@@ -239,6 +239,23 @@ This todo list is organized by **criticality, impact, and ROI**:
   - **Impact**: Faster FCP, reduced initial bundle, improved Core Web Vitals
   - **Backlogged**: Lazy loading, PPR, image blur placeholders, ScrollReveal optimization
 
+- [ ] **Speed Insights RES optimization - Phase 2** (3-4 hours) ⭐⭐⭐⭐ **BACKLOG**
+  - **Completed (Nov 19, 2025):**
+    - ✅ Font optimization: Changed display strategy from 'swap' to 'optional'
+    - ✅ Analytics optimization: Added mode and sample rate configuration
+    - ✅ Image loading strategy: Added lazy loading to below-fold images
+  - **Remaining work:**
+    - [ ] Bundle analysis with `ANALYZE=true npm run build`
+    - [ ] Identify code-split opportunities for heavy components (BlogFilters, GitHub contributions)
+    - [ ] Add preconnect hints for external resources
+    - [ ] Evaluate edge caching for static blog content
+    - [ ] Dynamic imports for non-critical components
+  - **Current RES**: 72 (homepage: 61, blog: 89)
+  - **Target RES**: 90+ ("Great" status)
+  - **Expected Impact**: +15-20 points on homepage RES
+  - **Impact**: Better user experience, improved SEO, reduced bounce rate
+  - **ROI**: ⭐⭐⭐⭐ (User experience + SEO benefit)
+
 - [ ] **Lazy load below-fold components** (2-3 hours) ⚪ **BACKLOG**
   - Dynamic imports for FeaturedPostHero and heavy components
   - Add loading skeletons for perceived performance

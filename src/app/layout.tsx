@@ -25,7 +25,7 @@ import { headers } from "next/headers";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-  display: "swap",
+  display: "optional",
   preload: true,
   adjustFontFallback: true,
 });
@@ -33,7 +33,7 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-  display: "swap",
+  display: "optional",
   preload: true,
   adjustFontFallback: true,
 });
@@ -41,7 +41,7 @@ const geistMono = Geist_Mono({
 const newsreader = Newsreader({
   variable: "--font-serif",
   subsets: ["latin"],
-  display: "swap",
+  display: "optional",
   preload: true,
   adjustFontFallback: true,
 });
@@ -121,8 +121,8 @@ export default async function RootLayout({
           <BottomNav />
           <Toaster richColors position="top-center" />
           {/* Vercel Analytics & Speed Insights */}
-          <Analytics />
-          <SpeedInsights />
+          <Analytics mode="production" debug={false} />
+          <SpeedInsights sampleRate={0.1} />
           {/* Web Vitals Tracking */}
           <WebVitalsReporter />
         </ThemeProvider>

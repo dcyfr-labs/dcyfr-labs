@@ -121,6 +121,7 @@ export function ProjectCard({
               image.position && `object-${image.position}`
             )}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            loading="lazy"
           />
           {/* Gradient overlay for better text readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/90 to-background/95" />
