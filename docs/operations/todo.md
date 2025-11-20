@@ -153,19 +153,21 @@ This todo list is organized by **criticality, impact, and ROI**:
 
 - [x] **Sentry issue analysis and resolution** (1 hour) ✅ **COMPLETED** (Nov 19, 2025)
   - ✅ Analyzed all 12 open Sentry issues
-  - ✅ Closed 8 resolved issues via commit references (CYBERDREW-DEV-K, P, 6, N, 7, M, 4, 5)
+  - ✅ Closed 9 resolved issues via commit references (CYBERDREW-DEV-K, P, 6, N, 7, M, 4, 5, 9)
   - ✅ Verified import errors fixed in current code
   - ✅ Confirmed Mermaid uses built-in themes (not CSS variables)
-  - ✅ Documented remaining infrastructure issues for monitoring
+  - ✅ Investigated CSP violation (Perplexity AI extension, working as intended)
+  - ✅ Created comprehensive CSP monitoring documentation
   - **Resolved Issues**:
     - Import errors: `cn` utility, `CONTAINER_PADDING`, `SITE_TITLE` (fixed in recent commits)
     - `/team/page` export error (page intentionally removed)
     - Mermaid color format (using built-in themes)
+    - CSP violation: Third-party browser extension (expected behavior)
   - **Remaining Issues** (infrastructure, not code bugs):
     - CYBERDREW-DEV-Q: EPIPE error (connection closed during write)
     - CYBERDREW-DEV-A, B: Connection aborts (client disconnects)
-    - CYBERDREW-DEV-9: CSP violation (requires investigation)
   - **Impact**: Cleared false positives, focused on real issues
+  - **Documentation**: Created `docs/security/csp-monitoring.md`
 
 - [ ] **Error monitoring strategy** (2 hours) 🔴 **HIGH PRIORITY** (Nov 19, 2025)
   - **Sentry dashboard**: Weekly review cadence (scheduled)
@@ -173,7 +175,7 @@ This todo list is organized by **criticality, impact, and ROI**:
   - **SLAs**: Define response times by severity (Critical: 24h, High: 72h, etc.)
   - **Alerts**: Configure for critical errors (5xx, unhandled exceptions)
   - **Infrastructure errors**: Add error handling for EPIPE/connection aborts
-  - **CSP violations**: Investigate CYBERDREW-DEV-9 and adjust policy if needed
+  - **CSP monitoring**: Follow weekly review process in csp-monitoring.md
   - **Impact**: Proactive issue detection and faster resolution
   - **Note**: Promoted to HIGH after Sentry analysis - establish baseline now
 

@@ -232,6 +232,7 @@ curl -i https://cyberdrew.dev | grep -i "strict-transport-security"
 - `/docs/security/hardening-summary-2025-10-24.md` - Recent improvements
 - `/docs/security/environment-variable-audit.md` - Env var security
 - `/docs/security/csp/nonce-implementation.md` - CSP implementation
+- `/docs/security/csp-monitoring.md` - CSP violation tracking & monitoring
 
 ### Component Docs
 - `/docs/components/github-heatmap.md` - API integration security
