@@ -151,23 +151,33 @@ This todo list is organized by **criticality, impact, and ROI**:
 
 ### Monitoring & Error Tracking
 
-- [x] **Sentry issue analysis and resolution** (1 hour) ✅ **COMPLETED** (Nov 19, 2025)
+- [x] **Sentry issue analysis and resolution** (2 hours) ✅ **COMPLETED** (Nov 19, 2025)
   - ✅ Analyzed all 12 open Sentry issues
   - ✅ Closed 9 resolved issues via commit references (CYBERDREW-DEV-K, P, 6, N, 7, M, 4, 5, 9)
   - ✅ Verified import errors fixed in current code
   - ✅ Confirmed Mermaid uses built-in themes (not CSS variables)
   - ✅ Investigated CSP violation (Perplexity AI extension, working as intended)
   - ✅ Created comprehensive CSP monitoring documentation
+  - ✅ Implemented graceful error handling for EPIPE and connection aborts
+  - ✅ Added centralized error handler with connection error detection
+  - ✅ Updated all API routes with proper error handling
+  - ✅ Created unit tests for error handling (18 tests, all passing)
   - **Resolved Issues**:
     - Import errors: `cn` utility, `CONTAINER_PADDING`, `SITE_TITLE` (fixed in recent commits)
     - `/team/page` export error (page intentionally removed)
     - Mermaid color format (using built-in themes)
     - CSP violation: Third-party browser extension (expected behavior)
-  - **Remaining Issues** (infrastructure, not code bugs):
-    - CYBERDREW-DEV-Q: EPIPE error (connection closed during write)
-    - CYBERDREW-DEV-A, B: Connection aborts (client disconnects)
-  - **Impact**: Cleared false positives, focused on real issues
-  - **Documentation**: Created `docs/security/csp-monitoring.md`
+    - Connection errors: EPIPE, ECONNRESET, ECONNABORTED (now handled gracefully)
+  - **Infrastructure Improvements**:
+    - Connection errors logged at debug level (not as errors)
+    - Actual errors reported to Sentry with full context
+    - Error severity classification system implemented
+    - 499 status code for client-closed connections
+  - **Impact**: All code issues resolved, infrastructure monitoring optimized
+  - **Documentation**: 
+    - Created `docs/security/csp-monitoring.md`
+    - Created `src/lib/error-handler.ts` with full JSDoc
+    - Added 18 unit tests in `src/__tests__/lib/error-handler.test.ts`
 
 - [ ] **Error monitoring strategy** (2 hours) 🔴 **HIGH PRIORITY** (Nov 19, 2025)
   - **Sentry dashboard**: Weekly review cadence (scheduled)
