@@ -121,19 +121,24 @@ This todo list is organized by **criticality, impact, and ROI**:
     8. ✅ `lib/post-badges.ts` - 100% coverage, 24 tests - Badge metadata generation
   - **Note**: Phase 1 completed with 7.37% coverage instead of 25% target. This is expected as many files require integration testing or are difficult to unit test (file system I/O, Redis connections, etc.). The 8 critical business logic files have excellent coverage.
 
-- [ ] **Phase 2: Test coverage - Components & hooks** (14-18 hours) 🟡 **MEDIUM PRIORITY**
-  - **Target**: 50% coverage (from 25%)
-  - **Timeframe**: Weeks 3-4
-  - **Focus**: Component logic, custom hooks, data layer
-  - **Areas to test**:
-    1. Component utilities (MDX, Mermaid, filters) - 3-4h
-    2. Layout components - 2-3h
-    3. Analytics components - 2-3h
-    4. Custom hooks (view tracking, analytics, animations) - 3-4h
-    5. Data layer (projects, resume, socials) - 2-3h
-    6. Remaining lib files (anti-spam, shares, views) - 1-2h
-  - **Deliverables**: 15+ test files, 80-120 test cases
+- [ ] **Phase 2: Test coverage - Components & hooks** (14-18 hours) 🟡 **IN PROGRESS** (Started Nov 20, 2025)
+  - **Target**: 50% coverage (from 7.37%)
+  - **Current Progress**: 2/6 areas completed (Component utilities: MDX, Mermaid)
+  - **Tests Added**: 52 new tests (395 total passing)
+  - **Files completed**:
+    1. ✅ `components/mdx.tsx` - 26 tests - Component mappings, custom elements, accessibility
+    2. ✅ `components/mermaid.tsx` - 26 tests - Theme detection, rendering, error handling
+  - **Remaining areas**:
+    3. ⏳ `components/blog-filters.tsx` - Search debouncing, tag filtering, clear filters
+    4. ⏳ `components/copy-code-button.tsx` - Clipboard API, success/error states
+    5. ⏳ Layout components (PageLayout, PageHero, ArchiveLayout, ArticleLayout) - 2-3h
+    6. ⏳ Analytics components (blog-analytics-tracker, view-tracker, web-vitals-reporter) - 2-3h
+    7. ⏳ Custom hooks (view tracking, analytics, animations) - 3-4h
+    8. ⏳ Data layer (projects, resume, socials) - 2-3h
+    9. ⏳ Remaining lib files (anti-spam, shares, views) - 1-2h
+  - **Estimated time remaining**: 10-14 hours
   - **Impact**: ⭐⭐⭐⭐ Component reliability, hook behavior validated
+  - **Next**: Continue with BlogFilters, copy-code-button, then layout components
 
 - [ ] **Phase 3: Test coverage - Integration & edge cases** (18-22 hours) 🟢 **LOW PRIORITY**
   - **Target**: 80% coverage (from 50%)
