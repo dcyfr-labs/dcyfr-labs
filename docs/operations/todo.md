@@ -153,19 +153,41 @@ This todo list is organized by **criticality, impact, and ROI**:
   - **Impact**: ⭐⭐⭐⭐⭐ Major reliability improvements - 437 new tests validating components, data layer, hooks, and Redis utilities
   - **Achievement**: 93.1% pass rate with comprehensive coverage of business logic, data structures, and utility functions
 
-- [ ] **Phase 3: Test coverage - Integration & edge cases** (18-22 hours) 🟢 **LOW PRIORITY**
+- [ ] **Phase 3: Test coverage - Integration & edge cases** (18-22 hours) 🟢 **IN PROGRESS**
   - **Target**: 80% coverage (from 50%)
   - **Timeframe**: Weeks 5-8
   - **Focus**: Integration tests, API routes, edge cases
+  - **Current Stats**: 947 tests (884 passing, 62 failing, 1 skipped) - 93.4% pass rate
+  - **Progress**: 2/8 areas completed
   - **Areas to test**:
-    1. API route integration (contact, analytics, GitHub) - 4-5h
-    2. Blog system integration (full lifecycle) - 3-4h
-    3. Authentication & security (CSP, rate limiting) - 2-3h
-    4. Error scenarios (network failures, missing data) - 3-4h
-    5. Performance benchmarks - 2-3h
-    6. Accessibility tests - 2-3h
+    1. ✅ API route integration - Contact API (17 tests, all passing)
+    2. ✅ API route integration - Views API (20 tests, all passing)
+    3. [ ] API route integration - Analytics API (20-25 tests)
+    4. [ ] API route integration - GitHub contributions API (15-20 tests)
+    5. [ ] Blog system integration (full lifecycle) - 3-4h
+    6. [ ] Authentication & security (CSP, rate limiting) - 2-3h
+    7. [ ] Error scenarios (network failures, missing data) - 3-4h
+    8. [ ] Performance benchmarks - 2-3h
   - **Deliverables**: 20+ integration tests, 100+ test cases, 80% coverage achieved
   - **Impact**: ⭐⭐⭐⭐ Production confidence, regression prevention
+  - **Phase 3 Files Completed**:
+    1. ✅ `src/__tests__/integration/api-contact.test.ts` - 17 tests (all passing)
+       - Rate limiting (429 responses, headers)
+       - Honeypot protection (silent acceptance)
+       - Input validation (required fields, email, lengths)
+       - Sanitization (trimming, truncation)
+       - Successful submission (Inngest integration)
+       - Error handling (JSON parsing, Inngest failures)
+    2. ✅ `src/__tests__/integration/api-views.test.ts` - 20 tests (all passing)
+       - Input validation (postId, sessionId, isVisible)
+       - Layer 1: Request validation (user-agent, bot detection)
+       - Layer 2: Timing validation (minimum time on page)
+       - Layer 3: Abuse pattern detection (known abusers)
+       - Layer 4: Rate limiting (10 req/5min, headers)
+       - Layer 5: Session deduplication (30min window)
+       - Successful recording (increment, response)
+       - Error handling (JSON parsing, Redis failures)
+       - Complete flow integration (layer order, early exit)
 
 ### Monitoring & Error Tracking
 
