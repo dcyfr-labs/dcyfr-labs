@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { posts, type Post } from "@/data/posts";
 import { PostList } from "@/components/post-list";
-import { BlogFilters } from "@/components/blog-filters";
+import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
 import { BlogSearchAnalytics } from "@/components/blog-search-analytics";
 import { ArchiveLayout } from "@/components/layouts/archive-layout";
 import { ArchivePagination } from "@/components/layouts/archive-pagination";
@@ -10,6 +11,19 @@ import { getPostBadgeMetadata } from "@/lib/post-badges";
 import { createArchivePageMetadata, createCollectionSchema, getJsonLdScriptProps } from "@/lib/metadata";
 import { AUTHOR_NAME, SITE_URL } from "@/lib/site-config";
 import { headers } from "next/headers";
+
+const BlogFilters = dynamic(() => import("@/components/blog-filters").then(mod => ({ default: mod.BlogFilters })), {
+  loading: () => (
+    <div className="space-y-4">
+      <Skeleton className="h-10 w-full" />
+      <div className="flex gap-2 flex-wrap">
+        <Skeleton className="h-8 w-20" />
+        <Skeleton className="h-8 w-24" />
+        <Skeleton className="h-8 w-20" />
+      </div>
+    </div>
+  ),
+});
 
 const pageTitle = "Blog";
 const pageDescription = "Articles on web development, cybersecurity, artificial intelligence, and more.";

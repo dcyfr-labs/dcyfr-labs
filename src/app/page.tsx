@@ -18,8 +18,13 @@ import {
 import { headers } from "next/headers";
 import type { Metadata } from "next";
 import { FeaturedPostHero } from "@/components/featured-post-hero";
-import { ScrollReveal } from "@/components/scroll-reveal";
+import dynamic from "next/dynamic";
 import { SectionNavigator, Section } from "@/components/section-navigator";
+
+const ScrollReveal = dynamic(() => import("@/components/scroll-reveal").then(mod => ({ default: mod.ScrollReveal })), {
+  loading: () => <div className="contents" />,
+  ssr: true,
+});
 import Image from "next/image";
 import { 
   TYPOGRAPHY, 

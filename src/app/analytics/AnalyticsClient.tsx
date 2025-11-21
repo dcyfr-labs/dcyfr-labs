@@ -48,7 +48,16 @@ import { useDashboardSort } from "@/hooks/use-dashboard-sort";
 // Components
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { AnalyticsOverview } from "@/components/analytics/analytics-overview";
-import { AnalyticsCharts } from "@/components/analytics/analytics-charts";
+import dynamic from "next/dynamic";
+
+const AnalyticsCharts = dynamic(() => import("@/components/analytics/analytics-charts").then(mod => ({ default: mod.AnalyticsCharts })), {
+  loading: () => (
+    <div className="space-y-6">
+      <Skeleton className="h-64 w-full" />
+      <Skeleton className="h-48 w-full" />
+    </div>
+  ),
+});
 
 // Sort indicator component - moved outside to avoid creating during render
 type SortIndicatorProps = {

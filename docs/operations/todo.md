@@ -2,7 +2,7 @@
 
 This document tracks **active and pending** work only, **organized by criticality**. Completed tasks are moved to **`done.md`**.
 
-**Last Updated:** November 19, 2025 (Sentry issues analyzed and resolved)
+**Last Updated:** November 20, 2025 (Speed Insights RES optimization Phase 2 completed)
 
 ---
 
@@ -239,22 +239,25 @@ This todo list is organized by **criticality, impact, and ROI**:
   - **Impact**: Faster FCP, reduced initial bundle, improved Core Web Vitals
   - **Backlogged**: Lazy loading, PPR, image blur placeholders, ScrollReveal optimization
 
-- [ ] **Speed Insights RES optimization - Phase 2** (3-4 hours) ⭐⭐⭐⭐ **BACKLOG**
-  - **Completed (Nov 19, 2025):**
-    - ✅ Font optimization: Changed display strategy from 'swap' to 'optional'
-    - ✅ Analytics optimization: Added mode and sample rate configuration
-    - ✅ Image loading strategy: Added lazy loading to below-fold images
-  - **Remaining work:**
-    - [ ] Bundle analysis with `ANALYZE=true npm run build`
-    - [ ] Identify code-split opportunities for heavy components (BlogFilters, GitHub contributions)
-    - [ ] Add preconnect hints for external resources
-    - [ ] Evaluate edge caching for static blog content
-    - [ ] Dynamic imports for non-critical components
-  - **Current RES**: 72 (homepage: 61, blog: 89)
-  - **Target RES**: 90+ ("Great" status)
-  - **Expected Impact**: +15-20 points on homepage RES
-  - **Impact**: Better user experience, improved SEO, reduced bounce rate
-  - **ROI**: ⭐⭐⭐⭐ (User experience + SEO benefit)
+- [x] **Speed Insights RES optimization - Phase 2** (3-4 hours) ✅ **COMPLETED** (Nov 20, 2025)
+  - **Completed optimizations:**
+    - ✅ Font optimization: Changed display strategy from 'swap' to 'optional' (Nov 19)
+    - ✅ Analytics optimization: Added mode and sample rate configuration (Nov 19)
+    - ✅ Image loading strategy: Added lazy loading to below-fold images (Nov 19)
+    - ✅ Bundle analysis: Identified top 5 chunks (~2MB): framer-motion, mermaid, giscus, recharts, react-calendar-heatmap (Nov 20)
+    - ✅ Code splitting: Implemented dynamic imports for 6 heavy components with loading states (Nov 20)
+      - ScrollReveal (homepage, post-list)
+      - GitHubHeatmap (projects page)
+      - BlogFilters (blog page)
+      - GiscusComments (blog posts)
+      - Mermaid (MDX content)
+      - AnalyticsCharts (analytics page)
+    - ✅ Preconnect hints: Added for Vercel Analytics, GitHub resources, Giscus (Nov 20)
+    - ✅ Edge caching: Verified ISR configuration (1h revalidation for all dynamic pages) (Nov 20)
+  - **Previous RES**: 72 (homepage: 61, blog: 89)
+  - **Expected Impact**: +15-20 points on homepage RES, improved TTI and initial load
+  - **Architecture**: Dynamic imports split heavy libraries into separate chunks loaded on-demand
+  - **Impact**: ⭐⭐⭐⭐⭐ Better user experience, improved SEO, reduced bounce rate, faster initial page load
 
 - [ ] **Lazy load below-fold components** (2-3 hours) ⚪ **BACKLOG**
   - Dynamic imports for FeaturedPostHero and heavy components

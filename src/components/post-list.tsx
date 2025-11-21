@@ -4,9 +4,14 @@ import Link from "next/link";
 import type { Post } from "@/data/posts";
 import { PostBadges } from "@/components/post-badges";
 import { PostThumbnail } from "@/components/post-thumbnail";
-import { ScrollReveal } from "@/components/scroll-reveal";
+import dynamic from "next/dynamic";
 import { ensurePostImage } from "@/lib/default-images";
 import { HOVER_EFFECTS } from "@/lib/design-tokens";
+
+const ScrollReveal = dynamic(() => import("@/components/scroll-reveal").then(mod => ({ default: mod.ScrollReveal })), {
+  loading: () => <div className="contents" />,
+  ssr: true,
+});
 
 /**
  * Props for the PostList component

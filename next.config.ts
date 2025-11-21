@@ -5,6 +5,7 @@ import { withBotId } from "botid/next/config";
 
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
+  openAnalyzer: true,
 });
 
 const nextConfig: NextConfig = {

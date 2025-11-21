@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
 import { visibleProjects } from "@/data/projects";
 import { ProjectCard } from "@/components/project-card";
-import { GitHubHeatmap } from "@/components/github-heatmap";
+import dynamic from "next/dynamic";
 import { GitHubHeatmapErrorBoundary } from "@/components/github-heatmap-error-boundary";
+import { GitHubHeatmapSkeleton } from "@/components/github-heatmap-skeleton";
 import { ArchiveLayout } from "@/components/layouts/archive-layout";
 import { SITE_URL, AUTHOR_NAME } from "@/lib/site-config";
 import { createArchivePageMetadata, getJsonLdScriptProps } from "@/lib/metadata";
 import { headers } from "next/headers";
+
+const GitHubHeatmap = dynamic(() => import("@/components/github-heatmap").then(mod => ({ default: mod.GitHubHeatmap })), {
+  loading: () => <GitHubHeatmapSkeleton />,
+});
 
 const pageTitle = "Projects";
 const pageDescription = "Browse my portfolio of development projects, open-source contributions, and published work.";

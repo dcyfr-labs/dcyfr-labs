@@ -13,9 +13,19 @@ import { TableOfContents } from "@/components/table-of-contents";
 import { extractHeadings } from "@/lib/toc";
 import { headers } from "next/headers";
 import { ShareButtons } from "@/components/share-buttons";
-import { GiscusComments } from "@/components/giscus-comments";
+import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { SeriesNavigation } from "@/components/series-navigation";
+
+const GiscusComments = dynamic(() => import("@/components/giscus-comments").then(mod => ({ default: mod.GiscusComments })), {
+  loading: () => (
+    <div className="space-y-2">
+      <Skeleton className="h-6 w-32" />
+      <Skeleton className="h-24 w-full" />
+    </div>
+  ),
+});
 import { PostHeroImage } from "@/components/post-hero-image";
 import { ViewTracker } from "@/components/view-tracker";
 import { BlogAnalyticsTracker } from "@/components/blog-analytics-tracker";

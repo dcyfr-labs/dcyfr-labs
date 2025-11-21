@@ -103,8 +103,20 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Font optimization */}
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        
+        {/* Analytics & monitoring */}
+        <link rel="dns-prefetch" href="https://va.vercel-scripts.com" />
+        <link rel="preconnect" href="https://vercel-insights.com" crossOrigin="anonymous" />
+        
+        {/* GitHub resources (for heatmap & avatars) */}
+        <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
+        <link rel="dns-prefetch" href="https://github.githubassets.com" />
+        
+        {/* Giscus comments (loaded on blog posts) */}
+        <link rel="dns-prefetch" href="https://giscus.app" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem nonce={nonce}>
