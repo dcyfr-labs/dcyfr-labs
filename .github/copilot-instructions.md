@@ -150,9 +150,13 @@ src/
 
 ## Task Tracking
 
-**Persistent**: `docs/operations/todo.md` (active work) + `done.md` (history)
-**Session**: Use in-memory todo tool for multi-step tasks
-**Workflow**: Check `todo.md` → create session list → update both on completion
+**Persistent**: `docs/operations/todo.md` (active work) + `done.md` (completed history)
+**Session**: Use in-memory todo tool for multi-step tasks within a conversation
+**Workflow**: 
+1. Check `todo.md` for existing tasks
+2. Create session list for current work using manage_todo_list tool
+3. Update both files on completion (session → persistent)
+4. Archive completed items to `done.md`
 
 ## Documentation
 
@@ -181,6 +185,32 @@ All docs in `/docs/` organized by domain:
 - Security headers or CSP (discuss implications first)
 
 **Key reference files**: `src/app/layout.tsx`, `src/lib/blog.ts`, `src/lib/metadata.ts`, `src/lib/design-tokens.ts`, `src/proxy.ts`
+
+---
+
+## CI/CD & Automation
+
+**GitHub Workflows** (`.github/workflows/`):
+- `test.yml` — Runs lint, typecheck, unit/e2e tests on push/PR
+- `deploy.yml` — Deploys to Vercel (main → production, preview → staging)
+- `dependabot-auto-merge.yml` — Auto-merges safe dependency updates
+- `lighthouse-ci.yml` — Performance budgets on PRs to main
+- `codeql.yml` — Security scanning (daily + on code changes)
+- `sync-preview-branch.yml` — Keeps preview branch in sync with main
+- `stale.yml` — Manages inactive issues/PRs
+
+**Optimization principles**:
+- Use concurrency groups to cancel redundant runs
+- Cache dependencies and build artifacts
+- Run independent jobs in parallel
+- Fail fast on validation errors
+- Use path filters to skip unnecessary runs
+
+**Dependabot** (`.github/dependabot.yml`):
+- Weekly npm updates (Monday 9am PT)
+- Grouped by category (Next.js, dev deps, TypeScript, testing, UI, etc.)
+- Auto-merge enabled for safe updates (dev deps patches/minors, prod patches)
+- Manual review required for major versions or breaking changes
 
 ---
 

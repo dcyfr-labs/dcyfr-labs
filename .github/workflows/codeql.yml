@@ -1,21 +1,28 @@
-# CodeQL Analysis - Security scanning for vulnerabilities and code quality issues
-# For more information see: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning
+# CodeQL Analysis - Security scanning for vulnerabilities and code quality
+# Docs: https://docs.github.com/en/code-security/code-scanning
 
 name: "CodeQL Analysis"
 
 on:
   push:
-    branches: ["main"]  # Only on main to reduce PR overhead
+    branches: ["main"]
+    paths:
+      - '**.ts'
+      - '**.tsx'
+      - '**.js'
+      - '**.jsx'
+      - 'package*.json'
+      - '.github/workflows/codeql.yml'
   pull_request:
     branches: ["main"]
-    paths:  # Only run if code changes, not docs
+    paths:
       - '**.ts'
       - '**.tsx'
       - '**.js'
       - '**.jsx'
       - 'package*.json'
   schedule:
-    # Run at 06:00 UTC every day
+    # Run daily at 06:00 UTC
     - cron: '0 6 * * *'
 
 # Cancel in-progress runs for same branch
@@ -28,54 +35,31 @@ permissions:
 
 jobs:
   analyze:
-    name: Analyze
+    name: Analyze JavaScript/TypeScript
     runs-on: ubuntu-latest
-    timeout-minutes: 360
+    timeout-minutes: 30
     permissions:
-      # Required for all workflows
       security-events: write
-      # Required to fetch internal or private CodeQL packs
       packages: read
-      # Only required for workflows in private repositories
       actions: read
       contents: read
-
-    strategy:
-      fail-fast: false
-      matrix:
-        # CodeQL supports JavaScript/TypeScript, Python, Ruby, Go, C/C++, C#, Java, Swift, Kotlin
-        # For this Next.js project, we're primarily scanning JavaScript/TypeScript
-        language: ['javascript-typescript']
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # Initializes the CodeQL tools for scanning
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
-        languages: ${{ matrix.language }}
-        # If you wish to specify custom queries, you can do so here or in a config file.
-        # By default, queries listed here will override any specified in a config file.
-        # Prefix the list here with "+" to use these queries and those in the config file.
-        
-        # Use default security-extended query suite for comprehensive coverage
+        languages: javascript-typescript
         queries: security-extended
-        
-        # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
 
-    # Autobuild attempts to build any compiled languages (C/C++, C#, Go, Java, or Swift).
-    # For JavaScript/TypeScript, autobuild will install dependencies
     - name: Autobuild
       uses: github/codeql-action/autobuild@v3
 
-    # Perform CodeQL Analysis
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
       with:
-        category: "/language:${{matrix.language}}"
-        # Upload results to GitHub Security tab
+        category: "/language:javascript-typescript"
         upload: true
-        # Set output format
         output: sarif-latest

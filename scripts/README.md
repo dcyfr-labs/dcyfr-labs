@@ -32,16 +32,6 @@ node scripts/check-security-alert.mjs https://github.com/dcyfr/cyberdrew-dev/sec
 - `0` - Alert is fixed, dismissed, or not found (resolved)
 - `1` - Alert is still open or error occurred
 
-#### sync-agents.mjs
-
-Syncs `.github/copilot-instructions.md` to `agents.md` and `mcp.json` in the root directory. Runs automatically before `dev`, `dev:https`, and `build`.
-
-```bash
-npm run sync:agents
-# or directly:
-node scripts/sync-agents.mjs
-```
-
 #### run-with-dev.mjs
 Helper script for running tasks with Next.js dev server. Used by accessibility test scripts.
 

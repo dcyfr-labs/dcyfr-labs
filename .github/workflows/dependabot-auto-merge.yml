@@ -85,9 +85,9 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           running-workflow-name: 'auto-merge'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 10  # Check every 10s instead of 20s
-          allowed-conclusions: success,skipped  # Allow skipped checks
-          check-regexp: '^(Test|Code Quality|CodeQL).*$'  # Only wait for essential checks
+          wait-interval: 10
+          allowed-conclusions: success,skipped
+          check-regexp: '^(Code Quality|Unit & Integration Tests|E2E Tests).*$'
       
       - name: Auto-approve safe updates
         if: steps.check.outputs.safe == 'true'

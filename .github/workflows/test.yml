@@ -3,6 +3,12 @@ name: Test
 on:
   push:
     branches: [main, preview]
+    paths:
+      - 'src/**'
+      - 'e2e/**'
+      - 'tests/**'
+      - 'package*.json'
+      - '.github/workflows/test.yml'
   pull_request:
     branches: [main, preview]
 
@@ -12,10 +18,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Single job for quick checks (lint + typecheck)
+  # Quick checks - fail fast
   quality:
     name: Code Quality
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     
     steps:
       - name: Checkout code
@@ -28,9 +35,9 @@ jobs:
           cache: 'npm'
       
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --prefer-offline
       
-      - name: Run linter & typecheck in parallel
+      - name: Lint and typecheck in parallel
         run: |
           npm run lint:ci &
           npm run typecheck &
@@ -39,6 +46,7 @@ jobs:
   unit:
     name: Unit & Integration Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     
     steps:
       - name: Checkout code
@@ -51,13 +59,13 @@ jobs:
           cache: 'npm'
       
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --prefer-offline
       
       - name: Run unit tests with coverage
         run: npm run test:coverage
       
-      - name: Upload coverage to Codecov (optional)
-        if: false # Enable when ready
+      - name: Upload coverage to Codecov
+        if: false  # Enable when ready
         uses: codecov/codecov-action@v4
         with:
           files: ./coverage/lcov.info
@@ -67,6 +75,7 @@ jobs:
   e2e:
     name: E2E Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     
     steps:
       - name: Checkout code
@@ -79,10 +88,22 @@ jobs:
           cache: 'npm'
       
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --prefer-offline
+      
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
       
       - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
+      
+      - name: Install Playwright deps only
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps
       
       - name: Run E2E tests
         run: npm run test:e2e

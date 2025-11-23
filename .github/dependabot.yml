@@ -1,10 +1,11 @@
 # Dependabot Configuration
 # Automated dependency updates and security alerts
-# Documentation: https://docs.github.com/en/code-security/dependabot
+# Docs: https://docs.github.com/en/code-security/dependabot
+# Auto-merge: .github/workflows/dependabot-auto-merge.yml
 
 version: 2
 updates:
-  # npm dependencies
+  # npm dependencies - weekly batch updates
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -13,13 +14,13 @@ updates:
       time: "09:00"
       timezone: "America/Los_Angeles"
     
-    # Open PRs for security updates immediately
+    # Limit open PRs to prevent notification spam
     open-pull-requests-limit: 10
     
-    # Grouping strategy - reduces PR noise
+    # Grouping strategy - reduces PR noise by combining related updates
     groups:
-      # Group all Next.js and React core packages together
-      nextjs:
+      # Framework core - Next.js, React, and Vercel integrations
+      nextjs-core:
         patterns:
           - "next"
           - "react"
@@ -27,32 +28,39 @@ updates:
           - "@next/*"
           - "@vercel/analytics"
           - "@vercel/speed-insights"
-      
-      # Group all development dependencies
-      development-dependencies:
-        dependency-type: "development"
+          - "@vercel/og"
         update-types:
           - "minor"
           - "patch"
       
-      # Group all TypeScript-related packages
-      typescript:
+      # Development tooling - linters, testers, type checkers
+      dev-tools:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+        exclude-patterns:
+          - "@types/*"  # Separate group for types
+      
+      # TypeScript ecosystem - compiler and type definitions
+      typescript-stack:
         patterns:
           - "typescript"
           - "@types/*"
           - "ts-node"
       
-      # Group all testing packages
-      testing:
+      # Testing infrastructure - Vitest, Playwright, Testing Library
+      testing-stack:
         patterns:
           - "vitest"
           - "@vitest/*"
           - "@testing-library/*"
           - "playwright"
           - "@playwright/*"
+          - "@axe-core/*"
       
-      # Group all linting/formatting packages
-      code-quality:
+      # Code quality - ESLint, Prettier, and related configs
+      linting-formatting:
         patterns:
           - "eslint"
           - "eslint-*"
@@ -60,8 +68,8 @@ updates:
           - "prettier"
           - "@typescript-eslint/*"
       
-      # Group Tailwind and UI packages
-      ui-packages:
+      # UI framework - Tailwind, Radix UI, and styling utilities
+      ui-framework:
         patterns:
           - "tailwindcss"
           - "@tailwindcss/*"
@@ -70,9 +78,11 @@ updates:
           - "class-variance-authority"
           - "clsx"
           - "tailwind-merge"
+          - "framer-motion"
+          - "lucide-react"
       
-      # Group MDX and content processing packages
-      content:
+      # Content processing - MDX, syntax highlighting, rehype/remark plugins
+      content-pipeline:
         patterns:
           - "next-mdx-remote"
           - "gray-matter"
@@ -82,36 +92,41 @@ updates:
           - "unified"
           - "unist-*"
           - "hast-*"
+          - "katex"
+          - "mermaid"
       
-      # Group Sentry monitoring packages
+      # Monitoring & observability - Sentry error tracking
       monitoring:
         patterns:
           - "@sentry/*"
       
-      # Group Inngest background job packages
+      # Background jobs - Inngest task processing
       background-jobs:
         patterns:
           - "inngest"
+      
+      # Email & communication - Resend and email templates
+      email:
+        patterns:
+          - "resend"
+          - "@react-email/*"
     
-    # Commit message prefix
+    # Commit message prefix for conventional commits
     commit-message:
       prefix: "chore(deps)"
       prefix-development: "chore(deps-dev)"
       include: "scope"
     
-    # Ignore specific packages (if needed)
+    # Labels applied to all PRs
+    labels:
+      - "dependencies"
+    
+    # Ignore specific packages (add as needed)
     # ignore:
     #   - dependency-name: "package-name"
     #     versions: ["x.x.x"]
-    
-    # Pull request reviewers (optional - add your GitHub username)
-    # reviewers:
-    #   - "dcyfr"
-    
-    # Auto-merge rules can be set up via GitHub Actions
-    # See: docs/operations/dependabot-setup.md for auto-merge configuration
 
-  # GitHub Actions dependencies
+  # GitHub Actions - keep CI/CD workflows updated
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -121,3 +136,6 @@ updates:
       timezone: "America/Los_Angeles"
     commit-message:
       prefix: "chore(ci)"
+    labels:
+      - "ci/cd"
+      - "dependencies"
