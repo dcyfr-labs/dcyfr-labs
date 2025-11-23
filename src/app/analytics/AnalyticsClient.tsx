@@ -48,6 +48,7 @@ import { useDashboardSort } from "@/hooks/use-dashboard-sort";
 // Components
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { AnalyticsOverview } from "@/components/analytics/analytics-overview";
+import { ConversionMetrics } from "@/components/analytics/conversion-metrics";
 import dynamic from "next/dynamic";
 
 const AnalyticsCharts = dynamic(() => import("@/components/analytics/analytics-charts").then(mod => ({ default: mod.AnalyticsCharts })), {
@@ -476,6 +477,13 @@ export default function AnalyticsDashboard() {
         summary={filteredSummary}
         totalViewsTrend24h={trendStats.totalViewsTrend24h}
         totalTrendPercent={trendStats.totalTrendPercent}
+      />
+
+      {/* Conversion Goals & Metrics */}
+      <ConversionMetrics
+        completionRate={filteredSummary.avgReadingCompletion}
+        avgScrollDepth={filteredSummary.avgScrollDepth}
+        totalPostsViewed={filteredSummary.totalViews}
       />
 
       {/* Time-Series Charts */}

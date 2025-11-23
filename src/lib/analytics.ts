@@ -40,6 +40,14 @@ export type BlogEvent =
       };
     }
   | {
+      name: "blog_scroll_milestone";
+      properties: {
+        slug: string;
+        milestone: 25 | 50 | 75 | 90; // percentage milestones
+        timeOnPage: number; // seconds when milestone reached
+      };
+    }
+  | {
       name: "blog_toc_clicked";
       properties: {
         slug: string;
@@ -330,6 +338,16 @@ export function trackBlogCompleted(slug: string, timeSpent: number, scrollDepth:
   return trackEvent({
     name: "blog_post_completed",
     properties: { slug, timeSpent, scrollDepth },
+  });
+}
+
+/**
+ * Track blog scroll milestone (25%, 50%, 75%, 90%)
+ */
+export function trackScrollMilestone(slug: string, milestone: 25 | 50 | 75 | 90, timeOnPage: number) {
+  return trackEvent({
+    name: "blog_scroll_milestone",
+    properties: { slug, milestone, timeOnPage },
   });
 }
 

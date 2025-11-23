@@ -132,9 +132,13 @@ export default async function RootLayout({
           <SiteFooter />
           <BottomNav />
           <Toaster richColors position="top-center" />
-          {/* Vercel Analytics & Speed Insights */}
-          <Analytics mode="production" debug={false} />
-          <SpeedInsights sampleRate={0.1} />
+          {/* Vercel Analytics & Speed Insights - Only in production */}
+          {process.env.NODE_ENV === 'production' && (
+            <>
+              <Analytics debug={false} />
+              <SpeedInsights sampleRate={0.1} />
+            </>
+          )}
           {/* Web Vitals Tracking */}
           <WebVitalsReporter />
         </ThemeProvider>

@@ -23,6 +23,7 @@ import { PageLayout } from "@/components/layouts/page-layout";
 import { PageHero } from "@/components/layouts/page-hero";
 import { createPageMetadata } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
+import { AvailabilityBanner } from "@/components/cta";
 
 const pageTitle = "About";
 const pageDescription = "Learn about Drew, a cybersecurity architect with 5+ years leading security programs, incident response, and building secure development practices.";
@@ -99,6 +100,9 @@ export default async function AboutPage() {
             <div className="mb-6">
               <AboutStats />
             </div>
+            
+            {/* Availability Banner */}
+            {/* <AvailabilityBanner className="mb-6" /> */}
             
             {/* Current Role */}
             <div className="space-y-3">

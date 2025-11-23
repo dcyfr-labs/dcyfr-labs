@@ -144,6 +144,7 @@ export default async function Home() {
                     src="/images/avatar.jpg"
                     alt="Drew's profile picture"
                     fill
+                    sizes="(max-width: 768px) 128px, 160px"
                     className="rounded-full object-cover ring-4 ring-border shadow-lg"
                     priority
                   />

@@ -23,6 +23,7 @@ export function useViewTracking(postId: string, enabled = true) {
   const [error, setError] = useState<string | null>(null);
   const startTimeRef = useRef<number>(0);
   const hasTrackedRef = useRef(false);
+  const isSubmittingRef = useRef(false);
   const visibilityTimeRef = useRef<number>(0);
   const lastVisibleRef = useRef<boolean>(true);
 
@@ -55,7 +56,10 @@ export function useViewTracking(postId: string, enabled = true) {
 
     // Submit view tracking
     const submitView = async () => {
-      if (hasTrackedRef.current) return;
+      // Prevent multiple simultaneous submissions
+      if (hasTrackedRef.current || isSubmittingRef.current) return;
+      
+      isSubmittingRef.current = true;
 
       const timeOnPage = Date.now() - startTimeRef.current + visibilityTimeRef.current;
       const isVisible = !document.hidden;
@@ -79,6 +83,7 @@ export function useViewTracking(postId: string, enabled = true) {
         if (!contentType || !contentType.includes("application/json")) {
           console.error("API returned non-JSON response:", response.status);
           setError("API error");
+          isSubmittingRef.current = false;
           return;
         }
 
@@ -94,10 +99,16 @@ export function useViewTracking(postId: string, enabled = true) {
           if (response.status !== 429 && !data.message?.includes("already recorded")) {
             setError(data.error || "Failed to track view");
           }
+          // Still mark as tracked if it's a duplicate or rate limit
+          if (response.status === 429 || data.message?.includes("already recorded")) {
+            hasTrackedRef.current = true;
+          }
         }
       } catch (err) {
         console.error("View tracking error:", err);
         setError("Network error");
+      } finally {
+        isSubmittingRef.current = false;
       }
     };
 

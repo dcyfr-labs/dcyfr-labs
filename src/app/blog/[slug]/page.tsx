@@ -37,6 +37,7 @@ import {
   createBreadcrumbSchema,
   getJsonLdScriptProps 
 } from "@/lib/metadata";
+import { BlogPostCTA } from "@/components/cta";
 
 // Enable Incremental Static Regeneration with 1 hour revalidation
 export const revalidate = 3600; // 1 hour in seconds
@@ -235,6 +236,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           >
             {/* Related posts section */}
             <RelatedPosts posts={articleData.relatedItems} currentSlug={post.slug} />
+            
+            {/* Call-to-action for consulting/collaboration */}
+            {/* <BlogPostCTA variant="default" location="blog-post-end" /> */}
           </ArticleFooter>
           
           {/* Comments section - hidden for draft posts */}

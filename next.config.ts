@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
       exclude: ['error', 'warn'],
     } : false,
   },
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    qualities: [75, 90],
+  },
 };
 
 export default withSentryConfig(withBundleAnalyzer(withBotId(nextConfig)), {

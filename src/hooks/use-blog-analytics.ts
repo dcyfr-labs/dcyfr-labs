@@ -19,7 +19,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { trackBlogCompleted } from "@/lib/analytics";
+import { trackBlogCompleted, trackScrollMilestone } from "@/lib/analytics";
 
 interface UseBlogAnalyticsProps {
   slug: string;
@@ -28,10 +28,13 @@ interface UseBlogAnalyticsProps {
 
 export function useBlogAnalytics({ slug, enabled = true }: UseBlogAnalyticsProps) {
   const [hasTrackedCompletion, setHasTrackedCompletion] = useState(false);
+  const [trackedMilestones, setTrackedMilestones] = useState<Set<25 | 50 | 75 | 90>>(new Set());
   const startTimeRef = useRef<number>(0);
   const maxScrollDepthRef = useRef<number>(0);
   const visibilityTimeRef = useRef<number>(0);
   const lastVisibilityChangeRef = useRef<number>(0);
+  const trackedMilestonesRef = useRef<Set<25 | 50 | 75 | 90>>(new Set());
+  const hasTrackedCompletionRef = useRef(false);
 
   useEffect(() => {
     if (!enabled || typeof window === "undefined") {
@@ -49,8 +52,11 @@ export function useBlogAnalytics({ slug, enabled = true }: UseBlogAnalyticsProps
     maxScrollDepthRef.current = 0;
     visibilityTimeRef.current = 0;
     lastVisibilityChangeRef.current = Date.now();
+    hasTrackedCompletionRef.current = false;
+    trackedMilestonesRef.current = new Set();
     // eslint-disable-next-line react-hooks/set-state-in-effect -- Reset state on slug change
     setHasTrackedCompletion(false);
+    setTrackedMilestones(new Set());
 
     // Calculate scroll depth
     const calculateScrollDepth = (): number => {
@@ -64,11 +70,37 @@ export function useBlogAnalytics({ slug, enabled = true }: UseBlogAnalyticsProps
       return Math.min(100, Math.round((scrollTop / scrollableHeight) * 100));
     };
 
+    // Get current time on page in seconds
+    const getTimeOnPage = (): number => {
+      const now = Date.now();
+      const elapsedTime = now - startTimeRef.current;
+      const visibleTime = document.hidden
+        ? visibilityTimeRef.current
+        : visibilityTimeRef.current + (now - lastVisibilityChangeRef.current);
+      return Math.round((elapsedTime - (elapsedTime - visibleTime)) / 1000);
+    };
+
+    // Check and track scroll milestones
+    const checkMilestones = () => {
+      const currentDepth = maxScrollDepthRef.current;
+      const timeOnPage = getTimeOnPage();
+      const milestones: Array<25 | 50 | 75 | 90> = [25, 50, 75, 90];
+
+      for (const milestone of milestones) {
+        if (currentDepth >= milestone && !trackedMilestonesRef.current.has(milestone)) {
+          trackScrollMilestone(slug, milestone, timeOnPage);
+          trackedMilestonesRef.current.add(milestone);
+          setTrackedMilestones(new Set(trackedMilestonesRef.current));
+        }
+      }
+    };
+
     // Update max scroll depth
     const updateScrollDepth = () => {
       const currentDepth = calculateScrollDepth();
       if (currentDepth > maxScrollDepthRef.current) {
         maxScrollDepthRef.current = currentDepth;
+        checkMilestones();
       }
       checkCompletion();
     };
@@ -87,22 +119,15 @@ export function useBlogAnalytics({ slug, enabled = true }: UseBlogAnalyticsProps
 
     // Check if completion criteria met
     const checkCompletion = () => {
-      if (hasTrackedCompletion) return;
+      if (hasTrackedCompletionRef.current) return;
 
-      const now = Date.now();
-      const elapsedTime = now - startTimeRef.current;
-      
-      // Calculate total time (including time before page was hidden)
-      const visibleTime = document.hidden
-        ? visibilityTimeRef.current
-        : visibilityTimeRef.current + (now - lastVisibilityChangeRef.current);
-      
-      const totalTimeSpent = (elapsedTime - (elapsedTime - visibleTime)) / 1000; // in seconds
+      const totalTimeSpent = getTimeOnPage();
       const scrollDepth = maxScrollDepthRef.current;
 
       // Track completion if user has spent 30+ seconds and scrolled 80%+
       if (totalTimeSpent >= 30 && scrollDepth >= 80) {
-        trackBlogCompleted(slug, Math.round(totalTimeSpent), scrollDepth);
+        trackBlogCompleted(slug, totalTimeSpent, scrollDepth);
+        hasTrackedCompletionRef.current = true;
         setHasTrackedCompletion(true);
       }
     };
@@ -133,9 +158,13 @@ export function useBlogAnalytics({ slug, enabled = true }: UseBlogAnalyticsProps
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       clearInterval(interval);
     };
-  }, [slug, enabled, hasTrackedCompletion]);
+    // Only re-run effect when slug or enabled changes
+    // hasTrackedCompletion and trackedMilestones are intentionally excluded
+    // to prevent infinite loops (they're updated inside the effect)
+  }, [slug, enabled]);
 
   return {
     hasTrackedCompletion,
+    trackedMilestones: Array.from(trackedMilestones),
   };
 }

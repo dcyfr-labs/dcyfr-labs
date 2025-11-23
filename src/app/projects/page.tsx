@@ -8,6 +8,7 @@ import { ArchiveLayout } from "@/components/layouts/archive-layout";
 import { SITE_URL, AUTHOR_NAME } from "@/lib/site-config";
 import { createArchivePageMetadata, getJsonLdScriptProps } from "@/lib/metadata";
 import { headers } from "next/headers";
+import { ProjectsCTA } from "@/components/cta";
 
 const GitHubHeatmap = dynamic(() => import("@/components/github-heatmap").then(mod => ({ default: mod.GitHubHeatmap })), {
   loading: () => <GitHubHeatmapSkeleton />,
@@ -84,6 +85,9 @@ export default async function ProjectsPage() {
             <ProjectCard key={project.slug} project={project} />
           ))}
         </div>
+        
+        {/* Call-to-action for hiring/consulting */}
+        {/* <ProjectsCTA /> */}
       </ArchiveLayout>
     </>
   );
