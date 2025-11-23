@@ -160,39 +160,6 @@ export function ProjectCard({
             </div>
           )}
         </CardHeader>
-        
-        {/* External project links only */}
-        {project.links.length > 0 && (
-          <CardFooter className="mt-auto flex flex-row flex-wrap gap-2 sm:gap-3 relative z-10 px-4 sm:px-6 py-3 sm:py-4">
-            {project.links.map((link) => {
-              const isExternal = /^(?:https?:)?\/\//.test(link.href);
-              const linkClassName = cn(
-                // eslint-disable-next-line no-restricted-syntax
-                "inline-flex items-center justify-center gap-1.5 text-sm font-medium transition-colors",
-                "px-3 py-2 rounded-md",
-                "bg-background/70 hover:bg-accent hover:text-accent-foreground border border-border/80 backdrop-blur-sm",
-                "touch-target"
-              );
-              
-              if (!isExternal) {
-                return null; // Skip internal links since card itself links to detail page
-              }
-              
-              return (
-                <a
-                  key={`${project.slug}-${link.href}`}
-                  className={linkClassName}
-                  href={sanitizeUrl(link.href)}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <span>{link.label}</span>
-                  <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                </a>
-              );
-            })}
-          </CardFooter>
-        )}
       </Card>
     </div>
   );
