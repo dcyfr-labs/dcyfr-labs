@@ -23,6 +23,8 @@ jobs:
     name: Code Quality
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
     
     steps:
       - name: Checkout code
@@ -47,6 +49,8 @@ jobs:
     name: Unit & Integration Tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
     
     steps:
       - name: Checkout code
@@ -76,6 +80,8 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
     
     steps:
       - name: Checkout code

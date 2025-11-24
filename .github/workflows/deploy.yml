@@ -21,6 +21,8 @@ jobs:
     name: Deploy to Vercel
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
     environment:
       name: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }}
       url: ${{ steps.deploy.outputs.url }}
