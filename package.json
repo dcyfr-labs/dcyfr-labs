@@ -62,7 +62,7 @@
     "react-dom": "19.2.0",
     "react-swipeable": "^7.0.2",
     "recharts": "^3.4.1",
-    "redis": "^5.9.0",
+    "redis": "^5.10.0",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-katex": "^7.0.1",
     "rehype-pretty-code": "^0.14.1",
