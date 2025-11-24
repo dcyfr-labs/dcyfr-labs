@@ -48,6 +48,7 @@ export function AboutAvatar({
             src={src}
             alt={alt}
             fill
+            sizes="(max-width: 768px) 96px, 112px"
             className="object-cover"
             onError={() => setImageError(true)}
             priority
