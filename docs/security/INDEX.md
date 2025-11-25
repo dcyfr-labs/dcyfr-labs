@@ -91,14 +91,18 @@ This comprehensive security analysis generated the following documentation:
 ## 🎯 How to Use These Documents
 
 ### For Security Teams
+
 1. Start with **Quick Reference** (5 min)
 2. Review **Findings & Action Items** (30 min)
 3. Reference **Comprehensive Analysis** as needed (ongoing)
+4. Review **BotID Implementation** for bot protection details (20 min)
 
 ### For Developers
+
 1. Start with **Summary** (15 min)
 2. Review recommendations in **Findings & Action Items** (20 min)
 3. Implement changes using provided code examples
+4. Reference **BotID Implementation** when working on protected endpoints (15 min)
 
 ### For Management
 1. Read **Quick Reference** (5 min)

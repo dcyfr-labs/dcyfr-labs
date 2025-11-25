@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { checkBotId } from "botid/server";
 import { rateLimit, getClientIp, createRateLimitHeaders } from "@/lib/rate-limit";
 import { inngest } from "@/inngest/client";
 import { trackContactFormSubmission } from "@/lib/analytics";
@@ -30,6 +31,19 @@ export async function POST(request: Request) {
   let body: ContactFormData | undefined;
   
   try {
+    // Check for bot traffic using Vercel BotID
+    // This uses the BotID SDK to verify the request is from a legitimate user
+    // See: https://vercel.com/docs/botid/get-started
+    const verification = await checkBotId();
+
+    if (verification.isBot) {
+      console.log("[Contact API] Bot detected by BotID - blocking request");
+      return NextResponse.json(
+        { error: "Access denied" },
+        { status: 403 }
+      );
+    }
+
     // Apply rate limiting
     const clientIp = getClientIp(request);
     const rateLimitResult = await rateLimit(clientIp, RATE_LIMIT_CONFIG);
