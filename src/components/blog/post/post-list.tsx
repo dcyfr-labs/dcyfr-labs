@@ -246,33 +246,33 @@ export function PostList({
                     {/* Content overlaying bottom of image */}
                     <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 lg:p-12 z-10">
                       {/* Badges and metadata */}
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm mb-4">
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm mb-4 text-zinc-700 dark:text-zinc-300">
                         <PostBadges post={p} isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} />
                         <SeriesBadge post={p} />
-                        <time dateTime={p.publishedAt} className="text-foreground/90">
+                        <time dateTime={p.publishedAt} className="text-zinc-700 dark:text-zinc-300">
                           {new Date(p.publishedAt).toLocaleDateString("en-US", { 
                             year: "numeric", 
                             month: "long", 
                             day: "numeric" 
                           })}
                         </time>
-                        <span aria-hidden="true" className="text-foreground/60">•</span>
-                        <span className="text-foreground/90">{p.readingTime.text}</span>
+                        <span aria-hidden="true" className="text-zinc-500">•</span>
+                        <span className="text-zinc-700 dark:text-zinc-300">{p.readingTime.text}</span>
                         {viewCounts && viewCounts.has(p.id) && viewCounts.get(p.id)! > 0 && (
                           <>
-                            <span aria-hidden="true" className="text-foreground/60">•</span>
-                            <span className="text-foreground/90">{formatViews(viewCounts.get(p.id)!)} views</span>
+                            <span aria-hidden="true" className="text-zinc-500">•</span>
+                            <span className="text-zinc-700 dark:text-zinc-300">{formatViews(viewCounts.get(p.id)!)} views</span>
                           </>
                         )}
                       </div>
                       
                       {/* Large hero title with better contrast */}
-                      <TitleTag className="font-bold text-3xl md:text-4xl lg:text-5xl leading-tight line-clamp-3 mb-4 text-foreground">
+                      <TitleTag className="font-bold text-3xl md:text-4xl lg:text-5xl leading-tight line-clamp-3 mb-4 text-zinc-900 dark:text-zinc-100">
                         <HighlightText text={p.title} searchQuery={searchQuery} />
                       </TitleTag>
                       
                       {/* Extended summary with better readability */}
-                      <p className="text-base md:text-xl leading-relaxed text-foreground/90 line-clamp-2 md:line-clamp-3 mb-5">
+                      <p className="text-base md:text-xl leading-relaxed text-zinc-700 dark:text-zinc-300 line-clamp-2 md:line-clamp-3 mb-5">
                         <HighlightText text={p.summary} searchQuery={searchQuery} />
                       </p>
                       
@@ -280,12 +280,12 @@ export function PostList({
                       {p.tags.length > 0 && (
                         <div className="flex flex-wrap gap-2">
                           {p.tags.slice(0, 5).map(tag => (
-                            <Badge key={tag} variant="secondary" className="text-xs md:text-sm">
+                            <Badge key={tag} variant="secondary" className="text-xs md:text-sm bg-zinc-200/80 text-zinc-800 dark:bg-zinc-700/80 dark:text-zinc-200">
                               {tag}
                             </Badge>
                           ))}
                           {p.tags.length > 5 && (
-                            <Badge variant="secondary" className="text-xs md:text-sm">
+                            <Badge variant="secondary" className="text-xs md:text-sm bg-zinc-200/80 text-zinc-800 dark:bg-zinc-700/80 dark:text-zinc-200">
                               +{p.tags.length - 5} more
                             </Badge>
                           )}
@@ -327,33 +327,33 @@ export function PostList({
                     {/* Content section - more space */}
                     <div className={`md:col-span-3 p-6 md:p-8 flex flex-col justify-center relative z-10 ${isEven ? 'md:col-start-3' : 'md:col-start-1'}`}>
                       {/* Badges and metadata */}
-                      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-muted-foreground mb-3">
+                      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-zinc-600 dark:text-zinc-400 mb-3">
                         <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} />
                         <SeriesBadge post={p} size="sm" />
-                        <time dateTime={p.publishedAt}>
+                        <time dateTime={p.publishedAt} className="text-zinc-600 dark:text-zinc-400">
                           {new Date(p.publishedAt).toLocaleDateString("en-US", { 
                             year: "numeric", 
                             month: "short", 
                             day: "numeric" 
                           })}
                         </time>
-                        <span aria-hidden="true">•</span>
-                        <span>{p.readingTime.text}</span>
+                        <span aria-hidden="true" className="text-zinc-400">•</span>
+                        <span className="text-zinc-600 dark:text-zinc-400">{p.readingTime.text}</span>
                         {viewCounts && viewCounts.has(p.id) && viewCounts.get(p.id)! > 0 && (
                           <>
-                            <span aria-hidden="true">•</span>
-                            <span>{formatViews(viewCounts.get(p.id)!)} views</span>
+                            <span aria-hidden="true" className="text-zinc-400">•</span>
+                            <span className="text-zinc-600 dark:text-zinc-400">{formatViews(viewCounts.get(p.id)!)} views</span>
                           </>
                         )}
                       </div>
                       
                       {/* Title with better sizing */}
-                      <TitleTag className="font-bold text-xl md:text-2xl lg:text-3xl leading-tight line-clamp-2 mb-3">
+                      <TitleTag className="font-bold text-xl md:text-2xl lg:text-3xl leading-tight line-clamp-2 mb-3 text-zinc-900 dark:text-zinc-100">
                         <HighlightText text={p.title} searchQuery={searchQuery} />
                       </TitleTag>
                       
                       {/* Summary with better line height */}
-                      <p className="text-sm md:text-base leading-relaxed text-muted-foreground line-clamp-2 lg:line-clamp-3 mb-4">
+                      <p className="text-sm md:text-base leading-relaxed text-zinc-600 dark:text-zinc-400 line-clamp-2 lg:line-clamp-3 mb-4">
                         <HighlightText text={p.summary} searchQuery={searchQuery} />
                       </p>
                       
@@ -361,12 +361,12 @@ export function PostList({
                       {p.tags.length > 0 && (
                         <div className="flex flex-wrap gap-2">
                           {p.tags.slice(0, 3).map(tag => (
-                            <Badge key={tag} variant="outline" className="text-xs">
+                            <Badge key={tag} variant="outline" className="text-xs border-zinc-300 text-zinc-700 dark:border-zinc-600 dark:text-zinc-300">
                               {tag}
                             </Badge>
                           ))}
                           {p.tags.length > 3 && (
-                            <Badge variant="outline" className="text-xs text-muted-foreground">
+                            <Badge variant="outline" className="text-xs border-zinc-300 text-zinc-500 dark:border-zinc-600 dark:text-zinc-400">
                               +{p.tags.length - 3}
                             </Badge>
                           )}

@@ -19,6 +19,7 @@ import { cn, sanitizeUrl } from "@/lib/utils";
 import { ensureProjectImage } from "@/lib/default-project-images";
 import { getContainerClasses, TYPOGRAPHY } from "@/lib/design-tokens";
 import { Logo } from "@/components/common/logo";
+import { ProjectsCTA } from "@/components/common";
 import { headers } from "next/headers";
 import { OtherProjectCard } from "@/components/projects/other-project-card";
 import { ArticleHeader } from "@/components/layouts";
@@ -251,6 +252,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               ))}
           </div>
         </div>
+
+        {/* Call-to-action */}
+        <ProjectsCTA />
       </div>
     </>
   );

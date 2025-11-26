@@ -36,12 +36,8 @@ export function ViewToggle({ currentView }: ViewToggleProps) {
   const setView = (view: "grid" | "list" | "magazine" | "compact") => {
     const params = new URLSearchParams(searchParams.toString());
     
-    if (view === "compact") {
-      // Compact is default, remove from URL
-      params.delete("layout");
-    } else {
-      params.set("layout", view);
-    }
+    // Always set layout param explicitly
+    params.set("layout", view);
     
     const query = params.toString();
     router.push(`/blog${query ? `?${query}` : ""}`, { scroll: false });

@@ -160,16 +160,16 @@ export function ProjectsCTA({ className }: { className?: string }) {
   };
 
   return (
-    <section className={cn('mt-16 text-center', className)}>
-      <div className="rounded-lg border bg-linear-to-b from-muted/50 to-muted/30 p-8 md:p-12">
-        <h2 className={cn(TYPOGRAPHY.h2.featured, 'mb-3')}>
+    <section className={cn('mt-12 text-center', className)}>
+      <div className="rounded-lg border bg-linear-to-b from-muted/50 to-muted/30 p-6 md:p-8">
+        <h2 className={cn(TYPOGRAPHY.h2.featured, 'mb-2')}>
           Interested in working together?
         </h2>
-        <p className={cn('text-lg text-muted-foreground mb-6 mx-auto', getContainerClasses('standard'))}>
+        <p className={cn('text-lg text-muted-foreground mb-4 mx-auto', getContainerClasses('standard'))}>
           Whether you&apos;re looking for a developer, consultant, or collaborator,
           I&apos;m always open to discussing new projects and opportunities.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Button asChild size="lg">
             <Link href="/contact" onClick={handleContactClick}>
               Start a conversation

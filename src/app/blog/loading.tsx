@@ -14,7 +14,7 @@ function BlogLoadingContent() {
   const layoutParam = searchParams.get("layout");
   const layout = (["grid", "list", "magazine", "compact"].includes(layoutParam || "")) 
     ? layoutParam as "grid" | "list" | "magazine" | "compact" 
-    : "compact";
+    : "list";
 
   return (
     <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-20 pb-8">

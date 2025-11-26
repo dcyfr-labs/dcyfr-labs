@@ -51,7 +51,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const sortBy = getParam("sortBy") || "newest";
   const dateRange = getParam("dateRange") || "all";
   const layoutParam = getParam("layout");
-  const layout = (["grid", "list", "magazine", "compact"].includes(layoutParam)) ? layoutParam as "grid" | "list" | "magazine" | "compact" : "compact";
+  const layout = (["grid", "list", "magazine", "compact"].includes(layoutParam)) ? layoutParam as "grid" | "list" | "magazine" | "compact" : "list";
   
   // Apply date range filter
   const now = new Date();

@@ -31,9 +31,9 @@
 .holo-gradient-dark {
   background: linear-gradient(
     to bottom,
-    hsl(var(--background) / 0.75) 0%,
-    hsl(var(--background) / 0.85) 50%,
-    hsl(var(--background) / 0.95) 100%
+    hsl(var(--background) / 0.80) 0%,
+    hsl(var(--background) / 0.90) 50%,
+    hsl(var(--background) / 0.97) 100%
   );
 }
 
@@ -41,31 +41,15 @@
 .holo-gradient-dark-hover {
   background: linear-gradient(
     to bottom,
-    hsl(var(--background) / 0.65) 0%,
-    hsl(var(--background) / 0.75) 50%,
-    hsl(var(--background) / 0.9) 100%
+    hsl(var(--background) / 0.75) 0%,
+    hsl(var(--background) / 0.85) 50%,
+    hsl(var(--background) / 0.95) 100%
   );
 }
 
-/* Holographic shine overlay - subtle gradient */
+/* Holographic shine overlay - disabled */
 .holo-shine {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.1) 50%,
-    transparent 100%
-  );
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  pointer-events: none;
-  mix-blend-mode: overlay;
-  z-index: 5;
-}
-
-.holo-card:hover .holo-shine {
-  opacity: 1;
 }
 
 /* Image enhancement - subtle */
@@ -166,49 +150,49 @@
   }
 }
 
-/* Headings get pure white with subtle shadow */
-.holo-card h1,
-.holo-card h2,
-.holo-card h3,
-.holo-card h4,
-.holo-card h5,
-.holo-card h6 {
+/* Headings get pure white with subtle shadow - unless explicit color class is set */
+.holo-card h1:not([class*="text-zinc"]),
+.holo-card h2:not([class*="text-zinc"]),
+.holo-card h3:not([class*="text-zinc"]),
+.holo-card h4:not([class*="text-zinc"]),
+.holo-card h5:not([class*="text-zinc"]),
+.holo-card h6:not([class*="text-zinc"]) {
   color: hsl(0 0% 100%) !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
-/* Paragraphs only (no spans/divs that might contain badges) */
-.holo-card p {
+/* Paragraphs only (no spans/divs that might contain badges) - unless explicit color class */
+.holo-card p:not([class*="text-zinc"]) {
   color: hsl(0 0% 100% / 0.95);
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
-/* Time stamps */
-.holo-card time {
+/* Time stamps - unless in a container with explicit color */
+.holo-card time:not([class*="text-zinc"]) {
   color: hsl(0 0% 100% / 0.9) !important;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
   font-weight: 500;
 }
 
-/* Font weight classes - only if not in a badge or link-button */
-.holo-card .font-semibold:not([data-slot="badge"]):not([data-slot="badge"] *):not(.inline-flex):not(.inline-flex *),
-.holo-card .font-bold:not([data-slot="badge"]):not([data-slot="badge"] *):not(.inline-flex):not(.inline-flex *),
-.holo-card .font-medium:not([data-slot="badge"]):not([data-slot="badge"] *):not(.inline-flex):not(.inline-flex *) {
+/* Font weight classes - only if not in a badge, link-button, or with explicit color */
+.holo-card .font-semibold:not([data-slot="badge"]):not([data-slot="badge"] *):not(.inline-flex):not(.inline-flex *):not([class*="text-zinc"]),
+.holo-card .font-bold:not([data-slot="badge"]):not([data-slot="badge"] *):not(.inline-flex):not(.inline-flex *):not([class*="text-zinc"]),
+.holo-card .font-medium:not([data-slot="badge"]):not([data-slot="badge"] *):not(.inline-flex):not(.inline-flex *):not([class*="text-zinc"]) {
   color: hsl(0 0% 100%) !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
-/* Muted text - only if not in a badge */
-.holo-card .text-muted-foreground:not([data-slot="badge"]):not([data-slot="badge"] *) {
+/* Muted text - only if not in a badge or with explicit color */
+.holo-card .text-muted-foreground:not([data-slot="badge"]):not([data-slot="badge"] *):not([class*="text-zinc"]) {
   color: hsl(0 0% 100% / 0.85) !important;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
-/* Text size variants - only apply to non-badge elements */
-.holo-card .text-xs:not([data-slot="badge"]):not([data-slot="badge"] *),
-.holo-card .text-sm:not([data-slot="badge"]):not([data-slot="badge"] *),
-.holo-card .text-base:not([data-slot="badge"]):not([data-slot="badge"] *),
-.holo-card .text-lg:not([data-slot="badge"]):not([data-slot="badge"] *) {
+/* Text size variants - only apply to non-badge elements without explicit color */
+.holo-card .text-xs:not([data-slot="badge"]):not([data-slot="badge"] *):not([class*="text-zinc"]),
+.holo-card .text-sm:not([data-slot="badge"]):not([data-slot="badge"] *):not([class*="text-zinc"]),
+.holo-card .text-base:not([data-slot="badge"]):not([data-slot="badge"] *):not([class*="text-zinc"]),
+.holo-card .text-lg:not([data-slot="badge"]):not([data-slot="badge"] *):not([class*="text-zinc"]) {
   color: hsl(0 0% 100% / 0.9);
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }

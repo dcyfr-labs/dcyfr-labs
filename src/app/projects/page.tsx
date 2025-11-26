@@ -13,7 +13,6 @@ import { ProjectCard, ProjectFilters } from "@/components/projects";
 import {
   GitHubHeatmapErrorBoundary,
   GitHubHeatmapSkeleton,
-  ProjectsCTA,
 } from "@/components/common";
 
 const GitHubHeatmap = dynamic(() => import("@/components/features/github/github-heatmap").then(mod => ({ default: mod.GitHubHeatmap })), {
@@ -278,11 +277,6 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
             </p>
           </div>
         )}
-
-        {/* Call-to-action */}
-        <div className="mt-12">
-          <ProjectsCTA />
-        </div>
       </ArchiveLayout>
     </>
   );

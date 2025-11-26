@@ -33,8 +33,27 @@ export type Project = {
 
 const projectDrafts: Project[] = [
   {
+    slug: "dcyfr-labs",
+    title: "DCYFR Labs",
+    description: "Cyber Architecture & Design Services, Portfolio, and Blog.",
+    timeline: "2025 → Present",
+    status: "active",
+    tech: ["React", "Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui"],
+    tags: ["Portfolio", "Web Development", "Personal"],
+    links: [
+      { label: "Website", href: `https://dcyfrlabs.com/`, type: "demo" },
+      { label: "Code", href: `https://github.com/dcyfr/dcyfr-labs`, type: "github" }
+    ],
+    featured: true,
+    image: {
+      url: "/projects/default/tech.svg",
+      alt: "DCYFR Labs: Cyber Architecture & Design",
+      position: "center",
+    },
+  },
+  {
     slug: "x64",
-    title: "X64: The Indie Cyber Publication",
+    title: "X64: Indie Cyber Publication",
     description: "A digital publication focused on cybersecurity, technology trends, and industry insights.",
     timeline: "2024 → Present",
     status: "active",
@@ -43,46 +62,17 @@ const projectDrafts: Project[] = [
     links: [
       { label: "Website", href: `https://x64.onl`, type: "demo" }
     ],
-    featured: true,
-    image: {
-      url: "/projects/default/design.svg",
-      alt: "X64 Publication - Cybersecurity and technology publication",
-      position: "center",
-    },
-    highlights: [
-      "Founded and manage X64, an indie cyber publication delivering high-quality articles on cybersecurity and technology trends.",
-      "Write and edit articles, curate content, and engage with a growing community of readers and contributors.",
-      "Collaborate with writers and industry experts to deliver diverse perspectives and insights.",
-    ],
-  },
-  {
-    slug: "drews-lab",
-    title: SITE_TITLE,
-    description: "A personal portfolio website showcasing blog articles, projects and proof of concept works.",
-    timeline: "2020 → Present",
-    status: "active",
-    tech: ["React", "Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui"],
-    tags: ["Portfolio", "Web Development", "Personal"],
-    links: [
-      { label: "Website", href: `https://cyberdrew.dev/`, type: "demo" },
-      { label: "Code", href: `https://github.com/dcyfr/cyberdrew-dev`, type: "github" }
-    ],
     featured: false,
     image: {
-      url: "/projects/default/tech.svg",
-      alt: "Drew's Lab - Personal portfolio and blog",
+      url: "/projects/default/design.svg",
+      alt: "X64: Indie Cyber Publication",
       position: "center",
     },
-    highlights: [
-      "Designed and developed a responsive and accessible personal portfolio website using Next.js and Tailwind CSS.",
-      "Implemented a blog section with MDX support for easy content creation and management.",
-      "Integrated SEO best practices to improve search engine visibility and organic traffic."
-    ],
   },
   {
-    slug: "isn-inc",
+    slug: "isn",
     title: "Information Security Network, Inc.",
-    description: "A non-profit organization dedicated to promoting information security awareness and education.",
+    description: "A non-profit organization dedicated to promoting public information security awareness.",
     timeline: "2019 → 2021",
     status: "archived",
     tech: ["WordPress", "PHP", "MySQL", "JavaScript", "CSS"],
@@ -91,14 +81,9 @@ const projectDrafts: Project[] = [
     featured: false,
     image: {
       url: "/projects/default/general.svg",
-      alt: "Information Security Network - Non-profit cybersecurity organization",
+      alt: "Information Security Network: A Non-profit cybersecurity organization",
       position: "center",
     },
-    highlights: [
-      "Co-founded and managed a non-profit organization focused on information security awareness and education.",
-      "Organized events, workshops, and training sessions to educate individuals and organizations on cybersecurity best practices.",
-      "Collaborated with industry professionals and volunteers to deliver high-quality content and resources to the community."
-    ],
   },
 ];
 
