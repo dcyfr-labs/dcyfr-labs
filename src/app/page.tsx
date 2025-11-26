@@ -1,14 +1,8 @@
 import { featuredProjects, projects } from "@/data/projects";
-import { ProjectCard } from "@/components/projects/project-card";
-import { PostList } from "@/components/blog/post/post-list";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { SectionHeader } from "@/components/common/section-header";
 import { posts, featuredPosts } from "@/data/posts";
+import { getSocialUrls } from "@/data/socials";
 import { getPostBadgeMetadata } from "@/lib/post-badges";
 import { getMultiplePostViews } from "@/lib/views";
-import { Logo } from "@/components/common/logo";
-import { getSocialUrls } from "@/data/socials";
 import {
   SITE_URL,
   SITE_TITLE,
@@ -18,37 +12,42 @@ import {
 } from "@/lib/site-config";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
-import { FeaturedPostHero } from "@/components/home/featured-post-hero";
+import Link from "next/link";
 import dynamic from "next/dynamic";
-import { SectionNavigator, Section } from "@/components/common/section-navigator";
-import { WhatIDo } from "@/components/about/what-i-do";
-import { GitHubHeatmap } from "@/components/features/github/github-heatmap";
-import { HomepageStats } from "@/components/home/homepage-stats";
-import { TechStack } from "@/components/about/tech-stack";
-import { SocialProof } from "@/components/about/social-proof";
-import { TrendingPosts } from "@/components/common/stats/trending-posts";
-import { RecentActivity } from "@/components/common/stats/recent-activity";
-import { HomepageHeroActions } from "@/components/home/homepage-hero-actions";
-
-const ScrollReveal = dynamic(() => import("@/components/features/scroll-reveal").then(mod => ({ default: mod.ScrollReveal })), {
-  loading: () => <div className="contents" />,
-  ssr: true,
-});
 import Image from "next/image";
-import { 
-  TYPOGRAPHY, 
+import {
+  TYPOGRAPHY,
   SPACING,
   PAGE_LAYOUT,
   CONTAINER_WIDTHS,
   SCROLL_BEHAVIOR,
   getContainerClasses,
 } from "@/lib/design-tokens";
+import { Button } from "@/components/ui/button";
 import { PageLayout } from "@/components/layouts/page-layout";
 import { PageHero } from "@/components/layouts/page-hero";
 import { createPageMetadata, getJsonLdScriptProps } from "@/lib/metadata";
+import { ProjectCard } from "@/components/projects";
+import { PostList } from "@/components/blog";
+import {
+  SectionHeader,
+  Logo,
+  SectionNavigator,
+  Section,
+  TrendingPosts,
+  RecentActivity,
+} from "@/components/common";
+import { FeaturedPostHero, HomepageStats, HomepageHeroActions } from "@/components/home";
+import { WhatIDo, TechStack, SocialProof } from "@/components/about";
+import { GitHubHeatmap } from "@/components/features/github/github-heatmap";
+
+const ScrollReveal = dynamic(() => import("@/components/features/scroll-reveal").then(mod => ({ default: mod.ScrollReveal })), {
+  loading: () => <div className="contents" />,
+  ssr: true,
+});
 
 // Optimized meta description for homepage (157 characters)
-const pageDescription = "Cybersecurity architect and tinkerer helping organizations build resilient security programs that empower teams to move fast and stay secure.";
+const pageDescription = "Drew's Lab - Cybersecurity architect and tinkerer helping organizations build resilient security programs that empower teams to move fast and stay secure.";
 
 export const metadata: Metadata = createPageMetadata({
   title: SITE_TITLE_PLAIN,
@@ -105,22 +104,22 @@ export default async function Home() {
         sameAs: getSocialUrls(),
         knowsAbout: [
           "Cybersecurity",
-          "Software Development",
+          "Artificial Intelligence",
           "Web Development",
-          "Cloud Computing",
-          "DevOps",
+          "Cloud Security",
+          "Risk Management",
+          "Incident Response",
+          "Compliance",
+          "DevSecOps",
           "Programming",
-          "Technology",
-          "Open Source",
-          "Networking",
-          "System Administration"
+          "Information Security",
         ],
       },
       {
         "@type": "WebPage",
         "@id": "https://cyberdrew.dev/#webpage",
         url: "https://cyberdrew.dev",
-        name: "Drew's Lab - Cybersecurity Architect & Developer",
+        name: "Drew's Lab",
         isPartOf: {
           "@id": "https://cyberdrew.dev/#website",
         },
@@ -148,10 +147,10 @@ export default async function Home() {
               align="center"
               title={
                 <span className="flex items-center gap-2 justify-center">
-                  Hi, I&apos;m Drew <Logo className="pb-2" width={32} height={32} />
+                  Drew&apos;s Lab <Logo className="pb-2" width={32} height={32} />
                 </span>
               }
-              description="Cybersecurity architect and tinkerer helping organizations build resilient security programs that empower teams to move fast and stay secure."
+              description="Hi! I'm Drew, a cybersecurity architect and tinkerer. Welcome to my lab where I share insights on security, development, and tech."
               image={
                 <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40">
                   <Image
@@ -188,7 +187,7 @@ export default async function Home() {
               <RecentActivity 
                 posts={recentPosts}
                 projects={[...featuredProjects]}
-                limit={3}
+                limit={5}
               />
             </div>
           </ScrollReveal>

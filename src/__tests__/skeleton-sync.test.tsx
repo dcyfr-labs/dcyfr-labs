@@ -1,14 +1,27 @@
 /**
  * Skeleton Sync Tests
- * 
+ *
  * Validates that skeleton loading states match the structure of actual pages.
  * These tests help catch drift between loading.tsx files and page.tsx files.
- * 
+ *
  * @see docs/components/skeleton-sync-strategy.md
  */
 
 import { render } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeAll } from 'vitest';
+
+// Mock Next.js router for BlogKeyboardProvider
+beforeAll(() => {
+  vi.mock('next/navigation', () => ({
+    useRouter: () => ({
+      push: vi.fn(),
+      replace: vi.fn(),
+      prefetch: vi.fn(),
+    }),
+    useSearchParams: () => new URLSearchParams(),
+    usePathname: () => '/blog',
+  }));
+});
 
 // Import loading components
 import HomeLoading from '@/app/loading';
@@ -22,15 +35,15 @@ describe('Skeleton Structural Sync', () => {
   describe('Homepage Loading', () => {
     it('should use PageHero component structure', () => {
       const { container } = render(<HomeLoading />);
-      
+
       // Should have PageLayout wrapper (div with min-h-screen)
       const wrapper = container.querySelector('[class*="min-h-screen"]');
       expect(wrapper).toBeTruthy();
-      
+
       // Should have hero section (from PageHero)
       const heroSection = container.querySelector('section');
       expect(heroSection).toBeTruthy();
-      
+
       // Should have skeleton elements (using skeleton-shimmer class)
       const skeletons = container.querySelectorAll('.skeleton-shimmer');
       expect(skeletons.length).toBeGreaterThan(0);
@@ -38,18 +51,25 @@ describe('Skeleton Structural Sync', () => {
 
     it('should have featured post section', () => {
       const { container } = render(<HomeLoading />);
-      
+
       const sections = container.querySelectorAll('section');
-      // Hero + Featured Post + Blog + Projects = 4 sections minimum
-      expect(sections.length).toBeGreaterThanOrEqual(4);
+      // Hero + Featured Post + Recent Activity = 3 sections minimum
+      expect(sections.length).toBeGreaterThanOrEqual(3);
     });
 
-    it('should have blog and projects sections', () => {
+    it('should have recent activity section', () => {
       const { container } = render(<HomeLoading />);
-      
-      // Check for grid layout (projects section)
-      const gridElements = container.querySelectorAll('[class*="grid"]');
-      expect(gridElements.length).toBeGreaterThan(0);
+
+      // Should have multiple skeleton shimmer elements for:
+      // - Hero section (avatar, title, description, actions)
+      // - Featured post section
+      // - Recent Activity section (multiple items with various skeleton elements)
+      const skeletons = container.querySelectorAll('.skeleton-shimmer');
+      expect(skeletons.length).toBeGreaterThanOrEqual(8); // Hero + Featured + Activity sections
+
+      // Should have at least one circular skeleton (hero avatar)
+      const circularSkeletons = container.querySelectorAll('.rounded-full');
+      expect(circularSkeletons.length).toBeGreaterThan(0);
     });
   });
 
@@ -90,33 +110,37 @@ describe('Skeleton Structural Sync', () => {
   });
 
   describe('Blog Page Loading', () => {
-    it('should use ArchiveLayout structure', () => {
+    it('should use custom blog layout structure', () => {
       const { container } = render(<BlogLoading />);
-      
-      // Should have hero section
-      const heroSection = container.querySelector('section');
-      expect(heroSection).toBeTruthy();
+
+      // Should have container with max-w-7xl
+      const mainContainer = container.querySelector('[class*="max-w-7xl"]');
+      expect(mainContainer).toBeTruthy();
+
+      // Should have desktop sidebar (hidden on mobile)
+      const sidebar = container.querySelector('.hidden.lg\\:block');
+      expect(sidebar).toBeTruthy();
     });
 
     it('should have search and filter skeletons', () => {
       const { container } = render(<BlogLoading />);
-      
+
       // Should have search input skeleton (using skeleton-shimmer class)
       const skeletons = container.querySelectorAll('.skeleton-shimmer');
       expect(skeletons.length).toBeGreaterThan(0);
-      
-      // Should have filter badges skeleton (flex-wrap)
-      const filterContainer = container.querySelector('[class*="flex-wrap"]');
+
+      // Should have mobile filter badges skeleton (flex-wrap)
+      const filterContainer = container.querySelector('.lg\\:hidden [class*="flex-wrap"]');
       expect(filterContainer).toBeTruthy();
     });
 
     it('should have post list skeleton', () => {
       const { container } = render(<BlogLoading />);
-      
+
       // Should have multiple skeleton items for posts (using skeleton-shimmer class)
       const skeletons = container.querySelectorAll('.skeleton-shimmer');
-      // At least 5 post skeletons + search + filters
-      expect(skeletons.length).toBeGreaterThan(7);
+      // 12 post skeletons + search + filters + header + pagination
+      expect(skeletons.length).toBeGreaterThan(10);
     });
   });
 
@@ -141,8 +165,8 @@ describe('Skeleton Structural Sync', () => {
       const { container } = render(<AboutLoading />);
       
       const sections = container.querySelectorAll('section');
-      // Hero + About Me + 4 content sections + Social Links = 7 minimum
-      expect(sections.length).toBeGreaterThanOrEqual(6);
+      // Hero + About Me + Professional Background + Connect with Me = 4 sections
+      expect(sections.length).toBeGreaterThanOrEqual(4);
     });
 
     it('should have social links grid', () => {
@@ -222,12 +246,14 @@ describe('Skeleton Structural Sync', () => {
       loadingComponents.forEach(({ name, component: Component }) => {
         const { container } = render(<Component />);
         // PageLayout renders a div with min-h-screen class
-        // ArchiveLayout (Blog, Projects) doesn't use PageLayout - check for section instead
+        // ArchiveLayout (Projects) renders section element
+        // Blog uses custom container with max-w-7xl
         const hasPageLayout = container.querySelector('[class*="min-h-screen"]');
         const hasSection = container.querySelector('section');
+        const hasContainer = container.querySelector('[class*="container"]');
         expect(
-          hasPageLayout || hasSection, 
-          `${name} should have either PageLayout wrapper or section element`
+          hasPageLayout || hasSection || hasContainer,
+          `${name} should have either PageLayout wrapper, section element, or container`
         ).toBeTruthy();
       });
     });
@@ -243,10 +269,166 @@ describe('Skeleton Structural Sync', () => {
     it('all loading states should use design tokens for spacing', () => {
       loadingComponents.forEach(({ name, component: Component }) => {
         const { container } = render(<Component />);
-        // Should use standard padding classes from design tokens
+        // Should use standard structural elements
+        // Blog uses custom layout, others use sections
         const sections = container.querySelectorAll('section');
-        expect(sections.length, `${name} should have sections`).toBeGreaterThan(0);
+        const hasContainer = container.querySelector('[class*="container"]');
+        const hasStructure = sections.length > 0 || hasContainer;
+        expect(hasStructure, `${name} should have structural elements`).toBeTruthy();
       });
     });
+  });
+});
+
+// ============================================================================
+// Co-located Loading Prop Tests
+// ============================================================================
+
+describe('Co-located Skeleton Loading Props', () => {
+  describe('ArticleLayout loading prop', () => {
+    it('should render skeleton when loading=true', async () => {
+      const { ArticleLayout } = await import('@/components/layouts/article-layout');
+      const { container } = render(<ArticleLayout loading />);
+      
+      // Should render article element
+      const article = container.querySelector('article');
+      expect(article).toBeTruthy();
+      
+      // Should have header, content, and footer sections
+      const header = article?.querySelector('header');
+      const footer = article?.querySelector('footer');
+      expect(header).toBeTruthy();
+      expect(footer).toBeTruthy();
+      
+      // Should have skeleton elements
+      const skeletons = container.querySelectorAll('.skeleton-shimmer');
+      expect(skeletons.length).toBeGreaterThan(5);
+    });
+
+    it('skeleton should have same container structure as normal render', async () => {
+      const { ArticleLayout } = await import('@/components/layouts/article-layout');
+      
+      const { container: loadingContainer } = render(<ArticleLayout loading />);
+      const { container: normalContainer } = render(
+        <ArticleLayout header={<div>Header</div>} footer={<div>Footer</div>}>
+          <div>Content</div>
+        </ArticleLayout>
+      );
+      
+      // Both should have article > header, article > div (content), article > footer
+      const loadingArticle = loadingContainer.querySelector('article');
+      const normalArticle = normalContainer.querySelector('article');
+      
+      expect(loadingArticle?.querySelector('header')).toBeTruthy();
+      expect(normalArticle?.querySelector('header')).toBeTruthy();
+      expect(loadingArticle?.querySelector('footer')).toBeTruthy();
+      expect(normalArticle?.querySelector('footer')).toBeTruthy();
+    });
+  });
+
+  describe('ProjectCard loading prop', () => {
+    it('should render skeleton when loading=true', async () => {
+      const { ProjectCard } = await import('@/components/projects/project-card');
+      const { container } = render(<ProjectCard loading />);
+      
+      // Should have card structure
+      const card = container.querySelector('[data-slot="card"]');
+      expect(card).toBeTruthy();
+      
+      // Should have skeleton elements
+      const skeletons = container.querySelectorAll('.skeleton-shimmer');
+      expect(skeletons.length).toBeGreaterThan(3);
+    });
+
+    it('skeleton should match normal card structure', async () => {
+      const { ProjectCard } = await import('@/components/projects/project-card');
+      
+      const { container: loadingContainer } = render(<ProjectCard loading />);
+      
+      // Check structural elements present in skeleton
+      const loadingCard = loadingContainer.querySelector('[data-slot="card"]');
+      expect(loadingCard).toBeTruthy();
+      
+      // Should have CardHeader equivalent
+      const headerArea = loadingCard?.querySelector('[class*="px-4"][class*="py-4"]');
+      expect(headerArea).toBeTruthy();
+    });
+  });
+
+  describe('PageHero loading prop', () => {
+    it('should render skeleton when loading=true', async () => {
+      const { PageHero } = await import('@/components/layouts/page-hero');
+      const { container } = render(<PageHero loading variant="standard" />);
+      
+      // Should have section element
+      const section = container.querySelector('section');
+      expect(section).toBeTruthy();
+      
+      // Should have skeleton elements
+      const skeletons = container.querySelectorAll('.skeleton-shimmer');
+      expect(skeletons.length).toBeGreaterThan(2);
+    });
+
+    it('homepage variant skeleton should include avatar and actions', async () => {
+      const { PageHero } = await import('@/components/layouts/page-hero');
+      const { container } = render(<PageHero loading variant="homepage" align="center" />);
+      
+      // Should have circular skeleton for avatar
+      const circularSkeletons = container.querySelectorAll('.rounded-full');
+      expect(circularSkeletons.length).toBeGreaterThan(0);
+      
+      // Should have action button skeletons
+      const skeletons = container.querySelectorAll('.skeleton-shimmer');
+      expect(skeletons.length).toBeGreaterThan(4); // avatar + title + description + actions
+    });
+  });
+});
+
+// ============================================================================
+// Skeleton Primitives Tests
+// ============================================================================
+
+describe('Skeleton Primitives', () => {
+  it('SkeletonText should render correct number of lines', async () => {
+    const { SkeletonText } = await import('@/components/ui/skeleton-primitives');
+    const { container } = render(<SkeletonText lines={5} />);
+    
+    const skeletons = container.querySelectorAll('.skeleton-shimmer');
+    expect(skeletons.length).toBe(5);
+  });
+
+  it('SkeletonHeading should use correct height for level', async () => {
+    const { SkeletonHeading } = await import('@/components/ui/skeleton-primitives');
+    const { container: h1Container } = render(<SkeletonHeading level="h1" />);
+    const { container: h3Container } = render(<SkeletonHeading level="h3" />);
+    
+    const h1Skeleton = h1Container.querySelector('.skeleton-shimmer');
+    const h3Skeleton = h3Container.querySelector('.skeleton-shimmer');
+    
+    // h1 should have larger height class
+    expect(h1Skeleton?.className).toContain('h-8');
+    expect(h3Skeleton?.className).toContain('h-5');
+  });
+
+  it('SkeletonBadges should render correct count', async () => {
+    const { SkeletonBadges } = await import('@/components/ui/skeleton-primitives');
+    const { container } = render(<SkeletonBadges count={4} />);
+    
+    const skeletons = container.querySelectorAll('.skeleton-shimmer');
+    expect(skeletons.length).toBe(4);
+  });
+
+  it('SkeletonCard variants should have distinct structures', async () => {
+    const { SkeletonCard } = await import('@/components/ui/skeleton-primitives');
+    
+    const { container: postCard } = render(<SkeletonCard variant="post" />);
+    const { container: projectCard } = render(<SkeletonCard variant="project" />);
+    
+    // Post card should have image placeholder
+    const postSkeletons = postCard.querySelectorAll('.skeleton-shimmer');
+    const projectSkeletons = projectCard.querySelectorAll('.skeleton-shimmer');
+    
+    expect(postSkeletons.length).toBeGreaterThan(0);
+    expect(projectSkeletons.length).toBeGreaterThan(0);
   });
 });

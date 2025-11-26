@@ -10,7 +10,7 @@ export { MDX } from "./mdx";
 export { Mermaid } from "./mermaid";
 export { RelatedPosts } from "./related-posts";
 export { SectionHeader } from "./section-header";
-export { SectionNavigator } from "./section-navigator";
+export { SectionNavigator, Section } from "./section-navigator";
 export { TableOfContents } from "./table-of-contents";
 export { ViewToggle } from "./view-toggle";
 export { default as DevToolsDropdown } from "./dev-tools-dropdown";

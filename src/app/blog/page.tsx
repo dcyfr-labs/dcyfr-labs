@@ -1,22 +1,22 @@
 import type { Metadata } from "next";
-import { posts, featuredPosts, type Post } from "@/data/posts";
-import { PostList } from "@/components/blog/post/post-list";
-import { BlogSearchAnalytics } from "@/components/blog/blog-search-analytics";
-import { BlogSidebar } from "@/components/blog/sidebar/blog-sidebar";
-import { ArchiveLayout } from "@/components/layouts/archive-layout";
-import { ArchivePagination } from "@/components/layouts/archive-pagination";
+import { posts, type Post } from "@/data/posts";
 import { getArchiveData } from "@/lib/archive";
 import { getPostBadgeMetadata } from "@/lib/post-badges";
 import { createArchivePageMetadata, createCollectionSchema, getJsonLdScriptProps } from "@/lib/metadata";
 import { AUTHOR_NAME, SITE_URL } from "@/lib/site-config";
 import { headers } from "next/headers";
 import { getMultiplePostViews } from "@/lib/views";
-import { ViewToggle } from "@/components/common/view-toggle";
-import { Badge } from "@/components/ui/badge";
-import { BlogLayoutManager } from "@/components/blog/blog-layout-manager";
-import { BlogLayoutWrapper } from "@/components/blog/blog-layout-wrapper";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
-import { BlogFilters } from "@/components/blog/filters/blog-filters";
+import { ArchivePagination } from "@/components/layouts/archive-pagination";
+import {
+  PostList,
+  BlogSearchAnalytics,
+  BlogSidebar,
+  BlogLayoutManager,
+  BlogLayoutWrapper,
+  BlogFilters,
+} from "@/components/blog";
+import { ViewToggle } from "@/components/common";
 
 const pageTitle = "Blog";
 const pageDescription = "Articles on web development, cybersecurity, artificial intelligence, and more.";

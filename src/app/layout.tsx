@@ -12,9 +12,7 @@ import {
   getOgImageUrl,
   getTwitterImageUrl,
 } from "@/lib/site-config";
-import { SiteHeader } from "@/components/navigation/site-header";
-import { SiteFooter } from "@/components/navigation/site-footer";
-import { BottomNav } from "@/components/navigation/bottom-nav";
+import { SiteHeader, SiteFooter, BottomNav } from "@/components/navigation";
 import { Toaster } from "@/components/ui/sonner";
 import { LoadingBar } from "@/components/features/loading-bar";
 import { WebVitalsReporter } from "@/components/features/web-vitals-reporter";

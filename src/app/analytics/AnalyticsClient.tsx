@@ -297,15 +297,56 @@ export default function AnalyticsDashboard() {
         description="View and analyze blog post performance metrics"
       >
         <div className="space-y-6">
-          <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
+          {/* Stats Section Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <Skeleton className="h-6 w-40 mb-1" />
+              <Skeleton className="h-4 w-56" />
+            </div>
+            <Skeleton className="h-9 w-24" />
+          </div>
+
+          {/* Stats Cards - 4 columns */}
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
             {[...Array(4)].map((_, i) => (
-              <Card key={i} className="p-3">
-                <Skeleton className="h-4 w-24 mb-2" />
-                <Skeleton className="h-9 w-20" />
+              <Card key={i} className="p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Skeleton className="h-5 w-5 rounded" />
+                  <Skeleton className="h-4 w-20" />
+                </div>
+                <Skeleton className="h-8 w-16 mb-1" />
+                <Skeleton className="h-3 w-24" />
               </Card>
             ))}
           </div>
-          <Skeleton className="h-64 w-full" />
+
+          {/* Featured Posts Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <Skeleton className="h-6 w-32 mb-1" />
+              <Skeleton className="h-4 w-48" />
+            </div>
+            <Skeleton className="h-9 w-24" />
+          </div>
+
+          {/* Featured Posts Cards - 4 columns */}
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            {[...Array(4)].map((_, i) => (
+              <Card key={i} className="p-4">
+                <Skeleton className="h-4 w-20 mb-2" />
+                <Skeleton className="h-5 w-full mb-2" />
+                <Skeleton className="h-4 w-3/4" />
+              </Card>
+            ))}
+          </div>
+
+          {/* Charts Section */}
+          <div className="space-y-4">
+            <Skeleton className="h-6 w-32" />
+            <Card className="p-6">
+              <Skeleton className="h-64 w-full" />
+            </Card>
+          </div>
         </div>
       </DashboardLayout>
     );

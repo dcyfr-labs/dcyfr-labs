@@ -3,32 +3,36 @@ import { notFound, redirect } from "next/navigation";
 import { posts, postsBySeries } from "@/data/posts";
 import { getPostByAnySlug } from "@/lib/blog";
 import { SITE_URL, AUTHOR_NAME } from "@/lib/site-config";
-import { MDX } from "@/components/common/mdx";
 import "katex/dist/katex.min.css"; // KaTeX styles for math rendering in blog posts
 import { getPostViews, getMultiplePostViews } from "@/lib/views";
 import { getPostShares } from "@/lib/shares";
-import { ReadingProgress } from "@/components/features/reading-progress";
-import { RelatedPosts } from "@/components/common/related-posts";
-import { TableOfContents } from "@/components/common/table-of-contents";
-import { BlogPostSidebar } from "@/components/blog/post/blog-post-sidebar";
 import { extractHeadings } from "@/lib/toc";
 import { headers } from "next/headers";
-import { ShareButtons } from "@/components/features/sharing/share-buttons";
-import { Breadcrumbs } from "@/components/navigation/breadcrumbs";
-import { SeriesNavigation } from "@/components/blog/post/series-navigation";
-import { GiscusComments } from "@/components/features/comments/giscus-comments";
-import { PostHeroImage } from "@/components/blog/post/post-hero-image";
-import { ViewTracker } from "@/components/features/view-tracker";
-import { BlogAnalyticsTracker } from "@/components/blog/blog-analytics-tracker";
-import { ArticleLayout, ArticleHeader, ArticleFooter } from "@/components/layouts";
 import { getArticleData } from "@/lib/article";
-import { 
+import {
   createArticlePageMetadata,
   createArticleSchema,
   createBreadcrumbSchema,
-  getJsonLdScriptProps 
+  getJsonLdScriptProps
 } from "@/lib/metadata";
-import { BlogPostCTA } from "@/components/common/cta";
+import { ArticleLayout, ArticleHeader, ArticleFooter } from "@/components/layouts";
+import {
+  BlogPostSidebar,
+  SeriesNavigation,
+  PostHeroImage,
+  BlogAnalyticsTracker,
+} from "@/components/blog";
+import {
+  MDX,
+  RelatedPosts,
+  TableOfContents,
+  BlogPostCTA,
+} from "@/components/common";
+import { Breadcrumbs } from "@/components/navigation";
+import { ReadingProgress } from "@/components/features/reading-progress";
+import { ShareButtons } from "@/components/features/sharing/share-buttons";
+import { GiscusComments } from "@/components/features/comments/giscus-comments";
+import { ViewTracker } from "@/components/features/view-tracker";
 
 // Enable Incremental Static Regeneration with 1 hour revalidation
 export const revalidate = 3600; // 1 hour in seconds
@@ -161,9 +165,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     <>
       {/* Client-side view tracking with anti-spam protection */}
       <ViewTracker postId={post.id} />
-      
+
       {/* Vercel Analytics custom events tracking */}
-      <BlogAnalyticsTracker 
+      <BlogAnalyticsTracker
         post={{
           id: post.id,
           slug: post.slug,
@@ -172,23 +176,23 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           readingTime: post.readingTime.minutes,
         }}
       />
-      
+
       <ReadingProgress />
       {/* FAB menu disabled */}
       {/* <BlogFABMenu headings={headings} /> */}
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
-      
+
       {/* Mobile/Tablet ToC - Keep existing FAB for smaller screens */}
       <div className="lg:hidden">
         <TableOfContents headings={headings} slug={post.slug} />
       </div>
-      
+
       {/* Desktop Layout: Sidebar + Content */}
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-20 pb-8">
         <div className="grid gap-8 items-start lg:grid-cols-[280px_1fr]">
           {/* Left Sidebar (desktop only) */}
-          <BlogPostSidebar 
-            headings={headings} 
+          <BlogPostSidebar
+            headings={headings}
             slug={post.slug}
             postTitle={post.title}
             metadata={{
@@ -201,60 +205,86 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             seriesPosts={seriesPosts}
             relatedPosts={articleData.relatedItems}
           />
-          
+
           {/* Main Content */}
           <div className="min-w-0">
-      <ArticleLayout useProseWidth={false} className="py-0! max-w-none px-0">
-          <Breadcrumbs items={[
-            { label: "Home", href: "/" },
-            { label: "Blog", href: "/blog" },
-            { label: post.title }
-          ]} />
-          
-          <ArticleHeader
-            title={post.title}
-            date={new Date(post.publishedAt)}
-            metadata={`${post.readingTime.text}${typeof viewCount === "number" ? ` · ${viewCount.toLocaleString()} ${viewCount === 1 ? "view" : "views"}` : ""}`}
-            backgroundImage={post.image ? {
-              url: post.image.url,
-              alt: post.image.alt || `Hero image for ${post.title}`,
-              position: post.image.position === 'background' ? 'center' : post.image.position as 'center' | 'top' | 'bottom' | 'left' | 'right' | undefined,
-            } : undefined}
-          />
-          
-          {/* Series navigation */}
-          {post.series && seriesPosts.length > 0 && (
-            <SeriesNavigation currentPost={post} seriesPosts={seriesPosts} />
-          )}
-          
-          <div className="prose my-8">
-            <MDX source={post.body} />
-          </div>
-          
-          <ArticleFooter
-            shareComponent={
-              <ShareButtons
-                url={`${SITE_URL}/blog/${post.slug}`}
-                title={post.title}
-                postId={post.id}
-                initialShareCount={shareCount ?? 0}
+            <ArticleLayout
+              useProseWidth={false}
+              className="py-0! max-w-none px-0"
+            >
+              <Breadcrumbs
+                items={[
+                  { label: "Home", href: "/" },
+                  { label: "Blog", href: "/blog" },
+                  { label: post.title },
+                ]}
               />
-            }
-            sources={post.sources?.map(s => ({ title: s.label, url: s.href }))}
-            tags={post.tags}
-            onTagClick={(tag) => `/blog?tag=${encodeURIComponent(tag)}`}
-          >
-          
-            {/* Call-to-action */}
-            <BlogPostCTA variant="default" location="blog-post-end" />
 
-            {/* Related posts section */}
-            <RelatedPosts posts={articleData.relatedItems} currentSlug={post.slug} />
-          </ArticleFooter>
-          
-          {/* Comments section - hidden for draft posts */}
-          {!post.draft && <GiscusComments />}
-      </ArticleLayout>
+              <ArticleHeader
+                title={post.title}
+                date={new Date(post.publishedAt)}
+                metadata={`${post.readingTime.text}${typeof viewCount === "number" ? ` · ${viewCount.toLocaleString()} ${viewCount === 1 ? "view" : "views"}` : ""}`}
+                backgroundImage={
+                  post.image
+                    ? {
+                        url: post.image.url,
+                        alt: post.image.alt || `Hero image for ${post.title}`,
+                        position:
+                          post.image.position === "background"
+                            ? "center"
+                            : (post.image.position as
+                                | "center"
+                                | "top"
+                                | "bottom"
+                                | "left"
+                                | "right"
+                                | undefined),
+                      }
+                    : undefined
+                }
+              />
+
+              {/* Series navigation */}
+              {post.series && seriesPosts.length > 0 && (
+                <SeriesNavigation
+                  currentPost={post}
+                  seriesPosts={seriesPosts}
+                />
+              )}
+
+              <div className="prose my-8">
+                {/* Post content */}
+                <MDX source={post.body} />
+                {/* Call-to-action */}
+                <BlogPostCTA variant="default" location="blog-post-end" />
+              </div>
+
+              <ArticleFooter
+                shareComponent={
+                  <ShareButtons
+                    url={`${SITE_URL}/blog/${post.slug}`}
+                    title={post.title}
+                    postId={post.id}
+                    initialShareCount={shareCount ?? 0}
+                  />
+                }
+                sources={post.sources?.map((s) => ({
+                  title: s.label,
+                  url: s.href,
+                }))}
+                tags={post.tags}
+                onTagClick={(tag) => `/blog?tag=${encodeURIComponent(tag)}`}
+              >
+                {/* Related posts section */}
+                <RelatedPosts
+                  posts={articleData.relatedItems}
+                  currentSlug={post.slug}
+                />
+              </ArticleFooter>
+
+              {/* Comments section - hidden for draft posts */}
+              {!post.draft && <GiscusComments />}
+            </ArticleLayout>
           </div>
         </div>
       </div>

@@ -18,15 +18,24 @@ Skeleton loaders need to stay synchronized with their actual components. When co
 - ✅ Manual updates required when components changed
 - ✅ Easy to forget to update skeletons after component changes
 
-## Latest Audit Results (November 22, 2025)
+## Latest Audit Results (November 25, 2025)
 
-**Issues Fixed:**
+**Critical Fixes Implemented:**
+1. ✅ **Projects Page** - Fixed grid breakpoint (`lg:grid-cols-3` added) and removed phantom GitHub Heatmap section
+2. ✅ **Homepage** - Replaced "Blog Section" with correct "Recent Activity" structure using Card components
+3. ✅ **Homepage** - Removed phantom "Projects Section" that was commented out in actual page
+4. ✅ **Blog Page** - Complete restructure to match actual custom layout with:
+   - BlogLayoutWrapper grid system (`lg:grid-cols-[280px_1fr]`)
+   - Desktop sidebar with sticky positioning (hidden on mobile)
+   - ViewToggle in header (desktop only)
+   - Mobile filters section (below lg breakpoint)
+   - Increased PostListSkeleton count to 12 items
+
+**Previous Fixes (November 22, 2025):**
 1. ✅ `PostListSkeleton` - Updated to match PostList's new structure with background images, gradient overlays, and proper padding (space-y-4 container, p-3 sm:p-4 content)
 2. ✅ `ProjectListSkeleton` - Fixed grid gap from `gap-6` to `gap-4` to match actual projects page
-3. ✅ `src/app/projects/loading.tsx` - Fixed grid gap from `gap-5` to `gap-4`
-4. ✅ Skeleton tests - Updated from deprecated `animate-pulse` to `skeleton-shimmer` class
-5. ✅ Skeleton tests - Fixed outdated selectors (Card uses `data-slot="card"` not `rounded-lg` class)
-6. ✅ Skeleton tests - Fixed PageLayout expectations (uses `min-h-screen` div, not `<main>` tag)
+3. ✅ Skeleton tests - Updated from deprecated `animate-pulse` to `skeleton-shimmer` class
+4. ✅ Skeleton tests - Fixed outdated selectors and layout expectations
 
 **All 21 skeleton sync tests now passing** ✅
 
@@ -90,12 +99,19 @@ Tests run automatically in CI/CD to catch any regressions.
 - ✅ `src/app/contact/loading.tsx` - Uses `PageHero` component
 - ✅ `src/app/resume/loading.tsx` - Uses `PageHero` component
 
-**Layout Components (2 files):**
+**Layout Components (3 files):**
 - ✅ `src/components/layouts/page-hero.tsx` - Added `loading` prop support
 - ✅ `src/components/layouts/archive-layout.tsx` - Added `loading` prop support
+- ✅ `src/components/layouts/article-layout.tsx` - Added `loading` prop support (NEW)
+
+**Skeleton Primitives (1 file):**
+- ✅ `src/components/ui/skeleton-primitives.tsx` - Design-token-aware skeleton primitives (NEW)
+
+**Components with Co-located Loading (1 file):**
+- ✅ `src/components/projects/project-card.tsx` - Added `loading` prop for co-located skeleton (NEW)
 
 **Tests (1 file):**
-- ✅ `src/__tests__/skeleton-sync.test.tsx` - Structural validation tests
+- ✅ `src/__tests__/skeleton-sync.test.tsx` - Structural validation tests + primitive tests
 
 ### Key Improvements
 
@@ -104,6 +120,105 @@ Tests run automatically in CI/CD to catch any regressions.
 3. **Automated Validation:** Tests catch regressions automatically
 4. **Future-Proof:** `loading` prop provides even simpler API going forward
 5. **Maintainable:** Changes to layout components automatically apply to loading states
+6. **Design-Token-Aware:** Skeleton primitives automatically size based on typography tokens (NEW)
+7. **Co-located Skeletons:** Components define their own skeleton inline, impossible to forget (NEW)
+
+## Skeleton Primitives (NEW)
+
+Design-token-aware skeleton primitives that automatically size based on the design system.
+
+### Available Primitives
+
+```tsx
+import { 
+  SkeletonText,        // Multi-line body text
+  SkeletonHeading,     // h1-h4 with token-based heights
+  SkeletonDescription, // Lead/description text
+  SkeletonAvatar,      // Circular avatar (sm/md/lg/xl)
+  SkeletonBadges,      // Tag/badge group
+  SkeletonButton,      // Button placeholder
+  SkeletonMetadata,    // Date, reading time, views
+  SkeletonParagraphs,  // Multiple paragraph blocks
+  SkeletonImage,       // Image with aspect ratios
+  SkeletonCard,        // Complete card (post/project/simple)
+  SkeletonList,        // List of skeleton cards
+} from "@/components/ui/skeleton-primitives";
+```
+
+### Usage Examples
+
+```tsx
+// Typography-matched headings
+<SkeletonHeading level="h1" variant="article" />  // Matches TYPOGRAPHY.h1.article
+<SkeletonHeading level="h2" />                     // Matches TYPOGRAPHY.h2.standard
+
+// Content blocks
+<SkeletonText lines={3} lastLineWidth="w-3/4" />
+<SkeletonParagraphs count={5} />
+
+// Metadata and badges
+<SkeletonMetadata showDate showReadingTime showViews />
+<SkeletonBadges count={4} />
+
+// Complete cards
+<SkeletonCard variant="post" showImage />
+<SkeletonCard variant="project" />
+```
+
+### Benefits
+
+- **Auto-sized:** Heights match actual typography tokens
+- **Consistent:** Same dimensions across all skeletons
+- **Maintainable:** Change token = all skeletons update
+- **Semantic:** `SkeletonHeading level="h1"` is self-documenting
+
+## Co-located Loading Pattern (NEW)
+
+Components define their own skeleton inline via a `loading` prop.
+
+### Example: ProjectCard
+
+```tsx
+// Using ProjectCard with loading state
+<ProjectCard loading />  // Renders skeleton
+
+// In a list
+{isLoading 
+  ? Array.from({ length: 3 }).map((_, i) => <ProjectCard key={i} loading />)
+  : projects.map(p => <ProjectCard key={p.slug} project={p} />)
+}
+```
+
+### Implementation Pattern
+
+```tsx
+export function MyComponent({ data, loading = false }: Props) {
+  // Loading state - render skeleton with IDENTICAL structure
+  if (loading || !data) {
+    return (
+      <div className="...same-classes-as-normal-render...">
+        <Skeleton className="h-6 w-3/4" />
+        {/* ... skeleton content using same wrapper structure ... */}
+      </div>
+    );
+  }
+
+  // Normal render
+  return (
+    <div className="...same-classes-as-skeleton...">
+      <h2>{data.title}</h2>
+      {/* ... normal content ... */}
+    </div>
+  );
+}
+```
+
+### Benefits
+
+- **Impossible to forget:** Skeleton lives in same file
+- **Single diff:** Update component = update skeleton
+- **IDE support:** Jump to skeleton is one scroll away
+- **Type-safe:** Same Props interface for both states
 
 ## Benefits of Hybrid Approach
 

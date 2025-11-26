@@ -3,32 +3,33 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { resume, getShortSummary } from "@/data/resume";
 import { getOgImageUrl } from "@/lib/site-config";
-import { Logo } from "@/components/common/logo";
 import { getAboutPageSchema, getJsonLdScriptProps } from "@/lib/json-ld";
 import { headers } from "next/headers";
 import { ExternalLink } from "lucide-react";
-import { AboutAvatar } from "@/components/about/about-avatar";
-import { AboutStats } from "@/components/about/about-stats";
-import { SocialLinksGrid } from "@/components/sections/social-links-grid";
-import { AboutTeam } from "@/components/about/about-team";
-import { PostList } from "@/components/blog/post/post-list";
 import { posts } from "@/data/posts";
 import { visibleProjects } from "@/data/projects";
 import { getYearsOfExperience } from "@/data/resume";
-import { SectionNavigator, Section } from "@/components/common/section-navigator";
-import { 
-  TYPOGRAPHY, 
+import {
+  TYPOGRAPHY,
   SPACING,
   HOVER_EFFECTS,
   PAGE_LAYOUT,
   SCROLL_BEHAVIOR,
 } from "@/lib/design-tokens";
-import { PageLayout } from "@/components/layouts/page-layout";
-import { PageHero } from "@/components/layouts/page-hero";
 import { createPageMetadata } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
-import { AvailabilityBanner } from "@/components/common/cta";
-import { DownloadResumeButton } from "@/components/resume/download-resume-button";
+import { PageLayout } from "@/components/layouts/page-layout";
+import { PageHero } from "@/components/layouts/page-hero";
+import { SocialLinksGrid } from "@/components/sections/social-links-grid";
+import {
+  Logo,
+  SectionNavigator,
+  Section,
+  AvailabilityBanner,
+} from "@/components/common";
+import { AboutAvatar, AboutStats, AboutTeam } from "@/components/about";
+import { PostList } from "@/components/blog";
+import { DownloadResumeButton } from "@/components/resume";
 import dynamic from "next/dynamic";
 
 const ScrollReveal = dynamic(() => import("@/components/features/scroll-reveal").then(mod => ({ default: mod.ScrollReveal })), {

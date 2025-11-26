@@ -4,19 +4,21 @@ import { headers } from "next/headers";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { resume, getSummary } from "@/data/resume";
-import { SkillsAndCertifications } from "@/components/resume/skills-and-certifications";
 import { highlightMetrics } from "@/lib/highlight-metrics";
 import { TYPOGRAPHY, PAGE_LAYOUT, SPACING, HOVER_EFFECTS } from "@/lib/design-tokens";
-import { PageLayout } from "@/components/layouts/page-layout";
-import { PageHero } from "@/components/layouts/page-hero";
 import { createPageMetadata } from "@/lib/metadata";
 import { getResumePageSchema, getJsonLdScriptProps } from "@/lib/json-ld";
-import { DownloadResumeButton } from "@/components/resume/download-resume-button";
-import { ResumeStats } from "@/components/resume/resume-stats";
-import { UnifiedTimeline } from "@/components/common/stats/unified-timeline";
-import { ResumeSectionNav } from "@/components/resume/resume-section-nav";
-import { BackToTop } from "@/components/navigation/back-to-top";
 import dynamic from "next/dynamic";
+import { PageLayout } from "@/components/layouts/page-layout";
+import { PageHero } from "@/components/layouts/page-hero";
+import {
+  DownloadResumeButton,
+  ResumeStats,
+  ResumeSectionNav,
+  SkillsAndCertifications,
+} from "@/components/resume";
+import { UnifiedTimeline } from "@/components/common";
+import { BackToTop } from "@/components/navigation";
 
 const ScrollReveal = dynamic(() => import("@/components/features/scroll-reveal").then(mod => ({ default: mod.ScrollReveal })), {
   loading: () => <div className="contents" />,

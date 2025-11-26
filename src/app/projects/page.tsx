@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
 import { visibleProjects, type Project } from "@/data/projects";
-import { ProjectCard } from "@/components/projects/project-card";
 import dynamic from "next/dynamic";
-import { GitHubHeatmapErrorBoundary } from "@/components/common/error-boundaries/github-heatmap-error-boundary";
-import { GitHubHeatmapSkeleton } from "@/components/common/skeletons/github-heatmap-skeleton";
-import { ArchiveLayout } from "@/components/layouts/archive-layout";
-import { ArchivePagination } from "@/components/layouts/archive-pagination";
 import { SITE_URL, AUTHOR_NAME } from "@/lib/site-config";
 import { createArchivePageMetadata, getJsonLdScriptProps } from "@/lib/metadata";
 import { headers } from "next/headers";
-import { ProjectsCTA } from "@/components/common/cta";
 import { getArchiveData } from "@/lib/archive";
 import { Badge } from "@/components/ui/badge";
 import { getMultipleProjectViews } from "@/lib/project-views";
-import { ProjectFilters } from "@/components/projects/project-filters";
+import { ArchiveLayout } from "@/components/layouts/archive-layout";
+import { ArchivePagination } from "@/components/layouts/archive-pagination";
+import { ProjectCard, ProjectFilters } from "@/components/projects";
+import {
+  GitHubHeatmapErrorBoundary,
+  GitHubHeatmapSkeleton,
+  ProjectsCTA,
+} from "@/components/common";
 
 const GitHubHeatmap = dynamic(() => import("@/components/features/github/github-heatmap").then(mod => ({ default: mod.GitHubHeatmap })), {
   loading: () => <GitHubHeatmapSkeleton />,

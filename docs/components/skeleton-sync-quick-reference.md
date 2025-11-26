@@ -22,6 +22,17 @@ When updating a component that has a skeleton:
 | `PostList` | `post-list-skeleton.tsx` | ✅ 2025-11-04 |
 | `BlogPost page` | `blog-post-skeleton.tsx` | ✅ 2025-11-04 |
 
+## Page Loading States
+
+| Page | Loading File | Last Synced |
+|------|--------------|-------------|
+| Homepage | `src/app/loading.tsx` | ✅ 2025-11-19 |
+| Projects | `src/app/projects/loading.tsx` | ✅ 2025-11-19 |
+| Blog | `src/app/blog/loading.tsx` | ✅ 2025-11-19 |
+| About | `src/app/about/loading.tsx` | ✅ 2025-11-25 |
+| Contact | `src/app/contact/loading.tsx` | ✅ 2025-11-25 |
+| Resume | `src/app/resume/loading.tsx` | ✅ 2025-11-25 |
+
 **All skeletons now have JSDoc sync warnings!** ✅
 
 ## Visual Markers in Code

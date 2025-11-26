@@ -6,6 +6,7 @@ import { ExternalLink, Eye } from "lucide-react";
 import { Project, ProjectStatus } from "@/data/projects";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn, sanitizeUrl, formatNumber } from "@/lib/utils";
 import { ensureProjectImage } from "@/lib/default-project-images";
 import { HOVER_EFFECTS } from "@/lib/design-tokens";
@@ -22,66 +23,97 @@ const STATUS_LABEL: Record<ProjectStatus, string> = {
   "archived": "Archived",
 };
 
+export interface ProjectCardProps {
+  /** Project data - omit for skeleton loading state */
+  project?: Project;
+  /** View count for the project */
+  viewCount?: number;
+  /** Loading state - renders skeleton version */
+  loading?: boolean;
+}
+
 /**
  * ProjectCard Component
  * 
  * Displays a portfolio project card in archive view with link to detail page.
  * The entire card is clickable and links to the project detail page.
  * 
- * ⚠️ SKELETON SYNC REQUIRED
- * When updating this component's structure, also update:
- * - src/components/project-card-skeleton.tsx
+ * **Loading State Support:**
+ * Pass `loading={true}` to render skeleton version automatically. This ensures
+ * the skeleton is always in sync with the actual component structure.
  * 
- * Key structural elements that must match:
- * - Link wrapper: block, group styling for hover effects
+ * Key structural elements (auto-synced with skeleton):
+ * - Wrapper: block, group, cursor-pointer styling
  * - Card: flex, h-full, relative positioning, overflow-hidden
  * - CardHeader: space-y-1.5, px-4 sm:px-6, py-4 sm:py-5, z-10
  *   - Timeline (optional, text-xs with status badge)
  *   - Title (text-base sm:text-lg md:text-xl)
  *   - Description (CardDescription)
  *   - Tech Stack (flex-wrap, gap-1.5, Badge variant="outline", max 3 shown)
- * - CardFooter: flex-row, gap-2 sm:gap-3, px-4 sm:px-6, py-3 sm:py-4
- *   - External project links only (no View Details button)
  * 
- * @component
- * 
- * Mobile Optimizations:
- * - Full-width card is tappable/clickable
- * - Enhanced padding and spacing for better readability
- * 
- * Desktop Features:
- * - Hover effects on entire card
- * - Optimized spacing for larger screens
- * 
- * @param {Object} props - Component props
- * @param {Project} props.project - Project data object
- * 
- * @example
+ * @example Standard usage
  * ```tsx
  * <ProjectCard project={projectData} />
  * ```
  * 
- * Accessibility:
- * - Entire card is keyboard accessible via Link
- * - Semantic HTML with proper heading hierarchy
- * - External links indicate opening in new tab
+ * @example Loading state
+ * ```tsx
+ * <ProjectCard loading />
+ * ```
  * 
- * Related Components:
- * - Card components from @/components/ui/card
- * - Badge from @/components/ui/badge
- * - ProjectCardSkeleton from @/components/projects/project-card-skeleton
+ * @example In a list with loading state
+ * ```tsx
+ * {isLoading 
+ *   ? Array.from({ length: 3 }).map((_, i) => <ProjectCard key={i} loading />)
+ *   : projects.map(p => <ProjectCard key={p.slug} project={p} />)
+ * }
+ * ```
  * 
- * @see {@link /docs/components/project-card.md} for detailed documentation
  * @see {@link /docs/components/skeleton-sync-strategy.md} for skeleton sync guidelines
  */
 export function ProjectCard({ 
   project,
-  viewCount
-}: { 
-  project: Project;
-  viewCount?: number;
-}) {
+  viewCount,
+  loading = false,
+}: ProjectCardProps) {
   const router = useRouter();
+  
+  // Loading state - render skeleton with IDENTICAL structure
+  if (loading || !project) {
+    return (
+      <div className="block group cursor-pointer">
+        <Card className={cn("flex h-full flex-col overflow-hidden relative holo-card holo-card-3d", HOVER_EFFECTS.card)}>
+          {/* Background placeholder */}
+          <div className="absolute inset-0 z-0 bg-muted/20" />
+
+          {/* Content - matches CardHeader structure exactly */}
+          <CardHeader className="space-y-1.5 relative z-10 px-4 sm:px-6 py-4 sm:py-5">
+            {/* Timeline with status badge */}
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-5 w-16" />
+              <Skeleton className="h-3 w-24" />
+            </div>
+            
+            {/* Title */}
+            <Skeleton className="h-6 sm:h-7 md:h-8 w-48 sm:w-56" />
+
+            {/* Description - 2 lines */}
+            <CardDescription className="space-y-2">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+            </CardDescription>
+
+            {/* Tech Stack badges (max 3) */}
+            <div className="flex flex-wrap gap-1.5 pt-1">
+              <Skeleton className="h-5 sm:h-6 w-16" />
+              <Skeleton className="h-5 sm:h-6 w-20" />
+              <Skeleton className="h-5 sm:h-6 w-14" />
+            </div>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
   
   // Always ensure we have an image (custom or default)
   const image = ensureProjectImage(project.image, {
