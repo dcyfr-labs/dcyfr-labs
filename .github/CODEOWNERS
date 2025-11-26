@@ -1,0 +1,54 @@
+# CODEOWNERS
+#
+# Auto-assign reviewers for pull requests.
+# Each line is a file pattern followed by one or more owners.
+# Order is important; the last matching pattern takes precedence.
+#
+# Documentation: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything in the repo
+* @dcyfr
+
+# Documentation
+/docs/ @dcyfr
+README.md @dcyfr
+CONTRIBUTING.md @dcyfr
+SECURITY.md @dcyfr
+CHANGELOG.md @dcyfr
+
+# Configuration files
+*.config.js @dcyfr
+*.config.ts @dcyfr
+*.config.mjs @dcyfr
+package.json @dcyfr
+package-lock.json @dcyfr
+tsconfig.json @dcyfr
+.eslintrc.* @dcyfr
+.prettierrc.* @dcyfr
+
+# GitHub workflows and actions
+/.github/ @dcyfr
+
+# Security-sensitive files
+/src/lib/security/ @dcyfr
+/src/lib/rate-limit/ @dcyfr
+/src/middleware.ts @dcyfr
+SECURITY.md @dcyfr
+
+# Core application code
+/src/app/ @dcyfr
+/src/components/ @dcyfr
+/src/lib/ @dcyfr
+
+# Testing infrastructure
+/src/__tests__/ @dcyfr
+/tests/ @dcyfr
+*.test.ts @dcyfr
+*.test.tsx @dcyfr
+vitest.config.ts @dcyfr
+playwright.config.ts @dcyfr
+
+# Deployment and infrastructure
+vercel.json @dcyfr
+next.config.ts @dcyfr
+.env.example @dcyfr

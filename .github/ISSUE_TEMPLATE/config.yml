@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 Question or Discussion
+    url: https://github.com/dcyfr/cyberdrew-dev/discussions
+    about: Ask questions or start a discussion
+  - name: 🔒 Security Vulnerability
+    url: https://github.com/dcyfr/cyberdrew-dev/security/advisories/new
+    about: Report a security vulnerability privately
+  - name: 📧 Direct Contact
+    url: https://cyberdrew.dev/contact
+    about: Contact via website form for general inquiries

@@ -205,19 +205,33 @@ Comprehensive docs in `/docs`:
 
 ## 🧪 Testing
 
+**Current Status:** 1185/1197 tests passing (99.0%)
+
 ```bash
 # Lint and type-check
 npm run lint
 npm run typecheck
-npm run check  # Both lint + typecheck
+npm run check             # Both lint + typecheck
 
-# Test specific features
-npm run test:rate-limit      # Rate limiting
-npm run test:toc             # Table of contents
-npm run test:related-posts   # Related posts algorithm
-npm run test:streaks         # GitHub streak calculation
-npm run test:mcp-servers     # MCP server integration
+# Run tests
+npm run test              # Run all tests (Vitest)
+npm run test:unit         # Unit tests only
+npm run test:integration  # Integration tests only
+npm run test:e2e          # End-to-end tests (Playwright)
+npm run test:coverage     # Generate coverage report
+npm run test:watch        # Watch mode
+
+# Test UI
+npm run test:ui           # Vitest UI
+npm run test:e2e:ui       # Playwright UI
 ```
+
+**Testing Infrastructure:**
+
+- **Unit & Integration Tests:** Vitest + Testing Library
+- **E2E Tests:** Playwright
+- **Coverage:** 99.0% pass rate across 1197 tests
+- **Test Documentation:** See [`/docs/testing/`](./docs/testing/)
 
 ## 🎨 Customization
 
