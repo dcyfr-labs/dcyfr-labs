@@ -1,6 +1,6 @@
 # Inngest Integration Guide
 
-Complete guide to the Inngest background job system integrated into cyberdrew-dev.
+Complete guide to the Inngest background job system integrated into dcyfr-labs.
 
 ## Table of Contents
 

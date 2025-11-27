@@ -148,7 +148,7 @@ Git MCP: Shows commit history for that file
 
 ### Project Structure (Filesystem)
 ```
-cyberdrew-dev/
+dcyfr-labs/
 ├── src/
 │   ├── app/           ← Page routes
 │   ├── components/    ← React components  

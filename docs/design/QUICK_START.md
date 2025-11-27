@@ -1,6 +1,6 @@
 # Design System Quick Start
 
-**For:** Developers working on cyberdrew-dev  
+**For:** Developers working on dcyfr-labs  
 **Last Updated:** November 8, 2025
 
 ---

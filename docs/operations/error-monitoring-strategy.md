@@ -159,7 +159,7 @@ Document all exceptions with rationale in Sentry issue comments.
 
 1. **Open Sentry Dashboard**
    - Navigate to [https://dcyfr-labs-gj.sentry.io/](https://dcyfr-labs-gj.sentry.io/)
-   - Select `cyberdrew-dev` project
+   - Select `dcyfr-labs` project
 
 2. **Review Issue Summary (Last 7 Days)**
    - Total issues opened vs. closed
@@ -287,7 +287,7 @@ Configure these alerts in Sentry dashboard:
 
 ### Email Alert Setup
 
-1. Navigate to **Settings → Projects → cyberdrew-dev → Alerts**
+1. Navigate to **Settings → Projects → dcyfr-labs → Alerts**
 2. Click **Create Alert Rule**
 3. Select trigger conditions (see above)
 4. Configure notification channels:

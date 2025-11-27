@@ -31,7 +31,7 @@ export default withSentryConfig(withBundleAnalyzer(withBotId(withAxiom(nextConfi
 
   org: "dcyfr-labs-gj",
 
-  project: "cyberdrew-dev",
+  project: "dcyfr-labs",
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,

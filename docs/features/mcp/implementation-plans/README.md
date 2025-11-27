@@ -1,6 +1,6 @@
 # MCP Implementation Plans - Overview
 
-This directory contains detailed implementation plans for MCP servers that enhance your development workflow for the cyberdrew-dev blog/portfolio project.
+This directory contains detailed implementation plans for MCP servers that enhance your development workflow for the dcyfr-labs blog/portfolio project.
 
 ---
 
@@ -279,5 +279,5 @@ Refer to the individual implementation plans for detailed troubleshooting, or co
 ---
 
 **Last Updated**: November 11, 2025  
-**Project**: cyberdrew-dev  
+**Project**: dcyfr-labs  
 **Status**: Ready for implementation

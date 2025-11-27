@@ -6,7 +6,7 @@
 
 ## Executive Summary
 
-This document identifies UX/UI inconsistencies across the cyberdrew-dev site and provides actionable recommendations for achieving design uniformity. The analysis covers page layouts, typography, spacing, component styling, and interactive effects.
+This document identifies UX/UI inconsistencies across the dcyfr-labs site and provides actionable recommendations for achieving design uniformity. The analysis covers page layouts, typography, spacing, component styling, and interactive effects.
 
 ### Key Findings
 

@@ -64,7 +64,7 @@ Four environment variables are required to enable comments. All must be present 
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `NEXT_PUBLIC_GISCUS_REPO` | GitHub repository (owner/repo) | `dcyfr/cyberdrew-dev` |
+| `NEXT_PUBLIC_GISCUS_REPO` | GitHub repository (owner/repo) | `dcyfr/dcyfr-labs` |
 | `NEXT_PUBLIC_GISCUS_REPO_ID` | Repository ID from Giscus | `R_kgDOK...` |
 | `NEXT_PUBLIC_GISCUS_CATEGORY` | Discussion category name | `Blog Comments` |
 | `NEXT_PUBLIC_GISCUS_CATEGORY_ID` | Category ID from Giscus | `DIC_kwDO...` |
@@ -90,7 +90,7 @@ Four environment variables are required to enable comments. All must be present 
 #### 3. Configure Giscus
 
 1. Visit [giscus.app](https://giscus.app/)
-2. Enter your repository name (e.g., `dcyfr/cyberdrew-dev`)
+2. Enter your repository name (e.g., `dcyfr/dcyfr-labs`)
 3. Verify repository eligibility:
    - Repository is public
    - giscus app is installed
@@ -115,7 +115,7 @@ Four environment variables are required to enable comments. All must be present 
 
 **Local Development (`/.env.local`):**
 ```bash
-NEXT_PUBLIC_GISCUS_REPO=dcyfr/cyberdrew-dev
+NEXT_PUBLIC_GISCUS_REPO=dcyfr/dcyfr-labs
 NEXT_PUBLIC_GISCUS_REPO_ID=R_kgDOK...
 NEXT_PUBLIC_GISCUS_CATEGORY=Blog Comments
 NEXT_PUBLIC_GISCUS_CATEGORY_ID=DIC_kwDO...

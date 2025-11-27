@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-The cyberdrew-dev portfolio implements a **robust, well-architected theme system** using OKLCH color space with excellent semantic variable structure. The system demonstrates:
+The dcyfr-labs portfolio implements a **robust, well-architected theme system** using OKLCH color space with excellent semantic variable structure. The system demonstrates:
 
 ✅ **Excellent Color Architecture** - OKLCH color space for perceptual uniformity  
 ✅ **Strong Semantic Naming** - Clear, maintainable CSS custom properties  
@@ -705,7 +705,7 @@ export const GRADIENT_OVERLAYS = {
 
 ## Conclusion
 
-The cyberdrew-dev theme engine represents a **best-in-class implementation** with:
+The dcyfr-labs theme engine represents a **best-in-class implementation** with:
 
 - ✅ Modern color science (OKLCH)
 - ✅ Excellent accessibility (WCAG AA+/AAA)

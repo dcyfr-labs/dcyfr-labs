@@ -38,7 +38,7 @@ This guide covers the complete setup and configuration of GitHub Dependabot for 
 
 1. **Navigate to Repository Settings**:
    ```
-   https://github.com/dcyfr/cyberdrew-dev/settings/security_analysis
+   https://github.com/dcyfr/dcyfr-labs/settings/security_analysis
    ```
 
 2. **Enable Security Features**:
@@ -79,7 +79,7 @@ After enabling in GitHub settings, Dependabot will:
 gh pr list --label "dependencies"
 
 # Or visit:
-https://github.com/dcyfr/cyberdrew-dev/pulls?q=is%3Apr+is%3Aopen+label%3Adependencies
+https://github.com/dcyfr/dcyfr-labs/pulls?q=is%3Apr+is%3Aopen+label%3Adependencies
 ```
 
 ---
@@ -144,16 +144,16 @@ This integrates with automated changelogs and release notes.
 
 **GitHub Web UI:**
 ```
-https://github.com/dcyfr/cyberdrew-dev/security/dependabot
+https://github.com/dcyfr/dcyfr-labs/security/dependabot
 ```
 
 **GitHub CLI:**
 ```bash
 # List all security alerts
-gh api /repos/dcyfr/cyberdrew-dev/dependabot/alerts
+gh api /repos/dcyfr/dcyfr-labs/dependabot/alerts
 
 # List only open alerts
-gh api /repos/dcyfr/cyberdrew-dev/dependabot/alerts?state=open
+gh api /repos/dcyfr/dcyfr-labs/dependabot/alerts?state=open
 ```
 
 ---

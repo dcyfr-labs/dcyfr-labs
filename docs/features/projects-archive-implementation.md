@@ -40,7 +40,7 @@ Transformed the `/projects` page into an archive with individual project detail 
 - ✅ Static generation via `generateStaticParams`
 
 **Example URLs:**
-- `/projects/cyberdrew-dev`
+- `/projects/dcyfr-labs`
 - `/projects/x64-indie-cyber-publication`
 - `/projects/drews-lab` (when added)
 

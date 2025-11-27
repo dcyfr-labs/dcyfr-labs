@@ -202,7 +202,7 @@ useEffect(() => {
 ```typescript
 // Track GitHub clicks
 <a 
-  href="https://github.com/dcyfr/cyberdrew-dev?utm_source=portfolio&utm_medium=website"
+  href="https://github.com/dcyfr/dcyfr-labs?utm_source=portfolio&utm_medium=website"
   target="_blank"
   onClick={() => {
     window.va?.('track', 'GitHub Repository Click', {

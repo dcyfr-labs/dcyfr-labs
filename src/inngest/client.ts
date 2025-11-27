@@ -12,4 +12,4 @@ import { Inngest } from "inngest";
  * 
  * @see https://www.inngest.com/docs/reference/client/create
  */
-export const inngest = new Inngest({ id: "cyberdrew-dev" });
+export const inngest = new Inngest({ id: "dcyfr-labs" });

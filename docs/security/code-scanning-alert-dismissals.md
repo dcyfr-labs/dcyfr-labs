@@ -47,7 +47,7 @@ False positive - image sources are from trusted static MDX content files in src/
 
 ```bash
 # For each alert (8, 9, 10):
-gh api -X PATCH /repos/dcyfr/cyberdrew-dev/code-scanning/alerts/{alert_number} \
+gh api -X PATCH /repos/dcyfr/dcyfr-labs/code-scanning/alerts/{alert_number} \
   -f state=dismissed \
   -f dismissed_reason=false_positive \
   -f dismissed_comment="Image sources from trusted MDX content, not user input"
@@ -85,7 +85,7 @@ Used in non-security context - session IDs are for analytics tracking only, not 
 
 ```bash
 # For each alert (5, 6, 7):
-gh api -X PATCH /repos/dcyfr/cyberdrew-dev/code-scanning/alerts/{alert_number} \
+gh api -X PATCH /repos/dcyfr/dcyfr-labs/code-scanning/alerts/{alert_number} \
   -f state=dismissed \
   -f dismissed_reason=used_in_tests \
   -f dismissed_comment="Analytics tracking only, not security-sensitive. Primary path uses crypto.randomUUID()"
@@ -118,7 +118,7 @@ Archived test script not used in production. File is in scripts/archive/legacy-t
 2. **Dismiss the alert:**
 
 ```bash
-gh api -X PATCH /repos/dcyfr/cyberdrew-dev/code-scanning/alerts/4 \
+gh api -X PATCH /repos/dcyfr/dcyfr-labs/code-scanning/alerts/4 \
   -f state=dismissed \
   -f dismissed_reason=wont_fix \
   -f dismissed_comment="Archived test script not used in production"
@@ -132,7 +132,7 @@ gh api -X PATCH /repos/dcyfr/cyberdrew-dev/code-scanning/alerts/4 \
 
 ```bash
 for alert in 8 9 10; do
-  gh api -X PATCH /repos/dcyfr/cyberdrew-dev/code-scanning/alerts/$alert \
+  gh api -X PATCH /repos/dcyfr/dcyfr-labs/code-scanning/alerts/$alert \
     -f state=dismissed \
     -f dismissed_reason=false_positive \
     -f dismissed_comment="Image sources from trusted MDX content, not user input"
@@ -143,7 +143,7 @@ done
 
 ```bash
 for alert in 5 6 7; do
-  gh api -X PATCH /repos/dcyfr/cyberdrew-dev/code-scanning/alerts/$alert \
+  gh api -X PATCH /repos/dcyfr/dcyfr-labs/code-scanning/alerts/$alert \
     -f state=dismissed \
     -f dismissed_reason=used_in_tests \
     -f dismissed_comment="Analytics tracking only, not security-sensitive. Primary path uses crypto.randomUUID()"
@@ -153,7 +153,7 @@ done
 ### Dismiss Archived Test File (Alert 4)
 
 ```bash
-gh api -X PATCH /repos/dcyfr/cyberdrew-dev/code-scanning/alerts/4 \
+gh api -X PATCH /repos/dcyfr/dcyfr-labs/code-scanning/alerts/4 \
   -f state=dismissed \
   -f dismissed_reason=wont_fix \
   -f dismissed_comment="Archived test script not used in production"

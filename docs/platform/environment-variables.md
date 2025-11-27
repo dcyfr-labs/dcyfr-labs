@@ -224,7 +224,7 @@ npm run dev
 
 ### `NEXT_PUBLIC_GISCUS_REPO`
 - **Type:** String ("owner/repo")
-- **Example:** `dcyfr/cyberdrew-dev`
+- **Example:** `dcyfr/dcyfr-labs`
 - **Purpose:** GitHub repository for comments
 
 ### `NEXT_PUBLIC_GISCUS_REPO_ID`

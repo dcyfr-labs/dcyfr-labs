@@ -6,7 +6,7 @@
 
 Visit your repository security settings:
 ```
-https://github.com/dcyfr/cyberdrew-dev/settings/security_analysis
+https://github.com/dcyfr/dcyfr-labs/settings/security_analysis
 ```
 
 Enable these features (click the "Enable" button for each):
@@ -48,7 +48,7 @@ Check that it's working:
 gh pr list --label "dependencies"
 
 # Or visit in browser
-open "https://github.com/dcyfr/cyberdrew-dev/pulls?q=is%3Apr+label%3Adependencies"
+open "https://github.com/dcyfr/dcyfr-labs/pulls?q=is%3Apr+label%3Adependencies"
 ```
 
 ## What's Already Configured

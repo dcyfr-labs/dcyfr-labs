@@ -396,4 +396,4 @@ Please test and provide feedback on:
 - Sort options (add more?)
 - Date range options (add custom range picker?)
 
-File issues at: [GitHub Issues](https://github.com/dcyfr/cyberdrew-dev/issues)
+File issues at: [GitHub Issues](https://github.com/dcyfr/dcyfr-labs/issues)

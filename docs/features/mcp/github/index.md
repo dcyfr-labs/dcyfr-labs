@@ -287,11 +287,11 @@ MCP Ecosystem Status:
 
 | Document | Owner | Last Updated | Status |
 |----------|-------|--------------|--------|
-| docs/mcp/github/setup.md | cyberdrew-dev team | Oct 18, 2025 | ✅ Current |
-| docs/mcp/github/quick-reference.md | cyberdrew-dev team | Oct 18, 2025 | ✅ Current |
-| docs/mcp/github/implementation.md | cyberdrew-dev team | Oct 18, 2025 | ✅ Current |
-| docs/mcp/github/implementation-summary.md | cyberdrew-dev team | Oct 18, 2025 | ✅ Current |
-| This index | cyberdrew-dev team | Oct 18, 2025 | ✅ Current |
+| docs/mcp/github/setup.md | dcyfr-labs team | Oct 18, 2025 | ✅ Current |
+| docs/mcp/github/quick-reference.md | dcyfr-labs team | Oct 18, 2025 | ✅ Current |
+| docs/mcp/github/implementation.md | dcyfr-labs team | Oct 18, 2025 | ✅ Current |
+| docs/mcp/github/implementation-summary.md | dcyfr-labs team | Oct 18, 2025 | ✅ Current |
+| This index | dcyfr-labs team | Oct 18, 2025 | ✅ Current |
 
 ---
 

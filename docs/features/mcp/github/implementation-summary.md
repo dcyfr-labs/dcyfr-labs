@@ -156,7 +156,7 @@ Before you can use GitHub MCP, you need:
 ### Immediate (Do First)
 1. **Create GitHub PAT**: https://github.com/settings/personal-access-tokens/new
 2. **Start Docker**: `open /Applications/Docker.app`
-3. **Open project**: `code cyberdrew-dev`
+3. **Open project**: `code dcyfr-labs`
 4. **Enable agent mode** in VS Code Copilot/Claude
 5. **Enter token** when prompted
 

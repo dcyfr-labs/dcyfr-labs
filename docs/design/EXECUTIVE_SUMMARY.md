@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-A comprehensive analysis of the cyberdrew-dev site has identified **5 major UX/UI inconsistency categories** affecting user experience and developer productivity. This document summarizes findings, solutions, and next steps.
+A comprehensive analysis of the dcyfr-labs site has identified **5 major UX/UI inconsistency categories** affecting user experience and developer productivity. This document summarizes findings, solutions, and next steps.
 
 ---
 

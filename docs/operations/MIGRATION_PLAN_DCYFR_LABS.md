@@ -8,14 +8,14 @@
 
 ## Executive Summary
 
-Comprehensive rebranding from "cyberdrew-dev" to "dcyfr-labs" and "Drew's Lab" to "DCYFR Labs". This migration maintains current domain infrastructure (cyberdrew.dev) while preparing for future migration to dcyfrlabs.com.
+Comprehensive rebranding from "dcyfr-labs" to "dcyfr-labs" and "Drew's Lab" to "DCYFR Labs". This migration maintains current domain infrastructure (cyberdrew.dev) while preparing for future migration to dcyfrlabs.com.
 
 ### Scope
 
 **Immediate Changes (This Migration):**
-- Repository name: `cyberdrew-dev` → `dcyfr-labs`
+- Repository name: `dcyfr-labs` → `dcyfr-labs`
 - Site title: "Drew's Lab" → "DCYFR Labs"
-- Package name: `cyberdrew-dev` → `dcyfr-labs`
+- Package name: `dcyfr-labs` → `dcyfr-labs`
 - All documentation references
 - Code references and configuration
 
@@ -59,7 +59,7 @@ Comprehensive rebranding from "cyberdrew-dev" to "dcyfr-labs" and "Drew's Lab" t
 ### Breaking Changes
 
 **GitHub:**
-- Repository URL changes from `github.com/dcyfr/cyberdrew-dev` to `github.com/dcyfr/dcyfr-labs`
+- Repository URL changes from `github.com/dcyfr/dcyfr-labs` to `github.com/dcyfr/dcyfr-labs`
 - Existing clones will need remote URL updates
 - Open PRs and issues remain intact (GitHub handles redirects)
 - GitHub Actions workflows continue to work
@@ -153,7 +153,7 @@ Comprehensive rebranding from "cyberdrew-dev" to "dcyfr-labs" and "Drew's Lab" t
 
 2. **Rename on GitHub**
    - Go to Settings → General → Repository name
-   - Change from `cyberdrew-dev` to `dcyfr-labs`
+   - Change from `dcyfr-labs` to `dcyfr-labs`
    - Confirm rename
 
 3. **Update Local Repository**
@@ -164,7 +164,7 @@ Comprehensive rebranding from "cyberdrew-dev" to "dcyfr-labs" and "Drew's Lab" t
 
 4. **Verify GitHub Redirects**
    - Old URLs redirect automatically
-   - Test: https://github.com/dcyfr/cyberdrew-dev → redirects
+   - Test: https://github.com/dcyfr/dcyfr-labs → redirects
    - Clone links update automatically
 
 ### Phase 4.5: Verify Vercel Integration 🔄
@@ -224,7 +224,7 @@ Comprehensive rebranding from "cyberdrew-dev" to "dcyfr-labs" and "Drew's Lab" t
 - [ ] Check blog posts (feeds, metadata)
 - [ ] Check projects page
 - [ ] Verify no "Drew's Lab" visible
-- [ ] Verify no "cyberdrew-dev" in visible UI
+- [ ] Verify no "dcyfr-labs" in visible UI
 - [ ] Test GitHub links in docs
 - [ ] Check CI/CD pipeline
 
@@ -237,7 +237,7 @@ Comprehensive rebranding from "cyberdrew-dev" to "dcyfr-labs" and "Drew's Lab" t
    git add .
    git commit -m "chore: rebrand to DCYFR Labs
 
-   - Rename repository from cyberdrew-dev to dcyfr-labs
+   - Rename repository from dcyfr-labs to dcyfr-labs
    - Update site name from Drew's Lab to DCYFR Labs
    - Update all documentation and configuration
    - Maintain current domain (cyberdrew.dev)
@@ -284,8 +284,8 @@ Comprehensive rebranding from "cyberdrew-dev" to "dcyfr-labs" and "Drew's Lab" t
 ### If Migration Fails
 
 **Option 1: Revert Repository Name (GitHub)**
-1. Rename repository back to `cyberdrew-dev` in GitHub settings
-2. Update local remote: `git remote set-url origin git@github.com:dcyfr/cyberdrew-dev.git`
+1. Rename repository back to `dcyfr-labs` in GitHub settings
+2. Update local remote: `git remote set-url origin git@github.com:dcyfr/dcyfr-labs.git`
 3. Revert code changes: `git revert <commit-hash>`
 
 **Option 2: Restore from Backup**
@@ -384,7 +384,7 @@ Migration is considered successful when:
 
 - [ ] All tests pass (≥99% pass rate maintained)
 - [ ] Production site displays "DCYFR Labs" branding
-- [ ] No visible "Drew's Lab" or "cyberdrew-dev" in UI
+- [ ] No visible "Drew's Lab" or "dcyfr-labs" in UI
 - [ ] Repository renamed to `dcyfr-labs` on GitHub
 - [ ] All GitHub Actions workflows pass
 - [ ] No broken internal links
@@ -439,7 +439,7 @@ Migration is considered successful when:
 **Find all references:**
 ```bash
 # Repository name
-grep -r "cyberdrew-dev" --exclude-dir=node_modules --exclude-dir=.next
+grep -r "dcyfr-labs" --exclude-dir=node_modules --exclude-dir=.next
 
 # Site name
 grep -r "Drew's Lab" --exclude-dir=node_modules --exclude-dir=.next

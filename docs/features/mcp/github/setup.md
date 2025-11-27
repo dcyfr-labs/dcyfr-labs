@@ -31,7 +31,7 @@ code --version
 1. Navigate to: https://github.com/settings/personal-access-tokens/new
 
 2. Fill in the form:
-   - **Token name**: `cyberdrew-dev-mcp` (or your preferred name)
+   - **Token name**: `dcyfr-labs-mcp` (or your preferred name)
    - **Expiration**: 90 days (balances security and convenience)
    - **Description**: "MCP Server for VS Code AI assistants"
 

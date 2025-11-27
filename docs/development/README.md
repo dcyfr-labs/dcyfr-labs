@@ -37,7 +37,7 @@ npm run test:e2e:ui
 ## Test Structure
 
 ```
-cyberdrew-dev/
+dcyfr-labs/
 ├── src/__tests__/          # Unit & Component tests
 │   ├── lib/                # Tests for lib/ utilities
 │   │   ├── utils.test.ts

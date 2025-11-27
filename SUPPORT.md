@@ -22,7 +22,7 @@ Before seeking support, please check our comprehensive documentation:
 For general questions, usage help, or discussions:
 
 1. **GitHub Discussions** (Recommended)
-   - Go to [Discussions](https://github.com/dcyfr/cyberdrew-dev/discussions)
+   - Go to [Discussions](https://github.com/dcyfr/dcyfr-labs/discussions)
    - Search existing discussions first
    - Create a new discussion if your question hasn't been answered
 
@@ -34,7 +34,7 @@ For general questions, usage help, or discussions:
 
 If you've found a bug:
 
-1. **Search existing issues** first: [GitHub Issues](https://github.com/dcyfr/cyberdrew-dev/issues)
+1. **Search existing issues** first: [GitHub Issues](https://github.com/dcyfr/dcyfr-labs/issues)
 2. If not found, **create a new issue** using the [Bug Report template](./.github/ISSUE_TEMPLATE/bug_report.md)
 3. Include:
    - Clear description of the bug
@@ -47,7 +47,7 @@ If you've found a bug:
 
 To suggest a new feature:
 
-1. **Check existing feature requests**: [GitHub Issues](https://github.com/dcyfr/cyberdrew-dev/issues?q=is%3Aissue+label%3Aenhancement)
+1. **Check existing feature requests**: [GitHub Issues](https://github.com/dcyfr/dcyfr-labs/issues?q=is%3Aissue+label%3Aenhancement)
 2. If not found, **create a new issue** using the [Feature Request template](./.github/ISSUE_TEMPLATE/feature_request.md)
 3. Clearly describe:
    - The problem you're trying to solve
@@ -61,7 +61,7 @@ To suggest a new feature:
 Instead, please report security issues responsibly:
 
 1. **GitHub Security Advisories** (Preferred)
-   - Go to [Security Advisories](https://github.com/dcyfr/cyberdrew-dev/security/advisories)
+   - Go to [Security Advisories](https://github.com/dcyfr/dcyfr-labs/security/advisories)
    - Click "Report a vulnerability"
    - Provide detailed information
 
@@ -89,14 +89,14 @@ Interested in contributing? Great!
 1. Read [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup
 2. Check [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) for community guidelines
 3. Review [docs/operations/todo.md](./docs/operations/todo.md) for current priorities
-4. See [open issues](https://github.com/dcyfr/cyberdrew-dev/issues) for contribution opportunities
+4. See [open issues](https://github.com/dcyfr/dcyfr-labs/issues) for contribution opportunities
 
 ## Project Resources
 
 - **Website**: [cyberdrew.dev](https://cyberdrew.dev)
-- **Repository**: [github.com/dcyfr/cyberdrew-dev](https://github.com/dcyfr/cyberdrew-dev)
-- **Issues**: [GitHub Issues](https://github.com/dcyfr/cyberdrew-dev/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/dcyfr/cyberdrew-dev/discussions)
+- **Repository**: [github.com/dcyfr/dcyfr-labs](https://github.com/dcyfr/dcyfr-labs)
+- **Issues**: [GitHub Issues](https://github.com/dcyfr/dcyfr-labs/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/dcyfr/dcyfr-labs/discussions)
 - **Security**: [Security Policy](./SECURITY.md)
 
 ## Community Guidelines

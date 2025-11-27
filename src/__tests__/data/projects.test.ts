@@ -315,10 +315,10 @@ describe('Projects Data', () => {
   })
 
   describe('Real Content Validation', () => {
-    it('has "drews-lab" project', () => {
-      const drewsLab = projects.find((p) => p.slug === 'drews-lab')
-      expect(drewsLab).toBeDefined()
-      expect(drewsLab?.status).toBe('active')
+    it('has "dcyfr-labs" project', () => {
+      const dcyfrLabs = projects.find((p) => p.slug === 'dcyfr-labs')
+      expect(dcyfrLabs).toBeDefined()
+      expect(dcyfrLabs?.status).toBe('active')
     })
 
     it('has at least one featured project', () => {

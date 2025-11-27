@@ -80,7 +80,7 @@ src/
 ## Security Scanning
 
 ```bash
-gh api /repos/dcyfr/cyberdrew-dev/code-scanning/alerts/{id}
+gh api /repos/dcyfr/dcyfr-labs/code-scanning/alerts/{id}
 ```
 
 ## MCP Servers (Chat)

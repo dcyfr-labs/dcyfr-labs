@@ -24,7 +24,7 @@
 
 ## Overview
 
-This design system ensures visual and behavioral consistency across the cyberdrew-dev site. It provides:
+This design system ensures visual and behavioral consistency across the dcyfr-labs site. It provides:
 
 - **Design tokens** - Single source of truth for design decisions
 - **Component patterns** - Reusable UI building blocks

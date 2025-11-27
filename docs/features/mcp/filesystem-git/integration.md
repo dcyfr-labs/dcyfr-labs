@@ -38,7 +38,7 @@ Integrated two additional Model Context Protocol (MCP) servers to enhance projec
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "/path/to/cyberdrew-dev"
+        "/path/to/dcyfr-labs"
       ],
       "disabled": false
     },
@@ -47,7 +47,7 @@ Integrated two additional Model Context Protocol (MCP) servers to enhance projec
       "args": [
         "-y",
         "@modelcontextprotocol/server-git",
-        "/path/to/cyberdrew-dev"
+        "/path/to/dcyfr-labs"
       ],
       "disabled": false
     }

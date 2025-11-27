@@ -1,6 +1,6 @@
 # Claude Code Integration Guide
 
-This document provides guidance on integrating Claude Code into the cyberdrew-dev project for optimal development quality and efficiency.
+This document provides guidance on integrating Claude Code into the dcyfr-labs project for optimal development quality and efficiency.
 
 **Last Updated:** November 24, 2025
 

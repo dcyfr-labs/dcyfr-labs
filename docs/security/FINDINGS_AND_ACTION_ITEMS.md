@@ -248,13 +248,13 @@ Create `/docs/security/MONITORING_SETUP.md` with:
 
 ```bash
 # View real-time CSP violations
-vercel logs --project cyberdrew-dev --since 1h
+vercel logs --project dcyfr-labs --since 1h
 
 # Filter specific violations
-vercel logs --project cyberdrew-dev | grep "CSP Violation"
+vercel logs --project dcyfr-labs | grep "CSP Violation"
 
 # Search for specific blocked URIs
-vercel logs --project cyberdrew-dev | grep "blocked-uri: https://evil"
+vercel logs --project dcyfr-labs | grep "blocked-uri: https://evil"
 ```
 
 ## Creating Custom Alerts

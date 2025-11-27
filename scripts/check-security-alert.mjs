@@ -8,13 +8,13 @@
  *
  * Examples:
  *   node scripts/check-security-alert.mjs 2
- *   node scripts/check-security-alert.mjs https://github.com/dcyfr/cyberdrew-dev/security/code-scanning/2
+ *   node scripts/check-security-alert.mjs https://github.com/dcyfr/dcyfr-labs/security/code-scanning/2
  */
 
 import { execSync } from "child_process";
 
 const DEFAULT_OWNER = "dcyfr";
-const DEFAULT_REPO = "cyberdrew-dev";
+const DEFAULT_REPO = "dcyfr-labs";
 
 function parseInput(input) {
 	// Check if input is a URL
@@ -135,7 +135,7 @@ Usage: node scripts/check-security-alert.mjs <alert-url-or-number>
 
 Examples:
   node scripts/check-security-alert.mjs 2
-  node scripts/check-security-alert.mjs https://github.com/dcyfr/cyberdrew-dev/security/code-scanning/2
+  node scripts/check-security-alert.mjs https://github.com/dcyfr/dcyfr-labs/security/code-scanning/2
 `);
 	process.exit(1);
 }

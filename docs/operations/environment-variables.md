@@ -278,7 +278,7 @@ curl http://localhost:3000/api/analytics?days=7 \
 #### `NEXT_PUBLIC_GISCUS_REPO`
 - **Type:** String (repository in "owner/repo" format)
 - **Required:** No
-- **Example:** `dcyfr/cyberdrew-dev`
+- **Example:** `dcyfr/dcyfr-labs`
 - **Purpose:** GitHub repository for Giscus comments
 
 #### `NEXT_PUBLIC_GISCUS_REPO_ID`

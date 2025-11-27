@@ -26,7 +26,7 @@ To enable this integration in production:
 ### 1. Create Axiom Dataset and Token
 
 1. Log in to [Axiom](https://app.axiom.co/)
-2. Create a new dataset (e.g., `web-vitals` or `cyberdrew-dev-vitals`)
+2. Create a new dataset (e.g., `web-vitals` or `dcyfr-labs-vitals`)
 3. Create an API token with ingest permissions for this dataset
 
 ### 2. Configure Vercel Environment Variables

@@ -46,7 +46,7 @@ This implementation connects VS Code and MCP-compatible AI tools directly to you
 Navigate to: **GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)**
 
 1. Click "Generate new token (classic)"
-2. Set token name: `cyberdrew-dev-mcp` (or your preference)
+2. Set token name: `dcyfr-labs-mcp` (or your preference)
 3. Select expiration (90 days recommended for security)
 4. Grant permissions based on intended use
 5. Copy the token (you won't see it again)
@@ -352,5 +352,5 @@ All MCP configurations follow the standardized JSON format supporting:
 ---
 
 **Last Updated**: October 18, 2025  
-**Maintained By**: cyberdrew-dev Team  
+**Maintained By**: dcyfr-labs Team  
 **Status**: Production Ready ✅

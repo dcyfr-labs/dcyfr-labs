@@ -61,7 +61,7 @@ representative at an online or offline event.
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the community leaders responsible for enforcement via the
 [contact form](https://cyberdrew.dev/contact) or through
-[GitHub Security Advisories](https://github.com/dcyfr/cyberdrew-dev/security/advisories).
+[GitHub Security Advisories](https://github.com/dcyfr/dcyfr-labs/security/advisories).
 
 All complaints will be reviewed and investigated promptly and fairly.
 

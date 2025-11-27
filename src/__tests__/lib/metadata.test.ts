@@ -29,7 +29,7 @@ import {
 // Mock site-config
 vi.mock('@/lib/site-config', () => ({
   SITE_URL: 'https://cyberdrew.dev',
-  SITE_TITLE_PLAIN: "Drew's Lab",
+  SITE_TITLE_PLAIN: "DCYFR Labs",
   getOgImageUrl: vi.fn((title?: string, description?: string) => {
     const url = new URL('/opengraph-image', 'https://cyberdrew.dev');
     if (title) url.searchParams.set('title', title);
@@ -57,10 +57,10 @@ describe('metadata.ts', () => {
 
       expect(metadata.title).toBe('About');
       expect(metadata.description).toBe('Learn more about us');
-      expect(metadata.openGraph?.title).toBe("About — Drew's Lab");
+      expect(metadata.openGraph?.title).toBe("About — DCYFR Labs");
       expect(metadata.openGraph?.description).toBe('Learn more about us');
       expect(metadata.openGraph?.url).toBe('https://cyberdrew.dev/about');
-      expect(metadata.openGraph?.siteName).toBe("Drew's Lab");
+      expect(metadata.openGraph?.siteName).toBe("DCYFR Labs");
       expect((metadata.openGraph as any)?.type).toBe('website');
     });
 
@@ -126,7 +126,7 @@ describe('metadata.ts', () => {
       const metadata = createPageMetadata(options);
 
       expect((metadata.twitter as any)?.card).toBe('summary_large_image');
-      expect(metadata.twitter?.title).toBe("Twitter Test — Drew's Lab");
+      expect(metadata.twitter?.title).toBe("Twitter Test — DCYFR Labs");
       expect(metadata.twitter?.description).toBe('Twitter card test');
       expect(metadata.twitter?.images).toHaveLength(1);
       expect((metadata.twitter?.images as any)?.[0]).toContain('/twitter-image');
@@ -141,7 +141,7 @@ describe('metadata.ts', () => {
 
       const metadata = createPageMetadata(options);
 
-      expect((metadata.openGraph?.images as any)?.[0].alt).toBe("Default Alt — Drew's Lab");
+      expect((metadata.openGraph?.images as any)?.[0].alt).toBe("Default Alt — DCYFR Labs");
     });
   });
 

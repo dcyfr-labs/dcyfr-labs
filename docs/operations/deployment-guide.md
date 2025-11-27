@@ -2,7 +2,7 @@
 
 **Last Updated:** October 24, 2025
 
-This guide covers deploying the cyberdrew-dev portfolio to production and managing different environments.
+This guide covers deploying the dcyfr-labs portfolio to production and managing different environments.
 
 ## Overview
 
@@ -59,8 +59,8 @@ Vercel will:
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/dcyfr/cyberdrew-dev.git
-cd cyberdrew-dev
+git clone https://github.com/dcyfr/dcyfr-labs.git
+cd dcyfr-labs
 
 # 2. Install dependencies
 npm install

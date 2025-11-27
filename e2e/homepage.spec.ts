@@ -10,10 +10,10 @@ import { test, expect } from '@playwright/test'
 test.describe('Homepage', () => {
   test('should load and display site title', async ({ page }) => {
     await page.goto('/')
-    
+
     // Check that the page loaded successfully
-    await expect(page).toHaveTitle(/Drew's Lab/)
-    
+    await expect(page).toHaveTitle(/DCYFR Labs/)
+
     // Verify main heading is visible - use getByRole to avoid strict mode violations
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
   })

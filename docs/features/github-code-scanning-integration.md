@@ -43,7 +43,7 @@ npm ls @package/name
 Created `scripts/check-security-alert.mjs` - a standalone Node.js script that simplifies alert checking:
 
 **Features:**
-- Accepts alert number (defaults to `dcyfr/cyberdrew-dev`) or full URL
+- Accepts alert number (defaults to `dcyfr/dcyfr-labs`) or full URL
 - Shows formatted alert details (state, rule, severity, location)
 - Returns appropriate exit codes for automation
 - Handles 404s gracefully (indicates alert was resolved/deleted)
@@ -55,13 +55,13 @@ Created `scripts/check-security-alert.mjs` - a standalone Node.js script that si
 node scripts/check-security-alert.mjs 2
 
 # By full URL
-node scripts/check-security-alert.mjs https://github.com/dcyfr/cyberdrew-dev/security/code-scanning/2
+node scripts/check-security-alert.mjs https://github.com/dcyfr/dcyfr-labs/security/code-scanning/2
 ```
 
 **Example output:**
 
 ```
-🔍 Checking alert #2 in dcyfr/cyberdrew-dev...
+🔍 Checking alert #2 in dcyfr/dcyfr-labs...
 
 📋 Alert Details:
    Number: #2
@@ -70,7 +70,7 @@ node scripts/check-security-alert.mjs https://github.com/dcyfr/cyberdrew-dev/sec
    Severity: warning
    Description: DOM-based Cross-site Scripting (XSS)
    Location: src/components/github-heatmap.tsx:495-495
-   URL: https://github.com/dcyfr/cyberdrew-dev/security/code-scanning/2
+   URL: https://github.com/dcyfr/dcyfr-labs/security/code-scanning/2
 
 ⚠️  Alert is OPEN and needs attention
 ```

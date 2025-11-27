@@ -47,7 +47,7 @@ const ScrollReveal = dynamic(() => import("@/components/features/scroll-reveal")
 });
 
 // Optimized meta description for homepage (157 characters)
-const pageDescription = "Drew's Lab - Cybersecurity architect and tinkerer helping organizations build resilient security programs that empower teams to move fast and stay secure.";
+const pageDescription = "DCYFR Labs - Cybersecurity architect and tinkerer helping organizations build resilient security programs that empower teams to move fast and stay secure.";
 
 export const metadata: Metadata = createPageMetadata({
   title: SITE_TITLE_PLAIN,
@@ -119,7 +119,7 @@ export default async function Home() {
         "@type": "WebPage",
         "@id": "https://cyberdrew.dev/#webpage",
         url: "https://cyberdrew.dev",
-        name: "Drew's Lab",
+        name: "DCYFR Labs",
         isPartOf: {
           "@id": "https://cyberdrew.dev/#website",
         },

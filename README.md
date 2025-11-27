@@ -39,7 +39,7 @@ A modern, full-featured developer blog and portfolio built with Next.js (App Rou
 ```bash
 # Clone and install
 git clone <your-repo-url>
-cd cyberdrew-dev
+cd dcyfr-labs
 npm install
 
 # Set up environment variables
@@ -67,7 +67,7 @@ See [`certs/README.md`](./certs/README.md) for certificate details.
 ## 📁 Project Structure
 
 ```
-cyberdrew-dev/
+dcyfr-labs/
 ├── src/
 │   ├── app/              # Next.js App Router (pages + API routes)
 │   ├── components/       # React components

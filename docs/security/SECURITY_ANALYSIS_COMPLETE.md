@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-Your **cyberdrew-dev** project has been comprehensively analyzed and **passes all critical security assessments**.
+Your **dcyfr-labs** project has been comprehensively analyzed and **passes all critical security assessments**.
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

@@ -9,7 +9,7 @@
 
 ## Overview
 
-This roadmap outlines the implementation of the design system to bring the cyberdrew-dev site to full UX/UI consistency. The work is divided into 4 phases with clear deliverables and success criteria.
+This roadmap outlines the implementation of the design system to bring the dcyfr-labs site to full UX/UI consistency. The work is divided into 4 phases with clear deliverables and success criteria.
 
 ---
 

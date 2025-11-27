@@ -18,7 +18,7 @@ import { LOGO_CONFIG } from '@/lib/logo-config';
  * // Inline with text
  * <span className="flex items-center gap-2">
  *   <Logo width={24} height={24} />
- *   <span>Drew's Lab</span>
+ *   <span>DCYFR Labs</span>
  * </span>
  * ```
  */
@@ -36,13 +36,13 @@ interface LogoProps extends React.SVGProps<SVGSVGElement> {
   height?: string | number;
 }
 
-export const Logo: React.FC<LogoProps> = ({ 
-  className = '', 
-  style = {}, 
+export const Logo: React.FC<LogoProps> = ({
+  className = '',
+  style = {},
   fill = 'currentColor',
   width = LOGO_CONFIG.defaultSize,
   height = LOGO_CONFIG.defaultSize,
-  ...props 
+  ...props
 }) => {
   return (
     <svg
@@ -58,7 +58,7 @@ export const Logo: React.FC<LogoProps> = ({
         height={height}
         viewBox={LOGO_CONFIG.viewBox}
         role="img"
-        aria-label="Drew's Logo"
+        aria-label="DCYFR Labs Logo"
         {...props}
     >
         <path d={LOGO_CONFIG.path} />

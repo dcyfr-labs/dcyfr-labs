@@ -28,7 +28,7 @@ vi.mock('@/lib/site-config', () => ({
   SITE_URL: 'https://cyberdrew.dev',
   AUTHOR_NAME: 'Drew',
   AUTHOR_EMAIL: 'drew@cyberdrew.dev',
-  SITE_TITLE: "Drew's Lab",
+  SITE_TITLE: "DCYFR Labs",
   SITE_DESCRIPTION: 'Portfolio and blog',
 }));
 
@@ -678,7 +678,7 @@ describe('feeds.ts', () => {
       const xml = await buildBlogFeed(testPosts);
 
       // Apostrophe is escaped in XML element text
-      expect(xml).toContain("Drew&apos;s Lab - Blog");
+      expect(xml).toContain("DCYFR Labs - Blog");
       expect(xml).toContain('/blog');
     });
   });
@@ -746,7 +746,7 @@ describe('feeds.ts', () => {
       const xml = await buildProjectsFeed(testProjects);
 
       // Apostrophe is escaped in XML element text
-      expect(xml).toContain("Drew&apos;s Lab - Projects");
+      expect(xml).toContain("DCYFR Labs - Projects");
       expect(xml).toContain('/projects');
     });
   });
@@ -858,7 +858,7 @@ describe('feeds.ts', () => {
       const xml = await buildCombinedFeed(testPosts, testProjects);
 
       // Apostrophe is escaped in XML element text
-      expect(xml).toContain("Drew&apos;s Lab");
+      expect(xml).toContain("DCYFR Labs");
       expect(xml).toContain('Portfolio and blog');
       expect(xml).toContain('https://cyberdrew.dev/feed');
     });
