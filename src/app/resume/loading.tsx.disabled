@@ -1,0 +1,154 @@
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card } from "@/components/ui/card";
+import { PageLayout } from "@/components/layouts/page-layout";
+import { PageHero } from "@/components/layouts/page-hero";
+import { PAGE_LAYOUT, SPACING } from "@/lib/design-tokens";
+
+/**
+ * Loading state for resume page.
+ * Uses PageHero component to match actual page structure.
+ * 
+ * @see src/app/resume/page.tsx - Must match structure
+ */
+export default function Loading() {
+  return (
+    <PageLayout>
+      <div className="space-y-10 md:space-y-14">
+      {/* Hero Section - Uses PageHero component */}
+      <PageHero
+        title={<Skeleton className="h-10 w-64" />}
+        description={
+          <>
+            <Skeleton className="h-6 w-full max-w-3xl" />
+            <Skeleton className="h-6 w-4/5 max-w-3xl" />
+          </>
+        }
+      />
+
+      {/* Download Button Skeleton */}
+      <div className="flex justify-center -mt-4 mb-8">
+        <Skeleton className="h-9 w-40" />
+      </div>
+
+      {/* Stats Section Skeleton */}
+      <section className={PAGE_LAYOUT.section.container}>
+        <div className={SPACING.content}>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Card key={i} className="p-4">
+                <div className="flex items-start gap-3">
+                  <Skeleton className="h-5 w-5 shrink-0 mt-1" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-9 w-16" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-3 w-3/4" />
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Section Navigation Skeleton */}
+      <section className={PAGE_LAYOUT.section.container}>
+        <div className={SPACING.content}>
+          <Card className="p-4">
+            <div className="grid grid-cols-3 gap-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="flex flex-col items-center gap-2 p-3">
+                  <Skeleton className="h-5 w-5" />
+                  <Skeleton className="h-4 w-20" />
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+      </section>
+
+      {/* Experience Section */}
+      <section className={PAGE_LAYOUT.section.container}>
+        <div className={SPACING.content}>
+          <Skeleton className="h-8 w-32 mb-4" />
+          <div className="space-y-6">
+            {Array.from({ length: 2 }).map((_, i) => (
+              <Card key={i} className="p-5 md:ml-20">
+                <div className="space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
+                    <div className="space-y-2 flex-1">
+                      <Skeleton className="h-6 w-64" />
+                      <Skeleton className="h-4 w-40" />
+                    </div>
+                    <Skeleton className="h-4 w-32" />
+                  </div>
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                  </div>
+                </div>
+              </Card>
+            ))}
+            {/* Show more button skeleton */}
+            <div className="md:ml-20">
+              <Skeleton className="h-9 w-full" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Education & Certifications Section */}
+      <section className={PAGE_LAYOUT.section.container}>
+        <div className={SPACING.content}>
+          <Skeleton className="h-8 w-64 mb-4" />
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card className="p-5 space-y-3">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="space-y-1">
+                  <Skeleton className="h-5 w-3/4" />
+                  <Skeleton className="h-4 w-full" />
+                </div>
+              ))}
+              <Skeleton className="h-9 w-full" />
+            </Card>
+            <Card className="p-5 space-y-3">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="space-y-2">
+                  <Skeleton className="h-4 w-20" />
+                  <div className="flex flex-wrap gap-1">
+                    {Array.from({ length: 4 }).map((_, j) => (
+                      <Skeleton key={j} className="h-6 w-16" />
+                    ))}
+                  </div>
+                </div>
+              ))}
+              <Skeleton className="h-9 w-full" />
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Skills Section */}
+      <section className={PAGE_LAYOUT.section.container}>
+        <div className={SPACING.content}>
+          <Skeleton className="h-8 w-24 mb-4" />
+          <div className="space-y-3">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="space-y-2">
+                <Skeleton className="h-4 w-32" />
+                <div className="flex flex-wrap gap-1">
+                  {Array.from({ length: 8 }).map((_, j) => (
+                    <Skeleton key={j} className="h-6 w-20" />
+                  ))}
+                </div>
+              </div>
+            ))}
+            {/* Show all button skeleton */}
+            <Skeleton className="h-9 w-full mt-2" />
+          </div>
+        </div>
+      </section>
+      </div>
+    </PageLayout>
+  );
+}
