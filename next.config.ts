@@ -55,5 +55,17 @@ export default withSentryConfig(withBundleAnalyzer(withBotId(withAxiom(nextConfi
   // See the following for more information:
   // https://docs.sentry.io/product/crons/
   // https://vercel.com/docs/cron-jobs
-  automaticVercelMonitors: true
+  automaticVercelMonitors: true,
+
+  // Ignore Next.js internal manifest files that don't have source maps
+  // These are auto-generated config files, not executable code
+  sourcemaps: {
+    ignore: [
+      '**/*_client-reference-manifest.js',
+      '**/middleware-build-manifest.js',
+      '**/next-font-manifest.js',
+      '**/server-reference-manifest.js',
+      '**/interception-route-rewrite-manifest.js',
+    ],
+  },
 });
