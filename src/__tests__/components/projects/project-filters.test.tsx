@@ -83,6 +83,12 @@ vi.mock("@/components/common/filters", async () => {
   };
 });
 
+// Helper to expand the collapsible filter section
+const expandFilters = () => {
+  const filtersButton = screen.getByRole("button", { name: /filters/i });
+  fireEvent.click(filtersButton);
+};
+
 describe("ProjectFilters Component", () => {
   const defaultProps = {
     selectedCategory: "",
@@ -126,6 +132,7 @@ describe("ProjectFilters Component", () => {
 
     it("should render technology tags as badges", () => {
       render(<ProjectFilters {...defaultProps} />);
+      expandFilters();
       // Tech items are now part of tags
       expect(screen.getByTestId("badge-react")).toBeInTheDocument();
       expect(screen.getByTestId("badge-nextjs")).toBeInTheDocument();
@@ -134,6 +141,7 @@ describe("ProjectFilters Component", () => {
 
     it("should render category badges", () => {
       render(<ProjectFilters {...defaultProps} />);
+      expandFilters();
       expect(screen.getByTestId("badge-community")).toBeInTheDocument();
       expect(screen.getByTestId("badge-nonprofit")).toBeInTheDocument();
       expect(screen.getByTestId("badge-code")).toBeInTheDocument();
@@ -141,6 +149,7 @@ describe("ProjectFilters Component", () => {
 
     it("should render tag badges", () => {
       render(<ProjectFilters {...defaultProps} />);
+      expandFilters();
       expect(screen.getByTestId("badge-web")).toBeInTheDocument();
       expect(screen.getByTestId("badge-mobile")).toBeInTheDocument();
       expect(screen.getByTestId("badge-api")).toBeInTheDocument();
@@ -165,12 +174,14 @@ describe("ProjectFilters Component", () => {
   describe("Category Filter", () => {
     it("should show selected category badges", () => {
       render(<ProjectFilters {...defaultProps} selectedCategory="community" />);
+      expandFilters();
       const communityBadge = screen.getByTestId("badge-community");
       expect(communityBadge).toHaveAttribute("data-selected", "true");
     });
 
     it("should toggle category selection on badge click", () => {
       render(<ProjectFilters {...defaultProps} />);
+      expandFilters();
       const communityBadge = screen.getByTestId("badge-community");
       fireEvent.click(communityBadge);
       expect(mockPush).toHaveBeenCalled();
@@ -180,6 +191,7 @@ describe("ProjectFilters Component", () => {
   describe("Tag Filter", () => {
     it("should show selected tag badges", () => {
       render(<ProjectFilters {...defaultProps} selectedTags={["web", "api"]} />);
+      expandFilters();
       const webBadge = screen.getByTestId("badge-web");
       const apiBadge = screen.getByTestId("badge-api");
       expect(webBadge).toHaveAttribute("data-selected", "true");
@@ -188,6 +200,7 @@ describe("ProjectFilters Component", () => {
 
     it("should toggle tag selection on badge click", () => {
       render(<ProjectFilters {...defaultProps} />);
+      expandFilters();
       const webBadge = screen.getByTestId("badge-web");
       fireEvent.click(webBadge);
       expect(mockPush).toHaveBeenCalled();

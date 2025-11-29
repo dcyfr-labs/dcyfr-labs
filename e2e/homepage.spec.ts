@@ -27,25 +27,25 @@ test.describe('Homepage', () => {
     const isMobile = viewport && viewport.width < 768 // md breakpoint is 768px
     
     if (isMobile) {
-      // Check bottom navigation on mobile (Home, Blog, Projects, Contact)
+      // Check bottom navigation on mobile (Home, Blog, Portfolio, Contact)
       const bottomNav = page.locator('nav[aria-label="Bottom navigation"]')
       const homeLink = bottomNav.getByRole('link', { name: /home/i })
       const blogLink = bottomNav.getByRole('link', { name: /blog/i })
-      const projectsLink = bottomNav.getByRole('link', { name: /projects/i })
+      const portfolioLink = bottomNav.getByRole('link', { name: /portfolio/i })
       const contactLink = bottomNav.getByRole('link', { name: /contact/i })
       
       await expect(homeLink).toBeVisible()
       await expect(blogLink).toBeVisible()
-      await expect(projectsLink).toBeVisible()
+      await expect(portfolioLink).toBeVisible()
       await expect(contactLink).toBeVisible()
     } else {
-      // Check main header navigation on desktop (About, Blog, Projects)
+      // Check main header navigation on desktop (About, Blog, Portfolio dropdown)
       const blogLink = page.locator('header nav').getByRole('link', { name: /blog/i })
-      const projectsLink = page.locator('header nav').getByRole('link', { name: /projects/i })
+      const portfolioButton = page.locator('header nav').getByRole('button', { name: /portfolio/i })
       const aboutLink = page.locator('header nav').getByRole('link', { name: /about/i })
       
       await expect(blogLink).toBeVisible()
-      await expect(projectsLink).toBeVisible()
+      await expect(portfolioButton).toBeVisible()
       await expect(aboutLink).toBeVisible()
     }
   })
