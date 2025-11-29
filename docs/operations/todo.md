@@ -75,6 +75,10 @@ Items deferred until data validates need or time permits.
   - Update VS Code Sentry MCP extension settings with correct org
   - Test with `mcp_sentry_find_organizations` tool
 
+- [x] **CodeQL Configuration** ✅ (Nov 29, 2025)
+  - Disabled default setup conflicting with advanced workflow
+  - Advanced `.github/workflows/codeql.yml` now runs without SARIF errors
+
 ### Infrastructure & Reliability
 
 - [ ] Backup & disaster recovery plan (2 hours)
