@@ -23,9 +23,9 @@ import { getSocialLink } from '@/data/socials';
  * Overrides serif font and margin from .prose h1/h2/h3 rules
  */
 const PROSE_RESET_STYLES: React.CSSProperties = {
-  fontFamily: 'var(--font-sans)',
-  marginTop: 0,
-  marginBottom: 0,
+//  fontFamily: 'var(--font-sans)',
+//  marginTop: 0,
+//  marginBottom: 0,
 };
 
 // ============================================================================
@@ -118,19 +118,19 @@ export function AvailabilityBanner({ className }: { className?: string }) {
         </div>
         <div className="flex-1">
           <div className="font-semibold mb-1">
-            I am currently open to new opportunities and collaborations!
+            We&apos;re currently available for new projects!
           </div>
           <p className="text-sm text-muted-foreground mb-4">
-            Whether you have a project in mind or just want to connect, feel
-            free to reach out.
+            Our calendar is now open! Whether you&apos;re looking for advice on
+            secure coding practices, application performance, or architecture, we&apos;re here to help.
           </p>
           <div className="flex flex-wrap gap-3">
-            <Button asChild>
+            <Button variant="cta" asChild>
               <Link href="/contact" onClick={handleContactClick}>
-                Contact me
+                Contact us
               </Link>
             </Button>
-            <Button variant="outline" asChild>
+            <Button variant="cta-outline" asChild>
               <a
                 href={calendarUrl ?? '#'}
                 target="_blank"
@@ -141,19 +141,6 @@ export function AvailabilityBanner({ className }: { className?: string }) {
                 Schedule a meeting
               </a>
             </Button>
-            {/* LinkedIn link
-            <Button variant="outline" asChild>
-              <a
-                href={linkedInUrl ?? '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={handleLinkedInClick}
-                aria-label={linkedInLink?.description ?? 'Connect on LinkedIn'}
-              >
-                Connect on LinkedIn
-              </a>
-            </Button>
-             */}
           </div>
         </div>
       </div>
@@ -182,7 +169,7 @@ export function BlogPostCTA({
             onClick={handleContactClick}
             className="text-primary underline ml-1"
           >
-            send me a message
+            send us a message
           </Link>
           {' '}with your thoughts!
         </p>
@@ -203,11 +190,26 @@ export function BlogPostCTA({
         className={cn(TYPOGRAPHY.h2.featured, "mb-2")}
         style={PROSE_RESET_STYLES}
       >
-        Did you enjoy this post?
+        What did you think of this post?
       </h2>
       <p className="text-muted-foreground mb-6">
-        If you found this content helpful, please reach out and let me know what
-        you think!
+        Feel free to{' '}
+        <Link
+          href="/contact"
+          onClick={handleContactClick}
+          className="text-primary underline"
+        >
+          send us a message
+        </Link>{' '}
+        with your thoughts, or learn more{' '}
+        <Link
+          href="/about"
+          onClick={handleAboutClick}
+          className="text-primary underline"
+        >
+          about us
+        </Link>
+        !
       </p>
       <div
         className={cn(
@@ -215,14 +217,14 @@ export function BlogPostCTA({
           "flex flex-col sm:flex-row gap-3"
         )}
       >
-        <Button asChild size="lg">
+        <Button variant="cta" asChild size="lg">
           <Link href="/contact" onClick={handleContactClick}>
-            Contact
+            Contact us
           </Link>
         </Button>
-        <Button variant="outline" size="lg" asChild>
+        <Button variant="cta-outline" size="lg" asChild>
           <Link href="/about" onClick={handleAboutClick}>
-            About
+            About us
           </Link>
         </Button>
       </div>
@@ -249,21 +251,22 @@ export function ProjectsCTA({ className }: { className?: string }) {
     <section className={cn('mt-12 text-center', className)}>
       <div className="rounded-lg border bg-linear-to-b from-muted/50 to-muted/30 p-6 md:p-8">
         <h2 className={cn(TYPOGRAPHY.h2.featured, 'mb-2')}>
-          Interested in collaborating?
+          Interested in a collaboration?
         </h2>
         <p
           className="text-muted-foreground mb-6"
         >
-          Feel free to reach out or connect with me on Peerlist to explore
-          potential opportunities!
+          Whether you&apos;re looking to build secure applications, improve
+          performance, or architect scalable systems, We&apos;re excited to work
+          with you.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button asChild size="lg">
+          <Button variant="cta" asChild size="lg">
             <Link href="/contact" onClick={handleContactClick}>
-              Contact
+              Contact us
             </Link>
           </Button>
-          <Button variant="outline" size="lg" asChild>
+          <Button variant="cta-outline" size="lg" asChild>
             <a
               href={peerlistUrl ?? '#'}
               target="_blank"
@@ -271,7 +274,7 @@ export function ProjectsCTA({ className }: { className?: string }) {
               onClick={handlePeerlistClick}
               aria-label={peerlistLink?.description ?? 'Collaborate on Peerlist'}
             >
-              Peerlist
+              Build with us on Peerlist
             </a>
           </Button>
         </div>

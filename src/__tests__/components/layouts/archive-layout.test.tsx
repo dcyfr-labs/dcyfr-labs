@@ -42,14 +42,14 @@ describe('ArchiveLayout', () => {
 
     it('renders PageHero internally', () => {
       render(
-        <ArchiveLayout title="Blog Posts" description="All my writing">
+        <ArchiveLayout title="Blog Posts" description="All our writing">
           <div>Content</div>
         </ArchiveLayout>
       )
 
       expect(screen.getByTestId('page-hero')).toBeInTheDocument()
       expect(screen.getByTestId('hero-title')).toHaveTextContent('Blog Posts')
-      expect(screen.getByTestId('hero-description')).toHaveTextContent('All my writing')
+      expect(screen.getByTestId('hero-description')).toHaveTextContent('All our writing')
     })
 
     it('uses standard variant for PageHero', () => {
@@ -293,7 +293,7 @@ describe('ArchiveLayout', () => {
       render(
         <ArchiveLayout
           title="Blog Posts"
-          description="All my writing about web development"
+          description="All our writing about web development"
           itemCount={25}
           filters={
             <div data-testid="filters">

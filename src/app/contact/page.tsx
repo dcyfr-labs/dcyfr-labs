@@ -34,7 +34,7 @@ export default async function ContactPage() {
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
       <div className="space-y-10 md:space-y-14">
       <PageHero
-        title="Contact Me"
+        title="Contact Us"
         description="Whether you have questions, feedback, or collaboration ideas, feel free to reach out using the form below."
       />
       

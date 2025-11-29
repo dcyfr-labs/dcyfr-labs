@@ -18,3 +18,6 @@ export { PostHeroImage } from "./post/post-hero-image";
 export { PostBadges } from "./post/post-badges";
 export { SeriesBadge } from "./post/series-badge";
 export { SeriesNavigation } from "./post/series-navigation";
+
+// Sidebar context for hiding duplicate content
+export { SidebarVisibilityProvider, useSidebarVisibility, HideWhenSidebarVisible } from "./post/sidebar-context";

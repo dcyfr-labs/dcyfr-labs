@@ -47,20 +47,20 @@ export default function DevToolsDropdown() {
         <div className="absolute right-0 mt-2 w-48 rounded-md border bg-card p-2 shadow-lg z-50">
           <nav className="flex flex-col">
             <Link
-              href="/api/health"
-              className="px-3 py-2 text-sm hover:bg-muted rounded"
-              onClick={() => setOpen(false)}
-              prefetch={false}
-            >
-              API Health
-            </Link>
-            <Link
               href="/dev/analytics"
               className="px-3 py-2 text-sm hover:bg-muted rounded"
               onClick={() => setOpen(false)}
               prefetch={false}
             >
               Analytics
+            </Link>
+            <Link
+              href="/dev/maintenance"
+              className="px-3 py-2 text-sm hover:bg-muted rounded"
+              onClick={() => setOpen(false)}
+              prefetch={false}
+            >
+              Maintenance
             </Link>
           </nav>
         </div>

@@ -112,28 +112,28 @@ export function RecentActivity({ posts, projects, limit = 5 }: RecentActivityPro
   const getCategoryBadgeClass = (category?: ProjectCategory) => {
     switch (category) {
       case "code":
-        return "border-purple-500/70 bg-purple-500/50 text-dark dark:text-white";
+        return "border-blue-500/70 bg-blue-500/15 text-blue-700 dark:text-blue-300";
       case "nonprofit":
-        return "border-emerald-500/70 bg-emerald-500/50 text-dark dark:text-white";
+        return "border-emerald-500/70 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300";
       case "community":
-        return "border-amber-500/70 bg-amber-500/50 text-dark dark:text-white";
+        return "border-purple-500/70 bg-purple-500/15 text-purple-700 dark:text-purple-300";
       case "photography":
-        return "border-rose-500/70 bg-rose-500/50 text-dark dark:text-white";
+        return "border-pink-500/70 bg-pink-500/15 text-pink-700 dark:text-pink-300";
       case "startup":
-        return "border-cyan-500/70 bg-cyan-500/50 text-dark dark:text-white";
+        return "border-orange-500/70 bg-orange-500/15 text-orange-700 dark:text-orange-300";
       default:
-        return "border-purple-500/70 bg-purple-500/50 text-dark dark:text-white";
+        return "border-purple-500/70 bg-purple-500/15 text-purple-700 dark:text-purple-300";
     }
   };
 
   const getTypeBadgeClass = (activity: ActivityItem) => {
     switch (activity.type) {
       case "post":
-        return "border-blue-500/70 bg-blue-500/50 text-dark dark:text-white";
+        return "border-blue-500/70 bg-blue-500/15 text-blue-700 dark:text-blue-300";
       case "project":
         return getCategoryBadgeClass(activity.category);
       case "commit":
-        return "border-green-500/70 bg-green-500/50 text-dark dark:text-white";
+        return "border-green-500/70 bg-green-500/15 text-green-700 dark:text-green-300";
     }
   };
 

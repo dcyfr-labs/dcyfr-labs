@@ -19,7 +19,7 @@ import {
 import { ViewToggle } from "@/components/common";
 
 const pageTitle = "Blog";
-const pageDescription = "Articles on web development, cybersecurity, artificial intelligence, and more.";
+const pageDescription = "Blog posts on software development, cybersecurity, emerging technologies, and more.";
 const POSTS_PER_PAGE = 12;
 
 export const metadata: Metadata = createArchivePageMetadata({
@@ -64,10 +64,20 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       )
     : posts;
   
+  // Apply archived filter when sortBy=archived
+  const postsWithArchivedFilter = sortBy === "archived"
+    ? postsWithCategoryFilter.filter((post) => post.archived)
+    : postsWithCategoryFilter;
+  
+  // Apply drafts filter when sortBy=drafts (development only)
+  const postsWithDraftsFilter = sortBy === "drafts" && process.env.NODE_ENV === "development"
+    ? postsWithArchivedFilter.filter((post) => post.draft)
+    : postsWithArchivedFilter;
+  
   // Apply date range filter
   const now = new Date();
   const postsWithDateFilter = dateRange !== "all"
-    ? postsWithCategoryFilter.filter((post) => {
+    ? postsWithDraftsFilter.filter((post) => {
         const postDate = new Date(post.publishedAt);
         const daysDiff = Math.floor((now.getTime() - postDate.getTime()) / (1000 * 60 * 60 * 24));
         
@@ -78,7 +88,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         }
         return true;
       })
-    : postsWithCategoryFilter;
+    : postsWithDraftsFilter;
   
   // Apply reading time filter (custom filter not in Archive pattern)
   const postsWithReadingTimeFilter = readingTime

@@ -96,25 +96,9 @@ export function RelatedPosts({ posts, currentSlug }: RelatedPostsProps) {
               key={post.slug}
               href={`/blog/${post.slug}`}
               onClick={() => handleClick(post.slug, index)}
-              className={`group block rounded-lg border overflow-hidden relative holo-card holo-card-3d ${HOVER_EFFECTS.cardSubtle}`}
+              className={`group block rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}
             >
-              {/* Background Image with gradient overlay */}
-              <div className="absolute inset-0 z-0">
-                <Image
-                  src={featuredImage.url}
-                  alt={featuredImage.alt}
-                  fill
-                  className="object-cover holo-image-shift"
-                  sizes="(max-width: 640px) 100vw, 50vw"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 holo-gradient-dark group-hover:holo-gradient-dark-hover transition-all duration-300" />
-              </div>
-              
-              {/* Subtle shine effect */}
-              <div className="holo-shine" />
-              
-              <div className="space-y-2 p-4 relative z-10">
+              <div className="space-y-2 p-4">
                 <h3 className="font-medium leading-tight group-hover:text-primary transition-colors">
                   {post.title}
                 </h3>

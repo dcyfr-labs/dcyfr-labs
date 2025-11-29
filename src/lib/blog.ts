@@ -3,7 +3,7 @@ import path from "path";
 import matter from "gray-matter";
 import yaml from "js-yaml";
 import crypto from "crypto";
-import type { Post, PostSource } from "@/data/posts";
+import type { Post } from "@/data/posts";
 
 const CONTENT_DIR = path.join(process.cwd(), "src/content/blog");
 const WORDS_PER_MINUTE = 225;
@@ -85,7 +85,6 @@ export function getAllPosts(): Post[] {
       archived: data.archived as boolean | undefined,
       draft: data.draft as boolean | undefined,
       body: content,
-      sources: data.sources as PostSource[] | undefined,
       previousSlugs: (data.previousSlugs as string[]) || undefined,
       image: data.image as Post["image"] | undefined,
       series: data.series as Post["series"] | undefined,
@@ -136,7 +135,6 @@ export function getPostBySlug(slug: string): Post | undefined {
     archived: data.archived as boolean | undefined,
     draft: data.draft as boolean | undefined,
     body: content,
-    sources: data.sources as PostSource[] | undefined,
     previousSlugs: (data.previousSlugs as string[]) || undefined,
     image: data.image as Post["image"] | undefined,
     series: data.series as Post["series"] | undefined,

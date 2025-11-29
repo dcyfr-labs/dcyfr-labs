@@ -57,7 +57,7 @@ export function BlogPostCTA({ variant = 'default', location, className }: CTAPro
     return (
       <div className={cn('border-t pt-8 mt-8', className)}>
         <p className="text-sm text-muted-foreground">
-          Building something similar? I&apos;d love to hear about it—
+          Building something similar? We&apos;d love to hear about it—
           <Link
             href="/contact"
             onClick={handleContactClick}
@@ -79,15 +79,15 @@ export function BlogPostCTA({ variant = 'default', location, className }: CTAPro
         </h2>
         <p className={cn('text-muted-foreground mb-6 mx-auto', getContainerClasses('narrow'))}>
           If you&apos;re building a Next.js application and need help with security,
-          performance, or architecture, I&apos;m here to help.
+          performance, or architecture, we&apos;re here to help.
         </p>
         <div className="flex gap-4 justify-center">
-          <Button asChild>
+          <Button variant="cta" asChild>
             <Link href="/contact" onClick={handleContactClick}>
               Start a conversation
             </Link>
           </Button>
-          <Button variant="outline" asChild>
+          <Button variant="cta-outline" asChild>
             <a
               href={linkedInLink ? `${linkedInLink.url}?utm_source=portfolio&utm_medium=website&utm_campaign=blog_cta` : '#'}
               target="_blank"
@@ -111,15 +111,15 @@ export function BlogPostCTA({ variant = 'default', location, className }: CTAPro
       </h2>
       <p className="text-muted-foreground mb-4">
         Whether you&apos;re facing challenges with security, performance, or architecture,
-        I&apos;m here to help you build robust and scalable applications.
+        we&apos;re here to help you build robust and scalable applications.
       </p>
       <div className="flex gap-3">
-        <Button asChild size="sm">
+        <Button variant="cta" asChild size="sm">
           <Link href="/contact" onClick={handleContactClick}>
             Get in touch
           </Link>
         </Button>
-        <Button variant="outline" size="sm" asChild>
+        <Button variant="cta-outline" size="sm" asChild>
           <a
             href={linkedInLink ? `${linkedInLink.url}?utm_source=portfolio&utm_medium=website&utm_campaign=blog_cta` : '#'}
             target="_blank"
@@ -167,17 +167,17 @@ export function ProjectsCTA({ className }: { className?: string }) {
         </h2>
         <p className={cn('text-lg text-muted-foreground mb-6 mx-auto', getContainerClasses('standard'))}>
           Whether you&apos;re looking for a developer, consultant, or collaborator,
-          I&apos;m always open to discussing new projects and opportunities.
+          we&apos;re always open to discussing new projects and opportunities.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button asChild size="lg">
+          <Button variant="cta" asChild size="lg">
             <Link href="/contact" onClick={handleContactClick}>
               Start a conversation
             </Link>
           </Button>
-          <Button variant="outline" size="lg" asChild>
+          <Button variant="cta-outline" size="lg" asChild>
             <Link href="/about" onClick={handleAboutClick}>
-              Learn more about me
+              Learn more about us
             </Link>
           </Button>
         </div>
@@ -213,7 +213,7 @@ export function AvailabilityBanner({ className }: { className?: string }) {
           </p>
           <Button asChild>
             <Link href="/contact" onClick={handleContactClick}>
-              Contact me
+              Contact us
             </Link>
           </Button>
         </div>

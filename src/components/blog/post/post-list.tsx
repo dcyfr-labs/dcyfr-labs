@@ -225,29 +225,14 @@ export function PostList({
                 delay={0}
                 duration={600}
               >
-                <article className={`group rounded-lg border overflow-hidden relative holo-card holo-card-3d ${HOVER_EFFECTS.cardSubtle}`}>
-                  {/* Large hero image with dramatic gradient */}
-                  <div className="relative h-80 md:h-[500px] lg:h-[600px] overflow-hidden">
-                    <Image
-                      src={featuredImage.url}
-                      alt={featuredImage.alt}
-                      fill
-                      className="object-cover holo-image-shift group-hover:scale-105 transition-transform duration-700"
-                      sizes="(max-width: 768px) 100vw, 1200px"
-                      priority
-                    />
-                    {/* Dramatic gradient overlay */}
-                    <div className="absolute inset-0 bg-linear-to-t from-background via-background/90 to-background/30" />
-                  </div>
-                  
-                  <div className="holo-shine" />
+                <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
 
                   <Link href={`/blog/${p.slug}`} className="block">
-                    {/* Content overlaying bottom of image */}
-                    <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 lg:p-12 z-10">
+                    {/* Content */}
+                    <div className="p-6 md:p-10 lg:p-12">
                       {/* Badges and metadata */}
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm mb-4 text-zinc-700 dark:text-zinc-300">
-                        <PostBadges post={p} isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} />
+                        <PostBadges post={p} isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory />
                         <SeriesBadge post={p} />
                         <time dateTime={p.publishedAt} className="text-zinc-700 dark:text-zinc-300">
                           {new Date(p.publishedAt).toLocaleDateString("en-US", { 
@@ -306,29 +291,13 @@ export function PostList({
               delay={index * 50}
               duration={600}
             >
-              <article className={`group rounded-lg border overflow-hidden relative holo-card holo-card-3d ${HOVER_EFFECTS.cardSubtle}`}>
+              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
                 <Link href={`/blog/${p.slug}`} className="block">
-                  <div className={`grid md:grid-cols-5 gap-0 ${isEven ? '' : 'md:grid-flow-dense'}`}>
-                    {/* Image section - larger proportion */}
-                    <div className={`relative h-56 md:h-auto md:min-h-80 lg:min-h-[360px] md:col-span-2 overflow-hidden ${isEven ? 'md:col-start-1' : 'md:col-start-4'}`}>
-                      <Image
-                        src={featuredImage.url}
-                        alt={featuredImage.alt}
-                        fill
-                        className="object-cover holo-image-shift group-hover:scale-105 transition-transform duration-500"
-                        sizes="(max-width: 768px) 100vw, 40vw"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 holo-gradient-dark group-hover:holo-gradient-dark-hover transition-all duration-300" />
-                    </div>
-                    
-                    <div className="holo-shine" />
-
-                    {/* Content section - more space */}
-                    <div className={`md:col-span-3 p-6 md:p-8 flex flex-col justify-center relative z-10 ${isEven ? 'md:col-start-3' : 'md:col-start-1'}`}>
+                  {/* Content section */}
+                  <div className="p-6 md:p-8">
                       {/* Badges and metadata */}
                       <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-zinc-600 dark:text-zinc-400 mb-3">
-                        <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} />
+                        <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory />
                         <SeriesBadge post={p} size="sm" />
                         <time dateTime={p.publishedAt} className="text-zinc-600 dark:text-zinc-400">
                           {new Date(p.publishedAt).toLocaleDateString("en-US", { 
@@ -372,7 +341,6 @@ export function PostList({
                           )}
                         </div>
                       )}
-                    </div>
                   </div>
                 </Link>
               </article>
@@ -400,29 +368,13 @@ export function PostList({
               delay={index * 50}
               duration={600}
             >
-              <article className={`group rounded-lg border overflow-hidden relative holo-card holo-card-3d ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
-                {/* Background Image with gradient overlay */}
-                <div className="absolute inset-0 z-0">
-                  <Image
-                    src={featuredImage.url}
-                    alt={featuredImage.alt}
-                    fill
-                    className="object-cover holo-image-shift"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 holo-gradient-dark group-hover:holo-gradient-dark-hover transition-all duration-300" />
-                </div>
-                
-                {/* Subtle shine effect */}
-                <div className="holo-shine" />
-
-                <Link href={`/blog/${p.slug}`} className="flex flex-col h-full relative z-10">
+              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
+                <Link href={`/blog/${p.slug}`} className="flex flex-col h-full">
                   {/* Post content */}
                   <div className="flex-1 p-4 flex flex-col">
                     {/* Badges and metadata */}
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground mb-2">
-                      <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} />
+                      <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory />
                       <SeriesBadge post={p} size="sm" />
                       <time dateTime={p.publishedAt}>
                         {new Date(p.publishedAt).toLocaleDateString("en-US", { 
@@ -493,28 +445,12 @@ export function PostList({
               delay={index * 80}
               duration={600}
             >
-              <article className={`group rounded-lg border overflow-hidden relative holo-card holo-card-3d ${HOVER_EFFECTS.cardSubtle}`}>
-                {/* Background Image with gradient overlay */}
-                <div className="absolute inset-0 z-0">
-                  <Image
-                    src={featuredImage.url}
-                    alt={featuredImage.alt}
-                    fill
-                    className="object-cover holo-image-shift"
-                    sizes="(max-width: 768px) 100vw, 800px"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 holo-gradient-dark group-hover:holo-gradient-dark-hover transition-all duration-300" />
-                </div>
-                
-                {/* Subtle shine effect */}
-                <div className="holo-shine" />
-
-                <Link href={`/blog/${p.slug}`} className="block relative z-10">
+              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
+                <Link href={`/blog/${p.slug}`} className="block">
                   <div className="p-5 md:p-6">
                     {/* Badges and metadata */}
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground mb-3">
-                      <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} />
+                      <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory />
                       <SeriesBadge post={p} size="sm" />
                       <time dateTime={p.publishedAt}>
                         {new Date(p.publishedAt).toLocaleDateString("en-US", { 
@@ -580,28 +516,12 @@ export function PostList({
               delay={index * 50}
               duration={600}
             >
-              <article className={`group rounded-lg border overflow-hidden relative holo-card holo-card-3d ${HOVER_EFFECTS.cardSubtle}`}>
-                {/* Background Image with gradient overlay */}
-                <div className="absolute inset-0 z-0">
-                  <Image
-                    src={featuredImage.url}
-                    alt={featuredImage.alt}
-                    fill
-                    className="object-cover holo-image-shift"
-                    sizes="(max-width: 768px) 100vw, 400px"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 holo-gradient-dark group-hover:holo-gradient-dark-hover transition-all duration-300" />
-                </div>
-                
-                {/* Subtle shine effect */}
-                <div className="holo-shine" />
-
-                <Link href={`/blog/${p.slug}`} className="block relative z-10">
+              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
+                <Link href={`/blog/${p.slug}`} className="block">
                   <div className="p-3">
                     {/* Badges and metadata - compact */}
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground mb-1.5">
-                      <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} />
+                      <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory />
                       <SeriesBadge post={p} size="sm" />
                       <time dateTime={p.publishedAt}>
                         {new Date(p.publishedAt).toLocaleDateString("en-US", { 
@@ -650,29 +570,13 @@ export function PostList({
             delay={index * 50}
             duration={600}
           >
-            <article className={`group rounded-lg border overflow-hidden relative holo-card holo-card-3d ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
-              {/* Background Image with gradient overlay */}
-              <div className="absolute inset-0 z-0">
-                <Image
-                  src={featuredImage.url}
-                  alt={featuredImage.alt}
-                  fill
-                  className="object-cover holo-image-shift"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 holo-gradient-dark group-hover:holo-gradient-dark-hover transition-all duration-300" />
-              </div>
-              
-              {/* Subtle shine effect */}
-              <div className="holo-shine" />
-
-              <Link href={`/blog/${p.slug}`} className="flex flex-col h-full relative z-10">
+            <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
+              <Link href={`/blog/${p.slug}`} className="flex flex-col h-full">
                 {/* Post content */}
                 <div className="flex-1 p-4 flex flex-col">
                   {/* Badges and metadata */}
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground mb-2">
-                    <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} />
+                    <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory />
                     <time dateTime={p.publishedAt}>
                       {new Date(p.publishedAt).toLocaleDateString("en-US", { 
                         year: "numeric", 

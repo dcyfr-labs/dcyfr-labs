@@ -2,26 +2,20 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { X, TrendingUp, Code2, Tags, Activity } from "lucide-react";
+import { X, ArrowDownUp, FolderOpen, Tags } from "lucide-react";
 
 interface ProjectFiltersProps {
+  selectedCategory?: string;
   selectedTags: string[];
-  selectedTech: string[];
-  status: string | null;
+  categoryList: string[];
+  categoryDisplayMap: Record<string, string>;
   tagList: string[];
-  techList: string[];
   query: string;
   sortBy?: string;
+  totalResults?: number;
+  hasActiveFilters?: boolean;
 }
 
 /**
@@ -29,26 +23,24 @@ interface ProjectFiltersProps {
  * 
  * Consolidated search and filter interface for projects with:
  * - Search input with debounce
- * - Tech stack multi-select
- * - Category/tag multi-select
- * - Status filter (active/in-progress/archived)
- * - Sort by dropdown (newest, oldest, A-Z)
- * - Clear all filters button
+ * - Sort by badges (Newest, Oldest, Archived)
+ * - Category badge multi-select
+ * - Tag badge multi-select
  * 
- * @param selectedTags - Currently selected category tags
- * @param selectedTech - Currently selected tech stack filters
- * @param status - Currently selected status filter (active/in-progress/archived/all)
- * @param tagList - Array of available category tags
- * @param techList - Array of available technologies
+ * @param selectedCategory - Currently selected category filter
+ * @param selectedTags - Currently selected tag filters
+ * @param categoryList - Array of available categories
+ * @param categoryDisplayMap - Map of category values to display names
+ * @param tagList - Array of available tags
  * @param query - Current search query
- * @param sortBy - Current sort option (newest/oldest/alpha)
+ * @param sortBy - Current sort option (newest/oldest/archived)
  */
 export function ProjectFilters({ 
+  selectedCategory,
   selectedTags, 
-  selectedTech, 
-  status, 
+  categoryList,
+  categoryDisplayMap,
   tagList, 
-  techList, 
   query, 
   sortBy = 'newest' 
 }: ProjectFiltersProps) {
@@ -85,22 +77,6 @@ export function ProjectFilters({
   }, [searchValue, query, searchParams, router]);
 
   /**
-   * Updates status filter
-   */
-  const updateStatus = (value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    
-    if (value && value !== "all") {
-      params.set("status", value);
-    } else {
-      params.delete("status");
-    }
-    params.delete("page");
-    
-    router.push(`/portfolio?${params.toString()}`);
-  };
-
-  /**
    * Updates sort order
    */
   const updateSort = (value: string) => {
@@ -115,7 +91,23 @@ export function ProjectFilters({
   };
 
   /**
-   * Toggle category tag selection
+   * Toggle category selection
+   */
+  const toggleCategory = (category: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    
+    if (selectedCategory === category) {
+      params.delete("category");
+    } else {
+      params.set("category", category);
+    }
+    params.delete("page");
+    
+    router.push(`/portfolio?${params.toString()}`);
+  };
+
+  /**
+   * Toggle tag selection
    */
   const toggleTag = (tag: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -138,37 +130,13 @@ export function ProjectFilters({
   };
 
   /**
-   * Toggle tech stack selection
-   */
-  const toggleTech = (tech: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    
-    let newTech: string[];
-    if (selectedTech.includes(tech)) {
-      newTech = selectedTech.filter((t) => t !== tech);
-    } else {
-      newTech = [...selectedTech, tech];
-    }
-    
-    if (newTech.length > 0) {
-      params.set("tech", newTech.join(","));
-    } else {
-      params.delete("tech");
-    }
-    params.delete("page");
-    
-    router.push(`/portfolio?${params.toString()}`);
-  };
-
-  /**
    * Clear all filters
    */
   const clearAllFilters = () => {
     router.push("/portfolio");
   };
 
-  const hasActiveFilters = selectedTags.length > 0 || selectedTech.length > 0 || status || query || (sortBy && sortBy !== 'newest');
-  const filterCount = selectedTags.length + selectedTech.length + (status ? 1 : 0) + (query ? 1 : 0) + (sortBy && sortBy !== 'newest' ? 1 : 0);
+  const _hasActiveFilters = !!selectedCategory || selectedTags.length > 0 || query || (sortBy && sortBy !== 'newest');
 
   return (
     <div className="space-y-6">
@@ -185,81 +153,54 @@ export function ProjectFilters({
         />
       </div>
       
-      {/* Filter Controls - Separate Row */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="flex-1 flex flex-wrap gap-3">
-          <div className="flex-1 min-w-[130px]">
-            <Select
-              value={status || "all"}
-              onValueChange={updateStatus}
-            >
-              <SelectTrigger className="h-10 w-full">
-                <Activity className="mr-2 h-4 w-4 text-muted-foreground shrink-0" />
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All statuses</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="in-progress">In Progress</SelectItem>
-                <SelectItem value="archived">Archived</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex-1 min-w-[130px]">
-            <Select value={sortBy} onValueChange={updateSort}>
-              <SelectTrigger className="h-10 w-full">
-                <TrendingUp className="mr-2 h-4 w-4 text-muted-foreground shrink-0" />
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="newest">Newest first</SelectItem>
-                <SelectItem value="oldest">Oldest first</SelectItem>
-                <SelectItem value="alpha">Alphabetical</SelectItem>
-                <SelectItem value="status">By status</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+      {/* Sort By Badges */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <ArrowDownUp className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm font-medium text-muted-foreground">Sort by</span>
         </div>
-        
-        {/* Clear All Button */}
-        {hasActiveFilters && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearAllFilters}
-            className="h-10 px-4 whitespace-nowrap shrink-0"
-          >
-            Clear all
-            {filterCount > 0 && (
-              <span className="ml-2 rounded-full bg-muted px-2 py-0.5 text-xs font-medium">
-                {filterCount}
-              </span>
-            )}
-          </Button>
-        )}
+        <div className="flex flex-wrap gap-2">
+          {[
+            { value: "newest", label: "Newest" },
+            { value: "oldest", label: "Oldest" },
+            { value: "archived", label: "Archived" },
+          ].map((option) => {
+            const isSelected = sortBy === option.value;
+            return (
+              <Badge
+                key={option.value}
+                variant={isSelected ? "default" : "outline"}
+                className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors select-none"
+                onClick={() => updateSort(option.value)}
+              >
+                {option.label}
+                {isSelected && option.value !== "newest" && (
+                  <X className="ml-1 h-3 w-3" onClick={(e) => { e.stopPropagation(); updateSort("newest"); }} />
+                )}
+              </Badge>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Tech Stack Badges */}
-      {techList.length > 0 && (
+      {/* Categories Badges */}
+      {categoryList.length > 0 && (
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <Code2 className="h-4 w-4 text-muted-foreground" />
-            {/* Label text, not a semantic heading */}
-            {/* eslint-disable-next-line no-restricted-syntax */}
-            <span className="text-sm font-medium text-muted-foreground">Tech Stack</span>
+            <FolderOpen className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-medium text-muted-foreground">Categories</span>
           </div>
           <div className="flex flex-wrap gap-2">
-            {techList.map((tech) => {
-              const isSelected = selectedTech.includes(tech);
+            {categoryList.map((category) => {
+              const isSelected = selectedCategory === category;
               return (
                 <Badge
-                  key={tech}
+                  key={category}
                   variant={isSelected ? "default" : "outline"}
                   className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors select-none"
-                  onClick={() => toggleTech(tech)}
+                  onClick={() => toggleCategory(category)}
                 >
-                  {tech}
+                  {categoryDisplayMap[category] || category}
                   {isSelected && (
                     <X className="ml-1 h-3 w-3" />
                   )}
@@ -270,14 +211,12 @@ export function ProjectFilters({
         </div>
       )}
 
-      {/* Category Tag Badges */}
+      {/* Tags Badges */}
       {tagList.length > 0 && (
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Tags className="h-4 w-4 text-muted-foreground" />
-            {/* Label text, not a semantic heading */}
-            {/* eslint-disable-next-line no-restricted-syntax */}
-            <span className="text-sm font-medium text-muted-foreground">Categories</span>
+            <span className="text-sm font-medium text-muted-foreground">Tags</span>
           </div>
           <div className="flex flex-wrap gap-2">
             {tagList.map((tag) => {

@@ -84,13 +84,11 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
         </div>
 
         {/* Title & Summary */}
-        <div className="space-y-3">
-          <Link href={`/blog/${post.slug}`}>
-            <h2 className={cn(TYPOGRAPHY.h2.featured, "group-hover:text-primary", "transition-colors")}>
-              {post.title}
-            </h2>
-          </Link>
-          <p className="text-base md:text-lg text-muted-foreground line-clamp-3">
+        <div className="space-y-2">
+          <h2 className={cn(TYPOGRAPHY.h2.featured, "md:text-4xl")}>
+            {post.title}
+          </h2>
+          <p className="text-lg text-muted-foreground leading-relaxed">
             {post.summary}
           </p>
         </div>
@@ -105,7 +103,7 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
             </span>
           </div>
           
-          <Button asChild size="default" className="group/btn">
+          <Button variant="cta" asChild size="default" className="group/btn">
             <Link href={`/blog/${post.slug}`}>
               Read post
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />

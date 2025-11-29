@@ -497,7 +497,28 @@ svg {
     vertical-align: middle;
   }
 
-  /* Footnote styling - hide emoji, use icon instead */
+  /* Footnote reference styling - superscript links in content */
+  sup:has(a[href^="#user-content-fn"]) {
+    margin-left: 0.125rem;
+    font-size: 0.75rem;
+    line-height: 1;
+    vertical-align: super;
+  }
+
+  sup a[href^="#user-content-fn"] {
+    text-decoration: none;
+    color: hsl(var(--primary));
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  sup a[href^="#user-content-fn"]:hover {
+    background-color: hsl(var(--primary) / 0.1);
+    text-decoration: underline;
+  }
+
+  /* Footnote backref styling - hide emoji, use icon instead */
   a[data-footnote-backref] {
     text-decoration: none;
     font-size: 0;
@@ -906,8 +927,9 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
 
 .prose blockquote {
   font-family: var(--font-serif), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  font-weight: 500;
   font-style: italic;
-  border-left: 4px solid hsl(var(--border));
+  border-left: 4px solid hsl(var(--border-background));
   padding-left: 1rem;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;

@@ -44,7 +44,7 @@ export async function GET() {
       // This is just a placeholder for server runtime compatibility
       serverInfo: {
         runtime: 'edge',
-        region: process.env.VERCEL_REGION || 'unknown',
+        region: process.env.VERCEL_REGION || (process.env.NODE_ENV === 'development' ? 'local' : 'unknown'),
       },
     };
 

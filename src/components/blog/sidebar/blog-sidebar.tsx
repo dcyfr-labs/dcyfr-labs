@@ -3,13 +3,6 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { X, Search, ChevronDown, ChevronUp, PanelRightClose, PanelRightOpen } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition, useEffect } from "react";
@@ -223,48 +216,80 @@ export function BlogSidebar({
         
         {expandedSections.filters && (
           <div className="space-y-3 pt-2">
-            <div className="space-y-2">
+            {/* Sort badges */}
+            <div className="space-y-1.5">
               <label className="text-xs text-muted-foreground">Sort by</label>
-              <Select value={sortBy} onValueChange={(val) => updateParam("sortBy", val)}>
-                <SelectTrigger className="h-9">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="newest">Newest first</SelectItem>
-                  <SelectItem value="popular">Most popular</SelectItem>
-                  <SelectItem value="oldest">Oldest first</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  { value: "newest", label: "Newest" },
+                  { value: "popular", label: "Popular" },
+                  { value: "oldest", label: "Oldest" },
+                  { value: "archived", label: "Archived" },
+                  ...(process.env.NODE_ENV === "development" ? [{ value: "drafts", label: "Drafts" }] : []),
+                ].map((option) => {
+                  const isSelected = sortBy === option.value;
+                  return (
+                    <Badge
+                      key={option.value}
+                      variant={isSelected ? "default" : "outline"}
+                      className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors select-none text-xs"
+                      onClick={() => updateParam("sortBy", option.value)}
+                    >
+                      {option.label}
+                    </Badge>
+                  );
+                })}
+              </div>
             </div>
 
-            <div className="space-y-2">
+            {/* Date range badges */}
+            <div className="space-y-1.5">
               <label className="text-xs text-muted-foreground">Date range</label>
-              <Select value={dateRange} onValueChange={(val) => updateParam("dateRange", val)}>
-                <SelectTrigger className="h-9">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All time</SelectItem>
-                  <SelectItem value="30d">Last 30 days</SelectItem>
-                  <SelectItem value="90d">Last 90 days</SelectItem>
-                  <SelectItem value="year">This year</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  { value: "all", label: "All time" },
+                  { value: "30d", label: "30 days" },
+                  { value: "90d", label: "90 days" },
+                  { value: "year", label: "This year" },
+                ].map((option) => {
+                  const isSelected = dateRange === option.value;
+                  return (
+                    <Badge
+                      key={option.value}
+                      variant={isSelected ? "default" : "outline"}
+                      className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors select-none text-xs"
+                      onClick={() => updateParam("dateRange", option.value)}
+                    >
+                      {option.label}
+                    </Badge>
+                  );
+                })}
+              </div>
             </div>
 
-            <div className="space-y-2">
+            {/* Reading time badges */}
+            <div className="space-y-1.5">
               <label className="text-xs text-muted-foreground">Reading time</label>
-              <Select value={readingTime || "all"} onValueChange={(val) => updateParam("readingTime", val)}>
-                <SelectTrigger className="h-9">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All lengths</SelectItem>
-                  <SelectItem value="quick">Quick read (≤5 min)</SelectItem>
-                  <SelectItem value="medium">Medium (5-15 min)</SelectItem>
-                  <SelectItem value="deep">Deep dive (&gt;15 min)</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  { value: "all", label: "All" },
+                  { value: "quick", label: "≤5 min" },
+                  { value: "medium", label: "5-15 min" },
+                  { value: "deep", label: ">15 min" },
+                ].map((option) => {
+                  const isSelected = (readingTime || "all") === option.value;
+                  return (
+                    <Badge
+                      key={option.value}
+                      variant={isSelected ? "default" : "outline"}
+                      className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors select-none text-xs"
+                      onClick={() => updateParam("readingTime", option.value)}
+                    >
+                      {option.label}
+                    </Badge>
+                  );
+                })}
+              </div>
             </div>
           </div>
         )}

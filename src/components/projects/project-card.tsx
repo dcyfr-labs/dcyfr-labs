@@ -18,14 +18,14 @@ const STATUS_LABEL: Record<ProjectStatus, string> = {
   "archived": "Archived",
 };
 
-// Status badge color styles - matching homepage activity badges
+// Status badge color styles - subtle background with colored text
 const STATUS_STYLES: Record<ProjectStatus, string> = {
   active:
-    "border-green-500/70 bg-green-500/50 backdrop-blur-sm font-semibold text-white",
+    "border-green-500/70 bg-green-500/15 text-green-700 dark:text-green-300 backdrop-blur-sm font-semibold",
   "in-progress":
-    "border-blue-500/70 bg-blue-500/50 backdrop-blur-sm font-semibold text-white",
+    "border-blue-500/70 bg-blue-500/15 text-blue-700 dark:text-blue-300 backdrop-blur-sm font-semibold",
   archived:
-    "border-amber-500/70 bg-amber-500/50 backdrop-blur-sm font-semibold text-white",
+    "border-amber-500/70 bg-amber-500/15 text-amber-700 dark:text-amber-300 backdrop-blur-sm font-semibold",
 };
 
 export interface ProjectCardProps {
@@ -94,12 +94,9 @@ export function ProjectCard({
   if (loading || !project) {
     return (
       <div className="block group cursor-pointer">
-        <Card className={cn("flex h-full flex-col overflow-hidden relative holo-card holo-card-3d", HOVER_EFFECTS.card)}>
-          {/* Background placeholder */}
-          <div className="absolute inset-0 z-0 bg-muted/20" />
-
+        <Card className={cn("flex h-full flex-col overflow-hidden relative", HOVER_EFFECTS.card)}>
           {/* Content - matches CardHeader structure exactly */}
-          <CardHeader className="space-y-1.5 relative z-10 px-4 sm:px-6 py-4 sm:py-5">
+          <CardHeader className="space-y-1.5 px-4 sm:px-6 py-4 sm:py-5">
             {/* Timeline with status badge */}
             <div className="flex items-center gap-2">
               <Skeleton className="h-5 w-16" />
@@ -155,34 +152,17 @@ export function ProjectCard({
         }
       }}
     >
-      <Card className={cn("flex h-full flex-col overflow-hidden relative holo-card holo-card-3d", HOVER_EFFECTS.card)}>
-        {/* Background Image - always present now (custom or default) */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src={image.url}
-            alt={image.alt}
-            fill
-            className={cn(
-              "object-cover holo-image-shift",
-              image.position && `object-${image.position}`
-            )}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            loading="lazy"
-          />
-          {/* Gradient overlay for better text readability */}
-          <div className="absolute inset-0 holo-gradient-dark group-hover:holo-gradient-dark-hover transition-all duration-300" />
-        </div>
-        
-        {/* Subtle shine effect */}
-        <div className="holo-shine" />
-
-        {/* Content - positioned above background */}
-        <CardHeader className="space-y-1.5 relative z-10 px-4 sm:px-6 py-4 sm:py-5">
+      <Card className={cn("flex h-full flex-col overflow-hidden relative", HOVER_EFFECTS.card)}>
+        {/* Content */}
+        <CardHeader className="space-y-1.5 px-4 sm:px-6 py-4 sm:py-5">
           {project.timeline && (
             <p className="text-xs uppercase tracking-wide text-muted-foreground flex items-center gap-2">
-              <Badge variant="outline" className={STATUS_STYLES[project.status]}>
-                {STATUS_LABEL[project.status]}
-              </Badge> {project.timeline}
+              {project.status !== "active" && (
+                <Badge variant="outline" className={STATUS_STYLES[project.status]}>
+                  {STATUS_LABEL[project.status]}
+                </Badge>
+              )}
+              {project.timeline}
               {viewCount !== undefined && viewCount > 0 && (
                 <span className="ml-auto flex items-center gap-1 text-muted-foreground">
                   <Eye className="h-3 w-3" />

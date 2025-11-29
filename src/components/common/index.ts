@@ -6,6 +6,7 @@ export { HighlightText } from "./highlight-text";
 export { HorizontalRule } from "./horizontal-rule";
 export { KeyboardShortcutsHelp } from "./keyboard-shortcuts-help";
 export { default as Logo } from "./logo";
+export { SiteLogo } from "./site-logo";
 export { MDX } from "./mdx";
 export { Mermaid } from "./mermaid";
 export { RelatedPosts } from "./related-posts";

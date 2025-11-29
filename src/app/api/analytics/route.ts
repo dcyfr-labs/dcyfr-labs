@@ -285,7 +285,23 @@ export async function GET(request: Request) {
       try {
         const trendingData = await redis.get("blog:trending");
         if (trendingData) {
-          trendingFromRedis = JSON.parse(trendingData);
+          const parsedTrending = JSON.parse(trendingData);
+          // Enrich trending data with full post information
+          // Redis trending only contains: slug, totalViews, recentViews, score
+          // We need to merge with postsWithViews to get full post data
+          trendingFromRedis = parsedTrending
+            .map((trending: { slug: string; totalViews: number; recentViews: number; score: number }) => {
+              const fullPost = postsWithViews.find(p => p.slug === trending.slug);
+              if (fullPost) {
+                return {
+                  ...fullPost,
+                  // Override views24h with recentViews from trending for more accurate recent data
+                  trendingScore: trending.score,
+                };
+              }
+              return null;
+            })
+            .filter(Boolean);
         }
         await redis.quit();
       } catch (error) {

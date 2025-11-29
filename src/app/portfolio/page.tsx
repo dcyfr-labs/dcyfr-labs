@@ -10,7 +10,7 @@ import { TYPOGRAPHY, CONTAINER_WIDTHS } from "@/lib/design-tokens";
 import { ProjectList, ProjectFilters } from "@/components/projects";
 
 const pageTitle = "Portfolio";
-const pageDescription = "Browse my portfolio of development projects, open-source contributions, and published work.";
+const pageDescription = "A collection of our projects showcasing cyber architecture, development, and design.";
 const PROJECTS_PER_PAGE = 9;
 
 export const metadata: Metadata = createArchivePageMetadata({
@@ -90,6 +90,15 @@ export default async function PortfolioPage({ searchParams }: PortfolioPageProps
       const bYear = b.timeline ? parseInt(b.timeline.match(/^\d{4}/)?.[0] || "9999") : 9999;
       return aYear - bYear;
     });
+  } else if (sortBy === "archived") {
+    // Filter to only archived projects, sorted newest first
+    sortedItems = [...archiveData.allFilteredItems]
+      .filter((p) => p.status === "archived")
+      .sort((a, b) => {
+        const aYear = a.timeline ? parseInt(a.timeline.match(/^\d{4}/)?.[0] || "0") : 0;
+        const bYear = b.timeline ? parseInt(b.timeline.match(/^\d{4}/)?.[0] || "0") : 0;
+        return bYear - aYear;
+      });
   } else if (sortBy === "alpha") {
     sortedItems = [...archiveData.allFilteredItems].sort((a, b) => 
       a.title.localeCompare(b.title)
@@ -226,7 +235,6 @@ export default async function PortfolioPage({ searchParams }: PortfolioPageProps
           <ProjectFilters
             selectedCategory={selectedCategory}
             selectedTags={selectedTags}
-            status={status}
             categoryList={availableCategories}
             categoryDisplayMap={categoryDisplayMap}
             tagList={availableTags}

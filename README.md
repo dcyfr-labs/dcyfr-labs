@@ -4,7 +4,7 @@ A modern, full-featured developer blog and portfolio built with Next.js (App Rou
 
 **🤖 AI Contributors:**
 
-- **Claude Code**: See [`.github/claude-instructions.md`](./.github/claude-instructions.md) for comprehensive development guide
+- **Claude Code**: See [`CLAUDE.md`](./CLAUDE.md) for comprehensive development guide
 - **GitHub Copilot**: See [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) for quick reference
 
 ## ✨ Features

@@ -22,6 +22,8 @@ import {
   SeriesNavigation,
   PostHeroImage,
   BlogAnalyticsTracker,
+  SidebarVisibilityProvider,
+  HideWhenSidebarVisible,
 } from "@/components/blog";
 import {
   MDX,
@@ -33,6 +35,7 @@ import { ReadingProgress } from "@/components/features/reading-progress";
 import { ShareButtons } from "@/components/features/sharing/share-buttons";
 import { GiscusComments } from "@/components/features/comments/giscus-comments";
 import { ViewTracker } from "@/components/features/view-tracker";
+import { PostBadges } from "@/components/post-badges";
 
 // Enable Incremental Static Regeneration with 1 hour revalidation
 export const revalidate = 3600; // 1 hour in seconds
@@ -117,18 +120,20 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const shareCount = await getPostShares(post.id);
   
   // Get view counts and determine latest/hottest posts (blog-specific)
-  const viewMap = await getMultiplePostViews(posts.map(p => p.slug));
+  // Use post IDs for view lookups, then map back to slugs
+  const postIdToSlug = new Map(posts.map(p => [p.id, p.slug]));
+  const viewMap = await getMultiplePostViews(posts.map(p => p.id));
   let hottestSlug: string | null = null;
   let maxViews = 0;
-  viewMap.forEach((views, slug) => {
+  viewMap.forEach((views, postId) => {
     if (views > maxViews) {
       maxViews = views;
-      hottestSlug = slug;
+      hottestSlug = postIdToSlug.get(postId) ?? null;
     }
   });
   
   const latestPost = [...posts]
-    .filter(p => !p.archived)
+    .filter(p => !p.archived && !p.draft)
     .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1))[0];
   
   // Get series posts if this post is part of a series
@@ -200,6 +205,11 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               readingTime: post.readingTime.text,
               viewCount: viewCount ?? undefined,
               tags: post.tags,
+              category: post.category,
+              isDraft: post.draft,
+              isArchived: post.archived,
+              isLatest: latestPost?.slug === post.slug,
+              isHot: hottestSlug === post.slug,
             }}
             series={post.series}
             seriesPosts={seriesPosts}
@@ -207,6 +217,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           />
 
           {/* Main Content */}
+          <SidebarVisibilityProvider>
           <div className="min-w-0">
             <ArticleLayout
               useProseWidth={false}
@@ -222,27 +233,54 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
               <ArticleHeader
                 title={post.title}
-                date={new Date(post.publishedAt)}
-                metadata={`${post.readingTime.text}${typeof viewCount === "number" ? ` · ${viewCount.toLocaleString()} ${viewCount === 1 ? "view" : "views"}` : ""}`}
-                backgroundImage={
-                  post.image
-                    ? {
-                        url: post.image.url,
-                        alt: post.image.alt || `Hero image for ${post.title}`,
-                        position:
-                          post.image.position === "background"
-                            ? "center"
-                            : (post.image.position as
-                                | "center"
-                                | "top"
-                                | "bottom"
-                                | "left"
-                                | "right"
-                                | undefined),
-                      }
-                    : undefined
+                badges={
+                  <HideWhenSidebarVisible>
+                    <PostBadges
+                      post={post}
+                      isLatestPost={latestPost?.slug === post.slug}
+                      isHotPost={hottestSlug === post.slug}
+                      showCategory
+                    />
+                  </HideWhenSidebarVisible>
                 }
-              />
+              >
+                {/* Metadata shown only when sidebar is hidden */}
+                <HideWhenSidebarVisible>
+                  <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mt-4">
+                    <time dateTime={post.publishedAt}>
+                      {new Date(post.publishedAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </time>
+                    <span aria-hidden="true">·</span>
+                    <span>{post.readingTime.text}</span>
+                    {typeof viewCount === "number" && (
+                      <>
+                        <span aria-hidden="true">·</span>
+                        <span>{viewCount.toLocaleString()} {viewCount === 1 ? "view" : "views"}</span>
+                      </>
+                    )}
+                  </div>
+                </HideWhenSidebarVisible>
+                
+                {/* Tags shown only when sidebar is hidden */}
+                <HideWhenSidebarVisible>
+                  {post.tags.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-2 mt-4">
+                      <span className="text-sm text-muted-foreground">Tagged:</span>
+                      {post.tags.map((tag) => (
+                        <a key={tag} href={`/blog?tag=${encodeURIComponent(tag)}`}>
+                          <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 cursor-pointer">
+                            {tag}
+                          </span>
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </HideWhenSidebarVisible>
+              </ArticleHeader>
 
               {/* Series navigation */}
               {post.series && seriesPosts.length > 0 && (
@@ -256,22 +294,21 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                 <MDX source={post.body} />
               </div>
 
-              <ArticleFooter
-                tags={post.tags}
-                onTagClick={(tag) => `/blog?tag=${encodeURIComponent(tag)}`}
-                sources={post.sources?.map((s) => ({
-                  title: s.label,
-                  url: s.href,
-                }))}
-                shareComponent={
-                  <ShareButtons
-                    url={`${SITE_URL}/blog/${post.slug}`}
-                    title={post.title}
-                    postId={post.id}
-                    initialShareCount={shareCount ?? 0}
-                  />
-                }
-              >
+
+              <ArticleFooter>
+                {/* Share section - hidden when sidebar is visible */}
+                <HideWhenSidebarVisible>
+                  <div className="space-y-4">
+                    <h2 className="text-xl font-semibold">Share this blog post</h2>
+                    <ShareButtons
+                      url={`${SITE_URL}/blog/${post.slug}`}
+                      title={post.title}
+                      postId={post.id}
+                      initialShareCount={shareCount ?? 0}
+                    />
+                  </div>
+                </HideWhenSidebarVisible>
+                
                 {/* Related posts section */}
                 <RelatedPosts
                   posts={articleData.relatedItems}
@@ -283,6 +320,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               {!post.draft && <GiscusComments />}
             </ArticleLayout>
           </div>
+          </SidebarVisibilityProvider>
         </div>
       </div>
     </>

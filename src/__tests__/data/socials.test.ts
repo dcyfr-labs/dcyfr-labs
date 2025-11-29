@@ -48,6 +48,7 @@ describe('Socials Data', () => {
         'peerlist',
         'goodreads',
         'credly',
+        'calendar',
       ]
 
       socialLinks.forEach((link) => {

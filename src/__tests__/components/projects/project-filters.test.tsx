@@ -197,7 +197,7 @@ describe("ProjectFilters Component", () => {
   // Status and sort filters are temporarily disabled
   describe.skip("Status Filter", () => {
     it("should display current status", () => {
-      render(<ProjectFilters {...defaultProps} status="active" />);
+      render(<ProjectFilters {...defaultProps} />);
       const select = screen.getByTestId("select-active") as HTMLSelectElement;
       expect(select.value).toBe("active");
     });
@@ -261,7 +261,6 @@ describe("ProjectFilters Component", () => {
           {...defaultProps}
           selectedCategory="code"
           selectedTags={["web", "api", "react"]}
-          status="active"
           query="test"
         />
       );

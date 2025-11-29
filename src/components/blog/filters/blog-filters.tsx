@@ -1,12 +1,13 @@
 "use client";
 
-import { Clock, TrendingUp, Calendar, FolderOpen, Tags } from "lucide-react";
+import { Clock, TrendingUp, Calendar, FolderOpen, Tags, ArrowUpDown } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { X } from "lucide-react";
 import {
   useFilterParams,
   useFilterSearch,
   useActiveFilters,
   FilterSearchInput,
-  FilterSelect,
   FilterBadges,
   FilterClearButton,
   type FilterOption,
@@ -25,22 +26,22 @@ interface BlogFiltersProps {
 }
 
 const READING_TIME_OPTIONS: FilterOption[] = [
-  { value: "all", label: "All reading times" },
-  { value: "quick", label: "Quick (<5 min)" },
-  { value: "medium", label: "Medium (5-15 min)" },
-  { value: "deep", label: "Deep (>15 min)" },
+  { value: "quick", label: "<5 min" },
+  { value: "medium", label: "5-15 min" },
+  { value: "deep", label: ">15 min" },
 ];
 
 const SORT_OPTIONS: FilterOption[] = [
-  { value: "newest", label: "Newest first" },
-  { value: "popular", label: "Most popular" },
-  { value: "oldest", label: "Oldest first" },
+  { value: "newest", label: "Newest" },
+  { value: "popular", label: "Popular" },
+  { value: "oldest", label: "Oldest" },
+  { value: "archived", label: "Archived" },
+  ...(process.env.NODE_ENV === "development" ? [{ value: "drafts", label: "Drafts" }] : []),
 ];
 
 const DATE_RANGE_OPTIONS: FilterOption[] = [
-  { value: "all", label: "All time" },
-  { value: "30d", label: "Last 30 days" },
-  { value: "90d", label: "Last 3 months" },
+  { value: "30d", label: "30 days" },
+  { value: "90d", label: "90 days" },
   { value: "year", label: "This year" },
 ];
 
@@ -97,8 +98,41 @@ export function BlogFilters({
   // Tags use lowercase for URL matching
   const toggleTag = (tag: string) => toggleMultiParam("tag", tag.toLowerCase(), selectedTags);
 
+  // Badge filter helper - click to toggle
+  const renderFilterBadges = (
+    options: FilterOption[],
+    currentValue: string,
+    defaultValue: string,
+    paramName: string,
+    icon: React.ReactNode,
+    label: string
+  ) => (
+    <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex items-center gap-1.5 text-sm text-muted-foreground shrink-0">
+        {icon}
+        <span className="font-medium">{label}</span>
+      </div>
+      <div className="flex flex-wrap gap-1.5">
+        {options.map((option) => {
+          const isSelected = currentValue === option.value;
+          return (
+            <Badge
+              key={option.value}
+              variant={isSelected ? "default" : "outline"}
+              className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors select-none text-xs"
+              onClick={() => updateParam(paramName, isSelected ? defaultValue : option.value, defaultValue)}
+            >
+              {option.label}
+              {isSelected && <X className="ml-1 h-3 w-3" />}
+            </Badge>
+          );
+        })}
+      </div>
+    </div>
+  );
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Search Input - Full Width */}
       <FilterSearchInput
         value={searchValue}
@@ -107,36 +141,34 @@ export function BlogFilters({
         aria-label="Search blog posts"
       />
 
-      {/* Filter Controls - Separate Row */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="flex-1 flex flex-wrap gap-3">
-          <FilterSelect
-            icon={Clock}
-            value={readingTime || "all"}
-            onChange={(value) => updateParam("readingTime", value, "all")}
-            options={READING_TIME_OPTIONS}
-            placeholder="Reading time"
-            className="flex-1 min-w-[140px]"
-          />
-
-          <FilterSelect
-            icon={TrendingUp}
-            value={sortBy}
-            onChange={(value) => updateParam("sortBy", value, "newest")}
-            options={SORT_OPTIONS}
-            placeholder="Sort by"
-            className="flex-1 min-w-[130px]"
-          />
-
-          <FilterSelect
-            icon={Calendar}
-            value={dateRange}
-            onChange={(value) => updateParam("dateRange", value, "all")}
-            options={DATE_RANGE_OPTIONS}
-            placeholder="Date range"
-            className="flex-1 min-w-[130px]"
-          />
-        </div>
+      {/* Filter Controls - Badge Style */}
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+        {renderFilterBadges(
+          SORT_OPTIONS,
+          sortBy,
+          "newest",
+          "sortBy",
+          <ArrowUpDown className="h-4 w-4" />,
+          "Sort"
+        )}
+        
+        {renderFilterBadges(
+          DATE_RANGE_OPTIONS,
+          dateRange,
+          "all",
+          "dateRange",
+          <Calendar className="h-4 w-4" />,
+          "Date"
+        )}
+        
+        {renderFilterBadges(
+          READING_TIME_OPTIONS,
+          readingTime || "all",
+          "all",
+          "readingTime",
+          <Clock className="h-4 w-4" />,
+          "Read"
+        )}
 
         {/* Clear All Button */}
         <FilterClearButton

@@ -44,14 +44,14 @@ export function HomepageHeroActions() {
 
   return (
     <div className="flex flex-wrap gap-2 sm:gap-3 pt-1 sm:pt-2 justify-center">
-      <Button asChild size="default">
-        <Link href="/blog" onClick={handleBlogClick}>
-          Read my blog
-        </Link>
-      </Button>
-      <Button variant="outline" asChild size="default">
+      <Button variant="cta" asChild size="default">
         <Link href="/portfolio" onClick={handleProjectsClick}>
           View portfolio
+        </Link>
+      </Button>
+      <Button variant="cta-outline" asChild size="default">
+        <Link href="/blog" onClick={handleBlogClick}>
+          Read blog
         </Link>
       </Button>
       <Button variant="secondary" asChild size="default">

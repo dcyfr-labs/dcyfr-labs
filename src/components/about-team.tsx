@@ -26,7 +26,7 @@ export function AboutTeam() {
 
       <div className="grid gap-4 md:grid-cols-2">
         {/* Drew */}
-        <Card className="p-5 space-y-4">
+        <Card className={`p-5 space-y-4 ${HOVER_EFFECTS.cardSubtle}`}>
           <div className="flex items-start gap-3">
             <AboutAvatar size="sm" />
             <div className="flex-1">
@@ -48,7 +48,7 @@ export function AboutTeam() {
         </Card>
 
         {/* DCYFR */}
-        <Card className="p-5 space-y-4 border-primary/20">
+        <Card className={`p-5 space-y-4 border-primary/20 ${HOVER_EFFECTS.cardSubtle}`}>
           <div className="flex items-start gap-3">
             <div className="relative">
               <div className="w-12 h-12 rounded-full bg-linear-to-br from-primary/20 to-primary/5 flex items-center justify-center">

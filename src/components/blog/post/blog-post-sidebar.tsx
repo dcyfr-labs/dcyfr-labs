@@ -6,10 +6,10 @@ import type { TocHeading } from "@/lib/toc";
 import { trackToCClick } from "@/lib/analytics";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, Eye, Tag, Share2, Bookmark, BookOpen, ChevronRight, Lightbulb } from "lucide-react";
+import { Calendar, Clock, Eye, Tag, Share2, Bookmark, BookOpen, ChevronRight, Lightbulb, Link2, Linkedin } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
-import type { Post } from "@/data/posts";
+import type { Post, PostCategory } from "@/data/posts";
 
 interface BlogPostSidebarProps {
   headings: TocHeading[];
@@ -19,6 +19,11 @@ interface BlogPostSidebarProps {
     readingTime: string;
     viewCount?: number;
     tags?: string[];
+    category?: PostCategory;
+    isDraft?: boolean;
+    isArchived?: boolean;
+    isLatest?: boolean;
+    isHot?: boolean;
   };
   postTitle?: string;
   series?: {
@@ -27,6 +32,35 @@ interface BlogPostSidebarProps {
   };
   seriesPosts?: Post[];
   relatedPosts?: Post[];
+}
+
+const CATEGORY_STYLES: Record<PostCategory, string> = {
+  "development": "border-blue-500/70 bg-blue-500/15 text-blue-700 dark:text-blue-300",
+  "security": "border-red-500/70 bg-red-500/15 text-red-700 dark:text-red-300",
+  "career": "border-green-500/70 bg-green-500/15 text-green-700 dark:text-green-300",
+  "ai": "border-purple-500/70 bg-purple-500/15 text-purple-700 dark:text-purple-300",
+  "tutorial": "border-amber-500/70 bg-amber-500/15 text-amber-700 dark:text-amber-300",
+};
+
+const CATEGORY_LABEL: Record<PostCategory, string> = {
+  "development": "Development",
+  "security": "Security",
+  "career": "Career",
+  "ai": "AI",
+  "tutorial": "Tutorial",
+};
+
+function CategoryBadge({ category }: { category: PostCategory }) {
+  return (
+    <Link href={`/blog?category=${category}`}>
+      <Badge
+        variant="outline"
+        className={`${CATEGORY_STYLES[category]} backdrop-blur-sm font-semibold cursor-pointer hover:opacity-80 transition-opacity`}
+      >
+        {CATEGORY_LABEL[category]}
+      </Badge>
+    </Link>
+  );
 }
 
 /**
@@ -82,6 +116,16 @@ export function BlogPostSidebar({ headings, slug, metadata, postTitle, series, s
     } catch {
       toast.error("Failed to copy link");
     }
+  };
+
+  const handleCopyLink = async () => {
+    await copyToClipboard(window.location.href);
+  };
+
+  const handleLinkedInShare = () => {
+    const url = encodeURIComponent(window.location.href);
+    const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+    window.open(linkedInUrl, "_blank", "noopener,noreferrer,width=600,height=600");
   };
 
   const handleBookmark = () => {
@@ -157,7 +201,7 @@ export function BlogPostSidebar({ headings, slug, metadata, postTitle, series, s
         {metadata && (
           <div className="space-y-3 pb-6 border-b">
             <h2 className="font-semibold mb-3 text-sm">Post Details</h2>
-            
+
             {/* Published Date */}
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="h-4 w-4 shrink-0" />
@@ -165,25 +209,85 @@ export function BlogPostSidebar({ headings, slug, metadata, postTitle, series, s
                 {metadata.publishedAt.toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
-                  year: "numeric"
+                  year: "numeric",
                 })}
               </time>
             </div>
-            
+
             {/* Reading Time */}
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Clock className="h-4 w-4 shrink-0" />
               <span>{metadata.readingTime}</span>
             </div>
-            
+
             {/* View Count */}
             {typeof metadata.viewCount === "number" && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Eye className="h-4 w-4 shrink-0" />
-                <span>{metadata.viewCount.toLocaleString()} {metadata.viewCount === 1 ? "view" : "views"}</span>
+                <span>
+                  {metadata.viewCount.toLocaleString()}{" "}
+                  {metadata.viewCount === 1 ? "view" : "views"}
+                </span>
               </div>
             )}
-            
+
+            {/* Status & Category Badges */}
+            {(metadata.isDraft ||
+              metadata.isArchived ||
+              metadata.isLatest ||
+              metadata.isHot ||
+              metadata.category) && (
+              <div className="flex flex-wrap gap-2">
+                {process.env.NODE_ENV === "development" && metadata.isDraft && (
+                  <Link href="/blog?sortBy=drafts">
+                    <Badge
+                      variant="outline"
+                      className="border-blue-500/70 bg-blue-500/15 text-blue-700 dark:text-blue-300 backdrop-blur-sm font-semibold text-xs cursor-pointer hover:opacity-80 transition-opacity"
+                    >
+                      Draft
+                    </Badge>
+                  </Link>
+                )}
+                {metadata.isArchived && (
+                  <Link href="/blog?sortBy=archived">
+                    <Badge
+                      variant="outline"
+                      className="border-amber-500/70 bg-amber-500/15 text-amber-700 dark:text-amber-300 backdrop-blur-sm font-semibold text-xs cursor-pointer hover:opacity-80 transition-opacity"
+                    >
+                      Archived
+                    </Badge>
+                  </Link>
+                )}
+                {metadata.isLatest &&
+                  !metadata.isArchived &&
+                  !metadata.isDraft && (
+                    <Link href="/blog?dateRange=30d">
+                      <Badge
+                        variant="outline"
+                        className="border-green-500/70 bg-green-500/15 text-green-700 dark:text-green-300 backdrop-blur-sm font-semibold text-xs cursor-pointer hover:opacity-80 transition-opacity"
+                      >
+                        New
+                      </Badge>
+                    </Link>
+                  )}
+                {metadata.isHot &&
+                  !metadata.isArchived &&
+                  !metadata.isDraft && (
+                    <Link href="/blog?sortBy=popular">
+                      <Badge
+                        variant="outline"
+                        className="border-red-500/70 bg-red-500/15 text-red-700 dark:text-red-300 backdrop-blur-sm font-semibold text-xs cursor-pointer hover:opacity-80 transition-opacity"
+                      >
+                        Hot
+                      </Badge>
+                    </Link>
+                  )}
+                {metadata.category && (
+                  <CategoryBadge category={metadata.category} />
+                )}
+              </div>
+            )}
+
             {/* Tags */}
             {metadata.tags && metadata.tags.length > 0 && (
               <div className="pt-2">
@@ -193,20 +297,40 @@ export function BlogPostSidebar({ headings, slug, metadata, postTitle, series, s
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {metadata.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>
+                    <Link
+                      key={tag}
+                      href={`/blog?tag=${encodeURIComponent(tag.toLowerCase())}`}
+                    >
+                      <Badge
+                        variant="secondary"
+                        className="text-xs cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                      >
+                        {tag}
+                      </Badge>
+                    </Link>
                   ))}
                 </div>
               </div>
             )}
           </div>
         )}
-        
+
         {/* Quick Actions */}
         <div className="space-y-2 pb-6 border-b">
           <h2 className="font-semibold mb-3 text-sm">Quick Actions</h2>
-          
+
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full justify-start gap-2"
+            onClick={handleBookmark}
+          >
+            <Bookmark
+              className={cn("h-4 w-4", isBookmarked && "fill-current")}
+            />
+            {isBookmarked ? "Bookmarked" : "Bookmark"}
+          </Button>
+
           <Button
             variant="outline"
             size="sm"
@@ -216,18 +340,28 @@ export function BlogPostSidebar({ headings, slug, metadata, postTitle, series, s
             <Share2 className="h-4 w-4" />
             Share
           </Button>
-          
+
           <Button
             variant="outline"
             size="sm"
             className="w-full justify-start gap-2"
-            onClick={handleBookmark}
+            onClick={handleCopyLink}
           >
-            <Bookmark className={cn("h-4 w-4", isBookmarked && "fill-current")} />
-            {isBookmarked ? "Bookmarked" : "Bookmark"}
+            <Link2 className="h-4 w-4" />
+            Copy Link
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full justify-start gap-2"
+            onClick={handleLinkedInShare}
+          >
+            <Linkedin className="h-4 w-4" />
+            Share on LinkedIn
           </Button>
         </div>
-        
+
         {/* Series Navigation */}
         {series && seriesPosts && seriesPosts.length > 0 && (
           <div className="space-y-3 pb-6 border-b">
@@ -235,11 +369,11 @@ export function BlogPostSidebar({ headings, slug, metadata, postTitle, series, s
               <BookOpen className="h-4 w-4 text-primary" />
               <h2 className="font-semibold text-sm">{series.name}</h2>
             </div>
-            
+
             <p className="text-xs text-muted-foreground mb-3">
               Part {series.order} of {seriesPosts.length}
             </p>
-            
+
             <nav aria-label="Series navigation" className="space-y-1.5">
               {seriesPosts.map((post) => {
                 const isCurrent = post.slug === slug;
@@ -247,13 +381,13 @@ export function BlogPostSidebar({ headings, slug, metadata, postTitle, series, s
 
                 return (
                   <div key={post.slug} className="flex items-start gap-2">
-                    <Badge 
-                      variant="outline" 
+                    <Badge
+                      variant="outline"
                       className="mt-0.5 shrink-0 min-w-6 h-5 text-xs justify-center px-1"
                     >
                       {order}
                     </Badge>
-                    
+
                     {isCurrent ? (
                       <div className="flex-1 min-w-0">
                         {/* eslint-disable-next-line no-restricted-syntax */}
@@ -278,7 +412,7 @@ export function BlogPostSidebar({ headings, slug, metadata, postTitle, series, s
             </nav>
           </div>
         )}
-        
+
         {/* Related Posts */}
         {relatedPosts && relatedPosts.length > 0 && (
           <div className="space-y-3 pb-6 border-b">
@@ -286,7 +420,7 @@ export function BlogPostSidebar({ headings, slug, metadata, postTitle, series, s
               <Lightbulb className="h-4 w-4 text-primary" />
               <h2 className="font-semibold text-sm">Related Posts</h2>
             </div>
-            
+
             <nav aria-label="Related posts" className="space-y-3">
               {relatedPosts.map((post) => (
                 <Link
@@ -306,12 +440,18 @@ export function BlogPostSidebar({ headings, slug, metadata, postTitle, series, s
                     {post.tags && post.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1">
                         {post.tags.slice(0, 2).map((tag) => (
-                          <Badge key={tag} variant="secondary" className="text-xs px-1.5 py-0 h-4">
+                          <Badge
+                            key={tag}
+                            variant="secondary"
+                            className="text-xs px-1.5 py-0 h-4"
+                          >
                             {tag}
                           </Badge>
                         ))}
                         {post.tags.length > 2 && (
-                          <span className="text-xs text-muted-foreground">+{post.tags.length - 2}</span>
+                          <span className="text-xs text-muted-foreground">
+                            +{post.tags.length - 2}
+                          </span>
                         )}
                       </div>
                     )}
@@ -321,7 +461,7 @@ export function BlogPostSidebar({ headings, slug, metadata, postTitle, series, s
             </nav>
           </div>
         )}
-        
+
         {/* Table of Contents */}
         <div>
           <h2 className="font-semibold mb-3 text-sm">On this page</h2>

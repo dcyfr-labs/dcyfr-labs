@@ -1,4 +1,4 @@
-import { Logo } from "@/components/common/logo";
+import { SiteLogo } from "@/components/common/site-logo";
 import { cn } from "@/lib/utils";
 import { CONTAINER_WIDTHS } from "@/lib/design-tokens";
 
@@ -25,10 +25,10 @@ export function SiteFooter() {
           "md:py-0"
         )}
       >
-        <p className="text-muted-foreground flex items-center gap-1 text-center md:text-left">
+        <p className="text-muted-foreground flex items-center gap-2 text-center md:text-left">
           &copy;{" "}
-          <span suppressHydrationWarning>{new Date().getFullYear()}</span> Drew{" "}
-          <Logo width={12} height={12} className="opacity-70" />
+          <span suppressHydrationWarning>{new Date().getFullYear()}</span>
+          <SiteLogo size="sm" iconClassName="opacity-70" />
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
           <a

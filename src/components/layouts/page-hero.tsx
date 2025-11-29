@@ -29,7 +29,7 @@
  * ```tsx
  * <PageHero 
  *   title="Welcome"
- *   description="Explore my work and ideas"
+ *   description="Explore our work and ideas"
  *   align="center"
  * />
  * ```

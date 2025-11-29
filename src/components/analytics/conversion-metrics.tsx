@@ -42,6 +42,9 @@ export function ConversionMetrics({
   avgScrollDepth = 0,
   totalPostsViewed = 0,
 }: ConversionMetricsProps) {
+  // Get current month for display
+  const currentMonth = new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  
   // Monthly targets from conversion tracking strategy
   const targets = {
     consultingLeads: { current: 0, target: 5, unit: "leads" },
@@ -79,7 +82,7 @@ export function ConversionMetrics({
               </CardDescription>
             </div>
             <Badge variant="outline" className="text-xs">
-              November 2025
+              {currentMonth}
             </Badge>
           </div>
         </CardHeader>
@@ -213,7 +216,7 @@ export function ConversionMetrics({
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Monthly Goal Progress</CardTitle>
           <CardDescription className="text-xs">
-            Progress toward November 2025 targets
+            Progress toward {currentMonth} targets
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

@@ -30,7 +30,7 @@ import { createPageMetadata, getJsonLdScriptProps } from "@/lib/metadata";
 import { PostList } from "@/components/blog";
 import {
   SectionHeader,
-  Logo,
+  SiteLogo,
   SectionNavigator,
   Section,
   TrendingPosts,
@@ -147,12 +147,8 @@ export default async function Home() {
               contentClassName={`${CONTAINER_WIDTHS.narrow} mx-auto text-center`}
               variant="homepage"
               align="center"
-              title={
-                <span className="flex items-center gap-2 justify-center">
-                  DCYFR Labs <Logo className="pb-2" width={32} height={32} />
-                </span>
-              }
-              description="Insights, projects, and tutorials exploring software development, cybersecurity, and emerging technologies."
+              title={<SiteLogo size="xl" className="justify-center" />}
+              description="Cyber architecture and design insights helping builders and creators develop secure, resilient, and innovative digital experiences."
               image={
                 <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40">
                   <Image
@@ -179,7 +175,9 @@ export default async function Home() {
           </ScrollReveal>
         </Section>
 
-        {/* Latest Activity */}
+        {/* Recent Activity */}
+        {/* TODO: Combine Recent Activity and Trending Posts into a single section with two columns */}
+        {/* TODO: Activity feed page */}
         <Section className={PAGE_LAYOUT.section.container}>
           <ScrollReveal animation="fade-up" delay={215}>
             <div className={SPACING.content}>
@@ -192,110 +190,6 @@ export default async function Home() {
             </div>
           </ScrollReveal>
         </Section>
-
-        {/* Blog articles 
-        <Section className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={150}>
-            <div className={SPACING.content}>
-              <SectionHeader
-                title="Blog Articles"
-                actionHref="/blog"
-              />
-              <PostList 
-                posts={recentPosts}
-                latestSlug={latestSlug ?? undefined}
-                hottestSlug={hottestSlug ?? undefined}
-                viewCounts={viewCounts}
-              />
-            </div>
-          </ScrollReveal>
-        </Section> */}
-
-        {/* Featured project 
-        <Section className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={200}>
-            <div className={SPACING.content}>
-              <SectionHeader
-                title="Featured Project"
-                actionHref="/portfolio"
-              />
-              <ProjectCard project={featuredProjects[0]} />
-            </div>
-          </ScrollReveal>
-        </Section> */}
-
-        {/* Latest projects 
-        <Section className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={200}>
-            <div className={SPACING.content}>
-              <SectionHeader
-                title="Portfolio"
-                actionHref="/portfolio"
-              />
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
-                {projects
-                  .filter(p => !p.hidden)
-                  .sort((a, b) => {
-                    // Sort by timeline (most recent first) - extract year from "YYYY → Present" format
-                    const aYear = a.timeline ? parseInt(a.timeline.match(/^\d{4}/)?.[0] || "0") : 0;
-                    const bYear = b.timeline ? parseInt(b.timeline.match(/^\d{4}/)?.[0] || "0") : 0;
-                    return bYear - aYear;
-                  })
-                  .slice(0, 2)
-                  .map((project) => (
-                    <ProjectCard key={project.slug} project={project} />
-                  ))
-                }
-              </div>
-            </div>
-          </ScrollReveal>
-        </Section> */}
-
-        {/* What I Do - Core Pillars 
-        <Section className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={75}>
-            <div className={SPACING.content}>
-              <SectionHeader title="What I do" />
-              <WhatIDo />
-            </div>
-          </ScrollReveal>
-        </Section> */}
-
-        {/* Homepage Stats 
-        <Section className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={100}>
-            <HomepageStats
-              postsCount={posts.length}
-              projectsCount={projects.filter(p => !p.hidden).length}
-              yearsOfExperience={5}
-              technologiesCount={90}
-            />
-          </ScrollReveal>
-        </Section> */}
-
-        {/* GitHub Activity 
-        <Section className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={125}>
-            <div className={SPACING.content}>
-              <SectionHeader
-                title="GitHub Activity"
-                actionHref="https://github.com/dcyfr"
-                actionLabel="View Profile"
-              />
-              <GitHubHeatmap username="dcyfr" />
-            </div>
-          </ScrollReveal>
-        </Section> */}
-
-        {/* Tech Stack & Social Proof 
-        <Section className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={225}>
-            <div className="grid gap-4 lg:grid-cols-2">
-              <TechStack />
-              <SocialProof />
-            </div>
-          </ScrollReveal>
-        </Section> */}
       </SectionNavigator>
     </PageLayout>
   );

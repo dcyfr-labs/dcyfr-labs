@@ -1,21 +1,20 @@
 "use client";
 
-import { TrendingUp, Tags, Activity, FolderOpen } from "lucide-react";
+import { useState } from "react";
+import { Tags, FolderOpen, ArrowDownUp, ChevronDown, ChevronUp, SlidersHorizontal } from "lucide-react";
 import {
   useFilterParams,
   useFilterSearch,
   useActiveFilters,
   FilterSearchInput,
-  FilterSelect,
   FilterBadges,
   FilterClearButton,
-  type FilterOption,
 } from "@/components/common/filters";
+import { Button } from "@/components/ui/button";
 
 interface ProjectFiltersProps {
   selectedCategory: string;
   selectedTags: string[];
-  status: string | null;
   categoryList: string[];
   categoryDisplayMap: Record<string, string>;
   tagList: string[];
@@ -25,18 +24,10 @@ interface ProjectFiltersProps {
   hasActiveFilters: boolean;
 }
 
-const STATUS_OPTIONS: FilterOption[] = [
-  { value: "all", label: "All statuses" },
-  { value: "active", label: "Active" },
-  { value: "in-progress", label: "In Progress" },
+const SORT_OPTIONS = [
+  { value: "newest", label: "Newest" },
+  { value: "oldest", label: "Oldest" },
   { value: "archived", label: "Archived" },
-];
-
-const SORT_OPTIONS: FilterOption[] = [
-  { value: "newest", label: "Newest first" },
-  { value: "oldest", label: "Oldest first" },
-  { value: "alpha", label: "Alphabetical" },
-  { value: "status", label: "By status" },
 ];
 
 /**
@@ -44,25 +35,22 @@ const SORT_OPTIONS: FilterOption[] = [
  *
  * Consolidated search and filter interface for projects with:
  * - Search input with debounce
- * - Category filter (primary classification)
- * - Tag multi-select (includes technologies)
- * - Status filter (active/in-progress/archived)
- * - Sort by dropdown (newest, oldest, A-Z)
+ * - Sort by badges (Newest, Oldest, Archived)
+ * - Category badges (primary classification)
+ * - Tag badges (secondary classification)
  * - Clear all filters button
  *
  * @param selectedCategory - Currently selected category (lowercase)
  * @param selectedTags - Currently selected tags (lowercase for matching)
- * @param status - Currently selected status filter (active/in-progress/archived/all)
  * @param categoryList - Array of available categories (lowercase)
  * @param categoryDisplayMap - Map of lowercase category to display name
  * @param tagList - Array of available tags (proper casing)
  * @param query - Current search query
- * @param sortBy - Current sort option (newest/oldest/alpha)
+ * @param sortBy - Current sort option (newest/oldest/archived)
  */
 export function ProjectFilters({
   selectedCategory,
   selectedTags,
-  status,
   categoryList,
   categoryDisplayMap,
   tagList,
@@ -77,7 +65,6 @@ export function ProjectFilters({
   const { hasActive, count } = useActiveFilters({
     category: selectedCategory,
     tags: selectedTags,
-    status,
     query,
     sortBy,
   }, {
@@ -88,6 +75,11 @@ export function ProjectFilters({
   const setCategory = (category: string) => updateParam("category", category, "");
   // Tags use lowercase for URL matching
   const toggleTag = (tag: string) => toggleMultiParam("tag", tag.toLowerCase(), selectedTags);
+  // Sort uses single-select
+  const setSort = (sort: string) => updateParam("sortBy", sort, "newest");
+
+  // Collapsible state - default collapsed
+  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -99,56 +91,65 @@ export function ProjectFilters({
         aria-label="Search projects"
       />
 
-      {/* Filter Controls - Separate Row */}
-      {/* Status and Sort filters temporarily disabled
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="flex-1 flex flex-wrap gap-3">
-          <FilterSelect
-            icon={Activity}
-            value={status || "all"}
-            onChange={(value) => updateParam("status", value, "all")}
-            options={STATUS_OPTIONS}
-            placeholder="Status"
-            className="flex-1 min-w-[130px]"
-          />
-
-          <FilterSelect
-            icon={TrendingUp}
-            value={sortBy}
-            onChange={(value) => updateParam("sortBy", value, "newest")}
-            options={SORT_OPTIONS}
-            placeholder="Sort by"
-            className="flex-1 min-w-[130px]"
-          />
-        </div>
+      {/* Collapsible Filter Toggle */}
+      <div className="flex justify-end">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+        >
+        <SlidersHorizontal className="h-4 w-4" />
+        <span>Filters</span>
+        {count > 0 && (
+          <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+            {count}
+          </span>
+        )}
+        {isExpanded ? (
+          <ChevronUp className="h-4 w-4" />
+        ) : (
+          <ChevronDown className="h-4 w-4" />
+        )}
+        </Button>
       </div>
-      */}
 
-      {/* Category Badges - Primary classification */}
-      {categoryList.length > 0 && (
-        <div className="space-y-2">
+      {/* Collapsible Filters Section */}
+      {isExpanded && (
+        <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-200">
+          {/* Sort By Badges */}
           <FilterBadges
-            items={categoryList}
-            selected={selectedCategory ? [selectedCategory] : []}
-            onToggle={(cat) => setCategory(selectedCategory === cat ? "" : cat)}
-            icon={FolderOpen}
-            label="Categories"
-            displayMap={categoryDisplayMap}
+            items={SORT_OPTIONS.map(o => o.value)}
+            selected={[sortBy]}
+            onToggle={(sort) => setSort(sort === sortBy && sort !== "newest" ? "newest" : sort)}
+            icon={ArrowDownUp}
+            label="Sort by"
+            displayMap={Object.fromEntries(SORT_OPTIONS.map(o => [o.value, o.label]))}
           />
-        </div>
-      )}
 
-      {/* Tag Badges - Secondary classification */}
-      {tagList.length > 0 && (
-        <div className="space-y-2">
-          <FilterBadges
-            items={tagList}
-            selected={selectedTags}
-            onToggle={toggleTag}
-            icon={Tags}
-            label="Tags"
-            caseInsensitive
-          />
+          {/* Category Badges - Primary classification */}
+          {categoryList.length > 0 && (
+            <FilterBadges
+              items={categoryList}
+              selected={selectedCategory ? [selectedCategory] : []}
+              onToggle={(cat) => setCategory(selectedCategory === cat ? "" : cat)}
+              icon={FolderOpen}
+              label="Categories"
+              displayMap={categoryDisplayMap}
+            />
+          )}
+
+          {/* Tag Badges - Secondary classification */}
+          {tagList.length > 0 && (
+            <FilterBadges
+              items={tagList}
+              selected={selectedTags}
+              onToggle={toggleTag}
+              icon={Tags}
+              label="Tags"
+              caseInsensitive
+            />
+          )}
         </div>
       )}
 

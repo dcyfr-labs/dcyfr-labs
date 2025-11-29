@@ -41,7 +41,7 @@ export function TechStack() {
       <div className="space-y-2">
         <h3 className={TYPOGRAPHY.h3.standard}>Tech Stack</h3>
         <p className="text-sm text-muted-foreground">
-          Technologies and tools I work with regularly
+          Technologies and tools we work with regularly
         </p>
       </div>
 

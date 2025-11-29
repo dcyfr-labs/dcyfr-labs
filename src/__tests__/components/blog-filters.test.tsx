@@ -136,9 +136,25 @@ describe("BlogFilters Component", () => {
       expect(screen.getByPlaceholderText("Search posts...")).toBeInTheDocument();
     });
 
-    it("should render reading time select", () => {
+    it("should render sort filter badges", () => {
       render(<BlogFilters {...defaultProps} />);
-      expect(screen.getByTestId("select-0")).toBeInTheDocument();
+      expect(screen.getByTestId("badge-Newest")).toBeInTheDocument();
+      expect(screen.getByTestId("badge-Popular")).toBeInTheDocument();
+      expect(screen.getByTestId("badge-Oldest")).toBeInTheDocument();
+    });
+
+    it("should render reading time filter badges", () => {
+      render(<BlogFilters {...defaultProps} />);
+      expect(screen.getByTestId("badge-<5 min")).toBeInTheDocument();
+      expect(screen.getByTestId("badge-5-15 min")).toBeInTheDocument();
+      expect(screen.getByTestId("badge->15 min")).toBeInTheDocument();
+    });
+
+    it("should render date range filter badges", () => {
+      render(<BlogFilters {...defaultProps} />);
+      expect(screen.getByTestId("badge-30 days")).toBeInTheDocument();
+      expect(screen.getByTestId("badge-90 days")).toBeInTheDocument();
+      expect(screen.getByTestId("badge-This year")).toBeInTheDocument();
     });
 
     it("should render all tag badges", () => {
@@ -258,32 +274,32 @@ describe("BlogFilters Component", () => {
   });
 
   describe("Reading Time Filter", () => {
-    it("should display 'all' as default value", () => {
+    it("should show reading time badges as outline by default", () => {
       render(<BlogFilters {...defaultProps} />);
-      const select = screen.getByTestId("select-0") as HTMLSelectElement;
-      expect(select.value).toBe("all");
+      const badge = screen.getByTestId("badge-<5 min");
+      expect(badge.getAttribute("data-variant")).toBe("outline");
     });
 
-    it("should display selected reading time", () => {
+    it("should show selected reading time badge as default variant", () => {
       render(<BlogFilters {...defaultProps} readingTime="quick" />);
-      const select = screen.getByTestId("select-0") as HTMLSelectElement;
-      expect(select.value).toBe("quick");
+      const badge = screen.getByTestId("badge-<5 min");
+      expect(badge.getAttribute("data-variant")).toBe("default");
     });
 
-    it("should update URL when reading time changes", () => {
+    it("should update URL when reading time badge is clicked", () => {
       render(<BlogFilters {...defaultProps} />);
-      const select = screen.getByTestId("select-0");
+      const badge = screen.getByTestId("badge-5-15 min");
       
-      fireEvent.change(select, { target: { value: "medium" } });
+      fireEvent.click(badge);
       
       expect(mockPush).toHaveBeenCalledWith("/blog?readingTime=medium");
     });
 
-    it("should remove readingTime param when 'all' selected", () => {
+    it("should remove readingTime param when selected badge is clicked again", () => {
       render(<BlogFilters {...defaultProps} readingTime="quick" />);
-      const select = screen.getByTestId("select-0");
+      const badge = screen.getByTestId("badge-<5 min");
       
-      fireEvent.change(select, { target: { value: "all" } });
+      fireEvent.click(badge);
       
       expect(mockPush).toHaveBeenCalledWith("/blog?");
     });
@@ -292,8 +308,8 @@ describe("BlogFilters Component", () => {
       mockSearchParamsData.page = "3";
       render(<BlogFilters {...defaultProps} />);
       
-      const select = screen.getByTestId("select-0");
-      fireEvent.change(select, { target: { value: "deep" } });
+      const badge = screen.getByTestId("badge->15 min");
+      fireEvent.click(badge);
       
       expect(mockPush).toHaveBeenCalledWith("/blog?readingTime=deep");
     });
@@ -303,8 +319,8 @@ describe("BlogFilters Component", () => {
       mockSearchParamsData.tag = "React";
       render(<BlogFilters {...defaultProps} query="test" selectedTags={["React"]} />);
       
-      const select = screen.getByTestId("select-0");
-      fireEvent.change(select, { target: { value: "quick" } });
+      const badge = screen.getByTestId("badge-<5 min");
+      fireEvent.click(badge);
       
       expect(mockPush).toHaveBeenCalledWith("/blog?q=test&tag=React&readingTime=quick");
     });
@@ -450,21 +466,26 @@ describe("BlogFilters Component", () => {
   describe("Responsive Behavior", () => {
     it("should have responsive layout classes", () => {
       const { container } = render(<BlogFilters {...defaultProps} />);
-      const topRow = container.querySelector(".flex.flex-col.sm\\:flex-row");
-      expect(topRow).toBeInTheDocument();
+      // Updated to match new badge-based filter layout
+      const filterRow = container.querySelector(".flex.flex-wrap");
+      expect(filterRow).toBeInTheDocument();
     });
 
-    it("should have responsive width for reading time select", () => {
-      const { container } = render(<BlogFilters {...defaultProps} />);
-      const selectContainer = container.querySelector(".flex-1.min-w-\\[140px\\]");
-      expect(selectContainer).toBeInTheDocument();
+    it("should render filter badges with proper classes", () => {
+      render(<BlogFilters {...defaultProps} />);
+      // Verify sort badges are rendered
+      const newestBadge = screen.getByTestId("badge-Newest");
+      expect(newestBadge).toBeInTheDocument();
     });
   });
 
   describe("Edge Cases", () => {
     it("should handle empty tag list", () => {
       render(<BlogFilters {...defaultProps} tagList={[]} categoryList={[]} />);
-      expect(screen.queryAllByTestId(/^badge-/)).toHaveLength(0);
+      // With new badge-based filters, we still have sort/date/reading time badges (9 total)
+      // But no tag badges specifically
+      expect(screen.queryByTestId("badge-React")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("badge-TypeScript")).not.toBeInTheDocument();
     });
 
     it("should handle special characters in search", async () => {

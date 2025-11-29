@@ -3,7 +3,7 @@
 import { Card } from "@/components/ui/card";
 import { TrendingUp, Shield, Zap, Award, CheckCircle2, FileText, Folder } from "lucide-react";
 import { useEffect, useState } from "react";
-import { TYPOGRAPHY } from "@/lib/design-tokens";
+import { TYPOGRAPHY, HOVER_EFFECTS } from "@/lib/design-tokens";
 import { resume, getYearsOfExperience } from "@/data/resume";
 
 /**
@@ -169,7 +169,7 @@ function StatCard({ stat }: { stat: Stat }) {
   const Icon = stat.icon;
 
   return (
-    <Card className="p-6 space-y-3 hover:border-primary transition-colors">
+    <Card className={`p-6 space-y-3 ${HOVER_EFFECTS.cardSubtle}`}>
       <div className="flex items-start justify-between">
         <Icon className="h-5 w-5 text-primary shrink-0" aria-hidden="true" />
       </div>

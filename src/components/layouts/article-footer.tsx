@@ -1,8 +1,11 @@
 /**
  * Article Footer Component
  * 
- * Standardized footer for individual item pages with share buttons, sources, and related content.
+ * Standardized footer for individual item pages with share buttons and related content.
  * Provides consistent navigation and engagement patterns.
+ * 
+ * Note: Sources/references should use native markdown footnotes ([^1] syntax) instead
+ * of the deprecated sources prop.
  * 
  * @example
  * ```tsx
@@ -16,7 +19,7 @@
  */
 
 import { TYPOGRAPHY, SPACING } from '@/lib/design-tokens';
-import { cn, sanitizeUrl } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { BlogPostCTA } from "@/components/common";
@@ -36,12 +39,6 @@ export interface ArticleFooterProps<T = Record<string, unknown>> {
   
   /** Function to generate tag URLs (returns URL string) */
   onTagClick?: (tag: string) => string;
-  
-  /** Sources/references links (optional) */
-  sources?: Array<{
-    title: string;
-    url: string;
-  }>;
   
   /** Related items to display (optional) */
   relatedItems?: T[];
@@ -64,7 +61,6 @@ export function ArticleFooter<T>({
   shareComponent,
   tags = [],
   onTagClick,
-  sources,
   relatedItems = [],
   renderRelatedItem,
   relatedTitle = "Related Articles",
@@ -73,15 +69,8 @@ export function ArticleFooter<T>({
 }: ArticleFooterProps<T>) {
   const hasShare = shareUrl || shareComponent;
   const hasTags = tags.length > 0;
-  const hasSources = sources && sources.length > 0;
   const hasRelated = relatedItems.length > 0 && renderRelatedItem;
-  const hasContent = hasShare || hasTags || hasSources || hasRelated || children;
-
-  // Sanitize source URLs upfront to avoid serialization issues in RSC
-  const sanitizedSources = sources?.map(source => ({
-    ...source,
-    url: sanitizeUrl(source.url)
-  }));
+  const hasContent = hasShare || hasTags || hasRelated || children;
 
   if (!hasContent) {
     return null;
@@ -120,48 +109,12 @@ export function ArticleFooter<T>({
           </div>
         </section>
       )}
-      
-      {/* Sources Section */}
-      {hasSources && (
-        <section className={SPACING.subsection}>
-          <h2 className={cn(TYPOGRAPHY.h2.standard, "mb-4")}>
-            Sources & References
-          </h2>
-          <ul className="space-y-2">
-            {sanitizedSources!.map((source, index) => (
-              <li key={index}>
-                <a
-                  href={source.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline inline-flex items-center gap-1"
-                >
-                  {source.title}
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                    />
-                  </svg>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
 
       {/* Share Section */}
       {hasShare && (
         <section className={SPACING.subsection}>
           <h2 className={cn(TYPOGRAPHY.h2.standard, "mb-4")}>
-            Share this article
+            Share this blog post
           </h2>
           {shareComponent || (
             <div className="flex gap-2">

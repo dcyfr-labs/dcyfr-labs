@@ -85,11 +85,14 @@ export const TYPOGRAPHY = {
     /** Standard page titles (about, projects, contact, blog listing) */
     standard: "text-3xl md:text-4xl font-semibold tracking-tight",
     
-    /** Homepage hero section */
-    hero: "font-serif text-3xl md:text-4xl font-semibold tracking-tight",
+    /** Archive/listing page titles (about, blog archive, portfolio archive) */
+    hero: "font-serif italic text-3xl md:text-4xl font-semibold tracking-tight",
     
     /** Blog post titles (larger, more prominent) */
-    article: "font-serif text-3xl md:text-5xl font-semibold tracking-tight leading-tight",
+    article: "font-serif italic text-3xl md:text-5xl font-semibold tracking-tight leading-tight",
+    
+    /** Portfolio project titles */
+    project: "font-serif italic text-3xl md:text-5xl font-semibold tracking-tight leading-tight",
     
     /** MDX content headings */
     mdx: "text-3xl md:text-4xl font-semibold tracking-tight",
@@ -101,7 +104,7 @@ export const TYPOGRAPHY = {
     standard: "text-xl md:text-2xl font-medium",
     
     /** Featured content headings (blog post cards, featured sections) */
-    featured: "text-2xl md:text-3xl font-semibold tracking-tight",
+    featured: "font-serif italic text-2xl md:text-3xl font-semibold tracking-tight",
     
     /** MDX content headings */
     mdx: "text-2xl md:text-3xl font-semibold tracking-tight",

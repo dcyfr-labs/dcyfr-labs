@@ -61,6 +61,9 @@ export interface ArticleHeaderProps {
     alt: string;
     position?: 'center' | 'top' | 'bottom' | 'left' | 'right';
   };
+  
+  /** Additional content (e.g., metadata shown conditionally) */
+  children?: React.ReactNode;
 }
 
 export function ArticleHeader({
@@ -74,6 +77,7 @@ export function ArticleHeader({
   className,
   onTagClick,
   backgroundImage,
+  children,
 }: ArticleHeaderProps) {
   /**
    * Format date for display
@@ -177,6 +181,9 @@ export function ArticleHeader({
               })}
             </div>
           )}
+          
+          {/* Children (additional content) */}
+          {children}
         </div>
       </div>
     );
@@ -249,6 +256,9 @@ export function ArticleHeader({
           })}
         </div>
       )}
+      
+      {/* Children (additional content) */}
+      {children}
     </div>
   );
 }

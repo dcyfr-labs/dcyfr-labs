@@ -20,14 +20,12 @@ import { createPageMetadata } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
 import { PageLayout } from "@/components/layouts/page-layout";
 import { PageHero } from "@/components/layouts/page-hero";
-import { SocialLinksGrid } from "@/components/sections/social-links-grid";
 import {
   Logo,
   SectionNavigator,
   Section,
-  AvailabilityBanner,
 } from "@/components/common";
-import { AboutAvatar, AboutStats, AboutTeam } from "@/components/about";
+import { AboutAvatar, AboutStats, TeamSpotlights, ConnectWithUs } from "@/components/about";
 import { PostList } from "@/components/blog";
 import { DownloadResumeButton } from "@/components/resume";
 import dynamic from "next/dynamic";
@@ -76,8 +74,8 @@ export default async function AboutPage() {
             </div>
             {/* Content */}
             <div className="flex-1 space-y-4">
-              <h1 className={TYPOGRAPHY.h1.hero}>
-                <span className="flex items-center gap-2">
+              <h1 className={cn(TYPOGRAPHY.h1.hero, "font-serif italic")}>
+                <span className="flex items-center gap-2 ">
                   About Drew
                 </span>
               </h1>
@@ -159,12 +157,12 @@ export default async function AboutPage() {
           </ScrollReveal>
         </Section>
         
-        {/* Meet the Team 
+        {/* Meet the Team */}
         <Section className={PAGE_LAYOUT.section.container}>
-          <div className={SPACING.content}>
-            <AboutTeam />
-          </div>
-        </Section> */}
+          <ScrollReveal animation="fade-up" delay={75}>
+            <TeamSpotlights />
+          </ScrollReveal>
+        </Section>
 
         {/* Featured Writing 
         <Section className={PAGE_LAYOUT.section.container}>
@@ -189,17 +187,10 @@ export default async function AboutPage() {
           </ScrollReveal>
         </Section> */}
 
-        {/* Connect with Me */}
+        {/* Connect with Us */}
         <Section className={PAGE_LAYOUT.section.container}>
           <ScrollReveal animation="fade-up" delay={100}>
-            <div className={SPACING.content}>
-              <h2 className={TYPOGRAPHY.h2.standard}>Connect with Me</h2>
-              <p className="text-muted-foreground mb-4">
-              I&apos;m open to connecting with fellow builders, sharing knowledge, and exploring new opportunities. Feel free to reach out through any of the platforms below!
-            </p>
-              <AvailabilityBanner className="my-6" />
-              <SocialLinksGrid />
-            </div>
+            <ConnectWithUs />
           </ScrollReveal>
         </Section>
       </SectionNavigator>

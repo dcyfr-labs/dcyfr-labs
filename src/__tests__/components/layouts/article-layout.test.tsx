@@ -90,7 +90,7 @@ describe('ArticleLayout', () => {
         <ArticleLayout
           footer={
             <div data-testid="article-footer">
-              <div>Share this article</div>
+              <div>Share this blog post</div>
               <div>Related posts</div>
             </div>
           }
@@ -100,7 +100,7 @@ describe('ArticleLayout', () => {
       )
 
       expect(screen.getByTestId('article-footer')).toBeInTheDocument()
-      expect(screen.getByText('Share this article')).toBeInTheDocument()
+      expect(screen.getByText('Share this blog post')).toBeInTheDocument()
       expect(screen.getByText('Related posts')).toBeInTheDocument()
     })
 

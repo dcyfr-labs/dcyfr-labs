@@ -355,7 +355,7 @@ export function extractTags<T>(
  * export async function generateMetadata(): Promise<Metadata> {
  *   return createArchiveMetadata({
  *     title: 'Blog Posts',
- *     description: 'All my blog posts about web development',
+ *     description: 'All our blog posts about web development',
  *     path: '/blog',
  *   });
  * }

@@ -15,7 +15,7 @@ export default function Loading() {
       {/* Header - matches page.tsx structure */}
       <div className="mb-8">
         <h1 className={TYPOGRAPHY.h1.hero}>Portfolio</h1>
-        <p className="text-muted-foreground">Browse my portfolio of development projects, open-source contributions, and published work.</p>
+        <p className="text-muted-foreground">A collection of our projects showcasing cyber architecture, development, and design.</p>
       </div>
 
       {/* Filters skeleton - matches ProjectFilters structure */}

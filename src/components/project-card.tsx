@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ExternalLink, Eye } from "lucide-react";
-import { Project, ProjectStatus } from "@/data/projects";
+import { Project, ProjectStatus, ProjectCategory } from "@/data/projects";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn, sanitizeUrl, formatNumber } from "@/lib/utils";
@@ -20,6 +20,22 @@ const STATUS_LABEL: Record<ProjectStatus, string> = {
   "active": "Active",
   "in-progress": "In progress",
   "archived": "Archived",
+};
+
+const CATEGORY_STYLES: Record<ProjectCategory, string> = {
+  "code": "border-blue-500/70 bg-blue-500/15 text-blue-700 dark:text-blue-300",
+  "photography": "border-pink-500/70 bg-pink-500/15 text-pink-700 dark:text-pink-300",
+  "community": "border-purple-500/70 bg-purple-500/15 text-purple-700 dark:text-purple-300",
+  "nonprofit": "border-emerald-500/70 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
+  "startup": "border-orange-500/70 bg-orange-500/15 text-orange-700 dark:text-orange-300",
+};
+
+const CATEGORY_LABEL: Record<ProjectCategory, string> = {
+  "code": "Code",
+  "photography": "Photography",
+  "community": "Community",
+  "nonprofit": "Nonprofit",
+  "startup": "Startup",
 };
 
 /**
@@ -111,32 +127,18 @@ export function ProjectCard({
         }
       }}
     >
-      <Card className={cn("flex h-full flex-col overflow-hidden relative holo-card holo-card-3d", HOVER_EFFECTS.card)}>
-        {/* Background Image - always present now (custom or default) */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src={image.url}
-            alt={image.alt}
-            fill
-            className={cn(
-              "object-cover holo-image-shift",
-              image.position && `object-${image.position}`
-            )}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            loading="lazy"
-          />
-          {/* Gradient overlay for better text readability */}
-          <div className="absolute inset-0 holo-gradient-dark group-hover:holo-gradient-dark-hover transition-all duration-300" />
-        </div>
-        
-        {/* Subtle shine effect */}
-        <div className="holo-shine" />
-
-        {/* Content - positioned above background */}
-        <CardHeader className="space-y-1.5 relative z-10 px-4 sm:px-6 py-4 sm:py-5">
+      <Card className={cn("flex h-full flex-col overflow-hidden relative", HOVER_EFFECTS.card)}>
+        {/* Content */}
+        <CardHeader className="space-y-1.5 px-4 sm:px-6 py-4 sm:py-5">
           {project.timeline && (
             <p className="text-xs uppercase tracking-wide text-muted-foreground flex items-center gap-2">
-              <Badge variant={STATUS_VARIANT[project.status]}>{STATUS_LABEL[project.status]}</Badge> {project.timeline}
+              <Badge variant={STATUS_VARIANT[project.status]}>{STATUS_LABEL[project.status]}</Badge>
+              {project.category && (
+                <Badge variant="outline" className={CATEGORY_STYLES[project.category]}>
+                  {CATEGORY_LABEL[project.category]}
+                </Badge>
+              )}
+              {project.timeline}
               {viewCount !== undefined && viewCount > 0 && (
                 <span className="ml-auto flex items-center gap-1 text-muted-foreground">
                   <Eye className="h-3 w-3" />

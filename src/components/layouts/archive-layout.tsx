@@ -13,7 +13,7 @@
  * ```tsx
  * <ArchiveLayout
  *   title="Blog Posts"
- *   description="All my writing about web development"
+ *   description="Our writing about web development"
  *   filters={<ArchiveFilters {...filterProps} />}
  *   pagination={<ArchivePagination {...paginationProps} />}
  * >

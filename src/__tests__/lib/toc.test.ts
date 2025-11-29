@@ -279,7 +279,7 @@ Some content in the middle
   describe('Real-World Blog Post Scenarios', () => {
     it('extracts headings from typical blog post structure', () => {
       const content = `
-# My Blog Post Title
+# Blog Post Title
 
 This is the introduction paragraph.
 

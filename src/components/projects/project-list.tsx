@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import type { Project } from "@/data/projects";
+import type { Project, ProjectCategory } from "@/data/projects";
 import { Badge } from "@/components/ui/badge";
 import { Eye } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -22,12 +22,29 @@ const STATUS_LABEL = {
   "archived": "Archived",
 } as const;
 
-// Status badge color styles - matching homepage activity badges
+// Status badge color styles - subtle background with colored text
 const STATUS_STYLES = {
-  "active": "border-green-500/70 bg-green-500/50 backdrop-blur-sm font-semibold text-white",
-  "in-progress": "border-blue-500/70 bg-blue-500/50 backdrop-blur-sm font-semibold text-white",
-  "archived": "border-amber-500/70 bg-amber-500/50 backdrop-blur-sm font-semibold text-white",
+  "active": "border-green-500/70 bg-green-500/15 text-green-700 dark:text-green-300 backdrop-blur-sm font-semibold",
+  "in-progress": "border-blue-500/70 bg-blue-500/15 text-blue-700 dark:text-blue-300 backdrop-blur-sm font-semibold",
+  "archived": "border-amber-500/70 bg-amber-500/15 text-amber-700 dark:text-amber-300 backdrop-blur-sm font-semibold",
 } as const;
+
+// Category labels and styles
+const CATEGORY_LABEL: Record<ProjectCategory, string> = {
+  "community": "Community",
+  "nonprofit": "Nonprofit",
+  "code": "Code",
+  "photography": "Photography",
+  "startup": "Startup",
+};
+
+const CATEGORY_STYLES: Record<ProjectCategory, string> = {
+  "community": "border-purple-500/70 bg-purple-500/15 text-purple-700 dark:text-purple-300",
+  "nonprofit": "border-emerald-500/70 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
+  "code": "border-blue-500/70 bg-blue-500/15 text-blue-700 dark:text-blue-300",
+  "photography": "border-pink-500/70 bg-pink-500/15 text-pink-700 dark:text-pink-300",
+  "startup": "border-orange-500/70 bg-orange-500/15 text-orange-700 dark:text-orange-300",
+};
 
 /**
  * Props for the ProjectList component
@@ -102,30 +119,15 @@ export function ProjectList({
               delay={index * 50}
               duration={600}
             >
-              <article className={`group rounded-lg border overflow-hidden relative holo-card holo-card-3d ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
-                {/* Background Image with gradient overlay */}
-                <div className="absolute inset-0 z-0">
-                  <Image
-                    src={image.url}
-                    alt={image.alt}
-                    fill
-                    className="object-cover holo-image-shift"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 holo-gradient-dark group-hover:holo-gradient-dark-hover transition-all duration-300" />
-                </div>
-
-                {/* Subtle shine effect */}
-                <div className="holo-shine" />
-
-                <Link href={`/portfolio/${project.slug}`} className="flex flex-col h-full relative z-10">
+              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
+                <Link href={`/portfolio/${project.slug}`} className="flex flex-col h-full">
                   {/* Project content */}
                   <div className="flex-1 p-4 sm:p-5 flex flex-col">
-                    {/* Status and timeline */}
+                    {/* Status, category, and timeline */}
                     {project.timeline && (
                       <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                        <Badge variant="outline" className={STATUS_STYLES[project.status]}>{STATUS_LABEL[project.status]}</Badge>
+                        {project.status !== "active" && <Badge variant="outline" className={STATUS_STYLES[project.status]}>{STATUS_LABEL[project.status]}</Badge>}
+                        {project.category && <Badge variant="outline" className={CATEGORY_STYLES[project.category]}>{CATEGORY_LABEL[project.category]}</Badge>}
                         <span>{project.timeline}</span>
                         {viewCounts && viewCounts.has(project.slug) && viewCounts.get(project.slug)! > 0 && (
                           <span className="ml-auto flex items-center gap-1">
@@ -188,29 +190,14 @@ export function ProjectList({
               delay={index * 80}
               duration={600}
             >
-              <article className={`group rounded-lg border overflow-hidden relative holo-card holo-card-3d ${HOVER_EFFECTS.cardSubtle}`}>
-                {/* Background Image with gradient overlay */}
-                <div className="absolute inset-0 z-0">
-                  <Image
-                    src={image.url}
-                    alt={image.alt}
-                    fill
-                    className="object-cover holo-image-shift"
-                    sizes="(max-width: 768px) 100vw, 800px"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 holo-gradient-dark group-hover:holo-gradient-dark-hover transition-all duration-300" />
-                </div>
-
-                {/* Subtle shine effect */}
-                <div className="holo-shine" />
-
-                <Link href={`/portfolio/${project.slug}`} className="block relative z-10">
+              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
+                <Link href={`/portfolio/${project.slug}`} className="block">
                   <div className="p-5 md:p-6">
-                    {/* Status and timeline */}
+                    {/* Status, category, and timeline */}
                     {project.timeline && (
                       <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-                        <Badge variant="outline" className={STATUS_STYLES[project.status]}>{STATUS_LABEL[project.status]}</Badge>
+                        {project.status !== "active" && <Badge variant="outline" className={STATUS_STYLES[project.status]}>{STATUS_LABEL[project.status]}</Badge>}
+                        {project.category && <Badge variant="outline" className={CATEGORY_STYLES[project.category]}>{CATEGORY_LABEL[project.category]}</Badge>}
                         <span>{project.timeline}</span>
                         {viewCounts && viewCounts.has(project.slug) && viewCounts.get(project.slug)! > 0 && (
                           <span className="ml-auto flex items-center gap-1">
@@ -268,28 +255,13 @@ export function ProjectList({
               delay={index * 50}
               duration={600}
             >
-              <article className={`group rounded-lg border overflow-hidden relative holo-card holo-card-3d ${HOVER_EFFECTS.cardSubtle}`}>
-                {/* Background Image with gradient overlay */}
-                <div className="absolute inset-0 z-0">
-                  <Image
-                    src={image.url}
-                    alt={image.alt}
-                    fill
-                    className="object-cover holo-image-shift"
-                    sizes="(max-width: 768px) 100vw, 400px"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 holo-gradient-dark group-hover:holo-gradient-dark-hover transition-all duration-300" />
-                </div>
-
-                {/* Subtle shine effect */}
-                <div className="holo-shine" />
-
-                <Link href={`/portfolio/${project.slug}`} className="block relative z-10">
+              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
+                <Link href={`/portfolio/${project.slug}`} className="block">
                   <div className="p-3">
-                    {/* Status and timeline - compact */}
+                    {/* Status, category, and timeline - compact */}
                     <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1.5">
-                      <Badge variant="outline" className={`text-xs ${STATUS_STYLES[project.status]}`}>{STATUS_LABEL[project.status]}</Badge>
+                      {project.status !== "active" && <Badge variant="outline" className={`text-xs ${STATUS_STYLES[project.status]}`}>{STATUS_LABEL[project.status]}</Badge>}
+                      {project.category && <Badge variant="outline" className={`text-xs ${CATEGORY_STYLES[project.category]}`}>{CATEGORY_LABEL[project.category]}</Badge>}
                       {project.timeline && <span>{project.timeline}</span>}
                       {viewCounts && viewCounts.has(project.slug) && viewCounts.get(project.slug)! > 0 && (
                         <span className="ml-auto flex items-center gap-1">
@@ -329,30 +301,15 @@ export function ProjectList({
             delay={index * 50}
             duration={600}
           >
-            <article className={`group rounded-lg border overflow-hidden relative holo-card holo-card-3d ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
-              {/* Background Image with gradient overlay */}
-              <div className="absolute inset-0 z-0">
-                <Image
-                  src={image.url}
-                  alt={image.alt}
-                  fill
-                  className="object-cover holo-image-shift"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 holo-gradient-dark group-hover:holo-gradient-dark-hover transition-all duration-300" />
-              </div>
-
-              {/* Subtle shine effect */}
-              <div className="holo-shine" />
-
-              <Link href={`/portfolio/${project.slug}`} className="flex flex-col h-full relative z-10">
+            <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
+              <Link href={`/portfolio/${project.slug}`} className="flex flex-col h-full">
                 {/* Project content */}
                 <div className="flex-1 p-4 sm:p-5 flex flex-col">
-                  {/* Status and timeline */}
+                  {/* Status, category, and timeline */}
                   {project.timeline && (
                     <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                      <Badge variant="outline" className={STATUS_STYLES[project.status]}>{STATUS_LABEL[project.status]}</Badge>
+                      {project.status !== "active" && <Badge variant="outline" className={STATUS_STYLES[project.status]}>{STATUS_LABEL[project.status]}</Badge>}
+                      {project.category && <Badge variant="outline" className={CATEGORY_STYLES[project.category]}>{CATEGORY_LABEL[project.category]}</Badge>}
                       <span>{project.timeline}</span>
                       {viewCounts && viewCounts.has(project.slug) && viewCounts.get(project.slug)! > 0 && (
                         <span className="ml-auto flex items-center gap-1">

@@ -82,7 +82,7 @@ export function SocialProof() {
           return (
             <div
               key={achievement.label}
-              className="group space-y-2 p-4 rounded-lg border bg-card/50 hover:bg-accent/50 transition-all duration-200"
+              className={`group space-y-2 p-4 rounded-lg border bg-card/50 ${HOVER_EFFECTS.cardSubtle}`}
             >
               <div className="flex items-start justify-between">
                 <Icon className={cn(

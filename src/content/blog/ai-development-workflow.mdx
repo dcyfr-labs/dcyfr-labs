@@ -12,17 +12,6 @@ image:
   caption: "Model Context Protocol bridges AI assistants with development tools"
   width: 1200
   height: 630
-sources:
-  - label: "Introducing the Model Context Protocol (Anthropic)"
-    href: "https://www.anthropic.com/news/model-context-protocol"
-  - label: "Model Context Protocol - Wikipedia"
-    href: "https://en.wikipedia.org/wiki/Model_Context_Protocol"
-  - label: "Code execution with MCP (Anthropic Engineering)"
-    href: "https://www.anthropic.com/engineering/code-execution-with-mcp"
-  - label: "MCP GitHub Organization"
-    href: "https://github.com/modelcontextprotocol"
-  - label: "Next.js 15 Release Notes"
-    href: "https://nextjs.org/blog/next-15"
 ---
 
 AI coding assistants are everywhere now, but there's a critical gap: **how do they access your actual development context?** Your database schema, API routes, recent commits, production errors—all the things you need to write real code. This is the problem Model Context Protocol (MCP) was designed to solve.
@@ -31,9 +20,9 @@ AI coding assistants are everywhere now, but there's a critical gap: **how do th
 
 ## What is Model Context Protocol?
 
-[Model Context Protocol](https://www.anthropic.com/news/model-context-protocol) is an open standard introduced by Anthropic that enables AI assistants to securely connect with external data sources and tools. According to Anthropic's announcement, "Instead of maintaining separate connectors for each data source, developers can now build against a standard protocol."
+[Model Context Protocol](https://www.anthropic.com/news/model-context-protocol)[^mcp-intro] is an open standard introduced by Anthropic that enables AI assistants to securely connect with external data sources and tools. According to Anthropic's announcement, "Instead of maintaining separate connectors for each data source, developers can now build against a standard protocol."
 
-The protocol has gained significant traction in 2025. According to [Wikipedia's MCP entry](https://en.wikipedia.org/wiki/Model_Context_Protocol), "In March 2025, OpenAI officially adopted the MCP, following a decision to integrate the standard across its products, including the ChatGPT desktop app."
+The protocol has gained significant traction in 2025. According to [Wikipedia's MCP entry](https://en.wikipedia.org/wiki/Model_Context_Protocol)[^mcp-wiki], "In March 2025, OpenAI officially adopted the MCP, following a decision to integrate the standard across its products, including the ChatGPT desktop app."
 
 Before MCP, each AI tool had to build custom integrations for every service. Want GitHub access? Custom integration. Need database queries? Another custom integration. MCP changes this by providing a universal protocol that works across AI assistants and development tools.
 
@@ -272,7 +261,7 @@ MCP is designed with security in mind, but you still need to be careful:
 - **Audit**: MCP servers log all operations
 - **Isolation**: Servers run locally, no external data sharing
 
-From the [MCP security guidelines](https://www.anthropic.com/news/model-context-protocol):
+From the MCP security guidelines[^mcp-intro]:
 
 > "MCP servers run with the same permissions as your user account. Only install servers from trusted sources."
 
@@ -346,3 +335,9 @@ If you're building AI tools or just trying to improve your development workflow,
 ---
 
 *This post was written with assistance from GitHub Copilot using MCP servers for Memory, Sequential Thinking, and Context7 documentation lookup. The irony is not lost on me.*
+
+[^mcp-intro]: [Introducing the Model Context Protocol](https://www.anthropic.com/news/model-context-protocol) - Anthropic
+[^mcp-wiki]: [Model Context Protocol - Wikipedia](https://en.wikipedia.org/wiki/Model_Context_Protocol)
+[^mcp-code-execution]: [Code execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp) - Anthropic Engineering
+[^mcp-github]: [MCP GitHub Organization](https://github.com/modelcontextprotocol)
+[^nextjs-15]: [Next.js 15 Release Notes](https://nextjs.org/blog/next-15)

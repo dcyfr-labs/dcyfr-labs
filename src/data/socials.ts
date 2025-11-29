@@ -33,42 +33,49 @@ export const socialLinks: SocialLink[] = [
       label: "LinkedIn",
       url: "https://www.linkedin.com/in/dcyfr",
       icon: "linkedin",
-      description: "Connect with me on LinkedIn"
+      description: "Connect with us on LinkedIn"
     },
     {
       platform: "peerlist",
       label: "Peerlist",
       url: "https://peerlist.io/dcyfr",
       icon: "users",
-      description: "Build with me on Peerlist"
+      description: "Build with us on Peerlist"
     },
     {
       platform: "github",
       label: "GitHub",
       url: "https://github.com/dcyfr",
       icon: "github",
-      description: "View my code"
+      description: "View our code"
     },
     {
       platform: "github-sponsor",
       label: "Become a Sponsor",
       url: "https://github.com/sponsors/dcyfr",
       icon: "heart",
-      description: "Support open source contributions"
+      description: "Support open source projects"
     },
     {
       platform: "credly",
       label: "Credly",
       url: "https://www.credly.com/users/dcyfr",
       icon: "award",
-      description: "View my professional certifications"
+      description: "View professional certifications"
     },
     {
       platform: "goodreads",
       label: "Goodreads",
       url: "https://www.goodreads.com/dcyfr",
       icon: "book-open",
-      description: "Look through my bookshelf"
+      description: "Read through our bookshelf"
+    },
+    {
+      platform: "calendar",
+      label: "Calendar",
+      url: "https://cal.com/dcyfr",
+      icon: "calendar",
+      description: "Schedule a meeting"
     }
   ];
 

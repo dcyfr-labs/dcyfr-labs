@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { sanitizeUrl } from "@/lib/utils";
 import { socialLinks } from "@/data/socials";
+import { HOVER_EFFECTS } from "@/lib/design-tokens";
 import {
   Github,
   Linkedin,
@@ -64,7 +65,7 @@ export function SocialLinksGrid() {
             rel="noopener noreferrer"
             className="group"
           >
-            <Card className="p-4 h-full transition-colors hover:border-primary">
+            <Card className={`p-4 h-full ${HOVER_EFFECTS.cardSubtle}`}>
               <div className="flex items-center gap-3">
                 <div className="shrink-0">
                   <IconComponent

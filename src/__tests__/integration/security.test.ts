@@ -193,10 +193,10 @@ describe('Authentication & Security Integration', () => {
       vi.unstubAllEnvs()
     })
 
-    it('blocks /analytics in production', () => {
+    it('blocks /dev/analytics in production', () => {
       vi.stubEnv('NODE_ENV', 'production')
 
-      const request = new NextRequest('http://localhost:3000/analytics')
+      const request = new NextRequest('http://localhost:3000/dev/analytics')
       const response = proxy(request)
 
       // Should be rewritten to not-found
@@ -207,10 +207,10 @@ describe('Authentication & Security Integration', () => {
       vi.unstubAllEnvs()
     })
 
-    it('blocks /analytics subpaths in production', () => {
+    it('blocks /dev/analytics subpaths in production', () => {
       vi.stubEnv('NODE_ENV', 'production')
 
-      const request = new NextRequest('http://localhost:3000/analytics/details')
+      const request = new NextRequest('http://localhost:3000/dev/analytics/details')
       const response = proxy(request)
 
       const rewrite = response.headers.get('x-middleware-rewrite')

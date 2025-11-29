@@ -1,10 +1,5 @@
 import { getAllPosts } from "@/lib/blog";
 
-export type PostSource = {
-  label: string;
-  href: string;
-};
-
 export type PostImage = {
   url: string; // local path (e.g., "/blog/images/post-slug/hero.jpg") or external URL
   alt: string; // required for accessibility
@@ -30,7 +25,6 @@ export type Post = {
   archived?: boolean; // posts that are no longer updated
   draft?: boolean; // only visible in development
   body: string; // MDX content
-  sources?: PostSource[];
   previousSlugs?: string[]; // old slugs that should 301 redirect to current slug
   image?: PostImage; // optional featured image
   series?: {
