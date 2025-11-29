@@ -34,11 +34,11 @@ export function SiteHeader() {
             Blog
           </Link>
           <Link 
-            href="/projects" 
+            href="/portfolio" 
             className="hover:underline underline-offset-4 will-change-auto touch-target px-1.5 sm:px-2"
             prefetch={false}
           >
-            Projects
+            Portfolio
           </Link>
           <ThemeToggle />
           {process.env.NODE_ENV === "development" && <DevToolsDropdown />}

@@ -40,10 +40,10 @@ export function BottomNav() {
       isActive: pathname.startsWith("/blog"),
     },
     {
-      href: "/projects",
-      label: "Projects",
+      href: "/portfolio",
+      label: "Portfolio",
       icon: FolderGit2,
-      isActive: pathname.startsWith("/projects"),
+      isActive: pathname.startsWith("/portfolio"),
     },
     {
       href: "/contact",

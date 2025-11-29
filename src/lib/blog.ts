@@ -79,6 +79,7 @@ export function getAllPosts(): Post[] {
       summary: data.summary as string,
       publishedAt,
       updatedAt: data.updatedAt as string | undefined,
+      category: data.category as Post["category"] | undefined,
       tags: (data.tags as string[]) || [],
       featured: data.featured as boolean | undefined,
       archived: data.archived as boolean | undefined,

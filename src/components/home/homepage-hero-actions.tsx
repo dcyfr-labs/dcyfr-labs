@@ -26,7 +26,7 @@ export function HomepageHeroActions() {
     trackEvent({
       name: 'external_link_clicked',
       properties: {
-        url: '/projects',
+        url: '/portfolio',
         source: 'homepage_hero_secondary_cta',
       },
     });
@@ -50,8 +50,8 @@ export function HomepageHeroActions() {
         </Link>
       </Button>
       <Button variant="outline" asChild size="default">
-        <Link href="/projects" onClick={handleProjectsClick}>
-          View projects
+        <Link href="/portfolio" onClick={handleProjectsClick}>
+          View portfolio
         </Link>
       </Button>
       <Button variant="secondary" asChild size="default">

@@ -40,7 +40,7 @@ export interface ProjectCardProps {
 /**
  * ProjectCard Component
  * 
- * @deprecated **Currently unused** - The `/projects` page uses `ProjectList` which renders 
+ * @deprecated **Currently unused** - The `/portfolio` page uses `ProjectList` which renders 
  * cards inline with multiple layout variants. Consider using `ProjectList` for archive views
  * or `OtherProjectCard` for compact card displays. This component is retained for potential
  * future use (e.g., homepage featured projects section).
@@ -80,7 +80,7 @@ export interface ProjectCardProps {
  * ```
  * 
  * @see {@link /docs/components/skeleton-sync-strategy.md} for skeleton sync guidelines
- * @see ProjectList - Used for /projects archive page with grid/list/compact layouts
+ * @see ProjectList - Used for /portfolio archive page with grid/list/compact layouts
  * @see OtherProjectCard - Used for "Other Projects" section on detail pages
  */
 export function ProjectCard({ 
@@ -139,7 +139,7 @@ export function ProjectCard({
     if (target.closest('a, button')) {
       return;
     }
-    router.push(`/projects/${project.slug}`);
+    router.push(`/portfolio/${project.slug}`);
   };
   
   return (
@@ -151,7 +151,7 @@ export function ProjectCard({
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          router.push(`/projects/${project.slug}`);
+          router.push(`/portfolio/${project.slug}`);
         }
       }}
     >

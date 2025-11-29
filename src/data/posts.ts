@@ -15,6 +15,8 @@ export type PostImage = {
   position?: "top" | "left" | "right" | "background"; // list view placement hint
 };
 
+export type PostCategory = "development" | "security" | "career" | "ai" | "tutorial";
+
 export type Post = {
   id: string; // stable permanent identifier (never changes, independent of slug)
   slug: string; // unique URL segment (active/current slug - can change)
@@ -22,6 +24,7 @@ export type Post = {
   summary: string;
   publishedAt: string; // ISO string
   updatedAt?: string; // ISO string
+  category?: PostCategory; // primary category for filtering
   tags: string[];
   featured?: boolean;
   archived?: boolean; // posts that are no longer updated
@@ -54,6 +57,15 @@ export const postTagCounts = posts.reduce<Record<string, number>>((acc, post) =>
 }, {});
 
 export const allPostTags = Object.freeze(Object.keys(postTagCounts).sort());
+
+export const postCategoryCounts = posts.reduce<Record<string, number>>((acc, post) => {
+  if (post.category) {
+    acc[post.category] = (acc[post.category] ?? 0) + 1;
+  }
+  return acc;
+}, {});
+
+export const allPostCategories = Object.freeze(Object.keys(postCategoryCounts).sort());
 
 export const featuredPosts = Object.freeze(posts.filter((post) => post.featured));
 

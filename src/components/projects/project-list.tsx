@@ -44,7 +44,7 @@ interface ProjectListProps {
  * ProjectList Component
  *
  * Reusable component for displaying projects in different layout variants.
- * Used across the site: /projects page, search results, tag filters.
+ * Used across the site: /portfolio page, search results, tag filters.
  *
  * Features:
  * - **Layout variants**: grid (3-column), list (single column expanded), compact (dense)
@@ -66,7 +66,7 @@ export function ProjectList({
 
   // Handle clear filters
   const handleClearFilters = () => {
-    router.push('/projects');
+    router.push('/portfolio');
   };
 
   if (projects.length === 0) {
@@ -119,7 +119,7 @@ export function ProjectList({
                 {/* Subtle shine effect */}
                 <div className="holo-shine" />
 
-                <Link href={`/projects/${project.slug}`} className="flex flex-col h-full relative z-10">
+                <Link href={`/portfolio/${project.slug}`} className="flex flex-col h-full relative z-10">
                   {/* Project content */}
                   <div className="flex-1 p-4 sm:p-5 flex flex-col">
                     {/* Status and timeline */}
@@ -205,7 +205,7 @@ export function ProjectList({
                 {/* Subtle shine effect */}
                 <div className="holo-shine" />
 
-                <Link href={`/projects/${project.slug}`} className="block relative z-10">
+                <Link href={`/portfolio/${project.slug}`} className="block relative z-10">
                   <div className="p-5 md:p-6">
                     {/* Status and timeline */}
                     {project.timeline && (
@@ -285,7 +285,7 @@ export function ProjectList({
                 {/* Subtle shine effect */}
                 <div className="holo-shine" />
 
-                <Link href={`/projects/${project.slug}`} className="block relative z-10">
+                <Link href={`/portfolio/${project.slug}`} className="block relative z-10">
                   <div className="p-3">
                     {/* Status and timeline - compact */}
                     <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1.5">
@@ -346,7 +346,7 @@ export function ProjectList({
               {/* Subtle shine effect */}
               <div className="holo-shine" />
 
-              <Link href={`/projects/${project.slug}`} className="flex flex-col h-full relative z-10">
+              <Link href={`/portfolio/${project.slug}`} className="flex flex-col h-full relative z-10">
                 {/* Project content */}
                 <div className="flex-1 p-4 sm:p-5 flex flex-col">
                   {/* Status and timeline */}

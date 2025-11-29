@@ -412,7 +412,7 @@ describe('Authentication & Security Integration', () => {
     })
 
     it('nonce is available for all requests', () => {
-      const paths = ['/', '/blog', '/projects', '/about', '/api/contact']
+      const paths = ['/', '/blog', '/portfolio', '/about', '/api/contact']
 
       paths.forEach(path => {
         const request = new NextRequest(`http://localhost:3000${path}`)
@@ -427,7 +427,7 @@ describe('Authentication & Security Integration', () => {
     })
 
     it('CSP is applied to all routes', () => {
-      const paths = ['/', '/blog', '/projects', '/about']
+      const paths = ['/', '/blog', '/portfolio', '/about']
 
       paths.forEach(path => {
         const request = new NextRequest(`http://localhost:3000${path}`)

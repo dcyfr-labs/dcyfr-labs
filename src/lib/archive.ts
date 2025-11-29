@@ -2,7 +2,7 @@
  * Archive Pattern Library
  * 
  * Generic utilities for list/grid pages with filtering, sorting, and pagination.
- * Used by: /blog, /projects, and future archive pages.
+ * Used by: /blog, /portfolio, and future archive pages.
  * 
  * @example
  * ```tsx

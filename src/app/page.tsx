@@ -135,8 +135,11 @@ export default async function Home() {
   return (
     <PageLayout>
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
-      
-      <SectionNavigator scrollOffset={SCROLL_BEHAVIOR.offset.standard} className="space-y-10 md:space-y-14">
+
+      <SectionNavigator
+        scrollOffset={SCROLL_BEHAVIOR.offset.standard}
+        className="space-y-10 md:space-y-14"
+      >
         {/* Hero Section */}
         <Section>
           <ScrollReveal animation="fade-up">
@@ -149,7 +152,7 @@ export default async function Home() {
                   DCYFR Labs <Logo className="pb-2" width={32} height={32} />
                 </span>
               }
-              description="Hi, I&apos;m Drew, Cyber Architect and Tinkerer. I help organizations build resilient security programs that empower teams to move fast and stay secure."
+              description="Insights, projects, and tutorials exploring software development, cybersecurity, and emerging technologies."
               image={
                 <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40">
                   <Image
@@ -180,10 +183,8 @@ export default async function Home() {
         <Section className={PAGE_LAYOUT.section.container}>
           <ScrollReveal animation="fade-up" delay={215}>
             <div className={SPACING.content}>
-              <SectionHeader
-                title="Recent Activity"
-              />
-              <RecentActivity 
+              <SectionHeader title="Recent Activity" />
+              <RecentActivity
                 posts={recentPosts}
                 projects={[...featuredProjects]}
                 limit={5}
@@ -216,7 +217,7 @@ export default async function Home() {
             <div className={SPACING.content}>
               <SectionHeader
                 title="Featured Project"
-                actionHref="/projects"
+                actionHref="/portfolio"
               />
               <ProjectCard project={featuredProjects[0]} />
             </div>
@@ -228,8 +229,8 @@ export default async function Home() {
           <ScrollReveal animation="fade-up" delay={200}>
             <div className={SPACING.content}>
               <SectionHeader
-                title="Projects"
-                actionHref="/projects"
+                title="Portfolio"
+                actionHref="/portfolio"
               />
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
                 {projects
@@ -295,8 +296,7 @@ export default async function Home() {
             </div>
           </ScrollReveal>
         </Section> */}
-
       </SectionNavigator>
-    </PageLayout> 
+    </PageLayout>
   );
 }

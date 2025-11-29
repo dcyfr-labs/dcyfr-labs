@@ -2,7 +2,7 @@
  * Article Pattern Library
  * 
  * Generic utilities for individual item pages with metadata, navigation, and related content.
- * Used by: /blog/[slug], /projects/[slug], and future individual pages.
+ * Used by: /blog/[slug], /portfolio/[slug], and future individual pages.
  * 
  * @example
  * ```tsx

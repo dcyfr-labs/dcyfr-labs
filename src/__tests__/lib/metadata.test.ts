@@ -161,28 +161,28 @@ describe('metadata.ts', () => {
 
     it('should append item count to description', () => {
       const options: ArchiveMetadataOptions = {
-        title: 'Projects',
-        description: 'All projects',
-        path: '/projects',
+        title: 'Portfolio',
+        description: 'All portfolio items',
+        path: '/portfolio',
         itemCount: 5,
       };
 
       const metadata = createArchivePageMetadata(options);
 
-      expect(metadata.description).toBe('All projects (5 items)');
+      expect(metadata.description).toBe('All portfolio items (5 items)');
     });
 
     it('should use singular "item" for count of 1', () => {
       const options: ArchiveMetadataOptions = {
-        title: 'Projects',
-        description: 'All projects',
-        path: '/projects',
+        title: 'Portfolio',
+        description: 'All portfolio items',
+        path: '/portfolio',
         itemCount: 1,
       };
 
       const metadata = createArchivePageMetadata(options);
 
-      expect(metadata.description).toBe('All projects (1 item)');
+      expect(metadata.description).toBe('All portfolio items (1 item)');
     });
 
     it('should append active tag to title and description', () => {
@@ -613,14 +613,14 @@ describe('metadata.ts', () => {
 
     it('should correctly structure item list elements', () => {
       const options: CollectionSchemaOptions = {
-        name: 'Projects',
-        description: 'My projects',
-        url: 'https://cyberdrew.dev/projects',
+        name: 'Portfolio',
+        description: 'My portfolio',
+        url: 'https://cyberdrew.dev/portfolio',
         items: [
           {
             name: 'Project One',
             description: 'First project',
-            url: 'https://cyberdrew.dev/projects/one',
+            url: 'https://cyberdrew.dev/portfolio/one',
             datePublished: baseDate,
             author: 'Drew',
           },
@@ -635,7 +635,7 @@ describe('metadata.ts', () => {
       expect(item.item['@type']).toBe('Article');
       expect(item.item.name).toBe('Project One');
       expect(item.item.description).toBe('First project');
-      expect(item.item.url).toBe('https://cyberdrew.dev/projects/one');
+      expect(item.item.url).toBe('https://cyberdrew.dev/portfolio/one');
       expect(item.item.datePublished).toBe(baseDate.toISOString());
       expect(item.item.author).toEqual({ '@type': 'Person', name: 'Drew' });
     });

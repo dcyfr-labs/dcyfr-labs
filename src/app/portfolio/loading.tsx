@@ -4,17 +4,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { TYPOGRAPHY, CONTAINER_WIDTHS } from "@/lib/design-tokens";
 
 /**
- * Loading state for projects page.
+ * Loading state for portfolio page.
  * Uses same container structure as page.tsx to prevent layout shift.
  * 
- * @see src/app/projects/page.tsx - Must match structure exactly
+ * @see src/app/portfolio/page.tsx - Must match structure exactly
  */
 export default function Loading() {
   return (
     <div className={`container ${CONTAINER_WIDTHS.archive} mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-20 pb-8`}>
       {/* Header - matches page.tsx structure */}
       <div className="mb-8">
-        <h1 className={TYPOGRAPHY.h1.hero}>Projects</h1>
+        <h1 className={TYPOGRAPHY.h1.hero}>Portfolio</h1>
         <p className="text-muted-foreground">Browse my portfolio of development projects, open-source contributions, and published work.</p>
       </div>
 

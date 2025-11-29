@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { FileText, GitCommit, FolderKanban, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Post } from "@/data/posts";
-import type { Project } from "@/data/projects";
+import type { Project, ProjectCategory } from "@/data/projects";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
 
 type ActivityType = "post" | "project" | "commit";
@@ -19,6 +19,7 @@ interface ActivityItem {
   date: string;
   href: string;
   tags?: string[];
+  category?: ProjectCategory; // For projects, store the category
 }
 
 interface RecentActivityProps {
@@ -60,8 +61,9 @@ export function RecentActivity({ posts, projects, limit = 5 }: RecentActivityPro
       title: project.title,
       description: project.description,
       date: project.timeline || new Date().toISOString(),
-      href: `/projects#${project.slug}`,
+      href: `/portfolio/${project.slug}`,
       tags: project.tags?.slice(0, 2),
+      category: project.category,
     })),
   ];
 
@@ -85,23 +87,48 @@ export function RecentActivity({ posts, projects, limit = 5 }: RecentActivityPro
     }
   };
 
-  const getTypeLabel = (type: ActivityType) => {
-    switch (type) {
+  const categoryDisplayMap: Record<ProjectCategory, string> = {
+    code: "Code",
+    nonprofit: "Nonprofit",
+    community: "Community",
+    photography: "Photography",
+    startup: "Startup",
+  };
+
+  const getTypeLabel = (activity: ActivityItem) => {
+    switch (activity.type) {
       case "post":
         return "Article";
       case "project":
-        return "Project";
+        return activity.category ? categoryDisplayMap[activity.category] : "Project";
       case "commit":
         return "Commit";
     }
   };
 
-  const getTypeBadgeClass = (type: ActivityType) => {
-    switch (type) {
+  const getCategoryBadgeClass = (category?: ProjectCategory) => {
+    switch (category) {
+      case "code":
+        return "border-purple-500/70 bg-purple-500/15 text-purple-700 dark:text-purple-300";
+      case "nonprofit":
+        return "border-emerald-500/70 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300";
+      case "community":
+        return "border-amber-500/70 bg-amber-500/15 text-amber-700 dark:text-amber-300";
+      case "photography":
+        return "border-rose-500/70 bg-rose-500/15 text-rose-700 dark:text-rose-300";
+      case "startup":
+        return "border-cyan-500/70 bg-cyan-500/15 text-cyan-700 dark:text-cyan-300";
+      default:
+        return "border-purple-500/70 bg-purple-500/15 text-purple-700 dark:text-purple-300";
+    }
+  };
+
+  const getTypeBadgeClass = (activity: ActivityItem) => {
+    switch (activity.type) {
       case "post":
         return "border-blue-500/70 bg-blue-500/15 text-blue-700 dark:text-blue-300";
       case "project":
-        return "border-purple-500/70 bg-purple-500/15 text-purple-700 dark:text-purple-300";
+        return getCategoryBadgeClass(activity.category);
       case "commit":
         return "border-green-500/70 bg-green-500/15 text-green-700 dark:text-green-300";
     }
@@ -167,9 +194,9 @@ export function RecentActivity({ posts, projects, limit = 5 }: RecentActivityPro
                     </Link>
                     <Badge 
                       variant="outline" 
-                      className={cn("shrink-0 text-xs", getTypeBadgeClass(activity.type))}
+                      className={cn("shrink-0 text-xs", getTypeBadgeClass(activity))}
                     >
-                      {getTypeLabel(activity.type)}
+                      {getTypeLabel(activity)}
                     </Badge>
                   </div>
 

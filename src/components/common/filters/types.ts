@@ -20,6 +20,10 @@ export interface FilterBadgesProps {
   icon?: React.ComponentType<{ className?: string }>;
   label?: string;
   className?: string;
+  /** Map item values to display labels (e.g., { "community": "Community" }) */
+  displayMap?: Record<string, string>;
+  /** If true, compare selected items case-insensitively */
+  caseInsensitive?: boolean;
 }
 
 export interface FilterSearchInputProps {

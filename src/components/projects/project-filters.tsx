@@ -1,6 +1,6 @@
 "use client";
 
-import { TrendingUp, Code2, Tags, Activity } from "lucide-react";
+import { TrendingUp, Tags, Activity, FolderOpen } from "lucide-react";
 import {
   useFilterParams,
   useFilterSearch,
@@ -13,11 +13,12 @@ import {
 } from "@/components/common/filters";
 
 interface ProjectFiltersProps {
+  selectedCategory: string;
   selectedTags: string[];
-  selectedTech: string[];
   status: string | null;
+  categoryList: string[];
+  categoryDisplayMap: Record<string, string>;
   tagList: string[];
-  techList: string[];
   query: string;
   sortBy?: string;
   totalResults: number;
@@ -43,37 +44,39 @@ const SORT_OPTIONS: FilterOption[] = [
  *
  * Consolidated search and filter interface for projects with:
  * - Search input with debounce
- * - Tech stack multi-select
- * - Category/tag multi-select
+ * - Category filter (primary classification)
+ * - Tag multi-select (includes technologies)
  * - Status filter (active/in-progress/archived)
  * - Sort by dropdown (newest, oldest, A-Z)
  * - Clear all filters button
  *
- * @param selectedTags - Currently selected category tags
- * @param selectedTech - Currently selected tech stack filters
+ * @param selectedCategory - Currently selected category (lowercase)
+ * @param selectedTags - Currently selected tags (lowercase for matching)
  * @param status - Currently selected status filter (active/in-progress/archived/all)
- * @param tagList - Array of available category tags
- * @param techList - Array of available technologies
+ * @param categoryList - Array of available categories (lowercase)
+ * @param categoryDisplayMap - Map of lowercase category to display name
+ * @param tagList - Array of available tags (proper casing)
  * @param query - Current search query
  * @param sortBy - Current sort option (newest/oldest/alpha)
  */
 export function ProjectFilters({
+  selectedCategory,
   selectedTags,
-  selectedTech,
   status,
+  categoryList,
+  categoryDisplayMap,
   tagList,
-  techList,
   query,
   sortBy = 'newest',
   totalResults,
   hasActiveFilters,
 }: ProjectFiltersProps) {
-  const { updateParam, toggleMultiParam, clearAll } = useFilterParams({ basePath: "/projects" });
-  const { searchValue, setSearchValue } = useFilterSearch({ query, basePath: "/projects" });
+  const { updateParam, toggleMultiParam, clearAll } = useFilterParams({ basePath: "/portfolio" });
+  const { searchValue, setSearchValue } = useFilterSearch({ query, basePath: "/portfolio" });
 
   const { hasActive, count } = useActiveFilters({
+    category: selectedCategory,
     tags: selectedTags,
-    tech: selectedTech,
     status,
     query,
     sortBy,
@@ -81,8 +84,10 @@ export function ProjectFilters({
     sortBy: "newest",
   });
 
-  const toggleTag = (tag: string) => toggleMultiParam("tag", tag, selectedTags);
-  const toggleTech = (tech: string) => toggleMultiParam("tech", tech, selectedTech);
+  // Category uses single-select with lowercase URL values
+  const setCategory = (category: string) => updateParam("category", category, "");
+  // Tags use lowercase for URL matching
+  const toggleTag = (tag: string) => toggleMultiParam("tag", tag.toLowerCase(), selectedTags);
 
   return (
     <div className="space-y-6">
@@ -119,20 +124,21 @@ export function ProjectFilters({
       </div>
       */}
 
-      {/* Tech Stack Badges */}
-      {techList.length > 0 && (
+      {/* Category Badges - Primary classification */}
+      {categoryList.length > 0 && (
         <div className="space-y-2">
           <FilterBadges
-            items={techList}
-            selected={selectedTech}
-            onToggle={toggleTech}
-            icon={Code2}
-            label="Tech Stack"
+            items={categoryList}
+            selected={selectedCategory ? [selectedCategory] : []}
+            onToggle={(cat) => setCategory(selectedCategory === cat ? "" : cat)}
+            icon={FolderOpen}
+            label="Categories"
+            displayMap={categoryDisplayMap}
           />
         </div>
       )}
 
-      {/* Category Tag Badges */}
+      {/* Tag Badges - Secondary classification */}
       {tagList.length > 0 && (
         <div className="space-y-2">
           <FilterBadges
@@ -140,7 +146,8 @@ export function ProjectFilters({
             selected={selectedTags}
             onToggle={toggleTag}
             icon={Tags}
-            label="Categories"
+            label="Tags"
+            caseInsensitive
           />
         </div>
       )}

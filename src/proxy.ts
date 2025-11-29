@@ -33,7 +33,7 @@ export default function proxy(request: NextRequest) {
   // Protect developer-only pages at request time. Even if a page was
   // prerendered during build as development content, middleware runs at
   // request time so we can reliably serve a 404 in non-development envs.
-  const devOnlyPaths = ["/analytics"];
+  const devOnlyPaths = ["/dev"];
   const pathname = request.nextUrl.pathname;
   if (!isDevelopment) {
     for (const p of devOnlyPaths) {

@@ -7,17 +7,17 @@ import type { ProjectImage } from "@/data/projects";
  */
 export const DEFAULT_PROJECT_IMAGES = {
   tech: {
-    url: "/projects/default/tech.svg",
+    url: "/portfolio/default/tech.svg",
     alt: "Default tech project background with code and circuits",
     position: "center" as const,
   },
   design: {
-    url: "/projects/default/design.svg",
+    url: "/portfolio/default/design.svg",
     alt: "Default design project background with geometric patterns",
     position: "center" as const,
   },
   general: {
-    url: "/projects/default/general.svg",
+    url: "/portfolio/default/general.svg",
     alt: "Default project background with abstract gradient",
     position: "center" as const,
   },

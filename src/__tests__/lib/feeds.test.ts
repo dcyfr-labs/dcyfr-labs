@@ -199,10 +199,10 @@ describe('feeds.ts', () => {
 
       const item = projectToFeedItem(project);
 
-      expect(item.id).toBe('https://cyberdrew.dev/projects/test-project');
+      expect(item.id).toBe('https://cyberdrew.dev/portfolio/test-project');
       expect(item.title).toBe('Test Project');
       expect(item.description).toBe('A test project');
-      expect(item.link).toBe('https://cyberdrew.dev/projects/test-project');
+      expect(item.link).toBe('https://cyberdrew.dev/portfolio/test-project');
       expect(item.author).toEqual({
         name: 'Drew',
         email: 'drew@cyberdrew.dev',
@@ -322,7 +322,7 @@ describe('feeds.ts', () => {
         description: 'Has image',
         timeline: '2024',
         image: {
-          url: '/projects/test.png',
+          url: '/portfolio/test.png',
           alt: 'Project image',
         },
       });
@@ -330,7 +330,7 @@ describe('feeds.ts', () => {
       const item = projectToFeedItem(project);
 
       expect(item.image).toEqual({
-        url: 'https://cyberdrew.dev/projects/test.png',
+        url: 'https://cyberdrew.dev/portfolio/test.png',
         type: 'image/png',
       });
     });
@@ -746,8 +746,8 @@ describe('feeds.ts', () => {
       const xml = await buildProjectsFeed(testProjects);
 
       // Apostrophe is escaped in XML element text
-      expect(xml).toContain("DCYFR Labs - Projects");
-      expect(xml).toContain('/projects');
+      expect(xml).toContain("DCYFR Labs - Portfolio");
+      expect(xml).toContain('/portfolio');
     });
   });
 

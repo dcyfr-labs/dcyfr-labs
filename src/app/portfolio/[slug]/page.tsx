@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: `${pageTitle} — ${SITE_TITLE_PLAIN}`,
       description: pageDescription,
       type: "article",
-      url: `${SITE_URL}/projects/${project.slug}`,
+      url: `${SITE_URL}/portfolio/${project.slug}`,
       siteName: SITE_TITLE_PLAIN,
       images: [
         {
@@ -111,7 +111,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
     "@type": "SoftwareSourceCode",
     name: project.title,
     description: project.description,
-    url: `${SITE_URL}/projects/${project.slug}`,
+    url: `${SITE_URL}/portfolio/${project.slug}`,
     author: {
       "@type": "Person",
       name: AUTHOR_NAME,
@@ -135,13 +135,13 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         suppressHydrationWarning
       />
       <div className={getContainerClasses('standard')}>
-        {/* Back to Projects */}
+        {/* Back to Portfolio */}
         <Link
-          href="/projects"
+          href="/portfolio"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
         >
           <ArrowLeft className="h-4 w-4" />
-          <span>Back to Projects</span>
+          <span>Back to Portfolio</span>
         </Link>
         
         {/* Project Header with Background Image */}

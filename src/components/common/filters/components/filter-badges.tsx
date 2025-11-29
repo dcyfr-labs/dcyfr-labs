@@ -11,8 +11,26 @@ export function FilterBadges({
   icon: Icon,
   label,
   className,
+  displayMap,
+  caseInsensitive,
 }: FilterBadgesProps) {
   if (items.length === 0) return null;
+
+  // Check if item is selected (supports case-insensitive comparison)
+  const isItemSelected = (item: string) => {
+    if (caseInsensitive) {
+      return selected.some((s) => s.toLowerCase() === item.toLowerCase());
+    }
+    return selected.includes(item);
+  };
+
+  // Get display label for item
+  const getDisplayLabel = (item: string) => {
+    if (displayMap && displayMap[item]) {
+      return displayMap[item];
+    }
+    return item;
+  };
 
   return (
     <div className={className}>
@@ -31,7 +49,7 @@ export function FilterBadges({
       )}
       <div className="flex flex-wrap gap-2">
         {items.map((item) => {
-          const isSelected = selected.includes(item);
+          const isSelected = isItemSelected(item);
           return (
             <Badge
               key={item}
@@ -39,7 +57,7 @@ export function FilterBadges({
               className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors select-none"
               onClick={() => onToggle(item)}
             >
-              {item}
+              {getDisplayLabel(item)}
               {isSelected && <X className="ml-1 h-3 w-3" />}
             </Badge>
           );

@@ -23,6 +23,20 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
     qualities: [75, 90],
   },
+  async redirects() {
+    return [
+      {
+        source: '/projects',
+        destination: '/portfolio',
+        permanent: true,
+      },
+      {
+        source: '/projects/:path*',
+        destination: '/portfolio/:path*',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default withSentryConfig(withBundleAnalyzer(withBotId(withAxiom(nextConfig))), {

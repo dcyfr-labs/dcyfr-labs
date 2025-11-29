@@ -39,7 +39,7 @@ beforeAll(() => {
 
 // Import loading components
 import HomeLoading from '@/app/loading';
-import ProjectsLoading from '@/app/projects/loading';
+import PortfolioLoading from '@/app/portfolio/loading';
 import BlogLoading from '@/app/blog/loading';
 import AboutLoading from '@/app/about/loading';
 import ContactLoading from '@/app/contact/loading';
@@ -93,9 +93,9 @@ describe('Skeleton Structural Sync', () => {
     });
   });
 
-  describe('Projects Page Loading', () => {
+  describe('Portfolio Page Loading', () => {
     it('should use ArchiveLayout structure', () => {
-      const { container } = render(<ProjectsLoading />);
+      const { container } = render(<PortfolioLoading />);
 
       // Should have container with archive width from design tokens
       const containerDiv = container.querySelector('.container');
@@ -108,7 +108,7 @@ describe('Skeleton Structural Sync', () => {
     });
 
     it('should have GitHub heatmap skeleton', () => {
-      const { container } = render(<ProjectsLoading />);
+      const { container } = render(<PortfolioLoading />);
       
       // GitHub heatmap should be present (using skeleton-shimmer class)
       expectSkeletons(container, () => {
@@ -118,7 +118,7 @@ describe('Skeleton Structural Sync', () => {
     });
 
     it('should have projects grid with multiple cards', () => {
-      const { container } = render(<ProjectsLoading />);
+      const { container } = render(<PortfolioLoading />);
       
       // Should have grid layout
       const gridElements = container.querySelectorAll('[class*="grid"]');
@@ -266,7 +266,7 @@ describe('Skeleton Structural Sync', () => {
   describe('Common Skeleton Patterns', () => {
     const loadingComponents = [
       { name: 'Home', component: HomeLoading },
-      { name: 'Projects', component: ProjectsLoading },
+      { name: 'Portfolio', component: PortfolioLoading },
       { name: 'Blog', component: BlogLoading },
       { name: 'About', component: AboutLoading },
       { name: 'Contact', component: ContactLoading },

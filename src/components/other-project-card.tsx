@@ -54,7 +54,7 @@ export function OtherProjectCard({
 
   return (
     <Link
-      href={`/projects/${project.slug}`}
+      href={`/portfolio/${project.slug}`}
       className="group block"
     >
       <Card className={cn("h-full overflow-hidden relative flex flex-col holo-card holo-card-3d", HOVER_EFFECTS.card)}>

@@ -17,8 +17,11 @@ import { useSidebarContext } from "@/components/blog/blog-layout-wrapper";
 import { useBlogKeyboard } from "@/components/blog/blog-keyboard-provider";
 
 interface BlogSidebarProps {
+  selectedCategory: string;
   selectedTags: string[];
   readingTime: string;
+  categoryList: string[];
+  categoryDisplayMap: Record<string, string>;
   tagList: Array<{ tag: string; count: number }>;
   query: string;
   sortBy: string;
@@ -31,12 +34,15 @@ interface BlogSidebarProps {
  * Blog Sidebar Component
  * 
  * Sticky sidebar for blog filtering and navigation on desktop screens.
- * Provides search, view toggle, sorting, filtering, and tag selection.
+ * Provides search, view toggle, sorting, filtering, category and tag selection.
  * Collapses to top section on mobile/tablet.
  */
 export function BlogSidebar({
+  selectedCategory,
   selectedTags,
   readingTime,
+  categoryList,
+  categoryDisplayMap,
   tagList,
   query,
   sortBy,
@@ -52,6 +58,7 @@ export function BlogSidebar({
   const { searchInputRef } = useBlogKeyboard();
   const [expandedSections, setExpandedSections] = useState({
     filters: true,
+    categories: true,
     topics: true,
   });
 
@@ -87,15 +94,32 @@ export function BlogSidebar({
 
   const toggleTag = (tag: string) => {
     const params = new URLSearchParams(searchParams.toString());
+    const lowerTag = tag.toLowerCase();
     const currentTags = selectedTags;
-    const newTags = currentTags.includes(tag)
-      ? currentTags.filter(t => t !== tag)
-      : [...currentTags, tag];
+    const newTags = currentTags.includes(lowerTag)
+      ? currentTags.filter(t => t !== lowerTag)
+      : [...currentTags, lowerTag];
     
     if (newTags.length === 0) {
       params.delete("tag");
     } else {
       params.set("tag", newTags.join(","));
+    }
+    
+    params.delete("page");
+    
+    startTransition(() => {
+      router.push(`/blog?${params.toString()}`, { scroll: false });
+    });
+  };
+
+  const setCategory = (category: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    
+    if (!category || category === selectedCategory) {
+      params.delete("category");
+    } else {
+      params.set("category", category);
     }
     
     params.delete("page");
@@ -114,13 +138,14 @@ export function BlogSidebar({
 
   const activeFilterCount = [
     query,
+    selectedCategory && "category",
     selectedTags.length > 0 && "tags",
     readingTime && "readingTime",
     sortBy !== "newest" && "sort",
     dateRange !== "all" && "date",
   ].filter(Boolean).length;
 
-  const toggleSection = (section: "filters" | "topics") => {
+  const toggleSection = (section: "filters" | "categories" | "topics") => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
@@ -245,6 +270,43 @@ export function BlogSidebar({
         )}
       </div>
 
+      {/* Categories */}
+      {categoryList.length > 0 && (
+        <div className="space-y-3">
+          <button
+            onClick={() => toggleSection("categories")}
+            className="flex items-center justify-between w-full text-sm font-medium"
+          >
+            <span>Categories</span>
+            {expandedSections.categories ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4" />
+            )}
+          </button>
+
+          {expandedSections.categories && (
+            <div className="flex flex-wrap gap-2 pt-2">
+              {categoryList.map((category) => {
+                const isSelected = selectedCategory === category;
+                const displayName = categoryDisplayMap[category] || category;
+                return (
+                  <Badge
+                    key={category}
+                    variant={isSelected ? "default" : "outline"}
+                    className="cursor-pointer hover:bg-accent transition-colors"
+                    onClick={() => setCategory(category)}
+                  >
+                    {displayName}
+                    {isSelected && <X className="ml-1 h-3 w-3" />}
+                  </Badge>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Topics (Tags) */}
       <div className="space-y-3">
         <button
@@ -262,7 +324,7 @@ export function BlogSidebar({
         {expandedSections.topics && tagList.length > 0 && (
           <div className="flex flex-wrap gap-2 pt-2">
             {tagList.map(({ tag, count }) => {
-              const isSelected = selectedTags.includes(tag);
+              const isSelected = selectedTags.some(t => t.toLowerCase() === tag.toLowerCase());
               return (
                 <Badge
                   key={tag}

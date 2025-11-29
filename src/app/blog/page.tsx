@@ -43,9 +43,13 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     return Array.isArray(value) ? value[0] ?? "" : value ?? "";
   };
   
-  // Support multiple tags (comma-separated)
+  // Support category filter (primary classification - lowercase in URL)
+  const categoryParam = getParam("category");
+  const selectedCategory = categoryParam ? categoryParam.toLowerCase() : "";
+  
+  // Support multiple tags (comma-separated, case-insensitive)
   const tagParam = getParam("tag");
-  const selectedTags = tagParam ? tagParam.split(",").filter(Boolean) : [];
+  const selectedTags = tagParam ? tagParam.split(",").filter(Boolean).map(t => t.toLowerCase()) : [];
   const query = getParam("q");
   const readingTime = getParam("readingTime");
   const sortBy = getParam("sortBy") || "newest";
@@ -53,10 +57,17 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const layoutParam = getParam("layout");
   const layout = (["grid", "list", "magazine", "compact"].includes(layoutParam)) ? layoutParam as "grid" | "list" | "magazine" | "compact" : "compact";
   
+  // Apply category filter first (case-insensitive)
+  const postsWithCategoryFilter = selectedCategory
+    ? posts.filter((post) => 
+        post.category && post.category.toLowerCase() === selectedCategory
+      )
+    : posts;
+  
   // Apply date range filter
   const now = new Date();
   const postsWithDateFilter = dateRange !== "all"
-    ? posts.filter((post) => {
+    ? postsWithCategoryFilter.filter((post) => {
         const postDate = new Date(post.publishedAt);
         const daysDiff = Math.floor((now.getTime() - postDate.getTime()) / (1000 * 60 * 60 * 24));
         
@@ -67,7 +78,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         }
         return true;
       })
-    : posts;
+    : postsWithCategoryFilter;
   
   // Apply reading time filter (custom filter not in Archive pattern)
   const postsWithReadingTimeFilter = readingTime
@@ -80,10 +91,12 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       })
     : postsWithDateFilter;
   
-  // Apply multiple tag filter manually before Archive pattern
+  // Apply multiple tag filter manually before Archive pattern (case-insensitive)
   const postsWithTagFilter = selectedTags.length > 0
     ? postsWithReadingTimeFilter.filter((post) =>
-        selectedTags.every((tag) => post.tags.includes(tag))
+        selectedTags.every((tag) => 
+          post.tags.some(t => t.toLowerCase() === tag)
+        )
       )
     : postsWithReadingTimeFilter;
   
@@ -141,8 +154,32 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     count: sortedArchiveData.allFilteredItems.filter(post => post.tags.includes(tag)).length,
   }));
   
+  // Get available categories from all posts (for filter UI)
+  // Categories use proper casing for display
+  const categoryDisplayMap: Record<string, string> = {
+    development: "Development",
+    security: "Security",
+    career: "Career",
+    ai: "AI",
+    tutorial: "Tutorial",
+  };
+  const availableCategories = Array.from(
+    new Set(
+      posts
+        .map((p) => p.category)
+        .filter((c): c is NonNullable<typeof c> => !!c)
+    )
+  ).sort();
+  
   // Check if filters are active for empty state
-  const hasActiveFilters = Boolean(query || selectedTags.length > 0 || readingTime || sortBy !== 'newest' || dateRange !== 'all');
+  const hasActiveFilters = Boolean(
+    query || 
+    selectedCategory ||
+    selectedTags.length > 0 || 
+    readingTime || 
+    sortBy !== 'newest' || 
+    dateRange !== 'all'
+  );
   
   // Get badge metadata (latest and hottest posts)
   const { latestSlug, hottestSlug } = await getPostBadgeMetadata(posts);
@@ -198,8 +235,11 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
           <div className="hidden lg:block">
             <div className="sticky top-24">
               <BlogSidebar
+                selectedCategory={selectedCategory}
                 selectedTags={selectedTags}
                 readingTime={readingTime}
+                categoryList={availableCategories}
+                categoryDisplayMap={categoryDisplayMap}
                 tagList={availableTagsWithCounts}
                 query={query}
                 sortBy={sortBy}
@@ -226,8 +266,11 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
             {/* Mobile filters (below lg breakpoint) */}
             <div className="lg:hidden mb-6 p-4 border rounded-lg">
               <BlogFilters 
+                selectedCategory={selectedCategory}
                 selectedTags={selectedTags}
-                readingTime={readingTime} 
+                readingTime={readingTime}
+                categoryList={availableCategories}
+                categoryDisplayMap={categoryDisplayMap}
                 tagList={sortedArchiveData.availableTags}
                 query={query}
                 sortBy={sortBy}

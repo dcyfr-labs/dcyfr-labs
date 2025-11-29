@@ -95,7 +95,7 @@ export function ProjectCard({
     if (target.closest('a, button')) {
       return;
     }
-    router.push(`/projects/${project.slug}`);
+    router.push(`/portfolio/${project.slug}`);
   };
   
   return (
@@ -107,7 +107,7 @@ export function ProjectCard({
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          router.push(`/projects/${project.slug}`);
+          router.push(`/portfolio/${project.slug}`);
         }
       }}
     >

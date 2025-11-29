@@ -63,8 +63,14 @@ export function MobileNav() {
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
     { href: "/blog", label: "Blog" },
-    { href: "/projects", label: "Projects" },
+    { href: "/portfolio", label: "Portfolio" },
     { href: "/contact", label: "Contact" },
+  ];
+
+  const portfolioCategories = [
+    { href: "/portfolio?category=startup", label: "Startup" },
+    { href: "/portfolio?category=community", label: "Community" },
+    { href: "/portfolio?category=nonprofit", label: "Nonprofit" }
   ];
 
   return (
@@ -87,22 +93,43 @@ export function MobileNav() {
           {navItems.map((item) => {
             const isActive = pathname === item.href || 
               (item.href !== "/" && pathname.startsWith(item.href));
+            const isPortfolio = item.href === "/portfolio";
             
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  // eslint-disable-next-line no-restricted-syntax
-                  "flex items-center h-14 px-4 rounded-md text-base font-medium transition-colors",
-                  "hover:bg-accent hover:text-accent-foreground",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  isActive && "bg-accent text-accent-foreground"
+              <div key={item.href}>
+                <Link
+                  href={item.href}
+                  className={cn(
+                    // eslint-disable-next-line no-restricted-syntax
+                    "flex items-center h-14 px-4 rounded-md text-base font-medium transition-colors",
+                    "hover:bg-accent hover:text-accent-foreground",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    isActive && "bg-accent text-accent-foreground"
+                  )}
+                  prefetch={false}
+                >
+                  {item.label}
+                </Link>
+                {/* Portfolio subcategories */}
+                {isPortfolio && (
+                  <div className="ml-4 flex flex-col gap-0.5">
+                    {portfolioCategories.map((cat) => (
+                      <Link
+                        key={cat.href}
+                        href={cat.href}
+                        className={cn(
+                          "flex items-center h-10 px-4 rounded-md text-sm text-muted-foreground transition-colors",
+                          "hover:bg-accent hover:text-accent-foreground",
+                          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        )}
+                        prefetch={false}
+                      >
+                        {cat.label}
+                      </Link>
+                    ))}
+                  </div>
                 )}
-                prefetch={false}
-              >
-                {item.label}
-              </Link>
+              </div>
             );
           })}
         </nav>

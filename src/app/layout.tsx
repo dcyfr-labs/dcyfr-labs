@@ -86,7 +86,7 @@ export const metadata: Metadata = {
       "application/atom+xml": [
         { url: `${SITE_URL}/feed`, title: `${SITE_TITLE} — All Content` },
         { url: `${SITE_URL}/blog/feed`, title: `${SITE_TITLE} — Blog` },
-        { url: `${SITE_URL}/projects/feed`, title: `${SITE_TITLE} — Projects` },
+        { url: `${SITE_URL}/portfolio/feed`, title: `${SITE_TITLE} — Portfolio` },
       ],
     },
   },

@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock, TrendingUp, Calendar } from "lucide-react";
+import { Clock, TrendingUp, Calendar, FolderOpen, Tags } from "lucide-react";
 import {
   useFilterParams,
   useFilterSearch,
@@ -13,8 +13,11 @@ import {
 } from "@/components/common/filters";
 
 interface BlogFiltersProps {
+  selectedCategory: string;
   selectedTags: string[];
   readingTime: string | null;
+  categoryList: string[];
+  categoryDisplayMap: Record<string, string>;
   tagList: string[];
   query: string;
   sortBy?: string;
@@ -46,22 +49,29 @@ const DATE_RANGE_OPTIONS: FilterOption[] = [
  *
  * Consolidated search and filter interface with:
  * - Search input with debounce
+ * - Category filter (primary classification)
  * - Reading time dropdown
  * - Sort by dropdown (newest, popular, etc.)
  * - Date range filter
  * - Multi-select tag badges
  * - Clear all filters button
  *
+ * @param selectedCategory - Currently selected category (lowercase)
  * @param selectedTags - Currently selected tags array
  * @param readingTime - Currently selected reading time filter (quick/medium/deep)
+ * @param categoryList - Array of available categories (lowercase)
+ * @param categoryDisplayMap - Map of lowercase category to display name
  * @param tagList - Array of available tags
  * @param query - Current search query
  * @param sortBy - Current sort option (newest/popular)
  * @param dateRange - Current date range filter (30d/90d/year/all)
  */
 export function BlogFilters({
+  selectedCategory,
   selectedTags,
   readingTime,
+  categoryList,
+  categoryDisplayMap,
   tagList,
   query,
   sortBy = 'newest',
@@ -71,6 +81,7 @@ export function BlogFilters({
   const { searchValue, setSearchValue } = useFilterSearch({ query, basePath: "/blog" });
 
   const { hasActive, count } = useActiveFilters({
+    category: selectedCategory,
     tags: selectedTags,
     readingTime,
     query,
@@ -81,7 +92,10 @@ export function BlogFilters({
     dateRange: "all",
   });
 
-  const toggleTag = (tag: string) => toggleMultiParam("tag", tag, selectedTags);
+  // Category uses single-select with lowercase URL values
+  const setCategory = (category: string) => updateParam("category", category, "");
+  // Tags use lowercase for URL matching
+  const toggleTag = (tag: string) => toggleMultiParam("tag", tag.toLowerCase(), selectedTags);
 
   return (
     <div className="space-y-6">
@@ -132,14 +146,33 @@ export function BlogFilters({
         />
       </div>
 
+      {/* Category Badges - Primary classification */}
+      {categoryList.length > 0 && (
+        <div className="space-y-2">
+          <FilterBadges
+            items={categoryList}
+            selected={selectedCategory ? [selectedCategory] : []}
+            onToggle={(cat) => setCategory(selectedCategory === cat ? "" : cat)}
+            icon={FolderOpen}
+            label="Categories"
+            displayMap={categoryDisplayMap}
+          />
+        </div>
+      )}
+
       {/* Tag Badges */}
-      <div className="space-y-3">
-        <FilterBadges
-          items={tagList}
-          selected={selectedTags}
-          onToggle={toggleTag}
-        />
-      </div>
+      {tagList.length > 0 && (
+        <div className="space-y-3">
+          <FilterBadges
+            items={tagList}
+            selected={selectedTags}
+            onToggle={toggleTag}
+            icon={Tags}
+            label="Tags"
+            caseInsensitive
+          />
+        </div>
+      )}
     </div>
   );
 }

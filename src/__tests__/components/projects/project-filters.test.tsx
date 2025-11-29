@@ -45,20 +45,35 @@ vi.mock("@/components/common/filters", async () => {
         ))}
       </select>
     ),
-    FilterBadges: ({ items, selected, onToggle }: { items: string[]; selected: string[]; onToggle: (item: string) => void }) => (
-      <div data-testid="filter-badges">
-        {items.map((item) => (
-          <button
-            key={item}
-            data-testid={`badge-${item}`}
-            data-selected={selected.includes(item)}
-            onClick={() => onToggle(item)}
-          >
-            {item}
-          </button>
-        ))}
-      </div>
-    ),
+    FilterBadges: ({ items, selected, onToggle, displayMap, caseInsensitive }: { 
+      items: string[]; 
+      selected: string[]; 
+      onToggle: (item: string) => void;
+      displayMap?: Record<string, string>;
+      caseInsensitive?: boolean;
+    }) => {
+      const isSelected = (item: string) => {
+        if (caseInsensitive) {
+          return selected.some((s) => s.toLowerCase() === item.toLowerCase());
+        }
+        return selected.includes(item);
+      };
+      const getLabel = (item: string) => displayMap?.[item] ?? item;
+      return (
+        <div data-testid="filter-badges">
+          {items.map((item) => (
+            <button
+              key={item}
+              data-testid={`badge-${item}`}
+              data-selected={isSelected(item)}
+              onClick={() => onToggle(item)}
+            >
+              {getLabel(item)}
+            </button>
+          ))}
+        </div>
+      );
+    },
     FilterClearButton: ({ onClear, visible }: { onClear: () => void; visible: boolean }) =>
       visible ? (
         <button data-testid="clear-all-button" onClick={onClear}>
@@ -70,11 +85,17 @@ vi.mock("@/components/common/filters", async () => {
 
 describe("ProjectFilters Component", () => {
   const defaultProps = {
+    selectedCategory: "",
     selectedTags: [],
-    selectedTech: [],
     status: null,
-    tagList: ["web", "mobile", "api"],
-    techList: ["react", "nextjs", "typescript"],
+    categoryList: ["community", "nonprofit", "code", "startup"],
+    categoryDisplayMap: {
+      community: "Community",
+      nonprofit: "Nonprofit",
+      code: "Code",
+      startup: "Startup",
+    },
+    tagList: ["web", "mobile", "api", "react", "nextjs", "typescript"],
     query: "",
     sortBy: "newest",
     totalResults: 10,
@@ -103,14 +124,22 @@ describe("ProjectFilters Component", () => {
       expect(screen.getByTestId("select-newest")).toBeInTheDocument();
     });
 
-    it("should render tech stack badges", () => {
+    it("should render technology tags as badges", () => {
       render(<ProjectFilters {...defaultProps} />);
+      // Tech items are now part of tags
       expect(screen.getByTestId("badge-react")).toBeInTheDocument();
       expect(screen.getByTestId("badge-nextjs")).toBeInTheDocument();
       expect(screen.getByTestId("badge-typescript")).toBeInTheDocument();
     });
 
     it("should render category badges", () => {
+      render(<ProjectFilters {...defaultProps} />);
+      expect(screen.getByTestId("badge-community")).toBeInTheDocument();
+      expect(screen.getByTestId("badge-nonprofit")).toBeInTheDocument();
+      expect(screen.getByTestId("badge-code")).toBeInTheDocument();
+    });
+
+    it("should render tag badges", () => {
       render(<ProjectFilters {...defaultProps} />);
       expect(screen.getByTestId("badge-web")).toBeInTheDocument();
       expect(screen.getByTestId("badge-mobile")).toBeInTheDocument();
@@ -133,26 +162,23 @@ describe("ProjectFilters Component", () => {
     });
   });
 
-  describe("Tech Stack Filter", () => {
-    it("should show selected tech badges", () => {
-      render(<ProjectFilters {...defaultProps} selectedTech={["react", "typescript"]} />);
-      const reactBadge = screen.getByTestId("badge-react");
-      const typescriptBadge = screen.getByTestId("badge-typescript");
-      expect(reactBadge).toHaveAttribute("data-selected", "true");
-      expect(typescriptBadge).toHaveAttribute("data-selected", "true");
+  describe("Category Filter", () => {
+    it("should show selected category badges", () => {
+      render(<ProjectFilters {...defaultProps} selectedCategory="community" />);
+      const communityBadge = screen.getByTestId("badge-community");
+      expect(communityBadge).toHaveAttribute("data-selected", "true");
     });
 
-    it("should toggle tech selection on badge click", () => {
+    it("should toggle category selection on badge click", () => {
       render(<ProjectFilters {...defaultProps} />);
-      const reactBadge = screen.getByTestId("badge-react");
-      fireEvent.click(reactBadge);
-      // Verify navigation was called with tech parameter
+      const communityBadge = screen.getByTestId("badge-community");
+      fireEvent.click(communityBadge);
       expect(mockPush).toHaveBeenCalled();
     });
   });
 
-  describe("Category Filter", () => {
-    it("should show selected category badges", () => {
+  describe("Tag Filter", () => {
+    it("should show selected tag badges", () => {
       render(<ProjectFilters {...defaultProps} selectedTags={["web", "api"]} />);
       const webBadge = screen.getByTestId("badge-web");
       const apiBadge = screen.getByTestId("badge-api");
@@ -160,7 +186,7 @@ describe("ProjectFilters Component", () => {
       expect(apiBadge).toHaveAttribute("data-selected", "true");
     });
 
-    it("should toggle category selection on badge click", () => {
+    it("should toggle tag selection on badge click", () => {
       render(<ProjectFilters {...defaultProps} />);
       const webBadge = screen.getByTestId("badge-web");
       fireEvent.click(webBadge);
@@ -201,7 +227,7 @@ describe("ProjectFilters Component", () => {
 
   describe("Clear All Functionality", () => {
     it("should show clear button when filters are active", () => {
-      render(<ProjectFilters {...defaultProps} selectedTags={["web"]} />);
+      render(<ProjectFilters {...defaultProps} selectedCategory="community" />);
       expect(screen.getByTestId("clear-all-button")).toBeInTheDocument();
     });
 
@@ -214,27 +240,27 @@ describe("ProjectFilters Component", () => {
       render(<ProjectFilters {...defaultProps} query="test" />);
       const clearButton = screen.getByTestId("clear-all-button");
       fireEvent.click(clearButton);
-      expect(mockPush).toHaveBeenCalledWith("/projects");
+      expect(mockPush).toHaveBeenCalledWith("/portfolio");
     });
   });
 
   describe("Edge Cases", () => {
-    it("should handle empty tech list", () => {
-      render(<ProjectFilters {...defaultProps} techList={[]} />);
-      expect(screen.queryByTestId("badge-react")).not.toBeInTheDocument();
-    });
-
     it("should handle empty tag list", () => {
       render(<ProjectFilters {...defaultProps} tagList={[]} />);
       expect(screen.queryByTestId("badge-web")).not.toBeInTheDocument();
+    });
+
+    it("should handle empty category list", () => {
+      render(<ProjectFilters {...defaultProps} categoryList={[]} />);
+      expect(screen.queryByTestId("badge-community")).not.toBeInTheDocument();
     });
 
     it("should handle multiple active filters", () => {
       render(
         <ProjectFilters
           {...defaultProps}
-          selectedTags={["web", "api"]}
-          selectedTech={["react", "typescript"]}
+          selectedCategory="code"
+          selectedTags={["web", "api", "react"]}
           status="active"
           query="test"
         />

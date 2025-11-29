@@ -16,12 +16,15 @@ export type ProjectImage = {
   position?: "center" | "top" | "bottom" | "left" | "right"; // background position
 };
 
+export type ProjectCategory = "community" | "nonprofit" | "code" | "photography" | "startup";
+
 export type Project = {
   slug: string;
   title: string;
   description: string;
   timeline?: string;
   status: ProjectStatus;
+  category?: ProjectCategory; // primary category for filtering
   tech?: string[];
   tags?: string[];
   links: ProjectLink[];
@@ -38,15 +41,16 @@ const projectDrafts: Project[] = [
     description: "Cyber Architecture & Design",
     timeline: "2025 → Present",
     status: "active",
+    category: "startup",
     tech: ["React", "Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui"],
-    tags: ["Portfolio", "Web Development", "Personal"],
+    tags: ["Web Development", "Personal", "React", "Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui"],
     links: [
       { label: "Website", href: `https://dcyfrlabs.com/`, type: "demo" },
       { label: "Code", href: `https://github.com/dcyfr/dcyfr-labs`, type: "github" }
     ],
     featured: true,
     image: {
-      url: "/projects/default/tech.svg",
+      url: "/portfolio/default/tech.svg",
       alt: "DCYFR Labs: Cyber Architecture & Design",
       position: "center",
     },
@@ -57,14 +61,15 @@ const projectDrafts: Project[] = [
     description: "A digital publication focused on cybersecurity, technology trends, and industry insights.",
     timeline: "2024 → Present",
     status: "active",
+    category: "community",
     tech: ["Ghost", "JavaScript", "CSS"],
-    tags: ["Publication", "Cybersecurity", "Writing"],
+    tags: ["Cybersecurity", "Writing", "Ghost", "JavaScript", "CSS"],
     links: [
       { label: "Website", href: `https://x64.onl`, type: "demo" }
     ],
     featured: false,
     image: {
-      url: "/projects/default/design.svg",
+      url: "/portfolio/default/design.svg",
       alt: "X64: Indie Cyber Publication",
       position: "center",
     },
@@ -75,12 +80,13 @@ const projectDrafts: Project[] = [
     description: "A non-profit organization dedicated to promoting public information security awareness.",
     timeline: "2019 → 2021",
     status: "archived",
+    category: "nonprofit",
     tech: ["WordPress", "PHP", "MySQL", "JavaScript", "CSS"],
-    tags: ["Non-profit", "Cybersecurity", "Community"],
+    tags: ["Cybersecurity", "WordPress", "PHP", "MySQL", "JavaScript", "CSS"],
     links: [],
     featured: false,
     image: {
-      url: "/projects/default/general.svg",
+      url: "/portfolio/default/general.svg",
       alt: "Information Security Network: A Non-profit cybersecurity organization",
       position: "center",
     },

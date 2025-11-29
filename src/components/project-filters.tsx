@@ -77,7 +77,7 @@ export function ProjectFilters({
       params.delete("page");
       
       startTransition(() => {
-        router.push(`/projects?${params.toString()}`, { scroll: false });
+        router.push(`/portfolio?${params.toString()}`, { scroll: false });
       });
     }, 250);
 
@@ -97,7 +97,7 @@ export function ProjectFilters({
     }
     params.delete("page");
     
-    router.push(`/projects?${params.toString()}`);
+    router.push(`/portfolio?${params.toString()}`);
   };
 
   /**
@@ -111,7 +111,7 @@ export function ProjectFilters({
       params.delete("sortBy");
     }
     params.delete("page");
-    router.push(`/projects?${params.toString()}`);
+    router.push(`/portfolio?${params.toString()}`);
   };
 
   /**
@@ -134,7 +134,7 @@ export function ProjectFilters({
     }
     params.delete("page");
     
-    router.push(`/projects?${params.toString()}`);
+    router.push(`/portfolio?${params.toString()}`);
   };
 
   /**
@@ -157,14 +157,14 @@ export function ProjectFilters({
     }
     params.delete("page");
     
-    router.push(`/projects?${params.toString()}`);
+    router.push(`/portfolio?${params.toString()}`);
   };
 
   /**
    * Clear all filters
    */
   const clearAllFilters = () => {
-    router.push("/projects");
+    router.push("/portfolio");
   };
 
   const hasActiveFilters = selectedTags.length > 0 || selectedTech.length > 0 || status || query || (sortBy && sortBy !== 'newest');

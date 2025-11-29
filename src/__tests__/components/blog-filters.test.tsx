@@ -103,8 +103,16 @@ vi.mock("@/components/ui/button", () => ({
 
 describe("BlogFilters Component", () => {
   const defaultProps = {
+    selectedCategory: "",
     selectedTags: [],
     readingTime: null,
+    categoryList: ["technology", "security", "career", "tutorial"],
+    categoryDisplayMap: {
+      technology: "Technology",
+      security: "Security",
+      career: "Career",
+      tutorial: "Tutorial",
+    },
     tagList: ["TypeScript", "React", "Next.js", "Testing"],
     query: "",
   };
@@ -321,11 +329,11 @@ describe("BlogFilters Component", () => {
       const badge = screen.getByTestId("badge-React");
       fireEvent.click(badge);
       
-      expect(mockPush).toHaveBeenCalledWith("/blog?tag=React");
+      expect(mockPush).toHaveBeenCalledWith("/blog?tag=react");
     });
 
     it("should remove tag when clicked again", () => {
-      render(<BlogFilters {...defaultProps} selectedTags={["React"]} />);
+      render(<BlogFilters {...defaultProps} selectedTags={["react"]} />);
       
       const badge = screen.getByTestId("badge-React");
       fireEvent.click(badge);
@@ -334,21 +342,21 @@ describe("BlogFilters Component", () => {
     });
 
     it("should handle multiple selected tags", () => {
-      render(<BlogFilters {...defaultProps} selectedTags={["React"]} />);
+      render(<BlogFilters {...defaultProps} selectedTags={["react"]} />);
       
       const badge = screen.getByTestId("badge-TypeScript");
       fireEvent.click(badge);
       
-      expect(mockPush).toHaveBeenCalledWith("/blog?tag=React%2CTypeScript");
+      expect(mockPush).toHaveBeenCalledWith("/blog?tag=react%2Ctypescript");
     });
 
     it("should remove tag from multiple selections", () => {
-      render(<BlogFilters {...defaultProps} selectedTags={["React", "TypeScript"]} />);
+      render(<BlogFilters {...defaultProps} selectedTags={["react", "typescript"]} />);
       
       const badge = screen.getByTestId("badge-React");
       fireEvent.click(badge);
       
-      expect(mockPush).toHaveBeenCalledWith("/blog?tag=TypeScript");
+      expect(mockPush).toHaveBeenCalledWith("/blog?tag=typescript");
     });
 
     it("should reset page parameter when toggling tags", () => {
@@ -358,7 +366,7 @@ describe("BlogFilters Component", () => {
       const badge = screen.getByTestId("badge-React");
       fireEvent.click(badge);
       
-      expect(mockPush).toHaveBeenCalledWith("/blog?tag=React");
+      expect(mockPush).toHaveBeenCalledWith("/blog?tag=react");
     });
 
     it("should show X icon on selected tags", () => {
@@ -455,8 +463,8 @@ describe("BlogFilters Component", () => {
 
   describe("Edge Cases", () => {
     it("should handle empty tag list", () => {
-      render(<BlogFilters {...defaultProps} tagList={[]} />);
-      expect(screen.queryByTestId(/^badge-/)).not.toBeInTheDocument();
+      render(<BlogFilters {...defaultProps} tagList={[]} categoryList={[]} />);
+      expect(screen.queryAllByTestId(/^badge-/)).toHaveLength(0);
     });
 
     it("should handle special characters in search", async () => {

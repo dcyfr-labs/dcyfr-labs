@@ -10,7 +10,7 @@ const pageConfig = {
   "/": { changeFrequency: "weekly" as const, priority: 1.0 },
   "/about": { changeFrequency: "yearly" as const, priority: 0.5 },
   "/blog": { changeFrequency: "weekly" as const, priority: 0.8 },
-  "/projects": { changeFrequency: "monthly" as const, priority: 0.7 },
+  "/portfolio": { changeFrequency: "monthly" as const, priority: 0.7 },
   "/contact": { changeFrequency: "yearly" as const, priority: 0.6 },
 } as const;
 
@@ -92,7 +92,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   
   // Generate sitemap entries for project detail pages
   const projectEntries = visibleProjects.map((project) => ({
-    url: `${base}/projects/${project.slug}`,
+    url: `${base}/portfolio/${project.slug}`,
     lastModified: now,
     changeFrequency: "monthly" as const,
     priority: 0.6,
@@ -113,7 +113,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
-      url: `${base}/projects/feed`,
+      url: `${base}/portfolio/feed`,
       lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 0.5,

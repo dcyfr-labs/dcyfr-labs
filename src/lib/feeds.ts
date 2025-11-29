@@ -153,11 +153,11 @@ export function projectToFeedItem(project: Project): FeedItem {
   const published = new Date(year, 0, 1);
   
   return {
-    id: absoluteUrl(`/projects/${project.slug}`),
+    id: absoluteUrl(`/portfolio/${project.slug}`),
     title: project.title,
     description: project.description,
     content: htmlContent,
-    link: absoluteUrl(`/projects/${project.slug}`),
+    link: absoluteUrl(`/portfolio/${project.slug}`),
     published,
     categories: project.tags || [],
     author: {
@@ -371,10 +371,10 @@ export async function buildProjectsFeed(
   const items = sortedProjects.map(projectToFeedItem);
   
   const config: FeedConfig = {
-    title: `${SITE_TITLE} - Projects`,
+    title: `${SITE_TITLE} - Portfolio`,
     description: "Portfolio projects and proof of concept works.",
-    link: `${SITE_URL}/projects`,
-    feedUrl: `${SITE_URL}/projects/feed`,
+    link: `${SITE_URL}/portfolio`,
+    feedUrl: `${SITE_URL}/portfolio/feed`,
     language: "en-us",
     author: {
       name: AUTHOR_NAME,

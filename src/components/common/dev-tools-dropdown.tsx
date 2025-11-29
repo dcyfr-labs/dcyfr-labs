@@ -38,19 +38,29 @@ export default function DevToolsDropdown() {
         }}
       >
         Dev Tools
-        <ChevronDown className={`h-3 w-3 transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown
+          className={`h-3 w-3 transition-transform ${open ? "rotate-180" : ""}`}
+        />
       </Badge>
 
       {open && (
         <div className="absolute right-0 mt-2 w-48 rounded-md border bg-card p-2 shadow-lg z-50">
           <nav className="flex flex-col">
             <Link
-              href="/analytics"
+              href="/api/health"
               className="px-3 py-2 text-sm hover:bg-muted rounded"
               onClick={() => setOpen(false)}
               prefetch={false}
             >
-              Analytics Dashboard
+              API Health
+            </Link>
+            <Link
+              href="/dev/analytics"
+              className="px-3 py-2 text-sm hover:bg-muted rounded"
+              onClick={() => setOpen(false)}
+              prefetch={false}
+            >
+              Analytics
             </Link>
           </nav>
         </div>
