@@ -115,6 +115,15 @@ Items deferred until data validates need or time permits.
 - [ ] Bookmark/reading list functionality (4-6 hours)
 - [ ] Print-friendly styling (2-3 hours)
 - [ ] Advanced search filters (4-6 hours)
+- [ ] Mobile filter drawer/sheet pattern (3-4 hours)
+  - Replace collapsible bar with bottom sheet or slide-out drawer
+  - Uses familiar mobile UX patterns (e.g., shadcn Sheet component)
+- [ ] Floating filter FAB for mobile (2-3 hours)
+  - Floating action button that opens filter modal
+  - Maximum content visibility, minimal footprint
+- [ ] Horizontal scroll filter chips (2-3 hours)
+  - Single row of horizontally scrolling quick-filter badges
+  - "More" button for full filter access
 
 ### Analytics Dashboard Enhancements
 

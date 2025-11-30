@@ -114,9 +114,9 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
               </span>
             </div>
             
-            <div className="group/btn flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+            <div className="inline-flex items-center gap-1 text-primary font-medium hover:underline">
               Read post
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+              <ArrowRight className="h-4 w-4" />
             </div>
           </div>
         </div>

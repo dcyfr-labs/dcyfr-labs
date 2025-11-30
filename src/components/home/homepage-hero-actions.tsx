@@ -48,16 +48,16 @@ export function HomepageHeroActions() {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row gap-3 pt-4 sm:pt-6 justify-center items-center sm:items-stretch">
+    <div className="flex flex-wrap gap-2 sm:gap-3 pt-4 sm:pt-6 justify-center items-center">
       {/* Primary CTA - Portfolio */}
       <Button
         variant="cta"
         asChild
-        size="lg"
-        className="sm:w-auto gap-2 hover:scale-105 transition-transform duration-200"
+        size="default"
+        className="gap-2 hover:scale-105 transition-transform duration-200"
       >
         <Link href="/portfolio" onClick={handleProjectsClick}>
-          <Briefcase className="h-5 w-5" />
+          <Briefcase className="h-4 w-4" />
           <span>View portfolio</span>
         </Link>
       </Button>

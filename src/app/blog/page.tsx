@@ -14,7 +14,7 @@ import {
   BlogSidebar,
   BlogLayoutManager,
   BlogLayoutWrapper,
-  BlogFilters,
+  MobileFilterBar,
 } from "@/components/blog";
 import { ViewToggle } from "@/components/common";
 
@@ -274,9 +274,9 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
               </div> */}
             </div>
             
-            {/* Mobile filters (below lg breakpoint) */}
-            <div className="lg:hidden mb-6 p-4 border rounded-lg">
-              <BlogFilters 
+            {/* Mobile filters (below lg breakpoint) - collapsible for better content visibility */}
+            <div className="lg:hidden mb-6">
+              <MobileFilterBar
                 selectedCategory={selectedCategory}
                 selectedTags={selectedTags}
                 readingTime={readingTime}
@@ -286,6 +286,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
                 query={query}
                 sortBy={sortBy}
                 dateRange={dateRange}
+                totalResults={sortedArchiveData.totalItems}
               />
             </div>
 

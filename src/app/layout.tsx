@@ -126,9 +126,9 @@ export default async function RootLayout({
           </a>
           <LayoutUtilities />
           <SiteHeader />
-          <main id="main-content" className="min-h-[calc(100dvh-128px)] pb-24 md:pb-8">{children}</main>
+          <main id="main-content" className="min-h-[calc(100dvh-128px)] pb-8">{children}</main>
           <SiteFooter />
-          <BottomNav />
+          {/* <BottomNav /> */}
           <Toaster richColors position="top-center" />
           {/* Vercel Analytics & Speed Insights - Only in production */}
           {process.env.NODE_ENV === 'production' && (
