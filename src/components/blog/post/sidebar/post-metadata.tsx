@@ -3,20 +3,8 @@
 import { Calendar, Clock, Eye, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import type { PostCategory } from "@/data/posts";
-
-const CATEGORY_LABEL: Record<PostCategory, string> = {
-  "development": "Development",
-  "security": "Security",
-  "career": "Career",
-  "ai": "AI",
-  "AI": "AI",
-  "tutorial": "Tutorial",
-  "Demo": "Demo",
-  "Career Development": "Career Development",
-  "Web Development": "Web Development",
-  "DevSecOps": "DevSecOps",
-};
+import type { PostCategory } from "@/lib/post-categories";
+import { POST_CATEGORY_LABEL } from "@/lib/post-categories";
 
 interface PostMetadataProps {
   publishedAt: Date;
@@ -129,7 +117,7 @@ export function PostMetadata({
                 variant="outline"
                 className="font-semibold text-xs cursor-pointer"
               >
-                {CATEGORY_LABEL[category]}
+                {POST_CATEGORY_LABEL[category]}
               </Badge>
             </Link>
           )}

@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
-import type { Post, PostCategory } from "@/data/posts";
+import type { Post } from "@/data/posts";
+import { POST_CATEGORY_LABEL } from "@/lib/post-categories";
 
 interface PostBadgesProps {
   post: Post;
@@ -8,19 +9,6 @@ interface PostBadgesProps {
   isHotPost?: boolean;
   showCategory?: boolean;
 }
-
-const CATEGORY_LABEL: Record<PostCategory, string> = {
-  "development": "Development",
-  "security": "Security",
-  "career": "Career",
-  "ai": "AI",
-  "AI": "AI",
-  "tutorial": "Tutorial",
-  "Demo": "Demo",
-  "Career Development": "Career Development",
-  "Web Development": "Web Development",
-  "DevSecOps": "DevSecOps",
-};
 
 /**
  * Display status badges for a blog post (Draft, Archived, Hot, New, etc.)
@@ -96,7 +84,7 @@ export function PostBadges({
         variant="outline"
         className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
       >
-        {CATEGORY_LABEL[post.category]}
+        {POST_CATEGORY_LABEL[post.category]}
       </Badge>
     );
   }

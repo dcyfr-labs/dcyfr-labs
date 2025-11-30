@@ -1,5 +1,10 @@
 import { getAllPosts } from "@/lib/blog";
 
+// Re-export category types and labels from centralized file (client-safe)
+export type { PostCategory } from "@/lib/post-categories";
+export { POST_CATEGORY_LABEL } from "@/lib/post-categories";
+import type { PostCategory } from "@/lib/post-categories";
+
 export type PostImage = {
   url: string; // local path (e.g., "/blog/images/post-slug/hero.jpg") or external URL
   alt: string; // required for accessibility
@@ -9,8 +14,6 @@ export type PostImage = {
   credit?: string; // optional, photographer/source attribution
   position?: "top" | "left" | "right" | "background"; // list view placement hint
 };
-
-export type PostCategory = "development" | "security" | "career" | "ai" | "AI" | "tutorial" | "Demo" | "Career Development" | "Web Development" | "DevSecOps";
 
 export type Post = {
   id: string; // stable permanent identifier (never changes, independent of slug)

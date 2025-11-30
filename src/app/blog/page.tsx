@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { posts, type Post } from "@/data/posts";
+import { POST_CATEGORY_LABEL } from "@/lib/post-categories";
 import { getArchiveData } from "@/lib/archive";
 import { getPostBadgeMetadata } from "@/lib/post-badges";
 import { createArchivePageMetadata, createCollectionSchema, getJsonLdScriptProps } from "@/lib/metadata";
@@ -165,14 +166,8 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   }));
   
   // Get available categories from all posts (for filter UI)
-  // Categories use proper casing for display
-  const categoryDisplayMap: Record<string, string> = {
-    development: "Development",
-    security: "Security",
-    career: "Career",
-    ai: "AI",
-    tutorial: "Tutorial",
-  };
+  // Use centralized category label mapping as single source of truth
+  const categoryDisplayMap = POST_CATEGORY_LABEL;
   const availableCategories = Array.from(
     new Set(
       posts

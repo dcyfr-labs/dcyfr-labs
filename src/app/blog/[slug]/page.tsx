@@ -282,7 +282,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                   {post.tags.length > 0 && (
                     <div className="flex flex-wrap items-center gap-2 mb-6">
                       <span className="text-sm text-muted-foreground">Tagged:</span>
-                      {post.tags.map((tag) => (
+                      {post.tags.map((tag: string) => (
                         <a key={tag} href={`/blog?tag=${encodeURIComponent(tag)}`}>
                           <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 cursor-pointer">
                             {tag}

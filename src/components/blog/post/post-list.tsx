@@ -516,7 +516,7 @@ export function PostList({
                   <div className="p-3">
                     {/* Badges and metadata - compact */}
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground mb-1.5">
-                      <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} />
+                      <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
                       <SeriesBadge post={p} size="sm" />
                       <time dateTime={p.publishedAt}>
                         {new Date(p.publishedAt).toLocaleDateString("en-US", { 
@@ -570,7 +570,7 @@ export function PostList({
                 <div className="flex-1 p-4 flex flex-col">
                   {/* Badges and metadata */}
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground mb-2">
-                    <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} />
+                    <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
                     <time dateTime={p.publishedAt}>
                       {new Date(p.publishedAt).toLocaleDateString("en-US", { 
                         year: "numeric", 
