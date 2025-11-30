@@ -162,9 +162,9 @@ export default async function Home() {
                 <div
                   className="flex justify-center"
                   role="img"
-                  aria-label="Drew's profile photo"
+                  aria-label="Drew's Avatar"
                 >
-                  <ProfileAvatar size="xl" priority animated backdrop />
+                  <ProfileAvatar size="lg" priority animated backdrop />
                 </div>
 
                 {/* Logo Title */}
@@ -190,10 +190,10 @@ export default async function Home() {
                 {/* Actions */}
                 <HomepageHeroActions />
 
-                {/* Scroll Indicator */}
+                {/* Scroll Indicator 
                 <div className="pt-8">
                   <ScrollIndicator />
-                </div>
+                </div> */}
               </div>
             </div>
           </ScrollReveal>

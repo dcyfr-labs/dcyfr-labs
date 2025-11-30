@@ -228,14 +228,99 @@ export const HOVER_EFFECTS = {
 // ============================================================================
 
 /**
- * Animation duration patterns for consistent motion design
+ * Animation System - Performance-First, CSS-Native
+ * 
+ * Philosophy:
+ * 1. CSS handles everything - no JavaScript animation libraries needed
+ * 2. Use transform + opacity only (GPU-accelerated, 60fps)
+ * 3. CSS handles reduced-motion globally via @media query
+ * 4. Simple utility classes for common patterns
+ * 
+ * The CSS custom properties are defined in globals.css under @theme inline.
+ * These TypeScript constants reference those values for documentation.
  * 
  * @example
  * ```tsx
- * <div className={`transition-all ${ANIMATIONS.standard}`}>
- *   {content}
- * </div>
+ * // Scroll reveal with stagger (CSS classes)
+ * {items.map((item, i) => (
+ *   <div 
+ *     key={item.id}
+ *     className={cn(
+ *       ANIMATION.reveal.base,
+ *       ANIMATION.reveal.up,
+ *       isVisible && ANIMATION.reveal.visible,
+ *       `stagger-${i + 1}`
+ *     )}
+ *   >
+ *     {item.content}
+ *   </div>
+ * ))}
+ * 
+ * // Simple hover effect
+ * <Card className={ANIMATION.hover.lift}>...</Card>
+ * 
+ * // Color transition (theme changes)
+ * <div className={ANIMATION.transition.colors}>...</div>
  * ```
+ * 
+ * @see src/app/globals.css for CSS custom properties and utility classes
+ */
+export const ANIMATION = {
+  /** Duration scale (references CSS custom properties) */
+  duration: {
+    instant: "duration-[0ms]",    // --duration-instant
+    fast: "duration-[150ms]",     // --duration-fast
+    normal: "duration-[250ms]",   // --duration-normal  
+    slow: "duration-[400ms]",     // --duration-slow
+    slower: "duration-[600ms]",   // --duration-slower
+  },
+  
+  /** Transition utilities */
+  transition: {
+    base: "transition-base",      // opacity, transform
+    fast: "transition-fast",      // faster variant
+    slow: "transition-slow",      // slower variant
+    colors: "transition-colors",  // color, background-color, etc.
+  },
+  
+  /** Scroll-reveal animation classes */
+  reveal: {
+    /** Initial hidden state - add this by default */
+    hidden: "reveal-hidden",
+    /** Visible state - add when element enters viewport */
+    visible: "reveal-visible",
+    /** Direction variants (combine with hidden/visible) */
+    up: "reveal-up",
+    down: "reveal-down",
+    left: "reveal-left",
+    right: "reveal-right",
+    scale: "reveal-scale",
+  },
+  
+  /** Hover effects */
+  hover: {
+    lift: "hover-lift",           // Subtle lift on hover
+  },
+  
+  /** Interactive feedback */
+  interactive: {
+    press: "press-effect",        // Scale down on active/press
+  },
+  
+  /** Stagger delays for lists (50ms increments) */
+  stagger: {
+    1: "stagger-1",
+    2: "stagger-2",
+    3: "stagger-3",
+    4: "stagger-4",
+    5: "stagger-5",
+    6: "stagger-6",
+  },
+} as const;
+
+/**
+ * @deprecated Use ANIMATION instead. These are kept for backwards compatibility.
+ * Animation duration patterns for consistent motion design
  */
 export const ANIMATIONS = {
   /** Fast transitions (hover states, small movements) */

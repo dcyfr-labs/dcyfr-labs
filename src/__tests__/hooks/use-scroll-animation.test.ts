@@ -1,18 +1,12 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
-import { renderHook, waitFor, act } from '@testing-library/react'
+import { renderHook, act } from '@testing-library/react'
 import { useScrollAnimation } from '@/hooks/use-scroll-animation'
-import * as React from 'react'
 
 describe('useScrollAnimation Hook', () => {
   let observerMock: {
     observe: ReturnType<typeof vi.fn>
     unobserve: ReturnType<typeof vi.fn>
     disconnect: ReturnType<typeof vi.fn>
-  }
-  let matchMediaMock: {
-    matches: boolean
-    addEventListener: ReturnType<typeof vi.fn>
-    removeEventListener: ReturnType<typeof vi.fn>
   }
   let observerCallback: ((entries: any[]) => void) | null = null
 
@@ -42,7 +36,6 @@ describe('useScrollAnimation Hook', () => {
   }
 
   beforeEach(() => {
-    vi.useFakeTimers()
     observerCallback = null
 
     // Mock IntersectionObserver
@@ -52,28 +45,15 @@ describe('useScrollAnimation Hook', () => {
       disconnect: vi.fn(),
     }
 
-    global.IntersectionObserver = vi.fn(function(callback, options) {
+    global.IntersectionObserver = vi.fn(function(callback) {
       // Store callback for manual triggering
       observerCallback = callback
       return observerMock
     }) as any
-
-    // Mock matchMedia for reduced motion
-    matchMediaMock = {
-      matches: false,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-    }
-
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      value: vi.fn(() => matchMediaMock),
-    })
   })
 
   afterEach(() => {
     vi.clearAllMocks()
-    vi.useRealTimers()
   })
 
   describe('Initial State', () => {
@@ -83,8 +63,16 @@ describe('useScrollAnimation Hook', () => {
       expect(result.current.ref.current).toBeNull()
     })
 
-    it('starts with isVisible false', () => {
-      const { result } = renderHook(() => useScrollAnimation())
+    it('starts with isVisible false when ref is attached', () => {
+      // With a ref attached, initial state is false (waiting for intersection)
+      const element = document.createElement('div')
+      const { result } = renderHook(() => {
+        const hookResult = useScrollAnimation()
+        if (!hookResult.ref.current) {
+          hookResult.ref.current = element
+        }
+        return hookResult
+      })
       expect(result.current.isVisible).toBe(false)
     })
 
@@ -93,15 +81,23 @@ describe('useScrollAnimation Hook', () => {
       expect(result.current.hasAnimated).toBe(false)
     })
 
-    it('starts with shouldAnimate false', () => {
-      const { result } = renderHook(() => useScrollAnimation())
+    it('starts with shouldAnimate false when ref is attached', () => {
+      // With a ref attached, initial state is false (waiting for intersection)
+      const element = document.createElement('div')
+      const { result } = renderHook(() => {
+        const hookResult = useScrollAnimation()
+        if (!hookResult.ref.current) {
+          hookResult.ref.current = element
+        }
+        return hookResult
+      })
       expect(result.current.shouldAnimate).toBe(false)
     })
   })
 
   describe('IntersectionObserver Setup', () => {
     it('creates IntersectionObserver with default options when element is present', () => {
-      const { result } = renderHook(() => {
+      renderHook(() => {
         const hookResult = useScrollAnimation()
         // Simulate ref being attached during render
         if (!hookResult.ref.current) {
@@ -120,7 +116,7 @@ describe('useScrollAnimation Hook', () => {
     })
 
     it('creates IntersectionObserver with custom threshold', () => {
-      const { result } = renderHook(() => {
+      renderHook(() => {
         const hookResult = useScrollAnimation({ threshold: 0.5 })
         if (!hookResult.ref.current) {
           hookResult.ref.current = document.createElement('div')
@@ -138,7 +134,7 @@ describe('useScrollAnimation Hook', () => {
     })
 
     it('creates IntersectionObserver with custom rootMargin', () => {
-      const { result } = renderHook(() => {
+      renderHook(() => {
         const hookResult = useScrollAnimation({ rootMargin: '50px' })
         if (!hookResult.ref.current) {
           hookResult.ref.current = document.createElement('div')
@@ -157,7 +153,7 @@ describe('useScrollAnimation Hook', () => {
 
     it('observes element when present', () => {
       const element = document.createElement('div')
-      const { result } = renderHook(() => {
+      renderHook(() => {
         const hookResult = useScrollAnimation()
         if (!hookResult.ref.current) {
           hookResult.ref.current = element
@@ -249,73 +245,60 @@ describe('useScrollAnimation Hook', () => {
       triggerIntersection([{ isIntersecting: true, target: element }])
       expect(result.current.isVisible).toBe(true)
     })
-  })
-
-  describe('Delay Behavior', () => {
-    it('applies delay before setting shouldAnimate', async () => {
-      const { result, element } = setupHookWithRef({ delay: 500 })
+    
+    it('disconnects observer after first trigger with triggerOnce=true', async () => {
+      const { result, element } = setupHookWithRef({ triggerOnce: true })
 
       triggerIntersection([{ isIntersecting: true, target: element }])
 
-      // Should not animate immediately
-      expect(result.current.shouldAnimate).toBe(false)
-
-      // Fast-forward time
-      act(() => {
-        vi.advanceTimersByTime(500)
-      })
-
-      expect(result.current.shouldAnimate).toBe(true)
-    })
-
-    it('cancels delay if element leaves viewport', async () => {
-      const { result, element } = setupHookWithRef({ delay: 500, triggerOnce: false })
-
-      // Enter viewport
-      triggerIntersection([{ isIntersecting: true, target: element }])
-      
-      // Leave before delay completes
-      act(() => {
-        vi.advanceTimersByTime(250)
-      })
-      triggerIntersection([{ isIntersecting: false, target: element }])
-      
-      // Complete delay time
-      act(() => {
-        vi.advanceTimersByTime(250)
-      })
-
-      // Should not have animated
-      expect(result.current.shouldAnimate).toBe(false)
+      expect(observerMock.disconnect).toHaveBeenCalled()
     })
   })
 
-  describe('Reduced Motion Support', () => {
-    it('respects prefers-reduced-motion', async () => {
-      matchMediaMock.matches = true
+  describe('shouldAnimate Behavior', () => {
+    it('shouldAnimate equals isVisible (CSS handles reduced motion)', async () => {
       const { result, element } = setupHookWithRef()
 
+      // Not visible yet
+      expect(result.current.shouldAnimate).toBe(false)
+      expect(result.current.isVisible).toBe(false)
+
+      // Trigger intersection
       triggerIntersection([{ isIntersecting: true, target: element }])
 
-      // isVisible should be true, but shouldAnimate should be false
+      // Now both should be true
+      expect(result.current.shouldAnimate).toBe(true)
       expect(result.current.isVisible).toBe(true)
-      expect(result.current.shouldAnimate).toBe(false)
     })
+  })
 
-    it('enables animation when reduced motion is disabled', async () => {
-      matchMediaMock.matches = false
-      const { result, element } = setupHookWithRef()
+  describe('Fallback Behavior', () => {
+    it('shows element immediately if IntersectionObserver is unavailable', () => {
+      // Remove IntersectionObserver
+      const originalIO = global.IntersectionObserver
+      // @ts-expect-error - intentionally setting to undefined
+      global.IntersectionObserver = undefined
 
-      triggerIntersection([{ isIntersecting: true, target: element }])
+      const { result } = renderHook(() => {
+        const hookResult = useScrollAnimation()
+        if (!hookResult.ref.current) {
+          hookResult.ref.current = document.createElement('div')
+        }
+        return hookResult
+      })
 
+      expect(result.current.isVisible).toBe(true)
       expect(result.current.shouldAnimate).toBe(true)
+
+      // Restore
+      global.IntersectionObserver = originalIO
     })
   })
 
   describe('Cleanup', () => {
     it('disconnects observer on unmount', () => {
       const element = document.createElement('div')
-      const { result, unmount } = renderHook(() => {
+      const { unmount } = renderHook(() => {
         const hookResult = useScrollAnimation()
         if (!hookResult.ref.current) {
           hookResult.ref.current = element
@@ -327,22 +310,11 @@ describe('useScrollAnimation Hook', () => {
       
       expect(observerMock.disconnect).toHaveBeenCalled()
     })
-
-    it('clears timeout on unmount', () => {
-      const { unmount } = renderHook(() => useScrollAnimation({ delay: 500 }))
-      const element = document.createElement('div')
-      
-      unmount()
-      vi.advanceTimersByTime(500)
-
-      // Should not throw or cause issues
-      expect(() => vi.runAllTimers()).not.toThrow()
-    })
   })
 
   describe('Options Validation', () => {
     it('handles threshold of 0', () => {
-      const { result } = renderHook(() => {
+      renderHook(() => {
         const hookResult = useScrollAnimation({ threshold: 0 })
         if (!hookResult.ref.current) {
           hookResult.ref.current = document.createElement('div')
@@ -357,7 +329,7 @@ describe('useScrollAnimation Hook', () => {
     })
 
     it('handles threshold of 1', () => {
-      const { result } = renderHook(() => {
+      renderHook(() => {
         const hookResult = useScrollAnimation({ threshold: 1 })
         if (!hookResult.ref.current) {
           hookResult.ref.current = document.createElement('div')
@@ -369,15 +341,6 @@ describe('useScrollAnimation Hook', () => {
         expect.any(Function),
         expect.objectContaining({ threshold: 1 })
       )
-    })
-
-    it('handles delay of 0', async () => {
-      const { result, element } = setupHookWithRef({ delay: 0 })
-
-      triggerIntersection([{ isIntersecting: true, target: element }])
-
-      // Should animate immediately with no delay
-      expect(result.current.shouldAnimate).toBe(true)
     })
   })
 

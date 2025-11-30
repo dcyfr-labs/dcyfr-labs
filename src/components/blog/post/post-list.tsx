@@ -11,7 +11,7 @@ import { PostThumbnail } from "@/components/blog/post/post-thumbnail";
 import { HighlightText } from "@/components/common/highlight-text";
 import dynamic from "next/dynamic";
 import { ensurePostImage } from "@/lib/default-images";
-import { HOVER_EFFECTS } from "@/lib/design-tokens";
+import { HOVER_EFFECTS, SPACING } from "@/lib/design-tokens";
 
 const ScrollReveal = dynamic(() => import("@/components/features/scroll-reveal").then(mod => ({ default: mod.ScrollReveal })), {
   loading: () => <div className="contents" />,
@@ -207,7 +207,7 @@ export function PostList({
   // Magazine layout: first post as hero, then alternating side-by-side layouts
   if (layout === "magazine") {
     return (
-      <div className="space-y-8" data-testid="post-list">
+      <div className={SPACING.subsection} data-testid="post-list">
         {posts.map((p, index) => {
           const featuredImage = ensurePostImage(p.image, {
             title: p.title,
@@ -223,13 +223,12 @@ export function PostList({
                 key={p.slug} 
                 animation="fade-up"
                 delay={0}
-                duration={600}
               >
                 <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
 
                   <Link href={`/blog/${p.slug}`} className="block">
                     {/* Content */}
-                    <div className="p-6 md:p-10 lg:p-12">
+                    <div className="p-4 md:p-10 lg:p-12">
                       {/* Badges and metadata */}
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm mb-4 text-zinc-700 dark:text-zinc-300">
                         <PostBadges post={p} isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
@@ -289,12 +288,11 @@ export function PostList({
               key={p.slug} 
               animation="fade-up"
               delay={index * 50}
-              duration={600}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
                 <Link href={`/blog/${p.slug}`} className="block">
                   {/* Content section */}
-                  <div className="p-6 md:p-8">
+                  <div className="p-4 md:p-8">
                       {/* Badges and metadata */}
                       <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-muted-foreground mb-3">
                         <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
@@ -354,7 +352,7 @@ export function PostList({
   // Grid layout: 2-column grid with images on top
   if (layout === "grid") {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6" data-testid="post-list">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="post-list">
         {posts.map((p, index) => {
           const featuredImage = ensurePostImage(p.image, {
             title: p.title,
@@ -366,7 +364,6 @@ export function PostList({
               key={p.slug} 
               animation="fade-up"
               delay={index * 50}
-              duration={600}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
                 <Link href={`/blog/${p.slug}`} className="flex flex-col h-full">
@@ -431,7 +428,7 @@ export function PostList({
   // List layout: single column with full details
   if (layout === "list") {
     return (
-      <div className="space-y-6" data-testid="post-list">
+      <div className={SPACING.subsection} data-testid="post-list">
         {posts.map((p, index) => {
           const featuredImage = ensurePostImage(p.image, {
             title: p.title,
@@ -443,11 +440,10 @@ export function PostList({
               key={p.slug} 
               animation="fade-up"
               delay={index * 80}
-              duration={600}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
                 <Link href={`/blog/${p.slug}`} className="block">
-                  <div className="p-5 md:p-6">
+                  <div className="p-4 md:p-8">
                     {/* Badges and metadata */}
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground mb-3">
                       <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
@@ -514,7 +510,6 @@ export function PostList({
               key={p.slug} 
               animation="fade-up"
               delay={index * 50}
-              duration={600}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
                 <Link href={`/blog/${p.slug}`} className="block">
@@ -556,7 +551,7 @@ export function PostList({
 
   // Grid layout (default): 2-column card layout (reuse existing grid implementation)
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6" data-testid="post-list">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="post-list">
       {posts.map((p, index) => {
         const featuredImage = ensurePostImage(p.image, {
           title: p.title,
@@ -568,7 +563,6 @@ export function PostList({
             key={p.slug} 
             animation="fade-up"
             delay={index * 50}
-            duration={600}
           >
             <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
               <Link href={`/blog/${p.slug}`} className="flex flex-col h-full">

@@ -27,20 +27,6 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Respect user preference for reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
 /**
  * Improved subpixel rendering for code blocks.
  * Monospace fonts benefit from subpixel rendering for clarity.
@@ -142,6 +128,36 @@ svg {
   --word-spacing-lg: 0.5em;
   --word-spacing-xl: 0.75em;
   --word-spacing-2xl: 1em;
+  
+  /* ============================================================================
+     ANIMATION SYSTEM
+     ============================================================================
+     Philosophy: Performance, Browser Support, Simplicity
+     
+     1. Use CSS custom properties for timing (single source of truth)
+     2. Prefer transform + opacity (GPU-accelerated, 60fps)
+     3. CSS handles reduced-motion globally (no JS checks needed)
+     4. Utility classes for common patterns
+     
+     @see /docs/ai/DESIGN_SYSTEM.md for usage guidelines
+     ============================================================================ */
+  
+  /* Duration Scale */
+  --duration-instant: 0ms;
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+  --duration-slower: 600ms;
+  
+  /* Easing Functions */
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);    /* Smooth in-out */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);           /* Accelerate */
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);          /* Decelerate */
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1); /* Slight overshoot */
+  
+  /* Transform Distances (for consistency) */
+  --slide-distance: 12px;
+  --lift-distance: 2px;
 }
 
 :root {
@@ -440,26 +456,10 @@ svg {
     }
   }
 
-  /* Reduced motion: disable shimmer animation */
-  @media (prefers-reduced-motion: reduce) {
-    .skeleton-shimmer {
-      animation: none;
-      background: hsl(var(--muted));
-    }
-  }
-
   /* Card hover effects - smooth lift with shadow */
   .group.rounded-lg.border,
   .flex.h-full.flex-col {
-    will-change: transform, box-shadow;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .group.rounded-lg.border,
-    .flex.h-full.flex-col {
-      transition: none !important;
-      transform: none !important;
-    }
+    will-change: auto;
   }
 
   /* Hide scrollbar while maintaining scroll functionality */
@@ -619,68 +619,6 @@ svg {
     top: 50%;
     transform: translate(-50%, -50%);
   }
-
-  /* ===================================================================
-     DISABLE ALL ANIMATIONS
-     ================================================================ */
-
-  /**
-   * Global animation disable - all animations and transitions disabled.
-   * Overrides all animation properties site-wide for performance/preference.
-   */
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0ms !important;
-    animation-delay: 0ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0ms !important;
-    transition-delay: 0ms !important;
-  }
-
-  html {
-    scroll-behavior: auto !important;
-  }
-
-  /* Disable skeleton shimmer */
-  .skeleton-shimmer {
-    animation: none !important;
-    background: hsl(var(--muted)) !important;
-  }
-
-  /* Disable holographic card effect */
-  .holographic-card::before {
-    animation: none !important;
-  }
-
-  /* Disable heatmap animations */
-  .react-calendar-heatmap rect {
-    animation: none !important;
-    transition: none !important;
-  }
-
-  .react-calendar-heatmap rect:hover {
-    opacity: 1 !important;
-    transform: none !important;
-  }
-
-  /* Disable card hover transforms */
-  .group.rounded-lg.border,
-  .flex.h-full.flex-col {
-    transition: none !important;
-    transform: none !important;
-  }
-
-  .group.rounded-lg.border:hover,
-  .flex.h-full.flex-col:hover {
-    transform: none !important;
-  }
-
-  /* Disable view transitions */
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation-duration: 0ms !important;
-  }
 }
 
 /* GitHub Heatmap Styles */
@@ -753,10 +691,146 @@ svg {
   fill: oklch(0.75 0.22 145);
 }
 
+/* ============================================================================
+   ANIMATION UTILITIES
+   ============================================================================
+   Simple, performant animation classes using CSS custom properties.
+   All animations use transform + opacity for GPU acceleration.
+   ============================================================================ */
+
+/* Base transition utility */
+.transition-base {
+  transition-property: opacity, transform;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-default);
+}
+
+.transition-fast {
+  transition-property: opacity, transform;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-default);
+}
+
+.transition-slow {
+  transition-property: opacity, transform;
+  transition-duration: var(--duration-slow);
+  transition-timing-function: var(--ease-out);
+}
+
+/* Color/background transitions (for theme, hover states) */
+.transition-colors {
+  transition-property: color, background-color, border-color, fill, stroke;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-default);
+}
+
+/* 
+ * Scroll-triggered reveal animations
+ * Usage: Add .reveal-hidden initially, then add .reveal-visible when in viewport
+ */
+
+/* Initial hidden state */
+.reveal-hidden {
+  opacity: 0;
+}
+
+/* Visible state */
+.reveal-visible {
+  opacity: 1;
+}
+
+/* Fade up variant */
+.reveal-hidden.reveal-up {
+  opacity: 0;
+  transform: translateY(var(--slide-distance));
+}
+
+.reveal-visible.reveal-up {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Fade down variant */
+.reveal-hidden.reveal-down {
+  opacity: 0;
+  transform: translateY(calc(-1 * var(--slide-distance)));
+}
+
+.reveal-visible.reveal-down {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Fade left variant */
+.reveal-hidden.reveal-left {
+  opacity: 0;
+  transform: translateX(var(--slide-distance));
+}
+
+.reveal-visible.reveal-left {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Fade right variant */
+.reveal-hidden.reveal-right {
+  opacity: 0;
+  transform: translateX(calc(-1 * var(--slide-distance)));
+}
+
+.reveal-visible.reveal-right {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Scale variant */
+.reveal-hidden.reveal-scale {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.reveal-visible.reveal-scale {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Card hover lift effect */
+.hover-lift {
+  transition-property: transform, box-shadow;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-default);
+}
+
+.hover-lift:hover {
+  transform: translateY(calc(-1 * var(--lift-distance)));
+}
+
+/* Button press effect */
+.press-effect:active {
+  transform: scale(0.98);
+}
+
+/* Stagger delay utilities for lists (combine with reveal classes) */
+.stagger-1 { transition-delay: calc(1 * 50ms); }
+.stagger-2 { transition-delay: calc(2 * 50ms); }
+.stagger-3 { transition-delay: calc(3 * 50ms); }
+.stagger-4 { transition-delay: calc(4 * 50ms); }
+.stagger-5 { transition-delay: calc(5 * 50ms); }
+.stagger-6 { transition-delay: calc(6 * 50ms); }
+
 /* ========================================
-   Reduced Motion - Accessibility
+   REDUCED MOTION - Accessibility (Unified)
+   ========================================
+   Single source of truth for reduced motion handling.
+   CSS handles this globally - no JavaScript checks needed.
+   
+   Philosophy:
+   - Instant state changes (no animation)
+   - Preserve functional feedback (focus, hover states)
+   - No layout shifts
    ======================================== */
 @media (prefers-reduced-motion: reduce) {
+  /* Global: Disable all animations and transitions */
   *,
   *::before,
   *::after {
@@ -765,24 +839,59 @@ svg {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  
+  html {
+    scroll-behavior: auto !important;
+  }
 
-  /* Disable specific animations */
+  /* Reveal animations: instant visibility */
+  .reveal-hidden,
+  .reveal-hidden.reveal-up,
+  .reveal-hidden.reveal-down,
+  .reveal-hidden.reveal-left,
+  .reveal-hidden.reveal-right,
+  .reveal-hidden.reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  
+  /* No stagger delays */
+  [class*="stagger-"] {
+    transition-delay: 0ms !important;
+  }
+
+  /* Disable skeleton shimmer */
   .skeleton-shimmer {
     animation: none !important;
     background: hsl(var(--muted)) !important;
   }
-
-  /* Disable transforms on cards and interactive elements */
-  .group.rounded-lg.border,
-  .flex.h-full.flex-col {
-    transition: none !important;
-    transform: none !important;
+  
+  /* Disable holographic effects */
+  .holographic-card::before {
+    animation: none !important;
   }
 
-  /* Keep box-shadow transitions for visual feedback but remove motion */
+  /* Disable card hover transforms */
+  .hover-lift:hover,
+  .press-effect:active,
   .group.rounded-lg.border:hover,
   .flex.h-full.flex-col:hover {
     transform: none !important;
+  }
+  
+  /* Disable heatmap animations */
+  .react-calendar-heatmap rect {
+    animation: none !important;
+  }
+  
+  .react-calendar-heatmap rect:hover {
+    transform: none !important;
+  }
+  
+  /* Disable view transitions */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms !important;
   }
 }
 

@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Eye } from "lucide-react";
 import dynamic from "next/dynamic";
 import { ensureProjectImage } from "@/lib/default-project-images";
-import { HOVER_EFFECTS } from "@/lib/design-tokens";
+import { HOVER_EFFECTS, SPACING } from "@/lib/design-tokens";
 import { formatNumber } from "@/lib/utils";
 
 const ScrollReveal = dynamic(() => import("@/components/features/scroll-reveal").then(mod => ({ default: mod.ScrollReveal })), {
@@ -90,7 +90,7 @@ export function ProjectList({
   // Grid layout: 3-column grid with images
   if (layout === "grid") {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="project-list">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" data-testid="project-list">
         {projects.map((project, index) => {
           const image = ensureProjectImage(project.image, {
             tags: project.tags,
@@ -102,7 +102,6 @@ export function ProjectList({
               key={project.slug}
               animation="fade-up"
               delay={index * 50}
-              duration={600}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
                 <Link href={`/portfolio/${project.slug}`} className="flex flex-col h-full">
@@ -161,7 +160,7 @@ export function ProjectList({
   // List layout: single column with full details
   if (layout === "list") {
     return (
-      <div className="space-y-6" data-testid="project-list">
+      <div className={SPACING.subsection} data-testid="project-list">
         {projects.map((project, index) => {
           const image = ensureProjectImage(project.image, {
             tags: project.tags,
@@ -173,11 +172,10 @@ export function ProjectList({
               key={project.slug}
               animation="fade-up"
               delay={index * 80}
-              duration={600}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
                 <Link href={`/portfolio/${project.slug}`} className="block">
-                  <div className="p-5 md:p-6">
+                  <div className="p-4 md:p-8">
                     {/* Status, category, and timeline */}
                     {project.timeline && (
                       <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
@@ -238,7 +236,6 @@ export function ProjectList({
               key={project.slug}
               animation="fade-up"
               delay={index * 50}
-              duration={600}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
                 <Link href={`/portfolio/${project.slug}`} className="block">
@@ -272,7 +269,7 @@ export function ProjectList({
 
   // Default to grid layout
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="project-list">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" data-testid="project-list">
       {projects.map((project, index) => {
         const image = ensureProjectImage(project.image, {
           tags: project.tags,
@@ -284,7 +281,6 @@ export function ProjectList({
             key={project.slug}
             animation="fade-up"
             delay={index * 50}
-            duration={600}
           >
             <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
               <Link href={`/portfolio/${project.slug}`} className="flex flex-col h-full">
