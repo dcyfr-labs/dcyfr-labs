@@ -124,13 +124,13 @@ export function AvailabilityBanner({ className }: { className?: string }) {
             Our calendar is now open! Whether you&apos;re looking for advice on
             secure coding practices, application performance, or architecture, we&apos;re here to help.
           </p>
-          <div className="flex flex-wrap gap-3">
-            <Button variant="cta" asChild>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button variant="cta" asChild className="w-full sm:w-auto">
               <Link href="/contact" onClick={handleContactClick}>
                 Contact us
               </Link>
             </Button>
-            <Button variant="cta-outline" asChild>
+            <Button variant="cta-outline" asChild className="w-full sm:w-auto">
               <a
                 href={calendarUrl ?? '#'}
                 target="_blank"

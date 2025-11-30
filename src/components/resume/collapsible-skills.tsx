@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
@@ -10,12 +10,55 @@ interface CollapsibleSkillsProps {
   skills: SkillCategory[];
 }
 
+// Memoized badge renderer
+const BadgeItem = memo(({ text }: { text: string }) => (
+  <Badge variant="outline" className="text-xs">
+    {text}
+  </Badge>
+));
+BadgeItem.displayName = "BadgeItem";
+
+// Memoized skill category with conditional rendering
+const SkillCategoryItem = memo(
+  ({ 
+    category, 
+    skills: skillList, 
+    isExpanded, 
+    initialCount 
+  }: { 
+    category: string; 
+    skills: string[]; 
+    isExpanded: boolean; 
+    initialCount: number;
+  }) => {
+    const skillsToShow = isExpanded ? skillList : skillList.slice(0, initialCount);
+    const hiddenCount = skillList.length - skillsToShow.length;
+
+    return (
+      <div className="space-y-1">
+        <p className="text-muted-foreground font-medium text-sm">{category}</p>
+        <div className="flex flex-wrap gap-1">
+          {skillsToShow.map((skill, idx) => (
+            <BadgeItem key={idx} text={skill} />
+          ))}
+          {!isExpanded && hiddenCount > 0 && (
+            <Badge variant="secondary" className="text-xs">
+              +{hiddenCount} more
+            </Badge>
+          )}
+        </div>
+      </div>
+    );
+  }
+);
+SkillCategoryItem.displayName = "SkillCategoryItem";
+
 /**
  * CollapsibleSkills component
  * 
  * Displays skill categories with expand/collapse functionality to condense space.
  * Shows limited skills per category by default, with "Show more" button to reveal all.
- * Matches the pattern used in CollapsibleCertifications.
+ * Optimized with memoization and lazy rendering for performance.
  * 
  * @param skills - Array of skill categories from resume data
  */
@@ -23,39 +66,26 @@ export function CollapsibleSkills({ skills }: CollapsibleSkillsProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const INITIAL_DISPLAY_COUNT = 10; // Show 10 skills per category initially
 
+  // Memoize the mapped skills to prevent unnecessary re-renders
+  const skillsData = useMemo(() => {
+    return skills.map((category) => ({
+      category: category.category,
+      skills: category.skills,
+    }));
+  }, [skills]);
+
   return (
     <div className="space-y-3">
-      {skills.map((skillCategory, index) => {
-        const skillsToShow = isExpanded 
-          ? skillCategory.skills 
-          : skillCategory.skills.slice(0, INITIAL_DISPLAY_COUNT);
-        const hiddenCount = skillCategory.skills.length - skillsToShow.length;
+      {skillsData.map((skillCategory, index) => (
+        <SkillCategoryItem
+          key={index}
+          category={skillCategory.category}
+          skills={skillCategory.skills}
+          isExpanded={isExpanded}
+          initialCount={INITIAL_DISPLAY_COUNT}
+        />
+      ))}
 
-        return (
-          <div key={index} className="space-y-1">
-            <p className="text-muted-foreground font-medium text-sm">
-              {skillCategory.category}
-            </p>
-            <div className="flex flex-wrap gap-1">
-              {skillsToShow.map((skill, idx) => (
-                <Badge key={idx} variant="outline" className="text-xs">
-                  {skill}
-                </Badge>
-              ))}
-              {!isExpanded && hiddenCount > 0 && (
-                <Badge 
-                  variant="secondary" 
-                  className="text-xs cursor-pointer"
-                  onClick={() => setIsExpanded(true)}
-                >
-                  +{hiddenCount} more
-                </Badge>
-              )}
-            </div>
-          </div>
-        );
-      })}
-      
       <Button
         variant="ghost"
         size="sm"

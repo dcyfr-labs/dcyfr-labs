@@ -36,7 +36,7 @@ export default function TwitterImage({
           padding: "64px 72px",
           background: "linear-gradient(135deg, #020617 0%, #111827 50%, #1f2937 100%)",
           color: "#f9fafb",
-          fontFamily: "Geist, Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif",
+          fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif",
         }}
       >
         <div

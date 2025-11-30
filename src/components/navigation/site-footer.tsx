@@ -6,10 +6,10 @@ export function SiteFooter() {
   return (
     <>
       {/* Mobile footer - minimalistic */}
-      <footer className="md:hidden mt-16 site-footer">
-        <div className="flex items-center justify-center gap-2 h-12 text-xs text-muted-foreground/40 [text-shadow:0_1px_0_rgba(255,255,255,0.1)] dark:[text-shadow:0_1px_0_rgba(255,255,255,0.05)]">
+      <footer className="md:hidden border-t mt-16 site-footer">
+        <div className="mx-auto px-4 sm:px-8 h-16 flex items-center justify-center text-sm text-muted-foreground gap-2">
           <span suppressHydrationWarning>&copy; {new Date().getFullYear()}</span>
-          <SiteLogo size="sm" iconClassName="opacity-30" />
+          <SiteLogo size="sm" />
         </div>
       </footer>
 

@@ -174,7 +174,7 @@ await server.connect(transport);
 
 After using MCP extensively on this portfolio, here are some patterns that work well:
 
-### 1. **Memory for Project Context**
+### 1. Memory for Project Context
 
 Use the Memory MCP to store project-specific knowledge:
 
@@ -197,7 +197,7 @@ await mcp_memory_create_entities({
 
 This means the AI remembers your project's patterns without you repeating them.
 
-### 2. **Sequential Thinking for Complex Tasks**
+### 2. Sequential Thinking for Complex Tasks
 
 For architectural decisions or debugging, use Sequential Thinking to break down problems:
 
@@ -213,7 +213,7 @@ await mcp_thinking_sequentialthinking({
 
 This gives better results than asking for immediate solutions.
 
-### 3. **Filesystem Operations Stay Local**
+### 3. Filesystem Operations Stay Local
 
 Never upload credentials or sensitive files. MCP filesystem servers let AI read your local files without sending them anywhere:
 
