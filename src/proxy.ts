@@ -121,6 +121,48 @@ export default function proxy(request: NextRequest) {
       }
     }
   }
+
+  // Protect internal API endpoints - only allow from same domain in production/preview
+  // These endpoints are for internal maintenance monitoring only
+  const internalApiPaths = [
+    "/api/maintenance",
+    "/dev/api",
+  ];
+
+  if (!isDevelopment) {
+    const isInternalApiPath = internalApiPaths.some(
+      (p) => pathname === p || pathname.startsWith(p + "/")
+    );
+
+    if (isInternalApiPath) {
+      // Check if request is from the same origin/domain
+      const referer = request.headers.get("referer");
+      const host = request.headers.get("host");
+      const isInternal = referer && host && referer.includes(host);
+
+      if (!isInternal) {
+        // Log unauthorized API access attempt
+        Sentry.captureMessage(`Unauthorized API access attempt: ${pathname}`, {
+          level: "warning",
+          tags: {
+            security: "unauthorized-api",
+            path: pathname,
+          },
+          extra: {
+            url: request.url,
+            method: request.method,
+            userAgent: request.headers.get("user-agent") || "unknown",
+            ip: request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown",
+            referer: referer || "none",
+            host: host || "unknown",
+          },
+        });
+
+        // Return 404 to not reveal the API exists
+        return NextResponse.rewrite(new URL("/_not-found", request.url));
+      }
+    }
+  }
   
   // Build CSP directives with nonce
   const cspDirectives = [
