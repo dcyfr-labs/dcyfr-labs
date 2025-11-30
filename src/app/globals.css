@@ -1008,11 +1008,13 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
     font-size: 0.875rem; /* Inline code slightly larger */
   }
 
-  /* Lists with better spacing */
+  /* Lists with default browser spacing */
   .prose ul,
   .prose ol {
-    margin-top: 1.25rem;
-    margin-bottom: 1.25rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-left: 1.5rem;
+    padding-left: 1.5rem;
   }
 
   .prose li {
@@ -1166,6 +1168,23 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
 /* ===================================================================
    KaTeX Math Rendering - Enhanced Readability
    ================================================================ */
+
+/**
+ * Loading bar animation
+ * Pure CSS animation for route transition loading indicator
+ */
+@keyframes loading-bar {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.animate-loading-bar {
+  animation: loading-bar 0.5s ease-in-out forwards;
+}
 
 /**
  * Improved sizing for LaTeX math equations

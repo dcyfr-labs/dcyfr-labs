@@ -117,7 +117,7 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
   blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => (
     <blockquote 
       {...props} 
-      className="border-l-4 border-primary/30 pl-8 pr-4 my-8 text-muted-foreground text-xl leading-relaxed"
+      className="pl-4 my-6"
     />
   ),
   table: (props: React.HTMLAttributes<HTMLTableElement>) => (

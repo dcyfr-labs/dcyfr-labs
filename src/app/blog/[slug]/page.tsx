@@ -33,9 +33,9 @@ import {
 import { Breadcrumbs } from "@/components/navigation";
 import { ReadingProgress } from "@/components/features/reading-progress";
 import { ShareButtons } from "@/components/features/sharing/share-buttons";
-import { GiscusComments } from "@/components/features/comments/giscus-comments";
+import { LazyGiscusComments } from "@/components/features/comments/lazy-giscus-comments";
 import { ViewTracker } from "@/components/features/view-tracker";
-import { PostBadges } from "@/components/post-badges";
+import { PostBadges } from "@/components/blog";
 
 // Enable Incremental Static Regeneration with 1 hour revalidation
 export const revalidate = 3600; // 1 hour in seconds
@@ -193,7 +193,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       </div>
 
       {/* Desktop Layout: Sidebar + Content */}
-      <div className={`container ${CONTAINER_WIDTHS.content} mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-20 pb-8`}>
+      <div className={`container ${CONTAINER_WIDTHS.content} mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-12 pb-8`}>
         <div className="grid gap-8 items-start lg:grid-cols-[280px_1fr]">
           {/* Left Sidebar (desktop only) */}
           <BlogPostSidebar
@@ -233,7 +233,6 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
               <ArticleHeader
                 title={post.title}
-                badges={<PostBadges post={post} isLatestPost={latestPost?.slug === post.slug} isHotPost={hottestSlug === post.slug} showCategory={true} />}
               >
                 {/* Metadata shown only when sidebar is hidden */}
                 <HideWhenSidebarVisible>
@@ -255,22 +254,6 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                     )}
                   </div>
                 </HideWhenSidebarVisible>
-                
-                {/* Tags shown only when sidebar is hidden */}
-                <HideWhenSidebarVisible>
-                  {post.tags.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-2 mt-4">
-                      <span className="text-sm text-muted-foreground">Tagged:</span>
-                      {post.tags.map((tag) => (
-                        <a key={tag} href={`/blog?tag=${encodeURIComponent(tag)}`}>
-                          <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 cursor-pointer">
-                            {tag}
-                          </span>
-                        </a>
-                      ))}
-                    </div>
-                  )}
-                </HideWhenSidebarVisible>
               </ArticleHeader>
 
               {/* Series navigation */}
@@ -287,6 +270,29 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
 
               <ArticleFooter>
+                {/* Status badges and category - hidden when sidebar is visible */}
+                <HideWhenSidebarVisible>
+                  <div className="flex flex-wrap items-center gap-2 mb-6">
+                    <PostBadges post={post} isLatestPost={latestPost?.slug === post.slug} isHotPost={hottestSlug === post.slug} showCategory={true} />
+                  </div>
+                </HideWhenSidebarVisible>
+
+                {/* Tags section - hidden when sidebar is visible */}
+                <HideWhenSidebarVisible>
+                  {post.tags.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-2 mb-6">
+                      <span className="text-sm text-muted-foreground">Tagged:</span>
+                      {post.tags.map((tag) => (
+                        <a key={tag} href={`/blog?tag=${encodeURIComponent(tag)}`}>
+                          <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 cursor-pointer">
+                            {tag}
+                          </span>
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </HideWhenSidebarVisible>
+
                 {/* Share section - hidden when sidebar is visible */}
                 <HideWhenSidebarVisible>
                   <div className="space-y-4">
@@ -308,7 +314,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               </ArticleFooter>
 
               {/* Comments section - hidden for draft posts */}
-              {!post.draft && <GiscusComments />}
+              {!post.draft && <LazyGiscusComments />}
             </ArticleLayout>
           </div>
           </SidebarVisibilityProvider>

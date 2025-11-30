@@ -14,6 +14,7 @@ const CATEGORY_LABEL: Record<PostCategory, string> = {
   "security": "Security",
   "career": "Career",
   "ai": "AI",
+  "AI": "AI",
   "tutorial": "Tutorial",
   "Demo": "Demo",
   "Career Development": "Career Development",
@@ -41,7 +42,7 @@ export function PostBadges({
       <Badge
         key="draft"
         variant="default"
-        className={size === "sm" ? "text-xs" : ""}
+        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
       >
         Draft
       </Badge>
@@ -54,7 +55,7 @@ export function PostBadges({
       <Badge
         key="archived"
         variant="default"
-        className={size === "sm" ? "text-xs" : ""}
+        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
       >
         Archived
       </Badge>
@@ -67,7 +68,7 @@ export function PostBadges({
       <Badge
         key="new"
         variant="default"
-        className={size === "sm" ? "text-xs" : ""}
+        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
       >
         New
       </Badge>
@@ -80,7 +81,7 @@ export function PostBadges({
       <Badge
         key="hot"
         variant="default"
-        className={size === "sm" ? "text-xs" : ""}
+        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
       >
         Hot
       </Badge>
@@ -93,7 +94,7 @@ export function PostBadges({
       <Badge
         key="category"
         variant="outline"
-        className={size === "sm" ? "text-xs" : ""}
+        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
       >
         {CATEGORY_LABEL[post.category]}
       </Badge>

@@ -45,7 +45,7 @@ export const CONTAINER_PADDING = "px-4 sm:px-6 md:px-8" as const;
  * Standard vertical padding for page containers
  * Provides consistent top/bottom spacing
  */
-export const CONTAINER_VERTICAL_PADDING = "py-14 md:py-20" as const;
+export const CONTAINER_VERTICAL_PADDING = "py-8 md:py-12" as const;
 
 /**
  * Utility function to build complete container classes
@@ -339,7 +339,7 @@ export const PAGE_LAYOUT = {
   /** Hero section spacing - larger than standard sections */
   hero: {
     /** Container for hero content - top padding accounts for sticky header */
-    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-20 md:pt-20`,
+    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-8 md:pt-12`,
     /** Hero title + description wrapper */
     content: SPACING.proseHero,
   },

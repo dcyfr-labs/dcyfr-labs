@@ -45,7 +45,7 @@ interface SiteLogoProps {
 const sizeConfig: Record<SiteLogoSize, { text: string; icon: string; gap: string }> = {
   xs: { text: "text-xs", icon: "w-2.5 h-2.5", gap: "gap-1.5" },
   sm: { text: "text-sm", icon: "w-3 h-3", gap: "gap-2" },
-  md: { text: "text-base sm:text-xl md:text-2xl", icon: "w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6", gap: "gap-2 sm:gap-2.5 md:gap-3" },
+  md: { text: "text-base sm:text-xl md:text-2xl", icon: "w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6", gap: "gap-2 sm:gap-2.5 md:gap-3" },
   lg: { text: "text-xl sm:text-2xl md:text-3xl", icon: "w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8", gap: "gap-2.5 sm:gap-3 md:gap-3.5" },
   xl: { text: "text-2xl sm:text-3xl md:text-4xl", icon: "w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10", gap: "gap-3 sm:gap-3.5 md:gap-4" },
 };
@@ -66,7 +66,7 @@ export const SiteLogo: React.FC<SiteLogoProps> = ({
         <span
           className={cn(
             config.text,
-            "font-serif font-medium leading-none",
+            "font-serif font-semibold leading-none",
             collapseOnMobile ? "hidden sm:inline" : ""
           )}
         >

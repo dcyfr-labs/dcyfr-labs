@@ -16,13 +16,43 @@ Next.js 16 + React 19 + TypeScript + Tailwind v4 + shadcn/ui + MDX portfolio sit
 ```
 src/
 ├── app/                    # App Router (server components default)
-├── components/layouts/     # PageLayout, PageHero, ArchiveLayout, ArticleLayout
-├── components/ui/          # shadcn/ui primitives
+├── components/            
+│   ├── about/              # About page components
+│   ├── activity/           # Activity feed components  
+│   ├── analytics/          # Analytics components
+│   ├── blog/               # Blog components (barrel: index.ts)
+│   ├── common/             # Shared components (barrel: index.ts)
+│   ├── dashboard/          # Dashboard components
+│   ├── features/           # Feature components (theme, comments, etc)
+│   ├── home/               # Homepage components (barrel: index.ts)
+│   ├── layouts/            # PageLayout, PageHero, ArchiveLayout, ArticleLayout
+│   ├── navigation/         # SiteHeader, SiteFooter, etc (barrel: index.ts)
+│   ├── projects/           # Project components (barrel: index.ts)
+│   ├── resume/             # Resume components (barrel: index.ts)
+│   ├── sections/           # Section components
+│   └── ui/                 # shadcn/ui primitives
 ├── content/blog/           # MDX posts
 ├── data/                   # Typed data (posts, projects, resume)
 ├── lib/                    # Utilities, metadata, design-tokens
 └── inngest/                # Background jobs
 ```
+
+## Component Import Rules (CRITICAL)
+
+**Always import from barrel files, never from root `@/components/`:**
+```typescript
+// ✅ CORRECT - import from organized subdirectories
+import { PostList, BlogFilters } from "@/components/blog";
+import { FeaturedPostHero } from "@/components/home";
+import { SiteHeader, SiteFooter } from "@/components/navigation";
+import { Logo, HighlightText } from "@/components/common";
+import { PageLayout } from "@/components/layouts";
+
+// ❌ WRONG - never import directly from components root
+import { PostList } from "@/components/post-list";  // ORPHANED FILE
+```
+
+**Before editing any component:** Verify the file is exported from a barrel file (`index.ts` in its directory).
 
 ## Essential Patterns
 

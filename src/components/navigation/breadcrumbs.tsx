@@ -84,7 +84,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
                   <span 
                     className={`truncate ${
                       isLast 
-                        ? 'max-w-[180px] sm:max-w-[250px] md:max-w-[400px] lg:max-w-none' 
+                        ? 'max-w-[220px] sm:max-w-[300px] md:max-w-[500px] lg:max-w-none' 
                         : 'max-w-[100px] sm:max-w-[150px] md:max-w-none'
                     }`}
                     aria-current={isLast ? "page" : undefined}

@@ -14,9 +14,7 @@ import {
 } from "@/lib/site-config";
 import { SiteHeader, SiteFooter, BottomNav } from "@/components/navigation";
 import { Toaster } from "@/components/ui/sonner";
-import { LoadingBar } from "@/components/features/loading-bar";
-import { ScrollToTop } from "@/components/features/scroll-to-top";
-import { WebVitalsReporter } from "@/components/features/web-vitals-reporter";
+import { LayoutUtilities } from "@/components/features/layout-utilities";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AxiomWebVitals } from "next-axiom";
@@ -126,8 +124,7 @@ export default async function RootLayout({
           >
             Skip to main content
           </a>
-          <LoadingBar />
-          <ScrollToTop />
+          <LayoutUtilities />
           <SiteHeader />
           <main id="main-content" className="min-h-[calc(100dvh-128px)] pb-24 md:pb-8">{children}</main>
           <SiteFooter />
@@ -140,8 +137,6 @@ export default async function RootLayout({
               <SpeedInsights sampleRate={0.1} />
             </>
           )}
-          {/* Web Vitals Tracking */}
-          <WebVitalsReporter />
           {/* Axiom Web Vitals - Production only */}
           <AxiomWebVitals />
         </ThemeProvider>

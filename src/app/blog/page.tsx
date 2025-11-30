@@ -238,7 +238,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       <BlogLayoutManager />
       
       {/* Blog layout with sidebar on desktop */}
-      <div className={`container ${CONTAINER_WIDTHS.archive} mx-auto px-4 sm:px-8 lg:px-8 pt-20 md:pt-20 pb-8`}>
+      <div className={`container ${CONTAINER_WIDTHS.archive} mx-auto px-4 sm:px-8 lg:px-8 pt-8 md:pt-12 pb-8`}>
         {/* Main grid: Sidebar + Content */}
         <BlogLayoutWrapper>
           {/* Sidebar (desktop only) */}

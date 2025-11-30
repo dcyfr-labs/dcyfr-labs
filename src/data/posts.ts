@@ -10,7 +10,7 @@ export type PostImage = {
   position?: "top" | "left" | "right" | "background"; // list view placement hint
 };
 
-export type PostCategory = "development" | "security" | "career" | "ai" | "tutorial" | "Demo" | "Career Development" | "Web Development" | "DevSecOps";
+export type PostCategory = "development" | "security" | "career" | "ai" | "AI" | "tutorial" | "Demo" | "Career Development" | "Web Development" | "DevSecOps";
 
 export type Post = {
   id: string; // stable permanent identifier (never changes, independent of slug)
