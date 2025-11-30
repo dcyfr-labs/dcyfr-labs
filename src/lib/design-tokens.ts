@@ -29,10 +29,10 @@ export const CONTAINER_WIDTHS = {
   standard: "max-w-4xl",
   
   /** Content-heavy pages with sidebar (individual blog posts, project detail pages) */
-  content: "max-w-6xl",
+  content: "max-w-7xl",
   
   /** Archive/listing pages with filters and grids (blog listing, projects listing) */
-  archive: "max-w-6xl",
+  archive: "max-w-7xl",
 } as const;
 
 /**
