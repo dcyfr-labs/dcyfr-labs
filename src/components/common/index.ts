@@ -9,6 +9,8 @@ export { default as Logo } from "./logo";
 export { SiteLogo } from "./site-logo";
 export { MDX } from "./mdx";
 export { Mermaid } from "./mermaid";
+export { ProfileAvatar, type AvatarSize } from "./profile-avatar";
+export { ScrollIndicator } from "./scroll-indicator";
 export { RelatedPosts } from "./related-posts";
 export { SectionHeader } from "./section-header";
 export { SectionNavigator, Section } from "./section-navigator";

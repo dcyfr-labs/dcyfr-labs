@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Source_Serif_4 } from "next/font/google";
+import { Geist, Geist_Mono, Alegreya } from "next/font/google";
 import "./globals.css";
 import "./print.css";
 import { ThemeProvider } from "@/components/features/theme/theme-provider";
@@ -36,7 +36,7 @@ const geistMono = Geist_Mono({
   adjustFontFallback: true,
 });
 
-const sourceSerif = Source_Serif_4({
+const alegreya = Alegreya({
   variable: "--font-serif",
   subsets: ["latin"],
   display: "swap",
@@ -116,7 +116,7 @@ export default async function RootLayout({
         {/* Giscus comments (loaded on blog posts) */}
         <link rel="dns-prefetch" href="https://giscus.app" />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${alegreya.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem nonce={nonce}>
           <a
             href="#main-content"

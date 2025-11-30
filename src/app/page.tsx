@@ -15,7 +15,6 @@ import { headers } from "next/headers";
 import type { Metadata } from "next";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import {
   TYPOGRAPHY,
   SPACING,
@@ -25,9 +24,9 @@ import {
   getContainerClasses,
 } from "@/lib/design-tokens";
 import { Button } from "@/components/ui/button";
-import { PageLayout } from "@/components/layouts/page-layout";
-import { PageHero } from "@/components/layouts/page-hero";
 import { createPageMetadata, getJsonLdScriptProps } from "@/lib/metadata";
+import { PageLayout } from "@/components/layouts/page-layout";
+import { cn } from "@/lib/utils";
 import { PostList } from "@/components/blog";
 import {
   SectionHeader,
@@ -35,6 +34,8 @@ import {
   SectionNavigator,
   Section,
   TrendingPosts,
+  ProfileAvatar,
+  ScrollIndicator,
 } from "@/components/common";
 import { ActivityFeed } from "@/components/activity";
 import {
@@ -43,7 +44,7 @@ import {
   transformChangelog,
   aggregateActivities,
 } from "@/lib/activity";
-import { FeaturedPostHero, HomepageStats, HomepageHeroActions } from "@/components/home";
+import { FeaturedPostHero, HomepageStats, HomepageHeroActions, HomepageHeroHeadline } from "@/components/home";
 import { WhatIDo, TechStack, SocialProof } from "@/components/about";
 
 const ScrollReveal = dynamic(() => import("@/components/features/scroll-reveal").then(mod => ({ default: mod.ScrollReveal })), {
@@ -149,26 +150,52 @@ export default async function Home() {
         {/* Hero Section */}
         <Section>
           <ScrollReveal animation="fade-up">
-            <PageHero
-              contentClassName={`${CONTAINER_WIDTHS.narrow} mx-auto text-center`}
-              variant="homepage"
-              align="center"
-              title={<SiteLogo size="xl" className="justify-center" />}
-              description="Cyber architecture and design insights helping builders and creators develop secure, resilient, and innovative digital experiences."
-              image={
-                <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40">
-                  <Image
-                    src="/images/avatar.jpg"
-                    alt="Drew (dcyfr)"
-                    fill
-                    sizes="(max-width: 640px) 96px, (max-width: 768px) 128px, 160px"
-                    className="rounded-full object-cover ring-4 ring-border shadow-lg"
-                    priority
-                  />
+            <div className={`${PAGE_LAYOUT.hero.container}`}>
+              <div
+                className={cn(
+                  PAGE_LAYOUT.hero.content,
+                  "text-center",
+                  `${CONTAINER_WIDTHS.narrow} mx-auto space-y-6`
+                )}
+              >
+                {/* Avatar */}
+                <div
+                  className="flex justify-center"
+                  role="img"
+                  aria-label="Drew's profile photo"
+                >
+                  <ProfileAvatar size="xl" priority animated backdrop />
                 </div>
-              }
-              actions={<HomepageHeroActions />}
-            />
+
+                {/* Logo Title */}
+                <SiteLogo size="xl" className="justify-center" />
+
+                {/* Professional Headline 
+                <HomepageHeroHeadline /> */}
+
+                {/* Description */}
+                <p
+                  className={cn(
+                    "text-muted-foreground leading-relaxed",
+                    TYPOGRAPHY.description,
+                    CONTAINER_WIDTHS.narrow,
+                    "mx-auto"
+                  )}
+                >
+                  Cyber architecture and design insights helping builders and
+                  creators develop secure, resilient, and innovative digital
+                  experiences.
+                </p>
+
+                {/* Actions */}
+                <HomepageHeroActions />
+
+                {/* Scroll Indicator */}
+                <div className="pt-8">
+                  <ScrollIndicator />
+                </div>
+              </div>
+            </div>
           </ScrollReveal>
         </Section>
 
@@ -187,11 +214,14 @@ export default async function Home() {
             <div className={SPACING.content}>
               <SectionHeader title="Activity" />
               <ActivityFeed
-                items={aggregateActivities([
-                  ...transformPosts(recentPosts),
-                  ...transformProjects([...featuredProjects]),
-                  ...transformChangelog(visibleChangelog),
-                ], { limit: 8 })}
+                items={aggregateActivities(
+                  [
+                    ...transformPosts(recentPosts),
+                    ...transformProjects([...featuredProjects]),
+                    ...transformChangelog(visibleChangelog),
+                  ],
+                  { limit: 8 }
+                )}
                 variant="timeline"
                 viewAllHref="/activity"
               />

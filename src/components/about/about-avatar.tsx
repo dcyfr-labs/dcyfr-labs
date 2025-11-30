@@ -1,64 +1,44 @@
 "use client";
 
-import Image from "next/image";
-import { useState } from "react";
-import { User } from "lucide-react";
+import { ProfileAvatar, type AvatarSize } from "@/components/common";
 
 /**
- * About Avatar Component
+ * AboutAvatar Component (Deprecated - Use ProfileAvatar instead)
  * 
- * Displays a professional avatar/profile image with fallback support.
- * Features responsive sizing and theme-aware styling.
+ * This is now a wrapper around ProfileAvatar for backward compatibility.
+ * It provides the same functionality as before but delegates to the unified
+ * ProfileAvatar component for maintainability.
  * 
- * @component
+ * @deprecated Use `ProfileAvatar` from `@/components/common` instead.
+ * @see ProfileAvatar
+ * 
  * @example
  * ```tsx
- * <AboutAvatar />
- * ```
+ * // ❌ Old way (still works)
+ * import { AboutAvatar } from "@/components/about";
+ * <AboutAvatar size="md" />
  * 
- * @remarks
- * Place profile image at `/public/images/profile.jpg` or update src prop
- * Currently defaults to `/images/avatar.jpg`
+ * // ✅ New way (recommended)
+ * import { ProfileAvatar } from "@/components/common";
+ * <ProfileAvatar size="md" />
+ * ```
  */
 
 type AboutAvatarProps = {
   src?: string;
   alt?: string;
-  size?: "sm" | "md" | "lg";
+  size?: AvatarSize;
 };
 
-const sizeClasses = {
-  sm: "w-16 h-16",
-  md: "w-24 h-24 md:w-28 md:h-28",
-  lg: "w-32 h-32 md:w-40 md:h-40",
-};
-
-export function AboutAvatar({ 
-  src = "/images/avatar.jpg", 
+/**
+ * Wrapper component for backward compatibility.
+ * Delegates all props to ProfileAvatar.
+ */
+export function AboutAvatar({
+  src = "/images/avatar.jpg",
   alt = "Profile photo",
-  size = "md"
+  size = "md",
 }: AboutAvatarProps) {
-  const [imageError, setImageError] = useState(false);
-
-  return (
-    <div className={`${sizeClasses[size]} relative flex-shrink-0`}>
-      {!imageError && src ? (
-        <div className="relative w-full h-full rounded-full overflow-hidden ring-2 ring-border shadow-lg">
-          <Image
-            src={src}
-            alt={alt}
-            fill
-            sizes="(max-width: 768px) 96px, 112px"
-            className="object-cover"
-            onError={() => setImageError(true)}
-            priority
-          />
-        </div>
-      ) : (
-        <div className="w-full h-full rounded-full bg-muted flex items-center justify-center ring-2 ring-border shadow-lg">
-          <User className="w-1/2 h-1/2 text-muted-foreground" aria-hidden="true" />
-        </div>
-      )}
-    </div>
-  );
+  return <ProfileAvatar src={src} alt={alt} size={size} />;
 }
+

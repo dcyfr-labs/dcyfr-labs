@@ -26,8 +26,9 @@ import {
   SectionNavigator,
   Section,
   GitHubHeatmapErrorBoundary,
+  ProfileAvatar,
 } from "@/components/common";
-import { AboutAvatar, AboutStats, TeamSpotlights, ConnectWithUs } from "@/components/about";
+import { AboutStats, TeamSpotlights, ConnectWithUs } from "@/components/about";
 import { PostList } from "@/components/blog";
 import { DownloadResumeButton } from "@/components/resume";
 import { LazyGitHubHeatmap } from "@/components/features/github/lazy-github-heatmap";
@@ -72,7 +73,7 @@ export default async function AboutPage() {
           <div className="flex flex-col md:flex-row md:items-start md:gap-4 lg:gap-8">
             {/* Avatar */}
             <div className="shrink-0 mb-6 md:mb-0">
-              <AboutAvatar size="md" />
+              <ProfileAvatar size="md" />
             </div>
             {/* Content */}
             <div className="flex-1 space-y-4">

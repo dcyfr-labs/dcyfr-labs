@@ -35,7 +35,7 @@ export function SiteHeader() {
       <div className={cn("mx-auto", CONTAINER_WIDTHS.archive, "px-4", "sm:px-8", "md:px-8", "h-14", "md:h-16", "flex", "items-center", "justify-between", "gap-2")}>
         {/* Logo - always visible */}
         <Link href="/" className={cn("touch-target", "shrink-0")}>
-          <SiteLogo size="md" collapseOnMobile />
+          <SiteLogo size="lg" collapseOnMobile />
         </Link>
 
         {/* Desktop Navigation - hidden on mobile, visible md and up */}

@@ -55,7 +55,7 @@ export function FABMenu({
       <motion.div
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="md:hidden fixed bottom-[104px] right-4 sm:right-6 z-40"
+        className="md:hidden fixed bottom-[88px] right-4 sm:right-6 z-40"
       >
         <Button
           size="icon"
@@ -74,7 +74,7 @@ export function FABMenu({
       <motion.div
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="md:hidden fixed bottom-[104px] right-4 sm:right-6 z-40"
+        className="md:hidden fixed bottom-[88px] right-4 sm:right-6 z-40"
       >
         <Button
           size="icon"
@@ -91,7 +91,7 @@ export function FABMenu({
   // Both buttons available - show expandable menu
   return (
     <div
-      className="md:hidden fixed bottom-[104px] right-4 sm:right-6 z-40"
+      className="md:hidden fixed bottom-[88px] right-4 sm:right-6 z-40"
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
       onTouchStart={() => setIsExpanded(!isExpanded)}

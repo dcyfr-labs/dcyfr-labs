@@ -2,7 +2,11 @@
  * Homepage Hero Actions Component
  * 
  * Client component for hero section buttons with conversion tracking.
- * Separated from server component to maintain SSR benefits while adding interactivity.
+ * Provides responsive button layout with visual hierarchy and icons.
+ * 
+ * Layout:
+ * - Desktop: Primary button large + Secondary button standard + Tertiary outline
+ * - Mobile: Primary button full-width, Secondary/Tertiary stacked below
  */
 
 'use client';
@@ -10,6 +14,7 @@
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { trackEvent } from '@/lib/analytics';
+import { Briefcase, BookOpen, Info } from 'lucide-react';
 
 export function HomepageHeroActions() {
   const handleBlogClick = () => {
@@ -43,20 +48,43 @@ export function HomepageHeroActions() {
   };
 
   return (
-    <div className="flex flex-wrap gap-2 sm:gap-3 pt-1 sm:pt-2 justify-center">
-      <Button variant="cta" asChild size="default">
+    <div className="flex flex-col sm:flex-row gap-3 pt-4 sm:pt-6 justify-center items-center sm:items-stretch">
+      {/* Primary CTA - Portfolio */}
+      <Button
+        variant="cta"
+        asChild
+        size="lg"
+        className="sm:w-auto gap-2 hover:scale-105 transition-transform duration-200"
+      >
         <Link href="/portfolio" onClick={handleProjectsClick}>
-          View portfolio
+          <Briefcase className="h-5 w-5" />
+          <span>View portfolio</span>
         </Link>
       </Button>
-      <Button variant="cta-outline" asChild size="default">
+
+      {/* Secondary CTA - Blog */}
+      <Button
+        variant="cta-outline"
+        asChild
+        size="default"
+        className="gap-2 hover:scale-105 transition-transform duration-200"
+      >
         <Link href="/blog" onClick={handleBlogClick}>
-          Read blog
+          <BookOpen className="h-4 w-4" />
+          <span>Read blog</span>
         </Link>
       </Button>
-      <Button variant="secondary" asChild size="default">
+
+      {/* Tertiary CTA - About */}
+      <Button
+        variant="secondary"
+        asChild
+        size="default"
+        className="gap-2 hover:scale-105 transition-transform duration-200"
+      >
         <Link href="/about" onClick={handleAboutClick}>
-          Learn more
+          <Info className="h-4 w-4" />
+          <span>Learn more</span>
         </Link>
       </Button>
     </div>

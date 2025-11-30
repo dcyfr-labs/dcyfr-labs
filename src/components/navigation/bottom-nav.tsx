@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, FileText, FolderGit2, Mail } from "lucide-react";
+import { Home, FileText, FolderGit2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -11,11 +11,12 @@ import { cn } from "@/lib/utils";
  * 
  * Features:
  * - Fixed at bottom of viewport on mobile only (< md breakpoint)
- * - 4 primary destinations: Home, Blog, Projects, Contact
- * - Large touch targets (56px height)
+ * - 3 primary destinations: Home, Blog, Portfolio
+ * - Compact 48px height (optimized for mobile content space)
  * - Active state highlighting
  * - Icon + label layout
  * - Backdrop blur effect
+ * - Contact and additional navigation available in hamburger menu
  * 
  * @example
  * ```tsx
@@ -45,12 +46,6 @@ export function BottomNav() {
       icon: FolderGit2,
       isActive: pathname.startsWith("/portfolio"),
     },
-    {
-      href: "/contact",
-      label: "Contact",
-      icon: Mail,
-      isActive: pathname.startsWith("/contact"),
-    },
   ];
 
   return (
@@ -58,7 +53,7 @@ export function BottomNav() {
       className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t backdrop-blur supports-[backdrop-filter]:bg-background/95 bg-background"
       aria-label="Bottom navigation"
     >
-      <div className={cn("grid grid-cols-4 h-16", "max-w-lg", "mx-auto")}>
+      <div className={cn("grid grid-cols-3 h-12", "max-w-lg", "mx-auto")}>
         {navItems.map((item) => {
           const Icon = item.icon;
           
@@ -78,10 +73,10 @@ export function BottomNav() {
               aria-current={item.isActive ? "page" : undefined}
             >
               <Icon
-                className={cn("h-5 w-5", item.isActive && "stroke-[2.5]")}
+                className={cn("h-4 w-4", item.isActive && "stroke-[2.5]")}
                 aria-hidden="true"
               />
-              <span className="text-xs">{item.label}</span>
+              <span className="text-[10px]">{item.label}</span>
             </Link>
           );
         })}

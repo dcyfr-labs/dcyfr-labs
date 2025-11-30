@@ -20,12 +20,12 @@ import { HOVER_EFFECTS } from "@/lib/design-tokens";
  * 
  * Design System:
  * - Size: 56px (h-14 w-14) - Standard FAB size
- * - Position: bottom-24 right-4 on desktop, bottom-[104px] right-4 on mobile (above bottom nav)
+ * - Position: bottom-24 right-4 on desktop, bottom-[88px] right-4 on mobile (above bottom nav)
  * - Z-index: 40 (below modals, above content)
  * - Animation: Framer Motion scale + opacity
  * - Scroll threshold: 400px
  * - Touch target: Meets 44px minimum (56px exceeds)
- * - Mobile: 104px from bottom (64px bottom nav + 40px spacing)
+ * - Mobile: 88px from bottom (48px bottom nav + 40px spacing)
  * - Desktop: 96px from bottom (above footer)
  * 
  * @component
@@ -73,7 +73,7 @@ export function BackToTop() {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
-          className="md:hidden fixed bottom-[104px] right-4 sm:right-6 z-40"
+          className="md:hidden fixed bottom-[88px] right-4 sm:right-6 z-40"
         >
           <Button
             variant="secondary"
