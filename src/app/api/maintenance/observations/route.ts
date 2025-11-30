@@ -75,7 +75,7 @@ export async function GET(request: Request) {
         }
       }
 
-      total = await redis.llen(OBSERVATIONS_KEY);
+      total = (await redis.llen(OBSERVATIONS_KEY)) as number || 0;
     } else {
       // Use in-memory fallback
       usingFallback = true;

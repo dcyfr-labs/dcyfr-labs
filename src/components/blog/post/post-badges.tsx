@@ -15,7 +15,6 @@ const CATEGORY_LABEL: Record<PostCategory, string> = {
   "career": "Career",
   "ai": "AI",
   "tutorial": "Tutorial",
-  "AI": "AI",
   "Demo": "Demo",
   "Career Development": "Career Development",
   "Web Development": "Web Development",
