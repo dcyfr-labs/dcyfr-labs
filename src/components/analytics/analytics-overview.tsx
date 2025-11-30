@@ -15,6 +15,7 @@ import { AnalyticsSummary } from "@/types/analytics";
 import { getBenchmark } from "@/lib/dashboard/table-utils";
 import Link from "next/link";
 import { useState } from "react";
+import { TYPOGRAPHY } from "@/lib/design-tokens";
 
 interface AnalyticsOverviewProps {
   /** Filtered summary statistics */
@@ -163,7 +164,7 @@ export function AnalyticsOverview({
                     >
                       {summary.topPost.title}
                     </Link>
-                    <p className="text-xl font-bold">
+                    <p className={TYPOGRAPHY.display.stat}>
                       {summary.topPost.views.toLocaleString()} views
                     </p>
                   </div>
@@ -188,7 +189,7 @@ export function AnalyticsOverview({
                     >
                       {summary.mostSharedPost.title}
                     </Link>
-                    <p className="text-xl font-bold">
+                    <p className={TYPOGRAPHY.display.stat}>
                       {summary.mostSharedPost.shares.toLocaleString()} shares
                     </p>
                   </div>
@@ -213,7 +214,7 @@ export function AnalyticsOverview({
                     >
                       {summary.mostCommentedPost.title}
                     </Link>
-                    <p className="text-xl font-bold">
+                    <p className={TYPOGRAPHY.display.stat}>
                       {summary.mostCommentedPost.comments.toLocaleString()} comments
                     </p>
                   </div>

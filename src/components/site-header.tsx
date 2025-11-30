@@ -10,14 +10,14 @@ import { CONTAINER_WIDTHS } from "@/lib/design-tokens";
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 backdrop-blur supports-backdrop-filter:bg-background/60 border-b site-header">
-      <div className={cn("mx-auto", CONTAINER_WIDTHS.archive, "px-4", "sm:px-6", "md:px-8", "h-14", "md:h-16", "flex", "items-center", "justify-between", "gap-2")}>
+      <div className={cn("mx-auto", CONTAINER_WIDTHS.archive, "px-4", "sm:px-8", "md:px-8", "h-14", "md:h-16", "flex", "items-center", "justify-between", "gap-2")}>
         {/* Logo - always visible */}
         <Link href="/" className={cn("touch-target", "shrink-0")}>
           <SiteLogo size="md" collapseOnMobile />
         </Link>
 
         {/* Desktop Navigation - hidden on mobile, visible md and up */}
-        <nav aria-label="Main navigation" className="hidden md:flex items-center gap-1 sm:gap-3 md:gap-6 text-sm">
+        <nav aria-label="Main navigation" className="hidden md:flex items-center gap-1 sm:gap-3 md:gap-4 text-sm">
           <Link 
             href="/about" 
             className="hover:underline underline-offset-4 will-change-auto touch-target px-1.5 sm:px-2"

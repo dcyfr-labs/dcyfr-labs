@@ -133,7 +133,7 @@ export function MobileNav() {
             );
           })}
         </nav>
-        <div className="border-t py-6 flex items-center justify-between text-center w-full mx-auto">
+        <div className="border-t py-8 flex items-center justify-between text-center w-full mx-auto">
           <ThemeToggle />
         </div>
       </SheetContent>

@@ -137,7 +137,7 @@ export function ActivityItem({
               >
                 {activity.title}
               </Link>
-              <Badge variant="outline" className={cn("shrink-0 text-xs", colors.badge)}>
+              <Badge variant="default" className="shrink-0 text-xs">
                 {sourceLabel}
               </Badge>
             </div>
@@ -316,7 +316,7 @@ function TimelineItem({
           >
             {activity.title}
           </Link>
-          <Badge variant="outline" className={cn("shrink-0 text-xs", colors.badge)}>
+          <Badge variant="default" className="shrink-0 text-xs">
             {sourceLabel}
           </Badge>
         </div>

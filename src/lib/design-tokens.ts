@@ -86,43 +86,43 @@ export const TYPOGRAPHY = {
     standard: "text-3xl md:text-4xl font-semibold tracking-tight",
     
     /** Archive/listing page titles (about, blog archive, portfolio archive) */
-    hero: "font-serif italic text-3xl md:text-4xl font-semibold tracking-tight",
+    hero: "font-serif text-3xl md:text-4xl font-semibold tracking-tight ws-sm",
     
     /** Blog post titles (larger, more prominent) */
-    article: "font-serif italic text-3xl md:text-5xl font-semibold tracking-tight leading-tight",
+    article: "font-serif text-3xl md:text-5xl font-semibold tracking-tight leading-tight ws-md",
     
     /** Portfolio project titles */
-    project: "font-serif italic text-3xl md:text-5xl font-semibold tracking-tight leading-tight",
+    project: "font-serif text-3xl md:text-5xl font-semibold tracking-tight leading-tight ws-md",
     
     /** MDX content headings */
-    mdx: "text-3xl md:text-4xl font-semibold tracking-tight",
+    mdx: "text-3xl md:text-4xl font-semibold tracking-tight ws-sm",
   },
   
   /** H2 heading variants */
   h2: {
     /** Standard section headings */
-    standard: "text-xl md:text-2xl font-medium",
+    standard: "text-xl md:text-2xl font-medium ws-xs",
     
     /** Featured content headings (blog post cards, featured sections) */
-    featured: "font-serif italic text-2xl md:text-3xl font-semibold tracking-tight",
+    featured: "font-serif text-2xl md:text-3xl font-semibold tracking-tight ws-sm",
     
     /** MDX content headings */
-    mdx: "text-2xl md:text-3xl font-semibold tracking-tight",
+    mdx: "text-2xl md:text-3xl font-semibold tracking-tight ws-sm",
   },
   
   /** H3 heading variants */
   h3: {
     /** Standard subsection headings */
-    standard: "text-lg md:text-xl font-medium",
+    standard: "text-lg md:text-xl font-medium ws-xs",
     
     /** MDX content headings */
-    mdx: "font-sans text-lg md:text-xl font-bold tracking-tight",
+    mdx: "font-sans text-lg md:text-xl font-bold tracking-tight ws-xs",
   },
   
   /** H4 heading variants */
   h4: {
     /** MDX content headings */
-    mdx: "font-sans text-base md:text-lg font-bold italic tracking-tight",
+    mdx: "font-sans text-base md:text-lg font-bold tracking-tight",
   },
   
   /** H5 heading variants */
@@ -134,29 +134,29 @@ export const TYPOGRAPHY = {
   /** H6 heading variants */
   h6: {
     /** MDX content headings */
-    mdx: "font-sans text-sm font-semibold italic tracking-tight",
+    mdx: "font-sans text-sm font-semibold tracking-tight",
   },
   
   /** Special display text (stats, error titles, large numbers) */
   display: {
     /** Error page titles */
-    error: "text-3xl md:text-4xl font-bold",
+    error: "text-3xl md:text-4xl font-bold ws-xs",
     
     /** Large statistics/metrics display */
-    stat: "text-3xl font-bold tracking-tight",
+    stat: "text-3xl font-bold tracking-tight ws-xs",
     
     /** Extra large statistics display (homepage stats) */
-    statLarge: "text-4xl md:text-5xl font-bold",
+    statLarge: "text-4xl md:text-5xl font-bold ws-sm",
   },
   
   /** Lead text / page descriptions */
-  description: "text-lg md:text-xl text-muted-foreground",
+  description: "text-lg md:text-xl text-muted-foreground ws-xs",
   
   /** Metadata text (dates, reading time, etc.) */
   metadata: "text-sm text-muted-foreground",
   
   /** Body text for long-form content */
-  body: "text-base text-foreground leading-relaxed",
+  body: "text-base text-foreground leading-relaxed ws-xs",
 } as const;
 
 // ============================================================================
@@ -446,6 +446,60 @@ export const SCROLL_BEHAVIOR = {
 } as const;
 
 // ============================================================================
+// WORD SPACING
+// ============================================================================
+
+/**
+ * Word spacing scale for improved typography and readability
+ * Applied to headings and body text for better visual hierarchy
+ * 
+ * Reference: https://tailkits.com/blog/tailwind-css-word-spacing/
+ * 
+ * Usage patterns:
+ * - ws-xs (0.05em): Metadata, small text, inline elements
+ * - ws-sm (0.1em): Headings, lead text, subtle spacing
+ * - ws-base (0.15em): Default body text, standard reading
+ * - ws-md (0.25em): Large article titles, emphasized text
+ * - ws-lg (0.5em): Extra-large display text, special emphasis
+ * - ws-xl (0.75em): Decorative/ceremonial text
+ * - ws-2xl (1em): Maximum spacing, special occasions
+ * 
+ * @example
+ * ```tsx
+ * // Large article title with increased word spacing
+ * <h1 className="text-5xl font-serif ws-md">Long Article Title Here</h1>
+ * 
+ * // Body text with subtle spacing
+ * <p className={`${TYPOGRAPHY.body} ws-xs`}>Reading content...</p>
+ * 
+ * // Responsive word spacing
+ * <h2 className="text-2xl ws-xs md:ws-sm">Responsive Heading</h2>
+ * ```
+ */
+export const WORD_SPACING = {
+  /** Extra small spacing for metadata and fine print (0.05em) */
+  xs: "ws-xs",
+  
+  /** Small spacing for headings and lead text (0.1em) */
+  sm: "ws-sm",
+  
+  /** Base spacing for standard body text (0.15em) */
+  base: "ws-base",
+  
+  /** Medium spacing for large article titles (0.25em) */
+  md: "ws-md",
+  
+  /** Large spacing for display text (0.5em) */
+  lg: "ws-lg",
+  
+  /** Extra large spacing for special emphasis (0.75em) */
+  xl: "ws-xl",
+  
+  /** Maximum spacing for decorative text (1em) */
+  "2xl": "ws-2xl",
+} as const;
+
+// ============================================================================
 // COMPONENT-SPECIFIC PATTERNS
 // ============================================================================
 
@@ -481,3 +535,6 @@ export type HoverEffect = keyof typeof HOVER_EFFECTS;
 
 /** Type for animation durations */
 export type AnimationDuration = keyof typeof ANIMATIONS;
+
+/** Type for word spacing variants */
+export type WordSpacingVariant = keyof typeof WORD_SPACING;

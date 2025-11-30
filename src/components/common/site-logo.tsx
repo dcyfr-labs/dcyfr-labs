@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 /**
  * SiteLogo Component - DCYFR Labs Brand Logo
  *
- * Displays the site name "DCYFR Labs" in italic serif font followed by
+ * Displays the site name "DCYFR Labs" in serif font followed by
  * the sparkle/star SVG logo. This is the primary brand mark used across
  * the site (header, footer, hero sections).
  *
@@ -65,9 +65,9 @@ export const SiteLogo: React.FC<SiteLogoProps> = ({
       {showText && (
         <span
           className={cn(
-            "font-serif font-semibold italic leading-none",
             config.text,
-            collapseOnMobile && "hidden sm:inline"
+            "font-serif font-medium leading-none",
+            collapseOnMobile ? "hidden sm:inline" : ""
           )}
         >
           DCYFR Labs

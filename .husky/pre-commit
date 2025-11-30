@@ -1,0 +1,2 @@
+# Run lint-staged (includes ESLint and design token validation)
+npx lint-staged

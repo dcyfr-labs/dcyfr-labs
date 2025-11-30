@@ -1,0 +1,54 @@
+{
+  "Import Design Tokens": {
+    "prefix": "dtimport",
+    "body": [
+      "import { SPACING, TYPOGRAPHY, HOVER_EFFECTS, CONTAINER_WIDTHS } from '@/lib/design-tokens'"
+    ],
+    "description": "Import design tokens"
+  },
+  "Spacing - Content": {
+    "prefix": "dtcontent",
+    "body": ["className={SPACING.content}"],
+    "description": "Add content spacing (space-y-4)"
+  },
+  "Spacing - Subsection": {
+    "prefix": "dtsubsection",
+    "body": ["className={SPACING.subsection}"],
+    "description": "Add subsection spacing (space-y-6 md:space-y-8)"
+  },
+  "Spacing - Section": {
+    "prefix": "dtsection",
+    "body": ["className={SPACING.section}"],
+    "description": "Add section spacing (space-y-10 md:space-y-12)"
+  },
+  "Typography - H1": {
+    "prefix": "dth1",
+    "body": ["className={TYPOGRAPHY.h1.standard}"],
+    "description": "Add H1 typography"
+  },
+  "Typography - H2": {
+    "prefix": "dth2",
+    "body": ["className={TYPOGRAPHY.h2.standard}"],
+    "description": "Add H2 typography"
+  },
+  "Typography - H3": {
+    "prefix": "dth3",
+    "body": ["className={TYPOGRAPHY.h3.standard}"],
+    "description": "Add H3 typography"
+  },
+  "Typography - Display Stat": {
+    "prefix": "dtstat",
+    "body": ["className={TYPOGRAPHY.display.stat}"],
+    "description": "Add stat/metric display typography"
+  },
+  "Hover - Card": {
+    "prefix": "dthover",
+    "body": ["className={HOVER_EFFECTS.card}"],
+    "description": "Add card hover effect"
+  },
+  "Container - Standard": {
+    "prefix": "dtcontainer",
+    "body": ["className={getContainerClasses('standard')}"],
+    "description": "Add standard container classes"
+  }
+}

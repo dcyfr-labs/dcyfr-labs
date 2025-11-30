@@ -1,0 +1,28 @@
+
+============================================================
+Design System Validation Report
+============================================================
+
+
+SPACING VIOLATIONS (2):
+------------------------------------------------------------
+
+  /Users/drew/Desktop/dcyfr/code/dcyfr-labs/src/app/about/page.tsx:72:71
+    ❌ gap-6
+    ✅ Use: gap-4
+
+  /Users/drew/Desktop/dcyfr/code/dcyfr-labs/src/app/about/page.tsx:72:80
+    ❌ gap-8
+    ✅ Use: gap-4
+
+============================================================
+Total Violations: 2
+Status: FAILED ❌
+============================================================
+
+Fix these violations by:
+  1. Import design tokens: import { SPACING, TYPOGRAPHY } from "@/lib/design-tokens"
+  2. Replace hardcoded values with token constants
+  3. Run ESLint for auto-fixable issues: npm run lint --fix
+  4. See docs/ai/DESIGN_SYSTEM.md for details
+

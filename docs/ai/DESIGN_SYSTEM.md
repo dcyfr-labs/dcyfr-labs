@@ -538,12 +538,118 @@ import { Card, CardContent } from "@/components/ui/card";
 <div className="bg-card">...</div>
 ```
 
+## Automated Enforcement
+
+### Running Validation Locally
+
+Check all files:
+
+```bash
+node scripts/validate-design-tokens.mjs
+```
+
+Check only staged files:
+
+```bash
+node scripts/validate-design-tokens.mjs --staged
+```
+
+Check specific files:
+
+```bash
+node scripts/validate-design-tokens.mjs --files src/components/ui/card.tsx
+```
+
+### ESLint Integration
+
+ESLint automatically catches violations in your editor and during `npm run lint`:
+
+```bash
+npm run lint          # Check for violations
+npm run lint --fix    # Auto-fix some violations
+```
+
+**Current violations will show as warnings** until we complete migration, then they'll become errors.
+
+### Pre-commit Hooks
+
+Husky automatically runs validation before each commit:
+
+```bash
+git add src/components/my-component.tsx
+git commit -m "feat: add new component"
+# → Runs lint-staged → ESLint + design token validation
+# → Commit blocked if violations found
+```
+
+Bypassing hooks (use sparingly):
+
+```bash
+git commit --no-verify -m "WIP: needs design token cleanup"
+```
+
+### GitHub Actions
+
+Pull requests automatically run design system validation:
+
+- ✅ ESLint check
+- ✅ Design token validation
+- 💬 Automated comment with violation report if failures
+
+### VS Code Snippets
+
+Type shortcuts for instant design token insertion:
+
+- `dtimport` → Import design tokens
+- `dtcontent` → `className={SPACING.content}`
+- `dtsubsection` → `className={SPACING.subsection}`
+- `dth1` → `className={TYPOGRAPHY.h1.standard}`
+- `dth2` → `className={TYPOGRAPHY.h2.standard}`
+- `dtstat` → `className={TYPOGRAPHY.display.stat}`
+- `dthover` → `className={HOVER_EFFECTS.card}`
+
+Enable in VS Code: Settings → "Editor: Quick Suggestions" → Set "strings" to `true`
+
+### Fixing Violations
+
+#### Step 1: Identify violations
+
+```bash
+node scripts/validate-design-tokens.mjs
+```
+
+#### Step 2: Import design tokens
+
+```tsx
+import { SPACING, TYPOGRAPHY, HOVER_EFFECTS } from '@/lib/design-tokens'
+```
+
+#### Step 3: Replace hardcoded values
+
+```tsx
+// Before
+<div className="space-y-8 gap-6">
+  <h1 className="text-3xl font-bold">Title</h1>
+</div>
+
+// After
+<div className={cn(SPACING.subsection, "gap-4")}>
+  <h1 className={TYPOGRAPHY.h1.standard}>Title</h1>
+</div>
+```
+
+#### Step 4: Run validation again
+
+```bash
+node scripts/validate-design-tokens.mjs --files src/components/my-component.tsx
+```
+
 ## Additional Resources
 
 - **Design tokens source**: [`src/lib/design-tokens.ts`](../../src/lib/design-tokens.ts)
 - **Layout components**: [`src/components/layouts/`](../../src/components/layouts/)
 - **UI primitives**: [`src/components/ui/`](../../src/components/ui/)
-- **Enforcement details**: [`/docs/design/ENFORCEMENT.md`](../design/ENFORCEMENT.md)
+- **Validation script**: [`scripts/validate-design-tokens.mjs`](../../scripts/validate-design-tokens.mjs)
 - **Best practices**: [`/docs/ai/BEST_PRACTICES.md`](./BEST_PRACTICES.md)
 
 ## Getting Help

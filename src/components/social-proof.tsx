@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Shield, Award, TrendingDown, Zap, ExternalLink } from "lucide-react";
-import { TYPOGRAPHY, HOVER_EFFECTS } from "@/lib/design-tokens";
+import { TYPOGRAPHY, HOVER_EFFECTS, SPACING } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import { resume } from "@/data/resume";
 
@@ -67,7 +67,7 @@ export function SocialProof() {
   );
 
   return (
-    <Card className="p-5 space-y-5">
+    <Card className={cn("p-4", SPACING.content)}>
       <div className="space-y-2">
         <h3 className={TYPOGRAPHY.h3.standard}>Track Record</h3>
         <p className="text-sm text-muted-foreground">
@@ -86,10 +86,10 @@ export function SocialProof() {
             >
               <div className="flex items-start justify-between">
                 <Icon className={cn(
-                  "h-5 w-5 transition-transform duration-200 group-hover:scale-110", 
+                  "h-5 w-5 transition-transform duration-200 group-hover:scale-110",
                   achievement.color
                 )} aria-hidden />
-                <span className={cn("text-2xl font-bold", achievement.color)}>
+                <span className={cn(TYPOGRAPHY.display.stat, achievement.color)}>
                   {achievement.metric}
                 </span>
               </div>

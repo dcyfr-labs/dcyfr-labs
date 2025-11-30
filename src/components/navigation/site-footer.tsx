@@ -10,7 +10,7 @@ export function SiteFooter() {
           "mx-auto",
           CONTAINER_WIDTHS.archive,
           "px-4",
-          "sm:px-6",
+          "sm:px-8",
           "md:px-8",
           "h-16",
           "flex",

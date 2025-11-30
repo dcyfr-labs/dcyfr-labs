@@ -163,7 +163,7 @@ export function BlogPostCTA({
     return (
       <div className={cn("border-t pt-8 mt-8", className)}>
         <p className="text-sm text-muted-foreground">
-          What did you think of this post? Leave a comment below or
+          What did you think? Leave a comment below or
           <Link
             href="/contact"
             onClick={handleContactClick}
@@ -190,7 +190,7 @@ export function BlogPostCTA({
         className={cn(TYPOGRAPHY.h2.featured, "mb-2")}
         style={PROSE_RESET_STYLES}
       >
-        What did you think of this post?
+        What did you think?
       </h2>
       <p className="text-muted-foreground mb-6">
         Feel free to{' '}
@@ -251,14 +251,13 @@ export function ProjectsCTA({ className }: { className?: string }) {
     <section className={cn('mt-12 text-center', className)}>
       <div className="rounded-lg border bg-linear-to-b from-muted/50 to-muted/30 p-6 md:p-8">
         <h2 className={cn(TYPOGRAPHY.h2.featured, 'mb-2')}>
-          Interested in a collaboration?
+          Interested in collaborating?
         </h2>
         <p
           className="text-muted-foreground mb-6"
         >
-          Whether you&apos;re looking to build secure applications, improve
-          performance, or architect scalable systems, We&apos;re excited to work
-          with you.
+          Whether you have a project in mind or just want to connect, we&apos;d
+          love to hear from you.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Button variant="cta" asChild size="lg">

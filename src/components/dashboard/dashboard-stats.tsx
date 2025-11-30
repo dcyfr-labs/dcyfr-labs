@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { TYPOGRAPHY } from "@/lib/design-tokens";
 
 /**
  * Dashboard stats card component for displaying key metrics
@@ -62,7 +63,7 @@ export function DashboardStat({
           {Icon && <Icon className="h-4 w-4 text-muted-foreground/50" />}
         </div>
         <div>
-          <p className="text-2xl font-bold">
+          <p className={TYPOGRAPHY.display.stat}>
             {typeof value === "number" ? value.toLocaleString() : value}
           </p>
           {secondaryValue && (
@@ -143,7 +144,7 @@ export function DashboardStats({ children, columns = 4, className }: DashboardSt
  *   description="Most viewed post overall"
  * >
  *   <p className="font-medium">Building a Developer Blog</p>
- *   <p className="text-2xl font-bold">15,234 views</p>
+ *   <p className={TYPOGRAPHY.display.stat}>15,234 views</p>
  * </DashboardFeaturedStat>
  * ```
  */

@@ -63,6 +63,14 @@ Project is in **maintenance mode** with data-driven enhancements.
 - ❌ Hardcoded colors: `bg-white dark:bg-gray-900`
 - ❌ Duplicate existing components
 
+**Automated Enforcement:**
+
+- ✅ ESLint catches spacing/typography violations (warnings in real-time)
+- ✅ Pre-commit hooks prevent violations from being committed
+- ✅ GitHub Actions validate PRs and post violation reports
+- ✅ Validation script: `node scripts/validate-design-tokens.mjs`
+- ✅ VS Code snippets: Type `dt` + Tab for design token shortcuts
+
 **See [`docs/ai/DESIGN_SYSTEM.md`](docs/ai/DESIGN_SYSTEM.md) for comprehensive validation checklist**
 
 ## Key Constraints

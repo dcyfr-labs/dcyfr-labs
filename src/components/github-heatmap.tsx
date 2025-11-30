@@ -9,6 +9,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ExternalLink, Flame, TrendingUp, Calendar, Target, FolderGit2, Star, GitFork } from "lucide-react";
 import { GitHubHeatmapSkeleton } from "@/components/github-heatmap-skeleton";
 import { sanitizeUrl } from "@/lib/utils";
+import { TYPOGRAPHY } from "@/lib/design-tokens";
 import "react-calendar-heatmap/dist/styles.css";
 
 /**
@@ -341,7 +342,7 @@ export function GitHubHeatmap({ username = DEFAULT_GITHUB_USERNAME }: GitHubHeat
                   <FolderGit2 className="w-4 h-4 text-cyan-500" aria-hidden="true" />
                   <span className="text-xs text-muted-foreground">Repositories</span>
                 </div>
-                <div className="text-2xl font-bold">{totalRepositories}</div>
+                <div className={TYPOGRAPHY.display.stat}>{totalRepositories}</div>
                 <div className="text-xs text-muted-foreground">public</div>
               </div>
 
@@ -351,7 +352,7 @@ export function GitHubHeatmap({ username = DEFAULT_GITHUB_USERNAME }: GitHubHeat
                   <Calendar className="w-4 h-4 text-blue-500" aria-hidden="true" />
                   <span className="text-xs text-muted-foreground">Active Days</span>
                 </div>
-                <div className="text-2xl font-bold">{activityStats.totalDaysActive}</div>
+                <div className={TYPOGRAPHY.display.stat}>{activityStats.totalDaysActive}</div>
                 <div className="text-xs text-muted-foreground">days</div>
               </div>
 
@@ -361,7 +362,7 @@ export function GitHubHeatmap({ username = DEFAULT_GITHUB_USERNAME }: GitHubHeat
                   <TrendingUp className="w-4 h-4 text-purple-500" aria-hidden="true" />
                   <span className="text-xs text-muted-foreground">Daily Average</span>
                 </div>
-                <div className="text-2xl font-bold">{activityStats.averagePerDay}</div>
+                <div className={TYPOGRAPHY.display.stat}>{activityStats.averagePerDay}</div>
                 <div className="text-xs text-muted-foreground">contributions</div>
               </div>
 
@@ -371,7 +372,7 @@ export function GitHubHeatmap({ username = DEFAULT_GITHUB_USERNAME }: GitHubHeat
                   <TrendingUp className="w-4 h-4 text-green-500" aria-hidden="true" />
                   <span className="text-xs text-muted-foreground">Longest Streak</span>
                 </div>
-                <div className="text-2xl font-bold">{streaks.longestStreak}</div>
+                <div className={TYPOGRAPHY.display.stat}>{streaks.longestStreak}</div>
                 <div className="text-xs text-muted-foreground">days</div>
               </div>
 
@@ -381,7 +382,7 @@ export function GitHubHeatmap({ username = DEFAULT_GITHUB_USERNAME }: GitHubHeat
                   <Flame className="w-4 h-4 text-orange-500" aria-hidden="true" />
                   <span className="text-xs text-muted-foreground">Current Streak</span>
                 </div>
-                <div className="text-2xl font-bold">{streaks.currentStreak}</div>
+                <div className={TYPOGRAPHY.display.stat}>{streaks.currentStreak}</div>
                 <div className="text-xs text-muted-foreground">days</div>
               </div>
 

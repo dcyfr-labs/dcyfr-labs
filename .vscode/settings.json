@@ -23,6 +23,6 @@
   "editor.quickSuggestions": {
     "other": true,
     "comments": false,
-    "strings": false
+    "strings": true
   }
 }

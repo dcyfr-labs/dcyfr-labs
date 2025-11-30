@@ -39,6 +39,15 @@ const eslintConfig = [
           selector: "Literal[value=/transition-all.*hover:shadow-(sm|md|lg|xl|2xl)/]",
           message: "Use HOVER_EFFECTS tokens from @/lib/design-tokens instead of hardcoded hover effects. See /docs/design/QUICK_START.md",
         },
+        {
+          selector: "Literal[value=/\\b(space-y-[5-9]|gap-[5-9]|p-[67]|px-[67]|py-[67])\\b/]",
+          message: "Prohibited spacing pattern detected. Use design tokens from @/lib/design-tokens:\n" +
+                   "  - space-y-8 → SPACING.subsection\n" +
+                   "  - space-y-6 → SPACING.subsection or SPACING.content\n" +
+                   "  - gap-6/7/8/9 → Use gap-4 (standard)\n" +
+                   "  - p-6/7, px-6/7, py-6/7 → Use p-4/p-8, px-4/px-8, py-4/py-8\n" +
+                   "  See /docs/design/QUICK_START.md",
+        },
       ],
     },
   },

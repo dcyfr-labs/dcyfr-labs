@@ -76,7 +76,7 @@ export default async function AboutPage() {
             </div>
             {/* Content */}
             <div className="flex-1 space-y-4">
-              <h1 className={cn(TYPOGRAPHY.h1.hero, "font-serif italic")}>
+              <h1 className={cn(TYPOGRAPHY.h1.hero, "font-serif")}>
                 <span className="flex items-center gap-2 ">
                   About Drew
                 </span>

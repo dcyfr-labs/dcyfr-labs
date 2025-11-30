@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { TrendingUp, Award, Code, Briefcase } from "lucide-react";
 import { useEffect, useState } from "react";
 import { resume, getYearsOfExperience } from "@/data/resume";
+import { TYPOGRAPHY } from "@/lib/design-tokens";
 
 /**
  * Resume Stats Component
@@ -112,15 +113,15 @@ export function ResumeStats() {
               <div className="min-w-0 flex-1">
                 {stat.animateNumber !== undefined ? (
                   <>
-                    {/* eslint-disable-next-line no-restricted-syntax */}
-                    <div className="text-3xl font-bold tabular-nums mb-1" suppressHydrationWarning>
+                    { }
+                    <div className={`${TYPOGRAPHY.display.stat} tabular-nums mb-1`} suppressHydrationWarning>
                       <AnimatedNumber target={stat.animateNumber} suffix={stat.suffix} />
                     </div>
                   </>
                 ) : (
                   <>
-                    {/* eslint-disable-next-line no-restricted-syntax */}
-                    <div className="text-3xl font-bold tabular-nums mb-1" suppressHydrationWarning>{stat.value}</div>
+                    { }
+                    <div className={`${TYPOGRAPHY.display.stat} tabular-nums mb-1`} suppressHydrationWarning>{stat.value}</div>
                   </>
                 )}
                 {/* eslint-disable-next-line no-restricted-syntax */}

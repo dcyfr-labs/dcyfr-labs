@@ -22,29 +22,13 @@ const STATUS_LABEL = {
   "archived": "Archived",
 } as const;
 
-// Status badge color styles - primary colors (high emphasis)
-const STATUS_STYLES = {
-  "active": "border-green-500 bg-green-500/20 text-green-700 dark:text-green-300 backdrop-blur-sm font-semibold",
-  "in-progress": "border-blue-500 bg-blue-500/20 text-blue-700 dark:text-blue-300 backdrop-blur-sm font-semibold",
-  "archived": "border-amber-500 bg-amber-500/20 text-amber-700 dark:text-amber-300 backdrop-blur-sm font-semibold",
-} as const;
-
-// Category labels and styles
+// Category labels
 const CATEGORY_LABEL: Record<ProjectCategory, string> = {
   "community": "Community",
   "nonprofit": "Nonprofit",
   "code": "Code",
   "photography": "Photography",
   "startup": "Startup",
-};
-
-// Category styles - dimmer/muted colors (secondary emphasis)
-const CATEGORY_STYLES: Record<ProjectCategory, string> = {
-  "community": "border-purple-400/40 bg-purple-400/10 text-purple-600/80 dark:text-purple-400/80",
-  "nonprofit": "border-emerald-400/40 bg-emerald-400/10 text-emerald-600/80 dark:text-emerald-400/80",
-  "code": "border-blue-400/40 bg-blue-400/10 text-blue-600/80 dark:text-blue-400/80",
-  "photography": "border-pink-400/40 bg-pink-400/10 text-pink-600/80 dark:text-pink-400/80",
-  "startup": "border-orange-400/40 bg-orange-400/10 text-orange-600/80 dark:text-orange-400/80",
 };
 
 /**
@@ -127,8 +111,8 @@ export function ProjectList({
                     {/* Status, category, and timeline */}
                     {project.timeline && (
                       <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                        {project.status !== "active" && <Badge variant="outline" className={STATUS_STYLES[project.status]}>{STATUS_LABEL[project.status]}</Badge>}
-                        {project.category && <Badge variant="outline" className={CATEGORY_STYLES[project.category]}>{CATEGORY_LABEL[project.category]}</Badge>}
+                        {project.status !== "active" && <Badge variant="default">{STATUS_LABEL[project.status]}</Badge>}
+                        {project.category && <Badge variant="outline">{CATEGORY_LABEL[project.category]}</Badge>}
                         <span>{project.timeline}</span>
                         {viewCounts && viewCounts.has(project.slug) && viewCounts.get(project.slug)! > 0 && (
                           <span className="ml-auto flex items-center gap-1">
@@ -197,8 +181,8 @@ export function ProjectList({
                     {/* Status, category, and timeline */}
                     {project.timeline && (
                       <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-                        {project.status !== "active" && <Badge variant="outline" className={STATUS_STYLES[project.status]}>{STATUS_LABEL[project.status]}</Badge>}
-                        {project.category && <Badge variant="outline" className={CATEGORY_STYLES[project.category]}>{CATEGORY_LABEL[project.category]}</Badge>}
+                        {project.status !== "active" && <Badge variant="default">{STATUS_LABEL[project.status]}</Badge>}
+                        {project.category && <Badge variant="outline">{CATEGORY_LABEL[project.category]}</Badge>}
                         <span>{project.timeline}</span>
                         {viewCounts && viewCounts.has(project.slug) && viewCounts.get(project.slug)! > 0 && (
                           <span className="ml-auto flex items-center gap-1">
@@ -261,8 +245,8 @@ export function ProjectList({
                   <div className="p-3">
                     {/* Status, category, and timeline - compact */}
                     <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1.5">
-                      {project.status !== "active" && <Badge variant="outline" className={`text-xs ${STATUS_STYLES[project.status]}`}>{STATUS_LABEL[project.status]}</Badge>}
-                      {project.category && <Badge variant="outline" className={`text-xs ${CATEGORY_STYLES[project.category]}`}>{CATEGORY_LABEL[project.category]}</Badge>}
+                      {project.status !== "active" && <Badge variant="default" className="text-xs">{STATUS_LABEL[project.status]}</Badge>}
+                      {project.category && <Badge variant="outline" className="text-xs">{CATEGORY_LABEL[project.category]}</Badge>}
                       {project.timeline && <span>{project.timeline}</span>}
                       {viewCounts && viewCounts.has(project.slug) && viewCounts.get(project.slug)! > 0 && (
                         <span className="ml-auto flex items-center gap-1">
@@ -309,8 +293,8 @@ export function ProjectList({
                   {/* Status, category, and timeline */}
                   {project.timeline && (
                     <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                      {project.status !== "active" && <Badge variant="outline" className={STATUS_STYLES[project.status]}>{STATUS_LABEL[project.status]}</Badge>}
-                      {project.category && <Badge variant="outline" className={CATEGORY_STYLES[project.category]}>{CATEGORY_LABEL[project.category]}</Badge>}
+                      {project.status !== "active" && <Badge variant="default">{STATUS_LABEL[project.status]}</Badge>}
+                      {project.category && <Badge variant="outline">{CATEGORY_LABEL[project.category]}</Badge>}
                       <span>{project.timeline}</span>
                       {viewCounts && viewCounts.has(project.slug) && viewCounts.get(project.slug)! > 0 && (
                         <span className="ml-auto flex items-center gap-1">

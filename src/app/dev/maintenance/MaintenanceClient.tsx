@@ -31,6 +31,7 @@ import {
 import { AlertCircle, RefreshCw, ExternalLink, CheckCircle2, XCircle, Server, TrendingUp, Plus, X as XIcon } from "lucide-react";
 import { toast } from "sonner";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
+import { TYPOGRAPHY } from "@/lib/design-tokens";
 import dynamic from "next/dynamic";
 import type { WorkflowSummary, WeeklyMetrics, Observation, ObservationCategory, ObservationSeverity } from "@/types/maintenance";
 
@@ -736,7 +737,7 @@ export default function MaintenanceClient() {
         <section>
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-semibold">Workflow Status</h2>
+              <h2 className={TYPOGRAPHY.h2.standard}>Workflow Status</h2>
               <p className="text-sm text-muted-foreground">
                 Status of automated maintenance workflows
               </p>

@@ -1,0 +1,55 @@
+name: Design System Validation
+
+on:
+  pull_request:
+    paths:
+      - 'src/**/*.tsx'
+      - 'src/**/*.ts'
+      - 'eslint.config.mjs'
+      - 'scripts/validate-design-tokens.mjs'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Validate Design Tokens
+        id: validation
+        run: node scripts/validate-design-tokens.mjs
+        continue-on-error: true
+
+      - name: Post PR Comment
+        if: failure() && steps.validation.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const reportPath = 'design-system-report.txt';
+
+            if (fs.existsSync(reportPath)) {
+              const report = fs.readFileSync(reportPath, 'utf8');
+              const body = `## Design System Validation Failed ❌\n\n\`\`\`\n${report}\n\`\`\`\n\n**Next Steps:**\n1. Import design tokens: \`import { SPACING, TYPOGRAPHY } from "@/lib/design-tokens"\`\n2. Replace hardcoded values with token constants\n3. See [docs/ai/DESIGN_SYSTEM.md](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/docs/ai/DESIGN_SYSTEM.md) for details`;
+
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body
+              });
+            }

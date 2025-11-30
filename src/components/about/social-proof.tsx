@@ -86,10 +86,10 @@ export function SocialProof() {
             >
               <div className="flex items-start justify-between">
                 <Icon className={cn(
-                  "h-5 w-5 transition-transform duration-200 group-hover:scale-110", 
+                  "h-5 w-5 transition-transform duration-200 group-hover:scale-110",
                   achievement.color
                 )} aria-hidden />
-                <span className={cn("text-2xl font-bold", achievement.color)}>
+                <span className={cn(TYPOGRAPHY.display.stat, achievement.color)}>
                   {achievement.metric}
                 </span>
               </div>

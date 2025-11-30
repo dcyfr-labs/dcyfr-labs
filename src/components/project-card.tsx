@@ -13,22 +13,13 @@ import { HOVER_EFFECTS } from "@/lib/design-tokens";
 const STATUS_VARIANT: Record<ProjectStatus, "secondary" | "default" | "outline"> = {
   "active": "default",
   "in-progress": "default",
-  "archived": "outline",
+  "archived": "default",
 };
 
 const STATUS_LABEL: Record<ProjectStatus, string> = {
   "active": "Active",
   "in-progress": "In progress",
   "archived": "Archived",
-};
-
-// Category styles - dimmer/muted colors (secondary emphasis)
-const CATEGORY_STYLES: Record<ProjectCategory, string> = {
-  "code": "border-blue-400/40 bg-blue-400/10 text-blue-600/80 dark:text-blue-400/80",
-  "photography": "border-pink-400/40 bg-pink-400/10 text-pink-600/80 dark:text-pink-400/80",
-  "community": "border-purple-400/40 bg-purple-400/10 text-purple-600/80 dark:text-purple-400/80",
-  "nonprofit": "border-emerald-400/40 bg-emerald-400/10 text-emerald-600/80 dark:text-emerald-400/80",
-  "startup": "border-orange-400/40 bg-orange-400/10 text-orange-600/80 dark:text-orange-400/80",
 };
 
 const CATEGORY_LABEL: Record<ProjectCategory, string> = {
@@ -135,7 +126,7 @@ export function ProjectCard({
             <p className="text-xs uppercase tracking-wide text-muted-foreground flex items-center gap-2">
               <Badge variant={STATUS_VARIANT[project.status]}>{STATUS_LABEL[project.status]}</Badge>
               {project.category && (
-                <Badge variant="outline" className={CATEGORY_STYLES[project.category]}>
+                <Badge variant="outline">
                   {CATEGORY_LABEL[project.category]}
                 </Badge>
               )}

@@ -34,13 +34,17 @@ interface BlogPostSidebarProps {
   relatedPosts?: Post[];
 }
 
-// Category styles - dimmer/muted colors (secondary emphasis)
+// Category styles - using outline variant (no custom colors)
 const CATEGORY_STYLES: Record<PostCategory, string> = {
-  "development": "border-blue-400/40 bg-blue-400/10 text-blue-600/80 dark:text-blue-400/80",
-  "security": "border-red-400/40 bg-red-400/10 text-red-600/80 dark:text-red-400/80",
-  "career": "border-green-400/40 bg-green-400/10 text-green-600/80 dark:text-green-400/80",
-  "ai": "border-purple-400/40 bg-purple-400/10 text-purple-600/80 dark:text-purple-400/80",
-  "tutorial": "border-amber-400/40 bg-amber-400/10 text-amber-600/80 dark:text-amber-400/80",
+  "development": "",
+  "security": "",
+  "career": "",
+  "ai": "",
+  "tutorial": "",
+  "Demo": "",
+  "Career Development": "",
+  "Web Development": "",
+  "DevSecOps": "",
 };
 
 const CATEGORY_LABEL: Record<PostCategory, string> = {
@@ -49,6 +53,10 @@ const CATEGORY_LABEL: Record<PostCategory, string> = {
   "career": "Career",
   "ai": "AI",
   "tutorial": "Tutorial",
+  "Demo": "Demo",
+  "Career Development": "Career Development",
+  "Web Development": "Web Development",
+  "DevSecOps": "DevSecOps",
 };
 
 function CategoryBadge({ category }: { category: PostCategory }) {

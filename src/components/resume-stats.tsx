@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { TrendingUp, Award, Code, Briefcase } from "lucide-react";
 import { useEffect, useState } from "react";
 import { resume, getYearsOfExperience } from "@/data/resume";
+import { TYPOGRAPHY } from "@/lib/design-tokens";
 
 /**
  * Resume Stats Component
@@ -111,11 +112,11 @@ export function ResumeStats() {
               </div>
               <div className="min-w-0 flex-1">
                 {stat.animateNumber !== undefined ? (
-                  <div className="text-3xl font-bold tabular-nums mb-1" suppressHydrationWarning>
+                  <div className={`${TYPOGRAPHY.display.stat} tabular-nums mb-1`} suppressHydrationWarning>
                     <AnimatedNumber target={stat.animateNumber} suffix={stat.suffix} />
                   </div>
                 ) : (
-                  <div className="text-3xl font-bold tabular-nums mb-1" suppressHydrationWarning>{stat.value}</div>
+                  <div className={`${TYPOGRAPHY.display.stat} tabular-nums mb-1`} suppressHydrationWarning>{stat.value}</div>
                 )}
                 <p className="text-sm font-medium text-foreground mb-0.5" suppressHydrationWarning>{stat.label}</p>
                 <p className="text-xs text-muted-foreground leading-snug">{stat.description}</p>

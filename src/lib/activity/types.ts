@@ -184,40 +184,32 @@ export interface ActivityFeedProps {
 
 /**
  * Color schemes for each activity source
- * Uses Tailwind classes for badge/icon styling
+ * Uses Tailwind classes for icon and border styling
+ * Badges now use stock light/dark variants
  */
 export const ACTIVITY_SOURCE_COLORS: Record<
   ActivitySource,
-  { badge: string; icon: string; border: string }
+  { icon: string; border: string }
 > = {
   blog: {
-    badge: "border-blue-500/40 bg-blue-500/10 text-blue-600 dark:text-blue-400",
-    icon: "text-blue-500",
-    border: "border-l-blue-500",
+    icon: "text-muted-foreground",
+    border: "border-l-muted-foreground",
   },
   project: {
-    badge:
-      "border-purple-500/40 bg-purple-500/10 text-purple-600 dark:text-purple-400",
-    icon: "text-purple-500",
-    border: "border-l-purple-500",
+    icon: "text-muted-foreground",
+    border: "border-l-muted-foreground",
   },
   github: {
-    badge:
-      "border-green-500/40 bg-green-500/10 text-green-600 dark:text-green-400",
-    icon: "text-green-500",
-    border: "border-l-green-500",
+    icon: "text-muted-foreground",
+    border: "border-l-muted-foreground",
   },
   changelog: {
-    badge:
-      "border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400",
-    icon: "text-amber-500",
-    border: "border-l-amber-500",
+    icon: "text-muted-foreground",
+    border: "border-l-muted-foreground",
   },
   milestone: {
-    badge:
-      "border-rose-500/40 bg-rose-500/10 text-rose-600 dark:text-rose-400",
-    icon: "text-rose-500",
-    border: "border-l-rose-500",
+    icon: "text-muted-foreground",
+    border: "border-l-muted-foreground",
   },
 } as const;
 

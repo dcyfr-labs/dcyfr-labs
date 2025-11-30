@@ -17,16 +17,6 @@ const STATUS_LABEL: Record<Project["status"], string> = {
   "archived": "Archived",
 };
 
-// Status badge color styles - primary colors (high emphasis)
-const STATUS_STYLES: Record<Project["status"], string> = {
-  active:
-    "border-green-500 bg-green-500/20 text-green-700 dark:text-green-300 backdrop-blur-sm font-semibold",
-  "in-progress":
-    "border-blue-500 bg-blue-500/20 text-blue-700 dark:text-blue-300 backdrop-blur-sm font-semibold",
-  archived:
-    "border-amber-500 bg-amber-500/20 text-amber-700 dark:text-amber-300 backdrop-blur-sm font-semibold",
-};
-
 interface CodeProjectLayoutProps {
   /** Project data with optional codeContent */
   project: Project;
@@ -52,7 +42,7 @@ interface CodeProjectLayoutProps {
  * <CodeProjectLayout project={project} nonce={nonce} />
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
 export function CodeProjectLayout({ project, nonce }: CodeProjectLayoutProps) {
   const codeContent = project.codeContent;
   
@@ -65,7 +55,7 @@ export function CodeProjectLayout({ project, nonce }: CodeProjectLayoutProps) {
         badges={
           project.status !== "active" ? (
             <Link href={`/portfolio?status=${project.status}`}>
-              <Badge variant="outline" className={`${STATUS_STYLES[project.status]} cursor-pointer hover:opacity-80 transition-opacity`}>
+              <Badge variant="default" className="cursor-pointer hover:opacity-80 transition-opacity">
                 {STATUS_LABEL[project.status]}
               </Badge>
             </Link>

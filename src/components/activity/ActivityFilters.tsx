@@ -123,12 +123,10 @@ export function ActivityFilters({
           return (
             <Badge
               key={source}
-              variant="outline"
+              variant={isSelected ? "default" : "outline"}
               className={cn(
                 "cursor-pointer transition-all gap-1",
-                isSelected
-                  ? colors.badge
-                  : "hover:bg-accent text-muted-foreground"
+                !isSelected && "hover:bg-accent text-muted-foreground"
               )}
               onClick={() => toggleSource(source)}
             >
