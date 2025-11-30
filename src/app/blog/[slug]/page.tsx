@@ -189,7 +189,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
       {/* Mobile/Tablet ToC - Keep existing FAB for smaller screens */}
       <div className="lg:hidden">
-        <TableOfContents headings={headings} slug={post.slug} />
+        <TableOfContents headings={headings} slug={post.slug} hideFAB={true} />
       </div>
 
       {/* Desktop Layout: Sidebar + Content */}
