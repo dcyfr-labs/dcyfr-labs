@@ -20,9 +20,7 @@ async function getRedisClient() {
 
   try {
     const client = createClient({ url: redisUrl });
-    if (!client.isOpen) {
-      await client.connect();
-    }
+    await client.connect();
     return client;
   } catch {
     return null;
@@ -48,15 +46,19 @@ export async function GET(request: Request) {
       try {
         const redis = await getRedisClient();
         if (redis) {
-          const cached = await redis.get(CACHE_KEY);
+          try {
+            const cached = await redis.get(CACHE_KEY);
 
-          if (cached) {
-            const data = JSON.parse(cached);
-            return NextResponse.json({
-              workflows: data,
-              cached: true,
-              timestamp: new Date().toISOString(),
-            });
+            if (cached) {
+              const data = JSON.parse(cached);
+              return NextResponse.json({
+                workflows: data,
+                cached: true,
+                timestamp: new Date().toISOString(),
+              });
+            }
+          } finally {
+            await redis.disconnect();
           }
         }
       } catch (cacheError) {
@@ -72,7 +74,11 @@ export async function GET(request: Request) {
     try {
       const redis = await getRedisClient();
       if (redis) {
-        await redis.setex(CACHE_KEY, CACHE_TTL, JSON.stringify(summaries));
+        try {
+          await redis.setEx(CACHE_KEY, CACHE_TTL, JSON.stringify(summaries));
+        } finally {
+          await redis.disconnect();
+        }
       }
     } catch (cacheError) {
       // Redis unavailable - continue without caching

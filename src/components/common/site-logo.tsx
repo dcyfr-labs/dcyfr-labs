@@ -66,11 +66,11 @@ export const SiteLogo: React.FC<SiteLogoProps> = ({
         <span
           className={cn(
             config.text,
-            "font-serif font-light leading-none",
+            "font-serif font-medium leading-none",
             collapseOnMobile ? "hidden sm:inline" : ""
           )}
         >
-          <strong>DCYFR</strong> Labs
+          DCYFR Labs
         </span>
       )}
       {showIcon && (

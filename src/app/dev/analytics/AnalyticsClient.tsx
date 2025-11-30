@@ -238,6 +238,11 @@ export default function AnalyticsDashboard() {
     };
   }, [data, hideDrafts, hideArchived, searchQuery, selectedTags, tagFilterMode, publicationCohort, performanceTier, sortField, sortDirection]);
 
+  // Get all unique tags for filter - moved before export functions to ensure it's defined
+  const allTags = useMemo(() => {
+    return data ? getUniqueValues(data.posts || [], "tags") : [];
+  }, [data]);
+
   // Export functions
   const handleExportCSV = () => {
     const columns: (keyof PostAnalytics)[] = [
@@ -285,9 +290,6 @@ export default function AnalyticsDashboard() {
     a.click();
     URL.revokeObjectURL(url);
   };
-
-  // Get all unique tags for filter
-  const allTags = data ? getUniqueValues(data.posts, "tags") : [];
 
   // Loading state
   if (loading) {

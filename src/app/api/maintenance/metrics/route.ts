@@ -17,9 +17,7 @@ async function getRedisClient() {
 
   try {
     const client = createClient({ url: redisUrl });
-    if (!client.isOpen) {
-      await client.connect();
-    }
+    await client.connect();
     return client;
   } catch {
     return null;
@@ -81,14 +79,18 @@ export async function GET(request: Request) {
       try {
         const redis = await getRedisClient();
         if (redis) {
-          const cached = await redis.get("maintenance:trends:52week");
-          if (cached) {
-            const data = JSON.parse(cached);
-            return NextResponse.json({
-              trends: data,
-              cached: true,
-              timestamp: new Date().toISOString(),
-            });
+          try {
+            const cached = await redis.get("maintenance:trends:52week");
+            if (cached) {
+              const data = JSON.parse(cached);
+              return NextResponse.json({
+                trends: data,
+                cached: true,
+                timestamp: new Date().toISOString(),
+              });
+            }
+          } finally {
+            await redis.disconnect();
           }
         }
       } catch (cacheError) {
@@ -102,11 +104,15 @@ export async function GET(request: Request) {
       try {
         const redis = await getRedisClient();
         if (redis) {
-          await redis.setex(
-            "maintenance:trends:52week",
-            3600, // 1 hour TTL
-            JSON.stringify(trends)
-          );
+          try {
+            await redis.setEx(
+              "maintenance:trends:52week",
+              3600, // 1 hour TTL
+              JSON.stringify(trends)
+            );
+          } finally {
+            await redis.disconnect();
+          }
         }
       } catch (cacheError) {
         console.warn("Failed to cache trend data:", cacheError);
