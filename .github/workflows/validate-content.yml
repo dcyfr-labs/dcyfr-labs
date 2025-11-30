@@ -145,7 +145,7 @@ jobs:
 
       - name: Upload validation report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: content-validation-report
           path: validation-results.txt
