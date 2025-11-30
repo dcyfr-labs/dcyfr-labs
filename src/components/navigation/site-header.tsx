@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { ThemeToggle } from "@/components/features/theme/theme-toggle";
 import { SiteLogo } from "@/components/common/site-logo";
@@ -19,6 +20,7 @@ const portfolioCategories = [
 export function SiteHeader() {
   const [portfolioOpen, setPortfolioOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -30,11 +32,19 @@ export function SiteHeader() {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+  // Handle logo click - scroll to top if already on homepage
+  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (pathname === "/") {
+      e.preventDefault();
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    }
+  };
+
   return (
     <header className="sticky top-0 z-40 backdrop-blur supports-backdrop-filter:bg-background/60 border-b site-header">
       <div className={cn("mx-auto", CONTAINER_WIDTHS.archive, "px-4", "sm:px-8", "md:px-8", "h-14", "md:h-16", "flex", "items-center", "justify-between", "gap-2")}>
         {/* Logo - always visible */}
-        <Link href="/" className={cn("touch-target", "shrink-0")}>
+        <Link href="/" onClick={handleLogoClick} className={cn("touch-target", "shrink-0")}>
           <SiteLogo size="lg" collapseOnMobile />
         </Link>
 

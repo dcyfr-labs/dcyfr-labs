@@ -194,7 +194,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
     <>
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
 
-      <div className={`container ${CONTAINER_WIDTHS.archive} mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-12 pb-8`}>
+      <div className={`container ${CONTAINER_WIDTHS.standard} mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-12 pb-8`}>
         {/* Header */}
         <div className="mb-8">
           <h1 className={TYPOGRAPHY.h1.hero}>{pageTitle}</h1>

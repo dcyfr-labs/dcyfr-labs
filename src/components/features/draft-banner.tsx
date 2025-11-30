@@ -20,7 +20,7 @@ import { CONTAINER_WIDTHS, CONTAINER_PADDING } from "@/lib/design-tokens";
 
 export function DraftBanner() {
   return (
-    <div className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-6`}>
+    <div className={`mx-auto ${CONTAINER_WIDTHS.content} ${CONTAINER_PADDING} pt-6`}>
       <div className="rounded-lg border border-amber-500/50 bg-amber-500/10 p-4">
         <div className="flex items-start gap-3">
           <AlertCircle className="h-5 w-5 text-amber-500 mt-0.5 shrink-0" />

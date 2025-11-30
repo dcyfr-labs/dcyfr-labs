@@ -67,10 +67,10 @@ export default async function AboutPage() {
     <PageLayout>
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
       
-      <SectionNavigator scrollOffset={SCROLL_BEHAVIOR.offset.standard} className="space-y-10 md:space-y-14">
+      <SectionNavigator scrollOffset={SCROLL_BEHAVIOR.offset.standard} className="space-y-12">
         {/* Page Hero */}
         <Section className={PAGE_LAYOUT.hero.container}>
-          <div className="flex flex-col md:flex-row md:items-start md:gap-4 lg:gap-8">
+          <div className={cn("flex flex-col md:flex-row items-center md:items-start gap-4", SPACING.content)}>
             {/* Avatar */}
             <div className="shrink-0 mb-6 md:mb-0">
               <ProfileAvatar size="md" />

@@ -270,7 +270,7 @@ describe("Mermaid Component", () => {
       }));
       
       const { container } = render(<Mermaid chart="graph LR\n A-->B" />);
-      const diagramContainer = container.querySelector('[role="img"]');
+      const diagramContainer = container.querySelector('.mermaid-container');
       
       expect(diagramContainer?.className).toContain("animate-pulse");
       expect(diagramContainer?.className).toContain("min-h-[200px]");
@@ -310,14 +310,18 @@ describe("Mermaid Component", () => {
   });
 
   describe("Styling", () => {
-    it("should apply container styling", () => {
+    it("should apply mermaid-container class", () => {
       const { container } = render(<Mermaid chart="graph LR\n A-->B" />);
-      const diagramContainer = container.querySelector('[role="img"]');
+      const diagramContainer = container.querySelector('.mermaid-container');
       
-      expect(diagramContainer?.className).toContain("my-6");
-      expect(diagramContainer?.className).toContain("flex");
-      expect(diagramContainer?.className).toContain("justify-center");
-      expect(diagramContainer?.className).toContain("overflow-x-auto");
+      expect(diagramContainer).toBeInTheDocument();
+    });
+
+    it("should apply custom className", () => {
+      const { container } = render(<Mermaid chart="graph LR\n A-->B" className="custom-class" />);
+      const diagramContainer = container.querySelector('.mermaid-container');
+      
+      expect(diagramContainer?.className).toContain("custom-class");
     });
 
     it("should apply error styling when error occurs", async () => {

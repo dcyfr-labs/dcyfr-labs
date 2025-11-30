@@ -18,6 +18,24 @@ export { TableOfContents } from "./table-of-contents";
 export { ViewToggle } from "./view-toggle";
 export { default as DevToolsDropdown } from "./dev-tools-dropdown";
 
+// Annotation (Rough Notation) - hand-drawn text annotations
+export { 
+  Annotation, 
+  AnnotationVariants,
+  type AnnotationProps, 
+  type AnnotationType,
+  type BracketType 
+} from "./annotation";
+
+// Interactive Diagrams (React Flow) - node-based diagrams
+export { 
+  InteractiveDiagram,
+  createLinearFlow,
+  createBranchingFlow,
+  type InteractiveDiagramProps,
+  type BaseNodeData 
+} from "./interactive-diagram";
+
 // Error boundaries
 export { ErrorBoundary } from "./error-boundaries/error-boundary";
 export { ContactFormErrorBoundary } from "./error-boundaries/contact-form-error-boundary";

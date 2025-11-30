@@ -2,18 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 import mermaid from "mermaid";
+import { cn } from "@/lib/utils";
 
 /**
  * Mermaid Diagram Component
  * 
- * Renders Mermaid diagrams with theme-aware styling.
- * Supports all Mermaid diagram types: flowcharts, sequence diagrams,
- * class diagrams, state diagrams, entity relationship diagrams, etc.
+ * Renders Mermaid diagrams with theme-aware styling and modern aesthetics.
+ * Features rounded nodes, softer edges, and smooth animations.
  * 
  * @component
  * @param {Object} props - Component props
  * @param {string} props.chart - Mermaid diagram syntax
  * @param {string} [props.id] - Optional unique ID for the diagram
+ * @param {string} [props.className] - Optional additional CSS classes
  * 
  * @example
  * ```tsx
@@ -26,30 +27,34 @@ import mermaid from "mermaid";
  * 
  * @features
  * - Theme-aware: Automatically detects and uses light/dark theme
+ * - Modern styling: Rounded nodes, soft shadows, smooth transitions
  * - Responsive: Diagrams scale to container width
  * - Accessible: Proper ARIA labels and semantic HTML
  * - Error handling: Graceful fallback for invalid syntax
  * - Dynamic updates: Re-renders when theme changes
  * 
- * @notes
- * - Uses Mermaid's built-in "default" and "dark" themes
- * - Monitors theme changes via MutationObserver
- * - Renders client-side only (requires browser environment)
- * 
  * @see https://mermaid.js.org/intro/ for Mermaid syntax
  */
-export function Mermaid({ chart, id }: { chart: string; id?: string }) {
+export function Mermaid({ 
+  chart, 
+  id,
+  className 
+}: { 
+  chart: string; 
+  id?: string;
+  className?: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [rendered, setRendered] = useState(false);
-  const [themeKey, setThemeKey] = useState(0); // Force re-render on theme change
+  const [themeKey, setThemeKey] = useState(0);
 
   useEffect(() => {
     // Listen for theme changes
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === 'class' || mutation.attributeName === 'data-theme') {
-          setThemeKey(prev => prev + 1); // Force re-render
+          setThemeKey(prev => prev + 1);
         }
       });
     });
@@ -69,13 +74,61 @@ export function Mermaid({ chart, id }: { chart: string; id?: string }) {
     const dataTheme = htmlElement.getAttribute('data-theme') || htmlElement.classList.contains('dark');
     const useDarkTheme = dataTheme === 'dark' || (dataTheme !== 'light' && isDark);
 
-    // Initialize Mermaid with theme configuration
-    // Use neutral theme for light mode, dark theme for dark mode
+    // Initialize Mermaid with enhanced theme configuration
     mermaid.initialize({
       startOnLoad: false,
       theme: useDarkTheme ? "dark" : "neutral",
       fontFamily: "ui-sans-serif, system-ui, sans-serif",
       fontSize: 14,
+      // Modern styling options
+      flowchart: {
+        curve: 'basis', // Smoother curves
+        padding: 20,
+        nodeSpacing: 50,
+        rankSpacing: 50,
+        htmlLabels: true,
+        useMaxWidth: true,
+      },
+      sequence: {
+        actorMargin: 50,
+        boxMargin: 10,
+        boxTextMargin: 5,
+        noteMargin: 10,
+        messageMargin: 35,
+        mirrorActors: true,
+        useMaxWidth: true,
+      },
+      themeVariables: useDarkTheme ? {
+        // Dark theme variables for softer look
+        primaryColor: '#3b4252',
+        primaryTextColor: '#eceff4',
+        primaryBorderColor: '#4c566a',
+        lineColor: '#81a1c1',
+        secondaryColor: '#434c5e',
+        tertiaryColor: '#2e3440',
+        background: '#242933',
+        mainBkg: '#2e3440',
+        nodeBorder: '#4c566a',
+        clusterBkg: '#3b4252',
+        clusterBorder: '#4c566a',
+        titleColor: '#eceff4',
+        edgeLabelBackground: '#2e3440',
+      } : {
+        // Light theme variables for clean look
+        primaryColor: '#f8fafc',
+        primaryTextColor: '#1e293b',
+        primaryBorderColor: '#cbd5e1',
+        lineColor: '#64748b',
+        secondaryColor: '#f1f5f9',
+        tertiaryColor: '#e2e8f0',
+        background: '#ffffff',
+        mainBkg: '#f8fafc',
+        nodeBorder: '#cbd5e1',
+        clusterBkg: '#f1f5f9',
+        clusterBorder: '#e2e8f0',
+        titleColor: '#1e293b',
+        edgeLabelBackground: '#ffffff',
+      },
     });
 
     async function renderDiagram() {
@@ -96,7 +149,7 @@ export function Mermaid({ chart, id }: { chart: string; id?: string }) {
     }
 
     renderDiagram();
-  }, [chart, id, themeKey]); // Re-render when theme changes
+  }, [chart, id, themeKey]);
 
   if (error) {
     return (
@@ -118,12 +171,18 @@ export function Mermaid({ chart, id }: { chart: string; id?: string }) {
 
   return (
     <div 
-      ref={ref} 
-      className={`my-6 flex justify-center items-center overflow-x-auto ${
-        !rendered ? "min-h-[200px] animate-pulse bg-muted/50 rounded-lg" : ""
-      }`}
-      role="img"
-      aria-label="Mermaid diagram"
-    />
+      className={cn(
+        "mermaid-container",
+        !rendered && "min-h-[200px] animate-pulse",
+        className
+      )}
+    >
+      <div 
+        ref={ref} 
+        className="flex justify-center items-center"
+        role="img"
+        aria-label="Mermaid diagram"
+      />
+    </div>
   );
 }

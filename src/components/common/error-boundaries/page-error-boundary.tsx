@@ -12,7 +12,7 @@ import { Logo } from "@/components/common/logo";
  */
 function PageErrorFallback({ error, resetError }: ErrorFallbackProps) {
   return (
-    <div className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_VERTICAL_PADDING}`}>
+    <div className={`mx-auto ${CONTAINER_WIDTHS.content} ${CONTAINER_VERTICAL_PADDING}`}>
       <div className={SPACING.content}>
         <div className="space-y-3">
           <h1 className={cn(TYPOGRAPHY.display.error, "text-destructive")}>
