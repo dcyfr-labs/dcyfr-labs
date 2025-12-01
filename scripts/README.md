@@ -112,3 +112,20 @@ npm run update:baseline
 ```
 
 This repository includes a scheduled GitHub Action (`.github/workflows/update-baseline-mapping.yml`) to refresh the data weekly. The script can also be run locally if you want to regenerate the file manually.
+
+CI integration
+--------------
+
+This repository now runs the `update:baseline` script before Lighthouse CI in both local and CI environments. The script is invoked automatically via NPM pre-scripts and as part of the Lighthouse CI workflow.
+
+Local commands:
+
+```bash
+npm run update:baseline         # generate baseline mapping locally
+npm run lighthouse:ci           # triggers update:baseline, build, and lhci autorun
+```
+
+In CI (GitHub Actions):
+
+- The Lighthouse CI workflow (`.github/workflows/lighthouse-ci.yml`) now runs `npm run update:baseline` before building.
+- Running `npm run lhci:autorun` or `npm run lhci:collect` will also run `update:baseline` automatically because of NPM `pre` scripts.
