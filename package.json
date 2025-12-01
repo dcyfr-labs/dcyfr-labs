@@ -19,7 +19,9 @@
     "test:integration": "vitest run tests/integration",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest watch",
-    "test:e2e": "playwright test",
+    "test:e2e": "PLAYWRIGHT_USE_PROD=1 playwright test",
+    "test:e2e:prod": "PLAYWRIGHT_USE_PROD=1 playwright test",
+    "test:e2e:dev": "PLAYWRIGHT_USE_PROD=0 playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
     "test:ci": "vitest run --coverage && playwright test",
@@ -130,8 +132,6 @@
     "typescript": "^5.9.3",
     "vitest": "^4.0.14"
   },
-  
-  
   "overrides": {
     "serialize-error-cjs": "0.2.0",
     "js-yaml": "^4.1.0",

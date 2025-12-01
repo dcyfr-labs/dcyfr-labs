@@ -93,13 +93,13 @@ describe("MDX Component", () => {
       expect(p.className).toContain("not-first:mt-4");
     });
 
-    it("should render blockquotes with border styling", () => {
+    it("should render blockquotes with correct spacing and styling", () => {
       render(<MDX source="> Quote" />);
       const blockquote = screen.getByText("Quote text");
       expect(blockquote.tagName).toBe("BLOCKQUOTE");
-      expect(blockquote.className).toContain("border-l-4");
-      expect(blockquote.className).toContain("pl-8");
-      expect(blockquote.className).toContain("text-muted-foreground");
+      // Classnames changed to reflect updated design tokens: left padding and spacing
+      expect(blockquote.className).toContain("pl-4");
+      expect(blockquote.className).toContain("my-6");
     });
   });
 

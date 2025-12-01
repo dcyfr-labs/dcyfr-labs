@@ -273,7 +273,7 @@ describe('useScrollAnimation Hook', () => {
   })
 
   describe('Fallback Behavior', () => {
-    it('shows element immediately if IntersectionObserver is unavailable', () => {
+    it('shows element immediately if IntersectionObserver is unavailable', async () => {
       // Remove IntersectionObserver
       const originalIO = global.IntersectionObserver
       // @ts-expect-error - intentionally setting to undefined
@@ -285,6 +285,11 @@ describe('useScrollAnimation Hook', () => {
           hookResult.ref.current = document.createElement('div')
         }
         return hookResult
+      })
+
+      // Wait for the requestAnimationFrame fallback to run
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0))
       })
 
       expect(result.current.isVisible).toBe(true)

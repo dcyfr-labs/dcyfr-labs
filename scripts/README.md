@@ -83,7 +83,8 @@ node scripts/test-skip-link-structure.mjs
 One-off development test scripts moved to `scripts/archive/legacy-tests/`. These have been superseded by proper testing infrastructure:
 
 - **Vitest** (`npm run test`) for unit and integration tests
-- **Playwright** (`npm run test:e2e`) for E2E tests  
+- **Playwright** (`npm run test:e2e`) for E2E tests (runs production build by default).
+	Use `npm run test:e2e:dev` to run E2E against the local dev server.
 - **Lighthouse CI** (`npm run lighthouse:ci`) for performance and accessibility validation
 
 See `scripts/archive/legacy-tests/README.md` for complete list and migration guidance.

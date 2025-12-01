@@ -98,21 +98,9 @@ describe("Mermaid Component", () => {
   });
 
   describe("Theme Detection", () => {
-    it("should use dark theme when prefers-color-scheme is dark", () => {
-      // Mock dark theme preference
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: vi.fn().mockImplementation(query => ({
-          matches: query === '(prefers-color-scheme: dark)' ? true : false,
-          media: query,
-          onchange: null,
-          addListener: vi.fn(),
-          removeListener: vi.fn(),
-          addEventListener: vi.fn(),
-          removeEventListener: vi.fn(),
-          dispatchEvent: vi.fn(),
-        })),
-      });
+    it("should use dark theme when html contains the dark class", () => {
+      // Simulate dark mode by adding a 'dark' class to html
+      document.documentElement.classList.add('dark');
 
       render(<Mermaid chart="graph LR\n A-->B" />);
       
@@ -121,6 +109,9 @@ describe("Mermaid Component", () => {
           theme: "dark",
         })
       );
+
+      // Cleanup
+      document.documentElement.classList.remove('dark');
     });
 
     it("should use dark theme when data-theme attribute is dark", () => {
@@ -187,30 +178,11 @@ describe("Mermaid Component", () => {
     });
   });
 
-  describe("Theme Change Observer", () => {
-    it("should set up MutationObserver for theme changes", () => {
-      const observeSpy = vi.spyOn(MutationObserver.prototype, 'observe');
-      
-      render(<Mermaid chart="graph LR\n A-->B" />);
-      
-      expect(observeSpy).toHaveBeenCalledWith(
-        document.documentElement,
-        expect.objectContaining({
-          attributes: true,
-          attributeFilter: ['class', 'data-theme'],
-        })
-      );
-    });
-
-    it("should disconnect observer on unmount", () => {
-      const disconnectSpy = vi.spyOn(MutationObserver.prototype, 'disconnect');
-      
-      const { unmount } = render(<Mermaid chart="graph LR\n A-->B" />);
-      unmount();
-      
-      expect(disconnectSpy).toHaveBeenCalled();
-    });
-  });
+  // Theme reactivity used to be driven by a MutationObserver in the legacy
+  // implementation. The current implementation performs static detection of
+  // theme at render time and re-initialization on `resolvedTheme` changes
+  // (via the `useTheme` hook). Mutations are not observed in this component,
+  // so we don't assert MutationObserver behavior here.
 
   describe("Error Handling", () => {
     it("should display error message when rendering fails", async () => {

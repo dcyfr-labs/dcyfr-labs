@@ -317,7 +317,7 @@ ${config.author ? `  <author>
     <email>${escapeXml(config.author.email)}</email>
   </author>` : ""}
   <generator uri="https://nextjs.org/">${config.generator || "Next.js"}</generator>
-  <rights>© ${new Date().getFullYear()} ${escapeXml(config.author?.name || "Drew")}. All rights reserved.</rights>
+  <rights>© ${new Date().getFullYear()} ${escapeXml(config.author?.name || "DCYFR Labs")}. All rights reserved.</rights>
 ${itemsXml}
 </feed>`;
 }

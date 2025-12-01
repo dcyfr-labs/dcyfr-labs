@@ -85,6 +85,24 @@ Items deferred until data validates need or time permits.
 - [ ] GitHub Actions CI improvements (2-3 hours)
 - [ ] Automated performance regression tests (3-4 hours)
 
+## 🔧 Current Short-Term Tasks (Next day)
+
+- [ ] Stabilize E2E (Mobile) - (1-2 hours)
+  - Investigate intermittent failures on Mobile Safari (WebKit) where the MobileNav trigger remains disabled until mount.
+  - Add small Playwright helper for reliably opening the mobile nav (ensures enabled state or force-click fallback).
+  - If the component mount behavior causes issues, consider refactoring `MobileNav` to remove the disabled pre-mount placeholder or render a visible, accessible fallback.
+
+- [ ] Validate E2E Production Build Runs in CI - (30-60 minutes)
+  - CI now runs Playwright with production build by default (PLAYWRIGHT_USE_PROD=1).
+  - Validate full Playwright runs against production build on an ephemeral environment.
+
+- [ ] Investigate Dev Overlay Artifact - (30-45 minutes)
+  - Dev overlay (Next.js dev overlay) previously interfered with E2E interactions. Running tests against the production build should resolve it; verify and document findings.
+
+- [x] Add Playwright utility for mobile nav and update `e2e` tests - (1 hour)
+  - Create a shared helper in `e2e/utils` to open mobile nav with robust retries and logging.
+
+
 ### Performance (Data-Driven)
 
 - [ ] Lazy load below-fold components (2-3 hours)

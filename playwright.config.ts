@@ -9,6 +9,8 @@ import { defineConfig, devices } from '@playwright/test'
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+const useProd = !!process.env.CI || process.env.PLAYWRIGHT_USE_PROD === '1' || process.env.PLAYWRIGHT_USE_PROD === 'true'
+
 export default defineConfig({
   testDir: './e2e',
   /* Run tests in files in parallel */
@@ -75,13 +77,16 @@ export default defineConfig({
     },
   ],
 
-  /* Run your local dev server before starting the tests */
+  /* Run your local dev or production server before starting the tests
+   * This config will use a production build server when `CI` or PLAYWRIGHT_USE_PROD
+   * is set. Set PLAYWRIGHT_USE_PROD=1 locally to run against a prod build.
+   */
   webServer: process.env.VERCEL_URL
     ? undefined
     : {
-        command: 'npm run dev',
+        command: useProd ? 'npm run build && npm run start' : 'npm run dev',
         url: 'http://localhost:3000',
         reuseExistingServer: !process.env.CI,
-        timeout: 120 * 1000, // 2 minutes for Turbopack to start
+        timeout: useProd ? 10 * 60 * 1000 : 120 * 1000, // 10 minutes for build+start
       },
 })

@@ -217,7 +217,7 @@ npm run check             # Both lint + typecheck
 npm run test              # Run all tests (Vitest)
 npm run test:unit         # Unit tests only
 npm run test:integration  # Integration tests only
-npm run test:e2e          # End-to-end tests (Playwright)
+npm run test:e2e          # End-to-end tests (Playwright) - runs production build by default (to avoid dev overlay). Use npm run test:e2e:dev to run against dev server.
 npm run test:coverage     # Generate coverage report
 npm run test:watch        # Watch mode
 

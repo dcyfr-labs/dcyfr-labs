@@ -31,7 +31,7 @@ export const teamMembers: TeamMember[] = [
   {
     id: "dcyfr",
     name: "DCYFR",
-    title: "AI Assistant",
+    title: "AI Lab Assistant",
     subtitle: "Digital Collaborator",
     description: "Context-aware coding and security assistant accelerating implementation, analysis, and docs.",
     badges: [

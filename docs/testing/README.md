@@ -33,6 +33,21 @@ Comprehensive testing setup for the application.
 - **Playwright** - Browser automation and testing
 - **Vercel Preview** - Test against preview deployments
 
+### E2E Helpers
+
+This repo includes a small set of E2E helpers under `e2e/utils/` to reduce flakiness and standardize common flows, for example:
+
+- `e2e/utils/nav.ts` - `openMobileNav(page)` and `closeMobileNav(page)` helpers to reliably open/close the MobileNav for tests across browsers and viewports.
+
+Use the helper in tests like:
+
+```ts
+import openMobileNav from './utils/nav'
+
+const nav = await openMobileNav(page)
+await nav?.getByRole('link', { name: /blog/ }).click()
+```
+
 ---
 
 ## Running Tests
@@ -53,13 +68,18 @@ npm run test:coverage
 npm run test:ui
 ```
 
-### E2E Tests
+# E2E Tests
 
 ```bash
-# Run E2E tests (headless)
+# Run E2E tests (headless). Note: by default this command runs a production build and starts the server
+# to avoid issues with Next.js dev overlay and dev-only behavior. Use `npm run test:e2e:dev` to run
+# against a dev server instead.
 npm run test:e2e
 
-# Run with UI (development)
+# Run E2E tests against local dev server
+npm run test:e2e:dev
+
+# Run with UI (interactive)
 npm run test:e2e:ui
 
 # Debug mode
