@@ -27,14 +27,18 @@
     "lhci:assert": "lhci assert",
     "lhci:upload": "lhci upload",
     "lhci:autorun": "lhci autorun",
-    "lighthouse:ci": "npm run build && lhci autorun",
+    "lighthouse:ci": "npm run update:baseline && npm run build && lhci autorun",
     "perf:check": "npm run build && node scripts/check-bundle-size.mjs",
     "perf:analyze": "ANALYZE=true npm run build",
     "validate:content": "node scripts/validate-markdown-content.mjs",
     "lint:mermaid": "node scripts/lint-mermaid-diagrams.mjs",
     "prepare": "husky"
     ,
-    "update:baseline": "node scripts/update-baseline-browser-mapping.mjs"
+    "update:baseline": "node scripts/update-baseline-browser-mapping.mjs",
+    "prelhci:collect": "npm run update:baseline",
+    "prelhci:autorun": "npm run update:baseline",
+    "prelhci:assert": "npm run update:baseline",
+    "prelighthouse:ci": "npm run update:baseline"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
@@ -126,6 +130,7 @@
     "typescript": "^5.9.3",
     "vitest": "^4.0.14"
   },
+  
   
   "overrides": {
     "serialize-error-cjs": "0.2.0",
