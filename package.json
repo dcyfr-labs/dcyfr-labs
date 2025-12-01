@@ -33,6 +33,8 @@
     "validate:content": "node scripts/validate-markdown-content.mjs",
     "lint:mermaid": "node scripts/lint-mermaid-diagrams.mjs",
     "prepare": "husky"
+    ,
+    "update:baseline": "node scripts/update-baseline-browser-mapping.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
@@ -124,6 +126,7 @@
     "typescript": "^5.9.3",
     "vitest": "^4.0.14"
   },
+  
   "overrides": {
     "serialize-error-cjs": "0.2.0",
     "js-yaml": "^4.1.0",

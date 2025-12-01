@@ -100,3 +100,15 @@ When adding new scripts:
 3. Include descriptive comment header
 4. Update this README with script description and usage
 5. Consider adding an npm script alias in `package.json` if frequently used
+
+### Baseline Browser Mapping
+
+The `baseline-browser-mapping` script in this repo generates a JSON data file using the `baseline-browser-mapping` package. This data can be used in Lighthouse or other analysis tooling to ensure accurate baseline browser mappings.
+
+Run it to update the JSON file at `src/data/baseline-browser-mapping.json`:
+
+```bash
+npm run update:baseline
+```
+
+This repository includes a scheduled GitHub Action (`.github/workflows/update-baseline-mapping.yml`) to refresh the data weekly. The script can also be run locally if you want to regenerate the file manually.
