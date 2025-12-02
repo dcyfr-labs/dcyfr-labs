@@ -120,8 +120,8 @@ style-src 'self' 'nonce-{random}' https://fonts.googleapis.com ...
   "violatedDirective": "script-src 'self' 'nonce-abc'",
   "effectiveDirective": "script-src",
   "blockedUri": "https://evil.com/malicious.js",
-  "documentUri": "https://cyberdrew.dev/blog/post",
-  "sourceFile": "https://cyberdrew.dev/blog/post",
+  "documentUri": "https://www.dcyfr.ai/blog/post",
+  "sourceFile": "https://www.dcyfr.ai/blog/post",
   "lineNumber": 42,
   "columnNumber": 13,
   "statusCode": 200,
@@ -291,7 +291,7 @@ function anonymizeUri(uri: string): string {
 npm run test:csp-report
 
 # Production
-TEST_URL=https://cyberdrew.dev npm run test:csp-report
+TEST_URL=https://www.dcyfr.ai npm run test:csp-report
 ```
 
 ### Manual CSP Testing

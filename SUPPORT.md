@@ -27,7 +27,7 @@ For general questions, usage help, or discussions:
    - Create a new discussion if your question hasn't been answered
 
 2. **Contact Form**
-   - Visit [cyberdrew.dev/contact](https://cyberdrew.dev/contact)
+   - Visit [www.dcyfr.ai/contact](https://www.dcyfr.ai/contact)
    - Use for general inquiries or feedback
 
 ### Bug Reports
@@ -66,7 +66,7 @@ Instead, please report security issues responsibly:
    - Provide detailed information
 
 2. **Direct Contact**
-   - Use the [contact form](https://cyberdrew.dev/contact)
+   - Use the [contact form](https://www.dcyfr.ai/contact)
    - Include "SECURITY" in the subject line
 
 See [SECURITY.md](./SECURITY.md) for full security policy.
@@ -93,7 +93,7 @@ Interested in contributing? Great!
 
 ## Project Resources
 
-- **Website**: [cyberdrew.dev](https://cyberdrew.dev)
+- **Website**: [www.dcyfr.ai](https://www.dcyfr.ai)
 - **Repository**: [github.com/dcyfr/dcyfr-labs](https://github.com/dcyfr/dcyfr-labs)
 - **Issues**: [GitHub Issues](https://github.com/dcyfr/dcyfr-labs/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/dcyfr/dcyfr-labs/discussions)
@@ -107,8 +107,8 @@ Please follow our [Code of Conduct](./CODE_OF_CONDUCT.md) in all interactions. W
 
 For questions not covered above:
 
-- **Blog**: Check [cyberdrew.dev/blog](https://cyberdrew.dev/blog) for articles and tutorials
-- **Contact**: Use the [contact form](https://cyberdrew.dev/contact) for direct communication
+- **Blog**: Check [www.dcyfr.ai/blog](https://www.dcyfr.ai/blog) for articles and tutorials
+- **Contact**: Use the [contact form](https://www.dcyfr.ai/contact) for direct communication
 
 ---
 

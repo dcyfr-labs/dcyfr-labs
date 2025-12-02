@@ -55,10 +55,10 @@ export function createPageMetadata(options: BaseMetadataOptions): Metadata {
 **Status:** ✅ Excellent
 
 All URLs are consistent and match metadata:
-- `https://cyberdrew.dev/` (homepage)
-- `https://cyberdrew.dev/blog` (no trailing slash)
-- `https://cyberdrew.dev/blog/{slug}` (post pages)
-- `https://cyberdrew.dev/projects/{slug}` (project pages)
+- `https://www.dcyfr.ai/` (homepage)
+- `https://www.dcyfr.ai/blog` (no trailing slash)
+- `https://www.dcyfr.ai/blog/{slug}` (post pages)
+- `https://www.dcyfr.ai/projects/{slug}` (project pages)
 
 **Example:**
 ```typescript
@@ -113,8 +113,8 @@ Next.js Metadata API does not automatically add `<link rel="canonical">` tags un
 **Verification:**
 ```bash
 # Test in production
-curl -s https://cyberdrew.dev/ | grep 'rel="canonical"'
-# Expected: <link rel="canonical" href="https://cyberdrew.dev/" />
+curl -s https://www.dcyfr.ai/ | grep 'rel="canonical"'
+# Expected: <link rel="canonical" href="https://www.dcyfr.ai/" />
 # Actual: No output (tag missing)
 ```
 
@@ -233,11 +233,11 @@ npm run dev
 
 # Test homepage
 curl -s http://localhost:3000/ | grep 'rel="canonical"'
-# Expected: <link rel="canonical" href="https://cyberdrew.dev/" />
+# Expected: <link rel="canonical" href="https://www.dcyfr.ai/" />
 
 # Test blog post
 curl -s http://localhost:3000/blog/ai-development-workflow | grep 'rel="canonical"'
-# Expected: <link rel="canonical" href="https://cyberdrew.dev/blog/ai-development-workflow" />
+# Expected: <link rel="canonical" href="https://www.dcyfr.ai/blog/ai-development-workflow" />
 ```
 
 ---
@@ -246,7 +246,7 @@ curl -s http://localhost:3000/blog/ai-development-workflow | grep 'rel="canonica
 
 ### Primary URL Format
 
-**Base URL:** `https://cyberdrew.dev`
+**Base URL:** `https://www.dcyfr.ai`
 - ✅ HTTPS (secure)
 - ✅ No www subdomain
 - ✅ No trailing slashes
@@ -256,14 +256,14 @@ curl -s http://localhost:3000/blog/ai-development-workflow | grep 'rel="canonica
 
 | Page Type | URL Pattern | Example |
 |-----------|-------------|---------|
-| Homepage | `/` | `https://cyberdrew.dev/` |
-| About | `/about` | `https://cyberdrew.dev/about` |
-| Blog Archive | `/blog` | `https://cyberdrew.dev/blog` |
-| Blog Post | `/blog/{slug}` | `https://cyberdrew.dev/blog/ai-development-workflow` |
-| Projects | `/projects` | `https://cyberdrew.dev/projects` |
-| Project Detail | `/projects/{slug}` | `https://cyberdrew.dev/projects/portfolio` |
-| Contact | `/contact` | `https://cyberdrew.dev/contact` |
-| RSS Feed | `/feed` | `https://cyberdrew.dev/feed` |
+| Homepage | `/` | `https://www.dcyfr.ai/` |
+| About | `/about` | `https://www.dcyfr.ai/about` |
+| Blog Archive | `/blog` | `https://www.dcyfr.ai/blog` |
+| Blog Post | `/blog/{slug}` | `https://www.dcyfr.ai/blog/ai-development-workflow` |
+| Projects | `/projects` | `https://www.dcyfr.ai/projects` |
+| Project Detail | `/projects/{slug}` | `https://www.dcyfr.ai/projects/portfolio` |
+| Contact | `/contact` | `https://www.dcyfr.ai/contact` |
+| RSS Feed | `/feed` | `https://www.dcyfr.ai/feed` |
 
 ### Query Parameters
 
@@ -342,11 +342,11 @@ node scripts/test-canonical-urls.mjs
 
 ```bash
 # Test in production
-curl -sI https://cyberdrew.dev/ | grep -i location
-curl -s https://cyberdrew.dev/ | grep 'rel="canonical"'
+curl -sI https://www.dcyfr.ai/ | grep -i location
+curl -s https://www.dcyfr.ai/ | grep 'rel="canonical"'
 
 # Test redirect
-curl -sI https://cyberdrew.dev/blog/hardening-tiny-portfolio | grep -i location
+curl -sI https://www.dcyfr.ai/blog/hardening-tiny-portfolio | grep -i location
 # Expected: location: /blog/hardening-developer-portfolio
 ```
 

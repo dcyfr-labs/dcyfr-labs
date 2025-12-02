@@ -797,7 +797,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
   "author": {
     "@type": "Person",
     "name": "Drew",
-    "url": "https://cyberdrew.dev"
+    "url": "https://www.dcyfr.ai"
   },
   "wordCount": 1350,
   "keywords": "Next.js, React, MDX",

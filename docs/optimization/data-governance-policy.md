@@ -4,13 +4,13 @@
 **Version:** 1.0  
 **Owner:** Drew
 
-Policies and procedures for managing analytics data for cyberdrew.dev in compliance with privacy regulations and best practices.
+Policies and procedures for managing analytics data for www.dcyfr.ai in compliance with privacy regulations and best practices.
 
 ---
 
 ## Overview
 
-This document establishes governance policies for all analytics data collected on cyberdrew.dev, including view counts, web vitals, and user interaction data. The goal is to maintain sustainable, privacy-compliant analytics while providing valuable insights.
+This document establishes governance policies for all analytics data collected on www.dcyfr.ai, including view counts, web vitals, and user interaction data. The goal is to maintain sustainable, privacy-compliant analytics while providing valuable insights.
 
 ---
 
@@ -156,12 +156,12 @@ vercel env pull
 
 # Delete specific post views (use with caution)
 redis-cli -u $KV_URL
-> DEL cyberdrew:views:test-post-slug
-> DEL cyberdrew:views:test-post-slug:history
-> DEL cyberdrew:shares:test-post-slug
+> DEL views:post:test-post-slug
+> DEL views:post:test-post-slug:history
+> DEL shares:post:test-post-slug
 
 # Verify deletion
-> GET cyberdrew:views:test-post-slug
+> GET views:post:test-post-slug
 (nil)
 ```
 
@@ -213,27 +213,27 @@ async function exportAnalytics() {
   const timestamp = new Date().toISOString().split('T')[0];
   
   // Get all view counts
-  const viewKeys = await redis.keys('cyberdrew:views:*');
+  const viewKeys = await redis.keys('views:post:*');
   const views: Record<string, number> = {};
   
   for (const key of viewKeys) {
     if (!key.includes(':history') && !key.includes(':sessions')) {
       const count = await redis.get<number>(key);
       if (count) {
-        const slug = key.replace('cyberdrew:views:', '');
+        const slug = key.replace('views:post:', '');
         views[slug] = count;
       }
     }
   }
   
   // Get all share counts
-  const shareKeys = await redis.keys('cyberdrew:shares:*');
+  const shareKeys = await redis.keys('shares:post:*');
   const shares: Record<string, number> = {};
   
   for (const key of shareKeys) {
     const count = await redis.get<number>(key);
     if (count) {
-      const slug = key.replace('cyberdrew:shares:', '');
+      const slug = key.replace('shares:post:', '');
       shares[slug] = count;
     }
   }
@@ -541,24 +541,24 @@ npm run analytics:export
 
 ### View Counts
 
-**Key:** `cyberdrew:views:{postSlug}`  
+**Key:** `views:post:{postSlug}`  
 **Type:** String (number)  
 **Value:** Total view count  
 **Expiration:** None (permanent)  
-**Example:** `cyberdrew:views:ai-development-workflow` → `1234`
+**Example:** `views:post:ai-development-workflow` → `1234`
 
 ---
 
 ### View History
 
-**Key:** `cyberdrew:views:{postSlug}:history`  
+**Key:** `views:post:{postSlug}:history`  
 **Type:** Sorted Set  
 **Members:** `{sessionId}:{timestamp}`  
 **Score:** Unix timestamp  
 **Expiration:** Members older than 90 days removed on query  
 **Example:**
 ```
-cyberdrew:views:ai-development-workflow:history
+views:post:ai-development-workflow:history
   abc123:1700000000 → 1700000000
   xyz789:1700001000 → 1700001000
 ```
@@ -567,7 +567,7 @@ cyberdrew:views:ai-development-workflow:history
 
 ### Session Deduplication
 
-**Key:** `cyberdrew:views:{postSlug}:sessions:{sessionId}`  
+**Key:** `views:post:{postSlug}:sessions:{sessionId}`  
 **Type:** String (flag)  
 **Value:** "1"  
 **Expiration:** 30 minutes (TTL)  
@@ -577,11 +577,11 @@ cyberdrew:views:ai-development-workflow:history
 
 ### Share Counts
 
-**Key:** `cyberdrew:shares:{postSlug}`  
+**Key:** `shares:post:{postSlug}`  
 **Type:** String (number)  
 **Value:** Share count  
 **Expiration:** 24 hours (resets daily)  
-**Example:** `cyberdrew:shares:ai-development-workflow` → `45`
+**Example:** `shares:post:ai-development-workflow` → `45`
 
 ---
 
@@ -592,7 +592,7 @@ cyberdrew:views:ai-development-workflow:history
 **Symptoms:** Views stay at 0 or don't increase
 
 **Diagnosis:**
-1. Check Redis connection: `curl https://cyberdrew.dev/api/views?postId=test-post`
+1. Check Redis connection: `curl https://www.dcyfr.ai/api/views?postId=test-post`
 2. Verify bot detection isn't blocking: Check user-agent
 3. Review rate limiting: May be hitting 10 req/5min limit
 4. Check session deduplication: Same sessionId reused?
@@ -600,7 +600,7 @@ cyberdrew:views:ai-development-workflow:history
 **Resolution:**
 - Increase rate limits if legitimate traffic
 - Whitelist specific IPs for testing
-- Clear session keys if testing: `DEL cyberdrew:views:*:sessions:*`
+- Clear session keys if testing: `DEL views:post:*:sessions:*`
 
 ---
 
@@ -627,7 +627,7 @@ cyberdrew:views:ai-development-workflow:history
 
 **Diagnosis:**
 1. Verify Redis credentials valid
-2. Check key patterns match: `KEYS cyberdrew:views:*`
+2. Check key patterns match: `KEYS views:post:*`
 3. Review script error logs
 
 **Resolution:**

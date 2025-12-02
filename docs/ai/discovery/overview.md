@@ -1,7 +1,7 @@
 # AI Discovery & Structured Data Implementation
 
 ## Overview
-This document describes the AI discovery features and structured data implementation for cyberdrew.dev. These features help AI assistants, crawlers, and search engines better understand and discover content on the site.
+This document describes the AI discovery features and structured data implementation for www.dcyfr.ai. These features help AI assistants, crawlers, and search engines better understand and discover content on the site.
 
 ## Implemented Features
 
@@ -28,7 +28,7 @@ This document describes the AI discovery features and structured data implementa
 
 A new specification similar to `robots.txt` but specifically for AI crawlers and LLMs.
 
-**Location**: `/ai.txt` (served at `https://cyberdrew.dev/ai.txt`)
+**Location**: `/ai.txt` (served at `https://www.dcyfr.ai/ai.txt`)
 
 **Implementation**: `src/app/ai.txt/route.ts`
 
@@ -57,7 +57,7 @@ A new specification similar to `robots.txt` but specifically for AI crawlers and
 
 ### 3. Enhanced robots.txt
 
-**Location**: `/robots.txt` (served at `https://cyberdrew.dev/robots.txt`)
+**Location**: `/robots.txt` (served at `https://www.dcyfr.ai/robots.txt`)
 
 **Implementation**: `src/app/robots.ts`
 
@@ -146,24 +146,24 @@ These features were already present and now work better with AI discovery:
 
 ### Test ai.txt:
 ```bash
-curl https://cyberdrew.dev/ai.txt
+curl https://www.dcyfr.ai/ai.txt
 ```
 
 ### Test robots.txt:
 ```bash
-curl https://cyberdrew.dev/robots.txt
+curl https://www.dcyfr.ai/robots.txt
 ```
 
 ### View JSON-LD on Pages:
 ```bash
 # Home page
-curl https://cyberdrew.dev/ | grep -A 50 "application/ld+json"
+curl https://www.dcyfr.ai/ | grep -A 50 "application/ld+json"
 
 # Blog post
-curl https://cyberdrew.dev/blog/your-post-slug | grep -A 50 "application/ld+json"
+curl https://www.dcyfr.ai/blog/your-post-slug | grep -A 50 "application/ld+json"
 
 # Projects
-curl https://cyberdrew.dev/projects | grep -A 50 "application/ld+json"
+curl https://www.dcyfr.ai/projects | grep -A 50 "application/ld+json"
 ```
 
 ## Attribution Format
@@ -171,12 +171,12 @@ curl https://cyberdrew.dev/projects | grep -A 50 "application/ld+json"
 When AI services cite your content, they should use:
 
 ```
-Drew. (2025). [Content Title]. Retrieved from https://cyberdrew.dev
+Drew. (2025). [Content Title]. Retrieved from https://www.dcyfr.ai
 ```
 
 Example:
 ```
-Drew. (2025). Shipping a Next.js Developer Portfolio. Retrieved from https://cyberdrew.dev/blog/shipping-a-nextjs-tiny-portfolio
+Drew. (2025). Shipping a Next.js Developer Portfolio. Retrieved from https://www.dcyfr.ai/blog/shipping-a-nextjs-tiny-portfolio
 ```
 
 ## Maintenance

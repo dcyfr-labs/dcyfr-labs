@@ -142,9 +142,9 @@ const htmlContent = `
 **RSS 2.0:**
 ```xml
 <image>
-  <url>https://cyberdrew.dev/icons/icon-512x512.png</url>
+  <url>https://www.dcyfr.ai/icons/icon-512x512.png</url>
   <title>Drew's Lab</title>
-  <link>https://cyberdrew.dev</link>
+  <link>https://www.dcyfr.ai</link>
   <width>144</width>
   <height>144</height>
 </image>
@@ -152,8 +152,8 @@ const htmlContent = `
 
 **Atom 1.0:**
 ```xml
-<logo>https://cyberdrew.dev/icons/icon-512x512.png</logo>
-<icon>https://cyberdrew.dev/favicon.ico</icon>
+<logo>https://www.dcyfr.ai/icons/icon-512x512.png</logo>
+<icon>https://www.dcyfr.ai/favicon.ico</icon>
 ```
 
 **Benefits:**
@@ -201,7 +201,7 @@ async function getImageMetadata(imagePath: string) {
 **Enclosure with metadata:**
 ```xml
 <enclosure 
-  url="https://cyberdrew.dev/projects/drews-lab/hero.png" 
+  url="https://www.dcyfr.ai/projects/drews-lab/hero.png" 
   type="image/png" 
   length="245832" 
 />
@@ -560,11 +560,11 @@ describe("RSS Feed", () => {
 **Solution:**
 ```xml
 <!-- Current feed -->
-<link rel="next" href="https://cyberdrew.dev/feed?page=2" />
+<link rel="next" href="https://www.dcyfr.ai/feed?page=2" />
 
 <!-- Archive feed -->
-<link rel="prev-archive" href="https://cyberdrew.dev/feed/2024" />
-<link rel="current" href="https://cyberdrew.dev/feed" />
+<link rel="prev-archive" href="https://www.dcyfr.ai/feed/2024" />
+<link rel="current" href="https://www.dcyfr.ai/feed" />
 ```
 
 **Implementation:**

@@ -188,5 +188,5 @@ None currently. All CTAs rendering correctly and event tracking functional.
 ---
 
 **Last updated**: 2025-01-XX
-**Owner**: @cyberdrew
+**Owner**: @dcyfr
 **Status**: Production Ready ✅

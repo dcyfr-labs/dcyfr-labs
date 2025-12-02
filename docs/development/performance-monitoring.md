@@ -6,7 +6,7 @@
 
 ## Overview
 
-This document outlines the comprehensive performance monitoring strategy for cyberdrew.dev, including Core Web Vitals tracking, bundle size monitoring, and performance budgets. The system provides real-time insights and automated alerts to maintain optimal performance.
+This document outlines the comprehensive performance monitoring strategy for www.dcyfr.ai, including Core Web Vitals tracking, bundle size monitoring, and performance budgets. The system provides real-time insights and automated alerts to maintain optimal performance.
 
 ## Table of Contents
 

@@ -10,7 +10,7 @@
  * @example
  * ```tsx
  * <ArticleFooter
- *   shareUrl="https://cyberdrew.dev/blog/my-post"
+ *   shareUrl="https://www.dcyfr.ai/blog/my-post"
  *   shareTitle="My Blog Post"
  *   relatedItems={[{title: "Related Post", slug: "related"}]}
  *   renderRelatedItem={(item) => <PostCard post={item} />}

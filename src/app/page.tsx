@@ -123,14 +123,14 @@ export default async function Home() {
       },
       {
         "@type": "WebPage",
-        "@id": "https://cyberdrew.dev/#webpage",
-        url: "https://cyberdrew.dev",
-        name: "DCYFR Labs",
+        "@id": `${SITE_URL}/#webpage`,
+        url: SITE_URL,
+        name: SITE_TITLE,
         isPartOf: {
-          "@id": "https://cyberdrew.dev/#website",
+          "@id": `${SITE_URL}/#website`,
         },
         about: {
-          "@id": "https://cyberdrew.dev/#person",
+          "@id": `${SITE_URL}/#person`,
         },
         description: pageDescription,
         inLanguage: "en-US",

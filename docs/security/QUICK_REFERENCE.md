@@ -166,7 +166,7 @@ https://securityheaders.com
 **Solution:** Verify `REDIS_URL` configured in environment variables
 
 ### Issue: Headers Not Appearing
-**Solution:** Run: `curl -i https://cyberdrew.dev | grep -i "x-"`
+**Solution:** Run: `curl -i https://www.dcyfr.ai | grep -i "x-"`
 
 ### Issue: HSTS Errors in Browser
 **Solution:** This is expected first time. Browser will cache HSTS header for 2 years.

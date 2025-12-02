@@ -51,7 +51,7 @@ The social links section intelligently differentiates between internal and exter
 **Detection Logic:**
 ```typescript
 const isInternalLink = social.url.startsWith('/') || 
-  (social.url.includes('cyberdrew.dev') && (
+  (social.url.includes('www.dcyfr.ai') && (
     social.url.endsWith('/') || 
     social.url.endsWith('/contact')
   ));

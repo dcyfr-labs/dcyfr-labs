@@ -48,7 +48,7 @@ article[data-url]:after {
 3. In print mode, the `article[data-url]:after` pseudo-element is activated
 4. CSS `attr(data-url)` function reads the URL from the data attribute
 5. The text "Read online: " is prepended to the URL
-6. Result: "Read online: https://cyberdrew.dev/blog/example-post" appears at the bottom
+6. Result: "Read online: https://www.dcyfr.ai/blog/example-post" appears at the bottom
 7. **Specificity:** Only articles WITH `data-url` attribute show the URL (prevents duplicates on list pages)
 
 ## Test Results
@@ -74,7 +74,7 @@ article[data-url]:after {
 2. Navigate to any blog post (e.g., `/blog/your-post-slug`)
 3. Press `Cmd+P` (Mac) or `Ctrl+P` (Windows)
 4. Scroll to bottom of print preview
-5. Verify "Read online: https://cyberdrew.dev/blog/your-post-slug" appears
+5. Verify "Read online: https://www.dcyfr.ai/blog/your-post-slug" appears
 
 ### Method 2: Test Page
 1. Start dev server: `npm run dev`
@@ -129,7 +129,7 @@ In print preview, the bottom of each blog post will show:
 [Article content ends here]
 
 ─────────────────────────────────────
-Read online: https://cyberdrew.dev/blog/example-post
+Read online: https://www.dcyfr.ai/blog/example-post
 ```
 
 The line is a 1pt solid gray border, and the text is 8pt gray color.

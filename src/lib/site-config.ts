@@ -2,17 +2,18 @@
 // Keep values here for easy updates across environments and build-time usage.
 
 export const DOMAIN_DEV = "localhost:3000";
-export const DOMAIN_PREVIEW = "cyberdrew.vercel.app";
-export const DOMAIN_PRODUCTION = "cyberdrew.dev";
+export const DOMAIN_PREVIEW = "dcyfr-preview.vercel.app";
+export const DOMAIN_PRODUCTION = "www.dcyfr.ai";
+export const DOMAIN_PRODUCTION_ALT = "dcyfr.vercel.app";
 
-export const AUTHOR_NAME = "Drew";
-export const AUTHOR_EMAIL = "drew@cyberdrew.dev";
+export const AUTHOR_NAME = "Drew (dcyfr)";
+export const AUTHOR_EMAIL = "drew@dcyfr.ai";
 
 // For display in UI (with sparkle character)
 export const SITE_TITLE = "DCYFR Labs";
 export const SITE_TITLE_PLAIN = "DCYFR Labs"; // For meta tags (without special characters)
-export const SITE_SUBTITLE = "Developer Portfolio & Tech Blog";
-export const SITE_DESCRIPTION = "Cyber architecture and design insights from DCYFR Labs. Exploring coding, security, and tech trends.";
+export const SITE_SUBTITLE = "Cyber Architecture & Design";
+export const SITE_DESCRIPTION = "Professional portfolio and blog of DCYFR Labs, exploring cyber architecture, coding, security, and tech trends.";
 
 /**
  * Feature Flags
@@ -48,12 +49,12 @@ export const CONTENT_CONFIG = {
   wordsPerMinute: 200, // for reading time calculation
   
   // Badges & indicators
-  newPostDays: 7, // "New" badge threshold
-  hotPostViewsThreshold: 100, // "Hot" badge threshold
+  newPostDays: 30, // "New" badge threshold
+  hotPostViewsThreshold: 350, // "Hot" badge threshold
   
   // TOC configuration
-  tocMinHeadings: 2, // minimum headings to show TOC
-  tocMaxDepth: 3, // H1-H3 only
+  tocMinHeadings: 3, // minimum headings to show TOC
+  tocMaxDepth: 2, // H1-H2 only
   
   // Excerpt/summary
   excerptLength: 160, // characters for truncated summaries

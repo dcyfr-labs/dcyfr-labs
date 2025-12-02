@@ -385,7 +385,7 @@ Create interactive design system documentation:
 - [ ] Add stories for design tokens
 - [ ] Deploy to Vercel subdomain
 
-**URL:** `design.cyberdrew.dev` or `/design-system` route
+**URL:** `design.www.dcyfr.ai` or `/design-system` route
 
 ---
 

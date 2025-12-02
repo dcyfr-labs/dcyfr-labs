@@ -136,14 +136,14 @@ Feed items are converted to Atom 1.0 format:
 ```xml
 <entry>
   <title type="text">...</title>
-  <link href="https://cyberdrew.dev/blog/..." rel="alternate" type="text/html" />
-  <link rel="enclosure" type="image/jpeg" href="https://cyberdrew.dev/blog/images/post/hero.jpg" />
-  <id>https://cyberdrew.dev/blog/...</id>
+  <link href="https://www.dcyfr.ai/blog/..." rel="alternate" type="text/html" />
+  <link rel="enclosure" type="image/jpeg" href="https://www.dcyfr.ai/blog/images/post/hero.jpg" />
+  <id>https://www.dcyfr.ai/blog/...</id>
   <published>2025-11-10T12:00:00.000Z</published>
   <updated>2025-11-10T12:00:00.000Z</updated>
   <author>
     <name>Drew</name>
-    <email>drew@cyberdrew.dev</email>
+    <email>drew@www.dcyfr.ai</email>
   </author>
   <summary type="html"><![CDATA[...]]></summary>
   <content type="html"><![CDATA[...]]></content>
@@ -163,10 +163,10 @@ Feed items are converted to Atom 1.0 format:
 {
   title: "Drew's Lab",
   description: "Cybersecurity, Tech, and More",
-  link: "https://cyberdrew.dev",
-  feedUrl: "https://cyberdrew.dev/feed",
+  link: "https://www.dcyfr.ai",
+  feedUrl: "https://www.dcyfr.ai/feed",
   language: "en-us",
-  author: { name: "Drew", email: "drew@cyberdrew.dev" }
+  author: { name: "Drew", email: "drew@www.dcyfr.ai" }
 }
 ```
 
@@ -183,8 +183,8 @@ Feed items are converted to Atom 1.0 format:
 {
   title: "Drew's Lab - Blog",
   description: "Articles and notes on web development, security, and TypeScript.",
-  link: "https://cyberdrew.dev/blog",
-  feedUrl: "https://cyberdrew.dev/blog/feed",
+  link: "https://www.dcyfr.ai/blog",
+  feedUrl: "https://www.dcyfr.ai/blog/feed",
   // ... same author
 }
 ```
@@ -203,8 +203,8 @@ Feed items are converted to Atom 1.0 format:
 {
   title: "Drew's Lab - Projects",
   description: "Portfolio projects and proof of concept works.",
-  link: "https://cyberdrew.dev/projects",
-  feedUrl: "https://cyberdrew.dev/projects/feed",
+  link: "https://www.dcyfr.ai/projects",
+  feedUrl: "https://www.dcyfr.ai/projects/feed",
   // ... same author
 }
 ```
@@ -257,7 +257,7 @@ The system infers MIME types from file extensions:
 
 **Atom 1.0:**
 ```xml
-<link rel="enclosure" type="image/jpeg" href="https://cyberdrew.dev/blog/images/post/hero.jpg" />
+<link rel="enclosure" type="image/jpeg" href="https://www.dcyfr.ai/blog/images/post/hero.jpg" />
 ```
 
 ## Performance Optimizations
@@ -400,9 +400,9 @@ curl -s http://localhost:3000/feed | grep "<enclosure"
 
 ```bash
 # Validate production feeds
-https://validator.w3.org/feed/check.cgi?url=https://cyberdrew.dev/feed
-https://validator.w3.org/feed/check.cgi?url=https://cyberdrew.dev/blog/feed
-https://validator.w3.org/feed/check.cgi?url=https://cyberdrew.dev/projects/feed
+https://validator.w3.org/feed/check.cgi?url=https://www.dcyfr.ai/feed
+https://validator.w3.org/feed/check.cgi?url=https://www.dcyfr.ai/blog/feed
+https://validator.w3.org/feed/check.cgi?url=https://www.dcyfr.ai/projects/feed
 ```
 
 ### Reader Testing
@@ -542,7 +542,7 @@ Add stylesheet for browser viewing:
 Enable real-time feed updates:
 ```xml
 <link rel="hub" href="https://pubsubhubbub.appspot.com/" />
-<link rel="self" href="https://cyberdrew.dev/feed" />
+<link rel="self" href="https://www.dcyfr.ai/feed" />
 ```
 
 ## References

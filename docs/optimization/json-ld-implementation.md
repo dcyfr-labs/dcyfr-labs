@@ -304,10 +304,10 @@ const jsonLd = /* schema object */;
 
 ```bash
 # Extract JSON-LD from homepage
-curl https://cyberdrew.dev/ | grep -A 100 "application/ld+json"
+curl https://www.dcyfr.ai/ | grep -A 100 "application/ld+json"
 
 # Extract JSON-LD from blog post
-curl https://cyberdrew.dev/blog/test-post | grep -A 100 "application/ld+json"
+curl https://www.dcyfr.ai/blog/test-post | grep -A 100 "application/ld+json"
 
 # Test locally with dev server
 curl http://localhost:3000/blog | grep -A 50 "application/ld+json"

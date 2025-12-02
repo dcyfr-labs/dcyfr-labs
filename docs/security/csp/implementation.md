@@ -342,7 +342,7 @@ For future microservices:
 
 ```typescript
 // Isolate API from main site
-"connect-src 'self' https://api.cyberdrew.dev"
+"connect-src 'self' https://api.www.dcyfr.ai"
 ```
 
 ## Compliance

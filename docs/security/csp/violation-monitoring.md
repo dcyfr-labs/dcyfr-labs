@@ -36,7 +36,7 @@ curl -X POST http://localhost:3000/api/csp-report \
   -H "Content-Type: application/json" \
   -d '{
     "csp-report": {
-      "document-uri": "https://cyberdrew.dev/test",
+      "document-uri": "https://www.dcyfr.ai/test",
       "violated-directive": "script-src '\''self'\''",
       "blocked-uri": "https://evil.com/script.js"
     }
@@ -116,11 +116,11 @@ npm run dev
 
 | Field | Description | Example |
 |-------|-------------|---------|
-| `document-uri` | Page where violation occurred | `https://cyberdrew.dev/blog/post` |
+| `document-uri` | Page where violation occurred | `https://www.dcyfr.ai/blog/post` |
 | `violated-directive` | CSP directive that was violated | `script-src 'self' 'nonce-abc'` |
 | `effective-directive` | Specific directive enforced | `script-src` |
 | `blocked-uri` | Resource that was blocked | `https://evil.com/script.js` or `inline` |
-| `source-file` | File containing violation | `https://cyberdrew.dev/page` |
+| `source-file` | File containing violation | `https://www.dcyfr.ai/page` |
 | `line-number` | Line in source file | `42` |
 | `column-number` | Column in source file | `13` |
 | `disposition` | `enforce` or `report` | `enforce` |
@@ -136,8 +136,8 @@ npm run dev
 
 **Example:**
 ```
-Input:  https://cyberdrew.dev/page?token=abc123#section
-Output: https://cyberdrew.dev/page
+Input:  https://www.dcyfr.ai/page?token=abc123#section
+Output: https://www.dcyfr.ai/page
 ```
 
 ---
@@ -276,7 +276,7 @@ npm run test:csp-report
 curl -I http://localhost:3000 | grep CSP
 
 # Check CSP header in production
-curl -I https://cyberdrew.dev | grep CSP
+curl -I https://www.dcyfr.ai | grep CSP
 
 # View Vercel logs
 vercel logs --follow

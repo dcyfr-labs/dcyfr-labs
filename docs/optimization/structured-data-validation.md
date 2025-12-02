@@ -41,25 +41,25 @@ All JSON-LD structured data schemas have been reviewed and validated against Sch
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": "https://cyberdrew.dev/#website",
-      "url": "https://cyberdrew.dev",
+      "@id": "https://www.dcyfr.ai/#website",
+      "url": "https://www.dcyfr.ai",
       "name": "CyberDrew.dev",
-      "publisher": { "@id": "https://cyberdrew.dev/#person" },
+      "publisher": { "@id": "https://www.dcyfr.ai/#person" },
       "inLanguage": "en-US",
       "potentialAction": {
         "@type": "SearchAction",
         "target": {
           "@type": "EntryPoint",
-          "urlTemplate": "https://cyberdrew.dev/blog?q={search_term_string}"
+          "urlTemplate": "https://www.dcyfr.ai/blog?q={search_term_string}"
         },
         "query-input": "required name=search_term_string"
       }
     },
     {
       "@type": "Person",
-      "@id": "https://cyberdrew.dev/#person",
+      "@id": "https://www.dcyfr.ai/#person",
       "name": "Drew",
-      "url": "https://cyberdrew.dev",
+      "url": "https://www.dcyfr.ai",
       "jobTitle": "Founder & Cyber Architect",
       "sameAs": [
         "https://github.com/dcyfr",
@@ -100,7 +100,7 @@ All JSON-LD structured data schemas have been reviewed and validated against Sch
   "@graph": [
     {
       "@type": "Article",
-      "@id": "https://cyberdrew.dev/blog/post-slug#article",
+      "@id": "https://www.dcyfr.ai/blog/post-slug#article",
       "headline": "Post Title",
       "description": "Post summary",
       "datePublished": "2025-11-11",
@@ -108,23 +108,23 @@ All JSON-LD structured data schemas have been reviewed and validated against Sch
       "author": {
         "@type": "Person",
         "name": "Drew",
-        "url": "https://cyberdrew.dev"
+        "url": "https://www.dcyfr.ai"
       },
       "publisher": {
         "@type": "Person",
         "name": "Drew",
-        "url": "https://cyberdrew.dev"
+        "url": "https://www.dcyfr.ai"
       },
-      "url": "https://cyberdrew.dev/blog/post-slug",
+      "url": "https://www.dcyfr.ai/blog/post-slug",
       "image": {
         "@type": "ImageObject",
-        "url": "https://cyberdrew.dev/blog/images/default/minimal.svg",
+        "url": "https://www.dcyfr.ai/blog/images/default/minimal.svg",
         "width": 1200,
         "height": 630
       },
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://cyberdrew.dev/blog/post-slug"
+        "@id": "https://www.dcyfr.ai/blog/post-slug"
       },
       "keywords": "Next.js, TypeScript, Web Development",
       "wordCount": 2500,
@@ -144,19 +144,19 @@ All JSON-LD structured data schemas have been reviewed and validated against Sch
           "@type": "ListItem",
           "position": 1,
           "name": "Home",
-          "item": "https://cyberdrew.dev"
+          "item": "https://www.dcyfr.ai"
         },
         {
           "@type": "ListItem",
           "position": 2,
           "name": "Blog",
-          "item": "https://cyberdrew.dev/blog"
+          "item": "https://www.dcyfr.ai/blog"
         },
         {
           "@type": "ListItem",
           "position": 3,
           "name": "Post Title",
-          "item": "https://cyberdrew.dev/blog/post-slug"
+          "item": "https://www.dcyfr.ai/blog/post-slug"
         }
       ]
     }
@@ -186,12 +186,12 @@ All JSON-LD structured data schemas have been reviewed and validated against Sch
   "@graph": [
     {
       "@type": "CollectionPage",
-      "@id": "https://cyberdrew.dev/blog#collection",
+      "@id": "https://www.dcyfr.ai/blog#collection",
       "name": "Blog",
       "description": "Articles on web development, security, and technology",
-      "url": "https://cyberdrew.dev/blog",
+      "url": "https://www.dcyfr.ai/blog",
       "isPartOf": {
-        "@id": "https://cyberdrew.dev/#website"
+        "@id": "https://www.dcyfr.ai/#website"
       },
       "mainEntity": {
         "@type": "ItemList",
@@ -200,7 +200,7 @@ All JSON-LD structured data schemas have been reviewed and validated against Sch
           {
             "@type": "ListItem",
             "position": 1,
-            "url": "https://cyberdrew.dev/blog/post-1",
+            "url": "https://www.dcyfr.ai/blog/post-1",
             "name": "Post Title 1"
           }
           // ... more items
@@ -265,12 +265,12 @@ npm run dev
 ```
 
 **Pages to test:**
-- [ ] Homepage: https://cyberdrew.dev/
-- [ ] Blog archive: https://cyberdrew.dev/blog
-- [ ] Blog post: https://cyberdrew.dev/blog/ai-development-workflow
-- [ ] About: https://cyberdrew.dev/about
-- [ ] Contact: https://cyberdrew.dev/contact
-- [ ] Projects: https://cyberdrew.dev/projects
+- [ ] Homepage: https://www.dcyfr.ai/
+- [ ] Blog archive: https://www.dcyfr.ai/blog
+- [ ] Blog post: https://www.dcyfr.ai/blog/ai-development-workflow
+- [ ] About: https://www.dcyfr.ai/about
+- [ ] Contact: https://www.dcyfr.ai/contact
+- [ ] Projects: https://www.dcyfr.ai/projects
 
 ### 3. Google Rich Results Test
 

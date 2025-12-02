@@ -8,7 +8,7 @@ This directory contains featured images for projects displayed on the portfolio.
 public/
 └── projects/
     ├── x64-publication.svg          # X64 Publication project
-    ├── cyberdrew-portfolio.svg      # cyberdrew.dev portfolio
+    ├── dcyfr-portfolio.svg          # www.dcyfr.ai portfolio
     └── default/                     # Default fallback images
         ├── tech.svg                 # Tech/development projects
         ├── design.svg               # Design/UI projects
@@ -93,7 +93,7 @@ See `/src/lib/default-project-images.ts` for selection logic.
 
 See existing images for reference:
 - **X64 Publication**: Red gradient with binary pattern, cyber theme
-- **cyberdrew.dev**: Blue-violet gradient with code brackets, modern tech
+- **www.dcyfr.ai**: Blue-violet gradient with code brackets, modern tech
 
 ## Accessibility
 

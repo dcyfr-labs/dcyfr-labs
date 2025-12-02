@@ -30,32 +30,32 @@ This guide explains how to set up comprehensive uptime and performance monitorin
 ## 🎯 What to Monitor
 
 ### Critical Endpoints (Priority 1)
-1. **Homepage** (`https://cyberdrew.dev/`)
+1. **Homepage** (`https://www.dcyfr.ai/`)
    - Most important page (user entry point)
    - Check interval: 5 minutes
    - Expected: 200 OK, < 2s load time
 
-2. **Blog List** (`https://cyberdrew.dev/blog`)
+2. **Blog List** (`https://www.dcyfr.ai/blog`)
    - High-traffic page
    - Check interval: 10 minutes
    - Expected: 200 OK, < 2s load time
 
-3. **API Health Check** (`https://cyberdrew.dev/api/health`)
+3. **API Health Check** (`https://www.dcyfr.ai/api/health`)
    - **Action Required**: Create this endpoint (see below)
    - Check interval: 5 minutes
    - Expected: 200 OK with JSON response
 
 ### Important Endpoints (Priority 2)
-4. **RSS Feed** (`https://cyberdrew.dev/rss.xml`)
+4. **RSS Feed** (`https://www.dcyfr.ai/rss.xml`)
    - Check interval: 30 minutes
    - Expected: 200 OK, valid XML
 
-5. **Sitemap** (`https://cyberdrew.dev/sitemap.xml`)
+5. **Sitemap** (`https://www.dcyfr.ai/sitemap.xml`)
    - Check interval: 60 minutes
    - Expected: 200 OK, valid XML
 
 ### Nice-to-Have (Priority 3)
-6. **Contact Form API** (`https://cyberdrew.dev/api/contact`)
+6. **Contact Form API** (`https://www.dcyfr.ai/api/contact`)
    - Already has error tracking via Sentry
    - Monitor via error rates (not direct uptime check)
 
@@ -171,9 +171,9 @@ Sentry.init({
 });
 
 const ENDPOINTS = [
-  { url: 'https://cyberdrew.dev/', name: 'homepage' },
-  { url: 'https://cyberdrew.dev/blog', name: 'blog' },
-  { url: 'https://cyberdrew.dev/api/health', name: 'health-check' },
+  { url: 'https://www.dcyfr.ai/', name: 'homepage' },
+  { url: 'https://www.dcyfr.ai/blog', name: 'blog' },
+  { url: 'https://www.dcyfr.ai/api/health', name: 'health-check' },
 ];
 
 async function checkEndpoint(endpoint) {

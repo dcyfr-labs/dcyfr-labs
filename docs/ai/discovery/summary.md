@@ -28,8 +28,8 @@
 
 ### New Endpoints:
 ```
-https://cyberdrew.dev/ai.txt        - AI crawler policy
-https://cyberdrew.dev/robots.txt    - Enhanced with AI rules (existing)
+https://www.dcyfr.ai/ai.txt        - AI crawler policy
+https://www.dcyfr.ai/robots.txt    - Enhanced with AI rules (existing)
 ```
 
 ### Structured Data on Pages:
@@ -75,14 +75,14 @@ Once deployed, test with:
 
 ```bash
 # Test ai.txt
-curl https://cyberdrew.dev/ai.txt
+curl https://www.dcyfr.ai/ai.txt
 
 # Test robots.txt
-curl https://cyberdrew.dev/robots.txt
+curl https://www.dcyfr.ai/robots.txt
 
 # Validate structured data
 # Visit: https://validator.schema.org/
-# Enter: https://cyberdrew.dev
+# Enter: https://www.dcyfr.ai
 ```
 
 ## 📊 Monitoring
@@ -117,7 +117,7 @@ After deployment, monitor:
 
 AI services citing your work should use:
 ```
-Drew. (2025). [Title]. Retrieved from https://cyberdrew.dev/[path]
+Drew. (2025). [Title]. Retrieved from https://www.dcyfr.ai/[path]
 ```
 
 ## 🔮 Future Enhancements

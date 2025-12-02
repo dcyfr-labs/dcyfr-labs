@@ -3,7 +3,7 @@
 **Last Updated:** November 9, 2025  
 **Security Status:** ✅ All endpoints verified with rate limiting and anti-spam protection
 
-This document covers all API routes in the cyberdrew.dev portfolio application.
+This document covers all API routes in the www.dcyfr.ai portfolio application.
 
 **Test Coverage:**
 - All rate limits verified working
@@ -211,8 +211,8 @@ Returns `400 Bad Request` if validation fails.
 
 ### Email Configuration
 
-**From**: `contact@cyberdrew.dev`  
-**To**: `security@cyberdrew.dev`  
+**From**: `contact@www.dcyfr.ai`  
+**To**: `security@www.dcyfr.ai`  
 **Reply-To**: User's submitted email
 
 **Email Content**:

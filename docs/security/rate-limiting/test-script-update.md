@@ -224,10 +224,10 @@ npm run test:rate-limit all
 ### Custom Base URL
 ```bash
 # Test staging environment
-BASE_URL=https://staging.cyberdrew.dev npm run test:rate-limit
+BASE_URL=https://staging.www.dcyfr.ai npm run test:rate-limit
 
 # Test production
-BASE_URL=https://cyberdrew.dev npm run test:rate-limit
+BASE_URL=https://www.dcyfr.ai npm run test:rate-limit
 ```
 
 ## Testing Checklist

@@ -53,7 +53,7 @@ jobs:
         run: |
           echo "Vercel deployment triggered via Git integration"
           echo "Branch: ${{ github.ref_name }}"
-          echo "url=https://${{ github.ref_name == 'main' && 'cyberdrew.dev' || 'dcyfr-labs-preview.vercel.app' }}" >> $GITHUB_OUTPUT
+          echo "url=https://${{ github.ref_name == 'main' && 'www.dcyfr.ai' || 'dcyfr-preview.vercel.app' }}" >> $GITHUB_OUTPUT
       
       - name: Deployment summary
         run: |

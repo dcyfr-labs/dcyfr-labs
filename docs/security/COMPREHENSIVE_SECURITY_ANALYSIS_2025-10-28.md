@@ -264,8 +264,8 @@ block-all-mixed-content               # No mixed HTTP/HTTPS
   "timestamp": "2025-10-28T10:30:00Z",
   "violatedDirective": "script-src",
   "blockedUri": "https://attacker.com/malicious.js",
-  "documentUri": "https://cyberdrew.dev/blog/post",
-  "sourceFile": "https://cyberdrew.dev/blog/post",
+  "documentUri": "https://www.dcyfr.ai/blog/post",
+  "sourceFile": "https://www.dcyfr.ai/blog/post",
   "lineNumber": 42,
   "columnNumber": 13,
   "disposition": "enforce"

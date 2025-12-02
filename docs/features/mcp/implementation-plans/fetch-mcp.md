@@ -92,7 +92,7 @@ Prompt: "Check if all external links in my latest blog post are still working"
 
 **Check Your Own Feeds**
 ```
-Prompt: "Fetch https://cyberdrew.dev/rss.xml and validate the feed structure"
+Prompt: "Fetch https://www.dcyfr.ai/rss.xml and validate the feed structure"
 ```
 
 **Expected Result**:
@@ -191,7 +191,7 @@ Prompt: "Fetch my blog post and verify the canonical URL is correct"
 
 **Post-Publication Validation**:
 ```
-1. "Fetch https://cyberdrew.dev/blog/my-new-post"
+1. "Fetch https://www.dcyfr.ai/blog/my-new-post"
 2. "Verify it loads successfully"
 3. "Check meta tags and OG images"
 ```
@@ -430,7 +430,7 @@ Expected: "Example Domain"
 
 ### Test 3: RSS Feed
 ```
-Prompt: "Fetch https://cyberdrew.dev/rss.xml and show the first item"
+Prompt: "Fetch https://www.dcyfr.ai/rss.xml and show the first item"
 Expected: Your latest blog post from RSS
 ```
 

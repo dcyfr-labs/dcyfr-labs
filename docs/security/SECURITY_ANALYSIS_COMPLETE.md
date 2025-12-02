@@ -170,7 +170,7 @@ npm run test:rate-limit      # Rate limiting
 npm run test:csp-report      # CSP violations
 
 # Check in browser
-curl -i https://cyberdrew.dev | grep -i "x-"
+curl -i https://www.dcyfr.ai | grep -i "x-"
 ```
 
 ### Verify Headers

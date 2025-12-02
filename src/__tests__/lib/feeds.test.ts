@@ -25,9 +25,9 @@ import type { Project } from '@/data/projects';
 
 // Mock dependencies
 vi.mock('@/lib/site-config', () => ({
-  SITE_URL: 'https://cyberdrew.dev',
+  SITE_URL: 'https://www.dcyfr.ai',
   AUTHOR_NAME: 'Drew',
-  AUTHOR_EMAIL: 'drew@cyberdrew.dev',
+  AUTHOR_EMAIL: 'drew@www.dcyfr.ai',
   SITE_TITLE: "DCYFR Labs",
   SITE_DESCRIPTION: 'Portfolio and blog',
 }));
@@ -75,15 +75,15 @@ describe('feeds.ts', () => {
 
       const item = await postToFeedItem(post);
 
-      expect(item.id).toBe('https://cyberdrew.dev/blog/test-post');
+      expect(item.id).toBe('https://www.dcyfr.ai/blog/test-post');
       expect(item.title).toBe('Test Post');
       expect(item.description).toBe('A test post summary');
-      expect(item.link).toBe('https://cyberdrew.dev/blog/test-post');
+      expect(item.link).toBe('https://www.dcyfr.ai/blog/test-post');
       expect(item.published).toEqual(new Date('2024-01-15'));
       expect(item.categories).toEqual(['test', 'blog']);
       expect(item.author).toEqual({
         name: 'Drew',
-        email: 'drew@cyberdrew.dev',
+        email: 'drew@www.dcyfr.ai',
       });
     });
 
@@ -146,7 +146,7 @@ describe('feeds.ts', () => {
       const item = await postToFeedItem(post);
 
       expect(item.image).toEqual({
-        url: 'https://cyberdrew.dev/blog/test-image.jpg',
+        url: 'https://www.dcyfr.ai/blog/test-image.jpg',
         type: 'image/jpeg',
       });
     });
@@ -199,13 +199,13 @@ describe('feeds.ts', () => {
 
       const item = projectToFeedItem(project);
 
-      expect(item.id).toBe('https://cyberdrew.dev/portfolio/test-project');
+      expect(item.id).toBe('https://www.dcyfr.ai/portfolio/test-project');
       expect(item.title).toBe('Test Project');
       expect(item.description).toBe('A test project');
-      expect(item.link).toBe('https://cyberdrew.dev/portfolio/test-project');
+      expect(item.link).toBe('https://www.dcyfr.ai/portfolio/test-project');
       expect(item.author).toEqual({
         name: 'Drew',
-        email: 'drew@cyberdrew.dev',
+        email: 'drew@www.dcyfr.ai',
       });
     });
 
@@ -330,7 +330,7 @@ describe('feeds.ts', () => {
       const item = projectToFeedItem(project);
 
       expect(item.image).toEqual({
-        url: 'https://cyberdrew.dev/portfolio/test.png',
+        url: 'https://www.dcyfr.ai/portfolio/test.png',
         type: 'image/png',
       });
     });
@@ -860,7 +860,7 @@ describe('feeds.ts', () => {
       // Apostrophe is escaped in XML element text
       expect(xml).toContain("DCYFR Labs");
       expect(xml).toContain('Portfolio and blog');
-      expect(xml).toContain('https://cyberdrew.dev/feed');
+      expect(xml).toContain('https://www.dcyfr.ai/feed');
     });
   });
 });

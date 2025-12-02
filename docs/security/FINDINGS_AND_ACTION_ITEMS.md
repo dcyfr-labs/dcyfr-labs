@@ -102,7 +102,7 @@ Create `/docs/privacy/PRIVACY_POLICY.md`:
 - Legitimate interest for analytics
 - Transparent data practices
 - No automated decision making
-- Contact: [your-email]@cyberdrew.dev
+- Contact: [your-email]@www.dcyfr.ai
 
 ## CCPA Compliance
 - Limited data collection
@@ -176,8 +176,8 @@ Create `/docs/security/INCIDENT_RESPONSE_PLAN.md`:
 
 ## Contact Information
 
-**Security Lead:** [your-email]@cyberdrew.dev  
-**Escalation:** [backup-contact]@cyberdrew.dev  
+**Security Lead:** [your-email]@www.dcyfr.ai  
+**Escalation:** [backup-contact]@www.dcyfr.ai  
 **Incident Channel:** [team-channel]
 ```
 
@@ -512,9 +512,9 @@ curl -i http://localhost:3000/api/contact \
   -d '{"name":"Test","email":"test@example.com","message":"Test message"}'
 
 # Check security headers (production)
-curl -i https://cyberdrew.dev | grep -i "x-"
-curl -i https://cyberdrew.dev | grep -i "strict-transport"
-curl -i https://cyberdrew.dev | grep -i "content-security"
+curl -i https://www.dcyfr.ai | grep -i "x-"
+curl -i https://www.dcyfr.ai | grep -i "strict-transport"
+curl -i https://www.dcyfr.ai | grep -i "content-security"
 ```
 
 ---

@@ -28,16 +28,16 @@ import {
 
 // Mock site-config
 vi.mock('@/lib/site-config', () => ({
-  SITE_URL: 'https://cyberdrew.dev',
+  SITE_URL: 'https://www.dcyfr.ai',
   SITE_TITLE_PLAIN: "DCYFR Labs",
   getOgImageUrl: vi.fn((title?: string, description?: string) => {
-    const url = new URL('/opengraph-image', 'https://cyberdrew.dev');
+    const url = new URL('/opengraph-image', 'https://www.dcyfr.ai');
     if (title) url.searchParams.set('title', title);
     if (description) url.searchParams.set('description', description);
     return url.toString();
   }),
   getTwitterImageUrl: vi.fn((title?: string, description?: string) => {
-    const url = new URL('/twitter-image', 'https://cyberdrew.dev');
+    const url = new URL('/twitter-image', 'https://www.dcyfr.ai');
     if (title) url.searchParams.set('title', title);
     if (description) url.searchParams.set('description', description);
     return url.toString();
@@ -59,7 +59,7 @@ describe('metadata.ts', () => {
       expect(metadata.description).toBe('Learn more about us');
       expect(metadata.openGraph?.title).toBe("About — DCYFR Labs");
       expect(metadata.openGraph?.description).toBe('Learn more about us');
-      expect(metadata.openGraph?.url).toBe('https://cyberdrew.dev/about');
+      expect(metadata.openGraph?.url).toBe('https://www.dcyfr.ai/about');
       expect(metadata.openGraph?.siteName).toBe("DCYFR Labs");
       expect((metadata.openGraph as any)?.type).toBe('website');
     });
@@ -238,7 +238,7 @@ describe('metadata.ts', () => {
       const metadata = createArchivePageMetadata(options);
 
       expect(metadata.keywords).toEqual(['blog', 'articles']);
-      expect(metadata.openGraph?.url).toBe('https://cyberdrew.dev/blog');
+      expect(metadata.openGraph?.url).toBe('https://www.dcyfr.ai/blog');
     });
   });
 
@@ -355,7 +355,7 @@ describe('metadata.ts', () => {
         title: 'Article with Image',
         description: 'Has hero image',
         path: '/blog/hero',
-        image: 'https://cyberdrew.dev/images/hero.jpg',
+        image: 'https://www.dcyfr.ai/images/hero.jpg',
         imageWidth: 1920,
         imageHeight: 1080,
         imageAlt: 'Hero image',
@@ -364,7 +364,7 @@ describe('metadata.ts', () => {
       const metadata = createArticlePageMetadata(options);
 
       const ogImage = (metadata.openGraph?.images as any)?.[0];
-      expect(ogImage.url).toBe('https://cyberdrew.dev/images/hero.jpg');
+      expect(ogImage.url).toBe('https://www.dcyfr.ai/images/hero.jpg');
       expect(ogImage.width).toBe(1920);
       expect(ogImage.height).toBe(1080);
       expect(ogImage.type).toBe('image/jpeg');
@@ -414,9 +414,9 @@ describe('metadata.ts', () => {
   describe('createBreadcrumbSchema', () => {
     it('should generate valid breadcrumb schema', () => {
       const items: BreadcrumbItem[] = [
-        { name: 'Home', url: 'https://cyberdrew.dev' },
-        { name: 'Blog', url: 'https://cyberdrew.dev/blog' },
-        { name: 'My Post', url: 'https://cyberdrew.dev/blog/my-post' },
+        { name: 'Home', url: 'https://www.dcyfr.ai' },
+        { name: 'Blog', url: 'https://www.dcyfr.ai/blog' },
+        { name: 'My Post', url: 'https://www.dcyfr.ai/blog/my-post' },
       ];
 
       const schema = createBreadcrumbSchema(items);
@@ -428,19 +428,19 @@ describe('metadata.ts', () => {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://cyberdrew.dev',
+        item: 'https://www.dcyfr.ai',
       });
       expect(schema.itemListElement[2]).toEqual({
         '@type': 'ListItem',
         position: 3,
         name: 'My Post',
-        item: 'https://cyberdrew.dev/blog/my-post',
+        item: 'https://www.dcyfr.ai/blog/my-post',
       });
     });
 
     it('should handle single breadcrumb item', () => {
       const items: BreadcrumbItem[] = [
-        { name: 'Home', url: 'https://cyberdrew.dev' },
+        { name: 'Home', url: 'https://www.dcyfr.ai' },
       ];
 
       const schema = createBreadcrumbSchema(items);
@@ -466,7 +466,7 @@ describe('metadata.ts', () => {
       const options: ArticleSchemaOptions = {
         title: 'Understanding React Hooks',
         description: 'A deep dive into React hooks',
-        url: 'https://cyberdrew.dev/blog/react-hooks',
+        url: 'https://www.dcyfr.ai/blog/react-hooks',
         publishedAt: baseDate,
         author: 'Drew',
       };
@@ -477,7 +477,7 @@ describe('metadata.ts', () => {
       expect(schema['@type']).toBe('Article');
       expect(schema.headline).toBe('Understanding React Hooks');
       expect(schema.description).toBe('A deep dive into React hooks');
-      expect(schema.url).toBe('https://cyberdrew.dev/blog/react-hooks');
+      expect(schema.url).toBe('https://www.dcyfr.ai/blog/react-hooks');
       expect(schema.datePublished).toBe(baseDate.toISOString());
       expect(schema.author).toEqual({
         '@type': 'Person',
@@ -489,7 +489,7 @@ describe('metadata.ts', () => {
       const options: ArticleSchemaOptions = {
         title: 'Article',
         description: 'Description',
-        url: 'https://cyberdrew.dev/blog/article',
+        url: 'https://www.dcyfr.ai/blog/article',
         publishedAt: baseDate,
         modifiedAt: modifiedDate,
         author: 'Drew',
@@ -504,7 +504,7 @@ describe('metadata.ts', () => {
       const options: ArticleSchemaOptions = {
         title: 'Article',
         description: 'Description',
-        url: 'https://cyberdrew.dev/blog/article',
+        url: 'https://www.dcyfr.ai/blog/article',
         publishedAt: baseDate,
         author: 'Drew',
       };
@@ -518,22 +518,22 @@ describe('metadata.ts', () => {
       const options: ArticleSchemaOptions = {
         title: 'Article with Image',
         description: 'Has image',
-        url: 'https://cyberdrew.dev/blog/image',
+        url: 'https://www.dcyfr.ai/blog/image',
         publishedAt: baseDate,
         author: 'Drew',
-        image: 'https://cyberdrew.dev/images/article.jpg',
+        image: 'https://www.dcyfr.ai/images/article.jpg',
       };
 
       const schema = createArticleSchema(options);
 
-      expect(schema.image).toBe('https://cyberdrew.dev/images/article.jpg');
+      expect(schema.image).toBe('https://www.dcyfr.ai/images/article.jpg');
     });
 
     it('should exclude image when not provided', () => {
       const options: ArticleSchemaOptions = {
         title: 'Article',
         description: 'Description',
-        url: 'https://cyberdrew.dev/blog/article',
+        url: 'https://www.dcyfr.ai/blog/article',
         publishedAt: baseDate,
         author: 'Drew',
       };
@@ -547,7 +547,7 @@ describe('metadata.ts', () => {
       const options: ArticleSchemaOptions = {
         title: 'Tagged Article',
         description: 'Has tags',
-        url: 'https://cyberdrew.dev/blog/tagged',
+        url: 'https://www.dcyfr.ai/blog/tagged',
         publishedAt: baseDate,
         author: 'Drew',
         tags: ['react', 'typescript', 'nextjs'],
@@ -562,7 +562,7 @@ describe('metadata.ts', () => {
       const options: ArticleSchemaOptions = {
         title: 'Article',
         description: 'Description',
-        url: 'https://cyberdrew.dev/blog/article',
+        url: 'https://www.dcyfr.ai/blog/article',
         publishedAt: baseDate,
         author: 'Drew',
         tags: [],
@@ -581,19 +581,19 @@ describe('metadata.ts', () => {
       const options: CollectionSchemaOptions = {
         name: 'Blog Posts',
         description: 'All blog posts about web development',
-        url: 'https://cyberdrew.dev/blog',
+        url: 'https://www.dcyfr.ai/blog',
         items: [
           {
             name: 'React Hooks Guide',
             description: 'Learn React hooks',
-            url: 'https://cyberdrew.dev/blog/react-hooks',
+            url: 'https://www.dcyfr.ai/blog/react-hooks',
             datePublished: baseDate,
             author: 'Drew',
           },
           {
             name: 'TypeScript Tips',
             description: 'TypeScript best practices',
-            url: 'https://cyberdrew.dev/blog/typescript-tips',
+            url: 'https://www.dcyfr.ai/blog/typescript-tips',
             datePublished: new Date('2024-02-01T10:00:00Z'),
             author: 'Drew',
           },
@@ -606,7 +606,7 @@ describe('metadata.ts', () => {
       expect(schema['@type']).toBe('CollectionPage');
       expect(schema.name).toBe('Blog Posts');
       expect(schema.description).toBe('All blog posts about web development');
-      expect(schema.url).toBe('https://cyberdrew.dev/blog');
+      expect(schema.url).toBe('https://www.dcyfr.ai/blog');
       expect(schema.mainEntity['@type']).toBe('ItemList');
       expect(schema.mainEntity.itemListElement).toHaveLength(2);
     });
@@ -615,12 +615,12 @@ describe('metadata.ts', () => {
       const options: CollectionSchemaOptions = {
         name: 'Portfolio',
         description: 'My portfolio',
-        url: 'https://cyberdrew.dev/portfolio',
+        url: 'https://www.dcyfr.ai/portfolio',
         items: [
           {
             name: 'Project One',
             description: 'First project',
-            url: 'https://cyberdrew.dev/portfolio/one',
+            url: 'https://www.dcyfr.ai/portfolio/one',
             datePublished: baseDate,
             author: 'Drew',
           },
@@ -635,7 +635,7 @@ describe('metadata.ts', () => {
       expect(item.item['@type']).toBe('Article');
       expect(item.item.name).toBe('Project One');
       expect(item.item.description).toBe('First project');
-      expect(item.item.url).toBe('https://cyberdrew.dev/portfolio/one');
+      expect(item.item.url).toBe('https://www.dcyfr.ai/portfolio/one');
       expect(item.item.datePublished).toBe(baseDate.toISOString());
       expect(item.item.author).toEqual({ '@type': 'Person', name: 'Drew' });
     });
@@ -644,11 +644,11 @@ describe('metadata.ts', () => {
       const options: CollectionSchemaOptions = {
         name: 'Simple Collection',
         description: 'Minimal items',
-        url: 'https://cyberdrew.dev/collection',
+        url: 'https://www.dcyfr.ai/collection',
         items: [
           {
             name: 'Item One',
-            url: 'https://cyberdrew.dev/collection/one',
+            url: 'https://www.dcyfr.ai/collection/one',
           },
         ],
       };
@@ -665,7 +665,7 @@ describe('metadata.ts', () => {
       const options: CollectionSchemaOptions = {
         name: 'Empty Collection',
         description: 'No items',
-        url: 'https://cyberdrew.dev/empty',
+        url: 'https://www.dcyfr.ai/empty',
         items: [],
       };
 
@@ -678,11 +678,11 @@ describe('metadata.ts', () => {
       const options: CollectionSchemaOptions = {
         name: 'Ordered Collection',
         description: 'Multiple items',
-        url: 'https://cyberdrew.dev/ordered',
+        url: 'https://www.dcyfr.ai/ordered',
         items: [
-          { name: 'First', url: 'https://cyberdrew.dev/1' },
-          { name: 'Second', url: 'https://cyberdrew.dev/2' },
-          { name: 'Third', url: 'https://cyberdrew.dev/3' },
+          { name: 'First', url: 'https://www.dcyfr.ai/1' },
+          { name: 'Second', url: 'https://www.dcyfr.ai/2' },
+          { name: 'Third', url: 'https://www.dcyfr.ai/3' },
         ],
       };
 

@@ -7,7 +7,7 @@ Quick reference for Content Security Policy implement| Service | Domain | Direct
 | Vercel Live | `vercel.live`, `*.pusher.com` | `script-src`, `style-src`, `img-src`, `font-src`, `connect-src` |
 | Google Fonts API | `fonts.googleapis.com` | `style-src` |
 | Google Fonts CDN | `fonts.gstatic.com` | `font-src` |
-| Vercel Images | `*.vercel.com` | `img-src` |n cyberdrew.dev.
+| Vercel Images | `*.vercel.com` | `img-src` |n www.dcyfr.ai.
 
 ## Current CSP Header
 
@@ -40,7 +40,7 @@ block-all-mixed-content
 npm run build
 
 # Check CSP header in browser
-curl -I https://cyberdrew.dev | grep -i content-security
+curl -I https://www.dcyfr.ai | grep -i content-security
 
 # Test locally
 npm run dev

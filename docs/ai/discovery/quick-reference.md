@@ -35,7 +35,7 @@ All pages now include machine-readable metadata:
 ### 2. Attribution Requirements
 When AI cites your work:
 ```
-Drew. (2025). [Content Title]. Retrieved from https://cyberdrew.dev
+Drew. (2025). [Content Title]. Retrieved from https://www.dcyfr.ai
 ```
 
 ### 3. Supported AI Services
@@ -73,12 +73,12 @@ curl http://localhost:3001/ai.txt
 curl http://localhost:3001/robots.txt
 
 # Test production (after deployment)
-curl https://cyberdrew.dev/ai.txt
-curl https://cyberdrew.dev/robots.txt
+curl https://www.dcyfr.ai/ai.txt
+curl https://www.dcyfr.ai/robots.txt
 
 # Validate structured data
 # Visit: https://validator.schema.org/
-# Enter: https://cyberdrew.dev
+# Enter: https://www.dcyfr.ai
 ```
 
 ## 📊 What to Monitor

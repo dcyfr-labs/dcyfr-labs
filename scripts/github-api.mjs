@@ -9,7 +9,7 @@ import { Octokit } from "@octokit/rest";
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const REPO_OWNER = process.env.GITHUB_REPOSITORY?.split("/")[0] || "dcyfr";
-const REPO_NAME = process.env.GITHUB_REPOSITORY?.split("/")[1] || "cyberdrew-dev";
+const REPO_NAME = process.env.GITHUB_REPOSITORY?.split("/")[1] || "dcyfr-labs";
 
 if (!GITHUB_TOKEN) {
   console.warn("⚠️  GITHUB_TOKEN not set. GitHub API operations will be skipped.");
@@ -17,7 +17,7 @@ if (!GITHUB_TOKEN) {
 
 const octokit = new Octokit({
   auth: GITHUB_TOKEN,
-  userAgent: "cyberdrew-dev-maintenance-automation",
+  userAgent: "dcyfr-labs-maintenance-automation",
 });
 
 /**

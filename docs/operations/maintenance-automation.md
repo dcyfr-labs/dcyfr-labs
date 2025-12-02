@@ -98,13 +98,13 @@ Options:
 
 **GitHub Actions:**
 
-- Check workflow runs: [Actions tab](https://github.com/dcyfr/cyberdrew-dev/actions/workflows/weekly-test-health.yml)
+- Check workflow runs: [Actions tab](https://github.com/dcyfr/dcyfr-labs/actions/workflows/weekly-test-health.yml)
 - View test artifacts: Uploaded for 90 days
 - Coverage reports: Uploaded for 30 days
 
 **GitHub Issues:**
 
-- Filter by label: [`test-health`](https://github.com/dcyfr/cyberdrew-dev/issues?q=is%3Aissue+label%3Atest-health)
+- Filter by label: [`test-health`](https://github.com/dcyfr/dcyfr-labs/issues?q=is%3Aissue+label%3Atest-health)
 - Auto-assigned to `drew`
 
 **Email Alerts:**
@@ -191,13 +191,13 @@ Options:
 
 **GitHub Actions:**
 
-- Workflow runs: [Actions tab](https://github.com/dcyfr/cyberdrew-dev/actions/workflows/monthly-security-review.yml)
+- Workflow runs: [Actions tab](https://github.com/dcyfr/dcyfr-labs/actions/workflows/monthly-security-review.yml)
 - SBOM artifacts: Uploaded for 90 days
 - Branch cleanup reports: Uploaded for 30 days
 
 **GitHub Issues:**
 
-- Filter by label: [`security`](https://github.com/dcyfr/cyberdrew-dev/issues?q=is%3Aissue+label%3Asecurity)
+- Filter by label: [`security`](https://github.com/dcyfr/dcyfr-labs/issues?q=is%3Aissue+label%3Asecurity)
 - Auto-assigned to `drew`
 
 **Email Alerts:**
@@ -326,14 +326,14 @@ node scripts/monthly-cleanup.mjs
 
 **GitHub Actions:**
 
-- Content validation: [Actions tab](https://github.com/dcyfr/cyberdrew-dev/actions/workflows/validate-content.yml)
-- Cleanup reports: [Actions tab](https://github.com/dcyfr/cyberdrew-dev/actions/workflows/monthly-cleanup.yml)
+- Content validation: [Actions tab](https://github.com/dcyfr/dcyfr-labs/actions/workflows/validate-content.yml)
+- Cleanup reports: [Actions tab](https://github.com/dcyfr/dcyfr-labs/actions/workflows/monthly-cleanup.yml)
 - Artifacts retained for 30-90 days
 
 **GitHub Issues:**
 
-- Content: Filter by [`content`](https://github.com/dcyfr/cyberdrew-dev/issues?q=is%3Aissue+label%3Acontent) and [`validation`](https://github.com/dcyfr/cyberdrew-dev/issues?q=is%3Aissue+label%3Avalidation) labels
-- Cleanup: Filter by [`cleanup`](https://github.com/dcyfr/cyberdrew-dev/issues?q=is%3Aissue+label%3Acleanup) and [`monthly-cleanup`](https://github.com/dcyfr/cyberdrew-dev/issues?q=is%3Aissue+label%3Amonthly-cleanup) labels
+- Content: Filter by [`content`](https://github.com/dcyfr/dcyfr-labs/issues?q=is%3Aissue+label%3Acontent) and [`validation`](https://github.com/dcyfr/dcyfr-labs/issues?q=is%3Aissue+label%3Avalidation) labels
+- Cleanup: Filter by [`cleanup`](https://github.com/dcyfr/dcyfr-labs/issues?q=is%3Aissue+label%3Acleanup) and [`monthly-cleanup`](https://github.com/dcyfr/dcyfr-labs/issues?q=is%3Aissue+label%3Amonthly-cleanup) labels
 
 ---
 
@@ -346,8 +346,8 @@ node scripts/monthly-cleanup.mjs
 
 **Optional:**
 
-- `SENTRY_ORG` - Defaults to `cyberdrew-dev`
-- `SENTRY_PROJECT` - Defaults to `cyberdrew-dev`
+- `SENTRY_ORG` - Defaults to `dcyfr-labs`
+- `SENTRY_PROJECT` - Defaults to `dcyfr-labs`
 
 ---
 

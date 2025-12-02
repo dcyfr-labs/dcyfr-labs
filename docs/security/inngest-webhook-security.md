@@ -175,7 +175,7 @@ The endpoint serves 8 Inngest functions:
 
 ```bash
 # Try to call webhook without signature (should fail)
-curl -X POST https://cyberdrew.dev/api/inngest \
+curl -X POST https://www.dcyfr.ai/api/inngest \
   -H "Content-Type: application/json" \
   -d '{"test": "data"}'
 

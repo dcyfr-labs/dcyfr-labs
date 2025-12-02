@@ -151,7 +151,7 @@ Prompt: "For each blog post without a featured image:
 
 **Test Across Devices**
 ```
-Prompt: "Take screenshots of https://cyberdrew.dev/blog at:
+Prompt: "Take screenshots of https://www.dcyfr.ai/blog at:
 - Mobile (375x667)
 - Tablet (768x1024)
 - Desktop (1920x1080)
@@ -177,7 +177,7 @@ Prompt: "Screenshot the homepage in both light and dark mode"
 
 **Run Lighthouse Audit**
 ```
-Prompt: "Run a Lighthouse accessibility audit on https://cyberdrew.dev/blog/my-post"
+Prompt: "Run a Lighthouse accessibility audit on https://www.dcyfr.ai/blog/my-post"
 ```
 
 **Expected Result**:
@@ -534,7 +534,7 @@ Expected: PNG file of the example.com homepage
 
 ### Test 2: Custom Dimensions
 ```
-Prompt: "Screenshot https://cyberdrew.dev at 1920x1080"
+Prompt: "Screenshot https://www.dcyfr.ai at 1920x1080"
 Expected: Full HD screenshot of your homepage
 ```
 

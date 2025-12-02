@@ -49,9 +49,9 @@ curl -s http://localhost:3000/feed | grep -c "<content type=\"html\">"
 
 **W3C Feed Validator**
 ```
-https://validator.w3.org/feed/check.cgi?url=https://cyberdrew.dev/feed
-https://validator.w3.org/feed/check.cgi?url=https://cyberdrew.dev/blog/feed
-https://validator.w3.org/feed/check.cgi?url=https://cyberdrew.dev/projects/feed
+https://validator.w3.org/feed/check.cgi?url=https://www.dcyfr.ai/feed
+https://validator.w3.org/feed/check.cgi?url=https://www.dcyfr.ai/blog/feed
+https://validator.w3.org/feed/check.cgi?url=https://www.dcyfr.ai/projects/feed
 ```
 
 ## RSS Reader Testing
@@ -201,7 +201,7 @@ diff /tmp/redirected-feed.xml /tmp/direct-feed.xml
 
 ### Test in RSS Readers
 
-1. Add old feed URL (e.g., `https://cyberdrew.dev/rss.xml`) to RSS reader
+1. Add old feed URL (e.g., `https://www.dcyfr.ai/rss.xml`) to RSS reader
 2. Reader should automatically follow redirect and subscribe to `/feed`
 3. Reader may show updated feed URL in settings
 4. Content should load normally

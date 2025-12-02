@@ -457,7 +457,7 @@ toast.success("Form submitted successfully");
 
 # Or use command-line tools
 npm install -g @axe-core/cli
-axe https://cyberdrew.dev --tags wcag2a,wcag2aa
+axe https://www.dcyfr.ai --tags wcag2a,wcag2aa
 ```
 
 ### Common Issues to Check

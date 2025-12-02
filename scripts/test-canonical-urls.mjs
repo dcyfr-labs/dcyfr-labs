@@ -13,12 +13,12 @@
 const BASE_URL = process.env.TEST_URL || 'http://localhost:3000';
 
 const TEST_PAGES = [
-  { path: '/', expected: 'https://cyberdrew.dev/' },
-  { path: '/about', expected: 'https://cyberdrew.dev/about' },
-  { path: '/blog', expected: 'https://cyberdrew.dev/blog' },
-  { path: '/blog/ai-development-workflow', expected: 'https://cyberdrew.dev/blog/ai-development-workflow' },
-  { path: '/projects', expected: 'https://cyberdrew.dev/projects' },
-  { path: '/contact', expected: 'https://cyberdrew.dev/contact' },
+  { path: '/', expected: 'https://www.dcyfr.ai/' },
+  { path: '/about', expected: 'https://www.dcyfr.ai/about' },
+  { path: '/blog', expected: 'https://www.dcyfr.ai/blog' },
+  { path: '/blog/ai-development-workflow', expected: 'https://www.dcyfr.ai/blog/ai-development-workflow' },
+  { path: '/projects', expected: 'https://www.dcyfr.ai/projects' },
+  { path: '/contact', expected: 'https://www.dcyfr.ai/contact' },
 ];
 
 console.log(`🔍 Testing Canonical URLs\n`);

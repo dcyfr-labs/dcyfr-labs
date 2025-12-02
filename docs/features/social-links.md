@@ -26,8 +26,8 @@ export type SocialLink = {
 
 ### Supported Platforms
 
-- Homepage (cyberdrew.dev)
-- Email (drew@cyberdrew.dev)
+- Homepage (www.dcyfr.ai)
+- Email (drew@www.dcyfr.ai)
 - Cal.com (Scheduling)
 - LinkedIn
 - GitHub
@@ -92,7 +92,7 @@ The about page displays all social links in a responsive grid with intelligent l
 **Link Detection Logic:**
 ```typescript
 const isInternalLink = social.url.startsWith('/') || 
-  (social.url.includes('cyberdrew.dev') && (
+  (social.url.includes('www.dcyfr.ai') && (
     social.url.endsWith('/') || 
     social.url.endsWith('/contact')
   ));

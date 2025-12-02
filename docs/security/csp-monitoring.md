@@ -18,7 +18,7 @@ Location: `src/proxy.ts`
   "default-src": "'self'",
   "script-src": "'self' 'nonce-${nonce}' https://va.vercel-scripts.com https://*.vercel-insights.com https://vercel.live",
   "style-src": "'self' 'unsafe-inline' https://fonts.googleapis.com https://vercel.live",
-  "img-src": "'self' data: https://cyberdrew.dev https://*.vercel.com https://avatars.githubusercontent.com https://vercel.live",
+  "img-src": "'self' data: https://www.dcyfr.ai https://*.vercel.com https://avatars.githubusercontent.com https://vercel.live",
   "font-src": "'self' https://fonts.gstatic.com https://vercel.live",
   "connect-src": "'self' https://va.vercel-scripts.com https://*.vercel-insights.com https://*.sentry.io https://vercel.live https://*.pusher.com",
   "frame-src": "https://vercel.live https://giscus.app",
@@ -41,7 +41,7 @@ Location: `src/proxy.ts`
 **Details:**
 - **Blocked URI:** `https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2`
 - **Violated Directive:** `font-src`
-- **Environment:** Production (`https://cyberdrew.dev/`)
+- **Environment:** Production (`https://www.dcyfr.ai/`)
 - **User Impact:** 1 user with Perplexity AI browser extension
 - **Browser:** Chrome 141 on macOS
 - **Timestamp:** 2025-11-12 17:01:23 UTC
@@ -145,7 +145,7 @@ Third-party browser extension (Perplexity AI) attempting to inject custom font i
 curl -I http://localhost:3000 | grep -i content-security-policy
 
 # Test CSP headers in production
-curl -I https://cyberdrew.dev | grep -i content-security-policy
+curl -I https://www.dcyfr.ai | grep -i content-security-policy
 ```
 
 ### Automated Testing
@@ -154,7 +154,7 @@ Use [CSP Evaluator](https://csp-evaluator.withgoogle.com/) to validate policy:
 
 ```bash
 # Get CSP header
-curl -I https://cyberdrew.dev | grep -i content-security-policy > csp.txt
+curl -I https://www.dcyfr.ai | grep -i content-security-policy > csp.txt
 
 # Paste into: https://csp-evaluator.withgoogle.com/
 ```

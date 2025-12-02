@@ -2,7 +2,7 @@
 
 **Last Updated:** November 22, 2025
 
-This document outlines target keywords for planned blog posts and overall SEO strategy for cyberdrew.dev.
+This document outlines target keywords for planned blog posts and overall SEO strategy for www.dcyfr.ai.
 
 ---
 
@@ -282,7 +282,7 @@ This document outlines target keywords for planned blog posts and overall SEO st
 
 Track rankings monthly for:
 - Primary keywords (top 3 per post)
-- "cyberdrew.dev" brand searches
+- "www.dcyfr.ai" brand searches
 - "Drew" + relevant tech terms
 
 **Tools:**

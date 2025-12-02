@@ -6,9 +6,9 @@
 
 All feeds use **Atom 1.0** format (RFC 4287):
 
-- **Unified Feed (all content):** `https://cyberdrew.dev/feed` - Includes both blog posts and projects
-- **Blog Feed:** `https://cyberdrew.dev/blog/feed` - Blog posts only
-- **Projects Feed:** `https://cyberdrew.dev/projects/feed` - Projects only
+- **Unified Feed (all content):** `https://www.dcyfr.ai/feed` - Includes both blog posts and projects
+- **Blog Feed:** `https://www.dcyfr.ai/blog/feed` - Blog posts only
+- **Projects Feed:** `https://www.dcyfr.ai/projects/feed` - Projects only
 
 ### Legacy Feed Redirects
 
@@ -24,9 +24,9 @@ This maintains backwards compatibility for users with old feed URLs in their RSS
 The site includes feed discovery meta tags in the `<head>` element for automatic detection by RSS readers and browsers:
 
 ```html
-<link rel="alternate" type="application/atom+xml" href="https://cyberdrew.dev/feed" title="cyberdrew.dev — All Content" />
-<link rel="alternate" type="application/atom+xml" href="https://cyberdrew.dev/blog/feed" title="cyberdrew.dev — Blog" />
-<link rel="alternate" type="application/atom+xml" href="https://cyberdrew.dev/projects/feed" title="cyberdrew.dev — Projects" />
+<link rel="alternate" type="application/atom+xml" href="https://www.dcyfr.ai/feed" title="www.dcyfr.ai — All Content" />
+<link rel="alternate" type="application/atom+xml" href="https://www.dcyfr.ai/blog/feed" title="www.dcyfr.ai — Blog" />
+<link rel="alternate" type="application/atom+xml" href="https://www.dcyfr.ai/projects/feed" title="www.dcyfr.ai — Projects" />
 ```
 
 ## What Changed in Latest Update
@@ -119,19 +119,19 @@ The site includes feed discovery meta tags in the `<head>` element for automatic
 
 ### Subscribe to All Content
 ```
-https://cyberdrew.dev/feed
+https://www.dcyfr.ai/feed
 ```
 Perfect for readers who want everything: new blog posts and project updates.
 
 ### Subscribe to Blog Only
 ```
-https://cyberdrew.dev/blog/feed
+https://www.dcyfr.ai/blog/feed
 ```
 For readers interested in articles and tutorials only.
 
 ### Subscribe to Projects Only
 ```
-https://cyberdrew.dev/projects/feed
+https://www.dcyfr.ai/projects/feed
 ```
 For tracking portfolio updates and new projects.
 
@@ -193,13 +193,13 @@ Add these to your site's `<head>` for automatic feed discovery:
 
 ```html
 <!-- Primary feed (all content) -->
-<link rel="alternate" type="application/atom+xml" title="Drew's Lab - All Content" href="https://cyberdrew.dev/feed" />
+<link rel="alternate" type="application/atom+xml" title="Drew's Lab - All Content" href="https://www.dcyfr.ai/feed" />
 
 <!-- Blog feed -->
-<link rel="alternate" type="application/atom+xml" title="Drew's Lab - Blog" href="https://cyberdrew.dev/blog/feed" />
+<link rel="alternate" type="application/atom+xml" title="Drew's Lab - Blog" href="https://www.dcyfr.ai/blog/feed" />
 
 <!-- Projects feed -->
-<link rel="alternate" type="application/atom+xml" title="Drew's Lab - Projects" href="https://cyberdrew.dev/projects/feed" />
+<link rel="alternate" type="application/atom+xml" title="Drew's Lab - Projects" href="https://www.dcyfr.ai/projects/feed" />
 ```
 - Validation checklist
 - Resources and references

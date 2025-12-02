@@ -104,7 +104,7 @@ Use preview deployments for:
 - Sharing work-in-progress with others
 - Performance/SEO validation
 
-**Preview URL structure:** `https://cyberdrew-<branch>.vercel.app`
+**Preview URL structure:** `https://dcyfr-<branch>.vercel.app`
 
 ### Production Deployment
 
@@ -195,8 +195,8 @@ npm run dev:https
 **Required:** No  
 **Default:** Auto-detected per environment
 - Local: `https://dcyfr.net`
-- Preview: `https://cyberdrew.vercel.app`
-- Production: `https://cyberdrew.dev`
+- Preview: `https://dcyfr-preview.vercel.app`
+- Production: `https://www.dcyfr.ai`
 
 **When to set:** Custom domain, testing, non-standard deployments
 

@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-Comprehensive rebranding from "dcyfr-labs" to "dcyfr-labs" and "Drew's Lab" to "DCYFR Labs". This migration maintains current domain infrastructure (cyberdrew.dev) while preparing for future migration to dcyfrlabs.com.
+Comprehensive rebranding from "dcyfr-labs" to "dcyfr-labs" and "Drew's Lab" to "DCYFR Labs". This migration maintains current domain infrastructure (www.dcyfr.ai) while preparing for future migration to dcyfrlabs.com.
 
 ### Scope
 
@@ -20,7 +20,7 @@ Comprehensive rebranding from "dcyfr-labs" to "dcyfr-labs" and "Drew's Lab" to "
 - Code references and configuration
 
 **Future Changes (Deferred):**
-- Domain migration: `cyberdrew.dev` → `dcyfrlabs.com`
+- Domain migration: `www.dcyfr.ai` → `dcyfrlabs.com`
 - DNS and redirect configuration
 - SEO considerations for domain change
 
@@ -240,7 +240,7 @@ Comprehensive rebranding from "dcyfr-labs" to "dcyfr-labs" and "Drew's Lab" to "
    - Rename repository from dcyfr-labs to dcyfr-labs
    - Update site name from Drew's Lab to DCYFR Labs
    - Update all documentation and configuration
-   - Maintain current domain (cyberdrew.dev)
+   - Maintain current domain (www.dcyfr.ai)
 
    BREAKING CHANGE: Repository URL changed
    "
@@ -344,11 +344,11 @@ Comprehensive rebranding from "dcyfr-labs" to "dcyfr-labs" and "Drew's Lab" to "
 
 ### Domain Migration (Future Phase)
 
-**When ready to migrate from cyberdrew.dev to dcyfrlabs.com:**
+**When ready to migrate from www.dcyfr.ai to dcyfrlabs.com:**
 
 1. **DNS Setup**
    - Configure dcyfrlabs.com in Vercel
-   - Set up 301 redirects from cyberdrew.dev
+   - Set up 301 redirects from www.dcyfr.ai
    - Update Google Search Console
    - Update sitemap URLs
 
@@ -445,7 +445,7 @@ grep -r "dcyfr-labs" --exclude-dir=node_modules --exclude-dir=.next
 grep -r "Drew's Lab" --exclude-dir=node_modules --exclude-dir=.next
 
 # Future: Domain references (keep for now)
-grep -r "cyberdrew.dev" --exclude-dir=node_modules --exclude-dir=.next
+grep -r "www.dcyfr.ai" --exclude-dir=node_modules --exclude-dir=.next
 ```
 
 ---

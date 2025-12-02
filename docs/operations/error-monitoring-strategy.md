@@ -6,7 +6,7 @@
 
 ## Overview
 
-This document establishes the error monitoring strategy for cyberdrew.dev using Sentry. It defines severity levels, response times (SLAs), review processes, and alert configurations to ensure proactive issue detection and resolution.
+This document establishes the error monitoring strategy for www.dcyfr.ai using Sentry. It defines severity levels, response times (SLAs), review processes, and alert configurations to ensure proactive issue detection and resolution.
 
 ## Table of Contents
 

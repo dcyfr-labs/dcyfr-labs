@@ -212,10 +212,10 @@ npm run test:csp-report
 ### Verify Production Readiness
 ```bash
 # Check CSP headers are present
-curl -i https://cyberdrew.dev | grep -i "content-security-policy"
+curl -i https://www.dcyfr.ai | grep -i "content-security-policy"
 
 # Verify HSTS is active
-curl -i https://cyberdrew.dev | grep -i "strict-transport-security"
+curl -i https://www.dcyfr.ai | grep -i "strict-transport-security"
 
 # Check security score at:
 # https://securityheaders.com

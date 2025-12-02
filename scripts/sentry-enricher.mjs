@@ -7,7 +7,7 @@
 
 const SENTRY_AUTH_TOKEN = process.env.SENTRY_AUTH_TOKEN;
 const SENTRY_ORG = process.env.SENTRY_ORG || "dcyfr-labs";
-const SENTRY_PROJECT = process.env.SENTRY_PROJECT || "cyberdrew-dev";
+const SENTRY_PROJECT = process.env.SENTRY_PROJECT || "dcyfr-labs";
 const SENTRY_API_BASE = "https://sentry.io/api/0";
 
 if (!SENTRY_AUTH_TOKEN) {

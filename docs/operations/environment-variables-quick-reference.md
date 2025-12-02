@@ -22,8 +22,8 @@ npm run dev
 | `RESEND_API_KEY` | Production | Contact form emails | [resend.com/api-keys](https://resend.com/api-keys) |
 | `GITHUB_TOKEN` | Recommended | GitHub heatmap rate limits | [github.com/settings/tokens](https://github.com/settings/tokens) |
 | `REDIS_URL` | Optional | Blog post view counts | [vercel.com/kv](https://vercel.com/docs/storage/vercel-kv) or [upstash.com](https://upstash.com) |
-| `NEXT_PUBLIC_SITE_URL` | Optional | Site URL override | Manual (e.g., `https://cyberdrew.dev`) |
-| `NEXT_PUBLIC_SITE_DOMAIN` | Optional | Domain override | Manual (e.g., `cyberdrew.dev`) |
+| `NEXT_PUBLIC_SITE_URL` | Optional | Site URL override | Manual (e.g., `https://www.dcyfr.ai`) |
+| `NEXT_PUBLIC_SITE_DOMAIN` | Optional | Domain override | Manual (e.g., `www.dcyfr.ai`) |
 
 ## Minimal .env.local for Development
 

@@ -16,7 +16,7 @@ Instead, please report security issues via one of these methods:
    - Provide detailed information about the vulnerability
 
 2. **Direct Contact**
-   - Email: [Contact via website form](https://cyberdrew.dev/contact)
+   - Email: [Contact via website form](https://www.dcyfr.ai/contact)
    - Include "SECURITY" in the subject line
    - Provide as much detail as possible
 
@@ -172,7 +172,7 @@ We thank the following security researchers for their responsible disclosure:
 ## 📞 Contact
 
 - **Security Issues:** Use GitHub Security Advisories or contact form
-- **General Questions:** [cyberdrew.dev/contact](https://cyberdrew.dev/contact)
+- **General Questions:** [www.dcyfr.ai/contact](https://www.dcyfr.ai/contact)
 - **Repository:** [github.com/dcyfr/dcyfr-labs](https://github.com/dcyfr/dcyfr-labs)
 
 ---

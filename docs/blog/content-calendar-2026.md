@@ -3,7 +3,7 @@
 **Created:** November 22, 2025  
 **Last Updated:** November 22, 2025
 
-Strategic 12-month content calendar with target keywords, promotion checklist, and performance tracking for cyberdrew.dev.
+Strategic 12-month content calendar with target keywords, promotion checklist, and performance tracking for www.dcyfr.ai.
 
 ---
 
@@ -502,7 +502,7 @@ Strategic 12-month content calendar with target keywords, promotion checklist, a
 
 ### Publication Day
 
-- [ ] Publish on cyberdrew.dev
+- [ ] Publish on www.dcyfr.ai
 - [ ] Verify all links and images work
 - [ ] Test on mobile and desktop
 - [ ] Publish LinkedIn native article (+ link post)

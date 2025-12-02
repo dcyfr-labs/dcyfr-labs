@@ -38,8 +38,8 @@ const ScrollReveal = dynamic(() => import("@/components/features/scroll-reveal")
   ssr: true,
 });
 
-const pageTitle = "About Drew";
-const pageDescription = "Learn more about Drew, his professional background, skills, and how to connect.";
+const pageTitle = "About";
+const pageDescription = "Learn more about us, our mission, team, and professional background in cybersecurity.";
 
 export const metadata: Metadata = createPageMetadata({
   title: pageTitle,
@@ -96,7 +96,7 @@ export default async function AboutPage() {
               <h2 className={TYPOGRAPHY.h2.standard}>What Drives Me</h2>
               <div className="space-y-3 text-muted-foreground">
               <p>
-                My passion for cybersecurity stems from a deep-seated curiosity about technology and a commitment to making the digital world a safer place. I thrive on solving complex problems, staying ahead of emerging threats, and continuously learning in this ever-evolving field.
+                My passion for cybersecurity stems from a deep-seated curiosity about technology and a commitment to making the digital world a safer and more secure place. I thrive on solving complex problems, staying ahead of emerging threats, and continuously learning in this ever-evolving field.
               </p>
               <p>
                 Beyond the technical aspects, I believe that effective cybersecurity is about people—educating users, fostering a security-first culture, and collaborating across teams to build resilient systems. I&apos;m dedicated to empowering organizations to protect their assets while enabling innovation and growth.

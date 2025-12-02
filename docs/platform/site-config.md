@@ -44,7 +44,7 @@ Security & secrets
 Examples
 
 - Force staging domain during preview builds:
-  - Set `NEXT_PUBLIC_SITE_DOMAIN=staging.cyberdrew.dev` in the preview build environment.
+  - Set `NEXT_PUBLIC_SITE_DOMAIN=staging.www.dcyfr.ai` in the preview build environment.
 
 - Local dev (default): no changes required.
 

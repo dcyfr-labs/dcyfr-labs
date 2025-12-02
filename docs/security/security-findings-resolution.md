@@ -2,7 +2,7 @@
 
 **Date:** October 5, 2025  
 **Status:** ✅ All Findings Resolved  
-**Report:** Security Assessment - cyberdrew.dev
+**Report:** Security Assessment - www.dcyfr.ai
 
 ---
 
@@ -112,14 +112,14 @@ Both headers work together:
 **Before (Vulnerable):**
 ```html
 <!-- Attacker's site -->
-<iframe src="https://cyberdrew.dev"></iframe>
+<iframe src="https://www.dcyfr.ai"></iframe>
 <!-- Site loads in iframe, clickjacking possible -->
 ```
 
 **After (Protected):**
 ```html
 <!-- Attacker's site -->
-<iframe src="https://cyberdrew.dev"></iframe>
+<iframe src="https://www.dcyfr.ai"></iframe>
 <!-- Browser blocks: Refused to display in frame -->
 <!-- Console: "frame-src 'none'" directive violated -->
 <!-- Console: X-Frame-Options: DENY -->
@@ -297,7 +297,7 @@ All security headers currently configured in `vercel.json`:
 
 **Test 1: Verify Headers Present**
 ```bash
-curl -I https://cyberdrew.dev | grep -E "Content-Security-Policy|X-Frame-Options|X-Content-Type-Options"
+curl -I https://www.dcyfr.ai | grep -E "Content-Security-Policy|X-Frame-Options|X-Content-Type-Options"
 ```
 
 Expected output:
@@ -310,7 +310,7 @@ X-Content-Type-Options: nosniff
 **Test 2: Clickjacking Protection**
 ```html
 <!-- Test page -->
-<iframe src="https://cyberdrew.dev"></iframe>
+<iframe src="https://www.dcyfr.ai"></iframe>
 <!-- Should fail to load with console error -->
 ```
 
@@ -318,7 +318,7 @@ Expected: `Refused to display in a frame because it set 'X-Frame-Options' to 'de
 
 **Test 3: MIME-Sniffing Protection**
 ```bash
-curl -I https://cyberdrew.dev/some-endpoint
+curl -I https://www.dcyfr.ai/some-endpoint
 ```
 
 Expected: `X-Content-Type-Options: nosniff` in response

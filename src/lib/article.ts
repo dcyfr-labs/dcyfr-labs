@@ -385,7 +385,7 @@ export function createArticleBreadcrumbs(items: BreadcrumbItem[]) {
  * const schema = createArticleSchema({
  *   title: post.title,
  *   description: post.description,
- *   url: `https://cyberdrew.dev/blog/${post.slug}`,
+ *   url: `https://www.dcyfr.ai/blog/${post.slug}`,
  *   publishedAt: post.publishedAt,
  *   author: 'Drew',
  *   image: post.image?.url,

@@ -53,18 +53,18 @@ This guide documents all environment variables used in the project, their purpos
 #### `NEXT_PUBLIC_SITE_URL`
 - **Type:** String (URL)
 - **Required:** No
-- **Example:** `https://cyberdrew.dev`
+- **Example:** `https://www.dcyfr.ai`
 - **Purpose:** Override the full site URL for absolute links, sitemap, OpenGraph, etc.
 - **Default:** Determined by `src/lib/site-config.ts` based on environment:
   - Development: `https://dcyfr.net`
-  - Preview (Vercel): `https://cyberdrew.vercel.app`
-  - Production: `https://cyberdrew.dev`
+  - Preview (Vercel): `https://dcyfr-preview.vercel.app`
+  - Production: `https://www.dcyfr.ai`
 - **When to use:** Custom domain testing, non-standard deployments
 
 #### `NEXT_PUBLIC_SITE_DOMAIN`
 - **Type:** String (domain)
 - **Required:** No
-- **Example:** `cyberdrew.dev`
+- **Example:** `www.dcyfr.ai`
 - **Purpose:** Override just the domain (automatically prefixed with `https://`)
 - **Default:** Same defaults as `NEXT_PUBLIC_SITE_URL`
 - **When to use:** Domain-only overrides, easier than full URL
@@ -131,7 +131,7 @@ This guide documents all environment variables used in the project, their purpos
 - **Setup:**
   1. Copy Signing Key from Inngest dashboard (same page as Event Key)
   2. Add to environment variables
-  3. Configure webhook URL in Inngest: `https://cyberdrew.dev/api/inngest`
+  3. Configure webhook URL in Inngest: `https://www.dcyfr.ai/api/inngest`
 
 **Behavior without key:**
 - ✅ Dev mode works (no verification needed locally)
@@ -505,7 +505,7 @@ Full configuration with all features enabled:
 RESEND_API_KEY=re_live_xxxxxxxxxxxx
 GITHUB_TOKEN=ghp_live_xxxxxxxxxxxx
 REDIS_URL=redis://production-instance
-NEXT_PUBLIC_SITE_URL=https://cyberdrew.dev
+NEXT_PUBLIC_SITE_URL=https://www.dcyfr.ai
 ```
 
 ## Testing Environment Variables

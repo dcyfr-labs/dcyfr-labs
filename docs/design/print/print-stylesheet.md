@@ -4,7 +4,7 @@
 
 ## Overview
 
-The print stylesheet (`src/app/print.css`) provides optimized styling for printing blog posts and other content from cyberdrew.dev. It ensures that printed pages are clean, readable, and professional-looking while hiding unnecessary interactive elements.
+The print stylesheet (`src/app/print.css`) provides optimized styling for printing blog posts and other content from www.dcyfr.ai. It ensures that printed pages are clean, readable, and professional-looking while hiding unnecessary interactive elements.
 
 ## Features
 
@@ -77,7 +77,7 @@ The following elements are hidden in print:
 - **Scope:** Only appears on full blog post pages (`/blog/[slug]`), NOT on post list views
 - **Implementation:** Uses `article[data-url]:after` pseudo-element with `attr(data-url)`
 - **Selector:** Specific to articles with `data-url` attribute (prevents appearing on homepage/blog list)
-- **Format:** "Read online: https://cyberdrew.dev/blog/[slug]"
+- **Format:** "Read online: https://www.dcyfr.ai/blog/[slug]"
 - **Styling:** Small gray text (8pt) with top border separator
 - **Purpose:** Allows readers to reference the online version for updates, links, or sharing
 

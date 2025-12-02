@@ -13,7 +13,7 @@
 | `INNGEST_EVENT_KEY` | Production only | Inngest event sending | Functions work in dev mode only |
 | `INNGEST_SIGNING_KEY` | Production only | Inngest webhook verification | Functions work in dev mode only |
 | `RESEND_API_KEY` | Production only | Email delivery (contact form, milestones) | Logs submissions, shows warning |
-| `NEXT_PUBLIC_FROM_EMAIL` | Optional | Override sender email address | Uses `no-reply@cyberdrew.dev` |
+| `NEXT_PUBLIC_FROM_EMAIL` | Optional | Override sender email address | Uses `no-reply@www.dcyfr.ai` |
 | `GITHUB_TOKEN` | Recommended | GitHub API rate limits (60 → 5,000/hr) | Uses unauthenticated API (60 req/hr) |
 | `REDIS_URL` | Recommended | Blog analytics, view counts, rate limiting | Disables analytics, falls back to in-memory |
 | `SENTRY_DSN` | Recommended | Error tracking and CSP monitoring | No error tracking (production ready) |
@@ -60,18 +60,18 @@ npm run dev
 #### `NEXT_PUBLIC_SITE_URL`
 - **Type:** String (URL)
 - **Required:** No
-- **Example:** `https://cyberdrew.dev`
+- **Example:** `https://www.dcyfr.ai`
 - **Purpose:** Override full site URL for absolute links, sitemap, OpenGraph
 - **Default:** Based on environment:
   - Development: `https://dcyfr.net`
-  - Vercel Preview: `https://cyberdrew.vercel.app`
-  - Production: `https://cyberdrew.dev`
+  - Vercel Preview: `https://dcyfr-preview.vercel.app`
+  - Production: `https://www.dcyfr.ai`
 - **When to use:** Custom domain testing, non-standard deployments
 
 #### `NEXT_PUBLIC_SITE_DOMAIN`
 - **Type:** String (domain)
 - **Required:** No
-- **Example:** `cyberdrew.dev`
+- **Example:** `www.dcyfr.ai`
 - **Purpose:** Override just the domain (auto-prefixes `https://`)
 - **Default:** Same as `NEXT_PUBLIC_SITE_URL`
 - **Priority:** Lower than `NEXT_PUBLIC_SITE_URL` if both set
@@ -114,7 +114,7 @@ npm run dev
 
 - **Type:** String (email address)
 - **Required:** No
-- **Default:** `no-reply@cyberdrew.dev`
+- **Default:** `no-reply@www.dcyfr.ai`
 - **Purpose:** Override the "from" email address for outgoing emails
 - **Example:** `NEXT_PUBLIC_FROM_EMAIL=contact@yourdomain.com`
 - **When to use:** Custom domain, different sender branding
@@ -154,7 +154,7 @@ npm run dev
 - **Setup:**
   1. Copy Signing Key (same page as Event Key)
   2. Add to environment variables
-  3. Configure webhook URL in Inngest: `https://cyberdrew.dev/api/inngest`
+  3. Configure webhook URL in Inngest: `https://www.dcyfr.ai/api/inngest`
 
 **Behavior without key:**
 - ✅ Dev mode works (no verification locally)
@@ -525,7 +525,7 @@ Full configuration:
 RESEND_API_KEY=re_live_xxxxxxxxxxxx
 GITHUB_TOKEN=ghp_live_xxxxxxxxxxxx
 REDIS_URL=redis://production-instance
-NEXT_PUBLIC_SITE_URL=https://cyberdrew.dev
+NEXT_PUBLIC_SITE_URL=https://www.dcyfr.ai
 ```
 
 ---

@@ -166,7 +166,7 @@ The script handles:
 
 ```bash
 # Override base URL (default: http://localhost:3000)
-BASE_URL=https://preview.cyberdrew.vercel.app npm run test:rate-limit
+BASE_URL=https://preview.dcyfr-preview.vercel.app npm run test:rate-limit
 ```
 
 ### Test Customization

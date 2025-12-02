@@ -145,8 +145,8 @@ Enhanced Atom 1.0 feed with:
 
 ## Feed URLs
 
-- **RSS 2.0:** `https://cyberdrew.dev/rss.xml`
-- **Atom 1.0:** `https://cyberdrew.dev/atom.xml`
+- **RSS 2.0:** `https://www.dcyfr.ai/rss.xml`
+- **Atom 1.0:** `https://www.dcyfr.ai/atom.xml`
 
 ---
 
@@ -166,7 +166,7 @@ Both feeds follow official specifications:
      xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Drew's Blog</title>
-    <link>https://cyberdrew.dev/blog</link>
+    <link>https://www.dcyfr.ai/blog</link>
     <description>Articles and notes...</description>
     <language>en-us</language>
     <lastBuildDate>...</lastBuildDate>
@@ -200,10 +200,10 @@ Both feeds follow official specifications:
   <link href=".../atom.xml" rel="self" type="application/atom+xml" />
   <link href=".../blog" rel="alternate" type="text/html" />
   <updated>2025-10-18T...</updated>
-  <id>https://cyberdrew.dev/</id>
+  <id>https://www.dcyfr.ai/</id>
   <author>
     <name>Drew</name>
-    <email>drew@cyberdrew.dev</email>
+    <email>drew@www.dcyfr.ai</email>
   </author>
   <generator uri="https://nextjs.org/">Next.js</generator>
   
@@ -215,7 +215,7 @@ Both feeds follow official specifications:
     <updated>2025-10-05</updated>
     <author>
       <name>Drew</name>
-      <email>drew@cyberdrew.dev</email>
+      <email>drew@www.dcyfr.ai</email>
     </author>
     <summary type="html"><![CDATA[summary]]></summary>
     <content type="html"><![CDATA[full HTML content]]></content>

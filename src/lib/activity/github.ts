@@ -38,7 +38,7 @@ export interface GitHubActivity {
 // ============================================================================
 
 const GITHUB_OWNER = "dcyfr";
-const GITHUB_REPO = "cyberdrew-dev";
+const GITHUB_REPO = "dcyfr-labs";
 const GITHUB_API_BASE = "https://api.github.com";
 
 // Cache for GitHub data (5 minute TTL)
@@ -57,7 +57,7 @@ async function fetchCommits(limit = 10): Promise<GitHubCommit[]> {
     const token = process.env.GITHUB_TOKEN;
     const headers: HeadersInit = {
       Accept: "application/vnd.github.v3+json",
-      "User-Agent": "cyberdrew-dev",
+      "User-Agent": "dcyfr-labs",
     };
 
     if (token) {
@@ -97,7 +97,7 @@ async function fetchReleases(limit = 5): Promise<GitHubRelease[]> {
     const token = process.env.GITHUB_TOKEN;
     const headers: HeadersInit = {
       Accept: "application/vnd.github.v3+json",
-      "User-Agent": "cyberdrew-dev",
+      "User-Agent": "dcyfr-labs",
     };
 
     if (token) {

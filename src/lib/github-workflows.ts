@@ -11,7 +11,7 @@ import type {
 } from "@/types/maintenance";
 
 const GITHUB_OWNER = "dcyfr";
-const GITHUB_REPO = "cyberdrew-dev";
+const GITHUB_REPO = "dcyfr-labs";
 
 /**
  * Initialize Octokit client with GitHub token

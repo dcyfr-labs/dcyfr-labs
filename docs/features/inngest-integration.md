@@ -80,7 +80,7 @@ GITHUB_TOKEN=github_pat_your_token_here
    - Signing Key (for webhook verification)
 4. **Add environment variables** to Vercel
 5. **Configure webhook**:
-   - URL: `https://cyberdrew.dev/api/inngest`
+   - URL: `https://www.dcyfr.ai/api/inngest`
    - Add to Inngest dashboard
 
 ## Architecture
@@ -290,7 +290,7 @@ Scheduled functions (cron) will show in the dev UI with their schedule. You can 
 2. **Deploy** as normal: `git push`
 3. **Configure Inngest webhook**:
    - Dashboard → Your App → Serve
-   - Add URL: `https://cyberdrew.dev/api/inngest`
+   - Add URL: `https://www.dcyfr.ai/api/inngest`
 4. **Verify** functions appear in Inngest dashboard
 
 ### Monitoring

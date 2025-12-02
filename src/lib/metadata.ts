@@ -321,9 +321,9 @@ export interface BreadcrumbItem {
  * @example
  * ```tsx
  * const breadcrumbs = createBreadcrumbSchema([
- *   { name: 'Home', url: 'https://cyberdrew.dev' },
- *   { name: 'Blog', url: 'https://cyberdrew.dev/blog' },
- *   { name: post.title, url: `https://cyberdrew.dev/blog/${post.slug}` },
+ *   { name: 'Home', url: 'https://www.dcyfr.ai' },
+ *   { name: 'Blog', url: 'https://www.dcyfr.ai/blog' },
+ *   { name: post.title, url: `https://www.dcyfr.ai/blog/${post.slug}` },
  * ]);
  * 
  * // In JSX:

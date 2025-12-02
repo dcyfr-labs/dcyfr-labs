@@ -31,7 +31,7 @@ import {
  * In production:
  * - Inngest Cloud uses this endpoint as a webhook
  * - Configure the webhook URL in your Inngest dashboard
- * - Example: https://cyberdrew.dev/api/inngest
+ * - Example: https://www.dcyfr.ai/api/inngest
  * 
  * @see https://www.inngest.com/docs/sdk/serve
  * @see https://www.inngest.com/docs/deploy/nextjs

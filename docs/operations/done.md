@@ -299,7 +299,7 @@ Per migration plan:
    - Confirm preview/production deployments trigger correctly
 
 3. **Future Domain Migration** (planned)
-   - Currently keeping cyberdrew.dev domain
+   - Currently keeping www.dcyfr.ai domain
    - Future migration to dcyfrlabs.com (redirect already configured)
 
 #### Notes
@@ -4001,7 +4001,7 @@ Improved the About page (`/about`) user experience by adding proper internal lin
 **Internal Link Detection Logic:**
 ```typescript
 const isInternalLink = social.url.startsWith('/') || 
-  (social.url.includes('cyberdrew.dev') && (
+  (social.url.includes('www.dcyfr.ai') && (
     social.url.endsWith('/') || 
     social.url.endsWith('/contact')
   ));
