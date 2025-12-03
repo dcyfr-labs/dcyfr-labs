@@ -22,7 +22,7 @@ import {
 interface ProjectFiltersProps {
   selectedTags: string[];
   selectedTech: string[];
-  status: string;
+  status: string | null;
   tagList: string[];
   techList: string[];
   query: string;

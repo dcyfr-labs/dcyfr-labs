@@ -10,7 +10,7 @@ const STATUS_OPTIONS = [
 ];
 
 interface ProjectStatusFilterProps {
-  status: string;
+  status: string | null;
   onStatusChange: (status: string) => void;
 }
 

@@ -100,7 +100,6 @@ export default async function SponsorsPage() {
                   member={member}
                   layout="compact"
                   contribution={contributorDescriptions[member.id]}
-                  linkTo={`/about#about-${member.id}`}
                   avatarUrl={member.avatarType === "image" ? "https://github.com/dcyfr.png" : undefined}
                 />
               ))}

@@ -66,7 +66,7 @@ test.describe('WebKit Mobile Nav', () => {
       throw err
     }
     await expect(nav).toBeTruthy()
-    await expect(nav).toBeVisible()
+    await expect(nav!).toBeVisible()
 
     // Ensure main links are present
     await expect(nav!.getByRole('link', { name: /home/i })).toBeVisible()
