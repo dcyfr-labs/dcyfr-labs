@@ -5,8 +5,13 @@
 import * as Sentry from "@sentry/nextjs";
 import { initBotId } from "botid/client/core";
 
+const isDev = process.env.NODE_ENV === "development";
+
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+
+  // Disable Sentry in development - log errors locally instead
+  enabled: !isDev,
 
   // Add optional integrations for additional features
   integrations: [

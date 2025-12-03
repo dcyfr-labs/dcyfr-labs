@@ -5,8 +5,13 @@
 
 import * as Sentry from "@sentry/nextjs";
 
+const isDev = process.env.NODE_ENV === "development";
+
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
+
+  // Disable Sentry in development - errors will still be logged to console
+  enabled: !isDev,
 
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1,
