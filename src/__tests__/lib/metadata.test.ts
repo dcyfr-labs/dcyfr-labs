@@ -161,28 +161,28 @@ describe('metadata.ts', () => {
 
     it('should append item count to description', () => {
       const options: ArchiveMetadataOptions = {
-        title: 'Portfolio',
-        description: 'All portfolio items',
-        path: '/portfolio',
+        title: 'Our Work',
+        description: 'All work items',
+        path: '/work',
         itemCount: 5,
       };
 
       const metadata = createArchivePageMetadata(options);
 
-      expect(metadata.description).toBe('All portfolio items (5 items)');
+      expect(metadata.description).toBe('All work items (5 items)');
     });
 
     it('should use singular "item" for count of 1', () => {
       const options: ArchiveMetadataOptions = {
-        title: 'Portfolio',
-        description: 'All portfolio items',
-        path: '/portfolio',
+        title: 'Our Work',
+        description: 'All work items',
+        path: '/work',
         itemCount: 1,
       };
 
       const metadata = createArchivePageMetadata(options);
 
-      expect(metadata.description).toBe('All portfolio items (1 item)');
+      expect(metadata.description).toBe('All work items (1 item)');
     });
 
     it('should append active tag to title and description', () => {

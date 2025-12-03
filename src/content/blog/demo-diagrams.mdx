@@ -28,14 +28,7 @@ This post demonstrates all Mermaid diagram types supported in the blog, perfect 
 
 A simple user authentication and dashboard flow:
 
-```mermaid
-graph TD
-    A[User] --> B{Authentication}
-    B -->|Valid| C[Dashboard]
-    B -->|Invalid| D[Login Page]
-    C --> E[API Calls]
-    E --> F[Database]
-```
+<AuthenticationFlow height={500} />
 
 **Use cases**: System architecture, application flow, decision trees
 

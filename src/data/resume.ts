@@ -32,16 +32,16 @@ export type Resume = {
 };
 
 export const resume: Resume = {
-  shortSummary: "Cyber architect with 5+ years leading security programs, incident response, and secure development practices for global organizations.",
-  summary: "I'm a cyber architect with over 5 years of experience leading security programs, incident response, and building secure development practices for global organizations. I specialize in cyber risk management, vulnerability management, and automating operational security. I'm passionate about mentoring the next generation of cyber professionals and sharing my knowledge through writing and community engagement.",
+  shortSummary: "Security architect with 5+ years leading security programs, incident response, and secure development practices for global organizations.",
+  summary: "I'm a cybersecurity professional with over 5 years of experience leading security programs, incident response, and building secure development practices for global organizations. I specialize in cyber risk management, vulnerability management, and automating operational security. I'm passionate about mentoring the next generation of security professionals and sharing my knowledge through writing and community engagement.",
   experience: [
     {
       title: "Principal Security Engineer",
       company: "Monks",
       duration: "Jul 2023 → Present",
       responsibilities: [
-        "Led audits to certify offices for ISO 27001, SOC2, TISAX, and TPN, ensuring standards and compliance.",
-        "Implemented technical controls, reducing global vulnerabilities by 23%, enhancing security posture.",
+        "Led audits to certify offices for ISO 27001, SOC2, TISAX, and TPN, ensuring compliance with industry standards.",
+        "Implemented technical controls, reducing global vulnerabilities by 23% and enhancing security posture.",
         "Streamlined incident response processes, achieving a 35% reduction in global response times."
       ]
     },
@@ -70,8 +70,8 @@ export const resume: Resume = {
       company: "Information Security Network, Inc.",
       duration: "Sep 2019 → Sep 2021",
       responsibilities: [
-        "Served as VP on the Board of Directors, aligning  IT and security objectives with nonprofit strategies.",
-        "Lead seminars and training events at BSides and Hack Pensacola, enhancing community engagement.",
+        "Served as VP on the Board of Directors, aligning IT and security objectives with nonprofit strategies.",
+        "Led seminars and training events at BSides and Hack Pensacola, enhancing community engagement.",
         "Collaborated with local groups like DC850 to promote security awareness and education initiatives."
       ]
     },
@@ -189,7 +189,7 @@ export function getYearsOfExperience(): number {
  */
 export function getShortSummary(): string {
   const years = getYearsOfExperience();
-  return `Cyber architect with ${years}+ years leading security programs, incident response, and secure development practices for global organizations.`;
+  return `Security architect with ${years}+ years leading security programs, incident response, and secure development practices for global organizations.`;
 }
 
 /**
@@ -198,7 +198,7 @@ export function getShortSummary(): string {
  */
 export function getSummary(): string {
   const years = getYearsOfExperience();
-  return `I'm a cyber architect with over ${years} years of experience leading security programs, incident response, and building secure development practices for global organizations. I specialize in cyber risk management, vulnerability management, and automating operational security. I'm passionate about mentoring the next generation of cyber professionals and sharing my knowledge through writing and community engagement.`;
+  return `I'm a cybersecurity professional with over ${years} years of experience leading security programs, incident response, and building secure development practices for global organizations. I specialize in cyber risk management, vulnerability management, and automating operational security. I'm passionate about mentoring the next generation of security professionals and sharing my knowledge through writing and community engagement.`;
 }
 
 export default resume;

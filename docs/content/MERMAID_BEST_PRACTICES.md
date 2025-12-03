@@ -271,4 +271,128 @@ Responsive, Theme-Aware SVG in Browser
 
 ---
 
+## When to Use React Flow vs Mermaid
+
+### React Flow (Recommended for Flowcharts & Architecture)
+
+**Use React Flow presets for:**
+- ✅ **Flowcharts** - Simple architecture diagrams
+- ✅ **System architecture** - 3-tier, microservices, client-server
+- ✅ **Process flows** - Linear pipelines, workflows
+- ✅ **Decision trees** - Authentication flows, branching logic
+
+**Benefits:**
+
+- ✅ **Interactive** - Zoom, pan, drag nodes
+- ✅ **Design token compliance** - Uses semantic colors (`bg-card`, `border`, `text-foreground`)
+- ✅ **Modern UX** - Smooth animations, hover states
+- ✅ **Theme-aware** - Automatic dark mode support
+- ✅ **Accessible** - Built-in keyboard navigation
+
+**Available Presets:**
+
+#### MCPArchitecture
+
+Three-tier architecture (AI Client → MCP Server → Data Source):
+
+```mdx
+<MCPArchitecture height={300} />
+```
+
+**Used in**: `src/content/blog/ai-development-workflow.mdx`
+
+#### AuthenticationFlow
+
+Decision-based authentication with valid/invalid paths:
+
+```mdx
+<AuthenticationFlow height={500} />
+```
+
+**Used in**: `src/content/blog/demo-diagrams.mdx`
+
+#### PipelineFlow
+
+Linear 6-step MDX processing pipeline:
+
+```mdx
+<PipelineFlow height={600} />
+```
+
+**Used in**: `src/content/blog/demo-markdown.mdx`
+
+**Custom Diagrams:**
+
+For custom diagrams, import `InteractiveDiagram` and use helper functions:
+
+```tsx
+import { InteractiveDiagram, createLinearFlow } from "@/components/common";
+
+const { nodes, edges } = createLinearFlow([
+  { label: "Step 1", description: "Description" },
+  { label: "Step 2", description: "Description" },
+  { label: "Step 3", description: "Description" },
+]);
+
+<InteractiveDiagram
+  nodes={nodes}
+  edges={edges}
+  title="Custom Flow"
+  height={400}
+/>
+```
+
+### Mermaid (For Specialized Diagrams)
+
+**Use Mermaid for:**
+- ✅ **Sequence diagrams** - API flows, message sequences
+- ✅ **State diagrams** - State machines, workflow states
+- ✅ **Class diagrams** - OOP design, entity relationships
+- ✅ **ER diagrams** - Database schemas
+- ✅ **Git graphs** - Branch workflows, version history
+- ✅ **Gantt charts** - Project timelines, scheduling
+- ✅ **Pie/bar charts** - Data visualization, statistics
+- ✅ **Mind maps** - Brainstorming, concept mapping
+- ✅ **Timelines** - Chronological data, release history
+
+**Why Mermaid:**
+- ✅ **Specialized types** - Not supported by React Flow
+- ✅ **Text-based syntax** - Easy to write in MDX code fences
+- ✅ **Wide support** - 10+ diagram types
+
+**Example:**
+
+```mdx
+\`\`\`mermaid
+sequenceDiagram
+    participant Client
+    participant API
+    participant DB
+
+    Client->>API: Request
+    API->>DB: Query
+    DB-->>API: Data
+    API-->>Client: Response
+\`\`\`
+```
+
+**Important**: Do NOT use hardcoded colors or styles in Mermaid diagrams. Theme detection is automatic.
+
+### Migration Summary
+
+| Before (Mermaid) | After (React Flow) | Reason |
+|------------------|-------------------|--------|
+| Simple flowcharts | `<AuthenticationFlow />` | Interactive, design token compliance |
+| Architecture diagrams | `<MCPArchitecture />` | Modern UX, theme-aware |
+| Linear pipelines | `<PipelineFlow />` | Animated, accessible |
+| Sequence diagrams | Keep as Mermaid | Specialized type |
+| ERD, Gantt, Pie | Keep as Mermaid | Not supported by React Flow |
+
+**See also:**
+- **Preset Source**: `src/components/common/diagram-presets.tsx`
+- **Interactive Diagram**: `src/components/common/interactive-diagram.tsx`
+- **Design Tokens**: `src/lib/design-tokens.ts`
+
+---
+
 **Maintainer**: Content & Design Systems Team | Questions? Check `/docs/content/MARKDOWN_STANDARDS.md`

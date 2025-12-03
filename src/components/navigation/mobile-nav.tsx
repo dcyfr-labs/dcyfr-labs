@@ -73,15 +73,15 @@ export function MobileNav() {
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
     { href: "/blog", label: "Blog" },
-    { href: "/portfolio", label: "Portfolio" },
+    { href: "/work", label: "Our Work" },
     { href: "/sponsors", label: "Sponsors" },
     { href: "/contact", label: "Contact" },
   ];
 
-  const portfolioCategories = [
-    { href: "/portfolio?category=startup", label: "Startup" },
-    { href: "/portfolio?category=community", label: "Community" },
-    { href: "/portfolio?category=nonprofit", label: "Nonprofit" }
+  const workCategories = [
+    { href: "/work?category=startup", label: "Startup" },
+    { href: "/work?category=community", label: "Community" },
+    { href: "/work?category=nonprofit", label: "Nonprofit" }
   ];
 
   return (
@@ -104,7 +104,7 @@ export function MobileNav() {
           {navItems.map((item) => {
             const isActive = pathname === item.href || 
               (item.href !== "/" && pathname.startsWith(item.href));
-            const isPortfolio = item.href === "/portfolio";
+            const isWork = item.href === "/work";
             
             return (
               <div key={item.href}>
@@ -121,10 +121,10 @@ export function MobileNav() {
                 >
                   {item.label}
                 </Link>
-                {/* Portfolio subcategories */}
-                {isPortfolio && (
+                {/* Work subcategories */}
+                {isWork && (
                   <div className="ml-4 flex flex-col gap-0.5">
-                    {portfolioCategories.map((cat) => (
+                    {workCategories.map((cat) => (
                       <Link
                         key={cat.href}
                         href={cat.href}

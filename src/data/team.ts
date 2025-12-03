@@ -4,10 +4,10 @@
  * Centralized team member information for /team and /about pages.
  */
 
-import { Bot, Code, Shield, Sparkles, Zap } from "lucide-react";
+import { Code, Shield, Sparkles, Zap } from "lucide-react";
 import type { TeamMember, TeamCollaborationArea, TeamHighlight } from "@/types/team";
 
-export const teamDescription = "A virtual partnership building secure, innovative solutions for the modern web.";
+export const teamDescription = "A virtual partnership dedicated to building secure, innovative solutions for the modern web.";
 
 export const teamMembers: TeamMember[] = [
   {
@@ -34,8 +34,8 @@ export const teamMembers: TeamMember[] = [
       { label: "AI-Powered", icon: Zap },
       { label: "Automation", icon: Code },
     ],
-    avatarType: "icon",
-    avatarIcon: Bot,
+    avatarType: "image",
+    avatarImagePath: "/images/dcyfr-avatar.svg",
     isPrimary: false,
   },
 ];

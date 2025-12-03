@@ -199,10 +199,10 @@ describe('feeds.ts', () => {
 
       const item = projectToFeedItem(project);
 
-      expect(item.id).toBe('https://www.dcyfr.ai/portfolio/test-project');
+      expect(item.id).toBe('https://www.dcyfr.ai/work/test-project');
       expect(item.title).toBe('Test Project');
       expect(item.description).toBe('A test project');
-      expect(item.link).toBe('https://www.dcyfr.ai/portfolio/test-project');
+      expect(item.link).toBe('https://www.dcyfr.ai/work/test-project');
       expect(item.author).toEqual({
         name: 'Drew',
         email: 'drew@www.dcyfr.ai',
@@ -746,8 +746,8 @@ describe('feeds.ts', () => {
       const xml = await buildProjectsFeed(testProjects);
 
       // Apostrophe is escaped in XML element text
-      expect(xml).toContain("DCYFR Labs - Portfolio");
-      expect(xml).toContain('/portfolio');
+      expect(xml).toContain("DCYFR Labs - Our Work");
+      expect(xml).toContain('/work');
     });
   });
 

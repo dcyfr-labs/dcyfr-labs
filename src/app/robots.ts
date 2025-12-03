@@ -11,25 +11,37 @@ export default function robots(): MetadataRoute.Robots {
         allow: "/",
         disallow: ["/api/", "/private/"],
       },
+      // Google Search - Allow full indexing
+      {
+        userAgent: "Googlebot",
+        allow: "/",
+        disallow: ["/api/", "/private/"],
+      },
+      // Bing Search - Allow full indexing
+      {
+        userAgent: "Bingbot",
+        allow: "/",
+        disallow: ["/api/", "/private/"],
+      },
       // AI Crawlers - Allow with specific rules
       {
         userAgent: ["GPTBot", "ChatGPT-User"],
-        allow: ["/", "/blog/", "/projects/", "/about/"],
+        allow: ["/", "/blog/", "/work/", "/about/"],
         disallow: ["/api/", "/contact/"],
       },
       {
         userAgent: ["anthropic-ai", "Claude-Web"],
-        allow: ["/", "/blog/", "/projects/", "/about/"],
+        allow: ["/", "/blog/", "/work/", "/about/"],
         disallow: ["/api/", "/contact/"],
       },
       {
         userAgent: "Google-Extended",
-        allow: ["/", "/blog/", "/projects/", "/about/"],
+        allow: ["/", "/blog/", "/work/", "/about/"],
         disallow: ["/api/", "/contact/"],
       },
       {
         userAgent: ["CCBot", "cohere-ai"],
-        allow: ["/", "/blog/", "/projects/", "/about/"],
+        allow: ["/", "/blog/", "/work/", "/about/"],
         disallow: ["/api/"],
       },
       {

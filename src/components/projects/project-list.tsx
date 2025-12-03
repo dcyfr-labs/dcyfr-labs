@@ -40,13 +40,15 @@ interface ProjectListProps {
   viewCounts?: Map<string, number>;
   hasActiveFilters?: boolean;
   emptyMessage?: string;
+  /** Base path for project URLs (default: '/work') */
+  basePath?: string;
 }
 
 /**
  * ProjectList Component
  *
  * Reusable component for displaying projects in different layout variants.
- * Used across the site: /portfolio page, search results, tag filters.
+ * Used across the site: /work page, search results, tag filters.
  *
  * Features:
  * - **Layout variants**: grid (3-column), list (single column expanded), compact (dense)
@@ -63,12 +65,13 @@ export function ProjectList({
   viewCounts,
   hasActiveFilters = false,
   emptyMessage = "No projects found.",
+  basePath = "/work",
 }: ProjectListProps) {
   const router = useRouter();
 
   // Handle clear filters
   const handleClearFilters = () => {
-    router.push('/portfolio');
+    router.push(basePath);
   };
 
   if (projects.length === 0) {
@@ -104,7 +107,7 @@ export function ProjectList({
               delay={index * 50}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
-                <Link href={`/portfolio/${project.slug}`} className="flex flex-col h-full">
+                <Link href={`${basePath}/${project.slug}`} className="flex flex-col h-full">
                   {/* Project content */}
                   <div className="flex-1 p-4 sm:p-5 flex flex-col">
                     {/* Status, category, and timeline */}
@@ -174,7 +177,7 @@ export function ProjectList({
               delay={index * 80}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
-                <Link href={`/portfolio/${project.slug}`} className="block">
+                <Link href={`${basePath}/${project.slug}`} className="block">
                   <div className="p-4 md:p-8">
                     {/* Status, category, and timeline */}
                     {project.timeline && (
@@ -238,7 +241,7 @@ export function ProjectList({
               delay={index * 50}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
-                <Link href={`/portfolio/${project.slug}`} className="block">
+                <Link href={`${basePath}/${project.slug}`} className="block">
                   <div className="p-3">
                     {/* Status, category, and timeline - compact */}
                     <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1.5">
@@ -283,7 +286,7 @@ export function ProjectList({
             delay={index * 50}
           >
             <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
-              <Link href={`/portfolio/${project.slug}`} className="flex flex-col h-full">
+              <Link href={`${basePath}/${project.slug}`} className="flex flex-col h-full">
                 {/* Project content */}
                 <div className="flex-1 p-4 sm:p-5 flex flex-col">
                   {/* Status, category, and timeline */}

@@ -19,7 +19,7 @@ import { teamMembers } from "@/data/team";
 
 const pageTitle = "Sponsors";
 const pageDescription =
-  "Thank you to all the amazing sponsors who support my open source work and content creation. Your support makes everything possible.";
+  "Thank you to all the amazing sponsors who support our open source work and content creation. Your support makes everything possible.";
 
 export const metadata: Metadata = createPageMetadata({
   title: pageTitle,
@@ -90,8 +90,8 @@ export default async function SponsorsPage() {
           <div className={SPACING.content}>
             <h2 className={TYPOGRAPHY.h2.standard}>Contributors</h2>
             <p className="text-muted-foreground mt-4 mb-8">
-              These individuals contribute their time, expertise, and research
-              to make our mission possible.
+              These contributors dedicate their expertise to advancing our
+              security research and open-source mission.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {teamMembers.map((member) => (
@@ -100,7 +100,7 @@ export default async function SponsorsPage() {
                   member={member}
                   layout="compact"
                   contribution={contributorDescriptions[member.id]}
-                  avatarUrl={member.avatarType === "image" ? "https://github.com/dcyfr.png" : undefined}
+                  avatarUrl={member.avatarType === "image" && member.id === "drew" ? "https://github.com/dcyfr.png" : undefined}
                 />
               ))}
             </div>

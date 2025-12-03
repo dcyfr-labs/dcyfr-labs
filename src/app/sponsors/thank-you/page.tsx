@@ -74,10 +74,10 @@ export default async function SponsorThankYouPage({ searchParams }: PageProps) {
     },
     {
       icon: Code,
-      title: "View Projects",
+      title: "View Our Work",
       description: "Check out some of the open source projects and experiments we're working on",
-      href: "/projects",
-      cta: "See Projects"
+      href: "/work",
+      cta: "See Our Work"
     },
     {
       icon: Linkedin,

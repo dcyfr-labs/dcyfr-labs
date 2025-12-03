@@ -22,6 +22,8 @@ interface DefaultProjectLayoutProps {
   project: Project;
   /** CSP nonce for inline scripts (unused in default layout but kept for consistency) */
   nonce: string;
+  /** Base path for project URLs (default: '/work') */
+  basePath?: string;
 }
 
 /**
@@ -40,10 +42,10 @@ interface DefaultProjectLayoutProps {
  * 
  * @example
  * ```tsx
- * <DefaultProjectLayout project={project} nonce={nonce} />
+ * <DefaultProjectLayout project={project} nonce={nonce} basePath="/work" />
  * ```
  */
-export function DefaultProjectLayout({ project, nonce }: DefaultProjectLayoutProps) {
+export function DefaultProjectLayout({ project, nonce, basePath = '/work' }: DefaultProjectLayoutProps) {
   // Check if we have any metadata to show
   const hasTech = project.tech && project.tech.length > 0;
   const hasTags = project.tags && project.tags.length > 0;
@@ -60,7 +62,7 @@ export function DefaultProjectLayout({ project, nonce }: DefaultProjectLayoutPro
           <>
             {/* Status Badge - only show for non-active statuses */}
             {project.status !== "active" && (
-              <Link href={`/portfolio?status=${project.status}`}>
+              <Link href={`${basePath}?status=${project.status}`}>
                 <Badge variant="default" className="cursor-pointer hover:opacity-80 transition-opacity">
                   {STATUS_LABEL[project.status]}
                 </Badge>
@@ -68,7 +70,7 @@ export function DefaultProjectLayout({ project, nonce }: DefaultProjectLayoutPro
             )}
             {/* Category Badge */}
             {project.category && (
-              <Link href={`/portfolio?category=${project.category}`}>
+              <Link href={`${basePath}?category=${project.category}`}>
                 <Badge variant="outline" className="cursor-pointer hover:opacity-80 transition-opacity">
                   {project.category.charAt(0).toUpperCase() + project.category.slice(1)}
                 </Badge>
@@ -152,6 +154,7 @@ export function DefaultProjectLayout({ project, nonce }: DefaultProjectLayoutPro
               <OtherProjectCard
                 key={otherProject.slug}
                 project={otherProject}
+                basePath={basePath}
               />
             ))}
         </div>

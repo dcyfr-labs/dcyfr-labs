@@ -34,7 +34,6 @@ import {
   SectionNavigator,
   Section,
   TrendingPosts,
-  ProfileAvatar,
   ScrollIndicator,
 } from "@/components/common";
 import { ActivityFeed } from "@/components/activity";
@@ -44,7 +43,7 @@ import {
   transformChangelog,
   aggregateActivities,
 } from "@/lib/activity";
-import { FeaturedPostHero, HomepageStats, HomepageHeroActions, HomepageHeroHeadline } from "@/components/home";
+import { FeaturedPostHero, HomepageStats, HomepageHeroActions, HomepageHeroHeadline, FlippableAvatar } from "@/components/home";
 import { WhatIDo, TechStack, SocialProof } from "@/components/about";
 
 const ScrollReveal = dynamic(() => import("@/components/features/scroll-reveal").then(mod => ({ default: mod.ScrollReveal })), {
@@ -162,13 +161,13 @@ export default async function Home() {
                 <div
                   className="flex justify-center"
                   role="img"
-                  aria-label="Drew's Avatar"
+                  aria-label="Avatar - Click to flip"
                 >
-                  <ProfileAvatar size="lg" priority animated backdrop />
+                  <FlippableAvatar size="md" priority animated backdrop />
                 </div>
 
                 {/* Logo Title */}
-                <SiteLogo size="xl" className="justify-center" />
+                <SiteLogo size="lg" showIcon={false} className="justify-center" />
 
                 {/* Professional Headline 
                 <HomepageHeroHeadline /> */}
@@ -182,9 +181,8 @@ export default async function Home() {
                     "mx-auto"
                   )}
                 >
-                  Cyber architecture and design insights helping builders and
-                  creators develop secure, resilient, and innovative digital
-                  experiences.
+                  Helping builders create secure, resilient digital experiences
+                  through cyber architecture and design insights.
                 </p>
 
                 {/* Actions */}

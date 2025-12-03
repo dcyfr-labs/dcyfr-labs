@@ -41,10 +41,10 @@ export function BottomNav() {
       isActive: pathname.startsWith("/blog"),
     },
     {
-      href: "/portfolio",
-      label: "Portfolio",
+      href: "/work",
+      label: "Work",
       icon: FolderGit2,
-      isActive: pathname.startsWith("/portfolio"),
+      isActive: pathname.startsWith("/work"),
     },
   ];
 

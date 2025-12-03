@@ -25,7 +25,7 @@ export function TeamSpotlights() {
             key={member.id} 
             member={member} 
             layout="detailed"
-            avatarUrl={member.avatarType === "image" ? "https://github.com/dcyfr.png" : undefined}
+            avatarUrl={member.avatarType === "image" && member.id === "drew" ? "https://github.com/dcyfr.png" : undefined}
           />
         ))}
       </div>

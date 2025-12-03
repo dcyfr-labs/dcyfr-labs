@@ -21,6 +21,8 @@ interface GalleryProjectLayoutProps {
   project: Project;
   /** CSP nonce for inline scripts (unused but kept for consistency) */
   nonce: string;
+  /** Base path for project URLs (default: '/work') */
+  basePath?: string;
 }
 
 /**
@@ -36,10 +38,10 @@ interface GalleryProjectLayoutProps {
  * 
  * @example
  * ```tsx
- * <GalleryProjectLayout project={project} nonce={nonce} />
+ * <GalleryProjectLayout project={project} nonce={nonce} basePath="/work" />
  * ```
  */
-export function GalleryProjectLayout({ project, nonce }: GalleryProjectLayoutProps) {
+export function GalleryProjectLayout({ project, nonce, basePath = '/work' }: GalleryProjectLayoutProps) {
   const galleryContent = project.galleryContent;
   
   // Default empty photos array if no gallery content
@@ -54,7 +56,7 @@ export function GalleryProjectLayout({ project, nonce }: GalleryProjectLayoutPro
         metadata={project.timeline || undefined}
         badges={
           project.status !== "active" ? (
-            <Link href={`/portfolio?status=${project.status}`}>
+            <Link href={`${basePath}?status=${project.status}`}>
               <Badge variant="default" className="cursor-pointer hover:opacity-80 transition-opacity">
                 {STATUS_LABEL[project.status]}
               </Badge>
@@ -104,7 +106,7 @@ export function GalleryProjectLayout({ project, nonce }: GalleryProjectLayoutPro
           <PhotoGrid 
             photos={photos} 
             columns={columns}
-            basePath={`/portfolio/${project.slug}`}
+            basePath={`${basePath}/${project.slug}`}
           />
         </section>
       ) : (

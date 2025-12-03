@@ -29,7 +29,7 @@ export function AboutTeam() {
             member={member}
             layout="detailed"
             avatarUrl={
-              member.avatarType === "image"
+              member.avatarType === "image" && member.id === "drew"
                 ? "https://github.com/dcyfr.png"
                 : undefined
             }

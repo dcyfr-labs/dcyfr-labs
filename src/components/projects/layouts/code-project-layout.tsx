@@ -22,6 +22,8 @@ interface CodeProjectLayoutProps {
   project: Project;
   /** CSP nonce for inline scripts (reserved for future use with embeds) */
   nonce: string;
+  /** Base path for project URLs (default: '/work') */
+  basePath?: string;
 }
 
 /**
@@ -39,11 +41,11 @@ interface CodeProjectLayoutProps {
  * 
  * @example
  * ```tsx
- * <CodeProjectLayout project={project} nonce={nonce} />
+ * <CodeProjectLayout project={project} nonce={nonce} basePath="/work" />
  * ```
  */
  
-export function CodeProjectLayout({ project, nonce }: CodeProjectLayoutProps) {
+export function CodeProjectLayout({ project, nonce, basePath = '/work' }: CodeProjectLayoutProps) {
   const codeContent = project.codeContent;
   
   return (
@@ -54,7 +56,7 @@ export function CodeProjectLayout({ project, nonce }: CodeProjectLayoutProps) {
         metadata={project.timeline || undefined}
         badges={
           project.status !== "active" ? (
-            <Link href={`/portfolio?status=${project.status}`}>
+            <Link href={`${basePath}?status=${project.status}`}>
               <Badge variant="default" className="cursor-pointer hover:opacity-80 transition-opacity">
                 {STATUS_LABEL[project.status]}
               </Badge>

@@ -1440,7 +1440,9 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
 .mermaid .node ellipse,
 .mermaid .node polygon,
 .mermaid .node path {
+  stroke: var(--border) !important;
   stroke-width: 1.5px !important;
+  fill: var(--card) !important;
   rx: 8px;
   ry: 8px;
   transition: filter 200ms ease, transform 200ms ease;
@@ -1460,10 +1462,12 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif !important;
   font-size: 14px !important;
   font-weight: 500 !important;
+  fill: var(--foreground) !important;
 }
 
 /* Edge/arrow styling - smoother curves */
 .mermaid .edgePath path.path {
+  stroke: var(--border) !important;
   stroke-width: 2px !important;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -1479,6 +1483,7 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
   font-size: 12px !important;
   font-weight: 500 !important;
   background: var(--background) !important;
+  color: var(--foreground) !important;
   padding: 4px 8px !important;
   border-radius: 4px !important;
 }
@@ -1487,7 +1492,9 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
 .mermaid .cluster rect {
   rx: 12px !important;
   ry: 12px !important;
+  stroke: var(--border) !important;
   stroke-width: 2px !important;
+  fill: var(--muted) !important;
   stroke-dasharray: none !important;
 }
 
@@ -1495,6 +1502,7 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif !important;
   font-size: 14px !important;
   font-weight: 600 !important;
+  fill: var(--muted-foreground) !important;
 }
 
 /* Sequence diagram enhancements */

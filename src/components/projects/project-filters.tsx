@@ -29,6 +29,8 @@ interface ProjectFiltersProps {
   sortBy?: string;
   totalResults: number;
   hasActiveFilters: boolean;
+  /** Base path for filter URLs (default: '/work') */
+  basePath?: string;
 }
 
 /**
@@ -58,9 +60,10 @@ export function ProjectFilters({
   sortBy = 'newest',
   totalResults,
   hasActiveFilters,
+  basePath = "/work",
 }: ProjectFiltersProps) {
-  const { updateParam, toggleMultiParam, clearAll } = useFilterParams({ basePath: "/projects" });
-  const { searchValue, setSearchValue } = useFilterSearch({ query, basePath: "/projects" });
+  const { updateParam, toggleMultiParam, clearAll } = useFilterParams({ basePath });
+  const { searchValue, setSearchValue } = useFilterSearch({ query, basePath });
 
   const { hasActive, count } = useActiveFilters({
     status,

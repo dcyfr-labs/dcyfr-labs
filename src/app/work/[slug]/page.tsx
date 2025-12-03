@@ -17,7 +17,7 @@ import { ProjectLayoutStrategy } from "@/components/projects/layouts";
 // Enable Incremental Static Regeneration with 1 hour revalidation
 export const revalidate = 3600; // 1 hour in seconds
 
-// Pre-generate all project pages at build time
+// Pre-generate all work item pages at build time
 export async function generateStaticParams() {
   return visibleProjects.map((project) => ({
     slug: project.slug,
@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: `${pageTitle} — ${SITE_TITLE_PLAIN}`,
       description: pageDescription,
       type: "article",
-      url: `${SITE_URL}/portfolio/${project.slug}`,
+      url: `${SITE_URL}/work/${project.slug}`,
       siteName: SITE_TITLE_PLAIN,
       images: [
         {
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function WorkItemPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const project = visibleProjects.find((p) => p.slug === slug);
   
@@ -73,13 +73,13 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   // Get nonce from proxy for CSP
   const nonce = (await headers()).get("x-nonce") || "";
   
-  // JSON-LD structured data for project
+  // JSON-LD structured data for work item
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "SoftwareSourceCode",
+    "@type": "CreativeWork",
     name: project.title,
     description: project.description,
-    url: `${SITE_URL}/portfolio/${project.slug}`,
+    url: `${SITE_URL}/work/${project.slug}`,
     author: {
       "@type": "Person",
       name: AUTHOR_NAME,
@@ -103,17 +103,17 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         suppressHydrationWarning
       />
       <div className={getContainerClasses('standard')}>
-        {/* Back to Portfolio */}
+        {/* Back to Our Work */}
         <Link
-          href="/portfolio"
+          href="/work"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
         >
           <ArrowLeft className="h-4 w-4" />
-          <span>Back to Portfolio</span>
+          <span>Back to Our Work</span>
         </Link>
         
         {/* Render appropriate layout based on project category */}
-        <ProjectLayoutStrategy project={project} nonce={nonce} />
+        <ProjectLayoutStrategy project={project} nonce={nonce} basePath="/work" />
       </div>
     </>
   );

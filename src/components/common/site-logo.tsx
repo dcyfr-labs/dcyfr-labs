@@ -1,53 +1,41 @@
 import React from "react";
 import { Logo } from "@/components/common/logo";
+import { LOGO_CONFIG } from "@/lib/logo-config";
 import { cn } from "@/lib/utils";
 
 /**
  * SiteLogo Component - DCYFR Labs Brand Logo
  *
- * Displays the site name "DCYFR Labs" in serif font followed by
- * the sparkle/star SVG logo. This is the primary brand mark used across
- * the site (header, footer, hero sections).
+ * Displays "DCYFR Labs" text + sparkle icon. Uses unified size tokens from logo-config.
  *
  * @example
  * ```tsx
- * // Default usage (header size)
- * <SiteLogo />
- *
- * // Small size (footer)
- * <SiteLogo size="sm" />
- *
- * // Large size (hero)
- * <SiteLogo size="lg" />
- *
- * // With custom className
- * <SiteLogo className="text-muted-foreground" />
+ * <SiteLogo />                    // md (header)
+ * <SiteLogo size="sm" />          // sm (footer)
+ * <SiteLogo size="lg" />          // lg (hero)
+ * <SiteLogo collapseOnMobile />   // icon-only on mobile
  * ```
  */
 
-type SiteLogoSize = "xs" | "sm" | "md" | "lg" | "xl";
+type SiteLogoSize = "sm" | "md" | "lg";
 
 interface SiteLogoProps {
-  /** Size variant for the logo */
+  /** Size variant: sm (footer), md (header), lg (hero) */
   size?: SiteLogoSize;
-  /** Additional CSS classes to apply to the container */
+  /** Additional CSS classes */
   className?: string;
-  /** Whether to show the text (defaults to true) */
+  /** Show text (default: true) */
   showText?: boolean;
-  /** Whether to show the star icon (defaults to true) */
+  /** Show star icon (default: true) */
   showIcon?: boolean;
-  /** Additional classes for the icon */
-  iconClassName?: string;
-  /** Hide text on mobile (shows only icon on small screens) */
+  /** Hide text on mobile */
   collapseOnMobile?: boolean;
 }
 
-const sizeConfig: Record<SiteLogoSize, { text: string; icon: string; gap: string }> = {
-  xs: { text: "text-xs", icon: "w-2.5 h-2.5", gap: "gap-1.5" },
-  sm: { text: "text-sm", icon: "w-3 h-3", gap: "gap-2" },
-  md: { text: "text-base sm:text-xl md:text-2xl", icon: "w-5 h-5", gap: "gap-2 sm:gap-2.5 md:gap-3" },
-  lg: { text: "text-xl sm:text-2xl md:text-3xl", icon: "w-5 h-5", gap: "gap-2.5 sm:gap-3 md:gap-3.5" },
-  xl: { text: "text-2xl sm:text-3xl md:text-4xl", icon: "w-6 h-6", gap: "gap-3 sm:gap-3.5 md:gap-4" },
+const sizeConfig: Record<SiteLogoSize, { text: string; icon: number; gap: string }> = {
+  sm: { text: "text-sm", icon: LOGO_CONFIG.sizes.small, gap: "gap-2" },
+  md: { text: "text-xl md:text-2xl", icon: LOGO_CONFIG.sizes.medium, gap: "gap-2.5" },
+  lg: { text: "text-3xl md:text-4xl", icon: LOGO_CONFIG.sizes.large, gap: "gap-3" },
 };
 
 export const SiteLogo: React.FC<SiteLogoProps> = ({
@@ -55,7 +43,6 @@ export const SiteLogo: React.FC<SiteLogoProps> = ({
   className,
   showText = true,
   showIcon = true,
-  iconClassName,
   collapseOnMobile = false,
 }) => {
   const config = sizeConfig[size];
@@ -67,14 +54,14 @@ export const SiteLogo: React.FC<SiteLogoProps> = ({
           className={cn(
             config.text,
             "font-serif font-semibold leading-none",
-            collapseOnMobile ? "hidden sm:inline" : ""
+            collapseOnMobile && "hidden sm:inline"
           )}
         >
           DCYFR Labs
         </span>
       )}
       {showIcon && (
-        <Logo className={cn(config.icon, iconClassName)} aria-hidden="true" />
+        <Logo width={config.icon} height={config.icon} aria-hidden="true" />
       )}
     </span>
   );

@@ -248,7 +248,7 @@ describe("ProjectFilters Component", () => {
       render(<ProjectFilters {...defaultProps} query="test" selectedTags={["web"]} />);
       const clearButton = screen.getByTestId("clear-all-button");
       fireEvent.click(clearButton);
-      expect(mockPush).toHaveBeenCalledWith("/projects");
+      expect(mockPush).toHaveBeenCalledWith("/work");
     });
   });
 

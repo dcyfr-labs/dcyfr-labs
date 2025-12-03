@@ -297,8 +297,44 @@ describe("createBranchingFlow Helper", () => {
       branches: [],
     };
     const { nodes, edges } = createBranchingFlow(config);
-    
+
     expect(nodes).toHaveLength(1);
     expect(edges).toHaveLength(0);
+  });
+});
+
+describe("Decision Node Type", () => {
+  it("should support decision node type in branching flows", () => {
+    const nodes: Node<BaseNodeData>[] = [
+      { id: 'decision', type: 'decision', position: { x: 250, y: 100 }, data: { label: 'Decide' } },
+    ];
+
+    expect(nodes[0].type).toBe('decision');
+  });
+
+  it("should be positioned correctly in branching patterns", () => {
+    const config = {
+      start: "Begin",
+      branches: [
+        { label: "Branch A" },
+        { label: "Branch B" },
+      ],
+    };
+    const { nodes } = createBranchingFlow(config);
+
+    const startNode = nodes.find(n => n.id === "start");
+    expect(startNode).toBeDefined();
+    expect(startNode?.type).toBe("input");
+  });
+
+  it("should support multiple source handles for branching", () => {
+    // Decision nodes typically have connections to multiple targets
+    const edges: Edge[] = [
+      { id: 'e1', source: 'decision', target: 'branch-a', animated: true },
+      { id: 'e2', source: 'decision', target: 'branch-b', animated: true },
+    ];
+
+    const decisionEdges = edges.filter(e => e.source === 'decision');
+    expect(decisionEdges).toHaveLength(2);
   });
 });

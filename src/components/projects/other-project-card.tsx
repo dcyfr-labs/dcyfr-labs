@@ -24,10 +24,11 @@ import { HOVER_EFFECTS, TYPOGRAPHY } from "@/lib/design-tokens";
  * 
  * @param {Object} props - Component props
  * @param {Project} props.project - Project data object
+ * @param {string} [props.basePath='/work'] - Base path for project URLs
  * 
  * @example
  * ```tsx
- * <OtherProjectCard project={projectData} />
+ * <OtherProjectCard project={projectData} basePath="/work" />
  * ```
  * 
  * Accessibility:
@@ -42,9 +43,11 @@ import { HOVER_EFFECTS, TYPOGRAPHY } from "@/lib/design-tokens";
  * @see {@link /docs/components/project-card.md} for detailed documentation
  */
 export function OtherProjectCard({ 
-  project 
+  project,
+  basePath = '/work',
 }: { 
   project: Project;
+  basePath?: string;
 }) {
   // Always ensure we have an image (custom or default)
   const image = ensureProjectImage(project.image, {
@@ -54,7 +57,7 @@ export function OtherProjectCard({
 
   return (
     <Link
-      href={`/portfolio/${project.slug}`}
+      href={`${basePath}/${project.slug}`}
       className="group block"
     >
       <Card className={cn("h-full overflow-hidden relative flex flex-col", HOVER_EFFECTS.card)}>

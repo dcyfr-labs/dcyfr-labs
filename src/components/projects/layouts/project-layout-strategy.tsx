@@ -8,6 +8,8 @@ interface ProjectLayoutStrategyProps {
   project: Project;
   /** CSP nonce for inline scripts */
   nonce: string;
+  /** Base path for project URLs (default: '/work') */
+  basePath?: string;
 }
 
 /**
@@ -22,17 +24,17 @@ interface ProjectLayoutStrategyProps {
  * 
  * @example
  * ```tsx
- * <ProjectLayoutStrategy project={project} nonce={nonce} />
+ * <ProjectLayoutStrategy project={project} nonce={nonce} basePath="/work" />
  * ```
  */
-export function ProjectLayoutStrategy({ project, nonce }: ProjectLayoutStrategyProps) {
+export function ProjectLayoutStrategy({ project, nonce, basePath = '/work' }: ProjectLayoutStrategyProps) {
   switch (project.category) {
     case "code":
-      return <CodeProjectLayout project={project} nonce={nonce} />;
+      return <CodeProjectLayout project={project} nonce={nonce} basePath={basePath} />;
     case "photography":
-      return <GalleryProjectLayout project={project} nonce={nonce} />;
+      return <GalleryProjectLayout project={project} nonce={nonce} basePath={basePath} />;
     default:
       // community, nonprofit, startup use default layout
-      return <DefaultProjectLayout project={project} nonce={nonce} />;
+      return <DefaultProjectLayout project={project} nonce={nonce} basePath={basePath} />;
   }
 }

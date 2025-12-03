@@ -10,7 +10,7 @@ const pageConfig = {
   "/": { changeFrequency: "weekly" as const, priority: 1.0 },
   "/about": { changeFrequency: "yearly" as const, priority: 0.5 },
   "/blog": { changeFrequency: "weekly" as const, priority: 0.8 },
-  "/portfolio": { changeFrequency: "monthly" as const, priority: 0.7 },
+  "/work": { changeFrequency: "monthly" as const, priority: 0.7 },
   "/contact": { changeFrequency: "yearly" as const, priority: 0.6 },
 } as const;
 

@@ -1,8 +1,8 @@
 /**
- * Projects Feed (Atom 1.0)
+ * Work Feed (Atom 1.0)
  * 
- * Provides a feed of projects only.
- * Available at: /projects/feed
+ * Provides a feed of all work items (projects, creative works).
+ * Available at: /work/feed
  * 
  * @see src/lib/feeds.ts for feed generation logic
  */
@@ -15,7 +15,8 @@ export const revalidate = 3600; // 1 hour
 
 export async function GET() {
   try {
-    const xml = await buildProjectsFeed(projects, "atom", 20);
+    // Use the projects feed builder with /work path
+    const xml = await buildProjectsFeed(projects, "atom", 20, "/work");
     
     return new NextResponse(xml, {
       headers: {
@@ -24,7 +25,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("Error generating projects feed:", error);
+    console.error("Error generating work feed:", error);
     return new NextResponse("Error generating feed", { status: 500 });
   }
 }

@@ -30,16 +30,7 @@ Before MCP, each AI tool had to build custom integrations for every service. Wan
 
 MCP follows a client-server model:
 
-```mermaid
-%%{init: {'flowchart': {'htmlLabels': true, 'useMaxWidth': true, 'nodeSpacing': 150, 'rankSpacing': 150}}}%%
-graph LR
-    A["<b>AI Client</b><br/>Claude, Copilot"] 
-    B["<b>MCP Server</b><br/>GitHub, Sentry,<br/>Database"]
-    C["<b>Data Source</b><br/>GitHub, Sentry,<br/>Postgres"]
-    
-    A -->|MCP Protocol| B
-    B -->|API| C
-```
+<MCPArchitecture height={300} />
 
 **Key benefits:**
 - **Security**: Credentials stay server-side; AI never sees your tokens

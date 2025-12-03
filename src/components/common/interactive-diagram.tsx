@@ -22,6 +22,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { cn } from "@/lib/utils";
+import { ANIMATION } from "@/lib/design-tokens";
 
 // ============================================================================
 // Custom Node Types
@@ -85,17 +86,18 @@ function InputNode({ data, selected }: NodeProps<Node<BaseNodeData>>) {
     <>
       <div
         className={cn(
-          "px-4 py-3 rounded-lg border-2 shadow-sm transition-all duration-200",
-          "bg-green-50 border-green-300 dark:bg-green-950/30 dark:border-green-800",
-          selected && "ring-2 ring-green-500 ring-offset-2 ring-offset-background shadow-lg"
+          "px-4 py-3 rounded-lg border-2 shadow-sm",
+          ANIMATION.transition.base,
+          "bg-card/80 border-border",
+          selected && "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-lg"
         )}
       >
         <div className="flex items-center gap-2">
-          {data.icon && <span className="text-green-600 dark:text-green-400">{data.icon}</span>}
-          <div className="font-medium text-sm text-green-700 dark:text-green-300">{data.label}</div>
+          {data.icon && <span className="text-muted-foreground">{data.icon}</span>}
+          <div className="font-medium text-sm text-foreground">{data.label}</div>
         </div>
       </div>
-      <Handle type="source" position={Position.Bottom} className="!bg-green-500 !w-3 !h-3 !border-2 !border-background" />
+      <Handle type="source" position={Position.Bottom} className="bg-primary! w-3! h-3! border-2! border-background!" />
     </>
   );
 }
@@ -106,17 +108,18 @@ function InputNode({ data, selected }: NodeProps<Node<BaseNodeData>>) {
 function OutputNode({ data, selected }: NodeProps<Node<BaseNodeData>>) {
   return (
     <>
-      <Handle type="target" position={Position.Top} className="!bg-blue-500 !w-3 !h-3 !border-2 !border-background" />
+      <Handle type="target" position={Position.Top} className="bg-primary! w-3! h-3! border-2! border-background!" />
       <div
         className={cn(
-          "px-4 py-3 rounded-lg border-2 shadow-sm transition-all duration-200",
-          "bg-blue-50 border-blue-300 dark:bg-blue-950/30 dark:border-blue-800",
-          selected && "ring-2 ring-blue-500 ring-offset-2 ring-offset-background shadow-lg"
+          "px-4 py-3 rounded-lg border-2 shadow-sm",
+          ANIMATION.transition.base,
+          "bg-card/80 border-border",
+          selected && "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-lg"
         )}
       >
         <div className="flex items-center gap-2">
-          {data.icon && <span className="text-blue-600 dark:text-blue-400">{data.icon}</span>}
-          <div className="font-medium text-sm text-blue-700 dark:text-blue-300">{data.label}</div>
+          {data.icon && <span className="text-muted-foreground">{data.icon}</span>}
+          <div className="font-medium text-sm text-foreground">{data.label}</div>
         </div>
       </div>
     </>
@@ -129,25 +132,53 @@ function OutputNode({ data, selected }: NodeProps<Node<BaseNodeData>>) {
 function ProcessNode({ data, selected }: NodeProps<Node<BaseNodeData>>) {
   return (
     <>
-      <Handle type="target" position={Position.Top} className="!bg-purple-500 !w-3 !h-3 !border-2 !border-background" />
+      <Handle type="target" position={Position.Top} className="bg-primary! w-3! h-3! border-2! border-background!" />
       <div
         className={cn(
-          "px-4 py-3 rounded-lg border-2 shadow-sm transition-all duration-200",
-          "bg-purple-50 border-purple-300 dark:bg-purple-950/30 dark:border-purple-800",
-          selected && "ring-2 ring-purple-500 ring-offset-2 ring-offset-background shadow-lg"
+          "px-4 py-3 rounded-lg border-2 shadow-sm",
+          ANIMATION.transition.base,
+          "bg-card/80 border-border",
+          selected && "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-lg"
         )}
       >
         <div className="flex items-center gap-2">
-          {data.icon && <span className="text-purple-600 dark:text-purple-400">{data.icon}</span>}
+          {data.icon && <span className="text-muted-foreground">{data.icon}</span>}
           <div>
-            <div className="font-medium text-sm text-purple-700 dark:text-purple-300">{data.label}</div>
+            <div className="font-medium text-sm text-foreground">{data.label}</div>
             {data.description && (
-              <div className="text-xs text-purple-600/70 dark:text-purple-400/70 mt-0.5">{data.description}</div>
+              <div className="text-xs text-muted-foreground mt-0.5">{data.description}</div>
             )}
           </div>
         </div>
       </div>
-      <Handle type="source" position={Position.Bottom} className="!bg-purple-500 !w-3 !h-3 !border-2 !border-background" />
+      <Handle type="source" position={Position.Bottom} className="bg-primary! w-3! h-3! border-2! border-background!" />
+    </>
+  );
+}
+
+/**
+ * Decision node (diamond shape for branching logic)
+ */
+function DecisionNode({ data, selected }: NodeProps<Node<BaseNodeData>>) {
+  return (
+    <>
+      <Handle type="target" position={Position.Top} className="bg-primary! w-3! h-3! border-2! border-background!" />
+      <div
+        className={cn(
+          "px-4 py-3 border-2 shadow-sm",
+          ANIMATION.transition.base,
+          "bg-card/80 border-border",
+          "w-24 h-24 rotate-45", // Diamond shape
+          selected && "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-lg"
+        )}
+      >
+        <div className="-rotate-45 flex items-center justify-center h-full">
+          <div className="font-medium text-sm text-foreground text-center">{data.label}</div>
+        </div>
+      </div>
+      <Handle type="source" position={Position.Bottom} className="bg-primary! w-3! h-3! border-2! border-background!" />
+      <Handle type="source" position={Position.Left} className="bg-primary! w-3! h-3! border-2! border-background!" />
+      <Handle type="source" position={Position.Right} className="bg-primary! w-3! h-3! border-2! border-background!" />
     </>
   );
 }
@@ -161,6 +192,7 @@ const nodeTypes: NodeTypes = {
   input: InputNode,
   output: OutputNode,
   process: ProcessNode,
+  decision: DecisionNode,
 };
 
 // ============================================================================

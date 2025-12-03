@@ -10,12 +10,13 @@ import type { Options as RehypePrettyCodeOptions } from "rehype-pretty-code";
 import { CopyCodeButton } from "@/components/common/copy-code-button";
 import { HorizontalRule } from "@/components/common/horizontal-rule";
 import { Mermaid as MermaidComponent } from "@/components/common/mermaid";
-import { 
-  Check, 
-  X, 
-  CornerDownLeft, 
-  AlertTriangle, 
-  Info, 
+import { MCPArchitecture, AuthenticationFlow, PipelineFlow } from "@/components/common/diagram-presets";
+import {
+  Check,
+  X,
+  CornerDownLeft,
+  AlertTriangle,
+  Info,
   Lightbulb,
   Zap,
   Lock,
@@ -313,6 +314,10 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
     const chart = props.children || '';
     return <MermaidComponent chart={chart} />;
   },
+  // Diagram presets
+  MCPArchitecture,
+  AuthenticationFlow,
+  PipelineFlow,
   // Footnote superscripts with icon
   sup: (props: React.HTMLAttributes<HTMLElement>) => {
     // Check if this contains a link (footnote reference) or has footnote-related attributes

@@ -388,7 +388,7 @@ describe('Resume Data', () => {
       const summary = getShortSummary()
       const years = getYearsOfExperience()
       expect(summary).toContain(`${years}+`)
-      expect(summary).toContain('Cyber architect')
+      expect(summary).toContain('Security architect')
       expect(summary.length).toBeGreaterThan(50)
     })
 
@@ -396,7 +396,7 @@ describe('Resume Data', () => {
       const summary = getSummary()
       const years = getYearsOfExperience()
       expect(summary).toContain(`${years}`)
-      expect(summary).toContain('cyber architect')
+      expect(summary).toContain('cybersecurity professional')
       expect(summary.length).toBeGreaterThan(100)
     })
 

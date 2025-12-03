@@ -32,14 +32,25 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // Redirect old /projects and /portfolio paths to new /work path
       {
         source: '/projects',
-        destination: '/portfolio',
+        destination: '/work',
         permanent: true,
       },
       {
         source: '/projects/:path*',
-        destination: '/portfolio/:path*',
+        destination: '/work/:path*',
+        permanent: true,
+      },
+      {
+        source: '/portfolio',
+        destination: '/work',
+        permanent: true,
+      },
+      {
+        source: '/portfolio/:path*',
+        destination: '/work/:path*',
         permanent: true,
       },
     ];

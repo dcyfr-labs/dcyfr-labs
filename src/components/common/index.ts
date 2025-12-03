@@ -39,13 +39,21 @@ export {
 } from "./annotation";
 
 // Interactive Diagrams (React Flow) - node-based diagrams
-export { 
+export {
   InteractiveDiagram,
   createLinearFlow,
   createBranchingFlow,
   type InteractiveDiagramProps,
-  type BaseNodeData 
+  type BaseNodeData
 } from "./interactive-diagram";
+
+// Diagram Presets
+export {
+  MCPArchitecture,
+  AuthenticationFlow,
+  PipelineFlow,
+  type DiagramPresetProps
+} from "./diagram-presets";
 
 // Error boundaries
 export { ErrorBoundary } from "./error-boundaries/error-boundary";

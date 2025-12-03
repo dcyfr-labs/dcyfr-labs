@@ -44,7 +44,7 @@ interface PhotoGridProps {
  * <PhotoGrid 
  *   photos={photos} 
  *   columns={3}
- *   basePath="/portfolio/my-project"
+ *   basePath="/work/my-project"
  * />
  * ```
  */

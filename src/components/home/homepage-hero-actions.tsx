@@ -31,7 +31,7 @@ export function HomepageHeroActions() {
     trackEvent({
       name: 'external_link_clicked',
       properties: {
-        url: '/portfolio',
+        url: '/work',
         source: 'homepage_hero_secondary_cta',
       },
     });
@@ -49,16 +49,16 @@ export function HomepageHeroActions() {
 
   return (
     <div className="flex flex-wrap gap-2 sm:gap-3 pt-4 sm:pt-6 justify-center items-center">
-      {/* Primary CTA - Portfolio */}
+      {/* Primary CTA - Our Work */}
       <Button
         variant="cta"
         asChild
         size="default"
         className="gap-2 hover:scale-105 transition-transform duration-200"
       >
-        <Link href="/portfolio" onClick={handleProjectsClick}>
+        <Link href="/work" onClick={handleProjectsClick}>
           <Briefcase className="h-4 w-4" />
-          <span>View portfolio</span>
+          <span>View our work</span>
         </Link>
       </Button>
 

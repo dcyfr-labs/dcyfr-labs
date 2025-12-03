@@ -237,6 +237,8 @@ curl -i https://www.dcyfr.ai | grep -i "strict-transport-security"
 - `/docs/security/environment-variable-audit.md` - Env var security
 - `/docs/security/csp/nonce-implementation.md` - CSP implementation
 - `/docs/security/csp-monitoring.md` - CSP violation tracking & monitoring
+- `/docs/security/honeypot-implementation.md` - Contact form honeypot
+- `/docs/security/honeypot-private-routes.md` - URL-based honeypot routes
 
 ### Component Docs
 - `/docs/components/github-heatmap.md` - API integration security

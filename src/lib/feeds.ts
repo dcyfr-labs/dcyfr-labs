@@ -128,8 +128,10 @@ export async function postToFeedItem(post: Post): Promise<FeedItem> {
 
 /**
  * Convert a project to a feed item
+ * @param project - The project to convert
+ * @param basePath - Base path for project URLs (default: '/work')
  */
-export function projectToFeedItem(project: Project): FeedItem {
+export function projectToFeedItem(project: Project, basePath: string = '/work'): FeedItem {
   // Build HTML description from project data
   const techList = project.tech?.length
     ? `<p><strong>Technologies:</strong> ${project.tech.join(", ")}</p>`
@@ -153,11 +155,11 @@ export function projectToFeedItem(project: Project): FeedItem {
   const published = new Date(year, 0, 1);
   
   return {
-    id: absoluteUrl(`/portfolio/${project.slug}`),
+    id: absoluteUrl(`${basePath}/${project.slug}`),
     title: project.title,
     description: project.description,
     content: htmlContent,
-    link: absoluteUrl(`/portfolio/${project.slug}`),
+    link: absoluteUrl(`${basePath}/${project.slug}`),
     published,
     categories: project.tags || [],
     author: {
@@ -358,23 +360,25 @@ export async function buildBlogFeed(
 
 /**
  * Build a feed from projects only
+ * @param basePath - Base path for project URLs (default: '/work')
  */
 export async function buildProjectsFeed(
   projects: readonly Project[],
   format: FeedFormat = "rss",
-  limit: number = 20
+  limit: number = 20,
+  basePath: string = "/work"
 ): Promise<string> {
   const sortedProjects = [...projects]
     .filter((p) => !p.hidden) // exclude hidden
     .slice(0, limit);
   
-  const items = sortedProjects.map(projectToFeedItem);
+  const items = sortedProjects.map((p) => projectToFeedItem(p, basePath));
   
   const config: FeedConfig = {
-    title: `${SITE_TITLE} - Portfolio`,
-    description: "Portfolio projects and proof of concept works.",
-    link: `${SITE_URL}/portfolio`,
-    feedUrl: `${SITE_URL}/portfolio/feed`,
+    title: `${SITE_TITLE} - Our Work`,
+    description: "Our projects, open-source contributions, and creative works.",
+    link: `${SITE_URL}${basePath}`,
+    feedUrl: `${SITE_URL}${basePath}/feed`,
     language: "en-us",
     author: {
       name: AUTHOR_NAME,
@@ -403,7 +407,7 @@ export async function buildCombinedFeed(
   
   const projectItems = projects
     .filter((p) => !p.hidden)
-    .map(projectToFeedItem);
+    .map((p) => projectToFeedItem(p));
   
   // Combine and sort by published date
   const allItems = [...postItems, ...projectItems]
