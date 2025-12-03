@@ -36,21 +36,21 @@ test.describe('Homepage', () => {
         if (!bottomNav) return
       const homeLink = bottomNav.getByRole('link', { name: /home/i })
       const blogLink = bottomNav.getByRole('link', { name: /blog/i })
-      const portfolioLink = bottomNav.getByRole('link', { name: /portfolio/i })
+      const workLink = bottomNav.getByRole('link', { name: /our work/i })
       const contactLink = bottomNav.getByRole('link', { name: /contact/i })
       
       await expect(homeLink).toBeVisible()
       await expect(blogLink).toBeVisible()
-      await expect(portfolioLink).toBeVisible()
+      await expect(workLink).toBeVisible()
       await expect(contactLink).toBeVisible()
     } else {
-      // Check main header navigation on desktop (About, Blog, Portfolio dropdown)
+      // Check main header navigation on desktop (About, Blog, Our Work dropdown)
       const blogLink = page.locator('header nav').getByRole('link', { name: /blog/i })
-      const portfolioButton = page.locator('header nav').getByRole('button', { name: /portfolio/i })
+      const workButton = page.locator('header nav').getByRole('button', { name: /our work/i })
       const aboutLink = page.locator('header nav').getByRole('link', { name: /about/i })
       
       await expect(blogLink).toBeVisible()
-      await expect(portfolioButton).toBeVisible()
+      await expect(workButton).toBeVisible()
       await expect(aboutLink).toBeVisible()
     }
   })

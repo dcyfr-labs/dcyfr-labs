@@ -4,6 +4,10 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [react()],
+  css: {
+    // Disable PostCSS processing in tests to avoid Tailwind v4 compatibility issues
+    postcss: {},
+  },
   test: {
     environment: 'happy-dom',
     setupFiles: ['./tests/setup/vitest.setup.ts'],

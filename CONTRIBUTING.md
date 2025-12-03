@@ -62,7 +62,6 @@ If you rely on services (Redis, Resend, GitHub token) for local features, use `.
 - `REDIS_URL` — Redis for view counts
 - `RESEND_API_KEY` — emails via Resend
 - `GITHUB_TOKEN` — optional GitHub token for higher API rate limits
-- `SNYK_TOKEN` — optional token for authenticated Snyk scans in CI
 
 ## How to contribute
 

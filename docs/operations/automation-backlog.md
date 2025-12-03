@@ -1,16 +1,33 @@
-# Automation & CI Backlog
+# Automation & CI Status
 
-This file tracks recommended small, low-risk automation items to improve developer experience and CI coverage.
+**Status:** ✅ Complete (December 2, 2025)
 
-Prioritized list (start at the top):
+This file tracks CI/CD automation. All core items are now implemented.
 
-- [ ] GitHub Actions CI — Add a lightweight CI workflow that runs `npm ci`, `npm run check` (lint + typecheck), and `npm run build`. Cache node modules and `.next/cache` to speed runs. (See `.github/workflows/ci.yml` added to the repo as a starting point.)
-- [ ] Snyk scan in CI — Run `snyk test` as an optional step when `SNYK_TOKEN` is provided (store token in GitHub Secrets). This provides authenticated vulnerability checks and reporting. The CI workflow includes an optional Snyk step that runs when the secret is present.
-- [ ] Husky + lint-staged — Install and configure to run `prettier --write` and `eslint --fix` on staged files to keep PRs clean. Add a `prepare` script to `package.json` to enable hooks.
-- [ ] Dependabot / Renovate — Configure automated dependency update PRs (weekly) for npm packages.
-- [ ] Cache build artifacts — Preserve `.next/cache` between CI runs keyed by lockfile + Node version.
-- [ ] Lighthouse / Performance checks — Add an optional Lighthouse CI job to track performance regressions on the main branch. Consider running only on merges to main or daily.
+## ✅ Completed Automation
 
-Notes:
-- The provided `.github/workflows/ci.yml` is intentionally minimal; it runs `npm run check` and `npm run build`, and includes an optional Snyk step that runs only when `SNYK_TOKEN` is present in the repository secrets. We keep `continue-on-error: true` on the Snyk step to avoid blocking builds; change this if you prefer failures to be blocking.
-- Next steps: pick one item (Husky, Dependabot) and I can implement it end-to-end.
+- [x] **GitHub Actions CI** — Multiple workflows handle lint, typecheck, build, and tests
+  - `test.yml` — Runs test suite on PR and push
+  - `deploy.yml` — Vercel deployment
+  - `validate-content.yml` — Content validation
+  - `design-system.yml` — Design token validation
+
+- [x] **Dependency Security** — Dependabot configured for automated updates
+  - Daily security vulnerability scans
+  - Weekly dependency update PRs
+  - Auto-merge for patch updates via `dependabot-auto-merge.yml`
+  - See [`dependabot-setup.md`](./dependabot-setup.md) for full configuration
+
+- [x] **Code Security Scanning** — GitHub CodeQL
+  - Automated SAST on push, PR, and daily schedule
+  - See `.github/workflows/codeql.yml`
+
+- [x] **Lighthouse CI** — Performance monitoring
+  - Runs on PRs to track regressions
+  - See `.github/workflows/lighthouse-ci.yml`
+
+- [x] **Cache build artifacts** — `.next/cache` preserved in CI workflows
+
+## 🔧 Optional Enhancements (Backlog)
+
+- [ ] Husky + lint-staged — Auto-format staged files (low priority, manual workflow works)

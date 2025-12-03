@@ -24,6 +24,8 @@ interface SiteLogoProps {
   size?: SiteLogoSize;
   /** Additional CSS classes */
   className?: string;
+  /** Additional CSS classes for the icon */
+  iconClassName?: string;
   /** Show text (default: true) */
   showText?: boolean;
   /** Show star icon (default: true) */
@@ -41,6 +43,7 @@ const sizeConfig: Record<SiteLogoSize, { text: string; icon: number; gap: string
 export const SiteLogo: React.FC<SiteLogoProps> = ({
   size = "md",
   className,
+  iconClassName,
   showText = true,
   showIcon = true,
   collapseOnMobile = false,
@@ -61,7 +64,7 @@ export const SiteLogo: React.FC<SiteLogoProps> = ({
         </span>
       )}
       {showIcon && (
-        <Logo width={config.icon} height={config.icon} aria-hidden="true" />
+        <Logo width={config.icon} height={config.icon} aria-hidden="true" className={iconClassName} />
       )}
     </span>
   );

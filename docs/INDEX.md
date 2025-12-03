@@ -1,89 +1,37 @@
 # Documentation Index
 
-**Last Updated:** November 26, 2025
-**Status:** Documentation cleanup complete - 22→14 directories, merged analytics/seo/performance/content ✅
+**Last Updated:** December 2, 2025
+**Status:** Production-ready documentation ✅
 
 ---
 
 ## 📊 Current Structure
 
-The documentation is organized into **14 focused directories**:
+The documentation is organized into **15 focused directories**:
 
 ### 📁 Core Documentation (9 directories)
 
-1. **`architecture/`** - Architecture patterns and refactoring guides
-2. **`blog/`** - Blog system documentation + content strategy + RSS feeds (merged from `/rss`, `/content`)
+1. **`architecture/`** - Architecture patterns, refactoring guides, and migration docs
+2. **`blog/`** - Blog system documentation, content strategy, RSS feeds (includes `feeds/` subdirectory)
 3. **`components/`** - Component documentation (26 files)
-4. **`api/`** - API integration references
-5. **`features/`** - Feature guides (Inngest, GitHub, MCP)
-6. **`design/`** - Design system and UX (organized by topic)
-7. **`security/`** - Security implementation (CSP, rate limiting)
+4. **`api/`** - API integration references and route documentation (includes `routes/` subdirectory)
+5. **`features/`** - Feature guides (Inngest, GitHub, MCP) with `mcp/` subdirectory
+6. **`design/`** - Design system and UX (organized by topic: `typography/`, `mobile/`, `print/`, `spacing/`, `ui-patterns/`)
+7. **`security/`** - Security implementation (`csp/`, `rate-limiting/` subdirectories)
 8. **`platform/`** - Platform configuration (env vars, site config)
-9. **`operations/`** - Project management (todo, done, deployment)
+9. **`operations/`** - Project management (todo, done, deployment, `sessions/` subdirectory)
 
-### 🔧 Development & Optimization (3 directories)
+### 🔧 Development & Optimization (4 directories)
 
-1. **`development/`** - Performance optimization (merged from `/performance`)
+1. **`development/`** - Performance optimization and development guides
 2. **`testing/`** - Test infrastructure and coverage roadmap
-3. **`optimization/`** - SEO + accessibility + analytics (merged from `/seo`, `/analytics`)
+3. **`optimization/`** - SEO + accessibility + analytics (merged from earlier `/seo`, `/analytics`)
+4. **`content/`** - Content validation and markdown standards
 
-### 📦 Reference & Archive (2 directories)
+### 📦 Reference (2 directories)
 
-1. **`archive/`** - Historical documentation
-2. **`ai/`** - AI discovery research
-
----
-
-## 🎉 LATEST: Documentation Cleanup (Nov 26, 2025)
-
-### What Changed
-
-- ✅ **Consolidated 22 → 14 directories** (36% reduction)
-- ✅ **Completed pending merges** - analytics → optimization, seo → optimization, performance → development, content → blog
-- ✅ **Removed empty directories** - mcp/, rss/, accessibility/
-- ✅ **Archived fixes** - vercel-build-warnings-resolution.md → archive/fixes-2025/
-- ✅ **Updated documentation** - README and INDEX now accurately reflect structure
-
-### Benefits
-
-- 🎯 **Accurate documentation** - README/INDEX match actual structure
-- 📚 **Cleaner organization** - No orphaned directories
-- 🔍 **Better navigation** - Related docs properly grouped
-- 🧹 **Completed migrations** - All claimed merges actually executed
-
-### Previous Updates
-
-#### Test Coverage Roadmap (Nov 15, 2025)
-
-- ✅ 3-phase roadmap created (0.63% → 80% coverage)
-- ✅ Testing documentation: [testing/README.md](./testing/README.md), [coverage-roadmap.md](./testing/coverage-roadmap.md), [quick-reference.md](./testing/quick-reference.md)
-
-#### Documentation Refactoring (Nov 14, 2025)
-
-- ✅ Initial structure planned (documented but not fully executed until Nov 26)
-- ✅ Organized design/ into subdirectories
-- ✅ Moved mcp/ → features/mcp/
-
----
-
-## 🏗️ **Architecture Refactoring Complete (Nov 10, 2025)**
-
-Complete architecture overhaul with reusable patterns:
-
-### Core Pages Refactor (Phases 1-4) ✅
-- **Homepage**: 255 → 223 lines (12.5% reduction)
-- **About Page**: 255 → 159 lines (38% reduction)
-- **Contact Page**: 74 → 50 lines (32% reduction)
-- **Resume Page**: 129 → 113 lines (12% reduction)
-- **Total**: 726 → 569 lines (21.6% reduction)
-
-### New Infrastructure
-- ✅ 8 layout components (540+ lines)
-- ✅ Centralized metadata helpers (455 lines)
-- ✅ Enhanced design tokens
-- ✅ Comprehensive documentation (2,000+ lines)
-
-**See [`/docs/architecture/refactoring-complete.md`](./architecture/refactoring-complete.md) for full details.**
+1. **`ai/`** - AI contributor guides and discovery research (`discovery/` subdirectory)
+2. **`maintenance/`** - Dashboard modularization and maintenance patterns
 
 ---
 
@@ -96,7 +44,7 @@ Complete architecture overhaul with reusable patterns:
 ### Architecture & Code
 - **[architecture/README.md](./architecture/README.md)** - Architecture overview
 - **[architecture/migration-guide.md](./architecture/migration-guide.md)** - Step-by-step migration
-- **[components/](./components/)** - 23 component docs
+- **[components/](./components/)** - Component documentation
 
 ### Blog System
 - **[blog/architecture.md](./blog/architecture.md)** - Complete blog architecture
@@ -114,9 +62,9 @@ Complete architecture overhaul with reusable patterns:
 - **[design/spacing/](./design/spacing/)** - Spacing standards
 
 ### Development
-- **[testing/README.md](./testing/README.md)** - Testing overview ⭐ NEW
-- **[testing/coverage-roadmap.md](./testing/coverage-roadmap.md)** - 3-phase coverage plan ⭐ NEW
-- **[testing/quick-reference.md](./testing/quick-reference.md)** - Testing commands & patterns ⭐ NEW
+- **[testing/README.md](./testing/README.md)** - Testing overview
+- **[testing/coverage-roadmap.md](./testing/coverage-roadmap.md)** - 3-phase coverage plan
+- **[testing/quick-reference.md](./testing/quick-reference.md)** - Testing commands & patterns
 - **[development/](./development/)** - Performance optimization guides
 - **[optimization/](./optimization/)** - SEO + accessibility + analytics
 
@@ -131,26 +79,6 @@ Complete architecture overhaul with reusable patterns:
 
 ---
 
-## 📈 Structure Metrics
-
-### Before Refactoring
-- **21 top-level directories**
-- Scattered small directories (seo, accessibility, analytics, testing, performance)
-- Fixes in active docs
-- RSS/content separate from blog
-- MCP outside features
-- Flat design/ directory (32 files)
-
-### After Refactoring
-- **16 top-level directories** (24% reduction)
-- Consolidated optimization/ and development/
-- Fixes archived
-- RSS and content merged into blog/
-- MCP properly organized under features/
-- Design/ organized into subdirectories
-
----
-
 ## 🎯 Directory Purposes
 
 ### `architecture/`
@@ -160,7 +88,7 @@ Architecture patterns, refactoring guides, migration docs, best practices
 Blog system architecture, content creation, MDX processing, frontmatter schema, RSS feeds, content strategy
 
 ### `components/`
-23 component docs covering UI components, error boundaries, loading states, and advanced features
+Component docs covering UI components, error boundaries, loading states, and advanced features
 
 ### `api/`
 API integration references, route documentation, rate limiting, error handling
@@ -186,22 +114,22 @@ Platform configuration: environment variables, site config, view counts, deploym
 Project management: todo lists, completed work, deployment guides, automation
 
 ### `development/`
-Testing and performance: Lighthouse CI, bundle analysis, INP optimization, ISR
+Performance: Lighthouse CI, bundle analysis, INP optimization, ISR
 
-**Testing subdirectory** (`testing/`):
-- Test infrastructure setup (Vitest, Playwright, Testing Library)
-- 3-phase coverage roadmap (0.63% → 80% coverage)
-- Quick reference for commands and patterns
-- Mocking strategies and best practices
+### `testing/`
+Test infrastructure setup (Vitest, Playwright, Testing Library), coverage roadmap, mocking strategies
 
 ### `optimization/`
 SEO, accessibility, and analytics: meta tags, alt text, JSON-LD, tag analytics
 
-### `archive/`
-Historical documentation retained for reference
+### `content/`
+Content validation, markdown standards, Mermaid best practices
 
 ### `ai/`
-AI discovery research and documentation
+AI contributor guides and discovery research
+
+### `maintenance/`
+Dashboard modularization patterns and maintenance documentation
 
 ---
 
@@ -209,10 +137,9 @@ AI discovery research and documentation
 
 - Keep documentation in appropriate topical folders
 - Use subdirectories when a category grows beyond 10-12 files
-- Archive completed implementations to `archive/`
 - Update this INDEX and README when structure changes
 - Cross-reference related docs with relative links
 
 ---
 
-_Last updated: November 15, 2025. Latest: Test coverage roadmap created - 3-phase plan to 80% coverage._
+_Last updated: December 2, 2025_

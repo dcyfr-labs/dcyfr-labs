@@ -141,17 +141,18 @@ Before deploying, we verify:
 
 Current security rating: **A+** (Excellent)
 
-- ✅ **0 vulnerabilities** in dependencies (as of 2025-11-26)
+- ✅ **0 vulnerabilities** in dependencies (as of 2025-12-02)
 - ✅ **0 code security issues** detected
 - ✅ **100% security header coverage**
 - ✅ **Production-ready** security posture
 
 **Latest Security Updates:**
 
+- **2025-12-02:** Operational audit complete, all dependencies updated
 - **2025-11-26:** Dependencies updated (Next.js 16.0.4, Vitest 4.0.14, Playwright 1.57.0)
 - **2025-11-17:** Initial security documentation complete
 
-Last updated: 2025-11-26
+Last updated: 2025-12-02
 
 ## 📝 Responsible Disclosure
 
@@ -177,4 +178,4 @@ We thank the following security researchers for their responsible disclosure:
 
 ---
 
-**Note:** This security policy applies to the and its deployed instances. For questions about this policy, please reach out via the contact methods listed above.
+**Note:** This security policy applies to the dcyfr-labs repository and its deployed instances. For questions about this policy, please reach out via the contact methods listed above.
