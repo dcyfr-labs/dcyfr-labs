@@ -13,6 +13,10 @@ import {
   generateAnalyticsSummary,
   dailyAnalyticsSummary,
 } from "@/inngest/blog-functions";
+import {
+  securityAdvisoryMonitor,
+  securityAdvisoryHandler,
+} from "@/inngest/security-functions";
 
 /**
  * Inngest API endpoint for Next.js App Router
@@ -55,5 +59,9 @@ export const { GET, POST, PUT } = serve({
     calculateTrending,           // Scheduled: hourly
     generateAnalyticsSummary,    // Event-driven: on demand
     dailyAnalyticsSummary,       // Scheduled: daily at midnight UTC
+    
+    // Security monitoring (CVE-2025-55182 response)
+    securityAdvisoryMonitor,     // Scheduled: hourly GHSA polling
+    securityAdvisoryHandler,     // Event-driven: process detections
   ],
 });

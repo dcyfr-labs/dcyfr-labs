@@ -9,6 +9,19 @@ const CONTENT_DIR = path.join(process.cwd(), "src/content/blog");
 const WORDS_PER_MINUTE = 225;
 
 /**
+ * Supported blog post structures:
+ * 1. Flat file: src/content/blog/my-post.mdx
+ * 2. Folder with index: src/content/blog/my-post/index.mdx (allows co-located assets)
+ * 
+ * Folder structure enables co-locating images, videos, and other assets:
+ * src/content/blog/my-post/
+ * ├── index.mdx
+ * ├── hero.png
+ * ├── diagram.svg
+ * └── demo.mp4
+ */
+
+/**
  * Generate a stable, deterministic post ID from publishedAt date and slug
  * Format: "post-{YYYYMMDD}-{hash}"
  * This ensures the ID never changes even if the slug changes
@@ -55,11 +68,30 @@ export function getAllPosts(): Post[] {
     return [];
   }
 
-  const files = fs.readdirSync(CONTENT_DIR).filter((file) => file.endsWith(".mdx"));
+  const entries = fs.readdirSync(CONTENT_DIR, { withFileTypes: true });
+  const posts: Post[] = [];
 
-  const posts = files.map((filename) => {
-    const slug = filename.replace(/\.mdx$/, "");
-    const filePath = path.join(CONTENT_DIR, filename);
+  for (const entry of entries) {
+    let slug: string;
+    let filePath: string;
+
+    if (entry.isFile() && entry.name.endsWith(".mdx")) {
+      // Flat file: my-post.mdx
+      slug = entry.name.replace(/\.mdx$/, "");
+      filePath = path.join(CONTENT_DIR, entry.name);
+    } else if (entry.isDirectory()) {
+      // Folder with index: my-post/index.mdx
+      const indexPath = path.join(CONTENT_DIR, entry.name, "index.mdx");
+      if (fs.existsSync(indexPath)) {
+        slug = entry.name;
+        filePath = indexPath;
+      } else {
+        continue; // Skip directories without index.mdx
+      }
+    } else {
+      continue; // Skip non-MDX files and other entries
+    }
+
     const fileContents = fs.readFileSync(filePath, "utf8");
     const { data, content } = matter(fileContents, {
       engines: {
@@ -72,7 +104,7 @@ export function getAllPosts(): Post[] {
     // Use explicit ID from frontmatter, or auto-generate deterministically
     const id = (data.id as string | undefined) || generatePostId(publishedAt, slug);
 
-    return {
+    posts.push({
       id,
       slug,
       title: data.title as string,
@@ -89,8 +121,8 @@ export function getAllPosts(): Post[] {
       image: data.image as Post["image"] | undefined,
       series: data.series as Post["series"] | undefined,
       readingTime: calculateReadingTime(content),
-    } satisfies Post;
-  });
+    } satisfies Post);
+  }
 
   // Filter out draft posts in production
   const filteredPosts = posts.filter((post) => {
@@ -107,7 +139,13 @@ export function getAllPosts(): Post[] {
 }
 
 export function getPostBySlug(slug: string): Post | undefined {
-  const filePath = path.join(CONTENT_DIR, `${slug}.mdx`);
+  // Try flat file first: my-post.mdx
+  let filePath = path.join(CONTENT_DIR, `${slug}.mdx`);
+  
+  // Then try folder with index: my-post/index.mdx
+  if (!fs.existsSync(filePath)) {
+    filePath = path.join(CONTENT_DIR, slug, "index.mdx");
+  }
 
   if (!fs.existsSync(filePath)) {
     return undefined;

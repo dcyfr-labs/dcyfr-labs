@@ -432,7 +432,6 @@ export function InteractiveDiagram({
           fitView={fitView}
           minZoom={lockedMinZoom}
           maxZoom={lockedMaxZoom}
-          paneMoveable={!locked}
           panOnScroll={!locked}
           zoomOnScroll={!locked}
           zoomOnPinch={!locked}

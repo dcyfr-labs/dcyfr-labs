@@ -5,7 +5,7 @@ import { NextRequest } from "next/server";
 
 // Mock Sentry
 vi.mock("@sentry/nextjs", () => ({
-  captureMessage: vi.fn(),
+  addBreadcrumb: vi.fn(),
   setContext: vi.fn(),
 }));
 
@@ -49,13 +49,21 @@ describe("Honeypot Route /private/*", () => {
       expect(data).toEqual({ error: "Not found" });
     });
 
-    it("should capture message to Sentry with warning level", async () => {
+    it("should add breadcrumb to Sentry with warning level", async () => {
       const request = createMockRequest("GET");
       await GET(request);
 
-      expect(Sentry.captureMessage).toHaveBeenCalledWith(
-        "Honeypot triggered: /private/test-path",
-        "warning"
+      expect(Sentry.addBreadcrumb).toHaveBeenCalledWith(
+        expect.objectContaining({
+          category: "security",
+          message: "Honeypot triggered: /private/test-path",
+          level: "warning",
+          data: expect.objectContaining({
+            path: "/private/test-path",
+            user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Bot",
+            ip: "192.168.1.100",
+          }),
+        })
       );
     });
 
@@ -131,7 +139,7 @@ describe("Honeypot Route /private/*", () => {
       expect(context.ip).toBe("203.0.113.45, 192.168.1.1");
     });
 
-    it("should capture correct path for different honeypot routes", async () => {
+    it("should add breadcrumb with correct path for different honeypot routes", async () => {
       const paths = [
         "/private/admin",
         "/private/wp-admin",
@@ -145,9 +153,10 @@ describe("Honeypot Route /private/*", () => {
         const request = createMockRequest("GET", path);
         await GET(request);
 
-        expect(Sentry.captureMessage).toHaveBeenCalledWith(
-          `Honeypot triggered: ${path}`,
-          "warning"
+        expect(Sentry.addBreadcrumb).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: `Honeypot triggered: ${path}`,
+          })
         );
       }
     });
@@ -161,16 +170,17 @@ describe("Honeypot Route /private/*", () => {
       expect(response.status).toBe(404);
       const data = await response.json();
       expect(data).toEqual({ error: "Not found" });
-      expect(Sentry.captureMessage).toHaveBeenCalled();
+      expect(Sentry.addBreadcrumb).toHaveBeenCalled();
     });
 
     it("should log honeypot trigger for POST requests", async () => {
       const request = createMockRequest("POST");
       await POST(request);
 
-      expect(Sentry.captureMessage).toHaveBeenCalledWith(
-        "Honeypot triggered: /private/test-path",
-        "warning"
+      expect(Sentry.addBreadcrumb).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: "Honeypot triggered: /private/test-path",
+        })
       );
     });
   });
@@ -181,7 +191,7 @@ describe("Honeypot Route /private/*", () => {
       const response = await PUT(request);
 
       expect(response.status).toBe(404);
-      expect(Sentry.captureMessage).toHaveBeenCalled();
+      expect(Sentry.addBreadcrumb).toHaveBeenCalled();
     });
   });
 
@@ -191,7 +201,7 @@ describe("Honeypot Route /private/*", () => {
       const response = await DELETE(request);
 
       expect(response.status).toBe(404);
-      expect(Sentry.captureMessage).toHaveBeenCalled();
+      expect(Sentry.addBreadcrumb).toHaveBeenCalled();
     });
   });
 
@@ -201,7 +211,7 @@ describe("Honeypot Route /private/*", () => {
       const response = await PATCH(request);
 
       expect(response.status).toBe(404);
-      expect(Sentry.captureMessage).toHaveBeenCalled();
+      expect(Sentry.addBreadcrumb).toHaveBeenCalled();
     });
   });
 
@@ -224,7 +234,7 @@ describe("Honeypot Route /private/*", () => {
       const request = createMockRequest("HEAD");
       await HEAD(request);
 
-      expect(Sentry.captureMessage).toHaveBeenCalled();
+      expect(Sentry.addBreadcrumb).toHaveBeenCalled();
     });
   });
 
@@ -234,7 +244,7 @@ describe("Honeypot Route /private/*", () => {
       const response = await OPTIONS(request);
 
       expect(response.status).toBe(404);
-      expect(Sentry.captureMessage).toHaveBeenCalled();
+      expect(Sentry.addBreadcrumb).toHaveBeenCalled();
     });
   });
 
@@ -356,11 +366,11 @@ describe("Honeypot Route /private/*", () => {
   });
 
   describe("Integration with Sentry", () => {
-    it("should call captureMessage before setContext", async () => {
+    it("should call addBreadcrumb before setContext", async () => {
       const callOrder: string[] = [];
 
-      vi.mocked(Sentry.captureMessage).mockImplementation(() => {
-        callOrder.push("captureMessage");
+      vi.mocked(Sentry.addBreadcrumb).mockImplementation(() => {
+        callOrder.push("addBreadcrumb");
         return undefined as any;
       });
 
@@ -372,14 +382,14 @@ describe("Honeypot Route /private/*", () => {
       const request = createMockRequest("GET");
       await GET(request);
 
-      expect(callOrder).toEqual(["captureMessage", "setContext"]);
+      expect(callOrder).toEqual(["addBreadcrumb", "setContext"]);
     });
 
     it("should call Sentry exactly twice per request", async () => {
       const request = createMockRequest("GET");
       await GET(request);
 
-      expect(Sentry.captureMessage).toHaveBeenCalledTimes(1);
+      expect(Sentry.addBreadcrumb).toHaveBeenCalledTimes(1);
       expect(Sentry.setContext).toHaveBeenCalledTimes(1);
     });
   });
@@ -399,7 +409,7 @@ describe("Honeypot Route /private/*", () => {
         const request = createMockRequest("GET", path);
         const response = await GET(request);
         expect(response.status).toBe(404);
-        expect(Sentry.captureMessage).toHaveBeenCalled();
+        expect(Sentry.addBreadcrumb).toHaveBeenCalled();
       }
     });
   });

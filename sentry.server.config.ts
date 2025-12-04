@@ -12,8 +12,63 @@ Sentry.init({
   // Disable Sentry in development - errors will still be logged to console
   enabled: !isDev,
 
-  // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-  tracesSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1,
+  // Dynamic trace sampling based on route importance
+  // Reduces span usage while preserving observability for critical paths
+  tracesSampler: (samplingContext) => {
+    const name = samplingContext.name || "";
+    const op = samplingContext.attributes?.["sentry.op"] || "";
+
+    // Always sample errors and slow transactions
+    if (samplingContext.parentSampled !== undefined) {
+      return samplingContext.parentSampled;
+    }
+
+    // High-value routes: sample at 20%
+    if (
+      name.includes("/api/contact") ||
+      name.includes("/api/csp-report") ||
+      op === "http.server" && name.includes("POST")
+    ) {
+      return 0.2;
+    }
+
+    // Health/monitoring routes: sample at 1% (mostly noise)
+    if (
+      name.includes("/api/health") ||
+      name.includes("/monitoring") ||
+      name.includes("/_next/")
+    ) {
+      return 0.01;
+    }
+
+    // High-traffic pages: sample at 5%
+    if (
+      name === "/" ||
+      name === "/blog" ||
+      name.startsWith("/blog/")
+    ) {
+      return 0.05;
+    }
+
+    // Default: 10% for everything else
+    return 0.1;
+  },
+
+  // Filter out low-value transactions before sending
+  beforeSendTransaction: (transaction) => {
+    const name = transaction.transaction || "";
+
+    // Drop static asset transactions entirely
+    if (
+      name.includes("/_next/static") ||
+      name.includes("/favicon.ico") ||
+      name.match(/\.(js|css|png|jpg|svg|woff2?)$/)
+    ) {
+      return null;
+    }
+
+    return transaction;
+  },
 
   // Enable logs to be sent to Sentry
   enableLogs: true,

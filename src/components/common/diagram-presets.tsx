@@ -149,3 +149,80 @@ export function PipelineFlow({
     />
   );
 }
+
+/**
+ * CVE Decision Tree Preset
+ *
+ * Decision tree for vulnerability assessment showing affected/unaffected paths.
+ * Used in security-related blog posts to help readers quickly assess impact.
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <CVEDecisionTree height={400} />
+ * ```
+ */
+export function CVEDecisionTree({
+  showControls = true,
+  height = 400,
+  className
+}: DiagramPresetProps) {
+  const nodes: Node<BaseNodeData>[] = [
+    { 
+      id: '1', 
+      type: 'decision', 
+      position: { x: 250, y: 0 }, 
+      data: { label: 'Using RSC?' } 
+    },
+    { 
+      id: '2', 
+      type: 'modern', 
+      position: { x: 50, y: 120 }, 
+      data: { label: 'Not Affected', variant: 'primary' } 
+    },
+    { 
+      id: '3', 
+      type: 'decision', 
+      position: { x: 400, y: 120 }, 
+      data: { label: 'React Version?' } 
+    },
+    { 
+      id: '4', 
+      type: 'modern', 
+      position: { x: 250, y: 260 }, 
+      data: { label: 'Already Patched', variant: 'primary' } 
+    },
+    { 
+      id: '5', 
+      type: 'modern', 
+      position: { x: 500, y: 260 }, 
+      data: { label: 'Vulnerable!', variant: 'secondary' } 
+    },
+    { 
+      id: '6', 
+      type: 'output', 
+      position: { x: 500, y: 360 }, 
+      data: { label: 'Upgrade Now' } 
+    },
+  ];
+
+  const edges: Edge[] = [
+    { id: 'e1-2', source: '1', target: '2', label: 'No', animated: true },
+    { id: 'e1-3', source: '1', target: '3', label: 'Yes', animated: true },
+    { id: 'e3-4', source: '3', target: '4', label: '19.0.1, 19.1.2, 19.2.1+', animated: true },
+    { id: 'e3-5', source: '3', target: '5', label: 'Other 19.x', animated: true },
+    { id: 'e5-6', source: '5', target: '6', animated: true },
+  ];
+
+  return (
+    <InteractiveDiagram
+      nodes={nodes}
+      edges={edges}
+      showControls={showControls}
+      height={height}
+      className={className}
+      title="Am I Affected?"
+      description="Quick decision tree to assess CVE-2025-55182 impact"
+    />
+  );
+}
