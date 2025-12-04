@@ -43,7 +43,7 @@ All JSON-LD structured data schemas have been reviewed and validated against Sch
       "@type": "WebSite",
       "@id": "https://www.dcyfr.ai/#website",
       "url": "https://www.dcyfr.ai",
-      "name": "CyberDrew.dev",
+      "name": "www.dcyfr.ai",
       "publisher": { "@id": "https://www.dcyfr.ai/#person" },
       "inLanguage": "en-US",
       "potentialAction": {

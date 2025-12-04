@@ -115,4 +115,4 @@ gh api /repos/dcyfr/dcyfr-labs/code-scanning/alerts/{id}
 
 ## MCP Servers (Chat)
 
-Memory, Sequential Thinking, Context7, Sentry, Vercel, GitHub
+Perplexity, Context, Playwright, Axiom, Filesystem, GitHub, Vercel, Sentry

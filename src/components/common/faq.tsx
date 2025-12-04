@@ -84,7 +84,7 @@ export function FAQ({ items, title, className, children }: FAQProps) {
         {title && (
           <h2
             id="faq-title"
-            className="text-2xl font-semibold mb-4"
+            className="font-semibold text-2xl mb-4"
             style={{ fontFamily: "var(--font-sans)" }}
           >
             {title}
@@ -120,7 +120,7 @@ export function FAQ({ items, title, className, children }: FAQProps) {
           {title && (
             <h2
               id="faq-title"
-              className="text-2xl font-semibold mb-4"
+              className="font-semibold text-2xl mb-4"
               style={{ fontFamily: "var(--font-sans)" }}
             >
               {title}
@@ -148,7 +148,7 @@ export function FAQ({ items, title, className, children }: FAQProps) {
         {title && (
           <h2
             id="faq-title"
-            className="text-2xl font-semibold mb-4"
+            className="font-semibold text-2xl mb-4"
             style={{ fontFamily: "var(--font-sans)" }}
           >
             {title}

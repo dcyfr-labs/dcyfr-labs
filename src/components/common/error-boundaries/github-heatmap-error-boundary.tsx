@@ -14,8 +14,8 @@ function GitHubHeatmapErrorFallback({ error, resetError }: ErrorFallbackProps) {
   const DEFAULT_GITHUB_USERNAME = "dcyfr";
 
   return (
-    <Card className="p-6 border-amber-200 dark:border-amber-800/50 bg-amber-50/50 dark:bg-amber-900/5 min-h-[400px] flex items-center">
-      <div className="space-y-4 w-full">
+    <Card className="p-4 border-amber-200 dark:border-amber-800/50 bg-amber-50/50 dark:bg-amber-900/5 min-h-[400px] flex items-center">
+      <div className="space-y-3 w-full">
         <div className="flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-500 mt-0.5 flex-shrink-0" aria-hidden="true" />
           <div className="flex-1 space-y-2">

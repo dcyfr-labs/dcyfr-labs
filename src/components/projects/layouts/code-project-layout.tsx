@@ -120,7 +120,7 @@ export function CodeProjectLayout({ project, nonce, basePath = '/work' }: CodePr
               {codeContent.codeDemo.input && (
                 <Card>
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">Input</CardTitle>
+                    <CardTitle className="font-medium text-sm text-muted-foreground">Input</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <pre className="text-sm bg-muted/50 p-3 rounded-md overflow-x-auto">
@@ -132,7 +132,7 @@ export function CodeProjectLayout({ project, nonce, basePath = '/work' }: CodePr
               {codeContent.codeDemo.output && (
                 <Card>
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">Output</CardTitle>
+                    <CardTitle className="font-medium text-sm text-muted-foreground">Output</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <pre className="text-sm bg-muted/50 p-3 rounded-md overflow-x-auto">

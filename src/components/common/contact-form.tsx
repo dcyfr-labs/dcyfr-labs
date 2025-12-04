@@ -66,7 +66,7 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+    <form onSubmit={handleSubmit} className="mt-8 space-y-4">
       {/* Honeypot field - hidden from real users, visible to bots */}
       <div className="hidden" aria-hidden="true">
         <Label htmlFor="website">Website (leave blank)</Label>

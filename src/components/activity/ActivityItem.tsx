@@ -224,7 +224,7 @@ function CompactItem({
         <Icon className={cn("h-3.5 w-3.5", colors?.icon)} />
       </div>
 
-      <span className="flex-1 text-sm font-medium truncate group-hover:text-primary transition-colors">
+      <span className="flex-1 font-medium text-sm truncate group-hover:text-primary transition-colors">
         {activity.title}
       </span>
 

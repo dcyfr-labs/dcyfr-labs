@@ -88,7 +88,7 @@ export function SkillsAndCertifications({ skills, certifications }: SkillsAndCer
   }, [certifications]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {/* Certifications Subsection */}
       <div className="space-y-3 pt-6">
         <h2 className={`${TYPOGRAPHY.h2.standard} mb-3`}>Certifications</h2>

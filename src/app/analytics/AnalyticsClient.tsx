@@ -296,7 +296,7 @@ export default function AnalyticsDashboard() {
         title="Analytics Dashboard"
         description="View and analyze blog post performance metrics"
       >
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Stats Section Header */}
           <div className="flex items-center justify-between">
             <div>
@@ -343,7 +343,7 @@ export default function AnalyticsDashboard() {
           {/* Charts Section */}
           <div className="space-y-4">
             <Skeleton className="h-6 w-32" />
-            <Card className="p-6">
+            <Card className="p-4">
               <Skeleton className="h-64 w-full" />
             </Card>
           </div>
@@ -668,7 +668,7 @@ export default function AnalyticsDashboard() {
           </div>
         </CardHeader>
         {showPerformance && (
-          <CardContent className="pt-0 space-y-6">
+          <CardContent className="pt-0 space-y-4">
             {/* Time-Series Charts */}
             <AnalyticsCharts posts={sortedPosts} dateRange={dateRange} />
             

@@ -67,7 +67,7 @@ export function SocialProof() {
   );
 
   return (
-    <Card className="p-5 space-y-5">
+    <Card className="p-4 space-y-4">
       <div className="space-y-2">
         <h3 className={TYPOGRAPHY.h3.standard}>Track Record</h3>
         <p className="text-sm text-muted-foreground">

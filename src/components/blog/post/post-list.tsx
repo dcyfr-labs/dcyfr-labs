@@ -257,7 +257,7 @@ export function PostList({
 
                       {/* Subtitle if available */}
                       {p.subtitle && (
-                        <p className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 font-medium mb-4">
+                        <p className="font-medium text-lg md:text-xl text-zinc-600 dark:text-zinc-400 mb-4">
                           <HighlightText text={p.subtitle} searchQuery={searchQuery} />
                         </p>
                       )}

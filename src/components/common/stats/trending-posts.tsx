@@ -43,7 +43,7 @@ export function TrendingPosts({ posts, viewCounts, limit = 3 }: TrendingPostsPro
   if (sortedPosts.length === 0) {
     return (
       <Card className="border-dashed">
-        <CardContent className="p-6 text-center">
+        <CardContent className="p-4 text-center">
           <TrendingUp className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
           <p className="text-sm text-muted-foreground">
             Trending data will appear as posts gain traction

@@ -67,7 +67,7 @@ export function ConversionMetrics({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Conversion Goals Header */}
       <Card>
         <CardHeader className="pb-3">
@@ -123,7 +123,7 @@ export function ConversionMetrics({
             Track user journeys from awareness to conversion
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4">
           {/* Funnel 1: Organic Search → Blog → Contact */}
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">

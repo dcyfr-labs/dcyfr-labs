@@ -24,5 +24,12 @@
     "other": true,
     "comments": false,
     "strings": true
+  },
+  "chat.mcp.serverSampling": {
+    "dcyfr-labs/.vscode/mcp.json: Sentry": {
+      "allowedModels": [
+        "copilot/auto"
+      ]
+    }
   }
 }

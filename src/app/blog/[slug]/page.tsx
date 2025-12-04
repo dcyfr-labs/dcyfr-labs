@@ -194,7 +194,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
       {/* Desktop Layout: Sidebar + Content */}
       <div className={`container ${CONTAINER_WIDTHS.content} mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-12 pb-8`}>
-        <div className="grid gap-8 items-start lg:grid-cols-[280px_1fr]">
+        <div className="grid gap-4 items-start lg:grid-cols-[280px_1fr]">
           {/* Left Sidebar (desktop only) */}
           <BlogPostSidebar
             headings={headings}
@@ -285,7 +285,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                       <span className="text-sm text-muted-foreground">Tagged:</span>
                       {post.tags.map((tag: string) => (
                         <a key={tag} href={`/blog?tag=${encodeURIComponent(tag)}`}>
-                          <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 cursor-pointer">
+                          <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 cursor-pointer">
                             {tag}
                           </span>
                         </a>

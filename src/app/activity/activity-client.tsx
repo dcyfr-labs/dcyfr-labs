@@ -81,7 +81,7 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
   }, [activities]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {/* Filters */}
       <ActivityFilters
         selectedSources={selectedSources}

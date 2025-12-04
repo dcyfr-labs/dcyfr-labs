@@ -78,7 +78,7 @@ export function PostHeroImage({ image, title, priority = true }: PostHeroImagePr
       
       {/* Caption and Credit */}
       {hasCaption && (
-        <figcaption className="px-4 sm:px-6 md:px-8 pt-3 text-sm text-muted-foreground">
+        <figcaption className="px-4 sm:px-8 md:px-8 pt-3 text-sm text-muted-foreground">
           {image.caption && (
             <p className="mb-1">{image.caption}</p>
           )}

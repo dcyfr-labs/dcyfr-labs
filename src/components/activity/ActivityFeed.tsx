@@ -153,7 +153,7 @@ function GroupedFeed({
   const groups = groupActivitiesByTime(items);
 
   return (
-    <div className={cn("space-y-6", className)}>
+    <div className={cn("space-y-4", className)}>
       {TIME_GROUP_ORDER.map((group) => {
         const groupItems = groups.get(group);
         if (!groupItems?.length) return null;

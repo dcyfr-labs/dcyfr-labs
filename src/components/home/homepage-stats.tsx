@@ -62,7 +62,7 @@ export function HomepageStats({
   className,
 }: HomepageStatsProps) {
   return (
-    <div className={cn("grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6", className)}>
+    <div className={cn("grid grid-cols-2 lg:grid-cols-4 gap-4", className)}>
       <StatItem value={postsCount} label="Blog Posts" />
       <StatItem value={projectsCount} label="Projects" />
       <StatItem value={yearsOfExperience} label="Years Experience" suffix="+" />

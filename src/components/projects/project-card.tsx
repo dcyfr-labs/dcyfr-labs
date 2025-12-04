@@ -86,7 +86,7 @@ export function ProjectCard({
       <div className="block group cursor-pointer">
         <Card className={cn("flex h-full flex-col overflow-hidden relative", HOVER_EFFECTS.card)}>
           {/* Content - matches CardHeader structure exactly */}
-          <CardHeader className="space-y-1.5 px-4 sm:px-6 py-4 sm:py-5">
+          <CardHeader className="space-y-1.5 px-4 py-4 sm:py-4">
             {/* Timeline with status badge */}
             <div className="flex items-center gap-2">
               <Skeleton className="h-5 w-16" />
@@ -144,7 +144,7 @@ export function ProjectCard({
     >
       <Card className={cn("flex h-full flex-col overflow-hidden relative", HOVER_EFFECTS.card)}>
         {/* Content */}
-        <CardHeader className="space-y-1.5 px-4 sm:px-6 py-4 sm:py-5">
+        <CardHeader className="space-y-1.5 px-4 py-4">
           {project.timeline && (
             <p className="text-xs uppercase tracking-wide text-muted-foreground flex items-center gap-2">
               {project.status !== "active" && (

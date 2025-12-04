@@ -110,7 +110,7 @@ export function AvailabilityBanner({ className }: { className?: string }) {
     : undefined;
 
   return (
-    <div className={cn("rounded-lg border bg-muted/50 p-6", className)}>
+    <div className={cn("rounded-lg border bg-muted/50 p-4", className)}>
       <div className="flex items-start gap-3">
         <div className="relative h-3 w-3 mt-1.5 shrink-0" aria-hidden="true">
           <span className="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-75" />
@@ -182,7 +182,7 @@ export function BlogPostCTA({
     <div
       className={cn(
         variant === "centered" ? "text-center" : "",
-        "rounded-lg border bg-linear-to-b from-muted/50 to-muted/30 p-6 md:p-8 mt-12 mb-6",
+        "rounded-lg border bg-linear-to-b from-muted/50 to-muted/30 p-4 md:p-8 mt-12 mb-6",
         className
       )}
     >
@@ -249,7 +249,7 @@ export function ProjectsCTA({ className }: { className?: string }) {
 
   return (
     <section className={cn('mt-12 text-center', className)}>
-      <div className="rounded-lg border bg-linear-to-b from-muted/50 to-muted/30 p-6 md:p-8">
+      <div className="rounded-lg border bg-linear-to-b from-muted/50 to-muted/30 p-4 md:p-8">
         <h2 className={cn(TYPOGRAPHY.h2.featured, 'mb-2')}>
           Interested in collaborating?
         </h2>

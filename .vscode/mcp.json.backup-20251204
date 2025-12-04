@@ -1,10 +1,20 @@
 {
 	"servers": {
-		"Perplexity": {
-			"type": "stdio",
+		"Memory": {
 			"command": "npx",
-			"args": ["-y", "@perplexity-ai/mcp-server"],
-			"envFile": "${workspaceFolder}/.env.local"
+			"args": [
+				"-y",
+				"@modelcontextprotocol/server-memory"
+			],
+			"type": "stdio"
+		},
+		"Thinking": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"@modelcontextprotocol/server-sequential-thinking"
+			],
+			"type": "stdio"
 		},
 		"Context": {
 			"command": "npx",
@@ -13,16 +23,6 @@
 				"@upstash/context7-mcp@latest"
 			],
 			"type": "stdio"
-		},
-		"Playwright": {
-			"type": "stdio",
-			"command": "npx",
-			"args": ["-y", "@playwright/mcp@latest"]
-		},
-		"Axiom": {
-			"type": "stdio",
-			"command": "npx",
-			"args": ["-y", "mcp-remote", "https://mcp.axiom.co/mcp"]
 		},
 		"Filesystem": {
 			"command": "npx",

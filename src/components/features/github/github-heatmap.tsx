@@ -286,8 +286,8 @@ export function GitHubHeatmap({ username = DEFAULT_GITHUB_USERNAME }: GitHubHeat
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        <Card className="p-6">
-          <div className="space-y-4">
+        <Card className="p-4">
+          <div className="space-y-3">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <h3 className="text-lg font-semibold">GitHub Activity</h3>
               <a

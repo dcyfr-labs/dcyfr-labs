@@ -205,7 +205,7 @@ export function AnalyticsRecommendations({ posts, compact = false }: AnalyticsRe
 
   if (recommendations.length === 0) {
     return (
-      <Card className="p-6 text-center">
+      <Card className="p-4 text-center">
         <Sparkles className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
         <p className="text-sm text-muted-foreground">
           Everything looks great! Keep up the excellent work.

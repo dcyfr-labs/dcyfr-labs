@@ -62,7 +62,7 @@ export function KeyboardShortcutsHelp({ open, onOpenChange }: KeyboardShortcutsH
           </DialogDescription>
         </DialogHeader>
         
-        <div className="space-y-6">
+        <div className="space-y-4">
           {shortcuts.map((section) => (
             <div key={section.category}>
               <h3 className="font-semibold mb-3">{section.category}</h3>

@@ -109,7 +109,7 @@ export function ProjectFilters({
         <SlidersHorizontal className="h-4 w-4" />
         <span>Filters</span>
         {count > 0 && (
-          <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+          <span className="rounded-full bg-primary/10 px-2 py-0.5 font-medium text-xs text-primary">
             {count}
           </span>
         )}

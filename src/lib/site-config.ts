@@ -113,6 +113,16 @@ export const SERVICES = {
     analyticsEnabled: true,
     speedInsightsEnabled: true,
   },
+
+  perplexity: {
+    enabled: !!process.env.PERPLEXITY_API_KEY,
+    apiUrl: "https://api.perplexity.ai",
+    defaultModel: "llama-3.1-sonar-large-128k-online" as const,
+    cacheMinutes: 5,
+    rateLimit: {
+      requestsPerMinute: 5,
+    },
+  },
 } as const;
 
 // Choose the active domain/URL based on environment variables.

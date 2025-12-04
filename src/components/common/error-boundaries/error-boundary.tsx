@@ -74,8 +74,8 @@ export class ErrorBoundary extends React.Component<
  */
 export function DefaultErrorFallback({ error, resetError }: ErrorFallbackProps) {
   return (
-    <Card className="p-6 border-destructive/50">
-      <div className="space-y-4">
+    <Card className="p-4 border-destructive/50">
+      <div className="space-y-3">
         <div className="space-y-2">
           <h2 className={cn("text-lg", "font-semibold", "text-destructive")}>Something went wrong</h2>
           <p className="text-sm text-muted-foreground">

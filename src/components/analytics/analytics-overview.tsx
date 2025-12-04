@@ -39,7 +39,7 @@ export function AnalyticsOverview({
   const [showFeaturedPosts, setShowFeaturedPosts] = useState(true);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Stats Section - Collapsible */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">

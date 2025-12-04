@@ -42,7 +42,7 @@ export function SeriesNavigation({ currentPost, seriesPosts }: SeriesNavigationP
   const totalPosts = seriesPosts.length;
 
   return (
-    <div className="my-8 rounded-lg border bg-card p-6">
+    <div className="my-8 rounded-lg border bg-card p-4">
       <div className="flex items-start gap-3 mb-4">
         <BookOpen className="h-5 w-5 mt-0.5 text-primary flex-shrink-0" />
         <div className="flex-1 min-w-0">

@@ -152,7 +152,7 @@ export function MobileFilterBar({
             <button
               type="button"
               className={cn(
-                "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-xs font-medium transition-all",
+                "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium text-xs transition-all",
                 "hover:bg-accent hover:text-accent-foreground active:bg-accent/80 dark:hover:bg-accent/60",
                 "disabled:pointer-events-none disabled:opacity-50",
                 "h-6 px-2"

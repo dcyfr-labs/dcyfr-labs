@@ -82,7 +82,7 @@ export function UnifiedTimeline({ experiences, education, companyUrls }: Unified
         aria-hidden="true"
       />
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         {timelineItems.map((item, index) => (
           <div key={index} className="relative">
             {/* Timeline dot */}
