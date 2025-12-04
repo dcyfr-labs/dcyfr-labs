@@ -233,6 +233,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
               <ArticleHeader
                 title={post.title}
+                subtitle={post.subtitle}
               >
                 {/* Metadata shown only when sidebar is hidden */}
                 <HideWhenSidebarVisible>

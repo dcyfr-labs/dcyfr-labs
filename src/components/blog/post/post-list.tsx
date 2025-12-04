@@ -254,6 +254,13 @@ export function PostList({
                       <TitleTag className="font-bold text-3xl md:text-4xl lg:text-5xl leading-tight line-clamp-3 mb-4 text-zinc-900 dark:text-zinc-100">
                         <HighlightText text={p.title} searchQuery={searchQuery} />
                       </TitleTag>
+
+                      {/* Subtitle if available */}
+                      {p.subtitle && (
+                        <p className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 font-medium mb-4">
+                          <HighlightText text={p.subtitle} searchQuery={searchQuery} />
+                        </p>
+                      )}
                       
                       {/* Extended summary with better readability */}
                       <p className="text-base md:text-xl leading-relaxed text-zinc-700 dark:text-zinc-300 line-clamp-2 md:line-clamp-3 mb-5">

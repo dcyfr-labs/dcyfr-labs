@@ -99,7 +99,8 @@ describe("MDX Component", () => {
       expect(blockquote.tagName).toBe("BLOCKQUOTE");
       // Classnames changed to reflect updated design tokens: left padding and spacing
       expect(blockquote.className).toContain("pl-4");
-      expect(blockquote.className).toContain("my-6");
+      expect(blockquote.className).toContain("mt-6");
+      expect(blockquote.className).toContain("border-l-4");
     });
   });
 
