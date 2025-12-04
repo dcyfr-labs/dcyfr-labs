@@ -62,11 +62,11 @@ Sentry.init({
     /^safari-extension:\/\//i,
     /^safari-web-extension:\/\//i,
     // Common third-party scripts that may error
-    /googletagmanager\.com/i,
-    /google-analytics\.com/i,
-    /doubleclick\.net/i,
-    /hotjar\.com/i,
-    /intercom\.io/i,
+    /^https?:\/\/[^/]*googletagmanager\.com/i,
+    /^https?:\/\/[^/]*google-analytics\.com/i,
+    /^https?:\/\/[^/]*doubleclick\.net/i,
+    /^https?:\/\/[^/]*hotjar\.com/i,
+    /^https?:\/\/[^/]*intercom\.io/i,
   ],
 
   // Enable sending user PII (Personally Identifiable Information)
