@@ -201,19 +201,49 @@ const nodeTypes: NodeTypes = {
 // ============================================================================
 
 /**
- * Internal component that handles automatic fit view on layout changes
+ * Internal component that handles automatic fit view on layout changes and viewport resize with auto zoom
  */
 function AutoFitView({ nodes }: { nodes: Node<BaseNodeData>[] }) {
   const { fitView: reactFlowFitView } = useReactFlow();
 
+  // Helper function to fit and zoom the view - memoized to avoid dependency issues
+  const fitAndZoom = useCallback((duration: number) => {
+    // Use fitView which automatically calculates optimal zoom level
+    reactFlowFitView({
+      padding: 0.2,
+      duration,
+      maxZoom: 1.5, // Allow zooming in up to 1.5x for better visibility
+      minZoom: 0.1, // Allow zooming out to 0.1x for overview
+    });
+  }, [reactFlowFitView]);
+
   useEffect(() => {
     // Fit view when nodes change (layout shifts)
     const timer = setTimeout(() => {
-      reactFlowFitView({ padding: 0.2, duration: 400 });
+      fitAndZoom(400);
     }, 100);
 
     return () => clearTimeout(timer);
-  }, [nodes, reactFlowFitView]);
+  }, [nodes, fitAndZoom]);
+
+  // Handle viewport resize for responsive scaling and auto zoom
+  useEffect(() => {
+    let resizeTimer: NodeJS.Timeout;
+
+    const handleResize = () => {
+      // Debounce resize events to avoid excessive updates
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        fitAndZoom(300);
+      }, 200);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimer);
+    };
+  }, [fitAndZoom]);
 
   return null;
 }
@@ -257,6 +287,8 @@ export interface InteractiveDiagramProps {
   title?: string;
   /** Description for the diagram */
   description?: string;
+  /** Lock the diagram (disable dragging, panning, zooming) */
+  locked?: boolean;
 }
 
 /**
@@ -312,9 +344,17 @@ export function InteractiveDiagram({
   customEdgeTypes,
   title,
   description,
+  locked = true,
 }: InteractiveDiagramProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  // Apply lock settings
+  const isDraggable = locked ? false : draggable;
+  const shouldShowControls = locked ? false : showControls;
+  // When locked, prevent user zoom but allow auto-fit to work (0.1 to 1.5 range)
+  const lockedMinZoom = locked ? 0.1 : minZoom;
+  const lockedMaxZoom = locked ? 1.5 : maxZoom;
 
   const onConnect: OnConnect = useCallback(
     (params) => {
@@ -387,11 +427,15 @@ export function InteractiveDiagram({
           onConnect={onConnect}
           nodeTypes={mergedNodeTypes}
           edgeTypes={customEdgeTypes}
-          nodesDraggable={draggable}
+          nodesDraggable={isDraggable}
           nodesConnectable={connectable}
           fitView={fitView}
-          minZoom={minZoom}
-          maxZoom={maxZoom}
+          minZoom={lockedMinZoom}
+          maxZoom={lockedMaxZoom}
+          panOnScroll={!locked}
+          zoomOnScroll={!locked}
+          zoomOnPinch={!locked}
+          panOnDrag={!locked}
           proOptions={{ hideAttribution: true }}
           className="bg-background"
         >
@@ -405,7 +449,7 @@ export function InteractiveDiagram({
             }}
           />
         )}
-        {showControls && (
+        {shouldShowControls && (
           <Controls
             className="bg-card! border-border! shadow-md!"
             showInteractive={connectable}

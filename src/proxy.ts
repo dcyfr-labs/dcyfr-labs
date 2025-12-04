@@ -88,14 +88,15 @@ export default function proxy(request: NextRequest) {
     );
 
     if (isSuspicious) {
-      // Report to Sentry for security monitoring
-      Sentry.captureMessage(`Suspicious path access attempt: ${pathname}`, {
+      // Add breadcrumb for security monitoring (doesn't consume event quota)
+      // These are informational - actual attacks will trigger errors elsewhere
+      Sentry.addBreadcrumb({
+        category: "security",
+        message: `Suspicious path access attempt: ${pathname}`,
         level: "warning",
-        tags: {
+        data: {
           security: "reconnaissance",
           path: pathname,
-        },
-        extra: {
           url: request.url,
           method: request.method,
           userAgent: request.headers.get("user-agent") || "unknown",
@@ -119,14 +120,15 @@ export default function proxy(request: NextRequest) {
   // Check honeypot paths (always active)
   for (const p of honeypotPaths) {
     if (pathname === p || pathname.startsWith(p + "/")) {
-      // Log as honeypot trigger (security monitoring)
-      Sentry.captureMessage(`Honeypot triggered: ${pathname}`, {
+      // Add breadcrumb for honeypot trigger (doesn't consume event quota)
+      // Security events are informational - they'll appear in traces if real issues occur
+      Sentry.addBreadcrumb({
+        category: "security",
+        message: `Honeypot triggered: ${pathname}`,
         level: "warning",
-        tags: {
+        data: {
           security: "honeypot",
           path: pathname,
-        },
-        extra: {
           url: request.url,
           method: request.method,
           userAgent: request.headers.get("user-agent") || "unknown",
@@ -152,14 +154,14 @@ export default function proxy(request: NextRequest) {
   if (!isDevelopment) {
     for (const p of devOnlyHoneypotPaths) {
       if (pathname === p || pathname.startsWith(p + "/")) {
-        // Log as honeypot trigger (security monitoring)
-        Sentry.captureMessage(`Honeypot triggered: ${pathname}`, {
+        // Add breadcrumb for honeypot trigger (doesn't consume event quota)
+        Sentry.addBreadcrumb({
+          category: "security",
+          message: `Honeypot triggered: ${pathname}`,
           level: "warning",
-          tags: {
+          data: {
             security: "honeypot",
             path: pathname,
-          },
-          extra: {
             url: request.url,
             method: request.method,
             userAgent: request.headers.get("user-agent") || "unknown",
@@ -201,14 +203,14 @@ export default function proxy(request: NextRequest) {
       const isInternal = referer && host && referer.includes(host);
 
       if (!isInternal) {
-        // Log unauthorized API access attempt
-        Sentry.captureMessage(`Unauthorized API access attempt: ${pathname}`, {
+        // Add breadcrumb for unauthorized API access attempt (doesn't consume event quota)
+        Sentry.addBreadcrumb({
+          category: "security",
+          message: `Unauthorized API access attempt: ${pathname}`,
           level: "warning",
-          tags: {
+          data: {
             security: "unauthorized-api",
             path: pathname,
-          },
-          extra: {
             url: request.url,
             method: request.method,
             userAgent: request.headers.get("user-agent") || "unknown",

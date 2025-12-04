@@ -7,11 +7,19 @@ export async function GET(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for") || "unknown";
   const url = request.nextUrl.pathname;
 
-  // Log honeypot access to Sentry for security monitoring
-  Sentry.captureMessage(
-    `Honeypot triggered: ${url}`,
-    "warning"
-  );
+  // Log honeypot access for security monitoring (breadcrumb doesn't consume event quota)
+  // These will appear in traces when actual errors occur
+  Sentry.addBreadcrumb({
+    category: "security",
+    message: `Honeypot triggered: ${url}`,
+    level: "warning",
+    data: {
+      path: url,
+      user_agent: userAgent,
+      referer: referer,
+      ip: ip,
+    },
+  });
 
   Sentry.setContext("honeypot_attempt", {
     path: url,
@@ -50,11 +58,18 @@ export async function HEAD(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for") || "unknown";
   const url = request.nextUrl.pathname;
 
-  // Log honeypot access to Sentry for security monitoring
-  Sentry.captureMessage(
-    `Honeypot triggered: ${url}`,
-    "warning"
-  );
+  // Log honeypot access for security monitoring (breadcrumb doesn't consume event quota)
+  Sentry.addBreadcrumb({
+    category: "security",
+    message: `Honeypot triggered: ${url}`,
+    level: "warning",
+    data: {
+      path: url,
+      user_agent: userAgent,
+      referer: referer,
+      ip: ip,
+    },
+  });
 
   Sentry.setContext("honeypot_attempt", {
     path: url,

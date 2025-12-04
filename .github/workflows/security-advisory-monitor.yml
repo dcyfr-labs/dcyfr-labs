@@ -1,0 +1,184 @@
+name: Security Advisory Monitor
+
+# Proactive monitoring for upstream security advisories
+# Addresses 13-hour detection gap from CVE-2025-55182
+# - Every 2 hours during business hours (9 AM - 6 PM PT)
+# - Every 6 hours overnight and weekends
+
+on:
+  schedule:
+    # Business hours (9 AM - 6 PM PT = 17:00 - 02:00 UTC next day)
+    # Every 2 hours: 17:00, 19:00, 21:00, 23:00, 01:00 UTC
+    - cron: '0 17,19,21,23,1 * * 1-5'  # Mon-Fri business hours
+    # Overnight/weekends - every 6 hours
+    - cron: '0 3,9,15 * * 1-5'          # Mon-Fri overnight (3, 9, 15 UTC)
+    - cron: '0 */6 * * 0,6'             # Sat-Sun every 6 hours
+  workflow_dispatch:
+    inputs:
+      force_alert:
+        description: 'Force alert even if no new advisories'
+        required: false
+        default: 'false'
+      severity_threshold:
+        description: 'Minimum severity to alert on (low, medium, high, critical)'
+        required: false
+        default: 'high'
+
+concurrency:
+  group: security-advisory-monitor
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+  security-events: read
+
+env:
+  # Packages to monitor for security advisories
+  # RSC packages get medium+ severity, others get high+ severity
+  CORE_PACKAGES: 'next,react,react-dom'
+  RSC_PACKAGES: 'react-server-dom-webpack,react-server-dom-turbopack,react-server-dom-parcel'
+  # Severity thresholds
+  CORE_SEVERITY: 'high,critical'
+  RSC_SEVERITY: 'medium,high,critical'
+
+jobs:
+  check-advisories:
+    name: Check GitHub Security Advisories
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    outputs:
+      has_new_advisories: ${{ steps.check.outputs.has_new_advisories }}
+      advisory_count: ${{ steps.check.outputs.advisory_count }}
+      advisory_summary: ${{ steps.check.outputs.advisory_summary }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Check for new advisories
+        id: check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORCE_ALERT: ${{ github.event.inputs.force_alert }}
+          SEVERITY_THRESHOLD: ${{ github.event.inputs.severity_threshold || 'high' }}
+        run: node scripts/monitor-upstream-advisories.mjs
+
+      - name: Create/Update security issue
+        if: steps.check.outputs.has_new_advisories == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          node -e "
+          const { getOrCreateIssue } = await import('./scripts/github-api.mjs');
+          
+          const summary = process.env.ADVISORY_SUMMARY;
+          const count = process.env.ADVISORY_COUNT;
+          const date = new Date().toISOString().split('T')[0];
+          
+          const body = \`## 🚨 Security Advisory Alert - \${date}
+
+          **\${count} new security advisor(y/ies) detected** for monitored packages.
+
+          ### Affected Packages
+
+          \${summary}
+
+          ### Action Required
+
+          1. Review the advisories linked above
+          2. Check if our current package versions are affected
+          3. Upgrade affected packages immediately if vulnerable
+          4. Deploy updated versions to production
+
+          ### Automated Detection
+
+          This issue was created by the Security Advisory Monitor workflow.
+          - Polling frequency: Every 2 hours (business hours) / 6 hours (overnight)
+          - Monitored packages: next, react, react-dom, react-server-dom-*
+
+          ---
+          <!-- Signature: security-advisory-monitor-\${date} -->
+          \`;
+
+          await getOrCreateIssue({
+            label: 'security',
+            signature: 'security-advisory-monitor-' + date,
+            title: '🚨 Security Advisory: ' + count + ' new vulnerabilities detected',
+            body,
+            labels: ['security', 'priority:critical', 'automated'],
+            updateIfExists: true
+          });
+          "
+        env:
+          ADVISORY_SUMMARY: ${{ steps.check.outputs.advisory_summary }}
+          ADVISORY_COUNT: ${{ steps.check.outputs.advisory_count }}
+
+      - name: Send Slack notification
+        if: steps.check.outputs.has_new_advisories == 'true' && vars.SLACK_WEBHOOK_URL
+        run: |
+          curl -X POST "${{ vars.SLACK_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "text": "🚨 Security Advisory Alert",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "🚨 New Security Advisories Detected"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*${{ steps.check.outputs.advisory_count }}* new security advisories found for monitored packages.\n\nCheck the GitHub Issue for details and required actions."
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Issues"
+                      },
+                      "url": "https://github.com/${{ github.repository }}/issues?q=is%3Aissue+label%3Asecurity+is%3Aopen"
+                    }
+                  ]
+                }
+              ]
+            }'
+
+      - name: Summary
+        run: |
+          echo "## Security Advisory Monitor" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.check.outputs.has_new_advisories }}" == "true" ]; then
+            echo "### 🚨 New Advisories Found" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "${{ steps.check.outputs.advisory_summary }}" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### ✅ No New Advisories" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "All monitored packages are clear of new security advisories." >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Monitored packages:** next, react, react-dom, react-server-dom-*" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Next check:** ~2 hours (business hours) or ~6 hours (overnight)" >> $GITHUB_STEP_SUMMARY

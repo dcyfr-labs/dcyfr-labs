@@ -10,7 +10,8 @@ import type { Options as RehypePrettyCodeOptions } from "rehype-pretty-code";
 import { CopyCodeButton } from "@/components/common/copy-code-button";
 import { HorizontalRule } from "@/components/common/horizontal-rule";
 import { Mermaid as MermaidComponent } from "@/components/common/mermaid";
-import { MCPArchitecture, AuthenticationFlow, PipelineFlow } from "@/components/common/diagram-presets";
+import { MCPArchitecture, AuthenticationFlow, PipelineFlow, CVEDecisionTree } from "@/components/common/diagram-presets";
+import { FAQ } from "@/components/common/faq";
 import {
   Check,
   X,
@@ -158,7 +159,7 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
   blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => (
     <blockquote 
       {...props} 
-      className="pl-4 my-6"
+      className="mt-6 border-l-4 border-primary/30 pl-4 italic text-muted-foreground not:first:mt-0"
     />
   ),
   table: (props: React.HTMLAttributes<HTMLTableElement>) => (
@@ -300,15 +301,15 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
     );
   },
   // Icon components for consistent styling across the site
-  CheckIcon: () => <Check className="inline-block w-4 h-4 text-green-600 dark:text-green-400" aria-label="Check" />,
-  XIcon: () => <X className="inline-block w-4 h-4 text-red-600 dark:text-red-400" aria-label="Cross" />,
-  ReturnIcon: () => <CornerDownLeft className="inline-block w-4 h-4 text-muted-foreground" aria-label="Return" />,
-  WarningIcon: () => <AlertTriangle className="inline-block w-4 h-4 text-yellow-600 dark:text-yellow-400" aria-label="Warning" />,
-  InfoIcon: () => <Info className="inline-block w-4 h-4 text-blue-600 dark:text-blue-400" aria-label="Information" />,
-  IdeaIcon: () => <Lightbulb className="inline-block w-4 h-4 text-yellow-600 dark:text-yellow-400" aria-label="Idea" />,
-  ZapIcon: () => <Zap className="inline-block w-4 h-4 text-purple-600 dark:text-purple-400" aria-label="Lightning" />,
-  LockIcon: () => <Lock className="inline-block w-4 h-4 text-muted-foreground" aria-label="Lock" />,
-  RocketIcon: () => <Rocket className="inline-block w-4 h-4 text-blue-600 dark:text-blue-400" aria-label="Rocket" />,
+  CheckIcon: () => <Check className="inline-block w-5 h-5 align-text-bottom text-green-600 dark:text-green-400" aria-label="Check" />,
+  XIcon: () => <X className="inline-block w-5 h-5 align-text-bottom text-red-600 dark:text-red-400" aria-label="Cross" />,
+  ReturnIcon: () => <CornerDownLeft className="inline-block w-5 h-5 align-text-bottom text-muted-foreground" aria-label="Return" />,
+  WarningIcon: () => <AlertTriangle className="inline-block w-5 h-5 align-text-bottom text-yellow-600 dark:text-yellow-400" aria-label="Warning" />,
+  InfoIcon: () => <Info className="inline-block w-5 h-5 align-text-bottom text-blue-600 dark:text-blue-400" aria-label="Information" />,
+  IdeaIcon: () => <Lightbulb className="inline-block w-5 h-5 align-text-bottom text-yellow-600 dark:text-yellow-400" aria-label="Idea" />,
+  ZapIcon: () => <Zap className="inline-block w-5 h-5 align-text-bottom text-purple-600 dark:text-purple-400" aria-label="Lightning" />,
+  LockIcon: () => <Lock className="inline-block w-5 h-5 align-text-bottom text-muted-foreground" aria-label="Lock" />,
+  RocketIcon: () => <Rocket className="inline-block w-5 h-5 align-text-bottom text-blue-600 dark:text-blue-400" aria-label="Rocket" />,
   // Mermaid diagrams component
   Mermaid: (props: { children?: string }) => {
     const chart = props.children || '';
@@ -318,6 +319,9 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
   MCPArchitecture,
   AuthenticationFlow,
   PipelineFlow,
+  CVEDecisionTree,
+  // FAQ component
+  FAQ,
   // Footnote superscripts with icon
   sup: (props: React.HTMLAttributes<HTMLElement>) => {
     // Check if this contains a link (footnote reference) or has footnote-related attributes

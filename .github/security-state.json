@@ -1,0 +1,21 @@
+{
+  "seenAdvisories": [
+    "GHSA-fmh4-wr37-44fp",
+    "GHSA-fv66-9v8q-g76r",
+    "GHSA-9qr9-h5gf-34mp",
+    "GHSA-xq4m-mc3c-vvg3",
+    "GHSA-w48q-cv73-mx4w",
+    "GHSA-v4hv-rgfq-gp49",
+    "GHSA-27m7-ffhq-jqrm",
+    "GHSA-vghf-hv5q-vc2g",
+    "GHSA-58c5-g7wp-6w37",
+    "GHSA-wvxp-jp4w-w8wg",
+    "GHSA-4fh9-h7wg-q85m",
+    "GHSA-hhh5-2cvx-vmfp",
+    "GHSA-2q7r-29rg-6m5h",
+    "GHSA-xhgv-99mj-8m2x",
+    "GHSA-6qj9-2g9m-29x9",
+    "GHSA-j9wj-m24m-7jj6"
+  ],
+  "lastCheck": "2025-12-04T05:45:33.381Z"
+}

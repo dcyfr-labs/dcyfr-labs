@@ -29,7 +29,45 @@ Sentry.init({
   replaysSessionSampleRate: process.env.NODE_ENV === "production" ? 0.05 : 0.1,
 
   // Define how likely Replay events are sampled when an error occurs.
-  replaysOnErrorSampleRate: 1.0,
+  // Conservative rate (0.5) to stay within quota (~25 replays/month)
+  replaysOnErrorSampleRate: 0.5,
+
+  // Filter out common browser extension and third-party noise
+  ignoreErrors: [
+    // Browser extensions and plugins
+    "ResizeObserver loop limit exceeded",
+    "ResizeObserver loop completed with undelivered notifications",
+    "Non-Error exception captured",
+    "Non-Error promise rejection captured",
+    // Network errors that are expected
+    "Network request failed",
+    "Failed to fetch",
+    "Load failed",
+    "NetworkError",
+    // Browser-specific quirks
+    "Cannot read properties of undefined",
+    "Cannot read property 'style' of null",
+    // Third-party script errors
+    /^Script error\.?$/,
+    /^Javascript error: Script error\.? on line 0$/,
+  ],
+
+  // Ignore errors from third-party scripts and browser extensions
+  denyUrls: [
+    // Browser extensions
+    /extensions\//i,
+    /^chrome:\/\//i,
+    /^chrome-extension:\/\//i,
+    /^moz-extension:\/\//i,
+    /^safari-extension:\/\//i,
+    /^safari-web-extension:\/\//i,
+    // Common third-party scripts that may error
+    /googletagmanager\.com/i,
+    /google-analytics\.com/i,
+    /doubleclick\.net/i,
+    /hotjar\.com/i,
+    /intercom\.io/i,
+  ],
 
   // Enable sending user PII (Personally Identifiable Information)
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii

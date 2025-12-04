@@ -1,13 +1,52 @@
 # Blog Content
 
-This directory contains individual blog posts as MDX files.
+This directory contains blog posts as MDX files. Posts can be organized as flat files or folders with co-located assets.
+
+## Directory Structure
+
+```
+src/content/blog/
+├── README.md
+├── simple-post.mdx                    # Flat file (no assets)
+├── post-with-assets/                  # Folder structure (with assets)
+│   ├── index.mdx                      # Post content
+│   ├── hero.png                       # Co-located image
+│   ├── diagram.svg                    # Co-located SVG
+│   └── demo.mp4                       # Co-located video
+└── another-post.mdx
+```
 
 ## Adding a New Blog Post
 
-To add a new blog post:
+### Option 1: Flat File (Simple Posts)
 
-1. Create a new `.mdx` file in this directory with a URL-friendly filename (e.g., `my-new-post.mdx`)
-2. Add frontmatter at the top of the file with the required metadata:
+For posts without custom assets, create a single `.mdx` file:
+
+```bash
+touch src/content/blog/my-new-post.mdx
+```
+
+### Option 2: Folder Structure (Posts with Assets)
+
+For posts with images, videos, or other assets, create a folder:
+
+```bash
+mkdir src/content/blog/my-new-post
+touch src/content/blog/my-new-post/index.mdx
+# Add assets to the same folder
+```
+
+**Referencing co-located assets in your MDX:**
+
+```mdx
+![Screenshot](/blog/my-new-post/assets/screenshot.png)
+
+<video src="/blog/my-new-post/assets/demo.mp4" controls />
+```
+
+Assets are served from `/blog/{slug}/assets/{filename}`.
+
+## Frontmatter
 
 ```mdx
 ---

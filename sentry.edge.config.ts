@@ -13,8 +13,52 @@ Sentry.init({
   // Disable Sentry in development - errors will still be logged to console
   enabled: !isDev,
 
-  // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-  tracesSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1,
+  // Dynamic trace sampling based on route importance
+  // Reduces span usage while preserving observability for critical paths
+  tracesSampler: (samplingContext) => {
+    const name = samplingContext.name || "";
+
+    // Always sample errors and slow transactions
+    if (samplingContext.parentSampled !== undefined) {
+      return samplingContext.parentSampled;
+    }
+
+    // Security-related routes (proxy/middleware): sample at 15%
+    if (
+      name.includes("/private") ||
+      name.includes("/admin") ||
+      name.includes("/api/maintenance")
+    ) {
+      return 0.15;
+    }
+
+    // Health/monitoring routes: sample at 1%
+    if (
+      name.includes("/api/health") ||
+      name.includes("/monitoring")
+    ) {
+      return 0.01;
+    }
+
+    // Default: 5% for edge functions
+    return 0.05;
+  },
+
+  // Filter out low-value transactions before sending
+  beforeSendTransaction: (transaction) => {
+    const name = transaction.transaction || "";
+
+    // Drop static asset transactions entirely
+    if (
+      name.includes("/_next/static") ||
+      name.includes("/favicon.ico") ||
+      name.match(/\.(js|css|png|jpg|svg|woff2?)$/)
+    ) {
+      return null;
+    }
+
+    return transaction;
+  },
 
   // Enable logs to be sent to Sentry
   enableLogs: true,

@@ -9,6 +9,7 @@ export { default as Logo } from "./logo";
 export { SiteLogo } from "./site-logo";
 export { MDX } from "./mdx";
 export { Mermaid } from "./mermaid";
+export { FAQ, FAQQuestion, FAQAnswer, type FAQProps, type FAQItem } from "./faq";
 export { ProfileAvatar, type AvatarSize } from "./profile-avatar";
 export { ScrollIndicator } from "./scroll-indicator";
 export { RelatedPosts } from "./related-posts";
@@ -52,6 +53,7 @@ export {
   MCPArchitecture,
   AuthenticationFlow,
   PipelineFlow,
+  CVEDecisionTree,
   type DiagramPresetProps
 } from "./diagram-presets";
 

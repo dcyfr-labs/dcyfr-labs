@@ -107,17 +107,6 @@ export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActi
     <div className="space-y-2 pb-6 border-b">
       <h2 className="font-semibold mb-3 text-sm">Quick Actions</h2>
 
-      {/* Copy Link Button */}
-      <Button
-        variant="outline"
-        size="sm"
-        className="w-full justify-start gap-2"
-        onClick={handleCopyLink}
-      >
-        <Link2 className="h-4 w-4" />
-        Copy Link
-      </Button>
-
       {/* Bookmark Button */}
       <Button
         variant="outline"
@@ -138,6 +127,17 @@ export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActi
       >
         <Share2 className="h-4 w-4" />
         Share Post
+      </Button>
+
+      {/* Copy Link Button */}
+      <Button
+        variant="outline"
+        size="sm"
+        className="w-full justify-start gap-2"
+        onClick={handleCopyLink}
+      >
+        <Link2 className="h-4 w-4" />
+        Copy Link
       </Button>
 
       {/* Citation Button */}
