@@ -31,6 +31,9 @@ export interface ArticleHeaderProps {
   /** Article title */
   title: string;
   
+  /** Subtitle displayed below title (alternative to em-dash in title) */
+  subtitle?: string;
+  
   /** Published date (optional) */
   date?: Date;
   
@@ -68,6 +71,7 @@ export interface ArticleHeaderProps {
 
 export function ArticleHeader({
   title,
+  subtitle,
   date,
   tags = [],
   badges,
@@ -128,6 +132,13 @@ export function ArticleHeader({
           <h1 className={TYPOGRAPHY.h1.article}>
             {title}
           </h1>
+
+          {/* Subtitle */}
+          {subtitle && (
+            <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed">
+              {subtitle}
+            </p>
+          )}
 
           {/* Metadata Row */}
           {(date || metadata) && (
@@ -203,6 +214,13 @@ export function ArticleHeader({
       <h1 className={TYPOGRAPHY.h1.article}>
         {title}
       </h1>
+
+      {/* Subtitle */}
+      {subtitle && (
+        <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed">
+          {subtitle}
+        </p>
+      )}
 
       {/* Metadata Row */}
       {(date || metadata) && (

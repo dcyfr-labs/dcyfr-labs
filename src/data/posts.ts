@@ -19,6 +19,7 @@ export type Post = {
   id: string; // stable permanent identifier (never changes, independent of slug)
   slug: string; // unique URL segment (active/current slug - can change)
   title: string;
+  subtitle?: string; // optional subtitle displayed below title (alternative to em-dash in title)
   summary: string;
   publishedAt: string; // ISO string
   updatedAt?: string; // ISO string

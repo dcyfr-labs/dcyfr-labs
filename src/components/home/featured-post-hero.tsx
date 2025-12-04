@@ -99,6 +99,11 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
             <h2 className={cn(TYPOGRAPHY.h2.featured, "md:text-4xl")}>
               {post.title}
             </h2>
+            {post.subtitle && (
+              <p className="text-lg md:text-xl text-muted-foreground font-medium">
+                {post.subtitle}
+              </p>
+            )}
             <p className="text-lg text-muted-foreground leading-relaxed">
               {post.summary}
             </p>

@@ -20,7 +20,7 @@ export const teamMembers: TeamMember[] = [
       { label: "Security", icon: Shield },
       { label: "Development", icon: Code },
     ],
-    philosophy: "Security isn't about saying no—it's about enabling innovation with confidence.",
+    philosophy: "Security isn't about saying no, it's about enabling innovation with confidence.",
     avatarType: "image",
     isPrimary: true,
   },
