@@ -1,6 +1,25 @@
 import { test, expect } from '@playwright/test'
 import openMobileNav, { closeMobileNav } from './utils/nav'
 
+/**
+ * WebKit Mobile Navigation Test
+ *
+ * Known Issue: WebKit (Safari) has hydration issues with Radix UI Sheet components
+ * in Next.js production builds running locally. This manifests as:
+ * - TLS errors preventing JavaScript from loading
+ * - Components not hydrating properly (mounted state stays false)
+ * - MobileNav button click not opening the sheet
+ *
+ * Root Cause: Likely related to how WebKit handles localhost production builds
+ * with dynamic imports and module loading.
+ *
+ * This test is:
+ * - Skipped in CI (WebKit crashes due to resource constraints)
+ * - Available for local debugging
+ * - Expected to fail until the underlying WebKit/Next.js issue is resolved
+ *
+ * Workaround: Use development mode (npm run dev) for local WebKit testing
+ */
 test.describe('WebKit Mobile Nav', () => {
   test('should open and close mobile nav reliably on iPhone 12 (WebKit)', async ({ page, browserName }) => {
     // Skip in CI - WebKit browser frequently crashes in GitHub Actions due to resource constraints
@@ -12,15 +31,14 @@ test.describe('WebKit Mobile Nav', () => {
     // Force mobile viewport to match project device
     await page.setViewportSize({ width: 390, height: 844 }) // iPhone 12 viewport
     await page.goto('/')
+
     // Capture console messages to help debug hydration/runtime issues in WebKit
     page.on('console', (msg) => console.log('[page-console] ' + msg.text()))
     page.on('pageerror', (err) => console.log('[page-error] ' + String(err)))
 
-    // Attempt to open mobile nav with an extended timeout for slower environments
-    // For debugging WebKit, inspect the open nav trigger and its attributes
+    // Debug WebKit hydration: inspect the open nav trigger and its attributes
     // There may be a server-side placeholder or a real button depending on
-    // whether the page has hydrated yet. Try to find the button or fallback
-    // placeholder and log its state for debugging.
+    // whether the page has hydrated yet. Log button state for debugging.
     const buttonLocator = page.locator('[data-slot="button"][aria-label="Open navigation menu"], [data-mount-fallback], [data-slot="sheet-trigger"][aria-label="Open navigation menu"]')
     const buttonCount = await buttonLocator.count()
     console.log('[webkit-debug] buttonCount:', buttonCount)
@@ -65,6 +83,7 @@ test.describe('WebKit Mobile Nav', () => {
       console.log('[webkit-debug] forcedOpen:', forcedOpen)
       throw err
     }
+    // Verify nav opened successfully
     await expect(nav).toBeTruthy()
     await expect(nav!).toBeVisible()
 

@@ -2,6 +2,8 @@
 
 Full-stack developer portfolio with Next.js 16 App Router, TypeScript, Tailwind v4, shadcn/ui, MDX blog, GitHub integration, and Redis analytics. Optimized for server-first rendering, type safety, and maintainable architecture.
 
+> **For GitHub Copilot users:** See [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) for a concise quick-reference guide focusing on the 80/20 patterns you'll use most.
+
 ## Current Focus (December 2025)
 
 **All major phases complete** ✅
@@ -113,7 +115,7 @@ Project is in **maintenance mode** with data-driven enhancements.
 - [`docs/ai/BEST_PRACTICES.md`](docs/ai/BEST_PRACTICES.md) - Workflow best practices
 - [`docs/ai/DESIGN_SYSTEM.md`](docs/ai/DESIGN_SYSTEM.md) - Complete design validation
 - [`docs/ai/OPTIMIZATION_STRATEGY.md`](docs/ai/OPTIMIZATION_STRATEGY.md) - Token optimization
-- [`docs/operations/PHASE_4_GUIDE.md`](docs/operations/PHASE_4_GUIDE.md) - Phase 4 workflows
+- [`docs/ai/CLAUDE_CODE_SETUP.md`](docs/ai/CLAUDE_CODE_SETUP.md) - Claude Code integration setup
 
 **Domain-specific docs:**
 
