@@ -21,24 +21,25 @@ test.describe('Homepage', () => {
 
   test('should have working navigation', async ({ page, browserName }) => {
     await page.goto('/')
-    
+
     // On mobile viewports, header nav is hidden and bottom nav is used
     // On desktop, header nav is visible
     const viewport = page.viewportSize()
     const isMobile = viewport && viewport.width < 768 // md breakpoint is 768px
-    
+
     if (isMobile) {
-      // Skip mobile-specific assertions on WebKit due to platform differences
-      // (some browsers may keep the pre-mount disabled button disabled)
+      // Skip mobile nav on WebKit - hydration issues in production builds
+      // See webkit-mobile-nav.spec.ts for dedicated WebKit testing
       if (browserName === 'webkit') return
+
       // On mobile, open the sheet menu then check navigation items
-        const bottomNav = await openMobileNav(page)
-        if (!bottomNav) return
+      const bottomNav = await openMobileNav(page)
+      if (!bottomNav) return
       const homeLink = bottomNav.getByRole('link', { name: /home/i })
       const blogLink = bottomNav.getByRole('link', { name: /blog/i })
       const workLink = bottomNav.getByRole('link', { name: /our work/i })
       const contactLink = bottomNav.getByRole('link', { name: /contact/i })
-      
+
       await expect(homeLink).toBeVisible()
       await expect(blogLink).toBeVisible()
       await expect(workLink).toBeVisible()
@@ -48,7 +49,7 @@ test.describe('Homepage', () => {
       const blogLink = page.locator('header nav').getByRole('link', { name: /blog/i })
       const workButton = page.locator('header nav').getByRole('button', { name: /our work/i })
       const aboutLink = page.locator('header nav').getByRole('link', { name: /about/i })
-      
+
       await expect(blogLink).toBeVisible()
       await expect(workButton).toBeVisible()
       await expect(aboutLink).toBeVisible()
@@ -56,33 +57,30 @@ test.describe('Homepage', () => {
   })
 
   test('should navigate to blog page', async ({ page, browserName }) => {
-    // Skip webkit due to timing issues with navigation
-    test.skip(browserName === 'webkit', 'Webkit has timing issues with this navigation pattern');
-    
+    // Skip WebKit entirely - navigation timing issues in production builds
+    test.skip(browserName === 'webkit', 'WebKit has navigation timing issues with production builds')
+
     await page.goto('/')
-    
+
     // On mobile viewports, use bottom nav; on desktop, use header nav
     const viewport = page.viewportSize()
     const isMobile = viewport && viewport.width < 768
-    
+
     if (isMobile) {
-      // Skip mobile-specific navigation on webkit, it has intermittent timing
-      // differences that cause the menu to remain disabled in CI.
-      if (browserName === 'webkit') return
       // Click on blog link in bottom nav
       // Ensure menu is open (mobile) before clicking blog link
-        const bottomNav = await openMobileNav(page)
-        if (!bottomNav) return
-        await bottomNav.getByRole('link', { name: /blog/i }).click()
+      const bottomNav = await openMobileNav(page)
+      if (!bottomNav) return
+      await bottomNav.getByRole('link', { name: /blog/i }).click()
       await page.waitForURL('/blog')
     } else {
       // Click on blog link in main header nav
       await page.locator('header nav').getByRole('link', { name: /blog/i }).click()
     }
-    
+
     // Wait for navigation
     await page.waitForURL('/blog')
-    
+
     // Verify we're on the blog page
     await expect(page).toHaveURL('/blog')
     await expect(page.locator('h1')).toContainText(/blog/i)
