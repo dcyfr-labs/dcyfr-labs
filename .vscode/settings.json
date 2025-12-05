@@ -31,5 +31,6 @@
         "copilot/auto"
       ]
     }
-  }
+  },
+  "codeQL.createQuery.qlPackLocation": "/Users/drew/Desktop/dcyfr/code/dcyfr-labs"
 }
