@@ -476,9 +476,9 @@ export function createCollectionSchema(options: CollectionSchemaOptions) {
 /**
  * Helper to get JSON-LD script props with CSP nonce
  * 
- * IMPORTANT: Always pass the nonce even if it's an empty string.
- * The spread operator with `...(nonce && { nonce })` will exclude the nonce attribute
- * if nonce is falsy (including empty string ""), which causes CSP violations.
+ * IMPORTANT: Pass nonce as a non-undefined value (including empty string).
+ * When nonce is undefined, no nonce attribute is added. When nonce is a string
+ * (even empty ""), it is added to the script tag for CSP compliance.
  * 
  * @example
  * ```tsx
@@ -497,8 +497,8 @@ export function getJsonLdScriptProps(schema: object, nonce?: string) {
     suppressHydrationWarning: true,
   };
 
-  // Always include nonce if provided, even if empty.
-  // An empty nonce="" is better than no nonce for CSP compliance.
+  // Include nonce attribute only if a string is provided (including empty string).
+  // undefined means no nonce attribute will be set.
   if (typeof nonce === "string") {
     props.nonce = nonce;
   }

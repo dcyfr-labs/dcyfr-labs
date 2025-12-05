@@ -193,7 +193,7 @@ async function rateLimitRedis(
     return {
       success: true,
       limit: config.limit,
-      remaining: config.limit,
+      remaining: config.limit - 1,
       reset: resetTime,
     };
   }
