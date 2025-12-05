@@ -22,6 +22,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const FORCE_ALERT = process.env.FORCE_ALERT === "true";
 const SEVERITY_THRESHOLD = process.env.SEVERITY_THRESHOLD || "high";
+const DEBUG = process.env.DEBUG === "true";
 
 // State file to track seen advisories (stored in .github/security-state.json)
 const STATE_FILE = join(__dirname, "..", ".github", "security-state.json");
@@ -94,9 +95,11 @@ function meetsSeverityThreshold(severity, packageName) {
 
 /**
  * Fetch security advisories from the global GHSA database
+ * IMPORTANT: Validates that advisories actually affect the requested package
  */
 async function fetchAdvisoriesForPackage(packageName) {
   const advisories = [];
+  const skippedAdvisories = [];
   
   try {
     console.log(`   Checking GHSA for ${packageName}...`);
@@ -115,21 +118,40 @@ async function fetchAdvisoriesForPackage(packageName) {
 
     if (!response.ok) {
       console.warn(`   ⚠️  GHSA API error for ${packageName}: ${response.status}`);
-      return [];
+      return { advisories: [], skipped: [] };
     }
 
     const data = await response.json();
-    console.log(`   Found ${data.length} total advisories for ${packageName}`);
+    console.log(`   Found ${data.length} total results for ${packageName}`);
     
     for (const adv of data) {
+      // CRITICAL: Validate that the advisory actually affects this package
+      // The API may return advisories for related packages or due to API quirks
+      const vulnInfo = adv.vulnerabilities?.find(v => v.package?.name === packageName);
+      
+      if (!vulnInfo) {
+        // Advisory does not affect the requested package - skip it
+        // This prevents false positives like open-webui and jws advisories
+        // being attributed to the next package
+        const affectedPackage = adv.vulnerabilities?.[0]?.package?.name || "unknown";
+        skippedAdvisories.push({
+          id: adv.ghsa_id,
+          cveId: adv.cve_id,
+          actualPackage: affectedPackage,
+          queriedPackage: packageName,
+        });
+        if (DEBUG) {
+          console.log(`   ⏭️  ${adv.ghsa_id} (${adv.cve_id}) - actually affects ${affectedPackage}, not ${packageName}`);
+        }
+        continue;
+      }
+      
       // Only include recent advisories (last 30 days)
       const publishedAt = new Date(adv.published_at);
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
       if (publishedAt >= thirtyDaysAgo) {
-        const vulnInfo = adv.vulnerabilities?.find(v => v.package?.name === packageName);
-        
         advisories.push({
           id: adv.ghsa_id,
           package: packageName,
@@ -140,8 +162,8 @@ async function fetchAdvisoriesForPackage(packageName) {
           cveId: adv.cve_id,
           publishedAt: adv.published_at,
           url: adv.html_url,
-          vulnerableRange: vulnInfo?.vulnerable_version_range || "Unknown",
-          patchedVersion: vulnInfo?.first_patched_version?.identifier || "Not yet available",
+          vulnerableRange: vulnInfo.vulnerable_version_range || "Unknown",
+          patchedVersion: vulnInfo.first_patched_version?.identifier || "Not yet available",
         });
       }
     }
@@ -149,7 +171,7 @@ async function fetchAdvisoriesForPackage(packageName) {
     console.warn(`   ⚠️  Error fetching GHSA for ${packageName}:`, error.message);
   }
 
-  return advisories;
+  return { advisories, skipped: skippedAdvisories };
 }
 
 /**
@@ -185,8 +207,11 @@ async function main() {
   const newAdvisories = [];
 
   // Fetch advisories for all monitored packages
+  const allSkipped = [];
+  
   for (const packageName of MONITORED_PACKAGES) {
-    const advisories = await fetchAdvisoriesForPackage(packageName);
+    const { advisories, skipped } = await fetchAdvisoriesForPackage(packageName);
+    allSkipped.push(...skipped);
 
     for (const advisory of advisories) {
       const id = advisory.id;
@@ -206,6 +231,14 @@ async function main() {
       console.log(`   🚨 NEW: ${id} - ${packageName} (${advisory.severity})`);
       newAdvisories.push(formatAdvisory(advisory));
       seenIds.add(id);
+    }
+  }
+
+  // Log diagnostic info about skipped advisories (misattributions prevented)
+  if (allSkipped.length > 0) {
+    console.log(`\n✅ Filtered out ${allSkipped.length} misattributed advisories:`);
+    for (const skipped of allSkipped) {
+      console.log(`   - ${skipped.id} (${skipped.cveId}): affects ${skipped.actualPackage}, not ${skipped.queriedPackage}`);
     }
   }
 

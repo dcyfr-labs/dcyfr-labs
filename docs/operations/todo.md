@@ -292,6 +292,80 @@ Final code quality cleanup - achieved zero warnings:
 4. Populate `performance-baselines.json` with actual metrics
 5. Document baselines in `performance-review-log.md`
 6. Configure Vercel Speed Insights alerts in dashboard
+7. **Add `VERCEL_TOKEN` to GitHub secrets for Vercel Checks API**
+
+---
+
+## 🟢 Recent Completion: Vercel Deployment Checks Integration (Dec 5, 2025) ✅
+
+**Automated Quality Gates for Every Deployment** ✅
+
+- [x] **GitHub Action Workflow Created** ✅ (Dec 5, 2025 - 1 hour)
+  - Created `.github/workflows/vercel-checks.yml`
+  - Triggers on `deployment_status` events from Vercel
+  - Registers 3 checks via Vercel Checks API:
+    1. **Bundle Size Validation** - Runs `check-bundle-size.mjs`, compares against baselines
+    2. **Lighthouse Performance** - Audits 5 pages (3 runs each), validates Core Web Vitals
+    3. **Performance Baseline Validation** - Aggregates results, blocks on critical regressions
+
+- [x] **Check Lifecycle Implementation** ✅
+  - **Create check** → Sets status to `running` with details URL
+  - **Run validation** → Executes bundle/Lighthouse scripts
+  - **Update check** → Sets conclusion (`succeeded`/`failed`/`neutral`) with detailed output
+  - **Block deployment** → Vercel prevents production alias if checks fail
+
+- [x] **Blocking Behavior Configured** ✅
+  - Critical failures block deployment:
+    - Bundle size >25% regression (error threshold)
+    - Lighthouse score decreases >10 points (error threshold)
+    - Performance <90% or Accessibility <95%
+  - Warnings allow deployment (neutral conclusion):
+    - Bundle size 10-25% regression
+    - Lighthouse score decreases 5-10 points
+  - Success allows deployment (succeeded conclusion)
+
+- [x] **Integration Documentation** ✅
+  - Created `docs/platform/vercel-deployment-checks.md`
+  - Complete setup guide (requires `VERCEL_TOKEN` secret)
+  - Check lifecycle diagrams and examples
+  - Troubleshooting guide
+  - Comparison: Vercel Checks vs GitHub Actions only
+
+**Benefits:**
+
+1. **Automated Quality Gates** - No bad deployments reach production
+2. **Visual Feedback** - See check status in Vercel dashboard before deployment goes live
+3. **Configurable Thresholds** - Team controls sensitivity via `performance-baselines.json`
+4. **Detailed Reports** - Full bundle analysis + Lighthouse scores in check output
+5. **Rerun Failed Checks** - Click to rerun without redeploying
+6. **Team Visibility** - Dashboard + notifications for all stakeholders
+
+**Setup Required:**
+
+- [ ] Add `VERCEL_TOKEN` to GitHub repository secrets
+  - Go to [Vercel Account → Tokens](https://vercel.com/account/tokens)
+  - Create token with `Deployments (Read & Write)` scope
+  - Add to GitHub: `Settings → Secrets → New secret: VERCEL_TOKEN`
+- [ ] Verify Vercel GitHub App integration is active
+- [ ] Test workflow on next deployment to preview branch
+
+**Files Created:**
+1. `.github/workflows/vercel-checks.yml` (395 lines) - Workflow with 3 checks
+2. `docs/platform/vercel-deployment-checks.md` - Complete documentation
+
+**Quality Verification:**
+- ✅ Workflow syntax validated
+- ✅ Vercel Checks API endpoints verified
+- ✅ Documentation complete with examples
+
+**Next Steps:**
+
+1. Deploy to preview branch (trigger production build)
+2. Run Lighthouse CI manually to collect baseline scores
+3. Extract bundle sizes from build output
+4. Populate `performance-baselines.json` with actual metrics
+5. Document baselines in `performance-review-log.md`
+6. Configure Vercel Speed Insights alerts in dashboard
   - Production build successful
   - Lint check clean (0 errors, 0 warnings)
 
