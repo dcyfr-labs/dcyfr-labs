@@ -83,6 +83,12 @@ export type RateLimitConfig = {
    * Time window in seconds
    */
   windowInSeconds: number;
+  /**
+   * If true, fail closed (deny request) on Redis errors instead of failing open
+   * Use for critical endpoints like contact forms
+   * Default: false (fail open for availability)
+   */
+  failClosed?: boolean;
 };
 
 export type RateLimitResult = {
@@ -166,10 +172,24 @@ async function rateLimitRedis(
       reset: actualResetTime,
     };
   } catch (error) {
-    // On Redis error, fail open (allow request) to maintain availability
+    // On Redis error, fail according to configuration
+    const shouldFailClosed = config.failClosed ?? false;
+
     if (process.env.NODE_ENV !== "production") {
-      console.error("Rate limit Redis error, failing open:", error);
+      console.error(`Rate limit Redis error, failing ${shouldFailClosed ? 'closed' : 'open'}:`, error);
     }
+
+    if (shouldFailClosed) {
+      // Fail closed: deny the request to maintain security
+      return {
+        success: false,
+        limit: config.limit,
+        remaining: 0,
+        reset: resetTime,
+      };
+    }
+
+    // Fail open: allow the request to maintain availability
     return {
       success: true,
       limit: config.limit,

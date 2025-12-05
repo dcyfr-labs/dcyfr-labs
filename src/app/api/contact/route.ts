@@ -6,9 +6,11 @@ import { trackContactFormSubmission } from "@/lib/analytics";
 import { handleApiError } from "@/lib/error-handler";
 
 // Rate limit: 3 requests per 60 seconds per IP
+// Fail closed: deny requests on Redis errors to prevent abuse
 const RATE_LIMIT_CONFIG = {
   limit: 3,
   windowInSeconds: 60,
+  failClosed: true,
 };
 
 type ContactFormData = {
