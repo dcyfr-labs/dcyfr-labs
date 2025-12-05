@@ -359,7 +359,7 @@ export function PostList({
   // Grid layout: 2-column grid with featured posts spanning full width
   if (layout === "grid") {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6" data-testid="post-list">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="post-list">
         {posts.map((p, index) => {
           const featuredImage = ensurePostImage(p.image, {
             title: p.title,
