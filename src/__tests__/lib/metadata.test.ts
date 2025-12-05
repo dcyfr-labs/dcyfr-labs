@@ -715,11 +715,14 @@ describe('metadata.ts', () => {
       expect(props.suppressHydrationWarning).toBe(true);
     });
 
-    it('should not include nonce property when empty string', () => {
+    it('should include nonce property even when empty string', () => {
       const schema = { '@type': 'Article', name: 'Test' };
       const props = getJsonLdScriptProps(schema, '');
 
-      expect(props).not.toHaveProperty('nonce');
+      // IMPORTANT: Empty nonce should still be included
+      // An empty nonce="" is better than no nonce for CSP compliance
+      expect(props).toHaveProperty('nonce');
+      expect(props.nonce).toBe('');
     });
 
     it('should properly stringify complex schema', () => {

@@ -476,6 +476,10 @@ export function createCollectionSchema(options: CollectionSchemaOptions) {
 /**
  * Helper to get JSON-LD script props with CSP nonce
  * 
+ * IMPORTANT: Always pass the nonce even if it's an empty string.
+ * The spread operator with `...(nonce && { nonce })` will exclude the nonce attribute
+ * if nonce is falsy (including empty string ""), which causes CSP violations.
+ * 
  * @example
  * ```tsx
  * const nonce = (await headers()).get("x-nonce") || "";
@@ -487,10 +491,17 @@ export function createCollectionSchema(options: CollectionSchemaOptions) {
  * ```
  */
 export function getJsonLdScriptProps(schema: object, nonce?: string) {
-  return {
-    type: 'application/ld+json' as const,
+  const props: Record<string, unknown> = {
+    type: 'application/ld+json',
     dangerouslySetInnerHTML: { __html: JSON.stringify(schema) },
-    ...(nonce && { nonce }),
     suppressHydrationWarning: true,
   };
+
+  // Always include nonce if it was provided (even if empty string)
+  // The key insight: An empty nonce="" is better than no nonce attribute for CSP compliance
+  if (nonce !== undefined) {
+    props.nonce = nonce;
+  }
+
+  return props as React.ScriptHTMLAttributes<HTMLScriptElement>;
 }

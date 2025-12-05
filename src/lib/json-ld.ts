@@ -281,13 +281,18 @@ export function getResumePageSchema(
  * Handles nonce for CSP and proper JSON stringification
  * 
  * @param schema - Schema object(s) to serialize
- * @param nonce - CSP nonce for inline scripts
+ * @param nonce - CSP nonce for inline scripts (required for CSP compliance)
  * @returns Props for script tag
+ * 
+ * CRITICAL: The nonce MUST be provided here. If it's missing or empty,
+ * CSP violations will occur when the script tag is rendered inline.
  */
 export function getJsonLdScriptProps(schema: object, nonce: string) {
+  // Always include the nonce attribute, even if empty
+  // An empty nonce="" is better than no nonce for CSP compliance
   return {
     type: "application/ld+json" as const,
-    nonce,
+    nonce: nonce, // Always include, even if empty
     dangerouslySetInnerHTML: { __html: JSON.stringify(schema) },
     suppressHydrationWarning: true,
   };

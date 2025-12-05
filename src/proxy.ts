@@ -283,7 +283,7 @@ export default function proxy(request: NextRequest) {
   // Clone response headers
   const requestHeaders = new Headers(request.headers);
   
-  // Pass nonce to components via custom header
+  // Pass nonce to components via custom header (in request headers for server components)
   requestHeaders.set("x-nonce", nonce);
 
   const response = NextResponse.next({
@@ -294,6 +294,16 @@ export default function proxy(request: NextRequest) {
 
   // Set CSP header with nonce
   response.headers.set("Content-Security-Policy", cspHeader);
+  
+  // Also set nonce in response headers and as a cookie for additional reliability
+  // This ensures it's available through multiple mechanisms
+  response.headers.set("x-nonce", nonce);
+  response.cookies.set("x-nonce", nonce, {
+    httpOnly: false, // Allow client-side access if needed
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 3600, // 1 hour
+  });
 
   return response;
 }
