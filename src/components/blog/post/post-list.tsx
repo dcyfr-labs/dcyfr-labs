@@ -230,7 +230,7 @@ export function PostList({
                     {/* Content */}
                     <div className="p-4 md:p-10 lg:p-12">
                       {/* Badges and metadata */}
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm mb-4 text-zinc-700 dark:text-zinc-300">
+                      <div className="flex flex-nowrap items-center gap-x-3 text-sm mb-4 text-zinc-700 dark:text-zinc-300 overflow-x-auto">
                         <PostBadges post={p} isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
                         <SeriesBadge post={p} />
                         <time dateTime={p.publishedAt} className="text-zinc-700 dark:text-zinc-300">
@@ -301,7 +301,7 @@ export function PostList({
                   {/* Content section */}
                   <div className="p-4 md:p-8">
                       {/* Badges and metadata */}
-                      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-muted-foreground mb-3">
+                      <div className="flex flex-nowrap items-center gap-x-2.5 text-sm text-muted-foreground mb-3 overflow-x-auto">
                         <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
                         <SeriesBadge post={p} size="sm" />
                         <time dateTime={p.publishedAt} className="text-zinc-600 dark:text-zinc-400">
@@ -381,7 +381,7 @@ export function PostList({
                   {/* Post content - larger padding for featured posts */}
                   <div className={`flex-1 flex flex-col ${isFeatured ? "p-5 md:p-8" : "p-4"}`}>
                     {/* Badges and metadata */}
-                    <div className={`flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground mb-3 ${isFeatured ? "text-sm" : "text-xs"}`}>
+                    <div className={`flex flex-nowrap items-center gap-x-2 text-muted-foreground mb-3 overflow-x-auto ${isFeatured ? "text-sm" : "text-xs"}`}>
                       <PostBadges post={p} size={isFeatured ? "default" : "sm"} isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
                       <SeriesBadge post={p} size={isFeatured ? "default" : "sm"} />
                       <time dateTime={p.publishedAt}>
@@ -456,7 +456,7 @@ export function PostList({
                 <Link href={`/blog/${p.slug}`} className="block">
                   <div className="p-4 md:p-8">
                     {/* Badges and metadata */}
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground mb-3">
+                    <div className="flex flex-nowrap items-center gap-x-2 text-xs text-muted-foreground mb-3 overflow-x-auto">
                       <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
                       <SeriesBadge post={p} size="sm" />
                       <time dateTime={p.publishedAt}>
@@ -526,7 +526,7 @@ export function PostList({
                 <Link href={`/blog/${p.slug}`} className="block">
                   <div className="p-3">
                     {/* Badges and metadata - compact */}
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground mb-1.5">
+                    <div className="flex flex-nowrap items-center gap-x-2 text-xs text-muted-foreground mb-1.5 overflow-x-auto">
                       <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
                       <SeriesBadge post={p} size="sm" />
                       <time dateTime={p.publishedAt}>
@@ -580,7 +580,7 @@ export function PostList({
                 {/* Post content */}
                 <div className="flex-1 p-4 flex flex-col">
                   {/* Badges and metadata */}
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground mb-2">
+                  <div className="flex flex-nowrap items-center gap-x-2 text-xs text-muted-foreground mb-2 overflow-x-auto">
                     <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
                     <time dateTime={p.publishedAt}>
                       {new Date(p.publishedAt).toLocaleDateString("en-US", { 

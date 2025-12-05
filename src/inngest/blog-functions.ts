@@ -201,7 +201,7 @@ export const calculateTrending = inngest.createFunction(
         const postsData = [];
         
         for (const key of postKeys) {
-          const slug = key.replace(VIEW_KEY_PREFIX, '');
+          const postId = key.replace(VIEW_KEY_PREFIX, '');
           const totalViews = parseInt(await redis.get(key) || '0');
           
           // Get views from last 7 days
@@ -217,7 +217,7 @@ export const calculateTrending = inngest.createFunction(
           }
           
           postsData.push({
-            slug,
+            postId,
             totalViews,
             recentViews,
           });
@@ -261,7 +261,7 @@ export const calculateTrending = inngest.createFunction(
     return {
       success: true,
       trendingCount: trending.length,
-      topPost: trending[0]?.slug,
+      topPost: trending[0]?.postId,
       timestamp: new Date().toISOString(),
     };
   },

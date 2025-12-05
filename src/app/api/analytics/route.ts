@@ -287,17 +287,21 @@ export async function GET(request: Request) {
         if (trendingData) {
           const parsedTrending = JSON.parse(trendingData);
           // Enrich trending data with full post information
-          // Redis trending only contains: slug, totalViews, recentViews, score
-          // We need to merge with postsWithViews to get full post data
+          // Redis trending contains: postId, totalViews, recentViews, score
+          // We need to merge with posts to get slug and then match with postsWithViews
           trendingFromRedis = parsedTrending
-            .map((trending: { slug: string; totalViews: number; recentViews: number; score: number }) => {
-              const fullPost = postsWithViews.find(p => p.slug === trending.slug);
-              if (fullPost) {
-                return {
-                  ...fullPost,
-                  // Override views24h with recentViews from trending for more accurate recent data
-                  trendingScore: trending.score,
-                };
+            .map((trending: { postId: string; totalViews: number; recentViews: number; score: number }) => {
+              // Find the post by its postId, then match by slug with postsWithViews
+              const post = posts.find(p => p.id === trending.postId);
+              if (post) {
+                const fullPost = postsWithViews.find(p => p.slug === post.slug);
+                if (fullPost) {
+                  return {
+                    ...fullPost,
+                    // Override views24h with recentViews from trending for more accurate recent data
+                    trendingScore: trending.score,
+                  };
+                }
               }
               return null;
             })
