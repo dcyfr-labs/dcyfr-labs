@@ -259,6 +259,15 @@ _All current short-term tasks completed as of December 4, 2025._
 - [ ] Horizontal scroll filter chips (2-3 hours)
   - Single row of horizontally scrolling quick-filter badges
   - "More" button for full filter access
+- [ ] Category grouping in blog grid (2-3 hours)
+  - Add section headers for each category to group posts visually
+  - Collapsible sections for cleaner browsing
+- [ ] Magazine layout as default option (1-2 hours)
+  - Consider enabling magazine layout by default or as prominent toggle
+  - Already has hero pattern built-in
+- [ ] Hybrid layout pattern (2-3 hours)
+  - Create hybrid layout: first post large hero, rest in 2-column grid
+  - Combines best of grid and magazine layouts
 
 ### Analytics Dashboard Enhancements
 

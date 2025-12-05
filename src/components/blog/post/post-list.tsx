@@ -356,34 +356,38 @@ export function PostList({
     );
   }
 
-  // Grid layout: 2-column grid with images on top
+  // Grid layout: 2-column grid with featured posts spanning full width
   if (layout === "grid") {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="post-list">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6" data-testid="post-list">
         {posts.map((p, index) => {
           const featuredImage = ensurePostImage(p.image, {
             title: p.title,
             tags: p.tags,
           });
+          
+          // Featured posts (New or Hot) span full width on desktop
+          const isFeatured = latestSlug === p.slug || hottestSlug === p.slug;
 
           return (
             <ScrollReveal 
               key={p.slug} 
               animation="fade-up"
               delay={index * 50}
+              className={isFeatured ? "md:col-span-2" : ""}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
                 <Link href={`/blog/${p.slug}`} className="flex flex-col h-full">
-                  {/* Post content */}
-                  <div className="flex-1 p-4 flex flex-col">
+                  {/* Post content - larger padding for featured posts */}
+                  <div className={`flex-1 flex flex-col ${isFeatured ? "p-5 md:p-8" : "p-4"}`}>
                     {/* Badges and metadata */}
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground mb-3">
-                      <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
-                      <SeriesBadge post={p} size="sm" />
+                    <div className={`flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground mb-3 ${isFeatured ? "text-sm" : "text-xs"}`}>
+                      <PostBadges post={p} size={isFeatured ? "default" : "sm"} isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
+                      <SeriesBadge post={p} size={isFeatured ? "default" : "sm"} />
                       <time dateTime={p.publishedAt}>
                         {new Date(p.publishedAt).toLocaleDateString("en-US", { 
                           year: "numeric", 
-                          month: "short", 
+                          month: isFeatured ? "long" : "short", 
                           day: "numeric" 
                         })}
                       </time>
@@ -397,27 +401,27 @@ export function PostList({
                       )}
                     </div>
                     
-                    {/* Title */}
-                    <TitleTag className="font-semibold text-lg md:text-xl line-clamp-2 mb-2">
+                    {/* Title - larger for featured posts */}
+                    <TitleTag className={`font-semibold line-clamp-2 mb-2 ${isFeatured ? "text-2xl md:text-3xl" : "text-lg md:text-xl"}`}>
                       <HighlightText text={p.title} searchQuery={searchQuery} />
                     </TitleTag>
                     
-                    {/* Summary */}
-                    <p className="text-sm text-muted-foreground line-clamp-3 flex-1">
+                    {/* Summary - more lines for featured */}
+                    <p className={`text-muted-foreground flex-1 ${isFeatured ? "text-base line-clamp-4 md:line-clamp-3" : "text-sm line-clamp-3"}`}>
                       <HighlightText text={p.summary} searchQuery={searchQuery} />
                     </p>
                     
-                    {/* Tags */}
+                    {/* Tags - show more for featured posts */}
                     {p.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1.5 mt-3">
-                        {p.tags.slice(0, 3).map(tag => (
-                          <Badge key={tag} variant="outline" className="text-xs">
+                        {p.tags.slice(0, isFeatured ? 5 : 3).map(tag => (
+                          <Badge key={tag} variant="outline" className={isFeatured ? "text-sm" : "text-xs"}>
                             {tag}
                           </Badge>
                         ))}
-                        {p.tags.length > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{p.tags.length - 3}
+                        {p.tags.length > (isFeatured ? 5 : 3) && (
+                          <Badge variant="outline" className={isFeatured ? "text-sm" : "text-xs"}>
+                            +{p.tags.length - (isFeatured ? 5 : 3)}
                           </Badge>
                         )}
                       </div>

@@ -161,7 +161,7 @@
 
 ### Step 1: Backup Current Config
 ```bash
-cd /dcyfr/code/dcyfr-labs
+cd /path/to/dcyfr-labs
 cp .vscode/mcp.json .vscode/mcp.json.backup
 ```
 
@@ -218,7 +218,7 @@ Compare code suggestions and analysis quality:
 
 If issues occur:
 ```bash
-cd /dcyfr/code/dcyfr-labs
+cd /path/to/dcyfr-labs
 cp .vscode/mcp.json.backup .vscode/mcp.json
 ```
 

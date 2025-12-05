@@ -13,7 +13,7 @@ const date = new Date().toISOString().split('T')[0];
 
 const body = `## 🚨 Security Advisory Alert - ${date}
 
-**${count} new security advisor(y/ies) detected** for monitored packages.
+**${count} new security ${count === '1' ? 'advisory' : 'advisories'} detected** for monitored packages.
 
 ### Affected Packages
 
