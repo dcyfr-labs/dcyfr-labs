@@ -79,51 +79,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-        run: |
-          node -e "
-          const { getOrCreateIssue } = await import('./scripts/github-api.mjs');
-          
-          const summary = process.env.ADVISORY_SUMMARY;
-          const count = process.env.ADVISORY_COUNT;
-          const date = new Date().toISOString().split('T')[0];
-          
-          const body = \`## 🚨 Security Advisory Alert - \${date}
-
-          **\${count} new security advisor(y/ies) detected** for monitored packages.
-
-          ### Affected Packages
-
-          \${summary}
-
-          ### Action Required
-
-          1. Review the advisories linked above
-          2. Check if our current package versions are affected
-          3. Upgrade affected packages immediately if vulnerable
-          4. Deploy updated versions to production
-
-          ### Automated Detection
-
-          This issue was created by the Security Advisory Monitor workflow.
-          - Polling frequency: Every 2 hours (business hours) / 6 hours (overnight)
-          - Monitored packages: next, react, react-dom, react-server-dom-*
-
-          ---
-          <!-- Signature: security-advisory-monitor-\${date} -->
-          \`;
-
-          await getOrCreateIssue({
-            label: 'security',
-            signature: 'security-advisory-monitor-' + date,
-            title: '🚨 Security Advisory: ' + count + ' new vulnerabilities detected',
-            body,
-            labels: ['security', 'priority:critical', 'automated'],
-            updateIfExists: true
-          });
-          "
-        env:
           ADVISORY_SUMMARY: ${{ steps.check.outputs.advisory_summary }}
           ADVISORY_COUNT: ${{ steps.check.outputs.advisory_count }}
+        run: node scripts/create-security-issue.mjs
 
       - name: Send Slack notification
         if: steps.check.outputs.has_new_advisories == 'true' && vars.SLACK_WEBHOOK_URL
