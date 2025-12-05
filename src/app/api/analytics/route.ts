@@ -419,6 +419,11 @@ export async function GET(request: Request) {
       },
       posts: postsWithViews,
       trending: trendingFromRedis || trendingPosts,
+    }, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+        ...createRateLimitHeaders(rateLimitResult),
+      },
     });
   } catch (error) {
     const errorInfo = handleApiError(error, {

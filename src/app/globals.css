@@ -536,6 +536,21 @@ svg {
     transition: background-color 0.2s, color 0.2s;
   }
 
+  /* Add brackets around footnote reference number */
+  sup a[href^="#user-content-fn"]::before {
+    content: "[";
+    margin-right: 0.0625rem;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  sup a[href^="#user-content-fn"]::after {
+    content: "]";
+    margin-left: 0.0625rem;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
   sup a[href^="#user-content-fn"]:hover {
     background-color: hsl(var(--primary) / 0.1);
     text-decoration: underline;

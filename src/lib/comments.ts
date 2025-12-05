@@ -40,7 +40,16 @@ async function getRedisClient() {
   if (!redisUrl) return null;
 
   try {
-    const client = createClient({ url: redisUrl });
+    const client = createClient({ 
+      url: redisUrl,
+      socket: {
+        connectTimeout: 5000,      // 5s connection timeout
+        reconnectStrategy: (retries) => {
+          if (retries > 3) return new Error('Max retries exceeded');
+          return Math.min(retries * 100, 3000); // Exponential backoff, max 3s
+        },
+      },
+    });
     if (!client.isOpen) {
       await client.connect();
     }

@@ -2,11 +2,14 @@
  * Test Redis storage functionality
  */
 import { NextResponse } from "next/server";
+import { assertDevOr404 } from "@/lib/dev-only";
 import { createClient } from "redis";
 
 const redisUrl = process.env.REDIS_URL;
 
 export async function GET() {
+  // Defense-in-depth: explicit environment check for Vercel Fluid Compute optimization
+  assertDevOr404();
   const result: {
     redisUrl: string | null;
     connected: boolean;

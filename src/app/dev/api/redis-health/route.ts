@@ -6,9 +6,12 @@
  */
 
 import { NextResponse } from "next/server";
+import { assertDevOr404 } from "@/lib/dev-only";
 import { testRedisConnection } from "@/lib/redis-health";
 
 export async function GET() {
+  // Defense-in-depth: explicit environment check for Vercel Fluid Compute optimization
+  assertDevOr404();
   try {
     const status = await testRedisConnection();
 

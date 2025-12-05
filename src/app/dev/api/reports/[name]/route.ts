@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { assertDevOr404 } from '@/lib/dev-only';
 import fs from 'fs';
 import path from 'path';
 
@@ -23,6 +24,9 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ name: string }> }
 ) {
+  // Defense-in-depth: explicit environment check for Vercel Fluid Compute optimization
+  assertDevOr404();
+  
   const { name } = await params;
 
   // Validate report name

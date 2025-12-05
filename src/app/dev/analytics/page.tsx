@@ -8,8 +8,8 @@ import { assertDevOr404 } from "@/lib/dev-only";
 // environment check below and return a 404 in non-dev environments.
 import AnalyticsClient from "./AnalyticsClient";
 
-// Force dynamic so the server check runs at request time.
-export const dynamic = "force-dynamic";
+// Vercel optimization: assertDevOr404() calls notFound() in Preview/Production,
+// which allows this page to be statically rendered. No dynamic function needed.
 
 export default function Page() {
   // Centralized helper: assert dev or render 404. Keeps behavior consistent

@@ -26,7 +26,16 @@ async function getAntiSpamClient(): Promise<RedisClient | null> {
   if (!redisUrl) return null;
 
   if (!globalThis.__antiSpamRedisClient) {
-    const client = createClient({ url: redisUrl });
+    const client = createClient({ 
+      url: redisUrl,
+      socket: {
+        connectTimeout: 5000,      // 5s connection timeout
+        reconnectStrategy: (retries) => {
+          if (retries > 3) return new Error('Max retries exceeded');
+          return Math.min(retries * 100, 3000); // Exponential backoff, max 3s
+        },
+      },
+    });
     client.on("error", (error) => {
       if (process.env.NODE_ENV !== "production") {
         console.error("Anti-spam Redis error:", error);
