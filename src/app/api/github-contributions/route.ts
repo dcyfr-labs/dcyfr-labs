@@ -126,18 +126,15 @@ export async function GET(request: NextRequest) {
   try {
     // Try fetching from GitHub's GraphQL API
     console.log(`Fetching GitHub contributions for user: ${username}`);
-    console.log(`GitHub token configured: ${!!process.env.GITHUB_TOKEN}`);
-    
+
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
       'User-Agent': `${SITE_DOMAIN}-portfolio`,
     };
-    
+
     // Only add Authorization header if token is available
     if (process.env.GITHUB_TOKEN) {
-      const tokenValue = process.env.GITHUB_TOKEN;
-      console.log(`Token length: ${tokenValue.length}, first 10 chars: ${tokenValue.substring(0, 10)}`);
-      headers['Authorization'] = `Bearer ${tokenValue}`;
+      headers['Authorization'] = `Bearer ${process.env.GITHUB_TOKEN}`;
       console.log('Using authenticated GitHub API');
     } else {
       console.log('Using unauthenticated GitHub API (subject to rate limits)');

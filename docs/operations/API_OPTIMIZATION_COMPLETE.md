@@ -425,7 +425,7 @@ curl http://localhost:3000/api/admin/api-usage | jq '.health'
 ### If MCP Changes Cause Issues
 
 ```bash
-cd /Users/drew/Desktop/dcyfr/code/dcyfr-labs
+cd /dcyfr/code/dcyfr-labs
 cp .vscode/mcp.json.backup-20251204 .vscode/mcp.json
 ```
 

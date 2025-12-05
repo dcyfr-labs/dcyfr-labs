@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import { checkBotId } from "botid/server";
 import { rateLimit, getClientIp, createRateLimitHeaders } from "@/lib/rate-limit";
+import { RATE_LIMITS } from "@/lib/api-guardrails";
 import { inngest } from "@/inngest/client";
 import { trackContactFormSubmission } from "@/lib/analytics";
 import { handleApiError } from "@/lib/error-handler";
 
-// Rate limit: 3 requests per 60 seconds per IP
+// Rate limit: 3 requests per minute per IP (from centralized guardrails config)
 const RATE_LIMIT_CONFIG = {
-  limit: 3,
+  limit: RATE_LIMITS.contact.requestsPerMinute,
   windowInSeconds: 60,
 };
 

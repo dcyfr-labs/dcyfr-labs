@@ -246,7 +246,7 @@ npm run check && npm run validate:content && npm run lint:mermaid
 
 **Fix:** Make sure you're in the project root directory and dependencies are installed:
 ```bash
-cd /Users/drew/Desktop/dcyfr/code/dcyfr-labs
+cd /dcyfr/code/dcyfr-labs
 npm install
 npm run validate:content
 ```

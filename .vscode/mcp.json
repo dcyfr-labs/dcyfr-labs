@@ -29,10 +29,7 @@
 			"args": [
 				"-y",
 				"@modelcontextprotocol/server-filesystem",
-				"src/content/blog",
-				"public/blog/images",
-				"docs",
-				"src/data"
+				"${workspaceFolder}"
 			],
 			"type": "stdio"
 		},
