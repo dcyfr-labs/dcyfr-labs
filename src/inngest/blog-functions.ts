@@ -40,17 +40,17 @@ const ANALYTICS_KEY_PREFIX = "blog:analytics:";
  * Track blog post view
  * 
  * Triggered when a user views a blog post.
- * Handles:
- * - Incrementing view counts
- * - Tracking daily/weekly/monthly stats
- * - Detecting milestone achievements
+ * NOTE: The actual view count increment happens in /api/views via incrementPostViews().
+ * This function handles secondary tracking:
+ * - Daily view tracking for analytics
+ * - Milestone detection
  * - Updating trending calculations
  */
 export const trackPostView = inngest.createFunction(
   { id: "track-post-view" },
   { event: "blog/post.viewed" },
   async ({ event, step }) => {
-    const { slug, title } = event.data;
+    const { postId, slug, title } = event.data;
     const redis = await getRedisClient();
 
     if (!redis) {
@@ -58,24 +58,25 @@ export const trackPostView = inngest.createFunction(
       return { success: false, reason: "redis-not-configured" };
     }
 
-    // Step 1: Increment view count
-    const totalViews = await step.run("increment-views", async () => {
+    // Step 1: Get current view count (already incremented by /api/views)
+    const totalViews = await step.run("get-views", async () => {
       try {
-        const views = await redis.incr(`${VIEW_KEY_PREFIX}${slug}`);
-        console.log(`Post view tracked: ${slug} (${views} total views)`);
-        return views;
+        const views = await redis.get(`${VIEW_KEY_PREFIX}${postId}`);
+        const count = parseInt(views || '0');
+        console.log(`Post view tracked: ${slug} (${count} total views)`);
+        return count;
       } catch (error) {
-        console.error("Failed to increment views:", error);
+        console.error("Failed to get view count:", error);
         return 0;
       }
     });
 
-    // Step 2: Track daily views
+    // Step 2: Track daily views (uses postId for consistency)
     await step.run("track-daily-views", async () => {
       try {
         const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-        await redis.incr(`${VIEW_KEY_PREFIX}${slug}:day:${today}`);
-        await redis.expire(`${VIEW_KEY_PREFIX}${slug}:day:${today}`, 90 * 24 * 60 * 60); // 90 days
+        await redis.incr(`${VIEW_KEY_PREFIX}${postId}:day:${today}`);
+        await redis.expire(`${VIEW_KEY_PREFIX}${postId}:day:${today}`, 90 * 24 * 60 * 60); // 90 days
       } catch (error) {
         console.error("Failed to track daily views:", error);
       }
@@ -99,9 +100,9 @@ export const trackPostView = inngest.createFunction(
             },
           });
 
-          // Track that we've sent this milestone
+          // Track that we've sent this milestone (uses postId)
           await redis.set(
-            `${MILESTONE_KEY_PREFIX}${slug}:${milestone}`,
+            `${MILESTONE_KEY_PREFIX}${postId}:${milestone}`,
             new Date().toISOString()
           );
 
@@ -112,6 +113,7 @@ export const trackPostView = inngest.createFunction(
 
     return {
       success: true,
+      postId,
       slug,
       totalViews,
       timestamp: new Date().toISOString(),

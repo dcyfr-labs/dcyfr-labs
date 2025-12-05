@@ -172,6 +172,7 @@ export async function POST(request: NextRequest) {
         await inngest.send({
           name: "blog/post.viewed",
           data: {
+            postId: post.id,
             slug: post.slug,
             title: post.title,
           },

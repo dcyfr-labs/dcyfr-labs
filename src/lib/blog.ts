@@ -41,7 +41,9 @@ export function generatePostId(publishedAt: string, slug: string): string {
     .substring(0, 8); // Take first 8 chars of hex hash
 
   // Format: post-YYYYMMDD-{hash}
-  const date = publishedAt.replace(/-/g, ""); // 2025-10-05 → 20251005
+  // Extract just the date part (YYYY-MM-DD) from ISO datetime strings
+  const datePart = publishedAt.split("T")[0]; // "2025-12-03T12:00:00Z" → "2025-12-03"
+  const date = datePart.replace(/-/g, ""); // "2025-12-03" → "20251203"
   return `post-${date}-${hash}`;
 }
 
@@ -119,6 +121,7 @@ export function getAllPosts(): Post[] {
       draft: data.draft as boolean | undefined,
       body: content,
       previousSlugs: (data.previousSlugs as string[]) || undefined,
+      previousIds: (data.previousIds as string[]) || undefined,
       image: data.image as Post["image"] | undefined,
       series: data.series as Post["series"] | undefined,
       readingTime: calculateReadingTime(content),
@@ -177,6 +180,7 @@ export function getPostBySlug(slug: string): Post | undefined {
     draft: data.draft as boolean | undefined,
     body: content,
     previousSlugs: (data.previousSlugs as string[]) || undefined,
+    previousIds: (data.previousIds as string[]) || undefined,
     image: data.image as Post["image"] | undefined,
     series: data.series as Post["series"] | undefined,
     readingTime: calculateReadingTime(content),

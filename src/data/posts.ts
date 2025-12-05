@@ -30,6 +30,7 @@ export type Post = {
   draft?: boolean; // only visible in development
   body: string; // MDX content
   previousSlugs?: string[]; // old slugs that should 301 redirect to current slug
+  previousIds?: string[]; // old IDs for analytics migration (auto-migrates Redis data)
   image?: PostImage; // optional featured image
   series?: {
     name: string; // series name (e.g., "React Hooks Deep Dive")

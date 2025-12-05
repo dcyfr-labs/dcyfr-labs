@@ -48,6 +48,8 @@ export interface EmailDeliveryEvent {
 export interface BlogPostViewedEvent {
   name: "blog/post.viewed";
   data: {
+    /** Permanent post identifier (from post.id field) */
+    postId: string;
     slug: string;
     title: string;
     /** ISO timestamp of view */

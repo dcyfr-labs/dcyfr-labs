@@ -98,7 +98,8 @@ export async function GET(request: NextRequest) {
       }
 
       for (const date of dates) {
-        const key = `${VIEW_KEY_PREFIX}${post.slug}:day:${date}`;
+        // Use postId for daily view keys (consistent with Inngest tracking)
+        const key = `${VIEW_KEY_PREFIX}${post.id}:day:${date}`;
         const views = await redis.get(key);
         dailyData.push({
           date,
@@ -111,9 +112,9 @@ export async function GET(request: NextRequest) {
       for (const date of dates) {
         let totalViews = 0;
         
-        // Sum views across all posts for this date
+        // Sum views across all posts for this date (using postId)
         for (const post of posts) {
-          const key = `${VIEW_KEY_PREFIX}${post.slug}:day:${date}`;
+          const key = `${VIEW_KEY_PREFIX}${post.id}:day:${date}`;
           const views = await redis.get(key);
           totalViews += parseInt(views || "0");
         }
