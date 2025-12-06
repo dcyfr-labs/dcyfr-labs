@@ -1,22 +1,47 @@
 # Featured Images Quick Start
 
 **Status:** ✅ Production Ready  
-**Last Updated:** November 3, 2025  
-**Related:** [Frontmatter Schema](./frontmatter-schema.md) · [Content Creation](./content-creation.md)
+**Last Updated:** December 6, 2025  
+**Related:** [Frontmatter Schema](./frontmatter-schema.md) · [Content Creation](./content-creation.md) · [Custom Image Generation](./custom-image-generation.md)
 
 ---
 
 ## Overview
 
-Blog posts now support optional featured images that display as thumbnails in list views and can be used for hero images on detail pages. The system uses Next.js Image component for automatic optimization.
+Blog posts support optional featured images that display as thumbnails in list views and as hero images on detail pages. The system uses Next.js Image component for automatic optimization.
 
-**New:** Posts without custom images automatically receive a beautiful default image based on their content and tags!
+**New Features:**
+- ✨ **Automated SVG generation**: Generate custom hero images programmatically
+- 📸 **Unsplash integration**: Download royalty-free professional photos
+- 🎨 **Smart defaults**: Posts without custom images receive beautiful defaults based on content
 
 ---
 
 ## Quick Start
 
-### Add an Image to a Post
+### Option 1: Generate Custom SVG (Recommended)
+
+Generate a unique hero image for your post automatically:
+
+```bash
+npm run generate:hero -- --slug my-post-slug
+```
+
+This creates `/public/blog/images/my-post-slug/hero.svg` with styles based on your post's tags and category.
+
+See [Custom Image Generation Guide](./custom-image-generation.md) for full details.
+
+### Option 2: Download from Unsplash
+
+Get professional photography with interactive search:
+
+```bash
+npm run fetch:unsplash -- --slug my-post-slug --interactive
+```
+
+Follow the prompts to search and select from results.
+
+### Option 3: Manual Image
 
 Add the `image` field to your post's frontmatter:
 

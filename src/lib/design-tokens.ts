@@ -189,6 +189,9 @@ export const SPACING = {
   
   /** Generic prose sections */
   proseSection: "prose space-y-4",
+  
+  /** Image elements in blog content (top/bottom margins) */
+  image: "mt-6 mb-6 md:mt-8 md:mb-8",
 } as const;
 
 // ============================================================================

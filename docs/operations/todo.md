@@ -373,6 +373,54 @@ Final code quality cleanup - achieved zero warnings:
 
 ---
 
+## 🟢 Recent Completion: Custom Blog Image Generation System (Dec 6, 2025) ✅
+
+Implemented hybrid approach for automated blog hero image generation:
+
+- [x] **Enhanced SVG Generator** ✅ (2 hours)
+  - Created `scripts/generate-blog-hero.mjs` with 6 style variants
+  - Automatic style selection based on post tags and category
+  - 8 icon types (code, security, API, design, performance, data, tools, docs)
+  - Pattern overlays (dots, grid, waves, circuit, hexagons)
+  - Generated 9 hero images (2.1-2.3KB each) for all blog posts
+  - CLI flags: `--slug`, `--all`, `--preview`, `--force`
+
+- [x] **Unsplash API Integration** ✅ (1.5 hours)
+  - Created `src/lib/unsplash.ts` TypeScript client
+  - Created `scripts/fetch-unsplash-image.mjs` CLI tool
+  - Interactive search mode with result preview
+  - Automatic download tracking (API compliance)
+  - Attribution management built-in
+  - Environment variable: `UNSPLASH_ACCESS_KEY`
+
+- [x] **Configuration Updates** ✅
+  - Added `images.unsplash.com` to Next.js remote patterns
+  - Added Unsplash setup to `.env.example`
+  - Added npm scripts: `generate:hero`, `generate:hero:all`, `fetch:unsplash`
+
+- [x] **Documentation** ✅
+  - Created `docs/blog/custom-image-generation.md` (full guide)
+  - Updated `docs/blog/featured-images.md` to reference new workflow
+  - Workflow recommendations: SVG for 80% of posts, Unsplash for featured posts
+
+**Benefits:**
+
+1. **Zero-cost automation**: SVG generation requires no external APIs
+2. **Consistent branding**: All images use design token colors
+3. **Smart defaults**: Auto-selects styles based on post metadata
+4. **Professional option**: Unsplash integration for high-value posts
+5. **Fast generation**: ~100ms per SVG, instant preview mode
+6. **Small file sizes**: 2.1-2.3KB per SVG (10-20x smaller than JPGs)
+
+**Quality Verification:**
+
+- ✅ All 9 SVGs generated successfully
+- ✅ Production build passing
+- ✅ Images load correctly in all contexts
+- ✅ File sizes optimal (2.1-2.3KB each)
+
+---
+
 ## 🟢 Completion: Codebase Quality Cleanup (Dec 5, 2025) ✅
 
 Complete cleanup of all remaining code quality issues:

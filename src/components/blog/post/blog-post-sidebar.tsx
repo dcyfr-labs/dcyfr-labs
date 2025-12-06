@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import type { TocHeading } from "@/lib/toc";
 import type { Post, PostCategory } from "@/data/posts";
 import { cn } from "@/lib/utils";
@@ -72,8 +73,9 @@ export function BlogPostSidebar({
   }
 
   return (
-    <aside className="hidden lg:block">
-      <div className={cn("sticky top-24", SPACING.subsection)}>
+    <aside className="hidden lg:block w-full lg:self-stretch">
+      {/* Non-sticky content at the top that scrolls away */}
+      <div className={cn(SPACING.subsection, "pb-6")}>
         {/* Post Metadata */}
         {metadata && (
           <PostMetadata
@@ -109,9 +111,13 @@ export function BlogPostSidebar({
         {relatedPosts && relatedPosts.length > 0 && (
           <PostRelated posts={relatedPosts} />
         )}
-
-        {/* Table of Contents */}
-        <PostTableOfContents headings={headings} slug={slug} />
+      </div>
+      
+      {/* Table of Contents - Sticky positioning */}
+      <div className="sticky top-24 bg-background">
+        <div className="max-h-[calc(100vh-7rem)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border hover:scrollbar-thumb-muted-foreground">
+          <PostTableOfContents headings={headings} slug={slug} />
+        </div>
       </div>
     </aside>
   );

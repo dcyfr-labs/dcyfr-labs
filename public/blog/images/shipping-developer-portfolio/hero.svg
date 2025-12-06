@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%" gradientTransform="rotate(135)">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  
+  <g opacity="0.3">
+    <pattern id="dots" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+        <circle cx="15" cy="15" r="1.5" fill="rgba(255,255,255,0.15)"/>
+      </pattern>
+      <rect width="1200" height="630" fill="url(#dots)"/>
+  </g>
+  
+  <!-- Decorative blobs -->
+  <g opacity="0.2">
+    <circle cx="1050" cy="100" r="150" fill="white" filter="blur(60px)"/>
+    <circle cx="150" cy="530" r="150" fill="white" filter="blur(60px)"/>
+  </g>
+  
+  <!-- Icon container -->
+  <g transform="translate(550, 190)">
+    <rect width="100" height="100" rx="20" fill="rgba(255,255,255,0.15)" 
+          stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+    <g transform="translate(25, 25) scale(2)" color="white">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8 6L4 10L8 14M16 6L20 10L16 14M12 4L8 20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+    </g>
+  </g>
+  
+  <!-- Title (if short enough) -->
+  
+  
+  <!-- Site branding -->
+  <text x="600" y="520" font-family="system-ui, -apple-system, sans-serif" 
+        font-size="24" font-weight="600" fill="rgba(255,255,255,0.9)" 
+        text-anchor="middle" letter-spacing="0.05em">
+    DCYFR.AI BLOG
+  </text>
+  
+  <!-- Metadata badge -->
+  <g transform="translate(500, 560)">
+    <rect width="200" height="40" rx="20" fill="rgba(255,255,255,0.1)" 
+          stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+    <text x="100" y="26" font-family="system-ui, -apple-system, sans-serif" 
+          font-size="14" font-weight="500" fill="rgba(255,255,255,0.8)" 
+          text-anchor="middle">
+      WEB
+    </text>
+  </g>
+</svg>

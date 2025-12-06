@@ -23,7 +23,7 @@ import {
   Lock,
   Rocket
 } from "lucide-react";
-import { TYPOGRAPHY } from "@/lib/design-tokens";
+import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
 
 /**
  * Configuration for the rehype-pretty-code plugin
@@ -300,6 +300,12 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
       </a>
     );
   },
+  img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
+    <img 
+      {...props} 
+      className={`${SPACING.image} rounded-lg max-w-full h-auto`}
+    />
+  ),
   // Icon components for consistent styling across the site
   CheckIcon: () => <Check className="inline-block w-5 h-5 align-text-bottom text-green-600 dark:text-green-400" aria-label="Check" />,
   XIcon: () => <X className="inline-block w-5 h-5 align-text-bottom text-red-600 dark:text-red-400" aria-label="Cross" />,
