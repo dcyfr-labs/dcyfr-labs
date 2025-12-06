@@ -414,6 +414,20 @@ svg {
     }
   }
 
+  /* Highlight animation for TOC anchor navigation */
+  @keyframes highlight-pulse {
+    0%, 100% {
+      background-color: transparent;
+    }
+    50% {
+      background-color: hsl(var(--primary) / 0.1);
+    }
+  }
+
+  .animate-highlight {
+    animation: highlight-pulse 2s ease-in-out;
+  }
+
   .holographic-card {
     position: relative;
     overflow: hidden;

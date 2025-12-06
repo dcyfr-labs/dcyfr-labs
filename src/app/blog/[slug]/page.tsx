@@ -28,6 +28,7 @@ import {
 import {
   MDX,
   RelatedPosts,
+  SmoothScrollToHash,
   TableOfContents,
 } from "@/components/common";
 import { Breadcrumbs } from "@/components/navigation";
@@ -183,13 +184,14 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       />
 
       <ReadingProgress />
+      <SmoothScrollToHash />
       {/* FAB menu disabled */}
       {/* <BlogFABMenu headings={headings} /> */}
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
 
-      {/* Mobile/Tablet ToC - Keep existing FAB for smaller screens */}
+      {/* Mobile/Tablet ToC - FAB menu enabled */}
       <div className="lg:hidden">
-        <TableOfContents headings={headings} slug={post.slug} hideFAB={true} />
+        <TableOfContents headings={headings} slug={post.slug} />
       </div>
 
       {/* Desktop Layout: Sidebar + Content */}

@@ -15,6 +15,7 @@ export { ScrollIndicator } from "./scroll-indicator";
 export { RelatedPosts } from "./related-posts";
 export { SectionHeader } from "./section-header";
 export { SectionNavigator, Section } from "./section-navigator";
+export { SmoothScrollToHash } from "./smooth-scroll-to-hash";
 export { TableOfContents } from "./table-of-contents";
 export { ViewToggle } from "./view-toggle";
 export { default as DevToolsDropdown } from "./dev-tools-dropdown";
