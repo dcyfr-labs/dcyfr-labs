@@ -16,6 +16,9 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { Button } from "@/components/ui/button";
 import { teamMembers } from "@/data/team";
+import { featuredInviteCodes } from "@/data/invites";
+import { InviteCodeCard } from "@/components/sponsors";
+import { Gift } from "lucide-react";
 
 const pageTitle = "Sponsors";
 const pageDescription =
@@ -103,6 +106,43 @@ export default async function SponsorsPage() {
                   avatarUrl={member.avatarType === "image" && member.id === "drew" ? "https://github.com/dcyfr.png" : undefined}
                 />
               ))}
+            </div>
+          </div>
+        </Section>
+
+        {/* Invite Codes Section */}
+        <Section
+          id="invite-codes"
+          className={PAGE_LAYOUT.section.container}
+        >
+          <div className={SPACING.content}>
+            <div className="flex items-center gap-3 mb-6">
+              <Gift className="h-6 w-6 text-primary" />
+              <div>
+                <h2 className={TYPOGRAPHY.h2.standard}>Invite Codes</h2>
+                <p className="text-muted-foreground mt-2">
+                  Join our favorite platforms and communities. Featured partnerships that support our work.
+                </p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              {featuredInviteCodes.map((code) => (
+                <InviteCodeCard
+                  key={code.id}
+                  code={code}
+                  showFullDescription={false}
+                />
+              ))}
+            </div>
+
+            {/* Link to full list */}
+            <div className="text-center mt-8">
+              <Button variant="outline" asChild>
+                <Link href="/invites">
+                  View All Invite Codes
+                </Link>
+              </Button>
             </div>
           </div>
         </Section>
@@ -229,7 +269,7 @@ function SponsorCard({ sponsor }: SponsorCardProps) {
       className={`group bg-card border border-border rounded-lg p-4 ${HOVER_EFFECTS.cardSubtle}`}
     >
       <div className="flex items-start gap-4">
-        <div className="relative w-16 h-16 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-border group-hover:ring-primary/50 transition-all">
+        <div className="relative w-16 h-16 rounded-full overflow-hidden shrink-0 ring-2 ring-border group-hover:ring-primary/50 transition-all">
           <Image
             src={sponsor.avatarUrl}
             alt={`${displayName}'s avatar`}

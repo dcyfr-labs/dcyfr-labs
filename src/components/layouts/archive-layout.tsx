@@ -86,7 +86,7 @@ export function ArchiveLayout({
         variant={variant}
       />
       
-      <div className={cn("mx-auto", CONTAINER_WIDTHS.content, CONTAINER_PADDING, "pb-14 md:pb-20", className)}>
+      <div className={cn("mx-auto", CONTAINER_WIDTHS.archive, CONTAINER_PADDING, "pb-14 md:pb-20", className)}>
         {/* Filters */}
         {filters && (
           <div className="mb-8">

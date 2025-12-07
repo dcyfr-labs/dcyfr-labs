@@ -6,6 +6,7 @@
  * Scans TypeScript/TSX files for design system violations:
  * - Prohibited spacing patterns (space-y-[5-9], gap-[5-9], p-[67])
  * - Inline typography (text-* font-* combinations)
+ * - Hardcoded container widths (max-w-* without CONTAINER_WIDTHS)
  * - Hardcoded colors (future enhancement)
  *
  * Usage:
@@ -64,6 +65,21 @@ const PATTERNS = {
       'text-2xl font-bold': 'TYPOGRAPHY.h2.standard or TYPOGRAPHY.display.stat',
       'text-2xl font-semibold': 'TYPOGRAPHY.h2.standard',
       'text-xl font-medium': 'TYPOGRAPHY.h3.standard',
+    },
+  },
+  containerWidth: {
+    // Match max-w-{number}xl or max-w-[{number}px] but exclude acceptable patterns
+    // Acceptable: max-w-full (images), max-w-2xl (modals), max-w-3xl (typography)
+    // Violations: max-w-4xl, max-w-5xl, max-w-6xl, max-w-7xl (should use CONTAINER_WIDTHS)
+    regex: /\b(max-w-(4xl|5xl|6xl|7xl)|max-w-\[1[0-9]{3,}px\])\b/g,
+    description: 'Hardcoded container width (use CONTAINER_WIDTHS)',
+    suggestions: {
+      'max-w-4xl': 'CONTAINER_WIDTHS.narrow',
+      'max-w-5xl': 'CONTAINER_WIDTHS.standard',
+      'max-w-6xl': 'CONTAINER_WIDTHS.content',
+      'max-w-7xl': 'CONTAINER_WIDTHS.archive',
+      'max-w-[1280px]': 'CONTAINER_WIDTHS.archive',
+      'max-w-[1536px]': 'CONTAINER_WIDTHS.dashboard',
     },
   },
 };
@@ -170,6 +186,11 @@ function validateFile(filePath) {
 
   // Check each pattern
   for (const [patternName, pattern] of Object.entries(PATTERNS)) {
+    // Skip containerWidth validation for design-tokens.ts (those are the definitions)
+    if (patternName === 'containerWidth' && filePath.includes('design-tokens.ts')) {
+      continue;
+    }
+    
     lines.forEach((line, lineNumber) => {
       const matches = line.matchAll(pattern.regex);
 
@@ -283,6 +304,7 @@ async function main() {
     summary: {
       spacing: allViolations.filter(v => v.type === 'spacing').length,
       typography: allViolations.filter(v => v.type === 'typography').length,
+      containerWidth: allViolations.filter(v => v.type === 'containerWidth').length,
     },
   };
   fs.writeFileSync(

@@ -48,7 +48,7 @@ export function DashboardLayout({
   className,
 }: DashboardLayoutProps) {
   return (
-    <div className={cn("mx-auto", CONTAINER_WIDTHS.archive, CONTAINER_PADDING, CONTAINER_VERTICAL_PADDING, className)}>
+    <div className={cn("mx-auto", CONTAINER_WIDTHS.dashboard, CONTAINER_PADDING, CONTAINER_VERTICAL_PADDING, className)}>
       {/* Header Section */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>

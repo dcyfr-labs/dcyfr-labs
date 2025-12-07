@@ -415,9 +415,18 @@ export default function AnalyticsDashboard() {
             setHideDrafts(false);
             setHideArchived(false);
           }}
-          resultCount={{ shown: sortedPosts.length, total: filteredPosts.length }}
+          resultCount={{
+            shown: sortedPosts.length,
+            total: filteredPosts.length,
+          }}
         />
       </div>
+
+      {/* Analytics Overview */}
+      <AnalyticsOverview summary={filteredSummary} />
+
+      {/* Trending Posts */}
+      <AnalyticsTrending trending={filteredTrending} limit={3} />
 
       {/* All Posts Table */}
       <Card className="overflow-hidden mb-6">
@@ -447,7 +456,11 @@ export default function AnalyticsDashboard() {
                       className="inline-flex items-center gap-1.5 hover:text-primary transition-colors cursor-pointer"
                     >
                       Title
-                      <SortIndicator field="title" sortField={sortField} sortDirection={sortDirection} />
+                      <SortIndicator
+                        field="title"
+                        sortField={sortField}
+                        sortDirection={sortDirection}
+                      />
                     </button>
                   </th>
                   <th className="text-right py-2 px-3 font-semibold whitespace-nowrap">
@@ -456,36 +469,58 @@ export default function AnalyticsDashboard() {
                       className="inline-flex items-center gap-1.5 hover:text-primary transition-colors cursor-pointer ml-auto"
                     >
                       Views
-                      <SortIndicator field="views" sortField={sortField} sortDirection={sortDirection} />
+                      <SortIndicator
+                        field="views"
+                        sortField={sortField}
+                        sortDirection={sortDirection}
+                      />
                     </button>
                   </th>
                   {dateRange !== "all" && (
                     <th className="text-right py-2 px-3 font-semibold whitespace-nowrap">
                       <button
-                        onClick={() => handleSort("viewsRange" as keyof PostAnalytics)}
+                        onClick={() =>
+                          handleSort("viewsRange" as keyof PostAnalytics)
+                        }
                         className="inline-flex items-center gap-1.5 hover:text-primary transition-colors cursor-pointer ml-auto"
                       >
                         {DATE_RANGE_LABELS[dateRange]}
-                        <SortIndicator field="viewsRange" sortField={sortField} sortDirection={sortDirection} />
+                        <SortIndicator
+                          field="viewsRange"
+                          sortField={sortField}
+                          sortDirection={sortDirection}
+                        />
                       </button>
                     </th>
                   )}
                   <th className="text-right py-2 px-3 font-semibold whitespace-nowrap">
                     <button
-                      onClick={() => handleSort("shares" as keyof PostAnalytics)}
+                      onClick={() =>
+                        handleSort("shares" as keyof PostAnalytics)
+                      }
                       className="inline-flex items-center gap-1.5 hover:text-primary transition-colors cursor-pointer ml-auto"
                     >
                       Shares
-                      <SortIndicator field="shares" sortField={sortField} sortDirection={sortDirection} />
+                      <SortIndicator
+                        field="shares"
+                        sortField={sortField}
+                        sortDirection={sortDirection}
+                      />
                     </button>
                   </th>
                   <th className="text-right py-2 px-3 font-semibold whitespace-nowrap">
                     <button
-                      onClick={() => handleSort("comments" as keyof PostAnalytics)}
+                      onClick={() =>
+                        handleSort("comments" as keyof PostAnalytics)
+                      }
                       className="inline-flex items-center gap-1.5 hover:text-primary transition-colors cursor-pointer ml-auto"
                     >
                       Comments
-                      <SortIndicator field="comments" sortField={sortField} sortDirection={sortDirection} />
+                      <SortIndicator
+                        field="comments"
+                        sortField={sortField}
+                        sortDirection={sortDirection}
+                      />
                     </button>
                   </th>
                   <th className="text-right py-2 px-3 font-semibold whitespace-nowrap">
@@ -495,7 +530,11 @@ export default function AnalyticsDashboard() {
                       title="Engagement rate = (shares + comments) / views × 100"
                     >
                       Engagement
-                      <SortIndicator field="engagementRate" sortField={sortField} sortDirection={sortDirection} />
+                      <SortIndicator
+                        field="engagementRate"
+                        sortField={sortField}
+                        sortDirection={sortDirection}
+                      />
                     </button>
                   </th>
                   <th className="text-center py-2 px-3 font-semibold whitespace-nowrap hidden lg:table-cell">
@@ -503,19 +542,30 @@ export default function AnalyticsDashboard() {
                   </th>
                   <th className="text-left py-2 px-3 font-semibold whitespace-nowrap hidden md:table-cell">
                     <button
-                      onClick={() => handleSort("publishedAt" as keyof PostAnalytics)}
+                      onClick={() =>
+                        handleSort("publishedAt" as keyof PostAnalytics)
+                      }
                       className="inline-flex items-center gap-1.5 hover:text-primary transition-colors cursor-pointer"
                     >
                       Published
-                      <SortIndicator field="publishedAt" sortField={sortField} sortDirection={sortDirection} />
+                      <SortIndicator
+                        field="publishedAt"
+                        sortField={sortField}
+                        sortDirection={sortDirection}
+                      />
                     </button>
                   </th>
-                  <th className="text-left py-2 px-3 font-semibold hidden lg:table-cell">Tags</th>
+                  <th className="text-left py-2 px-3 font-semibold hidden lg:table-cell">
+                    Tags
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {sortedPosts.map((post) => (
-                  <tr key={post.slug} className="border-b hover:bg-muted/50 transition-colors">
+                  <tr
+                    key={post.slug}
+                    className="border-b hover:bg-muted/50 transition-colors"
+                  >
                     <td className="py-2 px-3">
                       <a
                         href={`/blog/${post.slug}`}
@@ -529,7 +579,9 @@ export default function AnalyticsDashboard() {
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <button
-                              onClick={() => copyToClipboard(post.views, "views")}
+                              onClick={() =>
+                                copyToClipboard(post.views, "views")
+                              }
                               className="cursor-pointer underline decoration-dotted decoration-muted-foreground/50 hover:text-primary transition-colors inline-flex items-center gap-1 group"
                             >
                               {post.views.toLocaleString()}
@@ -538,9 +590,19 @@ export default function AnalyticsDashboard() {
                           </TooltipTrigger>
                           <TooltipContent side="left" className="text-xs">
                             <div className="space-y-1">
-                              <p className="font-semibold">{getBenchmark(post.views, filteredSummary.averageViews)}</p>
-                              <p className="text-muted-foreground">Site average: {filteredSummary.averageViews.toLocaleString()}</p>
-                              <p className="text-[10px] text-muted-foreground mt-1.5 pt-1.5 border-t">Click to copy</p>
+                              <p className="font-semibold">
+                                {getBenchmark(
+                                  post.views,
+                                  filteredSummary.averageViews
+                                )}
+                              </p>
+                              <p className="text-muted-foreground">
+                                Site average:{" "}
+                                {filteredSummary.averageViews.toLocaleString()}
+                              </p>
+                              <p className="text-[10px] text-muted-foreground mt-1.5 pt-1.5 border-t">
+                                Click to copy
+                              </p>
                             </div>
                           </TooltipContent>
                         </Tooltip>
@@ -551,20 +613,30 @@ export default function AnalyticsDashboard() {
                         {post.viewsRange.toLocaleString()}
                       </td>
                     )}
-                    <td className="text-right py-2 px-3 tabular-nums">{post.shares.toLocaleString()}</td>
-                    <td className="text-right py-2 px-3 tabular-nums">{post.comments.toLocaleString()}</td>
+                    <td className="text-right py-2 px-3 tabular-nums">
+                      {post.shares.toLocaleString()}
+                    </td>
+                    <td className="text-right py-2 px-3 tabular-nums">
+                      {post.comments.toLocaleString()}
+                    </td>
                     <td className="text-right py-2 px-3">
                       {(() => {
-                        const rate = calculateEngagementRate(post.views, post.shares, post.comments);
+                        const rate = calculateEngagementRate(
+                          post.views,
+                          post.shares,
+                          post.comments
+                        );
                         const tier = getEngagementTier(rate);
                         return (
-                          <span className={cn(
-                            "inline-flex items-center gap-1",
-                            "text-xs font-semibold",
-                            tier === "high" && "text-green-600",
-                            tier === "medium" && "text-yellow-600",
-                            tier === "low" && "text-muted-foreground"
-                          )}>
+                          <span
+                            className={cn(
+                              "inline-flex items-center gap-1",
+                              "text-xs font-semibold",
+                              tier === "high" && "text-green-600",
+                              tier === "medium" && "text-yellow-600",
+                              tier === "low" && "text-muted-foreground"
+                            )}
+                          >
                             {rate.toFixed(1)}%
                           </span>
                         );
@@ -572,18 +644,37 @@ export default function AnalyticsDashboard() {
                     </td>
                     <td className="text-center py-2 px-3 hidden lg:table-cell">
                       {(() => {
-                        const allViews = sortedPosts.map(p => p.views);
+                        const allViews = sortedPosts.map((p) => p.views);
                         const tier = getPerformanceTier(post.views, allViews);
-                        const benchmark = getBenchmark(post.views, filteredSummary.averageViews);
+                        const benchmark = getBenchmark(
+                          post.views,
+                          filteredSummary.averageViews
+                        );
                         return (
                           <div className="flex flex-col gap-1 items-center">
-                            <Badge 
-                              variant={tier === "top" ? "default" : tier === "above-average" ? "secondary" : tier === "below-average" ? "outline" : "destructive"}
+                            <Badge
+                              variant={
+                                tier === "top"
+                                  ? "default"
+                                  : tier === "above-average"
+                                    ? "secondary"
+                                    : tier === "below-average"
+                                      ? "outline"
+                                      : "destructive"
+                              }
                               className="text-[10px] px-1.5 py-0"
                             >
-                              {tier === "top" ? "Top 10%" : tier === "above-average" ? "Above Avg" : tier === "below-average" ? "Below Avg" : "Needs Focus"}
+                              {tier === "top"
+                                ? "Top 10%"
+                                : tier === "above-average"
+                                  ? "Above Avg"
+                                  : tier === "below-average"
+                                    ? "Below Avg"
+                                    : "Needs Focus"}
                             </Badge>
-                            <span className="text-[10px] text-muted-foreground">{benchmark}</span>
+                            <span className="text-[10px] text-muted-foreground">
+                              {benchmark}
+                            </span>
                           </div>
                         );
                       })()}
@@ -594,7 +685,11 @@ export default function AnalyticsDashboard() {
                     <td className="py-2 px-3 hidden lg:table-cell">
                       <div className="flex flex-wrap gap-1">
                         {post.tags.slice(0, 3).map((tag) => (
-                          <Badge key={tag} variant="outline" className="text-xs">
+                          <Badge
+                            key={tag}
+                            variant="outline"
+                            className="text-xs"
+                          >
                             {tag}
                           </Badge>
                         ))}
@@ -613,18 +708,56 @@ export default function AnalyticsDashboard() {
         </CardContent>
       </Card>
 
-      {/* Analytics Overview */}
-      <AnalyticsOverview
-        summary={filteredSummary}
-      />
+      {/* Performance Insights - All-Time Records & Distribution */}
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-base font-medium">
+                Performance Insights
+              </CardTitle>
+              <CardDescription className="text-sm">
+                Trends, records, and content distribution
+              </CardDescription>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowPerformance(!showPerformance)}
+              className="h-8 gap-2"
+            >
+              {showPerformance ? "Hide" : "Show"}
+              <ChevronDown
+                className={cn(
+                  "h-4 w-4 transition-transform",
+                  showPerformance && "rotate-180"
+                )}
+              />
+            </Button>
+          </div>
+        </CardHeader>
+        {showPerformance && (
+          <CardContent className="pt-0 space-y-4">
+            {/* Time-Series Charts */}
+            <AnalyticsCharts posts={sortedPosts} dateRange={dateRange} />
+
+            {/* All-Time Records & Distribution */}
+            <AnalyticsInsights posts={sortedPosts} compact={false} />
+          </CardContent>
+        )}
+      </Card>
 
       {/* Conversion Goals & Metrics */}
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-base font-medium">Conversion Metrics</CardTitle>
-              <CardDescription className="text-sm">Track user engagement and goal completion</CardDescription>
+              <CardTitle className="text-base font-medium">
+                Conversion Metrics
+              </CardTitle>
+              <CardDescription className="text-sm">
+                Track user engagement and goal completion
+              </CardDescription>
             </div>
             <Button
               variant="ghost"
@@ -633,7 +766,12 @@ export default function AnalyticsDashboard() {
               className="h-8 gap-2"
             >
               {showConversion ? "Hide" : "Show"}
-              <ChevronDown className={cn("h-4 w-4 transition-transform", showConversion && "rotate-180")} />
+              <ChevronDown
+                className={cn(
+                  "h-4 w-4 transition-transform",
+                  showConversion && "rotate-180"
+                )}
+              />
             </Button>
           </div>
         </CardHeader>
@@ -647,39 +785,6 @@ export default function AnalyticsDashboard() {
           </CardContent>
         )}
       </Card>
-
-      {/* Performance Insights - All-Time Records & Distribution */}
-      <Card>
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-base font-medium">Performance Insights</CardTitle>
-              <CardDescription className="text-sm">Trends, records, and content distribution</CardDescription>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowPerformance(!showPerformance)}
-              className="h-8 gap-2"
-            >
-              {showPerformance ? "Hide" : "Show"}
-              <ChevronDown className={cn("h-4 w-4 transition-transform", showPerformance && "rotate-180")} />
-            </Button>
-          </div>
-        </CardHeader>
-        {showPerformance && (
-          <CardContent className="pt-0 space-y-4">
-            {/* Time-Series Charts */}
-            <AnalyticsCharts posts={sortedPosts} dateRange={dateRange} />
-            
-            {/* All-Time Records & Distribution */}
-            <AnalyticsInsights posts={sortedPosts} compact={false} />
-          </CardContent>
-        )}
-      </Card>
-
-      {/* Trending Posts */}
-      <AnalyticsTrending trending={filteredTrending} limit={3} />
     </DashboardLayout>
   );
 }

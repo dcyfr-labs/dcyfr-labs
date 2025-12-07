@@ -71,22 +71,24 @@ All design tokens are centralized in `src/lib/design-tokens.ts`. Import and use 
 ```typescript
 import { CONTAINER_WIDTHS, getContainerClasses } from '@/lib/design-tokens';
 
-// Four semantic width options
-CONTAINER_WIDTHS.narrow    // max-w-2xl - Forms, focused content
-CONTAINER_WIDTHS.standard  // max-w-4xl - Core pages (home, about, contact, resume)
-CONTAINER_WIDTHS.content   // max-w-7xl - Content pages with sidebars (blog posts, project details)
-CONTAINER_WIDTHS.archive   // max-w-7xl - Archive/listing pages (blog listing, projects listing)
+// Five semantic width options
+CONTAINER_WIDTHS.narrow    // max-w-4xl (768px) - Forms, focused content
+CONTAINER_WIDTHS.standard  // max-w-5xl (1024px) - Core pages (home, about, contact, resume)
+CONTAINER_WIDTHS.content   // max-w-6xl (1152px) - Content pages with sidebars (blog posts, project details)
+CONTAINER_WIDTHS.archive   // max-w-7xl (1280px) - Archive/listing pages (blog listing, projects listing)
+CONTAINER_WIDTHS.dashboard // max-w-[1536px] (1536px) - Full-width dashboards with data tables, charts, analytics
 
 // Utility function for complete classes
 getContainerClasses('standard')
-// Returns: "mx-auto max-w-4xl py-14 md:py-20 px-4 sm:px-6 md:px-8"
+// Returns: "mx-auto max-w-5xl py-14 md:py-20 px-4 sm:px-6 md:px-8"
 ```
 
 **When to use each:**
-- **Narrow** (`max-w-2xl`): Contact form, focused content
-- **Standard** (`max-w-4xl`): Homepage, about page, resume, contact page
-- **Content** (`max-w-7xl`): Individual blog posts, project detail pages (with sidebar)
+- **Narrow** (`max-w-4xl`): Contact form, focused content, centered text blocks
+- **Standard** (`max-w-5xl`): Homepage, about page, resume, contact page (default for most pages)
+- **Content** (`max-w-6xl`): Individual blog posts, project detail pages (with sidebar/TOC)
 - **Archive** (`max-w-7xl`): Blog listing, projects listing (with filters/grids)
+- **Dashboard** (`max-w-[1536px]`): Analytics dashboards, dev tools, wide data tables and charts
 
 ### Typography
 

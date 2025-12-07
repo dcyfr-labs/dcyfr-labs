@@ -551,6 +551,64 @@ _All current short-term tasks completed as of December 5, 2025._
 
 ---
 
+## 🔵 Future Work: Invite Code Tracking & Sponsor Dashboard
+
+**Current Status (Dec 6, 2025):** Public invite code display implemented at `/sponsors` and `/invites`. Future sponsor-specific features backlogged.
+
+### ✅ Completed (Phase 1: Public Display)
+
+- [x] **Invite Code Data Structure** ✅
+  - `src/types/invites.ts` - TypeScript interfaces
+  - `src/data/invites.ts` - Centralized invite code data
+  - Support for platform categorization (professional-network, developer-community, etc.)
+  - Featured flag for `/sponsors` page priority
+  - Metrics field for social proof ("Join 100K+ tech professionals")
+
+- [x] **Public Pages** ✅
+  - `/sponsors` - Featured invite codes (3 cards) with link to full list
+  - `/invites` - All invite codes grouped by category
+  - `InviteCodeCard` component with external link handling
+  - Design token compliance and barrel exports
+
+### 🔲 Backlog (Phase 2: Tracking & Analytics)
+
+- [ ] **API Tracking Endpoints** (2-3 hours)
+  - `POST /api/invites/track` - Track invite code usage
+  - Follow `/api/views` pattern with anti-spam protection
+  - Session deduplication (24-hour window)
+  - Rate limiting (5 requests/minute per IP)
+  - Redis key structure: `invite:uses:{code}`, `invite:conversions:{code}`
+
+- [ ] **Inngest Background Jobs** (2-3 hours)
+  - `trackInviteCodeUse` - Increment usage counters
+  - `handleInviteMilestone` - Detect 100/500/1000 uses
+  - Follow `blog-functions.ts` pattern
+  - Vercel Analytics integration
+
+- [ ] **Sponsor Authentication** (3-4 hours)
+  - API key-based access (`SPONSOR_API_KEY` env var)
+  - Per-sponsor tokens stored in Redis (`sponsor:tokens` hash)
+  - `GET /api/invites/stats` - Protected stats endpoint
+  - Return aggregate data only (uses, conversions, history)
+
+- [ ] **Sponsor Dashboard UI** (3-4 hours)
+  - `/sponsors/dashboard` page with authentication
+  - Display invite code stats (uses, conversions, trending)
+  - Chart visualization (chart.js or recharts)
+  - Real-time updates via API polling
+
+- [ ] **Privacy & Compliance** (1-2 hours)
+  - IP address anonymization (hash only)
+  - Session data TTL (30-90 days)
+  - GDPR-compliant aggregate reporting
+  - No PII in sponsor-accessible data
+
+**Total Estimated Effort:** 11-16 hours
+
+**Priority:** Low (speculative, no validated sponsor need)
+
+---
+
 ## 📋 Quick Reference
 
 ### Before Starting Work

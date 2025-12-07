@@ -23,16 +23,19 @@
  */
 export const CONTAINER_WIDTHS = {
   /** Narrow width for forms and focused content (contact forms) */
-  narrow: "max-w-3xl",
+  narrow: "max-w-4xl",
   
   /** Standard width for core pages (homepage, about, contact, resume) */
-  standard: "max-w-4xl",
+  standard: "max-w-5xl",
   
   /** Content-heavy pages with sidebar (individual blog posts, project detail pages) */
-  content: "max-w-7xl",
+  content: "max-w-6xl",
   
   /** Archive/listing pages with filters and grids (blog listing, projects listing) */
   archive: "max-w-7xl",
+  
+  /** Full-width dashboard pages with data tables, charts, and analytics (dashboard pages, dev tools) */
+  dashboard: "max-w-[1536px]",
 } as const;
 
 /**

@@ -22,7 +22,7 @@ import { CONTAINER_WIDTHS } from "@/lib/design-tokens";
  */
 export function BlogPostSkeleton() {
   return (
-    <div className={`container ${CONTAINER_WIDTHS.content} mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-12 pb-8`}>
+    <div className={`container ${CONTAINER_WIDTHS.archive} mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-12 pb-8`}>
       <div className="grid gap-8 items-start lg:grid-cols-[280px_1fr]">
         {/* Left Sidebar skeleton (desktop only) */}
         <div className="hidden lg:block">

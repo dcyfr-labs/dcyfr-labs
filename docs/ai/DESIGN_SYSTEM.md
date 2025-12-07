@@ -77,10 +77,11 @@ TYPOGRAPHY.body.muted     // Muted text
 
 **CONTAINER_WIDTHS:**
 ```typescript
-CONTAINER_WIDTHS.narrow    // "max-w-2xl" - Forms, focused content
-CONTAINER_WIDTHS.standard  // "max-w-4xl" - Core pages (home, about, contact, resume)
-CONTAINER_WIDTHS.content   // "max-w-7xl" - Content pages with sidebars (blog posts, project details)
-CONTAINER_WIDTHS.archive   // "max-w-7xl" - Archive/listing pages (blog listing, projects listing)
+CONTAINER_WIDTHS.narrow    // "max-w-4xl" (768px) - Forms, focused content
+CONTAINER_WIDTHS.standard  // "max-w-5xl" (1024px) - Core pages (home, about, contact, resume)
+CONTAINER_WIDTHS.content   // "max-w-6xl" (1152px) - Content pages with sidebars (blog posts, project details)
+CONTAINER_WIDTHS.archive   // "max-w-7xl" (1280px) - Archive/listing pages (blog listing, projects listing)
+CONTAINER_WIDTHS.dashboard // "max-w-[1536px]" (1536px) - Full-width dashboards with data tables, charts, analytics
 ```
 
 ### 3. Validate Reusability
@@ -362,9 +363,11 @@ export function ProjectCard({ project }: { project: Project }) {
 
 ### Container Width Violations
 
-❌ `max-w-5xl` → Use `CONTAINER_WIDTHS.standard` or `CONTAINER_WIDTHS.content`
-❌ `max-w-7xl` → Use `CONTAINER_WIDTHS.archive` or `CONTAINER_WIDTHS.content`
-❌ `max-w-2xl` → Use `CONTAINER_WIDTHS.narrow`
+❌ `max-w-4xl` → Use `CONTAINER_WIDTHS.narrow`
+❌ `max-w-5xl` → Use `CONTAINER_WIDTHS.standard`
+❌ `max-w-6xl` → Use `CONTAINER_WIDTHS.content`
+❌ `max-w-7xl` → Use `CONTAINER_WIDTHS.archive`
+❌ `max-w-[1536px]` → Use `CONTAINER_WIDTHS.dashboard`
 ❌ Custom max-widths → Use CONTAINER_WIDTHS constants
 
 ### Pattern Violations
