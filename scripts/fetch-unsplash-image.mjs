@@ -15,6 +15,7 @@ import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import * as readline from 'readline';
+import { validateSlug, validateUnsplashUrl } from './lib/validation.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = join(__dirname, '..');
@@ -76,13 +77,15 @@ async function searchImages(query, options = {}) {
 }
 
 async function downloadImage(image, slug) {
-  const imageUrl = image.urls.regular;
-  const outputDir = join(PROJECT_ROOT, 'public', 'blog', 'images', slug);
-  const { mkdirSync, writeFileSync, existsSync } = await import('fs');
+  // Validate inputs to prevent path traversal and SSRF attacks
+  const validatedSlug = validateSlug(slug);
+  const imageUrl = validateUnsplashUrl(image.urls.regular);
   
-  if (!existsSync(outputDir)) {
-    mkdirSync(outputDir, { recursive: true });
-  }
+  const outputDir = join(PROJECT_ROOT, 'public', 'blog', 'images', validatedSlug);
+  const { mkdirSync, writeFileSync } = await import('fs');
+  
+  // Create directory atomically (fixes TOCTOU race condition)
+  mkdirSync(outputDir, { recursive: true });
 
   const response = await fetch(imageUrl);
   if (!response.ok) {
@@ -93,7 +96,7 @@ async function downloadImage(image, slug) {
   const outputPath = join(outputDir, 'hero.jpg');
   writeFileSync(outputPath, Buffer.from(buffer));
 
-  return `/blog/images/${slug}/hero.jpg`;
+  return `/blog/images/${validatedSlug}/hero.jpg`;
 }
 
 async function triggerDownload(image) {

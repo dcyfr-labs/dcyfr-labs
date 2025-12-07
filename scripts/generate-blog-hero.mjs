@@ -43,6 +43,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { readdir } from 'fs/promises';
 import { createHash } from 'crypto';
+import { validateSlug } from './lib/validation.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = join(__dirname, '..');
@@ -281,24 +282,27 @@ function parseFrontmatter(filePath) {
 function generateForPost(slug, options = {}) {
   const { preview = false, force = false } = options;
   
+  // Validate slug to prevent path traversal attacks
+  const validatedSlug = validateSlug(slug);
+  
   // Check for both flat (.mdx) and folder-based (slug/index.mdx) structures
-  let mdxPath = join(CONTENT_DIR, `${slug}.mdx`);
+  let mdxPath = join(CONTENT_DIR, `${validatedSlug}.mdx`);
   if (!existsSync(mdxPath)) {
-    mdxPath = join(CONTENT_DIR, slug, 'index.mdx');
+    mdxPath = join(CONTENT_DIR, validatedSlug, 'index.mdx');
   }
   
-  const outputDir = join(PUBLIC_IMAGES_DIR, slug);
+  const outputDir = join(PUBLIC_IMAGES_DIR, validatedSlug);
   const outputPath = join(outputDir, 'hero.svg');
   
   // Check if source file exists
   if (!existsSync(mdxPath)) {
-    console.error(`❌ Post not found: ${slug}.mdx or ${slug}/index.mdx`);
+    console.error(`❌ Post not found: ${validatedSlug}.mdx or ${validatedSlug}/index.mdx`);
     return false;
   }
   
   // Check if image already exists
   if (existsSync(outputPath) && !force && !preview) {
-    console.log(`⏭️  Skipping ${slug} (image already exists, use --force to regenerate)`);
+    console.log(`⏭️  Skipping ${validatedSlug} (image already exists, use --force to regenerate)`);
     return false;
   }
   
@@ -308,34 +312,32 @@ function generateForPost(slug, options = {}) {
     
     // Check if post already has custom image
     if (frontmatter.image && !force && !preview) {
-      console.log(`⏭️  Skipping ${slug} (custom image defined in frontmatter)`);
+      console.log(`⏭️  Skipping ${validatedSlug} (custom image defined in frontmatter)`);
       return false;
     }
     
     // Generate SVG
-    const svg = generateSVG(frontmatter, slug);
+    const svg = generateSVG(frontmatter, validatedSlug);
     
     if (preview) {
-      const gradientKey = selectGradientKey(frontmatter, slug);
-      console.log(`\n📄 Preview for ${slug}:\n`);
+      const gradientKey = selectGradientKey(frontmatter, validatedSlug);
+      console.log(`\n📄 Preview for ${validatedSlug}:\n`);
       console.log(svg);
       console.log(`\n💡 Gradient: ${gradientKey}`);
       return true;
     }
     
-    // Create output directory
-    if (!existsSync(outputDir)) {
-      mkdirSync(outputDir, { recursive: true });
-    }
+    // Create output directory atomically (fixes TOCTOU race condition)
+    mkdirSync(outputDir, { recursive: true });
     
     // Write SVG file
     writeFileSync(outputPath, svg, 'utf-8');
     console.log(`✅ Generated: ${outputPath}`);
     
     // Print next steps
-    console.log(`\n💡 Next steps for ${slug}:`);
-    console.log(`   1. Review the generated image at: public/blog/images/${slug}/hero.svg`);
-    console.log(`   2. Update frontmatter in src/content/blog/${slug}.mdx:`);
+    console.log(`\n💡 Next steps for ${validatedSlug}:`);
+    console.log(`   1. Review the generated image at: public/blog/images/${validatedSlug}/hero.svg`);
+    console.log(`   2. Update frontmatter in src/content/blog/${validatedSlug}.mdx:`);
     console.log(`      image:`);
     console.log(`        url: "/blog/images/${slug}/hero.svg"`);
     console.log(`        alt: "${frontmatter.title} - Hero image"`);

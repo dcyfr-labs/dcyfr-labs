@@ -11,10 +11,52 @@
  *   const imagePath = await downloadImage(results[0], 'my-post-slug');
  */
 
-import { writeFileSync, mkdirSync, existsSync } from 'fs';
+import { writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
 const UNSPLASH_API_BASE = 'https://api.unsplash.com';
+
+/**
+ * Validates a slug parameter to prevent path traversal attacks
+ */
+function validateSlug(slug: string): string {
+  if (!slug || typeof slug !== 'string') {
+    throw new Error('Invalid slug: must be a non-empty string');
+  }
+
+  if (!/^[a-zA-Z0-9_-]+$/.test(slug)) {
+    throw new Error(
+      'Invalid slug: must contain only alphanumeric characters, hyphens, and underscores'
+    );
+  }
+
+  if (slug.includes('..') || slug.includes('/') || slug.includes('\\')) {
+    throw new Error('Invalid slug: path traversal sequences detected');
+  }
+
+  if (slug.length > 100) {
+    throw new Error('Invalid slug: maximum length is 100 characters');
+  }
+
+  return slug;
+}
+
+/**
+ * Validates that a URL is from the trusted Unsplash CDN
+ */
+function validateUnsplashUrl(url: string): string {
+  if (!url || typeof url !== 'string') {
+    throw new Error('Invalid URL: must be a non-empty string');
+  }
+
+  if (!url.startsWith('https://images.unsplash.com/')) {
+    throw new Error(
+      'Invalid URL: must be from Unsplash CDN (https://images.unsplash.com/)'
+    );
+  }
+
+  return url;
+}
 const ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
 
 export interface UnsplashImage {
@@ -136,16 +178,17 @@ export async function downloadImage(
   slug: string,
   size: keyof UnsplashImage['urls'] = 'regular'
 ): Promise<string> {
-  const imageUrl = image.urls[size];
-  const outputDir = join(process.cwd(), 'public', 'blog', 'images', slug);
+  // Validate inputs to prevent path traversal and SSRF attacks
+  const validatedSlug = validateSlug(slug);
+  const imageUrl = validateUnsplashUrl(image.urls[size]);
+  
+  const outputDir = join(process.cwd(), 'public', 'blog', 'images', validatedSlug);
   const extension = 'jpg'; // Unsplash typically serves JPEGs
   const filename = `hero.${extension}`;
   const outputPath = join(outputDir, filename);
 
-  // Create directory if it doesn't exist
-  if (!existsSync(outputDir)) {
-    mkdirSync(outputDir, { recursive: true });
-  }
+  // Create directory atomically (fixes TOCTOU race condition)
+  mkdirSync(outputDir, { recursive: true });
 
   try {
     const response = await fetch(imageUrl);
@@ -157,7 +200,7 @@ export async function downloadImage(
     const buffer = await response.arrayBuffer();
     writeFileSync(outputPath, Buffer.from(buffer));
 
-    return `/blog/images/${slug}/${filename}`;
+    return `/blog/images/${validatedSlug}/${filename}`;
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(`Failed to download image: ${error.message}`);

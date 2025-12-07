@@ -255,10 +255,8 @@ function generateForProject(projectKey, options = {}) {
       return true;
     }
     
-    // Create output directory
-    if (!existsSync(OUTPUT_DIR)) {
-      mkdirSync(OUTPUT_DIR, { recursive: true });
-    }
+    // Create output directory atomically (fixes TOCTOU race condition)
+    mkdirSync(OUTPUT_DIR, { recursive: true });
     
     // Write SVG file
     writeFileSync(outputPath, svg, 'utf-8');
