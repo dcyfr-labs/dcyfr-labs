@@ -104,9 +104,14 @@ export async function GET(request: NextRequest) {
     // Standard blog posts (enriched with views)
     if (!sources.length || sources.includes("blog")) {
       fetchPromises.push(
-        transformPostsWithViews(posts).then((items) => {
-          activities.push(...items);
-        })
+        transformPostsWithViews(posts)
+          .then((items) => {
+            activities.push(...items);
+          })
+          .catch((error) => {
+            console.error("[Activity API] Blog posts fetch failed:", error);
+            // Continue without blog posts
+          })
       );
     }
 
@@ -131,45 +136,70 @@ export async function GET(request: NextRequest) {
     // Trending posts (from Redis)
     if (!sources.length || sources.includes("trending")) {
       fetchPromises.push(
-        transformTrendingPosts(posts, 10).then((items) => {
-          activities.push(...items);
-        })
+        transformTrendingPosts(posts, 10)
+          .then((items) => {
+            activities.push(...items);
+          })
+          .catch((error) => {
+            console.error("[Activity API] Trending posts fetch failed:", error);
+            // Continue without trending posts
+          })
       );
     }
 
     // Milestones (from Redis)
     if (!sources.length || sources.includes("milestone")) {
       fetchPromises.push(
-        transformMilestones(posts, 20).then((items) => {
-          activities.push(...items);
-        })
+        transformMilestones(posts, 20)
+          .then((items) => {
+            activities.push(...items);
+          })
+          .catch((error) => {
+            console.error("[Activity API] Milestones fetch failed:", error);
+            // Continue without milestones
+          })
       );
     }
 
     // High engagement posts
     if (!sources.length || sources.includes("engagement")) {
       fetchPromises.push(
-        transformHighEngagementPosts(posts, 5, 10).then((items) => {
-          activities.push(...items);
-        })
+        transformHighEngagementPosts(posts, 5, 10)
+          .then((items) => {
+            activities.push(...items);
+          })
+          .catch((error) => {
+            console.error("[Activity API] High engagement posts fetch failed:", error);
+            // Continue without engagement posts
+          })
       );
     }
 
     // Comment milestones
     if (!sources.length || sources.includes("comments")) {
       fetchPromises.push(
-        transformCommentMilestones(posts, 10).then((items) => {
-          activities.push(...items);
-        })
+        transformCommentMilestones(posts, 10)
+          .then((items) => {
+            activities.push(...items);
+          })
+          .catch((error) => {
+            console.error("[Activity API] Comment milestones fetch failed:", error);
+            // Continue without comment milestones
+          })
       );
     }
 
     // GitHub activity
     if (!sources.length || sources.includes("github")) {
       fetchPromises.push(
-        transformGitHubActivity("dcyfr", ["dcyfr-labs"], 15).then((items) => {
-          activities.push(...items);
-        })
+        transformGitHubActivity("dcyfr", ["dcyfr-labs"], 15)
+          .then((items) => {
+            activities.push(...items);
+          })
+          .catch((error) => {
+            console.error("[Activity API] GitHub activity fetch failed:", error);
+            // Continue without GitHub activities
+          })
       );
     }
 

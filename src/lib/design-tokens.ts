@@ -505,7 +505,7 @@ export const PAGE_LAYOUT = {
   /** Hero section spacing - larger than standard sections */
   hero: {
     /** Container for hero content - top padding accounts for sticky header */
-    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-24 md:pt-28 lg:pt-32 pb-10 md:pb-12 lg:pb-14 mb-12`,
+    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-12 md:pt-14 lg:pt-16 pb-10 md:pb-12 lg:pb-14 mb-12`,
     /** Hero title + description wrapper */
     content: SPACING.proseHero,
   },
@@ -513,7 +513,7 @@ export const PAGE_LAYOUT = {
   /** Archive page hero (blog, work, portfolio listings) - matches standard hero spacing */
   archiveHero: {
     /** Container for archive hero - consistent with standard hero for unified layout */
-    container: `mx-auto ${CONTAINER_WIDTHS.archive} ${ARCHIVE_CONTAINER_PADDING} pt-24 md:pt-28 lg:pt-32 pb-10 md:pb-12 lg:pb-14 mb-12`,
+    container: `mx-auto ${CONTAINER_WIDTHS.archive} ${ARCHIVE_CONTAINER_PADDING} pt-12 md:pt-14 lg:pt-16 pb-10 md:pb-12 lg:pb-14 mb-12`,
     /** Archive hero title + description wrapper */
     content: SPACING.proseHero,
   },

@@ -461,6 +461,11 @@ export async function transformGitHubActivity(
             },
           }))
         );
+      } else if (commitsResponse.status === 401) {
+        console.error("[Activity] GitHub API authentication failed (401) - check GITHUB_TOKEN validity");
+        return []; // Stop processing if auth fails
+      } else {
+        console.warn(`[Activity] Failed to fetch commits for ${repo}: ${commitsResponse.status}`);
       }
 
       // Fetch recent releases
@@ -493,6 +498,11 @@ export async function transformGitHubActivity(
             },
           }))
         );
+      } else if (releasesResponse.status === 401) {
+        console.error("[Activity] GitHub API authentication failed (401) - check GITHUB_TOKEN validity");
+        return []; // Stop processing if auth fails
+      } else {
+        console.warn(`[Activity] Failed to fetch releases for ${repo}: ${releasesResponse.status}`);
       }
     }
 
