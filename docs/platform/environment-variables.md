@@ -1,30 +1,44 @@
 # Environment Variables Guide
 
-**Last Updated:** November 8, 2025  
-**Status:** Consolidated from operations/  
+**Last Updated:** December 7, 2025  
+**Status:** Production Ready (99.5% test pass rate)  
 **Location:** `docs/platform/` (project configuration)
+
+---
+
+## Overview
+
+This guide documents all environment variables for dcyfr-labs portfolio, their purposes, setup instructions, and fallback behavior. The application is designed to work locally without any configuration - environment variables enhance functionality but are not blocking for development.
+
+### Priority Levels
+
+- **🔴 Required (Production)**: Must configure for production deployment
+- **🟡 Recommended**: Strongly recommended for production use
+- **🟢 Optional**: Nice to have, purely optional features
 
 ---
 
 ## Quick Reference
 
-| Variable | Required | Purpose | Default Behavior |
+| Variable | Priority | Purpose | Default Behavior |
 |----------|----------|---------|------------------|
-| `INNGEST_EVENT_KEY` | Production only | Inngest event sending | Functions work in dev mode only |
-| `INNGEST_SIGNING_KEY` | Production only | Inngest webhook verification | Functions work in dev mode only |
-| `RESEND_API_KEY` | Production only | Email delivery (contact form, milestones) | Logs submissions, shows warning |
-| `NEXT_PUBLIC_FROM_EMAIL` | Optional | Override sender email address | Uses `no-reply@www.dcyfr.ai` |
-| `GITHUB_TOKEN` | Recommended | GitHub API rate limits (60 → 5,000/hr) | Uses unauthenticated API (60 req/hr) |
-| `REDIS_URL` | Recommended | Blog analytics, view counts, rate limiting | Disables analytics, falls back to in-memory |
-| `SENTRY_DSN` | Recommended | Error tracking and CSP monitoring | No error tracking (production ready) |
-| `SENTRY_AUTH_TOKEN` | Build only | Source map uploads to Sentry | Source maps not uploaded |
-| `NEXT_PUBLIC_GISCUS_REPO` | Optional | Comments system - repository | Comments section hidden |
-| `NEXT_PUBLIC_GISCUS_REPO_ID` | Optional | Comments system - repo ID | Comments section hidden |
-| `NEXT_PUBLIC_GISCUS_CATEGORY` | Optional | Comments system - category | Comments section hidden |
-| `NEXT_PUBLIC_GISCUS_CATEGORY_ID` | Optional | Comments system - category ID | Comments section hidden |
-| `NEXT_PUBLIC_SITE_URL` | Optional | Site URL override | Uses environment-based defaults |
-| `NEXT_PUBLIC_SITE_DOMAIN` | Optional | Domain override | Uses environment-based defaults |
-| `DISABLE_DEV_PAGES` | Optional | Hide dev pages in development | Dev pages visible in dev mode |
+| `INNGEST_EVENT_KEY` | 🔴 Required | Inngest event sending | Dev mode only, production jobs fail |
+| `INNGEST_SIGNING_KEY` | 🔴 Required | Inngest webhook verification | Dev mode only, production webhooks rejected |
+| `RESEND_API_KEY` | 🔴 Required | Contact form email delivery | Logs only, shows warning banner |
+| `GITHUB_TOKEN` | 🟡 Recommended | GitHub API rate limits (60→5K/hr) | Lower rate limit, may hit fallback data |
+| `REDIS_URL` | 🟡 Recommended | View counts & analytics | Features disabled, graceful degradation |
+| `SENTRY_DSN` | 🟡 Recommended | Error tracking & monitoring | No error tracking, harder debugging |
+| `SENTRY_AUTH_TOKEN` | 🟡 Recommended | Source map uploads (build-time) | Minified stack traces only |
+| `NEXT_PUBLIC_FROM_EMAIL` | 🟢 Optional | Override sender email | Uses `no-reply@www.dcyfr.ai` |
+| `NEXT_PUBLIC_GISCUS_REPO` | 🟢 Optional | Comments system repository | Comments section hidden |
+| `NEXT_PUBLIC_GISCUS_REPO_ID` | 🟢 Optional | Comments repo ID | Comments section hidden |
+| `NEXT_PUBLIC_GISCUS_CATEGORY` | 🟢 Optional | Comments category name | Comments section hidden |
+| `NEXT_PUBLIC_GISCUS_CATEGORY_ID` | 🟢 Optional | Comments category ID | Comments section hidden |
+| `NEXT_PUBLIC_SITE_URL` | 🟢 Optional | Site URL override | Auto-detected from environment |
+| `NEXT_PUBLIC_SITE_DOMAIN` | 🟢 Optional | Domain override | Auto-detected from environment |
+| `DISABLE_DEV_PAGES` | 🟢 Optional | Hide dev pages in development | Dev pages visible in dev mode |
+| `UNSPLASH_ACCESS_KEY` | 🟢 Optional | Hero image generation | Manual images only |
+| `VERCEL_TOKEN` | 🟢 Optional | Deployment checks (GitHub Secrets) | Set in GitHub Secrets, not Vercel |
 
 ---
 
@@ -33,23 +47,59 @@
 ### Local Development
 
 ```bash
-# 1. Copy example file
-cp .env.example .env.local
+# 1. Copy example file (if it exists)
+cp .env.example .env.local  # or create manually
 
-# 2. Edit with your values
+# 2. Add credentials (optional for development)
+# All features work without credentials in dev mode!
 nano .env.local  # or your preferred editor
 
 # 3. Start dev server
 npm run dev
 ```
 
-**Note:** Everything works immediately without environment variables! Add credentials as needed.
+**Note:** The application works immediately without environment variables! Add credentials only when you need specific features (email delivery, production analytics, etc.).
 
-### Production (Vercel)
+### Production Deployment (Vercel)
 
-1. Go to: Project Settings → Environment Variables
-2. Add required variables (see sections below)
-3. Deploy or redeploy to apply changes
+**See:** [Production Deployment Runbook](../operations/PRODUCTION_DEPLOYMENT.md) for comprehensive guide.
+
+**Quick Setup:**
+
+1. **Navigate to Vercel Dashboard**
+   - Your Project → Settings → Environment Variables
+
+2. **Add Required Variables** (🔴 Priority)
+   - `INNGEST_EVENT_KEY` - Background jobs
+   - `INNGEST_SIGNING_KEY` - Webhook security
+   - `RESEND_API_KEY` - Contact form emails
+
+3. **Add Recommended Variables** (🟡 Priority)
+   - `GITHUB_TOKEN` - Better rate limits
+   - `REDIS_URL` - Analytics & view counts
+   - `SENTRY_DSN` - Error monitoring
+   - `SENTRY_AUTH_TOKEN` - Source maps (build-time)
+
+4. **Select Environments**
+   - Check: Production, Preview, Development (all three)
+   - Exception: Build-time variables (Sentry auth token)
+
+5. **Deploy or Redeploy**
+   - Changes take effect on next deployment
+   - Vercel auto-redeploys when you save variables
+
+### GitHub Secrets (CI/CD)
+
+Some variables should be set as **GitHub Secrets** instead of Vercel Environment Variables:
+
+1. **Repository Settings**
+   - Navigate to: Settings → Secrets and variables → Actions
+
+2. **Add Secrets**
+   - `VERCEL_TOKEN` - For deployment checks workflow
+   - `SENTRY_AUTH_TOKEN` - For source map uploads in CI
+
+**See:** [Production Deployment Runbook - GitHub Secrets](../operations/PRODUCTION_DEPLOYMENT.md#github-secrets-configuration)
 
 ---
 
