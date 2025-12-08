@@ -57,12 +57,13 @@ export default async function AboutPage() {
               title={pageTitle}
               description={pageDescription}
               variant="homepage"
+              align="center"
             />
           </ScrollReveal>
         </Section>
 
         {/* Organization Philosophy */}
-        <Section id="our-philosophy" className={PAGE_LAYOUT.proseSection.container}>
+        <Section id="our-philosophy" className={`${PAGE_LAYOUT.proseSection.container}`}>
           <ScrollReveal animation="fade-up" delay={125}>
             <AboutDcyfrLabs />
           </ScrollReveal>

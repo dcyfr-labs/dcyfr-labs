@@ -102,6 +102,6 @@ describe("Alert", () => {
     
     const alertDiv = container.querySelector(".rounded-lg");
     expect(alertDiv).toBeInTheDocument();
-    expect(alertDiv).toHaveClass("p-3", "sm:p-4", "my-3", "sm:my-4", "rounded-lg");
+    expect(alertDiv).toHaveClass("p-3", "sm:p-4", "my-4", "rounded-lg");
   });
 });

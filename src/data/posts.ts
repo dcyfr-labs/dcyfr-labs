@@ -13,6 +13,8 @@ export type PostImage = {
   caption?: string; // optional, displayed below image
   credit?: string; // optional, photographer/source attribution
   position?: "top" | "left" | "right" | "background"; // list view placement hint
+  hideHero?: boolean; // hide image in hero section on detail pages
+  hideCard?: boolean; // hide image as background in list view cards
 };
 
 export type Post = {

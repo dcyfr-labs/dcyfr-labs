@@ -68,6 +68,7 @@ export function GalleryProjectLayout({ project, nonce, basePath = '/work' }: Gal
           alt: project.image.alt,
           position: project.image.position || 'center',
           priority: project.featured || false,
+          hideHero: project.image.hideHero,
         } : undefined}
       />
       
@@ -105,7 +106,7 @@ export function GalleryProjectLayout({ project, nonce, basePath = '/work' }: Gal
           <h2 className={`${TYPOGRAPHY.h2.standard} mb-4 flex items-center gap-2`}>
             <Camera className="h-5 w-5" />
             Gallery
-            <span className="text-sm font-normal text-muted-foreground ml-2">
+            <span className={`${TYPOGRAPHY.label.small} text-muted-foreground ml-2`}>
               ({photos.length} photos)
             </span>
           </h2>

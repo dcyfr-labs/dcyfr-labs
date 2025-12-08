@@ -1,92 +1,214 @@
 /**
- * Holographic Card Effect CSS Module
+ * Holographic Card Effect CSS Module v2.0
  * 
- * CSS-only holographic shine and flare effects for featured cards.
- * Inspired by https://react-holo-card-effect.vercel.app/
+ * Simplified, high-performance holographic effects
+ * Focus: Clean shine animation + fast rendering + simple maintenance
  * 
- * Features:
- * - Animated holographic shine on hover
- * - Rainbow gradient reflections
- * - Lens flare effects
- * - Increased contrast with darker gradients
- * - Custom noise/grain texture
- * - GPU-accelerated transforms
- * 
- * Usage:
- * Apply .holo-card class to card container
- * Apply .holo-shine to overlay element
+ * Performance optimizations:
+ * - CSS containment for paint isolation
+ * - will-change hints for GPU acceleration
+ * - Reduced-motion support
+ * - Single pseudo-element for shine effect
  * 
  * @see https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations
  */
 
-/* Holographic card container */
+/* Core card container */
 .holo-card {
   position: relative;
   overflow: hidden;
-  transform-style: preserve-3d;
-  perspective: 1000px;
+  contain: layout style paint;
 }
 
-/* Darker gradient overlay for increased contrast */
+/* Shine effect (Primary Feature) */
+.holo-shine {
+  position: absolute;
+  inset: -100%;
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    transparent 40%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 60%,
+    transparent 100%
+  );
+  opacity: 0;
+  transform: translateX(-100%) translateY(-100%) rotate(30deg);
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  will-change: transform, opacity;
+  z-index: 10;
+}
+
+/* Hover state: trigger shine sweep */
+.holo-card:hover .holo-shine {
+  opacity: 1;
+  animation: shine-sweep 1.2s ease-out;
+}
+
+@keyframes shine-sweep {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(30deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(30deg);
+  }
+}
+
+/* Dark mode: stronger shine */
+@media (prefers-color-scheme: dark) {
+  .holo-shine {
+    background: linear-gradient(
+      110deg,
+      transparent 0%,
+      transparent 40%,
+      rgba(255, 255, 255, 0.4) 50%,
+      transparent 60%,
+      transparent 100%
+    );
+  }
+}
+
+/* Gradient overlays (Background Contrast) */
 .holo-gradient-dark {
   background: linear-gradient(
     to bottom,
-    hsl(var(--background) / 0.80) 0%,
-    hsl(var(--background) / 0.90) 50%,
-    hsl(var(--background) / 0.97) 100%
+    hsl(var(--background) / 0.80),
+    hsl(var(--background) / 0.92)
   );
+  transition: background 0.3s ease;
 }
 
-/* Hover state - lighter for shine-through effect */
 .holo-gradient-dark-hover {
   background: linear-gradient(
     to bottom,
-    hsl(var(--background) / 0.75) 0%,
-    hsl(var(--background) / 0.85) 50%,
-    hsl(var(--background) / 0.95) 100%
+    hsl(var(--background) / 0.70),
+    hsl(var(--background) / 0.88)
   );
 }
 
-/* Holographic shine overlay - disabled */
-.holo-shine {
-  position: absolute;
-}
-
-/* Image enhancement - subtle */
+/* Image effects */
 .holo-image-shift {
-  transition: transform 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
 .holo-card:hover .holo-image-shift {
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
-/* Subtle lift effect on card */
+/* 3D lift effect */
 .holo-card-3d {
-  transition: transform 0.2s ease;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
 .holo-card-3d:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -10px hsl(var(--primary) / 0.3);
 }
 
-/* Improved text visibility on holo cards */
-/* Apply white text to specific text elements, not universal selector */
+/* Accessibility & Performance */
 
-/* Badges: preserve their own text colors, don't inherit from holo card */
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .holo-shine,
+  .holo-image-shift,
+  .holo-card-3d {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+  
+  .holo-card:hover .holo-shine {
+    opacity: 0 !important;
+  }
+}
+
+/* Disable effects on touch devices (performance) */
+@media (hover: none) {
+  .holo-shine {
+    display: none;
+  }
+  
+  .holo-card-3d:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Text visibility fixes (Simplified) */
+
+/* Define theme-aware text colors using CSS custom properties */
+.holo-card {
+  --holo-text: hsl(0 0% 100% / 0.95);
+  --holo-text-muted: hsl(0 0% 100% / 0.75);
+  --holo-text-heading: hsl(0 0% 100%);
+}
+
+@media (prefers-color-scheme: light) {
+  .holo-card {
+    --holo-text: hsl(var(--foreground) / 0.90);
+    --holo-text-muted: hsl(var(--foreground) / 0.65);
+    --holo-text-heading: hsl(var(--foreground));
+  }
+}
+
+/* Apply to headings */
+.holo-card h1:not([class*="text-zinc"]):not([class*="text-foreground"]),
+.holo-card h2:not([class*="text-zinc"]):not([class*="text-foreground"]),
+.holo-card h3:not([class*="text-zinc"]):not([class*="text-foreground"]),
+.holo-card h4:not([class*="text-zinc"]):not([class*="text-foreground"]),
+.holo-card h5:not([class*="text-zinc"]):not([class*="text-foreground"]),
+.holo-card h6:not([class*="text-zinc"]):not([class*="text-foreground"]) {
+  color: var(--holo-text-heading);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Apply to paragraphs */
+.holo-card p:not([class*="text-zinc"]):not([class*="text-foreground"]) {
+  color: var(--holo-text);
+}
+
+/* Apply to timestamps */
+.holo-card time:not([class*="text-zinc"]):not([class*="text-foreground"]) {
+  color: var(--holo-text-muted);
+  font-weight: 500;
+}
+
+/* Apply to muted text */
+.holo-card .text-muted-foreground:not([data-slot="badge"]):not([data-slot="badge"] *):not([class*="text-zinc"]):not([class*="text-foreground"]) {
+  color: var(--holo-text-muted) !important;
+}
+
+/* Apply to text size variants */
+.holo-card .text-xs:not([data-slot="badge"]):not([data-slot="badge"] *):not([class*="text-zinc"]):not([class*="text-foreground"]),
+.holo-card .text-sm:not([data-slot="badge"]):not([data-slot="badge"] *):not([class*="text-zinc"]):not([class*="text-foreground"]),
+.holo-card .text-base:not([data-slot="badge"]):not([data-slot="badge"] *):not([class*="text-zinc"]):not([class*="text-foreground"]),
+.holo-card .text-lg:not([data-slot="badge"]):not([data-slot="badge"] *):not([class*="text-zinc"]):not([class*="text-foreground"]) {
+  color: var(--holo-text);
+}
+
+/* Apply to bold/semibold text */
+.holo-card .font-semibold:not([data-slot="badge"]):not([data-slot="badge"] *):not(.inline-flex):not(.inline-flex *):not([class*="text-zinc"]):not([class*="text-foreground"]),
+.holo-card .font-bold:not([data-slot="badge"]):not([data-slot="badge"] *):not(.inline-flex):not(.inline-flex *):not([class*="text-zinc"]):not([class*="text-foreground"]),
+.holo-card .font-medium:not([data-slot="badge"]):not([data-slot="badge"] *):not(.inline-flex):not(.inline-flex *):not([class*="text-zinc"]):not([class*="text-foreground"]) {
+  color: var(--holo-text-heading);
+}
+
+/* Apply to links */
+.holo-card a:not(.inline-flex):not([class*="button"]) {
+  color: var(--holo-text);
+}
+
+.holo-card a:not(.inline-flex):not([class*="button"]):hover {
+  color: hsl(var(--primary));
+}
+
+/* Badges: preserve their own text colors */
 .holo-card [data-slot="badge"],
 .holo-card [data-slot="badge"] * {
-    text-shadow: none !important;
-}
-
-/* Force white text for regular outline badges (tags) in light mode on holo cards */
-/* Exclude status badges that have font-semibold class */
-@media (prefers-color-scheme: light) {
-  .holo-card [data-slot="badge"]:not(.font-semibold) {
-    color: hsl(0 0% 100%) !important;
-    background: hsl(var(--background) / 0.9) !important;
-    border-color: hsl(var(--border) / 0.5) !important;
-  }
+  text-shadow: none !important;
 }
 
 /* Buttons and link-buttons: reset to theme colors */
@@ -110,7 +232,6 @@
   text-shadow: none !important;
 }
 
-/* Force dark text for link-buttons in light mode */
 @media (prefers-color-scheme: light) {
   .holo-card a.inline-flex,
   .holo-card a.inline-flex span,
@@ -125,174 +246,25 @@
   }
 }
 
-/* Headings get pure white with subtle shadow - unless explicit color class is set */
-.holo-card h1:not([class*="text-zinc"]):not([class*="text-foreground"]),
-.holo-card h2:not([class*="text-zinc"]):not([class*="text-foreground"]),
-.holo-card h3:not([class*="text-zinc"]):not([class*="text-foreground"]),
-.holo-card h4:not([class*="text-zinc"]):not([class*="text-foreground"]),
-.holo-card h5:not([class*="text-zinc"]):not([class*="text-foreground"]),
-.holo-card h6:not([class*="text-zinc"]):not([class*="text-foreground"]) {
-  color: hsl(0 0% 100%) !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-}
-
-/* Paragraphs only (no spans/divs that might contain badges) - unless explicit color class */
-.holo-card p:not([class*="text-zinc"]):not([class*="text-foreground"]) {
-  color: hsl(0 0% 100% / 0.95);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-}
-
-/* Time stamps - unless in a container with explicit color */
-.holo-card time:not([class*="text-zinc"]):not([class*="text-foreground"]) {
-  color: hsl(0 0% 100% / 0.9) !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-  font-weight: 500;
-}
-
-/* Font weight classes - only if not in a badge, link-button, or with explicit color */
-.holo-card .font-semibold:not([data-slot="badge"]):not([data-slot="badge"] *):not(.inline-flex):not(.inline-flex *):not([class*="text-zinc"]):not([class*="text-foreground"]),
-.holo-card .font-bold:not([data-slot="badge"]):not([data-slot="badge"] *):not(.inline-flex):not(.inline-flex *):not([class*="text-zinc"]):not([class*="text-foreground"]),
-.holo-card .font-medium:not([data-slot="badge"]):not([data-slot="badge"] *):not(.inline-flex):not(.inline-flex *):not([class*="text-zinc"]):not([class*="text-foreground"]) {
-  color: hsl(0 0% 100%) !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-}
-
-/* Muted text - only if not in a badge or with explicit color */
-.holo-card .text-muted-foreground:not([data-slot="badge"]):not([data-slot="badge"] *):not([class*="text-zinc"]):not([class*="text-foreground"]) {
-  color: hsl(0 0% 100% / 0.85) !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-}
-
-/* Text size variants - only apply to non-badge elements without explicit color */
-.holo-card .text-xs:not([data-slot="badge"]):not([data-slot="badge"] *):not([class*="text-zinc"]):not([class*="text-foreground"]),
-.holo-card .text-sm:not([data-slot="badge"]):not([data-slot="badge"] *):not([class*="text-zinc"]):not([class*="text-foreground"]),
-.holo-card .text-base:not([data-slot="badge"]):not([data-slot="badge"] *):not([class*="text-zinc"]):not([class*="text-foreground"]),
-.holo-card .text-lg:not([data-slot="badge"]):not([data-slot="badge"] *):not([class*="text-zinc"]):not([class*="text-foreground"]) {
-  color: hsl(0 0% 100% / 0.9);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-}
-
-/* Links that aren't badges/buttons get white with primary color on hover */
-.holo-card a:not(.inline-flex):not([class*="button"]) {
-  color: hsl(0 0% 100% / 0.95);
-}
-
-.holo-card a:not(.inline-flex):not([class*="button"]):hover {
-  color: hsl(var(--primary));
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  .holo-shine,
-  .holo-image-shift,
-  .holo-card-3d {
-    transition: opacity 0.2s ease !important;
-  }
-  
-  .holo-card-3d:hover {
-    transform: none;
-  }
-}
-
-/* Dark mode adjustments */
-@media (prefers-color-scheme: dark) {
-  .holo-shine {
-    background: linear-gradient(
-      135deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.15) 50%,
-      transparent 100%
-    );
-  }
-  
-  /* Adjust gradient overlay opacity for better pattern visibility in dark mode */
-  .holo-gradient-dark {
-    background: linear-gradient(
-      to bottom,
-      hsl(var(--background) / 0.75) 0%,
-      hsl(var(--background) / 0.85) 50%,
-      hsl(var(--background) / 0.95) 100%
-    );
-  }
-  
-  .holo-gradient-dark-hover {
-    background: linear-gradient(
-      to bottom,
-      hsl(var(--background) / 0.70) 0%,
-      hsl(var(--background) / 0.80) 50%,
-      hsl(var(--background) / 0.92) 100%
-    );
-  }
-}
-
-/* Manual theme override via data-theme attribute */
-[data-theme="dark"] .holo-gradient-dark {
-  background: linear-gradient(
-    to bottom,
-    hsl(var(--background) / 0.75) 0%,
-    hsl(var(--background) / 0.85) 50%,
-    hsl(var(--background) / 0.95) 100%
-  );
-}
-
-[data-theme="dark"] .holo-gradient-dark-hover {
-  background: linear-gradient(
-    to bottom,
-    hsl(var(--background) / 0.70) 0%,
-    hsl(var(--background) / 0.80) 50%,
-    hsl(var(--background) / 0.92) 100%
-  );
-}
-
-[data-theme="light"] .holo-gradient-dark {
-  background: linear-gradient(
-    to bottom,
-    hsl(var(--background) / 0.80) 0%,
-    hsl(var(--background) / 0.90) 50%,
-    hsl(var(--background) / 0.97) 100%
-  );
-}
-
-[data-theme="light"] .holo-gradient-dark-hover {
-  background: linear-gradient(
-    to bottom,
-    hsl(var(--background) / 0.75) 0%,
-    hsl(var(--background) / 0.85) 50%,
-    hsl(var(--background) / 0.95) 100%
-  );
-}
-
-/**
- * Theme-aware project image overlays
- * These classes ensure project SVG patterns remain visible in both light and dark modes
- */
+/* Project image overlays */
 .holo-project-image-overlay {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 1;
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--background) / 0.70),
+    hsl(var(--background) / 0.85)
+  );
 }
 
-/* Light mode: darker overlay to increase contrast */
-@media (prefers-color-scheme: light) {
-  .holo-project-image-overlay {
-    background: linear-gradient(
-      to bottom,
-      hsl(var(--background) / 0.70) 0%,
-      hsl(var(--background) / 0.85) 50%,
-      hsl(var(--background) / 0.95) 100%
-    );
-  }
-}
-
-/* Dark mode: lighter overlay to let patterns shine through */
 @media (prefers-color-scheme: dark) {
   .holo-project-image-overlay {
     background: linear-gradient(
       to bottom,
-      hsl(var(--background) / 0.60) 0%,
-      hsl(var(--background) / 0.75) 50%,
-      hsl(var(--background) / 0.90) 100%
+      hsl(var(--background) / 0.60),
+      hsl(var(--background) / 0.75)
     );
   }
 }
@@ -301,17 +273,15 @@
 [data-theme="light"] .holo-project-image-overlay {
   background: linear-gradient(
     to bottom,
-    hsl(var(--background) / 0.70) 0%,
-    hsl(var(--background) / 0.85) 50%,
-    hsl(var(--background) / 0.95) 100%
+    hsl(var(--background) / 0.70),
+    hsl(var(--background) / 0.85)
   );
 }
 
 [data-theme="dark"] .holo-project-image-overlay {
   background: linear-gradient(
     to bottom,
-    hsl(var(--background) / 0.60) 0%,
-    hsl(var(--background) / 0.75) 50%,
-    hsl(var(--background) / 0.90) 100%
+    hsl(var(--background) / 0.60),
+    hsl(var(--background) / 0.75)
   );
 }

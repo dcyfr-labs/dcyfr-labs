@@ -8,7 +8,7 @@ import {
   PAGE_LAYOUT,
 } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
-import { Section } from "@/components/common";
+import { Section, ProfileAvatar } from "@/components/common";
 import { Zap, Code, Brain, Shield, FileText } from "lucide-react";
 
 /**
@@ -30,16 +30,8 @@ export function AboutDcyfrProfile() {
           )}
         >
           {/* Avatar */}
-          <div className="shrink-0">
-            <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-2 border-border">
-              <Image
-                src="/images/dcyfr-avatar.svg"
-                alt="DCYFR AI Lab Assistant"
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
+          <div className="shrink-0 *:mt-0 mr-5">
+            <ProfileAvatar userProfile="dcyfr" size="lg" />
           </div>
 
           {/* Content */}
@@ -73,7 +65,7 @@ export function AboutDcyfrProfile() {
       {/* Capabilities Section */}
       <Section
         id="dcyfr-capabilities"
-        className={PAGE_LAYOUT.proseSection.container}
+        className={PAGE_LAYOUT.section.container}
       >
         <div className={SPACING.content}>
           <h3 className={TYPOGRAPHY.h2.standard}>Core Capabilities</h3>
@@ -123,10 +115,7 @@ export function AboutDcyfrProfile() {
       </Section>
 
       {/* Philosophy Section */}
-      <Section
-        id="dcyfr-philosophy"
-        className={PAGE_LAYOUT.proseSection.container}
-      >
+      <Section id="dcyfr-philosophy" className={PAGE_LAYOUT.section.container}>
         <div className={SPACING.content}>
           <h3 className={TYPOGRAPHY.h2.standard}>Guiding Philosophy</h3>
           <Card className="p-5">
@@ -146,10 +135,7 @@ export function AboutDcyfrProfile() {
       </Section>
 
       {/* Integration Section */}
-      <Section
-        id="dcyfr-integration"
-        className={PAGE_LAYOUT.proseSection.container}
-      >
+      <Section id="dcyfr-integration" className={PAGE_LAYOUT.section.container}>
         <div className={SPACING.content}>
           <h3 className={TYPOGRAPHY.h2.standard}>
             Integration with DCYFR Labs
@@ -168,10 +154,7 @@ export function AboutDcyfrProfile() {
       </Section>
 
       {/* Approach Section */}
-      <Section
-        id="dcyfr-approach"
-        className={PAGE_LAYOUT.proseSection.container}
-      >
+      <Section id="dcyfr-approach" className={PAGE_LAYOUT.section.container}>
         <div className={SPACING.content}>
           <h3 className={TYPOGRAPHY.h2.standard}>Development Approach</h3>
           <Card className="p-5">

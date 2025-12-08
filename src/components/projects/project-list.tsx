@@ -107,9 +107,23 @@ export function ProjectList({
               delay={index * 50}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
+                {/* Background image - only if defined */}
+                {image && (
+                  <div className="absolute inset-0 z-0 overflow-hidden">
+                    <Image
+                      src={image.url}
+                      alt={image.alt}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                    {/* Gradient overlay for text contrast */}
+                    <div className="absolute inset-0 bg-linear-to-b from-background/90 via-background/95 to-background" />
+                  </div>
+                )}
                 <Link href={`${basePath}/${project.slug}`} className="flex flex-col h-full">
                   {/* Project content */}
-                  <div className="flex-1 p-4 sm:p-5 flex flex-col">
+                  <div className="flex-1 p-4 sm:p-5 flex flex-col relative z-10">
                     {/* Status, category, and timeline */}
                     {project.timeline && (
                       <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
@@ -177,8 +191,22 @@ export function ProjectList({
               delay={index * 80}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
+                {/* Background image - only if defined */}
+                {image && (
+                  <div className="absolute inset-0 z-0 overflow-hidden">
+                    <Image
+                      src={image.url}
+                      alt={image.alt}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 100vw"
+                    />
+                    {/* Gradient overlay for text contrast */}
+                    <div className="absolute inset-0 bg-linear-to-b from-background/90 via-background/95 to-background" />
+                  </div>
+                )}
                 <Link href={`${basePath}/${project.slug}`} className="block">
-                  <div className="p-4 md:p-8">
+                  <div className="p-4 md:p-8 relative z-10">
                     {/* Status, category, and timeline */}
                     {project.timeline && (
                       <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
@@ -241,8 +269,22 @@ export function ProjectList({
               delay={index * 50}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
+                {/* Background image - only if defined */}
+                {image && (
+                  <div className="absolute inset-0 z-0 overflow-hidden">
+                    <Image
+                      src={image.url}
+                      alt={image.alt}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                    {/* Gradient overlay for text contrast */}
+                    <div className="absolute inset-0 bg-linear-to-b from-background/90 via-background/95 to-background" />
+                  </div>
+                )}
                 <Link href={`${basePath}/${project.slug}`} className="block">
-                  <div className="p-3">
+                  <div className="p-3 relative z-10">
                     {/* Status, category, and timeline - compact */}
                     <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1.5">
                       {project.status !== "active" && <Badge variant="default" className="text-xs">{STATUS_LABEL[project.status]}</Badge>}
@@ -286,9 +328,23 @@ export function ProjectList({
             delay={index * 50}
           >
             <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
+              {/* Background image - only if defined */}
+              {image && (
+                <div className="absolute inset-0 z-0 overflow-hidden">
+                  <Image
+                    src={image.url}
+                    alt={image.alt}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                  {/* Gradient overlay for text contrast */}
+                  <div className="absolute inset-0 bg-linear-to-b from-background/90 via-background/95 to-background" />
+                </div>
+              )}
               <Link href={`${basePath}/${project.slug}`} className="flex flex-col h-full">
                 {/* Project content */}
-                <div className="flex-1 p-4 sm:p-5 flex flex-col">
+                <div className="flex-1 p-4 sm:p-5 flex flex-col relative z-10">
                   {/* Status, category, and timeline */}
                   {project.timeline && (
                     <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">

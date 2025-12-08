@@ -12,6 +12,7 @@ import { HorizontalRule } from "@/components/common/horizontal-rule";
 import { Mermaid as MermaidComponent } from "@/components/common/mermaid";
 import { ZoomableImage } from "@/components/common/zoomable-image";
 import { Alert } from "@/components/common/alert";
+import { Figure, FigureProvider } from "@/components/common/figure-caption";
 import { MCPArchitecture, AuthenticationFlow, PipelineFlow, CVEDecisionTree } from "@/components/common/diagram-presets";
 import { FAQ } from "@/components/common/faq";
 import {
@@ -173,7 +174,7 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
     }
     
     return (
-      <p {...restProps} className="leading-7 not-first:mt-4">
+      <p {...restProps}>
         {children}
       </p>
     );
@@ -210,6 +211,7 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
   ol: (props: React.HTMLAttributes<HTMLOListElement>) => (
     <ol {...props} className={`list-decimal pl-6 ${SPACING.list}`} />
   ),
+  // Note: SPACING.list = space-y-0.5 is used for list items spacing
   code: (props: React.HTMLAttributes<HTMLElement>) => {
     // Inline code (no data-language attribute)
     const isInline = !props["data-language" as keyof typeof props];
@@ -329,6 +331,7 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
     />
   ),
   // Icon components for consistent styling across the site
+  // Note: Icon colors (text-*-500/600) are excluded from SEMANTIC_COLORS enforcement
   CheckIcon: () => <Check className="inline-block w-5 h-5 align-text-bottom text-green-600 dark:text-green-400" aria-label="Check" />,
   XIcon: () => <X className="inline-block w-5 h-5 align-text-bottom text-red-600 dark:text-red-400" aria-label="Cross" />,
   ReturnIcon: () => <CornerDownLeft className="inline-block w-5 h-5 align-text-bottom text-muted-foreground" aria-label="Return" />,
@@ -352,6 +355,8 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
   FAQ,
   // Alert component for banners
   Alert,
+  // Figure caption component for automatic figure numbering
+  Figure,
   // Footnote superscripts with icon
   sup: (props: React.HTMLAttributes<HTMLElement>) => {
     // Check if this contains a link (footnote reference) or has footnote-related attributes

@@ -33,8 +33,8 @@ export function AboutDrewProfile() {
           )}
         >
           {/* Avatar */}
-          <div className="shrink-0">
-            <ProfileAvatar size="lg" />
+          <div className="shrink-0 *:mt-0 mr-5">
+            <ProfileAvatar userProfile="drew" size="lg" />
           </div>
 
           {/* Content */}
@@ -66,36 +66,39 @@ export function AboutDrewProfile() {
       </Section>
 
       {/* Professional Background & Motivation Section */}
-      <Section id="drew-background" className={PAGE_LAYOUT.section.container}>
-        <div className={SPACING.content}>
+      <Section
+        id="drew-background"
+        className={PAGE_LAYOUT.proseSection.container}
+      >
+        <div className="prose prose-slate dark:prose-invert">
           <h3 className={TYPOGRAPHY.h2.standard}>Professional Background</h3>
 
           <div className={SPACING.content}>
             <p>
               With over {getYearsOfExperience()} years of experience in the
-              cybersecurity industry, Drew has had the privilege of working with
+              cybersecurity industry, I have had the privilege of working with
               diverse organizations ranging from startups to established
-              enterprises. His journey has equipped him with a comprehensive
+              enterprises. My journey has equipped me with a comprehensive
               understanding of security frameworks, risk management, and
               incident response strategies.
             </p>
 
             <div className="space-y-3">
               <h4 className={cn(TYPOGRAPHY.h3.standard, "text-foreground")}>
-                What Drives Drew
+                What Drives Me
               </h4>
               <p>
-                Drew&apos;s passion for cybersecurity stems from a deep-seated
-                curiosity about technology and a commitment to making the
-                digital world a safer and more secure place. He thrives on
-                solving complex problems, staying ahead of emerging threats, and
-                continuously learning in this ever-evolving field.
+                My passion for cybersecurity stems from a deep-seated curiosity
+                about technology and a commitment to making the digital world a
+                safer and more secure place. I thrive on solving complex
+                problems, staying ahead of emerging threats, and continuously
+                learning in this ever-evolving field.
               </p>
               <p>
-                Beyond the technical aspects, Drew believes that effective
+                Beyond the technical aspects, I believe that effective
                 cybersecurity is about people—educating users, fostering a
                 security-first culture, and collaborating across teams to build
-                resilient systems. He&apos;s dedicated to empowering
+                resilient systems. I&apos;m dedicated to empowering
                 organizations to protect their assets while enabling innovation
                 and growth.
               </p>
@@ -115,7 +118,7 @@ export function AboutDrewProfile() {
       {/* Current Roles Section */}
       <Section
         id="drew-current-roles"
-        className={PAGE_LAYOUT.proseSection.container}
+        className={PAGE_LAYOUT.section.container}
       >
         <div className={SPACING.content}>
           <h3 className={TYPOGRAPHY.h2.standard}>Current Roles</h3>

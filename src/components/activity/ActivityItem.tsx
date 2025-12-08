@@ -62,31 +62,37 @@ function getVerbDisplay(verb: ActivityItemType["verb"]) {
       icon: Check,
       label: "Published",
       badge: "bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800",
+      // Note: Status badge colors use semantic color palette (green for success)
     },
     updated: {
       icon: Pencil,
       label: "Updated",
       badge: "bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800",
+      // Note: Status badge colors use semantic color palette (blue for info)
     },
     launched: {
       icon: Megaphone,
       label: "Launched",
       badge: "bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-800",
+      // Note: Status badge colors use semantic color palette (purple for accent)
     },
     released: {
       icon: Trophy,
       label: "Released",
       badge: "bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800",
+      // Note: Status badge colors use semantic color palette (amber for warning)
     },
     committed: {
       icon: GitCommit,
       label: "Committed",
       badge: "bg-slate-50 dark:bg-slate-950/30 text-slate-700 dark:text-slate-400 border-slate-200 dark:border-slate-800",
+      // Note: Status badge colors use semantic color palette (slate for neutral)
     },
     achieved: {
       icon: Trophy,
       label: "Achieved",
       badge: "bg-yellow-50 dark:bg-yellow-950/30 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800",
+      // Note: Status badge colors use semantic color palette (yellow for highlight)
     },
   };
 
@@ -196,6 +202,10 @@ export function ActivityItem({
                 {activity.title}
               </Link>
               <div className="flex gap-1.5 shrink-0">
+                {/* Source badge */}
+                <Badge variant="default" className="shrink-0 text-xs">
+                  {sourceLabel}
+                </Badge>
                 {/* Verb badge (published/updated) */}
                 {(() => {
                   const verbDisplay = getVerbDisplay(activity.verb);
@@ -206,14 +216,12 @@ export function ActivityItem({
                       className={`text-xs border flex items-center gap-1 ${verbDisplay.badge}`}
                     >
                       <VerbIcon className="h-3 w-3" />
-                      <span className="hidden sm:inline">{verbDisplay.label}</span>
+                      <span className="hidden sm:inline">
+                        {verbDisplay.label}
+                      </span>
                     </Badge>
                   );
                 })()}
-                {/* Source badge */}
-                <Badge variant="default" className="shrink-0 text-xs">
-                  {sourceLabel}
-                </Badge>
               </div>
             </div>
 
@@ -459,6 +467,10 @@ function TimelineItem({
             {activity.title}
           </Link>
           <div className="flex gap-1.5 shrink-0">
+            {/* Source badge */}
+            <Badge variant="default" className="shrink-0 text-xs">
+              {sourceLabel}
+            </Badge>
             {/* Verb badge (published/updated) */}
             {(() => {
               const verbDisplay = getVerbDisplay(activity.verb);
@@ -473,10 +485,6 @@ function TimelineItem({
                 </Badge>
               );
             })()}
-            {/* Source badge */}
-            <Badge variant="default" className="shrink-0 text-xs">
-              {sourceLabel}
-            </Badge>
           </div>
         </div>
 

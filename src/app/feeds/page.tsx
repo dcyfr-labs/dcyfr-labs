@@ -61,7 +61,7 @@ const feeds: FeedInfo[] = [
   },
   {
     id: "work",
-    title: "Work Feed",
+    title: "Projects Feed",
     description: "Portfolio projects, open-source contributions, and creative works.",
     url: "/work/feed",
     updateFrequency: "Updated every 6 hours",
@@ -101,14 +101,10 @@ export default function FeedsPage() {
             <h2 className={TYPOGRAPHY.h2.standard}>What are RSS/Atom feeds?</h2>
             <p className="text-muted-foreground mt-4">
               Feeds allow you to subscribe to content updates without visiting the website. Use a feed reader like{" "}
-              <a href="https://feedly.com" target="_blank" rel="noopener noreferrer" className="underline">
-                Feedly
-              </a>
-              ,{" "}
               <a href="https://www.inoreader.com" target="_blank" rel="noopener noreferrer" className="underline">
                 Inoreader
               </a>
-              , or{" "}
+              {" "}or{" "}
               <a href="https://netnewswire.com" target="_blank" rel="noopener noreferrer" className="underline">
                 NetNewsWire
               </a>{" "}
@@ -118,7 +114,7 @@ export default function FeedsPage() {
 
           {/* Feed List */}
           <div className="grid gap-4">
-          {feeds.map((feed) => {
+          {feeds.filter((feed) => feed.id !== "unified").map((feed) => {
             const Icon = feed.icon;
             return (
               <div
@@ -170,7 +166,7 @@ export default function FeedsPage() {
           {/* Additional Info */}
           <div className="pt-8 border-t">
             <h2 className={TYPOGRAPHY.h2.standard}>Format Options</h2>
-            <dl className="space-y-6 mt-6">
+            <dl className={`${SPACING.subsection} mt-6`}>
               <div>
                 <dt className={TYPOGRAPHY.h3.standard}>Atom</dt>
                 <dd className="text-muted-foreground ml-0 mt-2">

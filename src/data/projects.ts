@@ -14,6 +14,7 @@ export type ProjectImage = {
   width?: number; // optional, for optimization
   height?: number; // optional, for aspect ratio
   position?: "center" | "top" | "bottom" | "left" | "right"; // background position
+  hideHero?: boolean; // hide image in hero section on detail pages
 };
 
 export type ProjectCategory = "community" | "nonprofit" | "code" | "photography" | "startup";
@@ -116,6 +117,7 @@ const projectDrafts: Project[] = [
       url: "/images/projects/startup.svg",
       alt: "DCYFR Labs: Cyber Architecture & Design",
       position: "center",
+      hideHero: true,
     },
   },
   {
@@ -140,6 +142,7 @@ const projectDrafts: Project[] = [
       url: "/images/projects/design.svg",
       alt: "X64: Indie Cyber Publication",
       position: "center",
+      hideHero: true,
     },
   },
   {
@@ -162,6 +165,7 @@ const projectDrafts: Project[] = [
       url: "/images/projects/nonprofit.svg",
       alt: "Information Security Network: A Non-profit cybersecurity organization",
       position: "center",
+      hideHero: true,
     },
   },
 ];

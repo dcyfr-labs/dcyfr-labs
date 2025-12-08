@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import { Suspense } from "react";
 import { posts, postsBySeries } from "@/data/posts";
 import { getPostByAnySlug } from "@/lib/blog";
 import { SITE_URL, AUTHOR_NAME } from "@/lib/site-config";
 import "katex/dist/katex.min.css"; // KaTeX styles for math rendering in blog posts
-import { getPostViews, getMultiplePostViews } from "@/lib/views";
-import { getPostShares } from "@/lib/shares";
 import { extractHeadings } from "@/lib/toc";
 import { headers } from "next/headers";
 import { getArticleData } from "@/lib/article";
-import { CONTAINER_WIDTHS, CONTAINER_PADDING, CONTAINER_VERTICAL_PADDING } from "@/lib/design-tokens";
+import { CONTAINER_WIDTHS, CONTAINER_PADDING, CONTAINER_VERTICAL_PADDING, SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
 import {
   createArticlePageMetadata,
   createArticleSchema,
@@ -18,15 +17,19 @@ import {
 } from "@/lib/metadata";
 import { ArticleLayout, ArticleHeader, ArticleFooter } from "@/components/layouts";
 import {
-  BlogPostSidebar,
+  BlogPostSidebarWrapper,
   SeriesNavigation,
   PostHeroImage,
   BlogAnalyticsTracker,
   SidebarVisibilityProvider,
   HideWhenSidebarVisible,
+  ViewCountDisplay,
+  ViewCountSkeleton,
+  getHottestPostSlug,
 } from "@/components/blog";
 import {
   MDX,
+  FigureProvider,
   RelatedPosts,
   SmoothScrollToHash,
   TableOfContents,
@@ -40,6 +43,10 @@ import { PostBadges } from "@/components/blog";
 
 // Enable Incremental Static Regeneration with 1 hour revalidation
 export const revalidate = 3600; // 1 hour in seconds
+
+// Enable Partial Prerendering for faster initial page load
+// ISR keeps content fresh, PPR streams dynamic view counts and related posts
+export const experimental_ppr = true;
 
 // Pre-generate all blog post pages at build time
 export async function generateStaticParams() {
@@ -116,22 +123,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     maxRelated: 3,
   });
   
-  // Get view/share counts (blog-specific, not in Article Pattern)
-  const viewCount = await getPostViews(post.id);
-  const shareCount = await getPostShares(post.id);
-  
-  // Get view counts and determine latest/hottest posts (blog-specific)
-  // Use post IDs for view lookups, then map back to slugs
-  const postIdToSlug = new Map(posts.map(p => [p.id, p.slug]));
-  const viewMap = await getMultiplePostViews(posts.map(p => p.id));
-  let hottestSlug: string | null = null;
-  let maxViews = 0;
-  viewMap.forEach((views, postId) => {
-    if (views > maxViews) {
-      maxViews = views;
-      hottestSlug = postIdToSlug.get(postId) ?? null;
-    }
-  });
+  // Get hottest post slug (streams with PPR)
+  const hottestSlug = await getHottestPostSlug(posts);
   
   const latestPost = [...posts]
     .filter(p => !p.archived && !p.draft)
@@ -195,19 +188,19 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       </div>
 
       {/* Desktop Layout: Sidebar + Content */}
-      <div className={`container ${CONTAINER_WIDTHS.archive} mx-auto ${CONTAINER_PADDING} pt-12 md:pt-14 lg:pt-16 pb-8 md:pb-12`}>
-        <div className="grid gap-8 lg:grid-cols-[280px_1fr] lg:items-start">
-          {/* Left Sidebar (desktop only) */}
-          <BlogPostSidebar
+      <div className={`container ${CONTAINER_WIDTHS.archive} mx-auto ${CONTAINER_PADDING} pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12`}>
+        <div className="grid lg:grid-cols-[280px_1fr] lg:items-start gap-4">
+          {/* Left Sidebar (desktop only) - Streams view count with PPR */}
+          <BlogPostSidebarWrapper
             headings={headings}
             slug={post.slug}
+            postId={post.id}
             authors={post.authors}
             postTitle={post.title}
             metadata={{
               publishedAt: new Date(post.publishedAt),
               updatedAt: post.updatedAt ? new Date(post.updatedAt) : undefined,
               readingTime: post.readingTime.text,
-              viewCount: viewCount ?? undefined,
               tags: post.tags,
               category: post.category,
               isDraft: post.draft,
@@ -243,6 +236,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                   alt: post.image.alt || `Hero image for ${post.title}`,
                   position: (post.image.position === 'background' ? 'center' : post.image.position) || 'center',
                   priority: post.featured || false, // Prioritize hero image loading for featured posts
+                  hideHero: post.image.hideHero,
                 } : undefined}
               >
                 {/* Metadata shown only when sidebar is hidden */}
@@ -257,12 +251,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                     </time>
                     <span aria-hidden="true">·</span>
                     <span>{post.readingTime.text}</span>
-                    {typeof viewCount === "number" && (
-                      <>
-                        <span aria-hidden="true">·</span>
-                        <span>{viewCount.toLocaleString()} {viewCount === 1 ? "view" : "views"}</span>
-                      </>
-                    )}
+                    <Suspense fallback={<ViewCountSkeleton />}>
+                      <ViewCountDisplay postId={post.id} />
+                    </Suspense>
                   </div>
                 </HideWhenSidebarVisible>
               </ArticleHeader>
@@ -276,7 +267,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               )}
 
               <div className="prose my-8">
-                <MDX source={post.body} />
+                <FigureProvider>
+                  <MDX source={post.body} />
+                </FigureProvider>
               </div>
 
 
@@ -307,12 +300,12 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                 {/* Share section - hidden when sidebar is visible */}
                 <HideWhenSidebarVisible>
                   <div className="space-y-4">
-                    <h2 className="text-xl font-semibold">Share this blog post</h2>
+                    <h2 className={TYPOGRAPHY.h2.standard}>Share this blog post</h2>
                     <ShareButtons
                       url={`${SITE_URL}/blog/${post.slug}`}
                       title={post.title}
                       postId={post.id}
-                      initialShareCount={shareCount ?? 0}
+                      initialShareCount={0}
                     />
                   </div>
                 </HideWhenSidebarVisible>

@@ -6,12 +6,13 @@ import { User } from "lucide-react";
 import { IMAGE_PLACEHOLDER, ANIMATION } from "@/lib/design-tokens";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { teamMembers } from "@/data/team";
 
 /**
  * ProfileAvatar Component
  * 
  * Unified, reusable avatar component for displaying profile images across the site.
- * Supports multiple size presets, animations, and graceful fallback to icon.
+ * Supports multiple size presets, animations, graceful fallback to icon, and team member lookup.
  * 
  * Features:
  * - Responsive sizing with Tailwind breakpoints
@@ -19,6 +20,8 @@ import { cn } from "@/lib/utils";
  * - Smooth load animation
  * - Gradient backdrop option
  * - Ring border and shadow styling
+ * - Team member image lookup by name (e.g., "drew", "dcyfr")
+ * - Custom image URL support
  * 
  * Used on:
  * - Homepage hero section (with animations)
@@ -28,29 +31,36 @@ import { cn } from "@/lib/utils";
  * @component
  * @example
  * ```tsx
- * // Default usage
+ * // Default usage (Drew's avatar)
  * <ProfileAvatar />
  * 
- * // With homepage animations
- * <ProfileAvatar size="xl" priority animated backdrop />
+ * // With team member lookup
+ * <ProfileAvatar userProfile="drew" size="lg" />
+ * <ProfileAvatar userProfile="dcyfr" size="md" />
  * 
- * // Custom size
- * <ProfileAvatar size="lg" />
+ * // With custom URL
+ * <ProfileAvatar src="https://example.com/avatar.jpg" size="md" />
+ * 
+ * // With homepage animations
+ * <ProfileAvatar userProfile="drew" size="xl" priority animated backdrop />
  * ```
  * 
  * @remarks
- * - Default image location: `/public/images/avatar.jpg`
+ * - Default image location: `/public/images/avatar.jpg` or Drew's avatar if available
  * - Supports responsive sizing with Tailwind breakpoints
  * - Automatically shows fallback icon if image fails to load
  * - Uses Next.js Image optimization for performance
  * - Circular display with ring border and shadow
+ * - Team member IDs: "drew", "dcyfr"
  */
 
 export type AvatarSize = "sm" | "md" | "lg" | "xl";
 
 type ProfileAvatarProps = {
-  /** Image source URL (default: /images/avatar.jpg) */
+  /** Image source URL (can be custom URL or auto-detected from userProfile) */
   src?: string;
+  /** Team member identifier to auto-load avatar (e.g., "drew", "dcyfr") */
+  userProfile?: string;
   /** Alt text for accessibility (default: "Profile photo") */
   alt?: string;
   /** Predefined size variant */
@@ -85,7 +95,8 @@ const sizeConfig: Record<AvatarSize, { container: string; sizes: string }> = {
 };
 
 export function ProfileAvatar({
-  src = "/images/avatar.jpg",
+  src,
+  userProfile,
   alt = "Profile photo",
   size = "md",
   className,
@@ -96,6 +107,48 @@ export function ProfileAvatar({
   const [imageError, setImageError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const sizeClass = sizeConfig[size];
+
+  // Resolve image URL: explicit src > team member lookup > default
+  const resolveImageUrl = (): string => {
+    // If custom src is provided, use it
+    if (src) {
+      return src;
+    }
+
+    // If userProfile is provided, look up team member
+    if (userProfile) {
+      const member = teamMembers.find(
+        (m) => m.id === userProfile || m.name.toLowerCase() === userProfile.toLowerCase()
+      );
+      if (member?.avatarImagePath) {
+        return member.avatarImagePath;
+      }
+    }
+
+    // Default to Drew's avatar or fallback
+    const defaultMember = teamMembers.find((m) => m.id === "drew");
+    return defaultMember?.avatarImagePath || "/images/avatar.jpg";
+  };
+
+  const resolveAltText = (): string => {
+    if (alt !== "Profile photo") {
+      return alt;
+    }
+
+    if (userProfile) {
+      const member = teamMembers.find(
+        (m) => m.id === userProfile || m.name.toLowerCase() === userProfile.toLowerCase()
+      );
+      if (member) {
+        return `${member.name}'s avatar`;
+      }
+    }
+
+    return alt;
+  };
+
+  const finalSrc = resolveImageUrl();
+  const finalAlt = resolveAltText();
 
   return (
     <div
@@ -132,10 +185,10 @@ export function ProfileAvatar({
         />
       )}
 
-      {!imageError && src ? (
+      {!imageError && finalSrc ? (
         <Image
-          src={src}
-          alt={alt}
+          src={finalSrc}
+          alt={finalAlt}
           fill
           sizes={sizeClass.sizes}
           className="object-cover ring-2 ring-border shadow-lg"

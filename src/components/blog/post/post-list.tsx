@@ -10,7 +10,6 @@ import { Badge } from "@/components/ui/badge";
 import { PostThumbnail } from "@/components/blog/post/post-thumbnail";
 import { HighlightText } from "@/components/common/highlight-text";
 import dynamic from "next/dynamic";
-import { ensurePostImage } from "@/lib/default-images";
 import { HOVER_EFFECTS, SPACING } from "@/lib/design-tokens";
 
 const ScrollReveal = dynamic(() => import("@/components/features/scroll-reveal").then(mod => ({ default: mod.ScrollReveal })), {
@@ -209,74 +208,119 @@ export function PostList({
     return (
       <div className={SPACING.subsection} data-testid="post-list">
         {posts.map((p, index) => {
-          const featuredImage = ensurePostImage(p.image, {
-            title: p.title,
-            tags: p.tags,
-          });
           const isFirstPost = index === 0;
           const isEven = index % 2 === 0;
 
           // Hero layout for first post
           if (isFirstPost) {
             return (
-              <ScrollReveal 
-                key={p.slug} 
-                animation="fade-up"
-                delay={0}
-              >
-                <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
+              <ScrollReveal key={p.slug} animation="fade-up" delay={0}>
+                <article
+                  className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}
+                >
+                  {/* Background image - only if explicitly defined in post and not hidden */}
+                  {p.image && !p.image.hideCard && (
+                    <div className="absolute inset-0 z-0 overflow-hidden">
+                      <Image
+                        src={p.image.url}
+                        alt={p.image.alt}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 100vw"
+                      />
+                      {/* Full gradient overlay for text contrast */}
+                      <div className="absolute inset-0 bg-linear-to-t from-background/90 via-background/95 to-background" />
+                    </div>
+                  )}
 
                   <Link href={`/blog/${p.slug}`} className="block">
                     {/* Content */}
-                    <div className="p-4 md:p-10 lg:p-12">
+                    <div className="p-4 md:p-10 lg:p-12 relative z-10">
                       {/* Badges and metadata */}
                       <div className="flex flex-nowrap items-center gap-x-3 text-sm mb-4 text-zinc-700 dark:text-zinc-300 overflow-x-auto">
-                        <PostBadges post={p} isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
+                        <PostBadges
+                          post={p}
+                          isLatestPost={latestSlug === p.slug}
+                          isHotPost={hottestSlug === p.slug}
+                          showCategory={true}
+                        />
                         <SeriesBadge post={p} />
-                        <time dateTime={p.publishedAt} className="text-zinc-700 dark:text-zinc-300">
-                          {new Date(p.publishedAt).toLocaleDateString("en-US", { 
-                            year: "numeric", 
-                            month: "long", 
-                            day: "numeric" 
+                        <time
+                          dateTime={p.publishedAt}
+                          className="text-zinc-700 dark:text-zinc-300"
+                        >
+                          {new Date(p.publishedAt).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
                           })}
                         </time>
-                        <span aria-hidden="true" className="text-zinc-500">•</span>
-                        <span className="text-zinc-700 dark:text-zinc-300">{p.readingTime.text}</span>
-                        {viewCounts && viewCounts.has(p.id) && viewCounts.get(p.id)! > 0 && (
-                          <>
-                            <span aria-hidden="true" className="text-zinc-500">•</span>
-                            <span className="text-zinc-700 dark:text-zinc-300">{formatViews(viewCounts.get(p.id)!)} views</span>
-                          </>
-                        )}
+                        <span aria-hidden="true" className="text-zinc-500">
+                          •
+                        </span>
+                        <span className="text-zinc-700 dark:text-zinc-300">
+                          {p.readingTime.text}
+                        </span>
+                        {viewCounts &&
+                          viewCounts.has(p.id) &&
+                          viewCounts.get(p.id)! > 0 && (
+                            <>
+                              <span
+                                aria-hidden="true"
+                                className="text-zinc-500"
+                              >
+                                •
+                              </span>
+                              <span className="text-zinc-700 dark:text-zinc-300">
+                                {formatViews(viewCounts.get(p.id)!)} views
+                              </span>
+                            </>
+                          )}
                       </div>
-                      
+
                       {/* Large hero title with better contrast */}
                       <TitleTag className="font-bold text-3xl md:text-4xl lg:text-5xl leading-tight line-clamp-3 mb-4 text-zinc-900 dark:text-zinc-100">
-                        <HighlightText text={p.title} searchQuery={searchQuery} />
+                        <HighlightText
+                          text={p.title}
+                          searchQuery={searchQuery}
+                        />
                       </TitleTag>
 
                       {/* Subtitle if available */}
                       {p.subtitle && (
                         <p className="font-medium text-lg md:text-xl text-zinc-600 dark:text-zinc-400 mb-4">
-                          <HighlightText text={p.subtitle} searchQuery={searchQuery} />
+                          <HighlightText
+                            text={p.subtitle}
+                            searchQuery={searchQuery}
+                          />
                         </p>
                       )}
-                      
+
                       {/* Extended summary with better readability */}
                       <p className="text-base md:text-xl leading-relaxed text-zinc-700 dark:text-zinc-300 line-clamp-2 md:line-clamp-3 mb-5">
-                        <HighlightText text={p.summary} searchQuery={searchQuery} />
+                        <HighlightText
+                          text={p.summary}
+                          searchQuery={searchQuery}
+                        />
                       </p>
-                      
+
                       {/* Tags with better styling */}
                       {p.tags.length > 0 && (
                         <div className="flex flex-wrap gap-2">
-                          {p.tags.slice(0, 5).map(tag => (
-                            <Badge key={tag} variant="secondary" className="text-xs md:text-sm bg-zinc-200/80 text-zinc-800 dark:bg-zinc-700/80 dark:text-zinc-200">
+                          {p.tags.slice(0, 5).map((tag) => (
+                            <Badge
+                              key={tag}
+                              variant="secondary"
+                              className="text-xs md:text-sm bg-zinc-200/80 text-zinc-800 dark:bg-zinc-700/80 dark:text-zinc-200"
+                            >
                               {tag}
                             </Badge>
                           ))}
                           {p.tags.length > 5 && (
-                            <Badge variant="secondary" className="text-xs md:text-sm bg-zinc-200/80 text-zinc-800 dark:bg-zinc-700/80 dark:text-zinc-200">
+                            <Badge
+                              variant="secondary"
+                              className="text-xs md:text-sm bg-zinc-200/80 text-zinc-800 dark:bg-zinc-700/80 dark:text-zinc-200"
+                            >
                               +{p.tags.length - 5} more
                             </Badge>
                           )}
@@ -291,61 +335,102 @@ export function PostList({
 
           // Alternating horizontal layout for remaining posts
           return (
-            <ScrollReveal 
-              key={p.slug} 
-              animation="fade-up"
-              delay={index * 50}
-            >
-              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
+            <ScrollReveal key={p.slug} animation="fade-up" delay={index * 50}>
+              <article
+                className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}
+              >
+                {/* Background image - only if explicitly defined in post and not hidden */}
+                {p.image && !p.image.hideCard && (
+                  <div className="absolute inset-0 z-0 overflow-hidden">
+                    <Image
+                      src={p.image.url}
+                      alt={p.image.alt}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 100vw"
+                    />
+                    {/* Gradient overlay for text contrast */}
+                    <div className="absolute inset-0 bg-linear-to-t from-background/90 via-background/95 to-background" />
+                  </div>
+                )}
                 <Link href={`/blog/${p.slug}`} className="block">
                   {/* Content section */}
-                  <div className="p-4 md:p-8">
-                      {/* Badges and metadata */}
-                      <div className="flex flex-nowrap items-center gap-x-2.5 text-sm text-muted-foreground mb-3 overflow-x-auto">
-                        <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
-                        <SeriesBadge post={p} size="sm" />
-                        <time dateTime={p.publishedAt} className="text-zinc-600 dark:text-zinc-400">
-                          {new Date(p.publishedAt).toLocaleDateString("en-US", { 
-                            year: "numeric", 
-                            month: "short", 
-                            day: "numeric" 
-                          })}
-                        </time>
-                        <span aria-hidden="true" className="text-zinc-400">•</span>
-                        <span className="text-zinc-600 dark:text-zinc-400">{p.readingTime.text}</span>
-                        {viewCounts && viewCounts.has(p.id) && viewCounts.get(p.id)! > 0 && (
+                  <div className="p-4 md:p-8 relative z-10">
+                    {/* Badges and metadata */}
+                    <div className="flex flex-nowrap items-center gap-x-2.5 text-sm text-muted-foreground mb-3 overflow-x-auto">
+                      <PostBadges
+                        post={p}
+                        size="sm"
+                        isLatestPost={latestSlug === p.slug}
+                        isHotPost={hottestSlug === p.slug}
+                        showCategory={true}
+                      />
+                      <SeriesBadge post={p} size="sm" />
+                      <time
+                        dateTime={p.publishedAt}
+                        className="text-zinc-600 dark:text-zinc-400"
+                      >
+                        {new Date(p.publishedAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </time>
+                      <span aria-hidden="true" className="text-zinc-400">
+                        •
+                      </span>
+                      <span className="text-zinc-600 dark:text-zinc-400">
+                        {p.readingTime.text}
+                      </span>
+                      {viewCounts &&
+                        viewCounts.has(p.id) &&
+                        viewCounts.get(p.id)! > 0 && (
                           <>
-                            <span aria-hidden="true" className="text-zinc-400">•</span>
-                            <span className="text-zinc-600 dark:text-zinc-400">{formatViews(viewCounts.get(p.id)!)} views</span>
+                            <span aria-hidden="true" className="text-zinc-400">
+                              •
+                            </span>
+                            <span className="text-zinc-600 dark:text-zinc-400">
+                              {formatViews(viewCounts.get(p.id)!)} views
+                            </span>
                           </>
                         )}
+                    </div>
+
+                    {/* Title with better sizing */}
+                    <TitleTag className="font-bold text-xl md:text-2xl lg:text-3xl leading-tight line-clamp-2 mb-3 text-zinc-900 dark:text-zinc-100">
+                      <HighlightText text={p.title} searchQuery={searchQuery} />
+                    </TitleTag>
+
+                    {/* Summary with better line height */}
+                    <p className="text-sm md:text-base leading-relaxed text-zinc-600 dark:text-zinc-400 line-clamp-2 lg:line-clamp-3 mb-4">
+                      <HighlightText
+                        text={p.summary}
+                        searchQuery={searchQuery}
+                      />
+                    </p>
+
+                    {/* Tags - limited with better styling */}
+                    {p.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {p.tags.slice(0, 3).map((tag) => (
+                          <Badge
+                            key={tag}
+                            variant="outline"
+                            className="text-xs border-zinc-300 text-zinc-700 dark:border-zinc-600 dark:text-zinc-300"
+                          >
+                            {tag}
+                          </Badge>
+                        ))}
+                        {p.tags.length > 3 && (
+                          <Badge
+                            variant="outline"
+                            className="text-xs border-zinc-300 text-zinc-500 dark:border-zinc-600 dark:text-zinc-400"
+                          >
+                            +{p.tags.length - 3}
+                          </Badge>
+                        )}
                       </div>
-                      
-                      {/* Title with better sizing */}
-                      <TitleTag className="font-bold text-xl md:text-2xl lg:text-3xl leading-tight line-clamp-2 mb-3 text-zinc-900 dark:text-zinc-100">
-                        <HighlightText text={p.title} searchQuery={searchQuery} />
-                      </TitleTag>
-                      
-                      {/* Summary with better line height */}
-                      <p className="text-sm md:text-base leading-relaxed text-zinc-600 dark:text-zinc-400 line-clamp-2 lg:line-clamp-3 mb-4">
-                        <HighlightText text={p.summary} searchQuery={searchQuery} />
-                      </p>
-                      
-                      {/* Tags - limited with better styling */}
-                      {p.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
-                          {p.tags.slice(0, 3).map(tag => (
-                            <Badge key={tag} variant="outline" className="text-xs border-zinc-300 text-zinc-700 dark:border-zinc-600 dark:text-zinc-300">
-                              {tag}
-                            </Badge>
-                          ))}
-                          {p.tags.length > 3 && (
-                            <Badge variant="outline" className="text-xs border-zinc-300 text-zinc-500 dark:border-zinc-600 dark:text-zinc-400">
-                              +{p.tags.length - 3}
-                            </Badge>
-                          )}
-                        </div>
-                      )}
+                    )}
                   </div>
                 </Link>
               </article>
@@ -361,11 +446,6 @@ export function PostList({
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="post-list">
         {posts.map((p, index) => {
-          const featuredImage = ensurePostImage(p.image, {
-            title: p.title,
-            tags: p.tags,
-          });
-          
           // Featured posts (New or Hot) span full width on desktop
           const isFeatured = latestSlug === p.slug || hottestSlug === p.slug;
 
@@ -377,9 +457,24 @@ export function PostList({
               className={isFeatured ? "md:col-span-2" : ""}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
+                {/* Background image - only if explicitly defined in post and not hidden */}
+                {p.image && !p.image.hideCard && (
+                  <div className="absolute inset-0 z-0 overflow-hidden">
+                    <Image
+                      src={p.image.url}
+                      alt={p.image.alt}
+                      fill
+                      className="object-cover"
+                      sizes={isFeatured ? "(max-width: 768px) 100vw, 100vw" : "(max-width: 768px) 100vw, 50vw"}
+                    />
+                    {/* Gradient overlay for text contrast */}
+                    <div className={`absolute inset-0 bg-linear-to-b ${isFeatured ? "from-background/80 via-background/90 to-background" : "from-background/90 via-background/95 to-background"}`} />
+                  </div>
+                )}
+                {/* TODO: Re-enable holo effects after mouse-tracking implementation for dynamic pivoting */}
                 <Link href={`/blog/${p.slug}`} className="flex flex-col h-full">
                   {/* Post content - larger padding for featured posts */}
-                  <div className={`flex-1 flex flex-col ${isFeatured ? "p-5 md:p-8" : "p-4"}`}>
+                  <div className={`flex-1 flex flex-col ${isFeatured ? "p-5 md:p-8" : "p-4"} relative z-10`}>
                     {/* Badges - show on all posts */}
                     <div className={`flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground mb-2 ${isFeatured ? "text-sm" : "text-xs"}`}>
                       <PostBadges post={p} size={isFeatured ? "default" : "sm"} isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
@@ -445,11 +540,6 @@ export function PostList({
     return (
       <div className={SPACING.subsection} data-testid="post-list">
         {posts.map((p, index) => {
-          const featuredImage = ensurePostImage(p.image, {
-            title: p.title,
-            tags: p.tags,
-          });
-
           return (
             <ScrollReveal 
               key={p.slug} 
@@ -457,8 +547,22 @@ export function PostList({
               delay={index * 80}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
+                {/* Background image - only if explicitly defined in post and not hidden */}
+                {p.image && !p.image.hideCard && (
+                  <div className="absolute inset-0 z-0 overflow-hidden">
+                    <Image
+                      src={p.image.url}
+                      alt={p.image.alt}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 100vw"
+                    />
+                    {/* Gradient overlay for text contrast */}
+                    <div className="absolute inset-0 bg-linear-to-b from-background/90 via-background/95 to-background" />
+                  </div>
+                )}
                 <Link href={`/blog/${p.slug}`} className="block">
-                  <div className="p-4 md:p-8">
+                  <div className="p-4 md:p-8 relative z-10">
                     {/* Badges and metadata */}
                     <div className="flex flex-nowrap items-center gap-x-2 text-xs text-muted-foreground mb-3 overflow-x-auto">
                       <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
@@ -515,11 +619,6 @@ export function PostList({
     return (
       <div className="space-y-3" data-testid="post-list">
         {posts.map((p, index) => {
-          const featuredImage = ensurePostImage(p.image, {
-            title: p.title,
-            tags: p.tags,
-          });
-
           return (
             <ScrollReveal 
               key={p.slug} 
@@ -527,8 +626,22 @@ export function PostList({
               delay={index * 50}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
+                {/* Background image - only if explicitly defined in post and not hidden */}
+                {p.image && !p.image.hideCard && (
+                  <div className="absolute inset-0 z-0 overflow-hidden">
+                    <Image
+                      src={p.image.url}
+                      alt={p.image.alt}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                    {/* Gradient overlay for text contrast */}
+                    <div className="absolute inset-0 bg-linear-to-b from-background/90 via-background/95 to-background" />
+                  </div>
+                )}
                 <Link href={`/blog/${p.slug}`} className="block">
-                  <div className="p-3">
+                  <div className="p-3 relative z-10">
                     {/* Badges and metadata - compact */}
                     <div className="flex flex-nowrap items-center gap-x-2 text-xs text-muted-foreground mb-1.5 overflow-x-auto">
                       <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
@@ -568,11 +681,6 @@ export function PostList({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="post-list">
       {posts.map((p, index) => {
-        const featuredImage = ensurePostImage(p.image, {
-          title: p.title,
-          tags: p.tags,
-        });
-
         return (
           <ScrollReveal 
             key={p.slug} 
@@ -580,9 +688,23 @@ export function PostList({
             delay={index * 50}
           >
             <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
+              {/* Background image - only if explicitly defined in post and not hidden */}
+              {p.image && !p.image.hideCard && (
+                <div className="absolute inset-0 z-0 overflow-hidden">
+                  <Image
+                    src={p.image.url}
+                    alt={p.image.alt}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                  {/* Gradient overlay for text contrast */}
+                  <div className="absolute inset-0 bg-linear-to-b from-background/90 via-background/95 to-background" />
+                </div>
+              )}
               <Link href={`/blog/${p.slug}`} className="flex flex-col h-full">
                 {/* Post content */}
-                <div className="flex-1 p-4 flex flex-col">
+                <div className="flex-1 p-4 flex flex-col relative z-10">
                   {/* Badges and metadata */}
                   <div className="flex flex-nowrap items-center gap-x-2 text-xs text-muted-foreground mb-2 overflow-x-auto">
                     <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />

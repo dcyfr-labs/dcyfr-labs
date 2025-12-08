@@ -11,6 +11,7 @@ export { SiteLogo } from "./site-logo";
 export { MDX } from "./mdx";
 export { ZoomableImage } from "./zoomable-image";
 export { Mermaid } from "./mermaid";
+export { Figure, FigureProvider } from "./figure-caption";
 export { FAQ, FAQQuestion, FAQAnswer, type FAQProps, type FAQItem } from "./faq";
 export { ProfileAvatar, type AvatarSize } from "./profile-avatar";
 export { ScrollIndicator } from "./scroll-indicator";
@@ -19,8 +20,12 @@ export { SectionHeader } from "./section-header";
 export { SectionNavigator, Section } from "./section-navigator";
 export { SmoothScrollToHash } from "./smooth-scroll-to-hash";
 export { TableOfContents } from "./table-of-contents";
+export { TransitionLink } from "./transition-link";
 export { ViewToggle } from "./view-toggle";
 export { default as DevToolsDropdown } from "./dev-tools-dropdown";
+
+// Hero Overlays - light/dark mode aware contrast for hero images
+export { HeroOverlay, BlogPostHeroOverlay, ProjectHeroOverlay, type HeroOverlayProps, type OverlayVariant, type OverlayDirection, type OverlayIntensity } from "./hero-overlay";
 
 // Math components
 export { 

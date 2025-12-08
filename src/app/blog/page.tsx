@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { posts, type Post } from "@/data/posts";
 import { POST_CATEGORY_LABEL } from "@/lib/post-categories";
 import { getArchiveData } from "@/lib/archive";
@@ -6,7 +7,6 @@ import { getPostBadgeMetadata } from "@/lib/post-badges";
 import { createArchivePageMetadata, createCollectionSchema, getJsonLdScriptProps } from "@/lib/metadata";
 import { AUTHOR_NAME, SITE_URL } from "@/lib/site-config";
 import { headers } from "next/headers";
-import { getMultiplePostViews } from "@/lib/views";
 import { TYPOGRAPHY, CONTAINER_WIDTHS, CONTAINER_PADDING, PAGE_LAYOUT, SPACING } from "@/lib/design-tokens";
 import { ArchivePagination } from "@/components/layouts/archive-pagination";
 import {
@@ -16,6 +16,8 @@ import {
   BlogLayoutManager,
   BlogLayoutWrapper,
   MobileFilterBar,
+  DynamicBlogContent,
+  BlogListSkeleton,
 } from "@/components/blog";
 import { ViewToggle, SmoothScrollToHash } from "@/components/common";
 import { PageLayout } from "@/components/layouts/page-layout";
@@ -29,6 +31,9 @@ export const metadata: Metadata = createArchivePageMetadata({
   description: pageDescription,
   path: "/blog",
 });
+
+// Enable Partial Prerendering for faster initial load with dynamic filters
+export const experimental_ppr = true;
 
 interface BlogPageProps {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -57,7 +62,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const sortBy = getParam("sortBy") || "newest";
   const dateRange = getParam("dateRange") || "all";
   const layoutParam = getParam("layout");
-  const layout = (["grid", "list", "magazine", "compact"].includes(layoutParam)) ? layoutParam as "grid" | "list" | "magazine" | "compact" : "grid";
+  const layout = (["grid", "list", "magazine", "compact"].includes(layoutParam)) ? layoutParam as "grid" | "list" | "magazine" | "compact" : "magazine";
   
   // Apply category filter first (case-insensitive)
   const postsWithCategoryFilter = selectedCategory
@@ -127,24 +132,18 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     }
   );
   
-  // Get view counts for all posts (for sorting and display)
-  const postIds = archiveData.allFilteredItems.map(post => post.id);
-  const viewCounts = await getMultiplePostViews(postIds);
+  // NOTE: View count fetching and popularity sorting moved to DynamicBlogContent
+  // This keeps the static shell rendering fast for PPR
   
-  // Apply sort by popularity if requested
+  // For non-popularity sorts, we can still sort here
   let sortedItems = archiveData.allFilteredItems;
-  if (sortBy === "popular") {
-    sortedItems = [...archiveData.allFilteredItems].sort((a, b) => {
-      const aViews = viewCounts.get(a.id) || 0;
-      const bViews = viewCounts.get(b.id) || 0;
-      return bViews - aViews; // Descending order
-    });
-  } else if (sortBy === "oldest") {
+  if (sortBy === "oldest") {
     sortedItems = [...archiveData.allFilteredItems].sort((a, b) => {
       return new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime();
     });
   }
   // "newest" is already the default sort from archiveData
+  // "popular" sort will be handled in DynamicBlogContent after fetching view counts
   
   // Re-paginate sorted items
   const startIndex = (archiveData.currentPage - 1) * archiveData.itemsPerPage;
@@ -267,53 +266,26 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
             </div>
           </div>
 
-          {/* Main content area */}
-          <div id="blog-posts" className="px-2 sm:px-4 lg:px-8 w-full">
-            
-            {/* Mobile filters (below lg breakpoint) - collapsible for better content visibility */}
-            <div className="lg:hidden mb-6">
-              <MobileFilterBar
-                selectedCategory={selectedCategory}
-                selectedTags={selectedTags}
-                readingTime={readingTime}
-                categoryList={availableCategories}
-                categoryDisplayMap={categoryDisplayMap}
-                tagList={availableTagsWithCounts.map(({ tag }) => tag)}
-                query={query}
-                sortBy={sortBy}
-                dateRange={dateRange}
-                totalResults={sortedArchiveData.totalItems}
-              />
-            </div>
-
-            {/* Featured posts section - DISABLED */}
-            {/* To re-enable: set shouldShowFeaturedSection logic above */}
-
-            {/* Post list */}
-            <PostList 
-              posts={mainListPosts}
+          {/* Main content area with Suspense for PPR */}
+          <Suspense fallback={<BlogListSkeleton layout={layout} itemCount={3} />}>
+            <DynamicBlogContent
+              sortedArchiveData={sortedArchiveData}
+              mainListPosts={mainListPosts}
               latestSlug={latestSlug ?? undefined}
               hottestSlug={hottestSlug ?? undefined}
-              titleLevel="h2"
+              selectedCategory={selectedCategory}
+              selectedTags={selectedTags}
+              readingTime={readingTime}
+              availableCategories={availableCategories}
+              categoryDisplayMap={categoryDisplayMap}
+              availableTagsWithCounts={availableTagsWithCounts}
+              query={query}
+              sortBy={sortBy}
+              dateRange={dateRange}
               layout={layout}
-              viewCounts={viewCounts}
               hasActiveFilters={hasActiveFilters}
-              emptyMessage="No posts found. Try adjusting your search or filters."
-              searchQuery={query}
             />
-
-            {/* Pagination */}
-            {sortedArchiveData.totalPages > 1 && (
-              <div className="mt-8">
-                <ArchivePagination
-                  currentPage={sortedArchiveData.currentPage}
-                  totalPages={sortedArchiveData.totalPages}
-                  hasPrevPage={sortedArchiveData.currentPage > 1}
-                  hasNextPage={sortedArchiveData.currentPage < sortedArchiveData.totalPages}
-                />
-              </div>
-            )}
-          </div>
+          </Suspense>
         </BlogLayoutWrapper>
       </div>
     </PageLayout>

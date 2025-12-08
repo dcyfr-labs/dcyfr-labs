@@ -147,41 +147,65 @@ export function PageHero({
 
   // Normal render
   return (
-    <section className={cn(PAGE_LAYOUT.hero.container, className)}>
-      <div className={cn(PAGE_LAYOUT.hero.content, alignmentClasses, contentClassName)}>
-        {/* Optional image/avatar */}
-        {image && (
-          <div className={cn('flex', imageJustify)}>
-            {image}
-          </div>
+    <section
+      className={cn(
+        PAGE_LAYOUT.hero.container,
+        "relative overflow-visible",
+        className
+      )}
+    >
+      <div
+        className={cn(
+          PAGE_LAYOUT.hero.content,
+          alignmentClasses,
+          contentClassName
         )}
+      >
+        {/* Optional image/avatar */}
+        {image && <div className={cn("flex", imageJustify)}>{image}</div>}
 
         {/* Title */}
         {title && <h1 className={styles.title}>{title}</h1>}
 
         {/* Description - use div for ReactNode, p for string to avoid hydration errors */}
-        {description && (
-          typeof description === 'string' ? (
-            <p className={cn(styles.description, "max-w-3xl", align === 'center' && 'mx-auto')}>
+        {description &&
+          (typeof description === "string" ? (
+            <p
+              className={cn(
+                styles.description,
+                "max-w-3xl",
+                align === "center" && "mx-auto"
+              )}
+            >
               {description}
               {itemCount !== undefined && (
                 <span className="text-muted-foreground">
-                  {' '}({itemCount} {itemCount === 1 ? 'item' : 'items'})
+                  {" "}
+                  ({itemCount} {itemCount === 1 ? "item" : "items"})
                 </span>
               )}
             </p>
           ) : (
-            <div className={cn(styles.description, "max-w-3xl", align === 'center' && 'mx-auto')}>
+            <div
+              className={cn(
+                styles.description,
+                "max-w-3xl",
+                align === "center" && "mx-auto"
+              )}
+            >
               {description}
             </div>
-          )
-        )}
+          ))}
 
         {/* Actions */}
         {actions && (
-          <div className={cn('pt-2', align === 'center' && 'flex justify-center')}>{actions}</div>
+          <div
+            className={cn("pt-2", align === "center" && "flex justify-center")}
+          >
+            {actions}
+          </div>
         )}
       </div>
     </section>
-  )
+  );
 }

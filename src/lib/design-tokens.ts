@@ -22,6 +22,9 @@
  * ```
  */
 export const CONTAINER_WIDTHS = {
+  /** Prose/reading content - optimal line length (65ch ~650px, 50-75 chars/line per typography research) */
+  prose: "max-w-prose",
+  
   /** Narrow width for forms and focused content (contact forms) */
   narrow: "max-w-4xl",
   
@@ -249,9 +252,13 @@ export const SPACING = {
   
   /** Within content blocks (tightest spacing) */
   content: "space-y-4",
+  // NOTE: Do NOT use SPACING.content in ArticleLayout wrapper
+  // Blog content uses prose CSS classes from globals.css for natural paragraph spacing
   
   /** Running text and prose paragraphs (better readability for long-form content) */
   prose: "space-y-6 md:space-y-8",
+  // NOTE: Only use SPACING.prose for manually structured sections
+  // Blog/article content relies on prose CSS classes, not design tokens
   
   /** Page hero/header sections with prose wrapper */
   proseHero: "prose space-y-4",
@@ -403,10 +410,10 @@ export const OPACITY = {
  */
 export const HOVER_EFFECTS = {
   /** Standard card hover (projects, posts, content cards) */
-  card: "transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:bg-muted/30 active:scale-[0.98] active:shadow-md",
+  card: "transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:bg-muted/60 active:scale-[0.98] active:shadow-md",
   
   /** Subtle hover for secondary/inline cards */
-  cardSubtle: "transition-all duration-300 hover:shadow-md hover:bg-muted/50 active:scale-[0.99]",
+  cardSubtle: "transition-all duration-300 hover:shadow-md hover:bg-muted/70 active:scale-[0.99]",
   
   /** Featured/hero cards (already prominent, minimal transform) */
   cardFeatured: "transition-all duration-300 hover:shadow-xl active:scale-[0.99]",
@@ -678,7 +685,7 @@ export const PAGE_LAYOUT = {
   /** Hero section spacing - larger than standard sections */
   hero: {
     /** Container for hero content - top padding accounts for sticky header */
-    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-12 md:pt-14 lg:pt-16 pb-10 md:pb-12 lg:pb-14 mb-12`,
+    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12`,
     /** Hero title + description wrapper */
     content: SPACING.proseHero,
   },
@@ -686,7 +693,7 @@ export const PAGE_LAYOUT = {
   /** Archive page hero (blog, work, portfolio listings) - matches standard hero spacing */
   archiveHero: {
     /** Container for archive hero - consistent with standard hero for unified layout */
-    container: `mx-auto ${CONTAINER_WIDTHS.archive} ${ARCHIVE_CONTAINER_PADDING} pt-12 md:pt-14 lg:pt-16 pb-10 md:pb-12 lg:pb-14 mb-12`,
+    container: `mx-auto ${CONTAINER_WIDTHS.archive} ${ARCHIVE_CONTAINER_PADDING} pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12`,
     /** Archive hero title + description wrapper */
     content: SPACING.proseHero,
   },
@@ -694,15 +701,15 @@ export const PAGE_LAYOUT = {
   /** Standard page section spacing */
   section: {
     /** Section container - no vertical padding (handled by parent gap) */
-    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} py-0`,
+    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING}`,
     /** Section content wrapper */
     content: SPACING.subsection,
   },
   
   /** Prose/reading-optimized section (about page, long-form content) */
   proseSection: {
-    /** Container for prose content */
-    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} py-6 md:py-8`,
+    /** Container for prose content - optimal reading width (65ch) */
+    container: `mx-auto ${CONTAINER_WIDTHS.prose} ${CONTAINER_PADDING}  pt-6 md:pt-8 lg:pt-10 pb-6 md:pb-8 lg:pb-10`,
     /** Prose content wrapper */
     content: SPACING.prose,
   },
@@ -710,7 +717,7 @@ export const PAGE_LAYOUT = {
   /** Narrow section for forms (contact page) */
   narrowSection: {
     /** Container for narrow content */
-    container: `mx-auto ${CONTAINER_WIDTHS.narrow} ${CONTAINER_PADDING} py-10 md:py-14`,
+    container: `mx-auto ${CONTAINER_WIDTHS.narrow} ${CONTAINER_PADDING}`,
     /** Content wrapper */
     content: SPACING.content,
   },

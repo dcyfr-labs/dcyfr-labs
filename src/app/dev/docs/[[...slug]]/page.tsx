@@ -219,15 +219,15 @@ export default async function DevDocsPage({ params, searchParams }: PageProps) {
     <PageLayout>
       <div className="relative">
         {/* Breadcrumbs */}
-        <div className={`mb-${SPACING.section}`}>
+        <div className="mb-10 md:mb-12">
           <Breadcrumbs items={breadcrumbs} />
         </div>
 
         {/* Main content area */}
-        <div className={`grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-${SPACING.content} xl:gap-12`}>
+        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-4 xl:gap-12">
           {/* Sidebar Navigation */}
           <aside className="lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto scrollbar-hide">
-            <div className={`space-y-${SPACING.content}`}>
+            <div className="space-y-4">
               {/* Search placeholder */}
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
@@ -262,12 +262,12 @@ export default async function DevDocsPage({ params, searchParams }: PageProps) {
 
           {/* Main content */}
           <main className="min-w-0">
-            <article className="prose prose-slate dark:prose-invert max-w-none">
+            <article className={`prose prose-slate dark:prose-invert ${CONTAINER_WIDTHS.prose}`}>
               <MDX source={content} />
             </article>
 
             {/* Footer metadata */}
-            <footer className={`mt-${SPACING.section} pt-${SPACING.content} border-t border-border text-sm text-muted-foreground`}>
+            <footer className="mt-10 md:mt-12 pt-4 border-t border-border text-sm text-muted-foreground">
               <div className="flex items-center justify-between">
                 <span>Last updated: {new Date().toLocaleDateString()}</span>
                 <Link

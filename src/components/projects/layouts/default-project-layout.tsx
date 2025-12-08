@@ -83,6 +83,7 @@ export function DefaultProjectLayout({ project, nonce, basePath = '/work' }: Def
           alt: project.image.alt,
           position: project.image.position || 'center',
           priority: project.featured || false,
+          hideHero: project.image.hideHero,
         } : undefined}
       />
 

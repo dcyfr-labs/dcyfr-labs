@@ -108,15 +108,16 @@ export default async function ProfilePage({ params }: PageProps) {
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
 
       {/* Profile Content */}
-      <div className={`mx-auto ${CONTAINER_WIDTHS.standard}`}>
-        {/* TODO: Breadcrumb Navigation */}
-        {/* Back to Our Work */}
+      <div
+        className={`mx-auto ${CONTAINER_WIDTHS.standard} ${SPACING.section}`}
+      >
+        {/* Back to Our Team */}
         <Link
-          href="/work"
+          href="/about#meet-the-team"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 mt-12"
         >
           <ArrowLeft className="h-4 w-4" />
-          <span>Back to Our Work</span>
+          <span>Back to Our Team</span>
         </Link>
         {member.slug === "drew" && <AboutDrewProfile />}
         {member.slug === "dcyfr" && <AboutDcyfrProfile />}

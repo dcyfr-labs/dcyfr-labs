@@ -21,10 +21,11 @@
  * ```
  */
 
-import { TYPOGRAPHY } from '@/lib/design-tokens';
+import { TYPOGRAPHY, IMAGE_PLACEHOLDER } from '@/lib/design-tokens';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
+import { ProjectHeroOverlay } from '@/components/common';
 import { cn } from '@/lib/utils';
 
 export interface ArticleHeaderProps {
@@ -65,6 +66,8 @@ export interface ArticleHeaderProps {
     position?: 'center' | 'top' | 'bottom' | 'left' | 'right';
     /** Preload image for performance (use for featured/above-fold images) */
     priority?: boolean;
+    /** Hide image in hero section */
+    hideHero?: boolean;
   };
   
   /** Additional content (e.g., metadata shown conditionally) */
@@ -96,39 +99,11 @@ export function ArticleHeader({
       )
     : null;
 
-  // Unified card structure with optional background image
+  // Text content outside card, card contains only image
   return (
-    <div className={cn("relative rounded-lg border overflow-hidden mb-8 holo-card", className)}>
-      {/* Background Image Layer (conditional) */}
-      {backgroundImage && (
-        <>
-          <div className="absolute inset-0 z-0">
-            <Image
-              src={backgroundImage.url}
-              alt={backgroundImage.alt}
-              fill
-              priority={backgroundImage.priority || false}
-              quality={90}
-              className={cn(
-                "object-cover holo-image-shift",
-                backgroundImage.position && `object-${backgroundImage.position}`
-              )}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-            />
-            {/* Gradient overlay for better text readability */}
-            <div className="absolute inset-0 holo-gradient-dark" />
-          </div>
-          
-          {/* Subtle shine effect */}
-          <div className="holo-shine" />
-        </>
-      )}
-
-      {/* Content - positioned above background if image exists */}
-      <div className={cn(
-        "px-4 sm:px-8 md:px-8 py-8 md:py-12 space-y-3",
-        backgroundImage && "relative z-10"
-      )}>
+    <div className={className}>
+      {/* Text Content Section - Outside and above the card */}
+      <div className="space-y-3 mb-6">
         {/* Badges */}
         {badges && (
           <div className="flex flex-wrap gap-2">
@@ -204,6 +179,29 @@ export function ArticleHeader({
         {/* Children (additional content) */}
         {children}
       </div>
+
+      {/* Featured Image Card - rendered below text */}
+      {backgroundImage && !backgroundImage.hideHero && (
+        <div className="relative w-full aspect-video overflow-hidden bg-muted rounded-lg border mb-8">
+          {/* TODO: Re-enable holo effects after mouse-tracking implementation for dynamic pivoting */}
+          <Image
+            src={backgroundImage.url}
+            alt={backgroundImage.alt}
+            fill
+            priority={backgroundImage.priority || false}
+            quality={90}
+            placeholder="blur"
+            blurDataURL={IMAGE_PLACEHOLDER.blur}
+            className={cn(
+              "object-cover",
+              backgroundImage.position && `object-${backgroundImage.position}`
+            )}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+          />
+          {/* Light/dark mode aware overlay for enhanced text contrast */}
+          <ProjectHeroOverlay intensity="light" />
+        </div>
+      )}
     </div>
   );
 }

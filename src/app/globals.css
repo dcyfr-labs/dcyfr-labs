@@ -198,7 +198,7 @@ svg {
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  --card: oklch(0.10 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
@@ -206,7 +206,7 @@ svg {
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.28 0 0);
   --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.28 0 0);
+  --muted: oklch(0.20 0 0);
   --muted-foreground: oklch(0.78 0 0);
   --accent: oklch(0.28 0 0);
   --accent-foreground: oklch(0.985 0 0);
@@ -1162,9 +1162,9 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
 }
 
 .prose p {
-  line-height: 1.9;
+  line-height: 1.65;
   letter-spacing: 0.3px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
   word-spacing: 0.05em;
 }
 
@@ -1175,10 +1175,12 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
   }
 
   .prose p {
-    line-height: 1.95; /* More breathing room on mobile */
-    margin-bottom: 1.75rem; /* Better paragraph separation */
+    line-height: 1.7; /* Comfortable reading on mobile */
+    margin-bottom: 1.5rem; /* Balanced paragraph separation */
     letter-spacing: 0.4px;
     word-spacing: 0.08em;
+  }
+
   .prose h2 {
     font-size: 1.75rem; /* 28px */
     margin-top: 3rem; /* More section separation */
@@ -1191,14 +1193,6 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
     margin-top: 2.25rem;
     margin-bottom: 1rem;
     letter-spacing: -0.3px;
-  } margin-top: 2.5rem; /* More section separation */
-    margin-bottom: 1rem;
-  }
-
-  .prose h3 {
-    font-size: 1.375rem; /* 22px */
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
   }
 
   /* Code blocks optimized for mobile */

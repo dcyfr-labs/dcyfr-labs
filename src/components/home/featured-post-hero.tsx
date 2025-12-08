@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -62,19 +63,24 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
 
   return (
     <Link href={`/blog/${post.slug}`}>
-      <Card className={`holo-card group relative overflow-hidden border-2 ${HOVER_EFFECTS.cardFeatured}`}>
-        {/* Holographic gradient overlay */}
-        <div className="holo-gradient-dark" />
-        {/* Background Image with gradient overlay - matches project card style */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-linear-to-br from-primary/20 via-primary/10 to-transparent" />
-          <div className={cn(
-            "absolute inset-0 bg-linear-to-b from-background/60 via-background/70 to-background/80 transition-opacity group-hover:from-background/50 group-hover:via-background/60 group-hover:to-background/70",
-            ANIMATION.duration.normal
-          )} />
-        </div>
+      <Card className={`group relative overflow-hidden border-2 ${HOVER_EFFECTS.cardFeatured}`}>
+        {/* Background image - only if explicitly defined in post and not hidden */}
+        {post.image && !post.image.hideCard && (
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            <Image
+              src={post.image.url}
+              alt={post.image.alt}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 100vw"
+            />
+            {/* Gradient overlay for text contrast */}
+            <div className="absolute inset-0 bg-linear-to-b from-background/80 via-background/90 to-background" />
+          </div>
+        )}
+        {/* TODO: Re-enable holo effects after mouse-tracking implementation for dynamic pivoting */}
         
-        <div className="relative z-10 p-5 space-y-4">
+        <div className="relative z-10 p-5 md:p-8 space-y-4">
           {/* Featured Badge */}
           <div className="flex items-center gap-2">
             <Badge variant="default" className={cn("text-xs", "font-medium")}>

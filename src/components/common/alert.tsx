@@ -52,10 +52,10 @@ export function Alert({ type = 'info', children, className = '' }: AlertProps) {
   const Icon = iconMap[type];
 
   return (
-    <div className={`${BORDERS.card} ${colors.border} ${colors.container} p-3 sm:p-4 my-3 sm:my-4 ${className}`}>
+    <div className={`${BORDERS.card} ${colors.border} ${colors.container} p-3 sm:p-4 my-4 ${className}`}>
       <div className="flex items-start gap-3">
         <Icon className={`h-5 w-5 mt-0.5 shrink-0 ${colors.icon}`} aria-hidden="true" />
-        <div className={`flex-1 text-sm leading-snug max-w-none ${colors.text} [&>p]:my-0 [&>strong]:font-semibold [&>ul]:space-y-1 [&>ol]:space-y-1 [&>li]:leading-snug`}>
+        <div className={`flex-1 text-sm leading-tight max-w-none ${colors.text} [&>p]:my-0 [&>p]:leading-tight [&>strong]:font-semibold [&>ul]:space-y-1 [&>ol]:space-y-1 [&>li]:leading-tight`}>
           {children}
         </div>
       </div>

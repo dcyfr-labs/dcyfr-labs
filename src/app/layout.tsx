@@ -4,6 +4,7 @@ import "./globals.css";
 import "./print.css";
 import "@/styles/katex.css";
 import { ThemeProvider } from "@/components/features/theme/theme-provider";
+import { PageTransitionProvider } from "@/components/features/page-transition-provider";
 import {
   SITE_URL,
   SITE_TITLE,
@@ -125,28 +126,30 @@ export default async function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${alegreya.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem nonce={nonce}>
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg"
-          >
-            Skip to main content
-          </a>
-          <LayoutUtilities />
-          <ScrollToAnchor offset={80} />
-          <SiteHeader />
-          <main id="main-content" className="min-h-[calc(100dvh-128px)] pb-8">{children}</main>
-          <SiteFooter />
-          {/* <BottomNav /> */}
-          <Toaster richColors position="top-center" />
-          {/* Vercel Analytics & Speed Insights - Only in production */}
-          {process.env.NODE_ENV === 'production' && (
-            <>
-              <Analytics debug={false} />
-              <SpeedInsights sampleRate={0.1} />
-            </>
-          )}
-          {/* Axiom Web Vitals - Production only */}
-          <AxiomWebVitals />
+          <PageTransitionProvider>
+            <a
+              href="#main-content"
+              className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg"
+            >
+              Skip to main content
+            </a>
+            <LayoutUtilities />
+            <ScrollToAnchor offset={80} />
+            <SiteHeader />
+            <main id="main-content" className="min-h-[calc(100dvh-128px)] pb-8">{children}</main>
+            <SiteFooter />
+            {/* <BottomNav /> */}
+            <Toaster richColors position="top-center" />
+            {/* Vercel Analytics & Speed Insights - Only in production */}
+            {process.env.NODE_ENV === 'production' && (
+              <>
+                <Analytics debug={false} />
+                <SpeedInsights sampleRate={0.1} />
+              </>
+            )}
+            {/* Axiom Web Vitals - Production only */}
+            <AxiomWebVitals />
+          </PageTransitionProvider>
         </ThemeProvider>
       </body>
     </html>

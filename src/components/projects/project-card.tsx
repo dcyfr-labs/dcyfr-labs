@@ -143,10 +143,22 @@ export function ProjectCard({
       }}
     >
       <Card className={cn("holo-card flex h-full flex-col overflow-hidden relative", HOVER_EFFECTS.card)}>
-        {/* Holographic gradient overlay */}
-        <div className="holo-gradient-dark" />
+        {/* Background image - only if defined */}
+        {image && (
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            <Image
+              src={image.url}
+              alt={image.alt}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+            {/* Gradient overlay for text contrast */}
+            <div className="absolute inset-0 bg-linear-to-b from-background/90 via-background/95 to-background" />
+          </div>
+        )}
         {/* Content */}
-        <CardHeader className="space-y-1.5 px-4 py-4">
+        <CardHeader className="space-y-1.5 px-4 py-4 relative z-10">
           {project.timeline && (
             <p className="text-xs uppercase tracking-wide text-muted-foreground flex items-center gap-2">
               {project.status !== "active" && (

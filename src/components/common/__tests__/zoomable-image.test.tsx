@@ -36,14 +36,14 @@ describe("ZoomableImage", () => {
     const img = screen.getByRole("button", { name: /zoom image/i });
     await user.click(img);
 
-    // Modal should be visible
-    const modal = screen.getByRole("button", { name: /close zoomed image/i });
-    expect(modal).toBeInTheDocument();
+    // Modal should be visible with close button
+    const closeButton = screen.getByRole("button", { name: /close image viewer/i });
+    expect(closeButton).toBeInTheDocument();
     
     // Should show the zoomed image
     const zoomedImg = screen.getAllByAltText("Test image")[1]; // Second image in modal
     expect(zoomedImg).toBeInTheDocument();
-    expect(zoomedImg).toHaveClass("cursor-zoom-out");
+    expect(zoomedImg).toHaveClass("pointer-events-none");
   });
 
   it("opens lightbox on Enter key", async () => {
@@ -54,8 +54,8 @@ describe("ZoomableImage", () => {
     img.focus();
     await user.keyboard("{Enter}");
 
-    const modal = screen.getByRole("button", { name: /close zoomed image/i });
-    expect(modal).toBeInTheDocument();
+    const closeButton = screen.getByRole("button", { name: /close image viewer/i });
+    expect(closeButton).toBeInTheDocument();
   });
 
   it("opens lightbox on Space key", async () => {
@@ -66,8 +66,8 @@ describe("ZoomableImage", () => {
     img.focus();
     await user.keyboard(" ");
 
-    const modal = screen.getByRole("button", { name: /close zoomed image/i });
-    expect(modal).toBeInTheDocument();
+    const closeButton = screen.getByRole("button", { name: /close image viewer/i });
+    expect(closeButton).toBeInTheDocument();
   });
 
   it("closes modal on Escape key", async () => {
@@ -78,13 +78,13 @@ describe("ZoomableImage", () => {
     const img = screen.getByRole("button", { name: /zoom image/i });
     await user.click(img);
     
-    expect(screen.getByRole("button", { name: /close zoomed image/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /close image viewer/i })).toBeInTheDocument();
 
     // Press Escape
     await user.keyboard("{Escape}");
 
     // Modal should be closed
-    expect(screen.queryByRole("button", { name: /close zoomed image/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /close image viewer/i })).not.toBeInTheDocument();
   });
 
   it("closes modal on backdrop click", async () => {
@@ -95,19 +95,26 @@ describe("ZoomableImage", () => {
     const img = screen.getByRole("button", { name: /zoom image/i });
     await user.click(img);
     
-    const modal = screen.getByRole("button", { name: /close zoomed image/i });
-    expect(modal).toBeInTheDocument();
+    const dialog = screen.getByRole("dialog", { name: /image viewer/i });
+    expect(dialog).toBeInTheDocument();
 
-    // Click backdrop
-    await user.click(modal);
+    // Click backdrop (dialog element)
+    await user.click(dialog);
 
     // Modal should be closed
-    expect(screen.queryByRole("button", { name: /close zoomed image/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("dialog", { name: /image viewer/i })).not.toBeInTheDocument();
   });
 
-  it("closes modal when clicking the zoomed image", async () => {
+  it("closes modal when clicking the zoomed image on desktop", async () => {
     const user = userEvent.setup();
     render(<ZoomableImage {...defaultProps} />);
+    
+    // Set desktop viewport
+    Object.defineProperty(window, "innerWidth", {
+      writable: true,
+      configurable: true,
+      value: 1024,
+    });
     
     // Open modal
     const img = screen.getByRole("button", { name: /zoom image/i });
@@ -117,8 +124,8 @@ describe("ZoomableImage", () => {
     const zoomedImg = screen.getAllByAltText("Test image")[1];
     await user.click(zoomedImg);
 
-    // Modal should be closed
-    expect(screen.queryByRole("button", { name: /close zoomed image/i })).not.toBeInTheDocument();
+    // Modal should be closed on desktop
+    expect(screen.queryByRole("button", { name: /close image viewer/i })).not.toBeInTheDocument();
   });
 
   it("prevents body scroll when modal is open", async () => {
@@ -148,7 +155,7 @@ describe("ZoomableImage", () => {
     expect(img).toHaveClass("custom-class");
   });
 
-  it("shows close hint in modal", async () => {
+  it("shows close button in modal", async () => {
     const user = userEvent.setup();
     render(<ZoomableImage {...defaultProps} />);
     
@@ -156,8 +163,47 @@ describe("ZoomableImage", () => {
     const img = screen.getByRole("button", { name: /zoom image/i });
     await user.click(img);
 
-    // Check for close hint text
-    expect(screen.getByText(/click or press esc to close/i)).toBeInTheDocument();
+    // Check for close button
+    const closeButton = screen.getByRole("button", { name: /close image viewer/i });
+    expect(closeButton).toBeInTheDocument();
+  });
+
+  it("closes modal when clicking close button", async () => {
+    const user = userEvent.setup();
+    render(<ZoomableImage {...defaultProps} />);
+    
+    // Open modal
+    const img = screen.getByRole("button", { name: /zoom image/i });
+    await user.click(img);
+    
+    expect(screen.getByRole("button", { name: /close image viewer/i })).toBeInTheDocument();
+
+    // Click close button
+    const closeButton = screen.getByRole("button", { name: /close image viewer/i });
+    await user.click(closeButton);
+
+    // Modal should be closed
+    expect(screen.queryByRole("button", { name: /close image viewer/i })).not.toBeInTheDocument();
+  });
+
+  it("supports swipe-to-close gesture on mobile", async () => {
+    const user = userEvent.setup();
+    render(<ZoomableImage {...defaultProps} />);
+    
+    // Set mobile viewport
+    Object.defineProperty(window, "innerWidth", {
+      writable: true,
+      configurable: true,
+      value: 375,
+    });
+    
+    // Open modal
+    const img = screen.getByRole("button", { name: /zoom image/i });
+    await user.click(img);
+    
+    // Dialog should be open with touch event handlers
+    const dialog = screen.getByRole("dialog", { name: /image viewer/i });
+    expect(dialog).toBeInTheDocument();
   });
 
   it("is keyboard accessible", () => {

@@ -100,7 +100,7 @@ export function TrendingPosts({ posts, viewCounts, limit = 3 }: TrendingPostsPro
               {/* Post title */}
               <Link 
                 href={`/blog/${post.slug}`}
-                className="font-medium hover:text-primary transition-colors line-clamp-2 block leading-snug"
+                className="font-medium hover:text-primary transition-colors line-clamp-2 block leading-tight"
               >
                 {post.title}
               </Link>

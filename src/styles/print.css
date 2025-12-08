@@ -1,0 +1,409 @@
+/**
+ * Print-Friendly Styles
+ * 
+ * Optimizes article pages and other content for print output.
+ * Removes unnecessary UI elements, optimizes typography, and adds page breaks.
+ */
+
+@media print {
+  /* ===== Global Print Styles ===== */
+  
+  /* Hide navigation, footers, and interactive elements */
+  nav,
+  header[role="banner"],
+  aside,
+  .blog-sidebar,
+  .blog-sidebar-mobile,
+  .sidebar-visibility-provider > div:nth-child(2),
+  [data-print-hide="true"],
+  .print-hidden {
+    display: none !important;
+  }
+
+  /* Ensure main content is visible */
+  main,
+  article {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* ===== Color and Background Optimization ===== */
+  
+  /* Remove backgrounds for better paper efficiency */
+  body,
+  html {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Preserve text colors but remove background colors */
+  * {
+    background-color: transparent !important;
+    background: transparent !important;
+  }
+
+  /* Keep text colors for good contrast */
+  p, span, div, li, td {
+    color: black !important;
+  }
+
+  /* Links: show URL for print */
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+
+  /* Exception: don't show URLs for navigation links, anchors, or internal document links */
+  a[href^="#"]::after,
+  nav a::after,
+  .breadcrumbs a::after,
+  .skip-to-content a::after {
+    content: "" !important;
+  }
+
+  /* ===== Typography Optimization ===== */
+  
+  body {
+    font-size: 12pt;
+    line-height: 1.6;
+    font-family: Georgia, "Times New Roman", serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+  }
+
+  h1 { font-size: 28pt; margin-bottom: 0.3em; }
+  h2 { font-size: 20pt; margin-top: 1.2em; }
+  h3 { font-size: 16pt; margin-top: 1em; }
+  h4 { font-size: 14pt; }
+  h5, h6 { font-size: 12pt; }
+
+  p {
+    orphans: 3;
+    widows: 3;
+    page-break-inside: avoid;
+    margin-bottom: 1em;
+  }
+
+  /* Code blocks */
+  pre, code {
+    background-color: #f5f5f5 !important;
+    border: 1px solid #ccc;
+    page-break-inside: avoid;
+    font-family: "Courier New", monospace;
+    font-size: 10pt;
+  }
+
+  pre {
+    padding: 12pt;
+    margin: 1em 0;
+    overflow: auto;
+  }
+
+  code {
+    padding: 2pt 4pt;
+  }
+
+  /* ===== Lists ===== */
+  
+  ul, ol {
+    margin-left: 2em;
+    page-break-inside: avoid;
+  }
+
+  li {
+    page-break-inside: avoid;
+    margin-bottom: 0.5em;
+  }
+
+  /* ===== Tables ===== */
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    page-break-inside: avoid;
+    margin: 1em 0;
+  }
+
+  th {
+    background-color: #e0e0e0 !important;
+    color: black !important;
+    font-weight: bold;
+    padding: 0.5em;
+    text-align: left;
+    page-break-inside: avoid;
+  }
+
+  td {
+    border: 1px solid #ccc;
+    padding: 0.5em;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+
+  /* ===== Blockquotes ===== */
+  
+  blockquote {
+    border-left: 4pt solid #999;
+    margin-left: 0;
+    padding-left: 1em;
+    page-break-inside: avoid;
+  }
+
+  /* ===== Images ===== */
+  
+  img {
+    max-width: 100%;
+    height: auto;
+    page-break-inside: avoid;
+  }
+
+  img[alt]::after {
+    content: " (" attr(alt) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+
+  /* ===== Article-Specific Styles ===== */
+  
+  /* Article header */
+  article > header {
+    margin-bottom: 1.5em;
+    page-break-after: avoid;
+  }
+
+  /* Article header metadata (date, author, etc.) */
+  article > header .metadata,
+  article > header [data-testid="article-meta"],
+  .article-meta,
+  .article-date,
+  .article-author {
+    font-size: 11pt;
+    color: #666;
+    margin-bottom: 0.5em;
+    page-break-inside: avoid;
+  }
+
+  /* Article title */
+  article > header h1 {
+    margin: 0.5em 0;
+    page-break-after: avoid;
+  }
+
+  /* Subtitle/description */
+  article > header .subtitle,
+  article > header p:first-of-type {
+    font-size: 13pt;
+    font-style: italic;
+    margin-bottom: 1em;
+    page-break-after: avoid;
+  }
+
+  /* Tags and badges */
+  .badge,
+  [data-component="badge"],
+  .tag,
+  .tags {
+    display: inline-block;
+    border: 1px solid #ccc;
+    padding: 0.25em 0.5em;
+    margin-right: 0.5em;
+    margin-bottom: 0.5em;
+    background-color: #f5f5f5 !important;
+    font-size: 10pt;
+    page-break-inside: avoid;
+  }
+
+  /* Article content area */
+  article > div:nth-of-type(1),
+  .article-content,
+  [data-component="article-content"] {
+    page-break-inside: avoid;
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Article footer */
+  article > footer {
+    margin-top: 2em;
+    padding-top: 1em;
+    border-top: 2pt solid #ccc;
+    page-break-before: avoid;
+  }
+
+  /* Hide footer share buttons and related articles */
+  article > footer .share-buttons,
+  article > footer .share-section,
+  .share-buttons,
+  .related-articles,
+  .related-posts,
+  [data-component="share"],
+  [data-component="related"],
+  .blog-post-cta {
+    display: none !important;
+  }
+
+  /* Show article sources if they exist */
+  article > footer .sources,
+  article > footer [data-component="sources"],
+  .article-sources {
+    display: block !important;
+    page-break-inside: avoid;
+    margin: 1em 0;
+  }
+
+  article > footer .sources h3,
+  article > footer [data-component="sources"] h3 {
+    font-size: 14pt;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+  }
+
+  article > footer .sources ul,
+  article > footer [data-component="sources"] ul {
+    list-style: decimal;
+    padding-left: 2em;
+  }
+
+  article > footer .sources li,
+  article > footer [data-component="sources"] li {
+    margin-bottom: 0.5em;
+  }
+
+  /* ===== Page Breaks ===== */
+  
+  /* Force page break after article header for longer articles */
+  article > header {
+    page-break-after: auto;
+  }
+
+  /* Prevent orphaned sections */
+  article > h2:last-child,
+  article > h3:last-child {
+    page-break-before: avoid;
+  }
+
+  /* ===== Metadata Display Control ===== */
+  
+  /* Show reading time if available */
+  .reading-time,
+  [data-component="reading-time"] {
+    display: block;
+    font-size: 11pt;
+    color: #666;
+    margin: 0.5em 0;
+  }
+
+  /* Show updated date if available */
+  .updated-date,
+  [data-component="updated-date"] {
+    display: block;
+    font-size: 10pt;
+    color: #999;
+    margin-top: 0.5em;
+  }
+
+  /* ===== Accessibility Improvements ===== */
+  
+  /* Ensure enough contrast */
+  body {
+    color: #000;
+  }
+
+  a {
+    color: #0066cc;
+    text-decoration: underline;
+  }
+
+  visited {
+    color: #662966;
+  }
+
+  /* ===== Margin and Spacing ===== */
+  
+  /* Add consistent spacing */
+  body {
+    margin: 1.27cm;
+  }
+
+  /* Reduce excessive spacing */
+  body > * {
+    margin-top: 0;
+  }
+
+  /* ===== Special Components ===== */
+  
+  /* Callouts/alerts */
+  .callout,
+  .alert,
+  [role="alert"] {
+    border-left: 4pt solid #ccc;
+    padding-left: 1em;
+    margin: 1em 0;
+    page-break-inside: avoid;
+  }
+
+  /* MDX components */
+  .mdx-component {
+    page-break-inside: avoid;
+  }
+
+  /* ===== Browser-Specific Fixes ===== */
+  
+  /* Chrome/Edge: ensure backgrounds are transparent */
+  @supports (background-clip: text) {
+    * {
+      background-clip: unset !important;
+    }
+  }
+
+  /* Firefox: ensure proper font rendering */
+  body {
+    -moz-osx-font-smoothing: auto;
+    -webkit-font-smoothing: auto;
+  }
+
+  /* Prevent "Print background colors" from breaking layout */
+  input,
+  button,
+  select,
+  textarea {
+    display: none !important;
+  }
+}
+
+/* ===== Print Preview Mode Adjustments ===== */
+@media print and (prefers-color-scheme: light) {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}
+
+/* ===== Landscape Print Support ===== */
+@media print and (orientation: landscape) {
+  body {
+    margin: 1cm 1.5cm;
+  }
+
+  article {
+    column-count: 2;
+    column-gap: 1.5em;
+    column-rule: 1pt solid #ccc;
+  }
+
+  /* Prevent column breaks inside key sections */
+  article > header,
+  article > footer,
+  article > h1,
+  article > h2 {
+    break-inside: avoid-column;
+  }
+}

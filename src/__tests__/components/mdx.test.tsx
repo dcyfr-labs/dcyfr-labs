@@ -89,8 +89,7 @@ describe("MDX Component", () => {
       render(<MDX source="Test content" />);
       const p = screen.getByText("Test paragraph");
       expect(p.tagName).toBe("P");
-      expect(p.className).toContain("leading-7");
-      expect(p.className).toContain("not-first:mt-4");
+      // Paragraphs rely on prose CSS, no inline classes
     });
 
     it("should render blockquotes with correct spacing and styling", () => {
@@ -181,6 +180,7 @@ describe("MDX Component", () => {
       render(<MDX source="<CheckIcon />" />);
       const icon = screen.getByLabelText("Check");
       expect(icon).toBeInTheDocument();
+      // Icon colors (text-*-500/600) are excluded from SEMANTIC_COLORS enforcement
       expect(icon.className).toContain("text-green-600");
     });
 
@@ -188,13 +188,14 @@ describe("MDX Component", () => {
       render(<MDX source="<XIcon />" />);
       const icon = screen.getByLabelText("Cross");
       expect(icon).toBeInTheDocument();
+      // Icon colors (text-*-500/600) are excluded from SEMANTIC_COLORS enforcement
       expect(icon.className).toContain("text-red-600");
     });
-
     it("should render InfoIcon component", () => {
       render(<MDX source="<InfoIcon />" />);
       const icon = screen.getByLabelText("Information");
       expect(icon).toBeInTheDocument();
+      // Icon colors (text-*-500/600) are excluded from SEMANTIC_COLORS enforcement
       expect(icon.className).toContain("text-blue-600");
     });
   });
@@ -238,10 +239,11 @@ describe("MDX Component", () => {
       expect(h1.className).toBeTruthy();
     });
 
-    it("should apply proper line height to paragraphs", () => {
+    it("should render paragraphs without custom classes", () => {
       render(<MDX source="Text" />);
       const p = screen.getByText("Test paragraph");
-      expect(p.className).toContain("leading-7");
+      // Paragraphs rely on prose CSS, no inline classes needed
+      expect(p.tagName).toBe("P");
     });
   });
 

@@ -33,6 +33,7 @@ import {
   SkeletonBadges,
   SkeletonText 
 } from '@/components/ui/skeleton-primitives';
+import '@/styles/print.css';
 
 export interface ArticleLayoutProps {
   /** Article header (title, metadata, badges) */
@@ -70,7 +71,7 @@ export function ArticleLayout({
   loading = false,
   skeletonParagraphs = 8,
 }: ArticleLayoutProps) {
-  const containerWidth = useProseWidth ? CONTAINER_WIDTHS.standard : CONTAINER_WIDTHS.content;
+  const containerWidth = useProseWidth ? CONTAINER_WIDTHS.prose : CONTAINER_WIDTHS.content;
 
   // Loading state - render skeleton with identical structure
   if (loading) {
@@ -111,7 +112,7 @@ export function ArticleLayout({
       )}
 
       {/* Content */}
-      <div className={cn(SPACING.content, contentClassName)}>
+      <div className={cn(contentClassName)}>
         {children}
       </div>
 

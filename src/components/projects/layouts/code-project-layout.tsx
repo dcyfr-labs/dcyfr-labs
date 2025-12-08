@@ -68,6 +68,7 @@ export function CodeProjectLayout({ project, nonce, basePath = '/work' }: CodePr
           alt: project.image.alt,
           position: project.image.position || 'center',
           priority: project.featured || false,
+          hideHero: project.image.hideHero,
         } : undefined}
       />
       

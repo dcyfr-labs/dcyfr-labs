@@ -1,0 +1,48 @@
+# Example: Figure Captions in MDX
+
+This page demonstrates how to use the `Figure` caption component in your blog posts.
+
+## Simple Image with Caption
+
+<Figure caption="A simple landscape photograph demonstrating the figure caption feature">
+  ![Example landscape](/images/blog/hero.svg)
+</Figure>
+
+## Multiple Figures with Auto-Numbering
+
+Here's a section with multiple figures. Notice how they're automatically numbered in order:
+
+<Figure caption="First figure showing an architecture diagram">
+  ![Architecture](/images/blog/hero.svg)
+</Figure>
+
+This is some text between figures to show how numbering continues.
+
+<Figure caption="Second figure showing a flow diagram">
+  ![Flow](/images/blog/hero.svg)
+</Figure>
+
+## How It Works
+
+The `Figure` component:
+
+1. Wraps around any image element
+2. Takes a `caption` prop with the text to display
+3. Automatically assigns sequential numbers (Fig. 1, Fig. 2, etc.)
+4. Renders as semantic HTML (`<figure>` and `<figcaption>`)
+5. Figures are numbered in order of appearance across the entire page
+
+## Without Caption
+
+If you need just an image without a caption, simply don't use the `Figure` component:
+
+![Plain image without caption](/images/blog/hero.svg)
+
+## Technical Implementation
+
+The numbering system works through React Context:
+
+- `FigureProvider` wraps the MDX content in blog posts
+- Each `Figure` component calls `context.increment()` to get its number
+- Numbers persist across the entire provider scope
+- Multiple providers can have independent numbering sequences
