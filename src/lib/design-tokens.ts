@@ -269,8 +269,11 @@ export const SPACING = {
   /** Compact vertical spacing for lists and alerts (improved mobile space utilization) */
   compact: "space-y-2",
   
-  /** Reduced spacing for list items (optimized for mobile scaling) */
-  list: "space-y-0.5",
+  /** Reduced spacing for list items (optimized for mobile scaling) - minimal gap between items */
+  list: "",
+  
+  /** Blog post card lists (compact, optimized spacing for post grids) */
+  postList: "space-y-2",
   
   /** Image elements in blog content (top/bottom margins) */
   image: "my-6 md:my-8",
@@ -410,13 +413,16 @@ export const OPACITY = {
  */
 export const HOVER_EFFECTS = {
   /** Standard card hover (projects, posts, content cards) */
-  card: "transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:bg-muted/60 active:scale-[0.98] active:shadow-md",
+  card: "transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:-translate-y-0.5 active:scale-[0.98] active:shadow-md",
+  
+  /** CTA card hover - highlights border instead of background */
+  cardCTA: "transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:-translate-y-0.5 active:scale-[0.98] active:shadow-md",
   
   /** Subtle hover for secondary/inline cards */
-  cardSubtle: "transition-all duration-300 hover:shadow-md hover:bg-muted/70 active:scale-[0.99]",
+  cardSubtle: "transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]",
   
   /** Featured/hero cards (already prominent, minimal transform) */
-  cardFeatured: "transition-all duration-300 hover:shadow-xl active:scale-[0.99]",
+  cardFeatured: "transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] active:shadow-md",
   
   /** Minimal hover for tertiary/subtle cards (shadow only) */
   cardMinimal: "transition-shadow duration-200 hover:shadow-md",

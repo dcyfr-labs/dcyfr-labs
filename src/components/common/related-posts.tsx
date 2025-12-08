@@ -96,7 +96,7 @@ export function RelatedPosts({ posts, currentSlug }: RelatedPostsProps) {
               key={post.slug}
               href={`/blog/${post.slug}`}
               onClick={() => handleClick(post.slug, index)}
-              className={`group block rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}
+              className={`group block rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}
             >
               <div className="space-y-2 p-4">
                 <h3 className="font-medium leading-tight group-hover:text-primary transition-colors">

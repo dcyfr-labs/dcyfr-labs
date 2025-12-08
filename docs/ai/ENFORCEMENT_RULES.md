@@ -88,11 +88,24 @@ HOVER_EFFECTS = {
 
 **SPACING tokens are ONLY for vertical spacing (space-y-*).**
 
+Valid SPACING tokens:
+- `SPACING.section` - Major page sections (space-y-10 md:space-y-12)
+- `SPACING.subsection` - Content blocks (space-y-6 md:space-y-8)
+- `SPACING.content` - Within blocks (space-y-4)
+- `SPACING.compact` - Dense lists/alerts (space-y-2)
+- `SPACING.postList` - Blog post card lists (space-y-2) ⭐ **New for blog spacing**
+- `SPACING.list` - Item lists (no spacing / tight)
+
 **✅ CORRECT Usage:**
 ```tsx
 // Use SPACING tokens directly for vertical spacing
 <div className={SPACING.section}>
   <section>...</section>
+</div>
+
+// Blog post lists must use SPACING.postList (guardrail for consistency)
+<div className={SPACING.postList}>
+  {posts.map(post => <PostCard key={post.id} {...post} />)}
 </div>
 
 // Use numeric values for gap, padding, small spacing
@@ -103,8 +116,13 @@ HOVER_EFFECTS = {
 
 **❌ INCORRECT Usage (Build Failures):**
 ```tsx
-// ❌ Template literals with SPACING (property doesn't exist)
-<div className={`gap-${SPACING.compact}`}>  // SPACING has no 'compact'
+// ❌ Hardcoded spacing in blog post lists
+<div className="space-y-3">  // WRONG: Use SPACING.postList instead
+  {posts.map(...)}
+</div>
+
+// ❌ Template literals with non-existent SPACING properties
+<div className={`gap-${SPACING.compact}`}>  // SPACING has no 'compact' for gaps
 <div className={`space-y-${SPACING.tight}`}>  // SPACING has no 'tight'
 
 // ❌ Using SPACING for non-vertical spacing
@@ -112,11 +130,42 @@ HOVER_EFFECTS = {
 ```
 
 **Common Mistakes:**
-- Using non-existent properties: `SPACING.compact`, `SPACING.tight`, `SPACING.small`
+- Using hardcoded `space-y-*` in blog post lists (use `SPACING.postList`)
+- Using non-existent properties: `SPACING.tight`, `SPACING.small`, `SPACING.dense`
 - Using SPACING in template literals for inline properties (gap, padding)
 - Using SPACING for horizontal spacing
 
-**If you see:** `Property 'X' does not exist on type 'SPACING'`
+**⭐ Blog Post List Guardrail:**
+All blog post card list containers MUST use `SPACING.postList`. This is NOT negotiable - it ensures consistent spacing across:
+- Homepage featured posts
+- Blog archive page (/blog)
+- Search results
+- Tag/category filtered lists
+
+**⭐ List Item Spacing Guardrail:**
+List item (`<li>`) vertical spacing is ONLY controlled by the parent container's `SPACING.list` token or class.
+- `.prose li` must have `margin-top: 0; margin-bottom: 0;` (NO hardcoded margins)
+- `.prose li` line-height is explicitly set to `1.6` to override global `.prose { line-height: 1.9; }`
+- Never add `margin-top` or `margin-bottom` to `li` elements in globals.css
+- Never let global prose rules override list item line-height (list items need compact spacing)
+- Parent `<ul>` or `<ol>` elements control all spacing via SPACING tokens
+- This prevents unintended whitespace between list items
+
+**Where to control list spacing:**
+```tsx
+// ✅ CORRECT: Control spacing via parent container
+<ul className={SPACING.list}>  {/* SPACING.list = "" for tight spacing */}
+  <li>Item 1</li>
+  <li>Item 2</li>
+</ul>
+
+// ❌ WRONG: Never add margins to li elements in CSS
+.prose li {
+  margin-top: 0.5rem;  // ❌ DO NOT DO THIS
+}
+```
+
+If you see: `Property 'X' does not exist on type 'SPACING'`
 **Solution:** Check the valid SPACING properties above or use numeric values (2, 4, 6, 8)
 
 ### ESLint Rules

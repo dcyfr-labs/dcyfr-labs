@@ -8,10 +8,11 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { trackEvent } from '@/lib/analytics';
-import { TYPOGRAPHY, getContainerClasses } from '@/lib/design-tokens';
+import { TYPOGRAPHY, HOVER_EFFECTS, getContainerClasses } from '@/lib/design-tokens';
 import { getSocialLink } from '@/data/socials';
 
 // ============================================================================
@@ -110,7 +111,7 @@ export function AvailabilityBanner({ className }: { className?: string }) {
     : undefined;
 
   return (
-    <div className={cn("rounded-lg border bg-muted/50 p-4", className)}>
+    <Card className={cn(HOVER_EFFECTS.card, "p-4 md:p-8 mt-12 mb-6", className)}>
       <div className="flex items-start gap-3">
         <div className="relative h-3 w-3 mt-1.5 shrink-0" aria-hidden="true">
           <span className="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-75" />
@@ -144,7 +145,7 @@ export function AvailabilityBanner({ className }: { className?: string }) {
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -179,10 +180,11 @@ export function BlogPostCTA({
 
   // Default variant
   return (
-    <div
+    <Card
       className={cn(
+        HOVER_EFFECTS.card,
         variant === "centered" ? "text-center" : "",
-        "rounded-lg border bg-linear-to-b from-muted/50 to-muted/30 p-4 md:p-8 mt-12 mb-6",
+        "bg-linear-to-b from-muted/50 to-muted/30 p-4 md:p-8 mt-12 mb-6",
         className
       )}
     >
@@ -228,7 +230,7 @@ export function BlogPostCTA({
           </Link>
         </Button>
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -249,7 +251,7 @@ export function ProjectsCTA({ className }: { className?: string }) {
 
   return (
     <section className={cn('mt-12 text-center', className)}>
-      <div className="rounded-lg border bg-linear-to-b from-muted/50 to-muted/30 p-4 md:p-8">
+      <Card className={cn(HOVER_EFFECTS.card, "bg-linear-to-b from-muted/50 to-muted/30 p-4 md:p-8")}>
         <h2 className={cn(TYPOGRAPHY.h2.featured, 'mb-2')}>
           Interested in collaborating?
         </h2>
@@ -277,7 +279,7 @@ export function ProjectsCTA({ className }: { className?: string }) {
             </a>
           </Button>
         </div>
-      </div>
+      </Card>
     </section>
   );
 }

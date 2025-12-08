@@ -216,10 +216,10 @@ export function PostList({
             return (
               <ScrollReveal key={p.slug} animation="fade-up" delay={0}>
                 <article
-                  className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}
+                  className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}
                 >
                   {/* Background image - only if explicitly defined in post and not hidden */}
-                  {p.image && !p.image.hideCard && (
+                  {p.image && p.image.url && !p.image.hideCard && (
                     <div className="absolute inset-0 z-0 overflow-hidden">
                       <Image
                         src={p.image.url}
@@ -335,12 +335,12 @@ export function PostList({
 
           // Alternating horizontal layout for remaining posts
           return (
-            <ScrollReveal key={p.slug} animation="fade-up" delay={index * 50}>
-              <article
-                className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}
+              <ScrollReveal key={p.slug} animation="fade-up" delay={index * 50}>
+                <article
+                className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}
               >
                 {/* Background image - only if explicitly defined in post and not hidden */}
-                {p.image && !p.image.hideCard && (
+                {p.image && p.image.url && !p.image.hideCard && (
                   <div className="absolute inset-0 z-0 overflow-hidden">
                     <Image
                       src={p.image.url}
@@ -456,9 +456,9 @@ export function PostList({
               delay={index * 50}
               className={isFeatured ? "md:col-span-2" : ""}
             >
-              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
+              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card} flex flex-col h-full`}>
                 {/* Background image - only if explicitly defined in post and not hidden */}
-                {p.image && !p.image.hideCard && (
+                {p.image && p.image.url && !p.image.hideCard && (
                   <div className="absolute inset-0 z-0 overflow-hidden">
                     <Image
                       src={p.image.url}
@@ -546,9 +546,9 @@ export function PostList({
               animation="fade-up"
               delay={index * 80}
             >
-              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
+              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}>
                 {/* Background image - only if explicitly defined in post and not hidden */}
-                {p.image && !p.image.hideCard && (
+                {p.image && p.image.url && !p.image.hideCard && (
                   <div className="absolute inset-0 z-0 overflow-hidden">
                     <Image
                       src={p.image.url}
@@ -617,7 +617,7 @@ export function PostList({
   // Compact layout: minimal cards
   if (layout === "compact") {
     return (
-      <div className="space-y-3" data-testid="post-list">
+      <div className={SPACING.postList} data-testid="post-list">
         {posts.map((p, index) => {
           return (
             <ScrollReveal 
@@ -625,9 +625,9 @@ export function PostList({
               animation="fade-up"
               delay={index * 50}
             >
-              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
+              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}>
                 {/* Background image - only if explicitly defined in post and not hidden */}
-                {p.image && !p.image.hideCard && (
+                {p.image && p.image.url && !p.image.hideCard && (
                   <div className="absolute inset-0 z-0 overflow-hidden">
                     <Image
                       src={p.image.url}
@@ -687,9 +687,9 @@ export function PostList({
             animation="fade-up"
             delay={index * 50}
           >
-            <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
+            <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card} flex flex-col h-full`}>
               {/* Background image - only if explicitly defined in post and not hidden */}
-              {p.image && !p.image.hideCard && (
+              {p.image && p.image.url && !p.image.hideCard && (
                 <div className="absolute inset-0 z-0 overflow-hidden">
                   <Image
                     src={p.image.url}

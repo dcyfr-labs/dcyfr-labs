@@ -135,9 +135,9 @@ function getOverlayClasses(
         strong: 'bg-linear-to-t from-background/90 to-transparent',
       },
       full: {
-        light: 'bg-gradient-to-b from-black/30 via-black/15 to-black/30',
-        medium: 'bg-gradient-to-b from-black/45 via-black/25 to-black/45',
-        strong: 'bg-gradient-to-b from-black/55 via-black/35 to-black/55',
+        light: 'bg-gradient-to-b from-black/10 to-black/5 to-black/10',
+        medium: 'bg-gradient-to-b from-black/20 via-black/10 to-black/20',
+        strong: 'bg-gradient-to-b from-black/30 via-black/20 to-black/30',
       },
     },
     

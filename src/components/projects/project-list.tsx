@@ -106,9 +106,9 @@ export function ProjectList({
               animation="fade-up"
               delay={index * 50}
             >
-              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
+              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card} flex flex-col h-full`}>
                 {/* Background image - only if defined */}
-                {image && (
+                {image && image.url && (
                   <div className="absolute inset-0 z-0 overflow-hidden">
                     <Image
                       src={image.url}
@@ -190,9 +190,9 @@ export function ProjectList({
               animation="fade-up"
               delay={index * 80}
             >
-              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
+              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}>
                 {/* Background image - only if defined */}
-                {image && (
+                {image && image.url && (
                   <div className="absolute inset-0 z-0 overflow-hidden">
                     <Image
                       src={image.url}
@@ -268,9 +268,9 @@ export function ProjectList({
               animation="fade-up"
               delay={index * 50}
             >
-              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle}`}>
+              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}>
                 {/* Background image - only if defined */}
-                {image && (
+                {image && image.url && (
                   <div className="absolute inset-0 z-0 overflow-hidden">
                     <Image
                       src={image.url}
@@ -327,9 +327,9 @@ export function ProjectList({
             animation="fade-up"
             delay={index * 50}
           >
-            <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.cardSubtle} flex flex-col h-full`}>
+            <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card} flex flex-col h-full`}>
               {/* Background image - only if defined */}
-              {image && (
+              {image && image.url && (
                 <div className="absolute inset-0 z-0 overflow-hidden">
                   <Image
                     src={image.url}

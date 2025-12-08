@@ -6,6 +6,7 @@ import {
   SkeletonMetadata, 
   SkeletonBadges 
 } from "@/components/ui/skeleton-primitives";
+import { SPACING } from "@/lib/design-tokens";
 
 /**
  * Skeleton loader for blog post list.
@@ -17,7 +18,7 @@ import {
  * ⚠️ STRUCTURE SYNC: src/components/blog/post/post-list.tsx
  * 
  * Layout variants:
- * - compact (default): space-y-4 with border cards, background images
+ * - compact (default): SPACING.postList with border cards, background images
  * - grid: 2-column card layout with images
  * - list: Single column with larger cards
  * - magazine: Alternating large/small hero layout
@@ -34,7 +35,7 @@ export function PostListSkeleton({ count = 3, layout = "compact" }: PostListSkel
   // Compact layout (default) - dense list style
   if (layout === "compact") {
     return (
-      <div className="space-y-4">
+      <div className={SPACING.postList}>
         {Array.from({ length: count }).map((_, i) => (
           <article key={i} className="group rounded-lg border overflow-hidden relative">
             {/* Background placeholder with gradient overlay */}
