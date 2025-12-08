@@ -103,11 +103,11 @@ export function AboutDrewProfile() {
                 and growth.
               </p>
               <p>
-                When Drew&apos;s not immersed in security challenges, you can
-                find him exploring the latest tech trends, contributing to
+                When I&apos;m not immersed in security challenges, you can
+                find me exploring the latest tech trends, contributing to
                 open-source projects, or sharing insights through writing and
-                speaking engagements. He&apos;s always eager to connect with
-                fellow professionals and enthusiasts who share his passion for
+                speaking engagements. I&apos;m always eager to connect with
+                fellow professionals and enthusiasts who share my passion for
                 cybersecurity.
               </p>
             </div>
@@ -161,7 +161,7 @@ export function AboutDrewProfile() {
         <div className={SPACING.content}>
           <h3 className={TYPOGRAPHY.h2.standard}>GitHub Activity</h3>
           <p className="text-muted-foreground mb-6">
-            A snapshot of Drew&apos;s open source contributions and coding
+            A snapshot of my open source contributions and coding
             activity over the past year.
           </p>
           <GitHubHeatmapErrorBoundary>
