@@ -154,7 +154,7 @@ export function ProjectCard({
               sizes="(max-width: 768px) 100vw, 50vw"
             />
             {/* Gradient overlay for text contrast */}
-            <div className="absolute inset-0 bg-linear-to-b from-background/90 via-background/95 to-background" />
+            <div className="absolute inset-0 bg-linear-to-b from-background/75 via-background/85 to-background/95" />
           </div>
         )}
         {/* Content */}

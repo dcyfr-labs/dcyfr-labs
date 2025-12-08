@@ -75,7 +75,7 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
               sizes="(max-width: 768px) 100vw, 100vw"
             />
             {/* Gradient overlay for text contrast */}
-            <div className="absolute inset-0 bg-linear-to-b from-background/80 via-background/90 to-background" />
+            <div className="absolute inset-0 bg-linear-to-b from-background/75 via-background/85 to-background/95" />
           </div>
         )}
         {/* TODO: Re-enable holo effects after mouse-tracking implementation for dynamic pivoting */}
