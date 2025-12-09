@@ -73,13 +73,13 @@ describe('check-mcp-servers', () => {
   });
 
   it('readMcpConfig returns servers when config exists', () => {
-    const servers = readMcpConfig(mcpFile);
+    const servers = readMcpConfig(mcpFile) as Record<string, any>;
     expect(servers.LocalHttp.url).toBe(url);
     expect(servers.NodeCommand.command).toBe('node');
   });
 
   it('readMcpConfig supports mcpServers and expands ${workspaceFolder}', () => {
-    const servers = readMcpConfig(mcpFile2);
+    const servers = readMcpConfig(mcpFile2) as Record<string, any>;
     expect(servers.Filesystem.command).toBe('node');
     // ${workspaceFolder} should be expanded to a string path under tmp
     expect(typeof servers.Filesystem.args[2]).toBe('string');
