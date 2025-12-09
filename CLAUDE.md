@@ -159,7 +159,7 @@ See [`docs/ai/OPTIMIZATION_STRATEGY.md`](docs/ai/OPTIMIZATION_STRATEGY.md) for d
 
 ## MCP Servers (Chat)
 
-Perplexity, Context, Playwright, Axiom, Filesystem, GitHub, Vercel, Sentry
+
 - Perplexity (web search, deep research, reasoning)
 - Context7 (library documentation)
 - Playwright (browser automation, E2E testing)

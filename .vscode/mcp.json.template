@@ -30,16 +30,19 @@
 		"GitHub": {
 			"type": "http",
 			"url": "https://api.githubcopilot.com/mcp/",
+			"auth": { "envVar": "GITHUB_TOKEN" },
 			"disabled": false
 		},
-        "Vercel": {
+		"Vercel": {
             "url": "https://mcp.vercel.com",
             "type": "http",
+			"auth": { "envVar": "VERCEL_TOKEN" },
 			"disabled": false
         },
         "Sentry": {
 			"url": "https://mcp.sentry.dev/mcp/YOUR_ORG/YOUR_PROJECT",
 			"type": "http",
+			"auth": { "envVar": "SENTRY_AUTH_TOKEN" },
 			"disabled": false
 		},
 		"Filesystem": {

@@ -9,7 +9,7 @@
  */
 
 import { execSync } from "child_process";
-import { readFileSync, writeFileSync, readdirSync, statSync } from "fs";
+import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from "fs";
 import { join } from "path";
 
 const ROOT = process.cwd();
@@ -46,10 +46,19 @@ function getTestStats() {
 
 function getMcpServers() {
   try {
-    const mcpConfig = JSON.parse(
-      readFileSync(join(ROOT, ".vscode/mcp.json"), "utf-8")
-    );
-    return Object.keys(mcpConfig.servers || {});
+    const vscodePath = join(ROOT, ".vscode/mcp.json");
+    const rootPath = join(ROOT, "mcp.json");
+    let cfg = null;
+    if (fs.existsSync(vscodePath)) {
+      cfg = JSON.parse(readFileSync(vscodePath, "utf-8"));
+      return Object.keys(cfg.servers || {});
+    }
+    if (fs.existsSync(rootPath)) {
+      cfg = JSON.parse(readFileSync(rootPath, "utf-8"));
+      // support both `servers` and `mcpServers`
+      return Object.keys(cfg.servers || cfg.mcpServers || {});
+    }
+    return [];
   } catch {
     return [];
   }
