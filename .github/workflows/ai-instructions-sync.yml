@@ -9,6 +9,9 @@ on:
 jobs:
   sync-and-validate:
     runs-on: ubuntu-latest
+    env:
+      ALLOW_MISSING_DCYFR: 'true'
+      # Default ignored files are read from .github/agents/instructions/INSTRUCTIONS_CONFIG.json
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,6 +30,8 @@ jobs:
 
       - name: Validate instruction files
         run: node scripts/validate-instructions.mjs
+        # This repo intentionally omits .github/agents/DCYFR.agent.md in some branches
+        # and the validation script will ignore it if the file is marked optional.
 
       - name: "Optional: Validate MCP servers (non-strict)"
         run: |

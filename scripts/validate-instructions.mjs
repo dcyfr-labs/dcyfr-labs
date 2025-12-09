@@ -11,6 +11,23 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.join(__dirname, '..');
+// Allow overriding files to ignore via environment variable for CI/preview branches
+const IGNORED_INSTRUCTION_FILES = (process.env.IGNORED_INSTRUCTION_FILES || '').split(',').map((p) => p.trim()).filter(Boolean);
+
+// Also allow repo-level default list via .github/agents/instructions/INSTRUCTIONS_CONFIG.json
+try {
+  const configFile = path.join(rootDir, '.github/agents/instructions/INSTRUCTIONS_CONFIG.json');
+  if (fs.existsSync(configFile)) {
+    const json = JSON.parse(fs.readFileSync(configFile, 'utf-8')) || {};
+    const defaults = json.ignoredInstructionFiles || [];
+    // merge, but env var takes precedence (already in IGNORED_INSTRUCTION_FILES)
+    for (const f of defaults) {
+      if (!IGNORED_INSTRUCTION_FILES.includes(f)) IGNORED_INSTRUCTION_FILES.push(f);
+    }
+  }
+} catch (e) {
+  // ignore config parse errors; env var will still work
+}
 
 // Define all instruction files and their required sections
 const INSTRUCTION_FILES = {
@@ -74,6 +91,7 @@ const INSTRUCTION_FILES = {
   dcyfr: {
     path: '.github/agents/DCYFR.agent.md',
     type: 'agent',
+    optional: true,
     requiredSections: [
       'What This Agent Does',
       'When to Use This Agent',
@@ -109,8 +127,13 @@ function log(message, color = 'reset') {
 function checkFile(filename, config) {
   const filepath = path.join(rootDir, config.path);
 
-  // Check file exists
+  // Check file exists (optional files are allowed to be missing)
   if (!fs.existsSync(filepath)) {
+    const ignored = IGNORED_INSTRUCTION_FILES.includes(config.path);
+    if (config.optional || ignored) {
+      log(`  ⚠️  Optional/ignored file missing (ok): ${config.path}`, 'yellow');
+      return true;
+    }
     log(`  ❌ File not found: ${config.path}`, 'red');
     return false;
   }
@@ -140,6 +163,13 @@ function checkFile(filename, config) {
   // Check required links
   if (config.requiredLinks) {
     for (const link of config.requiredLinks) {
+      // Skip checking links that are optional or explicitly ignored
+      const linkConfig = Object.values(INSTRUCTION_FILES).find((c) => c.path === link);
+      const isIgnored = IGNORED_INSTRUCTION_FILES.includes(link);
+      if (linkConfig && (linkConfig.optional || isIgnored)) {
+        // intentionally ignored link - skip
+        continue;
+      }
       // Check for markdown link format with this path
       if (!content.includes(link)) {
         log(`  ⚠️  Missing link to: "${link}"`, 'yellow');
@@ -163,7 +193,14 @@ function validateRelationships() {
   let relationshipsValid = true;
 
   // Verify all files mentioned in AGENTS.md actually exist
-  const fileReferences = ['CLAUDE.md', '.github/copilot-instructions.md', '.github/agents/DCYFR.agent.md'];
+  // Build the list of file references from INSTRUCTION_FILES but filter out optional ones
+  const fileReferences = [];
+  for (const config of Object.values(INSTRUCTION_FILES)) {
+    // Skip optional or explicitly ignored files
+    if (config.path && !config.optional && !IGNORED_INSTRUCTION_FILES.includes(config.path)) {
+      fileReferences.push(config.path);
+    }
+  }
 
   for (const fileRef of fileReferences) {
     const fullPath = path.join(rootDir, fileRef);
@@ -187,11 +224,14 @@ function validateMetadata() {
   let metadataValid = true;
 
   // Check that each file has a metadata section in AGENTS.md
-  const requiredMetadata = [
-    { file: 'copilot-instructions.md', type: 'copilot' },
-    { file: 'CLAUDE.md', type: 'claude' },
-    { file: 'DCYFR.agent.md', type: 'agent' },
-  ];
+  // Build metadata checks from INSTRUCTION_FILES, ignoring optional ones
+  const requiredMetadata = [];
+  for (const config of Object.values(INSTRUCTION_FILES)) {
+    const filename = path.basename(config.path);
+    if (!config.optional && !IGNORED_INSTRUCTION_FILES.includes(config.path)) {
+      requiredMetadata.push({ file: filename, type: config.type });
+    }
+  }
 
   for (const item of requiredMetadata) {
     if (!agentsContent.includes(item.file)) {

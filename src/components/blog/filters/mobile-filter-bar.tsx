@@ -2,7 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronDown, ChevronUp, SlidersHorizontal } from "lucide-react";
+import { ChevronUp, SlidersHorizontal } from "lucide-react";
+import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetClose } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -47,12 +48,15 @@ export function MobileFilterBar({
   dateRange = "all",
   totalResults,
 }: MobileFilterBarProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  // Using a mobile bottom sheet instead of inline expand/collapse
+  const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const handleClearAll = () => {
     startTransition(() => {
+      // Close sheet if open, then clear all filters by navigating back to base blog path
+      setIsOpen(false);
       router.push("/blog", { scroll: false });
     });
   };
@@ -115,100 +119,117 @@ export function MobileFilterBar({
 
   return (
     <div className="border rounded-lg overflow-hidden">
-      {/* Collapsed summary bar */}
-      <div className={cn("border-b", !isExpanded && "border-b-0")}>
-        <button
-          type="button"
-          onClick={() => setIsExpanded(!isExpanded)}
-          className={cn(
-            "w-full flex items-center justify-between gap-3 p-3",
-            "text-left hover:bg-muted/50 transition-colors"
-          )}
-          aria-expanded={isExpanded}
-          aria-controls="mobile-filter-content"
-        >
-          <div className="flex items-center gap-2 min-w-0 flex-1">
-            <SlidersHorizontal className="h-4 w-4 shrink-0 text-muted-foreground" />
-            <span className={TYPOGRAPHY.label.small}>
-              {hasActiveFilters ? (
-                <>Filters ({activeFilters.length})</>
-              ) : (
-                <>Filter & Search</>
-              )}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              · {totalResults} post{totalResults !== 1 ? "s" : ""}
-            </span>
-          </div>
-          
-          {isExpanded ? (
-            <ChevronUp className="h-4 w-4 text-muted-foreground" />
-          ) : (
-            <ChevronDown className="h-4 w-4 text-muted-foreground" />
-          )}
-        </button>
-        
-        {hasActiveFilters && !isExpanded && (
-          <div className="px-3 pb-3 flex justify-end">
+      {/* Use Sheet as a mobile bottom sheet instead of inline expansion */}
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <div className={cn("border-b")}> 
+          <SheetTrigger asChild>
             <button
               type="button"
               className={cn(
-                "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium text-xs transition-base",
-                "hover:bg-accent hover:text-accent-foreground active:bg-accent/80 dark:hover:bg-accent/60",
-                "disabled:pointer-events-none disabled:opacity-50",
-                "h-6 px-2"
+                "w-full flex items-center justify-between gap-3 p-3",
+                "text-left hover:bg-muted/50 transition-colors"
               )}
-              onClick={handleClearAll}
-              disabled={isPending}
+              aria-label="Open filter sheet"
             >
-              {isPending ? "..." : "Clear"}
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <SlidersHorizontal className="h-4 w-4 shrink-0 text-muted-foreground" />
+                <span className={TYPOGRAPHY.label.small}>
+                  {hasActiveFilters ? (
+                    <>Filters ({activeFilters.length})</>
+                  ) : (
+                    <>Filter & Search</>
+                  )}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  · {totalResults} post{totalResults !== 1 ? "s" : ""}
+                </span>
+              </div>
+              <ChevronUp className="h-4 w-4 text-muted-foreground" />
             </button>
-          </div>
-        )}
-      </div>
-      {/* Active filter badges (collapsed view) */}
-      {hasActiveFilters && !isExpanded && (
-        <div className="px-3 pb-3 flex flex-wrap gap-1.5">
-          {activeFilters.slice(0, 4).map((filter, index) => (
-            <Badge
-              key={`${filter.key}-${filter.value}-${index}`}
-              variant="secondary"
-              className="text-xs gap-1"
-            >
-              {filter.label}
-            </Badge>
-          ))}
-          {activeFilters.length > 4 && (
-            <Badge variant="outline" className="text-xs">
-              +{activeFilters.length - 4} more
-            </Badge>
+          </SheetTrigger>
+
+          {hasActiveFilters && (
+            <div className="px-3 pb-3 flex justify-end">
+              <button
+                type="button"
+                className={cn(
+                  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium text-xs transition-base",
+                  "hover:bg-accent hover:text-accent-foreground active:bg-accent/80 dark:hover:bg-accent/60",
+                  "disabled:pointer-events-none disabled:opacity-50",
+                  "h-6 px-2"
+                )}
+                onClick={handleClearAll}
+                disabled={isPending}
+              >
+                {isPending ? "..." : "Clear"}
+              </button>
+            </div>
           )}
         </div>
-      )}
 
-      {/* Expanded filter content */}
-      <div
-        id="mobile-filter-content"
-        className={cn(
-          "overflow-hidden transition-movement ease-in-out",
-          ANIMATION.duration.fast,
-          isExpanded ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
+        {/* Active filter badges (collapsed view) */}
+        {hasActiveFilters && (
+          <div className="px-3 pb-3 flex flex-wrap gap-1.5">
+            {activeFilters.slice(0, 4).map((filter, index) => (
+              <Badge
+                key={`${filter.key}-${filter.value}-${index}`}
+                variant="secondary"
+                className="text-xs gap-1"
+              >
+                {filter.label}
+              </Badge>
+            ))}
+            {activeFilters.length > 4 && (
+              <Badge variant="outline" className="text-xs">
+                +{activeFilters.length - 4} more
+              </Badge>
+            )}
+          </div>
         )}
-      >
-        <div className="p-4">
-          <BlogFilters
-            selectedCategory={selectedCategory}
-            selectedTags={selectedTags}
-            readingTime={readingTime}
-            categoryList={categoryList}
-            categoryDisplayMap={categoryDisplayMap}
-            tagList={tagList}
-            query={query}
-            sortBy={sortBy}
-            dateRange={dateRange}
-          />
-        </div>
-      </div>
+
+        <SheetContent side="bottom" className="max-h-[80vh] overflow-auto p-4">
+          <SheetHeader>
+            <div className="flex items-center justify-between">
+              <SheetTitle>Filters</SheetTitle>
+              <div className="flex items-center gap-2">
+                {hasActiveFilters && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleClearAll}
+                    disabled={isPending}
+                  >
+                    {isPending ? "..." : "Clear"}
+                  </Button>
+                )}
+                <SheetClose asChild>
+                  <Button variant="ghost" size="sm" aria-label="Close filters">
+                    Close
+                  </Button>
+                </SheetClose>
+              </div>
+            </div>
+          </SheetHeader>
+
+          <div className="pt-2">
+            <BlogFilters
+              selectedCategory={selectedCategory}
+              selectedTags={selectedTags}
+              readingTime={readingTime}
+              categoryList={categoryList}
+              categoryDisplayMap={categoryDisplayMap}
+              tagList={tagList}
+              query={query}
+              sortBy={sortBy}
+              dateRange={dateRange}
+            />
+          </div>
+
+          <SheetFooter>
+            {/* Footer actions if needed in the future */}
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

@@ -123,6 +123,8 @@ This document serves as the **single source of truth** for discovering, routing,
   "source_of_truth": "AGENTS.md",
   "sync_status": "Automatic (embedded in conversation)"
 }
+
+> Note: Some repositories intentionally omit the `.github/agents/DCYFR.agent.md` file. The validation script and workflows in this repository have been updated to treat this file as optional. If your project relies on DCYFR-specific instructions, add the file and set the validation configuration accordingly.
 ```
 
 ---

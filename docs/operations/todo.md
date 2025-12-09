@@ -216,6 +216,24 @@ This document tracks **active and pending** work. Completed tasks are in **`done
 
 ---
 
+### 📅 Recent Completion: Mobile Filter Drawer/Sheet Pattern (Dec 8, 2025) ✅
+
+- [x] **Mobile Filter Drawer (Sheet)** ✅
+  - Replaced inline collapsible `MobileFilterBar` with bottom sheet using `Sheet` UI (Radix + shadcn pattern)
+  - Sheet triggers via the filter summary button on mobile; supports backdrop click to close
+  - `BlogFilters` is now rendered inside `SheetContent` with `max-h-[80vh] overflow-auto` for scrolling
+  - Clear action closes sheet and returns to `/blog` (clears filters)
+  - Preserved desktop sidebar UX (desktop `BlogSidebar` still used)
+
+- [x] **Quality Verification** ✅
+  - Added unit test `src/__tests__/components/blog/mobile-filter-bar.test.tsx` covering trigger, sheet open, and clear action
+  - TypeScript: local typecheck passed; ESLint: ran with warnings unrelated to this change
+  - Layout & accessibility: `aria-label` and close button included; overlay/backdrop closable
+
+---
+
+---
+
 ### 📅 Recent Completion: Print-Friendly Blog Styling (Dec 7, 2025) ✅
 
 - [x] **Print Stylesheet Created** ✅
