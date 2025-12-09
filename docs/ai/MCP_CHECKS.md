@@ -33,10 +33,13 @@ Recommended `check-mcp-servers.mjs` script
 Suggested behavior for `scripts/check-mcp-servers.mjs` (not implemented here):
 - Read `.vscode/mcp.json` and enumerate servers.
 - For each server, attempt:
-  - If `url` exists: `HEAD` to that URL and log HTTP status + time.
+  - If `url` exists: `HEAD` to that URL and log HTTP status + time (script will fall back to `GET` on 405 or on Abort to confirm reachability).
   - If `command` exists (local): spawn `npx <command> --version` to confirm it's installed and runnable.
   - If `envFile` or secrets are present, attempt authenticated call where applicable (or skip with `--no-auth`).
 - Return a machine-readable JSON object with statuses for CI and a human-friendly table for logs.
+  - The script accepts a `server.auth.envVar` property so the server can declare the env var to use for auth, for example:
+    - `"Vercel": { "url": "https://mcp.vercel.com", "auth": { "envVar": "VERCEL_TOKEN" } }`
+  - The script exposes a `--debug` flag to print request/response diagnostics (method used, token name, elapsed time, etc.) for troubleshooting.
 
 Implemented in this repo: `scripts/check-mcp-servers.mjs` (lightweight checks)
 

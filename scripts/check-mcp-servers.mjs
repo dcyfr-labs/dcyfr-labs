@@ -30,42 +30,112 @@ function parseEnvFile(filePath) {
   }
 }
 
+function expandPlaceholders(value, root) {
+  if (typeof value !== 'string') return value;
+  return value.replace(/\$\{([^}]+)\}/g, (match, name) => {
+    if (name === 'workspaceFolder' || name === 'workspaceRoot') return root;
+    if (name === 'workspaceFolderBasename') return path.basename(root);
+    // Environment variables (e.g., PERPLEXITY_API_KEY)
+    if (process.env[name] !== undefined) return process.env[name];
+    // Unknown placeholder; return original match
+    return match;
+  });
+}
+
+function expandObject(obj, root) {
+  if (!obj || typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) return obj.map(v => expandObject(v, root));
+  const out = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (typeof v === 'string') out[k] = expandPlaceholders(v, root);
+    else if (Array.isArray(v)) out[k] = v.map(item => (typeof item === 'string' ? expandPlaceholders(item, root) : expandObject(item, root)));
+    else out[k] = expandObject(v, root);
+  }
+  return out;
+}
+
 function readMcpConfig(configPath = path.join(ROOT, '.vscode', 'mcp.json')) {
   try {
     const raw = fs.readFileSync(configPath, 'utf8');
     const cfg = JSON.parse(raw);
-    return cfg.servers || {};
+    // Support both `servers` and `mcpServers` (repo-level configs)
+    const servers = cfg.servers || cfg.mcpServers || {};
+    // Expand placeholders like ${workspaceFolder}
+    const root = path.dirname(path.resolve(configPath));
+    const expanded = {};
+    for (const [name, s] of Object.entries(servers)) {
+      expanded[name] = expandObject(s, root);
+    }
+    return expanded;
   } catch (err) {
     return {};
   }
 }
 
-async function checkUrlServer(name, server, env = {}, timeoutMs = 5000) {
+async function checkUrlServer(name, server, env = {}, timeoutMs = 5000, opts = {}) {
   const url = server.url;
   if (!url) return { name, ok: false, error: 'no-url' };
   const headers = {};
-  // Try to guess an auth token from env
+  let tokenNameUsed = undefined;
+  // Check for explicit per-server auth variable (server.auth.envVar)
+  if (server && server.auth && server.auth.envVar) {
+    const varName = server.auth.envVar;
+    if (env[varName]) {
+      headers['Authorization'] = `Bearer ${env[varName]}`;
+      tokenNameUsed = varName;
+    }
+  }
+  // Try to guess an auth token from env if explicit var not set
   const tokensToTry = [
     `${name.toUpperCase()}_API_KEY`,
+    `${name.toUpperCase()}_API_TOKEN`,
+    `${name.toUpperCase()}_ACCESS_TOKEN`,
     `${name.toUpperCase()}_TOKEN`,
     `${name.toUpperCase()}_KEY`,
     `${name.toUpperCase()}_AUTH_TOKEN`,
   ];
-  for (const t of tokensToTry) {
-    if (env[t]) {
-      headers['Authorization'] = `Bearer ${env[t]}`;
-      break;
+  if (!tokenNameUsed) {
+    for (const t of tokensToTry) {
+      if (env[t]) {
+        headers['Authorization'] = `Bearer ${env[t]}`;
+        tokenNameUsed = t;
+        break;
+      }
     }
   }
 
+  // Try HEAD first; fallback to GET if HEAD is not allowed, or if it times out
+  const startTime = Date.now();
   try {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     const res = await fetch(url, { method: 'HEAD', headers, signal: controller.signal });
     clearTimeout(timer);
-    return { name, ok: res.ok || res.status === 401 || res.status === 403, status: res.status, statusText: res.statusText };
+    // If we get a 405 (Method Not Allowed), try GET instead with longer timeout
+    if (res.status === 405) {
+      // Try GET fallback
+      const controller2 = new AbortController();
+      const timer2 = setTimeout(() => controller2.abort(), timeoutMs * 2);
+      const res2 = await fetch(url, { method: 'GET', headers, signal: controller2.signal });
+      clearTimeout(timer2);
+        if (opts.debug) console.log({ url, name, method: 'GET (fallback from HEAD 405)', tokenNameUsed, status: res2.status, statusText: res2.statusText });
+        return { name, ok: res2.ok || [401, 403, 405].includes(res2.status), status: res2.status, statusText: res2.statusText, method: 'GET', tokenNameUsed, elapsedMs: Date.now() - startTime };
+    }
+    if (opts.debug) console.log({ url, name, method: 'HEAD', tokenNameUsed, status: res.status, statusText: res.statusText });
+    return { name, ok: res.ok || [401, 403, 405].includes(res.status), status: res.status, statusText: res.statusText, method: 'HEAD', tokenNameUsed, elapsedMs: Date.now() - startTime };
   } catch (err) {
-    return { name, ok: false, error: String(err) };
+    // If the HEAD attempt aborted or failed, try GET as a fallback before declaring failure
+    try {
+      const controller3 = new AbortController();
+      const timer3 = setTimeout(() => controller3.abort(), timeoutMs * 2);
+      const res3 = await fetch(url, { method: 'GET', headers, signal: controller3.signal });
+      clearTimeout(timer3);
+      if (opts.debug) console.log({ url, name, method: 'GET (fallback from HEAD error)', tokenNameUsed, status: res3.status, statusText: res3.statusText });
+      return { name, ok: res3.ok || [401, 403, 405].includes(res3.status), status: res3.status, statusText: res3.statusText, method: 'GET', tokenNameUsed, elapsedMs: Date.now() - startTime };
+    } catch (err2) {
+      if (opts.debug) console.error(`MCP check failed ${name} ${url}:`, err2 || err);
+      return { name, ok: false, error: String(err2 || err), method: 'GET', tokenNameUsed, elapsedMs: Date.now() - startTime };
+    }
   }
 }
 
@@ -75,6 +145,13 @@ function checkCommandServer(name, server) {
   if (!command) return { name, ok: false, error: 'no-command' };
   // Append a version check flag if not already present
   const cmdArgs = Array.from(args);
+  // Try a bare `command --version` first (safe for npx and many binaries)
+  try {
+    const resBare = spawnSync(command, ['--version'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 10_000 });
+    if (!resBare.error && resBare.status === 0) return { name, ok: true, stdout: resBare.stdout.trim() };
+  } catch (err) {
+    // ignore; fallback to the full command invocation
+  }
   // Some packages want --version, some -v; try both
   cmdArgs.push('--version');
   try {
@@ -103,7 +180,7 @@ async function run(opts = {}) {
   const results = [];
   for (const [name, server] of Object.entries(servers)) {
     if (server.url) {
-      const r = await checkUrlServer(name, server, env, opts.timeoutMs);
+      const r = await checkUrlServer(name, server, env, opts.timeoutMs, opts);
       results.push({ name, type: 'url', ...r });
     } else if (server.command) {
       const r = checkCommandServer(name, server);
@@ -133,12 +210,13 @@ async function run(opts = {}) {
 // CLI
 if (fileURLToPath(import.meta.url) === process.argv[1]) {
   const args = process.argv.slice(2);
-  const opts = { json: false, fail: false, timeoutMs: 5000, envFile: '.env.local', configPath: path.join(ROOT, '.vscode', 'mcp.json') };
+  const opts = { json: false, fail: false, timeoutMs: 5000, envFile: '.env.local', configPath: path.join(ROOT, '.vscode', 'mcp.json'), debug: false };
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
     if (a === '--json') opts.json = true;
     if (a === '--fail') opts.fail = true;
     if (a === '--no-auth') opts.noAuth = true;
+    if (a === '--debug') opts.debug = true;
     if ((a === '--timeout' || a === '-t') && args[i + 1]) { opts.timeoutMs = parseInt(args[i + 1], 10); i++; }
     if ((a === '--envFile' || a === '-e') && args[i + 1]) { opts.envFile = args[i + 1]; i++; }
     if ((a === '--config' || a === '-c') && args[i + 1]) { opts.configPath = args[i + 1]; i++; }
