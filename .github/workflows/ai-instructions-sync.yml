@@ -28,7 +28,7 @@ jobs:
       - name: Validate instruction files
         run: node scripts/validate-instructions.mjs
 
-      - name: Optional: Validate MCP servers (non-strict)
+      - name: "Optional: Validate MCP servers (non-strict)"
         run: |
           if [ -f scripts/check-mcp-servers.mjs ]; then
             node scripts/check-mcp-servers.mjs --no-auth || echo "MCP checks failed but continuing";
