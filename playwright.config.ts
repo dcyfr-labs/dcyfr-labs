@@ -30,13 +30,13 @@ export default defineConfig({
     baseURL: process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}`
       : process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000',
-    
+
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    
+
     /* Screenshot on failure */
     screenshot: 'only-on-failure',
-    
+
     /* Video on failure */
     video: 'retain-on-failure',
 
@@ -47,6 +47,14 @@ export default defineConfig({
           'x-vercel-set-bypass-cookie': 'samesitenone',
         }
       : {},
+  },
+
+  /* Visual regression test settings */
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.01,
+      threshold: 0.2,
+    },
   },
 
   /* Configure projects for major browsers */

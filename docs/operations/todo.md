@@ -98,9 +98,10 @@ This document tracks **active and pending** work. Completed tasks are in **`done
   - API key-based access (`SPONSOR_API_KEY` env var)
   - Per-sponsor tokens stored in Redis
   - `GET /api/invites/stats` - Protected stats endpoint
+  - Github Sponsors authentication via Github OAuth
 
 - [ ] **Sponsor Dashboard UI** (3-4 hours)
-  - `/sponsors/dashboard` page with authentication
+  - `/sponsors/dashboard` page with authentication (Github OAuth)
   - Display stats (uses, conversions, trending)
   - Chart visualization
   - Real-time updates via API polling

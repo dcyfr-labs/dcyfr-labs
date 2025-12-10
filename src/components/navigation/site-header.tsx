@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Heart } from "lucide-react";
 import { ThemeToggle } from "@/components/features/theme/theme-toggle";
 import { SiteLogo } from "@/components/common/site-logo";
 import { MobileNav } from "@/components/navigation/mobile-nav";
@@ -106,6 +106,7 @@ export function SiteHeader() {
             prefetch={false}
           >
             Sponsors
+            <Heart className="inline-block h-3 w-3 ml-1 text-primary" aria-hidden="true" />
           </Link>
           <ThemeToggle />
           {process.env.NODE_ENV === "development" && <DevToolsDropdown />}

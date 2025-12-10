@@ -107,6 +107,36 @@ export interface AnalyticsSummaryEvent {
 }
 
 /**
+ * Google Indexing API events
+ * Triggered when submitting URLs to Google for indexing
+ */
+export interface GoogleUrlSubmitEvent {
+  name: "google/url.submit";
+  data: {
+    /** Full URL to submit for indexing */
+    url: string;
+    /** Type of notification (default: URL_UPDATED) */
+    type?: "URL_UPDATED" | "URL_DELETED";
+  };
+}
+
+export interface GoogleUrlDeleteEvent {
+  name: "google/url.delete";
+  data: {
+    /** Full URL to remove from index */
+    url: string;
+  };
+}
+
+export interface GoogleBatchSubmitEvent {
+  name: "google/urls.batch-submit";
+  data: {
+    /** Array of URLs to submit */
+    urls: string[];
+  };
+}
+
+/**
  * Union type of all Inngest events in the application
  */
 export type InngestEvents =
@@ -115,7 +145,10 @@ export type InngestEvents =
   | BlogPostViewedEvent
   | BlogMilestoneEvent
   | GitHubDataRefreshEvent
-  | AnalyticsSummaryEvent;
+  | AnalyticsSummaryEvent
+  | GoogleUrlSubmitEvent
+  | GoogleUrlDeleteEvent
+  | GoogleBatchSubmitEvent;
 
 /**
  * Analytics data structures

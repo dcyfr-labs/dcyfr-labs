@@ -406,7 +406,7 @@ export function InteractiveDiagram({
   return (
     <div
       className={cn(
-        "rounded-lg border border-border bg-card overflow-hidden flex flex-col",
+        "rounded-lg border border-border bg-card overflow-hidden flex flex-col w-full",
         className
       )}
       style={{ height }}

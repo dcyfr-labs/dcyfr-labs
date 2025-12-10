@@ -30,7 +30,7 @@ describe('DevBanner', () => {
     fireEvent.click(button)
 
     await waitFor(() => {
-      expect(screen.queryByText(/Development Mode/)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Development Mode/)).not.toBeVisible()
     })
 
     expect(sessionStorage.getItem('dev-banner-dismissed')).toBe('true')
@@ -43,7 +43,7 @@ describe('DevBanner', () => {
 
     // Allow effect to run and set internal state
     await waitFor(() => {
-      expect(screen.queryByText(/Development Mode/)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Development Mode/)).not.toBeVisible()
     })
   })
 
@@ -61,7 +61,7 @@ describe('DevBanner', () => {
     render(<DevBanner />)
     const close = await screen.findByRole('button', { name: /Close Dev Banner/i })
     fireEvent.click(close)
-    await waitFor(() => expect(screen.queryByRole('region', { name: /Dev Banner/i })).not.toBeInTheDocument())
+    await waitFor(() => expect(screen.queryByRole('region', { name: /Dev Banner/i })).not.toBeVisible())
     expect(localStorage.getItem('dev-banner-dismissed')).toBe('true')
     // Clean up stubbed env
     vi.unstubAllEnvs()

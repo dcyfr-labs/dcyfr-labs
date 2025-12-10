@@ -141,10 +141,23 @@ export function Figure({
 }) {
   const context = React.useContext(FigureCountContext);
   const isOverhead = React.useContext(OverheadContext);
-  const [figureNumber] = React.useState(() => context.increment());
+  const [figureNumber, setFigureNumber] = React.useState<number | null>(null);
+
+  // Use layoutEffect to ensure the number is set exactly once during mount
+  // This prevents double-incrementing in StrictMode
+  React.useLayoutEffect(() => {
+    if (figureNumber === null) {
+      setFigureNumber(context.increment());
+    }
+  }, [figureNumber, context]);
 
   if (!caption) {
     // If no caption provided, just render children as-is
+    return <>{children}</>;
+  }
+
+  // Don't render caption until we have a figure number
+  if (figureNumber === null) {
     return <>{children}</>;
   }
 

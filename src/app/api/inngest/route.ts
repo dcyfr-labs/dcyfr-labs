@@ -17,6 +17,11 @@ import {
   securityAdvisoryMonitor,
   securityAdvisoryHandler,
 } from "@/inngest/security-functions";
+import {
+  submitUrlToGoogle,
+  deleteUrlFromGoogle,
+  batchSubmitBlogPosts,
+} from "@/inngest/google-indexing-functions";
 
 /**
  * Inngest API endpoint for Next.js App Router
@@ -63,5 +68,10 @@ export const { GET, POST, PUT } = serve({
     // Security monitoring (CVE-2025-55182 response)
     securityAdvisoryMonitor,     // Scheduled: hourly GHSA polling
     securityAdvisoryHandler,     // Event-driven: process detections
+    
+    // Google Indexing API
+    submitUrlToGoogle,           // Event-driven: submit URL for indexing
+    deleteUrlFromGoogle,         // Event-driven: remove URL from index
+    batchSubmitBlogPosts,        // Event-driven: batch process multiple URLs
   ],
 });
