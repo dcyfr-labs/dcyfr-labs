@@ -31,7 +31,15 @@ const WORDS_PER_MINUTE = 225;
  * @returns Stable post ID (e.g., "post-20251005-abc123")
  * @internal Exported for testing purposes only
  */
-export function generatePostId(publishedAt: string, slug: string): string {
+export function generatePostId(publishedAt: string | undefined, slug: string): string {
+  // Guard against missing publishedAt
+  if (!publishedAt) {
+    throw new Error(
+      `Post "${slug}" is missing required frontmatter field: publishedAt. ` +
+      `Please add 'publishedAt: "YYYY-MM-DDTHH:MM:SSZ"' to the post's frontmatter.`
+    );
+  }
+
   // Create deterministic hash from published date and slug
   const input = `${publishedAt}:${slug}`;
   const hash = crypto
