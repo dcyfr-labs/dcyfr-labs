@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { posts } from "@/data/posts";
+import { posts, allSeries } from "@/data/posts";
 import { visibleProjects } from "@/data/projects";
 import { readdirSync, statSync } from "fs";
 import { join } from "path";
@@ -97,7 +97,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
-  
+
+  // Generate sitemap entries for series pages
+  const seriesEntries = allSeries.map((series) => ({
+    url: `${base}/blog/series/${series.slug}`,
+    lastModified: new Date(series.latestPost.publishedAt),
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
   // Generate sitemap entries for feed URLs
   const feedEntries = [
     {
@@ -126,5 +134,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
   
-  return [...pageEntries, ...blogPostEntries, ...projectEntries, ...feedEntries];
+  return [...pageEntries, ...blogPostEntries, ...projectEntries, ...seriesEntries, ...feedEntries];
 }

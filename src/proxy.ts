@@ -231,10 +231,10 @@ export default function proxy(request: NextRequest) {
     // Default: only allow same-origin resources
     "default-src 'self'",
     
-    // Scripts: self with nonce, external analytics, and Vercel Live
+    // Scripts: self with nonce, external analytics, BotID, and Vercel Live
     // Using nonce instead of unsafe-inline for improved security
     // In development, add 'unsafe-eval' for Turbopack HMR
-    `script-src 'self' 'nonce-${nonce}'${isDevelopment ? " 'unsafe-eval'" : ""} https://va.vercel-scripts.com https://*.vercel-insights.com https://vercel.live`,
+    `script-src 'self' 'nonce-${nonce}'${isDevelopment ? " 'unsafe-eval'" : ""} https://va.vercel-scripts.com https://*.vercel-insights.com https://sitesapi.io https://vercel.live`,
     
     // Styles: self with unsafe-inline (no nonce)
     // Note: Cannot use nonce for styles because third-party scripts (Vercel, Next.js fonts, React)
@@ -249,9 +249,9 @@ export default function proxy(request: NextRequest) {
     // Fonts: self, Google Fonts CDN, and Vercel Live
     "font-src 'self' https://fonts.gstatic.com https://vercel.live",
     
-    // Connect: self, Vercel analytics endpoints, Sentry error reporting, and Vercel Live (for feedback/comments)
+    // Connect: self, Vercel analytics endpoints, Sentry error reporting, BotID API, and Vercel Live (for feedback/comments)
     // In development, allow webpack/turbopack HMR websockets
-    `connect-src 'self'${isDevelopment ? " ws://localhost:* wss://localhost:*" : ""} https://va.vercel-scripts.com https://*.vercel-insights.com https://vercel-insights.com https://*.sentry.io https://vercel.live https://*.pusher.com wss://*.pusher.com`,
+    `connect-src 'self'${isDevelopment ? " ws://localhost:* wss://localhost:*" : ""} https://va.vercel-scripts.com https://*.vercel-insights.com https://vercel-insights.com https://*.sentry.io https://sitesapi.io https://vercel.live https://*.pusher.com wss://*.pusher.com`,
     
     // Frame: allow Vercel Live for preview feedback and Giscus for blog comments
     "frame-src https://vercel.live https://giscus.app",

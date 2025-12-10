@@ -1,13 +1,15 @@
 ---
 id: "post-20200108-647bfe00"
 title: "Code Examples & Syntax Highlighting"
-subtitle: "Showcase of Syntax Highlighting in 20+ Programming Languages"
 summary: "Complete showcase of syntax highlighting with code examples in 20+ programming languages supported by Shiki."
 publishedAt: "2020-01-08T12:00:00Z"
 updatedAt: "2025-11-30T12:00:00Z"
 category: "Demo"
 tags: ["Code", "Syntax Highlighting", "MDX", "Programming Languages", "Demo"]
 draft: true
+series:
+  name: "Features"
+  order: 3
 ---
 
 This page showcases syntax highlighting for code examples across all major programming languages supported by **Shiki** via `rehype-pretty-code`. Code blocks automatically receive theme-aware syntax highlighting with support for light and dark modes.
@@ -53,6 +55,8 @@ export async function fetchUser(id: string): Promise<ApiResponse<User>> {
 const result = await fetchUser("user-123")
 console.log(`Hello, ${result.data.name}!`)
 ```
+
+---
 
 ## React & TSX
 
@@ -102,6 +106,8 @@ export function Counter({ initialCount = 0, step = 1 }: CounterProps) {
 }
 ```
 
+---
+
 ## JavaScript
 
 Modern JavaScript with ES6+ features:
@@ -133,6 +139,8 @@ async function getData() {
   }
 }
 ```
+
+---
 
 ## Python
 
@@ -172,6 +180,8 @@ admin_users = [u for u in get_users() if "admin" in u.roles]
 print(f"Found {len(admin_users)} admin users")
 ```
 
+---
+
 ## Bash / Shell
 
 Shell scripting and command-line operations:
@@ -205,6 +215,8 @@ else
 fi
 ```
 
+---
+
 ## JSON
 
 JSON configuration and data structures:
@@ -233,6 +245,8 @@ JSON configuration and data structures:
   }
 }
 ```
+
+---
 
 ## CSS & Tailwind
 
@@ -273,6 +287,8 @@ CSS with modern features and Tailwind classes:
 }
 ```
 
+---
+
 ## SQL
 
 PostgreSQL queries and database operations:
@@ -308,6 +324,8 @@ INSERT INTO users (name, email) VALUES
   ('Alice', 'alice@example.com'),
   ('Bob', 'bob@example.com');
 ```
+
+---
 
 ## HTML
 
@@ -349,6 +367,8 @@ HTML markup and semantic structure:
 </html>
 ```
 
+---
+
 ## YAML
 
 YAML configuration files (Docker Compose, Kubernetes, etc.):
@@ -385,6 +405,8 @@ volumes:
   postgres_data:
 ```
 
+---
+
 ## TOML
 
 TOML configuration for projects:
@@ -402,6 +424,8 @@ tokio = { version = "1.0", features = ["full"] }
 [dev-dependencies]
 tokio-test = "0.4"
 ```
+
+---
 
 ## Go
 
@@ -437,6 +461,8 @@ func main() {
   http.ListenAndServe(":8080", nil)
 }
 ```
+
+---
 
 ## Rust
 
@@ -475,6 +501,8 @@ fn main() -> io::Result<()> {
     Ok(())
 }
 ```
+
+---
 
 ## Java
 
@@ -559,6 +587,8 @@ int main() {
 }
 ```
 
+---
+
 ## PHP
 
 PHP with OOP and namespaces:
@@ -595,6 +625,8 @@ foreach ($users as $user) {
 }
 ```
 
+---
+
 ## Ruby
 
 Ruby with blocks and metaprogramming:
@@ -627,6 +659,8 @@ users.map(&:display)
   .select { |u| u.name.start_with?("A") }
 ```
 
+---
+
 ## Markdown
 
 Markdown syntax reference:
@@ -658,6 +692,8 @@ const code = "block";
 | Cell 1   | Cell 2   |
 ```
 
+---
+
 ## Plaintext
 
 Plain text without syntax highlighting:
@@ -673,6 +709,8 @@ Line 1
 Line 2
 Line 3
 ```
+
+---
 
 ## Diff Format
 
@@ -695,6 +733,8 @@ index abc123..def456 100644
 +})
 ```
 
+---
+
 ## Additional Languages Supported
 
 Shiki supports 200+ languages out of the box. Some additional popular ones include:
@@ -707,6 +747,8 @@ Shiki supports 200+ languages out of the box. Some additional popular ones inclu
 - **Markup**: MDX, AsciiDoc, reStructuredText
 - **Specialized**: GraphQL, Prisma, Protocol Buffers
 
+---
+
 ## Syntax Highlighting Features
 
 All code blocks support:
@@ -715,6 +757,8 @@ All code blocks support:
 - **Language detection**: Specify the language identifier after opening backticks
 - **No runtime overhead**: All highlighting happens at build time
 - **Semantic HTML**: Generated markup is accessible and semantic
+
+---
 
 ## Usage in MDX
 

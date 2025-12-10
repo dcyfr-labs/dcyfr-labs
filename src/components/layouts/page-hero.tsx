@@ -88,6 +88,8 @@ interface PageHeroProps {
   itemCount?: number
   /** Loading state - renders skeleton version */
   loading?: boolean
+  /** Full-width background (content still constrained) */
+  fullWidth?: boolean
 }
 
 export function PageHero({
@@ -101,6 +103,7 @@ export function PageHero({
   contentClassName,
   itemCount,
   loading = false,
+  fullWidth = false,
 }: PageHeroProps) {
   const styles = HERO_VARIANTS[variant]
   const alignmentClasses = align === 'center' ? 'text-center' : ''
@@ -146,6 +149,72 @@ export function PageHero({
   }
 
   // Normal render
+  if (fullWidth) {
+    // Full-width variant: background extends to edges, content is constrained to archive width
+    return (
+      <section
+        className={cn(
+          "w-full pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12 relative overflow-visible",
+          className
+        )}
+      >
+        <div
+          className={cn(
+            `mx-auto max-w-7xl px-4 sm:px-6 md:px-8 space-y-4`,
+            alignmentClasses,
+            contentClassName
+          )}
+        >
+          {/* Optional image/avatar */}
+          {image && <div className={cn("flex", imageJustify)}>{image}</div>}
+
+          {/* Title */}
+          {title && <h1 className={styles.title}>{title}</h1>}
+
+          {/* Description */}
+          {description &&
+            (typeof description === "string" ? (
+              <p
+                className={cn(
+                  styles.description,
+                  "max-w-3xl",
+                  align === "center" && "mx-auto"
+                )}
+              >
+                {description}
+                {itemCount !== undefined && (
+                  <span className="text-muted-foreground">
+                    {" "}
+                    ({itemCount} {itemCount === 1 ? "item" : "items"})
+                  </span>
+                )}
+              </p>
+            ) : (
+              <div
+                className={cn(
+                  styles.description,
+                  "max-w-3xl",
+                  align === "center" && "mx-auto"
+                )}
+              >
+                {description}
+              </div>
+            ))}
+
+          {/* Actions */}
+          {actions && (
+            <div
+              className={cn("pt-2", align === "center" && "flex justify-center")}
+            >
+              {actions}
+            </div>
+          )}
+        </div>
+      </section>
+    );
+  }
+
+  // Standard variant: both background and content constrained
   return (
     <section
       className={cn(

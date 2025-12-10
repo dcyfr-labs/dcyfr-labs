@@ -23,14 +23,16 @@ describe('DevBanner', () => {
   })
 
   it('sets sessionStorage key when dismissed and hides the banner', async () => {
-    render(<DevBanner />)
+    const { container } = render(<DevBanner />)
 
     const button = await screen.findByRole('button', { name: /Close Dev Banner/i })
     expect(button).toBeInTheDocument()
     fireEvent.click(button)
 
     await waitFor(() => {
-      expect(screen.queryByText(/Development Mode/)).not.toBeInTheDocument()
+      const region = container.querySelector('[role="region"][aria-label="Dev Banner"]')
+      expect(region).toHaveAttribute('aria-hidden', 'true')
+      expect(region).toHaveClass('hidden')
     })
 
     expect(sessionStorage.getItem('dev-banner-dismissed')).toBe('true')
@@ -39,11 +41,13 @@ describe('DevBanner', () => {
   it('does not render when session storage has dismissed set', async () => {
     sessionStorage.setItem('dev-banner-dismissed', 'true')
 
-    render(<DevBanner />)
+    const { container } = render(<DevBanner />)
 
     // Allow effect to run and set internal state
     await waitFor(() => {
-      expect(screen.queryByText(/Development Mode/)).not.toBeInTheDocument()
+      const region = container.querySelector('[role="region"][aria-label="Dev Banner"]')
+      expect(region).toHaveAttribute('aria-hidden', 'true')
+      expect(region).toHaveClass('hidden')
     })
   })
 
@@ -58,10 +62,14 @@ describe('DevBanner', () => {
     }
     localStorage.clear()
 
-    render(<DevBanner />)
+    const { container } = render(<DevBanner />)
     const close = await screen.findByRole('button', { name: /Close Dev Banner/i })
     fireEvent.click(close)
-    await waitFor(() => expect(screen.queryByRole('region', { name: /Dev Banner/i })).not.toBeInTheDocument())
+    await waitFor(() => {
+      const region = container.querySelector('[role="region"][aria-label="Dev Banner"]')
+      expect(region).toHaveAttribute('aria-hidden', 'true')
+      expect(region).toHaveClass('hidden')
+    })
     expect(localStorage.getItem('dev-banner-dismissed')).toBe('true')
     // Clean up stubbed env
     vi.unstubAllEnvs()

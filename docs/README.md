@@ -11,7 +11,7 @@ This directory is the knowledge base for the portfolio. Content is organized by 
 
 ## Directory Overview
 
-**Core Documentation (9 directories):**
+**Core Documentation (10 directories):**
 
 - **`architecture/`** – Architecture patterns and refactoring guides
   - [`README.md`](./architecture/README.md) - Architecture overview
@@ -43,6 +43,10 @@ This directory is the knowledge base for the portfolio. Content is organized by 
   - [`inngest-integration.md`](./features/inngest-integration.md) - Complete Inngest background jobs guide
   - [`inngest-testing.md`](./features/inngest-testing.md) - Testing and debugging guide
   - [`github-integration.md`](./features/github-integration.md) - GitHub API integration
+  - [`ACTIVITY_FEED_AUTOMATION.md`](./features/ACTIVITY_FEED_AUTOMATION.md) - ✨ Activity feed automation strategy
+  - [`ACTIVITY_CACHING_IMPLEMENTATION.md`](./features/ACTIVITY_CACHING_IMPLEMENTATION.md) - ✨ Activity caching implementation
+  - [`SERIES_REFACTOR_PROGRESS.md`](./features/SERIES_REFACTOR_PROGRESS.md) - ✨ Blog series refactor tracker
+  - [`FUTURE_IDEAS.md`](./features/FUTURE_IDEAS.md) - ✨ Post-launch feature ideas
   - `mcp/` - Model Context Protocol documentation
 
 - **`design/`** – Design system and UX (organized into subdirectories):
@@ -52,6 +56,8 @@ This directory is the knowledge base for the portfolio. Content is organized by 
   - `spacing/` - Spacing standards and audit
   - `ui-patterns/` - Component patterns and UI consistency
   - [`design-system.md`](./design/design-system.md) - Overall design system
+  - [`PAGE_TEMPLATES.md`](./design/PAGE_TEMPLATES.md) - ✨ Complete page templates
+  - [`DESIGN_TOKEN_COMPLIANCE_REPORT.md`](./design/DESIGN_TOKEN_COMPLIANCE_REPORT.md) - ✨ Compliance audit
 
 - **`security/`** – Security implementation:
   - `csp/` - Content Security Policy with nonce implementation
@@ -67,6 +73,11 @@ This directory is the knowledge base for the portfolio. Content is organized by 
   - [`todo.md`](./operations/todo.md) - Active tasks and priorities
   - [`done.md`](./operations/done.md) - Completed projects archive
   - [`automation-backlog.md`](./operations/automation-backlog.md) - CI/CD automation status
+
+- **`automation/`** – ✨ Automated updates and dependency management:
+  - [`AUTOMATED_UPDATES.md`](./automation/AUTOMATED_UPDATES.md) - Complete automation system guide
+  - [`ENABLE_AUTO_MERGE.md`](./automation/ENABLE_AUTO_MERGE.md) - Auto-merge setup instructions
+  - [`IMPLEMENTATION_SUMMARY.md`](./automation/IMPLEMENTATION_SUMMARY.md) - Deployment guide
 
 **Development & Optimization (4 directories):**
 

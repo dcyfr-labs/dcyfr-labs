@@ -1,322 +1,227 @@
 ---
-id: "post-20251111-9632eff4"
-title: "Mermaid Diagrams & Visual Documentation"
-subtitle: "Complete Demonstration of Mermaid Diagram Capabilities"
-summary: "Complete demonstration of Mermaid diagram capabilities including flowcharts, sequence diagrams, state machines, and class diagrams."
-publishedAt: "2025-11-11T12:00:00Z"
-updatedAt: "2025-11-30T12:00:00Z"
+id: "post-20251109-7c4f3e2a"
+title: "Interactive Diagrams with ReactFlow"
+summary: "Explore interactive, accessible diagrams built with ReactFlow for visualizing architecture, workflows, and decision trees."
+publishedAt: "2025-11-09T00:00:00Z"
 category: "Demo"
-tags: ["Mermaid", "Diagrams", "Flowcharts", "Documentation", "Visual Design", "Demo"]
+tags: ["Diagrams", "ReactFlow", "Interactive", "Visualization", "Demo"]
 draft: true
+series:
+  name: "Features"
+  order: 1
+  description: "Explore interactive, accessible diagrams built with ReactFlow for visualizing architecture, workflows, and decision trees."
+  icon: "BookOpen"
+  color: "tutorial"
 ---
 
-This post demonstrates all Mermaid diagram types supported in the blog, perfect for documenting architectures, workflows, and system design.
-
----
-
-## What is Mermaid?
-
-**Mermaid** is a JavaScript-based diagramming and charting tool that renders Markdown-inspired text definitions to create and modify diagrams dynamically. It integrates seamlessly with the site's MDX pipeline.
-
-## Flowchart Example
-
-A simple user authentication and dashboard flow:
-
-<AuthenticationFlow height={500} />
-
-**Use cases**: System architecture, application flow, decision trees
-
-## Sequence Diagram
-
-API interaction flow showing cache patterns:
-
-```mermaid
-sequenceDiagram
-    participant Client
-    participant API
-    participant Cache
-    participant DB
-    
-    Client->>API: GET /users/1
-    API->>Cache: Check cache
-    
-    alt Cache hit
-        Cache-->>API: User data
-    else Cache miss
-        API->>DB: Query user
-        DB-->>API: User data
-        API->>Cache: Store in cache
-    end
-    
-    API-->>Client: 200 OK
-```
-
-**Use cases**: API interactions, communication protocols, message flows
-
-## State Diagram
-
-Feature deployment workflow:
-
-```mermaid
-stateDiagram-v2
-    [*] --> Development
-    Development --> CodeReview
-    CodeReview --> Testing
-    Testing --> Staging
-    Staging --> Production
-    
-    Testing --> Development : Failed
-    Staging --> Testing : Rollback
-    Production --> [*] : Deployed
-```
-
-**Use cases**: State machines, workflow pipelines, deployment processes
-
-## Class Diagram
-
-Object-oriented design example:
-
-```mermaid
-classDiagram
-    class User {
-        +String id
-        +String name
-        +String email
-        +login()
-        +logout()
-    }
-    
-    class Post {
-        +String id
-        +String title
-        +String content
-        +User author
-        +publish()
-        +archive()
-    }
-    
-    class Comment {
-        +String id
-        +String content
-        +User author
-        +submit()
-    }
-    
-    User "1" --> "*" Post : creates
-    User "1" --> "*" Comment : writes
-    Post "1" --> "*" Comment : has
-```
-
-**Use cases**: OOP design, entity relationships, system architecture
-
-## Entity Relationship Diagram (ERD)
-
-Database schema design:
-
-```mermaid
-erDiagram
-    USERS ||--o{ POSTS : creates
-    USERS ||--o{ COMMENTS : writes
-    POSTS ||--o{ COMMENTS : receives
-    POSTS }o--|| CATEGORIES : in
-    
-    USERS {
-        int id PK
-        string name
-        string email UK
-        timestamp created_at
-    }
-    
-    POSTS {
-        int id PK
-        int user_id FK
-        string title
-        text content
-        timestamp published_at
-    }
-    
-    COMMENTS {
-        int id PK
-        int post_id FK
-        int user_id FK
-        text content
-        timestamp created_at
-    }
-    
-    CATEGORIES {
-        int id PK
-        string name
-    }
-```
-
-**Use cases**: Database design, data model documentation, schema planning
-
-## Git Commit Graph
-
-Branch workflow visualization:
-
-```mermaid
-gitGraph
-    commit id: "Initial commit"
-    commit id: "Add homepage"
-    branch develop
-    checkout develop
-    commit id: "Start feature"
-    branch feature/user-auth
-    checkout feature/user-auth
-    commit id: "Add login page"
-    commit id: "Add signup form"
-    checkout develop
-    merge feature/user-auth
-    commit id: "Merge auth feature"
-    checkout main
-    merge develop tag: "v1.0.0"
-    commit id: "Post-release"
-```
-
-**Use cases**: Git workflows, release planning, branching strategies
-
-## Gantt Chart
-
-Project timeline:
-
-```mermaid
-gantt
-    title Project Timeline
-    dateFormat YYYY-MM-DD
-    
-    section Planning
-    Requirements :des1, 2025-11-01, 7d
-    Design :des2, after des1, 10d
-    
-    section Development
-    Backend API :dev1, 2025-11-15, 20d
-    Frontend UI :dev2, 2025-11-20, 18d
-    Integration :dev3, after dev2, 5d
-    
-    section Testing
-    QA Testing :test1, after dev3, 10d
-    UAT :test2, after test1, 5d
-    
-    section Deployment
-    Production Deploy :deploy1, after test2, 2d
-```
-
-**Use cases**: Project management, timeline planning, milestone tracking
-
-## Pie Chart
-
-Technology distribution:
-
-```mermaid
-pie title "Technology Stack Distribution"
-    "React" : 30
-    "TypeScript" : 25
-    "Node.js" : 20
-    "Next.js" : 15
-    "Tailwind CSS" : 10
-```
-
-**Use cases**: Statistics, distribution analysis, resource allocation
-
-## Bar Chart
-
-Performance metrics:
-
-```mermaid
-xychart-beta
-    title "Performance Metrics"
-    x-axis [API Latency, DB Query, Cache Hit, Render Time]
-    y-axis "Time (ms)" 0 --> 100
-    line [45, 65, 30, 55]
-```
-
-**Use cases**: Metrics visualization, performance tracking, data analysis
-
-## Mind Map
-
-Project organization:
-
-```mermaid
-mindmap
-  root((Project Management))
-    Planning
-      Requirements
-      Scope Definition
-      Resource Allocation
-    Execution
-      Development
-      Testing
-      Integration
-    Monitoring
-      Performance
-      Quality Metrics
-      Risk Management
-    Closure
-      Deployment
-      Documentation
-      Review
-```
-
-**Use cases**: Brainstorming, organization structure, concept mapping
-
-## Timeline
-
-Feature release history:
-
-```mermaid
-timeline
-    title Feature Release Timeline
-    2025-01 : v1.0.0 : Core features
-    2025-03 : v1.1.0 : User authentication
-    2025-06 : v1.2.0 : Analytics dashboard
-    2025-09 : v1.3.0 : API improvements
-    2025-11 : v1.4.0 : Performance optimization
-```
-
-**Use cases**: Version history, release notes, feature timeline
-
-## Best Practices
-
-### When to Use Mermaid Diagrams
-
-**Use Mermaid for**:
-- System architecture documentation
-- Process workflows and flowcharts
-- Database schema design
-- API interaction flows
-- Project timelines and Gantt charts
-- Release planning and git workflows
-
-**Consider alternatives for**:
-- Complex architectural diagrams (use tools like Lucidchart, Draw.io)
-- Highly customized branding/styling
-- Real-time collaborative editing
-- 3D visualizations
-
-### Tips for Readable Diagrams
-
-1. **Keep it simple**: Complex diagrams become hard to understand
-2. **Use clear labels**: Every node/edge should have descriptive text
-3. **Consistent naming**: Use similar terminology across diagrams
-4. **Logical flow**: Arrange elements to show natural progression
-5. **Color strategically**: Use highlighting for important paths or decisions
+After migrating away from Mermaid, we've built a set of interactive diagrams using [ReactFlow](https://xyflow.com/) that provide better performance, accessibility, and customization. These diagrams are fully interactive—you can pan, zoom, and explore them freely.
 
 ---
 
-## Summary
+## Why ReactFlow?
 
-Mermaid diagrams provide powerful visualization capabilities for:
+ReactFlow offers several advantages over Mermaid:
 
-- [x] Flowcharts for process documentation
-- [x] Sequence diagrams for API/system interactions
-- [x] State diagrams for workflow pipelines
-- [x] Class diagrams for OOP design
-- [x] Entity relationship diagrams for database design
-- [x] Git commit graphs for branching strategies
-- [x] Gantt charts for project planning
-- [x] Pie and bar charts for statistics
-- [x] Mind maps for organization
-- [x] Timeline for version history
+- **Performance**: Renders efficiently with thousands of nodes
+- **Interactivity**: Users can pan, zoom, and manipulate the diagram
+- **Accessibility**: Built with semantic HTML and ARIA labels
+- **Customization**: Full control over styling and behavior
+- **React Integration**: First-class support for React components within diagrams
 
-Visit the [Math & LaTeX](/blog/demo-math) post for mathematical equation rendering examples.
+---
+
+## Available Diagram Presets
+
+We've created several reusable diagram components that you can drop into any blog post or page:
+
+### 1. MCP Architecture
+
+The Model Context Protocol (MCP) architecture follows a three-tier client-server model:
+
+<MCPArchitecture height={300} caption="The three-tier MCP architecture: AI clients communicate with MCP servers through the protocol, which then access data sources via APIs." />
+
+**Use this when:**
+- Explaining multi-tier system architecture
+- Showing communication protocols between systems
+- Visualizing client-server relationships
+
+```tsx
+import { MCPArchitecture } from "@/components/common/diagram-presets";
+
+export default function MyPage() {
+  return <MCPArchitecture height={300} />;
+}
+```
+
+### 2. Authentication Flow
+
+This diagram shows a typical user authentication flow with decision points:
+
+<AuthenticationFlow height={500} caption="A user authentication flow showing the decision point where valid credentials lead to the dashboard while invalid credentials redirect to the login page." />
+
+**Use this when:**
+- Explaining authentication workflows
+- Showing valid vs. invalid paths
+- Visualizing multi-step login processes
+- Documenting API authentication flows
+
+```tsx
+import { AuthenticationFlow } from "@/components/common/diagram-presets";
+
+export default function MyPage() {
+  return <AuthenticationFlow height={500} />;
+}
+```
+
+### 3. MDX Processing Pipeline
+
+This diagram illustrates how markdown files are transformed into rendered HTML through multiple processing stages:
+
+<PipelineFlow height={600} caption="The MDX processing pipeline transforms raw markdown through remark parsing, rehype transformation, syntax highlighting, React compilation, and finally browser rendering." />
+
+**Use this when:**
+- Explaining content processing pipelines
+- Showing multi-stage transformations
+- Visualizing data flow through systems
+- Documenting build processes
+
+The six stages are:
+
+1. **Start: Markdown Post** - Raw `.mdx` file
+2. **Process with Remark** - Parse markdown syntax
+3. **Transform with Rehype** - HTML transformations
+4. **Syntax Highlight with Shiki** - Code block highlighting
+5. **Render as React Component** - MDX compilation
+6. **Display in Browser** - Final rendered output
+
+```tsx
+import { PipelineFlow } from "@/components/common/diagram-presets";
+
+export default function MyPage() {
+  return <PipelineFlow height={600} />;
+}
+```
+
+### 4. CVE Decision Tree
+
+This vulnerability assessment decision tree helps readers quickly determine if they're affected by a specific CVE:
+
+<CVEDecisionTree height={400} caption="A decision tree for assessing CVE-2025-55182 impact: users determine vulnerability by checking if they use React Server Components and their React version." />
+
+**Use this when:**
+- Documenting security vulnerabilities
+- Helping users assess impact
+- Creating decision trees for complex conditions
+- Explaining version-specific issues
+
+The tree guides users through a series of questions to determine their vulnerability status:
+
+```tsx
+import { CVEDecisionTree } from "@/components/common/diagram-presets";
+
+export default function SecurityPost() {
+  return (
+    <>
+      <h3>Am I Affected?</h3>
+      <CVEDecisionTree height={400} />
+    </>
+  );
+}
+```
+
+---
+
+## Customization
+
+All diagram presets accept the same props for customization:
+
+```tsx
+interface DiagramPresetProps {
+  showControls?: boolean;  // Show pan/zoom controls (default: true)
+  height?: number | string;  // Diagram height (default: varies)
+  className?: string;  // Additional CSS classes
+  caption?: string;  // Caption text displayed below the diagram
+}
+```
+
+**Examples:**
+
+```tsx
+// Full height diagram with controls and caption
+<MCPArchitecture 
+  height="100%" 
+  showControls={true}
+  caption="The three-tier MCP architecture"
+/>
+
+// Compact diagram with custom caption
+<AuthenticationFlow 
+  height={300} 
+  showControls={false}
+  caption="User login flow showing valid and invalid paths"
+/>
+
+// With custom styling and caption
+<PipelineFlow
+  height={500}
+  className="rounded-lg border border-border"
+  caption="Six-stage MDX to HTML transformation pipeline"
+/>
+```
+
+---
+
+## Creating Custom Diagrams
+
+If you need a custom diagram, use the base `InteractiveDiagram` component directly:
+
+```tsx
+import { InteractiveDiagram } from "@/components/common/interactive-diagram";
+import { type Node, type Edge } from "@xyflow/react";
+
+const nodes: Node[] = [
+  { id: '1', position: { x: 0, y: 0 }, data: { label: 'Start' } },
+  { id: '2', position: { x: 250, y: 0 }, data: { label: 'Process' } },
+  { id: '3', position: { x: 500, y: 0 }, data: { label: 'End' } },
+];
+
+const edges: Edge[] = [
+  { id: 'e1-2', source: '1', target: '2' },
+  { id: 'e2-3', source: '2', target: '3' },
+];
+
+export function CustomDiagram() {
+  return (
+    <InteractiveDiagram
+      nodes={nodes}
+      edges={edges}
+      title="My Custom Flow"
+      height={400}
+    />
+  );
+}
+```
+
+---
+
+## Performance Notes
+
+- Diagrams are **client-side rendered** using React hooks
+- Use `showControls={false}` for read-only diagrams to reduce bundle impact
+- Each diagram is lightweight (< 5KB gzipped)
+- Animations are GPU-accelerated for smooth performance
+
+---
+
+## Accessibility
+
+All diagrams include:
+
+- Semantic HTML structure
+- ARIA labels for nodes and edges
+- Keyboard navigation support
+- Sufficient color contrast
+
+---
+
+**Next Steps:** Try using these diagrams in your own blog posts! Check the `src/components/common/diagram-presets.tsx` file to see how they're implemented and create your own custom diagrams.

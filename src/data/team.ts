@@ -33,7 +33,7 @@ export const teamMembers: TeamMember[] = [
     name: "DCYFR",
     title: "AI Lab Assistant",
     subtitle: "Context-Aware Coding & Security AI",
-    description: "An AI assistant focused on automating code reviews, documentation, and security analysis to enhance developer productivity.",
+    description: "An AI assistant focused on automating code reviews, documentation, and security analysis to enhance developer productivity. (Pronounced 'Decipher')",
     badges: [
       { label: "AI-Powered", icon: Zap },
       { label: "Innovation by Design", icon: Shield },

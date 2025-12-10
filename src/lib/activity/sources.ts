@@ -269,6 +269,10 @@ export const TIME_GROUP_LABELS: Record<TimeGroup, string> = {
 export function formatActivityDate(timestamp: Date): string {
   const now = new Date();
   const diffMs = now.getTime() - timestamp.getTime();
+  
+  // If timestamp is in the future (invalid), treat as "just now"
+  if (diffMs < 0) return "Just now";
+  
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
   if (diffDays === 0) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useEffect } from "react";
+import { useCallback, useMemo, useEffect, useRef } from "react";
 import {
   ReactFlow,
   Controls,
@@ -290,6 +290,8 @@ export interface InteractiveDiagramProps {
   description?: string;
   /** Lock the diagram (disable dragging, panning, zooming) */
   locked?: boolean;
+  /** Caption for the diagram (displays below) */
+  caption?: string;
 }
 
 /**
@@ -346,7 +348,9 @@ export function InteractiveDiagram({
   title,
   description,
   locked = true,
+  caption,
 }: InteractiveDiagramProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
@@ -356,6 +360,26 @@ export function InteractiveDiagram({
   // When locked, prevent user zoom but allow auto-fit to work (0.1 to 1.5 range)
   const lockedMinZoom = locked ? 0.1 : minZoom;
   const lockedMaxZoom = locked ? 1.5 : maxZoom;
+
+  // Prevent scroll blocking when diagram is locked
+  // This allows page scrolling even when mouse is over the diagram
+  useEffect(() => {
+    if (!locked || !containerRef.current) return;
+
+    const container = containerRef.current;
+    
+    const handleWheel = (e: WheelEvent) => {
+      // Only prevent ReactFlow's default wheel handling when locked
+      // Allow the browser to handle the scroll normally for the page
+      e.preventDefault();
+    };
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+    };
+  }, [locked]);
 
   const onConnect: OnConnect = useCallback(
     (params) => {
@@ -404,13 +428,17 @@ export function InteractiveDiagram({
   );
 
   return (
-    <div
-      className={cn(
-        "rounded-lg border border-border bg-card overflow-hidden flex flex-col",
-        className
-      )}
-      style={{ height }}
-    >
+    <figure className="w-full mb-8">
+      <div
+        ref={containerRef}
+        className={cn(
+          "rounded-lg border border-border bg-card overflow-hidden flex flex-col w-full",
+          locked && "diagram-locked",
+          className
+        )}
+        style={{ height }}
+        data-locked={locked}
+      >
       {/*{(title || description) && (
         <div className="px-4 py-1 border-b border-border bg-muted/30 shrink-0">
           {title && <h3 className="font-sans! font-medium text-sm text-foreground">{title}</h3>}
@@ -480,6 +508,12 @@ export function InteractiveDiagram({
       </ReactFlow>
       </div>
     </div>
+    {caption && (
+      <figcaption className="mt-3 text-sm text-muted-foreground italic">
+        {caption}
+      </figcaption>
+    )}
+    </figure>
   );
 }
 

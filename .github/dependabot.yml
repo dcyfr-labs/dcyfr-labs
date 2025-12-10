@@ -2,8 +2,18 @@
 # Automated dependency updates and security alerts
 # Docs: https://docs.github.com/en/code-security/dependabot
 # Auto-merge: .github/workflows/dependabot-auto-merge.yml
+# 
+# IMPORTANT: Repository settings must enable auto-merge:
+# Settings → Pull requests → Allow auto-merge ✓
 
 version: 2
+
+# Global settings for all updates
+registries:
+  npm-registry:
+    type: npm-registry
+    url: https://registry.npmjs.org
+    
 updates:
   # npm dependencies - weekly batch updates
   - package-ecosystem: "npm"
@@ -125,8 +135,22 @@ updates:
     # ignore:
     #   - dependency-name: "package-name"
     #     versions: ["x.x.x"]
-
-  # GitHub Actions - keep CI/CD workflows updated
+    
+    # Auto-merge configuration (requires GitHub auto-merge enabled)
+    # Workflow handles security checks - this is just a fallback for simple patches
+    allow:
+      - dependency-type: "development"
+      - dependency-type: "production"
+    
+    # Increase PR limit slightly for production patches
+    open-pull-requests-limit: 15
+    
+    # Rebase stale PRs to ensure latest base
+    rebase-strategy: "auto"
+    
+    # Pull request versioning (keep PR titles consistent)
+    pull-request-branch-name:
+      separator: "/"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -139,3 +163,8 @@ updates:
     labels:
       - "ci/cd"
       - "dependencies"
+    # Auto-merge GitHub Actions updates (low risk)
+    allow:
+      - dependency-type: "all"
+    rebase-strategy: "auto"
+    open-pull-requests-limit: 20

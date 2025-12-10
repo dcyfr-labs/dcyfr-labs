@@ -7,6 +7,7 @@ export interface DiagramPresetProps {
   showControls?: boolean;
   height?: number | string;
   className?: string;
+  caption?: string;
 }
 
 /**
@@ -24,7 +25,8 @@ export interface DiagramPresetProps {
 export function MCPArchitecture({
   showControls = true,
   height = 300,
-  className
+  className,
+  caption
 }: DiagramPresetProps) {
   const { nodes: linearNodes, edges: linearEdges } = createLinearFlow([
     { label: "AI Client", description: "Claude, Copilot" },
@@ -54,6 +56,7 @@ export function MCPArchitecture({
       className={className}
       title="The Architecture"
       description="MCP follows a client-server model"
+      caption={caption}
     />
   );
 }
@@ -73,7 +76,8 @@ export function MCPArchitecture({
 export function AuthenticationFlow({
   showControls = true,
   height = 500,
-  className
+  className,
+  caption
 }: DiagramPresetProps) {
   const nodes: Node<BaseNodeData>[] = [
     { id: '1', type: 'input', position: { x: 250, y: 0 }, data: { label: 'User' } },
@@ -101,6 +105,7 @@ export function AuthenticationFlow({
       className={className}
       title="User Authentication Flow"
       description="Decision-based flow with valid/invalid authentication paths"
+      caption={caption}
     />
   );
 }
@@ -120,7 +125,8 @@ export function AuthenticationFlow({
 export function PipelineFlow({
   showControls = true,
   height = 600,
-  className
+  className,
+  caption
 }: DiagramPresetProps) {
   const { nodes, edges } = createLinearFlow([
     { label: "Start: Markdown Post", description: "Raw .mdx file" },
@@ -146,6 +152,7 @@ export function PipelineFlow({
       className={className}
       title="MDX Processing Pipeline"
       description="Six-step transformation from markdown to rendered HTML"
+      caption={caption}
     />
   );
 }
@@ -165,7 +172,8 @@ export function PipelineFlow({
 export function CVEDecisionTree({
   showControls = true,
   height = 400,
-  className
+  className,
+  caption
 }: DiagramPresetProps) {
   const nodes: Node<BaseNodeData>[] = [
     { 
@@ -223,6 +231,7 @@ export function CVEDecisionTree({
       className={className}
       title="Am I Affected?"
       description="Quick decision tree to assess CVE-2025-55182 impact"
+      caption={caption}
     />
   );
 }

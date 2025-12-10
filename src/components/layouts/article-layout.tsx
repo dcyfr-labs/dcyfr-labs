@@ -26,14 +26,13 @@
 
 import { CONTAINER_WIDTHS, SPACING, CONTAINER_VERTICAL_PADDING, CONTAINER_PADDING } from '@/lib/design-tokens';
 import { cn } from '@/lib/utils';
-import { 
-  SkeletonHeading, 
-  SkeletonMetadata, 
-  SkeletonParagraphs, 
+import {
+  SkeletonHeading,
+  SkeletonMetadata,
+  SkeletonParagraphs,
   SkeletonBadges,
-  SkeletonText 
+  SkeletonText
 } from '@/components/ui/skeleton-primitives';
-import '@/styles/print.css';
 
 export interface ArticleLayoutProps {
   /** Article header (title, metadata, badges) */

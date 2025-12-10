@@ -17,10 +17,10 @@ async function getRedisClient(): Promise<RedisClient | null> {
     const client = createClient({ 
       url: redisUrl,
       socket: {
-        connectTimeout: 5000,      // 5s connection timeout
+        connectTimeout: 10000,     // Increased to 10s (allow slow cold starts)
         reconnectStrategy: (retries) => {
-          if (retries > 3) return new Error('Max retries exceeded');
-          return Math.min(retries * 100, 3000); // Exponential backoff, max 3s
+          if (retries > 5) return new Error('Max retries exceeded');  // More attempts
+          return Math.min(retries * 200, 5000); // Slower backoff
         },
       },
     });
@@ -202,7 +202,7 @@ export const handleMilestone = inngest.createFunction(
 export const calculateTrending = inngest.createFunction(
   { 
     id: "calculate-trending",
-    retries: 2,
+    retries: 1,  // Fail fast on hourly jobs to prevent queue buildup
   },
   { cron: "0 * * * *" }, // Every hour
   async ({ step }) => {

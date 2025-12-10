@@ -1,9 +1,9 @@
 /**
  * BlogListSkeleton
- * 
+ *
  * Loading skeleton for blog post list with different layout support
  * Displays placeholder content while post list and view counts are loading
- * 
+ *
  * Sizes match actual PostList layout to prevent Cumulative Layout Shift (CLS)
  */
 
@@ -11,7 +11,7 @@ import { CONTAINER_PADDING, SPACING } from "@/lib/design-tokens";
 
 interface BlogListSkeletonProps {
   /** Layout mode - determines skeleton structure */
-  layout?: "grid" | "list" | "magazine" | "compact";
+  layout?: "grid" | "list" | "magazine" | "compact" | "grouped";
   /** Number of skeleton items to show */
   itemCount?: number;
 }
@@ -124,6 +124,22 @@ export function BlogListSkeleton({
         <div className="space-y-0">
           {Array.from({ length: itemCount + 3 }).map((_, i) => (
             <PostItemSkeleton key={i} layout="compact" />
+          ))}
+        </div>
+      )}
+
+      {/* Post list skeleton - grouped layout */}
+      {layout === "grouped" && (
+        <div className={SPACING.subsection}>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="border-b pb-4 last:border-b-0">
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-48 mb-4 animate-pulse" />
+              <div className={SPACING.content}>
+                {Array.from({ length: 4 }).map((_, j) => (
+                  <PostItemSkeleton key={j} layout="compact" />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       )}

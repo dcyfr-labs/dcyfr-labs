@@ -154,7 +154,7 @@ export function createPageMetadata(options: BaseMetadataOptions): Metadata {
       canonical: fullUrl,  // 🆕 ADD THIS
     },
     openGraph: {
-      title: `${title} — ${SITE_TITLE_PLAIN}`,
+      title: `${title}`,
       description,
       url: fullUrl,
       siteName: SITE_TITLE_PLAIN,
@@ -165,13 +165,13 @@ export function createPageMetadata(options: BaseMetadataOptions): Metadata {
           width: imageWidth,
           height: imageHeight,
           type: imageType,
-          alt: imageAlt || `${title} — ${SITE_TITLE_PLAIN}`,
+          alt: imageAlt || `${title}`,
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${title} — ${SITE_TITLE_PLAIN}`,
+      title: `${title}`,
       description,
       images: [twitterImageUrl],
     },
@@ -205,7 +205,7 @@ export function createArticlePageMetadata(options: ArticleMetadataOptions): Meta
       canonical: fullUrl,  // 🆕 ADD THIS
     },
     openGraph: {
-      title: `${title} — ${SITE_TITLE_PLAIN}`,
+      title: `${title}`,
       description,
       url: fullUrl,
       siteName: SITE_TITLE_PLAIN,

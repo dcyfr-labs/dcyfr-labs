@@ -1,13 +1,15 @@
 ---
 id: "post-20200107-04d94a8e"
 title: "Markdown Elements & Typography"
-subtitle: "Complete Demonstration of Markdown Elements and Typographic Styles"
 summary: "Complete demonstration of markdown elements including typography, lists, blockquotes, tables, and HTML components."
 publishedAt: "2020-01-07T12:00:00Z"
 updatedAt: "2025-11-30T12:00:00Z"
 category: "Demo"
 tags: ["Typography", "Markdown", "MDX", "Demo"]
 draft: true
+series:
+  name: "Features"
+  order: 2
 ---
 
 This page demonstrates all markdown elements and typographic styles used throughout the site. It showcases the **Lora** serif font for body text paired with **Geist Sans** for UI elements.
@@ -28,6 +30,8 @@ Fifth-level headings for deeply nested content.
 ###### Heading Level 6
 The smallest heading level available.
 
+---
+
 ## Text Formatting
 
 You can use **bold text** for emphasis, *italic text* for subtle emphasis, and ***bold italic*** for maximum emphasis. Use ~~strikethrough~~ for deleted text.
@@ -35,6 +39,8 @@ You can use **bold text** for emphasis, *italic text* for subtle emphasis, and *
 Inline `code snippets` are styled with monospace font and background highlighting. You can also use <kbd>Cmd</kbd> + <kbd>K</kbd> to show keyboard shortcuts.
 
 This paragraph includes a [link to Next.js](https://nextjs.org/) and an external link with proper styling.
+
+---
 
 ## Lists
 
@@ -63,6 +69,8 @@ This paragraph includes a [link to Next.js](https://nextjs.org/) and an external
 - [ ] Incomplete task
 - [ ] Another incomplete task
 
+---
+
 ## Blockquotes
 
 > This is a single-line blockquote.
@@ -72,6 +80,8 @@ This paragraph includes a [link to Next.js](https://nextjs.org/) and an external
 > It can span multiple paragraphs and includes proper spacing and styling to make quoted content stand out from the main text.
 
 > **Pro tip:** Blockquotes can contain **formatted text**, *italics*, and even `code snippets` for maximum flexibility.
+
+---
 
 ## Tables
 
@@ -171,6 +181,8 @@ Icons work great in tables for feature comparison:
 | <RocketIcon /> | Rocket | Launch, deployment |
 | <LockIcon /> | Lock | Security, privacy |
 
+---
+
 ## HTML Elements
 
 You can also use HTML elements when needed:
@@ -189,6 +201,8 @@ You can also use HTML elements when needed:
   - And other elements
 </details>
 
+---
+
 ## Footnotes
 
 Here's a sentence with a footnote reference[^1].
@@ -199,11 +213,15 @@ You can also use named footnotes[^note].
 
 [^note]: Named footnotes are easier to maintain in long documents.
 
-## Mermaid Diagrams
+---
 
-The site supports Mermaid diagrams for flowcharts, sequence diagrams, and more:
+## Interactive Diagrams
+
+The site supports interactive diagrams for flowcharts and architecture visualizations:
 
 <PipelineFlow height={600} />
+
+---
 
 ## Combinations
 
@@ -236,6 +254,6 @@ This page demonstrates major markdown and typographic elements:
 - [x] Icon components for consistent styling
 - [x] HTML elements and details/summary
 - [x] Footnotes
-- [x] Mermaid diagrams
+- [x] Interactive diagrams (ReactFlow)
 
 All elements are styled consistently with **Lora** serif font for readability and **Geist Sans** for UI elements.

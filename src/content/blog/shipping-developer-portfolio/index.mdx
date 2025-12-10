@@ -9,6 +9,12 @@ updatedAt: "2025-10-05T12:00:00Z"
 category: "Web"
 tags: ["Next.js", "Tailwind CSS", "TypeScript", "shadcn/ui", "Portfolio"]
 featured: true
+series:
+  name: "Portfolio"
+  order: 1
+  description: "Learn how to build, harden, and ship a production-ready developer portfolio with real-world techniques."
+  icon: "Rocket"
+  color: "development"
 previousSlugs:
   - "shipping-tiny-portfolio"
 ---
@@ -18,6 +24,8 @@ previousSlugs:
 ---
 
 I wanted to build a minimalistic, focused portfolio that is fast to load, easy to iterate on, and simple to host. After trying a few prototypes, I settled on a modern stack that prioritizes server rendering, typed data, and tiny bundles.
+
+---
 
 ## Why App Router?
 
@@ -29,6 +37,8 @@ The Next.js App Router represents a fundamental shift toward server-first render
 - **Streaming and suspense**: Built-in support for progressive loading.
 
 In this portfolio, I only use client components where it actually matters, theme toggling, the contact form, and a few sprinkle interactions.
+
+---
 
 ## Architecture cheat sheet
 
@@ -62,6 +72,8 @@ src/
 - Headless building blocks with CVA variants
 - Copy-paste component library that you own
 
+---
+
 ## Deployment
 
 Everything lands on Vercel with zero manual knobs. Analytics and Speed Insights are on by default, headers are set via `vercel.json`, and the whole thing stays fast.
@@ -78,6 +90,8 @@ Blog posts live as individual MDX files in `src/content/blog/`, parsed at build 
 - **Build-time rendering**: Posts are statically generated for speed
 
 MDX content is rendered with `next-mdx-remote` and enhanced with rehype plugins for auto-linking headings and GitHub-flavored markdown.
+
+---
 
 ## Takeaways
 

@@ -17,6 +17,18 @@ import {
   securityAdvisoryMonitor,
   securityAdvisoryHandler,
 } from "@/inngest/security-functions";
+import {
+  submitUrlToGoogle,
+  deleteUrlFromGoogle,
+  batchSubmitBlogPosts,
+  validateSitemapAndGetMissing,
+  submitMissingPagesToGoogle,
+} from "@/inngest/google-indexing-functions";
+import {
+  refreshActivityFeed,
+  invalidateActivityFeed,
+} from "@/inngest/activity-cache-functions";
+import { inngestErrorHandler } from "@/inngest/error-handler";
 
 /**
  * Inngest API endpoint for Next.js App Router
@@ -63,5 +75,19 @@ export const { GET, POST, PUT } = serve({
     // Security monitoring (CVE-2025-55182 response)
     securityAdvisoryMonitor,     // Scheduled: hourly GHSA polling
     securityAdvisoryHandler,     // Event-driven: process detections
+    
+    // Google Indexing API
+    submitUrlToGoogle,               // Event-driven: submit URL for indexing
+    deleteUrlFromGoogle,             // Event-driven: remove URL from index
+    batchSubmitBlogPosts,            // Event-driven: batch process multiple URLs (legacy)
+    validateSitemapAndGetMissing,    // Event-driven: validate sitemap against GSC
+    submitMissingPagesToGoogle,      // Event-driven: end-to-end: validate→submit→verify
+    
+    // Activity feed caching
+    refreshActivityFeed,             // Scheduled: every 5 minutes
+    invalidateActivityFeed,          // Event-driven: on content changes
+    
+    // Error handling (centralized monitoring and alerting)
+    inngestErrorHandler,             // Event-driven: triggered on function failures
   ],
 });

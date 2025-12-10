@@ -241,22 +241,25 @@ function generateRecommendations(posts: PostAnalytics[]): Recommendation[] {
     const recentAvgViews = recentPosts.reduce((sum, p) => sum + p.views, 0) / recentPosts.length;
     const overallAvgViews = avgViews;
     
-    if (recentAvgViews > overallAvgViews * 1.3) {
-      recommendations.push({
-        id: 'recent-performance',
-        type: 'insight',
-        priority: 'low',
-        title: 'Recent Content Performing Well',
-        description: `Your recent posts are getting ${Math.round((recentAvgViews / overallAvgViews - 1) * 100)}% more views than average. Keep up the momentum!`,
-      });
-    } else if (recentAvgViews < overallAvgViews * 0.7) {
-      recommendations.push({
-        id: 'recent-underperformance',
-        type: 'warning',
-        priority: 'medium',
-        title: 'Recent Content Underperforming',
-        description: `Recent posts are getting ${Math.round((1 - recentAvgViews / overallAvgViews) * 100)}% fewer views than average. Review your promotion strategy.`,
-      });
+    // Only compare if we have a valid baseline (avoid division by zero)
+    if (overallAvgViews > 0) {
+      if (recentAvgViews > overallAvgViews * 1.3) {
+        recommendations.push({
+          id: 'recent-performance',
+          type: 'insight',
+          priority: 'low',
+          title: 'Recent Content Performing Well',
+          description: `Your recent posts are getting ${Math.round((recentAvgViews / overallAvgViews - 1) * 100)}% more views than average. Keep up the momentum!`,
+        });
+      } else if (recentAvgViews < overallAvgViews * 0.7) {
+        recommendations.push({
+          id: 'recent-underperformance',
+          type: 'warning',
+          priority: 'medium',
+          title: 'Recent Content Underperforming',
+          description: `Recent posts are getting ${Math.round((1 - recentAvgViews / overallAvgViews) * 100)}% fewer views than average. Review your promotion strategy.`,
+        });
+      }
     }
   }
 

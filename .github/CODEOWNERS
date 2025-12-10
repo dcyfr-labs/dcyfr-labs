@@ -6,6 +6,12 @@
 #
 # Documentation: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
+# Proprietary AI Agent Instructions (RESTRICTED)
+.github/agents/ @dcyfr
+.github/copilot-instructions.md @dcyfr
+AGENTS.md @dcyfr
+CLAUDE.md @dcyfr
+
 # Default owner for everything in the repo
 * @dcyfr
 

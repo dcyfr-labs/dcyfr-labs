@@ -12,6 +12,7 @@ This guide documents all environment variables used in the project, their purpos
 |----------|----------|---------|------------------|
 | `INNGEST_EVENT_KEY` | Production only | Inngest event sending | Functions work in dev mode only |
 | `INNGEST_SIGNING_KEY` | Production only | Inngest webhook verification | Functions work in dev mode only |
+| `INNGEST_ERROR_ALERTS_EMAIL` | Recommended | Email alerts for function failures | Failures logged but no email alerts |
 | `RESEND_API_KEY` | Production only | Email delivery (contact form, milestones) | Logs submissions, shows warning |
 | `ADMIN_API_KEY` | Required for analytics | Secure analytics endpoint access | Endpoint disabled without key |
 | `GITHUB_TOKEN` | Recommended | GitHub API rate limits (60 → 5,000/hr) | Uses unauthenticated API (60 req/hr) |
@@ -149,6 +150,36 @@ This guide documents all environment variables used in the project, their purpos
 8. **Daily Analytics** (`dailyAnalyticsSummary`) - Daily at midnight UTC
 
 **Documentation:** See `/docs/features/inngest-integration.md`
+
+#### `INNGEST_ERROR_ALERTS_EMAIL`
+- **Type:** String (email address)
+- **Required:** No (highly recommended for production)
+- **Purpose:** Receive email alerts when Inngest functions fail after all retry attempts
+- **Setup:**
+  1. Set to your email address (e.g., `alerts@dcyfr.ai`)
+  2. Also requires `RESEND_API_KEY` to send emails
+  3. Automatic: no further configuration needed
+
+**Behavior without key:**
+- ✅ Function failures still logged in Inngest dashboard
+- ✅ Errors still reported to Sentry
+- ❌ No email alerts sent
+- ⚠️  You won't be notified immediately of failures
+
+**Alert Rules (Automatic):**
+- **CRITICAL** (contact form, payments) → Immediate email
+- **HIGH** (GitHub, security, analytics) → Email + Sentry
+- **MEDIUM** (trending, milestones) → Sentry only
+- **LOW** (logging, monitoring) → Console log only
+
+**Email Alert Includes:**
+- Function name, ID, and execution ID
+- Full error message and stack trace
+- Event data that triggered the error
+- Attempt count and retry limit
+- Links to Inngest and Sentry dashboards
+
+**Documentation:** See `/docs/features/inngest-error-alerting.md`
 
 ### Email Configuration (Legacy - Now via Inngest)
 - Check: `const isEmailConfigured = !!process.env.RESEND_API_KEY`

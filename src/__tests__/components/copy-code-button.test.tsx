@@ -330,7 +330,7 @@ describe("CopyCodeButton Component", () => {
   });
 
   describe("Visual Feedback", () => {
-    it("should show green check icon on success", async () => {
+    it("should show emerald check icon on success", async () => {
       const { container } = render(<CopyCodeButton code={mockCode} />);
       
       const button = screen.getByRole("button");
@@ -338,8 +338,8 @@ describe("CopyCodeButton Component", () => {
 
       await flushPromises();
 
-      // eslint-disable-next-line no-restricted-syntax -- Testing CSS selector for icon color
-      const checkIcon = container.querySelector('[class*="text-green-500"]');
+       
+      const checkIcon = container.querySelector('[class*="text-emerald-500"]');
       expect(checkIcon).toBeInTheDocument();
     });
 

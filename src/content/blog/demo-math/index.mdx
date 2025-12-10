@@ -1,13 +1,15 @@
 ---
 id: "post-20251112-26db545c"
 title: "LaTeX & Mathematical Expressions"
-subtitle: "Comprehensive Demonstration of LaTeX and Mathematical Expression Rendering with KaTeX"
 summary: "Complete demonstration of LaTeX and mathematical expression rendering with KaTeX, including inline equations, integrals, matrices, and calculus."
 publishedAt: "2025-11-12T12:00:00Z"
 updatedAt: "2025-11-30T12:00:00Z"
 category: "Demo"
 tags: ["LaTeX", "Math", "KaTeX", "Equations", "Calculus", "Demo"]
 draft: true
+series:
+  name: "Features"
+  order: 4
 ---
 
 This post demonstrates mathematical expression rendering using **KaTeX**, providing beautiful typesetting for mathematical content inline and as block equations.
@@ -18,6 +20,8 @@ This post demonstrates mathematical expression rendering using **KaTeX**, provid
 
 **KaTeX** is a fast, easy-to-use JavaScript library for TeX math rendering on the web. The blog uses KaTeX through the `remark-math` and `rehype-katex` plugins to render LaTeX expressions at build time.
 
+---
+
 ## Inline Math
 
 Einstein's famous equation is $E = mc^2$, where $m$ is mass and $c$ is the speed of light.
@@ -27,6 +31,8 @@ The quadratic formula is $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$.
 Pythagorean theorem: $a^2 + b^2 = c^2$
 
 Speed equals distance over time: $v = \frac{d}{t}$
+
+---
 
 ## Block Math (Display Mode)
 
@@ -58,6 +64,8 @@ x + y &= 5 \\
 $$
 
 **Solution**: $x = 2, y = 3$
+
+---
 
 ## Matrix Operations
 
@@ -101,6 +109,8 @@ g & h & i
 \end{bmatrix} = a(ei-fh) - b(di-fg) + c(dh-eg)
 $$
 
+---
+
 ## Summation and Products
 
 ### Sum of First n Natural Numbers
@@ -128,6 +138,8 @@ $$
 $$
 \prod_{n=1}^{\infty} \frac{(2n)^2}{(2n-1)(2n+1)} = \frac{\pi}{2}
 $$
+
+---
 
 ## Calculus
 
@@ -168,6 +180,8 @@ $$
 \int_{0}^{3} x^2 \, dx = \left[\frac{x^3}{3}\right]_0^3 = \frac{27}{3} - 0 = 9
 $$
 
+---
+
 ## Multivariable Calculus
 
 ### Partial Derivatives
@@ -191,6 +205,8 @@ $$
 $$
 \iint_R (x + y) \, dA = \int_0^2 \int_0^3 (x + y) \, dx \, dy
 $$
+
+---
 
 ## Algebra
 
@@ -222,6 +238,8 @@ $$
 \log_b(x^n) = n \log_b(x)
 $$
 
+---
+
 ## Linear Algebra
 
 ### Eigenvalue Problem
@@ -250,6 +268,8 @@ v_1 & v_2 & v_3
 \end{vmatrix}
 $$
 
+---
+
 ## Probability & Statistics
 
 ### Binomial Probability
@@ -275,6 +295,8 @@ $$
 $$
 \text{Var}(X) = E[X^2] - (E[X])^2
 $$
+
+---
 
 ## Physics
 
@@ -310,6 +332,8 @@ $$
 i\hbar\frac{\partial \Psi}{\partial t} = -\frac{\hbar^2}{2m}\frac{\partial^2 \Psi}{\partial x^2} + V\Psi
 $$
 
+---
+
 ## Complex Numbers
 
 ### Euler's Formula
@@ -329,6 +353,8 @@ $$
 $$
 \overline{z} = \overline{a + bi} = a - bi
 $$
+
+---
 
 ## Special Functions
 
@@ -355,6 +381,8 @@ $$
 $$
 \text{erf}(x) = \frac{2}{\sqrt{\pi}} \int_0^x e^{-t^2} dt
 $$
+
+---
 
 ## Tips for Writing LaTeX
 
@@ -395,4 +423,4 @@ This post demonstrates mathematical expression rendering with:
 - [x] Complex numbers
 - [x] Special functions
 
-Visit the [Mermaid Diagrams](/blog/demo-diagrams) post for visual documentation examples.
+Visit the [Markdown Demo](/blog/demo-markdown) post for typography and interactive diagram examples.

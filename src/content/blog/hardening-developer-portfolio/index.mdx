@@ -2,16 +2,22 @@
 id: "post-20251005-cadc6db5"
 title: "Hardening a Developer Portfolio"
 subtitle: "A multi-part series on taking a weekend portfolio project to production"
-authors: ["drew","dcyfr"]
 summary: "A multi-part series on taking a weekend portfolio project to production: implementing CSP, rate limiting, INP optimization, and more."
+authors: ["drew","dcyfr"]
 publishedAt: "2025-10-05T12:00:00Z"
 updatedAt: "2025-10-15T12:00:00Z"
 category: "DevSecOps"
 tags: ["Next.js", "Security", "Performance", "TypeScript", "Production"]
-featured: false
+series:
+  name: "Portfolio"
+  order: 2
+  description: "Learn how to build, harden, and ship a production-ready developer portfolio with real-world techniques."
+  icon: "Rocket"
+  color: "development"
 previousSlugs:
   - "hardening-tiny-portfolio"
 ---
+
 > **Series Background:** This is a follow-up to [Shipping a Developer Portfolio: Next.js, Tailwind v4 & shadcn/ui](/blog/shipping-developer-portfolio), where I built a minimal portfolio with Next.js 15, TypeScript, and Tailwind v4 in a weekend. This series documents the production-hardening work I did after launch.
 
 ---
@@ -19,6 +25,8 @@ previousSlugs:
 After shipping my portfolio, I realized that "working" and "production-ready" are two very different things. Over the next few weeks, I systematically addressed security vulnerabilities, performance bottlenecks, and developer experience gaps.
 
 This series documents everything I learned along the way.
+
+---
 
 ## The Journey
 
@@ -256,6 +264,8 @@ I created comprehensive instructions for AI coding assistants (GitHub Copilot, C
 5. **Document everything**: Future you will thank present you
 6. **AI assistants need guardrails**: Explicit conventions prevent drift
 
+---
+
 ## What's Next?
 
 Future improvements on my radar:
@@ -264,6 +274,8 @@ Future improvements on my radar:
 - View counts and analytics
 - Upgrade rate limiter to Vercel KV for multi-region
 - Add E2E tests with Playwright
+
+---
 
 ## Conclusion
 

@@ -5,6 +5,7 @@ import { BookOpen, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import type { Post } from "@/data/posts";
 import { SPACING } from "@/lib/design-tokens";
+import { trackSeriesPostClick } from "@/lib/analytics";
 
 interface PostSeriesNavProps {
   series: {
@@ -17,11 +18,24 @@ interface PostSeriesNavProps {
 
 /**
  * Post Series Navigation Section
- * 
+ *
  * Displays navigation for posts that are part of a series.
+ * Includes analytics tracking on post clicks.
  */
 export function PostSeriesNav({ series, seriesPosts, currentSlug }: PostSeriesNavProps) {
   if (seriesPosts.length === 0) return null;
+
+  const seriesSlug = series.name.toLowerCase().replace(/\s+/g, "-");
+
+  const handlePostClick = (post: Post) => {
+    trackSeriesPostClick(
+      seriesSlug,
+      series.name,
+      post.slug,
+      post.title,
+      post.series?.order ?? 0
+    );
+  };
 
   return (
     <div className={`${SPACING.compact} pb-6 border-b`}>
@@ -59,6 +73,7 @@ export function PostSeriesNav({ series, seriesPosts, currentSlug }: PostSeriesNa
                 <Link
                   href={`/blog/${post.slug}`}
                   className="flex-1 min-w-0 group flex items-start gap-1"
+                  onClick={() => handlePostClick(post)}
                 >
                   <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors truncate flex-1">
                     {post.title}

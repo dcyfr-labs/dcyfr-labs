@@ -2,8 +2,8 @@
 id: "post-20251111-446fbfc7"
 title: "Building with AI"
 subtitle: "How Model Context Protocol is Transforming AI-Assisted Development"
-authors: ["drew","dcyfr"]
 summary: "Exploring the Model Context Protocol (MCP) and how it's enabling new patterns for AI-assisted development with practical examples from real projects."
+authors: ["drew","dcyfr"]
 publishedAt: "2025-11-11T12:00:00Z"
 updatedAt: "2025-11-18T12:00:00Z"
 category: "AI"
@@ -34,6 +34,8 @@ MCP follows a client-server model:
 - **Standardization**: One protocol for many tools
 - **Composability**: Mix and match servers for your workflow
 - **Local-first**: Servers run on your machine, not in the cloud
+
+---
 
 ## Real-World Example: This Portfolio
 
@@ -103,6 +105,8 @@ const logs = await mcp_vercel_get_deployment_build_logs({
 });
 ```
 
+---
+
 ## Building Your Own MCP Server
 
 MCP servers are surprisingly simple to build. The official SDK[^mcp-github] provides everything you need. Here's a minimal example:
@@ -156,6 +160,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 const transport = new StdioServerTransport();
 await server.connect(transport);
 ```
+
+---
 
 ## Patterns I've Learned
 
@@ -213,6 +219,8 @@ const config = await mcp_filesystem_read_file({
 
 The file contents stay on your machine.
 
+---
+
 ## The Developer Experience
 
 Here's what a typical workflow looks like:
@@ -235,6 +243,8 @@ Here's what a typical workflow looks like:
 
 The difference is dramatic. **The AI works with your actual project state**, not a text summary you typed.
 
+---
+
 ## Security Considerations
 
 MCP is designed with security in mind, but you still need to be careful:
@@ -247,6 +257,8 @@ MCP is designed with security in mind, but you still need to be careful:
 From the MCP security guidelines[^mcp-intro]:
 
 > "MCP servers run with the same permissions as your user account. Only install servers from trusted sources."
+
+---
 
 ## Getting Started
 
@@ -292,6 +304,8 @@ Add to `.vscode/settings.json` or user settings:
 "Use Memory to recall our authentication architecture"
 ```
 
+---
+
 ## What's Next for MCP?
 
 The protocol is still evolving. Anthropic recently announced code execution capabilities[^mcp-code-execution], and the direction is clear:
@@ -300,6 +314,8 @@ The protocol is still evolving. Anthropic recently announced code execution capa
 - **Better discovery**: Marketplace for MCP servers
 - **Cross-editor support**: Beyond VS Code (JetBrains, Cursor, etc.)
 - **Enterprise features**: Team-shared servers, permission management
+
+---
 
 ## Closing Thoughts
 

@@ -231,8 +231,9 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
       const top = element.getBoundingClientRect().top + window.scrollY - 80;
       window.scrollTo({ top, behavior: "smooth" });
       setActiveId(id);
-      // Close sheet on mobile after navigation
-      setIsSheetOpen(false);
+      // Delay sheet close to allow scroll animation to complete (~1000ms)
+      // This ensures the user can see the target section scroll into view
+      setTimeout(() => setIsSheetOpen(false), 1000);
     }
   };
 

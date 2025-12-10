@@ -1,0 +1,109 @@
+name: Automated Test Metrics Collection
+
+# Runs after test suite to capture metrics
+on:
+  workflow_run:
+    workflows: ['Tests']
+    types: [completed]
+  
+  # Manual trigger for baseline reset
+  workflow_dispatch:
+    inputs:
+      reset_baseline:
+        description: 'Reset performance baseline'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+  checks: read
+
+jobs:
+  collect-metrics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run test suite with JSON reporter
+        id: test-results
+        run: |
+          npm run test:ci > test-output.json 2>&1 || echo "Tests completed with status: $?"
+          
+          # Extract metrics
+          if [ -f test-output.json ]; then
+            PASS=$(grep -oP '✓.*passed' test-output.json | wc -l || echo "0")
+            TOTAL=$(grep -oP '✓|✗' test-output.json | wc -l || echo "0")
+            PERCENTAGE=$(echo "scale=1; ($PASS / $TOTAL) * 100" | bc -l 2>/dev/null || echo "0")
+            echo "tests_passed=$PASS" >> $GITHUB_OUTPUT
+            echo "tests_total=$TOTAL" >> $GITHUB_OUTPUT
+            echo "pass_percentage=$PERCENTAGE" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Collect Lighthouse metrics
+        id: lighthouse-metrics
+        run: |
+          if [ -f performance-baselines.json ]; then
+            PERF=$(jq -r '.performance // "0"' performance-baselines.json)
+            A11Y=$(jq -r '.accessibility // "0"' performance-baselines.json)
+            SEO=$(jq -r '.seo // "0"' performance-baselines.json)
+            echo "performance=$PERF" >> $GITHUB_OUTPUT
+            echo "accessibility=$A11Y" >> $GITHUB_OUTPUT
+            echo "seo=$SEO" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Update metrics file
+        run: |
+          cat > metrics-snapshot.json << 'EOF'
+          {
+            "timestamp": "$(date -u +'%Y-%m-%dT%H:%M:%SZ')",
+            "tests": {
+              "passed": ${{ steps.test-results.outputs.tests_passed || 0 }},
+              "total": ${{ steps.test-results.outputs.tests_total || 0 }},
+              "pass_rate": "${{ steps.test-results.outputs.pass_percentage || 0 }}%"
+            },
+            "lighthouse": {
+              "performance": ${{ steps.lighthouse-metrics.outputs.performance || 0 }},
+              "accessibility": ${{ steps.lighthouse-metrics.outputs.accessibility || 0 }},
+              "seo": ${{ steps.lighthouse-metrics.outputs.seo || 0 }}
+            }
+          }
+          EOF
+      
+      - name: Create metrics commit (if changed)
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          
+          if ! git diff --quiet metrics-snapshot.json 2>/dev/null; then
+            git add metrics-snapshot.json
+            git commit -m "chore(metrics): update test and performance snapshots" --no-verify
+            git push
+          else
+            echo "No changes to metrics"
+          fi
+        continue-on-error: true
+      
+      - name: Report metrics
+        run: |
+          echo "### 📊 Test Metrics Snapshot" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Test Results:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Passed: ${{ steps.test-results.outputs.tests_passed }} / ${{ steps.test-results.outputs.tests_total }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Pass Rate: ${{ steps.test-results.outputs.pass_percentage }}%" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Lighthouse Scores:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Performance: ${{ steps.lighthouse-metrics.outputs.performance }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Accessibility: ${{ steps.lighthouse-metrics.outputs.accessibility }}" >> $GITHUB_STEP_SUMMARY
+          echo "- SEO: ${{ steps.lighthouse-metrics.outputs.seo }}" >> $GITHUB_STEP_SUMMARY

@@ -10,9 +10,9 @@ This document tracks **active and pending** work. Completed tasks are in **`done
 
 | Status | Count | Impact |
 |--------|-------|--------|
-| **Pending Work** | 13 items | Medium-effort features (2-6 hours each) |
+| **Pending Work** | 11 items | Medium-effort features (2-6 hours each) |
 | **Backlog** | 12 items | Low-priority or speculative features |
-| **✅ Completed** | 47+ items | Phases 1-4 + recent completions |
+| **✅ Completed** | 50+ items | Phases 1-4 + automation + activity caching |
 
 ---
 
@@ -67,9 +67,21 @@ This document tracks **active and pending** work. Completed tasks are in **`done
 - Portfolio samples (link to work page)
 - **Estimated Impact:** Business development
 
+### Priority 4: Blog Series - Polish (1-2 hours)
+
+#### 🟡 **Series Analytics & Navigation** (1-2 hours)
+- Add series analytics tracking (view/start/complete events)
+- Update navigation (header dropdown, sidebar, footer)
+- Verify sitemap includes series URLs
+- Write comprehensive test suite
+- **Status:** Phase 1 complete (foundation + pages)
+- **Estimated Impact:** Enhanced series discoverability
+
 ---
 
 ## 🔵 BACKLOG (Low Priority or Speculative)
+
+### Blog Features
 
 ### Infrastructure & Reliability
 
@@ -98,9 +110,10 @@ This document tracks **active and pending** work. Completed tasks are in **`done
   - API key-based access (`SPONSOR_API_KEY` env var)
   - Per-sponsor tokens stored in Redis
   - `GET /api/invites/stats` - Protected stats endpoint
+  - Github Sponsors authentication via Github OAuth
 
 - [ ] **Sponsor Dashboard UI** (3-4 hours)
-  - `/sponsors/dashboard` page with authentication
+  - `/sponsors/dashboard` page with authentication (Github OAuth)
   - Display stats (uses, conversions, trending)
   - Chart visualization
   - Real-time updates via API polling

@@ -10,7 +10,6 @@ export { default as Logo } from "./logo";
 export { SiteLogo } from "./site-logo";
 export { MDX } from "./mdx";
 export { ZoomableImage } from "./zoomable-image";
-export { Mermaid } from "./mermaid";
 export { Figure, FigureProvider } from "./figure-caption";
 export { FAQ, FAQQuestion, FAQAnswer, type FAQProps, type FAQItem } from "./faq";
 export { ProfileAvatar, type AvatarSize } from "./profile-avatar";
@@ -56,12 +55,23 @@ export {
   type BaseNodeData
 } from "./interactive-diagram";
 
-// Diagram Presets
+// Diagram Presets (lazy-loaded for SSR compatibility)
 export {
   MCPArchitecture,
   AuthenticationFlow,
   PipelineFlow,
   CVEDecisionTree,
+} from "./lazy-diagrams";
+
+// MDX Diagram Wrappers (client-only, prevents SSR bailout in MDX)
+export {
+  MDXMCPArchitecture,
+  MDXAuthenticationFlow,
+  MDXPipelineFlow,
+  MDXCVEDecisionTree,
+} from "./mdx-diagram-wrapper";
+
+export {
   type DiagramPresetProps
 } from "./diagram-presets";
 

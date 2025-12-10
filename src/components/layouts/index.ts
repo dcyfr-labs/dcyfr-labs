@@ -15,6 +15,8 @@
 export { PageLayout } from './page-layout';
 export type { PageLayoutProps } from './page-layout';
 
+export { PageHero } from './page-hero';
+
 // Archive Pattern Components
 export { ArchiveLayout } from './archive-layout';
 export type { ArchiveLayoutProps } from './archive-layout';

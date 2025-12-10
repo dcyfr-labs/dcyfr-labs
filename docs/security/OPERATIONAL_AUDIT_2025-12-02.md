@@ -337,7 +337,7 @@ npm run build
 - ✅ Production sampling: 10% traces, 5% session replay
 - ✅ Source maps enabled for debugging
 - ✅ User PII tracking enabled (for support)
-- ⚠️ **Known Issue**: MCP integration returning 404 for org `dcyfr-labs-gj`
+- ⚠️ **Known Issue**: MCP integration returning 404 for org `dcyfr-labs`
 
 ### Analytics
 - ✅ **Vercel Analytics**: Auto-configured on deployment
@@ -625,7 +625,7 @@ Total:         2.6 GB
    - Fix error scenario integration tests
 
 6. **Fix Sentry MCP Integration** (1 hour)
-   - Update org slug from `dcyfr-labs-gj` to `dcyfr-labs`
+   - Update org slug from `dcyfr-labs` to `dcyfr-labs`
    - Test with `mcp_sentry_find_organizations` tool
    - Update VS Code settings
 

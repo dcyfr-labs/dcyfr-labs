@@ -85,52 +85,70 @@ This document serves as the **single source of truth** for discovering, routing,
 
 ---
 
-### 3. DCYFR Agent Instructions
-**File:** [`.github/agents/DCYFR.agent.md`](./.github/agents/DCYFR.agent.md)  
-**Lines:** 414  
-**Last Updated:** December 8, 2025  
+### 3. DCYFR Agent Instructions (Modular v2.0)
+**Hub File:** [`.github/agents/DCYFR.agent.md`](./.github/agents/DCYFR.agent.md)  
+**Lines:** 195 (hub) + 2600+ (modular files)  
+**Last Updated:** December 9, 2025  
 **Audience:** DCYFR agent (specialized mode, activated in conversation)  
-**Format:** Comprehensive specification with examples
+**Format:** Hub with links to modular documentation
 
-**Covers:**
-- Agent purpose and capabilities
+**Hub File (.github/agents/DCYFR.agent.md) Covers:**
+- Agent purpose and quick start
 - When to use/not use DCYFR
-- Mandatory patterns and boundaries
-- Strategic testing guidelines
-- Approval gates for breaking changes
-- Ideal input formats
-- Expected output formats
-- Workflow examples
-- Progress reporting standards
-- Help & escalation procedures
-- Resource index
-- Agent philosophy
+- 5 core rules (Design Tokens, Layouts, Imports, API, Testing)
+- Approval gates overview
+- DCYFR philosophy
+- Links to all modular documentation
+
+**Modular Files Organization:**
+
+#### Patterns Directory (.github/agents/patterns/)
+| File | Lines | Covers |
+|------|-------|--------|
+| [COMPONENT_PATTERNS.md](patterns/COMPONENT_PATTERNS.md) | 466 | Layout selection (PageLayout 90% rule), barrel exports, import strategy, anti-patterns |
+| [API_PATTERNS.md](patterns/API_PATTERNS.md) | 405 | Validate→Queue→Respond, Inngest integration, error handling, rate limiting |
+| [TESTING_PATTERNS.md](patterns/TESTING_PATTERNS.md) | 370 | 99% pass rate target, strategic skips, when/when-not-to-test, E2E strategy |
+| [CODEQL_SUPPRESSIONS.md](patterns/CODEQL_SUPPRESSIONS.md) | 310 | LGTM syntax, false positive patterns, common suppressions, verification |
+
+#### Enforcement Directory (.github/agents/enforcement/)
+| File | Lines | Covers |
+|------|-------|--------|
+| [DESIGN_TOKENS.md](enforcement/DESIGN_TOKENS.md) | 360 | Token enforcement (NON-NEGOTIABLE), categories, ESLint rules, compliance targets |
+| [APPROVAL_GATES.md](enforcement/APPROVAL_GATES.md) | 380 | Breaking changes, architecture decisions, security-sensitive work, approval process |
+| [VALIDATION_CHECKLIST.md](enforcement/VALIDATION_CHECKLIST.md) | 360 | Pre-completion checks, automated/manual validation, common failures, bypass criteria |
+
+#### Learning Directory (.github/agents/learning/)
+| File | Lines | Covers |
+|------|-------|--------|
+| [PERFORMANCE_METRICS.md](learning/PERFORMANCE_METRICS.md) | 340 | Token budgets, efficiency targets, dashboards, metrics tracking |
+| [CONTINUOUS_LEARNING.md](learning/CONTINUOUS_LEARNING.md) | 420 | Pattern recognition, feedback loops, self-improvement triggers, knowledge base evolution |
+| [KNOWLEDGE_BASE.md](learning/KNOWLEDGE_BASE.md) | 350 | Session handoff, knowledge transfer, long-term learning, monthly reports |
 
 **When to update:**
-- DCYFR capabilities expand
-- New mandatory patterns
-- Enforcement rules change
-- Approval gates shift
-- Decision trees evolve
+- **Hub file:** When changing core rules, philosophy, approval gates, or adding new modular files
+- **Pattern files:** When implementing or discovering new architectural patterns
+- **Enforcement files:** When enforcement rules change (design tokens, validation gates)
+- **Learning files:** When optimizing DCYFR performance or evolving self-improvement strategy
 
 **Version tracking:**
 ```json
 {
   "file": ".github/agents/DCYFR.agent.md",
-  "format": "agent-instructions",
+  "format": "agent-instructions-modular",
+  "version": "2.0.0",
   "scope": "specialized-mode-enforcement",
-  "coverage": "Production patterns, validation, testing",
+  "coverage": "Production patterns, validation, testing, learning",
+  "last_updated": "2025-12-09",
   "source_of_truth": "AGENTS.md",
-  "sync_status": "Automatic (embedded in conversation)"
+  "sync_status": "Automatic (embedded in conversation)",
+  "modular_structure": {
+    "hub": ".github/agents/DCYFR.agent.md (195 lines)",
+    "patterns": 4,
+    "enforcement": 3,
+    "learning": 3,
+    "total_modular_lines": 2600
+  }
 }
-
-> Note: Some repositories intentionally omit the `.github/agents/DCYFR.agent.md` file. The validation script and workflows in this repository have been updated to treat this file as optional. If your project relies on DCYFR-specific instructions, add the file and set the validation configuration accordingly.
-
-Configuration: The default ignored instruction files are stored in `.github/agents/instructions/INSTRUCTIONS_CONFIG.json`. Use the `IGNORED_INSTRUCTION_FILES` environment variable to override this list in CI or local runs. Example:
-
-```
-IGNORED_INSTRUCTION_FILES='.github/agents/DCYFR.agent.md' node scripts/validate-instructions.mjs
-```
 ```
 
 ---
@@ -201,11 +219,28 @@ AGENTS.md (This file)
    │  ├─ Source: Project lead updates
    │  └─ Sync: Update when project phase changes
    │
-   ├─ .github/agents/DCYFR.agent.md
+   ├─ .github/agents/DCYFR.agent.md (HUB v2.0 Modular)
    │  ├─ For: Specialized mode in conversation
-   │  ├─ Focus: Pattern enforcement, decision logic
+   │  ├─ Focus: Core rules, philosophy, approval gates
    │  ├─ Source: Architecture decisions (docs/ai/)
-   │  └─ Sync: Automatic (embedded in session)
+   │  ├─ Sync: Automatic (embedded in session)
+   │  └─ Links to:
+   │     │
+   │     ├─ .github/agents/patterns/ (4 files)
+   │     │  ├─ COMPONENT_PATTERNS.md (layouts, imports, exports)
+   │     │  ├─ API_PATTERNS.md (Inngest, validation, responses)
+   │     │  ├─ TESTING_PATTERNS.md (99% target, when/when-not-to-test)
+   │     │  └─ CODEQL_SUPPRESSIONS.md (LGTM syntax, false positives)
+   │     │
+   │     ├─ .github/agents/enforcement/ (3 files)
+   │     │  ├─ DESIGN_TOKENS.md (token enforcement, categories)
+   │     │  ├─ APPROVAL_GATES.md (breaking changes, security)
+   │     │  └─ VALIDATION_CHECKLIST.md (pre-completion checks)
+   │     │
+   │     └─ .github/agents/learning/ (3 files)
+   │        ├─ PERFORMANCE_METRICS.md (token budgets, dashboards)
+   │        ├─ CONTINUOUS_LEARNING.md (pattern recognition, self-improvement)
+   │        └─ KNOWLEDGE_BASE.md (session handoff, long-term learning)
    │
    ├─ docs/ai/ (Referenced by all)
    │  ├─ QUICK_REFERENCE.md
@@ -227,14 +262,15 @@ AGENTS.md (This file)
 
 | Aspect | Copilot | Claude | DCYFR |
 |--------|---------|--------|-------|
-| **Format** | Quick-ref, 80/20 | Narrative, full context | Comprehensive spec |
-| **Lines** | 240 | 175 | 414 |
+| **Format** | Quick-ref, 80/20 | Narrative, full context | Modular hub v2.0 |
+| **Lines** | 240 | 175 | 195 (hub) + 2600 (modular) |
 | **Update Frequency** | Quarterly or as patterns emerge | On phase changes | On enforcement changes |
 | **Scope** | Real-time coding patterns | Project-wide context | Strict pattern validation |
-| **Decision Support** | Basic (layouts, imports) | Exploratory (why/how) | Systematic (decision trees) |
+| **Decision Support** | Basic (layouts, imports) | Exploratory (why/how) | Systematic (10 modular files) |
 | **Enforcement** | ESLint violations | Guidelines | Mandatory gates + tests |
 | **Best For** | Speed (seconds) | Understanding (minutes) | Rigor (hours) |
 | **Activation** | Always active in VS Code | Always available | Conversation mode |
+| **Structure** | Monolithic | Narrative | Hub + 3 directories (patterns, enforcement, learning) |
 
 ---
 
@@ -339,12 +375,60 @@ Each instruction file maintains this metadata:
 
 ## 📋 Recent Updates
 
+### December 9, 2025
+- ✅ **Enhanced automation system**
+  - Enabled full Dependabot auto-merge for safe updates
+  - Created `scheduled-instruction-sync.yml` for quarterly doc updates
+  - Created `automated-metrics-collection.yml` for continuous metrics
+  - Created `automated-security-checks.yml` for daily security scanning
+  - Added `docs/automation/AUTOMATED_UPDATES.md` with complete automation guide
+- ✅ Completed modular refactoring of DCYFR.agent.md
+  - Extracted 10 modular documentation files
+  - Created 3 directories: patterns/, enforcement/, learning/
+  - Reduced hub from 719 to 195 lines
+  - Total modular content: 2600+ lines across 10 files
+- ✅ Updated AGENTS.md with modular file structure and automation reference
+
 ### December 8, 2025
 - ✅ Created `AGENTS.md` as centralized hub
 - ✅ Documented all three instruction files
 - ✅ Established decision tree for agent selection
 - ✅ Created sync checklist and maintenance procedures
 - ✅ Mapped file relationships and ownership
+
+---
+
+## 🤖 Automated Updates & Maintenance
+
+dcyfr-labs uses a **comprehensive multi-layer automation system** to keep dependencies, documentation, and metrics current automatically.
+
+**Full Documentation:** [`docs/automation/AUTOMATED_UPDATES.md`](docs/automation/AUTOMATED_UPDATES.md)
+
+### What's Automated
+
+| System | Frequency | Purpose |
+|--------|-----------|---------|
+| **Dependabot Updates** | Weekly | Auto-updates npm and GitHub Actions |
+| **Auto-Merge Workflow** | Per PR | Safely auto-merges patches & minor updates |
+| **Instruction Sync** | Monthly | Keeps AI docs in sync with project metrics |
+| **Security Pre-Checks** | Daily | Scans for vulnerabilities |
+| **Test Metrics** | Per run | Captures test & performance data |
+| **Lighthouse CI** | Per push | Validates performance & accessibility |
+
+### Quick Reference
+
+```bash
+# Manually trigger instruction sync
+npm run sync:ai
+
+# Check MCP server health
+npm run mcp:check
+
+# Run all quality gates
+npm run check
+```
+
+**For detailed automation setup and configuration, see:** [`docs/automation/AUTOMATED_UPDATES.md`](docs/automation/AUTOMATED_UPDATES.md)
 
 ---
 

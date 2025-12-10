@@ -23,6 +23,38 @@ import {
   transformGitHubActivity,
 } from "@/lib/activity/sources.server";
 import type { ActivityItem } from "@/lib/activity/types";
+import { createClient } from "redis";
+
+// ============================================================================
+// REDIS CLIENT HELPER
+// ============================================================================
+
+async function getRedisClient() {
+  const redisUrl = process.env.REDIS_URL;
+  if (!redisUrl) return null;
+
+  try {
+    const client = createClient({
+      url: redisUrl,
+      socket: {
+        connectTimeout: 5000,
+        reconnectStrategy: (retries) => {
+          if (retries > 3) return new Error("Max retries exceeded");
+          return Math.min(retries * 100, 3000);
+        },
+      },
+    });
+
+    if (!client.isOpen) {
+      await client.connect();
+    }
+
+    return client;
+  } catch (error) {
+    console.error("[Activity Page] Redis connection failed:", error);
+    return null;
+  }
+}
 
 const pageTitle = "Activity";
 const pageDescription =
@@ -41,19 +73,45 @@ export default async function ActivityPage() {
   // Get nonce from proxy for CSP
   const nonce = (await headers()).get("x-nonce") || "";
 
-  // Fetch activities directly (no HTTP request needed in server component)
+  // Fetch activities (cache-first strategy)
   let allActivities: ActivityItem[] = [];
   let error: string | null = null;
+  let loadSource: "cache" | "direct" = "direct";
 
   try {
-    // Calculate time boundaries for trending posts
-    const now = new Date();
-    
-    // Start of current month
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    
-    // Gather activity from all sources in parallel (same as API route)
-    const activities: ActivityItem[] = [];
+    // STEP 1: Try cache first
+    const redis = await getRedisClient();
+    if (redis) {
+      try {
+        const cached = await redis.get("activity:feed:all");
+        if (cached) {
+          allActivities = JSON.parse(cached);
+          loadSource = "cache";
+          console.log(
+            `[Activity Page] ✅ Loaded from cache: ${allActivities.length} items`
+          );
+        } else {
+          console.log("[Activity Page] ⚠️ Cache miss, fetching directly");
+        }
+        await redis.quit();
+      } catch (cacheError) {
+        console.error("[Activity Page] Cache read error:", cacheError);
+        // Continue to direct fetch on cache error
+      }
+    }
+
+    // STEP 2: Fallback to direct fetch if cache miss
+    if (allActivities.length === 0) {
+      console.log("[Activity Page] Fetching activities directly...");
+
+      // Calculate time boundaries for trending posts
+      const now = new Date();
+      
+      // Start of current month
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      
+      // Gather activity from all sources in parallel
+      const activities: ActivityItem[] = [];
     
     await Promise.all([
       // Blog posts with views
@@ -115,9 +173,15 @@ export default async function ActivityPage() {
 
     // Aggregate and sort (limit to 100 for page)
     allActivities = aggregateActivities(activities, { limit: 100 });
+    loadSource = "direct";
+    
+    console.log(
+      `[Activity Page] ✅ Direct fetch complete: ${allActivities.length} items`
+    );
+    }
   } catch (err) {
     error = "Failed to load activities";
-    console.error("[Activity Page]", err);
+    console.error("[Activity Page] Error:", err);
   }
 
   // JSON-LD structured data

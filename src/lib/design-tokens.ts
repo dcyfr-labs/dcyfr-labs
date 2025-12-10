@@ -397,6 +397,174 @@ export const OPACITY = {
 } as const;
 
 // ============================================================================
+// SERIES COLORS
+// ============================================================================
+
+/**
+ * Series color palette for blog series theming
+ *
+ * Provides semantic color schemes for series badges, cards, and navigation.
+ * All colors are optimized for light/dark mode with accessible contrast ratios.
+ *
+ * Color Selection Philosophy:
+ * - Maps to existing gradient categories (brand, warm, cool, neutral, vibrant)
+ * - Semantic names tied to common series themes (tutorial, security, performance, etc.)
+ * - WCAG AA contrast compliance for text on backgrounds
+ * - Consistent with existing design token system
+ *
+ * @example
+ * ```tsx
+ * // Using series colors in components
+ * <Badge className={SERIES_COLORS.tutorial.badge}>
+ *   Tutorial Series
+ * </Badge>
+ *
+ * <Card className={SERIES_COLORS.security.card}>
+ *   {content}
+ * </Card>
+ * ```
+ */
+export const SERIES_COLORS = {
+  /** Default series color (primary brand blue) */
+  default: {
+    /** Badge background/text */
+    badge: "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary/90 border-primary/20",
+    /** Card accent (border, highlights) */
+    card: "border-primary/20 hover:border-primary/40",
+    /** Icon color */
+    icon: "text-primary dark:text-primary/90",
+    /** Gradient key for hero images */
+    gradient: "brand.primary" as const,
+  },
+
+  /** Tutorial/educational series (blue → violet) */
+  tutorial: {
+    badge: "bg-blue-500/10 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 border-blue-500/20",
+    card: "border-blue-500/20 hover:border-blue-500/40",
+    icon: "text-blue-600 dark:text-blue-400",
+    gradient: "brand.primary" as const,
+  },
+
+  /** Security/hardening series (shield theme - cyan → indigo) */
+  security: {
+    badge: "bg-cyan-500/10 text-cyan-700 dark:bg-cyan-500/20 dark:text-cyan-300 border-cyan-500/20",
+    card: "border-cyan-500/20 hover:border-cyan-500/40",
+    icon: "text-cyan-600 dark:text-cyan-400",
+    gradient: "brand.accent" as const,
+  },
+
+  /** Performance/optimization series (lightning theme - orange → red) */
+  performance: {
+    badge: "bg-orange-500/10 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300 border-orange-500/20",
+    card: "border-orange-500/20 hover:border-orange-500/40",
+    icon: "text-orange-600 dark:text-orange-400",
+    gradient: "warm.fire" as const,
+  },
+
+  /** Architecture/design series (violet → pink) */
+  architecture: {
+    badge: "bg-violet-500/10 text-violet-700 dark:bg-violet-500/20 dark:text-violet-300 border-violet-500/20",
+    card: "border-violet-500/20 hover:border-violet-500/40",
+    icon: "text-violet-600 dark:text-violet-400",
+    gradient: "brand.secondary" as const,
+  },
+
+  /** Development/coding series (emerald → teal) */
+  development: {
+    badge: "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 border-emerald-500/20",
+    card: "border-emerald-500/20 hover:border-emerald-500/40",
+    icon: "text-emerald-600 dark:text-emerald-400",
+    gradient: "cool.teal" as const,
+  },
+
+  /** Testing/QA series (green theme) */
+  testing: {
+    badge: "bg-green-500/10 text-green-700 dark:bg-green-500/20 dark:text-green-300 border-green-500/20",
+    card: "border-green-500/20 hover:border-green-500/40",
+    icon: "text-green-600 dark:text-green-400",
+    gradient: "cool.forest" as const,
+  },
+
+  /** DevOps/deployment series (sky → blue) */
+  devops: {
+    badge: "bg-sky-500/10 text-sky-700 dark:bg-sky-500/20 dark:text-sky-300 border-sky-500/20",
+    card: "border-sky-500/20 hover:border-sky-500/40",
+    icon: "text-sky-600 dark:text-sky-400",
+    gradient: "cool.sky" as const,
+  },
+
+  /** Career/soft skills series (amber → orange) */
+  career: {
+    badge: "bg-amber-500/10 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300 border-amber-500/20",
+    card: "border-amber-500/20 hover:border-amber-500/40",
+    icon: "text-amber-600 dark:text-amber-400",
+    gradient: "warm.amber" as const,
+  },
+
+  /** Deep dive/advanced series (indigo → purple) */
+  advanced: {
+    badge: "bg-indigo-500/10 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 border-indigo-500/20",
+    card: "border-indigo-500/20 hover:border-indigo-500/40",
+    icon: "text-indigo-600 dark:text-indigo-400",
+    gradient: "cool.ocean" as const,
+  },
+
+  /** Design/UI/UX series (pink → rose) */
+  design: {
+    badge: "bg-pink-500/10 text-pink-700 dark:bg-pink-500/20 dark:text-pink-300 border-pink-500/20",
+    card: "border-pink-500/20 hover:border-pink-500/40",
+    icon: "text-pink-600 dark:text-pink-400",
+    gradient: "warm.rose" as const,
+  },
+
+  /** Quick tips/snippets series (lime → green) */
+  tips: {
+    badge: "bg-lime-500/10 text-lime-700 dark:bg-lime-500/20 dark:text-lime-300 border-lime-500/20",
+    card: "border-lime-500/20 hover:border-lime-500/40",
+    icon: "text-lime-600 dark:text-lime-400",
+    gradient: "vibrant.neon" as const,
+  },
+
+  /** Troubleshooting/debugging series (red → orange) */
+  debugging: {
+    badge: "bg-red-500/10 text-red-700 dark:bg-red-500/20 dark:text-red-300 border-red-500/20",
+    card: "border-red-500/20 hover:border-red-500/40",
+    icon: "text-red-600 dark:text-red-400",
+    gradient: "warm.fire" as const,
+  },
+
+  /** Neutral/general series (slate) */
+  general: {
+    badge: "bg-slate-500/10 text-slate-700 dark:bg-slate-500/20 dark:text-slate-300 border-slate-500/20",
+    card: "border-slate-500/20 hover:border-slate-500/40",
+    icon: "text-slate-600 dark:text-slate-400",
+    gradient: "neutral.slate" as const,
+  },
+} as const;
+
+/**
+ * Valid series color theme names
+ */
+export type SeriesColorTheme = keyof typeof SERIES_COLORS;
+
+/**
+ * Get series color configuration by theme name
+ * Falls back to 'default' if theme not found
+ *
+ * @param theme - Series color theme name
+ * @returns Series color configuration object
+ *
+ * @example
+ * ```tsx
+ * const colors = getSeriesColors('security');
+ * <Badge className={colors.badge}>Security Series</Badge>
+ * ```
+ */
+export function getSeriesColors(theme: string = 'default') {
+  return SERIES_COLORS[theme as SeriesColorTheme] || SERIES_COLORS.default;
+}
+
+// ============================================================================
 // HOVER EFFECTS
 // ============================================================================
 

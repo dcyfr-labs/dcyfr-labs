@@ -1,10 +1,11 @@
 name: AI Instructions Sync & Validation
 
-on:
-  push:
-    branches: [ 'main', 'preview' ]
-  pull_request:
-    branches: [ 'main', 'preview' ]
+# DISABLED: Not syncing agents to GitHub at this time
+# on:
+#   push:
+#     branches: [ 'main', 'preview' ]
+#   pull_request:
+#     branches: [ 'main', 'preview' ]
 
 jobs:
   sync-and-validate:

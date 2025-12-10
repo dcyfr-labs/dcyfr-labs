@@ -39,9 +39,9 @@ describe("POST /api/contact - BotID Integration", () => {
     });
   });
 
-  describe("BotID Protection", () => {
-    it("should block requests when BotID detects a bot", async () => {
-      // Mock BotID detecting a bot
+  describe("BotID Protection (Currently Disabled)", () => {
+    it("should NOT call BotID check when disabled", async () => {
+      // BotID is currently disabled in the route due to false positives
       vi.mocked(checkBotId).mockResolvedValue({
         isHuman: false,
         isBot: true,
@@ -58,15 +58,17 @@ describe("POST /api/contact - BotID Integration", () => {
       const response = await POST(request);
       const data = await response.json();
 
-      expect(response.status).toBe(403);
-      expect(data.error).toBe("Access denied");
-      expect(checkBotId).toHaveBeenCalledTimes(1);
-      // Rate limiting should not be called if bot is detected first
-      expect(rateLimit).not.toHaveBeenCalled();
+      // Should succeed even with bot-like behavior since BotID is disabled
+      expect(response.status).toBe(200);
+      expect(data.success).toBe(true);
+      // BotID should not be called since it's commented out
+      expect(checkBotId).not.toHaveBeenCalled();
+      // Rate limiting should still be called
+      expect(rateLimit).toHaveBeenCalled();
     });
 
-    it("should allow requests when BotID verifies human user", async () => {
-      // Mock BotID verifying a human
+    it("should allow legitimate requests without BotID verification", async () => {
+      // Mock BotID would verify human, but it's not called
       vi.mocked(checkBotId).mockResolvedValue({
         isHuman: true,
         isBot: false,
@@ -85,11 +87,13 @@ describe("POST /api/contact - BotID Integration", () => {
 
       expect(response.status).toBe(200);
       expect(data.success).toBe(true);
-      expect(checkBotId).toHaveBeenCalledTimes(1);
+      // BotID should not be called
+      expect(checkBotId).not.toHaveBeenCalled();
+      // Rate limiting should be called
       expect(rateLimit).toHaveBeenCalled();
     });
 
-    it("should check BotID before rate limiting", async () => {
+    it("should start with rate limiting as first protection layer", async () => {
       const checkOrder: string[] = [];
 
       vi.mocked(checkBotId).mockImplementation(async () => {
@@ -120,14 +124,14 @@ describe("POST /api/contact - BotID Integration", () => {
 
       await POST(request);
 
-      // BotID should be checked first
-      expect(checkOrder[0]).toBe("botid");
-      // Rate limiting should not be called if bot is detected
-      expect(checkOrder.length).toBe(1);
+      // Rate limiting should be first now (BotID disabled)
+      expect(checkOrder[0]).toBe("rateLimit");
+      // BotID should not be in the order
+      expect(checkOrder).not.toContain("botid");
     });
 
-    it("should handle BotID check errors gracefully", async () => {
-      // Mock BotID throwing an error
+    it("should NOT handle BotID check errors since it's disabled", async () => {
+      // Mock BotID throwing an error (shouldn't be called)
       vi.mocked(checkBotId).mockRejectedValue(new Error("BotID service unavailable"));
 
       const request = mockRequest({
@@ -138,13 +142,17 @@ describe("POST /api/contact - BotID Integration", () => {
 
       const response = await POST(request);
       
-      expect(response.status).toBe(500);
-      expect(checkBotId).toHaveBeenCalledTimes(1);
+      // Should succeed without calling BotID
+      expect(response.status).toBe(200);
+      expect(checkBotId).not.toHaveBeenCalled();
+      const json = await response.json();
+      expect(json.success).toBe(true);
+      expect(json.message).toBeDefined();
     });
   });
 
   describe("Multi-layer Protection", () => {
-    it("should apply all protection layers in correct order", async () => {
+    it("should apply protection layers without BotID (currently disabled)", async () => {
       const protectionOrder: string[] = [];
 
       vi.mocked(checkBotId).mockImplementation(async () => {
@@ -176,13 +184,15 @@ describe("POST /api/contact - BotID Integration", () => {
 
       await POST(request);
 
-      // Verify protection order
-      expect(protectionOrder).toEqual(["1-botid", "2-rateLimit"]);
-      // Honeypot and validation happen after these checks
+      // Verify protection order without BotID
+      expect(protectionOrder).toEqual(["2-rateLimit"]);
+      // BotID should not be called
+      expect(protectionOrder).not.toContain("1-botid");
+      // Honeypot and validation happen after rate limiting
     });
 
-    it("should still catch bots that pass BotID via honeypot", async () => {
-      // Scenario: Sophisticated bot that passes BotID but fills honeypot
+    it("should still catch bots via honeypot without BotID", async () => {
+      // Scenario: Bot fills honeypot (BotID is disabled)
       vi.mocked(checkBotId).mockResolvedValue({
         isHuman: true,
         isBot: false,
@@ -200,9 +210,11 @@ describe("POST /api/contact - BotID Integration", () => {
       const response = await POST(request);
       const data = await response.json();
 
-      // Should return success but not actually process
+      // Should return success but not actually process (honeypot catches it)
       expect(response.status).toBe(200);
       expect(data.success).toBe(true);
+      // BotID should not be called
+      expect(checkBotId).not.toHaveBeenCalled();
     });
   });
 });

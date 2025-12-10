@@ -46,11 +46,21 @@ export const inviteCodes: InviteCode[] = [
     url: "https://github.com/sponsors/dcyfr",
     description: "Support open source development by sponsoring our work on GitHub.",
     category: "developer-community",
-    featured: true,
+    featured: false,
     addedAt: "2024-01-15",
     metrics: "Support our work"
   },
   // Learning Platforms
+  {
+    id: "perplexity",
+    platform: "Perplexity",
+    url: "https://www.perplexity.ai/referrals/17XCE9S0",
+    description: "AI-powered search engine that answers complex questions with sources. Use our referral link for a great experience.",
+    category: "learning-platform",
+    featured: true,
+    addedAt: "2025-12-10",
+    metrics: "AI-powered answers"
+  },
   // Productivity Tools
   {
     id: "cal",

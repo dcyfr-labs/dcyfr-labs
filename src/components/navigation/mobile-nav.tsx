@@ -47,6 +47,7 @@ export function MobileNav() {
   const navItems = [
     { href: "/", label: "Home" },
     { href: "/blog", label: "Blog" },
+    { href: "/blog/series", label: "Series" },
     { href: "/about", label: "About Us" },
     { href: "/work", label: "Our Work" },
     { href: "/contact", label: "Contact Us" },

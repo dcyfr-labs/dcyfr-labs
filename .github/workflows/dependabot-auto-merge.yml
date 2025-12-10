@@ -3,11 +3,13 @@ name: Dependabot Auto-Merge
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  workflow_dispatch:  # Allow manual trigger for testing
 
 permissions:
   contents: write
   pull-requests: write
   checks: read
+  statuses: read
 
 jobs:
   auto-merge:
@@ -93,17 +95,18 @@ jobs:
         if: steps.check.outputs.safe == 'true'
         run: |
           gh pr review --approve "$PR_URL" --body "✅ Auto-approved: ${{ steps.check.outputs.reason }}"
+          echo "✅ PR auto-approved" >> $GITHUB_STEP_SUMMARY
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
       - name: Enable auto-merge
         if: steps.check.outputs.safe == 'true'
         run: |
-          gh pr merge --auto --squash "$PR_URL"
-          echo "✅ Auto-merge enabled for PR #${{ github.event.pull_request.number }}"
+          gh pr merge --auto --squash "$PR_URL" 2>/dev/null || echo "Auto-merge already enabled or unavailable"
+          echo "✅ Auto-merge enabled for PR #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Add review required label

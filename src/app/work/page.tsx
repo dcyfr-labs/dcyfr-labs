@@ -6,10 +6,10 @@ import { headers } from "next/headers";
 import { getArchiveData } from "@/lib/archive";
 import { getMultipleProjectViews } from "@/lib/project-views";
 import { ArchivePagination } from "@/components/layouts/archive-pagination";
-import { TYPOGRAPHY, CONTAINER_WIDTHS, CONTAINER_PADDING, PAGE_LAYOUT, SPACING } from "@/lib/design-tokens";
+import { CONTAINER_WIDTHS, CONTAINER_PADDING, SPACING } from "@/lib/design-tokens";
 import { ProjectList, ProjectFilters } from "@/components/projects";
 import { SmoothScrollToHash } from "@/components/common";
-import { PageLayout } from "@/components/layouts/page-layout";
+import { PageLayout, PageHero } from "@/components/layouts";
 
 const basePageTitle = "Our Work";
 const basePageDescription = "Browse our portfolio of development projects, open-source contributions, and published works.";
@@ -282,15 +282,17 @@ export default async function WorkPage({ searchParams }: WorkPageProps) {
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
       <SmoothScrollToHash />
 
-      {/* Hero Section */}
-      <section id="hero" className={PAGE_LAYOUT.archiveHero.container}>
-        <div className={PAGE_LAYOUT.archiveHero.content}>
-          <h1 className={TYPOGRAPHY.h1.hero}>{pageTitle}</h1>
-          <p className={TYPOGRAPHY.description}>{pageDescription}</p>
-        </div>
-      </section>
+      {/* Hero section with full-width background */}
+      <PageHero
+        variant="homepage"
+        title={pageTitle}
+        description={pageDescription}
+        itemCount={sortedArchiveData.totalItems}
+        fullWidth
+      />
 
-      <div className={`container ${CONTAINER_WIDTHS.archive} mx-auto ${CONTAINER_PADDING} pb-8`}>
+      {/* Content section with archive-width container */}
+      <div className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING}`}>
         {/* Filters - temporarily hidden
         <div className="mb-8">
           <ProjectFilters
@@ -308,28 +310,30 @@ export default async function WorkPage({ searchParams }: WorkPageProps) {
         */}
 
         {/* Projects list */}
-        <div id="work-list">
-        <ProjectList
-          projects={sortedArchiveData.items}
-          layout="grid"
-          viewCounts={viewCounts}
-          hasActiveFilters={hasActiveFilters}
-          emptyMessage="No work found. Try adjusting your search or filters."
-          basePath="/work"
-        />
-        </div>
-
-        {/* Pagination */}
-        {sortedArchiveData.totalPages > 1 && (
-          <div className="mt-12">
-            <ArchivePagination
-              currentPage={sortedArchiveData.currentPage}
-              totalPages={sortedArchiveData.totalPages}
-              hasPrevPage={sortedArchiveData.currentPage > 1}
-              hasNextPage={sortedArchiveData.currentPage < sortedArchiveData.totalPages}
+        <div className={SPACING.section}>
+          <div id="work-list">
+            <ProjectList
+              projects={sortedArchiveData.items}
+              layout="grid"
+              viewCounts={viewCounts}
+              hasActiveFilters={hasActiveFilters}
+              emptyMessage="No work found. Try adjusting your search or filters."
+              basePath="/work"
             />
           </div>
-        )}
+
+          {/* Pagination */}
+          {sortedArchiveData.totalPages > 1 && (
+            <div className="mt-12">
+              <ArchivePagination
+                currentPage={sortedArchiveData.currentPage}
+                totalPages={sortedArchiveData.totalPages}
+                hasPrevPage={sortedArchiveData.currentPage > 1}
+                hasNextPage={sortedArchiveData.currentPage < sortedArchiveData.totalPages}
+              />
+            </div>
+          )}
+        </div>
       </div>
     </PageLayout>
   );

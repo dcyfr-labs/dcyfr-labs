@@ -1,0 +1,74 @@
+/**
+ * Font Rendering Optimization
+ *
+ * Cross-browser font rendering improvements for smoother, more readable text.
+ *
+ * Features:
+ * - WebKit/Blink grayscale antialiasing (thinner, sharper)
+ * - text-rendering: optimizeLegibility enables kerning and ligatures
+ * - OpenType features for professional typography
+ * - Firefox on macOS grayscale rendering
+ */
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  font-variant-ligatures: common-ligatures contextual;
+  scroll-behavior: smooth;
+}
+
+/**
+ * Improved subpixel rendering for code blocks.
+ * Monospace fonts benefit from subpixel rendering for clarity.
+ */
+code,
+pre,
+kbd,
+samp,
+.font-mono {
+  -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: auto;
+  text-rendering: optimizeSpeed;
+}
+
+/**
+ * Optimize headings for legibility.
+ * Larger text benefits from kerning and ligatures.
+ */
+h1, h2, h3, h4, h5, h6 {
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "dlig" 1;
+}
+
+/**
+ * Enhanced serif font rendering.
+ * Serif fonts can appear jagged without proper antialiasing.
+ */
+.font-serif {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+}
+
+/**
+ * SVG rendering optimization.
+ * Prevents jagged edges on SVG graphics, especially icons and logos.
+ */
+svg {
+  shape-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/**
+ * High-quality image and SVG rendering.
+ * Ensures smooth scaling and antialiasing for all graphics.
+ */
+img,
+svg {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}

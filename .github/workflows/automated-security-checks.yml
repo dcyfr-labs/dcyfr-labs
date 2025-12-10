@@ -1,0 +1,130 @@
+name: Automated Security Pre-Checks
+
+# Runs automatically on dependencies to catch security issues early
+on:
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/dependabot.yml'
+  
+  schedule:
+    # Daily security check
+    - cron: '0 6 * * *'
+  
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: write
+
+jobs:
+  security-pre-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Run npm audit
+        id: npm-audit
+        run: |
+          # Run audit and capture results
+          npm audit --json > npm-audit-results.json 2>&1 || true
+          
+          # Parse results
+          VULNERABILITIES=$(jq '.metadata.vulnerabilities.total // 0' npm-audit-results.json)
+          CRITICAL=$(jq '.metadata.vulnerabilities.critical // 0' npm-audit-results.json)
+          HIGH=$(jq '.metadata.vulnerabilities.high // 0' npm-audit-results.json)
+          
+          echo "total=$VULNERABILITIES" >> $GITHUB_OUTPUT
+          echo "critical=$CRITICAL" >> $GITHUB_OUTPUT
+          echo "high=$HIGH" >> $GITHUB_OUTPUT
+          
+          if [ "$CRITICAL" -gt 0 ]; then
+            echo "has_critical=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_critical=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Check for outdated packages
+        id: outdated
+        run: |
+          npm outdated --json > npm-outdated-results.json 2>&1 || true
+          
+          OUTDATED=$(jq 'length' npm-outdated-results.json 2>/dev/null || echo "0")
+          echo "outdated=$OUTDATED" >> $GITHUB_OUTPUT
+      
+      - name: Generate security report
+        run: |
+          cat > security-report.md << 'EOF'
+          # Automated Security Pre-Check Report
+          
+          ## npm Audit Results
+          - **Total Vulnerabilities:** ${{ steps.npm-audit.outputs.total }}
+          - **Critical:** ${{ steps.npm-audit.outputs.critical }}
+          - **High:** ${{ steps.npm-audit.outputs.high }}
+          
+          ## Outdated Packages
+          - **Count:** ${{ steps.outdated.outputs.outdated }}
+          
+          ## Status
+          EOF
+          
+          if [ "${{ steps.npm-audit.outputs.has_critical }}" == "true" ]; then
+            echo "🚨 **Action Required:** Critical vulnerabilities detected" >> security-report.md
+          elif [ "${{ steps.npm-audit.outputs.high }}" -gt 0 ]; then
+            echo "⚠️ **Review Needed:** High-severity vulnerabilities found" >> security-report.md
+          else
+            echo "✅ **All Clear:** No critical vulnerabilities" >> security-report.md
+          fi
+      
+      - name: Comment on PR if issues found
+        if: github.event_name == 'pull_request' && (steps.npm-audit.outputs.has_critical == 'true' || steps.npm-audit.outputs.high > 0)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('security-report.md', 'utf-8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: report
+            });
+      
+      - name: Fail on critical vulnerabilities
+        if: steps.npm-audit.outputs.has_critical == 'true'
+        run: |
+          echo "❌ Critical security vulnerabilities detected!"
+          npm audit --audit-level=moderate
+          exit 1
+      
+      - name: Summary
+        run: |
+          echo "### 🔒 Security Pre-Check Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**npm Audit:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Total: ${{ steps.npm-audit.outputs.total }} vulnerabilities" >> $GITHUB_STEP_SUMMARY
+          echo "- Critical: ${{ steps.npm-audit.outputs.critical }}" >> $GITHUB_STEP_SUMMARY
+          echo "- High: ${{ steps.npm-audit.outputs.high }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Outdated:**" >> $GITHUB_STEP_SUMMARY
+          echo "- ${{ steps.outdated.outputs.outdated }} packages could be updated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.npm-audit.outputs.has_critical }}" == "true" ]; then
+            echo "**Status:** 🚨 Critical vulnerabilities found - action required" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ steps.npm-audit.outputs.high }}" -gt 0 ]; then
+            echo "**Status:** ⚠️ High-severity vulnerabilities - review recommended" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Status:** ✅ All clear" >> $GITHUB_STEP_SUMMARY
+          fi

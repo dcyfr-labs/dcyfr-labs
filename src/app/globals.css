@@ -1,86 +1,12 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "../styles/holo-card.css";
+@import "../styles/base/font-rendering.css";
+@import "../styles/base/scrollbars.css";
 
 @custom-variant dark (&:is(.dark *));
 
-/* ===================================================================
-   Font Rendering Optimization
-   ================================================================ */
-
-/**
- * Cross-browser font rendering improvements for smoother, more readable text.
- * 
- * - antialiased: WebKit/Blink grayscale antialiasing (thinner, sharper)
- * - text-rendering: optimizeLegibility enables kerning and ligatures
- * - font-feature-settings: OpenType features for professional typography
- * - font-variant-ligatures: Enables common and contextual ligatures
- * - -webkit-font-smoothing: WebKit-specific antialiasing
- * - -moz-osx-font-smoothing: Firefox on macOS grayscale rendering
- */
-html {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
-  font-variant-ligatures: common-ligatures contextual;
-  scroll-behavior: smooth;
-}
-
-/**
- * Improved subpixel rendering for code blocks.
- * Monospace fonts benefit from subpixel rendering for clarity.
- */
-code,
-pre,
-kbd,
-samp,
-.font-mono {
-  -webkit-font-smoothing: subpixel-antialiased;
-  -moz-osx-font-smoothing: auto;
-  text-rendering: optimizeSpeed;
-}
-
-/**
- * Optimize headings for legibility.
- * Larger text benefits from kerning and ligatures.
- */
-h1, h2, h3, h4, h5, h6 {
-  text-rendering: optimizeLegibility;
-  font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "dlig" 1;
-}
-
-/**
- * Enhanced serif font rendering.
- * Serif fonts can appear jagged without proper antialiasing.
- */
-.font-serif {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
-}
-
-/**
- * SVG rendering optimization.
- * Prevents jagged edges on SVG graphics, especially icons and logos.
- */
-svg {
-  shape-rendering: geometricPrecision;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/**
- * High-quality image and SVG rendering.
- * Ensures smooth scaling and antialiasing for all graphics.
- */
-img,
-svg {
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-}
-
+/* Theme Variables */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -299,65 +225,7 @@ svg {
   body {
     @apply bg-background text-foreground;
   }
-  
-  /* ===================================================================
-     Unified Scrollbar Design
-     ================================================================ */
-  
-  /**
-   * Custom scrollbar styling that matches the site theme.
-   * Works in WebKit browsers (Chrome, Safari, Edge) and Firefox.
-   * 
-   * Design principles:
-   * - Thin, unobtrusive scrollbars (8px width)
-   * - Matches border color for consistency
-   * - Hover state for better discoverability
-   * - Respects dark/light theme
-   * - Smooth transitions
-   */
-  
-  /* Firefox scrollbar styling */
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: hsl(var(--muted)) transparent;
-  }
-  
-  /* WebKit scrollbar styling (Chrome, Safari, Edge) */
-  *::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-  
-  *::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  *::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted));
-    border-radius: 4px;
-    transition: background 200ms ease;
-  }
-  
-  *::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground) / 0.3);
-  }
-  
-  /* Scrollbar corner (where horizontal and vertical meet) */
-  *::-webkit-scrollbar-corner {
-    background: transparent;
-  }
-  
-  /* Enhanced scrollbar for TOC and code blocks */
-  nav::-webkit-scrollbar-thumb,
-  pre::-webkit-scrollbar-thumb {
-    background: hsl(var(--border));
-  }
-  
-  nav::-webkit-scrollbar-thumb:hover,
-  pre::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground) / 0.4);
-  }
-  
+
   /* Performance optimizations for navigation links */
   a[class*="hover:underline"] {
     text-decoration-skip-ink: auto;
@@ -489,16 +357,6 @@ svg {
     will-change: auto;
   }
 
-  /* Hide scrollbar while maintaining scroll functionality */
-  .scrollbar-hide {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
-
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;  /* Chrome, Safari, and Opera */
-  }
-
   /* Star bullets for unordered lists */
   :where([data-slot="card"] ul) {
     list-style-type: disc;
@@ -551,6 +409,18 @@ svg {
   :where([data-slot="card"] ul) li > svg:first-child {
     margin-right: 0.5em;
     vertical-align: middle;
+  }
+
+  /* Replace standard disc bullets with SVG logo for brand consistency */
+  /* Global list-disc styling - renders SVG logo as bullet */
+  ul:where(.list-disc, [class*="list-disc"]) {
+    list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='12' height='12'%3E%3Cpath d='M 100 51.397411 C 91.768944 54.80574 85.209213 57.873196 80.320602 60.599865 C 75.431992 63.32653 71.623482 66.030434 68.894951 68.711655 C 66.211899 71.392883 63.506153 75.164703 60.777626 80.027267 C 58.049099 84.889832 54.934074 91.547333 51.432468 100 L 48.635742 100 C 45.088661 91.547333 41.950901 84.889832 39.222374 80.027267 C 36.493847 75.164703 33.810837 71.392883 31.17326 68.711655 C 28.444733 66.030434 24.636229 63.32653 19.747612 60.599865 C 14.859005 57.873196 8.27653 54.80574 -0 51.397411 L -0 48.602589 C 8.322005 45.19426 14.927217 42.126804 19.815825 39.400135 C 24.704441 36.67347 28.490208 33.969566 31.17326 31.288345 C 33.810837 28.607117 36.493847 24.835297 39.222374 19.972733 C 41.950901 15.110176 45.088661 8.452667 48.635742 0 L 51.432468 0 C 54.934074 8.452667 58.049099 15.110176 60.777626 19.972733 C 63.506153 24.835297 66.211899 28.607117 68.894951 31.288345 C 71.532532 33.969566 75.29557 36.67347 80.184174 39.400135 C 85.072792 42.126804 91.677994 45.19426 100 48.602589 Z' fill='currentColor'/%3E%3C/svg%3E");
+    list-style-position: inside;
+  }
+
+  /* Dark mode SVG bullet color adjustment */
+  .dark ul:where(.list-disc, [class*="list-disc"]) {
+    list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='12' height='12'%3E%3Cpath d='M 100 51.397411 C 91.768944 54.80574 85.209213 57.873196 80.320602 60.599865 C 75.431992 63.32653 71.623482 66.030434 68.894951 68.711655 C 66.211899 71.392883 63.506153 75.164703 60.777626 80.027267 C 58.049099 84.889832 54.934074 91.547333 51.432468 100 L 48.635742 100 C 45.088661 91.547333 41.950901 84.889832 39.222374 80.027267 C 36.493847 75.164703 33.810837 71.392883 31.17326 68.711655 C 28.444733 66.030434 24.636229 63.32653 19.747612 60.599865 C 14.859005 57.873196 8.27653 54.80574 -0 51.397411 L -0 48.602589 C 8.322005 45.19426 14.927217 42.126804 19.815825 39.400135 C 24.704441 36.67347 28.490208 33.969566 31.17326 31.288345 C 33.810837 28.607117 36.493847 24.835297 39.222374 19.972733 C 41.950901 15.110176 45.088661 8.452667 48.635742 0 L 51.432468 0 C 54.934074 8.452667 58.049099 15.110176 60.777626 19.972733 C 63.506153 24.835297 66.211899 28.607117 68.894951 31.288345 C 71.532532 33.969566 75.29557 36.67347 80.184174 39.400135 C 85.072792 42.126804 91.677994 45.19426 100 48.602589 Z' fill='%23f9fafb'/%3E%3C/svg%3E");
   }
 
   /* Footnote reference styling - superscript links in content */
@@ -1174,6 +1044,8 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
   box-shadow: inset 0 1px 2px hsl(0 0% 10% / 0.05);
   border-radius: 0.375rem;
   color: hsl(var(--code-foreground));
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .dark .prose code:not(pre code) {
@@ -1252,13 +1124,15 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
   }
 
   .prose li {
-    margin-top: 0;
-    margin-bottom: 0;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
     line-height: 1.6;
   }
   
-  /* ⚠️ GUARDRAIL: List item margins controlled by SPACING.list token in design-tokens.ts
-     Do NOT add margin-top/bottom here - use the parent ul/ol SPACING class instead */
+  /* Spacing helps separate inline code blocks within list items for better readability */
+  .prose li code {
+    margin: 0 0.25em; /* Horizontal spacing around inline code */
+  }
 
   /* Blockquotes more prominent */
   .prose blockquote {
@@ -1280,7 +1154,7 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
   .prose details summary {
     cursor: pointer;
     font-weight: bold !important;
-    font-size: 1.25rem !important;
+    font-size: 1rem !important;
     list-style: none;
     user-select: none;
     display: flex;
@@ -1386,13 +1260,15 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
   }
 
   .prose li {
-    margin-top: 0;
-    margin-bottom: 0;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
   }
   
-  /* ⚠️ GUARDRAIL: Explicitly override global .prose line-height to keep list items compact
-     The global .prose { line-height: 1.9; } should NOT apply to list items
-     List item line-height is set in mobile media query */
+  /* Spacing helps separate inline code blocks within list items for better readability */
+  .prose li code {
+    margin: 0 0.25em; /* Horizontal spacing around inline code */
+  }
 
   /* Horizontal rule better spacing */
   .prose hr {
@@ -1569,455 +1445,6 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
 }
 
 /* ===================================================================
-   Enhanced Mermaid Diagram Styling
-   ================================================================ */
-
-/**
- * Modern, cohesive diagram styling that matches the site's design system
- * 
- * Features:
- * - Rounded nodes and softer edges
- * - Theme-aware colors using CSS custom properties
- * - Subtle shadows and gradients
- * - Smooth hover animations
- * - Better text readability
- */
-
-/* Container wrapper */
-.mermaid-container {
-  margin: 1.5rem 0;
-  padding: 1.5rem;
-  background: linear-gradient(
-    135deg,
-    oklch(from var(--card) l c h / 80%) 0%,
-    oklch(from var(--muted) l c h / 40%) 100%
-  );
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow-x: auto;
-  transition: box-shadow 200ms ease, border-color 200ms ease;
-}
-
-.mermaid-container:hover {
-  box-shadow: 0 8px 24px oklch(0 0 0 / 8%);
-  border-color: oklch(from var(--border) l c h / 80%);
-}
-
-.dark .mermaid-container:hover {
-  box-shadow: 0 8px 24px oklch(0 0 0 / 30%);
-}
-
-/* Mermaid SVG base styling */
-.mermaid svg {
-  max-width: 100%;
-  height: auto;
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif !important;
-  overflow: visible !important;
-}
-
-.mermaid {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-/* Prevent text clipping in nodes */
-.mermaid .nodeLabel,
-.mermaid .node text,
-.mermaid text {
-  overflow: visible !important;
-  word-wrap: break-word !important;
-  white-space: normal !important;
-}
-
-/* Node styling - softer, rounder appearance */
-.mermaid .node rect,
-.mermaid .node circle,
-.mermaid .node ellipse,
-.mermaid .node polygon,
-.mermaid .node path {
-  stroke: var(--border) !important;
-  stroke-width: 1.5px !important;
-  fill: var(--card) !important;
-  rx: 8px;
-  ry: 8px;
-  transition: filter 200ms ease, transform 200ms ease;
-}
-
-.mermaid .node:hover rect,
-.mermaid .node:hover circle,
-.mermaid .node:hover ellipse,
-.mermaid .node:hover polygon {
-  filter: brightness(1.05);
-  transform: translateY(-1px);
-}
-
-/* Node text */
-.mermaid .nodeLabel,
-.mermaid .node text {
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  fill: var(--foreground) !important;
-}
-
-/* Edge/arrow styling - smoother curves */
-.mermaid .edgePath path.path {
-  stroke: var(--border) !important;
-  stroke-width: 2px !important;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.mermaid .edgePath marker path {
-  stroke-width: 1px;
-}
-
-/* Edge labels */
-.mermaid .edgeLabel {
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif !important;
-  font-size: 12px !important;
-  font-weight: 500 !important;
-  background: var(--background) !important;
-  color: var(--foreground) !important;
-  padding: 4px 8px !important;
-  border-radius: 4px !important;
-}
-
-/* Cluster/subgraph styling */
-.mermaid .cluster rect {
-  rx: 12px !important;
-  ry: 12px !important;
-  stroke: var(--border) !important;
-  stroke-width: 2px !important;
-  fill: var(--muted) !important;
-  stroke-dasharray: none !important;
-}
-
-.mermaid .cluster text {
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-  fill: var(--muted-foreground) !important;
-}
-
-/* Sequence diagram enhancements */
-.mermaid .actor {
-  rx: 8px;
-  ry: 8px;
-}
-
-.mermaid .actor-line {
-  stroke-width: 1.5px !important;
-  stroke-dasharray: 4, 4 !important;
-}
-
-.mermaid text.actor {
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-}
-
-.mermaid .messageLine0,
-.mermaid .messageLine1 {
-  stroke-width: 1.5px !important;
-}
-
-.mermaid .messageText {
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
-}
-
-/* Flowchart specific */
-.mermaid .flowchart-link {
-  stroke-width: 2px !important;
-}
-
-/* State diagram */
-.mermaid .statediagram-state rect {
-  rx: 8px !important;
-  ry: 8px !important;
-}
-
-/* Class diagram */
-.mermaid .classGroup rect {
-  rx: 8px !important;
-  ry: 8px !important;
-}
-
-.mermaid .classLabel {
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif !important;
-}
-
-/* Pie chart */
-.mermaid .pieTitleText {
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif !important;
-  font-size: 16px !important;
-  font-weight: 600 !important;
-}
-
-.mermaid .slice {
-  transition: transform 200ms ease;
-}
-
-.mermaid .slice:hover {
-  transform: scale(1.02);
-}
-
-/* Gantt chart */
-.mermaid .section {
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif !important;
-}
-
-/* Light theme: Primary color-aware design */
-.mermaid .node rect {
-  fill: hsl(var(--primary) / 0.08) !important;
-  stroke: hsl(var(--primary) / 0.5) !important;
-  stroke-width: 1.5px !important;
-}
-
-.mermaid .node.default rect {
-  fill: hsl(var(--primary) / 0.1) !important;
-  stroke: hsl(var(--primary) / 0.6) !important;
-}
-
-.mermaid .edgePath path.path {
-  stroke: hsl(var(--primary)) !important;
-  stroke-width: 2px !important;
-}
-
-.mermaid .edgeLabel {
-  background: hsl(var(--background)) !important;
-  color: hsl(var(--foreground)) !important;
-}
-
-/* Circle nodes (decision diamonds, states) */
-.mermaid .node circle {
-  fill: hsl(var(--primary) / 0.1) !important;
-  stroke: hsl(var(--primary) / 0.6) !important;
-  stroke-width: 1.5px !important;
-}
-
-/* Diamond nodes */
-.mermaid .node.state circle {
-  fill: hsl(var(--primary) / 0.12) !important;
-  stroke: hsl(var(--primary) / 0.7) !important;
-}
-
-/* Text colors for light theme */
-.mermaid .nodeLabel {
-  color: hsl(var(--foreground)) !important;
-}
-
-.mermaid .label {
-  color: hsl(var(--foreground)) !important;
-}
-
-/* ===================================================================
-   FAQ Accordion Styling
-   ================================================================ */
-
-/**
- * Accordion trigger button styling for FAQ questions.
- * Ensures bold, larger text for better readability.
- */
-button[data-state][data-radix-collection-item] {
-  font-weight: 700 !important;
-  font-size: 1.125rem !important;
-}
-
-/* Dark theme: Primary color-aware design */
-.dark .mermaid .node rect {
-  fill: hsl(var(--primary) / 0.15) !important;
-  stroke: hsl(var(--primary) / 0.7) !important;
-  stroke-width: 1.5px !important;
-}
-
-.dark .mermaid .node.default rect {
-  fill: hsl(var(--primary) / 0.2) !important;
-  stroke: hsl(var(--primary) / 0.8) !important;
-}
-
-.dark .mermaid .edgePath path.path {
-  stroke: hsl(var(--primary) / 0.8) !important;
-  stroke-width: 2px !important;
-}
-
-.dark .mermaid .edgeLabel {
-  background: hsl(var(--background)) !important;
-  color: hsl(var(--foreground)) !important;
-}
-
-/* Circle nodes in dark theme */
-.dark .mermaid .node circle {
-  fill: hsl(var(--primary) / 0.2) !important;
-  stroke: hsl(var(--primary) / 0.8) !important;
-  stroke-width: 1.5px !important;
-}
-
-.dark .mermaid .node.state circle {
-  fill: hsl(var(--primary) / 0.25) !important;
-  stroke: hsl(var(--primary) / 0.9) !important;
-}
-
-/* Text colors for dark theme */
-.dark .mermaid .nodeLabel {
-  color: hsl(var(--foreground)) !important;
-}
-
-.dark .mermaid .label {
-  color: hsl(var(--foreground)) !important;
-}
-
-/* Sequence diagrams - primary color theme */
-.mermaid .actor line {
-  stroke: hsl(var(--primary)) !important;
-  stroke-width: 1.5px !important;
-}
-
-.mermaid .actor {
-  stroke: hsl(var(--primary) / 0.7) !important;
-  fill: hsl(var(--primary) / 0.1) !important;
-}
-
-.mermaid .message {
-  stroke: hsl(var(--primary)) !important;
-  stroke-width: 1px !important;
-}
-
-.dark .mermaid .actor {
-  stroke: hsl(var(--primary) / 0.9) !important;
-  fill: hsl(var(--primary) / 0.2) !important;
-}
-
-.dark .mermaid .message {
-  stroke: hsl(var(--primary) / 0.85) !important;
-}
-
-/* State diagrams - primary color theme */
-.mermaid .state-box {
-  stroke: hsl(var(--primary) / 0.6) !important;
-  fill: hsl(var(--primary) / 0.08) !important;
-}
-
-.dark .mermaid .state-box {
-  stroke: hsl(var(--primary) / 0.8) !important;
-  fill: hsl(var(--primary) / 0.15) !important;
-}
-
-/* Class diagrams - primary color theme */
-.mermaid .classGroup line {
-  stroke: hsl(var(--primary) / 0.6) !important;
-}
-
-.mermaid .classGroup rect {
-  stroke: hsl(var(--primary) / 0.6) !important;
-  fill: hsl(var(--primary) / 0.08) !important;
-}
-
-.dark .mermaid .classGroup line {
-  stroke: hsl(var(--primary) / 0.8) !important;
-}
-
-.dark .mermaid .classGroup rect {
-  stroke: hsl(var(--primary) / 0.8) !important;
-  fill: hsl(var(--primary) / 0.15) !important;
-}
-
-/* Relationship lines */
-.mermaid .relationship {
-  stroke: hsl(var(--primary) / 0.5) !important;
-}
-
-.dark .mermaid .relationship {
-  stroke: hsl(var(--primary) / 0.7) !important;
-}
-
-/* ERD diagram - primary color theme */
-.mermaid .entityBox {
-  stroke: hsl(var(--primary) / 0.6) !important;
-  fill: hsl(var(--primary) / 0.08) !important;
-}
-
-.mermaid .entityLine {
-  stroke: hsl(var(--primary)) !important;
-  stroke-width: 1.5px !important;
-}
-
-.dark .mermaid .entityBox {
-  stroke: hsl(var(--primary) / 0.8) !important;
-  fill: hsl(var(--primary) / 0.15) !important;
-}
-
-.dark .mermaid .entityLine {
-  stroke: hsl(var(--primary) / 0.85) !important;
-}
-
-/* Cluster/group styling */
-.mermaid .cluster rect {
-  stroke: hsl(var(--primary) / 0.5) !important;
-  fill: hsl(var(--primary) / 0.04) !important;
-}
-
-.mermaid .cluster text {
-  color: hsl(var(--primary) / 0.8) !important;
-}
-
-.dark .mermaid .cluster rect {
-  stroke: hsl(var(--primary) / 0.7) !important;
-  fill: hsl(var(--primary) / 0.1) !important;
-}
-
-.dark .mermaid .cluster text {
-  color: hsl(var(--primary) / 0.9) !important;
-}
-
-/* Arrows and markers */
-.mermaid marker {
-  fill: hsl(var(--primary)) !important;
-}
-
-.dark .mermaid marker {
-  fill: hsl(var(--primary) / 0.85) !important;
-}
-
-/* Container styling */
-.mermaid-container {
-  border-radius: 0.5rem;
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  padding: 1.5rem;
-  margin: 1.5rem 0;
-  overflow-x: auto;
-  transition: all 0.3s ease;
-}
-
-.mermaid-container:hover {
-  border-color: hsl(var(--primary) / 0.3);
-  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.05);
-}
-
-.mermaid-container > div {
-  display: flex;
-  justify-content: center;
-}
-
-/* Accessibility - respect reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .mermaid .node:hover rect,
-  .mermaid .node:hover circle,
-  .mermaid .slice:hover {
-    transform: none;
-    transition: none;
-  }
-
-  .mermaid-container:hover {
-    transition: none;
-  }
-}
-
-/* ===================================================================
    ReactFlow Diagram Styling
    Override ReactFlow's default CSS variables to use our design tokens
    ================================================================ */
@@ -2066,3 +1493,12 @@ button[data-state][data-radix-collection-item] {
 .react-flow__edge-text {
   fill: var(--foreground) !important;
 }
+
+/* Prevent scroll blocking on locked diagrams
+   When a React Flow diagram is locked (panOnScroll=false, zoomOnScroll=false),
+   JavaScript prevents wheel events from being captured so page scrolling works
+   normally even when the mouse is over the diagram. */
+
+
+
+

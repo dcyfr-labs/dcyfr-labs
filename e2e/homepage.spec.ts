@@ -45,12 +45,12 @@ test.describe('Homepage', () => {
       await expect(workLink).toBeVisible()
       await expect(contactLink).toBeVisible()
     } else {
-      // Check main header navigation on desktop (About, Blog, Our Work dropdown)
-      const blogLink = page.locator('header nav').getByRole('link', { name: /blog/i })
+      // Check main header navigation on desktop (About, Blog dropdown, Our Work dropdown)
+      const blogButton = page.locator('header nav').getByRole('button', { name: /blog/i })
       const workButton = page.locator('header nav').getByRole('button', { name: /our work/i })
       const aboutLink = page.locator('header nav').getByRole('link', { name: /about/i })
 
-      await expect(blogLink).toBeVisible()
+      await expect(blogButton).toBeVisible()
       await expect(workButton).toBeVisible()
       await expect(aboutLink).toBeVisible()
     }
@@ -74,8 +74,9 @@ test.describe('Homepage', () => {
       await bottomNav.getByRole('link', { name: /blog/i }).click()
       await page.waitForURL('/blog')
     } else {
-      // Click on blog link in main header nav
-      await page.locator('header nav').getByRole('link', { name: /blog/i }).click()
+      // Click on blog dropdown button then "All Posts" in main header nav
+      await page.locator('header nav').getByRole('button', { name: /blog/i }).click()
+      await page.getByRole('link', { name: /all posts/i }).click()
     }
 
     // Wait for navigation

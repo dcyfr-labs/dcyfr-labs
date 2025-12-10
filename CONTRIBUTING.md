@@ -69,4 +69,51 @@ If you rely on services (Redis, Resend, GitHub token) for local features, use `.
 - Run `npm run check` locally and fix errors/warnings.
 - Open a pull request against the default branch and include a short description of the change.
 
+### Proprietary Specifications
+
+This project uses specialized AI agent instructions and pattern enforcement systems that are proprietary to dcyfr-labs.
+
+#### What You CAN Do
+
+✅ **Learn and reference** patterns from `/docs/ai/`  
+✅ **Use templates** from `/docs/templates/` in your own projects  
+✅ **Follow** documented design patterns and standards  
+✅ **Request DCYFR mode** for your feature work  
+✅ **Suggest improvements** via GitHub Issues  
+✅ **Contribute** code that follows published patterns  
+
+#### What You CANNOT Do
+
+❌ **Redistribute** `.github/agents/` files or DCYFR specifications  
+❌ **Use DCYFR architecture** in competing projects  
+❌ **Modify** proprietary specifications without approval  
+❌ **Copy** enforcement system to other repositories  
+❌ **Claim ownership** of DCYFR system components  
+
+#### How to Extend DCYFR
+
+Want to improve DCYFR patterns or suggest new features?
+
+1. **Open an issue** describing your suggestion
+2. **Provide examples** of the pattern or problem
+3. **Get approval** from @dcyfr before implementing
+4. **Submit PR** linked to the approved issue
+5. **Work collaboratively** on integration
+
+This ensures proprietary systems remain secure while allowing collaborative evolution.
+
+### Licensing
+
+This repository uses multiple licenses:
+
+- **MIT License** - All source code in `/src/`, `/tests/`, `/scripts/`
+- **CC BY-SA 4.0** - Documentation in `/docs/`
+- **Proprietary** - DCYFR specifications in `.github/agents/`
+
+See [LICENSE.md](LICENSE.md) for complete details.
+
+For questions about what's protected and why, see [.github/DCYFR_STATEMENT.md](.github/DCYFR_STATEMENT.md).
+
+---
+
 Thanks — and happy hacking!

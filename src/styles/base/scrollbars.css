@@ -1,0 +1,65 @@
+/**
+ * Unified Scrollbar Design
+ *
+ * Custom scrollbar styling that matches the site theme.
+ * Works in WebKit browsers (Chrome, Safari, Edge) and Firefox.
+ *
+ * Design principles:
+ * - Thin, unobtrusive scrollbars (8px width)
+ * - Matches border color for consistency
+ * - Hover state for better discoverability
+ * - Respects dark/light theme
+ * - Smooth transitions
+ */
+
+/* Firefox scrollbar styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted)) transparent;
+}
+
+/* WebKit scrollbar styling (Chrome, Safari, Edge) */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+  transition: background 200ms ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.3);
+}
+
+/* Scrollbar corner (where horizontal and vertical meet) */
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Enhanced scrollbar for TOC and code blocks */
+nav::-webkit-scrollbar-thumb,
+pre::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+}
+
+nav::-webkit-scrollbar-thumb:hover,
+pre::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.4);
+}
+
+/* Hide scrollbar while maintaining scroll functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, and Opera */
+}
