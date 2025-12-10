@@ -143,7 +143,7 @@ async function fetchGitHubContributions(): Promise<ContributionResponse | null> 
 export const refreshGitHubData = inngest.createFunction(
   { 
     id: "refresh-github-data",
-    retries: 2,
+    retries: 1,  // Fail fast on hourly jobs to prevent queue buildup
   },
   { cron: "0 * * * *" }, // Hourly at minute 0
   async ({ step }) => {

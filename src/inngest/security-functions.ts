@@ -114,8 +114,9 @@ export const securityAdvisoryMonitor = inngest.createFunction(
           );
 
           if (!response.ok) {
-            console.warn(`GHSA API error for ${packageName}: ${response.status}`);
-            continue;
+            console.error(`GHSA API error for ${packageName}: ${response.status}`);
+            // Throw error to trigger Inngest retry on API failures
+            throw new Error(`Failed to fetch GHSA advisories for ${packageName}: HTTP ${response.status}`);
           }
 
           const data = await response.json();
