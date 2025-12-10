@@ -1,30 +1,34 @@
+"use client";
+
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { ChevronRight, BookOpen } from "lucide-react";
 import type { Post } from "@/data/posts";
 import { cn } from "@/lib/utils";
+import { trackSeriesPostClick } from "@/lib/analytics";
 
 /**
  * SeriesNavigation Component
- * 
+ *
  * Displays navigation for blog post series, showing all posts in the series
  * with the current post highlighted. Helps readers navigate multi-part content.
- * 
+ *
  * Features:
  * - Shows series name and total post count
  * - Highlights current post
  * - Links to all other posts in series
  * - Displays post order numbers
  * - Responsive design with proper mobile spacing
- * 
+ * - Analytics tracking on post clicks
+ *
  * @param props.currentPost - The current blog post being viewed
  * @param props.seriesPosts - All posts in the same series, sorted by order
- * 
+ *
  * @example
  * ```tsx
- * <SeriesNavigation 
- *   currentPost={post} 
- *   seriesPosts={seriesPostsArray} 
+ * <SeriesNavigation
+ *   currentPost={post}
+ *   seriesPosts={seriesPostsArray}
  * />
  * ```
  */
@@ -40,6 +44,17 @@ export function SeriesNavigation({ currentPost, seriesPosts }: SeriesNavigationP
 
   const { name: seriesName } = currentPost.series;
   const totalPosts = seriesPosts.length;
+  const seriesSlug = seriesName.toLowerCase().replace(/\s+/g, "-");
+
+  const handlePostClick = (post: Post) => {
+    trackSeriesPostClick(
+      seriesSlug,
+      seriesName,
+      post.slug,
+      post.title,
+      post.series?.order ?? 0
+    );
+  };
 
   return (
     <div className="my-8 rounded-lg border bg-card p-4">
@@ -83,12 +98,13 @@ export function SeriesNavigation({ currentPost, seriesPosts }: SeriesNavigationP
                     </p>
                   </div>
                 ) : (
-                  <Link 
+                  <Link
                     href={`/blog/${post.slug}`}
                     className={cn(
                       "flex-1 min-w-0 group",
                       "hover:text-primary transition-colors"
                     )}
+                    onClick={() => handlePostClick(post)}
                   >
                     <div className="flex items-center gap-2">
                       <span className="truncate group-hover:underline underline-offset-4">

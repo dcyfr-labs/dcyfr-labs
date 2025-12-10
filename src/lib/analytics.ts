@@ -79,6 +79,54 @@ export type BlogEvent =
     };
 
 /**
+ * Series Events
+ */
+export type SeriesEvent =
+  | {
+      name: "series_index_viewed";
+      properties: {
+        seriesCount: number;
+      };
+    }
+  | {
+      name: "series_viewed";
+      properties: {
+        seriesSlug: string;
+        seriesName: string;
+        postCount: number;
+        totalReadingTime: number; // in minutes
+      };
+    }
+  | {
+      name: "series_card_clicked";
+      properties: {
+        seriesSlug: string;
+        seriesName: string;
+        postCount: number;
+        position: number; // 0-indexed position in grid
+      };
+    }
+  | {
+      name: "series_post_clicked";
+      properties: {
+        seriesSlug: string;
+        seriesName: string;
+        postSlug: string;
+        postTitle: string;
+        position: number; // position within series (1-indexed)
+      };
+    }
+  | {
+      name: "series_navigation_clicked";
+      properties: {
+        seriesSlug: string;
+        fromPostSlug: string;
+        toPostSlug: string;
+        direction: "prev" | "next";
+      };
+    };
+
+/**
  * Search and Filter Events
  */
 export type SearchEvent =
@@ -191,6 +239,7 @@ export type PerformanceEvent = {
  */
 export type AnalyticsEvent =
   | BlogEvent
+  | SeriesEvent
   | SearchEvent
   | NavigationEvent
   | InteractionEvent
@@ -522,6 +571,77 @@ export function trackPerformanceMetric(
   return trackEvent({
     name: "performance_metric",
     properties: { metric, value, rating },
+  });
+}
+
+/**
+ * Track series index page view
+ */
+export function trackSeriesIndexView(seriesCount: number) {
+  return trackEvent({
+    name: "series_index_viewed",
+    properties: { seriesCount },
+  });
+}
+
+/**
+ * Track series page view
+ */
+export function trackSeriesView(
+  seriesSlug: string,
+  seriesName: string,
+  postCount: number,
+  totalReadingTime: number
+) {
+  return trackEvent({
+    name: "series_viewed",
+    properties: { seriesSlug, seriesName, postCount, totalReadingTime },
+  });
+}
+
+/**
+ * Track series card click
+ */
+export function trackSeriesCardClick(
+  seriesSlug: string,
+  seriesName: string,
+  postCount: number,
+  position: number
+) {
+  return trackEvent({
+    name: "series_card_clicked",
+    properties: { seriesSlug, seriesName, postCount, position },
+  });
+}
+
+/**
+ * Track series post click
+ */
+export function trackSeriesPostClick(
+  seriesSlug: string,
+  seriesName: string,
+  postSlug: string,
+  postTitle: string,
+  position: number
+) {
+  return trackEvent({
+    name: "series_post_clicked",
+    properties: { seriesSlug, seriesName, postSlug, postTitle, position },
+  });
+}
+
+/**
+ * Track series navigation (prev/next) click
+ */
+export function trackSeriesNavigation(
+  seriesSlug: string,
+  fromPostSlug: string,
+  toPostSlug: string,
+  direction: "prev" | "next"
+) {
+  return trackEvent({
+    name: "series_navigation_clicked",
+    properties: { seriesSlug, fromPostSlug, toPostSlug, direction },
   });
 }
 

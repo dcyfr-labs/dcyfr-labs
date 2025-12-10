@@ -1,25 +1,26 @@
 # Documentation Index
 
-**Last Updated:** December 4, 2025
+**Last Updated:** December 9, 2025
 **Status:** Production-ready documentation ✅
 
 ---
 
 ## 📊 Current Structure
 
-The documentation is organized into **15 focused directories**:
+The documentation is organized into **16 focused directories**:
 
-### 📁 Core Documentation (9 directories)
+### 📁 Core Documentation (10 directories)
 
 1. **`architecture/`** - Architecture patterns, refactoring guides, and migration docs
 2. **`blog/`** - Blog system documentation, content strategy, RSS feeds (includes `feeds/` subdirectory)
 3. **`components/`** - Component documentation (26 files)
 4. **`api/`** - API integration references and route documentation (includes `routes/` subdirectory)
-5. **`features/`** - Feature guides (Inngest, GitHub, MCP) with `mcp/` subdirectory
+5. **`features/`** - Feature guides (Inngest, GitHub, MCP, Activity Feed, Series)
 6. **`design/`** - Design system and UX (organized by topic: `typography/`, `mobile/`, `print/`, `spacing/`, `ui-patterns/`)
 7. **`security/`** - Security implementation (`csp/`, `rate-limiting/` subdirectories)
 8. **`platform/`** - Platform configuration (env vars, site config)
 9. **`operations/`** - Project management (todo, done, deployment, `sessions/` subdirectory)
+10. **`automation/`** - Automated updates, dependency management, CI/CD
 
 ### 🔧 Development & Optimization (4 directories)
 
@@ -55,11 +56,23 @@ The documentation is organized into **15 focused directories**:
 - **[features/inngest-integration.md](./features/inngest-integration.md)** - Background jobs
 - **[features/github-integration.md](./features/github-integration.md)** - GitHub API
 - **[features/mcp/](./features/mcp/)** - Model Context Protocol
+- **[features/ACTIVITY_FEED_AUTOMATION.md](./features/ACTIVITY_FEED_AUTOMATION.md)** - ✨ **Activity feed automation strategy**
+- **[features/ACTIVITY_AUTOMATION_QUICK_START.md](./features/ACTIVITY_AUTOMATION_QUICK_START.md)** - ✨ **30-min activity caching implementation**
+- **[features/ACTIVITY_CACHING_IMPLEMENTATION.md](./features/ACTIVITY_CACHING_IMPLEMENTATION.md)** - ✨ **Implementation summary & testing guide**
+- **[features/SERIES_REFACTOR_PROGRESS.md](./features/SERIES_REFACTOR_PROGRESS.md)** - ✨ **Blog series refactor progress tracker**
+- **[features/FUTURE_IDEAS.md](./features/FUTURE_IDEAS.md)** - ✨ **Post-launch feature ideas & evaluation**
 
 ### Design System
 - **[design/typography/](./design/typography/)** - Typography system
 - **[design/mobile/](./design/mobile/)** - Mobile-first design
 - **[design/spacing/](./design/spacing/)** - Spacing standards
+- **[design/PAGE_TEMPLATES.md](./design/PAGE_TEMPLATES.md)** - ✨ **Complete page templates with design tokens**
+- **[design/DESIGN_TOKEN_COMPLIANCE_REPORT.md](./design/DESIGN_TOKEN_COMPLIANCE_REPORT.md)** - ✨ **Series refactor compliance audit**
+
+### Automation
+- **[automation/AUTOMATED_UPDATES.md](./automation/AUTOMATED_UPDATES.md)** - ✨ **Complete automation system guide**
+- **[automation/ENABLE_AUTO_MERGE.md](./automation/ENABLE_AUTO_MERGE.md)** - ✨ **Auto-merge setup instructions**
+- **[automation/IMPLEMENTATION_SUMMARY.md](./automation/IMPLEMENTATION_SUMMARY.md)** - ✨ **Deployment guide**
 
 ### Development
 - **[testing/README.md](./testing/README.md)** - Testing overview
@@ -95,7 +108,7 @@ Component docs covering UI components, error boundaries, loading states, and adv
 API integration references, route documentation, rate limiting, error handling
 
 ### `features/`
-Feature guides for Inngest, GitHub integration, MCP servers, analytics, OG images
+Feature guides for Inngest, GitHub integration, MCP servers, analytics, OG images, activity feed automation, blog series refactor, and future ideas tracking
 
 ### `design/`
 Design system organized by topic:
@@ -104,6 +117,16 @@ Design system organized by topic:
 - `print/` - Print stylesheet
 - `spacing/` - Spacing standards
 - `ui-patterns/` - Component patterns
+- Complete page templates with design token enforcement
+- Design token compliance audits
+
+### `automation/`
+Automated update system:
+- Dependabot auto-merge configuration
+- Quarterly AI instruction sync
+- Continuous test metrics collection
+- Daily security scanning
+- Setup and deployment guides
 
 ### `security/`
 Security implementation guides for CSP, rate limiting, and security best practices
@@ -143,4 +166,4 @@ Dashboard modularization patterns and maintenance documentation
 
 ---
 
-_Last updated: December 4, 2025_
+_Last updated: December 9, 2025_

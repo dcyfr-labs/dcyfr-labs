@@ -58,7 +58,7 @@ export const Logo: React.FC<LogoProps> = ({
         height={height}
         viewBox={LOGO_CONFIG.viewBox}
         role="img"
-        aria-label="DCYFR Labs"
+        aria-label="DCYFR (Decipher) Labs"
         {...props}
     >
         <path d={LOGO_CONFIG.path} />

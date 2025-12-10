@@ -6,6 +6,41 @@ Standardized page templates enforcing design token usage for consistent user exp
 
 ---
 
+## 📚 Real-World Examples
+
+### Series Pages (December 2025)
+
+The series feature implementation serves as the **gold standard** for archive page patterns:
+
+- **Index Page**: `/blog/series` - [page.tsx](../../src/app/blog/series/page.tsx)
+- **Detail Page**: `/blog/series/[slug]` - [page.tsx](../../src/app/blog/series/[slug]/page.tsx)
+
+**Key Implementation Details:**
+
+- ✅ Full-width hero with `variant="homepage"` (includes serif font)
+- ✅ Hero content constrained to `max-w-7xl` (matches archive container)
+- ✅ Analytics tracking integrated via dedicated tracker components
+- ✅ Design tokens used throughout (zero hardcoded values)
+- ✅ Responsive grid with `GRID_PATTERNS.three`
+- ✅ ISR with 24-hour revalidation
+
+**What Makes This Template Great:**
+
+1. **Typography Hierarchy**: Uses `variant="homepage"` for serif titles matching other archive pages
+2. **Width Consistency**: Hero (`max-w-7xl`) matches content container (`CONTAINER_WIDTHS.archive`)
+3. **Analytics First**: Dedicated tracker components for granular event tracking
+4. **No Prose Constraint**: Removed `prose` class from hero to prevent 65ch width limit
+5. **Full-Width Background**: Hero extends to viewport edges while content stays constrained
+
+**Lessons Learned:**
+
+- `PAGE_LAYOUT.hero.content` includes `prose` class → adds unwanted `max-w-prose` constraint
+- Archive pages should use `CONTAINER_WIDTHS.archive` (`max-w-7xl`) not `standard` (`max-w-5xl`)
+- `variant="homepage"` adds serif font (`font-serif`) for archive page titles
+- Always match hero content width to page content container width
+
+---
+
 ## 🎯 Design Token Compliance Rules
 
 **ALWAYS use design tokens. NEVER hardcode values.**

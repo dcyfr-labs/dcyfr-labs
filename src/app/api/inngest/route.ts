@@ -24,6 +24,10 @@ import {
   validateSitemapAndGetMissing,
   submitMissingPagesToGoogle,
 } from "@/inngest/google-indexing-functions";
+import {
+  refreshActivityFeed,
+  invalidateActivityFeed,
+} from "@/inngest/activity-cache-functions";
 import { inngestErrorHandler } from "@/inngest/error-handler";
 
 /**
@@ -78,6 +82,10 @@ export const { GET, POST, PUT } = serve({
     batchSubmitBlogPosts,            // Event-driven: batch process multiple URLs (legacy)
     validateSitemapAndGetMissing,    // Event-driven: validate sitemap against GSC
     submitMissingPagesToGoogle,      // Event-driven: end-to-end: validate→submit→verify
+    
+    // Activity feed caching
+    refreshActivityFeed,             // Scheduled: every 5 minutes
+    invalidateActivityFeed,          // Event-driven: on content changes
     
     // Error handling (centralized monitoring and alerting)
     inngestErrorHandler,             // Event-driven: triggered on function failures

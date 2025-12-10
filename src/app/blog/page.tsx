@@ -8,7 +8,7 @@ import { groupPostsByCategory, sortCategoriesByCount } from "@/lib/blog-grouping
 import { createArchivePageMetadata, createCollectionSchema, getJsonLdScriptProps } from "@/lib/metadata";
 import { AUTHOR_NAME, SITE_URL } from "@/lib/site-config";
 import { headers } from "next/headers";
-import { TYPOGRAPHY, CONTAINER_WIDTHS, CONTAINER_PADDING, PAGE_LAYOUT, SPACING } from "@/lib/design-tokens";
+import { CONTAINER_WIDTHS, CONTAINER_PADDING, SPACING } from "@/lib/design-tokens";
 import { ArchivePagination } from "@/components/layouts/archive-pagination";
 import {
   PostList,
@@ -21,7 +21,7 @@ import {
   BlogListSkeleton,
 } from "@/components/blog";
 import { ViewToggle, SmoothScrollToHash } from "@/components/common";
-import { PageLayout } from "@/components/layouts/page-layout";
+import { PageLayout, PageHero } from "@/components/layouts";
 
 const pageTitle = "Blog";
 const pageDescription = "Blog posts on software development, cybersecurity, emerging technologies, and more.";
@@ -229,27 +229,28 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     <PageLayout>
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
       <SmoothScrollToHash />
-      
+
       {/* Track search and filter analytics */}
-      <BlogSearchAnalytics 
+      <BlogSearchAnalytics
         query={query}
         tags={selectedTags}
         resultsCount={sortedArchiveData.totalItems}
       />
-      
+
       {/* Layout preference manager */}
       <BlogLayoutManager />
-      
-      {/* Hero Section */}
-      <section id="hero" className={PAGE_LAYOUT.archiveHero.container}>
-        <div className={PAGE_LAYOUT.archiveHero.content}>
-          <h1 className={TYPOGRAPHY.h1.hero}>{pageTitle}</h1>
-          <p className={TYPOGRAPHY.description}>{pageDescription}</p>
-        </div>
-      </section>
-      
+
+      {/* Hero section with full-width background */}
+      <PageHero
+        variant="homepage"
+        title={pageTitle}
+        description={pageDescription}
+        itemCount={sortedArchiveData.totalItems}
+        fullWidth
+      />
+
       {/* Blog layout with sidebar on desktop */}
-      <div className={`container ${CONTAINER_WIDTHS.archive} mx-auto ${CONTAINER_PADDING} pb-8`}>
+      <div className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING}`}>
         {/* Main grid: Sidebar + Content */}
         <BlogLayoutWrapper>
           {/* Sidebar (desktop only) */}

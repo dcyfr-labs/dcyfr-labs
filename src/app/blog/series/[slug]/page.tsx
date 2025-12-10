@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { allSeries, getSeriesByAnySlug } from "@/data/posts";
-import { PageLayout } from "@/components/layouts";
-import { SeriesHeader, PostList } from "@/components/blog";
+import { PageLayout, PageHero } from "@/components/layouts";
+import { PostList, SeriesPageAnalyticsTracker } from "@/components/blog";
 import { SITE_TITLE_PLAIN, SITE_URL, getOgImageUrl, getTwitterImageUrl } from "@/lib/site-config";
 import { CONTAINER_WIDTHS, CONTAINER_PADDING, SPACING } from "@/lib/design-tokens";
 
@@ -113,15 +113,27 @@ export default async function SeriesPage({
 
   return (
     <PageLayout>
-      <div
-        className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING}`}
-      >
-        <SeriesHeader
-          name={series.name}
-          postCount={series.postCount}
-          totalMinutes={Math.ceil(series.totalReadingTime)}
-        />
+      {/* Analytics tracking */}
+      <SeriesPageAnalyticsTracker
+        series={{
+          slug: series.slug,
+          name: series.name,
+          postCount: series.postCount,
+          totalReadingTime: series.totalReadingTime,
+        }}
+      />
 
+      {/* Hero section with full-width background */}
+      <PageHero
+        variant="homepage"
+        title={series.name}
+        description={series.description}
+        itemCount={series.postCount}
+        fullWidth
+      />
+
+      {/* Content section with archive-width container */}
+      <div className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING}`}>
         <div className={SPACING.section}>
           <PostList
             posts={series.posts}

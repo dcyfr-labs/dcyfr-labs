@@ -10,6 +10,8 @@ export { BlogLayoutWrapper } from "./blog-layout-wrapper";
 export { BlogSearchAnalytics } from "./blog-search-analytics";
 export { BlogSearchForm } from "./blog-search-form";
 export { BlogAnalyticsTracker } from "./blog-analytics-tracker";
+export { SeriesAnalyticsTracker } from "./series-analytics-tracker";
+export { SeriesPageAnalyticsTracker } from "./series-page-analytics-tracker";
 export { BookmarkButton } from "./bookmark-button";
 export { LayoutToggle } from "./layout-toggle";
 

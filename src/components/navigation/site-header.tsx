@@ -17,15 +17,25 @@ const workCategories = [
   { href: "/work?category=startup", label: "Startup" },
 ];
 
+const blogCategories = [
+  { href: "/blog", label: "All Posts" },
+  { href: "/blog/series", label: "Series" },
+];
+
 export function SiteHeader() {
   const [workOpen, setWorkOpen] = useState(false);
+  const [blogOpen, setBlogOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const blogDropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setWorkOpen(false);
+      }
+      if (blogDropdownRef.current && !blogDropdownRef.current.contains(e.target as Node)) {
+        setBlogOpen(false);
       }
     }
     document.addEventListener("click", handleClickOutside);
@@ -50,20 +60,40 @@ export function SiteHeader() {
 
         {/* Desktop Navigation - hidden on mobile, visible md and up */}
         <nav aria-label="Main navigation" className="hidden md:flex items-center gap-1 sm:gap-3 md:gap-4 text-sm">
-          <Link 
-            href="/about" 
+          <Link
+            href="/about"
             className="hover:underline underline-offset-4 will-change-auto touch-target px-1.5 sm:px-2"
             prefetch={false}
           >
             About
           </Link>
-          <Link 
-            href="/blog" 
-            className="hover:underline underline-offset-4 will-change-auto touch-target px-1.5 sm:px-2"
-            prefetch={false}
-          >
-            Blog
-          </Link>
+          {/* Blog dropdown */}
+          <div ref={blogDropdownRef} className="relative">
+            <button
+              onClick={() => setBlogOpen((prev) => !prev)}
+              className="flex items-center gap-1 hover:underline underline-offset-4 will-change-auto touch-target px-1.5 sm:px-2"
+              aria-haspopup="menu"
+              aria-expanded={blogOpen}
+            >
+              Blog
+              <ChevronDown className={cn("h-3 w-3 transition-transform", blogOpen && "rotate-180")} />
+            </button>
+            {blogOpen && (
+              <div className="absolute top-full left-0 mt-2 w-40 rounded-md border bg-card p-1 shadow-lg z-50">
+                {blogCategories.map((cat) => (
+                  <Link
+                    key={cat.href}
+                    href={cat.href}
+                    className="block px-3 py-2 text-sm hover:bg-muted rounded"
+                    onClick={() => setBlogOpen(false)}
+                    prefetch={false}
+                  >
+                    {cat.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
           {/* Our Work dropdown */}
           <div ref={dropdownRef} className="relative">
             <button

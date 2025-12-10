@@ -7,11 +7,14 @@ import type { SeriesMetadata } from "@/data/posts";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { HOVER_EFFECTS, SPACING, TYPOGRAPHY, BORDERS, getSeriesColors } from "@/lib/design-tokens";
+import { HOVER_EFFECTS, SPACING, TYPOGRAPHY, BORDERS, ANIMATION, getSeriesColors } from "@/lib/design-tokens";
+import { trackSeriesCardClick } from "@/lib/analytics";
 
 export interface SeriesCardProps {
   /** Series metadata */
   series: SeriesMetadata;
+  /** Position in the grid (0-indexed) */
+  position?: number;
 }
 
 /**
@@ -24,13 +27,14 @@ export interface SeriesCardProps {
  * - Post count and total reading time
  * - Clickable link to series archive page
  * - Hover effects with color-matched borders
+ * - Analytics tracking on click
  *
  * @example
  * ```tsx
- * <SeriesCard series={seriesMetadata} />
+ * <SeriesCard series={seriesMetadata} position={0} />
  * ```
  */
-export function SeriesCard({ series }: SeriesCardProps) {
+export function SeriesCard({ series, position = 0 }: SeriesCardProps) {
   const colors = getSeriesColors(series.color);
 
   // Dynamically load Lucide icon if specified
@@ -38,14 +42,24 @@ export function SeriesCard({ series }: SeriesCardProps) {
     ? (LucideIcons[series.icon as keyof typeof LucideIcons] as React.ComponentType<{ className?: string }>) || BookOpen
     : BookOpen;
 
+  const handleClick = () => {
+    trackSeriesCardClick(
+      series.slug,
+      series.name,
+      series.postCount,
+      position
+    );
+  };
+
   return (
     <Link
       href={`/blog/series/${series.slug}`}
       className="block group"
+      onClick={handleClick}
     >
       <Card
         className={cn(
-          "h-full transition-all",
+          "h-full",
           HOVER_EFFECTS.card,
           colors.card
         )}
@@ -53,7 +67,7 @@ export function SeriesCard({ series }: SeriesCardProps) {
         <CardHeader className={SPACING.compact}>
           <div className="flex items-start gap-3">
             <div className={cn(
-              "flex-shrink-0 p-2",
+              "shrink-0 p-2",
               BORDERS.card,
               "transition-colors",
               colors.badge
@@ -91,7 +105,7 @@ export function SeriesCard({ series }: SeriesCardProps) {
         </CardContent>
 
         <CardFooter className="pt-0">
-          <div className="flex items-center gap-2 text-sm font-medium text-primary group-hover:gap-3 transition-all">
+          <div className={cn("flex items-center gap-2 text-sm font-medium text-primary group-hover:gap-3 transition-[gap]", ANIMATION.duration.fast)}>
             <span>Start Series</span>
             <ChevronRight className="h-4 w-4" />
           </div>

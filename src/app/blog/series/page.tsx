@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { allSeries } from "@/data/posts";
 import { PageLayout, PageHero } from "@/components/layouts";
-import { SeriesCard } from "@/components/blog";
+import { SeriesCard, SeriesAnalyticsTracker } from "@/components/blog";
 import { SITE_TITLE_PLAIN, SITE_URL, getOgImageUrl, getTwitterImageUrl } from "@/lib/site-config";
 import { CONTAINER_WIDTHS, CONTAINER_PADDING, GRID_PATTERNS, SPACING } from "@/lib/design-tokens";
 
@@ -15,7 +15,7 @@ export const revalidate = 86400;
  */
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Blog Series";
-  const description = "Explore multi-part content series organized by topic. Deep dives into development, security, performance, and more.";
+  const description = "Explore multi-part content series organized by topic.. Deep dives into development, security, performance, and more.";
 
   return {
     title,
@@ -72,10 +72,16 @@ export default function SeriesIndexPage() {
 
   return (
     <PageLayout>
-      {/* Hero section with full-width container */}
+      {/* Analytics tracking */}
+      <SeriesAnalyticsTracker seriesCount={sortedSeries.length} />
+
+      {/* Hero section with full-width background */}
       <PageHero
+        variant="homepage"
         title="Blog Series"
-        description="Explore multi-part content series organized by topic"
+        description="Explore multi-part content series organized by topic."
+        itemCount={sortedSeries.length}
+        fullWidth
       />
 
       {/* Content section with archive-width container */}
@@ -87,8 +93,8 @@ export default function SeriesIndexPage() {
         ) : (
           <div className={SPACING.section}>
             <div className={GRID_PATTERNS.three}>
-              {sortedSeries.map((series) => (
-                <SeriesCard key={series.slug} series={series} />
+              {sortedSeries.map((series, index) => (
+                <SeriesCard key={series.slug} series={series} position={index} />
               ))}
             </div>
           </div>
