@@ -71,6 +71,8 @@ This document tracks **active and pending** work. Completed tasks are in **`done
 
 ## 🔵 BACKLOG (Low Priority or Speculative)
 
+### Blog Features
+
 ### Infrastructure & Reliability
 
 - [ ] **Backup & Disaster Recovery Plan** (2 hours)

@@ -34,7 +34,7 @@ interface SeriesNavigationProps {
 }
 
 export function SeriesNavigation({ currentPost, seriesPosts }: SeriesNavigationProps) {
-  if (!currentPost.series || seriesPosts.length === 0) {
+  if (!currentPost.series || !currentPost.series.name || seriesPosts.length === 0) {
     return null;
   }
 

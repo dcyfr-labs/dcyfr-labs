@@ -106,7 +106,6 @@ export function SiteHeader() {
             prefetch={false}
           >
             Sponsors
-            <Heart className="inline-block h-3 w-3 ml-1 text-primary" aria-hidden="true" />
           </Link>
           <ThemeToggle />
           {process.env.NODE_ENV === "development" && <DevToolsDropdown />}

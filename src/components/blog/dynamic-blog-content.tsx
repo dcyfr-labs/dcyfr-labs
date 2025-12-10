@@ -12,10 +12,13 @@
 import { Suspense } from "react";
 import type { ArchiveData } from "@/lib/archive";
 import type { Post } from "@/data/posts";
+import type { PostCategory } from "@/lib/post-categories";
 import { getMultiplePostViews } from "@/lib/views";
 import { calculateActiveFilterCount } from "@/lib/blog";
+import { SPACING } from "@/lib/design-tokens";
 import { ArchivePagination } from "@/components/layouts/archive-pagination";
 import { PostList } from "@/components/blog/post/post-list";
+import { PostCategorySection } from "@/components/blog/post/post-category-section";
 import { MobileFilterBar } from "@/components/blog/filters/mobile-filter-bar";
 import { FloatingFilterFab } from "@/components/blog/filters/floating-filter-fab";
 import { HorizontalFilterChips } from "@/components/blog/filters/horizontal-filter-chips";
@@ -49,9 +52,11 @@ interface DynamicBlogContentProps {
   /** Date range filter */
   dateRange: string;
   /** Post layout mode */
-  layout: "grid" | "list" | "magazine" | "compact";
+  layout: "grid" | "list" | "magazine" | "compact" | "grouped";
   /** Whether active filters are applied */
   hasActiveFilters: boolean;
+  /** Grouped categories (only when layout=grouped) */
+  groupedCategories?: [PostCategory, Post[]][];
 }
 
 /**
@@ -74,6 +79,7 @@ async function DynamicBlogContentImpl({
   dateRange,
   layout,
   hasActiveFilters,
+  groupedCategories,
 }: DynamicBlogContentProps) {
   // Fetch view counts for all filtered posts (this is the async operation that gets streamed)
   const postIds = sortedArchiveData.allFilteredItems.map((post: Post) => post.id);
@@ -144,18 +150,35 @@ async function DynamicBlogContentImpl({
           hasFilters={hasActiveFilters}
         />
 
-        {/* Post list with view counts */}
-        <PostList
-          posts={postsToDisplay}
-          latestSlug={latestSlug}
-          hottestSlug={hottestSlug}
-          titleLevel="h2"
-          layout={layout}
-          viewCounts={viewCounts}
-          hasActiveFilters={hasActiveFilters}
-          emptyMessage="No posts found. Try adjusting your search or filters."
-          searchQuery={query}
-        />
+        {/* Post list or grouped view */}
+        {layout === "grouped" && groupedCategories ? (
+          <div className={SPACING.subsection}>
+            {groupedCategories.map(([category, posts]) => (
+              <PostCategorySection
+                key={category}
+                category={category}
+                label={categoryDisplayMap[category]}
+                posts={posts}
+                latestSlug={latestSlug}
+                hottestSlug={hottestSlug}
+                viewCounts={viewCounts}
+                searchQuery={query}
+              />
+            ))}
+          </div>
+        ) : (
+          <PostList
+            posts={postsToDisplay}
+            latestSlug={latestSlug}
+            hottestSlug={hottestSlug}
+            titleLevel="h2"
+            layout={layout as "grid" | "list" | "magazine" | "compact"}
+            viewCounts={viewCounts}
+            hasActiveFilters={hasActiveFilters}
+            emptyMessage="No posts found. Try adjusting your search or filters."
+            searchQuery={query}
+          />
+        )}
 
         {/* Pagination */}
         {sortedArchiveData.totalPages > 1 && (

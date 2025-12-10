@@ -21,7 +21,10 @@ import {
   submitUrlToGoogle,
   deleteUrlFromGoogle,
   batchSubmitBlogPosts,
+  validateSitemapAndGetMissing,
+  submitMissingPagesToGoogle,
 } from "@/inngest/google-indexing-functions";
+import { inngestErrorHandler } from "@/inngest/error-handler";
 
 /**
  * Inngest API endpoint for Next.js App Router
@@ -70,8 +73,13 @@ export const { GET, POST, PUT } = serve({
     securityAdvisoryHandler,     // Event-driven: process detections
     
     // Google Indexing API
-    submitUrlToGoogle,           // Event-driven: submit URL for indexing
-    deleteUrlFromGoogle,         // Event-driven: remove URL from index
-    batchSubmitBlogPosts,        // Event-driven: batch process multiple URLs
+    submitUrlToGoogle,               // Event-driven: submit URL for indexing
+    deleteUrlFromGoogle,             // Event-driven: remove URL from index
+    batchSubmitBlogPosts,            // Event-driven: batch process multiple URLs (legacy)
+    validateSitemapAndGetMissing,    // Event-driven: validate sitemap against GSC
+    submitMissingPagesToGoogle,      // Event-driven: end-to-end: validate→submit→verify
+    
+    // Error handling (centralized monitoring and alerting)
+    inngestErrorHandler,             // Event-driven: triggered on function failures
   ],
 });

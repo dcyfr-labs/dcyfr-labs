@@ -22,6 +22,47 @@ This document tracks **recently completed** work. Historical completions are arc
 
 ## ✅ RECENTLY COMPLETED (December 2025)
 
+### 📅 December 9, 2025 - Blog Series Archive Re-enabled
+
+**Status:** ✅ Complete  
+**Effort:** 45 minutes  
+**Impact:** ⭐⭐⭐ Completes series feature, improves blog navigation
+
+**What Was Done:**
+- Re-enabled `/blog/series/[slug]` route (was disabled since Dec 9)
+- Created minimal archive implementation (not over-engineered)
+- Built `SeriesHeader` component with stats display
+- Reused existing `PostList` component for series posts
+- Added 16 tests covering series functionality
+- Updated documentation
+
+**Files Created:**
+- `src/components/blog/series-header.tsx` - Series metadata display
+- `src/__tests__/components/blog/series-header.test.tsx` - Component tests (6 tests)
+- `src/__tests__/pages/blog-series.test.ts` - Series logic tests (10 tests)
+
+**Files Modified:**
+- `src/app/blog/series/[slug]/page.tsx` - Full implementation
+- `src/components/blog/index.ts` - Added SeriesHeader export
+- `docs/operations/todo.md` - Removed from backlog/temp sections
+
+**Key Metrics:**
+- ✅ 16 new tests, all passing
+- ✅ Uses design tokens (TYPOGRAPHY, SPACING, CONTAINER_WIDTHS)
+- ✅ PageLayout + PostList reuse (no over-engineering)
+- ✅ Series posts sorted by order field
+- ✅ SEO metadata with Open Graph/Twitter Card
+- ✅ 24-hour ISR revalidation
+
+**Design Decisions:**
+- Minimal approach (no fancy filtering/sorting)
+- Reuse existing PostList component
+- Display: series name, post count, total reading time
+- List layout (single column) for series reading
+- No new dependencies
+
+---
+
 ### 📅 December 7, 2025 - Todo Refactoring
 
 **Status:** ✅ Complete  

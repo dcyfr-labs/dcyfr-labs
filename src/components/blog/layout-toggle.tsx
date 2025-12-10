@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { LayoutGrid, List, Columns2, Square } from "lucide-react";
+import { LayoutGrid, List, Columns2, Square, FolderKanban } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface LayoutOption {
-  id: "grid" | "list" | "magazine" | "compact";
+  id: "grid" | "list" | "magazine" | "compact" | "grouped";
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   title: string;
@@ -36,11 +36,17 @@ const LAYOUT_OPTIONS: LayoutOption[] = [
     icon: Square,
     title: "Compact layout - Minimal cards",
   },
+  {
+    id: "grouped",
+    label: "Grouped",
+    icon: FolderKanban,
+    title: "Grouped layout - Posts organized by category",
+  },
 ];
 
 interface LayoutToggleProps {
   /** Current active layout */
-  currentLayout: "grid" | "list" | "magazine" | "compact";
+  currentLayout: "grid" | "list" | "magazine" | "compact" | "grouped";
 }
 
 /**
@@ -57,7 +63,7 @@ export function LayoutToggle({ currentLayout }: LayoutToggleProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const handleLayoutChange = (layout: "grid" | "list" | "magazine" | "compact") => {
+  const handleLayoutChange = (layout: "grid" | "list" | "magazine" | "compact" | "grouped") => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("layout", layout);
     router.push(`/blog?${params.toString()}`, { scroll: false });

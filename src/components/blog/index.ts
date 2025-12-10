@@ -22,12 +22,14 @@ export { BlogPostSidebar } from "./post/blog-post-sidebar";
 export { BlogPostSidebarWrapper } from "./post/blog-post-sidebar-wrapper";
 export { BlogPostSkeleton } from "./post/blog-post-skeleton";
 export { PostList } from "./post/post-list";
+export { PostCategorySection } from "./post/post-category-section";
 export { PostListSkeleton } from "./post/post-list-skeleton";
 export { PostThumbnail } from "./post/post-thumbnail";
 export { PostHeroImage } from "./post/post-hero-image";
 export { PostBadges } from "./post/post-badges";
 export { SeriesBadge } from "./post/series-badge";
 export { SeriesNavigation } from "./post/series-navigation";
+export { SeriesHeader } from "./series-header";
 
 // Sidebar context for hiding duplicate content
 export { SidebarVisibilityProvider, useSidebarVisibility, HideWhenSidebarVisible } from "./post/sidebar-context";

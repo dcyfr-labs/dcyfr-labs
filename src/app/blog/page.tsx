@@ -4,6 +4,7 @@ import { posts, type Post } from "@/data/posts";
 import { POST_CATEGORY_LABEL } from "@/lib/post-categories";
 import { getArchiveData } from "@/lib/archive";
 import { getPostBadgeMetadata } from "@/lib/post-badges";
+import { groupPostsByCategory, sortCategoriesByCount } from "@/lib/blog-grouping";
 import { createArchivePageMetadata, createCollectionSchema, getJsonLdScriptProps } from "@/lib/metadata";
 import { AUTHOR_NAME, SITE_URL } from "@/lib/site-config";
 import { headers } from "next/headers";
@@ -53,7 +54,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   // Support category filter (primary classification - lowercase in URL)
   const categoryParam = getParam("category");
   const selectedCategory = categoryParam ? categoryParam.toLowerCase() : "";
-  
+
   // Support multiple tags (comma-separated, case-insensitive)
   const tagParam = getParam("tag");
   const selectedTags = tagParam ? tagParam.split(",").filter(Boolean).map(t => t.toLowerCase()) : [];
@@ -62,7 +63,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const sortBy = getParam("sortBy") || "newest";
   const dateRange = getParam("dateRange") || "all";
   const layoutParam = getParam("layout");
-  const layout = (["grid", "list", "magazine", "compact"].includes(layoutParam)) ? layoutParam as "grid" | "list" | "magazine" | "compact" : "magazine";
+  const layout = (["grid", "list", "magazine", "compact", "grouped"].includes(layoutParam)) ? layoutParam as "grid" | "list" | "magazine" | "compact" | "grouped" : "magazine";
   
   // Apply category filter first (case-insensitive)
   const postsWithCategoryFilter = selectedCategory
@@ -158,7 +159,11 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     totalItems: sortedItems.length,
     totalPages: Math.ceil(sortedItems.length / archiveData.itemsPerPage),
   };
-  
+
+  // Group posts by category for grouped layout
+  const groupedPosts = groupPostsByCategory(sortedArchiveData.allFilteredItems);
+  const sortedCategories = sortCategoriesByCount(groupedPosts);
+
   // Transform availableTags to include counts and sort by count (highest first)
   const availableTagsWithCounts = sortedArchiveData.availableTags
     .map(tag => ({
@@ -284,6 +289,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
               dateRange={dateRange}
               layout={layout}
               hasActiveFilters={hasActiveFilters}
+              groupedCategories={layout === "grouped" ? sortedCategories : undefined}
             />
           </Suspense>
         </BlogLayoutWrapper>
