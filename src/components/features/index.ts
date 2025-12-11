@@ -2,6 +2,7 @@
 export { ThemeProvider } from "./theme/theme-provider";
 export { ThemeToggle } from "./theme/theme-toggle";
 export { GitHubHeatmap } from "./github/github-heatmap";
+export { ServerGitHubHeatmap } from "./github/server-github-heatmap";
 export { GiscusComments } from "./comments/giscus-comments";
 export { ShareButtons } from "./sharing/share-buttons";
 export { ViewTracker } from "./view-tracker";
