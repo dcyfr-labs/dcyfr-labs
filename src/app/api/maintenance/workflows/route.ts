@@ -3,7 +3,8 @@
  * GET endpoint for fetching GitHub Actions workflow data
  */
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { blockExternalAccess } from "@/lib/api-security";
 import { getAllWorkflowSummaries } from "@/lib/github-workflows";
 import { TRACKED_WORKFLOWS } from "@/types/maintenance";
 import { createClient } from "redis";
@@ -35,7 +36,11 @@ async function getRedisClient() {
  * - limit: Number of runs per workflow (default: 10)
  * - skip_cache: Skip Redis cache (default: false)
  */
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
+  // Block external access - internal maintenance tools only
+  const blockResponse = blockExternalAccess(request);
+  if (blockResponse) return blockResponse;
+
   try {
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get("limit") || "10", 10);

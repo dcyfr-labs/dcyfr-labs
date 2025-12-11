@@ -5,7 +5,8 @@
  * Stores observations in Redis if available, otherwise uses in-memory storage (dev only).
  */
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { blockExternalAccess } from "@/lib/api-security";
 import { createClient } from "redis";
 import type { Observation } from "@/types/maintenance";
 
@@ -47,7 +48,11 @@ async function getRedisClient() {
  * - category: Filter by category (optional)
  * - severity: Filter by severity (optional)
  */
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
+  // Block external access - internal maintenance tools only
+  const blockResponse = blockExternalAccess(request);
+  if (blockResponse) return blockResponse;
+
   try {
     const { searchParams } = new URL(request.url);
     const limit = Math.min(parseInt(searchParams.get("limit") || "20", 10), 100);
@@ -148,7 +153,11 @@ export async function GET(request: Request) {
  *   screenshot?: string
  * }
  */
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  // Block external access - internal maintenance tools only
+  const blockResponse = blockExternalAccess(request);
+  if (blockResponse) return blockResponse;
+
   try {
     const body = await request.json();
 
