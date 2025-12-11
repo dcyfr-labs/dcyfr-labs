@@ -389,6 +389,10 @@ export async function POST(request: NextRequest) {
  * Returns API status and configuration
  */
 export async function GET(request: NextRequest) {
+  // Block external access for security
+  const blockResponse = blockExternalAccess(request);
+  if (blockResponse) return blockResponse;
+
   const configured = isPerplexityConfigured();
 
   return NextResponse.json({
