@@ -4,12 +4,6 @@
   "github": {
     "silent": true
   },
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/404"
-    }
-  ],
   "headers": [
     {
       "source": "/_next/static/(.*)",
