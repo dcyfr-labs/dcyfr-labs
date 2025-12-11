@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 // import { checkBotId } from "botid/server"; // Disabled - see PR #112
-import { blockExternalAccess } from "@/lib/api-security";
+// blockExternalAccess NOT imported - contact form is public user-facing endpoint
 import { rateLimit, getClientIp, createRateLimitHeaders } from "@/lib/rate-limit";
 import { RATE_LIMITS } from "@/lib/api-guardrails";
 import { inngest } from "@/inngest/client";
@@ -59,9 +59,10 @@ function sanitizeInput(input: string): string {
 }
 
 export async function POST(request: NextRequest) {
-  // Block external access for security
-  const blockResponse = blockExternalAccess(request);
-  if (blockResponse) return blockResponse;
+  // NOTE: blockExternalAccess() is NOT used here because this is a PUBLIC
+  // user-facing endpoint that must accept requests from users' browsers.
+  // Security is provided by: rate limiting, honeypot field, input validation,
+  // and optionally BotID (currently disabled due to false positives).
 
   let body: ContactFormData | undefined;
   
