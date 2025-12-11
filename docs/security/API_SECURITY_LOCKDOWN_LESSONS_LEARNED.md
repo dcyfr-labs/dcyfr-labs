@@ -115,6 +115,12 @@ export function blockExternalAccess(request: NextRequest): NextResponse | null {
 - Environment-aware access control
 - Explicit authentication for admin endpoints
 - Header-based service identification
+- Node.js runtime for endpoints requiring Node.js built-in modules
+
+**🔧 Runtime Selection Guidelines:**
+- **Edge Runtime:** Use for simple endpoints with no Node.js module dependencies
+- **Node.js Runtime:** Use for endpoints requiring fs, crypto, path, or external service access
+- **Check dependencies:** Audit import chains to avoid edge runtime compatibility issues
 
 ### **2. Security Audit Process**
 
@@ -185,6 +191,11 @@ grep -r "blockExternalAccess\|ADMIN_API_KEY\|export async function" src/app/api/
 - ✅ **Monitoring and alerting maintained** with restricted access
 - ✅ **Admin dashboards secure** behind API key authentication
 
+### **3. Edge Runtime Compatibility Issues**
+- **Issue:** Edge runtime build failures with Node.js module dependencies
+- **Root Cause:** Edge runtime cannot import Node.js built-in modules (crypto, fs, path)
+- **Solution:** Switch critical endpoints to Node.js runtime when Node.js modules required
+
 ---
 
 ## 🚧 **Implementation Challenges**
@@ -201,6 +212,20 @@ grep -r "blockExternalAccess\|ADMIN_API_KEY\|export async function" src/app/api/
 ### **3. Development vs Production**
 - **Issue:** Need different security postures for development efficiency
 - **Solution:** Environment-aware security with localhost exceptions
+
+### **4. Edge Runtime Module Compatibility**
+- **Issue:** Build errors with `Cannot find module 'node:crypto'` in edge runtime
+- **Root Cause:** `/api/health` using edge runtime but importing dependencies that use Node.js crypto
+- **Solution:** Switched health endpoint from edge to nodejs runtime
+- **Technical Details:**
+  ```
+  Error: Cannot find module 'node:crypto': Unsupported external type Url for commonjs reference
+  ```
+  - Edge runtime cannot access Node.js built-in modules (crypto, fs, path, url)
+  - Indirect dependency chain: health route → checkGitHubDataHealth → potential blog.ts imports
+  - Blog utilities use crypto for hash generation, incompatible with edge runtime
+  - Switched `/api/health` from `export const runtime = 'edge'` to `export const runtime = 'nodejs'`
+  - Build now completes successfully (407/407 static pages generated)
 
 ---
 
@@ -230,6 +255,7 @@ grep -r "blockExternalAccess\|ADMIN_API_KEY\|export async function" src/app/api/
 2. **Middleware has deployment complexity** - use sparingly
 3. **Vercel config is post-routing** - can't block App Router APIs
 4. **Environment-aware security essential** for development workflow
+5. **Edge runtime requires dependency auditing** - no Node.js built-in modules
 
 ### **For API Security Generally:**
 1. **Start with business necessity audit** - remove what isn't needed
