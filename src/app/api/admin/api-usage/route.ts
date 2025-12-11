@@ -9,6 +9,8 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { blockExternalAccess } from "@/lib/api-security";
+import { rateLimit, getClientIp, createRateLimitHeaders } from "@/lib/rate-limit";
 import {
   getAllUsageStats,
   getUsageSummary,
@@ -48,9 +50,19 @@ function isAuthenticated(request: NextRequest): boolean {
  * GET /api/admin/api-usage
  *
  * Returns comprehensive API usage statistics and health status
+ *
+ * Security layers:
+ * - Layer 0: blockExternalAccess() - blocks all external requests in production
+ * - Layer 1: API key authentication - requires ADMIN_API_KEY
+ * - Layer 2: Environment check - disabled in production entirely
+ * - Layer 3: Rate limiting - 1 request per minute per IP (strict admin limit)
  */
 export async function GET(request: NextRequest) {
-  // Check authentication
+  // Layer 0: Block external access for security
+  const blockResponse = blockExternalAccess(request);
+  if (blockResponse) return blockResponse;
+
+  // Layer 1: Check authentication
   if (!isAuthenticated(request)) {
     return NextResponse.json(
       { error: "Unauthorized" },
@@ -58,7 +70,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // Environment check - only allow in dev/preview
+  // Layer 2: Environment check - only allow in dev/preview
   if (process.env.NODE_ENV === "production") {
     return NextResponse.json(
       {
@@ -66,6 +78,31 @@ export async function GET(request: NextRequest) {
         message: "API usage endpoint is disabled in production for security",
       },
       { status: 403 }
+    );
+  }
+
+  // Layer 3: Rate limiting - strict limit for admin endpoints (1 req/min)
+  const clientIp = getClientIp(request);
+  const rateLimitResult = await rateLimit(clientIp, {
+    limit: 1,
+    windowInSeconds: 60,
+  });
+
+  if (!rateLimitResult.success) {
+    const retryAfter = Math.ceil((rateLimitResult.reset - Date.now()) / 1000);
+    return NextResponse.json(
+      {
+        error: "Rate limit exceeded",
+        message: "Admin endpoint limited to 1 request per minute",
+        retryAfter,
+      },
+      {
+        status: 429,
+        headers: {
+          ...createRateLimitHeaders(rateLimitResult),
+          "Retry-After": retryAfter.toString(),
+        },
+      }
     );
   }
 
