@@ -78,7 +78,9 @@ jobs:
         run: npm ci --prefer-offline
 
       - name: Run gitleaks
-        uses: zricethezav/gitleaks-action@v8
+        # Use the GitHub Action release (v2) which maps to the stable action versions.
+        # The gitleaks CLI binary used by the action may be a different major version; pin the action (v2) instead of 'v8'.
+        uses: zricethezav/gitleaks-action@v2
         with:
           args: --verbose --redact --report-format json --report gitleaks-report.json
         continue-on-error: true
