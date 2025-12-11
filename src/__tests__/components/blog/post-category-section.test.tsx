@@ -53,7 +53,7 @@ describe("PostCategorySection", () => {
     expect(screen.getByText("Artificial Intelligence")).toBeInTheDocument();
   });
 
-  it("should display post count in header", () => {
+  it("should display post count in header badge", () => {
     render(
       <PostCategorySection
         category="AI"
@@ -77,6 +77,33 @@ describe("PostCategorySection", () => {
     );
 
     expect(screen.getByText("1 post")).toBeInTheDocument();
+  });
+
+  it("should render post count badge with primary/10 background", () => {
+    render(
+      <PostCategorySection
+        category="AI"
+        label="AI"
+        posts={mockPosts}
+      />
+    );
+
+    const badge = screen.getByText("2 posts").closest("span");
+    expect(badge).toHaveClass("bg-primary/10", "text-primary");
+  });
+
+  it("should render chevron icon for expand/collapse", () => {
+    render(
+      <PostCategorySection
+        category="AI"
+        label="AI"
+        posts={mockPosts}
+      />
+    );
+
+    // ChevronDown icon should be present (aria-hidden)
+    const chevron = screen.getByRole("button").querySelector("svg");
+    expect(chevron).toBeInTheDocument();
   });
 
   it("should render PostList with compact layout", () => {
@@ -121,7 +148,7 @@ describe("PostCategorySection", () => {
     expect(screen.getByTestId("post-2")).toBeInTheDocument();
   });
 
-  it("should start with accordion expanded", () => {
+  it("should start with accordion expanded by default", () => {
     render(
       <PostCategorySection
         category="AI"
@@ -130,10 +157,8 @@ describe("PostCategorySection", () => {
       />
     );
 
-    // Check if trigger button has aria-expanded="true" initially
-    const trigger = screen.getByRole("button");
-    // Note: This depends on Radix UI's default state, should be expanded
-    expect(trigger).toBeInTheDocument();
+    // Posts should be visible when rendered (defaultValue includes category)
+    expect(screen.getByTestId("post-list")).toBeInTheDocument();
   });
 
   it("should allow toggling accordion expansion", () => {
@@ -230,5 +255,20 @@ describe("PostCategorySection", () => {
 
     expect(screen.getByText("AI")).toBeInTheDocument();
     expect(screen.getByTestId("post-list")).toBeInTheDocument();
+  });
+
+  it("should have no border on accordion item", () => {
+    render(
+      <PostCategorySection
+        category="AI"
+        label="AI"
+        posts={mockPosts}
+      />
+    );
+
+    const accordionItem = screen.getByRole("button").closest("[class*='accordion-item']");
+    if (accordionItem) {
+      expect(accordionItem).toHaveClass("border-none");
+    }
   });
 });

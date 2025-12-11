@@ -11,7 +11,7 @@ This document tracks **active and pending** work. Completed tasks are in **`done
 | Status | Count | Impact |
 |--------|-------|--------|
 | **Pending Work** | 11 items | Medium-effort features (2-6 hours each) |
-| **Backlog** | 12 items | Low-priority or speculative features |
+| **Backlog** | 14 items | Low-priority or speculative features |
 | **✅ Completed** | 50+ items | Phases 1-4 + automation + activity caching |
 
 ---
@@ -88,6 +88,102 @@ This document tracks **active and pending** work. Completed tasks are in **`done
 - [ ] **Backup & Disaster Recovery Plan** (2 hours)
 - [ ] **GitHub Actions CI Improvements** (2-3 hours)
 - [ ] **Automated Performance Regression Tests** (3-4 hours)
+
+### AI & Agent Security
+
+- [ ] **AI Agent Security Guardrails (Post / Guide)** (4-8 hours)
+  - **Goal:** Publish a developer-focused post and guide detailing best practices for securing AI agents and runtime guardrails, including patterns used in `AGENTS.md` and DCYFR enforcement rules.
+  - **Note:** In this doc, **PI = Proprietary Information** — defined per NIST: [Proprietary Information](https://csrc.nist.gov/glossary/term/proprietary_information).
+    Treat PI the same as PII for storage and handling practices when applicable (i.e., do not commit PI to the repo).
+  - **Scope:**
+    - Intro: threat models (prompt injection, capability escalation, data exfiltration)
+    - Design-time guardrails: policy-as-code, explicit permissioning, secrets handling, and approval gates
+    - Runtime guardrails: capability restrictions, sandboxing, rate limiting, and red-team testing
+    - Observability: audit logs, telemetry, anomaly detection, and policy violations
+    - DevOps: CI gating, test harnesses, policy enforcement, and sample Inngest/agent middleware
+    - Compliance & ethics: data minimization, GDPR considerations, and clear fail-soft behaviors
+  - **Deliverables:**
+    - Blog post draft with actionable examples
+    - Short sample snippet demonstrating a runtime policy check or middleware (Node/TS example)
+    - Checklist and policy template to include in `AGENTS.md` / `docs/ai/` for internal enforcement
+  - **Estimated Effort:** 4-8 hours (draft and review); 12-20 hours (with sample repo code, tests, and policy templates)
+  - **Priority:** Low (Backlog)
+
+### AI & Security / Detection & Allowlist Enhancements (Backlog)
+
+- [ ] **Allowlist PR Description Requirement** (1-2 hours)
+  - Add a GitHub check that requires a short justification in the PR description when `.pii-allowlist.json` is modified; ensure this mirrors the `allowlistReasons` entry.
+  - **Impact:** Improves auditability for allowlist changes and prevents accidental silence of scans.
+  - **Estimated Effort:** 1-2 hours
+  - **Priority:** Low
+
+- [ ] **Scheduled Allowlist Audit Job** (2 hours)
+  - Add a weekly or monthly GitHub Action to run `npm run audit:allowlist` and post the results to PR comments or a team channel (Slack or email) for review.
+  - **Impact:** Regularly surfaces allowlist additions and reduces stale or unjustified allowlist entries.
+  - **Estimated Effort:** 2 hours
+  - **Priority:** Low
+
+- [ ] **Gitleaks Enforcement Policy & Tickets** (3-4 hours)
+  - Enhance CI to automatically create a remediation issue/ticket when gitleaks flags critical secrets, with a link to the artifact and remediation checklist (rotate keys, remove from history, update secrets management).
+  - **Impact:** Ensures critical secrets have a documented remediation workflow and prevents accidental bypass via allowlist entries.
+  - **Estimated Effort:** 3-4 hours
+  - **Priority:** Medium
+
+- [ ] **Credential Rotation Schedule & Documentation** (1-2 hours)
+  - Document rotation schedule for all service accounts and API keys in secure location
+  - Create calendar reminders for 6-month (service accounts) and 12-month (API keys) rotation
+  - Add rotation checklist to security runbook
+  - **Credentials to rotate:**
+    - Google service account keys (every 6 months)
+    - GitHub PAT (every 6 months)
+    - Sentry auth token (every 6 months)
+    - Vercel tokens (every 6 months)
+    - Resend API key (every 12 months)
+    - Perplexity API key (every 12 months)
+    - Inngest keys (every 12 months)
+  - **Impact:** Reduces risk from compromised long-lived credentials
+  - **Estimated Effort:** 1-2 hours (documentation); ongoing maintenance
+  - **Priority:** Low
+
+- [ ] **PII/PI Contributor Training Documentation** (2-3 hours)
+  - Create "Security for Contributors" section in CONTRIBUTING.md
+  - Add PI/PII handling checklist to PR template
+  - Include common examples and patterns (what to avoid)
+  - Link to LOGGING_SECURITY.md and pi-policy.md
+  - Add to onboarding checklist for new contributors
+  - **Impact:** Proactive education reduces security incidents
+  - **Estimated Effort:** 2-3 hours
+  - **Priority:** Low
+
+- [ ] **Automated Redaction Helper** (3-5 hours)
+  - Implement a helper script that proposes redaction patches for accidental commits (e.g., replace private key with `REDACTED` and add placeholder) and opens a PR with the changes; maintainers review and apply.
+  - **Impact:** Streamlines remediation and reduces time to redact sensitive examples.
+  - **Estimated Effort:** 3-5 hours
+  - **Priority:** Low
+
+- [ ] **Allowlist Management Interface** (8-12 hours)
+  - Build a small internal UI (or GitHub App) to review, propose, and approve allowlist entries, including reasons and approval history; store audit log in the repo or via action comments.
+  - **Impact:** Lowers friction for maintainers and centralizes allowlist governance.
+  - **Estimated Effort:** 8-12 hours
+  - **Priority:** Backlog
+
+- [ ] **Scanner Unit & Integration Tests** (2-3 hours)
+  - Add tests for `check-for-pii.mjs` and the gitleaks parser to ensure placeholder logic and allowlist classification work as expected. Include falsy and true-positive tests.
+  - **Impact:** Reduces regressions when modifying scanner rules.
+  - **Estimated Effort:** 2-3 hours
+  - **Priority:** Medium
+
+- [ ] **PI vs PII Classification Expansion** (3-5 hours)
+  - Expand the scanner to support more nuanced PI/PII patterns (e.g., service tokens, unique business identifiers) and map to taxonomy; update docs to reflect the detailed mapping for maintainers.
+  - **Impact:** Improves detection accuracy and helps triage severity.
+  - **Estimated Effort:** 3-5 hours
+  - **Priority:** Medium
+
+- [ ] **PII/PI Events Dashboard** (4-6 hours)
+  - Create a maintenance dashboard that tracks PII/PI scans over time (counts, file paths, false positives), ideally pulling from GitHub Action artifacts or a scheduled job that persists results to a CSV or lightweight database.
+  - **Impact:** Visibility into detection trends, false positives, and enforcement effectiveness.
+  - **Estimated Effort:** 4-6 hours
+  - **Priority:** Low
 
 ### Future Features: Sponsor Dashboard & Tracking
 

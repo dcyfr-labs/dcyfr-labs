@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+      "validate:allowlist": "node scripts/validate-allowlist.mjs",
+      "audit:allowlist": "node scripts/audit-allowlist.mjs",
+      "parse:gitleaks-report": "node scripts/parse-gitleaks-report.mjs gitleaks-report.json",
     "dev": "next dev --turbopack",
     "dev:https": "node server.mjs",
     "build": "next build",
@@ -26,6 +29,8 @@
     "test:e2e:debug": "playwright test --debug",
     "test:ci": "vitest run --coverage && playwright test",
     "sync:ai": "node scripts/sync-ai-instructions.mjs",
+    "scan:pi": "node scripts/check-for-pii.mjs",
+    "scan:pi:all": "node scripts/check-for-pii.mjs --all",
     "mcp:check": "node scripts/check-mcp-servers.mjs",
     "lhci:collect": "lhci collect",
     "lhci:assert": "lhci assert",

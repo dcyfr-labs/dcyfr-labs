@@ -63,7 +63,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const sortBy = getParam("sortBy") || "newest";
   const dateRange = getParam("dateRange") || "all";
   const layoutParam = getParam("layout");
-  const layout = (["grid", "list", "magazine", "compact", "grouped"].includes(layoutParam)) ? layoutParam as "grid" | "list" | "magazine" | "compact" | "grouped" : "magazine";
+  const layout = (["grid", "list", "magazine", "compact", "hybrid", "grouped"].includes(layoutParam)) ? layoutParam as "grid" | "list" | "magazine" | "compact" | "hybrid" | "grouped" : "magazine";
   
   // Apply category filter first (case-insensitive)
   const postsWithCategoryFilter = selectedCategory
