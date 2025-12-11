@@ -28,7 +28,5 @@ export function middleware(request: NextRequest) {
  * while allowing other paths to function normally.
  */
 export const config = {
-  matcher: [
-    '/api/:path*'
-  ]
+  matcher: '/api/(.*)'
 };
