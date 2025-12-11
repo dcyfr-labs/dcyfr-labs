@@ -85,20 +85,20 @@ jobs:
             else if (moderate > 0) emoji = '⚡';
             
             const comment = `${emoji} **Security Audit Results**
-            
-| Severity | Count |
-|----------|-------|
-| 🚨 Critical | ${critical} |
-| ⚠️ High | ${high} |
-| ⚡ Moderate | ${moderate} |
-| ℹ️ Low | ${low} |
 
-${critical > 0 ? '**❌ Build will fail:** Critical vulnerabilities detected.' : ''}
-${high > 0 && critical === 0 ? '**❌ Build will fail:** High severity vulnerabilities detected.' : ''}
-${moderate > 0 && critical === 0 && high === 0 ? '**⚠️ Review recommended:** Moderate vulnerabilities present.' : ''}
-${critical === 0 && high === 0 && moderate === 0 ? '**✅ No known vulnerabilities found!**' : ''}
+            | Severity | Count |
+            |----------|-------|
+            | 🚨 Critical | ${critical} |
+            | ⚠️ High | ${high} |
+            | ⚡ Moderate | ${moderate} |
+            | ℹ️ Low | ${low} |
 
-For details, run: \`npm audit\``;
+            ${critical > 0 ? '**❌ Build will fail:** Critical vulnerabilities detected.' : ''}
+            ${high > 0 && critical === 0 ? '**❌ Build will fail:** High severity vulnerabilities detected.' : ''}
+            ${moderate > 0 && critical === 0 && high === 0 ? '**⚠️ Review recommended:** Moderate vulnerabilities present.' : ''}
+            ${critical === 0 && high === 0 && moderate === 0 ? '**✅ No known vulnerabilities found!**' : ''}
+
+            For details, run: \`npm audit\``;
             
             github.rest.issues.createComment({
               issue_number: context.issue.number,
