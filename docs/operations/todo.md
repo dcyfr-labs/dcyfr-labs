@@ -2,7 +2,9 @@
 
 This document tracks **active and pending** work. Completed tasks are in **`done.md`**.
 
-**Last Updated:** December 9, 2025 | **Status:** Maintenance mode with data-driven enhancements | **Pass Rate:** 1339/1346 tests (99.5%)
+**Last Updated:** December 10, 2025 | **Status:** Maintenance mode with data-driven enhancements | **Pass Rate:** 1339/1346 tests (99.5%)
+
+> **📋 For AI Agents:** This document tracks **active and backlog** work only. For **unvalidated ideas** and **future enhancements** (>10 hours effort, experimental features, ideas needing validation), see **[`FUTURE_IDEAS.md`](../features/FUTURE_IDEAS.md)**. Move items from FUTURE_IDEAS.md to this TODO only after validation, clear business case, or resource availability.
 
 ---
 
@@ -86,8 +88,13 @@ This document tracks **active and pending** work. Completed tasks are in **`done
 ### Infrastructure & Reliability
 
 - [ ] **Backup & Disaster Recovery Plan** (2 hours)
-- [ ] **GitHub Actions CI Improvements** (2-3 hours)
 - [ ] **Automated Performance Regression Tests** (3-4 hours)
+
+**CI/CD Pipeline:**
+
+- ✅ Tier 1 optimizations complete (Dec 2025): 30-40% faster PR workflows
+- Tier 2/3 optimizations moved to [FUTURE_IDEAS.md](../features/FUTURE_IDEAS.md#infrastructure)
+- See [ci-cd-optimization-analysis.md](ci-cd-optimization-analysis.md) and [ci-cd-optimization-implementation.md](ci-cd-optimization-implementation.md) for details
 
 ### AI & Agent Security
 
@@ -721,4 +728,13 @@ npm run check            # All quality checks
 
 ---
 
-**Last Review:** December 7, 2025 | **Next Review:** Monthly or as needed
+## 📚 Related Documents
+
+- **[`done.md`](done.md)** - Completed work archive (Phases 1-4, features, fixes)
+- **[`FUTURE_IDEAS.md`](../features/FUTURE_IDEAS.md)** - Unvalidated ideas, experimental features, long-term enhancements (>10 hours effort)
+- **[CI/CD Optimization Analysis](ci-cd-optimization-analysis.md)** - Pipeline optimization opportunities and implementation
+- **[CI/CD Optimization Implementation](ci-cd-optimization-implementation.md)** - Completed Tier 1 optimizations (Dec 2025)
+
+---
+
+**Last Review:** December 10, 2025 | **Next Review:** Monthly or as needed
