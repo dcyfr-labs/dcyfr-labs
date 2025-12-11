@@ -90,74 +90,74 @@ function validateInngestHeaders(request: NextRequest): boolean {
   return true;
 }
 
-// Create the base Inngest handler
-const inngestHandler = serve({
+// Create the base Inngest handlers
+const { GET: inngestGET, POST: inngestPOST, PUT: inngestPUT } = serve({
   client: inngest,
   functions: [
     // Demo function
     helloWorld,
-    
+
     // Contact form processing
     contactFormSubmitted,
-    
+
     // GitHub data refresh
     refreshGitHubData,           // Scheduled: every hour
     manualRefreshGitHubData,    // Event-driven: manual refresh
-    
+
     // Blog analytics
     trackPostView,               // Event-driven: on post view
     handleMilestone,             // Event-driven: on milestone reached
     calculateTrending,           // Scheduled: hourly
     generateAnalyticsSummary,    // Event-driven: on demand
     dailyAnalyticsSummary,       // Scheduled: daily at midnight UTC
-    
+
     // Security monitoring (CVE-2025-55182 response)
     securityAdvisoryMonitor,     // Scheduled: hourly GHSA polling
     securityAdvisoryHandler,     // Event-driven: process detections
-    
+
     // Google Indexing API
     submitUrlToGoogle,               // Event-driven: submit URL for indexing
     deleteUrlFromGoogle,             // Event-driven: remove URL from index
     batchSubmitBlogPosts,            // Event-driven: batch process multiple URLs (legacy)
     validateSitemapAndGetMissing,    // Event-driven: validate sitemap against GSC
     submitMissingPagesToGoogle,      // Event-driven: end-to-end: validate→submit→verify
-    
+
     // Activity feed caching
     refreshActivityFeed,             // Scheduled: every 5 minutes
     invalidateActivityFeed,          // Event-driven: on content changes
-    
+
     // Error handling (centralized monitoring and alerting)
     inngestErrorHandler,             // Event-driven: triggered on function failures
   ],
 });
 
 // Export handlers with defense-in-depth signature validation
-export const GET = async (request: NextRequest) => {
+export const GET = async (request: NextRequest, context: unknown) => {
   if (!validateInngestHeaders(request)) {
     return NextResponse.json(
       { error: "Unauthorized" },
       { status: 401 }
     );
   }
-  return inngestHandler.GET(request);
+  return inngestGET(request, context);
 };
 
-export const POST = async (request: NextRequest) => {
+export const POST = async (request: NextRequest, context: unknown) => {
   if (!validateInngestHeaders(request)) {
     return NextResponse.json(
       { error: "Unauthorized" },
       { status: 401 }
     );
   }
-  return inngestHandler.POST(request);
+  return inngestPOST(request, context);
 };
 
-export const PUT = async (request: NextRequest) => {
+export const PUT = async (request: NextRequest, context: unknown) => {
   if (!validateInngestHeaders(request)) {
     return NextResponse.json(
       { error: "Unauthorized" },
       { status: 401 }
     );
   }
-  return inngestHandler.PUT(request);
+  return inngestPUT(request, context);
 };
