@@ -8,11 +8,10 @@
 
 version: 2
 
-# Global settings for all updates
-registries:
-  npm-registry:
-    type: npm-registry
-    url: https://registry.npmjs.org
+# Note: We don't define a top-level `registries` entry for the public npm registry
+# Dependabot's `registries` top-level key is intended for private registries and
+# requires authentication fields (token or username/password). Defining the
+# public npm registry here can trigger schema validation errors.
     
 updates:
   # npm dependencies - weekly batch updates

@@ -5,6 +5,10 @@
 
 Strategic 12-month content calendar with target keywords, promotion checklist, and performance tracking for www.dcyfr.ai.
 
+> Canonical content strategy: `docs/operations/content-strategy.md`
+>
+> This calendar is a companion document with granular scheduling & promotion details. Keep this in `docs/blog/` and link back to the canonical strategy doc for pillar-level decisions.
+
 ---
 
 ## Editorial Calendar (12 Months)

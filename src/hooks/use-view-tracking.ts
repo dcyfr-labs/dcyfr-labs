@@ -78,11 +78,24 @@ export function useViewTracking(postId: string, enabled = true) {
           }),
         });
 
+        // Handle blocked API endpoints gracefully (404 from security lockdown)
+        if (response.status === 404) {
+          // API endpoint is blocked - fail silently in development
+          if (process.env.NODE_ENV === 'development') {
+            // console.warn("View tracking API is blocked in development");
+            isSubmittingRef.current = false;
+            return;
+          }
+        }
+
         // Check if response is JSON before parsing
         const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
-          console.error("API returned non-JSON response:", response.status);
-          setError("API error");
+          // Only log errors if it's not a blocked API (404)
+          if (response.status !== 404) {
+            console.error("API returned non-JSON response:", response.status);
+            setError("API error");
+          }
           isSubmittingRef.current = false;
           return;
         }

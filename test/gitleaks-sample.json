@@ -1,0 +1,9 @@
+[
+  {
+    "rule": "AWS Access Key",
+    "description": "Potential AWS access key",
+    "file": "src/lib/secrets.txt",
+    "line": 1,
+    "entropy": 4.0
+  }
+]

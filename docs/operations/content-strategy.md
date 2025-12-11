@@ -6,6 +6,28 @@
 
 ---
 
+## 🧭 Consolidation & Canonical Sources
+
+To reduce fragmentation and establish a single source of truth, `docs/operations/content-strategy.md` is the canonical content strategy document for the site. Supporting artifacts such as editorial calendars and promotion plans live in `docs/blog/` (for example `docs/blog/content-calendar-2026.md`) and are treated as companion documents.
+
+Guidelines:
+- Use this file (`docs/operations/content-strategy.md`) for strategic content decisions, pillars, and long-term publishing cadences.
+- Use `docs/blog/content-calendar-2026.md` (and future calendar files under `docs/blog`) for granular publication schedules, promotion plans, and keyword-level planning.
+- Ensure cross-references: each calendar or promotion plan should link back to this canonical doc and include a short changelog to record when the calendar was updated.
+- If you need to store private drafts or documents (PII or sensitive content), do not store them in the repository; instead use a secure document store (Notion, Google Drive, or an encrypted store). If you need to keep drafts in the codebase temporarily, store them under `docs/operations/private/` *and* ensure `.gitignore` blocks the folder (see repository policies and `.gitignore`).
+
+If you maintain a separate content calendar file, add a short header to the top of that file that points back to this canonical doc and the intended owner/editor.
+
+### Definitions
+
+- **PI (Proprietary Information)** — Per NIST, proprietary information includes trade secrets, internal designs, business processes, and other information that is privately owned and should not be publicly disclosed. See: [NIST glossary — Proprietary Information](https://csrc.nist.gov/glossary/term/proprietary_information)
+- **PII (Personally Identifiable Information)** — Information that can be used to uniquely identify a person (names, phone numbers, addresses, emails, etc.). Do not store PII in repository files.
+
+If content or drafts fall into either category, follow the 'private drafts' guidance described above: keep them off-repo and in a secure, access-controlled storage location. Add a short header in the draft that references the canonical doc and the owner/editor when necessary.
+
+
+---
+
 ## 🎯 Content Pillars
 
 This blog focuses on three interconnected pillars that reflect real-world development:

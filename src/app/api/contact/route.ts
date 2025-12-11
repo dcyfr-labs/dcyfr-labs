@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server";
-import { checkBotId } from "botid/server";
+import { NextRequest, NextResponse } from "next/server";
+// import { checkBotId } from "botid/server"; // Disabled - see PR #112
+import { blockExternalAccess } from "@/lib/api-security";
 import { rateLimit, getClientIp, createRateLimitHeaders } from "@/lib/rate-limit";
 import { RATE_LIMITS } from "@/lib/api-guardrails";
 import { inngest } from "@/inngest/client";
@@ -30,37 +31,44 @@ function sanitizeInput(input: string): string {
   return input.trim().slice(0, 1000); // Basic sanitization and length limit
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  // Block external access for security
+  const blockResponse = blockExternalAccess(request);
+  if (blockResponse) return blockResponse;
+
   let body: ContactFormData | undefined;
   
   try {
+    /* BotID temporarily disabled due to false positives - see PR #112
     // Optional bot detection using Vercel BotID
     // If BotID is unavailable or misconfigured, we gracefully fall back to
     // rate limiting + honeypot + input validation for protection
     // See: https://vercel.com/docs/botid/get-started
     //
-    // NOTE: BotID is disabled for now due to false positives in preview/production
-    // We rely on: rate limiting (3/min), honeypot field, input validation, Resend spam filters
-    // Re-enable when BotID configuration is verified in Vercel dashboard
-    /*
-    try {
-      const verification = await checkBotId();
+    // Toggle BotID via ENABLE_BOTID env var (set to '1' to enable). Default is disabled.
+    // This approach allows us to re-enable BotID quickly after verifying configuration
+    // in the Vercel dashboard without code changes.
+    if (process.env.ENABLE_BOTID === '1') {
+      try {
+        const verification = await checkBotId();
 
-      // Only block if BotID confidently identifies this as a bot (not a verified bot like search engines)
-      // Verified bots (search engines, monitoring) are allowed through
-      if (verification.isBot && !verification.isVerifiedBot && !verification.bypassed) {
-        console.log("[Contact API] Bot detected by BotID - blocking request");
-        return NextResponse.json(
-          { error: "Access denied" },
-          { status: 403 }
+        // Only block if BotID confidently identifies this as a bot (not a verified bot like search engines)
+        // Verified bots (search engines, monitoring) are allowed through
+        if (verification.isBot && !verification.isVerifiedBot && !verification.bypassed) {
+          console.log("[Contact API] Bot detected by BotID - blocking request");
+          return NextResponse.json(
+            { error: "Access denied" },
+            { status: 403 }
+          );
+        }
+      } catch (botIdError) {
+        // BotID is optional - if it fails, continue with fallback protection
+        // Common reasons: not configured, CSP issues, network errors, timeout
+        // Log only the error message (avoid printing full error objects which may contain sensitive data)
+        console.warn("[Contact API] BotID check failed, using fallback protection (rate limit + honeypot):",
+          botIdError instanceof Error ? botIdError.message : String(botIdError)
         );
       }
-    } catch (botIdError) {
-      // BotID is optional - if it fails, continue with fallback protection
-      // Common reasons: not configured, CSP issues, network errors, timeout
-      console.log("[Contact API] BotID check failed, using fallback protection (rate limit + honeypot):", 
-        botIdError instanceof Error ? botIdError.message : String(botIdError)
-      );
     }
     */
 
@@ -160,7 +168,8 @@ export async function POST(request: Request) {
       ).catch(err => console.warn("Analytics tracking failed:", err));
 
       // Log submission (anonymized)
-      console.log("Contact form submission queued:", {
+      // Log an anonymized summary to avoid storing user-provided content in logs
+      console.info("Contact form submission queued:", {
         nameLength: sanitizedData.name.length,
         emailDomain: sanitizedData.email.split('@')[1] || 'unknown',
         messageLength: sanitizedData.message.length,
@@ -178,7 +187,8 @@ export async function POST(request: Request) {
         }
       );
     } catch (inngestError) {
-      console.error("Failed to queue contact form:", inngestError);
+      // Avoid printing full error objects that could include sensitive details
+      console.error("Failed to queue contact form:", inngestError instanceof Error ? inngestError.message : String(inngestError));
       return NextResponse.json(
         { error: "Failed to process your message. Please try again later." },
         { status: 500 }

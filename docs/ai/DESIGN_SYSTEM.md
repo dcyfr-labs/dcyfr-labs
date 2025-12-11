@@ -705,6 +705,85 @@ node scripts/validate-design-tokens.mjs --files src/components/my-component.tsx
 - **Validation script**: [`scripts/validate-design-tokens.mjs`](../../scripts/validate-design-tokens.mjs)
 - **Best practices**: [`/docs/ai/BEST_PRACTICES.md`](./BEST_PRACTICES.md)
 
+## Logging Security Best Practices
+
+**CRITICAL: Never log sensitive information in clear text.**
+
+See comprehensive guide: [`docs/ai/LOGGING_SECURITY.md`](./LOGGING_SECURITY.md)
+
+### Quick Rules
+
+**❌ NEVER log:**
+
+- API keys, tokens, credentials
+- Environment variables containing secrets
+- User personal data (emails, phone numbers, IDs)
+- Private keys, certificates
+- Authentication responses
+- Payment/financial information
+- Database passwords or connection strings
+
+**✅ ACCEPTABLE to log:**
+
+- Non-sensitive metadata (project IDs, general service names)
+- Public user information already available
+- Application state and flow information
+- Error messages without sensitive details
+- Timestamps, request IDs, correlation IDs
+
+### Two Approaches for Sensitive Data
+
+**Option 1: Remove Logging** (Preferred for tests/config scripts)
+
+```javascript
+// ❌ WRONG: Logs service account email
+console.log(`Service Account: ${credentials.client_email}`);
+
+// ✅ CORRECT: Generic message
+console.log("✅ Service account JSON is valid");
+```
+
+**Option 2: Mask Sensitive Data** (When verification logging needed)
+
+```javascript
+// ✅ CORRECT: Mask email for verification
+const maskEmail = (email) => {
+  const [local, domain] = email.split('@');
+  return `${local.substring(0, 2)}***@${domain}`;
+};
+console.log(`Service Account: ${maskEmail(credentials.client_email)}`);
+// Output: Service Account: co***@example.com
+```
+
+### Examples
+
+**Logging environment validation:**
+
+```javascript
+// ❌ WRONG - Exposes secrets
+if (!process.env.GOOGLE_API_KEY) {
+  console.error(`Missing API key: ${process.env.GOOGLE_API_KEY}`);
+}
+
+// ✅ CORRECT - Generic message
+if (!process.env.GOOGLE_API_KEY) {
+  console.error("Missing GOOGLE_API_KEY environment variable");
+  console.error("See: docs/setup.md for configuration instructions");
+}
+```
+
+**Logging authentication attempts:**
+
+```javascript
+// ❌ WRONG - Logs user credentials
+console.log(`User login: ${username}:${password}`);
+
+// ✅ CORRECT - Log only non-sensitive metadata
+console.log(`Authentication attempt for user account`);
+console.log(`Auth provider: ${authProvider}`);
+console.log(`Status: ${result.success ? 'success' : 'failed'}`);
+```
+
 ## Getting Help
 
 **If you're unsure whether to create a new component:**

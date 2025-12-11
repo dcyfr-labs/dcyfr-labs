@@ -67,8 +67,6 @@ try {
   }
   
   console.log("✅ Service account JSON is valid");
-  console.log(`   Project ID: ${credentials.project_id}`);
-  console.log(`   Service Account: ${credentials.client_email}`);
   
 } catch (error) {
   console.error("\n❌ Error: Failed to parse GOOGLE_INDEXING_API_KEY");
@@ -106,7 +104,7 @@ console.log("• 403 Forbidden:");
 console.log("  → Service account not added as owner in Search Console");
 console.log("  → Visit: https://search.google.com/search-console");
 console.log("  → Settings > Users & Permissions > Add User");
-console.log("  → Add: " + JSON.parse(process.env.GOOGLE_INDEXING_API_KEY).client_email);
+console.log("  → Add the service account email from GOOGLE_INDEXING_API_KEY");
 console.log("  → Permission: Owner\n");
 console.log("• 401 Unauthorized:");
 console.log("  → Invalid credentials or APIs not enabled");

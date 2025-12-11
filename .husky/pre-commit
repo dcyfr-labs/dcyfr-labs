@@ -1,2 +1,5 @@
+# Run PI/PII scan on staged files
+npm run scan:pi
+
 # Run lint-staged (includes ESLint and design token validation)
 npx lint-staged

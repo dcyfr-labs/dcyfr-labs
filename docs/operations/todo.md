@@ -2,7 +2,9 @@
 
 This document tracks **active and pending** work. Completed tasks are in **`done.md`**.
 
-**Last Updated:** December 9, 2025 | **Status:** Maintenance mode with data-driven enhancements | **Pass Rate:** 1339/1346 tests (99.5%)
+**Last Updated:** December 10, 2025 | **Status:** Maintenance mode with data-driven enhancements | **Pass Rate:** 1339/1346 tests (99.5%)
+
+> **📋 For AI Agents:** This document tracks **active and backlog** work only. For **unvalidated ideas** and **future enhancements** (>10 hours effort, experimental features, ideas needing validation), see **[`FUTURE_IDEAS.md`](../features/FUTURE_IDEAS.md)**. Move items from FUTURE_IDEAS.md to this TODO only after validation, clear business case, or resource availability.
 
 ---
 
@@ -10,62 +12,74 @@ This document tracks **active and pending** work. Completed tasks are in **`done
 
 | Status | Count | Impact |
 |--------|-------|--------|
-| **Pending Work** | 11 items | Medium-effort features (2-6 hours each) |
-| **Backlog** | 12 items | Low-priority or speculative features |
-| **✅ Completed** | 50+ items | Phases 1-4 + automation + activity caching |
+| **Pending Work** | 1 item | Series analytics & navigation (1-2 hours) |
+| **Backlog** | 14 items | Low-priority or speculative features |
+| **✅ Completed** | 50+ items | Phases 1-4 + automation + activity caching + 4 layout/analytics features |
+
+---
+
+## 🤖 Claude Code Agents for TODO Management
+
+**8 specialized agents available** to support work on these items. Use them when:
+
+**Creating Features:** `/design-check` → `/security-audit` → `/arch-review`
+
+- Design validation, security checks, pattern consistency
+
+**Writing Content:** `/create-blog` → `/edit-content` → `/seo-optimize`
+
+- Blog posts, documentation, SEO optimization
+
+**Maintenance Work:** `/deps-audit` → `/perf-optimize` → `/seo-optimize`
+
+- Dependency updates, performance analysis, Lighthouse scores
+
+**Quick Help:** Type `/agent-help` in Claude Code to see all agents and workflows
+
+See [`CLAUDE.md`](../../CLAUDE.md#claude-code-agents-ai-powered-quality-assurance) and [`.claude/agents/`](../../.claude/agents/) for detailed agent documentation.
+
+---
+
+## ✅ RECENTLY COMPLETED (Dec 10, 2025)
+
+### Blog Layout Features
+
+- ✅ **Category Grouping in Blog Grid** - Implemented via `PostCategorySection` component + grouped layout mode
+- ✅ **Hybrid Layout Pattern** - Implemented as layout variant in `PostList` component
+
+### Analytics Dashboard - VALIDATION COMPLETE
+
+- ✅ **GitHub-Style Heatmap** - Implemented at `src/components/features/github/github-heatmap.tsx` (52-week view, color intensity, tooltips)
+- ✅ **Vercel Analytics Integration** - Implemented at `src/components/analytics/vercel-insights.tsx` (top pages, referrers, devices with last sync time)
+- ⚠️ **Sparkline Trend Visualizations** - NOT YET IMPLEMENTED (minor component, can be added to overview cards)
+
+See `done.md` for details.
 
 ---
 
 ## 🟡 PENDING WORK QUEUE (Next Steps)
 
-### Priority 1: Blog Features (Medium Effort)
+### Priority 1: Blog Series - Analytics & Navigation (1-2 hours) ⭐ NEXT
 
-#### 🟡 **Category Grouping in Blog Grid** (2-3 hours)
-- Add section headers for each category
-- Group posts visually under category headings
-- Optional collapsible sections
-- Shows post count per category
-- **Estimated Impact:** Better content organization
+#### 🟡 **Series Analytics & Navigation**
 
-#### 🟡 **Hybrid Layout Pattern** (2-3 hours)
-- First post as large hero card, rest in 2-column grid
-- Responsive: stacked on mobile, 2-col on tablet+
-- Combines best of grid and magazine layouts
-- Fallback to magazine layout if <3 posts
-- **Estimated Impact:** Visual hierarchy improvement
+- Add series analytics tracking (view/start/complete events)
+- Update navigation (header dropdown, sidebar, footer)
+- Verify sitemap includes series URLs
+- Write comprehensive test suite
+- **Status:** Phase 1 complete (foundation + pages)
+- **Estimated Impact:** Enhanced series discoverability
 
-### Priority 2: Analytics Dashboard (Medium Effort)
+### Security: BotID Re-Enablement
 
-#### 🟡 **Sparkline Trend Visualizations** (2-3 hours)
-- Small inline charts for key metrics
-- `RechartsSparkline` component
-- Show 7-day/30-day trends
-- Use design token colors
-- **Estimated Impact:** Quick metrics overview
+- [ ] **Re-enable Vercel BotID for contact form** (1-2 hours)
+  - Verify BotID configuration in Vercel dashboard for `preview` and `production` deployments
+  - Add a CI check to validate BotID TLS/keys and/or test the `checkBotId()` callback in a pre-merge integration step
+  - Add unit/integration test asserting BotID is called when enabled, and that fallback protections remain (rate limit, honeypot)
+  - Monitor for false positives for 48 hours after re-enable and add rollback plan
+  - **Priority:** High
 
-#### 🟡 **GitHub-Style Heatmap Calendar View** (3-4 hours)
-- Calendar heatmap of post views/engagement
-- 52-week view (adjustable date range)
-- Color intensity = activity level
-- Tooltip on hover with details
-- **Estimated Impact:** Visual engagement trends
-
-#### 🟡 **Real Vercel Analytics Integration** (4-6 hours)
-- Query Vercel Analytics API (requires integration)
-- Display top pages, referrers, devices
-- Compare with custom Redis analytics
-- Sync in daily background job
-- **Estimated Impact:** Comprehensive analytics view
-
-### Priority 3: New Pages (Medium Effort)
-
-#### 🟡 **Professional Services Page** (4-6 hours)
-- Consulting offerings overview
-- Service packages with descriptions
-- Process/methodology section
-- CTA to contact form
-- Portfolio samples (link to work page)
-- **Estimated Impact:** Business development
+> **Note:** Content strategy items like Professional Services Page belong in [`FUTURE_IDEAS.md`](../features/FUTURE_IDEAS.md), not here. This queue tracks only implementation work.
 
 ### Priority 4: Blog Series - Polish (1-2 hours)
 
@@ -86,8 +100,109 @@ This document tracks **active and pending** work. Completed tasks are in **`done
 ### Infrastructure & Reliability
 
 - [ ] **Backup & Disaster Recovery Plan** (2 hours)
-- [ ] **GitHub Actions CI Improvements** (2-3 hours)
 - [ ] **Automated Performance Regression Tests** (3-4 hours)
+
+**CI/CD Pipeline:**
+
+- ✅ Tier 1 optimizations complete (Dec 2025): 30-40% faster PR workflows
+- Tier 2/3 optimizations moved to [FUTURE_IDEAS.md](../features/FUTURE_IDEAS.md#infrastructure)
+- See [ci-cd-optimization-analysis.md](ci-cd-optimization-analysis.md) and [ci-cd-optimization-implementation.md](ci-cd-optimization-implementation.md) for details
+
+### AI & Agent Security
+
+- [ ] **AI Agent Security Guardrails (Post / Guide)** (4-8 hours)
+  - **Goal:** Publish a developer-focused post and guide detailing best practices for securing AI agents and runtime guardrails, including patterns used in `AGENTS.md` and DCYFR enforcement rules.
+  - **Note:** In this doc, **PI = Proprietary Information** — defined per NIST: [Proprietary Information](https://csrc.nist.gov/glossary/term/proprietary_information).
+    Treat PI the same as PII for storage and handling practices when applicable (i.e., do not commit PI to the repo).
+  - **Scope:**
+    - Intro: threat models (prompt injection, capability escalation, data exfiltration)
+    - Design-time guardrails: policy-as-code, explicit permissioning, secrets handling, and approval gates
+    - Runtime guardrails: capability restrictions, sandboxing, rate limiting, and red-team testing
+    - Observability: audit logs, telemetry, anomaly detection, and policy violations
+    - DevOps: CI gating, test harnesses, policy enforcement, and sample Inngest/agent middleware
+    - Compliance & ethics: data minimization, GDPR considerations, and clear fail-soft behaviors
+  - **Deliverables:**
+    - Blog post draft with actionable examples
+    - Short sample snippet demonstrating a runtime policy check or middleware (Node/TS example)
+    - Checklist and policy template to include in `AGENTS.md` / `docs/ai/` for internal enforcement
+  - **Estimated Effort:** 4-8 hours (draft and review); 12-20 hours (with sample repo code, tests, and policy templates)
+  - **Priority:** Low (Backlog)
+
+### AI & Security / Detection & Allowlist Enhancements (Backlog)
+
+- [ ] **Allowlist PR Description Requirement** (1-2 hours)
+  - Add a GitHub check that requires a short justification in the PR description when `.pii-allowlist.json` is modified; ensure this mirrors the `allowlistReasons` entry.
+  - **Impact:** Improves auditability for allowlist changes and prevents accidental silence of scans.
+  - **Estimated Effort:** 1-2 hours
+  - **Priority:** Low
+
+- [ ] **Scheduled Allowlist Audit Job** (2 hours)
+  - Add a weekly or monthly GitHub Action to run `npm run audit:allowlist` and post the results to PR comments or a team channel (Slack or email) for review.
+  - **Impact:** Regularly surfaces allowlist additions and reduces stale or unjustified allowlist entries.
+  - **Estimated Effort:** 2 hours
+  - **Priority:** Low
+
+- [ ] **Gitleaks Enforcement Policy & Tickets** (3-4 hours)
+  - Enhance CI to automatically create a remediation issue/ticket when gitleaks flags critical secrets, with a link to the artifact and remediation checklist (rotate keys, remove from history, update secrets management).
+  - **Impact:** Ensures critical secrets have a documented remediation workflow and prevents accidental bypass via allowlist entries.
+  - **Estimated Effort:** 3-4 hours
+  - **Priority:** Medium
+
+- [ ] **Credential Rotation Schedule & Documentation** (1-2 hours)
+  - Document rotation schedule for all service accounts and API keys in secure location
+  - Create calendar reminders for 6-month (service accounts) and 12-month (API keys) rotation
+  - Add rotation checklist to security runbook
+  - **Credentials to rotate:**
+    - Google service account keys (every 6 months)
+    - GitHub PAT (every 6 months)
+    - Sentry auth token (every 6 months)
+    - Vercel tokens (every 6 months)
+    - Resend API key (every 12 months)
+    - Perplexity API key (every 12 months)
+    - Inngest keys (every 12 months)
+  - **Impact:** Reduces risk from compromised long-lived credentials
+  - **Estimated Effort:** 1-2 hours (documentation); ongoing maintenance
+  - **Priority:** Low
+
+- [ ] **PII/PI Contributor Training Documentation** (2-3 hours)
+  - Create "Security for Contributors" section in CONTRIBUTING.md
+  - Add PI/PII handling checklist to PR template
+  - Include common examples and patterns (what to avoid)
+  - Link to LOGGING_SECURITY.md and pi-policy.md
+  - Add to onboarding checklist for new contributors
+  - **Impact:** Proactive education reduces security incidents
+  - **Estimated Effort:** 2-3 hours
+  - **Priority:** Low
+
+- [ ] **Automated Redaction Helper** (3-5 hours)
+  - Implement a helper script that proposes redaction patches for accidental commits (e.g., replace private key with `REDACTED` and add placeholder) and opens a PR with the changes; maintainers review and apply.
+  - **Impact:** Streamlines remediation and reduces time to redact sensitive examples.
+  - **Estimated Effort:** 3-5 hours
+  - **Priority:** Low
+
+- [ ] **Allowlist Management Interface** (8-12 hours)
+  - Build a small internal UI (or GitHub App) to review, propose, and approve allowlist entries, including reasons and approval history; store audit log in the repo or via action comments.
+  - **Impact:** Lowers friction for maintainers and centralizes allowlist governance.
+  - **Estimated Effort:** 8-12 hours
+  - **Priority:** Backlog
+
+- [ ] **Scanner Unit & Integration Tests** (2-3 hours)
+  - Add tests for `check-for-pii.mjs` and the gitleaks parser to ensure placeholder logic and allowlist classification work as expected. Include falsy and true-positive tests.
+  - **Impact:** Reduces regressions when modifying scanner rules.
+  - **Estimated Effort:** 2-3 hours
+  - **Priority:** Medium
+
+- [ ] **PI vs PII Classification Expansion** (3-5 hours)
+  - Expand the scanner to support more nuanced PI/PII patterns (e.g., service tokens, unique business identifiers) and map to taxonomy; update docs to reflect the detailed mapping for maintainers.
+  - **Impact:** Improves detection accuracy and helps triage severity.
+  - **Estimated Effort:** 3-5 hours
+  - **Priority:** Medium
+
+- [ ] **PII/PI Events Dashboard** (4-6 hours)
+  - Create a maintenance dashboard that tracks PII/PI scans over time (counts, file paths, false positives), ideally pulling from GitHub Action artifacts or a scheduled job that persists results to a CSV or lightweight database.
+  - **Impact:** Visibility into detection trends, false positives, and enforcement effectiveness.
+  - **Estimated Effort:** 4-6 hours
+  - **Priority:** Low
 
 ### Future Features: Sponsor Dashboard & Tracking
 
@@ -625,4 +740,13 @@ npm run check            # All quality checks
 
 ---
 
-**Last Review:** December 7, 2025 | **Next Review:** Monthly or as needed
+## 📚 Related Documents
+
+- **[`done.md`](done.md)** - Completed work archive (Phases 1-4, features, fixes)
+- **[`FUTURE_IDEAS.md`](../features/FUTURE_IDEAS.md)** - Unvalidated ideas, experimental features, long-term enhancements (>10 hours effort)
+- **[CI/CD Optimization Analysis](ci-cd-optimization-analysis.md)** - Pipeline optimization opportunities and implementation
+- **[CI/CD Optimization Implementation](ci-cd-optimization-implementation.md)** - Completed Tier 1 optimizations (Dec 2025)
+
+---
+
+**Last Review:** December 10, 2025 | **Next Review:** Monthly or as needed

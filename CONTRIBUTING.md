@@ -55,6 +55,44 @@ npm audit
 
 For a single-developer workflow, we do not enforce commit hooks by default. Consider adding `husky` + `lint-staged` to automatically format and lint staged files before commits.
 
+Note: The repository runs a pre-commit scan for likely PII/Proprietary markers using `scripts/check-for-pii.mjs` (automatically via Husky pre-commit) and a PR-level scan via GitHub Action (`.github/workflows/pii-scan.yml`). This helps prevent accidental commits of sensitive content.
+
+### Example files and private keys
+
+If you include examples that show private key blocks or service account JSON, follow these rules:
+
+- Use placeholders (e.g., `...`) and include `EXAMPLE` or `REDACTED` markers adjacent to the snippet.
+- If a real key must be used for CI, store it securely in a secrets manager and never commit a real key into the repo.
+- When in doubt, use `docs/operations/private/README.template.md` and external secure storage for sensitive examples.
+
+## PII/Allowlist Handling
+
+If you find that legitimate documentation (examples, placeholders, or definitions) is flagged by the PII/PI scanner, follow these steps to request an allowlist entry:
+
+1. Open a non-breaking PR that updates `.pii-allowlist.json`.
+2. Add the path (or domain/email) to `paths`/`proprietaryPaths` and add a `allowlistReasons` entry with a short justification and approver name.
+3. In the PR description, provide a short explanation and why the path should be allowlisted (ex: `docs/ai/LOGGING_SECURITY.md contains a definition; not real PI`).
+4. At least one owner from the security/ops team (`@dcyfr`) must approve the change.
+
+Note: Do not use allowlist entries as a shortcut to avoid redacting or removing real secrets. If a secret is found in the repo, remove it and add a remediation note to the PR instead.
+
+If you maintain the allowlist or are preparing a change, use these helpers locally:
+
+```bash
+npm run validate:allowlist  # validate allowlist JSON has reasons for entries
+npm run audit:allowlist     # print allowlist entries and reasons for audits
+```
+
+If you want to locally parse a gitleaks report (for debugging), run:
+
+```bash
+npm run parse:gitleaks-report ./gitleaks-report.json
+```
+
+### PII vs. PI Allowlisting Guidelines (Short Version)
+- PII allowlist entries are for test data or placeholders (e.g., `example.com`, `test@test.com`) and should be treated conservatively; preference is to redact or mask. Add to `piiPaths` or `paths` as appropriate.
+- PI allowlist entries (business or proprietary content) are for documentation that explains or defines proprietary systems (e.g., `docs/ai/LOGGING_SECURITY.md`) and require stronger justification and an owner signoff; add to `piPaths` or `proprietaryPaths` as appropriate.
+
 ## Environment
 
 If you rely on services (Redis, Resend, GitHub token) for local features, use `.env.local` or `vercel env pull .env.development.local` to populate environment variables. Example keys used by the app:

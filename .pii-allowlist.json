@@ -1,0 +1,70 @@
+{
+  "emailDomains": [
+    "example.com",
+    "example.org",
+    "example.net",
+    "dcyfr.ai",
+    "your-domain.com",
+    "yourdomain.com",
+    "upstash.io",
+    "sentry.io"
+  ],
+  
+  "emails": [
+    "git@github.com",
+    "drew@dcyfr.ai",
+    "noreply@www.dcyfr.ai",
+    "alerts@dcyfr.ai",
+    "noreply@",
+    "no-reply@",
+    "alerts@",
+    "indexing-service@your-project.iam.gserviceaccount.com",
+    "actions@github.com",
+    "test@test.com",
+    "noreply@your-domain.com",
+    "contact@yourdomain.com",
+    "user@domain.com"
+  ],
+  
+  "paths": [
+    "src/__tests__/**",
+    "tests/**",
+    "LICENSE.md",
+    "CONTRIBUTING.md",
+    ".github/DCYFR_STATEMENT.md",
+    "docs/operations/content-strategy.md",
+    "docs/operations/todo.md"
+    , "docs/features/google-indexing-api.md",
+    "docs/operations/PRODUCTION_DEPLOYMENT.md"
+  ]
+  ,
+  "proprietaryPaths": [
+    "docs/ai/LOGGING_SECURITY.md"
+  ]
+  ,
+  "privateKeyPaths": [
+    "docs/features/google-indexing-api.md"
+  ],
+  "piPaths": [
+    "docs/ai/LOGGING_SECURITY.md"
+  ],
+  "piiPaths": [
+    "docs/examples/**",
+    "docs/templates/**"
+  ],
+  "allowlistReasons": {
+    "drew@dcyfr.ai": "Public contact email for portfolio owner (DCYFR Labs); intentionally published in site configuration for contact purposes.",
+    "docs/ai/LOGGING_SECURITY.md": "Contains definitions/explanations of 'Proprietary' rather than actual proprietary data. Allowed for educational/documentation purposes.",
+    "docs/features/google-indexing-api.md": "Contains an example service account JSON for developer guidance; keys are placeholders and redacted in examples.",
+    "src/__tests__/**": "Test fixtures and sample data; intentionally includes placeholder addresses.",
+    "tests/**": "End-to-end and integration test data that may contain example addresses or sample keys.",
+    "LICENSE.md": "Public license reference; known safe content.",
+    "CONTRIBUTING.md": "Contributor guidelines and examples; contains placeholder addresses for contributors.",
+    ".github/DCYFR_STATEMENT.md": "Repository policy statement; includes high-level guidance and placeholders.",
+    "docs/operations/content-strategy.md": "Guidance and canonical content strategy; includes example addresses and content artifacts.",
+    "docs/operations/todo.md": "Backlog and planning artifacts that may contain placeholder names/emails.",
+    "docs/operations/PRODUCTION_DEPLOYMENT.md": "Deployment runbook and contact addresses for deployment artifacts.",
+    "docs/examples/**": "Documentation examples that intentionally include placeholders and test addresses.",
+    "docs/templates/**": "Templates used for docs and code samples; include placeholders by design."
+  }
+}

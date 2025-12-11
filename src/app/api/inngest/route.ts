@@ -1,5 +1,7 @@
 import { serve } from "inngest/next";
 import { inngest } from "@/inngest/client";
+import { blockExternalAccess } from "@/lib/api-security";
+import { NextRequest } from "next/server";
 import { helloWorld } from "@/inngest/functions";
 import { contactFormSubmitted } from "@/inngest/contact-functions";
 import { 

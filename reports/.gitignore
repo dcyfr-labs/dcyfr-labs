@@ -1,0 +1,9 @@
+# Generated reports directory
+# This directory contains temporary and generated reports that should not be committed
+
+# Ignore all files by default
+*
+
+# Exceptions: keep these files for directory management
+!.gitignore
+!README.md

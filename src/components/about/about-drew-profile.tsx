@@ -10,7 +10,7 @@ import {
 } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import { Section, ProfileAvatar, GitHubHeatmapErrorBoundary } from "@/components/common";
-import { LazyGitHubHeatmap } from "@/components/features/github/lazy-github-heatmap";
+import { ServerGitHubHeatmap } from "@/components/features";
 import { Coffee, Shield, Code, ArrowLeft } from "lucide-react";
 
 /**
@@ -165,7 +165,7 @@ export function AboutDrewProfile() {
             activity over the past year.
           </p>
           <GitHubHeatmapErrorBoundary>
-            <LazyGitHubHeatmap username="dcyfr" />
+            <ServerGitHubHeatmap username="dcyfr" />
           </GitHubHeatmapErrorBoundary>
         </div>
       </Section>

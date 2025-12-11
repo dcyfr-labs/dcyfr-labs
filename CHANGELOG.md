@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Clarified that 7 "failing" tests are strategic skips, not failures
 - Enhanced deployment checklist with pre/post production deployment steps
 - Updated environment variables documentation for December 2025
+ - Temporarily disabled Vercel BotID in `/api/contact` due to false positives; added `ENABLE_BOTID` env var to toggle check and added tests + documentation to re-enable safely when Vercel configuration validated
 
 ## [1.0.0-preview] - 2025-12-07
 

@@ -157,7 +157,7 @@ Before you begin, ensure you have:
 
 2. **Add to `.env.local`**
    ```bash
-   GOOGLE_INDEXING_API_KEY='{"type":"service_account","project_id":"your-project","private_key_id":"...","private_key":"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n","client_email":"indexing-service@your-project.iam.gserviceaccount.com","client_id":"...","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_x509_cert_url":"..."}'
+   GOOGLE_INDEXING_API_KEY='{"type":"service_account","project_id":"your-project","private_key_id":"[REDACTED]","private_key":"-----BEGIN PRIVATE KEY-----\n[REDACTED - YOUR KEY HERE]\n-----END PRIVATE KEY-----\n","client_email":"indexing-service@your-project.iam.gserviceaccount.com","client_id":"[REDACTED]","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_x509_cert_url":"[REDACTED]"}'
    ```
 
 3. **For Production (Vercel)**

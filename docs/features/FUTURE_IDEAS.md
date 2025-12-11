@@ -2,7 +2,7 @@
 
 This document tracks **aspirational features** and ideas that are **not yet validated** or prioritized for the roadmap. These are potential enhancements to consider after core features are launched and we have user feedback.
 
-**Last Updated:** December 9, 2025
+**Last Updated:** December 10, 2025
 
 ---
 
@@ -150,6 +150,29 @@ This document tracks **aspirational features** and ideas that are **not yet vali
 ---
 
 ### Infrastructure
+
+**CI/CD Pipeline Optimizations - Tier 2** (Low-Medium Effort: 2-4 hours)
+- **Idea:** Extend shared dependency caching to remaining workflows
+- **Why:** Further reduce workflow execution time
+- **Current Status:** Tier 1 complete (security consolidated, test.yml optimized, duplicate lint removed)
+- **Implementation:**
+  - Apply shared cache pattern to `design-system.yml`, `lighthouse-ci.yml`, `monthly-security-review.yml`
+  - Merge `monthly-security-review.yml` into `security.yml` with schedule conditionals
+- **Estimated Savings:** 2-3 minutes per PR (diminishing returns from Tier 1)
+- **Priority:** Low (Tier 1 already achieved 30-40% improvement)
+- **Reference:** See [ci-cd-optimization-analysis.md](../operations/ci-cd-optimization-analysis.md)
+
+**CI/CD Pipeline Optimizations - Tier 3** (Medium Effort: 4-6 hours)
+
+- **Idea:** Advanced workflow optimizations for maintainability and developer experience
+- **Why:** Cleaner configuration, better draft PR experience, avoid duplicate builds
+- **Implementation:**
+  - Convert test jobs to matrix strategy (reduces YAML duplication)
+  - Skip expensive checks (E2E, Lighthouse) on draft PRs (saves 10-15 min for drafts)
+  - Cache build artifacts between `test.yml`, `deploy.yml`, `vercel-checks.yml` (saves 2-4 min per deploy)
+- **Validation Needed:** Cost/benefit analysis on added complexity
+- **Priority:** Very Low (minimal gains, added complexity)
+- **Reference:** See [ci-cd-optimization-analysis.md](../operations/ci-cd-optimization-analysis.md)
 
 **Backup & Disaster Recovery Plan** (Low Effort: 2 hours)
 - **Idea:** Automated backups of Redis data, content, configuration

@@ -1,0 +1,129 @@
+name: Privacy & PII Scan
+
+# Consolidated privacy scanning workflow:
+# - PII/PI pattern scanning
+# - Gitleaks secret detection
+# - Allowlist validation
+# Optimized to share npm ci installation
+
+on:
+  pull_request:
+    paths: ['**/*']
+  push:
+    branches: [main, preview]
+
+# Cancel in-progress runs for same PR/branch
+concurrency:
+  group: privacy-scan-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    name: PII & Privacy Scan
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # Single npm ci for all checks
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Validate .pii-allowlist.json
+        run: npm run validate:allowlist
+      - name: Run PII/PI scan across repository (capture output)
+        id: run-pii
+        run: |
+          npm run scan:pi:all > scan-output.txt 2>&1 || true
+          # store scan output in the step output variable
+          echo "scan<<EOF" >> $GITHUB_OUTPUT
+          cat scan-output.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Create PR comment with scan output
+        if: always() && (github.event_name == 'pull_request')
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ### PI/PII Scanner Results
+            The repository was scanned for likely PII/Proprietary content.
+            
+            **Scan Results:**
+            ```
+            ${{ steps.run-pii.outputs.scan }}
+            ```
+  gitleaks:
+    runs-on: ubuntu-latest
+    name: Gitleaks Secret Detection
+    needs: scan
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # Reuse npm ci for parse script
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Run gitleaks
+        # Use the GitHub Action release (v2) which maps to the stable action versions.
+        # The gitleaks CLI binary used by the action may be a different major version; pin the action (v2) instead of 'v8'.
+        uses: zricethezav/gitleaks-action@v2
+        with:
+          args: --verbose --redact --report-format json --report gitleaks-report.json
+        continue-on-error: true
+
+      - name: Upload gitleaks report as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-report
+          path: gitleaks-report.json
+
+      - name: Capture gitleaks report output
+        id: gitleaks-report
+        if: always()
+        run: |
+          if [ -f gitleaks-report.json ]; then
+            echo "report<<EOF" >> $GITHUB_OUTPUT
+            cat gitleaks-report.json >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "report<<EOF" >> $GITHUB_OUTPUT
+            echo "[]" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Parse gitleaks report and block on critical secrets
+        if: always()
+        run: |
+          if [ -f gitleaks-report.json ]; then
+            npm run parse:gitleaks-report gitleaks-report.json
+          else
+            echo "No gitleaks-report.json found"
+          fi
+
+      - name: Post gitleaks report to PR
+        if: always() && (github.event_name == 'pull_request')
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ### Gitleaks Report
+            Gitleaks was run on this branch and produced the following report (JSON attached as artifact):
+            ```json
+            ${{ steps.gitleaks-report.outputs.report }}
+            ```

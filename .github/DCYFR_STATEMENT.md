@@ -35,6 +35,8 @@ We believe in maintaining **transparency about what we do** while **protecting h
 
 **Status:** Proprietary to dcyfr-labs. Use in own projects requires written permission.
 
+**PI Definition:** Proprietary Information (PI) is treated as sensitive. See NIST definition: [Proprietary Information](https://csrc.nist.gov/glossary/term/proprietary_information)
+
 ---
 
 ## Why This Distinction?

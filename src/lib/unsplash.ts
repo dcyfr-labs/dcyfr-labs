@@ -12,6 +12,7 @@
  */
 
 import { writeFileSync, mkdirSync } from 'fs';
+import { writeFile as writeFileAsync, rename as renameAsync } from 'fs/promises';
 import { join } from 'path';
 
 const UNSPLASH_API_BASE = 'https://api.unsplash.com';
@@ -199,7 +200,10 @@ export async function downloadImage(
 
     const buffer = await response.arrayBuffer();
     // lgtm[js/http-to-file-access] - Security controls: URL validated via validateUnsplashUrl(), path validated via validateSlug(), trusted Unsplash API source only
-    writeFileSync(outputPath, Buffer.from(buffer));
+    // Use atomic write: write to a temp file and rename to avoid race conditions
+    const tmpPath = `${outputPath}.tmp`;
+    await writeFileAsync(tmpPath, Buffer.from(buffer));
+    await renameAsync(tmpPath, outputPath);
 
     return `/blog/images/${validatedSlug}/${filename}`;
   } catch (error) {

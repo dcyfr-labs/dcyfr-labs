@@ -108,12 +108,110 @@ Project is in **maintenance mode** with data-driven enhancements.
 4. ✅ Design tokens used (no hardcoded values)
 5. Update `todo.md` and `done.md`
 
+## Claude Code Agents (AI-Powered Quality Assurance)
+
+**8 specialized agents available** to enforce quality, security, and consistency standards:
+
+### Tier 1: Core Quality (Auto-Triggered)
+
+- **`/design-check`** - Design token compliance & hardcoded value detection
+  - Validates SPACING, TYPOGRAPHY, SEMANTIC_COLORS usage
+  - Detects hardcoded spacing/colors/typography
+  - Auto-triggers: Component changes
+
+- **`/create-blog`** - Blog post creation with proper structure & metadata
+  - Generates frontmatter (id, title, summary, tags, series)
+  - Ensures SEO-optimized metadata
+  - Auto-triggers: Content creation
+
+- **`/security-audit`** - OWASP compliance & vulnerability detection
+  - Checks all OWASP Top 10 violations
+  - Validates logging security (no secrets, PII, IP addresses)
+  - Auto-triggers: API routes, auth logic, external calls
+
+### Tier 2: Performance & Maintenance
+
+- **`/seo-optimize`** - Metadata optimization & Core Web Vitals (90%+ Lighthouse CI)
+  - Validates metadata completeness & character counts
+  - Checks heading hierarchy & structured data
+  - Monitors Core Web Vitals (LCP <2.5s, INP <200ms, CLS <0.1)
+
+- **`/deps-audit`** - Dependency security & update safety
+  - Runs `npm audit` with vulnerability categorization
+  - Analyzes breaking changes in major version upgrades
+  - Checks Node.js compatibility
+
+### Tier 3: Polish & Advanced
+
+- **`/edit-content`** - Prose quality & consistency
+  - Improves clarity, readability, tone
+  - Ensures consistent terminology
+  - Validates Flesch Reading Ease score (target: 60-70)
+
+- **`/perf-optimize`** - Bundle analysis & rendering optimization
+  - Profiles Lighthouse scores
+  - Detects rendering bottlenecks
+  - Recommends code splitting & React patterns
+
+- **`/arch-review`** - Architectural pattern enforcement
+  - Validates Next.js App Router & server-first patterns
+  - Ensures @/* import aliases (no relative paths)
+  - Detects code duplication & suggests refactoring
+
+**Quick start:** Type `/agent-help` to see all agents and usage guide
+
+**Workflow integration:**
+
+```bash
+Creating content:
+1. /create-blog     → Generate structure
+2. /edit-content    → Polish prose
+3. /seo-optimize    → Optimize metadata
+
+Building features:
+1. /design-check    → Validate design tokens
+2. /security-audit  → Check OWASP compliance
+3. /arch-review     → Ensure patterns
+
+Maintaining:
+1. /deps-audit      → Security & updates
+2. /perf-optimize   → Performance analysis
+3. /seo-optimize    → Verify Lighthouse scores
+```
+
+**See:** [`.claude/agents/`](.claude/agents/) for detailed agent documentation
+
+## Security Best Practices
+
+### Logging Security (CRITICAL)
+
+Never log sensitive information in clear text. Use one of two approaches:
+
+1. **Remove logging** (preferred for tests/config scripts)
+
+```javascript
+// ❌ WRONG: console.log(credentials.client_email);
+// ✅ CORRECT: console.log("✅ Service account JSON is valid");
+```
+
+1. **Mask sensitive data** (when verification logging needed)
+
+```javascript
+const maskEmail = (email) => `${email.split('@')[0].substring(0, 2)}***@${email.split('@')[1]}`;
+console.log(`Service Account: ${maskEmail(credentials.client_email)}`);
+```
+
+**Never log:** API keys, tokens, credentials, environment variables containing secrets, user personal data, private keys, passwords, payment info
+
+**See detailed guide:** [`docs/ai/LOGGING_SECURITY.md`](docs/ai/LOGGING_SECURITY.md)
+
 ## Documentation
 
 **Comprehensive guides** (load only when needed):
 
 - [`docs/ai/BEST_PRACTICES.md`](docs/ai/BEST_PRACTICES.md) - Workflow best practices
 - [`docs/ai/DESIGN_SYSTEM.md`](docs/ai/DESIGN_SYSTEM.md) - Complete design validation
+- [`docs/ai/LOGGING_SECURITY.md`](docs/ai/LOGGING_SECURITY.md) - Logging security best practices
 - [`docs/ai/OPTIMIZATION_STRATEGY.md`](docs/ai/OPTIMIZATION_STRATEGY.md) - Token optimization
 - [`docs/ai/CLAUDE_CODE_SETUP.md`](docs/ai/CLAUDE_CODE_SETUP.md) - Claude Code integration setup
 

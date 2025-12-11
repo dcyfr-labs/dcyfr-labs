@@ -57,6 +57,10 @@ yarn-error.log*
 .github/agents/**
 !.github/agents/.gitkeep
 !.github/agents/README.md
+!.github/agents/learning/
+!.github/agents/learning/**
+# Learning data is private (contains metrics, not committed to git)
+.github/agents/learning-data/
 
 # AI assistant configurations (local overrides)
 .github/copilot-instructions.local.md
@@ -161,6 +165,18 @@ $RECYCLE.BIN/
 .temp/
 .tmp/
 tmp/
+# ========================================
+# SENSITIVE: Private Docs / PI / PII
+# ========================================
+# Temporary private docs and drafts that may contain Personally Identifiable Information (PII) or
+# Proprietary Information (PI). Proprietary Information (PI) is defined per NIST:
+# https://csrc.nist.gov/glossary/term/proprietary_information
+# Do not commit such documents into the repo; prefer secure external storage (Notion, Google Drive, or encrypted store)
+docs/operations/private/**
+docs/blog/private/**
+docs/ai/private/**
+**/personal-info/**
+**/pii/**
 
 # Package manager caches
 .npm/

@@ -282,8 +282,8 @@ async function main() {
   const report = formatViolations(allViolations);
   console.log(report);
 
-  // Ensure reports directory exists (private, not in public/)
-  const reportsDir = path.join(projectRoot, '.reports');
+  // Ensure reports directory exists
+  const reportsDir = path.join(projectRoot, 'reports/design-system');
   if (!fs.existsSync(reportsDir)) {
     fs.mkdirSync(reportsDir, { recursive: true });
   }

@@ -59,12 +59,12 @@ export default async function ContactPage() {
           </ScrollReveal>
         </section>
 
-        {/* Contact Methods - Primary options 
+        {/* Contact Methods - Primary options */}
         <section id="contact-methods" className={PAGE_LAYOUT.section.container}>
           <ScrollReveal animation="fade-up" delay={0}>
             <ContactMethods />
           </ScrollReveal>
-        </section> */}
+        </section>
 
         {/* Social Links - All platforms */}
         <section id="social-links" className={PAGE_LAYOUT.section.container}>

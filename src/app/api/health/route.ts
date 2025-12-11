@@ -1,7 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
+import { blockExternalAccess } from '@/lib/api-security';
+import { checkGitHubDataHealth } from '@/lib/github-data';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 /**
  * Health Check Endpoint with Sentry Monitoring
@@ -23,7 +25,11 @@ export const runtime = 'edge';
  *   uptime: process.uptime() in seconds
  * }
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Block external access
+  const blockResponse = blockExternalAccess(request);
+  if (blockResponse) return blockResponse;
+
   // Start Sentry check-in for uptime monitoring
   const checkId = Sentry.captureCheckIn({
     monitorSlug: 'site-health-check',
@@ -31,19 +37,29 @@ export async function GET() {
   });
 
   try {
+    // Check GitHub data cache health
+    const githubHealth = await checkGitHubDataHealth();
+    
     // Perform health checks
     const healthChecks = {
       timestamp: new Date().toISOString(),
       services: {
-        // Edge runtime is working if we got here
-        edge: true,
+        // Node.js runtime is working if we got here
+        nodejs: true,
         // Vercel platform is working if we can respond
         vercel: true,
+        // GitHub cache status
+        githubCache: githubHealth.cacheAvailable,
+        githubData: githubHealth.dataFresh,
       },
-      // Note: In edge runtime, process.uptime() may not be available
-      // This is just a placeholder for server runtime compatibility
+      githubInfo: {
+        lastUpdated: githubHealth.lastUpdated,
+        totalContributions: githubHealth.totalContributions,
+      },
+      // Note: In Node.js runtime, process.uptime() is available
+      // This provides server uptime information for monitoring
       serverInfo: {
-        runtime: 'edge',
+        runtime: 'nodejs',
         region: process.env.VERCEL_REGION || (process.env.NODE_ENV === 'development' ? 'local' : 'unknown'),
       },
     };
