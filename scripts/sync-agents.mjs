@@ -22,6 +22,7 @@ const SOURCES = {
   patterns: path.join(ROOT, '.github/agents/patterns'),
   enforcement: path.join(ROOT, '.github/agents/enforcement'),
   learning: path.join(ROOT, '.github/agents/learning'),
+  learningData: path.join(ROOT, '.github/agents/learning-data/knowledge-base.json'),
   hub: path.join(ROOT, '.github/agents/DCYFR.agent.md')
 };
 
@@ -159,16 +160,52 @@ async function validateConsistency() {
 }
 
 /**
+ * Load learning data from knowledge base
+ */
+async function loadLearningData() {
+  try {
+    const knowledgeBase = await fs.readFile(SOURCES.learningData, 'utf8');
+    const data = JSON.parse(knowledgeBase);
+    return data.knowledgeBase || {};
+  } catch (error) {
+    console.log('⚠️ No learning data found (knowledge base not initialized yet)');
+    return {};
+  }
+}
+
+/**
  * Generate sync report
  */
-function generateSyncReport(target, changes, issues = []) {
+function generateSyncReport(target, changes, issues = [], learningData = null) {
   const timestamp = new Date().toISOString();
+
+  let learningSection = '';
+  if (learningData) {
+    const patternCount = Object.keys(learningData.designPatterns || {}).length;
+    const mistakeCount = (learningData.commonMistakes || []).length;
+    const optimizationCount = (learningData.optimizations || []).length;
+
+    learningSection = `
+## Recent Learnings
+- **Patterns:** ${patternCount} validated
+- **Common Mistakes:** ${mistakeCount} identified
+- **Optimizations:** ${optimizationCount} discovered
+
+**Top Patterns:**
+${Object.entries(learningData.designPatterns || {})
+  .sort((a, b) => b[1].confidence - a[1].confidence)
+  .slice(0, 3)
+  .map(([key, pattern]) => `- ${pattern.rule} (${(pattern.confidence * 100).toFixed(0)}% confidence)`)
+  .join('\n')}
+`;
+  }
+
   return `
 # Agent Sync Report - ${target.toUpperCase()}
 
-**Generated:** ${timestamp}  
-**Target:** ${target}  
-**Changes:** ${changes.length}  
+**Generated:** ${timestamp}
+**Target:** ${target}
+**Changes:** ${changes.length}
 **Issues:** ${issues.length}
 
 ## Changes Made
@@ -176,10 +213,10 @@ ${changes.map(change => `- ${change}`).join('\n')}
 
 ## Validation Issues
 ${issues.map(issue => `- ⚠️ ${issue}`).join('\n')}
-
+${learningSection}
 ## Next Steps
-${issues.length > 0 ? 
-  '- Review and resolve validation issues\n- Re-run sync after fixes' : 
+${issues.length > 0 ?
+  '- Review and resolve validation issues\n- Re-run sync after fixes' :
   '- Sync completed successfully\n- All implementations synchronized'
 }
 `;
@@ -251,10 +288,21 @@ async function syncAgents(options = {}) {
 
   console.log('');
 
+  // Load learning data
+  const learningData = await loadLearningData();
+  if (Object.keys(learningData).length > 0) {
+    console.log('📚 Loaded learning data from knowledge base');
+  }
+
   // Generate reports
   for (const [targetKey, result] of Object.entries(results)) {
     if (result.changes.length > 0) {
-      const report = generateSyncReport(targetKey, result.changes, result.issues);
+      const report = generateSyncReport(
+        targetKey,
+        result.changes,
+        result.issues,
+        Object.keys(learningData).length > 0 ? learningData : null
+      );
       const reportPath = path.join(ROOT, `sync-report-${targetKey}-${Date.now()}.md`);
 
       if (!dryRun) {

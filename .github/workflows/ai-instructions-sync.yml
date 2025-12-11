@@ -35,16 +35,26 @@ jobs:
         run: npm run sync:agents -- --status
         if: always()
 
+      - name: Generate monthly learning report
+        run: npm run learning:report -- --month $(date +%Y-%m)
+        continue-on-error: true
+
       - name: Commit sync changes
         id: commit
         run: |
-          if git diff --quiet; then
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Add sync reports
+          git add sync-report-*.md || true
+
+          # Add learning reports if they exist (not in git per data protection policy)
+          # Reports are generated but not committed - stored as artifacts only
+
+          if git diff --quiet --cached; then
             echo "No changes detected"
             echo "changes=false" >> $GITHUB_OUTPUT
           else
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add sync-report-*.md
             git commit -m "chore: sync DCYFR agents (primary → secondary model)"
             echo "changes=true" >> $GITHUB_OUTPUT
           fi
@@ -66,6 +76,11 @@ jobs:
             - Updated Copilot quick reference from Claude Code patterns
             - Generated sync validation report
             - All implementations validated for consistency
+            - Monthly learning report generated (available in artifacts)
+
+            ### Artifacts
+            - **Sync reports:** `agent-sync-reports` artifact
+            - **Learning report:** `learning-report-${{ github.run_number }}` artifact (90-day retention)
 
             ### Strategy
             See [`docs/ai/AGENT_SYNC_STRATEGY.md`](./docs/ai/AGENT_SYNC_STRATEGY.md) for sync strategy and [`docs/ai/AGENT_UNIFICATION_ANALYSIS.md`](./docs/ai/AGENT_UNIFICATION_ANALYSIS.md) for rationale.
@@ -82,6 +97,15 @@ jobs:
           path: sync-report-*.md
           if-no-files-found: ignore
           retention-days: 30
+
+      - name: Publish learning report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: learning-report-${{ github.run_number }}
+          path: .github/agents/learning-data/monthly-reports/*.md
+          if-no-files-found: ignore
+          retention-days: 90
 
   validate:
     runs-on: ubuntu-latest
