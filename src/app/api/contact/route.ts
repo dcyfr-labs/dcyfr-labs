@@ -23,8 +23,35 @@ type ContactFormData = {
 };
 
 function validateEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+  // RFC 5322 compliant email validation (simplified but more robust)
+  // Validates:
+  // - Local part: alphanumeric + allowed special chars
+  // - @ symbol
+  // - Domain: valid format with proper TLD (min 2 chars)
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
+  if (!emailRegex.test(email)) {
+    return false;
+  }
+
+  // Additional validation: check for valid TLD length (min 2 chars)
+  const parts = email.split('@');
+  if (parts.length !== 2) return false;
+
+  const domain = parts[1];
+  const tld = domain.split('.').pop();
+
+  // TLD must be at least 2 characters (e.g., .io, .com, but not .c)
+  if (!tld || tld.length < 2) {
+    return false;
+  }
+
+  // Email length validation (max 254 per RFC 5321)
+  if (email.length > 254) {
+    return false;
+  }
+
+  return true;
 }
 
 function sanitizeInput(input: string): string {

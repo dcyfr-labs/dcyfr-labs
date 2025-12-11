@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { blockExternalAccess } from "@/lib/api-security";
 import { getMultiplePostViews, getMultiplePostViews24h, getMultiplePostViewsInRange } from "@/lib/views";
 import { getPostSharesBulk, getPostShares24hBulk } from "@/lib/shares";
 import { getPostCommentsBulk, getPostComments24hBulk } from "@/lib/comments";
@@ -9,24 +10,29 @@ import { handleApiError } from "@/lib/error-handler";
 
 /**
  * Security Configuration for Analytics API
- * 
+ *
  * This endpoint provides sensitive analytics data and requires multi-layer protection:
- * 
+ *
+ * Layer 0: External Access Blocking (NEW)
+ * - Uses blockExternalAccess() to block all external requests in production
+ * - Returns 404 in production to avoid revealing endpoint existence
+ * - Allows only internal/localhost requests in development
+ *
  * Layer 1: API Key Authentication
  * - Requires ADMIN_API_KEY environment variable
  * - Key must be passed via Authorization header: "Bearer YOUR_KEY"
  * - Prevents unauthorized access even if endpoint is publicly exposed
- * 
+ *
  * Layer 2: Environment Validation
  * - Checks VERCEL_ENV to prevent production exposure
  * - Allows: development, preview (with key), test
  * - Blocks: production environment entirely
- * 
+ *
  * Layer 3: Rate Limiting
  * - 5 requests per minute per IP address
  * - Prevents abuse and excessive data access
  * - Uses Redis-backed rate limiting with in-memory fallback
- * 
+ *
  * Layer 4: Audit Logging
  * - Logs all access attempts (success and failure)
  * - Includes timestamp, IP, user agent, endpoint params
@@ -146,7 +152,11 @@ async function getRedisClient() {
   }
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
+  // Layer 0: Block external access for security
+  const blockResponse = blockExternalAccess(request);
+  if (blockResponse) return blockResponse;
+
   // Layer 1: Environment validation
   if (!isAllowedEnvironment()) {
     logAccess(request, "denied", "production environment blocked");
@@ -200,7 +210,29 @@ export async function GET(request: Request) {
     // Get date range parameter from URL
     const { searchParams } = new URL(request.url);
     const daysParam = searchParams.get("days");
-    const days = daysParam === "all" ? null : (daysParam ? parseInt(daysParam, 10) : 1);
+
+    // Validate days parameter
+    let days: number | null;
+    if (daysParam === "all" || daysParam === null) {
+      days = null;
+    } else {
+      const parsedDays = parseInt(daysParam, 10);
+      if (isNaN(parsedDays) || parsedDays < 1 || parsedDays > 365) {
+        return NextResponse.json(
+          {
+            error: "Invalid days parameter",
+            message: "Days must be a number between 1 and 365, or 'all'"
+          },
+          { status: 400 }
+        );
+      }
+      days = parsedDays;
+    }
+
+    // Default to 1 day if no parameter provided
+    if (days === null && daysParam === null) {
+      days = 1;
+    }
 
     // Get view counts for all posts using their stable post IDs
     const postIds = posts.map((p) => p.id);
