@@ -210,6 +210,60 @@ Start Phase 4.1: Component directory reorganization
 
 ---
 
+## Local CLI: Claude Code Requirements & Troubleshooting
+
+If you use the `claude` CLI (for local agent runs like `claude /agents`) the CLI requires a stable Node LTS runtime. On macOS we recommend Node 20 (LTS) for compatibility. Node 25+ can cause runtime issues with some installed CLI bundles.
+
+Quick steps to prepare environment (macOS / Homebrew):
+
+1. Install Node 20 (keg-only):
+
+```bash
+brew install node@20
+```
+
+2. Add Node 20 to your PATH (idempotent):
+
+```bash
+# Add this to ~/.zshrc (only if you use zsh)
+export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
+source ~/.zshrc
+```
+
+3. Reinstall the `claude` CLI using Node 20’s npm to ensure the package is built for the correct runtime:
+
+```bash
+# Optional: uninstall any previous global installation
+npm uninstall -g @anthropic-ai/claude-code || true
+
+# Use the Node 20 installation's npm
+/opt/homebrew/opt/node@20/bin/npm install -g @anthropic-ai/claude-code
+```
+
+4. Confirm the CLI is functional:
+
+```bash
+claude --version
+claude agents --help
+```
+
+Alternative approaches:
+
+- Use a version manager (nvm, volta, asdf) and switch to Node 20 for the repository.
+- If you prefer not to change PATH, run the CLI directly with Node 20:
+   ```bash
+   /opt/homebrew/opt/node@20/bin/node /opt/homebrew/lib/node_modules/@anthropic-ai/claude-code/cli.js --version
+   ```
+
+Troubleshooting:
+
+- If the CLI throws a TypeError about `prototype` or crashes, it is usually a Node runtime mismatch. Use Node 20 as above.
+- If the CLI fails after switching to Node 20, reinstall the package under that Node version.
+- If you continue to see runtime errors after these updates, file a bug report with the `claude` CLI maintainers and include Node version, CLI version, and the stack trace.
+
+
+---
+
 ## Best Practices
 
 ### Starting a Session
