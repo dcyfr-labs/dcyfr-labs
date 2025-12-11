@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
+import { blockExternalAccess } from '@/lib/api-security';
 
 export const runtime = 'edge';
 
@@ -23,7 +24,11 @@ export const runtime = 'edge';
  *   uptime: process.uptime() in seconds
  * }
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Block external access
+  const blockResponse = blockExternalAccess(request);
+  if (blockResponse) return blockResponse;
+
   // Start Sentry check-in for uptime monitoring
   const checkId = Sentry.captureCheckIn({
     monitorSlug: 'site-health-check',

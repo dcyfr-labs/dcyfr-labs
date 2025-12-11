@@ -5,6 +5,7 @@
  * Provides real-time web search with citation generation.
  *
  * Security features:
+ * - EXTERNAL ACCESS BLOCKED FOR SECURITY
  * - Rate limiting (5 requests/minute per IP)
  * - Input validation and sanitization
  * - Server-side caching (5 minutes)
@@ -13,6 +14,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { blockExternalAccess } from "@/lib/api-security";
 import {
   rateLimit,
   getClientIp,
@@ -204,6 +206,10 @@ function validateOptions(
  * }
  */
 export async function POST(request: NextRequest) {
+  // Block external access for security
+  const blockResponse = blockExternalAccess(request);
+  if (blockResponse) return blockResponse;
+
   // Check if Perplexity is configured
   if (!isPerplexityConfigured()) {
     return NextResponse.json(

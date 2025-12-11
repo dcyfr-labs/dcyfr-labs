@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { checkBotId } from "botid/server";
+import { blockExternalAccess } from "@/lib/api-security";
 import { rateLimit, getClientIp, createRateLimitHeaders } from "@/lib/rate-limit";
 import { RATE_LIMITS } from "@/lib/api-guardrails";
 import { inngest } from "@/inngest/client";
@@ -30,7 +31,11 @@ function sanitizeInput(input: string): string {
   return input.trim().slice(0, 1000); // Basic sanitization and length limit
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  // Block external access for security
+  const blockResponse = blockExternalAccess(request);
+  if (blockResponse) return blockResponse;
+
   let body: ContactFormData | undefined;
   
   try {
