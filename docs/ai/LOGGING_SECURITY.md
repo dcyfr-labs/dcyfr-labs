@@ -16,12 +16,18 @@ This guide provides comprehensive patterns for secure logging practices in the d
 
 ## Quick Rules
 
+### Definitions
+- **PI (Proprietary Information)** — Information that confers competitive or business advantage and should be protected; defined per NIST: https://csrc.nist.gov/glossary/term/proprietary_information
+- **PI (Proprietary Information)** — Information that confers competitive or business advantage and should be protected; defined per NIST: https://csrc.nist.gov/glossary/term/proprietary_information. See `docs/security/pi-policy.md` for handling guidance.
+- **PII (Personally Identifiable Information)** — Data that identifies an individual (email, phone, SSN, etc.). Do not log PII in cleartext.
+
 ### Never Log
 
 - **API Keys & Tokens**: Auth tokens, JWT, API keys, access keys, secret keys
 - **Credentials**: Passwords, passphrases, PIN codes
 - **Environment Variables**: Containing secrets (checked at system boundaries)
-- **User Personal Data**: Emails, phone numbers, SSNs, personal IDs, IP addresses
+- **User Personal Data**: Emails, phone numbers, SSNs, personal IDs
+- **IP Addresses**: PII under GDPR/CCPA (use for rate limiting only, never log)
 - **Private Keys & Certificates**: SSL/TLS certificates, private encryption keys
 - **Authentication Responses**: Session tokens, authentication headers, bearer tokens
 - **Payment Information**: Credit card numbers, bank account details, payment tokens
@@ -96,6 +102,43 @@ if (process.env.NODE_ENV === 'production') {
 console.log("User request processed");
 console.log(`User role: ${user.role}`); // Only if role is non-sensitive
 ```
+
+### 3a. IP Addresses (PII under GDPR/CCPA)
+
+**IP addresses are considered PII** and must be handled carefully. See [docs/security/pi-policy.md](../../docs/security/pi-policy.md#ip-address-collection--handling) for full policy.
+
+```javascript
+// ❌ WRONG: Logs full IP address
+const clientIp = getClientIp(request);
+console.log(`Request from IP: ${clientIp}`);
+
+// ❌ WRONG: Logs IP in error message
+console.error(`Rate limit exceeded for ${ip}`);
+
+// ❌ WRONG: Logs IP with user action
+console.log(`User at ${ipAddress} submitted form`);
+
+// ✅ CORRECT: Log the action without the IP
+console.log("Rate limit applied to request");
+console.log("Contact form submission received");
+
+// ✅ CORRECT: If debugging is truly needed, mask the IP
+const maskedIp = ip.split('.').map((octet, i) => i < 2 ? octet : 'xxx').join('.');
+console.log(`Debug context: ${maskedIp}`); // Output: "192.168.xxx.xxx"
+
+// ✅ CORRECT: Use IP for rate limiting (not logging)
+// This is acceptable - IP used for security, not logged
+const rateLimitResult = await rateLimit(clientIp, config);
+```
+
+**Why IP addresses matter:**
+
+- **GDPR Article 4(1)**: IP addresses are personal data that can identify an individual
+- **CCPA**: IP addresses are personal information under California law
+- **Legitimate use**: Rate limiting, abuse prevention (ephemeral, not logged)
+- **Never log**: Do not persist IPs in logs, databases, or analytics
+
+**Our IP policy**: IPs are used only for rate limiting (60s TTL in Redis), never logged or stored long-term.
 
 ### 4. Sensitive Configuration
 

@@ -27,8 +27,18 @@ interface PostCategorySectionProps {
  * PostCategorySection Component
  *
  * Renders a collapsible accordion section for a blog category.
- * Each category has a header showing the category name and post count,
- * with a list of posts inside that can be expanded/collapsed.
+ * Each category has an enhanced header with:
+ * - Category name in large typography
+ * - Post count badge
+ * - Visual separator line
+ * - Expandable/collapsible posts in compact layout
+ *
+ * Features:
+ * - All categories expanded by default
+ * - Clean visual hierarchy with category headers
+ * - Post count clearly visible in a badge
+ * - Smooth expand/collapse animations
+ * - Responsive design for mobile and desktop
  *
  * @param props - Component props
  * @returns React element
@@ -42,29 +52,36 @@ export function PostCategorySection({
   viewCounts,
   searchQuery,
 }: PostCategorySectionProps) {
+  const postCount = posts.length;
+
   return (
     <Accordion type="multiple" defaultValue={[category]} className="w-full">
-      <AccordionItem value={category}>
-        <AccordionTrigger>
-          <div className="flex items-center justify-between w-full pr-4">
-            <h2 className={TYPOGRAPHY.h2.standard}>{label}</h2>
-            <span className="text-sm text-muted-foreground">
-              {posts.length} {posts.length === 1 ? "post" : "posts"}
-            </span>
+      <AccordionItem value={category} className="border-none" style={{ paddingTop: SPACING.section }}>
+        <AccordionTrigger className="hover:no-underline py-4 px-0">
+          <div className="flex items-center gap-4">
+            {/* Category label and count */}
+            <div className="flex items-baseline gap-3 flex-1 text-left">
+              <h2 className={TYPOGRAPHY.h2.standard}>{label}</h2>
+              <span className={`inline-flex items-center justify-center px-2.5 py-1 rounded-full bg-primary/10 text-primary whitespace-nowrap ${TYPOGRAPHY.label.small}`}>
+                {postCount} {postCount === 1 ? "post" : "posts"}
+              </span>
+            </div>
           </div>
+
+          {/* Bottom border for visual separation - gradient effect */}
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-border via-border to-transparent group-hover:via-primary/20 transition-colors" />
         </AccordionTrigger>
-        <AccordionContent>
-          <div className={SPACING.content}>
-            <PostList
-              posts={posts}
-              latestSlug={latestSlug}
-              hottestSlug={hottestSlug}
-              titleLevel="h3"
-              layout="compact"
-              viewCounts={viewCounts}
-              searchQuery={searchQuery}
-            />
-          </div>
+
+        <AccordionContent className="pt-6 pb-6 px-0">
+          <PostList
+            posts={posts}
+            latestSlug={latestSlug}
+            hottestSlug={hottestSlug}
+            titleLevel="h3"
+            layout="compact"
+            viewCounts={viewCounts}
+            searchQuery={searchQuery}
+          />
         </AccordionContent>
       </AccordionItem>
     </Accordion>

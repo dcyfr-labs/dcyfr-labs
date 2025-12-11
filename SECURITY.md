@@ -64,6 +64,9 @@ This project implements comprehensive security controls:
 - ✅ HTTPS enforcement with HSTS headers
 - ✅ Secure environment variable handling
 
+- ✅ PI (Proprietary Information) protection — Treat proprietary information similarly to PII in terms of storage, logging, and access control. See NIST's definition: https://csrc.nist.gov/glossary/term/proprietary_information
+ - ✅ See `docs/security/pi-policy.md` for a full policy and handling checklist for PI/PII and private drafts.
+
 ### Input Validation
 
 - ✅ All API endpoints validate inputs
@@ -104,6 +107,11 @@ We continuously monitor security through:
 - **Dependency Scanning:** Dependabot (daily) + npm audit
 - **Code Security:** GitHub CodeQL (on push, PR, and daily schedule)
 - **Secret Scanning:** GitHub Secret Scanning
+### PI/PII Scanning
+
+- Local pre-commit scanning: run `npm run scan:pi` locally to scan staged files for likely PII or proprietary markers
+- CI scanning: PRs are scanned using `.github/workflows/pii-scan.yml` and will fail if the checks detect likely sensitive content
+
 - **Security Headers:** Automated header validation
 
 ### Manual Review

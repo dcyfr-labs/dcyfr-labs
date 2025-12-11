@@ -5,7 +5,7 @@ import { LayoutGrid, List, Columns2, Square, FolderKanban } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface LayoutOption {
-  id: "grid" | "list" | "magazine" | "compact" | "grouped";
+  id: "grid" | "list" | "magazine" | "compact" | "hybrid" | "grouped";
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   title: string;
@@ -17,6 +17,12 @@ const LAYOUT_OPTIONS: LayoutOption[] = [
     label: "Magazine",
     icon: Columns2,
     title: "Magazine layout - Featured posts with alternating full-width cards",
+  },
+  {
+    id: "hybrid",
+    label: "Hybrid",
+    icon: LayoutGrid,
+    title: "Hybrid layout - Hero post with 2-column grid",
   },
   {
     id: "grid",
@@ -46,7 +52,7 @@ const LAYOUT_OPTIONS: LayoutOption[] = [
 
 interface LayoutToggleProps {
   /** Current active layout */
-  currentLayout: "grid" | "list" | "magazine" | "compact" | "grouped";
+  currentLayout: "grid" | "list" | "magazine" | "compact" | "hybrid" | "grouped";
 }
 
 /**
@@ -63,7 +69,7 @@ export function LayoutToggle({ currentLayout }: LayoutToggleProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const handleLayoutChange = (layout: "grid" | "list" | "magazine" | "compact" | "grouped") => {
+  const handleLayoutChange = (layout: "grid" | "list" | "magazine" | "compact" | "hybrid" | "grouped") => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("layout", layout);
     router.push(`/blog?${params.toString()}`, { scroll: false });
