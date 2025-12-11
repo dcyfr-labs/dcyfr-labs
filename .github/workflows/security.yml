@@ -1,0 +1,180 @@
+name: Security Checks
+
+# Consolidated security workflow combining:
+# - security-audit.yml (npm audit on PRs + scheduled)
+# - automated-security-checks.yml (npm audit + outdated packages)
+# Optimized to run npm ci only once and provide comprehensive security reporting
+
+on:
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/dependabot.yml'
+  push:
+    branches: [main, preview]
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+  schedule:
+    # Daily at 2 AM UTC (9 PM PT) - catches newly disclosed vulnerabilities
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      audit_level:
+        description: 'Audit level (low, moderate, high, critical)'
+        required: false
+        default: 'moderate'
+
+# Cancel in-progress runs for same PR/branch
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: write
+
+jobs:
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # Single npm ci - shared for all checks below
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      # ============================================
+      # NPM AUDIT
+      # ============================================
+
+      - name: Run npm audit
+        id: audit
+        continue-on-error: true
+        run: |
+          # npm audit with --json for machine-readable output
+          npm audit --audit-level=moderate --json > audit-results.json || EXIT_CODE=$?
+          echo "exit_code=${EXIT_CODE:-0}" >> $GITHUB_OUTPUT
+
+          # Parse vulnerability counts
+          CRITICAL=$(jq '.metadata.vulnerabilities.critical // 0' audit-results.json)
+          HIGH=$(jq '.metadata.vulnerabilities.high // 0' audit-results.json)
+          MODERATE=$(jq '.metadata.vulnerabilities.moderate // 0' audit-results.json)
+          LOW=$(jq '.metadata.vulnerabilities.low // 0' audit-results.json)
+          TOTAL=$(jq '.metadata.vulnerabilities.total // 0' audit-results.json)
+
+          echo "critical=$CRITICAL" >> $GITHUB_OUTPUT
+          echo "high=$HIGH" >> $GITHUB_OUTPUT
+          echo "moderate=$MODERATE" >> $GITHUB_OUTPUT
+          echo "low=$LOW" >> $GITHUB_OUTPUT
+          echo "total=$TOTAL" >> $GITHUB_OUTPUT
+
+          if [ "$CRITICAL" -gt 0 ]; then
+            echo "has_critical=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_critical=false" >> $GITHUB_OUTPUT
+          fi
+
+      # ============================================
+      # OUTDATED PACKAGES CHECK
+      # ============================================
+
+      - name: Check for outdated packages
+        id: outdated
+        continue-on-error: true
+        run: |
+          npm outdated --json > npm-outdated-results.json 2>&1 || true
+
+          OUTDATED=$(jq 'length' npm-outdated-results.json 2>/dev/null || echo "0")
+          echo "outdated=$OUTDATED" >> $GITHUB_OUTPUT
+
+          # Extract major updates count
+          MAJOR_UPDATES=$(jq '[.[] | select(.type == "major")] | length' npm-outdated-results.json 2>/dev/null || echo "0")
+          echo "major_updates=$MAJOR_UPDATES" >> $GITHUB_OUTPUT
+
+      # ============================================
+      # REPORTING
+      # ============================================
+
+      - name: Generate comprehensive security report
+        run: |
+          cat > security-report.md << EOF
+          ## 🔒 Security Audit Results
+
+          ### npm Audit
+          | Severity | Count |
+          |----------|-------|
+          | 🚨 Critical | ${{ steps.audit.outputs.critical }} |
+          | ⚠️ High | ${{ steps.audit.outputs.high }} |
+          | ⚡ Moderate | ${{ steps.audit.outputs.moderate }} |
+          | ℹ️ Low | ${{ steps.audit.outputs.low }} |
+
+          **Total Vulnerabilities:** ${{ steps.audit.outputs.total }}
+
+          ### Outdated Packages
+          - **Total outdated:** ${{ steps.outdated.outputs.outdated }}
+          - **Major updates available:** ${{ steps.outdated.outputs.major_updates }}
+
+          ### Status
+          EOF
+
+          if [ "${{ steps.audit.outputs.has_critical }}" == "true" ]; then
+            echo "🚨 **❌ Build will fail:** Critical vulnerabilities detected" >> security-report.md
+          elif [ "${{ steps.audit.outputs.high }}" -gt 0 ]; then
+            echo "⚠️ **❌ Build will fail:** High severity vulnerabilities detected" >> security-report.md
+          elif [ "${{ steps.audit.outputs.moderate }}" -gt 0 ]; then
+            echo "⚡ **⚠️ Review recommended:** Moderate vulnerabilities present" >> security-report.md
+          else
+            echo "✅ **All Clear:** No known vulnerabilities found" >> security-report.md
+          fi
+
+          echo "" >> security-report.md
+          echo "For details, run: \`npm audit\`" >> security-report.md
+
+      - name: Comment on PR with results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('security-report.md', 'utf-8');
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: report
+            });
+
+      - name: Generate step summary
+        if: always()
+        run: |
+          cat security-report.md >> $GITHUB_STEP_SUMMARY
+
+      # ============================================
+      # FAILURE CONDITIONS
+      # ============================================
+
+      - name: Fail on critical/high vulnerabilities
+        if: steps.audit.outputs.exit_code != '0'
+        run: |
+          echo "❌ npm audit failed: Vulnerabilities detected at configured threshold"
+          echo ""
+          echo "Critical: ${{ steps.audit.outputs.critical }}"
+          echo "High: ${{ steps.audit.outputs.high }}"
+          echo "Moderate: ${{ steps.audit.outputs.moderate }}"
+          echo ""
+          echo "Run 'npm audit' locally for details"
+          exit 1

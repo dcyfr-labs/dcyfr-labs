@@ -195,12 +195,14 @@ export async function GET(request: NextRequest) {
 
     // Check for GraphQL errors
     if (data.errors) {
-      console.error('GitHub GraphQL errors:', data.errors);
-      throw new Error(`GitHub GraphQL query failed: ${JSON.stringify(data.errors)}`);
+      // Log a summary of GraphQL errors without printing full structured data
+      console.error('GitHub GraphQL errors detected (count):', (data.errors || []).length);
+      throw new Error(`GitHub GraphQL query failed`);
     }
 
     if (!data.data?.user?.contributionsCollection?.contributionCalendar) {
-      console.error('Invalid response structure. Full response:', JSON.stringify(data, null, 2));
+      // Avoid logging entire response structures - log summary keys for debugging
+      console.error('Invalid response structure. Response keys:', Object.keys(data || {}));
       throw new Error('Invalid GitHub API response structure');
     }
 

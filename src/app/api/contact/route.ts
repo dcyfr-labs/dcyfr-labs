@@ -58,7 +58,8 @@ export async function POST(request: Request) {
     } catch (botIdError) {
       // BotID is optional - if it fails, continue with fallback protection
       // Common reasons: not configured, CSP issues, network errors, timeout
-      console.log("[Contact API] BotID check failed, using fallback protection (rate limit + honeypot):", 
+      // Log only the error message (avoid printing full error objects which may contain sensitive data)
+      console.warn("[Contact API] BotID check failed, using fallback protection (rate limit + honeypot):", 
         botIdError instanceof Error ? botIdError.message : String(botIdError)
       );
     }
@@ -160,7 +161,8 @@ export async function POST(request: Request) {
       ).catch(err => console.warn("Analytics tracking failed:", err));
 
       // Log submission (anonymized)
-      console.log("Contact form submission queued:", {
+      // Log an anonymized summary to avoid storing user-provided content in logs
+      console.info("Contact form submission queued:", {
         nameLength: sanitizedData.name.length,
         emailDomain: sanitizedData.email.split('@')[1] || 'unknown',
         messageLength: sanitizedData.message.length,
@@ -178,7 +180,8 @@ export async function POST(request: Request) {
         }
       );
     } catch (inngestError) {
-      console.error("Failed to queue contact form:", inngestError);
+      // Avoid printing full error objects that could include sensitive details
+      console.error("Failed to queue contact form:", inngestError instanceof Error ? inngestError.message : String(inngestError));
       return NextResponse.json(
         { error: "Failed to process your message. Please try again later." },
         { status: 500 }

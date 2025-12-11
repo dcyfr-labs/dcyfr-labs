@@ -139,12 +139,14 @@ export async function getGitHubSponsors(): Promise<Sponsor[]> {
 
     // Check for GraphQL errors
     if (data.errors && data.errors.length > 0) {
-      console.error("GitHub GraphQL errors:", data.errors);
+      // Log a non-sensitive summary of GraphQL errors
+      console.error("GitHub GraphQL errors detected (count):", data.errors.length);
       throw new Error(`GraphQL error: ${data.errors[0].message}`);
     }
 
     if (!data.data || !data.data.user) {
-      console.error("GitHub API returned unexpected response:", data);
+      // Avoid logging full response objects that may contain sensitive information
+      console.error("GitHub API returned unexpected response: missing user data", Object.keys(data || {}));
       throw new Error("Invalid response from GitHub API - user not found");
     }
 
@@ -179,7 +181,7 @@ export async function getGitHubSponsors(): Promise<Sponsor[]> {
 
     return sponsors;
   } catch (error) {
-    console.error("Error fetching GitHub sponsors:", error);
+    console.error("Error fetching GitHub sponsors:", error instanceof Error ? error.message : String(error));
     // Return cached data if available, otherwise empty array
     return cachedSponsors || [];
   }

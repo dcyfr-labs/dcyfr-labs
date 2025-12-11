@@ -1,4 +1,10 @@
-name: PI/PII Scan
+name: Privacy & PII Scan
+
+# Consolidated privacy scanning workflow:
+# - PII/PI pattern scanning
+# - Gitleaks secret detection
+# - Allowlist validation
+# Optimized to share npm ci installation
 
 on:
   pull_request:
@@ -6,18 +12,28 @@ on:
   push:
     branches: [main, preview]
 
+# Cancel in-progress runs for same PR/branch
+concurrency:
+  group: privacy-scan-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   scan:
     runs-on: ubuntu-latest
-    name: Run PII/PI scan
+    name: PII & Privacy Scan
     steps:
       - uses: actions/checkout@v4
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
+          cache: 'npm'
+
+      # Single npm ci for all checks
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --prefer-offline
+
       - name: Validate .pii-allowlist.json
         run: npm run validate:allowlist
       - name: Run PII/PI scan across repository (capture output)
@@ -46,20 +62,34 @@ jobs:
             ```
   gitleaks:
     runs-on: ubuntu-latest
+    name: Gitleaks Secret Detection
     needs: scan
     steps:
       - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # Reuse npm ci for parse script
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
       - name: Run gitleaks
         uses: zricethezav/gitleaks-action@v8
         with:
           args: --verbose --redact --report-format json --report gitleaks-report.json
         continue-on-error: true
+
       - name: Upload gitleaks report as artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: gitleaks-report
           path: gitleaks-report.json
+
       - name: Capture gitleaks report output
         id: gitleaks-report
         if: always()
@@ -73,14 +103,16 @@ jobs:
             echo "[]" >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
           fi
-        - name: Parse gitleaks report and block on critical secrets
-          if: always()
-          run: |
-            if [ -f gitleaks-report.json ]; then
-              npm run parse:gitleaks-report gitleaks-report.json
-            else
-              echo "No gitleaks-report.json found"
-            fi
+
+      - name: Parse gitleaks report and block on critical secrets
+        if: always()
+        run: |
+          if [ -f gitleaks-report.json ]; then
+            npm run parse:gitleaks-report gitleaks-report.json
+          else
+            echo "No gitleaks-report.json found"
+          fi
+
       - name: Post gitleaks report to PR
         if: always() && (github.event_name == 'pull_request')
         uses: peter-evans/create-or-update-comment@v3

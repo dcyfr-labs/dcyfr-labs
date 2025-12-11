@@ -18,26 +18,57 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Quick checks - fail fast
-  quality:
-    name: Code Quality
+  # Setup job - install dependencies once and cache for all downstream jobs
+  setup:
+    name: Setup Dependencies
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
       contents: read
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci --prefer-offline
+
+      - name: Cache node_modules
+        uses: actions/cache/save@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
+
+  # Quick checks - fail fast
+  quality:
+    needs: setup
+    name: Code Quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
+          fail-on-cache-miss: true
       
       - name: Lint and typecheck in parallel
         run: |
@@ -46,24 +77,28 @@ jobs:
           wait
   
   unit:
+    needs: setup
     name: Unit & Integration Tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: read
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-      
-      - name: Install dependencies
-        run: npm ci --prefer-offline
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
+          fail-on-cache-miss: true
       
       - name: Run unit tests with coverage
         run: npm run test:coverage
@@ -77,24 +112,28 @@ jobs:
           name: codecov-umbrella
 
   bundle:
+    needs: setup
     name: Bundle Size Check
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: read
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-      
-      - name: Install dependencies
-        run: npm ci --prefer-offline
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
+          fail-on-cache-miss: true
       
       - name: Build production bundle
         run: npm run build
@@ -105,24 +144,28 @@ jobs:
         run: npm run perf:check
 
   e2e:
+    needs: setup
     name: E2E Tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
       contents: read
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-      
-      - name: Install dependencies
-        run: npm ci --prefer-offline
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
+          fail-on-cache-miss: true
       
       - name: Cache Playwright browsers
         uses: actions/cache@v4

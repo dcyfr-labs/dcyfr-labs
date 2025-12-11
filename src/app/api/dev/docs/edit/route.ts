@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readFile, writeFile } from "fs/promises";
-import { join } from "path";
+import { join, resolve } from "path";
 
 const DOCS_ROOT = join(process.cwd(), "docs");
 
@@ -10,6 +10,10 @@ const DOCS_ROOT = join(process.cwd(), "docs");
  * POST: Saves the updated markdown content
  */
 export async function GET(request: NextRequest) {
+  // Disallow this route in production; only enable for development or when explicitly allowed
+  if (process.env.NODE_ENV === 'production' && process.env.ALLOW_DEV_ROUTES !== 'true') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
   const { searchParams } = new URL(request.url);
   const path = searchParams.get("path");
 
@@ -29,6 +33,10 @@ export async function GET(request: NextRequest) {
   }
 
   const filePath = join(DOCS_ROOT, `${path}.md`);
+  const resolved = resolve(filePath);
+  if (!resolved.startsWith(resolve(DOCS_ROOT))) {
+    return NextResponse.json({ error: 'Invalid path' }, { status: 400 });
+  }
 
   try {
     const content = await readFile(filePath, "utf-8");
@@ -42,6 +50,10 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  // Disallow this route in production; only enable for development or when explicitly allowed
+  if (process.env.NODE_ENV === 'production' && process.env.ALLOW_DEV_ROUTES !== 'true') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
   try {
     const { path, content } = await request.json();
 
@@ -61,6 +73,10 @@ export async function POST(request: NextRequest) {
     }
 
     const filePath = join(DOCS_ROOT, `${path}.md`);
+    const resolved = resolve(filePath);
+    if (!resolved.startsWith(resolve(DOCS_ROOT))) {
+      return NextResponse.json({ error: 'Invalid path' }, { status: 400 });
+    }
 
     // Save the file
     await writeFile(filePath, content, "utf-8");
