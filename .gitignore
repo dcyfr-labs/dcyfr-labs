@@ -57,6 +57,10 @@ yarn-error.log*
 .github/agents/**
 !.github/agents/.gitkeep
 !.github/agents/README.md
+!.github/agents/learning/
+!.github/agents/learning/**
+# Learning data is private (contains metrics, not committed to git)
+.github/agents/learning-data/
 
 # AI assistant configurations (local overrides)
 .github/copilot-instructions.local.md
