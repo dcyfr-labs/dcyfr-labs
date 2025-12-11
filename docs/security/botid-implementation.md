@@ -219,7 +219,14 @@ BotID is part of a comprehensive security strategy:
 ```typescript
 export async function POST(request: Request) {
   // Layer 1: BotID (blocks automated bots)
-  const verification = await checkBotId();
+  // BotID check can be toggled via the `ENABLE_BOTID` environment variable
+  // (set to '1' to enable in staging/prod). Default: disabled.
+  if (process.env.ENABLE_BOTID === '1') {
+    const verification = await checkBotId();
+    if (verification.isBot) {
+      return NextResponse.json({ error: "Access denied" }, { status: 403 });
+    }
+  }
   if (verification.isBot) {
     return NextResponse.json({ error: "Access denied" }, { status: 403 });
   }

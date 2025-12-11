@@ -27,7 +27,7 @@ const __dirname = dirname(__filename);
 const rootDir = join(__dirname, "..");
 
 // Load performance budgets
-const budgetsPath = join(rootDir, "performance-budgets.json");
+const budgetsPath = join(rootDir, "reports/performance/baselines/performance-budgets.json");
 if (!existsSync(budgetsPath)) {
   console.error("❌ performance-budgets.json not found");
   process.exit(1);
@@ -36,7 +36,7 @@ if (!existsSync(budgetsPath)) {
 const budgets = JSON.parse(readFileSync(budgetsPath, "utf8"));
 
 // Load performance baselines (optional - may not exist yet)
-const baselinesPath = join(rootDir, "performance-baselines.json");
+const baselinesPath = join(rootDir, "reports/performance/baselines/performance-baselines.json");
 let baselines = null;
 if (existsSync(baselinesPath)) {
   baselines = JSON.parse(readFileSync(baselinesPath, "utf8"));

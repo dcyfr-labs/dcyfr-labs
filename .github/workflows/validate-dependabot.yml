@@ -1,0 +1,33 @@
+name: Validate Dependabot config
+
+on:
+  push:
+    branches: [ main, preview ]
+  pull_request:
+    branches: [ main, preview ]
+
+jobs:
+  validate:
+    name: Validate dependabot.yml
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Parse and validate dependabot.yml
+        env:
+          FILE: .github/dependabot.yml
+        run: |
+          ruby -ryaml -e '
+            cfg = YAML.load_file(ENV["FILE"]) || {};
+            raise "dependabot.yml missing version or invalid format" unless cfg["version"] == 2
+            if cfg.key?("registries")
+              cfg["registries"].each do |name, registry|
+                auth_ok = registry.key?("token") || (registry.key?("username") && registry.key?("password"))
+                unless auth_ok
+                  raise "Registry \"#{name}\" must include authentication (token or username/password)"
+                end
+              end
+            end
+            puts "Dependabot config OK"
+          '

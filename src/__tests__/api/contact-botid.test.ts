@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { POST } from "@/app/api/contact/route";
 import { checkBotId } from "botid/server";
 import { rateLimit } from "@/lib/rate-limit";
@@ -28,6 +28,7 @@ describe("POST /api/contact - BotID Integration", () => {
   };
 
   beforeEach(() => {
+    delete process.env.ENABLE_BOTID;
     vi.clearAllMocks();
     
     // Default: Rate limit allows request
@@ -148,6 +149,99 @@ describe("POST /api/contact - BotID Integration", () => {
       const json = await response.json();
       expect(json.success).toBe(true);
       expect(json.message).toBeDefined();
+    });
+  });
+
+  describe("BotID Protection (Enabled via ENV)", () => {
+    beforeEach(() => {
+      process.env.ENABLE_BOTID = '1';
+      vi.clearAllMocks();
+      vi.mocked(rateLimit).mockResolvedValue({
+        success: true,
+        limit: 3,
+        remaining: 2,
+        reset: Date.now() + 60000,
+      });
+    });
+
+    afterEach(() => {
+      delete process.env.ENABLE_BOTID;
+    });
+
+    it("should call BotID check and block if BotID identifies a bot", async () => {
+      const callOrder: string[] = [];
+
+      vi.mocked(checkBotId).mockImplementation(async () => {
+        callOrder.push('botid');
+        return {
+          isHuman: false,
+          isBot: true,
+          isVerifiedBot: false,
+          bypassed: false,
+        };
+      });
+
+      vi.mocked(rateLimit).mockImplementation(async () => {
+        callOrder.push('rateLimit');
+        return {
+          success: true,
+          limit: 3,
+          remaining: 2,
+          reset: Date.now() + 60000,
+        };
+      });
+
+      const request = mockRequest({
+        name: 'Malicious Bot',
+        email: 'bot@spam.com',
+        message: 'Automated spam',
+      });
+
+      const response = await POST(request);
+      const json = await response.json();
+
+      expect(response.status).toBe(403);
+      expect(json.error).toBe('Access denied');
+      expect(callOrder[0]).toBe('botid');
+      expect(checkBotId).toHaveBeenCalled();
+    });
+
+    it("should allow legitimate requests when BotID identifies human", async () => {
+      const callOrder: string[] = [];
+
+      vi.mocked(checkBotId).mockImplementation(async () => {
+        callOrder.push('botid');
+        return {
+          isHuman: true,
+          isBot: false,
+          isVerifiedBot: false,
+          bypassed: false,
+        };
+      });
+
+      vi.mocked(rateLimit).mockImplementation(async () => {
+        callOrder.push('rateLimit');
+        return {
+          success: true,
+          limit: 3,
+          remaining: 2,
+          reset: Date.now() + 60000,
+        };
+      });
+
+      const request = mockRequest({
+        name: 'Human User',
+        email: 'human@example.com',
+        message: 'This is a legit message',
+      });
+
+      const response = await POST(request);
+      const json = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(json.success).toBe(true);
+      expect(callOrder[0]).toBe('botid');
+      expect(checkBotId).toHaveBeenCalled();
     });
   });
 

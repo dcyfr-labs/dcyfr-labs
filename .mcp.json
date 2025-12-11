@@ -1,5 +1,5 @@
 {
-  "servers": {
+  "mcpServers": {
     "Perplexity": {
       "type": "stdio",
       "command": "npx",

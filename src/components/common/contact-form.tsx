@@ -58,7 +58,15 @@ export function ContactForm() {
       }
       (e.target as HTMLFormElement).reset();
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      // If API is completely unavailable (404/blocking), show alternative contact methods
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        toast.error(
+          "The contact form is temporarily unavailable. Please reach out via email or social media below.",
+          { duration: 8000 }
+        );
+      } else {
+        toast.error("Something went wrong. Please try again or use alternative contact methods below.");
+      }
       console.error("Contact form error:", error);
     } finally {
       setIsSubmitting(false);
@@ -66,7 +74,15 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+    <div>
+      {/* Informational banner */}
+      <div className="mb-6 p-4 bg-muted rounded-lg border border-border">
+        <p className="text-sm text-muted-foreground">
+          💡 <strong>Multiple ways to connect:</strong> You can use the form below or reach out directly via email and social media.
+        </p>
+      </div>
+      
+      <form onSubmit={handleSubmit} className="mt-8 space-y-4">
       {/* Honeypot field - hidden from real users, visible to bots */}
       <div className="hidden" aria-hidden="true">
         <Label htmlFor="website">Website (leave blank)</Label>
@@ -123,5 +139,6 @@ export function ContactForm() {
         {isSubmitting ? "Sending..." : "Send Message"}
       </Button>
     </form>
+    </div>
   );
 }

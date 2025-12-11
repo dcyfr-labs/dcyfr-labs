@@ -18,6 +18,28 @@ This document tracks **active and pending** work. Completed tasks are in **`done
 
 ---
 
+## 🤖 Claude Code Agents for TODO Management
+
+**8 specialized agents available** to support work on these items. Use them when:
+
+**Creating Features:** `/design-check` → `/security-audit` → `/arch-review`
+
+- Design validation, security checks, pattern consistency
+
+**Writing Content:** `/create-blog` → `/edit-content` → `/seo-optimize`
+
+- Blog posts, documentation, SEO optimization
+
+**Maintenance Work:** `/deps-audit` → `/perf-optimize` → `/seo-optimize`
+
+- Dependency updates, performance analysis, Lighthouse scores
+
+**Quick Help:** Type `/agent-help` in Claude Code to see all agents and workflows
+
+See [`CLAUDE.md`](../../CLAUDE.md#claude-code-agents-ai-powered-quality-assurance) and [`.claude/agents/`](../../.claude/agents/) for detailed agent documentation.
+
+---
+
 ## ✅ RECENTLY COMPLETED (Dec 10, 2025)
 
 ### Blog Layout Features
@@ -47,6 +69,15 @@ See `done.md` for details.
 - Write comprehensive test suite
 - **Status:** Phase 1 complete (foundation + pages)
 - **Estimated Impact:** Enhanced series discoverability
+
+### Security: BotID Re-Enablement
+
+- [ ] **Re-enable Vercel BotID for contact form** (1-2 hours)
+  - Verify BotID configuration in Vercel dashboard for `preview` and `production` deployments
+  - Add a CI check to validate BotID TLS/keys and/or test the `checkBotId()` callback in a pre-merge integration step
+  - Add unit/integration test asserting BotID is called when enabled, and that fallback protections remain (rate limit, honeypot)
+  - Monitor for false positives for 48 hours after re-enable and add rollback plan
+  - **Priority:** High
 
 > **Note:** Content strategy items like Professional Services Page belong in [`FUTURE_IDEAS.md`](../features/FUTURE_IDEAS.md), not here. This queue tracks only implementation work.
 
