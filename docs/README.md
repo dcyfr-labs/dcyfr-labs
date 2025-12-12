@@ -2,12 +2,10 @@
 
 This directory is the knowledge base for the portfolio. Content is organized by topic-focused subfolders for faster navigation.
 
-## 🚀 Start Here
+## 🚀 Quick Navigation
 
-**New to this documentation?** Start with:
-- **[`QUICK_START.md`](./QUICK_START.md)** – Single-page navigation hub linking all quick-references and guides
-- **[`INDEX.md`](./INDEX.md)** – Complete directory structure and search-friendly index
-- This `README.md` (current page) – Topic overview and key links
+- **[`INDEX.md`](./INDEX.md)** – Complete directory structure (start here!)
+- **[`QUICK_START.md`](./QUICK_START.md)** – Navigation hub for quick references
 
 ## Directory Overview
 
