@@ -9,6 +9,7 @@ import {
   InvitesStats,
   InvitesCTA,
   InvitesCategorySection,
+  InvitesFeatured,
 } from "@/components/invites";
 import { groupInviteCodesByCategory, sortCategoriesByCount } from "@/lib/invites";
 import { headers } from "next/headers";
@@ -27,6 +28,7 @@ export default async function InvitesPage() {
   const nonce = (await headers()).get("x-nonce") || "";
   const groupedCodes = groupInviteCodesByCategory(inviteCodes);
   const sortedCategories = sortCategoriesByCount(groupedCodes);
+  const featuredCodes = inviteCodes.filter((c) => c.featured);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -65,20 +67,37 @@ export default async function InvitesPage() {
           />
         </Section>
 
-        {/* Invites by Category */}
-        {sortedCategories.map(([category, codes]) => (
-          <Section
-            key={category}
-            id={`category-${category}`}
-            className={PAGE_LAYOUT.section.container}
-          >
-            <InvitesCategorySection
-              category={category}
-              label={INVITE_CODE_CATEGORY_LABELS[category]}
-              codes={codes}
-            />
+        {/* Featured Invites */}
+        {featuredCodes.length > 0 && (
+          <Section id="featured" className={PAGE_LAYOUT.section.container}>
+            <InvitesFeatured codes={featuredCodes} />
           </Section>
-        ))}
+        )}
+
+        {/* Invites by Category */}
+        {sortedCategories.map(([category, codes]) => {
+          // Filter out featured codes from category sections
+          const nonFeaturedCodes = codes.filter((c) => !c.featured);
+          
+          // Skip category if all codes are featured
+          if (nonFeaturedCodes.length === 0) {
+            return null;
+          }
+
+          return (
+            <Section
+              key={category}
+              id={`category-${category}`}
+              className={PAGE_LAYOUT.section.container}
+            >
+              <InvitesCategorySection
+                category={category}
+                label={INVITE_CODE_CATEGORY_LABELS[category]}
+                codes={nonFeaturedCodes}
+              />
+            </Section>
+          );
+        })}
 
         {/* Call to Action */}
         <Section id="cta" className={PAGE_LAYOUT.section.container}>
