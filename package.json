@@ -6,6 +6,7 @@
       "validate:allowlist": "node scripts/validate-allowlist.mjs",
       "audit:allowlist": "node scripts/audit-allowlist.mjs",
       "parse:gitleaks-report": "node scripts/parse-gitleaks-report.mjs gitleaks-report.json",
+      "validate:botid": "node scripts/validate-botid-setup.mjs",
     "dev": "next dev --turbopack",
     "dev:https": "node server.mjs",
     "build": "next build",

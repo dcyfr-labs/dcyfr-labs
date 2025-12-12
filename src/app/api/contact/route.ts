@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-// import { checkBotId } from "botid/server"; // Disabled - see PR #112
+import { checkBotId } from "botid/server";
 // blockExternalAccess NOT imported - contact form is public user-facing endpoint
 import { rateLimit, getClientIp, createRateLimitHeaders } from "@/lib/rate-limit";
 import { RATE_LIMITS } from "@/lib/api-guardrails";
@@ -120,7 +120,6 @@ export async function POST(request: NextRequest) {
   const contactData = body as ContactFormData;
 
   try {
-    /* BotID temporarily disabled due to false positives - see PR #112
     // Optional bot detection using Vercel BotID
     // If BotID is unavailable or misconfigured, we gracefully fall back to
     // rate limiting + honeypot + input validation for protection
@@ -151,7 +150,6 @@ export async function POST(request: NextRequest) {
         );
       }
     }
-    */
 
     // Apply rate limiting
     const clientIp = getClientIp(request);
@@ -173,7 +171,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    body = await request.json();
+    // Extract form data (body was already parsed from request.text() above)
     const { name, email, message, website } = body || {};
 
     // Honeypot validation - if filled, it's likely a bot
