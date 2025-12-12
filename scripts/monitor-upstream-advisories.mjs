@@ -15,8 +15,10 @@
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+import { execSync } from "child_process";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const PROJECT_ROOT = join(__dirname, "..");
 
 // Configuration
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
@@ -75,6 +77,158 @@ function saveState(state) {
   } catch (error) {
     console.warn("⚠️  Could not save state file:", error.message);
   }
+}
+
+/**
+ * Get installed package versions from package-lock.json
+ * Returns a map of package name -> installed version
+ */
+function getInstalledPackages() {
+  const installedVersions = new Map();
+  
+  try {
+    const lockfilePath = join(PROJECT_ROOT, "package-lock.json");
+    if (!existsSync(lockfilePath)) {
+      console.warn("⚠️  No package-lock.json found, cannot verify installed versions");
+      return installedVersions;
+    }
+    
+    const lockfile = JSON.parse(readFileSync(lockfilePath, "utf-8"));
+    
+    // Check lockfile version 3 format (packages)
+    if (lockfile.packages) {
+      for (const [path, pkg] of Object.entries(lockfile.packages)) {
+        // Direct dependencies are in packages[""] or packages["node_modules/pkg"]
+        if (path === "" && pkg.dependencies) {
+          // Root package.json dependencies
+          continue;
+        }
+        
+        // Extract package name from path like "node_modules/next" or "node_modules/@scope/pkg"
+        const match = path.match(/^node_modules\/(.+)$/);
+        if (match && pkg.version) {
+          const pkgName = match[1];
+          // Only track top-level (direct or hoisted) packages
+          if (!pkgName.includes("node_modules/")) {
+            installedVersions.set(pkgName, pkg.version);
+          }
+        }
+      }
+    }
+    
+    // Fallback to lockfile version 2 format (dependencies)
+    if (installedVersions.size === 0 && lockfile.dependencies) {
+      for (const [name, info] of Object.entries(lockfile.dependencies)) {
+        if (info.version) {
+          installedVersions.set(name, info.version);
+        }
+      }
+    }
+  } catch (error) {
+    console.warn("⚠️  Error reading package-lock.json:", error.message);
+  }
+  
+  return installedVersions;
+}
+
+/**
+ * Parse a semver version string into components
+ * @param {string} version - Version string like "16.0.10" or "19.2.1"
+ * @returns {{ major: number, minor: number, patch: number, prerelease: string[] } | null}
+ */
+function parseVersion(version) {
+  if (!version) return null;
+  
+  // Clean the version string
+  const cleaned = version.replace(/^[v=]/, "").trim();
+  
+  // Match semver pattern: major.minor.patch with optional prerelease
+  const match = cleaned.match(/^(\d+)\.(\d+)\.(\d+)(?:-(.+))?$/);
+  if (!match) return null;
+  
+  return {
+    major: parseInt(match[1], 10),
+    minor: parseInt(match[2], 10),
+    patch: parseInt(match[3], 10),
+    prerelease: match[4] ? match[4].split(".") : [],
+  };
+}
+
+/**
+ * Compare two versions: returns -1 if a < b, 0 if equal, 1 if a > b
+ */
+function compareVersions(a, b) {
+  const vA = parseVersion(a);
+  const vB = parseVersion(b);
+  
+  if (!vA || !vB) return 0;
+  
+  // Compare major.minor.patch
+  if (vA.major !== vB.major) return vA.major < vB.major ? -1 : 1;
+  if (vA.minor !== vB.minor) return vA.minor < vB.minor ? -1 : 1;
+  if (vA.patch !== vB.patch) return vA.patch < vB.patch ? -1 : 1;
+  
+  // Prerelease versions are less than release versions
+  if (vA.prerelease.length && !vB.prerelease.length) return -1;
+  if (!vA.prerelease.length && vB.prerelease.length) return 1;
+  
+  return 0;
+}
+
+/**
+ * Check if a version is within a vulnerable range
+ * Handles ranges like:
+ * - ">= 13.3.0, < 14.2.34"
+ * - "< 19.0.2"
+ * - ">= 19.0.0, < 19.0.2"
+ * 
+ * @param {string} installedVersion - The installed version (e.g., "16.0.10")
+ * @param {string} vulnerableRange - The vulnerable range (e.g., ">= 13.3.0, < 14.2.34")
+ * @returns {boolean} - True if the installed version is vulnerable
+ */
+function isVersionVulnerable(installedVersion, vulnerableRange) {
+  if (!installedVersion || !vulnerableRange || vulnerableRange === "Unknown") {
+    // Can't determine - assume vulnerable to be safe
+    return true;
+  }
+  
+  const installed = parseVersion(installedVersion);
+  if (!installed) return true;
+  
+  // Parse the vulnerability range - split by comma for compound ranges
+  const conditions = vulnerableRange.split(",").map(c => c.trim());
+  
+  for (const condition of conditions) {
+    // Parse operator and version from conditions like ">= 13.3.0" or "< 14.2.34"
+    const match = condition.match(/^([<>=!]+)\s*(.+)$/);
+    if (!match) continue;
+    
+    const [, operator, targetVersion] = match;
+    const comparison = compareVersions(installedVersion, targetVersion);
+    
+    // Check if condition is NOT satisfied (meaning version is NOT vulnerable)
+    switch (operator) {
+      case "<":
+        if (comparison >= 0) return false; // installed >= target, so not < target
+        break;
+      case "<=":
+        if (comparison > 0) return false; // installed > target, so not <= target
+        break;
+      case ">":
+        if (comparison <= 0) return false; // installed <= target, so not > target
+        break;
+      case ">=":
+        if (comparison < 0) return false; // installed < target, so not >= target
+        break;
+      case "=":
+      case "==":
+        if (comparison !== 0) return false;
+        break;
+    }
+  }
+  
+  // All conditions satisfied - version is vulnerable
+  return true;
 }
 
 /**
@@ -257,6 +411,19 @@ async function main() {
   console.log(`Force alert: ${FORCE_ALERT}`);
   console.log("");
 
+  // Get installed package versions for validation
+  const installedPackages = getInstalledPackages();
+  console.log("📦 Installed monitored packages:");
+  for (const pkg of MONITORED_PACKAGES) {
+    const version = installedPackages.get(pkg);
+    if (version) {
+      console.log(`   - ${pkg}@${version}`);
+    } else {
+      console.log(`   - ${pkg}: not installed (will skip)`);
+    }
+  }
+  console.log("");
+
   const state = loadState();
   const seenIds = new Set(state.seenAdvisories);
   const newAdvisories = [];
@@ -265,6 +432,13 @@ async function main() {
   const allSkipped = [];
   
   for (const packageName of MONITORED_PACKAGES) {
+    // Skip packages that aren't installed
+    const installedVersion = installedPackages.get(packageName);
+    if (!installedVersion) {
+      console.log(`   ⏭️  Skipping ${packageName}: not installed in project`);
+      continue;
+    }
+    
     const { advisories, skipped } = await fetchAdvisoriesForPackage(packageName);
     allSkipped.push(...skipped);
 
@@ -282,8 +456,22 @@ async function main() {
         console.log(`   ⏭️  Below threshold: ${id} (${advisory.severity})`);
         continue;
       }
+      
+      // Check if installed version is actually vulnerable
+      const vulnerable = isVersionVulnerable(installedVersion, advisory.vulnerableRange);
+      if (!vulnerable) {
+        console.log(`   ✅ Not vulnerable: ${id} - ${packageName}@${installedVersion} not in range "${advisory.vulnerableRange}"`);
+        allSkipped.push({
+          id: advisory.id,
+          cveId: advisory.cveId,
+          actualPackage: packageName,
+          queriedPackage: packageName,
+          reason: `version_not_vulnerable: ${installedVersion} not in ${advisory.vulnerableRange}`
+        });
+        continue;
+      }
 
-      console.log(`   🚨 NEW: ${id} - ${packageName} (${advisory.severity})`);
+      console.log(`   🚨 NEW: ${id} - ${packageName}@${installedVersion} (${advisory.severity}) - vulnerable to ${advisory.vulnerableRange}`);
       newAdvisories.push(formatAdvisory(advisory));
       seenIds.add(id);
     }
