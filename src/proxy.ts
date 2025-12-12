@@ -253,8 +253,8 @@ export default function proxy(request: NextRequest) {
     // In development, allow webpack/turbopack HMR websockets
     `connect-src 'self'${isDevelopment ? " ws://localhost:* wss://localhost:*" : ""} https://va.vercel-scripts.com https://*.vercel-insights.com https://vercel-insights.com https://*.sentry.io https://sitesapi.io https://vercel.live https://*.pusher.com wss://*.pusher.com`,
     
-    // Frame: allow Vercel Live for preview feedback and Giscus for blog comments
-    "frame-src https://vercel.live https://giscus.app",
+    // Frame: allow Vercel Live for preview feedback, Giscus for blog comments, and Vercel Analytics for fingerprinting
+    "frame-src https://vercel.live https://giscus.app https://*.vercel-insights.com",
     
     // Worker: allow blob URIs for Sentry session replay
     "worker-src 'self' blob:",

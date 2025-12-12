@@ -302,7 +302,7 @@ The site implements strict nonce-based CSP for security. Giscus requires the fol
 // Required CSP directives for Giscus
 const cspDirectives = [
   // Allow Giscus iframe to load
-  "frame-src https://vercel.live https://giscus.app",
+  "frame-src https://vercel.live https://giscus.app https://*.vercel-insights.com",
   
   // Allow GitHub avatars and assets in comments
   "img-src 'self' data: ... https://avatars.githubusercontent.com https://github.githubassets.com ...",
