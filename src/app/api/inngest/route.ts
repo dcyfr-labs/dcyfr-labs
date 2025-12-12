@@ -62,28 +62,37 @@ import { inngestErrorHandler } from "@/inngest/error-handler";
  */
 
 /**
- * Validates Inngest webhook signature headers are present
- * The actual cryptographic validation is handled by serve()
+ * Validates Inngest webhook requests
+ * 
+ * @remarks
+ * CRITICAL: The Inngest serve() function handles cryptographic signature validation.
+ * This function should NOT reject requests based on headers - that causes false 401s.
+ * 
+ * Real-world behavior:
+ * - Inngest Cloud may send requests without visible signature headers in proxied requests
+ * - The serve() function uses INNGEST_SIGNING_KEY env var for validation (crypto happens inside)
+ * - Pre-emptive header checks here block legitimate webhook deliveries → 2,936+ failed requests
+ * 
+ * Solution: Trust serve() to do its job. Only allow it to run.
+ * If signature validation fails, serve() will return 401 with proper error messages.
+ * 
+ * @see https://www.inngest.com/docs/sdk/serve
+ * @see https://github.com/inngest/inngest-js/blob/main/packages/sdk-js/src/components/Inngest.ts#L462
  */
 function validateInngestHeaders(request: NextRequest): boolean {
-  const signature = request.headers.get("x-inngest-signature");
-  const timestamp = request.headers.get("x-inngest-timestamp");
-  const userAgent = request.headers.get("user-agent") || "";
-
-  // In development, allow requests without signature (Inngest Dev Server)
+  // In development, allow all requests (Inngest Dev Server)
   if (process.env.NODE_ENV === "development") {
     return true;
   }
 
-  // In production, require Inngest signature headers
-  if (!signature || !timestamp) {
-    console.warn("[Inngest] Missing required signature headers");
-    return false;
-  }
-
-  // Verify user agent contains 'inngest'
-  if (!userAgent.toLowerCase().includes("inngest")) {
-    console.warn("[Inngest] Invalid user agent:", userAgent);
+  // In production: Allow the request through to serve()
+  // serve() will validate the signature cryptographically using INNGEST_SIGNING_KEY
+  // Do NOT reject based on header presence - that causes false positives
+  
+  // Only basic sanity check: ensure it's an HTTP method we support
+  const method = request.method;
+  if (!["GET", "POST", "PUT"].includes(method)) {
+    console.warn(`[Inngest] Unsupported method: ${method}`);
     return false;
   }
 
@@ -131,33 +140,87 @@ const { GET: inngestGET, POST: inngestPOST, PUT: inngestPUT } = serve({
   ],
 });
 
-// Export handlers with defense-in-depth signature validation
+// Export handlers - trust serve() to handle signature validation
 export const GET = async (request: NextRequest, context: unknown) => {
   if (!validateInngestHeaders(request)) {
+    console.error(
+      `[Inngest] GET rejected by header validation. Method: ${request.method}`
+    );
     return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401 }
+      { error: "Unsupported method" },
+      { status: 405 }
     );
   }
-  return inngestGET(request, context);
+  
+  try {
+    const response = await inngestGET(request, context);
+    
+    // Log signature validation failures from serve()
+    if (response.status === 401) {
+      console.warn(
+        "[Inngest] GET returned 401 from serve() - signature validation failed"
+      );
+    }
+    
+    return response;
+  } catch (error) {
+    console.error("[Inngest] GET handler error:", error);
+    throw error;
+  }
 };
 
 export const POST = async (request: NextRequest, context: unknown) => {
   if (!validateInngestHeaders(request)) {
+    console.error(
+      `[Inngest] POST rejected by header validation. Method: ${request.method}`
+    );
     return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401 }
+      { error: "Unsupported method" },
+      { status: 405 }
     );
   }
-  return inngestPOST(request, context);
+  
+  try {
+    const response = await inngestPOST(request, context);
+    
+    // Log signature validation failures from serve()
+    if (response.status === 401) {
+      console.warn(
+        "[Inngest] POST returned 401 from serve() - signature validation failed"
+      );
+    }
+    
+    return response;
+  } catch (error) {
+    console.error("[Inngest] POST handler error:", error);
+    throw error;
+  }
 };
 
 export const PUT = async (request: NextRequest, context: unknown) => {
   if (!validateInngestHeaders(request)) {
+    console.error(
+      `[Inngest] PUT rejected by header validation. Method: ${request.method}`
+    );
     return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401 }
+      { error: "Unsupported method" },
+      { status: 405 }
     );
   }
-  return inngestPUT(request, context);
+  
+  try {
+    const response = await inngestPUT(request, context);
+    
+    // Log signature validation failures from serve()
+    if (response.status === 401) {
+      console.warn(
+        "[Inngest] PUT returned 401 from serve() - signature validation failed"
+      );
+    }
+    
+    return response;
+  } catch (error) {
+    console.error("[Inngest] PUT handler error:", error);
+    throw error;
+  }
 };

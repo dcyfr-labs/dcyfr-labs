@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { timingSafeEqual } from "crypto";
+import * as Sentry from "@sentry/nextjs";
 import { blockExternalAccess } from "@/lib/api-security";
 import { getMultiplePostViews, getMultiplePostViews24h, getMultiplePostViewsInRange } from "@/lib/views";
 import { getPostSharesBulk, getPostShares24hBulk } from "@/lib/shares";
@@ -59,16 +61,19 @@ const RATE_LIMIT_CONFIG = {
 };
 
 /**
- * Validates the API key from the Authorization header
- * 
+ * Validates the API key from the Authorization header using timing-safe comparison
+ *
  * Expected format: "Bearer YOUR_API_KEY"
- * 
+ *
+ * Uses timingSafeEqual() to prevent timing attacks that could reveal the API key
+ * byte-by-byte through response time analysis.
+ *
  * @param request - Incoming request with Authorization header
  * @returns true if valid key, false otherwise
  */
 function validateApiKey(request: Request): boolean {
   const adminKey = process.env.ADMIN_API_KEY;
-  
+
   // If no admin key is configured, deny all access
   if (!adminKey) {
     console.error("[Analytics API] ADMIN_API_KEY not configured - endpoint disabled");
@@ -76,7 +81,7 @@ function validateApiKey(request: Request): boolean {
   }
 
   const authHeader = request.headers.get("Authorization");
-  
+
   if (!authHeader) {
     return false;
   }
@@ -86,7 +91,22 @@ function validateApiKey(request: Request): boolean {
     ? authHeader.slice(7)
     : authHeader;
 
-  return token === adminKey;
+  // Use timing-safe comparison to prevent timing attacks
+  try {
+    const tokenBuf = Buffer.from(token, 'utf8');
+    const keyBuf = Buffer.from(adminKey, 'utf8');
+
+    // Ensure buffers are same length to prevent length-based timing
+    if (tokenBuf.length !== keyBuf.length) {
+      return false;
+    }
+
+    return timingSafeEqual(tokenBuf, keyBuf);
+  } catch (error) {
+    // If comparison fails (e.g., buffer creation error), deny access
+    console.error("[Analytics API] Error during key validation:", error);
+    return false;
+  }
 }
 
 /**
@@ -117,8 +137,18 @@ function isAllowedEnvironment(): boolean {
 }
 
 /**
- * Logs analytics access attempts for security monitoring
- * 
+ * Logs analytics access attempts using structured JSON format for security monitoring
+ *
+ * Structured logging enables:
+ * - Easier parsing and analysis by log aggregation tools (Axiom, Sentry)
+ * - Automated alerting based on specific fields
+ * - Security incident investigation and forensics
+ * - Compliance audit trails
+ *
+ * Logs to both:
+ * - Console (for Axiom/Vercel logs) - detailed analysis
+ * - Sentry (for alerting) - security events only
+ *
  * @param request - The incoming request
  * @param status - "success" or "denied"
  * @param reason - Reason for denial (if applicable)
@@ -130,11 +160,74 @@ function logAccess(request: Request, status: "success" | "denied", reason?: stri
   const userAgent = request.headers.get("user-agent") || "unknown";
   const queryParams = url.searchParams.toString();
 
-  console.log(
-    `[Analytics API] ${status.toUpperCase()} - ${timestamp} - IP: ${ip} - ${userAgent} - ${
-      queryParams ? `?${queryParams}` : "no params"
-    }${reason ? ` - ${reason}` : ""}`
-  );
+  const logData = {
+    event: "admin_access",
+    endpoint: "/api/analytics",
+    method: "GET",
+    result: status,
+    reason: reason || undefined,
+    timestamp,
+    ip,
+    userAgent,
+    queryParams: queryParams || undefined,
+    environment: process.env.NODE_ENV || "unknown",
+    vercelEnv: process.env.VERCEL_ENV || undefined,
+  };
+
+  // Structured JSON logging for Axiom/Vercel logs
+  console.log(JSON.stringify(logData));
+
+  // Send security events to Sentry for alerting
+  if (status === "denied") {
+    // Determine severity based on reason
+    const level = reason?.includes("production") ? "error" : "warning";
+
+    Sentry.captureMessage(`Admin access denied: ${reason || "unknown"}`, {
+      level,
+      tags: {
+        event_type: "admin_access",
+        endpoint: "/api/analytics",
+        result: status,
+        reason: reason || "unknown",
+        environment: process.env.NODE_ENV || "unknown",
+        vercel_env: process.env.VERCEL_ENV || "unknown",
+      },
+      contexts: {
+        admin_access: logData,
+      },
+      fingerprint: [
+        "admin_access",
+        "/api/analytics",
+        status,
+        reason || "unknown",
+      ],
+    });
+  }
+
+  // CRITICAL: Production access attempts should NEVER happen
+  // Admin endpoints are blocked in production via blockExternalAccess()
+  if (process.env.VERCEL_ENV === "production") {
+    Sentry.captureMessage(
+      "CRITICAL: Admin endpoint accessed in production - possible security bypass!",
+      {
+        level: "error",
+        tags: {
+          event_type: "admin_access_production",
+          endpoint: "/api/analytics",
+          result: status,
+          critical: "true",
+        },
+        contexts: {
+          admin_access: logData,
+          security: {
+            alert: "Production admin access should be blocked by blockExternalAccess()",
+            investigation_required: true,
+          },
+        },
+        fingerprint: ["admin_access_production", "/api/analytics"],
+      }
+    );
+  }
 }
 
 async function getRedisClient() {

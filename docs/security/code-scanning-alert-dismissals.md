@@ -1,7 +1,8 @@
 # Code Scanning Alert Dismissal Guide
 
-**Date:** November 18, 2025  
-**Analysis:** 9 open alerts reviewed
+**Date:** December 11, 2025  
+**Latest Update:** Alert #52 (HTTP to file access) - FALSE POSITIVE  
+**Total Alerts Reviewed:** 10 (2 fixed, 8 to dismiss)
 
 ## Fixed Issues ✅
 
@@ -18,6 +19,54 @@
 **Changes:** Strip newline characters from `req.url` before logging
 
 ## Alerts to Dismiss
+
+### Alert #52 - Network Data Written to File (FALSE POSITIVE)
+
+**Rule:** `js/http-to-file-access`  
+**Severity:** 🟡 Medium  
+**File:** `src/lib/unsplash.ts:205`  
+**First Detected:** December 11, 2025 (16 hours ago)  
+**Weaknesses:** CWE-434, CWE-912
+
+**Context:**
+
+This code downloads featured images from the Unsplash API and caches them locally during the build process:
+
+```typescript
+// src/lib/unsplash.ts:205
+const buffer = await response.arrayBuffer();
+const tmpPath = `${outputPath}.tmp`;
+await writeFileAsync(tmpPath, Buffer.from(buffer));  // Write to temp file
+await renameAsync(tmpPath, outputPath);              // Atomic rename
+```
+
+**Why It's a False Positive:**
+
+1. ✅ **Trusted HTTP Source** - Data comes from Unsplash public API (third-party CDN), not user input
+2. ✅ **Validated File Path** - Output path is validated by `validateUnsplashUrl()` function
+3. ✅ **Build-Time Only** - This is a build-time script, not runtime code
+4. ✅ **No Arbitrary Upload** - Both source and destination paths are controlled and validated
+5. ✅ **Atomic Write Pattern** - Writing to `.tmp` then renaming is actually a **security best practice** to prevent partial file writes
+
+**Technical Analysis:**
+
+- **HTTP Source Validation:** URLs come from `validateUnsplashUrl()`, which validates against trusted Unsplash domain
+- **File Path Validation:** Output path constructed from validated slug and filename
+- **No User Control:** Users cannot control the HTTP endpoint, file path, or file content
+- **Context:** Used for caching blog post hero images during build (not runtime)
+
+**Dismissal:** LGTM suppression comment already added in source code
+
+**Dismiss via GitHub UI:**
+
+```bash
+gh api -X PATCH /repos/dcyfr/dcyfr-labs/code-scanning/alerts/52 \
+  -f state=dismissed \
+  -f dismissed_reason=false_positive \
+  -f dismissed_comment="Trusted Unsplash API source with validated file paths. Build-time image caching with atomic writes - not a runtime vulnerability."
+```
+
+---
 
 ### Alerts #8, #9, #10 - Stored XSS (FALSE POSITIVES)
 
@@ -165,6 +214,7 @@ gh api -X PATCH /repos/dcyfr/dcyfr-labs/code-scanning/alerts/4 \
 
 | Alert | Rule | Severity | Action | Status |
 |-------|------|----------|--------|--------|
+| #52 | HTTP to file | Medium | Dismiss | False positive |
 | #12 | Log injection | Medium | Fixed | ✅ Complete |
 | #11 | Command injection | Medium | Fixed | ✅ Complete |
 | #10 | Stored XSS | High | Dismiss | False positive |
@@ -175,4 +225,4 @@ gh api -X PATCH /repos/dcyfr/dcyfr-labs/code-scanning/alerts/4 \
 | #5 | Insecure randomness | High | Dismiss | Acceptable risk |
 | #4 | URL sanitization | High | Dismiss/Delete | Not exploitable |
 
-**Total:** 2 fixed, 7 to dismiss
+**Total:** 2 fixed, 8 to dismiss

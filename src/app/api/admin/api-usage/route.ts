@@ -9,6 +9,8 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { timingSafeEqual } from "crypto";
+import * as Sentry from "@sentry/nextjs";
 import { blockExternalAccess } from "@/lib/api-security";
 import { rateLimit, getClientIp, createRateLimitHeaders } from "@/lib/rate-limit";
 import {
@@ -23,6 +25,17 @@ import {
 // AUTHENTICATION
 // ============================================================================
 
+/**
+ * Validates the API key from the Authorization header using timing-safe comparison
+ *
+ * Expected format: "Bearer YOUR_API_KEY"
+ *
+ * Uses timingSafeEqual() to prevent timing attacks that could reveal the API key
+ * byte-by-byte through response time analysis.
+ *
+ * @param request - Incoming request with Authorization header
+ * @returns true if valid key, false otherwise
+ */
 function isAuthenticated(request: NextRequest): boolean {
   const authHeader = request.headers.get("authorization");
   const adminKey = process.env.ADMIN_API_KEY;
@@ -39,7 +52,118 @@ function isAuthenticated(request: NextRequest): boolean {
   }
 
   const token = authHeader.replace("Bearer ", "");
-  return token === adminKey;
+
+  // Use timing-safe comparison to prevent timing attacks
+  try {
+    const tokenBuf = Buffer.from(token, 'utf8');
+    const keyBuf = Buffer.from(adminKey, 'utf8');
+
+    // Ensure buffers are same length to prevent length-based timing
+    if (tokenBuf.length !== keyBuf.length) {
+      return false;
+    }
+
+    return timingSafeEqual(tokenBuf, keyBuf);
+  } catch (error) {
+    // If comparison fails (e.g., buffer creation error), deny access
+    console.error("[API Usage] Error during key validation:", error);
+    return false;
+  }
+}
+
+// ============================================================================
+// SECURITY LOGGING
+// ============================================================================
+
+/**
+ * Logs admin access attempts using structured JSON format for security monitoring
+ *
+ * Structured logging enables:
+ * - Easier parsing and analysis by log aggregation tools (Axiom, Sentry)
+ * - Automated alerting based on specific fields
+ * - Security incident investigation and forensics
+ * - Compliance audit trails
+ *
+ * Logs to both:
+ * - Console (for Axiom/Vercel logs) - detailed analysis
+ * - Sentry (for alerting) - security events only
+ *
+ * @param request - The incoming request
+ * @param status - "success" or "denied"
+ * @param reason - Reason for denial (if applicable)
+ */
+function logAdminAccess(request: NextRequest, status: "success" | "denied", reason?: string) {
+  const timestamp = new Date().toISOString();
+  const ip = getClientIp(request);
+  const userAgent = request.headers.get("user-agent") || "unknown";
+
+  const logData = {
+    event: "admin_access",
+    endpoint: "/api/admin/api-usage",
+    method: "GET",
+    result: status,
+    reason: reason || undefined,
+    timestamp,
+    ip,
+    userAgent,
+    environment: process.env.NODE_ENV || "unknown",
+    vercelEnv: process.env.VERCEL_ENV || undefined,
+  };
+
+  // Structured JSON logging for Axiom/Vercel logs
+  console.log(JSON.stringify(logData));
+
+  // Send security events to Sentry for alerting
+  if (status === "denied") {
+    // Determine severity based on reason
+    const level = reason?.includes("production") ? "error" : "warning";
+
+    Sentry.captureMessage(`Admin access denied: ${reason || "unknown"}`, {
+      level,
+      tags: {
+        event_type: "admin_access",
+        endpoint: "/api/admin/api-usage",
+        result: status,
+        reason: reason || "unknown",
+        environment: process.env.NODE_ENV || "unknown",
+        vercel_env: process.env.VERCEL_ENV || "unknown",
+      },
+      contexts: {
+        admin_access: logData,
+      },
+      fingerprint: [
+        "admin_access",
+        "/api/admin/api-usage",
+        status,
+        reason || "unknown",
+      ],
+    });
+  }
+
+  // CRITICAL: Production access attempts should NEVER happen
+  // Admin endpoints are blocked in production via blockExternalAccess()
+  if (process.env.VERCEL_ENV === "production") {
+    Sentry.captureMessage(
+      "CRITICAL: Admin endpoint accessed in production - possible security bypass!",
+      {
+        level: "error",
+        tags: {
+          event_type: "admin_access_production",
+          endpoint: "/api/admin/api-usage",
+          result: status,
+          critical: "true",
+        },
+        contexts: {
+          admin_access: logData,
+          security: {
+            alert: "Production admin access should be blocked by blockExternalAccess()",
+            investigation_required: true,
+          },
+        },
+        fingerprint: ["admin_access_production", "/api/admin/api-usage"],
+      }
+    );
+  }
 }
 
 // ============================================================================
@@ -53,9 +177,10 @@ function isAuthenticated(request: NextRequest): boolean {
  *
  * Security layers:
  * - Layer 0: blockExternalAccess() - blocks all external requests in production
- * - Layer 1: API key authentication - requires ADMIN_API_KEY
+ * - Layer 1: API key authentication - requires ADMIN_API_KEY (timing-safe comparison)
  * - Layer 2: Environment check - disabled in production entirely
  * - Layer 3: Rate limiting - 1 request per minute per IP (strict admin limit)
+ * - Layer 4: Audit logging - structured JSON logs for security monitoring
  */
 export async function GET(request: NextRequest) {
   // Layer 0: Block external access for security
@@ -64,6 +189,7 @@ export async function GET(request: NextRequest) {
 
   // Layer 1: Check authentication
   if (!isAuthenticated(request)) {
+    logAdminAccess(request, "denied", "invalid or missing API key");
     return NextResponse.json(
       { error: "Unauthorized" },
       { status: 401 }
@@ -72,6 +198,7 @@ export async function GET(request: NextRequest) {
 
   // Layer 2: Environment check - only allow in dev/preview
   if (process.env.NODE_ENV === "production") {
+    logAdminAccess(request, "denied", "production environment blocked");
     return NextResponse.json(
       {
         error: "Forbidden",
@@ -90,6 +217,7 @@ export async function GET(request: NextRequest) {
 
   if (!rateLimitResult.success) {
     const retryAfter = Math.ceil((rateLimitResult.reset - Date.now()) / 1000);
+    logAdminAccess(request, "denied", "rate limit exceeded");
     return NextResponse.json(
       {
         error: "Rate limit exceeded",
@@ -105,6 +233,9 @@ export async function GET(request: NextRequest) {
       }
     );
   }
+
+  // Layer 4: Log successful access
+  logAdminAccess(request, "success");
 
   try {
     const stats = getAllUsageStats();
