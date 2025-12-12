@@ -251,7 +251,7 @@ RESEND_API_KEY=re_xxxxx
 
 ### Verification Results
 
-- ✅ Rate limiting: 10 views per 5 minutes enforced
+- ✅ Rate limiting: 20 views per 5 minutes enforced
 - ✅ Session deduplication: Duplicates correctly rejected
 - ✅ Timing validation: Quick views (<5s) blocked
 - ✅ Redis persistence: Data stored correctly
@@ -263,7 +263,7 @@ Client-side view tracking with comprehensive anti-spam protection. Counts blog p
 
 ### Protection Layers
 
-1. **IP Rate Limiting**: 10 views per 5 minutes per IP
+1. **IP Rate Limiting**: 20 views per 5 minutes per IP (~4 views/minute)
 2. **Session Deduplication**: 1 view per session per post per 30 minutes
 3. **User-Agent Validation**: Blocks bots, requires valid user-agent
 4. **Timing Validation**: Minimum 5 seconds on page with page visible
