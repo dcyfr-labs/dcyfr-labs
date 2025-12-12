@@ -108,7 +108,7 @@ export default async function RootLayout({
   const nonce = (await headers()).get("x-nonce") || undefined;
   
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
         {/* Font optimization */}
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
