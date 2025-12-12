@@ -3,6 +3,6 @@
     "GHSA-9qr9-h5gf-34mp",
     "GHSA-fv66-9v8q-g76r"
   ],
-  "lastCheck": "2025-12-08T09:00:00.000Z",
+  "lastCheck": "2025-12-12T03:23:07.261Z",
   "notes": "Updated 2025-12-08: Added GHSA-9qr9-h5gf-34mp (CVE-2025-66478) and GHSA-fv66-9v8q-g76r (CVE-2025-55182) to prevent duplicate alerts. Project uses Next.js 16.0.7 and React 19.2.1, which are NOT vulnerable (advisories affect Next.js < 15.0.5 and React = 19.0). Previous note: Cleared 2025-12-07 after fixing false positive detection in security advisory monitor. Enhanced validation now prevents future false positives."
 }
