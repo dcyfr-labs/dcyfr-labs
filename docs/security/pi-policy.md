@@ -130,6 +130,29 @@ For reference, IP address handling code exists in:
 	- Allowlist changes are validated in CI using `scripts/validate-allowlist.mjs`; PRs that add new allowlist entries must include `allowlistReasons` or the job fails.
 	- The `pii-scan` job posts scan output in PR comments to help authors triage issues.
 
+## Automated Remediation
+
+When `gitleaks` detects critical secrets (AWS keys, private keys, API tokens, etc.), an **automated GitHub issue is created** with:
+
+- **Detection details and affected files** - Specific file paths, line numbers, and rule names that triggered the detection
+- **Step-by-step remediation checklist** - Including credential rotation, git history cleanup, and secrets management best practices  
+- **Links to security policies and documentation** - Direct references to this policy, allowlist documentation, and security guidelines
+- **Workflow run information for debugging** - Links to the exact CI run that detected the secrets for troubleshooting
+
+**Important: Do NOT bypass critical secret detection via allowlist without:**
+
+1. **Verifying the secret is truly a placeholder/example** - Confirm it's not real credentials by checking with the service provider or team
+2. **Adding detailed justification in `.pii-allowlist.json`** - Include specific reasoning like "Placeholder AWS credentials for API documentation examples"
+3. **Getting approval from security contact** - Discuss with `@dcyfr` if there's any uncertainty about whether the secret is legitimate
+
+**Real credentials should NEVER be committed to the repository.** The automated remediation process ensures that:
+- Critical security incidents are tracked and resolved systematically
+- There's an audit trail of secret detection and remediation steps
+- Security best practices are followed consistently across all incidents
+- The security team has visibility into all critical secret exposures
+
+The remediation issues are automatically labeled with `security`, `critical`, `gitleaks`, and `automated` for easy filtering and priority management.
+
 ## Allowlist Maintenance
 
 - The allowlist is defined in `.pii-allowlist.json`. It supports:

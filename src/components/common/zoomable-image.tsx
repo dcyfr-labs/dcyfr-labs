@@ -72,9 +72,60 @@ export function ZoomableImage(props: React.ImgHTMLAttributes<HTMLImageElement>) 
     }
   };
 
+  // Portal for modal to avoid nesting issues
+  const modalElement = isOpen && (
+    <div
+      ref={modalRef}
+      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 backdrop-blur-sm animate-in fade-in ${ANIMATION.duration.fast}`}
+      onClick={() => setIsOpen(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Image viewer"
+    >
+      {/* Close button - top-right corner */}
+      <button
+        ref={closeButtonRef}
+        onClick={() => setIsOpen(false)}
+        className="absolute top-4 sm:top-6 right-4 sm:right-6 z-50 text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/90 rounded-lg p-2 transition-colors"
+        aria-label="Close image viewer"
+        type="button"
+      >
+        <X className="w-6 h-6 sm:w-7 sm:h-7" aria-hidden="true" />
+      </button>
+
+      {/* Hint text - minimal padding, responsive sizing */}
+      <div
+        className={`text-xs sm:text-sm text-white text-center mb-3 sm:mb-4`}
+      >
+        Click or press ESC to close
+      </div>
+
+      {/* Image container - no excess padding */}
+      <div
+        className="relative max-w-[95vw] max-h-[85vh] flex items-center justify-center cursor-zoom-out"
+        onClick={(e) => {
+          e.stopPropagation();
+          // Close on click for desktop, but allow swipe to close on mobile
+          if (window.innerWidth >= 768) {
+            setIsOpen(false);
+          }
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element -- Native img required for zoom functionality */}
+        <img
+          src={props.src}
+          alt={props.alt}
+          className={`max-w-full max-h-full object-contain ${BORDERS.card} ${SHADOWS.xl} pointer-events-none`}
+        />
+      </div>
+    </div>
+  );
+
   return (
-    <div className="relative group inline-block cursor-zoom-in w-full">
-      {/* Image with hover zoom indicator */}
+    <>
+      {/* Image with hover zoom indicator - no wrapper div to avoid nesting in <p> */}
       {/* eslint-disable-next-line @next/next/no-img-element -- Native img required for zoom functionality */}
       <img
         {...props}
@@ -87,6 +138,7 @@ export function ZoomableImage(props: React.ImgHTMLAttributes<HTMLImageElement>) 
         }}
         tabIndex={0}
         role="button"
+        className={`${props.className || ''} cursor-zoom-in`}
         aria-label={`Zoom image: ${props.alt || "image"}`}
       />
 
@@ -98,56 +150,8 @@ export function ZoomableImage(props: React.ImgHTMLAttributes<HTMLImageElement>) 
       </span> */}
 
       {/* Full-screen modal */}
-      {isOpen && (
-        <div
-          ref={modalRef}
-          className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 backdrop-blur-sm animate-in fade-in ${ANIMATION.duration.fast}`}
-          onClick={() => setIsOpen(false)}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Image viewer"
-        >
-          {/* Close button - top-right corner */}
-          <button
-            ref={closeButtonRef}
-            onClick={() => setIsOpen(false)}
-            className="absolute top-4 sm:top-6 right-4 sm:right-6 z-50 text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/90 rounded-lg p-2 transition-colors"
-            aria-label="Close image viewer"
-            type="button"
-          >
-            <X className="w-6 h-6 sm:w-7 sm:h-7" aria-hidden="true" />
-          </button>
-
-          {/* Hint text - minimal padding, responsive sizing */}
-          <div
-            className={`text-xs sm:text-sm text-white text-center mb-3 sm:mb-4`}
-          >
-            Click or press ESC to close
-          </div>
-
-          {/* Image container - no excess padding */}
-          <div
-            className="relative max-w-[95vw] max-h-[85vh] flex items-center justify-center cursor-zoom-out"
-            onClick={(e) => {
-              e.stopPropagation();
-              // Close on click for desktop, but allow swipe to close on mobile
-              if (window.innerWidth >= 768) {
-                setIsOpen(false);
-              }
-            }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element -- Native img required for zoom functionality */}
-            <img
-              src={props.src}
-              alt={props.alt}
-              className={`max-w-full max-h-full object-contain ${BORDERS.card} ${SHADOWS.xl} pointer-events-none`}
-            />
-          </div>
-        </div>
-      )}
-    </div>
+      {modalElement}
+    </>
   );
 }
 
