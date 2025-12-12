@@ -126,29 +126,9 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
   h6: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h6 {...props} className={`${TYPOGRAPHY.h6.mdx} mt-4 scroll-mt-20`} />
   ),
-  p: (props: React.HTMLAttributes<HTMLParagraphElement>) => {
-    const { children, ...restProps } = props;
-    
-    // Check if this is a single child that is likely an image component
-    // This prevents "div cannot be a descendant of p" hydration errors
-    const isSingleImageComponent =
-      children &&
-      !Array.isArray(children) &&
-      typeof children === 'object' &&
-      'type' in children &&
-      typeof children.type === 'function';
-    
-    // If it appears to be a component (not a string or primitive), render without <p>
-    if (isSingleImageComponent) {
-      return <>{children}</>;
-    }
-    
-    return (
-      <p {...restProps}>
-        {children}
-      </p>
-    );
-  },
+  p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
+    <p {...props} />
+  ),
   blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => (
     <blockquote 
       {...props} 

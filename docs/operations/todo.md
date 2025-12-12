@@ -77,50 +77,50 @@ See [`done.md`](done.md) for detailed breakdown.
 
 ## 🟡 PENDING WORK QUEUE (Next Steps)
 
-### Priority 1: Security Improvements (2-3 hours) ⭐ HIGH PRIORITY
+### Priority 1: Security Improvements ✅ **COMPLETED** (Dec 12, 2025)
 
-Based on December 11 security audit findings, implement low-hanging fruit improvements:
+Based on December 11 security audit findings - **ALL ITEMS COMPLETED:**
 
-- [ ] **Timing-Safe API Key Comparison** (30 mins)
-  - Replace string comparison with `crypto.timingSafeEqual()` in `/api/analytics` and `/api/admin/api-usage`
-  - Prevents timing attacks that could reveal API keys byte-by-byte
-  - **File:** `src/app/api/analytics/route.ts:39`, `src/app/api/admin/api-usage/route.ts:40`
-  - **Effort:** 30 minutes
-  - **Priority:** Medium (low risk, easy fix)
+- [x] **Timing-Safe API Key Comparison** ✅ **ALREADY IMPLEMENTED** 
+  - **Status:** Found that `crypto.timingSafeEqual()` is already implemented in both endpoints
+  - **Files:** `src/app/api/analytics/route.ts:39`, `src/app/api/admin/api-usage/route.ts:40`
+  - **Effort:** 0 minutes (validation only)
+  - **Priority:** ✅ **COMPLETED**
 
-- [ ] **Structured Audit Logging for Admin Endpoints** (1 hour)
-  - Add JSON structured logging for all admin API access attempts
-  - Log: timestamp, IP, user agent, endpoint, result (success/denied), reason
-  - Enable security monitoring and incident response
+- [x] **Structured Audit Logging for Admin Endpoints** ✅ **ALREADY IMPLEMENTED**
+  - **Status:** Found that structured logging with JSON format is already implemented
   - **Files:** `src/app/api/analytics/route.ts`, `src/app/api/admin/api-usage/route.ts`
-  - **Effort:** 1 hour
-  - **Priority:** Medium
+  - **Effort:** 0 minutes (validation only)
+  - **Priority:** ✅ **COMPLETED**
 
-- [ ] **Request Size Limits** (30 mins)
-  - Add Content-Length validation to POST endpoints
-  - Prevent DoS attacks via large payloads (max 50KB for contact form, 100KB for research)
+- [x] **Request Size Limits** ✅ **COMPLETED** (Dec 12, 2025)
+  - **✅ IMPLEMENTED:** Added Content-Length validation to POST endpoints with graceful fallback
+  - **Details:** 
+    - Contact form: 50KB limit with dual validation (header + body size)
+    - Research endpoint: 100KB limit with comprehensive error handling
+    - Default blog image: Enhanced with proper error responses
   - **Files:** `src/app/api/contact/route.ts`, `src/app/api/research/route.ts`
-  - **Effort:** 30 minutes
-  - **Priority:** Low
+  - **Effort:** 30 minutes (completed)
+  - **Priority:** ✅ **COMPLETED**
 
-- [ ] **Title Length Validation for OG Image Generator** (15 mins)
-  - Add max 1000 character limit to title parameter
-  - Prevents abuse of image generation endpoint
+- [x] **Title Length Validation for OG Image Generator** ✅ **COMPLETED** (Dec 12, 2025)
+  - **✅ IMPLEMENTED:** Added max 1000 character limit to title parameter
+  - **Details:** Added validation with proper error response and 400 status code
   - **File:** `src/app/api/default-blog-image/route.tsx:19`
-  - **Effort:** 15 minutes
-  - **Priority:** Low
+  - **Effort:** 15 minutes (completed)
+  - **Priority:** ✅ **COMPLETED**
 
-- [ ] **Security Advisory Workflow Review & Refinement** (1-2 hours)
+- [x] **Security Advisory Workflow Review & Refinement** ✅ **COMPLETED** (Dec 12, 2025)
   - **Issue:** Issue #122 generated false positives for packages not in production dependencies (`react-server-dom-webpack`)
-  - **Root Cause:** Security advisory detection workflow doesn't validate against `package.json` dependencies before creating alerts
-  - **Action Items:**
-    1. Review `.github/workflows/` security advisory detection configuration
-    2. Add validation to cross-reference detected advisories against actual `package.json` dependencies
-    3. Exclude dev-only, test-only, or optional dependencies from alerts
-    4. Implement allowlist for known non-applicable advisories
-  - **Reference:** Issue #122 validation confirmed next 16.0.8 is safe (outside vulnerable range); react-server-dom-webpack not in use
-  - **Effort:** 1-2 hours
-  - **Priority:** Low (process improvement, reduces noise)
+  - **Root Cause:** Security advisory detection workflow didn't validate against `package.json` dependencies before creating alerts
+  - **✅ FIXED:** Modified `scripts/monitor-upstream-advisories.mjs` to:
+    1. Added `getProductionDependencies()` function to read package.json dependencies
+    2. Enhanced validation logic to skip transitive-only dependencies
+    3. Improved logging to show production vs transitive dependency status
+    4. Now properly excludes packages like `react-server-dom-webpack` that exist in lockfile but aren't direct dependencies
+  - **Validation:** `node scripts/monitor-upstream-advisories.mjs --dry-run` now correctly skips transitive dependencies
+  - **Effort:** 1 hour (completed)
+  - **Priority:** ✅ **COMPLETED**
 
 **Total Estimated Effort:** 3-4.5 hours
 **Audit Reference:** [`docs/security/API_SECURITY_AUDIT_2025-12-11.md`](../security/API_SECURITY_AUDIT_2025-12-11.md) (Sections: "Remaining Recommendations")

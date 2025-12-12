@@ -64,8 +64,60 @@ export async function POST(request: NextRequest) {
   // Security is provided by: rate limiting, honeypot field, input validation,
   // and optionally BotID (currently disabled due to false positives).
 
-  let body: ContactFormData | undefined;
+  // Validate request size to prevent DoS attacks via large payloads
+  const contentLength = request.headers.get("content-length");
+  const maxSize = 50 * 1024; // 50KB limit for contact form
   
+  // Primary check: Content-Length header (for production environments)
+  if (contentLength && parseInt(contentLength) > maxSize) {
+    return NextResponse.json(
+      { 
+        error: "Request too large",
+        message: `Request size must not exceed ${Math.floor(maxSize / 1024)}KB`,
+      },
+      { status: 413 } // Payload Too Large
+    );
+  }
+  
+  // Secondary check: Body size validation (for testing/environments without Content-Length)
+  let rawBody: string;
+  try {
+    rawBody = await request.text();
+    
+    // Check actual body size
+    const bodySize = Buffer.byteLength(rawBody, 'utf8');
+    if (bodySize > maxSize) {
+      return NextResponse.json(
+        { 
+          error: "Request too large",
+          message: `Request size must not exceed ${Math.floor(maxSize / 1024)}KB`,
+        },
+        { status: 413 } // Payload Too Large
+      );
+    }
+    
+    // Re-parse JSON from the text
+    body = JSON.parse(rawBody);
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: "Invalid JSON in request body",
+        message: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 400 }
+    );
+  }
+  
+  // Validate the parsed data
+  if (!body || typeof body !== "object") {
+    return NextResponse.json(
+      { error: "Request body must be a JSON object" },
+      { status: 400 }
+    );
+  }
+
+  const contactData = body as ContactFormData;
+
   try {
     /* BotID temporarily disabled due to false positives - see PR #112
     // Optional bot detection using Vercel BotID
