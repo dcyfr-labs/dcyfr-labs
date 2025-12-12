@@ -207,7 +207,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ViewRespo
     }
 
     // Layer 3: Detect abuse patterns
-    const isAbusePattern = await detectAbusePattern(clientIp);
+    const isAbusePattern = await detectAbusePattern(clientIp, "view");
     if (isAbusePattern) {
       await recordAbuseAttempt(clientIp, "view", "abuse_pattern_detected");
       return NextResponse.json(
