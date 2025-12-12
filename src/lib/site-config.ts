@@ -164,10 +164,12 @@ export const getTwitterImageUrl = (title?: string, description?: string): string
 };
 
 // Explicit FROM_EMAIL constant to avoid split/join logic in other modules.
+// Uses Resend's verified domain (onboarding@resend.dev for testing, or domain-specific for production)
 // Can be overridden with NEXT_PUBLIC_FROM_EMAIL at build/runtime if needed.
 export const FROM_EMAIL =
   (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_FROM_EMAIL) ||
-  AUTHOR_EMAIL;
+  (typeof process !== 'undefined' && process.env?.RESEND_FROM_EMAIL) ||
+  "onboarding@resend.dev"; // Default Resend testing email
 
 const siteConfig = {
   DOMAIN_DEV,

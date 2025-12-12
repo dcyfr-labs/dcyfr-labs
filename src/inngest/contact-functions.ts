@@ -35,10 +35,21 @@ export const contactFormSubmitted = inngest.createFunction(
   async ({ event, step }) => {
     const { name, email, message, submittedAt } = event.data;
 
+    // Log function execution for debugging
+    console.info("[Contact Function] Processing submission:", {
+      fromEmail: email,
+      messageLength: message.length,
+      emailConfigured: isEmailConfigured,
+      resendFromEmail: FROM_EMAIL,
+    });
+
     // Step 1: Send notification email to site owner
     const notificationResult = await step.run("send-notification-email", async () => {
       if (!isEmailConfigured || !resend) {
-        console.warn("Email not configured, skipping notification");
+        console.warn("[Contact Function] Email not configured, skipping notification", {
+          hasResendKey: !!process.env.RESEND_API_KEY,
+          resendInstance: !!resend,
+        });
         return { success: false, reason: "not-configured" };
       }
 
@@ -63,6 +74,7 @@ export const contactFormSubmitted = inngest.createFunction(
         console.log("Notification email sent:", {
           messageId: result.data?.id,
           to: AUTHOR_EMAIL,
+          from: FROM_EMAIL,
           emailDomain: email.split('@')[1],
         });
         
@@ -78,7 +90,12 @@ export const contactFormSubmitted = inngest.createFunction(
           messageId: result.data?.id,
         };
       } catch (error) {
-        console.error("Failed to send notification email:", error);
+        console.error("[Contact Function] Failed to send notification email:", {
+          error: error instanceof Error ? error.message : String(error),
+          from: FROM_EMAIL,
+          to: AUTHOR_EMAIL,
+          emailDomain: email.split('@')[1],
+        });
         throw error; // Will trigger retry
       }
     });
@@ -112,6 +129,7 @@ export const contactFormSubmitted = inngest.createFunction(
         console.log("Confirmation email sent:", {
           messageId: result.data?.id,
           to: email,
+          from: FROM_EMAIL,
         });
 
         return { 
@@ -120,7 +138,11 @@ export const contactFormSubmitted = inngest.createFunction(
         };
       } catch (error) {
         // Log but don't fail the function if confirmation email fails
-        console.error("Failed to send confirmation email:", error);
+        console.error("[Contact Function] Failed to send confirmation email:", {
+          error: error instanceof Error ? error.message : String(error),
+          from: FROM_EMAIL,
+          to: email,
+        });
         return { success: false, error: String(error) };
       }
     });

@@ -113,7 +113,7 @@ export function ContactMethods() {
                       {method.label}
                       {isExternal && (
                         <ExternalLink
-                          className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="h-3 w-3"
                           aria-hidden="true"
                         />
                       )}
