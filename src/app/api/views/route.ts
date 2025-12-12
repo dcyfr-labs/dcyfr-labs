@@ -220,8 +220,11 @@ export async function POST(request: NextRequest): Promise<NextResponse<ViewRespo
     }
 
     // Layer 4: Rate limiting
+    // 20 views per 5 minutes per IP - allows ~4 views per minute per user
+    // with headroom for shared IPs. Session deduplication (Layer 5) provides
+    // the real spam protection by limiting 1 view per post per session per 30 min.
     const rateLimitResult = await rateLimit(`view:${clientIp}`, {
-      limit: 10,
+      limit: 20,
       windowInSeconds: 300, // 5 minutes
     });
 
