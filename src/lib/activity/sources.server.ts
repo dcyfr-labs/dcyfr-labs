@@ -105,6 +105,10 @@ interface TrendingPost {
 /**
  * Validate trending post data for consistency and quality
  * Returns validation result with warnings/errors for missing data
+ * 
+ * Handles slug migration: trending data may reference old post slugs (stored as postId)
+ * while posts now use new slugs. This function maps old slugs to current post IDs
+ * by checking previousSlugs in post frontmatter.
  */
 function validateTrendingData(
   trending: TrendingPost[],
@@ -112,21 +116,38 @@ function validateTrendingData(
 ): { valid: TrendingPost[]; warnings: string[]; source: "redis" | "fallback" } {
   const warnings: string[] = [];
 
+  // Build slug-to-post mapping including previous slugs for backward compatibility
+  const postsBySlug = new Map<string, Post>();
+  const postsByPreviousSlug = new Map<string, Post>();
+  
+  for (const post of posts) {
+    postsBySlug.set(post.slug, post);
+    postsBySlug.set(post.id, post); // Also map by current post ID
+    
+    // Map previous slugs to current post for slug migration support
+    if (post.previousSlugs && Array.isArray(post.previousSlugs)) {
+      for (const prevSlug of post.previousSlugs) {
+        postsByPreviousSlug.set(prevSlug, post);
+      }
+    }
+  }
+
   const validTrending = trending.filter((item) => {
-    // Validate post exists and is published
-    const post = posts.find((p) => p.id === item.postId);
+    if (!item.postId) {
+      warnings.push(`Trending item missing postId`);
+      return false;
+    }
+
+    // Try to find post by current ID first, then by current slug, then by previous slug
+    let post = postsBySlug.get(item.postId) || postsByPreviousSlug.get(item.postId);
+    
     if (!post) {
       warnings.push(`Post ${item.postId} not found in posts data`);
       return false;
     }
+
     if (post.archived || post.draft) {
       warnings.push(`Post ${item.postId} is archived or draft`);
-      return false;
-    }
-
-    // Validate required fields
-    if (!item.postId) {
-      warnings.push(`Trending item missing postId`);
       return false;
     }
 
@@ -134,6 +155,9 @@ function validateTrendingData(
     if (item.totalViews === undefined || item.recentViews === undefined) {
       warnings.push(`Trending item for ${item.postId} missing view counts`);
     }
+
+    // Update postId to current post ID in case it was resolved via previous slug
+    item.postId = post.id;
 
     return true;
   });
