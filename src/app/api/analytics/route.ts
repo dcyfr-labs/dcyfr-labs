@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { timingSafeEqual } from "crypto";
+import * as Sentry from "@sentry/nextjs";
 import { blockExternalAccess } from "@/lib/api-security";
 import { getMultiplePostViews, getMultiplePostViews24h, getMultiplePostViewsInRange } from "@/lib/views";
 import { getPostSharesBulk, getPostShares24hBulk } from "@/lib/shares";
@@ -144,6 +145,10 @@ function isAllowedEnvironment(): boolean {
  * - Security incident investigation and forensics
  * - Compliance audit trails
  *
+ * Logs to both:
+ * - Console (for Axiom/Vercel logs) - detailed analysis
+ * - Sentry (for alerting) - security events only
+ *
  * @param request - The incoming request
  * @param status - "success" or "denied"
  * @param reason - Reason for denial (if applicable)
@@ -155,8 +160,7 @@ function logAccess(request: Request, status: "success" | "denied", reason?: stri
   const userAgent = request.headers.get("user-agent") || "unknown";
   const queryParams = url.searchParams.toString();
 
-  // Structured JSON logging for security monitoring
-  console.log(JSON.stringify({
+  const logData = {
     event: "admin_access",
     endpoint: "/api/analytics",
     method: "GET",
@@ -168,7 +172,62 @@ function logAccess(request: Request, status: "success" | "denied", reason?: stri
     queryParams: queryParams || undefined,
     environment: process.env.NODE_ENV || "unknown",
     vercelEnv: process.env.VERCEL_ENV || undefined,
-  }));
+  };
+
+  // Structured JSON logging for Axiom/Vercel logs
+  console.log(JSON.stringify(logData));
+
+  // Send security events to Sentry for alerting
+  if (status === "denied") {
+    // Determine severity based on reason
+    const level = reason?.includes("production") ? "error" : "warning";
+
+    Sentry.captureMessage(`Admin access denied: ${reason || "unknown"}`, {
+      level,
+      tags: {
+        event_type: "admin_access",
+        endpoint: "/api/analytics",
+        result: status,
+        reason: reason || "unknown",
+        environment: process.env.NODE_ENV || "unknown",
+        vercel_env: process.env.VERCEL_ENV || "unknown",
+      },
+      contexts: {
+        admin_access: logData,
+      },
+      fingerprint: [
+        "admin_access",
+        "/api/analytics",
+        status,
+        reason || "unknown",
+      ],
+    });
+  }
+
+  // CRITICAL: Production access attempts should NEVER happen
+  // Admin endpoints are blocked in production via blockExternalAccess()
+  if (process.env.VERCEL_ENV === "production") {
+    Sentry.captureMessage(
+      "CRITICAL: Admin endpoint accessed in production - possible security bypass!",
+      {
+        level: "error",
+        tags: {
+          event_type: "admin_access_production",
+          endpoint: "/api/analytics",
+          result: status,
+          critical: "true",
+        },
+        contexts: {
+          admin_access: logData,
+          security: {
+            alert: "Production admin access should be blocked by blockExternalAccess()",
+            investigation_required: true,
+          },
+        },
+        fingerprint: ["admin_access_production", "/api/analytics"],
+      }
+    );
+  }
 }
 
 async function getRedisClient() {

@@ -110,7 +110,19 @@ Based on December 11 security audit findings, implement low-hanging fruit improv
   - **Effort:** 15 minutes
   - **Priority:** Low
 
-**Total Estimated Effort:** 2-3 hours
+- [ ] **Security Advisory Workflow Review & Refinement** (1-2 hours)
+  - **Issue:** Issue #122 generated false positives for packages not in production dependencies (`react-server-dom-webpack`)
+  - **Root Cause:** Security advisory detection workflow doesn't validate against `package.json` dependencies before creating alerts
+  - **Action Items:**
+    1. Review `.github/workflows/` security advisory detection configuration
+    2. Add validation to cross-reference detected advisories against actual `package.json` dependencies
+    3. Exclude dev-only, test-only, or optional dependencies from alerts
+    4. Implement allowlist for known non-applicable advisories
+  - **Reference:** Issue #122 validation confirmed next 16.0.8 is safe (outside vulnerable range); react-server-dom-webpack not in use
+  - **Effort:** 1-2 hours
+  - **Priority:** Low (process improvement, reduces noise)
+
+**Total Estimated Effort:** 3-4.5 hours
 **Audit Reference:** [`docs/security/API_SECURITY_AUDIT_2025-12-11.md`](../security/API_SECURITY_AUDIT_2025-12-11.md) (Sections: "Remaining Recommendations")
 
 ---
