@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { timingSafeEqual } from "crypto";
 import { blockExternalAccess } from "@/lib/api-security";
 import { getMultiplePostViews, getMultiplePostViews24h, getMultiplePostViewsInRange } from "@/lib/views";
 import { getPostSharesBulk, getPostShares24hBulk } from "@/lib/shares";
@@ -59,16 +60,19 @@ const RATE_LIMIT_CONFIG = {
 };
 
 /**
- * Validates the API key from the Authorization header
- * 
+ * Validates the API key from the Authorization header using timing-safe comparison
+ *
  * Expected format: "Bearer YOUR_API_KEY"
- * 
+ *
+ * Uses timingSafeEqual() to prevent timing attacks that could reveal the API key
+ * byte-by-byte through response time analysis.
+ *
  * @param request - Incoming request with Authorization header
  * @returns true if valid key, false otherwise
  */
 function validateApiKey(request: Request): boolean {
   const adminKey = process.env.ADMIN_API_KEY;
-  
+
   // If no admin key is configured, deny all access
   if (!adminKey) {
     console.error("[Analytics API] ADMIN_API_KEY not configured - endpoint disabled");
@@ -76,7 +80,7 @@ function validateApiKey(request: Request): boolean {
   }
 
   const authHeader = request.headers.get("Authorization");
-  
+
   if (!authHeader) {
     return false;
   }
@@ -86,7 +90,22 @@ function validateApiKey(request: Request): boolean {
     ? authHeader.slice(7)
     : authHeader;
 
-  return token === adminKey;
+  // Use timing-safe comparison to prevent timing attacks
+  try {
+    const tokenBuf = Buffer.from(token, 'utf8');
+    const keyBuf = Buffer.from(adminKey, 'utf8');
+
+    // Ensure buffers are same length to prevent length-based timing
+    if (tokenBuf.length !== keyBuf.length) {
+      return false;
+    }
+
+    return timingSafeEqual(tokenBuf, keyBuf);
+  } catch (error) {
+    // If comparison fails (e.g., buffer creation error), deny access
+    console.error("[Analytics API] Error during key validation:", error);
+    return false;
+  }
 }
 
 /**
@@ -117,8 +136,14 @@ function isAllowedEnvironment(): boolean {
 }
 
 /**
- * Logs analytics access attempts for security monitoring
- * 
+ * Logs analytics access attempts using structured JSON format for security monitoring
+ *
+ * Structured logging enables:
+ * - Easier parsing and analysis by log aggregation tools (Axiom, Sentry)
+ * - Automated alerting based on specific fields
+ * - Security incident investigation and forensics
+ * - Compliance audit trails
+ *
  * @param request - The incoming request
  * @param status - "success" or "denied"
  * @param reason - Reason for denial (if applicable)
@@ -130,11 +155,20 @@ function logAccess(request: Request, status: "success" | "denied", reason?: stri
   const userAgent = request.headers.get("user-agent") || "unknown";
   const queryParams = url.searchParams.toString();
 
-  console.log(
-    `[Analytics API] ${status.toUpperCase()} - ${timestamp} - IP: ${ip} - ${userAgent} - ${
-      queryParams ? `?${queryParams}` : "no params"
-    }${reason ? ` - ${reason}` : ""}`
-  );
+  // Structured JSON logging for security monitoring
+  console.log(JSON.stringify({
+    event: "admin_access",
+    endpoint: "/api/analytics",
+    method: "GET",
+    result: status,
+    reason: reason || undefined,
+    timestamp,
+    ip,
+    userAgent,
+    queryParams: queryParams || undefined,
+    environment: process.env.NODE_ENV || "unknown",
+    vercelEnv: process.env.VERCEL_ENV || undefined,
+  }));
 }
 
 async function getRedisClient() {
