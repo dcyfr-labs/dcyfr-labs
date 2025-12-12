@@ -13,7 +13,8 @@ This document tracks **active and pending** work. Completed tasks are in **`done
 | Status | Count | Impact |
 |--------|-------|--------|
 | **Pending Work** | 0 items | All priority work complete ✅ |
-| **Backlog** | 12 items | Low-priority or speculative features |
+| **Active Backlog** | 4 items | Medium-priority, 2-5 hour efforts (next planning cycle) |
+| **Future Ideas** | 12 items | Low-priority, experimental, or unvalidated features (>10 hours or speculative) |
 | **✅ Completed** | 57+ items | Phases 1-4 + automation + security hardening + 2 priority tasks completed (Dec 12) |
 
 ---
@@ -177,14 +178,16 @@ Based on December 11 security audit findings - **ALL ITEMS COMPLETED:**
 
 ---
 
-## 🔵 BACKLOG (Low Priority or Speculative)
+## 🔵 ACTIVE BACKLOG (Medium Priority - Validate & Schedule)
 
-### Blog Features
+These items have clear impact and modest effort (2-5 hours each). Evaluate for next planning cycle.
 
 ### Infrastructure & Reliability
 
 - [ ] **Backup & Disaster Recovery Plan** (2 hours)
-- [ ] **Automated Performance Regression Tests** (3-4 hours)
+  - **Impact:** Business continuity and disaster recovery
+  - **Scope:** Document backup strategy, recovery procedures, testing schedule
+  - **Priority:** Medium (compliance requirement)
 
 **CI/CD Pipeline:**
 
@@ -192,83 +195,13 @@ Based on December 11 security audit findings - **ALL ITEMS COMPLETED:**
 - Tier 2/3 optimizations moved to [FUTURE_IDEAS.md](../features/FUTURE_IDEAS.md#infrastructure)
 - See [ci-cd-optimization-analysis.md](ci-cd-optimization-analysis.md) and [ci-cd-optimization-implementation.md](ci-cd-optimization-implementation.md) for details
 
-### AI & Agent Security
-
-- [ ] **AI Agent Security Guardrails (Post / Guide)** (4-8 hours)
-  - **Goal:** Publish a developer-focused post and guide detailing best practices for securing AI agents and runtime guardrails, including patterns used in `AGENTS.md` and DCYFR enforcement rules.
-  - **Note:** In this doc, **PI = Proprietary Information** — defined per NIST: [Proprietary Information](https://csrc.nist.gov/glossary/term/proprietary_information).
-    Treat PI the same as PII for storage and handling practices when applicable (i.e., do not commit PI to the repo).
-  - **Scope:**
-    - Intro: threat models (prompt injection, capability escalation, data exfiltration)
-    - Design-time guardrails: policy-as-code, explicit permissioning, secrets handling, and approval gates
-    - Runtime guardrails: capability restrictions, sandboxing, rate limiting, and red-team testing
-    - Observability: audit logs, telemetry, anomaly detection, and policy violations
-    - DevOps: CI gating, test harnesses, policy enforcement, and sample Inngest/agent middleware
-    - Compliance & ethics: data minimization, GDPR considerations, and clear fail-soft behaviors
-  - **Deliverables:**
-    - Blog post draft with actionable examples
-    - Short sample snippet demonstrating a runtime policy check or middleware (Node/TS example)
-    - Checklist and policy template to include in `AGENTS.md` / `docs/ai/` for internal enforcement
-  - **Estimated Effort:** 4-8 hours (draft and review); 12-20 hours (with sample repo code, tests, and policy templates)
-  - **Priority:** Low (Backlog)
-
-### AI & Security / Detection & Allowlist Enhancements (Backlog)
-
-- [ ] **Allowlist PR Description Requirement** (1-2 hours)
-  - Add a GitHub check that requires a short justification in the PR description when `.pii-allowlist.json` is modified; ensure this mirrors the `allowlistReasons` entry.
-  - **Impact:** Improves auditability for allowlist changes and prevents accidental silence of scans.
-  - **Estimated Effort:** 1-2 hours
-  - **Priority:** Low
-
-- [ ] **Scheduled Allowlist Audit Job** (2 hours)
-  - Add a weekly or monthly GitHub Action to run `npm run audit:allowlist` and post the results to PR comments or a team channel (Slack or email) for review.
-  - **Impact:** Regularly surfaces allowlist additions and reduces stale or unjustified allowlist entries.
-  - **Estimated Effort:** 2 hours
-  - **Priority:** Low
+### AI & Security / Detection & Allowlist Enhancements
 
 - [ ] **Gitleaks Enforcement Policy & Tickets** (3-4 hours)
   - Enhance CI to automatically create a remediation issue/ticket when gitleaks flags critical secrets, with a link to the artifact and remediation checklist (rotate keys, remove from history, update secrets management).
   - **Impact:** Ensures critical secrets have a documented remediation workflow and prevents accidental bypass via allowlist entries.
   - **Estimated Effort:** 3-4 hours
   - **Priority:** Medium
-
-- [ ] **Credential Rotation Schedule & Documentation** (1-2 hours)
-  - Document rotation schedule for all service accounts and API keys in secure location
-  - Create calendar reminders for 6-month (service accounts) and 12-month (API keys) rotation
-  - Add rotation checklist to security runbook
-  - **Credentials to rotate:**
-    - Google service account keys (every 6 months)
-    - GitHub PAT (every 6 months)
-    - Sentry auth token (every 6 months)
-    - Vercel tokens (every 6 months)
-    - Resend API key (every 12 months)
-    - Perplexity API key (every 12 months)
-    - Inngest keys (every 12 months)
-  - **Impact:** Reduces risk from compromised long-lived credentials
-  - **Estimated Effort:** 1-2 hours (documentation); ongoing maintenance
-  - **Priority:** Low
-
-- [ ] **PII/PI Contributor Training Documentation** (2-3 hours)
-  - Create "Security for Contributors" section in CONTRIBUTING.md
-  - Add PI/PII handling checklist to PR template
-  - Include common examples and patterns (what to avoid)
-  - Link to LOGGING_SECURITY.md and pi-policy.md
-  - Add to onboarding checklist for new contributors
-  - **Impact:** Proactive education reduces security incidents
-  - **Estimated Effort:** 2-3 hours
-  - **Priority:** Low
-
-- [ ] **Automated Redaction Helper** (3-5 hours)
-  - Implement a helper script that proposes redaction patches for accidental commits (e.g., replace private key with `REDACTED` and add placeholder) and opens a PR with the changes; maintainers review and apply.
-  - **Impact:** Streamlines remediation and reduces time to redact sensitive examples.
-  - **Estimated Effort:** 3-5 hours
-  - **Priority:** Low
-
-- [ ] **Allowlist Management Interface** (8-12 hours)
-  - Build a small internal UI (or GitHub App) to review, propose, and approve allowlist entries, including reasons and approval history; store audit log in the repo or via action comments.
-  - **Impact:** Lowers friction for maintainers and centralizes allowlist governance.
-  - **Estimated Effort:** 8-12 hours
-  - **Priority:** Backlog
 
 - [ ] **Scanner Unit & Integration Tests** (2-3 hours)
   - Add tests for `check-for-pii.mjs` and the gitleaks parser to ensure placeholder logic and allowlist classification work as expected. Include falsy and true-positive tests.
@@ -282,92 +215,22 @@ Based on December 11 security audit findings - **ALL ITEMS COMPLETED:**
   - **Estimated Effort:** 3-5 hours
   - **Priority:** Medium
 
-- [ ] **PII/PI Events Dashboard** (4-6 hours)
-  - Create a maintenance dashboard that tracks PII/PI scans over time (counts, file paths, false positives), ideally pulling from GitHub Action artifacts or a scheduled job that persists results to a CSV or lightweight database.
-  - **Impact:** Visibility into detection trends, false positives, and enforcement effectiveness.
-  - **Estimated Effort:** 4-6 hours
-  - **Priority:** Low
+---
 
-### Future Features: Sponsor Dashboard & Tracking
+**Note:** The following items have been moved to [`FUTURE_IDEAS.md`](../features/FUTURE_IDEAS.md) for later evaluation:
 
-**Current Status:** Public invite code display implemented at `/sponsors` and `/invites`. Phase 2 backlogged pending sponsor validation.
-
-#### Phase 2: Tracking & Analytics (11-16 hours total)
-
-- [ ] **API Tracking Endpoints** (2-3 hours)
-  - `POST /api/invites/track` - Track invite code usage
-  - Follow `/api/views` pattern with anti-spam protection
-  - Session deduplication (24-hour window)
-  - Rate limiting (5 requests/minute per IP)
-
-- [ ] **Inngest Background Jobs** (2-3 hours)
-  - `trackInviteCodeUse` - Increment usage counters
-  - `handleInviteMilestone` - Detect 100/500/1000 uses
-  - Vercel Analytics integration
-
-- [ ] **Sponsor Authentication** (3-4 hours)
-  - API key-based access (`SPONSOR_API_KEY` env var)
-  - Per-sponsor tokens stored in Redis
-  - `GET /api/invites/stats` - Protected stats endpoint
-  - Github Sponsors authentication via Github OAuth
-
-- [ ] **Sponsor Dashboard UI** (3-4 hours)
-  - `/sponsors/dashboard` page with authentication (Github OAuth)
-  - Display stats (uses, conversions, trending)
-  - Chart visualization
-  - Real-time updates via API polling
-
-- [ ] **Privacy & Compliance** (1-2 hours)
-  - IP address anonymization (hash only)
-  - Session data TTL (30-90 days)
-  - GDPR-compliant aggregate reporting
-
-**Priority:** Low (no validated sponsor need yet)
-
-### UI/UX Enhancements
-
-- [ ] **Expandable FAB with Quick Actions Menu** (4-5 hours)
-  - **Concept:** Single floating action button → expands into radial action nodes
-  - **Actions:** Filter, Search, Clear All, Bookmarks, Layout Toggle
-  - **Animation:** Smooth cascade or radial reveal using Framer Motion
-  - **Mobile First:** Position bottom-right, gesture-friendly
-  - **Implementation Options:**
-    1. Radial menu - actions positioned in circle around FAB
-    2. Cascade reveal - actions stack downward/upward from FAB
-    3. Context menu overlay - actions appear near FAB on click
-  - **Accessibility:** Keyboard navigation between actions, ESC to close
-  - **Design Inspiration:** Facebook Messenger, Gmail mobile FAB patterns
-  - **Estimated Impact:** Unified mobile control hub for blog interactions
-  - **Priority:** Low (backlog, future enhancement)
-
-- [ ] **Advanced Holographic Card Effects with Mouse Tracking** (4-6 hours)
-  - **Current Status:** Disabled pending implementation
-  - **Scope:** Refactor card hover effects with dynamic mouse tracking
-  - **Reference Patterns:** 
-    - Vercel dashboard card interactions (magnetic borders, gradient borders)
-    - Framer Motion parallax effects
-    - Real-time cursor position tracking
-    - Dynamic 3D tilt based on mouse location
-  - **Implementation Plan:**
-    1. Mouse event tracking hook (`useMouseTracker`) - tracks cursor position relative to card
-    2. Dynamic border shine effect - follows cursor movement
-    3. Gradient border animation - CSS mask or border-image with gradient
-    4. Card tilt/perspective - 3D rotation based on cursor X/Y
-    5. Parallax image shift - subtle image movement paralleling mouse
-    6. Performance optimization - throttle tracking, GPU acceleration via `will-change`
-    7. Mobile fallback - disable tracking on touch devices, use static effects
-    8. Accessibility - respect `prefers-reduced-motion` for all animations
-  - **Files to Update:**
-    - `src/components/home/featured-post-hero.tsx` - re-enable holo effects
-    - `src/components/blog/post/post-list.tsx` - all layout variants (magazine, grid, list, compact)
-    - `src/styles/holo-card.css` - add new selectors for dynamic border tracking
-    - Create new: `src/hooks/useMouseTracker.ts` - cursor tracking utility
-    - Create new: `src/lib/card-tilt.ts` - 3D tilt calculations
-  - **Design Inspiration:**
-    - Vercel's featured blog cards with animated borders
-    - Apple's product pages with parallax depth
-    - Tailwind UI premium components with shimmer effects
-  - **Estimated Impact:** Significant visual polish, competitive feature parity with modern platforms
+- Allowlist PR Description Requirement
+- Scheduled Allowlist Audit Job
+- Credential Rotation Schedule & Documentation
+- PII/PI Contributor Training Documentation
+- Automated Redaction Helper
+- Allowlist Management Interface
+- PII/PI Events Dashboard
+- AI Agent Security Guardrails Post
+- Automated Performance Regression Tests
+- Sponsor Dashboard Phase 2 (API tracking, auth, UI)
+- Expandable FAB with Quick Actions
+- Advanced Holographic Card Effects
 
 ---
 

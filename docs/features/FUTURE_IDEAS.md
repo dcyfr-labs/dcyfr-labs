@@ -2,7 +2,7 @@
 
 This document tracks **aspirational features** and ideas that are **not yet validated** or prioritized for the roadmap. These are potential enhancements to consider after core features are launched and we have user feedback.
 
-**Last Updated:** December 10, 2025
+**Last Updated:** December 12, 2025
 
 ---
 
@@ -232,6 +232,119 @@ This document tracks **aspirational features** and ideas that are **not yet vali
 
 ---
 
+### Security & PII Management Enhancements
+
+**Allowlist PR Description Requirement** (Low Effort: 1-2 hours)
+
+- **Idea:** Require justification in PR description when `.pii-allowlist.json` is modified
+- **Why:** Improves auditability, prevents accidental silence of scans
+- **Implementation:** GitHub check requiring matching between PR description and `allowlistReasons`
+- **Validation Needed:** Would this overhead be justified vs current workflow?
+
+**Scheduled Allowlist Audit Job** (Low Effort: 2 hours)
+
+- **Idea:** Weekly/monthly GitHub Action to audit and surface allowlist entries
+- **Why:** Reduces stale or unjustified allowlist entries
+- **Implementation:** Runs `npm run audit:allowlist`, posts results to PR comments or Slack
+- **Validation Needed:** What cadence makes sense for our use case?
+
+**Credential Rotation Schedule & Documentation** (Low Effort: 1-2 hours)
+
+- **Idea:** Document and automate credential rotation reminders
+- **Why:** Reduces risk from compromised long-lived credentials
+- **Credentials Covered:** Google service accounts, GitHub PAT, Sentry token, Vercel tokens, Resend API key, Perplexity API key, Inngest keys
+- **Validation Needed:** Can we automate via calendar/alerting system?
+
+**PII/PI Contributor Training Documentation** (Low Effort: 2-3 hours)
+
+- **Idea:** Add security education to CONTRIBUTING.md and PR template
+- **Why:** Proactive education reduces security incidents
+- **Implementation:** Security for Contributors section, PI/PII checklist, examples, links to guides
+- **Validation Needed:** How often should training be updated/reviewed?
+
+**Automated Redaction Helper** (Medium Effort: 3-5 hours)
+
+- **Idea:** Script that proposes redaction patches for accidental secret commits
+- **Why:** Streamlines remediation, reduces time to redact sensitive examples
+- **Implementation:** Auto-create PR replacing secrets with `REDACTED` placeholders
+- **Validation Needed:** What secrets should be auto-redacted vs manually reviewed?
+
+**Allowlist Management Interface** (High Effort: 8-12 hours)
+
+- **Idea:** Internal UI or GitHub App for reviewing/approving allowlist entries
+- **Why:** Lowers friction for maintainers, centralizes governance
+- **Features:** Review reasons, approval history, audit log
+- **Validation Needed:** Is the current allowlist workflow a bottleneck?
+
+**PII/PI Events Dashboard** (Medium Effort: 4-6 hours)
+
+- **Idea:** Maintenance dashboard tracking PII/PI scan trends over time
+- **Why:** Visibility into detection trends, false positives, effectiveness
+- **Data Source:** GitHub Action artifacts or scheduled job persistence
+- **Validation Needed:** What metrics matter most for monitoring?
+
+---
+
+### AI & Agent Security
+
+**AI Agent Security Guardrails (Post & Guide)** (High Effort: 4-8 to 12-20 hours)
+
+- **Idea:** Developer-focused blog post and guide on securing AI agents and runtime guardrails
+- **Why:** Share DCYFR's enforcement patterns with developer community
+- **Scope Includes:**
+  - Threat models (prompt injection, capability escalation, data exfiltration)
+  - Design-time guardrails (policy-as-code, permissioning, secrets handling)
+  - Runtime guardrails (capability restrictions, sandboxing, rate limiting)
+  - Observability (audit logs, telemetry, anomaly detection)
+  - DevOps (CI gating, test harnesses, policy enforcement)
+  - Compliance & ethics (data minimization, GDPR, fail-soft behaviors)
+- **Deliverables (Basic):** Blog post with actionable examples
+- **Deliverables (Full):** Blog post + code samples + policy templates + tests
+- **Validation Needed:** Is there developer demand for this content?
+
+---
+
+### Sponsor Dashboard & Tracking
+
+**Sponsor Dashboard Phase 2: Tracking & Analytics** (High Effort: 11-16 hours total)
+
+- **Current Status:** Phase 1 complete (public invite code display at `/sponsors` and `/invites`)
+- **Phase 2 Scope:**
+
+**API Tracking Endpoints** (2-3 hours)
+
+- `POST /api/invites/track` - Track invite code usage (anti-spam, deduplication)
+- Session deduplication (24-hour window), rate limiting (5 req/min per IP)
+
+**Inngest Background Jobs** (2-3 hours)
+
+- `trackInviteCodeUse` - Increment usage counters
+- `handleInviteMilestone` - Detect 100/500/1000 uses
+- Vercel Analytics integration
+
+**Sponsor Authentication** (3-4 hours)
+
+- API key-based access (`SPONSOR_API_KEY` env var)
+- Per-sponsor tokens in Redis
+- `GET /api/invites/stats` - Protected stats endpoint
+- GitHub Sponsors OAuth integration
+
+**Sponsor Dashboard UI** (3-4 hours)
+
+- `/sponsors/dashboard` page (GitHub OAuth auth)
+- Display stats (uses, conversions, trending)
+- Chart visualization, real-time API polling
+
+**Privacy & Compliance** (1-2 hours)
+
+- IP address anonymization (hash only)
+- Session data TTL (30-90 days)
+- GDPR-compliant aggregate reporting
+
+- **Validation Needed:** Do we have sponsors requesting this feature?
+
+---
+
 ## 🗃️ Archived Ideas (Rejected or Obsolete)
 
 **Memory and Sequential Thinking MCPs** (Removed Dec 2025)
@@ -274,4 +387,5 @@ When considering moving an idea to the active TODO:
 
 ---
 
+**Last Review:** December 12, 2025 - Reorganized backlog, moved 12 low-priority items to FUTURE_IDEAS
 **Next Review:** January 6, 2026
