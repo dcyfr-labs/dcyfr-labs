@@ -137,17 +137,19 @@ export async function POST(request: NextRequest) {
     
     if (shouldUseBotId) {
       try {
-        const verification = await checkBotId();
+        // TEMPORARILY DISABLED: checkBotId import is commented out to prevent 403 errors
+        // Uncomment the import and this code when BotID is properly configured
+        // const verification = await checkBotId();
 
-        // Only block if BotID confidently identifies this as a bot (not a verified bot like search engines)
-        // Verified bots (search engines, monitoring) are allowed through
-        if (verification.isBot && !verification.isVerifiedBot && !verification.bypassed) {
-          console.log("[Contact API] Bot detected by BotID - blocking request");
-          return NextResponse.json(
-            { error: "Access denied" },
-            { status: 403 }
-          );
-        }
+        // // Only block if BotID confidently identifies this as a bot (not a verified bot like search engines)
+        // // Verified bots (search engines, monitoring) are allowed through
+        // if (verification.isBot && !verification.isVerifiedBot && !verification.bypassed) {
+        //   console.log("[Contact API] Bot detected by BotID - blocking request");
+        //   return NextResponse.json(
+        //     { error: "Access denied" },
+        //     { status: 403 }
+        //   );
+        // }
       } catch (botIdError) {
         // BotID is optional - if it fails, continue with fallback protection
         // Common reasons: not configured, CSP issues, network errors, timeout
