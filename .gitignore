@@ -23,6 +23,7 @@
 reports/e2e-artifacts/**
 e2e/**-spec.ts-snapshots/**
 **/*-spec.ts-snapshots/**
+**/*.spec.ts-snapshots/**
 
 # next.js
 /.next/
