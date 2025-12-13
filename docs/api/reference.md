@@ -85,7 +85,7 @@ X-RateLimit-Reset: 1696348920000
 ```
 
 #### 3. Input Validation 🛡️
-- Validates GitHub username format: `/^[a-zA-Z0-9-]{1,39}$/`
+- Validates GitHub username format: `` /^[a-zA-Z0-9-]{1,39}$/ ``
 - Alphanumeric characters and hyphens only
 - Maximum 39 characters (GitHub limit)
 - Returns `400 Bad Request` for invalid formats
@@ -251,7 +251,7 @@ RESEND_API_KEY=re_xxxxx
 
 ### Verification Results
 
-- ✅ Rate limiting: 10 views per 5 minutes enforced
+- ✅ Rate limiting: 20 views per 5 minutes enforced
 - ✅ Session deduplication: Duplicates correctly rejected
 - ✅ Timing validation: Quick views (<5s) blocked
 - ✅ Redis persistence: Data stored correctly
@@ -263,7 +263,7 @@ Client-side view tracking with comprehensive anti-spam protection. Counts blog p
 
 ### Protection Layers
 
-1. **IP Rate Limiting**: 10 views per 5 minutes per IP
+1. **IP Rate Limiting**: 20 views per 5 minutes per IP (~4 views/minute)
 2. **Session Deduplication**: 1 view per session per post per 30 minutes
 3. **User-Agent Validation**: Blocks bots, requires valid user-agent
 4. **Timing Validation**: Minimum 5 seconds on page with page visible
@@ -504,7 +504,13 @@ Sends contact form emails with rate limiting and validation.
 
 ### Request
 
-```http
+```json
+{
+  "name": "string (required, 1-100 chars)",
+  "email": "string (required, valid email)",
+  "message": "string (required, 10-5000 chars)"
+}
+```
 
 ### Test Rate Limiting
 
@@ -512,7 +518,10 @@ Sends contact form emails with rate limiting and validation.
 # Should get 429 on 11th request
 for i in {1..11}; do
   curl -w "\nStatus: %{http_code}\n" \
-    http://localhost:3000/api/github-contributions?username=dcyfr
+    http://localhost:3000/api/contact \
+    -X POST \
+    -H "Content-Type: application/json" \
+    -d '{"name":"Test","email":"test@example.com","message":"Test message"}'
 done
 ```
 

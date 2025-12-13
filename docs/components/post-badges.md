@@ -251,9 +251,9 @@ All badges include:
 
 ## Related Documentation
 
-- [Post List Component](./post-list.md) - Integration with post cards
-- [Blog Architecture](../blog/architecture.md) - Blog system design
-- [Reading Progress](./reading-progress.md) - Content features
+- [Post List Component](./post-list) - Integration with post cards
+- [Blog Architecture](../blog/architecture) - Blog system design
+- [Reading Progress](./reading-progress) - Content features
 
 ---
 

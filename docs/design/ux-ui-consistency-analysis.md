@@ -417,10 +417,10 @@ export const ANIMATIONS = {
 
 ## Related Documentation
 
-- [Design System Guide](./design-system.md) - Comprehensive design system documentation
-- [Component Patterns](./component-patterns.md) - Reusable component patterns
-- [Typography Guide](./typography.md) - Typography hierarchy and usage
-- [Spacing System](./spacing.md) - Spacing scale and usage guidelines
+- [Design System Guide](./design-system) - Comprehensive design system documentation
+- [Component Patterns](./component-patterns) - Reusable component patterns
+- [Typography Guide](./typography) - Typography hierarchy and usage
+- [Spacing System](./spacing) - Spacing scale and usage guidelines
 
 ---
 

@@ -210,6 +210,50 @@ export async function POST(request: NextRequest) {
   const blockResponse = blockExternalAccess(request);
   if (blockResponse) return blockResponse;
 
+  // Validate request size to prevent DoS attacks via large payloads
+  const contentLength = request.headers.get("content-length");
+  const maxSize = 100 * 1024; // 100KB limit for research endpoint
+  
+  // Primary check: Content-Length header (for production environments)
+  if (contentLength && parseInt(contentLength) > maxSize) {
+    return NextResponse.json(
+      { 
+        error: "Request too large",
+        message: `Request size must not exceed ${Math.floor(maxSize / 1024)}KB`,
+      },
+      { status: 413 } // Payload Too Large
+    );
+  }
+
+  // Parse and validate request body
+  let body: unknown;
+  let rawBody: string;
+  try {
+    rawBody = await request.text();
+    
+    // Secondary check: Body size validation (for testing/environments without Content-Length)
+    const bodySize = Buffer.byteLength(rawBody, 'utf8');
+    if (bodySize > maxSize) {
+      return NextResponse.json(
+        { 
+          error: "Request too large",
+          message: `Request size must not exceed ${Math.floor(maxSize / 1024)}KB`,
+        },
+        { status: 413 } // Payload Too Large
+      );
+    }
+    
+    body = JSON.parse(rawBody);
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: "Invalid JSON in request body",
+        message: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 400 }
+    );
+  }
+
   // Check if Perplexity is configured
   if (!isPerplexityConfigured()) {
     return NextResponse.json(
@@ -244,20 +288,6 @@ export async function POST(request: NextRequest) {
           "Retry-After": retryAfter.toString(),
         },
       }
-    );
-  }
-
-  // Parse and validate request body
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch (error) {
-    return NextResponse.json(
-      {
-        error: "Invalid JSON in request body",
-        message: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 400 }
     );
   }
 

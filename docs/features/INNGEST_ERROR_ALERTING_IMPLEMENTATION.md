@@ -198,7 +198,7 @@ await reportInngestError(inngest, {
 - ✅ Sentry integration tested
 - ✅ Email alert formatting
 - ✅ Severity categorization
-- ✅ Performance optimized (<1s overhead)
+- ✅ Performance optimized (\<1s overhead)
 - ✅ Documentation complete
 - ✅ Examples provided
 - ✅ Troubleshooting guide
@@ -253,7 +253,7 @@ A: Adjust severity levels or increase function retry backoff
 **Q: Missing error context?**  
 A: Add custom context when reporting errors manually
 
-See [Full Guide](./inngest-error-alerting.md) for complete troubleshooting.
+See [Full Guide](./inngest-error-alerting) for complete troubleshooting.
 
 ## Architecture Diagram
 

@@ -135,6 +135,6 @@ docs/features/inngest-error-alerting.md  # Full documentation (NEW)
 
 ## See Also
 
-- [Full Error Alerting Guide](./inngest-error-alerting.md)
-- [Inngest Integration](./inngest-integration.md)
-- [Environment Variables](../operations/environment-variables.md)
+- [Full Error Alerting Guide](./inngest-error-alerting)
+- [Inngest Integration](./inngest-integration)
+- [Environment Variables](../operations/environment-variables)

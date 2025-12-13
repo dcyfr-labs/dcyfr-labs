@@ -43,8 +43,8 @@ describe('Views API Integration', () => {
     vi.mocked(detectAbusePattern).mockResolvedValue(false)
     vi.mocked(rateLimit).mockResolvedValue({
       success: true,
-      limit: 10,
-      remaining: 9,
+      limit: 20,
+      remaining: 19,
       reset: Date.now() + 300000,
     })
     vi.mocked(checkSessionDuplication).mockResolvedValue(false)
@@ -274,7 +274,7 @@ describe('Views API Integration', () => {
         it('returns 429 when rate limit exceeded', async () => {
           vi.mocked(rateLimit).mockResolvedValue({
             success: false,
-            limit: 10,
+            limit: 20,
             remaining: 0,
             reset: Date.now() + 30000,
           })
@@ -307,8 +307,8 @@ describe('Views API Integration', () => {
 
           vi.mocked(rateLimit).mockResolvedValue({
             success: true,
-            limit: 10,
-            remaining: 5,
+            limit: 20,
+            remaining: 15,
             reset: resetTime,
           })
 
@@ -325,8 +325,8 @@ describe('Views API Integration', () => {
           const response = await POST(request)
 
           expect(response.status).toBe(200)
-          expect(response.headers.get('X-RateLimit-Limit')).toBe('10')
-          expect(response.headers.get('X-RateLimit-Remaining')).toBe('5')
+          expect(response.headers.get('X-RateLimit-Limit')).toBe('20')
+          expect(response.headers.get('X-RateLimit-Remaining')).toBe('15')
           expect(response.headers.get('X-RateLimit-Reset')).toBe(resetTime.toString())
         })
 
@@ -344,7 +344,7 @@ describe('Views API Integration', () => {
           await POST(request)
 
           expect(rateLimit).toHaveBeenCalledWith('view:192.168.1.1', {
-            limit: 10,
+            limit: 20,
             windowInSeconds: 300, // 5 minutes
           })
         })

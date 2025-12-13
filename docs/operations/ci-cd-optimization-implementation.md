@@ -2,7 +2,7 @@
 
 **Date:** 2025-12-10
 **Status:** ✅ Completed - Phase 1 (Tier 1 Optimizations)
-**Note:** Tier 2/3 optimizations moved to backlog in [todo.md](todo.md#cicd-pipeline-optimizations-tier-23)
+**Note:** Tier 2/3 optimizations moved to backlog in [todo.md](todo#cicd-pipeline-optimizations-tier-23)
 
 ## What Was Implemented
 

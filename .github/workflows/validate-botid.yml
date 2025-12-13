@@ -1,0 +1,56 @@
+name: Validate BotID Setup
+
+on:
+  push:
+    branches: [main, preview]
+    paths:
+      - 'src/app/api/contact/**'
+      - 'src/instrumentation-client.ts'
+      - 'next.config.ts'
+      - 'package.json'
+      - 'scripts/validate-botid-setup.mjs'
+      - '.github/workflows/validate-botid.yml'
+  pull_request:
+    branches: [main, preview]
+    paths:
+      - 'src/app/api/contact/**'
+      - 'src/instrumentation-client.ts'
+      - 'next.config.ts'
+      - 'package.json'
+      - 'scripts/validate-botid-setup.mjs'
+
+jobs:
+  validate-botid:
+    name: Validate BotID Configuration
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Validate BotID setup
+        run: npm run validate:botid
+
+      - name: Verify BotID tests
+        run: npm run test -- contact-botid.test.ts
+        continue-on-error: false
+
+      - name: Check TypeScript
+        run: npx tsc -p tsconfig.json --noEmit src/app/api/contact/route.ts src/instrumentation-client.ts src/__tests__/api/contact-botid.test.ts
+        continue-on-error: false
+
+      - name: Verify no ESLint issues
+        run: npm run lint -- src/app/api/contact/route.ts src/instrumentation-client.ts
+        continue-on-error: false

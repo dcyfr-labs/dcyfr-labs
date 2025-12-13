@@ -20,6 +20,22 @@ export async function GET(request: NextRequest) {
     const title = searchParams.get("title") || "";
     const style = searchParams.get("style") || "gradient"; // gradient, minimal, geometric
 
+    // Validate title length to prevent abuse
+    const maxTitleLength = 1000;
+    if (title.length > maxTitleLength) {
+      return new Response(
+        JSON.stringify({ 
+          error: "Title too long", 
+          message: `Title must not exceed ${maxTitleLength} characters`,
+          provided: title.length 
+        }),
+        { 
+          status: 400,
+          headers: { "Content-Type": "application/json" }
+        }
+      );
+    }
+
     // Brand colors (adjust to match your site theme)
     const colors = {
       primary: "#3b82f6", // blue-500

@@ -96,6 +96,6 @@ Keyboard shortcuts work in all modern browsers:
 
 ## Related
 
-- [Blog Architecture](../blog/ARCHITECTURE_VISUAL.md)
-- [Sidebar Filters](./sidebar-filters.md)
-- [View Layouts](./view-layouts.md)
+- [Blog Architecture](../blog/architecture-visual)
+- [Sidebar Filters](./sidebar-filters)
+- [View Layouts](./view-layouts)

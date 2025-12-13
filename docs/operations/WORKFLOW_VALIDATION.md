@@ -279,8 +279,8 @@ Branches: TBD (depends on repo state)
 - [Security Issues](https://github.com/dcyfr/dcyfr-labs/issues?q=is%3Aissue+label%3Asecurity)
 
 **Documentation:**
-- [Maintenance Automation Docs](./maintenance-automation.md)
-- [Todo Tracker](./todo.md)
+- [Maintenance Automation Docs](./maintenance-automation)
+- [Todo Tracker](./todo)
 
 ---
 

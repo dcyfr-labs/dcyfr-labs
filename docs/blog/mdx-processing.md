@@ -2,7 +2,7 @@
 
 **Status:** ✅ Production  
 **Last Updated:** October 24, 2025  
-**Related:** [Blog Architecture](./architecture.md) · [MDX Component](../components/mdx.md) · [Content Creation](./content-creation.md)
+**Related:** [Blog Architecture](./architecture) · [MDX Component](../components/mdx) · [Content Creation](./content-creation)
 
 ---
 
@@ -965,10 +965,10 @@ rehypePlugins: [rehypeSlug]  // Direct reference
 
 ## Related Documentation
 
-- **[Blog Architecture](./architecture.md)** - Overall blog system design
-- **[MDX Component](../components/mdx.md)** - Component API reference
-- **[Content Creation](./content-creation.md)** - Writing blog posts
-- **[Quick Reference](./quick-reference.md)** - Cheat sheet
+- **[Blog Architecture](./architecture)** - Overall blog system design
+- **[MDX Component](../components/mdx)** - Component API reference
+- **[Content Creation](./content-creation)** - Writing blog posts
+- **[Quick Reference](./quick-reference)** - Cheat sheet
 
 ---
 

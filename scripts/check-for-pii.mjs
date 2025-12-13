@@ -118,6 +118,9 @@ function scanContent(file, content, results, isPrScan, isContentFile) {
   // Remove URLs to avoid matching ISBNs, ASINs, or product IDs inside links
   cleanedContent = cleanedContent.replace(/https?:\/\/\S+/g, '');
   const tests = [
+    // ============================================================================
+    // PII PATTERNS (Personally Identifiable Information)
+    // ============================================================================
     {
       name: "email",
       classification: 'PII',
@@ -149,6 +152,10 @@ function scanContent(file, content, results, isPrScan, isContentFile) {
       message: "potential IP address logging in console statement (PII under GDPR/CCPA)",
       codeOnly: true, // Only check in code files, not docs
     },
+    
+    // ============================================================================
+    // PI PATTERNS (Proprietary Information) - Credentials & Secrets
+    // ============================================================================
     {
       name: "aws_key",
       classification: 'PI',
@@ -160,6 +167,77 @@ function scanContent(file, content, results, isPrScan, isContentFile) {
       classification: 'PI',
       regex: /-----BEGIN (RSA |EC |OPENSSH |ENCRYPTED )?PRIVATE KEY-----/g,
       message: "private key block",
+    },
+    {
+      name: "jwt_token",
+      classification: 'PI',
+      // Matches JWT Bearer tokens: Bearer eyJ...
+      // JWT format: 3 base64url-encoded parts separated by dots
+      // eyJ is base64 for {"
+      regex: /(?:Bearer|JWT)\s+eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/gi,
+      message: "JWT (JSON Web Token) - bearer token",
+    },
+    {
+      name: "oauth_token",
+      classification: 'PI',
+      // Matches OAuth 2.0 access/refresh tokens and API tokens
+      // Looks for patterns like: access_token=..., refresh_token=..., token=...
+      // Matches hex strings, base64, and URL-safe base64
+      regex: /(?:access_token|refresh_token|oauth_token|api_token|token)\s*[=:]\s*["']?([a-zA-Z0-9._\-]{20,}|[a-f0-9]{32,})["']?/gi,
+      message: "OAuth 2.0 token or API token assignment",
+    },
+    {
+      name: "database_connection",
+      classification: 'PI',
+      // Matches database connection strings with embedded credentials
+      // PostgreSQL: postgresql://user:pass@host:port/db
+      // MongoDB: mongodb+srv://user:pass@cluster.mongodb.net/db pragma: allowlist secret
+      // MySQL: mysql://user:pass@host:port/db
+      // Redis: redis://:password@host:port
+      regex: /(postgresql|mysql|mongodb\+srv|mongodb|redis|mariadb|cockroachdb):\/\/([a-zA-Z0-9._\-%]+:[a-zA-Z0-9._\-%$@!]+@|:([a-zA-Z0-9._\-%$@!]+)@)[a-zA-Z0-9._\-:]+\/[a-zA-Z0-9._\-]*/gi,
+      message: "database connection string with credentials",
+    },
+    {
+      name: "generic_api_key",
+      classification: 'PI',
+      // Matches generic API key patterns: api_key, apiKey, API_KEY assignments
+      // Looks for hex strings (32+ chars), base64, or URL-safe patterns
+      // Avoids false positives by requiring "api" keyword context
+      regex: /(?:api_key|apiKey|API_KEY|api-key)\s*[=:]\s*["']?([a-zA-Z0-9._\-]{20,}|[a-f0-9]{32,}|sk-[a-zA-Z0-9]{20,})["']?/gi,
+      message: "API key assignment",
+    },
+    
+    // ============================================================================
+    // PI PATTERNS (Proprietary Information) - Business Identifiers
+    // ============================================================================
+    {
+      name: "customer_id",
+      classification: 'PI',
+      // Matches customer identifiers: CUST-123456, customer_id=12345678
+      // Uses context detection to avoid false positives
+      regex: /(?:customer[-_]?id|cust[-_]?(?:id|no)|customer[-_]?number)\s*[=:]\s*["']?([A-Z\d-]{4,20}|\d{6,})["']?/gi,
+      message: "customer identifier (business data)",
+    },
+    {
+      name: "order_number",
+      classification: 'PI',
+      // Matches order/transaction numbers: ORD-2024-001234, order_id=ABC123
+      regex: /(?:order[-_]?(?:id|no|number)|order)\s*[=:]\s*["']?([A-Z]{2,4}-\d{4}-\d{4,}|[A-Z\d]{4,})["']?/gi,
+      message: "order number or transaction identifier (business data)",
+    },
+    {
+      name: "transaction_id",
+      classification: 'PI',
+      // Matches transaction identifiers: TXN-123456, transaction_id=xyz
+      regex: /(?:transaction[-_]?(?:id|no)|txn[-_]?(?:id|no)|trans[-_]?(?:id|no))\s*[=:]\s*["']?([A-Z\d-]{4,20}|\d{6,})["']?/gi,
+      message: "transaction identifier (business data)",
+    },
+    {
+      name: "account_number",
+      classification: 'PI',
+      // Matches account numbers: acct=123456789, account_number=ACCT-123
+      regex: /(?:account[-_]?(?:id|no|number)|acct(?:[-_]?(?:no|id))?)\s*[=:]\s*["']?([A-Z0-9]{4,20})["']?/gi,
+      message: "account number or account identifier (business data)",
     },
   ];
 
@@ -287,6 +365,66 @@ function scanContent(file, content, results, isPrScan, isContentFile) {
         });
         // If this path is an allowlisted place for examples, but a real private key exists without placeholder markers,
         // mark this as critical.
+      }
+      if (t.name === 'jwt_token') {
+        // Filter JWT tokens: only flag if they look like real tokens (not examples)
+        matches = matches.filter(m => {
+          const surrounding = content.slice(Math.max(0, content.indexOf(m) - 50), content.indexOf(m) + m.length + 50);
+          // Skip if marked as EXAMPLE or PLACEHOLDER
+          if (/EXAMPLE|PLACEHOLDER|REDACTED|FAKE|MOCK|TEST|DUMMY/i.test(surrounding)) return false;
+          // Skip if it's in a comment explaining what JWT looks like
+          if (/\/\/|--|\s*#/.test(surrounding.substring(0, surrounding.indexOf(m)))) return false;
+          return true;
+        });
+      }
+      if (t.name === 'oauth_token') {
+        // Filter OAuth tokens: reduce false positives from docs/examples
+        matches = matches.filter(m => {
+          const surrounding = content.slice(Math.max(0, content.indexOf(m) - 50), content.indexOf(m) + m.length + 50);
+          // Skip if marked as example or placeholder
+          if (/EXAMPLE|PLACEHOLDER|REDACTED|FAKE|MOCK|TEST|DUMMY|example\.com|localhost|placeholder/i.test(surrounding)) return false;
+          // Skip if it's a short example (< 25 chars total) in documentation context
+          if (isContentFile && m.length < 30) return false;
+          return true;
+        });
+      }
+      if (t.name === 'database_connection') {
+        // Filter DB connection strings: only flag if they contain real credentials
+        matches = matches.filter(m => {
+          const surrounding = content.slice(Math.max(0, content.indexOf(m) - 50), content.indexOf(m) + m.length + 50);
+          // Skip if it's an example connection string
+          if (/example|placeholder|localhost|test|127\.0\.0\.1|docker|EXAMPLE|PLACEHOLDER|TEST|DUMMY/i.test(m)) return false;
+          // Skip if marked as example in surrounding text
+          if (/EXAMPLE|PLACEHOLDER|REDACTED|FAKE|MOCK|TEST/i.test(surrounding)) return false;
+          // Require actual hostname/port, not placeholders
+          if (/\$|{|}|<|>|YOUR|REPLACE/i.test(m)) return false;
+          return true;
+        });
+      }
+      if (t.name === 'generic_api_key') {
+        // Filter generic API keys: very strict to avoid false positives
+        matches = matches.filter(m => {
+          const surrounding = content.slice(Math.max(0, content.indexOf(m) - 50), content.indexOf(m) + m.length + 50);
+          // Skip if marked as example or placeholder
+          if (/EXAMPLE|PLACEHOLDER|REDACTED|FAKE|MOCK|TEST|DUMMY/i.test(surrounding)) return false;
+          // Skip test/development patterns
+          if (/test|dev|example|placeholder|sk_test/i.test(m)) return false;
+          // Require actual key-like content (32+ hex chars)
+          const keyContent = m.match(/[a-f0-9]{32,}|[a-zA-Z0-9._\-]{40,}/);
+          return keyContent !== null;
+        });
+      }
+      // Business identifiers: filter based on context
+      if (['customer_id', 'order_number', 'transaction_id', 'account_number'].includes(t.name)) {
+        matches = matches.filter(m => {
+          const surrounding = content.slice(Math.max(0, content.indexOf(m) - 50), content.indexOf(m) + m.length + 50);
+          // Skip if marked as example or in allowlisted paths
+          if (/EXAMPLE|PLACEHOLDER|REDACTED|FAKE|MOCK|TEST|DUMMY|example\.com|placeholder/i.test(m)) return false;
+          if (isInAllowlist(file, allowlist.piPaths)) return false; // Already allowlisted
+          // Only flag if in code, not in documentation
+          if (isContentFile && !file.includes('test')) return false;
+          return true;
+        });
       }
       if (matches.length === 0) continue;
       const classification = t.classification || 'PII';

@@ -78,67 +78,91 @@ export function ContactForm() {
       {/* Informational banner */}
       <div className="mb-6 p-4 bg-muted rounded-lg border border-border">
         <p className="text-sm text-muted-foreground">
-          💡 <strong>Multiple ways to connect:</strong> You can use the form below or reach out directly via email and social media.
+          💡 <strong>Multiple ways to connect:</strong> You can use the form
+          below or reach out directly via email and social media.
         </p>
       </div>
-      
+
       <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-      {/* Honeypot field - hidden from real users, visible to bots */}
-      <div className="hidden" aria-hidden="true">
-        <Label htmlFor="website">Website (leave blank)</Label>
-        <Input
-          id="website"
-          name="website"
-          type="text"
-          autoComplete="off"
-          tabIndex={-1}
-          placeholder="https://example.com"
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="name">Name</Label>
-        <Input
-          id="name"
-          name="name"
-          type="text"
-          inputMode="text"
-          placeholder="Your name"
-          autoComplete="name"
-          required
+        {/* Honeypot field - hidden from real users, visible to bots */}
+        <div className="hidden" aria-hidden="true">
+          <Label htmlFor="website">Website (leave blank)</Label>
+          <Input
+            id="website"
+            name="website"
+            type="text"
+            autoComplete="off"
+            tabIndex={-1}
+            placeholder="https://example.com"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="name">Name</Label>
+          <Input
+            id="name"
+            name="name"
+            type="text"
+            inputMode="text"
+            placeholder="Your name"
+            autoComplete="name"
+            required
+            disabled={isSubmitting}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            inputMode="email"
+            placeholder="your.email@example.com"
+            autoComplete="email"
+            required
+            disabled={isSubmitting}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="message">Message</Label>
+          <Textarea
+            id="message"
+            name="message"
+            placeholder="Your message..."
+            required
+            disabled={isSubmitting}
+            rows={6}
+            className="resize-none"
+          />
+        </div>
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full sm:w-auto"
           disabled={isSubmitting}
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          inputMode="email"
-          placeholder="your.email@example.com"
-          autoComplete="email"
-          required
-          disabled={isSubmitting}
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="message">Message</Label>
-        <Textarea
-          id="message"
-          name="message"
-          placeholder="Your message..."
-          required
-          disabled={isSubmitting}
-          rows={6}
-          className="resize-none"
-        />
-      </div>
-      <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={isSubmitting}>
-        {isSubmitting && <Loader2 className="animate-spin" />}
-        {isSubmitting ? "Sending..." : "Send Message"}
-      </Button>
-    </form>
+        >
+          {isSubmitting && <Loader2 className="animate-spin" />}
+          {isSubmitting ? "Sending..." : "Send Message"}
+        </Button>
+
+        {/* Privacy Notice */}
+        <div className="mt-4 text-xs text-muted-foreground">
+          <p>
+            By submitting this form, you agree to our data handling practices.
+            We collect only the information you provide (name, email, message)
+            to respond to your inquiry. Your data is not shared with third
+            parties and is handled securely.{" "}
+            <a
+              href="/security.txt"
+              className="underline hover:text-foreground transition-colors"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Security contact
+            </a>
+          </p>
+        </div>
+      </form>
     </div>
   );
 }

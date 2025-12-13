@@ -406,7 +406,7 @@ graph TD
 - Pie charts
 - Git graphs
 
-**See:** [Diagram and Math Guide](/docs/content/diagrams-and-math.md) for complete examples
+**See:** [Diagram and Math Guide](/docs/content/diagrams-and-math) for complete examples
 
 ### LaTeX Math Equations
 
@@ -432,7 +432,7 @@ $$
 - Physics equations
 - Financial calculations
 
-**See:** [Diagram and Math Guide](/docs/content/diagrams-and-math.md) for syntax examples
+**See:** [Diagram and Math Guide](/docs/content/diagrams-and-math) for syntax examples
 
 ---
 
@@ -706,9 +706,9 @@ const isExternal = href?.startsWith('http://') || href?.startsWith('https://');
 
 ## Related Documentation
 
-- [Blog Architecture](../blog/architecture.md)
-- [MDX Processing](../blog/mdx-processing.md)
-- [Syntax Highlighting Quick Reference](../operations/syntax-highlighting-quick-reference.md)
+- [Blog Architecture](../blog/architecture)
+- [MDX Processing](../blog/mdx-processing)
+- [Syntax Highlighting Quick Reference](../operations/syntax-highlighting-quick-reference)
 
 ---
 

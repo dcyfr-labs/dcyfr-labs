@@ -53,7 +53,7 @@ mkdir -p ~/Library/Application\ Support/Code/User
 # Then configure VS Code with MCP servers
 ```
 
-See: [Troubleshooting](./tests/servers-test.md#troubleshooting)
+See: [Troubleshooting](./tests/servers-test#troubleshooting)
 
 ### "npm/npx not available"
 ```bash
@@ -90,10 +90,10 @@ All ✅ configured and accessible
 
 | Link | Purpose |
 |------|---------|
-| [Setup Guide](./servers.md) | How to use each server |
-| [Test Guide](./tests/servers-test.md) | Detailed test documentation |
-| [Implementation](./tests/servers-test-implementation.md) | Technical details |
-| [Full Reference](./tests/dependency-validation.md) | Complete reference |
+| [Setup Guide](./servers) | How to use each server |
+| [Test Guide](./tests/servers-test) | Detailed test documentation |
+| [Implementation](./tests/servers-test-implementation) | Technical details |
+| [Full Reference](./tests/dependency-validation) | Complete reference |
 
 ---
 
@@ -118,9 +118,9 @@ npm run lint
 ## Need Help?
 
 1. **Quick answer**: Run `npm run test:mcp-servers`
-2. **Setup issues**: Read [MCP Servers Guide](./servers.md)
-3. **Test details**: Review [MCP Servers Test Guide](./tests/servers-test.md)
-4. **Full reference**: Consult [MCP Dependency Validation](./tests/dependency-validation.md)
+2. **Setup issues**: Read [MCP Servers Guide](./servers)
+3. **Test details**: Review [MCP Servers Test Guide](./tests/servers-test)
+4. **Full reference**: Consult [MCP Dependency Validation](./tests/dependency-validation)
 
 ---
 

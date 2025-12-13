@@ -152,10 +152,10 @@ curl http://localhost:3000/api/github-contributions?username=dcyfr
 
 ## Related Documentation
 
-- [Full Environment Variables Guide](./environment-variables.md) - Complete documentation
-- [API Reference](../api/reference.md) - API route details
-- [Deployment Checklist](./deployment-checklist.md) - Pre-deploy checks
+- [Full Environment Variables Guide](./environment-variables) - Complete documentation
+- [API Reference](../api/reference) - API route details
+- [Deployment Checklist](./deployment-checklist) - Pre-deploy checks
 
 ---
 
-**Need more details?** See the [full environment variables guide](./environment-variables.md).
+**Need more details?** See the [full environment variables guide](./environment-variables).

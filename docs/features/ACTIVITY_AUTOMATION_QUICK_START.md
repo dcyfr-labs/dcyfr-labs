@@ -310,7 +310,7 @@ open https://app.inngest.com/env/production/functions/refresh-activity-feed
 | **Page Load Time** | 800ms | 400ms | 50% faster ⚡ |
 | **Server CPU** | High | Low | Reduced load 📉 |
 | **Cache Hit Rate** | 0% | 80%+ | First-time users still fast |
-| **Error Rate** | 2% | <1% | Better reliability ✅ |
+| **Error Rate** | 2% | \<1% | Better reliability ✅ |
 
 ---
 
@@ -364,7 +364,7 @@ After caching is working, consider:
 3. **Email Digest** - Weekly summary of activity feed
 4. **Analytics Dashboard** - Track cache hit rates and engagement
 
-See [ACTIVITY_FEED_AUTOMATION.md](./ACTIVITY_FEED_AUTOMATION.md) for full automation roadmap.
+See [ACTIVITY_FEED_AUTOMATION.md](./activity-feed-automation) for full automation roadmap.
 
 ---
 

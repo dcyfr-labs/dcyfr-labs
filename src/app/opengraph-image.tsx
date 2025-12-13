@@ -16,12 +16,33 @@ const toStringParam = (value?: string | string[]): string | undefined => {
   return Array.isArray(value) ? value[0] : value;
 };
 
+/**
+ * Validates and truncates title to prevent layout overflow
+ * Max 100 characters to ensure readability on OG image
+ */
+const validateTitle = (title: string): string => {
+  const MAX_LENGTH = 100;
+
+  if (title.length <= MAX_LENGTH) {
+    return title;
+  }
+
+  // Truncate at word boundary and add ellipsis
+  const truncated = title.slice(0, MAX_LENGTH);
+  const lastSpace = truncated.lastIndexOf(' ');
+
+  return lastSpace > 0
+    ? truncated.slice(0, lastSpace) + '...'
+    : truncated + '...';
+};
+
 export default function OpenGraphImage({
   searchParams,
 }: {
   searchParams?: SearchParams;
 }) {
-  const title = toStringParam(searchParams?.title) || SITE_TITLE;
+  const rawTitle = toStringParam(searchParams?.title) || SITE_TITLE;
+  const title = validateTitle(rawTitle);
   const description = toStringParam(searchParams?.description) || SITE_DESCRIPTION;
 
   return new ImageResponse(

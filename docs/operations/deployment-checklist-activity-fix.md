@@ -55,4 +55,4 @@ open https://your-site.com/activity
 
 ## Related Docs
 
-- [Fix Details](../debugging/activity-page-401-fix.md)
+- [Fix Details](../debugging/activity-page-401-fix)

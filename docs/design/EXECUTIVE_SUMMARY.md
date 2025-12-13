@@ -63,11 +63,11 @@ Created a comprehensive design system with:
 - TypeScript types for safety
 
 ✅ **Comprehensive Documentation**
-- [Quick Start Guide](./design/QUICK_START.md) - 5-minute overview
-- [UX/UI Consistency Analysis](./design/ux-ui-consistency-analysis.md) - Full report
-- [Design System Guide](./design/design-system.md) - Complete reference
-- [Component Patterns](./design/component-patterns.md) - Examples
-- [Implementation Roadmap](./design/implementation-roadmap.md) - Execution plan
+- [Quick Start Guide](./design/quick-start) - 5-minute overview
+- [UX/UI Consistency Analysis](./design/ux-ui-consistency-analysis) - Full report
+- [Design System Guide](./design/design-system) - Complete reference
+- [Component Patterns](./design/component-patterns) - Examples
+- [Implementation Roadmap](./design/implementation-roadmap) - Execution plan
 
 ### 3. Implementation Phases
 
@@ -280,20 +280,20 @@ Phase 4 includes ESLint rules to catch violations and visual regression tests to
 ### For Decision Makers
 
 1. Review this summary (5 min)
-2. Skim [Quick Start Guide](./design/QUICK_START.md) (5 min)
+2. Skim [Quick Start Guide](./design/quick-start) (5 min)
 3. Decide: Approve Phase 2 execution?
 4. Schedule: When to start implementation?
 
 ### For Developers
 
-1. Read [Quick Start Guide](./design/QUICK_START.md) (5 min)
-2. Review [UX/UI Analysis](./design/ux-ui-consistency-analysis.md) (15 min)
-3. Study [Design System Guide](./design/design-system.md) (30 min)
+1. Read [Quick Start Guide](./design/quick-start) (5 min)
+2. Review [UX/UI Analysis](./design/ux-ui-consistency-analysis) (15 min)
+3. Study [Design System Guide](./design/design-system) (30 min)
 4. Ready to implement Phase 2 when approved
 
 ### For Project Managers
 
-1. Review [Implementation Roadmap](./design/implementation-roadmap.md) (15 min)
+1. Review [Implementation Roadmap](./design/implementation-roadmap) (15 min)
 2. Create tracking issues for each phase
 3. Schedule team capacity for 33 hours
 4. Set up check-ins for progress updates
@@ -303,11 +303,11 @@ Phase 4 includes ESLint rules to catch violations and visual regression tests to
 ## Contact & Resources
 
 ### Documentation
-- **Quick Start:** [design/QUICK_START.md](./design/QUICK_START.md)
-- **Full Analysis:** [design/ux-ui-consistency-analysis.md](./design/ux-ui-consistency-analysis.md)
-- **Design System:** [design/design-system.md](./design/design-system.md)
-- **Component Patterns:** [design/component-patterns.md](./design/component-patterns.md)
-- **Roadmap:** [design/implementation-roadmap.md](./design/implementation-roadmap.md)
+- **Quick Start:** [design/QUICK_START.md](./design/quick-start)
+- **Full Analysis:** [design/ux-ui-consistency-analysis.md](./design/ux-ui-consistency-analysis)
+- **Design System:** [design/design-system.md](./design/design-system)
+- **Component Patterns:** [design/component-patterns.md](./design/component-patterns)
+- **Roadmap:** [design/implementation-roadmap.md](./design/implementation-roadmap)
 
 ### Source Code
 - **Design Tokens:** `src/lib/design-tokens.ts`

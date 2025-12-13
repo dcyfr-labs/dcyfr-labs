@@ -330,10 +330,10 @@ Create a scheduled function to email daily failure summaries.
 
 ## Related Documentation
 
-- [Inngest Integration Guide](./inngest-integration.md)
-- [Sentry Configuration](../operations/error-tracking.md)
-- [Environment Variables](../operations/environment-variables.md)
-- [Production Deployment](../operations/PRODUCTION_DEPLOYMENT.md)
+- [Inngest Integration Guide](./inngest-integration)
+- [Sentry Configuration](../operations/error-tracking)
+- [Environment Variables](../operations/environment-variables)
+- [Production Deployment](../operations/production-deployment)
 
 ## FAQ
 

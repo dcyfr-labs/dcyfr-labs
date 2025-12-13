@@ -441,10 +441,10 @@ Enter URL → View how description appears in previews
 
 ## Related Documentation
 
-- [JSON-LD Implementation](./json-ld-implementation.md)
-- [Site Configuration](../lib/site-config.md)
-- [Blog Content Creation Guide](../blog/content-creation.md)
-- [SEO Checklist](./seo-checklist.md) _(future)_
+- [JSON-LD Implementation](./json-ld-implementation)
+- [Site Configuration](../lib/site-config)
+- [Blog Content Creation Guide](../blog/content-creation)
+- [SEO Checklist](./seo-checklist) _(future)_
 
 ---
 

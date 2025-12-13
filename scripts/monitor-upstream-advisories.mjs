@@ -132,6 +132,45 @@ function getInstalledPackages() {
 }
 
 /**
+ * Get production dependencies from package.json
+ * Returns a set of package names that are direct dependencies
+ */
+function getProductionDependencies() {
+  const productionDeps = new Set();
+  
+  try {
+    const packageJsonPath = join(PROJECT_ROOT, "package.json");
+    if (!existsSync(packageJsonPath)) {
+      console.warn("⚠️  No package.json found, cannot verify production dependencies");
+      return productionDeps;
+    }
+    
+    const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
+    
+    // Add dependencies (production)
+    if (packageJson.dependencies) {
+      for (const name of Object.keys(packageJson.dependencies)) {
+        productionDeps.add(name);
+      }
+    }
+    
+    // Add devDependencies only if they're in our MONITORED_PACKAGES list
+    // (some dev tools like @next/bundle-analyzer might have security relevance)
+    if (packageJson.devDependencies) {
+      for (const name of Object.keys(packageJson.devDependencies)) {
+        if (MONITORED_PACKAGES.includes(name)) {
+          productionDeps.add(name);
+        }
+      }
+    }
+  } catch (error) {
+    console.warn("⚠️  Error reading package.json:", error.message);
+  }
+  
+  return productionDeps;
+}
+
+/**
  * Parse a semver version string into components
  * @param {string} version - Version string like "16.0.10" or "19.2.1"
  * @returns {{ major: number, minor: number, patch: number, prerelease: string[] } | null}
@@ -413,11 +452,18 @@ async function main() {
 
   // Get installed package versions for validation
   const installedPackages = getInstalledPackages();
+  const productionDependencies = getProductionDependencies();
+  
   console.log("📦 Installed monitored packages:");
   for (const pkg of MONITORED_PACKAGES) {
     const version = installedPackages.get(pkg);
+    const isProduction = productionDependencies.has(pkg);
     if (version) {
-      console.log(`   - ${pkg}@${version}`);
+      if (isProduction) {
+        console.log(`   - ${pkg}@${version} ✅ (production dependency)`);
+      } else {
+        console.log(`   - ${pkg}@${version} ⚠️  (transitive only - will skip)`);
+      }
     } else {
       console.log(`   - ${pkg}: not installed (will skip)`);
     }
@@ -432,10 +478,17 @@ async function main() {
   const allSkipped = [];
   
   for (const packageName of MONITORED_PACKAGES) {
-    // Skip packages that aren't installed
+    // Skip packages that aren't installed or aren't production dependencies
     const installedVersion = installedPackages.get(packageName);
+    const isProductionDep = productionDependencies.has(packageName);
+    
     if (!installedVersion) {
       console.log(`   ⏭️  Skipping ${packageName}: not installed in project`);
+      continue;
+    }
+    
+    if (!isProductionDep) {
+      console.log(`   ⏭️  Skipping ${packageName}: transitive dependency only (not in package.json)`);
       continue;
     }
     

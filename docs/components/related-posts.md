@@ -162,7 +162,7 @@ Related posts intentionally excluded from feeds (not part of post content).
 - Algorithm runs during SSR (no client impact)
 - O(n) complexity where n = total posts
 - Efficient Set-based tag matching
-- Negligible runtime (<1ms on 50+ posts)
+- Negligible runtime (\<1ms on 50+ posts)
 
 ### Client-Side
 - Static HTML with CSS transitions
@@ -381,7 +381,7 @@ scripts/
 
 ## Notes
 
-- Algorithm runs on every page load (fast, <1ms)
+- Algorithm runs on every page load (fast, \<1ms)
 - No caching needed (SSR handles it)
 - Works with any number of posts (scales well)
 - Tag matching is case-sensitive (by design)

@@ -395,7 +395,7 @@ Visit `/dev/docs/decision-trees` for interactive versions with:
 
 ## Related Documentation
 
-- [Component Patterns Guide](./COMPONENT_PATTERNS.md)
-- [Design Token System](./DESIGN_SYSTEM.md)
+- [Component Patterns Guide](./component-patterns)
+- [Design Token System](./design-system)
 - [Templates Library](../templates/)
-- [Best Practices](./BEST_PRACTICES.md)
+- [Best Practices](./best-practices)

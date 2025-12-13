@@ -204,5 +204,5 @@ Consider future enhancements:
 ## Related Documentation
 
 - [Component Documentation](/docs/components/) - Component-specific docs
-- [Blog Architecture](/docs/blog/architecture.md) - Blog system design
+- [Blog Architecture](/docs/blog/architecture) - Blog system design
 - [Design System](/docs/design/) - Design patterns and guidelines

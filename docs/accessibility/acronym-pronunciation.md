@@ -292,4 +292,4 @@ console.log(missing); // ["API", "CVE"] - add these to the map
 **Last Updated:** December 9, 2025  
 **Next Review:** March 9, 2026 (Quarterly)
 
-For feedback or improvements, see [AGENTS.md](../../AGENTS.md) for contribution guidelines.
+For feedback or improvements, see [AGENTS.md](../../agents) for contribution guidelines.

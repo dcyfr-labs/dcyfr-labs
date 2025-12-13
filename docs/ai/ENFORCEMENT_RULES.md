@@ -411,7 +411,7 @@ These are **non-negotiable architecture decisions**. Changing them requires team
 
 ## Related Documentation
 
-- [Component Patterns](./COMPONENT_PATTERNS.md) - Layout usage, imports
-- [Quick Reference](./QUICK_REFERENCE.md) - Commands and 80/20 rules
-- [Decision Trees](./DECISION_TREES.md) - Visual flowcharts
-- [Design System Details](./DESIGN_SYSTEM.md) - Deep dive into token system
+- [Component Patterns](./component-patterns) - Layout usage, imports
+- [Quick Reference](./quick-reference) - Commands and 80/20 rules
+- [Decision Trees](./decision-trees) - Visual flowcharts
+- [Design System Details](./design-system) - Deep dive into token system

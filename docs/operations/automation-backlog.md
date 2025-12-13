@@ -16,7 +16,7 @@ This file tracks CI/CD automation. All core items are now implemented.
   - Daily security vulnerability scans
   - Weekly dependency update PRs
   - Auto-merge for patch updates via `dependabot-auto-merge.yml`
-  - See [`dependabot-setup.md`](./dependabot-setup.md) for full configuration
+  - See [`dependabot-setup.md`](./dependabot-setup) for full configuration
 
 - [x] **Code Security Scanning** — GitHub CodeQL
   - Automated SAST on push, PR, and daily schedule

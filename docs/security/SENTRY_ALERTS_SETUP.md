@@ -746,8 +746,8 @@ For 24/7 monitoring:
 
 - [Sentry Alerts Documentation](https://docs.sentry.io/product/alerts/)
 - [Axiom Query Syntax](https://axiom.co/docs/query-data/queries)
-- [Security Audit Summary](./SECURITY_AUDIT_SUMMARY_2025-12-11.md)
-- [Red Team Engagement Plan](./RED_TEAM_ENGAGEMENT_PLAN.md)
+- [Security Audit Summary](./security-audit-summary-2025-12-11)
+- [Red Team Engagement Plan](./red-team-engagement-plan)
 
 ---
 

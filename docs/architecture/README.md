@@ -8,15 +8,15 @@ This directory contains comprehensive architectural plans and documentation for 
 
 **New to the refactored architecture?** Start here:
 
-1. **[Migration Guide](./migration-guide.md)** - Step-by-step guide for creating archive/article pages
-2. **[Examples](./examples.md)** - Copy-paste examples for common patterns
-3. **[Best Practices](./best-practices.md)** - Guidelines and recommendations
+1. **[Migration Guide](./migration-guide)** - Step-by-step guide for creating archive/article pages
+2. **[Examples](./examples)** - Copy-paste examples for common patterns
+3. **[Best Practices](./best-practices)** - Guidelines and recommendations
 
 **Want to understand the refactoring?** Read these:
 
-1. **[Refactoring Complete](./refactoring-complete.md)** - Full overview of Phases 1-3
-2. **[Phase 1 Complete](./phase-1-complete.md)** - Foundation infrastructure
-3. **[Phase 2 Complete](./phase-2-complete.md)** - Blog pages refactoring
+1. **[Refactoring Complete](./refactoring-complete)** - Full overview of Phases 1-3
+2. **[Phase 1 Complete](./phase-1-complete)** - Foundation infrastructure
+3. **[Phase 2 Complete](./phase-2-complete)** - Blog pages refactoring
 
 ---
 
@@ -24,7 +24,7 @@ This directory contains comprehensive architectural plans and documentation for 
 
 ### ✅ Completed Refactoring
 
-#### [Blog & Archive Pages Refactor](./refactoring-complete.md)
+#### [Blog & Archive Pages Refactor](./refactoring-complete)
 **Status:** ✅ Complete (Phases 1-3)  
 **Completed:** November 10, 2025  
 **Goal:** Simplify and standardize `/blog`, `/projects`, and future archive pages
@@ -47,16 +47,16 @@ This directory contains comprehensive architectural plans and documentation for 
 - 4 universal layout components
 
 **Documentation:**
-- **[Refactoring Complete](./refactoring-complete.md)** - Complete overview with metrics
-- **[Migration Guide](./migration-guide.md)** - How to use the patterns
-- **[Examples](./examples.md)** - Practical copy-paste examples
-- **[Best Practices](./best-practices.md)** - Guidelines and tips
-- **[Phase 1](./phase-1-complete.md)** - Foundation details
-- **[Phase 2](./phase-2-complete.md)** - Blog refactoring details
+- **[Refactoring Complete](./refactoring-complete)** - Complete overview with metrics
+- **[Migration Guide](./migration-guide)** - How to use the patterns
+- **[Examples](./examples)** - Practical copy-paste examples
+- **[Best Practices](./best-practices)** - Guidelines and tips
+- **[Phase 1](./phase-1-complete)** - Foundation details
+- **[Phase 2](./phase-2-complete)** - Blog refactoring details
 
 ---
 
-#### [Developer Dashboard Refactor](./dashboard-refactor-plan.md)
+#### [Developer Dashboard Refactor](./dashboard-refactor-plan)
 **Status:** ✅ Phase 3 Complete  
 **Completed:** November 11, 2025  
 **Goal:** Simplify analytics dashboard and create reusable dashboard patterns
@@ -74,21 +74,21 @@ This directory contains comprehensive architectural plans and documentation for 
 - `src/lib/dashboard/` - Table and export utilities
 
 **Documentation:**
-- **[Dashboard Refactor Plan](./dashboard-refactor-plan.md)** - Complete plan with phases
-- **[Phase 3 Complete](../../operations/dashboard-refactor-phase-3-complete.md)** - Technical summary
-- **[Analytics Architecture Decision](./analytics-architecture-decision.md)** - Vercel Analytics evaluation
+- **[Dashboard Refactor Plan](./dashboard-refactor-plan)** - Complete plan with phases
+- **[Phase 3 Complete](../../operations/dashboard-refactor-phase-3-complete)** - Technical summary
+- **[Analytics Architecture Decision](./analytics-architecture-decision)** - Vercel Analytics evaluation
 
 ---
 
 ### 📋 Planning Phase
 
-#### [Blog Refactor Plan](./blog-refactor-plan.md)
-**Status:** ✅ Completed (see [Refactoring Complete](./refactoring-complete.md))  
+#### [Blog Refactor Plan](./blog-refactor-plan)
+**Status:** ✅ Completed (see [Refactoring Complete](./refactoring-complete))  
 **Note:** Original planning document - refer to completion docs for actual results
 
 ---
 
-#### [Core Pages Refactor](./core-pages-refactor-plan.md)
+#### [Core Pages Refactor](./core-pages-refactor-plan)
 **Status:** Planning Phase  
 **Goal:** Simplify and standardize core pages (/, /about, /contact, /resume)
 
@@ -106,7 +106,7 @@ This directory contains comprehensive architectural plans and documentation for 
 
 ---
 
-#### [Developer Dashboard & Tools Refactor](./dashboard-refactor-plan.md)
+#### [Developer Dashboard & Tools Refactor](./dashboard-refactor-plan)
 **Status:** Planning Phase  
 **Goal:** Simplify and standardize developer dashboards and admin tools (/analytics)
 

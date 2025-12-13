@@ -350,8 +350,8 @@ When adding BotID to a new route:
 - [Vercel BotID Documentation](https://vercel.com/docs/botid/get-started)
 - [Advanced Configuration](https://vercel.com/docs/botid/advanced-configuration)
 - [Local Development Behavior](https://vercel.com/docs/botid/local-development-behavior)
-- [Security Best Practices](/docs/security/security-best-practices.md)
-- [Rate Limiting Implementation](/docs/security/rate-limiting.md)
+- [Security Best Practices](/docs/security/security-best-practices)
+- [Rate Limiting Implementation](/docs/security/rate-limiting)
 
 ## Changelog
 

@@ -6,11 +6,11 @@ Copy-paste templates for common tasks. Each template includes inline documentati
 
 | Template | Use Case | View |
 |----------|----------|------|
-| [NEW_PAGE.tsx](./NEW_PAGE.tsx.md) | Standard pages with PageLayout | Most common |
-| [API_ROUTE.ts](./API_ROUTE.ts.md) | API routes with Inngest pattern | POST endpoints |
-| [INNGEST_FUNCTION.ts](./INNGEST_FUNCTION.ts.md) | Background job handlers | Async tasks |
-| [COMPONENT_WITH_BARREL.tsx](./COMPONENT_WITH_BARREL.tsx.md) | New components with exports | Components |
-| [METADATA_ONLY.ts](./METADATA_ONLY.ts.md) | Metadata generation only | OG images, etc. |
+| [NEW_PAGE.tsx](./new-page.tsx) | Standard pages with PageLayout | Most common |
+| [API_ROUTE.ts](./api-route.ts) | API routes with Inngest pattern | POST endpoints |
+| [INNGEST_FUNCTION.ts](./inngest-function.ts) | Background job handlers | Async tasks |
+| [COMPONENT_WITH_BARREL.tsx](./component-with-barrel.tsx) | New components with exports | Components |
+| [METADATA_ONLY.ts](./metadata-only.ts) | Metadata generation only | OG images, etc. |
 
 ## Coming Soon
 
@@ -45,6 +45,6 @@ When adding new templates:
 
 ## Related Documentation
 
-- [Component Patterns](../ai/COMPONENT_PATTERNS.md)
-- [Decision Trees](../ai/DECISION_TREES.md)
-- [Quick Reference](../ai/QUICK_REFERENCE.md)
+- [Component Patterns](../ai/component-patterns)
+- [Decision Trees](../ai/decision-trees)
+- [Quick Reference](../ai/quick-reference)

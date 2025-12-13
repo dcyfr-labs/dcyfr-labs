@@ -165,6 +165,6 @@ Before committing your new page:
 
 ## Related Docs
 
-- [Component Patterns](../ai/COMPONENT_PATTERNS.md#layout-hierarchy)
-- [Design Tokens](../ai/ENFORCEMENT_RULES.md#design-token-enforcement)
-- [Decision Trees](../ai/DECISION_TREES.md#which-layout-should-i-use)
+- [Component Patterns](../ai/component-patterns#layout-hierarchy)
+- [Design Tokens](../ai/enforcement-rules#design-token-enforcement)
+- [Decision Trees](../ai/decision-trees#which-layout-should-i-use)

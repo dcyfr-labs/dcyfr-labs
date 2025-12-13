@@ -77,12 +77,23 @@ Sentry.init({
 // Initialize BotID for bot detection and protection
 // Protects API routes that are configured in the protect array
 // See: https://vercel.com/docs/botid/get-started
+//
+// IMPORTANT: BotID client-side protection is temporarily disabled for /api/contact
+// until proper production configuration is verified. The API route handles
+// bot protection via rate limiting, honeypot field, and input validation.
+//
+// To re-enable BotID protection:
+// 1. Verify BotID is properly configured in Vercel dashboard
+// 2. Set ENABLE_BOTID=1 environment variable in production
+// 3. Uncomment the contact route below
+// 4. Test thoroughly in preview environment first
 initBotId({
   protect: [
-    {
-      path: "/api/contact",
-      method: "POST",
-    },
+    // Temporarily disabled - causing 403 errors without proper setup
+    // {
+    //   path: "/api/contact",
+    //   method: "POST",
+    // },
     // Add more protected routes as needed
     // Example:
     // {

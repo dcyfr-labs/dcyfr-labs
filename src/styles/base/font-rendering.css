@@ -16,6 +16,12 @@ html {
   text-rendering: optimizeLegibility;
   font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
   font-variant-ligatures: common-ligatures contextual;
+  scroll-behavior: auto;
+}
+
+/* Smooth scrolling enabled via data-scroll-behavior attribute on html element
+   This allows Next.js to disable smooth scrolling during route transitions */
+html[data-scroll-behavior="smooth"] {
   scroll-behavior: smooth;
 }
 

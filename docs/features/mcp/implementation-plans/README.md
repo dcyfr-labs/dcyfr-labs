@@ -8,11 +8,11 @@ This directory contains detailed implementation plans for MCP servers that enhan
 
 | MCP Server | Status | Priority | Complexity | Setup Time | Cost | Key Benefit |
 |------------|--------|----------|------------|------------|------|-------------|
-| [Filesystem](./filesystem-mcp.md) | ✅ **Implemented** | **Tier 1** | ⭐ Easy | 10 min | $0 | MDX content management |
-| [Brave Search](./archive/brave-search-mcp.md) | ❌ **Removed** | **Tier 1** | ⭐⭐ Medium | 15 min | $0* | Content research & validation |
-| [Fetch](./fetch-mcp.md) | ❌ **Removed** | **Tier 2** | ⭐ Easy | 5 min | $0 | Link validation & API testing |
-| [Time](./time-mcp.md) | ⏸️ **Deferred** | **Tier 2** | ⭐ Easy | 15 min | $0 | Publishing schedules & timezones |
-| [Puppeteer](./puppeteer-mcp.md) | 📋 **Backlog** | **Tier 1** | ⭐⭐ Medium | 20 min | $0 | Screenshots & OG images |
+| [Filesystem](./filesystem-mcp) | ✅ **Implemented** | **Tier 1** | ⭐ Easy | 10 min | $0 | MDX content management |
+| [Brave Search](./archive/brave-search-mcp) | ❌ **Removed** | **Tier 1** | ⭐⭐ Medium | 15 min | $0* | Content research & validation |
+| [Fetch](./fetch-mcp) | ❌ **Removed** | **Tier 2** | ⭐ Easy | 5 min | $0 | Link validation & API testing |
+| [Time](./time-mcp) | ⏸️ **Deferred** | **Tier 2** | ⭐ Easy | 15 min | $0 | Publishing schedules & timezones |
+| [Puppeteer](./puppeteer-mcp) | 📋 **Backlog** | **Tier 1** | ⭐⭐ Medium | 20 min | $0 | Screenshots & OG images |
 
 ---
 
@@ -134,10 +134,10 @@ Post-Publish:
 ### Step 1: Choose Your Starting Point
 
 **If you want immediate productivity gains**:
-→ Start with [Filesystem MCP](./filesystem-mcp.md)
+→ Start with [Filesystem MCP](./filesystem-mcp)
 
 **If you need visual automation**:
-→ Start with [Puppeteer MCP](./puppeteer-mcp.md)
+→ Start with [Puppeteer MCP](./puppeteer-mcp)
 
 ### Step 2: Read the Implementation Plan
 
@@ -188,8 +188,8 @@ Common issues covered:
 ### Getting Help
 
 1. Check the specific implementation plan's troubleshooting section
-2. Review [MCP Servers Overview](../servers.md)
-3. Check [MCP Quick Reference](../quick-reference.md)
+2. Review [MCP Servers Overview](../servers)
+3. Check [MCP Quick Reference](../quick-reference)
 4. Consult official MCP documentation
 
 ---
@@ -264,11 +264,10 @@ Track these to measure MCP implementation success:
 
 ## Related Documentation
 
-- [MCP Servers Overview](../servers.md)
-- [MCP Quick Reference](../quick-reference.md)
-- [Blog System Architecture](../../blog/architecture.md)
-- [Content Creation Guide](../../blog/content-creation.md)
-- [Content Strategy](../../operations/content-strategy.md)
+- [MCP Servers Overview](../servers)
+- [MCP Quick Reference](../quick-reference)
+- [Blog System Architecture](../../blog/architecture)
+- [Content Creation Guide](../../blog/content-creation)
 
 ---
 

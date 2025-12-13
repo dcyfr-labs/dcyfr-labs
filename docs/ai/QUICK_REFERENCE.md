@@ -118,6 +118,6 @@ src/
 ---
 
 **Need more detail?** See:
-- [Component Patterns](./COMPONENT_PATTERNS.md) - Layout usage, barrel exports
-- [Enforcement Rules](./ENFORCEMENT_RULES.md) - Design tokens, validation
+- [Component Patterns](./component-patterns) - Layout usage, barrel exports
+- [Enforcement Rules](./enforcement-rules) - Design tokens, validation
 - [Templates](../templates/) - Copy-paste starting points

@@ -554,10 +554,10 @@ Respect user privacy:
 
 ## Related Documentation
 
-- [MCP Servers Overview](../servers.md)
-- [Blog System Architecture](../../blog/architecture.md)
-- [RSS Feed Documentation](../../rss/feeds.md)
-- [API Routes Overview](../../api/routes/overview.md)
+- [MCP Servers Overview](../servers)
+- [Blog System Architecture](../../blog/architecture)
+- [RSS Feed Documentation](../../rss/feeds)
+- [API Routes Overview](../../api/routes/overview)
 
 ---
 

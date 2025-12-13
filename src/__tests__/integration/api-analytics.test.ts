@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { createClient } from 'redis'
 import { GET } from '@/app/api/analytics/route'
 import { rateLimit } from '@/lib/rate-limit'
+import { blockExternalAccess } from '@/lib/api-security'
 import {
   getMultiplePostViews,
   getMultiplePostViews24h,
@@ -11,6 +12,10 @@ import { getPostSharesBulk, getPostShares24hBulk } from '@/lib/shares'
 import { getPostCommentsBulk, getPostComments24hBulk } from '@/lib/comments'
 
 // Mock dependencies
+vi.mock('@/lib/api-security', () => ({
+  blockExternalAccess: vi.fn(() => null), // By default, allow access
+}))
+
 vi.mock('@/lib/rate-limit', () => ({
   rateLimit: vi.fn(),
   getClientIp: vi.fn(() => '192.168.1.1'),

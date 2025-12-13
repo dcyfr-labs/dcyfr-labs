@@ -390,7 +390,7 @@ document.body.innerHTML += '<script>alert("xss")</script>';
 ### Security Audit
 
 **Status:** ✅ **PASSED** (October 25, 2025)
-**Documentation:** [Environment Variable Audit](/docs/security/environment-variable-audit.md)
+**Documentation:** [Environment Variable Audit](/docs/security/environment-variable-audit)
 
 **Audit Results:**
 - ✅ No hardcoded secrets found in codebase
@@ -417,7 +417,7 @@ document.body.innerHTML += '<script>alert("xss")</script>';
 - ✅ Comprehensive documentation with examples
 - ✅ Fallback behaviors for all optional credentials
 
-**See full audit report:** [environment-variable-audit.md](/docs/security/environment-variable-audit.md)
+**See full audit report:** [environment-variable-audit.md](/docs/security/environment-variable-audit)
 
 ---
 
@@ -445,11 +445,11 @@ document.body.innerHTML += '<script>alert("xss")</script>';
 ## References
 
 ### Documentation
-- [CSP Nonce Implementation](/docs/security/csp/nonce-implementation.md) - Complete guide
-- [Rate Limiting Guide](/docs/security/rate-limiting/guide.md) - Rate limit setup
-- [API Routes Overview](/docs/api/routes/overview.md) - API architecture
-- [Environment Variable Audit](/docs/security/environment-variable-audit.md) - Security audit report
-- [Environment Variables Guide](/docs/platform/environment-variables.md) - Setup guide
+- [CSP Nonce Implementation](/docs/security/csp/nonce-implementation) - Complete guide
+- [Rate Limiting Guide](/docs/security/rate-limiting/guide) - Rate limit setup
+- [API Routes Overview](/docs/api/routes/overview) - API architecture
+- [Environment Variable Audit](/docs/security/environment-variable-audit) - Security audit report
+- [Environment Variables Guide](/docs/platform/environment-variables) - Setup guide
 
 ### Standards
 - [OWASP CSP Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html)

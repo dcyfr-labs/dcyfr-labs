@@ -385,9 +385,9 @@ Potential improvements for future versions:
 
 ## Related Documentation
 
-- **[MDX Component](./mdx.md)** - How MDX processes markdown images
-- **[Design System](../../docs/ai/DESIGN_SYSTEM.md)** - Image spacing tokens
-- **[Component Patterns](../../docs/ai/COMPONENT_PATTERNS.md)** - Barrel exports
+- **[MDX Component](./mdx)** - How MDX processes markdown images
+- **[Design System](../../docs/ai/design-system)** - Image spacing tokens
+- **[Component Patterns](../../docs/ai/component-patterns)** - Barrel exports
 
 ---
 

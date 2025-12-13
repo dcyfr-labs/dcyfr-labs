@@ -413,8 +413,8 @@ toast.error("Failed to copy", {
 
 ## Related Documentation
 
-- [Blog System Architecture](../blog/architecture.md)
-- [Component JSDoc Guide](../operations/component-jsdoc-implementation.md)
+- [Blog System Architecture](../blog/architecture)
+- [Component JSDoc Guide](../operations/component-jsdoc-implementation)
 - [shadcn/ui Button Component](https://ui.shadcn.com/docs/components/button)
 - [lucide-react Icons](https://lucide.dev/icons/)
 - [Sonner Toast Library](https://sonner.emilkowal.ski/)

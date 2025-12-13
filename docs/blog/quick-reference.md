@@ -2,7 +2,7 @@
 
 **For:** Developers and content authors  
 **Last Updated:** October 23, 2025  
-**Related:** [Architecture](./architecture.md) · [Content Creation](./content-creation.md) · [MDX Processing](./mdx-processing.md)
+**Related:** [Architecture](./architecture) · [Content Creation](./content-creation) · [MDX Processing](./mdx-processing)
 
 ---
 
@@ -555,10 +555,10 @@ Automatic tracking (requires Redis):
 ## Resources
 
 ### Documentation
-- [Architecture](./architecture.md) - System overview
-- [MDX Processing](./mdx-processing.md) - How MDX is transformed
-- [Content Creation](./content-creation.md) - Detailed authoring guide
-- [Frontmatter Schema](./frontmatter-schema.md) - Complete field reference
+- [Architecture](./architecture) - System overview
+- [MDX Processing](./mdx-processing) - How MDX is transformed
+- [Content Creation](./content-creation) - Detailed authoring guide
+- [Frontmatter Schema](./frontmatter-schema) - Complete field reference
 
 ### Examples
 - `src/content/blog/shipping-tiny-portfolio.mdx` - Full-featured example
@@ -571,4 +571,4 @@ Automatic tracking (requires Redis):
 
 ---
 
-_For detailed information, see the [full architecture documentation](./architecture.md)._
+_For detailed information, see the [full architecture documentation](./architecture)._

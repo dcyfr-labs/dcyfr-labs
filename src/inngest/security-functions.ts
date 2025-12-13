@@ -322,3 +322,213 @@ export const securityAdvisoryHandler = inngest.createFunction(
     };
   }
 );
+
+/**
+ * Daily Security Test Suite - Cron Job
+ *
+ * Runs automated security tests daily at 6:00 PM Mountain Time
+ * to validate Sentry alerting and Axiom logging integration.
+ *
+ * Schedule: Daily at 6:00 PM MT (00:00 UTC next day during MST, 01:00 UTC during MDT)
+ * Duration: December 12-20, 2025 (1 week validation period)
+ *
+ * Tests performed:
+ * 1. Invalid API key attempts (triggers Sentry warning)
+ * 2. Brute force simulation (15 attempts)
+ * 3. Rate limit validation
+ * 4. Successful access logging
+ *
+ * Expected outcomes:
+ * - Sentry alerts triggered for brute force (>10 attempts)
+ * - Axiom logs generated for all attempts
+ * - Email notifications sent per alert configuration
+ *
+ * @remarks
+ * This validates the security monitoring setup implemented in
+ * December 2025 security audit. After validation period, this
+ * can be disabled or reduced to weekly frequency.
+ */
+export const dailySecurityTest = inngest.createFunction(
+  {
+    id: "daily-security-test",
+    retries: 1,
+    cancelOn: [
+      {
+        // Auto-cancel after December 20, 2025
+        event: "inngest/function.cancelled",
+        if: "async.data.reason == 'schedule_ended'",
+      },
+    ],
+  },
+  // Run daily at 6:00 PM Mountain Time
+  // MST (winter): 6 PM MST = 1 AM UTC next day (UTC-7)
+  // MDT (summer): 6 PM MDT = 12 AM UTC next day (UTC-6)
+  // Currently in MST, so 1 AM UTC
+  { cron: "0 1 * * *" },
+  async ({ step }) => {
+    const now = new Date();
+    const endDate = new Date("2025-12-20T23:59:59Z");
+
+    // Auto-skip if past December 20, 2025
+    if (now > endDate) {
+      return {
+        skipped: true,
+        reason: "Validation period ended (Dec 20, 2025)",
+        timestamp: now.toISOString(),
+      };
+    }
+
+    const baseUrl = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3000";
+
+    // Test 1: Invalid API key attempts
+    const invalidKeyResults = await step.run("test-invalid-api-keys", async () => {
+      const results = [];
+
+      for (let i = 1; i <= 3; i++) {
+        try {
+          const response = await fetch(`${baseUrl}/api/analytics`, {
+            headers: {
+              "x-internal-request": "true",
+              "Authorization": `Bearer inngest_test_invalid_${i}_${Date.now()}`,
+            },
+          });
+
+          results.push({
+            attempt: i,
+            status: response.status,
+            success: response.status === 401,
+          });
+        } catch (error) {
+          results.push({
+            attempt: i,
+            error: error instanceof Error ? error.message : "Unknown error",
+            success: false,
+          });
+        }
+      }
+
+      return results;
+    });
+
+    // Test 2: Brute force simulation (15 attempts to trigger alert)
+    const bruteForceResults = await step.run("test-brute-force", async () => {
+      const results = [];
+
+      for (let i = 1; i <= 15; i++) {
+        try {
+          const response = await fetch(`${baseUrl}/api/analytics`, {
+            headers: {
+              "x-internal-request": "true",
+              "Authorization": `Bearer brute_force_${i}_${Date.now()}`,
+            },
+          });
+
+          results.push({
+            attempt: i,
+            status: response.status,
+            success: response.status === 401,
+          });
+
+          // Small delay to avoid overwhelming the server
+          await new Promise(resolve => setTimeout(resolve, 100));
+        } catch (error) {
+          results.push({
+            attempt: i,
+            error: error instanceof Error ? error.message : "Unknown error",
+            success: false,
+          });
+        }
+      }
+
+      return results;
+    });
+
+    // Test 3: Rate limit validation (rapid requests)
+    const rateLimitResults = await step.run("test-rate-limits", async () => {
+      const results = [];
+
+      for (let i = 1; i <= 10; i++) {
+        try {
+          const response = await fetch(`${baseUrl}/api/analytics`, {
+            headers: {
+              "x-internal-request": "true",
+              "Authorization": `Bearer rate_test_${i}_${Date.now()}`,
+            },
+          });
+
+          results.push({
+            attempt: i,
+            status: response.status,
+            rateLimited: response.status === 429,
+          });
+
+          // No delay for rate limit testing
+        } catch (error) {
+          results.push({
+            attempt: i,
+            error: error instanceof Error ? error.message : "Unknown error",
+          });
+        }
+      }
+
+      return results;
+    });
+
+    // Test 4: Admin API Usage endpoint
+    const adminApiResults = await step.run("test-admin-api", async () => {
+      try {
+        const response = await fetch(`${baseUrl}/api/admin/api-usage`, {
+          headers: {
+            "x-internal-request": "true",
+            "Authorization": `Bearer inngest_admin_test_${Date.now()}`,
+          },
+        });
+
+        return {
+          status: response.status,
+          success: response.status === 401,
+        };
+      } catch (error) {
+        return {
+          error: error instanceof Error ? error.message : "Unknown error",
+          success: false,
+        };
+      }
+    });
+
+    // Calculate summary
+    const summary = {
+      timestamp: now.toISOString(),
+      mountainTime: now.toLocaleString("en-US", { timeZone: "America/Denver" }),
+      daysRemaining: Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)),
+      tests: {
+        invalidKeys: {
+          total: invalidKeyResults.length,
+          successful: invalidKeyResults.filter(r => r.success).length,
+        },
+        bruteForce: {
+          total: bruteForceResults.length,
+          successful: bruteForceResults.filter(r => r.success).length,
+          expectedSentryAlert: bruteForceResults.filter(r => r.success).length >= 10,
+        },
+        rateLimits: {
+          total: rateLimitResults.length,
+          rateLimited: rateLimitResults.filter(r => 'rateLimited' in r && r.rateLimited).length,
+        },
+        adminApi: adminApiResults,
+      },
+      expectedOutcomes: {
+        sentryEvents: invalidKeyResults.length + bruteForceResults.length + 1,
+        sentryAlerts: bruteForceResults.filter(r => r.success).length >= 10 ? 1 : 0,
+        axiomLogs: invalidKeyResults.length + bruteForceResults.length + rateLimitResults.length + 1,
+      },
+    };
+
+    // Log summary for monitoring
+    console.log("Daily Security Test Summary:", JSON.stringify(summary, null, 2));
+
+    return summary;
+  }
+);

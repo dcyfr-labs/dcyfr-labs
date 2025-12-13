@@ -53,7 +53,7 @@ Quick, high-impact UI/UX improvements implemented for better user experience and
 
 **Inspiration**: [react-holo-card-effect.vercel.app](https://react-holo-card-effect.vercel.app/)
 
-**See**: [Holographic Card Effects Documentation](/docs/design/holographic-card-effects.md)
+**See**: [Holographic Card Effects Documentation](/docs/design/holographic-card-effects)
 
 ### 2. **Smooth Input Transitions** ✅
 
@@ -216,8 +216,8 @@ html {
 
 ## Related Documentation
 
-- [Design System Validation](/docs/design/ENFORCEMENT.md)
-- [UI Design Patterns Audit](/docs/design/ui-design-patterns-audit-2025.md)
+- [Design System Validation](/docs/design/enforcement)
+- [UI Design Patterns Audit](/docs/design/ui-design-patterns-audit-2025)
 - [Component API Docs](/docs/components/)
 - [Accessibility Guidelines](/docs/accessibility/)
 

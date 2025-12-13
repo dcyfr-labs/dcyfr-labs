@@ -360,9 +360,9 @@ describe('Contact API Integration', () => {
         const response = await POST(request)
         const data = await response.json()
 
-        // API returns 500 for JSON parse errors via error handler
-        expect(response.status).toBe(500)
-        expect(data.error).toBeTruthy()
+        // API returns 400 for JSON parse errors
+        expect(response.status).toBe(400)
+        expect(data.error).toContain('Invalid JSON')
       })
 
       it('handles Inngest send failure', async () => {

@@ -116,4 +116,4 @@ open https://your-site.com/activity
 
 - [GitHub Token Documentation](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
 - [Vercel Environment Variables](https://vercel.com/docs/projects/environment-variables)
-- [Error Handling Best Practices](../development/error-handling.md)
+- [Error Handling Best Practices](../development/error-handling)

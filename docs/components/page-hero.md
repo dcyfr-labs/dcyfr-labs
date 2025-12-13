@@ -297,7 +297,7 @@ After:
 
 ## See Also
 
-- [Design Tokens](/docs/design/ux-ui-consistency-analysis.md)
-- [Page Layout Component](/docs/components/page-layout.md)
-- [Archive Layout Component](/docs/components/archive-layout.md)
-- [Architecture Patterns](/docs/architecture/README.md)
+- [Design Tokens](/docs/design/ux-ui-consistency-analysis)
+- [Page Layout Component](/docs/components/page-layout)
+- [Archive Layout Component](/docs/components/archive-layout)
+- [Architecture Patterns](/docs/architecture/readme)

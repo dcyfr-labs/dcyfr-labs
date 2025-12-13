@@ -62,7 +62,7 @@ npm run dev
 
 ### Production Deployment (Vercel)
 
-**See:** [Production Deployment Runbook](../operations/PRODUCTION_DEPLOYMENT.md) for comprehensive guide.
+**See:** [Production Deployment Runbook](../operations/production-deployment) for comprehensive guide.
 
 **Quick Setup:**
 
@@ -99,7 +99,7 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
    - `VERCEL_TOKEN` - For deployment checks workflow
    - `SENTRY_AUTH_TOKEN` - For source map uploads in CI
 
-**See:** [Production Deployment Runbook - GitHub Secrets](../operations/PRODUCTION_DEPLOYMENT.md#github-secrets-configuration)
+**See:** [Production Deployment Runbook - GitHub Secrets](../operations/production-deployment#github-secrets-configuration)
 
 ---
 
@@ -679,11 +679,11 @@ NEXT_PUBLIC_GISCUS_CATEGORY_ID=
 
 ## Related Documentation
 
-- [API Routes](../api/routes/overview.md) - API documentation
-- [Site Configuration](./site-config.md) - Domain/URL config
-- [Inngest Integration](../features/inngest-integration.md) - Background jobs
-- [GitHub Integration](../features/github-integration.md) - Heatmap setup
-- [Deployment Guide](../deployment-guide.md) - Pre-deployment checklist
+- [API Routes](../api/routes/overview) - API documentation
+- [Site Configuration](./site-config) - Domain/URL config
+- [Inngest Integration](../features/inngest-integration) - Background jobs
+- [GitHub Integration](../features/github-integration) - Heatmap setup
+- [Deployment Guide](../deployment-guide) - Pre-deployment checklist
 
 ---
 

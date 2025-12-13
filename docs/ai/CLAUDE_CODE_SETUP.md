@@ -7,7 +7,7 @@ Your project is now fully configured for Claude Code integration with comprehens
 ## What Was Done
 
 ### 1. Created Claude Code Instructions
-**File**: [`.github/claude-instructions.md`](./.github/claude-instructions.md)
+**File**: [`.github/claude-instructions.md`](./.github/claude-instructions)
 
 Comprehensive 600+ line guide covering:
 - Project architecture and current state
@@ -18,7 +18,7 @@ Comprehensive 600+ line guide covering:
 - MCP server documentation
 
 ### 2. Created Integration Guide
-**File**: [`docs/ai/claude-code-integration.md`](./docs/ai/claude-code-integration.md)
+**File**: [`docs/ai/claude-code-integration.md`](./docs/ai/claude-code-integration)
 
 Detailed 500+ line integration guide:
 - When to use Claude Code vs Copilot
@@ -147,7 +147,7 @@ Analyze the codebase for code duplication patterns
 
 ## Phase 4 Tasks Ready
 
-From [`docs/operations/todo.md`](./docs/operations/todo.md):
+From [`docs/operations/todo.md`](./docs/operations/todo):
 
 1. **Phase 4.1**: Component directory reorganization (4-6 hours)
 2. **Phase 4.2**: Extract common filter logic (3-4 hours)
@@ -181,15 +181,15 @@ Claude Code automatically enforces:
 ## Resources
 
 ### Primary Documentation
-- **Claude Instructions**: [`.github/claude-instructions.md`](./.github/claude-instructions.md)
-- **Integration Guide**: [`docs/ai/claude-code-integration.md`](./docs/ai/claude-code-integration.md)
+- **Claude Instructions**: [`.github/claude-instructions.md`](./.github/claude-instructions)
+- **Integration Guide**: [`docs/ai/claude-code-integration.md`](./docs/ai/claude-code-integration)
 
 ### Project Status
-- **Current Priorities**: [`docs/operations/todo.md`](./docs/operations/todo.md)
-- **Completed Work**: [`docs/operations/done.md`](./docs/operations/done.md)
+- **Current Priorities**: [`docs/operations/todo.md`](./docs/operations/todo)
+- **Completed Work**: [`docs/operations/done.md`](./docs/operations/done)
 
 ### Architecture
-- **Design System**: [`docs/design/ENFORCEMENT.md`](./docs/design/ENFORCEMENT.md)
+- **Design System**: [`docs/design/ENFORCEMENT.md`](./docs/design/enforcement)
 - **Architecture Guides**: [`docs/architecture/`](./docs/architecture/)
 - **Testing Guide**: [`docs/testing/`](./docs/testing/)
 
@@ -240,4 +240,4 @@ After Claude Code completes Phase 4:
 
 **Ready to Start**: Open Claude Code and say "Start Phase 4.1"
 
-For detailed instructions, see [`.github/claude-instructions.md`](./.github/claude-instructions.md)
+For detailed instructions, see [`.github/claude-instructions.md`](./.github/claude-instructions)

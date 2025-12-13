@@ -469,7 +469,7 @@ Expected: Number of days + date
 
 ### Publishing Schedule
 
-Define in `/docs/operations/content-strategy.md`:
+Define in content management system:
 ```markdown
 ## Publishing Schedule
 - **Frequency**: Bi-weekly (every other Tuesday)
@@ -523,10 +523,9 @@ Example structure:
 
 ## Related Documentation
 
-- [Content Strategy](../../operations/content-strategy.md)
-- [Inngest Integration](../../features/inngest-integration.md)
-- [Blog System Architecture](../../blog/architecture.md)
-- [Frontmatter Schema](../../blog/frontmatter-schema.md)
+- [Inngest Integration](../../features/inngest-integration)
+- [Blog System Architecture](../../blog/architecture)
+- [Frontmatter Schema](../../blog/frontmatter-schema)
 
 ---
 

@@ -18,6 +18,7 @@ import {
 import {
   securityAdvisoryMonitor,
   securityAdvisoryHandler,
+  dailySecurityTest,
 } from "@/inngest/security-functions";
 import {
   submitUrlToGoogle,
@@ -123,6 +124,7 @@ const { GET: inngestGET, POST: inngestPOST, PUT: inngestPUT } = serve({
     // Security monitoring (CVE-2025-55182 response)
     securityAdvisoryMonitor,     // Scheduled: hourly GHSA polling
     securityAdvisoryHandler,     // Event-driven: process detections
+    dailySecurityTest,           // Scheduled: daily at 6PM MT (Dec 12-20)
 
     // Google Indexing API
     submitUrlToGoogle,               // Event-driven: submit URL for indexing

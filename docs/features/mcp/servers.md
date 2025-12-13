@@ -183,7 +183,7 @@ This project uses **Model Context Protocol (MCP)** servers in VS Code to enhance
 - ✅ Bulk operations save time
 - ✅ Template-based workflows
 
-**Documentation**: [Filesystem MCP Implementation Guide](./implementation-plans/filesystem-mcp.md)
+**Documentation**: [Filesystem MCP Implementation Guide](./implementation-plans/filesystem-mcp)
 
 ---
 
@@ -210,7 +210,7 @@ This project uses **Model Context Protocol (MCP)** servers in VS Code to enhance
 - ✅ RSS feed testing
 - ✅ No external dependencies
 
-**Documentation**: [Fetch MCP Implementation Guide](./implementation-plans/fetch-mcp.md)
+**Documentation**: [Fetch MCP Implementation Guide](./implementation-plans/fetch-mcp)
 
 ---
 

@@ -63,7 +63,16 @@ export function AnalyticsCharts({ posts, dateRange }: AnalyticsChartsProps) {
         const response = await fetch(`/api/analytics/daily?days=${days}`);
         
         if (!response.ok) {
-          throw new Error("Failed to fetch daily analytics");
+          // Try to get error details from response
+          let errorMessage = `HTTP ${response.status}`;
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.message || errorData.error || errorMessage;
+          } catch {
+            // If response isn't JSON, use status text
+            errorMessage = response.statusText || errorMessage;
+          }
+          throw new Error(`Failed to fetch daily analytics: ${errorMessage}`);
         }
 
         const result = await response.json();
@@ -72,23 +81,30 @@ export function AnalyticsCharts({ posts, dateRange }: AnalyticsChartsProps) {
           throw new Error(result.error || "Failed to load data");
         }
 
+        if (!Array.isArray(result.data)) {
+          throw new Error("Invalid response format: expected data array");
+        }
+
         // Transform API data to chart format
-        const transformedData: DailyData[] = result.data.map((item: { date: string; views: number }) => {
+        const transformedData: DailyData[] = result.data.map((item: { date: string; views: number; shares?: number; comments?: number; engagement?: number }) => {
           const dateObj = new Date(item.date);
           return {
             date: dateObj.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-            views: item.views,
-            // TODO: Add shares and comments when daily tracking is implemented
-            shares: 0,
-            comments: 0,
-            engagement: 0,
+            views: item.views || 0,
+            shares: item.shares || 0,
+            comments: item.comments || 0,
+            engagement: item.engagement || 0,
           };
         });
 
         setChartData(transformedData);
       } catch (err) {
-        console.error("Failed to fetch daily analytics:", err);
-        setError(err instanceof Error ? err.message : "Unknown error");
+        const errorMessage = err instanceof Error ? err.message : "Unknown error";
+        console.error("Failed to fetch daily analytics:", {
+          error: errorMessage,
+          details: err,
+        });
+        setError(errorMessage);
         // Set empty data on error
         setChartData([]);
       } finally {

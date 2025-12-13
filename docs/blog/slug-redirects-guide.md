@@ -2,7 +2,7 @@
 
 **Status:** ✅ Production  
 **Last Updated:** October 27, 2025  
-**Related:** [Frontmatter Schema](./frontmatter-schema.md) · [Content Creation](./content-creation.md)
+**Related:** [Frontmatter Schema](./frontmatter-schema) · [Content Creation](./content-creation)
 
 ---
 
@@ -483,6 +483,6 @@ No action needed - let it happen naturally.
 
 ## See Also
 
-- [Frontmatter Schema Reference](./frontmatter-schema.md) - Full field documentation
-- [Content Creation Guide](./content-creation.md) - Writing blog posts
-- [Blog Architecture](./architecture.md) - How the blog system works
+- [Frontmatter Schema Reference](./frontmatter-schema) - Full field documentation
+- [Content Creation Guide](./content-creation) - Writing blog posts
+- [Blog Architecture](./architecture) - How the blog system works

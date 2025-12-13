@@ -212,6 +212,6 @@ const { latestSlug, hottestSlug } = await getPostBadgeMetadata(posts);
 
 ## Related Documentation
 
-- [Post List Refactoring](./post-list-refactoring.md) - Full implementation guide
-- [Post Badges Quick Reference](./post-badges-quick-reference.md) - Badge system
-- [Badge Floating Layout](./badge-floating-layout.md) - Badge positioning
+- [Post List Refactoring](./post-list-refactoring) - Full implementation guide
+- [Post Badges Quick Reference](./post-badges-quick-reference) - Badge system
+- [Badge Floating Layout](./badge-floating-layout) - Badge positioning

@@ -21,7 +21,7 @@ Location: `src/proxy.ts`
   "img-src": "'self' data: https://www.dcyfr.ai https://*.vercel.com https://avatars.githubusercontent.com https://vercel.live",
   "font-src": "'self' https://fonts.gstatic.com https://vercel.live",
   "connect-src": "'self' https://va.vercel-scripts.com https://*.vercel-insights.com https://*.sentry.io https://vercel.live https://*.pusher.com",
-  "frame-src": "https://vercel.live https://giscus.app",
+  "frame-src": "https://vercel.live https://giscus.app https://*.vercel-insights.com",
   "worker-src": "'self' blob:",
   "object-src": "'none'",
   "base-uri": "'self'",

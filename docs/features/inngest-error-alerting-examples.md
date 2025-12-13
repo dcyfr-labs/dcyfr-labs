@@ -442,7 +442,7 @@ async function testErrorHandling() {
 
 ## Related Documentation
 
-- [Full Error Alerting Guide](./inngest-error-alerting.md)
-- [Quick Reference](./inngest-error-alerting-quick-ref.md)
-- [Implementation Summary](./INNGEST_ERROR_ALERTING_IMPLEMENTATION.md)
-- [Inngest Integration](./inngest-integration.md)
+- [Full Error Alerting Guide](./inngest-error-alerting)
+- [Quick Reference](./inngest-error-alerting-quick-ref)
+- [Implementation Summary](./inngest-error-alerting-implementation)
+- [Inngest Integration](./inngest-integration)

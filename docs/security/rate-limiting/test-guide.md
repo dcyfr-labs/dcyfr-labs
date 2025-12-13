@@ -241,11 +241,11 @@ jobs:
 
 ## Related Documentation
 
-- [Rate Limiting Guide](../docs/security/rate-limiting/guide.md)
-- [Rate Limiting Implementation](../docs/security/rate-limiting/implementation-summary.md)
-- [Rate Limiting Quick Reference](../docs/security/rate-limiting/quick-reference.md)
-- [API Reference](../docs/api/reference.md)
-- [Environment Variables](../docs/operations/environment-variables.md)
+- [Rate Limiting Guide](../docs/security/rate-limiting/guide)
+- [Rate Limiting Implementation](../docs/security/rate-limiting/implementation-summary)
+- [Rate Limiting Quick Reference](../docs/security/rate-limiting/quick-reference)
+- [API Reference](../docs/api/reference)
+- [Environment Variables](../docs/operations/environment-variables)
 
 ## Maintenance
 

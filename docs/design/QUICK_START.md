@@ -11,10 +11,10 @@ We've identified UX/UI inconsistencies across the site and created a design syst
 
 ### Quick Links
 
-- 📊 [Full Analysis](./ux-ui-consistency-analysis.md) - Detailed inconsistency report
-- 📚 [Design System Guide](./design-system.md) - Complete documentation
-- 🎨 [Component Patterns](./component-patterns.md) - Reusable patterns & examples
-- 🗺️ [Implementation Roadmap](./implementation-roadmap.md) - Step-by-step plan
+- 📊 [Full Analysis](./ux-ui-consistency-analysis) - Detailed inconsistency report
+- 📚 [Design System Guide](./design-system) - Complete documentation
+- 🎨 [Component Patterns](./component-patterns) - Reusable patterns & examples
+- 🗺️ [Implementation Roadmap](./implementation-roadmap) - Step-by-step plan
 - 🎯 [Design Tokens](../../src/lib/design-tokens.ts) - Source of truth
 
 ---
@@ -220,15 +220,15 @@ import { HOVER_EFFECTS } from '@/lib/design-tokens';
 
 ### If you're creating a new component:
 
-1. **Check existing patterns** in [Component Patterns](./component-patterns.md)
+1. **Check existing patterns** in [Component Patterns](./component-patterns)
 2. **Use design tokens** from `src/lib/design-tokens.ts`
 3. **Follow the examples** in the documentation
 4. **Test thoroughly** (light/dark mode, all breakpoints)
 
 ### If you're updating an existing component:
 
-1. **Read the analysis** in [UX/UI Consistency Analysis](./ux-ui-consistency-analysis.md)
-2. **Check the roadmap** in [Implementation Roadmap](./implementation-roadmap.md)
+1. **Read the analysis** in [UX/UI Consistency Analysis](./ux-ui-consistency-analysis)
+2. **Check the roadmap** in [Implementation Roadmap](./implementation-roadmap)
 3. **Import design tokens** instead of using magic strings
 4. **Update documentation** if you discover new patterns
 
@@ -312,7 +312,7 @@ You can for unique cases, but design tokens ensure consistency. If everyone uses
 
 ### Do I need to update all existing code?
 
-Not immediately. See the [Implementation Roadmap](./implementation-roadmap.md) for the phased rollout plan. But **all new code** should use design tokens.
+Not immediately. See the [Implementation Roadmap](./implementation-roadmap) for the phased rollout plan. But **all new code** should use design tokens.
 
 ### How do I test my changes?
 
@@ -358,7 +358,7 @@ Create a GitHub issue with:
 
 ## Related Documents
 
-- 📊 [UX/UI Consistency Analysis](./ux-ui-consistency-analysis.md) - Full problem breakdown
-- 📚 [Design System Guide](./design-system.md) - Complete reference
-- 🎨 [Component Patterns](./component-patterns.md) - Copy-paste examples
-- 🗺️ [Implementation Roadmap](./implementation-roadmap.md) - Rollout plan
+- 📊 [UX/UI Consistency Analysis](./ux-ui-consistency-analysis) - Full problem breakdown
+- 📚 [Design System Guide](./design-system) - Complete reference
+- 🎨 [Component Patterns](./component-patterns) - Copy-paste examples
+- 🗺️ [Implementation Roadmap](./implementation-roadmap) - Rollout plan

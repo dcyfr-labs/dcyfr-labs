@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-// import { checkBotId } from "botid/server"; // Disabled - see PR #112
+import { checkBotId } from "botid/server";
 // blockExternalAccess NOT imported - contact form is public user-facing endpoint
 import { rateLimit, getClientIp, createRateLimitHeaders } from "@/lib/rate-limit";
 import { RATE_LIMITS } from "@/lib/api-guardrails";
@@ -62,12 +62,65 @@ export async function POST(request: NextRequest) {
   // NOTE: blockExternalAccess() is NOT used here because this is a PUBLIC
   // user-facing endpoint that must accept requests from users' browsers.
   // Security is provided by: rate limiting, honeypot field, input validation,
-  // and optionally BotID (currently disabled due to false positives).
+  // and optionally BotID in production environments (requires ENABLE_BOTID=1).
+  // BotID is disabled in non-production environments to prevent false positives.
 
-  let body: ContactFormData | undefined;
+  // Validate request size to prevent DoS attacks via large payloads
+  const contentLength = request.headers.get("content-length");
+  const maxSize = 50 * 1024; // 50KB limit for contact form
   
+  // Primary check: Content-Length header (for production environments)
+  if (contentLength && parseInt(contentLength) > maxSize) {
+    return NextResponse.json(
+      { 
+        error: "Request too large",
+        message: `Request size must not exceed ${Math.floor(maxSize / 1024)}KB`,
+      },
+      { status: 413 } // Payload Too Large
+    );
+  }
+  
+  // Secondary check: Body size validation (for testing/environments without Content-Length)
+  let rawBody: string;
+  let body: any;
   try {
-    /* BotID temporarily disabled due to false positives - see PR #112
+    rawBody = await request.text();
+
+    // Check actual body size
+    const bodySize = Buffer.byteLength(rawBody, 'utf8');
+    if (bodySize > maxSize) {
+      return NextResponse.json(
+        {
+          error: "Request too large",
+          message: `Request size must not exceed ${Math.floor(maxSize / 1024)}KB`,
+        },
+        { status: 413 } // Payload Too Large
+      );
+    }
+
+    // Re-parse JSON from the text
+    body = JSON.parse(rawBody);
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: "Invalid JSON in request body",
+        message: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 400 }
+    );
+  }
+  
+  // Validate the parsed data
+  if (!body || typeof body !== "object") {
+    return NextResponse.json(
+      { error: "Request body must be a JSON object" },
+      { status: 400 }
+    );
+  }
+
+  const contactData = body as ContactFormData;
+
+  try {
     // Optional bot detection using Vercel BotID
     // If BotID is unavailable or misconfigured, we gracefully fall back to
     // rate limiting + honeypot + input validation for protection
@@ -76,7 +129,12 @@ export async function POST(request: NextRequest) {
     // Toggle BotID via ENABLE_BOTID env var (set to '1' to enable). Default is disabled.
     // This approach allows us to re-enable BotID quickly after verifying configuration
     // in the Vercel dashboard without code changes.
-    if (process.env.ENABLE_BOTID === '1') {
+    // 
+    // IMPORTANT: Only enable BotID in production AND when explicitly enabled via env var
+    // This prevents false positives in development/preview and requires deliberate activation
+    const shouldUseBotId = process.env.NODE_ENV === 'production' && process.env.ENABLE_BOTID === '1';
+    
+    if (shouldUseBotId) {
       try {
         const verification = await checkBotId();
 
@@ -98,7 +156,6 @@ export async function POST(request: NextRequest) {
         );
       }
     }
-    */
 
     // Apply rate limiting
     const clientIp = getClientIp(request);
@@ -120,7 +177,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    body = await request.json();
+    // Extract form data (body was already parsed from request.text() above)
     const { name, email, message, website } = body || {};
 
     // Honeypot validation - if filled, it's likely a bot

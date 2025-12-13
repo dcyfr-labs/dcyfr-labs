@@ -67,6 +67,20 @@ const nextConfig: NextConfig = {
       // Legacy RSS/Atom redirects already handled in app/rss.xml/route.ts and app/atom.xml/route.ts
     ];
   },
+  webpack: (config, { isServer }) => {
+    // Suppress harmless deprecation warnings from botid's transitive dependencies
+    // These are internal to the package and don't affect functionality
+    if (!isServer && process.env.NODE_ENV === 'development') {
+      config.ignoreWarnings = [
+        ...(config.ignoreWarnings || []),
+        {
+          module: /node_modules\/botid/,
+          message: /deprecated.*usestand/i,
+        },
+      ];
+    }
+    return config;
+  },
 };
 
 export default withSentryConfig(withBundleAnalyzer(withBotId(withAxiom(nextConfig))), {

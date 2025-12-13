@@ -4,13 +4,12 @@
 
 import * as Sentry from "@sentry/nextjs";
 
-const isDev = process.env.NODE_ENV === "development";
-
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
 
-  // Disable Sentry in development - errors will still be logged to console
-  enabled: !isDev,
+  // TEMPORARY: Enable Sentry in development for testing alerts
+  // TODO: Revert to `enabled: !isDev` after alert testing is complete
+  enabled: true,
 
   // Dynamic trace sampling based on route importance
   // Reduces span usage while preserving observability for critical paths

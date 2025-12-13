@@ -875,8 +875,8 @@ grep -r "from '@/lib/analytics'" src/
 
 ## Additional Resources
 
-- **Todo tracking**: [`docs/operations/todo.md`](todo.md)
-- **Completion history**: [`docs/operations/done.md`](done.md)
-- **Best practices**: [`docs/ai/BEST_PRACTICES.md`](../ai/BEST_PRACTICES.md)
-- **Design system**: [`docs/ai/DESIGN_SYSTEM.md`](../ai/DESIGN_SYSTEM.md)
+- **Todo tracking**: [`docs/operations/todo.md`](todo)
+- **Completion history**: [`docs/operations/done.md`](done)
+- **Best practices**: [`docs/ai/BEST_PRACTICES.md`](../ai/best-practices)
+- **Design system**: [`docs/ai/DESIGN_SYSTEM.md`](../ai/design-system)
 - **Architecture docs**: [`docs/architecture/`](../architecture/)

@@ -51,6 +51,7 @@ export function extractHeadings(content: string): TocHeading[] {
   const headings: TocHeading[] = [];
   const lines = content.split('\n');
   let inCodeBlock = false;
+  const idCounts = new Map<string, number>(); // Track duplicate IDs
   
   for (const line of lines) {
     // Toggle code block state when encountering triple backticks
@@ -70,7 +71,14 @@ export function extractHeadings(content: string): TocHeading[] {
       const level = headingMatch[1].length; // 2 for ##, 3 for ###
       const rawText = headingMatch[2].trim();
       const text = stripMarkdown(rawText); // Strip markdown formatting for display
-      const id = generateSlug(rawText); // Use raw text for ID to match rehype-slug
+      let id = generateSlug(rawText); // Use raw text for ID to match rehype-slug
+      
+      // Ensure unique IDs by appending counter to duplicates
+      const count = (idCounts.get(id) ?? 0) + 1;
+      idCounts.set(id, count);
+      if (count > 1) {
+        id = `${id}-${count - 1}`;
+      }
       
       headings.push({ id, text, level });
     }

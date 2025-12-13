@@ -108,12 +108,102 @@ jobs:
 
       - name: Parse gitleaks report and block on critical secrets
         if: always()
+        id: parse-gitleaks
         run: |
           if [ -f gitleaks-report.json ]; then
-            npm run parse:gitleaks-report gitleaks-report.json
+            npm run parse:gitleaks-report gitleaks-report.json || PARSE_EXIT_CODE=$?
+            echo "parse_exit_code=${PARSE_EXIT_CODE:-0}" >> $GITHUB_OUTPUT
           else
             echo "No gitleaks-report.json found"
+            echo "parse_exit_code=0" >> $GITHUB_OUTPUT
           fi
+        continue-on-error: true
+
+      - name: Create remediation issue for critical secrets
+        if: always() && steps.parse-gitleaks.outputs.parse_exit_code == '3'
+        run: |
+          # Extract detection details from gitleaks report
+          DETECTION_COUNT=$(jq 'length' gitleaks-report.json)
+          FILE_LIST=$(jq -r '.[] | "- `\(.file)` (line \(.line // "n/a")): \(.rule)"' gitleaks-report.json | head -20)
+
+          # Add note if there are more than 20 findings
+          if [ $(jq 'length' gitleaks-report.json) -gt 20 ]; then
+            FILE_LIST="$FILE_LIST
+          - ... and $((DETECTION_COUNT - 20)) more findings (see artifact)"
+          fi
+
+          # Prepare issue body
+          ISSUE_BODY="## 🚨 Critical Secret Detected
+
+Gitleaks has detected **${DETECTION_COUNT} critical secret(s)** requiring immediate remediation.
+
+### Detection Details
+
+This automated scan found secrets matching critical patterns (AWS keys, private keys, API tokens, etc.). These must be rotated and removed from git history immediately.
+
+### Affected Files
+
+\`\`\`
+${FILE_LIST}
+\`\`\`
+
+### Remediation Checklist
+
+- [ ] **Rotate Credentials**
+  - [ ] Identify the exposed secret type
+  - [ ] Generate new credentials via the appropriate service
+  - [ ] Update environment variables in Vercel, GitHub, and other services
+  - [ ] Verify new credentials work correctly
+
+- [ ] **Remove from Git History**
+  \`\`\`bash
+  # Using BFG Repo-Cleaner (recommended for large repos)
+  # Install: npm install -g bfg
+  bfg --replace-text passwords.txt
+  git reflog expire --expire=now --all
+  git gc --prune=now --aggressive
+  \`\`\`
+
+- [ ] **Update Secrets Management**
+  - [ ] Store secret in secure vault (not committed)
+  - [ ] Add to .gitignore if file-based
+  - [ ] Use environment variables for runtime
+  - [ ] Update .pii-allowlist.json ONLY if legitimate placeholder
+
+- [ ] **Verify Remediation**
+  - [ ] Run \`npm run parse:gitleaks-report\` locally
+  - [ ] Confirm secret no longer detected
+  - [ ] Verify service access with new credentials
+
+- [ ] **Close Issue** with remediation summary
+
+### References
+
+- [PI/PII Policy](docs/security/pi-policy.md)
+- [Security Findings](docs/security/FINDINGS_AND_ACTION_ITEMS.md)
+- [Allowlist Documentation](.pii-allowlist.json)
+
+### Workflow Information
+
+- **Triggered by:** ${{ github.event_name }}
+- **Branch:** ${{ github.ref_name }}
+- **Commit:** ${{ github.sha }}
+- **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+---
+
+*Automated by pii-scan workflow • DO NOT bypass via allowlist without justification*"
+
+          # Create GitHub issue
+          gh issue create \
+            --title "🚨 Critical Secret Detected: $DETECTION_COUNT secret(s) found" \
+            --body "$ISSUE_BODY" \
+            --label "security" \
+            --label "critical" \
+            --label "gitleaks" \
+            --label "automated"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Post gitleaks report to PR
         if: always() && (github.event_name == 'pull_request')

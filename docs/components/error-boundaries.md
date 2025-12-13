@@ -294,7 +294,7 @@ export function ErrorTrigger() {
 
 ## Related Documentation
 
-- [Loading States](./loading-states.md) – Skeleton components for async content
+- [Loading States](./loading-states) – Skeleton components for async content
 - [React Error Boundaries](https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary)
 - [Next.js Error Handling](https://nextjs.org/docs/app/building-your-application/routing/error-handling)
 

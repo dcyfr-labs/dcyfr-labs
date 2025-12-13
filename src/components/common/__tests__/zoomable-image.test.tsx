@@ -23,12 +23,11 @@ describe("ZoomableImage", () => {
   });
 
   it("shows zoom icon on hover (via CSS)", () => {
-    const { container } = render(<ZoomableImage {...defaultProps} />);
+    render(<ZoomableImage {...defaultProps} />);
     const img = screen.getByRole("button", { name: /zoom image/i });
-    // Verify the image button exists (zoom icon is CSS-based on hover via parent group class)
+    // Verify the image button exists with proper cursor styling for zoom
     expect(img).toBeInTheDocument();
-    const groupContainer = container.querySelector(".group");
-    expect(groupContainer).toBeInTheDocument();
+    expect(img).toHaveClass("cursor-zoom-in");
   });
 
   it("opens lightbox modal on click", async () => {

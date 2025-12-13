@@ -177,4 +177,4 @@ Consider:
 
 - [GitHub GraphQL API Docs](https://docs.github.com/en/graphql)
 - [GitHub API Rate Limits](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting)
-- [Contact API Fallback](./contact-fallback.md) - Similar pattern
+- [Contact API Fallback](./contact-fallback) - Similar pattern

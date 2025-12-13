@@ -34,28 +34,28 @@ export const socialLinks: SocialLink[] = [
       label: "Booking Page",
       url: "https://cal.com/dcyfr",
       icon: "calendar",
-      description: "Schedule a meeting"
+      description: "Meet with us"
     },
     {
       platform: "linkedin",
       label: "LinkedIn",
-      url: "https://www.linkedin.com/in/dcyfr",
+      url: "https://www.linkedin.com/company/dcyfr",
       icon: "linkedin",
-      description: "Connect with us on LinkedIn"
+      description: "Connect on LinkedIn"
     },
     {
       platform: "peerlist",
       label: "Peerlist",
       url: "https://peerlist.io/dcyfr",
       icon: "users",
-      description: "Build with us on Peerlist"
+      description: "Build on Peerlist"
     },
     {
       platform: "wellfound",
       label: "Wellfound",
       url: "https://wellfound.com/u/dcyfr",
       icon: "briefcase",
-      description: "Explore startups with us on Wellfound"
+      description: "Explore startups on Wellfound"
     },
     {
       platform: "github",
@@ -76,7 +76,7 @@ export const socialLinks: SocialLink[] = [
       label: "Credly",
       url: "https://www.credly.com/users/dcyfr",
       icon: "award",
-      description: "View professional certifications"
+      description: "View our professional certifications"
     },
     {
       platform: "goodreads",
