@@ -199,7 +199,10 @@ export async function downloadImage(
     }
 
     const buffer = await response.arrayBuffer();
-    // lgtm[js/http-to-file-access] - Security controls: URL validated via validateUnsplashUrl(), path validated via validateSlug(), trusted Unsplash API source only
+    // lgtm [js/http-to-file-access] - Security controls in place:
+    // 1. URL validated via validateUnsplashUrl() against allowlist
+    // 2. Path validated via validateSlug() to prevent directory traversal
+    // 3. Source is trusted Unsplash API, not user-controlled endpoint
     // Use atomic write: write to a temp file and rename to avoid race conditions
     const tmpPath = `${outputPath}.tmp`;
     await writeFileAsync(tmpPath, Buffer.from(buffer));

@@ -657,12 +657,43 @@ A: Quarterly automatic review, or immediately when adding new agents or major in
 - [ ] Keep file paths absolute (from repo root)
 - [ ] Update sync metadata when changing instructions
 - [ ] Test decision tree before committing changes
+- [ ] **Store sensitive files in `**/private/**` directories** (see below)
 
 **Never:**
 - [ ] Create instructions without updating AGENTS.md
 - [ ] Have conflicting patterns in different files
 - [ ] Leave sync status undefined
 - [ ] Update instructions in conversation without PR
+- [ ] **Put security findings, audits, or vulnerability analysis in public `/docs/`**
+
+### Sensitive Files Policy
+
+**All sensitive/internal documentation must be stored in `/docs/private/` directories.**
+
+**What qualifies as sensitive:**
+- Security vulnerability details and findings
+- CodeQL/security scanning results and remediation
+- Audit reports and analysis (API security, infrastructure, etc.)
+- Incident reports and root cause analysis
+- Red team engagement plans and results
+- Internal security assessments
+- Deployment secrets or sensitive configurations
+- Third-party security reviews
+- PII/PI audit results and taxonomies
+
+**Directory structure:**
+```
+/docs/private/
+├── security/       # Security audits, findings, vulnerabilities
+├── operations/     # Internal operations and deployment docs
+├── architecture/   # Internal architecture decisions
+└── ...
+```
+
+**Examples:**
+- ✅ `/docs/private/security/CODEQL_FINDINGS_RESOLVED.md`
+- ✅ `/docs/private/security/SECURITY_AUDIT_SUMMARY.md`
+- ❌ `/docs/security/VULNERABILITY_REPORT.md` (wrong location)
 
 ---
 

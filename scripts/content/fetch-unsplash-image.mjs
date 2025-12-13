@@ -94,7 +94,10 @@ async function downloadImage(image, slug) {
 
   const buffer = await response.arrayBuffer();
   const outputPath = join(outputDir, 'hero.jpg');
-  // lgtm[js/http-to-file-access] - Security controls: URL validated via validateUnsplashUrl(), path validated via validateSlug(), trusted Unsplash API source only
+  // lgtm [js/http-to-file-access] - Security controls in place:
+  // 1. URL validated via validateUnsplashUrl() against allowlist
+  // 2. Path validated via validateSlug() to prevent directory traversal
+  // 3. Source is trusted Unsplash API, not user-controlled endpoint
   writeFileSync(outputPath, Buffer.from(buffer));
 
   return `/blog/images/${validatedSlug}/hero.jpg`;

@@ -109,7 +109,8 @@ async function checkUrlServer(name, server, env = {}, timeoutMs = 5000, opts = {
   try {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
-    // lgtm [js/file-access-to-http] - URLs from trusted MCP server configuration, not user input
+    // lgtm [js/file-access-to-http] - URLs come from trusted MCP server configuration loaded from
+    // version-controlled .mcpservers.json file, not user input. Build-time only utility.
     const res = await fetch(url, { method: 'HEAD', headers, signal: controller.signal });
     clearTimeout(timer);
     // If we get a 405 (Method Not Allowed), try GET instead with longer timeout
@@ -117,7 +118,8 @@ async function checkUrlServer(name, server, env = {}, timeoutMs = 5000, opts = {
       // Try GET fallback
       const controller2 = new AbortController();
       const timer2 = setTimeout(() => controller2.abort(), timeoutMs * 2);
-      // lgtm [js/file-access-to-http] - URLs from trusted MCP server configuration, not user input
+      // lgtm [js/file-access-to-http] - Same as above: URLs from trusted MCP server config,
+      // never from user input. Fallback for servers that don't support HEAD method.
       const res2 = await fetch(url, { method: 'GET', headers, signal: controller2.signal });
       clearTimeout(timer2);
         if (opts.debug) console.log({ url, name, method: 'GET (fallback from HEAD 405)', tokenNameUsed, status: res2.status, statusText: res2.statusText });
@@ -129,7 +131,8 @@ async function checkUrlServer(name, server, env = {}, timeoutMs = 5000, opts = {
     try {
       const controller3 = new AbortController();
       const timer3 = setTimeout(() => controller3.abort(), timeoutMs * 2);
-      // lgtm [js/file-access-to-http] - URLs from trusted MCP server configuration, not user input
+      // lgtm [js/file-access-to-http] - Same as above: URLs from trusted MCP server config,
+      // never from user input. Second-level fallback when HEAD/GET timeout.
       const res3 = await fetch(url, { method: 'GET', headers, signal: controller3.signal });
       clearTimeout(timer3);
       if (opts.debug) console.log({ url, name, method: 'GET (fallback from HEAD error)', tokenNameUsed, status: res3.status, statusText: res3.statusText });
