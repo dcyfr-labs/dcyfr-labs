@@ -22,6 +22,7 @@
 # These contain screenshots/videos/diffs generated during CI or local runs
 reports/e2e-artifacts/**
 e2e/**-spec.ts-snapshots/**
+**/*-spec.ts-snapshots/**
 
 # next.js
 /.next/
