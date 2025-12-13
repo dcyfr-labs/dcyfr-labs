@@ -38,7 +38,7 @@ jobs:
         run: npm run sync:ai
       
       - name: Validate instruction files
-        run: node scripts/validate-instructions.mjs
+        run: node scripts/validation/validate-instructions.mjs
         continue-on-error: true
       
       - name: Check for changes

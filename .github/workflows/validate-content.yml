@@ -39,7 +39,7 @@ jobs:
       - name: Validate frontmatter
         id: validate
         run: |
-          node scripts/validate-frontmatter.mjs > validation-results.txt
+          node scripts/validation/validate-frontmatter.mjs > validation-results.txt
           echo "exit_code=$?" >> $GITHUB_OUTPUT
         continue-on-error: true
 
@@ -130,7 +130,7 @@ jobs:
             - [ ] Verify title/summary lengths meet SEO requirements
             - [ ] Check date formats and logic
             - [ ] Validate image accessibility (imageAlt)
-            - [ ] Re-run validation: \`node scripts/validate-frontmatter.mjs\`
+            - [ ] Re-run validation: \`node scripts/validation/validate-frontmatter.mjs\`
 
             **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             `;

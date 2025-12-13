@@ -73,7 +73,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           TEST_RESULTS_FILE: test-results.json
           BASELINE_FILE: ${{ steps.baseline-cache.outputs.cache-hit == 'true' && 'test-baseline.json' || '' }}
-        run: node scripts/analyze-test-health.mjs
+        run: node scripts/ci/analyze-test-health.mjs
 
       - name: Upload test results
         if: always()

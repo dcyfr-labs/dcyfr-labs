@@ -38,7 +38,7 @@ export async function GET(
   }
 
   // Build path to report file
-  const reportsDir = path.join(process.cwd(), '.reports');
+  const reportsDir = path.join(process.cwd(), 'reports', 'design-system');
   const reportPath = path.join(reportsDir, name);
 
   // Check if file exists

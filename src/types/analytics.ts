@@ -103,6 +103,17 @@ export const DATE_RANGE_LABELS: Record<DateRange, string> = {
 };
 
 /**
+ * Daily time-series data for charts
+ */
+export interface DailyData {
+  date: string; // ISO date or formatted string
+  views: number;
+  shares: number;
+  comments: number;
+  engagement: number;
+}
+
+/**
  * Publication date cohort filters
  */
 export type PublicationCohort = 

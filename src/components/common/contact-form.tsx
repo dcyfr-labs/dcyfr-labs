@@ -135,6 +135,21 @@ export function ContactForm() {
             className="resize-none"
           />
         </div>
+        <p className="text-muted-foreground text-xs">
+          By submitting this form, you agree to our data handling practices. We
+          collect only the information you provide (name, email, message) to
+          respond to your inquiry. Your data is not shared with third parties
+          and is handled securely.
+          {/* " "}
+            <a
+              href="/security.txt"
+              className="underline hover:text-foreground transition-colors"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Security contact
+            </a> */}
+        </p>
         <Button
           type="submit"
           size="lg"
@@ -146,22 +161,7 @@ export function ContactForm() {
         </Button>
 
         {/* Privacy Notice */}
-        <div className="mt-4 text-xs text-muted-foreground">
-          <p>
-            By submitting this form, you agree to our data handling practices.
-            We collect only the information you provide (name, email, message)
-            to respond to your inquiry. Your data is not shared with third
-            parties and is handled securely.{" "}
-            <a
-              href="/security.txt"
-              className="underline hover:text-foreground transition-colors"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Security contact
-            </a>
-          </p>
-        </div>
+        <div className="mt-4 text-xs text-muted-foreground"></div>
       </form>
     </div>
   );

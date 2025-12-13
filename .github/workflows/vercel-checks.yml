@@ -97,7 +97,7 @@ jobs:
         continue-on-error: true
         run: |
           echo "📦 Checking bundle sizes..."
-          OUTPUT=$(node scripts/check-bundle-size.mjs 2>&1)
+          OUTPUT=$(node scripts/performance/check-bundle-size.mjs 2>&1)
           EXIT_CODE=$?
           
           # Save output for reporting

@@ -72,7 +72,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FORCE_ALERT: ${{ github.event.inputs.force_alert }}
           SEVERITY_THRESHOLD: ${{ github.event.inputs.severity_threshold || 'high' }}
-        run: node scripts/monitor-upstream-advisories.mjs
+        run: node scripts/security/monitor-upstream-advisories.mjs
 
       - name: Create/Update security issue
         if: steps.check.outputs.has_new_advisories == 'true'
@@ -81,7 +81,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           ADVISORY_SUMMARY: ${{ steps.check.outputs.advisory_summary }}
           ADVISORY_COUNT: ${{ steps.check.outputs.advisory_count }}
-        run: node scripts/create-security-issue.mjs
+        run: node scripts/security/create-security-issue.mjs
 
       - name: Summary
         run: |

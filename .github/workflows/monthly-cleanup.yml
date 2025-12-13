@@ -35,7 +35,7 @@ jobs:
       - name: Run cleanup analysis
         id: cleanup
         run: |
-          node scripts/monthly-cleanup.mjs > cleanup-results.txt
+          node scripts/ci/monthly-cleanup.mjs > cleanup-results.txt
           echo "exit_code=$?" >> $GITHUB_OUTPUT
         continue-on-error: true
 

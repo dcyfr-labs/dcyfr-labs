@@ -99,10 +99,27 @@ export function DesignSystemReportCard({ report }: { report: DesignSystemReport 
     return (
       <Card>
         <CardHeader>
-          <Skeleton className="h-6 w-40" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <FileWarning className="h-5 w-5 text-muted-foreground" />
+              <div>
+                <CardTitle className="text-lg">Design System</CardTitle>
+                <CardDescription className="text-xs">No data available</CardDescription>
+              </div>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
-          <Skeleton className="h-4 w-full" />
+          <div className="flex items-center justify-center py-8 text-center">
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">
+                Design system report is loading...
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Run validation script to generate report
+              </p>
+            </div>
+          </div>
         </CardContent>
       </Card>
     );
@@ -127,7 +144,8 @@ export function DesignSystemReportCard({ report }: { report: DesignSystemReport 
               report.totalViolations === 0 ? SEMANTIC_COLORS.status.success : SEMANTIC_COLORS.status.warning
             }
           >
-            {report.totalViolations} violations
+            <CheckCircle2 className={`h-3 w-3 mr-1 ${report.totalViolations === 0 ? '' : 'hidden'}`} />
+            {report.totalViolations} {report.totalViolations === 1 ? 'violation' : 'violations'}
           </Badge>
         </div>
       </CardHeader>

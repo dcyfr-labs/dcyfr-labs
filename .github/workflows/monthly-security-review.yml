@@ -55,7 +55,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           AUTO_DELETE: ${{ github.event.inputs.auto_delete_branches == 'true' }}
         run: |
-          node scripts/branch-cleanup.mjs > branch-cleanup.txt
+          node scripts/security/branch-cleanup.mjs > branch-cleanup.txt
           echo "BRANCH_SUMMARY<<EOF" >> $GITHUB_ENV
           cat branch-cleanup.txt >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
@@ -65,7 +65,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           BRANCH_SUMMARY: ${{ env.BRANCH_SUMMARY }}
-        run: node scripts/security-audit.mjs
+        run: node scripts/security/security-audit.mjs
 
       - name: Upload SBOM
         if: always()

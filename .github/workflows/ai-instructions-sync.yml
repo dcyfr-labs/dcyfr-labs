@@ -128,7 +128,7 @@ jobs:
       - name: Validate instruction files
         run: |
           if [ -f scripts/validate-instructions.mjs ]; then
-            node scripts/validate-instructions.mjs
+            node scripts/validation/validate-instructions.mjs
           else
             echo "No validation script found, skipping..."
           fi
@@ -137,7 +137,7 @@ jobs:
       - name: Check MCP servers
         run: |
           if [ -f scripts/check-mcp-servers.mjs ]; then
-            node scripts/check-mcp-servers.mjs --no-auth || echo "MCP checks completed"
+            node scripts/ci/check-mcp-servers.mjs --no-auth || echo "MCP checks completed"
           else
             echo "No MCP script found, proceeding..."
           fi

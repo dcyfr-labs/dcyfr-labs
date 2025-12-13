@@ -6,23 +6,26 @@
  * - Auto-refresh capability
  * - Loading and error states
  * - Manual refresh support
- * 
  * @module hooks/use-analytics-data
  */
 
 import { useEffect, useState, useCallback } from "react";
-import { AnalyticsData, DateRange } from "@/types/analytics";
+import { AnalyticsData, DateRange, DailyData } from "@/types/analytics";
 
 interface UseAnalyticsDataOptions {
   /** Date range for analytics data */
   dateRange: DateRange;
   /** Enable auto-refresh every 30 seconds */
   autoRefresh?: boolean;
+  /** Type of analytics data to fetch (summary data or daily time-series) */
+  dataType?: 'summary' | 'daily';
 }
 
 interface UseAnalyticsDataReturn {
   /** Analytics data */
   data: AnalyticsData | null;
+  /** Daily analytics time series */
+  daily: DailyData[];
   /** Loading state */
   loading: boolean;
   /** Error message if fetch failed */
@@ -49,10 +52,14 @@ interface UseAnalyticsDataReturn {
 export function useAnalyticsData({
   dateRange,
   autoRefresh = false,
+  dataType = 'summary',
 }: UseAnalyticsDataOptions): UseAnalyticsDataReturn {
   const [data, setData] = useState<AnalyticsData | null>(null);
+  const [daily, setDaily] = useState<DailyData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [dailyLoading, setDailyLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [dailyError, setDailyError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
@@ -64,21 +71,15 @@ export function useAnalyticsData({
       }
 
       try {
-        // Get API key from environment (injected at build time via NEXT_PUBLIC_)
         const apiKey = process.env.NEXT_PUBLIC_ADMIN_API_KEY;
-
         const headers: HeadersInit = {
           "Content-Type": "application/json",
         };
+        if (apiKey) headers["Authorization"] = `Bearer ${apiKey}`;
 
-        // Add Authorization header if API key is available
-        if (apiKey) {
-          headers["Authorization"] = `Bearer ${apiKey}`;
-        }
-
-        const response = await fetch(`/api/analytics?days=${dateRange}`, {
-          headers,
-        });
+        const daysParam = dateRange === "all" ? "all" : dateRange;
+        const url = `/api/analytics?days=${daysParam}`;
+        const response = await fetch(url, { headers });
 
         if (!response.ok) {
           throw new Error("Failed to fetch analytics");
@@ -100,35 +101,113 @@ export function useAnalyticsData({
     [dateRange]
   );
 
+  const fetchDailyData = useCallback(
+    async (isManualRefresh = false) => {
+      if (isManualRefresh) {
+        setIsRefreshing(true);
+      }
+
+      setDailyLoading(true);
+
+      try {
+        const apiKey = process.env.NEXT_PUBLIC_ADMIN_API_KEY;
+        const headers: HeadersInit = {
+          "Content-Type": "application/json",
+        };
+        if (apiKey) headers["Authorization"] = `Bearer ${apiKey}`;
+
+        const daysParam = dateRange === "all" ? "all" : dateRange;
+        const url = `/api/analytics/daily?days=${daysParam}`;
+        const response = await fetch(url, { headers });
+
+        if (!response.ok) {
+          // Try to parse server error
+          let errorMessage = `HTTP ${response.status}`;
+          try {
+            const errJson = await response.json();
+            errorMessage = errJson.message || errJson.error || errorMessage;
+          } catch {
+            errorMessage = response.statusText || errorMessage;
+          }
+          throw new Error(errorMessage);
+        }
+
+        const result = await response.json();
+        if (!result.success) {
+          throw new Error(result.error || "Failed to load data");
+        }
+
+        if (!Array.isArray(result.data)) {
+          throw new Error("Invalid response format: expected data array");
+        }
+
+        const transformed: DailyData[] = result.data.map((item: { date: string; views: number; shares?: number; comments?: number; engagement?: number }) => {
+          const dateObj = new Date(item.date);
+          return {
+            date: dateObj.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+            views: item.views || 0,
+            shares: item.shares || 0,
+            comments: item.comments || 0,
+            engagement: item.engagement || 0,
+          };
+        });
+
+        setDaily(transformed);
+        setDailyError(null);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Unknown error";
+        // Log with a stable, developer-friendly prefix and detailed info
+        const details = err instanceof Error ? (err.stack || err.message) : (typeof err === 'object' ? JSON.stringify(err) : String(err));
+        console.error("Failed to fetch daily analytics:", errorMessage, details);
+        setDailyError(errorMessage);
+      } finally {
+        setDailyLoading(false);
+        if (isManualRefresh) setIsRefreshing(false);
+      }
+    },
+    [dateRange]
+  );
+
   // Manual refresh function
   const refresh = useCallback(async () => {
     await fetchAnalytics(true);
-  }, [fetchAnalytics]);
+    await fetchDailyData(true);
+  }, [fetchAnalytics, fetchDailyData]);
 
   // Initial fetch and dateRange changes
   useEffect(() => {
     setLoading(true);
-    fetchAnalytics();
+    if (dataType === "summary") {
+      fetchAnalytics();
+    } else {
+      fetchDailyData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateRange]); // Only depend on dateRange, not fetchAnalytics (to avoid infinite loop)
+  }, [dateRange, dataType]);
 
   // Auto-refresh effect
   useEffect(() => {
     if (!autoRefresh) return;
 
     const interval = setInterval(() => {
-      fetchAnalytics();
+      if (dataType === "summary") {
+        fetchAnalytics();
+      } else {
+        fetchDailyData();
+      }
     }, 30000); // 30 seconds
 
     return () => clearInterval(interval);
-  }, [autoRefresh, fetchAnalytics]);
+  }, [autoRefresh, fetchAnalytics, fetchDailyData, dataType]);
 
   return {
     data,
-    loading,
-    error,
+    daily,
+    loading: dataType === 'daily' ? dailyLoading : loading,
+    error: dataType === 'daily' ? dailyError : error,
     isRefreshing,
     lastUpdated,
     refresh,
   };
 }
+

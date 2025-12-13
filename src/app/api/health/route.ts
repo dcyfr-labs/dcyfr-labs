@@ -44,23 +44,20 @@ export async function GET(request: NextRequest) {
     const healthChecks = {
       timestamp: new Date().toISOString(),
       services: {
-        // Node.js runtime is working if we got here
-        nodejs: true,
+        // Edge runtime (always operational in this Node.js runtime)
+        edge: true,
         // Vercel platform is working if we can respond
         vercel: true,
-        // GitHub cache status
-        githubCache: githubHealth.cacheAvailable,
-        githubData: githubHealth.dataFresh,
+      },
+      serverInfo: {
+        runtime: 'nodejs',
+        region: process.env.VERCEL_REGION || (process.env.NODE_ENV === 'development' ? 'local' : 'unknown'),
       },
       githubInfo: {
         lastUpdated: githubHealth.lastUpdated,
         totalContributions: githubHealth.totalContributions,
-      },
-      // Note: In Node.js runtime, process.uptime() is available
-      // This provides server uptime information for monitoring
-      serverInfo: {
-        runtime: 'nodejs',
-        region: process.env.VERCEL_REGION || (process.env.NODE_ENV === 'development' ? 'local' : 'unknown'),
+        cacheAvailable: githubHealth.cacheAvailable,
+        dataFresh: githubHealth.dataFresh,
       },
     };
 

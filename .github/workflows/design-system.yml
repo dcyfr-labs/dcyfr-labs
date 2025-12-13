@@ -40,7 +40,7 @@ jobs:
 
       - name: Validate Design Tokens
         id: validation
-        run: node scripts/validate-design-tokens.mjs
+        run: node scripts/validation/validate-design-tokens.mjs
         continue-on-error: true
 
       - name: Post PR Comment
