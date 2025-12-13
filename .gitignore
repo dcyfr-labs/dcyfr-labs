@@ -5,14 +5,13 @@
 /.pnp
 .pnp.*
 .yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+!.yarn/cache
+!.yarn/sdk
 
 # testing
 /coverage
 /test-results/
+/scripts/reports/
 /playwright-report/
 /playwright/.cache/
 /lighthouse/
@@ -60,12 +59,14 @@ yarn-error.log*
 # ========================================
 # AI Agent Configurations
 # ========================================
-.github/agents/**
-!.github/agents/.gitkeep
-!.github/agents/README.md
+.github/agents/
+!.github/agents/*.md
 !.github/agents/learning/
 !.github/agents/learning/**
-.github/agents/learning-data/
+!.github/agents/patterns/
+!.github/agents/patterns/**
+!.github/agents/enforcement/
+!.github/agents/enforcement/**
 
 # AI assistant configurations (local overrides)
 .github/copilot-instructions.local.md
@@ -86,16 +87,15 @@ mcp.json
 .anthropic/
 .openai/
 
-# ========================================
 # IDE & Editor Configs
 # ========================================
 # VS Code (allow workspace settings, block user settings)
 .vscode/*
+.vscode/*.local.*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-.vscode/*.local.*
 
 # JetBrains IDEs
 .idea/
@@ -132,7 +132,6 @@ dump.rdb
 # Platform & Deployment
 # ========================================
 # vercel
-.github/agents/*
 .vercel
 .vercel.json.local
 
