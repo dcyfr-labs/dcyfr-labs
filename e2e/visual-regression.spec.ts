@@ -26,6 +26,21 @@ for (const page of VISUAL_TEST_PAGES) {
     await p.goto(page.path);
     await p.waitForLoadState('networkidle');
 
+    // Close any dev or cookie banners that could change the page height
+    // If a Dev Banner appears (development-only UI), close it to avoid
+    // changing full-page screenshots (it affects page height).
+    const devBannerClose = p.locator('button[data-testid="dev-banner-close"]');
+    try {
+      // Wait briefly for the dev banner to hydrate and then click the close
+      // button if it appears. This tolerates both server-rendered and
+      // client-hydrated states.
+      await devBannerClose.waitFor({ state: 'visible', timeout: 1500 });
+      await devBannerClose.click();
+      await p.waitForTimeout(150);
+    } catch (err) {
+      // Ignore timeout — dev banner not present.
+    }
+
     // Wait for any animations to settle
     await p.waitForTimeout(500);
 
@@ -57,15 +72,16 @@ test('visual: dark-mode-homepage', async ({ page }) => {
   await page.waitForLoadState('networkidle');
 
   // Find the theme toggle button specifically by aria-label
-  const themeToggle = page.getByRole('button', { name: 'Toggle theme' }).first();
+  const themeToggleLocator = page.getByRole('button', { name: 'Toggle theme' });
 
   // Try to find a theme toggle, if not found skip this test
-  const toggleExists = await themeToggle.count() > 0;
-  if (!toggleExists) {
-    test.skip();
+  const toggleCount = await themeToggleLocator.count();
+  if (toggleCount === 0) {
+    test.skip('No theme toggle found');
     return;
   }
 
+  const themeToggle = themeToggleLocator.first();
   await themeToggle.click();
   await page.waitForTimeout(500); // Wait for theme transition
 
