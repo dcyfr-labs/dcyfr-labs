@@ -572,9 +572,9 @@ Track these metrics weekly:
 
 ## Related Documents
 
-- [UX/UI Consistency Analysis](./ux-ui-consistency-analysis.md)
-- [Design System Guide](./design-system.md)
-- [Component Patterns](./component-patterns.md)
+- [UX/UI Consistency Analysis](./ux-ui-consistency-analysis)
+- [Design System Guide](./design-system)
+- [Component Patterns](./component-patterns)
 - [Design Tokens Source](../../src/lib/design-tokens.ts)
 
 ---

@@ -360,10 +360,10 @@ npx -y @modelcontextprotocol/server-filesystem --version
 
 ## Related Documentation
 
-- [MCP Servers Overview](../servers.md)
-- [Blog System Architecture](../../blog/architecture.md)
-- [Content Creation Guide](../../blog/content-creation.md)
-- [Frontmatter Schema](../../blog/frontmatter-schema.md)
+- [MCP Servers Overview](../servers)
+- [Blog System Architecture](../../blog/architecture)
+- [Content Creation Guide](../../blog/content-creation)
+- [Frontmatter Schema](../../blog/frontmatter-schema)
 
 ---
 

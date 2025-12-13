@@ -285,7 +285,7 @@ For post: "Hardening a Developer Portfolio" (tags: Security, Performance, Next.j
 
 ## Notes
 
-- Algorithm runs on every page load (fast, <1ms)
+- Algorithm runs on every page load (fast, \<1ms)
 - No caching needed (SSR handles it)
 - Works with any number of posts (scales well)
 - Tag matching is case-sensitive (by design)

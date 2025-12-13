@@ -160,7 +160,7 @@ This document tracks **aspirational features** and ideas that are **not yet vali
   - Merge `monthly-security-review.yml` into `security.yml` with schedule conditionals
 - **Estimated Savings:** 2-3 minutes per PR (diminishing returns from Tier 1)
 - **Priority:** Low (Tier 1 already achieved 30-40% improvement)
-- **Reference:** See [ci-cd-optimization-analysis.md](../operations/ci-cd-optimization-analysis.md)
+- **Reference:** See [ci-cd-optimization-analysis.md](../operations/ci-cd-optimization-analysis)
 
 **CI/CD Pipeline Optimizations - Tier 3** (Medium Effort: 4-6 hours)
 
@@ -172,7 +172,7 @@ This document tracks **aspirational features** and ideas that are **not yet vali
   - Cache build artifacts between `test.yml`, `deploy.yml`, `vercel-checks.yml` (saves 2-4 min per deploy)
 - **Validation Needed:** Cost/benefit analysis on added complexity
 - **Priority:** Very Low (minimal gains, added complexity)
-- **Reference:** See [ci-cd-optimization-analysis.md](../operations/ci-cd-optimization-analysis.md)
+- **Reference:** See [ci-cd-optimization-analysis.md](../operations/ci-cd-optimization-analysis)
 
 **Backup & Disaster Recovery Plan** (Low Effort: 2 hours)
 - **Idea:** Automated backups of Redis data, content, configuration

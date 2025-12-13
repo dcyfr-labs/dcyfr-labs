@@ -653,10 +653,10 @@ await generateOGImage(title, tags, output);
 
 ## Related Documentation
 
-- [Blog System Architecture](../../blog/architecture.md)
-- [Accessibility Testing Guide](../../accessibility/testing-report-skip-link-2025-11-11.md)
-- [Content Creation Guide](../../blog/content-creation.md)
-- [Image Optimization](../../performance/image-optimization.md) (if exists)
+- [Blog System Architecture](../../blog/architecture)
+- [Accessibility Testing Guide](../../accessibility/testing-report-skip-link-2025-11-11)
+- [Content Creation Guide](../../blog/content-creation)
+- [Image Optimization](../../performance/image-optimization) (if exists)
 
 ---
 

@@ -165,10 +165,10 @@ export default function GroupLayout({
 
 ## Related Templates
 
-- [NEW_PAGE.tsx](./NEW_PAGE.tsx.md) - Full page with metadata
-- [ARCHIVE_PAGE.tsx](./ARCHIVE_PAGE.tsx.md) - Archive metadata
+- [NEW_PAGE.tsx](./new-page.tsx) - Full page with metadata
+- [ARCHIVE_PAGE.tsx](./archive-page.tsx) - Archive metadata
 
 ## Related Docs
 
-- [Metadata Generation](../ai/COMPONENT_PATTERNS.md#metadata-generation)
-- [OpenGraph Images](../optimization/seo.md)
+- [Metadata Generation](../ai/component-patterns#metadata-generation)
+- [OpenGraph Images](../optimization/seo)

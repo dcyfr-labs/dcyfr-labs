@@ -532,10 +532,10 @@ After each Critical or High severity incident:
 
 ## Related Documentation
 
-- [CSP Monitoring Guide](../security/csp-monitoring.md)
+- [CSP Monitoring Guide](../security/csp-monitoring)
 - [Error Handler Implementation](../../src/lib/error-handler.ts)
-- [Rate Limiting Strategy](../security/rate-limiting.md)
-- [Uptime Monitoring Setup](./uptime-monitoring-sentry.md)
+- [Rate Limiting Strategy](../security/rate-limiting)
+- [Uptime Monitoring Setup](./uptime-monitoring-sentry)
 - [Sentry Configuration](../../sentry.server.config.ts)
 
 ## Contact & Support

@@ -42,21 +42,21 @@ All effects are pure CSS with GPU-accelerated transforms for performance.
 ```
 
 #### Holographic Effects
-```html
+```jsx
 <!-- Rainbow shine sweep -->
-<div class="holo-shine" />
+<div className="holo-shine" />
 
 <!-- Lens flare -->
-<div class="holo-flare" style={{ top: '30%', left: '40%' }} />
+<div className="holo-flare" style={{ top: '30%', left: '40%' }} />
 
 <!-- Metallic border -->
-<div class="holo-border" />
+<div className="holo-border" />
 
 <!-- Sparkles -->
-<div class="holo-sparkle holo-sparkle-1" />
-<div class="holo-sparkle holo-sparkle-2" />
-<div class="holo-sparkle holo-sparkle-3" />
-<div class="holo-sparkle holo-sparkle-4" />
+<div className="holo-sparkle holo-sparkle-1" />
+<div className="holo-sparkle holo-sparkle-2" />
+<div className="holo-sparkle holo-sparkle-3" />
+<div className="holo-sparkle holo-sparkle-4" />
 ```
 
 ## Usage
@@ -331,10 +331,10 @@ Change rainbow shine colors:
 
 ## Related Documentation
 
-- [UI/UX Quick Wins](/docs/design/ui-ux-quick-wins.md)
-- [Design System Validation](/docs/design/ENFORCEMENT.md)
-- [Performance Optimization](/docs/performance/optimization-guide.md)
-- [Accessibility Guidelines](/docs/accessibility/README.md)
+- [UI/UX Quick Wins](/docs/design/ui-ux-quick-wins)
+- [Design System Validation](/docs/design/enforcement)
+- [Performance Optimization](/docs/performance/optimization-guide)
+- [Accessibility Guidelines](/docs/accessibility/readme)
 
 ## Inspiration
 

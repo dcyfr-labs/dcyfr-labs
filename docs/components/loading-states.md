@@ -405,7 +405,7 @@ if (loading) {
 
 ## Related Documentation
 
-- [Error Boundaries](./error-boundaries.md) – Error handling for failed loads
+- [Error Boundaries](./error-boundaries) – Error handling for failed loads
 - [Next.js Data Fetching](https://nextjs.org/docs/app/building-your-application/data-fetching)
 - [React Suspense](https://react.dev/reference/react/Suspense)
 

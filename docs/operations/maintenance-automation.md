@@ -739,9 +739,9 @@ curl -X POST http://localhost:3001/api/maintenance/observations \
 
 **Issue Templates:**
 
-- [`.github/ISSUE_TEMPLATE/test-health-report.md`](../../.github/ISSUE_TEMPLATE/test-health-report.md)
-- [`.github/ISSUE_TEMPLATE/monthly-security-review.md`](../../.github/ISSUE_TEMPLATE/monthly-security-review.md)
-- [`.github/ISSUE_TEMPLATE/monthly-cleanup.md`](../../.github/ISSUE_TEMPLATE/monthly-cleanup.md)
+- [`.github/ISSUE_TEMPLATE/test-health-report.md`](../../.github/issue_template/test-health-report)
+- [`.github/ISSUE_TEMPLATE/monthly-security-review.md`](../../.github/issue_template/monthly-security-review)
+- [`.github/ISSUE_TEMPLATE/monthly-cleanup.md`](../../.github/issue_template/monthly-cleanup)
 
 ---
 

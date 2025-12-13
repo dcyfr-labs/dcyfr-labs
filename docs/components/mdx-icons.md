@@ -246,6 +246,6 @@ When migrating existing content:
 
 ## Related Documentation
 
-- [MDX Processing Pipeline](/docs/blog/mdx-processing.md)
+- [MDX Processing Pipeline](/docs/blog/mdx-processing)
 - [Component Documentation](/docs/components/)
 - [Design System](/docs/design/)

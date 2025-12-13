@@ -74,10 +74,10 @@ Deploy → Done! ✅
 
 | Document | Purpose |
 |----------|---------|
-| [INNGEST_ERROR_ALERTING_SETUP.md](../INNGEST_ERROR_ALERTING_SETUP.md) | Quick setup (start here) |
-| [inngest-error-alerting.md](./inngest-error-alerting.md) | Complete guide |
-| [inngest-error-alerting-quick-ref.md](./inngest-error-alerting-quick-ref.md) | Quick reference |
-| [inngest-error-alerting-examples.md](./inngest-error-alerting-examples.md) | Code examples |
+| [INNGEST_ERROR_ALERTING_SETUP.md](../inngest-error-alerting-setup) | Quick setup (start here) |
+| [inngest-error-alerting.md](./inngest-error-alerting) | Complete guide |
+| [inngest-error-alerting-quick-ref.md](./inngest-error-alerting-quick-ref) | Quick reference |
+| [inngest-error-alerting-examples.md](./inngest-error-alerting-examples) | Code examples |
 
 ## How It Works
 
@@ -146,8 +146,8 @@ if (functionId.includes("background")) {
 - Or increase retry backoff on functions
 
 **Need more features?**
-- See [Complete Guide](./inngest-error-alerting.md) for advanced options
-- See [Code Examples](./inngest-error-alerting-examples.md) for patterns
+- See [Complete Guide](./inngest-error-alerting) for advanced options
+- See [Code Examples](./inngest-error-alerting-examples) for patterns
 
 ## Performance
 

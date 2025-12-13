@@ -338,7 +338,7 @@ This report analyzes the security posture of all API endpoints in the www.dcyfr.
 
 **After Phase 2:**
 - ✅ 90% reduction in contact form spam
-- ✅ <1% false positive rate
+- ✅ \<1% false positive rate
 - ✅ All inputs sanitized
 
 **After Phase 3:**

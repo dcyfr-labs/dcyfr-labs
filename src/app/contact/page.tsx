@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getContactPageSchema, getJsonLdScriptProps } from "@/lib/json-ld";
 import { headers } from "next/headers";
-import { PAGE_LAYOUT, TYPOGRAPHY } from "@/lib/design-tokens";
+import { PAGE_LAYOUT, TYPOGRAPHY, getContainerClasses } from "@/lib/design-tokens";
 import { createPageMetadata } from "@/lib/metadata";
 import dynamic from "next/dynamic";
 import { PageLayout } from "@/components/layouts/page-layout";
@@ -34,7 +34,7 @@ export default async function ContactPage() {
     <PageLayout>
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
       <SmoothScrollToHash />
-      <div className="space-y-10 md:space-y-14 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className={`space-y-10 md:space-y-14 ${getContainerClasses('narrow')}`}>
         {/* Hero Section */}
         <section id="hero">
           <PageHero

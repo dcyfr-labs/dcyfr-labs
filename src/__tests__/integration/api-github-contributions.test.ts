@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
-import { GET } from '@/app/api/github-contributions/route'
+// @ts-ignore - endpoint removed for security
+// import { GET } from '@/app/api/github-contributions/route'
 import { rateLimit } from '@/lib/rate-limit'
 import { NextRequest } from 'next/server'
 
@@ -29,7 +30,7 @@ vi.mock('@/app/api/github-contributions/route', async (importOriginal) => {
   }
 })
 
-describe('GitHub Contributions API Integration', () => {
+describe.skip('GitHub Contributions API Integration', () => {
   const VALID_USERNAME = 'dcyfr'
   const originalEnv = process.env
 

@@ -2,7 +2,7 @@
 
 **Status:** ✅ Production  
 **Last Updated:** October 24, 2025  
-**Related:** [Blog Architecture](./architecture.md) · [Quick Reference](./quick-reference.md)
+**Related:** [Blog Architecture](./architecture) · [Quick Reference](./quick-reference)
 
 ---
 
@@ -39,7 +39,7 @@ Complete catalog of all blog system features, from content authoring to reader e
 - ✅ Custom component mapping
 - ✅ Frontmatter metadata
 
-**Documentation:** [MDX Processing](./mdx-processing.md)
+**Documentation:** [MDX Processing](./mdx-processing)
 
 **Technologies:**
 - `next-mdx-remote` - Server-side MDX rendering
@@ -87,7 +87,7 @@ const example: string = "Hello, World!";
 - `draft` - Development-only visibility
 - `sources` - Reference links
 
-**Documentation:** [Frontmatter Schema](./frontmatter-schema.md)
+**Documentation:** [Frontmatter Schema](./frontmatter-schema)
 
 **Auto-Generated:**
 - `slug` - URL segment (from filename)
@@ -124,7 +124,7 @@ const example: string = "Hello, World!";
    - Shows "Archived" badge
    - Useful for historical content
 
-**Documentation:** [Content Creation](./content-creation.md#post-states)
+**Documentation:** [Content Creation](./content-creation#post-states)
 
 ---
 
@@ -719,7 +719,7 @@ npm run build
 
 **Metrics:**
 - 60 FPS smooth scrolling
-- <1ms per frame
+- \<1ms per frame
 - Zero jank on scroll
 
 ---
@@ -1035,8 +1035,8 @@ npm run test:siteurl        # Check SITE_URL configuration
 
 | Feature | Status | Documentation | Component/File |
 |---------|--------|---------------|----------------|
-| MDX Content | ✅ | [MDX Processing](./mdx-processing.md) | `mdx.tsx` |
-| Frontmatter | ✅ | [Schema](./frontmatter-schema.md) | `blog.ts` |
+| MDX Content | ✅ | [MDX Processing](./mdx-processing) | `mdx.tsx` |
+| Frontmatter | ✅ | [Schema](./frontmatter-schema) | `blog.ts` |
 | Search | ✅ | - | `blog-search-form.tsx` |
 | Tag Filtering | ✅ | - | `blog/page.tsx` |
 | Table of Contents | ✅ | - | `table-of-contents.tsx` |
@@ -1044,10 +1044,10 @@ npm run test:siteurl        # Check SITE_URL configuration
 | Related Posts | ✅ | - | `related-posts.tsx` |
 | View Counts | ✅ | - | `lib/views.ts` |
 | Post Badges | ✅ | Quick Ref | `post-badges.tsx` |
-| Draft Posts | ✅ | [Content Creation](./content-creation.md) | `blog.ts` |
-| Archived Posts | ✅ | [Content Creation](./content-creation.md) | `blog.ts` |
-| Featured Posts | ✅ | [Content Creation](./content-creation.md) | `data/posts.ts` |
-| Syntax Highlighting | ✅ | [MDX Processing](./mdx-processing.md) | `mdx.tsx` |
+| Draft Posts | ✅ | [Content Creation](./content-creation) | `blog.ts` |
+| Archived Posts | ✅ | [Content Creation](./content-creation) | `blog.ts` |
+| Featured Posts | ✅ | [Content Creation](./content-creation) | `data/posts.ts` |
+| Syntax Highlighting | ✅ | [MDX Processing](./mdx-processing) | `mdx.tsx` |
 | RSS Feed | ✅ | `docs/rss/` | `rss.xml/route.ts` |
 | Atom Feed | ✅ | `docs/rss/` | `atom.xml/route.ts` |
 | Sitemap | ✅ | - | `sitemap.ts` |
@@ -1102,11 +1102,11 @@ npm run test:siteurl        # Check SITE_URL configuration
 
 ## Related Documentation
 
-- **[Blog Architecture](./architecture.md)** - System design overview
-- **[Content Creation](./content-creation.md)** - How to write posts
-- **[MDX Processing](./mdx-processing.md)** - Content transformation
-- **[Frontmatter Schema](./frontmatter-schema.md)** - Metadata reference
-- **[Quick Reference](./quick-reference.md)** - Command cheat sheet
+- **[Blog Architecture](./architecture)** - System design overview
+- **[Content Creation](./content-creation)** - How to write posts
+- **[MDX Processing](./mdx-processing)** - Content transformation
+- **[Frontmatter Schema](./frontmatter-schema)** - Metadata reference
+- **[Quick Reference](./quick-reference)** - Command cheat sheet
 
 ---
 

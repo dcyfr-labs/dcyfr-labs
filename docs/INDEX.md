@@ -39,57 +39,57 @@ The documentation is organized into **16 focused directories**:
 ## 🚀 Quick Navigation
 
 ### Getting Started
-- **[README.md](./README.md)** - Directory overview and quick links
-- **[QUICK_START.md](./QUICK_START.md)** - Single-page navigation hub
+- **[README.md](./readme)** - Directory overview and quick links
+- **[QUICK_START.md](./quick-start)** - Single-page navigation hub
 
 ### Architecture & Code
-- **[architecture/README.md](./architecture/README.md)** - Architecture overview
-- **[architecture/migration-guide.md](./architecture/migration-guide.md)** - Step-by-step migration
+- **[architecture/README.md](./architecture/readme)** - Architecture overview
+- **[architecture/migration-guide.md](./architecture/migration-guide)** - Step-by-step migration
 - **[components/](./components/)** - Component documentation
 
 ### Blog System
-- **[blog/architecture.md](./blog/architecture.md)** - Complete blog architecture
-- **[blog/quick-reference.md](./blog/quick-reference.md)** - Common patterns
+- **[blog/architecture.md](./blog/architecture)** - Complete blog architecture
+- **[blog/quick-reference.md](./blog/quick-reference)** - Common patterns
 - **[blog/feeds/](./blog/feeds/)** - RSS/Atom feed documentation
 
 ### Features
-- **[features/inngest-integration.md](./features/inngest-integration.md)** - Background jobs
-- **[features/github-integration.md](./features/github-integration.md)** - GitHub API
+- **[features/inngest-integration.md](./features/inngest-integration)** - Background jobs
+- **[features/github-integration.md](./features/github-integration)** - GitHub API
 - **[features/mcp/](./features/mcp/)** - Model Context Protocol
-- **[features/ACTIVITY_FEED_AUTOMATION.md](./features/ACTIVITY_FEED_AUTOMATION.md)** - ✨ **Activity feed automation strategy**
-- **[features/ACTIVITY_AUTOMATION_QUICK_START.md](./features/ACTIVITY_AUTOMATION_QUICK_START.md)** - ✨ **30-min activity caching implementation**
-- **[features/ACTIVITY_CACHING_IMPLEMENTATION.md](./features/ACTIVITY_CACHING_IMPLEMENTATION.md)** - ✨ **Implementation summary & testing guide**
-- **[features/SERIES_REFACTOR_PROGRESS.md](./features/SERIES_REFACTOR_PROGRESS.md)** - ✨ **Blog series refactor progress tracker**
-- **[features/FUTURE_IDEAS.md](./features/FUTURE_IDEAS.md)** - ✨ **Post-launch feature ideas & evaluation**
+- **[features/ACTIVITY_FEED_AUTOMATION.md](./features/activity-feed-automation)** - ✨ **Activity feed automation strategy**
+- **[features/ACTIVITY_AUTOMATION_QUICK_START.md](./features/activity-automation-quick-start)** - ✨ **30-min activity caching implementation**
+- **[features/ACTIVITY_CACHING_IMPLEMENTATION.md](./features/activity-caching-implementation)** - ✨ **Implementation summary & testing guide**
+- **[features/SERIES_REFACTOR_PROGRESS.md](./features/series-refactor-progress)** - ✨ **Blog series refactor progress tracker**
+- **[features/FUTURE_IDEAS.md](./features/future-ideas)** - ✨ **Post-launch feature ideas & evaluation**
 
 ### Design System
 - **[design/typography/](./design/typography/)** - Typography system
 - **[design/mobile/](./design/mobile/)** - Mobile-first design
 - **[design/spacing/](./design/spacing/)** - Spacing standards
-- **[design/PAGE_TEMPLATES.md](./design/PAGE_TEMPLATES.md)** - ✨ **Complete page templates with design tokens**
-- **[design/DESIGN_TOKEN_COMPLIANCE_REPORT.md](./design/DESIGN_TOKEN_COMPLIANCE_REPORT.md)** - ✨ **Series refactor compliance audit**
+- **[design/PAGE_TEMPLATES.md](./design/page-templates)** - ✨ **Complete page templates with design tokens**
+- **[design/DESIGN_TOKEN_COMPLIANCE_REPORT.md](./design/design-token-compliance-report)** - ✨ **Series refactor compliance audit**
 
 ### Automation
-- **[automation/AUTOMATED_UPDATES.md](./automation/AUTOMATED_UPDATES.md)** - ✨ **Complete automation system guide**
-- **[automation/ENABLE_AUTO_MERGE.md](./automation/ENABLE_AUTO_MERGE.md)** - ✨ **Auto-merge setup instructions**
-- **[automation/IMPLEMENTATION_SUMMARY.md](./automation/IMPLEMENTATION_SUMMARY.md)** - ✨ **Deployment guide**
+- **[automation/AUTOMATED_UPDATES.md](./automation/automated-updates)** - ✨ **Complete automation system guide**
+- **[automation/ENABLE_AUTO_MERGE.md](./automation/enable-auto-merge)** - ✨ **Auto-merge setup instructions**
+- **[automation/IMPLEMENTATION_SUMMARY.md](./automation/implementation-summary)** - ✨ **Deployment guide**
 
 ### Development
-- **[testing/README.md](./testing/README.md)** - Testing overview
-- **[testing/coverage-roadmap.md](./testing/coverage-roadmap.md)** - 3-phase coverage plan
-- **[testing/quick-reference.md](./testing/quick-reference.md)** - Testing commands & patterns
+- **[testing/README.md](./testing/readme)** - Testing overview
+- **[testing/coverage-roadmap.md](./testing/coverage-roadmap)** - 3-phase coverage plan
+- **[testing/quick-reference.md](./testing/quick-reference)** - Testing commands & patterns
 - **[development/](./development/)** - Performance optimization guides
 - **[optimization/](./optimization/)** - SEO + accessibility + analytics
 
 ### Configuration
-- **[platform/environment-variables.md](./platform/environment-variables.md)** - Complete env setup
+- **[platform/environment-variables.md](./platform/environment-variables)** - Complete env setup
 - **[security/](./security/)** - CSP, rate limiting, security guides
-- **[api/routes/overview.md](./api/routes/overview.md)** - API architecture
+- **[api/routes/overview.md](./api/routes/overview)** - API architecture
 
 ### Operations
-- **[operations/todo.md](./operations/todo.md)** - Active tasks
-- **[operations/done.md](./operations/done.md)** - Completed work
-- **[operations/KNOWN_ISSUES.md](./operations/KNOWN_ISSUES.md)** - ✨ **Known issues & acceptable warnings**
+- **[operations/todo.md](./operations/todo)** - Active tasks
+- **[operations/done.md](./operations/done)** - Completed work
+- **[operations/KNOWN_ISSUES.md](./operations/known-issues)** - ✨ **Known issues & acceptable warnings**
 
 ---
 

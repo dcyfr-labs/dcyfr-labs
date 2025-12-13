@@ -524,9 +524,9 @@ REDIS_URL=redis://localhost:6379
 
 ## 📝 Related Documentation
 
-- [Redis Health Check](../platform/view-counts.md) - Production Redis monitoring
-- [Error Monitoring](../operations/error-monitoring-strategy.md) - Sentry integration
-- [API Security](../security/api-security-audit.md) - Rate limiting and security
+- [Redis Health Check](../platform/view-counts) - Production Redis monitoring
+- [Error Monitoring](../operations/error-monitoring-strategy) - Sentry integration
+- [API Security](../security/api-security-audit) - Rate limiting and security
 
 ## 🆘 Getting Help
 

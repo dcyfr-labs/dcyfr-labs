@@ -367,6 +367,75 @@ Code example here.
     });
   });
 
+  describe('Duplicate Heading IDs', () => {
+    it('handles duplicate headings by appending counter', () => {
+      const content = `
+## Features
+Some content
+## Features
+More content
+`;
+      const headings = extractHeadings(content);
+      expect(headings).toHaveLength(2);
+      expect(headings[0]).toEqual({
+        id: 'features',
+        text: 'Features',
+        level: 2,
+      });
+      expect(headings[1]).toEqual({
+        id: 'features-1',
+        text: 'Features',
+        level: 2,
+      });
+    });
+
+    it('handles multiple duplicate headings with incremental counters', () => {
+      const content = `
+## Section
+Content one
+## Section
+Content two
+## Section
+Content three
+`;
+      const headings = extractHeadings(content);
+      expect(headings).toHaveLength(3);
+      expect(headings[0].id).toBe('section');
+      expect(headings[1].id).toBe('section-1');
+      expect(headings[2].id).toBe('section-2');
+    });
+
+    it('handles mixed unique and duplicate headings', () => {
+      const content = `
+## Introduction
+## Getting Started
+## Features
+## Conclusion
+## Features
+`;
+      const headings = extractHeadings(content);
+      expect(headings).toHaveLength(5);
+      expect(headings[0].id).toBe('introduction');
+      expect(headings[1].id).toBe('getting-started');
+      expect(headings[2].id).toBe('features');
+      expect(headings[3].id).toBe('conclusion');
+      expect(headings[4].id).toBe('features-1');
+    });
+
+    it('ensures all IDs are unique', () => {
+      const content = `
+## Overview
+### Details
+## Overview
+### Details
+`;
+      const headings = extractHeadings(content);
+      const ids = headings.map(h => h.id);
+      const uniqueIds = new Set(ids);
+      expect(ids.length).toBe(uniqueIds.size);
+    });
+  });
+
   describe('Type Safety', () => {
     it('returns TocHeading objects with correct shape', () => {
       const content = '## Test Heading';

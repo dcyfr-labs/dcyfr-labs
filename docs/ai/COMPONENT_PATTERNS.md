@@ -462,7 +462,7 @@ import {
 
 ## Related Documentation
 
-- [Quick Reference](./QUICK_REFERENCE.md) - Commands and 80/20 patterns
-- [Enforcement Rules](./ENFORCEMENT_RULES.md) - Design tokens, validation
-- [Decision Trees](./DECISION_TREES.md) - Visual flowcharts
+- [Quick Reference](./quick-reference) - Commands and 80/20 patterns
+- [Enforcement Rules](./enforcement-rules) - Design tokens, validation
+- [Decision Trees](./decision-trees) - Visual flowcharts
 - [Templates](../templates/) - Copy-paste starting points

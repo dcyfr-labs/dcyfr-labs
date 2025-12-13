@@ -1,7 +1,7 @@
 # Bot Detection Quick Reference
 
 **Last Updated:** November 19, 2025  
-**Full Docs:** [bot-detection.md](./bot-detection.md)
+**Full Docs:** [bot-detection.md](./bot-detection)
 
 ## Quick Start
 
@@ -106,7 +106,7 @@ curl -X POST https://app.vercel.app/api/contact
 ## Performance
 
 - **Client**: ~5-10ms challenge execution
-- **Server**: <1ms verification
+- **Server**: \<1ms verification
 - **Bundle**: ~15KB gzipped
 
 ## Troubleshooting
@@ -141,4 +141,4 @@ curl -X POST https://app.vercel.app/api/contact
 
 ---
 
-**Need Help?** See [bot-detection.md](./bot-detection.md) for detailed examples and architecture.
+**Need Help?** See [bot-detection.md](./bot-detection) for detailed examples and architecture.

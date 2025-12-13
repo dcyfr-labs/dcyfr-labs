@@ -526,10 +526,10 @@ REDIS_URL=redis://...
 
 ## 📚 Related Documentation
 
-- [Activity Feed Feature](./FEEDS.md)
-- [Inngest Functions](../api/INNGEST_FUNCTIONS.md)
-- [GitHub Integration](./github-integration.md)
-- [Blog Analytics](../blog/ANALYTICS.md)
+- [Activity Feed Feature](./feeds)
+- [Inngest Functions](../api/inngest-functions)
+- [GitHub Integration](./github-integration)
+- [Blog Analytics](../blog/analytics)
 
 ---
 

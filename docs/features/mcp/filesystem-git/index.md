@@ -15,21 +15,21 @@ This integration adds **Filesystem** and **Git** MCPs to enhance your developmen
 ## Start Here
 
 ### Five-Minute Learner
-**Read:** [Quick Reference](./quick-reference.md)
+**Read:** [Quick Reference](./quick-reference)
 - Quick command reference
 - Common workflows
 - Pro tips
 - **Time**: 5 minutes
 
 ### Ten-Minute Overview
-**Read:** [Ready Checklist](./ready.md)
+**Read:** [Ready Checklist](./ready)
 - What was added
 - Key capabilities
 - Getting started
 - **Time**: 10 minutes
 
 ### Thirty-Minute Deep Dive
-**Read:** [Integration Guide](./integration.md)
+**Read:** [Integration Guide](./integration)
 - Complete capabilities
 - Usage examples
 - Security details
@@ -38,7 +38,7 @@ This integration adds **Filesystem** and **Git** MCPs to enhance your developmen
 - **Time**: 30 minutes
 
 ### Full Status Report
-**Read:** [Complete Summary](../../archive/mcp-filesystem-git-complete-summary.md)
+**Read:** [Complete Summary](../../archive/mcp-filesystem-git-complete-summary)
 - Implementation details
 - Verification results
 - Configuration status
@@ -89,33 +89,33 @@ This integration adds **Filesystem** and **Git** MCPs to enhance your developmen
 #### ...understand file structure
 1. Use Filesystem MCP: "What's in src/components?"
 2. See: List of files and directories
-3. Read more: [Quick Reference](./quick-reference.md)
+3. Read more: [Quick Reference](./quick-reference)
 
 #### ...understand recent changes
 1. Use Git MCP: "Show me recent commits"
 2. See: Commit history with messages
-3. Read more: [Quick Reference](./quick-reference.md)
+3. Read more: [Quick Reference](./quick-reference)
 
 #### ...refactor code
 1. Filesystem MCP: Find all usages
 2. Sequential Thinking: Plan refactoring
 3. Filesystem MCP: Update files safely
 4. Git MCP: Verify changes
-5. Read more: [Integration Guide](./integration.md)
+5. Read more: [Integration Guide](./integration)
 
 #### ...review a change
 1. Git MCP: Show what changed
 2. Filesystem MCP: View implementations
 3. Sequential Thinking: Analyze
-4. Read more: [Integration Guide](./integration.md)
+4. Read more: [Integration Guide](./integration)
 
 #### ...learn best practices
-1. Read: [Integration Guide](./integration.md)
+1. Read: [Integration Guide](./integration)
 2. Section: "Best Practices"
 3. Section: "Practical Examples"
 
 #### ...troubleshoot issues
-1. Read: [Integration Guide](./integration.md)
+1. Read: [Integration Guide](./integration)
 2. Section: "Troubleshooting"
 3. Check: Configuration verification
 
@@ -238,18 +238,18 @@ Files identified + git history shown
 ## Learning Path
 
 ### Level 1: Beginner (15 minutes)
-1. Read: [Quick Reference](./quick-reference.md)
+1. Read: [Quick Reference](./quick-reference)
 2. Try: Simple Filesystem commands
 3. Try: Simple Git commands
 
 ### Level 2: Intermediate (45 minutes)
-1. Read: [Ready Checklist](./ready.md)
+1. Read: [Ready Checklist](./ready)
 2. Try: Combining MCPs
 3. Try: Workflow examples
 4. Read: Best practices section
 
 ### Level 3: Advanced (90 minutes)
-1. Read: [Integration Guide](./integration.md)
+1. Read: [Integration Guide](./integration)
 2. Study: All examples and use cases
 3. Build: Custom workflows
 4. Master: Advanced combinations
@@ -387,11 +387,11 @@ A: Comprehensive security considerations are documented.
 
 ## Documentation Files
 
-1. [Quick Reference](./quick-reference.md) — 5 minutes
-2. [Ready Checklist](./ready.md) — 10 minutes
-3. [Integration Guide](./integration.md) — 30 minutes
-4. [Complete Summary](../../archive/mcp-filesystem-git-complete-summary.md) — 15 minutes
-5. [Implementation Changelog](../../operations/implementation-changelog.md) — 10 minutes
-6. [Index](./index.md) — 5 minutes
+1. [Quick Reference](./quick-reference) — 5 minutes
+2. [Ready Checklist](./ready) — 10 minutes
+3. [Integration Guide](./integration) — 30 minutes
+4. [Complete Summary](../../archive/mcp-filesystem-git-complete-summary) — 15 minutes
+5. [Implementation Changelog](../../operations/implementation-changelog) — 10 minutes
+6. [Index](./index) — 5 minutes
 
 Choose what you need. You're all set! 🚀

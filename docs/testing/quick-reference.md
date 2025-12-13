@@ -518,7 +518,7 @@ describe.skip('Suite', () => {})
 - **Phase 2**: Test components and hooks
 - **Phase 3**: Integration and E2E tests
 
-See [Coverage Roadmap](./coverage-roadmap.md) for detailed plan.
+See [Coverage Roadmap](./coverage-roadmap) for detailed plan.
 
 ---
 

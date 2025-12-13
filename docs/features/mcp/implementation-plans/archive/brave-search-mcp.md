@@ -520,9 +520,9 @@ Expected: Recent articles and discussions
 
 ## Related Documentation
 
-- [MCP Servers Overview](../servers.md)
-- [Content Creation Guide](../../blog/content-creation.md)
-- [Content Strategy](../../operations/content-strategy.md)
+- [MCP Servers Overview](../servers)
+- [Content Creation Guide](../../blog/content-creation)
+- [Content Strategy](../../operations/content-strategy)
 - [Brave Search API Docs](https://brave.com/search/api/)
 
 ---

@@ -523,10 +523,10 @@ Example structure:
 
 ## Related Documentation
 
-- [Content Strategy](../../operations/content-strategy.md)
-- [Inngest Integration](../../features/inngest-integration.md)
-- [Blog System Architecture](../../blog/architecture.md)
-- [Frontmatter Schema](../../blog/frontmatter-schema.md)
+- [Content Strategy](../../operations/content-strategy)
+- [Inngest Integration](../../features/inngest-integration)
+- [Blog System Architecture](../../blog/architecture)
+- [Frontmatter Schema](../../blog/frontmatter-schema)
 
 ---
 

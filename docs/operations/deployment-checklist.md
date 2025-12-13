@@ -3,7 +3,7 @@
 **Last Updated:** December 7, 2025  
 **Status:** Production Ready (99.5% test pass rate)
 
-Comprehensive checklist for deploying dcyfr-labs portfolio to production. For detailed step-by-step instructions, see [PRODUCTION_DEPLOYMENT.md](./PRODUCTION_DEPLOYMENT.md).
+Comprehensive checklist for deploying dcyfr-labs portfolio to production. For detailed step-by-step instructions, see [PRODUCTION_DEPLOYMENT.md](./production-deployment).
 
 ---
 
@@ -369,10 +369,10 @@ git push origin main
 
 ## Resources
 
-- **[Production Deployment Runbook](./PRODUCTION_DEPLOYMENT.md)** - Detailed step-by-step guide
-- **[Deployment Guide](./deployment-guide.md)** - Comprehensive deployment documentation
-- **[Environment Variables](../platform/ENVIRONMENT_VARIABLES.md)** - Complete reference
-- **[Testing Guide](../testing/README.md)** - Test strategy and execution
+- **[Production Deployment Runbook](./production-deployment)** - Detailed step-by-step guide
+- **[Deployment Guide](./deployment-guide)** - Comprehensive deployment documentation
+- **[Environment Variables](../platform/environment-variables)** - Complete reference
+- **[Testing Guide](../testing/readme)** - Test strategy and execution
 
 ---
 

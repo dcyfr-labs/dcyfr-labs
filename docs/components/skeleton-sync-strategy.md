@@ -889,9 +889,9 @@ Any failures block PR merges, ensuring skeletons stay in sync.
 
 ## Related Documentation
 
-- [Loading States Overview](/docs/components/loading-states.md)
+- [Loading States Overview](/docs/components/loading-states)
 - [Component Documentation Index](/docs/components/)
-- [Mobile-First Optimization](/docs/design/mobile-first-optimization-analysis.md)
+- [Mobile-First Optimization](/docs/design/mobile-first-optimization-analysis)
 
 ---
 

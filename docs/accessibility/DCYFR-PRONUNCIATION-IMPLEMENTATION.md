@@ -238,10 +238,10 @@ console.log(missing);  // [] if all defined
 
 ## Related Documentation
 
-- **[Acronym Pronunciation Guide](../accessibility/acronym-pronunciation.md)** - Detailed reference
+- **[Acronym Pronunciation Guide](../accessibility/acronym-pronunciation)** - Detailed reference
 - **[WCAG Accessibility Standards](https://www.w3.org/WAI/WCAG21/quickref/)** - W3C guidance
 - **[ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)** - W3C best practices
-- **[Screen Reader Testing](../accessibility/acronym-pronunciation.md#testing)** - How to test
+- **[Screen Reader Testing](../accessibility/acronym-pronunciation#testing)** - How to test
 
 ---
 

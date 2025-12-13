@@ -2,7 +2,7 @@
 
 **Status:** ✅ Implemented  
 **Last Updated:** October 23, 2025  
-**Related:** [MDX Processing](./mdx-processing.md) · [Content Creation](./content-creation.md) · [Quick Reference](./quick-reference.md)
+**Related:** [MDX Processing](./mdx-processing) · [Content Creation](./content-creation) · [Quick Reference](./quick-reference)
 
 ---
 
@@ -281,7 +281,7 @@ Incremental Static Regeneration (ISR)
 - **Scalability**: No server rendering on every request
 - **View count updates**: Picked up during revalidation
 
-See [ISR Implementation Guide](../performance/isr-implementation.md) for details.
+See [ISR Implementation Guide](../performance/isr-implementation) for details.
 
 ---
 
@@ -476,11 +476,11 @@ export function rankPostsByComplexity(posts: Post[]) { /* ... */ }
 
 ## Related Documentation
 
-- [MDX Processing](./mdx-processing.md) - How MDX is transformed to HTML
-- [Content Creation](./content-creation.md) - Guide to authoring posts
-- [Frontmatter Schema](./frontmatter-schema.md) - Complete field reference
-- [Quick Reference](./quick-reference.md) - Common patterns and snippets
-- [Features Index](./features-index.md) - Complete feature catalog
+- [MDX Processing](./mdx-processing) - How MDX is transformed to HTML
+- [Content Creation](./content-creation) - Guide to authoring posts
+- [Frontmatter Schema](./frontmatter-schema) - Complete field reference
+- [Quick Reference](./quick-reference) - Common patterns and snippets
+- [Features Index](./features-index) - Complete feature catalog
 
 ---
 

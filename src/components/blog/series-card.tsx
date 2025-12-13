@@ -105,7 +105,7 @@ export function SeriesCard({ series, position = 0 }: SeriesCardProps) {
         </CardContent>
 
         <CardFooter className="pt-0">
-          <div className={cn("flex items-center gap-2 text-sm font-medium text-primary group-hover:gap-3 transition-[gap]", ANIMATION.duration.fast)}>
+          <div className={cn(`flex items-center gap-2 ${TYPOGRAPHY.label.small} text-primary group-hover:gap-3 transition-[gap]`, ANIMATION.duration.fast)}>
             <span>Start Series</span>
             <ChevronRight className="h-4 w-4" />
           </div>

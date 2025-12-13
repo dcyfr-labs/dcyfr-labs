@@ -105,7 +105,7 @@ console.log(`User role: ${user.role}`); // Only if role is non-sensitive
 
 ### 3a. IP Addresses (PII under GDPR/CCPA)
 
-**IP addresses are considered PII** and must be handled carefully. See [docs/security/pi-policy.md](../../docs/security/pi-policy.md#ip-address-collection--handling) for full policy.
+**IP addresses are considered PII** and must be handled carefully. See [docs/security/pi-policy.md](../../docs/security/pi-policy#ip-address-collection--handling) for full policy.
 
 ```javascript
 // ❌ WRONG: Logs full IP address
@@ -595,8 +595,8 @@ CodeQL runs automatically on all PRs:
 - [CWE-532: Insertion of Sensitive Information into Log File](https://cwe.mitre.org/data/definitions/532.html)
 
 **Related Documentation:**
-- [CLAUDE.md - Security Best Practices](../../CLAUDE.md#security-best-practices)
-- [DESIGN_SYSTEM.md - Logging Security](./DESIGN_SYSTEM.md#logging-security-best-practices)
+- [CLAUDE.md - Security Best Practices](../../claude#security-best-practices)
+- [DESIGN_SYSTEM.md - Logging Security](./design-system#logging-security-best-practices)
 
 ## Quick Reference Card
 

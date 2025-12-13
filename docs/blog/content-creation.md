@@ -2,7 +2,7 @@
 
 **Status:** ✅ Production  
 **Last Updated:** October 24, 2025  
-**Related:** [Blog Architecture](./architecture.md) · [MDX Processing](./mdx-processing.md) · [Frontmatter Schema](./frontmatter-schema.md)
+**Related:** [Blog Architecture](./architecture) · [MDX Processing](./mdx-processing) · [Frontmatter Schema](./frontmatter-schema)
 
 ---
 
@@ -555,7 +555,7 @@ MDX allows you to use React components in markdown.
 
 **Current Custom Components:**
 - Standard HTML elements with Tailwind styling
-- See [MDX Component docs](../components/mdx.md) for full list
+- See [MDX Component docs](../components/mdx) for full list
 
 ---
 
@@ -1023,10 +1023,10 @@ More content...
 
 ## Related Documentation
 
-- **[Blog Architecture](./architecture.md)** - Overall system design
-- **[MDX Processing](./mdx-processing.md)** - How content is transformed
-- **[Frontmatter Schema](./frontmatter-schema.md)** - Complete field reference
-- **[Quick Reference](./quick-reference.md)** - Command cheat sheet
+- **[Blog Architecture](./architecture)** - Overall system design
+- **[MDX Processing](./mdx-processing)** - How content is transformed
+- **[Frontmatter Schema](./frontmatter-schema)** - Complete field reference
+- **[Quick Reference](./quick-reference)** - Command cheat sheet
 
 ---
 

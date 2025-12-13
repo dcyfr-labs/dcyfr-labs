@@ -442,7 +442,7 @@ npm run dev
 
 ### Future Enhancements
 
-See [FUTURE_IDEAS.md](./FUTURE_IDEAS.md) for post-launch enhancements:
+See [FUTURE_IDEAS.md](./future-ideas) for post-launch enhancements:
 
 - Series progress indicators
 - Series bookmarking
@@ -494,10 +494,10 @@ See [FUTURE_IDEAS.md](./FUTURE_IDEAS.md) for post-launch enhancements:
 
 ## 📚 Documentation References
 
-- **Analytics Implementation:** [SERIES_ANALYTICS_IMPLEMENTATION.md](./SERIES_ANALYTICS_IMPLEMENTATION.md)
-- **Design Token Compliance:** [DESIGN_TOKEN_COMPLIANCE_REPORT.md](../design/DESIGN_TOKEN_COMPLIANCE_REPORT.md)
-- **Page Templates:** [PAGE_TEMPLATES.md](../design/PAGE_TEMPLATES.md)
-- **Future Ideas:** [FUTURE_IDEAS.md](./FUTURE_IDEAS.md)
+- **Analytics Implementation:** [SERIES_ANALYTICS_IMPLEMENTATION.md](./series-analytics-implementation)
+- **Design Token Compliance:** [DESIGN_TOKEN_COMPLIANCE_REPORT.md](../design/design-token-compliance-report)
+- **Page Templates:** [PAGE_TEMPLATES.md](../design/page-templates)
+- **Future Ideas:** [FUTURE_IDEAS.md](./future-ideas)
 
 ---
 

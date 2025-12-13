@@ -118,6 +118,6 @@ Potential improvements for future iterations:
 
 ## See Also
 
-- [Analytics Dashboard Documentation](./dashboard.md)
-- [24h Trends Guide](./24h-trends.md)
-- [Blog Tag System](../blog/frontmatter-schema.md#tags)
+- [Analytics Dashboard Documentation](./dashboard)
+- [24h Trends Guide](./24h-trends)
+- [Blog Tag System](../blog/frontmatter-schema#tags)

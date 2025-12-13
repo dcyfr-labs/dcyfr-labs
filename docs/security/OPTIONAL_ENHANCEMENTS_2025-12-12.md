@@ -156,7 +156,7 @@ Output: "This is a very long title that exceeds the maximum character limit and 
 **Status:** Newly Documented
 **Priority:** Low (Documentation only)
 **Implementation Time:** 10 minutes
-**File:** [docs/security/CORS_POLICY.md](./CORS_POLICY.md)
+**File:** [docs/security/CORS_POLICY.md](./cors-policy)
 
 ### What Was Documented
 
@@ -368,10 +368,10 @@ npm run typecheck
 
 ## Related Documentation
 
-- [Security Audit Summary](./SECURITY_AUDIT_SUMMARY_2025-12-11.md)
-- [Security Fixes Implementation](./SECURITY_FIXES_2025-12-11.md)
-- [CORS Policy](./CORS_POLICY.md)
-- [Completion Status](./COMPLETION_STATUS_2025-12-12.md)
+- [Security Audit Summary](./security-audit-summary-2025-12-11)
+- [Security Fixes Implementation](./security-fixes-2025-12-11)
+- [CORS Policy](./cors-policy)
+- [Completion Status](./completion-status-2025-12-12)
 
 ---
 

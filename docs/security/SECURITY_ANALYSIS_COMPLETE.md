@@ -273,17 +273,17 @@ Review and adjust as needed
 ## 🔗 Quick Links
 
 ### Analysis Documents
-- [INDEX](INDEX.md) - Complete navigation guide
-- [QUICK_REFERENCE](QUICK_REFERENCE.md) - 5-minute summary
-- [SUMMARY](SECURITY_ANALYSIS_SUMMARY.md) - 15-minute overview
-- [COMPREHENSIVE](COMPREHENSIVE_SECURITY_ANALYSIS_2025-10-28.md) - Full 16-section analysis
-- [ACTION_ITEMS](FINDINGS_AND_ACTION_ITEMS.md) - Implementation guide
+- [INDEX](index) - Complete navigation guide
+- [QUICK_REFERENCE](quick-reference) - 5-minute summary
+- [SUMMARY](security-analysis-summary) - 15-minute overview
+- [COMPREHENSIVE](comprehensive-security-analysis-2025-10-28) - Full 16-section analysis
+- [ACTION_ITEMS](findings-and-action-items) - Implementation guide
 
 ### Existing Security Docs
-- [Security Status](security-status.md) - October 25, 2025
-- [Hardening Summary](hardening-summary-2025-10-24.md) - October 24, 2025
-- [Environment Audit](environment-variable-audit.md) - October 25, 2025
-- [CSP Implementation](csp/nonce-implementation.md) - Complete guide
+- [Security Status](security-status) - October 25, 2025
+- [Hardening Summary](hardening-summary-2025-10-24) - October 24, 2025
+- [Environment Audit](environment-variable-audit) - October 25, 2025
+- [CSP Implementation](csp/nonce-implementation) - Complete guide
 
 ### External Resources
 - [OWASP](https://owasp.org/) - Web security standards
@@ -394,7 +394,7 @@ This comprehensive security analysis provides:
 
 ---
 
-**Start Reading:** [`/docs/security/INDEX.md`](INDEX.md)
+**Start Reading:** [`/docs/security/INDEX.md`](index)
 
 **Questions?** Review the comprehensive documentation in `/docs/security/`
 

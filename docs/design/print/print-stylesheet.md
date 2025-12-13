@@ -198,9 +198,9 @@ Potential improvements for future iterations:
 
 ## Related Documentation
 
-- [Blog Architecture](/docs/blog/architecture.md) - Blog system overview
-- [Typography Guide](/docs/design/typography.md) - Typography system
-- [Component: MDX](/docs/components/mdx.md) - MDX rendering
+- [Blog Architecture](/docs/blog/architecture) - Blog system overview
+- [Typography Guide](/docs/design/typography) - Typography system
+- [Component: MDX](/docs/components/mdx) - MDX rendering
 
 ## Troubleshooting
 

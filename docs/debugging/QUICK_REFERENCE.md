@@ -183,7 +183,7 @@ watch -n 2 'curl -s localhost:3000/api/dev/diagnostics | jq .diagnostics.memory'
 
 ## 📖 Full Documentation
 
-See [DEV_DEBUGGING_GUIDE.md](./DEV_DEBUGGING_GUIDE.md) for:
+See [DEV_DEBUGGING_GUIDE.md](./dev-debugging-guide) for:
 - Complete API reference
 - Detailed troubleshooting scenarios
 - Configuration options

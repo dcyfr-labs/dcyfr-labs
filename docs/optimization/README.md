@@ -4,9 +4,9 @@ Analytics dashboard documentation for tracking and analyzing blog post performan
 
 ## Quick Links
 
-- **[24h Trends](./24h-trends.md)** - 24-hour performance tracking and analysis
-- **[24h Trends Quick Reference](./24h-trends-quick-ref.md)** - Quick guide for daily metrics
-- **[Tag Analytics](./tag-analytics.md)** - Tag performance and content strategy insights
+- **[24h Trends](./24h-trends)** - 24-hour performance tracking and analysis
+- **[24h Trends Quick Reference](./24h-trends-quick-ref)** - Quick guide for daily metrics
+- **[Tag Analytics](./tag-analytics)** - Tag performance and content strategy insights
 
 ## Overview
 
@@ -173,7 +173,7 @@ The Tag Analytics section shows performance metrics for each content tag, helpin
 3. **SEO Optimization** - Prioritize tags with strong reach
 4. **Content Balance** - Ensure diverse topic coverage
 
-See **[Tag Analytics Guide](./tag-analytics.md)** for detailed documentation.
+See **[Tag Analytics Guide](./tag-analytics)** for detailed documentation.
 
 ## Performance
 
@@ -213,7 +213,7 @@ Benefits:
 
 ### No view data showing
 **Cause:** Redis not configured or no traffic yet  
-**Fix:** Set up Redis (see [environment variables](../operations/environment-variables.md)) or wait for organic traffic
+**Fix:** Set up Redis (see [environment variables](../operations/environment-variables)) or wait for organic traffic
 
 ### Filters not working
 **Cause:** JavaScript not loaded  
@@ -261,6 +261,6 @@ Planned improvements:
 
 ## See Also
 
-- [Blog System Architecture](../blog/architecture.md)
-- [View Tracking Implementation](../components/view-tracking.md)
-- [Redis Configuration](../operations/environment-variables.md)
+- [Blog System Architecture](../blog/architecture)
+- [View Tracking Implementation](../components/view-tracking)
+- [Redis Configuration](../operations/environment-variables)

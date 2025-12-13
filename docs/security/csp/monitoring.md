@@ -418,9 +418,9 @@ tags.type:csp_violation environment:production
 ## Reference
 
 ### Documentation
-- [CSP Nonce Implementation](/docs/security/csp/nonce-implementation.md)
-- [Environment Variables](/docs/platform/environment-variables.md)
-- [Security Findings](/docs/security/FINDINGS_AND_ACTION_ITEMS.md)
+- [CSP Nonce Implementation](/docs/security/csp/nonce-implementation)
+- [Environment Variables](/docs/platform/environment-variables)
+- [Security Findings](/docs/security/findings-and-action-items)
 
 ### External Resources
 - [Sentry CSP Documentation](https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/filtering/#content-security-policy)

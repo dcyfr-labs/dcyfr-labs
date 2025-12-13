@@ -181,7 +181,7 @@ grep -r "blockExternalAccess\|ADMIN_API_KEY\|export async function" src/app/api/
 - **Admin Exposure:** 3 endpoints → 0 (secured)
 
 ### **Performance Impact**
-- **Minimal overhead:** Security checks add <1ms per request
+- **Minimal overhead:** Security checks add \<1ms per request
 - **Reduced server load:** 47% fewer endpoints to maintain
 - **Simplified monitoring:** Focus on essential endpoints only
 

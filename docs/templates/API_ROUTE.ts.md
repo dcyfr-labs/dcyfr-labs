@@ -327,6 +327,6 @@ Before committing your new API route:
 
 ## Related Docs
 
-- [API Routes Guide](../api/README.md)
-- [Inngest Functions](../features/inngest.md)
-- [Background Job Patterns](../ai/COMPONENT_PATTERNS.md#background-jobs)
+- [API Routes Guide](../api/readme)
+- [Inngest Functions](../features/inngest)
+- [Background Job Patterns](../ai/component-patterns#background-jobs)

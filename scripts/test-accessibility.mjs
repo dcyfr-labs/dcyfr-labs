@@ -50,8 +50,10 @@ async function runLighthouse(url, name) {
       '--chrome-flags="--headless"'
     ];
 
-    // Add Vercel protection bypass headers if secret is available
-    if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
+    // Add Vercel protection bypass headers for preview deployments only
+    // Only use bypass on preview URLs (vercel.app or www.dcyfr.dev preview, not localhost or production)
+    const isPreviewUrl = (url.includes('vercel.app') || (url.includes('dcyfr.dev')));
+    if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET && isPreviewUrl) {
       args.push(`--extra-headers={"x-vercel-protection-bypass":"${process.env.VERCEL_AUTOMATION_BYPASS_SECRET}","x-vercel-set-bypass-cookie":"samesitenone"}`);
     }
 

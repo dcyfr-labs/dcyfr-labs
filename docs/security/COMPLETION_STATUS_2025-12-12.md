@@ -15,13 +15,13 @@
 - OWASP Top 10 (2024) compliance verification
 - OWASP API Security Top 10 (2023) compliance verification
 - **Result:** 0 critical, 0 high, 2 medium vulnerabilities found
-- **Files:** [API_SECURITY_AUDIT_2025-12-11.md](./API_SECURITY_AUDIT_2025-12-11.md)
+- **Files:** [API_SECURITY_AUDIT_2025-12-11.md](./api-security-audit-2025-12-11)
 
 **2. ✅ Red Team Engagement Plan Created**
 - 8-phase comprehensive testing plan
 - Attack scenarios for all endpoints
 - Automated test suite specifications
-- **Files:** [RED_TEAM_ENGAGEMENT_PLAN.md](./RED_TEAM_ENGAGEMENT_PLAN.md)
+- **Files:** [RED_TEAM_ENGAGEMENT_PLAN.md](./red-team-engagement-plan)
 
 **3. ✅ Timing-Safe API Key Comparison**
 - Implemented `timingSafeEqual()` from Node.js crypto
@@ -53,7 +53,7 @@
 - 15 pre-built security monitoring queries
 - Categories: Core security, advanced analysis, compliance
 - Real-time monitoring dashboards
-- **Files:** [AXIOM_SECURITY_QUERIES.md](./AXIOM_SECURITY_QUERIES.md)
+- **Files:** [AXIOM_SECURITY_QUERIES.md](./axiom-security-queries)
 
 **7. ✅ Automated Security Test Suite**
 - Test script with 7 security scenarios
@@ -67,11 +67,11 @@
 - Sentry alert setup instructions
 - Testing procedures
 - **Files Created:**
-  - [SECURITY_FIXES_2025-12-11.md](./SECURITY_FIXES_2025-12-11.md)
-  - [SENTRY_INTEGRATION_COMPLETE.md](./SENTRY_INTEGRATION_COMPLETE.md)
-  - [SENTRY_ALERTS_SETUP.md](./SENTRY_ALERTS_SETUP.md)
-  - [SENTRY_MANUAL_ALERT_SETUP.md](./SENTRY_MANUAL_ALERT_SETUP.md)
-  - [AXIOM_SECURITY_QUERIES.md](./AXIOM_SECURITY_QUERIES.md)
+  - [SECURITY_FIXES_2025-12-11.md](./security-fixes-2025-12-11)
+  - [SENTRY_INTEGRATION_COMPLETE.md](./sentry-integration-complete)
+  - [SENTRY_ALERTS_SETUP.md](./sentry-alerts-setup)
+  - [SENTRY_MANUAL_ALERT_SETUP.md](./sentry-manual-alert-setup)
+  - [AXIOM_SECURITY_QUERIES.md](./axiom-security-queries)
 
 ---
 
@@ -83,7 +83,7 @@
 - **Status:** Events flowing (77+ events verified), alerts not configured
 - **Blocker:** Sentry API has deprecated syntax, manual setup required
 - **Action Required:** Manual UI configuration (5 minutes)
-- **Guide:** [SENTRY_MANUAL_ALERT_SETUP.md](./SENTRY_MANUAL_ALERT_SETUP.md)
+- **Guide:** [SENTRY_MANUAL_ALERT_SETUP.md](./sentry-manual-alert-setup)
 - **Steps:**
   1. Go to Sentry Issues tab
   2. Click "Create Alert" on existing issue
@@ -294,12 +294,12 @@ Full red team engagement (8 phases) - **NOT STARTED**
 
 ## 📚 **RELATED DOCUMENTATION**
 
-- [API Security Audit Report](./API_SECURITY_AUDIT_2025-12-11.md)
-- [Security Fixes Implementation](./SECURITY_FIXES_2025-12-11.md)
-- [Red Team Engagement Plan](./RED_TEAM_ENGAGEMENT_PLAN.md)
-- [Sentry Integration Guide](./SENTRY_INTEGRATION_COMPLETE.md)
-- [Sentry Manual Alert Setup](./SENTRY_MANUAL_ALERT_SETUP.md)
-- [Axiom Security Queries](./AXIOM_SECURITY_QUERIES.md)
+- [API Security Audit Report](./api-security-audit-2025-12-11)
+- [Security Fixes Implementation](./security-fixes-2025-12-11)
+- [Red Team Engagement Plan](./red-team-engagement-plan)
+- [Sentry Integration Guide](./sentry-integration-complete)
+- [Sentry Manual Alert Setup](./sentry-manual-alert-setup)
+- [Axiom Security Queries](./axiom-security-queries)
 
 ---
 

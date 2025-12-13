@@ -308,10 +308,10 @@ MCP Ecosystem Status:
 
 **Choose your path:**
 
-- **First time?** → Read [`docs/mcp/github/setup.md`](./setup.md)
-- **Need quick help?** → Read [`docs/mcp/github/quick-reference.md`](./quick-reference.md)
-- **Want everything?** → Read [`docs/mcp/github/implementation.md`](./implementation.md)
-- **Need background?** → Read [`docs/mcp/github/implementation-summary.md`](./implementation-summary.md)
+- **First time?** → Read [`docs/mcp/github/setup.md`](./setup)
+- **Need quick help?** → Read [`docs/mcp/github/quick-reference.md`](./quick-reference)
+- **Want everything?** → Read [`docs/mcp/github/implementation.md`](./implementation)
+- **Need background?** → Read [`docs/mcp/github/implementation-summary.md`](./implementation-summary)
 
 ---
 

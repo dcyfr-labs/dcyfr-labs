@@ -13,7 +13,7 @@
 
 ## Tiered Documentation Approach
 
-### Tier 1: Auto-Loaded (CLAUDE.md - Target: <1,500 tokens)
+### Tier 1: Auto-Loaded (CLAUDE.md - Target: \<1,500 tokens)
 
 **Essential quick reference only:**
 - Project type and stack (1-2 sentences)

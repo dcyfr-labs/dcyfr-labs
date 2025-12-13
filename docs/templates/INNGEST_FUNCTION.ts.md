@@ -350,6 +350,6 @@ Before committing your Inngest function:
 
 ## Related Docs
 
-- [Inngest Guide](../features/inngest.md)
-- [Background Job Patterns](../ai/COMPONENT_PATTERNS.md#background-jobs)
-- [API Route Integration](../api/README.md)
+- [Inngest Guide](../features/inngest)
+- [Background Job Patterns](../ai/component-patterns#background-jobs)
+- [API Route Integration](../api/readme)

@@ -1,7 +1,7 @@
 # Open Graph Image Integration
 
 **Status**: ✅ Implemented (November 9, 2025)  
-**Related**: [`featured-images.md`](./featured-images.md), [`frontmatter-schema.md`](./frontmatter-schema.md)
+**Related**: [`featured-images.md`](./featured-images), [`frontmatter-schema.md`](./frontmatter-schema)
 
 ## Overview
 
@@ -202,9 +202,9 @@ ls -lh public/blog/images/**/*
 
 ## Related Documentation
 
-- [Featured Images Guide](./featured-images.md) - Hero image display on blog posts
-- [Frontmatter Schema](./frontmatter-schema.md) - Complete frontmatter reference
-- [Default Images](./default-images-quick-ref.md) - Using default/placeholder images
+- [Featured Images Guide](./featured-images) - Hero image display on blog posts
+- [Frontmatter Schema](./frontmatter-schema) - Complete frontmatter reference
+- [Default Images](./default-images-quick-ref) - Using default/placeholder images
 
 ## Troubleshooting
 

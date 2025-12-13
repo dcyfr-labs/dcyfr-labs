@@ -3,7 +3,7 @@
 **Purpose:** Maintain single source of truth while optimizing Claude Code (primary) and auto-syncing Copilot (secondary)
 **Last Updated:** December 10, 2025
 **Strategy:** Primary development on Claude Code agents, automated monthly sync to Copilot
-**Rationale:** See [`docs/ai/AGENT_UNIFICATION_ANALYSIS.md`](./AGENT_UNIFICATION_ANALYSIS.md)
+**Rationale:** See [`docs/ai/AGENT_UNIFICATION_ANALYSIS.md`](./agent-unification-analysis)
 
 ---
 
@@ -231,9 +231,9 @@ The `ai-instructions-sync` GitHub Actions workflow automatically:
 
 ## 📖 Related Documentation
 
-- [AGENTS.md](../../AGENTS.md) - Complete agent ecosystem overview
-- [AGENT_UNIFICATION_ANALYSIS.md](./AGENT_UNIFICATION_ANALYSIS.md) - Feasibility analysis
-- [docs/ai/QUICK_REFERENCE.md](./QUICK_REFERENCE.md) - Pattern reference
+- [AGENTS.md](../../agents) - Complete agent ecosystem overview
+- [AGENT_UNIFICATION_ANALYSIS.md](./agent-unification-analysis) - Feasibility analysis
+- [docs/ai/QUICK_REFERENCE.md](./quick-reference) - Pattern reference
 - [.github/workflows/](../../.github/workflows/) - Automation workflows
 - [scripts/](../../scripts/) - Maintenance and sync scripts
 

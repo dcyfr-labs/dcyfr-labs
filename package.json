@@ -42,6 +42,7 @@
     "scan:pi": "node scripts/check-for-pii.mjs",
     "scan:pi:all": "node scripts/check-for-pii.mjs --all",
     "mcp:check": "node scripts/check-mcp-servers.mjs",
+    "backup:status": "node scripts/backup-status.mjs",
     "lhci:collect": "lhci collect",
     "lhci:assert": "lhci assert",
     "lhci:upload": "lhci upload",

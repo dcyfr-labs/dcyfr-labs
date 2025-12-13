@@ -244,11 +244,11 @@ When making changes to rate limiting:
 
 ## Related Documentation
 
-- [Test Guide](test-guide.md) - Complete testing documentation
-- [Rate Limiting Guide](guide.md) - Implementation guide
-- [Rate Limiting Quick Reference](quick-reference.md) - Quick lookup
-- [API Reference](../../api/reference.md) - API documentation
-- [Environment Variables](../../operations/environment-variables.md) - Configuration
+- [Test Guide](test-guide) - Complete testing documentation
+- [Rate Limiting Guide](guide) - Implementation guide
+- [Rate Limiting Quick Reference](quick-reference) - Quick lookup
+- [API Reference](../../api/reference) - API documentation
+- [Environment Variables](../../operations/environment-variables) - Configuration
 
 ## Known Limitations
 

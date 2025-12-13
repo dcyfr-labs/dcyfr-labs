@@ -314,6 +314,6 @@ done
 ---
 
 **Quick Links:**
-- [Full Security Status](/docs/security/security-status.md)
-- [CSP Nonce Implementation](/docs/security/csp/nonce-implementation.md)
-- [Rate Limiting Guide](/docs/security/rate-limiting/guide.md)
+- [Full Security Status](/docs/security/security-status)
+- [CSP Nonce Implementation](/docs/security/csp/nonce-implementation)
+- [Rate Limiting Guide](/docs/security/rate-limiting/guide)

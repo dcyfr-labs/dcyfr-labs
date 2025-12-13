@@ -2,9 +2,9 @@
 
 This document tracks **active and pending** work. Completed tasks are in **`done.md`**.
 
-**Last Updated:** December 11, 2025 | **Status:** Maintenance mode + security hardening complete | **Pass Rate:** 1339/1346 tests (99.5%)
+**Last Updated:** December 12, 2025 | **Status:** Cleanup Complete - TODO/Done/Future Ideas Consolidated | **Pass Rate:** 1339/1346 tests (99.5%)
 
-> **📋 For AI Agents:** This document tracks **active and backlog** work only. For **unvalidated ideas** and **future enhancements** (>10 hours effort, experimental features, ideas needing validation), see **[`FUTURE_IDEAS.md`](../features/FUTURE_IDEAS.md)**. Move items from FUTURE_IDEAS.md to this TODO only after validation, clear business case, or resource availability.
+> **📋 For AI Agents:** This document tracks **active and backlog** work only. For **unvalidated ideas** and **future enhancements** (>10 hours effort, experimental features, ideas needing validation), see **[`FUTURE_IDEAS.md`](../features/future-ideas)**. Move items from FUTURE_IDEAS.md to this TODO only after validation, clear business case, or resource availability.
 
 ---
 
@@ -13,9 +13,9 @@ This document tracks **active and pending** work. Completed tasks are in **`done
 | Status | Count | Impact |
 |--------|-------|--------|
 | **Pending Work** | 0 items | All priority work complete ✅ |
-| **Active Backlog** | 4 items | Medium-priority, 2-5 hour efforts (next planning cycle) |
+| **Active Backlog** | 2 items | Medium-priority, 2-5 hour efforts (next planning cycle) |
 | **Future Ideas** | 12 items | Low-priority, experimental, or unvalidated features (>10 hours or speculative) |
-| **✅ Completed** | 57+ items | Phases 1-4 + automation + security hardening + 2 priority tasks completed (Dec 12) |
+| **✅ Completed** | 59 items | Phases 1-4 + automation + security hardening + Gitleaks enforcement + backup plan (Dec 12) |
 
 ---
 
@@ -37,171 +37,30 @@ This document tracks **active and pending** work. Completed tasks are in **`done
 
 **Quick Help:** Type `/agent-help` in Claude Code to see all agents and workflows
 
-See [`CLAUDE.md`](../../CLAUDE.md#claude-code-agents-ai-powered-quality-assurance) and [`.claude/agents/`](../../.claude/agents/) for detailed agent documentation.
+See [`CLAUDE.md`](../../claude#claude-code-agents-ai-powered-quality-assurance) and [`.claude/agents/`](../../.claude/agents/) for detailed agent documentation.
 
 ---
 
-## ✅ RECENTLY COMPLETED (Dec 11, 2025)
+## ✅ RECENTLY COMPLETED (Dec 12, 2025)
 
-### 🔒 API Security Hardening & Incident Response
+**All recently completed items have been moved to [`done.md`](done) for consolidation.** This keeps todo.md focused on active and pending work.
 
-**Completed:** December 11, 2025 (5-hour comprehensive audit + incident resolution)
+Key completions in this period:
+- 🔐 Gitleaks Enforcement Policy & Automated Remediation
+- 🔒 API Security Hardening & Incident Response  
+- 🔐 PI vs PII Classification Expansion (9 new patterns)
+- 📊 Activity Feed Caching Implementation
+- ✅ All Priority 1-3 security improvements and features
 
-- ✅ **Comprehensive API Security Audit** - Audited all 11 API endpoints
-- ✅ **Fixed 5 Critical Vulnerabilities:**
-  1. `/api/research` GET - Blocked public information disclosure
-  2. `/api/analytics` - Added external blocking + input validation (days parameter)
-  3. `/api/admin/api-usage` - Added external blocking + strict rate limiting (1 req/min)
-  4. `/api/inngest` - Added defense-in-depth signature validation
-  5. `/api/contact` - Strengthened email validation (RFC 5322 compliant)
-- ✅ **Critical Incident Resolution** - Contact form blocked by overly aggressive security
-  - Root cause: `blockExternalAccess()` applied to public user-facing endpoint
-  - Fixed within 15 minutes of discovery
-  - ~4 hour downtime from deployment to discovery
-- ✅ **Security Documentation** - Comprehensive 560-line audit report with incident analysis
-- ✅ **Lessons Learned** - API classification guide (internal vs public endpoints)
-
-**Impact:** All API endpoints now properly secured with multi-layer defense-in-depth approach.
-
-**Documentation:** [`docs/security/API_SECURITY_AUDIT_2025-12-11.md`](../security/API_SECURITY_AUDIT_2025-12-11.md)
-
-**Commits:**
-- `e46b559` - Fix research endpoint
-- `9443d66` - Comprehensive hardening (4 endpoints)
-- `c65fab8` - TypeScript fix (Inngest handlers)
-- `ca2d0eb` - Critical contact form fix
-- `42fa782` - Security documentation update
-
-See [`done.md`](done.md) for detailed breakdown.
+See [`done.md`](done) for full details on Dec 11-12 completions.
 
 ---
 
 ## 🟡 PENDING WORK QUEUE (Next Steps)
 
-### Priority 1: Security Improvements ✅ **COMPLETED** (Dec 12, 2025)
+**All security priority work (Priority 1-3) has been completed and archived in [`done.md`](done).**
 
-Based on December 11 security audit findings - **ALL ITEMS COMPLETED:**
-
-- [x] **Timing-Safe API Key Comparison** ✅ **ALREADY IMPLEMENTED** 
-  - **Status:** Found that `crypto.timingSafeEqual()` is already implemented in both endpoints
-  - **Files:** `src/app/api/analytics/route.ts:39`, `src/app/api/admin/api-usage/route.ts:40`
-  - **Effort:** 0 minutes (validation only)
-  - **Priority:** ✅ **COMPLETED**
-
-- [x] **Structured Audit Logging for Admin Endpoints** ✅ **ALREADY IMPLEMENTED**
-  - **Status:** Found that structured logging with JSON format is already implemented
-  - **Files:** `src/app/api/analytics/route.ts`, `src/app/api/admin/api-usage/route.ts`
-  - **Effort:** 0 minutes (validation only)
-  - **Priority:** ✅ **COMPLETED**
-
-- [x] **Request Size Limits** ✅ **COMPLETED** (Dec 12, 2025)
-  - **✅ IMPLEMENTED:** Added Content-Length validation to POST endpoints with graceful fallback
-  - **Details:** 
-    - Contact form: 50KB limit with dual validation (header + body size)
-    - Research endpoint: 100KB limit with comprehensive error handling
-    - Default blog image: Enhanced with proper error responses
-  - **Files:** `src/app/api/contact/route.ts`, `src/app/api/research/route.ts`
-  - **Effort:** 30 minutes (completed)
-  - **Priority:** ✅ **COMPLETED**
-
-- [x] **Title Length Validation for OG Image Generator** ✅ **COMPLETED** (Dec 12, 2025)
-  - **✅ IMPLEMENTED:** Added max 1000 character limit to title parameter
-  - **Details:** Added validation with proper error response and 400 status code
-  - **File:** `src/app/api/default-blog-image/route.tsx:19`
-  - **Effort:** 15 minutes (completed)
-  - **Priority:** ✅ **COMPLETED**
-
-- [x] **Security Advisory Workflow Review & Refinement** ✅ **COMPLETED** (Dec 12, 2025)
-  - **Issue:** Issue #122 generated false positives for packages not in production dependencies (`react-server-dom-webpack`)
-  - **Root Cause:** Security advisory detection workflow didn't validate against `package.json` dependencies before creating alerts
-  - **✅ FIXED:** Modified `scripts/monitor-upstream-advisories.mjs` to:
-    1. Added `getProductionDependencies()` function to read package.json dependencies
-    2. Enhanced validation logic to skip transitive-only dependencies
-    3. Improved logging to show production vs transitive dependency status
-    4. Now properly excludes packages like `react-server-dom-webpack` that exist in lockfile but aren't direct dependencies
-  - **Validation:** `node scripts/monitor-upstream-advisories.mjs --dry-run` now correctly skips transitive dependencies
-  - **Effort:** 1 hour (completed)
-  - **Priority:** ✅ **COMPLETED**
-
-**Total Estimated Effort:** 3-4.5 hours
-**Audit Reference:** [`docs/security/API_SECURITY_AUDIT_2025-12-11.md`](../security/API_SECURITY_AUDIT_2025-12-11.md) (Sections: "Remaining Recommendations")
-
----
-
-### Priority 2: BotID Re-Enablement ✅ **COMPLETED** (Dec 12, 2025)
-
-- [x] **Re-enable Vercel BotID for contact form** ✅
-  - [x] BotID import and check logic in `/api/contact`
-  - [x] Graceful fallback protection (rate limiting + honeypot)
-  - [x] CI validation: 7/7 checks passing (`scripts/validate-botid-setup.mjs`)
-  - [x] Comprehensive test suite: 8/8 tests passing
-  - [x] GitHub Actions workflow: `.github/workflows/validate-botid.yml`
-  - [x] 48-hour monitoring plan documented
-  - [x] Rollback procedure documented
-
-**Implementation Details:**
-
-- **Protection Layers:** BotID → Rate Limiting (3 req/min) → Honeypot → Input Validation → Error Handling
-- **Graceful Fallback:** If BotID fails, request continues with rate limiting + honeypot
-- **Default State:** Disabled (requires `ENABLE_BOTID=1` to activate)
-- **Environment Variable:** Easy enable/disable without code changes
-- **Deployment:** Set `ENABLE_BOTID=1` in Vercel environment variables + monitor for 48 hours
-
-**Reference:** Commit `3f2b446` (feat: Re-enable Vercel BotID with safeguards)
-
-- **Effort:** 2-3 hours ✅ **COMPLETE**
-- **Priority:** Medium ✅ **COMPLETE**
-
----
-
-### Priority 3: Blog Series - Analytics & Navigation ✅ **COMPLETED** (Dec 12, 2025)
-
-- [x] **Series Analytics & Navigation** ✅
-  - [x] Series analytics tracking fully implemented (view/card click/post click/navigation events)
-  - [x] Navigation components complete (series-navigation, post-series-nav, series cards)
-  - [x] Sitemap includes series URLs (`src/app/sitemap.ts`)
-  - [x] Comprehensive test suite (169 lines across 2 test files)
-  - [x] Analytics tracker components (series-analytics-tracker, series-page-analytics-tracker)
-
-**Implementation Details:**
-
-- **Analytics Events:** 5 series events tracked (series_index_viewed, series_viewed, series_card_clicked, series_post_clicked, series_navigation_clicked)
-- **Components:** Series cards, navigation, badges, page trackers all implemented
-- **Test Coverage:** 169 lines of tests covering series pages and headers
-- **Sitemap:** Series pages included in dynamic sitemap generation
-- **Status:** Phase 1 complete (foundation + pages) + Phase 2 analytics ✅
-- **Estimated Impact:** Enhanced series discoverability
-- **Effort:** 1-2 hours ✅ **COMPLETE**
-- **Priority:** Low ✅ **COMPLETE**
-
-> **Note:** Content strategy items like Professional Services Page belong in [`FUTURE_IDEAS.md`](../features/FUTURE_IDEAS.md), not here. This queue tracks only implementation work.
-
----
-
-## 🔵 ACTIVE BACKLOG (Medium Priority - Validate & Schedule)
-
-These items have clear impact and modest effort (2-5 hours each). Evaluate for next planning cycle.
-
-### Infrastructure & Reliability
-
-- [ ] **Backup & Disaster Recovery Plan** (2 hours)
-  - **Impact:** Business continuity and disaster recovery
-  - **Scope:** Document backup strategy, recovery procedures, testing schedule
-  - **Priority:** Medium (compliance requirement)
-
-**CI/CD Pipeline:**
-
-- ✅ Tier 1 optimizations complete (Dec 2025): 30-40% faster PR workflows
-- Tier 2/3 optimizations moved to [FUTURE_IDEAS.md](../features/FUTURE_IDEAS.md#infrastructure)
-- See [ci-cd-optimization-analysis.md](ci-cd-optimization-analysis.md) and [ci-cd-optimization-implementation.md](ci-cd-optimization-implementation.md) for details
-
-### AI & Security / Detection & Allowlist Enhancements
-
-- [ ] **Gitleaks Enforcement Policy & Tickets** (3-4 hours)
-  - Enhance CI to automatically create a remediation issue/ticket when gitleaks flags critical secrets, with a link to the artifact and remediation checklist (rotate keys, remove from history, update secrets management).
-  - **Impact:** Ensures critical secrets have a documented remediation workflow and prevents accidental bypass via allowlist entries.
-  - **Estimated Effort:** 3-4 hours
-  - **Priority:** Medium
+### Remaining Backlog Items
 
 - [ ] **Scanner Unit & Integration Tests** (2-3 hours)
   - Add tests for `check-for-pii.mjs` and the gitleaks parser to ensure placeholder logic and allowlist classification work as expected. Include falsy and true-positive tests.
@@ -209,34 +68,19 @@ These items have clear impact and modest effort (2-5 hours each). Evaluate for n
   - **Estimated Effort:** 2-3 hours
   - **Priority:** Medium
 
-- [ ] **PI vs PII Classification Expansion** (3-5 hours)
-  - Expand the scanner to support more nuanced PI/PII patterns (e.g., service tokens, unique business identifiers) and map to taxonomy; update docs to reflect the detailed mapping for maintainers.
-  - **Impact:** Improves detection accuracy and helps triage severity.
-  - **Estimated Effort:** 3-5 hours
-  - **Priority:** Medium
+---
+
+## 📋 Completed Work Archive
+
+All completed work has been moved to [`done.md`](done) with archive subdirectories for historical reference.
+
+See:
+- **[`done.md`](done)** - Recent completions (current month)
+- **[`docs/operations/archive/`](./archive/)** - Historical completions by month
 
 ---
 
-**Note:** The following items have been moved to [`FUTURE_IDEAS.md`](../features/FUTURE_IDEAS.md) for later evaluation:
-
-- Allowlist PR Description Requirement
-- Scheduled Allowlist Audit Job
-- Credential Rotation Schedule & Documentation
-- PII/PI Contributor Training Documentation
-- Automated Redaction Helper
-- Allowlist Management Interface
-- PII/PI Events Dashboard
-- AI Agent Security Guardrails Post
-- Automated Performance Regression Tests
-- Sponsor Dashboard Phase 2 (API tracking, auth, UI)
-- Expandable FAB with Quick Actions
-- Advanced Holographic Card Effects
-
----
-
-## ✅ COMPLETED WORK
-
-### 📅 Recent Completion: Horizontal Scroll Filter Chips (Dec 9, 2025) ✅
+### Historic Completion: Horizontal Scroll Filter Chips (Dec 9, 2025) ✅
 
 - [x] **HorizontalFilterChips Component** ✅
   - Created `src/components/blog/filters/horizontal-filter-chips.tsx`
@@ -689,10 +533,10 @@ npm run check            # All quality checks
 
 ## 📚 Related Documents
 
-- **[`done.md`](done.md)** - Completed work archive (Phases 1-4, features, fixes)
-- **[`FUTURE_IDEAS.md`](../features/FUTURE_IDEAS.md)** - Unvalidated ideas, experimental features, long-term enhancements (>10 hours effort)
-- **[CI/CD Optimization Analysis](ci-cd-optimization-analysis.md)** - Pipeline optimization opportunities and implementation
-- **[CI/CD Optimization Implementation](ci-cd-optimization-implementation.md)** - Completed Tier 1 optimizations (Dec 2025)
+- **[`done.md`](done)** - Completed work archive (Phases 1-4, features, fixes)
+- **[`FUTURE_IDEAS.md`](../features/future-ideas)** - Unvalidated ideas, experimental features, long-term enhancements (>10 hours effort)
+- **[CI/CD Optimization Analysis](ci-cd-optimization-analysis)** - Pipeline optimization opportunities and implementation
+- **[CI/CD Optimization Implementation](ci-cd-optimization-implementation)** - Completed Tier 1 optimizations (Dec 2025)
 
 ---
 

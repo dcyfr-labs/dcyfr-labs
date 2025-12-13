@@ -247,8 +247,8 @@ All required variables already configured:
 - [src/components/common/dev-tools-dropdown.tsx](../../src/components/common/dev-tools-dropdown.tsx)
 
 **Documentation:**
-- [docs/operations/maintenance-automation.md](./maintenance-automation.md)
-- [Implementation Plan](/.claude/plans/unified-exploring-wadler.md)
+- [docs/operations/maintenance-automation.md](./maintenance-automation)
+- [Implementation Plan](/.claude/plans/unified-exploring-wadler)
 
 ---
 

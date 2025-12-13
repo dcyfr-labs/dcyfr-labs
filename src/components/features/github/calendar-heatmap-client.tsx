@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax -- Chart visualization colors (GitHub contribution heatmap) are intentional exceptions */
 "use client";
 
 import { useMemo } from "react";
@@ -190,25 +191,21 @@ export function ClientGitHubHeatmap({
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           />
           {/* GitHub contribution heatmap colors - chart visualization exception */}
-          { }
           <motion.div 
             className="w-2.5 h-2.5 rounded-sm bg-green-200 dark:bg-green-900"
             whileHover={{ scale: 1.2 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           />
-          { }
           <motion.div 
             className="w-2.5 h-2.5 rounded-sm bg-green-300 dark:bg-green-800"
             whileHover={{ scale: 1.2 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           />
-          { }
           <motion.div 
             className="w-2.5 h-2.5 rounded-sm bg-green-400 dark:bg-green-700"
             whileHover={{ scale: 1.2 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           />
-          { }
           <motion.div 
             className="w-2.5 h-2.5 rounded-sm bg-green-500 dark:bg-green-600"
             whileHover={{ scale: 1.2 }}

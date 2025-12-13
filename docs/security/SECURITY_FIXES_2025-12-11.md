@@ -319,7 +319,7 @@ curl -X GET http://localhost:3000/api/analytics \
 ```
 
 **Automated Red Team Testing:**
-See [RED_TEAM_ENGAGEMENT_PLAN.md](./RED_TEAM_ENGAGEMENT_PLAN.md) Phase 2: Authentication Testing
+See [RED_TEAM_ENGAGEMENT_PLAN.md](./red-team-engagement-plan) Phase 2: Authentication Testing
 
 ---
 
@@ -371,15 +371,15 @@ Changes are isolated to these two files and do not affect other endpoints.
 ## Documentation Updates
 
 ### Files Updated
-- ✅ [docs/security/SECURITY_AUDIT_SUMMARY_2025-12-11.md](./SECURITY_AUDIT_SUMMARY_2025-12-11.md) - Security rating upgraded to A+
-- ✅ [docs/security/SECURITY_FIXES_2025-12-11.md](./SECURITY_FIXES_2025-12-11.md) - This document
+- ✅ [docs/security/SECURITY_AUDIT_SUMMARY_2025-12-11.md](./security-audit-summary-2025-12-11) - Security rating upgraded to A+
+- ✅ [docs/security/SECURITY_FIXES_2025-12-11.md](./security-fixes-2025-12-11) - This document
 - ✅ [src/app/api/analytics/route.ts](../../src/app/api/analytics/route.ts) - Inline documentation updated
 - ✅ [src/app/api/admin/api-usage/route.ts](../../src/app/api/admin/api-usage/route.ts) - Inline documentation updated
 
 ### Related Documentation
-- [API Security Audit Report](./API_SECURITY_AUDIT_2025-12-11.md)
-- [Red Team Engagement Plan](./RED_TEAM_ENGAGEMENT_PLAN.md)
-- [Logging Security Guide](../ai/LOGGING_SECURITY.md)
+- [API Security Audit Report](./api-security-audit-2025-12-11)
+- [Red Team Engagement Plan](./red-team-engagement-plan)
+- [Logging Security Guide](../ai/logging-security)
 
 ---
 

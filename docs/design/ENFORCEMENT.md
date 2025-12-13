@@ -138,7 +138,7 @@ import {
 
 ### Step 2: Replace Hardcoded Values
 
-Refer to the **[Quick Start Guide](./QUICK_START.md)** for examples of each pattern.
+Refer to the **[Quick Start Guide](./quick-start)** for examples of each pattern.
 
 ### Step 3: Verify
 
@@ -203,13 +203,13 @@ To suppress warnings in these cases, use ESLint disable comments:
 
 ## Resources
 
-- **[Quick Start Guide](./QUICK_START.md)** - Get started with design tokens
-- **[Design System Overview](./design-system.md)** - Complete reference
-- **[Component Patterns](./component-patterns.md)** - Copy-paste examples
-- **[Implementation Roadmap](./implementation-roadmap.md)** - Migration phases
+- **[Quick Start Guide](./quick-start)** - Get started with design tokens
+- **[Design System Overview](./design-system)** - Complete reference
+- **[Component Patterns](./component-patterns)** - Copy-paste examples
+- **[Implementation Roadmap](./implementation-roadmap)** - Migration phases
 
 ---
 
 ## Questions?
 
-See the [Quick Start Guide](./QUICK_START.md) for common patterns, or check the [Design System documentation](./design-system.md) for detailed information about available tokens.
+See the [Quick Start Guide](./quick-start) for common patterns, or check the [Design System documentation](./design-system) for detailed information about available tokens.

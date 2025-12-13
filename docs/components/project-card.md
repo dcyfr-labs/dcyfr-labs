@@ -166,7 +166,7 @@ hover:shadow-lg hover:-translate-y-1
 
 ## Design Rationale
 
-See [Mobile-First Optimization Analysis](/docs/design/mobile-first-optimization-analysis.md#4-project-cards-project-cardtsx) for detailed design decisions and user research.
+See [Mobile-First Optimization Analysis](/docs/design/mobile-first-optimization-analysis#4-project-cards-project-cardtsx) for detailed design decisions and user research.
 
 ### Key Improvements
 1. **Progressive Disclosure** - Reveals content on demand without overwhelming mobile users

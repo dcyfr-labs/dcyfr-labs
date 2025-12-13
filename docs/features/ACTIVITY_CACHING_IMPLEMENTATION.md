@@ -296,16 +296,16 @@ Send event: activity/cache.invalidate
 - Activity engagement metrics
 - Historical trend analysis
 
-**See:** [ACTIVITY_FEED_AUTOMATION.md](../../docs/features/ACTIVITY_FEED_AUTOMATION.md) for full roadmap
+**See:** [ACTIVITY_FEED_AUTOMATION.md](../../docs/features/activity-feed-automation) for full roadmap
 
 ---
 
 ## 📚 Related Documentation
 
-- [Activity Feed Automation Strategy](../../docs/features/ACTIVITY_FEED_AUTOMATION.md)
-- [Quick Start Guide](../../docs/features/ACTIVITY_AUTOMATION_QUICK_START.md)
-- [Inngest Integration](../../docs/features/inngest-integration.md)
-- [Redis Guide](../../docs/platform/redis-guide.md)
+- [Activity Feed Automation Strategy](../../docs/features/activity-feed-automation)
+- [Quick Start Guide](../../docs/features/activity-automation-quick-start)
+- [Inngest Integration](../../docs/features/inngest-integration)
+- [Redis Guide](../../docs/platform/redis-guide)
 
 ---
 

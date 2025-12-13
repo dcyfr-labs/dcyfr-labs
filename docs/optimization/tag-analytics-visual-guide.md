@@ -258,6 +258,6 @@ The table footer shows context when many tags exist:
 
 ## See Also
 
-- [Tag Analytics Documentation](./tag-analytics.md)
-- [Analytics Dashboard Guide](./README.md)
-- [Design System Patterns](../design/component-patterns.md)
+- [Tag Analytics Documentation](./tag-analytics)
+- [Analytics Dashboard Guide](./readme)
+- [Design System Patterns](../design/component-patterns)

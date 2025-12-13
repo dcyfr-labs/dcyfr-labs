@@ -201,12 +201,12 @@ npm run dev
 
 | Topic | File |
 |-------|------|
-| **Daily Test Schedule** | [DAILY_SECURITY_TEST_SCHEDULE.md](./DAILY_SECURITY_TEST_SCHEDULE.md) |
-| **Sentry Setup** | [SENTRY_MANUAL_ALERT_SETUP.md](./SENTRY_MANUAL_ALERT_SETUP.md) |
-| **Axiom Queries** | [AXIOM_SECURITY_QUERIES.md](./AXIOM_SECURITY_QUERIES.md) |
-| **Security Audit** | [SECURITY_AUDIT_SUMMARY_2025-12-11.md](./SECURITY_AUDIT_SUMMARY_2025-12-11.md) |
-| **Implementation** | [SECURITY_FIXES_2025-12-11.md](./SECURITY_FIXES_2025-12-11.md) |
-| **Completion Status** | [COMPLETION_STATUS_2025-12-12.md](./COMPLETION_STATUS_2025-12-12.md) |
+| **Daily Test Schedule** | [DAILY_SECURITY_TEST_SCHEDULE.md](./daily-security-test-schedule) |
+| **Sentry Setup** | [SENTRY_MANUAL_ALERT_SETUP.md](./sentry-manual-alert-setup) |
+| **Axiom Queries** | [AXIOM_SECURITY_QUERIES.md](./axiom-security-queries) |
+| **Security Audit** | [SECURITY_AUDIT_SUMMARY_2025-12-11.md](./security-audit-summary-2025-12-11) |
+| **Implementation** | [SECURITY_FIXES_2025-12-11.md](./security-fixes-2025-12-11) |
+| **Completion Status** | [COMPLETION_STATUS_2025-12-12.md](./completion-status-2025-12-12) |
 
 ---
 

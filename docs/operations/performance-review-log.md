@@ -4,7 +4,7 @@
 
 **Review Schedule:** Every Monday, 10:30 AM PST (after Sentry review)
 
-**Process:** Follow checklist in [Performance Monitoring Strategy](../performance/performance-monitoring.md#review-process)
+**Process:** Follow checklist in [Performance Monitoring Strategy](../performance/performance-monitoring#review-process)
 
 ---
 

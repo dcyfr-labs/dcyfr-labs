@@ -83,7 +83,7 @@ IP addresses are collected **only** for the following security and operational p
 
 ### Logging Guidelines
 
-IP addresses should **never** be logged in clear text. See [docs/ai/LOGGING_SECURITY.md](../ai/LOGGING_SECURITY.md) for detailed guidelines.
+IP addresses should **never** be logged in clear text. See [docs/ai/LOGGING_SECURITY.md](../ai/logging-security) for detailed guidelines.
 
 **Correct approach**:
 

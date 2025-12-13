@@ -258,7 +258,7 @@ export default function TestPage() {
 ## Performance
 
 - **Client overhead**: ~5-10ms for challenge execution
-- **Server overhead**: <1ms for verification
+- **Server overhead**: \<1ms for verification
 - **Network**: No external API calls (runs locally)
 - **Bundle size**: ~15KB gzipped
 
@@ -332,8 +332,8 @@ This implementation is different from the initial attempt:
 
 ## Related Documentation
 
-- [Rate Limiting Strategy](./rate-limiting.md)
-- [API Routes](../api/README.md)
+- [Rate Limiting Strategy](./rate-limiting)
+- [API Routes](../api/readme)
 - [Vercel BotID Docs](https://vercel.com/docs/botid/get-started)
 
 ## Version History

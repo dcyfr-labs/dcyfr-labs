@@ -604,7 +604,7 @@ test.describe('POST /api/contact', () => {
 
 - **Average response time**: 100ms (cached), 500ms (with email)
 - **Email delivery**: 1-2 seconds (Resend)
-- **Rate limit check**: <1ms
+- **Rate limit check**: \<1ms
 
 ## Changelog
 

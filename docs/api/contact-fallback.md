@@ -112,5 +112,5 @@ Consider adding:
 
 ## See Also
 
-- [API Reference](./reference.md)
-- [Rate Limiting](../security/rate-limiting/quick-reference.md)
+- [API Reference](./reference)
+- [Rate Limiting](../security/rate-limiting/quick-reference)

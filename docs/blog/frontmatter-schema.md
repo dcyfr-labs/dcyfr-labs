@@ -2,7 +2,7 @@
 
 **Status:** ✅ Production  
 **Last Updated:** October 24, 2025  
-**Related:** [Content Creation](./content-creation.md) · [Blog Architecture](./architecture.md)
+**Related:** [Content Creation](./content-creation) · [Blog Architecture](./architecture)
 
 ---
 
@@ -833,9 +833,9 @@ public/blog/images/
 ```
 
 **See Also:**
-- [Featured Images Guide](/docs/blog/featured-images.md) - Hero image implementation
-- [OG Image Integration](/docs/blog/og-image-integration.md) - Social sharing setup
-- [Default Images](/docs/blog/default-images-quick-ref.md) - Fallback image system
+- [Featured Images Guide](/docs/blog/featured-images) - Hero image implementation
+- [OG Image Integration](/docs/blog/og-image-integration) - Social sharing setup
+- [Default Images](/docs/blog/default-images-quick-ref) - Fallback image system
 
 ---
 
@@ -1319,10 +1319,10 @@ sources:
 
 ## Related Documentation
 
-- **[Content Creation Guide](./content-creation.md)** - How to write posts
-- **[Blog Architecture](./architecture.md)** - System design
-- **[MDX Processing](./mdx-processing.md)** - Content transformation
-- **[Quick Reference](./quick-reference.md)** - Command cheat sheet
+- **[Content Creation Guide](./content-creation)** - How to write posts
+- **[Blog Architecture](./architecture)** - System design
+- **[MDX Processing](./mdx-processing)** - Content transformation
+- **[Quick Reference](./quick-reference)** - Command cheat sheet
 
 ---
 

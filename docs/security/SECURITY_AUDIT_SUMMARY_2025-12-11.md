@@ -343,7 +343,7 @@ A comprehensive red team engagement plan has been created with 8 testing phases:
 
 An automated test script has been created:
 
-**Location:** See [Red Team Engagement Plan - Automated Test Suite](docs/security/RED_TEAM_ENGAGEMENT_PLAN.md#automated-test-suite)
+**Location:** See [Red Team Engagement Plan - Automated Test Suite](docs/security/red-team-engagement-plan#automated-test-suite)
 
 **Tests Include:**
 - External access blocking verification
@@ -523,11 +523,11 @@ The planned red team engagement will validate these controls and provide additio
 ## References
 
 **Audit Documentation:**
-- [Comprehensive Security Audit Report](docs/security/API_SECURITY_AUDIT_2025-12-11.md)
-- [Red Team Engagement Plan](docs/security/RED_TEAM_ENGAGEMENT_PLAN.md)
-- [Security Status](docs/security/security-status.md)
-- [Inngest Webhook Security](docs/security/inngest-webhook-security.md)
-- [Logging Security Guide](docs/ai/LOGGING_SECURITY.md)
+- [Comprehensive Security Audit Report](docs/security/api-security-audit-2025-12-11)
+- [Red Team Engagement Plan](docs/security/red-team-engagement-plan)
+- [Security Status](docs/security/security-status)
+- [Inngest Webhook Security](docs/security/inngest-webhook-security)
+- [Logging Security Guide](docs/ai/logging-security)
 
 **Standards & Guidelines:**
 - [OWASP Top 10 (2024)](https://owasp.org/Top10/)

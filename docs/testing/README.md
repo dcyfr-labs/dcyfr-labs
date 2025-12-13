@@ -13,8 +13,8 @@ Comprehensive testing setup for the application.
 
 ## Quick Links
 
-- **[Coverage Roadmap](./coverage-roadmap.md)** - Detailed plan to reach 80% coverage
-- **[Quick Reference](./quick-reference.md)** - Testing commands and patterns
+- **[Coverage Roadmap](./coverage-roadmap)** - Detailed plan to reach 80% coverage
+- **[Quick Reference](./quick-reference)** - Testing commands and patterns
 
 ---
 
@@ -160,7 +160,7 @@ npm run test:e2e:debug
 - Blog system lifecycle tests
 - Error scenarios and edge cases
 
-See **[Coverage Roadmap](./coverage-roadmap.md)** for detailed plan.
+See **[Coverage Roadmap](./coverage-roadmap)** for detailed plan.
 
 ---
 
@@ -401,9 +401,9 @@ thresholds: {
 
 ### Internal Docs
 
-- [Coverage Roadmap](./coverage-roadmap.md) - Detailed testing plan
-- [Testing Guide](./testing-guide.md) - How-to guide
-- [E2E Testing](./e2e-testing.md) - Playwright setup
+- [Coverage Roadmap](./coverage-roadmap) - Detailed testing plan
+- [Testing Guide](./testing-guide) - How-to guide
+- [E2E Testing](./e2e-testing) - Playwright setup
 
 ---
 

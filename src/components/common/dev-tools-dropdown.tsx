@@ -52,7 +52,7 @@ export default function DevToolsDropdown() {
               onClick={() => setOpen(false)}
               prefetch={false}
             >
-              Documentation
+              Docs
             </Link>
             <Link
               href="/dev/analytics"

@@ -431,10 +431,10 @@ This approach gives you:
 
 ## References
 
-- [`AGENT_SYNC_STRATEGY.md`](./AGENT_SYNC_STRATEGY.md) - Sync implementation plan
-- [`AGENTS.md`](../AGENTS.md) - Centralized agent documentation
-- [`.claude/agents/README.md`](./.claude/agents/README.md) - Claude Code agent details
-- [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) - Copilot quick reference
+- [`AGENT_SYNC_STRATEGY.md`](./agent-sync-strategy) - Sync implementation plan
+- [`AGENTS.md`](../agents) - Centralized agent documentation
+- [`.claude/agents/README.md`](./.claude/agents/readme) - Claude Code agent details
+- [`.github/copilot-instructions.md`](./.github/copilot-instructions) - Copilot quick reference
 
 ---
 

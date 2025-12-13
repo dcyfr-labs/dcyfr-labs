@@ -172,11 +172,11 @@ When fixing warnings, verify:
 
 ## 📚 Documentation Links
 
-- [Full Resolution Plan](/docs/design/eslint-warnings-resolution.md) - Complete strategy and timeline
-- [Design System Quick Start](/docs/design/QUICK_START.md) - How to use design tokens
+- [Full Resolution Plan](/docs/design/eslint-warnings-resolution) - Complete strategy and timeline
+- [Design System Quick Start](/docs/design/quick-start) - How to use design tokens
 - [Design Tokens Reference](/src/lib/design-tokens.ts) - Complete token definitions
-- [Component Patterns](/docs/design/component-patterns.md) - Reusable examples
-- [Implementation Roadmap](/docs/design/implementation-roadmap.md) - Overall plan
+- [Component Patterns](/docs/design/component-patterns) - Reusable examples
+- [Implementation Roadmap](/docs/design/implementation-roadmap) - Overall plan
 
 ---
 

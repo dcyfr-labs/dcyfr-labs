@@ -3,12 +3,29 @@ import { NextRequest } from 'next/server'
 import { GET as analyticsGET } from '@/app/api/analytics/route'
 import { getMultiplePostViews, getMultiplePostViews24h, getMultiplePostViewsInRange } from '@/lib/views'
 import { getPostSharesBulk, getPostShares24hBulk } from '@/lib/shares'
+import { getPostCommentsBulk, getPostComments24hBulk } from '@/lib/comments'
+import { rateLimit } from '@/lib/rate-limit'
+import { blockExternalAccess } from '@/lib/api-security'
 import { createClient } from 'redis'
 
 // Mock posts data import
 import { posts } from '@/data/posts'
 
 // Prepare mocks
+vi.mock('@/lib/api-security', () => ({
+  blockExternalAccess: vi.fn(() => null), // By default, allow access
+}))
+
+vi.mock('@/lib/rate-limit', () => ({
+  rateLimit: vi.fn(),
+  getClientIp: vi.fn(() => '192.168.1.1'),
+  createRateLimitHeaders: vi.fn((result) => ({
+    'X-RateLimit-Limit': result.limit.toString(),
+    'X-RateLimit-Remaining': result.remaining.toString(),
+    'X-RateLimit-Reset': result.reset.toString(),
+  })),
+}))
+
 vi.mock('@/lib/views', () => ({
   getMultiplePostViews: vi.fn(),
   getMultiplePostViews24h: vi.fn(),
@@ -18,6 +35,11 @@ vi.mock('@/lib/views', () => ({
 vi.mock('@/lib/shares', () => ({
   getPostSharesBulk: vi.fn(),
   getPostShares24hBulk: vi.fn(),
+}))
+
+vi.mock('@/lib/comments', () => ({
+  getPostCommentsBulk: vi.fn(),
+  getPostComments24hBulk: vi.fn(),
 }))
 
 vi.mock('redis', () => ({
@@ -44,6 +66,8 @@ describe('Error Scenario Integration Tests', () => {
     vi.mocked(getMultiplePostViewsInRange).mockResolvedValue(new Map())
     vi.mocked(getPostSharesBulk).mockResolvedValue({})
     vi.mocked(getPostShares24hBulk).mockResolvedValue({})
+    vi.mocked(getPostCommentsBulk).mockResolvedValue({})
+    vi.mocked(getPostComments24hBulk).mockResolvedValue({})
 
     // Mock redis client createClient to return a client with get/quit/on
     vi.mocked(createClient).mockImplementation(() => {
@@ -54,6 +78,14 @@ describe('Error Scenario Integration Tests', () => {
         get: vi.fn().mockResolvedValue(null),
         quit: vi.fn().mockResolvedValue(undefined),
       } as any
+    })
+
+    // Default: rate limit allows requests
+    vi.mocked(rateLimit).mockResolvedValue({
+      success: true,
+      limit: 60,
+      remaining: 59,
+      reset: Date.now() + 60000,
     })
   })
 

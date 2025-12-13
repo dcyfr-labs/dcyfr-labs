@@ -7,21 +7,21 @@ Comprehensive debugging tools and documentation for troubleshooting async operat
 ## 📚 Documentation Index
 
 ### Quick Start
-- **[Quick Reference](./QUICK_REFERENCE.md)** - One-page guide for common debugging tasks
+- **[Quick Reference](./quick-reference)** - One-page guide for common debugging tasks
   - Quick commands and code patterns
   - Debug checklist
   - Emergency procedures
   - Pro tips
 
 ### Comprehensive Guide
-- **[Dev Debugging Guide](./DEV_DEBUGGING_GUIDE.md)** - Complete debugging documentation
+- **[Dev Debugging Guide](./dev-debugging-guide)** - Complete debugging documentation
   - Tool overview and API reference
   - Common debugging scenarios with solutions
   - Monitoring dashboard setup
   - Best practices and configuration
 
 ### Implementation Details
-- **[Implementation Summary](./IMPLEMENTATION_SUMMARY.md)** - Technical implementation details
+- **[Implementation Summary](./implementation-summary)** - Technical implementation details
   - Deliverables and integration points
   - Testing procedures
   - Performance impact
@@ -114,7 +114,7 @@ Automatic setup of all debugging tools (called via instrumentation.ts).
 3. Check Redis connectivity: `redis-cli -u $REDIS_URL ping`
 4. Try disabling Redis: `unset REDIS_URL && npm run dev`
 
-See: [DEV_DEBUGGING_GUIDE.md - Scenario 1](./DEV_DEBUGGING_GUIDE.md#scenario-1-dev-server-hangs-on-startup)
+See: [DEV_DEBUGGING_GUIDE.md - Scenario 1](./dev-debugging-guide#scenario-1-dev-server-hangs-on-startup)
 
 ### Debugging Slow API Routes
 1. Add API monitoring: `withApiMonitoring(handler, 'route-name')`
@@ -122,7 +122,7 @@ See: [DEV_DEBUGGING_GUIDE.md - Scenario 1](./DEV_DEBUGGING_GUIDE.md#scenario-1-d
 3. Review timing logs in terminal
 4. Add granular timing for bottlenecks
 
-See: [DEV_DEBUGGING_GUIDE.md - Scenario 4](./DEV_DEBUGGING_GUIDE.md#scenario-4-slow-api-responses)
+See: [DEV_DEBUGGING_GUIDE.md - Scenario 4](./dev-debugging-guide#scenario-4-slow-api-responses)
 
 ### Debugging Redis Issues
 1. Check Redis health in diagnostics
@@ -130,7 +130,7 @@ See: [DEV_DEBUGGING_GUIDE.md - Scenario 4](./DEV_DEBUGGING_GUIDE.md#scenario-4-s
 3. Monitor with: `redisManager.logStatus()`
 4. Test with Redis disabled
 
-See: [DEV_DEBUGGING_GUIDE.md - Scenario 1](./DEV_DEBUGGING_GUIDE.md#scenario-1-dev-server-hangs-on-startup)
+See: [DEV_DEBUGGING_GUIDE.md - Scenario 1](./dev-debugging-guide#scenario-1-dev-server-hangs-on-startup)
 
 ### Monitoring Memory Leaks
 1. Watch memory in diagnostics
@@ -138,7 +138,7 @@ See: [DEV_DEBUGGING_GUIDE.md - Scenario 1](./DEV_DEBUGGING_GUIDE.md#scenario-1-d
 3. Review Redis connection counts
 4. Look for accumulating operations
 
-See: [DEV_DEBUGGING_GUIDE.md - Scenario 3](./DEV_DEBUGGING_GUIDE.md#scenario-3-memory-leaks)
+See: [DEV_DEBUGGING_GUIDE.md - Scenario 3](./dev-debugging-guide#scenario-3-memory-leaks)
 
 ## 📊 Quick Commands
 
@@ -206,18 +206,18 @@ src/
 
 ## 🆘 Getting Help
 
-1. **Check Quick Reference** - [QUICK_REFERENCE.md](./QUICK_REFERENCE.md)
-2. **Review Common Scenarios** - [DEV_DEBUGGING_GUIDE.md](./DEV_DEBUGGING_GUIDE.md)
+1. **Check Quick Reference** - [QUICK_REFERENCE.md](./quick-reference)
+2. **Review Common Scenarios** - [DEV_DEBUGGING_GUIDE.md](./dev-debugging-guide)
 3. **Run Diagnostics** - `curl localhost:3000/api/dev/diagnostics | jq .`
 4. **Check Terminal Logs** - Look for color-coded errors/warnings
 5. **Test with Minimal Config** - Disable external services one by one
 
 ## 🔗 Related Documentation
 
-- [Redis Health Check](../platform/view-counts.md) - Production Redis monitoring
-- [Error Monitoring](../operations/error-monitoring-strategy.md) - Sentry integration
-- [API Security](../security/api-security-audit.md) - Rate limiting and security
-- [Testing Guide](../testing/README.md) - Test infrastructure
+- [Redis Health Check](../platform/view-counts) - Production Redis monitoring
+- [Error Monitoring](../operations/error-monitoring-strategy) - Sentry integration
+- [API Security](../security/api-security-audit) - Rate limiting and security
+- [Testing Guide](../testing/readme) - Test infrastructure
 
 ## 📝 Contributing
 
@@ -255,4 +255,4 @@ curl http://localhost:3000/api/dev/diagnostics | jq .success
 
 ---
 
-**Need Help?** Start with [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) for common tasks or [DEV_DEBUGGING_GUIDE.md](./DEV_DEBUGGING_GUIDE.md) for comprehensive documentation.
+**Need Help?** Start with [QUICK_REFERENCE.md](./quick-reference) for common tasks or [DEV_DEBUGGING_GUIDE.md](./dev-debugging-guide) for comprehensive documentation.

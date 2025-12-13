@@ -386,9 +386,9 @@ PPR is still experimental in Next.js 16:
 
 ## Related Documentation
 
-- [ISR Implementation Guide](../development/isr-implementation.md)
-- [Performance Optimization](../optimization/core-web-vitals.md)
-- [Blog Architecture](../blog/architecture.md)
+- [ISR Implementation Guide](../development/isr-implementation)
+- [Performance Optimization](../optimization/core-web-vitals)
+- [Blog Architecture](../blog/architecture)
 - [Next.js PPR Documentation](https://nextjs.org/docs/app/building-your-application/rendering/partial-prerendering)
 
 ---

@@ -703,13 +703,13 @@ node scripts/validate-design-tokens.mjs --files src/components/my-component.tsx
 - **Layout components**: [`src/components/layouts/`](../../src/components/layouts/)
 - **UI primitives**: [`src/components/ui/`](../../src/components/ui/)
 - **Validation script**: [`scripts/validate-design-tokens.mjs`](../../scripts/validate-design-tokens.mjs)
-- **Best practices**: [`/docs/ai/BEST_PRACTICES.md`](./BEST_PRACTICES.md)
+- **Best practices**: [`/docs/ai/BEST_PRACTICES.md`](./best-practices)
 
 ## Logging Security Best Practices
 
 **CRITICAL: Never log sensitive information in clear text.**
 
-See comprehensive guide: [`docs/ai/LOGGING_SECURITY.md`](./LOGGING_SECURITY.md)
+See comprehensive guide: [`docs/ai/LOGGING_SECURITY.md`](./logging-security)
 
 ### Quick Rules
 

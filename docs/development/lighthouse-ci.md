@@ -293,7 +293,7 @@ jq '.runs[0].lhr.audits | to_entries[] | select(.key | contains("aria") or conta
 
 ## Related Documentation
 
-- [Performance Monitoring with Budgets](./performance-budgets.md) (future)
-- [Core Web Vitals Guide](./core-web-vitals.md) (future)
-- [Image Optimization Best Practices](../design/image-optimization.md)
+- [Performance Monitoring with Budgets](./performance-budgets) (future)
+- [Core Web Vitals Guide](./core-web-vitals) (future)
+- [Image Optimization Best Practices](../design/image-optimization)
 - [Next.js Performance Guide](https://nextjs.org/docs/app/building-your-application/optimizing)

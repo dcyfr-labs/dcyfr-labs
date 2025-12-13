@@ -935,10 +935,10 @@ After rollback:
 
 ### Internal Documentation
 
-- [Deployment Checklist](./deployment-checklist.md) - Quick reference checklist
-- [Deployment Guide](./deployment-guide.md) - Detailed deployment guide
-- [Environment Variables](../platform/ENVIRONMENT_VARIABLES.md) - Complete env var reference
-- [Testing Guide](../testing/README.md) - Test strategy and execution
+- [Deployment Checklist](./deployment-checklist) - Quick reference checklist
+- [Deployment Guide](./deployment-guide) - Detailed deployment guide
+- [Environment Variables](../platform/environment-variables) - Complete env var reference
+- [Testing Guide](../testing/readme) - Test strategy and execution
 
 ### External Resources
 

@@ -348,7 +348,7 @@ Content...
 ## Performance
 
 ### Build Time
-- Heading extraction: <1ms per post
+- Heading extraction: \<1ms per post
 - No impact on build speed
 - Runs once at build time
 

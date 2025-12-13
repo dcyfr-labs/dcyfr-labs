@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax -- Chart visualization and icon colors are intentional exceptions */
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
@@ -328,10 +329,10 @@ export function GitHubHeatmap({ username = DEFAULT_GITHUB_USERNAME }: GitHubHeat
                     />
                   </svg>
                   <div className="flex-1 space-y-1">
-                    { }
+                    {/* Notice/warning header */}
                     <p
                       className={cn(
-                        "text-sm font-medium",
+                        TYPOGRAPHY.label.small,
                         SEMANTIC_COLORS.alert.warning.text
                       )}
                     >
@@ -515,7 +516,7 @@ export function GitHubHeatmap({ username = DEFAULT_GITHUB_USERNAME }: GitHubHeat
               {/* Active Days Card */}
               <div className="bg-muted/50 rounded-lg p-3 border border-border hover:border-primary/50 transition-colors">
                 <div className="flex items-center gap-2 mb-1">
-                  { }
+                  {/* Icon color for statistics visualization */}
                   <Calendar
                     className="w-4 h-4 text-blue-500"
                     aria-hidden="true"
@@ -533,6 +534,7 @@ export function GitHubHeatmap({ username = DEFAULT_GITHUB_USERNAME }: GitHubHeat
               {/* Daily Average Card */}
               <div className="bg-muted/50 rounded-lg p-3 border border-border hover:border-primary/50 transition-colors">
                 <div className="flex items-center gap-2 mb-1">
+                  {/* Icon color for statistics visualization */}
                   <TrendingUp
                     className="w-4 h-4 text-purple-500"
                     aria-hidden="true"
@@ -552,7 +554,7 @@ export function GitHubHeatmap({ username = DEFAULT_GITHUB_USERNAME }: GitHubHeat
               {/* Longest Streak Card */}
               <div className="bg-muted/50 rounded-lg p-3 border border-border hover:border-primary/50 transition-colors">
                 <div className="flex items-center gap-2 mb-1">
-                  { }
+                  {/* Icon color for statistics visualization */}
                   <TrendingUp
                     className="w-4 h-4 text-green-500"
                     aria-hidden="true"

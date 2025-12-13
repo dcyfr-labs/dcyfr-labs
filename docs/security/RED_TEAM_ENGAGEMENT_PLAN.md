@@ -1072,7 +1072,7 @@ go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
 
 ## Appendix B: API Endpoint Reference
 
-See [API Security Audit Report](/docs/security/API_SECURITY_AUDIT_2025-12-11.md) Section 1 for complete endpoint inventory.
+See [API Security Audit Report](/docs/security/api-security-audit-2025-12-11) Section 1 for complete endpoint inventory.
 
 ---
 

@@ -315,12 +315,12 @@ await inngest.send({
 
 ## Related Documentation
 
-- [Security Audit Summary](./SECURITY_AUDIT_SUMMARY_2025-12-11.md)
-- [Security Fixes Implementation](./SECURITY_FIXES_2025-12-11.md)
-- [Sentry Integration Guide](./SENTRY_INTEGRATION_COMPLETE.md)
-- [Sentry Manual Alert Setup](./SENTRY_MANUAL_ALERT_SETUP.md)
-- [Axiom Security Queries](./AXIOM_SECURITY_QUERIES.md)
-- [Completion Status](./COMPLETION_STATUS_2025-12-12.md)
+- [Security Audit Summary](./security-audit-summary-2025-12-11)
+- [Security Fixes Implementation](./security-fixes-2025-12-11)
+- [Sentry Integration Guide](./sentry-integration-complete)
+- [Sentry Manual Alert Setup](./sentry-manual-alert-setup)
+- [Axiom Security Queries](./axiom-security-queries)
+- [Completion Status](./completion-status-2025-12-12)
 
 ---
 

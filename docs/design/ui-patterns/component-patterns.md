@@ -479,8 +479,8 @@ When implementing new components:
 
 ## Related Documentation
 
-- [Design System Guide](./design-system.md)
-- [UX/UI Consistency Analysis](./ux-ui-consistency-analysis.md)
+- [Design System Guide](./design-system)
+- [UX/UI Consistency Analysis](./ux-ui-consistency-analysis)
 - [Design Tokens](../../src/lib/design-tokens.ts)
 
 ---

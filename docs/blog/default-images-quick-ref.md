@@ -2,7 +2,7 @@
 
 **Status:** ✅ Production Ready  
 **Last Updated:** November 3, 2025  
-**Related:** [Featured Images Guide](./featured-images.md)
+**Related:** [Featured Images Guide](./featured-images)
 
 ---
 
@@ -178,4 +178,4 @@ tags: ["react"]
 
 ---
 
-**Questions?** See [Featured Images Guide](./featured-images.md) for complete documentation.
+**Questions?** See [Featured Images Guide](./featured-images) for complete documentation.

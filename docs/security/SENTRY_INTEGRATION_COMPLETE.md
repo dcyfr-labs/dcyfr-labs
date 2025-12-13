@@ -53,7 +53,7 @@ if (process.env.VERCEL_ENV === "production") {
 
 ### 2. ✅ Axiom Security Queries (15 Pre-Built Queries)
 
-**File Created:** [docs/security/AXIOM_SECURITY_QUERIES.md](./AXIOM_SECURITY_QUERIES.md)
+**File Created:** [docs/security/AXIOM_SECURITY_QUERIES.md](./axiom-security-queries)
 
 **Query Categories:**
 - **Core Security:** Real-time monitoring, failed auth, brute force detection
@@ -429,9 +429,9 @@ done
 ## Files Created/Modified
 
 ### New Files ✅
-1. [docs/security/SENTRY_ALERTS_SETUP.md](./SENTRY_ALERTS_SETUP.md) - Complete setup guide
-2. [docs/security/AXIOM_SECURITY_QUERIES.md](./AXIOM_SECURITY_QUERIES.md) - 15 pre-built queries
-3. [docs/security/SENTRY_INTEGRATION_COMPLETE.md](./SENTRY_INTEGRATION_COMPLETE.md) - This document
+1. [docs/security/SENTRY_ALERTS_SETUP.md](./sentry-alerts-setup) - Complete setup guide
+2. [docs/security/AXIOM_SECURITY_QUERIES.md](./axiom-security-queries) - 15 pre-built queries
+3. [docs/security/SENTRY_INTEGRATION_COMPLETE.md](./sentry-integration-complete) - This document
 4. [scripts/test-security-alerts.sh](../../scripts/test-security-alerts.sh) - Automated test script
 
 ### Modified Files ✅

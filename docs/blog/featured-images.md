@@ -2,7 +2,7 @@
 
 **Status:** ✅ Production Ready  
 **Last Updated:** December 6, 2025  
-**Related:** [Frontmatter Schema](./frontmatter-schema.md) · [Content Creation](./content-creation.md) · [Custom Image Generation](./custom-image-generation.md)
+**Related:** [Frontmatter Schema](./frontmatter-schema) · [Content Creation](./content-creation) · [Custom Image Generation](./custom-image-generation)
 
 ---
 
@@ -29,7 +29,7 @@ npm run generate:hero -- --slug my-post-slug
 
 This creates `/public/blog/images/my-post-slug/hero.svg` with styles based on your post's tags and category.
 
-See [Custom Image Generation Guide](./custom-image-generation.md) for full details.
+See [Custom Image Generation Guide](./custom-image-generation) for full details.
 
 ### Option 2: Download from Unsplash
 
@@ -397,10 +397,10 @@ To add images:
 
 ## Related Documentation
 
-- [Frontmatter Schema Reference](./frontmatter-schema.md) - Complete field reference
-- [Content Creation Guide](./content-creation.md) - Writing posts
-- [Blog Architecture](./architecture.md) - System design
-- [PostThumbnail Component](../components/post-thumbnail.md) - Technical docs
+- [Frontmatter Schema Reference](./frontmatter-schema) - Complete field reference
+- [Content Creation Guide](./content-creation) - Writing posts
+- [Blog Architecture](./architecture) - System design
+- [PostThumbnail Component](../components/post-thumbnail) - Technical docs
 
 ---
 

@@ -320,9 +320,9 @@ console.log("Filtered posts:", filtered.length)
 
 ## Related Documentation
 
-- [Post Badges](./post-badges.md) – Badge system and eligibility
-- [Related Posts](./related-posts.md) – Post recommendation algorithm
-- [Blog System](../blog/architecture.md) – Blog architecture overview
+- [Post Badges](./post-badges) – Badge system and eligibility
+- [Related Posts](./related-posts) – Post recommendation algorithm
+- [Blog System](../blog/architecture) – Blog architecture overview
 
 ---
 

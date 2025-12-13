@@ -451,9 +451,9 @@ Vercel automatically tracks bundle sizes and Speed Insights. Configure alerts in
 
 ## Related Documentation
 
-- [Lighthouse CI Integration](./lighthouse-ci.md)
-- [Error Monitoring Strategy](../operations/error-monitoring-strategy.md)
-- [Uptime Monitoring](../operations/uptime-monitoring-sentry.md)
+- [Lighthouse CI Integration](./lighthouse-ci)
+- [Error Monitoring Strategy](../operations/error-monitoring-strategy)
+- [Uptime Monitoring](../operations/uptime-monitoring-sentry)
 - [Next.js Performance Optimization](https://nextjs.org/docs/app/building-your-application/optimizing)
 - [Web Vitals](https://web.dev/vitals/)
 

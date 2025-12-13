@@ -9,7 +9,7 @@
 ## ✅ Completed Tasks (Phase 1: Foundation)
 
 ### 1. Future Ideas Document ✅
-**File:** [`docs/features/FUTURE_IDEAS.md`](./FUTURE_IDEAS.md)
+**File:** [`docs/features/FUTURE_IDEAS.md`](./future-ideas)
 - Created comprehensive post-launch ideas tracker
 - Moved speculative features from TODO to dedicated bucket
 - Includes evaluation framework and review cadence

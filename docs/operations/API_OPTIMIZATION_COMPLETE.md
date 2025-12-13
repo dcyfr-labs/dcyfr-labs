@@ -123,8 +123,8 @@ curl http://localhost:3000/api/admin/api-usage \
 
 ### 4. Documentation
 **Files:**
-- [`docs/operations/third-party-analysis.md`](./third-party-analysis.md) - Complete analysis
-- [`docs/operations/mcp-validation-test.md`](./mcp-validation-test.md) - MCP removal validation
+- [`docs/operations/third-party-analysis.md`](./third-party-analysis) - Complete analysis
+- [`docs/operations/mcp-validation-test.md`](./mcp-validation-test) - MCP removal validation
 - This file - Implementation summary
 
 ---
@@ -464,7 +464,7 @@ Restart VS Code.
 ## Questions?
 
 **Q: Will this slow down API requests?**
-A: No, overhead is <1ms per request (in-memory tracking).
+A: No, overhead is \<1ms per request (in-memory tracking).
 
 **Q: What happens when a limit is reached?**
 A: Users get a 429 error with clear message. Retry after 1 hour (limits reset daily).
@@ -482,8 +482,8 @@ A: Use `/api/admin/api-usage` endpoint (dev/preview only for security).
 
 ## Resources
 
-- [Third-Party Analysis](./third-party-analysis.md)
-- [MCP Validation Test Plan](./mcp-validation-test.md)
+- [Third-Party Analysis](./third-party-analysis)
+- [MCP Validation Test Plan](./mcp-validation-test)
 - [API Guardrails Source](../../src/lib/api-guardrails.ts)
 - [Usage Monitoring API](../../src/app/api/admin/api-usage/route.ts)
 - [Perplexity API Docs](https://docs.perplexity.ai/)

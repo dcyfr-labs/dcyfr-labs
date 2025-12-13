@@ -8,11 +8,16 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { POST, GET } from "@/app/api/research/route";
 import { rateLimit } from "@/lib/rate-limit";
+import { blockExternalAccess } from "@/lib/api-security";
 import { clearCache } from "@/lib/perplexity";
 import { NextRequest } from "next/server";
 import type { PerplexityResponse } from "@/lib/perplexity";
 
 // Mock dependencies
+vi.mock("@/lib/api-security", () => ({
+  blockExternalAccess: vi.fn(() => null), // By default, allow access
+}));
+
 vi.mock("@/lib/rate-limit", () => ({
   rateLimit: vi.fn(),
   getClientIp: vi.fn(() => "192.168.1.1"),

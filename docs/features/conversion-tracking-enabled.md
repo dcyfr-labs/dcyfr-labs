@@ -140,9 +140,9 @@ Visit `/analytics` to see conversion metrics:
 
 ## Related Documentation
 
-- [`/docs/features/conversion-tracking-strategy.md`](./conversion-tracking-strategy.md) - Original implementation plan
-- [`/docs/analytics/conversion-tracking-implementation-complete.md`](../analytics/conversion-tracking-implementation-complete.md) - Full implementation details
-- [`/docs/api/reference.md`](../api/reference.md) - API endpoints including `/api/analytics`
+- [`/docs/features/conversion-tracking-strategy.md`](./conversion-tracking-strategy) - Original implementation plan
+- [`/docs/analytics/conversion-tracking-implementation-complete.md`](../analytics/conversion-tracking-implementation-complete) - Full implementation details
+- [`/docs/api/reference.md`](../api/reference) - API endpoints including `/api/analytics`
 - [`src/components/cta.tsx`](../../src/components/cta.tsx) - CTA component source
 
 ## Configuration
@@ -177,7 +177,7 @@ To disable CTAs:
 ## Performance Impact
 
 - **Bundle size**: +2.3KB gzipped (CTA components + event tracking)
-- **Runtime overhead**: Negligible (<1ms per click)
+- **Runtime overhead**: Negligible (\<1ms per click)
 - **Network requests**: 1 POST per CTA click (fire-and-forget)
 - **No impact on**: Page load time, SEO, Core Web Vitals
 

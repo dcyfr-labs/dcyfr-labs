@@ -4,7 +4,7 @@
 
 **Review Schedule:** Every Monday, 10:00 AM PST
 
-**Process:** Follow checklist in [Error Monitoring Strategy](./error-monitoring-strategy.md#weekly-review-process)
+**Process:** Follow checklist in [Error Monitoring Strategy](./error-monitoring-strategy#weekly-review-process)
 
 ---
 

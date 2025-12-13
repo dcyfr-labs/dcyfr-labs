@@ -150,9 +150,9 @@ To extend this feature, consider:
 ## Documentation
 
 Full documentation available:
-- **[Tag Analytics Guide](./tag-analytics.md)** - Detailed feature docs
-- **[Analytics README](./README.md)** - Complete analytics overview
-- **[24h Trends](./24h-trends.md)** - Related trending features
+- **[Tag Analytics Guide](./tag-analytics)** - Detailed feature docs
+- **[Analytics README](./readme)** - Complete analytics overview
+- **[24h Trends](./24h-trends)** - Related trending features
 
 ## Testing
 

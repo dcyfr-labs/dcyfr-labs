@@ -291,9 +291,9 @@ Week 3:
 
 ## Related Documentation
 
-- [Design System Quick Start](/docs/design/QUICK_START.md)
-- [UX/UI Consistency Analysis](/docs/design/ux-ui-consistency-analysis.md)
-- [Implementation Roadmap](/docs/design/implementation-roadmap.md)
+- [Design System Quick Start](/docs/design/quick-start)
+- [UX/UI Consistency Analysis](/docs/design/ux-ui-consistency-analysis)
+- [Implementation Roadmap](/docs/design/implementation-roadmap)
 - [Design Tokens Reference](/src/lib/design-tokens.ts)
 
 ---

@@ -211,7 +211,7 @@ A new alert has been added to your Sentry configuration:
 - Frequency: Every 10 minutes
 - Actions: Email + Slack notification
 
-**See:** [`docs/security/SENTRY_ALERTS_SETUP.md`](./SENTRY_ALERTS_SETUP.md#step-11-inngest-webhook-authentication-monitoring)
+**See:** [`docs/security/SENTRY_ALERTS_SETUP.md`](./sentry-alerts-setup#step-11-inngest-webhook-authentication-monitoring)
 
 ### Investigation Workflow
 
@@ -315,7 +315,7 @@ function validateWebhookHeaders(request) {
 - **Inngest Docs:** https://www.inngest.com/docs/sdk/serve
 - **Signature Validation:** https://www.inngest.com/docs/security/signing-keys
 - **Webhook Best Practices:** https://www.inngest.com/docs/deploy/nextjs
-- **Alert Setup:** [`docs/security/SENTRY_ALERTS_SETUP.md`](./SENTRY_ALERTS_SETUP.md)
+- **Alert Setup:** [`docs/security/SENTRY_ALERTS_SETUP.md`](./sentry-alerts-setup)
 
 ---
 

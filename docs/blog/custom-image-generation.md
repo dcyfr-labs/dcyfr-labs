@@ -335,6 +335,6 @@ Potential additions (not yet implemented):
 
 ## Related Documentation
 
-- [Featured Images Guide](./featured-images.md) - Using images in blog posts
-- [Frontmatter Schema](./frontmatter-schema.md) - Image field reference
-- [Design Tokens](../../architecture/design-tokens.md) - Color system used in SVGs
+- [Featured Images Guide](./featured-images) - Using images in blog posts
+- [Frontmatter Schema](./frontmatter-schema) - Image field reference
+- [Design Tokens](../../architecture/design-tokens) - Color system used in SVGs

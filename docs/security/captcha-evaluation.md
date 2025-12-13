@@ -239,6 +239,6 @@ The contact form has sufficient protection through rate limiting and validation.
 ---
 
 **Related Documentation:**
-- [Rate Limiting Guide](./rate-limiting/quick-reference.md)
-- [Security Hardening Summary](./hardening-summary-2025-10-24.md)
-- [Contact API Documentation](../api/reference.md)
+- [Rate Limiting Guide](./rate-limiting/quick-reference)
+- [Security Hardening Summary](./hardening-summary-2025-10-24)
+- [Contact API Documentation](../api/reference)
