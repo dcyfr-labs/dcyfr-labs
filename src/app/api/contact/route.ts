@@ -132,7 +132,8 @@ export async function POST(request: NextRequest) {
     // 
     // IMPORTANT: Only enable BotID in production AND when explicitly enabled via env var
     // This prevents false positives in development/preview and requires deliberate activation
-    const shouldUseBotId = process.env.NODE_ENV === 'production' && process.env.ENABLE_BOTID === '1';
+    // TEMPORARILY DISABLED: BotID causing 403 errors - investigate configuration
+    const shouldUseBotId = false; // process.env.NODE_ENV === 'production' && process.env.ENABLE_BOTID === '1';
     
     if (shouldUseBotId) {
       try {
