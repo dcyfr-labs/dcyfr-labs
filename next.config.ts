@@ -1,7 +1,7 @@
 import {withSentryConfig} from "@sentry/nextjs";
 import type { NextConfig } from "next";
 import bundleAnalyzer from "@next/bundle-analyzer";
-import { withBotId } from "botid/next/config";
+// import { withBotId } from "botid/next/config"; // Temporarily disabled
 import { withAxiom } from "next-axiom";
 
 const withBundleAnalyzer = bundleAnalyzer({
@@ -83,7 +83,7 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withSentryConfig(withBundleAnalyzer(withBotId(withAxiom(nextConfig))), {
+export default withSentryConfig(withBundleAnalyzer(withAxiom(nextConfig)), {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
