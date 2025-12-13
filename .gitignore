@@ -80,8 +80,6 @@ claude_desktop_config.json
 # MCP (Model Context Protocol) configs
 .mcp.json
 mcp.json
-.vscode/mcp.json
-.cursor/mcp.json
 
 # local configs
 .anthropic/
@@ -90,12 +88,7 @@ mcp.json
 # IDE & Editor Configs
 # ========================================
 # VS Code (allow workspace settings, block user settings)
-.vscode/*
-.vscode/*.local.*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+.vscode/
 
 # JetBrains IDEs
 .idea/

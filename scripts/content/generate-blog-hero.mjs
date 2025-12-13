@@ -328,7 +328,8 @@ function generateForPost(slug, options = {}) {
     }
     
     // Create output directory atomically (fixes TOCTOU race condition)
-    // lgtm[js/file-system-race] - mkdirSync with recursive:true is atomic and prevents TOCTOU vulnerabilities. Path validated via validateSlug() to prevent traversal.
+    // lgtm [js/file-system-race] - mkdirSync with recursive:true is atomic and prevents TOCTOU vulnerabilities.
+    // Path validated via validateSlug() to prevent directory traversal attacks.
     mkdirSync(outputDir, { recursive: true });
     
     // Write SVG file
