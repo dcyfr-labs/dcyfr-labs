@@ -43,30 +43,28 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # ========================================
-# SENSITIVE: Environment & Secrets
+# Environment & Secrets
 # ========================================
-# env files (can opt-in for committing if needed)
+**/private/**
+
+# env files
 .env*
 !.env.example
 !.env.template
 
 # API keys and tokens
-**/secrets/**
-**/credentials/**
 *.key
 *.token
 *.secret
 
 # ========================================
-# SENSITIVE: AI Agent Configurations
+# AI Agent Configurations
 # ========================================
-# Custom AI agents and modes (DCYFR, etc.)
 .github/agents/**
 !.github/agents/.gitkeep
 !.github/agents/README.md
 !.github/agents/learning/
 !.github/agents/learning/**
-# Learning data is private (contains metrics, not committed to git)
 .github/agents/learning-data/
 
 # AI assistant configurations (local overrides)
@@ -74,26 +72,22 @@ yarn-error.log*
 .github/copilot-instructions.*.md
 !.github/copilot-instructions.md
 
-# Cursor AI configs (local)
-.cursorrules.local
-.cursor/
-*.cursor
-
 # Claude Desktop configs (local)
 claude_desktop_config.json
 .claude/
 
-# MCP (Model Context Protocol) configs with secrets
+# MCP (Model Context Protocol) configs
+.mcp.json
 mcp.json
 .vscode/mcp.json
 .cursor/mcp.json
 
-# Anthropic/OpenAI local configs
+# local configs
 .anthropic/
 .openai/
 
 # ========================================
-# SENSITIVE: IDE & Editor Configs
+# IDE & Editor Configs
 # ========================================
 # VS Code (allow workspace settings, block user settings)
 .vscode/*
@@ -114,7 +108,7 @@ mcp.json
 .windsurf/
 
 # ========================================
-# SENSITIVE: Development & Debug
+# Development & Debug
 # ========================================
 # Local development overrides
 *.local
@@ -150,15 +144,12 @@ next-env.d.ts
 /public/data/*.json
 !/public/data/.gitkeep
 
-# generated reports (dev tools - stored outside public for security)
-/.reports/
-
 # Sentry Config File
 .env.sentry-build-plugin
 .sentryclirc
 
 # ========================================
-# SENSITIVE: Temporary & Cache Files
+# Temporary & Cache Files
 # ========================================
 # OS-specific
 Thumbs.db
@@ -172,16 +163,6 @@ $RECYCLE.BIN/
 .temp/
 .tmp/
 tmp/
-# ========================================
-# SENSITIVE: Private Docs / PI / PII
-# ========================================
-# Temporary private docs and drafts that may contain Personally Identifiable Information (PII) or
-# Proprietary Information (PI). Proprietary Information (PI) is defined per NIST:
-# https://csrc.nist.gov/glossary/term/proprietary_information
-# Do not commit such documents into the repo; prefer secure external storage (Notion, Google Drive, or encrypted store)
-**/private/**
-**/personal/**
-**/pii/**
 
 # Package manager caches
 .npm/
