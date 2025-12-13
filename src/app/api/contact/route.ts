@@ -62,7 +62,8 @@ export async function POST(request: NextRequest) {
   // NOTE: blockExternalAccess() is NOT used here because this is a PUBLIC
   // user-facing endpoint that must accept requests from users' browsers.
   // Security is provided by: rate limiting, honeypot field, input validation,
-  // and optionally BotID (currently disabled due to false positives).
+  // and optionally BotID in production environments (requires ENABLE_BOTID=1).
+  // BotID is disabled in non-production environments to prevent false positives.
 
   // Validate request size to prevent DoS attacks via large payloads
   const contentLength = request.headers.get("content-length");
@@ -128,7 +129,12 @@ export async function POST(request: NextRequest) {
     // Toggle BotID via ENABLE_BOTID env var (set to '1' to enable). Default is disabled.
     // This approach allows us to re-enable BotID quickly after verifying configuration
     // in the Vercel dashboard without code changes.
-    if (process.env.ENABLE_BOTID === '1') {
+    // 
+    // IMPORTANT: Only enable BotID in production AND when explicitly enabled via env var
+    // This prevents false positives in development/preview and requires deliberate activation
+    const shouldUseBotId = process.env.NODE_ENV === 'production' && process.env.ENABLE_BOTID === '1';
+    
+    if (shouldUseBotId) {
       try {
         const verification = await checkBotId();
 

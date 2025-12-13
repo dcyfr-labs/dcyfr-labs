@@ -299,7 +299,7 @@ Expected: File created successfully (then manually verify and delete)
 Create a workflow for new posts:
 ```
 1. "Create new post template for [topic]"
-2. "Add it to the editorial calendar in /docs/operations/content-strategy.md"
+2. "Add it to the editorial calendar in content management system"
 3. "Generate a matching featured image placeholder"
 ```
 

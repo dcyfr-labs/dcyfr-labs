@@ -2,11 +2,20 @@
 
 Analytics dashboard documentation for tracking and analyzing blog post performance.
 
-## Quick Links
+# Analytics Documentation
 
-- **[24h Trends](./24h-trends)** - 24-hour performance tracking and analysis
-- **[24h Trends Quick Reference](./24h-trends-quick-ref)** - Quick guide for daily metrics
-- **[Tag Analytics](./tag-analytics)** - Tag performance and content strategy insights
+Analytics dashboard documentation for tracking and analyzing blog post performance.
+
+## 🚀 Quick Links (Consolidated Guides)
+
+- **[Tag Analytics (Complete)](./tag-analytics-consolidated)** - **Tag performance guide** (features + implementation + setup)
+- **[24h Trends (Complete)](./24h-trends-consolidated)** - **Real-time analytics guide** (metrics + dashboard + setup)
+
+## Other Optimization Guides
+
+- **[JSON-LD Implementation](./json-ld-implementation)** - Structured data for SEO
+- **[Alt Text Guide](./alt-text-guide)** - Accessibility optimization
+- **[Canonical URL Audit](./canonical-url-audit)** - URL structure optimization
 
 ## Overview
 

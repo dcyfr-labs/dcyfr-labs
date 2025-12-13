@@ -268,7 +268,6 @@ Track these to measure MCP implementation success:
 - [MCP Quick Reference](../quick-reference)
 - [Blog System Architecture](../../blog/architecture)
 - [Content Creation Guide](../../blog/content-creation)
-- [Content Strategy](../../operations/content-strategy)
 
 ---
 

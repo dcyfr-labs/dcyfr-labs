@@ -172,10 +172,8 @@ tmp/
 # Proprietary Information (PI). Proprietary Information (PI) is defined per NIST:
 # https://csrc.nist.gov/glossary/term/proprietary_information
 # Do not commit such documents into the repo; prefer secure external storage (Notion, Google Drive, or encrypted store)
-docs/operations/private/**
-docs/blog/private/**
-docs/ai/private/**
-**/personal-info/**
+**/personal/**
+**/private/**
 **/pii/**
 
 # Package manager caches

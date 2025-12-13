@@ -1,7 +1,9 @@
+<!-- TLP:CLEAR -->
 # Documentation Index
 
-**Last Updated:** December 9, 2025
-**Status:** Production-ready documentation ✅
+**Last Updated:** December 12, 2025  
+**Status:** Production-ready documentation ✅  
+**Classification:** [TLP Implementation](./security/TLP_CLASSIFICATION_IMPLEMENTATION.md) - Most content TLP:CLEAR (public)
 
 ---
 

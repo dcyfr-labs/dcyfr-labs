@@ -1,6 +1,9 @@
+<!-- TLP:CLEAR -->
 # Documentation
 
 This directory is the knowledge base for the portfolio. Content is organized by topic-focused subfolders for faster navigation.
+
+> **🔒 Information Classification:** This documentation follows the [Traffic Light Protocol (TLP)](./security/TLP_CLASSIFICATION_IMPLEMENTATION.md) for information sharing. Most content is TLP:CLEAR (public), with sensitive implementation details marked as TLP:GREEN (limited distribution).
 
 ## 🚀 Quick Navigation
 
@@ -22,6 +25,7 @@ This directory is the knowledge base for the portfolio. Content is organized by 
   - [`architecture.md`](./blog/architecture) - Complete blog system architecture and data flow
   - [`quick-reference.md`](./blog/quick-reference) - Quick patterns and common tasks
   - [`content-creation.md`](./blog/content-creation) - Post authoring guide
+  - [`blog-images-consolidated.md`](./blog/blog-images-consolidated) - **Complete images guide** (SVG generation + Unsplash + defaults + OG)
   - [`mdx-processing.md`](./blog/mdx-processing) - MDX pipeline and plugins
   - [`frontmatter-schema.md`](./blog/frontmatter-schema) - Post metadata reference
   - `feeds/` - RSS/Atom feed documentation
@@ -47,6 +51,10 @@ This directory is the knowledge base for the portfolio. Content is organized by 
   - [`FUTURE_IDEAS.md`](./features/future-ideas) - ✨ Post-launch feature ideas
   - `mcp/` - Model Context Protocol documentation
 
+- **`accessibility/`** – Accessibility patterns and implementation:
+  - [`dcyfr-pronunciation-consolidated.md`](./accessibility/dcyfr-pronunciation-consolidated) - **Complete DCYFR pronunciation guide** (quick ref + implementation + checklist)
+  - [`acronym-pronunciation.md`](./accessibility/acronym-pronunciation) - General acronym strategies
+
 - **`design/`** – Design system and UX (organized into subdirectories):
   - `typography/` - Typography system (Geist Sans, Source Serif 4, Geist Mono)
   - `mobile/` - Mobile-first optimization and analysis
@@ -54,6 +62,7 @@ This directory is the knowledge base for the portfolio. Content is organized by 
   - `spacing/` - Spacing standards and audit
   - `ui-patterns/` - Component patterns and UI consistency
   - [`design-system.md`](./design/design-system) - Overall design system
+  - [`eslint-design-system-consolidated.md`](./design/eslint-design-system-consolidated) - **ESLint warnings guide** (quick ref + resolution + checklist)
   - [`PAGE_TEMPLATES.md`](./design/page-templates) - ✨ Complete page templates
   - [`DESIGN_TOKEN_COMPLIANCE_REPORT.md`](./design/design-token-compliance-report) - ✨ Compliance audit
 
@@ -73,9 +82,7 @@ This directory is the knowledge base for the portfolio. Content is organized by 
   - [`automation-backlog.md`](./operations/automation-backlog) - CI/CD automation status
 
 - **`automation/`** – ✨ Automated updates and dependency management:
-  - [`AUTOMATED_UPDATES.md`](./automation/automated-updates) - Complete automation system guide
-  - [`ENABLE_AUTO_MERGE.md`](./automation/enable-auto-merge) - Auto-merge setup instructions
-  - [`IMPLEMENTATION_SUMMARY.md`](./automation/implementation-summary) - Deployment guide
+  - [`automation-system-consolidated.md`](./automation/automation-system-consolidated) - **Complete automation guide** (setup + overview + implementation)
 
 **Development & Optimization (4 directories):**
 

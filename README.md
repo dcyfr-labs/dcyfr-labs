@@ -190,7 +190,7 @@ See [`/docs/platform/environment-variables.md`](./docs/platform/environment-vari
 
 ## 📚 Documentation
 
-Comprehensive docs in `/docs`:
+Comprehensive docs in `/docs` ([TLP:CLEAR](./docs/security/TLP_CLASSIFICATION_IMPLEMENTATION.md) - publicly accessible):
 
 | Topic | Primary Docs |
 |-------|-------------|

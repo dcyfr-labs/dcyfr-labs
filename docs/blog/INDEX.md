@@ -1,3 +1,4 @@
+<!-- TLP:AMBER - Internal Use Only -->
 # 🎯 Content Strategy Complete
 ## Your Fresh Start is Ready
 
@@ -297,7 +298,7 @@ H2 2026: Authority
 ## 🏁 Final Checklist Before You Start
 
 - ✅ Read README.md for overview
-- ✅ Review strategy-2025-2026.md for November post details
+- ✅ Review content planning for next post details
 - ✅ Check ideas-brainstorm.md for inspiration bank
 - ✅ Understand metrics.md for tracking success
 - ✅ Bookmark VISUAL-REFERENCE.md for quick lookup

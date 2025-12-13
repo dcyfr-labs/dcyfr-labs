@@ -1,3 +1,4 @@
+<!-- TLP:GREEN - Limited Distribution -->
 # Error Monitoring Strategy
 
 **Last Updated:** November 19, 2025  

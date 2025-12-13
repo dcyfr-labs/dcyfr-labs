@@ -522,7 +522,6 @@ Expected: Recent articles and discussions
 
 - [MCP Servers Overview](../servers)
 - [Content Creation Guide](../../blog/content-creation)
-- [Content Strategy](../../operations/content-strategy)
 - [Brave Search API Docs](https://brave.com/search/api/)
 
 ---

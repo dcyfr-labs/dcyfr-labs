@@ -155,6 +155,7 @@ describe("POST /api/contact - BotID Integration", () => {
   describe("BotID Protection (Enabled via ENV)", () => {
     beforeEach(() => {
       process.env.ENABLE_BOTID = '1';
+      process.env.NODE_ENV = 'production'; // BotID only runs in production
       vi.clearAllMocks();
       vi.mocked(rateLimit).mockResolvedValue({
         success: true,
@@ -166,6 +167,7 @@ describe("POST /api/contact - BotID Integration", () => {
 
     afterEach(() => {
       delete process.env.ENABLE_BOTID;
+      process.env.NODE_ENV = 'test';
     });
 
     it("should call BotID check and block if BotID identifies a bot", async () => {
