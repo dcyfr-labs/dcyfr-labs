@@ -95,6 +95,11 @@ node scripts/validate-design-tokens.mjs
 grep -r "pattern" src/
 ```
 
+## Agents / Subagents (VS Code)
+
+Use VS Code subagents for context-isolated research or analysis. Enable the `runSubagent` tool in the Chat tool picker (or add `runSubagent` to the `tools` frontmatter in custom prompt files), then use `#runSubagent` in prompts to spawn a subagent. See https://code.visualstudio.com/docs/copilot/chat/chat-sessions#_contextisolated-subagents for details.
+
+
 ## Tech Stack Reference
 
 - **Framework:** Next.js 16 (App Router, React 19)

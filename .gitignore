@@ -12,6 +12,7 @@
 /coverage
 /test-results/
 /scripts/reports/
+/scripts/__tests__/
 /playwright-report/
 /playwright/.cache/
 /lighthouse/

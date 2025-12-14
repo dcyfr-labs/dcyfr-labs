@@ -83,8 +83,8 @@ const INSTRUCTION_FILES = {
       'Decision Trees',
     ],
     requiredLinks: [
-      'docs/ai/QUICK_REFERENCE.md',
-      'docs/ai/COMPONENT_PATTERNS.md',
+      'docs/ai/quick-reference.md',
+      'docs/ai/component-patterns.md',
       'docs/templates/',
     ],
     description: 'GitHub Copilot quick reference instructions',

@@ -252,7 +252,7 @@ function formatViolations(violations) {
   output += '  1. Import design tokens: import { SPACING, TYPOGRAPHY } from "@/lib/design-tokens"\n';
   output += '  2. Replace hardcoded values with token constants\n';
   output += '  3. Run ESLint for auto-fixable issues: npm run lint --fix\n';
-  output += '  4. See docs/ai/DESIGN_SYSTEM.md for details\n\n';
+  output += '  4. See docs/ai/design-system.md for details\n\n';
 
   return output;
 }

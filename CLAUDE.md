@@ -73,7 +73,7 @@ Project is in **maintenance mode** with data-driven enhancements.
 - ✅ Validation script: `node scripts/validate-design-tokens.mjs`
 - ✅ VS Code snippets: Type `dt` + Tab for design token shortcuts
 
-**See [`docs/ai/DESIGN_SYSTEM.md`](docs/ai/DESIGN_SYSTEM.md) for comprehensive validation checklist**
+**See [`docs/ai/design-system.md`](docs/ai/design-system.md) for comprehensive validation checklist**
 
 ## Key Constraints
 
@@ -179,7 +179,9 @@ Maintaining:
 3. /seo-optimize    → Verify Lighthouse scores
 ```
 
-**See:** [`.claude/agents/`](.claude/agents/) for detailed agent documentation
+**For Detailed Patterns & Enforcement:**
+- **Public/Shared:** See [`.github/agents/DCYFR.agent.md`](./.github/agents/DCYFR.agent.md) for modular enforcement documentation
+- **Internal Only:** For Claude Code users with access to proprietary `.claude/agents/` files, see your internal documentation (not available in public repo)
 
 ## Security Best Practices
 
@@ -203,17 +205,17 @@ console.log(`Service Account: ${maskEmail(credentials.client_email)}`);
 
 **Never log:** API keys, tokens, credentials, environment variables containing secrets, user personal data, private keys, passwords, payment info
 
-**See detailed guide:** [`docs/ai/LOGGING_SECURITY.md`](docs/ai/LOGGING_SECURITY.md)
+**See detailed guide:** [`docs/ai/logging-security.md`](docs/ai/logging-security.md)
 
 ## Documentation
 
 **Comprehensive guides** (load only when needed):
 
-- [`docs/ai/BEST_PRACTICES.md`](docs/ai/BEST_PRACTICES.md) - Workflow best practices
-- [`docs/ai/DESIGN_SYSTEM.md`](docs/ai/DESIGN_SYSTEM.md) - Complete design validation
-- [`docs/ai/LOGGING_SECURITY.md`](docs/ai/LOGGING_SECURITY.md) - Logging security best practices
+- [`docs/ai/best-practices.md`](docs/ai/best-practices.md) - Workflow best practices
+- [`docs/ai/design-system.md`](docs/ai/design-system.md) - Complete design validation
+- [`docs/ai/logging-security.md`](docs/ai/logging-security.md) - Logging security best practices
 - [`docs/ai/OPTIMIZATION_STRATEGY.md`](docs/ai/OPTIMIZATION_STRATEGY.md) - Token optimization
-- [`docs/ai/CLAUDE_CODE_SETUP.md`](docs/ai/CLAUDE_CODE_SETUP.md) - Claude Code integration setup
+- [`docs/ai/claude-code-setup.md`](docs/ai/claude-code-setup.md) - Claude Code integration setup
 
 **Domain-specific docs:**
 
@@ -269,4 +271,4 @@ See [`docs/ai/OPTIMIZATION_STRATEGY.md`](docs/ai/OPTIMIZATION_STRATEGY.md) for d
 
 **For quick tasks**: Use this guide + design tokens
 **For complex tasks**: Load relevant detailed guides from `/docs/ai/`
-**For Phase 4 work**: See [`docs/operations/PHASE_4_GUIDE.md`](docs/operations/PHASE_4_GUIDE.md)
+**For Phase 4 work**: See [`docs/operations/phase-4-guide.md`](docs/operations/phase-4-guide.md)

@@ -15,10 +15,10 @@ Next.js 16 + React 19 + TypeScript + Tailwind v4 + shadcn/ui + MDX portfolio.
 
 | Resource | Description | View |
 |----------|-------------|------|
-| **[Quick Reference](docs/ai/QUICK_REFERENCE.md)** | Commands, imports, 80/20 patterns | Essential for speed |
-| **[Component Patterns](docs/ai/COMPONENT_PATTERNS.md)** | Layouts, barrel exports, metadata | Mandatory patterns |
-| **[Enforcement Rules](docs/ai/ENFORCEMENT_RULES.md)** | Design tokens, validation, CI/CD | Quality gates |
-| **[Decision Trees](docs/ai/DECISION_TREES.md)** | Visual flowcharts for decisions | Quick answers |
+| **[Quick Reference](docs/ai/quick-reference.md)** | Commands, imports, 80/20 patterns | Essential for speed |
+| **[Component Patterns](docs/ai/component-patterns.md)** | Layouts, barrel exports, metadata | Mandatory patterns |
+| **[Enforcement Rules](docs/ai/enforcement-rules.md)** | Design tokens, validation, CI/CD | Quality gates |
+| **[Decision Trees](docs/ai/decision-trees.md)** | Visual flowcharts for decisions | Quick answers |
 
 ### Interactive Tools
 
@@ -30,9 +30,9 @@ Next.js 16 + React 19 + TypeScript + Tailwind v4 + shadcn/ui + MDX portfolio.
 
 | Template | Use Case |
 |----------|----------|
-| [NEW_PAGE.tsx](docs/templates/NEW_PAGE.tsx.md) | Standard pages with PageLayout |
-| [ARCHIVE_PAGE.tsx](docs/templates/ARCHIVE_PAGE.tsx.md) | Filterable list pages |
-| [API_ROUTE.ts](docs/templates/API_ROUTE.ts.md) | API routes with Inngest |
+| [NEW_PAGE.tsx](docs/templates/new-page.tsx.md) | Standard pages with PageLayout |
+| [ARCHIVE_PAGE.tsx](docs/templates/archive-page.tsx.md) | Filterable list pages |
+| [API_ROUTE.ts](docs/templates/api-route.ts.md) | API routes with Inngest |
 | [INNGEST_FUNCTION.ts](docs/templates/INNGEST_FUNCTION.ts.md) | Background jobs |
 | [COMPONENT_WITH_BARREL.tsx](docs/templates/COMPONENT_WITH_BARREL.tsx.md) | New component with exports |
 | [METADATA_ONLY.ts](docs/templates/METADATA_ONLY.ts.md) | Metadata generation |
@@ -152,8 +152,8 @@ export async function POST(request: NextRequest) {
 |----------|----------|
 | What command to run? | [Quick Reference](docs/ai/QUICK_REFERENCE.md#commands) |
 | Which layout to use? | [Decision Trees](docs/ai/DECISION_TREES.md#which-layout-should-i-use) |
-| How to import components? | [Component Patterns](docs/ai/COMPONENT_PATTERNS.md#barrel-exports) |
-| Design token rules? | [Enforcement Rules](docs/ai/ENFORCEMENT_RULES.md#design-token-enforcement) |
+| How to import components? | [Component Patterns](docs/ai/component-patterns.md#barrel-exports) |
+| Design token rules? | [Enforcement Rules](docs/ai/enforcement-rules.md#design-token-enforcement) |
 | Copy-paste template? | [Templates](docs/templates/) |
 | Current priorities? | [todo.md](docs/operations/todo.md) |
 | Architecture decisions? | [docs/architecture/](docs/architecture/) |
@@ -225,13 +225,34 @@ npm run test:e2e        # E2E tests
 
 ---
 
+## Subagents (VS Code)
+
+To use VS Code subagents (context-isolated helpers) with Copilot and the Chat view, add the following workspace settings to `.vscode/settings.json`:
+
+```json
+{
+  "chat.customAgentInSubagent.enabled": true,
+  "chat.agentSessionsViewLocation": "sidebar",
+  "github.copilot.chat.mcp.enabled": true
+}
+```
+
+Quick usage tips:
+- Enable the `runSubagent` tool in the tool picker (Chat view) or include `runSubagent` in the `tools` frontmatter of custom prompt files/agents.
+- Use `#runSubagent` in prompts to spawn a context-isolated subagent for research or analysis.
+- Check the Agent Sessions view in the sidebar to monitor subagent progress and to delegate tasks to other agents.
+
+See VS Code docs: https://code.visualstudio.com/docs/copilot/chat/chat-sessions#_contextisolated-subagents
+
+---
+
 ## 📖 Extended Documentation
 
 For deeper dives, see:
 
-- [Best Practices](docs/ai/BEST_PRACTICES.md) - Workflows and conventions
-- [Design System](docs/ai/DESIGN_SYSTEM.md) - Token system deep dive
-- [Optimization Strategy](docs/ai/OPTIMIZATION_STRATEGY.md) - Performance patterns
+- [Best Practices](docs/ai/best-practices.md) - Workflows and conventions
+- [Design System](docs/ai/design-system.md) - Token system deep dive
+- [Optimization Strategy](docs/ai/optimization-strategy.md) - Performance patterns
 - [Architecture Guide](docs/architecture/) - System design decisions
 - [Operations Guide](docs/operations/) - Priorities and changelog
 

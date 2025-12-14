@@ -226,7 +226,7 @@ export const TYPOGRAPHY = {
  * - proseSection: Generic prose sections
  * - image: Image elements in blog content
  * 
- * @see /docs/ai/ENFORCEMENT_RULES.md#design-token-enforcement
+ * @see /docs/ai/enforcement-rules.md#design-token-enforcement
  * 
  * @example
  * ```tsx

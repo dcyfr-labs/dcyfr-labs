@@ -1,91 +1,25 @@
 {
-  "emailDomains": [
-    "example.com",
-    "example.org",
-    "example.net",
-    "dcyfr.ai",
-    "your-domain.com",
-    "yourdomain.com",
-    "upstash.io",
-    "sentry.io"
-  ],
-  
-  "emails": [
-    "git@github.com",
-    "drew@dcyfr.ai",
-    "noreply@www.dcyfr.ai",
-    "alerts@dcyfr.ai",
-    "noreply@",
-    "no-reply@",
-    "alerts@",
-    "indexing-service@your-project.iam.gserviceaccount.com",
-    "actions@github.com",
-    "test@test.com",
-    "noreply@your-domain.com",
-    "contact@yourdomain.com",
-    "user@domain.com"
-  ],
-  
-  "paths": [
-    "src/__tests__/**",
-    "tests/**",
-    "LICENSE.md",
-    "CONTRIBUTING.md",
-    ".github/DCYFR_STATEMENT.md",
-    "docs/operations/content-strategy.md",
-    "docs/operations/todo.md",
-    "docs/features/google-indexing-api.md",
-    "docs/operations/PRODUCTION_DEPLOYMENT.md",
-    "docs/security/**",
-    "docs/examples/**",
-    "docs/templates/**"
-  ],
-  
-  "proprietaryPaths": [
-    "docs/ai/LOGGING_SECURITY.md",
-    "docs/security/**"
-  ],
-  
-  "privateKeyPaths": [
-    "docs/features/google-indexing-api.md",
-    "docs/security/**",
-    "certs/**"
-  ],
-  
+  "emailDomains": [],
+  "emails": [],
+  "paths": [],
+  "piiPaths": [],
   "piPaths": [
-    "src/__tests__/**",
-    "docs/ai/LOGGING_SECURITY.md",
-    "docs/security/**",
-    "docs/architecture/**",
-    "docs/api/**",
-    "tests/__fixtures__/**"
+    "src/app/globals.css",
+    "src/lib/design-tokens.ts",
+    "src/**"
   ],
-  
-  "piiPaths": [
-    "docs/examples/**",
-    "docs/templates/**",
-    "docs/security/**"
+  "emailDomains": [
+    "github.com",
+    "example.com",
+    "dcyfr.ai"
   ],
-  
+  "paths": [
+    "docs/**"
+  ],
+  "proprietaryPaths": [],
+  "privateKeyPaths": [],
   "allowlistReasons": {
-    "drew@dcyfr.ai": "Public contact email for portfolio owner (DCYFR Labs); intentionally published in site configuration for contact purposes.",
-    "docs/ai/LOGGING_SECURITY.md": "Contains definitions/explanations of 'Proprietary' rather than actual proprietary data. Allowed for educational/documentation purposes.",
-    "docs/features/google-indexing-api.md": "Contains an example service account JSON for developer guidance; keys are placeholders and redacted in examples.",
-    "docs/security/**": "Security documentation and taxonomy reference; contains pattern definitions and examples (all marked as placeholders).",
-    "docs/security/PI_PII_TAXONOMY.md": "Reference guide for PII/PI classification system; contains pattern definitions and example regexes for documentation purposes.",
-    "src/__tests__/**": "Test fixtures and sample data; intentionally includes placeholder addresses and example credentials.",
-    "tests/**": "End-to-end and integration test data that may contain example addresses or sample keys.",
-    "tests/__fixtures__/**": "Test fixtures for API calls, database connections, and credentials; all marked as EXAMPLE or TEST.",
-    "LICENSE.md": "Public license reference; known safe content.",
-    "CONTRIBUTING.md": "Contributor guidelines and examples; contains placeholder addresses for contributors.",
-    ".github/DCYFR_STATEMENT.md": "Repository policy statement; includes high-level guidance and placeholders.",
-    "docs/operations/content-strategy.md": "Guidance and canonical content strategy; includes example addresses and content artifacts.",
-    "docs/operations/todo.md": "Backlog and planning artifacts that may contain placeholder names/emails.",
-    "docs/operations/PRODUCTION_DEPLOYMENT.md": "Deployment runbook and contact addresses for deployment artifacts.",
-    "docs/examples/**": "Documentation examples that intentionally include placeholders and test addresses.",
-    "docs/templates/**": "Templates used for docs and code samples; include placeholders by design.",
-    "docs/architecture/**": "Architecture documentation; may contain example service names and endpoint patterns.",
-    "docs/api/**": "API documentation; contains example requests, response structures, and token patterns.",
-    "certs/**": "Development certificates and example keys; non-production use only."
+    "src/app/globals.css": "CSS design tokens and property names (e.g., 'order', 'border', 'oklch') are benign style tokens and may trigger conservative PI pattern matches.",
+    "src/lib/design-tokens.ts": "Design token keys and example strings (e.g., 'border-*') are semantic tokens, not transaction/order identifiers."
   }
 }

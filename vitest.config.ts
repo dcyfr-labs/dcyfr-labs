@@ -11,6 +11,12 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     setupFiles: ['./tests/setup/vitest.setup.ts'],
+    // Performance optimization: Use thread pool for parallel execution
+    pool: 'threads',
+    // Cache configuration for faster re-runs
+    cache: {
+      dir: 'node_modules/.vitest',
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],

@@ -106,18 +106,23 @@ cp -r dcyfr-labs/.github/agents/ my-project/
 
 ## The Transparency
 
-**We're not hiding anything.** The proprietary files are right here in the open:
+**We're not hiding anything about our public patterns.** The shared documentation is right here in the open:
 
 - `.github/agents/DCYFR.agent.md` - Hub file (195 lines)
 - `.github/agents/patterns/` - 4 pattern files (1551 lines)
 - `.github/agents/enforcement/` - 3 enforcement files (1100 lines)
 - `.github/agents/learning/` - 3 learning files (1110 lines)
 
+**⚠️ Important Note:** 
+- ✅ `.github/agents/` - **PUBLIC/SHARED** (available in this repo)
+- ❌ `.claude/agents/` - **PROPRIETARY/INTERNAL ONLY** (not included in public repo)
+
 **What this means:**
-- ✅ You can see exactly how DCYFR works
-- ✅ You can understand the system architecture
+- ✅ You can see exactly how shared DCYFR patterns work
+- ✅ You can understand the public system architecture
 - ✅ You can appreciate the engineering complexity
-- ✅ You cannot redistribute it to avoid undermining our competitive advantage
+- ✅ You cannot redistribute proprietary `.claude/agents/` files (internal only)
+- ✅ You can use and learn from all `.github/agents/` documentation
 
 **This is similar to:**
 - Open-source code (can see, learn, contribute)
