@@ -71,7 +71,7 @@ If you find that legitimate documentation (examples, placeholders, or definition
 
 1. Open a non-breaking PR that updates `.pii-allowlist.json`.
 2. Add the path (or domain/email) to `paths`/`proprietaryPaths` and add a `allowlistReasons` entry with a short justification and approver name.
-3. In the PR description, provide a short explanation and why the path should be allowlisted (ex: `docs/ai/LOGGING_SECURITY.md contains a definition; not real PI`).
+3. In the PR description, provide a short explanation and why the path should be allowlisted (ex: `docs/ai/logging-security.md contains a definition; not real PI`).
 4. At least one owner from the security/ops team (`@dcyfr`) must approve the change.
 
 Note: Do not use allowlist entries as a shortcut to avoid redacting or removing real secrets. If a secret is found in the repo, remove it and add a remediation note to the PR instead.
@@ -91,7 +91,7 @@ npm run parse:gitleaks-report ./gitleaks-report.json
 
 ### PII vs. PI Allowlisting Guidelines (Short Version)
 - PII allowlist entries are for test data or placeholders (e.g., `example.com`, `test@test.com`) and should be treated conservatively; preference is to redact or mask. Add to `piiPaths` or `paths` as appropriate.
-- PI allowlist entries (business or proprietary content) are for documentation that explains or defines proprietary systems (e.g., `docs/ai/LOGGING_SECURITY.md`) and require stronger justification and an owner signoff; add to `piPaths` or `proprietaryPaths` as appropriate.
+- PI allowlist entries (business or proprietary content) are for documentation that explains or defines proprietary systems (e.g., `docs/ai/logging-security.md`) and require stronger justification and an owner signoff; add to `piPaths` or `proprietaryPaths` as appropriate.
 
 ## Environment
 

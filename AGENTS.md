@@ -176,57 +176,42 @@ This document serves as the **single source of truth** for discovering, routing,
 
 ---
 
-### 4. DCYFR Claude Code Agents (v2.1.0)
-**Hub Directory:** [`.claude/agents/`](./.claude/agents/)  
-**Lines:** 800+ (3 specialized agents + registry)  
+### 4. DCYFR Claude Code Agents (v2.1.0) - PROPRIETARY/INTERNAL ONLY
+**⚠️ NOTE:** Files in `.claude/agents/` are **proprietary and not available in the public repository**. This section is for documentation purposes only.
+
+**Hub Directory:** `.claude/agents/` (Not in public repo)  
 **Last Updated:** December 10, 2025  
-**Audience:** Claude Code with auto-delegation capabilities  
+**Audience:** Internal use only - Claude Code with auto-delegation capabilities  
 **Format:** Individual agent files optimized for Claude Code sub-agents
 
-**Agent Collection:**
+**Primary Agents (Used in Public Projects):**
 
-| Agent | File | Lines | Purpose | Model |
-|-------|------|-------|---------|--------|
-| **Production Enforcer** | [`DCYFR.md`](./.claude/agents/DCYFR.md) | 320 | Full production implementation with mandatory enforcement | Sonnet |
-| **Quick Fix** | [`dcyfr-quick-fix.md`](./.claude/agents/dcyfr-quick-fix.md) | 120 | Fast pattern fixes and token compliance | Haiku |
-| **Test Specialist** | [`dcyfr-test-specialist.md`](./.claude/agents/dcyfr-test-specialist.md) | 280 | Test coverage maintenance and quality assurance | Sonnet |
-| **Agent Registry** | [`README.md`](./.claude/agents/README.md) | 180 | Agent coordination and selection guide | - |
+| Agent | File | Purpose |
+|-------|------|---------|
+| **Production Enforcer** | `DCYFR.md` | Full production implementation with mandatory enforcement |
+| **Quick Fix** | `quick-fix.md` | Fast pattern fixes and token compliance |
+| **Test Specialist** | `test-specialist.md` | Test coverage maintenance and quality assurance |
 
-**Claude Code Optimizations:**
-- **Auto-delegation:** Agents automatically chosen based on task type
-- **Permission handling:** `acceptEdits` mode for streamlined workflows
-- **Tool specialization:** Each agent has optimized tool access
-- **Model selection:** Haiku for speed, Sonnet for complexity
-- **Proactive triggers:** "Use proactively" patterns for automatic invocation
+**Supporting Agents (Proprietary Specializations):**
+- `architecture-reviewer.md` - Architecture review and technical decisions
+- `content-creator.md` - Content and documentation generation
+- `content-editor.md` - Content refinement and polish
+- `dependency-manager.md` - Dependency updates and compatibility
+- `design-specialist.md` - Design system and UI enhancements
+- `performance-specialist.md` - Performance optimization and metrics
+- `security-specialist.md` - Security hardening and compliance
+- `seo-specialist.md` - SEO optimization and metadata
+- *(Additional agents may be added internally)*
 
-**When to update:**
-- **Production agent:** Core rules, enforcement changes, new patterns
-- **Quick Fix agent:** Common violation patterns, token updates
-- **Test Specialist:** Testing strategy, coverage targets, quality metrics
-- **Registry:** New agents, capability changes, coordination rules
+**⚠️ Important Clarifications:**
+- ✅ `.github/agents/` directory (patterns, enforcement, learning) - **PUBLIC/SHARED**
+- ❌ `.claude/agents/` directory - **PROPRIETARY/INTERNAL ONLY**
+- These proprietary agent files are **not included in the public repository**
+- Public users should reference **`.github/agents/DCYFR.agent.md`** instead
 
-**Version tracking:**
-```json
-{
-  "directory": ".claude/agents/",
-  "format": "claude-code-subagents",
-  "version": "2.1.0",
-  "scope": "production-enforcement-auto-delegated",
-  "coverage": "Production patterns, quick fixes, test coverage",
-  "last_updated": "2025-12-10",
-  "source_of_truth": "AGENTS.md",
-  "sync_status": "Manual (Claude Code managed)",
-  "agent_structure": {
-    "production": "DCYFR.md (320 lines)",
-    "quick_fix": "dcyfr-quick-fix.md (120 lines)",
-    "test_specialist": "dcyfr-test-specialist.md (280 lines)",
-    "registry": "README.md (180 lines)",
-    "total_agents": 3
-  }
-}
-  }
-}
-```
+**When to reference:**
+- For **public/shared work:** Use `.github/agents/DCYFR.agent.md` and its modular documentation
+- For **internal development:** Use `.claude/agents/` files (not available publicly)
 
 ---
 
@@ -245,19 +230,20 @@ START: "I need AI help with dcyfr-labs"
   │  └─ YES → Use Claude (General)
   │     └─ Reference: CLAUDE.md + docs/ai/
   │
-  ├─ Using Claude Code for production work?
-  │  └─ YES → Use DCYFR (Claude Code)
-  │     ├─ Auto-delegation: Based on task complexity
-  │     ├─ Quick fixes: dcyfr-quick-fix (Haiku)
-  │     ├─ Full features: DCYFR production (Sonnet)
-  │     └─ Testing: dcyfr-test-specialist (Sonnet)
-  │
   ├─ Building feature following strict patterns?
   │  └─ YES → Use DCYFR (VS Code Mode)
   │     └─ Reference: .github/agents/DCYFR.agent.md
   │
   ├─ Bug fix with compliance enforcement?
   │  └─ YES → Use DCYFR (VS Code Mode)
+  │     └─ Reference: .github/agents/DCYFR.agent.md
+  │
+  ├─ General investigation/documentation?
+  │  └─ Use Claude (General)
+  │     └─ Reference: CLAUDE.md + docs/
+```
+
+**Note on Claude Code:** Claude Code users in your organization may have access to proprietary `.claude/agents/` files for auto-delegation and specialized task routing. These are **not** included in the public repository. For public contributions, use `.github/agents/DCYFR.agent.md` instead.
   │     └─ Reference: .github/agents/DCYFR.agent.md
   │
   └─ General investigation/documentation?
@@ -304,12 +290,12 @@ AGENTS.md (This file)
    │  ├─ Source: Project lead updates
    │  └─ Sync: Update when project phase changes
    │
-   ├─ .claude/agents/ (PRIMARY - Main Development Target)
-   │  ├─ For: Claude Code auto-delegation system
+   ├─ .claude/agents/ (PRIMARY - PROPRIETARY/INTERNAL ONLY)
+   │  ├─ Status: ⚠️ NOT in public repository
+   │  ├─ For: Claude Code auto-delegation system (internal use only)
    │  ├─ Focus: Task-specific agents with full enforcement
-   │  ├─ Source: Architecture decisions + sync from .github/agents/
-   │  ├─ Sync: Auto-synced when patterns change
-   │  └─ Components: 3 specialized agents + registry
+   │  ├─ Components: 11 specialized agents
+   │  └─ Public Alternative: Use .github/agents/ instead
    │
    ├─ .github/agents/DCYFR.agent.md (HUB v2.0 Modular - Source of Truth)
    │  ├─ For: Specialized mode in conversation + sync source
@@ -364,40 +350,49 @@ AGENTS.md (This file)
 | **Enforcement** | ESLint violations | Guidelines | Mandatory gates + tests | **Proactive compliance** |
 | **Best For** | Speed (<2 sec) | Understanding (mins) | Rigor (hours) | **Balanced efficiency** |
 | **Activation** | Always in VS Code | Always available | Conversation mode | **Auto-delegation** |
-| **Structure** | Monolithic | Narrative | Hub + 3 directories | **3 agents + registry** |
-| **Model Selection** | N/A | User choice | Single model | **Haiku + Sonnet** |
-| **Sync Source** | ← Transforms FROM Claude Code | - | - | **← Source of Truth** |
+| **Structure** | Monolithic | Narrative | Hub + 3 directories | **11 specialized agents** |
+| **Model Selection** | N/A | User choice | Single model | **Internal use only** |
+| **Sync Source** | ← Transforms FROM shared docs | - | - | **← Source of Truth** |
 
 ---
 
 ## 🔄 Synchronization & Maintenance
 
-### Implementation Synchronization Strategy (Primary → Secondary Model)
+### Implementation Synchronization Strategy (Public + Proprietary Model)
 
-The dcyfr-labs project maintains **one source of truth with multiple optimized implementations**:
+The dcyfr-labs project maintains **public shared documentation with private internal optimization**:
 
 ```
-Development Flow:
+Documentation Flow:
 
-.github/agents/ (Source of Truth)
+.github/agents/ (PUBLIC - Source of Truth for Shared Docs)
 ├─ patterns/ (COMPONENT, API, TESTING, CODEQL)
 ├─ enforcement/ (DESIGN_TOKENS, APPROVAL_GATES, VALIDATION)
 └─ learning/ (PERFORMANCE, CONTINUOUS_LEARNING, KNOWLEDGE_BASE)
 
-    ↓ Syncs to ↓
+    ↓ Used by ↓
 
-🔴 PRIMARY Development Target:
-.claude/agents/ (3 specialized agents + registry)
-└─ AUTO-DELEGATION system for Claude Code
-   ├─ Production agent (Sonnet) → Full enforcement
-   ├─ Quick Fix agent (Haiku) → Fast pattern fixes
-   └─ Test Specialist (Sonnet) → Coverage & quality
+🔵 SUPPORTING (Public-Facing):
+- DCYFR VS Code Mode (.github/agents/DCYFR.agent.md)
+- GitHub Copilot (.github/copilot-instructions.md)
+- General Claude (CLAUDE.md)
+
+    ↓ May inform ↓
+
+🔴 PRIMARY (Internal Only):
+.claude/agents/ (11 specialized agents)
+└─ AUTO-DELEGATION system for Claude Code (NOT in public repo)
+   ├─ Production Enforcer (Sonnet) → Full enforcement
+   ├─ Quick Fix (Haiku) → Fast pattern fixes
+   ├─ Test Specialist (Sonnet) → Coverage & quality
+   └─ 8 Additional Specialized Agents → Domain-specific optimization
+```
 
     ↓ Transforms to ↓
 
 🟡 SECONDARY Maintenance:
 .github/copilot-instructions.md (80/20 quick reference)
-└─ Auto-synced monthly via sync-agents.mjs
+└─ Auto-synced from shared docs
    ├─ Essential patterns only
    ├─ Speed optimized (<2 seconds)
    └─ No auto-delegation (Copilot limitation)
@@ -409,59 +404,64 @@ Claude General → Deep research and architecture decisions
 
 **Development Allocation:**
 
-- **Claude Code**: 80% of development effort (primary target)
-- **Copilot**: 20% (auto-sync maintenance)
-- **Result**: One strong primary tool + one optimized secondary
+- **Public Work**: 100% follows `.github/agents/` (shared/open source)
+- **Internal Development**: May reference `.claude/agents/` (proprietary optimizations)
+- **Result**: Unified public base + optimized internal tools
 
-**Key Optimizations by Tool:**
+**Key Clarifications:**
 
-- **Copilot (🟡 Secondary)**: 80/20 patterns, quick templates, speed-optimized
-- **Claude Code (🔴 Primary)**: Auto-delegation, model selection (Haiku/Sonnet), proactive triggers, full reasoning
-- **VS Code (🔵 Supporting)**: Comprehensive validation, approval gates, learning system
-
-**Automated Sync**: Use `npm run sync:agents` to maintain consistency while preserving tool-specific optimizations.
+- **Public/Shared (🔵 SUPPORTING)**: `.github/agents/` directory - available to all users
+- **Proprietary/Internal (🔴 PRIMARY)**: `.claude/agents/` directory - internal use only
+- **Secondary (🟡)**: GitHub Copilot gets 80/20 patterns from public docs
+- **NO PUBLIC SYNC FROM PROPRIETARY**: `.claude/agents/` files are never referenced in public documentation
 
 **Detailed Strategy**: See [`docs/ai/AGENT_SYNC_STRATEGY.md`](docs/ai/AGENT_SYNC_STRATEGY.md) and [`docs/ai/AGENT_UNIFICATION_ANALYSIS.md`](docs/ai/AGENT_UNIFICATION_ANALYSIS.md) for complete plans and design rationale.
 
 ### File Ownership & Update Responsibility
 
-| File | Owner | Primary? | Update Trigger | Frequency |
-|------|-------|----------|---|----------|
-| `AGENTS.md` | Project Lead | - | Strategy/governance changes | Quarterly |
-| **`.claude/agents/*.md`** | **DCYFR Team** | **🔴 YES** | Pattern/capability changes | **Ongoing development** |
-| `.github/agents/DCYFR.agent.md` | Architecture | Source of Truth | Enforcement changes | As needed |
-| `.github/copilot-instructions.md` | Sync System | 🟡 NO | Auto-synced from Claude patterns | Monthly (automated) |
-| `CLAUDE.md` | Project Lead | Supporting | Phase changes, constraints | As needed |
+| File | Owner | Public? | Update Trigger | Frequency |
+|------|-------|---------|---|----------|
+| `AGENTS.md` | Project Lead | ✅ Yes | Strategy/governance changes | Quarterly |
+| `.claude/agents/*.md` | Internal Team | ❌ **NO** | ⚠️ **Proprietary only** | Ongoing (internal only) |
+| `.github/agents/DCYFR.agent.md` | Architecture | ✅ Yes | Enforcement changes | As needed |
+| `.github/copilot-instructions.md` | Community | ✅ Yes | Updates from `.github/agents/` | As needed |
+| `CLAUDE.md` | Project Lead | ✅ Yes | Phase changes, constraints | As needed |
 
-### Sync Checklist (Primary → Secondary Model)
+### Sync Strategy (Shared vs. Proprietary)
 
-**Monthly Automated Sync (Copilot ← Claude Code):**
+**Shared Documentation Flow (`.github/agents/` ← public):**
+- Source of truth: `.github/agents/` directory (patterns, enforcement, learning)
+- Used for: Public contributions, DCYFR VS Code mode, shared documentation
+- Availability: ✅ In public repository
 
-The `ai-instructions-sync` GitHub Actions workflow automatically:
+**Proprietary Development Flow (`.claude/agents/` ← internal only):**
+- Internal optimization: `.claude/agents/` directory (11 specialized agents)
+- Used for: Claude Code auto-delegation, internal development
+- Availability: ❌ NOT in public repository
+- Access: Internal team members only
 
-- [ ] Extracts Claude Code patterns (`.claude/agents/`)
-- [ ] Transforms to 80/20 reference (`.github/copilot-instructions.md`)
-- [ ] Validates sync completeness
-- [ ] Generates sync report
+**Sync Considerations:**
+- `.github/agents/` is the source of truth for public documentation
+- `.claude/agents/` contains proprietary optimizations NOT shared publicly
+- Updates to `.github/agents/` may inform internal improvements to `.claude/agents/`
+- Public repository only references `.github/agents/` documentation
 
-**Quarterly Manual Review (Every 3 months):**
+### Quarterly Manual Review (Every 3 months)
 
-- [ ] Review Claude Code agents for new capabilities
-- [ ] Check if new patterns should be added to sync
-- [ ] Verify Copilot quick reference covers 80% of use cases
+- [ ] Verify `.github/agents/` documentation is current and complete
+- [ ] Check that `.github/agents/` is the primary reference for public users
+- [ ] Confirm no proprietary `.claude/agents/` files are referenced in public docs
 - [ ] Review decision trees against implementation
 - [ ] Check docs/ai/ for missing references
 - [ ] Validate cross-implementation consistency
-- [ ] Confirm GitHub Actions workflows are running
 
-**Manual Sync Commands (For Testing/Updates):**
+**Manual Update Commands (For Shared Docs):**
 
 ```bash
-# Run full sync with validation
-npm run sync:agents
+# Update shared .github/agents/ documentation
+git add .github/agents/
+git commit -m "docs: update shared agent documentation"
 
-# Preview changes without writing
-npm run sync:agents --dry-run
 
 # Sync specific target
 npm run sync:agents --target=copilot
@@ -477,7 +477,7 @@ npm run sync:agents --status
 - [ ] Update CLAUDE.md constraints
 - [ ] Run `npm run sync:agents` to propagate changes
 - [ ] Consider copilot-instructions.md impact
-- [ ] Update docs/ai/ENFORCEMENT_RULES.md
+- [ ] Update docs/ai/enforcement-rules.md
 - [ ] Add entry to AGENTS.md "Recent Updates"
 
 **On Phase Completion:**
@@ -527,7 +527,7 @@ Each instruction file maintains this metadata:
 1. Start with [`CLAUDE.md`](./CLAUDE.md) for project context
 2. Use decision tree (above) to pick your agent
 3. Reference the mapped instruction file
-4. Consult [`docs/ai/QUICK_REFERENCE.md`](docs/ai/QUICK_REFERENCE.md) for commands
+4. Consult [`docs/ai/quick-reference.md`](docs/ai/quick-reference.md) for commands
 
 ---
 
@@ -535,14 +535,14 @@ Each instruction file maintains this metadata:
 
 **Foundational (Read First):**
 - [`CLAUDE.md`](./CLAUDE.md) - Project context & constraints
-- [`docs/ai/QUICK_REFERENCE.md`](docs/ai/QUICK_REFERENCE.md) - Commands & imports
-- [`docs/ai/DECISION_TREES.md`](docs/ai/DECISION_TREES.md) - Visual decision flowcharts
- - [`docs/ai/MCP_CHECKS.md`](docs/ai/MCP_CHECKS.md) - MCP server health checks & CI guidance
+- [`docs/ai/quick-reference.md`](docs/ai/quick-reference.md) - Commands & imports
+- [`docs/ai/decision-trees.md`](docs/ai/decision-trees.md) - Visual decision flowcharts
+ - [`docs/ai/mcp-checks.md`](docs/ai/mcp-checks.md) - MCP server health checks & CI guidance
 
 **Deep Dives (Reference as Needed):**
-- [`docs/ai/COMPONENT_PATTERNS.md`](docs/ai/COMPONENT_PATTERNS.md) - Layout & import patterns
-- [`docs/ai/ENFORCEMENT_RULES.md`](docs/ai/ENFORCEMENT_RULES.md) - Design token validation
-- [`docs/ai/DESIGN_SYSTEM.md`](docs/ai/DESIGN_SYSTEM.md) - Token system deep dive
+- [`docs/ai/component-patterns.md`](docs/ai/component-patterns.md) - Layout & import patterns
+- [`docs/ai/enforcement-rules.md`](docs/ai/enforcement-rules.md) - Design token validation
+- [`docs/ai/design-system.md`](docs/ai/design-system.md) - Token system deep dive
 
 **Practical (Copy-Paste Ready):**
 - [`docs/templates/`](docs/templates/) - Component, page, and API templates

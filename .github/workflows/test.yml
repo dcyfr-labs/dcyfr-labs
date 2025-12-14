@@ -50,7 +50,7 @@ jobs:
     needs: setup
     name: Code Quality
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 3  # Reduced from 5
     permissions:
       contents: read
 
@@ -80,7 +80,7 @@ jobs:
     needs: setup
     name: Unit & Integration Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 8  # Reduced from 10
     permissions:
       contents: read
 
@@ -115,7 +115,7 @@ jobs:
     needs: setup
     name: Bundle Size Check
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 8  # Reduced from 10
     permissions:
       contents: read
 
@@ -135,6 +135,16 @@ jobs:
           key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
           fail-on-cache-miss: true
       
+      # Add Next.js build cache for faster builds
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: |
+            .next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+      
       - name: Build production bundle
         run: npm run build
         env:
@@ -147,7 +157,7 @@ jobs:
     needs: setup
     name: E2E Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 12  # Reduced from 15
     permissions:
       contents: read
 

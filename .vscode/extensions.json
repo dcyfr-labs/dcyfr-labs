@@ -1,5 +1,11 @@
 {
   "recommendations": [
+    "GitHub.copilot",
+    "GitHub.copilot-chat"
+  ]
+}
+{
+  "recommendations": [
     "vitest.explorer",
     "ms-playwright.playwright",
     "usernamehw.errorlens",

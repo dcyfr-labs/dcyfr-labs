@@ -125,6 +125,7 @@ Any monitored packages detected as vulnerable?
 |---------|---------|-----|
 | `redis-not-configured` | Redis URL not set or connection failed | Check REDIS_URL env var, verify cloud instance |
 | `GHSA API error: 429` | Rate limited | Add GitHub token or wait 1 hour |
+| `GHSA API error: 422` | Validation or anti-spam (endpoint may have rejected the request) | Log response body, avoid aggressive retries, add small delays between package requests and consider adding a GITHUB_TOKEN |
 | `GHSA API error: 500` | GitHub API issue | Wait and retry, check status page |
 | `Failed to connect` | Connection timeout (too short) | Increase timeout from 5s to 10s |
 | `Max retries exceeded` | Too many retry attempts | Reduce retry count or fix root cause |

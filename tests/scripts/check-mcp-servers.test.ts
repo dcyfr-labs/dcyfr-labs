@@ -7,7 +7,7 @@ import path from 'path';
 import os from 'os';
 import { fileURLToPath } from 'url';
 
-import { parseEnvFile, readMcpConfig, checkUrlServer, checkCommandServer, run } from '../../scripts/check-mcp-servers.mjs';
+import { parseEnvFile, readMcpConfig, checkUrlServer, checkCommandServer, run } from '../../scripts/ci/check-mcp-servers.mjs';
 
 // Provide a simple node-based fetch for the tests to avoid CORS/DOM policy used
 // by the default test environment. We implement a minimal HEAD/GET support.

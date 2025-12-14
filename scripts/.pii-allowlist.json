@@ -1,0 +1,27 @@
+{
+  "emailDomains": [
+    "github.com",
+    "example.com",
+    "dcyfr.ai"
+  ],
+  "emails": [],
+  "paths": [
+    "docs/**"
+  ],
+  "piiPaths": [],
+  "piPaths": [
+    "src/app/globals.css",
+    "src/lib/design-tokens.ts",
+    "src/**"
+  ],
+  "proprietaryPaths": [
+    "docs/ai/logging-security.md"
+  ],
+  "privateKeyPaths": [],
+  "allowlistReasons": {
+    "src/app/globals.css": "CSS design tokens and property names (e.g., 'order', 'border', 'oklch') are benign style tokens and may trigger conservative PI pattern matches.",
+    "src/lib/design-tokens.ts": "Design token keys and example strings (e.g., 'border-*') are semantic tokens, not transaction/order identifiers.",
+    "docs/": "Documentation includes example emails and placeholders which are expected and safe.",
+    "docs/ai/logging-security.md": "AI logging/security documentation references proprietary terminology for classification examples and is expected in this context."
+  }
+}

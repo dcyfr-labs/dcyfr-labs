@@ -125,7 +125,7 @@ We continuously monitor security through:
 
 Detailed security documentation is available in `/docs/security/`:
 
-- [Quick Reference](./docs/security/QUICK_REFERENCE.md) - Overview of security controls
+- [Quick Reference](./docs/security/quick-reference.md) - Overview of security controls
 - [CSP Documentation](./docs/security/csp/) - Content Security Policy details
 - [Rate Limiting](./docs/security/rate-limiting/) - Rate limiting implementation
 - [API Security](./docs/security/api-security-audit.md) - API endpoint security

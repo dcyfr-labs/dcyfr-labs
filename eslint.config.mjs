@@ -42,7 +42,7 @@ const eslintConfig = [
                    "  ❌ \"text-2xl font-semibold\" → ✅ {TYPOGRAPHY.h2.standard}\n" +
                    "  ❌ \"text-sm font-medium\" → ✅ {TYPOGRAPHY.label.small}\n" +
                    "  EXCLUDES: CSS selectors like [&>strong]:font-semibold (these are valid)\n" +
-                   "  See /docs/ai/DESIGN_SYSTEM.md#typography-tokens",
+                   "  See /docs/ai/design-system.md#typography-tokens",
         },
         {
           selector: "Literal[value=/\\b(duration|transition)-(75|100|150|200|300|500|700|1000)\\b/]",
@@ -51,7 +51,7 @@ const eslintConfig = [
                    "  ❌ \"duration-300\" → ✅ {ANIMATION.duration.normal}\n" +
                    "  ❌ \"duration-500\" → ✅ {ANIMATION.duration.slow}\n" +
                    "  Or use transition utilities: .transition-movement, .transition-appearance, .transition-theme\n" +
-                   "  See /docs/ai/DESIGN_SYSTEM.md#animation-tokens",
+                   "  See /docs/ai/design-system.md#animation-tokens",
         },
         {
           selector: "Literal[value=/transition-all.*hover:shadow-(sm|md|lg|xl|2xl)/]",
@@ -65,7 +65,7 @@ const eslintConfig = [
                    "  ✅ .transition-base (opacity + transform, 300ms - default choice)\n" +
                    "  ✅ .transition-theme (colors only, 150ms - best for theme changes)\n" +
                    "  Performance impact: transition-all ~10x slower than specific transitions\n" +
-                   "  See /docs/ai/DESIGN_SYSTEM.md#animation-tokens",
+                   "  See /docs/ai/design-system.md#animation-tokens",
         },
         {
           selector: "Literal[value=/(bg-green-|bg-yellow-|bg-red-|bg-blue-|bg-amber-|bg-orange-|text-green-|text-yellow-|text-red-|text-blue-|text-amber-|text-orange-)\\d{3,}/]",
@@ -75,7 +75,7 @@ const eslintConfig = [
                    "  - Interactive states → SEMANTIC_COLORS.interactive.{hover|active|focus|disabled}\n" +
                    "  - Highlighting → SEMANTIC_COLORS.highlight.{primary|mark|muted}\n" +
                    "  EXCLUDES: Icon colors (text-*-500), accent colors in CTA, chart colors\n" +
-                   "  See /docs/ai/DESIGN_SYSTEM.md#semantic-colors",
+                   "  See /docs/ai/design-system.md#semantic-colors",
         },
         {
           selector: "Literal[value=/\\b(space-y-[5-9]|gap-[5-9]|p-[67]|px-[67]|py-[67])\\b/]",
@@ -93,7 +93,7 @@ const eslintConfig = [
                    "  ❌ \`space-y-\${SPACING.tight}\` (SPACING has no 'tight' property)\n" +
                    "  ✅ Use SPACING tokens directly: className={SPACING.section}\n" +
                    "  ✅ Use numbers for gap/padding: className=\"flex gap-4\"\n" +
-                   "  See /docs/ai/ENFORCEMENT_RULES.md#design-token-enforcement",
+                   "  See /docs/ai/enforcement-rules.md#design-token-enforcement",
         },
       ],
     },

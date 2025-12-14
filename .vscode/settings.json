@@ -10,6 +10,11 @@
     "usernamehw.errorlens"
   ],
 
+  // GitHub Copilot Chat - enable custom agents in subagents
+  "chat.customAgentInSubagent.enabled": true,
+  "chat.agentSessionsViewLocation": "sidebar",
+  "github.copilot.chat.mcp.enabled": true,
+
   // GitHub Copilot - optimized for token efficiency
   "github.copilot.enable": {
     "*": true,
