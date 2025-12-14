@@ -18,11 +18,6 @@ const nextConfig: NextConfig = {
     cpus: Math.max(1, require('os').cpus().length - 1),
     // Development optimizations
     optimizeCss: process.env.NODE_ENV === 'development',
-    turbo: {
-      resolveAlias: {
-        '@': './src',
-      },
-    },
   },
   // Development server optimizations
   ...(process.env.NODE_ENV === 'development' && {
