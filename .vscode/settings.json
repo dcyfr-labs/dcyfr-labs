@@ -37,7 +37,7 @@
       ]
     }
   },
-  "codeQL.createQuery.qlPackLocation": "/Users/drew/Desktop/dcyfr/code/dcyfr-labs",
+  "codeQL.createQuery.qlPackLocation": "/Users/drew/Desktop/dcyfr/code/dcyfr-labs",\n\n  // IDE Performance Optimizations\n  "typescript.preferences.includePackageJsonAutoImports": "off",\n  "typescript.suggest.autoImports": true,\n  "typescript.preferences.fastIntelliSense": true,\n  "typescript.disableAutomaticTypeAcquisition": true,\n  "emmet.triggerExpansionOnTab": false,\n  "files.watcherExclude": {\n    "**/.git/objects/**": true,\n    "**/.git/subtree-cache/**": true,\n    "**/node_modules/**": true,\n    "**/.next/**": true,\n    "**/coverage/**": true\n  },\n\n  // Development Experience\n  "editor.formatOnSave": true,\n  "editor.codeActionsOnSave": {\n    "source.fixAll.eslint": "explicit"\n  },\n  "editor.defaultFormatter": "esbenp.prettier-vscode",\n  "[typescript]": {\n    "editor.defaultFormatter": "esbenp.prettier-vscode"\n  },\n  "[typescriptreact]": {\n    "editor.defaultFormatter": "esbenp.prettier-vscode"\n  },
 
   // Tailwind CSS - Known acceptable warnings for v1 production
   // These are false positives from Tailwind CSS IntelliSense extension not yet supporting v4

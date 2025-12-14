@@ -27,7 +27,10 @@
       "@/*": [
         "./src/*"
       ]
-    }
+    },
+    // Development performance optimizations
+    "tsBuildInfoFile": ".next/cache/tsc/tsconfig.tsbuildinfo",
+    "assumeChangesOnlyAffectDirectDependencies": true
   },
   "include": [
     "**/*.ts",
