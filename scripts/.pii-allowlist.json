@@ -6,7 +6,8 @@
   ],
   "emails": [],
   "paths": [
-    "docs/**"
+    "docs/**",
+    "docs/operations/scanner-tests-completed.md"
   ],
   "piiPaths": [],
   "piPaths": [
@@ -22,6 +23,7 @@
     "src/app/globals.css": "CSS design tokens and property names (e.g., 'order', 'border', 'oklch') are benign style tokens and may trigger conservative PI pattern matches.",
     "src/lib/design-tokens.ts": "Design token keys and example strings (e.g., 'border-*') are semantic tokens, not transaction/order identifiers.",
     "docs/": "Documentation includes example emails and placeholders which are expected and safe.",
+    "docs/operations/scanner-tests-completed.md": "Test documentation containing example phone numbers (e.g., 5551234567) for PII scanner validation purposes.",
     "docs/ai/logging-security.md": "AI logging/security documentation references proprietary terminology for classification examples and is expected in this context."
   }
 }
