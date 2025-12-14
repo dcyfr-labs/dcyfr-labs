@@ -317,9 +317,11 @@ export async function fetchGhsaAdvisories(packageName: string) {
       // Read body for diagnostics
       const body = await response.text().catch(() => "<no-body>");
       const remaining = response.headers?.get?.("x-ratelimit-remaining") ?? "unknown";
-      console.error(`[fetchGhsaAdvisories] GHSA API error for ${packageName}: ${response.status} (remaining: ${remaining})`, {
+      
+      // Don't log raw response body to avoid PII scanner issues
+      // Just log the status and rate limit info
+      console.error(`[fetchGhsaAdvisories] GHSA API error for ${packageName}: ${response.status}`, {
         statusCode: response.status,
-        body: body.substring(0, 500), // First 500 chars
         remaining,
       });
 

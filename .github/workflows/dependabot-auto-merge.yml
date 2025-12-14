@@ -106,7 +106,6 @@ jobs:
           echo "✅ Auto-merge enabled for PR #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Add review required label

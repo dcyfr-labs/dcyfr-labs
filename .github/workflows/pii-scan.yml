@@ -128,8 +128,7 @@ jobs:
 
           # Add note if there are more than 20 findings
           if [ $(jq 'length' gitleaks-report.json) -gt 20 ]; then
-            FILE_LIST="$FILE_LIST
-          - ... and $((DETECTION_COUNT - 20)) more findings (see artifact)"
+            FILE_LIST="$FILE_LIST"$'\n'"- ... and $((DETECTION_COUNT - 20)) more findings (see artifact)"
           fi
 
           # Prepare issue body
