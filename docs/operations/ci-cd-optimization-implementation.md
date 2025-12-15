@@ -56,6 +56,18 @@ Successfully completed all Tier 1 (high-ROI) optimizations from the CI/CD analys
 
 ### 3. ✅ Added Shared Dependencies Cache to Test Workflow
 
+**Additional improvement (Dec 14):**
+- **Updated `bundle` job cache**: Cache now includes both `.next/cache` and `.next` to improve build reuse between runs. The cache key was changed to:
+
+```
+${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-build-v1
+```
+
+- **Restore-keys** added to increase hit rate across branches and small changes.
+- **Verification:** Added a script test to validate workflow cache section and keys (`scripts/__tests__/ci-cache.test.mjs`).
+
+**Impact:** Better cache reuse across CI runs should reduce build times and improve cache-hit rates.
+
 **Before:**
 - 4 parallel jobs each running `npm ci` independently
   - `quality` - Lint + typecheck

@@ -76,5 +76,20 @@ export function ensurePostImage(
   image: PostImage | undefined,
   fallbackOptions?: Parameters<typeof getDefaultBlogImage>[0]
 ): PostImage {
-  return image || getDefaultBlogImage(fallbackOptions);
+  if (!image) return getDefaultBlogImage(fallbackOptions);
+
+  // If no caption is provided and the alt is already present, return the
+  // original image object to preserve referential identity (avoids surprising
+  // object replacement in callers). If a caption exists and differs from the
+  // current alt (or alt is missing), return a new object with alt set to the
+  // caption. This ensures caption takes precedence for accessibility.
+  const desiredAlt = image.caption ?? image.alt;
+  if (!image.caption || image.alt === desiredAlt) {
+    return image;
+  }
+
+  return {
+    ...image,
+    alt: desiredAlt,
+  };
 }

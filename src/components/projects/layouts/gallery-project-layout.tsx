@@ -67,6 +67,8 @@ export function GalleryProjectLayout({ project, nonce, basePath = '/work' }: Gal
           url: project.image.url,
           alt: project.image.alt,
           position: project.image.position || 'center',
+          caption: project.image.caption,
+          credit: project.image.credit,
           priority: project.featured || false,
           hideHero: project.image.hideHero,
         } : undefined}

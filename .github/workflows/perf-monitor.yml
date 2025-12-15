@@ -1,0 +1,67 @@
+name: Perf Monitor
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '0 6 * * *' # daily at 06:00 UTC (optional, disabled by default; enable if desired)
+
+jobs:
+  build-and-metrics:
+    name: Build & Collect Metrics
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Restore Next.js build cache
+        id: next-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .next/cache
+            .next
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-build-v1
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+            ${{ runner.os }}-nextjs-
+
+      - name: Record start time
+        id: start
+        run: echo "START=$(date +%s)" >> $GITHUB_ENV
+
+      - name: Build production bundle
+        run: |
+          set -euo pipefail
+          npm ci --prefer-offline
+          npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Record end time and metrics
+        id: metrics
+        run: |
+          END=$(date +%s)
+          START=${{ env.START }}
+          DURATION=$((END - START))
+          NEXT_CACHE_HIT=${{ steps.next-cache.outputs.cache-hit || 'false' }}
+          mkdir -p perf
+          cat <<EOF > perf/metrics.json
+          {
+            "next_cache_hit": "${NEXT_CACHE_HIT}",
+            "build_duration_seconds": ${DURATION}
+          }
+          EOF
+
+      - name: Upload perf metrics
+        uses: actions/upload-artifact@v5
+        with:
+          name: perf-metrics
+          path: perf/metrics.json

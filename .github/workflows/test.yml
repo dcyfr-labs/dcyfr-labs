@@ -141,15 +141,17 @@ jobs:
         with:
           path: |
             .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+            .next
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-build-v1
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
-      
+            ${{ runner.os }}-nextjs-
+
       - name: Build production bundle
         run: npm run build
         env:
           NODE_ENV: production
-      
+
       - name: Check bundle sizes
         run: npm run perf:check
 

@@ -98,7 +98,7 @@ You can also explicitly specify the hero image in frontmatter for more control:
 ```yaml
 image:
   url: "/blog/my-new-post/assets/custom-hero.jpg"
-  alt: "Descriptive alt text for accessibility"
+  alt: "Descriptive alt text for accessibility" # optional - if omitted, caption (when present) will be used as alt
   width: 1200
   height: 630
   caption: "Optional caption displayed below image"

@@ -10,7 +10,19 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const rootDir = path.join(__dirname, '..');
+// Heuristically locate the repository root (the directory containing AGENTS.md or package.json).
+// This ensures the script works whether it's executed from scripts/, scripts/validation/, or
+// a temporary test directory where the file layout may differ.
+let rootDir = path.resolve(__dirname);
+for (let i = 0; i < 6; i++) {
+  if (fs.existsSync(path.join(rootDir, 'AGENTS.md')) || fs.existsSync(path.join(rootDir, 'package.json'))) {
+    break;
+  }
+  const parent = path.dirname(rootDir);
+  if (parent === rootDir) break;
+  rootDir = parent;
+}
+
 // Allow overriding files to ignore via environment variable for CI/preview branches
 const envHasIgnoredVar = Object.prototype.hasOwnProperty.call(process.env, 'IGNORED_INSTRUCTION_FILES');
 let IGNORED_INSTRUCTION_FILES = (process.env.IGNORED_INSTRUCTION_FILES || '').split(',').map((p) => p.trim()).filter(Boolean);

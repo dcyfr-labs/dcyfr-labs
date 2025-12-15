@@ -61,6 +61,9 @@ test('env var overrides config default', () => {
   mkdirSync(destDir, { recursive: true });
   cpSync(join(process.cwd(), '.github/agents/instructions/INSTRUCTIONS_CONFIG.json'), join(destDir, 'INSTRUCTIONS_CONFIG.json'));
 
+  // Ensure the validation script is present in the temp repo (mirrors runValidationWithFiles)
+  cpSync(join(process.cwd(), 'scripts/validate-instructions.mjs'), join(tempRoot, 'scripts/validate-instructions.mjs'));
+
   // run validation with env var overriding to ignore nothing
   const result1 = spawnSync('node', ['scripts/validate-instructions.mjs'], { cwd: tempRoot, env: { ...process.env, IGNORED_INSTRUCTION_FILES: '' } });
   // It should fail (since DCYFR agent is missing and not ignored)

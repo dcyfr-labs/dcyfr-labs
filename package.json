@@ -49,6 +49,7 @@
     "learning:report": "node scripts/learning/generate-report.mjs",
     "scan:pi": "node scripts/ci/check-for-pii.mjs",
     "scan:pi:all": "node scripts/ci/check-for-pii.mjs --all",
+    "scan:reports": "node scripts/validation/check-reports-for-pii.mjs",
     "mcp:check": "node scripts/ci/check-mcp-servers.mjs",
     "lhci:collect": "lhci collect",
     "lhci:assert": "lhci assert",

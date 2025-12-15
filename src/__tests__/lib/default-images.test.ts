@@ -144,6 +144,30 @@ describe('default-images.ts', () => {
       const result = ensurePostImage(customImage, fallbackOptions);
       expect(result).toBe(customImage);
     });
+
+    test('uses caption as alt when caption provided and alt missing', () => {
+      const customImage = {
+        url: '/with-caption.jpg',
+        caption: 'Caption Text'
+      } as any;
+
+      const result = ensurePostImage(customImage);
+      expect(result.alt).toBe('Caption Text');
+      // Should return a new object since alt was injected
+      expect(result).not.toBe(customImage);
+    });
+
+    test('overrides alt with caption when caption differs', () => {
+      const customImage = {
+        url: '/with-caption-and-alt.jpg',
+        alt: 'Old Alt',
+        caption: 'Caption Override'
+      } as any;
+
+      const result = ensurePostImage(customImage);
+      expect(result.alt).toBe('Caption Override');
+      expect(result).not.toBe(customImage);
+    });
   });
 
   describe('file paths and accessibility', () => {

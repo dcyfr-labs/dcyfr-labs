@@ -9,9 +9,12 @@
  * - Automatic TTL/expiration
  * - Graceful fallback to in-memory
  * - Standard rate limit headers
+ * - IP reputation-based rate limiting
+ * - Automatic blocking of malicious IPs
  */
 
 import { createClient } from "redis";
+import { isIPBlocked, isIPSuspicious } from "./blocked-ips";
 
 type RedisClient = ReturnType<typeof createClient>;
 
@@ -98,6 +101,26 @@ export type RateLimitConfig = {
    * Default: false (fail open for availability)
    */
   failClosed?: boolean;
+  /**
+   * If true, check IP reputation and apply different limits
+   * Default: false (standard rate limiting)
+   */
+  checkReputation?: boolean;
+};
+
+export type ReputationBasedRateLimitConfig = {
+  malicious: { limit: number; windowInSeconds: number; block: boolean };
+  suspicious: { limit: number; windowInSeconds: number; block: boolean };
+  unknown: { limit: number; windowInSeconds: number; block: boolean };
+  benign: { limit: number; windowInSeconds: number; block: boolean };
+};
+
+// Default reputation-based rate limits
+const DEFAULT_REPUTATION_LIMITS: ReputationBasedRateLimitConfig = {
+  malicious: { limit: 1, windowInSeconds: 3600, block: true },
+  suspicious: { limit: 10, windowInSeconds: 300, block: false },
+  unknown: { limit: 60, windowInSeconds: 300, block: false },
+  benign: { limit: 1000, windowInSeconds: 300, block: false },
 };
 
 export type RateLimitResult = {
@@ -105,6 +128,15 @@ export type RateLimitResult = {
   limit: number;
   remaining: number;
   reset: number;
+  /**
+   * IP reputation information (only when checkReputation=true)
+   */
+  reputation?: {
+    is_blocked: boolean;
+    is_suspicious: boolean;
+    classification: 'malicious' | 'suspicious' | 'unknown' | 'benign';
+    reason?: string;
+  };
 };
 
 /**
@@ -118,6 +150,11 @@ export async function rateLimit(
   identifier: string,
   config: RateLimitConfig
 ): Promise<RateLimitResult> {
+  // Check IP reputation if enabled and identifier looks like an IP
+  if (config.checkReputation && isValidIP(identifier)) {
+    return await rateLimitWithReputation(identifier, config);
+  }
+  
   const client = await getRateLimitClient();
   
   // Use Redis if available (distributed rate limiting)
@@ -127,6 +164,79 @@ export async function rateLimit(
   
   // Fallback to in-memory rate limiting (local development)
   return rateLimitMemory(identifier, config);
+}
+
+/**
+ * Rate limit with IP reputation checking
+ */
+async function rateLimitWithReputation(
+  ip: string,
+  config: RateLimitConfig
+): Promise<RateLimitResult> {
+  // Check if IP is blocked
+  const isBlocked = await isIPBlocked(ip);
+  if (isBlocked) {
+    return {
+      success: false,
+      limit: 0,
+      remaining: 0,
+      reset: Date.now() + 3600000, // Reset in 1 hour
+      reputation: {
+        is_blocked: true,
+        is_suspicious: false,
+        classification: 'malicious',
+        reason: 'IP is permanently blocked',
+      },
+    };
+  }
+
+  // Check if IP is suspicious  
+  const isSuspicious = await isIPSuspicious(ip);
+  
+  // Determine rate limit configuration based on reputation
+  let reputationConfig: RateLimitConfig;
+  let classification: 'malicious' | 'suspicious' | 'unknown' | 'benign';
+  
+  if (isSuspicious) {
+    classification = 'suspicious';
+    reputationConfig = {
+      limit: DEFAULT_REPUTATION_LIMITS.suspicious.limit,
+      windowInSeconds: DEFAULT_REPUTATION_LIMITS.suspicious.windowInSeconds,
+      failClosed: config.failClosed,
+    };
+  } else {
+    // For unknown/benign IPs, use the original config but with reputation metadata
+    classification = 'unknown';
+    reputationConfig = config;
+  }
+
+  // Apply rate limiting with reputation-adjusted config
+  const client = await getRateLimitClient();
+  let result: RateLimitResult;
+  
+  if (client) {
+    result = await rateLimitRedis(client, ip, reputationConfig);
+  } else {
+    result = await rateLimitMemory(ip, reputationConfig);
+  }
+
+  // Add reputation information to result
+  result.reputation = {
+    is_blocked: false,
+    is_suspicious: isSuspicious,
+    classification,
+  };
+
+  return result;
+}
+
+/**
+ * Check if string is a valid IP address
+ */
+function isValidIP(str: string): boolean {
+  const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+  const ipv6Regex = /^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/;
+  return ipv4Regex.test(str) || ipv6Regex.test(str);
 }
 
 /**
@@ -286,15 +396,102 @@ export function getClientIp(request: Request): string {
 
 /**
  * Create rate limit headers for the response
- * Following standard rate limit header conventions
+ * Following standard rate limit header conventions with IP reputation info
  * 
  * @param result - Rate limit result
  * @returns Headers object
  */
 export function createRateLimitHeaders(result: RateLimitResult): Record<string, string> {
-  return {
+  const headers: Record<string, string> = {
     "X-RateLimit-Limit": result.limit.toString(),
     "X-RateLimit-Remaining": result.remaining.toString(),
     "X-RateLimit-Reset": result.reset.toString(),
   };
+  
+  // Add reputation headers if available
+  if (result.reputation) {
+    headers["X-RateLimit-Reputation"] = result.reputation.classification;
+    if (result.reputation.is_blocked) {
+      headers["X-RateLimit-Blocked"] = "true";
+      headers["X-RateLimit-Block-Reason"] = result.reputation.reason || "security";
+    }
+    if (result.reputation.is_suspicious) {
+      headers["X-RateLimit-Suspicious"] = "true";
+    }
+  }
+  
+  return headers;
+}
+
+/**
+ * Rate limit specifically for IP addresses with reputation checking
+ * This is the main function to use for API routes that need IP protection
+ */
+export async function rateLimitByIP(request: Request, config: {
+  limit: number;
+  windowInSeconds: number;
+  checkReputation?: boolean;
+  failClosed?: boolean;
+}): Promise<RateLimitResult> {
+  const clientIp = getClientIp(request);
+  
+  return await rateLimit(clientIp, {
+    limit: config.limit,
+    windowInSeconds: config.windowInSeconds,
+    checkReputation: config.checkReputation ?? true, // Default to checking reputation
+    failClosed: config.failClosed,
+  });
+}
+
+/**
+ * Simplified rate limiting for endpoints that need IP reputation protection
+ * Uses sensible defaults for most use cases
+ */
+export async function rateLimitWithProtection(
+  request: Request,
+  limits: {
+    standard?: { limit: number; windowInSeconds: number };
+    suspicious?: { limit: number; windowInSeconds: number };
+  } = {}
+): Promise<RateLimitResult> {
+  const clientIp = getClientIp(request);
+  
+  // Default limits
+  const standardLimits = limits.standard ?? { limit: 100, windowInSeconds: 300 };
+  const suspiciousLimits = limits.suspicious ?? { limit: 10, windowInSeconds: 300 };
+  
+  // Check reputation first
+  const [isBlocked, isSuspicious] = await Promise.all([
+    isIPBlocked(clientIp),
+    isIPSuspicious(clientIp),
+  ]);
+  
+  if (isBlocked) {
+    return {
+      success: false,
+      limit: 0,
+      remaining: 0,
+      reset: Date.now() + 3600000,
+      reputation: {
+        is_blocked: true,
+        is_suspicious: false,
+        classification: 'malicious',
+        reason: 'IP is blocked due to malicious activity',
+      },
+    };
+  }
+  
+  // Apply appropriate limits based on reputation
+  const config = isSuspicious ? suspiciousLimits : standardLimits;
+  
+  const result = await rateLimit(clientIp, config);
+  
+  // Add reputation info
+  result.reputation = {
+    is_blocked: false,
+    is_suspicious: isSuspicious,
+    classification: isSuspicious ? 'suspicious' : 'unknown',
+  };
+  
+  return result;
 }

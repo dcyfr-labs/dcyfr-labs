@@ -1,5 +1,12 @@
 import { inngest } from "./client";
 
+// Import IP reputation functions
+export {
+  scheduleIpReputationCheck,
+  checkIpReputation,
+  handleMaliciousIpDetected,
+} from "./ip-reputation-functions";
+
 /**
  * Hello World function - demonstrates basic Inngest function pattern
  * 

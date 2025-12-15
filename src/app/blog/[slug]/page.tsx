@@ -91,7 +91,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     image: heroImageUrl,
     imageWidth: post.image?.width,
     imageHeight: post.image?.height,
-    imageAlt: post.image?.alt,
+    imageAlt: post.image?.caption ?? post.image?.alt,
   });
 }
 
@@ -235,6 +235,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                   url: post.image.url,
                   alt: post.image.alt || `Hero image for ${post.title}`,
                   position: (post.image.position === 'background' ? 'center' : post.image.position) || 'center',
+                  caption: post.image.caption,
+                  credit: post.image.credit,
                   priority: post.featured || false, // Prioritize hero image loading for featured posts
                   hideHero: post.image.hideHero,
                 } : undefined}

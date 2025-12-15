@@ -7,7 +7,7 @@ import type { PostCategory } from "@/lib/post-categories";
 
 export type PostImage = {
   url: string; // local path (e.g., "/blog/images/post-slug/hero.jpg") or external URL
-  alt: string; // required for accessibility
+  alt?: string; // optional alt text (falls back to caption or generated text when not provided)
   width?: number; // optional, for next/image optimization
   height?: number; // optional, maintains aspect ratio
   caption?: string; // optional, displayed below image

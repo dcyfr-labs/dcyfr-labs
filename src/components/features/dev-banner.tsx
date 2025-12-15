@@ -74,7 +74,7 @@ export function DevBanner() {
         <div className="flex items-center gap-3">
           <strong className={cn("text-sm", SEMANTIC_COLORS.alert.info.text)}>Development Mode</strong>
           <span className={cn("text-sm", SEMANTIC_COLORS.alert.info.text)}>
-            This site is running in development. Some features or content may not be present in production.
+            This site is running in development. Some features may be incomplete or not work as expected.
           </span>
         </div>
 
