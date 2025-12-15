@@ -9,11 +9,11 @@
 !.yarn/sdk
 
 # testing
-/coverage
-/test-results/
-/scripts/reports/
-/scripts/__tests__/
-/playwright-report/
+/coverage/*
+/test-results/*
+/scripts/reports/*
+/scripts/__tests__/*
+/playwright-report/*
 /playwright/.cache/
 /lighthouse/
 /.lighthouseci/
@@ -33,11 +33,8 @@ e2e/**-spec.ts-snapshots/**
 # - Scan any report artifacts with `npm run scan:pi` before committing.
 # -----------------------------------------------------------------------------
 !/coverage/
-!/coverage/**
 !/test-results/
-!/test-results/**
 !/playwright-report/
-!/playwright-report/**
 
 # next.js
 /.next/
@@ -74,14 +71,11 @@ yarn-error.log*
 # ========================================
 # AI Agent Configurations
 # ========================================
-.github/agents/
+.github/agents/*
 !.github/agents/*.md
 !.github/agents/learning/
-!.github/agents/learning/**
 !.github/agents/patterns/
-!.github/agents/patterns/**
 !.github/agents/enforcement/
-!.github/agents/enforcement/**
 
 # AI assistant configurations (local overrides)
 .github/copilot-instructions.local.md
