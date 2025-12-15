@@ -64,6 +64,10 @@ export interface ArticleHeaderProps {
     url: string;
     alt: string;
     position?: 'center' | 'top' | 'bottom' | 'left' | 'right';
+    /** Optional caption text to display below the image */
+    caption?: string;
+    /** Optional credit/attribution for the image */
+    credit?: string;
     /** Preload image for performance (use for featured/above-fold images) */
     priority?: boolean;
     /** Hide image in hero section */
@@ -182,25 +186,39 @@ export function ArticleHeader({
 
       {/* Featured Image Card - rendered below text */}
       {backgroundImage && !backgroundImage.hideHero && (
-        <div className="relative w-full aspect-video overflow-hidden bg-muted rounded-lg border mb-8">
-          {/* TODO: Re-enable holo effects after mouse-tracking implementation for dynamic pivoting */}
-          <Image
-            src={backgroundImage.url}
-            alt={backgroundImage.alt}
-            fill
-            priority={backgroundImage.priority || false}
-            quality={90}
-            placeholder="blur"
-            blurDataURL={IMAGE_PLACEHOLDER.blur}
-            className={cn(
-              "object-cover",
-              backgroundImage.position && `object-${backgroundImage.position}`
-            )}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-          />
-          {/* Light/dark mode aware overlay for enhanced text contrast */}
-          <ProjectHeroOverlay intensity="light" />
-        </div>
+        <figure className="not-prose mb-8">
+          <div className="relative w-full aspect-video overflow-hidden bg-muted rounded-lg border">
+            {/* TODO: Re-enable holo effects after mouse-tracking implementation for dynamic pivoting */}
+            <Image
+              src={backgroundImage.url}
+              alt={backgroundImage.alt}
+              fill
+              priority={backgroundImage.priority || false}
+              quality={90}
+              placeholder="blur"
+              blurDataURL={IMAGE_PLACEHOLDER.blur}
+              className={cn(
+                "object-cover",
+                backgroundImage.position && `object-${backgroundImage.position}`
+              )}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+            />
+            {/* Light/dark mode aware overlay for enhanced text contrast */}
+            <ProjectHeroOverlay intensity="light" />
+          </div>
+
+          {/* Caption and Credit - show only when present */}
+          {(backgroundImage.caption || backgroundImage.credit) && (
+            <figcaption className="px-4 sm:px-8 md:px-8 pt-3 text-sm text-muted-foreground">
+              {backgroundImage.caption && (
+                <p className="mb-1">{backgroundImage.caption}</p>
+              )}
+              {backgroundImage.credit && (
+                <p className="text-xs">Photo by {backgroundImage.credit}</p>
+              )}
+            </figcaption>
+          )}
+        </figure>
       )}
     </div>
   );
