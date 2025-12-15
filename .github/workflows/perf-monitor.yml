@@ -3,7 +3,7 @@ name: Perf Monitor
 on:
   workflow_dispatch: {}
   schedule:
-    - cron: '0 6 * * *' # daily at 06:00 UTC (optional, disabled by default; enable if desired)
+    - cron: '0 6 * * *' # daily at 06:00 UTC
 
 jobs:
   build-and-metrics:
@@ -21,6 +21,17 @@ jobs:
         with:
           node-version: '20'
 
+      # Step 1: Restore node_modules for consistency
+      - name: Restore node_modules cache
+        id: node-cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-
+
+      # Step 2: Restore Next.js build cache with cross-branch fallback
       - name: Restore Next.js build cache
         id: next-cache
         uses: actions/cache@v4
@@ -31,37 +42,76 @@ jobs:
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-build-v1
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+            ${{ runner.os }}-nextjs-build-v1-
             ${{ runner.os }}-nextjs-
 
-      - name: Record start time
+      - name: Record start time and metadata
         id: start
-        run: echo "START=$(date +%s)" >> $GITHUB_ENV
+        run: |
+          echo "START=$(date +%s)" >> $GITHUB_ENV
+          echo "TIMESTAMP=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+          echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "BRANCH=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
+
+      - name: Install dependencies (if needed)
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm ci --prefer-offline
 
       - name: Build production bundle
         run: |
           set -euo pipefail
-          npm ci --prefer-offline
           npm run build
         env:
           NODE_ENV: production
 
-      - name: Record end time and metrics
+      - name: Record end time and calculate metrics
         id: metrics
         run: |
           END=$(date +%s)
           START=${{ env.START }}
           DURATION=$((END - START))
           NEXT_CACHE_HIT=${{ steps.next-cache.outputs.cache-hit || 'false' }}
+          NODE_CACHE_HIT=${{ steps.node-cache.outputs.cache-hit || 'false' }}
+          
           mkdir -p perf
+          
+          # Create detailed metrics JSON
           cat <<EOF > perf/metrics.json
           {
-            "next_cache_hit": "${NEXT_CACHE_HIT}",
-            "build_duration_seconds": ${DURATION}
+            "timestamp": "${{ env.TIMESTAMP }}",
+            "commit_sha": "${{ env.COMMIT_SHA }}",
+            "branch": "${{ env.BRANCH }}",
+            "run_id": "${{ github.run_id }}",
+            "run_attempt": "${{ github.run_attempt }}",
+            "caches": {
+              "next_cache_hit": ${NEXT_CACHE_HIT},
+              "node_cache_hit": ${NODE_CACHE_HIT}
+            },
+            "performance": {
+              "build_duration_seconds": ${DURATION},
+              "timestamp_unix": ${END}
+            }
           }
           EOF
+          
+          # Output for GitHub summary
+          echo "**Build Performance Metrics**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build Duration:** ${DURATION}s" >> $GITHUB_STEP_SUMMARY
+          echo "- **Next.js Cache Hit:** ${NEXT_CACHE_HIT}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Node Modules Cache Hit:** ${NODE_CACHE_HIT}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** \`${{ env.COMMIT_SHA }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Timestamp:** ${{ env.TIMESTAMP }}" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload perf metrics
         uses: actions/upload-artifact@v5
         with:
-          name: perf-metrics
+          name: perf-metrics-${{ github.run_id }}
           path: perf/metrics.json
+          retention-days: 30
+
+      - name: Collect metrics to history (optional - comment out if not tracking)
+        continue-on-error: true
+        run: |
+          mkdir -p reports/performance
+          cat perf/metrics.json | node scripts/collect-perf-metrics.mjs
