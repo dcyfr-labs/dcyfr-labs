@@ -1,10 +1,17 @@
 # Code Scanning Alert Dismissal Guide
 
 **Date:** December 11, 2025  
-**Latest Update:** Alert #52 (HTTP to file access) - FALSE POSITIVE  
-**Total Alerts Reviewed:** 10 (2 fixed, 8 to dismiss)
+**Latest Update:** Alerts #54-59 - DISMISSED (False Positives)  
+**Total Alerts Reviewed:** 16 (3 fixed, 13 dismissed as false positives)
 
 ## Fixed Issues ✅
+
+### Alert #2 - DOM-based Cross-site Scripting (XSS)
+
+**File:** `src/components/features/github/github-heatmap.tsx:495`  
+**Status:** Fixed  
+**Resolved:** November 18, 2025  
+**Changes:** Removed unsafe DOM XSS vulnerability - sanitized or replaced with safe React patterns
 
 ### Alert #11 - Indirect Command Injection
 
@@ -214,9 +221,16 @@ gh api -X PATCH /repos/dcyfr/dcyfr-labs/code-scanning/alerts/4 \
 
 | Alert | Rule | Severity | Action | Status |
 |-------|------|----------|--------|--------|
+| #59 | File system race | Warning | Dismissed | ✅ False positive (build-time) |
+| #58 | File system race | Warning | Dismissed | ✅ False positive (build-time) |
+| #57 | File access to HTTP | Warning | Dismissed | ✅ False positive (MCP config) |
+| #56 | File access to HTTP | Warning | Dismissed | ✅ False positive (MCP config) |
+| #55 | File access to HTTP | Warning | Dismissed | ✅ False positive (MCP config) |
+| #54 | HTTP to file | Warning | Dismissed | ✅ False positive (Unsplash) |
 | #52 | HTTP to file | Medium | Dismiss | False positive |
 | #12 | Log injection | Medium | Fixed | ✅ Complete |
 | #11 | Command injection | Medium | Fixed | ✅ Complete |
+| #2 | DOM XSS | Warning | Fixed | ✅ Complete (Nov 18) |
 | #10 | Stored XSS | High | Dismiss | False positive |
 | #9 | Stored XSS | High | Dismiss | False positive |
 | #8 | Stored XSS | High | Dismiss | False positive |
@@ -225,4 +239,4 @@ gh api -X PATCH /repos/dcyfr/dcyfr-labs/code-scanning/alerts/4 \
 | #5 | Insecure randomness | High | Dismiss | Acceptable risk |
 | #4 | URL sanitization | High | Dismiss/Delete | Not exploitable |
 
-**Total:** 2 fixed, 8 to dismiss
+**Total:** 3 fixed, 13 dismissed as false positives
