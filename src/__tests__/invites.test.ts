@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { getInviteCodeById } from "@/data/invites";
+import { getInviteCodeById, inviteCodes } from "@/data/invites";
+import { groupInviteCodesByCategory } from "@/lib/invites";
 
 describe("invites data", () => {
   it("includes Setapp invite", () => {
@@ -10,9 +11,6 @@ describe("invites data", () => {
   });
 
   it("is grouped into productivity-tools", () => {
-    const { groupInviteCodesByCategory } = require("@/lib/invites");
-    const { inviteCodes } = require("@/data/invites");
-
     const grouped = groupInviteCodesByCategory(inviteCodes);
     const productivity = grouped.get("productivity-tools");
 
