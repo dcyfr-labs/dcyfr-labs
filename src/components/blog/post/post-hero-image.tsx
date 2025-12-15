@@ -70,11 +70,11 @@ export function PostHeroImage({ image, title, priority = true }: PostHeroImagePr
       {hasCaption && (
         <figcaption className="px-4 sm:px-8 md:px-8 pt-3 text-sm text-muted-foreground">
           {image.caption && (
-            <p className="mb-1">{image.caption}</p>
+            <p className="mb-1">&quot;{image.caption}&quot;</p>
           )}
           {image.credit && (
-            <p className="text-xs">
-              Photo by {image.credit}
+            <p className="text-xs *:italic">
+              {image.credit}
             </p>
           )}
         </figcaption>

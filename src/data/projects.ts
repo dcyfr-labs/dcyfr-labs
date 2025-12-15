@@ -15,6 +15,8 @@ export type ProjectImage = {
   height?: number; // optional, for aspect ratio
   position?: "center" | "top" | "bottom" | "left" | "right"; // background position
   hideHero?: boolean; // hide image in hero section on detail pages
+  caption?: string; // optional caption for featured images
+  credit?: string; // optional credit/attribution
 };
 
 export type ProjectCategory = "community" | "nonprofit" | "code" | "photography" | "startup";
