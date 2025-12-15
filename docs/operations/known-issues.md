@@ -4,7 +4,7 @@ This document tracks known issues, false positives, and acceptable warnings in t
 
 ## Status: Production Ready (v1.0)
 
-**Overall Health:** 99.5% (1339/1346 tests passing)
+**Overall Health:** 96.6% (1659/1717 tests passing)
 - 5 unit tests: Intentionally skipped for component refactors
 - 2 E2E tests: Skipped for CI timing optimization (WebKit mobile nav)
 

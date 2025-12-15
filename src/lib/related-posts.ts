@@ -3,6 +3,7 @@
  */
 
 import type { Post } from "@/data/posts";
+import { isPostVisible } from "@/lib/blog";
 
 export type RelatedPost = {
   post: Post;
@@ -30,8 +31,8 @@ export function getRelatedPosts(
       // Exclude current post
       if (post.slug === currentPost.slug) return false;
       
-      // Exclude draft posts in production
-      if (process.env.NODE_ENV === "production" && post.draft) return false;
+      // Exclude draft and scheduled (future-dated) posts in production
+      if (!isPostVisible(post)) return false;
       
       // Only include posts with at least one shared tag
       return post.tags.some((tag) => currentTags.has(tag));

@@ -12,11 +12,11 @@ This directory contains comprehensive architectural plans and documentation for 
 2. **[Examples](./examples)** - Copy-paste examples for common patterns
 3. **[Best Practices](./best-practices)** - Guidelines and recommendations
 
-**Want to understand the refactoring?** Read these:
+**Want to understand the current architecture?** Read these:
 
-1. **[Refactoring Complete](./refactoring-complete)** - Full overview of Phases 1-3
-2. **[Phase 1 Complete](./phase-1-complete)** - Foundation infrastructure
-3. **[Phase 2 Complete](./phase-2-complete)** - Blog pages refactoring
+1. **[Blog Refactor Plan](./blog-refactor-plan)** - Complete blog system architecture
+2. **[Core Pages Refactor Plan](./core-pages-refactor-plan)** - Foundation patterns
+3. **[Dashboard Refactor Plan](./dashboard-refactor-plan)** - Dashboard organization
 
 ---
 
@@ -24,8 +24,8 @@ This directory contains comprehensive architectural plans and documentation for 
 
 ### ✅ Completed Refactoring
 
-#### [Blog & Archive Pages Refactor](./refactoring-complete)
-**Status:** ✅ Complete (Phases 1-3)  
+#### [Blog & Archive Pages Refactor](./blog-refactor-plan)
+**Status:** ✅ Complete  
 **Completed:** November 10, 2025  
 **Goal:** Simplify and standardize `/blog`, `/projects`, and future archive pages
 

@@ -6,12 +6,18 @@ import crypto from "crypto";
 import type { Post } from "@/data/posts";
 
 const CONTENT_DIR = path.join(process.cwd(), "src/content/blog");
+// Private drafts folder - git-ignored, only visible in development
+const PRIVATE_CONTENT_DIR = path.join(process.cwd(), "src/content/blog/private");
 const WORDS_PER_MINUTE = 225;
 
 /**
  * Supported blog post structures:
  * 1. Flat file: src/content/blog/my-post.mdx
  * 2. Folder with index: src/content/blog/my-post/index.mdx (allows co-located assets)
+ * 
+ * Private drafts (git-ignored, dev-only):
+ * 3. Private flat file: src/content/blog/private/my-draft.mdx
+ * 4. Private folder: src/content/blog/private/my-draft/index.mdx
  * 
  * Folder structure enables co-locating images, videos, and other assets:
  * src/content/blog/my-post/
@@ -56,6 +62,30 @@ export function generatePostId(publishedAt: string | undefined, slug: string): s
 }
 
 /**
+ * Check if a post is scheduled for future publication
+ * @param publishedAt ISO date string
+ * @returns true if the publishedAt date is in the future
+ * @internal Exported for testing purposes only
+ */
+export function isScheduledPost(publishedAt: string): boolean {
+  return new Date(publishedAt) > new Date();
+}
+
+/**
+ * Check if a post should be visible based on draft status and scheduled date
+ * @param post The post to check
+ * @param isProduction Whether we're in production environment
+ * @returns true if the post should be visible
+ * @internal Exported for testing purposes only
+ */
+export function isPostVisible(post: Pick<Post, 'draft' | 'publishedAt'>, isProduction: boolean = process.env.NODE_ENV === "production"): boolean {
+  if (!isProduction) return true;
+  if (post.draft) return false;
+  if (isScheduledPost(post.publishedAt)) return false;
+  return true;
+}
+
+/**
  * Calculate reading time for blog post content
  * @internal Exported for testing purposes only
  */
@@ -76,10 +106,14 @@ export function calculateReadingTime(body: string): Post["readingTime"] {
 /**
  * Check if a post has a co-located hero image
  * Looks for hero.svg, hero.jpg, hero.jpeg, hero.png, hero.webp in the post's directory
+ * @param slug - The post slug
+ * @param title - The post title (for alt text)
+ * @param isPrivate - Whether the post is in the private folder
  * @returns Image object if found, undefined otherwise
  */
-function getColocatedHeroImage(slug: string, title: string): Post["image"] | undefined {
-  const postDir = path.join(CONTENT_DIR, slug);
+function getColocatedHeroImage(slug: string, title: string, isPrivate: boolean = false): Post["image"] | undefined {
+  const baseDir = isPrivate ? PRIVATE_CONTENT_DIR : CONTENT_DIR;
+  const postDir = path.join(baseDir, slug);
   
   // Only check if the post uses folder structure (not flat file)
   if (!fs.existsSync(postDir) || !fs.statSync(postDir).isDirectory()) {
@@ -102,25 +136,37 @@ function getColocatedHeroImage(slug: string, title: string): Post["image"] | und
   return undefined;
 }
 
-export function getAllPosts(): Post[] {
-  if (!fs.existsSync(CONTENT_DIR)) {
+/**
+ * Scan a content directory for blog posts
+ * @param contentDir - The directory to scan
+ * @param isPrivate - Whether this is the private (git-ignored) folder
+ * @returns Array of posts found in the directory
+ */
+function scanContentDirectory(contentDir: string, isPrivate: boolean = false): Post[] {
+  if (!fs.existsSync(contentDir)) {
     return [];
   }
 
-  const entries = fs.readdirSync(CONTENT_DIR, { withFileTypes: true });
+  const entries = fs.readdirSync(contentDir, { withFileTypes: true });
   const posts: Post[] = [];
 
   for (const entry of entries) {
+    // Skip the 'private' subdirectory when scanning main content dir
+    // (it's scanned separately)
+    if (entry.name === 'private' && !isPrivate) {
+      continue;
+    }
+
     let slug: string;
     let filePath: string;
 
     if (entry.isFile() && entry.name.endsWith(".mdx")) {
       // Flat file: my-post.mdx
       slug = entry.name.replace(/\.mdx$/, "");
-      filePath = path.join(CONTENT_DIR, entry.name);
+      filePath = path.join(contentDir, entry.name);
     } else if (entry.isDirectory()) {
       // Folder with index: my-post/index.mdx
-      const indexPath = path.join(CONTENT_DIR, entry.name, "index.mdx");
+      const indexPath = path.join(contentDir, entry.name, "index.mdx");
       if (fs.existsSync(indexPath)) {
         slug = entry.name;
         filePath = indexPath;
@@ -144,7 +190,10 @@ export function getAllPosts(): Post[] {
     const id = (data.id as string | undefined) || generatePostId(publishedAt, slug);
 
     // Check for co-located hero image if not specified in frontmatter
-    const image = data.image as Post["image"] | undefined || getColocatedHeroImage(slug, data.title as string);
+    const image = data.image as Post["image"] | undefined || getColocatedHeroImage(slug, data.title as string, isPrivate);
+
+    // Posts in private folder are implicitly drafts (hidden in production)
+    const isDraft = isPrivate || (data.draft as boolean | undefined);
 
     posts.push({
       id,
@@ -158,7 +207,7 @@ export function getAllPosts(): Post[] {
       tags: (data.tags as string[]) || [],
       featured: data.featured as boolean | undefined,
       archived: data.archived as boolean | undefined,
-      draft: data.draft as boolean | undefined,
+      draft: isDraft,
       body: content,
       previousSlugs: (data.previousSlugs as string[]) || undefined,
       previousIds: (data.previousIds as string[]) || undefined,
@@ -170,13 +219,22 @@ export function getAllPosts(): Post[] {
     } satisfies Post);
   }
 
-  // Filter out draft posts in production
-  const filteredPosts = posts.filter((post) => {
-    if (process.env.NODE_ENV === "production" && post.draft) {
-      return false;
-    }
-    return true;
-  });
+  return posts;
+}
+
+export function getAllPosts(): Post[] {
+  // Scan main content directory
+  const publicPosts = scanContentDirectory(CONTENT_DIR, false);
+  
+  // Scan private drafts directory (only in development)
+  const privatePosts = process.env.NODE_ENV !== "production" 
+    ? scanContentDirectory(PRIVATE_CONTENT_DIR, true)
+    : [];
+
+  const allPosts = [...publicPosts, ...privatePosts];
+
+  // Filter out draft and scheduled (future-dated) posts in production
+  const filteredPosts = allPosts.filter((post) => isPostVisible(post));
 
   // Sort by publishedAt date, newest first
   return filteredPosts.sort(
@@ -185,12 +243,23 @@ export function getAllPosts(): Post[] {
 }
 
 export function getPostBySlug(slug: string): Post | undefined {
-  // Try flat file first: my-post.mdx
+  // Try public content first
   let filePath = path.join(CONTENT_DIR, `${slug}.mdx`);
+  let isPrivate = false;
   
-  // Then try folder with index: my-post/index.mdx
+  // Then try folder with index in public: my-post/index.mdx
   if (!fs.existsSync(filePath)) {
     filePath = path.join(CONTENT_DIR, slug, "index.mdx");
+  }
+
+  // Then try private drafts folder (only in development)
+  if (!fs.existsSync(filePath) && process.env.NODE_ENV !== "production") {
+    filePath = path.join(PRIVATE_CONTENT_DIR, `${slug}.mdx`);
+    isPrivate = true;
+    
+    if (!fs.existsSync(filePath)) {
+      filePath = path.join(PRIVATE_CONTENT_DIR, slug, "index.mdx");
+    }
   }
 
   if (!fs.existsSync(filePath)) {
@@ -208,7 +277,10 @@ export function getPostBySlug(slug: string): Post | undefined {
   const id = (data.id as string | undefined) || generatePostId(publishedAt, slug);
 
   // Check for co-located hero image if not specified in frontmatter
-  const image = data.image as Post["image"] | undefined || getColocatedHeroImage(slug, data.title as string);
+  const image = data.image as Post["image"] | undefined || getColocatedHeroImage(slug, data.title as string, isPrivate);
+
+  // Posts in private folder are implicitly drafts (hidden in production)
+  const isDraft = isPrivate || (data.draft as boolean | undefined);
 
   const post: Post = {
     id,
@@ -222,7 +294,7 @@ export function getPostBySlug(slug: string): Post | undefined {
     tags: (data.tags as string[]) || [],
     featured: data.featured as boolean | undefined,
     archived: data.archived as boolean | undefined,
-    draft: data.draft as boolean | undefined,
+    draft: isDraft,
     body: content,
     previousSlugs: (data.previousSlugs as string[]) || undefined,
     previousIds: (data.previousIds as string[]) || undefined,
@@ -233,8 +305,8 @@ export function getPostBySlug(slug: string): Post | undefined {
     readingTime: calculateReadingTime(content),
   };
 
-  // Don't return draft posts in production
-  if (process.env.NODE_ENV === "production" && post.draft) {
+  // Don't return draft or scheduled (future-dated) posts in production
+  if (!isPostVisible(post)) {
     return undefined;
   }
 

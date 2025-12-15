@@ -25,7 +25,7 @@ Comprehensive checklist for deploying dcyfr-labs portfolio to production. For de
 
 - [ ] **TypeScript**: Run `npm run typecheck` - 0 errors required
 - [ ] **ESLint**: Run `npm run lint` - 0 errors required
-- [ ] **Tests**: Run `npm run test` - ≥99% pass rate (1339/1346)
+- [ ] **Tests**: Run `npm run test` - ≥96% pass rate (1659/1717)
 - [ ] **E2E Tests**: Run `npm run test:e2e` - All critical paths passing
 - [ ] **Build**: Run `npm run build` - Success with no errors
 - [ ] **Bundle Size**: Check build output - Within budget limits

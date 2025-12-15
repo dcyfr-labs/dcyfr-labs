@@ -5,6 +5,8 @@ import {
   getPostByAnySlug,
   calculateReadingTime,
   generatePostId,
+  isScheduledPost,
+  isPostVisible,
 } from '@/lib/blog'
 import type { Post } from '@/data/posts'
 
@@ -431,6 +433,91 @@ describe('blog utilities', () => {
       const result = getPostByAnySlug('old-slug-50', posts)
       expect(result?.post.slug).toBe('current-slug')
       expect(result?.needsRedirect).toBe(true)
+    })
+  })
+
+  describe('isScheduledPost', () => {
+    it('should return true for future dates', () => {
+      const futureDate = new Date()
+      futureDate.setFullYear(futureDate.getFullYear() + 1)
+      expect(isScheduledPost(futureDate.toISOString())).toBe(true)
+    })
+
+    it('should return false for past dates', () => {
+      const pastDate = new Date()
+      pastDate.setFullYear(pastDate.getFullYear() - 1)
+      expect(isScheduledPost(pastDate.toISOString())).toBe(false)
+    })
+
+    it('should return false for current date', () => {
+      // Use a date slightly in the past to avoid race conditions
+      const now = new Date()
+      now.setSeconds(now.getSeconds() - 10)
+      expect(isScheduledPost(now.toISOString())).toBe(false)
+    })
+
+    it('should handle ISO date strings with timezone', () => {
+      const futureDate = '2099-12-31T23:59:59Z'
+      expect(isScheduledPost(futureDate)).toBe(true)
+    })
+
+    it('should handle simple date strings', () => {
+      expect(isScheduledPost('2099-01-01')).toBe(true)
+      expect(isScheduledPost('2000-01-01')).toBe(false)
+    })
+  })
+
+  describe('isPostVisible', () => {
+    const pastDate = '2020-01-01T12:00:00Z'
+    const futureDate = '2099-01-01T12:00:00Z'
+
+    describe('in development (isProduction = false)', () => {
+      it('should show regular posts', () => {
+        const post = { draft: false, publishedAt: pastDate }
+        expect(isPostVisible(post, false)).toBe(true)
+      })
+
+      it('should show draft posts', () => {
+        const post = { draft: true, publishedAt: pastDate }
+        expect(isPostVisible(post, false)).toBe(true)
+      })
+
+      it('should show scheduled posts', () => {
+        const post = { draft: false, publishedAt: futureDate }
+        expect(isPostVisible(post, false)).toBe(true)
+      })
+
+      it('should show draft scheduled posts', () => {
+        const post = { draft: true, publishedAt: futureDate }
+        expect(isPostVisible(post, false)).toBe(true)
+      })
+    })
+
+    describe('in production (isProduction = true)', () => {
+      it('should show regular published posts', () => {
+        const post = { draft: false, publishedAt: pastDate }
+        expect(isPostVisible(post, true)).toBe(true)
+      })
+
+      it('should hide draft posts', () => {
+        const post = { draft: true, publishedAt: pastDate }
+        expect(isPostVisible(post, true)).toBe(false)
+      })
+
+      it('should hide scheduled posts', () => {
+        const post = { draft: false, publishedAt: futureDate }
+        expect(isPostVisible(post, true)).toBe(false)
+      })
+
+      it('should hide draft scheduled posts', () => {
+        const post = { draft: true, publishedAt: futureDate }
+        expect(isPostVisible(post, true)).toBe(false)
+      })
+
+      it('should show posts with undefined draft', () => {
+        const post = { draft: undefined, publishedAt: pastDate }
+        expect(isPostVisible(post, true)).toBe(true)
+      })
     })
   })
 })

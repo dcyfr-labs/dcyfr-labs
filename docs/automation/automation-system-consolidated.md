@@ -74,7 +74,7 @@ Dependabot opens PR → Check if safe → Run tests → Auto-merge ✅
 **Purpose:** Keep AI documentation current with project reality
 
 **What Gets Updated:**
-- Test pass rates (1339/1346 current status)
+- Test pass rates (tracked dynamically from CI)
 - Performance metrics (Lighthouse scores, bundle sizes)
 - Documentation cross-references and links
 - AI agent instruction accuracy
