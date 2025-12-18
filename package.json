@@ -109,7 +109,7 @@
     "gray-matter": "^4.0.3",
     "inngest": "^3.47.0",
     "katex": "^0.16.27",
-    "lucide-react": "^0.560.0",
+    "lucide-react": "^0.561.0",
     "next": "^16.0.10",
     "next-axiom": "^1.9.3",
     "next-mdx-remote": "^5.0.0",
