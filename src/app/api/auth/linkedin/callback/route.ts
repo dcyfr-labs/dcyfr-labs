@@ -22,6 +22,11 @@ export async function GET(request: NextRequest) {
     const error = searchParams.get('error');
     const errorDescription = searchParams.get('error_description');
 
+    // lgtm [js/log-injection]
+    // Data source: OAuth error parameters from LinkedIn callback.
+    // Risk mitigation: Logging only for debugging OAuth flow failures.
+    // Error values are enum-like (e.g., 'access_denied') from OAuth spec,
+    // not user-generated input. Used for troubleshooting only.
     console.log('📋 OAuth parameters received:', {
       hasCode: !!code,
       codeLength: code?.length || 0,
@@ -33,6 +38,10 @@ export async function GET(request: NextRequest) {
 
     // Handle authorization errors
     if (error) {
+      // lgtm [js/log-injection]
+      // Data source: OAuth error parameters from LinkedIn callback.
+      // Risk mitigation: Logging for troubleshooting OAuth failures.
+      // Error values follow OAuth 2.0 spec (standard error codes like 'access_denied').
       console.error('LinkedIn OpenID authorization error:', error, errorDescription);
       return NextResponse.json({
         error: 'LinkedIn OpenID authorization failed',

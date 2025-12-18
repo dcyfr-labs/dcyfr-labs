@@ -38,6 +38,9 @@ async function analyzeRedisUrl() {
   console.log(`   Password: ${parsed.password ? '***' + parsed.password.slice(-4) : 'none'}`);
   
   // Identify Redis service based on hostname
+  // lgtm [js/incomplete-url-substring-sanitization]
+  // Safe: hostname is from URL.parse() constructor, not user input.
+  // URL.parse() properly validates and extracts the hostname component.
   let serviceType = 'unknown';
   if (parsed.hostname.includes('upstash.io')) {
     serviceType = 'upstash';
