@@ -17,6 +17,10 @@ export async function GET(request: NextRequest) {
 
     // Handle authorization errors
     if (error) {
+      // lgtm [js/log-injection]
+      // Data source: OAuth error parameters from LinkedIn posting callback.
+      // Risk mitigation: Logging for troubleshooting OAuth failures in posting flow.
+      // Error values follow OAuth 2.0 spec (standard error codes like 'access_denied').
       console.error('LinkedIn posting authorization error:', error, errorDescription);
       return NextResponse.json({
         error: 'LinkedIn posting authorization failed',
