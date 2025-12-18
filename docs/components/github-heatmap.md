@@ -283,7 +283,7 @@ Provides visual feedback that content is loading without layout shift or page ju
 <Card>
   {/* Header */}
   <h3>GitHub Activity</h3>
-  <a href="github.com/username">@username <ExternalLink /></a>
+  HTML anchor@username <ExternalLink /></a>
 
   {/* Warning banner (if present) */}
   {warning && <WarningCard>{warning}</WarningCard>}
@@ -350,7 +350,7 @@ In production, only user-friendly message shown.
 ### ARIA & Semantics
 
 ```tsx
-<a href="..." target="_blank" rel="noopener noreferrer">
+HTML anchor
   @username
   <ExternalLink className="w-3 h-3" />
 </a>

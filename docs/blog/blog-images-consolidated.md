@@ -1,4 +1,4 @@
-<!-- TLP:CLEAR -->
+{/* TLP:CLEAR */}
 # Blog Images - Complete Guide
 
 **Status:** ✅ Production Ready  
@@ -450,7 +450,7 @@ curl -s "https://yourdomain.com/blog/post-slug" | grep -i "og:image"
 **Technical Implementation:**
 - [`components/mdx.md`](../components/mdx) - MDX image rendering
 - [`optimization/alt-text-guide.md`](../optimization/alt-text-guide) - Accessibility guide
-- [`design/mobile/mobile-first-optimization.md`](../design/mobile/mobile-first-optimization) - Mobile image optimization
+- `design/mobile/mobile-first-optimization.md` - Mobile image optimization
 
 **Social Media & SEO:**
 - [`optimization/json-ld-implementation.md`](../optimization/json-ld-implementation) - Structured data for images
@@ -462,4 +462,4 @@ curl -s "https://yourdomain.com/blog/post-slug" | grep -i "og:image"
 **Version:** 1.0.0 (Consolidated)  
 **Contributors:** DCYFR Team
 
-For issues or enhancements, see [`operations/todo.md`](../operations/todo).
+For issues or enhancements, see `operations/todo.md`.

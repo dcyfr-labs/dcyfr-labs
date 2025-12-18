@@ -333,7 +333,7 @@ This implementation is different from the initial attempt:
 ## Related Documentation
 
 - [Rate Limiting Strategy](./rate-limiting)
-- [API Routes](../api/readme)
+- API Routes
 - [Vercel BotID Docs](https://vercel.com/docs/botid/get-started)
 
 ## Version History

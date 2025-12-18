@@ -15,7 +15,7 @@
 - OWASP Top 10 (2024) compliance verification
 - OWASP API Security Top 10 (2023) compliance verification
 - **Result:** 0 critical, 0 high, 2 medium vulnerabilities found
-- **Files:** [API_SECURITY_AUDIT_2025-12-11.md](./api-security-audit-2025-12-11)
+- **Files:** API_SECURITY_AUDIT_2025-12-11.md
 
 **2. ✅ Red Team Engagement Plan Created**
 - 8-phase comprehensive testing plan
@@ -294,7 +294,7 @@ Full red team engagement (8 phases) - **NOT STARTED**
 
 ## 📚 **RELATED DOCUMENTATION**
 
-- [API Security Audit Report](./api-security-audit-2025-12-11)
+- API Security Audit Report
 - [Security Fixes Implementation](./security-fixes-2025-12-11)
 - [Red Team Engagement Plan](./red-team-engagement-plan)
 - [Sentry Integration Guide](./sentry-integration-complete)

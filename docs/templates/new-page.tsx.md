@@ -159,12 +159,12 @@ Before committing your new page:
 
 ## Related Templates
 
-- [ARCHIVE_PAGE.tsx](./ARCHIVE_PAGE.tsx) - Filterable list pages
-- [METADATA_ONLY.ts](./METADATA_ONLY.ts) - Just metadata (no component)
-- [ERROR_BOUNDARY.tsx](./ERROR_BOUNDARY.tsx) - Error handling wrapper
+- ARCHIVE_PAGE.tsx - Filterable list pages
+- METADATA_ONLY.ts - Just metadata (no component)
+- ERROR_BOUNDARY.tsx - Error handling wrapper
 
 ## Related Docs
 
-- [Component Patterns](../ai/component-patterns#layout-hierarchy)
-- [Design Tokens](../ai/enforcement-rules#design-token-enforcement)
-- [Decision Trees](../ai/decision-trees#which-layout-should-i-use)
+- Component Patterns
+- Design Tokens
+- Decision Trees

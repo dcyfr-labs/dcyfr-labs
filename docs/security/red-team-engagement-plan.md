@@ -723,7 +723,7 @@ curl -I https://dcyfr.ai | grep -i "set-cookie"
 
 **Test Case: Cross-Site Request Forgery**
 ```html
-<!-- csrf-test.html -->
+{/* csrf-test.html */}
 <!DOCTYPE html>
 <html>
 <body>
@@ -1072,7 +1072,7 @@ go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
 
 ## Appendix B: API Endpoint Reference
 
-See [API Security Audit Report](/docs/security/api-security-audit-2025-12-11) Section 1 for complete endpoint inventory.
+See API Security Audit Report Section 1 for complete endpoint inventory.
 
 ---
 

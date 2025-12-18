@@ -116,8 +116,8 @@ Quick references for design patterns and styling:
 | Topic | Purpose | Doc |
 |-------|---------|-----|
 | **Typography** | Font and text styling | [design/typography.md](./design/typography) |
-| **Print Stylesheet** | Print-specific styles | [design/print-stylesheet.md](./design/print-stylesheet) |
-| **Color Contrast** | Accessibility improvements | [design/color-contrast-improvements.md](./design/color-contrast-improvements) |
+| **Print Stylesheet** | Print-specific styles | design/print-stylesheet.md |
+| **Color Contrast** | Accessibility improvements | design/color-contrast-improvements.md |
 
 **All design docs:** [`/docs/design/`](./design/)
 
@@ -127,8 +127,8 @@ Guides for project organization and operations:
 
 | Topic | Purpose | Doc |
 |-------|---------|-----|
-| **Current Work** | Active tasks and priorities | [operations/todo.md](./operations/todo) |
-| **Completed Work** | Historical record of finished items | [operations/done.md](./operations/done) |
+| **Current Work** | Active tasks and priorities | operations/todo.md |
+| **Completed Work** | Historical record of finished items | operations/done.md |
 
 **All operations docs:** [`/docs/operations/`](./operations/)
 
@@ -159,7 +159,7 @@ Guides for project organization and operations:
 **Deploy to production**
 1. Check [Environment Variables](./platform/environment-variables) for production config
 2. Check [Site Configuration](./platform/site-config) for domain setup
-3. Check [Deployment Guide](./deployment-guide) for pre-flight checklist
+3. Check Deployment Guide for pre-flight checklist
 
 **Fix an error**
 1. Check [Error Boundaries](./components/error-boundaries)
@@ -168,14 +168,14 @@ Guides for project organization and operations:
 4. Check security docs if security-related
 
 **Improve performance**
-1. Read [Bundle Analysis](./performance/bundle-analysis)
+1. Read Bundle Analysis
 2. Check specific component docs
 3. Review [GitHub Integration](./features/github-integration) (has caching)
 
 **Style something**
 1. Check [Typography](./design/typography)
-2. Check [Color Contrast](./design/color-contrast-improvements)
-3. Check [Print Stylesheet](./design/print-stylesheet) for print styles
+2. Check Color Contrast
+3. Check Print Stylesheet for print styles
 
 **Debug API issues**
 1. Check [API Overview](./api/routes/overview)
@@ -283,7 +283,7 @@ Guides for project organization and operations:
 - **Quick lookup?** Use this page (QUICK_START.md)
 - **Details on a component?** Check its doc in [`/docs/components/`](./components/)
 - **Writing a post?** Go to [Content Creation](./blog/content-creation)
-- **Deploying?** Check [Deployment Guide](./deployment-guide)
+- **Deploying?** Check Deployment Guide
 
 ---
 

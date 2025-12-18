@@ -1,5 +1,5 @@
 # DCYFR Pronunciation Guide
-<!-- TLP:CLEAR -->
+{/* TLP:CLEAR */}
 
 **Quick Reference • Implementation • Checklist**
 
@@ -127,7 +127,7 @@ export function getAcronymPronunciation(acronym: keyof typeof acronymPronunciati
 <p>
   DCYFR focuses on practical solutions. The DCYFR team believes...
 </p>
-<!-- No additional markup needed for subsequent mentions -->
+{/* No additional markup needed for subsequent mentions */}
 ```
 
 #### Button/Link Text

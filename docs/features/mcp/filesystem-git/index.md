@@ -38,7 +38,7 @@ This integration adds **Filesystem** and **Git** MCPs to enhance your developmen
 - **Time**: 30 minutes
 
 ### Full Status Report
-**Read:** [Complete Summary](../../archive/mcp-filesystem-git-complete-summary)
+**Read:** Complete Summary
 - Implementation details
 - Verification results
 - Configuration status
@@ -390,8 +390,8 @@ A: Comprehensive security considerations are documented.
 1. [Quick Reference](./quick-reference) — 5 minutes
 2. [Ready Checklist](./ready) — 10 minutes
 3. [Integration Guide](./integration) — 30 minutes
-4. [Complete Summary](../../archive/mcp-filesystem-git-complete-summary) — 15 minutes
-5. [Implementation Changelog](../../operations/implementation-changelog) — 10 minutes
+4. Complete Summary — 15 minutes
+5. Implementation Changelog — 10 minutes
 6. [Index](./index) — 5 minutes
 
 Choose what you need. You're all set! 🚀

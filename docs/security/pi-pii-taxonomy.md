@@ -455,10 +455,10 @@ npm run lint:pii-audit
 
 ## 📖 Related Documentation
 
-- [`.pii-allowlist.json`](.pii-allowlist.json) - Configuration file
-- [`scripts/check-for-pii.mjs`](../../scripts/check-for-pii.mjs) - Scanner implementation
-- [`tests/scripts/check-for-pii.test.ts`](../../tests/scripts/check-for-pii.test.ts) - Test suite
-- [DCYFR Security Guide](./security) - Security best practices
+- `.pii-allowlist.json` - Configuration file
+- `scripts/check-for-pii.mjs` - Scanner implementation
+- `tests/scripts/check-for-pii.test.ts` - Test suite
+- DCYFR Security Guide - Security best practices
 
 ---
 

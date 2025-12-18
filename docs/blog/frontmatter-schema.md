@@ -833,9 +833,9 @@ public/blog/images/
 ```
 
 **See Also:**
-- [Featured Images Guide](/docs/blog/featured-images) - Hero image implementation
-- [OG Image Integration](/docs/blog/og-image-integration) - Social sharing setup
-- [Default Images](/docs/blog/default-images-quick-ref) - Fallback image system
+- Featured Images Guide - Hero image implementation
+- OG Image Integration - Social sharing setup
+- Default Images - Fallback image system
 
 ---
 

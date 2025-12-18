@@ -32,30 +32,30 @@ Mermaid supports many diagram types:
 
 To create a Mermaid diagram, use a code fence with the `mermaid` language identifier:
 
-````markdown
+```markdown
 ```mermaid
 graph TD
     A[Start] --> B{Decision}
     B -->|Yes| C[Action 1]
     B -->|No| D[Action 2]
 ```
-````
+```
 
 ### Flowchart Examples
 
 #### Simple Flowchart
 
-````markdown
+```markdown
 ```mermaid
 graph LR
     A[Client] --> B[Server]
     B --> C[Database]
 ```
-````
+```
 
 #### Styled Flowchart with Colors
 
-````markdown
+```markdown
 ```mermaid
 graph TD
     A[Start] --> B[Process]
@@ -67,13 +67,13 @@ graph TD
     style D fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
     style E fill:#ffcdd2,stroke:#d32f2f,stroke-width:2px
 ```
-````
+```
 
 ### Sequence Diagram Example
 
 Perfect for API documentation:
 
-````markdown
+```markdown
 ```mermaid
 sequenceDiagram
     participant Client
@@ -85,13 +85,13 @@ sequenceDiagram
     Database-->>Server: user_id
     Server-->>Client: 201 Created
 ```
-````
+```
 
 ### Class Diagram Example
 
 Great for architecture documentation:
 
-````markdown
+```markdown
 ```mermaid
 classDiagram
     class User {
@@ -109,13 +109,13 @@ classDiagram
     
     User "1" --> "*" Post : writes
 ```
-````
+```
 
 ### State Diagram Example
 
 Useful for feature workflows:
 
-````markdown
+```markdown
 ```mermaid
 stateDiagram-v2
     [*] --> Draft
@@ -125,13 +125,13 @@ stateDiagram-v2
     Published --> Archived
     Archived --> [*]
 ```
-````
+```
 
 ### Entity Relationship Diagram
 
 For database schema documentation:
 
-````markdown
+```markdown
 ```mermaid
 erDiagram
     USER ||--o{ POST : writes
@@ -158,13 +158,13 @@ erDiagram
         text content
     }
 ```
-````
+```
 
 ### Gantt Chart Example
 
 For project timelines:
 
-````markdown
+```markdown
 ```mermaid
 gantt
     title Project Timeline
@@ -176,7 +176,7 @@ gantt
     Testing           :a3, after a2, 30d
     Deployment        :a4, after a3, 15d
 ```
-````
+```
 
 ---
 
@@ -389,7 +389,7 @@ $$
 
 Here's a complete example showing both Mermaid and LaTeX:
 
-````markdown
+```markdown
 ---
 title: "My Technical Post"
 publishedAt: "2024-01-01"
@@ -423,7 +423,7 @@ For our use case, where $n$ is the number of requests:
 $$
 \text{Throughput} = \frac{n}{T_{total}}
 $$
-````
+```
 
 ---
 

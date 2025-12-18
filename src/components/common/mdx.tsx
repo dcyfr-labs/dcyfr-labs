@@ -109,22 +109,22 @@ function extractTextFromChildren(children: React.ReactNode): string {
 // Map a few elements to tailwind-styled components
 const components: NonNullable<MDXRemoteProps["components"]> = {
   h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h1 {...props} className={`${TYPOGRAPHY.h1.mdx} mt-8 first:mt-0 scroll-mt-20`} />
+    <h1 {...props} className={`${TYPOGRAPHY.h1.mdx} mt-8 first:mt-0 scroll-mt-20 group`} />
   ),
   h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h2 {...props} className={`${TYPOGRAPHY.h2.mdx} mt-8 scroll-mt-20`} />
+    <h2 {...props} className={`${TYPOGRAPHY.h2.mdx} mt-8 scroll-mt-20 group`} />
   ),
   h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h3 {...props} className={`${TYPOGRAPHY.h3.mdx} mt-6 scroll-mt-20`} />
+    <h3 {...props} className={`${TYPOGRAPHY.h3.mdx} mt-6 scroll-mt-20 group`} />
   ),
   h4: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h4 {...props} className={`${TYPOGRAPHY.h4.mdx} mt-5 scroll-mt-20`} />
+    <h4 {...props} className={`${TYPOGRAPHY.h4.mdx} mt-5 scroll-mt-20 group`} />
   ),
   h5: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h5 {...props} className={`${TYPOGRAPHY.h5.mdx} mt-4 scroll-mt-20`} />
+    <h5 {...props} className={`${TYPOGRAPHY.h5.mdx} mt-4 scroll-mt-20 group`} />
   ),
   h6: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h6 {...props} className={`${TYPOGRAPHY.h6.mdx} mt-4 scroll-mt-20`} />
+    <h6 {...props} className={`${TYPOGRAPHY.h6.mdx} mt-4 scroll-mt-20 group`} />
   ),
   p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
     <p {...props} />
@@ -204,9 +204,16 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
     const href = props.href || '';
     const isExternal = href.startsWith('http://') || href.startsWith('https://');
     
+    // Convert relative docs links to proper /dev/docs/ paths
+    let adjustedHref = href;
+    if (href.startsWith('./')) {
+      adjustedHref = `/dev/docs/${href.slice(2)}`;
+    }
+    
     return (
       <a 
         {...props} 
+        href={adjustedHref}
         className={isHeaderAnchor 
           ? "hover:text-primary" 
           : "inline-flex items-center gap-1 underline underline-offset-4 hover:text-primary"
@@ -370,7 +377,7 @@ export function MDX({ source }: { source: string }) {
               { 
                 behavior: "wrap",
                 properties: {
-                  className: "no-underline hover:text-primary"
+                  className: "no-underline hover:text-primary transition-colors"
                 }
               }
             ]

@@ -281,7 +281,7 @@ Incremental Static Regeneration (ISR)
 - **Scalability**: No server rendering on every request
 - **View count updates**: Picked up during revalidation
 
-See [ISR Implementation Guide](../performance/isr-implementation) for details.
+See ISR Implementation Guide for details.
 
 ---
 

@@ -278,14 +278,14 @@ Attacker URL: https://site.com/?q=<script>steal()</script>
 
 **Without Nonces:**
 ```html
-<!-- Attacker-controlled value rendered inline -->
+{/* Attacker-controlled value rendered inline */}
 <div>Search: <script>steal()</script></div>
 ```
 Result: ❌ Script executes if `'unsafe-inline'` allowed
 
 **With Nonces:**
 ```html
-<!-- Same vulnerability in code, but CSP blocks -->
+{/* Same vulnerability in code, but CSP blocks */}
 <div>Search: <script>steal()</script></div>
 ```
 Result: ✅ Browser blocks script (no matching nonce)  

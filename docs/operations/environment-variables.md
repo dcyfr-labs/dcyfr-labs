@@ -643,9 +643,9 @@ curl http://localhost:3000/api/github-contributions?username=dcyfr
 
 ## Related Documentation
 
-- [API Reference](./api/reference) - API route documentation
-- [Deployment Checklist](./operations/deployment-checklist) - Pre-deployment checks
-- [Site Configuration](./platform/site-config) - Domain and URL configuration
+- API Reference - API route documentation
+- Deployment Checklist - Pre-deployment checks
+- Site Configuration - Domain and URL configuration
 
 ## Change Log
 

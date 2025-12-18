@@ -47,12 +47,12 @@ This directory contains comprehensive architectural plans and documentation for 
 - 4 universal layout components
 
 **Documentation:**
-- **[Refactoring Complete](./refactoring-complete)** - Complete overview with metrics
+- **Refactoring Complete** - Complete overview with metrics
 - **[Migration Guide](./migration-guide)** - How to use the patterns
 - **[Examples](./examples)** - Practical copy-paste examples
 - **[Best Practices](./best-practices)** - Guidelines and tips
-- **[Phase 1](./phase-1-complete)** - Foundation details
-- **[Phase 2](./phase-2-complete)** - Blog refactoring details
+- **Phase 1** - Foundation details
+- **Phase 2** - Blog refactoring details
 
 ---
 
@@ -75,7 +75,7 @@ This directory contains comprehensive architectural plans and documentation for 
 
 **Documentation:**
 - **[Dashboard Refactor Plan](./dashboard-refactor-plan)** - Complete plan with phases
-- **[Phase 3 Complete](../../operations/dashboard-refactor-phase-3-complete)** - Technical summary
+- **Phase 3 Complete** - Technical summary
 - **[Analytics Architecture Decision](./analytics-architecture-decision)** - Vercel Analytics evaluation
 
 ---
@@ -83,7 +83,7 @@ This directory contains comprehensive architectural plans and documentation for 
 ### 📋 Planning Phase
 
 #### [Blog Refactor Plan](./blog-refactor-plan)
-**Status:** ✅ Completed (see [Refactoring Complete](./refactoring-complete))  
+**Status:** ✅ Completed (see Refactoring Complete)  
 **Note:** Original planning document - refer to completion docs for actual results
 
 ---

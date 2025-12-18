@@ -229,8 +229,8 @@ The test includes a 5-second timeout for package validation. If you're on a slow
 ## Related Documentation
 
 - [MCP Servers Guide](../servers) — Comprehensive MCP setup and usage
-- [Copilot Instructions](./../.github/copilot-instructions) — AI contributor guidelines
-- [Agents Configuration](./../agents) — Agent configuration reference
+- Copilot Instructions — AI contributor guidelines
+- Agents Configuration — Agent configuration reference
 
 ## Implementation Details
 
@@ -269,6 +269,6 @@ To improve the test suite:
 For issues or questions:
 
 1. Check [MCP Servers Guide](../servers)
-2. Review [Copilot Instructions](./../.github/copilot-instructions)
+2. Review Copilot Instructions
 3. See troubleshooting section above
 4. Create an issue with test output attached

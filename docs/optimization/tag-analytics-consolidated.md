@@ -1,4 +1,4 @@
-<!-- TLP:CLEAR -->
+{/* TLP:CLEAR */}
 # Tag Analytics - Complete Guide
 
 **Status:** ✅ Complete (November 8, 2025)  
@@ -250,7 +250,7 @@ console.log('Filtered posts:', filteredPosts);
 
 **Core Analytics:**
 - [`analytics/README.md`](../README.md) - Overall analytics system
-- [`optimization/conversion-tracking-strategy.md`](./conversion-tracking-strategy) - Analytics strategy
+- `optimization/conversion-tracking-strategy.md` - Analytics strategy
 
 **Related Features:**
 - [`24h-trends-consolidated.md`](./24h-trends-consolidated) - 24-hour trending implementation
@@ -266,4 +266,4 @@ console.log('Filtered posts:', filteredPosts);
 **Version:** 1.0.0 (Consolidated)  
 **Contributors:** DCYFR Team
 
-For issues or enhancements, see [`operations/todo.md`](../operations/todo).
+For issues or enhancements, see `operations/todo.md`.

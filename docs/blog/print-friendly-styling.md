@@ -293,9 +293,9 @@ Enhancements will be implemented based on:
 
 ## Related Documentation
 
-- [Article Layout Component](../components/article-layout)
+- Article Layout Component
 - [Design System - Typography](../design/typography)
-- [Accessibility Guidelines](../security/accessibility-guide)
+- Accessibility Guidelines
 
 ---
 

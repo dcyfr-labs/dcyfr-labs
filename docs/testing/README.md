@@ -413,8 +413,8 @@ thresholds: {
 ### Internal Docs
 
 - [Coverage Roadmap](./coverage-roadmap) - Detailed testing plan
-- [Testing Guide](./testing-guide) - How-to guide
-- [E2E Testing](./e2e-testing) - Playwright setup
+- Testing Guide - How-to guide
+- E2E Testing - Playwright setup
 
 ---
 

@@ -527,9 +527,9 @@ REDIS_URL=redis://...
 ## 📚 Related Documentation
 
 - [Activity Feed Feature](./feeds)
-- [Inngest Functions](../api/inngest-functions)
+- Inngest Functions
 - [GitHub Integration](./github-integration)
-- [Blog Analytics](../blog/analytics)
+- Blog Analytics
 
 ---
 

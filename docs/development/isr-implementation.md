@@ -175,7 +175,7 @@ In development (`npm run dev`), pages are always dynamically rendered.
 
 - [Next.js ISR Documentation](https://nextjs.org/docs/app/building-your-application/data-fetching/incremental-static-regeneration)
 - [Blog Architecture](../blog/architecture)
-- [Performance Optimization](./optimization-guide) *(future)*
+- Performance Optimization *(future)*
 
 ## Future Enhancements
 

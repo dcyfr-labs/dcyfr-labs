@@ -53,7 +53,7 @@ mkdir -p ~/Library/Application\ Support/Code/User
 # Then configure VS Code with MCP servers
 ```
 
-See: [Troubleshooting](./tests/servers-test#troubleshooting)
+See: Troubleshooting
 
 ### "npm/npx not available"
 ```bash

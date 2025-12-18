@@ -1,9 +1,9 @@
-<!-- TLP:CLEAR -->
+{/* TLP:CLEAR */}
 # Documentation Index
 
 **Last Updated:** December 15, 2025  
 **Status:** Production-ready documentation ✅  
-**Classification:** [TLP Implementation](./security/TLP_CLASSIFICATION_IMPLEMENTATION.md) - Most content TLP:CLEAR (public)
+**Classification:** TLP Implementation - Most content TLP:CLEAR (public)
 
 🔒 **Note:** This documentation is public. Sensitive content (security findings, operational metrics, compliance audits) is in subdirectory `private/` folders (e.g., `/docs/security/private/`, `/docs/operations/private/`). See [DOCS_GOVERNANCE.md](./DOCS_GOVERNANCE.md) for policies.
 
@@ -63,20 +63,20 @@ The documentation is organized into **16 focused directories**:
 - **[features/ACTIVITY_FEED_AUTOMATION.md](./features/activity-feed-automation)** - ✨ **Activity feed automation strategy**
 - **[features/ACTIVITY_AUTOMATION_QUICK_START.md](./features/activity-automation-quick-start)** - ✨ **30-min activity caching implementation**
 - **[features/ACTIVITY_CACHING_IMPLEMENTATION.md](./features/activity-caching-implementation)** - ✨ **Implementation summary & testing guide**
-- **[features/SERIES_REFACTOR_PROGRESS.md](./features/series-refactor-progress)** - ✨ **Blog series refactor progress tracker**
-- **[features/FUTURE_IDEAS.md](./features/future-ideas)** - ✨ **Post-launch feature ideas & evaluation**
+- **features/SERIES_REFACTOR_PROGRESS.md** - ✨ **Blog series refactor progress tracker**
+- **features/FUTURE_IDEAS.md** - ✨ **Post-launch feature ideas & evaluation**
 
 ### Design System
 - **[design/typography/](./design/typography/)** - Typography system
 - **[design/mobile/](./design/mobile/)** - Mobile-first design
 - **[design/spacing/](./design/spacing/)** - Spacing standards
 - **[design/PAGE_TEMPLATES.md](./design/page-templates)** - ✨ **Complete page templates with design tokens**
-- **[design/DESIGN_TOKEN_COMPLIANCE_REPORT.md](./design/design-token-compliance-report)** - ✨ **Series refactor compliance audit**
+- **design/DESIGN_TOKEN_COMPLIANCE_REPORT.md** - ✨ **Series refactor compliance audit**
 
 ### Automation
-- **[automation/AUTOMATED_UPDATES.md](./automation/automated-updates)** - ✨ **Complete automation system guide**
-- **[automation/ENABLE_AUTO_MERGE.md](./automation/enable-auto-merge)** - ✨ **Auto-merge setup instructions**
-- **[automation/IMPLEMENTATION_SUMMARY.md](./automation/implementation-summary)** - ✨ **Deployment guide**
+- **automation/AUTOMATED_UPDATES.md** - ✨ **Complete automation system guide**
+- **automation/ENABLE_AUTO_MERGE.md** - ✨ **Auto-merge setup instructions**
+- **automation/IMPLEMENTATION_SUMMARY.md** - ✨ **Deployment guide**
 
 ---
 
@@ -121,8 +121,8 @@ The documentation is organized into **16 focused directories**:
 - **[api/routes/overview.md](./api/routes/overview)** - API architecture
 
 ### Operations
-- **[operations/todo.md](./operations/todo)** - Active tasks
-- **[operations/done.md](./operations/done)** - Completed work
+- **operations/todo.md** - Active tasks
+- **operations/done.md** - Completed work
 - **[operations/KNOWN_ISSUES.md](./operations/known-issues)** - ✨ **Known issues & acceptable warnings**
 
 ---

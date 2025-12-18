@@ -97,5 +97,5 @@ Keyboard shortcuts work in all modern browsers:
 ## Related
 
 - [Blog Architecture](../blog/architecture-visual)
-- [Sidebar Filters](./sidebar-filters)
-- [View Layouts](./view-layouts)
+- Sidebar Filters
+- View Layouts

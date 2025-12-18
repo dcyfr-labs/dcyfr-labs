@@ -37,7 +37,7 @@ A comprehensive security audit and red team engagement plan has been completed f
 
 **1. Timing-Safe API Key Comparison** ✅ **IMPLEMENTED**
 
-- **Location:** [src/app/api/analytics/route.ts:95-103](src/app/api/analytics/route.ts#L95-L103), [src/app/api/admin/api-usage/route.ts:56-69](src/app/api/admin/api-usage/route.ts#L56-L69)
+- **Location:** src/app/api/analytics/route.ts:95-103, src/app/api/admin/api-usage/route.ts:56-69
 - **Issue:** ~~API key comparison uses standard equality, vulnerable to timing attacks~~ **RESOLVED**
 - **Impact:** ~~Potential to reveal API key byte-by-byte~~ **MITIGATED**
 - **Implementation Date:** December 11, 2025
@@ -70,7 +70,7 @@ function validateApiKey(request: Request): boolean {
 
 **2. Structured Audit Logging for Admin Endpoints** ✅ **IMPLEMENTED**
 
-- **Location:** [src/app/api/analytics/route.ts:159-171](src/app/api/analytics/route.ts#L159-L171), [src/app/api/admin/api-usage/route.ts:90-107](src/app/api/admin/api-usage/route.ts#L90-L107)
+- **Location:** src/app/api/analytics/route.ts:159-171, src/app/api/admin/api-usage/route.ts:90-107
 - **Issue:** ~~Basic console logging lacks structured format for security monitoring~~ **RESOLVED**
 - **Impact:** ~~Harder to detect security incidents and unauthorized access attempts~~ **IMPROVED**
 - **Implementation Date:** December 11, 2025
@@ -137,7 +137,7 @@ function logAdminAccess(request: NextRequest, status: "success" | "denied", reas
 - **Fix:** Add middleware to check Content-Length header
 
 **4. OG Image Title Length Validation**
-- **Location:** [src/app/api/default-blog-image/route.tsx](src/app/api/default-blog-image/route.tsx)
+- **Location:** src/app/api/default-blog-image/route.tsx
 - **Issue:** No length validation on title parameter
 - **Impact:** Potential abuse of image generation endpoint
 - **Effort:** 15 minutes
@@ -343,7 +343,7 @@ A comprehensive red team engagement plan has been created with 8 testing phases:
 
 An automated test script has been created:
 
-**Location:** See [Red Team Engagement Plan - Automated Test Suite](docs/security/RED_TEAM_ENGAGEMENT_PLAN.md#automated-test-suite)
+**Location:** See Red Team Engagement Plan - Automated Test Suite
 
 **Tests Include:**
 - External access blocking verification
@@ -523,11 +523,11 @@ The planned red team engagement will validate these controls and provide additio
 ## References
 
 **Audit Documentation:**
-- [Comprehensive Security Audit Report](docs/security/API_SECURITY_AUDIT_2025-12-11.md)
-- [Red Team Engagement Plan](docs/security/RED_TEAM_ENGAGEMENT_PLAN.md)
-- [Security Status](docs/security/security-status.md)
-- [Inngest Webhook Security](docs/security/inngest-webhook-security.md)
-- [Logging Security Guide](docs/ai/LOGGING_SECURITY.md)
+- Comprehensive Security Audit Report
+- Red Team Engagement Plan
+- Security Status
+- Inngest Webhook Security
+- Logging Security Guide
 
 **Standards & Guidelines:**
 - [OWASP Top 10 (2024)](https://owasp.org/Top10/)

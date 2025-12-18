@@ -90,7 +90,7 @@ if (process.env.VERCEL_ENV === "production") {
 
 ### 3. ✅ Automated Test Script
 
-**File Created:** [scripts/test-security-alerts.sh](../../scripts/test-security-alerts.sh)
+**File Created:** scripts/test-security-alerts.sh
 
 **Test Coverage:**
 - ✅ Test 1: Invalid API Key (triggers Sentry warning)
@@ -432,7 +432,7 @@ done
 1. [docs/security/SENTRY_ALERTS_SETUP.md](./sentry-alerts-setup) - Complete setup guide
 2. [docs/security/AXIOM_SECURITY_QUERIES.md](./axiom-security-queries) - 15 pre-built queries
 3. [docs/security/SENTRY_INTEGRATION_COMPLETE.md](./sentry-integration-complete) - This document
-4. [scripts/test-security-alerts.sh](../../scripts/test-security-alerts.sh) - Automated test script
+4. scripts/test-security-alerts.sh - Automated test script
 
 ### Modified Files ✅
 5. [src/app/api/analytics/route.ts](../../src/app/api/analytics/route.ts) - Added Sentry logging

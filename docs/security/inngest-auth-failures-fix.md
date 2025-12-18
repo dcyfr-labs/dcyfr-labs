@@ -211,7 +211,7 @@ A new alert has been added to your Sentry configuration:
 - Frequency: Every 10 minutes
 - Actions: Email + Slack notification
 
-**See:** [`docs/security/SENTRY_ALERTS_SETUP.md`](./sentry-alerts-setup#step-11-inngest-webhook-authentication-monitoring)
+**See:** `docs/security/SENTRY_ALERTS_SETUP.md`
 
 ### Investigation Workflow
 

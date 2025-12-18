@@ -261,7 +261,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
 
 **Check Rendered Output:**
 ```html
-<!-- Should see -->
+{/* Should see */}
 <meta name="description" content="Your description here">
 <meta property="og:description" content="Your description here">
 <meta name="twitter:description" content="Your description here">
@@ -442,9 +442,9 @@ Enter URL → View how description appears in previews
 ## Related Documentation
 
 - [JSON-LD Implementation](./json-ld-implementation)
-- [Site Configuration](../lib/site-config)
+- Site Configuration
 - [Blog Content Creation Guide](../blog/content-creation)
-- [SEO Checklist](./seo-checklist) _(future)_
+- SEO Checklist _(future)_
 
 ---
 

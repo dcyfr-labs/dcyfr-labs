@@ -111,18 +111,18 @@ Both headers work together:
 
 **Before (Vulnerable):**
 ```html
-<!-- Attacker's site -->
+{/* Attacker's site */}
 <iframe src="https://www.dcyfr.ai"></iframe>
-<!-- Site loads in iframe, clickjacking possible -->
+{/* Site loads in iframe, clickjacking possible */}
 ```
 
 **After (Protected):**
 ```html
-<!-- Attacker's site -->
+{/* Attacker's site */}
 <iframe src="https://www.dcyfr.ai"></iframe>
-<!-- Browser blocks: Refused to display in frame -->
-<!-- Console: "frame-src 'none'" directive violated -->
-<!-- Console: X-Frame-Options: DENY -->
+{/* Browser blocks: Refused to display in frame */}
+{/* Console: "frame-src 'none'" directive violated */}
+{/* Console: X-Frame-Options: DENY */}
 ```
 
 #### Attack Scenarios Prevented
@@ -199,7 +199,7 @@ Implemented X-Content-Type-Options header to disable MIME-sniffing.
 
 **Scenario 1: SVG XSS**
 ```xml
-<!-- Malicious SVG uploaded -->
+{/* Malicious SVG uploaded */}
 <svg onload="alert('XSS')">
 ```
 - ❌ Without nosniff: Browser might execute as HTML
@@ -309,9 +309,9 @@ X-Content-Type-Options: nosniff
 
 **Test 2: Clickjacking Protection**
 ```html
-<!-- Test page -->
+{/* Test page */}
 <iframe src="https://www.dcyfr.ai"></iframe>
-<!-- Should fail to load with console error -->
+{/* Should fail to load with console error */}
 ```
 
 Expected: `Refused to display in a frame because it set 'X-Frame-Options' to 'deny'`

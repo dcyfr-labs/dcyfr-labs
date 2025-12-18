@@ -192,13 +192,13 @@ src/data/projects.ts → projectToFeedItem() → FeedItem → Atom XML
 Add these to your site's `<head>` for automatic feed discovery:
 
 ```html
-<!-- Primary feed (all content) -->
+{/* Primary feed (all content) */}
 <link rel="alternate" type="application/atom+xml" title="Drew's Lab - All Content" href="https://www.dcyfr.ai/feed" />
 
-<!-- Blog feed -->
+{/* Blog feed */}
 <link rel="alternate" type="application/atom+xml" title="Drew's Lab - Blog" href="https://www.dcyfr.ai/blog/feed" />
 
-<!-- Projects feed -->
+{/* Projects feed */}
 <link rel="alternate" type="application/atom+xml" title="Drew's Lab - Projects" href="https://www.dcyfr.ai/projects/feed" />
 ```
 - Validation checklist

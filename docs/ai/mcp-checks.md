@@ -7,7 +7,7 @@ This page documents recommended checks for MCP (Model Context Protocol) servers,
 
 Why this matters
 -----------------
-- MCP servers provide runtime context and services used by the AI agents this repository integrates with (e.g., Perplexity, Context, Playwright, Axiom, Filesystem). Monitoring them improves developer ergonomics and reduces flaky CI runs.
+- MCP servers provide runtime context and services used by the AI agents this repository integrates with (e.g., Perplexity, Context, Axiom, Filesystem). Monitoring them improves developer ergonomics and reduces flaky CI runs.
 
 Local validation
 ----------------
@@ -23,7 +23,6 @@ npm run sync:ai
 Recommended MCP health checks (manual)
 ------------------------------------
 - Perplexity: If a token is present, send a minimal request (or run `isPerplexityConfigured()` helper in `src/lib/perplexity.ts`).
-- Playwright: Confirm the `@playwright/mcp` binary runs; it should support `--version`.
 - Context: Confirm the Context MCP server is accessible if it uses an http URL.
 - Axiom / Sentry / Vercel: Confirm public endpoints respond with 200/401 (401 is okay if token required) and that the host resolves.
 

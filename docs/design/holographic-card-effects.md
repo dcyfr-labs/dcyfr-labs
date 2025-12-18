@@ -25,34 +25,34 @@ All effects are pure CSS with GPU-accelerated transforms for performance.
 #### Container
 ```html
 <article class="holo-card holo-card-3d">
-  <!-- Card content -->
+  {/* Card content */}
 </article>
 ```
 
 #### Background Effects
 ```html
-<!-- Darker gradient overlay -->
+{/* Darker gradient overlay */}
 <div class="holo-gradient-dark group-hover:holo-gradient-dark-hover" />
 
-<!-- Noise texture -->
+{/* Noise texture */}
 <div class="holo-noise" />
 
-<!-- Enhanced image -->
+{/* Enhanced image */}
 <Image class="holo-image-shift" />
 ```
 
 #### Holographic Effects
 ```jsx
-<!-- Rainbow shine sweep -->
+{/* Rainbow shine sweep */}
 <div className="holo-shine" />
 
-<!-- Lens flare -->
+{/* Lens flare */}
 <div className="holo-flare" style={{ top: '30%', left: '40%' }} />
 
-<!-- Metallic border -->
+{/* Metallic border */}
 <div className="holo-border" />
 
-<!-- Sparkles -->
+{/* Sparkles */}
 <div className="holo-sparkle holo-sparkle-1" />
 <div className="holo-sparkle holo-sparkle-2" />
 <div className="holo-sparkle holo-sparkle-3" />
@@ -331,10 +331,10 @@ Change rainbow shine colors:
 
 ## Related Documentation
 
-- [UI/UX Quick Wins](/docs/design/ui-ux-quick-wins)
+- UI/UX Quick Wins
 - [Design System Validation](/docs/design/enforcement)
-- [Performance Optimization](/docs/performance/optimization-guide)
-- [Accessibility Guidelines](/docs/accessibility/readme)
+- Performance Optimization
+- Accessibility Guidelines
 
 ## Inspiration
 

@@ -207,6 +207,6 @@ To use a specific version instead of `@latest`:
 
 ## Related Documentation
 
-- [Inngest Integration](../features/inngest-integration) - Background job processing
-- [Environment Variables](../platform/environment-variables) - Environment setup guide
-- [API Routes](../api/routes/overview) - API architecture overview
+- Inngest Integration - Background job processing
+- Environment Variables - Environment setup guide
+- API Routes - API architecture overview

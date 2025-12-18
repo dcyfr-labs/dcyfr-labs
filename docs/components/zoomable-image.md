@@ -50,12 +50,12 @@ title: "My Blog Post"
 
 Here's an image that users can zoom:
 
-![Screenshot of dashboard](/blog/images/screenshot.png)
+![Screenshot of dashboard](screenshot-url.jpg)
 
 Regular content continues...
 ```
 
-All markdown images (`![alt](src)`) in blog posts automatically become zoomable.
+All markdown images (`!alt`) in blog posts automatically become zoomable.
 
 ### Manual Usage
 
@@ -283,7 +283,7 @@ Works in all modern browsers with:
 ### 1. Screenshots in Technical Posts
 
 ```mdx
-![Application dashboard with metrics](/blog/images/dashboard.png)
+![Application dashboard with metrics](dashboard-before.jpg)
 ```
 
 **Result:** Readers can click to see details in charts and metrics.
@@ -291,7 +291,7 @@ Works in all modern browsers with:
 ### 2. Architecture Diagrams
 
 ```mdx
-![System architecture diagram](/blog/images/architecture.png)
+![System architecture diagram](architecture-diagram.jpg)
 ```
 
 **Result:** Complex diagrams become readable when zoomed.
@@ -299,7 +299,7 @@ Works in all modern browsers with:
 ### 3. Code Screenshots
 
 ```mdx
-![VS Code with error highlights](/blog/images/code-error.png)
+![VS Code with error highlights](vs-code-errors.jpg)
 ```
 
 **Result:** Small text in screenshots becomes legible.
@@ -307,8 +307,8 @@ Works in all modern browsers with:
 ### 4. Before/After Comparisons
 
 ```mdx
-![Performance metrics before optimization](/blog/images/before.png)
-![Performance metrics after optimization](/blog/images/after.png)
+![Performance metrics before optimization](perf-before.jpg)
+![Performance metrics after optimization](perf-after.jpg)
 ```
 
 **Result:** Readers can examine both images in detail.
@@ -394,7 +394,7 @@ Potential improvements for future versions:
 ## Examples in Production
 
 See the feature in action:
-- **[CVE-2025-55182 Blog Post](/blog/cve-2025-55182-react-server-rce)** - Dashboard screenshot is zoomable
+- **CVE-2025-55182 Blog Post** - Dashboard screenshot is zoomable
 - Any blog post with embedded images
 
 ---

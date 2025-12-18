@@ -2,7 +2,7 @@
 
 **Date:** 2025-12-10
 **Status:** ✅ Completed - Phase 1 (Tier 1 Optimizations)
-**Note:** Tier 2/3 optimizations moved to backlog in [todo.md](todo#cicd-pipeline-optimizations-tier-23)
+**Note:** Tier 2/3 optimizations moved to backlog in todo.md
 
 ## What Was Implemented
 
@@ -16,7 +16,7 @@ Successfully completed all Tier 1 (high-ROI) optimizations from the CI/CD analys
 - `monthly-security-review.yml` - monthly comprehensive review
 
 **After:**
-- **NEW:** [`.github/workflows/security.yml`](.github/workflows/security.yml) - Unified security checks
+- **NEW:** `.github/workflows/security.yml` - Unified security checks
   - Runs npm audit + outdated package check in single workflow
   - One `npm ci` instead of two separate installs
   - Combined PR commenting with comprehensive report
@@ -39,7 +39,7 @@ Successfully completed all Tier 1 (high-ROI) optimizations from the CI/CD analys
 - `allowlist-validate.yml` - Separate workflow for allowlist validation
 
 **After:**
-- **UPDATED:** [`.github/workflows/pii-scan.yml`](.github/workflows/pii-scan.yml)
+- **UPDATED:** `.github/workflows/pii-scan.yml`
   - Renamed to "Privacy & PII Scan"
   - Already included allowlist validation (line 22 of original)
   - Optimized both jobs to use `npm ci --prefer-offline`
@@ -77,7 +77,7 @@ ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-build-v1
 - Total: 4x `npm ci` executions (~3-4 minutes each)
 
 **After:**
-- **UPDATED:** [`.github/workflows/test.yml`](.github/workflows/test.yml)
+- **UPDATED:** `.github/workflows/test.yml`
   - **NEW `setup` job:** Runs `npm ci` once, caches `node_modules`
   - All 4 test jobs now:
     - Depend on `setup` job (`needs: setup`)
@@ -114,8 +114,8 @@ quality/unit/bundle/e2e:
 ### 4. ✅ Removed Duplicate Lint from Design System Workflow
 
 **Before:**
-- [`.github/workflows/design-system.yml`](.github/workflows/design-system.yml) ran ESLint (lines 38-40)
-- [`.github/workflows/test.yml`](.github/workflows/test.yml) also ran ESLint in quality job
+- `.github/workflows/design-system.yml` ran ESLint (lines 38-40)
+- `.github/workflows/test.yml` also ran ESLint in quality job
 - **Result:** Lint ran twice on every PR changing `.tsx/.ts` files
 
 **After:**

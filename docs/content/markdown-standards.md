@@ -274,13 +274,13 @@ The `buildId` function in `src/lib/build.ts` handles...
 
 Use fenced code blocks with language specification:
 
-````markdown
+```markdown
 ```typescript
 export function greet(name: string): string {
   return `Hello, ${name}!`;
 }
 ```
-````
+```
 
 **Supported languages**: JavaScript, TypeScript, Python, JSX, TSX, Bash, JSON, etc.
 
@@ -288,7 +288,7 @@ export function greet(name: string): string {
 
 Highlight important lines with comments:
 
-````markdown
+```markdown
 ```typescript
 export function greet(name: string): string {
   // ← Important: Always validate input
@@ -296,7 +296,7 @@ export function greet(name: string): string {
   return `Hello, ${name}!`;
 }
 ```
-````
+```
 
 **Special markers:**
 - `// ✅ Correct approach`
@@ -455,7 +455,7 @@ The area is 9 square units.
 Link to other blog posts with relative paths:
 
 ```markdown
-See [Shipping a Portfolio](/blog/shipping-developer-portfolio) for setup details.
+See Shipping a Portfolio for setup details.
 ```
 
 ### External Links

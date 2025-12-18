@@ -21,7 +21,7 @@ Comprehensive debugging tools and documentation for troubleshooting async operat
   - Best practices and configuration
 
 ### Implementation Details
-- **[Implementation Summary](./implementation-summary)** - Technical implementation details
+- **Implementation Summary** - Technical implementation details
   - Deliverables and integration points
   - Testing procedures
   - Performance impact
@@ -114,7 +114,7 @@ Automatic setup of all debugging tools (called via instrumentation.ts).
 3. Check Redis connectivity: `redis-cli -u $REDIS_URL ping`
 4. Try disabling Redis: `unset REDIS_URL && npm run dev`
 
-See: [DEV_DEBUGGING_GUIDE.md - Scenario 1](./dev-debugging-guide#scenario-1-dev-server-hangs-on-startup)
+See: DEV_DEBUGGING_GUIDE.md - Scenario 1
 
 ### Debugging Slow API Routes
 1. Add API monitoring: `withApiMonitoring(handler, 'route-name')`
@@ -122,7 +122,7 @@ See: [DEV_DEBUGGING_GUIDE.md - Scenario 1](./dev-debugging-guide#scenario-1-dev-
 3. Review timing logs in terminal
 4. Add granular timing for bottlenecks
 
-See: [DEV_DEBUGGING_GUIDE.md - Scenario 4](./dev-debugging-guide#scenario-4-slow-api-responses)
+See: DEV_DEBUGGING_GUIDE.md - Scenario 4
 
 ### Debugging Redis Issues
 1. Check Redis health in diagnostics
@@ -130,7 +130,7 @@ See: [DEV_DEBUGGING_GUIDE.md - Scenario 4](./dev-debugging-guide#scenario-4-slow
 3. Monitor with: `redisManager.logStatus()`
 4. Test with Redis disabled
 
-See: [DEV_DEBUGGING_GUIDE.md - Scenario 1](./dev-debugging-guide#scenario-1-dev-server-hangs-on-startup)
+See: DEV_DEBUGGING_GUIDE.md - Scenario 1
 
 ### Monitoring Memory Leaks
 1. Watch memory in diagnostics
@@ -138,7 +138,7 @@ See: [DEV_DEBUGGING_GUIDE.md - Scenario 1](./dev-debugging-guide#scenario-1-dev-
 3. Review Redis connection counts
 4. Look for accumulating operations
 
-See: [DEV_DEBUGGING_GUIDE.md - Scenario 3](./dev-debugging-guide#scenario-3-memory-leaks)
+See: DEV_DEBUGGING_GUIDE.md - Scenario 3
 
 ## 📊 Quick Commands
 

@@ -1,5 +1,5 @@
 # ESLint Design System Warnings Guide
-<!-- TLP:GREEN - Limited Distribution -->
+{/* TLP:GREEN - Limited Distribution */}
 
 **Quick Reference • Implementation • Resolution**
 

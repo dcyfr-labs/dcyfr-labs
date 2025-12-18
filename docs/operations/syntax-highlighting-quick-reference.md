@@ -63,22 +63,22 @@ Includes custom CSS for:
 
 ### Basic code block
 
-````mdx
+```mdx
 ```typescript
 const greeting: string = "Hello, World!";
 console.log(greeting);
 ```
-````
+```
 
 ### Code block with title (future enhancement)
 
-````mdx
+```mdx
 ```typescript title="src/lib/utils.ts"
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 ```
-````
+```
 
 ### Inline code
 
@@ -119,16 +119,16 @@ These features are available in rehype-pretty-code but not yet configured:
 
 ### Line numbers
 
-````mdx
+```mdx
 ```typescript showLineNumbers
 const x = 1;
 const y = 2;
 ```
-````
+```
 
 ### Line highlighting
 
-````mdx
+```mdx
 ```typescript {2,4-6}
 const a = 1;
 const b = 2; // highlighted
@@ -137,24 +137,24 @@ const d = 4; // highlighted
 const e = 5; // highlighted
 const f = 6; // highlighted
 ```
-````
+```
 
 ### Character highlighting
 
-````mdx
+```mdx
 ```typescript /useState/
 import { useState } from 'react';
 ```
-````
+```
 
 ### Diff indicators
 
-````mdx
+```mdx
 ```typescript
 - const old = "removed";
 + const new = "added";
 ```
-````
+```
 
 ## Performance Notes
 

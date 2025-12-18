@@ -361,7 +361,7 @@ A: Yes: `git commit --no-verify`. But don't. Follow the standards instead.
 - [DOCS_GOVERNANCE.md](./DOCS_GOVERNANCE.md) - Full governance policy
 - [CONTRIBUTING.md](../CONTRIBUTING.md) - Contributor guidelines (updated)
 - [docs/README.md](./README.md) - Public docs index
-- [.gitignore](../../.gitignore) - Git exclusions
+- .gitignore - Git exclusions
 
 ---
 

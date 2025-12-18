@@ -1,13 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { Project, ProjectCategory } from "@/data/projects";
 import { Badge } from "@/components/ui/badge";
 import { Eye } from "lucide-react";
 import dynamic from "next/dynamic";
-import { ensureProjectImage } from "@/lib/default-project-images";
 import { HOVER_EFFECTS, SPACING } from "@/lib/design-tokens";
 import { formatNumber } from "@/lib/utils";
 
@@ -95,11 +93,6 @@ export function ProjectList({
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" data-testid="project-list">
         {projects.map((project, index) => {
-          const image = ensureProjectImage(project.image, {
-            tags: project.tags,
-            tech: project.tech,
-          });
-
           return (
             <ScrollReveal
               key={project.slug}
@@ -107,23 +100,9 @@ export function ProjectList({
               delay={index * 50}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card} flex flex-col h-full`}>
-                {/* Background image - only if defined */}
-                {image && image.url && (
-                  <div className="absolute inset-0 z-0">
-                    <Image
-                      src={image.url}
-                      alt={image.alt}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                    {/* Gradient overlay for text contrast */}
-                    <div className="absolute inset-0 bg-linear-to-b from-background/75 via-background/85 to-background/95" />
-                  </div>
-                )}
                 <Link href={`${basePath}/${project.slug}`} className="flex flex-col h-full">
                   {/* Project content */}
-                  <div className="flex-1 p-4 sm:p-5 flex flex-col relative z-10">
+                  <div className="flex-1 p-4 sm:p-5 flex flex-col">
                     {/* Status, category, and timeline */}
                     {project.timeline && (
                       <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
@@ -179,11 +158,6 @@ export function ProjectList({
     return (
       <div className={SPACING.subsection} data-testid="project-list">
         {projects.map((project, index) => {
-          const image = ensureProjectImage(project.image, {
-            tags: project.tags,
-            tech: project.tech,
-          });
-
           return (
             <ScrollReveal
               key={project.slug}
@@ -191,22 +165,8 @@ export function ProjectList({
               delay={index * 80}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}>
-                {/* Background image - only if defined */}
-                {image && image.url && (
-                  <div className="absolute inset-0 z-0">
-                    <Image
-                      src={image.url}
-                      alt={image.alt}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 100vw"
-                    />
-                    {/* Gradient overlay for text contrast */}
-                    <div className="absolute inset-0 bg-linear-to-b from-background/75 via-background/85 to-background/95" />
-                  </div>
-                )}
                 <Link href={`${basePath}/${project.slug}`} className="block">
-                  <div className="p-4 md:p-8 relative z-10">
+                  <div className="p-4 md:p-8">
                     {/* Status, category, and timeline */}
                     {project.timeline && (
                       <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
@@ -257,11 +217,6 @@ export function ProjectList({
     return (
       <div className="space-y-3" data-testid="project-list">
         {projects.map((project, index) => {
-          const image = ensureProjectImage(project.image, {
-            tags: project.tags,
-            tech: project.tech,
-          });
-
           return (
             <ScrollReveal
               key={project.slug}
@@ -269,22 +224,8 @@ export function ProjectList({
               delay={index * 50}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}>
-                {/* Background image - only if defined */}
-                {image && image.url && (
-                  <div className="absolute inset-0 z-0">
-                    <Image
-                      src={image.url}
-                      alt={image.alt}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                    />
-                    {/* Gradient overlay for text contrast */}
-                    <div className="absolute inset-0 bg-linear-to-b from-background/75 via-background/85 to-background/95" />
-                  </div>
-                )}
                 <Link href={`${basePath}/${project.slug}`} className="block">
-                  <div className="p-3 relative z-10">
+                  <div className="p-3">
                     {/* Status, category, and timeline - compact */}
                     <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1.5">
                       {project.status !== "active" && <Badge variant="default" className="text-xs">{STATUS_LABEL[project.status]}</Badge>}
@@ -316,11 +257,6 @@ export function ProjectList({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" data-testid="project-list">
       {projects.map((project, index) => {
-        const image = ensureProjectImage(project.image, {
-          tags: project.tags,
-          tech: project.tech,
-        });
-
         return (
           <ScrollReveal
             key={project.slug}
@@ -328,23 +264,9 @@ export function ProjectList({
             delay={index * 50}
           >
             <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card} flex flex-col h-full`}>
-              {/* Background image - only if defined */}
-              {image && image.url && (
-                <div className="absolute inset-0 z-0">
-                  <Image
-                    src={image.url}
-                    alt={image.alt}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
-                  {/* Gradient overlay for text contrast */}
-                  <div className="absolute inset-0 bg-linear-to-b from-background/75 via-background/85 to-background/95" />
-                </div>
-              )}
               <Link href={`${basePath}/${project.slug}`} className="flex flex-col h-full">
                 {/* Project content */}
-                <div className="flex-1 p-4 sm:p-5 flex flex-col relative z-10">
+                <div className="flex-1 p-4 sm:p-5 flex flex-col">
                   {/* Status, category, and timeline */}
                   {project.timeline && (
                     <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">

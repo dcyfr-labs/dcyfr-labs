@@ -318,8 +318,8 @@ remarkPlugins: [remarkGfm, remarkMath]
 Automatically adds `id` attributes to headings:
 
 ```html
-<!-- Input: ## My Heading -->
-<!-- Output: -->
+{/* Input: ## My Heading */}
+{/* Output: */}
 <h2 id="my-heading">My Heading</h2>
 ```
 
@@ -387,13 +387,13 @@ Wraps headings in anchor links:
 
 The MDX component automatically renders Mermaid diagrams when you use a code fence with the `mermaid` language:
 
-````markdown
+```markdown
 ```mermaid
 graph TD
     A[Start] --> B[Process]
     B --> C[End]
 ```
-````
+```
 
 **Supported diagram types:**
 
@@ -406,7 +406,7 @@ graph TD
 - Pie charts
 - Git graphs
 
-**See:** [Diagram and Math Guide](/docs/content/diagrams-and-math) for complete examples
+**See:** Diagram and Math Guide for complete examples
 
 ### LaTeX Math Equations
 
@@ -432,7 +432,7 @@ $$
 - Physics equations
 - Financial calculations
 
-**See:** [Diagram and Math Guide](/docs/content/diagrams-and-math) for syntax examples
+**See:** Diagram and Math Guide for syntax examples
 
 ---
 
@@ -649,7 +649,7 @@ code here
 ```typescript
 code here
 ```
-````
+```
 
 ### Inline Code Styled as Block
 
@@ -690,7 +690,7 @@ const isExternal = href?.startsWith('http://') || href?.startsWith('https://');
 
 **Verify:**
 ```html
-<!-- Should have id -->
+{/* Should have id */}
 <h2 id="my-heading">My Heading</h2>
 ```
 

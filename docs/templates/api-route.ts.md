@@ -322,11 +322,11 @@ Before committing your new API route:
 
 ## Related Templates
 
-- [INNGEST_FUNCTION.ts](./INNGEST_FUNCTION.ts) - Background job handler
-- [TEST_SUITE.test.tsx](./TEST_SUITE.test.tsx) - API route tests
+- INNGEST_FUNCTION.ts - Background job handler
+- TEST_SUITE.test.tsx - API route tests
 
 ## Related Docs
 
-- [API Routes Guide](../api/readme)
-- [Inngest Functions](../features/inngest)
-- [Background Job Patterns](../ai/component-patterns#background-jobs)
+- API Routes Guide
+- Inngest Functions
+- Background Job Patterns

@@ -1,4 +1,4 @@
-<!-- TLP:AMBER - Internal Use Only -->
+{/* TLP:AMBER - Internal Use Only */}
 # 🎯 Content Strategy Complete
 ## Your Fresh Start is Ready
 

@@ -205,8 +205,8 @@ To suppress warnings in these cases, use ESLint disable comments:
 
 - **[Quick Start Guide](./quick-start)** - Get started with design tokens
 - **[Design System Overview](./design-system)** - Complete reference
-- **[Component Patterns](./component-patterns)** - Copy-paste examples
-- **[Implementation Roadmap](./implementation-roadmap)** - Migration phases
+- **Component Patterns** - Copy-paste examples
+- **Implementation Roadmap** - Migration phases
 
 ---
 

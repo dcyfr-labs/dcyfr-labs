@@ -201,7 +201,7 @@ This guide documents alt text and ARIA accessibility best practices for the proj
 **Icons with adjacent text:**
 ```tsx
 // ✅ Good: Icon is decorative, text provides meaning
-<a href="/profile" className="flex items-center gap-2">
+HTML anchor
   <User className="h-4 w-4" aria-hidden="true" />
   <span>View Profile</span>
 </a>

@@ -377,10 +377,10 @@ curl -H "Authorization: Bearer $ADMIN_API_KEY" \\\n  "http://localhost:3000/api/
 ## 📚 Related Documentation
 
 - [Security Architecture](../security/index.md)
-- [Rate Limiting Guide](../api/rate-limiting.md)  
+- Rate Limiting Guide  
 - [GreyNoise API Documentation](https://docs.greynoise.io/)
-- [Inngest Functions](../development/inngest-patterns.md)
-- [Redis Security Patterns](../security/redis-security.md)
+- Inngest Functions
+- Redis Security Patterns
 
 ---
 

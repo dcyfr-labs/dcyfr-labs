@@ -391,12 +391,12 @@ defaultLang: "plaintext"  // Fallback for unknown languages
 
 ### Code Block Syntax
 
-````markdown
+```markdown
 ```typescript
 const greeting: string = "Hello, World!";
 console.log(greeting);
 ```
-````
+```
 
 **Generated HTML:**
 ```html
@@ -405,7 +405,7 @@ console.log(greeting);
     <span class="line">
       <span style="color: var(--shiki-light-keyword); ...">const</span>
       <span style="color: var(--shiki-light-variable); ...">greeting</span>
-      <!-- ... more tokens ... -->
+      {/* ... more tokens ... */}
     </span>
   </code>
 </pre>
@@ -432,7 +432,7 @@ onVisitHighlightedLine(node) {
 ```
 
 **Usage (when implemented):**
-````markdown
+```markdown
 ```typescript {2,4-6}
 const a = 1;
 const b = 2;  // Highlighted
@@ -441,7 +441,7 @@ const d = 4;  // Highlighted
 const e = 5;  // Highlighted
 const f = 6;  // Highlighted
 ```
-````
+```
 
 **Current Status:** Configuration present but not yet used in content. Add metadata syntax to enable.
 

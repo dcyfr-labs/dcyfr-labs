@@ -9,22 +9,22 @@
 ## 🚦 TLP Classification System
 
 ### TLP:CLEAR (Public)
-**Header:** `<!-- TLP:CLEAR -->`  
+**Header:** `{/* TLP:CLEAR */}`  
 **Distribution:** May be distributed without restriction  
 **Examples:** Technical documentation, tutorials, open source guides
 
 ### TLP:GREEN (Community)
-**Header:** `<!-- TLP:GREEN - Limited Distribution -->`  
+**Header:** `{/* TLP:GREEN - Limited Distribution */}`  
 **Distribution:** Limited to the organization and clients or customers  
 **Examples:** Implementation details, architecture decisions, troubleshooting guides
 
 ### TLP:AMBER (Organization)
-**Header:** `<!-- TLP:AMBER - Internal Use Only -->`  
+**Header:** `{/* TLP:AMBER - Internal Use Only */}`  
 **Distribution:** Limited to the organization  
 **Examples:** Business strategy, planning documents, competitive analysis, internal processes
 
 ### TLP:RED (Personal)
-**Header:** `<!-- TLP:RED - Confidential -->`  
+**Header:** `{/* TLP:RED - Confidential */}`  
 **Distribution:** Limited to specific individuals  
 **Examples:** Financial information, personal data, sensitive business intelligence
 
@@ -126,7 +126,7 @@ Files that may contain strategic information requiring reclassification:
 
 ### For Public Technical Documentation
 ```markdown
-<!-- TLP:CLEAR -->
+{/* TLP:CLEAR */}
 # API Routes Overview
 
 This document covers all public API endpoints...
@@ -134,7 +134,7 @@ This document covers all public API endpoints...
 
 ### For Internal Implementation Details  
 ```markdown
-<!-- TLP:GREEN - Limited Distribution -->
+{/* TLP:GREEN - Limited Distribution */}
 # Performance Optimization Strategy
 
 Internal implementation details for optimization...
@@ -142,7 +142,7 @@ Internal implementation details for optimization...
 
 ### For Strategic Planning (Private Only)
 ```markdown
-<!-- TLP:AMBER - Internal Use Only -->
+{/* TLP:AMBER - Internal Use Only */}
 # Content Strategy & Editorial Calendar
 
 Detailed business planning for 2025-2026...

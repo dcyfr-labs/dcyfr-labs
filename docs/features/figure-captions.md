@@ -10,7 +10,7 @@ Wrap images with the `Figure` component and provide a `caption` prop. Figures ar
 
 ```mdx
 <Figure caption="This is my figure caption">
-  ![alt text](/path/to/image.png)
+  !alt text
 </Figure>
 ```
 
@@ -51,7 +51,7 @@ The `Figure` component:
 To understand how MCP works, let's look at the client-server model:
 
 <Figure caption="Model Context Protocol follows a client-server architecture pattern">
-  ![MCP Architecture Diagram](/images/mcp-architecture.png)
+  !MCP Architecture Diagram
 </Figure>
 
 The diagram shows how:
@@ -93,7 +93,7 @@ The `Figure` component uses React Context to track figure count:
 If you just want to display an image without a caption, simply don't use the `Figure` component:
 
 ```mdx
-![alt text](/path/to/image.png)
+![alt text](image-url.jpg)
 ```
 
 ## Existing Images

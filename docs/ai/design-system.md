@@ -702,7 +702,7 @@ node scripts/validate-design-tokens.mjs --files src/components/my-component.tsx
 - **Design tokens source**: [`src/lib/design-tokens.ts`](../../src/lib/design-tokens.ts)
 - **Layout components**: [`src/components/layouts/`](../../src/components/layouts/)
 - **UI primitives**: [`src/components/ui/`](../../src/components/ui/)
-- **Validation script**: [`scripts/validate-design-tokens.mjs`](../../scripts/validate-design-tokens.mjs)
+- **Validation script**: `scripts/validate-design-tokens.mjs`
 - **Best practices**: [`/docs/ai/BEST_PRACTICES.md`](./best-practices)
 
 ## Logging Security Best Practices

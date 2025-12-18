@@ -1,5 +1,5 @@
 # Automation System Guide
-<!-- TLP:CLEAR -->
+{/* TLP:CLEAR */}
 
 **Quick Setup • System Overview • Implementation Details**
 

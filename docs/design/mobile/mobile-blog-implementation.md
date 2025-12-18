@@ -2,7 +2,7 @@
 
 **Date:** November 4, 2025  
 **Status:** ✅ Complete (Phase 1 - Critical Fixes)  
-**Related:** [Brainstorm Document](./mobile-blog-improvements-brainstorm) · [Component Docs](../components/)
+**Related:** [Brainstorm Document](./mobile-blog-improvements-brainstorm) · Component Docs
 
 ---
 
@@ -231,7 +231,7 @@ None identified. All features working as expected.
 
 ## Future Enhancements (Backlog)
 
-See [`/docs/operations/todo.md`](../operations/todo) for:
+See `/docs/operations/todo.md` for:
 - Phase 2: Badge overflow handling, related posts mobile layout
 - Phase 3: Swipe gestures, pull-to-refresh, active states
 - Phase 4: Code splitting, image optimization, lazy-load comments
@@ -242,9 +242,9 @@ See [`/docs/operations/todo.md`](../operations/todo) for:
 ## Documentation
 
 ### Component Docs
-- [`table-of-contents.md`](../components/table-of-contents) - Full TOC implementation guide
-- [`share-buttons.md`](../components/share-buttons) - Share functionality documentation
-- [`reading-progress.md`](../components/reading-progress) - Progress bar (existing)
+- `table-of-contents.md` - Full TOC implementation guide
+- `share-buttons.md` - Share functionality documentation
+- `reading-progress.md` - Progress bar (existing)
 
 ### Design Docs
 - [`mobile-blog-improvements-brainstorm.md`](./mobile-blog-improvements-brainstorm) - Full brainstorm and planning

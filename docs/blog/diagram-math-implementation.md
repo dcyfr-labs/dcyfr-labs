@@ -86,7 +86,7 @@ graph LR
 
 ### Mermaid Diagrams
 
-````markdown
+```mermaid
 ```mermaid
 graph TD
     A[Start] --> B{Decision}
@@ -97,7 +97,7 @@ graph TD
     style C fill:#c8e6c9,stroke:#388e3c
     style D fill:#ffcdd2,stroke:#d32f2f
 ```
-````
+```
 
 **Supported types:**
 - Flowcharts

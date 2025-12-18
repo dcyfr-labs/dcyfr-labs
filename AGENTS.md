@@ -553,6 +553,13 @@ Each instruction file maintains this metadata:
 
 ## 📋 Recent Updates
 
+### December 17, 2025
+- ✅ **Removed Playwright MCP support** to optimize tool availability (138 tool limit)
+  - Removed Playwright MCP server from `.vscode/mcp.json`
+  - Updated `docs/ai/mcp-checks.md` to remove Playwright references
+  - Verified no other documentation references `@playwright/mcp`
+  - Note: VS Code Playwright extension (`ms-playwright.playwright`) remains for local E2E test execution
+
 ### December 10, 2025
 - ✅ **Created DCYFR Claude Code Agent Collection (v2.1.0)**
   - Replicated `.github/agents/DCYFR.agent.md` to `.claude/agents/`

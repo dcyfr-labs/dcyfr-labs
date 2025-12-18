@@ -148,6 +148,6 @@ useEffect(() => {
 
 ## See Also
 
-- [Full Implementation Guide](./error-boundaries-implementation)
+- Full Implementation Guide
 - [React Error Boundaries Docs](https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary)
 - [Next.js Error Handling](https://nextjs.org/docs/app/building-your-application/routing/error-handling)

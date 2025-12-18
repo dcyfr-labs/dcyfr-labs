@@ -200,7 +200,7 @@ export default function Page() {
 **Generated output:**
 ```html
 <div class="mx-auto max-w-5xl py-14 md:py-20 px-4 sm:px-6 md:px-8">
-  <!-- Centered, responsive padding, consistent vertical spacing -->
+  {/* Centered, responsive padding, consistent vertical spacing */}
 </div>
 ```
 

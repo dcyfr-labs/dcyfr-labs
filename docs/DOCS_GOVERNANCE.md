@@ -195,7 +195,7 @@ If public doc contains sensitive data found during review:
 ```markdown
 # Public: docs/security/CSP_CONFIGURATION.md
 CSP provides protection against injection attacks.
-See [Security Assessment](./private/CSP_FINDINGS.md) for audit details.
+See Security Assessment for audit details.
 ```
 
 ```markdown

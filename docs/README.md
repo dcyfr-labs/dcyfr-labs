@@ -1,160 +1,109 @@
-<!-- TLP:CLEAR -->
-# Documentation
+---
+title: Developer Documentation
+description: Comprehensive guides, references, and quick navigation for the DCYFR Labs project
+category: documentation
+tags: [overview, navigation, quick-start]
+order: 1
+---
 
-This directory is the knowledge base for the portfolio. Content is organized by topic-focused subfolders for faster navigation.
+{/* TLP:CLEAR */}
+# Developer Documentation
 
-> **🔒 Information Classification:** This documentation follows the [Traffic Light Protocol (TLP)](./security/TLP_CLASSIFICATION_IMPLEMENTATION.md) for information sharing. Most content is TLP:CLEAR (public), with sensitive implementation details marked as TLP:GREEN (limited distribution).
+Welcome to the DCYFR Labs documentation hub. This is your central resource for understanding, building, and contributing to the project.
 
-## 🚀 Quick Navigation
+> **🔒 Information Classification:** This documentation follows the Traffic Light Protocol (TLP) for information sharing. Most content is TLP:CLEAR (public), with sensitive implementation details marked as TLP:GREEN (limited distribution).
 
-- **[`INDEX.md`](./index)** – Complete directory structure (start here!)
-- **[`QUICK_START.md`](./quick-start)** – Navigation hub for quick references
+## 🚀 Quick Start
 
-## Directory Overview
+### 🏗️ Architecture & Setup
+System design, patterns, and getting started guides
 
-**Core Documentation (10 directories):**
+- [→ Architecture Overview](./architecture/README)
+- [→ Quick Start Guide](./quick-start)
+- [→ Environment Setup](./platform/environment-variables)
 
-- **`architecture/`** – Architecture patterns and refactoring guides
-  - [`README.md`](./architecture/readme) - Architecture overview
-  - [`refactoring-complete.md`](./architecture/refactoring-complete) - Complete refactoring summary
-  - [`migration-guide.md`](./architecture/migration-guide) - Step-by-step migration guide
-  - [`examples.md`](./architecture/examples) - Practical code examples
-  - [`best-practices.md`](./architecture/best-practices) - Architectural guidelines
-  
-- **`blog/`** – Blog system documentation + content strategy + RSS feeds:
-  - [`architecture.md`](./blog/architecture) - Complete blog system architecture and data flow
-  - [`quick-reference.md`](./blog/quick-reference) - Quick patterns and common tasks
-  - [`content-creation.md`](./blog/content-creation) - Post authoring guide
-  - [`blog-images-consolidated.md`](./blog/blog-images-consolidated) - **Complete images guide** (SVG generation + Unsplash + defaults + OG)
-  - [`mdx-processing.md`](./blog/mdx-processing) - MDX pipeline and plugins
-  - [`frontmatter-schema.md`](./blog/frontmatter-schema) - Post metadata reference
-  - `feeds/` - RSS/Atom feed documentation
+### 🧩 Components & Design  
+UI components, design system, and patterns
 
-- **`components/`** – Component documentation (26 files):
-  - **Quick References:** [`post-badges.md`](./components/post-badges) · [`error-boundaries.md`](./components/error-boundaries) · [`loading-states.md`](./components/loading-states)
-  - **Advanced Components:** [`related-posts.md`](./components/related-posts) · [`table-of-contents.md`](./components/table-of-contents) · [`syntax-highlighting.md`](./components/syntax-highlighting)
-  - **Core Components:** [`mdx.md`](./components/mdx) · [`post-list.md`](./components/post-list) · [`blog-search-form.md`](./components/blog-search-form)
+- [→ Design System](./design/design-system)
+- [→ Component Library](./components/mdx)
+- → Page Templates
 
-- **`api/`** – API integration references:
-  - [`routes/overview.md`](./api/routes/overview) - API architecture, rate limiting, error handling
-  - [`routes/contact.md`](./api/routes/contact) - Contact form endpoint
-  - [`routes/github-contributions.md`](./api/routes/github-contributions) - GitHub API integration
-  - [`reference.md`](./api/reference) - Quick API reference
+### 🔌 API & Features
+API routes, background jobs, and integrations
 
-- **`features/`** – Feature guides:
-  - [`inngest-integration.md`](./features/inngest-integration) - Complete Inngest background jobs guide
-  - [`inngest-testing.md`](./features/inngest-testing) - Testing and debugging guide
-  - [`github-integration.md`](./features/github-integration) - GitHub API integration
-  - [`ACTIVITY_FEED_AUTOMATION.md`](./features/activity-feed-automation) - ✨ Activity feed automation strategy
-  - [`ACTIVITY_CACHING_IMPLEMENTATION.md`](./features/activity-caching-implementation) - ✨ Activity caching implementation
-  - [`SERIES_REFACTOR_PROGRESS.md`](./features/series-refactor-progress) - ✨ Blog series refactor tracker
-  - [`FUTURE_IDEAS.md`](./features/future-ideas) - ✨ Post-launch feature ideas
-  - `mcp/` - Model Context Protocol documentation
+- [→ API Overview](./api/routes/overview)
+- [→ Background Jobs](./features/inngest-integration)
+- [→ GitHub Integration](./features/github-integration)
 
-- **`accessibility/`** – Accessibility patterns and implementation:
-  - [`dcyfr-pronunciation-consolidated.md`](./accessibility/dcyfr-pronunciation-consolidated) - **Complete DCYFR pronunciation guide** (quick ref + implementation + checklist)
-  - [`acronym-pronunciation.md`](./accessibility/acronym-pronunciation) - General acronym strategies
+### ⚡ Development & Testing
+Performance, testing, and optimization guides
 
-- **`design/`** – Design system and UX (organized into subdirectories):
-  - `typography/` - Typography system (Geist Sans, Source Serif 4, Geist Mono)
-  - `mobile/` - Mobile-first optimization and analysis
-  - `print/` - Print stylesheet implementation
-  - `spacing/` - Spacing standards and audit
-  - `ui-patterns/` - Component patterns and UI consistency
-  - [`design-system.md`](./design/design-system) - Overall design system
-  - [`eslint-design-system-consolidated.md`](./design/eslint-design-system-consolidated) - **ESLint warnings guide** (quick ref + resolution + checklist)
-  - [`PAGE_TEMPLATES.md`](./design/page-templates) - ✨ Complete page templates
-  - [`DESIGN_TOKEN_COMPLIANCE_REPORT.md`](./design/design-token-compliance-report) - ✨ Compliance audit
+- [→ Testing Overview](./testing/README)
+- [→ Performance](./development/lighthouse-ci)
+- [→ SEO & Analytics](./optimization/json-ld-implementation)
 
-- **`security/`** – Security implementation:
-  - `csp/` - Content Security Policy with nonce implementation
-  - `rate-limiting/` - Rate limiting guides and flows
-  - [`security-findings-resolution.md`](./security/security-findings-resolution)
+## Essential References
 
-- **`platform/`** – Platform configuration:
-  - [`environment-variables.md`](./platform/environment-variables) - Complete environment setup
-  - [`site-config.md`](./platform/site-config) - Domain and URL configuration
-  - [`view-counts.md`](./platform/view-counts) - Blog analytics and Redis setup
+- **[Complete Index](./INDEX)** – Full directory structure and file listing
+- **[Quick Start Guide](./quick-start)** – Get up and running in minutes
+- **Operations Todo** – Current priorities and active tasks
 
-- **`operations/`** – Project management:
-  - [`todo.md`](./operations/todo) - Active tasks and priorities
-  - [`done.md`](./operations/done) - Completed projects archive
-  - [`automation-backlog.md`](./operations/automation-backlog) - CI/CD automation status
+## 📁 Documentation Structure
 
-- **`automation/`** – ✨ Automated updates and dependency management:
-  - [`automation-system-consolidated.md`](./automation/automation-system-consolidated) - **Complete automation guide** (setup + overview + implementation)
+### Core Functionality
+- **[`architecture/`](./architecture/)** – System design, patterns, and refactoring guides
+- **[`components/`](./components/)** – UI component documentation (26 files)
+- **[`api/`](./api/)** – API routes, endpoints, and integration guides
+- **[`features/`](./features/)** – Background jobs, GitHub integration, activity feeds
 
-**Development & Optimization (4 directories):**
+### Design & Content
+- **[`design/`](./design/)** – Design system, typography, spacing, mobile optimization
+- **[`blog/`](./blog/)** – Blog architecture, content creation, MDX processing
+- **[`accessibility/`](./accessibility/)** – DCYFR pronunciation, accessibility patterns
 
-- **`development/`** – Performance optimization:
-  - [`lighthouse-ci.md`](./development/lighthouse-ci) - Lighthouse CI setup
-  - [`inp-optimization.md`](./development/inp-optimization) - INP optimization
-  - [`isr-implementation.md`](./development/isr-implementation) - ISR setup
-  - [`bundle-analysis.md`](./development/bundle-analysis) - Bundle optimization
+### Operations & Security
+- **[`security/`](./security/)** – CSP implementation, rate limiting, security findings
+- **[`operations/`](./operations/)** – Project management, tasks, automation backlog
+- **[`platform/`](./platform/)** – Environment setup, site config, view counts
 
-- **`testing/`** – Test infrastructure and coverage:
-  - [`README.md`](./testing/readme) - Testing overview and setup
-  - [`coverage-roadmap.md`](./testing/coverage-roadmap) - 3-phase coverage plan
-  - [`quick-reference.md`](./testing/quick-reference) - Testing commands & patterns
+### Development & Quality
+- **[`testing/`](./testing/)** – Test infrastructure, coverage roadmap, quick reference
+- **[`development/`](./development/)** – Performance optimization, Lighthouse CI, ISR
+- **[`optimization/`](./optimization/)** – SEO, JSON-LD, alt-text, tag analytics
+- **[`content/`](./content/)** – Content validation, Markdown standards, Mermaid
 
-- **`optimization/`** – SEO + accessibility + analytics:
-  - [`json-ld-implementation.md`](./optimization/json-ld-implementation) - Structured data
-  - [`alt-text-guide.md`](./optimization/alt-text-guide) - Accessibility
-  - [`tag-analytics.md`](./optimization/tag-analytics) - Tag analytics
+### Reference & Tools
+- **[`ai/`](./ai/)** – AI contributor guides, best practices, optimization
+- **[`automation/`](./automation/)** – Automated dependency management and updates
+- **[`maintenance/`](./maintenance/)** – Maintenance patterns and modularization
 
-- **`content/`** – Content validation and standards:
-  - [`CONTENT_VALIDATION.md`](./content/content-validation) - Validation workflows
-  - [`MARKDOWN_STANDARDS.md`](./content/markdown-standards) - Markdown conventions
-  - [`MERMAID_BEST_PRACTICES.md`](./content/mermaid-best-practices) - Diagram guidelines
+## 🔗 Quick Links
 
-**Reference (2 directories):**
+| Area | Key Documentation |
+|------|-------------------|
+| **Getting Started** | [Quick Start](./quick-start) • [Environment Setup](./platform/environment-variables) |
+| **Architecture** | [Architecture Overview](./architecture/README) • [Migration Guide](./architecture/migration-guide) |
+| **Design System** | [Design System](./design/design-system) • Page Templates |
+| **Components** | [MDX Components](./components/mdx) • [Post Components](./components/post-badges) |
+| **API & Features** | [API Overview](./api/routes/overview) • [Background Jobs](./features/inngest-integration) |
+| **Testing & Quality** | [Testing Guide](./testing/README) • [Performance](./development/lighthouse-ci) |
+| **Operations** | Current Tasks • Completed Work |
 
-- **`ai/`** – AI contributor guides:
-  - [`BEST_PRACTICES.md`](./ai/best-practices) - AI development practices
-  - [`DESIGN_SYSTEM.md`](./ai/design-system) - Design system for AI
-  - [`OPTIMIZATION_STRATEGY.md`](./ai/optimization-strategy) - Token optimization
-  - `discovery/` - AI discovery documentation
+---
 
-- **`maintenance/`** – Maintenance patterns:
-  - [`MODULARIZATION.md`](./maintenance/modularization) - Dashboard modularization
+## Getting Help
 
-## Quick Links
+- **Browse all docs**: Use the search above or explore the directory structure
+- **Need specific help?** Check operations/todo.md for current priorities
+- **Contributing?** See [ai/BEST_PRACTICES.md](./ai/best-practices) for development guidelines
 
-| Topic | Primary References |
-|-------|--------------------|
-| **Getting Started** | **[`QUICK_START.md`](./quick-start) - Navigation hub** |
-| **Architecture** | **[`architecture/README.md`](./architecture/readme) · [`architecture/migration-guide.md`](./architecture/migration-guide)** |
-| AI Discovery | [`ai/discovery/overview.md`](./ai/discovery/overview) |
-| APIs | [`api/reference.md`](./api/reference) · [`api/routes/overview.md`](./api/routes/overview) |
-| Blog System | [`blog/architecture.md`](./blog/architecture) · [`blog/quick-reference.md`](./blog/quick-reference) |
-| Blog Feeds | [`blog/feeds/improvements.md`](./blog/feeds/improvements) |
-| Components | [`components/post-badges.md`](./components/post-badges) · [`components/mdx.md`](./components/mdx) |
-| Design System | [`design/design-system.md`](./design/design-system) |
-| Typography | [`design/typography/typography.md`](./design/typography/typography) |
-| **Mobile-First UX** | **[`design/mobile/mobile-first-optimization-analysis.md`](./design/mobile/mobile-first-optimization-analysis)** |
-| Print Styles | [`design/print/print-stylesheet.md`](./design/print/print-stylesheet) |
-| Spacing System | [`design/spacing/spacing-system.md`](./design/spacing/spacing-system) |
-| **Background Jobs** | **[`features/inngest-integration.md`](./features/inngest-integration)** |
-| GitHub Integration | [`features/github-integration.md`](./features/github-integration) |
-| MCP Servers | [`features/mcp/servers.md`](./features/mcp/servers) |
-| **Operations** | **[`operations/todo.md`](./operations/todo) · [`operations/done.md`](./operations/done)** |
-| Testing | [`testing/README.md`](./testing/readme) · [`testing/coverage-roadmap.md`](./testing/coverage-roadmap) |
-| Performance | [`development/lighthouse-ci.md`](./development/lighthouse-ci) · [`development/inp-optimization.md`](./development/inp-optimization) |
-| SEO & Accessibility | [`optimization/json-ld-implementation.md`](./optimization/json-ld-implementation) · [`optimization/alt-text-guide.md`](./optimization/alt-text-guide) |
-| Security – CSP | [`security/csp/nonce-implementation.md`](./security/csp/nonce-implementation) |
-| Security – Rate Limiting | [`security/rate-limiting/guide.md`](./security/rate-limiting/guide) |
-| **Environment Setup** | **[`platform/environment-variables.md`](./platform/environment-variables)** |
-| Platform Config | [`platform/site-config.md`](./platform/site-config) · [`platform/view-counts.md`](./platform/view-counts) |
+## Contributing & Maintenance
 
-## Maintenance Guidelines
+- Keep new documentation in the appropriate topical folder
+- Use level-one headings (`# Title`) with a **Summary** section for new content
+- Update this README when adding new folders or key references
 
-- Keep new documentation in the appropriate topical folder; avoid reintroducing flat files at the root.
-- Normalize headings to start with a level-one title (`# Title`) followed by a short **Summary** section when adding new content.
-- Update this README whenever folders or key references change to maintain a reliable entry point.
+---
 
-## Related References
-
-- `.github/copilot-instructions.md` – AI contributor guidelines and architectural constraints.
-- Project root `README.md` – High-level overview and developer quick start.
-
-_Last updated: December 2, 2025_
+*Documentation hub for DCYFR Labs • Last updated: December 17, 2025*

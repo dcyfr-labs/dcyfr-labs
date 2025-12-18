@@ -130,12 +130,12 @@ archived: true
 
 ### Basic Syntax
 
-````markdown
+```markdown
 ```typescript
 const greeting = "Hello, world!";
 console.log(greeting);
 ```
-````
+```
 
 ### Supported Languages
 
@@ -208,7 +208,7 @@ tags: ["web development"]               # Too broad
 
 ```markdown
 [Link text](https://example.com)
-[Internal link](/blog/other-post)
+Internal link
 ```
 
 **External links** automatically open in new tab.
@@ -216,7 +216,7 @@ tags: ["web development"]               # Too broad
 ### Images
 
 ```markdown
-![Alt text](/images/my-image.png)
+![Alt text](image-url.jpg)
 ```
 
 ### Blockquotes
@@ -360,13 +360,13 @@ updatedAt: "2025-10-24"
 
 ### Multi-Line Code
 
-````markdown
+```markdown
 ```typescript
 export function myFunction() {
   return "Hello";
 }
 ```
-````
+```
 
 ### Inline Code
 
@@ -455,7 +455,7 @@ code here
 ```typescript
 code here
 ```
-````
+```
 
 ### Related Posts Not Showing
 

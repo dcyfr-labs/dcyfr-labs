@@ -1,13 +1,14 @@
 /**
  * Layout Components Index
  * 
- * Centralized exports for page, archive, and article layout patterns.
+ * Centralized exports for page, archive, article, and docs layout patterns.
  * 
  * @example
  * ```tsx
  * import { PageLayout } from '@/components/layouts';
  * import { ArchiveLayout, ArchiveFilters, ArchivePagination } from '@/components/layouts';
  * import { ArticleLayout, ArticleHeader, ArticleFooter } from '@/components/layouts';
+ * import { DocsLayout } from '@/components/layouts';
  * ```
  */
 
@@ -36,3 +37,6 @@ export type { ArticleHeaderProps } from './article-header';
 
 export { ArticleFooter } from './article-footer';
 export type { ArticleFooterProps } from './article-footer';
+
+// Docs Layout
+export { DocsLayout } from './docs-layout';

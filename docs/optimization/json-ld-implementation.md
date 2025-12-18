@@ -413,8 +413,8 @@ curl http://localhost:3000/blog | grep -A 50 "application/ld+json"
 
 ## Related Documentation
 
-- [SEO Best Practices](./seo-best-practices)
-- [Site Configuration](../lib/site-config)
+- SEO Best Practices
+- Site Configuration
 - [CSP Implementation](../security/csp/nonce-implementation)
 - [Blog Architecture](../blog/architecture)
 

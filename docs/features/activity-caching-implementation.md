@@ -305,7 +305,7 @@ Send event: activity/cache.invalidate
 - [Activity Feed Automation Strategy](../../docs/features/activity-feed-automation)
 - [Quick Start Guide](../../docs/features/activity-automation-quick-start)
 - [Inngest Integration](../../docs/features/inngest-integration)
-- [Redis Guide](../../docs/platform/redis-guide)
+- Redis Guide
 
 ---
 

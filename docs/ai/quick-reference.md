@@ -74,7 +74,7 @@ import PostList from "../../components/blog/post-list";
 - User form → Yes
 - Static content → No
 
-**See:** [Interactive Decision Trees](/dev/docs/decision-trees) for detailed flowcharts
+**See:** Interactive Decision Trees for detailed flowcharts
 
 ## Quick Debugging
 

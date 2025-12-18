@@ -23,7 +23,7 @@ Automated recurring maintenance tasks with GitHub Issues, email alerts, and dash
 
 ### Weekly Test Health Reports
 
-**Workflow:** [`.github/workflows/weekly-test-health.yml`](.github/workflows/weekly-test-health.yml)
+**Workflow:** `.github/workflows/weekly-test-health.yml`
 
 **Schedule:** Every Monday at 08:00 UTC (after Dependabot runs)
 
@@ -118,7 +118,7 @@ Options:
 
 ### Monthly Security Reviews
 
-**Workflow:** [`.github/workflows/monthly-security-review.yml`](.github/workflows/monthly-security-review.yml)
+**Workflow:** `.github/workflows/monthly-security-review.yml`
 
 **Schedule:** First day of each month at 09:00 UTC
 
@@ -210,7 +210,7 @@ Options:
 
 ### Content Validation
 
-**Workflow:** [`.github/workflows/validate-content.yml`](.github/workflows/validate-content.yml)
+**Workflow:** `.github/workflows/validate-content.yml`
 
 **Triggers:**
 
@@ -249,7 +249,7 @@ Options:
 
 ### Monthly Cleanup
 
-**Workflow:** [`.github/workflows/monthly-cleanup.yml`](.github/workflows/monthly-cleanup.yml)
+**Workflow:** `.github/workflows/monthly-cleanup.yml`
 
 **Schedule:** 15th of every month at 11:00 UTC
 
@@ -723,19 +723,19 @@ curl -X POST http://localhost:3001/api/maintenance/observations \
 
 **Phase 1 Scripts (Testing):**
 
-- [`scripts/analyze-test-health.mjs`](../../scripts/analyze-test-health.mjs)
-- [`scripts/sentry-enricher.mjs`](../../scripts/sentry-enricher.mjs)
-- [`scripts/github-api.mjs`](../../scripts/github-api.mjs)
+- `scripts/analyze-test-health.mjs`
+- `scripts/sentry-enricher.mjs`
+- `scripts/github-api.mjs`
 
 **Phase 2 Scripts (Security):**
 
-- [`scripts/security-audit.mjs`](../../scripts/security-audit.mjs)
-- [`scripts/branch-cleanup.mjs`](../../scripts/branch-cleanup.mjs)
+- `scripts/security-audit.mjs`
+- `scripts/branch-cleanup.mjs`
 
 **Phase 3 Scripts (Content & Cleanup):**
 
-- [`scripts/validate-frontmatter.mjs`](../../scripts/validate-frontmatter.mjs)
-- [`scripts/monthly-cleanup.mjs`](../../scripts/monthly-cleanup.mjs)
+- `scripts/validate-frontmatter.mjs`
+- `scripts/monthly-cleanup.mjs`
 
 **Issue Templates:**
 

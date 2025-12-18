@@ -15,7 +15,7 @@ Analytics dashboard documentation for tracking and analyzing blog post performan
 
 - **[JSON-LD Implementation](./json-ld-implementation)** - Structured data for SEO
 - **[Alt Text Guide](./alt-text-guide)** - Accessibility optimization
-- **[Canonical URL Audit](./canonical-url-audit)** - URL structure optimization
+- **Canonical URL Audit** - URL structure optimization
 
 ## Overview
 
@@ -182,7 +182,7 @@ The Tag Analytics section shows performance metrics for each content tag, helpin
 3. **SEO Optimization** - Prioritize tags with strong reach
 4. **Content Balance** - Ensure diverse topic coverage
 
-See **[Tag Analytics Guide](./tag-analytics)** for detailed documentation.
+See **Tag Analytics Guide** for detailed documentation.
 
 ## Performance
 
@@ -271,5 +271,5 @@ Planned improvements:
 ## See Also
 
 - [Blog System Architecture](../blog/architecture)
-- [View Tracking Implementation](../components/view-tracking)
+- View Tracking Implementation
 - [Redis Configuration](../operations/environment-variables)

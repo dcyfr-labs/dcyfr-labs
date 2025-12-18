@@ -116,4 +116,4 @@ Once you know which MCPs work:
 4. **Update `.mcp.json`** if needed
 5. **Set up monitoring** for working MCPs
 
-See [mcp-test-guide.md](mcp-test-guide) for detailed troubleshooting.
+See [./mcp-test-guide.md](mcp-test-guide) for detailed troubleshooting.

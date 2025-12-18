@@ -286,12 +286,12 @@ async function getProjectFileDate(slug: string): Promise<Date> {
 
 **RSS 2.0:**
 ```xml
-<ttl>60</ttl> <!-- refresh every 60 minutes -->
+<ttl>60</ttl> {/* refresh every 60 minutes */}
 ```
 
 **Atom 1.0:** (no native TTL, but can use custom elements)
 ```xml
-<!-- Cache-Control headers already set in route.ts -->
+{/* Cache-Control headers already set in route.ts */}
 ```
 
 **Also add to channel:**
@@ -304,7 +304,7 @@ async function getProjectFileDate(slug: string): Promise<Date> {
   <hour>4</hour>
   <hour>5</hour>
 </skipHours>
-<!-- Hint: don't check between midnight-6am UTC -->
+{/* Hint: don't check between midnight-6am UTC */}
 ```
 
 **Benefits:**
@@ -337,10 +337,10 @@ async function getProjectFileDate(slug: string): Promise<Date> {
 
 **Per-item (for blog posts):**
 ```xml
-<!-- RSS -->
+{/* RSS */}
 <rights>This work is licensed under CC BY-NC-SA 4.0</rights>
 
-<!-- Atom -->
+{/* Atom */}
 <rights type="text">This work is licensed under CC BY-NC-SA 4.0</rights>
 ```
 
@@ -559,10 +559,10 @@ describe("RSS Feed", () => {
 
 **Solution:**
 ```xml
-<!-- Current feed -->
+{/* Current feed */}
 <link rel="next" href="https://www.dcyfr.ai/feed?page=2" />
 
-<!-- Archive feed -->
+{/* Archive feed */}
 <link rel="prev-archive" href="https://www.dcyfr.ai/feed/2024" />
 <link rel="current" href="https://www.dcyfr.ai/feed" />
 ```
@@ -607,21 +607,21 @@ export async function GET(request: Request) {
 Subscribe to updates fromDCYFR Labs using your favorite RSS/Atom reader.
 
 ## 📰 All Content
-- **Atom:** [/feed](/feed)
+- **Atom:** /feed
 - **Description:** Combined feed of blog posts and projects
 
 ## ✍️ Blog Posts Only
-- **Atom:** [/blog/feed](/blog/feed)
+- **Atom:** /blog/feed
 - **Description:** Latest articles and notes
 
 ## 🚀 Projects Only
-- **Atom:** [/projects/feed](/projects/feed)
+- **Atom:** /projects/feed
 - **Description:** Portfolio projects and updates
 
 ## 🔖 Filtered Feeds
-- [Security Posts](/blog/feed?tag=security)
-- [TypeScript Posts](/blog/feed?tag=typescript)
-- [Active Projects](/projects/feed?status=active)
+- Security Posts
+- TypeScript Posts
+- Active Projects
 
 ## 📱 Recommended Readers
 - **iOS/macOS:** NetNewsWire, Reeder

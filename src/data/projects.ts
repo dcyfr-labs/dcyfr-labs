@@ -115,12 +115,6 @@ const projectDrafts: Project[] = [
       "Integrated SEO best practices to enhance online visibility and search engine rankings."
     ],
     featured: true,
-    image: {
-      url: "/images/projects/startup.svg",
-      alt: "DCYFR Labs: Cyber Architecture & Design",
-      position: "center",
-      hideHero: true,
-    },
   },
   {
     slug: "x64",
@@ -140,12 +134,6 @@ const projectDrafts: Project[] = [
       "Built a community of readers and contributors passionate about cybersecurity awareness and education."
     ],
     featured: false,
-    image: {
-      url: "/images/projects/design.svg",
-      alt: "X64: Indie Cyber Publication",
-      position: "center",
-      hideHero: true,
-    },
   },
   {
     slug: "isn",
@@ -163,12 +151,6 @@ const projectDrafts: Project[] = [
       "Organized events and workshops to engage the public and foster a culture of security awareness."
     ],
     featured: false,
-    image: {
-      url: "/images/projects/nonprofit.svg",
-      alt: "Information Security Network: A Non-profit cybersecurity organization",
-      position: "center",
-      hideHero: true,
-    },
   },
 ];
 

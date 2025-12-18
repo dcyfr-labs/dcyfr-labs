@@ -244,7 +244,7 @@ const components = {
 
 Then use standard markdown:
 ```markdown
-![Screenshot of app](/blog/screenshot.png)
+![Screenshot of app](optimized-screenshot.jpg)
 ```
 
 ### 9. Performance Checklist

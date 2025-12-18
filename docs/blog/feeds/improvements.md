@@ -170,7 +170,7 @@ Both feeds follow official specifications:
     <description>Articles and notes...</description>
     <language>en-us</language>
     <lastBuildDate>...</lastBuildDate>
-    <atom:link href=".../rss.xml" rel="self" type="application/rss+xml" />
+    HTML anchor
     <generator>Next.js</generator>
     <managingEditor>email (name)</managingEditor>
     <webMaster>email (name)</webMaster>

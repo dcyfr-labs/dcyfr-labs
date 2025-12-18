@@ -133,5 +133,5 @@ const latestPost = [...posts]
 ## Related Documentation
 
 - [Badge Floating Layout](./badge-floating-layout) - Floating layout implementation
-- [Post Badges Reorganization](./post-badges-reorganization) - Initial implementation
-- [Draft Posts Feature](./draft-posts-implementation)
+- Post Badges Reorganization - Initial implementation
+- Draft Posts Feature

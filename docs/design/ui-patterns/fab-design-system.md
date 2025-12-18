@@ -2,7 +2,7 @@
 
 **Date:** November 4, 2025  
 **Status:** ✅ Implemented  
-**Related:** [Back to Top](../components/back-to-top.tsx) · [Table of Contents](../components/table-of-contents.tsx)
+**Related:** Back to Top · Table of Contents
 
 ---
 
@@ -214,7 +214,7 @@ window.addEventListener("scroll", handleScroll, { passive: true });
 3. Both use same right-side positioning (consistent)
 4. 72px vertical gap prevents touch target overlap
 5. Footer clearance prevents overlap at bottom of long pages
-````
+```
 
 ---
 

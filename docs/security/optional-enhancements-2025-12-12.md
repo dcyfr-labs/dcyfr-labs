@@ -20,7 +20,7 @@ Four optional security enhancements identified in the security audit have been i
 
 ### Current Implementation
 
-**File:** [src/app/api/contact/route.ts:67-98](../../src/app/api/contact/route.ts#L67-L98)
+**File:** src/app/api/contact/route.ts:67-98
 
 **Size Limit:** 50KB (50 * 1024 bytes)
 
@@ -93,7 +93,7 @@ curl -X POST https://your-domain.com/api/contact \
 **Status:** Newly Implemented
 **Priority:** Low
 **Implementation Time:** 15 minutes
-**File:** [src/app/opengraph-image.tsx:19-37](../../src/app/opengraph-image.tsx#L19-L37)
+**File:** src/app/opengraph-image.tsx:19-37
 
 ### Implementation
 
@@ -193,7 +193,7 @@ Output: "This is a very long title that exceeds the maximum character limit and 
 **Status:** Newly Implemented
 **Priority:** Low
 **Implementation Time:** 5 minutes
-**File:** [src/components/common/contact-form.tsx:148-164](../../src/components/common/contact-form.tsx#L148-L164)
+**File:** src/components/common/contact-form.tsx:148-164
 
 ### Implementation
 
@@ -207,12 +207,7 @@ Output: "This is a very long title that exceeds the maximum character limit and 
     We collect only the information you provide (name, email, message)
     to respond to your inquiry. Your data is not shared with third
     parties and is handled securely.{" "}
-    <a
-      href="/security.txt"
-      className="underline hover:text-foreground transition-colors"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
+    HTML anchor
       Security contact
     </a>
   </p>
@@ -250,10 +245,7 @@ Output: "This is a very long title that exceeds the maximum character limit and 
 
 **If a full privacy policy is created:**
 ```tsx
-<a
-  href="/privacy"
-  className="underline hover:text-foreground transition-colors"
->
+HTML anchor
   Privacy Policy
 </a>
 ```

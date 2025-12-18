@@ -245,7 +245,7 @@ src/
 
 ## Related Documentation
 
-- [Post Badges Reorganization](./post-badges-reorganization) - Initial badge implementation
+- Post Badges Reorganization - Initial badge implementation
 - [View Counts Feature](../platform/view-counts) - View tracking system
 
 ## Rollback

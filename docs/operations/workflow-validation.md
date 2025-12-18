@@ -280,7 +280,7 @@ Branches: TBD (depends on repo state)
 
 **Documentation:**
 - [Maintenance Automation Docs](./maintenance-automation)
-- [Todo Tracker](./todo)
+- Todo Tracker
 
 ---
 

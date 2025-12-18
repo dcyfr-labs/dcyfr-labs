@@ -2,7 +2,7 @@
 
 **Date:** November 4, 2025  
 **Status:** 🎨 Planning & Brainstorming  
-**Related:** [Blog Architecture](../blog/architecture) · [Component Docs](../components/)
+**Related:** Blog Architecture · Component Docs
 
 ---
 

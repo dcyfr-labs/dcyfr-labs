@@ -303,10 +303,10 @@ className="py-3 sm:py-4"
 
 ## Related Documentation
 
-- [Mobile-First Optimization Analysis](./mobile-first-optimization-analysis)
-- [Component Documentation](../components/)
-- [Skeleton Sync Strategy](../components/skeleton-sync-strategy)
-- [Touch Target Guidelines](./mobile-first-quick-reference)
+- Mobile-First Optimization Analysis
+- Component Documentation
+- Skeleton Sync Strategy
+- Touch Target Guidelines
 
 ## Validation
 

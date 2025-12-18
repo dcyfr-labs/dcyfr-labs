@@ -345,11 +345,11 @@ Before committing your Inngest function:
 
 ## Related Templates
 
-- [API_ROUTE.ts](./API_ROUTE.ts) - Trigger Inngest from API
-- [TEST_SUITE.test.tsx](./TEST_SUITE.test.tsx) - Test your function
+- API_ROUTE.ts - Trigger Inngest from API
+- TEST_SUITE.test.tsx - Test your function
 
 ## Related Docs
 
-- [Inngest Guide](../features/inngest)
-- [Background Job Patterns](../ai/component-patterns#background-jobs)
-- [API Route Integration](../api/readme)
+- Inngest Guide
+- Background Job Patterns
+- API Route Integration

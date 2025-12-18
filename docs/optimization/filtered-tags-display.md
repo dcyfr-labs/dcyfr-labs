@@ -283,6 +283,6 @@ Potential improvements:
 
 ## See Also
 
-- [Tag Analytics Documentation](./tag-analytics)
-- [Tag Analytics Quick Reference](./tag-analytics-quick-ref)
+- Tag Analytics Documentation
+- Tag Analytics Quick Reference
 - [Analytics Dashboard Guide](./readme)

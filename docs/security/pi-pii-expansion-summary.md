@@ -345,4 +345,4 @@ Future expansion opportunities:
 **Test Coverage:** 100% (52/52 passing)  
 **Code Quality:** TypeScript strict mode, ESLint 0 errors
 
-For detailed implementation guidance, see [`docs/security/PI_PII_TAXONOMY.md`](pi-pii-taxonomy).
+For detailed implementation guidance, see [`docs/security/PI_PII_TAXONOMY.md`](./pi-pii-taxonomy).

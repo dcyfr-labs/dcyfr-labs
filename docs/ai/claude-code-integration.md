@@ -10,7 +10,7 @@ This document provides guidance on integrating Claude Code into the dcyfr-labs p
 
 Claude Code is configured as the primary AI development assistant for complex, multi-file refactoring and architectural work. It complements GitHub Copilot, which remains useful for inline suggestions and simple edits.
 
-**Primary Instructions:** [`.github/claude-instructions.md`](../../.github/claude-instructions)
+**Primary Instructions:** `.github/claude-instructions.md`
 
 ---
 
@@ -153,7 +153,7 @@ Claude Code is specifically configured to handle Phase 4: Code Organization & St
 
 ### Current Phase 4 Tasks
 
-From [`docs/operations/todo.md`](../operations/todo):
+From `docs/operations/todo.md`:
 
 1. **Phase 4.1**: Component directory reorganization (4-6 hours)
    - Move 80 components from root to feature-based directories
@@ -542,8 +542,8 @@ Why are integration tests failing in CI but passing locally?
 ## Next Steps
 
 1. **Familiarize with Instructions**
-   - Read [`.github/claude-instructions.md`](../../.github/claude-instructions)
-   - Review Phase 4 tasks in [`docs/operations/todo.md`](../operations/todo)
+   - Read `.github/claude-instructions.md`
+   - Review Phase 4 tasks in `docs/operations/todo.md`
 
 2. **Start with Phase 4.1**
    - Component reorganization is highest priority
@@ -564,9 +564,9 @@ Why are integration tests failing in CI but passing locally?
 
 ## Resources
 
-- **Primary Instructions**: [`.github/claude-instructions.md`](../../.github/claude-instructions)
-- **Current Priorities**: [`docs/operations/todo.md`](../operations/todo)
-- **Completed Work**: [`docs/operations/done.md`](../operations/done)
+- **Primary Instructions**: `.github/claude-instructions.md`
+- **Current Priorities**: `docs/operations/todo.md`
+- **Completed Work**: `docs/operations/done.md`
 - **Design System**: [`docs/design/ENFORCEMENT.md`](../design/enforcement)
 - **Architecture**: [`docs/architecture/`](../architecture/)
 - **Testing Guide**: [`docs/testing/`](../testing/)

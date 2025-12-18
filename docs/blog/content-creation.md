@@ -390,7 +390,7 @@ All standard GFM features are supported via `remark-gfm`.
 
 ```markdown
 [Link text](https://example.com)
-[Internal link](/blog/another-post)
+Internal link
 ```
 
 **Auto-detected:**
@@ -485,12 +485,12 @@ Use the `npm run dev` command to start the dev server.
 
 Specify language for automatic syntax highlighting:
 
-````markdown
+```markdown
 ```typescript
 const greeting: string = "Hello, World!";
 console.log(greeting);
 ```
-````
+```
 
 **Supported Languages:**
 - `typescript`, `javascript`, `jsx`, `tsx`
@@ -502,7 +502,7 @@ console.log(greeting);
 
 #### Multi-Line Code Examples
 
-````markdown
+```markdown
 ```tsx
 import { Button } from "@/components/ui/button";
 
@@ -515,16 +515,16 @@ export default function Example() {
   );
 }
 ```
-````
+```
 
 #### Code Without Language
 
-````markdown
+```markdown
 ```
 Plain text code block
 No syntax highlighting
 ```
-````
+```
 
 ---
 
@@ -856,7 +856,7 @@ title: "Part 1: Introduction to TypeScript"
 tags: ["TypeScript", "Series"]
 ---
 
-> **Series:** This is Part 1 of 3. Continue with [Part 2: Advanced Types](/blog/typescript-part-2) and [Part 3: Generics](/blog/typescript-part-3).
+> **Series:** This is Part 1 of 3. Continue with Part 2: Advanced Types and Part 3: Generics.
 
 ## Introduction
 ...
@@ -866,19 +866,19 @@ tags: ["TypeScript", "Series"]
 ```markdown
 ## Next Steps
 
-Continue to [Part 2: Advanced Types](/blog/typescript-part-2) to learn about union types, intersection types, and type guards.
+Continue to Part 2: Advanced Types to learn about union types, intersection types, and type guards.
 ```
 
 ### Update Notices
 
 **At the top of post:**
 ```mdx
-> **Update (Oct 2025):** This post is now part of a series! Check out [Part 2: Advanced Topics](/blog/post-part-2) for the follow-up.
+> **Update (Oct 2025):** This post is now part of a series! Check out Part 2: Advanced Topics for the follow-up.
 ```
 
 **For deprecation:**
 ```mdx
-> **Deprecation Notice:** The approach described here has been replaced by [newer method]. See [Updated Guide](/blog/new-guide) for current best practices.
+> **Deprecation Notice:** The approach described here has been replaced by [newer method]. See Updated Guide for current best practices.
 ```
 
 ### Code Samples with Explanations
@@ -945,7 +945,7 @@ npm run build
 3. ✅ No extra spaces before/after backticks
 
 **Example:**
-````markdown
+```markdown
 ❌ Wrong:
 ``` typescript
 const x = 1;
@@ -955,7 +955,7 @@ const x = 1;
 ```typescript
 const x = 1;
 ```
-````
+```
 
 ### Table of Contents Empty
 

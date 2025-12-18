@@ -414,7 +414,7 @@ Replace `/public/images/avatar.jpg` or pass custom `src` prop
 
 ## Related Documentation
 
-- [About Page Phase 2 & 3 Backlog](/docs/operations/todo#-about-page-enhancements-backlog)
+- About Page Phase 2 & 3 Backlog
 - [Resume Data Schema](/src/data/resume.ts)
 - [Design System (shadcn/ui)](/components.json)
 - [Component Patterns](/docs/components/)

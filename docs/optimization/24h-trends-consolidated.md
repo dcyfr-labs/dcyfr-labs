@@ -1,4 +1,4 @@
-<!-- TLP:CLEAR -->
+{/* TLP:CLEAR */}
 # 24-Hour Trends Analytics - Complete Guide
 
 **Status:** ✅ Complete (November 8, 2025)  
@@ -289,11 +289,11 @@ const debug24hTrend = (postSlug: string) => {
 - [`platform/view-counts.md`](../platform/view-counts) - View tracking system
 
 **Implementation Details:**
-- [`features/redis-caching.md`](../features/redis-caching) - Redis configuration
-- [`development/analytics-api.md`](../development/analytics-api) - API endpoints
+- `features/redis-caching.md` - Redis configuration
+- `development/analytics-api.md` - API endpoints
 
 **Monitoring & Performance:**
-- [`operations/monitoring.md`](../operations/monitoring) - System health monitoring
+- `operations/monitoring.md` - System health monitoring
 - [`development/performance-monitoring.md`](../development/performance-monitoring) - Performance optimization
 
 ---
@@ -302,4 +302,4 @@ const debug24hTrend = (postSlug: string) => {
 **Version:** 1.0.0 (Consolidated)  
 **Contributors:** DCYFR Team
 
-For issues or enhancements, see [`operations/todo.md`](../operations/todo).
+For issues or enhancements, see `operations/todo.md`.

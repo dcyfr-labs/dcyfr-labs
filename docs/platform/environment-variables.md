@@ -99,7 +99,7 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
    - `VERCEL_TOKEN` - For deployment checks workflow
    - `SENTRY_AUTH_TOKEN` - For source map uploads in CI
 
-**See:** [Production Deployment Runbook - GitHub Secrets](../operations/production-deployment#github-secrets-configuration)
+**See:** Production Deployment Runbook - GitHub Secrets
 
 ---
 
@@ -683,7 +683,7 @@ NEXT_PUBLIC_GISCUS_CATEGORY_ID=
 - [Site Configuration](./site-config) - Domain/URL config
 - [Inngest Integration](../features/inngest-integration) - Background jobs
 - [GitHub Integration](../features/github-integration) - Heatmap setup
-- [Deployment Guide](../deployment-guide) - Pre-deployment checklist
+- Deployment Guide - Pre-deployment checklist
 
 ---
 

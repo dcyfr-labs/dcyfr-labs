@@ -158,16 +158,7 @@ export default async function SponsorsPage() {
             {sponsors.length === 0 ? (
               <div className="text-center mt-8">
                 <p className="text-muted-foreground">
-                  No backers yet. Be the first to{" "}
-                  <Link
-                    href="https://github.com/sponsors/dcyfr"
-                    className="text-primary hover:underline"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    sponsor us
-                  </Link>
-                  !
+                  No sponsors yet. Will you be the first?
                 </p>
               </div>
             ) : (

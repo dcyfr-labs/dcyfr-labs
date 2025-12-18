@@ -4,7 +4,7 @@
 
 ## 🎯 Start Here
 
-**[AUTOMATION SYSTEM GUIDE](automation-system-consolidated.md)** - Complete guide with:
+**[AUTOMATION SYSTEM GUIDE](./automation-system-consolidated.md)** - Complete guide with:
 - 🚀 **Quick Setup** (5-minute start)
 - 📊 **System Overview** (visual architecture) 
 - 🛠️ **Implementation Details** (technical depth)
@@ -37,11 +37,11 @@
 
 **I want to...** → **Read this**
 
-- Enable auto-merge now → [ENABLE_AUTO_MERGE.md](enable-auto-merge)
-- Understand the system → [QUICK_VISUAL_GUIDE.md](quick-visual-guide)
-- Get all the details → [AUTOMATED_UPDATES.md](automated-updates)
-- See implementation → [IMPLEMENTATION_SUMMARY.md](implementation-summary)
-- Troubleshoot issues → [AUTOMATED_UPDATES.md#troubleshooting](automated-updates)
+- Enable auto-merge now → ENABLE_AUTO_MERGE.md
+- Understand the system → QUICK_VISUAL_GUIDE.md
+- Get all the details → AUTOMATED_UPDATES.md
+- See implementation → IMPLEMENTATION_SUMMARY.md
+- Troubleshoot issues → AUTOMATED_UPDATES.md#troubleshooting
 
 ---
 
@@ -159,7 +159,7 @@ gh run list --limit 10
 ```
 
 ### Troubleshoot
-See [AUTOMATED_UPDATES.md#troubleshooting](automated-updates#troubleshooting)
+See AUTOMATED_UPDATES.md#troubleshooting
 
 ### Get Help
 - Check relevant documentation file
@@ -208,9 +208,9 @@ Continuous:
 
 ## 🎯 Next Steps
 
-1. **Read:** [QUICK_VISUAL_GUIDE.md](quick-visual-guide) (5 min)
-2. **Setup:** [ENABLE_AUTO_MERGE.md](enable-auto-merge) (5 min)
-3. **Understand:** [AUTOMATED_UPDATES.md](automated-updates) (15 min)
+1. **Read:** QUICK_VISUAL_GUIDE.md (5 min)
+2. **Setup:** ENABLE_AUTO_MERGE.md (5 min)
+3. **Understand:** AUTOMATED_UPDATES.md (15 min)
 4. **Done!** ✅
 
 ---
@@ -219,4 +219,4 @@ Continuous:
 **Last Updated:** December 9, 2025  
 **Next Review:** March 9, 2026 (Quarterly)
 
-**Ready to enable?** → [ENABLE_AUTO_MERGE.md](enable-auto-merge)
+**Ready to enable?** → ENABLE_AUTO_MERGE.md

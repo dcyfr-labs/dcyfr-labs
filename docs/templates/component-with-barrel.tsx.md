@@ -150,9 +150,9 @@ export function ClientComponent() {
 ## Related Templates
 
 - [NEW_PAGE.tsx](./new-page.tsx) - Using components in pages
-- [TEST_SUITE.test.tsx](./test-suite.test.tsx) - Testing components
+- TEST_SUITE.test.tsx - Testing components
 
 ## Related Docs
 
-- [Component Patterns](../ai/component-patterns#barrel-exports)
-- [Design Tokens](../ai/enforcement-rules#design-token-enforcement)
+- Component Patterns
+- Design Tokens

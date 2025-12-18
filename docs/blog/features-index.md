@@ -124,7 +124,7 @@ const example: string = "Hello, World!";
    - Shows "Archived" badge
    - Useful for historical content
 
-**Documentation:** [Content Creation](./content-creation#post-states)
+**Documentation:** Content Creation
 
 ---
 

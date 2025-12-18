@@ -74,7 +74,7 @@ Deploy → Done! ✅
 
 | Document | Purpose |
 |----------|---------|
-| [INNGEST_ERROR_ALERTING_SETUP.md](../inngest-error-alerting-setup) | Quick setup (start here) |
+| INNGEST_ERROR_ALERTING_SETUP.md | Quick setup (start here) |
 | [inngest-error-alerting.md](./inngest-error-alerting) | Complete guide |
 | [inngest-error-alerting-quick-ref.md](./inngest-error-alerting-quick-ref) | Quick reference |
 | [inngest-error-alerting-examples.md](./inngest-error-alerting-examples) | Code examples |

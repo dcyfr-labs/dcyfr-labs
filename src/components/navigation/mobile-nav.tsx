@@ -57,8 +57,22 @@ export function MobileNav() {
 
   // Render button immediately but defer Sheet portal rendering until mounted
   // This avoids Radix ID mismatches while keeping the trigger interactive
+  if (!mounted) {
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        className="touch-target"
+        aria-label="Open navigation menu"
+        onClick={() => {}} // No-op until mounted
+      >
+        <MenuIcon className="h-5 w-5" />
+      </Button>
+    );
+  }
+
   return (
-    <Sheet open={mounted && open} onOpenChange={setOpen}>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
           variant="ghost"
@@ -69,8 +83,7 @@ export function MobileNav() {
           <MenuIcon className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      {mounted && (
-        <SheetContent side="left" className="w-[280px] sm:w-[320px] p-4">
+      <SheetContent side="left" className="w-[280px] sm:w-[320px] p-4">
           <SheetHeader>
             <SheetTitle className="text-left">Navigation</SheetTitle>
           </SheetHeader>
@@ -103,7 +116,6 @@ export function MobileNav() {
             <ThemeToggle />
           </div>
         </SheetContent>
-      )}
     </Sheet>
   );
 }
