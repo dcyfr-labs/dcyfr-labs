@@ -118,7 +118,7 @@
     "react-calendar-heatmap": "^1.10.0",
     "react-dom": "^19.2.1",
     "react-swipeable": "^7.0.2",
-    "recharts": "^3.5.1",
+    "recharts": "^3.6.0",
     "redis": "^5.10.0",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-katex": "^7.0.1",
