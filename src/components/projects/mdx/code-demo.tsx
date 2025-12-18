@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { MDX } from "@/components/common/mdx";
-import { SPACING } from "@/lib/design-tokens";
+import { SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
 
 interface CodeDemoProps {
   language?: string;
@@ -26,7 +26,7 @@ export function CodeDemo({
 
   return (
     <div className={SPACING.content}>
-      {title && <h3 className="text-xl font-semibold mb-3">{title}</h3>}
+      {title && <h3 className={`${TYPOGRAPHY.h3.standard} mb-3`}>{title}</h3>}
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
