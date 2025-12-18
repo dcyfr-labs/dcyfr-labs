@@ -9,7 +9,6 @@
  * - Workflow status grid (4 tracked workflows)
  * - 52-week trend visualization
  * - Recent workflow history
- * - Observation logging system
  * - Auto-refresh every 60 seconds
  * 
  * Modular structure:
@@ -27,7 +26,6 @@ import { TYPOGRAPHY } from "@/lib/design-tokens";
 // Import components
 import { WorkflowCard, WorkflowGridSkeleton, WorkflowStatusBadge } from "./components/workflow";
 import { ApiHealthCard, DesignSystemReportCard, RedisHealthCard } from "./components/status-cards";
-import { ObservationLogger, ObservationList } from "./components/observations";
 import { TrendChart } from "./components/trends";
 
 // Import hook and types
@@ -37,7 +35,7 @@ import { useMaintenanceDashboard } from "./hooks";
  * Main Maintenance Client Component
  */
 export default function MaintenanceClient() {
-  const { state, fetchDashboardData, refreshObservations, setAutoRefresh } =
+  const { state, fetchDashboardData, setAutoRefresh } =
     useMaintenanceDashboard();
 
   /**
@@ -200,22 +198,6 @@ export default function MaintenanceClient() {
               </div>
             </CardContent>
           </Card>
-        </section>
-
-        {/* Observations */}
-        <section>
-          <div className="grid gap-4 lg:grid-cols-2">
-            <ObservationLogger onSubmit={refreshObservations} />
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Observations</CardTitle>
-                <CardDescription>Last 10 logged observations</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ObservationList observations={state.observations} />
-              </CardContent>
-            </Card>
-          </div>
         </section>
       </div>
     </DashboardLayout>

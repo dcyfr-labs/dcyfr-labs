@@ -104,7 +104,7 @@ export function DesignSystemReportCard({ report }: { report: DesignSystemReport 
               <FileWarning className="h-5 w-5 text-muted-foreground" />
               <div>
                 <CardTitle className="text-lg">Design System</CardTitle>
-                <CardDescription className="text-xs">No data available</CardDescription>
+                <CardDescription className="text-xs">Not available</CardDescription>
               </div>
             </div>
           </div>
@@ -113,10 +113,10 @@ export function DesignSystemReportCard({ report }: { report: DesignSystemReport 
           <div className="flex items-center justify-center py-8 text-center">
             <div>
               <p className="text-sm text-muted-foreground mb-2">
-                Design system report is loading...
+                Design system validation skipped
               </p>
               <p className="text-xs text-muted-foreground">
-                Run validation script to generate report
+                Run: node scripts/validation/validate-design-tokens.mjs
               </p>
             </div>
           </div>

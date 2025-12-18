@@ -156,13 +156,6 @@ export const getOgImageUrl = (title?: string, description?: string): string => {
   return url.toString();
 };
 
-export const getTwitterImageUrl = (title?: string, description?: string): string => {
-  const url = new URL("/twitter-image", SITE_URL);
-  if (title) url.searchParams.set("title", title);
-  if (description) url.searchParams.set("description", description);
-  return url.toString();
-};
-
 // Explicit FROM_EMAIL constant to avoid split/join logic in other modules.
 // Uses Resend's verified domain (onboarding@resend.dev for testing, or domain-specific for production)
 // Can be overridden with NEXT_PUBLIC_FROM_EMAIL at build/runtime if needed.
@@ -187,7 +180,6 @@ const siteConfig = {
   content: CONTENT_CONFIG,
   services: SERVICES,
   getOgImageUrl,
-  getTwitterImageUrl,
 };
 
 export default siteConfig;

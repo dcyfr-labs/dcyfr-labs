@@ -1,9 +1,11 @@
 <!-- TLP:CLEAR -->
 # Documentation Index
 
-**Last Updated:** December 14, 2025  
+**Last Updated:** December 15, 2025  
 **Status:** Production-ready documentation ✅  
 **Classification:** [TLP Implementation](./security/TLP_CLASSIFICATION_IMPLEMENTATION.md) - Most content TLP:CLEAR (public)
+
+🔒 **Note:** This documentation is public. Sensitive content (security findings, operational metrics, compliance audits) is in subdirectory `private/` folders (e.g., `/docs/security/private/`, `/docs/operations/private/`). See [DOCS_GOVERNANCE.md](./DOCS_GOVERNANCE.md) for policies.
 
 ---
 
@@ -76,6 +78,36 @@ The documentation is organized into **16 focused directories**:
 - **[automation/ENABLE_AUTO_MERGE.md](./automation/enable-auto-merge)** - ✨ **Auto-merge setup instructions**
 - **[automation/IMPLEMENTATION_SUMMARY.md](./automation/implementation-summary)** - ✨ **Deployment guide**
 
+---
+
+## 🔒 Documentation Governance
+
+### Public vs. Private Documentation
+
+**This directory (`/docs`)** contains public documentation for contributors and users.
+
+**Private documentation** (subdirectory `private/` folders) contains sensitive content:
+
+- Security vulnerability details and audit findings → `docs/security/private/`
+- Operational metrics and performance benchmarks → `docs/operations/private/`
+- Internal team decisions and sprint backlogs → `docs/operations/private/`
+- Design analysis and metrics → `docs/design/private/`
+- Infrastructure credentials and procedures → `docs/development/private/`
+
+**[DOCS_GOVERNANCE.md](./DOCS_GOVERNANCE.md)** - Complete policy document
+
+- What belongs in public vs. private docs
+- Classification matrix for different document types
+- Enforcement mechanisms and guardrails
+- Contributor guidelines for documentation
+
+**[DOCUMENTATION_CONSOLIDATION_GUIDE.md](./DOCUMENTATION_CONSOLIDATION_GUIDE.md)** - How to find everything
+- Complete index of all documentation locations
+- Migration status of recent reorganization
+- Guardrails in place (pre-commit hooks, .gitignore)
+- Setup instructions for your machine
+
+---
 ### Development
 - **[testing/README.md](./testing/readme)** - Testing overview
 - **[testing/coverage-roadmap.md](./testing/coverage-roadmap)** - 3-phase coverage plan

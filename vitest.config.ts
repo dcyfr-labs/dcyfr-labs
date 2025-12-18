@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import os from 'os'
 
 export default defineConfig({
   plugins: [react()],
@@ -10,13 +11,17 @@ export default defineConfig({
   },
   test: {
     environment: 'happy-dom',
-    setupFiles: ['./tests/setup/vitest.setup.ts'],
+    setupFiles: ['./tests/vitest.setup.ts'],
     // Performance optimization: Use thread pool for parallel execution
     pool: 'threads',
     // Cache configuration for faster re-runs
     cache: {
       dir: 'node_modules/.vitest',
     },
+    // Test isolation: Clear all mocks and module cache between test suites
+    testTimeout: 10000, // 10 second timeout per test
+    // Bail after N failures (speeds up CI)
+    bail: 0, // 0 = no bail, run all tests. Set to 1 in CI with --bail flag
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
@@ -43,6 +48,9 @@ export default defineConfig({
     globals: true,
     include: ['src/**/*.{test,spec}.{ts,tsx}', 'tests/**/*.{test,spec}.{ts,tsx}'],
     exclude: ['node_modules', '.next', 'e2e'],
+    // Silence console output during tests (cleaner output)
+    // Set to false if debugging
+    silent: false,
   },
   resolve: {
     alias: {
@@ -50,3 +58,4 @@ export default defineConfig({
     },
   },
 })
+

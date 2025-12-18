@@ -74,7 +74,7 @@ export type BlogEvent =
       name: "blog_share_clicked";
       properties: {
         slug: string;
-        platform: "twitter" | "linkedin" | "facebook" | "reddit" | "copy";
+        platform: "linkedin" | "facebook" | "reddit" | "copy";
       };
     };
 
@@ -433,7 +433,7 @@ export function trackCodeCopy(slug: string, language: string) {
 /**
  * Track social share
  */
-export function trackShare(slug: string, platform: "twitter" | "linkedin" | "facebook" | "reddit" | "copy") {
+export function trackShare(slug: string, platform: "linkedin" | "facebook" | "reddit" | "copy") {
   return trackEvent({
     name: "blog_share_clicked",
     properties: { slug, platform },

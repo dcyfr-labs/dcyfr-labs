@@ -40,6 +40,7 @@ export default async function ContactPage() {
           <PageHero
             title="Contact Us"
             description="Whether you have questions, feedback, or collaboration ideas, we're here to help. Choose your preferred way to connect."
+            className="pt-8 md:pt-10 lg:pt-12"
           />
         </section>
 

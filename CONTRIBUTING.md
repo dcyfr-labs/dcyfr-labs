@@ -63,7 +63,7 @@ If you include examples that show private key blocks or service account JSON, fo
 
 - Use placeholders (e.g., `...`) and include `EXAMPLE` or `REDACTED` markers adjacent to the snippet.
 - If a real key must be used for CI, store it securely in a secrets manager and never commit a real key into the repo.
-- When in doubt, use `docs/operations/private/README.template.md` and external secure storage for sensitive examples.
+- When in doubt, use subdirectory-specific private folders (e.g., `docs/security/private/`, `docs/operations/private/`) and external secure storage for sensitive examples.
 
 ## PII/Allowlist Handling
 
@@ -101,10 +101,57 @@ If you rely on services (Redis, Resend, GitHub token) for local features, use `.
 - `RESEND_API_KEY` — emails via Resend
 - `GITHUB_TOKEN` — optional GitHub token for higher API rate limits
 
+## Documentation Governance
+
+All documentation is organized into **public** and **private** tiers to protect sensitive content.
+
+### Public Documentation (`/docs`)
+
+✅ **Share with world:** Architecture guides, API references, setup instructions, templates, design patterns
+✅ **Audience:** Community, contributors, open source users
+✅ **Examples:** `/docs/architecture/`, `/docs/api/`, `/docs/templates/`
+
+### Private Documentation (Subdirectory `private/` folders)
+
+🔒 **Team only:** Security findings, audit reports, operational metrics, performance data, team decisions
+🔒 **NOT committed to public git:** Excluded via `.gitignore`
+🔒 **Audience:** Team members, authorized auditors
+🔒 **Examples:** `/docs/security/private/`, `/docs/operations/private/`, `/docs/design/private/`
+
+**Note:** Private documentation uses subdirectory-specific `private/` folders (e.g., `docs/security/private/`) instead of a centralized `docs/private/*` structure. This prevents duplicate content and keeps related materials together.
+
+### Documentation Standards
+
+**Before committing documentation:**
+
+1. **Ask:** "Is this sensitive or internal?"
+   - Security findings → `/docs/security/private/`
+   - Operational metrics → `/docs/operations/private/`
+   - Design decisions → `/docs/design/private/`
+   - Public guidance → `/docs/`
+
+2. **Name clearly:** Use prefixes for sensitivity
+   - ✅ `FINDINGS_AND_ACTION_ITEMS.md` (obviously private)
+   - ✅ `OPERATIONAL_STATUS_2025.md` (obviously private)
+   - ❌ `status.md` (too vague)
+   - ❌ `report.md` (unclear)
+
+3. **Verify placement:** Pre-commit hook checks:
+   ```bash
+   git add docs/your-file.md
+   git commit -m "docs: add documentation"
+   # Hook runs automatically and blocks if file is in wrong place
+   ```
+
+4. **For detailed standards:** See [DOCS_GOVERNANCE.md](docs/DOCS_GOVERNANCE.md)
+
+---
+
 ## How to contribute
 
 - Make a small change in a branch.
 - Run `npm run check` locally and fix errors/warnings.
+- **For documentation:** Verify correct public/private placement (see Documentation Governance above).
 - Open a pull request against the default branch and include a short description of the change.
 
 ### Proprietary Specifications

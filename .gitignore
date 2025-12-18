@@ -172,9 +172,13 @@ tmp/
 .yarn/install-state.gz
 # Playwright generated test reports
 playwright-report/
-# Private documentation
-# Operational status reports, security findings, audit results, internal metrics
+
+# Private documentation (handled by **/private/** pattern above)
+# Subdirectory-specific private folders: docs/security/private/, docs/operations/private/, etc.
 # See: docs/DOCS_GOVERNANCE.md for documentation standards
 docs/archive/
-docs/private/
 .docs-private
+
+# Template documentation files containing example OAuth/API credentials
+# These are reference implementations only and should not be version controlled
+docs/templates/*.md

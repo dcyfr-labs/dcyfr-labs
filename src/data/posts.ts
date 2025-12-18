@@ -77,7 +77,7 @@ export const allPostCategories = Object.freeze(Object.keys(postCategoryCounts).s
 export const featuredPosts = Object.freeze(posts.filter((post) => post.featured));
 
 // Group posts by series
-export const postsBySeries = posts.reduce<Record<string, Post[]>>((acc, post) => {
+const postsBySeriesUnsorted = posts.reduce<Record<string, Post[]>>((acc, post) => {
   if (post.series) {
     if (!acc[post.series.name]) {
       acc[post.series.name] = [];
@@ -88,15 +88,23 @@ export const postsBySeries = posts.reduce<Record<string, Post[]>>((acc, post) =>
 }, {});
 
 // Sort posts within each series by order
-Object.keys(postsBySeries).forEach(seriesName => {
-  postsBySeries[seriesName].sort((a, b) => {
+Object.keys(postsBySeriesUnsorted).forEach(seriesName => {
+  postsBySeriesUnsorted[seriesName].sort((a, b) => {
     const orderA = a.series?.order ?? 0;
     const orderB = b.series?.order ?? 0;
     return orderA - orderB;
   });
 });
 
-export const allSeriesNames = Object.freeze(Object.keys(postsBySeries).sort());
+// Rebuild postsBySeries with sorted keys for consistency
+export const postsBySeries: Record<string, Post[]> = {};
+const sortedSeriesNames = Object.keys(postsBySeriesUnsorted).sort((a, b) => a.localeCompare(b));
+sortedSeriesNames.forEach(seriesName => {
+  postsBySeries[seriesName] = postsBySeriesUnsorted[seriesName];
+});
+
+// Export series names in sorted order for consistency
+export const allSeriesNames = Object.freeze(sortedSeriesNames);
 
 // ============================================================================
 // SERIES METADATA

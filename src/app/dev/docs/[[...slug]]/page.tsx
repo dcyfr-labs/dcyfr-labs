@@ -1,4 +1,6 @@
 import { createPageMetadata } from "@/lib/metadata";
+import { PageLayout } from "@/components/layouts";
+import { TYPOGRAPHY, CONTAINER_WIDTHS } from "@/lib/design-tokens";
 
 export const metadata = createPageMetadata({
   title: "Dev Docs",
@@ -8,9 +10,15 @@ export const metadata = createPageMetadata({
 
 export default function DevDocsPage() {
   return (
-    <div className="text-center py-24">
-      <h1 className="text-3xl font-bold mb-4">Developer Documentation</h1>
-      <p className="text-muted-foreground">Documentation page coming soon.</p>
-    </div>
+    <PageLayout>
+      <div className="text-center">
+        <h1 className={TYPOGRAPHY.h1.hero}>
+          Developer Documentation
+        </h1>
+        <p className={`${TYPOGRAPHY.description} mt-4`}>
+          Documentation page coming soon.
+        </p>
+      </div>
+    </PageLayout>
   );
 }

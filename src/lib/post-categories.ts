@@ -36,6 +36,7 @@ const CATEGORIES = [
   // Legacy lowercase (backwards compatibility)
   { id: "development", label: "Development" },
   { id: "security", label: "Security" },
+  { id: "career", label: "Career" },
   { id: "ai", label: "AI" },
   { id: "tutorial", label: "Tutorial" },
 ] as const;

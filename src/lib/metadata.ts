@@ -35,7 +35,7 @@
  */
 
 import type { Metadata } from 'next';
-import { SITE_URL, SITE_TITLE_PLAIN, getOgImageUrl, getTwitterImageUrl } from './site-config';
+import { SITE_URL, SITE_TITLE_PLAIN, getOgImageUrl } from './site-config';
 
 /**
  * Base metadata options shared across all page types
@@ -90,7 +90,6 @@ export function createPageMetadata(options: BaseMetadataOptions): Metadata {
 
   const fullUrl = `${SITE_URL}${path}`;
   const ogImageUrl = customImage || getOgImageUrl(title, description);
-  const twitterImageUrl = customImage || getTwitterImageUrl(title, description);
   const imageType = customImage ? 'image/jpeg' : 'image/png';
 
   return {
@@ -120,7 +119,7 @@ export function createPageMetadata(options: BaseMetadataOptions): Metadata {
       card: 'summary_large_image',
       title: `${title}`,
       description,
-      images: [twitterImageUrl],
+      images: [ogImageUrl],
     },
   };
 }
@@ -263,7 +262,6 @@ export function createArticlePageMetadata(options: ArticleMetadataOptions): Meta
   
   // Use custom image or fall back to dynamic generator
   const ogImageUrl = hasCustomImage ? image : getOgImageUrl(title, description);
-  const twitterImageUrl = hasCustomImage ? image : getTwitterImageUrl(title, description);
   const imageType = hasCustomImage ? 'image/jpeg' : 'image/png';
 
   // Normalize authors
@@ -302,7 +300,7 @@ export function createArticlePageMetadata(options: ArticleMetadataOptions): Meta
       card: 'summary_large_image',
       title: `${title}`,
       description,
-      images: [twitterImageUrl],
+      images: [ogImageUrl],
     },
   };
 }

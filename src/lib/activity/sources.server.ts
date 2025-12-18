@@ -204,13 +204,16 @@ export async function transformTrendingPosts(
             trendingSource = "redis";
             console.log(`[Activity] Successfully fetched ${trending.length} trending posts from Redis`);
           } else {
-            console.warn("[Activity] Redis trending data is empty or invalid format");
+            // This is expected when trending data hasn't been populated yet
+            // (e.g., first deployment, or after Redis reset)
+            console.log("[Activity] Redis trending data not yet populated, using fallback");
           }
         } catch (parseError) {
           console.error("[Activity] Failed to parse trending data from Redis:", parseError);
         }
       } else {
-        console.warn("[Activity] No trending data found in Redis (key: blog:trending)");
+        // This is expected when trending data hasn't been populated yet
+        console.log("[Activity] No trending data in Redis yet (key: blog:trending), using fallback");
       }
 
       await redis.quit();
@@ -221,7 +224,7 @@ export async function transformTrendingPosts(
       }
     }
   } else {
-    console.warn("[Activity] Redis client unavailable (REDIS_URL not configured)");
+    console.log("[Activity] Redis client unavailable (REDIS_URL not configured), using fallback");
   }
 
   // Fallback: use most recent published posts if Redis is unavailable or invalid
@@ -246,10 +249,17 @@ export async function transformTrendingPosts(
 
   // Double validation: validate the trending data
   const validation = validateTrendingData(trending, posts);
-  if (validation.warnings.length > 0) {
+
+  // Only log warnings if they indicate actual data quality issues
+  // Filter out informational warnings about missing view counts (expected for fallback data)
+  const criticalWarnings = validation.warnings.filter(
+    (w) => !w.includes("missing view counts")
+  );
+
+  if (criticalWarnings.length > 0) {
     console.warn(
       `[Activity] Trending data validation warnings (${trendingSource}):`,
-      validation.warnings
+      criticalWarnings
     );
   }
 

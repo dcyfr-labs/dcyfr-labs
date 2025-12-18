@@ -46,6 +46,12 @@ export function SiteFooter() {
               Activity
             </a>
             <a
+              href="/bookmarks"
+              className="hover:underline underline-offset-4 will-change-auto whitespace-nowrap px-1.5 py-1"
+            >
+              Bookmarks
+            </a>
+            <a
               href="/contact"
               className="hover:underline underline-offset-4 will-change-auto whitespace-nowrap px-1.5 py-1"
             >

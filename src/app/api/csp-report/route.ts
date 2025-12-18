@@ -87,35 +87,54 @@ export async function POST(req: NextRequest) {
       disposition: cspReport["disposition"], // "enforce" or "report"
     };
 
-    // Log to console (will be captured by Vercel logs)
-    console.warn("CSP Violation Report:", JSON.stringify(violationData, null, 2));
+    // Check if this is a known false positive (browser extensions, dev tools)
+    const isFalsePositive = isKnownFalsePositive(violationData, clientIp);
 
-    // Send to Sentry for centralized monitoring and alerting
-    try {
-      Sentry.captureMessage("CSP Violation", {
-        level: "warning",
-        tags: {
-          violatedDirective: violationData.violatedDirective,
-          effectiveDirective: violationData.effectiveDirective,
-          disposition: violationData.disposition,
-        },
-        extra: violationData,
-        contexts: {
-          csp: {
-            violated_directive: violationData.violatedDirective,
-            effective_directive: violationData.effectiveDirective,
-            blocked_uri: violationData.blockedUri,
-            document_uri: violationData.documentUri,
-            source_file: violationData.sourceFile,
-            line_number: violationData.lineNumber,
-            column_number: violationData.columnNumber,
+    // Always log to console for debugging (captured by Vercel logs)
+    if (isFalsePositive) {
+      console.info("CSP Violation (Known False Positive):", JSON.stringify({
+        ...violationData,
+        reason: "Browser extension or development environment",
+        filtered: true,
+      }, null, 2));
+    } else {
+      console.warn("CSP Violation Report:", JSON.stringify(violationData, null, 2));
+    }
+
+    // Send to Sentry ONLY if it's not a known false positive
+    if (!isFalsePositive) {
+      try {
+        Sentry.captureMessage("CSP Violation", {
+          level: "warning",
+          tags: {
+            violatedDirective: violationData.violatedDirective,
+            effectiveDirective: violationData.effectiveDirective,
             disposition: violationData.disposition,
           },
-        },
-      });
-    } catch (sentryError) {
-      // Sentry errors should never break CSP reporting
-      console.error("Failed to send CSP violation to Sentry:", sentryError);
+          extra: violationData,
+          contexts: {
+            csp: {
+              violated_directive: violationData.violatedDirective,
+              effective_directive: violationData.effectiveDirective,
+              blocked_uri: violationData.blockedUri,
+              document_uri: violationData.documentUri,
+              source_file: violationData.sourceFile,
+              line_number: violationData.lineNumber,
+              column_number: violationData.columnNumber,
+              disposition: violationData.disposition,
+            },
+          },
+          // Custom fingerprint for better issue grouping
+          fingerprint: [
+            "csp-violation",
+            violationData.effectiveDirective || "unknown",
+            violationData.blockedUri || "unknown",
+          ],
+        });
+      } catch (sentryError) {
+        // Sentry errors should never break CSP reporting
+        console.error("Failed to send CSP violation to Sentry:", sentryError);
+      }
     }
 
     return NextResponse.json(
@@ -134,29 +153,93 @@ export async function POST(req: NextRequest) {
 }
 
 /**
+ * Check if a CSP violation is a known false positive
+ *
+ * Filters out violations caused by:
+ * - Browser extensions (cannot access nonces)
+ * - Development tools (React DevTools, Redux DevTools, etc.)
+ * - Localhost traffic (development environment)
+ *
+ * @param violationData - The CSP violation data
+ * @param clientIp - The client IP address
+ * @returns true if this is a known false positive, false otherwise
+ */
+function isKnownFalsePositive(
+  violationData: {
+    blockedUri: string;
+    sourceFile: string;
+    effectiveDirective?: string;
+  },
+  clientIp: string
+): boolean {
+  // Filter 1: Localhost traffic (development environment)
+  // Real production violations won't come from 127.0.0.1
+  if (clientIp === "127.0.0.1" || clientIp === "::1") {
+    return true;
+  }
+
+  // Filter 2: Browser extension indicators
+  // Extensions inject inline scripts without nonces
+  const extensionIndicators = [
+    "about", // Chrome extension internal pages (chrome://about, etc.)
+    "chrome-extension://",
+    "moz-extension://",
+    "safari-extension://",
+    "ms-browser-extension://",
+  ];
+
+  const sourceFile = violationData.sourceFile?.toLowerCase() || "";
+  if (extensionIndicators.some(indicator => sourceFile.includes(indicator))) {
+    return true;
+  }
+
+  // Filter 3: Inline script violations without legitimate source
+  // Extensions typically inject inline scripts with no specific source file
+  const isInlineScript = violationData.blockedUri === "inline";
+  const hasVagueSource = sourceFile === "about" || sourceFile === "unknown" || !sourceFile;
+
+  if (isInlineScript && hasVagueSource) {
+    return true;
+  }
+
+  // Filter 4: Script-src-elem violations are often browser extensions
+  // This is the most common directive violated by extensions
+  if (
+    violationData.effectiveDirective === "script-src-elem" &&
+    isInlineScript &&
+    hasVagueSource
+  ) {
+    return true;
+  }
+
+  // Not a known false positive - log to Sentry
+  return false;
+}
+
+/**
  * Anonymize URIs by removing query parameters and hashes
- * 
+ *
  * Removes potentially sensitive data like:
  * - Query parameters (may contain tokens, IDs, PII)
  * - Hash fragments (may contain state, tokens)
  * - User-specific paths (if configured)
- * 
+ *
  * @param uri - The URI to anonymize
  * @returns Anonymized URI with only scheme, host, and path
- * 
+ *
  * @example
  * anonymizeUri("https://example.com/page?token=secret#section")
  * // Returns: "https://example.com/page"
- * 
+ *
  * anonymizeUri("inline")
  * // Returns: "inline" (special CSP value)
  */
 function anonymizeUri(uri: string | undefined): string {
   if (!uri) return "unknown";
-  
+
   // Special CSP values (inline, eval, etc.)
   if (!uri.startsWith("http")) return uri;
-  
+
   try {
     const url = new URL(uri);
     // Return only scheme + host + pathname (no query, no hash)

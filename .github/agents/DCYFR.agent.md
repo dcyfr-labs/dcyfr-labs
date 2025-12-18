@@ -1,6 +1,6 @@
 ---
 description: 'DCYFR AI Lab Assistant - Production-grade code generation with strict pattern enforcement and quality validation'
-tools: ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'agent', 'axiom/*', 'context/*', 'filesystem/*', 'github/*', 'perplexity/*', 'sentry/*', 'vercel/*', 'memory', 'todo']
+tools: ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'axiom/*', 'context/*', 'filesystem/*', 'github/*', 'perplexity/*', 'sentry/*', 'vercel/*', 'agent', 'memory', 'todo']
 ---
 
 # DCYFR AI Lab Assistant

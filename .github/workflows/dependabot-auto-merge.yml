@@ -27,15 +27,505 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       
+      - name: Define safe packages
+        id: safe-packages
+        run: |
+          # Define packages safe to auto-merge (low-risk updates)
+          cat > /tmp/safe_packages.txt << 'SAFE_PACKAGES'
+          @axe-core/react
+          @babel/code-frame
+          @babel/helper-validator-identifier
+          @babel/highlight
+          @babel/parser
+          @babel/runtime
+          @eslint/config-inspector
+          @eslint/eslintrc
+          @eslint/js
+          @floating-ui/core
+          @floating-ui/dom
+          @floating-ui/react
+          @floating-ui/react-dom
+          @next/bundle-analyzer
+          @playwright/test
+          @radix-ui/primitive
+          @radix-ui/react-arrow
+          @radix-ui/react-dialog
+          @radix-ui/react-dropdown-menu
+          @radix-ui/react-hover-card
+          @radix-ui/react-primitive
+          @radix-ui/react-scroll-area
+          @radix-ui/react-slot
+          @radix-ui/react-tooltip
+          @sentry/browser
+          @sentry/nextjs
+          @tailwindcss/typography
+          @testing-library/jest-dom
+          @testing-library/react
+          @testing-library/user-event
+          @types/node
+          @types/react
+          @types/react-dom
+          @typescript-eslint/eslint-plugin
+          @typescript-eslint/parser
+          @vercel/analytics
+          @vercel/og
+          @vercel/speed-insights
+          ansi-html-community
+          ansi-styles
+          arg
+          axe-core
+          braceexpand
+          brace-expansion
+          browserslist
+          call-bind
+          chalk
+          chokidar
+          class-variance-authority
+          clsx
+          commander
+          cross-spawn
+          csstype
+          debug
+          define-properties
+          eastasianwidth
+          emoji-regex
+          enquirer
+          esbuild
+          eslint
+          eslint-config-next
+          eslint-config-prettier
+          eslint-plugin-import
+          eslint-plugin-jsx-a11y
+          eslint-plugin-react
+          eslint-plugin-react-hooks
+          estree-walker
+          estree-walker
+          etag
+          execa
+          extract-zip
+          fast-glob
+          fastq
+          file-entry-cache
+          find-up
+          flat-cache
+          flatted
+          focus-visible
+          framer-motion
+          fs-extra
+          function-bind
+          gensync
+          get-intrinsic
+          glob
+          glob-parent
+          globs
+          globby
+          graceful-fs
+          gray-matter
+          has
+          has-flag
+          has-property-descriptors
+          has-proto
+          has-symbols
+          hasown
+          hast-util-parse-selector
+          hast-util-to-string
+          html-entities
+          https-proxy-agent
+          ignore
+          import-fresh
+          imurmurhash
+          inflight
+          inherits
+          inngest
+          inquirer
+          is-arrayish
+          is-builtin-module
+          is-core-module
+          is-fullwidth-code-point
+          is-glob
+          is-number
+          is-potential-custom-element-name
+          is-stream
+          isexe
+          isomorphic-dompurifier
+          jest-environment-jsdom
+          jest-worker
+          js-tokens
+          js-yaml
+          jsesc
+          json-parse-better-errors
+          json5
+          jsonc-eslint-parser
+          jsx-ast-utils
+          katex
+          kleur
+          known-css-properties
+          lilconfig
+          lines-and-columns
+          locate-character
+          lodash.camelcase
+          lodash.isplainobject
+          lodash.merge
+          lodash.uniq
+          loose-envify
+          loupe
+          lucide-react
+          mcp
+          mdast-util-directive
+          mdast-util-find-and-replace
+          mdast-util-from-markdown
+          mdast-util-gfm
+          mdast-util-gfm-autolink-literal
+          mdast-util-gfm-footnote
+          mdast-util-gfm-strikethrough
+          mdast-util-gfm-table
+          mdast-util-gfm-task-list-item
+          mdast-util-markdown-factory
+          mdast-util-mdx
+          mdast-util-mdx-expression
+          mdast-util-mdx-jsx
+          mdast-util-to-hast
+          mdast-util-to-markdown
+          mermaid
+          micromark
+          micromark-extension-gfm
+          micromark-extension-gfm-autolink-literal
+          micromark-extension-gfm-footnote
+          micromark-extension-gfm-strikethrough
+          micromark-extension-gfm-table
+          micromark-extension-gfm-task-list-item
+          micromark-extension-mdx
+          micromark-extension-mdx-expression
+          micromark-extension-mdx-jsx
+          micromark-util-character
+          micromark-util-chunked
+          micromark-util-classify-character
+          micromark-util-classify-punctuation
+          micromark-util-combine-extensions
+          micromark-util-decode-numeric-character-reference
+          micromark-util-decode-string
+          micromark-util-encode
+          micromark-util-html-tag-name
+          micromark-util-normalize-identifier
+          micromark-util-resolve-all
+          micromark-util-sanitize-uri
+          micromark-util-subtokenize
+          micromatch
+          mime
+          mime-db
+          mime-types
+          min-indent
+          minimatch
+          minimist
+          minipass
+          minizlib
+          mkdirp
+          module-alias
+          ms
+          multimap
+          mz
+          nanoid
+          natural-compare
+          next
+          next-mdx-remote
+          node-fetch
+          node-gyp
+          node-releases
+          normalize-path
+          normalize-range
+          npm-run-all
+          once
+          p-limit
+          p-locate
+          package-json
+          parent-module
+          parse-entities
+          parse-json
+          parse5
+          parseurl
+          path-exists
+          path-is-absolute
+          path-key
+          path-parse
+          path-to-regexp
+          pathe
+          pathfinder
+          peek-readable
+          peerDependencies
+          pify
+          picomatch
+          pidtree
+          playwright
+          possible-typed-array-names
+          postcss
+          postcss-import
+          postcss-js
+          postcss-load-config
+          postcss-nested
+          postcss-selector-parser
+          postcss-value-parser
+          prelude-ls
+          prettier
+          prettier-plugin-tailwindcss
+          prismjs
+          promise-inflight
+          prompts
+          property-information
+          prosemirror-model
+          prosemirror-state
+          prosemirror-view
+          psl
+          public-encrypt
+          punycode
+          pupa
+          queue-microtask
+          quick-lru
+          randombytes
+          range-parser
+          react
+          react-dom
+          read-cache
+          readable-stream
+          readdirp
+          require-directory
+          require-from-string
+          require-main-filename
+          resolve
+          resolve-alpn
+          resolve-from
+          resolve-url
+          restore-cursor
+          retry
+          reusify
+          rgb-hex
+          rimraf
+          rss
+          run-async
+          run-parallel
+          safe-buffer
+          safer-buffer
+          sax
+          scheduler
+          schema-utils
+          search-insights
+          section-matter
+          select-hoist
+          semver
+          semver-compare
+          send
+          set-blocking
+          set-function-length
+          set-function-name
+          setimmediate
+          setprototypeof
+          shiki
+          side-channel
+          signal-exit
+          simple-swizzle
+          sirv
+          slash
+          slice-ansi
+          smart-buffer
+          socks
+          sort-object-keys
+          source-map
+          source-map-support
+          space-separated-tokens
+          spinnies
+          split2
+          sprintf-js
+          sprintf
+          stable
+          stackback
+          stacktrace-parser
+          statuses
+          stream-shift
+          stream-to-observable
+          string-width
+          string.prototype.matchall
+          string.prototype.padend
+          string.prototype.padstart
+          string.prototype.trimend
+          string.prototype.trimstart
+          strings
+          stringz
+          strip-ansi
+          strip-bom
+          strip-json-comments
+          style-to-object
+          stylehacks
+          styleme
+          sucrase
+          sucrase-ts
+          sudache
+          supports-color
+          supports-preserve-symlinks-flag
+          svgo
+          swiper
+          symbol-observable
+          table
+          tailwind-merge
+          tailwindcss
+          tailwindcss-animate
+          tar
+          tar-fs
+          tar-stream
+          text-table
+          thenify
+          thenify-all
+          through
+          through2
+          through2-filter
+          through2-map
+          tiny-invariant
+          tiny-warning
+          tmp
+          to-regex-range
+          token-types
+          totalist
+          tough-cookie
+          tr46
+          traceback
+          traverse
+          trim-lines
+          triple-beam
+          ts-interface-checker
+          ts-node
+          tsconfig-paths
+          tslib
+          tunnel-agent
+          turbo
+          type-check
+          type-fest
+          type-is
+          typed-array-buffer
+          typed-array-byte-length
+          typed-array-byte-offset
+          typed-array-length
+          typedarray
+          typescript
+          unbox-primitive
+          undici
+          unicode-canonical-property-names-ecmascript
+          unicode-emoji-modifier-base
+          unicode-emoji-modifier-sequence
+          unicode-emoji-presentation
+          unicode-emoji-property-aliases
+          unicode-emoji-sequence
+          unicode-match-property-ecmascript
+          unicode-match-property-value-ecmascript
+          unicode-property-aliases-ecmascript
+          unifiedjs
+          unified
+          unist-builder
+          unist-util-generated
+          unist-util-inspect
+          unist-util-is
+          unist-util-modify-children
+          unist-util-position
+          unist-util-remove
+          unist-util-remove-position
+          unist-util-stringify-position
+          unist-util-visit
+          unist-util-visit-parents
+          universalify
+          unpipe
+          unplugin
+          unplugin-vue-components
+          unset-value
+          upath
+          upper-case
+          upper-case-first
+          uri-js
+          url
+          urlpattern-polyfill
+          use-sync-external-store
+          util
+          util-deprecate
+          util-inspect
+          utila
+          utile
+          utils-merge
+          uuid
+          v8-compile-cache
+          v8-compile-cache-lib
+          vary
+          vendors
+          vercel
+          verdaccio
+          verror
+          vfile
+          vfile-location
+          vfile-message
+          vite
+          vite-node
+          vitedge
+          vitest
+          vm-browserify
+          void-elements
+          walk
+          walkdir
+          walker
+          web-namespaces
+          webidl-conversions
+          webpack
+          webpack-sources
+          whatwg-url
+          when-exit
+          which
+          which-boxed-primitive
+          which-collection
+          which-typed-array
+          whichever
+          while-not-promised
+          wide-align
+          widest-line
+          windows-release
+          winston
+          with-open-file
+          word-wrap
+          wordwrap
+          worker_threads
+          workpool
+          wrapper-webpack-plugin
+          wrappy
+          write-file-atomic
+          ws
+          xml
+          xmlchars
+          xo
+          y18n
+          yallist
+          yaml
+          yamljs
+          yargs
+          yargs-parser
+          yargs-unparser
+          yocto-queue
+          zod
+          SAFE_PACKAGES
+          
+          wc -l < /tmp/safe_packages.txt
+      
       - name: Determine if safe to auto-merge
         id: check
         run: |
           echo "PR: ${{ github.event.pull_request.title }}"
           echo "Update type: ${{ steps.metadata.outputs.update-type }}"
           echo "Dependency type: ${{ steps.metadata.outputs.dependency-type }}"
+          echo "Dependency names: ${{ steps.metadata.outputs.dependency-names }}"
           
           SAFE="false"
           REASON=""
+          
+          # Check if dependency is in safe packages list
+          IS_SAFE_PACKAGE="false"
+          while IFS= read -r pkg; do
+            if [[ "${{ steps.metadata.outputs.dependency-names }}" == *"$pkg"* ]]; then
+              IS_SAFE_PACKAGE="true"
+              break
+            fi
+          done < /tmp/safe_packages.txt
           
           # Auto-merge dev dependencies (patch and minor updates)
           if [[ "${{ steps.metadata.outputs.dependency-type }}" == "direct:development" ]] || \
@@ -47,37 +537,41 @@ jobs:
             fi
           fi
           
-          # Auto-merge production patch updates (with breaking change check)
+          # Auto-merge production patch updates for safe packages (with breaking change check)
           if [[ "${{ steps.metadata.outputs.dependency-type }}" == "direct:production" ]]; then
             if [[ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-patch" ]]; then
-              # Check for breaking changes mentioned in PR body
-              if ! echo "${{ github.event.pull_request.body }}" | grep -iq "breaking"; then
-                SAFE="true"
-                REASON="Production patch update without breaking changes"
+              if [[ "$IS_SAFE_PACKAGE" == "true" ]]; then
+                if ! echo "${{ github.event.pull_request.body }}" | grep -iq "breaking"; then
+                  SAFE="true"
+                  REASON="Production patch update (safe package) without breaking changes"
+                else
+                  REASON="Breaking changes detected in patch update"
+                fi
               else
-                REASON="Breaking changes detected in patch update"
+                REASON="Production patch update for non-allowlisted package - requires review"
               fi
             fi
           fi
           
-          # Extra validation for Next.js/React updates
-          if [[ "${{ steps.metadata.outputs.dependency-names }}" =~ (next|react|react-dom) ]]; then
+          # Framework updates always require review (except patches for safe packages)
+          if [[ "${{ steps.metadata.outputs.dependency-names }}" =~ ^(next|react|react-dom|@vercel|tailwindcss)$ ]]; then
             if [[ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-patch" ]]; then
               if ! echo "${{ github.event.pull_request.body }}" | grep -iq "breaking"; then
                 SAFE="true"
-                REASON="Next.js/React patch without breaking changes"
+                REASON="Framework patch without breaking changes"
               else
                 SAFE="false"
-                REASON="Next.js/React with breaking changes - requires review"
+                REASON="Framework with breaking changes - requires review"
               fi
             else
               SAFE="false"
-              REASON="Next.js/React minor/major update - requires review"
+              REASON="Framework minor/major update - requires review"
             fi
           fi
           
           echo "safe=$SAFE" >> $GITHUB_OUTPUT
           echo "reason=$REASON" >> $GITHUB_OUTPUT
+          echo "is-safe-package=$IS_SAFE_PACKAGE" >> $GITHUB_OUTPUT
           echo "Decision: $SAFE - $REASON"
       
       - name: Wait for CI checks to complete
@@ -148,6 +642,13 @@ jobs:
             echo "### ✅ Auto-merge enabled" >> $GITHUB_STEP_SUMMARY
             echo "This PR will be automatically merged once CI checks pass." >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Reason:** ${{ steps.check.outputs.reason }}" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### ⚠️ Manual review required" >> $GITHUB_STEP_SUMMARY
+            echo "This PR requires manual review before merging." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Reason:** ${{ steps.check.outputs.reason }}" >> $GITHUB_STEP_SUMMARY
+          fi
             echo "**Reason:** ${{ steps.check.outputs.reason }}" >> $GITHUB_STEP_SUMMARY
           else
             echo "### ⚠️ Manual review required" >> $GITHUB_STEP_SUMMARY

@@ -668,9 +668,10 @@ A: Quarterly automatic review, or immediately when adding new agents or major in
 
 ### Sensitive Files Policy
 
-**All sensitive/internal documentation must be stored in `/docs/private/` directories.**
+**All sensitive/internal documentation must be stored in subdirectory `private/` folders under each docs category.**
 
 **What qualifies as sensitive:**
+
 - Security vulnerability details and findings
 - CodeQL/security scanning results and remediation
 - Audit reports and analysis (API security, infrastructure, etc.)
@@ -681,19 +682,30 @@ A: Quarterly automatic review, or immediately when adding new agents or major in
 - Third-party security reviews
 - PII/PI audit results and taxonomies
 
-**Directory structure:**
-```
-/docs/private/
-├── security/       # Security audits, findings, vulnerabilities
-├── operations/     # Internal operations and deployment docs
-├── architecture/   # Internal architecture decisions
+**Directory structure (subdirectory-specific approach):**
+
+```text
+/docs/
+├── security/
+│   ├── public docs...
+│   └── private/       # Security audits, findings, vulnerabilities
+├── operations/
+│   ├── public docs...
+│   └── private/       # Internal operations and deployment docs
+├── design/
+│   ├── public docs...
+│   └── private/       # Design analysis and metrics
 └── ...
 ```
 
 **Examples:**
-- ✅ `/docs/private/security/CODEQL_FINDINGS_RESOLVED.md`
-- ✅ `/docs/private/security/SECURITY_AUDIT_SUMMARY.md`
-- ❌ `/docs/security/VULNERABILITY_REPORT.md` (wrong location)
+
+- ✅ `/docs/security/private/CODEQL_FINDINGS_RESOLVED.md`
+- ✅ `/docs/security/private/SECURITY_AUDIT_SUMMARY.md`
+- ✅ `/docs/operations/private/PERFORMANCE_METRICS.md`
+- ❌ `/docs/security/VULNERABILITY_REPORT.md` (should be in private/ subfolder)
+
+**Rationale:** Subdirectory-specific `private/` folders prevent duplicate content and keep related materials together. See [DOCS_GOVERNANCE.md](docs/DOCS_GOVERNANCE.md) for complete policy.
 
 ---
 

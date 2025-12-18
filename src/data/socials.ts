@@ -15,7 +15,6 @@ export type SocialPlatform =
   | "credly"
   | "calendar"
   | "orcid"
-  | "twitter"
 
 export type SocialLink = {
   platform: SocialPlatform;

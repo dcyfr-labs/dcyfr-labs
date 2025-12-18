@@ -8,14 +8,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import type { DashboardState, ApiHealth, DesignSystemReport, RedisHealthStatus } from "./types";
-import type { WorkflowSummary, WeeklyMetrics, Observation } from "@/types/maintenance";
+import type { WorkflowSummary, WeeklyMetrics } from "@/types/maintenance";
 
 export function useMaintenanceDashboard() {
   const [state, setState] = useState<DashboardState>({
     workflows: [],
     apiHealth: null,
     trends: null,
-    observations: [],
     designSystemReport: null,
     redisHealth: null,
     loading: true,
@@ -31,12 +30,11 @@ export function useMaintenanceDashboard() {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
 
-      const [workflowsRes, healthRes, trendsRes, observationsRes, designReportRes, redisHealthRes] =
+      const [workflowsRes, healthRes, trendsRes, designReportRes, redisHealthRes] =
         await Promise.all([
           fetch("/api/maintenance/workflows"),
           fetch("/api/health"),
           fetch("/api/maintenance/metrics?period=52weeks"),
-          fetch("/api/maintenance/observations?limit=10"),
           fetch("/dev/api/reports/design-system-report.json"),
           fetch("/dev/api/redis-health"),
         ]);
@@ -48,7 +46,6 @@ export function useMaintenanceDashboard() {
       const workflowsData = await workflowsRes.json();
       let healthData: ApiHealth | null = null;
       let trendsData: WeeklyMetrics[] | null = null;
-      let observationsData: Observation[] = [];
       let designData: DesignSystemReport | null = null;
       let redisData: RedisHealthStatus | null = null;
 
@@ -60,11 +57,6 @@ export function useMaintenanceDashboard() {
       if (trendsRes.ok) {
         const trendsResponse = await trendsRes.json();
         trendsData = trendsResponse.trends;
-      }
-
-      if (observationsRes.ok) {
-        const observationsResponse = await observationsRes.json();
-        observationsData = observationsResponse.observations;
       }
 
       if (designReportRes.ok) {
@@ -80,7 +72,6 @@ export function useMaintenanceDashboard() {
         workflows: workflowsData.workflows,
         apiHealth: healthData,
         trends: trendsData,
-        observations: observationsData,
         designSystemReport: designData,
         redisHealth: redisData,
         lastRefresh: new Date(),
@@ -97,20 +88,6 @@ export function useMaintenanceDashboard() {
     }
   }, []);
 
-  /**
-   * Refresh observations only
-   */
-  const refreshObservations = useCallback(async () => {
-    try {
-      const response = await fetch("/api/maintenance/observations?limit=10");
-      if (response.ok) {
-        const data = await response.json();
-        setState((prev) => ({ ...prev, observations: data.observations }));
-      }
-    } catch (error) {
-      console.error("Failed to refresh observations:", error);
-    }
-  }, []);
 
   /**
    * Initial data fetch
@@ -135,7 +112,6 @@ export function useMaintenanceDashboard() {
   return {
     state,
     fetchDashboardData,
-    refreshObservations,
     setAutoRefresh: (enabled: boolean) => {
       setState((prev) => ({ ...prev, autoRefresh: enabled }));
     },

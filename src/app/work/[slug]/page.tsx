@@ -8,7 +8,7 @@ import {
   SITE_TITLE_PLAIN,
   AUTHOR_NAME,
   getOgImageUrl,
-  getTwitterImageUrl,
+
 } from "@/lib/site-config";
 import {
   CONTAINER_WIDTHS,
@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       card: "summary_large_image",
       title: `${pageTitle} — ${SITE_TITLE_PLAIN}`,
       description: pageDescription,
-      images: [getTwitterImageUrl(pageTitle, pageDescription)],
+      images: [getOgImageUrl(pageTitle, pageDescription)],
     },
   };
 }

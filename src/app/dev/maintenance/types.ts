@@ -77,7 +77,6 @@ export interface DashboardState {
   workflows: any[];
   apiHealth: ApiHealth | null;
   trends: any[] | null;
-  observations: any[];
   designSystemReport: DesignSystemReport | null;
   redisHealth: RedisHealthStatus | null;
   loading: boolean;

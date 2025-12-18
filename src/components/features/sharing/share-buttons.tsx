@@ -12,11 +12,10 @@ import { useShareTracking } from "@/hooks/use-share-tracking";
  * ShareButtons Component
  * 
  * A reusable component for sharing blog posts on social media platforms.
- * Provides buttons for Twitter, LinkedIn, native sharing, and copy-to-clipboard.
+ * Provides buttons for LinkedIn, native sharing, and copy-to-clipboard.
  * 
  * Features:
  * - Native Web Share API on mobile devices (when available)
- * - Twitter share with pre-filled text and hashtags
  * - LinkedIn share with URL
  * - Copy link to clipboard with visual feedback
  * - Persistent share count tracking via Redis/KV database

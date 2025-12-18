@@ -13,7 +13,6 @@ import { POST_CATEGORY_LABEL, type PostCategory } from "@/lib/post-categories";
 import type { Post } from "@/data/posts";
 
 // Re-export to get access to CATEGORIES for dynamic testing
-// @ts-expect-error - accessing internal CATEGORIES for test generation
 import { CATEGORIES } from "@/lib/post-categories";
 
 // Helper to create a minimal post for testing

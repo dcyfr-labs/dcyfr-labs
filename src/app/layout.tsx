@@ -12,7 +12,7 @@ import {
   SITE_DOMAIN,
   SITE_DESCRIPTION,
   getOgImageUrl,
-  getTwitterImageUrl,
+
 } from "@/lib/site-config";
 import { SiteHeader, SiteFooter, BottomNav } from "@/components/navigation";
 import { Toaster } from "@/components/ui/sonner";
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SITE_TITLE_PLAIN,
     description: SITE_DESCRIPTION,
-    images: [getTwitterImageUrl()],
+    images: [getOgImageUrl()],
   },
   icons: {
     icon: "/icon",

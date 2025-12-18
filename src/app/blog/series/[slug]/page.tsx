@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { allSeries, getSeriesByAnySlug } from "@/data/posts";
 import { PageLayout, PageHero } from "@/components/layouts";
 import { PostList, SeriesPageAnalyticsTracker } from "@/components/blog";
-import { SITE_TITLE_PLAIN, SITE_URL, getOgImageUrl, getTwitterImageUrl } from "@/lib/site-config";
+import { SITE_TITLE_PLAIN, SITE_URL, getOgImageUrl } from "@/lib/site-config";
 import { CONTAINER_WIDTHS, CONTAINER_PADDING, SPACING } from "@/lib/design-tokens";
 
 /**
@@ -78,7 +78,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: `${title}`,
       description,
-      images: [getTwitterImageUrl(title, description)],
+      images: [getOgImageUrl(title, description)],
     },
   };
 }

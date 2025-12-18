@@ -63,6 +63,14 @@ export default function DevToolsDropdown() {
               Analytics
             </Link>
             <Link
+              href="/dev/social"
+              className="px-3 py-2 text-sm hover:bg-muted rounded"
+              onClick={() => setOpen(false)}
+              prefetch={false}
+            >
+              Social Media
+            </Link>
+            <Link
               href="/dev/maintenance"
               className="px-3 py-2 text-sm hover:bg-muted rounded"
               onClick={() => setOpen(false)}

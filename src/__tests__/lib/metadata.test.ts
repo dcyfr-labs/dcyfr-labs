@@ -36,12 +36,6 @@ vi.mock('@/lib/site-config', () => ({
     if (description) url.searchParams.set('description', description);
     return url.toString();
   }),
-  getTwitterImageUrl: vi.fn((title?: string, description?: string) => {
-    const url = new URL('/twitter-image', 'https://www.dcyfr.ai');
-    if (title) url.searchParams.set('title', title);
-    if (description) url.searchParams.set('description', description);
-    return url.toString();
-  }),
 }));
 
 describe('metadata.ts', () => {
@@ -129,7 +123,7 @@ describe('metadata.ts', () => {
       expect(metadata.twitter?.title).toBe("Twitter Test");
       expect(metadata.twitter?.description).toBe('Twitter card test');
       expect(metadata.twitter?.images).toHaveLength(1);
-      expect((metadata.twitter?.images as any)?.[0]).toContain('/twitter-image');
+      expect((metadata.twitter?.images as any)?.[0]).toContain('/opengraph-image');
     });
 
     it('should default image alt to title when not provided', () => {
