@@ -50,9 +50,12 @@ const createTestPost = (overrides: Partial<Post> = {}): Post => ({
 });
 
 const createTestProject = (overrides: Partial<Project> = {}): Project => ({
+  id: 'test-project-id',
   slug: 'test-project',
   title: 'Test Project',
   description: 'Test description',
+  body: 'Test project body',
+  publishedAt: '2024-01-15',
   timeline: '2024',
   status: 'active',
   links: [],
@@ -289,9 +292,12 @@ describe('feeds.ts', () => {
     it('should use current year if no timeline', () => {
       // Create project without timeline (don't use helper's default)
       const project: Project = {
+        id: 'no-timeline-id',
         slug: 'no-timeline',
         title: 'No Timeline',
         description: 'No timeline project',
+        body: 'No timeline body',
+        publishedAt: '2024-01-15',
         status: 'active',
         links: [],
       };
