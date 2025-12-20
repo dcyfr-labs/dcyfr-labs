@@ -9,7 +9,6 @@ import { extractHeadings } from "@/lib/toc";
 import { headers } from "next/headers";
 import { getArticleData } from "@/lib/article";
 import { CONTAINER_WIDTHS, CONTAINER_PADDING, CONTAINER_VERTICAL_PADDING, SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
-import { resolveFrontmatterImagePath } from "@/lib/mdx-asset-resolver";
 import {
   createArticlePageMetadata,
   createArticleSchema,
@@ -81,11 +80,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   // Use hero image for OG if available
   let heroImageUrl: string | undefined;
   if (post.image?.url) {
-    // Check if this post is in the private folder using the post property
-    const isPrivatePost = post.isPrivate;
     heroImageUrl = post.image.url.startsWith('/') 
       ? `${SITE_URL}${post.image.url}`
-      : `${SITE_URL}${resolveFrontmatterImagePath(post.image.url, post.slug, isPrivatePost)}`;
+      : `${SITE_URL}/${post.image.url}`;
   }
   
   return createArticlePageMetadata({
@@ -240,13 +237,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                 title={post.title}
                 subtitle={post.subtitle}
                 backgroundImage={post.image ? {
-                  url: (() => {
-                    // Check if this post is in the private folder using the post property
-                    const isPrivatePost = post.isPrivate;
-                    return post.image.url.startsWith('/') 
+                  url: post.image.url.startsWith('/') 
                       ? post.image.url
-                      : resolveFrontmatterImagePath(post.image.url, post.slug, isPrivatePost);
-                  })(),
+                      : `/${post.image.url}`,
                   alt: post.image.alt || `Hero image for ${post.title}`,
                   position: (post.image.position === 'background' ? 'center' : post.image.position) || 'center',
                   caption: post.image.caption,
@@ -286,8 +279,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                 <FigureProvider>
                   <MDX 
                     source={post.body} 
-                    useFontContrast={true} 
-                    blogPostSlug={post.slug}
+                    useFontContrast={true}
                   />
                 </FigureProvider>
               </div>
