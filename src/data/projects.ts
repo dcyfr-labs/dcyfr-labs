@@ -120,11 +120,6 @@ const projectDrafts: Project[] = [
       "Implemented responsive design principles to ensure optimal viewing across devices.",
       "Integrated SEO best practices to enhance online visibility and search engine rankings."
     ],
-    image: {
-      url: "/images/projects/dcyfr-labs.png",
-      alt: "DCYFR Labs - Cyber Architecture and Design Services",
-      position: "center"
-    },
     featured: true,
     body: "",
     publishedAt: "2025-01-01",
