@@ -20,7 +20,8 @@ export function ProjectLinks({ links }: ProjectLinksProps) {
   }
 
   return (
-    <div className={`flex flex-wrap gap-3 ${SPACING.content}`}>
+    <div className={SPACING.content}>
+      <div className="flex flex-wrap gap-3">
       {links.map((link) => {
         const Icon = link.type ? linkIcons[link.type] : ExternalLink;
         return (
@@ -32,6 +33,7 @@ export function ProjectLinks({ links }: ProjectLinksProps) {
           </Button>
         );
       })}
+      </div>
     </div>
   );
 }

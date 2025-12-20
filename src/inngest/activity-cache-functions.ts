@@ -85,7 +85,7 @@ export const refreshActivityFeed = inngest.createFunction(
     id: "refresh-activity-feed",
     retries: 2,
   },
-  { cron: "*/5 * * * *" }, // Every 5 minutes
+  { cron: "0 * * * *" }, // Every hour on the hour
   async ({ step }) => {
     const redis = await getRedisClient();
     if (!redis) {
@@ -141,7 +141,7 @@ export const refreshActivityFeed = inngest.createFunction(
     // Step 2: Cache aggregated feed
     const cached = await step.run("cache-feed", async () => {
       const cacheKey = "activity:feed:all";
-      const ttl = 300; // 5 minutes (matches cron frequency)
+      const ttl = 3600; // 1 hour (matches cron frequency)
 
       try {
         await redis.setEx(cacheKey, ttl, JSON.stringify(activities));

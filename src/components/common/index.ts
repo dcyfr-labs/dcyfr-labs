@@ -1,6 +1,8 @@
 // Common/shared components
 export { BlogPostCTA, ProjectsCTA, AvailabilityBanner, type CTAProps } from "./cta";
 export { Alert, type AlertProps } from "./alert";
+export { KeyTakeaway, type KeyTakeawayProps } from "./key-takeaway";
+export { ContextClue, type ContextClueProps } from "./context-clue";
 export { ContactForm } from "./contact-form";
 export { CopyCodeButton } from "./copy-code-button";
 export { HighlightText } from "./highlight-text";
@@ -11,6 +13,7 @@ export { SiteLogo } from "./site-logo";
 export { MDX } from "./mdx";
 export { ZoomableImage } from "./zoomable-image";
 export { Figure, FigureProvider } from "./figure-caption";
+export { TableCaption, type TableCaptionProps } from "./table-caption";
 export { FAQ, FAQQuestion, FAQAnswer, type FAQProps, type FAQItem } from "./faq";
 export { ProfileAvatar, type AvatarSize } from "./profile-avatar";
 export { ScrollIndicator } from "./scroll-indicator";
@@ -22,6 +25,14 @@ export { TableOfContents } from "./table-of-contents";
 export { TransitionLink } from "./transition-link";
 export { ViewToggle } from "./view-toggle";
 export { default as DevToolsDropdown } from "./dev-tools-dropdown";
+
+// Progressive content and depth styling
+export { 
+  ProgressiveParagraph, 
+  ContentBlock, 
+  ContrastText,
+  analyzeContentDepth
+} from "./progressive-content";
 
 // Hero Overlays - light/dark mode aware contrast for hero images
 export { HeroOverlay, BlogPostHeroOverlay, ProjectHeroOverlay, type HeroOverlayProps, type OverlayVariant, type OverlayDirection, type OverlayIntensity } from "./hero-overlay";

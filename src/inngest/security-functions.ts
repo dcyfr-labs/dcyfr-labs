@@ -90,8 +90,8 @@ export const securityAdvisoryMonitor = inngest.createFunction(
     id: "security-advisory-monitor",
     retries: 3,
   },
-  // Run every hour - supplements the GitHub Actions workflow
-  { cron: "0 * * * *" },
+  // Run 3x daily (every 8 hours: 00:00, 08:00, 16:00 UTC) - supplements GitHub Actions workflow
+  { cron: "0 0,8,16 * * *" },
   async ({ step }) => {
     // Step 1: Fetch advisories from GHSA
     const advisories = await step.run("fetch-ghsa-advisories", async () => {
