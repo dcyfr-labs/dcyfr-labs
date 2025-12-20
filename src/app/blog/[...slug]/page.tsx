@@ -52,16 +52,16 @@ export const experimental_ppr = true;
 export async function generateStaticParams() {
   const allParams = [];
   
-  // Add current slugs
+  // Add current slugs - must be array for catch-all routes
   for (const post of posts) {
-    allParams.push({ slug: post.slug });
+    allParams.push({ slug: [post.slug] });
   }
   
   // Add previous slugs for redirect pages
   for (const post of posts) {
     if (post.previousSlugs) {
       for (const oldSlug of post.previousSlugs) {
-        allParams.push({ slug: oldSlug });
+        allParams.push({ slug: [oldSlug] });
       }
     }
   }
@@ -69,9 +69,10 @@ export async function generateStaticParams() {
   return allParams;
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }): Promise<Metadata> {
   const { slug } = await params;
-  const result = getPostByAnySlug(slug, posts);
+  const slugString = slug.join("/");
+  const result = getPostByAnySlug(slugString, posts);
   
   if (!result) return {};
   
@@ -100,9 +101,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   });
 }
 
-export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function PostPage({ params }: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await params;
-  const result = getPostByAnySlug(slug, posts);
+  const slugString = slug.join("/");
+  const result = getPostByAnySlug(slugString, posts);
   
   if (!result) {
     notFound();
