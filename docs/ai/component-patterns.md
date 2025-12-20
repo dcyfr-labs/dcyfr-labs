@@ -460,6 +460,79 @@ import {
 
 ---
 
+## MDX Components for Content
+
+### KeyTakeaway - Key Insights
+
+**Purpose:** Highlight critical takeaways and insights in blog content.
+
+**Use for:**
+- Important security principles
+- Critical technical insights  
+- Key business implications
+- Essential conclusions
+
+```mdx
+<KeyTakeaway>
+If an agent's goals can be hijacked, it becomes a weapon turned against you---using its own legitimate access to cause harm.
+</KeyTakeaway>
+```
+
+**Features:**
+- Lightbulb icon for visual prominence
+- Automatic "Key Takeaway:" prefix
+- Semantic info color theming
+- Responsive typography and spacing
+
+### ContextClue - Background Information
+
+**Purpose:** Provide important background context and setup information.
+
+**Use for:**
+- Background information readers need
+- Prerequisites or assumptions
+- Research methodology context
+- Problem space setup
+
+```mdx
+<ContextClue>
+As AI agents become more autonomous and capable of taking real-world actions, the security landscape is evolving rapidly.
+</ContextClue>
+```
+
+**Features:**
+- Info icon for contextual information
+- Automatic "Context:" prefix
+- Subtle blue theming
+- `role="complementary"` for accessibility
+
+### Alert - Status Messages
+
+**Purpose:** Warnings, errors, or important notifications.
+
+```mdx
+<Alert type="warning">
+**Important:** This feature is in beta.
+</Alert>
+
+<Alert type="critical">
+**Security Alert:** Update immediately.
+</Alert>
+```
+
+**Types:** `critical`, `warning`, `info`, `success`
+
+### When to Use Which
+
+| Component | Use For | Don't Use For |
+|-----------|---------|---------------|
+| `<KeyTakeaway>` | Insights, conclusions, principles | Quotes, citations, warnings |
+| `<ContextClue>` | Background info, prerequisites, setup | Main content, key insights |
+| `<Alert>` | Warnings, status messages | Insights, regular content |
+| `<blockquote>` | Citations, quotes | Key takeaways, alerts, context |
+
+---
+
 ## Related Documentation
 
 - [Quick Reference](./quick-reference) - Commands and 80/20 patterns

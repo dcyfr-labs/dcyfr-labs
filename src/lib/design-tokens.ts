@@ -22,8 +22,8 @@
  * ```
  */
 export const CONTAINER_WIDTHS = {
-  /** Prose/reading content - optimal line length (65ch ~650px, 50-75 chars/line per typography research) */
-  prose: "max-w-prose",
+  /** Prose/reading content - optimal line length (45-75 chars/line per typography research) */
+  prose: "max-w-4xl",
   
   /** Narrow width for forms and focused content (contact forms) */
   narrow: "max-w-4xl",
@@ -75,6 +75,92 @@ export function getContainerClasses(
   width: keyof typeof CONTAINER_WIDTHS = 'standard'
 ): string {
   return `mx-auto ${CONTAINER_WIDTHS[width]} pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12 ${CONTAINER_PADDING}`;
+}
+
+/**
+ * Dynamic Content Depth Classifier
+ * 
+ * Analyzes content characteristics and returns appropriate depth styling.
+ * Implements varying depth based on paragraph length and position.
+ * 
+ * @param options - Content analysis options
+ * @returns Appropriate depth class string
+ * 
+ * @example
+ * ```tsx
+ * const depthClass = getContentDepthClass({
+ *   length: paragraph.length,
+ *   position: 'body',
+ *   isContextual: false
+ * });
+ * <p className={depthClass}>{paragraph}</p>
+ * ```
+ */
+export function getContentDepthClass(options: {
+  /** Character length of content */
+  length?: number;
+  /** Position in content flow */
+  position?: 'opening' | 'body' | 'closing';
+  /** Whether content is contextual/supporting */
+  isContextual?: boolean;
+  /** Whether to apply font contrast system */
+  useFontContrast?: boolean;
+}): string {
+  const { length = 0, position = 'body', isContextual = false, useFontContrast = false } = options;
+
+  // Base font system
+  if (useFontContrast) {
+    return FONT_CONTRAST.base;
+  }
+
+  // Contextual content
+  if (isContextual) {
+    return PROGRESSIVE_TEXT.contextual;
+  }
+
+  // Position-based styling
+  if (position === 'opening') {
+    return PROGRESSIVE_TEXT.opening;
+  }
+  
+  if (position === 'closing') {
+    return PROGRESSIVE_TEXT.closing;
+  }
+
+  // Length-based styling
+  if (length > 300) {
+    return PROGRESSIVE_TEXT.extended;
+  }
+
+  return PROGRESSIVE_TEXT.body;
+}
+
+/**
+ * Content Block Depth Helper
+ * 
+ * Applies consistent hierarchy patterns to content blocks.
+ * Based on the about page's content organization patterns.
+ * 
+ * @param variant - Content block type
+ * @returns Object with title, content, and container classes
+ * 
+ * @example
+ * ```tsx
+ * const styles = getContentBlockStyles('primary');
+ * <div className={styles.container}>
+ *   <h3 className={styles.title}>Title</h3>
+ *   <p className={styles.content}>Content</p>
+ * </div>
+ * ```
+ */
+export function getContentBlockStyles(
+  variant: keyof typeof CONTENT_HIERARCHY
+): {
+  title: string;
+  content: string;
+  container: string;
+} {
+  return CONTENT_HIERARCHY[variant];
 }
 
 // ============================================================================
@@ -196,6 +282,161 @@ export const TYPOGRAPHY = {
     /** Large logo text (headers, hero sections) */
     large: "text-3xl md:text-4xl font-serif font-semibold leading-none",
   },
+
+  /**
+   * Depth-Based Text Hierarchy
+   * 
+   * Creates visual hierarchy through progressive text treatments.
+   * Inspired by the about page's varying depth patterns.
+   * 
+   * Usage: Apply to content blocks, subsections, and contextual information
+   * 
+   * @example
+   * ```tsx
+   * <div className={TYPOGRAPHY.depth.primary}>Main content here</div>
+   * <div className={TYPOGRAPHY.depth.secondary}>Supporting information</div>
+   * <div className={TYPOGRAPHY.depth.tertiary}>Contextual details</div>
+   * ```
+   */
+  depth: {
+    /** Primary content - emphasized, full contrast */
+    primary: "font-medium text-foreground",
+    
+    /** Secondary content - medium emphasis, slight reduction */
+    secondary: "font-normal text-foreground/90",
+    
+    /** Tertiary content - supporting information, muted */
+    tertiary: "font-normal text-muted-foreground",
+    
+    /** Accent content - highlighted information */
+    accent: "font-semibold text-foreground",
+    
+    /** Subtle content - least emphasis, background information */
+    subtle: "font-light text-muted-foreground/70",
+  },
+} as const;
+
+// ============================================================================
+// CONTENT HIERARCHY
+// ============================================================================
+
+/**
+ * Content Hierarchy Patterns
+ * 
+ * Defines consistent patterns for creating depth and emphasis in content blocks.
+ * Based on the varying depth style from the about page, these patterns create
+ * visual hierarchy through strategic use of font weights and text opacity.
+ * 
+ * Use Cases:
+ * - Blog post content sections
+ * - About page information blocks
+ * - Card descriptions and supporting text
+ * - Contextual information panels
+ * 
+ * @example
+ * ```tsx
+ * <div className={CONTENT_HIERARCHY.primary.container}>
+ *   <h3 className={CONTENT_HIERARCHY.primary.title}>Section Title</h3>
+ *   <p className={CONTENT_HIERARCHY.primary.content}>Main content here</p>
+ *   <p className={CONTENT_HIERARCHY.supporting.content}>Supporting details</p>
+ * </div>
+ * ```
+ */
+export const CONTENT_HIERARCHY = {
+  /** Primary content blocks - main information */
+  primary: {
+    title: "font-medium text-foreground",
+    content: "text-foreground leading-relaxed",
+    container: "space-y-3",
+  },
+  
+  /** Supporting content blocks - contextual information */
+  supporting: {
+    title: "font-medium text-foreground/90",
+    content: "text-muted-foreground leading-relaxed",
+    container: "space-y-2 mt-1",
+  },
+  
+  /** Accent content blocks - highlighted information */
+  accent: {
+    title: "font-semibold text-foreground",
+    content: "text-foreground/95 leading-relaxed",
+    container: "space-y-3",
+  },
+  
+  /** Subtle content blocks - background information */
+  subtle: {
+    title: "font-normal text-muted-foreground",
+    content: "text-muted-foreground/80 leading-relaxed text-sm",
+    container: "space-y-2",
+  },
+} as const;
+
+/**
+ * Progressive Text Patterns
+ * 
+ * Dynamic text styling based on paragraph position or content length.
+ * Implements the "muted text dynamically by paragraph length" concept.
+ * 
+ * Usage: Apply programmatically based on content analysis or position.
+ * 
+ * @example
+ * ```tsx
+ * // For first paragraph
+ * <p className={PROGRESSIVE_TEXT.opening}>Introduction text</p>
+ * 
+ * // For subsequent paragraphs
+ * <p className={PROGRESSIVE_TEXT.body}>Regular body text</p>
+ * 
+ * // For final/closing paragraphs
+ * <p className={PROGRESSIVE_TEXT.closing}>Closing thoughts</p>
+ * ```
+ */
+export const PROGRESSIVE_TEXT = {
+  /** Opening paragraph - full emphasis */
+  opening: "text-foreground font-normal leading-relaxed text-lg",
+  
+  /** Body paragraphs - standard treatment */
+  body: "text-foreground leading-relaxed",
+  
+  /** Long paragraphs - slightly reduced emphasis */
+  extended: "text-foreground/95 leading-relaxed text-[15px]",
+  
+  /** Closing paragraphs - subtle reduction */
+  closing: "text-foreground/90 leading-relaxed",
+  
+  /** Contextual paragraphs - background information */
+  contextual: "text-muted-foreground leading-relaxed text-sm",
+} as const;
+
+/**
+ * Font Weight Contrast System
+ * 
+ * Establishes clear contrast between thin base fonts and bold weights.
+ * Addresses the "thinner base font in contrast to bold weight" requirement.
+ * 
+ * @example
+ * ```tsx
+ * <p className={FONT_CONTRAST.base}>Base content with thin weight</p>
+ * <strong className={FONT_CONTRAST.emphasis}>Bold contrast text</strong>
+ * <h3 className={FONT_CONTRAST.heading}>Heading with proper contrast</h3>
+ * ```
+ */
+export const FONT_CONTRAST = {
+  /** Base text - lighter weight for better contrast */
+  base: "font-light text-foreground leading-relaxed",
+  
+  /** Medium emphasis - slight increase from base */
+  medium: "font-normal text-foreground leading-relaxed",
+  
+  /** Strong emphasis - clear contrast from base */
+  emphasis: "font-semibold text-foreground",
+  
+  /** Bold elements - maximum contrast */
+  bold: "font-bold text-foreground",
+  
+  /** Heading contrast - optimized for headings */
+  heading: "font-medium text-foreground",
 } as const;
 
 // ============================================================================
@@ -245,18 +486,18 @@ export const TYPOGRAPHY = {
  */
 export const SPACING = {
   /** Between major page sections (largest gaps) */
-  section: "space-y-10 md:space-y-12",
+  section: "space-y-8 md:space-y-10 lg:space-y-14",
   
   /** Between related content blocks within a section */
-  subsection: "space-y-6 md:space-y-8",
+  subsection: "space-y-5 md:space-y-6 lg:space-y-8",
   
   /** Within content blocks (tightest spacing) */
-  content: "space-y-4",
+  content: "space-y-3 md:space-y-4 lg:space-y-5",
   // NOTE: Do NOT use SPACING.content in ArticleLayout wrapper
   // Blog content uses prose CSS classes from globals.css for natural paragraph spacing
   
   /** Running text and prose paragraphs (better readability for long-form content) */
-  prose: "space-y-6 md:space-y-8",
+  prose: "space-y-5 md:space-y-6 lg:space-y-8",
   // NOTE: Only use SPACING.prose for manually structured sections
   // Blog/article content relies on prose CSS classes, not design tokens
   

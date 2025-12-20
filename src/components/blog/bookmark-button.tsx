@@ -26,6 +26,7 @@ interface BookmarkButtonProps {
  * - Toast notifications on toggle
  * - Configurable appearance (variant, size, label)
  * - Accessible (proper ARIA labels)
+ * - Hydration-safe (suppresses hydration mismatch)
  * 
  * @example
  * ```tsx
@@ -45,6 +46,12 @@ export function BookmarkButton({
 }: BookmarkButtonProps) {
   const { isBookmarked, toggleBookmark } = useBookmarks();
   const bookmarked = isBookmarked(slug);
+  const [isMounted, setIsMounted] = React.useState(false);
+
+  // Suppress hydration mismatch by only rendering browser-dependent content after mount
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation if button is inside a link
@@ -60,24 +67,28 @@ export function BookmarkButton({
     );
   };
 
+  // Use default state for initial render (server + client match)
+  // Update to actual bookmarked state after hydration
+  const displayBookmarked = isMounted ? bookmarked : false;
+
   return (
     <Button
       variant={variant}
       size={size}
       onClick={handleClick}
       className={cn(className)}
-      aria-label={bookmarked ? "Remove bookmark" : "Bookmark post"}
-      title={bookmarked ? "Remove bookmark" : "Bookmark post"}
+      aria-label={displayBookmarked ? "Remove bookmark" : "Bookmark post"}
+      title={displayBookmarked ? "Remove bookmark" : "Bookmark post"}
     >
       <Bookmark 
         className={cn(
           "h-4 w-4",
-          bookmarked && "fill-current"
+          displayBookmarked && "fill-current"
         )} 
       />
       {showLabel && (
         <span className="ml-2">
-          {bookmarked ? "Bookmarked" : "Bookmark"}
+          {displayBookmarked ? "Bookmarked" : "Bookmark"}
         </span>
       )}
     </Button>

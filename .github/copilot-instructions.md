@@ -213,6 +213,14 @@ npm run test:e2e        # E2E tests
 - **Database:** Redis (analytics)
 - **Deployment:** Vercel
 
+### MDX Components
+
+| Component | Usage |
+|-----------|-------|
+| `<KeyTakeaway>` | `<KeyTakeaway>Your insight</KeyTakeaway>` |
+| `<ContextClue>` | `<ContextClue>Background info</ContextClue>` |
+| `<Alert type="warning">` | `<Alert type="warning">Warning</Alert>` |
+
 ---
 
 ## 🚀 Productivity Tips

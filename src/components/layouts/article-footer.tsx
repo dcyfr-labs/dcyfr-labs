@@ -4,8 +4,7 @@
  * Standardized footer for individual item pages with share buttons and related content.
  * Provides consistent navigation and engagement patterns.
  * 
- * Note: Sources/references should use native markdown footnotes ([^1] syntax) instead
- * of the deprecated sources prop.
+ * Note: Sources/references should use native markdown footnotes ([^1] syntax).
  * 
  * @example
  * ```tsx
