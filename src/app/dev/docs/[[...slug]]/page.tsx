@@ -45,7 +45,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params;
   const slugPath = slug?.join("/") || "";
-  
+
   if (!slugPath) {
     return createPageMetadata({
       title: "Developer Documentation",
@@ -53,9 +53,26 @@ export async function generateMetadata({ params }: PageProps) {
       path: "/dev/docs",
     });
   }
-  
+
+  // Check if it's a folder first (has INDEX/README or files/subfolders)
+  const folderContents = getFolderContents(slugPath);
+  const hasIndexOrReadme = folderContents.indexDoc || folderContents.readmeDoc;
+  const hasFilesOrFolders = folderContents.files.length > 0 || folderContents.subfolders.length > 0;
+
+  if (hasIndexOrReadme || hasFilesOrFolders) {
+    const lastSegment = slugPath.split('/').pop() || '';
+    const folderName = lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1);
+
+    return createPageMetadata({
+      title: `${folderName} Documentation - Dev Docs`,
+      description: `Browse ${folderName} documentation and guides`,
+      path: `/dev/docs/${slugPath}`,
+    });
+  }
+
+  // Otherwise, try to get a specific document (not INDEX/README)
   const doc = getDocBySlug(slugPath);
-  
+
   if (doc) {
     return createPageMetadata({
       title: `${doc.meta.title} - Dev Docs`,
@@ -63,23 +80,7 @@ export async function generateMetadata({ params }: PageProps) {
       path: `/dev/docs/${doc.slug}`,
     });
   }
-  
-  // If no document, check if it's a valid folder
-  const folderContents = getFolderContents(slugPath);
-  
-  if (folderContents.indexDoc || folderContents.readmeDoc || 
-      folderContents.files.length > 0 || folderContents.subfolders.length > 0) {
-    
-    const lastSegment = slugPath.split('/').pop() || '';
-    const folderName = lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1);
-    
-    return createPageMetadata({
-      title: `${folderName} Documentation - Dev Docs`,
-      description: `Browse ${folderName} documentation and guides`,
-      path: `/dev/docs/${slugPath}`,
-    });
-  }
-  
+
   return createPageMetadata({
     title: "Documentation Not Found",
     description: "The requested documentation page could not be found",
@@ -153,22 +154,32 @@ export default async function DevDocsPage({ params, searchParams }: PageProps) {
     return renderFolderView("", folderContents, allDocs);
   }
   
-  // Try to get the document or folder view
+  // Check if this is a folder (has INDEX/README or files/subfolders)
+  const folderContents = getFolderContents(slugPath);
+  const hasIndexOrReadme = folderContents.indexDoc || folderContents.readmeDoc;
+  const hasFilesOrFolders = folderContents.files.length > 0 || folderContents.subfolders.length > 0;
+
+  // If folder has INDEX/README or any content, render as folder view
+  if (hasIndexOrReadme || hasFilesOrFolders) {
+    return renderFolderView(slugPath, folderContents, allDocs);
+  }
+
+  // Otherwise, try to get a specific document (not INDEX/README)
   const doc = getDocBySlug(slugPath);
-  
+
   if (doc) {
     // Show specific documentation
     const tableOfContents = extractTableOfContents(doc.content);
-    
+
     return (
       <DocsLayout doc={doc} docs={allDocs} tableOfContents={tableOfContents}>
         <article className="prose max-w-none">
           <DocHeader doc={doc} />
-          
+
           <div className="mt-8">
             <MDX source={doc.content} />
           </div>
-          
+
           {/* Tags */}
           {doc.meta.tags && doc.meta.tags.length > 0 && (
             <footer className="mt-8 pt-8 border-t border-border">
@@ -177,8 +188,8 @@ export default async function DevDocsPage({ params, searchParams }: PageProps) {
                 <span className="text-sm text-muted-foreground">Tags:</span>
                 <div className="flex flex-wrap gap-2">
                   {doc.meta.tags.map((tag) => (
-                    <span 
-                      key={tag} 
+                    <span
+                      key={tag}
                       className="px-2 py-1 bg-muted rounded text-xs"
                     >
                       {tag}
@@ -192,17 +203,9 @@ export default async function DevDocsPage({ params, searchParams }: PageProps) {
       </DocsLayout>
     );
   }
-  
-  // If no document found, try to render as a folder view
-  const folderContents = getFolderContents(slugPath);
-  
-  // Check if this folder has any content at all
-  if (!folderContents.indexDoc && !folderContents.readmeDoc && 
-      folderContents.files.length === 0 && folderContents.subfolders.length === 0) {
-    notFound();
-  }
-  
-  return renderFolderView(slugPath, folderContents, allDocs);
+
+  // Nothing found - show 404
+  notFound();
 }
 
 // Helper function to render folder views
@@ -255,7 +258,10 @@ function renderFolderView(
           <section className="mt-12">
             <div className="border-t pt-8">
               <h2 className={cn(TYPOGRAPHY.h2.standard, 'mb-6')}>
-                Browse {folderPath || 'Documentation'}
+                Browse {folderPath ?
+                  `${folderPath.split('/').pop()?.charAt(0).toUpperCase()}${folderPath.split('/').pop()?.slice(1)} Documentation` :
+                  'Documentation'
+                }
               </h2>
               
               {/* Subfolders */}

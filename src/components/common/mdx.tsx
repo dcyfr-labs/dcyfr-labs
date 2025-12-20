@@ -2,6 +2,7 @@ import * as React from "react";
 import { MDXRemote, type MDXRemoteProps } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
+import remarkSmartypants from "remark-smartypants";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
@@ -11,7 +12,10 @@ import { CopyCodeButton } from "@/components/common/copy-code-button";
 import { HorizontalRule } from "@/components/common/horizontal-rule";
 import { ZoomableImage } from "@/components/common/zoomable-image";
 import { Alert } from "@/components/common/alert";
+import { KeyTakeaway } from "@/components/common/key-takeaway";
+import { ContextClue } from "@/components/common/context-clue";
 import { Figure, FigureProvider } from "@/components/common/figure-caption";
+import { TableCaption } from "@/components/common/table-caption";
 import { 
   MDXMCPArchitecture, 
   MDXAuthenticationFlow, 
@@ -19,10 +23,11 @@ import {
   MDXCVEDecisionTree 
 } from "@/components/common/mdx-diagram-wrapper";
 import { FAQ } from "@/components/common/faq";
+import { ProgressiveParagraph, ContrastText } from "@/components/common/progressive-content";
 import {
   Check,
   X,
-  CornerDownLeft,
+  ArrowUpLeft,
   AlertTriangle,
   Info,
   Lightbulb,
@@ -30,8 +35,43 @@ import {
   Lock,
   Rocket
 } from "lucide-react";
-import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
+import { TYPOGRAPHY, SPACING, PROGRESSIVE_TEXT, FONT_CONTRAST, ANIMATION } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
+import { MDXProgressionContext, MDXProgressionProvider, MDXParagraphComponent } from "@/components/common/mdx-progression-context";
+
+/**
+ * MDX Paragraph Component with Progressive Styling
+ */
+
+/**
+ * Modern table component wrapper for MDX
+ * Features:
+ * - Rounded corners with card-like styling
+ * - Subtle depth with shadows and hover effects
+ * - Responsive overflow handling
+ * - Figure caption support for table descriptions
+ * - Design token integration for consistent styling
+ */
+function TableWrapper(props: React.HTMLAttributes<HTMLTableElement>) {
+  const tableId = React.useId();
+  return (
+    <figure className="my-8 w-full group" role="table" aria-labelledby={`${tableId}-caption`}>
+      <div className={cn(
+        "relative overflow-hidden rounded-xl border border-border bg-card shadow-sm",
+        ANIMATION.transition.theme,
+        "hover:shadow-md"
+      )}>
+        <div className="overflow-x-auto">
+          <table 
+            {...props} 
+            className="w-full border-collapse" 
+            id={tableId}
+          />
+        </div>
+      </div>
+    </figure>
+  );
+}
 
 /**
  * Configuration for the rehype-pretty-code plugin
@@ -72,6 +112,47 @@ const rehypePrettyCodeOptions: RehypePrettyCodeOptions = {
     node.properties.className = ["word"];
   },
 };
+
+/**
+ * Custom rehype plugin to replace footnote backref emoji (↩) with an accessible element
+ * This processes the HTML tree after remark-gfm adds footnotes
+ */
+function rehypeReplaceFootnoteEmoji() {
+  return (tree: any) => {
+    // Visit all nodes in the tree
+    const visit = (node: any) => {
+      if (node.type === "element" && node.tagName === "a") {
+        // Look for footnote backref links (they have specific class patterns)
+        if (node.properties?.href?.toString().includes("user-content-fnref")) {
+          // Check if the link contains the ↩ emoji
+          const hasEmoji = node.children?.some((child: any) =>
+            child.type === "text" && child.value?.includes("↩")
+          );
+          
+          if (hasEmoji) {
+            // Replace text children containing ↩ with a marker we can target
+            node.children = node.children?.map((child: any) =>
+
+              child.type === "text" && child.value?.includes("↩")
+                ? { type: "text", value: "FOOTNOTE_BACKREF" }
+                : child
+            );
+            // Add a data attribute to mark this as a footnote backref
+            node.properties = node.properties || {};
+            node.properties["data-footnote-backref"] = "true";
+          }
+        }
+      }
+      
+      // Recursively visit children
+      if (node.children && Array.isArray(node.children)) {
+        node.children.forEach(visit);
+      }
+    };
+    
+    visit(tree);
+  };
+}
 
 /**
  * Helper function to extract text content from React children recursively
@@ -126,34 +207,50 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
   h6: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h6 {...props} className={`${TYPOGRAPHY.h6.mdx} mt-4 scroll-mt-20 group`} />
   ),
-  p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
-    <p {...props} />
-  ),
+  p: MDXParagraphComponent,
   blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => (
     <blockquote 
       {...props} 
       className="mt-6 border-l-4 border-primary/30 pl-4 italic text-muted-foreground not:first:mt-0"
     />
   ),
-  table: (props: React.HTMLAttributes<HTMLTableElement>) => (
-    <div className="my-6 w-full overflow-x-auto">
-      <table {...props} className="w-full border-collapse border border-border" />
-    </div>
-  ),
+  table: TableWrapper,
   thead: (props: React.HTMLAttributes<HTMLTableSectionElement>) => (
-    <thead {...props} className="bg-muted" />
+    <thead 
+      {...props} 
+      className="bg-gradient-to-r from-muted/80 to-muted/60 backdrop-blur-sm" 
+    />
   ),
   tbody: (props: React.HTMLAttributes<HTMLTableSectionElement>) => (
-    <tbody {...props} className="divide-y divide-border" />
+    <tbody {...props} />
   ),
   tr: (props: React.HTMLAttributes<HTMLTableRowElement>) => (
-    <tr {...props} className="border-b border-border" />
+    <tr 
+      {...props} 
+      className="border-b border-border/50 transition-colors hover:bg-muted/30 last:border-b-0" 
+    />
   ),
   th: (props: React.HTMLAttributes<HTMLTableCellElement>) => (
-    <th {...props} className="border border-border px-4 py-2 text-left font-semibold bg-muted/50" />
+    <th 
+      {...props} 
+      className={cn(
+        "px-4 py-4 text-left font-semibold",
+        TYPOGRAPHY.label.small,
+        "text-foreground/90 tracking-wide"
+      )} 
+    />
   ),
   td: (props: React.HTMLAttributes<HTMLTableCellElement>) => (
-    <td {...props} className="border border-border px-4 py-2" />
+    <td 
+      {...props} 
+      className="px-4 py-4 text-sm leading-relaxed text-foreground/90" 
+    />
+  ),
+  strong: (props: React.HTMLAttributes<HTMLElement>) => (
+    <ContrastText.Bold as="strong" {...props} />
+  ),
+  em: (props: React.HTMLAttributes<HTMLElement>) => (
+    <ContrastText.Emphasis as="em" {...props} />
   ),
   ul: (props: React.HTMLAttributes<HTMLUListElement>) => (
     <ul {...props} className={cn("list-disc pl-6", SPACING.list)} />
@@ -203,6 +300,21 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
     const isHeaderAnchor = props.className?.includes('no-underline');
     const href = props.href || '';
     const isExternal = href.startsWith('http://') || href.startsWith('https://');
+    const isFootnoteBackref = href.includes('user-content-fnref');
+    
+    // Handle footnote backref links - replace emoji with icon
+    if (isFootnoteBackref) {
+      return (
+        <a 
+          {...props}
+          href={href}
+          className="no-underline inline-flex items-center pl-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 transition-colors"
+          title="Back to note reference"
+        >
+          <ArrowUpLeft className="inline-block w-3 h-3" aria-label="Back to note" />
+        </a>
+      );
+    }
     
     // Convert relative docs links to proper /dev/docs/ paths
     let adjustedHref = href;
@@ -254,7 +366,7 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
   /* eslint-disable no-restricted-syntax -- MDX icon components use accent colors */
   CheckIcon: () => <Check className="inline-block w-5 h-5 align-text-bottom text-green-600 dark:text-green-400" aria-label="Check" />,
   XIcon: () => <X className="inline-block w-5 h-5 align-text-bottom text-red-600 dark:text-red-400" aria-label="Cross" />,
-  ReturnIcon: () => <CornerDownLeft className="inline-block w-5 h-5 align-text-bottom text-muted-foreground" aria-label="Return" />,
+  ReturnIcon: () => <ArrowUpLeft className="inline-block w-5 h-5 align-text-bottom text-muted-foreground" aria-label="Return" />,
   WarningIcon: () => <AlertTriangle className="inline-block w-5 h-5 align-text-bottom text-yellow-600 dark:text-yellow-400" aria-label="Warning" />,
   InfoIcon: () => <Info className="inline-block w-5 h-5 align-text-bottom text-blue-600 dark:text-blue-400" aria-label="Information" />,
   IdeaIcon: () => <Lightbulb className="inline-block w-5 h-5 align-text-bottom text-yellow-600 dark:text-yellow-400" aria-label="Idea" />,
@@ -272,8 +384,14 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
   FAQ,
   // Alert component for banners
   Alert,
+  // Key Takeaway component for insights
+  KeyTakeaway,
+  // Context Clue component for background information
+  ContextClue,
   // Figure caption component for automatic figure numbering
   Figure,
+  // Table caption component for table descriptions
+  TableCaption,
   // Footnote superscripts with icon
   sup: (props: React.HTMLAttributes<HTMLElement>) => {
     // Check if this contains a link (footnote reference) or has footnote-related attributes
@@ -294,7 +412,7 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
       return (
         <sup {...props} className="ml-0.5 inline-flex items-center">
           <a href={href} className="no-underline hover:opacity-70 transition-opacity">
-            <CornerDownLeft className="inline-block w-3 h-3 text-primary" aria-label="Footnote reference" />
+            <ArrowUpLeft className="inline-block w-3 h-3 text-primary" aria-label="Footnote reference" />
           </a>
         </sup>
       );
@@ -358,33 +476,43 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
  *
  * @see /docs/components/mdx.md for detailed documentation
  */
-export function MDX({ source }: { source: string }) {
+export function MDX({ 
+  source, 
+  useFontContrast = false 
+}: { 
+  source: string; 
+  useFontContrast?: boolean;
+}) {
   return (
-    <MDXRemote
-      source={source}
-      options={{
-        mdxOptions: {
-          remarkPlugins: [
-            remarkGfm,
-            remarkMath, // Parse math notation
-          ],
-          rehypePlugins: [
-            rehypeSlug,
-            [rehypePrettyCode, rehypePrettyCodeOptions],
-            rehypeKatex, // Render math with KaTeX
-            [
-              rehypeAutolinkHeadings, 
-              { 
-                behavior: "wrap",
-                properties: {
-                  className: "no-underline hover:text-primary transition-colors"
+    <MDXProgressionProvider useFontContrast={useFontContrast}>
+      <MDXRemote
+        source={source}
+        options={{
+          mdxOptions: {
+            remarkPlugins: [
+              remarkGfm,
+              remarkMath, // Parse math notation
+              remarkSmartypants, // Convert --- to em-dashes, quotes to smart quotes
+            ],
+            rehypePlugins: [
+              rehypeSlug,
+              [rehypePrettyCode, rehypePrettyCodeOptions],
+              rehypeKatex, // Render math with KaTeX
+              rehypeReplaceFootnoteEmoji, // Replace footnote emoji with icon
+              [
+                rehypeAutolinkHeadings, 
+                { 
+                  behavior: "wrap",
+                  properties: {
+                    className: "no-underline hover:text-primary transition-colors"
+                  }
                 }
-              }
-            ]
-          ],
-        },
-      }}
-      components={components}
-    />
+              ]
+            ],
+          },
+        }}
+        components={components}
+      />
+    </MDXProgressionProvider>
   );
 }

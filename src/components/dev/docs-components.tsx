@@ -1,6 +1,8 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Link from "next/link";
-import { Search, FileText, Folder, ChevronRight } from "lucide-react";
+import { Search, FileText, Folder, ChevronRight, ChevronDown } from "lucide-react";
 import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import type { DocFile } from "@/lib/docs";
@@ -12,8 +14,12 @@ interface DocSidebarProps {
 }
 
 export function DocSidebar({ docs, currentSlug, className }: DocSidebarProps) {
+  // Filter out root-level files (files without a subfolder)
+  // Only show docs that are in subfolders (slug contains "/")
+  const docsInFolders = docs.filter(doc => doc.slug.includes("/"));
+
   // Group docs by category
-  const docsByCategory = docs.reduce((acc, doc) => {
+  const docsByCategory = docsInFolders.reduce((acc, doc) => {
     const category = doc.category;
     if (!acc[category]) {
       acc[category] = [];
@@ -22,33 +28,81 @@ export function DocSidebar({ docs, currentSlug, className }: DocSidebarProps) {
     return acc;
   }, {} as Record<string, DocFile[]>);
 
+  // Track which categories are expanded (default: all collapsed)
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+
+  const toggleCategory = (category: string) => {
+    setExpandedCategories(prev => {
+      const next = new Set(prev);
+      if (next.has(category)) {
+        next.delete(category);
+      } else {
+        next.add(category);
+      }
+      return next;
+    });
+  };
+
   return (
     <aside className={cn("sticky top-24 h-[calc(100vh-6rem)] overflow-y-auto", className)}>
-      <nav className="space-y-4">
-        {Object.entries(docsByCategory).map(([category, categoryDocs]) => (
-          <div key={category}>
-            <h3 className={cn(TYPOGRAPHY.h3.standard, "flex items-center gap-2 mb-2")}>
-              <Folder size={16} />
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-            </h3>
-            <ul className="space-y-1 ml-4">
-              {categoryDocs.map((doc) => (
-                <li key={doc.slug}>
-                  <Link
-                    href={`/dev/docs/${doc.slug}`}
-                    className={cn(
-                      "flex items-center gap-2 p-2 rounded text-sm hover:bg-muted transition-colors",
-                      currentSlug === doc.slug && "bg-muted font-medium"
-                    )}
-                  >
-                    <FileText size={14} />
-                    {doc.meta.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+      <nav className="space-y-2">
+        {Object.entries(docsByCategory).map(([category, categoryDocs]) => {
+          const isExpanded = expandedCategories.has(category);
+          const isCurrentCategory = currentSlug?.startsWith(`${category}/`);
+
+          return (
+            <div key={category}>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => toggleCategory(category)}
+                  className="flex items-center gap-2 p-2 rounded hover:bg-muted transition-colors flex-1 text-left"
+                  aria-expanded={isExpanded}
+                  aria-label={`Toggle ${category} category`}
+                >
+                  {isExpanded ? (
+                    <ChevronDown size={16} className="text-muted-foreground shrink-0" />
+                  ) : (
+                    <ChevronRight size={16} className="text-muted-foreground shrink-0" />
+                  )}
+                  <Folder size={16} className="shrink-0" />
+                  <span className={cn(TYPOGRAPHY.h3.standard, "flex-1")}>
+                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </span>
+                </button>
+                <Link
+                  href={`/dev/docs/${category}`}
+                  className={cn(
+                    "p-2 rounded hover:bg-muted transition-colors",
+                    isCurrentCategory && !currentSlug?.includes("/", category.length + 1) && "bg-muted"
+                  )}
+                  aria-label={`View ${category} category page`}
+                  title="View category overview"
+                >
+                  <ChevronRight size={16} />
+                </Link>
+              </div>
+
+              {isExpanded && (
+                <ul className="space-y-1 ml-4 mt-1">
+                  {categoryDocs.map((doc) => (
+                    <li key={doc.slug}>
+                      <Link
+                        href={`/dev/docs/${doc.slug}`}
+                        className={cn(
+                          "flex items-center gap-2 p-2 rounded text-sm hover:bg-muted transition-colors",
+                          currentSlug === doc.slug && "bg-muted font-medium"
+                        )}
+                      >
+                        <FileText size={14} className="shrink-0" />
+                        <span className="truncate">{doc.meta.title}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          );
+        })}
       </nav>
     </aside>
   );

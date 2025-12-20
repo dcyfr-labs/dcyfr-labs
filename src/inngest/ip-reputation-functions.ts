@@ -62,7 +62,7 @@ export const scheduleIpReputationCheck = inngest.createFunction(
     id: "schedule-ip-reputation-check",
     name: "Schedule IP Reputation Check",
   },
-  { cron: "0 * * * *" }, // Every hour at minute 0
+  { cron: "0 0,4,8,12,16,20 * * *" }, // Every 4 hours (0, 4, 8, 12, 16, 20 UTC)
   async ({ step, logger }) => {
     logger.info("Starting scheduled IP reputation check");
 

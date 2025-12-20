@@ -58,7 +58,7 @@ export const sessionMonitoring = inngest.createFunction(
     name: "Session Monitoring",
   },
   {
-    cron: "0 * * * *", // Every hour
+    cron: "0 0,4,8,12,16,20 * * *", // Every 4 hours
   },
   async ({ step }) => {
     const stats = await step.run("collect-session-stats", async () => {

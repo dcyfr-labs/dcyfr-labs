@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HOVER_EFFECTS, SPACING } from "@/lib/design-tokens";
+import { HOVER_EFFECTS, SPACING, CONTENT_HIERARCHY } from "@/lib/design-tokens";
 
 /**
  * About DCYFR Component
@@ -33,11 +33,11 @@ export function AboutDcyfrLabs() {
 
       <h3>What We Focus On</h3>
       <div className={SPACING.subsection}>
-        <div>
-          <p className="font-medium text-foreground">
+        <div className={CONTENT_HIERARCHY.primary.container}>
+          <p className={CONTENT_HIERARCHY.primary.title}>
             Development & Architecture
           </p>
-          <p className="text-muted-foreground mt-1">
+          <p className={CONTENT_HIERARCHY.supporting.content}>
             Production-grade architecture decisions, server-first rendering,
             and building systems that scale. We share real experiences from
             real projects, complete with trade-offs and lessons learned.
@@ -50,11 +50,11 @@ export function AboutDcyfrLabs() {
           </p>
         </div>
 
-        <div>
-          <p className="font-medium text-foreground">
+        <div className={CONTENT_HIERARCHY.primary.container}>
+          <p className={CONTENT_HIERARCHY.primary.title}>
             Cybersecurity & Defense
           </p>
-          <p className="text-muted-foreground mt-1">
+          <p className={CONTENT_HIERARCHY.supporting.content}>
             Defense-in-depth strategies, practical security hardening, and
             analysis of real threats and defenses. Security as an enabler,
             not a bottleneck.
@@ -67,11 +67,11 @@ export function AboutDcyfrLabs() {
           </p>
         </div>
 
-        <div>
-          <p className="font-medium text-foreground">
+        <div className={CONTENT_HIERARCHY.primary.container}>
+          <p className={CONTENT_HIERARCHY.primary.title}>
             AI & Automation
           </p>
-          <p className="text-muted-foreground mt-1">
+          <p className={CONTENT_HIERARCHY.supporting.content}>
             Augmentation over replacement. We explore practical AI
             workflows, human-centric automation, and how AI can enhance (not
             replace) human expertise and creativity.
