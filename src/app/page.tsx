@@ -194,18 +194,17 @@ export default async function Home() {
         {/* Hero Section */}
         <Section id="hero">
           <ScrollReveal animation="fade-up">
-            <div className={`${PAGE_LAYOUT.hero.container}`}>
+            <div className={cn(PAGE_LAYOUT.hero.container, "flex flex-col items-center w-full")}>
               <div
                 className={cn(
-                  PAGE_LAYOUT.hero.content,
-                  "text-center",
-                  `${CONTAINER_WIDTHS.narrow} mx-auto`,
-                  SPACING.subsectionAlt
+                  "space-y-4",
+                  "text-center flex flex-col items-center w-full",
+                  `${CONTAINER_WIDTHS.narrow} mx-auto`
                 )}
               >
                 {/* Avatar */}
                 <div
-                  className="flex justify-center"
+                  className="flex justify-center w-full"
                   role="img"
                   aria-label="Avatar - Click to flip"
                 >
@@ -224,14 +223,17 @@ export default async function Home() {
                     "text-muted-foreground leading-relaxed",
                     TYPOGRAPHY.description,
                     CONTAINER_WIDTHS.narrow,
-                    "mx-auto"
+                    "mx-auto w-full",
+                    "text-center"
                   )}
                 >
                   Exploring cyber architecture, coding, and security insights to build a safer digital future.
                 </p>
 
                 {/* Actions */}
-                <HomepageHeroActions />
+                <div className="w-full flex justify-center">
+                  <HomepageHeroActions />
+                </div>
               </div>
             </div>
           </ScrollReveal>
