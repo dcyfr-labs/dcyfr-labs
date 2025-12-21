@@ -982,9 +982,22 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
   letter-spacing: 0.2px;
   margin-bottom: clamp(1.25rem, 1rem + 1vw, 1.75rem);
   word-spacing: 0.05em;
-  text-align: left;
   text-rendering: optimizeLegibility;
   max-width: clamp(65ch, 70ch, 75ch);
+}
+
+/* Exclude banners and alerts from max-width constraints */
+.alert-banner p,
+.banner p,
+.prose-banner p,
+[data-type="banner"] p {
+  max-width: none !important;
+}
+
+/* Remove paragraph margins within figures */
+figure p,
+figcaption p {
+  margin-bottom: 0 !important;
 }
 
 /* ===================================================================
@@ -1101,6 +1114,15 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
     max-width: clamp(70ch, 72ch, 75ch);
   }
 
+<<<<<<< HEAD
+  /* Exclude banners from max-width constraints */
+  .alert-banner p,
+  .banner p,
+  .prose-banner p,
+  [data-type="banner"] p {
+    max-width: none !important;
+  }
+
   /* Tablet heading scaling */
   .prose h2 {
     font-size: clamp(1.75rem, 1.5rem + 1.25vw, 2rem); /* 28px - 32px */
@@ -1114,6 +1136,21 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
     margin-bottom: clamp(0.875rem, 0.75rem + 0.625vw, 1rem);
   }
 
+=======
+  /* Tablet heading scaling */
+  .prose h2 {
+    font-size: clamp(1.75rem, 1.5rem + 1.25vw, 2rem); /* 28px - 32px */
+    margin-top: clamp(2.75rem, 2.5rem + 1.25vw, 3rem);
+    margin-bottom: clamp(1rem, 0.875rem + 0.625vw, 1.125rem);
+  }
+
+  .prose h3 {
+    font-size: clamp(1.375rem, 1.25rem + 0.625vw, 1.5rem); /* 22px - 24px */
+    margin-top: clamp(2.25rem, 2rem + 1.25vw, 2.5rem);
+    margin-bottom: clamp(0.875rem, 0.75rem + 0.625vw, 1rem);
+  }
+
+>>>>>>> main
   .prose h4 {
     font-size: clamp(1.25rem, 1.125rem + 0.625vw, 1.375rem); /* 20px - 22px */
     margin-top: clamp(1.75rem, 1.5rem + 1.25vw, 2rem);
@@ -1164,6 +1201,17 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
     max-width: clamp(65ch, 68ch, 70ch); /* Optimal reading length */
   }
 
+<<<<<<< HEAD
+  /* Exclude banners from max-width constraints */
+  .alert-banner p,
+  .banner p,
+  .prose-banner p,
+  [data-type="banner"] p {
+    max-width: none !important;
+  }
+
+=======
+>>>>>>> main
   /* Large desktop headings */
   .prose h2 {
     font-size: clamp(2rem, 1.75rem + 1.25vw, 2.25rem); /* 32px - 36px */

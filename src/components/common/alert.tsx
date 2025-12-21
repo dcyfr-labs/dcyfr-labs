@@ -11,6 +11,7 @@ import { SEMANTIC_COLORS, BORDERS } from "@/lib/design-tokens";
  * Supports multiple severity levels: warning, critical, info, success
  * 
  * Uses semantic color tokens from design system for consistent theming.
+ * Follows the unified pattern used by KeyTakeaway and ContextClue components.
  * 
  * @component
  * @param {Object} props - Component props
@@ -52,10 +53,10 @@ export function Alert({ type = 'info', children, className = '' }: AlertProps) {
   const Icon = iconMap[type];
 
   return (
-    <div className={`${BORDERS.card} ${colors.border} ${colors.container} p-3 sm:p-4 my-4 ${className}`}>
-      <div className="flex items-start gap-3">
-        <Icon className={`h-5 w-5 mt-0.5 shrink-0 ${colors.icon}`} aria-hidden="true" />
-        <div className={`flex-1 text-sm leading-relaxed max-w-none ${colors.text} [&>p]:m-0 [&>p]:leading-relaxed [&>strong]:font-semibold [&>ul]:space-y-0.5 [&>ol]:space-y-0.5 [&>li]:leading-relaxed`}>
+    <div className={`alert-banner ${BORDERS.card} ${colors.border} ${colors.container} p-4 sm:p-5 my-6 ${className}`}>
+      <div className="flex items-start gap-3 sm:gap-4">
+        <Icon className={`h-5 w-5 sm:h-6 sm:w-6 mt-0.5 shrink-0 ${colors.icon}`} aria-hidden="true" />
+        <div className={`flex-1 text-sm sm:text-base leading-relaxed max-w-none ${colors.text} [&>p]:m-0 [&>p]:inline [&>strong]:font-semibold [&>em]:italic [&>ul]:space-y-0.5 [&>ol]:space-y-0.5 [&>li]:leading-relaxed`}>
           {children}
         </div>
       </div>

@@ -170,10 +170,10 @@ export function Figure({
   if (isOverhead) {
     // Overhead mode: Caption as overlay at bottom of image
     return (
-      <figure className="relative inline-block w-full">
+      <figure className="relative inline-block w-full [&>p]:mb-0">
         {children}
         <figcaption
-          className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent ${TYPOGRAPHY.body} text-white italic text-center text-sm p-4`}
+          className={`absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent ${TYPOGRAPHY.body} text-white italic text-center text-sm p-4 [&>p]:mb-0`}
         >
           {captionText}
         </figcaption>
@@ -183,10 +183,10 @@ export function Figure({
 
   // Normal mode: Caption below image
   return (
-    <figure className={`flex flex-col items-center gap-1 mb-8`}>
+    <figure className={`mb-6 flex flex-col items-center [&>p]:mb-0`}>
       {children}
       <figcaption
-        className={`${TYPOGRAPHY.body} text-muted-foreground italic text-center max-w-full text-sm`}
+        className={`${TYPOGRAPHY.body} text-center italic text-sm text-muted-foreground [&>p]:mb-0`}
       >
         {captionText}
       </figcaption>
