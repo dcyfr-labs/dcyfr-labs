@@ -423,83 +423,6 @@
     list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='12' height='12'%3E%3Cpath d='M 100 51.397411 C 91.768944 54.80574 85.209213 57.873196 80.320602 60.599865 C 75.431992 63.32653 71.623482 66.030434 68.894951 68.711655 C 66.211899 71.392883 63.506153 75.164703 60.777626 80.027267 C 58.049099 84.889832 54.934074 91.547333 51.432468 100 L 48.635742 100 C 45.088661 91.547333 41.950901 84.889832 39.222374 80.027267 C 36.493847 75.164703 33.810837 71.392883 31.17326 68.711655 C 28.444733 66.030434 24.636229 63.32653 19.747612 60.599865 C 14.859005 57.873196 8.27653 54.80574 -0 51.397411 L -0 48.602589 C 8.322005 45.19426 14.927217 42.126804 19.815825 39.400135 C 24.704441 36.67347 28.490208 33.969566 31.17326 31.288345 C 33.810837 28.607117 36.493847 24.835297 39.222374 19.972733 C 41.950901 15.110176 45.088661 8.452667 48.635742 0 L 51.432468 0 C 54.934074 8.452667 58.049099 15.110176 60.777626 19.972733 C 63.506153 24.835297 66.211899 28.607117 68.894951 31.288345 C 71.532532 33.969566 75.29557 36.67347 80.184174 39.400135 C 85.072792 42.126804 91.677994 45.19426 100 48.602589 Z' fill='%23f9fafb'/%3E%3C/svg%3E");
   }
 
-  /* Footnote reference styling - superscript links in content */
-  sup:has(a[href^="#user-content-fn"]) {
-    margin-left: 0.125rem;
-    font-size: 0.75rem;
-    line-height: 1;
-    vertical-align: super;
-  }
-
-  sup a[href^="#user-content-fn"] {
-    text-decoration: none;
-    color: hsl(var(--primary));
-    padding: 0.125rem 0.25rem;
-    border-radius: 0.25rem;
-    transition: background-color 0.2s, color 0.2s;
-  }
-
-  /* Add brackets around footnote reference number */
-  sup a[href^="#user-content-fn"]::before {
-    content: "[";
-    margin-right: 0.0625rem;
-    text-decoration: none;
-    font-weight: bold;
-  }
-
-  sup a[href^="#user-content-fn"]::after {
-    content: "]";
-    margin-left: 0.0625rem;
-    text-decoration: none;
-    font-weight: bold;
-  }
-
-  sup a[href^="#user-content-fn"]:hover {
-    background-color: hsl(var(--primary) / 0.1);
-    text-decoration: underline;
-  }
-
-  /* Footnote definition scroll offset - prevents nav bar overlap */
-  [id^="user-content-fn-"] {
-    scroll-margin-top: 5rem;
-  }
-
-  /* Footnote reference in text scroll offset - for backref clicks */
-  [id^="user-content-fnref-"] {
-    scroll-margin-top: 5rem;
-  }
-
-  /* Footnote backref styling - hide emoji, use icon instead */
-  a[data-footnote-backref] {
-    text-decoration: none;
-    font-size: 0;
-    display: inline-flex;
-    align-items: center;
-    margin-left: 0.25rem;
-  }
-
-  a[data-footnote-backref]::before {
-    content: "";
-    display: inline-block;
-    width: 0.75rem;
-    height: 0.75rem;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a855f7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 10 4 15 9 20'%3E%3C/polyline%3E%3Cpath d='M20 4v7a4 4 0 0 1-4 4H4'%3E%3C/path%3E%3C/svg%3E");
-    background-size: contain;
-    background-repeat: no-repeat;
-    font-size: 0.75rem;
-    opacity: 0.7;
-    transition: opacity 0.2s;
-  }
-
-  a[data-footnote-backref]:hover::before {
-    opacity: 1;
-  }
-
-  /* Dark mode footnote icon */
-  .dark a[data-footnote-backref]::before {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c084fc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 10 4 15 9 20'%3E%3C/polyline%3E%3Cpath d='M20 4v7a4 4 0 0 1-4 4H4'%3E%3C/path%3E%3C/svg%3E");
-  }
-
   /* Touch Target Utilities - Mobile-First UX */
   /* Ensures minimum 44x44px touch targets per Apple/Google guidelines */
   .touch-target {
@@ -1055,94 +978,74 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
 }
 
 .prose p {
-  line-height: 1.65;
-  letter-spacing: 0.3px;
-  margin-bottom: 1.25rem;
+  line-height: 1.75;
+  letter-spacing: 0.2px;
+  margin-bottom: clamp(1.25rem, 1rem + 1vw, 1.75rem);
   word-spacing: 0.05em;
+  text-align: left;
+  text-rendering: optimizeLegibility;
+  max-width: clamp(65ch, 70ch, 75ch);
 }
 
-/* Mobile typography enhancements */
-@media (max-width: 768px) {
+/* ===================================================================
+   RESPONSIVE TYPOGRAPHY SYSTEM
+   ================================================================ */
+
+/* Mobile-first fluid typography (320px - 768px) */
+@media (max-width: 48rem) {
   .prose {
-    font-size: 1.0625rem; /* 17px - iOS standard for better readability */
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.0625rem); /* 16px - 17px */
   }
 
   .prose p {
-    line-height: 1.7; /* Comfortable reading on mobile */
-    margin-bottom: 1.5rem; /* Balanced paragraph separation */
-    letter-spacing: 0.4px;
-    word-spacing: 0.08em;
+    line-height: clamp(1.75, 1.7 + 0.25vw, 1.8);
+    letter-spacing: clamp(0.2px, 0.2px + 0.05vw, 0.3px);
+    word-spacing: clamp(0.05em, 0.05em + 0.015vw, 0.08em);
   }
 
-  /* Reduce paragraph margin when immediately followed by lists to avoid excess spacing */
-  .prose p + ul,
-  .prose p + ol {
-    margin-top: 0.75rem;
-    margin-bottom: 0.75rem;
-  }
-
+  /* Mobile headings with fluid scaling */
   .prose h2 {
-    font-size: 1.75rem; /* 28px */
-    margin-top: 3rem; /* More section separation */
-    margin-bottom: 1.25rem;
-    letter-spacing: -0.5px;
+    font-size: clamp(1.5rem, 1.25rem + 1.25vw, 1.75rem); /* 24px - 28px */
+    margin-top: clamp(2.5rem, 2rem + 2.5vw, 3.5rem);
+    margin-bottom: clamp(1rem, 0.75rem + 1.25vw, 1.5rem);
   }
 
   .prose h3 {
-    font-size: 1.375rem; /* 22px */
-    margin-top: 2.25rem;
-    margin-bottom: 1rem;
-    letter-spacing: -0.3px;
+    font-size: clamp(1.25rem, 1.125rem + 0.625vw, 1.375rem); /* 20px - 22px */
+    margin-top: clamp(2rem, 1.75rem + 1.25vw, 2.75rem);
+    margin-bottom: clamp(0.875rem, 0.75rem + 0.625vw, 1.25rem);
   }
 
-  /* Code blocks optimized for mobile */
+  .prose h4 {
+    font-size: clamp(1.125rem, 1rem + 0.625vw, 1.25rem); /* 18px - 20px */
+    margin-top: clamp(1.75rem, 1.5rem + 1.25vw, 2rem);
+    margin-bottom: clamp(0.75rem, 0.5rem + 1.25vw, 1rem);
+  }
+
+  /* Mobile code blocks */
   .prose pre {
-    font-size: 0.8125rem; /* 13px - optimal for mobile code */
-    padding: 0.75rem;
-    margin-left: -1rem; /* Bleed to container edges for max width */
+    font-size: clamp(0.75rem, 0.7rem + 0.25vw, 0.8125rem); /* 12px - 13px */
+    padding: clamp(0.625rem, 0.5rem + 0.625vw, 0.75rem);
+    margin-left: -1rem;
     margin-right: -1rem;
-    border-radius: 0; /* Square edges when bleeding */
+    border-radius: 0;
     overflow-x: auto;
   }
 
   .prose code {
-    font-size: 0.875rem !important; /* Inline code slightly larger */
+    font-size: clamp(0.8125rem, 0.75rem + 0.3125vw, 0.875rem) !important;
   }
 
-  /* Lists with default browser spacing */
-  .prose ul {
-    margin-top: 1.25rem;
-    margin-bottom: 1.25rem;
-    padding-left: 1.5rem;
-  }
-
-  .prose ol {
-    margin-top: 1.25rem;
-    margin-bottom: 1.25rem;
-    margin-left: 1.5rem;
-    list-style-position: outside;
-  }
-
-  .prose li {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-    line-height: 1.6;
-  }
-  
-  /* Spacing helps separate inline code blocks within list items for better readability */
-  .prose li code {
-    margin: 0 0.25em; /* Horizontal spacing around inline code */
-  }
-
-  /* Blockquotes more prominent */
+  /* Mobile blockquotes */
   .prose blockquote {
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
-    padding-left: 1rem;
+    margin-top: clamp(1.25rem, 1rem + 1.25vw, 1.5rem);
+    margin-bottom: clamp(1.25rem, 1rem + 1.25vw, 1.5rem);
+    padding-left: clamp(0.75rem, 0.625rem + 0.625vw, 1rem);
   }
+}
 
-  /* Details/Summary (Collapsible FAQ) Styling */
-  .prose details {
+/* Details/Summary (Collapsible FAQ) Styling */
+.prose details {
     margin-top: 1rem;
     margin-bottom: 1rem;
     border: 1px solid hsl(var(--border));
@@ -1184,98 +1087,377 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
   .prose details > summary + * {
     margin-top: 1rem;
   }
-}
 
-/* Desktop prose enhancements */
-@media (min-width: 769px) {
+/* Tablet/desktop fluid typography (769px - 1199px) */
+@media (min-width: 48.0625rem) and (max-width: 74.9375rem) {
   .prose {
-    line-height: 1.9;
+    font-size: clamp(1.0625rem, 1rem + 0.3125vw, 1.125rem); /* 17px - 18px */
+    line-height: clamp(1.8, 1.75 + 0.25vw, 1.9);
   }
   
-  /* ⚠️ GUARDRAIL: Override global .prose line-height for list items to keep them compact */
-  .prose li {
-    line-height: 1.6;
-  }
-
   .prose p {
-    line-height: 1.9;
-    letter-spacing: 0.3px;
-    margin-bottom: 1.5rem;
+    line-height: clamp(1.8, 1.75 + 0.25vw, 1.85);
+    letter-spacing: 0.2px;
+    max-width: clamp(70ch, 72ch, 75ch);
   }
 
-  /* Reduce list top margin when immediately preceded by paragraph */
-  .prose p + ul,
-  .prose p + ol {
-    margin-top: 0.5rem;
+  /* Tablet heading scaling */
+  .prose h2 {
+    font-size: clamp(1.75rem, 1.5rem + 1.25vw, 2rem); /* 28px - 32px */
+    margin-top: clamp(2.75rem, 2.5rem + 1.25vw, 3rem);
+    margin-bottom: clamp(1rem, 0.875rem + 0.625vw, 1.125rem);
   }
 
-  .prose strong {
-    font-weight: 600;
+  .prose h3 {
+    font-size: clamp(1.375rem, 1.25rem + 0.625vw, 1.5rem); /* 22px - 24px */
+    margin-top: clamp(2.25rem, 2rem + 1.25vw, 2.5rem);
+    margin-bottom: clamp(0.875rem, 0.75rem + 0.625vw, 1rem);
   }
 
-  .prose em {
+  .prose h4 {
+    font-size: clamp(1.25rem, 1.125rem + 0.625vw, 1.375rem); /* 20px - 22px */
+    margin-top: clamp(1.75rem, 1.5rem + 1.25vw, 2rem);
+    margin-bottom: clamp(0.625rem, 0.5rem + 0.625vw, 0.75rem);
+  }
+
+  /* Tablet blockquotes */
+  .prose blockquote {
+    margin-top: clamp(1.75rem, 1.5rem + 1.25vw, 2rem);
+    margin-bottom: clamp(1.75rem, 1.5rem + 1.25vw, 2rem);
+    padding-left: clamp(1rem, 0.875rem + 0.625vw, 1.25rem);
+    line-height: clamp(1.7, 1.65 + 0.25vw, 1.8);
+  }
+
+  .prose blockquote p {
+    font-size: clamp(1.0625rem, 1rem + 0.3125vw, 1.125rem);
+    line-height: clamp(1.65, 1.6 + 0.25vw, 1.7);
+    margin-bottom: clamp(0.375rem, 0.25rem + 0.625vw, 0.5rem);
     font-style: italic;
   }
 
-  /* Better table readability */
+  /* Tablet tables */
   .prose table {
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
+    margin-top: clamp(1.25rem, 1rem + 1.25vw, 1.5rem);
+    margin-bottom: clamp(1.25rem, 1rem + 1.25vw, 1.5rem);
   }
 
   .prose thead th {
-    padding: 0.75rem 1rem;
+    padding: clamp(0.625rem, 0.5rem + 0.625vw, 0.75rem) clamp(0.875rem, 0.75rem + 0.625vw, 1rem);
     line-height: 1.5;
     background-color: hsl(var(--muted));
   }
 
   .prose tbody td {
-    padding: 0.75rem 1rem;
+    padding: clamp(0.625rem, 0.5rem + 0.625vw, 0.75rem) clamp(0.875rem, 0.75rem + 0.625vw, 1rem);
     line-height: 1.6;
   }
+}
 
-  /* Better blockquote visibility and spacing */
+/* Large desktop fluid typography (1200px+) */
+@media (min-width: 75rem) {
+  .prose {
+    font-size: clamp(1.125rem, 1.0625rem + 0.3125vw, 1.25rem); /* 18px - 20px */
+    line-height: clamp(1.75, 1.7 + 0.25vw, 1.8);
+  }
+
+  .prose p {
+    max-width: clamp(65ch, 68ch, 70ch); /* Optimal reading length */
+  }
+
+  /* Large desktop headings */
+  .prose h2 {
+    font-size: clamp(2rem, 1.75rem + 1.25vw, 2.25rem); /* 32px - 36px */
+    margin-top: clamp(2.25rem, 2rem + 1.25vw, 2.5rem);
+    margin-bottom: clamp(0.75rem, 0.625rem + 0.625vw, 0.875rem);
+  }
+
+  .prose h3 {
+    font-size: clamp(1.5rem, 1.375rem + 0.625vw, 1.625rem); /* 24px - 26px */
+    margin-top: clamp(1.75rem, 1.5rem + 1.25vw, 2rem);
+    margin-bottom: clamp(0.625rem, 0.5rem + 0.625vw, 0.75rem);
+  }
+
+  .prose h4 {
+    font-size: clamp(1.375rem, 1.25rem + 0.625vw, 1.5rem); /* 22px - 24px */
+    margin-top: clamp(1.5rem, 1.375rem + 0.625vw, 1.75rem);
+    margin-bottom: clamp(0.5rem, 0.375rem + 0.625vw, 0.625rem);
+  }
+
+  /* Large desktop blockquotes */
   .prose blockquote {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    padding-left: 1.25rem;
-    line-height: 1.8;
+    margin-top: clamp(1.5rem, 1.375rem + 0.625vw, 1.75rem);
+    margin-bottom: clamp(1.5rem, 1.375rem + 0.625vw, 1.75rem);
+    padding-left: clamp(1.25rem, 1.125rem + 0.625vw, 1.5rem);
   }
 
   .prose blockquote p {
-    margin-bottom: 0.5rem;
-    font-style: italic;
+    font-size: clamp(1.125rem, 1.0625rem + 0.3125vw, 1.25rem);
   }
 
-  /* Code block improvements */
+  /* Large desktop code blocks */
   .prose pre {
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
+    margin-top: clamp(1.25rem, 1.125rem + 0.625vw, 1.5rem);
+    margin-bottom: clamp(1.25rem, 1.125rem + 0.625vw, 1.5rem);
   }
 
-  /* List spacing for proper paragraph separation */
-  .prose ul,
-  .prose ol {
-    margin-bottom: 1.5rem;
-  }
-
-  .prose li {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-    line-height: 1.6;
-  }
-  
-  /* Spacing helps separate inline code blocks within list items for better readability */
-  .prose li code {
-    margin: 0 0.25em; /* Horizontal spacing around inline code */
-  }
-
-  /* Horizontal rule better spacing */
+  /* Large desktop horizontal rules */
   .prose hr {
-    margin-top: 2.5rem;
-    margin-bottom: 2.5rem;
+    margin-top: clamp(2.25rem, 2rem + 1.25vw, 2.5rem);
+    margin-bottom: clamp(2.25rem, 2rem + 1.25vw, 2.5rem);
     opacity: 0.5;
   }
+}
+
+/* ===================================================================
+   MODERN TABLE STYLING SYSTEM
+   
+   Features:
+   - Rounded corners following card design patterns
+   - Subtle depth with shadows and hover effects
+   - Figure caption support for table descriptions
+   - Responsive overflow handling with horizontal scroll
+   - Design token integration (SPACING, TYPOGRAPHY)
+   - Dark/light mode support with semantic colors
+   ================================================================ */
+
+/* Table figure wrapper - card-like presentation */
+.prose figure[role="table"] {
+  position: relative;
+  display: block;
+  margin: 2rem auto;
+  width: 100%;
+}
+
+/* Table container with modern styling */
+.prose figure[role="table"] > div {
+  position: relative;
+  border-radius: 0.75rem;
+  border: 1px solid hsl(0 0% 90%);
+  background-color: hsl(var(--card));
+  box-shadow: 0 1px 2px hsl(0 0% 0% / 5%);
+  transition: box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.dark .prose figure[role="table"] > div {
+  border-color: oklch(1 0 0 / 0.16);
+  box-shadow: 0 1px 3px hsl(0 0% 0% / 20%);
+}
+
+/* Hover effect for table depth */
+.prose figure[role="table"]:hover > div {
+  box-shadow: 0 4px 12px hsl(0 0% 0% / 8%);
+}
+
+.dark .prose figure[role="table"]:hover > div {
+  box-shadow: 0 4px 12px hsl(0 0% 0% / 25%);
+}
+
+/* Responsive table overflow handling */
+.prose figure[role="table"] > div > .overflow-x-auto {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Scrollbar styling for better appearance */
+.prose figure[role="table"] > div > .overflow-x-auto::-webkit-scrollbar {
+  height: 0.375rem;
+}
+
+.prose figure[role="table"] > div > .overflow-x-auto::-webkit-scrollbar-track {
+  background-color: hsl(var(--muted) / 30%);
+  border-radius: 999px;
+}
+
+.prose figure[role="table"] > div > .overflow-x-auto::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--muted));
+  border-radius: 999px;
+  transition: background-color 200ms ease;
+}
+
+.prose figure[role="table"] > div > .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--muted) / 80%);
+}
+
+/* Modern table structure */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+}
+
+/* Table header with solid background for visibility */
+.prose thead {
+  background-color: hsl(var(--muted));
+}
+
+/* Table header cells with improved spacing and typography */
+.prose thead th {
+  padding: 1rem 1rem;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  text-transform: none;
+  color: hsl(var(--foreground));
+  border: 0;
+  white-space: nowrap;
+}
+
+/* Table body rows with hover effect */
+.prose tbody tr {
+  border-bottom: 1px solid hsl(0 0% 90%);
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .prose tbody tr {
+  border-bottom-color: oklch(1 0 0 / 0.12);
+}
+
+.prose tbody tr:hover {
+  background-color: hsl(var(--muted) / 50%);
+}
+
+.prose tbody tr:last-child {
+  border-bottom: 0;
+}
+
+/* Table data cells with modern spacing */
+.prose tbody td {
+  padding: 1rem 1rem;
+  text-align: left;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: hsl(var(--foreground));
+  border: 0;
+  vertical-align: middle;
+}
+
+/* Striped rows for better readability (optional alternating pattern) */
+.prose tbody tr:nth-child(odd) {
+  background-color: hsl(var(--muted) / 25%);
+}
+
+.prose tbody tr:nth-child(odd):hover {
+  background-color: hsl(var(--muted) / 50%);
+}
+
+/* Table caption styling */
+.prose figcaption {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: hsl(var(--foreground) / 80%);
+  font-weight: 500;
+  border-top: 1px solid hsl(0 0% 90%);
+  background-color: hsl(var(--muted) / 30%);
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+}
+
+.dark .prose figcaption {
+  border-top-color: oklch(1 0 0 / 0.12);
+}
+
+/* Code in table cells */
+.prose tbody td code,
+.prose thead th code {
+  background-color: hsl(var(--primary) / 10%);
+  border: 1px solid hsl(var(--primary) / 20%);
+  color: hsl(var(--primary));
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.85em;
+  word-break: break-word;
+}
+
+/* Links in table cells */
+.prose tbody a,
+.prose thead a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+
+.prose tbody a:hover,
+.prose thead a:hover {
+  color: hsl(var(--primary) / 80%);
+  text-decoration-thickness: 2px;
+}
+
+/* Responsive table adjustments for mobile */
+@media (max-width: 48rem) {
+  .prose figure[role="table"] {
+    margin: 1.5rem -1rem;
+    width: calc(100% + 2rem);
+  }
+
+  .prose figure[role="table"] > div {
+    border-radius: 0.5rem;
+  }
+
+  .prose thead th {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.8125rem;
+  }
+
+  .prose tbody td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .prose figcaption {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.8125rem;
+  }
+}
+
+/* ===================================================================
+   UNIFIED LIST SYSTEM
+   ================================================================ */
+
+/* Base list styles with fluid scaling */
+.prose ul,
+.prose ol {
+  margin-top: clamp(1rem, 0.875rem + 0.625vw, 1.25rem);
+  margin-bottom: clamp(1rem, 0.875rem + 0.625vw, 1.25rem);
+  padding-left: clamp(1.25rem, 1.125rem + 0.625vw, 1.5rem);
+  list-style-position: outside;
+}
+
+.prose ol {
+  /* Ensure consistent margin for ordered lists */
+  margin-left: 0;
+}
+
+.prose li {
+  margin-top: clamp(0.375rem, 0.25rem + 0.625vw, 0.5rem);
+  margin-bottom: clamp(0.375rem, 0.25rem + 0.625vw, 0.5rem);
+  line-height: 1.6; /* Consistent across all breakpoints */
+}
+
+/* Inline code in lists */
+.prose li code {
+  margin: 0 0.25em;
+}
+
+/* Reduce spacing between paragraphs and lists */
+.prose p + ul,
+.prose p + ol {
+  margin-top: clamp(0.25rem, 0.125rem + 0.625vw, 0.5rem);
+}
+
+/* Typography enhancements that apply to all breakpoints */
+.prose strong {
+  font-weight: 600;
+}
+
+.prose em {
+  font-style: italic;
 }
 
 

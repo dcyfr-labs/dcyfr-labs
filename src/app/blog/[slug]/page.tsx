@@ -270,7 +270,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
               <div className="prose my-8">
                 <FigureProvider>
-                  <MDX source={post.body} />
+                  <MDX source={post.body} useFontContrast={true} />
                 </FigureProvider>
               </div>
 

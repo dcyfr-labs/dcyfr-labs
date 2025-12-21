@@ -22,7 +22,12 @@ interface PostQuickActionsProps {
  */
 export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActionsProps) {
   const { isBookmarked, toggleBookmark } = useBookmarks();
-  const bookmarked = slug ? isBookmarked(slug) : false;
+  const [isHydrated, setIsHydrated] = React.useState(false);
+  const bookmarked = isHydrated && slug ? isBookmarked(slug) : false;
+
+  React.useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   const copyToClipboard = async (text: string) => {
     try {

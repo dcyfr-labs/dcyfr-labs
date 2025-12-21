@@ -74,6 +74,7 @@ export type GalleryProjectContent = {
 };
 
 export type Project = {
+  id: string; // deterministically generated or specified in frontmatter
   slug: string;
   title: string;
   description: string;
@@ -87,6 +88,10 @@ export type Project = {
   hidden?: boolean; // false
   highlights?: string[];
   image?: ProjectImage; // optional featured image
+  body: string; // MDX/markdown content
+  previousSlugs?: string[]; // for handling slug changes
+  readingTime?: { words: number; minutes: number; text: string };
+  publishedAt: string; // ISO date string
   
   // Category-specific content (only one should be present based on category)
   /** Code project content - for category: "code" */
@@ -97,6 +102,7 @@ export type Project = {
 
 const projectDrafts: Project[] = [
   {
+    id: "project-dcyfr-labs-de1e4e89",
     slug: "dcyfr-labs",
     title: "DCYFR Labs",
     description: "Cyber architecture and design services for modern businesses, focusing on secure and scalable solutions.",
@@ -115,8 +121,11 @@ const projectDrafts: Project[] = [
       "Integrated SEO best practices to enhance online visibility and search engine rankings."
     ],
     featured: true,
+    body: "",
+    publishedAt: "2025-01-01",
   },
   {
+    id: "project-x64-8ab9c3d2",
     slug: "x64",
     title: "X64: Indie Cyber Publication",
     description: "An independent online publication focused on cybersecurity topics, trends, and research, providing in-depth articles and analysis for professionals and enthusiasts.",
@@ -134,8 +143,11 @@ const projectDrafts: Project[] = [
       "Built a community of readers and contributors passionate about cybersecurity awareness and education."
     ],
     featured: false,
+    body: "",
+    publishedAt: "2024-01-01",
   },
   {
+    id: "project-isn-7c5f6e4a",
     slug: "isn",
     title: "Information Security Network, Inc.",
     description: "A local nonprofit dedicated to promoting public security awareness through community outreach and education.",
@@ -151,6 +163,8 @@ const projectDrafts: Project[] = [
       "Organized events and workshops to engage the public and foster a culture of security awareness."
     ],
     featured: false,
+    body: "",
+    publishedAt: "2021-01-01",
   },
 ];
 

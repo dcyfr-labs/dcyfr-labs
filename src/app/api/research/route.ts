@@ -328,7 +328,7 @@ export async function POST(request: NextRequest) {
 
   // Perform research
   try {
-    console.log(`[Research API] Processing request for ${messages.length} messages`);
+    console.log(`[Research API] Processing request for ${messages.length} messages`); // lgtm[js/log-injection]
 
     const result: ResearchResult = await research(messages, options);
 

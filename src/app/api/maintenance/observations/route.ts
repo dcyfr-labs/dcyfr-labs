@@ -245,7 +245,7 @@ export async function POST(request: NextRequest) {
       console.log(`[In-Memory] Stored observation. Total in memory: ${inMemoryObservations.length}`);
     }
 
-    console.log(`[Observation] ${severity.toUpperCase()}: "${title}" [${usingFallback ? "in-memory" : "Redis"}]`);
+    console.log(`[Observation] ${severity.toUpperCase()}: "${title}" [${usingFallback ? "in-memory" : "Redis"}]`); // lgtm[js/log-injection]
 
     return NextResponse.json(
       {

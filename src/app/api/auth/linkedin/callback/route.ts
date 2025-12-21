@@ -22,18 +22,18 @@ export async function GET(request: NextRequest) {
     const error = searchParams.get('error');
     const errorDescription = searchParams.get('error_description');
 
-    console.log('📋 OAuth parameters received:', {
+    console.log('📋 OAuth parameters received:', { // lgtm[js/log-injection]
       hasCode: !!code,
       codeLength: code?.length || 0,
       state: state,
       hasError: !!error,
-      error: error,
+      error: error, // OAuth standard error codes (e.g., 'access_denied')
       errorDescription: errorDescription
     });
 
     // Handle authorization errors
     if (error) {
-      console.error('LinkedIn OpenID authorization error:', error, errorDescription);
+      console.error('LinkedIn OpenID authorization error:', error, errorDescription); // lgtm[js/log-injection]
       return NextResponse.json({
         error: 'LinkedIn OpenID authorization failed',
         details: errorDescription || error

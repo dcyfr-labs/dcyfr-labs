@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { createPortal } from "react-dom";
 import { ZoomIn, X } from "lucide-react";
 import { ANIMATION, BORDERS, SHADOWS } from "@/lib/design-tokens";
 
@@ -149,8 +150,8 @@ export function ZoomableImage(props: React.ImgHTMLAttributes<HTMLImageElement>) 
         </span>
       </span> */}
 
-      {/* Full-screen modal */}
-      {modalElement}
+      {/* Full-screen modal - rendered via portal to avoid nesting in <p> tags */}
+      {isOpen && typeof document !== 'undefined' && createPortal(modalElement, document.body)}
     </>
   );
 }

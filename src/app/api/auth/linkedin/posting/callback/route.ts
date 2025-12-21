@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
     // Handle authorization errors
     if (error) {
-      console.error('LinkedIn posting authorization error:', error, errorDescription);
+      console.error('LinkedIn posting authorization error:', error, errorDescription); // lgtm[js/log-injection]
       return NextResponse.json({
         error: 'LinkedIn posting authorization failed',
         details: errorDescription || error

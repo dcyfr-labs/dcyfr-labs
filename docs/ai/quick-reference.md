@@ -99,6 +99,42 @@ grep -r "pattern" src/
 
 Use VS Code subagents for context-isolated research or analysis. Enable the `runSubagent` tool in the Chat tool picker (or add `runSubagent` to the `tools` frontmatter in custom prompt files), then use `#runSubagent` in prompts to spawn a subagent. See https://code.visualstudio.com/docs/copilot/chat/chat-sessions#_contextisolated-subagents for details.
 
+## MDX Content Components
+
+| Component | Usage | Purpose |
+|-----------|-------|---------|
+| `<KeyTakeaway>` | `<KeyTakeaway>Your insight here</KeyTakeaway>` | Critical insights and takeaways |
+| `<ContextClue>` | `<ContextClue>Background info here</ContextClue>` | Context and setup information |
+| `<Alert type="warning">` | `<Alert type="warning">Warning text</Alert>` | Status messages, warnings |
+| `<Figure>` | Auto-numbered captions | Image captions with numbering |
+| `<ZoomableImage>` | Auto-enabled on all `<img>` | Click-to-zoom functionality |
+
+**Quick MDX Tips:**
+- KeyTakeaway automatically adds "Key Takeaway:" prefix
+- ContextClue automatically adds "Context:" prefix
+- Alert types: `critical`, `warning`, `info`, `success`  
+- All components use design tokens for consistency
+
+## Prose Style Guidelines
+
+**Em-Dash Usage (Avoiding "AI Accent"):**
+
+AI models tend to overuse em-dashes (`--`) as a crutch to extend sentences. Limit usage to sound more authoritative and human.
+
+| Pattern | Example | Fix |
+| ------- | ------- | --- |
+| **Lazy Conjunction** | `systems are reactive--Agentic AI is proactive` | Use period: `systems are reactive. Agentic AI is proactive.` |
+| **Double Dash** | `components--tools, plugins, models--infiltrate` | Use parentheses: `components (tools, plugins, models) infiltrate` |
+| **However Trap** | `is significant--however,` | Always: `. However,` |
+| **Legitimate Use** | `a framework--developed by 100+ experts` | Keep: emphasis/expansion is valid |
+
+**Rule of Thumb:**
+
+- Max **one em-dash per paragraph**
+- When in doubt, break into two sentences
+- Shorter sentences increase readability scores (Flesch-Kincaid)
+
+**The "Period Test":** For each em-dash, try replacing with a period or comma. If it works, prefer the simpler punctuation.
 
 ## Tech Stack Reference
 

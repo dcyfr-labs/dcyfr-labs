@@ -7,10 +7,20 @@ import { afterEach, vi } from 'vitest'
  * Reduces test setup time by configuring sensible defaults
  */
 
-// Increase timeout for async operations to prevent flaky tests
-configure({ asyncUtilTimeout: 2000 })
+// Configure testing library for performance
+// - asyncUtilTimeout: Timeout for async queries (prevents infinite waits)
+// - getElementError: Faster error object creation without stack trace
+configure({
+  asyncUtilTimeout: 2000,
+  getElementError: (message: string | null) => {
+    const error = new Error(message ?? 'Element not found')
+    error.name = 'TestingLibraryElementError'
+    return error
+  },
+})
 
 // Clean up after each test (e.g., clearing jsdom)
+// This runs automatically in parallel with next test's setup phase
 afterEach(() => {
   cleanup()
   // Clear all mocks to prevent test pollution
