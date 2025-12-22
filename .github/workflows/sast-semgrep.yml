@@ -1,0 +1,220 @@
+name: SAST - Semgrep
+
+# Static Application Security Testing with Semgrep
+# Scans code for security vulnerabilities, bugs, and code quality issues
+# Uses Semgrep OSS rules + custom security rules
+
+on:
+  push:
+    branches: [main, preview]
+    paths:
+      - 'src/**'
+      - 'scripts/**'
+      - '.github/workflows/**'
+  pull_request:
+    branches: [main, preview]
+  schedule:
+    # Weekly full scan on Sunday at 02:00 UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+    inputs:
+      severity:
+        description: 'Minimum severity to report (INFO, WARNING, ERROR)'
+        required: false
+        default: 'WARNING'
+        type: choice
+        options:
+          - INFO
+          - WARNING
+          - ERROR
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: write
+
+jobs:
+  semgrep:
+    name: Semgrep SAST Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    container:
+      image: returntocorp/semgrep
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Semgrep scan
+        id: semgrep
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+        run: |
+          SEVERITY="${{ github.event.inputs.severity || 'WARNING' }}"
+
+          # Run Semgrep with multiple rulesets
+          semgrep scan \
+            --config=auto \
+            --config="p/security-audit" \
+            --config="p/owasp-top-ten" \
+            --config="p/react" \
+            --config="p/typescript" \
+            --config="p/nextjs" \
+            --severity=$SEVERITY \
+            --sarif \
+            --output=semgrep-results.sarif \
+            --json-output=semgrep-results.json \
+            --metrics=off \
+            || EXIT_CODE=$?
+
+          # Count findings by severity
+          if [ -f semgrep-results.json ]; then
+            ERROR_COUNT=$(jq '[.results[] | select(.extra.severity == "ERROR")] | length' semgrep-results.json || echo "0")
+            WARNING_COUNT=$(jq '[.results[] | select(.extra.severity == "WARNING")] | length' semgrep-results.json || echo "0")
+            INFO_COUNT=$(jq '[.results[] | select(.extra.severity == "INFO")] | length' semgrep-results.json || echo "0")
+            TOTAL_COUNT=$(jq '.results | length' semgrep-results.json || echo "0")
+
+            echo "error_count=$ERROR_COUNT" >> $GITHUB_OUTPUT
+            echo "warning_count=$WARNING_COUNT" >> $GITHUB_OUTPUT
+            echo "info_count=$INFO_COUNT" >> $GITHUB_OUTPUT
+            echo "total_count=$TOTAL_COUNT" >> $GITHUB_OUTPUT
+            echo "exit_code=${EXIT_CODE:-0}" >> $GITHUB_OUTPUT
+          else
+            echo "error_count=0" >> $GITHUB_OUTPUT
+            echo "warning_count=0" >> $GITHUB_OUTPUT
+            echo "info_count=0" >> $GITHUB_OUTPUT
+            echo "total_count=0" >> $GITHUB_OUTPUT
+            echo "exit_code=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload SARIF to GitHub Security
+        if: always() && hashFiles('semgrep-results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep-results.sarif
+          category: semgrep
+
+      - name: Upload Semgrep results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: semgrep-results
+          path: |
+            semgrep-results.sarif
+            semgrep-results.json
+          retention-days: 90
+
+      - name: Generate findings summary
+        if: always()
+        run: |
+          echo "# 🔍 Semgrep SAST Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Severity | Count |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔴 Error | ${{ steps.semgrep.outputs.error_count }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🟠 Warning | ${{ steps.semgrep.outputs.warning_count }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔵 Info | ${{ steps.semgrep.outputs.info_count }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Total** | **${{ steps.semgrep.outputs.total_count }}** |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.semgrep.outputs.error_count }}" -gt 0 ]; then
+            echo "⚠️ **${{ steps.semgrep.outputs.error_count }} error(s)** detected - review required" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ No critical security issues detected" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Rulesets:** security-audit, OWASP Top 10, React, TypeScript, Next.js" >> $GITHUB_STEP_SUMMARY
+
+      - name: Comment on PR with results
+        if: always() && github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## 🔍 Semgrep SAST Scan Results
+
+            | Severity | Count |
+            |----------|-------|
+            | 🔴 Error | ${{ steps.semgrep.outputs.error_count }} |
+            | 🟠 Warning | ${{ steps.semgrep.outputs.warning_count }} |
+            | 🔵 Info | ${{ steps.semgrep.outputs.info_count }} |
+
+            ${{ steps.semgrep.outputs.error_count > 0 && '⚠️ **Action required**: Review and fix error-level findings' || '✅ No critical security issues detected' }}
+
+            <details>
+            <summary>View scan details</summary>
+
+            **Rulesets applied:**
+            - Security audit
+            - OWASP Top 10
+            - React best practices
+            - TypeScript security
+            - Next.js patterns
+
+            Full results available in Security > Code scanning alerts
+
+            </details>
+
+      - name: Create issue for critical findings
+        if: always() && steps.semgrep.outputs.error_count > 0 && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ERROR_COUNT="${{ steps.semgrep.outputs.error_count }}"
+
+          # Extract error-level findings
+          ERROR_FINDINGS=$(jq -r '[.results[] | select(.extra.severity == "ERROR")] | .[] | "- **\(.check_id)** in `\(.path)`:\(.start.line) - \(.extra.message)"' semgrep-results.json | head -10)
+
+          cat > issue-body.md <<'ISSUEBODY'
+          ## 🔴 Critical Security Issues Detected
+
+          Semgrep SAST scan detected **ERROR_COUNT_PLACEHOLDER error-level security issue(s)** requiring immediate attention.
+
+          ### Critical Findings
+
+          ERROR_FINDINGS_PLACEHOLDER
+
+          ### Immediate Actions Required
+
+          1. **Review findings** in Security > Code scanning alerts
+          2. **Prioritize fixes** for error-level issues
+          3. **Validate remediation** with `semgrep scan --config=auto`
+          4. **Update security rules** if findings are false positives
+
+          ### Resources
+
+          - [Semgrep Rule Documentation](https://semgrep.dev/docs/)
+          - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+          - [Security Best Practices](../../docs/ai/logging-security.md)
+
+          ---
+
+          **Scan Details:**
+          - Rulesets: security-audit, OWASP Top 10, React, TypeScript, Next.js
+          - Total findings: ${{ steps.semgrep.outputs.total_count }}
+          - Errors: ${{ steps.semgrep.outputs.error_count }}
+          - Warnings: ${{ steps.semgrep.outputs.warning_count }}
+          ISSUEBODY
+
+          sed -i "s|ERROR_COUNT_PLACEHOLDER|${ERROR_COUNT}|g" issue-body.md
+          sed -i "s|ERROR_FINDINGS_PLACEHOLDER|${ERROR_FINDINGS}|g" issue-body.md
+
+          gh issue create \
+            --title "🔴 Security: $ERROR_COUNT critical SAST finding(s) detected" \
+            --body-file issue-body.md \
+            --label "security" \
+            --label "critical" \
+            --label "sast" \
+            --label "automated"
+
+      - name: Fail on critical findings
+        if: steps.semgrep.outputs.error_count > 0 && github.event_name == 'pull_request'
+        run: |
+          echo "❌ Semgrep detected ${{ steps.semgrep.outputs.error_count }} critical security issue(s)"
+          echo "Review Security > Code scanning alerts for details"
+          exit 1
