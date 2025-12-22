@@ -49,12 +49,6 @@ export function SiteFooter() {
                 {item.label}
               </a>
             ))}
-            <a
-              href="/sitemap.xml"
-              className="hover:underline underline-offset-4 will-change-auto whitespace-nowrap px-1.5 py-1"
-            >
-              Sitemap
-            </a>
           </div>
         </div>
       </footer>
