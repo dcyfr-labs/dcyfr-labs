@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json.schemastore.org/bundle-size-budget.json",
+  "description": "Bundle size budgets for dcyfr-labs",
+  "budgets": {
+    "totalJavaScript": {
+      "value": 500,
+      "unit": "KB",
+      "description": "Total JavaScript bundle size (all routes combined)"
+    },
+    "mainRoute": {
+      "value": 200,
+      "unit": "KB",
+      "description": "Home page route bundle"
+    },
+    "initialLoad": {
+      "value": 300,
+      "unit": "KB",
+      "description": "First Contentful Paint budget"
+    },
+    "vendor": {
+      "value": 250,
+      "unit": "KB",
+      "description": "Third-party dependencies (React, Next.js, etc.)"
+    },
+    "css": {
+      "value": 50,
+      "unit": "KB",
+      "description": "Total CSS bundle size"
+    }
+  },
+  "thresholds": {
+    "error": 1.0,
+    "warning": 0.9
+  },
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/.next/cache/**"
+  ]
+}
