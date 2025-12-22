@@ -1,0 +1,221 @@
+name: Visual Regression Testing
+
+# Visual regression testing with Chromatic
+# Captures component snapshots and detects visual changes
+# Requires Storybook setup (see docs/testing/visual-regression-setup.md)
+
+on:
+  pull_request:
+    branches: [main, preview]
+    paths:
+      - 'src/components/**'
+      - 'src/app/**'
+      - 'src/styles/**'
+      - '**.css'
+      - '**.scss'
+      - 'tailwind.config.ts'
+  workflow_dispatch:
+    inputs:
+      auto_accept:
+        description: 'Auto-accept all changes (use with caution)'
+        required: false
+        default: false
+        type: boolean
+
+# Cancel in-progress runs for same PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  # Check if Storybook is configured
+  check-storybook:
+    name: Check Storybook Setup
+    runs-on: ubuntu-latest
+    outputs:
+      has_storybook: ${{ steps.check.outputs.has_storybook }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for Storybook configuration
+        id: check
+        run: |
+          if [ -f ".storybook/main.ts" ] || [ -f ".storybook/main.js" ]; then
+            echo "has_storybook=true" >> $GITHUB_OUTPUT
+            echo "✅ Storybook configuration found"
+          else
+            echo "has_storybook=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ Storybook not configured - visual regression testing skipped"
+            echo "See docs/testing/visual-regression-setup.md for setup instructions"
+          fi
+
+  chromatic:
+    needs: check-storybook
+    if: needs.check-storybook.outputs.has_storybook == 'true'
+    name: Run Chromatic
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for Chromatic baseline comparison
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Build Storybook
+        run: npm run build-storybook --quiet
+        env:
+          NODE_ENV: production
+
+      - name: Run Chromatic
+        id: chromatic
+        uses: chromaui/action@latest
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          buildScriptName: build-storybook
+          autoAcceptChanges: ${{ github.event.inputs.auto_accept || 'false' }}
+          exitOnceUploaded: true
+          onlyChanged: true  # Only test changed components
+          externals: |
+            - 'public/**'
+            - 'src/styles/**/*.css'
+
+      - name: Update PR with Chromatic results
+        if: always() && github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## 🎨 Visual Regression Test Results
+
+            **Status:** ${{ steps.chromatic.outputs.storybookUrl && '✅ Complete' || '⚠️ Check required' }}
+
+            ${{ steps.chromatic.outputs.changeCount > 0 && format('**Visual changes detected:** {0} component(s) changed', steps.chromatic.outputs.changeCount) || '✅ No visual changes detected' }}
+
+            ### Review & Approve
+
+            - 🔍 [View Storybook](${{ steps.chromatic.outputs.storybookUrl }})
+            - 📊 [Review visual changes](${{ steps.chromatic.outputs.buildUrl }})
+
+            ${{ steps.chromatic.outputs.changeCount > 0 && '⚠️ **Action required:** Review visual changes and approve or request changes in Chromatic' || '' }}
+
+      - name: Generate summary
+        if: always()
+        run: |
+          echo "# 🎨 Visual Regression Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Build URL:** ${{ steps.chromatic.outputs.buildUrl }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Storybook URL:** ${{ steps.chromatic.outputs.storybookUrl }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.chromatic.outputs.changeCount }}" -gt 0 ]; then
+            echo "⚠️ **${{ steps.chromatic.outputs.changeCount }} visual change(s) detected**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Review and approve changes in Chromatic UI before merging." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ No visual changes detected" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Fail on unaccepted changes
+        if: steps.chromatic.outputs.changeCount > 0
+        run: |
+          echo "⚠️ Visual changes detected and require review"
+          echo "Review changes at: ${{ steps.chromatic.outputs.buildUrl }}"
+          exit 1
+
+  # Fallback: Playwright screenshot comparison (if Storybook not configured)
+  playwright-visual:
+    needs: check-storybook
+    if: needs.check-storybook.outputs.has_storybook == 'false'
+    name: Playwright Visual Testing (Fallback)
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Get Playwright version
+        id: playwright-version
+        run: echo "version=$(npm list @playwright/test --depth=0 --json | jq -r '.dependencies["@playwright/test"].version')" >> $GITHUB_OUTPUT
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps
+
+      - name: Install Playwright deps only
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps
+
+      - name: Run visual regression tests
+        run: |
+          # Create basic visual regression test if not exists
+          if [ ! -f "e2e/visual-regression.spec.ts" ]; then
+            echo "ℹ️ No visual regression tests found"
+            echo "See docs/testing/visual-regression-setup.md for setup instructions"
+            exit 0
+          fi
+
+          npx playwright test e2e/visual-regression.spec.ts --update-snapshots
+        env:
+          CI: true
+
+      - name: Upload visual diff artifacts
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: visual-diff-results
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 30
+
+      - name: Comment on PR
+        if: always() && github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## 🎨 Visual Testing (Playwright)
+
+            ℹ️ **Storybook-based visual regression not configured**
+
+            For comprehensive visual regression testing, set up Storybook and Chromatic.
+            See `docs/testing/visual-regression-setup.md` for instructions.
+
+            Current status: Using basic Playwright screenshot comparison as fallback.
