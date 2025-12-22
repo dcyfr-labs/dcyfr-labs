@@ -83,8 +83,9 @@ yarn-error.log*
 !.github/copilot-instructions.md
 
 # Claude Desktop configs (local)
-claude_desktop_config.json
 .claude/
+CLAUDE.md
+claude_desktop_config.json
 
 # MCP (Model Context Protocol) configs
 .mcp.json

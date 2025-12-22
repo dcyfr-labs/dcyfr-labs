@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { LinkedInTokenManager } from '@/lib/linkedin-token-manager';
+import { safeLog, sanitizeForLog } from '@/lib/log-sanitizer';
 
 /**
  * LinkedIn Community Management API OAuth Callback Endpoint
@@ -17,7 +18,10 @@ export async function GET(request: NextRequest) {
 
     // Handle authorization errors
     if (error) {
-      console.error('LinkedIn posting authorization error:', error, errorDescription); // lgtm[js/log-injection]
+      safeLog('error', 'LinkedIn posting authorization error', {
+        error: sanitizeForLog(error),
+        errorDescription: sanitizeForLog(errorDescription),
+      });
       return NextResponse.json({
         error: 'LinkedIn posting authorization failed',
         details: errorDescription || error
@@ -71,25 +75,24 @@ export async function GET(request: NextRequest) {
     // Automatically store token with expiration tracking
     await LinkedInTokenManager.storeToken(tokenData, 'posting');
 
-    // Log tokens for development (copy these to your .env.local)
-    console.log('🎉 LinkedIn Community Management API OAuth Success!');
-    console.log('=====================================================');
-    console.log('📋 Copy these POSTING tokens to your .env.local:');
-    console.log('=====================================================');
-    console.log(`LINKEDIN_POSTING_ACCESS_TOKEN="${tokenData.access_token}"`);
-    
+    // Log token success with masked values (security best practice)
+    console.log('✅ LinkedIn Posting API OAuth successful');
+    console.log('📊 Token details:');
+    console.log(`   Expires in: ${tokenData.expires_in}s`);
+    console.log(`   Scope: ${tokenData.scope}`);
+    console.log(`   Purpose: Content posting and management`);
+    console.log(`   Access Token (last 8): ***${tokenData.access_token.slice(-8)}`);
     if (tokenData.refresh_token) {
-      console.log(`LINKEDIN_POSTING_REFRESH_TOKEN="${tokenData.refresh_token}"`);
+      console.log(`   Refresh Token (last 8): ***${tokenData.refresh_token.slice(-8)}`);
     } else {
-      console.log('# No refresh token provided (normal for LinkedIn)');
+      console.log('   Refresh Token: None (normal for LinkedIn)');
     }
-    
-    console.log(`LINKEDIN_POSTING_EXPIRES_IN=${tokenData.expires_in}`);
-    console.log('=====================================================');
-    console.log('⏰ Token expires in:', tokenData.expires_in, 'seconds');
-    console.log('📝 Scope:', tokenData.scope);
-    console.log('🎯 Purpose: Content posting and management');
-    console.log('🤖 Token automatically stored and will be monitored for expiration');
+    console.log('');
+    console.log('🔐 Token stored securely in Redis');
+    console.log('🤖 Token will be monitored for expiration');
+    console.log('⚠️  To manually configure .env.local (if needed):');
+    console.log('   Retrieve tokens from LinkedIn Developer Console');
+    console.log('   DO NOT copy from logs (security risk)');
 
     // Test the token by getting user profile
     try {
