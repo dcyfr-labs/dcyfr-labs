@@ -275,7 +275,7 @@ getPostByAnySlug(slug, posts)
   └─ Return match or null
   
   Time: O(n) where n = number of posts
-  Actual: <1ms for typical blog (10-100 posts)
+  Actual: &lt;1ms for typical blog (10-100 posts)
   
   Note: Already prerendered at build time,
         so most requests hit static cache

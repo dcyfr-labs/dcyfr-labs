@@ -1,0 +1,348 @@
+name: Test (Optimized)
+
+# Enhanced test workflow with Phase 2 optimizations:
+# - Improved caching strategy (Next.js cache + Playwright browsers)
+# - Conditional E2E execution (skip on docs-only PRs)
+# - Global Playwright cache with fallback
+# - Build artifact reuse across jobs
+#
+# To enable: Rename test.yml to test-legacy.yml and rename this to test.yml
+
+on:
+  push:
+    branches: [main, preview]
+    paths:
+      - 'src/**'
+      - 'e2e/**'
+      - 'tests/**'
+      - 'package*.json'
+      - '.github/workflows/test*.yml'
+  pull_request:
+    branches: [main, preview]
+
+# Cancel in-progress runs for same PR/branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Determine test scope based on changed files
+  determine-scope:
+    name: Determine Test Scope
+    runs-on: ubuntu-latest
+    outputs:
+      run_e2e: ${{ steps.scope.outputs.run_e2e }}
+      run_bundle: ${{ steps.scope.outputs.run_bundle }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine test scope
+        id: scope
+        run: |
+          RUN_E2E="true"
+          RUN_BUNDLE="true"
+
+          # Skip E2E if only docs/non-code changes (PR only)
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+
+            # Check if only docs/markdown/config files changed
+            if echo "$CHANGED_FILES" | grep -vqE '\.(ts|tsx|js|jsx|css|mdx)$'; then
+              if echo "$CHANGED_FILES" | grep -qE '\.(md|json|yml|yaml|txt)$'; then
+                RUN_E2E="false"
+                RUN_BUNDLE="false"
+                echo "ℹ️ Only documentation/config files changed - skipping E2E and bundle checks"
+              fi
+            fi
+
+            # Force E2E if PR has label "e2e-required"
+            if gh pr view ${{ github.event.pull_request.number }} --json labels -q '.labels[].name' | grep -q "e2e-required"; then
+              RUN_E2E="true"
+              echo "ℹ️ Label 'e2e-required' found - forcing E2E tests"
+            fi
+          fi
+
+          echo "run_e2e=$RUN_E2E" >> $GITHUB_OUTPUT
+          echo "run_bundle=$RUN_BUNDLE" >> $GITHUB_OUTPUT
+
+          echo "### Test Scope" >> $GITHUB_STEP_SUMMARY
+          echo "- E2E Tests: $RUN_E2E" >> $GITHUB_STEP_SUMMARY
+          echo "- Bundle Check: $RUN_BUNDLE" >> $GITHUB_STEP_SUMMARY
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Setup job - install dependencies once with enhanced caching
+  setup:
+    name: Setup Dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      # Enhanced caching: include Next.js cache
+      - name: Cache node_modules and Next.js cache
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            node_modules
+            .next/cache
+          key: test-deps-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
+
+  # Quick checks - fail fast
+  quality:
+    needs: setup
+    name: Code Quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Restore cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            .next/cache
+          key: test-deps-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
+          fail-on-cache-miss: true
+
+      - name: Lint and typecheck in parallel
+        run: |
+          npm run lint:ci &
+          npm run typecheck &
+          wait
+
+  unit:
+    needs: setup
+    name: Unit & Integration Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Restore cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            .next/cache
+          key: test-deps-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
+          fail-on-cache-miss: true
+
+      - name: Run unit tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage to Codecov
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/preview'
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+  bundle:
+    needs: [setup, determine-scope]
+    if: needs.determine-scope.outputs.run_bundle == 'true'
+    name: Bundle Size Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Restore cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            .next/cache
+          key: test-deps-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
+          fail-on-cache-miss: true
+
+      # Enhanced Next.js build cache with cross-branch fallback
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: |
+            .next/cache
+            .next
+          key: ${{ runner.os }}-nextjs-build-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-build-${{ hashFiles('**/package-lock.json') }}-
+            ${{ runner.os }}-nextjs-build-
+
+      - name: Build production bundle
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Check bundle sizes
+        run: npm run perf:check
+
+      # Save build artifacts for potential reuse
+      - name: Save build artifacts
+        uses: actions/cache/save@v4
+        with:
+          path: .next
+          key: build-artifacts-${{ github.run_id }}
+
+  e2e:
+    needs: [setup, determine-scope]
+    if: needs.determine-scope.outputs.run_e2e == 'true'
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Restore cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+            .next/cache
+          key: test-deps-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
+          fail-on-cache-miss: true
+
+      # Global Playwright cache with any-version fallback
+      - name: Get Playwright version
+        id: playwright-version
+        run: echo "version=$(npm list @playwright/test --depth=0 --json | jq -r '.dependencies["@playwright/test"].version')" >> $GITHUB_OUTPUT
+
+      - name: Cache Playwright browsers (global)
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps
+
+      - name: Install Playwright deps only
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+        env:
+          CI: true
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 30
+
+  # Summary job
+  summary:
+    needs: [quality, unit, bundle, e2e]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate test summary
+        run: |
+          echo "# Test Suite Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ needs.quality.result }}" == "success" ]; then
+            echo "| Code Quality | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Code Quality | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ needs.unit.result }}" == "success" ]; then
+            echo "| Unit Tests | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Unit Tests | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ needs.bundle.result }}" == "success" ]; then
+            echo "| Bundle Check | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ needs.bundle.result }}" == "skipped" ]; then
+            echo "| Bundle Check | ⏭️ Skipped |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Bundle Check | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ needs.e2e.result }}" == "success" ]; then
+            echo "| E2E Tests | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ needs.e2e.result }}" == "skipped" ]; then
+            echo "| E2E Tests | ⏭️ Skipped (docs-only PR) |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| E2E Tests | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Optimizations enabled:**" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Enhanced caching (Next.js + Playwright)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Conditional E2E execution" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Global Playwright browser cache" >> $GITHUB_STEP_SUMMARY

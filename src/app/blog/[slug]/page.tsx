@@ -36,6 +36,7 @@ import {
 } from "@/components/common";
 import { Breadcrumbs } from "@/components/navigation";
 import { ReadingProgress } from "@/components/features/reading-progress";
+import { ArticleReadingProgress } from "@/components/app";
 import { ShareButtons } from "@/components/features/sharing/share-buttons";
 import { LazyGiscusComments } from "@/components/features/comments/lazy-giscus-comments";
 import { ViewTracker } from "@/components/features/view-tracker";
@@ -161,7 +162,11 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   };
 
   return (
-    <>
+    <ArticleReadingProgress
+      articleId={post.slug}
+      title={post.title}
+      readingTime={post.readingTime.minutes}
+    >
       {/* Client-side view tracking with anti-spam protection */}
       <ViewTracker postId={post.id} />
 
@@ -326,6 +331,6 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           </SidebarVisibilityProvider>
         </div>
       </div>
-    </>
+    </ArticleReadingProgress>
   );
 }

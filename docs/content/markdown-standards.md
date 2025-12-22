@@ -598,7 +598,7 @@ We were experiencing 2-3 second response times on critical endpoints.
 
 ## Results
 
-80% of requests now respond in <100ms.
+80% of requests now respond in &lt;100ms.
 
 ---
 

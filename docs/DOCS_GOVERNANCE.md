@@ -217,7 +217,145 @@ If private doc should be public (patterns, learnings):
 
 ---
 
-## 📊 Document Classification Matrix
+## � Website Content (`src/content/`)
+
+### Purpose
+Public-facing content published on the live website (blog posts, portfolio items, project showcases).
+
+**Key Difference:** `/docs` = internal project documentation; `src/content/` = user-facing website content
+
+### Directory Structure
+
+```
+src/content/
+├── blog/                           # Published blog posts (PUBLIC)
+│   ├── post-slug/
+│   │   ├── index.mdx              # Post content
+│   │   └── assets/                # Images, diagrams, videos
+│   │       ├── hero.webp          # Hero image
+│   │       ├── diagram.svg        # Inline diagrams
+│   │       └── demo.mp4           # Demo videos
+│   └── private/                   # Draft/unpublished posts (PRIVATE)
+│       └── draft-post/
+│           ├── index.mdx          # Draft content (with draft: true)
+│           └── assets/            # Draft images/assets
+│               └── hero.webp
+└── portfolio/                      # Portfolio items (PUBLIC by default)
+    └── project-name/
+        ├── index.json             # Project metadata
+        └── assets/                # Project images
+```
+
+### What Belongs Where
+
+**Published Blog Posts (`src/content/blog/{slug}/`):**
+- ✅ Published posts with `draft: false` or no draft field
+- ✅ All post assets (images, videos, diagrams)
+- ✅ Hero images for published posts
+- ❌ Work-in-progress content
+- ❌ Sensitive case studies not yet approved
+
+**Draft Blog Posts (`src/content/blog/private/{slug}/`):**
+- ✅ Posts marked with `draft: true`
+- ✅ Work-in-progress content
+- ✅ Unpublished series installments
+- ✅ Sensitive topics under review
+- ✅ All draft assets (images, videos)
+
+**Portfolio Items (`public/portfolio/` or `src/content/portfolio/`):**
+- ✅ Public project showcases
+- ✅ Case studies (with client approval)
+- ❌ Client work without permission
+- ❌ Proprietary implementations
+
+### Classification Rules
+
+| Content Type | Public | Private | Rule |
+|---|---|---|---|
+| **Published Blog Posts** | ✅ | ❌ | In `src/content/blog/{slug}/` with `draft: false` or omitted |
+| **Draft Blog Posts** | ❌ | ✅ | In `src/content/blog/private/{slug}/` with `draft: true` |
+| **Blog Images (published)** | ✅ | ❌ | In published post's `assets/` folder |
+| **Blog Images (draft)** | ❌ | ✅ | In private post's `assets/` folder |
+| **Blog Hero Images** | ✅ (published) | ✅ (draft) | Follow parent post's classification |
+| **Portfolio Items** | ✅ | ❌ | In `public/portfolio/` (always public) |
+| **Portfolio Case Studies** | ⚠️ | ⚠️ | Public only with client approval; otherwise private |
+| **MDX Components** | ✅ | ❌ | Reusable components in `src/components/mdx/` |
+
+### Draft vs. Private
+
+Two mechanisms control post visibility:
+
+1. **`draft: true` in frontmatter**
+   - Post file exists in git (in `src/content/blog/`)
+   - Excluded from public listings by build logic
+   - Accessible if direct URL is known
+   - **Use case:** Scheduled posts, soft launches
+
+2. **`private/` folder** (RECOMMENDED)
+   - Post in `src/content/blog/private/`
+   - Completely excluded from git (via `.gitignore`)
+   - Never committed, never public
+   - **Use case:** Work-in-progress, sensitive content, unpublished drafts
+
+**Best Practice:** Use `private/` folder for all drafts to prevent accidental publication via direct URLs.
+
+### Blog Images & Assets
+
+**Classification follows parent post:**
+
+```yaml
+# Published post: src/content/blog/my-post/index.mdx
+image:
+  url: "/blog/my-post/assets/hero.webp"  # ✅ PUBLIC
+  
+# Draft post: src/content/blog/private/my-draft/index.mdx
+image:
+  url: "/blog/private/my-draft/assets/hero.webp"  # ❌ PRIVATE (gitignored)
+```
+
+**Important:** Images in `src/content/blog/private/` are excluded from git and will never be deployed. This prevents accidental exposure of draft content screenshots, diagrams, or sensitive visuals.
+
+### Publishing Workflow
+
+**Moving from private to public:**
+
+1. Ensure post is ready (reviewed, fact-checked)
+2. Move folder from `src/content/blog/private/{slug}/` to `src/content/blog/{slug}/`
+3. Update image URLs to remove `/private/` path segment:
+   ```diff
+   - url: "/blog/private/event-driven-architecture/assets/hero.webp"
+   + url: "/blog/event-driven-architecture/assets/hero.webp"
+   ```
+4. Set `draft: false` or remove draft field
+5. Commit and deploy
+
+**Moving from public to private (unpublishing):**
+
+1. Move folder from `src/content/blog/{slug}/` to `src/content/blog/private/{slug}/`
+2. Update image URLs to include `/private/` path segment
+3. Set `draft: true`
+4. Commit (folder will be gitignored, effectively removing from public repo)
+
+### Validation
+
+Before committing blog content:
+
+- [ ] Published posts are NOT in `private/` folder
+- [ ] Draft posts ARE in `private/` folder
+- [ ] Image URLs match post location (public vs. private paths)
+- [ ] No sensitive client information in published posts
+- [ ] Hero images exist and are accessible
+- [ ] `draft: true` is set for all private folder posts
+
+**Automated check:**
+
+```bash
+npm run validate:content  # Checks frontmatter, structure
+```
+
+---
+
+## �📊 Document Classification Matrix
 
 | Document Type | Public | Private | Rule |
 |---|---|---|---|
@@ -241,6 +379,66 @@ If private doc should be public (patterns, learnings):
 | **Phase Completion Reports** | ❌ | ✅ | Private (contains operational metrics) |
 | **Campaign Performance Reports** | ❌ | ✅ | Private (contains performance/timing data) |
 | **Build Optimization Reports** | ❌ | ✅ | Private (contains build timing/performance metrics) |
+| **Archived Documentation** | ❌ | ✅ | Excluded from repo (historical reference, not active guidance) |
+| **Published Blog Posts** | ✅ | ❌ | In `src/content/blog/{slug}/` with `draft: false` or omitted |
+| **Draft Blog Posts** | ❌ | ✅ | In `src/content/blog/private/{slug}/` with `draft: true` |
+| **Blog Images (published)** | ✅ | ❌ | In published post's `assets/` folder |
+| **Blog Images (draft)** | ❌ | ✅ | In private post's `assets/` folder (gitignored) |
+| **Blog Hero Images** | ✅/❌ | ✅/❌ | Follow parent post's classification |
+| **Portfolio Items** | ✅ | ❌ | Public project showcases only |
+| **Portfolio Case Studies** | ⚠️ | ⚠️ | Public with client approval; private otherwise |
+
+---
+
+## 📦 Archive Documentation Policy
+
+### Purpose
+
+Documentation is archived when it's no longer actively maintained but may be valuable for historical reference. Archived docs are excluded from git to keep the repository lean and prevent confusion with current guidance.
+
+### What Gets Archived
+
+- Superseded architecture decisions (keep current ADR, archive old)
+- Deprecated features and their documentation
+- Old patterns replaced by new best practices
+- Historical project status reports (>6 months old)
+- Obsolete tooling/framework guides
+
+### How to Archive
+
+1. **Move to `docs/archive/`** with clear naming:
+   ```
+   docs/archive/
+   ├── ADR-002-redux-removed.md (superseded by Zustand ADR)
+   ├── OLD_COMPONENT_LIBRARY_GUIDE.md (deprecated)
+   ├── NEXT_PAGES_MIGRATION_NOTES.md (historical)
+   └── 2024-Q4-PROJECT_STATUS.md (old reports)
+   ```
+
+2. **Add header to archived doc:**
+   ```markdown
+   # [ARCHIVED] Original Title
+
+   ⚠️ **This documentation is archived and no longer maintained.**
+   
+   **Superseded by:** Link to current version or replacement
+   **Archived Date:** YYYY-MM-DD
+   **Reason:** Why this is archived (deprecated feature, superseded pattern, etc.)
+
+   ---
+
+   [Original content follows]
+   ```
+
+3. **Update old references:**
+   - If current docs link to archived items, update to point to replacement
+   - If new docs should replace old ones, add "See also: [archived version]"
+
+### Archived vs. Private
+
+- **Archived (`docs/archive/`):** Historical reference, intentionally excluded from git
+- **Private (`docs/*/private/`):** Sensitive internal docs, excluded from git for security
+- **Difference:** Archived = not needed anymore; Private = sensitive content
 
 ---
 

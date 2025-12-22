@@ -15,6 +15,10 @@ import {
   Trophy,
   TrendingUp,
   Flame,
+  Award,
+  BarChart3,
+  Activity,
+  Search,
 } from "lucide-react";
 
 // ============================================================================
@@ -55,6 +59,10 @@ const SOURCE_ICONS: Record<ActivitySource, typeof FileText> = {
   milestone: Trophy,
   trending: TrendingUp,
   engagement: Flame,
+  certification: Award,
+  analytics: BarChart3,
+  "github-traffic": Activity,
+  seo: Search,
 };
 
 const TIME_RANGES: { value: TimeRangeFilter; label: string }[] = [

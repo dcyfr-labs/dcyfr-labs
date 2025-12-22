@@ -55,7 +55,7 @@ describe('SiteHeader', () => {
 
     it('renders theme toggle button', () => {
       render(<SiteHeader />);
-      const themeToggles = screen.getAllByRole('button', { name: /toggle theme/i });
+      const themeToggles = screen.getAllByRole('button', { name: /switch to|toggle theme/i });
       expect(themeToggles.length).toBeGreaterThan(0);
     });
   });
@@ -114,13 +114,16 @@ describe('SiteHeader', () => {
     it('closes Blog dropdown when clicking outside', async () => {
       render(<SiteHeader />);
       const blogButton = screen.getByRole('button', { name: /Blog/i });
-      
+
       fireEvent.click(blogButton);
       expect(blogButton).toHaveAttribute('aria-expanded', 'true');
-      
+
+      // Wait for event listener to be registered (useDropdown uses setTimeout)
+      await waitFor(() => {}, { timeout: 10 });
+
       // Click outside the dropdown
       fireEvent.click(document.body);
-      
+
       await waitFor(() => {
         expect(blogButton).toHaveAttribute('aria-expanded', 'false');
       });
@@ -182,13 +185,16 @@ describe('SiteHeader', () => {
     it('closes Our Work dropdown when clicking outside', async () => {
       render(<SiteHeader />);
       const workButton = screen.getByRole('button', { name: /Our Work/i });
-      
+
       fireEvent.click(workButton);
       expect(workButton).toHaveAttribute('aria-expanded', 'true');
-      
+
+      // Wait for event listener to be registered (useDropdown uses setTimeout)
+      await waitFor(() => {}, { timeout: 10 });
+
       // Click outside the dropdown
       fireEvent.click(document.body);
-      
+
       await waitFor(() => {
         expect(workButton).toHaveAttribute('aria-expanded', 'false');
       });
@@ -253,7 +259,7 @@ describe('SiteHeader', () => {
 
     it('shows theme toggle in mobile nav', () => {
       render(<SiteHeader />);
-      const themeToggles = screen.getAllByRole('button', { name: /toggle theme/i });
+      const themeToggles = screen.getAllByRole('button', { name: /switch to|toggle theme/i });
       expect(themeToggles.length).toBeGreaterThan(0);
     });
   });

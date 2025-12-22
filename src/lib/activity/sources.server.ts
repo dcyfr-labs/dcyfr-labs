@@ -10,6 +10,7 @@
 
 import type { Post } from "@/data/posts";
 import type { ActivityItem } from "./types";
+import type { CredlyBadge, CredlyBadgesResponse } from "@/types/credly";
 import { getMultiplePostViews } from "@/lib/views";
 import { getPostCommentsBulk } from "@/lib/comments";
 import { createClient } from "redis";
@@ -182,7 +183,7 @@ function validateTrendingData(
  */
 export async function transformTrendingPosts(
   posts: Post[],
-  limit = 10,
+  limit?: number,
   options?: { after?: Date; before?: Date; description?: string }
 ): Promise<ActivityItem[]> {
   const redis = await getRedisClient();
@@ -231,10 +232,11 @@ export async function transformTrendingPosts(
   if (!trending) {
     const validPosts = posts.filter((p) => !p.archived && !p.draft);
     const sorted = validPosts
-      .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-      .slice(0, limit);
+      .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+    
+    const limited = limit ? sorted.slice(0, limit) : sorted;
 
-    trending = sorted.map((post) => ({
+    trending = limited.map((post) => ({
       postId: post.id,
       totalViews: 0,
       recentViews: 0,
@@ -265,7 +267,8 @@ export async function transformTrendingPosts(
 
   const trendingActivities: ActivityItem[] = [];
 
-  for (const item of validation.valid.slice(0, limit)) {
+  const itemsToProcess = limit ? validation.valid.slice(0, limit) : validation.valid;
+  for (const item of itemsToProcess) {
     const post = posts.find((p) => p.id === item.postId);
     if (!post || post.archived || post.draft) continue;
 
@@ -346,7 +349,7 @@ export async function transformTrendingPosts(
  */
 export async function transformMilestones(
   posts: Post[],
-  limit = 10
+  limit?: number
 ): Promise<ActivityItem[]> {
   const redis = await getRedisClient();
   if (!redis) return [];
@@ -404,9 +407,10 @@ export async function transformMilestones(
 
     await redis.quit();
 
-    return milestoneActivities
-      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-      .slice(0, limit);
+    const sorted = milestoneActivities
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    
+    return limit ? sorted.slice(0, limit) : sorted;
   } catch (error) {
     console.error("[Activity] Failed to fetch milestones:", error);
     return [];
@@ -437,7 +441,7 @@ function calculateEngagementRate(
 export async function transformHighEngagementPosts(
   posts: Post[],
   threshold = 5, // 5% engagement threshold
-  limit = 10
+  limit?: number
 ): Promise<ActivityItem[]> {
   const publishedPosts = posts.filter((p) => !p.archived && !p.draft);
   const postIds = publishedPosts.map((p) => p.id);
@@ -468,10 +472,11 @@ export async function transformHighEngagementPosts(
         };
       })
       .filter((data) => data.engagementRate >= threshold && data.views >= 100) // Min 100 views
-      .sort((a, b) => b.engagementRate - a.engagementRate)
-      .slice(0, limit);
+      .sort((a, b) => b.engagementRate - a.engagementRate);
+    
+    const limitedData = limit ? engagementData.slice(0, limit) : engagementData;
 
-    return engagementData.map((data) => ({
+    return limitedData.map((data) => ({
       id: `engagement-${data.post.id}-${Date.now()}`,
       source: "engagement" as const,
       verb: "updated" as const,
@@ -511,7 +516,7 @@ const COMMENT_MILESTONES = [10, 50, 100, 250, 500] as const;
  */
 export async function transformCommentMilestones(
   posts: Post[],
-  limit = 10
+  limit?: number
 ): Promise<ActivityItem[]> {
   const publishedPosts = posts.filter((p) => !p.archived && !p.draft);
   const postSlugs = publishedPosts.map((p) => p.slug);
@@ -537,10 +542,11 @@ export async function transformCommentMilestones(
         };
       })
       .filter((data): data is NonNullable<typeof data> => data !== null)
-      .sort((a, b) => b.milestone - a.milestone)
-      .slice(0, limit);
+      .sort((a, b) => b.milestone - a.milestone);
+    
+    const limitedMilestones = limit ? milestones.slice(0, limit) : milestones;
 
-    return milestones.map((data) => ({
+    return limitedMilestones.map((data) => ({
       id: `comment-milestone-${data.post.id}-${data.milestone}`,
       source: "milestone" as const,
       verb: "achieved" as const,
@@ -598,7 +604,7 @@ interface GitHubRelease {
 export async function transformGitHubActivity(
   org = "dcyfr",
   repos = ["dcyfr-labs"],
-  limit = 10
+  limit?: number
 ): Promise<ActivityItem[]> {
   const githubToken = process.env.GITHUB_TOKEN;
   if (!githubToken) {
@@ -684,11 +690,411 @@ export async function transformGitHubActivity(
       }
     }
 
-    return activities
-      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-      .slice(0, limit);
+    const sorted = activities
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    
+    return limit ? sorted.slice(0, limit) : sorted;
   } catch (error) {
     console.error("[Activity] Failed to fetch GitHub activity:", error);
+    return [];
+  }
+}
+
+// ============================================================================
+// VERCEL ANALYTICS TRANSFORMER
+// ============================================================================
+
+/**
+ * Transform Vercel Analytics traffic milestones into activity items
+ * Detects when traffic crosses significant thresholds
+ */
+export async function transformVercelAnalytics(
+  limit?: number
+): Promise<ActivityItem[]> {
+  const redis = await getRedisClient();
+  if (!redis) return [];
+
+  try {
+    // Fetch analytics milestones from Redis
+    const milestonesKey = "analytics:milestones";
+    const milestonesData = await redis.get(milestonesKey);
+    
+    if (!milestonesData) {
+      console.log("[Activity] No Vercel Analytics milestones found in Redis");
+      await redis.quit();
+      return [];
+    }
+
+    interface AnalyticsMilestone {
+      type: 'monthly_visitors' | 'total_views' | 'unique_visitors';
+      threshold: number;
+      reached_at: string;
+      value: number;
+    }
+
+    const milestones: AnalyticsMilestone[] = JSON.parse(milestonesData);
+    const sorted = milestones.sort((a, b) => 
+      new Date(b.reached_at).getTime() - new Date(a.reached_at).getTime()
+    );
+    
+    const limited = limit ? sorted.slice(0, limit) : sorted;
+
+    await redis.quit();
+
+    return limited.map((milestone) => {
+      const typeLabels = {
+        monthly_visitors: 'Monthly Visitors',
+        total_views: 'Total Page Views',
+        unique_visitors: 'Unique Visitors',
+      };
+
+      return {
+        id: `analytics-${milestone.type}-${milestone.threshold}-${Date.parse(milestone.reached_at)}`,
+        source: "analytics" as const,
+        verb: "reached" as const,
+        title: `${milestone.threshold.toLocaleString()} ${typeLabels[milestone.type]}`,
+        description: `Site traffic reached ${milestone.value.toLocaleString()} ${typeLabels[milestone.type].toLowerCase()}`,
+        timestamp: new Date(milestone.reached_at),
+        href: "/activity",
+        meta: {
+          category: "Traffic",
+          stats: {
+            views: milestone.value,
+          },
+        },
+      };
+    });
+  } catch (error) {
+    console.error("[Activity] transformVercelAnalytics error:", error);
+    if (redis) await redis.quit();
+    return [];
+  }
+}
+
+// ============================================================================
+// GITHUB TRAFFIC TRANSFORMER
+// ============================================================================
+
+/**
+ * Transform GitHub repository traffic milestones into activity items
+ * Tracks views, clones, and referrer achievements
+ */
+export async function transformGitHubTraffic(
+  owner: string = "dcyfr",
+  repos: string[] = ["dcyfr-labs"],
+  limit?: number
+): Promise<ActivityItem[]> {
+  const redis = await getRedisClient();
+  if (!redis) return [];
+
+  try {
+    // Fetch GitHub traffic milestones from Redis
+    const milestonesKey = "github:traffic:milestones";
+    const milestonesData = await redis.get(milestonesKey);
+    
+    if (!milestonesData) {
+      console.log("[Activity] No GitHub traffic milestones found in Redis");
+      await redis.quit();
+      return [];
+    }
+
+    interface GitHubTrafficMilestone {
+      repo: string;
+      type: 'views' | 'clones' | 'stars' | 'forks';
+      threshold: number;
+      reached_at: string;
+      value: number;
+    }
+
+    const milestones: GitHubTrafficMilestone[] = JSON.parse(milestonesData);
+    const sorted = milestones.sort((a, b) => 
+      new Date(b.reached_at).getTime() - new Date(a.reached_at).getTime()
+    );
+    
+    const limited = limit ? sorted.slice(0, limit) : sorted;
+
+    await redis.quit();
+
+    return limited.map((milestone) => {
+      const typeLabels = {
+        views: 'Repository Views',
+        clones: 'Repository Clones',
+        stars: 'GitHub Stars',
+        forks: 'Repository Forks',
+      };
+
+      const typeEmoji = {
+        views: '👀',
+        clones: '📥',
+        stars: '⭐',
+        forks: '🍴',
+      };
+
+      return {
+        id: `github-traffic-${milestone.repo}-${milestone.type}-${milestone.threshold}`,
+        source: "github-traffic" as const,
+        verb: "reached" as const,
+        title: `${typeEmoji[milestone.type]} ${milestone.threshold.toLocaleString()} ${typeLabels[milestone.type]}`,
+        description: `${milestone.repo} reached ${milestone.value.toLocaleString()} ${milestone.type}`,
+        timestamp: new Date(milestone.reached_at),
+        href: `https://github.com/${owner}/${milestone.repo}`,
+        meta: {
+          category: "Repository Growth",
+          stats: {
+            views: milestone.value,
+          },
+        },
+      };
+    });
+  } catch (error) {
+    console.error("[Activity] transformGitHubTraffic error:", error);
+    if (redis) await redis.quit();
+    return [];
+  }
+}
+
+// ============================================================================
+// GOOGLE ANALYTICS TRANSFORMER
+// ============================================================================
+
+/**
+ * Transform Google Analytics milestones into activity items
+ * Tracks monthly visitor achievements and engagement metrics
+ */
+export async function transformGoogleAnalytics(
+  limit?: number
+): Promise<ActivityItem[]> {
+  const redis = await getRedisClient();
+  if (!redis) return [];
+
+  try {
+    // Fetch GA milestones from Redis
+    const milestonesKey = "google:analytics:milestones";
+    const milestonesData = await redis.get(milestonesKey);
+    
+    if (!milestonesData) {
+      console.log("[Activity] No Google Analytics milestones found in Redis");
+      await redis.quit();
+      return [];
+    }
+
+    interface GAMilestone {
+      type: 'monthly_users' | 'session_duration' | 'pages_per_session' | 'bounce_rate';
+      threshold: number;
+      reached_at: string;
+      value: number;
+      month?: string;
+    }
+
+    const milestones: GAMilestone[] = JSON.parse(milestonesData);
+    const sorted = milestones.sort((a, b) => 
+      new Date(b.reached_at).getTime() - new Date(a.reached_at).getTime()
+    );
+    
+    const limited = limit ? sorted.slice(0, limit) : sorted;
+
+    await redis.quit();
+
+    return limited.map((milestone) => {
+      const typeLabels = {
+        monthly_users: 'Monthly Active Users',
+        session_duration: 'Average Session Duration',
+        pages_per_session: 'Pages per Session',
+        bounce_rate: 'Bounce Rate Below',
+      };
+
+      const formatValue = (type: string, value: number) => {
+        switch (type) {
+          case 'session_duration':
+            return `${Math.floor(value / 60)}m ${value % 60}s`;
+          case 'pages_per_session':
+            return value.toFixed(1);
+          case 'bounce_rate':
+            return `${value}%`;
+          default:
+            return value.toLocaleString();
+        }
+      };
+
+      return {
+        id: `google-analytics-${milestone.type}-${milestone.threshold}-${Date.parse(milestone.reached_at)}`,
+        source: "analytics" as const,
+        verb: "achieved" as const,
+        title: `${typeLabels[milestone.type]}: ${formatValue(milestone.type, milestone.threshold)}`,
+        description: milestone.month 
+          ? `${milestone.month} achieved ${formatValue(milestone.type, milestone.value)} ${typeLabels[milestone.type].toLowerCase()}`
+          : `Achieved ${formatValue(milestone.type, milestone.value)} ${typeLabels[milestone.type].toLowerCase()}`,
+        timestamp: new Date(milestone.reached_at),
+        href: "/activity",
+        meta: {
+          category: "User Engagement",
+          stats: {
+            views: milestone.value,
+          },
+        },
+      };
+    });
+  } catch (error) {
+    console.error("[Activity] transformGoogleAnalytics error:", error);
+    if (redis) await redis.quit();
+    return [];
+  }
+}
+
+// ============================================================================
+// SEARCH CONSOLE TRANSFORMER
+// ============================================================================
+
+/**
+ * Transform Google Search Console achievements into activity items
+ * Tracks SEO milestones like ranking improvements and impression growth
+ */
+export async function transformSearchConsole(
+  limit?: number
+): Promise<ActivityItem[]> {
+  const redis = await getRedisClient();
+  if (!redis) return [];
+
+  try {
+    // Fetch Search Console milestones from Redis
+    const milestonesKey = "search:console:milestones";
+    const milestonesData = await redis.get(milestonesKey);
+    
+    if (!milestonesData) {
+      console.log("[Activity] No Search Console milestones found in Redis");
+      await redis.quit();
+      return [];
+    }
+
+    interface SearchConsoleMilestone {
+      type: 'impressions' | 'clicks' | 'ctr' | 'position' | 'top_keyword';
+      threshold?: number;
+      reached_at: string;
+      value: number | string;
+      query?: string;
+      page?: string;
+    }
+
+    const milestones: SearchConsoleMilestone[] = JSON.parse(milestonesData);
+    const sorted = milestones.sort((a, b) => 
+      new Date(b.reached_at).getTime() - new Date(a.reached_at).getTime()
+    );
+    
+    const limited = limit ? sorted.slice(0, limit) : sorted;
+
+    await redis.quit();
+
+    return limited.map((milestone) => {
+      let title: string;
+      let description: string;
+
+      switch (milestone.type) {
+        case 'impressions':
+          title = `${(milestone.value as number).toLocaleString()} Search Impressions`;
+          description = `Site reached ${(milestone.value as number).toLocaleString()} total impressions in Google Search`;
+          break;
+        case 'clicks':
+          title = `${(milestone.value as number).toLocaleString()} Search Clicks`;
+          description = `Site reached ${(milestone.value as number).toLocaleString()} total clicks from Google Search`;
+          break;
+        case 'ctr':
+          title = `${milestone.value}% Click-Through Rate`;
+          description = `Search click-through rate improved to ${milestone.value}%`;
+          break;
+        case 'position':
+          title = `Top ${milestone.value} Search Ranking`;
+          description = milestone.query 
+            ? `Ranked position ${milestone.value} for "${milestone.query}"`
+            : `Achieved top ${milestone.value} position in search results`;
+          break;
+        case 'top_keyword':
+          title = `#1 Ranking: "${milestone.value}"`;
+          description = `Achieved top position for "${milestone.value}" in Google Search`;
+          break;
+        default:
+          title = `SEO Milestone Reached`;
+          description = `Achieved ${milestone.value}`;
+      }
+
+      return {
+        id: `search-console-${milestone.type}-${Date.parse(milestone.reached_at)}`,
+        source: "seo" as const,
+        verb: "achieved" as const,
+        title,
+        description,
+        timestamp: new Date(milestone.reached_at),
+        href: milestone.page || "/activity",
+        meta: {
+          category: "SEO Performance",
+          stats: typeof milestone.value === 'number' ? {
+            views: milestone.value,
+          } : undefined,
+        },
+      };
+    });
+  } catch (error) {
+    console.error("[Activity] transformSearchConsole error:", error);
+    if (redis) await redis.quit();
+    return [];
+  }
+}
+
+// ============================================================================
+// CREDLY BADGES TRANSFORMER
+// ============================================================================
+
+/**
+ * Transform Credly badges into activity items
+ * Fetches recent certifications and displays them in the activity feed
+ */
+export async function transformCredlyBadges(
+  username: string = "dcyfr",
+  limit?: number
+): Promise<ActivityItem[]> {
+  try {
+    const credlyUrl = `https://www.credly.com/users/${username}/badges.json`;
+    const response = await fetch(credlyUrl, {
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
+
+    if (!response.ok) {
+      console.error(`[Activity] Credly API returned ${response.status}`);
+      return [];
+    }
+
+    const data: CredlyBadgesResponse = await response.json();
+    const badges = data.data || [];
+
+    // Sort by issued_at descending
+    const sortedBadges = badges
+      .sort((a, b) => new Date(b.issued_at).getTime() - new Date(a.issued_at).getTime());
+    
+    const limitedBadges = limit ? sortedBadges.slice(0, limit) : sortedBadges;
+
+    return limitedBadges.map((badge) => {
+      const issuerName = badge.issuer.entities.find(e => e.primary)?.entity.name || 
+        badge.issuer.entities[0]?.entity.name || 
+        "Unknown Issuer";
+
+      return {
+        id: `certification-${badge.id}`,
+        source: "certification" as const,
+        verb: "earned" as const,
+        title: badge.badge_template.name,
+        description: `Issued by ${issuerName}`,
+        timestamp: new Date(badge.issued_at),
+        href: `https://www.credly.com/badges/${badge.id}`,
+        meta: {
+          image: {
+            url: badge.image_url,
+            alt: badge.badge_template.name,
+          },
+          category: issuerName,
+        },
+      };
+    });
+  } catch (error) {
+    console.error("[Activity] transformCredlyBadges error:", error);
     return [];
   }
 }

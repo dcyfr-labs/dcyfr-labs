@@ -25,7 +25,6 @@ export async function createAuthSession(
   const sessionData = {
     userId: user.id,
     email: user.email,
-    linkedinProfile: user.profile,
     permissions: user.permissions || [],
   };
 
@@ -62,7 +61,7 @@ export async function getAuthenticatedUser(request: NextRequest): Promise<{
     const user: AuthUser = {
       id: session.userId,
       email: session.email || '',
-      profile: session.linkedinProfile,
+      profile: session.profile,
       permissions: session.permissions || []
     };
 

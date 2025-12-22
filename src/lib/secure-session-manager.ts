@@ -32,7 +32,6 @@ const redis = process.env.REDIS_URL ? (() => {
 interface SessionData {
   userId?: string;
   email?: string;
-  linkedinProfile?: any;
   permissions?: string[];
   lastActivity?: number;
   csrfToken?: string;

@@ -232,7 +232,7 @@ curl http://localhost:3000/activity
 ### Track These Metrics Monthly
 
 1. **Execution Count Trend**
-   - Goal: Stay <85,000/month
+   - Goal: Stay &lt;85,000/month
    - Current: ~51,830/month
    - Buffer: +33,170 available for growth
 
@@ -242,9 +242,9 @@ curl http://localhost:3000/activity
    - Indicates 1-hour frequency is appropriate
 
 3. **Alert Response Time**
-   - Security advisories: <8 hours
-   - Session anomalies: <4 hours
-   - IP threats: <4 hours
+   - Security advisories: &lt;8 hours
+   - Session anomalies: &lt;4 hours
+   - IP threats: &lt;4 hours
 
 4. **Event-Driven Execution Growth**
    - Monitor contact form submissions

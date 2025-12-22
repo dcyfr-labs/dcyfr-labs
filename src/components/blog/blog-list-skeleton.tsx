@@ -11,7 +11,7 @@ import { CONTAINER_PADDING, SPACING } from "@/lib/design-tokens";
 
 interface BlogListSkeletonProps {
   /** Layout mode - determines skeleton structure */
-  layout?: "grid" | "list" | "magazine" | "compact" | "hybrid" | "grouped";
+  layout?: "grid" | "list" | "magazine" | "compact" | "grouped";
   /** Number of skeleton items to show */
   itemCount?: number;
 }
@@ -23,7 +23,7 @@ interface BlogListSkeletonProps {
 function PostItemSkeleton({
   layout = "grid",
 }: {
-  layout: "grid" | "list" | "magazine" | "compact" | "hybrid" | "grouped";
+  layout: "grid" | "list" | "magazine" | "compact" | "grouped";
 }) {
   if (layout === "list") {
     return (

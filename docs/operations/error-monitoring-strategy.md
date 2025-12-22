@@ -87,7 +87,7 @@ This document establishes the error monitoring strategy for www.dcyfr.ai using S
 - Non-fatal MDX parsing warnings
 
 **Characteristics:**
-- Affects <10% of users
+- Affects &lt;10% of users
 - Workarounds available
 - Cosmetic or convenience features
 - Isolated to specific pages/features
@@ -475,11 +475,11 @@ Request: [Specific help needed]
 
 | Metric | Target | Alert Threshold |
 |--------|--------|----------------|
-| Overall Error Rate | <0.1% of requests | >0.5% |
+| Overall Error Rate | &lt;0.1% of requests | >0.5% |
 | Critical Errors | 0 per week | >1 per week |
-| High Errors | <5 per week | >10 per week |
-| MTTR (Mean Time to Resolution) | <4 hours (Critical) | >8 hours |
-| Error Recurrence Rate | <5% | >10% |
+| High Errors | &lt;5 per week | >10 per week |
+| MTTR (Mean Time to Resolution) | &lt;4 hours (Critical) | >8 hours |
+| Error Recurrence Rate | &lt;5% | >10% |
 
 ### Success Metrics
 

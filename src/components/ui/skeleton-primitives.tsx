@@ -358,7 +358,10 @@ export function SkeletonCard({
         <div className="absolute inset-0 bg-muted/20" />
         
         {/* Content */}
-        <div className="relative z-10 p-4 sm:p-6 space-y-3">
+        <div
+           
+          className="relative z-10 p-4 sm:p-6 space-y-3"
+        >
           <div className="flex items-center gap-2">
             <Skeleton className="h-5 w-16" />
             <Skeleton className="h-4 w-24" />

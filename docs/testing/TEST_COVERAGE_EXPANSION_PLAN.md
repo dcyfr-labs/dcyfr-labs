@@ -206,7 +206,7 @@ npm run analyze:coverage  # Identify gaps
 
 ### Success Metrics:
 - **Primary**: 50% overall coverage by Week 3
-- **Secondary**: 0 flaky tests, <5s test runtime  
+- **Secondary**: 0 flaky tests, &lt;5s test runtime  
 - **Tertiary**: 80%+ coverage for business-critical files
 
 ## Risk Mitigation

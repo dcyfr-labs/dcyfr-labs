@@ -3,7 +3,7 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronUp, SlidersHorizontal } from "lucide-react";
-import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetClose } from "@/components/ui/sheet";
+import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter, SheetClose } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -191,7 +191,12 @@ export function MobileFilterBar({
         <SheetContent side="bottom" className="max-h-[80vh] overflow-auto p-4">
           <SheetHeader>
             <div className="flex items-center justify-between">
-              <SheetTitle>Filters</SheetTitle>
+              <div>
+                <SheetTitle>Filters</SheetTitle>
+                <SheetDescription className="sr-only">
+                  Filter blog posts by category, tags, reading time, and sort options
+                </SheetDescription>
+              </div>
               <div className="flex items-center gap-2">
                 {hasActiveFilters && (
                   <Button

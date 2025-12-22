@@ -18,3 +18,7 @@ export { ConnectWithUs } from "./connect-with-us";
 export { AboutDcyfrLabs } from "./about-dcyfr-labs";
 export { AboutDcyfrProfile } from "./about-dcyfr-profile";
 export { AboutDrewProfile } from "./about-drew-profile";
+export { BadgeWallet } from "./badge-wallet";
+export { SkillsWallet } from "./skills-wallet";
+export { MiniBadgeList } from "./mini-badge-list";
+export { MiniSkillsList } from "./mini-skills-list";
