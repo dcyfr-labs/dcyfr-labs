@@ -1,0 +1,136 @@
+name: Workflow Health Report
+
+# Weekly automated workflow health monitoring
+# Tracks success rates, reliability, and identifies problematic workflows
+
+on:
+  schedule:
+    # Every Sunday at 23:00 UTC (3 PM PT)
+    - cron: '0 23 * * 0'
+  workflow_dispatch:
+    inputs:
+      days:
+        description: 'Number of days to analyze'
+        required: false
+        default: '7'
+        type: string
+      min_runs:
+        description: 'Minimum runs to include in report'
+        required: false
+        default: '5'
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+
+jobs:
+  generate-health-report:
+    name: Generate Workflow Health Report
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate workflow health report
+        id: report
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DAYS="${{ github.event.inputs.days || '7' }}"
+          MIN_RUNS="${{ github.event.inputs.min_runs || '5' }}"
+
+          node scripts/ci/workflow-health-monitor.mjs \
+            --days=$DAYS \
+            --min-runs=$MIN_RUNS \
+            --format=markdown > workflow-health-report.md
+
+          # Extract key metrics for outputs
+          CRITICAL_COUNT=$(grep -c "🔴" workflow-health-report.md || echo "0")
+          WARNING_COUNT=$(grep -c "🟠\\|🟡" workflow-health-report.md || echo "0")
+
+          echo "critical=$CRITICAL_COUNT" >> $GITHUB_OUTPUT
+          echo "warning=$WARNING_COUNT" >> $GITHUB_OUTPUT
+
+      - name: Upload report as artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: workflow-health-report
+          path: workflow-health-report.md
+          retention-days: 90
+
+      - name: Find existing health report issue
+        id: find-issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_NUMBER=$(gh issue list \
+            --label "ci/cd" \
+            --label "automated" \
+            --label "workflow-health" \
+            --state open \
+            --json number \
+            --jq '.[0].number' || echo "")
+
+          echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
+
+      - name: Create or update health report issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPORT_BODY=$(cat workflow-health-report.md)
+
+          if [ -z "${{ steps.find-issue.outputs.issue_number }}" ]; then
+            # Create new issue
+            gh issue create \
+              --title "🏥 Weekly Workflow Health Report - $(date +%Y-%m-%d)" \
+              --body "$REPORT_BODY" \
+              --label "ci/cd" \
+              --label "automated" \
+              --label "workflow-health"
+            echo "✅ Created new health report issue"
+          else
+            # Update existing issue
+            gh issue edit ${{ steps.find-issue.outputs.issue_number }} \
+              --title "🏥 Weekly Workflow Health Report - $(date +%Y-%m-%d)" \
+              --body "$REPORT_BODY"
+            echo "✅ Updated health report issue #${{ steps.find-issue.outputs.issue_number }}"
+          fi
+
+      - name: Add critical label if issues detected
+        if: steps.report.outputs.critical > 0
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -n "${{ steps.find-issue.outputs.issue_number }}" ]; then
+            gh issue edit ${{ steps.find-issue.outputs.issue_number }} \
+              --add-label "critical"
+          fi
+
+      - name: Summary
+        run: |
+          cat workflow-health-report.md >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.report.outputs.critical }}" -gt 0 ]; then
+            echo "⚠️ **${{ steps.report.outputs.critical }} critical workflow(s)** detected" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ No critical workflows detected" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ -n "${{ steps.find-issue.outputs.issue_number }}" ]; then
+            echo "Health report issue updated: #${{ steps.find-issue.outputs.issue_number }}" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "New health report issue created" >> $GITHUB_STEP_SUMMARY
+          fi

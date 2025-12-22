@@ -1,0 +1,259 @@
+name: Dependency Dashboard
+
+# Weekly automated dependency health report
+# Creates GitHub issue with outdated packages, security advisories, and update recommendations
+
+on:
+  schedule:
+    # Every Monday at 9 AM UTC (1 AM PT)
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+    inputs:
+      include_dev:
+        description: 'Include dev dependencies in report'
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  generate-dashboard:
+    name: Generate Dependency Dashboard
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      # Collect dependency information
+      - name: Run npm outdated
+        id: outdated
+        continue-on-error: true
+        run: |
+          npm outdated --json > npm-outdated.json 2>&1 || true
+          echo "count=$(jq 'length' npm-outdated.json 2>/dev/null || echo '0')" >> $GITHUB_OUTPUT
+
+      - name: Run npm audit
+        id: audit
+        continue-on-error: true
+        run: |
+          npm audit --json > npm-audit.json 2>&1 || true
+
+          CRITICAL=$(jq '.metadata.vulnerabilities.critical // 0' npm-audit.json)
+          HIGH=$(jq '.metadata.vulnerabilities.high // 0' npm-audit.json)
+          MODERATE=$(jq '.metadata.vulnerabilities.moderate // 0' npm-audit.json)
+          LOW=$(jq '.metadata.vulnerabilities.low // 0' npm-audit.json)
+
+          echo "critical=$CRITICAL" >> $GITHUB_OUTPUT
+          echo "high=$HIGH" >> $GITHUB_OUTPUT
+          echo "moderate=$MODERATE" >> $GITHUB_OUTPUT
+          echo "low=$LOW" >> $GITHUB_OUTPUT
+
+      - name: Check for major updates
+        id: major-updates
+        run: |
+          MAJOR_COUNT=$(jq '[.[] | select(.type == "major")] | length' npm-outdated.json 2>/dev/null || echo "0")
+          echo "count=$MAJOR_COUNT" >> $GITHUB_OUTPUT
+
+          # Get list of major updates
+          MAJOR_LIST=$(jq -r '[.[] | select(.type == "major")] | .[] | "- **\(.package)**: \(.current) → \(.latest) (major)"' npm-outdated.json 2>/dev/null | head -20 || echo "None")
+          echo "list<<EOF" >> $GITHUB_OUTPUT
+          echo "$MAJOR_LIST" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Check for minor updates
+        id: minor-updates
+        run: |
+          MINOR_COUNT=$(jq '[.[] | select(.type == "minor")] | length' npm-outdated.json 2>/dev/null || echo "0")
+          echo "count=$MINOR_COUNT" >> $GITHUB_OUTPUT
+
+          # Get list of minor updates (top 10)
+          MINOR_LIST=$(jq -r '[.[] | select(.type == "minor")] | .[] | "- **\(.package)**: \(.current) → \(.latest) (minor)"' npm-outdated.json 2>/dev/null | head -10 || echo "None")
+          echo "list<<EOF" >> $GITHUB_OUTPUT
+          echo "$MINOR_LIST" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Get dependency statistics
+        id: stats
+        run: |
+          TOTAL_DEPS=$(jq '.dependencies | length' package.json)
+          TOTAL_DEV_DEPS=$(jq '.devDependencies | length' package.json)
+          echo "total=$TOTAL_DEPS" >> $GITHUB_OUTPUT
+          echo "dev=$TOTAL_DEV_DEPS" >> $GITHUB_OUTPUT
+
+      # Generate dashboard report
+      - name: Generate dashboard report
+        run: |
+          cat > dashboard-report.md << 'DASHBOARDEOF'
+          # 📦 Weekly Dependency Dashboard
+
+          **Generated:** $(date -u '+%Y-%m-%d %H:%M UTC')
+
+          ## 📊 Summary
+
+          | Metric | Count |
+          |--------|-------|
+          | Total Dependencies | ${{ steps.stats.outputs.total }} |
+          | Dev Dependencies | ${{ steps.stats.outputs.dev }} |
+          | Outdated Packages | ${{ steps.outdated.outputs.count }} |
+          | Major Updates Available | ${{ steps.major-updates.outputs.count }} |
+          | Minor Updates Available | ${{ steps.minor-updates.outputs.count }} |
+
+          ## 🚨 Security Vulnerabilities
+
+          | Severity | Count |
+          |----------|-------|
+          | 🔴 Critical | ${{ steps.audit.outputs.critical }} |
+          | 🟠 High | ${{ steps.audit.outputs.high }} |
+          | 🟡 Moderate | ${{ steps.audit.outputs.moderate }} |
+          | ⚪ Low | ${{ steps.audit.outputs.low }} |
+
+          DASHBOARDEOF
+
+          if [ "${{ steps.audit.outputs.critical }}" -gt 0 ] || [ "${{ steps.audit.outputs.high }}" -gt 0 ]; then
+            cat >> dashboard-report.md << 'VULNEOF'
+
+          ### ⚠️ Action Required
+
+          Critical or high severity vulnerabilities detected. Run `npm audit` for details and remediation steps.
+
+          ```bash
+          npm audit
+          npm audit fix  # Apply automatic fixes
+          ```
+
+          VULNEOF
+          else
+            echo "" >> dashboard-report.md
+            echo "✅ **No critical or high severity vulnerabilities detected.**" >> dashboard-report.md
+          fi
+
+          cat >> dashboard-report.md << 'MAJOREOF'
+
+          ## 🔼 Major Updates Available
+
+          ${{ steps.major-updates.outputs.list }}
+
+          MAJOREOF
+
+          if [ "${{ steps.major-updates.outputs.count }}" -gt 0 ]; then
+            cat >> dashboard-report.md << 'MAJORNOTEOF'
+
+          > **Note:** Major updates may include breaking changes. Review changelogs before upgrading.
+
+          MAJORNOTEOF
+          fi
+
+          cat >> dashboard-report.md << 'MINOREOF'
+
+          ## ⬆️ Minor Updates Available (Top 10)
+
+          ${{ steps.minor-updates.outputs.list }}
+
+          MINOREOF
+
+          cat >> dashboard-report.md << 'FOOTEREOF'
+
+          ## 🛠️ Update Commands
+
+          ### Update all minor/patch versions (safe):
+          ```bash
+          npm update
+          ```
+
+          ### Update specific package:
+          ```bash
+          npm update <package-name>
+          ```
+
+          ### Update to latest (including majors):
+          ```bash
+          npm install <package-name>@latest
+          ```
+
+          ## 📚 Resources
+
+          - [npm outdated documentation](https://docs.npmjs.com/cli/v8/commands/npm-outdated)
+          - [npm audit documentation](https://docs.npmjs.com/cli/v8/commands/npm-audit)
+          - [Dependabot configuration](.github/dependabot.yml)
+
+          ---
+
+          **Next dashboard:** Next Monday at 9 AM UTC
+
+          *Automated by dependency-dashboard workflow*
+          FOOTEREOF
+
+      - name: Upload dashboard as artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: dependency-dashboard
+          path: dashboard-report.md
+          retention-days: 90
+
+      # Create or update GitHub issue
+      - name: Find existing dashboard issue
+        id: find-issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_NUMBER=$(gh issue list \
+            --label "dependencies" \
+            --label "automated" \
+            --label "dashboard" \
+            --state open \
+            --json number \
+            --jq '.[0].number' || echo "")
+
+          echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
+
+      - name: Create or update dashboard issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_BODY=$(cat dashboard-report.md)
+
+          if [ -z "${{ steps.find-issue.outputs.issue_number }}" ]; then
+            # Create new issue
+            gh issue create \
+              --title "📦 Weekly Dependency Dashboard - $(date +%Y-%m-%d)" \
+              --body "$ISSUE_BODY" \
+              --label "dependencies" \
+              --label "automated" \
+              --label "dashboard"
+            echo "✅ Created new dashboard issue"
+          else
+            # Update existing issue
+            gh issue edit ${{ steps.find-issue.outputs.issue_number }} \
+              --title "📦 Weekly Dependency Dashboard - $(date +%Y-%m-%d)" \
+              --body "$ISSUE_BODY"
+            echo "✅ Updated dashboard issue #${{ steps.find-issue.outputs.issue_number }}"
+          fi
+
+      - name: Summary
+        run: |
+          echo "## 📦 Dependency Dashboard Generated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Outdated packages:** ${{ steps.outdated.outputs.count }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Major updates:** ${{ steps.major-updates.outputs.count }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Vulnerabilities:** ${{ steps.audit.outputs.critical }} critical, ${{ steps.audit.outputs.high }} high" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -n "${{ steps.find-issue.outputs.issue_number }}" ]; then
+            echo "Dashboard issue updated: #${{ steps.find-issue.outputs.issue_number }}" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "New dashboard issue created" >> $GITHUB_STEP_SUMMARY
+          fi

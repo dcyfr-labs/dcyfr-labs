@@ -1,0 +1,373 @@
+name: Privacy & Security Scan Suite
+
+# Consolidated privacy scanning workflow combining:
+# - pii-scan.yml (repository-wide PII/PI pattern scanning + gitleaks)
+# - reports-pii-scan.yml (focused scan on report artifacts)
+#
+# Optimized to intelligently run relevant scans based on changed files
+
+on:
+  pull_request:
+    paths: ['**/*']
+  push:
+    branches: [main, preview]
+  schedule:
+    # Weekly full scan on Sunday at midnight UTC
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+    inputs:
+      full_scan:
+        description: 'Run full repository scan (ignore path filters)'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: privacy-scan-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  # Determine scan scope based on changed files
+  determine-scope:
+    runs-on: ubuntu-latest
+    outputs:
+      scan_all: ${{ steps.scope.outputs.scan_all }}
+      scan_reports: ${{ steps.scope.outputs.scan_reports }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need history for changed files
+
+      - name: Determine scan scope
+        id: scope
+        run: |
+          SCAN_ALL="false"
+          SCAN_REPORTS="false"
+
+          # Full scan if:
+          # - Scheduled
+          # - Manual with full_scan=true
+          # - Push to main/preview
+          if [ "${{ github.event_name }}" == "schedule" ] || \
+             [ "${{ github.event.inputs.full_scan }}" == "true" ] || \
+             [ "${{ github.event_name }}" == "push" ]; then
+            SCAN_ALL="true"
+            SCAN_REPORTS="true"
+          # PR: check changed files
+          elif [ "${{ github.event_name }}" == "pull_request" ]; then
+            # Always run repository scan on PRs
+            SCAN_ALL="true"
+
+            # Check if reports changed
+            if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '^(playwright-report|reports|coverage|test-results)/'; then
+              SCAN_REPORTS="true"
+            fi
+          fi
+
+          echo "scan_all=$SCAN_ALL" >> $GITHUB_OUTPUT
+          echo "scan_reports=$SCAN_REPORTS" >> $GITHUB_OUTPUT
+
+          echo "### Scan Scope" >> $GITHUB_STEP_SUMMARY
+          echo "- Repository scan: $SCAN_ALL" >> $GITHUB_STEP_SUMMARY
+          echo "- Reports scan: $SCAN_REPORTS" >> $GITHUB_STEP_SUMMARY
+
+  # Setup job - install dependencies once
+  setup:
+    needs: determine-scope
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Cache node_modules
+        uses: actions/cache/save@v4
+        with:
+          path: node_modules
+          key: privacy-node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
+
+  # Repository-wide PII/PI scan
+  repository-scan:
+    needs: [determine-scope, setup]
+    if: needs.determine-scope.outputs.scan_all == 'true'
+    runs-on: ubuntu-latest
+    name: Repository PII/PI Scan
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: privacy-node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
+          fail-on-cache-miss: true
+
+      - name: Validate PII allowlist
+        run: npm run validate:allowlist
+
+      - name: Run repository PII/PI scan
+        id: pii-scan
+        run: |
+          npm run scan:pi:all > scan-output.txt 2>&1 || true
+          echo "scan<<EOF" >> $GITHUB_OUTPUT
+          cat scan-output.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Upload scan output
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: pii-scan-output
+          path: scan-output.txt
+          retention-days: 30
+
+      - name: Comment on PR with results
+        if: always() && github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ### Repository PII/PI Scanner Results
+
+            **Scan Output:**
+            ```
+            ${{ steps.pii-scan.outputs.scan }}
+            ```
+
+            Full scan output available in artifacts.
+
+  # Gitleaks secret detection
+  gitleaks-scan:
+    needs: [determine-scope, setup]
+    if: needs.determine-scope.outputs.scan_all == 'true'
+    runs-on: ubuntu-latest
+    name: Secret Detection (Gitleaks)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for gitleaks
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: privacy-node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
+          fail-on-cache-miss: true
+
+      - name: Run gitleaks
+        uses: zricethezav/gitleaks-action@v2
+        with:
+          args: --verbose --redact --report-format json --report gitleaks-report.json
+        continue-on-error: true
+
+      - name: Upload gitleaks report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: gitleaks-report
+          path: gitleaks-report.json
+          retention-days: 90
+
+      - name: Parse gitleaks report
+        id: parse
+        if: always()
+        run: |
+          if [ -f gitleaks-report.json ]; then
+            npm run parse:gitleaks-report gitleaks-report.json || EXIT_CODE=$?
+            echo "exit_code=${EXIT_CODE:-0}" >> $GITHUB_OUTPUT
+
+            # Capture report content
+            echo "report<<EOF" >> $GITHUB_OUTPUT
+            cat gitleaks-report.json >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "exit_code=0" >> $GITHUB_OUTPUT
+            echo "report=[]" >> $GITHUB_OUTPUT
+          fi
+        continue-on-error: true
+
+      - name: Create critical secret remediation issue
+        if: always() && steps.parse.outputs.exit_code == '3'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DETECTION_COUNT=$(jq 'length' gitleaks-report.json)
+          FILE_LIST=$(jq -r '.[] | "- `\(.file)` (line \(.line // "n/a")): \(.rule)"' gitleaks-report.json | head -20)
+
+          if [ $(jq 'length' gitleaks-report.json) -gt 20 ]; then
+            FILE_LIST="$FILE_LIST"$'\n'"- ... and $((DETECTION_COUNT - 20)) more findings"
+          fi
+
+          gh issue create \
+            --title "🚨 Critical Secret Detected: $DETECTION_COUNT secret(s) found" \
+            --body "## 🚨 Critical Secret Detected
+
+Gitleaks detected **${DETECTION_COUNT} critical secret(s)** requiring immediate remediation.
+
+### Affected Files
+\`\`\`
+${FILE_LIST}
+\`\`\`
+
+### Immediate Actions Required
+1. **Rotate all exposed credentials**
+2. **Remove from git history** (use BFG Repo-Cleaner)
+3. **Update secret management** (use environment variables)
+4. **Verify remediation** (re-run scan)
+
+See workflow artifacts for full report." \
+            --label "security" \
+            --label "critical" \
+            --label "gitleaks" \
+            --label "automated"
+
+      - name: Comment on PR with gitleaks results
+        if: always() && github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ### Gitleaks Secret Detection Results
+
+            Gitleaks scan completed. Report available in artifacts.
+
+            **Exit code:** ${{ steps.parse.outputs.exit_code }}
+            - `0`: No secrets detected
+            - `3`: Critical secrets found (issue created)
+
+  # Reports artifact scan (focused on test/coverage/playwright reports)
+  reports-scan:
+    needs: [determine-scope, setup]
+    if: needs.determine-scope.outputs.scan_reports == 'true'
+    runs-on: ubuntu-latest
+    name: Reports Artifact Scan
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: privacy-node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
+          fail-on-cache-miss: true
+
+      - name: Run reports PII scanner
+        id: reports-scan
+        run: |
+          npm run scan:reports > reports-scan-output.txt 2>&1 || EXIT_CODE=$?
+          echo "exit_code=${EXIT_CODE:-0}" >> $GITHUB_OUTPUT
+
+          if [ -f reports-scan-output.txt ]; then
+            echo "report<<EOF" >> $GITHUB_OUTPUT
+            cat reports-scan-output.txt >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload scan output
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: reports-scan-output
+          path: reports-scan-output.txt
+          retention-days: 30
+
+      - name: Comment on PR with results
+        if: always() && github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ### Reports PII Scanner Results
+
+            This PR modifies report artifacts (playwright/coverage/test-results).
+
+            **Scan Output:**
+            ```
+            ${{ steps.reports-scan.outputs.report }}
+            ```
+
+      - name: Fail if PII found in reports
+        if: steps.reports-scan.outputs.exit_code != '0'
+        run: |
+          echo "❌ PII detected in report artifacts"
+          exit 1
+
+  # Unified summary
+  summary:
+    needs: [repository-scan, gitleaks-scan, reports-scan]
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate unified summary
+        run: |
+          echo "# 🔒 Privacy & Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Scan | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ needs.repository-scan.result }}" != "skipped" ]; then
+            if [ "${{ needs.repository-scan.result }}" == "success" ]; then
+              echo "| Repository PII/PI Scan | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "| Repository PII/PI Scan | ⚠️ Check logs |" >> $GITHUB_STEP_SUMMARY
+            fi
+          fi
+
+          if [ "${{ needs.gitleaks-scan.result }}" != "skipped" ]; then
+            if [ "${{ needs.gitleaks-scan.result }}" == "success" ]; then
+              echo "| Gitleaks Secret Detection | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "| Gitleaks Secret Detection | ⚠️ Check logs |" >> $GITHUB_STEP_SUMMARY
+            fi
+          fi
+
+          if [ "${{ needs.reports-scan.result }}" != "skipped" ]; then
+            if [ "${{ needs.reports-scan.result }}" == "success" ]; then
+              echo "| Reports Artifact Scan | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+            elif [ "${{ needs.reports-scan.result }}" == "failure" ]; then
+              echo "| Reports Artifact Scan | ❌ PII Detected |" >> $GITHUB_STEP_SUMMARY
+            fi
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All privacy and security scans completed." >> $GITHUB_STEP_SUMMARY
