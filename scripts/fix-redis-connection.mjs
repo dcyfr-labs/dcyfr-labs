@@ -37,20 +37,21 @@ async function analyzeRedisUrl() {
   console.log(`   Username: ${parsed.username}`);
   console.log(`   Password: ${parsed.password ? '***' + parsed.password.slice(-4) : 'none'}`);
   
-  // Identify Redis service based on hostname
-  // lgtm [js/incomplete-url-substring-sanitization]
-  // Safe: hostname is from URL.parse() constructor, not user input.
-  // URL.parse() properly validates and extracts the hostname component.
+  // Identify Redis service based on hostname with exact suffix matching
+  // Defense-in-depth: Use .endsWith() to prevent subdomain attacks
+  const hostname = parsed.hostname.toLowerCase();
   let serviceType = 'unknown';
-  if (parsed.hostname.includes('upstash.io')) { // lgtm[js/incomplete-url-substring-sanitization]
+
+  if (hostname.endsWith('.upstash.io') || hostname === 'upstash.io') {
     serviceType = 'upstash';
-  } else if (parsed.hostname.includes('redis-cloud.com') || parsed.hostname.includes('redislabs.com')) { // lgtm[js/incomplete-url-substring-sanitization]
+  } else if (hostname.endsWith('.redis-cloud.com') || hostname === 'redis-cloud.com' ||
+             hostname.endsWith('.redislabs.com') || hostname === 'redislabs.com') {
     serviceType = 'redis-cloud';
-  } else if (parsed.hostname.includes('amazonaws.com')) { // lgtm[js/incomplete-url-substring-sanitization]
+  } else if (hostname.endsWith('.amazonaws.com')) {
     serviceType = 'aws-elasticache';
-  } else if (parsed.hostname.includes('azure.com')) { // lgtm[js/incomplete-url-substring-sanitization]
+  } else if (hostname.endsWith('.azure.com')) {
     serviceType = 'azure-redis';
-  } else if (parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1') {
+  } else if (hostname === 'localhost' || hostname === '127.0.0.1') {
     serviceType = 'local';
   }
   

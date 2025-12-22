@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { LinkedInTokenManager } from '@/lib/linkedin-token-manager';
+import { safeLog, sanitizeForLog } from '@/lib/log-sanitizer';
 
 /**
  * LinkedIn OpenID Connect OAuth Callback Endpoint
@@ -22,18 +23,22 @@ export async function GET(request: NextRequest) {
     const error = searchParams.get('error');
     const errorDescription = searchParams.get('error_description');
 
-    console.log('📋 OAuth parameters received:', { // lgtm[js/log-injection]
+    // Use safe logging to prevent log injection attacks
+    safeLog('info', 'OAuth parameters received', {
       hasCode: !!code,
       codeLength: code?.length || 0,
-      state: state,
+      statePresent: !!state,
+      stateLength: state?.length || 0,
       hasError: !!error,
-      error: error, // OAuth standard error codes (e.g., 'access_denied')
-      errorDescription: errorDescription
+      errorType: error ? sanitizeForLog(error) : null,
     });
 
     // Handle authorization errors
     if (error) {
-      console.error('LinkedIn OpenID authorization error:', error, errorDescription); // lgtm[js/log-injection]
+      safeLog('error', 'LinkedIn OpenID authorization error', {
+        error: sanitizeForLog(error),
+        errorDescription: sanitizeForLog(errorDescription),
+      });
       return NextResponse.json({
         error: 'LinkedIn OpenID authorization failed',
         details: errorDescription || error
@@ -181,25 +186,24 @@ export async function GET(request: NextRequest) {
     // Automatically store token with expiration tracking
     await LinkedInTokenManager.storeToken(tokenData, 'openid');
 
-    // Log tokens for development (copy these to your .env.local)
-    console.log('🎉 LinkedIn OpenID Connect OAuth Success!');
-    console.log('================================================');
-    console.log('📋 Copy these OPENID tokens to your .env.local:');
-    console.log('================================================');
-    console.log(`LINKEDIN_OPENID_ACCESS_TOKEN="${tokenData.access_token}"`);
-    
+    // Log token success with masked values (security best practice)
+    console.log('✅ LinkedIn OpenID OAuth successful');
+    console.log('📊 Token details:');
+    console.log(`   Expires in: ${tokenData.expires_in}s`);
+    console.log(`   Scope: ${tokenData.scope}`);
+    console.log(`   Purpose: User authentication`);
+    console.log(`   Access Token (last 8): ***${tokenData.access_token.slice(-8)}`);
     if (tokenData.refresh_token) {
-      console.log(`LINKEDIN_OPENID_REFRESH_TOKEN="${tokenData.refresh_token}"`);
+      console.log(`   Refresh Token (last 8): ***${tokenData.refresh_token.slice(-8)}`);
     } else {
-      console.log('# No refresh token provided (normal for LinkedIn)');
+      console.log('   Refresh Token: None (normal for LinkedIn)');
     }
-    
-    console.log(`LINKEDIN_OPENID_EXPIRES_IN=${tokenData.expires_in}`);
-    console.log('================================================');
-    console.log('⏰ Token expires in:', tokenData.expires_in, 'seconds');
-    console.log('📝 Scope:', tokenData.scope);
-    console.log('🎯 Purpose: User authentication and profile access');
-    console.log('🤖 Token automatically stored and will be monitored for expiration');
+    console.log('');
+    console.log('🔐 Token stored securely in Redis');
+    console.log('🤖 Token will be monitored for expiration');
+    console.log('⚠️  To manually configure .env.local (if needed):');
+    console.log('   Retrieve tokens from LinkedIn Developer Console');
+    console.log('   DO NOT copy from logs (security risk)');
 
     // Get user profile info to verify token works
     try {

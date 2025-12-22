@@ -245,7 +245,12 @@ export async function POST(request: NextRequest) {
       console.log(`[In-Memory] Stored observation. Total in memory: ${inMemoryObservations.length}`);
     }
 
-    console.log(`[Observation] ${severity.toUpperCase()}: "${title}" [${usingFallback ? "in-memory" : "Redis"}]`); // lgtm[js/log-injection]
+    console.log('[Observation] Created:', {
+      severity: severity.toUpperCase(),
+      titleLength: title.length,
+      storage: usingFallback ? 'in-memory' : 'Redis',
+      timestamp: new Date().toISOString(),
+    });
 
     return NextResponse.json(
       {
