@@ -228,7 +228,7 @@ All optimizations validated:
 Track these metrics over the next 30 days:
 
 1. **Average PR workflow time**
-   - Target: <30 minutes (from ~40-50 min)
+   - Target: &lt;30 minutes (from ~40-50 min)
    - Check: GitHub Actions insights dashboard
 
 2. **npm ci execution count**

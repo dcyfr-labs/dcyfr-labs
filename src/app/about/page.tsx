@@ -17,7 +17,7 @@ import {
   Section,
   SmoothScrollToHash,
 } from "@/components/common";
-import { TeamSpotlights, ConnectWithUs, AboutDcyfrLabs } from "@/components/about";
+import { TeamSpotlights, ConnectWithUs, AboutDcyfrLabs, BadgeWallet } from "@/components/about";
 
 const ScrollReveal = dynamic(() => import("@/components/features/scroll-reveal").then(mod => ({ default: mod.ScrollReveal })), {
   loading: () => <div className="contents" />,
@@ -73,6 +73,18 @@ export default async function AboutPage() {
         <Section id="meet-the-team" className={PAGE_LAYOUT.section.container}>
           <ScrollReveal animation="fade-up" delay={50}>
             <TeamSpotlights />
+          </ScrollReveal>
+        </Section>
+
+        {/* Latest Badges */}
+        <Section id="badges" className={PAGE_LAYOUT.section.container}>
+          <ScrollReveal animation="fade-up" delay={100}>
+            <BadgeWallet 
+              showLatestOnly 
+              limit={3} 
+              viewMoreUrl="/about/drew/resume#badges"
+              viewMoreText="View all badges on my resume"
+            />
           </ScrollReveal>
         </Section>
 

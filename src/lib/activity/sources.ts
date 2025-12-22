@@ -196,7 +196,7 @@ export function aggregateActivities(
 
 /**
  * Calculate time group for an activity based on timestamp
- * Uses calendar-based grouping (today, week Monday-Sunday, month boundaries)
+ * Uses calendar-based grouping with rolling week logic
  */
 export function getTimeGroup(timestamp: Date): TimeGroup {
   const now = new Date();
@@ -205,11 +205,10 @@ export function getTimeGroup(timestamp: Date): TimeGroup {
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const timestampStart = new Date(timestamp.getFullYear(), timestamp.getMonth(), timestamp.getDate());
   
-  // Get start of current week (Monday)
-  const dayOfWeek = now.getDay();
-  const diff = now.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-  const weekStart = new Date(now.getFullYear(), now.getMonth(), diff);
-  weekStart.setHours(0, 0, 0, 0);
+  // Get start of "this week" - last 7 days excluding today
+  // This ensures that items from the past 7 days show in "This Week"
+  const weekStart = new Date(todayStart);
+  weekStart.setDate(weekStart.getDate() - 7);
   
   // Get start of current month
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -219,11 +218,14 @@ export function getTimeGroup(timestamp: Date): TimeGroup {
     return "today";
   }
   
-  if (timestampStart >= weekStart && timestampStart < new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000)) {
+  // This week: last 7 days before today
+  if (timestampStart > weekStart && timestampStart < todayStart) {
     return "this-week";
   }
   
-  if (timestampStart.getFullYear() === now.getFullYear() && timestampStart.getMonth() === now.getMonth()) {
+  // This month: same month but not in this week or today
+  if (timestampStart.getFullYear() === now.getFullYear() && 
+      timestampStart.getMonth() === now.getMonth()) {
     return "this-month";
   }
   

@@ -1,0 +1,108 @@
+# PR Auto-Labeling Configuration
+# Automatically labels PRs based on changed files
+# See: https://github.com/actions/labeler
+
+# Documentation changes
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: ['docs/**/*', '*.md', 'README.md', 'CHANGELOG.md']
+
+# AI/Agent configuration
+ai-agents:
+  - changed-files:
+      - any-glob-to-any-file: ['.github/agents/**/*', 'CLAUDE.md', 'AGENTS.md', '.github/copilot-instructions.md']
+
+ai-instructions:
+  - changed-files:
+      - any-glob-to-any-file: ['CLAUDE.md', '.github/copilot-instructions.md']
+
+# Core application code
+components:
+  - changed-files:
+      - any-glob-to-any-file: ['src/components/**/*']
+
+layouts:
+  - changed-files:
+      - any-glob-to-any-file: ['src/components/layouts/**/*']
+
+ui:
+  - changed-files:
+      - any-glob-to-any-file: ['src/components/ui/**/*']
+
+# Content & Blog
+content:
+  - changed-files:
+      - any-glob-to-any-file: ['src/content/**/*']
+
+blog:
+  - changed-files:
+      - any-glob-to-any-file: ['src/content/blog/**/*']
+
+# Core library code
+lib:
+  - changed-files:
+      - any-glob-to-any-file: ['src/lib/**/*']
+
+api:
+  - changed-files:
+      - any-glob-to-any-file: ['src/app/api/**/*', 'src/lib/api/**/*']
+
+# Design system
+design-system:
+  - changed-files:
+      - any-glob-to-any-file: ['src/lib/design-tokens.ts', 'tailwind.config.ts', 'src/styles/**/*']
+
+# Testing
+tests:
+  - changed-files:
+      - any-glob-to-any-file: ['src/**/*.test.{ts,tsx}', 'tests/**/*', 'e2e/**/*', 'vitest.config.ts', 'playwright.config.ts']
+
+e2e:
+  - changed-files:
+      - any-glob-to-any-file: ['e2e/**/*', 'playwright.config.ts']
+
+# CI/CD & Infrastructure
+ci/cd:
+  - changed-files:
+      - any-glob-to-any-file: ['.github/workflows/**/*', '.github/actions/**/*']
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file: ['package.json', 'package-lock.json']
+
+configuration:
+  - changed-files:
+      - any-glob-to-any-file: ['*.config.{js,ts,mjs}', 'tsconfig.json', '.eslintrc.*', '.prettierrc.*', 'vercel.json']
+
+# Security
+security:
+  - changed-files:
+      - any-glob-to-any-file: ['src/lib/security/**/*', 'src/middleware.ts', 'SECURITY.md', '.github/workflows/security*.yml', '.github/workflows/codeql.yml']
+
+# Performance
+performance:
+  - changed-files:
+      - any-glob-to-any-file: ['src/lib/performance/**/*', 'next.config.ts', '.github/workflows/lighthouse*.yml', '.github/workflows/perf*.yml']
+
+# Scripts
+scripts:
+  - changed-files:
+      - any-glob-to-any-file: ['scripts/**/*']
+
+# Database & Data
+database:
+  - changed-files:
+      - any-glob-to-any-file: ['src/lib/db/**/*', 'src/lib/redis/**/*']
+
+# Feature-specific labels
+analytics:
+  - changed-files:
+      - any-glob-to-any-file: ['src/lib/analytics/**/*', 'src/app/api/analytics/**/*']
+
+github-integration:
+  - changed-files:
+      - any-glob-to-any-file: ['src/lib/github/**/*', 'src/app/api/github/**/*']
+
+inngest:
+  - changed-files:
+      - any-glob-to-any-file: ['src/inngest/**/*', 'src/app/api/inngest/**/*']

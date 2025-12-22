@@ -104,12 +104,13 @@ jobs:
         run: npm run test:coverage
       
       - name: Upload coverage to Codecov
-        if: false  # Enable when ready
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/preview'
         uses: codecov/codecov-action@v5
         with:
           files: ./coverage/lcov.info
           flags: unittests
           name: codecov-umbrella
+          fail_ci_if_error: false  # Don't fail CI if Codecov has issues
 
   bundle:
     needs: setup

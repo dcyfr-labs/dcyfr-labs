@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { IMAGE_PLACEHOLDER, ANIMATION } from "@/lib/design-tokens";
 
@@ -66,9 +66,17 @@ export function FlippableAvatar({
   const [isAnimating, setIsAnimating] = useState(false);
   const [drewLoaded, setDrewLoaded] = useState(false);
   const [dcyfrLoaded, setDcyfrLoaded] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
   
   const sizeClass = sizeConfig[size];
   const isLoaded = drewLoaded || dcyfrLoaded;
+  
+  // Mark as initialized after first load to prevent both avatars showing
+  React.useEffect(() => {
+    if (isLoaded && !isInitialized) {
+      setIsInitialized(true);
+    }
+  }, [isLoaded, isInitialized]);
 
   const handleFlip = useCallback(() => {
     if (isAnimating) return;
@@ -123,7 +131,13 @@ export function FlippableAvatar({
       >
         {/* Front face - DCYFR */}
         <div
-          className="absolute inset-0 rounded-full overflow-hidden ring-2 ring-border shadow-lg"
+          className={cn(
+            "absolute inset-0 rounded-full overflow-hidden ring-2 ring-border shadow-lg transition-opacity",
+            ANIMATION.duration.normal,
+            !isInitialized && "opacity-0",
+            isInitialized && !isFlipped && "opacity-100",
+            isInitialized && isFlipped && "opacity-0"
+          )}
           style={{
             backfaceVisibility: "hidden",
             WebkitBackfaceVisibility: "hidden",
@@ -142,7 +156,13 @@ export function FlippableAvatar({
 
         {/* Back face - Drew */}
         <div
-          className="absolute inset-0 rounded-full overflow-hidden ring-2 ring-border shadow-lg"
+          className={cn(
+            "absolute inset-0 rounded-full overflow-hidden ring-2 ring-border shadow-lg transition-opacity",
+            ANIMATION.duration.normal,
+            !isInitialized && "opacity-0",
+            isInitialized && isFlipped && "opacity-100",
+            isInitialized && !isFlipped && "opacity-0"
+          )}
           style={{
             backfaceVisibility: "hidden",
             WebkitBackfaceVisibility: "hidden",

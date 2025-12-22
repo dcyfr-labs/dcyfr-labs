@@ -1,9 +1,10 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
+import { Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState, useTransition } from "react";
+import { trackThemeToggle } from "@/lib/analytics";
 
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
@@ -12,21 +13,64 @@ export function ThemeToggle() {
   // eslint-disable-next-line react-hooks/set-state-in-effect -- Hydration-safe pattern
   useEffect(() => setMounted(true), []);
 
-  const isDark = (mounted ? resolvedTheme : theme) === "dark";
+  const currentTheme = mounted ? theme : "system";
+
+  const getNextTheme = () => {
+    switch (currentTheme) {
+      case "system":
+        return "light";
+      case "light":
+        return "dark";
+      case "dark":
+        return "system";
+      default:
+        return "system";
+    }
+  };
 
   const handleToggle = () => {
+    const nextTheme = getNextTheme();
+    
     // Use View Transitions API if available for smoother theme changes
     if (typeof document !== 'undefined' && 'startViewTransition' in document) {
       (document as Document & { startViewTransition: (callback: () => void) => void }).startViewTransition(() => {
         startTransition(() => {
-          setTheme(isDark ? "light" : "dark");
+          setTheme(nextTheme);
+          trackThemeToggle(nextTheme as "light" | "dark" | "system");
         });
       });
     } else {
       // Fallback to regular transition
       startTransition(() => {
-        setTheme(isDark ? "light" : "dark");
+        setTheme(nextTheme);
+        trackThemeToggle(nextTheme as "light" | "dark" | "system");
       });
+    }
+  };
+
+  const getThemeIcon = () => {
+    switch (currentTheme) {
+      case "system":
+        return <Monitor className="size-5" aria-hidden="true" />;
+      case "light":
+        return <Sun className="size-5" aria-hidden="true" />;
+      case "dark":
+        return <Moon className="size-5" aria-hidden="true" />;
+      default:
+        return <Monitor className="size-5" aria-hidden="true" />;
+    }
+  };
+
+  const getThemeLabel = () => {
+    switch (currentTheme) {
+      case "system":
+        return "Switch to light theme";
+      case "light":
+        return "Switch to dark theme";
+      case "dark":
+        return "Switch to system theme";
+      default:
+        return "Toggle theme";
     }
   };
 
@@ -40,7 +84,7 @@ export function ThemeToggle() {
         className="opacity-0"
         disabled
       >
-        <Sun className="size-5" aria-hidden="true" />
+        <Monitor className="size-5" aria-hidden="true" />
       </Button>
     );
   }
@@ -49,11 +93,11 @@ export function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon"
-      aria-label="Toggle theme"
+      aria-label={getThemeLabel()}
       onClick={handleToggle}
       disabled={isPending}
    >
-      {isDark ? <Sun className="size-5" aria-hidden="true" /> : <Moon className="size-5" aria-hidden="true" />}
+      {getThemeIcon()}
     </Button>
   );
 }

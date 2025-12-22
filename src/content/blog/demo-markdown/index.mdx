@@ -1,0 +1,259 @@
+---
+id: "post-20200107-04d94a8e"
+title: "Markdown Elements & Typography"
+summary: "Complete demonstration of markdown elements including typography, lists, blockquotes, tables, and HTML components."
+publishedAt: "2020-01-07T12:00:00Z"
+updatedAt: "2025-11-30T12:00:00Z"
+category: "Demo"
+tags: ["Typography", "Markdown", "MDX", "Demo"]
+draft: true
+series:
+  name: "Features"
+  order: 2
+---
+
+This page demonstrates all markdown elements and typographic styles used throughout the site. It showcases the **Lora** serif font for body text paired with **Geist Sans** for UI elements.
+
+---
+
+## Typography Styles
+
+### Heading Level 3
+This is how a third-level heading looks with the current typography system.
+
+#### Heading Level 4
+Fourth-level headings are slightly smaller but still maintain hierarchy.
+
+##### Heading Level 5
+Fifth-level headings for deeply nested content.
+
+###### Heading Level 6
+The smallest heading level available.
+
+---
+
+## Text Formatting
+
+You can use **bold text** for emphasis, *italic text* for subtle emphasis, and ***bold italic*** for maximum emphasis. Use ~~strikethrough~~ for deleted text.
+
+Inline `code snippets` are styled with monospace font and background highlighting. You can also use <kbd>Cmd</kbd> + <kbd>K</kbd> to show keyboard shortcuts.
+
+This paragraph includes a [link to Next.js](https://nextjs.org/) and an external link with proper styling.
+
+---
+
+## Lists
+
+### Unordered Lists
+
+- First level item A
+- First level item B
+  - Second level item B.1
+  - Second level item B.2
+    - Third level item B.2.1
+    - Third level item B.2.2
+- First level item C
+
+### Ordered Lists
+
+1. First ordered item
+2. Second ordered item
+   1. Nested ordered item 2.1
+   2. Nested ordered item 2.2
+3. Third ordered item
+
+### Task Lists
+
+- [x] Completed task
+- [x] Another completed task
+- [ ] Incomplete task
+- [ ] Another incomplete task
+
+---
+
+## Blockquotes
+
+> This is a single-line blockquote.
+
+> This is a multi-line blockquote with multiple sentences.
+> 
+> It can span multiple paragraphs and includes proper spacing and styling to make quoted content stand out from the main text.
+
+> **Pro tip:** Blockquotes can contain **formatted text**, *italics*, and even `code snippets` for maximum flexibility.
+
+---
+
+## Tables
+
+### Simple Table
+
+| Name    | Role      | Status |
+|---------|-----------|--------|
+| Alice   | Admin     | Active |
+| Bob     | Editor    | Active |
+| Charlie | Viewer    | Inactive |
+
+### Complex Table with Alignment
+
+| Feature | Free | Pro | Enterprise |
+|---------|:----:|:---:|:----------:|
+| Users | 1 | 10 | Unlimited |
+| Storage | 1GB | 100GB | Custom |
+| Support | Email | Priority | 24/7 Phone |
+| Custom Domain | <XIcon /> | <CheckIcon /> | <CheckIcon /> |
+| API Access | <XIcon /> | Limited | Unlimited |
+
+---
+
+## Horizontal Rules
+
+Three or more dashes create a horizontal rule:
+
+---
+
+Three or more asterisks also work:
+
+***
+
+Three or more underscores as well:
+
+___
+
+---
+
+## Images
+
+![Avatar](/images/avatar.jpg)
+
+*Image caption: This is how images render with optional captions.*
+
+---
+
+## Math & LaTeX (KaTeX)
+
+Inline math equations render with KaTeX: $E = mc^2$ is Einstein's famous equation.
+
+Block math equations are centered on their own line:
+
+$$
+\sum_{i=1}^{n} i = \frac{n(n+1)}{2}
+$$
+
+Complex expressions work too:
+
+$$
+\int_0^\infty e^{-x^2} dx = \frac{\sqrt{\pi}}{2}
+$$
+
+---
+
+## Icon Components
+
+MDX supports custom icon components for consistent styling across the site:
+
+### Status Icons
+
+- <CheckIcon /> Features that are available
+- <XIcon /> Features that are not available
+- <WarningIcon /> Features that need attention
+
+### Contextual Icons
+
+- <InfoIcon /> Helpful information and tips
+- <IdeaIcon /> Pro tips and best practices
+- <ZapIcon /> Performance and speed features
+- <RocketIcon /> New launches and releases
+- <LockIcon /> Security and private features
+- <ReturnIcon /> Return or continuation indicators
+
+### Icon Tables
+
+Icons work great in tables for feature comparison:
+
+| Icon | Name | Use Case |
+|:----:|------|----------|
+| <CheckIcon /> | Check | Success, completion, available |
+| <XIcon /> | Cross | Error, unavailable, denied |
+| <WarningIcon /> | Warning | Caution, deprecation |
+| <InfoIcon /> | Info | Helpful notes, documentation |
+| <IdeaIcon /> | Idea | Tips, insights |
+| <ZapIcon /> | Zap | Performance, speed |
+| <RocketIcon /> | Rocket | Launch, deployment |
+| <LockIcon /> | Lock | Security, privacy |
+
+---
+
+## HTML Elements
+
+You can also use HTML elements when needed:
+
+<div className="p-4 bg-accent rounded-lg my-4">
+  <strong>Custom HTML:</strong> This is a custom HTML element styled with Tailwind classes.
+</div>
+
+<details>
+  <summary>Click to expand</summary>
+  
+  Hidden content that reveals when you click the summary.
+  
+  - Can contain markdown
+  - Including lists
+  - And other elements
+</details>
+
+---
+
+## Footnotes
+
+Here's a sentence with a footnote reference[^1].
+
+You can also use named footnotes[^note].
+
+[^1]: This is the first footnote with more detailed information about the topic.
+
+[^note]: Named footnotes are easier to maintain in long documents.
+
+---
+
+## Interactive Diagrams
+
+The site supports interactive diagrams for flowcharts and architecture visualizations:
+
+<PipelineFlow height={600} />
+
+---
+
+## Combinations
+
+You can combine multiple markdown elements:
+
+> **Important Note:**
+> 
+> When working with TypeScript, remember to:
+> 
+> 1. Define proper types for all function parameters
+> 2. Use interfaces for object shapes
+> 3. Leverage generics for reusable code
+> 
+> See the [Code Examples](/blog/demo-code) for detailed examples.
+
+---
+
+## Summary
+
+This page demonstrates major markdown and typographic elements:
+
+- [x] Six levels of headings
+- [x] Text formatting (bold, italic, strikethrough)
+- [x] Lists (ordered, unordered, nested, tasks)
+- [x] Blockquotes with formatting
+- [x] Tables (simple and complex)
+- [x] Horizontal rules
+- [x] Images with captions
+- [x] Math & LaTeX equations (KaTeX)
+- [x] Icon components for consistent styling
+- [x] HTML elements and details/summary
+- [x] Footnotes
+- [x] Interactive diagrams (ReactFlow)
+
+All elements are styled consistently with **Lora** serif font for readability and **Geist Sans** for UI elements.

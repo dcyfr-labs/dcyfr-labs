@@ -55,6 +55,7 @@ export function PhotoGrid({ columns = 3, photos = [], children }: PhotoGridProps
       </div>
 
       <Dialog open={!!lightboxPhoto} onOpenChange={() => setLightboxPhoto(null)}>
+        { }
         <DialogContent className="max-w-4xl">
           {lightboxPhoto && (
             <div className="relative w-full h-[80vh]">

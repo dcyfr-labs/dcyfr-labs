@@ -18,9 +18,13 @@ import {
   Flame,
   Check,
   Pencil,
+  Award,
+  BarChart3,
+  Search,
+  Activity,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ANIMATION, SEMANTIC_COLORS } from "@/lib/design-tokens";
+import { ANIMATION, SEMANTIC_COLORS, NEON_COLORS } from "@/lib/design-tokens";
 import {
   type ActivityItem as ActivityItemType,
   type ActivitySource,
@@ -43,6 +47,10 @@ const SOURCE_ICONS: Record<ActivitySource, typeof FileText> = {
   milestone: Trophy,
   trending: TrendingUp,
   engagement: Flame,
+  certification: Award,
+  analytics: BarChart3,
+  "github-traffic": Activity,
+  seo: Search,
 };
 
 // ============================================================================
@@ -52,6 +60,7 @@ const SOURCE_ICONS: Record<ActivitySource, typeof FileText> = {
 /**
  * Get display information for activity verbs
  * Shows visual distinction between published (new) vs updated (modified)
+ * Uses neon color palette for vibrant, glowing badges in dark mode
  */
 function getVerbDisplay(verb: ActivityItemType["verb"]) {
   const verbConfig: Record<
@@ -61,40 +70,42 @@ function getVerbDisplay(verb: ActivityItemType["verb"]) {
     published: {
       icon: Check,
       label: "Published",
-      badge: `${SEMANTIC_COLORS.status.success} border-green-200 dark:border-green-800`,
-      // Note: Status badge colors use semantic color palette (green for success)
+      badge: NEON_COLORS.lime.badge,
     },
     updated: {
       icon: Pencil,
       label: "Updated",
-      badge: `${SEMANTIC_COLORS.status.info} border-blue-200 dark:border-blue-800`,
-      // Note: Status badge colors use semantic color palette (blue for info)
+      badge: NEON_COLORS.cyan.badge,
     },
     launched: {
       icon: Megaphone,
       label: "Launched",
-      badge: "bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-800",
-      // Note: Status badge colors use semantic color palette (purple for accent)
+      badge: NEON_COLORS.purple.badge,
     },
     released: {
       icon: Trophy,
       label: "Released",
-      // eslint-disable-next-line no-restricted-syntax -- Activity badge custom accent color
-      badge: "bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800",
-      // Note: Status badge colors use semantic color palette (amber for warning)
+      badge: NEON_COLORS.orange.badge,
     },
     committed: {
       icon: GitCommit,
       label: "Committed",
-      badge: "bg-slate-50 dark:bg-slate-950/30 text-slate-700 dark:text-slate-400 border-slate-200 dark:border-slate-800",
-      // Note: Status badge colors use semantic color palette (slate for neutral)
+      badge: NEON_COLORS.slate.badge,
     },
     achieved: {
       icon: Trophy,
       label: "Achieved",
-      // eslint-disable-next-line no-restricted-syntax -- Activity badge custom accent color
-      badge: "bg-yellow-50 dark:bg-yellow-950/30 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800",
-      // Note: Status badge colors use semantic color palette (yellow for highlight)
+      badge: NEON_COLORS.yellow.badge,
+    },
+    earned: {
+      icon: Award,
+      label: "Earned",
+      badge: NEON_COLORS.blue.badge,
+    },
+    reached: {
+      icon: TrendingUp,
+      label: "Reached",
+      badge: NEON_COLORS.lime.badge,
     },
   };
 
@@ -282,8 +293,7 @@ export function ActivityItem({
                   <span className="text-xs text-muted-foreground">•</span>
                   <Badge
                     variant="secondary"
-                    /* eslint-disable-next-line no-restricted-syntax -- Trending badge accent color */
-                    className="text-xs px-1.5 py-0 bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20"
+                    className={`text-xs px-1.5 py-0 ${NEON_COLORS.orange.badge}`}
                   >
                     <TrendingUp className="h-3 w-3 mr-1" />
                     Trending
@@ -297,8 +307,7 @@ export function ActivityItem({
                   <span className="text-xs text-muted-foreground">•</span>
                   <Badge
                     variant="secondary"
-                    /* eslint-disable-next-line no-restricted-syntax -- Milestone badge accent color */
-                    className="text-xs px-1.5 py-0 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20"
+                    className={`text-xs px-1.5 py-0 ${NEON_COLORS.yellow.badge}`}
                   >
                     <Trophy className="h-3 w-3 mr-1" />
                     {activity.meta.milestone.toLocaleString()} milestone
@@ -313,8 +322,7 @@ export function ActivityItem({
                     <span className="text-xs text-muted-foreground">•</span>
                     <Badge
                       variant="secondary"
-                      /* eslint-disable-next-line no-restricted-syntax -- High engagement badge accent color */
-                      className="text-xs px-1.5 py-0 bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20"
+                      className={`text-xs px-1.5 py-0 ${NEON_COLORS.red.badge}`}
                     >
                       <Flame className="h-3 w-3 mr-1" />
                       {activity.meta.engagement.toFixed(1)}% engaged

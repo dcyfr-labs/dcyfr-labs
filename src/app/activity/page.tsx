@@ -21,6 +21,11 @@ import {
   transformHighEngagementPosts,
   transformCommentMilestones,
   transformGitHubActivity,
+  transformCredlyBadges,
+  transformVercelAnalytics,
+  transformGitHubTraffic,
+  transformGoogleAnalytics,
+  transformSearchConsole,
 } from "@/lib/activity/sources.server";
 import type { ActivityItem } from "@/lib/activity/types";
 import { createClient } from "redis";
@@ -129,50 +134,59 @@ export default async function ActivityPage() {
         .then((items) => activities.push(...items))
         .catch((err) => console.error("[Activity Page] Changelog fetch failed:", err)),
       
-      // Trending posts from this week (limit 1)
-      transformTrendingPosts(posts, 1)
+      // Trending posts - all time (no limits)
+      transformTrendingPosts(posts)
         .then((items) => activities.push(...items))
-        .catch((err) => console.error("[Activity Page] Trending posts (this week) fetch failed:", err)),
+        .catch((err) => console.error("[Activity Page] Trending posts fetch failed:", err)),
       
-      // Trending posts from this month (limit 1, after month start)
-      transformTrendingPosts(posts, 1, {
-        after: monthStart,
-        description: "Trending this month",
-      })
-        .then((items) => activities.push(...items))
-        .catch((err) => console.error("[Activity Page] Trending posts (this month) fetch failed:", err)),
-      
-      // All time trending posts (limit 1, before this month)
-      transformTrendingPosts(posts, 1, {
-        before: monthStart,
-        description: "All time trending",
-      })
-        .then((items) => activities.push(...items))
-        .catch((err) => console.error("[Activity Page] Trending posts (all time) fetch failed:", err)),
-      
-      // Milestones
-      transformMilestones(posts, 20)
+      // Milestones - all
+      transformMilestones(posts)
         .then((items) => activities.push(...items))
         .catch((err) => console.error("[Activity Page] Milestones fetch failed:", err)),
       
-      // High engagement posts
-      transformHighEngagementPosts(posts, 5, 10)
+      // High engagement posts - all
+      transformHighEngagementPosts(posts)
         .then((items) => activities.push(...items))
         .catch((err) => console.error("[Activity Page] High engagement posts fetch failed:", err)),
       
-      // Comment milestones
-      transformCommentMilestones(posts, 10)
+      // Comment milestones - all
+      transformCommentMilestones(posts)
         .then((items) => activities.push(...items))
         .catch((err) => console.error("[Activity Page] Comment milestones fetch failed:", err)),
       
-      // GitHub activity
-      transformGitHubActivity("dcyfr", ["dcyfr-labs"], 15)
+      // GitHub activity - all
+      transformGitHubActivity("dcyfr", ["dcyfr-labs"])
         .then((items) => activities.push(...items))
         .catch((err) => console.error("[Activity Page] GitHub activity fetch failed:", err)),
+      
+      // Credly badges - all
+      transformCredlyBadges("dcyfr")
+        .then((items) => activities.push(...items))
+        .catch((err) => console.error("[Activity Page] Credly badges fetch failed:", err)),
+      
+      // Vercel Analytics milestones - all
+      transformVercelAnalytics()
+        .then((items) => activities.push(...items))
+        .catch((err) => console.error("[Activity Page] Vercel Analytics fetch failed:", err)),
+      
+      // GitHub Traffic milestones - all
+      transformGitHubTraffic()
+        .then((items) => activities.push(...items))
+        .catch((err) => console.error("[Activity Page] GitHub Traffic fetch failed:", err)),
+      
+      // Google Analytics milestones - all
+      transformGoogleAnalytics()
+        .then((items) => activities.push(...items))
+        .catch((err) => console.error("[Activity Page] Google Analytics fetch failed:", err)),
+      
+      // Search Console achievements - all
+      transformSearchConsole()
+        .then((items) => activities.push(...items))
+        .catch((err) => console.error("[Activity Page] Search Console fetch failed:", err)),
     ]);
 
-    // Aggregate and sort (limit to 100 for page)
-    allActivities = aggregateActivities(activities, { limit: 100 });
+    // Aggregate and sort (no limits - unified timeline)
+    allActivities = aggregateActivities(activities);
     loadSource = "direct";
     
     console.log(

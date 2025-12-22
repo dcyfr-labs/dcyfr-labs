@@ -1,6 +1,7 @@
 import { SiteLogo } from "@/components/common/site-logo";
 import { cn } from "@/lib/utils";
 import { CONTAINER_WIDTHS } from "@/lib/design-tokens";
+import { NAVIGATION } from "@/lib/navigation-config";
 
 export function SiteFooter() {
   return (
@@ -39,30 +40,15 @@ export function SiteFooter() {
             <SiteLogo size="sm" iconClassName="opacity-80" showIcon={false} />
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-            <a
-              href="/activity"
-              className="hover:underline underline-offset-4 will-change-auto whitespace-nowrap px-1.5 py-1"
-            >
-              Activity
-            </a>
-            <a
-              href="/bookmarks"
-              className="hover:underline underline-offset-4 will-change-auto whitespace-nowrap px-1.5 py-1"
-            >
-              Bookmarks
-            </a>
-            <a
-              href="/contact"
-              className="hover:underline underline-offset-4 will-change-auto whitespace-nowrap px-1.5 py-1"
-            >
-              Contact
-            </a>
-            <a
-              href="/feeds"
-              className="hover:underline underline-offset-4 will-change-auto whitespace-nowrap px-1.5 py-1"
-            >
-              Feeds
-            </a>
+            {NAVIGATION.footer.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="hover:underline underline-offset-4 will-change-auto whitespace-nowrap px-1.5 py-1"
+              >
+                {item.label}
+              </a>
+            ))}
             <a
               href="/sitemap.xml"
               className="hover:underline underline-offset-4 will-change-auto whitespace-nowrap px-1.5 py-1"

@@ -21,7 +21,8 @@ export function ClientDocSearch({ placeholder = "Search documentation..." }: Cli
     } else {
       params.delete("search");
     }
-    router.push(`/dev/docs?${params.toString()}`);
+    // Use replace instead of push to avoid navigation and page reloads
+    router.replace(`/dev/docs?${params.toString()}`);
   }, [searchParams, router]);
 
   // Debounce search

@@ -7,11 +7,16 @@ import {
   SPACING,
   HOVER_EFFECTS,
   PAGE_LAYOUT,
+  SHADOWS,
+  BORDERS,
 } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import { Section, ProfileAvatar, GitHubHeatmapErrorBoundary } from "@/components/common";
 import { ServerGitHubHeatmap } from "@/components/features";
-import { Coffee, Shield, Code, ArrowLeft } from "lucide-react";
+import { ResumeStats } from "@/components/resume";
+import { BadgeWallet } from "./badge-wallet";
+import { SkillsWallet } from "./skills-wallet";
+import { Coffee, Shield, Code, Github, Briefcase } from "lucide-react";
 
 /**
  * About Drew Profile Component
@@ -28,12 +33,12 @@ export function AboutDrewProfile() {
       <Section id="drew-hero" className={PAGE_LAYOUT.hero.container}>
         <div
           className={cn(
-            "flex flex-col md:flex-row items-center md:items-start gap-4",
+            "flex flex-col md:flex-row items-center md:items-start gap-6",
             SPACING.content
           )}
         >
           {/* Avatar */}
-          <div className="shrink-0 *:mt-0 mr-5">
+          <div className="shrink-0 *:mt-0">
             <ProfileAvatar userProfile="drew" size="lg" />
           </div>
 
@@ -115,18 +120,48 @@ export function AboutDrewProfile() {
         </div>
       </Section>
 
+      {/* GitHub Activity Section */}
+      <Section id="drew-github" className={PAGE_LAYOUT.section.container}>
+        <div className={SPACING.content}>
+          <div className="flex items-center gap-2.5 mb-4">
+            <Github className="h-6 w-6 text-primary" />
+            <h3 className={TYPOGRAPHY.h2.standard}>GitHub Activity</h3>
+          </div>
+          <p className="text-muted-foreground mb-6">
+            A snapshot of my open source contributions and coding
+            activity over the past year.
+          </p>
+          <GitHubHeatmapErrorBoundary>
+            <ServerGitHubHeatmap username="dcyfr" />
+          </GitHubHeatmapErrorBoundary>
+        </div>
+      </Section>
+
       {/* Current Roles Section */}
       <Section
         id="drew-current-roles"
         className={PAGE_LAYOUT.section.container}
       >
         <div className={SPACING.content}>
-          <h3 className={TYPOGRAPHY.h2.standard}>Current Roles</h3>
+          <div className="flex items-center gap-2.5 mb-6">
+            <Briefcase className="h-6 w-6 text-primary" />
+            <h3 className={TYPOGRAPHY.h2.standard}>Current Experience</h3>
+          </div>
+          
+          {/* Resume Stats Summary */}
+          <div className="mb-8">
+            <ResumeStats />
+          </div>
+          
           <div className="space-y-4">
             {resume.experience
               .filter((role) => role.duration.includes("Present"))
               .map((role, idx) => (
-                <Card key={idx} className="p-5 space-y-4">
+                <Card key={idx} className={cn(
+                  "p-6 space-y-4",
+                  SHADOWS.card.rest,
+                  BORDERS.card
+                )}>
                   <div className="space-y-1">
                     <p className="font-medium text-lg">{role.title}</p>
                     <p className="text-sm text-muted-foreground">
@@ -148,7 +183,7 @@ export function AboutDrewProfile() {
           <div className="flex flex-col sm:flex-row gap-3 mt-6">
             <Link
               className={`underline inline-flex items-center gap-2 text-primary ${HOVER_EFFECTS.link}`}
-              href="/resume"
+              href="/about/drew/resume"
             >
               View full resume
             </Link>
@@ -156,18 +191,25 @@ export function AboutDrewProfile() {
         </div>
       </Section>
 
-      {/* GitHub Activity Section */}
-      <Section id="drew-github" className={PAGE_LAYOUT.section.container}>
-        <div className={SPACING.content}>
-          <h3 className={TYPOGRAPHY.h2.standard}>GitHub Activity</h3>
-          <p className="text-muted-foreground mb-6">
-            A snapshot of my open source contributions and coding
-            activity over the past year.
-          </p>
-          <GitHubHeatmapErrorBoundary>
-            <ServerGitHubHeatmap username="dcyfr" />
-          </GitHubHeatmapErrorBoundary>
-        </div>
+      {/* Certifications Section - Badge Wallet */}
+      <Section id="drew-certifications" className={PAGE_LAYOUT.section.container}>
+        <BadgeWallet 
+          username="dcyfr"
+          showLatestOnly
+          limit={3}
+          viewMoreUrl="/about/drew/resume#certifications"
+          viewMoreText="View all certifications"
+        />
+      </Section>
+
+      {/* Skills Section - Skills Wallet */}
+      <Section id="drew-skills" className={PAGE_LAYOUT.section.container}>
+        <SkillsWallet 
+          username="dcyfr"
+          limit={9}
+          viewMoreUrl="/about/drew/resume#skills"
+          viewMoreText="View all skills"
+        />
       </Section>
     </>
   );

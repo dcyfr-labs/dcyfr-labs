@@ -843,7 +843,7 @@ export const HOVER_EFFECTS = {
   button: "transition-shadow hover:shadow-xl active:scale-95 active:shadow-lg",
   
   /** Text links */
-  link: "hover:underline underline-offset-4 will-change-auto transition-colors active:opacity-70",
+  link: "hover:underline underline-offset-4 decoration-skip-ink-none will-change-auto transition-colors active:opacity-70",
 } as const;
 
 // ============================================================================
@@ -1009,15 +1009,52 @@ export const BORDERS = {
 /**
  * Shadow elevation patterns
  * 
+ * Includes both the 3-tier content hierarchy system and semantic UI shadows.
+ * 
  * @example
  * ```tsx
- * // Using semantic shadow pattern
+ * // Content hierarchy (code blocks, tables, alerts)
+ * <pre className={SHADOWS.tier1.combined}>...</pre>
+ * 
+ * // Semantic UI shadows
  * <Card className={SHADOWS.card.rest}>
  *   {content}
  * </Card>
  * ```
  */
 export const SHADOWS = {
+  /** Tier 1: Reference content - Code blocks, important callouts (most prominent) */
+  tier1: {
+    /** Light mode shadow */
+    light: "shadow-[0_2px_8px_rgb(0_0_0_/_0.12)]",
+    /** Dark mode shadow */
+    dark: "dark:shadow-[0_2px_8px_rgb(0_0_0_/_0.3)]",
+    /** Combined (light + dark) */
+    combined: "shadow-[0_2px_8px_rgb(0_0_0_/_0.12)] dark:shadow-[0_2px_8px_rgb(0_0_0_/_0.3)]",
+  },
+  
+  /** Tier 2: Data content - Tables, structured content (medium prominence) */
+  tier2: {
+    /** Light mode shadow */
+    light: "shadow-[0_1px_4px_rgb(0_0_0_/_0.08)]",
+    /** Dark mode shadow */
+    dark: "dark:shadow-[0_1px_4px_rgb(0_0_0_/_0.2)]",
+    /** Combined (light + dark) */
+    combined: "shadow-[0_1px_4px_rgb(0_0_0_/_0.08)] dark:shadow-[0_1px_4px_rgb(0_0_0_/_0.2)]",
+    /** Hover state for interactive depth */
+    hover: "hover:shadow-[0_4px_12px_rgb(0_0_0_/_0.12)] dark:hover:shadow-[0_4px_12px_rgb(0_0_0_/_0.25)]",
+  },
+  
+  /** Tier 3: Inline/embedded content - Alert banners, context clues (subtle) */
+  tier3: {
+    /** Light mode shadow */
+    light: "shadow-[0_1px_2px_rgb(0_0_0_/_0.05)]",
+    /** Dark mode shadow */
+    dark: "dark:shadow-[0_1px_2px_rgb(0_0_0_/_0.15)]",
+    /** Combined (light + dark) */
+    combined: "shadow-[0_1px_2px_rgb(0_0_0_/_0.05)] dark:shadow-[0_1px_2px_rgb(0_0_0_/_0.15)]",
+  },
+  
   /** Subtle elevation (cards at rest) */
   sm: "shadow-sm",
   
@@ -1048,6 +1085,9 @@ export const SHADOWS = {
   
   /** FAB shadows */
   fab: "shadow-xl",
+  
+  /** No shadow */
+  none: "shadow-none",
 } as const;
 
 // ============================================================================
@@ -1381,6 +1421,133 @@ export type StatusVariant = keyof typeof SEMANTIC_COLORS.status;
 export type GridPattern = keyof typeof GRID_PATTERNS;
 
 // ============================================================================
+// NEON COLOR PALETTE
+// ============================================================================
+
+/**
+ * Neon color palette for badges, indicators, and accent elements
+ * Designed to work in both light and dark modes with vibrant, glowing aesthetics
+ *
+ * Color Philosophy:
+ * - Light mode: Muted neon with darker text for readability
+ * - Dark mode: Bright, saturated neon with glow effects
+ * - All colors maintain WCAG AA contrast ratios
+ *
+ * Usage:
+ * - Status badges and indicators
+ * - Activity feed verb badges (published, updated, trending, etc.)
+ * - Alert banners and notifications
+ * - Dev tools and debugging UI elements
+ *
+ * @example
+ * ```tsx
+ * // Badge with neon accent
+ * <Badge className={NEON_COLORS.cyan.badge}>Active</Badge>
+ *
+ * // Status indicator dot
+ * <span className={`h-2 w-2 rounded-full ${NEON_COLORS.green.dot} animate-pulse`} />
+ *
+ * // Alert banner
+ * <div className={NEON_COLORS.magenta.container}>
+ *   <Icon className={NEON_COLORS.magenta.icon} />
+ *   <p className={NEON_COLORS.magenta.text}>Message</p>
+ * </div>
+ * ```
+ */
+export const NEON_COLORS = {
+  /** Electric cyan - for info, primary actions, and active states */
+  cyan: {
+    /** Badge styling (text + background) */
+    badge: "bg-cyan-100 dark:bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border-cyan-300 dark:border-cyan-400/50 dark:shadow-[0_0_8px_rgba(34,211,238,0.3)]",
+    /** Container/card background */
+    container: "bg-cyan-50 dark:bg-cyan-500/10 border-cyan-200 dark:border-cyan-400/30",
+    /** Text color */
+    text: "text-cyan-700 dark:text-cyan-300",
+    /** Icon color with glow */
+    icon: "text-cyan-600 dark:text-cyan-400 dark:drop-shadow-[0_0_4px_rgba(34,211,238,0.5)]",
+    /** Pulsing status dot */
+    dot: "bg-cyan-500 dark:bg-cyan-400 dark:shadow-[0_0_8px_rgba(34,211,238,0.6)]",
+  },
+
+  /** Hot magenta/pink - for critical, destructive, or high-priority items */
+  magenta: {
+    badge: "bg-fuchsia-100 dark:bg-fuchsia-500/20 text-fuchsia-700 dark:text-fuchsia-300 border-fuchsia-300 dark:border-fuchsia-400/50 dark:shadow-[0_0_8px_rgba(217,70,239,0.3)]",
+    container: "bg-fuchsia-50 dark:bg-fuchsia-500/10 border-fuchsia-200 dark:border-fuchsia-400/30",
+    text: "text-fuchsia-700 dark:text-fuchsia-300",
+    icon: "text-fuchsia-600 dark:text-fuchsia-400 dark:drop-shadow-[0_0_4px_rgba(217,70,239,0.5)]",
+    dot: "bg-fuchsia-500 dark:bg-fuchsia-400 dark:shadow-[0_0_8px_rgba(217,70,239,0.6)]",
+  },
+
+  /** Electric lime - for success, completion, and positive states */
+  lime: {
+    badge: "bg-lime-100 dark:bg-lime-500/20 text-lime-700 dark:text-lime-300 border-lime-300 dark:border-lime-400/50 dark:shadow-[0_0_8px_rgba(132,204,22,0.3)]",
+    container: "bg-lime-50 dark:bg-lime-500/10 border-lime-200 dark:border-lime-400/30",
+    text: "text-lime-700 dark:text-lime-300",
+    icon: "text-lime-600 dark:text-lime-400 dark:drop-shadow-[0_0_4px_rgba(132,204,22,0.5)]",
+    dot: "bg-lime-500 dark:bg-lime-400 dark:shadow-[0_0_8px_rgba(132,204,22,0.6)]",
+  },
+
+  /** Neon orange - for warnings, updates, and in-progress states */
+  orange: {
+    badge: "bg-orange-100 dark:bg-orange-500/20 text-orange-700 dark:text-orange-300 border-orange-300 dark:border-orange-400/50 dark:shadow-[0_0_8px_rgba(249,115,22,0.3)]",
+    container: "bg-orange-50 dark:bg-orange-500/10 border-orange-200 dark:border-orange-400/30",
+    text: "text-orange-700 dark:text-orange-300",
+    icon: "text-orange-600 dark:text-orange-400 dark:drop-shadow-[0_0_4px_rgba(249,115,22,0.5)]",
+    dot: "bg-orange-500 dark:bg-orange-400 dark:shadow-[0_0_8px_rgba(249,115,22,0.6)]",
+  },
+
+  /** Electric purple - for special, featured, or launched items */
+  purple: {
+    badge: "bg-purple-100 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-400/50 dark:shadow-[0_0_8px_rgba(168,85,247,0.3)]",
+    container: "bg-purple-50 dark:bg-purple-500/10 border-purple-200 dark:border-purple-400/30",
+    text: "text-purple-700 dark:text-purple-300",
+    icon: "text-purple-600 dark:text-purple-400 dark:drop-shadow-[0_0_4px_rgba(168,85,247,0.5)]",
+    dot: "bg-purple-500 dark:bg-purple-400 dark:shadow-[0_0_8px_rgba(168,85,247,0.6)]",
+  },
+
+  /** Electric blue - for information, engagement, and neutral states */
+  blue: {
+    badge: "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-400/50 dark:shadow-[0_0_8px_rgba(59,130,246,0.3)]",
+    container: "bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-400/30",
+    text: "text-blue-700 dark:text-blue-300",
+    icon: "text-blue-600 dark:text-blue-400 dark:drop-shadow-[0_0_4px_rgba(59,130,246,0.5)]",
+    dot: "bg-blue-500 dark:bg-blue-400 dark:shadow-[0_0_8px_rgba(59,130,246,0.6)]",
+  },
+
+  /** Electric yellow - for highlights, milestones, and achievements */
+  yellow: {
+    badge: "bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 border-yellow-300 dark:border-yellow-400/50 dark:shadow-[0_0_8px_rgba(234,179,8,0.3)]",
+    container: "bg-yellow-50 dark:bg-yellow-500/10 border-yellow-200 dark:border-yellow-400/30",
+    text: "text-yellow-700 dark:text-yellow-300",
+    icon: "text-yellow-600 dark:text-yellow-400 dark:drop-shadow-[0_0_4px_rgba(234,179,8,0.5)]",
+    dot: "bg-yellow-500 dark:bg-yellow-400 dark:shadow-[0_0_8px_rgba(234,179,8,0.6)]",
+  },
+
+  /** Electric red - for errors, fire/trending, and urgent states */
+  red: {
+    badge: "bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-300 border-red-300 dark:border-red-400/50 dark:shadow-[0_0_8px_rgba(239,68,68,0.3)]",
+    container: "bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-400/30",
+    text: "text-red-700 dark:text-red-300",
+    icon: "text-red-600 dark:text-red-400 dark:drop-shadow-[0_0_4px_rgba(239,68,68,0.5)]",
+    dot: "bg-red-500 dark:bg-red-400 dark:shadow-[0_0_8px_rgba(239,68,68,0.6)]",
+  },
+
+  /** Neutral gray - for secondary, neutral, or committed states */
+  slate: {
+    badge: "bg-slate-100 dark:bg-slate-500/20 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-400/50 dark:shadow-[0_0_8px_rgba(100,116,139,0.3)]",
+    container: "bg-slate-50 dark:bg-slate-500/10 border-slate-200 dark:border-slate-400/30",
+    text: "text-slate-700 dark:text-slate-300",
+    icon: "text-slate-600 dark:text-slate-400 dark:drop-shadow-[0_0_4px_rgba(100,116,139,0.5)]",
+    dot: "bg-slate-500 dark:bg-slate-400 dark:shadow-[0_0_8px_rgba(100,116,139,0.6)]",
+  },
+} as const;
+
+/**
+ * Type for neon color variants
+ */
+export type NeonColorVariant = keyof typeof NEON_COLORS;
+
+// ============================================================================
 // GRADIENTS
 // ============================================================================
 
@@ -1554,4 +1721,87 @@ export function getGradient(key: string): string {
 export const IMAGE_PLACEHOLDER = {
   /** Standard gray blur placeholder (matches muted background) */
   blur: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlNWU3ZWIiLz48L3N2Zz4=",
+} as const;
+
+// ============================================================================
+// APP-SPECIFIC TOKENS (Interactive Features)
+// ============================================================================
+
+/**
+ * App-specific design tokens for interactive, app-like features
+ * 
+ * These tokens support progressive web app features, command palette,
+ * gestures, and other native-like interactions.
+ * 
+ * @example
+ * ```tsx
+ * <div className={`transition-all ${APP_TOKENS.ANIMATIONS.pageTransition}`}>
+ *   {content}
+ * </div>
+ * ```
+ */
+export const APP_TOKENS = {
+  /** Gesture interaction thresholds and parameters */
+  GESTURES: {
+    /** Minimum distance to trigger swipe action */
+    swipeThreshold: "50px",
+    /** Duration to hold for long-press detection */
+    longPressDelay: "500ms",
+    /** Maximum time for tap detection */
+    tapMaxDuration: "200ms",
+    /** Maximum movement allowed for tap */
+    tapMaxMovement: "10px",
+  },
+  
+  /** Animation timing and easing for app interactions */
+  ANIMATIONS: {
+    /** Page/view transition timing */
+    pageTransition: "duration-200 ease-in-out",
+    /** Optimistic UI update feedback */
+    optimisticUpdate: "duration-100 ease-out",
+    /** Pull-to-refresh animation */
+    pullToRefresh: "duration-300",
+    /** Command palette open/close */
+    commandPalette: "duration-200 ease-in-out",
+    /** Modal/dialog transitions */
+    modal: "duration-150 ease-out",
+    /** Toast notification entrance */
+    toast: "duration-300 ease-out",
+  },
+  
+  /** Touch target sizes following accessibility guidelines */
+  TOUCH_TARGETS: {
+    /** iOS Human Interface Guidelines minimum (44x44pt) */
+    minimum: "min-h-[44px] min-w-[44px]",
+    /** Material Design comfortable target (48x48dp) */
+    comfortable: "min-h-[48px] min-w-[48px]",
+    /** Generous target for frequently-used actions */
+    large: "min-h-[56px] min-w-[56px]",
+  },
+  
+  /** Z-index layering system for app UI elements */
+  Z_INDEX: {
+    /** Base content layer */
+    base: "z-0",
+    /** Sticky headers and navigation */
+    sticky: "z-10",
+    /** Floating action buttons */
+    fab: "z-20",
+    /** Dropdown menus and tooltips */
+    dropdown: "z-30",
+    /** Modal overlays */
+    modal: "z-40",
+    /** Command palette */
+    commandPalette: "z-50",
+    /** Toast notifications */
+    toast: "z-60",
+  },
+  
+  /** Keyboard shortcuts display formatting */
+  KEYBOARD: {
+    /** Key badge styling (Cmd, K, etc.) */
+    keyBadge: "px-1.5 py-0.5 text-xs font-mono bg-muted border border-border rounded",
+    /** Shortcut separator (between keys) */
+    separator: "text-muted-foreground/50",
+  },
 } as const;

@@ -243,8 +243,8 @@ export default function proxy(request: NextRequest) {
     // We maintain strict nonce-based CSP for scripts where it matters most for security.
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://vercel.live",
     
-    // Images: self, data URIs, production domain, Vercel domains, GitHub (for Giscus avatars), and Vercel Live
-  `img-src 'self' data: https://${SITE_DOMAIN} https://*.vercel.com https://vercel.com https://avatars.githubusercontent.com https://github.githubassets.com https://vercel.live`,
+    // Images: self, data URIs, production domain, Vercel domains, GitHub (for Giscus avatars), Credly (for certification badges), and Vercel Live
+  `img-src 'self' data: https://${SITE_DOMAIN} https://*.vercel.com https://vercel.com https://avatars.githubusercontent.com https://github.githubassets.com https://images.credly.com https://vercel.live`,
     
     // Fonts: self, Google Fonts CDN, and Vercel Live
     "font-src 'self' https://fonts.gstatic.com https://vercel.live",

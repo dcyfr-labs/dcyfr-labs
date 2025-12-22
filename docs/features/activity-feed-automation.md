@@ -477,8 +477,8 @@ REDIS_URL=redis://...
 
 | Metric | Current | Target | Method |
 |--------|---------|--------|--------|
-| **Activity Feed Load Time** | ~800ms | <400ms | Caching |
-| **Content to Activity Delay** | Manual | <15 min | Git detection |
+| **Activity Feed Load Time** | ~800ms | &lt;400ms | Caching |
+| **Content to Activity Delay** | Manual | &lt;15 min | Git detection |
 | **Social Media Reach** | Manual | Automatic | Auto-posting |
 | **Email Open Rate** | N/A | >25% | Weekly digest |
 | **Cache Hit Rate** | N/A | >80% | Redis monitoring |

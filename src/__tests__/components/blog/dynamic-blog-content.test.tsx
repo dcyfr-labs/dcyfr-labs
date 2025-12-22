@@ -295,32 +295,27 @@ describe('DynamicBlogContent Logic Tests', () => {
 
   describe('Layout Mode Logic', () => {
     it('should support grid layout', () => {
-      const layout: 'grid' | 'list' | 'magazine' | 'compact' | 'hybrid' | 'grouped' = 'grid';
+      const layout: 'grid' | 'list' | 'magazine' | 'compact' | 'grouped' = 'grid';
       expect(layout).toBe('grid');
     });
 
     it('should support list layout', () => {
-      const layout: 'grid' | 'list' | 'magazine' | 'compact' | 'hybrid' | 'grouped' = 'list';
+      const layout: 'grid' | 'list' | 'magazine' | 'compact' | 'grouped' = 'list';
       expect(layout).toBe('list');
     });
 
     it('should support magazine layout', () => {
-      const layout: 'grid' | 'list' | 'magazine' | 'compact' | 'hybrid' | 'grouped' = 'magazine';
+      const layout: 'grid' | 'list' | 'magazine' | 'compact' | 'grouped' = 'magazine';
       expect(layout).toBe('magazine');
     });
 
     it('should support compact layout', () => {
-      const layout: 'grid' | 'list' | 'magazine' | 'compact' | 'hybrid' | 'grouped' = 'compact';
+      const layout: 'grid' | 'list' | 'magazine' | 'compact' | 'grouped' = 'compact';
       expect(layout).toBe('compact');
     });
 
-    it('should support hybrid layout', () => {
-      const layout: 'grid' | 'list' | 'magazine' | 'compact' | 'hybrid' | 'grouped' = 'hybrid';
-      expect(layout).toBe('hybrid');
-    });
-
     it('should support grouped layout', () => {
-      const layout: 'grid' | 'list' | 'magazine' | 'compact' | 'hybrid' | 'grouped' = 'grouped';
+      const layout: 'grid' | 'list' | 'magazine' | 'compact' | 'grouped' = 'grouped';
       expect(layout).toBe('grouped');
     });
 

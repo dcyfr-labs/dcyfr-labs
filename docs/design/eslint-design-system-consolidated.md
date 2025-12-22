@@ -13,7 +13,7 @@
 
 | Metric | Before | Current | Target |
 |--------|--------|---------|---------|
-| Total Warnings | 100+ | 78 | <50 |
+| Total Warnings | 100+ | 78 | &lt;50 |
 | False Positives | ~25 | 0 | 0 |
 | Build Status | ✅ Pass | ✅ Pass | ✅ Pass |
 | Design Token Coverage | ~60% | ~75% | >90% |
@@ -197,7 +197,7 @@ npm run design-tokens:check
 - [ ] Document exceptions and edge cases
 
 ### Long-Term (Quarter 1)
-- [ ] Achieve <50 total warnings (currently 78)
+- [ ] Achieve &lt;50 total warnings (currently 78)
 - [ ] Implement automated design token coverage reports
 - [ ] Create visual regression testing for design token changes
 - [ ] Train team on design token best practices
@@ -294,7 +294,7 @@ className={TYPOGRAPHY.h1.standard}
 ### Success Metrics
 
 #### Short-Term (30 days)
-- [ ] Reduce warnings from 78 to <50
+- [ ] Reduce warnings from 78 to &lt;50
 - [ ] Migrate top 5 highest-warning files
 - [ ] Zero false positives maintained
 
@@ -304,7 +304,7 @@ className={TYPOGRAPHY.h1.standard}
 - [ ] Team proficiency in design token usage
 
 #### Long-Term (6 months)
-- [ ] <10 total warnings across entire codebase
+- [ ] &lt;10 total warnings across entire codebase
 - [ ] Design system compliance dashboard
 - [ ] New component templates with built-in token usage
 

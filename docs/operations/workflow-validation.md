@@ -157,7 +157,7 @@ gh run watch <run-id>
 - ✅ npm audit: 0 vulnerabilities
 - ✅ Dependabot: 0 open PRs
 - ✅ SBOM: Skipped (requires npm 9.7+)
-- ❓ Issue creation depends on findings (may not create if <5 medium findings)
+- ❓ Issue creation depends on findings (may not create if &lt;5 medium findings)
 
 ---
 

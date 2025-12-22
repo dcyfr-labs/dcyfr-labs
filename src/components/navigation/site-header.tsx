@@ -1,55 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
-import { usePathname } from "next/navigation";
-import { ChevronDown, Heart } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { ThemeToggle } from "@/components/features/theme/theme-toggle";
 import { SiteLogo } from "@/components/common/site-logo";
 import { MobileNav } from "@/components/navigation/mobile-nav";
 import DevToolsDropdown from "@/components/common/dev-tools-dropdown";
 import { cn } from "@/lib/utils";
 import { CONTAINER_WIDTHS } from "@/lib/design-tokens";
-
-const workCategories = [
-  { href: "/work?category=community", label: "Community" },
-  { href: "/work?category=nonprofit", label: "Nonprofit" },
-  { href: "/work?category=startup", label: "Startup" },
-];
-
-const blogCategories = [
-  { href: "/blog", label: "All Posts" },
-  { href: "/blog/series", label: "Series" },
-];
+import { NAVIGATION } from "@/lib/navigation-config";
+import { useDropdown } from "@/hooks/use-dropdown";
+import { useLogoClick } from "@/hooks/use-navigation";
 
 export function SiteHeader() {
-  const [workOpen, setWorkOpen] = useState(false);
-  const [blogOpen, setBlogOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const blogDropdownRef = useRef<HTMLDivElement>(null);
-  const pathname = usePathname();
+  const blogDropdown = useDropdown();
+  const workDropdown = useDropdown();
+  const handleLogoClick = useLogoClick();
 
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setWorkOpen(false);
-      }
-      if (blogDropdownRef.current && !blogDropdownRef.current.contains(e.target as Node)) {
-        setBlogOpen(false);
-      }
-    }
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, []);
-
-  // Handle logo click - scroll to top if already on homepage
-  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (pathname === "/") {
-      e.preventDefault();
-      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-    }
-  };
-
+  /* eslint-disable react-hooks/refs -- dropdown.ref/isOpen/toggle are hook return values, not ref.current access */
   return (
     <header className="sticky top-0 z-40 backdrop-blur supports-backdrop-filter:bg-background/60 border-b site-header">
       <div className={cn("mx-auto", CONTAINER_WIDTHS.dashboard, "px-4", "sm:px-8", "md:px-8", "h-14", "md:h-16", "flex", "items-center", "justify-between", "gap-2")}>
@@ -68,75 +36,57 @@ export function SiteHeader() {
             About
           </Link>
           {/* Blog dropdown */}
-          <div ref={blogDropdownRef} className="relative">
+          <div ref={blogDropdown.ref} className="relative">
             <button
-              onClick={() => setBlogOpen((prev) => !prev)}
+              {...blogDropdown.triggerProps}
               className="flex items-center gap-1 hover:underline underline-offset-4 will-change-auto touch-target px-1.5 sm:px-2"
-              aria-haspopup="menu"
-              aria-expanded={blogOpen}
             >
               Blog
-              <ChevronDown className={cn("h-3 w-3 transition-transform", blogOpen && "rotate-180")} />
+              <ChevronDown className={cn("h-3 w-3 transition-transform", blogDropdown.isOpen && "rotate-180")} />
             </button>
-            {blogOpen && (
-              <div className="absolute top-full left-0 mt-2 w-40 rounded-md border bg-card p-1 shadow-lg z-50">
-                {blogCategories.map((cat) => (
+            {blogDropdown.isOpen && (
+              <div {...blogDropdown.contentProps} className="absolute top-full left-0 mt-2 w-40 rounded-md border bg-card p-1 shadow-lg z-50">
+                {NAVIGATION.blog.map((item) => (
                   <Link
-                    key={cat.href}
-                    href={cat.href}
+                    key={item.href}
+                    href={item.href}
                     className="block px-3 py-2 text-sm hover:bg-muted rounded"
-                    onClick={() => setBlogOpen(false)}
+                    onClick={blogDropdown.close}
                     prefetch={false}
                   >
-                    {cat.label}
+                    {item.label}
                   </Link>
                 ))}
               </div>
             )}
           </div>
           {/* Our Work dropdown */}
-          <div ref={dropdownRef} className="relative">
+          <div ref={workDropdown.ref} className="relative">
             <button
-              onClick={() => setWorkOpen((prev) => !prev)}
+              {...workDropdown.triggerProps}
               className="flex items-center gap-1 hover:underline underline-offset-4 will-change-auto touch-target px-1.5 sm:px-2"
-              aria-haspopup="menu"
-              aria-expanded={workOpen}
             >
               Our Work
-              <ChevronDown className={cn("h-3 w-3 transition-transform", workOpen && "rotate-180")} />
+              <ChevronDown className={cn("h-3 w-3 transition-transform", workDropdown.isOpen && "rotate-180")} />
             </button>
-            {workOpen && (
-              <div className="absolute top-full left-0 mt-2 w-40 rounded-md border bg-card p-1 shadow-lg z-50">
-                <Link
-                  href="/work"
-                  className="block px-3 py-2 text-sm hover:bg-muted rounded"
-                  onClick={() => setWorkOpen(false)}
-                  prefetch={false}
-                >
-                  All Projects
-                </Link>
-                <div className="my-1 border-t" />
-                {workCategories.map((cat) => (
-                  <Link
-                    key={cat.href}
-                    href={cat.href}
-                    className="block px-3 py-2 text-sm hover:bg-muted rounded"
-                    onClick={() => setWorkOpen(false)}
-                    prefetch={false}
-                  >
-                    {cat.label}
-                  </Link>
+            {workDropdown.isOpen && (
+              <div {...workDropdown.contentProps} className="absolute top-full left-0 mt-2 w-40 rounded-md border bg-card p-1 shadow-lg z-50">
+                {NAVIGATION.work.map((item, index) => (
+                  <div key={item.href}>
+                    {index === 1 && <div className="my-1 border-t" />}
+                    <Link
+                      href={item.href}
+                      className="block px-3 py-2 text-sm hover:bg-muted rounded"
+                      onClick={workDropdown.close}
+                      prefetch={false}
+                    >
+                      {item.label}
+                    </Link>
+                  </div>
                 ))}
               </div>
             )}
           </div>
-          <Link 
-            href="/sponsors" 
-            className="hover:underline underline-offset-4 will-change-auto touch-target px-1.5 sm:px-2"
-            prefetch={false}
-          >
-            Sponsors
-          </Link>
           <ThemeToggle />
           {process.env.NODE_ENV === "development" && <DevToolsDropdown />}
         </nav>
@@ -149,4 +99,5 @@ export function SiteHeader() {
       </div>
     </header>
   );
+  /* eslint-enable react-hooks/refs */
 }

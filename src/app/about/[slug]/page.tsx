@@ -2,18 +2,17 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import Link from "next/link";
-import { ChevronLeft, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { teamMembers } from "@/data/team";
 import { createPageMetadata } from "@/lib/metadata";
-import { getJsonLdScriptProps, getPersonSchema } from "@/lib/json-ld";
+import { getJsonLdScriptProps } from "@/lib/json-ld";
 import { SITE_URL } from "@/lib/site-config";
 import { PageLayout } from "@/components/layouts";
 import { AboutDrewProfile } from "@/components/about/about-drew-profile";
 import { AboutDcyfrProfile } from "@/components/about/about-dcyfr-profile";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CONTAINER_WIDTHS, SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
-import { ArrowLeft } from "lucide-react";
+import { CONTAINER_WIDTHS, SPACING, TYPOGRAPHY, SHADOWS, HOVER_EFFECTS } from "@/lib/design-tokens";
 
 /**
  * Team Member Profile Page
@@ -111,14 +110,6 @@ export default async function ProfilePage({ params }: PageProps) {
       <div
         className={`mx-auto ${CONTAINER_WIDTHS.standard} ${SPACING.section}`}
       >
-        {/* FIX: Back to Our Team - -- missing left padding/margin on mobile
-        <Link
-          href="/about#meet-the-team"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 mt-12 -ml-4 sm:-ml-6 md:-ml-8"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span>Back to Our Team</span>
-        </Link> */}
         {member.slug === "drew" && <AboutDrewProfile />}
         {member.slug === "dcyfr" && <AboutDcyfrProfile />}
       </div>
@@ -131,7 +122,7 @@ export default async function ProfilePage({ params }: PageProps) {
           <div className={SPACING.section}>
             <h2 className={TYPOGRAPHY.h2.standard}>Meet the Team</h2>
             <Link href={otherMember.profileUrl} className="block group mt-4">
-              <Card className="p-4 hover:shadow-lg transition-base hover:-translate-y-1">
+              <Card className={`p-6 ${SHADOWS.card.rest} ${SHADOWS.card.hover} ${HOVER_EFFECTS.cardLift}`}>
                 <div className="flex items-start gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">

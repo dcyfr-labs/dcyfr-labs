@@ -1,0 +1,319 @@
+name: Performance Monitoring
+
+# Advanced performance tracking and monitoring
+# Tracks Core Web Vitals, bundle sizes, and performance trends over time
+# Creates weekly performance reports with actionable insights
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'package*.json'
+      - 'next.config.ts'
+  schedule:
+    # Weekly performance report on Monday at 10:00 UTC
+    - cron: '0 10 * * 1'
+  workflow_dispatch:
+    inputs:
+      create_report:
+        description: 'Create performance report issue'
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  analyze-performance:
+    name: Analyze Performance Metrics
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Build production bundle
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Analyze bundle size
+        id: bundle
+        run: |
+          # Get bundle sizes
+          TOTAL_JS=$(find .next/static -name '*.js' -type f -exec du -ch {} + | grep total$ | cut -f1)
+          TOTAL_CSS=$(find .next/static -name '*.css' -type f -exec du -ch {} + | grep total$ | cut -f1)
+
+          # Get largest chunks
+          LARGEST_CHUNKS=$(find .next/static/chunks -name '*.js' -type f -exec du -h {} + | sort -rh | head -5)
+
+          echo "total_js=$TOTAL_JS" >> $GITHUB_OUTPUT
+          echo "total_css=$TOTAL_CSS" >> $GITHUB_OUTPUT
+          echo "largest_chunks<<EOF" >> $GITHUB_OUTPUT
+          echo "$LARGEST_CHUNKS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Run Lighthouse CI
+        id: lighthouse
+        run: |
+          npm install -g @lhci/cli@0.13.x
+
+          # Run Lighthouse on key pages
+          lhci autorun --config=.github/lighthouse/ci.json || true
+
+          # Extract metrics from latest run
+          if [ -f ".lighthouseci/lhr-*.json" ]; then
+            LATEST_LHR=$(ls -t .lighthouseci/lhr-*.json | head -1)
+
+            PERF_SCORE=$(jq '.categories.performance.score * 100' "$LATEST_LHR")
+            LCP=$(jq '.audits["largest-contentful-paint"].numericValue / 1000' "$LATEST_LHR")
+            FID=$(jq '.audits["max-potential-fid"].numericValue' "$LATEST_LHR")
+            CLS=$(jq '.audits["cumulative-layout-shift"].numericValue' "$LATEST_LHR")
+            TTI=$(jq '.audits["interactive"].numericValue / 1000' "$LATEST_LHR")
+            TBT=$(jq '.audits["total-blocking-time"].numericValue' "$LATEST_LHR")
+
+            echo "perf_score=$PERF_SCORE" >> $GITHUB_OUTPUT
+            echo "lcp=$LCP" >> $GITHUB_OUTPUT
+            echo "fid=$FID" >> $GITHUB_OUTPUT
+            echo "cls=$CLS" >> $GITHUB_OUTPUT
+            echo "tti=$TTI" >> $GITHUB_OUTPUT
+            echo "tbt=$TBT" >> $GITHUB_OUTPUT
+          else
+            echo "perf_score=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check performance budgets
+        id: budgets
+        run: |
+          # Load budget configuration
+          if [ -f "scripts/performance/bundle-size-budget.json" ]; then
+            BUDGET_JS=$(jq -r '.budgets.totalJavaScript.value' scripts/performance/bundle-size-budget.json)
+            BUDGET_CSS=$(jq -r '.budgets.css.value' scripts/performance/bundle-size-budget.json)
+
+            CURRENT_JS=$(du -sm .next/static | cut -f1)
+            CURRENT_CSS=$(find .next/static -name '*.css' -type f -exec du -sm {} + | awk '{s+=$1} END {print s}')
+
+            if [ "$CURRENT_JS" -gt "$BUDGET_JS" ]; then
+              echo "js_exceeded=true" >> $GITHUB_OUTPUT
+              echo "⚠️ JavaScript bundle exceeds budget: ${CURRENT_JS}MB > ${BUDGET_JS}MB"
+            else
+              echo "js_exceeded=false" >> $GITHUB_OUTPUT
+            fi
+
+            if [ "$CURRENT_CSS" -gt "$BUDGET_CSS" ]; then
+              echo "css_exceeded=true" >> $GITHUB_OUTPUT
+              echo "⚠️ CSS bundle exceeds budget: ${CURRENT_CSS}MB > ${BUDGET_CSS}MB"
+            else
+              echo "css_exceeded=false" >> $GITHUB_OUTPUT
+            fi
+
+            echo "budget_js=$BUDGET_JS" >> $GITHUB_OUTPUT
+            echo "budget_css=$BUDGET_CSS" >> $GITHUB_OUTPUT
+            echo "current_js=$CURRENT_JS" >> $GITHUB_OUTPUT
+            echo "current_css=$CURRENT_CSS" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/
+          retention-days: 90
+
+      - name: Generate performance summary
+        if: always()
+        run: |
+          echo "# 📊 Performance Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "## Bundle Sizes" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Asset Type | Size | Budget | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------------|------|--------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| JavaScript | ${{ steps.budgets.outputs.current_js }}MB | ${{ steps.budgets.outputs.budget_js }}MB | ${{ steps.budgets.outputs.js_exceeded == 'true' && '⚠️ Over budget' || '✅ Within budget' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| CSS | ${{ steps.budgets.outputs.current_css }}MB | ${{ steps.budgets.outputs.budget_css }}MB | ${{ steps.budgets.outputs.css_exceeded == 'true' && '⚠️ Over budget' || '✅ Within budget' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "## Core Web Vitals" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value | Target | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|--------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Performance Score | ${{ steps.lighthouse.outputs.perf_score }}% | ≥90% | ${{ steps.lighthouse.outputs.perf_score >= 90 && '✅ Good' || '⚠️ Needs improvement' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| LCP | ${{ steps.lighthouse.outputs.lcp }}s | <2.5s | ${{ steps.lighthouse.outputs.lcp < 2.5 && '✅ Good' || '⚠️ Needs improvement' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| FID | ${{ steps.lighthouse.outputs.fid }}ms | <100ms | ${{ steps.lighthouse.outputs.fid < 100 && '✅ Good' || '⚠️ Needs improvement' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| CLS | ${{ steps.lighthouse.outputs.cls }} | <0.1 | ${{ steps.lighthouse.outputs.cls < 0.1 && '✅ Good' || '⚠️ Needs improvement' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| TTI | ${{ steps.lighthouse.outputs.tti }}s | <3.8s | ${{ steps.lighthouse.outputs.tti < 3.8 && '✅ Good' || '⚠️ Needs improvement' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| TBT | ${{ steps.lighthouse.outputs.tbt }}ms | <200ms | ${{ steps.lighthouse.outputs.tbt < 200 && '✅ Good' || '⚠️ Needs improvement' }} |" >> $GITHUB_STEP_SUMMARY
+
+      - name: Find existing performance report issue
+        if: github.event_name == 'schedule' || github.event.inputs.create_report == 'true'
+        id: find-issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_NUMBER=$(gh issue list \
+            --label "performance" \
+            --label "automated" \
+            --label "monitoring" \
+            --state open \
+            --json number \
+            --jq '.[0].number' || echo "")
+
+          echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
+
+      - name: Create or update performance report
+        if: github.event_name == 'schedule' || github.event.inputs.create_report == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cat > performance-report.md <<'REPORTEOF'
+          # 📊 Weekly Performance Report
+
+          **Generated:** $(date -u '+%Y-%m-%d %H:%M UTC')
+
+          ## Performance Score: PERF_SCORE_PLACEHOLDER%
+
+          PERF_STATUS_PLACEHOLDER
+
+          ## Core Web Vitals
+
+          | Metric | Value | Target | Status |
+          |--------|-------|--------|--------|
+          | 🎯 Performance Score | PERF_SCORE_PLACEHOLDER% | ≥90% | PERF_EMOJI_PLACEHOLDER |
+          | 🖼️ LCP (Largest Contentful Paint) | LCP_PLACEHOLDER s | <2.5s | LCP_EMOJI_PLACEHOLDER |
+          | ⚡ FID (First Input Delay) | FID_PLACEHOLDER ms | <100ms | FID_EMOJI_PLACEHOLDER |
+          | 📏 CLS (Cumulative Layout Shift) | CLS_PLACEHOLDER | <0.1 | CLS_EMOJI_PLACEHOLDER |
+          | 🚀 TTI (Time to Interactive) | TTI_PLACEHOLDER s | <3.8s | TTI_EMOJI_PLACEHOLDER |
+          | ⏱️ TBT (Total Blocking Time) | TBT_PLACEHOLDER ms | <200ms | TBT_EMOJI_PLACEHOLDER |
+
+          ## Bundle Sizes
+
+          | Asset Type | Current Size | Budget | Status |
+          |------------|--------------|--------|--------|
+          | JavaScript | JS_SIZE_PLACEHOLDER MB | JS_BUDGET_PLACEHOLDER MB | JS_STATUS_PLACEHOLDER |
+          | CSS | CSS_SIZE_PLACEHOLDER MB | CSS_BUDGET_PLACEHOLDER MB | CSS_STATUS_PLACEHOLDER |
+
+          ## Largest Chunks
+
+          ```
+          LARGEST_CHUNKS_PLACEHOLDER
+          ```
+
+          ## Recommendations
+
+          RECOMMENDATIONS_PLACEHOLDER
+
+          ---
+
+          **Next report:** Next Monday at 10:00 UTC
+
+          *Automated by performance-monitoring workflow*
+          REPORTEOF
+
+          # Populate report with actual values
+          PERF_SCORE="${{ steps.lighthouse.outputs.perf_score }}"
+          LCP="${{ steps.lighthouse.outputs.lcp }}"
+          FID="${{ steps.lighthouse.outputs.fid }}"
+          CLS="${{ steps.lighthouse.outputs.cls }}"
+          TTI="${{ steps.lighthouse.outputs.tti }}"
+          TBT="${{ steps.lighthouse.outputs.tbt }}"
+
+          # Determine status messages
+          if (( $(echo "$PERF_SCORE >= 90" | bc -l) )); then
+            PERF_STATUS="✅ **Excellent performance** - All metrics within target ranges"
+            PERF_EMOJI="✅"
+          else
+            PERF_STATUS="⚠️ **Performance needs improvement** - Review recommendations below"
+            PERF_EMOJI="⚠️"
+          fi
+
+          LCP_EMOJI=$( (( $(echo "$LCP < 2.5" | bc -l) )) && echo "✅" || echo "⚠️" )
+          FID_EMOJI=$( (( $(echo "$FID < 100" | bc -l) )) && echo "✅" || echo "⚠️" )
+          CLS_EMOJI=$( (( $(echo "$CLS < 0.1" | bc -l) )) && echo "✅" || echo "⚠️" )
+          TTI_EMOJI=$( (( $(echo "$TTI < 3.8" | bc -l) )) && echo "✅" || echo "⚠️" )
+          TBT_EMOJI=$( (( $(echo "$TBT < 200" | bc -l) )) && echo "✅" || echo "⚠️" )
+
+          JS_STATUS=$( [ "${{ steps.budgets.outputs.js_exceeded }}" == "true" ] && echo "⚠️ Over budget" || echo "✅ Within budget" )
+          CSS_STATUS=$( [ "${{ steps.budgets.outputs.css_exceeded }}" == "true" ] && echo "⚠️ Over budget" || echo "✅ Within budget" )
+
+          # Generate recommendations
+          RECOMMENDATIONS=""
+          if (( $(echo "$PERF_SCORE < 90" | bc -l) )); then
+            RECOMMENDATIONS+="### 🎯 Improve Performance Score\n"
+            RECOMMENDATIONS+="- Run Lighthouse audit locally: \`npm run lighthouse\`\n"
+            RECOMMENDATIONS+="- Review and optimize render-blocking resources\n"
+            RECOMMENDATIONS+="- Consider code splitting for large bundles\n\n"
+          fi
+
+          if (( $(echo "$LCP > 2.5" | bc -l) )); then
+            RECOMMENDATIONS+="### 🖼️ Optimize LCP\n"
+            RECOMMENDATIONS+="- Optimize and compress images\n"
+            RECOMMENDATIONS+="- Preload critical resources\n"
+            RECOMMENDATIONS+="- Use Next.js Image component for automatic optimization\n\n"
+          fi
+
+          if [ "${{ steps.budgets.outputs.js_exceeded }}" == "true" ]; then
+            RECOMMENDATIONS+="### 📦 Reduce JavaScript Bundle Size\n"
+            RECOMMENDATIONS+="- Analyze bundle with \`npm run analyze\`\n"
+            RECOMMENDATIONS+="- Remove unused dependencies\n"
+            RECOMMENDATIONS+="- Use dynamic imports for large components\n\n"
+          fi
+
+          if [ -z "$RECOMMENDATIONS" ]; then
+            RECOMMENDATIONS="✅ **All metrics within target ranges**\n\nContinue monitoring performance weekly to maintain quality.\n\n**Best practices:**\n- Keep bundles optimized\n- Monitor third-party script impact\n- Test on real devices and network conditions"
+          fi
+
+          # Substitute placeholders
+          sed -i "s|PERF_SCORE_PLACEHOLDER|${PERF_SCORE}|g" performance-report.md
+          sed -i "s|PERF_STATUS_PLACEHOLDER|${PERF_STATUS}|g" performance-report.md
+          sed -i "s|PERF_EMOJI_PLACEHOLDER|${PERF_EMOJI}|g" performance-report.md
+          sed -i "s|LCP_PLACEHOLDER|${LCP}|g" performance-report.md
+          sed -i "s|LCP_EMOJI_PLACEHOLDER|${LCP_EMOJI}|g" performance-report.md
+          sed -i "s|FID_PLACEHOLDER|${FID}|g" performance-report.md
+          sed -i "s|FID_EMOJI_PLACEHOLDER|${FID_EMOJI}|g" performance-report.md
+          sed -i "s|CLS_PLACEHOLDER|${CLS}|g" performance-report.md
+          sed -i "s|CLS_EMOJI_PLACEHOLDER|${CLS_EMOJI}|g" performance-report.md
+          sed -i "s|TTI_PLACEHOLDER|${TTI}|g" performance-report.md
+          sed -i "s|TTI_EMOJI_PLACEHOLDER|${TTI_EMOJI}|g" performance-report.md
+          sed -i "s|TBT_PLACEHOLDER|${TBT}|g" performance-report.md
+          sed -i "s|TBT_EMOJI_PLACEHOLDER|${TBT_EMOJI}|g" performance-report.md
+          sed -i "s|JS_SIZE_PLACEHOLDER|${{ steps.budgets.outputs.current_js }}|g" performance-report.md
+          sed -i "s|JS_BUDGET_PLACEHOLDER|${{ steps.budgets.outputs.budget_js }}|g" performance-report.md
+          sed -i "s|JS_STATUS_PLACEHOLDER|${JS_STATUS}|g" performance-report.md
+          sed -i "s|CSS_SIZE_PLACEHOLDER|${{ steps.budgets.outputs.current_css }}|g" performance-report.md
+          sed -i "s|CSS_BUDGET_PLACEHOLDER|${{ steps.budgets.outputs.budget_css }}|g" performance-report.md
+          sed -i "s|CSS_STATUS_PLACEHOLDER|${CSS_STATUS}|g" performance-report.md
+          sed -i "s|LARGEST_CHUNKS_PLACEHOLDER|${{ steps.bundle.outputs.largest_chunks }}|g" performance-report.md
+          sed -i "s|RECOMMENDATIONS_PLACEHOLDER|${RECOMMENDATIONS}|g" performance-report.md
+
+          if [ -z "${{ steps.find-issue.outputs.issue_number }}" ]; then
+            # Create new issue
+            gh issue create \
+              --title "📊 Weekly Performance Report - $(date +%Y-%m-%d)" \
+              --body-file performance-report.md \
+              --label "performance" \
+              --label "automated" \
+              --label "monitoring"
+            echo "✅ Created new performance report issue"
+          else
+            # Update existing issue
+            gh issue edit ${{ steps.find-issue.outputs.issue_number }} \
+              --title "📊 Weekly Performance Report - $(date +%Y-%m-%d)" \
+              --body-file performance-report.md
+            echo "✅ Updated performance report issue #${{ steps.find-issue.outputs.issue_number }}"
+          fi

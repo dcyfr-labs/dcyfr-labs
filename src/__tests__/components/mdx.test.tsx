@@ -161,11 +161,12 @@ describe("MDX Component", () => {
   describe("Table Elements", () => {
     it("should wrap tables in overflow container", () => {
       render(<MDX source="| Col |\n|-----|\n| Val |" />);
-      const table = screen.getByRole("table");
-      expect(table.className).toContain("border-collapse");
-      expect(table.className).toContain("border");
-      // Check for wrapper div
-      const wrapper = table.parentElement;
+      // Table is wrapped in a figure with role="table", get the actual table element
+      const tableElement = document.querySelector("table");
+      expect(tableElement).toBeInTheDocument();
+      expect(tableElement?.className).toContain("border-collapse");
+      // Check for wrapper div with overflow
+      const wrapper = tableElement?.parentElement;
       expect(wrapper?.className).toContain("overflow-x-auto");
     });
   });

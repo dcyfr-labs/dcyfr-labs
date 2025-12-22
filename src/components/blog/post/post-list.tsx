@@ -26,7 +26,7 @@ const ScrollReveal = dynamic(() => import("@/components/features/scroll-reveal")
  * @property {string} [hottestSlug] - Slug of the hottest/trending post (for "Hot" badge)
  * @property {"h2" | "h3"} [titleLevel="h2"] - HTML heading level for post titles
  * @property {string} [emptyMessage="No posts found."] - Message to show when posts array is empty
- * @property {"grid" | "list" | "magazine" | "compact"} [layout="grid"] - Layout variant to use
+ * @property {"grid" | "list" | "magazine" | "compact"} [layout="grid"] - Layout variant to use (grid = hero first post + 2-column grid)
  * @property {Map<string, number>} [viewCounts] - Map of post ID to view count
  * @property {() => void} [onClearFilters] - Callback when clear filters is clicked in empty state
  * @property {boolean} [hasActiveFilters=false] - Whether filters are currently active
@@ -38,7 +38,7 @@ interface PostListProps {
   hottestSlug?: string;
   titleLevel?: "h2" | "h3";
   emptyMessage?: string;
-  layout?: "grid" | "list" | "magazine" | "compact" | "hybrid";
+  layout?: "grid" | "list" | "magazine" | "compact";
   viewCounts?: Map<string, number>;
   onClearFilters?: () => void;
   hasActiveFilters?: boolean;
@@ -460,8 +460,8 @@ export function PostList({
     );
   }
 
-  // Hybrid layout: First post as large hero card, remaining posts in 2-column grid
-  if (layout === "hybrid") {
+  // Grid layout: First post as large hero card, remaining posts in 2-column grid
+  if (layout === "grid") {
     // If less than 3 posts, fallback to magazine layout
     if (posts.length < 3) {
       return (
@@ -614,7 +614,7 @@ export function PostList({
       );
     }
 
-    // Main hybrid layout: Hero first post + 2-column grid for rest
+    // Grid layout implementation: Hero first post + 2-column grid for rest
     return (
       <div data-testid="post-list">
         {/* Hero section - First post */}
@@ -764,7 +764,7 @@ export function PostList({
                       <HighlightText text={p.title} searchQuery={searchQuery} />
                     </TitleTag>
 
-                    <p className="text-sm text-muted-foreground line-clamp-3 flex-1">
+                    <p className="text-sm text-muted-foreground line-clamp-4 md:line-clamp-5 flex-1">
                       <HighlightText text={p.summary} searchQuery={searchQuery} />
                     </p>
 
@@ -792,146 +792,10 @@ export function PostList({
     );
   }
 
-  // Grid layout: 2-column grid with featured posts spanning full width
-  if (layout === "grid") {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="post-list">
-        {posts.map((p, index) => {
-          // Featured posts (New or Hot) span full width on desktop
-          const isFeatured = latestSlug === p.slug || hottestSlug === p.slug;
-
-          return (
-            <ScrollReveal
-              key={p.slug}
-              animation="fade-up"
-              delay={index * 50}
-              className={isFeatured ? "md:col-span-2" : ""}
-            >
-              <article
-                className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card} flex flex-col h-full`}
-              >
-                {/* Bookmark Button - Top Right Corner */}
-                <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <BookmarkButton slug={p.slug} size="icon" variant="ghost" className="bg-background/80 backdrop-blur-sm hover:bg-background" />
-                </div>
-                
-                {/* Background image - only if explicitly defined in post and not hidden */}
-                {p.image && p.image.url && !p.image.hideCard && (
-                  <div className="absolute inset-0 z-0">
-                    <Image
-                      src={p.image.url}
-                      alt={p.image.alt || p.title}
-                      fill
-                      className="object-cover"
-                      sizes={
-                        isFeatured
-                          ? "(max-width: 768px) 100vw, 100vw"
-                          : "(max-width: 768px) 100vw, 50vw"
-                      }
-                    />
-                    {/* Gradient overlay for text contrast */}
-                    <div className="absolute inset-0 bg-linear-to-b from-background/75 via-background/85 to-background/95" />
-                  </div>
-                )}
-                {/* TODO: Re-enable holo effects after mouse-tracking implementation for dynamic pivoting */}
-                <Link href={`/blog/${p.slug}`} className="flex flex-col h-full">
-                  {/* Post content - larger padding for featured posts */}
-                  <div
-                    className={`flex-1 flex flex-col ${isFeatured ? "p-5 md:p-8" : "p-4"} relative z-10`}
-                  >
-                    {/* Badges - show on all posts */}
-                    <div
-                      className={`flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground mb-2 ${isFeatured ? "text-sm" : "text-xs"}`}
-                    >
-                      <PostBadges
-                        post={p}
-                        size={isFeatured ? "default" : "sm"}
-                        isLatestPost={latestSlug === p.slug}
-                        isHotPost={hottestSlug === p.slug}
-                        showCategory={true}
-                      />
-                      <SeriesBadge
-                        post={p}
-                        size={isFeatured ? "default" : "sm"}
-                      />
-                    </div>
-
-                    {/* Title - larger for featured posts */}
-                    <TitleTag
-                      className={`font-semibold line-clamp-2 mb-2 ${isFeatured ? "text-2xl md:text-3xl" : "text-lg md:text-xl"}`}
-                    >
-                      <HighlightText text={p.title} searchQuery={searchQuery} />
-                    </TitleTag>
-
-                    {/* Metadata - moved below title for featured posts (desktop only) */}
-                    <div
-                      className={`hidden md:flex flex-nowrap items-center gap-x-2 text-muted-foreground mb-2 ${isFeatured ? "text-xs" : "text-xs"}`}
-                    >
-                      <time dateTime={p.publishedAt}>
-                        {new Date(p.publishedAt).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </time>
-                      <span aria-hidden="true">•</span>
-                      <span>{p.readingTime.text}</span>
-                      {viewCounts &&
-                        viewCounts.has(p.id) &&
-                        viewCounts.get(p.id)! > 0 && (
-                          <>
-                            <span aria-hidden="true">•</span>
-                            <span>
-                              {formatViews(viewCounts.get(p.id)!)} views
-                            </span>
-                          </>
-                        )}
-                    </div>
-
-                    {/* Summary - more lines for featured */}
-                    <p
-                      className={`text-muted-foreground flex-1 ${isFeatured ? "text-base line-clamp-4 md:line-clamp-3" : "text-sm line-clamp-3"}`}
-                    >
-                      <HighlightText
-                        text={p.summary}
-                        searchQuery={searchQuery}
-                      />
-                    </p>
-
-                    {/* Tags - show more for featured posts */}
-                    {p.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 mt-3">
-                        {p.tags.slice(0, isFeatured ? 5 : 3).map((tag) => (
-                          <Badge
-                            key={tag}
-                            variant="outline"
-                            className={isFeatured ? "text-sm" : "text-xs"}
-                          >
-                            {tag}
-                          </Badge>
-                        ))}
-                        {p.tags.length > (isFeatured ? 5 : 3) && (
-                          <Badge
-                            variant="outline"
-                            className={isFeatured ? "text-sm" : "text-xs"}
-                          >
-                            +{p.tags.length - (isFeatured ? 5 : 3)}
-                          </Badge>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </Link>
-              </article>
-            </ScrollReveal>
-          );
-        })}
-      </div>
-    );
-  }
-
   // List layout: single column with full details
   if (layout === "list") {
+
+
     return (
       <div className={SPACING.subsection} data-testid="post-list">
         {posts.map((p, index) => {
@@ -1113,90 +977,83 @@ export function PostList({
     );
   }
 
-  // Grid layout (default): 2-column card layout (reuse existing grid implementation)
+  // Default fallback to magazine layout
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="post-list">
-      {posts.map((p, index) => {
-        return (
-          <ScrollReveal 
-            key={p.slug} 
-            animation="fade-up"
-            delay={index * 50}
+    <div className={SPACING.subsection} data-testid="post-list">
+      {posts.map((p, index) => (
+        <ScrollReveal key={p.slug} animation="fade-up" delay={index * 50}>
+          <article
+            className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}
           >
-            <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card} flex flex-col h-full`}>
-              {/* Background image - only if explicitly defined in post and not hidden */}
-              {p.image && p.image.url && !p.image.hideCard && (
-                <div className="absolute inset-0 z-0">
-                  <Image
-                    src={p.image.url}
-                    alt={p.image.alt || p.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 50vw"
+            <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+              <BookmarkButton slug={p.slug} size="icon" variant="ghost" className="bg-background/80 backdrop-blur-sm hover:bg-background" />
+            </div>
+            {p.image && p.image.url && !p.image.hideCard && (
+              <div className="absolute inset-0 z-0">
+                <Image
+                  src={p.image.url}
+                  alt={p.image.alt || p.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 100vw"
+                />
+                <div className="absolute inset-0 bg-linear-to-b from-background/75 via-background/85 to-background/95" />
+              </div>
+            )}
+            <Link href={`/blog/${p.slug}`} className="block">
+              <div className="p-4 md:p-8 relative z-10">
+                <div className="flex flex-nowrap items-center gap-x-2.5 text-sm text-muted-foreground mb-3 overflow-x-auto">
+                  <PostBadges
+                    post={p}
+                    size="sm"
+                    isLatestPost={latestSlug === p.slug}
+                    isHotPost={hottestSlug === p.slug}
+                    showCategory={true}
                   />
-                  {/* Gradient overlay for text contrast */}
-                  <div className="absolute inset-0 bg-linear-to-b from-background/75 via-background/85 to-background/95" />
+                  <SeriesBadge post={p} size="sm" />
                 </div>
-              )}
-              <Link href={`/blog/${p.slug}`} className="flex flex-col h-full">
-                {/* Post content */}
-                <div className="flex-1 p-4 flex flex-col relative z-10">
-                  {/* Badges - show on all posts */}
-                  <div className="flex flex-nowrap items-center gap-x-2 text-xs text-muted-foreground mb-2 overflow-x-auto">
-                    <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
-                    <SeriesBadge post={p} size="sm" />
-                  </div>
-
-                  {/* Time/reading time/views - desktop only */}
-                  <div className="hidden md:flex flex-nowrap items-center gap-x-2 text-xs text-muted-foreground mb-2 overflow-x-auto">
-                    <time dateTime={p.publishedAt}>
-                      {new Date(p.publishedAt).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric"
-                      })}
-                    </time>
-                    <span aria-hidden="true">•</span>
-                    <span>{p.readingTime.text}</span>
-                    {viewCounts && viewCounts.has(p.id) && viewCounts.get(p.id)! > 0 && (
-                      <>
-                        <span aria-hidden="true">•</span>
-                        <span>{formatViews(viewCounts.get(p.id)!)} views</span>
-                      </>
-                    )}
-                  </div>
-                  
-                  {/* Title */}
-                  <TitleTag className="font-semibold text-lg md:text-xl line-clamp-2 mb-2">
-                    <HighlightText text={p.title} searchQuery={searchQuery} />
-                  </TitleTag>
-                  
-                  {/* Summary */}
-                  <p className="text-sm text-muted-foreground line-clamp-3 flex-1">
-                    <HighlightText text={p.summary} searchQuery={searchQuery} />
-                  </p>
-                  
-                  {/* Tags */}
-                  {p.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mt-3">
-                      {p.tags.slice(0, 3).map(tag => (
-                        <Badge key={tag} variant="outline" className="text-xs">
-                          {tag}
-                        </Badge>
-                      ))}
-                      {p.tags.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{p.tags.length - 3}
-                        </Badge>
-                      )}
-                    </div>
+                <div className="hidden md:flex flex-nowrap items-center gap-x-2.5 text-sm text-muted-foreground mb-3 overflow-x-auto">
+                  <time dateTime={p.publishedAt}>
+                    {new Date(p.publishedAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </time>
+                  <span aria-hidden="true" className="text-zinc-400">•</span>
+                  <span>{p.readingTime.text}</span>
+                  {viewCounts && viewCounts.has(p.id) && viewCounts.get(p.id)! > 0 && (
+                    <>
+                      <span aria-hidden="true" className="text-zinc-400">•</span>
+                      <span>{formatViews(viewCounts.get(p.id)!)} views</span>
+                    </>
                   )}
                 </div>
-              </Link>
-            </article>
-          </ScrollReveal>
-        );
-      })}
+                <TitleTag className="font-bold text-xl md:text-2xl lg:text-3xl leading-tight line-clamp-2 mb-3 text-zinc-900 dark:text-zinc-100">
+                  <HighlightText text={p.title} searchQuery={searchQuery} />
+                </TitleTag>
+                <p className="text-sm md:text-base leading-relaxed text-zinc-600 dark:text-zinc-400 line-clamp-2 lg:line-clamp-3 mb-4">
+                  <HighlightText text={p.summary} searchQuery={searchQuery} />
+                </p>
+                {p.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {p.tags.slice(0, 3).map((tag) => (
+                      <Badge key={tag} variant="outline" className="text-xs border-zinc-300 text-zinc-700 dark:border-zinc-600 dark:text-zinc-300">
+                        {tag}
+                      </Badge>
+                    ))}
+                    {p.tags.length > 3 && (
+                      <Badge variant="outline" className="text-xs border-zinc-300 text-zinc-500 dark:border-zinc-600 dark:text-zinc-400">
+                        +{p.tags.length - 3}
+                      </Badge>
+                    )}
+                  </div>
+                )}
+              </div>
+            </Link>
+          </article>
+        </ScrollReveal>
+      ))}
     </div>
   );
 }

@@ -280,11 +280,14 @@ describe('Projects Data', () => {
       })
     })
 
-    it('featured projects have images', () => {
+    it('featured projects have optional images', () => {
       featuredProjects.forEach((project) => {
-        expect(project.image).toBeDefined()
-        expect(project.image?.url).toBeTruthy()
-        expect(project.image?.alt).toBeTruthy()
+        // Images are optional - if present, they must be valid
+        if (project.image) {
+          expect(project.image.url).toBeTruthy()
+          expect(project.image.alt).toBeTruthy()
+        }
+        // No image is valid - card will render without background
       })
     })
   })

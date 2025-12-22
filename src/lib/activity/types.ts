@@ -22,7 +22,11 @@ export type ActivitySource =
   | "changelog" // Site updates
   | "milestone" // Achievements (view/comment milestones)
   | "trending" // Trending posts
-  | "engagement"; // High engagement posts
+  | "engagement" // High engagement posts
+  | "certification" // Credly certifications
+  | "analytics" // Vercel/GA traffic milestones
+  | "github-traffic" // Repository traffic achievements
+  | "seo"; // Search Console achievements
 
 /**
  * Action verbs describing what happened
@@ -33,7 +37,9 @@ export type ActivityVerb =
   | "launched" // New project
   | "released" // Version release
   | "committed" // Code commit
-  | "achieved"; // Milestone reached
+  | "achieved" // Milestone reached
+  | "earned" // Certification earned
+  | "reached"; // Traffic/analytics milestone reached
 
 /**
  * Display variants for different contexts
@@ -228,6 +234,25 @@ export const ACTIVITY_SOURCE_COLORS: Record<
     icon: SEMANTIC_COLORS.alert.critical.icon,
     border: "border-l-red-600",
   },
+  certification: {
+    icon: "text-muted-foreground",
+    border: "border-l-muted-foreground",
+  },
+  analytics: {
+    // eslint-disable-next-line no-restricted-syntax -- Icon accent color configuration
+    icon: "text-blue-600 dark:text-blue-400",
+    border: "border-l-blue-600",
+  },
+  "github-traffic": {
+     
+    icon: "text-purple-600 dark:text-purple-400",
+    border: "border-l-purple-600",
+  },
+  seo: {
+    // eslint-disable-next-line no-restricted-syntax -- Icon accent color configuration
+    icon: "text-green-600 dark:text-green-400",
+    border: "border-l-green-600",
+  },
 } as const;
 
 /**
@@ -241,6 +266,10 @@ export const ACTIVITY_SOURCE_LABELS: Record<ActivitySource, string> = {
   milestone: "Milestone",
   trending: "Trending",
   engagement: "High Engagement",
+  certification: "Certification",
+  analytics: "Analytics",
+  "github-traffic": "Repository Growth",
+  seo: "SEO Achievement",
 } as const;
 
 /**
@@ -253,4 +282,6 @@ export const ACTIVITY_VERB_LABELS: Record<ActivityVerb, string> = {
   released: "Released",
   committed: "Committed",
   achieved: "Achieved",
+  earned: "Earned",
+  reached: "Reached",
 } as const;

@@ -103,6 +103,15 @@ describe('Authentication & Security Integration', () => {
       expect(csp).toContain('https://github.githubassets.com')
     })
 
+    it('allows Credly badge images in img-src', () => {
+      const request = new NextRequest('http://localhost:3000/')
+      const response = proxy(request)
+
+      const csp = response.headers.get('Content-Security-Policy')
+
+      expect(csp).toContain('https://images.credly.com')
+    })
+
     it('allows Giscus in frame-src for blog comments', () => {
       const request = new NextRequest('http://localhost:3000/')
       const response = proxy(request)
