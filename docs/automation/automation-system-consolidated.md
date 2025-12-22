@@ -235,9 +235,9 @@ PR Type Analysis:
 - **Cost impact:** $0 (well within free tier)
 
 #### Storage
-- **Metrics data:** <1MB per month
+- **Metrics data:** &lt;1MB per month
 - **Log retention:** 90 days (GitHub default)
-- **Artifact storage:** <50MB total
+- **Artifact storage:** &lt;50MB total
 
 #### Network
 - **Dependency updates:** ~20 PRs/month
@@ -248,9 +248,9 @@ PR Type Analysis:
 
 #### Success Metrics
 - **Auto-merge success rate:** >95%
-- **False positive rate:** <5%
-- **Manual intervention required:** <20% of PRs
-- **Security response time:** <24 hours
+- **False positive rate:** &lt;5%
+- **Manual intervention required:** &lt;20% of PRs
+- **Security response time:** &lt;24 hours
 
 #### Alert Conditions
 ```yaml

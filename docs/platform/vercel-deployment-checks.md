@@ -350,7 +350,7 @@ Deployments **proceed** when:
 
 - **Bundle Size Check:** ~2-3 minutes (includes build)
 - **Lighthouse Check:** ~5-8 minutes (3 runs × 5 pages)
-- **Baseline Check:** <30 seconds (aggregation only)
+- **Baseline Check:** &lt;30 seconds (aggregation only)
 - **Total:** ~8-12 minutes per deployment
 
 ### Cost Considerations

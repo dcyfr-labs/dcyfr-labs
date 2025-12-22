@@ -91,12 +91,16 @@ export function FAQ({ items, title, className, children }: FAQProps) {
             {title}
           </h2>
         )}
-        <Accordion type="single" collapsible className="w-full">
+        <Accordion type="single" collapsible defaultValue={"item-0"} className="w-full">
           {items.map((item, index) => (
-            <AccordionItem key={index} value={`item-${index}`}>
-              <AccordionTrigger className={TYPOGRAPHY.accordion.trigger}>
-                {item.question}
-              </AccordionTrigger>
+            <AccordionItem key={index} value={`item-${index}`} className="border-none">
+              <div className="relative">
+                <AccordionTrigger className={TYPOGRAPHY.accordion.trigger}>
+                  {item.question}
+                </AccordionTrigger>
+                {/* Bottom border with gradient fade effect */}
+                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-border via-border to-transparent" />
+              </div>
               <AccordionContent className="text-muted-foreground">
                 {item.answer}
               </AccordionContent>
@@ -127,12 +131,16 @@ export function FAQ({ items, title, className, children }: FAQProps) {
               {title}
             </h2>
           )}
-          <Accordion type="single" collapsible className="w-full">
+          <Accordion type="single" collapsible defaultValue={"item-0"} className="w-full">
             {faqItems.map((item, index) => (
-              <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger className="text-left font-medium">
-                  {item.question}
-                </AccordionTrigger>
+              <AccordionItem key={index} value={`item-${index}`} className="border-none">
+                <div className="relative">
+                  <AccordionTrigger className="text-left font-medium">
+                    {item.question}
+                  </AccordionTrigger>
+                  {/* Bottom border with gradient fade effect */}
+                  <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-border via-border to-transparent" />
+                </div>
                 <AccordionContent className="prose prose-sm dark:prose-invert max-w-none">
                   {item.answer}
                 </AccordionContent>

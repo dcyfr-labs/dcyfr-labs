@@ -19,6 +19,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { LayoutUtilities } from "@/components/features/layout-utilities";
 import { DevBanner } from "@/components/features/dev-banner";
 import { ScrollToAnchor } from "@/components/features/scroll-to-anchor";
+import { CommandPalette } from "@/components/app";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AxiomWebVitals } from "next-axiom";
@@ -138,6 +139,7 @@ export default async function RootLayout({
             {/* Dev Banner: Only show in development environment */}
             {process.env.NODE_ENV === 'development' && <DevBanner />}
             <ScrollToAnchor offset={80} />
+            <CommandPalette />
             <SiteHeader />
             <main id="main-content" className="min-h-[calc(100dvh-128px)] pb-8">{children}</main>
             <SiteFooter />

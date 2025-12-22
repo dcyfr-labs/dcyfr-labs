@@ -54,7 +54,7 @@ export function PostHeroImage({ image, title, priority = true }: PostHeroImagePr
   return (
     <figure className="not-prose -mx-4 sm:-mx-6 md:-mx-8 mb-8 md:mb-12">
       {/* Image Container with Overlays */}
-      <div className="relative w-full aspect-video md:aspect-21/9 overflow-hidden bg-muted">
+      <div className="relative w-full aspect-video md:aspect-21/9 overflow-hidden bg-background border border-border">
         {/* Hero Image */}
         <Image
           src={image.url}

@@ -114,11 +114,8 @@ export function ProjectCard({
     );
   }
   
-  // Always ensure we have an image (custom or default)
-  const image = ensureProjectImage(project.image, {
-    tags: project.tags,
-    tech: project.tech,
-  });
+  // Use project image if provided, otherwise no background image
+  const image = project.image;
   
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // Don't navigate if clicking on an interactive element

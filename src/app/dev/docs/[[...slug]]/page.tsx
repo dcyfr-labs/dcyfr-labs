@@ -14,33 +14,9 @@ interface PageProps {
   searchParams: Promise<{ search?: string }>;
 }
 
-export function generateStaticParams() {
-  const docs = getAllDocs();
-  
-  // Get all unique folder paths
-  const folderPaths = new Set<string>();
-  
-  docs.forEach(doc => {
-    const parts = doc.slug.split("/");
-    // Add each parent folder path
-    for (let i = 1; i < parts.length; i++) {
-      folderPaths.add(parts.slice(0, i).join("/"));
-    }
-  });
-  
-  return [
-    // Main docs page
-    { slug: undefined },
-    // Individual doc pages
-    ...docs.map(doc => ({
-      slug: doc.slug.split("/")
-    })),
-    // Folder pages
-    ...Array.from(folderPaths).map(folderPath => ({
-      slug: folderPath.split("/")
-    }))
-  ];
-}
+// Enable on-demand ISR - pages are generated on first request, then cached
+export const dynamicParams = true;
+export const revalidate = 3600; // Revalidate every hour
 
 export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params;

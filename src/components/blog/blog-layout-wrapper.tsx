@@ -42,8 +42,8 @@ export function BlogLayoutWrapper({ children }: BlogLayoutWrapperProps) {
       <BlogKeyboardProvider onToggleFilters={toggleCollapsed}>
         <div
           className={cn(
-            /* eslint-disable-next-line no-restricted-syntax -- Layout gap for sidebar grid */
-            "grid gap-8 items-start",
+             
+            "grid gap-4 items-start",
             ANIMATION.transition.appearance,
             isCollapsed 
               ? "lg:grid-cols-[48px_1fr]" 

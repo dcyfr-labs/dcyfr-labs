@@ -24,7 +24,7 @@
  */
 
 import { cn } from "@/lib/utils";
-import { TYPOGRAPHY, HOVER_EFFECTS } from "@/lib/design-tokens";
+import { TYPOGRAPHY, HOVER_EFFECTS, SPACING } from "@/lib/design-tokens";
 
 type StatItemProps = {
   value: string | number;
@@ -34,7 +34,7 @@ type StatItemProps = {
 
 function StatItem({ value, label, suffix }: StatItemProps) {
   return (
-    <div className={`flex flex-col items-center p-6 rounded-lg border bg-card ${HOVER_EFFECTS.cardSubtle}`}>
+    <div className={`flex flex-col items-center ${SPACING.content} rounded-lg border bg-card ${HOVER_EFFECTS.cardSubtle}`}>
       <div className={`${TYPOGRAPHY.display.statLarge} mb-2`}>
         {value}
         {suffix && <span className="text-muted-foreground">{suffix}</span>}

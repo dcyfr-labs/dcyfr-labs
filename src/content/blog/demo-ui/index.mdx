@@ -1,0 +1,525 @@
+---
+id: "post-20251222-ui-demo"
+title: "UI Elements and Components"
+subtitle: "A comprehensive demonstration of all available visual components and styling options"
+authors: ["dcyfr"]
+summary: "Explore the full range of UI components, MDX elements, code highlighting, alerts, callouts, and visual features available in this blog system."
+publishedAt: "2025-12-22T12:00:00Z"
+category: "Design"
+tags: ["Demo", "UI", "Design System", "Components", "MDX"]
+draft: true
+---
+
+> **Note:** This is a demonstration post showcasing all available UI elements and components. It serves as a visual reference for content creators and developers.
+
+This post demonstrates every visual element, component, and styling option available in the blog system. Use this as a reference when creating new content.
+
+---
+
+## Typography Hierarchy
+
+# Heading 1: Main Title
+The largest heading, typically used only once per page as the article title.
+
+## Heading 2: Major Sections
+Primary section headers that divide your content into major parts.
+
+### Heading 3: Subsections
+Secondary headers for breaking down sections into smaller topics.
+
+#### Heading 4: Details
+Tertiary headers for fine-grained organization.
+
+##### Heading 5: Minor Points
+Fourth-level headers for very specific topics.
+
+###### Heading 6: Smallest Heading
+The smallest heading level, rarely used but available.
+
+---
+
+## Text Formatting
+
+Regular paragraph text provides the foundation for your content. It should be easy to read with appropriate line height and spacing. The system uses a responsive typography scale that adapts to different screen sizes.
+
+You can use **bold text** to emphasize important points, *italic text* for subtle emphasis, or ***bold italic*** for maximum impact. Use ~~strikethrough~~ for deprecated content or corrections.
+
+Inline `code snippets` are perfect for mentioning variables, functions, or commands within sentences. For example: `npm install` or `const myVariable = true;`.
+
+> Blockquotes are great for highlighting quotes, testimonials, or important callouts. They stand out visually from the main content flow.
+
+---
+
+## Lists and Organization
+
+### Unordered Lists
+
+- First item in the list
+- Second item with important details
+- Third item
+  - Nested item 1
+  - Nested item 2
+    - Deeply nested item
+- Back to top level
+
+### Ordered Lists
+
+1. First step in the process
+2. Second step with explanation
+3. Third step
+   1. Substep A
+   2. Substep B
+4. Final step
+
+### Task Lists
+
+- [x] Completed task
+- [x] Another finished item
+- [ ] Pending task
+- [ ] Future enhancement
+
+---
+
+## Custom MDX Components
+
+### KeyTakeaway
+
+<KeyTakeaway>
+The design system ensures visual consistency across all blog posts by using semantic color tokens and standardized component patterns. This makes content creation faster and the user experience more predictable.
+</KeyTakeaway>
+
+### ContextClue
+
+<ContextClue>
+This blog system is built on Next.js 15 with React 19, using TypeScript for type safety and Tailwind CSS v4 for styling. The component architecture follows server-first principles with selective client-side interactivity.
+</ContextClue>
+
+### Alerts
+
+<Alert type="info">
+**Information:** This is a standard informational alert. Use it for helpful tips and general information.
+</Alert>
+
+<Alert type="warning">
+**Warning:** This is a warning alert. Use it for cautions, deprecations, or important notices that need attention.
+</Alert>
+
+<Alert type="critical">
+**Critical:** This is a critical alert. Use it for urgent information, breaking changes, or security issues.
+</Alert>
+
+<Alert type="success">
+**Success:** This is a success alert. Use it for confirmations, achievements, or positive outcomes.
+</Alert>
+
+---
+
+## Code Examples
+
+### Inline Code
+
+Use `const`, `let`, or `var` for variable declarations in JavaScript. The `useState` hook is essential for managing component state in React.
+
+### Code Blocks
+
+```typescript
+// TypeScript with syntax highlighting
+interface BlogPost {
+  id: string;
+  title: string;
+  summary: string;
+  publishedAt: string;
+  tags: string[];
+  featured?: boolean;
+}
+
+const createPost = (data: BlogPost): BlogPost => {
+  return {
+    ...data,
+    id: data.id || generateId(),
+  };
+};
+
+// Arrow function with type inference
+const filterFeatured = (posts: BlogPost[]): BlogPost[] => {
+  return posts.filter(post => post.featured === true);
+};
+```
+
+```javascript
+// JavaScript example
+function calculateReadingTime(content) {
+  const wordsPerMinute = 200;
+  const wordCount = content.split(/\s+/).length;
+  const minutes = Math.ceil(wordCount / wordsPerMinute);
+  return `${minutes} min read`;
+}
+
+// ES6 features
+const posts = [1, 2, 3, 4, 5];
+const doubled = posts.map(n => n * 2);
+const evens = posts.filter(n => n % 2 === 0);
+```
+
+```jsx
+// React component example
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+
+export function Counter() {
+  const [count, setCount] = useState(0);
+  
+  return (
+    <div className="flex items-center gap-4">
+      <Button onClick={() => setCount(count - 1)}>
+        Decrease
+      </Button>
+      <span className="text-2xl font-bold">{count}</span>
+      <Button onClick={() => setCount(count + 1)}>
+        Increase
+      </Button>
+    </div>
+  );
+}
+```
+
+```python
+# Python example with syntax highlighting
+def fibonacci(n: int) -> list[int]:
+    """Generate Fibonacci sequence up to n terms."""
+    if n <= 0:
+        return []
+    elif n == 1:
+        return [0]
+    elif n == 2:
+        return [0, 1]
+    
+    sequence = [0, 1]
+    for i in range(2, n):
+        sequence.append(sequence[i-1] + sequence[i-2])
+    
+    return sequence
+
+# List comprehension
+squares = [x**2 for x in range(10)]
+evens = [x for x in range(20) if x % 2 == 0]
+```
+
+```bash
+# Shell commands
+npm install next@latest react@latest
+
+# Multiple commands
+git add .
+git commit -m "Add new feature"
+git push origin main
+
+# With output
+$ npm run build
+> Building production bundle...
+✓ Compiled successfully
+```
+
+```json
+{
+  "name": "dcyfr-labs",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "^15.0.0",
+    "react": "^19.0.0"
+  }
+}
+```
+
+```css
+/* CSS with modern features */
+:root {
+  --color-primary: hsl(221 83% 53%);
+  --color-background: hsl(0 0% 100%);
+  --spacing-unit: 0.25rem;
+}
+
+.dark {
+  --color-background: hsl(224 71% 4%);
+}
+
+.container {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: calc(var(--spacing-unit) * 4);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: calc(var(--spacing-unit) * 8);
+  }
+}
+```
+
+```sql
+-- SQL query example
+SELECT 
+  u.id,
+  u.username,
+  COUNT(p.id) as post_count,
+  MAX(p.published_at) as last_post
+FROM users u
+LEFT JOIN posts p ON u.id = p.author_id
+WHERE u.active = true
+GROUP BY u.id, u.username
+HAVING COUNT(p.id) > 5
+ORDER BY post_count DESC
+LIMIT 10;
+```
+
+---
+
+## Links and Navigation
+
+Regular links work as expected: [Link to homepage](/) or [External link to Next.js](https://nextjs.org).
+
+Auto-linking for headings is enabled, so you can link directly to sections: [Jump to Typography](#typography-hierarchy)
+
+---
+
+## Horizontal Rules
+
+Use horizontal rules to create visual breaks between sections:
+
+---
+
+Like that!
+
+---
+
+## Tables
+
+Tables are fully responsive and styled with the design system:
+
+| Feature | Status | Priority | Notes |
+|---------|--------|----------|-------|
+| MDX Support | ✅ Shipped | High | Full MDX rendering with components |
+| Syntax Highlighting | ✅ Shipped | High | Shiki with multiple themes |
+| Dark Mode | ✅ Shipped | High | CSS variable based theming |
+| Search | ✅ Shipped | Medium | Client-side fuzzy search |
+| Comments | ⏳ Planned | Low | Considering giscus integration |
+| Analytics | ✅ Shipped | Medium | View counts and trending |
+
+### Complex Table
+
+| Language | Type | Use Case | Performance | Learning Curve |
+|----------|------|----------|-------------|----------------|
+| TypeScript | Compiled | Web Apps | ⭐⭐⭐⭐ | Medium |
+| Python | Interpreted | Data Science | ⭐⭐⭐ | Easy |
+| Rust | Compiled | Systems | ⭐⭐⭐⭐⭐ | Hard |
+| Go | Compiled | Backend | ⭐⭐⭐⭐ | Easy |
+| JavaScript | Interpreted | Web | ⭐⭐⭐ | Easy |
+
+---
+
+## Special Characters and Emojis
+
+The system automatically handles smart typography:
+
+- Em dashes---like this
+- Ellipsis...
+- "Smart quotes" and 'single quotes'
+- Apostrophes don't break
+
+Emojis work great: 🚀 ✅ ❌ ⚠️ 💡 🔒 ⚡
+
+Icon replacements are also available:
+- <CheckIcon /> Checkmark
+- <XIcon /> Cross
+- <WarningIcon /> Warning
+- <InfoIcon /> Info
+- <IdeaIcon /> Lightbulb
+- <ZapIcon /> Lightning
+- <LockIcon /> Lock
+- <RocketIcon /> Rocket
+
+---
+
+## Math Equations
+
+Inline math: The quadratic formula is $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$, which is fundamental to algebra.
+
+Display math (block):
+
+$$
+E = mc^2
+$$
+
+$$
+\int_{a}^{b} f(x) \, dx = F(b) - F(a)
+$$
+
+$$
+\sum_{i=1}^{n} i = \frac{n(n+1)}{2}
+$$
+
+---
+
+## Nested Content
+
+You can combine multiple elements for rich content:
+
+1. **First**: Start with a numbered list
+   
+   > Add a blockquote within the list
+   
+   ```typescript
+   // Include code examples
+   const example = "nested content";
+   ```
+
+2. **Second**: Continue with more items
+   
+   - Nested unordered list
+   - Another nested item
+   
+   <KeyTakeaway>
+   Even custom components work inside lists!
+   </KeyTakeaway>
+
+3. **Third**: Complex nesting patterns
+   
+   | Column 1 | Column 2 |
+   |----------|----------|
+   | Data | More data |
+   
+   And regular paragraph text flows naturally.
+
+---
+
+## Image Placeholders
+
+While this demo doesn't include actual images, here's how they would work:
+
+![Alt text for accessibility](/blog/images/default/hero.svg)
+
+Images are automatically optimized with Next.js Image component and include:
+- Lazy loading
+- Responsive sizing
+- Click-to-zoom functionality
+- Blur placeholder during load
+
+---
+
+## Keyboard Shortcuts
+
+You can mention keyboard shortcuts: Press <kbd>Cmd</kbd> + <kbd>K</kbd> to open the command palette, or <kbd>Ctrl</kbd> + <kbd>C</kbd> to copy.
+
+---
+
+## Design System Features
+
+### Color Semantics
+
+The design system uses semantic color tokens:
+
+- **Primary**: Brand color for CTAs and links
+- **Success**: Green for confirmations
+- **Warning**: Yellow/orange for cautions  
+- **Critical**: Red for errors and urgent items
+- **Info**: Blue for informational content
+
+### Spacing Scale
+
+Consistent spacing using design tokens:
+- Compact: Small gaps for related items
+- Content: Standard spacing between paragraphs
+- Subsection: Space between subsections
+- Section: Major section breaks
+- Page: Top-level page margins
+
+### Animation
+
+Subtle animations enhance the user experience:
+- Reveal animations on scroll
+- Hover effects on interactive elements
+- Smooth theme transitions
+- Loading states with proper feedback
+
+---
+
+## Accessibility Features
+
+All components are built with accessibility in mind:
+
+- Semantic HTML structure
+- Proper heading hierarchy
+- ARIA labels where needed
+- Keyboard navigation support
+- Screen reader friendly
+- High contrast mode compatible
+- Focus indicators on interactive elements
+
+---
+
+## Progressive Enhancement
+
+The blog system follows progressive enhancement principles:
+
+1. **Base layer**: Semantic HTML and CSS work without JavaScript
+2. **Enhanced layer**: JavaScript adds interactivity where beneficial
+3. **Optimized layer**: Client-side features enhance the experience
+
+This ensures content is accessible even if JavaScript fails to load.
+
+---
+
+## Responsive Design
+
+All elements adapt to different screen sizes:
+
+- Mobile-first approach
+- Breakpoints at sm (640px), md (768px), lg (1024px), xl (1280px)
+- Responsive typography scales
+- Touch-friendly interactive elements
+- Optimized layouts for all devices
+
+---
+
+## Performance Optimizations
+
+The system includes several performance features:
+
+- Server-side rendering by default
+- Code splitting for client components
+- Image optimization with Next.js Image
+- CSS extracted and minified
+- Lazy loading for below-fold content
+- Prefetching for navigation links
+
+---
+
+## Conclusion
+
+This showcase demonstrates the full range of visual elements available in the blog system. When creating content:
+
+- Use headings to create clear structure
+- Choose appropriate components for your message
+- Leverage code blocks for technical examples
+- Add visual breaks with horizontal rules
+- Include custom components for emphasis
+- Ensure accessibility in all content
+
+<KeyTakeaway>
+A consistent design system enables faster content creation while maintaining high quality and accessibility standards across all blog posts.
+</KeyTakeaway>
+
+---
+
+## Related Resources
+
+- [Design System Documentation](/dev/docs)
+- [Component Patterns](/dev/docs/component-patterns)
+- [MDX Guide](/dev/docs/mdx)
+- [Content Creation Guide](/dev/docs/content-creation)
+

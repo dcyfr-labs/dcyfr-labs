@@ -7,12 +7,14 @@ import path from "path";
  * 
  * URL pattern: /blog/{slug}/assets/{filename}
  * File location: src/content/blog/{slug}/{filename}
+ *              or src/content/blog/private/{slug}/{filename} (dev only)
  * 
  * Supports images, videos, and other static files.
  * Returns 404 for non-existent files or disallowed extensions.
  */
 
 const CONTENT_DIR = path.join(process.cwd(), "src/content/blog");
+const PRIVATE_CONTENT_DIR = path.join(process.cwd(), "src/content/blog/private");
 
 // Allowed file extensions and their MIME types
 const ALLOWED_EXTENSIONS: Record<string, string> = {
@@ -58,11 +60,19 @@ export async function GET(
     return new NextResponse("Not Found", { status: 404 });
   }
 
-  // Construct the full file path
-  const filePath = path.join(CONTENT_DIR, slug, filename);
+  // Try public content first
+  let filePath = path.join(CONTENT_DIR, slug, filename);
 
-  // Ensure the file exists and is within the content directory
-  if (!filePath.startsWith(CONTENT_DIR)) {
+  // Then try private content (only in development)
+  if (!fs.existsSync(filePath) && process.env.NODE_ENV !== "production") {
+    filePath = path.join(PRIVATE_CONTENT_DIR, slug, filename);
+  }
+
+  // Ensure the file exists and is within allowed content directories
+  const isInPublicDir = filePath.startsWith(CONTENT_DIR);
+  const isInPrivateDir = process.env.NODE_ENV !== "production" && filePath.startsWith(PRIVATE_CONTENT_DIR);
+  
+  if (!isInPublicDir && !isInPrivateDir) {
     return new NextResponse("Not Found", { status: 404 });
   }
 

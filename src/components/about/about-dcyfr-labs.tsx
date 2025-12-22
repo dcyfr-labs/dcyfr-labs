@@ -42,7 +42,7 @@ export function AboutDcyfrLabs() {
             and building systems that scale. We share real experiences from
             real projects, complete with trade-offs and lessons learned.
             <Link
-              href="/blog?category=development"
+              href="/blog?category=Web"
               className={`ml-1 underline ${HOVER_EFFECTS.link}`}
             >
               Explore development articles
@@ -59,7 +59,7 @@ export function AboutDcyfrLabs() {
             analysis of real threats and defenses. Security as an enabler,
             not a bottleneck.
             <Link
-              href="/blog?category=cybersecurity"
+              href="/blog?category=DevSecOps"
               className={`ml-1 underline ${HOVER_EFFECTS.link}`}
             >
               Explore security articles

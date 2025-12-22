@@ -163,7 +163,7 @@ Send event: activity/cache.invalidate
 
 2. **Function Success Rate**
    - Inngest Dashboard → `refresh-activity-feed`
-   - Look for failed runs (should be <5%)
+   - Look for failed runs (should be &lt;5%)
 
 3. **Page Load Times**
    - Vercel Analytics → /activity page
@@ -179,7 +179,7 @@ Send event: activity/cache.invalidate
 
 ### Alerts to Configure (Optional)
 
-1. **Cache Hit Rate <70%** → Investigate Redis connection
+1. **Cache Hit Rate &lt;70%** → Investigate Redis connection
 2. **Function Failures >10%** → Check Redis availability
 3. **Page Load Time >600ms** → Verify caching is working
 
@@ -230,7 +230,7 @@ Send event: activity/cache.invalidate
 ### Issue: High Cache Miss Rate
 
 **Symptoms:**
-- Cache hit rate <50%
+- Cache hit rate &lt;50%
 - Frequent "Cache miss" logs
 
 **Solutions:**
@@ -318,7 +318,7 @@ Send event: activity/cache.invalidate
 - [x] TypeScript compiles with no errors
 - [x] ESLint passes (0 errors, 5 warnings acceptable)
 - [ ] Cache hit rate >70% after 24 hours (production)
-- [ ] Page load time <500ms average (production)
+- [ ] Page load time &lt;500ms average (production)
 - [ ] Function success rate >95% (production)
 
 ---

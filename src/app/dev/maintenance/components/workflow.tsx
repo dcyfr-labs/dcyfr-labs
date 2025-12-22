@@ -5,7 +5,7 @@
  */
 
 import { Badge } from "@/components/ui/badge";
-import { SEMANTIC_COLORS } from "@/lib/design-tokens";
+import { SEMANTIC_COLORS, NEON_COLORS } from "@/lib/design-tokens";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -25,8 +25,7 @@ export function WorkflowStatusBadge({
   if (status === "in_progress" || status === "queued") {
     return (
       <Badge variant="secondary" className="gap-1">
-        {/* eslint-disable-next-line no-restricted-syntax -- Status indicator dot accent color */}
-        <span className="h-2 w-2 rounded-full bg-blue-500 dark:bg-blue-400 animate-pulse" />
+        <span className={`h-2 w-2 rounded-full ${NEON_COLORS.cyan.dot} animate-pulse`} />
         {status === "queued" ? "Queued" : "Running"}
       </Badge>
     );
@@ -34,8 +33,8 @@ export function WorkflowStatusBadge({
 
   if (conclusion === "success") {
     return (
-      <Badge variant="default" className={`gap-1 ${SEMANTIC_COLORS.status.success}`}>
-        <span className="h-2 w-2 rounded-full bg-white dark:bg-white" />
+      <Badge variant="outline" className={`gap-1 ${NEON_COLORS.lime.badge}`}>
+        <span className={`h-2 w-2 rounded-full ${NEON_COLORS.lime.dot}`} />
         Success
       </Badge>
     );
@@ -43,8 +42,8 @@ export function WorkflowStatusBadge({
 
   if (conclusion === "failure" || conclusion === "timed_out" || conclusion === "action_required") {
     return (
-      <Badge variant="destructive" className="gap-1">
-        <span className="h-2 w-2 rounded-full bg-white" />
+      <Badge variant="outline" className={`gap-1 ${NEON_COLORS.red.badge}`}>
+        <span className={`h-2 w-2 rounded-full ${NEON_COLORS.red.dot}`} />
         Failed
       </Badge>
     );
@@ -52,9 +51,8 @@ export function WorkflowStatusBadge({
 
   if (conclusion === "cancelled" || conclusion === "skipped") {
     return (
-      <Badge variant="secondary" className="gap-1">
-        {/* eslint-disable-next-line no-restricted-syntax -- Status indicator dot accent color */}
-        <span className="h-2 w-2 rounded-full bg-yellow-500 dark:bg-yellow-400" />
+      <Badge variant="outline" className={`gap-1 ${NEON_COLORS.yellow.badge}`}>
+        <span className={`h-2 w-2 rounded-full ${NEON_COLORS.yellow.dot}`} />
         {conclusion === "cancelled" ? "Cancelled" : "Skipped"}
       </Badge>
     );

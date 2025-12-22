@@ -151,7 +151,7 @@ export default async function SponsorThankYouPage({ searchParams }: PageProps) {
                   href={step.href}
                   target={step.external ? "_blank" : undefined}
                   rel={step.external ? "noopener noreferrer" : undefined}
-                  className={`group bg-card border border-border rounded-lg p-6 ${HOVER_EFFECTS.cardSubtle}`}
+                  className={`group bg-card border border-border rounded-lg ${SPACING.content} ${HOVER_EFFECTS.cardSubtle}`}
                 >
                   <div className="flex items-start gap-4">
                     <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">

@@ -60,7 +60,7 @@
  */
 
 import { ReactNode } from 'react'
-import { PAGE_LAYOUT, HERO_VARIANTS } from '@/lib/design-tokens'
+import { PAGE_LAYOUT, HERO_VARIANTS, CONTAINER_WIDTHS } from '@/lib/design-tokens'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 
@@ -161,7 +161,7 @@ export function PageHero({
       >
         <div
           className={cn(
-            `mx-auto max-w-7xl px-4 sm:px-6 md:px-8 space-y-4`,
+            `mx-auto ${CONTAINER_WIDTHS.archive} px-4 sm:px-8 md:px-8 space-y-4`,
             alignmentClasses,
             align === "center" && "flex flex-col items-center w-full",
             contentClassName

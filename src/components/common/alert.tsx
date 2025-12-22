@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { AlertTriangle, Info, AlertCircle, CheckCircle } from "lucide-react";
-import { SEMANTIC_COLORS, BORDERS } from "@/lib/design-tokens";
+import { NEON_COLORS, BORDERS } from "@/lib/design-tokens";
 
 /**
  * Alert Banner Component for MDX
@@ -49,11 +49,19 @@ const iconMap = {
 };
 
 export function Alert({ type = 'info', children, className = '' }: AlertProps) {
-  const colors = SEMANTIC_COLORS.alert[type];
+  // Map alert types to neon color variants
+  const colorMap = {
+    critical: NEON_COLORS.red,
+    warning: NEON_COLORS.orange,
+    info: NEON_COLORS.cyan,
+    success: NEON_COLORS.lime,
+  };
+
+  const colors = colorMap[type];
   const Icon = iconMap[type];
 
   return (
-    <div className={`alert-banner ${BORDERS.card} ${colors.border} ${colors.container} p-4 sm:p-5 my-6 ${className}`}>
+    <div className={`alert-banner ${BORDERS.card} ${colors.container} shadow-[0_1px_2px_rgb(0_0_0_/_0.05)] dark:shadow-[0_1px_2px_rgb(0_0_0_/_0.15)] p-4 sm:p-5 my-6 ${className}`}>
       <div className="flex items-start gap-3 sm:gap-4">
         <Icon className={`h-5 w-5 sm:h-6 sm:w-6 mt-0.5 shrink-0 ${colors.icon}`} aria-hidden="true" />
         <div className={`flex-1 text-sm sm:text-base leading-relaxed max-w-none ${colors.text} [&>p]:m-0 [&>p]:inline [&>strong]:font-semibold [&>em]:italic [&>ul]:space-y-0.5 [&>ol]:space-y-0.5 [&>li]:leading-relaxed`}>

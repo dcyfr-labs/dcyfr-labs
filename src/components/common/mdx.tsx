@@ -75,11 +75,12 @@ function TableWrapper(props: React.HTMLAttributes<HTMLTableElement>) {
 
 /**
  * Configuration for the rehype-pretty-code plugin
- * Enables syntax highlighting with Shiki using dual-theme support:
- * - Dark theme: "github-dark-dimmed" (optimized for dark mode)
- * - Light theme: "github-light" (optimized for light mode)
+ * Enables syntax highlighting with Shiki using custom neon cyberpunk themes:
+ * - Dark theme: github-dark with CSS variable overrides for neon effects
+ * - Light theme: github-light for subtle colors
  *
  * Features:
+ * - Custom neon cyberpunk colors via CSS variable overrides
  * - Automatic theme switching based on user's theme preference
  * - Line and character highlighting support
  * - Empty line prevention in grid layout
@@ -87,26 +88,23 @@ function TableWrapper(props: React.HTMLAttributes<HTMLTableElement>) {
  *
  * @type {RehypePrettyCodeOptions}
  */
-// Configure syntax highlighting with Shiki
+// Configure syntax highlighting with built-in themes + CSS overrides
 const rehypePrettyCodeOptions: RehypePrettyCodeOptions = {
   theme: {
-    dark: "github-dark-dimmed",
+    dark: "github-dark",
     light: "github-light",
   },
   defaultLang: "plaintext",
+  keepBackground: false,
   // Prevent lines from collapsing in `display: grid` mode
   onVisitLine(node) {
-    if (!node.children || node.children.length === 0) {
+    if (node.children.length === 0) {
       node.children = [{ type: "text", value: " " }];
     }
   },
   onVisitHighlightedLine(node) {
-    if (!node.properties.className) {
-      node.properties.className = [];
-    }
-    if (Array.isArray(node.properties.className)) {
-      node.properties.className.push("highlighted");
-    }
+    node.properties.className = node.properties.className || [];
+    node.properties.className.push("highlighted");
   },
   onVisitHighlightedChars(node) {
     node.properties.className = ["word"];

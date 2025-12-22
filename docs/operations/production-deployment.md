@@ -199,9 +199,6 @@ SENTRY_AUTH_TOKEN=sntrys_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 # Custom site URL (auto-detected on Vercel)
 NEXT_PUBLIC_SITE_URL=https://yourdomain.com
 
-# Unsplash (for hero image generation)
-UNSPLASH_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
 # Vercel (for deployment checks - set in GitHub Secrets instead)
 VERCEL_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
@@ -546,9 +543,9 @@ npm run build
 ```
 
 Expected bundle sizes (approximate):
-- First Load JS: <100 KB
-- Total JS: <500 KB
-- Individual routes: <50 KB each
+- First Load JS: &lt;100 KB
+- Total JS: &lt;500 KB
+- Individual routes: &lt;50 KB each
 
 ### Functionality Verification
 

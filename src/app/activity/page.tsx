@@ -21,6 +21,7 @@ import {
   transformHighEngagementPosts,
   transformCommentMilestones,
   transformGitHubActivity,
+  transformCredlyBadges,
 } from "@/lib/activity/sources.server";
 import type { ActivityItem } from "@/lib/activity/types";
 import { createClient } from "redis";
@@ -169,6 +170,11 @@ export default async function ActivityPage() {
       transformGitHubActivity("dcyfr", ["dcyfr-labs"], 15)
         .then((items) => activities.push(...items))
         .catch((err) => console.error("[Activity Page] GitHub activity fetch failed:", err)),
+      
+      // Credly badges
+      transformCredlyBadges("dcyfr", 10)
+        .then((items) => activities.push(...items))
+        .catch((err) => console.error("[Activity Page] Credly badges fetch failed:", err)),
     ]);
 
     // Aggregate and sort (limit to 100 for page)

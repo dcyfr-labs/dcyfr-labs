@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { Search, FileText, Folder, ChevronRight, ChevronDown } from "lucide-react";
 import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
@@ -16,22 +16,30 @@ interface DocSidebarProps {
 export function DocSidebar({ docs, currentSlug, className }: DocSidebarProps) {
   // Filter out root-level files (files without a subfolder)
   // Only show docs that are in subfolders (slug contains "/")
-  const docsInFolders = docs.filter(doc => doc.slug.includes("/"));
+  // Memoize to prevent recalculation on every render
+  const docsInFolders = useMemo(
+    () => docs.filter(doc => doc.slug.includes("/")),
+    [docs]
+  );
 
   // Group docs by category
-  const docsByCategory = docsInFolders.reduce((acc, doc) => {
-    const category = doc.category;
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(doc);
-    return acc;
-  }, {} as Record<string, DocFile[]>);
+  // Memoize to prevent recalculation on every render
+  const docsByCategory = useMemo(
+    () => docsInFolders.reduce((acc, doc) => {
+      const category = doc.category;
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(doc);
+      return acc;
+    }, {} as Record<string, DocFile[]>),
+    [docsInFolders]
+  );
 
   // Track which categories are expanded (default: all collapsed)
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
 
-  const toggleCategory = (category: string) => {
+  const toggleCategory = useCallback((category: string) => {
     setExpandedCategories(prev => {
       const next = new Set(prev);
       if (next.has(category)) {
@@ -41,7 +49,7 @@ export function DocSidebar({ docs, currentSlug, className }: DocSidebarProps) {
       }
       return next;
     });
-  };
+  }, []);
 
   return (
     <aside className={cn("sticky top-24 h-[calc(100vh-6rem)] overflow-y-auto", className)}>

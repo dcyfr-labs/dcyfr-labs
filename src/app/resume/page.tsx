@@ -1,23 +1,22 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { headers } from "next/headers";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { resume, getSummary } from "@/data/resume";
-import { highlightMetrics } from "@/lib/highlight-metrics";
-import { TYPOGRAPHY, PAGE_LAYOUT, SPACING, HOVER_EFFECTS } from "@/lib/design-tokens";
+import { SPACING, PAGE_LAYOUT, SCROLL_BEHAVIOR } from "@/lib/design-tokens";
 import { createPageMetadata } from "@/lib/metadata";
-import { getResumePageSchema, getJsonLdScriptProps } from "@/lib/json-ld";
+import { getAboutPageSchema, getJsonLdScriptProps } from "@/lib/json-ld";
 import dynamic from "next/dynamic";
 import { PageLayout } from "@/components/layouts/page-layout";
-import { PageHero } from "@/components/layouts/page-hero";
 import {
-  DownloadResumeButton,
-  ResumeStats,
-  ResumeSectionNav,
-  SkillsAndCertifications,
-} from "@/components/resume";
-import { UnifiedTimeline, SmoothScrollToHash } from "@/components/common";
+  SectionNavigator,
+  Section,
+  SmoothScrollToHash,
+} from "@/components/common";
+import {
+  CompanyOverview,
+  ServiceOfferings,
+  TechnicalCapabilities,
+  CaseStudies,
+  ClientValueProps,
+} from "@/components/company-resume";
 import { BackToTop } from "@/components/navigation";
 
 const ScrollReveal = dynamic(() => import("@/components/features/scroll-reveal").then(mod => ({ default: mod.ScrollReveal })), {
@@ -25,95 +24,75 @@ const ScrollReveal = dynamic(() => import("@/components/features/scroll-reveal")
   ssr: true,
 });
 
-const pageTitle = "Resume";
-const pageDescription = "Explore Drew's professional experience, skills, and certifications as a cyber architect.";
+const pageTitle = "Services & Capabilities";
+const pageDescription = "Explore DCYFR Labs' cyber architecture and security services, technical capabilities, and client success stories.";
 
 export const metadata: Metadata = createPageMetadata({
   title: pageTitle,
   description: pageDescription,
   path: "/resume",
+  keywords: [
+    "cyber architecture",
+    "security services",
+    "web development",
+    "AI integration",
+    "DevSecOps",
+    "Next.js development",
+    "security consulting",
+  ],
 });
 
-// Company website URLs for linking
-const companyUrls: Record<string, string> = {
-  "Monks": "https://monks.com/",
-  "Creative Breakthroughs, Inc.": "https://convergetp.com/our-story/cbi/",
-  "Escambia County Commissioners Office": "https://myescambia.com/",
-};
-
-export default async function ResumePage() {
+export default async function CompanyResumePage() {
   // Get nonce from proxy for CSP
   const nonce = (await headers()).get("x-nonce") || "";
   
-  // JSON-LD structured data for resume page
-  const jsonLd = getResumePageSchema(
-    pageDescription,
-    resume.experience.slice(0, 3) // Include top 3 roles for schema
-  );
+  // JSON-LD structured data for organization/services page
+  const jsonLd = getAboutPageSchema(pageDescription);
 
   return (
     <PageLayout>
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
       <SmoothScrollToHash />
-      <div className="space-y-10 md:space-y-14">
-      <section id="hero">
-      <PageHero
-        title="Drew's Resume"
-        description={getSummary()}
-      />
-      </section>
-      
-      {/* Download Button 
-      <ScrollReveal animation="fade-up" delay={0}>
-        <div className="flex justify-center -mt-4 mb-8">
-          <DownloadResumeButton />
-        </div>
-      </ScrollReveal> */}
 
-      {/* Stats Overview */}
-      <section id="stats" className={PAGE_LAYOUT.section.container}>
-        <ScrollReveal animation="fade-up" delay={50}>
-          <div className={SPACING.content}>
-            <ResumeStats />
-          </div>
-        </ScrollReveal>
-      </section>
+      <SectionNavigator
+        scrollOffset={SCROLL_BEHAVIOR.offset.standard}
+        className={`space-y-${SPACING.section}`}
+      >
+        {/* Company Overview */}
+        <Section id="overview" className={PAGE_LAYOUT.section.container}>
+          <ScrollReveal animation="fade-up" delay={0}>
+            <CompanyOverview />
+          </ScrollReveal>
+        </Section>
 
-      {/* Section Navigation 
-      <section className={PAGE_LAYOUT.section.container}>
-        <ScrollReveal animation="fade-up" delay={100}>
-          <div className={SPACING.content}>
-            <ResumeSectionNav />
-          </div>
-        </ScrollReveal>
-      </section> */}
+        {/* Service Offerings */}
+        <Section id="services" className={PAGE_LAYOUT.section.container}>
+          <ScrollReveal animation="fade-up" delay={50}>
+            <ServiceOfferings />
+          </ScrollReveal>
+        </Section>
 
-      {/* Professional Timeline (Experience + Education) */}
-      <section id="timeline" className={PAGE_LAYOUT.section.container} aria-labelledby="timeline-heading">
-        <ScrollReveal animation="fade-up" delay={150}>
-          <div className={SPACING.content}>
-            <h2 id="timeline-heading" className={TYPOGRAPHY.h2.standard}>Professional Timeline</h2>
-            <UnifiedTimeline 
-              experiences={resume.experience} 
-              education={resume.education}
-              companyUrls={companyUrls} 
-            />
-          </div>
-        </ScrollReveal>
-      </section>
+        {/* Technical Capabilities */}
+        <Section id="capabilities" className={PAGE_LAYOUT.section.container}>
+          <ScrollReveal animation="fade-up" delay={100}>
+            <TechnicalCapabilities />
+          </ScrollReveal>
+        </Section>
 
-      {/* Skills & Certifications */}
-      <section id="skills" className={PAGE_LAYOUT.section.container} aria-labelledby="skills-heading">
-        <ScrollReveal animation="fade-up" delay={200}>
-          <div className={SPACING.content}>
-            <SkillsAndCertifications 
-              skills={resume.skills} 
-              certifications={resume.certifications}
-            />
-          </div>
-        </ScrollReveal>
-      </section>
-      </div>
+        {/* Case Studies */}
+        <Section id="work" className={PAGE_LAYOUT.section.container}>
+          <ScrollReveal animation="fade-up" delay={150}>
+            <CaseStudies />
+          </ScrollReveal>
+        </Section>
+
+        {/* Value Propositions & CTA */}
+        <Section id="value" className={PAGE_LAYOUT.section.container}>
+          <ScrollReveal animation="fade-up" delay={200}>
+            <ClientValueProps />
+          </ScrollReveal>
+        </Section>
+      </SectionNavigator>
 
       {/* Back to Top Button */}
       <BackToTop />

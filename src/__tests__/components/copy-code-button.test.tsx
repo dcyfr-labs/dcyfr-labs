@@ -181,7 +181,9 @@ describe("CopyCodeButton Component", () => {
       expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(2);
       
       // After timeout
-      vi.advanceTimersByTime(2000);
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
       fireEvent.click(button);
       expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(3);
     });
@@ -315,7 +317,9 @@ describe("CopyCodeButton Component", () => {
       expect(button.getAttribute("aria-label")).not.toBe("");
       
       // After timeout
-      vi.advanceTimersByTime(2000);
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
       await Promise.resolve();
 
       expect(button.getAttribute("aria-label")).toBeTruthy();
@@ -412,7 +416,9 @@ describe("CopyCodeButton Component", () => {
       unmount();
       
       // Fast-forward time - should not cause errors
-      vi.advanceTimersByTime(2000);
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
       
       // No errors should be thrown
       expect(true).toBe(true);

@@ -2,9 +2,9 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Home, FileText, FolderGit2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { NAVIGATION } from "@/lib/navigation-config";
+import { useNavigation } from "@/hooks/use-navigation";
 
 /**
  * Bottom navigation bar for mobile devices
@@ -25,28 +25,7 @@ import { cn } from "@/lib/utils";
  * ```
  */
 export function BottomNav() {
-  const pathname = usePathname();
-
-  const navItems = [
-    {
-      href: "/",
-      label: "Home",
-      icon: Home,
-      isActive: pathname === "/",
-    },
-    {
-      href: "/blog",
-      label: "Blog",
-      icon: FileText,
-      isActive: pathname.startsWith("/blog"),
-    },
-    {
-      href: "/work",
-      label: "Work",
-      icon: FolderGit2,
-      isActive: pathname.startsWith("/work"),
-    },
-  ];
+  const { isNavItemActive, getAriaCurrent } = useNavigation();
 
   return (
     <nav
@@ -54,9 +33,10 @@ export function BottomNav() {
       aria-label="Bottom navigation"
     >
       <div className={cn("grid grid-cols-3 h-12", "max-w-lg", "mx-auto")}>
-        {navItems.map((item) => {
+        {NAVIGATION.bottom.map((item) => {
           const Icon = item.icon;
-          
+          const isActive = isNavItemActive(item);
+
           return (
             <Link
               key={item.href}
@@ -65,17 +45,19 @@ export function BottomNav() {
                 "flex flex-col items-center justify-center gap-1 transition-colors",
                 "hover:bg-accent/50",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                item.isActive
+                isActive
                   ? "text-primary font-medium"
                   : "text-muted-foreground hover:text-foreground"
               )}
               prefetch={false}
-              aria-current={item.isActive ? "page" : undefined}
+              aria-current={getAriaCurrent(item.href, item.exactMatch)}
             >
-              <Icon
-                className={cn("h-4 w-4", item.isActive && "stroke-[2.5]")}
-                aria-hidden="true"
-              />
+              {Icon && (
+                <Icon
+                  className={cn("h-4 w-4", isActive && "stroke-[2.5]")}
+                  aria-hidden="true"
+                />
+              )}
               <span className="text-[10px]">{item.label}</span>
             </Link>
           );
