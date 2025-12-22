@@ -37,7 +37,6 @@ This guide documents all environment variables for dcyfr-labs portfolio, their p
 | `NEXT_PUBLIC_SITE_URL` | 🟢 Optional | Site URL override | Auto-detected from environment |
 | `NEXT_PUBLIC_SITE_DOMAIN` | 🟢 Optional | Domain override | Auto-detected from environment |
 | `DISABLE_DEV_PAGES` | 🟢 Optional | Hide dev pages in development | Dev pages visible in dev mode |
-| `UNSPLASH_ACCESS_KEY` | 🟢 Optional | Hero image generation | Manual images only |
 | `VERCEL_TOKEN` | 🟢 Optional | Deployment checks (GitHub Secrets) | Set in GitHub Secrets, not Vercel |
 
 ---

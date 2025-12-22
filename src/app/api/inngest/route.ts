@@ -31,8 +31,11 @@ import {
   refreshActivityFeed,
   invalidateActivityFeed,
 } from "@/inngest/activity-cache-functions";
+import {
+  refreshCredlyCache,
+  clearCredlyCache,
+} from "@/inngest/credly-cache-functions";
 import { inngestErrorHandler } from "@/inngest/error-handler";
-import { linkedinTokenFunctions } from "@/inngest/linkedin-tokens";
 
 /**
  * Inngest API endpoint for Next.js App Router
@@ -138,11 +141,12 @@ const { GET: inngestGET, POST: inngestPOST, PUT: inngestPUT } = serve({
     refreshActivityFeed,             // Scheduled: every 5 minutes
     invalidateActivityFeed,          // Event-driven: on content changes
 
+    // Credly badge caching
+    refreshCredlyCache,              // Scheduled: daily at 6 AM UTC
+    clearCredlyCache,                // Event-driven: manual cache clear
+
     // Error handling (centralized monitoring and alerting)
     inngestErrorHandler,             // Event-driven: triggered on function failures
-
-    // LinkedIn token management
-    ...linkedinTokenFunctions,       // Token refresh, expiry alerts, re-auth handling
   ],
 });
 

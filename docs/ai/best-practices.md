@@ -299,9 +299,9 @@ export { BlogPostList } from "./post-list";
 - Use agents judiciously (prefer direct tool use)
 
 **Typical token budgets:**
-- Quick fix: <20k tokens
-- Feature addition: <50k tokens
-- Major refactoring: <100k tokens
+- Quick fix: &lt;20k tokens
+- Feature addition: &lt;50k tokens
+- Major refactoring: &lt;100k tokens
 
 ## Common Workflows
 

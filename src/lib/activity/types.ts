@@ -22,7 +22,8 @@ export type ActivitySource =
   | "changelog" // Site updates
   | "milestone" // Achievements (view/comment milestones)
   | "trending" // Trending posts
-  | "engagement"; // High engagement posts
+  | "engagement" // High engagement posts
+  | "certification"; // Credly certifications
 
 /**
  * Action verbs describing what happened
@@ -33,7 +34,8 @@ export type ActivityVerb =
   | "launched" // New project
   | "released" // Version release
   | "committed" // Code commit
-  | "achieved"; // Milestone reached
+  | "achieved" // Milestone reached
+  | "earned"; // Certification earned
 
 /**
  * Display variants for different contexts
@@ -228,6 +230,10 @@ export const ACTIVITY_SOURCE_COLORS: Record<
     icon: SEMANTIC_COLORS.alert.critical.icon,
     border: "border-l-red-600",
   },
+  certification: {
+    icon: "text-muted-foreground",
+    border: "border-l-muted-foreground",
+  },
 } as const;
 
 /**
@@ -241,6 +247,7 @@ export const ACTIVITY_SOURCE_LABELS: Record<ActivitySource, string> = {
   milestone: "Milestone",
   trending: "Trending",
   engagement: "High Engagement",
+  certification: "Certification",
 } as const;
 
 /**
@@ -253,4 +260,5 @@ export const ACTIVITY_VERB_LABELS: Record<ActivityVerb, string> = {
   released: "Released",
   committed: "Committed",
   achieved: "Achieved",
+  earned: "Earned",
 } as const;

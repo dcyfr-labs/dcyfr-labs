@@ -669,7 +669,6 @@ image:
   width: 1200
   height: 630
   caption: "Next.js makes building React apps easier"
-  credit: "Photo by John Doe on Unsplash"
   position: "top"
 ```
 
@@ -722,16 +721,14 @@ image:
   width: 1200
   height: 630
   caption: "Security should be built in from the start"
-  credit: "Photo by Dan Nelson on Unsplash"
   position: "top"
 
-# External image
+# Custom image with metadata
 image:
-  url: "https://images.unsplash.com/photo-123456789"
+  url: "/blog/images/landscape/hero.jpg"
   alt: "Beautiful landscape photo"
   width: 1920
   height: 1080
-  credit: "Unsplash"
 ```
 
 **Best Practices:**

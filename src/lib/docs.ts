@@ -33,10 +33,23 @@ export interface DocCategory {
   subcategories: DocCategory[];
 }
 
+// Cache for documentation files
+let docsCache: DocFile[] | null = null;
+let docsCacheTime: number = 0;
+// In development, cache for 1 minute; in production, cache for 1 hour
+const CACHE_TTL = process.env.NODE_ENV === 'production' ? 3600_000 : 60_000;
+
 /**
  * Get all documentation files from the docs directory
+ * Results are cached to improve performance
  */
 export function getAllDocs(): DocFile[] {
+  // Check cache validity
+  const now = Date.now();
+  if (docsCache && (now - docsCacheTime) < CACHE_TTL) {
+    return docsCache;
+  }
+
   const docs: DocFile[] = [];
   
   function readDocsRecursive(dir: string, basePath: string = ""): void {
@@ -107,7 +120,7 @@ export function getAllDocs(): DocFile[] {
   readDocsRecursive(DOCS_DIR);
   
   // Sort by category, then by order, then by title
-  return docs.sort((a, b) => {
+  const sortedDocs = docs.sort((a, b) => {
     if (a.category !== b.category) {
       return a.category.localeCompare(b.category);
     }
@@ -116,6 +129,12 @@ export function getAllDocs(): DocFile[] {
     }
     return (a.meta.title || "").localeCompare(b.meta.title || "");
   });
+
+  // Cache the results
+  docsCache = sortedDocs;
+  docsCacheTime = now;
+
+  return sortedDocs;
 }
 
 /**

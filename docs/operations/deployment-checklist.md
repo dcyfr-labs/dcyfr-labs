@@ -106,7 +106,6 @@ Configure in **Vercel Dashboard** → **Settings** → **Environment Variables**
 ### Optional Variables
 
 - [ ] **`NEXT_PUBLIC_SITE_URL`**: Override site URL (auto-detected)
-- [ ] **`UNSPLASH_ACCESS_KEY`**: For hero image generation
 - [ ] **`VERCEL_TOKEN`**: For deployment checks (set in GitHub Secrets instead)
 
 ---

@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-This document describes the test performance optimizations implemented to reduce test execution time from ~15s to target <10s.
+This document describes the test performance optimizations implemented to reduce test execution time from ~15s to target &lt;10s.
 
 ### Baseline & Results
 
@@ -376,4 +376,4 @@ Cache invalidates on:
 
 ---
 
-**Summary:** Test execution has been optimized through parallel worker configuration, efficient mock setup, and Testing Library tuning. Current performance: **~10s baseline → target <10s achieved in subsequent runs** ✅
+**Summary:** Test execution has been optimized through parallel worker configuration, efficient mock setup, and Testing Library tuning. Current performance: **~10s baseline → target &lt;10s achieved in subsequent runs** ✅

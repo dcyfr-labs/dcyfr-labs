@@ -22,20 +22,19 @@ export function DocsLayout({ children, doc, docs, tableOfContents = [] }: DocsLa
       {/* Mobile navigation */}
       <MobileDocSidebar docs={docs} currentSlug={doc?.slug} />
       
-      <div className={cn("container mx-auto", CONTAINER_WIDTHS.archive, CONTAINER_PADDING, "pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12")}>
-        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr_200px] gap-4">
-          {/* Left Sidebar - Documentation Navigation */}
+      <div className={cn("container mx-auto max-w-[1600px]", CONTAINER_PADDING, "pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12")}>
+        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] xl:grid-cols-[280px_1fr_240px] gap-4">\n          {/* Left Sidebar - Documentation Navigation */}
           <div className="hidden lg:block">
             <DocSidebar docs={docs} currentSlug={doc?.slug} />
           </div>
 
-          {/* Main Content */}
-          <main className="min-w-0">
+          {/* Main Content - Wider for dashboard-style layout */}
+          <main className={`min-w-0 ${CONTAINER_WIDTHS.standard}`}>
             {children}
           </main>
 
           {/* Right Sidebar - Table of Contents */}
-          <div className="hidden lg:block">
+          <div className="hidden xl:block">
             {tableOfContents.length > 0 && (
               <DocTableOfContents headings={tableOfContents} />
             )}

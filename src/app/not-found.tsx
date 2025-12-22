@@ -52,13 +52,13 @@ export default function NotFound() {
       />
 
       {/* Recommended Content Section */}
-      <div className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pb-12 md:pb-16`}>
+      <div className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-12 md:pt-16`}>
         <div className="text-center">
           <h2 className={`${TYPOGRAPHY.h2.standard} mb-2`}>
-            Here&apos;s where you can go instead
+            Recommended Links
           </h2>
           <p className={`${TYPOGRAPHY.description} mb-8`}>
-            Discover some of the most visited sections of this site
+            Here are some helpful links to get you back on track.
           </p>
         </div>
 
@@ -76,7 +76,7 @@ export default function NotFound() {
               <p className={`${TYPOGRAPHY.metadata} mt-2`}>
                 {link.description}
               </p>
-              <div className={`absolute inset-0 rounded-lg bg-gradient-to-r from-primary/0 via-primary/0 to-primary/5 opacity-0 group-hover:opacity-100 ${ANIMATION.transition.appearance}`} />
+              <div className={`absolute inset-0 rounded-lg bg-linear-to-r from-primary/0 via-primary/0 to-primary/5 opacity-0 group-hover:opacity-100 ${ANIMATION.transition.appearance}`} />
             </Link>
           ))}
         </div>

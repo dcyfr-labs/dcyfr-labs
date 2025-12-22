@@ -52,7 +52,7 @@ interface DynamicBlogContentProps {
   /** Date range filter */
   dateRange: string;
   /** Post layout mode */
-  layout: "grid" | "list" | "magazine" | "compact" | "hybrid" | "grouped";
+  layout: "grid" | "list" | "magazine" | "compact" | "grouped";
   /** Whether active filters are applied */
   hasActiveFilters: boolean;
   /** Grouped categories (only when layout=grouped) */
@@ -172,7 +172,7 @@ async function DynamicBlogContentImpl({
             latestSlug={latestSlug}
             hottestSlug={hottestSlug}
             titleLevel="h2"
-            layout={layout as "grid" | "list" | "magazine" | "compact" | "hybrid"}
+            layout={layout as "grid" | "list" | "magazine" | "compact"}
             viewCounts={viewCounts}
             hasActiveFilters={hasActiveFilters}
             emptyMessage="No posts found. Try adjusting your search or filters."

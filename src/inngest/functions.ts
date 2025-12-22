@@ -7,6 +7,12 @@ export {
   handleMaliciousIpDetected,
 } from "./ip-reputation-functions";
 
+// Import Credly cache functions
+export {
+  refreshCredlyCache,
+  clearCredlyCache,
+} from "./credly-cache-functions";
+
 /**
  * Hello World function - demonstrates basic Inngest function pattern
  * 

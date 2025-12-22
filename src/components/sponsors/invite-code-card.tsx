@@ -11,7 +11,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, TrendingUp } from "lucide-react";
 import { HOVER_EFFECTS } from "@/lib/design-tokens";
@@ -37,9 +37,9 @@ export function InviteCodeCard({
 }: InviteCodeCardProps) {
   return (
     <Card
-      className={`p-6 ${HOVER_EFFECTS.cardSubtle} ${className || ""}`}
+      className={`${HOVER_EFFECTS.cardSubtle} ${className || ""}`}
     >
-      <div className="flex flex-col gap-4 h-full">
+      <CardContent className="flex flex-col gap-4 h-full">
         {/* Header with platform name and metrics */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
@@ -87,7 +87,7 @@ export function InviteCodeCard({
             </Link>
           </Button>
         </div>
-      </div>
+      </CardContent>
     </Card>
   );
 }

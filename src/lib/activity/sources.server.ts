@@ -10,6 +10,7 @@
 
 import type { Post } from "@/data/posts";
 import type { ActivityItem } from "./types";
+import type { CredlyBadge, CredlyBadgesResponse } from "@/types/credly";
 import { getMultiplePostViews } from "@/lib/views";
 import { getPostCommentsBulk } from "@/lib/comments";
 import { createClient } from "redis";
@@ -689,6 +690,65 @@ export async function transformGitHubActivity(
       .slice(0, limit);
   } catch (error) {
     console.error("[Activity] Failed to fetch GitHub activity:", error);
+    return [];
+  }
+}
+
+// ============================================================================
+// CREDLY BADGES TRANSFORMER
+// ============================================================================
+
+/**
+ * Transform Credly badges into activity items
+ * Fetches recent certifications and displays them in the activity feed
+ */
+export async function transformCredlyBadges(
+  username: string = "dcyfr",
+  limit: number = 10
+): Promise<ActivityItem[]> {
+  try {
+    const credlyUrl = `https://www.credly.com/users/${username}/badges.json`;
+    const response = await fetch(credlyUrl, {
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
+
+    if (!response.ok) {
+      console.error(`[Activity] Credly API returned ${response.status}`);
+      return [];
+    }
+
+    const data: CredlyBadgesResponse = await response.json();
+    const badges = data.data || [];
+
+    // Sort by issued_at descending and limit
+    const sortedBadges = badges
+      .sort((a, b) => new Date(b.issued_at).getTime() - new Date(a.issued_at).getTime())
+      .slice(0, limit);
+
+    return sortedBadges.map((badge) => {
+      const issuerName = badge.issuer.entities.find(e => e.primary)?.entity.name || 
+        badge.issuer.entities[0]?.entity.name || 
+        "Unknown Issuer";
+
+      return {
+        id: `certification-${badge.id}`,
+        source: "certification" as const,
+        verb: "earned" as const,
+        title: badge.badge_template.name,
+        description: `Issued by ${issuerName}`,
+        timestamp: new Date(badge.issued_at),
+        href: `https://www.credly.com/badges/${badge.id}`,
+        meta: {
+          image: {
+            url: badge.image_url,
+            alt: badge.badge_template.name,
+          },
+          category: issuerName,
+        },
+      };
+    });
+  } catch (error) {
+    console.error("[Activity] transformCredlyBadges error:", error);
     return [];
   }
 }

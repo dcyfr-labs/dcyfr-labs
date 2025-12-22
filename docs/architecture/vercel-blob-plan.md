@@ -29,8 +29,8 @@ images: {
 
 | Metric | Value | Threshold |
 |--------|-------|-----------|
-| Git repo size | ~17 MB | <500 MB |
-| Largest image | ~120 KB | <50 MB |
+| Git repo size | ~17 MB | &lt;500 MB |
+| Largest image | ~120 KB | &lt;50 MB |
 | Total images | ~15 files | No limit |
 | Image formats | SVG, PNG, JPG | - |
 

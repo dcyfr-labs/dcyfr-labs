@@ -14,7 +14,6 @@
 | Method | Time | Quality | Best For |
 |--------|------|---------|----------|
 | **🎯 Auto SVG** | 30 sec | Consistent | Most posts (recommended) |
-| **📸 Unsplash** | 2 min | Professional | Featured posts |
 | **🎨 Smart Default** | 0 sec | Good | Quick publishing |
 | **✏️ Custom Upload** | 5 min | Variable | Specific needs |
 
@@ -27,9 +26,6 @@ npm run generate:hero -- --slug my-post-slug
 # Generate for all posts missing images  
 npm run generate:hero -- --all
 
-# Download Unsplash image (interactive)
-npm run fetch:unsplash
-
 # Preview generation without saving
 npm run generate:hero -- --slug post-slug --preview
 ```
@@ -41,11 +37,10 @@ npm run generate:hero -- --slug post-slug --preview
 title: "My Great Post"
 image:
   url: "/blog/images/my-post/hero.svg"    # Auto-generated
-  # OR: "/blog/images/my-post/hero.jpg"   # Unsplash/custom
+  # OR: "/blog/images/my-post/hero.jpg"   # Custom upload
   alt: "Description for accessibility"
   width: 1200                            # Optional: for OG metadata
   height: 600                            # Optional: for OG metadata
-  attribution: "Photo by Name on Unsplash" # Required for Unsplash
 ```
 
 ---
@@ -58,7 +53,6 @@ Blog posts support optional featured images that display as thumbnails in list v
 
 #### **Core Features:**
 - ✨ **Automated SVG generation**: Generate custom hero images programmatically
-- 📸 **Unsplash integration**: Download royalty-free professional photos  
 - 🎨 **Smart defaults**: Posts without custom images receive beautiful defaults based on content
 - 🔗 **OG integration**: Hero images automatically used for social media previews
 - ♿ **Accessibility**: Alt text support with validation
@@ -131,50 +125,20 @@ const getStyleFromTags = (tags: string[]) => {
 };
 ```
 
-### Method 2: Unsplash Integration (For Featured Posts)
+### Method 2: Custom Uploads
 
-#### Interactive Download Workflow
+To use a custom image file:
 
-```bash
-npm run fetch:unsplash
-```
+1. Place image in `/public/blog/images/{slug}/`
+2. Reference in frontmatter with relative path
+3. Add alt text for accessibility
 
-**Interactive Prompts:**
-1. **Search terms** - Describe the image you want
-2. **Quality selection** - Choose resolution (1920px, 1280px, 800px)
-3. **Post association** - Link to specific post slug
-4. **Attribution handling** - Automatically generates required credit
-
-#### Unsplash Features
-
-**Professional Quality:**
-- High-resolution images (up to 1920px wide)
-- Professional photography
-- Curated collections
-- Royalty-free usage
-
-**Automatic Integration:**
-```bash
-# Interactive example flow
-? Search terms: "coding workspace setup"
-? Resolution: 1280px (Recommended)
-? Post slug: my-workspace-post
-? Save to: /public/blog/images/my-workspace-post/hero.jpg
-
-✅ Downloaded: photo by John Doe on Unsplash
-✅ Generated attribution: "Photo by John Doe on Unsplash"
-✅ Updated frontmatter template
-```
-
-**Attribution Handling:**
 ```yaml
-# Automatically added to frontmatter
 image:
   url: "/blog/images/my-post/hero.jpg"
-  alt: "Modern coding workspace with dual monitors"
-  attribution: "Photo by John Doe on Unsplash"
-  width: 1280
-  height: 853
+  alt: "Description of the image"
+  width: 1200
+  height: 600
 ```
 
 ### Method 3: Smart Default Images (Zero Setup)
@@ -277,7 +241,7 @@ const generateMetadata = async ({ params }: { params: { slug: string } }) => {
 
 **OG Image Best Practices:**
 - **Dimensions:** 1200x630px (optimal for most platforms)
-- **File size:** <1MB for fast loading
+- **File size:** &lt;1MB for fast loading
 - **Text:** Readable at small sizes
 - **Branding:** Include subtle brand elements
 
@@ -335,7 +299,6 @@ image:
 
 - [ ] **Image Generation Scripts**
   - [ ] `npm run generate:hero --help` shows options
-  - [ ] `npm run fetch:unsplash` interactive prompt works
   - [ ] `/public/blog/images/default/` contains 3 SVG files
 
 - [ ] **Directory Structure**
@@ -357,12 +320,11 @@ image:
   - [ ] Update frontmatter with image details
   - [ ] Add descriptive alt text
 
-#### For Featured Posts (Professional Images)
-- [ ] **Unsplash Integration**
-  - [ ] Run `npm run fetch:unsplash`
-  - [ ] Search for relevant professional photos
-  - [ ] Download and save with attribution
-  - [ ] Update frontmatter with attribution details
+#### For Custom Images
+- [ ] **Manual Upload**
+  - [ ] Place image in `/public/blog/images/{slug}/`
+  - [ ] Add proper alt text in frontmatter
+  - [ ] Ensure proper licensing/attribution if applicable
 
 ### Quality Assurance Checklist
 
