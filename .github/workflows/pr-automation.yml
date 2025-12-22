@@ -1,0 +1,215 @@
+name: PR Automation
+
+# Auto-label PRs and add helpful comments based on PR size and changes
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  auto-label:
+    name: Auto-label PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Auto-label PR based on changed files
+        uses: actions/labeler@v5
+        with:
+          configuration-path: .github/labeler.yml
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+  size-check:
+    name: Check PR Size
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for proper diff
+
+      - name: Analyze PR size
+        id: size
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get PR details
+          PR_NUMBER=${{ github.event.pull_request.number }}
+
+          # Get changed files count
+          CHANGED_FILES=$(gh pr view $PR_NUMBER --json files -q '.files | length')
+
+          # Get total lines changed
+          ADDITIONS=$(gh pr view $PR_NUMBER --json additions -q '.additions')
+          DELETIONS=$(gh pr view $PR_NUMBER --json deletions -q '.deletions')
+          TOTAL_CHANGES=$((ADDITIONS + DELETIONS))
+
+          echo "changed_files=$CHANGED_FILES" >> $GITHUB_OUTPUT
+          echo "additions=$ADDITIONS" >> $GITHUB_OUTPUT
+          echo "deletions=$DELETIONS" >> $GITHUB_OUTPUT
+          echo "total_changes=$TOTAL_CHANGES" >> $GITHUB_OUTPUT
+
+          # Determine size category
+          SIZE="small"
+          EMOJI="🟢"
+          if [ $TOTAL_CHANGES -gt 1000 ] || [ $CHANGED_FILES -gt 50 ]; then
+            SIZE="extra-large"
+            EMOJI="🔴"
+          elif [ $TOTAL_CHANGES -gt 500 ] || [ $CHANGED_FILES -gt 30 ]; then
+            SIZE="large"
+            EMOJI="🟠"
+          elif [ $TOTAL_CHANGES -gt 200 ] || [ $CHANGED_FILES -gt 15 ]; then
+            SIZE="medium"
+            EMOJI="🟡"
+          fi
+
+          echo "size=$SIZE" >> $GITHUB_OUTPUT
+          echo "emoji=$EMOJI" >> $GITHUB_OUTPUT
+
+          echo "### PR Size Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "- Changed files: $CHANGED_FILES" >> $GITHUB_STEP_SUMMARY
+          echo "- Lines added: +$ADDITIONS" >> $GITHUB_STEP_SUMMARY
+          echo "- Lines removed: -$DELETIONS" >> $GITHUB_STEP_SUMMARY
+          echo "- Total changes: $TOTAL_CHANGES" >> $GITHUB_STEP_SUMMARY
+          echo "- Size: $EMOJI $SIZE" >> $GITHUB_STEP_SUMMARY
+
+      - name: Add size label
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          SIZE="${{ steps.size.outputs.size }}"
+
+          # Remove existing size labels
+          gh pr edit $PR_NUMBER --remove-label "size/small" || true
+          gh pr edit $PR_NUMBER --remove-label "size/medium" || true
+          gh pr edit $PR_NUMBER --remove-label "size/large" || true
+          gh pr edit $PR_NUMBER --remove-label "size/extra-large" || true
+
+          # Add new size label
+          gh pr edit $PR_NUMBER --add-label "size/$SIZE"
+
+      - name: Comment on large PRs
+        if: steps.size.outputs.size == 'large' || steps.size.outputs.size == 'extra-large'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          CHANGED_FILES=${{ steps.size.outputs.changed_files }}
+          TOTAL_CHANGES=${{ steps.size.outputs.total_changes }}
+          EMOJI=${{ steps.size.outputs.emoji }}
+
+          # Check if we've already commented (avoid spam)
+          EXISTING_COMMENT=$(gh pr view $PR_NUMBER --json comments -q '.comments[] | select(.author.login == "github-actions[bot]" and (.body | contains("large PR"))) | .id' | head -1)
+
+          if [ -z "$EXISTING_COMMENT" ]; then
+            gh pr comment $PR_NUMBER --body "## $EMOJI Large PR Detected
+
+This PR modifies **$CHANGED_FILES files** with **$TOTAL_CHANGES total changes**.
+
+### 💡 Recommendations
+
+Large PRs are harder to review and more likely to introduce bugs. Consider:
+
+1. **Break into smaller PRs**: Split unrelated changes into separate PRs
+2. **Incremental approach**: Submit features in smaller, logical chunks
+3. **Clear description**: Provide detailed context for reviewers
+4. **Self-review**: Walk through all changes before requesting review
+
+### 📋 Review Checklist
+
+- [ ] All changes are necessary for this specific feature/fix
+- [ ] Tests are included for new functionality
+- [ ] Documentation is updated
+- [ ] No unrelated refactoring or cleanup
+- [ ] Breaking changes are clearly documented
+
+**Ideal PR size**: < 400 lines changed, < 15 files modified"
+          fi
+
+  add-reviewers:
+    name: Auto-assign Reviewers
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Only run if PR is not from dependabot
+    if: github.event.pull_request.user.login != 'dependabot[bot]'
+
+    steps:
+      - name: Add reviewers based on CODEOWNERS
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+
+          # CODEOWNERS are automatically requested, but we can add team reviewers here if needed
+          # For now, just ensure PR is ready for review
+
+          echo "✅ Code owners will be automatically requested for review" >> $GITHUB_STEP_SUMMARY
+
+  first-time-contributor:
+    name: Welcome First-Time Contributors
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check if first-time contributor
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_AUTHOR=${{ github.event.pull_request.user.login }}
+          REPO=${{ github.repository }}
+
+          # Check if this is the author's first PR (excluding dependabot)
+          if [ "$PR_AUTHOR" != "dependabot[bot]" ]; then
+            PR_COUNT=$(gh pr list --repo $REPO --author $PR_AUTHOR --state all --json number -q 'length')
+
+            if [ "$PR_COUNT" -eq 1 ]; then
+              echo "first_time=true" >> $GITHUB_OUTPUT
+            else
+              echo "first_time=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "first_time=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Welcome first-time contributor
+        if: steps.check.outputs.first_time == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+
+          gh pr comment $PR_NUMBER --body "## 👋 Welcome to dcyfr-labs!
+
+Thank you for your first contribution! 🎉
+
+### What happens next?
+
+1. **Automated checks** will run (tests, linting, security scans)
+2. **Code owners** will be automatically assigned for review
+3. **CI feedback** will appear shortly
+
+### Need help?
+
+- Read our [Contributing Guide](https://github.com/${{ github.repository }}/blob/main/CONTRIBUTING.md)
+- Check [Development Setup](https://github.com/${{ github.repository }}/blob/main/README.md#development)
+- Ask questions in PR comments - we're happy to help!
+
+### Tips for a smooth review
+
+✅ Make sure all CI checks pass
+✅ Respond to review feedback
+✅ Keep the PR focused on a single feature/fix
+✅ Update documentation if needed
+
+Thanks again for contributing! 🚀"
