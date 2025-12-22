@@ -460,6 +460,13 @@
     top: 50%;
     transform: translate(-50%, -50%);
   }
+
+  /* Superscript and subscript with horizontal margins */
+  sup,
+  sub {
+    margin-left: 0.25em;
+    margin-right: 0.25em;
+  }
 }
 
 /* GitHub Heatmap Styles */

@@ -174,7 +174,7 @@ function GroupedFeed({
                 <div className="relative">
                   {groupItems.map((activity, index) => (
                     <ActivityItem
-                      key={activity.id}
+                      key={`${group}-${activity.id}`}
                       activity={activity}
                       variant={variant}
                       isLast={index === groupItems.length - 1}
@@ -185,7 +185,7 @@ function GroupedFeed({
               ) : (
                 groupItems.map((activity) => (
                   <ActivityItem
-                    key={activity.id}
+                    key={`${group}-${activity.id}`}
                     activity={activity}
                     variant={variant}
                   />
