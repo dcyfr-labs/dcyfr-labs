@@ -111,7 +111,7 @@
     "critters": "^0.0.25",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.26",
-    "googleapis": "^168.0.0",
+    "googleapis": "^169.0.0",
     "gray-matter": "^4.0.3",
     "inngest": "^3.48.1",
     "katex": "^0.16.27",
