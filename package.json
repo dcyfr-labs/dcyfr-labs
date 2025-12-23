@@ -113,7 +113,7 @@
     "framer-motion": "^12.23.26",
     "googleapis": "^168.0.0",
     "gray-matter": "^4.0.3",
-    "inngest": "^3.47.0",
+    "inngest": "^3.48.1",
     "katex": "^0.16.27",
     "lucide-react": "^0.561.0",
     "next": "^16.0.10",
