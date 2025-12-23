@@ -182,7 +182,7 @@ export const FOOTER_NAV: NavItem[] = [
     icon: Rss,
   },
   {
-    href: "/sitemap",
+    href: "/sitemap.xml",
     label: "Sitemap",
   },
 ] as const;
