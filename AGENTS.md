@@ -132,6 +132,7 @@ This document serves as the **single source of truth** for discovering, routing,
 | [API_PATTERNS.md](patterns/API_PATTERNS.md) | 405 | Validate→Queue→Respond, Inngest integration, error handling, rate limiting |
 | [TESTING_PATTERNS.md](patterns/TESTING_PATTERNS.md) | 370 | 99% pass rate target, strategic skips, when/when-not-to-test, E2E strategy |
 | [CODEQL_SUPPRESSIONS.md](patterns/CODEQL_SUPPRESSIONS.md) | 310 | LGTM syntax, false positive patterns, common suppressions, verification |
+| [SECURITY_VULNERABILITY_TROUBLESHOOTING.md](patterns/SECURITY_VULNERABILITY_TROUBLESHOOTING.md) | 510 | Code scanning analysis workflow, SSRF/CWE-918 prevention, security testing patterns, lessons learned |
 
 #### Enforcement Directory (.github/agents/enforcement/)
 | File | Lines | Covers |
