@@ -63,6 +63,7 @@ Create a new /bookmarks page:
 | [**API_PATTERNS.md**](patterns/api-patterns.md) | Validate→Queue→Respond, Inngest integration, rate limiting |
 | [**TESTING_PATTERNS.md**](patterns/testing-patterns.md) | 99% pass rate target, strategic skips, when to test |
 | [**CODEQL_SUPPRESSIONS.md**](patterns/codeql-suppressions.md) | LGTM syntax, false positive patterns, verification |
+| [**SECURITY_VULNERABILITY_TROUBLESHOOTING.md**](patterns/SECURITY_VULNERABILITY_TROUBLESHOOTING.md) | Code scanning alert analysis, SSRF prevention, security testing |
 
 ### **Enforcement Rules**
 

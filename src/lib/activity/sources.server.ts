@@ -293,28 +293,12 @@ export async function transformTrendingPosts(
         : `Recently published`;
     }
 
-    // Determine timestamp based on trending period
-    // - Weekly trending: use start of this week
-    // - Monthly trending: use start of this month
-    // - All time: use current time (will appear in "Today")
-    let timestamp: Date;
-    const now = new Date();
-    
-    if (options?.after) {
-      // Monthly trending - use start of month
-      timestamp = options.after;
-    } else if (options?.before) {
-      // All time trending - use current time
-      timestamp = now;
-    } else {
-      // Weekly trending - use start of this week (Monday)
-      const dayOfWeek = now.getDay();
-      const diff = now.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-      timestamp = new Date(now.getFullYear(), now.getMonth(), diff);
-    }
+    // Use actual publication/update date for timestamp, not artificial trending period date
+    // This ensures accurate "recency" representation in the activity feed
+    const timestamp = new Date(post.updatedAt || post.publishedAt);
 
     trendingActivities.push({
-      id: `trending-${post.id}-${Date.now()}`,
+      id: `trending-${post.id}`,
       source: "trending" as const,
       verb: "updated" as const,
       title: post.title,
@@ -477,7 +461,7 @@ export async function transformHighEngagementPosts(
     const limitedData = limit ? engagementData.slice(0, limit) : engagementData;
 
     return limitedData.map((data) => ({
-      id: `engagement-${data.post.id}-${Date.now()}`,
+      id: `engagement-${data.post.id}`,
       source: "engagement" as const,
       verb: "updated" as const,
       title: data.post.title,

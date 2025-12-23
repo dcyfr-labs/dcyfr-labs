@@ -160,7 +160,81 @@ Questions:
 
 ---
 
+## Security Vulnerability Fixes
+
+### Definition
+
+Fixes for **CodeQL/security scanner findings** that involve code changes to remediate vulnerabilities.
+
+### Approval Status
+
+**Quick Answer:**
+- ✅ **NO APPROVAL NEEDED** for fixes
+- ✅ **Proceed immediately** upon discovery
+- ✅ **Security > Breaking changes** (security fixes supersede approval gates)
+- 📋 **Document thoroughly** (why vulnerable, how fixed, test coverage)
+
+### Process for Security Fixes
+
+1. **Discover vulnerability** (CodeQL, manual review, etc.)
+2. **Root cause analysis** (understand the issue)
+3. **Implement fix** (defense-in-depth approach)
+4. **Add security tests** (prevent regression)
+5. **Document in `/docs/private/`** (security findings stay private)
+6. **Validate fully** (TypeScript, ESLint, tests, manual security review)
+7. **Merge immediately** (don't wait for scheduled reviews)
+
+### Example: SSRF Vulnerability (CWE-918)
+
+```
+🔴 CRITICAL: SSRF in /api/credly/badges
+
+File: src/app/api/credly/badges/route.ts
+Line: 47
+Issue: User input directly in URL
+
+Fix Applied:
+1. Added input validation (whitelist regex)
+2. Added length check (255 char limit)
+3. Use URL constructor (structural guarantee)
+4. Added 23 security tests (SSRF attack vectors)
+
+Documentation:
+- docs/private/SECURITY_FIX_CWE918_SSRF.md
+
+Status: READY TO MERGE (no approval needed)
+```
+
+### Security-Specific Validation Checklist
+
+Before merging a security fix:
+
+- ✅ **Root cause** - Clearly documented why vulnerable
+- ✅ **Defense-in-depth** - Multiple layers of protection
+- ✅ **Test coverage** - Attack vectors tested, not just valid input
+- ✅ **No regressions** - Original functionality still works
+- ✅ **Documentation** - Stored in `/docs/private/` (not public)
+- ✅ **CWE reference** - Links to specific weakness
+- ✅ **Lessons learned** - How to prevent similar issues
+
+### When to Document in Private
+
+Store security findings in `/docs/private/` directory:
+- ✅ Vulnerability details and analysis
+- ✅ Root cause explanation
+- ✅ Attack vectors demonstrated
+- ✅ Fix implementation details
+- ✅ Test coverage for regression prevention
+
+❌ **Never** publicly document:
+- Specific exploit details before patch available
+- Undisclosed vulnerabilities
+- Ways to bypass security controls
+
+---
+
 ## Emergency Overrides
+
 
 In rare cases, you can authorize DCYFR to proceed **without** pre-approval:
 

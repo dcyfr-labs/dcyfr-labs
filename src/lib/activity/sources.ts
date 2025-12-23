@@ -157,12 +157,55 @@ export interface AggregateOptions {
 
 /**
  * Aggregate and sort activities from multiple sources
+ * 
+ * Deduplicates activities by extracting content ID (blog-{id}, project-{slug}, etc.)
+ * to prevent the same content from appearing multiple times when it matches multiple
+ * activity categories (e.g., trending + high-engagement).
  */
 export function aggregateActivities(
   items: ActivityItem[],
   options: AggregateOptions = {}
 ): ActivityItem[] {
+  // Extract content ID from activity ID (format: {source}-{contentId}[-{suffix}])
+  function getContentId(activityId: string): string {
+    const parts = activityId.split('-');
+    if (parts.length < 2) return activityId;
+    
+    // For "blog-{id}" or "project-{slug}" or "changelog-{id}" etc
+    // We want to capture everything up to the last suffix (timestamp for trending items)
+    const source = parts[0];
+    
+    // Handle special case: trending items have timestamp suffix "trending-{id}-{timestamp}"
+    if (source === 'trending' && parts.length >= 3) {
+      return `blog-${parts[1]}`; // Convert to blog ID for deduplication
+    }
+    
+    // Handle milestones: "milestone-{postId}-{count}"
+    if (source === 'milestone' && parts.length >= 3) {
+      return `blog-${parts[1]}`; // Convert to blog ID for deduplication
+    }
+    
+    // Handle high engagement and comment milestones: "{source}-{postId}-{suffix}?"
+    if ((source === 'engagement' || source === 'comment-milestone') && parts.length >= 2) {
+      return `blog-${parts[1]}`;
+    }
+    
+    // Standard format: "{source}-{id}"
+    return `${source}-${parts.slice(1).join('-')}`;
+  }
+
   let result = [...items];
+
+  // Deduplicate by content ID - keep the first occurrence (most relevant)
+  const seen = new Set<string>();
+  result = result.filter((item) => {
+    const contentId = getContentId(item.id);
+    if (seen.has(contentId)) {
+      return false; // Skip duplicates
+    }
+    seen.add(contentId);
+    return true;
+  });
 
   // Filter by sources
   if (options.sources?.length) {
