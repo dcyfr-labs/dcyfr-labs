@@ -70,6 +70,28 @@ npm run test:e2e
 
 **Status:** ✅ **MUST PASS** (or documented skip)
 
+### 6. Security Scanning (for API routes, user input handling)
+```bash
+gh api repos/dcyfr/dcyfr-labs/code-scanning/alerts --jq '.[] | select(.state == "open")'
+```
+**Validates:**
+- ✅ No NEW high/critical security findings
+- ✅ User input properly validated
+- ✅ Output properly encoded
+- ✅ URL construction secure (CWE-918)
+- ✅ No log injection (CWE-117)
+- ✅ No file system race conditions (CWE-367)
+
+**Status:** ✅ **MUST PASS** for security-sensitive code  
+**When Required:**
+- ✅ API routes (especially query parameters)
+- ✅ File operations
+- ✅ Logging with user data
+- ✅ URL/network operations
+- ✅ Database queries
+
+**Reference:** [SECURITY_VULNERABILITY_TROUBLESHOOTING.md](patterns/SECURITY_VULNERABILITY_TROUBLESHOOTING.md)
+
 ## 📋 Manual Validation (Human Review)
 
 ### 1. Code Review

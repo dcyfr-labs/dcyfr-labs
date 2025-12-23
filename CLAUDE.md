@@ -106,7 +106,19 @@ Project is in **maintenance mode** with data-driven enhancements.
 2. ✅ All tests pass (`npm run test`)
 3. ✅ Lint passes (`npm run lint`)
 4. ✅ Design tokens used (no hardcoded values)
-5. Update `todo.md` and `done.md`
+5. ✅ Security scanning passes (CodeQL/manual review)
+6. Update `todo.md` and `done.md`
+
+**Security Vulnerability Handling (CRITICAL):**
+
+When discovering a CodeQL alert or security issue:
+1. Analyze using [SECURITY_VULNERABILITY_TROUBLESHOOTING.md](/.github/agents/patterns/SECURITY_VULNERABILITY_TROUBLESHOOTING.md)
+2. Implement fix with defense-in-depth approach
+3. Add comprehensive security tests (attack vectors + valid patterns)
+4. Document in `/docs/private/SECURITY_FIX_*.md` (private storage)
+5. Merge **immediately** (security > approval gates)
+
+See: [APPROVAL_GATES.md#security-vulnerability-fixes](/.github/agents/enforcement/APPROVAL_GATES.md)
 
 ## Claude Code Agents (AI-Powered Quality Assurance)
 

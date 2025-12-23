@@ -42,9 +42,29 @@ export async function GET(request: NextRequest) {
     const username = searchParams.get("username") || CREDLY_USERNAME;
     const limit = parseInt(searchParams.get("limit") || "50", 10);
 
-    // Fetch from Credly public API
-    const credlyUrl = `https://www.credly.com/users/${username}/badges.json`;
-    const response = await fetch(credlyUrl, {
+    // ✅ SSRF Protection: Validate username format
+    // Only allow alphanumeric characters, hyphens, underscores, and dots
+    if (!/^[a-zA-Z0-9._-]+$/.test(username)) {
+      return NextResponse.json(
+        { error: "Invalid username format. Only alphanumeric, dots, hyphens, and underscores allowed." },
+        { status: 400 }
+      );
+    }
+
+    // ✅ Additional validation: Max length to prevent abuse
+    if (username.length > 255) {
+      return NextResponse.json(
+        { error: "Username too long" },
+        { status: 400 }
+      );
+    }
+
+    // ✅ SSRF Protection: Use URL constructor to prevent injection
+    // This ensures the username cannot break out of the pathname
+    const credlyUrl = new URL("https://www.credly.com");
+    credlyUrl.pathname = `/users/${encodeURIComponent(username)}/badges.json`;
+
+    const response = await fetch(credlyUrl.toString(), {
       next: { revalidate: CACHE_TTL },
     });
 

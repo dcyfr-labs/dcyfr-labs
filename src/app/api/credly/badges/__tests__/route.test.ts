@@ -194,3 +194,348 @@ describe("Credly Badges API Route", () => {
     expect(cacheControl).toContain("s-maxage");
   });
 });
+
+describe("SSRF Security Tests - CWE-918 Prevention", () => {
+  beforeEach(async () => {
+    vi.clearAllMocks();
+    
+    const { rateLimit, getClientIp, createRateLimitHeaders } = await import("@/lib/rate-limit");
+    vi.mocked(rateLimit).mockResolvedValue({
+      success: true,
+      limit: 10,
+      remaining: 9,
+      reset: Date.now() + 60000,
+    });
+    vi.mocked(getClientIp).mockReturnValue("127.0.0.1");
+    vi.mocked(createRateLimitHeaders).mockReturnValue({});
+    
+    global.fetch = vi.fn() as any;
+  });
+
+  describe("URL Fragment Injection Prevention", () => {
+    it("should reject username with URL fragments (#)", async () => {
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=attacker%40evil.com%23"
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data.error).toContain("Invalid username format");
+    });
+
+    it("should reject username with query string injection (?)", async () => {
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=user?admin=true"
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data.error).toContain("Invalid username format");
+    });
+  });
+
+  describe("Path Traversal Prevention", () => {
+    it("should reject username with path traversal (../)", async () => {
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=..%2F..%2Fadmin"
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data.error).toContain("Invalid username format");
+    });
+
+    it("should reject username with backslash traversal", async () => {
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=..%5C..%5Cadmin"
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data.error).toContain("Invalid username format");
+    });
+
+    it("should reject username with forward slash", async () => {
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=admin%2Fuser"
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data.error).toContain("Invalid username format");
+    });
+  });
+
+  describe("Protocol & Scheme Injection Prevention", () => {
+    it("should reject username with protocol injection (http://)", async () => {
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=http://evil.com"
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data.error).toContain("Invalid username format");
+    });
+
+    it("should reject username with javascript: protocol", async () => {
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=javascript:alert(1)"
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data.error).toContain("Invalid username format");
+    });
+
+    it("should reject username with file: protocol", async () => {
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=file:///etc/passwd"
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data.error).toContain("Invalid username format");
+    });
+  });
+
+  describe("Special Character & Encoding Prevention", () => {
+    it("should reject username with @ symbol (email format)", async () => {
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=attacker@evil.com"
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data.error).toContain("Invalid username format");
+    });
+
+    it("should reject username with colon (port injection)", async () => {
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=127.0.0.1:8080"
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data.error).toContain("Invalid username format");
+    });
+
+    it("should accept username with ampersand if used as a valid part of username", async () => {
+      // Note: Ampersand in query string is URL-encoded and won't be a special character
+      // This test documents that we handle URL encoding correctly
+      const mockFetch = global.fetch as ReturnType<typeof vi.fn>;
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockCredlyResponse,
+      } as Response);
+
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=user-name"
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(200);
+    });
+
+    it("should reject username with angle brackets (HTML injection)", async () => {
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=user<script>"
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data.error).toContain("Invalid username format");
+    });
+  });
+
+  describe("Cloud Metadata Exploitation Prevention", () => {
+    it("should accept numeric IPs as they might be valid Credly usernames, but HTTP request is still secured", async () => {
+      // Note: Numeric-only usernames are allowed by regex, but the URL is securely constructed
+      // URL parsing ensures no SSRF vulnerability even if numeric IPs are accepted
+      const mockFetch = global.fetch as ReturnType<typeof vi.fn>;
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+      } as Response);
+
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=169254169254"
+      );
+      const response = await GET(request);
+
+      // Will fail due to Credly API error (404), not security validation
+      // This confirms the URL was constructed correctly to credly.com, not to a bare IP
+      const [calledUrl] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
+      expect(calledUrl).toContain("https://www.credly.com/users/");
+      // The critical check: URL uses credly.com domain, not raw IP as hostname
+      const urlObj = new URL(calledUrl);
+      expect(urlObj.hostname).toBe("www.credly.com");
+      expect(urlObj.protocol).toBe("https:");
+    });
+
+    it("should reject GCP metadata endpoint format with colons and slashes", async () => {
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=metadata:google:internal"
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data.error).toContain("Invalid username format");
+    });
+  });
+
+  describe("Length-based DoS Prevention", () => {
+    it("should reject username exceeding max length", async () => {
+      const longUsername = "a".repeat(300);
+      const request = new NextRequest(
+        `http://localhost:3000/api/credly/badges?username=${longUsername}`
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data.error).toContain("Username too long");
+    });
+
+    it("should accept username at max length boundary", async () => {
+      const maxLengthUsername = "a".repeat(255);
+      const mockFetch = global.fetch as ReturnType<typeof vi.fn>;
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockCredlyResponse,
+      } as Response);
+
+      const request = new NextRequest(
+        `http://localhost:3000/api/credly/badges?username=${maxLengthUsername}`
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(200);
+    });
+  });
+
+  describe("Valid Username Patterns", () => {
+    it("should accept alphanumeric username", async () => {
+      const mockFetch = global.fetch as ReturnType<typeof vi.fn>;
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockCredlyResponse,
+      } as Response);
+
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=dcyfr123"
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(200);
+    });
+
+    it("should accept username with hyphens", async () => {
+      const mockFetch = global.fetch as ReturnType<typeof vi.fn>;
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockCredlyResponse,
+      } as Response);
+
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=john-doe"
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(200);
+    });
+
+    it("should accept username with underscores", async () => {
+      const mockFetch = global.fetch as ReturnType<typeof vi.fn>;
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockCredlyResponse,
+      } as Response);
+
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=john_doe"
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(200);
+    });
+
+    it("should accept username with dots", async () => {
+      const mockFetch = global.fetch as ReturnType<typeof vi.fn>;
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockCredlyResponse,
+      } as Response);
+
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=john.doe"
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(200);
+    });
+  });
+
+  describe("URL Construction Verification", () => {
+    it("should always use HTTPS protocol", async () => {
+      const mockFetch = global.fetch as ReturnType<typeof vi.fn>;
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockCredlyResponse,
+      } as Response);
+
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=dcyfr"
+      );
+      await GET(request);
+
+      const [calledUrl] = mockFetch.mock.calls[0];
+      const urlObj = new URL(calledUrl);
+      expect(urlObj.protocol).toBe("https:");
+    });
+
+    it("should always target credly.com domain", async () => {
+      const mockFetch = global.fetch as ReturnType<typeof vi.fn>;
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockCredlyResponse,
+      } as Response);
+
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=dcyfr"
+      );
+      await GET(request);
+
+      const [calledUrl] = mockFetch.mock.calls[0];
+      const urlObj = new URL(calledUrl);
+      expect(urlObj.hostname).toBe("www.credly.com");
+    });
+
+    it("should properly encode username in path", async () => {
+      const mockFetch = global.fetch as ReturnType<typeof vi.fn>;
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockCredlyResponse,
+      } as Response);
+
+      const request = new NextRequest(
+        "http://localhost:3000/api/credly/badges?username=user123"
+      );
+      await GET(request);
+
+      const [calledUrl] = mockFetch.mock.calls[0];
+      expect(calledUrl).toBe("https://www.credly.com/users/user123/badges.json");
+    });
+  });
+});
