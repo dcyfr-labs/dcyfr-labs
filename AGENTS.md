@@ -6,6 +6,19 @@ This document serves as the **single source of truth** for discovering, routing,
 
 ---
 
+## ⚠️ Important for AI Agents
+
+**Testing Commands:** Always use `npm run test:run` or `vitest run` instead of `npm test` to avoid watch mode hanging. See [Automated Testing Guide](docs/testing/automated-testing-guide.md) for details.
+
+**Quick Commands:**
+```bash
+npm run test:run <file>    # Run tests once (no watch)
+vitest run <file>           # Direct vitest (no watch)
+npm run check               # Type + lint check
+```
+
+---
+
 ## 🎯 Development Strategy: Primary + Secondary Model
 
 **DCYFR-labs uses a Primary/Secondary agent strategy** to maximize effectiveness for each tool:

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,6 +36,12 @@ import {
   createPreset,
   markPresetUsed,
 } from "@/lib/activity/presets";
+import {
+  loadSearchHistory,
+  saveSearchToHistory,
+  clearSearchHistory,
+  type SearchHistoryItem,
+} from "@/lib/activity/search";
 import { PresetManager } from "./PresetManager";
 import {
   FileText,
@@ -52,6 +58,9 @@ import {
   Save,
   ChevronDown,
   Star,
+  X,
+  Clock,
+  Command,
 } from "lucide-react";
 
 // ============================================================================
@@ -70,6 +79,12 @@ interface ActivityFiltersProps {
 
   /** Callback when time range changes */
   onTimeRangeChange: (range: TimeRangeFilter) => void;
+
+  /** Current search query */
+  searchQuery?: string;
+
+  /** Callback when search query changes */
+  onSearchChange?: (query: string) => void;
 
   /** Available sources to filter by */
   availableSources?: ActivitySource[];
@@ -136,6 +151,8 @@ export function ActivityFilters({
   onSourcesChange,
   selectedTimeRange,
   onTimeRangeChange,
+  searchQuery = "",
+  onSearchChange,
   availableSources = ["blog", "project", "github", "changelog", "milestone", "trending", "engagement"],
   totalCount,
   filteredCount,
@@ -145,6 +162,26 @@ export function ActivityFilters({
   const [presets, setPresets] = useState<ActivityFilterPreset[]>(() => loadPresets());
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [newPresetName, setNewPresetName] = useState("");
+
+  // Search state
+  const [searchHistory, setSearchHistory] = useState<SearchHistoryItem[]>(
+    () => typeof window !== "undefined" ? loadSearchHistory() : []
+  );
+  const [showSearchHistory, setShowSearchHistory] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Keyboard shortcut: Cmd/Ctrl + K to focus search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // Save presets when they change
   useEffect(() => {
@@ -164,6 +201,9 @@ export function ActivityFilters({
   const clearAllFilters = () => {
     onSourcesChange([]);
     onTimeRangeChange("all");
+    if (onSearchChange) {
+      onSearchChange("");
+    }
   };
 
   const applyPreset = (preset: ActivityFilterPreset) => {
@@ -185,12 +225,112 @@ export function ActivityFilters({
     setNewPresetName("");
   };
 
+  const handleSearchChange = (value: string) => {
+    if (onSearchChange) {
+      onSearchChange(value);
+    }
+  };
+
+  const handleSearchSubmit = () => {
+    if (searchQuery.trim() && filteredCount !== undefined) {
+      saveSearchToHistory(searchQuery, filteredCount);
+      setSearchHistory(loadSearchHistory());
+      setShowSearchHistory(false);
+    }
+  };
+
+  const applySearchFromHistory = (query: string) => {
+    if (onSearchChange) {
+      onSearchChange(query);
+    }
+    setShowSearchHistory(false);
+  };
+
+  const handleClearSearchHistory = () => {
+    clearSearchHistory();
+    setSearchHistory([]);
+  };
+
   const isAllSources = selectedSources.length === 0;
-  const hasActiveFilters = !isAllSources || selectedTimeRange !== "all";
-  const activeFilterCount = (isAllSources ? 0 : selectedSources.length) + (selectedTimeRange !== "all" ? 1 : 0);
+  const hasActiveFilters = !isAllSources || selectedTimeRange !== "all" || searchQuery.length > 0;
+  const activeFilterCount = 
+    (isAllSources ? 0 : selectedSources.length) + 
+    (selectedTimeRange !== "all" ? 1 : 0) + 
+    (searchQuery.length > 0 ? 1 : 0);
 
   return (
     <div className={cn("space-y-4", className)}>
+      {/* Search input with history */}
+      {onSearchChange && (
+        <div className="relative">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              ref={searchInputRef}
+              type="text"
+              placeholder="Search activities... (⌘K)"
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSearchSubmit();
+              }}
+              onFocus={() => setShowSearchHistory(searchHistory.length > 0)}
+              className="pl-10 pr-20"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => handleSearchChange("")}
+                className="absolute right-12 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-theme"
+                aria-label="Clear search"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+              <Command className="h-3 w-3" />K
+            </kbd>
+          </div>
+
+          {/* Search history dropdown */}
+          {showSearchHistory && searchHistory.length > 0 && (
+            <div className="absolute z-50 mt-1 w-full rounded-md border bg-popover p-1 shadow-md">
+              <div className="flex items-center justify-between px-2 py-1.5">
+                <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  Recent Searches
+                </span>
+                <button
+                  onClick={handleClearSearchHistory}
+                  className="text-xs text-muted-foreground hover:text-foreground transition-theme"
+                >
+                  Clear
+                </button>
+              </div>
+              {searchHistory.slice(0, 10).map((item, index) => (
+                <button
+                  key={index}
+                  onClick={() => applySearchFromHistory(item.query)}
+                  className="w-full text-left px-2 py-1.5 text-sm rounded hover:bg-accent transition-theme flex items-center justify-between"
+                >
+                  <span className="truncate">{item.query}</span>
+                  <span className="text-xs text-muted-foreground ml-2">
+                    {item.resultCount} results
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Search syntax hint */}
+          <p className="text-xs text-muted-foreground mt-1">
+            Try: <code className="px-1 py-0.5 rounded bg-muted">tag:typescript</code>,{" "}
+            <code className="px-1 py-0.5 rounded bg-muted">source:blog</code>,{" "}
+            <code className="px-1 py-0.5 rounded bg-muted">-github</code>, or{" "}
+            <code className="px-1 py-0.5 rounded bg-muted">&quot;exact phrase&quot;</code>
+          </p>
+        </div>
+      )}
+
       {/* Preset controls */}
       <div className="flex items-center gap-2 flex-wrap">
         {/* Preset dropdown */}

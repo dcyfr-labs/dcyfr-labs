@@ -26,6 +26,9 @@ export { TransitionLink } from "./transition-link";
 export { ViewToggle } from "./view-toggle";
 export { default as DevToolsDropdown } from "./dev-tools-dropdown";
 
+// Search components
+export { SearchHighlight, SearchInput } from "./search";
+
 // Progressive content and depth styling
 export { 
   ProgressiveParagraph, 

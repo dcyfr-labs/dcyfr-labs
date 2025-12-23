@@ -15,6 +15,9 @@ export { SeriesPageAnalyticsTracker } from "./series-page-analytics-tracker";
 export { BookmarkButton } from "./bookmark-button";
 export { LayoutToggle } from "./layout-toggle";
 
+// Search components
+export { BlogSearchClient, useBlogSearch } from "./blog-search-client";
+
 // Partial Prerendering components
 export { DynamicBlogContent } from "./dynamic-blog-content";
 export { BlogListSkeleton } from "./blog-list-skeleton";

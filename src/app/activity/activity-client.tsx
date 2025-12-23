@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { ActivityFeed, ActivityFilters } from "@/components/activity";
 import type { ActivityItem, ActivitySource } from "@/lib/activity";
+import { searchActivities, createSearchIndex } from "@/lib/activity/search";
 
 // ============================================================================
 // TYPES
@@ -30,17 +31,32 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
   const [selectedSources, setSelectedSources] = useState<ActivitySource[]>([]);
   const [selectedTimeRange, setSelectedTimeRange] =
     useState<TimeRangeFilter>("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // Deserialize and filter activities
-  const filteredActivities = useMemo(() => {
-    // First, deserialize timestamps
-    const deserialized: ActivityItem[] = activities.map((a) => ({
+  // Deserialize activities once
+  const deserializedActivities = useMemo<ActivityItem[]>(() => {
+    return activities.map((a) => ({
       ...a,
       timestamp: new Date(a.timestamp),
     }));
+  }, [activities]);
+
+  // Create search index once
+  const searchIndex = useMemo(() => {
+    return createSearchIndex(deserializedActivities);
+  }, [deserializedActivities]);
+
+  // Filter activities
+  const filteredActivities = useMemo(() => {
+    let result = deserializedActivities;
+
+    // Apply search filter first
+    if (searchQuery.trim()) {
+      const searchResults = searchActivities(result, searchQuery, searchIndex);
+      result = searchResults.map((r) => r.item);
+    }
 
     // Filter by sources
-    let result = deserialized;
     if (selectedSources.length > 0) {
       result = result.filter((a) => selectedSources.includes(a.source));
     }
@@ -71,7 +87,7 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
     }
 
     return result;
-  }, [activities, selectedSources, selectedTimeRange]);
+  }, [deserializedActivities, searchQuery, selectedSources, selectedTimeRange, searchIndex]);
 
   // Available sources based on data
   const availableSources: ActivitySource[] = useMemo(() => {
@@ -88,6 +104,8 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
         onSourcesChange={setSelectedSources}
         selectedTimeRange={selectedTimeRange}
         onTimeRangeChange={setSelectedTimeRange}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
         availableSources={availableSources}
         totalCount={activities.length}
         filteredCount={filteredActivities.length}

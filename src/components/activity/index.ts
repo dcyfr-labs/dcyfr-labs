@@ -9,3 +9,4 @@ export { ActivityItem } from "./ActivityItem";
 export { ActivityFilters } from "./ActivityFilters";
 export { ActivitySkeleton } from "./ActivitySkeleton";
 export { PresetManager } from "./PresetManager";
+export { SearchHighlight } from "./SearchHighlight";
