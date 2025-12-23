@@ -6,6 +6,7 @@ A modern, full-featured developer blog and portfolio built with Next.js (App Rou
 
 - **Claude Code**: See [`CLAUDE.md`](./CLAUDE.md) for comprehensive development guide (detailed patterns, workflows, documentation references)
 - **GitHub Copilot**: See [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) for quick-reference guide (80/20 patterns you'll use most)
+- **Transparency**: See [`docs/TRANSPARENCY_STATEMENT.md`](./docs/TRANSPARENCY_STATEMENT.md) for details on open vs. proprietary components
 
 ## ✨ Features
 
@@ -202,10 +203,11 @@ Comprehensive docs in `/docs` ([TLP:CLEAR](./docs/security/TLP_CLASSIFICATION_IM
 | **Security** | [`/docs/security/`](./docs/security/) |
 | **Features** | [`/docs/features/`](./docs/features/) |
 | **Operations** | [`/docs/operations/todo.md`](./docs/operations/todo.md) |
+| **Transparency** | [`/docs/TRANSPARENCY_STATEMENT.md`](./docs/TRANSPARENCY_STATEMENT.md) |
 
 ## 🧪 Testing
 
-**Current Status:** 1339/1346 tests passing (99.5%)
+**Current Status:** 1879/1944 tests passing (96.7%)
 
 ```bash
 # Lint and type-check
@@ -230,7 +232,7 @@ npm run test:e2e:ui       # Playwright UI
 
 - **Unit & Integration Tests:** Vitest + Testing Library
 - **E2E Tests:** Playwright
-- **Coverage:** 99.5% pass rate across 1346 tests
+- **Coverage:** 96.7% pass rate across 1944 tests
 - **Test Documentation:** See [`/docs/testing/`](./docs/testing/)
 
 ## 🎨 Customization

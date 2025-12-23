@@ -8,3 +8,4 @@ export { ActivityFeed } from "./ActivityFeed";
 export { ActivityItem } from "./ActivityItem";
 export { ActivityFilters } from "./ActivityFilters";
 export { ActivitySkeleton } from "./ActivitySkeleton";
+export { PresetManager } from "./PresetManager";
