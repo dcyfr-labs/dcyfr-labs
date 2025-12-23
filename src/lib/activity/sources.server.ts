@@ -277,8 +277,11 @@ export async function transformTrendingPosts(
     if (options?.after && postDate < options.after) continue;
     if (options?.before && postDate > options.before) continue;
 
-    // Build description with view stats
+    // Build description with view stats and time period
     let description: string;
+    const timestamp = new Date(post.updatedAt || post.publishedAt);
+    const trendingMonth = timestamp.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+    
     if (options?.description) {
       // Custom description base - add view stats if available
       if (item.recentViews > 0) {
@@ -287,15 +290,11 @@ export async function transformTrendingPosts(
         description = options.description;
       }
     } else {
-      // Default description
+      // Default description - always show the month for clarity
       description = item.recentViews > 0
-        ? `Trending with ${item.recentViews.toLocaleString()} views in the last 7 days`
-        : `Recently published`;
+        ? `Trending in ${trendingMonth} with ${item.recentViews.toLocaleString()} views in the last 7 days`
+        : `Recently published in ${trendingMonth}`;
     }
-
-    // Use actual publication/update date for timestamp, not artificial trending period date
-    // This ensures accurate "recency" representation in the activity feed
-    const timestamp = new Date(post.updatedAt || post.publishedAt);
 
     trendingActivities.push({
       id: `trending-${post.id}`,

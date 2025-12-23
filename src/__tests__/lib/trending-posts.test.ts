@@ -60,7 +60,8 @@ describe("transformTrendingPosts", () => {
     
     expect(result).toHaveLength(1);
     expect(result[0].title).toBe("First Post");
-    expect(result[0].description).toBe("Recently published");
+    // Should include month-based formatting: "Recently published in [Month Year]"
+    expect(result[0].description).toMatch(/Recently published in \w+ \d{4}/);
     expect(result[0].source).toBe("trending");
   });
 

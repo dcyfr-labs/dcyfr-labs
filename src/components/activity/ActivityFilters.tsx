@@ -43,6 +43,10 @@ interface ActivityFiltersProps {
   /** Available sources to filter by */
   availableSources?: ActivitySource[];
 
+  /** Total and filtered activity counts for results badge */
+  totalCount?: number;
+  filteredCount?: number;
+
   /** CSS class overrides */
   className?: string;
 }
@@ -102,6 +106,8 @@ export function ActivityFilters({
   selectedTimeRange,
   onTimeRangeChange,
   availableSources = ["blog", "project", "github", "changelog", "milestone", "trending", "engagement"],
+  totalCount,
+  filteredCount,
   className,
 }: ActivityFiltersProps) {
   const toggleSource = (source: ActivitySource) => {
@@ -112,10 +118,40 @@ export function ActivityFilters({
     }
   };
 
+  const clearAllFilters = () => {
+    onSourcesChange([]);
+    onTimeRangeChange("all");
+  };
+
   const isAllSources = selectedSources.length === 0;
+  const hasActiveFilters = !isAllSources || selectedTimeRange !== "all";
+  const activeFilterCount = (isAllSources ? 0 : selectedSources.length) + (selectedTimeRange !== "all" ? 1 : 0);
 
   return (
     <div className={cn("space-y-4", className)}>
+      {/* Results count and clear filters */}
+      <div className="flex items-center justify-between gap-4">
+        {totalCount !== undefined && filteredCount !== undefined && (
+          <p className="text-sm text-muted-foreground">
+            Showing <span className="font-medium text-foreground">{filteredCount}</span> of{" "}
+            <span className="font-medium text-foreground">{totalCount}</span> activities
+            {hasActiveFilters && (
+              <Badge variant="secondary" className="ml-2">
+                {activeFilterCount} {activeFilterCount === 1 ? "filter" : "filters"}
+              </Badge>
+            )}
+          </p>
+        )}
+        {hasActiveFilters && (
+          <button
+            onClick={clearAllFilters}
+            className="text-sm text-muted-foreground hover:text-foreground transition-theme underline"
+          >
+            Clear all filters
+          </button>
+        )}
+      </div>
+
       {/* Source filters */}
       <div className="flex flex-wrap gap-2">
         {/* "All" toggle */}

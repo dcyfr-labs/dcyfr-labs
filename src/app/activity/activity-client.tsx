@@ -89,12 +89,9 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
         selectedTimeRange={selectedTimeRange}
         onTimeRangeChange={setSelectedTimeRange}
         availableSources={availableSources}
+        totalCount={activities.length}
+        filteredCount={filteredActivities.length}
       />
-
-      {/* Results count */}
-      <p className="text-sm text-muted-foreground">
-        Showing {filteredActivities.length} of {activities.length} activities
-      </p>
 
       {/* Feed */}
       <ActivityFeed
