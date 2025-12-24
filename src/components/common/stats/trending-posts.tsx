@@ -33,7 +33,7 @@ interface TrendingPostsProps {
  */
 export function TrendingPosts({ posts, viewCounts, limit = 3 }: TrendingPostsProps) {
   // Sort posts by view count (highest first)
-  const sortedPosts = [...posts]
+  let sortedPosts = [...posts]
     .map(post => ({
       post,
       views: viewCounts?.get(post.id) || 0,
@@ -42,6 +42,18 @@ export function TrendingPosts({ posts, viewCounts, limit = 3 }: TrendingPostsPro
     .sort((a, b) => b.views - a.views)
     .slice(0, limit);
 
+  // Fallback: if no posts with views, show most recent posts
+  if (sortedPosts.length === 0) {
+    sortedPosts = [...posts]
+      .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+      .slice(0, limit)
+      .map(post => ({
+        post,
+        views: 0,
+      }));
+  }
+
+  // Only show placeholder if there are truly no posts at all
   if (sortedPosts.length === 0) {
     return (
       <Card className="border-dashed">
@@ -122,13 +134,23 @@ export function TrendingPosts({ posts, viewCounts, limit = 3 }: TrendingPostsPro
                 >
                   #{index + 1}
                 </Badge>
-                <Badge 
-                  variant="secondary" 
-                  className="shrink-0 flex items-center gap-1 text-xs px-2"
-                >
-                  <Eye className="h-3 w-3" />
-                  {views.toLocaleString()}
-                </Badge>
+                {views > 0 ? (
+                  <Badge 
+                    variant="secondary" 
+                    className="shrink-0 flex items-center gap-1 text-xs px-2"
+                  >
+                    <Eye className="h-3 w-3" />
+                    {views.toLocaleString()}
+                  </Badge>
+                ) : (
+                  <Badge 
+                    variant="secondary" 
+                    className="shrink-0 flex items-center gap-1 text-xs px-2"
+                  >
+                    <Clock className="h-3 w-3" />
+                    Recent
+                  </Badge>
+                )}
               </div>
 
               {/* Post title */}
