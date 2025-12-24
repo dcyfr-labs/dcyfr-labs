@@ -38,11 +38,12 @@ const feeds: FeedInfo[] = [
   {
     id: "activity",
     title: "Activity Feed",
-    description: "Complete timeline of all content: blog posts, projects, and site updates. The most comprehensive feed available.",
-    url: "/activity/feed",
-    updateFrequency: "Updated every 30 minutes",
+    description: "Complete timeline of all content: blog posts, projects, milestones, GitHub activity, and site updates. The most comprehensive feed available.",
+    url: "/activity/rss.xml",
+    updateFrequency: "Updated every 5 minutes",
     icon: Activity,
     formats: [
+      { label: "RSS 2.0", url: "/activity/rss.xml", type: "application/rss+xml" },
       { label: "Atom", url: "/activity/feed", type: "application/atom+xml" },
       { label: "JSON Feed", url: "/activity/feed.json", type: "application/feed+json" },
     ],
@@ -51,10 +52,11 @@ const feeds: FeedInfo[] = [
     id: "blog",
     title: "Blog Feed",
     description: "Latest blog posts covering web development, security, TypeScript, and tech insights.",
-    url: "/blog/feed",
+    url: "/blog/rss.xml",
     updateFrequency: "Updated hourly",
     icon: FileText,
     formats: [
+      { label: "RSS 2.0", url: "/blog/rss.xml", type: "application/rss+xml" },
       { label: "Atom", url: "/blog/feed", type: "application/atom+xml" },
       { label: "JSON Feed", url: "/blog/feed.json", type: "application/feed+json" },
     ],
@@ -63,10 +65,11 @@ const feeds: FeedInfo[] = [
     id: "work",
     title: "Projects Feed",
     description: "Portfolio projects, open-source contributions, and creative works.",
-    url: "/work/feed",
+    url: "/work/rss.xml",
     updateFrequency: "Updated every 6 hours",
     icon: Briefcase,
     formats: [
+      { label: "RSS 2.0", url: "/work/rss.xml", type: "application/rss+xml" },
       { label: "Atom", url: "/work/feed", type: "application/atom+xml" },
       { label: "JSON Feed", url: "/work/feed.json", type: "application/feed+json" },
     ],
@@ -168,9 +171,15 @@ export default function FeedsPage() {
             <h2 className={TYPOGRAPHY.h2.standard}>Format Options</h2>
             <dl className={`${SPACING.subsection} mt-6`}>
               <div>
+                <dt className={TYPOGRAPHY.h3.standard}>RSS 2.0</dt>
+                <dd className="text-muted-foreground ml-0 mt-2">
+                  Widely-supported XML feed format with excellent compatibility across all feed readers. Includes rich metadata and engagement stats.
+                </dd>
+              </div>
+              <div>
                 <dt className={TYPOGRAPHY.h3.standard}>Atom</dt>
                 <dd className="text-muted-foreground ml-0 mt-2">
-                  Industry-standard XML feed format with excellent reader support. Recommended for most users.
+                  Modern XML feed format with enhanced features and strict validation. Excellent reader support.
                 </dd>
               </div>
               <div>

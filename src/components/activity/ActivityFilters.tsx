@@ -93,6 +93,9 @@ interface ActivityFiltersProps {
   totalCount?: number;
   filteredCount?: number;
 
+  /** Callback when a preset is applied */
+  onPresetApply?: (presetId: string, filters: { sources: ActivitySource[]; timeRange: TimeRangeFilter }) => void;
+
   /** CSS class overrides */
   className?: string;
 }
@@ -156,6 +159,7 @@ export function ActivityFilters({
   availableSources = ["blog", "project", "github", "changelog", "milestone", "trending", "engagement"],
   totalCount,
   filteredCount,
+  onPresetApply,
   className,
 }: ActivityFiltersProps) {
   // Preset state
@@ -207,8 +211,14 @@ export function ActivityFilters({
   };
 
   const applyPreset = (preset: ActivityFilterPreset) => {
-    onSourcesChange(preset.filters.sources);
-    onTimeRangeChange(preset.filters.timeRange);
+    if (onPresetApply) {
+      // Use custom preset handler if provided
+      onPresetApply(preset.id, preset.filters);
+    } else {
+      // Fallback to direct filter setting
+      onSourcesChange(preset.filters.sources);
+      onTimeRangeChange(preset.filters.timeRange);
+    }
     setPresets(markPresetUsed(presets, preset.id));
   };
 

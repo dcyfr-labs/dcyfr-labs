@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Clock } from "lucide-react";
 import type { Post } from "@/data/posts";
-import { HOVER_EFFECTS, TYPOGRAPHY, ANIMATION } from "@/lib/design-tokens";
+import { HOVER_EFFECTS, TYPOGRAPHY, SPACING, GRADIENTS } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 
 interface FeaturedPostHeroProps {
@@ -63,7 +63,9 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
 
   return (
     <Link href={`/blog/${post.slug}`}>
-      <Card className={`group relative overflow-hidden border-2 p-0 ${HOVER_EFFECTS.cardFeatured}`}>
+      <Card className={cn("group relative overflow-hidden border-2 p-0", HOVER_EFFECTS.cardFeatured)}>
+        {/* Gradient accent bar */}
+        <div className={cn("absolute inset-x-0 top-0 h-1 z-20", GRADIENTS.brand.primary)} />
         {/* Background image - only if explicitly defined in post and not hidden */}
         {post.image && !post.image.hideCard && (
           <div className="absolute inset-0 z-0">
@@ -80,7 +82,7 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
         )}
         {/* TODO: Re-enable holo effects after mouse-tracking implementation for dynamic pivoting */}
         
-        <div className="relative z-10 p-5 md:p-8 space-y-4">
+        <div className={cn("relative z-10 p-5 md:p-8", SPACING.content)}>
           {/* Featured Badge */}
           <div className="flex items-center gap-2">
             <Badge variant="default" className={cn("text-xs", "font-medium")}>

@@ -6,7 +6,8 @@ import { helloWorld } from "@/inngest/functions";
 import { contactFormSubmitted } from "@/inngest/contact-functions";
 import { 
   refreshGitHubData, 
-  manualRefreshGitHubData 
+  manualRefreshGitHubData,
+  processGitHubCommit,
 } from "@/inngest/github-functions";
 import {
   trackPostView,
@@ -117,6 +118,7 @@ const { GET: inngestGET, POST: inngestPOST, PUT: inngestPUT } = serve({
     // GitHub data refresh
     refreshGitHubData,           // Scheduled: every hour
     manualRefreshGitHubData,    // Event-driven: manual refresh
+    processGitHubCommit,        // Event-driven: webhook → commit pushed
 
     // Blog analytics
     trackPostView,               // Event-driven: on post view

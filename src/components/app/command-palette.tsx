@@ -20,6 +20,7 @@ import { DialogTitle } from "@/components/ui/dialog";
 import { useKeyboardShortcut, getModifierKey } from "@/hooks/use-keyboard-shortcut";
 import { useReadingProgressList } from "@/hooks/use-reading-progress";
 import { APP_TOKENS } from "@/lib/design-tokens";
+import { NAVIGATION } from "@/lib/navigation-config";
 
 /**
  * Command action configuration
@@ -103,6 +104,18 @@ export function CommandPalette() {
     setOpen(false);
   }, []);
 
+  // Icon mapping for navigation items
+  const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+    "/": Home,
+    "/blog": FileText,
+    "/work": Briefcase,
+    "/bookmarks": Bookmark,
+    "/about": User,
+    "/feeds": Rss,
+    "/sponsors": Settings,
+    "/contact": User,
+  };
+
   // Define available commands
   const commands: CommandAction[] = [
     // Continue Reading (dynamic from localStorage)
@@ -118,76 +131,28 @@ export function CommandPalette() {
       keywords: ["continue", "reading", "progress", article.title || "", article.articleId],
       shortcut: `${Math.round(article.progress)}% complete`,
     })),
-    // Navigation
-    {
-      id: "nav-home",
-      label: "Home",
-      category: "navigation",
-      icon: Home,
+    // Navigation - Auto-generated from NAVIGATION.primary config
+    ...NAVIGATION.primary.map((navItem) => ({
+      id: `nav-${navItem.href.slice(1) || "home"}`,
+      label: navItem.label,
+      category: "navigation" as const,
+      icon: navItem.icon || iconMap[navItem.href] || Home,
+      shortcut: navItem.shortcut ? navItem.shortcut.toUpperCase().replace(" ", " → ") : undefined,
       onSelect: () => {
-        router.push("/");
+        router.push(navItem.href);
         setOpen(false);
       },
-      keywords: ["home", "index", "main"],
-    },
-    {
-      id: "nav-blog",
-      label: "Blog",
-      category: "navigation",
-      icon: FileText,
-      shortcut: "G → B",
-      onSelect: () => {
-        router.push("/blog");
-        setOpen(false);
-      },
-      keywords: ["blog", "posts", "articles", "writing"],
-    },
-    {
-      id: "nav-work",
-      label: "Work",
-      category: "navigation",
-      icon: Briefcase,
-      shortcut: "G → W",
-      onSelect: () => {
-        router.push("/work");
-        setOpen(false);
-      },
-      keywords: ["work", "projects", "portfolio", "case studies"],
-    },
-    {
-      id: "nav-bookmarks",
-      label: "Bookmarks",
-      category: "navigation",
-      icon: Bookmark,
-      shortcut: "G → K",
-      onSelect: () => {
-        router.push("/bookmarks");
-        setOpen(false);
-      },
-      keywords: ["bookmarks", "saved", "links", "resources"],
-    },
-    {
-      id: "nav-about",
-      label: "About",
-      category: "navigation",
-      icon: User,
-      onSelect: () => {
-        router.push("/about");
-        setOpen(false);
-      },
-      keywords: ["about", "bio", "profile", "me"],
-    },
-    {
-      id: "nav-feeds",
-      label: "Feeds",
-      category: "navigation",
-      icon: Rss,
-      onSelect: () => {
-        router.push("/feeds");
-        setOpen(false);
-      },
-      keywords: ["feeds", "rss", "atom", "subscribe"],
-    },
+      keywords: [
+        navItem.label.toLowerCase(),
+        navItem.href.slice(1),
+        ...(navItem.href === "/" ? ["home", "index", "main"] : []),
+        ...(navItem.href === "/blog" ? ["posts", "articles", "writing"] : []),
+        ...(navItem.href === "/work" ? ["projects", "portfolio", "case studies"] : []),
+        ...(navItem.href === "/bookmarks" ? ["saved", "links", "resources"] : []),
+        ...(navItem.href === "/about" ? ["bio", "profile", "me"] : []),
+        ...(navItem.href === "/feeds" ? ["rss", "atom", "subscribe"] : []),
+      ],
+    })),
     // Actions
     {
       id: "action-theme-light",

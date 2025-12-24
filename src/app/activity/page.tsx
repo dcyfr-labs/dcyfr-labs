@@ -21,6 +21,7 @@ import {
   transformHighEngagementPosts,
   transformCommentMilestones,
   transformGitHubActivity,
+  transformWebhookGitHubCommits,
   transformCredlyBadges,
   transformVercelAnalytics,
   transformGitHubTraffic,
@@ -65,11 +66,23 @@ const pageTitle = "Activity";
 const pageDescription =
   "Real-time timeline of blog posts, project updates, trending content, milestones, and GitHub activity.";
 
-export const metadata: Metadata = createPageMetadata({
-  title: pageTitle,
-  description: pageDescription,
-  path: "/activity",
-});
+export const metadata: Metadata = {
+  ...createPageMetadata({
+    title: pageTitle,
+    description: pageDescription,
+    path: "/activity",
+  }),
+  alternates: {
+    types: {
+      "application/rss+xml": [
+        {
+          url: `${SITE_URL}/activity/rss.xml`,
+          title: `${AUTHOR_NAME}'s Activity Feed`,
+        },
+      ],
+    },
+  },
+};
 
 // Enable ISR for activity page - revalidate every 5 minutes
 export const revalidate = 300;
@@ -159,6 +172,11 @@ export default async function ActivityPage() {
         .then((items) => activities.push(...items))
         .catch((err) => console.error("[Activity Page] GitHub activity fetch failed:", err)),
       
+      // Webhook GitHub commits - real-time from Redis
+      transformWebhookGitHubCommits()
+        .then((items) => activities.push(...items))
+        .catch((err) => console.error("[Activity Page] Webhook GitHub commits fetch failed:", err)),
+      
       // Credly badges - all
       transformCredlyBadges("dcyfr")
         .then((items) => activities.push(...items))
@@ -235,6 +253,25 @@ export default async function ActivityPage() {
           title={pageTitle}
           description={pageDescription}
           variant="homepage"
+          actions={
+            <a
+              href="/activity/rss.xml"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/50"
+              title="Subscribe to RSS feed"
+              aria-label="Subscribe to activity feed via RSS"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-5 h-5"
+                aria-hidden="true"
+              >
+                <path d="M3.429 2.571v18.857h18.857V2.571H3.429zm16.071 16.072H5.214V4.357H19.5v14.286zM8.25 14.893a2.036 2.036 0 1 1 0 4.071 2.036 2.036 0 0 1 0-4.071zm0 0M6.321 6.536v2.25c5.625 0 10.179 4.554 10.179 10.178h2.25c0-6.857-5.571-12.428-12.429-12.428zm0 4.5v2.25a5.679 5.679 0 0 1 5.679 5.678h2.25A7.929 7.929 0 0 0 6.321 11.036z"/>
+              </svg>
+              RSS Feed
+            </a>
+          }
         />
       </div>
 

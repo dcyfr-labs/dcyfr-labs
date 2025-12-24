@@ -272,3 +272,83 @@ export const manualRefreshGitHubData = inngest.createFunction(
     };
   },
 );
+
+/**
+ * Process GitHub commit webhook event
+ * Creates an activity item for the commit and stores it for the activity feed
+ */
+export const processGitHubCommit = inngest.createFunction(
+  { id: "process-github-commit", concurrency: { limit: 10 } },
+  { event: "github/commit.pushed" },
+  async ({ event, logger }) => {
+    try {
+      const {
+        hash,
+        message,
+        author,
+        url,
+        timestamp,
+        branch,
+        repository,
+      } = event.data;
+
+      logger.info("Processing GitHub commit", {
+        hash,
+        message,
+        author,
+        branch,
+      });
+
+      // Store commit in Redis activity cache
+      const redis = await getRedisClient();
+      if (redis) {
+        const commitKey = `github:commit:${hash}`;
+        const commitData = {
+          id: `github-commit-${hash}`,
+          source: "github",
+          verb: "committed",
+          title: `${author} committed to ${branch}`,
+          description: message,
+          timestamp: new Date(timestamp).toISOString(),
+          href: url,
+          meta: {
+            tags: ["github", branch],
+            category: "development",
+          },
+          hash,
+          author,
+          branch,
+          repository,
+        };
+
+        // Store with 7-day expiration
+        await redis.setEx(
+          commitKey,
+          7 * 24 * 60 * 60, // 7 days in seconds
+          JSON.stringify(commitData)
+        );
+
+        // Add to activity feed index
+        const indexKey = "github:commits:recent";
+        await redis.lPush(indexKey, commitKey);
+        await redis.lTrim(indexKey, 0, 999); // Keep last 1000 commits
+        await redis.expire(indexKey, 7 * 24 * 60 * 60); // Expire the list after 7 days
+
+        logger.info("Stored GitHub commit in cache", { hash, commitKey });
+      }
+
+      return {
+        success: true,
+        hash,
+        message,
+        author,
+        branch,
+      };
+    } catch (error) {
+      logger.error("Failed to process GitHub commit", {
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+      throw error;
+    }
+  }
+);

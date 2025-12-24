@@ -66,7 +66,7 @@ export function SiteHeader() {
               {...workDropdown.triggerProps}
               className="flex items-center gap-1 hover:underline underline-offset-4 will-change-auto touch-target px-1.5 sm:px-2"
             >
-              Our Work
+              Work
               <ChevronDown className={cn("h-3 w-3 transition-transform", workDropdown.isOpen && "rotate-180")} />
             </button>
             {workDropdown.isOpen && (

@@ -21,7 +21,7 @@ interface PostQuickActionsProps {
  * Provides bookmark, share, copy link, copy IEEE citation, and LinkedIn share buttons.
  */
 export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActionsProps) {
-  const { isBookmarked, toggleBookmark } = useBookmarks();
+  const { isBookmarked, toggle } = useBookmarks();
   const [isHydrated, setIsHydrated] = React.useState(false);
   const bookmarked = isHydrated && slug ? isBookmarked(slug) : false;
 
@@ -69,7 +69,7 @@ export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActi
   const handleBookmark = () => {
     if (!slug) return;
     
-    toggleBookmark(slug);
+    toggle(slug);
     toast.success(bookmarked ? "Bookmark removed" : "Bookmarked for later");
   };
 

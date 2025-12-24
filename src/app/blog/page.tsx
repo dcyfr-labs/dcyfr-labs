@@ -27,11 +27,35 @@ const pageTitle = "Blog";
 const pageDescription = "Blog posts on software development, cybersecurity, emerging technologies, and more.";
 const POSTS_PER_PAGE = 12;
 
-export const metadata: Metadata = createArchivePageMetadata({
-  title: pageTitle,
-  description: pageDescription,
-  path: "/blog",
-});
+export const metadata: Metadata = {
+  ...createArchivePageMetadata({
+    title: pageTitle,
+    description: pageDescription,
+    path: "/blog",
+  }),
+  alternates: {
+    types: {
+      "application/rss+xml": [
+        {
+          url: `${SITE_URL}/blog/rss.xml`,
+          title: `${SITE_URL} - Blog (RSS)`,
+        },
+      ],
+      "application/atom+xml": [
+        {
+          url: `${SITE_URL}/blog/feed`,
+          title: `${SITE_URL} - Blog (Atom)`,
+        },
+      ],
+      "application/feed+json": [
+        {
+          url: `${SITE_URL}/blog/feed.json`,
+          title: `${SITE_URL} - Blog (JSON Feed)`,
+        },
+      ],
+    },
+  },
+};
 
 // Enable Partial Prerendering for faster initial load with dynamic filters
 export const experimental_ppr = true;

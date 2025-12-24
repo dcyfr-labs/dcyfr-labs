@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Eye, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Post } from "@/data/posts";
-import { HOVER_EFFECTS } from "@/lib/design-tokens";
+import { HOVER_EFFECTS, SHADOWS, ANIMATION } from "@/lib/design-tokens";
 
 interface TrendingPostsProps {
   posts: Post[];
@@ -57,19 +59,51 @@ export function TrendingPosts({ posts, viewCounts, limit = 3 }: TrendingPostsPro
     <div className="grid gap-3 md:grid-cols-3">
       {sortedPosts.map(({ post, views }, index) => {
         const isTopTrending = index === 0;
-        
+
         return (
-          <Card 
+          <motion.div
             key={post.id}
-            className={cn(
-              HOVER_EFFECTS.card,
-              "group relative overflow-hidden",
-              isTopTrending && "ring-2 ring-primary/20"
-            )}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: index * 0.1, ease: "easeOut" }}
           >
-            <CardContent className="p-5 space-y-3">
-              {/* Trending indicator */}
-              {isTopTrending && (
+            <Card
+              className={cn(
+                HOVER_EFFECTS.card,
+                SHADOWS.card.rest,
+                "group relative overflow-hidden h-full",
+                isTopTrending && "ring-2 ring-primary/20"
+              )}
+            >
+              {/* Post image (if available and not hidden) */}
+              {post.image && !post.image.hideCard && (
+                <div className="relative aspect-video overflow-hidden">
+                  <Image
+                    src={post.image.url}
+                    alt={post.image.alt || post.title}
+                    fill
+                    className={cn(
+                      "object-cover",
+                      ANIMATION.transition.base,
+                      "group-hover:scale-105"
+                    )}
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-linear-to-t from-background/80 via-background/20 to-transparent" />
+                  {/* Trending ribbon on image */}
+                  {isTopTrending && (
+                    <div className="absolute top-0 right-0 w-16 h-16 overflow-hidden">
+                      <div className="absolute top-3 -right-8 w-32 text-center bg-primary rotate-45 shadow-sm py-1">
+                        <TrendingUp className="h-3 w-3 text-primary-foreground mx-auto" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+              <CardContent className={cn("p-4 space-y-3", post.image && !post.image.hideCard && "pt-3")}>
+              {/* Trending indicator (only if no image) */}
+              {isTopTrending && (!post.image || post.image.hideCard) && (
                 <div className="absolute top-0 right-0 w-16 h-16 overflow-hidden">
                   <div className="absolute top-3 -right-8 w-32 text-center bg-primary rotate-45 shadow-sm py-1">
                     <TrendingUp className="h-3 w-3 text-primary-foreground mx-auto" />
@@ -98,9 +132,9 @@ export function TrendingPosts({ posts, viewCounts, limit = 3 }: TrendingPostsPro
               </div>
 
               {/* Post title */}
-              <Link 
+              <Link
                 href={`/blog/${post.slug}`}
-                className="font-medium hover:text-primary transition-colors line-clamp-2 block leading-tight"
+                className={cn("font-medium hover:text-primary line-clamp-2 block leading-tight", ANIMATION.transition.theme)}
               >
                 {post.title}
               </Link>
@@ -122,6 +156,7 @@ export function TrendingPosts({ posts, viewCounts, limit = 3 }: TrendingPostsPro
               </div>
             </CardContent>
           </Card>
+          </motion.div>
         );
       })}
     </div>

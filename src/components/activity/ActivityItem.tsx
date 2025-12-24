@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   FileText,
   FolderKanban,
@@ -22,9 +23,12 @@ import {
   BarChart3,
   Search,
   Activity,
+  Bookmark,
+  BookmarkCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ANIMATION, SEMANTIC_COLORS, NEON_COLORS } from "@/lib/design-tokens";
+import { ANIMATION, NEON_COLORS } from "@/lib/design-tokens";
+import { useBookmarks } from "@/hooks/use-bookmarks";
 import {
   type ActivityItem as ActivityItemType,
   type ActivitySource,
@@ -156,6 +160,13 @@ export function ActivityItem({
   const Icon = SOURCE_ICONS[activity.source] || FileText;
   const colors = ACTIVITY_SOURCE_COLORS[activity.source] || { icon: "", text: "", bg: "" };
   const sourceLabel = ACTIVITY_SOURCE_LABELS[activity.source] || "Activity";
+  const { isBookmarked, toggle } = useBookmarks();
+
+  const handleBookmarkToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggle(activity.id);
+  };
 
   if (variant === "minimal") {
     return <MinimalItem activity={activity} className={className} />;
@@ -179,6 +190,7 @@ export function ActivityItem({
   // Standard variant
   return (
     <Card
+      data-testid="activity-item"
       className={cn(
         "group transition-base",
         ANIMATION.duration.fast,
@@ -186,8 +198,27 @@ export function ActivityItem({
         className
       )}
     >
-      <CardContent className="p-4">
-        <div className="flex gap-3">
+      <CardContent className="p-4 relative">
+        {/* Bookmark button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleBookmarkToggle}
+          className={cn(
+            "absolute top-3 right-3 h-8 w-8 opacity-0 group-hover:opacity-100",
+            "transition-opacity duration-200",
+            isBookmarked(activity.id) && "opacity-100 text-amber-500 hover:text-amber-600"
+          )}
+          aria-label={isBookmarked(activity.id) ? "Remove bookmark" : "Add bookmark"}
+        >
+          {isBookmarked(activity.id) ? (
+            <BookmarkCheck className="h-4 w-4" />
+          ) : (
+            <Bookmark className="h-4 w-4" />
+          )}
+        </Button>
+
+        <div className="flex gap-3 pr-10">{/* Add right padding for bookmark button */}
           {/* Activity icon */}
           <div
             className={cn(
@@ -371,6 +402,7 @@ function CompactItem({
   return (
     <Link
       href={activity.href}
+      data-testid="activity-item"
       className={cn(
         "group flex items-center gap-3 py-2 px-3 rounded-lg",
         "hover:bg-accent/50 transition-colors",
@@ -415,6 +447,7 @@ function MinimalItem({
   return (
     <Link
       href={activity.href}
+      data-testid="activity-item"
       className={cn(
         "group flex items-center gap-2 py-1.5",
         "hover:text-primary transition-colors",
@@ -448,31 +481,72 @@ function TimelineItem({
   const Icon = SOURCE_ICONS[activity.source] || FileText;
   const colors = ACTIVITY_SOURCE_COLORS[activity.source] || { icon: "", text: "", bg: "" };
   const sourceLabel = ACTIVITY_SOURCE_LABELS[activity.source] || "Activity";
+  const { isBookmarked, toggle } = useBookmarks();
+
+  const handleBookmarkToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggle(activity.id);
+  };
 
   return (
-    <div className={cn("relative flex gap-4", className)}>
+    <div className={cn("relative flex gap-4 group", className)} data-testid="activity-item">
       {/* Timeline connector line */}
       {showConnector && !isLast && (
         <div
-          className="absolute left-[18px] top-10 bottom-0 w-px bg-border"
+          className="absolute left-4.5 top-10 bottom-0 w-px bg-border"
           aria-hidden="true"
         />
       )}
 
-      {/* Icon node */}
+      {/* Icon node with micro-interactions */}
       <div
         className={cn(
           "relative z-10 shrink-0 w-9 h-9 rounded-full flex items-center justify-center",
           "bg-background border-2 border-border",
-          "group-hover:border-primary/50 transition-colors"
+          // Enhanced hover: border color + subtle scale + shadow
+          "transition-all duration-200 ease-out",
+          "group-hover:border-primary/50 group-hover:scale-110 group-hover:shadow-md",
+          "group-hover:shadow-primary/10"
         )}
       >
-        <Icon className={cn("h-4 w-4", colors?.icon)} />
+        <Icon
+          className={cn(
+            "h-4 w-4 transition-all duration-200",
+            colors?.icon,
+            // Icon color change on hover
+            "group-hover:text-primary group-hover:scale-105"
+          )}
+        />
       </div>
 
       {/* Content */}
-      <div className="flex-1 pb-6 min-w-0">
-        <div className="flex items-start justify-between gap-2 mb-1">
+      <div className="flex-1 pb-6 min-w-0 relative">
+        {/* Bookmark button with bounce animation */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleBookmarkToggle}
+          className={cn(
+            "absolute top-0 right-0 h-8 w-8",
+            // Fade in/out with scale
+            "opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100",
+            "transition-all duration-200 ease-out",
+            // Active state: slight bounce
+            "active:scale-90",
+            // Bookmarked state: always visible with amber color
+            isBookmarked(activity.id) && "opacity-100 scale-100 text-amber-500 hover:text-amber-600"
+          )}
+          aria-label={isBookmarked(activity.id) ? "Remove bookmark" : "Add bookmark"}
+        >
+          {isBookmarked(activity.id) ? (
+            <BookmarkCheck className="h-4 w-4 animate-in zoom-in-50 duration-200" />
+          ) : (
+            <Bookmark className="h-4 w-4" />
+          )}
+        </Button>
+
+        <div className="flex items-start justify-between gap-2 mb-1 pr-10">{/* Add right padding for bookmark button */}
           <Link
             href={activity.href}
             className="font-medium hover:text-primary transition-colors line-clamp-1"

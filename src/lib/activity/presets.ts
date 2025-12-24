@@ -54,6 +54,16 @@ const STORAGE_VERSION = 1;
  */
 export const DEFAULT_PRESETS: ActivityFilterPreset[] = [
   {
+    id: "bookmarks",
+    name: "Bookmarked Items",
+    filters: {
+      sources: [],
+      timeRange: "all",
+    },
+    isDefault: true,
+    createdAt: Date.now(),
+  },
+  {
     id: "code-projects",
     name: "Code Projects",
     filters: {

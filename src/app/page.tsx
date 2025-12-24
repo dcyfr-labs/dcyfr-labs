@@ -13,7 +13,6 @@ import {
 } from "@/lib/site-config";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
-import Link from "next/link";
 import dynamic from "next/dynamic";
 import {
   TYPOGRAPHY,
@@ -21,21 +20,17 @@ import {
   PAGE_LAYOUT,
   CONTAINER_WIDTHS,
   SCROLL_BEHAVIOR,
-  getContainerClasses,
 } from "@/lib/design-tokens";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { createPageMetadata, getJsonLdScriptProps } from "@/lib/metadata";
 import { PageLayout } from "@/components/layouts/page-layout";
 import { cn } from "@/lib/utils";
-import { PostList } from "@/components/blog";
 import {
   SectionHeader,
   SiteLogo,
   SectionNavigator,
   Section,
   TrendingPosts,
-  ScrollIndicator,
   SmoothScrollToHash,
 } from "@/components/common";
 import {
@@ -44,7 +39,13 @@ import {
   transformChangelog,
   aggregateActivities,
 } from "@/lib/activity";
-import { HomepageStats, HomepageHeroActions, HomepageHeroHeadline, FlippableAvatar } from "@/components/home";
+import {
+  HomepageStats,
+  HomepageHeroActions,
+  HomepageHeroHeadline,
+  FlippableAvatar,
+  QuickLinksRibbon,
+} from "@/components/home";
 import { ScrollReveal } from "@/components/features";
 
 // Lazy-loaded below-fold components for better initial load performance
@@ -67,13 +68,37 @@ const FeaturedPostHero = dynamic(
   }
 );
 
-const ActivityFeed = dynamic(
-  () => import("@/components/activity").then(mod => ({ default: mod.ActivityFeed })),
+const InfiniteActivitySection = dynamic(
+  () => import("@/components/home").then(mod => ({ default: mod.InfiniteActivitySection })),
   {
     loading: () => (
       <div className="space-y-3">
-        {[...Array(3)].map((_, i) => (
+        {[...Array(5)].map((_, i) => (
           <div key={i} className="h-20 bg-muted rounded-lg animate-pulse" />
+        ))}
+      </div>
+    ),
+    ssr: true,
+  }
+);
+
+const HomepageHeatmapMini = dynamic(
+  () => import("@/components/home").then(mod => ({ default: mod.HomepageHeatmapMini })),
+  {
+    loading: () => (
+      <div className="h-48 bg-muted rounded-lg animate-pulse" />
+    ),
+    ssr: true,
+  }
+);
+
+const ExploreCards = dynamic(
+  () => import("@/components/home").then(mod => ({ default: mod.ExploreCards })),
+  {
+    loading: () => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-32 bg-muted rounded-lg animate-pulse" />
         ))}
       </div>
     ),
@@ -100,11 +125,11 @@ export default async function Home() {
   // Get featured post for hero section
   const featuredPost = featuredPosts[0];
   
-  // Prepare recent posts for homepage
+  // Prepare posts for homepage (more for infinite scroll timeline)
   const recentPosts = [...posts]
     .filter(p => !p.archived)
     .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1))
-    .slice(0, 5);
+    .slice(0, 20); // Increased for infinite scroll
   
   // Get badge metadata (latest and hottest posts)
   const { latestSlug, hottestSlug } = await getPostBadgeMetadata(posts);
@@ -172,15 +197,33 @@ export default async function Home() {
   const blogActivities = await transformPosts(recentPosts);
   const projectActivities = transformProjects([...featuredProjects]);
   const changelogActivities = transformChangelog(visibleChangelog);
-  
-  const recentActivities = aggregateActivities(
+
+  // Activities for infinite scroll timeline (larger dataset)
+  const timelineActivities = aggregateActivities(
     [
       ...blogActivities,
       ...projectActivities,
       ...changelogActivities,
     ],
-    { limit: 7 }
+    { limit: 50 } // Larger limit for infinite scroll
   );
+
+  // All activities for heatmap (no limit)
+  const allActivities = aggregateActivities([
+    ...blogActivities,
+    ...projectActivities,
+    ...changelogActivities,
+  ]);
+
+  // Convert viewCounts to Map for TrendingPosts
+  const viewCountsMap = new Map(Object.entries(viewCounts).map(([k, v]) => [k, v as number]));
+
+  // Calculate stats for homepage
+  const activePosts = posts.filter(p => !p.archived);
+  const uniqueTechnologies = new Set(
+    projects.flatMap(p => p.tech || [])
+  );
+  const yearsOfExperience = new Date().getFullYear() - 2010; // Started in 2010
 
   return (
     <PageLayout>
@@ -191,7 +234,7 @@ export default async function Home() {
         scrollOffset={SCROLL_BEHAVIOR.offset.standard}
         className="space-y-10 md:space-y-14"
       >
-        {/* Hero Section */}
+        {/* 1. Hero Section */}
         <Section id="hero">
           <ScrollReveal animation="fade-up">
             <div className={cn(PAGE_LAYOUT.hero.container, "flex flex-col items-center w-full")}>
@@ -214,9 +257,6 @@ export default async function Home() {
                 {/* Logo Title */}
                 <SiteLogo size="lg" showIcon={false} className="justify-center" />
 
-                {/* Professional Headline 
-                <HomepageHeroHeadline /> */}
-
                 {/* Description */}
                 <p
                   className={cn(
@@ -234,29 +274,97 @@ export default async function Home() {
                 <div className="w-full flex justify-center">
                   <HomepageHeroActions />
                 </div>
+
+                {/* Quick Links Ribbon */}
+                <QuickLinksRibbon className="mt-2" />
               </div>
             </div>
           </ScrollReveal>
         </Section>
 
-        {/* featured article */}
-        <Section id="featured-post" className={PAGE_LAYOUT.section.container}>
+        {/* 2. Activity Heatmap */}
+        <Section id="activity-heatmap" className={PAGE_LAYOUT.section.container}>
+          <ScrollReveal animation="fade-up" delay={50}>
+            <div className={SPACING.content}>
+              <HomepageHeatmapMini activities={allActivities} />
+            </div>
+          </ScrollReveal>
+        </Section>
+
+        {/* 3. Featured Article - Highlighted section */}
+        <Section
+          id="featured-post"
+          className={cn(
+            PAGE_LAYOUT.section.container,
+            "py-8 md:py-12 -mx-4 px-4 md:-mx-6 md:px-6 lg:-mx-8 lg:px-8",
+            "bg-muted/30 dark:bg-muted/10",
+            "border-y border-border/50"
+          )}
+        >
           <ScrollReveal animation="fade-up" delay={100}>
             <div className={SPACING.content}>
+              <SectionHeader title="Featured" />
               <FeaturedPostHero post={featuredPost} />
             </div>
           </ScrollReveal>
         </Section>
 
-        {/* Recent Activity */}
-        <Section id="recent-activity" className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={215}>
+        {/* 4. Trending Now */}
+        <Section id="trending" className={PAGE_LAYOUT.section.container}>
+          <ScrollReveal animation="fade-up" delay={150}>
             <div className={SPACING.content}>
-              <SectionHeader title="Activity" />
-              <ActivityFeed
-                items={recentActivities}
-                variant="timeline"
-                viewAllHref="/activity"
+              <SectionHeader title="Trending" actionHref="/blog" actionLabel="View all posts" />
+              <TrendingPosts posts={activePosts} viewCounts={viewCountsMap} limit={3} />
+            </div>
+          </ScrollReveal>
+        </Section>
+
+        {/* 5. Recent Activity - Infinite Scroll Timeline */}
+        <Section id="recent-activity" className={PAGE_LAYOUT.section.container}>
+          <ScrollReveal animation="fade-up" delay={200}>
+            <div className={SPACING.content}>
+              <SectionHeader title="Activity Timeline" actionHref="/activity" actionLabel="View full activity" />
+              <InfiniteActivitySection
+                items={timelineActivities}
+                initialCount={5}
+                pageSize={5}
+                maxHeight="50vh"
+              />
+            </div>
+          </ScrollReveal>
+        </Section>
+
+        {/* 6. Explore Cards - Highlighted section */}
+        <Section
+          id="explore"
+          className={cn(
+            PAGE_LAYOUT.section.container,
+            "py-8 md:py-12 -mx-4 px-4 md:-mx-6 md:px-6 lg:-mx-8 lg:px-8",
+            "bg-muted/30 dark:bg-muted/10",
+            "border-y border-border/50"
+          )}
+        >
+          <ScrollReveal animation="fade-up" delay={250}>
+            <div className={SPACING.content}>
+              <SectionHeader title="Explore" />
+              <ExploreCards
+                postCount={activePosts.length}
+                projectCount={projects.length}
+                activityCount={allActivities.length}
+              />
+            </div>
+          </ScrollReveal>
+        </Section>
+
+        {/* 7. Stats Dashboard */}
+        <Section id="stats" className={PAGE_LAYOUT.section.container}>
+          <ScrollReveal animation="fade-up" delay={300}>
+            <div className={SPACING.content}>
+              <HomepageStats
+                postsCount={activePosts.length}
+                projectsCount={projects.length}
+                yearsOfExperience={yearsOfExperience}
+                technologiesCount={uniqueTechnologies.size}
               />
             </div>
           </ScrollReveal>

@@ -44,7 +44,7 @@ export function BookmarkButton({
   showLabel = false,
   className,
 }: BookmarkButtonProps) {
-  const { isBookmarked, toggleBookmark } = useBookmarks();
+  const { isBookmarked, toggle } = useBookmarks();
   const bookmarked = isBookmarked(slug);
   const [isMounted, setIsMounted] = React.useState(false);
 
@@ -57,7 +57,7 @@ export function BookmarkButton({
     e.preventDefault(); // Prevent navigation if button is inside a link
     e.stopPropagation(); // Prevent parent click handlers
     
-    toggleBookmark(slug);
+    toggle(slug);
     
     toast.success(
       bookmarked ? "Bookmark removed" : "Bookmarked for later",

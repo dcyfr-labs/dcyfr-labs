@@ -267,8 +267,8 @@ const generateMetadata = async ({ params }: { params: { slug: string } }) => {
 │   └── og.svg               # Social optimized (optional)
 │
 └── post-slug-2/
-    ├── hero.jpg              # Unsplash download
-    └── attribution.txt       # Attribution file
+    ├── hero.jpg              # Custom image
+    └── attribution.txt       # Attribution file (if needed)
 ```
 
 #### Frontmatter Schema
@@ -280,7 +280,7 @@ image:
   alt: "Descriptive text for accessibility"  # Required: Alt text
   width: 1200                                # Optional: Image width
   height: 600                                # Optional: Image height  
-  attribution: "Photo by Name on Unsplash"   # Required for Unsplash
+  attribution: "Photo by Author Name"         # Optional: Image attribution
   caption: "Optional caption for display"    # Optional: Display caption
 ```
 

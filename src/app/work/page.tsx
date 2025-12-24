@@ -80,12 +80,36 @@ export async function generateMetadata({ searchParams }: WorkPageProps): Promise
     ? enabledProjects.filter(p => p.category?.toLowerCase() === category).length
     : enabledProjects.length;
   
-  return createArchivePageMetadata({
-    title,
-    description,
-    path: category ? `/work?category=${category}` : "/work",
-    itemCount,
-  });
+  return {
+    ...createArchivePageMetadata({
+      title,
+      description,
+      path: category ? `/work?category=${category}` : "/work",
+      itemCount,
+    }),
+    alternates: {
+      types: {
+        "application/rss+xml": [
+          {
+            url: `${SITE_URL}/work/rss.xml`,
+            title: `${SITE_URL} - Projects (RSS)`,
+          },
+        ],
+        "application/atom+xml": [
+          {
+            url: `${SITE_URL}/work/feed`,
+            title: `${SITE_URL} - Projects (Atom)`,
+          },
+        ],
+        "application/feed+json": [
+          {
+            url: `${SITE_URL}/work/feed.json`,
+            title: `${SITE_URL} - Projects (JSON Feed)`,
+          },
+        ],
+      },
+    },
+  };
 }
 
 export default async function WorkPage({ searchParams }: WorkPageProps) {

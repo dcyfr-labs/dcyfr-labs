@@ -44,34 +44,3 @@ export function validateSlug(slug) {
 
   return slug;
 }
-
-/**
- * Validates that a URL is from the trusted Unsplash CDN
- * 
- * Security requirements:
- * - Must be HTTPS
- * - Must be from images.unsplash.com domain
- * - Prevents SSRF attacks by ensuring only trusted sources
- * 
- * @param {string} url - The URL to validate
- * @returns {string} The validated URL
- * @throws {Error} If URL is not from Unsplash CDN
- * 
- * @example
- * validateUnsplashUrl('https://images.unsplash.com/photo-123'); // Returns: URL
- * validateUnsplashUrl('https://evil.com/malware'); // Throws: Error
- */
-export function validateUnsplashUrl(url) {
-  if (!url || typeof url !== 'string') {
-    throw new Error('Invalid URL: must be a non-empty string');
-  }
-
-  // Ensure URL is from trusted Unsplash CDN only
-  if (!url.startsWith('https://images.unsplash.com/')) {
-    throw new Error(
-      'Invalid URL: must be from Unsplash CDN (https://images.unsplash.com/)'
-    );
-  }
-
-  return url;
-}

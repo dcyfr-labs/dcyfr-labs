@@ -44,6 +44,16 @@ export {
   type GitHubActivity,
 } from "./github";
 
+// Heatmap utilities
+export {
+  aggregateActivitiesByDate,
+  calculateHeatmapStats,
+  getHeatmapColorClass,
+  getHeatmapIntensity,
+  type ActivityHeatmapDay,
+  type ActivityHeatmapStats,
+} from "./heatmap";
+
 // Time utilities
 export {
   getTimeGroup,
@@ -52,3 +62,13 @@ export {
   formatActivityDateFull,
   TIME_GROUP_LABELS,
 } from "./sources";
+
+// RSS feed generation
+export {
+  generateRSSFeed,
+  filterActivitiesForRSS,
+  type RSSFeedConfig,
+} from "./rss";
+
+// Bookmarks
+export * from "./bookmarks";

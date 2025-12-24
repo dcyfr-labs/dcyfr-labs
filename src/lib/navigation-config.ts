@@ -66,7 +66,7 @@ export const PRIMARY_NAV: NavItem[] = [
   },
   {
     href: "/work",
-    label: "Our Work",
+    label: "Work",
     icon: FolderGit2,
     shortcut: "g w",
   },
@@ -111,8 +111,8 @@ export const BLOG_CATEGORIES: NavItem[] = [
   },
   {
     href: "/blog/series",
-    label: "Series",
-  },
+    label: "Blog Series",
+  }
 ] as const;
 
 /**
@@ -161,6 +161,10 @@ export const DEV_TOOLS_NAV: NavItem[] = [
  */
 export const FOOTER_NAV: NavItem[] = [
   {
+    href: "/about",
+    label: "About",
+  },
+  {
     href: "/activity",
     label: "Activity",
   },
@@ -201,20 +205,16 @@ export const MOBILE_NAV: NavItem[] = [
     label: "Blog",
   },
   {
-    href: "/blog/series",
-    label: "Series",
-  },
-  {
     href: "/about",
-    label: "About Us",
+    label: "About",
   },
   {
     href: "/work",
-    label: "Our Work",
+    label: "Work",
   },
   {
     href: "/contact",
-    label: "Contact Us",
+    label: "Contact",
   },
   {
     href: "/feeds",

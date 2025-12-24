@@ -1,134 +1,221 @@
+/**
+ * React hook for managing activity bookmarks
+ *
+ * Provides state management and operations for bookmarks with localStorage persistence.
+ */
+
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
+import {
+  loadBookmarksFromStorage,
+  addBookmark,
+  removeBookmark,
+  toggleBookmark,
+  updateBookmarkNotes,
+  updateBookmarkTags,
+  isBookmarked,
+  getAllTags,
+  filterBookmarkedActivities,
+  searchBookmarks,
+  filterBookmarksByTag,
+  exportBookmarksToJSON,
+  exportBookmarksToCSV,
+  importBookmarksFromJSON,
+  downloadBookmarks,
+  syncBookmarksWithServer,
+  type BookmarkCollection,
+  type Bookmark,
+  type ExportFormat,
+} from "@/lib/activity/bookmarks";
+import type { ActivityItem } from "@/lib/activity/types";
 
-const STORAGE_KEY = "bookmarked-posts";
-
-// Helper to check if we're in a browser environment
-const isBrowser = typeof window !== "undefined";
-
-// Helper to load bookmarks from localStorage
-function loadBookmarks(): string[] {
-  if (!isBrowser) return [];
+export interface UseBookmarksReturn {
+  // State
+  collection: BookmarkCollection;
+  loading: boolean;
   
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      return Array.isArray(parsed) ? parsed : [];
-    }
-  } catch (error) {
-    console.error("[useBookmarks] Failed to load bookmarks:", error);
-  }
-  return [];
+  // Queries
+  isBookmarked: (activityId: string) => boolean;
+  getBookmark: (activityId: string) => Bookmark | undefined;
+  getAllTags: () => string[];
+  
+  // Operations
+  toggle: (activityId: string, options?: { notes?: string; tags?: string[] }) => void;
+  add: (activityId: string, options?: { notes?: string; tags?: string[] }) => void;
+  remove: (activityId: string) => void;
+  updateNotes: (activityId: string, notes: string) => void;
+  updateTags: (activityId: string, tags: string[]) => void;
+  
+  // Filtering
+  filterActivities: (activities: ActivityItem[]) => ActivityItem[];
+  searchBookmarks: (query: string) => Bookmark[];
+  filterByTag: (tag: string) => Bookmark[];
+  
+  // Export/Import
+  exportToJSON: () => string;
+  exportToCSV: () => string;
+  importFromJSON: (json: string, merge?: boolean) => void;
+  download: (format: ExportFormat) => void;
+  
+  // Sync
+  sync: () => Promise<void>;
 }
 
 /**
- * Custom hook for managing bookmarked posts with localStorage persistence
- * 
- * Features:
- * - LocalStorage persistence (survives page refreshes)
- * - SSR-safe (checks for browser environment)
- * - Real-time sync across components via storage event
- * - Type-safe operations (add, remove, check, clear)
- * - Graceful error handling
- * 
- * @returns Object with bookmarks array and manipulation functions
+ * Hook for managing activity bookmarks
  * 
  * @example
  * ```tsx
- * const { bookmarks, isBookmarked, addBookmark, removeBookmark, clearBookmarks } = useBookmarks();
+ * const { isBookmarked, toggle, collection } = useBookmarks();
  * 
- * // Check if post is bookmarked
- * if (isBookmarked('my-post-slug')) { ... }
+ * // Check if bookmarked
+ * if (isBookmarked(activityId)) { ... }
  * 
- * // Add bookmark
- * addBookmark('my-post-slug');
- * 
- * // Remove bookmark
- * removeBookmark('my-post-slug');
+ * // Toggle bookmark
+ * toggle(activityId, { tags: ['important'] });
  * 
  * // Clear all bookmarks
  * clearBookmarks();
  * ```
  */
-export function useBookmarks() {
-  // Initialize with loaded bookmarks (runs once on mount, before first render)
-  const [bookmarks, setBookmarks] = useState<string[]>(loadBookmarks);
+export function useBookmarks(): UseBookmarksReturn {
+  const [collection, setCollection] = useState<BookmarkCollection>(() => ({
+    bookmarks: [],
+    lastUpdated: new Date(),
+    count: 0,
+    syncStatus: "local",
+  }));
+  const [loading, setLoading] = useState(true);
 
-  // Sync bookmarks across tabs/windows via storage event
+  // Load bookmarks on mount
   useEffect(() => {
-    if (!isBrowser) return;
-
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === STORAGE_KEY && e.newValue) {
-        try {
-          const parsed = JSON.parse(e.newValue);
-          setBookmarks(Array.isArray(parsed) ? parsed : []);
-        } catch (error) {
-          console.error("[useBookmarks] Failed to sync bookmarks:", error);
-        }
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
+    const loaded = loadBookmarksFromStorage();
+    setCollection(loaded);
+    setLoading(false);
   }, []);
 
-  // Save bookmarks to localStorage
-  const saveBookmarks = useCallback((newBookmarks: string[]) => {
-    if (!isBrowser) return;
+  // Query operations
+  const isBookmarkedQuery = useCallback(
+    (activityId: string): boolean => {
+      return isBookmarked(activityId, collection);
+    },
+    [collection]
+  );
 
+  const getBookmark = useCallback(
+    (activityId: string): Bookmark | undefined => {
+      return collection.bookmarks.find((b) => b.activityId === activityId);
+    },
+    [collection]
+  );
+
+  const getAllTagsQuery = useCallback((): string[] => {
+    return getAllTags(collection);
+  }, [collection]);
+
+  // Mutation operations
+  const toggle = useCallback(
+    (activityId: string, options?: { notes?: string; tags?: string[] }) => {
+      setCollection((prev) => toggleBookmark(activityId, prev, options));
+    },
+    []
+  );
+
+  const add = useCallback(
+    (activityId: string, options?: { notes?: string; tags?: string[] }) => {
+      setCollection((prev) => addBookmark(activityId, prev, options));
+    },
+    []
+  );
+
+  const remove = useCallback((activityId: string) => {
+    setCollection((prev) => removeBookmark(activityId, prev));
+  }, []);
+
+  const updateNotes = useCallback((activityId: string, notes: string) => {
+    setCollection((prev) => updateBookmarkNotes(activityId, notes, prev));
+  }, []);
+
+  const updateTags = useCallback((activityId: string, tags: string[]) => {
+    setCollection((prev) => updateBookmarkTags(activityId, tags, prev));
+  }, []);
+
+  // Filtering operations
+  const filterActivities = useCallback(
+    (activities: ActivityItem[]): ActivityItem[] => {
+      return filterBookmarkedActivities(activities, collection);
+    },
+    [collection]
+  );
+
+  const searchBookmarksQuery = useCallback(
+    (query: string): Bookmark[] => {
+      return searchBookmarks(query, collection);
+    },
+    [collection]
+  );
+
+  const filterByTag = useCallback(
+    (tag: string): Bookmark[] => {
+      return filterBookmarksByTag(tag, collection);
+    },
+    [collection]
+  );
+
+  // Export operations
+  const exportToJSON = useCallback((): string => {
+    return exportBookmarksToJSON(collection);
+  }, [collection]);
+
+  const exportToCSV = useCallback((): string => {
+    return exportBookmarksToCSV(collection);
+  }, [collection]);
+
+  const importFromJSON = useCallback((json: string, merge = false) => {
+    setCollection((prev) => importBookmarksFromJSON(json, prev, { merge }));
+  }, []);
+
+  const download = useCallback(
+    (format: ExportFormat) => {
+      downloadBookmarks(collection, format);
+    },
+    [collection]
+  );
+
+  // Sync operation
+  const sync = useCallback(async () => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newBookmarks));
-      setBookmarks(newBookmarks);
+      const synced = await syncBookmarksWithServer(collection);
+      setCollection(synced);
     } catch (error) {
-      console.error("[useBookmarks] Failed to save bookmarks:", error);
+      console.error("[useBookmarks] Sync failed:", error);
+      setCollection((prev) => ({
+        ...prev,
+        syncStatus: "error",
+        syncError: error instanceof Error ? error.message : "Sync failed",
+      }));
     }
-  }, []);
-
-  // Check if a post is bookmarked
-  const isBookmarked = useCallback((slug: string): boolean => {
-    return bookmarks.includes(slug);
-  }, [bookmarks]);
-
-  // Add a bookmark
-  const addBookmark = useCallback((slug: string) => {
-    if (!slug || isBookmarked(slug)) return;
-    
-    const newBookmarks = [...bookmarks, slug];
-    saveBookmarks(newBookmarks);
-  }, [bookmarks, isBookmarked, saveBookmarks]);
-
-  // Remove a bookmark
-  const removeBookmark = useCallback((slug: string) => {
-    if (!isBookmarked(slug)) return;
-    
-    const newBookmarks = bookmarks.filter(s => s !== slug);
-    saveBookmarks(newBookmarks);
-  }, [bookmarks, isBookmarked, saveBookmarks]);
-
-  // Toggle bookmark (add if not present, remove if present)
-  const toggleBookmark = useCallback((slug: string) => {
-    if (isBookmarked(slug)) {
-      removeBookmark(slug);
-    } else {
-      addBookmark(slug);
-    }
-  }, [isBookmarked, addBookmark, removeBookmark]);
-
-  // Clear all bookmarks
-  const clearBookmarks = useCallback(() => {
-    saveBookmarks([]);
-  }, [saveBookmarks]);
+  }, [collection]);
 
   return {
-    bookmarks,
-    isBookmarked,
-    addBookmark,
-    removeBookmark,
-    toggleBookmark,
-    clearBookmarks,
-    count: bookmarks.length,
+    collection,
+    loading,
+    isBookmarked: isBookmarkedQuery,
+    getBookmark,
+    getAllTags: getAllTagsQuery,
+    toggle,
+    add,
+    remove,
+    updateNotes,
+    updateTags,
+    filterActivities,
+    searchBookmarks: searchBookmarksQuery,
+    filterByTag,
+    exportToJSON,
+    exportToCSV,
+    importFromJSON,
+    download,
+    sync,
   };
 }

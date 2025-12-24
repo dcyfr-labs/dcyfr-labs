@@ -7,7 +7,7 @@ import { BookmarksClient } from "./bookmarks-client";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Bookmarks",
-  description: "Your saved blog posts for later reading",
+  description: "Your saved content for later reading",
   path: "/bookmarks",
 });
 

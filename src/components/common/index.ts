@@ -105,6 +105,10 @@ export { TeamMemberCard, type TeamMemberCardLayout } from "./team-member-card";
 export { TrendingPosts } from "./stats/trending-posts";
 export { UnifiedTimeline } from "./stats/unified-timeline";
 
+// Cards (enhanced media cards)
+export { MediaCard, type MediaCardProps } from "./cards";
+export { QuoteCard, type QuoteCardProps } from "./cards";
+
 // Activity (replaces deprecated RecentActivity)
 export * from "../activity";
 
