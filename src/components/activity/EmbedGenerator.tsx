@@ -17,6 +17,7 @@ interface EmbedOptions {
   limit?: number;
   width?: string;
   height?: string;
+  theme?: "light" | "dark" | "auto";
 }
 
 // ============================================================================
@@ -28,6 +29,7 @@ export function EmbedGenerator() {
     limit: 20,
     width: "100%",
     height: "600px",
+    theme: "auto",
   });
   const [copied, setCopied] = useState(false);
 
@@ -37,6 +39,7 @@ export function EmbedGenerator() {
     if (options.source) params.set("source", options.source);
     if (options.timeRange) params.set("timeRange", options.timeRange);
     if (options.limit) params.set("limit", options.limit.toString());
+    if (options.theme && options.theme !== "auto") params.set("theme", options.theme);
 
     const queryString = params.toString();
     return `${SITE_URL}/activity/embed${queryString ? `?${queryString}` : ""}`;
@@ -62,6 +65,35 @@ export function EmbedGenerator() {
         iframe.style.height = e.data.height + 'px';
       }
     }
+  
+  // Send theme to iframe (if auto-detect is enabled)
+  ${options.theme === "auto" ? `
+  const getTheme = () => {
+    // Detect user's theme preference
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return 'light';
+  };
+  
+  const iframe = document.querySelector('iframe[src*="/activity/embed"]');
+  if (iframe) {
+    iframe.addEventListener('load', () => {
+      iframe.contentWindow.postMessage({
+        type: 'setTheme',
+        theme: getTheme()
+      }, '*');
+    });
+    
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      iframe.contentWindow.postMessage({
+        type: 'setTheme',
+        theme: e.matches ? 'dark' : 'light'
+      }, '*');
+    });
+  }
+  ` : ""}
   });
 </script>`;
 
@@ -195,6 +227,32 @@ export function EmbedGenerator() {
               setOptions({ ...options, height: e.target.value })
             }
           />
+        </div>
+
+        {/* Theme */}
+        <div>
+          {/* eslint-disable-next-line no-restricted-syntax */}
+          <label htmlFor="embed-theme" className="block mb-2 text-sm font-medium">
+            Theme
+          </label>
+          <select
+            id="embed-theme"
+            className="w-full px-3 py-2 border rounded-lg text-sm"
+            value={options.theme}
+            onChange={(e) =>
+              setOptions({
+                ...options,
+                theme: e.target.value as "light" | "dark" | "auto",
+              })
+            }
+          >
+            <option value="auto">Auto-detect from parent page</option>
+            <option value="light">Light theme</option>
+            <option value="dark">Dark theme</option>
+          </select>
+          <p className="text-xs text-zinc-500 mt-1">
+            Auto-detect will match the theme of the page hosting the embed
+          </p>
         </div>
       </div>
 
