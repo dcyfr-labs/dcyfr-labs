@@ -22,7 +22,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useSyncExternalStore } from "react";
 import { Heart, Share2, Bookmark } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -77,12 +77,17 @@ export function ThreadActions({
   const { isLiked, toggleLike, getCount } = useActivityReactions();
   const { isBookmarked, toggle: toggleBookmark } = useBookmarks();
 
-  // Avoid calling setState in effects — use a runtime check for client
-  const isClient = typeof window !== "undefined";
+  // Use useSyncExternalStore for proper client-side hydration without ESLint warnings
+  const isHydrated = useSyncExternalStore(
+    () => () => {}, // subscribe (no-op since we don't need to listen for changes)
+    () => true,      // getSnapshot (client)
+    () => false      // getServerSnapshot (server)
+  );
 
-  const liked = isClient ? isLiked(activityId) : false;
-  const bookmarked = isClient ? isBookmarked(activityId) : false;
-  const likeCount = isClient ? getCount(activityId) : 0;
+  // Only show actual values after hydration
+  const liked = isHydrated ? isLiked(activityId) : false;
+  const bookmarked = isHydrated ? isBookmarked(activityId) : false;
+  const likeCount = isHydrated ? getCount(activityId) : 0;
 
   const isCompact = size === "compact";
 

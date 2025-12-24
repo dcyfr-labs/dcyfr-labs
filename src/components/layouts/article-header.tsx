@@ -187,7 +187,7 @@ export function ArticleHeader({
       {/* Featured Image Card - rendered below text */}
       {backgroundImage && !backgroundImage.hideHero && (
         <figure className="not-prose mb-8">
-          <div className="relative w-full aspect-video overflow-hidden bg-muted rounded-lg border">
+          <div className="relative w-full aspect-video overflow-hidden bg-muted/30 dark:bg-muted/20 rounded-lg border">
             {/* TODO: Re-enable holo effects after mouse-tracking implementation for dynamic pivoting */}
             <Image
               src={backgroundImage.url}
@@ -198,7 +198,7 @@ export function ArticleHeader({
               placeholder="blur"
               blurDataURL={IMAGE_PLACEHOLDER.blur}
               className={cn(
-                "object-cover",
+                "object-cover bg-muted/50 dark:bg-muted/30",
                 backgroundImage.position && `object-${backgroundImage.position}`
               )}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"

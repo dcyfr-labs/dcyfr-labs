@@ -226,11 +226,25 @@
     @apply bg-background text-foreground;
   }
 
+  /* Fix underline rendering - ensure solid continuous lines */
+  /* This must use !important to override Tailwind's utility classes */
+  *,
+  *::before,
+  *::after {
+    text-decoration-skip-ink: none !important;
+  }
+
   /* Performance optimizations for navigation links */
   a[class*="hover:underline"] {
-    text-decoration-skip-ink: auto;
+    text-decoration-skip-ink: none !important;
     text-underline-offset: 4px;
     contain: layout style;
+  }
+  
+  /* Target all underline utilities explicitly */
+  .underline,
+  [class*="underline"] {
+    text-decoration-skip-ink: none !important;
   }
   
   /* Hardware acceleration for interactive elements */
@@ -467,6 +481,21 @@
     margin-left: 0.25em;
     margin-right: 0.25em;
   }
+}
+
+/* ============================================================================
+   CRITICAL FIX: Solid Underline Rendering (Outside @layer for max specificity)
+   ============================================================================
+   Issue: text-decoration-skip-ink: auto causes 1px breaks in underlines
+   Solution: Override all underline styling globally with !important
+   Placement: Outside @layer base to ensure it wins over Tailwind utilities
+   ============================================================================ */
+
+.underline,
+.hover\:underline:hover,
+[class*="underline"],
+a[href]:hover {
+  text-decoration-skip-ink: none !important;
 }
 
 /* GitHub Heatmap Styles */

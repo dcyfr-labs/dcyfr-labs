@@ -54,7 +54,7 @@ export function PostHeroImage({ image, title, priority = true }: PostHeroImagePr
   return (
     <figure className="not-prose -mx-4 sm:-mx-6 md:-mx-8 mb-8 md:mb-12">
       {/* Image Container with Overlays */}
-      <div className="relative w-full aspect-video md:aspect-21/9 overflow-hidden bg-background border border-border">
+      <div className="relative w-full aspect-video md:aspect-21/9 overflow-hidden bg-muted/30 dark:bg-muted/20 border border-border">
         {/* Hero Image */}
         <Image
           src={image.url}
@@ -62,7 +62,7 @@ export function PostHeroImage({ image, title, priority = true }: PostHeroImagePr
           fill
           priority={priority}
           quality={90}
-          className="object-cover"
+          className="object-cover bg-muted/50 dark:bg-muted/30"
           sizes="100vw"
           placeholder="blur"
           blurDataURL={IMAGE_PLACEHOLDER.blur}
