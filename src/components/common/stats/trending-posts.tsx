@@ -103,25 +103,19 @@ export function TrendingPosts({ posts, viewCounts, limit = 3 }: TrendingPostsPro
                   />
                   {/* Gradient overlay */}
                   <div className="absolute inset-0 bg-linear-to-t from-background/80 via-background/20 to-transparent" />
-                  {/* Trending ribbon on image */}
+                  {/* Trending badge on image */}
                   {isTopTrending && (
-                    <div className="absolute top-0 right-0 w-16 h-16 overflow-hidden">
-                      <div className="absolute top-3 -right-8 w-32 text-center bg-primary rotate-45 shadow-sm py-1">
-                        <TrendingUp className="h-3 w-3 text-primary-foreground mx-auto" />
-                      </div>
-                    </div>
+                    <Badge 
+                      variant="default" 
+                      className="absolute top-2 right-2 flex items-center gap-1 shadow-lg"
+                    >
+                      <TrendingUp className="h-3 w-3" />
+                      Trending
+                    </Badge>
                   )}
                 </div>
               )}
               <CardContent className={cn("p-4 space-y-3", post.image && !post.image.hideCard && "pt-3")}>
-              {/* Trending indicator (only if no image) */}
-              {isTopTrending && (!post.image || post.image.hideCard) && (
-                <div className="absolute top-0 right-0 w-16 h-16 overflow-hidden">
-                  <div className="absolute top-3 -right-8 w-32 text-center bg-primary rotate-45 shadow-sm py-1">
-                    <TrendingUp className="h-3 w-3 text-primary-foreground mx-auto" />
-                  </div>
-                </div>
-              )}
 
               {/* Rank and view badges */}
               <div className="flex items-center justify-between gap-2">
