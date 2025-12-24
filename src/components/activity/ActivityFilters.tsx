@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { SEMANTIC_COLORS } from "@/lib/design-tokens";
+import { SEMANTIC_COLORS, TYPOGRAPHY, SPACING, CONTAINER_WIDTHS } from "@/lib/design-tokens";
 import {
   type ActivitySource,
   ACTIVITY_SOURCE_COLORS,
@@ -61,7 +61,9 @@ import {
   X,
   Clock,
   Command,
+  SlidersHorizontal,
 } from "lucide-react";
+import { Logo } from "@/components/common/logo";
 
 // ============================================================================
 // TYPES
@@ -174,6 +176,9 @@ export function ActivityFilters({
   const [showSearchHistory, setShowSearchHistory] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
+  // Collapsed state - filters collapsed by default
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
+
   // Keyboard shortcut: Cmd/Ctrl + K to focus search
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -269,49 +274,53 @@ export function ActivityFilters({
     (searchQuery.length > 0 ? 1 : 0);
 
   return (
-    <div className={cn("space-y-4", className)}>
-      {/* Search input with history */}
+    <div className={cn(SPACING.content, className)}>
+      {/* Search input with history - Prominent, centered on larger screens */}
       {onSearchChange && (
         <div className="relative">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <div className={cn("relative mx-auto", CONTAINER_WIDTHS.thread, SPACING.content)}>
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+              <Logo width={20} height={20} className="text-muted-foreground" />
+            </div>
             <Input
               ref={searchInputRef}
               type="text"
-              placeholder="Search activities... (⌘K)"
+              placeholder="Search timeline..."
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleSearchSubmit();
               }}
               onFocus={() => setShowSearchHistory(searchHistory.length > 0)}
-              className="pl-10 pr-20"
+              className={cn(
+                "pl-12 pr-24 h-12 rounded-full border-border/50 focus:border-border bg-background/50 backdrop-blur-sm text-base"
+              )}
             />
             {searchQuery && (
               <button
                 onClick={() => handleSearchChange("")}
-                className="absolute right-12 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-theme"
+                className="absolute right-16 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors rounded-full p-1 hover:bg-muted/50"
                 aria-label="Clear search"
               >
                 <X className="h-4 w-4" />
               </button>
             )}
-            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+            <kbd className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none inline-flex h-6 select-none items-center gap-1 rounded-md border bg-muted px-2 font-mono text-[11px] font-medium text-muted-foreground">
               <Command className="h-3 w-3" />K
             </kbd>
           </div>
 
           {/* Search history dropdown */}
           {showSearchHistory && searchHistory.length > 0 && (
-            <div className="absolute z-50 mt-1 w-full rounded-md border bg-popover p-1 shadow-md">
-              <div className="flex items-center justify-between px-2 py-1.5">
-                <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
+            <div className={cn("absolute z-50 mt-2 w-full left-1/2 -translate-x-1/2 rounded-xl border bg-popover/95 backdrop-blur-sm p-2 shadow-xl", CONTAINER_WIDTHS.thread, SPACING.content)}>
+              <div className="flex items-center justify-between px-3 py-2">
+                <span className={cn(TYPOGRAPHY.label.xs, "text-muted-foreground flex items-center gap-1.5")}>
+                  <Clock className="h-3.5 w-3.5" />
                   Recent Searches
                 </span>
                 <button
                   onClick={handleClearSearchHistory}
-                  className="text-xs text-muted-foreground hover:text-foreground transition-theme"
+                  className={cn(TYPOGRAPHY.label.xs, "text-muted-foreground hover:text-foreground transition-colors")}
                 >
                   Clear
                 </button>
@@ -320,163 +329,201 @@ export function ActivityFilters({
                 <button
                   key={index}
                   onClick={() => applySearchFromHistory(item.query)}
-                  className="w-full text-left px-2 py-1.5 text-sm rounded hover:bg-accent transition-theme flex items-center justify-between"
+                  className="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-accent/50 transition-colors flex items-center justify-between group"
                 >
                   <span className="truncate">{item.query}</span>
-                  <span className="text-xs text-muted-foreground ml-2">
-                    {item.resultCount} results
+                  <span className={cn(TYPOGRAPHY.metadata, "ml-3 opacity-60 group-hover:opacity-100")}>
+                    {item.resultCount} {item.resultCount === 1 ? "result" : "results"}
                   </span>
                 </button>
               ))}
             </div>
           )}
 
-          {/* Search syntax hint */}
-          <p className="text-xs text-muted-foreground mt-1">
-            Try: <code className="px-1 py-0.5 rounded bg-muted">tag:typescript</code>,{" "}
-            <code className="px-1 py-0.5 rounded bg-muted">source:blog</code>,{" "}
-            <code className="px-1 py-0.5 rounded bg-muted">-github</code>, or{" "}
-            <code className="px-1 py-0.5 rounded bg-muted">&quot;exact phrase&quot;</code>
+          {/* Search syntax hint - Simplified */}
+          <p className={cn(TYPOGRAPHY.metadata, "text-center mt-4 mx-auto", CONTAINER_WIDTHS.thread, SPACING.content)}>
+            Try:{" "}
+            <code className="px-1.5 py-0.5 rounded-md bg-muted/50 text-foreground/80">tag:typescript</code>{" "}
+            <code className="px-1.5 py-0.5 rounded-md bg-muted/50 text-foreground/80">source:blog</code>{" "}
+            <code className="px-1.5 py-0.5 rounded-md bg-muted/50 text-foreground/80">-github</code>{" "}
+            <code className="px-1.5 py-0.5 rounded-md bg-muted/50 text-foreground/80">&quot;exact phrase&quot;</code>
           </p>
         </div>
       )}
 
-      {/* Preset controls */}
-      <div className="flex items-center gap-2 flex-wrap">
-        {/* Preset dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="gap-2">
-              <Star className="h-4 w-4" />
-              Presets
-              <ChevronDown className="h-3 w-3" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-56">
-            <DropdownMenuLabel>Quick Apply</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {presets.filter((p) => p.isDefault).map((preset) => (
-              <DropdownMenuItem
-                key={preset.id}
-                onClick={() => applyPreset(preset)}
-              >
-                <Star className="h-4 w-4 mr-2 text-yellow-500" />
-                {preset.name}
-              </DropdownMenuItem>
-            ))}
-            {presets.filter((p) => !p.isDefault).length > 0 && (
-              <>
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel>Your Presets</DropdownMenuLabel>
-                {presets.filter((p) => !p.isDefault).map((preset) => (
-                  <DropdownMenuItem
-                    key={preset.id}
-                    onClick={() => applyPreset(preset)}
-                  >
-                    {preset.name}
-                  </DropdownMenuItem>
-                ))}
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* Save current filters */}
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setSaveDialogOpen(true)}
-          disabled={!hasActiveFilters}
-          className="gap-2"
-        >
-          <Save className="h-4 w-4" />
-          Save Current
-        </Button>
-
-        {/* Manage presets */}
-        <PresetManager presets={presets} onPresetsChange={setPresets} />
-      </div>
-
-      {/* Results count and clear filters */}
-      <div className="flex items-center justify-between gap-4">
+      {/* Compact filter controls - Centered */}
+      <div className={cn("flex items-center justify-between gap-4 flex-wrap mx-auto", CONTAINER_WIDTHS.standard)}>
+        {/* Left: Results count */}
         {totalCount !== undefined && filteredCount !== undefined && (
-          <p className="text-sm text-muted-foreground">
-            Showing <span className="font-medium text-foreground">{filteredCount}</span> of{" "}
-            <span className="font-medium text-foreground">{totalCount}</span> activities
+          <div className="flex items-center gap-2">
+            <p className="text-sm text-muted-foreground">
+              <span className="font-medium text-foreground">{filteredCount}</span>
+              {" of "}
+              <span className="font-medium text-foreground">{totalCount}</span>
+              {" "}
+              {totalCount === 1 ? "activity" : "activities"}
+            </p>
             {hasActiveFilters && (
-              <Badge variant="secondary" className="ml-2">
-                {activeFilterCount} {activeFilterCount === 1 ? "filter" : "filters"}
+              <Badge variant="secondary" className="rounded-full">
+                {activeFilterCount}
               </Badge>
             )}
-          </p>
+          </div>
         )}
-        {hasActiveFilters && (
-          <button
-            onClick={clearAllFilters}
-            className="text-sm text-muted-foreground hover:text-foreground transition-theme underline"
+
+        {/* Right: Quick controls */}
+        <div className="flex items-center gap-2">
+          {/* Toggle filters button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setFiltersExpanded(!filtersExpanded)}
+            className="gap-1.5 rounded-full h-8"
           >
-            Clear all filters
-          </button>
-        )}
-      </div>
-
-      {/* Source filters */}
-      <div className="flex flex-wrap gap-2">
-        {/* "All" toggle */}
-        <Badge
-          variant={isAllSources ? "default" : "outline"}
-          className={cn(
-            "cursor-pointer transition-base",
-            isAllSources
-              ? "bg-primary text-primary-foreground"
-              : "hover:bg-accent"
-          )}
-          onClick={() => onSourcesChange([])}
-        >
-          All
-        </Badge>
-
-        {/* Source toggles */}
-        {availableSources.map((source) => {
-          const Icon = SOURCE_ICONS[source];
-          const isSelected = selectedSources.includes(source);
-          const colors = ACTIVITY_SOURCE_COLORS[source];
-
-          return (
-            <Badge
-              key={source}
-              variant={isSelected ? "default" : "outline"}
-              className={cn(
-                "cursor-pointer transition-theme gap-1",
-                !isSelected && "hover:bg-accent text-muted-foreground"
+            <SlidersHorizontal className="h-3.5 w-3.5" />
+            <span className="text-sm">{filtersExpanded ? "Hide" : "Show"} Filters</span>
+            <ChevronDown className={cn(
+              "h-3.5 w-3.5 transition-transform",
+              filtersExpanded && "rotate-180"
+            )} />
+          </Button>
+          {/* Preset dropdown - Simplified */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="gap-1.5 rounded-full h-8">
+                <Star className="h-3.5 w-3.5" />
+                <span className="text-sm">Presets</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-52">
+              <DropdownMenuLabel className="text-xs">Quick Filters</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {presets.filter((p) => p.isDefault).map((preset) => (
+                <DropdownMenuItem
+                  key={preset.id}
+                  onClick={() => applyPreset(preset)}
+                  className="gap-2"
+                >
+                  {/* eslint-disable-next-line no-restricted-syntax */}
+                  <Star className="h-3.5 w-3.5 text-yellow-500" />
+                  <span className="text-sm">{preset.name}</span>
+                </DropdownMenuItem>
+              ))}
+              {presets.filter((p) => !p.isDefault).length > 0 && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel className="text-xs">Your Presets</DropdownMenuLabel>
+                  {presets.filter((p) => !p.isDefault).map((preset) => (
+                    <DropdownMenuItem
+                      key={preset.id}
+                      onClick={() => applyPreset(preset)}
+                    >
+                      <span className="text-sm">{preset.name}</span>
+                    </DropdownMenuItem>
+                  ))}
+                </>
               )}
-              onClick={() => toggleSource(source)}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Save current */}
+          {hasActiveFilters && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSaveDialogOpen(true)}
+              className="gap-1.5 rounded-full h-8"
             >
-              <Icon className="h-3 w-3" />
-              {ACTIVITY_SOURCE_LABELS[source]}
-            </Badge>
-          );
-        })}
+              <Save className="h-3.5 w-3.5" />
+              <span className="text-sm">Save</span>
+            </Button>
+          )}
+
+          {/* Manage presets */}
+          <PresetManager presets={presets} onPresetsChange={setPresets} />
+
+          {/* Clear filters */}
+          {hasActiveFilters && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearAllFilters}
+              className="gap-1.5 rounded-full h-8"
+            >
+              <X className="h-3.5 w-3.5" />
+              <span className="text-sm">Clear</span>
+            </Button>
+          )}
+        </div>
       </div>
 
-      {/* Time range filter */}
-      <div className="flex flex-wrap gap-2">
-        {TIME_RANGES.map(({ value, label }) => (
-          <Badge
-            key={value}
-            variant={selectedTimeRange === value ? "secondary" : "outline"}
-            className={cn(
-              "cursor-pointer transition-theme",
-              selectedTimeRange === value
-                ? "bg-secondary"
-                : "hover:bg-accent text-muted-foreground"
-            )}
-            onClick={() => onTimeRangeChange(value)}
-          >
-            {label}
-          </Badge>
-        ))}
-      </div>
+      {/* Collapsible filter sections */}
+      {filtersExpanded && (
+        <>
+          {/* Source filters - Pill style, centered, scrollable on mobile */}
+          <div className="flex justify-center">
+            <div className="flex flex-wrap gap-1.5 justify-center max-w-4xl">
+              {/* "All" toggle */}
+              <Badge
+                variant={isAllSources ? "default" : "outline"}
+                className={cn(
+                  "cursor-pointer transition-colors rounded-full px-3 py-1.5",
+                  isAllSources
+                    ? "bg-foreground text-background hover:bg-foreground/90"
+                    : "hover:bg-muted/70 border-border/50"
+                )}
+                onClick={() => onSourcesChange([])}
+              >
+                <span className="text-sm">All</span>
+              </Badge>
+
+              {/* Source toggles */}
+              {availableSources.map((source) => {
+                const Icon = SOURCE_ICONS[source];
+                const isSelected = selectedSources.includes(source);
+
+                return (
+                  <Badge
+                    key={source}
+                    variant={isSelected ? "default" : "outline"}
+                    className={cn(
+                      "cursor-pointer transition-colors rounded-full px-3 py-1.5 gap-1.5",
+                      isSelected
+                        ? "bg-foreground text-background hover:bg-foreground/90"
+                        : "hover:bg-muted/70 border-border/50"
+                    )}
+                    onClick={() => toggleSource(source)}
+                  >
+                    <Icon className="h-3 w-3" />
+                    <span className="text-sm">{ACTIVITY_SOURCE_LABELS[source]}</span>
+                  </Badge>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Time range filter - Pill style, centered */}
+          <div className="flex justify-center">
+            <div className="flex flex-wrap gap-1.5 justify-center">
+              {TIME_RANGES.map(({ value, label }) => (
+                <Badge
+                  key={value}
+                  variant={selectedTimeRange === value ? "secondary" : "outline"}
+                  className={cn(
+                    "cursor-pointer transition-colors rounded-full px-3 py-1.5",
+                    selectedTimeRange === value
+                      ? "bg-secondary hover:bg-secondary/90"
+                      : "hover:bg-muted/70 border-border/50"
+                  )}
+                  onClick={() => onTimeRangeChange(value)}
+                >
+                  <span className="text-sm">{label}</span>
+                </Badge>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Save preset dialog */}
       <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>

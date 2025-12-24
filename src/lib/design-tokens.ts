@@ -24,10 +24,13 @@
 export const CONTAINER_WIDTHS = {
   /** Prose/reading content - optimal line length (45-75 chars/line per typography research) */
   prose: "max-w-4xl",
-  
+
   /** Narrow width for forms and focused content (contact forms) */
   narrow: "max-w-4xl",
-  
+
+  /** Thread-style single-column feed (Threads-inspired activity timeline) */
+  thread: "max-w-2xl",
+
   /** Standard width for core pages (homepage, about, contact, resume) */
   standard: "max-w-5xl",
   

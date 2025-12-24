@@ -2,17 +2,14 @@
 
 import { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUp, ArrowDown, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ActivityItem as ActivityItemComponent } from "@/components/activity/ActivityItem";
-import { FeedInterruption, type FeedInterruptionProps } from "@/components/activity";
+import { ThreadedActivityFeed } from "@/components/activity/ThreadedActivityFeed";
 import { useInfiniteActivity } from "@/hooks/use-infinite-activity";
-import { useActivityWithInterruptions, type FeedItem } from "@/hooks/use-activity-with-interruptions";
-import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { cn } from "@/lib/utils";
-import { ANIMATION, TYPOGRAPHY } from "@/lib/design-tokens";
 import type { ActivityItem } from "@/lib/activity";
+import { SPACING } from "@/lib/design-tokens";
 
 // ============================================================================
 // TYPES
@@ -21,20 +18,14 @@ import type { ActivityItem } from "@/lib/activity";
 interface InfiniteActivitySectionProps {
   /** All activity items */
   items: ActivityItem[];
+  /** Total count of all activities (before limiting) */
+  totalActivities?: number;
   /** Initial number of items to show */
   initialCount?: number;
   /** Items to load per page */
   pageSize?: number;
-  /** Max height for the scrollable container */
-  maxHeight?: string;
-  /** Content interruptions to intersperse */
-  interruptions?: FeedInterruptionProps[];
-  /** Insert interruption every N items */
-  interruptionInterval?: number;
   /** Show progress indicator */
   showProgress?: boolean;
-  /** Show scroll hint for first-time visitors */
-  showScrollHint?: boolean;
   /** Show CTA to full activity page after N items */
   maxItemsBeforeCTA?: number;
   /** CTA text */
@@ -44,32 +35,6 @@ interface InfiniteActivitySectionProps {
   /** Additional class names */
   className?: string;
 }
-
-// ============================================================================
-// DEFAULT INTERRUPTIONS
-// ============================================================================
-
-const DEFAULT_INTERRUPTIONS: FeedInterruptionProps[] = [
-  {
-    type: "cta",
-    title: "Explore the Blog",
-    description: "Discover in-depth articles on security, architecture, and modern development practices.",
-    href: "/blog",
-    buttonLabel: "Browse articles",
-    theme: "cyan",
-  },
-  {
-    type: "quote",
-    quote: "Security is not a product, but a process. It's about layers, vigilance, and continuous improvement.",
-    source: "Security Architecture Philosophy",
-    theme: "lime",
-  },
-  {
-    type: "newsletter",
-    title: "Stay Updated",
-    description: "Subscribe to the RSS feed for the latest posts and project updates.",
-  },
-];
 
 // ============================================================================
 // CONSTANTS
@@ -85,48 +50,41 @@ const SCROLL_HINT_HIDE_DELAY = 5000; // Hide scroll hint after 5s
 /**
  * InfiniteActivitySection
  *
- * Homepage section that displays an infinite-scrolling activity feed
- * with content interruptions interspersed between activities.
+ * Homepage section that displays activity feed with dynamic page-flow loading
+ * using the Threads-inspired threaded activity layout.
+ * 
+ * As the user scrolls down the page, more items load automatically using
+ * Intersection Observer API.
  *
  * Features:
- * - Infinite scroll with simulated loading
- * - Content interruptions (CTAs, quotes, newsletter prompts)
- * - Scroll position restoration
- * - Scroll-to-top button
- * - Timeline connector styling
+ * - Dynamic loading as user scrolls (no constrained container)
+ * - Threaded conversation-style grouping
+ * - Intersection Observer for optimal performance
+ * - Smooth animations for new items
+ * - Like, share, and bookmark interactions
  *
  * @example
  * ```tsx
  * <InfiniteActivitySection
  *   items={allActivities}
- *   initialCount={5}
- *   pageSize={5}
- *   maxHeight="50vh"
- *   interruptions={[
- *     { type: "cta", title: "...", ... },
- *     { type: "quote", quote: "...", ... },
- *   ]}
+ *   initialCount={12}
+ *   pageSize={8}
  * />
  * ```
  */
 export function InfiniteActivitySection({
   items,
+  totalActivities,
   initialCount = 10,
   pageSize = 5,
-  maxHeight = "60vh",
-  interruptions = DEFAULT_INTERRUPTIONS,
-  interruptionInterval = 4,
   showProgress = true,
-  showScrollHint = true,
   maxItemsBeforeCTA = 20,
   ctaText = "View full activity timeline",
   ctaHref = "/activity",
   className,
 }: InfiniteActivitySectionProps) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [showScrollToTop, setShowScrollToTop] = useState(false);
-  const [showScrollHintIndicator, setShowScrollHintIndicator] = useState(showScrollHint);
-  const [hasUserScrolled, setHasUserScrolled] = useState(false);
+  const loadTriggerRef = useRef<HTMLDivElement>(null);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
   // Infinite scroll pagination
   const {
@@ -138,171 +96,97 @@ export function InfiniteActivitySection({
     visibleCount,
   } = useInfiniteActivity({
     items,
+    totalActivities,
     initialPageSize: initialCount,
     pageSize,
   });
 
-  // Inject interruptions into the feed
-  const { feedItems } = useActivityWithInterruptions({
-    activities: visibleItems,
-    interruptions,
-    interval: interruptionInterval,
-    startAfter: 3,
-    maxInterruptions: 3,
-  });
-
-  // Scroll restoration
-  useScrollRestoration("homepage-activity", scrollRef);
-
-  // Auto-hide scroll hint after delay
-  useEffect(() => {
-    if (!showScrollHintIndicator) return;
-    
-    const timer = setTimeout(() => {
-      setShowScrollHintIndicator(false);
-    }, SCROLL_HINT_HIDE_DELAY);
-
-    return () => clearTimeout(timer);
-  }, [showScrollHintIndicator]);
-
-  // Scroll detection for infinite load and scroll-to-top button
-  const handleScroll = () => {
-    if (!scrollRef.current) return;
-    const scrollTop = scrollRef.current.scrollTop;
-    const atBottom =
-      scrollRef.current.scrollHeight - scrollRef.current.scrollTop <=
-      scrollRef.current.clientHeight + 100;
-
-    // Track if user has scrolled (hide scroll hint)
-    if (!hasUserScrolled && scrollTop > 50) {
-      setHasUserScrolled(true);
-      setShowScrollHintIndicator(false);
-    }
-
-    // Update scroll-to-top button visibility
-    setShowScrollToTop(scrollTop > SCROLL_TO_TOP_THRESHOLD);
-
-    // Trigger load more when near bottom
-    if (atBottom && hasMore && !isLoadingMore) {
-      loadMore();
-    }
-  };
-
-  const scrollToTop = () => {
-    scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   // Check if we should show CTA instead of loading more
   const shouldShowCTA = visibleCount >= maxItemsBeforeCTA && hasMore;
 
+  // Intersection Observer for lazy loading when element comes into view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // Load more when the trigger element is visible and we're not already loading
+          if (entry.isIntersecting && hasMore && !isLoadingMore) {
+            loadMore();
+            setHasLoadedOnce(true);
+          }
+        });
+      },
+      {
+        // Trigger loading when element is 200px from bottom of viewport
+        rootMargin: "200px",
+        threshold: 0,
+      }
+    );
+
+    const currentRef = loadTriggerRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+      observer.disconnect();
+    };
+  }, [hasMore, isLoadingMore, loadMore]);
+
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative w-full", className)}>
       {/* Progress indicator */}
       {showProgress && (
-        <div className="flex items-center justify-between mb-3 text-xs text-muted-foreground">
+        <div className="mb-12 text-xs text-muted-foreground">
           <span className="font-medium">
             Showing <span className="text-foreground">{visibleCount}</span> of{" "}
             <span className="text-foreground">{totalCount}</span> activities
           </span>
-          {hasMore && !shouldShowCTA && (
-            <span className="text-muted-foreground/70">
-              Scroll for more
-            </span>
-          )}
         </div>
       )}
 
-      {/* Scrollable feed container */}
-      <div
-        ref={scrollRef}
-        onScroll={handleScroll}
-        style={{ maxHeight }}
-        className="overflow-auto rounded-lg relative"
-      >
-        {/* Scroll hint indicator */}
-        {showScrollHintIndicator && hasMore && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3, delay: 0.5 }}
-            className="absolute top-2 left-1/2 -translate-x-1/2 z-10 pointer-events-none"
-          >
-            <div className="flex flex-col items-center gap-1 px-3 py-2 bg-background/95 backdrop-blur-sm border border-border/50 rounded-lg shadow-md">
-              <span className="text-xs text-muted-foreground font-medium">More below</span>
-              <motion.div
-                animate={{ y: [0, 4, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <ArrowDown className="h-3 w-3 text-muted-foreground" />
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-        <div className="relative">
-          {/* Timeline connector line */}
-          <div className="absolute left-4.75 top-4 bottom-4 w-px bg-border/50" />
+      {/* Timeline wrapper */}
+      <div className="relative">
+        {/* Threaded Activity Feed */}
+        <ThreadedActivityFeed
+          activities={visibleItems}
+          className="mb-8"
+        />
 
-          {/* Feed items with staggered entrance animations */}
-          <div className="space-y-4">
-            <AnimatePresence mode="popLayout">
-              {feedItems.map((feedItem, index) => (
+        {/* Loading indicator with entrance animation */}
+        <AnimatePresence>
+          {isLoadingMore && !shouldShowCTA && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="py-4 text-center"
+            >
+              <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
                 <motion.div
-                  key={feedItem.type === "activity" ? feedItem.item.id : `interruption-${index}`}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{
-                    duration: 0.3,
-                    delay: Math.min(index * 0.05, 0.3), // Cap delay at 0.3s
-                    ease: "easeOut",
-                  }}
-                  layout
-                  className="relative"
-                >
-                  {feedItem.type === "activity" ? (
-                    <ActivityItemComponent
-                      activity={feedItem.item}
-                      variant="timeline"
-                      showConnector
-                      isLast={index === feedItems.length - 1}
-                    />
-                  ) : (
-                    <div className="ml-10 md:ml-12">
-                      <FeedInterruption
-                        {...feedItem.item}
-                        animationDelay={0} // Animation handled by parent motion.div
-                      />
-                    </div>
-                  )}
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-
-          {/* Loading indicator with entrance animation */}
-          <AnimatePresence>
-            {isLoadingMore && !shouldShowCTA && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="py-6 text-center"
-              >
-                <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    className="h-4 w-4 border-2 border-current border-t-transparent rounded-full"
-                  />
-                  Loading more...
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  className="h-4 w-4 border-2 border-current border-t-transparent rounded-full"
+                />
+                Loading more...
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
+
+      {/* Load trigger point for Intersection Observer */}
+      {!shouldShowCTA && hasMore && (
+        <div
+          ref={loadTriggerRef}
+          className="h-2 pointer-events-none"
+          aria-hidden="true"
+        />
+      )}
 
       {/* CTA to full activity page */}
       {shouldShowCTA && (
@@ -310,7 +194,7 @@ export function InfiniteActivitySection({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="text-center py-6 border-t border-border/50 mt-2"
+          className="text-center py-8 border-t border-border/50 mt-8"
         >
           <p className="text-sm text-muted-foreground mb-3">
             Viewing {visibleCount} of {totalCount} activities
@@ -329,9 +213,9 @@ export function InfiniteActivitySection({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-center text-sm text-muted-foreground py-4 border-t border-border/50 mt-2"
+          className="text-center text-sm text-muted-foreground py-8 border-t border-border/50 mt-8"
         >
-          <p className="mb-2">You&apos;ve reached the end of recent activity</p>
+          <p className="mb-3">You&apos;ve reached the end of recent activity</p>
           <Button asChild variant="outline" size="sm">
             <Link href={ctaHref} className="gap-2">
               View all activity
@@ -339,22 +223,6 @@ export function InfiniteActivitySection({
             </Link>
           </Button>
         </motion.div>
-      )}
-
-      {/* Scroll to top button (fixed position within section) */}
-      {showScrollToTop && (
-        <Button
-          onClick={scrollToTop}
-          size="icon"
-          variant="secondary"
-          className={cn(
-            "absolute bottom-4 right-4 rounded-full shadow-lg z-10",
-            "animate-in fade-in slide-in-from-bottom-2"
-          )}
-          aria-label="Scroll to top"
-        >
-          <ArrowUp className="h-4 w-4" />
-        </Button>
       )}
     </div>
   );

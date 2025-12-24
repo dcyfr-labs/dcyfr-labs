@@ -380,9 +380,16 @@ describe('Resume Data', () => {
     it('getYearsOfExperience calculates from earliest experience', () => {
       const years = getYearsOfExperience()
       const currentYear = new Date().getFullYear()
-      const firstExperience = resume.experience[resume.experience.length - 1]
-      const startYear = parseInt(firstExperience.duration.match(/\d{4}/)?.[0] || "2021")
-      expect(years).toBe(currentYear - startYear)
+
+      // Find the actual earliest year across all experience entries
+      const allYears: number[] = []
+      resume.experience.forEach(exp => {
+        const year = parseInt(exp.duration.match(/\d{4}/)?.[0] || "2021")
+        allYears.push(year)
+      })
+      const earliestYear = Math.min(...allYears)
+
+      expect(years).toBe(currentYear - earliestYear)
     })
 
     it('getShortSummary includes calculated years', () => {

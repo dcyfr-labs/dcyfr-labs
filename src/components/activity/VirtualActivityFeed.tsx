@@ -197,6 +197,7 @@ export function VirtualActivityFeed({
   };
 
   // Virtual scrolling setup
+  // eslint-disable-next-line react-hooks/incompatible-library -- TanStack Virtual API returns functions that cannot be memoized safely
   const virtualizer = useVirtualizer({
     count: virtualItems.length,
     getScrollElement: () => parentRef.current,
@@ -250,14 +251,19 @@ export function VirtualActivityFeed({
           contain: "strict",
         }}
       >
-        <div
-          style={{
-            height: `${virtualizer.getTotalSize()}px`,
-            width: "100%",
-            position: "relative",
-          }}
-        >
-          {virtualRows.map((virtualRow) => {
+        {virtualItems.length === 0 && !isLoading ? (
+          <div className="flex items-center justify-center py-16 text-center">
+            <p className="text-muted-foreground">{emptyMessage}</p>
+          </div>
+        ) : (
+          <div
+            style={{
+              height: `${virtualizer.getTotalSize()}px`,
+              width: "100%",
+              position: "relative",
+            }}
+          >
+            {virtualRows.map((virtualRow) => {
             const item = virtualItems[virtualRow.index];
 
             return (
@@ -307,7 +313,8 @@ export function VirtualActivityFeed({
               </div>
             </div>
           )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Scroll to top button */}

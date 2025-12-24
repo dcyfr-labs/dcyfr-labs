@@ -101,7 +101,7 @@ export function MiniSkillsList({
       </div>
 
       {/* Skills grouped by frequency */}
-      <div className="space-y-6">
+      <div className={SPACING.subsection}>
         {/* High Frequency Skills (3+ certifications) */}
         {skillTiers.core.length > 0 && (
           <div>

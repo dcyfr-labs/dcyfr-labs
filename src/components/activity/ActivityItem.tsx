@@ -206,7 +206,8 @@ export function ActivityItem({
           onClick={handleBookmarkToggle}
           className={cn(
             "absolute top-3 right-3 h-8 w-8 opacity-0 group-hover:opacity-100",
-            "transition-opacity duration-200",
+            ANIMATION.transition.movement,
+            // eslint-disable-next-line no-restricted-syntax -- Bookmark status color (icon color, not semantic)
             isBookmarked(activity.id) && "opacity-100 text-amber-500 hover:text-amber-600"
           )}
           aria-label={isBookmarked(activity.id) ? "Remove bookmark" : "Add bookmark"}
@@ -505,14 +506,15 @@ function TimelineItem({
           "relative z-10 shrink-0 w-9 h-9 rounded-full flex items-center justify-center",
           "bg-background border-2 border-border",
           // Enhanced hover: border color + subtle scale + shadow
-          "transition-all duration-200 ease-out",
+          cn(ANIMATION.transition.base, ANIMATION.duration.fast),
           "group-hover:border-primary/50 group-hover:scale-110 group-hover:shadow-md",
           "group-hover:shadow-primary/10"
         )}
       >
         <Icon
           className={cn(
-            "h-4 w-4 transition-all duration-200",
+            "h-4 w-4",
+            ANIMATION.transition.base,
             colors?.icon,
             // Icon color change on hover
             "group-hover:text-primary group-hover:scale-105"
@@ -531,16 +533,17 @@ function TimelineItem({
             "absolute top-0 right-0 h-8 w-8",
             // Fade in/out with scale
             "opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100",
-            "transition-all duration-200 ease-out",
+            cn(ANIMATION.transition.base, ANIMATION.duration.fast),
             // Active state: slight bounce
             "active:scale-90",
             // Bookmarked state: always visible with amber color
+            // eslint-disable-next-line no-restricted-syntax -- Bookmark status color (icon color, not semantic)
             isBookmarked(activity.id) && "opacity-100 scale-100 text-amber-500 hover:text-amber-600"
           )}
           aria-label={isBookmarked(activity.id) ? "Remove bookmark" : "Add bookmark"}
         >
           {isBookmarked(activity.id) ? (
-            <BookmarkCheck className="h-4 w-4 animate-in zoom-in-50 duration-200" />
+            <BookmarkCheck className={cn("h-4 w-4 animate-in zoom-in-50", ANIMATION.duration.fast)} />
           ) : (
             <Bookmark className="h-4 w-4" />
           )}

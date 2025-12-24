@@ -1,6 +1,6 @@
 import { featuredProjects, projects } from "@/data/projects";
 import { posts, featuredPosts } from "@/data/posts";
-import { visibleChangelog } from "@/data/changelog";
+import { visibleChangelog, changelog } from "@/data/changelog";
 import { getSocialUrls } from "@/data/socials";
 import { getPostBadgeMetadata } from "@/lib/post-badges";
 import { getMultiplePostViews } from "@/lib/views";
@@ -39,8 +39,22 @@ import {
   transformPosts,
   transformProjects,
   transformChangelog,
-  aggregateActivities,
 } from "@/lib/activity";
+import type { ActivityItem } from "@/lib/activity/types";
+import {
+  transformPostsWithViews,
+  transformTrendingPosts,
+  transformMilestones,
+  transformHighEngagementPosts,
+  transformCommentMilestones,
+  transformGitHubActivity,
+  transformWebhookGitHubCommits,
+  transformCredlyBadges,
+  transformVercelAnalytics,
+  transformGitHubTraffic,
+  transformGoogleAnalytics,
+  transformSearchConsole,
+} from "@/lib/activity/sources.server";
 import {
   HomepageStats,
   HomepageHeroActions,
@@ -197,27 +211,88 @@ export default async function Home() {
     ],
   };
 
-  // Transform content into activity items
-  const blogActivities = await transformPosts(recentPosts);
-  const projectActivities = transformProjects([...featuredProjects]);
-  const changelogActivities = transformChangelog(visibleChangelog);
+  // Gather activity from all sources (unified timeline)
+  const activities: ActivityItem[] = [];
 
-  // Activities for infinite scroll timeline (larger dataset)
-  const timelineActivities = aggregateActivities(
-    [
-      ...blogActivities,
-      ...projectActivities,
-      ...changelogActivities,
-    ],
-    { limit: 50 } // Larger limit for infinite scroll
+  await Promise.all([
+    // Blog posts with views
+    transformPostsWithViews(posts)
+      .then((items) => activities.push(...items))
+      .catch((err) => console.error("[Homepage] Blog posts fetch failed:", err)),
+    
+    // Projects
+    Promise.resolve(transformProjects([...projects]))
+      .then((items) => activities.push(...items))
+      .catch((err) => console.error("[Homepage] Projects fetch failed:", err)),
+    
+    // Changelog
+    Promise.resolve(transformChangelog(changelog))
+      .then((items) => activities.push(...items))
+      .catch((err) => console.error("[Homepage] Changelog fetch failed:", err)),
+    
+    // Trending posts
+    transformTrendingPosts(posts)
+      .then((items) => activities.push(...items))
+      .catch((err) => console.error("[Homepage] Trending posts fetch failed:", err)),
+    
+    // Milestones
+    transformMilestones(posts)
+      .then((items) => activities.push(...items))
+      .catch((err) => console.error("[Homepage] Milestones fetch failed:", err)),
+    
+    // High engagement posts
+    transformHighEngagementPosts(posts)
+      .then((items) => activities.push(...items))
+      .catch((err) => console.error("[Homepage] High engagement posts fetch failed:", err)),
+    
+    // Comment milestones
+    transformCommentMilestones(posts)
+      .then((items) => activities.push(...items))
+      .catch((err) => console.error("[Homepage] Comment milestones fetch failed:", err)),
+    
+    // GitHub activity
+    transformGitHubActivity("dcyfr", ["dcyfr-labs"])
+      .then((items) => activities.push(...items))
+      .catch((err) => console.error("[Homepage] GitHub activity fetch failed:", err)),
+    
+    // Webhook GitHub commits
+    transformWebhookGitHubCommits()
+      .then((items) => activities.push(...items))
+      .catch((err) => console.error("[Homepage] Webhook commits fetch failed:", err)),
+    
+    // Credly badges
+    transformCredlyBadges("dcyfr")
+      .then((items) => activities.push(...items))
+      .catch((err) => console.error("[Homepage] Credly badges fetch failed:", err)),
+    
+    // Vercel Analytics
+    transformVercelAnalytics()
+      .then((items) => activities.push(...items))
+      .catch((err) => console.error("[Homepage] Vercel Analytics fetch failed:", err)),
+    
+    // GitHub Traffic
+    transformGitHubTraffic()
+      .then((items) => activities.push(...items))
+      .catch((err) => console.error("[Homepage] GitHub Traffic fetch failed:", err)),
+    
+    // Google Analytics
+    transformGoogleAnalytics()
+      .then((items) => activities.push(...items))
+      .catch((err) => console.error("[Homepage] Google Analytics fetch failed:", err)),
+    
+    // Search Console
+    transformSearchConsole()
+      .then((items) => activities.push(...items))
+      .catch((err) => console.error("[Homepage] Search Console fetch failed:", err)),
+  ]);
+
+  // Sort by timestamp (most recent first)
+  const timelineActivities = activities.sort(
+    (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
   );
 
-  // All activities for heatmap (no limit)
-  const allActivities = aggregateActivities([
-    ...blogActivities,
-    ...projectActivities,
-    ...changelogActivities,
-  ]);
+  // All activities for heatmap
+  const allActivities = timelineActivities;
 
   // Convert viewCounts to Map for TrendingPosts
   const viewCountsMap = new Map(Object.entries(viewCounts).map(([k, v]) => [k, v as number]));
@@ -353,11 +428,10 @@ export default async function Home() {
               />
               <InfiniteActivitySection
                 items={timelineActivities}
-                initialCount={12}
+                totalActivities={timelineActivities.length}
+                initialCount={7}
                 pageSize={8}
-                maxHeight="65vh"
                 showProgress
-                showScrollHint
                 maxItemsBeforeCTA={20}
                 ctaText="View all activity"
                 ctaHref="/activity"

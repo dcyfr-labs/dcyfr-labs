@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert } from "@/components/common/alert";
 import { Award, ExternalLink, Clock } from "lucide-react";
-import { SPACING, TYPOGRAPHY, HOVER_EFFECTS } from "@/lib/design-tokens";
+import { SPACING, TYPOGRAPHY, HOVER_EFFECTS, ANIMATION } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import { useCredlyBadges } from "@/hooks/use-credly";
 import type { CredlyBadge } from "@/types/credly";
@@ -58,7 +58,7 @@ function BadgeCard({ badge }: BadgeCardProps) {
       rel="noopener noreferrer"
       className="block group"
     >
-      <Card className={cn("p-6 h-full", HOVER_EFFECTS.card)}>
+      <Card className={cn("p-4 h-full", HOVER_EFFECTS.card)}>
         <div className="flex flex-col items-center text-center gap-4">
           {/* Badge Image */}
           <div className="relative w-36 h-36 shrink-0">
@@ -105,7 +105,8 @@ function BadgeCard({ badge }: BadgeCardProps) {
           <div className={cn(
             "flex items-center gap-1.5",
             TYPOGRAPHY.label.small,
-            "text-primary group-hover:gap-2 transition-all"
+            "text-primary group-hover:gap-2",
+            ANIMATION.transition.movement
           )}>
             <span>View Badge</span>
             <ExternalLink className="h-4 w-4" />
@@ -195,7 +196,7 @@ export function BadgeWallet({
       </div>
 
       {/* Badge Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {displayedBadges.map((badge) => (
           <BadgeCard key={badge.id} badge={badge} />
         ))}

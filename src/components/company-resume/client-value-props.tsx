@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { getValuePropositions } from "@/data/company-cv";
 import { TYPOGRAPHY, SPACING, HOVER_EFFECTS } from "@/lib/design-tokens";
+import { cn } from "@/lib/utils";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
 /**
@@ -24,13 +25,13 @@ export function ClientValueProps() {
         </p>
       </div>
 
-      <div className={`space-y-${SPACING.subsection}`}>
+      <div className={SPACING.subsection}>
         {valueProps.map((prop, idx) => (
-          <Card key={idx} className="p-6 hover:shadow-lg transition-shadow">
+          <Card key={idx} className="p-4 hover:shadow-lg transition-shadow">
             <div className="space-y-4">
               {/* Header */}
               <div>
-                <h3 className={`${TYPOGRAPHY.h2.standard} mb-2`}>
+                <h3 className={cn(TYPOGRAPHY.h2.standard, "mb-2")}>
                   {prop.title}
                 </h3>
                 <p className="text-muted-foreground">{prop.description}</p>
@@ -54,11 +55,12 @@ export function ClientValueProps() {
       </div>
 
       {/* CTA Section */}
-      <Card className={`p-8 mt-${SPACING.content} bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 text-center`}>
-        <h3 className={`${TYPOGRAPHY.h2.standard} mb-4`}>
+      <Card className={cn("p-8 mt-8 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 text-center")}>
+        <h3 className={cn(TYPOGRAPHY.h2.standard, "mb-4")}>
           Ready to Build Something Secure & Scalable?
         </h3>
-        <p className={`${TYPOGRAPHY.description} mb-6 max-w-2xl mx-auto`}>
+        {/* eslint-disable-next-line no-restricted-syntax -- max-w-2xl is for text width, not page container */}
+        <p className={cn(TYPOGRAPHY.description, "mb-6 max-w-2xl mx-auto")}>
           Let&apos;s discuss how DCYFR Labs can help you navigate the complex landscape
           of cyber architecture and modern web development.
         </p>

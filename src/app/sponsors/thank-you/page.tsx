@@ -15,6 +15,7 @@ import {
   HOVER_EFFECTS
 } from "@/lib/design-tokens";
 import { BookOpen, Code, Linkedin, Github, ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { getGitHubSponsors } from "@/lib/sponsors/github-sponsors";
 
 export const metadata: Metadata = {
@@ -123,7 +124,7 @@ export default async function SponsorThankYouPage({ searchParams }: PageProps) {
               <h2 className={TYPOGRAPHY.h2.standard}>
                 Your Impact
               </h2>
-              <p className={`text-muted-foreground mt-4 ${CONTAINER_WIDTHS.narrow} mx-auto`}>
+              <p className={cn("text-muted-foreground mt-4 mx-auto", CONTAINER_WIDTHS.narrow)}>
                 Your sponsorship directly supports these initiatives and helps us continue creating value for the developer community.
               </p>
             </div>
@@ -137,7 +138,7 @@ export default async function SponsorThankYouPage({ searchParams }: PageProps) {
             <div className="text-center mb-8">
               <h2 className={TYPOGRAPHY.h2.standard}>What&apos;s Next?</h2>
               <p
-                className={`text-muted-foreground mt-4 ${CONTAINER_WIDTHS.narrow} mx-auto`}
+                className={cn("text-muted-foreground mt-4 mx-auto", CONTAINER_WIDTHS.narrow)}
               >
                 Here are some ways to stay connected and get the most out of the
                 community.
@@ -151,7 +152,7 @@ export default async function SponsorThankYouPage({ searchParams }: PageProps) {
                   href={step.href}
                   target={step.external ? "_blank" : undefined}
                   rel={step.external ? "noopener noreferrer" : undefined}
-                  className={`group bg-card border border-border rounded-lg ${SPACING.content} ${HOVER_EFFECTS.cardSubtle}`}
+                  className={cn("group bg-card border border-border rounded-lg", SPACING.content, HOVER_EFFECTS.cardSubtle)}
                 >
                   <div className="flex items-start gap-4">
                     <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">

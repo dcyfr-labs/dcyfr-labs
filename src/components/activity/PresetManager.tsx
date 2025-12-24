@@ -123,7 +123,8 @@ export function PresetManager({
         <div className={SPACING.subsection}>
           {/* Default Presets */}
           <div>
-            <h3 className={`${TYPOGRAPHY.h3.standard} mb-3 flex items-center gap-2`}>
+            <h3 className={cn(TYPOGRAPHY.h3.standard, "mb-3 flex items-center gap-2")}>
+              {/* eslint-disable-next-line no-restricted-syntax */}
               <Star className="h-4 w-4 text-yellow-500" />
               Default Presets
             </h3>
@@ -149,7 +150,7 @@ export function PresetManager({
 
           {/* User Presets */}
           <div>
-            <h3 className={`${TYPOGRAPHY.h3.standard} mb-3`}>Your Presets</h3>
+            <h3 className={cn(TYPOGRAPHY.h3.standard, "mb-3")}>Your Presets</h3>
             {userPresets.length === 0 ? (
               <p className="text-sm text-muted-foreground text-center py-8">
                 No custom presets yet. Save your current filters to create one!

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { createPageMetadata, getJsonLdScriptProps } from "@/lib/metadata";
 import { SITE_URL, AUTHOR_NAME } from "@/lib/site-config";
-import { CONTAINER_WIDTHS, CONTAINER_PADDING, CONTAINER_VERTICAL_PADDING } from "@/lib/design-tokens";
-import { PageHero } from "@/components/layouts/page-hero";
+import { CONTAINER_WIDTHS, CONTAINER_PADDING, TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
+import { cn } from "@/lib/utils";
 import { ActivityPageClient } from "./activity-client";
 import { posts } from "@/data/posts";
 import { projects } from "@/data/projects";
@@ -64,7 +64,7 @@ async function getRedisClient() {
 
 const pageTitle = "Activity";
 const pageDescription =
-  "Real-time timeline of blog posts, project updates, trending content, milestones, and GitHub activity.";
+  "Timeline of blog posts, project updates, trending content, milestones, and GitHub activity.";
 
 export const metadata: Metadata = {
   ...createPageMetadata({
@@ -203,8 +203,10 @@ export default async function ActivityPage() {
         .catch((err) => console.error("[Activity Page] Search Console fetch failed:", err)),
     ]);
 
-    // Aggregate and sort (no limits - unified timeline)
-    allActivities = aggregateActivities(activities);
+    // Sort by timestamp (no filtering, no aggregation - unified timeline)
+    allActivities = activities.sort(
+      (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
+    );
     loadSource = "direct";
     
     console.log(
@@ -247,16 +249,22 @@ export default async function ActivityPage() {
     <>
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
 
-      {/* Header */}
-      <div id="activity-header">
-        <PageHero
-          title={pageTitle}
-          description={pageDescription}
-          variant="homepage"
-          actions={
+      {/* Minimal Hero - Threads-like centered design */}
+      <div className={cn("border-b py-16 md:py-20")}>
+        <div className={`${CONTAINER_WIDTHS.thread} mx-auto ${CONTAINER_PADDING} text-center`}>
+          <div className="flex flex-col items-center gap-4">
+            <h1 className={cn(TYPOGRAPHY.h1.standard, "text-balance")}>
+              {pageTitle}
+            </h1>
+            <p className={cn(TYPOGRAPHY.body, "text-muted-foreground text-balance")}>
+              {pageDescription}
+            </p>
             <a
               href="/activity/rss.xml"
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/50"
+              className={cn(
+                "inline-flex items-center gap-2 px-3 py-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-full border border-border/50 hover:border-border hover:bg-muted/30",
+                TYPOGRAPHY.label.small
+              )}
               title="Subscribe to RSS feed"
               aria-label="Subscribe to activity feed via RSS"
             >
@@ -264,26 +272,26 @@ export default async function ActivityPage() {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                className="w-5 h-5"
+                className="w-4 h-4"
                 aria-hidden="true"
               >
                 <path d="M3.429 2.571v18.857h18.857V2.571H3.429zm16.071 16.072H5.214V4.357H19.5v14.286zM8.25 14.893a2.036 2.036 0 1 1 0 4.071 2.036 2.036 0 0 1 0-4.071zm0 0M6.321 6.536v2.25c5.625 0 10.179 4.554 10.179 10.178h2.25c0-6.857-5.571-12.428-12.429-12.428zm0 4.5v2.25a5.679 5.679 0 0 1 5.679 5.678h2.25A7.929 7.929 0 0 0 6.321 11.036z"/>
               </svg>
               RSS Feed
             </a>
-          }
-        />
+          </div>
+        </div>
       </div>
 
       <div
-        className={`container ${CONTAINER_WIDTHS.standard} mx-auto ${CONTAINER_PADDING} pb-8`}
+        className={`${CONTAINER_WIDTHS.standard} mx-auto ${CONTAINER_PADDING} py-12 md:py-16`}
       >
 
         {/* Error State */}
         {error && (
-          <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 mb-8">
-            <p className="text-sm text-destructive">{error}</p>
-            <p className="text-xs text-muted-foreground mt-2">
+          <div className={cn("rounded-xl border border-destructive/50 bg-destructive/10 p-4", SPACING.content)}>
+            <p className={cn(TYPOGRAPHY.body, "text-destructive")}>{error}</p>
+            <p className={cn(TYPOGRAPHY.metadata, "text-muted-foreground mt-2")}>
               Activities may be temporarily unavailable. Please try again later.
             </p>
           </div>

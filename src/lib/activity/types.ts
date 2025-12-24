@@ -8,6 +8,20 @@
  * @see /docs/features/activity-feed.md (TODO: create documentation)
  */
 
+import {
+  FileText,
+  FolderKanban,
+  GitCommit,
+  Sparkles,
+  Trophy,
+  TrendingUp,
+  Flame,
+  Award,
+  BarChart3,
+  Activity,
+  Search,
+} from "lucide-react";
+
 // ============================================================================
 // ACTIVITY SOURCES & VERBS
 // ============================================================================
@@ -115,6 +129,7 @@ export interface ActivityMeta {
   /** GitHub-specific fields */
   commits?: number;
   version?: string;
+  repo?: string; // Repository name for threading
 
   /** Milestone value (for view/comment milestones) */
   milestone?: number;
@@ -124,6 +139,10 @@ export interface ActivityMeta {
 
   /** Engagement rate percentage */
   engagement?: number;
+
+  /** Unique content identifiers for threading */
+  id?: string; // Content ID (e.g., blog post ID)
+  postId?: string; // Blog post ID for trending/engagement threading
 }
 
 // ============================================================================
@@ -285,3 +304,27 @@ export const ACTIVITY_VERB_LABELS: Record<ActivityVerb, string> = {
   earned: "Earned",
   reached: "Reached",
 } as const;
+
+/**
+ * Icon mapping for activity sources
+ */
+export const SOURCE_ICONS: Record<ActivitySource, typeof FileText> = {
+  blog: FileText,
+  project: FolderKanban,
+  github: GitCommit,
+  changelog: Sparkles,
+  milestone: Trophy,
+  trending: TrendingUp,
+  engagement: Flame,
+  certification: Award,
+  analytics: BarChart3,
+  "github-traffic": Activity,
+  seo: Search,
+} as const;
+
+/**
+ * Get the appropriate icon component for an activity source
+ */
+export function getActivitySourceIcon(source: ActivitySource): typeof FileText {
+  return SOURCE_ICONS[source];
+}

@@ -148,7 +148,7 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
   }
 
   return (
-    <div className={cn("space-y-6", className)}>
+    <div className={cn(SPACING.subsection, className)}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -198,7 +198,7 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
         <Card>
           <CardContent className="flex flex-col items-center justify-center p-12 text-center">
             <BookmarkX className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No bookmarks yet</h3>
+            <h3 className={TYPOGRAPHY.h3.standard}>No bookmarks yet</h3>
             <p className="text-sm text-muted-foreground max-w-md">
               Bookmark activity items to save them for later reference. Click the bookmark
               icon on any activity to get started.
@@ -401,6 +401,7 @@ function BookmarkCard({ bookmark, onEdit, onRemove }: BookmarkCardProps) {
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
+              {/* eslint-disable-next-line no-restricted-syntax -- Bookmark status color (icon color, not semantic) */}
               <Bookmark className="h-4 w-4 text-amber-500 shrink-0" />
               <code className="text-sm bg-muted px-2 py-0.5 rounded font-mono">
                 {bookmark.activityId}

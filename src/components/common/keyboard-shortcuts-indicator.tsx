@@ -18,6 +18,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { ANIMATION, TYPOGRAPHY } from "@/lib/design-tokens";
 
 /**
  * Small indicator that appears when 'g' is pressed
@@ -34,12 +35,12 @@ export function KeyboardShortcutIndicator() {
         "fixed bottom-4 right-4 z-50",
         "bg-card border rounded-lg shadow-lg",
         "px-4 py-3",
-        "animate-in fade-in slide-in-from-bottom-2 duration-200"
+        `animate-in fade-in slide-in-from-bottom-2 ${ANIMATION.duration.normal}`
       )}
       role="status"
       aria-live="polite"
     >
-      <div className="text-sm font-medium mb-2">Press a key:</div>
+      <div className={cn(TYPOGRAPHY.label.small, "mb-2")}>Press a key:</div>
       <div className="flex gap-2 flex-wrap">
         {availableKeys.map((key) => (
           <kbd
@@ -78,7 +79,7 @@ export function KeyboardShortcutsHelp() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Keyboard Shortcuts</DialogTitle>
           <DialogDescription>
@@ -86,10 +87,10 @@ export function KeyboardShortcutsHelp() {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6 mt-4">
+        <div className="space-y-4 mt-4">
           {/* Navigation Shortcuts */}
           <section>
-            <h3 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">
+            <h3 className={cn(TYPOGRAPHY.label.small, "mb-3 text-muted-foreground uppercase tracking-wide")}>
               Navigation
             </h3>
             <div className="space-y-2">
@@ -126,7 +127,7 @@ export function KeyboardShortcutsHelp() {
 
           {/* General Shortcuts */}
           <section>
-            <h3 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">
+            <h3 className={cn(TYPOGRAPHY.label.small, "mb-3 text-muted-foreground uppercase tracking-wide")}>
               General
             </h3>
             <div className="space-y-2">

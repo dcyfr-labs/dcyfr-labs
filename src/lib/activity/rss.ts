@@ -27,7 +27,7 @@ export interface RSSFeedConfig {
 const DEFAULT_CONFIG: RSSFeedConfig = {
   title: `${AUTHOR_NAME}'s Activity Feed`,
   description:
-    "Real-time timeline of blog posts, project updates, trending content, milestones, and GitHub activity.",
+    "Timeline of blog posts, project updates, trending content, milestones, and GitHub activity.",
   link: `${SITE_URL}/activity`,
   language: "en-US",
   copyright: `© ${new Date().getFullYear()} ${AUTHOR_NAME}`,

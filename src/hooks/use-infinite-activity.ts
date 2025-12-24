@@ -10,6 +10,8 @@ import type { ActivityItem } from "@/lib/activity";
 interface UseInfiniteActivityOptions {
   /** All activity items to paginate through */
   items: ActivityItem[];
+  /** Total count of all activities (before limiting), if different from items.length */
+  totalActivities?: number;
   /** Initial page size */
   initialPageSize?: number;
   /** How many items to load per "page" */
@@ -73,6 +75,7 @@ const SIMULATED_LOAD_DELAY = 300; // Simulate network delay for realistic UX
  */
 export function useInfiniteActivity({
   items,
+  totalActivities,
   initialPageSize = DEFAULT_INITIAL_PAGE_SIZE,
   pageSize = DEFAULT_PAGE_SIZE,
 }: UseInfiniteActivityOptions): UseInfiniteActivityReturn {
@@ -113,8 +116,8 @@ export function useInfiniteActivity({
     isLoadingMore,
     loadMore,
     reset,
-    totalCount: items.length,
-    visibleCount,
+    totalCount: totalActivities ?? items.length,
+    visibleCount: visibleItems.length, // Use actual visible items length, not state
   };
 }
 

@@ -2,18 +2,23 @@
 import { createClient } from 'redis';
 
 async function clearActivityCache() {
-  const redis = createClient({ url: process.env.REDIS_URL });
+  const redisUrl = process.env.REDIS_URL;
   
+  if (!redisUrl) {
+    console.log('⚠️  REDIS_URL not configured - no cache to clear');
+    return;
+  }
+
   try {
+    const redis = createClient({ url: redisUrl });
     await redis.connect();
-    await redis.del('activity:feed:aggregated');
-    console.log('✓ Activity cache cleared successfully');
-    console.log('The next page load will fetch fresh data including certifications');
+    
+    await redis.del('activity:feed:all');
+    console.log('✅ Cleared activity:feed:all cache');
+    
     await redis.quit();
-    process.exit(0);
   } catch (error) {
-    console.error('Error clearing cache:', error.message);
-    await redis.quit();
+    console.error('❌ Failed to clear cache:', error);
     process.exit(1);
   }
 }

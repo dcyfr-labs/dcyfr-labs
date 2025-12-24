@@ -245,8 +245,8 @@ export function getResumePageSchema(
     "@graph": [
       {
         "@type": "ProfilePage",
-        "@id": `${SITE_URL}/resume#page`,
-        url: `${SITE_URL}/resume`,
+        "@id": `${SITE_URL}/services#page`,
+        url: `${SITE_URL}/services`,
         name: "Resume",
         description,
         isPartOf: {
