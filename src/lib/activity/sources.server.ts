@@ -296,6 +296,10 @@ export async function transformTrendingPosts(
         : `Recently published in ${trendingMonth}`;
     }
 
+    // Use actual publication/update date for timestamp, not artificial trending period date
+    // This ensures accurate "recency" representation in the activity feed
+    const timestamp = new Date(post.updatedAt || post.publishedAt);
+
     trendingActivities.push({
       id: `trending-${post.id}`,
       source: "trending" as const,
