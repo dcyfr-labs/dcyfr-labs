@@ -13,4 +13,5 @@ export { SearchHighlight } from "./SearchHighlight";
 export { ActivityHeatmapCalendar } from "./ActivityHeatmapCalendar";
 export { VirtualActivityFeed } from "./VirtualActivityFeed";
 export { BookmarkManager } from "./BookmarkManager";
+export { EmbedGenerator } from "./EmbedGenerator";
 export { FeedInterruption, type FeedInterruptionProps } from "./FeedInterruption";

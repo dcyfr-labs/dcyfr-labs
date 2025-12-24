@@ -337,15 +337,17 @@ _No critical bugs currently tracked. Check GitHub Issues for community-reported 
   - [ ] Add commit detail view with diff preview (future enhancement)
   - [ ] Add rate limiting (future enhancement)
 
-- [ ] **Activity Embeds** (Priority: MEDIUM)
-  - [ ] Create `/activity/embed` route with iframe support
-  - [ ] Design minimal embed layout (no nav/footer)
-  - [ ] Add embed URL generator with filter parameters
-  - [ ] Add CORS headers for cross-origin embedding
-  - [ ] Create embed code snippet generator
-  - [ ] Add responsive embed sizing (auto-height)
-  - [ ] Test on external sites (Medium, Notion, personal blogs)
-  - [ ] Document embed usage with examples
+- [x] **Activity Embeds** (Priority: MEDIUM) ✅ COMPLETE
+  - [x] Create `/activity/embed` route with iframe support
+  - [x] Design minimal embed layout (no nav/footer)
+  - [x] Add embed URL generator with filter parameters
+  - [x] Add CORS headers for cross-origin embedding
+  - [x] Create embed code snippet generator
+  - [x] Add responsive embed sizing (auto-height)
+  - [x] Write comprehensive unit tests (13 tests passing)
+  - [x] Write E2E tests for embed interactions (15 test scenarios)
+  - [x] Document embed usage with examples
+  - [ ] Test on external sites (Medium, Notion, personal blogs) (manual validation)
 
 - [ ] **AI Topic Clustering** (Priority: LOW)
   - [ ] Research clustering algorithms (k-means, hierarchical)
@@ -370,12 +372,12 @@ _No critical bugs currently tracked. Check GitHub Issues for community-reported 
 - ✅ RSS Feed Generation (December 2025)
 - ✅ Bookmarking System (December 23, 2025)
 - ✅ Real-time GitHub Commits (December 23, 2025)
+- ✅ Activity Embeds (December 24, 2025)
 
 **Remaining Features:**
-- ⏳ Activity Embeds (awaiting prioritization)
 - ⏳ AI Topic Clustering (low priority)
 
-**Status:** Stage 6 - 60% complete (3/5 features done)
+**Status:** Stage 6 - 80% complete (4/5 features done)
 
 ---
 

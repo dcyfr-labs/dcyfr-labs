@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { ActivityFilters } from "@/components/activity";
+import { ActivityFilters, EmbedGenerator } from "@/components/activity";
 import { ThreadedActivityFeed } from "@/components/activity/ThreadedActivityFeed";
 import { FeedInterruption, type FeedInterruptionProps } from "@/components/activity";
 import type { ActivityItem, ActivitySource } from "@/lib/activity";
@@ -10,6 +10,7 @@ import { searchActivities, createSearchIndex } from "@/lib/activity/search";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import { SPACING } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
+import { Code } from "lucide-react";
 
 // ============================================================================
 // TYPES & CONSTANTS
@@ -68,6 +69,7 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
     useState<TimeRangeFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isBookmarksFilter, setIsBookmarksFilter] = useState(false);
+  const [showEmbedGenerator, setShowEmbedGenerator] = useState(false);
 
   // Deserialize activities once
   const deserializedActivities = useMemo<ActivityItem[]>(() => {
@@ -210,6 +212,37 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
         filteredCount={filteredActivities.length}
         onPresetApply={handlePresetApply}
       />
+
+      {/* Embed Generator Toggle */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className={cn("mb-6")}
+      >
+        <button
+          onClick={() => setShowEmbedGenerator(!showEmbedGenerator)}
+          className={cn(
+            "flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors",
+            "hover:bg-zinc-50 text-sm"
+          )}
+        >
+          <Code className="w-4 h-4" />
+          {showEmbedGenerator ? "Hide" : "Show"} Embed Code
+        </button>
+        
+        {showEmbedGenerator && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mt-4"
+          >
+            <EmbedGenerator />
+          </motion.div>
+        )}
+      </motion.div>
 
       {/* Timeline Feed with Interruptions */}
       <motion.div
