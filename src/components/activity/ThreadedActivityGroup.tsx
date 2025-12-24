@@ -70,12 +70,13 @@ export function ThreadedActivityGroup({
 
       {/* Replies */}
       {hasReplies && (
-        <div className={cn("relative", SPACING.compact)}>
+        <div className={cn("relative mt-6", SPACING.compact)}>
           {/* Render Visible Replies */}
           {visibleReplies.map((reply, index) => (
             <ThreadReply
               key={reply.id}
               activity={reply}
+              primaryActivity={thread.primary}
               isLast={
                 index === visibleReplies.length - 1 &&
                 (!hasCollapsedReplies || showAllReplies)

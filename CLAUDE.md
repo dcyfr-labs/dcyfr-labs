@@ -37,13 +37,88 @@ Project is in **maintenance mode** with data-driven enhancements.
 - Use `ArticleLayout` for blog posts
 
 **Metadata** (`src/lib/metadata.ts`):
+
 - `createPageMetadata()` for standard pages
 - `createArchivePageMetadata()` for list pages
 - `createArticlePageMetadata()` for blog posts
 
 **Design Tokens** (`src/lib/design-tokens.ts`):
+
 - Import `SPACING`, `TYPOGRAPHY`, `CONTAINER_WIDTHS`
 - Never hardcode spacing or typography
+
+## Component Examples (Copy-Paste Ready)
+
+**Quick Reference**: See [`/docs/ai/design-system-quick-ref.md`](/docs/ai/design-system-quick-ref.md) for comprehensive AI-optimized patterns
+
+**Component Templates**: Browse [`/src/components/_templates/`](/src/components/_templates/) for full examples
+
+### Building a New Page
+
+```tsx
+import { PageLayout } from '@/components/layouts/page-layout'
+import { PageHero } from '@/components/layouts/page-hero'
+import { SPACING, CONTAINER_WIDTHS } from '@/lib/design-tokens'
+
+export default function NewPage() {
+  return (
+    <PageLayout>
+      <PageHero title="Page Title" description="Page description" />
+
+      <section className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}>
+        <div className={SPACING.section}>
+          {/* Your content here */}
+        </div>
+      </section>
+    </PageLayout>
+  )
+}
+```
+
+### Building a Card Grid
+
+```tsx
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { HOVER_EFFECTS } from '@/lib/design-tokens'
+
+export function ProjectGrid({ projects }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {projects.map((project) => (
+        <Card key={project.id} className={HOVER_EFFECTS.card}>
+          <CardHeader>
+            <CardTitle>{project.title}</CardTitle>
+          </CardHeader>
+          <CardContent>{project.description}</CardContent>
+        </Card>
+      ))}
+    </div>
+  )
+}
+```
+
+### Building a Form
+
+```tsx
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { SPACING } from '@/lib/design-tokens'
+
+export function ContactForm() {
+  return (
+    <form className={SPACING.content}>
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" type="email" />
+      </div>
+      <Button type="submit">Send</Button>
+    </form>
+  )
+}
+```
+
+**More Examples**: See templates in `/src/components/_templates/` for hero sections, CTAs, content sections, and more.
 
 ## Design System Rules (MANDATORY)
 

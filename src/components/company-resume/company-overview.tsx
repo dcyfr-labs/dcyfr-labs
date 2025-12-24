@@ -41,7 +41,7 @@ export function CompanyOverview() {
       </div>
 
       {/* Mission Statement */}
-      <Card className="p-4 mb-8 bg-gradient-to-br from-background to-muted/20">
+      <Card className="p-4 mb-8 bg-linear-to-br from-background to-muted/20">
         <h2 className={cn(TYPOGRAPHY.h3.standard, "mb-3")}>Mission</h2>
         <p className={cn(TYPOGRAPHY.description, "text-foreground/90")}>
           {overview.mission}

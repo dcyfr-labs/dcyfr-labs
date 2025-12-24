@@ -1,9 +1,8 @@
 /**
  * Thread Header Component
  *
- * Displays the primary activity in a thread with Threads-inspired layout:
- * - Avatar on left
- * - Content (title, description, metadata) on right
+ * Displays the primary activity in a thread with clean layout:
+ * - Content (title, description, metadata) in full width
  * - Action buttons (like, share, bookmark) below
  *
  * @example
@@ -16,7 +15,6 @@
 
 import { createElement } from "react";
 import Link from "next/link";
-import { ProfileAvatar } from "@/components/common/profile-avatar";
 import { Badge } from "@/components/ui/badge";
 import { ThreadActions } from "./ThreadActions";
 import { ThreadShareButton } from "./ThreadShareButton";
@@ -24,7 +22,6 @@ import { getActivitySourceIcon } from "@/lib/activity/types";
 import type { ActivityItem } from "@/lib/activity/types";
 import { cn } from "@/lib/utils";
 import { TYPOGRAPHY, SPACING, HOVER_EFFECTS, ANIMATION, NEON_COLORS } from "@/lib/design-tokens";
-import { useState } from "react";
 
 // ============================================================================
 // TYPES & HELPERS
@@ -69,7 +66,6 @@ export function ThreadHeader({
   hasReplies = false,
   className,
 }: ThreadHeaderProps) {
-  const [shareMenuOpen, setShareMenuOpen] = useState(false);
   const verbColor = getVerbColor(activity.verb);
 
   // Get icon component reference
@@ -77,38 +73,19 @@ export function ThreadHeader({
 
   return (
     <div className={cn("group/thread relative", className)}>
-      {/* Avatar + Content Layout */}
-      <div className="flex gap-4">
-        {/* Avatar Column (Fixed) */}
-        <div className="shrink-0">
-          <Link
-            href="/about/drew"
-            className={cn("block", ANIMATION.transition.base)}
-          >
-            <ProfileAvatar
-              userProfile="dcyfr"
-              size="sm"
-              className={cn(
-                HOVER_EFFECTS.cardSubtle,
-                "ring-2 ring-border ring-offset-2 ring-offset-background"
-              )}
-            />
-          </Link>
+      {/* Content Layout (Full Width) */}
+      <div className="w-full">
+        {/* Header: Source + Verb Badges */}
+        <div className="flex items-center gap-2 mb-1.5">
+          <Badge variant="default" className="gap-1.5 px-2 h-6">
+            {createElement(sourceIconComponent, { className: "h-3.5 w-3.5", "aria-hidden": "true" })}
+            <span className="capitalize">{activity.source}</span>
+          </Badge>
+
+          <Badge variant="outline" className={cn("px-2 h-6", verbColor)}>
+            {activity.verb}
+          </Badge>
         </div>
-
-        {/* Content Column (Flexible) */}
-        <div className="flex-1 min-w-0">
-          {/* Header: Source + Verb Badges */}
-          <div className="flex items-center gap-2 mb-1.5">
-            <Badge variant="default" className="gap-1.5 px-2 h-6">
-              {createElement(sourceIconComponent, { className: "h-3.5 w-3.5", "aria-hidden": "true" })}
-              <span className="capitalize">{activity.source}</span>
-            </Badge>
-
-            <Badge variant="outline" className={cn("px-2 h-6", verbColor)}>
-              {activity.verb}
-            </Badge>
-          </div>
 
           {/* Title */}
           <Link
@@ -176,11 +153,9 @@ export function ThreadHeader({
               activityTitle={activity.title}
               activityDescription={activity.description}
               timestamp={activity.timestamp}
-              onShareClick={() => setShareMenuOpen(true)}
             />
           </div>
         </div>
-      </div>
 
       {/* Share Button (Positioned Absolutely on Desktop) */}
       <div className="hidden md:block absolute top-0 right-0">

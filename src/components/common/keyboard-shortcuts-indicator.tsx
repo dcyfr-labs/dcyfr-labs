@@ -48,7 +48,7 @@ export function KeyboardShortcutIndicator() {
             className={cn(
               "px-2 py-1 text-xs font-mono",
               "bg-muted rounded border",
-              "min-w-[24px] text-center"
+              "min-w-6 text-center"
             )}
           >
             {key}
@@ -112,7 +112,7 @@ export function KeyboardShortcutsHelp() {
                           className={cn(
                             "px-2 py-1 text-xs font-mono",
                             "bg-muted rounded border",
-                            "min-w-[28px] text-center"
+                            "min-w-7 text-center"
                           )}
                         >
                           {key.toUpperCase()}
@@ -137,7 +137,7 @@ export function KeyboardShortcutsHelp() {
                   className={cn(
                     "px-2 py-1 text-xs font-mono",
                     "bg-muted rounded border",
-                    "min-w-[28px] text-center"
+                    "min-w-7 text-center"
                   )}
                 >
                   ?

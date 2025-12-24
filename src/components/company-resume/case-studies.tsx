@@ -75,7 +75,7 @@ export function CaseStudies() {
                   {study.metrics.map((metric, metricIdx) => (
                     <Card
                       key={metricIdx}
-                      className="p-4 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20"
+                      className="p-4 bg-linear-to-br from-primary/5 to-primary/10 border-primary/20"
                     >
                       <div className="flex items-center gap-2 mb-1">
                         <TrendingUp className="w-4 h-4 text-primary" />

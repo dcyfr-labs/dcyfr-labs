@@ -22,6 +22,7 @@
 
 "use client";
 
+import { useState } from "react";
 import { Heart, Share2, Bookmark } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -51,6 +52,8 @@ export interface ThreadActionsProps {
   size?: "default" | "compact";
   /** Show share button (for opening share menu) */
   onShareClick?: () => void;
+  /** Hide timestamp display */
+  hideTimestamp?: boolean;
 }
 
 // ============================================================================
@@ -69,13 +72,17 @@ export function ThreadActions({
   className,
   size = "default",
   onShareClick,
+  hideTimestamp = false,
 }: ThreadActionsProps) {
   const { isLiked, toggleLike, getCount } = useActivityReactions();
   const { isBookmarked, toggle: toggleBookmark } = useBookmarks();
 
-  const liked = isLiked(activityId);
-  const bookmarked = isBookmarked(activityId);
-  const likeCount = getCount(activityId);
+  // Avoid calling setState in effects — use a runtime check for client
+  const isClient = typeof window !== "undefined";
+
+  const liked = isClient ? isLiked(activityId) : false;
+  const bookmarked = isClient ? isBookmarked(activityId) : false;
+  const likeCount = isClient ? getCount(activityId) : 0;
 
   const isCompact = size === "compact";
 
@@ -117,16 +124,18 @@ export function ThreadActions({
       />
 
       {/* Timestamp */}
-      <time
-        dateTime={timestamp.toISOString()}
-        className={cn(
-          TYPOGRAPHY.metadata,
-          "text-muted-foreground ml-auto"
-        )}
-        title={timestamp.toLocaleString()}
-      >
-        {formatDistanceToNow(timestamp, { addSuffix: true })}
-      </time>
+      {!hideTimestamp && (
+        <time
+          dateTime={timestamp.toISOString()}
+          className={cn(
+            TYPOGRAPHY.metadata,
+            "text-muted-foreground ml-auto"
+          )}
+          title={timestamp.toLocaleString()}
+        >
+          {formatDistanceToNow(timestamp, { addSuffix: true })}
+        </time>
+      )}
     </div>
   );
 }
@@ -168,6 +177,7 @@ function ActionButton({
         ANIMATION.transition.base,
         "hover:bg-accent/50"
       )}
+      suppressHydrationWarning
     >
       <Icon
         className={cn(
@@ -184,6 +194,7 @@ function ActionButton({
             textSize,
             active ? activeColor : "text-muted-foreground"
           )}
+          suppressHydrationWarning
         >
           {label}
         </span>

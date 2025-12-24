@@ -393,7 +393,7 @@ export default async function Home() {
         >
           <ScrollReveal animation="fade-up" delay={100}>
             <div className={SPACING.content}>
-              <SectionHeader title="Featured" />
+              {/* <SectionHeader title="Featured" /> */}
               <FeaturedPostHero post={featuredPost} />
             </div>
           </ScrollReveal>
@@ -403,11 +403,11 @@ export default async function Home() {
         <Section id="trending" className={PAGE_LAYOUT.section.container}>
           <ScrollReveal animation="fade-up" delay={150}>
             <div className={SPACING.content}>
-              <SectionHeader
+              {/* <SectionHeader
                 title="Trending"
                 actionHref="/blog"
                 actionLabel="View all posts"
-              />
+              /> */}
               <TrendingPosts
                 posts={activePosts}
                 viewCounts={viewCountsMap}
@@ -421,11 +421,11 @@ export default async function Home() {
         <Section id="recent-activity" className={PAGE_LAYOUT.section.container}>
           <ScrollReveal animation="fade-up" delay={200}>
             <div className={SPACING.content}>
-              <SectionHeader
+              {/* <SectionHeader
                 title="Recent Activity"
                 actionHref="/activity"
                 actionLabel="View all activity"
-              />
+              /> */}
               <InfiniteActivitySection
                 items={timelineActivities}
                 totalActivities={timelineActivities.length}

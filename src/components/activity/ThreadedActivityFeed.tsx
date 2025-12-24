@@ -82,7 +82,7 @@ export function ThreadedActivityFeed({
 
             {/* Divider between threads (except last) */}
             {index < threads.length - 1 && (
-              <div className="my-8 border-t border-border/50" aria-hidden="true" />
+              <div className="my-12 border-t border-border/50" aria-hidden="true" />
             )}
           </div>
         ))}

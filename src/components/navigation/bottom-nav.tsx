@@ -30,7 +30,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t backdrop-blur supports-[backdrop-filter]:bg-background/95 bg-background"
+      className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t backdrop-blur supports-backdrop-filter:bg-background/95 bg-background"
       aria-label="Bottom navigation"
     >
       <div className={cn("grid grid-cols-3 h-12", "max-w-lg", "mx-auto")}>

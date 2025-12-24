@@ -455,43 +455,78 @@ export const FONT_CONTRAST = {
 
 /**
  * Spacing patterns for consistent vertical rhythm
- * 
+ *
  * IMPORTANT: These tokens are for VERTICAL spacing (space-y-*) only.
  * For inline/horizontal spacing (gap-*, p-*, px-*, py-*), use numeric values.
- * 
+ *
  * Valid Usage:
  * ✅ <div className={SPACING.section}>        // Vertical spacing between sections
  * ✅ <div className="flex gap-4">            // Horizontal gap (use numbers)
  * ✅ <div className="space-y-2">             // Small vertical spacing (use numbers)
- * 
+ *
  * Invalid Usage:
  * ❌ <div className={`gap-${SPACING.compact}`}>     // SPACING has no 'compact' property
  * ❌ <div className={`space-y-${SPACING.tight}`}>  // SPACING has no 'tight' property
  * ❌ <div className={`p-${SPACING.content}`}>      // SPACING is for space-y only
- * 
+ *
  * Available Properties:
- * - section: Major page sections (space-y-10 md:space-y-12)
- * - subsection: Related content blocks (space-y-6 md:space-y-8)
- * - content: Within content blocks (space-y-4)
- * - proseHero: Page hero/header sections
- * - proseSection: Generic prose sections
- * - image: Image elements in blog content
- * 
+ * - section: Major page sections (space-y-8 md:space-y-10 lg:space-y-14)
+ * - subsection: Related content blocks (space-y-5 md:space-y-6 lg:space-y-8)
+ * - content: Within content blocks (space-y-3 md:space-y-4 lg:space-y-5)
+ * - prose: Running text paragraphs (space-y-5 md:space-y-6 lg:space-y-8)
+ * - compact: Lists and alerts (space-y-2)
+ *
  * @see /docs/ai/enforcement-rules.md#design-token-enforcement
- * 
- * @example
+ * @see /docs/ai/design-system-quick-ref.md for AI code generation guide
+ *
+ * @example Major page sections (largest gaps)
  * ```tsx
- * // Correct - use SPACING for vertical space-y patterns
  * <div className={SPACING.section}>
- *   <section>...</section>
- *   <section>...</section>
+ *   <section>Hero Section</section>
+ *   <section>Features Section</section>
+ *   <section>CTA Section</section>
  * </div>
- * 
- * // Correct - use numbers for gap, padding, small spacing
+ * ```
+ *
+ * @example Related content blocks within a section
+ * ```tsx
+ * <section>
+ *   <h2>About Me</h2>
+ *   <div className={SPACING.subsection}>
+ *     <div>Experience block</div>
+ *     <div>Skills block</div>
+ *     <div>Education block</div>
+ *   </div>
+ * </section>
+ * ```
+ *
+ * @example Content within a block (tightest spacing)
+ * ```tsx
+ * <div className={SPACING.content}>
+ *   <h3>Project Title</h3>
+ *   <p>Project description</p>
+ *   <ul>Tech stack</ul>
+ * </div>
+ * ```
+ *
+ * @example Correct usage with numbers for gaps and padding
+ * ```tsx
+ * // ✅ Use numbers for flex/grid gaps
  * <div className="flex gap-4">
- *   <div className="p-4">...</div>
- *   <div className="space-y-2">...</div>
+ *   <Button>Primary</Button>
+ *   <Button>Secondary</Button>
  * </div>
+ *
+ * // ✅ Use numbers for padding
+ * <div className="p-6 rounded-lg">
+ *   <p>Card content</p>
+ * </div>
+ *
+ * // ✅ Use numbers for tight vertical spacing
+ * <ul className="space-y-2">
+ *   <li>Item 1</li>
+ *   <li>Item 2</li>
+ * </ul>
  * ```
  */
 export const SPACING = {
@@ -822,12 +857,52 @@ export function getSeriesColors(theme: string = 'default') {
 /**
  * Hover effect patterns for interactive elements
  * Ensures consistent feedback across different component types
- * 
- * @example
+ *
+ * All hover effects include:
+ * - Smooth transitions (duration-300)
+ * - Shadow elevation changes
+ * - Optional transforms (lift, scale)
+ * - Active state feedback
+ *
+ * @example Standard card hover (most common)
  * ```tsx
+ * import { Card } from '@/components/ui/card'
+ * import { HOVER_EFFECTS } from '@/lib/design-tokens'
+ *
  * <Card className={HOVER_EFFECTS.card}>
- *   {content}
+ *   <CardHeader>
+ *     <CardTitle>Project Title</CardTitle>
+ *   </CardHeader>
+ *   <CardContent>
+ *     Project details...
+ *   </CardContent>
  * </Card>
+ * ```
+ *
+ * @example CTA card with border highlight
+ * ```tsx
+ * <Card className={HOVER_EFFECTS.cardCTA}>
+ *   <CardHeader>
+ *     <CardTitle>Get Started</CardTitle>
+ *   </CardHeader>
+ *   <CardContent>
+ *     Sign up today!
+ *   </CardContent>
+ * </Card>
+ * ```
+ *
+ * @example Interactive link
+ * ```tsx
+ * <Link href="/blog" className={HOVER_EFFECTS.link}>
+ *   Read more →
+ * </Link>
+ * ```
+ *
+ * @example Button with feedback
+ * ```tsx
+ * <button className={cn('px-6 py-3 rounded-md', HOVER_EFFECTS.button)}>
+ *   Click me
+ * </button>
  * ```
  */
 export const HOVER_EFFECTS = {

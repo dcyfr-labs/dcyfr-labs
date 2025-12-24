@@ -52,6 +52,8 @@ function getVerbColor(verb: ActivityItem["verb"]): string {
 export interface ThreadReplyProps {
   /** Reply activity */
   activity: ActivityItem;
+  /** Primary activity in the thread (to check for duplicates) */
+  primaryActivity?: ActivityItem;
   /** Whether this is the last reply in the thread */
   isLast?: boolean;
   /** Optional CSS class */
@@ -67,6 +69,7 @@ export interface ThreadReplyProps {
  */
 export function ThreadReply({
   activity,
+  primaryActivity,
   isLast = false,
   className,
 }: ThreadReplyProps) {
@@ -74,6 +77,9 @@ export function ThreadReply({
 
   // Get icon component reference
   const sourceIconComponent = getActivitySourceIcon(activity.source);
+  
+  // Hide verb badge if it's the same as primary to reduce duplication
+  const showVerbBadge = !primaryActivity || activity.verb !== primaryActivity.verb;
 
   return (
     <div className={cn("group/reply relative", className)}>
@@ -93,7 +99,7 @@ export function ThreadReply({
         </div>
 
         {/* Content Column */}
-        <div className="flex-1 min-w-0 pb-6">
+        <div className="flex-1 min-w-0 pb-8">
           {/* Header: Source + Verb Badges (Compact) */}
           <div className="flex items-center gap-2 mb-1">
             <Badge
@@ -104,12 +110,14 @@ export function ThreadReply({
               <span className="capitalize">{activity.source}</span>
             </Badge>
 
-            <Badge
-              variant="outline"
-              className={cn("px-1.5 h-5 text-xs", verbColor)}
-            >
-              {activity.verb}
-            </Badge>
+            {showVerbBadge && (
+              <Badge
+                variant="outline"
+                className={cn("px-1.5 h-5 text-xs", verbColor)}
+              >
+                {activity.verb}
+              </Badge>
+            )}
           </div>
 
           {/* Title (Compact) */}
@@ -160,6 +168,7 @@ export function ThreadReply({
               activityDescription={activity.description}
               timestamp={activity.timestamp}
               size="compact"
+              hideTimestamp
             />
           </div>
         </div>
@@ -168,7 +177,7 @@ export function ThreadReply({
       {/* Thread Connector Line (continues unless last) */}
       {!isLast && (
         <div
-          className="absolute left-8 top-8 bottom-0 w-px bg-border/50"
+          className="absolute left-8 top-6 bottom-0 w-px bg-border/50"
           aria-hidden="true"
         />
       )}

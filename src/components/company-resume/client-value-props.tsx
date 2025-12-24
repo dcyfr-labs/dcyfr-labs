@@ -55,7 +55,7 @@ export function ClientValueProps() {
       </div>
 
       {/* CTA Section */}
-      <Card className={cn("p-8 mt-8 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 text-center")}>
+      <Card className={cn("p-8 mt-8 bg-linear-to-br from-primary/5 to-primary/10 border-primary/20 text-center")}>
         <h3 className={cn(TYPOGRAPHY.h2.standard, "mb-4")}>
           Ready to Build Something Secure & Scalable?
         </h3>

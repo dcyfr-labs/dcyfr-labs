@@ -76,7 +76,7 @@ export function MobileNav() {
           <MenuIcon className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-[280px] sm:w-[320px] p-4 overflow-y-auto">
+      <SheetContent side="left" className="w-70 sm:w-[320px] p-4 overflow-y-auto">
         <SheetHeader>
           <SheetTitle className="text-left">Navigation</SheetTitle>
         </SheetHeader>

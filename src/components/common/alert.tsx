@@ -61,7 +61,7 @@ export function Alert({ type = 'info', children, className = '' }: AlertProps) {
   const Icon = iconMap[type];
 
   return (
-    <div role="alert" className={`alert-banner ${BORDERS.card} ${colors.container} shadow-[0_1px_2px_rgb(0_0_0_/_0.05)] dark:shadow-[0_1px_2px_rgb(0_0_0_/_0.15)] p-4 sm:p-5 my-6 ${className}`}>
+    <div role="alert" className={`alert-banner ${BORDERS.card} ${colors.container} shadow-[0_1px_2px_rgb(0_0_0/0.05)] dark:shadow-[0_1px_2px_rgb(0_0_0/0.15)] p-4 sm:p-5 my-6 ${className}`}>
       <div className="flex items-start gap-3 sm:gap-4">
         <Icon className={`h-5 w-5 sm:h-6 sm:w-6 mt-0.5 shrink-0 ${colors.icon}`} aria-hidden="true" />
         <div className={`flex-1 text-sm sm:text-base leading-relaxed max-w-none ${colors.text} [&>p]:m-0 [&>p]:inline [&>strong]:font-semibold [&>em]:italic [&>ul]:space-y-0.5 [&>ol]:space-y-0.5 [&>li]:leading-relaxed`}>
