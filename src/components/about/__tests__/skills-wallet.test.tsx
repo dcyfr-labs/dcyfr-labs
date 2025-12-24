@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { SkillsWallet } from "../skills-wallet";
+import { clearCredlyCache } from "@/lib/credly-cache";
 import type { CredlyBadge } from "@/types/credly";
 
 // Mock fetch globally
@@ -77,10 +78,12 @@ const mockBadges: CredlyBadge[] = [
 describe("SkillsWallet", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    clearCredlyCache();
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
+    clearCredlyCache();
   });
 
   it("renders loading state initially", () => {
@@ -149,7 +152,8 @@ describe("SkillsWallet", () => {
     render(<SkillsWallet username="dcyfr" />);
 
     await waitFor(() => {
-      expect(screen.getByText("Network error")).toBeInTheDocument();
+      const alert = screen.getByRole('alert');
+      expect(alert.textContent).toContain("Network error");
     });
   });
 
@@ -166,7 +170,8 @@ describe("SkillsWallet", () => {
     render(<SkillsWallet username="dcyfr" />);
 
     await waitFor(() => {
-      expect(screen.getByText("No skills found.")).toBeInTheDocument();
+      const alert = screen.getByRole('alert');
+      expect(alert.textContent).toContain("No skills found for this user");
     });
   });
 

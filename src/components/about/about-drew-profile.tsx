@@ -33,7 +33,7 @@ export function AboutDrewProfile() {
       <Section id="drew-hero" className={PAGE_LAYOUT.hero.container}>
         <div
           className={cn(
-            "flex flex-col md:flex-row items-center md:items-start gap-6",
+            "flex flex-col md:flex-row items-center md:items-start gap-4",
             SPACING.content
           )}
         >
@@ -158,12 +158,12 @@ export function AboutDrewProfile() {
               .filter((role) => role.duration.includes("Present"))
               .map((role, idx) => (
                 <Card key={idx} className={cn(
-                  "p-6 space-y-4",
+                  "p-4 space-y-4",
                   SHADOWS.card.rest,
                   BORDERS.card
                 )}>
                   <div className="space-y-1">
-                    <p className="font-medium text-lg">{role.title}</p>
+                    <p className={cn(TYPOGRAPHY.label.small, "font-medium")}>{role.title}</p>
                     <p className="text-sm text-muted-foreground">
                       {role.company}
                     </p>

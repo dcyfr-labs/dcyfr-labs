@@ -278,9 +278,10 @@ describe("Activity Filter Presets", () => {
 
   describe("DEFAULT_PRESETS", () => {
     it("includes expected default presets", () => {
-      expect(DEFAULT_PRESETS.length).toBe(4);
+      expect(DEFAULT_PRESETS.length).toBe(5);
 
       const names = DEFAULT_PRESETS.map((p) => p.name);
+      expect(names).toContain("Bookmarked Items");
       expect(names).toContain("Code Projects");
       expect(names).toContain("Trending This Month");
       expect(names).toContain("Recent Blog Posts");

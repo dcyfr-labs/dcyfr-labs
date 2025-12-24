@@ -23,6 +23,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { loadSearchHistory, saveSearchToHistory, clearSearchHistory } from "@/lib/search";
+import { TYPOGRAPHY } from "@/lib/design-tokens";
+import { cn } from "@/lib/utils";
 
 interface SearchInputProps {
   /** Current search query */
@@ -159,7 +161,7 @@ export function SearchInput({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-64">
-                <div className="flex items-center justify-between px-2 py-1.5 text-xs font-medium text-muted-foreground">
+                <div className={cn("flex items-center justify-between px-2 py-1.5 text-muted-foreground", TYPOGRAPHY.label.xs)}>
                   <span className="flex items-center gap-1">
                     <Clock className="h-3 w-3" />
                     Recent Searches

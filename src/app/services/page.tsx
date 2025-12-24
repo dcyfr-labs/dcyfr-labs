@@ -30,7 +30,7 @@ const pageDescription = "Explore DCYFR Labs' cyber architecture and security ser
 export const metadata: Metadata = createPageMetadata({
   title: pageTitle,
   description: pageDescription,
-  path: "/resume",
+  path: "/services",
   keywords: [
     "cyber architecture",
     "security services",
@@ -56,7 +56,7 @@ export default async function CompanyResumePage() {
 
       <SectionNavigator
         scrollOffset={SCROLL_BEHAVIOR.offset.standard}
-        className={`space-y-${SPACING.section}`}
+        className={SPACING.section}
       >
         {/* Company Overview */}
         <Section id="overview" className={PAGE_LAYOUT.section.container}>

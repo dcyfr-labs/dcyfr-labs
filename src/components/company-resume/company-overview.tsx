@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { getCompanyOverview } from "@/data/company-cv";
 import { TYPOGRAPHY, SPACING, PAGE_LAYOUT } from "@/lib/design-tokens";
 import { Building2, MapPin, Calendar } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 /**
  * CompanyOverview Component
@@ -40,9 +41,9 @@ export function CompanyOverview() {
       </div>
 
       {/* Mission Statement */}
-      <Card className="p-6 mb-8 bg-gradient-to-br from-background to-muted/20">
-        <h2 className={`${TYPOGRAPHY.h3.standard} mb-3`}>Mission</h2>
-        <p className={`${TYPOGRAPHY.description} text-foreground/90`}>
+      <Card className="p-4 mb-8 bg-gradient-to-br from-background to-muted/20">
+        <h2 className={cn(TYPOGRAPHY.h3.standard, "mb-3")}>Mission</h2>
+        <p className={cn(TYPOGRAPHY.description, "text-foreground/90")}>
           {overview.mission}
         </p>
       </Card>

@@ -23,10 +23,10 @@ const eslintConfig = [
     // Design System Enforcement Rules
     files: ["src/**/*.{ts,tsx,js,jsx}"],
     rules: {
-      // Warn about hardcoded container widths - should use getContainerClasses()
+      // ERROR on hardcoded design patterns - must use design tokens
       // Excludes single max-w-* values (which are typically in cn() calls after refactoring)
       "no-restricted-syntax": [
-        "warn",
+        "error",
         {
           selector: "Literal[value=/^(?!.*\\bmax-w-(xs|sm|md|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|full|prose)$).*\\bmax-w-(xs|sm|md|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|full|prose)\\b/]",
           message: "Use getContainerClasses() from @/lib/design-tokens instead of hardcoded max-w-* classes for page containers. See /docs/design/QUICK_START.md",

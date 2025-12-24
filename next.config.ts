@@ -88,6 +88,12 @@ const nextConfig: NextConfig = {
         destination: '/about/drew/resume',
         permanent: true,
       },
+      // Resume to Services redirect
+      {
+        source: '/resume',
+        destination: '/services',
+        permanent: true,
+      },
       // Legacy RSS/Atom redirects already handled in app/rss.xml/route.ts and app/atom.xml/route.ts
     ];
   },

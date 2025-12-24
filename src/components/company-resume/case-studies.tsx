@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getCaseStudies } from "@/data/company-cv";
 import { TYPOGRAPHY, SPACING, HOVER_EFFECTS } from "@/lib/design-tokens";
+import { cn } from "@/lib/utils";
 import { ExternalLink, Github, FileText, TrendingUp } from "lucide-react";
 
 /**
@@ -36,22 +37,22 @@ export function CaseStudies() {
         </p>
       </div>
 
-      <div className={`space-y-${SPACING.content}`}>
+      <div className={SPACING.content}>
         {caseStudies.map((study, idx) => (
-          <Card key={idx} className="p-6 md:p-8 hover:shadow-xl transition-shadow">
-            <div className="space-y-6">
+          <Card key={idx} className="p-4 md:p-5 hover:shadow-xl transition-shadow">
+            <div className="space-y-4">
               {/* Header */}
               <div>
-                <h3 className={TYPOGRAPHY.h2.standard}>{study.title}</h3>
-                <p className={`${TYPOGRAPHY.description} mt-2`}>
+                <h3 className={TYPOGRAPHY.h1.standard}>{study.title}</h3>
+                <p className={cn(TYPOGRAPHY.description, "mt-2")}>
                   {study.description}
                 </p>
               </div>
 
               {/* Challenge & Solution */}
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <h4 className="text-sm font-semibold mb-2 text-primary">
+                  <h4 className={cn(TYPOGRAPHY.label.small, "mb-2 text-primary")}>
                     Challenge
                   </h4>
                   <p className="text-sm text-muted-foreground">
@@ -59,7 +60,7 @@ export function CaseStudies() {
                   </p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold mb-2 text-primary">
+                  <h4 className={cn(TYPOGRAPHY.label.small, "mb-2 text-primary")}>
                     Solution
                   </h4>
                   <p className="text-sm text-muted-foreground">
@@ -78,7 +79,7 @@ export function CaseStudies() {
                     >
                       <div className="flex items-center gap-2 mb-1">
                         <TrendingUp className="w-4 h-4 text-primary" />
-                        <p className="text-2xl font-bold text-primary">
+                        <p className={TYPOGRAPHY.display.stat}>
                           {metric.value}
                           {metric.value !== "0" && !metric.value.includes("x") && (
                             <span className="text-lg">%</span>
@@ -95,7 +96,7 @@ export function CaseStudies() {
 
               {/* Results */}
               <div>
-                <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                <h4 className={cn(TYPOGRAPHY.label.small, "mb-3 flex items-center gap-2")}>
                   <TrendingUp className="w-4 h-4 text-primary" />
                   Key Results
                 </h4>
@@ -114,7 +115,7 @@ export function CaseStudies() {
 
               {/* Tech Stack */}
               <div>
-                <h4 className="text-sm font-semibold mb-3">Technology Stack</h4>
+                <h4 className={cn(TYPOGRAPHY.label.small, "mb-3")}>Technology Stack</h4>
                 <div className="flex flex-wrap gap-2">
                   {study.tech.map((tech, techIdx) => (
                     <Badge key={techIdx} variant="outline" className="text-xs">

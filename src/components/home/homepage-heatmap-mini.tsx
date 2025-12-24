@@ -121,7 +121,7 @@ export function HomepageHeatmapMini({
           <div className={cn("flex items-center gap-4 mb-4 md:mb-6")}>
             {/* Active Days */}
             <div className="flex items-center gap-4">
-              <Calendar className="w-4 h-4 text-blue-500" aria-hidden="true" />
+              <Calendar className="w-4 h-4 text-chart-1" aria-hidden="true" />
               <span className="text-sm">
                 <span className="font-semibold">{stats.activeDays}</span>{" "}
                 <span className="text-muted-foreground">active days</span>
@@ -130,7 +130,7 @@ export function HomepageHeatmapMini({
 
             {/* Current Streak */}
             <div className="flex items-center gap-4">
-              <Zap className="w-4 h-4 text-yellow-500" aria-hidden="true" />
+              <Zap className="w-4 h-4 text-chart-2" aria-hidden="true" />
               <span className="text-sm">
                 <span className="font-semibold">{stats.currentStreak}</span>{" "}
                 <span className="text-muted-foreground">day streak</span>
@@ -188,10 +188,10 @@ export function HomepageHeatmapMini({
               <div className="flex items-center gap-4">
                 { }
                 <div className="w-2 h-2 rounded-sm bg-muted border border-border" />
-                <div className="w-2 h-2 rounded-sm bg-green-200 dark:bg-green-900" />
-                <div className="w-2 h-2 rounded-sm bg-green-300 dark:bg-green-800" />
-                <div className="w-2 h-2 rounded-sm bg-green-400 dark:bg-green-700" />
-                <div className="w-2 h-2 rounded-sm bg-green-500 dark:bg-green-600" />
+                <div className="w-2 h-2 rounded-sm bg-chart-1/20 dark:bg-chart-1/30" />
+                <div className="w-2 h-2 rounded-sm bg-chart-1/40 dark:bg-chart-1/50" />
+                <div className="w-2 h-2 rounded-sm bg-chart-1/60 dark:bg-chart-1/70" />
+                <div className="w-2 h-2 rounded-sm bg-chart-1 dark:bg-chart-1/90" />
               </div>
               <span>More</span>
             </div>

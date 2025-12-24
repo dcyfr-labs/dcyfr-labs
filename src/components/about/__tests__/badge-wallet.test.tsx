@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { BadgeWallet } from "../badge-wallet";
+import { clearCredlyCache } from "@/lib/credly-cache";
 import type { CredlyBadgesResponse } from "@/types/credly";
 
 // Mock fetch globally
@@ -89,10 +90,12 @@ const mockBadgesResponse: CredlyBadgesResponse = {
 describe("BadgeWallet", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    clearCredlyCache();
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
+    clearCredlyCache();
   });
 
   it("renders loading state initially", () => {
@@ -132,7 +135,8 @@ describe("BadgeWallet", () => {
     render(<BadgeWallet username="dcyfr" />);
 
     await waitFor(() => {
-      expect(screen.getByText("Network error")).toBeInTheDocument();
+      const alert = screen.getByRole('alert');
+      expect(alert.textContent).toContain("Network error");
     });
   });
 
@@ -149,7 +153,8 @@ describe("BadgeWallet", () => {
     render(<BadgeWallet username="dcyfr" />);
 
     await waitFor(() => {
-      expect(screen.getByText("No badges found for this user.")).toBeInTheDocument();
+      const alert = screen.getByRole('alert');
+      expect(alert.textContent).toContain("No badges found for this user.");
     });
   });
 

@@ -27,7 +27,7 @@ export function AboutDcyfrProfile() {
       <Section id="dcyfr-hero" className={PAGE_LAYOUT.hero.container}>
         <div
           className={cn(
-            "flex flex-col md:flex-row items-center md:items-start gap-6",
+            "flex flex-col md:flex-row items-center md:items-start gap-4",
             SPACING.content
           )}
         >
@@ -74,7 +74,7 @@ export function AboutDcyfrProfile() {
           <div className="grid gap-4 md:grid-cols-2">
             {dcyfr.capabilities.map((capability, idx) => (
               <Card key={idx} className={cn(
-                "p-6 space-y-3",
+                "p-8 space-y-3",
                 SHADOWS.card.rest,
                 BORDERS.card
               )}>
@@ -125,7 +125,7 @@ export function AboutDcyfrProfile() {
         <div className={SPACING.content}>
           <h3 className={TYPOGRAPHY.h2.standard}>Guiding Philosophy</h3>
           <Card className={cn(
-            "p-6",
+            "p-8",
             SHADOWS.card.rest,
             BORDERS.card
           )}>
@@ -153,7 +153,7 @@ export function AboutDcyfrProfile() {
           <div className="space-y-4">
             {dcyfr.integration.map((item, idx) => (
               <Card key={idx} className={cn(
-                "p-6 space-y-2",
+                "p-8 space-y-2",
                 SHADOWS.tier3.combined,
                 BORDERS.card
               )}>
@@ -171,7 +171,7 @@ export function AboutDcyfrProfile() {
       <Section id="dcyfr-approach" className={PAGE_LAYOUT.section.container}>
         <div className={SPACING.content}>
           <h3 className={TYPOGRAPHY.h2.standard}>Development Approach</h3>
-          <Card className={cn("p-6", SHADOWS.card.rest, BORDERS.card)}>
+          <Card className={cn("p-8", SHADOWS.card.rest, BORDERS.card)}>
             <ul className="space-y-2.5">
               {dcyfr.approach.map((principle, idx) => (
                 <li

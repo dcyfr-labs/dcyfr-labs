@@ -131,7 +131,7 @@ export function MediaCard({
     featured: {
       container: "flex flex-col",
       imageAspect: "aspect-[16/9]",
-      contentPadding: "p-5 md:p-6",
+      contentPadding: "p-4 md:p-5",
     },
     compact: {
       container: "flex flex-col",

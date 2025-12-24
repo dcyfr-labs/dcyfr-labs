@@ -1,24 +1,47 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ActivityFeed, ActivityFilters, ActivityHeatmapCalendar, VirtualActivityFeed } from "@/components/activity";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { motion } from "framer-motion";
+import { ActivityFilters } from "@/components/activity";
+import { ThreadedActivityFeed } from "@/components/activity/ThreadedActivityFeed";
+import { FeedInterruption, type FeedInterruptionProps } from "@/components/activity";
 import type { ActivityItem, ActivitySource } from "@/lib/activity";
 import { searchActivities, createSearchIndex } from "@/lib/activity/search";
 import { useBookmarks } from "@/hooks/use-bookmarks";
+import { SPACING } from "@/lib/design-tokens";
+import { cn } from "@/lib/utils";
 
 // ============================================================================
 // TYPES & CONSTANTS
 // ============================================================================
 
-/**
- * Feature flag: Enable virtual scrolling for large activity feeds
- * Recommended for 100+ items to improve performance
- */
-const ENABLE_VIRTUAL_SCROLLING = true;
-const VIRTUAL_SCROLLING_THRESHOLD = 50; // Min items to enable virtual scrolling
-
 type TimeRangeFilter = "today" | "week" | "month" | "year" | "all";
+
+// Feed interruptions for engagement
+const FEED_INTERRUPTIONS: FeedInterruptionProps[] = [
+  {
+    type: "cta",
+    title: "Explore the Blog",
+    description: "Discover in-depth articles on security, architecture, and modern development practices.",
+    href: "/blog",
+    buttonLabel: "Browse articles",
+    theme: "cyan",
+  },
+  {
+    type: "quote",
+    quote: "Security is not a product, but a process. It's about layers, vigilance, and continuous improvement.",
+    source: "Security Architecture Philosophy",
+    theme: "lime",
+  },
+  {
+    type: "cta",
+    title: "View Our Work",
+    description: "Check out our portfolio of projects and case studies showcasing real-world solutions.",
+    href: "/work",
+    buttonLabel: "Explore projects",
+    theme: "magenta",
+  },
+];
 
 interface SerializedActivity extends Omit<ActivityItem, "timestamp"> {
   timestamp: string;
@@ -39,15 +62,11 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
   // Hooks
   const { filterActivities: filterBookmarkedActivities } = useBookmarks();
   
-  // View state
-  const [activeView, setActiveView] = useState<"timeline" | "heatmap">("timeline");
-  
   // Filter state
   const [selectedSources, setSelectedSources] = useState<ActivitySource[]>([]);
   const [selectedTimeRange, setSelectedTimeRange] =
     useState<TimeRangeFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [isBookmarksFilter, setIsBookmarksFilter] = useState(false);
 
   // Deserialize activities once
@@ -83,20 +102,8 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
       result = result.filter((a) => selectedSources.includes(a.source));
     }
 
-    // Filter by specific date (from heatmap click)
-    if (selectedDate) {
-      const targetDate = new Date(selectedDate);
-      result = result.filter((a) => {
-        const activityDate = new Date(a.timestamp);
-        return (
-          activityDate.getFullYear() === targetDate.getFullYear() &&
-          activityDate.getMonth() === targetDate.getMonth() &&
-          activityDate.getDate() === targetDate.getDate()
-        );
-      });
-    }
-    // Otherwise filter by time range
-    else if (selectedTimeRange !== "all") {
+    // Filter by time range
+    if (selectedTimeRange !== "all") {
       const now = new Date();
       let cutoff: Date;
 
@@ -121,7 +128,7 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
     }
 
     return result;
-  }, [deserializedActivities, searchQuery, selectedSources, selectedTimeRange, selectedDate, searchIndex, isBookmarksFilter, filterBookmarkedActivities]);
+  }, [deserializedActivities, searchQuery, selectedSources, selectedTimeRange, searchIndex, isBookmarksFilter, filterBookmarkedActivities]);
 
   // Available sources based on data
   const availableSources: ActivitySource[] = useMemo(() => {
@@ -129,17 +136,6 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
     activities.forEach((a) => sources.add(a.source));
     return Array.from(sources);
   }, [activities]);
-  // Handle date click from heatmap
-  const handleDateClick = (date: string) => {
-    setSelectedDate(date);
-    setActiveView("timeline"); // Switch to timeline view to show filtered results
-  };
-
-  // Clear date filter when time range changes
-  const handleTimeRangeChange = (newTimeRange: TimeRangeFilter) => {
-    setSelectedDate(null);
-    setSelectedTimeRange(newTimeRange);
-  };
 
   // Handle preset application (including bookmarks)
   const handlePresetApply = (presetId: string, filters: { sources: ActivitySource[]; timeRange: TimeRangeFilter }) => {
@@ -151,7 +147,6 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
       setSelectedSources(filters.sources);
     }
     setSelectedTimeRange(filters.timeRange);
-    setSelectedDate(null);
   };
 
   // Handle manual source filter changes (disable bookmarks mode)
@@ -160,18 +155,54 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
     setSelectedSources(sources);
   };
 
-  // Determine whether to use virtual scrolling
-  const useVirtualScrolling = ENABLE_VIRTUAL_SCROLLING && 
-    filteredActivities.length >= VIRTUAL_SCROLLING_THRESHOLD;
+  // Insert interruptions into activities (every 8 items)
+  const renderItems = useMemo(() => {
+    const items: Array<{ type: 'activity' | 'interruption'; data: any; id: string }> = [];
+    const interruptionInterval = 8;
+    let interruptionIndex = 0;
+    let interruptionCounter = 0; // Unique counter for each interruption instance
+
+    // Group activities into chunks
+    for (let i = 0; i < filteredActivities.length; i += interruptionInterval) {
+      const chunk = filteredActivities.slice(i, i + interruptionInterval);
+      
+      items.push({
+        type: 'activity',
+        data: chunk,
+        id: `activities-${i}`,
+      });
+      
+      // Add interruption after chunk (if not last chunk)
+      if (
+        i + interruptionInterval < filteredActivities.length &&
+        interruptionIndex < FEED_INTERRUPTIONS.length
+      ) {
+        items.push({
+          type: 'interruption',
+          data: FEED_INTERRUPTIONS[interruptionIndex],
+          id: `interruption-${interruptionCounter}`, // Use unique counter
+        });
+        interruptionIndex = (interruptionIndex + 1) % FEED_INTERRUPTIONS.length;
+        interruptionCounter++; // Increment unique counter
+      }
+    }
+
+    return items;
+  }, [filteredActivities]);
 
   return (
-    <div className="space-y-10">
-      {/* Filters */}
+    <motion.div 
+      className={cn("space-y-12")}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+    >
+      {/* Filters - Modern, threads-like design */}
       <ActivityFilters
         selectedSources={isBookmarksFilter ? [] : selectedSources}
         onSourcesChange={handleSourcesChange}
         selectedTimeRange={selectedTimeRange}
-        onTimeRangeChange={handleTimeRangeChange}
+        onTimeRangeChange={setSelectedTimeRange}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         availableSources={availableSources}
@@ -180,65 +211,50 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
         onPresetApply={handlePresetApply}
       />
 
-      {/* View Tabs */}
-      <Tabs value={activeView} onValueChange={(v) => setActiveView(v as "timeline" | "heatmap")}>
-        <TabsList className="grid w-full max-w-md grid-cols-2">
-          <TabsTrigger value="timeline">Timeline View</TabsTrigger>
-          <TabsTrigger value="heatmap">Heatmap View</TabsTrigger>
-        </TabsList>
-
-        {/* Timeline Tab */}
-        <TabsContent value="timeline" className="mt-6">
-          {useVirtualScrolling ? (
-            <VirtualActivityFeed
-              items={filteredActivities}
-              variant="timeline"
-              showGroups
-              emptyMessage="No activities match your filters"
-            />
-          ) : (
-            <ActivityFeed
-              items={filteredActivities}
-              variant="timeline"
-              showGroups
-              emptyMessage="No activities match your filters"
-            />
-          )}
-        </TabsContent>
-
-        {/* Heatmap Tab */}
-        <TabsContent value="heatmap" className="mt-6">
-          {/* Responsive month count based on viewport */}
-          <div className="space-y-6">
-            {/* Desktop: 12 months */}
-            <div className="hidden lg:block">
-              <ActivityHeatmapCalendar
-                activities={deserializedActivities}
-                onDateClick={handleDateClick}
-                monthsToShow={12}
-              />
-            </div>
-            
-            {/* Tablet: 6 months */}
-            <div className="hidden md:block lg:hidden">
-              <ActivityHeatmapCalendar
-                activities={deserializedActivities}
-                onDateClick={handleDateClick}
-                monthsToShow={6}
-              />
-            </div>
-            
-            {/* Mobile: 3 months */}
-            <div className="block md:hidden">
-              <ActivityHeatmapCalendar
-                activities={deserializedActivities}
-                onDateClick={handleDateClick}
-                monthsToShow={3}
-              />
-            </div>
+      {/* Timeline Feed with Interruptions */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3, delay: 0.2, ease: "easeOut" }}
+        className="space-y-12"
+      >
+        {renderItems.length === 0 ? (
+          <div className={cn("text-center py-12", SPACING.content)}>
+            <p className="text-muted-foreground">No activities match your filters</p>
           </div>
-        </TabsContent>
-      </Tabs>
-    </div>
+        ) : (
+          renderItems.map((item, index) => {
+            if (item.type === 'interruption') {
+              return (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.3, delay: 0.1, ease: "easeOut" }}
+                >
+                  <FeedInterruption {...item.data} />
+                </motion.div>
+              );
+            }
+            
+            return (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.3, delay: 0.1, ease: "easeOut" }}
+              >
+                <ThreadedActivityFeed
+                  activities={item.data}
+                  emptyMessage=""
+                />
+              </motion.div>
+            );
+          })
+        )}
+      </motion.div>
+    </motion.div>
   );
 }

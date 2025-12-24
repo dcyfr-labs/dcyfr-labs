@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getTechnicalCapabilities } from "@/data/company-cv";
 import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
+import { cn } from "@/lib/utils";
 import { Shield, Code, Brain } from "lucide-react";
 
 /**
@@ -30,12 +31,12 @@ export function TechnicalCapabilities() {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-3 gap-4">
         {capabilities.map((capability, idx) => {
           const IconComponent = getIcon(capability.domain);
           
           return (
-            <Card key={idx} className="p-6">
+            <Card key={idx} className="p-4">
               <div className="space-y-4">
                 {/* Domain Header */}
                 <div className="flex items-center gap-3">
@@ -51,7 +52,7 @@ export function TechnicalCapabilities() {
                     <Badge
                       key={skillIdx}
                       variant="secondary"
-                      className="text-xs font-normal"
+                      className={cn(TYPOGRAPHY.label.xs, "font-normal")}
                     >
                       {skill}
                     </Badge>

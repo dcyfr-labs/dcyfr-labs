@@ -114,7 +114,7 @@ function CTAInterruption({
     >
       <Card
         className={cn(
-          "relative overflow-hidden border-2",
+          "relative overflow-hidden border-2 bg-card/40 backdrop-blur-sm",
           themeColors.container,
           SHADOWS.card.rest,
           className
@@ -185,7 +185,7 @@ function RelatedPostInterruption({
       <Link href={href} className="block group">
         <Card
           className={cn(
-            "relative overflow-hidden",
+            "relative overflow-hidden bg-card/40 backdrop-blur-sm",
             HOVER_EFFECTS.cardSubtle,
             SHADOWS.card.rest,
             className
@@ -219,7 +219,7 @@ function RelatedPostInterruption({
               {/* Content */}
               <div className="flex-1 min-w-0">
                 {tag && (
-                  <span className="inline-block text-xs text-primary font-medium mb-1">
+                  <span className={cn(TYPOGRAPHY.label.xs, "text-primary mb-1")}>
                     {tag}
                   </span>
                 )}
@@ -266,7 +266,7 @@ function NewsletterInterruption({
     >
       <Card
         className={cn(
-          "relative overflow-hidden",
+          "relative overflow-hidden bg-card/40 backdrop-blur-sm",
           themeColors.container,
           SHADOWS.card.rest,
           className
@@ -321,7 +321,7 @@ function SponsorInterruption({
     >
       <Card
         className={cn(
-          "relative overflow-hidden border-dashed",
+          "relative overflow-hidden border-dashed bg-card/40 backdrop-blur-sm",
           themeColors.container,
           className
         )}
@@ -359,7 +359,7 @@ function QuoteInterruption({
     >
       <Card
         className={cn(
-          "relative overflow-hidden border-l-4",
+          "relative overflow-hidden border-l-4 bg-card/40 backdrop-blur-sm",
           themeColors.container,
           className
         )}

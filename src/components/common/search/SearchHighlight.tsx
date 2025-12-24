@@ -6,6 +6,7 @@
  */
 
 import { highlightSearchTerms } from "@/lib/search";
+import { SEMANTIC_COLORS } from "@/lib/design-tokens";
 
 interface SearchHighlightProps {
   /** Text to highlight */
@@ -25,10 +26,10 @@ interface SearchHighlightProps {
  *   query="hello" 
  * />
  */
-export function SearchHighlight({ 
-  text, 
+export function SearchHighlight({
+  text,
   query,
-  highlightClassName = "bg-yellow-200 dark:bg-yellow-900/50 font-semibold rounded px-0.5"
+  highlightClassName = `${SEMANTIC_COLORS.highlight.primary} font-semibold rounded px-0.5`
 }: SearchHighlightProps) {
   const segments = highlightSearchTerms(text, query);
 

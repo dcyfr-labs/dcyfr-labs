@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Alert } from "@/components/common/alert";
 import { Award, ExternalLink } from "lucide-react";
-import { SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
+import { SPACING, TYPOGRAPHY, ANIMATION } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import { useCredlyBadges } from "@/hooks/use-credly";
 import type { CredlyBadge } from "@/types/credly";
@@ -83,7 +83,7 @@ export function MiniBadgeList({
               className="group relative"
               title={`${badge.badge_template.name} - Issued ${issuedDate}`}
             >
-              <div className="relative w-20 h-20 transition-transform duration-200 hover:scale-110 hover:-translate-y-1">
+              <div className={cn("relative w-20 h-20 transition-transform hover:scale-110 hover:-translate-y-1", ANIMATION.duration.fast)}>
                 <Image
                   src={badge.image_url}
                   alt={badge.badge_template.name}

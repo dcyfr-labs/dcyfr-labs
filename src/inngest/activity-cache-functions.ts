@@ -134,10 +134,13 @@ export const refreshActivityFeed = inngest.createFunction(
         );
       }
 
-      const aggregated = aggregateActivities(allActivities);
-      console.log(`[Activity Cache] Aggregated ${aggregated.length} activities`);
+      // Sort by timestamp - no filtering, no aggregation
+      const sorted = allActivities.sort(
+        (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
+      );
+      console.log(`[Activity Cache] Sorted ${sorted.length} activities`);
 
-      return aggregated;
+      return sorted;
     });
 
     // Step 2: Cache aggregated feed

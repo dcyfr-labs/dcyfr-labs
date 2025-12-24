@@ -80,16 +80,18 @@ export interface UseBookmarksReturn {
  * ```
  */
 export function useBookmarks(): UseBookmarksReturn {
-  const [collection, setCollection] = useState<BookmarkCollection>(() => ({
+  const [collection, setCollection] = useState<BookmarkCollection>({
     bookmarks: [],
     lastUpdated: new Date(),
     count: 0,
     syncStatus: "local",
-  }));
+  });
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   // Load bookmarks on mount
   useEffect(() => {
+    setMounted(true);
     const loaded = loadBookmarksFromStorage();
     setCollection(loaded);
     setLoading(false);
@@ -98,9 +100,10 @@ export function useBookmarks(): UseBookmarksReturn {
   // Query operations
   const isBookmarkedQuery = useCallback(
     (activityId: string): boolean => {
+      if (!mounted) return false; // Suppress client-only data during SSR
       return isBookmarked(activityId, collection);
     },
-    [collection]
+    [collection, mounted]
   );
 
   const getBookmark = useCallback(

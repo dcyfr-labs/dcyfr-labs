@@ -12,7 +12,7 @@ const pageConfig = {
   "/about/drew/resume": { changeFrequency: "monthly" as const, priority: 0.4 },
   "/blog": { changeFrequency: "weekly" as const, priority: 0.8 },
   "/work": { changeFrequency: "monthly" as const, priority: 0.7 },
-  "/resume": { changeFrequency: "monthly" as const, priority: 0.7 },
+  "/services": { changeFrequency: "monthly" as const, priority: 0.7 },
   "/contact": { changeFrequency: "yearly" as const, priority: 0.6 },
 } as const;
 

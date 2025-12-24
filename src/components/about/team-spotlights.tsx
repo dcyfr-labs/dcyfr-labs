@@ -13,7 +13,7 @@ import { TeamMemberCard } from "@/components/common";
  */
 export function TeamSpotlights() {
   return (
-    <div className="space-y-8">
+    <div className={SPACING.subsection}>
       <div className="space-y-2">
         <h2 className={TYPOGRAPHY.h2.standard}>Meet the Team</h2>
         <p className="text-muted-foreground">{teamDescription}</p>
