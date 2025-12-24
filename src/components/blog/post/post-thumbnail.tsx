@@ -92,7 +92,7 @@ export function PostThumbnail({
   return (
     <div
       className={cn(
-        "relative overflow-hidden bg-muted",
+        "relative overflow-hidden bg-muted/30 dark:bg-muted/20",
         // Only apply default size if no custom sizing in className
         !className?.match(/\b(w-|h-|min-w-|min-h-|max-w-|max-h-)/) && sizeClasses[size],
         className
@@ -103,7 +103,7 @@ export function PostThumbnail({
         alt={image.alt || alt || "Blog post image"}
         fill
         className={cn(
-          "object-cover transition-transform hover:scale-105",
+          "object-cover transition-transform hover:scale-105 bg-muted/50 dark:bg-muted/30",
           ANIMATION.duration.normal
         )}
         priority={priority}
