@@ -18,6 +18,8 @@ import {
 import { ArticleLayout, ArticleHeader, ArticleFooter } from "@/components/layouts";
 import {
   BlogPostSidebarWrapper,
+  BlogPostLayoutWrapper,
+  CollapsibleBlogSidebar,
   SeriesNavigation,
   PostHeroImage,
   BlogAnalyticsTracker,
@@ -33,6 +35,7 @@ import {
   RelatedPosts,
   SmoothScrollToHash,
   TableOfContents,
+  TableOfContentsSidebar,
 } from "@/components/common";
 import { Breadcrumbs } from "@/components/navigation";
 import { ReadingProgress } from "@/components/features/reading-progress";
@@ -41,6 +44,7 @@ import { ShareButtons } from "@/components/features/sharing/share-buttons";
 import { LazyGiscusComments } from "@/components/features/comments/lazy-giscus-comments";
 import { ViewTracker } from "@/components/features/view-tracker";
 import { PostBadges } from "@/components/blog";
+import { PostInteractions } from "@/components/common/PostInteractions";
 
 // Enable Incremental Static Regeneration with 1 hour revalidation
 export const revalidate = 3600; // 1 hour in seconds
@@ -183,44 +187,14 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
       <ReadingProgress />
       <SmoothScrollToHash />
-      {/* FAB menu disabled */}
-      {/* <BlogFABMenu headings={headings} /> */}
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
 
-      {/* Mobile/Tablet ToC - FAB menu enabled */}
-      <div className="lg:hidden">
-        <TableOfContents headings={headings} slug={post.slug} />
-      </div>
-
-      {/* Desktop Layout: Sidebar + Content */}
-      <div className={`container ${CONTAINER_WIDTHS.archive} mx-auto ${CONTAINER_PADDING} pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12`}>
-        <div className="grid lg:grid-cols-[280px_1fr] lg:items-start gap-4">
-          {/* Left Sidebar (desktop only) - Streams view count with PPR */}
-          <BlogPostSidebarWrapper
-            headings={headings}
-            slug={post.slug}
-            postId={post.id}
-            authors={post.authors}
-            postTitle={post.title}
-            metadata={{
-              publishedAt: new Date(post.publishedAt),
-              updatedAt: post.updatedAt ? new Date(post.updatedAt) : undefined,
-              readingTime: post.readingTime.text,
-              tags: post.tags,
-              category: post.category,
-              isDraft: post.draft,
-              isArchived: post.archived,
-              isLatest: latestPost?.slug === post.slug,
-              isHot: hottestSlug === post.slug,
-            }}
-            series={post.series}
-            seriesPosts={seriesPosts}
-            relatedPosts={articleData.relatedItems}
-          />
-
-          {/* Main Content */}
+      {/* Desktop Layout: Three-column (Content + TOC + Sidebar) - DOM order optimized for accessibility */}
+      <div className={`container ${CONTAINER_WIDTHS.dashboard} mx-auto ${CONTAINER_PADDING} pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12`}>
+        <BlogPostLayoutWrapper>
+          {/* Center: Main Content (DOM first for accessibility/SEO) */}
           <SidebarVisibilityProvider>
-          <div className="min-w-0">
+          <div className="min-w-0 lg:order-2">
             <ArticleLayout
               useProseWidth={false}
               className="py-0! max-w-none px-0"
@@ -279,6 +253,18 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                 </FigureProvider>
               </div>
 
+              {/* Post interactions (like, bookmark, share) */}
+              <div className="my-6">
+                <PostInteractions
+                  contentId={post.slug}
+                  contentType="post"
+                  title={post.title}
+                  description={post.summary}
+                  href={`/blog/${post.slug}`}
+                  variant="default"
+                  showCounts={true}
+                />
+              </div>
 
               <ArticleFooter>
                 {/* Status badges and category - hidden when sidebar is visible */}
@@ -327,9 +313,44 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               {/* Comments section - hidden for draft posts */}
               {!post.draft && <LazyGiscusComments />}
             </ArticleLayout>
+
+            {/* Mobile/Tablet ToC - positioned after content for better mobile UX */}
+            <div className="lg:hidden mt-8">
+              <TableOfContents headings={headings} slug={post.slug} />
+            </div>
           </div>
           </SidebarVisibilityProvider>
-        </div>
+
+          {/* Left Rail: Table of Contents (desktop only, visually left via CSS Grid order) */}
+          <div className="hidden lg:block lg:order-1">
+            <TableOfContentsSidebar headings={headings} slug={post.slug} />
+          </div>
+
+          {/* Right Rail: Collapsible Sidebar (desktop only) - Streams view count with PPR */}
+          <CollapsibleBlogSidebar className="lg:order-3">
+            <BlogPostSidebarWrapper
+              headings={headings}
+              slug={post.slug}
+              postId={post.id}
+              authors={post.authors}
+              postTitle={post.title}
+              metadata={{
+                publishedAt: new Date(post.publishedAt),
+                updatedAt: post.updatedAt ? new Date(post.updatedAt) : undefined,
+                readingTime: post.readingTime.text,
+                tags: post.tags,
+                category: post.category,
+                isDraft: post.draft,
+                isArchived: post.archived,
+                isLatest: latestPost?.slug === post.slug,
+                isHot: hottestSlug === post.slug,
+              }}
+              series={post.series}
+              seriesPosts={seriesPosts}
+              relatedPosts={articleData.relatedItems}
+            />
+          </CollapsibleBlogSidebar>
+        </BlogPostLayoutWrapper>
       </div>
     </ArticleReadingProgress>
   );

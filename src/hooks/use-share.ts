@@ -61,6 +61,9 @@ export interface UseShareReturn {
   /** Generate social media share URLs */
   getSocialUrls: (data: ShareData) => SocialShareUrls;
 
+  /** Get share count for activity */
+  getShareCount: (activityId: string) => number;
+
   /** Current sharing state */
   isSharing: boolean;
 
@@ -92,6 +95,24 @@ export function useShare(): UseShareReturn {
     setCanUseNativeShare(
       typeof navigator !== "undefined" && "share" in navigator
     );
+  }, []);
+
+  /**
+   * Get share count for activity
+   * Returns simulated count for now (will be replaced with server data)
+   */
+  const getShareCount = useCallback((activityId: string): number => {
+    // Simulated share counts (localStorage-based)
+    // In production, this would fetch from analytics API
+    if (typeof window === "undefined") return 0;
+
+    try {
+      const key = `share:count:${activityId}`;
+      const stored = localStorage.getItem(key);
+      return stored ? parseInt(stored, 10) : 0;
+    } catch {
+      return 0;
+    }
   }, []);
 
   /**
@@ -142,6 +163,11 @@ export function useShare(): UseShareReturn {
       setIsSharing(true);
 
       try {
+        // Validate URL before attempting to share
+        if (!data.url || typeof data.url !== "string" || data.url.trim() === "") {
+          throw new Error("Invalid URL: URL is required for sharing");
+        }
+
         // Try native share API first (mobile)
         if (canUseNativeShare && navigator.share) {
           await navigator.share({
@@ -199,6 +225,7 @@ export function useShare(): UseShareReturn {
     canUseNativeShare,
     copyToClipboard,
     getSocialUrls,
+    getShareCount,
     isSharing,
     recentlyCopied,
   };

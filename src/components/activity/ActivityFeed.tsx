@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
 import { ActivityItem } from "./ActivityItem";
-import { ActivitySkeleton } from "./ActivitySkeleton";
+import { ActivitySkeleton, ActivitySkeletonGroup } from "./ActivitySkeleton";
 import {
   type ActivityItem as ActivityItemType,
   type ActivityVariant,
@@ -92,7 +92,7 @@ export function ActivityFeed({
 
   // Loading state
   if (isLoading) {
-    return <ActivitySkeleton variant={variant} count={limit || 5} />;
+    return <ActivitySkeletonGroup count={limit || 5} />;
   }
 
   // Empty state

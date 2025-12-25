@@ -13,7 +13,7 @@ import { ANIMATION } from "@/lib/design-tokens";
  * Features:
  * - Fixed at bottom of viewport on mobile only (< md breakpoint)
  * - 3 primary destinations: Home, Blog, Work
- * - Compact 48px height (optimized for mobile content space)
+ * - 64px height (recommended touch target size for accessibility)
  * - Active state highlighting
  * - Icon + label layout
  * - Backdrop blur effect
@@ -33,7 +33,7 @@ export function BottomNav() {
       className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t backdrop-blur supports-backdrop-filter:bg-background/95 bg-background"
       aria-label="Bottom navigation"
     >
-      <div className={cn("grid grid-cols-3 h-12", "max-w-lg", "mx-auto")}>
+      <div className={cn("grid grid-cols-3 h-16", "max-w-lg", "mx-auto")}>
         {NAVIGATION.bottom.map((item) => {
           const Icon = item.icon;
           const isActive = isNavItemActive(item, pathname);

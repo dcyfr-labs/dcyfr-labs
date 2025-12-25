@@ -109,55 +109,76 @@ export default async function RootLayout({
 }>) {
   // Get nonce from proxy for CSP-compliant theme injection
   const nonce = (await headers()).get("x-nonce") || undefined;
-  
+
+  // Detect if we're in an embed route
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") || "";
+  const isEmbed = pathname.startsWith("/embed");
+
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
         {/* Font optimization */}
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        
+
         {/* Analytics & monitoring */}
         <link rel="dns-prefetch" href="https://va.vercel-scripts.com" />
         <link rel="preconnect" href="https://vercel-insights.com" crossOrigin="anonymous" />
-        
+
         {/* GitHub resources (for heatmap & avatars) */}
         <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
         <link rel="dns-prefetch" href="https://github.githubassets.com" />
-        
+
         {/* Giscus comments (loaded on blog posts) */}
         <link rel="dns-prefetch" href="https://giscus.app" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${alegreya.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem nonce={nonce}>
-          <PageTransitionProvider>
-            <a
-              href="#main-content"
-              className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg"
-            >
-              Skip to main content
-            </a>
-            <LayoutUtilities />
-            {/* Dev Banner: Only show in development environment */}
-            {process.env.NODE_ENV === 'development' && <DevBanner />}
-            <ScrollToAnchor offset={80} />
-            <CommandPalette />
-            <NavigationShortcutsProvider />
-            <SiteHeader />
-            <main id="main-content" className={`min-h-[calc(100dvh-128px)] ${MOBILE_SAFE_PADDING}`}>{children}</main>
-            <SiteFooter />
-            <BottomNav />
-            <Toaster richColors position="top-center" />
-            {/* Vercel Analytics & Speed Insights - Only in production */}
-            {process.env.NODE_ENV === 'production' && (
-              <>
-                <Analytics debug={false} />
-                <SpeedInsights sampleRate={0.1} />
-              </>
-            )}
-            {/* Axiom Web Vitals - Production only */}
-            <AxiomWebVitals />
-          </PageTransitionProvider>
+          {isEmbed ? (
+            // Minimal layout for embeds - no header, footer, navigation
+            <>
+              {children}
+              {/* Analytics only - no UI components for embeds */}
+              {process.env.NODE_ENV === 'production' && (
+                <>
+                  <Analytics debug={false} />
+                  <SpeedInsights sampleRate={0.1} />
+                </>
+              )}
+              <AxiomWebVitals />
+            </>
+          ) : (
+            // Full layout for regular pages
+            <PageTransitionProvider>
+              <a
+                href="#main-content"
+                className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg"
+              >
+                Skip to main content
+              </a>
+              <LayoutUtilities />
+              {/* Dev Banner: Only show in development environment */}
+              {process.env.NODE_ENV === 'development' && <DevBanner />}
+              <ScrollToAnchor offset={80} />
+              <CommandPalette />
+              <NavigationShortcutsProvider />
+              <SiteHeader />
+              <main id="main-content" className={`min-h-[calc(100dvh-128px)] ${MOBILE_SAFE_PADDING}`}>{children}</main>
+              <SiteFooter />
+              <BottomNav />
+              <Toaster richColors position="top-center" />
+              {/* Vercel Analytics & Speed Insights - Only in production */}
+              {process.env.NODE_ENV === 'production' && (
+                <>
+                  <Analytics debug={false} />
+                  <SpeedInsights sampleRate={0.1} />
+                </>
+              )}
+              {/* Axiom Web Vitals - Production only */}
+              <AxiomWebVitals />
+            </PageTransitionProvider>
+          )}
         </ThemeProvider>
       </body>
     </html>

@@ -150,6 +150,35 @@ export function ContactForm() {
 
 **See [`docs/ai/design-system.md`](docs/ai/design-system.md) for comprehensive validation checklist**
 
+## Test Data Prevention (MANDATORY)
+
+**NEVER commit test/fabricated data to production.** All test data must:
+
+1. **Be behind environment checks** - Both NODE_ENV and VERCEL_ENV
+2. **Have cleanup scripts** - Remove test data if leaked (npm run clear:analytics)
+3. **Log warnings in production** - Alert if fallback/demo data used
+4. **Be documented** - Compare sample values to actual metrics
+
+### Key Pattern
+
+```typescript
+// ✅ CORRECT: Environment-aware with explicit warning
+const isProduction = process.env.NODE_ENV === 'production' 
+  || process.env.VERCEL_ENV === 'production';
+
+if (isProduction && !hasRealData) {
+  console.error('❌ CRITICAL: Using demo data in production!');
+  return null;  // Don't use fake data - return empty or error
+}
+
+// Safe to use test data in development only
+return mockData;
+```
+
+**Reference:** [TEST_DATA_PREVENTION.md](.github/agents/enforcement/TEST_DATA_PREVENTION.md)
+
+**History:** [December 25, 2025] Removed 13 fabricated analytics items from production Redis.
+
 ## Key Constraints
 
 **Do NOT change without discussion:**

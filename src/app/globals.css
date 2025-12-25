@@ -323,6 +323,20 @@
     animation: highlight-pulse 2s ease-in-out;
   }
 
+  /* Pulse-once animation for activity feed reactions (one-time pulse effect) */
+  @keyframes pulse-once {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+  }
+
+  .animate-pulse-once {
+    animation: pulse-once 300ms ease-in-out;
+  }
+
   .holographic-card {
     position: relative;
     overflow: hidden;
@@ -793,8 +807,37 @@ a[href]:hover {
   .react-calendar-heatmap rect {
     animation: none !important;
   }
-  
+
   .react-calendar-heatmap rect:hover {
+    transform: none !important;
+  }
+
+  /* Disable activity feed animations (like button, pulse, count) */
+  .animate-pulse-once {
+    animation: none !important;
+  }
+
+  /* Disable loading bar animation */
+  .animate-loading-bar {
+    animation: none !important;
+    transform: scaleX(1) !important;
+  }
+
+  /* Disable fade-in animations */
+  .animate-fade-in {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  /* Disable highlight pulse animation */
+  .animate-highlight {
+    animation: none !important;
+  }
+
+  /* Disable all scale transforms on interactive elements */
+  button:active,
+  a:active,
+  [role="button"]:active {
     transform: none !important;
   }
   

@@ -89,7 +89,12 @@ export async function fetchCredlyBadgesCached(
     ...(limit && { limit: limit.toString() }),
   });
 
-  const apiUrl = `/api/credly/badges?${params}`;
+  // Construct absolute URL for fetch
+  const baseUrl = typeof window !== 'undefined' 
+    ? window.location.origin 
+    : process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  
+  const apiUrl = new URL(`/api/credly/badges?${params}`, baseUrl).toString();
   const response = await fetch(apiUrl);
   
   if (!response.ok) {

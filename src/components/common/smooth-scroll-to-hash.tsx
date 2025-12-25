@@ -19,6 +19,9 @@ import { SCROLL_BEHAVIOR } from "@/lib/design-tokens";
  */
 export function SmoothScrollToHash() {
   React.useEffect(() => {
+    // Track pending timeouts for cleanup
+    const pendingTimeouts = new Set<NodeJS.Timeout>();
+    
     // Scroll to element with animation
     const scrollToElement = (element: HTMLElement) => {
       const top = element.getBoundingClientRect().top + window.scrollY - SCROLL_BEHAVIOR.offset.standard;
@@ -30,9 +33,11 @@ export function SmoothScrollToHash() {
 
       // Add highlight animation to heading
       element.classList.add("animate-highlight");
-      setTimeout(() => {
+      const highlightTimeout = setTimeout(() => {
         element.classList.remove("animate-highlight");
+        pendingTimeouts.delete(highlightTimeout);
       }, 2000);
+      pendingTimeouts.add(highlightTimeout);
 
       // Dispatch custom event to notify TOC of hash navigation
       window.dispatchEvent(new CustomEvent("toc:hash-navigation", {
@@ -51,12 +56,14 @@ export function SmoothScrollToHash() {
       if (!element) {
         // Element not found immediately, try again after a delay
         // This handles async content loading or hydration delays
-        setTimeout(() => {
+        const retryTimeout = setTimeout(() => {
           element = document.getElementById(elementId);
           if (element) {
             scrollToElement(element);
           }
+          pendingTimeouts.delete(retryTimeout);
         }, 300);
+        pendingTimeouts.add(retryTimeout);
         return;
       }
 
@@ -76,10 +83,14 @@ export function SmoothScrollToHash() {
     };
 
     // Use requestIdleCallback for better performance, fallback to setTimeout
+    let idleCallbackId: number | null = null;
+    let initialTimeout: NodeJS.Timeout | null = null;
+    
     if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => handleHashOnLoad());
+      idleCallbackId = requestIdleCallback(() => handleHashOnLoad());
     } else {
-      setTimeout(() => handleHashOnLoad(), 100);
+      initialTimeout = setTimeout(() => handleHashOnLoad(), 100);
+      pendingTimeouts.add(initialTimeout);
     }
 
     // Listen for hash changes
@@ -87,6 +98,16 @@ export function SmoothScrollToHash() {
 
     return () => {
       window.removeEventListener("hashchange", handleHashChange);
+      // Cancel pending requestIdleCallback if it exists
+      if (idleCallbackId !== null) {
+        cancelIdleCallback(idleCallbackId);
+      }
+      // Clear all pending timeouts
+      pendingTimeouts.forEach(timeout => clearTimeout(timeout));
+      pendingTimeouts.clear();
+      if (initialTimeout !== null) {
+        clearTimeout(initialTimeout);
+      }
     };
   }, []);
 

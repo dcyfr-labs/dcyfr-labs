@@ -1,0 +1,2047 @@
+
+> dcyfr-labs@0.1.0 test:e2e
+> PLAYWRIGHT_USE_PROD=1 playwright test
+
+
+Running 1048 tests using 4 workers
+
+[1A[2K[1/1048] [chromium] › e2e/activity-embed.spec.ts:14:7 › Activity Feed Embed › embed respects source filter parameter
+[1A[2K[2/1048] [chromium] › e2e/activity-embed.spec.ts:4:7 › Activity Feed Embed › embed route loads without navigation
+[1A[2K[3/1048] [chromium] › e2e/activity-embed.spec.ts:25:7 › Activity Feed Embed › embed respects time range parameter
+[1A[2K[4/1048] [chromium] › e2e/activity-embed.spec.ts:36:7 › Activity Feed Embed › embed respects limit parameter
+[1A[2K  1) [chromium] › e2e/activity-embed.spec.ts:4:7 › Activity Feed Embed › embed route loads without navigation 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).not.[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('nav')
+    Expected: not visible
+    Error: strict mode violation: locator('nav') resolved to 2 elements:
+        1) <nav aria-label="Main navigation" class="hidden md:flex items-center gap-1 sm:gap-3 md:gap-4 text-sm">…</nav> aka getByRole('navigation', { name: 'Main navigation' })
+        2) <nav aria-label="Bottom navigation" class="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t backdrop-blur supports-backdrop-filter:bg-background/95 bg-background">…</nav> aka getByLabel('Bottom navigation')
+
+    Call log:
+    [2m  - Expect "not toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('nav')[22m
+
+
+       6 |     
+       7 |     // Should not have main navigation
+    >  8 |     await expect(page.locator("nav")).not.toBeVisible();
+         |                                           ^
+       9 |     
+      10 |     // Should display activity items
+      11 |     await expect(page.locator("[data-testid*='activity']").first()).toBeVisible({ timeout: 10000 });
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-embed.spec.ts:8:43
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Fe-06648-te-loads-without-navigation-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Fe-06648-te-loads-without-navigation-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-embed-Activity-Fe-06648-te-loads-without-navigation-chromium/error-context.md
+
+
+[1A[2K[5/1048] [chromium] › e2e/activity-embed.spec.ts:47:7 › Activity Feed Embed › embed sends resize messages via postMessage
+[1A[2K  2) [chromium] › e2e/activity-embed.spec.ts:47:7 › Activity Feed Embed › embed sends resize messages via postMessage 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeDefined[2m()[22m
+
+    Received: [31mundefined[39m
+
+      65 |     // Check if any resize message was sent
+      66 |     const resizeMessage = messages.find((msg) => msg.type === "activity-embed-resize");
+    > 67 |     expect(resizeMessage).toBeDefined();
+         |                           ^
+      68 |     expect(resizeMessage?.height).toBeGreaterThan(0);
+      69 |   });
+      70 |
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-embed.spec.ts:67:27
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Fe-65d3a-ze-messages-via-postMessage-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Fe-65d3a-ze-messages-via-postMessage-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-embed-Activity-Fe-65d3a-ze-messages-via-postMessage-chromium/error-context.md
+
+
+[1A[2K[6/1048] [chromium] › e2e/activity-embed.spec.ts:71:7 › Activity Feed Embed › embed can be loaded in iframe
+[1A[2K  3) [chromium] › e2e/activity-embed.spec.ts:25:7 › Activity Feed Embed › embed respects time range parameter 
+
+    TimeoutError: page.waitForSelector: Timeout 10000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('[data-testid*=\'activity\']') to be visible[22m
+
+
+      27 |     
+      28 |     // Wait for activities to load
+    > 29 |     await page.waitForSelector("[data-testid*='activity']", { timeout: 10000 });
+         |                ^
+      30 |     
+      31 |     // Should show activities
+      32 |     const activities = await page.locator("[data-testid*='activity']").all();
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-embed.spec.ts:29:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Fe-bf86d-spects-time-range-parameter-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Fe-bf86d-spects-time-range-parameter-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-embed-Activity-Fe-bf86d-spects-time-range-parameter-chromium/error-context.md
+
+
+[1A[2K  4) [chromium] › e2e/activity-embed.spec.ts:14:7 › Activity Feed Embed › embed respects source filter parameter 
+
+    TimeoutError: page.waitForSelector: Timeout 10000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('[data-testid*=\'activity\']') to be visible[22m
+
+
+      16 |     
+      17 |     // Wait for activities to load
+    > 18 |     await page.waitForSelector("[data-testid*='activity']", { timeout: 10000 });
+         |                ^
+      19 |     
+      20 |     // All visible activities should be blog posts
+      21 |     const activities = await page.locator("[data-testid*='activity']").all();
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-embed.spec.ts:18:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Fe-c945e-cts-source-filter-parameter-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Fe-c945e-cts-source-filter-parameter-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-embed-Activity-Fe-c945e-cts-source-filter-parameter-chromium/error-context.md
+
+
+[1A[2K  5) [chromium] › e2e/activity-embed.spec.ts:36:7 › Activity Feed Embed › embed respects limit parameter 
+
+    TimeoutError: page.waitForSelector: Timeout 10000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('[data-testid*=\'activity\']') to be visible[22m
+
+
+      38 |     
+      39 |     // Wait for activities to load
+    > 40 |     await page.waitForSelector("[data-testid*='activity']", { timeout: 10000 });
+         |                ^
+      41 |     
+      42 |     // Should show maximum 5 activities (accounting for threading)
+      43 |     const activities = await page.locator("[data-testid*='activity']").all();
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-embed.spec.ts:40:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Fe-27a9b-ed-respects-limit-parameter-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Fe-27a9b-ed-respects-limit-parameter-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-embed-Activity-Fe-27a9b-ed-respects-limit-parameter-chromium/error-context.md
+
+
+[1A[2K[7/1048] [chromium] › e2e/activity-embed.spec.ts:97:7 › Activity Embed Generator › shows embed generator when button is clicked
+[1A[2K[8/1048] [chromium] › e2e/activity-embed.spec.ts:106:7 › Activity Embed Generator › hides embed generator when toggled
+[1A[2K[9/1048] [chromium] › e2e/activity-embed.spec.ts:116:7 › Activity Embed Generator › updates embed code when source is selected
+[1A[2K[10/1048] [chromium] › e2e/activity-embed.spec.ts:127:7 › Activity Embed Generator › updates embed code when time range is selected
+[1A[2K  6) [chromium] › e2e/activity-embed.spec.ts:97:7 › Activity Embed Generator › shows embed generator when button is clicked 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Embed Code')
+    Expected: visible
+    Error: strict mode violation: locator('text=Embed Code') resolved to 3 elements:
+        1) <button class="flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors hover:bg-zinc-50 text-sm">…</button> aka getByRole('button', { name: 'Hide Embed Code' })
+        2) <label class="block mb-2 text-sm font-medium">Embed Code</label> aka getByText('Embed Code', { exact: true })
+        3) <li>Copy the generated embed code</li> aka getByText('Copy the generated embed code')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Embed Code')[22m
+
+
+      101 |     // Should display the embed generator
+      102 |     await expect(page.locator("text=Embed Activity Feed")).toBeVisible();
+    > 103 |     await expect(page.locator("text=Embed Code")).toBeVisible();
+          |                                                   ^
+      104 |   });
+      105 |
+      106 |   test("hides embed generator when toggled", async ({ page }) => {
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-embed.spec.ts:103:51
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Em-456c3-ator-when-button-is-clicked-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Em-456c3-ator-when-button-is-clicked-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-embed-Activity-Em-456c3-ator-when-button-is-clicked-chromium/error-context.md
+
+
+[1A[2K  7) [chromium] › e2e/activity-embed.spec.ts:116:7 › Activity Embed Generator › updates embed code when source is selected 
+
+    Error: page.selectOption: Unknown engine "label" while parsing selector label=Filter by Source (optional)
+    Call log:
+    [2m  - waiting for locator('label=Filter by Source (optional)')[22m
+
+
+      118 |     
+      119 |     // Select a source filter
+    > 120 |     await page.selectOption("label=Filter by Source (optional)", "blog");
+          |                ^
+      121 |     
+      122 |     // Verify embed code includes source parameter
+      123 |     const codeBlock = await page.locator("pre code").textContent();
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-embed.spec.ts:120:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Em-c417a-ode-when-source-is-selected-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Em-c417a-ode-when-source-is-selected-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-embed-Activity-Em-c417a-ode-when-source-is-selected-chromium/error-context.md
+
+
+[1A[2K  8) [chromium] › e2e/activity-embed.spec.ts:71:7 › Activity Feed Embed › embed can be loaded in iframe 
+
+    TimeoutError: locator.waitFor: Timeout 10000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('#embed').contentFrame().locator('[data-testid*=\'activity\']').first() to be visible[22m
+
+
+      82 |     // Wait for iframe to load
+      83 |     const iframe = await page.frameLocator("#embed");
+    > 84 |     await iframe.locator("[data-testid*='activity']").first().waitFor({ timeout: 10000 });
+         |                                                               ^
+      85 |     
+      86 |     // Verify activities are visible in iframe
+      87 |     const activities = await iframe.locator("[data-testid*='activity']").all();
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-embed.spec.ts:84:63
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Fe-0056e-bed-can-be-loaded-in-iframe-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Fe-0056e-bed-can-be-loaded-in-iframe-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-embed-Activity-Fe-0056e-bed-can-be-loaded-in-iframe-chromium/error-context.md
+
+
+[1A[2K[11/1048] [chromium] › e2e/activity-embed.spec.ts:138:7 › Activity Embed Generator › updates embed code when limit is changed
+[1A[2K[12/1048] [chromium] › e2e/activity-embed.spec.ts:149:7 › Activity Embed Generator › copies embed code to clipboard
+[1A[2K[13/1048] [chromium] › e2e/activity-embed.spec.ts:167:7 › Activity Embed Generator › preview link opens embed in new window
+[1A[2K  9) [chromium] › e2e/activity-embed.spec.ts:127:7 › Activity Embed Generator › updates embed code when time range is selected 
+
+    Error: page.selectOption: Unknown engine "label" while parsing selector label=Time Range (optional)
+    Call log:
+    [2m  - waiting for locator('label=Time Range (optional)')[22m
+
+
+      129 |     
+      130 |     // Select a time range
+    > 131 |     await page.selectOption("label=Time Range (optional)", "week");
+          |                ^
+      132 |     
+      133 |     // Verify embed code includes timeRange parameter
+      134 |     const codeBlock = await page.locator("pre code").textContent();
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-embed.spec.ts:131:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Em-16dd5-when-time-range-is-selected-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Em-16dd5-when-time-range-is-selected-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-embed-Activity-Em-16dd5-when-time-range-is-selected-chromium/error-context.md
+
+
+[1A[2K[14/1048] [chromium] › e2e/activity-embed.spec.ts:182:7 › Activity Embed Generator › combines multiple parameters in embed URL
+[1A[2K[15/1048] [chromium] › e2e/activity-search.spec.ts:22:7 › Activity Feed Search › should display search input with placeholder
+[1A[2K  10) [chromium] › e2e/activity-embed.spec.ts:138:7 › Activity Embed Generator › updates embed code when limit is changed 
+
+    Error: page.fill: Unknown engine "label" while parsing selector label=Number of Items
+    Call log:
+    [2m  - waiting for locator('label=Number of Items')[22m
+
+
+      140 |     
+      141 |     // Change limit
+    > 142 |     await page.fill("label=Number of Items", "50");
+          |                ^
+      143 |     
+      144 |     // Verify embed code includes limit parameter
+      145 |     const codeBlock = await page.locator("pre code").textContent();
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-embed.spec.ts:142:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Em-133a5--code-when-limit-is-changed-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Em-133a5--code-when-limit-is-changed-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-embed-Activity-Em-133a5--code-when-limit-is-changed-chromium/error-context.md
+
+
+[1A[2K  11) [chromium] › e2e/activity-embed.spec.ts:167:7 › Activity Embed Generator › preview link opens embed in new window 
+
+    Error: page.selectOption: Unknown engine "label" while parsing selector label=Filter by Source (optional)
+    Call log:
+    [2m  - waiting for locator('label=Filter by Source (optional)')[22m
+
+
+      169 |     
+      170 |     // Select some filters
+    > 171 |     await page.selectOption("label=Filter by Source (optional)", "github");
+          |                ^
+      172 |     
+      173 |     // Get the preview link
+      174 |     const previewLink = page.locator("text=Preview embed in new window");
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-embed.spec.ts:171:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Em-6f910-k-opens-embed-in-new-window-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Em-6f910-k-opens-embed-in-new-window-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-embed-Activity-Em-6f910-k-opens-embed-in-new-window-chromium/error-context.md
+
+
+[1A[2K[16/1048] [chromium] › e2e/activity-search.spec.ts:27:7 › Activity Feed Search › should show keyboard shortcut hint
+[1A[2K[17/1048] [chromium] › e2e/activity-search.spec.ts:32:7 › Activity Feed Search › should filter activities by search query
+[1A[2K  12) [chromium] › e2e/activity-embed.spec.ts:182:7 › Activity Embed Generator › combines multiple parameters in embed URL 
+
+    Error: page.selectOption: Unknown engine "label" while parsing selector label=Filter by Source (optional)
+    Call log:
+    [2m  - waiting for locator('label=Filter by Source (optional)')[22m
+
+
+      184 |     
+      185 |     // Set multiple options
+    > 186 |     await page.selectOption("label=Filter by Source (optional)", "blog");
+          |                ^
+      187 |     await page.selectOption("label=Time Range (optional)", "month");
+      188 |     await page.fill("label=Number of Items", "30");
+      189 |     
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-embed.spec.ts:186:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Em-a2e01-ple-parameters-in-embed-URL-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-embed-Activity-Em-a2e01-ple-parameters-in-embed-URL-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-embed-Activity-Em-a2e01-ple-parameters-in-embed-URL-chromium/error-context.md
+
+
+[1A[2K[18/1048] [chromium] › e2e/activity-search.spec.ts:49:7 › Activity Feed Search › should clear search with X button
+[1A[2K[19/1048] [chromium] › e2e/activity-search.spec.ts:63:7 › Activity Feed Search › should support tag filter syntax
+[1A[2K  13) [chromium] › e2e/activity-search.spec.ts:22:7 › Activity Feed Search › should display search input with placeholder 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByPlaceholder(/Search activities/i)
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for getByPlaceholder(/Search activities/i)[22m
+
+
+      22 |   test("should display search input with placeholder", async ({ page }) => {
+      23 |     const searchInput = page.getByPlaceholder(/Search activities/i);
+    > 24 |     await expect(searchInput).toBeVisible();
+         |                               ^
+      25 |   });
+      26 |
+      27 |   test("should show keyboard shortcut hint", async ({ page }) => {
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-search.spec.ts:24:31
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-27057-arch-input-with-placeholder-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-27057-arch-input-with-placeholder-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-search-Activity-F-27057-arch-input-with-placeholder-chromium/error-context.md
+
+
+[1A[2K[20/1048] [chromium] › e2e/activity-search.spec.ts:81:7 › Activity Feed Search › should support source filter syntax
+[1A[2K  14) [chromium] › e2e/activity-search.spec.ts:32:7 › Activity Feed Search › should filter activities by search query 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByPlaceholder(/Search activities/i)[22m
+
+
+      37 |     // Enter search query
+      38 |     const searchInput = page.getByPlaceholder(/Search activities/i);
+    > 39 |     await searchInput.fill("React");
+         |                       ^
+      40 |
+      41 |     // Wait for results to update
+      42 |     await page.waitForTimeout(500);
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-search.spec.ts:39:23
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-c7ce7--activities-by-search-query-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-c7ce7--activities-by-search-query-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-search-Activity-F-c7ce7--activities-by-search-query-chromium/error-context.md
+
+
+[1A[2K[21/1048] [chromium] › e2e/activity-search.spec.ts:97:7 › Activity Feed Search › should support exclude syntax
+[1A[2K  15) [chromium] › e2e/activity-search.spec.ts:49:7 › Activity Feed Search › should clear search with X button 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByPlaceholder(/Search activities/i)[22m
+
+
+      51 |     
+      52 |     // Enter search query
+    > 53 |     await searchInput.fill("TypeScript");
+         |                       ^
+      54 |     
+      55 |     // Click clear button
+      56 |     const clearButton = page.locator('[aria-label="Clear search"]');
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-search.spec.ts:53:23
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-3572d--clear-search-with-X-button-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-3572d--clear-search-with-X-button-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-search-Activity-F-3572d--clear-search-with-X-button-chromium/error-context.md
+
+
+[1A[2K[22/1048] [chromium] › e2e/activity-search.spec.ts:113:7 › Activity Feed Search › should support exact phrase matching
+[1A[2K  16) [chromium] › e2e/activity-search.spec.ts:63:7 › Activity Feed Search › should support tag filter syntax 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByPlaceholder(/Search activities/i)[22m
+
+
+      65 |     
+      66 |     // Search by tag
+    > 67 |     await searchInput.fill("tag:react");
+         |                       ^
+      68 |     await searchInput.press("Enter");
+      69 |     
+      70 |     // Wait for results
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-search.spec.ts:67:23
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-a2cff-d-support-tag-filter-syntax-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-a2cff-d-support-tag-filter-syntax-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-search-Activity-F-a2cff-d-support-tag-filter-syntax-chromium/error-context.md
+
+
+[1A[2K[23/1048] [chromium] › e2e/activity-search.spec.ts:129:7 › Activity Feed Search › should focus search input with Cmd+K
+[1A[2K  17) [chromium] › e2e/activity-search.spec.ts:81:7 › Activity Feed Search › should support source filter syntax 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByPlaceholder(/Search activities/i)[22m
+
+
+      83 |     
+      84 |     // Search by source
+    > 85 |     await searchInput.fill("source:blog");
+         |                       ^
+      86 |     await searchInput.press("Enter");
+      87 |     
+      88 |     // Wait for results
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-search.spec.ts:85:23
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-9b431-upport-source-filter-syntax-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-9b431-upport-source-filter-syntax-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-search-Activity-F-9b431-upport-source-filter-syntax-chromium/error-context.md
+
+
+[1A[2K[24/1048] [chromium] › e2e/activity-search.spec.ts:143:7 › Activity Feed Search › should save search to history after submission
+[1A[2K  18) [chromium] › e2e/activity-search.spec.ts:129:7 › Activity Feed Search › should focus search input with Cmd+K 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeFocused[2m([22m[2m)[22m failed
+
+    Locator: getByPlaceholder(/Search activities/i)
+    Expected: focused
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeFocused" with timeout 5000ms[22m
+    [2m  - waiting for getByPlaceholder(/Search activities/i)[22m
+
+
+      138 |     
+      139 |     // Verify search input is focused
+    > 140 |     await expect(searchInput).toBeFocused();
+          |                               ^
+      141 |   });
+      142 |
+      143 |   test("should save search to history after submission", async ({ page, context }) => {
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-search.spec.ts:140:31
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-59f7f-cus-search-input-with-Cmd-K-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-59f7f-cus-search-input-with-Cmd-K-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-search-Activity-F-59f7f-cus-search-input-with-Cmd-K-chromium/error-context.md
+
+
+[1A[2K[25/1048] [chromium] › e2e/activity-search.spec.ts:176:7 › Activity Feed Search › should apply search from history
+[1A[2K  19) [chromium] › e2e/activity-search.spec.ts:97:7 › Activity Feed Search › should support exclude syntax 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByPlaceholder(/Search activities/i)[22m
+
+
+       99 |     
+      100 |     // Exclude a source
+    > 101 |     await searchInput.fill("-github");
+          |                       ^
+      102 |     await searchInput.press("Enter");
+      103 |     
+      104 |     // Wait for results
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-search.spec.ts:101:23
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-676dc-ould-support-exclude-syntax-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-676dc-ould-support-exclude-syntax-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-search-Activity-F-676dc-ould-support-exclude-syntax-chromium/error-context.md
+
+
+[1A[2K[26/1048] [chromium] › e2e/activity-search.spec.ts:204:7 › Activity Feed Search › should clear search history
+[1A[2K  20) [chromium] › e2e/activity-search.spec.ts:113:7 › Activity Feed Search › should support exact phrase matching 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByPlaceholder(/Search activities/i)[22m
+
+
+      115 |     
+      116 |     // Search for exact phrase
+    > 117 |     await searchInput.fill('"React Hooks"');
+          |                       ^
+      118 |     await searchInput.press("Enter");
+      119 |     
+      120 |     // Wait for results
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-search.spec.ts:117:23
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-0026d-pport-exact-phrase-matching-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-0026d-pport-exact-phrase-matching-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-search-Activity-F-0026d-pport-exact-phrase-matching-chromium/error-context.md
+
+
+[1A[2K[27/1048] [chromium] › e2e/activity-search.spec.ts:233:7 › Activity Feed Search › should show search syntax hints
+[1A[2K[28/1048] [chromium] › e2e/activity-search.spec.ts:238:7 › Activity Feed Search › should combine search with other filters
+[1A[2K  21) [chromium] › e2e/activity-search.spec.ts:143:7 › Activity Feed Search › should save search to history after submission 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByPlaceholder(/Search activities/i)[22m
+
+
+      149 |     
+      150 |     // Perform a search
+    > 151 |     await searchInput.fill("TypeScript");
+          |                       ^
+      152 |     await searchInput.press("Enter");
+      153 |     
+      154 |     // Wait for search to complete
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-search.spec.ts:151:23
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-cfcfa-to-history-after-submission-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-cfcfa-to-history-after-submission-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-search-Activity-F-cfcfa-to-history-after-submission-chromium/error-context.md
+
+
+[1A[2K[29/1048] [chromium] › e2e/activity-search.spec.ts:256:7 › Activity Feed Search › should update results count badge
+[1A[2K  22) [chromium] › e2e/activity-search.spec.ts:176:7 › Activity Feed Search › should apply search from history 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByPlaceholder(/Search activities/i)[22m
+
+
+      178 |     
+      179 |     // Perform initial search
+    > 180 |     await searchInput.fill("React");
+          |                       ^
+      181 |     await searchInput.press("Enter");
+      182 |     await page.waitForTimeout(500);
+      183 |     
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-search.spec.ts:180:23
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-d78f1-d-apply-search-from-history-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-d78f1-d-apply-search-from-history-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-search-Activity-F-d78f1-d-apply-search-from-history-chromium/error-context.md
+
+
+[1A[2K[30/1048] [chromium] › e2e/blog.spec.ts:10:7 › Blog › should display blog posts
+[1A[2K  23) [chromium] › e2e/activity-search.spec.ts:204:7 › Activity Feed Search › should clear search history 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByPlaceholder(/Search activities/i)[22m
+
+
+      206 |     
+      207 |     // Perform a search to create history
+    > 208 |     await searchInput.fill("Test");
+          |                       ^
+      209 |     await searchInput.press("Enter");
+      210 |     await page.waitForTimeout(500);
+      211 |     
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-search.spec.ts:208:23
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-3d7b0-should-clear-search-history-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-search-Activity-F-3d7b0-should-clear-search-history-chromium/error-context.md
+
+
+[1A[2K[31/1048] [chromium] › e2e/blog.spec.ts:21:7 › Blog › should have working search functionality
+[1A[2K  24) [chromium] › e2e/activity-search.spec.ts:238:7 › Activity Feed Search › should combine search with other filters 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByPlaceholder(/Search activities/i)[22m
+
+
+      240 |     
+      241 |     // Apply search
+    > 242 |     await searchInput.fill("React");
+          |                       ^
+      243 |     
+      244 |     // Click a source filter (e.g., Blog)
+      245 |     const blogFilter = page.locator("text=Blog").first();
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-search.spec.ts:242:23
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-1c5c6-e-search-with-other-filters-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-search-Activity-F-1c5c6-e-search-with-other-filters-chromium/error-context.md
+
+
+[1A[2K[32/1048] [chromium] › e2e/blog.spec.ts:38:7 › Blog › should filter posts by tag
+[1A[2K  25) [chromium] › e2e/activity-search.spec.ts:256:7 › Activity Feed Search › should update results count badge 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByPlaceholder(/Search activities/i)[22m
+
+
+      258 |     
+      259 |     // Enter search query
+    > 260 |     await searchInput.fill("TypeScript");
+          |                       ^
+      261 |     
+      262 |     // Wait for results
+      263 |     await page.waitForTimeout(500);
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/activity-search.spec.ts:260:23
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/activity-search-Activity-F-7ac15--update-results-count-badge-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/activity-search-Activity-F-7ac15--update-results-count-badge-chromium/error-context.md
+
+
+[1A[2K[33/1048] [chromium] › e2e/blog.spec.ts:52:7 › Blog › should open and display blog post
+[1A[2K  26) [chromium] › e2e/blog.spec.ts:10:7 › Blog › should display blog posts ────────────────────────
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - navigating to "http://localhost:3000/blog", waiting until "load"[22m
+
+
+       9 | test.describe('Blog', () => {
+      10 |   test('should display blog posts', async ({ page }) => {
+    > 11 |     await page.goto('/blog')
+         |                ^
+      12 |     
+      13 |     // Check page title
+      14 |     await expect(page).toHaveTitle(/Blog/)
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/blog.spec.ts:11:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/blog-Blog-should-display-blog-posts-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/blog-Blog-should-display-blog-posts-chromium/error-context.md
+
+
+[1A[2K[34/1048] [chromium] › e2e/blog.spec.ts:76:7 › Blog › should have accessible navigation
+[1A[2K  27) [chromium] › e2e/blog.spec.ts:21:7 › Blog › should have working search functionality ─────────
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/blog", waiting until "load"[22m
+
+
+      20 |
+      21 |   test('should have working search functionality', async ({ page }) => {
+    > 22 |     await page.goto('/blog')
+         |                ^
+      23 |     
+      24 |     // Find search input by its aria-label to be more specific
+      25 |     const searchInput = page.getByRole('searchbox', { name: /search/i }).first()
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/blog.spec.ts:22:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/blog-Blog-should-have-working-search-functionality-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K  28) [chromium] › e2e/blog.spec.ts:52:7 › Blog › should open and display blog post ────────────────
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/blog", waiting until "load"[22m
+
+
+      54 |     test.skip(browserName === 'webkit', 'Webkit has TLS/timing issues with this navigation pattern');
+      55 |     
+    > 56 |     await page.goto('/blog')
+         |                ^
+      57 |     
+      58 |     // Click on first blog post link and wait for navigation
+      59 |     const firstPost = page.locator('[data-testid="post-list"] article a').first()
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/blog.spec.ts:56:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/blog-Blog-should-open-and-display-blog-post-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K  29) [chromium] › e2e/blog.spec.ts:38:7 › Blog › should filter posts by tag ───────────────────────
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/blog", waiting until "load"[22m
+
+
+      37 |
+      38 |   test('should filter posts by tag', async ({ page }) => {
+    > 39 |     await page.goto('/blog')
+         |                ^
+      40 |     
+      41 |     // Find and click a tag filter button
+      42 |     const tagButton = page.locator('[role="button"]').filter({ hasText: /nextjs|react|typescript/i }).first()
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/blog.spec.ts:39:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/blog-Blog-should-filter-posts-by-tag-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[35/1048] [chromium] › e2e/bookmarks.spec.ts:16:7 › Activity Bookmarks › should bookmark and unbookmark activity items
+[1A[2K[36/1048] [chromium] › e2e/bookmarks.spec.ts:75:7 › Activity Bookmarks › should filter activities using bookmarks preset
+[1A[2K[37/1048] [chromium] › e2e/bookmarks.spec.ts:48:7 › Activity Bookmarks › should persist bookmarks across page reloads
+[1A[2K  30) [chromium] › e2e/blog.spec.ts:76:7 › Blog › should have accessible navigation ────────────────
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/blog", waiting until "load"[22m
+
+
+      75 |
+      76 |   test('should have accessible navigation', async ({ page }) => {
+    > 77 |     await page.goto('/blog')
+         |                ^
+      78 |     
+      79 |     // Test keyboard navigation
+      80 |     await page.keyboard.press('Tab')
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/blog.spec.ts:77:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/blog-Blog-should-have-accessible-navigation-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[38/1048] [chromium] › e2e/bookmarks.spec.ts:109:7 › Activity Bookmarks › should handle bookmark button hover states
+[1A[2K  31) [chromium] › e2e/bookmarks.spec.ts:16:7 › Activity Bookmarks › should bookmark and unbookmark activity items 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - navigating to "http://localhost:3000/activity", waiting until "load"[22m
+
+
+      16 |   test("should bookmark and unbookmark activity items", async ({ page }) => {
+      17 |     // Go to activity page
+    > 18 |     await page.goto("/activity");
+         |                ^
+      19 |     
+      20 |     // Wait for activities to load
+      21 |     await expect(page.locator("[data-testid='activity-item']").first()).toBeVisible();
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/bookmarks.spec.ts:18:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/bookmarks-Activity-Bookmar-67cf5-d-unbookmark-activity-items-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/bookmarks-Activity-Bookmar-67cf5-d-unbookmark-activity-items-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/bookmarks-Activity-Bookmar-67cf5-d-unbookmark-activity-items-chromium/error-context.md
+
+
+[1A[2K  32) [chromium] › e2e/bookmarks.spec.ts:48:7 › Activity Bookmarks › should persist bookmarks across page reloads 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - navigating to "http://localhost:3000/activity", waiting until "load"[22m
+
+
+      48 |   test("should persist bookmarks across page reloads", async ({ page }) => {
+      49 |     // Go to activity page
+    > 50 |     await page.goto("/activity");
+         |                ^
+      51 |     await expect(page.locator("[data-testid='activity-item']").first()).toBeVisible();
+      52 |     
+      53 |     // Hover and bookmark first item
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/bookmarks.spec.ts:50:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/bookmarks-Activity-Bookmar-f15d5-okmarks-across-page-reloads-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/bookmarks-Activity-Bookmar-f15d5-okmarks-across-page-reloads-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/bookmarks-Activity-Bookmar-f15d5-okmarks-across-page-reloads-chromium/error-context.md
+
+
+[1A[2K  33) [chromium] › e2e/bookmarks.spec.ts:75:7 › Activity Bookmarks › should filter activities using bookmarks preset 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - navigating to "http://localhost:3000/activity", waiting until "load"[22m
+
+
+      75 |   test("should filter activities using bookmarks preset", async ({ page }) => {
+      76 |     // Go to activity page
+    > 77 |     await page.goto("/activity");
+         |                ^
+      78 |     await expect(page.locator("[data-testid='activity-item']").first()).toBeVisible();
+      79 |     
+      80 |     // Count initial activities
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/bookmarks.spec.ts:77:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/bookmarks-Activity-Bookmar-75aa6-ties-using-bookmarks-preset-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/bookmarks-Activity-Bookmar-75aa6-ties-using-bookmarks-preset-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/bookmarks-Activity-Bookmar-75aa6-ties-using-bookmarks-preset-chromium/error-context.md
+
+
+[1A[2K[39/1048] [chromium] › e2e/bookmarks.spec.ts:153:7 › Bookmark Accessibility › should have proper ARIA labels and keyboard navigation
+[1A[2K[40/1048] [chromium] › e2e/command-palette.spec.ts:8:7 › Command Palette › should open command palette with Cmd+K (Mac) or Ctrl+K (Windows/Linux)
+[1A[2K[41/1048] [chromium] › e2e/bookmarks.spec.ts:140:7 › Bookmark Manager › should show empty state when no bookmarks
+[1A[2K  34) [chromium] › e2e/bookmarks.spec.ts:109:7 › Activity Bookmarks › should handle bookmark button hover states 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('[data-testid=\'activity-item\']').first()
+    Expected: visible
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('[data-testid=\'activity-item\']').first()[22m
+
+
+      109 |   test("should handle bookmark button hover states", async ({ page }) => {
+      110 |     await page.goto("/activity");
+    > 111 |     await expect(page.locator("[data-testid='activity-item']").first()).toBeVisible();
+          |                                                                         ^
+      112 |     
+      113 |     const firstActivity = page.locator("[data-testid='activity-item']").first();
+      114 |     
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/bookmarks.spec.ts:111:73
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/bookmarks-Activity-Bookmar-a2a8a-ookmark-button-hover-states-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/bookmarks-Activity-Bookmar-a2a8a-ookmark-button-hover-states-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/bookmarks-Activity-Bookmar-a2a8a-ookmark-button-hover-states-chromium/error-context.md
+
+
+[1A[2K[42/1048] [chromium] › e2e/command-palette.spec.ts:19:7 › Command Palette › should close command palette with Escape
+[1A[2K[43/1048] [chromium] › e2e/command-palette.spec.ts:29:7 › Command Palette › should close command palette when clicking backdrop
+[1A[2K  35) [chromium] › e2e/bookmarks.spec.ts:153:7 › Bookmark Accessibility › should have proper ARIA labels and keyboard navigation 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('[data-testid=\'activity-item\']').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('[data-testid=\'activity-item\']').first()[22m
+
+
+      153 |   test("should have proper ARIA labels and keyboard navigation", async ({ page }) => {
+      154 |     await page.goto("/activity");
+    > 155 |     await expect(page.locator("[data-testid='activity-item']").first()).toBeVisible();
+          |                                                                         ^
+      156 |     
+      157 |     // Hover to reveal bookmark button
+      158 |     const firstActivity = page.locator("[data-testid='activity-item']").first();
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/bookmarks.spec.ts:155:73
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/bookmarks-Bookmark-Accessi-7a743-els-and-keyboard-navigation-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/bookmarks-Bookmark-Accessi-7a743-els-and-keyboard-navigation-chromium/error-context.md
+
+
+[1A[2K  36) [chromium] › e2e/command-palette.spec.ts:8:7 › Command Palette › should open command palette with Cmd+K (Mac) or Ctrl+K (Windows/Linux) 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator:  getByRole('dialog')
+    Expected: visible
+    Received: hidden
+    Timeout:  5000ms
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for getByRole('dialog')[22m
+    [2m    8 × locator resolved to <div class="" role="dialog" tabindex="-1" cmdk-dialog="" data-state="open" id="radix-_R_2qlb_" aria-label="Command Palette" aria-labelledby="radix-_R_2qlbH1_" aria-describedby="radix-_R_2qlbH2_">…</div>[22m
+    [2m      - unexpected value "hidden"[22m
+
+
+      13 |
+      14 |     // Command palette should be visible
+    > 15 |     await expect(page.getByRole("dialog")).toBeVisible();
+         |                                            ^
+      16 |     await expect(page.getByPlaceholder("Search commands...")).toBeVisible();
+      17 |   });
+      18 |
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/command-palette.spec.ts:15:44
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/command-palette-Command-Pa-640e0-ac-or-Ctrl-K-Windows-Linux--chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/command-palette-Command-Pa-640e0-ac-or-Ctrl-K-Windows-Linux--chromium/error-context.md
+
+
+[1A[2K[44/1048] [chromium] › e2e/command-palette.spec.ts:39:7 › Command Palette › should filter commands based on search input
+[1A[2K[45/1048] [chromium] › e2e/command-palette.spec.ts:57:7 › Command Palette › should navigate to blog when selecting Blog command
+[1A[2K  37) [chromium] › e2e/command-palette.spec.ts:19:7 › Command Palette › should close command palette with Escape 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator:  getByRole('dialog')
+    Expected: visible
+    Received: hidden
+    Timeout:  5000ms
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for getByRole('dialog')[22m
+    [2m    9 × locator resolved to <div class="" role="dialog" tabindex="-1" cmdk-dialog="" data-state="open" id="radix-_R_2qlb_" aria-label="Command Palette" aria-labelledby="radix-_R_2qlbH1_" aria-describedby="radix-_R_2qlbH2_">…</div>[22m
+    [2m      - unexpected value "hidden"[22m
+
+
+      20 |     // Open command palette
+      21 |     await page.keyboard.press(process.platform === "darwin" ? "Meta+K" : "Control+K");
+    > 22 |     await expect(page.getByRole("dialog")).toBeVisible();
+         |                                            ^
+      23 |
+      24 |     // Close with Escape
+      25 |     await page.keyboard.press("Escape");
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/command-palette.spec.ts:22:44
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/command-palette-Command-Pa-3037a-command-palette-with-Escape-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/command-palette-Command-Pa-3037a-command-palette-with-Escape-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/command-palette-Command-Pa-3037a-command-palette-with-Escape-chromium/error-context.md
+
+
+[1A[2K[46/1048] [chromium] › e2e/command-palette.spec.ts:71:7 › Command Palette › should navigate using keyboard arrow keys and Enter
+[1A[2K  38) [chromium] › e2e/command-palette.spec.ts:29:7 › Command Palette › should close command palette when clicking backdrop 
+
+    [31mTest timeout of 30000ms exceeded while running "beforeEach" hook.[39m
+
+      2 |
+      3 | test.describe("Command Palette", () => {
+    > 4 |   test.beforeEach(async ({ page }) => {
+        |        ^
+      5 |     await page.goto("/");
+      6 |   });
+      7 |
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/command-palette.spec.ts:4:8
+
+    Error: page.goto: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      3 | test.describe("Command Palette", () => {
+      4 |   test.beforeEach(async ({ page }) => {
+    > 5 |     await page.goto("/");
+        |                ^
+      6 |   });
+      7 |
+      8 |   test("should open command palette with Cmd+K (Mac) or Ctrl+K (Windows/Linux)", async ({
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/command-palette.spec.ts:5:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/command-palette-Command-Pa-8507d-ette-when-clicking-backdrop-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/command-palette-Command-Pa-8507d-ette-when-clicking-backdrop-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/command-palette-Command-Pa-8507d-ette-when-clicking-backdrop-chromium/error-context.md
+
+
+[1A[2K[47/1048] [chromium] › e2e/command-palette.spec.ts:88:7 › Command Palette › should show categorized commands (Navigation, Actions, Settings)
+[1A[2K  39) [chromium] › e2e/command-palette.spec.ts:39:7 › Command Palette › should filter commands based on search input 
+
+    [31mTest timeout of 30000ms exceeded while running "beforeEach" hook.[39m
+
+      2 |
+      3 | test.describe("Command Palette", () => {
+    > 4 |   test.beforeEach(async ({ page }) => {
+        |        ^
+      5 |     await page.goto("/");
+      6 |   });
+      7 |
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/command-palette.spec.ts:4:8
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      3 | test.describe("Command Palette", () => {
+      4 |   test.beforeEach(async ({ page }) => {
+    > 5 |     await page.goto("/");
+        |                ^
+      6 |   });
+      7 |
+      8 |   test("should open command palette with Cmd+K (Mac) or Ctrl+K (Windows/Linux)", async ({
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/command-palette.spec.ts:5:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/command-palette-Command-Pa-9c4a6-mands-based-on-search-input-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K  40) [chromium] › e2e/command-palette.spec.ts:57:7 › Command Palette › should navigate to blog when selecting Blog command 
+
+    [31mTest timeout of 30000ms exceeded while running "beforeEach" hook.[39m
+
+      2 |
+      3 | test.describe("Command Palette", () => {
+    > 4 |   test.beforeEach(async ({ page }) => {
+        |        ^
+      5 |     await page.goto("/");
+      6 |   });
+      7 |
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/command-palette.spec.ts:4:8
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      3 | test.describe("Command Palette", () => {
+      4 |   test.beforeEach(async ({ page }) => {
+    > 5 |     await page.goto("/");
+        |                ^
+      6 |   });
+      7 |
+      8 |   test("should open command palette with Cmd+K (Mac) or Ctrl+K (Windows/Linux)", async ({
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/command-palette.spec.ts:5:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/command-palette-Command-Pa-6671a-when-selecting-Blog-command-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[48/1048] [chromium] › e2e/command-palette.spec.ts:107:7 › Command Palette › should toggle theme when selecting theme command
+[1A[2K[49/1048] [chromium] › e2e/command-palette.spec.ts:127:7 › Command Palette › should show keyboard shortcuts in footer
+[1A[2K  41) [chromium] › e2e/command-palette.spec.ts:71:7 › Command Palette › should navigate using keyboard arrow keys and Enter 
+
+    [31mTest timeout of 30000ms exceeded while running "beforeEach" hook.[39m
+
+      2 |
+      3 | test.describe("Command Palette", () => {
+    > 4 |   test.beforeEach(async ({ page }) => {
+        |        ^
+      5 |     await page.goto("/");
+      6 |   });
+      7 |
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/command-palette.spec.ts:4:8
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      3 | test.describe("Command Palette", () => {
+      4 |   test.beforeEach(async ({ page }) => {
+    > 5 |     await page.goto("/");
+        |                ^
+      6 |   });
+      7 |
+      8 |   test("should open command palette with Cmd+K (Mac) or Ctrl+K (Windows/Linux)", async ({
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/command-palette.spec.ts:5:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/command-palette-Command-Pa-c9940-yboard-arrow-keys-and-Enter-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[50/1048] [chromium] › e2e/command-palette.spec.ts:137:7 › Command Palette › should show 'No results found' when search has no matches
+[1A[2K  42) [chromium] › e2e/command-palette.spec.ts:88:7 › Command Palette › should show categorized commands (Navigation, Actions, Settings) 
+
+    [31mTest timeout of 30000ms exceeded while running "beforeEach" hook.[39m
+
+      2 |
+      3 | test.describe("Command Palette", () => {
+    > 4 |   test.beforeEach(async ({ page }) => {
+        |        ^
+      5 |     await page.goto("/");
+      6 |   });
+      7 |
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/command-palette.spec.ts:4:8
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      3 | test.describe("Command Palette", () => {
+      4 |   test.beforeEach(async ({ page }) => {
+    > 5 |     await page.goto("/");
+        |                ^
+      6 |   });
+      7 |
+      8 |   test("should open command palette with Cmd+K (Mac) or Ctrl+K (Windows/Linux)", async ({
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/command-palette.spec.ts:5:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/command-palette-Command-Pa-c0de5-avigation-Actions-Settings--chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[51/1048] [chromium] › e2e/command-palette.spec.ts:148:7 › Command Palette › should not interfere with native browser shortcuts
+[1A[2K  43) [chromium] › e2e/command-palette.spec.ts:148:7 › Command Palette › should not interfere with native browser shortcuts 
+
+    Error: page.goto: net::ERR_CONNECTION_RESET at http://localhost:3000/
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      3 | test.describe("Command Palette", () => {
+      4 |   test.beforeEach(async ({ page }) => {
+    > 5 |     await page.goto("/");
+        |                ^
+      6 |   });
+      7 |
+      8 |   test("should open command palette with Cmd+K (Mac) or Ctrl+K (Windows/Linux)", async ({
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/command-palette.spec.ts:5:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/command-palette-Command-Pa-fd71d-th-native-browser-shortcuts-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/command-palette-Command-Pa-fd71d-th-native-browser-shortcuts-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[52/1048] [chromium] › e2e/dev-banner.spec.ts:4:7 › Dev Banner E2E › should display dev banner and dismiss in development
+[1A[2K  44) [chromium] › e2e/command-palette.spec.ts:137:7 › Command Palette › should show 'No results found' when search has no matches 
+
+    Error: page.goto: net::ERR_CONNECTION_RESET at http://localhost:3000/
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      3 | test.describe("Command Palette", () => {
+      4 |   test.beforeEach(async ({ page }) => {
+    > 5 |     await page.goto("/");
+        |                ^
+      6 |   });
+      7 |
+      8 |   test("should open command palette with Cmd+K (Mac) or Ctrl+K (Windows/Linux)", async ({
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/command-palette.spec.ts:5:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/command-palette-Command-Pa-b49ea--when-search-has-no-matches-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/command-palette-Command-Pa-b49ea--when-search-has-no-matches-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[53/1048] [chromium] › e2e/homepage.spec.ts:22:7 › Homepage › should have working navigation
+[1A[2K  45) [chromium] › e2e/command-palette.spec.ts:107:7 › Command Palette › should toggle theme when selecting theme command 
+
+    Error: page.goto: net::ERR_CONNECTION_RESET at http://localhost:3000/
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      3 | test.describe("Command Palette", () => {
+      4 |   test.beforeEach(async ({ page }) => {
+    > 5 |     await page.goto("/");
+        |                ^
+      6 |   });
+      7 |
+      8 |   test("should open command palette with Cmd+K (Mac) or Ctrl+K (Windows/Linux)", async ({
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/command-palette.spec.ts:5:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/command-palette-Command-Pa-a9c43-hen-selecting-theme-command-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/command-palette-Command-Pa-a9c43-hen-selecting-theme-command-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[54/1048] [chromium] › e2e/homepage.spec.ts:12:7 › Homepage › should load and display site title
+[1A[2K  46) [chromium] › e2e/command-palette.spec.ts:127:7 › Command Palette › should show keyboard shortcuts in footer 
+
+    Error: page.goto: net::ERR_CONNECTION_RESET at http://localhost:3000/
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      3 | test.describe("Command Palette", () => {
+      4 |   test.beforeEach(async ({ page }) => {
+    > 5 |     await page.goto("/");
+        |                ^
+      6 |   });
+      7 |
+      8 |   test("should open command palette with Cmd+K (Mac) or Ctrl+K (Windows/Linux)", async ({
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/command-palette.spec.ts:5:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/command-palette-Command-Pa-f8732-eyboard-shortcuts-in-footer-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/command-palette-Command-Pa-f8732-eyboard-shortcuts-in-footer-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[55/1048] [chromium] › e2e/homepage.spec.ts:59:7 › Homepage › should navigate to blog page
+[1A[2K[56/1048] [chromium] › e2e/homepage.spec.ts:91:7 › Homepage › should be responsive
+[1A[2K  47) [chromium] › e2e/homepage.spec.ts:22:7 › Homepage › should have working navigation ───────────
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      21 |
+      22 |   test('should have working navigation', async ({ page, browserName }) => {
+    > 23 |     await page.goto('/')
+         |                ^
+      24 |
+      25 |     // On mobile viewports, header nav is hidden and bottom nav is used
+      26 |     // On desktop, header nav is visible
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/homepage.spec.ts:23:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/homepage-Homepage-should-have-working-navigation-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/homepage-Homepage-should-have-working-navigation-chromium/error-context.md
+
+
+[1A[2K  48) [chromium] › e2e/homepage.spec.ts:12:7 › Homepage › should load and display site title ───────
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      11 | test.describe('Homepage', () => {
+      12 |   test('should load and display site title', async ({ page }) => {
+    > 13 |     await page.goto('/')
+         |                ^
+      14 |
+      15 |     // Check that the page loaded successfully
+      16 |     await expect(page).toHaveTitle(/DCYFR Labs/)
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/homepage.spec.ts:13:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/homepage-Homepage-should-load-and-display-site-title-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/homepage-Homepage-should-load-and-display-site-title-chromium/error-context.md
+
+
+[1A[2K  49) [chromium] › e2e/homepage.spec.ts:59:7 › Homepage › should navigate to blog page ─────────────
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      61 |     test.skip(browserName === 'webkit', 'WebKit has navigation timing issues with production builds')
+      62 |
+    > 63 |     await page.goto('/')
+         |                ^
+      64 |
+      65 |     // On mobile viewports, use bottom nav; on desktop, use header nav
+      66 |     const viewport = page.viewportSize()
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/homepage.spec.ts:63:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/homepage-Homepage-should-navigate-to-blog-page-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/homepage-Homepage-should-navigate-to-blog-page-chromium/error-context.md
+
+
+[1A[2K  50) [chromium] › e2e/homepage.spec.ts:91:7 › Homepage › should be responsive ─────────────────────
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      92 |     // Test mobile viewport
+      93 |     await page.setViewportSize({ width: 375, height: 667 })
+    > 94 |     await page.goto('/')
+         |                ^
+      95 |     
+      96 |     // Page should still load and be usable - check site title is visible
+      97 |     await expect(page.locator('header a[href="/"]')).toBeVisible()
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/homepage.spec.ts:94:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/homepage-Homepage-should-be-responsive-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/homepage-Homepage-should-be-responsive-chromium/error-context.md
+
+
+[1A[2K[57/1048] [chromium] › e2e/homepage.spec.ts:104:7 › Homepage › should display all homepage sections
+[1A[2K[58/1048] [chromium] › e2e/homepage.spec.ts:130:7 › Homepage › should have working hero CTAs
+[1A[2K[59/1048] [chromium] › e2e/homepage.spec.ts:170:7 › Homepage › should have accessible hero section
+[1A[2K[60/1048] [chromium] › e2e/homepage.spec.ts:149:7 › Homepage › should display responsive spacing on mobile
+[1A[2K  51) [chromium] › e2e/homepage.spec.ts:149:7 › Homepage › should display responsive spacing on mobile 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      150 |     // Test mobile viewport
+      151 |     await page.setViewportSize({ width: 375, height: 667 })
+    > 152 |     await page.goto('/')
+          |                ^
+      153 |
+      154 |     // Verify key sections are visible and properly spaced on mobile
+      155 |     await expect(page.locator('#hero')).toBeVisible()
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/homepage.spec.ts:152:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/homepage-Homepage-should-d-b1833-esponsive-spacing-on-mobile-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K  52) [chromium] › e2e/homepage.spec.ts:104:7 › Homepage › should display all homepage sections ────
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      103 |
+      104 |   test('should display all homepage sections', async ({ page }) => {
+    > 105 |     await page.goto('/')
+          |                ^
+      106 |
+      107 |     // 1. Hero section with avatar and actions
+      108 |     await expect(page.locator('#hero')).toBeVisible()
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/homepage.spec.ts:105:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/homepage-Homepage-should-display-all-homepage-sections-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K  53) [chromium] › e2e/homepage.spec.ts:130:7 › Homepage › should have working hero CTAs ───────────
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      129 |
+      130 |   test('should have working hero CTAs', async ({ page }) => {
+    > 131 |     await page.goto('/')
+          |                ^
+      132 |
+      133 |     // Verify hero action buttons are visible and clickable
+      134 |     const heroSection = page.locator('#hero')
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/homepage.spec.ts:131:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/homepage-Homepage-should-have-working-hero-CTAs-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K  54) [chromium] › e2e/homepage.spec.ts:170:7 › Homepage › should have accessible hero section ─────
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      169 |
+      170 |   test('should have accessible hero section', async ({ page }) => {
+    > 171 |     await page.goto('/')
+          |                ^
+      172 |
+      173 |     // Check avatar has proper ARIA label
+      174 |     const avatar = page.locator('[role="img"][aria-label*="Avatar"]')
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/homepage.spec.ts:171:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/homepage-Homepage-should-have-accessible-hero-section-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[61/1048] [chromium] › e2e/mobile-navigation.spec.ts:13:7 › Mobile Navigation › bottom navigation tab bar is visible and properly sized on iPhone 15 Pro Max
+[1A[2K[62/1048] [chromium] › e2e/mobile-navigation.spec.ts:51:7 › Mobile Navigation › bottom navigation tabs have proper touch targets (44x44pt minimum)
+[1A[2K[63/1048] [chromium] › e2e/mobile-navigation.spec.ts:114:7 › Mobile Navigation › mobile navigation has proper aria-labels for accessibility
+[1A[2K[64/1048] [chromium] › e2e/mobile-navigation.spec.ts:91:7 › Mobile Navigation › active tab is visually indicated with aria-selected or active class
+[1A[2K  55) [chromium] › e2e/mobile-navigation.spec.ts:114:7 › Mobile Navigation › mobile navigation has proper aria-labels for accessibility 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      116 |     
+      117 |     await setMobileViewport(page, 'iPhone 15 Pro Max')
+    > 118 |     await page.goto('/')
+          |                ^
+      119 |     
+      120 |     // Check for accessible navigation structure
+      121 |     const navElements = page.locator('nav')
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-navigation.spec.ts:118:16
+
+
+[1A[2K[65/1048] [chromium] › e2e/mobile-navigation.spec.ts:136:7 › Mobile Navigation › mobile sheet navigation opens with proper focus management
+[1A[2K  56) [chromium] › e2e/mobile-navigation.spec.ts:51:7 › Mobile Navigation › bottom navigation tabs have proper touch targets (44x44pt minimum) 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      53 |     
+      54 |     await setMobileViewport(page, 'iPhone 15 Pro Max')
+    > 55 |     await page.goto('/')
+         |                ^
+      56 |     
+      57 |     // Find tab buttons
+      58 |     const tabSelectors = [
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-navigation.spec.ts:55:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-navigation-Mobile-N-eeabd-ch-targets-44x44pt-minimum--chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K  57) [chromium] › e2e/mobile-navigation.spec.ts:13:7 › Mobile Navigation › bottom navigation tab bar is visible and properly sized on iPhone 15 Pro Max 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      15 |     
+      16 |     await setMobileViewport(page, 'iPhone 15 Pro Max')
+    > 17 |     await page.goto('/')
+         |                ^
+      18 |     
+      19 |     // Try to find bottom navigation (may not exist yet - feature in development)
+      20 |     const bottomNavSelectors = [
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-navigation.spec.ts:17:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-navigation-Mobile-N-4e595--sized-on-iPhone-15-Pro-Max-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K  58) [chromium] › e2e/mobile-navigation.spec.ts:91:7 › Mobile Navigation › active tab is visually indicated with aria-selected or active class 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      93 |     
+      94 |     await setMobileViewport(page, 'iPhone 15 Pro Max')
+    > 95 |     await page.goto('/')
+         |                ^
+      96 |     
+      97 |     // Look for tab indicators
+      98 |     const tabList = page.locator('nav[role="tablist"]')
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-navigation.spec.ts:95:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-navigation-Mobile-N-93351-ia-selected-or-active-class-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[66/1048] [chromium] › e2e/mobile-navigation.spec.ts:160:7 › Mobile Navigation › navigation does not overlap main content on scroll
+[1A[2K[67/1048] [chromium] › e2e/mobile-navigation.spec.ts:185:7 › Mobile Navigation › navigation is keyboard accessible (Tab navigation)
+[1A[2K[68/1048] [chromium] › e2e/mobile-navigation.spec.ts:205:7 › Mobile Navigation › navigation works correctly on iPhone SE (small device)
+[1A[2K[69/1048] [chromium] › e2e/mobile-navigation.spec.ts:226:7 › Mobile Navigation › navigation adapts properly on iPad Pro (tablet)
+[1A[2K[70/1048] [chromium] › e2e/mobile-navigation.spec.ts:249:7 › Mobile Navigation › navigation works in landscape orientation
+[1A[2K[71/1048] [chromium] › e2e/mobile-responsive.spec.ts:15:9 › Mobile Responsive Design › homepage loads correctly on iPhone SE
+[1A[2K  59) [chromium] › e2e/mobile-navigation.spec.ts:136:7 › Mobile Navigation › mobile sheet navigation opens with proper focus management 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      138 |     
+      139 |     await setMobileViewport(page, 'iPhone 15 Pro Max')
+    > 140 |     await page.goto('/')
+          |                ^
+      141 |     
+      142 |     // Try to open mobile nav sheet
+      143 |     const nav = await openMobileNav(page)
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-navigation.spec.ts:140:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-navigation-Mobile-N-c1bc8-ith-proper-focus-management-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[72/1048] [chromium] › e2e/mobile-responsive.spec.ts:35:9 › Mobile Responsive Design › blog page is responsive on iPhone SE
+[1A[2K  60) [chromium] › e2e/mobile-navigation.spec.ts:160:7 › Mobile Navigation › navigation does not overlap main content on scroll 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      162 |     
+      163 |     await setMobileViewport(page, 'iPhone 15 Pro Max')
+    > 164 |     await page.goto('/')
+          |                ^
+      165 |     
+      166 |     // Get main content area
+      167 |     const main = page.locator('[role="main"]').first()
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-navigation.spec.ts:164:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-navigation-Mobile-N-94030-rlap-main-content-on-scroll-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K  61) [chromium] › e2e/mobile-navigation.spec.ts:185:7 › Mobile Navigation › navigation is keyboard accessible (Tab navigation) 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      187 |     
+      188 |     await setMobileViewport(page, 'iPhone 15 Pro Max')
+    > 189 |     await page.goto('/')
+          |                ^
+      190 |     
+      191 |     // Press Tab to navigate
+      192 |     await page.keyboard.press('Tab')
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-navigation.spec.ts:189:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-navigation-Mobile-N-28a8e--accessible-Tab-navigation--chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K  62) [chromium] › e2e/mobile-responsive.spec.ts:15:9 › Mobile Responsive Design › homepage loads correctly on iPhone SE 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      17 |       
+      18 |       await setMobileViewport(page, device)
+    > 19 |       await page.goto('/')
+         |                  ^
+      20 |       
+      21 |       // Page should load without errors
+      22 |       await expect(page.locator('header').first()).toBeVisible()
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-responsive.spec.ts:19:18
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-7632c-oads-correctly-on-iPhone-SE-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[73/1048] [chromium] › e2e/mobile-responsive.spec.ts:59:9 › Mobile Responsive Design › work page grid adapts on iPhone SE
+[1A[2K[74/1048] [chromium] › e2e/mobile-responsive.spec.ts:15:9 › Mobile Responsive Design › homepage loads correctly on iPhone 12
+[1A[2K[75/1048] [chromium] › e2e/mobile-responsive.spec.ts:35:9 › Mobile Responsive Design › blog page is responsive on iPhone 12
+[1A[2K  63) [chromium] › e2e/mobile-responsive.spec.ts:35:9 › Mobile Responsive Design › blog page is responsive on iPhone SE 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+    [2m  - navigating to "http://localhost:3000/blog", waiting until "load"[22m
+
+
+      37 |       
+      38 |       await setMobileViewport(page, device)
+    > 39 |       await page.goto('/blog')
+         |                  ^
+      40 |       
+      41 |       // Posts should be in single column on mobile (not multi-column grid)
+      42 |       const postList = page.locator('[data-testid="post-list"]')
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-responsive.spec.ts:39:18
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-82145--is-responsive-on-iPhone-SE-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[76/1048] [chromium] › e2e/mobile-responsive.spec.ts:59:9 › Mobile Responsive Design › work page grid adapts on iPhone 12
+[1A[2K  64) [chromium] › e2e/mobile-responsive.spec.ts:59:9 › Mobile Responsive Design › work page grid adapts on iPhone 12 
+
+    Error: page.goto: net::ERR_CONNECTION_RESET at http://localhost:3000/work
+    Call log:
+    [2m  - navigating to "http://localhost:3000/work", waiting until "load"[22m
+
+
+      61 |       
+      62 |       await setMobileViewport(page, device)
+    > 63 |       await page.goto('/work')
+         |                  ^
+      64 |       
+      65 |       // Grid should collapse to single column on mobile
+      66 |       const grid = page.locator('[data-testid="project-grid"], .grid')
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-responsive.spec.ts:63:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-41624-ge-grid-adapts-on-iPhone-12-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-41624-ge-grid-adapts-on-iPhone-12-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[77/1048] [chromium] › e2e/mobile-responsive.spec.ts:15:9 › Mobile Responsive Design › homepage loads correctly on iPhone 15 Pro Max
+[1A[2K  65) [chromium] › e2e/mobile-responsive.spec.ts:15:9 › Mobile Responsive Design › homepage loads correctly on iPhone 15 Pro Max 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      17 |       
+      18 |       await setMobileViewport(page, device)
+    > 19 |       await page.goto('/')
+         |                  ^
+      20 |       
+      21 |       // Page should load without errors
+      22 |       await expect(page.locator('header').first()).toBeVisible()
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-responsive.spec.ts:19:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-e9127-rectly-on-iPhone-15-Pro-Max-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-e9127-rectly-on-iPhone-15-Pro-Max-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[78/1048] [chromium] › e2e/mobile-responsive.spec.ts:35:9 › Mobile Responsive Design › blog page is responsive on iPhone 15 Pro Max
+[1A[2K  66) [chromium] › e2e/mobile-responsive.spec.ts:59:9 › Mobile Responsive Design › work page grid adapts on iPhone SE 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_EMPTY_RESPONSE at http://localhost:3000/work
+    Call log:
+    [2m  - navigating to "http://localhost:3000/work", waiting until "load"[22m
+
+
+      61 |       
+      62 |       await setMobileViewport(page, device)
+    > 63 |       await page.goto('/work')
+         |                  ^
+      64 |       
+      65 |       // Grid should collapse to single column on mobile
+      66 |       const grid = page.locator('[data-testid="project-grid"], .grid')
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-responsive.spec.ts:63:18
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-0405d-ge-grid-adapts-on-iPhone-SE-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K  67) [chromium] › e2e/mobile-responsive.spec.ts:35:9 › Mobile Responsive Design › blog page is responsive on iPhone 12 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_EMPTY_RESPONSE at http://localhost:3000/blog
+    Call log:
+    [2m  - navigating to "http://localhost:3000/blog", waiting until "load"[22m
+
+
+      37 |       
+      38 |       await setMobileViewport(page, device)
+    > 39 |       await page.goto('/blog')
+         |                  ^
+      40 |       
+      41 |       // Posts should be in single column on mobile (not multi-column grid)
+      42 |       const postList = page.locator('[data-testid="post-list"]')
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-responsive.spec.ts:39:18
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-e9f7a--is-responsive-on-iPhone-12-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K  68) [chromium] › e2e/mobile-responsive.spec.ts:35:9 › Mobile Responsive Design › blog page is responsive on iPhone 15 Pro Max 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/blog
+    Call log:
+    [2m  - navigating to "http://localhost:3000/blog", waiting until "load"[22m
+
+
+      37 |       
+      38 |       await setMobileViewport(page, device)
+    > 39 |       await page.goto('/blog')
+         |                  ^
+      40 |       
+      41 |       // Posts should be in single column on mobile (not multi-column grid)
+      42 |       const postList = page.locator('[data-testid="post-list"]')
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-responsive.spec.ts:39:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-21b24-onsive-on-iPhone-15-Pro-Max-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-21b24-onsive-on-iPhone-15-Pro-Max-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K  69) [chromium] › e2e/mobile-responsive.spec.ts:15:9 › Mobile Responsive Design › homepage loads correctly on iPhone 12 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.goto: net::ERR_EMPTY_RESPONSE at http://localhost:3000/
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      17 |       
+      18 |       await setMobileViewport(page, device)
+    > 19 |       await page.goto('/')
+         |                  ^
+      20 |       
+      21 |       // Page should load without errors
+      22 |       await expect(page.locator('header').first()).toBeVisible()
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-responsive.spec.ts:19:18
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-e0605-oads-correctly-on-iPhone-12-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[79/1048] [chromium] › e2e/mobile-responsive.spec.ts:59:9 › Mobile Responsive Design › work page grid adapts on iPhone 15 Pro Max
+[1A[2K[80/1048] [chromium] › e2e/mobile-responsive.spec.ts:15:9 › Mobile Responsive Design › homepage loads correctly on Pixel 5
+[1A[2K[81/1048] [chromium] › e2e/mobile-responsive.spec.ts:35:9 › Mobile Responsive Design › blog page is responsive on Pixel 5
+[1A[2K[82/1048] [chromium] › e2e/mobile-responsive.spec.ts:59:9 › Mobile Responsive Design › work page grid adapts on Pixel 5
+[1A[2K  70) [chromium] › e2e/mobile-responsive.spec.ts:59:9 › Mobile Responsive Design › work page grid adapts on iPhone 15 Pro Max 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/work
+    Call log:
+    [2m  - navigating to "http://localhost:3000/work", waiting until "load"[22m
+
+
+      61 |       
+      62 |       await setMobileViewport(page, device)
+    > 63 |       await page.goto('/work')
+         |                  ^
+      64 |       
+      65 |       // Grid should collapse to single column on mobile
+      66 |       const grid = page.locator('[data-testid="project-grid"], .grid')
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-responsive.spec.ts:63:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-0e5b9-adapts-on-iPhone-15-Pro-Max-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-0e5b9-adapts-on-iPhone-15-Pro-Max-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K  71) [chromium] › e2e/mobile-responsive.spec.ts:35:9 › Mobile Responsive Design › blog page is responsive on Pixel 5 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/blog
+    Call log:
+    [2m  - navigating to "http://localhost:3000/blog", waiting until "load"[22m
+
+
+      37 |       
+      38 |       await setMobileViewport(page, device)
+    > 39 |       await page.goto('/blog')
+         |                  ^
+      40 |       
+      41 |       // Posts should be in single column on mobile (not multi-column grid)
+      42 |       const postList = page.locator('[data-testid="post-list"]')
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-responsive.spec.ts:39:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-4b966-ge-is-responsive-on-Pixel-5-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-4b966-ge-is-responsive-on-Pixel-5-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K  72) [chromium] › e2e/mobile-responsive.spec.ts:15:9 › Mobile Responsive Design › homepage loads correctly on Pixel 5 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/
+    Call log:
+    [2m  - navigating to "http://localhost:3000/", waiting until "load"[22m
+
+
+      17 |       
+      18 |       await setMobileViewport(page, device)
+    > 19 |       await page.goto('/')
+         |                  ^
+      20 |       
+      21 |       // Page should load without errors
+      22 |       await expect(page.locator('header').first()).toBeVisible()
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-responsive.spec.ts:19:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-416db--loads-correctly-on-Pixel-5-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-416db--loads-correctly-on-Pixel-5-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K  73) [chromium] › e2e/mobile-responsive.spec.ts:59:9 › Mobile Responsive Design › work page grid adapts on Pixel 5 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/work
+    Call log:
+    [2m  - navigating to "http://localhost:3000/work", waiting until "load"[22m
+
+
+      61 |       
+      62 |       await setMobileViewport(page, device)
+    > 63 |       await page.goto('/work')
+         |                  ^
+      64 |       
+      65 |       // Grid should collapse to single column on mobile
+      66 |       const grid = page.locator('[data-testid="project-grid"], .grid')
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/mobile-responsive.spec.ts:63:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-ced74-page-grid-adapts-on-Pixel-5-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/mobile-responsive-Mobile-R-ced74-page-grid-adapts-on-Pixel-5-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K[83/1048] [chromium] › e2e/mobile-responsive.spec.ts:81:7 › Mobile Responsive Design › landscape orientation is supported on iPhone 15 Pro Max

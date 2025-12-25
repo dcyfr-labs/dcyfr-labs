@@ -7,7 +7,7 @@
  * Features:
  * - Check if activity is liked
  * - Toggle like state
- * - Get reaction counts (simulated + real)
+ * - Get reaction counts (real user interactions only)
  * - Automatic localStorage sync
  *
  * @example
@@ -48,7 +48,7 @@ export interface UseActivityReactionsReturn {
   /** Toggle like state for an activity (optimistic update) */
   toggleLike: (activityId: string, type?: ReactionType) => void;
 
-  /** Get simulated reaction count for display */
+  /** Get real reaction count (0 if not reacted, 1 if reacted by user) */
   getCount: (activityId: string, type?: ReactionType) => number;
 
   /** Get all reacted activity IDs */
@@ -116,7 +116,7 @@ export function useActivityReactions(): UseActivityReactionsReturn {
   );
 
   /**
-   * Get simulated reaction count
+   * Get real reaction count (user's actual interaction)
    */
   const getCount = useCallback(
     (activityId: string, type: ReactionType = "like"): number => {

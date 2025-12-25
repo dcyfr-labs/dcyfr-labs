@@ -72,6 +72,7 @@ Create a new /bookmarks page:
 | [**DESIGN_TOKENS.md**](enforcement/design-tokens.md) | Token enforcement (NON-NEGOTIABLE), categories, ESLint rules, compliance |
 | [**APPROVAL_GATES.md**](enforcement/approval-gates.md) | Breaking changes, architecture decisions, security-sensitive work |
 | [**VALIDATION_CHECKLIST.md**](enforcement/validation-checklist.md) | Pre-completion checks, common failures, bypass criteria |
+| [**TEST_DATA_PREVENTION.md**](enforcement/TEST_DATA_PREVENTION.md) | Environment-aware code, no fabricated data in production, cleanup practices |
 
 ### **Learning & Optimization**
 
@@ -147,6 +148,29 @@ export async function POST(request: NextRequest) {
 
 **See:** [TESTING_PATTERNS.md](patterns/testing-patterns.md)
 
+### 6. **Test Data Prevention (MANDATORY)**
+
+- ❌ **NEVER commit test/fabricated data to production**
+- ✅ Test data must be **behind environment checks** (NODE_ENV + VERCEL_ENV)
+- ✅ Production must **warn explicitly** if fallback/demo data used
+- ✅ Cleanup scripts must be available via npm scripts
+- ✅ All test data sources must be **documented** with actual vs sample comparison
+
+**Key Pattern:**
+```typescript
+// ✅ CORRECT: Environment-aware with explicit warning
+const isProduction = process.env.NODE_ENV === 'production' 
+  || process.env.VERCEL_ENV === 'production';
+
+if (isProduction && !hasRealData) {
+  console.error('❌ CRITICAL: Using demo data in production!');
+  // Don't use fake data - return empty or error
+  return null;
+}
+```
+
+**See:** [TEST_DATA_PREVENTION.md](enforcement/TEST_DATA_PREVENTION.md) for complete best practices
+
 ---
 
 ## 🔐 Approval Gates
@@ -156,6 +180,7 @@ DCYFR **pauses and requests approval** for:
 - **Breaking changes** (prop removal, URL changes, schema changes)
 - **Architecture decisions** (new dependencies, patterns, frameworks)
 - **Security-sensitive work** (auth, rate limits, CORS, sanitization)
+- **Test data changes** (new test data sources, modifications to safeguards)
 
 **See:** [APPROVAL_GATES.md](enforcement/APPROVAL_GATES.md) for process details
 

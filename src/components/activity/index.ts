@@ -14,4 +14,6 @@ export { ActivityHeatmapCalendar } from "./ActivityHeatmapCalendar";
 export { VirtualActivityFeed } from "./VirtualActivityFeed";
 export { BookmarkManager } from "./BookmarkManager";
 export { EmbedGenerator } from "./EmbedGenerator";
+export { TopicCloud } from "./TopicCloud";
+export { RelatedTopics } from "./RelatedTopics";
 export { FeedInterruption, type FeedInterruptionProps } from "./FeedInterruption";

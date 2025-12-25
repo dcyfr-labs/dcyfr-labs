@@ -57,29 +57,29 @@ export function useBlogKeyboardShortcuts({
         target.tagName === "TEXTAREA" ||
         target.isContentEditable;
 
-      // Search focus: / (but not when already typing)
-      if (e.key === "/" && !isTyping) {
+      // Search focus: / (but not when already typing or with modifiers)
+      if (e.key === "/" && !isTyping && !e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey) {
         e.preventDefault();
         searchInputRef?.current?.focus();
         return;
       }
 
-      // Help dialog: ?
-      if (e.key === "?" && !isTyping) {
+      // Help dialog: ? (but not with modifiers)
+      if (e.key === "?" && !isTyping && !e.metaKey && !e.ctrlKey && !e.altKey) {
         e.preventDefault();
         onShowHelp();
         return;
       }
 
-      // Toggle filters: f (but not when typing)
-      if (e.key === "f" && !isTyping && onToggleFilters) {
+      // Toggle filters: f (but not when typing or with modifiers like Cmd+F/Ctrl+F)
+      if (e.key === "f" && !isTyping && !e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey && onToggleFilters) {
         e.preventDefault();
         onToggleFilters();
         return;
       }
 
-      // View switching: 1-4 (but not when typing)
-      if (!isTyping && ["1", "2", "3", "4"].includes(e.key)) {
+      // View switching: 1-4 (but not when typing or with modifiers)
+      if (!isTyping && !e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey && ["1", "2", "3", "4"].includes(e.key)) {
         e.preventDefault();
         const views = ["compact", "grid", "list", "magazine"];
         const viewIndex = parseInt(e.key) - 1;

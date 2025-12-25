@@ -10,6 +10,7 @@ import { ProjectsCTA } from "@/components/common";
 import { OtherProjectCard } from "@/components/projects/other-project-card";
 import { ArticleHeader } from "@/components/layouts";
 import { MDX } from "@/components/common/mdx";
+import { PostInteractions } from "@/components/common/PostInteractions";
 
 const STATUS_LABEL: Record<Project["status"], string> = {
   "active": "Active",
@@ -244,6 +245,19 @@ export function CodeProjectLayout({ project, nonce, basePath = '/work' }: CodePr
           </div>
         </section>
       )}
+
+      {/* Post Interactions (like, bookmark, share) */}
+      <div className="my-8">
+        <PostInteractions
+          contentId={project.slug}
+          contentType="project"
+          title={project.title}
+          description={project.description}
+          href={`${basePath}/${project.slug}`}
+          variant="default"
+          showCounts={true}
+        />
+      </div>
 
       {/* Other Projects */}
       <div className="mt-12 pt-8 border-t">

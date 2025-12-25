@@ -22,6 +22,7 @@ export { SectionHeader } from "./section-header";
 export { SectionNavigator, Section } from "./section-navigator";
 export { SmoothScrollToHash } from "./smooth-scroll-to-hash";
 export { TableOfContents } from "./table-of-contents";
+export { TableOfContentsSidebar } from "./table-of-contents-sidebar";
 export { TransitionLink } from "./transition-link";
 export { ViewToggle } from "./view-toggle";
 export { default as DevToolsDropdown } from "./dev-tools-dropdown";

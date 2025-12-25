@@ -47,8 +47,8 @@ import {
   transformMilestones,
   transformHighEngagementPosts,
   transformCommentMilestones,
-  transformGitHubActivity,
-  transformWebhookGitHubCommits,
+  // transformGitHubActivity, (DISABLED)
+  // transformWebhookGitHubCommits, (DISABLED)
   transformCredlyBadges,
   transformVercelAnalytics,
   transformGitHubTraffic,
@@ -230,11 +230,11 @@ export default async function Home() {
       .then((items) => activities.push(...items))
       .catch((err) => console.error("[Homepage] Changelog fetch failed:", err)),
     
-    // Trending posts
-    transformTrendingPosts(posts)
-      .then((items) => activities.push(...items))
-      .catch((err) => console.error("[Homepage] Trending posts fetch failed:", err)),
-    
+    // Trending posts - DISABLED: Now shown as badges on published events
+    // transformTrendingPosts(posts)
+    //   .then((items) => activities.push(...items))
+    //   .catch((err) => console.error("[Homepage] Trending posts fetch failed:", err)),
+
     // Milestones
     transformMilestones(posts)
       .then((items) => activities.push(...items))
@@ -250,15 +250,15 @@ export default async function Home() {
       .then((items) => activities.push(...items))
       .catch((err) => console.error("[Homepage] Comment milestones fetch failed:", err)),
     
-    // GitHub activity
-    transformGitHubActivity("dcyfr", ["dcyfr-labs"])
-      .then((items) => activities.push(...items))
-      .catch((err) => console.error("[Homepage] GitHub activity fetch failed:", err)),
+    // GitHub activity (DISABLED)
+    // transformGitHubActivity("dcyfr", ["dcyfr-labs"])
+    //   .then((items) => activities.push(...items))
+    //   .catch((err) => console.error("[Homepage] GitHub activity fetch failed:", err)),
     
-    // Webhook GitHub commits
-    transformWebhookGitHubCommits()
-      .then((items) => activities.push(...items))
-      .catch((err) => console.error("[Homepage] Webhook commits fetch failed:", err)),
+    // Webhook GitHub commits (DISABLED)
+    // transformWebhookGitHubCommits()
+    //   .then((items) => activities.push(...items))
+    //   .catch((err) => console.error("[Homepage] Webhook commits fetch failed:", err)),
     
     // Credly badges
     transformCredlyBadges("dcyfr")
@@ -374,7 +374,7 @@ export default async function Home() {
           </ScrollReveal>
         </Section>
 
-        {/* 2. Activity Heatmap 
+        {/* 2. TODO: Activity Heatmap -- needs work
         <Section id="activity-heatmap" className={PAGE_LAYOUT.section.container}>
           <ScrollReveal animation="fade-up" delay={50}>
             <div className={SPACING.content}>
@@ -386,30 +386,32 @@ export default async function Home() {
         {/* 3. Featured Article - Highlighted section */}
         <Section
           id="featured-post"
-          className={cn(
-            PAGE_LAYOUT.section.container,
-            CONTAINER_VERTICAL_PADDING
-          )}
+          className={cn(PAGE_LAYOUT.section.container)}
         >
           <ScrollReveal animation="fade-up" delay={100}>
             <div className={SPACING.content}>
-              {/* <SectionHeader title="Featured" /> */}
               <FeaturedPostHero post={featuredPost} />
             </div>
           </ScrollReveal>
         </Section>
 
         {/* 4. Trending Now */}
-        <Section id="trending" className={PAGE_LAYOUT.section.container}>
+        <Section
+          id="trending"
+          className={cn(
+            PAGE_LAYOUT.section.container,
+            CONTAINER_VERTICAL_PADDING
+          )}
+        >
           <ScrollReveal animation="fade-up" delay={150}>
             <div className={SPACING.content}>
-              {/* <SectionHeader
+              <SectionHeader
                 title="Trending"
                 actionHref="/blog"
                 actionLabel="View all posts"
-              /> */}
+              />
               <TrendingPosts
-                posts={activePosts}
+                posts={activePosts.filter((p) => p.id !== featuredPost?.id)}
                 viewCounts={viewCountsMap}
                 limit={3}
               />
@@ -418,21 +420,24 @@ export default async function Home() {
         </Section>
 
         {/* 5. Recent Activity - Infinite Scroll Timeline */}
-        <Section id="recent-activity" className={PAGE_LAYOUT.section.container}>
+        <Section
+          id="recent-activity"
+          className={cn(PAGE_LAYOUT.section.container)}
+        >
           <ScrollReveal animation="fade-up" delay={200}>
             <div className={SPACING.content}>
-              {/* <SectionHeader
+              <SectionHeader
                 title="Recent Activity"
                 actionHref="/activity"
                 actionLabel="View all activity"
-              /> */}
+              />
               <InfiniteActivitySection
                 items={timelineActivities}
                 totalActivities={timelineActivities.length}
                 initialCount={7}
                 pageSize={8}
                 showProgress
-                maxItemsBeforeCTA={20}
+                maxItemsBeforeCTA={12}
                 ctaText="View all activity"
                 ctaHref="/activity"
               />
@@ -440,7 +445,7 @@ export default async function Home() {
           </ScrollReveal>
         </Section>
 
-        {/* 6. Explore Cards - Highlighted section 
+        {/* 6. TODO: Explore Cards - Highlighted section -- needs work
         <Section
           id="explore"
           className={cn(
@@ -462,7 +467,7 @@ export default async function Home() {
           </ScrollReveal>
         </Section> */}
 
-        {/* 7. Stats Dashboard 
+        {/* 7. TODO: Stats Dashboard -- needs validation 
         <Section id="stats" className={PAGE_LAYOUT.section.container}>
           <ScrollReveal animation="fade-up" delay={300}>
             <div className={SPACING.content}>

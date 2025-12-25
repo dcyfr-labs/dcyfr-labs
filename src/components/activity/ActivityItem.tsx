@@ -27,7 +27,7 @@ import {
   BookmarkCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ANIMATION, NEON_COLORS } from "@/lib/design-tokens";
+import { ANIMATION, NEON_COLORS, TOUCH_TARGET } from "@/lib/design-tokens";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import {
   type ActivityItem as ActivityItemType,
@@ -199,13 +199,16 @@ export function ActivityItem({
       )}
     >
       <CardContent className="p-4 relative">
-        {/* Bookmark button */}
+        {/* Bookmark button - Mobile-first touch target sizing */}
         <Button
           variant="ghost"
           size="icon"
           onClick={handleBookmarkToggle}
           className={cn(
-            "absolute top-3 right-3 h-8 w-8 opacity-0 group-hover:opacity-100",
+            "absolute top-3 right-3",
+            // Mobile-first: 44x44px minimum, scale down on tablet+
+            TOUCH_TARGET.close,
+            "opacity-0 group-hover:opacity-100",
             ANIMATION.transition.movement,
             // eslint-disable-next-line no-restricted-syntax -- Bookmark status color (icon color, not semantic)
             isBookmarked(activity.id) && "opacity-100 text-amber-500 hover:text-amber-600"
@@ -524,13 +527,15 @@ function TimelineItem({
 
       {/* Content */}
       <div className="flex-1 pb-6 min-w-0 relative">
-        {/* Bookmark button with bounce animation */}
+        {/* Bookmark button with bounce animation - Mobile-first sizing */}
         <Button
           variant="ghost"
           size="icon"
           onClick={handleBookmarkToggle}
           className={cn(
-            "absolute top-0 right-0 h-8 w-8",
+            "absolute top-0 right-0",
+            // Mobile-first: 44x44px minimum, scale down on tablet+
+            TOUCH_TARGET.close,
             // Fade in/out with scale
             "opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100",
             cn(ANIMATION.transition.base, ANIMATION.duration.fast),

@@ -1,9 +1,9 @@
 # Activity Feed Documentation
 
-**Last Updated:** December 23, 2025  
+**Last Updated:** December 25, 2025
 **Status:** Production Ready
 
-The Activity Feed is a universal timeline that aggregates content from multiple sources (blog posts, projects, GitHub activity, milestones, etc.) into a unified, filterable, searchable stream.
+The Activity Feed is a universal timeline that aggregates content from multiple sources (blog posts, projects, GitHub activity, milestones, etc.) into a unified, filterable, searchable stream with engagement-based trending indicators.
 
 ---
 
@@ -19,6 +19,7 @@ The Activity Feed is a universal timeline that aggregates content from multiple 
 - ✅ **Search history** - Recent 10 searches with result counts
 - ✅ **Keyboard shortcuts** - Cmd/Ctrl+K to focus search
 - ✅ **Activity heatmap** - Calendar view showing activity intensity over time
+- ✅ **Trending badges** - Real-time engagement scoring with weekly/monthly indicators
 - ✅ **Responsive design** - Mobile-optimized timeline and heatmap views
 
 ---
@@ -139,6 +140,59 @@ Save frequently-used filter combinations for quick access:
 - **Delete** - Use Preset Manager
 - **Reorder** - Drag and drop in Preset Manager
 - **Export/Import** - Share presets with others
+
+---
+
+## Trending Badges
+
+**Implementation Date:** December 25, 2025
+
+Engagement-based trending indicators that appear as badges on published events instead of creating duplicate "trending" events.
+
+### How It Works
+
+**Engagement Score Calculation:**
+```
+Raw Score = (views × 1) + (likes × 5) + (comments × 10) + (completion × 2)
+Daily Score = Raw Score / periodDays
+Normalized Score = min(100, (Daily Score / 10) × 100)
+```
+
+**Time Windows:**
+- **Weekly Trending** (🔥 orange badge): Score ≥ 60 with views from past 7 days
+- **Monthly Trending** (📈 blue badge): Score ≥ 50 with views from past 30 days
+
+**Anti-Spam Protection:**
+- Minimum 10 views required in time window
+- Comments weighted 10x higher than views (strongest engagement signal)
+- Likes weighted 5x higher than views
+
+### Data Sources
+
+- **Views**: Time-windowed from Redis (past 7/30 days only)
+- **Likes**: All-time counts from Giscus API
+- **Comments**: All-time counts from Giscus API
+- **Reading Completion**: Not yet implemented (placeholder set to 0)
+
+### Visual Design
+
+**Badge Hierarchy:**
+```
+[Source] [Verb] [Trending (if applicable)]
+  ↓       ↓            ↓
+[Blog] [published] [🔥 Trending this week]
+```
+
+**Badge Priority:**
+- Weekly badge shown preferentially if both conditions met
+- Compact variants for reply threads (shortened labels)
+
+### Storage
+
+- View history retained for 90 days in Redis sorted sets
+- Enables historical trending analysis and long-term analytics
+
+**See:** [Trending Badges Implementation Guide](./trending-badges-implementation.md)
 
 ---
 

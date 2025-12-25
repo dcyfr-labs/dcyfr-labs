@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TOUCH_TARGET } from "@/lib/design-tokens";
 import type { FilterSelectProps } from "../types";
 
 export function FilterSelect({
@@ -21,7 +22,7 @@ export function FilterSelect({
   return (
     <div className={className}>
       <Select value={value || defaultValue} onValueChange={onChange}>
-        <SelectTrigger className="h-10 w-full">
+        <SelectTrigger className={`${TOUCH_TARGET.textMobile} md:h-10 w-full`}>
           {Icon && <Icon className="mr-2 h-4 w-4 text-muted-foreground shrink-0" />}
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>

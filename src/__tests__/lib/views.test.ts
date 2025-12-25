@@ -87,7 +87,7 @@ describe('Views Utilities', () => {
       )
     })
 
-    it('cleans up old views beyond 24 hours', async () => {
+    it('cleans up old views beyond 90 days', async () => {
       process.env.REDIS_URL = 'redis://localhost:6379'
       mockRedisClient.incr.mockResolvedValue(1)
       mockRedisClient.zAdd.mockResolvedValue(1)
@@ -99,12 +99,12 @@ describe('Views Utilities', () => {
       const { incrementPostViews } = await import('@/lib/views')
       await incrementPostViews('test-post-id')
 
-      const twentyFourHoursAgo = now - 24 * 60 * 60 * 1000
+      const ninetyDaysAgo = now - 90 * 24 * 60 * 60 * 1000
 
       expect(mockRedisClient.zRemRangeByScore).toHaveBeenCalledWith(
         'views:history:post:test-post-id',
         '-inf',
-        twentyFourHoursAgo
+        ninetyDaysAgo
       )
     })
 
@@ -349,7 +349,7 @@ describe('Views Utilities', () => {
       )
     })
 
-    it('cleanup removes views older than 24 hours', async () => {
+    it('cleanup removes views older than 90 days', async () => {
       process.env.REDIS_URL = 'redis://localhost:6379'
       mockRedisClient.incr.mockResolvedValue(1)
       mockRedisClient.zAdd.mockResolvedValue(1)
@@ -361,7 +361,7 @@ describe('Views Utilities', () => {
       const { incrementPostViews } = await import('@/lib/views')
       await incrementPostViews('test-post-id')
 
-      const expectedCutoff = fixedTime - 24 * 60 * 60 * 1000
+      const expectedCutoff = fixedTime - 90 * 24 * 60 * 60 * 1000
 
       expect(mockRedisClient.zRemRangeByScore).toHaveBeenCalledWith(
         'views:history:post:test-post-id',

@@ -9,6 +9,7 @@ import { ProjectsCTA } from "@/components/common";
 import { OtherProjectCard } from "@/components/projects/other-project-card";
 import { ArticleHeader } from "@/components/layouts";
 import { PhotoGrid } from "@/components/projects/photo-grid";
+import { PostInteractions } from "@/components/common/PostInteractions";
 
 const STATUS_LABEL: Record<Project["status"], string> = {
   "active": "Active",
@@ -140,6 +141,19 @@ export function GalleryProjectLayout({ project, nonce, basePath = '/work' }: Gal
           </div>
         </section>
       )}
+
+      {/* Post Interactions (like, bookmark, share) */}
+      <div className="my-8">
+        <PostInteractions
+          contentId={project.slug}
+          contentType="project"
+          title={project.title}
+          description={project.description}
+          href={`${basePath}/${project.slug}`}
+          variant="default"
+          showCounts={true}
+        />
+      </div>
 
       {/* Other Projects */}
       <div className="mt-12 pt-8 border-t">

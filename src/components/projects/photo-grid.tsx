@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { PhotoCard, type Photo } from "./photo-card";
-import { IMAGE_PLACEHOLDER } from "@/lib/design-tokens";
+import { IMAGE_PLACEHOLDER, TOUCH_TARGET } from "@/lib/design-tokens";
 
 // Storage key for layout preference
 const STORAGE_KEY = "gallery-layout-preference";
@@ -217,10 +217,10 @@ export function PhotoGrid({
             variant="ghost"
             size="icon"
             onClick={closeLightbox}
-            className="absolute top-4 right-4 z-50 text-white hover:bg-white/10"
+            className={cn("absolute top-4 right-4 z-50 text-white hover:bg-white/10", TOUCH_TARGET.close)}
             aria-label="Close lightbox"
           >
-            <X className="h-6 w-6" />
+            <X className="h-5 w-5" />
           </Button>
 
           {/* Navigation buttons */}

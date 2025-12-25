@@ -1,0 +1,81 @@
+
+> dcyfr-labs@0.1.0 test:e2e
+> PLAYWRIGHT_USE_PROD=1 playwright test e2e/touch-targets.spec.ts e2e/mobile-typography.spec.ts --project=chromium --reporter=list
+
+
+Running 14 tests using 4 workers
+
+  ✓   2 [chromium] › e2e/mobile-typography.spec.ts:50:7 › Mobile Typography › line height is optimized for mobile readability (1.6-1.8) (3.4s)
+  ✓   3 [chromium] › e2e/mobile-typography.spec.ts:136:7 › Mobile Typography › line length is readable on mobile (45-75 characters per line) (3.5s)
+  -   1 [chromium] › e2e/mobile-typography.spec.ts:12:7 › Mobile Typography › headings scale appropriately on mobile vs desktop
+  ✓   4 [chromium] › e2e/mobile-typography.spec.ts:79:7 › Mobile Typography › text has sufficient contrast on mobile (4.5:1 WCAG AA) (3.6s)
+  ✓   6 [chromium] › e2e/mobile-typography.spec.ts:195:7 › Mobile Typography › typography remains readable during scroll and interactions (2.3s)
+  ✓   5 [chromium] › e2e/mobile-typography.spec.ts:169:7 › Mobile Typography › mobile typography scales consistently across different font sizes (2.3s)
+  ✓   7 [chromium] › e2e/mobile-typography.spec.ts:219:7 › Mobile Typography › code/monospace text is clearly distinguished on mobile (2.4s)
+  ✓  10 [chromium] › e2e/touch-targets.spec.ts:62:7 › Touch Targets › all links should have adequate touch target (44x44pt) (1.9s)
+  ✓  11 [chromium] › e2e/touch-targets.spec.ts:99:7 › Touch Targets › interactive elements should have 8pt minimum spacing (2.4s)
+Touch target failures: [
+  { index: [33m0[39m, width: [33m32[39m, height: [33m32[39m },
+  { index: [33m4[39m, width: [33m36[39m, height: [33m36[39m },
+  { index: [33m6[39m, width: [33m32[39m, height: [33m32[39m },
+  { index: [33m7[39m, width: [33m62[39m, height: [33m25[39m },
+  { index: [33m8[39m, width: [33m57.8125[39m, height: [33m28[39m },
+  { index: [33m9[39m, width: [33m36[39m, height: [33m24[39m },
+  { index: [33m10[39m, width: [33m36[39m, height: [33m32[39m },
+  { index: [33m11[39m, width: [33m50.9375[39m, height: [33m28[39m },
+  { index: [33m12[39m, width: [33m36[39m, height: [33m24[39m },
+  { index: [33m13[39m, width: [33m36[39m, height: [33m32[39m },
+  { index: [33m14[39m, width: [33m60.28125[39m, height: [33m28[39m },
+  { index: [33m15[39m, width: [33m36[39m, height: [33m24[39m },
+  { index: [33m16[39m, width: [33m36[39m, height: [33m32[39m },
+  { index: [33m17[39m, width: [33m59.609375[39m, height: [33m28[39m },
+  { index: [33m18[39m, width: [33m36[39m, height: [33m24[39m },
+  { index: [33m19[39m, width: [33m36[39m, height: [33m32[39m },
+  { index: [33m20[39m, width: [33m60.28125[39m, height: [33m28[39m },
+  { index: [33m21[39m, width: [33m36[39m, height: [33m24[39m },
+  { index: [33m22[39m, width: [33m36[39m, height: [33m32[39m },
+  { index: [33m23[39m, width: [33m59.171875[39m, height: [33m28[39m },
+  { index: [33m24[39m, width: [33m36[39m, height: [33m24[39m },
+  { index: [33m25[39m, width: [33m36[39m, height: [33m32[39m },
+  { index: [33m26[39m, width: [33m51.03125[39m, height: [33m28[39m },
+  { index: [33m27[39m, width: [33m36[39m, height: [33m24[39m },
+  { index: [33m28[39m, width: [33m36[39m, height: [33m32[39m },
+  { index: [33m29[39m, width: [33m32[39m, height: [33m32[39m }
+]
+  -  13 [chromium] › e2e/touch-targets.spec.ts:162:7 › Touch Targets › touch targets work on iPhone SE (smallest mobile device)
+  -  14 [chromium] › e2e/touch-targets.spec.ts:189:7 › Touch Targets › tablet touch targets are appropriately sized (iPad Pro)
+  ✘   9 [chromium] › e2e/touch-targets.spec.ts:19:7 › Touch Targets › all buttons should be at least 44x44pt on mobile (3.0s)
+  ✓   8 [chromium] › e2e/mobile-typography.spec.ts:246:7 › Mobile Typography › typography is consistent across mobile devices (5.5s)
+  -  12 [chromium] › e2e/touch-targets.spec.ts:132:7 › Touch Targets › form inputs should be at least 44px tall on mobile
+
+
+  1) [chromium] › e2e/touch-targets.spec.ts:19:7 › Touch Targets › all buttons should be at least 44x44pt on mobile 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeLessThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: < [32m6[39m
+    Received:   [31m26[39m
+
+      57 |     
+      58 |     // Allow some tolerance for edge cases (e.g., icon-only buttons with padding)
+    > 59 |     expect(failures.length).toBeLessThan(count * 0.2) // Max 20% failure rate
+         |                             ^
+      60 |   })
+      61 |
+      62 |   test('all links should have adequate touch target (44x44pt)', async ({ page, browserName }) => {
+        at /Users/drew/DCYFR/code/dcyfr-labs/e2e/touch-targets.spec.ts:59:29
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    reports/e2e-artifacts/touch-targets-Touch-Target-cc70f--at-least-44x44pt-on-mobile-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    reports/e2e-artifacts/touch-targets-Touch-Target-cc70f--at-least-44x44pt-on-mobile-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: reports/e2e-artifacts/touch-targets-Touch-Target-cc70f--at-least-44x44pt-on-mobile-chromium/error-context.md
+
+  1 failed
+    [chromium] › e2e/touch-targets.spec.ts:19:7 › Touch Targets › all buttons should be at least 44x44pt on mobile 
+  4 skipped
+  9 passed (11.5s)

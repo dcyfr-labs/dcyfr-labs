@@ -15,13 +15,13 @@
 
 import { createElement } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { ThreadActions } from "./ThreadActions";
-import { ThreadShareButton } from "./ThreadShareButton";
 import { getActivitySourceIcon } from "@/lib/activity/types";
 import type { ActivityItem } from "@/lib/activity/types";
 import { cn } from "@/lib/utils";
-import { TYPOGRAPHY, SPACING, HOVER_EFFECTS, ANIMATION, NEON_COLORS } from "@/lib/design-tokens";
+import { TYPOGRAPHY, SPACING, HOVER_EFFECTS, ANIMATION, NEON_COLORS, ACTIVITY_IMAGE } from "@/lib/design-tokens";
 
 // ============================================================================
 // TYPES & HELPERS
@@ -75,8 +75,8 @@ export function ThreadHeader({
     <div className={cn("group/thread relative", className)}>
       {/* Content Layout (Full Width) */}
       <div className="w-full">
-        {/* Header: Source + Verb Badges */}
-        <div className="flex items-center gap-2 mb-1.5">
+        {/* Header: Source + Verb Badges + Trending */}
+        <div className="flex items-center gap-2 mb-1.5 flex-wrap">
           <Badge variant="default" className="gap-1.5 px-2 h-6">
             {createElement(sourceIconComponent, { className: "h-3.5 w-3.5", "aria-hidden": "true" })}
             <span className="capitalize">{activity.source}</span>
@@ -85,36 +85,57 @@ export function ThreadHeader({
           <Badge variant="outline" className={cn("px-2 h-6", verbColor)}>
             {activity.verb}
           </Badge>
+
+          {/* Trending Badge (Weekly takes priority over Monthly) */}
+          {activity.meta?.trendingStatus?.isWeeklyTrending && (
+            <Badge variant="secondary" className={cn("px-2 h-6", NEON_COLORS.orange.badge)}>
+              🔥 Trending this week
+            </Badge>
+          )}
+          {!activity.meta?.trendingStatus?.isWeeklyTrending && activity.meta?.trendingStatus?.isMonthlyTrending && (
+            <Badge variant="secondary" className={cn("px-2 h-6", NEON_COLORS.blue.badge)}>
+              📈 Trending this month
+            </Badge>
+          )}
         </div>
 
+        {/* Content: Title, Featured Image, Description, Metadata */}
+        <div className={SPACING.activity.contentGap}>
           {/* Title */}
           <Link
             href={activity.href}
             className={cn(
               "block group/link",
               ANIMATION.transition.base,
-              TYPOGRAPHY.h3.standard,
+              TYPOGRAPHY.activity.title,
               "hover:text-primary"
             )}
           >
             <span className={HOVER_EFFECTS.link}>{activity.title}</span>
           </Link>
 
+          {/* Featured Image (if present) */}
+          {activity.meta?.image && (
+            <div className={cn(ACTIVITY_IMAGE.container, ACTIVITY_IMAGE.sizes.header)}>
+              <Image
+                src={activity.meta.image.url}
+                alt={activity.meta.image.alt || activity.title}
+                fill
+                className={ACTIVITY_IMAGE.image}
+              />
+            </div>
+          )}
+
           {/* Description (if present) */}
           {activity.description && (
-            <p
-              className={cn(
-                TYPOGRAPHY.body,
-                "text-muted-foreground mt-2 line-clamp-3"
-              )}
-            >
+            <p className={TYPOGRAPHY.activity.description}>
               {activity.description}
             </p>
           )}
 
           {/* Metadata (tags, stats, etc.) */}
           {(activity.meta?.tags || activity.meta?.stats) && (
-            <div className={cn("flex flex-wrap items-center gap-2 mt-3")}>
+            <div className="flex flex-wrap items-center gap-2">
               {/* Tags */}
               {activity.meta.tags &&
                 activity.meta.tags.slice(0, 3).map((tag) => (
@@ -125,12 +146,7 @@ export function ThreadHeader({
 
               {/* Stats */}
               {activity.meta.stats && (
-                <div
-                  className={cn(
-                    TYPOGRAPHY.metadata,
-                    "text-muted-foreground flex items-center gap-2"
-                  )}
-                >
+                <div className={cn(TYPOGRAPHY.activity.metadata, "flex items-center gap-2")}>
                   {activity.meta.stats.views !== undefined && (
                     <span>{activity.meta.stats.views} views</span>
                   )}
@@ -144,32 +160,23 @@ export function ThreadHeader({
               )}
             </div>
           )}
+        </div>
 
-          {/* Action Buttons */}
+          {/* Action Buttons (now includes share button in footer) */}
           <div className="mt-4">
             <ThreadActions
               activityId={activity.id}
-              activityHref={activity.href}
-              activityTitle={activity.title}
-              activityDescription={activity.description}
               timestamp={activity.timestamp}
+              activity={{
+                title: activity.title,
+                description: activity.description,
+                href: activity.href,
+              }}
+              showBookmarkCount
+              showShareCount
             />
           </div>
         </div>
-
-      {/* Share Button (Positioned Absolutely on Desktop) */}
-      <div className="hidden md:block absolute top-0 right-0">
-        <ThreadShareButton
-          activity={{
-            id: activity.id,
-            title: activity.title,
-            description: activity.description,
-            href: activity.href,
-          }}
-          variant="ghost"
-          size="sm"
-        />
-      </div>
 
       {/* Thread Connector Line (if has replies) */}
       {hasReplies && (

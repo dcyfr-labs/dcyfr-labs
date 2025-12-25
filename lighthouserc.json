@@ -1,17 +1,20 @@
 {
   "ci": {
     "collect": {
-      "staticDistDir": "./.next",
       "numberOfRuns": 3,
+      "startServerCommand": "npm run start",
+      "startServerReadyPattern": "Ready",
+      "startServerReadyTimeout": 30000,
       "url": [
         "http://localhost:3000/",
         "http://localhost:3000/blog",
-        "http://localhost:3000/projects",
+        "http://localhost:3000/work",
         "http://localhost:3000/about",
-        "http://localhost:3000/contact"
+        "http://localhost:3000/contact",
+        "http://localhost:3000/activity"
       ],
       "settings": {
-        "chromeFlags": "--no-sandbox --headless",
+        "chromeFlags": "--no-sandbox --headless --disable-gpu",
         "configPath": "./lighthouse-config.json",
         "extraHeaders": "{\"x-vercel-protection-bypass\": \"${VERCEL_AUTOMATION_BYPASS_SECRET}\", \"x-vercel-set-bypass-cookie\": \"samesitenone\"}"
       }

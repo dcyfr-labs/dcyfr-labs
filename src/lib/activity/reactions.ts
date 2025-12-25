@@ -248,26 +248,22 @@ export function clearAllReactions(): ReactionCollection {
 // ============================================================================
 
 /**
- * Gets a simulated reaction count for display purposes
- * Combines actual user reaction + a base simulated count
+ * Gets the real reaction count for an activity
+ * Returns only actual user interactions (0 if not reacted, 1 if reacted)
+ * No simulated/fake counts - only real data
  *
- * This creates the illusion of engagement while remaining honest
- * (the user's own reactions are real, the baseline is simulated)
- *
- * @param activityId - Activity ID
+ * @param activityId - Activity ID  
  * @param collection - Reaction collection
  * @param type - Reaction type
- * @returns Simulated total count for display
+ * @returns Real count (0 or 1 based on user's actual interaction)
  */
 export function getSimulatedReactionCount(
   activityId: string,
   collection: ReactionCollection,
   type: ReactionType = "like"
 ): number {
-  const userReacted = isActivityLiked(activityId, collection, type);
-  const baseCount = generateBaseCount(activityId);
-
-  return userReacted ? baseCount + 1 : baseCount;
+  // Return only real user reaction: 1 if user reacted, 0 if not
+  return isActivityLiked(activityId, collection, type) ? 1 : 0;
 }
 
 /**

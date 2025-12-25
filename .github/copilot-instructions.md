@@ -144,6 +144,31 @@ export async function POST(request: NextRequest) {
 }
 ```
 
+### 5. Never Commit Test Data to Production
+
+```typescript
+// ✅ CORRECT: Test data protected by environment check
+const isProduction = process.env.NODE_ENV === 'production' 
+  || process.env.VERCEL_ENV === 'production';
+
+if (isProduction && !hasRealData) {
+  console.error('❌ CRITICAL: Using demo data in production!');
+  return null;  // Return empty, not fake data
+}
+
+// Safe to use test data in dev only
+return mockData;
+
+// ❌ WRONG: Test data without environment check
+function getMetrics() {
+  return { stars: 15, forks: 0 };  // Always runs, even in production!
+}
+```
+
+**Key:** Check both `NODE_ENV` and `VERCEL_ENV`. Log CRITICAL errors for production fallback.
+
+**See:** [TEST_DATA_PREVENTION.md](.github/agents/enforcement/TEST_DATA_PREVENTION.md)
+
 ---
 
 ## 🔍 Finding Information Fast
@@ -156,6 +181,7 @@ export async function POST(request: NextRequest) {
 | Which layout to use? | [Decision Trees](docs/ai/DECISION_TREES.md#which-layout-should-i-use) |
 | How to import components? | [Component Patterns](docs/ai/component-patterns.md#barrel-exports) |
 | Design token rules? | [Enforcement Rules](docs/ai/enforcement-rules.md#design-token-enforcement) |
+| Test data safety? | [TEST_DATA_PREVENTION.md](.github/agents/enforcement/TEST_DATA_PREVENTION.md) |
 | Copy-paste template? | [Templates](docs/templates/) |
 | Current priorities? | [todo.md](docs/operations/todo.md) |
 | Architecture decisions? | [docs/architecture/](docs/architecture/) |

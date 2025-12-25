@@ -1,14 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { TYPOGRAPHY } from "@/lib/design-tokens";
+import { TYPOGRAPHY, TOUCH_TARGET } from "@/lib/design-tokens";
 import type { FilterClearButtonProps } from "../types";
 
 export function FilterClearButton({
   onClear,
   count,
   visible,
-  className = "h-10 px-4 whitespace-nowrap shrink-0",
+  className = `${TOUCH_TARGET.textMobile} px-4 whitespace-nowrap shrink-0 md:h-10 md:px-4`,
 }: FilterClearButtonProps) {
   return (
     <Button

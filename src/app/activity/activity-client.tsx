@@ -4,9 +4,15 @@ import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { ActivityFilters, EmbedGenerator } from "@/components/activity";
 import { ThreadedActivityFeed } from "@/components/activity/ThreadedActivityFeed";
-import { FeedInterruption, type FeedInterruptionProps } from "@/components/activity";
+import { TopicCloud } from "@/components/activity/TopicCloud";
+import { RelatedTopics } from "@/components/activity/RelatedTopics";
 import type { ActivityItem, ActivitySource } from "@/lib/activity";
 import { searchActivities, createSearchIndex } from "@/lib/activity/search";
+import {
+  extractTopics,
+  filterByTopics,
+  buildCooccurrenceMatrix,
+} from "@/lib/activity/topics";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import { SPACING } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
@@ -17,32 +23,6 @@ import { Code } from "lucide-react";
 // ============================================================================
 
 type TimeRangeFilter = "today" | "week" | "month" | "year" | "all";
-
-// Feed interruptions for engagement
-const FEED_INTERRUPTIONS: FeedInterruptionProps[] = [
-  {
-    type: "cta",
-    title: "Explore the Blog",
-    description: "Discover in-depth articles on security, architecture, and modern development practices.",
-    href: "/blog",
-    buttonLabel: "Browse articles",
-    theme: "cyan",
-  },
-  {
-    type: "quote",
-    quote: "Security is not a product, but a process. It's about layers, vigilance, and continuous improvement.",
-    source: "Security Architecture Philosophy",
-    theme: "lime",
-  },
-  {
-    type: "cta",
-    title: "View Our Work",
-    description: "Check out our portfolio of projects and case studies showcasing real-world solutions.",
-    href: "/work",
-    buttonLabel: "Explore projects",
-    theme: "magenta",
-  },
-];
 
 interface SerializedActivity extends Omit<ActivityItem, "timestamp"> {
   timestamp: string;
@@ -70,6 +50,7 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isBookmarksFilter, setIsBookmarksFilter] = useState(false);
   const [showEmbedGenerator, setShowEmbedGenerator] = useState(false);
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
 
   // Deserialize activities once
   const deserializedActivities = useMemo<ActivityItem[]>(() => {
@@ -82,6 +63,18 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
   // Create search index once
   const searchIndex = useMemo(() => {
     return createSearchIndex(deserializedActivities);
+  }, [deserializedActivities]);
+
+  // Extract topics and build co-occurrence matrix
+  const topics = useMemo(() => {
+    return extractTopics(deserializedActivities, {
+      minCount: 2, // Only show topics that appear in at least 2 activities
+      includeKeywords: false, // Only use tags and categories (more accurate)
+    });
+  }, [deserializedActivities]);
+
+  const topicCooccurrence = useMemo(() => {
+    return buildCooccurrenceMatrix(deserializedActivities);
   }, [deserializedActivities]);
 
   // Filter activities
@@ -97,6 +90,11 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
     if (searchQuery.trim()) {
       const searchResults = searchActivities(result, searchQuery, searchIndex);
       result = searchResults.map((r) => r.item);
+    }
+
+    // Filter by topics
+    if (selectedTopics.length > 0) {
+      result = filterByTopics(result, selectedTopics);
     }
 
     // Filter by sources (only if not using bookmarks filter)
@@ -130,7 +128,16 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
     }
 
     return result;
-  }, [deserializedActivities, searchQuery, selectedSources, selectedTimeRange, searchIndex, isBookmarksFilter, filterBookmarkedActivities]);
+  }, [
+    deserializedActivities,
+    searchQuery,
+    selectedSources,
+    selectedTopics,
+    selectedTimeRange,
+    searchIndex,
+    isBookmarksFilter,
+    filterBookmarkedActivities,
+  ]);
 
   // Available sources based on data
   const availableSources: ActivitySource[] = useMemo(() => {
@@ -157,40 +164,21 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
     setSelectedSources(sources);
   };
 
-  // Insert interruptions into activities (every 8 items)
-  const renderItems = useMemo(() => {
-    const items: Array<{ type: 'activity' | 'interruption'; data: any; id: string }> = [];
-    const interruptionInterval = 8;
-    let interruptionIndex = 0;
-    let interruptionCounter = 0; // Unique counter for each interruption instance
-
-    // Group activities into chunks
-    for (let i = 0; i < filteredActivities.length; i += interruptionInterval) {
-      const chunk = filteredActivities.slice(i, i + interruptionInterval);
-      
-      items.push({
-        type: 'activity',
-        data: chunk,
-        id: `activities-${i}`,
-      });
-      
-      // Add interruption after chunk (if not last chunk)
-      if (
-        i + interruptionInterval < filteredActivities.length &&
-        interruptionIndex < FEED_INTERRUPTIONS.length
-      ) {
-        items.push({
-          type: 'interruption',
-          data: FEED_INTERRUPTIONS[interruptionIndex],
-          id: `interruption-${interruptionCounter}`, // Use unique counter
-        });
-        interruptionIndex = (interruptionIndex + 1) % FEED_INTERRUPTIONS.length;
-        interruptionCounter++; // Increment unique counter
+  // Handle topic click (toggle topic selection)
+  const handleTopicClick = (topic: string) => {
+    setSelectedTopics((prev) => {
+      if (prev.includes(topic)) {
+        // Remove topic if already selected
+        return prev.filter((t) => t !== topic);
+      } else {
+        // Add topic if not selected
+        return [...prev, topic];
       }
-    }
+    });
+  };
 
-    return items;
-  }, [filteredActivities]);
+  // No longer split activities into chunks - render as unified timeline
+  // Interruptions are disabled to maintain consistent threading across pages
 
   return (
     <motion.div 
@@ -210,82 +198,55 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
         availableSources={availableSources}
         totalCount={activities.length}
         filteredCount={filteredActivities.length}
-        onPresetApply={handlePresetApply}
       />
 
-      {/* Embed Generator Toggle */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className={cn("mb-6")}
-      >
-        <button
-          onClick={() => setShowEmbedGenerator(!showEmbedGenerator)}
-          className={cn(
-            "flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors",
-            "hover:bg-zinc-50 text-sm"
-          )}
+      {/* Topic Cloud - Interactive topic filtering */}
+      {topics.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
         >
-          <Code className="w-4 h-4" />
-          {showEmbedGenerator ? "Hide" : "Show"} Embed Code
-        </button>
-        
-        {showEmbedGenerator && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="mt-4"
-          >
-            <EmbedGenerator />
-          </motion.div>
-        )}
-      </motion.div>
+          <TopicCloud
+            topics={topics}
+            selectedTopics={selectedTopics}
+            onTopicClick={handleTopicClick}
+            maxTopics={50}
+          />
+        </motion.div>
+      )}
 
-      {/* Timeline Feed with Interruptions */}
+      {/* Related Topics - Show recommendations based on selected topics */}
+      {selectedTopics.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.15 }}
+        >
+          <RelatedTopics
+            selectedTopics={selectedTopics}
+            cooccurrenceMatrix={topicCooccurrence}
+            onTopicClick={handleTopicClick}
+            maxPerTopic={5}
+          />
+        </motion.div>
+      )}
+
+      {/* Timeline Feed - Unified threading across all activities */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.2, ease: "easeOut" }}
-        className="space-y-12"
       >
-        {renderItems.length === 0 ? (
+        {filteredActivities.length === 0 ? (
           <div className={cn("text-center py-12", SPACING.content)}>
             <p className="text-muted-foreground">No activities match your filters</p>
           </div>
         ) : (
-          renderItems.map((item, index) => {
-            if (item.type === 'interruption') {
-              return (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.3, delay: 0.1, ease: "easeOut" }}
-                >
-                  <FeedInterruption {...item.data} />
-                </motion.div>
-              );
-            }
-            
-            return (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.3, delay: 0.1, ease: "easeOut" }}
-              >
-                <ThreadedActivityFeed
-                  activities={item.data}
-                  emptyMessage=""
-                />
-              </motion.div>
-            );
-          })
+          <ThreadedActivityFeed
+            activities={filteredActivities}
+            emptyMessage="No activities match your filters"
+          />
         )}
       </motion.div>
     </motion.div>

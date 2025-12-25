@@ -3,11 +3,13 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Share2, Bookmark, Link2, Linkedin, BookOpen } from "lucide-react";
+import { Share2, Bookmark, Link2, Linkedin, BookOpen, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { AUTHOR_NAME, SITE_TITLE_PLAIN } from "@/lib/site-config";
 import { SPACING } from "@/lib/design-tokens";
 import { useBookmarks } from "@/hooks/use-bookmarks";
+import { useShare } from "@/hooks/use-share";
+import { useActivityReactions } from "@/hooks/use-activity-reactions";
 
 interface PostQuickActionsProps {
   slug?: string;
@@ -21,9 +23,19 @@ interface PostQuickActionsProps {
  * Provides bookmark, share, copy link, copy IEEE citation, and LinkedIn share buttons.
  */
 export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActionsProps) {
-  const { isBookmarked, toggle } = useBookmarks();
+  const { isBookmarked, toggle, getBookmarkCount } = useBookmarks();
+  const { getShareCount } = useShare();
+  const { isLiked, toggleLike, getCount } = useActivityReactions();
   const [isHydrated, setIsHydrated] = React.useState(false);
-  const bookmarked = isHydrated && slug ? isBookmarked(slug) : false;
+  
+  // Use same activity ID format as PostInteractions: "blog-{slug}"
+  const activityId = slug ? `blog-${slug}` : undefined;
+  
+  const bookmarked = isHydrated && activityId ? isBookmarked(activityId) : false;
+  const bookmarkCount = isHydrated && activityId ? getBookmarkCount(activityId) : 0;
+  const shareCount = isHydrated && activityId ? getShareCount(activityId) : 0;
+  const liked = isHydrated && activityId ? isLiked(activityId) : false;
+  const likeCount = isHydrated && activityId ? getCount(activityId) : 0;
 
   React.useEffect(() => {
     setIsHydrated(true);
@@ -67,10 +79,17 @@ export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActi
   };
 
   const handleBookmark = () => {
-    if (!slug) return;
+    if (!activityId) return;
     
-    toggle(slug);
+    toggle(activityId);
     toast.success(bookmarked ? "Bookmark removed" : "Bookmarked for later");
+  };
+
+  const handleLike = () => {
+    if (!activityId) return;
+    
+    toggleLike(activityId);
+    toast.success(liked ? "Like removed" : "Liked!");
   };
 
   const generateIEEECitation = (): string => {
@@ -102,6 +121,20 @@ export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActi
     <div className={`${SPACING.compact} pb-6 border-b`}>
       <h2 className="font-semibold mb-3 text-sm">Quick Actions</h2>
 
+      {/* Like Button */}
+      <Button
+        variant="outline"
+        size="sm"
+        className="w-full justify-start gap-2"
+        onClick={handleLike}
+      >
+        <Heart className={cn("h-4 w-4", liked && "fill-destructive text-destructive")} />
+        {liked ? "Liked" : "Like"}
+        {likeCount > 0 && (
+          <span className="ml-auto text-xs text-muted-foreground">{likeCount}</span>
+        )}
+      </Button>
+
       {/* Bookmark Button */}
       <Button
         variant="outline"
@@ -111,6 +144,9 @@ export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActi
       >
         <Bookmark className={cn("h-4 w-4", bookmarked && "fill-current")} />
         {bookmarked ? "Bookmarked" : "Bookmark"}
+        {bookmarkCount > 0 && (
+          <span className="ml-auto text-xs text-muted-foreground">{bookmarkCount}</span>
+        )}
       </Button>
 
       {/* Share Button */}
@@ -122,6 +158,9 @@ export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActi
       >
         <Share2 className="h-4 w-4" />
         Share Post
+        {shareCount > 0 && (
+          <span className="ml-auto text-xs text-muted-foreground">{shareCount}</span>
+        )}
       </Button>
 
       {/* Copy Link Button */}

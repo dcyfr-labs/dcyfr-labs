@@ -2,9 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SPACING } from "@/lib/design-tokens";
-import { useSidebarContext } from "@/components/blog/blog-layout-wrapper";
 import { useBlogKeyboard } from "@/components/blog/blog-keyboard-provider";
 import { SidebarSearch } from "./sidebar-search";
 import { SidebarFilters } from "./sidebar-filters";
@@ -57,7 +55,6 @@ export function BlogSidebar({
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const [searchValue, setSearchValue] = useState(query);
-  const { isCollapsed, toggleCollapsed } = useSidebarContext();
   const { searchInputRef } = useBlogKeyboard();
   const [expandedSections, setExpandedSections] = useState({
     filters: true,
@@ -153,25 +150,8 @@ export function BlogSidebar({
   };
 
   return (
-    <aside className={cn(
-      SPACING.subsection,
-      "flex flex-col",
-      isCollapsed && "items-center"
-    )}>
-      {isCollapsed ? (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 shrink-0"
-          onClick={toggleCollapsed}
-          title="Expand filters (Press 'f')"
-          aria-label="Expand filters"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      ) : (
-        <>
-          <SidebarSearch
+    <aside className={cn(SPACING.subsection, "flex flex-col")}>
+      <SidebarSearch
             searchValue={searchValue}
             onSearchChange={setSearchValue}
             searchInputRef={searchInputRef}
@@ -202,15 +182,13 @@ export function BlogSidebar({
             onCategorySelect={setCategory}
           />
 
-          <SidebarTopics
-            tagList={tagList}
-            selectedTags={selectedTags}
-            isExpanded={expandedSections.topics}
-            onToggle={() => toggleSection("topics")}
-            onTagToggle={toggleTag}
-          />
-        </>
-      )}
+      <SidebarTopics
+        tagList={tagList}
+        selectedTags={selectedTags}
+        isExpanded={expandedSections.topics}
+        onToggle={() => toggleSection("topics")}
+        onTagToggle={toggleTag}
+      />
     </aside>
   );
 }

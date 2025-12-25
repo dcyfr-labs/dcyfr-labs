@@ -1,58 +1,26 @@
 "use client";
 
-import { useState, createContext, useContext } from "react";
+import type { ReactNode } from "react";
 import { BlogKeyboardProvider } from "@/components/blog/blog-keyboard-provider";
-import { cn } from "@/lib/utils";
-import { ANIMATION } from "@/lib/design-tokens";
-
-interface SidebarContextType {
-  isCollapsed: boolean;
-  setIsCollapsed: (collapsed: boolean) => void;
-  toggleCollapsed: () => void;
-}
-
-const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
-
-export function useSidebarContext() {
-  const context = useContext(SidebarContext);
-  if (!context) {
-    throw new Error("useSidebarContext must be used within BlogLayoutWrapper");
-  }
-  return context;
-}
 
 interface BlogLayoutWrapperProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 /**
  * Blog Layout Wrapper Component
  * 
- * Provides sidebar collapse state management for the blog layout.
- * Adjusts grid layout to give more space to content when sidebar is collapsed.
- * Integrates keyboard shortcuts for blog navigation.
+ * Two-column layout for blog archive page.
+ * Sidebar positioned on the left side, always expanded at 280px.
+ * No collapsible functionality.
+ * Provides keyboard navigation context for blog features.
  */
 export function BlogLayoutWrapper({ children }: BlogLayoutWrapperProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  
-  const toggleCollapsed = () => setIsCollapsed(prev => !prev);
-
   return (
-    <SidebarContext.Provider value={{ isCollapsed, setIsCollapsed, toggleCollapsed }}>
-      <BlogKeyboardProvider onToggleFilters={toggleCollapsed}>
-        <div
-          className={cn(
-             
-            "grid gap-4 items-start",
-            ANIMATION.transition.appearance,
-            isCollapsed 
-              ? "lg:grid-cols-[48px_1fr]" 
-              : "lg:grid-cols-[280px_1fr]"
-          )}
-        >
-          {children}
-        </div>
-      </BlogKeyboardProvider>
-    </SidebarContext.Provider>
+    <BlogKeyboardProvider onToggleFilters={() => {}}>
+      <div className="grid gap-4 items-start lg:grid-cols-[280px_1fr]">
+        {children}
+      </div>
+    </BlogKeyboardProvider>
   );
 }

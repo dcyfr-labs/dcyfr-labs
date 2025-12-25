@@ -11,9 +11,11 @@
 import type { Post } from "@/data/posts";
 import type { ActivityItem, ActivitySource, ActivityVerb } from "./types";
 import type { CredlyBadge, CredlyBadgesResponse } from "@/types/credly";
-import { getMultiplePostViews } from "@/lib/views";
+import { getMultiplePostViews, getMultiplePostViewsInRange } from "@/lib/views";
 import { getPostCommentsBulk } from "@/lib/comments";
+import { getActivityReactionsBulk, mapGiscusReactionsToLikes } from "@/lib/giscus-reactions";
 import { createClient } from "redis";
+import { calculateTrendingStatus, type EngagementMetrics } from "./trending";
 
 // ============================================================================
 // REDIS CLIENT
@@ -52,25 +54,82 @@ async function getRedisClient() {
 // ============================================================================
 
 /**
- * Transform blog posts into activity items with view counts from Redis
- * Server-only version with enriched data
+ * Transform blog posts into activity items with view counts and Giscus reactions
+ * Server-only version with enriched data from Redis
+ *
+ * Now includes:
+ * - View counts from Redis
+ * - Comment counts from GitHub Discussions (Giscus)
+ * - Reaction counts (likes) from Giscus
  */
 export async function transformPostsWithViews(posts: Post[]): Promise<ActivityItem[]> {
   const publishedPosts = posts.filter((p) => !p.archived && !p.draft);
   const postIds = publishedPosts.map((p) => p.id);
+  const slugs = publishedPosts.map((p) => p.slug);
 
-  // Fetch view counts in bulk
-  let viewsMap: Map<string, number>;
-  try {
-    viewsMap = await getMultiplePostViews(postIds);
-  } catch (error) {
-    console.error("[Activity] Failed to fetch view counts:", error);
-    viewsMap = new Map();
-  }
+  // Fetch data in parallel (view counts, comments, reactions)
+  const [viewsMap, weeklyViewsMap, monthlyViewsMap, commentsMap, reactionsMap] = await Promise.all([
+    // All-time view counts from Redis (for display)
+    getMultiplePostViews(postIds).catch((error) => {
+      console.error("[Activity] Failed to fetch view counts:", error);
+      return new Map<string, number>();
+    }),
+    // Weekly view counts for trending calculation (past 7 days)
+    getMultiplePostViewsInRange(postIds, 7).catch((error) => {
+      console.error("[Activity] Failed to fetch weekly view counts:", error);
+      return new Map<string, number>();
+    }),
+    // Monthly view counts for trending calculation (past 30 days)
+    getMultiplePostViewsInRange(postIds, 30).catch((error) => {
+      console.error("[Activity] Failed to fetch monthly view counts:", error);
+      return new Map<string, number>();
+    }),
+    // Comment counts from Giscus (GitHub Discussions)
+    getPostCommentsBulk(slugs).catch((error) => {
+      console.error("[Activity] Failed to fetch comment counts:", error);
+      return {} as Record<string, number>;
+    }),
+    // Reaction counts from Giscus (👍 = likes)
+    getActivityReactionsBulk(
+      publishedPosts.map((post) => ({
+        activityId: `blog-${post.id}`,
+        discussionPath: `/blog/${post.slug}`,
+      }))
+    ).catch((error) => {
+      console.error("[Activity] Failed to fetch Giscus reactions:", error);
+      return {} as Record<string, any>;
+    }),
+  ]);
 
   return publishedPosts.map((post) => {
     const views = viewsMap.get(post.id) || undefined;
+    const weeklyViews = weeklyViewsMap.get(post.id) || 0;
+    const monthlyViews = monthlyViewsMap.get(post.id) || 0;
+    const comments = commentsMap[post.slug] || undefined;
+    const reactions = reactionsMap[`blog-${post.id}`];
+    const likes = reactions ? mapGiscusReactionsToLikes(reactions) : undefined;
     const verb = post.updatedAt ? ("updated" as const) : ("published" as const);
+
+    // Calculate trending status using time-windowed views (past 7/30 days)
+    // Comments/likes use all-time counts (most engagement happens within first weeks anyway)
+    const weeklyMetrics: EngagementMetrics = {
+      views: weeklyViews,
+      likes: likes || 0,
+      comments: comments || 0,
+      readingCompletion: 0, // TODO: Implement reading completion tracking
+      periodDays: 7,
+    };
+
+    const monthlyMetrics: EngagementMetrics = {
+      views: monthlyViews,
+      likes: likes || 0,
+      comments: comments || 0,
+      readingCompletion: 0,
+      periodDays: 30,
+    };
+
+    const weeklyStatus = calculateTrendingStatus(weeklyMetrics);
+    const monthlyStatus = calculateTrendingStatus(monthlyMetrics);
 
     return {
       id: `blog-${post.id}`,
@@ -87,7 +146,25 @@ export async function transformPostsWithViews(posts: Post[]): Promise<ActivityIt
           ? { url: post.image.url, alt: post.image.alt || post.image.caption || post.title }
           : undefined,
         readingTime: post.readingTime?.text,
-        stats: views ? { views } : undefined,
+        stats: {
+          ...(views !== undefined && { views }),
+          ...(comments !== undefined && { comments }),
+          ...(likes !== undefined && { likes }),
+        },
+        // Store raw Giscus reactions for potential future use (analytics, breakdown)
+        giscusReactions: reactions,
+        // Add trending status
+        trendingStatus: {
+          isWeeklyTrending: weeklyStatus.isWeeklyTrending,
+          isMonthlyTrending: monthlyStatus.isMonthlyTrending,
+          engagementScore: Math.max(
+            weeklyStatus.engagementScore,
+            monthlyStatus.engagementScore
+          ),
+        },
+        // Keep backward compatibility
+        trending:
+          weeklyStatus.isWeeklyTrending || monthlyStatus.isMonthlyTrending,
       },
     };
   });

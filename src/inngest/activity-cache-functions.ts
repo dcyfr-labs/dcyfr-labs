@@ -27,7 +27,7 @@ import {
   transformMilestones,
   transformHighEngagementPosts,
   transformCommentMilestones,
-  transformGitHubActivity,
+  // transformGitHubActivity, (DISABLED)
   transformCredlyBadges,
   transformVercelAnalytics,
   transformGitHubTraffic,
@@ -112,7 +112,7 @@ export const refreshActivityFeed = inngest.createFunction(
         transformMilestones(posts), // All milestones
         transformHighEngagementPosts(posts), // All high engagement posts
         transformCommentMilestones(posts), // All comment milestones
-        transformGitHubActivity(), // All GitHub activity
+        // transformGitHubActivity(), // All GitHub activity (DISABLED)
         transformCredlyBadges("dcyfr"), // All Credly certifications
         transformVercelAnalytics(), // Vercel Analytics traffic milestones
         transformGitHubTraffic(), // GitHub repository traffic milestones

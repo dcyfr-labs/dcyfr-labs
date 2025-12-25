@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock next/navigation
 const mockUsePathname = vi.fn();
-vi.mock('next/navigation', () => ({ 
+vi.mock('next/navigation', () => ({
   usePathname: () => mockUsePathname()
 }));
 
@@ -22,6 +22,21 @@ import { SiteHeader } from '@/components/navigation/site-header';
 describe('SiteHeader', () => {
   beforeEach(() => {
     mockUsePathname.mockReturnValue('/');
+
+    // Mock matchMedia for desktop viewport (md breakpoint = 768px)
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: query.includes('min-width'), // Match all min-width queries (desktop)
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
   });
 
   describe('Basic Rendering', () => {
@@ -34,21 +49,21 @@ describe('SiteHeader', () => {
 
     it('renders logo link to homepage', () => {
       render(<SiteHeader />);
-      const logoLink = screen.getByRole('link', { name: /DCYFR Labs/i });
+      const logoLink = screen.getByRole('link', { name: /DCYFR Labs home/i });
       expect(logoLink).toBeInTheDocument();
       expect(logoLink).toHaveAttribute('href', '/');
     });
 
     it('renders About link in desktop nav', () => {
       render(<SiteHeader />);
-      const aboutLink = screen.getByRole('link', { name: /About/i });
+      const aboutLink = screen.getByRole('link', { name: /Learn about DCYFR Labs and our team/i });
       expect(aboutLink).toBeInTheDocument();
       expect(aboutLink).toHaveAttribute('href', '/about');
     });
 
     it('renders Sponsors link in desktop nav', () => {
       render(<SiteHeader />);
-      const sponsorsLink = screen.getByRole('link', { name: /Sponsors/i });
+      const sponsorsLink = screen.getByRole('link', { name: /Support open source development/i });
       expect(sponsorsLink).toBeInTheDocument();
       expect(sponsorsLink).toHaveAttribute('href', '/sponsors');
     });
@@ -86,26 +101,26 @@ describe('SiteHeader', () => {
     it('opens Blog dropdown when clicked', async () => {
       render(<SiteHeader />);
       const blogButton = screen.getByRole('button', { name: /Blog/i });
-      
+
       fireEvent.click(blogButton);
-      
+
       await waitFor(() => {
         expect(blogButton).toHaveAttribute('aria-expanded', 'true');
       });
-      
-      expect(screen.getByRole('link', { name: /All Posts/i })).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: /Series/i })).toBeInTheDocument();
+
+      expect(screen.getByRole('link', { name: /Browse all blog articles/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /Multi-part article collections/i })).toBeInTheDocument();
     });
 
     it('closes Blog dropdown when clicking a link', async () => {
       render(<SiteHeader />);
       const blogButton = screen.getByRole('button', { name: /Blog/i });
-      
+
       fireEvent.click(blogButton);
-      
-      const allPostsLink = await screen.findByRole('link', { name: /All Posts/i });
+
+      const allPostsLink = await screen.findByRole('link', { name: /Browse all blog articles/i });
       fireEvent.click(allPostsLink);
-      
+
       await waitFor(() => {
         expect(blogButton).toHaveAttribute('aria-expanded', 'false');
       });
@@ -155,28 +170,28 @@ describe('SiteHeader', () => {
     it('opens Our Work dropdown when clicked', async () => {
       render(<SiteHeader />);
       const workButton = screen.getByRole('button', { name: /Our Work/i });
-      
+
       fireEvent.click(workButton);
-      
+
       await waitFor(() => {
         expect(workButton).toHaveAttribute('aria-expanded', 'true');
       });
-      
-      expect(screen.getByRole('link', { name: /All Projects/i })).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: /Community/i })).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: /Nonprofit/i })).toBeInTheDocument();
-      expect(screen.getByRole('link', { name: /Startup/i })).toBeInTheDocument();
+
+      expect(screen.getByRole('link', { name: /View complete portfolio/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /Open source and community work/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /Mission-driven partnerships/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /Early-stage product development/i })).toBeInTheDocument();
     });
 
     it('closes Our Work dropdown when clicking a link', async () => {
       render(<SiteHeader />);
       const workButton = screen.getByRole('button', { name: /Our Work/i });
-      
+
       fireEvent.click(workButton);
-      
-      const allProjectsLink = await screen.findByRole('link', { name: /All Projects/i });
+
+      const allProjectsLink = await screen.findByRole('link', { name: /View complete portfolio/i });
       fireEvent.click(allProjectsLink);
-      
+
       await waitFor(() => {
         expect(workButton).toHaveAttribute('aria-expanded', 'false');
       });
@@ -203,13 +218,13 @@ describe('SiteHeader', () => {
     it('displays correct links in Our Work dropdown', async () => {
       render(<SiteHeader />);
       const workButton = screen.getByRole('button', { name: /Our Work/i });
-      
+
       fireEvent.click(workButton);
-      
-      const communityLink = await screen.findByRole('link', { name: /Community/i });
-      const nonprofitLink = screen.getByRole('link', { name: /Nonprofit/i });
-      const startupLink = screen.getByRole('link', { name: /Startup/i });
-      
+
+      const communityLink = await screen.findByRole('link', { name: /Open source and community work/i });
+      const nonprofitLink = screen.getByRole('link', { name: /Mission-driven partnerships/i });
+      const startupLink = screen.getByRole('link', { name: /Early-stage product development/i });
+
       expect(communityLink).toHaveAttribute('href', '/work?category=community');
       expect(nonprofitLink).toHaveAttribute('href', '/work?category=nonprofit');
       expect(startupLink).toHaveAttribute('href', '/work?category=startup');
@@ -221,12 +236,12 @@ describe('SiteHeader', () => {
       mockUsePathname.mockReturnValue('/');
       const scrollToSpy = vi.fn();
       window.scrollTo = scrollToSpy;
-      
+
       render(<SiteHeader />);
-      const logoLink = screen.getByRole('link', { name: /DCYFR Labs/i });
-      
+      const logoLink = screen.getByRole('link', { name: /DCYFR Labs home/i });
+
       fireEvent.click(logoLink);
-      
+
       expect(scrollToSpy).toHaveBeenCalledWith({
         top: 0,
         left: 0,
@@ -238,12 +253,12 @@ describe('SiteHeader', () => {
       mockUsePathname.mockReturnValue('/blog');
       const scrollToSpy = vi.fn();
       window.scrollTo = scrollToSpy;
-      
+
       render(<SiteHeader />);
-      const logoLink = screen.getByRole('link', { name: /DCYFR Labs/i });
-      
+      const logoLink = screen.getByRole('link', { name: /DCYFR Labs home/i });
+
       fireEvent.click(logoLink);
-      
+
       // Should not scroll when not on homepage
       expect(scrollToSpy).not.toHaveBeenCalled();
     });

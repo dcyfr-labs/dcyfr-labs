@@ -77,9 +77,25 @@ async function getRedisClient() {
 // ============================================================================
 
 /**
- * Generate realistic fallback data for development/demo purposes
+ * Generate realistic fallback data for development/demo purposes (DEV ONLY)
+ * 
+ * ⚠️  WARNING: This generates SAMPLE data and should only be used when Redis
+ * is unavailable in development/testing environments.
+ * 
+ * Do NOT rely on this fallback in production - it will show fake GitHub data.
  */
 function generateFallbackData(): ContributionResponse {
+  const nodeEnv = process.env.NODE_ENV || 'development';
+  const isProduction = nodeEnv === 'production' || process.env.VERCEL_ENV === 'production';
+  
+  // PRODUCTION WARNING
+  if (isProduction) {
+    console.error('[GitHub Data] ❌ CRITICAL: Fallback data in production!');
+    console.error('[GitHub Data]    This means Redis is unavailable in production.');
+    console.error('[GitHub Data]    Showing fake contribution data is NOT acceptable.');
+    console.error('[GitHub Data]    Please restore Redis connection immediately.');
+  }
+
   const contributions: ContributionDay[] = [];
   const endDate = new Date();
   let totalContributions = 0;
@@ -111,7 +127,9 @@ function generateFallbackData(): ContributionResponse {
     totalContributions,
     totalRepositories: 42,
     lastUpdated: new Date().toISOString(),
-    warning: "Using demo data - GitHub API temporarily unavailable"
+    warning: isProduction 
+      ? "❌ CRITICAL: Showing demo data in production (Redis unavailable)"
+      : "Using demo data - GitHub API temporarily unavailable (DEV MODE)"
   };
 }
 

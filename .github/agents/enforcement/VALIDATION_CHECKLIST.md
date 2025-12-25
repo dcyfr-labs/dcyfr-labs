@@ -122,6 +122,17 @@ gh api repos/dcyfr/dcyfr-labs/code-scanning/alerts --jq '.[] | select(.state == 
 - ✅ Edge cases covered
 - ✅ Error handling tested
 
+### 5. Test Data Safety
+**Checks:**
+- ✅ No fabricated/sample data in source code
+- ✅ Test data scripts have production guards
+- ✅ Environment checks use both NODE_ENV and VERCEL_ENV
+- ✅ Production warnings logged for fallback behavior
+- ✅ Cleanup scripts available and documented
+- ✅ Sample data compared to actual data in docs
+
+**Reference:** [TEST_DATA_PREVENTION.md](TEST_DATA_PREVENTION.md)
+
 ## 🚀 Pre-Completion Validation Flow
 
 ### Stage 1: Automated Tests (Blocking)
@@ -233,6 +244,46 @@ import { COLORS } from "@/lib/design-tokens";
 <span style={{ color: COLORS.text.secondary }}>Badge</span>
 ```
 
+### ❌ Test Data Violations
+
+**Example:**
+```
+❌ ERROR: Hardcoded test value 'stars: 15' in src/lib/github-data.ts
+  Test data must not be hardcoded in source
+  Use TEST_DATA_USAGE.md pattern: environment checks + cleanup script
+```
+
+**Fix:**
+```typescript
+// Before
+function getGitHubData() {
+  return { stars: 15, forks: 0 };  // ❌ Hardcoded test data
+}
+
+// After
+function getGitHubData() {
+  const isProduction = process.env.NODE_ENV === 'production' 
+    || process.env.VERCEL_ENV === 'production';
+  
+  if (isProduction) {
+    console.error('❌ CRITICAL: GitHub API data unavailable');
+    return null;  // Don't use fake data in production
+  }
+  
+  // Safe demo data in development
+  return { stars: 15, forks: 0 };
+}
+```
+
+**Prevention:**
+- Add production environment checks (NODE_ENV + VERCEL_ENV)
+- Log CRITICAL level errors when using fallback
+- Create cleanup scripts for test data (npm run clear:analytics)
+- Document actual vs sample values in [TEST_DATA_USAGE.md](../../docs/features/TEST_DATA_USAGE.md)
+- Never commit test data without safeguards
+
+**Reference:** [TEST_DATA_PREVENTION.md](TEST_DATA_PREVENTION.md)
+
 ---
 
 ## Bypass Criteria (When to Skip)
@@ -292,6 +343,7 @@ Before DCYFR marks work complete:
 - [ ] No ESLint errors (0 errors)
 - [ ] Unit test pass rate ≥99%
 - [ ] Design token compliance ≥90%
+- [ ] No test data committed without safeguards
 - [ ] Breaking changes approved (if any)
 - [ ] Architecture decisions approved (if any)
 - [ ] Security changes approved (if any)

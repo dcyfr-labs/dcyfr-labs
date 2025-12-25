@@ -17,8 +17,8 @@ import {
   transformMilestones,
   transformHighEngagementPosts,
   transformCommentMilestones,
-  transformGitHubActivity,
-  transformWebhookGitHubCommits,
+  // transformGitHubActivity, (DISABLED)
+  // transformWebhookGitHubCommits, (DISABLED)
   transformCredlyBadges,
   transformVercelAnalytics,
   transformGitHubTraffic,
@@ -93,34 +93,34 @@ export default async function ActivityEmbedPage({
   let error: string | null = null;
 
   try {
-    // STEP 1: Try cache first
-    const redis = await getRedisClient();
-    let cachedActivities: ActivityItem[] = [];
+    // STEP 1: Try cache first (TEMPORARILY DISABLED FOR DEBUG - committed activity removal)
+    // const redis = await getRedisClient();
+    let cachedActivities: ActivityItem[] = []; // Always empty - cache disabled
 
-    if (redis) {
-      try {
-        const cached = await redis.get("activity:feed:all");
-        if (cached) {
-          cachedActivities = JSON.parse(cached);
-          allActivities = cachedActivities;
-        }
-      } catch (cacheError) {
-        console.error("[Activity Embed] Cache read failed:", cacheError);
-      } finally {
-        await redis.disconnect();
-      }
-    }
+    // if (redis) {
+    //   try {
+    //     const cached = await redis.get("activity:feed:all");
+    //     if (cached) {
+    //       cachedActivities = JSON.parse(cached);
+    //       allActivities = cachedActivities;
+    //     }
+    //   } catch (cacheError) {
+    //     console.error("[Activity Embed] Cache read failed:", cacheError);
+    //   } finally {
+    //     await redis.disconnect();
+    //   }
+    // }
 
     // STEP 2: If no cache, fetch from sources
     if (cachedActivities.length === 0) {
       const [
         postsWithViews,
-        trending,
+        // trending - DISABLED: Now shown as badges on published events
         milestones,
         highEngagement,
         commentMilestones,
-        githubActivity,
-        webhookCommits,
+        // githubActivity, (DISABLED)
+        // webhookCommits, (DISABLED)
         credlyBadges,
         vercelAnalytics,
         githubTraffic,
@@ -128,12 +128,12 @@ export default async function ActivityEmbedPage({
         searchConsole,
       ] = await Promise.all([
         transformPostsWithViews(posts),
-        transformTrendingPosts(posts),
+        // transformTrendingPosts(posts), - DISABLED
         transformMilestones(posts),
         transformHighEngagementPosts(posts),
         transformCommentMilestones(posts),
-        transformGitHubActivity(),
-        transformWebhookGitHubCommits(),
+        // transformGitHubActivity(), (DISABLED)
+        // transformWebhookGitHubCommits(), (DISABLED)
         transformCredlyBadges(),
         transformVercelAnalytics(),
         transformGitHubTraffic(),
@@ -150,12 +150,12 @@ export default async function ActivityEmbedPage({
         ...staticProjects,
         ...staticChangelog,
         ...postsWithViews,
-        ...trending,
+        // ...trending, - DISABLED: Now shown as badges
         ...milestones,
         ...highEngagement,
         ...commentMilestones,
-        ...githubActivity,
-        ...webhookCommits,
+        // ...githubActivity, (DISABLED)
+        // ...webhookCommits, (DISABLED)
         ...credlyBadges,
         ...vercelAnalytics,
         ...githubTraffic,

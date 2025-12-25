@@ -1,14 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Eye, Clock } from "lucide-react";
+import { TrendingUp, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Post } from "@/data/posts";
-import { HOVER_EFFECTS, SHADOWS, ANIMATION } from "@/lib/design-tokens";
+import { ANIMATION, TYPOGRAPHY } from "@/lib/design-tokens";
 
 interface TrendingPostsProps {
   posts: Post[];
@@ -19,8 +18,8 @@ interface TrendingPostsProps {
 /**
  * Trending Posts Component
  * 
- * Displays popular blog posts with view counts and visual indicators.
- * Uses analytics data when available to highlight trending content.
+ * Displays popular blog posts in a simple, social media style format.
+ * Clean and minimal design inspired by social platforms.
  * 
  * @example
  * ```tsx
@@ -56,122 +55,69 @@ export function TrendingPosts({ posts, viewCounts, limit = 3 }: TrendingPostsPro
   // Only show placeholder if there are truly no posts at all
   if (sortedPosts.length === 0) {
     return (
-      <Card className="border-dashed">
-        <CardContent className="p-4 text-center">
-          <TrendingUp className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
-          <p className="text-sm text-muted-foreground">
-            Trending data will appear as posts gain traction
-          </p>
-        </CardContent>
+      <Card className="border-dashed p-4 text-center">
+        <TrendingUp className="h-6 w-6 text-muted-foreground/30 mx-auto mb-2" />
+        <p className={cn(TYPOGRAPHY.label.small, "text-muted-foreground")}>
+          Trending data will appear as posts gain traction
+        </p>
       </Card>
     );
   }
 
   return (
-    <div className="grid gap-3 md:grid-cols-3">
+    <div className="space-y-3">
       {sortedPosts.map(({ post, views }, index) => {
-        const isTopTrending = index === 0;
-
         return (
           <motion.div
             key={post.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: index * 0.1, ease: "easeOut" }}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, delay: index * 0.05, ease: "easeOut" }}
           >
-            <Card
-              className={cn(
-                HOVER_EFFECTS.card,
-                SHADOWS.card.rest,
-                "group relative overflow-hidden h-full",
-                isTopTrending && "ring-2 ring-primary/20"
-              )}
-            >
-              {/* Post image (if available and not hidden) */}
-              {post.image && !post.image.hideCard && (
-                <div className="relative aspect-video overflow-hidden">
-                  <Image
-                    src={post.image.url}
-                    alt={post.image.alt || post.title}
-                    fill
-                    className={cn(
-                      "object-cover",
-                      ANIMATION.transition.base,
-                      "group-hover:scale-105"
+            <Link href={`/blog/${post.slug}`}>
+              <Card className={cn(
+                "p-4 border hover:border-primary/50 cursor-pointer",
+                ANIMATION.transition.base,
+                "hover:bg-muted/30"
+              )}>
+                <div className="space-y-2">
+                  {/* Header: Rank + Tag */}
+                  <div className="flex items-center justify-between gap-2">
+                    <Badge variant="outline" className={TYPOGRAPHY.label.xs}>
+                      #{index + 1}
+                    </Badge>
+                    {post.tags[0] && (
+                      <Badge variant="secondary" className={TYPOGRAPHY.label.xs}>
+                        {post.tags[0]}
+                      </Badge>
                     )}
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                  />
-                  {/* Gradient overlay */}
-                  <div className="absolute inset-0 bg-linear-to-t from-background/80 via-background/20 to-transparent" />
-                  {/* Trending badge on image */}
-                  {isTopTrending && (
-                    <Badge 
-                      variant="default" 
-                      className="absolute top-2 right-2 flex items-center gap-1 shadow-lg"
-                    >
-                      <TrendingUp className="h-3 w-3" />
-                      Trending
-                    </Badge>
-                  )}
+                  </div>
+
+                  {/* Title */}
+                  <h3 className={cn(
+                    TYPOGRAPHY.label.standard,
+                    "line-clamp-2 leading-snug",
+                    ANIMATION.transition.theme
+                  )}>
+                    {post.title}
+                  </h3>
+
+                  {/* Footer: Views + Reading time */}
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground pt-1">
+                    {views > 0 && (
+                      <div className="flex items-center gap-1">
+                        <TrendingUp className="h-3 w-3" />
+                        <span>{views.toLocaleString()} views</span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-1">
+                      <MessageSquare className="h-3 w-3" />
+                      <span>{post.readingTime.text}</span>
+                    </div>
+                  </div>
                 </div>
-              )}
-              <CardContent className={cn("p-4 space-y-3", post.image && !post.image.hideCard && "pt-3")}>
-
-              {/* Rank and view badges */}
-              <div className="flex items-center justify-between gap-2">
-                <Badge 
-                  variant={isTopTrending ? "default" : "outline"}
-                  className={cn(
-                    "shrink-0 text-xs",
-                    !isTopTrending && "border-muted bg-muted/50"
-                  )}
-                >
-                  #{index + 1}
-                </Badge>
-                {views > 0 ? (
-                  <Badge 
-                    variant="secondary" 
-                    className="shrink-0 flex items-center gap-1 text-xs px-2"
-                  >
-                    <Eye className="h-3 w-3" />
-                    {views.toLocaleString()}
-                  </Badge>
-                ) : (
-                  <Badge 
-                    variant="secondary" 
-                    className="shrink-0 flex items-center gap-1 text-xs px-2"
-                  >
-                    <Clock className="h-3 w-3" />
-                    Recent
-                  </Badge>
-                )}
-              </div>
-
-              {/* Post title */}
-              <Link
-                href={`/blog/${post.slug}`}
-                className={cn("font-medium hover:text-primary line-clamp-2 block leading-tight", ANIMATION.transition.theme)}
-              >
-                {post.title}
-              </Link>
-
-              {/* Post metadata */}
-              <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
-                <div className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  <span>{post.readingTime.text}</span>
-                </div>
-                {post.tags[0] && (
-                  <>
-                    <span>•</span>
-                    <Badge variant="secondary" className="text-xs px-1.5 py-0">
-                      {post.tags[0]}
-                    </Badge>
-                  </>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+              </Card>
+            </Link>
           </motion.div>
         );
       })}

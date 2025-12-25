@@ -8,12 +8,52 @@
  */
 
 // ============================================================================
+// FLUID TYPOGRAPHY UTILITIES
+// ============================================================================
+
+/**
+ * Fluid typography using CSS clamp() for viewport-responsive sizing
+ *
+ * Benefits:
+ * - Eliminates 90% of media query-based font sizing
+ * - Continuous scaling across all viewports
+ * - Respects user zoom preferences (accessibility)
+ * - Better performance (no breakpoint recalculations)
+ *
+ * Formula: clamp(min-rem, calc(base-rem + viewport-multiplier), max-rem)
+ *
+ * @see Modern UI/UX Design Standards Report (2025)
+ * @see https://web.dev/articles/baseline-in-action-fluid-type
+ */
+
+/**
+ * Tailwind size reference (for conversion):
+ * - text-sm: 0.875rem (14px)
+ * - text-base: 1rem (16px)
+ * - text-lg: 1.125rem (18px)
+ * - text-xl: 1.25rem (20px)
+ * - text-2xl: 1.5rem (24px)
+ * - text-3xl: 1.875rem (30px)
+ * - text-4xl: 2.25rem (36px)
+ * - text-5xl: 3rem (48px)
+ */
+
+/**
+ * Converts fixed Tailwind sizes to fluid clamp() values
+ *
+ * Examples:
+ * - text-3xl md:text-4xl → text-[clamp(1.875rem,4vw+1rem,2.25rem)]
+ * - text-xl md:text-2xl → text-[clamp(1.25rem,2.5vw+0.75rem,1.5rem)]
+ * - text-lg md:text-xl → text-[clamp(1.125rem,2vw+0.75rem,1.25rem)]
+ */
+
+// ============================================================================
 // CONTAINER WIDTHS
 // ============================================================================
 
 /**
  * Semantic container width patterns based on content type
- * 
+ *
  * @example
  * ```tsx
  * <div className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING}`}>
@@ -62,11 +102,11 @@ export const ARCHIVE_CONTAINER_PADDING = "px-4 sm:px-6 md:px-8" as const;
 export const CONTAINER_VERTICAL_PADDING = "py-8 md:py-12" as const;
 
 /**
- * Mobile-safe bottom padding that accounts for BottomNav (48px) + safe clearance
- * - Mobile: 80px (BottomNav 48px + 32px clearance)
+ * Mobile-safe bottom padding that accounts for BottomNav (64px) + safe clearance
+ * - Mobile: 96px (BottomNav 64px + 32px clearance)
  * - Desktop: 32px (standard padding, no BottomNav)
  */
-export const MOBILE_SAFE_PADDING = "pb-20 md:pb-8" as const;
+export const MOBILE_SAFE_PADDING = "pb-24 md:pb-8" as const;
 
 /**
  * Utility function to build complete container classes
@@ -174,6 +214,39 @@ export function getContentBlockStyles(
 }
 
 // ============================================================================
+// ACTIVITY IMAGE PRESENTATION
+// ============================================================================
+
+/**
+ * Activity feed image presentation tokens (Medium/Substack inspired)
+ * Provides consistent aspect ratios and sizing for featured images in activities
+ *
+ * @example
+ * ```tsx
+ * {activity.meta?.image && (
+ *   <div className={cn(ACTIVITY_IMAGE.container, ACTIVITY_IMAGE.sizes.header)}>
+ *     <Image src={activity.meta.image.url} fill className={ACTIVITY_IMAGE.image} />
+ *   </div>
+ * )}
+ * ```
+ */
+export const ACTIVITY_IMAGE = {
+  /** Base container with 16:9 aspect ratio and overflow handling, with light background for transparent images */
+  container: "aspect-[16/9] relative overflow-hidden rounded-lg mb-4 bg-muted/30 dark:bg-muted/10",
+
+  /** Image size variants for different activity types */
+  sizes: {
+    /** Primary activity header (larger, more prominent) */
+    header: "h-64 md:h-80 lg:h-96",
+    /** Reply/nested activity (smaller, compact) */
+    reply: "h-40 md:h-48",
+  },
+
+  /** Image styling with hover zoom effect */
+  image: "object-cover w-full h-full transition-transform duration-300 hover:scale-105",
+} as const;
+
+// ============================================================================
 // TYPOGRAPHY
 // ============================================================================
 
@@ -189,75 +262,109 @@ export function getContentBlockStyles(
 export const TYPOGRAPHY = {
   /** H1 heading variants for different contexts */
   h1: {
-    /** Standard page titles (about, projects, contact, blog listing) */
-    standard: "text-3xl md:text-4xl font-semibold tracking-tight",
-    
-    /** Archive/listing page titles (about, blog archive, portfolio archive) */
-    hero: "font-serif text-3xl md:text-4xl font-semibold tracking-tight ws-sm",
-    
-    /** Blog post titles (larger, more prominent) */
-    article: "font-serif text-3xl md:text-5xl font-semibold tracking-tight leading-tight ws-md",
-    
-    /** Portfolio project titles */
-    project: "font-serif text-3xl md:text-5xl font-semibold tracking-tight leading-tight ws-md",
-    
-    /** MDX content headings */
-    mdx: "text-3xl md:text-4xl font-semibold tracking-tight ws-sm",
+    /** Standard page titles (about, projects, contact, blog listing)
+     * Fluid: 30px (mobile) → 36px (desktop)
+     */
+    standard: "text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-semibold tracking-tight",
+
+    /** Archive/listing page titles (about, blog archive, portfolio archive)
+     * Fluid: 30px (mobile) → 36px (desktop)
+     */
+    hero: "font-serif text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-semibold tracking-tight ws-sm",
+
+    /** Blog post titles (larger, more prominent)
+     * Fluid: 30px (mobile) → 48px (desktop)
+     */
+    article: "font-serif text-[clamp(1.875rem,5vw+0.75rem,3rem)] font-semibold tracking-tight leading-tight ws-md",
+
+    /** Portfolio project titles
+     * Fluid: 30px (mobile) → 48px (desktop)
+     */
+    project: "font-serif text-[clamp(1.875rem,5vw+0.75rem,3rem)] font-semibold tracking-tight leading-tight ws-md",
+
+    /** MDX content headings
+     * Fluid: 30px (mobile) → 36px (desktop)
+     */
+    mdx: "text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-semibold tracking-tight ws-sm",
   },
-  
+
   /** H2 heading variants */
   h2: {
-    /** Standard section headings */
-    standard: "text-xl md:text-2xl font-medium ws-xs",
-    
-    /** Featured content headings (blog post cards, featured sections) */
-    featured: "font-serif text-2xl md:text-3xl font-semibold tracking-tight ws-sm",
-    
-    /** MDX content headings */
-    mdx: "text-2xl md:text-3xl font-semibold tracking-tight ws-sm",
+    /** Standard section headings
+     * Fluid: 20px (mobile) → 24px (desktop)
+     */
+    standard: "text-[clamp(1.25rem,2.5vw+0.75rem,1.5rem)] font-medium ws-xs",
+
+    /** Featured content headings (blog post cards, featured sections)
+     * Fluid: 24px (mobile) → 30px (desktop)
+     */
+    featured: "font-serif text-[clamp(1.5rem,3vw+0.875rem,1.875rem)] font-semibold tracking-tight ws-sm",
+
+    /** MDX content headings
+     * Fluid: 24px (mobile) → 30px (desktop)
+     */
+    mdx: "text-[clamp(1.5rem,3vw+0.875rem,1.875rem)] font-semibold tracking-tight ws-sm",
   },
-  
+
   /** H3 heading variants */
   h3: {
-    /** Standard subsection headings */
-    standard: "text-lg md:text-xl font-medium ws-xs",
-    
-    /** MDX content headings */
-    mdx: "font-sans text-lg md:text-xl font-bold tracking-tight ws-xs",
+    /** Standard subsection headings
+     * Fluid: 18px (mobile) → 20px (desktop)
+     */
+    standard: "text-[clamp(1.125rem,2vw+0.75rem,1.25rem)] font-medium ws-xs",
+
+    /** MDX content headings
+     * Fluid: 18px (mobile) → 20px (desktop)
+     */
+    mdx: "font-sans text-[clamp(1.125rem,2vw+0.75rem,1.25rem)] font-bold tracking-tight ws-xs",
   },
-  
+
   /** H4 heading variants */
   h4: {
-    /** MDX content headings */
-    mdx: "font-sans text-base md:text-lg font-bold tracking-tight",
+    /** MDX content headings
+     * Fluid: 16px (mobile) → 18px (desktop)
+     */
+    mdx: "font-sans text-[clamp(1rem,1.5vw+0.75rem,1.125rem)] font-bold tracking-tight",
   },
-  
+
   /** H5 heading variants */
   h5: {
-    /** MDX content headings */
-    mdx: "font-sans text-sm md:text-base font-semibold tracking-tight",
+    /** MDX content headings
+     * Fluid: 14px (mobile) → 16px (desktop)
+     */
+    mdx: "font-sans text-[clamp(0.875rem,1vw+0.75rem,1rem)] font-semibold tracking-tight",
   },
-  
+
   /** H6 heading variants */
   h6: {
-    /** MDX content headings */
+    /** MDX content headings
+     * Stays at 14px across viewports
+     */
     mdx: "font-sans text-sm font-semibold tracking-tight",
   },
   
   /** Special display text (stats, error titles, large numbers) */
   display: {
-    /** Error page titles */
-    error: "text-3xl md:text-4xl font-bold ws-xs",
-    
-    /** Large statistics/metrics display */
+    /** Error page titles
+     * Fluid: 30px (mobile) → 36px (desktop)
+     */
+    error: "text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-bold ws-xs",
+
+    /** Large statistics/metrics display
+     * Stays at 30px across viewports (single value, no scaling needed)
+     */
     stat: "text-3xl font-bold tracking-tight ws-xs",
-    
-    /** Extra large statistics display (homepage stats) */
-    statLarge: "text-4xl md:text-5xl font-bold ws-sm",
+
+    /** Extra large statistics display (homepage stats)
+     * Fluid: 36px (mobile) → 48px (desktop)
+     */
+    statLarge: "text-[clamp(2.25rem,4.5vw+1rem,3rem)] font-bold ws-sm",
   },
-  
-  /** Lead text / page descriptions */
-  description: "text-lg md:text-xl text-muted-foreground ws-xs",
+
+  /** Lead text / page descriptions
+   * Fluid: 18px (mobile) → 20px (desktop)
+   */
+  description: "text-[clamp(1.125rem,2vw+0.75rem,1.25rem)] text-muted-foreground ws-xs",
   
   /** Metadata text (dates, reading time, etc.) */
   metadata: "text-sm text-muted-foreground",
@@ -274,7 +381,40 @@ export const TYPOGRAPHY = {
     /** Extra small labels */
     xs: "text-xs font-semibold",
   },
-  
+
+  /** Activity feed typography (content-focused, Medium/Substack inspired) */
+  activity: {
+    /** Primary activity titles (larger, prominent, good hierarchy)
+     * Fluid: 20px (mobile) → 24px (tablet) → 30px (desktop)
+     */
+    title: "text-[clamp(1.25rem,3vw+0.75rem,1.875rem)] font-semibold tracking-tight",
+
+    /** Activity subtitles (optional secondary text)
+     * Fluid: 16px (mobile) → 18px (desktop)
+     */
+    subtitle: "text-[clamp(1rem,1.5vw+0.75rem,1.125rem)] text-muted-foreground",
+
+    /** Activity descriptions (enhanced readability, optimal line height)
+     * Stays at 16px (base size, no scaling needed)
+     */
+    description: "text-base leading-relaxed text-foreground/90",
+
+    /** Activity metadata (timestamps, counts, badges)
+     * Stays at 14px (small text, no scaling needed)
+     */
+    metadata: "text-sm text-muted-foreground",
+
+    /** Reply/nested activity titles (smaller than primary, still readable)
+     * Fluid: 16px (mobile) → 18px (desktop)
+     */
+    replyTitle: "text-[clamp(1rem,1.5vw+0.75rem,1.125rem)] font-medium",
+
+    /** Reply descriptions (compact but readable)
+     * Stays at 14px (small text, no scaling needed)
+     */
+    replyDescription: "text-sm leading-relaxed text-muted-foreground",
+  },
+
   /** Accordion/FAQ specific styling */
   accordion: {
     /** FAQ section heading */
@@ -285,12 +425,20 @@ export const TYPOGRAPHY = {
   
   /** Logo/branding text */
   logo: {
-    /** Small logo text (mobile nav, compact views) */
+    /** Small logo text (mobile nav, compact views)
+     * Stays at 14px (small text, no scaling needed)
+     */
     small: "text-sm font-serif font-semibold leading-none",
-    /** Medium logo text (default) */
-    medium: "text-xl md:text-2xl font-serif font-semibold leading-none",
-    /** Large logo text (headers, hero sections) */
-    large: "text-3xl md:text-4xl font-serif font-semibold leading-none",
+
+    /** Medium logo text (default)
+     * Fluid: 20px (mobile) → 24px (desktop)
+     */
+    medium: "text-[clamp(1.25rem,2.5vw+0.75rem,1.5rem)] font-serif font-semibold leading-none",
+
+    /** Large logo text (headers, hero sections)
+     * Fluid: 30px (mobile) → 36px (desktop)
+     */
+    large: "text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-serif font-semibold leading-none",
   },
 
   /**
@@ -572,6 +720,18 @@ export const SPACING = {
   
   /** Alternative subsection spacing (backwards compatibility, single value) */
   subsectionAlt: "space-y-6",
+
+  /** Activity feed spacing (content-focused, generous breathing room) */
+  activity: {
+    /** Spacing between individual threads (generous for visual separation) */
+    threadGap: "space-y-8 md:space-y-10",
+    /** Spacing between replies within a thread (comfortable but connected) */
+    replyGap: "space-y-4",
+    /** Spacing within activity content (title, description, metadata) */
+    contentGap: "space-y-3",
+    /** Spacing between action buttons (like, bookmark, share) */
+    actionGap: "gap-6",
+  },
 } as const;
 
 // ============================================================================
@@ -639,7 +799,21 @@ export const SEMANTIC_COLORS = {
     error: "bg-red-500 text-red-50 dark:bg-red-600 dark:text-red-50",
     neutral: "bg-muted text-muted-foreground dark:bg-muted/50",
   },
-  
+
+  /** Activity feed interaction states (content-focused, subtle actions) */
+  activity: {
+    action: {
+      /** Default state - subtle, low contrast (appears on hover) */
+      default: "text-muted-foreground/60 hover:text-muted-foreground",
+      /** Active state - full contrast when focused/hovered */
+      active: "text-foreground hover:text-foreground/80",
+      /** Liked state - warm red color */
+      liked: "text-red-500 dark:text-red-400",
+      /** Bookmarked state - warm amber color */
+      bookmarked: "text-amber-500 dark:text-amber-400",
+    },
+  },
+
   /** Chart colors (map to CSS custom properties) */
   chart: {
     primary: "bg-chart-1 text-chart-1",
@@ -1041,6 +1215,16 @@ export const ANIMATION = {
     5: "stagger-5",
     6: "stagger-6",
   },
+
+  /** Activity feed engagement animations */
+  activity: {
+    /** Like button interaction (scale down on click, smooth transition) */
+    like: "transition-all duration-200 active:scale-95",
+    /** Pulse animation (one-time pulse effect for reactions) */
+    pulse: "animate-pulse-once",
+    /** Count increment (scale up briefly when count changes) */
+    countIncrement: "transition-transform duration-300 scale-110",
+  },
 } as const;
 
 /**
@@ -1192,14 +1376,128 @@ export const BREAKPOINTS = {
 } as const;
 
 /**
- * Touch target size for mobile accessibility
+ * Touch target sizes and button sizing for mobile accessibility
+ * 
+ * Following Apple HIG and Material Design guidelines:
+ * - Minimum touch target: 44x44px (accessible for most users)
+ * - Comfortable spacing: 8px minimum between targets
+ * - Mobile-first: All buttons 44px+ on mobile, can reduce on desktop with md: prefix
+ * 
+ * @example
+ * ```tsx
+ * // Icon button (mobile first)
+ * <button className={TOUCH_TARGET.iconMobile}>
+ *   <Icon />
+ * </button>
+ * 
+ * // Text button (mobile first)
+ * <button className={TOUCH_TARGET.textMobile}>
+ *   Action
+ * </button>
+ * 
+ * // Responsive icon (44px mobile, 36px tablet+)
+ * <button className="h-11 w-11 md:h-9 md:w-9">
+ *   <Icon />
+ * </button>
+ * ```
  */
 export const TOUCH_TARGET = {
+  // ========== Size Standards ==========
+  /** Minimum touch target (44x44px per WCAG AAA) */
+  minimum: "44px",
+  
+  /** Comfortable touch target (48x48px) */
+  comfortable: "48px",
+  
+  /** Large touch target for thumbs (56x56px) */
+  large: "56px",
+  
+  /** Minimum spacing between targets (8px) */
+  spacing: "8px",
+
+  // ========== Mobile Icon Buttons (default) ==========
+  /** Icon-only button (44x44px) - matches min touch target */
+  iconMobile: "h-11 w-11",
+  
+  /** Small icon button (36x36px) - for dense layouts, use with caution */
+  iconSmall: "h-9 w-9",
+  
+  // ========== Mobile Text Buttons ==========
+  /** Standard text button (44px height with padding) */
+  textMobile: "h-11 px-4",
+  
+  /** Large text button (48px height) */
+  textLarge: "h-12 px-5",
+  
+  /** Small text button (36px height) - use sparingly */
+  textSmall: "h-9 px-3",
+
+  // ========== Combined Button Sizes ==========
+  /** Standard button/link size (square) */
+  standard: "h-12 w-12",
+  
   /** Minimum recommended size (44x44px) */
   min: "min-h-11 min-w-11",
   
-  /** Standard button/link size */
-  standard: "h-12 w-12",
+  // ========== Desktop Responsive Sizing ==========
+  /** Icon button: 44px mobile, 36px tablet+, 32px desktop+ */
+  iconResponsive: "h-11 w-11 md:h-9 md:w-9 lg:h-8 lg:w-8",
+  
+  /** Text button: 44px mobile, 40px tablet+, 36px desktop+ */
+  textResponsive: "h-11 md:h-10 lg:h-9 px-4 md:px-3 lg:px-2",
+  
+  // ========== Action Group Spacing ==========
+  /** Spacing between action buttons in a group (like, reply, share) */
+  actionGroupGap: "gap-2 md:gap-1",
+  
+  // ========== Special Cases ==========
+  /** FAB (floating action button) - always prominent */
+  fab: "h-14 w-14",
+  
+  /** Mobile menu toggle button */
+  menuToggle: "h-11 w-11",
+  
+  /** Close/dismiss button */
+  close: "h-11 w-11 md:h-9 md:w-9",
+} as const;
+
+/**
+ * Predefined button size classes for common patterns
+ * Combines height, padding, and responsive breakpoints
+ */
+export const BUTTON_SIZES = {
+  // ========== Mobile-First Variants ==========
+  /** Icon-only buttons (mobile) */
+  iconMobile: "h-11 w-11",
+  
+  /** Small text buttons (mobile) - fits activity action buttons */
+  smallMobile: "h-11 px-3",
+  
+  /** Standard buttons (mobile) */
+  standardMobile: "h-11 px-4",
+  
+  /** Large CTA buttons (mobile) */
+  largeMobile: "h-12 px-6",
+  
+  // ========== Desktop Variants ==========
+  /** Icon-only buttons (desktop) */
+  iconDesktop: "h-9 w-9",
+  
+  /** Standard buttons (desktop) */
+  standardDesktop: "h-10 px-5",
+  
+  /** Large buttons (desktop) */
+  largeDesktop: "h-11 px-6",
+  
+  // ========== Responsive (Mobile-First) ==========
+  /** Icon button with responsive sizing (44px → 36px → 32px) */
+  iconResponsive: "h-11 w-11 md:h-9 md:w-9 lg:h-8 lg:w-8",
+  
+  /** Text button with responsive sizing */
+  textResponsive: "h-11 md:h-10 px-4 md:px-3",
+  
+  /** Large button with responsive sizing */
+  largeResponsive: "h-12 md:h-11 px-6 md:px-5",
 } as const;
 
 // ============================================================================
@@ -1888,5 +2186,191 @@ export const APP_TOKENS = {
     keyBadge: "px-1.5 py-0.5 text-xs font-mono bg-muted border border-border rounded",
     /** Shortcut separator (between keys) */
     separator: "text-muted-foreground/50",
+  },
+} as const;
+
+/**
+ * Modern Archive Card Variants
+ *
+ * Optimized card layouts for blog and work archive pages.
+ * Fixes washed-out image issue with elevated images and lighter overlays.
+ *
+ * @example
+ * ```tsx
+ * // Elevated card with prominent image
+ * <article className={ARCHIVE_CARD_VARIANTS.elevated.container}>
+ *   <div className={ARCHIVE_CARD_VARIANTS.elevated.imageWrapper}>
+ *     <Image className={ARCHIVE_CARD_VARIANTS.elevated.image} ... />
+ *     <div className={ARCHIVE_CARD_VARIANTS.elevated.overlay} />
+ *   </div>
+ *   <div className={ARCHIVE_CARD_VARIANTS.elevated.content}>
+ *     {content}
+ *   </div>
+ * </article>
+ * ```
+ */
+export const ARCHIVE_CARD_VARIANTS = {
+  /** Elevated image card - image on top, content below (recommended) */
+  elevated: {
+    container: "group rounded-xl border bg-card overflow-hidden hover:shadow-xl transition-all duration-300",
+    imageWrapper: "relative aspect-[16/9] sm:aspect-[21/9] overflow-hidden",
+    image: "object-cover group-hover:scale-105 transition-transform duration-500",
+    /** Lighter gradient only at bottom for badges */
+    overlay: "absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent",
+    badgeContainer: "absolute bottom-3 left-3 flex gap-2 z-10",
+    badge: "backdrop-blur-md bg-white/90 dark:bg-black/90",
+    glassCard: "bg-background/95 backdrop-blur-sm rounded-lg p-4",
+    content: "p-4 md:p-6 space-y-3",
+  },
+
+  /** Background image card - reduced overlay for visibility */
+  background: {
+    container: "group relative rounded-xl border bg-card overflow-hidden hover:shadow-xl transition-all duration-300 min-h-[280px] md:min-h-[320px]",
+    imageWrapper: "absolute inset-0 z-0",
+    image: "object-cover group-hover:scale-105 transition-transform duration-500",
+    /** Lighter overlay - 20-60% instead of 75-95% */
+    overlay: "absolute inset-0 bg-gradient-to-b from-background/20 via-background/40 to-background/60 backdrop-blur-[2px]",
+    content: "relative z-10 p-6 md:p-8 flex flex-col justify-end h-full",
+    /** Elevated glass card for content */
+    glassCard: "bg-background/80 backdrop-blur-md rounded-t-2xl p-6 border-t",
+  },
+
+  /** Side-by-side layout - image left, content right */
+  sideBySide: {
+    container: "group flex gap-4 rounded-xl border bg-card overflow-hidden hover:shadow-lg transition-shadow duration-300",
+    imageWrapper: "relative w-48 flex-shrink-0 overflow-hidden",
+    image: "object-cover group-hover:scale-105 transition-transform duration-500",
+    overlay: "hidden",
+    badgeContainer: "flex gap-2",
+    badge: "inline-flex",
+    glassCard: "hidden",
+    content: "flex-1 p-4 md:p-6 flex flex-col justify-between",
+  },
+
+  /** Hero card - large featured card */
+  hero: {
+    container: "group relative rounded-2xl overflow-hidden h-[500px] md:h-[600px] cursor-pointer hover:shadow-2xl transition-shadow duration-300",
+    imageWrapper: "absolute inset-0 z-0",
+    image: "object-cover group-hover:scale-105 transition-transform duration-700",
+    /** Darker overlay only on bottom for readability */
+    overlay: "absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent",
+    content: "absolute inset-x-0 bottom-0 p-6 md:p-12 text-white z-10",
+    contentWrapper: "max-w-3xl",
+  },
+} as const;
+
+/**
+ * Archive Animation Variants (Framer Motion)
+ *
+ * Pre-configured animation variants for consistent archive page animations.
+ * Use with Framer Motion for staggered card reveals.
+ *
+ * @example
+ * ```tsx
+ * <motion.div
+ *   variants={ARCHIVE_ANIMATIONS.container}
+ *   initial="hidden"
+ *   animate="visible"
+ * >
+ *   {items.map((item, i) => (
+ *     <motion.div
+ *       key={item.id}
+ *       variants={ARCHIVE_ANIMATIONS.item}
+ *       transition={{ delay: i * 0.05 }}
+ *     >
+ *       <Card />
+ *     </motion.div>
+ *   ))}
+ * </motion.div>
+ * ```
+ */
+export const ARCHIVE_ANIMATIONS = {
+  /** Container with stagger children */
+  container: {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05,
+      },
+    },
+  },
+
+  /** Individual item fade-up */
+  item: {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut",
+      },
+    },
+  },
+
+  /** Card hover animation */
+  cardHover: {
+    y: -8,
+    scale: 1.02,
+    transition: {
+      duration: 0.2,
+      ease: "easeOut",
+    },
+  },
+
+  /** Floating filter bar entrance */
+  filterBar: {
+    hidden: { y: -100, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut",
+      },
+    },
+  },
+} as const;
+
+/**
+ * View Mode Options
+ *
+ * Layout configurations for different view modes in archive pages.
+ *
+ * @example
+ * ```tsx
+ * <div className={VIEW_MODES[viewMode].grid}>
+ *   {items.map(item => <Card key={item.id} {...item} />)}
+ * </div>
+ * ```
+ */
+export const VIEW_MODES = {
+  /** Compact grid - auto-fit columns */
+  grid: {
+    grid: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6",
+    cardPadding: "p-4",
+    imageHeight: "aspect-[16/9]",
+  },
+
+  /** List view - single column with more detail */
+  list: {
+    grid: "space-y-6",
+    cardPadding: "p-6",
+    imageHeight: "aspect-[21/9]",
+  },
+
+  /** Magazine - hero + grid */
+  magazine: {
+    grid: "space-y-6",
+    cardPadding: "p-4 md:p-6",
+    imageHeight: "aspect-[16/9] md:aspect-[21/9]",
+  },
+
+  /** Masonry - Pinterest-style */
+  masonry: {
+    grid: "columns-1 md:columns-2 lg:columns-3 gap-6",
+    cardPadding: "p-4 mb-6 break-inside-avoid",
+    imageHeight: "aspect-auto",
   },
 } as const;

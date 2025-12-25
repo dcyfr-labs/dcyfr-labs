@@ -20,8 +20,8 @@ import {
   transformMilestones,
   transformHighEngagementPosts,
   transformCommentMilestones,
-  transformGitHubActivity,
-  transformWebhookGitHubCommits,
+  // transformGitHubActivity, (DISABLED)
+  // transformWebhookGitHubCommits, (DISABLED)
   transformCredlyBadges,
   transformVercelAnalytics,
   transformGitHubTraffic,
@@ -97,26 +97,26 @@ export default async function ActivityPage() {
   let loadSource: "cache" | "direct" = "direct";
 
   try {
-    // STEP 1: Try cache first
-    const redis = await getRedisClient();
-    if (redis) {
-      try {
-        const cached = await redis.get("activity:feed:all");
-        if (cached) {
-          allActivities = JSON.parse(cached);
-          loadSource = "cache";
-          console.log(
-            `[Activity Page] ✅ Loaded from cache: ${allActivities.length} items`
-          );
-        } else {
-          console.log("[Activity Page] ⚠️ Cache miss, fetching directly");
-        }
-        await redis.quit();
-      } catch (cacheError) {
-        console.error("[Activity Page] Cache read error:", cacheError);
-        // Continue to direct fetch on cache error
-      }
-    }
+    // STEP 1: Try cache first (TEMPORARILY DISABLED FOR DEBUG - committed activity removal)
+    // const redis = await getRedisClient();
+    // if (redis) {
+    //   try {
+    //     const cached = await redis.get("activity:feed:all");
+    //     if (cached) {
+    //       allActivities = JSON.parse(cached);
+    //       loadSource = "cache";
+    //       console.log(
+    //         `[Activity Page] ✅ Loaded from cache: ${allActivities.length} items`
+    //       );
+    //     } else {
+    //       console.log("[Activity Page] ⚠️ Cache miss, fetching directly");
+    //     }
+    //     await redis.quit();
+    //   } catch (cacheError) {
+    //     console.error("[Activity Page] Cache read error:", cacheError);
+    //     // Continue to direct fetch on cache error
+    //   }
+    // }
 
     // STEP 2: Fallback to direct fetch if cache miss
     if (allActivities.length === 0) {
@@ -147,11 +147,11 @@ export default async function ActivityPage() {
         .then((items) => activities.push(...items))
         .catch((err) => console.error("[Activity Page] Changelog fetch failed:", err)),
       
-      // Trending posts - all time (no limits)
-      transformTrendingPosts(posts)
-        .then((items) => activities.push(...items))
-        .catch((err) => console.error("[Activity Page] Trending posts fetch failed:", err)),
-      
+      // Trending posts - DISABLED: Now shown as badges on published events
+      // transformTrendingPosts(posts)
+      //   .then((items) => activities.push(...items))
+      //   .catch((err) => console.error("[Activity Page] Trending posts fetch failed:", err)),
+
       // Milestones - all
       transformMilestones(posts)
         .then((items) => activities.push(...items))
@@ -167,15 +167,15 @@ export default async function ActivityPage() {
         .then((items) => activities.push(...items))
         .catch((err) => console.error("[Activity Page] Comment milestones fetch failed:", err)),
       
-      // GitHub activity - all
-      transformGitHubActivity("dcyfr", ["dcyfr-labs"])
-        .then((items) => activities.push(...items))
-        .catch((err) => console.error("[Activity Page] GitHub activity fetch failed:", err)),
+      // GitHub activity - all (DISABLED)
+      // transformGitHubActivity("dcyfr", ["dcyfr-labs"])
+      //   .then((items) => activities.push(...items))
+      //   .catch((err) => console.error("[Activity Page] GitHub activity fetch failed:", err)),
       
-      // Webhook GitHub commits - real-time from Redis
-      transformWebhookGitHubCommits()
-        .then((items) => activities.push(...items))
-        .catch((err) => console.error("[Activity Page] Webhook GitHub commits fetch failed:", err)),
+      // Webhook GitHub commits - real-time from Redis (DISABLED)
+      // transformWebhookGitHubCommits()
+      //   .then((items) => activities.push(...items))
+      //   .catch((err) => console.error("[Activity Page] Webhook GitHub commits fetch failed:", err)),
       
       // Credly badges - all
       transformCredlyBadges("dcyfr")
@@ -209,8 +209,14 @@ export default async function ActivityPage() {
     );
     loadSource = "direct";
     
+    // DEBUG: Log all sources of activities
+    const sourceCounts: Record<string, number> = {};
+    activities.forEach((a) => {
+      sourceCounts[a.source] = (sourceCounts[a.source] || 0) + 1;
+    });
     console.log(
-      `[Activity Page] ✅ Direct fetch complete: ${allActivities.length} items`
+      `[Activity Page] ✅ Direct fetch complete: ${allActivities.length} items. Sources:`,
+      sourceCounts
     );
     }
   } catch (err) {

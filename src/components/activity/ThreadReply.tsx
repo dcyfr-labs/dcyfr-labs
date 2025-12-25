@@ -20,12 +20,13 @@
 
 import { createElement } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { ThreadActions } from "./ThreadActions";
 import { getActivitySourceIcon } from "@/lib/activity/types";
 import type { ActivityItem } from "@/lib/activity/types";
 import { cn } from "@/lib/utils";
-import { TYPOGRAPHY, ANIMATION, NEON_COLORS } from "@/lib/design-tokens";
+import { TYPOGRAPHY, ANIMATION, NEON_COLORS, ACTIVITY_IMAGE, SPACING } from "@/lib/design-tokens";
 
 // ============================================================================
 // TYPES & HELPERS
@@ -100,8 +101,8 @@ export function ThreadReply({
 
         {/* Content Column */}
         <div className="flex-1 min-w-0 pb-8">
-          {/* Header: Source + Verb Badges (Compact) */}
-          <div className="flex items-center gap-2 mb-1">
+          {/* Header: Source + Verb Badges + Trending (Compact) */}
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
             <Badge
               variant="secondary"
               className="gap-1 px-1.5 h-5 text-xs"
@@ -118,57 +119,95 @@ export function ThreadReply({
                 {activity.verb}
               </Badge>
             )}
+
+            {/* Trending Badge (Compact) - Weekly takes priority */}
+            {activity.meta?.trendingStatus?.isWeeklyTrending && (
+              <Badge variant="secondary" className={cn("px-1.5 h-5 text-xs", NEON_COLORS.orange.badge)}>
+                🔥 Week
+              </Badge>
+            )}
+            {!activity.meta?.trendingStatus?.isWeeklyTrending && activity.meta?.trendingStatus?.isMonthlyTrending && (
+              <Badge variant="secondary" className={cn("px-1.5 h-5 text-xs", NEON_COLORS.blue.badge)}>
+                📈 Month
+              </Badge>
+            )}
           </div>
 
-          {/* Title (Compact) */}
-          <Link
-            href={activity.href}
-            className={cn(
-              "block group/link",
-              ANIMATION.transition.base,
-              TYPOGRAPHY.body,
-              "font-medium hover:text-primary line-clamp-2"
+          {/* Content: Title, Image, Description, Metadata */}
+          <div className={SPACING.activity.contentGap}>
+            {/* Title */}
+            <Link
+              href={activity.href}
+              className={cn(
+                "block group/link",
+                ANIMATION.transition.base,
+                TYPOGRAPHY.activity.replyTitle,
+                "hover:text-primary"
+              )}
+            >
+              {activity.title}
+            </Link>
+
+            {/* Featured Image (if present, smaller for replies) */}
+            {activity.meta?.image && (
+              <div className={cn(ACTIVITY_IMAGE.container, ACTIVITY_IMAGE.sizes.reply)}>
+                <Image
+                  src={activity.meta.image.url}
+                  alt={activity.meta.image.alt || activity.title}
+                  fill
+                  className={ACTIVITY_IMAGE.image}
+                />
+              </div>
             )}
-          >
-            {activity.title}
-          </Link>
 
-          {/* Metadata (Minimal) */}
-          {activity.meta && (
-            <div className="mt-1.5">
-              {/* Milestone Badge */}
-              {activity.meta.milestone && (
-                <Badge variant="secondary" className="text-xs">
-                  {activity.meta.milestone.toLocaleString()}
-                </Badge>
-              )}
+            {/* Description (if present) */}
+            {activity.description && (
+              <p className={TYPOGRAPHY.activity.replyDescription}>
+                {activity.description}
+              </p>
+            )}
 
-              {/* Trending Badge */}
-              {activity.meta.trending && (
-                <Badge variant="secondary" className="text-xs">
-                  🔥 Trending
-                </Badge>
-              )}
+            {/* Metadata (Minimal) */}
+            {activity.meta && (
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Milestone Badge */}
+                {activity.meta.milestone && (
+                  <Badge variant="secondary" className="text-xs">
+                    {activity.meta.milestone.toLocaleString()}
+                  </Badge>
+                )}
 
-              {/* Engagement Badge */}
-              {activity.meta.engagement && (
-                <Badge variant="secondary" className="text-xs">
-                  {activity.meta.engagement}% engagement
-                </Badge>
-              )}
-            </div>
-          )}
+                {/* Trending Badge */}
+                {activity.meta.trending && (
+                  <Badge variant="secondary" className="text-xs">
+                    🔥 Trending
+                  </Badge>
+                )}
 
-          {/* Actions (Compact) */}
+                {/* Engagement Badge */}
+                {activity.meta.engagement && (
+                  <Badge variant="secondary" className="text-xs">
+                    {activity.meta.engagement}% engagement
+                  </Badge>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Actions (Compact - now includes share button) */}
           <div className="mt-2">
             <ThreadActions
               activityId={activity.id}
-              activityHref={activity.href}
-              activityTitle={activity.title}
-              activityDescription={activity.description}
               timestamp={activity.timestamp}
+              activity={{
+                title: activity.title,
+                description: activity.description,
+                href: activity.href,
+              }}
               size="compact"
               hideTimestamp
+              showBookmarkCount
+              showShareCount
             />
           </div>
         </div>

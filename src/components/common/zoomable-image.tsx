@@ -3,7 +3,7 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { ZoomIn, X } from "lucide-react";
-import { ANIMATION, BORDERS, SHADOWS } from "@/lib/design-tokens";
+import { ANIMATION, BORDERS, SHADOWS, TOUCH_TARGET } from "@/lib/design-tokens";
 
 /**
  * ZoomableImage Component
@@ -89,11 +89,11 @@ export function ZoomableImage(props: React.ImgHTMLAttributes<HTMLImageElement>) 
       <button
         ref={closeButtonRef}
         onClick={() => setIsOpen(false)}
-        className="absolute top-4 sm:top-6 right-4 sm:right-6 z-50 text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/90 rounded-lg p-2 transition-colors"
+        className={`absolute top-4 sm:top-6 right-4 sm:right-6 z-50 text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/90 rounded-lg transition-colors ${TOUCH_TARGET.close}`}
         aria-label="Close image viewer"
         type="button"
       >
-        <X className="w-6 h-6 sm:w-7 sm:h-7" aria-hidden="true" />
+        <X className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
       </button>
 
       {/* Hint text - minimal padding, responsive sizing */}

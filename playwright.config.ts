@@ -86,6 +86,33 @@ export default defineConfig({
       name: 'Mobile Safari',
       use: { ...devices['iPhone 12'] },
     },
+
+    /* Additional mobile devices for comprehensive testing */
+    {
+      name: 'iPhone 15 Pro Max',
+      use: {
+        ...devices['iPhone 15 Pro Max'],
+        deviceScaleFactor: 3,
+        isMobile: true,
+        hasTouch: true,
+      },
+    },
+    {
+      name: 'iPhone SE',
+      use: {
+        ...devices['iPhone SE'],
+        isMobile: true,
+        hasTouch: true,
+      },
+    },
+    {
+      name: 'iPad Pro',
+      use: {
+        ...devices['iPad Pro'],
+        isMobile: true,
+        hasTouch: true,
+      },
+    },
   ],
 
   /* Run your local dev or production server before starting the tests

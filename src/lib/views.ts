@@ -69,9 +69,9 @@ export async function incrementPostViews(postId: string): Promise<number | null>
       value: `${now}`,
     });
     
-    // Clean up views older than 24 hours (keep data for trending analysis)
-    const twentyFourHoursAgo = now - 24 * 60 * 60 * 1000;
-    await client.zRemRangeByScore(formatHistoryKey(postId), "-inf", twentyFourHoursAgo);
+    // Clean up views older than 90 days (keep data for trending analysis and long-term analytics)
+    const ninetyDaysAgo = now - 90 * 24 * 60 * 60 * 1000;
+    await client.zRemRangeByScore(formatHistoryKey(postId), "-inf", ninetyDaysAgo);
     
     return count;
   } catch {

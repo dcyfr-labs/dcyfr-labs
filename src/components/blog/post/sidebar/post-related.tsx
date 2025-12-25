@@ -26,7 +26,7 @@ export function PostRelated({ posts }: PostRelatedProps) {
         <h2 className="font-semibold text-sm">Related Posts</h2>
       </div>
 
-      <nav aria-label="Related posts" className={SPACING.compact}>
+      <nav aria-label="Related posts" className={SPACING.content}>
         {posts.map((post) => (
           <Link
             key={post.slug}

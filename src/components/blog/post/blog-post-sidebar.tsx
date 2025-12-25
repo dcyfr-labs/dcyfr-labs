@@ -80,7 +80,7 @@ export function BlogPostSidebar({
 
   return (
     <aside className="hidden lg:block w-full lg:self-stretch">
-      {/* Non-sticky content at the top that scrolls away */}
+      {/* Sidebar content */}
       <div className={cn(SPACING.subsection, "pb-6")}>
         {/* Post Author(s) */}
         <PostAuthor authors={authors} publishedAt={metadata?.publishedAt} />
@@ -121,13 +121,6 @@ export function BlogPostSidebar({
         {relatedPosts && relatedPosts.length > 0 && (
           <PostRelated posts={relatedPosts} />
         )}
-      </div>
-
-      {/* Table of Contents - Sticky positioning */}
-      <div className="sticky top-24 bg-background">
-        <div className="max-h-[calc(100vh-7rem)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border hover:scrollbar-thumb-muted-foreground">
-          <PostTableOfContents headings={headings} slug={slug} />
-        </div>
       </div>
     </aside>
   );

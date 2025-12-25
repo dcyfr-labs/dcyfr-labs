@@ -79,21 +79,25 @@ export function ThreadShareButton({
   } = useShare();
 
   // Build full URL for sharing
-  const fullUrl =
-    typeof window !== "undefined"
+  const fullUrl = activity.href
+    ? typeof window !== "undefined"
       ? `${window.location.origin}${activity.href}`
-      : activity.href;
+      : activity.href
+    : undefined;
+
+  const isShareable = !!fullUrl;
 
   const shareData = {
     title: activity.title,
     text: activity.description,
-    url: fullUrl,
+    url: fullUrl || "",
   };
 
   const socialUrls = getSocialUrls(shareData);
 
   // Handle native share (mobile)
   const handleNativeShare = () => {
+    if (!isShareable) return;
     share(shareData, {
       onSuccess: () => console.log("[Share] Native share succeeded"),
       onError: (error) => console.error("[Share] Native share failed:", error),
@@ -107,6 +111,7 @@ export function ThreadShareButton({
 
   // Handle copy link
   const handleCopyLink = async () => {
+    if (!isShareable) return;
     await copyToClipboard(fullUrl);
   };
 
@@ -118,6 +123,7 @@ export function ThreadShareButton({
           size={size}
           className={cn("gap-1.5", className)}
           aria-label="Share options"
+          disabled={!isShareable}
         >
           <Share2 className="h-4 w-4" aria-hidden="true" />
           <span className="sr-only sm:not-sr-only">Share</span>

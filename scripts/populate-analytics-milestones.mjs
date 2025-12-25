@@ -1,15 +1,39 @@
 #!/usr/bin/env node
 /**
- * Populate Analytics Milestones for Testing
+ * Populate Analytics Milestones for Testing (DEV ONLY)
  * 
- * This script creates sample milestone data in Redis for testing the analytics
- * activity feed integrations. In production, these milestones would be created
- * by separate monitoring scripts that track real analytics data.
+ * ⚠️  WARNING: This script creates SAMPLE/TEST milestone data for development.
+ * It should ONLY be used in development/staging environments.
+ * 
+ * Do NOT run this in production - it will overwrite real analytics data with test data.
+ * 
+ * In production, analytics milestones should be created by actual monitoring scripts
+ * that track real Vercel Analytics, GitHub traffic, Google Analytics, and Search Console data.
  */
 
 import { createClient } from 'redis';
 
 async function populateAnalyticsMilestones() {
+  // PRODUCTION CHECK: Prevent running in production
+  const nodeEnv = process.env.NODE_ENV || 'development';
+  const isProduction = nodeEnv === 'production' || process.env.VERCEL_ENV === 'production';
+  
+  if (isProduction) {
+    console.error('❌ BLOCKED: This script is for development/testing only!');
+    console.error('   Environment: ' + nodeEnv);
+    console.error('   Do NOT populate sample data in production.');
+    console.error('');
+    console.error('   If you need to set real analytics milestones in production:');
+    console.error('   1. Implement real data fetching from Vercel Analytics API');
+    console.error('   2. Set up GitHub traffic monitoring (requires admin access)');
+    console.error('   3. Integrate Google Analytics data export');
+    console.error('   4. Integrate Search Console API');
+    process.exit(1);
+  }
+  
+  console.log('✅ Running in DEV mode: ' + nodeEnv);
+  console.log('📝 Note: This will populate TEST DATA in Redis.\n');
+  
   // Check if Redis URL is configured
   if (!process.env.REDIS_URL) {
     console.log('⚠️  REDIS_URL not configured in environment');

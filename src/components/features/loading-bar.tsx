@@ -23,17 +23,22 @@ export function LoadingBar() {
     setIsLoading(true);
     setIsExiting(false);
     
+    let exitTimeout: NodeJS.Timeout | null = null;
     const loadingTimeout = setTimeout(() => {
       setIsExiting(true);
       // Wait for exit animation to complete before hiding
-      const exitTimeout = setTimeout(() => {
+      exitTimeout = setTimeout(() => {
         setIsLoading(false);
         setIsExiting(false);
       }, 200);
-      return () => clearTimeout(exitTimeout);
     }, 500);
     
-    return () => clearTimeout(loadingTimeout);
+    return () => {
+      clearTimeout(loadingTimeout);
+      if (exitTimeout) {
+        clearTimeout(exitTimeout);
+      }
+    };
   }, [pathname, searchParams]);
 
   if (!isLoading) return null;

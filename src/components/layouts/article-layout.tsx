@@ -102,25 +102,35 @@ export function ArticleLayout({
   }
 
   return (
-    <article className={cn(containerWidth, "mx-auto", CONTAINER_PADDING, CONTAINER_VERTICAL_PADDING, className)}>
-      {/* Header */}
-      {header && (
-        <header className="mb-8 md:mb-10">
-          {header}
-        </header>
-      )}
+    <>
+      {/* Skip to main content link for keyboard navigation */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-primary focus:text-primary-foreground focus:px-4 focus:py-2 focus:rounded-md focus:ring-2 focus:ring-ring focus:ring-offset-2"
+      >
+        Skip to main content
+      </a>
 
-      {/* Content */}
-      <div className={cn(contentClassName)}>
-        {children}
-      </div>
+      <article id="main-content" className={cn(containerWidth, "mx-auto", CONTAINER_PADDING, CONTAINER_VERTICAL_PADDING, className)}>
+        {/* Header */}
+        {header && (
+          <header className="mb-8 md:mb-10">
+            {header}
+          </header>
+        )}
 
-      {/* Footer */}
-      {footer && (
-        <footer className="mt-12 md:mt-16 pt-8 border-t">
-          {footer}
-        </footer>
-      )}
-    </article>
+        {/* Content */}
+        <div className={cn(contentClassName)}>
+          {children}
+        </div>
+
+        {/* Footer */}
+        {footer && (
+          <footer className="mt-12 md:mt-16 pt-8 border-t">
+            {footer}
+          </footer>
+        )}
+      </article>
+    </>
   );
 }

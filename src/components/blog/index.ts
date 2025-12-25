@@ -7,6 +7,8 @@ export { BlogSidebar } from "./sidebar/blog-sidebar";
 export { BlogKeyboardProvider } from "./blog-keyboard-provider";
 export { BlogLayoutManager } from "./blog-layout-manager";
 export { BlogLayoutWrapper } from "./blog-layout-wrapper";
+export { BlogPostLayoutWrapper } from "./blog-post-layout-wrapper";
+export { CollapsibleBlogSidebar } from "./collapsible-blog-sidebar";
 export { BlogSearchAnalytics } from "./blog-search-analytics";
 export { BlogSearchForm } from "./blog-search-form";
 export { BlogAnalyticsTracker } from "./blog-analytics-tracker";
@@ -27,6 +29,8 @@ export { BlogPostSidebar } from "./post/blog-post-sidebar";
 export { BlogPostSidebarWrapper } from "./post/blog-post-sidebar-wrapper";
 export { BlogPostSkeleton } from "./post/blog-post-skeleton";
 export { PostList } from "./post/post-list";
+export { ModernPostCard } from "./post/modern-post-card";
+export { ModernBlogGrid } from "./modern-blog-grid";
 export { PostCategorySection } from "./post/post-category-section";
 export { PostListSkeleton } from "./post/post-list-skeleton";
 export { PostThumbnail } from "./post/post-thumbnail";
@@ -36,6 +40,7 @@ export { SeriesBadge } from "./post/series-badge";
 export { SeriesNavigation } from "./post/series-navigation";
 export { SeriesHeader } from "./series-header";
 export { SeriesCard } from "./series-card";
+export { ContentTypeToggle } from "./content-type-toggle";
 
 // Sidebar context for hiding duplicate content
 export { SidebarVisibilityProvider, useSidebarVisibility, HideWhenSidebarVisible } from "./post/sidebar-context";

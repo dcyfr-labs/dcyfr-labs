@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Activity Embed Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        iframe { border: 1px solid #ccc; border-radius: 8px; }
+        .controls { margin-bottom: 20px; }
+        button { margin-right: 10px; padding: 8px 12px; }
+    </style>
+</head>
+<body>
+    <h1>Activity Feed Embed Test</h1>
+    
+    <div class="controls">
+        <button onclick="setTheme('light')">Light Theme</button>
+        <button onclick="setTheme('dark')">Dark Theme</button>
+        <button onclick="refreshEmbed()">Refresh Embed</button>
+    </div>
+    
+    <iframe 
+        id="activity-embed" 
+        src="http://localhost:3000/embed/activity?theme=light" 
+        width="800" 
+        height="600"
+        frameborder="0">
+    </iframe>
+    
+    <script>
+        function setTheme(theme) {
+            const iframe = document.getElementById('activity-embed');
+            const currentSrc = iframe.src.split('?')[0];
+            iframe.src = currentSrc + '?theme=' + theme;
+            
+            // Also send postMessage to iframe
+            setTimeout(() => {
+                iframe.contentWindow.postMessage({
+                    type: 'setTheme',
+                    theme: theme
+                }, '*');
+            }, 500);
+        }
+        
+        function refreshEmbed() {
+            const iframe = document.getElementById('activity-embed');
+            iframe.src = iframe.src;
+        }
+    </script>
+</body>
+</html>

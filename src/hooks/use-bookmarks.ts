@@ -34,10 +34,11 @@ export interface UseBookmarksReturn {
   // State
   collection: BookmarkCollection;
   loading: boolean;
-  
+
   // Queries
   isBookmarked: (activityId: string) => boolean;
   getBookmark: (activityId: string) => Bookmark | undefined;
+  getBookmarkCount: (activityId: string) => number;
   getAllTags: () => string[];
   
   // Operations
@@ -111,6 +112,15 @@ export function useBookmarks(): UseBookmarksReturn {
       return collection.bookmarks.find((b) => b.activityId === activityId);
     },
     [collection]
+  );
+
+  const getBookmarkCount = useCallback(
+    (activityId: string): number => {
+      // Return 1 if bookmarked, 0 otherwise (simulated global count)
+      // In a real implementation, this would fetch from server
+      return isBookmarkedQuery(activityId) ? 1 : 0;
+    },
+    [isBookmarkedQuery]
   );
 
   const getAllTagsQuery = useCallback((): string[] => {
@@ -206,6 +216,7 @@ export function useBookmarks(): UseBookmarksReturn {
     loading,
     isBookmarked: isBookmarkedQuery,
     getBookmark,
+    getBookmarkCount,
     getAllTags: getAllTagsQuery,
     toggle,
     add,

@@ -118,6 +118,7 @@ export interface ActivityMeta {
     views?: number;
     stars?: number;
     comments?: number;
+    likes?: number; // From Giscus reactions (👍 THUMBS_UP)
   };
 
   /** Reading time for blog posts */
@@ -134,8 +135,18 @@ export interface ActivityMeta {
   /** Milestone value (for view/comment milestones) */
   milestone?: number;
 
-  /** Trending flag */
+  /** Trending flag (deprecated - use trendingStatus instead) */
   trending?: boolean;
+
+  /** Detailed trending status */
+  trendingStatus?: {
+    /** Trending in weekly window (7 days) */
+    isWeeklyTrending: boolean;
+    /** Trending in monthly window (30 days) */
+    isMonthlyTrending: boolean;
+    /** Engagement score (0-100) */
+    engagementScore: number;
+  };
 
   /** Engagement rate percentage */
   engagement?: number;
@@ -143,6 +154,14 @@ export interface ActivityMeta {
   /** Unique content identifiers for threading */
   id?: string; // Content ID (e.g., blog post ID)
   postId?: string; // Blog post ID for trending/engagement threading
+
+  /** Giscus reactions data (for analytics and future use) */
+  giscusReactions?: {
+    thumbsUp: number;
+    heart: number;
+    total: number;
+    breakdown: Partial<Record<string, number>>;
+  };
 }
 
 // ============================================================================

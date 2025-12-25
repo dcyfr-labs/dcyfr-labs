@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { TOUCH_TARGET } from "@/lib/design-tokens";
+import { cn } from "@/lib/utils";
 
 /**
  * Copy code button component for code blocks.
@@ -26,7 +28,12 @@ export function CopyCodeButton({ code }: { code: string }) {
     <Button
       variant="ghost"
       size="icon"
-      className="absolute top-2 right-2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+      className={cn(
+        "absolute top-2 right-2",
+        // Mobile-first: 44x44px minimum, scale down on tablet+
+        TOUCH_TARGET.close,
+        "opacity-0 group-hover:opacity-100 transition-opacity"
+      )}
       onClick={handleCopy}
       aria-label={copied ? "Copied!" : "Copy code"}
     >

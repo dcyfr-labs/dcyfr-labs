@@ -282,9 +282,12 @@ export default function proxy(request: NextRequest) {
 
   // Clone response headers
   const requestHeaders = new Headers(request.headers);
-  
+
   // Pass nonce to components via custom header (in request headers for server components)
   requestHeaders.set("x-nonce", nonce);
+
+  // Pass pathname to layouts for conditional rendering (embed detection)
+  requestHeaders.set("x-pathname", pathname);
 
   const response = NextResponse.next({
     request: {

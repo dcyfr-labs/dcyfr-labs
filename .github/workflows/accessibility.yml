@@ -1,0 +1,127 @@
+name: Accessibility Validation
+
+on:
+  pull_request:
+    paths:
+      - 'src/**/*.tsx'
+      - 'src/**/*.ts'
+      - 'src/**/*.css'
+      - 'src/lib/design-tokens.ts'
+      - 'app/globals.css'
+  push:
+    branches:
+      - main
+      - preview
+  schedule:
+    # Run weekly on Mondays at 9:00 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+# Cancel in-progress runs for same PR
+concurrency:
+  group: accessibility-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  contrast-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Build application
+        run: npm run build
+        env:
+          SKIP_ENV_VALIDATION: true
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: Start server
+        run: npm run start &
+        env:
+          PORT: 3000
+
+      - name: Wait for server
+        run: |
+          timeout 60 bash -c 'until curl -f http://localhost:3000 > /dev/null 2>&1; do sleep 2; done'
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Run contrast validation
+        id: contrast
+        run: npm run validate:contrast
+        continue-on-error: true
+
+      - name: Post PR Comment (Violations Found)
+        if: failure() && steps.contrast.outcome == 'failure' && github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const body = `## ⚠️ WCAG Color Contrast Violations Detected
+
+This PR introduces or affects elements that do not meet **WCAG 2.1 Level AA** color contrast requirements.
+
+### Requirements
+- **Normal text**: 4.5:1 contrast ratio minimum
+- **Large text** (18pt/14pt bold): 3:1 minimum
+- **UI components**: 3:1 minimum
+
+### Next Steps
+1. Review the workflow logs for specific violations
+2. Use a contrast checker tool: [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
+3. Update colors in \`src/lib/design-tokens.ts\` or component styles
+4. Re-run validation: \`npm run validate:contrast\`
+
+### Resources
+- [WCAG 2.1 Contrast Guidelines](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum)
+- [Modern UI/UX Design Standards (2025)](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/docs/ai/design-system.md)
+
+**Tip:** Consider using the OKLCH color space for perceptually uniform contrast adjustments.
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Post PR Comment (All Pass)
+        if: success() && github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const body = `## ✅ WCAG Color Contrast Validation Passed
+
+All tested pages meet **WCAG 2.1 Level AA** contrast requirements!
+
+- Normal text: ≥4.5:1 ✓
+- Large text: ≥3:1 ✓
+- UI components: ≥3:1 ✓
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Fail job on violations
+        if: steps.contrast.outcome == 'failure'
+        run: exit 1
