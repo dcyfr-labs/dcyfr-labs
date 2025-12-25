@@ -13,6 +13,9 @@ export {
   clearCredlyCache,
 } from "./credly-cache-functions";
 
+// Import analytics functions
+export { updateAnalyticsMilestones } from "./update-analytics-milestones";
+
 /**
  * Hello World function - demonstrates basic Inngest function pattern
  * 

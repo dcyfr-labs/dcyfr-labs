@@ -148,10 +148,10 @@ export function SiteHeader() {
 
                   return (
                     <div key={item.href}>
-                      {/* Separator before Services */}
+                      {/* Separator before Services 
                       {index === WORK_NAV.length - 1 && (
                         <div className="my-1.5 border-t" role="separator" />
-                      )}
+                      )} */}
                       <Link
                         href={item.href}
                         className={cn(

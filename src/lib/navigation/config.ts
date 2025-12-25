@@ -150,12 +150,7 @@ export const WORK_NAV: NavItem[] = [
     href: "/work?category=startup",
     label: "Startup",
     description: "Early-stage product development",
-  },
-  {
-    href: "/services",
-    label: "Services",
-    description: "Our capabilities and services",
-  },
+  }
 ];
 
 // ============================================================================

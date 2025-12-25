@@ -54,6 +54,8 @@
     "learning:report": "node scripts/learning/generate-report.mjs",
     "analytics:populate": "node scripts/populate-analytics-milestones.mjs",
     "analytics:clear": "node scripts/clear-test-data.mjs",
+    "analytics:update": "curl -X POST http://localhost:3000/api/analytics/update-milestones",
+    "analytics:update:prod": "curl -X POST https://dcyfr.dev/api/analytics/update-milestones -H \"Authorization: Bearer $CRON_SECRET\"",
     "scan:pi": "node scripts/ci/check-for-pii.mjs",
     "scan:pi:all": "node scripts/ci/check-for-pii.mjs --all",
     "scan:reports": "node scripts/validation/check-reports-for-pii.mjs",

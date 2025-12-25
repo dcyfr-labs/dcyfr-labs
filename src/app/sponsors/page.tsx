@@ -86,6 +86,52 @@ export default async function SponsorsPage() {
           />
         </Section>
 
+                {/* Sponsors Section */}
+        <Section
+          id="sponsors"
+          className={PAGE_LAYOUT.section.container}
+        >
+          <div className={SPACING.content}>
+            {sponsors.length === 0 ? (
+              <div className="text-center mt-8">
+                <p className="text-muted-foreground">
+                  No sponsors yet. Be the first to support our work!{" "}
+                </p>
+              </div>
+            ) : (
+              <>
+                {/* Sponsor count */}
+                <div className="text-center mt-4 mb-12">
+                  <p className="text-lg text-muted-foreground">
+                    Thank you to{" "}
+                    <span className="font-semibold text-primary">
+                      {sponsors.length}
+                    </span>{" "}
+                    {sponsors.length === 1 ? "sponsor" : "sponsors"} for their
+                    generous support!
+                  </p>
+                </div>
+
+                {/* Sponsors by tier */}
+                {sortedTiers.map(([tierAmount, tierSponsors]) => (
+                  <div key={tierAmount} className="mb-12 last:mb-0">
+                    <h2 className={TYPOGRAPHY.h2.standard}>
+                      {tierAmount > 0
+                        ? `$${tierAmount}/month`
+                        : "One-time & Custom Sponsors"}
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+                      {tierSponsors.map((sponsor) => (
+                        <SponsorCard key={sponsor.id} sponsor={sponsor} />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+        </Section>
+
         {/* Core Contributors Section */}
         <Section
           id="core-contributors"
@@ -145,53 +191,6 @@ export default async function SponsorsPage() {
                 </Link>
               </Button>
             </div>
-          </div>
-        </Section>
-
-        {/* Sponsors Section */}
-        <Section
-          id="sponsors"
-          className={PAGE_LAYOUT.section.container}
-        >
-          <div className={SPACING.content}>
-            <h2 className={TYPOGRAPHY.h2.standard}>Sponsors</h2>
-            {sponsors.length === 0 ? (
-              <div className="text-center mt-8">
-                <p className="text-muted-foreground">
-                  No sponsors yet. Will you be the first?
-                </p>
-              </div>
-            ) : (
-              <>
-                {/* Sponsor count */}
-                <div className="text-center mt-4 mb-12">
-                  <p className="text-lg text-muted-foreground">
-                    Thank you to{" "}
-                    <span className="font-semibold text-primary">
-                      {sponsors.length}
-                    </span>{" "}
-                    {sponsors.length === 1 ? "sponsor" : "sponsors"} for their
-                    generous support!
-                  </p>
-                </div>
-
-                {/* Sponsors by tier */}
-                {sortedTiers.map(([tierAmount, tierSponsors]) => (
-                  <div key={tierAmount} className="mb-12 last:mb-0">
-                    <h2 className={TYPOGRAPHY.h2.standard}>
-                      {tierAmount > 0
-                        ? `$${tierAmount}/month`
-                        : "One-time & Custom Sponsors"}
-                    </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
-                      {tierSponsors.map((sponsor) => (
-                        <SponsorCard key={sponsor.id} sponsor={sponsor} />
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </>
-            )}
           </div>
         </Section>
 
