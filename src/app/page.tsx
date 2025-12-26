@@ -527,7 +527,7 @@ export default async function Home() {
           </ScrollReveal>
         </Section>
 
-        {/* 6. Blog Series - Organized content paths */}
+        {/* 6. TODO: Blog Series - Organized content paths -- need 3+ series
         {allSeries.length > 0 && (
           <Section
             id="series"
@@ -547,7 +547,7 @@ export default async function Home() {
               </div>
             </ScrollReveal>
           </Section>
-        )}
+        )} */}
 
         {/* 7. Recent Activity - Updates feed */}
         <Section

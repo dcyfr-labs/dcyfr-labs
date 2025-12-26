@@ -4,7 +4,7 @@ import { PageLayout } from "@/components/layouts";
 import { ArchiveHero } from "@/components/layouts/archive-hero";
 import { SeriesCard, SeriesAnalyticsTracker } from "@/components/blog";
 import { SITE_TITLE_PLAIN, SITE_URL, getOgImageUrl } from "@/lib/site-config";
-import { CONTAINER_WIDTHS, CONTAINER_PADDING, GRID_PATTERNS, SPACING } from "@/lib/design-tokens";
+import { CONTAINER_WIDTHS, CONTAINER_PADDING, GRID_PATTERNS, SPACING, MOBILE_SAFE_PADDING } from "@/lib/design-tokens";
 
 /**
  * Revalidate every 24 hours for series index page
@@ -88,7 +88,7 @@ export default function SeriesIndexPage() {
       />
 
       {/* Content section with archive-width container */}
-      <div className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING}`}>
+      <div className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING} ${MOBILE_SAFE_PADDING}`}>
         {sortedSeries.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground">No series found. Check back soon!</p>

@@ -1,8 +1,8 @@
 /**
- * Site Atom Feed (Atom 1.0)
+ * Site JSON Feed (JSON Feed 1.1)
  * 
  * Alternative format for /feed (which defaults to RSS).
- * Available at: /atom.xml
+ * Available at: /feed.json
  * 
  * @see src/lib/feeds.ts for feed generation logic
  */
@@ -16,17 +16,17 @@ export const revalidate = 3600; // 1 hour
 
 export async function GET() {
   try {
-    const xml = await buildCombinedFeed(posts, projects, "atom", 20);
+    const json = await buildCombinedFeed(posts, projects, "json", 20);
     
-    return new NextResponse(xml, {
+    return new NextResponse(json, {
       headers: {
-        "Content-Type": "application/atom+xml; charset=utf-8",
+        "Content-Type": "application/feed+json; charset=utf-8",
         "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
-        "X-Feed-Format": "Atom 1.0",
+        "X-Feed-Format": "JSON Feed 1.1",
       },
     });
   } catch (error) {
-    console.error("Error generating Atom feed:", error);
+    console.error("Error generating JSON feed:", error);
     return new NextResponse("Error generating feed", { status: 500 });
   }
 }

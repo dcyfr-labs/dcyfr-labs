@@ -6,11 +6,12 @@ import { headers } from "next/headers";
 import { getArchiveData } from "@/lib/archive";
 import { getMultipleProjectViews } from "@/lib/project-views";
 import { ArchivePagination } from "@/components/layouts/archive-pagination";
-import { CONTAINER_WIDTHS, CONTAINER_PADDING, SPACING } from "@/lib/design-tokens";
+import { CONTAINER_WIDTHS, CONTAINER_PADDING, SPACING, MOBILE_SAFE_PADDING } from "@/lib/design-tokens";
 import { ProjectList, ProjectFilters } from "@/components/projects";
 import { SmoothScrollToHash } from "@/components/common";
 import { PageLayout } from "@/components/layouts";
 import { ArchiveHero } from "@/components/layouts/archive-hero";
+import { RSSFeedButton } from "@/components/blog";
 
 const basePageTitle = "Our Work";
 const basePageDescription = "Browse our portfolio of development projects, open-source contributions, and published works.";
@@ -318,29 +319,11 @@ export default async function WorkPage({ searchParams }: WorkPageProps) {
         title={pageTitle}
         description={pageDescription}
         stats={`${sortedArchiveData.totalItems} ${sortedArchiveData.totalItems === 1 ? 'project' : 'projects'} • ${uniqueTechnologies.size} ${uniqueTechnologies.size === 1 ? 'technology' : 'technologies'}`}
-        actions={
-          <a
-            href="/work/rss.xml"
-            className="inline-flex items-center gap-2 px-3 py-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-full border border-border/50 hover:border-border hover:bg-muted/30 text-sm"
-            title="Subscribe to projects RSS feed"
-            aria-label="Subscribe to projects feed via RSS"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-4 h-4"
-              aria-hidden="true"
-            >
-              <path d="M3.429 2.571v18.857h18.857V2.571H3.429zm16.071 16.072H5.214V4.357H19.5v14.286zM8.25 14.893a2.036 2.036 0 1 1 0 4.071 2.036 2.036 0 0 1 0-4.071zm0 0M6.321 6.536v2.25c5.625 0 10.179 4.554 10.179 10.178h2.25c0-6.857-5.571-12.428-12.429-12.428zm0 4.5v2.25a5.679 5.679 0 0 1 5.679 5.678h2.25A7.929 7.929 0 0 0 6.321 11.036z"/>
-            </svg>
-            RSS Feed
-          </a>
-        }
+        actions={<RSSFeedButton href="/work/rss.xml" />}
       />
 
       {/* Content section with archive-width container */}
-      <div className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING}`}>
+      <div className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING} ${MOBILE_SAFE_PADDING}`}>
         {/* Filters - temporarily hidden
         <div className="mb-8">
           <ProjectFilters

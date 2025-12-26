@@ -1,0 +1,57 @@
+name: Sitemap Validation
+
+on:
+  pull_request:
+    paths:
+      - 'src/app/**/page.tsx'
+      - 'src/app/sitemap.ts'
+      - 'src/data/**'
+      - 'scripts/validate-sitemap.mjs'
+  push:
+    branches:
+      - main
+      - preview
+    paths:
+      - 'src/app/**/page.tsx'
+      - 'src/app/sitemap.ts'
+      - 'src/data/**'
+
+jobs:
+  validate-sitemap:
+    name: Validate Sitemap
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+        env:
+          # Use minimal env vars for build
+          NODE_ENV: production
+          SKIP_ENV_VALIDATION: true
+
+      - name: Validate sitemap
+        run: npm run sitemap:validate
+
+      - name: Comment on PR (if failed)
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ **Sitemap validation failed**\n\nSome pages are missing from sitemap.xml. Run `npm run sitemap:validate` locally to see details.\n\nIf you added new pages, make sure to update `src/app/sitemap.ts` accordingly.'
+            })
