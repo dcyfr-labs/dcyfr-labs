@@ -9,7 +9,7 @@ interface BlogLayoutWrapperProps {
 
 /**
  * Blog Layout Wrapper Component
- * 
+ *
  * Two-column layout for blog archive page.
  * Sidebar positioned on the left side, always expanded at 280px.
  * No collapsible functionality.

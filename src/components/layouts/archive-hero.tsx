@@ -37,7 +37,7 @@
 
 import { ReactNode } from 'react'
 import Image from 'next/image'
-import { PAGE_LAYOUT, HERO_VARIANTS, CONTAINER_WIDTHS, ANIMATION } from '@/lib/design-tokens'
+import { PAGE_LAYOUT, HERO_VARIANTS, CONTAINER_WIDTHS, ANIMATION, CONTAINER_PADDING } from '@/lib/design-tokens'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 
@@ -76,19 +76,19 @@ function getVariantStyles(variant: ArchiveVariant) {
   switch (variant) {
     case 'full':
       return {
-        container: 'pt-24 md:pt-28 lg:pt-32 pb-12 md:pb-16 lg:pb-20',
+        container: PAGE_LAYOUT.archiveHero.padding.full,
         hasBackground: true,
         overlayIntensity: 'from-background/45 via-background/70 to-background/95',
       }
     case 'medium':
       return {
-        container: 'pt-24 md:pt-28 lg:pt-32 pb-10 md:pb-14',
+        container: PAGE_LAYOUT.archiveHero.padding.medium,
         hasBackground: true,
         overlayIntensity: 'from-background/70 via-background/85 to-background/95',
       }
     case 'minimal':
       return {
-        container: 'pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12',
+        container: PAGE_LAYOUT.archiveHero.padding.minimal,
         hasBackground: false,
         overlayIntensity: '',
       }
@@ -155,7 +155,7 @@ export function ArchiveHero({
       {/* Content */}
       <div
         className={cn(
-          `mx-auto ${CONTAINER_WIDTHS.archive} px-4 sm:px-8 md:px-8 space-y-4 md:space-y-6 relative z-10`,
+          `mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING} space-y-4 md:space-y-6 relative z-10`,
           alignmentClasses,
           align === 'center' && 'flex flex-col items-center w-full',
           contentClassName

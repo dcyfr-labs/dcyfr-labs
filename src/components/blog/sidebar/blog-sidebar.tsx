@@ -150,37 +150,43 @@ export function BlogSidebar({
   };
 
   return (
-    <aside className={cn(SPACING.subsection, "flex flex-col")}>
+    <aside className={cn("flex flex-col", SPACING.subsection)}>
       <SidebarSearch
-            searchValue={searchValue}
-            onSearchChange={setSearchValue}
-            searchInputRef={searchInputRef}
-            totalResults={totalResults}
-            totalPosts={totalPosts}
-            activeFilterCount={activeFilterCount}
-            onClearAll={clearAllFilters}
-            isPending={isPending}
-          />
+        searchValue={searchValue}
+        onSearchChange={setSearchValue}
+        searchInputRef={searchInputRef}
+        totalResults={totalResults}
+        totalPosts={totalPosts}
+        activeFilterCount={activeFilterCount}
+        onClearAll={clearAllFilters}
+        isPending={isPending}
+      />
 
-          <SidebarFilters
-            sortBy={sortBy}
-            dateRange={dateRange}
-            readingTime={readingTime}
-            isExpanded={expandedSections.filters}
-            onToggle={() => toggleSection("filters")}
-            onSortChange={(value) => updateParam("sortBy", value)}
-            onDateRangeChange={(value) => updateParam("dateRange", value)}
-            onReadingTimeChange={(value) => updateParam("readingTime", value)}
-          />
+      <div className="border-t border-border/50" />
 
-          <SidebarCategories
-            categoryList={categoryList}
-            categoryDisplayMap={categoryDisplayMap}
-            selectedCategory={selectedCategory}
-            isExpanded={expandedSections.categories}
-            onToggle={() => toggleSection("categories")}
-            onCategorySelect={setCategory}
-          />
+      <SidebarFilters
+        sortBy={sortBy}
+        dateRange={dateRange}
+        readingTime={readingTime}
+        isExpanded={expandedSections.filters}
+        onToggle={() => toggleSection("filters")}
+        onSortChange={(value) => updateParam("sortBy", value)}
+        onDateRangeChange={(value) => updateParam("dateRange", value)}
+        onReadingTimeChange={(value) => updateParam("readingTime", value)}
+      />
+
+      <div className="border-t border-border/50" />
+
+      <SidebarCategories
+        categoryList={categoryList}
+        categoryDisplayMap={categoryDisplayMap}
+        selectedCategory={selectedCategory}
+        isExpanded={expandedSections.categories}
+        onToggle={() => toggleSection("categories")}
+        onCategorySelect={setCategory}
+      />
+
+      <div className="border-t border-border/50" />
 
       <SidebarTopics
         tagList={tagList}

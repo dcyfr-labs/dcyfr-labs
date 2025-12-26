@@ -145,7 +145,7 @@ export function ActivityPageClient({
         filteredCount={filteredActivities.length}
       />
 
-      <div className={`${CONTAINER_WIDTHS.standard} mx-auto ${CONTAINER_PADDING} py-12 md:py-16`}>
+      <div className={`${CONTAINER_WIDTHS.standard} mx-auto ${CONTAINER_PADDING} py-12 md:py-16 pb-24 md:pb-16`}>
         {/* Timeline Feed - Unified threading across all activities */}
         <motion.div
           initial={{ opacity: 0 }}

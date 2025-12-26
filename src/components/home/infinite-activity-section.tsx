@@ -194,7 +194,7 @@ export function InfiniteActivitySection({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="text-center py-8 border-t border-border/50 mt-8"
+          className="text-center pt-8 pb-24 md:pb-8 border-t border-border/50 mt-8"
         >
           <p className="text-sm text-muted-foreground mb-3">
             Viewing {visibleCount} of {totalCount} activities
@@ -213,7 +213,7 @@ export function InfiniteActivitySection({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-center text-sm text-muted-foreground py-8 border-t border-border/50 mt-8"
+          className="text-center text-sm text-muted-foreground pt-8 pb-24 md:pb-8 border-t border-border/50 mt-8"
         >
           <p className="mb-3">You&apos;ve reached the end of recent activity</p>
           <Button asChild variant="outline" size="sm">

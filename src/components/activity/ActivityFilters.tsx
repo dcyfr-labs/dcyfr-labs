@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS } from "@/lib/design-tokens";
+import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS, CONTAINER_PADDING } from "@/lib/design-tokens";
 import { type ActivitySource } from "@/lib/activity";
 import { Logo } from "@/components/common/logo";
 
@@ -83,7 +83,7 @@ export function ActivityFilters({
     <div className={className}>
       {/* Search input - Prominent, centered */}
       {onSearchChange && (
-        <div className="relative py-8 md:py-10">
+        <div className={cn("relative pt-12 pb-8 md:pt-16 md:pb-10", CONTAINER_PADDING)}>
           <div className={cn("relative mx-auto", CONTAINER_WIDTHS.thread, SPACING.content)}>
             <div className="absolute left-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
               <Logo width={18} height={18} className="text-muted-foreground" />

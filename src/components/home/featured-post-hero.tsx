@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -54,17 +55,72 @@ interface FeaturedPostHeroProps {
  */
 export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
   const router = useRouter();
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
   const publishedDate = new Date(post.publishedAt).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
 
+  // Handle mouse move for tilt effect
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    setMousePosition({ x, y });
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    setMousePosition({ x: 0.5, y: 0.5 });
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  // Calculate tilt values (subtle effect)
+  const tiltX = isHovered ? (mousePosition.y - 0.5) * -8 : 0;
+  const tiltY = isHovered ? (mousePosition.x - 0.5) * 8 : 0;
+
   return (
     <Link href={`/blog/${post.slug}`}>
-      <div className={cn(
-        "group relative overflow-hidden rounded-xl border shadow-lg"
-      )}>
+      <div
+        className={cn(
+          "group relative overflow-hidden rounded-xl border shadow-lg",
+          ANIMATION.transition.base
+        )}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        onMouseEnter={handleMouseEnter}
+        style={{
+          transform: `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(${isHovered ? 1.02 : 1})`,
+          transition: 'transform 0.2s ease-out',
+          willChange: isHovered ? 'transform' : 'auto',
+        }}
+      >
+        {/* Animated gradient glow following mouse */}
+        <div
+          className={cn("absolute inset-0 z-10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none", ANIMATION.duration.normal)}
+          style={{
+            background: `radial-gradient(600px circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, hsl(var(--primary) / 0.1), transparent 40%)`,
+          }}
+        />
+
+        {/* Animated border gradient */}
+        <div
+          className={cn("absolute inset-0 z-20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none", ANIMATION.duration.normal)}
+          style={{
+            background: `linear-gradient(${Math.atan2(mousePosition.y - 0.5, mousePosition.x - 0.5) * (180 / Math.PI)}deg, hsl(var(--primary) / 0.5), hsl(var(--primary) / 0.2), transparent)`,
+            maskImage: 'linear-gradient(black, black) padding-box, linear-gradient(black, black)',
+            WebkitMaskComposite: 'xor',
+            maskComposite: 'exclude',
+            padding: '2px',
+          }}
+        />
+
         {/* Accent bar with glow effect */}
         <div
           className={cn("absolute inset-x-0 top-0 h-1 z-20 rounded-t-xl group-hover:h-1.5 group-hover:shadow-lg bg-primary", ANIMATION.transition.base)}

@@ -12,6 +12,7 @@ import { HighlightText } from "@/components/common/highlight-text";
 import { BookmarkButton } from "@/components/blog/bookmark-button";
 import dynamic from "next/dynamic";
 import { HOVER_EFFECTS, SPACING } from "@/lib/design-tokens";
+import { cn } from "@/lib/utils";
 
 const ScrollReveal = dynamic(() => import("@/components/features/scroll-reveal").then(mod => ({ default: mod.ScrollReveal })), {
   loading: () => <div className="contents" />,
@@ -703,7 +704,7 @@ export function PostList({
         </ScrollReveal>
 
         {/* Grid section - Remaining posts in 2-column layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className={cn("grid grid-cols-1 md:grid-cols-2", SPACING.contentGrid)}>
           {posts.slice(1).map((p, index) => (
             <ScrollReveal
               key={p.slug}

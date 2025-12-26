@@ -1552,6 +1552,15 @@ export const PAGE_LAYOUT = {
     container: `mx-auto ${CONTAINER_WIDTHS.archive} ${ARCHIVE_CONTAINER_PADDING} pt-16 md:pt-24 lg:pt-32 pb-8 md:pb-12`,
     /** Archive hero title + description wrapper */
     content: SPACING.proseHero,
+    /** Padding variants for different archive hero styles */
+    padding: {
+      /** Full variant - maximum breathing room with background images */
+      full: "pt-24 md:pt-28 lg:pt-32 pb-12 md:pb-16 lg:pb-20",
+      /** Medium variant - moderate padding for minimal backgrounds */
+      medium: "pt-24 md:pt-28 lg:pt-32 pb-10 md:pb-14",
+      /** Minimal variant - standard padding without backgrounds */
+      minimal: "pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12",
+    },
   },
   
   /** Standard page section spacing */

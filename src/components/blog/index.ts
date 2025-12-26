@@ -16,6 +16,7 @@ export { SeriesAnalyticsTracker } from "./series-analytics-tracker";
 export { SeriesPageAnalyticsTracker } from "./series-page-analytics-tracker";
 export { BookmarkButton } from "./bookmark-button";
 export { LayoutToggle } from "./layout-toggle";
+export { RSSFeedButton } from "./rss-feed-button";
 
 // Search components
 export { BlogSearchClient, useBlogSearch } from "./blog-search-client";

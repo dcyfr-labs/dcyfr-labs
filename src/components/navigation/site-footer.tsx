@@ -6,11 +6,11 @@ import { NAVIGATION } from "@/lib/navigation-config";
 export function SiteFooter() {
   return (
     <>
-      {/* Mobile footer - minimalistic with recommended touch target size (44px min) */}
-      <footer className="md:hidden mt-8 site-footer border-t pb-2">
+      {/* Mobile footer - hidden on mobile since bottom nav is used */}
+      <footer className="hidden md:hidden mt-8 site-footer border-t pb-2">
         <div className="mx-auto px-4 sm:px-8 h-16 flex items-center justify-center text-sm text-muted-foreground gap-2">
           <SiteLogo size="md" />
-        </div> 
+        </div>
       </footer>
 
       {/* Desktop footer */}
