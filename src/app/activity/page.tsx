@@ -7,21 +7,21 @@ import { cn } from "@/lib/utils";
 import { ActivityPageClient } from "./activity-client";
 import { PageLayout } from "@/components/layouts";
 import { ArchiveHero } from "@/components/layouts/archive-hero";
-import { RSSFeedButton } from "@/components/blog";
 import { posts } from "@/data/posts";
 import { projects } from "@/data/projects";
+import { changelog } from "@/data/changelog";
 import {
   transformPosts,
   transformProjects,
-  // transformChangelog, (DISABLED - removed commit-style messages)
+  transformChangelog,
   aggregateActivities,
 } from "@/lib/activity/sources";
 import {
   transformPostsWithViews,
-  // transformTrendingPosts, (DISABLED)
-  // transformMilestones, (DISABLED - causes duplication)
-  // transformHighEngagementPosts, (DISABLED - causes duplication)
-  // transformCommentMilestones, (DISABLED - causes duplication)
+  transformTrendingPosts,
+  transformMilestones,
+  transformHighEngagementPosts,
+  transformCommentMilestones,
   // transformGitHubActivity, (DISABLED)
   // transformWebhookGitHubCommits, (DISABLED)
   transformCredlyBadges,
@@ -98,25 +98,26 @@ export default async function ActivityPage() {
   let error: string | null = null;
 
   try {
-    // STEP 1: Try cache first
-    const redis = await getRedisClient();
-    if (redis) {
-      try {
-        const cached = await redis.get("activity:feed:all");
-        if (cached) {
-          allActivities = JSON.parse(cached);
-          console.log(
-            `[Activity Page] ✅ Loaded from cache: ${allActivities.length} items`
-          );
-        } else {
-          console.log("[Activity Page] ⚠️ Cache miss, fetching directly");
-        }
-        await redis.quit();
-      } catch (cacheError) {
-        console.error("[Activity Page] Cache read error:", cacheError);
-        // Continue to direct fetch on cache error
-      }
-    }
+    // STEP 1: Try cache first (TEMPORARILY DISABLED FOR DEBUG - committed activity removal)
+    // const redis = await getRedisClient();
+    // if (redis) {
+    //   try {
+    //     const cached = await redis.get("activity:feed:all");
+    //     if (cached) {
+    //       allActivities = JSON.parse(cached);
+    //       loadSource = "cache";
+    //       console.log(
+    //         `[Activity Page] ✅ Loaded from cache: ${allActivities.length} items`
+    //       );
+    //     } else {
+    //       console.log("[Activity Page] ⚠️ Cache miss, fetching directly");
+    //     }
+    //     await redis.quit();
+    //   } catch (cacheError) {
+    //     console.error("[Activity Page] Cache read error:", cacheError);
+    //     // Continue to direct fetch on cache error
+    //   }
+    // }
 
     // STEP 2: Fallback to direct fetch if cache miss
     if (allActivities.length === 0) {
@@ -141,31 +142,31 @@ export default async function ActivityPage() {
       Promise.resolve(transformProjects([...projects]))
         .then((items) => activities.push(...items))
         .catch((err) => console.error("[Activity Page] Projects fetch failed:", err)),
-
-      // Changelog - DISABLED: Commit-style messages removed for cleaner timeline
-      // Promise.resolve(transformChangelog(changelog))
-      //   .then((items) => activities.push(...items))
-      //   .catch((err) => console.error("[Activity Page] Changelog fetch failed:", err)),
+      
+      // Changelog
+      Promise.resolve(transformChangelog(changelog))
+        .then((items) => activities.push(...items))
+        .catch((err) => console.error("[Activity Page] Changelog fetch failed:", err)),
       
       // Trending posts - DISABLED: Now shown as badges on published events
       // transformTrendingPosts(posts)
       //   .then((items) => activities.push(...items))
       //   .catch((err) => console.error("[Activity Page] Trending posts fetch failed:", err)),
 
-      // Milestones - DISABLED: Causes duplication, stats shown on published events instead
-      // transformMilestones(posts)
-      //   .then((items) => activities.push(...items))
-      //   .catch((err) => console.error("[Activity Page] Milestones fetch failed:", err)),
-
-      // High engagement posts - DISABLED: Causes duplication, stats shown on published events instead
-      // transformHighEngagementPosts(posts)
-      //   .then((items) => activities.push(...items))
-      //   .catch((err) => console.error("[Activity Page] High engagement posts fetch failed:", err)),
-
-      // Comment milestones - DISABLED: Causes duplication, stats shown on published events instead
-      // transformCommentMilestones(posts)
-      //   .then((items) => activities.push(...items))
-      //   .catch((err) => console.error("[Activity Page] Comment milestones fetch failed:", err)),
+      // Milestones - all
+      transformMilestones(posts)
+        .then((items) => activities.push(...items))
+        .catch((err) => console.error("[Activity Page] Milestones fetch failed:", err)),
+      
+      // High engagement posts - all
+      transformHighEngagementPosts(posts)
+        .then((items) => activities.push(...items))
+        .catch((err) => console.error("[Activity Page] High engagement posts fetch failed:", err)),
+      
+      // Comment milestones - all
+      transformCommentMilestones(posts)
+        .then((items) => activities.push(...items))
+        .catch((err) => console.error("[Activity Page] Comment milestones fetch failed:", err)),
       
       // GitHub activity - all (DISABLED)
       // transformGitHubActivity("dcyfr", ["dcyfr-labs"])
@@ -260,6 +261,29 @@ export default async function ActivityPage() {
       })
     : null;
 
+  // RSS Feed button for hero
+  const rssAction = (
+    <a
+      href="/activity/rss.xml"
+      className={cn(
+        "inline-flex items-center gap-2 px-3 py-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-full border border-border/50 hover:border-border hover:bg-muted/30",
+        TYPOGRAPHY.label.small
+      )}
+      title="Subscribe to RSS feed"
+      aria-label="Subscribe to activity feed via RSS"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        className="w-4 h-4"
+        aria-hidden="true"
+      >
+        <path d="M3.429 2.571v18.857h18.857V2.571H3.429zm16.071 16.072H5.214V4.357H19.5v14.286zM8.25 14.893a2.036 2.036 0 1 1 0 4.071 2.036 2.036 0 0 1 0-4.071zm0 0M6.321 6.536v2.25c5.625 0 10.179 4.554 10.179 10.178h2.25c0-6.857-5.571-12.428-12.429-12.428zm0 4.5v2.25a5.679 5.679 0 0 1 5.679 5.678h2.25A7.929 7.929 0 0 0 6.321 11.036z"/>
+      </svg>
+      RSS Feed
+    </a>
+  );
 
   return (
     <PageLayout>
@@ -271,7 +295,7 @@ export default async function ActivityPage() {
         title={pageTitle}
         description={pageDescription}
         stats={lastUpdated ? `${activityCount} ${activityCount === 1 ? 'activity' : 'activities'} • Last updated ${lastUpdated}` : `${activityCount} ${activityCount === 1 ? 'activity' : 'activities'}`}
-        actions={<RSSFeedButton href="/activity/rss.xml" />}
+        actions={rssAction}
         align="center"
       />
 

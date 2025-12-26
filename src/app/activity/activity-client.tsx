@@ -7,7 +7,8 @@ import { ThreadedActivityFeed } from "@/components/activity/ThreadedActivityFeed
 import type { ActivityItem, ActivitySource } from "@/lib/activity";
 import { searchActivities, createSearchIndex } from "@/lib/activity/search";
 import { useBookmarks } from "@/hooks/use-bookmarks";
-import { CONTAINER_WIDTHS, CONTAINER_PADDING } from "@/lib/design-tokens";
+import { SPACING, CONTAINER_WIDTHS, CONTAINER_PADDING } from "@/lib/design-tokens";
+import { cn } from "@/lib/utils";
 
 // ============================================================================
 // TYPES & CONSTANTS
@@ -145,16 +146,24 @@ export function ActivityPageClient({
       />
 
       <div className={`${CONTAINER_WIDTHS.standard} mx-auto ${CONTAINER_PADDING} py-12 md:py-16 pb-24 md:pb-16`}>
-        {/* Rich Card Feed - Same style as /embed/activity */}
+        {/* Timeline Feed - Unified threading across all activities */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          <ThreadedActivityFeed
-            activities={filteredActivities}
-            emptyMessage="No activities match your filters"
-          />
+          {filteredActivities.length === 0 ? (
+            <div className={cn("text-center py-12", SPACING.content)}>
+              <p className="text-muted-foreground">
+                No activities match your filters
+              </p>
+            </div>
+          ) : (
+            <ThreadedActivityFeed
+              activities={filteredActivities}
+              emptyMessage="No activities match your filters"
+            />
+          )}
         </motion.div>
       </div>
     </>
