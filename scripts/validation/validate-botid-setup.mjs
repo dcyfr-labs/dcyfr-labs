@@ -16,7 +16,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const rootDir = path.resolve(__dirname, '..');
+const rootDir = path.resolve(__dirname, '../..');
 
 const checks = [];
 
@@ -34,13 +34,15 @@ checks.push({
     : 'checkBotId import is missing or incorrectly commented out'
 });
 
-const hasBotIDLogic = contactRouteContent.includes('if (process.env.ENABLE_BOTID === \'1\')');
+// Check for BotID logic - can be either enabled via ENABLE_BOTID flag or with shouldUseBotId variable
+const hasBotIDLogic = contactRouteContent.includes('if (process.env.ENABLE_BOTID === \'1\')') ||
+                      contactRouteContent.includes('shouldUseBotId');
 checks.push({
   name: 'BotID check logic in contact API',
   passed: hasBotIDLogic,
   file: 'src/app/api/contact/route.ts',
   details: hasBotIDLogic
-    ? 'BotID check is present and can be enabled via ENABLE_BOTID env var'
+    ? 'BotID check is present (may be disabled via shouldUseBotId flag)'
     : 'BotID check logic is missing'
 });
 

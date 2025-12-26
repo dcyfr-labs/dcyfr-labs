@@ -18,7 +18,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const blogDir = path.join(__dirname, "../src/content/blog");
+const blogDir = path.join(__dirname, "../../src/content/blog");
 
 // ANSI colors for terminal output
 const colors = {
