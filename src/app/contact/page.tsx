@@ -49,7 +49,7 @@ export default async function ContactPage() {
         <section id="contact-form" className={cn("mx-auto", CONTAINER_WIDTHS.standard, "px-4 sm:px-8 md:px-8")}>
           <ScrollReveal animation="fade-up" delay={100}>
             <div className="text-center mb-8">
-              <h2 className={TYPOGRAPHY.h2.featured}>Send a Message</h2>
+              <h2 className={TYPOGRAPHY.h2.featured}>Send us a Message</h2>
               <p className={cn(TYPOGRAPHY.description, "mt-2")}>
                 Fill out the form below and we&apos;ll get back to you as soon as possible
               </p>

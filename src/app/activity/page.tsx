@@ -5,7 +5,8 @@ import { SITE_URL, AUTHOR_NAME } from "@/lib/site-config";
 import { CONTAINER_WIDTHS, CONTAINER_PADDING, TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import { ActivityPageClient } from "./activity-client";
-import { PageLayout, PageHero } from "@/components/layouts";
+import { PageLayout } from "@/components/layouts";
+import { ArchiveHero } from "@/components/layouts/archive-hero";
 import { posts } from "@/data/posts";
 import { projects } from "@/data/projects";
 import { changelog } from "@/data/changelog";
@@ -250,6 +251,16 @@ export default async function ActivityPage() {
         : activity.timestamp?.toISOString?.() || new Date().toISOString(),
   }));
 
+  // Calculate stats for hero
+  const activityCount = allActivities.length;
+  const lastUpdated = allActivities.length > 0
+    ? new Date(allActivities[0].timestamp).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    : null;
+
   // RSS Feed button for hero
   const rssAction = (
     <a
@@ -279,9 +290,11 @@ export default async function ActivityPage() {
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
 
       {/* Hero Section */}
-      <PageHero
+      <ArchiveHero
+        variant="medium"
         title={pageTitle}
         description={pageDescription}
+        stats={lastUpdated ? `${activityCount} ${activityCount === 1 ? 'activity' : 'activities'} • Last updated ${lastUpdated}` : `${activityCount} ${activityCount === 1 ? 'activity' : 'activities'}`}
         actions={rssAction}
         align="center"
       />

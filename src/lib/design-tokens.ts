@@ -1103,6 +1103,12 @@ export const HOVER_EFFECTS = {
   
   /** Text links */
   link: "hover:underline underline-offset-4 decoration-skip-ink-none will-change-auto transition-colors active:opacity-70",
+
+  /** Card glow effect on hover */
+  cardGlow: "transition-all duration-300 hover:shadow-glow",
+
+  /** Card tilt effect on hover (3D transform) */
+  cardTilt: "transition-transform duration-300 hover:rotate-1 hover:scale-[1.02]",
 } as const;
 
 // ============================================================================
@@ -1224,6 +1230,18 @@ export const ANIMATION = {
     pulse: "animate-pulse-once",
     /** Count increment (scale up briefly when count changes) */
     countIncrement: "transition-transform duration-300 scale-110",
+  },
+
+  /** Homepage visual effect animations */
+  effects: {
+    /** Count-up animation for number reveals */
+    countUp: "animate-count-up",
+    /** Shimmer effect for loading and polish */
+    shimmer: "animate-shimmer",
+    /** Subtle pulse for interactive elements */
+    pulse: "animate-pulse-subtle",
+    /** Floating animation for parallax elements */
+    float: "animate-float",
   },
 } as const;
 
@@ -2036,6 +2054,18 @@ export const GRADIENTS = {
     
     /** Aurora: emerald-400 → cyan-400 → blue-500 */
     aurora: "linear-gradient(135deg, #34d399 0%, #22d3ee 50%, #3b82f6 100%)",
+  },
+
+  /** Effect gradients for animations and visual polish */
+  effects: {
+    /** Shimmer effect: subtle animated gradient for loading states */
+    shimmer: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%)",
+
+    /** Glow effect: soft gradient for hover states and borders */
+    glow: "linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(139,92,246,0.1) 100%)",
+
+    /** Glow effect (dark mode): enhanced glow for dark backgrounds */
+    glowDark: "linear-gradient(135deg, rgba(59,130,246,0.2) 0%, rgba(139,92,246,0.2) 100%)",
   },
 } as const;
 

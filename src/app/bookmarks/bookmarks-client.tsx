@@ -334,10 +334,9 @@ export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
         {isMounted && totalBookmarked > 0 && (
           <Alert type="info" className="mt-8">
             <div>
-              <p className="font-medium mb-1">Bookmarks are stored locally</p>
+              <p className="font-medium mb-1">Bookmarks stored locally</p>
               <p className="text-sm">
-                Your bookmarks are saved in your browser&apos;s local storage and will persist across sessions.
-                Use the Export button to save a backup.
+                Your bookmarks are saved in your browser&apos;s local storage. They won&apos;t sync across devices or be visible to others.
               </p>
             </div>
           </Alert>
