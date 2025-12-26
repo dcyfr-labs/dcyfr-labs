@@ -78,6 +78,16 @@ export function ThreadActions({
   const { isBookmarked, toggle: toggleBookmark, getBookmarkCount } = useBookmarks();
   const { getShareCount } = useShare();
 
+  // Normalize activity ID for blog posts to match /likes and /bookmarks pages
+  // Blog posts in activity feed have id="blog-slug" but we check them by slug only
+  // This ensures likes/bookmarks sync across homepage and dedicated pages
+  const normalizedId = (() => {
+    if (activity?.href.startsWith("/blog/")) {
+      return activity.href.replace("/blog/", "");
+    }
+    return activityId;
+  })();
+
   // Use useSyncExternalStore for proper client-side hydration without ESLint warnings
   const isHydrated = useSyncExternalStore(
     () => () => {}, // subscribe (no-op since we don't need to listen for changes)
@@ -86,11 +96,11 @@ export function ThreadActions({
   );
 
   // Only show actual values after hydration
-  const liked = isHydrated ? isLiked(activityId) : false;
-  const bookmarked = isHydrated ? isBookmarked(activityId) : false;
-  const likeCount = isHydrated ? getCount(activityId) : 0;
-  const bookmarkCount = isHydrated && showBookmarkCount ? getBookmarkCount(activityId) : 0;
-  const shareCount = isHydrated && showShareCount ? getShareCount(activityId) : 0;
+  const liked = isHydrated ? isLiked(normalizedId) : false;
+  const bookmarked = isHydrated ? isBookmarked(normalizedId) : false;
+  const likeCount = isHydrated ? getCount(normalizedId) : 0;
+  const bookmarkCount = isHydrated && showBookmarkCount ? getBookmarkCount(normalizedId) : 0;
+  const shareCount = isHydrated && showShareCount ? getShareCount(normalizedId) : 0;
 
   const isCompact = size === "compact";
 
@@ -107,7 +117,7 @@ export function ThreadActions({
         icon={Heart}
         label={likeCount > 0 ? String(likeCount) : undefined}
         active={liked}
-        onClick={() => toggleLike(activityId)}
+        onClick={() => toggleLike(normalizedId)}
         ariaLabel={liked ? "Unlike" : "Like"}
         size={size}
         activeColor={SEMANTIC_COLORS.activity.action.liked}
@@ -118,7 +128,7 @@ export function ThreadActions({
         icon={Bookmark}
         label={bookmarkCount > 0 ? String(bookmarkCount) : undefined}
         active={bookmarked}
-        onClick={() => toggleBookmark(activityId)}
+        onClick={() => toggleBookmark(normalizedId)}
         ariaLabel={bookmarked ? "Remove bookmark" : "Bookmark"}
         size={size}
         activeColor={SEMANTIC_COLORS.activity.action.bookmarked}
