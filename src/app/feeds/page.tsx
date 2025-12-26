@@ -92,7 +92,7 @@ export default function FeedsPage() {
     <PageLayout>
       {/* Hero Section */}
       <PageHero
-        title="Subscribe to Feeds"
+        title="Subscribe to our Feeds"
         description={`Stay up to date with the latest content from ${SITE_TITLE}. Choose from our various feeds based on your interests and preferred update frequency.`}
       />
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { allSeries } from "@/data/posts";
-import { PageLayout, PageHero } from "@/components/layouts";
+import { PageLayout } from "@/components/layouts";
+import { ArchiveHero } from "@/components/layouts/archive-hero";
 import { SeriesCard, SeriesAnalyticsTracker } from "@/components/blog";
 import { SITE_TITLE_PLAIN, SITE_URL, getOgImageUrl } from "@/lib/site-config";
 import { CONTAINER_WIDTHS, CONTAINER_PADDING, GRID_PATTERNS, SPACING } from "@/lib/design-tokens";
@@ -70,18 +71,20 @@ export default function SeriesIndexPage() {
     return dateB - dateA;
   });
 
+  // Calculate total posts across all series
+  const totalPosts = sortedSeries.reduce((sum, series) => sum + series.postCount, 0);
+
   return (
     <PageLayout>
       {/* Analytics tracking */}
       <SeriesAnalyticsTracker seriesCount={sortedSeries.length} />
 
-      {/* Hero section with full-width background */}
-      <PageHero
-        variant="homepage"
+      {/* Hero section with medium background */}
+      <ArchiveHero
+        variant="medium"
         title="Blog Series"
         description="Explore multi-part content series organized by topic."
-        itemCount={sortedSeries.length}
-        fullWidth
+        stats={`${sortedSeries.length} ${sortedSeries.length === 1 ? 'series' : 'series'} • ${totalPosts} total ${totalPosts === 1 ? 'post' : 'posts'}`}
       />
 
       {/* Content section with archive-width container */}

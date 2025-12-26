@@ -23,7 +23,8 @@ import {
   ModernBlogGrid,
 } from "@/components/blog";
 import { ViewToggle, SmoothScrollToHash } from "@/components/common";
-import { PageLayout, PageHero } from "@/components/layouts";
+import { PageLayout } from "@/components/layouts";
+import { ArchiveHero } from "@/components/layouts/archive-hero";
 
 const pageTitle = "Blog";
 const pageDescription = "Blog posts on software development, cybersecurity, emerging technologies, and more.";
@@ -317,12 +318,11 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       <BlogLayoutManager />
 
       {/* Hero section with RSS Feed button */}
-      <PageHero
-        variant="homepage"
+      <ArchiveHero
+        variant="full"
         title={pageTitle}
         description={pageDescription}
-        itemCount={sortedArchiveData.totalItems}
-        fullWidth
+        stats={`${sortedArchiveData.totalItems} ${sortedArchiveData.totalItems === 1 ? 'article' : 'articles'} across ${sortedArchiveData.availableTags.length} ${sortedArchiveData.availableTags.length === 1 ? 'topic' : 'topics'}`}
         actions={
           <a
             href="/blog/rss.xml"

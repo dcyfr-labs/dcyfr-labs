@@ -9,7 +9,8 @@ import { ArchivePagination } from "@/components/layouts/archive-pagination";
 import { CONTAINER_WIDTHS, CONTAINER_PADDING, SPACING } from "@/lib/design-tokens";
 import { ProjectList, ProjectFilters } from "@/components/projects";
 import { SmoothScrollToHash } from "@/components/common";
-import { PageLayout, PageHero } from "@/components/layouts";
+import { PageLayout } from "@/components/layouts";
+import { ArchiveHero } from "@/components/layouts/archive-hero";
 
 const basePageTitle = "Our Work";
 const basePageDescription = "Browse our portfolio of development projects, open-source contributions, and published works.";
@@ -257,7 +258,12 @@ export default async function WorkPage({ searchParams }: WorkPageProps) {
   // Compute dynamic title and description based on category
   const pageTitle = getPageTitle(selectedCategory);
   const pageDescription = getPageDescription(selectedCategory);
-  
+
+  // Calculate unique technologies for stats
+  const uniqueTechnologies = new Set(
+    sortedArchiveData.allFilteredItems.flatMap(p => p.tech || [])
+  );
+
   // Get view counts for all projects
   const projectSlugs = sortedArchiveData.allFilteredItems.map(project => project.slug);
   let viewCounts = new Map<string, number>();
@@ -307,12 +313,11 @@ export default async function WorkPage({ searchParams }: WorkPageProps) {
       <SmoothScrollToHash />
 
       {/* Hero section with RSS Feed button */}
-      <PageHero
-        variant="homepage"
+      <ArchiveHero
+        variant="full"
         title={pageTitle}
         description={pageDescription}
-        itemCount={sortedArchiveData.totalItems}
-        fullWidth
+        stats={`${sortedArchiveData.totalItems} ${sortedArchiveData.totalItems === 1 ? 'project' : 'projects'} • ${uniqueTechnologies.size} ${uniqueTechnologies.size === 1 ? 'technology' : 'technologies'}`}
         actions={
           <a
             href="/work/rss.xml"

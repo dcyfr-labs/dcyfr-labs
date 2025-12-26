@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { BookOpen, Briefcase, Activity, Bookmark, ArrowRight } from "lucide-react";
+import { BookOpen, Briefcase, Activity, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TYPOGRAPHY, HOVER_EFFECTS, ANIMATION } from "@/lib/design-tokens";
@@ -19,6 +19,7 @@ interface ExploreCardData {
   description: string;
   count?: number;
   countLabel?: string;
+  accentColor: string;
 }
 
 interface ExploreCardsProps {
@@ -59,12 +60,22 @@ export function ExploreCards({
 }: ExploreCardsProps) {
   const cards: ExploreCardData[] = [
     {
+      href: "/activity",
+      label: "Activity",
+      icon: Activity,
+      description: "Recent updates, commits, and milestones",
+      count: activityCount,
+      countLabel: "activities",
+      accentColor: "border-primary",
+    },
+    {
       href: "/blog",
       label: "Blog",
       icon: BookOpen,
       description: "Articles on security, development, and technology",
       count: postCount,
       countLabel: "articles",
+      accentColor: "border-primary",
     },
     {
       href: "/work",
@@ -73,28 +84,14 @@ export function ExploreCards({
       description: "Featured work and open source contributions",
       count: projectCount,
       countLabel: "projects",
-    },
-    {
-      href: "/activity",
-      label: "Activity",
-      icon: Activity,
-      description: "Recent updates, commits, and milestones",
-      count: activityCount,
-      countLabel: "activities",
-    },
-    {
-      href: "/bookmarks",
-      label: "Bookmarks",
-      icon: Bookmark,
-      description: "Curated resources and saved reads",
-      countLabel: "saved",
-    },
+      accentColor: "border-primary",
+    }
   ];
 
   return (
     <div
       className={cn(
-        "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4",
+        "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4",
         className
       )}
     >
@@ -108,26 +105,41 @@ export function ExploreCards({
           <Link href={card.href} className="block h-full group">
             <Card
               className={cn(
-                "h-full",
-                HOVER_EFFECTS.card
+                "h-full relative overflow-hidden",
+                HOVER_EFFECTS.card,
+                HOVER_EFFECTS.cardGlow
               )}
             >
+              {/* Accent border */}
+              <div
+                className={cn("absolute inset-x-0 top-0 h-0.5 z-20 opacity-0 group-hover:opacity-100 border-t-2", card.accentColor, ANIMATION.transition.appearance)}
+              />
+
               <CardContent className="p-4 md:p-5 flex flex-col h-full">
                 {/* Icon + Label + Count */}
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className={cn("p-2 rounded-lg bg-muted/50 group-hover:bg-muted", ANIMATION.transition.theme)}>
+                    <div
+                      className={cn("p-2 rounded-lg bg-muted/50 group-hover:bg-muted group-hover:scale-110", ANIMATION.transition.base)}
+                    >
                       <card.icon
                         className={cn("h-5 w-5 text-muted-foreground group-hover:text-foreground", ANIMATION.transition.theme)}
                         aria-hidden="true"
                       />
                     </div>
-                    <h3 className={cn(TYPOGRAPHY.h3.standard, "text-base")}>
+                    <h3 className={cn(TYPOGRAPHY.h3.standard, "text-base group-hover:text-foreground", ANIMATION.transition.theme)}>
                       {card.label}
                     </h3>
                   </div>
                   {card.count !== undefined && (
-                    <Badge variant="secondary" className="text-xs shrink-0">
+                    <Badge
+                      variant="secondary"
+                      className={cn(
+                        "text-xs shrink-0 group-hover:scale-110",
+                        ANIMATION.transition.movement,
+                        ANIMATION.effects.countUp
+                      )}
+                    >
                       {card.count} {card.countLabel}
                     </Badge>
                   )}
@@ -142,7 +154,7 @@ export function ExploreCards({
                 <div className={cn("flex items-center gap-1 mt-3 text-sm text-muted-foreground group-hover:text-foreground", ANIMATION.transition.theme)}>
                   <span>Explore</span>
                   <ArrowRight
-                    className="h-4 w-4 transform group-hover:translate-x-1 transition-transform"
+                    className={cn("h-4 w-4 group-hover:translate-x-1", ANIMATION.transition.movement)}
                     aria-hidden="true"
                   />
                 </div>

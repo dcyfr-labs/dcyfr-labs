@@ -158,11 +158,13 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
 
       {/* Dynamic Count and Actions */}
       {isMounted && totalLiked > 0 && (
-        <div className={cn(
-          "mx-auto flex items-center justify-between gap-4 -mt-6 mb-8",
-          CONTAINER_WIDTHS.standard,
-          CONTAINER_PADDING
-        )}>
+        <div
+          className={cn(
+            "mx-auto flex items-center justify-between gap-4 -mt-6 mb-8",
+            CONTAINER_WIDTHS.standard,
+            CONTAINER_PADDING
+          )}
+        >
           <p className={TYPOGRAPHY.metadata}>
             {totalLiked} {totalLiked === 1 ? "item" : "items"} liked
             {likedActivities.length > likedPosts.length && (
@@ -172,7 +174,11 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
             )}
           </p>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={() => setShowClearDialog(true)}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowClearDialog(true)}
+            >
               <Trash2 className="h-4 w-4 mr-2" />
               Clear All
             </Button>
@@ -181,7 +187,9 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
       )}
 
       {/* Post List or Empty State */}
-      <div className={cn("mx-auto", CONTAINER_WIDTHS.standard, CONTAINER_PADDING)}>
+      <div
+        className={cn("mx-auto", CONTAINER_WIDTHS.standard, CONTAINER_PADDING)}
+      >
         {!isMounted ? (
           // Loading state during hydration
           <div className="text-center py-8 text-muted-foreground">
@@ -195,7 +203,8 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
               </div>
               <h2 className={TYPOGRAPHY.h2.standard}>No liked items yet</h2>
               <p className="text-muted-foreground mt-2 mb-8">
-                Like posts and activities you enjoy by clicking the heart icon on any card
+                Like posts and activities you enjoy by clicking the heart icon
+                on any card
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button asChild variant="default">
@@ -214,7 +223,9 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
             {recommendedPosts.length > 0 && (
               <div className="mt-16">
                 <div className="mb-6 text-center">
-                  <h3 className={TYPOGRAPHY.h3.standard}>Recommended to Get Started</h3>
+                  <h3 className={TYPOGRAPHY.h3.standard}>
+                    Recommended to Get Started
+                  </h3>
                   <p className="text-muted-foreground mt-2">
                     Popular posts to explore first
                   </p>
@@ -235,11 +246,7 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
                 <h3 className={cn(TYPOGRAPHY.h3.standard, "mb-6")}>
                   Blog Posts
                 </h3>
-                <PostList
-                  posts={likedPosts}
-                  layout={layout}
-                  emptyMessage=""
-                />
+                <PostList posts={likedPosts} layout={layout} emptyMessage="" />
               </div>
             )}
 
@@ -249,10 +256,7 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
                 <h3 className={cn(TYPOGRAPHY.h3.standard, "mb-6")}>
                   Other Activities
                 </h3>
-                <ActivityFeed
-                  items={nonBlogLikedActivities}
-                  emptyMessage=""
-                />
+                <ActivityFeed items={nonBlogLikedActivities} emptyMessage="" />
               </div>
             )}
           </div>
@@ -262,10 +266,9 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
         {isMounted && totalLiked > 0 && (
           <Alert type="info" className="mt-8">
             <div>
-              <p className="font-medium mb-1">Likes are stored locally</p>
+              <p className="font-medium mb-1">Likes stored locally</p>
               <p className="text-sm">
-                Your likes are saved in your browser&apos;s local storage and will persist across sessions.
-                Global like counts are tracked across all users in Redis.
+                Your likes are saved in your browser&apos;s local storage. They won&apos;t sync across devices or be visible to others.
               </p>
             </div>
           </Alert>
@@ -283,7 +286,9 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
               <div className="flex-1 space-y-2">
                 <DialogTitle>Clear all likes?</DialogTitle>
                 <DialogDescription>
-                  This will remove all {totalLiked} liked {totalLiked === 1 ? "item" : "items"}. This action cannot be undone.
+                  This will remove all {totalLiked} liked{" "}
+                  {totalLiked === 1 ? "item" : "items"}. This action cannot be
+                  undone.
                 </DialogDescription>
               </div>
             </div>

@@ -56,7 +56,9 @@ export function QuickLinksRibbon({ className }: { className?: string }) {
                 "text-muted-foreground hover:text-foreground",
                 TYPOGRAPHY.label.small,
                 "whitespace-nowrap",
-                ANIMATION.transition.theme,
+                ANIMATION.transition.base,
+                "hover:scale-105 active:scale-95",
+                "hover:shadow-md",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 "min-h-11" // Touch target (44px)
               )}

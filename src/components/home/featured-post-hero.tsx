@@ -3,11 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Clock } from "lucide-react";
 import type { Post } from "@/data/posts";
-import { HOVER_EFFECTS, TYPOGRAPHY, SPACING, GRADIENTS } from "@/lib/design-tokens";
+import { TYPOGRAPHY, SPACING, ANIMATION } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 
 interface FeaturedPostHeroProps {
@@ -63,9 +62,13 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
 
   return (
     <Link href={`/blog/${post.slug}`}>
-      <div className={cn("group relative overflow-hidden rounded-xl border shadow-lg", HOVER_EFFECTS.cardFeatured)}>
-        {/* Gradient accent bar */}
-        <div className={cn("absolute inset-x-0 top-0 h-1 z-20 rounded-t-xl", GRADIENTS.brand.primary)} />
+      <div className={cn(
+        "group relative overflow-hidden rounded-xl border shadow-lg"
+      )}>
+        {/* Accent bar with glow effect */}
+        <div
+          className={cn("absolute inset-x-0 top-0 h-1 z-20 rounded-t-xl group-hover:h-1.5 group-hover:shadow-lg bg-primary", ANIMATION.transition.base)}
+        />
         
         {/* Background image - fills entire container */}
         {post.image && !post.image.hideCard && (
@@ -74,12 +77,12 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
               src={post.image.url}
               alt={post.image.alt || post.title}
               fill
-              className="object-cover"
+              className={cn("object-cover", ANIMATION.transition.slow)}
               sizes="(max-width: 768px) 100vw, 1200px"
               priority
             />
             {/* Dark overlay for text contrast */}
-            <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/85 to-background/90" />
+            <div className={cn("absolute inset-0 bg-linear-to-b from-background/45 via-background/70 to-background/95", ANIMATION.transition.appearance)} />
           </div>
         )}
         
@@ -133,9 +136,9 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
               </span>
             </div>
             
-            <div className="inline-flex items-center gap-1 text-primary font-medium hover:underline">
+            <div className={cn("inline-flex items-center gap-1 text-primary font-medium hover:underline group-hover:gap-2", ANIMATION.transition.base)}>
               Read post
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className={cn("h-4 w-4 group-hover:translate-x-1", ANIMATION.transition.movement)} />
             </div>
           </div>
         </div>

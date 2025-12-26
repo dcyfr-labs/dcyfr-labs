@@ -6,7 +6,7 @@ import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
 import { getAllDocs, getDocBySlug, getFolderContents, searchDocs, extractTableOfContents } from "@/lib/docs";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { FileText, Search, Folder, Clock, Tag } from "lucide-react";
+import { FileText, Folder, Clock, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface PageProps {
@@ -79,22 +79,35 @@ export default async function DevDocsPage({ params, searchParams }: PageProps) {
     
     // If searching, show search results
     if (search && searchResults) {
+      const RESULTS_PER_PAGE = 50;
+      const displayedResults = searchResults.slice(0, RESULTS_PER_PAGE);
+      const hasMoreResults = searchResults.length > RESULTS_PER_PAGE;
+
       return (
         <DocsLayout docs={allDocs}>
           <div>
             <header className={SPACING.content}>
               <h1 className={TYPOGRAPHY.h1.standard}>Search Results</h1>
               <p className={cn(TYPOGRAPHY.description, "mt-2")}>
-                Found {searchResults.length} results for &quot;{search}&quot;
+                {hasMoreResults ? (
+                  <>Showing {displayedResults.length} of {searchResults.length} results for &quot;{search}&quot;</>
+                ) : (
+                  <>Found {searchResults.length} {searchResults.length === 1 ? 'result' : 'results'} for &quot;{search}&quot;</>
+                )}
               </p>
+              {hasMoreResults && (
+                <div className="mt-3 p-3 bg-muted rounded-lg text-sm text-muted-foreground">
+                  <p>Too many results to display. Try refining your search query for better results.</p>
+                </div>
+              )}
             </header>
-            
+
             <div className="mb-8">
               <ClientDocSearch placeholder="Search documentation..." />
             </div>
-            
+
             <div className="space-y-4">
-              {searchResults.map(doc => (
+              {displayedResults.map(doc => (
                 <Link
                   key={doc.slug}
                   href={`/dev/docs/${doc.slug}`}
@@ -191,15 +204,10 @@ function renderFolderView(
   allDocs: any[]
 ) {
   const { indexDoc, readmeDoc, files, subfolders } = folderContents;
-  
+
   // Determine the primary document to show (INDEX takes priority over README)
   const primaryDoc = indexDoc || readmeDoc || undefined;
   const secondaryDoc = indexDoc && readmeDoc ? readmeDoc : null;
-  
-  // For metadata and title
-  const title = folderPath ? 
-    `${folderPath.split('/').pop()?.charAt(0).toUpperCase()}${folderPath.split('/').pop()?.slice(1)} Documentation` :
-    'Developer Documentation';
   
   return (
     <DocsLayout doc={primaryDoc} docs={allDocs}>

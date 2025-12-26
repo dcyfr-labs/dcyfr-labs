@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { allSeries, getSeriesByAnySlug } from "@/data/posts";
-import { PageLayout, PageHero } from "@/components/layouts";
+import { PageLayout } from "@/components/layouts";
+import { ArchiveHero } from "@/components/layouts/archive-hero";
 import { PostList, SeriesPageAnalyticsTracker } from "@/components/blog";
 import { SITE_TITLE_PLAIN, SITE_URL, getOgImageUrl } from "@/lib/site-config";
 import { CONTAINER_WIDTHS, CONTAINER_PADDING, SPACING } from "@/lib/design-tokens";
@@ -123,13 +124,12 @@ export default async function SeriesPage({
         }}
       />
 
-      {/* Hero section with full-width background */}
-      <PageHero
-        variant="homepage"
+      {/* Hero section with medium background */}
+      <ArchiveHero
+        variant="medium"
         title={series.name}
         description={series.description}
-        itemCount={series.postCount}
-        fullWidth
+        stats={`${series.postCount} ${series.postCount === 1 ? 'post' : 'posts'} • ${series.totalReadingTime} min read`}
       />
 
       {/* Content section with archive-width container */}

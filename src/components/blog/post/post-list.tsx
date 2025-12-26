@@ -235,7 +235,7 @@ export function PostList({
                         sizes="(max-width: 768px) 100vw, 100vw"
                       />
                       {/* Gradient overlay for text contrast */}
-                      <div className="absolute inset-0 bg-linear-to-b from-background/75 via-background/85 to-background/95" />
+                      <div className="absolute inset-0 bg-linear-to-b from-background/45 via-background/70 to-background/95" />
                     </div>
                   )}
 
@@ -365,7 +365,7 @@ export function PostList({
                       sizes="(max-width: 768px) 100vw, 100vw"
                     />
                     {/* Gradient overlay for text contrast */}
-                    <div className="absolute inset-0 bg-linear-to-b from-background/75 via-background/85 to-background/95" />
+                    <div className="absolute inset-0 bg-linear-to-b from-background/45 via-background/70 to-background/95" />
                   </div>
                 )}
                 <Link href={`/blog/${p.slug}`} className="block">
@@ -490,7 +490,7 @@ export function PostList({
                           className="object-cover"
                           sizes="(max-width: 768px) 100vw, 100vw"
                         />
-                        <div className="absolute inset-0 bg-linear-to-b from-background/75 via-background/85 to-background/95" />
+                        <div className="absolute inset-0 bg-linear-to-b from-background/45 via-background/70 to-background/95" />
                       </div>
                     )}
 
@@ -575,7 +575,7 @@ export function PostList({
                         className="object-cover"
                         sizes="(max-width: 768px) 100vw, 100vw"
                       />
-                      <div className="absolute inset-0 bg-linear-to-b from-background/75 via-background/85 to-background/95" />
+                      <div className="absolute inset-0 bg-linear-to-b from-background/45 via-background/70 to-background/95" />
                     </div>
                   )}
                   <Link href={`/blog/${p.slug}`} className="block">
@@ -635,7 +635,7 @@ export function PostList({
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 100vw"
                 />
-                <div className="absolute inset-0 bg-linear-to-b from-background/75 via-background/85 to-background/95" />
+                <div className="absolute inset-0 bg-linear-to-b from-background/45 via-background/70 to-background/95" />
               </div>
             )}
 
@@ -726,7 +726,7 @@ export function PostList({
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, 50vw"
                     />
-                    <div className="absolute inset-0 bg-linear-to-b from-background/75 via-background/85 to-background/95" />
+                    <div className="absolute inset-0 bg-linear-to-b from-background/45 via-background/70 to-background/95" />
                   </div>
                 )}
                 <Link href={`/blog/${p.slug}`} className="flex flex-col h-full">
@@ -820,7 +820,7 @@ export function PostList({
                       sizes="(max-width: 768px) 100vw, 100vw"
                     />
                     {/* Gradient overlay for text contrast */}
-                    <div className="absolute inset-0 bg-linear-to-b from-background/75 via-background/85 to-background/95" />
+                    <div className="absolute inset-0 bg-linear-to-b from-background/45 via-background/70 to-background/95" />
                   </div>
                 )}
                 <Link href={`/blog/${p.slug}`} className="block">
@@ -923,7 +923,7 @@ export function PostList({
                       sizes="(max-width: 768px) 100vw, 50vw"
                     />
                     {/* Gradient overlay for text contrast */}
-                    <div className="absolute inset-0 bg-linear-to-b from-background/75 via-background/85 to-background/95" />
+                    <div className="absolute inset-0 bg-linear-to-b from-background/45 via-background/70 to-background/95" />
                   </div>
                 )}
                 <Link href={`/blog/${p.slug}`} className="block">
@@ -997,7 +997,7 @@ export function PostList({
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 100vw"
                 />
-                <div className="absolute inset-0 bg-linear-to-b from-background/75 via-background/85 to-background/95" />
+                <div className="absolute inset-0 bg-linear-to-b from-background/45 via-background/70 to-background/95" />
               </div>
             )}
             <Link href={`/blog/${p.slug}`} className="block">

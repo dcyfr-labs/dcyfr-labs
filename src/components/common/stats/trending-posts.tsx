@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { TrendingUp, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Post } from "@/data/posts";
-import { ANIMATION, TYPOGRAPHY } from "@/lib/design-tokens";
+import { ANIMATION, TYPOGRAPHY, HOVER_EFFECTS } from "@/lib/design-tokens";
 
 interface TrendingPostsProps {
   posts: Post[];
@@ -76,18 +76,33 @@ export function TrendingPosts({ posts, viewCounts, limit = 3 }: TrendingPostsPro
           >
             <Link href={`/blog/${post.slug}`}>
               <Card className={cn(
-                "p-4 border hover:border-primary/50 cursor-pointer",
+                "p-4 border cursor-pointer group",
                 ANIMATION.transition.base,
-                "hover:bg-muted/30"
+                HOVER_EFFECTS.cardGlow,
+                "hover:bg-muted/30 hover:border-primary/50 hover:-translate-y-0.5"
               )}>
                 <div className="space-y-2">
                   {/* Header: Rank + Tag */}
                   <div className="flex items-center justify-between gap-2">
-                    <Badge variant="outline" className={TYPOGRAPHY.label.xs}>
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        TYPOGRAPHY.label.xs,
+                        ANIMATION.transition.movement,
+                        "group-hover:scale-110"
+                      )}
+                    >
                       #{index + 1}
                     </Badge>
                     {post.tags[0] && (
-                      <Badge variant="secondary" className={TYPOGRAPHY.label.xs}>
+                      <Badge
+                        variant="secondary"
+                        className={cn(
+                          TYPOGRAPHY.label.xs,
+                          ANIMATION.transition.theme,
+                          "group-hover:bg-primary/20"
+                        )}
+                      >
                         {post.tags[0]}
                       </Badge>
                     )}
@@ -97,7 +112,8 @@ export function TrendingPosts({ posts, viewCounts, limit = 3 }: TrendingPostsPro
                   <h3 className={cn(
                     TYPOGRAPHY.label.standard,
                     "line-clamp-2 leading-snug",
-                    ANIMATION.transition.theme
+                    ANIMATION.transition.theme,
+                    "group-hover:text-primary"
                   )}>
                     {post.title}
                   </h3>
@@ -105,9 +121,9 @@ export function TrendingPosts({ posts, viewCounts, limit = 3 }: TrendingPostsPro
                   {/* Footer: Views + Reading time */}
                   <div className="flex items-center gap-3 text-xs text-muted-foreground pt-1">
                     {views > 0 && (
-                      <div className="flex items-center gap-1">
-                        <TrendingUp className="h-3 w-3" />
-                        <span>{views.toLocaleString()} views</span>
+                      <div className={cn("flex items-center gap-1 group-hover:text-foreground", ANIMATION.transition.theme)}>
+                        <TrendingUp className={cn("h-3 w-3 group-hover:scale-110", ANIMATION.transition.movement)} />
+                        <span className={ANIMATION.effects.countUp}>{views.toLocaleString()} views</span>
                       </div>
                     )}
                     <div className="flex items-center gap-1">
