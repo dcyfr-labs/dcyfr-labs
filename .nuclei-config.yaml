@@ -1,0 +1,143 @@
+# Nuclei Scanner Configuration
+# ProjectDiscovery Nuclei settings for external vulnerability scanning
+# Docs: https://docs.projectdiscovery.io/tools/nuclei/running
+
+# General Settings
+version: "3.3.7"
+silent: false
+verbose: false
+debug: false
+stats: true
+
+# Performance Settings
+rate-limit: 150                    # Max requests per second
+bulk-size: 25                      # URLs per template batch
+concurrency: 25                    # Parallel templates
+timeout: 10                        # Request timeout (seconds)
+retries: 1                         # Retry failed requests
+max-host-error: 30                 # Max errors before skipping host
+
+# Template Settings
+# Nuclei auto-updates templates - this config defines preferences
+templates:
+  - cves/                          # CVE-specific templates
+  - exposures/                     # Exposed services/data
+  - misconfiguration/              # Configuration issues
+  - vulnerabilities/               # General vulnerabilities
+  - network/                       # Network security
+  - takeovers/                     # Subdomain takeovers
+  - technologies/                  # Tech stack detection
+
+# Excluded templates (avoid invasive/disruptive scans)
+exclude-templates:
+  - fuzzing/                       # Avoid fuzzing in production
+  - headless/                      # Skip browser-based (slower)
+  - helpers/                       # Helper templates only
+
+# Tags to include
+tags:
+  - cve
+  - exposure
+  - misconfiguration
+  - network
+  - owasp
+  - tech
+  - vulnerability
+  - xss
+  - sqli
+  - rce
+  - lfi
+  - ssrf
+
+# Tags to exclude (avoid destructive tests)
+exclude-tags:
+  - intrusive
+  - dos
+  - fuzzing
+  - experimental
+
+# Severity filters
+severity:
+  - medium
+  - high
+  - critical
+
+exclude-severity:
+  - info                           # Too noisy for production
+
+# Network Settings
+# Follow redirects for complete coverage
+follow-redirects: true
+max-redirects: 5
+follow-host-redirects: false       # Stay on target domain
+
+# Disable IPv6 to avoid scanning issues
+disable-ipv6: true
+
+# HTTP Settings
+user-agent: "Mozilla/5.0 (compatible; NucleiScanner/3.3; +https://github.com/projectdiscovery/nuclei)"
+
+# Custom headers for identification
+header:
+  - "X-Scanner: Nuclei"
+  - "X-Scan-Purpose: Security-Assessment"
+
+# Output Settings
+json: true
+json-export: nuclei-results.json
+markdown-export: nuclei-report.md
+
+# Reporting Settings
+# GitHub Issues integration handled by workflow
+report-config:
+  github:
+    username: "${GITHUB_REPOSITORY_OWNER}"
+    token: "${GITHUB_TOKEN}"
+    project-name: "${GITHUB_REPOSITORY}"
+    issue-label: "security,nuclei,external-scan"
+
+# Interactsh Settings (for OAST vulnerabilities)
+# Disabled by default - uncomment to enable
+# interactsh-server: "oast.pro,oast.live,oast.site,oast.online,oast.fun,oast.me"
+# interactsh-cache-size: 5000
+# interactsh-eviction: 60
+# interactsh-poll-duration: 5
+# interactsh-cooldown-period: 5
+
+# Rate Limiting & Backoff
+# Respect target servers
+system-resolvers: true             # Use system DNS
+# no-stdin: true                   # Uncomment for CI/CD
+
+# Update Settings
+# Templates auto-update in workflow
+update-templates: true
+templates-version: latest
+
+# Nuclei Cloud (disabled - using open-source)
+# cloud-upload: false
+# disable-update-check: false
+
+# Advanced Settings
+# Stop after N errors per host
+# stop-at-first-match: false       # Find all vulns, not just first
+
+# Code Settings (for code protocol scans)
+# Disabled for external web scanning
+# code: false
+
+# Metrics & Monitoring
+# metrics: true
+# metrics-port: 9092
+
+# Custom Template Paths (optional)
+# template-list:
+#   - /custom/templates/
+#   - ./.nuclei-templates/
+
+# Environment-Specific Overrides
+# Set via environment variables in GitHub Actions:
+# - NUCLEI_TARGET
+# - NUCLEI_SEVERITY
+# - NUCLEI_TAGS
+# - NUCLEI_EXCLUDE_TAGS

@@ -1,0 +1,433 @@
+name: Nuclei External Vulnerability Scan
+
+# ProjectDiscovery Nuclei integration for external vulnerability scanning
+# Complements CodeQL/Semgrep internal code scanning with runtime vulnerability detection
+# Docs: https://github.com/projectdiscovery/nuclei
+
+on:
+  # Trigger after successful production deployment
+  workflow_run:
+    workflows: ['Deploy']
+    types: [completed]
+    branches: [main]
+
+  # Scheduled scans to catch newly disclosed vulnerabilities
+  schedule:
+    # Daily at 3 AM UTC (after dependency scans complete)
+    - cron: '0 3 * * *'
+
+  # Manual trigger for ad-hoc security testing
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: 'Target URL to scan (default: production)'
+        required: false
+        default: 'https://dcyfr.ai'
+        type: string
+      severity_threshold:
+        description: 'Minimum severity to report'
+        required: false
+        default: 'medium'
+        type: choice
+        options:
+          - info
+          - low
+          - medium
+          - high
+          - critical
+      create_issues:
+        description: 'Auto-create GitHub issues for findings'
+        required: false
+        default: true
+        type: boolean
+
+# Cancel in-progress runs for same branch
+concurrency:
+  group: nuclei-scan-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  security-events: write
+  issues: write
+  actions: read
+
+env:
+  PRODUCTION_URL: 'https://dcyfr.ai'  # Production: dcyfr.ai (main) | Preview: dcyfr.dev
+  SEVERITY_THRESHOLD: 'medium'
+
+jobs:
+  # Only run on successful deployments or scheduled/manual triggers
+  check-deployment:
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+      target_url: ${{ steps.check.outputs.target_url }}
+    steps:
+      - name: Determine if scan should run
+        id: check
+        run: |
+          SHOULD_RUN="true"
+          TARGET_URL="${{ github.event.inputs.target_url || env.PRODUCTION_URL }}"
+
+          # Skip if workflow_run triggered but deployment failed
+          if [ "${{ github.event_name }}" == "workflow_run" ] && [ "${{ github.event.workflow_run.conclusion }}" != "success" ]; then
+            echo "Deployment failed - skipping vulnerability scan"
+            SHOULD_RUN="false"
+          fi
+
+          echo "should_run=$SHOULD_RUN" >> $GITHUB_OUTPUT
+          echo "target_url=$TARGET_URL" >> $GITHUB_OUTPUT
+
+          echo "### Scan Decision" >> $GITHUB_STEP_SUMMARY
+          echo "- Should run: $SHOULD_RUN" >> $GITHUB_STEP_SUMMARY
+          echo "- Target URL: $TARGET_URL" >> $GITHUB_STEP_SUMMARY
+          echo "- Trigger: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+
+  nuclei-scan:
+    needs: check-deployment
+    if: needs.check-deployment.outputs.should_run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    outputs:
+      vulnerabilities_found: ${{ steps.scan.outputs.vulnerabilities_found }}
+      critical_count: ${{ steps.scan.outputs.critical_count }}
+      high_count: ${{ steps.scan.outputs.high_count }}
+      medium_count: ${{ steps.scan.outputs.medium_count }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nuclei
+        run: |
+          # Install latest Nuclei from GitHub releases
+          wget -q https://github.com/projectdiscovery/nuclei/releases/latest/download/nuclei_3.3.7_linux_amd64.zip
+          unzip -q nuclei_3.3.7_linux_amd64.zip
+          sudo mv nuclei /usr/local/bin/
+          nuclei -version
+
+      - name: Update Nuclei templates
+        run: |
+          # Download latest vulnerability templates (11,000+ templates)
+          nuclei -update-templates
+          echo "✅ Nuclei templates updated successfully"
+
+      - name: Run Nuclei vulnerability scan
+        id: scan
+        continue-on-error: true
+        env:
+          TARGET_URL: ${{ needs.check-deployment.outputs.target_url }}
+          SEVERITY: ${{ github.event.inputs.severity_threshold || env.SEVERITY_THRESHOLD }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: |
+          # Build target URL with Vercel authentication bypass ONLY for protected preview (.dev)
+          # Production (.ai) is public and doesn't require bypass
+          SCAN_TARGET="$TARGET_URL"
+          if [[ "$TARGET_URL" == *".dev"* ]] && [ -n "$VERCEL_AUTOMATION_BYPASS_SECRET" ]; then
+            echo "✅ Using Vercel automation bypass secret for password-protected preview deployment"
+            SCAN_TARGET="${TARGET_URL}?x-vercel-protection-bypass=${VERCEL_AUTOMATION_BYPASS_SECRET}"
+          elif [[ "$TARGET_URL" == *".ai"* ]]; then
+            echo "✅ Scanning public production deployment (no bypass needed)"
+          else
+            echo "⚠️  Unknown deployment type - scanning without bypass"
+          fi
+
+          echo "🔍 Scanning $TARGET_URL with severity threshold: $SEVERITY"
+
+          # Run Nuclei scan with comprehensive settings
+          nuclei \
+            -target "$SCAN_TARGET" \
+            -severity "$SEVERITY,high,critical" \
+            -exclude-severity info \
+            -json \
+            -output nuclei-results.json \
+            -stats \
+            -silent \
+            -rate-limit 150 \
+            -bulk-size 25 \
+            -concurrency 25 \
+            -timeout 10 \
+            -retries 1 \
+            -tags cve,exposure,misconfiguration,network,owasp,tech,vulnerability \
+            -exclude-tags intrusive,dos,fuzzing || true
+
+          # Parse results
+          if [ -f nuclei-results.json ] && [ -s nuclei-results.json ]; then
+            TOTAL=$(jq -s 'length' nuclei-results.json)
+            CRITICAL=$(jq -s '[.[] | select(.info.severity=="critical")] | length' nuclei-results.json)
+            HIGH=$(jq -s '[.[] | select(.info.severity=="high")] | length' nuclei-results.json)
+            MEDIUM=$(jq -s '[.[] | select(.info.severity=="medium")] | length' nuclei-results.json)
+            LOW=$(jq -s '[.[] | select(.info.severity=="low")] | length' nuclei-results.json)
+
+            echo "vulnerabilities_found=true" >> $GITHUB_OUTPUT
+            echo "total=$TOTAL" >> $GITHUB_OUTPUT
+            echo "critical_count=$CRITICAL" >> $GITHUB_OUTPUT
+            echo "high_count=$HIGH" >> $GITHUB_OUTPUT
+            echo "medium_count=$MEDIUM" >> $GITHUB_OUTPUT
+            echo "low_count=$LOW" >> $GITHUB_OUTPUT
+
+            echo "📊 Found $TOTAL vulnerabilities: Critical=$CRITICAL, High=$HIGH, Medium=$MEDIUM, Low=$LOW"
+          else
+            echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT
+            echo "total=0" >> $GITHUB_OUTPUT
+            echo "critical_count=0" >> $GITHUB_OUTPUT
+            echo "high_count=0" >> $GITHUB_OUTPUT
+            echo "medium_count=0" >> $GITHUB_OUTPUT
+            echo "low_count=0" >> $GITHUB_OUTPUT
+            echo "✅ No vulnerabilities detected"
+          fi
+
+      - name: Generate vulnerability report
+        if: always()
+        run: |
+          cat > nuclei-report.md << 'EOF'
+          ## 🔍 Nuclei External Vulnerability Scan
+
+          **Target:** ${{ needs.check-deployment.outputs.target_url }}
+          **Scan Date:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')
+          **Trigger:** ${{ github.event_name }}
+
+          ### Vulnerability Summary
+
+          | Severity | Count |
+          |----------|-------|
+          | 🚨 Critical | ${{ steps.scan.outputs.critical_count || 0 }} |
+          | ⚠️ High | ${{ steps.scan.outputs.high_count || 0 }} |
+          | ⚡ Medium | ${{ steps.scan.outputs.medium_count || 0 }} |
+          | ℹ️ Low | ${{ steps.scan.outputs.low_count || 0 }} |
+
+          **Total:** ${{ steps.scan.outputs.total || 0 }} vulnerabilities
+
+          ### Status
+          EOF
+
+          if [ "${{ steps.scan.outputs.critical_count }}" -gt 0 ]; then
+            echo "🚨 **CRITICAL:** High-severity vulnerabilities detected - immediate action required" >> nuclei-report.md
+          elif [ "${{ steps.scan.outputs.high_count }}" -gt 0 ]; then
+            echo "⚠️ **WARNING:** High-severity vulnerabilities found - review and remediation recommended" >> nuclei-report.md
+          elif [ "${{ steps.scan.outputs.medium_count }}" -gt 0 ]; then
+            echo "⚡ **INFO:** Medium-severity vulnerabilities present - review when possible" >> nuclei-report.md
+          else
+            echo "✅ **ALL CLEAR:** No significant vulnerabilities detected" >> nuclei-report.md
+          fi
+
+          echo "" >> nuclei-report.md
+          echo "### Scan Details" >> nuclei-report.md
+          echo "- **Nuclei Version:** $(nuclei -version 2>&1 | head -n1)" >> nuclei-report.md
+          echo "- **Templates:** Latest community templates (11,000+)" >> nuclei-report.md
+          echo "- **Excluded:** DoS, intrusive, fuzzing tests" >> nuclei-report.md
+          echo "" >> nuclei-report.md
+          echo "See workflow artifacts for detailed JSON results." >> nuclei-report.md
+
+      - name: Upload scan results as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuclei-scan-results-${{ github.run_number }}
+          path: |
+            nuclei-results.json
+            nuclei-report.md
+          retention-days: 90
+
+      - name: Generate step summary
+        if: always()
+        run: cat nuclei-report.md >> $GITHUB_STEP_SUMMARY
+
+      - name: Save results for issue creation
+        if: steps.scan.outputs.vulnerabilities_found == 'true'
+        run: |
+          # Export results for issue creation job
+          echo "Results saved for GitHub issue creation"
+
+  # Create GitHub issues for discovered vulnerabilities
+  create-issues:
+    needs: [check-deployment, nuclei-scan]
+    if: needs.nuclei-scan.outputs.vulnerabilities_found == 'true' && (github.event.inputs.create_issues != 'false')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download scan results
+        uses: actions/download-artifact@v4
+        with:
+          name: nuclei-scan-results-${{ github.run_number }}
+
+      - name: Create GitHub issues for vulnerabilities
+        uses: actions/github-script@v7
+        env:
+          TARGET_URL: ${{ needs.check-deployment.outputs.target_url }}
+        with:
+          script: |
+            const fs = require('fs');
+
+            // Load scan results
+            const results = JSON.parse(fs.readFileSync('nuclei-results.json', 'utf-8'))
+              .split('\n')
+              .filter(line => line.trim())
+              .map(line => JSON.parse(line));
+
+            console.log(`Processing ${results.length} vulnerabilities`);
+
+            // Get existing issues to avoid duplicates
+            const existingIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'security,nuclei',
+              per_page: 100
+            });
+
+            const existingTitles = new Set(existingIssues.data.map(i => i.title));
+
+            // Group by severity
+            const critical = results.filter(r => r.info.severity === 'critical');
+            const high = results.filter(r => r.info.severity === 'high');
+            const medium = results.filter(r => r.info.severity === 'medium');
+
+            let issuesCreated = 0;
+
+            // Create issues for critical/high vulnerabilities
+            for (const vuln of [...critical, ...high]) {
+              const title = `[Nuclei] ${vuln.info.severity.toUpperCase()}: ${vuln.info.name}`;
+
+              // Skip if already exists
+              if (existingTitles.has(title)) {
+                console.log(`Skipping duplicate: ${title}`);
+                continue;
+              }
+
+              const body = `## 🔍 External Vulnerability Detected by Nuclei
+
+            **Severity:** ${vuln.info.severity.toUpperCase()}
+            **Template:** ${vuln.templateID || vuln['template-id'] || 'Unknown'}
+            **Target:** ${process.env.TARGET_URL}
+            **Matched At:** ${vuln.matched || vuln.matchedAt || 'N/A'}
+
+            ### Description
+            ${vuln.info.description || 'No description provided'}
+
+            ### Evidence
+            \`\`\`
+            ${vuln.extracted_results?.join('\n') || vuln.matcher_name || 'See scan artifacts for details'}
+            \`\`\`
+
+            ### References
+            ${vuln.info.reference ? vuln.info.reference.map(r => `- ${r}`).join('\n') : 'No references available'}
+
+            ### Remediation
+            ${vuln.info.remediation || 'Review vulnerability details and apply security patches or configuration changes as appropriate.'}
+
+            ---
+            **Scan Date:** ${new Date().toISOString()}
+            **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            ---
+            *This issue was automatically created by Nuclei external vulnerability scanner.*
+            `;
+
+              try {
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title,
+                  body,
+                  labels: [
+                    'security',
+                    'nuclei',
+                    `severity:${vuln.info.severity}`,
+                    'external-scan'
+                  ]
+                });
+                issuesCreated++;
+                console.log(`✅ Created issue: ${title}`);
+              } catch (error) {
+                console.error(`❌ Failed to create issue: ${error.message}`);
+              }
+            }
+
+            // Summary comment
+            console.log(`\n📊 Summary: Created ${issuesCreated} GitHub issues`);
+
+            // Create summary issue if multiple medium-severity found
+            if (medium.length > 5) {
+              const summaryTitle = `[Nuclei] Security Review: ${medium.length} Medium-Severity Findings`;
+
+              if (!existingTitles.has(summaryTitle)) {
+                const summaryBody = `## 📋 Multiple Medium-Severity Vulnerabilities Detected
+
+            Nuclei external scan found **${medium.length} medium-severity vulnerabilities** that should be reviewed:
+
+            ${medium.map((v, i) => `${i + 1}. **${v.info.name}** (${v.templateID || v['template-id']})`).join('\n')}
+
+            ### Recommendations
+            - Review each vulnerability in the scan artifacts
+            - Prioritize based on asset criticality and exploit likelihood
+            - Apply security patches or configuration hardening
+
+            **Scan Artifacts:** See workflow run for detailed JSON results
+
+            ---
+            **Scan Date:** ${new Date().toISOString()}
+            **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            `;
+
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: summaryTitle,
+                  body: summaryBody,
+                  labels: ['security', 'nuclei', 'severity:medium', 'external-scan']
+                });
+                console.log(`✅ Created summary issue for ${medium.length} medium-severity findings`);
+              }
+            }
+
+      - name: Summary
+        run: |
+          echo "### 📝 GitHub Issues Created" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Automatically created GitHub issues for critical and high-severity vulnerabilities." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Filter by labels:** \`security\`, \`nuclei\`, \`severity:critical\`, \`severity:high\`" >> $GITHUB_STEP_SUMMARY
+
+  # Fail workflow if critical vulnerabilities found
+  security-gate:
+    needs: nuclei-scan
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for critical vulnerabilities
+        run: |
+          CRITICAL=${{ needs.nuclei-scan.outputs.critical_count || 0 }}
+
+          if [ "$CRITICAL" -gt 0 ]; then
+            echo "❌ SECURITY GATE FAILED: $CRITICAL critical vulnerabilities detected"
+            echo ""
+            echo "Review automatically created GitHub issues for details and remediation steps."
+            exit 1
+          else
+            echo "✅ Security gate passed - no critical vulnerabilities"
+          fi
+
+      - name: Generate unified summary
+        if: always()
+        run: |
+          echo "# 🔒 Nuclei Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Critical | ${{ needs.nuclei-scan.outputs.critical_count || 0 }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| High | ${{ needs.nuclei-scan.outputs.high_count || 0 }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Medium | ${{ needs.nuclei-scan.outputs.medium_count || 0 }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ needs.nuclei-scan.outputs.critical_count }}" -gt 0 ]; then
+            echo "**Status:** 🚨 Critical vulnerabilities require immediate attention" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Status:** ✅ No critical external vulnerabilities detected" >> $GITHUB_STEP_SUMMARY
+          fi

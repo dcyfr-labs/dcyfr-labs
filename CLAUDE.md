@@ -337,6 +337,7 @@ console.log(`Service Account: ${maskEmail(credentials.client_email)}`);
 
 - `/docs/architecture/` - Patterns, migration guides
 - `/docs/design/` - Design system enforcement
+- `/docs/security/` - Security scanning (Nuclei, CodeQL)
 - `/docs/testing/` - Test infrastructure
 - `/docs/features/` - Feature guides
 - `/docs/operations/` - Todo system, done.md
@@ -369,6 +370,7 @@ See [`docs/ai/OPTIMIZATION_STRATEGY.md`](docs/ai/OPTIMIZATION_STRATEGY.md) for d
 **GitHub Actions:**
 
 - CodeQL security scanning (daily)
+- Nuclei external vulnerability scanning (on deploy + daily)
 - Dependabot auto-merge
 - Test suite on PR
 - Lighthouse CI on deploy

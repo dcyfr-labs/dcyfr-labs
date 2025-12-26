@@ -101,10 +101,12 @@ export function useBookmarks(): UseBookmarksReturn {
   // Query operations
   const isBookmarkedQuery = useCallback(
     (activityId: string): boolean => {
-      if (!mounted) return false; // Suppress client-only data during SSR
+      // Removed !mounted check - it causes race conditions where bookmarks exist in collection
+      // but isBookmarked returns false because mounted state hasn't updated yet.
+      // Component-level isMounted checks are sufficient for hydration safety.
       return isBookmarked(activityId, collection);
     },
-    [collection, mounted]
+    [collection]
   );
 
   const getBookmark = useCallback(
@@ -118,9 +120,10 @@ export function useBookmarks(): UseBookmarksReturn {
     (activityId: string): number => {
       // Return 1 if bookmarked, 0 otherwise (simulated global count)
       // In a real implementation, this would fetch from server
-      return isBookmarkedQuery(activityId) ? 1 : 0;
+      // Use isBookmarked directly instead of isBookmarkedQuery to avoid race conditions
+      return isBookmarked(activityId, collection) ? 1 : 0;
     },
-    [isBookmarkedQuery]
+    [collection]
   );
 
   const getAllTagsQuery = useCallback((): string[] => {
@@ -130,20 +133,73 @@ export function useBookmarks(): UseBookmarksReturn {
   // Mutation operations
   const toggle = useCallback(
     (activityId: string, options?: { notes?: string; tags?: string[] }) => {
+      // Check if currently bookmarked before toggling
+      const wasBookmarked = isBookmarked(activityId, collection);
+
+      // Optimistic localStorage update
       setCollection((prev) => toggleBookmark(activityId, prev, options));
+
+      // Sync with Redis analytics (fire and forget)
+      const contentType = "activity";
+      const action = wasBookmarked ? "unbookmark" : "bookmark";
+
+      fetch("/api/engagement/bookmark", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slug: activityId,
+          contentType,
+          action,
+        }),
+      }).catch((error) => {
+        // Silently fail - localStorage state is source of truth
+        if (process.env.NODE_ENV === "development") {
+          console.warn("[useBookmarks] Failed to sync bookmark to Redis:", error);
+        }
+      });
     },
-    []
+    [collection]
   );
 
   const add = useCallback(
     (activityId: string, options?: { notes?: string; tags?: string[] }) => {
       setCollection((prev) => addBookmark(activityId, prev, options));
+
+      // Sync with Redis analytics
+      fetch("/api/engagement/bookmark", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slug: activityId,
+          contentType: "activity",
+          action: "bookmark",
+        }),
+      }).catch((error) => {
+        if (process.env.NODE_ENV === "development") {
+          console.warn("[useBookmarks] Failed to sync add to Redis:", error);
+        }
+      });
     },
     []
   );
 
   const remove = useCallback((activityId: string) => {
     setCollection((prev) => removeBookmark(activityId, prev));
+
+    // Sync with Redis analytics
+    fetch("/api/engagement/bookmark", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        slug: activityId,
+        contentType: "activity",
+        action: "unbookmark",
+      }),
+    }).catch((error) => {
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[useBookmarks] Failed to sync remove to Redis:", error);
+      }
+    });
   }, []);
 
   const updateNotes = useCallback((activityId: string, notes: string) => {

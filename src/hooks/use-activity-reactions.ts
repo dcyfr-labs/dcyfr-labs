@@ -106,13 +106,36 @@ export function useActivityReactions(): UseActivityReactionsReturn {
   );
 
   /**
-   * Toggle like state with optimistic update
+   * Toggle like state with optimistic update and Redis sync
    */
   const toggleLike = useCallback(
     (activityId: string, type: ReactionType = "like"): void => {
+      // Optimistic localStorage update
+      const wasLiked = isLikedUtil(activityId, reactions, type);
       setReactions((current) => toggleReactionUtil(activityId, current, type));
+
+      // Sync with Redis analytics (fire and forget)
+      // Determine contentType from activityId if possible
+      // Default to "activity" for activity feed items
+      const contentType = "activity";
+      const action = wasLiked ? "unlike" : "like";
+
+      fetch("/api/engagement/like", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slug: activityId,
+          contentType,
+          action,
+        }),
+      }).catch((error) => {
+        // Silently fail - localStorage state is source of truth
+        if (process.env.NODE_ENV === "development") {
+          console.warn("[useActivityReactions] Failed to sync like to Redis:", error);
+        }
+      });
     },
-    []
+    [reactions]
   );
 
   /**

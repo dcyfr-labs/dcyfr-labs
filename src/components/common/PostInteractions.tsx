@@ -66,7 +66,7 @@ export interface PostInteractionsProps {
 
 /**
  * Unified post/project interactions component
- * Maps content ID to activity ID format (e.g., "blog-{slug}" or "project-{slug}")
+ * Uses contentId (slug) directly for consistency with ActivityItem bookmarks
  */
 export function PostInteractions({
   contentId,
@@ -78,8 +78,9 @@ export function PostInteractions({
   variant = "default",
   showCounts = true,
 }: PostInteractionsProps) {
-  // Map content to activity ID format
-  const activityId = `${contentType === "post" ? "blog" : "project"}-${contentId}`;
+  // Use contentId directly (slug) for consistency with ActivityItem
+  // contentId is already the slug (e.g., "my-post" or "my-project")
+  const activityId = contentId;
 
   const { isLiked, toggleLike, getCount } = useActivityReactions();
   const { isBookmarked, toggle: toggleBookmark, getBookmarkCount } = useBookmarks();
