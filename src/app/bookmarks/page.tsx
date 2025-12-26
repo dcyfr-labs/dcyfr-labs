@@ -4,6 +4,7 @@ import { PageLayout } from "@/components/layouts";
 import { createPageMetadata } from "@/lib/metadata";
 import { CONTAINER_WIDTHS } from "@/lib/design-tokens";
 import { BookmarksClient } from "./bookmarks-client";
+import { getBasicActivities } from "@/lib/activity/helpers.server";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Bookmarks",
@@ -13,15 +14,19 @@ export const metadata: Metadata = createPageMetadata({
 
 /**
  * Bookmarks Page (Server Component)
- * 
- * Fetches all posts server-side and passes to client component.
+ *
+ * Fetches all posts and activities server-side and passes to client component.
  * Client component handles localStorage bookmark filtering.
+ * Supports bookmarking both blog posts AND all activity types (GitHub, projects, etc.)
  */
-export default function BookmarksPage() {
+export default async function BookmarksPage() {
+  // Get all activities (includes blog posts, projects, GitHub activity, etc.)
+  const activities = await getBasicActivities();
+
   return (
     <PageLayout>
       <div className={`mx-auto ${CONTAINER_WIDTHS.standard}`}>
-        <BookmarksClient posts={posts} />
+        <BookmarksClient posts={posts} activities={activities} />
       </div>
     </PageLayout>
   );

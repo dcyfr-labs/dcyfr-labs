@@ -107,6 +107,7 @@ export function loadBookmarksFromStorage(): BookmarkCollection {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) {
+      console.log("[Bookmarks] 📂 No bookmarks found in localStorage");
       return {
         bookmarks: [],
         lastUpdated: new Date(),
@@ -147,6 +148,8 @@ export function loadBookmarksFromStorage(): BookmarkCollection {
       createdAt: new Date(b.createdAt),
       lastSyncedAt: b.lastSyncedAt ? new Date(b.lastSyncedAt) : undefined,
     }));
+
+    console.log(`[Bookmarks] 📂 Loaded ${bookmarks.length} bookmarks from localStorage:`, bookmarks.map(b => b.activityId));
 
     return {
       bookmarks,
@@ -213,6 +216,7 @@ export function addBookmark(
 ): BookmarkCollection {
   // Don't duplicate
   if (isBookmarked(activityId, collection)) {
+    console.log(`[Bookmarks] Skipping duplicate bookmark: ${activityId}`);
     return collection;
   }
 
@@ -230,6 +234,7 @@ export function addBookmark(
     syncStatus: "pending",
   };
 
+  console.log(`[Bookmarks] ✅ Added bookmark: ${activityId} (total: ${updated.count})`);
   saveBookmarksToStorage(updated);
   return updated;
 }
@@ -242,7 +247,7 @@ export function removeBookmark(
   collection: BookmarkCollection
 ): BookmarkCollection {
   const filteredBookmarks = collection.bookmarks.filter((b) => b.activityId !== activityId);
-  
+
   const updated: BookmarkCollection = {
     bookmarks: filteredBookmarks,
     lastUpdated: new Date(),
@@ -250,6 +255,7 @@ export function removeBookmark(
     syncStatus: "pending",
   };
 
+  console.log(`[Bookmarks] ❌ Removed bookmark: ${activityId} (remaining: ${updated.count})`);
   saveBookmarksToStorage(updated);
   return updated;
 }

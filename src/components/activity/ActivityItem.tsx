@@ -162,10 +162,21 @@ export function ActivityItem({
   const sourceLabel = ACTIVITY_SOURCE_LABELS[activity.source] || "Activity";
   const { isBookmarked, toggle } = useBookmarks();
 
+  // Extract slug from href for blog posts to match BookmarkButton behavior
+  // Blog posts have href like "/blog/owasp-top-10-agentic-ai"
+  const getBookmarkId = () => {
+    if (activity.source === "blog" && activity.href.startsWith("/blog/")) {
+      return activity.href.replace("/blog/", "");
+    }
+    return activity.id;
+  };
+
+  const bookmarkId = getBookmarkId();
+
   const handleBookmarkToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    toggle(activity.id);
+    toggle(bookmarkId);
   };
 
   if (variant === "minimal") {
@@ -211,11 +222,11 @@ export function ActivityItem({
             "opacity-0 group-hover:opacity-100",
             ANIMATION.transition.movement,
             // eslint-disable-next-line no-restricted-syntax -- Bookmark status color (icon color, not semantic)
-            isBookmarked(activity.id) && "opacity-100 text-amber-500 hover:text-amber-600"
+            isBookmarked(bookmarkId) && "opacity-100 text-amber-500 hover:text-amber-600"
           )}
-          aria-label={isBookmarked(activity.id) ? "Remove bookmark" : "Add bookmark"}
+          aria-label={isBookmarked(bookmarkId) ? "Remove bookmark" : "Add bookmark"}
         >
-          {isBookmarked(activity.id) ? (
+          {isBookmarked(bookmarkId) ? (
             <BookmarkCheck className="h-4 w-4" />
           ) : (
             <Bookmark className="h-4 w-4" />
@@ -487,10 +498,20 @@ function TimelineItem({
   const sourceLabel = ACTIVITY_SOURCE_LABELS[activity.source] || "Activity";
   const { isBookmarked, toggle } = useBookmarks();
 
+  // Extract slug from href for blog posts to match BookmarkButton behavior  // Blog posts have href like "/blog/owasp-top-10-agentic-ai"
+  const getBookmarkId = () => {
+    if (activity.source === "blog" && activity.href.startsWith("/blog/")) {
+      return activity.href.replace("/blog/", "");
+    }
+    return activity.id;
+  };
+
+  const bookmarkId = getBookmarkId();
+
   const handleBookmarkToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    toggle(activity.id);
+    toggle(bookmarkId);
   };
 
   return (
@@ -543,11 +564,11 @@ function TimelineItem({
             "active:scale-90",
             // Bookmarked state: always visible with amber color
             // eslint-disable-next-line no-restricted-syntax -- Bookmark status color (icon color, not semantic)
-            isBookmarked(activity.id) && "opacity-100 scale-100 text-amber-500 hover:text-amber-600"
+            isBookmarked(bookmarkId) && "opacity-100 scale-100 text-amber-500 hover:text-amber-600"
           )}
-          aria-label={isBookmarked(activity.id) ? "Remove bookmark" : "Add bookmark"}
+          aria-label={isBookmarked(bookmarkId) ? "Remove bookmark" : "Add bookmark"}
         >
-          {isBookmarked(activity.id) ? (
+          {isBookmarked(bookmarkId) ? (
             <BookmarkCheck className={cn("h-4 w-4 animate-in zoom-in-50", ANIMATION.duration.fast)} />
           ) : (
             <Bookmark className="h-4 w-4" />

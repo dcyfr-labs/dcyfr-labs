@@ -224,6 +224,12 @@ export const MOBILE_NAV_SECTIONS: NavSection[] = [
         description: "Curated resources and links",
       },
       {
+        href: "/likes",
+        label: "Likes",
+        icon: Heart,
+        description: "Content you've liked",
+      },
+      {
         href: "/feeds",
         label: "RSS Feeds",
         icon: Rss,
@@ -320,6 +326,11 @@ export const FOOTER_NAV_SECTIONS: NavSection[] = [
         href: "/bookmarks",
         label: "Bookmarks",
         description: "Curated resources",
+      },
+      {
+        href: "/likes",
+        label: "Likes",
+        description: "Content you liked",
       },
     ],
   },

@@ -181,7 +181,7 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
   // Interruptions are disabled to maintain consistent threading across pages
 
   return (
-    <motion.div 
+    <motion.div
       className={cn("space-y-12")}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -200,7 +200,7 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
         filteredCount={filteredActivities.length}
       />
 
-      {/* Topic Cloud - Interactive topic filtering */}
+      {/* TODO: Topic Cloud - Interactive topic filtering  -- needs refinement
       {topics.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -214,9 +214,9 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
             maxTopics={50}
           />
         </motion.div>
-      )}
+      )} */}
 
-      {/* Related Topics - Show recommendations based on selected topics */}
+      {/* TODO: Related Topics - Show recommendations based on selected topics -- needs refinement
       {selectedTopics.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -230,7 +230,7 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
             maxPerTopic={5}
           />
         </motion.div>
-      )}
+      )} */}
 
       {/* Timeline Feed - Unified threading across all activities */}
       <motion.div
@@ -240,7 +240,9 @@ export function ActivityPageClient({ activities }: ActivityPageClientProps) {
       >
         {filteredActivities.length === 0 ? (
           <div className={cn("text-center py-12", SPACING.content)}>
-            <p className="text-muted-foreground">No activities match your filters</p>
+            <p className="text-muted-foreground">
+              No activities match your filters
+            </p>
           </div>
         ) : (
           <ThreadedActivityFeed

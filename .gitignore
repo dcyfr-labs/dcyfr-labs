@@ -18,6 +18,12 @@
 /lighthouse/
 /.lighthouseci/
 
+# Security scanning results
+nuclei-results.json
+nuclei-report.md
+nuclei-*.json
+nuclei-*.md
+
 # Playwright visual regression & test artifacts
 # These contain screenshots/videos/diffs generated during CI or local runs
 reports/e2e-artifacts/**

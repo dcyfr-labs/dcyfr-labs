@@ -56,9 +56,9 @@ export function BookmarkButton({
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation if button is inside a link
     e.stopPropagation(); // Prevent parent click handlers
-    
+
     toggle(slug);
-    
+
     toast.success(
       bookmarked ? "Bookmark removed" : "Bookmarked for later",
       {
