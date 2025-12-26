@@ -13,7 +13,7 @@ Project is in **maintenance mode** with data-driven enhancements ready for next 
 **Key Metrics** (see [`docs/operations/todo.md`](docs/operations/todo.md) and [`docs/operations/done.md`](docs/operations/done.md)):
 
 - ✅ Phase 1-6 complete (Activity Feed Enhancement fully implemented)
-- ✅ 2193/2193 tests passing (100%)
+- ✅ 2193/2202 tests passing (99.6%)
 - ✅ 2250+ unit/integration/E2E tests
 - ✅ TypeScript strict: 0 errors
 - ✅ ESLint: 0 errors
@@ -27,37 +27,8 @@ Project is in **maintenance mode** with data-driven enhancements ready for next 
 ## Quick Reference
 
 **Stack**: Next.js 16 + React 19 + TypeScript + Tailwind v4 + shadcn/ui + MDX
-**Commands**: `npm run dev` • `npm run build` • `npm run lint` • `npm run test` • `npm run health`
+**Commands**: `npm run dev` • `npm run build` • `npm run lint` • `npm run test`
 **Imports**: Always use `@/*` alias (never relative paths)
-
-### Health Check Commands
-
-**Automated project health validation:**
-
-- `npm run health` - Comprehensive health check (~2-3 min)
-  - Git status & branch analysis
-  - TypeScript compilation
-  - ESLint validation
-  - Full test suite (2193 tests)
-  - Production build verification
-  - Security vulnerability scan
-  - Documentation structure audit
-  - Temporary file detection
-
-- `npm run health:quick` - Fast health check (~30s)
-  - TypeScript + ESLint only
-  - Test suite execution
-  - No build step
-
-- `npm run doctor` - Legacy health command
-  - Lint + Tests + Performance checks
-
-**When to use:**
-
-- Starting a new session (`health:quick`)
-- Before committing major changes (`health`)
-- Pre-deployment validation (`health`)
-- Weekly maintenance checks (`health`)
 
 ## Essential Patterns
 
@@ -227,7 +198,7 @@ return mockData;
 
 1. Check [`docs/operations/todo.md`](docs/operations/todo.md) for priorities
 2. Review recent commits: `git log --oneline -5`
-3. Run health check: `npm run health:quick` (or `npm run health` for full check)
+3. Run tests: `npm run test`
 
 **During implementation:**
 
@@ -243,8 +214,7 @@ return mockData;
 3. ✅ Lint passes (`npm run lint`)
 4. ✅ Design tokens used (no hardcoded values)
 5. ✅ Security scanning passes (CodeQL/manual review)
-6. ✅ Health check passes (`npm run health:quick`)
-7. Update `todo.md` and `done.md`
+6. Update `todo.md` and `done.md`
 
 **Security Vulnerability Handling (CRITICAL):**
 
