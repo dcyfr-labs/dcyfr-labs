@@ -10,6 +10,7 @@ import { SPACING } from "@/lib/design-tokens";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import { useShare } from "@/hooks/use-share";
 import { useActivityReactions } from "@/hooks/use-activity-reactions";
+import { useGlobalEngagementCounts } from "@/hooks/use-global-engagement-counts";
 
 interface PostQuickActionsProps {
   slug?: string;
@@ -31,6 +32,12 @@ export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActi
   // Use normalized activity ID format (just slug, matching ThreadActions normalization)
   // Blog posts are normalized from "blog-slug" to "slug" on homepage for consistency
   const activityId = slug;
+
+  // Fetch global engagement counts
+  const { globalLikes, globalBookmarks } = useGlobalEngagementCounts({
+    slug: activityId || "",
+    contentType: "activity",
+  });
 
   const bookmarked = isHydrated && activityId ? isBookmarked(activityId) : false;
   const bookmarkCount = isHydrated && activityId ? getBookmarkCount(activityId) : 0;
@@ -141,8 +148,8 @@ export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActi
       >
         <Heart className={cn("h-4 w-4", liked && "fill-destructive text-destructive")} />
         {liked ? "Liked" : "Like"}
-        {likeCount > 0 && (
-          <span className="ml-auto text-xs text-muted-foreground">{likeCount}</span>
+        {globalLikes > 0 && (
+          <span className="ml-auto text-xs text-muted-foreground">{globalLikes}{globalLikes > 1 ? '+' : ''}</span>
         )}
       </Button>
 
@@ -155,8 +162,8 @@ export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActi
       >
         <Bookmark className={cn("h-4 w-4", bookmarked && "fill-current")} />
         {bookmarked ? "Bookmarked" : "Bookmark"}
-        {bookmarkCount > 0 && (
-          <span className="ml-auto text-xs text-muted-foreground">{bookmarkCount}</span>
+        {globalBookmarks > 0 && (
+          <span className="ml-auto text-xs text-muted-foreground">{globalBookmarks}{globalBookmarks > 1 ? '+' : ''}</span>
         )}
       </Button>
 

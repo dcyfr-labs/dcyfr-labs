@@ -34,6 +34,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useActivityReactions } from "@/hooks/use-activity-reactions";
 import { useBookmarks } from "@/hooks/use-bookmarks";
+import { useGlobalEngagementCounts } from "@/hooks/use-global-engagement-counts";
 import { ThreadShareButton } from "@/components/activity/ThreadShareButton";
 import { ANIMATION, TYPOGRAPHY, SEMANTIC_COLORS } from "@/lib/design-tokens";
 
@@ -85,6 +86,12 @@ export function PostInteractions({
   const { isLiked, toggleLike, getCount } = useActivityReactions();
   const { isBookmarked, toggle: toggleBookmark, getBookmarkCount } = useBookmarks();
 
+  // Fetch global engagement counts
+  const { globalLikes, globalBookmarks } = useGlobalEngagementCounts({
+    slug: activityId,
+    contentType: "activity",
+  });
+
   // Use useSyncExternalStore for proper client-side hydration
   const isHydrated = useSyncExternalStore(
     () => () => {},
@@ -112,7 +119,7 @@ export function PostInteractions({
       {/* Like Button */}
       <ActionButton
         icon={Heart}
-        label={showCounts && likeCount > 0 ? String(likeCount) : undefined}
+        label={showCounts && globalLikes > 0 ? `${globalLikes}${globalLikes > 1 ? '+' : ''}` : undefined}
         active={liked}
         onClick={() => toggleLike(activityId)}
         ariaLabel={liked ? "Unlike" : "Like"}
@@ -123,7 +130,7 @@ export function PostInteractions({
       {/* Bookmark Button */}
       <ActionButton
         icon={Bookmark}
-        label={showCounts && bookmarkCount > 0 ? String(bookmarkCount) : undefined}
+        label={showCounts && globalBookmarks > 0 ? `${globalBookmarks}${globalBookmarks > 1 ? '+' : ''}` : undefined}
         active={bookmarked}
         onClick={() => toggleBookmark(activityId)}
         ariaLabel={bookmarked ? "Remove bookmark" : "Bookmark"}

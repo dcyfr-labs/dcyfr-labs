@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { useActivityReactions } from "@/hooks/use-activity-reactions";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import { useShare } from "@/hooks/use-share";
+import { useGlobalEngagementCounts } from "@/hooks/use-global-engagement-counts";
 import { ThreadShareButton } from "./ThreadShareButton";
 import { ANIMATION, TYPOGRAPHY, SEMANTIC_COLORS } from "@/lib/design-tokens";
 
@@ -100,6 +101,12 @@ export function ThreadActions({
     return activityId;
   })();
 
+  // Fetch global engagement counts
+  const { globalLikes, globalBookmarks } = useGlobalEngagementCounts({
+    slug: normalizedId,
+    contentType: "activity",
+  });
+
   // Use useSyncExternalStore for proper client-side hydration without ESLint warnings
   const isHydrated = useSyncExternalStore(
     () => () => {}, // subscribe (no-op since we don't need to listen for changes)
@@ -138,7 +145,8 @@ export function ThreadActions({
       {/* Like Button */}
       <ActionButton
         icon={Heart}
-        label={likeCount > 0 ? String(likeCount) : undefined}
+        label={globalLikes > 0 ? `${globalLikes}${globalLikes > 1 ? '+' : ''}` : undefined}
+        globalCount={globalLikes}
         active={liked}
         onClick={() => toggleLike(normalizedId)}
         ariaLabel={liked ? "Unlike" : "Like"}
@@ -149,7 +157,8 @@ export function ThreadActions({
       {/* Bookmark Button */}
       <ActionButton
         icon={Bookmark}
-        label={bookmarkCount > 0 ? String(bookmarkCount) : undefined}
+        label={globalBookmarks > 0 ? `${globalBookmarks}${globalBookmarks > 1 ? '+' : ''}` : undefined}
+        globalCount={globalBookmarks}
         active={bookmarked}
         onClick={() => toggleBookmark(normalizedId)}
         ariaLabel={bookmarked ? "Remove bookmark" : "Bookmark"}
@@ -204,6 +213,7 @@ export function ThreadActions({
 interface ActionButtonProps {
   icon: React.ElementType;
   label?: string;
+  globalCount?: number;
   active?: boolean;
   onClick?: () => void;
   ariaLabel: string;
@@ -214,6 +224,7 @@ interface ActionButtonProps {
 function ActionButton({
   icon: Icon,
   label,
+  globalCount = 0,
   active = false,
   onClick,
   ariaLabel,
