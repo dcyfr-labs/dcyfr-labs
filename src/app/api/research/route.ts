@@ -364,10 +364,20 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    const errorStack = error instanceof Error ? error.stack : undefined;
 
-    console.error("[Research API] Error:", errorMessage);
-    if (errorStack) console.error("Stack trace:", errorStack);
+    // Log with full stack only in development
+    if (process.env.NODE_ENV === "development") {
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      console.error("[Research API] Error:", errorMessage);
+      if (errorStack) console.error("Stack trace:", errorStack);
+    } else {
+      // Production: minimal error logging without stack traces
+      console.error("[Research API] Error:", {
+        type: error instanceof Error ? error.constructor.name : typeof error,
+        message: errorMessage,
+        timestamp: new Date().toISOString(),
+      });
+    }
 
     // Check for specific error types
     if (errorMessage.includes("API key not configured")) {

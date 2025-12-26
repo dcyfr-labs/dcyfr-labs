@@ -68,6 +68,16 @@ type RateLimitEntry = {
 
 const rateLimitStore = new Map<string, RateLimitEntry>();
 
+// Local IP reputation tracking for escalation (unknown -> suspicious -> malicious)
+// Used to track repeat abuse attempts and escalate rate limits
+type IpReputationEntry = {
+  abuseCount: number;
+  lastAbuseTime: number;
+  classification: 'unknown' | 'suspicious' | 'malicious';
+};
+
+const localIpReputation = new Map<string, IpReputationEntry>();
+
 // Cleanup old entries periodically to prevent memory leaks
 const CLEANUP_INTERVAL = 60000; // 1 minute
 let lastCleanup = Date.now();
@@ -76,14 +86,71 @@ function cleanup() {
   const now = Date.now();
   if (now - lastCleanup > CLEANUP_INTERVAL) {
     const keysToDelete: string[] = [];
+    const reputationKeysToDelete: string[] = [];
+
     rateLimitStore.forEach((entry, key) => {
       if (now > entry.resetTime) {
         keysToDelete.push(key);
       }
     });
+
+    // Also cleanup expired reputation entries (24 hours without abuse)
+    localIpReputation.forEach((entry, key) => {
+      const hoursSinceLastAbuse = (now - entry.lastAbuseTime) / (1000 * 60 * 60);
+      if (hoursSinceLastAbuse > 24) {
+        reputationKeysToDelete.push(key);
+      }
+    });
+
     keysToDelete.forEach((key) => rateLimitStore.delete(key));
+    reputationKeysToDelete.forEach((key) => localIpReputation.delete(key));
     lastCleanup = now;
   }
+}
+
+/**
+ * Get the current local reputation classification for an IP
+ * Decays abuse count after 24 hours of no new attempts
+ */
+function getLocalIpReputation(ip: string): 'unknown' | 'suspicious' | 'malicious' {
+  const entry = localIpReputation.get(ip);
+  if (!entry) return 'unknown';
+
+  const now = Date.now();
+  const hoursSinceLastAbuse = (now - entry.lastAbuseTime) / (1000 * 60 * 60);
+
+  // Decay: reset to unknown after 24 hours without new abuse attempts
+  if (hoursSinceLastAbuse > 24) {
+    localIpReputation.delete(ip);
+    return 'unknown';
+  }
+
+  return entry.classification;
+}
+
+/**
+ * Record an abuse attempt and potentially escalate IP classification
+ * Escalation path: unknown (1 attempt) -> suspicious (3+ attempts) -> malicious (10+ attempts)
+ */
+function recordLocalAbuseAttempt(ip: string): void {
+  const now = Date.now();
+  const entry = localIpReputation.get(ip) || {
+    abuseCount: 0,
+    lastAbuseTime: now,
+    classification: 'unknown' as const,
+  };
+
+  entry.abuseCount++;
+  entry.lastAbuseTime = now;
+
+  // Escalate classification based on cumulative abuse attempts
+  if (entry.abuseCount >= 10) {
+    entry.classification = 'malicious';
+  } else if (entry.abuseCount >= 3) {
+    entry.classification = 'suspicious';
+  }
+
+  localIpReputation.set(ip, entry);
 }
 
 export type RateLimitConfig = {
@@ -168,12 +235,14 @@ export async function rateLimit(
 
 /**
  * Rate limit with IP reputation checking
+ * Implements escalation: external DB + local abuse tracking
+ * When rate limiting is exceeded, records an abuse attempt and escalates local reputation
  */
 async function rateLimitWithReputation(
   ip: string,
   config: RateLimitConfig
 ): Promise<RateLimitResult> {
-  // Check if IP is blocked
+  // Check if IP is permanently blocked
   const isBlocked = await isIPBlocked(ip);
   if (isBlocked) {
     return {
@@ -190,14 +259,25 @@ async function rateLimitWithReputation(
     };
   }
 
-  // Check if IP is suspicious  
-  const isSuspicious = await isIPSuspicious(ip);
-  
-  // Determine rate limit configuration based on reputation
+  // Check multiple reputation sources: external DB + local tracking
+  const [isSuspiciousExternal, localReputation] = await Promise.all([
+    isIPSuspicious(ip),
+    Promise.resolve(getLocalIpReputation(ip)),
+  ]);
+
+  // Determine rate limit configuration based on combined reputation
   let reputationConfig: RateLimitConfig;
   let classification: 'malicious' | 'suspicious' | 'unknown' | 'benign';
-  
-  if (isSuspicious) {
+
+  // Escalation logic: take the stricter of external or local reputation
+  if (localReputation === 'malicious' || isSuspiciousExternal) {
+    classification = 'suspicious';
+    reputationConfig = {
+      limit: DEFAULT_REPUTATION_LIMITS.suspicious.limit,
+      windowInSeconds: DEFAULT_REPUTATION_LIMITS.suspicious.windowInSeconds,
+      failClosed: config.failClosed,
+    };
+  } else if (localReputation === 'suspicious') {
     classification = 'suspicious';
     reputationConfig = {
       limit: DEFAULT_REPUTATION_LIMITS.suspicious.limit,
@@ -205,7 +285,7 @@ async function rateLimitWithReputation(
       failClosed: config.failClosed,
     };
   } else {
-    // For unknown/benign IPs, use the original config but with reputation metadata
+    // For unknown/benign IPs, use the original config
     classification = 'unknown';
     reputationConfig = config;
   }
@@ -213,17 +293,28 @@ async function rateLimitWithReputation(
   // Apply rate limiting with reputation-adjusted config
   const client = await getRateLimitClient();
   let result: RateLimitResult;
-  
+
   if (client) {
     result = await rateLimitRedis(client, ip, reputationConfig);
   } else {
     result = await rateLimitMemory(ip, reputationConfig);
   }
 
+  // Track local abuse attempts to escalate reputation
+  // When rate limit is exceeded, record the abuse and potentially escalate classification
+  if (!result.success) {
+    recordLocalAbuseAttempt(ip);
+    // Update the result classification to reflect new escalated reputation
+    const updatedLocalRep = getLocalIpReputation(ip);
+    classification = updatedLocalRep === 'malicious' || updatedLocalRep === 'suspicious'
+      ? 'suspicious'
+      : classification;
+  }
+
   // Add reputation information to result
   result.reputation = {
     is_blocked: false,
-    is_suspicious: isSuspicious,
+    is_suspicious: isSuspiciousExternal || localReputation !== 'unknown',
     classification,
   };
 

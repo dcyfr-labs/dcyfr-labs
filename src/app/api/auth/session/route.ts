@@ -1,25 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { withOptionalAuth, createProtectedHandler } from '@/lib/auth-middleware';
+import { createProtectedHandler } from '@/lib/auth-middleware';
+import { validateRequestCSRF, getAuthenticatedUser } from '@/lib/auth-utils';
 import { SecureSessionManager } from '@/lib/secure-session-manager';
-import { getAuthenticatedUser } from '@/lib/auth-utils';
 
 /**
  * Session Management API Routes
- * 
+ *
  * Provides secure session management endpoints that work across all environments.
  * Used for authentication status, session refresh, and logout.
+ *
+ * Security notes:
+ * - GET /api/auth/session - Public endpoint that returns { authenticated: false } for unauthenticated users
+ * - GET /api/auth/session with Authorization - Requires CSRF token for authenticated users accessing sensitive data
+ * - POST/DELETE - Require CSRF tokens (state-changing operations)
  */
 
-// GET: Check authentication status
+// GET: Check authentication status or retrieve authenticated session details
 async function handleGet(request: NextRequest) {
   const { user, sessionToken, session } = await getAuthenticatedUser(request);
-  
+
+  // Public check: return only authentication status
   if (!user || !session) {
     return NextResponse.json({ authenticated: false });
   }
 
+  // For authenticated users accessing sensitive session details, validate CSRF token
+  // This prevents CSRF attacks that attempt to read session metadata
+  if (sessionToken) {
+    const csrfValid = await validateRequestCSRF(request, sessionToken);
+    if (!csrfValid) {
+      // Return generic 403 without exposing CSRF details
+      return NextResponse.json(
+        { error: 'Forbidden' },
+        { status: 403 }
+      );
+    }
+  }
+
   // Get session stats for admin users
-  const sessionStats = user.permissions?.includes('admin') 
+  const sessionStats = user.permissions?.includes('admin')
     ? await SecureSessionManager.getSessionStats()
     : null;
 

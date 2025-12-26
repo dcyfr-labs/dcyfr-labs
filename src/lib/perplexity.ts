@@ -7,6 +7,7 @@
  */
 
 import { SERVICES } from "@/lib/site-config";
+import { safeFetch } from "@/lib/api-security";
 
 // ============================================================================
 // TYPES
@@ -213,23 +214,35 @@ async function callPerplexityAPI(
     stream: options?.stream ?? false,
   };
 
-  const response = await fetch(`${API_URL}/chat/completions`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify(requestBody),
-  });
+  // Add timeout protection for external API calls
+  const FETCH_TIMEOUT_MS = 30000; // 30 seconds
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
 
-  if (!response.ok) {
-    const errorData: PerplexityError = await response.json();
-    throw new Error(
-      errorData.error?.message || `Perplexity API error: ${response.status}`
-    );
+  try {
+    const response = await safeFetch(`${API_URL}/chat/completions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify(requestBody),
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const errorData: PerplexityError = await response.json();
+      throw new Error(
+        errorData.error?.message || `Perplexity API error: ${response.status}`
+      );
+    }
+
+    return response.json();
+  } catch (error) {
+    clearTimeout(timeoutId);
+    throw error;
   }
-
-  return response.json();
 }
 
 // ============================================================================
