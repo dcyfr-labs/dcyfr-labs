@@ -199,15 +199,19 @@ function ActionButton({
       )}
       suppressHydrationWarning
     >
-      <Icon
+      <span
         className={cn(
           iconSize,
           ANIMATION.transition.base,
-          active ? [activeColor, "fill-current"] : SEMANTIC_COLORS.activity.action.default,
+          active && activeColor,
+          active && "fill-current",
+          !active && SEMANTIC_COLORS.activity.action.default,
           active && "group-hover/action:scale-110"
         )}
-        aria-hidden="true"
-      />
+      >
+        {/* @ts-expect-error - Icon component type inference issue */}
+        <Icon />
+      </span>
       {label && (
         <span
           className={cn(textSize, active ? activeColor : SEMANTIC_COLORS.activity.action.default)}

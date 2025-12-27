@@ -20,4 +20,3 @@ export { TrendingProjectsPanel } from "./trending-projects-panel";
 
 // Modern enhancements
 export { NetworkBackground } from "./network-background";
-export { FeaturedCVEBanner } from "./featured-cve-banner";

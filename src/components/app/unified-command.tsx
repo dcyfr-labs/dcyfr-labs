@@ -39,7 +39,7 @@ import {
   Settings2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { TYPOGRAPHY, SPACING, GLASS, INTERACTIVE } from "@/lib/design-tokens";
+import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
 import { useKeyboardShortcut } from "@/hooks/use-keyboard-shortcut";
 import { useReadingProgressList } from "@/hooks/use-reading-progress";
 import { useSearch } from "@/components/search";
@@ -330,7 +330,7 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
                     className={cn(
                       "relative flex cursor-pointer items-center gap-2 rounded-md px-3 py-2",
                       "aria-selected:bg-accent aria-selected:text-accent-foreground",
-                      INTERACTIVE.cardHover
+                      "hover:bg-accent/50 transition-colors"
                     )}
                   >
                     <Clock className="h-4 w-4 text-muted-foreground" />
@@ -359,7 +359,7 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
                     className={cn(
                       "relative flex cursor-pointer items-center gap-2 rounded-md px-3 py-2",
                       "aria-selected:bg-accent aria-selected:text-accent-foreground",
-                      INTERACTIVE.cardHover
+                      "hover:bg-accent/50 transition-colors"
                     )}
                   >
                     <BookOpen className="h-4 w-4 text-primary/60" />
@@ -386,7 +386,7 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
                     className={cn(
                       "relative flex cursor-pointer flex-col gap-1 rounded-md px-3 py-3",
                       "aria-selected:bg-accent aria-selected:text-accent-foreground",
-                      INTERACTIVE.cardHover
+                      "hover:bg-accent/50 transition-colors"
                     )}
                   >
                     <div className="flex items-start justify-between gap-2">
@@ -432,7 +432,7 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
                       className={cn(
                         "relative flex cursor-pointer items-center gap-2 rounded-md px-3 py-2",
                         "aria-selected:bg-accent aria-selected:text-accent-foreground",
-                        INTERACTIVE.cardHover
+                        "hover:bg-accent/50 transition-colors"
                       )}
                     >
                       <Icon className="h-4 w-4 text-muted-foreground" />
@@ -455,7 +455,7 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
                       className={cn(
                         "relative flex cursor-pointer items-center gap-2 rounded-md px-3 py-2",
                         "aria-selected:bg-accent aria-selected:text-accent-foreground",
-                        INTERACTIVE.cardHover
+                        "hover:bg-accent/50 transition-colors"
                       )}
                     >
                       <Icon className="h-4 w-4 text-muted-foreground" />
