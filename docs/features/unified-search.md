@@ -174,11 +174,11 @@ Unified search input with history and keyboard shortcuts.
 - `placeholder?: string` - Placeholder text
 - `historyStorageKey?: string` - localStorage key (default: "search-history")
 - `resultCount?: number` - Number of results for history tracking
-- `keyboardShortcut?: boolean` - Enable Cmd/Ctrl+K (default: true)
+- `keyboardShortcut?: boolean` - Enable / search shortcut (default: true)
 - `showHints?: boolean` - Show syntax hints (default: true)
 
 **Features:**
-- Keyboard shortcut (⌘K / Ctrl+K)
+- Keyboard shortcut (/)
 - Search history dropdown
 - Syntax hints
 - Clear button

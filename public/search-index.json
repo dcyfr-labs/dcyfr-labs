@@ -1,0 +1,271 @@
+{
+  "posts": [
+    {
+      "id": "post-20260115-7b4e92c1",
+      "title": "Building Event-Driven Architecture with Inngest",
+      "summary": "Implement event-driven architecture with Inngest for instant API responses, automatic retries, and production-grade background processing. Real code from a live portfolio.",
+      "content": "> Series Background: This is Part 3 of the Portfolio series, following Shipping a Developer Portfolio and Hardening a Developer Portfolio. Here we explore how event-driven architecture transforms user experience and system reliability. --- Your API routes are lying to your users. They return while work is still happening. The contact form says \"Message sent!\" but the email hasn't been delivered yet. Event-driven architecture fixes this by separating acknowledgment from processing. Users get inst",
+      "tags": [
+        "Inngest",
+        "Event-Driven",
+        "Next.js",
+        "Background Jobs",
+        "TypeScript"
+      ],
+      "series": "Portfolio",
+      "publishedAt": "2026-01-15T12:00:00Z",
+      "readingTime": 6,
+      "url": "/blog/post-20260115-7b4e92c1"
+    },
+    {
+      "id": "post-20251226-8581f290",
+      "title": "Getting Started with React Hooks",
+      "summary": "A comprehensive guide to React Hooks with interactive, editable code examples. Learn useState, custom hooks, and TypeScript patterns with live demonstrations of counter, todo, and localStorage implementations.",
+      "content": "Getting Started with React Hooks Learn how to use React Hooks to manage state and side effects in functional components. This guide includes interactive examples you can edit and run right in your browser. What Are React Hooks? React Hooks are functions that let you \"hook into\" React features. They were introduced in React 16.8 as a way to write stateful logic in functional components, eliminating the need for class components. Hooks solve the problem of code reuse in React. Before hooks, sharin",
+      "tags": [
+        "React",
+        "Hooks",
+        "JavaScript",
+        "TypeScript"
+      ],
+      "series": null,
+      "publishedAt": "2025-12-26T00:00:00Z",
+      "readingTime": 3,
+      "url": "/blog/post-20251226-8581f290"
+    },
+    {
+      "id": "post-20251222-ui-demo",
+      "title": "UI Elements and Components",
+      "summary": "Explore the full range of UI components, MDX elements, code highlighting, alerts, callouts, and visual features available in this blog system.",
+      "content": "> Note: This is a demonstration post showcasing all available UI elements and components. It serves as a visual reference for content creators and developers. This post demonstrates every visual element, component, and styling option available in the blog system. Use this as a reference when creating new content. --- Typography Hierarchy Heading 1: Main Title The largest heading, typically used only once per page as the article title. Heading 2: Major Sections Primary section headers that divide",
+      "tags": [
+        "Demo",
+        "UI",
+        "Design System",
+        "Components",
+        "MDX"
+      ],
+      "series": null,
+      "publishedAt": "2025-12-22T12:00:00Z",
+      "readingTime": 6,
+      "url": "/blog/post-20251222-ui-demo"
+    },
+    {
+      "id": "post-20251219-7f3a9c2e",
+      "title": "OWASP Top 10 for Agentic AI: What You Need to Know in 2026",
+      "summary": "OWASP's first Top 10 for Agentic Applications covers goal hijacking, memory poisoning, tool misuse, and critical security risks facing autonomous AI agents.",
+      "content": "As AI agents become more autonomous and capable of taking real-world actions, the security landscape is evolving rapidly. This guide breaks down OWASP's newly released framework for securing agentic AI systems. AI is evolving beyond chatbots into the era of agentic AI--autonomous systems that plan, decide, and act across multiple steps and systems. These digital workers book travel, manage calendars, approve expenses, deploy code, and handle customer service from start to finish without human in",
+      "tags": [
+        "AI Security",
+        "OWASP",
+        "Agentic AI",
+        "LLM Security",
+        "AI Agent Security",
+        "Autonomous Systems",
+        "Cybersecurity"
+      ],
+      "series": null,
+      "publishedAt": "2025-12-19T12:00:00Z",
+      "readingTime": 16,
+      "url": "/blog/post-20251219-7f3a9c2e"
+    },
+    {
+      "id": "post-20251203-47dac952",
+      "title": "CVE-2025-55182 (React2Shell)",
+      "summary": "CVE-2025-55182 (React2Shell) is a critical RCE vulnerability in React Server Components under active exploitation since December 4, 2025. This post explores the vulnerability, confirmed botnet integration, attack patterns, detection methods, and why upgrading is essential.",
+      "content": "STATUS UPDATE (December 13, 2025): Exploitation continues with confirmed China-nexus APT activity. Three additional CVEs disclosed (CVE-2025-55183, CVE-2025-55184, CVE-2025-67779). Latest patches: React 19.2.3 and Next.js 16.0.10+ address all vulnerabilities. Major cloud providers have deployed platform-level protections, but upgrade remains mandatory. CRITICAL UPDATE (December 6, 2025): Security researchers confirm active exploitation in the wild. CVE-2025-55182, now widely known as \"React2Shel",
+      "tags": [
+        "Next.js",
+        "React",
+        "Security",
+        "CVE",
+        "RSC",
+        "Vercel",
+        "Dependabot",
+        "React2Shell",
+        "Threat Intelligence"
+      ],
+      "series": null,
+      "publishedAt": "2025-12-03T12:00:00Z",
+      "readingTime": 15,
+      "url": "/blog/post-20251203-47dac952"
+    },
+    {
+      "id": "post-20251112-26db545c",
+      "title": "LaTeX & Mathematical Expressions",
+      "summary": "Complete demonstration of LaTeX and mathematical expression rendering with KaTeX, including inline equations, integrals, matrices, and calculus.",
+      "content": "This post demonstrates mathematical expression rendering using KaTeX, providing beautiful typesetting for mathematical content inline and as block equations. --- What is KaTeX? KaTeX is a fast, easy-to-use JavaScript library for TeX math rendering on the web. The blog uses KaTeX through the and plugins to render LaTeX expressions at build time. --- Inline Math Einstein's famous equation is $E = mc^2$, where $m$ is mass and $c$ is the speed of light. The quadratic formula is $x = \\frac } $. Pytha",
+      "tags": [
+        "LaTeX",
+        "Math",
+        "KaTeX",
+        "Equations",
+        "Calculus",
+        "Demo"
+      ],
+      "series": "Features",
+      "publishedAt": "2025-11-12T12:00:00Z",
+      "readingTime": 5,
+      "url": "/blog/post-20251112-26db545c"
+    },
+    {
+      "id": "post-20251111-446fbfc7",
+      "title": "Building with AI",
+      "summary": "Exploring the Model Context Protocol (MCP) and how it's enabling new patterns for AI-assisted development with practical examples from real projects.",
+      "content": "AI coding assistants are everywhere now, but there's a critical gap: how do they access your actual development context? Your database schema, API routes, recent commits, production errors, all the things you need to write real code. This is the problem Model Context Protocol (MCP) was designed to solve. --- What is Model Context Protocol? Model Context Protocol[^mcp-intro] is an open standard introduced by Anthropic that enables AI assistants to securely connect with external data sources and t",
+      "tags": [
+        "AI",
+        "MCP",
+        "Developer Tools",
+        "Productivity",
+        "Architecture"
+      ],
+      "series": null,
+      "publishedAt": "2025-11-11T12:00:00Z",
+      "readingTime": 5,
+      "url": "/blog/post-20251111-446fbfc7"
+    },
+    {
+      "id": "post-20251109-7c4f3e2a",
+      "title": "Interactive Diagrams with ReactFlow",
+      "summary": "Explore interactive, accessible diagrams built with ReactFlow for visualizing architecture, workflows, and decision trees.",
+      "content": "After migrating away from Mermaid, we've built a set of interactive diagrams using ReactFlow that provide better performance, accessibility, and customization. These diagrams are fully interactive—you can pan, zoom, and explore them freely. --- Why ReactFlow? ReactFlow offers several advantages over Mermaid: - Performance: Renders efficiently with thousands of nodes - Interactivity: Users can pan, zoom, and manipulate the diagram - Accessibility: Built with semantic HTML and ARIA labels - Custom",
+      "tags": [
+        "Diagrams",
+        "ReactFlow",
+        "Interactive",
+        "Visualization",
+        "Demo"
+      ],
+      "series": "Features",
+      "publishedAt": "2025-11-09T00:00:00Z",
+      "readingTime": 3,
+      "url": "/blog/post-20251109-7c4f3e2a"
+    },
+    {
+      "id": "post-20251005-cadc6db5",
+      "title": "Hardening a Developer Portfolio",
+      "summary": "A multi-part series on building production-ready developer platforms: implementing CSP, rate limiting, INP optimization, analytics, and comprehensive security features.",
+      "content": "> Series Background: This is a follow-up to Shipping a Developer Portfolio, where I built the foundation for what would become a comprehensive developer platform. This series documents the security hardening, performance optimization, and production features that transformed a simple portfolio into an enterprise-ready system. --- After building the initial portfolio, I systematically addressed security vulnerabilities, performance bottlenecks, and scalability concerns to create a production-read",
+      "tags": [
+        "Next.js",
+        "Security",
+        "Performance",
+        "TypeScript",
+        "Production"
+      ],
+      "series": "Portfolio",
+      "publishedAt": "2025-10-05T12:00:00Z",
+      "readingTime": 5,
+      "url": "/blog/post-20251005-cadc6db5"
+    },
+    {
+      "id": "post-20250910-39db73be",
+      "title": "Shipping a Developer Portfolio",
+      "summary": "How I used Next.js App Router, Tailwind v4, and shadcn/ui to build a production-ready developer portfolio with modern architecture patterns.",
+      "content": "> Update (December 2025): This post is now part of a series! What started as a minimal portfolio has evolved into a production-ready platform with comprehensive security, featuring CSP headers, rate limiting, Redis analytics, background job processing, and extensive monitoring. Check out Hardening a Developer Portfolio for the follow-up covering production deployment patterns. --- I wanted to build a focused portfolio that is fast to load, easy to iterate on, and simple to host. After trying a f",
+      "tags": [
+        "Next.js",
+        "Tailwind CSS",
+        "TypeScript",
+        "shadcn/ui",
+        "Portfolio"
+      ],
+      "series": "Portfolio",
+      "publishedAt": "2025-09-10T12:00:00Z",
+      "readingTime": 3,
+      "url": "/blog/post-20250910-39db73be"
+    },
+    {
+      "id": "post-20200108-647bfe00",
+      "title": "Code Examples & Syntax Highlighting",
+      "summary": "Complete showcase of syntax highlighting with code examples in 20+ programming languages supported by Shiki.",
+      "content": "This page showcases syntax highlighting for code examples across all major programming languages supported by Shiki via . Code blocks automatically receive theme-aware syntax highlighting with support for light and dark modes. --- TypeScript Complete TypeScript examples with types, interfaces, and generics: --- React & TSX React components with TypeScript and hooks: --- JavaScript Modern JavaScript with ES6+ features: --- Python Python with decorators, type hints, and dataclasses: --- Bash / She",
+      "tags": [
+        "Code",
+        "Syntax Highlighting",
+        "MDX",
+        "Programming Languages",
+        "Demo"
+      ],
+      "series": "Features",
+      "publishedAt": "2020-01-08T12:00:00Z",
+      "readingTime": 2,
+      "url": "/blog/post-20200108-647bfe00"
+    },
+    {
+      "id": "post-20200107-04d94a8e",
+      "title": "Markdown Elements & Typography",
+      "summary": "Complete demonstration of markdown elements including typography, lists, blockquotes, tables, and HTML components.",
+      "content": "This page demonstrates all markdown elements and typographic styles used throughout the site. It showcases the Lora serif font for body text paired with Geist Sans for UI elements. --- Typography Styles Heading Level 3 This is how a third-level heading looks with the current typography system. Heading Level 4 Fourth-level headings are slightly smaller but still maintain hierarchy. Heading Level 5 Fifth-level headings for deeply nested content. Heading Level 6 The smallest heading level available",
+      "tags": [
+        "Typography",
+        "Markdown",
+        "MDX",
+        "Demo"
+      ],
+      "series": "Features",
+      "publishedAt": "2020-01-07T12:00:00Z",
+      "readingTime": 4,
+      "url": "/blog/post-20200107-04d94a8e"
+    }
+  ],
+  "tags": [
+    "AI",
+    "AI Agent Security",
+    "AI Security",
+    "Agentic AI",
+    "Architecture",
+    "Autonomous Systems",
+    "Background Jobs",
+    "CVE",
+    "Calculus",
+    "Code",
+    "Components",
+    "Cybersecurity",
+    "Demo",
+    "Dependabot",
+    "Design System",
+    "Developer Tools",
+    "Diagrams",
+    "Equations",
+    "Event-Driven",
+    "Hooks",
+    "Inngest",
+    "Interactive",
+    "JavaScript",
+    "KaTeX",
+    "LLM Security",
+    "LaTeX",
+    "MCP",
+    "MDX",
+    "Markdown",
+    "Math",
+    "Next.js",
+    "OWASP",
+    "Performance",
+    "Portfolio",
+    "Production",
+    "Productivity",
+    "Programming Languages",
+    "RSC",
+    "React",
+    "React2Shell",
+    "ReactFlow",
+    "Security",
+    "Syntax Highlighting",
+    "Tailwind CSS",
+    "Threat Intelligence",
+    "TypeScript",
+    "Typography",
+    "UI",
+    "Vercel",
+    "Visualization",
+    "shadcn/ui"
+  ],
+  "series": [
+    "Features",
+    "Portfolio"
+  ],
+  "generatedAt": "2025-12-27T09:26:32.595Z"
+}

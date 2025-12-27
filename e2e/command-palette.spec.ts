@@ -5,11 +5,11 @@ test.describe("Command Palette", () => {
     await page.goto("/");
   });
 
-  test("should open command palette with Cmd+K (Mac) or Ctrl+K (Windows/Linux)", async ({
+  test("should open command palette with / (forward slash)", async ({
     page,
   }) => {
-    // Press Cmd+K (or Ctrl+K on non-Mac)
-    await page.keyboard.press(process.platform === "darwin" ? "Meta+K" : "Control+K");
+    // Press / key
+    await page.keyboard.press("Slash");
 
     // Command palette should be visible
     await expect(page.getByRole("dialog")).toBeVisible();
@@ -18,7 +18,7 @@ test.describe("Command Palette", () => {
 
   test("should close command palette with Escape", async ({ page }) => {
     // Open command palette
-    await page.keyboard.press(process.platform === "darwin" ? "Meta+K" : "Control+K");
+    await page.keyboard.press("Slash");
     await expect(page.getByRole("dialog")).toBeVisible();
 
     // Close with Escape
@@ -28,7 +28,7 @@ test.describe("Command Palette", () => {
 
   test("should close command palette when clicking backdrop", async ({ page }) => {
     // Open command palette
-    await page.keyboard.press(process.platform === "darwin" ? "Meta+K" : "Control+K");
+    await page.keyboard.press("Slash");
     await expect(page.getByRole("dialog")).toBeVisible();
 
     // Click backdrop (outside dialog)
@@ -38,7 +38,7 @@ test.describe("Command Palette", () => {
 
   test("should filter commands based on search input", async ({ page }) => {
     // Open command palette
-    await page.keyboard.press(process.platform === "darwin" ? "Meta+K" : "Control+K");
+    await page.keyboard.press("Slash");
 
     // Type search query
     await page.getByPlaceholder("Search commands...").fill("blog");
@@ -56,7 +56,7 @@ test.describe("Command Palette", () => {
 
   test("should navigate to blog when selecting Blog command", async ({ page }) => {
     // Open command palette
-    await page.keyboard.press(process.platform === "darwin" ? "Meta+K" : "Control+K");
+    await page.keyboard.press("Slash");
 
     // Click Blog command
     await page.getByText("Blog", { exact: true }).click();
@@ -70,7 +70,7 @@ test.describe("Command Palette", () => {
 
   test("should navigate using keyboard arrow keys and Enter", async ({ page }) => {
     // Open command palette
-    await page.keyboard.press(process.platform === "darwin" ? "Meta+K" : "Control+K");
+    await page.keyboard.press("Slash");
 
     // Press ArrowDown to select first command
     await page.keyboard.press("ArrowDown");
@@ -87,7 +87,7 @@ test.describe("Command Palette", () => {
 
   test("should show categorized commands (Navigation, Actions, Settings)", async ({ page }) => {
     // Open command palette
-    await page.keyboard.press(process.platform === "darwin" ? "Meta+K" : "Control+K");
+    await page.keyboard.press("Slash");
 
     // Should show Navigation category
     await expect(page.getByText("Navigation")).toBeVisible();
@@ -106,7 +106,7 @@ test.describe("Command Palette", () => {
 
   test("should toggle theme when selecting theme command", async ({ page }) => {
     // Open command palette
-    await page.keyboard.press(process.platform === "darwin" ? "Meta+K" : "Control+K");
+    await page.keyboard.press("Slash");
 
     // Get current theme
     const htmlElement = page.locator("html");
@@ -126,7 +126,7 @@ test.describe("Command Palette", () => {
 
   test("should show keyboard shortcuts in footer", async ({ page }) => {
     // Open command palette
-    await page.keyboard.press(process.platform === "darwin" ? "Meta+K" : "Control+K");
+    await page.keyboard.press("Slash");
 
     // Footer should show keyboard hints
     await expect(page.getByText("Navigate")).toBeVisible();
@@ -136,7 +136,7 @@ test.describe("Command Palette", () => {
 
   test("should show 'No results found' when search has no matches", async ({ page }) => {
     // Open command palette
-    await page.keyboard.press(process.platform === "darwin" ? "Meta+K" : "Control+K");
+    await page.keyboard.press("Slash");
 
     // Type non-matching search query
     await page.getByPlaceholder("Search commands...").fill("xyzzzzz123nonexistent");

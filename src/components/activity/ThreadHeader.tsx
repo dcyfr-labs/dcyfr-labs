@@ -22,6 +22,7 @@ import { getActivitySourceIcon } from "@/lib/activity/types";
 import type { ActivityItem } from "@/lib/activity/types";
 import { cn } from "@/lib/utils";
 import { TYPOGRAPHY, SPACING, HOVER_EFFECTS, ANIMATION, NEON_COLORS, ACTIVITY_IMAGE } from "@/lib/design-tokens";
+import { Flame, TrendingUp } from "lucide-react";
 
 // ============================================================================
 // TYPES & HELPERS
@@ -88,13 +89,15 @@ export function ThreadHeader({
 
           {/* Trending Badge (Weekly takes priority over Monthly) */}
           {activity.meta?.trendingStatus?.isWeeklyTrending && (
-            <Badge variant="secondary" className={cn("px-2 h-6", NEON_COLORS.orange.badge)}>
-              🔥 Trending this week
+            <Badge variant="secondary" className={cn("px-2 h-6 flex items-center gap-1", NEON_COLORS.orange.badge)}>
+              <Flame className="w-3 h-3" aria-hidden="true" />
+              Trending this week
             </Badge>
           )}
           {!activity.meta?.trendingStatus?.isWeeklyTrending && activity.meta?.trendingStatus?.isMonthlyTrending && (
-            <Badge variant="secondary" className={cn("px-2 h-6", NEON_COLORS.blue.badge)}>
-              📈 Trending this month
+            <Badge variant="secondary" className={cn("px-2 h-6 flex items-center gap-1", NEON_COLORS.blue.badge)}>
+              <TrendingUp className="w-3 h-3" aria-hidden="true" />
+              Trending this month
             </Badge>
           )}
         </div>

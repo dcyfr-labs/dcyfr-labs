@@ -12,7 +12,7 @@ import { AboutDrewProfile } from "@/components/about/about-drew-profile";
 import { AboutDcyfrProfile } from "@/components/about/about-dcyfr-profile";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CONTAINER_WIDTHS, SPACING, TYPOGRAPHY, SHADOWS, HOVER_EFFECTS } from "@/lib/design-tokens";
+import { CONTAINER_WIDTHS, CONTAINER_PADDING, SPACING, TYPOGRAPHY, SHADOWS, HOVER_EFFECTS } from "@/lib/design-tokens";
 
 /**
  * Team Member Profile Page
@@ -117,12 +117,12 @@ export default async function ProfilePage({ params }: PageProps) {
       {/* Cross-link to Other Team Member */}
       {otherMember && (
         <div
-          className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 lg:px-8 py-12`}
+          className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} py-12`}
         >
           <div className={SPACING.section}>
             <h2 className={TYPOGRAPHY.h2.standard}>Meet the Team</h2>
             <Link href={otherMember.profileUrl} className="block group mt-4">
-              <Card className={`p-6 ${SHADOWS.card.rest} ${SHADOWS.card.hover} ${HOVER_EFFECTS.cardLift}`}>
+              <Card className={`p-4 sm:p-8 ${SHADOWS.card.rest} ${SHADOWS.card.hover} ${HOVER_EFFECTS.cardLift}`}>
                 <div className="flex items-start gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">

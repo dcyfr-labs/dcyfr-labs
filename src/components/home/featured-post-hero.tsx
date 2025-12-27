@@ -137,15 +137,22 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
               sizes="(max-width: 768px) 100vw, 1200px"
               priority
             />
-            {/* Dark overlay for text contrast */}
-            <div className={cn("absolute inset-0 bg-linear-to-b from-background/45 via-background/70 to-background/95", ANIMATION.transition.appearance)} />
+            {/* Dark overlay for text contrast - modern pattern */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70" />
           </div>
         )}
         
         <div className={cn("relative z-10 p-4 md:p-8", SPACING.content)}>
           {/* Featured Badge */}
           <div className="flex items-center gap-4">
-            <Badge variant="default" className={cn("text-xs", "font-medium")}>
+            <Badge 
+              variant="default" 
+              className={cn(TYPOGRAPHY.label.xs, "backdrop-blur-sm", 
+                post.image && post.image.url && !post.image.hideCard 
+                  ? 'bg-white/20 text-white border border-white/30' 
+                  : 'bg-white/10 text-foreground border border-border/40'
+              )}
+            >
               Featured
             </Badge>
             {post.tags.slice(0, 2).map((tag) => (
@@ -159,7 +166,11 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
               >
                 <Badge 
                   variant="outline" 
-                  className="text-xs hover:bg-accent transition-colors cursor-pointer"
+                  className={cn("text-xs backdrop-blur-sm transition-colors cursor-pointer",
+                    post.image && post.image.url && !post.image.hideCard 
+                      ? 'bg-white/20 text-white border-white/30 hover:bg-white/30' 
+                      : 'text-foreground hover:bg-accent'
+                  )}
                 >
                   {tag}
                 </Badge>
@@ -169,30 +180,51 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
 
           {/* Title & Summary */}
           <div className="space-y-2 md:space-y-3">
-            <h2 className={cn(TYPOGRAPHY.h2.featured, "md:text-4xl text-foreground")}>
+            <h2 className={cn(TYPOGRAPHY.h2.featured, "md:text-4xl", 
+              post.image && post.image.url && !post.image.hideCard 
+                ? 'text-white' 
+                : 'text-foreground'
+            )}>
               {post.title}
             </h2>
             {post.subtitle && (
-              <p className="text-base md:text-lg lg:text-xl text-foreground/80 font-medium">
+              <p className={cn(TYPOGRAPHY.h3.standard,
+                post.image && post.image.url && !post.image.hideCard 
+                  ? 'text-white/80' 
+                  : 'text-foreground/80'
+              )}>
                 {post.subtitle}
               </p>
             )}
-            <p className="text-base md:text-lg text-foreground/70 leading-relaxed">
+            <p className={cn(TYPOGRAPHY.description,
+              post.image && post.image.url && !post.image.hideCard 
+                ? 'text-white/80' 
+                : 'text-foreground/70'
+            )}>
               {post.summary}
             </p>
           </div>
 
           {/* Metadata & CTA */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pt-3 md:pt-4">
-            <div className="flex items-center gap-4 text-sm">
-              <time dateTime={post.publishedAt} className="text-foreground/60">{publishedDate}</time>
-              <span className="flex items-center gap-1 text-foreground/60">
+            <div className={cn("flex items-center gap-4 text-sm",
+              post.image && post.image.url && !post.image.hideCard 
+                ? 'text-white/70' 
+                : 'text-foreground/60'
+            )}>
+              <time dateTime={post.publishedAt}>{publishedDate}</time>
+              <span className="flex items-center gap-1">
                 <Clock className="h-3.5 w-3.5" />
                 {post.readingTime.text}
               </span>
             </div>
             
-            <div className={cn("inline-flex items-center gap-1 text-primary font-medium hover:underline group-hover:gap-2", ANIMATION.transition.base)}>
+            <div className={cn("inline-flex items-center gap-1 font-medium hover:underline group-hover:gap-2", 
+              ANIMATION.transition.base,
+              post.image && post.image.url && !post.image.hideCard 
+                ? 'text-white' 
+                : 'text-primary'
+            )}>
               Read post
               <ArrowRight className={cn("h-4 w-4 group-hover:translate-x-1", ANIMATION.transition.movement)} />
             </div>

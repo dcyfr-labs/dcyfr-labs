@@ -4,7 +4,7 @@
 import { useMemo } from "react";
 import CalendarHeatmap from "react-calendar-heatmap";
 import { motion } from "framer-motion";
-import { ExternalLink, GitCommit, Calendar, Zap, TrendingUp } from "lucide-react";
+import { ExternalLink, GitCommit, Calendar, Zap, TrendingUp, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { TYPOGRAPHY, SEMANTIC_COLORS } from "@/lib/design-tokens";
 import type { ContributionResponse } from "@/lib/github-data";
@@ -143,8 +143,9 @@ export function ClientGitHubHeatmap({
           animate={{ opacity: 1, scale: 1 }}
           className={`${SEMANTIC_COLORS.alert.warning.container} ${SEMANTIC_COLORS.alert.warning.border} rounded-lg p-3`}
         >
-          <p className={`text-sm ${SEMANTIC_COLORS.alert.warning.text}`}>
-            ⚠️ {data.warning}
+          <p className={`text-sm ${SEMANTIC_COLORS.alert.warning.text} flex items-center gap-2`}>
+            <AlertCircle className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+            <span>{data.warning}</span>
           </p>
         </motion.div>
       )}

@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import type { Post } from "@/data/posts";
 import { POST_CATEGORY_LABEL } from "@/lib/post-categories";
+import { NEON_COLORS } from "@/lib/design-tokens";
 
 interface PostBadgesProps {
   post: Post;
@@ -29,21 +30,20 @@ export function PostBadges({
     badges.push(
       <Badge
         key="draft"
-        variant="default"
-        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
+        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none ${NEON_COLORS.blue.badge}`}
       >
         Draft
       </Badge>
     );
   }
 
-  // Archived badge
+  // Archived badge - dimmed
   if (post.archived) {
     badges.push(
       <Badge
         key="archived"
-        variant="default"
-        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
+        variant="outline"
+        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none bg-muted/70 text-muted-foreground border-border/70`}
       >
         Archived
       </Badge>
@@ -55,8 +55,7 @@ export function PostBadges({
     badges.push(
       <Badge
         key="new"
-        variant="default"
-        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
+        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none ${NEON_COLORS.lime.badge}`}
       >
         New
       </Badge>
@@ -68,8 +67,7 @@ export function PostBadges({
     badges.push(
       <Badge
         key="hot"
-        variant="default"
-        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
+        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none ${NEON_COLORS.red.badge}`}
       >
         Hot
       </Badge>

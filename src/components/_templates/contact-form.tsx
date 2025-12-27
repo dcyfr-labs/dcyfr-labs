@@ -28,7 +28,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { SPACING, TYPOGRAPHY, CONTAINER_WIDTHS } from '@/lib/design-tokens'
+import { SPACING, TYPOGRAPHY, CONTAINER_WIDTHS, CONTAINER_PADDING } from '@/lib/design-tokens'
 import { Mail, Send, CheckCircle } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
@@ -50,7 +50,7 @@ export function ContactFormBasic() {
   }
 
   return (
-    <div className={`mx-auto ${CONTAINER_WIDTHS.narrow} px-4 sm:px-6 md:px-8`}>
+    <div className={`mx-auto ${CONTAINER_WIDTHS.narrow} ${CONTAINER_PADDING}`}>
       <form onSubmit={handleSubmit} className={SPACING.content}>
         {/* Name field */}
         <div className="space-y-2">

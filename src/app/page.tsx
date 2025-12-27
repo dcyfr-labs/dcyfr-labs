@@ -23,6 +23,7 @@ import {
   SCROLL_BEHAVIOR,
   CONTAINER_VERTICAL_PADDING,
   ANIMATION,
+  CONTAINER_PADDING,
 } from "@/lib/design-tokens";
 import { Card } from "@/components/ui/card";
 import { createPageMetadata, getJsonLdScriptProps } from "@/lib/metadata";
@@ -33,7 +34,6 @@ import {
   SiteLogo,
   SectionNavigator,
   Section,
-  TrendingPosts,
   SmoothScrollToHash,
 } from "@/components/common";
 import {
@@ -58,11 +58,15 @@ import {
 } from "@/lib/activity/sources.server";
 import {
   HomepageStats,
-  HomepageHeroActions,
   HomepageHeroHeadline,
   FlippableAvatar,
+  NetworkBackground,
+  FeaturedCVEBanner,
+  TrendingSection,
   QuickLinksRibbon,
 } from "@/components/home";
+import { getTrendingProjects } from "@/lib/activity/trending-projects";
+import { SearchButton } from "@/components/search";
 import { ScrollReveal, ScrollProgressIndicator } from "@/components/features";
 
 // Lazy-loaded below-fold components for better initial load performance
@@ -118,20 +122,6 @@ const ExploreCards = dynamic(
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {[...Array(3)].map((_, i) => (
           <div key={i} className="h-32 bg-muted rounded-lg animate-pulse" />
-        ))}
-      </div>
-    ),
-    ssr: true,
-  }
-);
-
-const TopicNavigator = dynamic(
-  () => import("@/components/home").then(mod => ({ default: mod.TopicNavigator })),
-  {
-    loading: () => (
-      <div className="flex flex-wrap gap-2 justify-center">
-        {[...Array(12)].map((_, i) => (
-          <div key={i} className="h-8 w-20 bg-muted rounded-full animate-pulse" />
         ))}
       </div>
     ),
@@ -354,6 +344,9 @@ export default async function Home() {
     colorVariant: colorVariants[index % colorVariants.length],
   }));
 
+  // Calculate trending projects with real GitHub stats
+  const trendingProjects = await getTrendingProjects([...projects], { limit: 5 });
+
   return (
     <PageLayout>
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
@@ -364,77 +357,90 @@ export default async function Home() {
         scrollOffset={SCROLL_BEHAVIOR.offset.standard}
         className={SPACING.section}
       >
-        {/* 1. Hero Section */}
-        <Section id="hero" className="relative">
-          {/* Gradient background overlay */}
-          <div
-            className="absolute inset-0 opacity-10 dark:opacity-5 pointer-events-none"
-            style={{
-              background: "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)",
-            }}
-            aria-hidden="true"
-          />
+        {/* 1. Hero Section - Full-screen immersive experience (accounts for header height) */}
+        <Section
+          id="hero"
+          className="relative overflow-hidden min-h-[calc(100vh-56px)] md:min-h-[calc(100vh-64px)]"
+          style={{ minHeight: "calc(100vh - 56px)" }}
+        >
+          {/* 3D Network Background */}
+          <NetworkBackground />
 
-          <ScrollReveal animation="fade-up">
-            <div
-              className={cn(
-                PAGE_LAYOUT.hero.container,
-                "flex flex-col items-center w-full relative z-10"
-              )}
-            >
+          {/* Centered Content Container */}
+          <div className="absolute inset-0 flex items-center justify-center z-10">
+            <ScrollReveal animation="fade-up" className="w-full">
               <div
                 className={cn(
-                  SPACING.content,
-                  "text-center flex flex-col items-center w-full",
-                  CONTAINER_WIDTHS.narrow,
-                  "mx-auto"
+                  "flex flex-col items-center justify-center w-full",
+                  CONTAINER_PADDING
                 )}
               >
-                {/* Avatar */}
                 <div
                   className={cn(
-                    "flex justify-center w-full",
-                    ANIMATION.effects.pulse
+                    "text-center flex flex-col items-center w-full mx-auto",
+                    SPACING.content
                   )}
-                  role="img"
-                  aria-label="Avatar - Click to flip"
+                  style={{ maxWidth: "48rem" }}
                 >
-                  <FlippableAvatar size="md" priority animated backdrop />
+                  {/* Avatar - Larger for full-screen impact  
+                  <div
+                    className={cn(
+                      "flex justify-center w-full",
+                      ANIMATION.effects.pulse
+                    )}
+                    role="img"
+                    aria-label="Avatar - Click to flip"
+                  >
+                    <FlippableAvatar size="md" priority animated backdrop />
+                  </div> */}
+
+                  {/* Logo Title - Larger scale for hero */}
+                  <div>
+                    <SiteLogo
+                      size="lg"
+                      className="justify-center scale-110 md:scale-125"
+                    />
+                  </div>
+
+                  {/* Description - Larger text for readability 
+                  <p
+                    className={cn(
+                      "text-muted-foreground leading-relaxed",
+                      "mx-auto w-full text-center max-w-2xl",
+                      "text-base md:text-lg lg:text-xl",
+                      "px-4 md:px-0"
+                    )}
+                  >
+                    Exploring cyber architecture, coding, and security insights to
+                    build a safer digital future.
+                  </p> */}
+
+                  {/* Search Bar - Prominent, wide placement */}
+                  <div className={`w-full mt-4 md:mt-6 *:md:w-3/4 lg:w-2/3`}>
+                    <div
+                      className="w-full mx-auto"
+                      style={{ maxWidth: "28rem" }}
+                    >
+                      <SearchButton variant="input" />
+                    </div>
+                  </div>
                 </div>
-
-                {/* Logo Title */}
-                <div>
-                  <SiteLogo
-                    size="lg"
-                    showIcon={false}
-                    className="justify-center"
-                  />
-                </div>
-
-                {/* Description */}
-                <p
-                  className={cn(
-                    "text-muted-foreground leading-relaxed",
-                    TYPOGRAPHY.description,
-                    "mx-auto w-full text-center",
-                    "text-sm md:text-base"
-                  )}
-                >
-                  Exploring cyber architecture, coding, and security insights to
-                  build a safer digital future.
-                </p>
-
-                {/* Actions */}
-                <div className="w-full flex justify-center">
-                  <HomepageHeroActions />
-                </div>
-
-                {/* Quick Links Ribbon */}
-                <QuickLinksRibbon />
               </div>
+            </ScrollReveal>
+          </div>
+        </Section>
+
+        {/* TODO: 1.5. Featured CVE Alert - Cybersecurity focus -- needs something
+        <Section
+          id="cve-alert"
+          className={cn(PAGE_LAYOUT.section.container)}
+        >
+          <ScrollReveal animation="fade-up" delay={75}>
+            <div className={SPACING.content}>
+              <FeaturedCVEBanner />
             </div>
           </ScrollReveal>
-        </Section>
+        </Section> */}
 
         {/* 2. TODO: Activity Heatmap -- needs work
         <Section id="activity-heatmap" className={PAGE_LAYOUT.section.container}>
@@ -457,29 +463,7 @@ export default async function Home() {
           </ScrollReveal>
         </Section>
 
-        {/* 3. Explore Cards - Primary navigation hub */}
-        <Section
-          id="explore"
-          className={cn(
-            PAGE_LAYOUT.section.container,
-            CONTAINER_VERTICAL_PADDING,
-            "bg-muted/30 dark:bg-muted/10",
-            "border-y border-border/50"
-          )}
-        >
-          <ScrollReveal animation="fade-up" delay={125}>
-            <div className={SPACING.content}>
-              <SectionHeader title="Explore" />
-              <ExploreCards
-                postCount={activePosts.length}
-                projectCount={projects.length}
-                activityCount={allActivities.length}
-              />
-            </div>
-          </ScrollReveal>
-        </Section>
-
-        {/* 4. Trending Now */}
+        {/* 4. Unified Trending Section - Posts, Topics, and Projects */}
         <Section
           id="trending"
           className={cn(
@@ -492,36 +476,14 @@ export default async function Home() {
               <SectionHeader
                 title="Trending"
                 actionHref="/blog"
-                actionLabel="View all posts"
+                actionLabel="View all"
               />
-              <TrendingPosts
+              <TrendingSection
                 posts={activePosts.filter((p) => p.id !== featuredPost?.id)}
                 viewCounts={viewCountsMap}
-                limit={3}
-              />
-            </div>
-          </ScrollReveal>
-        </Section>
-
-        {/* 5. Topic Navigator - Discover content by topic */}
-        <Section
-          id="topics"
-          className={cn(
-            PAGE_LAYOUT.section.container,
-            CONTAINER_VERTICAL_PADDING
-          )}
-        >
-          <ScrollReveal animation="fade-up" delay={175}>
-            <div className={SPACING.content}>
-              <SectionHeader
-                title="Popular Topics"
-                actionHref="/blog"
-                actionLabel="Browse all topics"
-              />
-              <TopicNavigator
                 topics={topTopics}
-                maxTopics={12}
-                variant="homepage"
+                projects={trendingProjects}
+                defaultTab="posts"
               />
             </div>
           </ScrollReveal>
@@ -588,6 +550,28 @@ export default async function Home() {
             </div>
           </ScrollReveal>
         </Section> */}
+        
+        {/* 3. Explore Cards - Primary navigation hub (consolidated) */}
+        <Section
+          id="explore"
+          className={cn(
+            PAGE_LAYOUT.section.container,
+            CONTAINER_VERTICAL_PADDING,
+            "bg-muted/30 dark:bg-muted/10",
+            "border-y border-border/50"
+          )}
+        >
+          <ScrollReveal animation="fade-up" delay={125}>
+            <div className={SPACING.content}>
+              <SectionHeader title="Explore More" />
+              <ExploreCards
+                postCount={activePosts.length}
+                projectCount={projects.length}
+                activityCount={allActivities.length}
+              />
+            </div>
+          </ScrollReveal>
+        </Section>
       </SectionNavigator>
     </PageLayout>
   );

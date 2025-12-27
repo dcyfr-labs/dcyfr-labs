@@ -45,9 +45,9 @@ export function ViewToggle({ currentView }: ViewToggleProps) {
 
   const views = [
     { value: "compact", icon: Square, label: "Compact view" },
+    { value: "grid", icon: LayoutGrid, label: "Grid view" },
     { value: "list", icon: List, label: "List view" },
     { value: "magazine", icon: Newspaper, label: "Magazine view" },
-    { value: "grid", icon: LayoutGrid, label: "Grid view" },
   ] as const;
 
   return (

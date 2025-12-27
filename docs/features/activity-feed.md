@@ -17,7 +17,7 @@ The Activity Feed is a universal timeline that aggregates content from multiple 
 - ✅ **Full-text search** - Search titles, descriptions, tags, and categories
 - ✅ **Advanced query syntax** - `tag:`, `source:`, `-exclude`, `"exact phrases"`
 - ✅ **Search history** - Recent 10 searches with result counts
-- ✅ **Keyboard shortcuts** - Cmd/Ctrl+K to focus search
+- ✅ **Keyboard shortcuts** - Press `/` to open search
 - ✅ **Activity heatmap** - Calendar view showing activity intensity over time
 - ✅ **Trending badges** - Real-time engagement scoring with weekly/monthly indicators
 - ✅ **Responsive design** - Mobile-optimized timeline and heatmap views
@@ -109,7 +109,7 @@ raect → matches "React"
 
 #### Keyboard Shortcuts
 
-- **Cmd+K** (Mac) / **Ctrl+K** (Windows/Linux) - Focus search input
+- **/** - Open search / command palette
 - **Enter** - Submit search and save to history
 - **Escape** - Clear focus (browser default)
 

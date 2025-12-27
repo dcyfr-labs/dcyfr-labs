@@ -29,14 +29,14 @@ interface PostCategorySectionProps {
  * Renders a collapsible accordion section for a blog category.
  * Each category has an enhanced header with:
  * - Category name in large typography
- * - Post count badge
- * - Visual separator line
+ * - Post count badge with gradient styling
+ * - Modern visual separator line
  * - Expandable/collapsible posts in compact layout
  *
  * Features:
  * - All categories expanded by default
- * - Clean visual hierarchy with category headers
- * - Post count clearly visible in a badge
+ * - Enhanced visual hierarchy with modern styling
+ * - Post count in glass morphism badge
  * - Smooth expand/collapse animations
  * - Responsive design for mobile and desktop
  *
@@ -57,22 +57,22 @@ export function PostCategorySection({
   return (
     <Accordion type="multiple" defaultValue={[category]} className="w-full">
       <AccordionItem value={category} className="border-none" style={{ paddingTop: SPACING.section }}>
-        <AccordionTrigger className="hover:no-underline py-4 px-0">
-          <div className="flex items-center gap-4">
+        <AccordionTrigger className="hover:no-underline py-4 px-0 group">
+          <div className="flex items-center gap-4 flex-1 text-left">
             {/* Category label and count */}
-            <div className="flex items-baseline gap-3 flex-1 text-left">
+            <div className="flex items-baseline gap-3 flex-1">
               <h2 className={TYPOGRAPHY.h2.standard}>{label}</h2>
-              <span className={`inline-flex items-center justify-center px-2.5 py-1 rounded-full bg-primary/10 text-primary whitespace-nowrap ${TYPOGRAPHY.label.small}`}>
+              <span className={`inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-foreground whitespace-nowrap transition-colors ${TYPOGRAPHY.label.small}`}>
                 {postCount} {postCount === 1 ? "post" : "posts"}
               </span>
             </div>
           </div>
 
-          {/* Bottom border for visual separation - gradient effect */}
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-border via-border to-transparent group-hover:via-primary/20 transition-colors" />
+          {/* Bottom border for visual separation - enhanced gradient effect */}
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-border via-border to-transparent group-hover:via-primary/30 transition-colors" />
         </AccordionTrigger>
 
-        <AccordionContent className="pt-6 pb-6 px-0">
+        <AccordionContent className="pt-8 pb-6 px-0">
           <PostList
             posts={posts}
             latestSlug={latestSlug}

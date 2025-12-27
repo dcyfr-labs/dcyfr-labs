@@ -177,11 +177,10 @@ describe("useKeyboardShortcut", () => {
     expect(callback2).toHaveBeenCalledTimes(1);
   });
 
-  it("should handle Ctrl key as metaKey on non-Mac", () => {
+  it("should trigger shortcut without modifier keys", () => {
     const shortcuts: KeyboardShortcut[] = [
       {
-        key: "k",
-        metaKey: true,
+        key: "/",
         callback: mockCallback,
       },
     ];
@@ -189,8 +188,7 @@ describe("useKeyboardShortcut", () => {
     renderHook(() => useKeyboardShortcut(shortcuts));
 
     const event = new KeyboardEvent("keydown", {
-      key: "k",
-      ctrlKey: true, // Ctrl instead of Meta
+      key: "/",
       bubbles: true,
     });
 

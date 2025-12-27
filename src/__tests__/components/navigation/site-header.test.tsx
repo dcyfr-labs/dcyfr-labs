@@ -17,7 +17,25 @@ vi.mock('next/link', () => ({
   ),
 }));
 
+// Mock next/image
+vi.mock('next/image', () => ({
+  default: ({ alt, src, ...props }: any) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img alt={alt} src={src} {...props} />
+  ),
+}));
+
 import { SiteHeader } from '@/components/navigation/site-header';
+import { SearchProvider } from '@/components/search';
+
+// Helper to render with SearchProvider
+const renderWithProviders = (component: React.ReactElement) => {
+  return render(
+    <SearchProvider>
+      {component}
+    </SearchProvider>
+  );
+};
 
 describe('SiteHeader', () => {
   beforeEach(() => {
@@ -41,35 +59,35 @@ describe('SiteHeader', () => {
 
   describe('Basic Rendering', () => {
     it('renders the site header with logo', () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const header = screen.getByRole('banner');
       expect(header).toBeInTheDocument();
       expect(header).toHaveClass('site-header');
     });
 
     it('renders logo link to homepage', () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const logoLink = screen.getByRole('link', { name: /DCYFR Labs home/i });
       expect(logoLink).toBeInTheDocument();
       expect(logoLink).toHaveAttribute('href', '/');
     });
 
     it('renders About link in desktop nav', () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const aboutLink = screen.getByRole('link', { name: /Learn about DCYFR Labs and our team/i });
       expect(aboutLink).toBeInTheDocument();
       expect(aboutLink).toHaveAttribute('href', '/about');
     });
 
     it('renders Sponsors link in desktop nav', () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const sponsorsLink = screen.getByRole('link', { name: /Support open source development/i });
       expect(sponsorsLink).toBeInTheDocument();
       expect(sponsorsLink).toHaveAttribute('href', '/sponsors');
     });
 
     it('renders theme toggle button', () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const themeToggles = screen.getAllByRole('button', { name: /switch to|toggle theme/i });
       expect(themeToggles.length).toBeGreaterThan(0);
     });
@@ -77,13 +95,13 @@ describe('SiteHeader', () => {
 
   describe('Desktop Navigation', () => {
     it('renders desktop navigation with aria-label', () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const nav = screen.getByRole('navigation', { name: /Main navigation/i });
       expect(nav).toBeInTheDocument();
     });
 
     it('hides desktop navigation on mobile (has hidden md:flex classes)', () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const nav = screen.getByRole('navigation', { name: /Main navigation/i });
       expect(nav.className).toContain('hidden md:flex');
     });
@@ -91,7 +109,7 @@ describe('SiteHeader', () => {
 
   describe('Blog Dropdown', () => {
     it('renders Blog dropdown button', () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const blogButton = screen.getByRole('button', { name: /Blog/i });
       expect(blogButton).toBeInTheDocument();
       expect(blogButton).toHaveAttribute('aria-haspopup', 'menu');
@@ -99,7 +117,7 @@ describe('SiteHeader', () => {
     });
 
     it('opens Blog dropdown when clicked', async () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const blogButton = screen.getByRole('button', { name: /Blog menu/i });
 
       fireEvent.click(blogButton);
@@ -118,7 +136,7 @@ describe('SiteHeader', () => {
     });
 
     it('closes Blog dropdown when clicking a link', async () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const blogButton = screen.getByRole('button', { name: /Blog menu/i });
 
       fireEvent.click(blogButton);
@@ -132,7 +150,7 @@ describe('SiteHeader', () => {
     });
 
     it('closes Blog dropdown when clicking outside', async () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const blogButton = screen.getByRole('button', { name: /Blog/i });
 
       fireEvent.click(blogButton);
@@ -150,7 +168,7 @@ describe('SiteHeader', () => {
     });
 
     it('displays chevron icon that rotates when dropdown opens', () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const blogButton = screen.getByRole('button', { name: /Blog/i });
       const chevron = blogButton.querySelector('svg');
       
@@ -165,7 +183,7 @@ describe('SiteHeader', () => {
 
   describe('Our Work Dropdown', () => {
     it('renders Our Work dropdown button', () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const workButton = screen.getByRole('button', { name: /Our Work/i });
       expect(workButton).toBeInTheDocument();
       expect(workButton).toHaveAttribute('aria-haspopup', 'menu');
@@ -173,7 +191,7 @@ describe('SiteHeader', () => {
     });
 
     it('opens Our Work dropdown when clicked', async () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const workButton = screen.getByRole('button', { name: /Our Work menu/i });
 
       fireEvent.click(workButton);
@@ -196,7 +214,7 @@ describe('SiteHeader', () => {
     });
 
     it('closes Our Work dropdown when clicking a link', async () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const workButton = screen.getByRole('button', { name: /Our Work menu/i });
 
       fireEvent.click(workButton);
@@ -210,7 +228,7 @@ describe('SiteHeader', () => {
     });
 
     it('closes Our Work dropdown when clicking outside', async () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const workButton = screen.getByRole('button', { name: /Our Work/i });
 
       fireEvent.click(workButton);
@@ -228,7 +246,7 @@ describe('SiteHeader', () => {
     });
 
     it('displays correct links in Our Work dropdown', async () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const workButton = screen.getByRole('button', { name: /Our Work menu/i });
 
       fireEvent.click(workButton);
@@ -249,7 +267,7 @@ describe('SiteHeader', () => {
       const scrollToSpy = vi.fn();
       window.scrollTo = scrollToSpy;
 
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const logoLink = screen.getByRole('link', { name: /DCYFR Labs home/i });
 
       fireEvent.click(logoLink);
@@ -266,7 +284,7 @@ describe('SiteHeader', () => {
       const scrollToSpy = vi.fn();
       window.scrollTo = scrollToSpy;
 
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const logoLink = screen.getByRole('link', { name: /DCYFR Labs home/i });
 
       fireEvent.click(logoLink);
@@ -278,14 +296,14 @@ describe('SiteHeader', () => {
 
   describe('Mobile Navigation', () => {
     it('renders mobile navigation container', () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const header = screen.getByRole('banner');
       const mobileNavContainer = header.querySelector('.flex.md\\:hidden');
       expect(mobileNavContainer).toBeInTheDocument();
     });
 
     it('shows theme toggle in mobile nav', () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const themeToggles = screen.getAllByRole('button', { name: /switch to|toggle theme/i });
       expect(themeToggles.length).toBeGreaterThan(0);
     });
@@ -293,12 +311,12 @@ describe('SiteHeader', () => {
 
   describe('Accessibility', () => {
     it('has proper ARIA labels for navigation', () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       expect(screen.getByRole('navigation', { name: /Main navigation/i })).toBeInTheDocument();
     });
 
     it('has proper ARIA attributes for dropdowns', () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       
       const blogButton = screen.getByRole('button', { name: /Blog/i });
       expect(blogButton).toHaveAttribute('aria-haspopup', 'menu');
@@ -310,7 +328,7 @@ describe('SiteHeader', () => {
     });
 
     it('updates aria-expanded when dropdowns open/close', async () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const blogButton = screen.getByRole('button', { name: /Blog/i });
       
       expect(blogButton).toHaveAttribute('aria-expanded', 'false');
@@ -329,22 +347,77 @@ describe('SiteHeader', () => {
 
   describe('Styling and Layout', () => {
     it('applies sticky positioning to header', () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const header = screen.getByRole('banner');
       expect(header.className).toContain('sticky');
       expect(header.className).toContain('top-0');
     });
 
     it('applies backdrop blur effect', () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const header = screen.getByRole('banner');
       expect(header.className).toContain('backdrop-blur');
     });
 
     it('has correct z-index for stacking', () => {
-      render(<SiteHeader />);
+      renderWithProviders(<SiteHeader />);
       const header = screen.getByRole('banner');
       expect(header.className).toContain('z-40');
+    });
+  });
+
+  describe('Scroll Border Behavior', () => {
+    it('does not have border-b when scrollY is 0', () => {
+      renderWithProviders(<SiteHeader />);
+      const header = screen.getByRole('banner');
+      expect(header.className).not.toContain('border-b');
+    });
+
+    it('adds border-b when scrolled', async () => {
+      renderWithProviders(<SiteHeader />);
+      const header = screen.getByRole('banner');
+      
+      // Simulate scroll
+      Object.defineProperty(window, 'scrollY', {
+        writable: true,
+        configurable: true,
+        value: 10,
+      });
+      
+      fireEvent.scroll(window, { target: { scrollY: 10 } });
+      
+      await waitFor(() => {
+        expect(header.className).toContain('border-b');
+      });
+    });
+
+    it('removes border-b when scrolled back to top', async () => {
+      renderWithProviders(<SiteHeader />);
+      const header = screen.getByRole('banner');
+      
+      // Simulate scroll down
+      Object.defineProperty(window, 'scrollY', {
+        writable: true,
+        configurable: true,
+        value: 10,
+      });
+      fireEvent.scroll(window, { target: { scrollY: 10 } });
+      
+      await waitFor(() => {
+        expect(header.className).toContain('border-b');
+      });
+      
+      // Simulate scroll back to top
+      Object.defineProperty(window, 'scrollY', {
+        writable: true,
+        configurable: true,
+        value: 0,
+      });
+      fireEvent.scroll(window, { target: { scrollY: 0 } });
+      
+      await waitFor(() => {
+        expect(header.className).not.toContain('border-b');
+      });
     });
   });
 });

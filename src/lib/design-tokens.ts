@@ -234,12 +234,12 @@ export const ACTIVITY_IMAGE = {
   /** Base container with 16:9 aspect ratio and overflow handling, with light background for transparent images */
   container: "aspect-[16/9] relative overflow-hidden rounded-lg mb-4 bg-muted/30 dark:bg-muted/10",
 
-  /** Image size variants for different activity types */
+  /** Image size variants for different activity types - width controls size via aspect ratio */
   sizes: {
-    /** Primary activity header (larger, more prominent) */
-    header: "h-64 md:h-80 lg:h-96",
-    /** Reply/nested activity (smaller, compact) */
-    reply: "h-40 md:h-48",
+    /** Primary activity header (larger, more prominent) - full width, aspect ratio controls height */
+    header: "w-full",
+    /** Reply/nested activity (smaller, compact) - full width, aspect ratio controls height */
+    reply: "w-full",
   },
 
   /** Image styling with hover zoom effect */
@@ -2254,10 +2254,10 @@ export const ARCHIVE_CARD_VARIANTS = {
     container: "group rounded-xl border bg-card overflow-hidden hover:shadow-xl transition-all duration-300",
     imageWrapper: "relative aspect-[16/9] sm:aspect-[21/9] overflow-hidden",
     image: "object-cover group-hover:scale-105 transition-transform duration-500",
-    /** Lighter gradient only at bottom for badges */
-    overlay: "absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent",
+    /** Modern dark overlay matching blog cards */
+    overlay: "absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70",
     badgeContainer: "absolute bottom-3 left-3 flex gap-2 z-10",
-    badge: "backdrop-blur-md bg-white/90 dark:bg-black/90",
+    badge: "backdrop-blur-md bg-white/20 dark:bg-white/20 border border-white/30 text-white",
     glassCard: "bg-background/95 backdrop-blur-sm rounded-lg p-4",
     content: "p-4 md:p-6 space-y-3",
   },
@@ -2267,8 +2267,8 @@ export const ARCHIVE_CARD_VARIANTS = {
     container: "group relative rounded-xl border bg-card overflow-hidden hover:shadow-xl transition-all duration-300 min-h-[280px] md:min-h-[320px]",
     imageWrapper: "absolute inset-0 z-0",
     image: "object-cover group-hover:scale-105 transition-transform duration-500",
-    /** Lighter overlay - 20-60% instead of 75-95% */
-    overlay: "absolute inset-0 bg-gradient-to-b from-background/20 via-background/40 to-background/60 backdrop-blur-[2px]",
+    /** Modern dark overlay */
+    overlay: "absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70",
     content: "relative z-10 p-6 md:p-8 flex flex-col justify-end h-full",
     /** Elevated glass card for content */
     glassCard: "bg-background/80 backdrop-blur-md rounded-t-2xl p-6 border-t",
@@ -2291,8 +2291,8 @@ export const ARCHIVE_CARD_VARIANTS = {
     container: "group relative rounded-2xl overflow-hidden h-[500px] md:h-[600px] cursor-pointer hover:shadow-2xl transition-shadow duration-300",
     imageWrapper: "absolute inset-0 z-0",
     image: "object-cover group-hover:scale-105 transition-transform duration-700",
-    /** Darker overlay only on bottom for readability */
-    overlay: "absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent",
+    /** Modern dark overlay */
+    overlay: "absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70",
     content: "absolute inset-x-0 bottom-0 p-6 md:p-12 text-white z-10",
     contentWrapper: "max-w-3xl",
   },

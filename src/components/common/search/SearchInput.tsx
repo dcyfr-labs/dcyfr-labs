@@ -88,21 +88,6 @@ export function SearchInput({
     }
   }, [value, resultCount, historyStorageKey]);
 
-  // Keyboard shortcut (Cmd/Ctrl + K)
-  useEffect(() => {
-    if (!keyboardShortcut) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        inputRef.current?.focus();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [keyboardShortcut]);
-
   const handleClear = () => {
     onChange("");
     inputRef.current?.focus();
@@ -123,7 +108,7 @@ export function SearchInput({
   return (
     <div className={`relative ${className}`}>
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/70 dark:text-muted-foreground" />
         
         <Input
           ref={inputRef}

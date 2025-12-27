@@ -23,7 +23,7 @@
 
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { SPACING, TYPOGRAPHY, CONTAINER_WIDTHS, HOVER_EFFECTS } from '@/lib/design-tokens'
+import { SPACING, TYPOGRAPHY, CONTAINER_WIDTHS, CONTAINER_PADDING, HOVER_EFFECTS } from '@/lib/design-tokens'
 import { ArrowRight, Mail, Github, Linkedin } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
@@ -34,7 +34,7 @@ import { cn } from '@/lib/utils'
  */
 export function CTASectionSimple() {
   return (
-    <section className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}>
+    <section className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pb-8 md:pb-12`}>
       <div className="bg-muted/50 border border-border rounded-xl p-8 md:p-12 text-center">
         <div className={cn(SPACING.content, `mx-auto ${CONTAINER_WIDTHS.narrow}`)}>
           <h2 className={TYPOGRAPHY.h2.standard}>
@@ -61,7 +61,7 @@ export function CTASectionSimple() {
  */
 export function CTASectionDual() {
   return (
-    <section className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}>
+    <section className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pb-8 md:pb-12`}>
       <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-8 md:p-12 text-center">
         <div className={cn(SPACING.content, `mx-auto ${CONTAINER_WIDTHS.narrow}`)}>
           <h2 className={TYPOGRAPHY.h2.featured}>
@@ -97,7 +97,7 @@ export function CTASectionDual() {
  */
 export function CTASectionCard() {
   return (
-    <section className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}>
+    <section className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pb-8 md:pb-12`}>
       <Card className={HOVER_EFFECTS.cardCTA}>
         <CardHeader>
           <CardTitle className={TYPOGRAPHY.h2.standard}>
@@ -136,7 +136,7 @@ export function CTASectionCard() {
  */
 export function CTASectionNewsletter() {
   return (
-    <section className={`mx-auto ${CONTAINER_WIDTHS.prose} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}>
+    <section className={`mx-auto ${CONTAINER_WIDTHS.prose} ${CONTAINER_PADDING} pb-8 md:pb-12`}>
       <div className="bg-card border border-border rounded-xl p-8">
         <div className={SPACING.content}>
           <h2 className={TYPOGRAPHY.h2.standard}>
@@ -174,7 +174,7 @@ export function CTASectionSocial() {
   ]
 
   return (
-    <section className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}>
+    <section className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pb-8 md:pb-12`}>
       <div className="text-center">
         <div className={cn(SPACING.content, `mx-auto ${CONTAINER_WIDTHS.narrow}`)}>
           <h2 className={TYPOGRAPHY.h2.standard}>
@@ -215,7 +215,7 @@ export function CTASectionSocial() {
  */
 export function CTASectionMinimal() {
   return (
-    <section className={`mx-auto ${CONTAINER_WIDTHS.narrow} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}>
+    <section className={`mx-auto ${CONTAINER_WIDTHS.narrow} ${CONTAINER_PADDING} pb-8 md:pb-12`}>
       <div className="text-center space-y-4">
         <p className={cn(TYPOGRAPHY.body, 'text-muted-foreground')}>
           Interested in working together?
@@ -238,7 +238,7 @@ export function CTASectionMinimal() {
 export function CTASectionBanner() {
   return (
     <section className="bg-primary text-primary-foreground py-12 md:py-16">
-      <div className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8 text-center`}>
+      <div className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} text-center`}>
         <div className={cn(SPACING.content, `mx-auto ${CONTAINER_WIDTHS.narrow}`)}>
           <h2 className={TYPOGRAPHY.h2.featured}>
             Ready to Start Your Project?

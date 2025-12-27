@@ -92,8 +92,7 @@ const EXCLUDED_PATHS = [
   '/dist/',
   '/build/',
   '/out/',
-  '/src/components/ui/', // shadcn/ui components
-  '/src/lib/design-tokens.ts', // design token definitions
+  'src/lib/design-tokens.ts', // design token definitions (exact match)
 ];
 
 // Files to exclude by pattern
@@ -190,8 +189,17 @@ function validateFile(filePath) {
     if (patternName === 'containerWidth' && filePath.includes('design-tokens.ts')) {
       continue;
     }
-    
+
     lines.forEach((line, lineNumber) => {
+      // Skip comment lines (both // and /* */ style comments)
+      const trimmedLine = line.trim();
+      if (trimmedLine.startsWith('//') ||
+          trimmedLine.startsWith('/*') ||
+          trimmedLine.startsWith('*') ||
+          trimmedLine.includes('{ }')) { // Skip commented JSX
+        return;
+      }
+
       const matches = line.matchAll(pattern.regex);
 
       for (const match of matches) {

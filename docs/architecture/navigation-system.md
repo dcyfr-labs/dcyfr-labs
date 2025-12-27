@@ -600,7 +600,7 @@ const commands: CommandAction[] = [
 
 The command palette is triggered by:
 
-- **`⌘K`** (Mac) or **`Ctrl+K`** (Windows/Linux)
+- **`/`** (universal shortcut across all OS and keyboards)
 
 All navigation items with shortcuts are automatically included in the command palette.
 

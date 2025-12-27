@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import { ThemeToggle } from "@/components/features/theme/theme-toggle";
-import { SiteLogo } from "@/components/common/site-logo";
 import { MobileNav } from "@/components/navigation/mobile-nav";
+import { SearchButton } from "@/components/search";
 import DevToolsDropdown from "@/components/common/dev-tools-dropdown";
 import { cn } from "@/lib/utils";
 import { CONTAINER_WIDTHS, ANIMATION } from "@/lib/design-tokens";
@@ -24,20 +26,39 @@ import { useLogoClick } from "@/hooks/use-navigation";
  * - Sticky positioning with backdrop blur
  * - Keyboard navigation support
  * - SEO-optimized structure
+ * - Hides border until scroll (blends with hero sections)
  */
 export function SiteHeader() {
   const pathname = usePathname();
   const blogDropdown = useDropdown();
   const workDropdown = useDropdown();
   const handleLogoClick = useLogoClick();
+  const [hasScrolled, setHasScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolled = window.scrollY > 0;
+      setHasScrolled(scrolled);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   /* eslint-disable react-hooks/refs -- dropdown.ref/isOpen/toggle are hook return values, not ref.current access */
   return (
-    <header className="sticky top-0 z-40 backdrop-blur supports-backdrop-filter:bg-background/60 border-b site-header">
+    <header className={cn("sticky top-0 z-40 backdrop-blur supports-backdrop-filter:bg-background/60 site-header", hasScrolled && "border-b")}>
       <div className={cn("mx-auto", CONTAINER_WIDTHS.dashboard, "px-4", "sm:px-8", "md:px-8", "h-14", "md:h-16", "flex", "items-center", "justify-between", "gap-2")}>
         {/* Logo - always visible */}
-        <Link href="/" onClick={handleLogoClick} className={cn("touch-target", "shrink-0")} aria-label="DCYFR Labs home">
-          <SiteLogo size="md" collapseOnMobile />
+        <Link href="/" onClick={handleLogoClick} className={cn("touch-target", "shrink-0", "-ml-2")} aria-label="DCYFR Labs Home">
+          <Image
+            src="/images/dcyfr-avatar.svg"
+            alt="DCYFR Labs Logo"
+            width={32}
+            height={32}
+            className="w-8 h-8 rounded-full"
+            priority
+          />
         </Link>
 
         {/* Desktop Navigation - hidden on mobile, visible md and up */}
@@ -180,12 +201,14 @@ export function SiteHeader() {
             )}
           </div>
 
+          <SearchButton variant="default" />
           <ThemeToggle />
           {process.env.NODE_ENV === "development" && <DevToolsDropdown />}
         </nav>
 
         {/* Mobile Navigation - visible on mobile, hidden md and up */}
         <div className="flex md:hidden items-center gap-2">
+          <SearchButton variant="default" />
           <ThemeToggle />
           <MobileNav />
         </div>

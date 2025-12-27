@@ -20,8 +20,9 @@ import { Toaster } from "@/components/ui/sonner";
 import { LayoutUtilities } from "@/components/features/layout-utilities";
 import { DevBanner } from "@/components/features/dev-banner";
 import { ScrollToAnchor } from "@/components/features/scroll-to-anchor";
-import { CommandPalette } from "@/components/app";
+import { UnifiedCommand } from "@/components/app";
 import { NavigationShortcutsProvider } from "@/components/common/navigation-shortcuts-provider";
+import { SearchProvider } from "@/components/search";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AxiomWebVitals } from "next-axiom";
@@ -150,18 +151,19 @@ export default async function RootLayout({
             </>
           ) : (
             // Full layout for regular pages
-            <PageTransitionProvider>
-              <a
-                href="#main-content"
-                className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg"
-              >
-                Skip to main content
-              </a>
+            <SearchProvider>
+              <PageTransitionProvider>
+                <a
+                  href="#main-content"
+                  className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg"
+                >
+                  Skip to main content
+                </a>
               <LayoutUtilities />
               {/* Dev Banner: Only show in development environment */}
               {process.env.NODE_ENV === 'development' && <DevBanner />}
               <ScrollToAnchor offset={80} />
-              <CommandPalette />
+              <UnifiedCommand />
               <NavigationShortcutsProvider />
               <SiteHeader />
               <main id="main-content" className={`min-h-[calc(100dvh-128px)] ${MOBILE_SAFE_PADDING}`}>{children}</main>
@@ -178,6 +180,7 @@ export default async function RootLayout({
               {/* Axiom Web Vitals - Production only */}
               <AxiomWebVitals />
             </PageTransitionProvider>
+            </SearchProvider>
           )}
         </ThemeProvider>
       </body>

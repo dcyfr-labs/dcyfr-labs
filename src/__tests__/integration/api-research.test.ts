@@ -16,7 +16,7 @@ import type { PerplexityResponse } from "@/lib/perplexity";
 // Mock dependencies
 vi.mock("@/lib/api-security", () => ({
   blockExternalAccess: vi.fn(() => null), // By default, allow access
-  safeFetch: vi.fn((...args) => global.fetch(...args)), // Delegate to global fetch mock
+  safeFetch: vi.fn((...args: Parameters<typeof fetch>) => global.fetch(...args)), // Delegate to global fetch mock
 }));
 
 vi.mock("@/lib/rate-limit", () => ({
