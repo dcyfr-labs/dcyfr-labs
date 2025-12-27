@@ -125,6 +125,7 @@
     "critters": "^0.0.25",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.26",
+    "fuse.js": "^7.1.0",
     "googleapis": "^169.0.0",
     "gray-matter": "^4.0.3",
     "html2canvas": "^1.4.1",
