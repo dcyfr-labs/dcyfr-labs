@@ -126,7 +126,9 @@ export function ModernProjectCard({
         <Link href={`/work/${project.slug}`}>
           <div className={elevatedVariant.content}>
             {/* Metadata row */}
-            <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
+            <div className={cn("flex items-center gap-3 text-xs flex-wrap",
+              project.image ? 'text-white/70' : 'text-muted-foreground'
+            )}>
               {project.timeline && (
                 <>
                   <time className="uppercase tracking-wide">{project.timeline}</time>
@@ -152,12 +154,16 @@ export function ModernProjectCard({
             </div>
 
             {/* Title */}
-            <h3 className={cn(TYPOGRAPHY.h2.standard, "font-bold line-clamp-2 group-hover:text-primary transition-colors")}>
+            <h3 className={cn(TYPOGRAPHY.h2.standard, "font-bold line-clamp-2 transition-colors",
+              project.image ? 'text-white group-hover:text-white/90' : 'text-foreground group-hover:text-primary'
+            )}>
               {project.title}
             </h3>
 
             {/* Description */}
-            <p className="text-muted-foreground line-clamp-3 text-sm leading-relaxed">
+            <p className={cn("line-clamp-3 text-sm leading-relaxed",
+              project.image ? 'text-white/80' : 'text-muted-foreground'
+            )}>
               {project.description}
             </p>
 
@@ -165,12 +171,27 @@ export function ModernProjectCard({
             {project.tech && project.tech.length > 0 && (
               <div className="flex flex-wrap gap-1.5 pt-2">
                 {project.tech.slice(0, 4).map((tech) => (
-                  <Badge key={tech} variant="outline" className="text-xs">
+                  <Badge 
+                    key={tech} 
+                    variant="outline" 
+                    className={cn("text-xs",
+                      project.image 
+                        ? 'bg-white/20 text-white border-white/30' 
+                        : 'text-foreground'
+                    )}
+                  >
                     {tech}
                   </Badge>
                 ))}
                 {project.tech.length > 4 && (
-                  <Badge variant="outline" className="text-xs">
+                  <Badge 
+                    variant="outline" 
+                    className={cn("text-xs",
+                      project.image 
+                        ? 'bg-white/20 text-white border-white/30' 
+                        : 'text-foreground'
+                    )}
+                  >
                     +{project.tech.length - 4}
                   </Badge>
                 )}
@@ -214,7 +235,7 @@ export function ModernProjectCard({
               <Badge
                 variant="outline"
                 className={cn(
-                  "text-xs mb-3",
+                  "text-xs mb-3 backdrop-blur-md bg-white/20 border-white/30 text-white",
                   STATUS_COLORS[project.status]
                 )}
               >
@@ -225,7 +246,7 @@ export function ModernProjectCard({
             {/* Glass card for content */}
             <div className={cardVariant.glassCard}>
               {/* Metadata */}
-              <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+              <div className="flex items-center gap-2 text-xs text-foreground/70 mb-3">
                 {project.timeline && (
                   <>
                     <time className="uppercase tracking-wide">{project.timeline}</time>
@@ -241,12 +262,12 @@ export function ModernProjectCard({
               </div>
 
               {/* Title */}
-              <h3 className={cn(TYPOGRAPHY.h2.mdx, "font-bold mb-2 line-clamp-2")}>
+              <h3 className={cn(TYPOGRAPHY.h2.mdx, "font-bold mb-2 line-clamp-2 text-foreground")}>
                 {project.title}
               </h3>
 
               {/* Description */}
-              <p className="text-sm text-muted-foreground line-clamp-2">
+              <p className="text-sm text-foreground/70 line-clamp-2">
                 {project.description}
               </p>
             </div>

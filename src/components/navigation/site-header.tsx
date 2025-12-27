@@ -54,9 +54,9 @@ export function SiteHeader() {
           <Image
             src="/images/dcyfr-avatar.svg"
             alt="DCYFR Labs Logo"
-            width={40}
-            height={40}
-            className="w-10 h-10 rounded-full"
+            width={32}
+            height={32}
+            className="w-8 h-8 rounded-full"
             priority
           />
         </Link>

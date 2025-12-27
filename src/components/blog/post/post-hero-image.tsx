@@ -54,7 +54,7 @@ export function PostHeroImage({ image, title, priority = true }: PostHeroImagePr
   return (
     <figure className="not-prose -mx-4 sm:-mx-6 md:-mx-8 mb-8 md:mb-12">
       {/* Image Container with Overlays */}
-      <div className="relative w-full aspect-video md:aspect-21/9 overflow-hidden bg-muted/30 dark:bg-muted/20 border border-border">
+      <div className="relative w-full aspect-video md:aspect-21/9 overflow-hidden bg-muted/30 dark:bg-muted/20 border border-border rounded-xl shadow-md">
         {/* Hero Image */}
         <Image
           src={image.url}
@@ -67,17 +67,19 @@ export function PostHeroImage({ image, title, priority = true }: PostHeroImagePr
           placeholder="blur"
           blurDataURL={IMAGE_PLACEHOLDER.blur}
         />
+        {/* Dark overlay for text contrast */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30" />
       </div>
       
       {/* Caption and Credit */}
       {hasCaption && (
-        <figcaption className="px-4 sm:px-8 md:px-8 pt-3 text-sm text-muted-foreground">
+        <figcaption className="px-4 md:px-8 pt-4 text-sm text-muted-foreground">
           {image.caption && (
-            <p className="mb-1">&quot;{image.caption}&quot;</p>
+            <p className="mb-2 italic">&quot;{image.caption}&quot;</p>
           )}
           {image.credit && (
-            <p className="text-xs *:italic">
-              {image.credit}
+            <p className="text-xs opacity-75">
+              Photo by {image.credit}
             </p>
           )}
         </figcaption>

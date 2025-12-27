@@ -25,7 +25,6 @@ import { TYPOGRAPHY, IMAGE_PLACEHOLDER } from '@/lib/design-tokens';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { ProjectHeroOverlay } from '@/components/common';
 import { cn } from '@/lib/utils';
 
 export interface ArticleHeaderProps {
@@ -187,7 +186,7 @@ export function ArticleHeader({
       {/* Featured Image Card - rendered below text */}
       {backgroundImage && !backgroundImage.hideHero && (
         <figure className="not-prose mb-8">
-          <div className="relative w-full aspect-video overflow-hidden bg-muted/30 dark:bg-muted/20 rounded-lg border">
+          <div className="relative w-full aspect-video overflow-hidden bg-muted/30 dark:bg-muted/20 rounded-lg border shadow-md">
             {/* TODO: Re-enable holo effects after mouse-tracking implementation for dynamic pivoting */}
             <Image
               src={backgroundImage.url}
@@ -203,18 +202,18 @@ export function ArticleHeader({
               )}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
             />
-            {/* Light/dark mode aware overlay for enhanced text contrast */}
-            <ProjectHeroOverlay intensity="light" />
+            {/* Dark overlay for text contrast - modern pattern matching archive cards */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30" />
           </div>
 
           {/* Caption and Credit - show only when present */}
           {(backgroundImage.caption || backgroundImage.credit) && (
-            <figcaption className="px-4 sm:px-8 md:px-8 pt-3 text-sm text-muted-foreground">
+            <figcaption className="px-4 md:px-8 pt-4 text-sm text-muted-foreground">
               {backgroundImage.caption && (
-                <p className="mb-1">{backgroundImage.caption}</p>
+                <p className="mb-2 italic">&quot;{backgroundImage.caption}&quot;</p>
               )}
               {backgroundImage.credit && (
-                <p className="text-xs">Photo by {backgroundImage.credit}</p>
+                <p className="text-xs opacity-75">Photo by {backgroundImage.credit}</p>
               )}
             </figcaption>
           )}

@@ -37,7 +37,7 @@
 
 import { ReactNode } from 'react'
 import Image from 'next/image'
-import { PAGE_LAYOUT, HERO_VARIANTS, CONTAINER_WIDTHS, ANIMATION, CONTAINER_PADDING, SPACING } from '@/lib/design-tokens'
+import { PAGE_LAYOUT, HERO_VARIANTS, CONTAINER_WIDTHS, ANIMATION, CONTAINER_PADDING, SPACING, TYPOGRAPHY } from '@/lib/design-tokens'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 
@@ -162,7 +162,7 @@ export function ArchiveHero({
         )}
       >
         {/* Title */}
-        <h1 className={heroStyles.title}>{title}</h1>
+        <h1 className={TYPOGRAPHY.h1.hero}>{title}</h1>
 
         {/* Description */}
         {description && (

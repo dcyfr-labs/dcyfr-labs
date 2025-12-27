@@ -8,7 +8,8 @@
   "paths": [
     "docs/**",
     "docs/operations/scanner-tests-completed.md",
-    "scripts/.pii-allowlist.json"
+    "scripts/.pii-allowlist.json",
+    "public/search-index.json"
   ],
   "piiPaths": [],
   "piPaths": [
@@ -28,6 +29,7 @@
     "src/**": "Source files may include example strings, placeholders, or tokens that match PI/PII heuristics; use specific allowlist entries for narrower exceptions if possible.",
     "docs/operations/scanner-tests-completed.md": "Test documentation containing example phone numbers (e.g., 5551234567) for PII scanner validation purposes.",
     "scripts/.pii-allowlist.json": "PII allowlist configuration file containing example patterns for documentation and scanning reference purposes.",
-    "docs/ai/logging-security.md": "AI logging/security documentation references proprietary terminology for classification examples and is expected in this context."
+    "docs/ai/logging-security.md": "AI logging/security documentation references proprietary terminology for classification examples and is expected in this context.",
+    "public/search-index.json": "Search index contains blog post IDs formatted as YYYYMMDD-xxxx (e.g., 20251226-8581f290) which match conservative phone number patterns but are date-based identifiers, not PII."
   }
 }

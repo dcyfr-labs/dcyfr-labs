@@ -14,7 +14,7 @@ import { ArchivePagination } from "@/components/layouts/archive-pagination";
 import {
   PostList,
   BlogSearchAnalytics,
-  BlogSidebar,
+  BlogSidebarWrapper,
   BlogLayoutManager,
   BlogLayoutWrapper,
   MobileFilterBar,
@@ -141,7 +141,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const sortBy = getParam("sortBy") || "newest";
   const dateRange = getParam("dateRange") || "all";
   const layoutParam = getParam("layout");
-  const layout = (["grid", "list", "magazine", "compact", "grouped"].includes(layoutParam)) ? layoutParam as "grid" | "list" | "magazine" | "compact" | "grouped" : "grid";
+  const layout = (["grid", "list", "magazine", "compact", "grouped"].includes(layoutParam)) ? layoutParam as "grid" | "list" | "magazine" | "compact" | "grouped" : "magazine";
   
   // Apply category filter first (case-insensitive)
   const postsWithCategoryFilter = selectedCategory
@@ -331,24 +331,20 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       <div className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING} ${MOBILE_SAFE_PADDING}`}>
         {/* Main grid: Sidebar + Content */}
         <BlogLayoutWrapper>
-          {/* Sidebar (desktop only) - positioned on left */}
-          <div className="hidden lg:block">
-            <div className="sticky top-24">
-              <BlogSidebar
-                selectedCategory={selectedCategory}
-                selectedTags={selectedTags}
-                readingTime={readingTime}
-                categoryList={availableCategories}
-                categoryDisplayMap={categoryDisplayMap}
-                tagList={availableTagsWithCounts}
-                query={query}
-                sortBy={sortBy}
-                dateRange={dateRange}
-                totalResults={sortedArchiveData.totalItems}
-                totalPosts={posts.length}
-              />
-            </div>
-          </div>
+          {/* Sidebar (desktop only) - positioned on left, toggled via 'f' key */}
+          <BlogSidebarWrapper
+            selectedCategory={selectedCategory}
+            selectedTags={selectedTags}
+            readingTime={readingTime}
+            categoryList={availableCategories}
+            categoryDisplayMap={categoryDisplayMap}
+            tagList={availableTagsWithCounts}
+            query={query}
+            sortBy={sortBy}
+            dateRange={dateRange}
+            totalResults={sortedArchiveData.totalItems}
+            totalPosts={posts.length}
+          />
 
           {/* Main content area with Suspense for PPR */}
           <Suspense fallback={<BlogListSkeleton layout={layout} itemCount={3} />}>

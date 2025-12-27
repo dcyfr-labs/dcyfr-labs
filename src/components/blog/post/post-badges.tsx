@@ -29,21 +29,20 @@ export function PostBadges({
     badges.push(
       <Badge
         key="draft"
-        variant="default"
-        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
+        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none bg-blue-500/40 text-blue-100 dark:text-blue-200 border border-blue-400/60`}
       >
         Draft
       </Badge>
     );
   }
 
-  // Archived badge
+  // Archived badge - dimmed
   if (post.archived) {
     badges.push(
       <Badge
         key="archived"
-        variant="default"
-        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
+        variant="outline"
+        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none bg-muted/70 text-muted-foreground border-border/70`}
       >
         Archived
       </Badge>
@@ -55,8 +54,7 @@ export function PostBadges({
     badges.push(
       <Badge
         key="new"
-        variant="default"
-        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
+        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none bg-emerald-500/40 text-emerald-100 dark:text-emerald-200 border border-emerald-400/60`}
       >
         New
       </Badge>
@@ -68,8 +66,7 @@ export function PostBadges({
     badges.push(
       <Badge
         key="hot"
-        variant="default"
-        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
+        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none bg-orange-500/40 text-orange-100 dark:text-orange-200 border border-orange-400/60`}
       >
         Hot
       </Badge>

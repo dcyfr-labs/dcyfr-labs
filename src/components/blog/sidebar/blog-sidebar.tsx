@@ -25,6 +25,8 @@ interface BlogSidebarProps {
   totalPosts: number;
 }
 
+export type { BlogSidebarProps };
+
 /**
  * Blog Sidebar Component
  * 

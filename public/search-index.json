@@ -18,6 +18,22 @@
       "url": "/blog/post-20260115-7b4e92c1"
     },
     {
+      "id": "post-20251226-8581f290",
+      "title": "Getting Started with React Hooks",
+      "summary": "A comprehensive guide to React Hooks with interactive, editable code examples. Learn useState, custom hooks, and TypeScript patterns with live demonstrations of counter, todo, and localStorage implementations.",
+      "content": "Getting Started with React Hooks Learn how to use React Hooks to manage state and side effects in functional components. This guide includes interactive examples you can edit and run right in your browser. What Are React Hooks? React Hooks are functions that let you \"hook into\" React features. They were introduced in React 16.8 as a way to write stateful logic in functional components, eliminating the need for class components. Hooks solve the problem of code reuse in React. Before hooks, sharin",
+      "tags": [
+        "React",
+        "Hooks",
+        "JavaScript",
+        "TypeScript"
+      ],
+      "series": null,
+      "publishedAt": "2025-12-26T00:00:00Z",
+      "readingTime": 3,
+      "url": "/blog/post-20251226-8581f290"
+    },
+    {
       "id": "post-20251222-ui-demo",
       "title": "UI Elements and Components",
       "summary": "Explore the full range of UI components, MDX elements, code highlighting, alerts, callouts, and visual features available in this blog system.",
@@ -214,8 +230,10 @@
     "Diagrams",
     "Equations",
     "Event-Driven",
+    "Hooks",
     "Inngest",
     "Interactive",
+    "JavaScript",
     "KaTeX",
     "LLM Security",
     "LaTeX",
@@ -249,5 +267,5 @@
     "Features",
     "Portfolio"
   ],
-  "generatedAt": "2025-12-27T06:38:47.611Z"
+  "generatedAt": "2025-12-27T09:26:32.595Z"
 }

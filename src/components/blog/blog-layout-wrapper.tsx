@@ -1,7 +1,22 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useState, createContext, useContext } from "react";
 import { BlogKeyboardProvider } from "@/components/blog/blog-keyboard-provider";
+
+interface BlogLayoutContextType {
+  sidebarVisible: boolean;
+}
+
+const BlogLayoutContext = createContext<BlogLayoutContextType | undefined>(undefined);
+
+export function useBlogLayout() {
+  const context = useContext(BlogLayoutContext);
+  if (!context) {
+    throw new Error("useBlogLayout must be used within BlogLayoutWrapper");
+  }
+  return context;
+}
 
 interface BlogLayoutWrapperProps {
   children: ReactNode;
@@ -11,16 +26,30 @@ interface BlogLayoutWrapperProps {
  * Blog Layout Wrapper Component
  *
  * Two-column layout for blog archive page.
- * Sidebar positioned on the left side, always expanded at 280px.
- * No collapsible functionality.
+ * Sidebar can be toggled via keyboard shortcut (f key).
  * Provides keyboard navigation context for blog features.
+ * 
+ * Keyboard shortcuts:
+ * - f : Toggle sidebar visibility
+ * - 1-4 : Switch layouts (compact, grid, list, magazine)
+ * - / : Focus search input
+ * - ? : Show help dialog
+ * - Esc : Clear search (when search is focused)
  */
 export function BlogLayoutWrapper({ children }: BlogLayoutWrapperProps) {
+  const [sidebarVisible, setSidebarVisible] = useState(true);
+
+  const handleToggleSidebar = () => {
+    setSidebarVisible(prev => !prev);
+  };
+
   return (
-    <BlogKeyboardProvider onToggleFilters={() => {}}>
-      <div className="grid gap-4 items-start lg:grid-cols-[280px_1fr]">
-        {children}
-      </div>
-    </BlogKeyboardProvider>
+    <BlogLayoutContext.Provider value={{ sidebarVisible }}>
+      <BlogKeyboardProvider onToggleSidebar={handleToggleSidebar}>
+        <div className={`grid gap-4 items-start ${sidebarVisible ? 'lg:grid-cols-[280px_1fr]' : 'lg:grid-cols-1'}`}>
+          {children}
+        </div>
+      </BlogKeyboardProvider>
+    </BlogLayoutContext.Provider>
   );
 }
