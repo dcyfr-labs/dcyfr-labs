@@ -63,6 +63,7 @@ import {
   NetworkBackground,
   FeaturedCVEBanner,
   TrendingSection,
+  QuickLinksRibbon,
 } from "@/components/home";
 import { getTrendingProjects } from "@/lib/activity/trending-projects";
 import { SearchButton } from "@/components/search";
@@ -488,7 +489,7 @@ export default async function Home() {
           </ScrollReveal>
         </Section>
 
-        {/* 6. TODO: Blog Series - Organized content paths -- needs more series
+        {/* 6. Blog Series - Organized content paths */}
         {allSeries.length > 0 && (
           <Section
             id="series"
@@ -508,7 +509,7 @@ export default async function Home() {
               </div>
             </ScrollReveal>
           </Section>
-        )} */}
+        )}
 
         {/* 7. Recent Activity - Updates feed */}
         <Section

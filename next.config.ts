@@ -55,43 +55,6 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
-      // Global security headers for all routes
-      {
-        source: '/:path*',
-        headers: [
-          {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=31536000; includeSubDomains; preload',
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-no-referrer',
-          },
-          {
-            key: 'Permissions-Policy',
-            value: 'geolocation=(), microphone=(), camera=()',
-          },
-          {
-            key: 'X-Permitted-Cross-Domain-Policies',
-            value: 'none',
-          },
-          // CSP: Allow self + unsafe-inline for framework (Next.js/React inline styles)
-          // Restrict external script execution to trusted sources only
-          {
-            key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://vercel.live https://vercel-insights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https://dcyfr.ai; object-src 'none'; base-uri 'self'; form-action 'self'",
-          },
-        ],
-      },
-      // Embed endpoint: Allow framing + CORS for third-party integration
       {
         source: '/activity/embed',
         headers: [
@@ -110,11 +73,6 @@ const nextConfig: NextConfig = {
           {
             key: 'Access-Control-Allow-Headers',
             value: 'Content-Type',
-          },
-          // Override restrictive CSP for embed endpoint
-          {
-            key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com data:",
           },
         ],
       },
