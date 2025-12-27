@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 interface UseBlogKeyboardShortcutsProps {
   onShowHelp: () => void;
-  onToggleFilters?: () => void;
+  onToggleSidebar?: () => void;
   searchInputRef: RefObject<HTMLInputElement | null>;
 }
 
@@ -13,15 +13,18 @@ interface UseBlogKeyboardShortcutsProps {
  * Custom hook for blog keyboard shortcuts
  * 
  * Handles global keyboard shortcuts for the blog page:
- * - / : Focus search
- * - 1-4 : Switch views
- * - f : Toggle sidebar filters
- * - Esc : Clear search / close dialogs
- * - ? : Show help
+ * - f : Toggle sidebar visibility
+ * - 1 : Compact layout
+ * - 2 : Grid layout
+ * - 3 : List layout
+ * - 4 : Magazine layout
+ * - / : Focus search input
+ * - ? : Show help dialog
+ * - Esc : Clear search (when search is focused)
  */
 export function useBlogKeyboardShortcuts({
   onShowHelp,
-  onToggleFilters,
+  onToggleSidebar,
   searchInputRef,
 }: UseBlogKeyboardShortcutsProps) {
   const router = useRouter();
@@ -71,19 +74,20 @@ export function useBlogKeyboardShortcuts({
         return;
       }
 
-      // Toggle filters: f (but not when typing or with modifiers like Cmd+F/Ctrl+F)
-      if (e.key === "f" && !isTyping && !e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey && onToggleFilters) {
+      // Toggle sidebar: f (but not when typing or with modifiers like Cmd+F/Ctrl+F)
+      if (e.key === "f" && !isTyping && !e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey && onToggleSidebar) {
         e.preventDefault();
-        onToggleFilters();
+        onToggleSidebar();
         return;
       }
 
       // View switching: 1-4 (but not when typing or with modifiers)
+      // 1 = compact, 2 = grid, 3 = list, 4 = magazine
       if (!isTyping && !e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey && ["1", "2", "3", "4"].includes(e.key)) {
         e.preventDefault();
-        const views = ["compact", "grid", "list", "magazine"];
-        const viewIndex = parseInt(e.key) - 1;
-        updateLayout(views[viewIndex]);
+        const layouts = ["compact", "grid", "list", "magazine"];
+        const layoutIndex = parseInt(e.key) - 1;
+        updateLayout(layouts[layoutIndex]);
         return;
       }
 
@@ -98,5 +102,5 @@ export function useBlogKeyboardShortcuts({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [updateLayout, clearSearch, onShowHelp, onToggleFilters, searchInputRef]);
+  }, [updateLayout, clearSearch, onShowHelp, onToggleSidebar, searchInputRef]);
 }

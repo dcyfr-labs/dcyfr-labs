@@ -6,7 +6,7 @@ import { KeyboardShortcutsHelp } from "@/components/common/keyboard-shortcuts-he
 
 interface BlogKeyboardContextType {
   searchInputRef: RefObject<HTMLInputElement | null>;
-  toggleFilters: () => void;
+  toggleSidebar: () => void;
 }
 
 const BlogKeyboardContext = createContext<BlogKeyboardContextType | undefined>(undefined);
@@ -21,27 +21,31 @@ export function useBlogKeyboard() {
 
 interface BlogKeyboardProviderProps {
   children: React.ReactNode;
-  onToggleFilters: () => void;
+  onToggleSidebar: () => void;
 }
 
 /**
  * Blog Keyboard Provider
  * 
- * Provides keyboard shortcut functionality for the blog page.
- * Manages help dialog state and search input ref.
+ * Provides keyboard shortcut functionality for the blog page:
+ * - f : Toggle sidebar visibility
+ * - 1-4 : Switch layouts (compact, grid, list, magazine)
+ * - / : Focus search input
+ * - ? : Show help dialog
+ * - Esc : Clear search (when search is focused)
  */
-export function BlogKeyboardProvider({ children, onToggleFilters }: BlogKeyboardProviderProps) {
+export function BlogKeyboardProvider({ children, onToggleSidebar }: BlogKeyboardProviderProps) {
   const [showHelp, setShowHelp] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useBlogKeyboardShortcuts({
     onShowHelp: () => setShowHelp(true),
-    onToggleFilters,
+    onToggleSidebar,
     searchInputRef,
   });
 
   return (
-    <BlogKeyboardContext.Provider value={{ searchInputRef, toggleFilters: onToggleFilters }}>
+    <BlogKeyboardContext.Provider value={{ searchInputRef, toggleSidebar: onToggleSidebar }}>
       {children}
       <KeyboardShortcutsHelp open={showHelp} onOpenChange={setShowHelp} />
     </BlogKeyboardContext.Provider>
