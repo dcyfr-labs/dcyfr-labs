@@ -4,6 +4,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { TrendingBadge } from "@/components/ui/trending-badge";
+import type { TrendingBadgeVariant } from "@/components/ui/trending-badge";
 import { Star, TrendingUp, GitFork, FolderGit2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Project } from "@/data/projects";
@@ -13,17 +15,50 @@ import { ANIMATION, TYPOGRAPHY, HOVER_EFFECTS, SPACING, SEMANTIC_COLORS } from "
 // TYPES
 // ============================================================================
 
+export interface TrendingVelocity {
+  /** Rapid growth (>50% in 7 days) */
+  isHot: boolean;
+  /** Steady growth (>20% in 30 days) */
+  isRising: boolean;
+  /** Highest score in category */
+  isTop: boolean;
+  /** Growth rate increasing */
+  isAccelerating: boolean;
+  /** Growth rate percentage */
+  growthRate: number;
+}
+
 export interface TrendingProject {
   project: Project;
   stars: number;
   recentStars: number; // Stars gained in recent period
   forks?: number;
   score: number; // Calculated trending score
+  velocity?: TrendingVelocity; // Momentum indicators
 }
 
 interface TrendingProjectsPanelProps {
   projects: TrendingProject[];
   limit?: number;
+}
+
+// ============================================================================
+// HELPERS
+// ============================================================================
+
+/**
+ * Get the highest priority trending badge for a project
+ * Priority: Hot > Accelerating > Rising > Top
+ */
+function getPrimaryBadge(velocity?: TrendingVelocity): TrendingBadgeVariant | null {
+  if (!velocity) return null;
+
+  if (velocity.isHot) return "hot";
+  if (velocity.isAccelerating) return "accelerating";
+  if (velocity.isRising) return "rising";
+  if (velocity.isTop) return "top";
+
+  return null;
 }
 
 // ============================================================================
@@ -78,8 +113,9 @@ export function TrendingProjectsPanel({
 
   return (
     <div className={SPACING.compact}>
-      {sortedProjects.map(({ project, stars, recentStars, forks, score }, index) => {
+      {sortedProjects.map(({ project, stars, recentStars, forks, score, velocity }, index) => {
         const hasGitHubData = stars > 0;
+        const primaryBadge = getPrimaryBadge(velocity);
 
         return (
           <motion.div
@@ -98,18 +134,29 @@ export function TrendingProjectsPanel({
                 )}
               >
                 <div className={SPACING.compact}>
-                  {/* Header: Rank + Category */}
+                  {/* Header: Rank + Trending Badge + Category */}
                   <div className="flex items-center justify-between gap-2">
-                    <Badge
-                      variant="outline"
-                      className={cn(
-                        TYPOGRAPHY.label.xs,
-                        ANIMATION.transition.movement,
-                        "group-hover:scale-110"
+                    <div className="flex items-center gap-2">
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          TYPOGRAPHY.label.xs,
+                          ANIMATION.transition.movement,
+                          "group-hover:scale-110"
+                        )}
+                      >
+                        #{index + 1}
+                      </Badge>
+                      {primaryBadge && (
+                        <TrendingBadge
+                          variant={primaryBadge}
+                          className={cn(
+                            ANIMATION.transition.movement,
+                            "group-hover:scale-110"
+                          )}
+                        />
                       )}
-                    >
-                      #{index + 1}
-                    </Badge>
+                    </div>
                     {project.category && (
                       <Badge
                         variant="secondary"

@@ -4,8 +4,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingUp, Hash, FolderGit2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SPACING, ANIMATION } from "@/lib/design-tokens";
+import { TrendingPostsPanel } from "@/components/home/trending-posts-panel";
+import { TrendingTopicsPanel } from "@/components/home/trending-topics-panel";
+import { TrendingProjectsPanel } from "@/components/home/trending-projects-panel";
+import type { TrendingProject } from "@/components/home/trending-projects-panel";
 import type { Post } from "@/data/posts";
-import type { Project } from "@/data/projects";
 import type { NeonColorVariant } from "@/lib/design-tokens";
 
 // ============================================================================
@@ -16,13 +19,6 @@ export interface TopicData {
   tag: string;
   count: number;
   colorVariant: NeonColorVariant;
-}
-
-export interface TrendingProject {
-  project: Project;
-  stars: number;
-  recentStars: number;
-  score: number;
 }
 
 export interface TrendingSectionProps {
@@ -57,7 +53,6 @@ export interface TrendingSectionProps {
  * - Smooth animations between tabs
  * - Responsive layout (tabs on desktop, stacked on mobile)
  * - Design token compliance
- * - Lazy loading of tab content
  *
  * @example
  * ```tsx
@@ -78,11 +73,6 @@ export function TrendingSection({
   defaultTab = "posts",
   className,
 }: TrendingSectionProps) {
-  // Lazy load panel components
-  const TrendingPostsPanel = require("./trending-posts-panel").TrendingPostsPanel;
-  const TrendingTopicsPanel = require("./trending-topics-panel").TrendingTopicsPanel;
-  const TrendingProjectsPanel = require("./trending-projects-panel").TrendingProjectsPanel;
-
   return (
     <div className={cn(SPACING.content, className)}>
       <Tabs defaultValue={defaultTab} className="w-full">

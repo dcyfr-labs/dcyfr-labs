@@ -12,7 +12,7 @@
  */
 
 import type { Project } from "@/data/projects";
-import type { TrendingProject } from "@/components/home/trending-projects-panel";
+import type { TrendingProject, TrendingVelocity } from "@/components/home/trending-projects-panel";
 
 // ============================================================================
 // TYPES
@@ -278,6 +278,43 @@ function calculateProjectScore(
 }
 
 /**
+ * Calculate trending velocity indicators
+ *
+ * Determines which trending badges a project should display:
+ * - Hot: >50% growth rate (recent stars / total stars)
+ * - Rising: >20% growth rate
+ * - Top: Highest score (will be set after sorting)
+ * - Accelerating: >30% growth rate AND small repo (<1000 stars)
+ *
+ * @param stars - Total star count
+ * @param recentStars - Stars gained recently
+ * @returns Velocity indicators object
+ */
+function calculateVelocity(
+  stars: number,
+  recentStars: number
+): Omit<TrendingVelocity, "isTop"> {
+  // Avoid division by zero
+  if (stars === 0) {
+    return {
+      isHot: false,
+      isRising: false,
+      isAccelerating: false,
+      growthRate: 0,
+    };
+  }
+
+  const growthRate = (recentStars / stars) * 100; // Percentage
+
+  return {
+    isHot: growthRate > 50, // >50% growth in recent period
+    isRising: growthRate > 20, // >20% growth
+    isAccelerating: growthRate > 30 && stars < 1000, // Fast growing new repos
+    growthRate,
+  };
+}
+
+/**
  * Get trending projects with GitHub stats
  *
  * @param projects - Array of projects to analyze
@@ -313,21 +350,37 @@ export async function getTrendingProjects(
       }
 
       const score = calculateProjectScore(project, stats, opts);
+      const stars = stats?.stars || 0;
+      const recentStars = stats?.recentStars || 0;
+
+      // Calculate velocity indicators (without isTop, will be set after sorting)
+      const velocityBase = calculateVelocity(stars, recentStars);
 
       return {
         project,
-        stars: stats?.stars || 0,
-        recentStars: stats?.recentStars || 0,
+        stars,
+        recentStars,
         forks: stats?.forks,
         score,
+        velocity: {
+          ...velocityBase,
+          isTop: false, // Will be updated after sorting
+        },
       } as TrendingProject;
     })
   );
 
   // Sort by score (descending) and limit
-  return projectsWithStats
+  const sorted = projectsWithStats
     .sort((a, b) => b.score - a.score)
     .slice(0, opts.limit);
+
+  // Mark the top project
+  if (sorted.length > 0 && sorted[0].velocity) {
+    sorted[0].velocity.isTop = true;
+  }
+
+  return sorted;
 }
 
 // ============================================================================

@@ -6,6 +6,7 @@
  */
 
 import React from "react";
+import { Check } from "lucide-react";
 import { 
   ProgressiveParagraph, 
   ContentBlock, 
@@ -17,6 +18,7 @@ import {
   PROGRESSIVE_TEXT, 
   FONT_CONTRAST,
   SPACING,
+  SEMANTIC_COLORS,
 } from "@/lib/design-tokens";
 
 /**
@@ -197,28 +199,28 @@ export default function VaryingDepthDemo() {
         <h2 className={TYPOGRAPHY.h2.standard}>Implementation Benefits</h2>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="rounded-lg border border-border p-4">
-            <h3 className="font-semibold mb-2">✅ Visual Hierarchy</h3>
+            <h3 className="font-semibold mb-2 flex items-center gap-2"><Check className={`w-4 h-4 ${SEMANTIC_COLORS.status.success}`} aria-hidden="true" /> Visual Hierarchy</h3>
             <p className="text-sm text-muted-foreground">
               Clear distinction between primary, supporting, and contextual information helps readers understand content importance at a glance.
             </p>
           </div>
 
           <div className="rounded-lg border border-border p-4">
-            <h3 className="font-semibold mb-2">✅ Readability</h3>
+            <h3 className="font-semibold mb-2 flex items-center gap-2"><Check className={`w-4 h-4 ${SEMANTIC_COLORS.status.success}`} aria-hidden="true" /> Readability</h3>
             <p className="text-sm text-muted-foreground">
               Progressive styling prevents visual fatigue in long-form content while maintaining comfortable reading flow.
             </p>
           </div>
 
           <div className="rounded-lg border border-border p-4">
-            <h3 className="font-semibold mb-2">✅ Consistency</h3>
+            <h3 className="font-semibold mb-2 flex items-center gap-2"><Check className={`w-4 h-4 ${SEMANTIC_COLORS.status.success}`} aria-hidden="true" /> Consistency</h3>
             <p className="text-sm text-muted-foreground">
               Standardized tokens ensure uniform depth styling across the entire site and all content types.
             </p>
           </div>
 
           <div className="rounded-lg border border-border p-4">
-            <h3 className="font-semibold mb-2">✅ Accessibility</h3>
+            <h3 className="font-semibold mb-2 flex items-center gap-2"><Check className={`w-4 h-4 ${SEMANTIC_COLORS.status.success}`} aria-hidden="true" /> Accessibility</h3>
             <p className="text-sm text-muted-foreground">
               Maintains proper color contrast ratios and semantic HTML structure for all users and assistive technologies.
             </p>

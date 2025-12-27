@@ -461,27 +461,6 @@ export default async function Home() {
             </div>
           </ScrollReveal>
         </Section>
-        {/* 3. Explore Cards - Primary navigation hub (consolidated) */}
-        <Section
-          id="explore"
-          className={cn(
-            PAGE_LAYOUT.section.container,
-            CONTAINER_VERTICAL_PADDING,
-            "bg-muted/30 dark:bg-muted/10",
-            "border-y border-border/50"
-          )}
-        >
-          <ScrollReveal animation="fade-up" delay={125}>
-            <div className={SPACING.content}>
-              <SectionHeader title="Explore" />
-              <ExploreCards
-                postCount={activePosts.length}
-                projectCount={projects.length}
-                activityCount={allActivities.length}
-              />
-            </div>
-          </ScrollReveal>
-        </Section>
 
         {/* 4. Unified Trending Section - Posts, Topics, and Projects */}
         <Section
@@ -570,6 +549,28 @@ export default async function Home() {
             </div>
           </ScrollReveal>
         </Section> */}
+        
+        {/* 3. Explore Cards - Primary navigation hub (consolidated) */}
+        <Section
+          id="explore"
+          className={cn(
+            PAGE_LAYOUT.section.container,
+            CONTAINER_VERTICAL_PADDING,
+            "bg-muted/30 dark:bg-muted/10",
+            "border-y border-border/50"
+          )}
+        >
+          <ScrollReveal animation="fade-up" delay={125}>
+            <div className={SPACING.content}>
+              <SectionHeader title="Explore More" />
+              <ExploreCards
+                postCount={activePosts.length}
+                projectCount={projects.length}
+                activityCount={allActivities.length}
+              />
+            </div>
+          </ScrollReveal>
+        </Section>
       </SectionNavigator>
     </PageLayout>
   );

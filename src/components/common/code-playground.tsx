@@ -13,7 +13,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { getTemplate } from "@/lib/playground-templates";
 import { SPACING, CONTAINER_WIDTHS, TYPOGRAPHY, ANIMATION } from "@/lib/design-tokens";
-import { AlertTriangle, Code, Loader, ExternalLink } from "lucide-react";
+import { AlertTriangle, Code, Loader, ExternalLink, Lightbulb } from "lucide-react";
 import { Alert } from "@/components/common/alert";
 import { cn } from "@/lib/utils";
 
@@ -183,8 +183,9 @@ export function CodePlayground({
       {/* Mobile Notice */}
       {isMobile && (
         <div className="bg-info/10 border-t border-info/20 px-4 py-2">
-          <p className={cn(TYPOGRAPHY.label.small, "text-muted-foreground")}>
-            💡 Tip: Open in StackBlitz for the full editor experience on desktop
+          <p className={cn(TYPOGRAPHY.label.small, "text-muted-foreground", "flex items-center gap-2")}>
+            <Lightbulb className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+            <span>Tip: Open in StackBlitz for the full editor experience on desktop</span>
           </p>
         </div>
       )}
