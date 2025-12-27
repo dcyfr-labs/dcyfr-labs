@@ -4,7 +4,7 @@ import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useSearch } from "./search-provider";
-import { INTERACTIVE, TYPOGRAPHY } from "@/lib/design-tokens";
+import { TYPOGRAPHY } from "@/lib/design-tokens";
 
 /**
  * SearchButton Component
@@ -34,7 +34,7 @@ export function SearchButton({ variant = "default", className }: SearchButtonPro
           "bg-muted/50 hover:bg-muted/80",
           "border border-border/50",
           "text-muted-foreground hover:text-foreground",
-          INTERACTIVE.cardHover,
+          "hover:bg-accent/50 transition-colors",
           className
         )}
         aria-label="Search posts"

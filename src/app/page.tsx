@@ -61,7 +61,6 @@ import {
   HomepageHeroHeadline,
   FlippableAvatar,
   NetworkBackground,
-  FeaturedCVEBanner,
   TrendingSection,
   QuickLinksRibbon,
 } from "@/components/home";

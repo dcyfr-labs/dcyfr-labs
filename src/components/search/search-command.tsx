@@ -6,7 +6,7 @@ import Fuse from "fuse.js";
 import { Search, Clock, Tag, BookOpen, Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { TYPOGRAPHY, SPACING, GLASS, INTERACTIVE } from "@/lib/design-tokens";
+import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
 import type { SearchIndex, SearchablePost } from "@/lib/search/fuse-config";
 import { fuseOptions } from "@/lib/search/fuse-config";
 
@@ -133,7 +133,7 @@ export function SearchCommand({ open, onOpenChange }: SearchCommandProps) {
         <Command
           className={cn(
             "rounded-xl border shadow-2xl",
-            GLASS.modal,
+            "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
             "overflow-hidden"
           )}
         >
@@ -167,7 +167,7 @@ export function SearchCommand({ open, onOpenChange }: SearchCommandProps) {
                   className={cn(
                     "inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full",
                     "bg-primary/10 text-primary hover:bg-primary/20",
-                    INTERACTIVE.press
+                    "active:scale-95 transition-transform"
                   )}
                 >
                   <Tag className="h-3 w-3" />
@@ -207,7 +207,7 @@ export function SearchCommand({ open, onOpenChange }: SearchCommandProps) {
                     className={cn(
                       "relative flex cursor-pointer items-center gap-2 rounded-md px-3 py-2",
                       "aria-selected:bg-accent aria-selected:text-accent-foreground",
-                      INTERACTIVE.cardHover
+                      "hover:bg-accent/50 transition-colors"
                     )}
                   >
                     <Clock className="h-4 w-4 text-muted-foreground" />
@@ -233,7 +233,7 @@ export function SearchCommand({ open, onOpenChange }: SearchCommandProps) {
                     className={cn(
                       "relative flex cursor-pointer flex-col gap-1 rounded-md px-3 py-3",
                       "aria-selected:bg-accent aria-selected:text-accent-foreground",
-                      INTERACTIVE.cardHover
+                      "hover:bg-accent/50 transition-colors"
                     )}
                   >
                     <div className="flex items-start justify-between gap-2">
