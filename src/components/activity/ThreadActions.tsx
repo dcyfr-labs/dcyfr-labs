@@ -19,7 +19,7 @@
 
 "use client";
 
-import { useSyncExternalStore } from "react";
+import React, { useSyncExternalStore } from "react";
 import { Heart, Bookmark, Share2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -248,15 +248,17 @@ function ActionButton({
       )}
       suppressHydrationWarning
     >
-      <Icon
-        className={cn(
+      {React.createElement(Icon, {
+        className: cn(
           iconSize,
           ANIMATION.transition.base,
-          active ? [activeColor, "fill-current"] : SEMANTIC_COLORS.activity.action.default,
-          active && "group-hover/action:scale-110"
-        )}
-        aria-hidden="true"
-      />
+          active && activeColor,
+          active && "fill-current",
+          active && "group-hover/action:scale-110",
+          !active && SEMANTIC_COLORS.activity.action.default
+        ),
+        "aria-hidden": "true",
+      })}
       {label && (
         <span
           className={cn(
