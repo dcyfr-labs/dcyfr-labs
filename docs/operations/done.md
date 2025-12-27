@@ -142,6 +142,34 @@ This document archives completed features and improvements across all phases.
 
 ## Recent Improvements: December 26, 2025
 
+### Hydration Mismatch Fix ✅ **COMPLETE**
+
+**Resolved React hydration error in SearchButton component:**
+
+- [x] Fixed hydration mismatch for keyboard shortcut (⌘ vs Ctrl)
+- [x] Added `suppressHydrationWarning` to platform-specific content
+- [x] Prevents server/client mismatch when navigator.platform differs
+- [x] No visual impact - shortcut key still displays correctly
+
+**Issue:**
+
+- Server renders "Ctrl" (navigator.platform unavailable)
+- Client renders "⌘" on Mac (navigator.platform available)
+- React hydration fails due to text mismatch
+
+**Solution:**
+
+- Added `suppressHydrationWarning` to `<span>` containing shortcut key
+- This is the React-recommended approach for platform-specific content
+
+**Files Fixed:**
+
+- `src/components/search/search-button.tsx:50` - suppressHydrationWarning
+
+**Completed:** December 26, 2025
+
+---
+
 ### ESLint & TypeScript Fixes ✅ **COMPLETE**
 
 **Resolved design token violations and type errors blocking commits:**
