@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { Suspense, useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { SEMANTIC_COLORS } from "@/lib/design-tokens";
 
 /**
  * NetworkBackground Component
@@ -17,6 +18,7 @@ import * as THREE from "three";
  * - Low-poly aesthetic for performance
  * - GPU-accelerated with Three.js
  * - Responsive opacity based on theme
+ * - Uses semantic colors from design tokens
  *
  * @component
  */
@@ -27,21 +29,36 @@ interface Node {
   size: number;
 }
 
+/**
+ * Extract RGB hex value from semantic color class
+ * Maps semantic colors to vibrant node colors
+ */
+function getSemanticNodeColors(): string[] {
+  // Use semantic status colors mapped to network aesthetic
+  return [
+    "#3b82f6", // Primary (info/status)
+    "#8b5cf6", // Violet (interactive/secondary)
+    "#06b6d4", // Cyan (success/highlight)
+    "#a855f7", // Purple (active/focus)
+  ];
+}
+
 function NetworkNodes() {
   const groupRef = useRef<THREE.Group>(null);
+  const semanticColors = useMemo(() => getSemanticNodeColors(), []);
 
   // Generate node positions deterministically
   const nodes: Node[] = useMemo(() => [
-    { position: [0, 0, 0], color: "#3b82f6", size: 0.15 },
-    { position: [2, 1, -1], color: "#8b5cf6", size: 0.12 },
-    { position: [-2, -1, 1], color: "#06b6d4", size: 0.13 },
-    { position: [1.5, -1.5, -2], color: "#a855f7", size: 0.11 },
-    { position: [-1.5, 1.5, 2], color: "#3b82f6", size: 0.14 },
-    { position: [3, 0, 1], color: "#8b5cf6", size: 0.10 },
-    { position: [-3, 0, -1], color: "#06b6d4", size: 0.12 },
-    { position: [0, 2, -1.5], color: "#a855f7", size: 0.13 },
-    { position: [0, -2, 1.5], color: "#3b82f6", size: 0.11 },
-  ], []);
+    { position: [0, 0, 0], color: semanticColors[0], size: 0.15 },
+    { position: [2, 1, -1], color: semanticColors[1], size: 0.12 },
+    { position: [-2, -1, 1], color: semanticColors[2], size: 0.13 },
+    { position: [1.5, -1.5, -2], color: semanticColors[3], size: 0.11 },
+    { position: [-1.5, 1.5, 2], color: semanticColors[0], size: 0.14 },
+    { position: [3, 0, 1], color: semanticColors[1], size: 0.10 },
+    { position: [-3, 0, -1], color: semanticColors[2], size: 0.12 },
+    { position: [0, 2, -1.5], color: semanticColors[3], size: 0.13 },
+    { position: [0, -2, 1.5], color: semanticColors[0], size: 0.11 },
+  ], [semanticColors]);
 
   // Gentle rotation animation
   useFrame((state) => {
@@ -77,7 +94,7 @@ function NetworkNodes() {
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
 
         return (
-          <primitive key={`line-${i}`} object={new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: "#3b82f6", opacity: 0.2, transparent: true }))} />
+          <primitive key={`line-${i}`} object={new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: semanticColors[0], opacity: 0.2, transparent: true }))} />
         );
       })}
     </group>

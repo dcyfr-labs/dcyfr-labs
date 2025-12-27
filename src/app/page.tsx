@@ -34,7 +34,6 @@ import {
   SiteLogo,
   SectionNavigator,
   Section,
-  TrendingPosts,
   SmoothScrollToHash,
 } from "@/components/common";
 import {
@@ -63,7 +62,9 @@ import {
   FlippableAvatar,
   NetworkBackground,
   FeaturedCVEBanner,
+  TrendingSection,
 } from "@/components/home";
+import { getTrendingProjects } from "@/lib/activity/trending-projects";
 import { SearchButton } from "@/components/search";
 import { ScrollReveal, ScrollProgressIndicator } from "@/components/features";
 
@@ -120,20 +121,6 @@ const ExploreCards = dynamic(
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {[...Array(3)].map((_, i) => (
           <div key={i} className="h-32 bg-muted rounded-lg animate-pulse" />
-        ))}
-      </div>
-    ),
-    ssr: true,
-  }
-);
-
-const TopicNavigator = dynamic(
-  () => import("@/components/home").then(mod => ({ default: mod.TopicNavigator })),
-  {
-    loading: () => (
-      <div className="flex flex-wrap gap-2 justify-center">
-        {[...Array(12)].map((_, i) => (
-          <div key={i} className="h-8 w-20 bg-muted rounded-full animate-pulse" />
         ))}
       </div>
     ),
@@ -356,6 +343,9 @@ export default async function Home() {
     colorVariant: colorVariants[index % colorVariants.length],
   }));
 
+  // Calculate trending projects with real GitHub stats
+  const trendingProjects = await getTrendingProjects([...projects], { limit: 5 });
+
   return (
     <PageLayout>
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
@@ -493,7 +483,7 @@ export default async function Home() {
           </ScrollReveal>
         </Section>
 
-        {/* 4. Trending Now */}
+        {/* 4. Unified Trending Section - Posts, Topics, and Projects */}
         <Section
           id="trending"
           className={cn(
@@ -506,36 +496,14 @@ export default async function Home() {
               <SectionHeader
                 title="Trending"
                 actionHref="/blog"
-                actionLabel="View all posts"
+                actionLabel="View all"
               />
-              <TrendingPosts
+              <TrendingSection
                 posts={activePosts.filter((p) => p.id !== featuredPost?.id)}
                 viewCounts={viewCountsMap}
-                limit={3}
-              />
-            </div>
-          </ScrollReveal>
-        </Section>
-
-        {/* 5. Topic Navigator - Discover content by topic */}
-        <Section
-          id="topics"
-          className={cn(
-            PAGE_LAYOUT.section.container,
-            CONTAINER_VERTICAL_PADDING
-          )}
-        >
-          <ScrollReveal animation="fade-up" delay={175}>
-            <div className={SPACING.content}>
-              <SectionHeader
-                title="Popular Topics"
-                actionHref="/blog"
-                actionLabel="Browse all topics"
-              />
-              <TopicNavigator
                 topics={topTopics}
-                maxTopics={12}
-                variant="homepage"
+                projects={trendingProjects}
+                defaultTab="posts"
               />
             </div>
           </ScrollReveal>
