@@ -124,6 +124,7 @@ The documentation is organized into **16 focused directories**:
 - **operations/todo.md** - Active tasks
 - **operations/done.md** - Completed work
 - **[operations/KNOWN_ISSUES.md](./operations/known-issues)** - ✨ **Known issues & acceptable warnings**
+- **[.github/docs/PREVIEW_BRANCH_WORKFLOW.md](../.github/docs/PREVIEW_BRANCH_WORKFLOW)** - Preview branch management and protection
 
 ---
 

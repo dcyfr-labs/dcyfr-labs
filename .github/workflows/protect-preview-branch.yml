@@ -1,0 +1,72 @@
+name: Protect Preview Branch
+
+# This workflow prevents the preview branch from being auto-deleted
+# when PRs are merged from it.
+
+on:
+  delete:
+
+permissions:
+  contents: write
+
+jobs:
+  restore-preview:
+    # Only run when the preview branch is deleted
+    if: github.event.ref == 'preview' && github.event.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Restore preview branch
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            console.log('⚠️ Preview branch was deleted - attempting to restore...');
+            
+            try {
+              // Get the main branch reference
+              const mainRef = await github.rest.git.getRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: 'heads/main'
+              });
+              
+              // Recreate preview branch from main
+              await github.rest.git.createRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: 'refs/heads/preview',
+                sha: mainRef.data.object.sha
+              });
+              
+              console.log('✅ Preview branch restored successfully');
+              
+              // Create an issue to notify about the restoration
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '⚠️ Preview branch was auto-deleted and restored',
+                body: `## Preview Branch Auto-Restoration
+                
+                The \`preview\` branch was automatically deleted (likely by merging a PR from it) and has been automatically restored from \`main\`.
+                
+                **Action Taken:** Created new \`preview\` branch from current \`main\` branch
+                
+                **Root Cause:** Repository setting \`deleteBranchOnMerge: true\` deletes ANY branch when its PR is merged, including the preview branch.
+                
+                **Recommended Actions:**
+                1. Do NOT create PRs FROM the preview branch
+                2. Create PRs TO the preview branch instead
+                3. Or use feature branches that branch from main
+                
+                **Workflow Run:** ${context.payload.repository.html_url}/actions/runs/${context.runId}
+                
+                See \`.github/docs/PREVIEW_BRANCH_WORKFLOW.md\` for proper preview branch usage.`,
+                labels: ['automated', 'branch-management', 'preview']
+              });
+              
+            } catch (error) {
+              console.error('❌ Failed to restore preview branch:', error.message);
+              throw error;
+            }
