@@ -23,6 +23,7 @@ import {
   SCROLL_BEHAVIOR,
   CONTAINER_VERTICAL_PADDING,
   ANIMATION,
+  CONTAINER_PADDING,
 } from "@/lib/design-tokens";
 import { Card } from "@/components/ui/card";
 import { createPageMetadata, getJsonLdScriptProps } from "@/lib/metadata";
@@ -58,10 +59,8 @@ import {
 } from "@/lib/activity/sources.server";
 import {
   HomepageStats,
-  HomepageHeroActions,
   HomepageHeroHeadline,
   FlippableAvatar,
-  QuickLinksRibbon,
   NetworkBackground,
   FeaturedCVEBanner,
 } from "@/components/home";
@@ -367,78 +366,77 @@ export default async function Home() {
         scrollOffset={SCROLL_BEHAVIOR.offset.standard}
         className={SPACING.section}
       >
-        {/* 1. Hero Section */}
+        {/* 1. Hero Section - Full-screen immersive experience (accounts for header height) */}
         <Section
           id="hero"
-          className="relative overflow-hidden min-h-[600px] md:min-h-[700px]"
+          className="relative overflow-hidden min-h-[calc(100vh-56px)] md:min-h-[calc(100vh-64px)]"
+          style={{ minHeight: "calc(100vh - 56px)" }}
         >
           {/* 3D Network Background */}
           <NetworkBackground />
 
-          <ScrollReveal animation="fade-up">
-            <div
-              className={cn(
-                PAGE_LAYOUT.hero.container,
-                "flex flex-col items-center w-full relative z-10"
-              )}
-            >
+          {/* Centered Content Container */}
+          <div className="absolute inset-0 flex items-center justify-center z-10">
+            <ScrollReveal animation="fade-up" className="w-full">
               <div
                 className={cn(
-                  SPACING.content,
-                  "text-center flex flex-col items-center w-full",
-                  CONTAINER_WIDTHS.narrow,
-                  "mx-auto"
+                  "flex flex-col items-center justify-center w-full",
+                  CONTAINER_PADDING
                 )}
               >
-                {/* Avatar */}
                 <div
                   className={cn(
-                    "flex justify-center w-full",
-                    ANIMATION.effects.pulse
+                    "text-center flex flex-col items-center w-full mx-auto",
+                    SPACING.content
                   )}
-                  role="img"
-                  aria-label="Avatar - Click to flip"
+                  style={{ maxWidth: "48rem" }}
                 >
-                  <FlippableAvatar size="md" priority animated backdrop />
+                  {/* Avatar - Larger for full-screen impact  
+                  <div
+                    className={cn(
+                      "flex justify-center w-full",
+                      ANIMATION.effects.pulse
+                    )}
+                    role="img"
+                    aria-label="Avatar - Click to flip"
+                  >
+                    <FlippableAvatar size="md" priority animated backdrop />
+                  </div> */}
+
+                  {/* Logo Title - Larger scale for hero */}
+                  <div>
+                    <SiteLogo
+                      size="lg"
+                      className="justify-center scale-110 md:scale-125"
+                    />
+                  </div>
+
+                  {/* Description - Larger text for readability 
+                  <p
+                    className={cn(
+                      "text-muted-foreground leading-relaxed",
+                      "mx-auto w-full text-center max-w-2xl",
+                      "text-base md:text-lg lg:text-xl",
+                      "px-4 md:px-0"
+                    )}
+                  >
+                    Exploring cyber architecture, coding, and security insights to
+                    build a safer digital future.
+                  </p> */}
+
+                  {/* Search Bar - Prominent, wide placement */}
+                  <div className={`w-full mt-4 md:mt-6 *:md:w-3/4 lg:w-2/3`}>
+                    <div
+                      className="w-full mx-auto"
+                      style={{ maxWidth: "28rem" }}
+                    >
+                      <SearchButton variant="input" />
+                    </div>
+                  </div>
                 </div>
-
-                {/* Logo Title */}
-                <div>
-                  <SiteLogo
-                    size="lg"
-                    showIcon={false}
-                    className="justify-center"
-                  />
-                </div>
-
-                {/* Description */}
-                <p
-                  className={cn(
-                    "text-muted-foreground leading-relaxed",
-                    TYPOGRAPHY.description,
-                    "mx-auto w-full text-center",
-                    "text-sm md:text-base"
-                  )}
-                >
-                  Exploring cyber architecture, coding, and security insights to
-                  build a safer digital future.
-                </p>
-
-                {/* Search Bar */}
-                <div className="w-full flex justify-center">
-                  <SearchButton variant="input" />
-                </div>
-
-                {/* Actions */}
-                <div className="w-full flex justify-center">
-                  <HomepageHeroActions />
-                </div>
-
-                {/* Quick Links Ribbon */}
-                <QuickLinksRibbon />
               </div>
-            </div>
-          </ScrollReveal>
+            </ScrollReveal>
+          </div>
         </Section>
 
         {/* TODO: 1.5. Featured CVE Alert - Cybersecurity focus -- needs something
@@ -473,8 +471,7 @@ export default async function Home() {
             </div>
           </ScrollReveal>
         </Section>
-
-        {/* 3. Explore Cards - Primary navigation hub */}
+        {/* 3. Explore Cards - Primary navigation hub (consolidated) */}
         <Section
           id="explore"
           className={cn(

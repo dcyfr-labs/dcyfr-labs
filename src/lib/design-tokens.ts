@@ -234,12 +234,12 @@ export const ACTIVITY_IMAGE = {
   /** Base container with 16:9 aspect ratio and overflow handling, with light background for transparent images */
   container: "aspect-[16/9] relative overflow-hidden rounded-lg mb-4 bg-muted/30 dark:bg-muted/10",
 
-  /** Image size variants for different activity types */
+  /** Image size variants for different activity types - width controls size via aspect ratio */
   sizes: {
-    /** Primary activity header (larger, more prominent) */
-    header: "h-64 md:h-80 lg:h-96",
-    /** Reply/nested activity (smaller, compact) */
-    reply: "h-40 md:h-48",
+    /** Primary activity header (larger, more prominent) - full width, aspect ratio controls height */
+    header: "w-full",
+    /** Reply/nested activity (smaller, compact) - full width, aspect ratio controls height */
+    reply: "w-full",
   },
 
   /** Image styling with hover zoom effect */

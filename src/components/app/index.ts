@@ -5,6 +5,8 @@
  * command palette, reading progress, and native-like interactions.
  */
 
+export { UnifiedCommand } from "./unified-command";
+export type { UnifiedCommandProps } from "./unified-command";
 export { CommandPalette } from "./command-palette";
 export type { CommandAction } from "./command-palette";
 export { ArticleReadingProgress } from "./article-reading-progress";

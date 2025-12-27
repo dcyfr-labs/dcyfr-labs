@@ -139,14 +139,14 @@ export function SearchCommand({ open, onOpenChange }: SearchCommandProps) {
         >
           {/* Search Input */}
           <div className="flex items-center border-b px-4">
-            <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+            <Search className="mr-2 h-4 w-4 shrink-0 text-primary/70 dark:text-muted-foreground" />
             <Command.Input
               value={searchQuery}
               onValueChange={setSearchQuery}
               placeholder="Search posts, tags, topics..."
               className={cn(
                 "flex h-14 w-full bg-transparent py-3 text-sm outline-none",
-                "placeholder:text-muted-foreground",
+                "placeholder:text-primary/50 dark:placeholder:text-muted-foreground",
                 "disabled:cursor-not-allowed disabled:opacity-50"
               )}
             />
@@ -182,7 +182,7 @@ export function SearchCommand({ open, onOpenChange }: SearchCommandProps) {
             {/* Loading State */}
             {!searchIndex && (
               <Command.Loading>
-                <div className={cn("text-center text-sm text-muted-foreground", SPACING.content)}>
+                <div className={cn("text-center text-sm text-primary/70 dark:text-muted-foreground", SPACING.content)}>
                   Loading search index...
                 </div>
               </Command.Loading>
@@ -191,7 +191,7 @@ export function SearchCommand({ open, onOpenChange }: SearchCommandProps) {
             {/* Empty State */}
             {searchIndex && !searchQuery && recentSearches.length === 0 && (
               <Command.Empty>
-                <div className={cn("text-center text-muted-foreground", SPACING.content)}>
+                <div className={cn("text-center text-primary/70 dark:text-muted-foreground", SPACING.content)}>
                   Start typing to search posts...
                 </div>
               </Command.Empty>
@@ -216,7 +216,7 @@ export function SearchCommand({ open, onOpenChange }: SearchCommandProps) {
                 ))}
                 <button
                   onClick={clearRecent}
-                  className="w-full text-left px-3 py-2 text-xs text-muted-foreground hover:text-foreground"
+                  className="w-full text-left px-3 py-2 text-xs text-primary/60 dark:text-muted-foreground hover:text-primary dark:hover:text-foreground"
                 >
                   Clear recent searches
                 </button>
@@ -240,15 +240,15 @@ export function SearchCommand({ open, onOpenChange }: SearchCommandProps) {
                       <h4 className="font-medium text-sm">
                         {post.title}
                       </h4>
-                      <span className="text-xs text-muted-foreground whitespace-nowrap">
+                      <span className="text-xs text-primary/60 dark:text-muted-foreground whitespace-nowrap">
                         {post.readingTime} min
                       </span>
                     </div>
-                    <p className="text-sm text-muted-foreground line-clamp-1">
+                    <p className="text-sm text-primary/70 dark:text-muted-foreground line-clamp-1">
                       {post.summary}
                     </p>
                     <div className="flex items-center gap-3 mt-1">
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1 text-xs text-primary/60 dark:text-muted-foreground">
                         <Calendar className="h-3 w-3" />
                         {new Date(post.publishedAt).toLocaleDateString("en-US", {
                           month: "short",
@@ -257,15 +257,15 @@ export function SearchCommand({ open, onOpenChange }: SearchCommandProps) {
                         })}
                       </div>
                       {post.series && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1 text-xs text-primary/60 dark:text-muted-foreground">
                           <BookOpen className="h-3 w-3" />
                           {post.series}
                         </div>
                       )}
                       {post.tags.length > 0 && (
                         <div className="flex items-center gap-1">
-                          <Tag className="h-3 w-3 text-muted-foreground" />
-                          <span className="text-xs text-muted-foreground">
+                          <Tag className="h-3 w-3 text-primary/60 dark:text-muted-foreground" />
+                          <span className="text-xs text-primary/60 dark:text-muted-foreground">
                             {post.tags.slice(0, 2).join(", ")}
                           </span>
                         </div>
@@ -280,10 +280,10 @@ export function SearchCommand({ open, onOpenChange }: SearchCommandProps) {
             {searchQuery && results.length === 0 && searchIndex && (
               <Command.Empty>
                 <div className={cn("text-center", SPACING.content)}>
-                  <p className="text-sm text-muted-foreground mb-2">
+                  <p className="text-sm text-primary/70 dark:text-muted-foreground mb-2">
                     No results found for &quot;{searchQuery}&quot;
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-primary/70 dark:text-muted-foreground">
                     Try different keywords or browse{" "}
                     <button
                       onClick={() => {
@@ -301,7 +301,7 @@ export function SearchCommand({ open, onOpenChange }: SearchCommandProps) {
           </Command.List>
 
           {/* Footer Hints */}
-          <div className="flex items-center justify-between border-t px-4 py-2 text-xs text-muted-foreground bg-muted/20">
+          <div className="flex items-center justify-between border-t px-4 py-2 text-xs text-primary/60 dark:text-muted-foreground bg-muted/20">
             <span>Navigate with ↑↓ arrows</span>
             <span className="hidden sm:inline">Press Enter to open</span>
           </div>

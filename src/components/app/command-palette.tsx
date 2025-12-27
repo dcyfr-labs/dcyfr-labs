@@ -69,15 +69,15 @@ export function CommandPalette() {
   // Get reading progress for "Continue Reading" suggestions
   const { inProgress } = useReadingProgressList({ limit: 3, minProgress: 5, maxProgress: 95 });
 
-  // Register Cmd+K shortcut
-  useKeyboardShortcut([
-    {
-      key: "k",
-      metaKey: true,
-      callback: () => setOpen(true),
-      description: "Open command palette",
-    },
-  ]);
+  // Cmd+K/Ctrl+K keyboard shortcut disabled
+  // useKeyboardShortcut([
+  //   {
+  //     key: "k",
+  //     metaKey: true,
+  //     callback: () => setOpen(true),
+  //     description: "Open command palette",
+  //   },
+  // ]);
 
   // Close on Escape
   useEffect(() => {

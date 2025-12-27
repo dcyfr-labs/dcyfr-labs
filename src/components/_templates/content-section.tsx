@@ -21,7 +21,7 @@
  * ```
  */
 
-import { SPACING, TYPOGRAPHY, CONTAINER_WIDTHS } from '@/lib/design-tokens'
+import { SPACING, TYPOGRAPHY, CONTAINER_WIDTHS, CONTAINER_PADDING } from '@/lib/design-tokens'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { CheckCircle, Star, Zap, Shield } from 'lucide-react'
@@ -33,7 +33,7 @@ import { cn } from '@/lib/utils'
  */
 export function StandardContentSection() {
   return (
-    <section className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}>
+    <section className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pb-8 md:pb-12`}>
       <div className={SPACING.section}>
         {/* Section header */}
         <div className={SPACING.content}>
@@ -79,7 +79,7 @@ export function StandardContentSection() {
  */
 export function TwoColumnSection() {
   return (
-    <section className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}>
+    <section className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pb-8 md:pb-12`}>
       <div className={SPACING.section}>
         <h2 className={TYPOGRAPHY.h2.standard}>
           Why Choose This Approach?
@@ -177,7 +177,7 @@ export function FeatureListSection() {
   ]
 
   return (
-    <section className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}>
+    <section className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pb-8 md:pb-12`}>
       <div className={SPACING.section}>
         <div className={cn(SPACING.content, 'text-center')}>
           <h2 className={TYPOGRAPHY.h2.standard}>
@@ -222,7 +222,7 @@ export function StatsSection() {
 
   return (
     <section className="bg-muted/50 border-y border-border py-8 md:py-12">
-      <div className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8`}>
+      <div className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING}`}>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {stats.map((stat) => (
             <div key={stat.label} className="text-center">
@@ -246,14 +246,14 @@ export function StatsSection() {
  */
 export function ProseContentSection() {
   return (
-    <section className={`mx-auto ${CONTAINER_WIDTHS.prose} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}>
+    <section className={`mx-auto ${CONTAINER_WIDTHS.prose} ${CONTAINER_PADDING} pb-8 md:pb-12`}>
       <div className={SPACING.prose}>
         <h2 className={TYPOGRAPHY.h2.standard}>
           Introduction
         </h2>
         <p className={TYPOGRAPHY.body}>
           This section demonstrates proper prose styling with optimal line length for
-          readability. The max-width is set to max-w-4xl (prose container) to maintain
+          readability. The max-width is set to CONTAINER_WIDTHS.narrow (prose container) to maintain
           45-75 characters per line.
         </p>
 

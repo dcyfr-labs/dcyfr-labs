@@ -91,8 +91,8 @@ export function ThreadedActivityFeed({
           </div>
         ))}
 
-        {/* End of Timeline Easter Egg 
-        <div className="mt-16 pt-12 border-t border-border/50 text-center space-y-6">
+        {/* End of Timeline Easter Egg
+        <div className="mt-16 pt-12 border-t border-border/50 text-center space-y-4">
           <div className="flex items-center justify-center gap-2 text-muted-foreground">
             <Eye className="h-4 w-4" />
             <span className="text-sm">observer.detected</span>

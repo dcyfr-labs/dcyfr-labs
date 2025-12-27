@@ -66,33 +66,17 @@ export function useKeyboardShortcut(shortcuts: KeyboardShortcut[]) {
           continue;
         }
 
-        // Check if all required modifiers match
-        const metaKeyMatch = shortcut.metaKey ? (event.metaKey || event.ctrlKey) : true;
-        const ctrlKeyMatch = shortcut.ctrlKey ? event.ctrlKey : true;
-        const shiftKeyMatch = shortcut.shiftKey ? event.shiftKey : true;
-        const altKeyMatch = shortcut.altKey ? event.altKey : true;
-
-        // Check if no unexpected modifiers are pressed (unless explicitly required)
-        // For metaKey, allow either Meta OR Ctrl (cross-platform support)
-        const noUnexpectedMeta = shortcut.metaKey || shortcut.ctrlKey || !(event.metaKey || event.ctrlKey);
-        const noUnexpectedCtrl = shortcut.metaKey || shortcut.ctrlKey || !event.ctrlKey;
-        const noUnexpectedShift = shortcut.shiftKey || !event.shiftKey;
-        const noUnexpectedAlt = shortcut.altKey || !event.altKey;
-
         // Match key (case-insensitive)
         const keyMatch = event.key.toLowerCase() === shortcut.key.toLowerCase();
+        if (!keyMatch) continue;
 
-        if (
-          keyMatch &&
-          metaKeyMatch &&
-          ctrlKeyMatch &&
-          shiftKeyMatch &&
-          altKeyMatch &&
-          noUnexpectedMeta &&
-          noUnexpectedCtrl &&
-          noUnexpectedShift &&
-          noUnexpectedAlt
-        ) {
+        // For metaKey, allow either Meta (Mac) or Ctrl (Windows/Linux)
+        const hasRequiredMeta = shortcut.metaKey ? (event.metaKey || event.ctrlKey) : !event.metaKey && !event.ctrlKey;
+        const hasRequiredCtrl = shortcut.ctrlKey ? event.ctrlKey : !event.ctrlKey;
+        const hasRequiredShift = shortcut.shiftKey ? event.shiftKey : !event.shiftKey;
+        const hasRequiredAlt = shortcut.altKey ? event.altKey : !event.altKey;
+
+        if (hasRequiredMeta && hasRequiredCtrl && hasRequiredShift && hasRequiredAlt) {
           event.preventDefault();
           shortcut.callback(event);
           break; // Only trigger first matching shortcut

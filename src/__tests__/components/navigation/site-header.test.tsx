@@ -17,6 +17,14 @@ vi.mock('next/link', () => ({
   ),
 }));
 
+// Mock next/image
+vi.mock('next/image', () => ({
+  default: ({ alt, src, ...props }: any) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img alt={alt} src={src} {...props} />
+  ),
+}));
+
 import { SiteHeader } from '@/components/navigation/site-header';
 import { SearchProvider } from '@/components/search';
 
@@ -355,6 +363,61 @@ describe('SiteHeader', () => {
       renderWithProviders(<SiteHeader />);
       const header = screen.getByRole('banner');
       expect(header.className).toContain('z-40');
+    });
+  });
+
+  describe('Scroll Border Behavior', () => {
+    it('does not have border-b when scrollY is 0', () => {
+      renderWithProviders(<SiteHeader />);
+      const header = screen.getByRole('banner');
+      expect(header.className).not.toContain('border-b');
+    });
+
+    it('adds border-b when scrolled', async () => {
+      renderWithProviders(<SiteHeader />);
+      const header = screen.getByRole('banner');
+      
+      // Simulate scroll
+      Object.defineProperty(window, 'scrollY', {
+        writable: true,
+        configurable: true,
+        value: 10,
+      });
+      
+      fireEvent.scroll(window, { target: { scrollY: 10 } });
+      
+      await waitFor(() => {
+        expect(header.className).toContain('border-b');
+      });
+    });
+
+    it('removes border-b when scrolled back to top', async () => {
+      renderWithProviders(<SiteHeader />);
+      const header = screen.getByRole('banner');
+      
+      // Simulate scroll down
+      Object.defineProperty(window, 'scrollY', {
+        writable: true,
+        configurable: true,
+        value: 10,
+      });
+      fireEvent.scroll(window, { target: { scrollY: 10 } });
+      
+      await waitFor(() => {
+        expect(header.className).toContain('border-b');
+      });
+      
+      // Simulate scroll back to top
+      Object.defineProperty(window, 'scrollY', {
+        writable: true,
+        configurable: true,
+        value: 0,
+      });
+      fireEvent.scroll(window, { target: { scrollY: 0 } });
+      
+      await waitFor(() => {
+        expect(header.className).not.toContain('border-b');
+      });
     });
   });
 });

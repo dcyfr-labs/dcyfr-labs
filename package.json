@@ -112,6 +112,7 @@
     "@react-email/render": "^2.0.0",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.2",
+    "@stackblitz/sdk": "^1.11.0",
     "@tanstack/react-virtual": "^3.13.13",
     "@upstash/redis": "^1.35.8",
     "@vercel/analytics": "1.6.1",

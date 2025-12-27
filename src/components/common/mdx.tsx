@@ -16,6 +16,7 @@ import { KeyTakeaway } from "@/components/common/key-takeaway";
 import { ContextClue } from "@/components/common/context-clue";
 import { Figure, FigureProvider } from "@/components/common/figure-caption";
 import { TableCaption } from "@/components/common/table-caption";
+import { CodePlayground } from "@/components/common/code-playground";
 import { 
   MDXMCPArchitecture, 
   MDXAuthenticationFlow, 
@@ -390,6 +391,8 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
   Figure,
   // Table caption component for table descriptions
   TableCaption,
+  // Code Playground component for interactive examples
+  CodePlayground,
   // Footnote superscripts with icon
   sup: (props: React.HTMLAttributes<HTMLElement>) => {
     // Check if this contains a link (footnote reference) or has footnote-related attributes

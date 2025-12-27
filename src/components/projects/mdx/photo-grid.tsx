@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { SPACING } from "@/lib/design-tokens";
+import { SPACING, CONTAINER_WIDTHS } from "@/lib/design-tokens";
 
 interface Photo {
   url: string;
@@ -56,7 +56,7 @@ export function PhotoGrid({ columns = 3, photos = [], children }: PhotoGridProps
 
       <Dialog open={!!lightboxPhoto} onOpenChange={() => setLightboxPhoto(null)}>
         { }
-        <DialogContent className="max-w-4xl">
+        <DialogContent className={CONTAINER_WIDTHS.narrow}>
           {lightboxPhoto && (
             <div className="relative w-full h-[80vh]">
               <Image

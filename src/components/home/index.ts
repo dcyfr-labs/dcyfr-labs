@@ -7,6 +7,7 @@ export { FlippableAvatar } from "./flippable-avatar";
 export { QuickLinksRibbon } from "./quick-links-ribbon";
 export { HomepageHeatmapMini } from "./homepage-heatmap-mini";
 export { ExploreCards } from "./explore-cards";
+export { ExploreNavigation } from "./explore-navigation";
 export { InfiniteActivitySection } from "./infinite-activity-section";
 export { TopicNavigator } from "./TopicNavigator";
 export { SeriesShowcase } from "./SeriesShowcase";

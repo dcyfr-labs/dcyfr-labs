@@ -30,6 +30,10 @@ export { default as DevToolsDropdown } from "./dev-tools-dropdown";
 // Search components
 export { SearchHighlight, SearchInput } from "./search";
 
+// Code Playground components
+export { CodePlayground } from "./code-playground";
+export type { CodePlaygroundProps } from "./code-playground";
+
 // Progressive content and depth styling
 export { 
   ProgressiveParagraph, 
