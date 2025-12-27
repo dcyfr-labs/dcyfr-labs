@@ -1,257 +1,244 @@
-# Next.js Developer Blog & Portfolio
+# DCYFR Transparency Statement
 
-A modern, full-featured developer blog and portfolio built with Next.js (App Router), TypeScript, Tailwind CSS v4, and shadcn/ui. Features an MDX-powered blog with advanced analytics, GitHub integration, Redis-backed view counts, background job processing, and comprehensive security features.
+## Our Philosophy: Open Patterns, Protected Systems
 
-**🤖 AI Contributors:**
-
-- **Claude Code**: See [`CLAUDE.md`](./CLAUDE.md) for comprehensive development guide (detailed patterns, workflows, documentation references)
-- **GitHub Copilot**: See [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) for quick-reference guide (80/20 patterns you'll use most)
-- **Transparency**: See [`docs/TRANSPARENCY_STATEMENT.md`](./docs/TRANSPARENCY_STATEMENT.md) for details on open vs. proprietary components
-
-## ✨ Features
-
-- **📝 MDX Blog System** - Rich blog posts with syntax highlighting, table of contents, reading progress, and related posts
-- **📊 Real-time Analytics** - View tracking, trending posts, milestone detection (powered by Redis + Inngest)
-- **⚡ Background Jobs** - Asynchronous processing with Inngest (contact form, GitHub sync, analytics)
-- **🔒 Security First** - CSP with nonces, rate limiting, input validation, secure headers
-- **🎨 Modern UI** - Tailwind CSS v4, shadcn/ui components, dark mode, responsive design
-- **🚀 Performance** - Server components, image optimization, edge caching, ISR
-- **📈 GitHub Integration** - Contribution heatmap with real-time data
-- **🔍 SEO Optimized** - Dynamic metadata, sitemap, RSS/Atom feeds, structured data
-
-## 🛠️ Tech Stack
-
-- **Framework:** Next.js 16 (App Router) + React 19
-- **Language:** TypeScript (strict mode)
-- **Styling:** Tailwind CSS v4
-- **UI Components:** shadcn/ui (Radix UI + CVA)
-- **Content:** MDX with next-mdx-remote
-- **Background Jobs:** Inngest
-- **Database/Cache:** Redis (Upstash)
-- **Email:** Resend
-- **Deployment:** Vercel
-- **Analytics:** Vercel Analytics + Speed Insights
-- **Monitoring:** Sentry (error tracking)
-
-## 🚀 Quick Start
-
-### Installation
-
-```bash
-# Clone and install
-git clone <your-repo-url>
-cd dcyfr-labs
-npm install
-
-# Set up environment variables
-cp .env.example .env.local
-# Edit .env.local with your values
-
-# Start development server
-npm run dev
-```
-
-Visit **http://localhost:3000** to see your site.
-
-### HTTPS Development (Safari)
-
-Safari on macOS requires HTTPS for certain APIs. Use the HTTPS dev server:
-
-```bash
-npm run dev:https
-```
-
-Visit **https://localhost:3000** (certificates auto-generated via mkcert).
-
-See [`certs/README.md`](./certs/README.md) for certificate details.
-
-## 📁 Project Structure
-
-```
-dcyfr-labs/
-├── src/
-│   ├── app/              # Next.js App Router (pages + API routes)
-│   ├── components/       # React components
-│   │   ├── ui/          # shadcn/ui primitives
-│   │   ├── layouts/     # Page and section layouts
-│   │   └── sections/    # Reusable page sections
-│   ├── content/blog/    # MDX blog posts
-│   ├── data/            # Static data (projects, resume)
-│   ├── lib/             # Utilities and helpers
-│   ├── hooks/           # Custom React hooks
-│   └── inngest/         # Background job functions
-├── docs/                # Comprehensive documentation
-├── public/              # Static assets
-└── scripts/             # Build and test scripts
-```
-
-## 🎯 Key Architecture
-
-### Page Layouts (Reusable Patterns)
-- **`PageLayout`** - Universal page wrapper with consistent spacing
-- **`ArchiveLayout`** - List pages (blog, projects) with filtering/pagination
-- **`ArticleLayout`** - Individual content pages (blog posts)
-
-### Metadata Generation
-- **`createPageMetadata()`** - Standard page metadata
-- **`createArchivePageMetadata()`** - List page metadata
-- **`createArticlePageMetadata()`** - Blog post metadata
-
-See [`/docs/architecture/`](./docs/architecture/) for detailed guides.
-
-## 📝 Blog System
-
-### Content Creation
-
-Create MDX files in `src/content/blog/`:
-
-```markdown
----
-title: "Your Post Title"
-description: "Post description"
-date: "2025-11-10"
-tags: ["nextjs", "typescript"]
-featured: true
-draft: false
----
-
-Your content here with full MDX support...
-```
-
-See [`/docs/blog/content-creation.md`](./docs/blog/content-creation.md) for complete guide.
-
-### Blog Features
-- ✅ Search and tag filtering
-- ✅ Draft and archived post states
-- ✅ Auto-generated table of contents
-- ✅ Syntax highlighting (Shiki, dual-theme)
-- ✅ Related posts algorithm
-- ✅ Reading progress indicator
-- ✅ View counts and trending detection
-- ✅ RSS/Atom feeds (`/rss.xml`, `/atom.xml`)
-
-## ⚡ Background Jobs (Inngest)
-
-Asynchronous task processing with automatic retries:
-
-- **Contact Form** - Send emails without blocking API response
-- **GitHub Sync** - Refresh contribution data every hour
-- **Blog Analytics** - Track views, calculate trending posts
-- **Daily Summaries** - Automated analytics reports (midnight UTC)
-
-**Dev UI:** http://localhost:3000/api/inngest
-
-See [`/docs/features/inngest-integration.md`](./docs/features/inngest-integration.md) for setup.
-
-## 🔒 Security Features
-
-- **Content Security Policy (CSP)** - Nonce-based with zero `unsafe-inline`
-- **Rate Limiting** - Redis-backed with in-memory fallback
-- **Input Validation** - All API routes validated
-- **Security Headers** - HSTS, X-Frame-Options, CSP, etc.
-- **PII Protection** - Logs sanitized, no sensitive data exposure
-
-See [`/docs/security/`](./docs/security/) for implementation details.
-
-## 🌐 Deployment
-
-### Vercel (Recommended)
-
-1. Import this repo to Vercel
-2. Configure environment variables (see [`.env.example`](./.env.example))
-3. Deploy!
-
-**Automatic Features on Vercel:**
-- Edge caching and CDN
-- Analytics and Speed Insights (already wired in `layout.tsx`)
-- Automatic HTTPS
-- Preview deployments for PRs
-
-### Environment Variables
-
-Required variables:
-```bash
-# Contact form
-CONTACT_EMAIL=your-email@example.com
-RESEND_API_KEY=re_...
-
-# Blog analytics (optional)
-REDIS_URL=redis://...
-
-# GitHub integration (optional, increases rate limits)
-GITHUB_TOKEN=ghp_...
-GITHUB_USERNAME=your-username
-
-# Inngest (optional for local dev)
-INNGEST_EVENT_KEY=...
-INNGEST_SIGNING_KEY=...
-```
-
-See [`/docs/platform/environment-variables.md`](./docs/platform/environment-variables.md) for complete reference.
-
-## 📚 Documentation
-
-Comprehensive docs in `/docs` ([TLP:CLEAR](./docs/security/TLP_CLASSIFICATION_IMPLEMENTATION.md) - publicly accessible):
-
-| Topic | Primary Docs |
-|-------|-------------|
-| **Getting Started** | [`QUICK_START.md`](./docs/QUICK_START.md) |
-| **Architecture** | [`/docs/architecture/`](./docs/architecture/) |
-| **Blog System** | [`/docs/blog/architecture.md`](./docs/blog/architecture.md) |
-| **Components** | [`/docs/components/`](./docs/components/) |
-| **API Routes** | [`/docs/api/routes/overview.md`](./docs/api/routes/overview.md) |
-| **Security** | [`/docs/security/`](./docs/security/) |
-| **Features** | [`/docs/features/`](./docs/features/) |
-| **Operations** | [`/docs/operations/todo.md`](./docs/operations/todo.md) |
-| **Transparency** | [`/docs/TRANSPARENCY_STATEMENT.md`](./docs/TRANSPARENCY_STATEMENT.md) |
-
-## 🧪 Testing
-
-**Current Status:** 1879/1944 tests passing (96.7%)
-
-```bash
-# Lint and type-check
-npm run lint
-npm run typecheck
-npm run check             # Both lint + typecheck
-
-# Run tests
-npm run test              # Run all tests (Vitest)
-npm run test:unit         # Unit tests only
-npm run test:integration  # Integration tests only
-npm run test:e2e          # End-to-end tests (Playwright) - runs production build by default (to avoid dev overlay). Use npm run test:e2e:dev to run against dev server.
-npm run test:coverage     # Generate coverage report
-npm run test:watch        # Watch mode
-
-# Test UI
-npm run test:ui           # Vitest UI
-npm run test:e2e:ui       # Playwright UI
-```
-
-**Testing Infrastructure:**
-
-- **Unit & Integration Tests:** Vitest + Testing Library
-- **E2E Tests:** Playwright
-- **Coverage:** 96.7% pass rate across 1944 tests
-- **Test Documentation:** See [`/docs/testing/`](./docs/testing/)
-
-## 🎨 Customization
-
-### Update Site Content
-- **Homepage**: `src/app/page.tsx`
-- **About**: `src/app/about/page.tsx`
-- **Projects**: `src/data/projects.ts`
-- **Resume**: `src/data/resume.ts`
-
-### Styling
-- **Theme colors**: `src/app/globals.css`
-- **Design tokens**: `src/lib/design-tokens.ts`
-- **Tailwind config**: `tailwind.config.ts`
-
-### Metadata
-- **Global metadata**: `src/app/layout.tsx`
-- **SEO routes**: `src/app/sitemap.ts`, `src/app/robots.ts`
+We believe in maintaining **transparency about what we do** while **protecting how we do it**.
 
 ---
 
-**Built with:** Next.js 16, TypeScript, Tailwind CSS v4, shadcn/ui, Inngest, Redis, and ❤️
+## What's Visible (Public Patterns)
+
+**Anyone can learn, use, and build with these:**
+
+- ✅ **Component patterns** - How to structure pages, components, layouts
+- ✅ **Design tokens** - What design system tokens exist and why
+- ✅ **Testing strategy** - How to achieve 99% test pass rate
+- ✅ **API patterns** - How API routes are structured (Validate→Queue→Respond)
+- ✅ **Decision trees** - How to make architectural choices
+- ✅ **Templates** - Copy-paste starting points for pages, components, APIs
+- ✅ **Best practices** - Documented conventions and standards
+
+**Location:** `/docs/ai/`, `/docs/templates/`, `/docs/testing/`
+
+---
+
+## What's Protected (Proprietary System)
+
+**Visible for transparency, but not for redistribution:**
+
+- 🔒 **DCYFR agent instructions** - How the automation system works
+- 🔒 **Enforcement specifications** - How validation gates are implemented
+- 🔒 **Learning system** - How DCYFR self-improves and captures patterns
+- 🔒 **Meta-system documentation** - Agent routing and architecture
+
+**Location:** `.github/agents/` (protected via CODEOWNERS)
+
+**Status:** Proprietary to dcyfr-labs. Use in own projects requires written permission.
+
+**PI Definition:** Proprietary Information (PI) is treated as sensitive. See NIST definition: [Proprietary Information](https://csrc.nist.gov/glossary/term/proprietary_information)
+
+---
+
+## Why This Distinction?
+
+### Benefits of Open Patterns
+- **Community:** Everyone learns from quality patterns
+- **Transparency:** How we build is publicly documented
+- **Reusability:** Templates and standards help all contributors
+- **Accessibility:** New team members understand our approach quickly
+
+### Benefits of Protected Systems
+- **Integrity:** DCYFR automation remains consistent across projects
+- **Strategic advantage:** Our AI agent system isn't copied to competitors
+- **Quality control:** Enforcement system isn't diluted through redistribution
+- **Long-term sustainability:** Proprietary system stays ours to improve
+
+---
+
+## How Contributors Benefit
+
+### What They Get (Free)
+✅ All public patterns and best practices  
+✅ Copy-paste templates for fast development  
+✅ Decision trees for architectural choices  
+✅ Design system documentation  
+✅ Testing strategy and guidelines  
+✅ DCYFR support for their feature work  
+
+### What They Can't Do (Reasonable Restrictions)
+❌ Redistribute proprietary specifications  
+❌ Use DCYFR architecture in competing projects  
+❌ Modify enforcement system without approval  
+❌ Copy agent instructions to other repositories  
+
+---
+
+## Practical Example
+
+### ✅ What's Allowed
+
+```
+// From /docs/ai/QUICK_REFERENCE.md - LEARN & USE
+import { PageLayout } from "@/components/layouts";
+import { SPACING } from "@/lib/design-tokens";
+
+// From /docs/templates/NEW_PAGE.tsx - COPY & EXTEND
+export const metadata = createPageMetadata({...});
+
+// Contributing to dcyfr-labs - USE DCYFR
+@dcyfr-labs activate DCYFR mode for my feature
+```
+
+### ❌ What's Not Allowed
+
+```
+// Can't copy .github/agents/ to own project
+cp -r dcyfr-labs/.github/agents/ my-project/
+
+// Can't redistribute DCYFR specs
+"Here's DCYFR from dcyfr-labs: [copy of DCYFR.agent.md]"
+
+// Can't modify proprietary system without approval
+// Modify .github/agents/enforcement/DESIGN_TOKENS.md
+```
+
+---
+
+## The Transparency
+
+**We're not hiding anything about our public patterns.** The shared documentation is right here in the open:
+
+- `.github/agents/DCYFR.agent.md` - Hub file (195 lines)
+- `.github/agents/patterns/` - 4 pattern files (1551 lines)
+- `.github/agents/enforcement/` - 3 enforcement files (1100 lines)
+- `.github/agents/learning/` - 3 learning files (1110 lines)
+
+**⚠️ Important Note:** 
+- ✅ `.github/agents/` - **PUBLIC/SHARED** (available in this repo)
+- ❌ `.claude/agents/` - **PROPRIETARY/INTERNAL ONLY** (not included in public repo)
+
+**What this means:**
+- ✅ You can see exactly how shared DCYFR patterns work
+- ✅ You can understand the public system architecture
+- ✅ You can appreciate the engineering complexity
+- ✅ You cannot redistribute proprietary `.claude/agents/` files (internal only)
+- ✅ You can use and learn from all `.github/agents/` documentation
+
+**This is similar to:**
+- Open-source code (can see, learn, contribute)
+- Proprietary SaaS product (can use, can't clone)
+- Public research paper (can read, can't republish as your own)
+
+---
+
+## Questions & Clarifications
+
+### "Why not make DCYFR fully open source?"
+
+**Good reasons to protect DCYFR:**
+1. **Differentiation** - DCYFR automation is our competitive advantage
+2. **Quality control** - Open specs get forked and diluted
+3. **System integrity** - Enforcement must stay consistent
+4. **Business sustainability** - Proprietary system funds ongoing development
+
+**Good reasons to share patterns:**
+1. **Community benefit** - Everyone learns and builds better
+2. **Transparency** - How we work is visible and documented
+3. **Contribution** - External input improves our patterns
+4. **Accessibility** - New team members ramp up quickly
+
+**Our approach balances both.**
+
+### "Can I use DCYFR patterns in my own project?"
+
+**Yes! Absolutely.**
+
+- Use design tokens from `/docs/ai/DESIGN_SYSTEM.md`
+- Use component patterns from `/docs/ai/COMPONENT_PATTERNS.md`
+- Use templates from `/docs/templates/`
+- Follow decision trees from `/docs/ai/DECISION_TREES.md`
+
+**Can't:**
+- Copy `.github/agents/` system
+- Redistribute DCYFR specifications
+- Use DCYFR agent in competing projects
+
+### "What if I want to build something similar?"
+
+**We encourage it!**
+
+- Learn from our public patterns
+- Build your own enforcement system
+- Contribute improvements back to dcyfr-labs
+- Get approval if you want to modify our system
+
+Just don't copy/redistribute the proprietary DCYFR architecture. Build your own.
+
+---
+
+## How This Works in Practice
+
+### For dcyfr-labs Contributors
+- **Read:** `/docs/ai/` for patterns
+- **Use:** `/docs/templates/` for starting points
+- **Request:** DCYFR mode for feature work
+- **Benefit:** Full system support + validation
+
+### For External Developers
+- **Learn:** All public patterns from `/docs/ai/`
+- **Fork:** Templates and reuse in own projects
+- **Reference:** Our approach in your architecture
+- **Don't:** Redistribute DCYFR specifications
+
+### For Team Members
+- **Access:** Everything, both public and proprietary
+- **Modify:** Core patterns with approval
+- **Extend:** DCYFR system with PR review
+- **Maintain:** System integrity and consistency
+
+---
+
+## Enforcement & Compliance
+
+**How we protect proprietary files:**
+
+1. **GitHub CODEOWNERS** - `.github/agents/` requires approval
+2. **Branch protection** - Status checks on agent changes
+3. **PR reviews** - All proprietary changes need review
+4. **License clarification** - Clear what's protected
+5. **Contributing guidelines** - Clear what's not allowed
+
+**How we stay transparent:**
+
+1. **Files are visible** - Not hidden or encrypted
+2. **Documentation exists** - Why things are protected
+3. **Public alternatives** - `/docs/ai/` shows everything public
+4. **Clear boundaries** - Everyone knows what's what
+5. **Accessible reasoning** - Why we made these choices
+
+---
+
+## Summary
+
+| Aspect | Status | Reason |
+|--------|--------|--------|
+| **Source code** (`/src/`) | MIT Licensed | Open for everyone |
+| **Patterns & best practices** (`/docs/ai/`) | CC Licensed | Open for learning |
+| **Templates** (`/docs/templates/`) | CC Licensed | Open for reuse |
+| **Tests & configuration** | MIT Licensed | Open for reference |
+| **DCYFR system** (`.github/agents/`) | Proprietary | Strategic advantage |
+| **Design system tokens** | Public (in `/docs/`) | Everyone uses them |
+| **Enforcement rules** | Proprietary | System integrity |
+
+---
+
+**Status:** Production Ready  
+**Last Updated:** December 9, 2025  
+**Version:** 1.0.0
+
+---
+
+For detailed access controls, see [CODEOWNERS](./CODEOWNERS)  
+For public patterns, see [docs/ai/](../../docs/ai/)  
+For contribution rules, see [CONTRIBUTING.md](../../CONTRIBUTING.md)  
+For agent reference, see [DCYFR.agent.md](./agents/DCYFR.agent.md)
