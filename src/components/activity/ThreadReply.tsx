@@ -26,7 +26,7 @@ import { ThreadActions } from "./ThreadActions";
 import { getActivitySourceIcon } from "@/lib/activity/types";
 import type { ActivityItem } from "@/lib/activity/types";
 import { cn } from "@/lib/utils";
-import { TYPOGRAPHY, ANIMATION, NEON_COLORS, ACTIVITY_IMAGE, SPACING } from "@/lib/design-tokens";
+import { TYPOGRAPHY, ANIMATION, ACTIVITY_IMAGE, SPACING, SEMANTIC_COLORS } from "@/lib/design-tokens";
 import { Flame, TrendingUp } from "lucide-react";
 
 // ============================================================================
@@ -34,21 +34,21 @@ import { Flame, TrendingUp } from "lucide-react";
 // ============================================================================
 
 /**
- * Maps activity verb to neon color badge class
+ * Maps activity verb to semantic color badge class
  */
 function getVerbColor(verb: ActivityItem["verb"]): string {
   const colorMap: Record<ActivityItem["verb"], string> = {
-    published: NEON_COLORS.lime.badge,
-    updated: NEON_COLORS.cyan.badge,
-    launched: NEON_COLORS.purple.badge,
-    released: NEON_COLORS.orange.badge,
-    committed: NEON_COLORS.slate.badge,
-    achieved: NEON_COLORS.yellow.badge,
-    earned: NEON_COLORS.blue.badge,
-    reached: NEON_COLORS.lime.badge,
+    published: SEMANTIC_COLORS.status.success,
+    updated: SEMANTIC_COLORS.accent.cyan.badge,
+    launched: SEMANTIC_COLORS.accent.purple.badge,
+    released: SEMANTIC_COLORS.accent.orange.badge,
+    committed: SEMANTIC_COLORS.status.neutral,
+    achieved: SEMANTIC_COLORS.status.warning,
+    earned: SEMANTIC_COLORS.status.info,
+    reached: SEMANTIC_COLORS.status.success,
   };
 
-  return colorMap[verb] || NEON_COLORS.lime.badge;
+  return colorMap[verb] || SEMANTIC_COLORS.status.success;
 }
 
 export interface ThreadReplyProps {
@@ -123,13 +123,13 @@ export function ThreadReply({
 
             {/* Trending Badge (Compact) - Weekly takes priority */}
             {activity.meta?.trendingStatus?.isWeeklyTrending && (
-              <Badge variant="secondary" className={cn("px-1.5 h-5 text-xs flex items-center gap-0.5", NEON_COLORS.orange.badge)}>
+              <Badge variant="secondary" className={cn("px-1.5 h-5 text-xs flex items-center gap-0.5", SEMANTIC_COLORS.accent.orange.badge)}>
                 <Flame className="w-3 h-3" aria-hidden="true" />
                 Week
               </Badge>
             )}
             {!activity.meta?.trendingStatus?.isWeeklyTrending && activity.meta?.trendingStatus?.isMonthlyTrending && (
-              <Badge variant="secondary" className={cn("px-1.5 h-5 text-xs flex items-center gap-0.5", NEON_COLORS.blue.badge)}>
+              <Badge variant="secondary" className={cn("px-1.5 h-5 text-xs flex items-center gap-0.5", SEMANTIC_COLORS.status.info)}>
                 <TrendingUp className="w-3 h-3" aria-hidden="true" />
                 Month
               </Badge>

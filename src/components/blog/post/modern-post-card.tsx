@@ -11,7 +11,7 @@ import { SeriesBadge } from "@/components/blog/post/series-badge";
 import { BookmarkButton } from "@/components/blog/bookmark-button";
 import { HighlightText } from "@/components/common/highlight-text";
 import type { Post } from "@/data/posts";
-import { ARCHIVE_CARD_VARIANTS, ARCHIVE_ANIMATIONS, TOUCH_TARGET, TYPOGRAPHY, SEMANTIC_COLORS } from "@/lib/design-tokens";
+import { ARCHIVE_CARD_VARIANTS, ARCHIVE_ANIMATIONS, TOUCH_TARGET, TYPOGRAPHY, SEMANTIC_COLORS, IMAGE_PLACEHOLDER } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import { useShare } from "@/hooks/use-share";
 import { useShareTracking } from "@/hooks/use-share-tracking";
@@ -127,6 +127,8 @@ export function ModernPostCard({
                 className={elevatedVariant.image}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 priority={index === 0}
+                placeholder="blur"
+                blurDataURL={IMAGE_PLACEHOLDER.blur}
               />
             </Link>
 
@@ -284,6 +286,8 @@ export function ModernPostCard({
               className={cardVariant.image}
               sizes="(max-width: 768px) 100vw, 100vw"
               priority={index === 0}
+              placeholder="blur"
+              blurDataURL={IMAGE_PLACEHOLDER.blur}
             />
             {/* Lighter overlay - 20-60% instead of 75-95% */}
             <div className={cardVariant.overlay} />
@@ -382,6 +386,8 @@ export function ModernPostCard({
               fill
               className={cardVariant.image}
               sizes="192px"
+              placeholder="blur"
+              blurDataURL={IMAGE_PLACEHOLDER.blur}
             />
           </Link>
         </div>

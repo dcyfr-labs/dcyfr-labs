@@ -7,6 +7,7 @@ import { getPostBadgeMetadata } from "@/lib/post-badges";
 import { groupPostsByCategory, sortCategoriesByCount } from "@/lib/blog-grouping";
 import { createArchivePageMetadata, createCollectionSchema, getJsonLdScriptProps } from "@/lib/metadata";
 import { AUTHOR_NAME, SITE_URL } from "@/lib/site-config";
+import { teamMembers } from "@/data/team";
 import { headers } from "next/headers";
 import { getMultiplePostViews } from "@/lib/views";
 import { CONTAINER_WIDTHS, CONTAINER_PADDING, SPACING, MOBILE_SAFE_PADDING } from "@/lib/design-tokens";
@@ -136,6 +137,11 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   // Support multiple tags (comma-separated, case-insensitive)
   const tagParam = getParam("tag");
   const selectedTags = tagParam ? tagParam.split(",").filter(Boolean).map(t => t.toLowerCase()) : [];
+  
+  // Support author filter
+  const authorParam = getParam("author");
+  const selectedAuthor = authorParam || "";
+  
   const query = getParam("q");
   const readingTime = getParam("readingTime");
   const sortBy = getParam("sortBy") || "newest";
@@ -196,10 +202,18 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       )
     : postsWithReadingTimeFilter;
   
+  // Apply author filter
+  const postsWithAuthorFilter = selectedAuthor
+    ? postsWithTagFilter.filter((post) => {
+        const postAuthors = post.authors || ["dcyfr"];
+        return postAuthors.includes(selectedAuthor);
+      })
+    : postsWithTagFilter;
+  
   // Use Archive Pattern for filtering, sorting, pagination (without tag filter)
   const archiveData = getArchiveData<Post>(
     {
-      items: postsWithTagFilter,
+      items: postsWithAuthorFilter,
       searchFields: ["title", "summary", "body"],
       tagField: "tags",
       dateField: "publishedAt",
@@ -268,7 +282,8 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     selectedTags.length > 0 || 
     readingTime || 
     sortBy !== 'newest' || 
-    dateRange !== 'all'
+    dateRange !== 'all' ||
+    selectedAuthor
   );
   
   // Get badge metadata (latest and hottest posts)
@@ -278,6 +293,13 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   // const activeFeaturedPosts = featuredPosts.filter(p => !p.archived && !p.draft);
   // const shouldShowFeaturedSection = activeFeaturedPosts.length > 0 && !hasActiveFilters;
   const shouldShowFeaturedSection = false;
+  
+  // Create serializable authors list for client component (without icon objects)
+  const serializableAuthors = teamMembers.map(author => ({
+    id: author.id,
+    name: author.name,
+    avatarImagePath: author.avatarImagePath,
+  }));
   
   // Exclude featured posts from main list only when featured section is shown
   const mainListPosts = shouldShowFeaturedSection 
@@ -329,23 +351,8 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
 
       {/* Blog layout with sidebar on desktop */}
       <div className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING} ${MOBILE_SAFE_PADDING}`}>
-        {/* Main grid: Sidebar + Content */}
+        {/* Main grid: Content + Sidebar */}
         <BlogLayoutWrapper>
-          {/* Sidebar (desktop only) - positioned on left, toggled via 'f' key */}
-          <BlogSidebarWrapper
-            selectedCategory={selectedCategory}
-            selectedTags={selectedTags}
-            readingTime={readingTime}
-            categoryList={availableCategories}
-            categoryDisplayMap={categoryDisplayMap}
-            tagList={availableTagsWithCounts}
-            query={query}
-            sortBy={sortBy}
-            dateRange={dateRange}
-            totalResults={sortedArchiveData.totalItems}
-            totalPosts={posts.length}
-          />
-
           {/* Main content area with Suspense for PPR */}
           <Suspense fallback={<BlogListSkeleton layout={layout} itemCount={3} />}>
             {modern ? (
@@ -377,6 +384,23 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
               />
             )}
           </Suspense>
+
+          {/* Sidebar (desktop only) - positioned on right, toggled via 'f' key */}
+          <BlogSidebarWrapper
+            selectedCategory={selectedCategory}
+            selectedTags={selectedTags}
+            readingTime={readingTime}
+            categoryList={availableCategories}
+            categoryDisplayMap={categoryDisplayMap}
+            tagList={availableTagsWithCounts}
+            authors={serializableAuthors}
+            selectedAuthor={selectedAuthor}
+            query={query}
+            sortBy={sortBy}
+            dateRange={dateRange}
+            totalResults={sortedArchiveData.totalItems}
+            totalPosts={posts.length}
+          />
         </BlogLayoutWrapper>
       </div>
     </PageLayout>

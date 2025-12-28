@@ -62,7 +62,7 @@ function generateSearchIndex(): SearchIndex {
         series: post.series?.name || null,
         publishedAt: post.publishedAt,
         readingTime: post.readingTime.minutes,
-        url: `/blog/${post.id}`,
+        url: `/blog/${post.slug}`,
       };
     });
 

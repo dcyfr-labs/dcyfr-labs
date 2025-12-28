@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Copy, Check, Code, ExternalLink } from "lucide-react";
 import { SITE_URL } from "@/lib/site-config";
-import { SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
+import { SPACING, TYPOGRAPHY, SEMANTIC_COLORS } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import type { ActivitySource } from "@/lib/activity";
 
@@ -284,7 +284,7 @@ export function EmbedGenerator() {
             className={cn(
               "absolute top-2 right-2 p-2 rounded-lg transition-colors",
               copied
-                ? "bg-green-100 text-green-700" // eslint-disable-line no-restricted-syntax
+                ? SEMANTIC_COLORS.status.success
                 : "bg-white border hover:bg-zinc-50"
             )}
             aria-label="Copy embed code"
@@ -295,7 +295,7 @@ export function EmbedGenerator() {
       </div>
 
       {/* Usage Instructions */}
-      <div className="mt-6 p-4 border rounded-lg bg-blue-50 border-blue-200 text-sm"> { }
+      <div className={cn("mt-6 p-4 border rounded-lg text-sm", SEMANTIC_COLORS.status.info, "dark:border-info/30")}> { }
         <p className="mb-2 font-semibold">Usage Instructions:</p>
         <ol className="list-decimal list-inside space-y-1 text-zinc-700">
           <li>Customize the options above to fit your needs</li>

@@ -4,12 +4,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingUp, Hash, FolderGit2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SPACING, ANIMATION } from "@/lib/design-tokens";
+
 import { TrendingPostsPanel } from "@/components/home/trending-posts-panel";
 import { TrendingTopicsPanel } from "@/components/home/trending-topics-panel";
 import { TrendingProjectsPanel } from "@/components/home/trending-projects-panel";
 import type { TrendingProject } from "@/components/home/trending-projects-panel";
 import type { Post } from "@/data/posts";
-import type { NeonColorVariant } from "@/lib/design-tokens";
 
 // ============================================================================
 // TYPES
@@ -18,7 +18,7 @@ import type { NeonColorVariant } from "@/lib/design-tokens";
 export interface TopicData {
   tag: string;
   count: number;
-  colorVariant: NeonColorVariant;
+  colorVariant: string;
 }
 
 export interface TrendingSectionProps {

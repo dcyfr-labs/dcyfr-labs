@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import {
   HOVER_EFFECTS,
   ANIMATION,
-  NEON_COLORS,
+  SERIES_COLORS,
   TYPOGRAPHY,
 } from "@/lib/design-tokens";
 
@@ -60,20 +60,24 @@ export function QuoteCard({
   animationDelay = 0,
   className,
 }: QuoteCardProps) {
-  const themeColors = NEON_COLORS[theme];
+  // Map themes to series colors for consistent styling
+  const themeMapping: Record<string, typeof SERIES_COLORS.security | typeof SERIES_COLORS.design | typeof SERIES_COLORS.tips | typeof SERIES_COLORS.performance | typeof SERIES_COLORS.architecture | typeof SERIES_COLORS.default> = {
+    cyan: SERIES_COLORS.security,
+    magenta: SERIES_COLORS.design,
+    lime: SERIES_COLORS.tips,
+    orange: SERIES_COLORS.performance,
+    purple: SERIES_COLORS.architecture,
+  };
+  const themeColors = themeMapping[theme] || SERIES_COLORS.default;
 
   const cardContent = (
     <Card
       className={cn(
         "relative overflow-hidden",
-        "border-l-4",
-        themeColors.container,
+        themeColors.card,
         href && HOVER_EFFECTS.cardSubtle,
         className
       )}
-      style={{
-        borderLeftColor: `hsl(var(--${theme === "cyan" ? "primary" : theme === "magenta" ? "destructive" : theme === "lime" ? "success" : theme === "orange" ? "warning" : "secondary"}))`,
-      }}
     >
       {/* Quote icon */}
       <div
@@ -102,10 +106,7 @@ export function QuoteCard({
         {/* Source/author */}
         {source && (
           <cite
-            className={cn(
-              "block mt-3 text-sm not-italic",
-              themeColors.text
-            )}
+            className="block mt-3 text-sm not-italic text-muted-foreground"
           >
             — {source}
           </cite>
@@ -115,8 +116,7 @@ export function QuoteCard({
         {href && (
           <div
             className={cn(
-              "mt-3 flex items-center gap-1 text-sm",
-              themeColors.text,
+              "mt-3 flex items-center gap-1 text-sm text-muted-foreground",
               ANIMATION.transition.theme,
               "group-hover:gap-2"
             )}

@@ -244,7 +244,11 @@ export function PostList({
                     {/* Content */}
                     <div className="p-4 md:p-10 lg:p-12 relative z-10 flex flex-col justify-end min-h-96 md:min-h-128">
                       {/* Badges - modern layout */}
-                      <div className="flex flex-nowrap items-center gap-x-3 text-sm mb-4 text-zinc-300 dark:text-zinc-400 overflow-x-auto">
+                      <div className={`flex flex-nowrap items-center gap-x-3 text-sm mb-4 overflow-x-auto ${
+                        p.image && p.image.url && !p.image.hideCard 
+                          ? "text-zinc-300 dark:text-zinc-400" 
+                          : "text-muted-foreground"
+                      }`}>
                         <PostBadges
                           post={p}
                           isLatestPost={latestSlug === p.slug}
@@ -255,7 +259,11 @@ export function PostList({
                       </div>
 
                       {/* Meta info - desktop only */}
-                      <div className="hidden md:flex flex-nowrap items-center gap-x-3 text-sm mb-5 text-zinc-300 dark:text-zinc-400 overflow-x-auto">
+                      <div className={`hidden md:flex flex-nowrap items-center gap-x-3 text-sm mb-5 overflow-x-auto ${
+                        p.image && p.image.url && !p.image.hideCard 
+                          ? "text-zinc-300 dark:text-zinc-400" 
+                          : "text-muted-foreground"
+                      }`}>
                         <time dateTime={p.publishedAt} className="whitespace-nowrap">
                           {new Date(p.publishedAt).toLocaleDateString("en-US", {
                             year: "numeric",
@@ -263,30 +271,42 @@ export function PostList({
                             day: "numeric",
                           })}
                         </time>
-                        <span aria-hidden="true" className="text-zinc-500">•</span>
+                        <span aria-hidden="true" className={p.image && p.image.url && !p.image.hideCard ? "text-zinc-500" : "text-muted-foreground"}>•</span>
                         <span className="whitespace-nowrap">{p.readingTime.text}</span>
                         {viewCounts && viewCounts.has(p.id) && viewCounts.get(p.id)! > 0 && (
                           <>
-                            <span aria-hidden="true" className="text-zinc-500">•</span>
+                            <span aria-hidden="true" className={p.image && p.image.url && !p.image.hideCard ? "text-zinc-500" : "text-muted-foreground"}>•</span>
                             <span className="whitespace-nowrap">{formatViews(viewCounts.get(p.id)!)} views</span>
                           </>
                         )}
                       </div>
 
                       {/* Title - large and bold */}
-                      <TitleTag className="font-bold text-4xl md:text-5xl lg:text-6xl leading-tight line-clamp-3 mb-4 text-white">
+                      <TitleTag className={`font-bold text-4xl md:text-5xl lg:text-6xl leading-tight line-clamp-3 mb-4 ${
+                        p.image && p.image.url && !p.image.hideCard 
+                          ? "text-white" 
+                          : "text-foreground"
+                      }`}>
                         <HighlightText text={p.title} searchQuery={searchQuery} />
                       </TitleTag>
 
                       {/* Subtitle if available */}
                       {p.subtitle && (
-                        <p className="font-medium text-lg md:text-xl text-zinc-200 dark:text-zinc-300 mb-4 line-clamp-2">
+                        <p className={`font-medium text-lg md:text-xl mb-4 line-clamp-2 ${
+                          p.image && p.image.url && !p.image.hideCard 
+                            ? "text-zinc-200 dark:text-zinc-300" 
+                            : "text-muted-foreground"
+                        }`}>
                           <HighlightText text={p.subtitle} searchQuery={searchQuery} />
                         </p>
                       )}
 
                       {/* Summary */}
-                      <p className="text-base md:text-lg leading-relaxed text-zinc-300 dark:text-zinc-300 line-clamp-2 md:line-clamp-3 mb-6">
+                      <p className={`text-base md:text-lg leading-relaxed line-clamp-2 md:line-clamp-3 mb-6 ${
+                        p.image && p.image.url && !p.image.hideCard 
+                          ? "text-zinc-300 dark:text-zinc-300" 
+                          : "text-muted-foreground"
+                      }`}>
                         <HighlightText text={p.summary} searchQuery={searchQuery} />
                       </p>
 
@@ -321,6 +341,7 @@ export function PostList({
 
           // Alternating horizontal layout for remaining posts - modern card design
           const isSecondRow = index === 1 || index === 2;
+          const isEven = index % 2 === 0; // Alternate left/right image position
           return (
             <ScrollReveal key={p.slug}>
               <article
@@ -332,7 +353,10 @@ export function PostList({
                 </div>
                 
                 <Link href={`/blog/${p.slug}`} className="block h-full">
-                  <div className="h-full flex flex-col md:flex-row md:items-stretch">
+                  <div className={cn(
+                    "h-full flex flex-col md:items-stretch",
+                    isEven ? "md:flex-row" : "md:flex-row-reverse"
+                  )}>
                     {/* Image section - dynamic sizing based on position */}
                     {p.image && p.image.url && !p.image.hideCard && (
                       <div className={`relative overflow-hidden bg-muted shrink-0 ${index === 1 ? 'md:w-2/5' : 'md:w-3/5'}`}>
@@ -375,11 +399,11 @@ export function PostList({
                             day: "numeric",
                           })}
                         </time>
-                        <span aria-hidden="true" className="text-zinc-400">•</span>
+                        <span aria-hidden="true" className="text-muted-foreground">•</span>
                         <span className="whitespace-nowrap">{p.readingTime.text}</span>
                         {viewCounts && viewCounts.has(p.id) && viewCounts.get(p.id)! > 0 && (
                           <>
-                            <span aria-hidden="true" className="text-zinc-400">•</span>
+                            <span aria-hidden="true" className="text-muted-foreground">•</span>
                             <span className="whitespace-nowrap">{formatViews(viewCounts.get(p.id)!)} views</span>
                           </>
                         )}

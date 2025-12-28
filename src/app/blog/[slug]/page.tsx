@@ -62,11 +62,27 @@ export async function generateStaticParams() {
     allParams.push({ slug: post.slug });
   }
   
+  // Add post IDs for redirect pages (e.g., /blog/post-20200107-04d94a8e → /blog/demo-markdown)
+  for (const post of posts) {
+    if (post.id !== post.slug) {
+      allParams.push({ slug: post.id });
+    }
+  }
+  
   // Add previous slugs for redirect pages
   for (const post of posts) {
     if (post.previousSlugs) {
       for (const oldSlug of post.previousSlugs) {
         allParams.push({ slug: oldSlug });
+      }
+    }
+  }
+  
+  // Add previous IDs for redirect pages (analytics migration)
+  for (const post of posts) {
+    if (post.previousIds) {
+      for (const oldId of post.previousIds) {
+        allParams.push({ slug: oldId });
       }
     }
   }

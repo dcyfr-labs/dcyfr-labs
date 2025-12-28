@@ -18,10 +18,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { ThreadActions } from "./ThreadActions";
+import { SEMANTIC_COLORS } from "@/lib/design-tokens";
 import { getActivitySourceIcon } from "@/lib/activity/types";
 import type { ActivityItem } from "@/lib/activity/types";
 import { cn } from "@/lib/utils";
-import { TYPOGRAPHY, SPACING, HOVER_EFFECTS, ANIMATION, NEON_COLORS, ACTIVITY_IMAGE } from "@/lib/design-tokens";
+import { TYPOGRAPHY, SPACING, HOVER_EFFECTS, ANIMATION, ACTIVITY_IMAGE } from "@/lib/design-tokens";
 import { Flame, TrendingUp } from "lucide-react";
 
 // ============================================================================
@@ -29,21 +30,21 @@ import { Flame, TrendingUp } from "lucide-react";
 // ============================================================================
 
 /**
- * Maps activity verb to neon color badge class
+ * Maps activity verb to semantic color badge class
  */
 function getVerbColor(verb: ActivityItem["verb"]): string {
   const colorMap: Record<ActivityItem["verb"], string> = {
-    published: NEON_COLORS.lime.badge,
-    updated: NEON_COLORS.cyan.badge,
-    launched: NEON_COLORS.purple.badge,
-    released: NEON_COLORS.orange.badge,
-    committed: NEON_COLORS.slate.badge,
-    achieved: NEON_COLORS.yellow.badge,
-    earned: NEON_COLORS.blue.badge,
-    reached: NEON_COLORS.lime.badge,
+    published: SEMANTIC_COLORS.status.success,
+    updated: SEMANTIC_COLORS.status.info,
+    launched: SEMANTIC_COLORS.highlight.primary,
+    released: SEMANTIC_COLORS.status.warning,
+    committed: SEMANTIC_COLORS.status.neutral,
+    achieved: SEMANTIC_COLORS.status.warning,
+    earned: SEMANTIC_COLORS.status.info,
+    reached: SEMANTIC_COLORS.status.success,
   };
 
-  return colorMap[verb] || NEON_COLORS.lime.badge;
+  return colorMap[verb] || SEMANTIC_COLORS.status.success;
 }
 
 export interface ThreadHeaderProps {
@@ -89,13 +90,13 @@ export function ThreadHeader({
 
           {/* Trending Badge (Weekly takes priority over Monthly) */}
           {activity.meta?.trendingStatus?.isWeeklyTrending && (
-            <Badge variant="secondary" className={cn("px-2 h-6 flex items-center gap-1", NEON_COLORS.orange.badge)}>
+            <Badge variant="secondary" className={cn("px-2 h-6 flex items-center gap-1", SEMANTIC_COLORS.status.warning)}>
               <Flame className="w-3 h-3" aria-hidden="true" />
               Trending this week
             </Badge>
           )}
           {!activity.meta?.trendingStatus?.isWeeklyTrending && activity.meta?.trendingStatus?.isMonthlyTrending && (
-            <Badge variant="secondary" className={cn("px-2 h-6 flex items-center gap-1", NEON_COLORS.blue.badge)}>
+            <Badge variant="secondary" className={cn("px-2 h-6 flex items-center gap-1", SEMANTIC_COLORS.status.info)}>
               <TrendingUp className="w-3 h-3" aria-hidden="true" />
               Trending this month
             </Badge>

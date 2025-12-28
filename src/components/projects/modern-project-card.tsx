@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Eye, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Project, ProjectStatus } from "@/data/projects";
-import { ARCHIVE_CARD_VARIANTS, ARCHIVE_ANIMATIONS, TYPOGRAPHY, SEMANTIC_COLORS } from "@/lib/design-tokens";
+import { ARCHIVE_CARD_VARIANTS, ARCHIVE_ANIMATIONS, TYPOGRAPHY, SEMANTIC_COLORS, IMAGE_PLACEHOLDER } from "@/lib/design-tokens";
 import { cn, formatNumber } from "@/lib/utils";
 
 // Human-readable status labels
@@ -81,6 +81,8 @@ export function ModernProjectCard({
                 className={elevatedVariant.image}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 priority={index === 0}
+                placeholder="blur"
+                blurDataURL={IMAGE_PLACEHOLDER.blur}
               />
             </Link>
 
@@ -221,6 +223,8 @@ export function ModernProjectCard({
               className={cardVariant.image}
               sizes="(max-width: 768px) 100vw, 100vw"
               priority={index === 0}
+              placeholder="blur"
+              blurDataURL={IMAGE_PLACEHOLDER.blur}
             />
             {/* Lighter overlay - 20-60% instead of 75-95% */}
             <div className={cardVariant.overlay} />
@@ -293,6 +297,8 @@ export function ModernProjectCard({
               fill
               className={cardVariant.image}
               sizes="192px"
+              placeholder="blur"
+              blurDataURL={IMAGE_PLACEHOLDER.blur}
             />
           </Link>
         </div>

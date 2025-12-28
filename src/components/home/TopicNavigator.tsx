@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
-import { TYPOGRAPHY, NEON_COLORS, ANIMATION, type NeonColorVariant } from "@/lib/design-tokens";
+import { TYPOGRAPHY, ANIMATION, SEMANTIC_COLORS } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 
 // ============================================================================
@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 interface TopicData {
   tag: string;
   count: number;
-  colorVariant: NeonColorVariant;
+  colorVariant: string;
 }
 
 interface TopicNavigatorProps {
@@ -47,10 +47,10 @@ function getTopicSize(count: number, minCount: number, maxCount: number): string
 }
 
 /**
- * Get neon color variant based on index (cycles through colors)
+ * Get color variant based on index (cycles through colors)
  */
-function getColorVariant(index: number): NeonColorVariant {
-  const colors: NeonColorVariant[] = ["cyan", "lime", "orange", "purple", "magenta"];
+function getColorVariant(index: number): string {
+  const colors: string[] = ["cyan", "lime", "orange", "purple", "magenta"];
   return colors[index % colors.length];
 }
 
@@ -107,7 +107,17 @@ export function TopicNavigator({
     >
       {displayTopics.map((topic, index) => {
         const sizeClass = getTopicSize(topic.count, minCount, maxCount);
-        const neonColor = NEON_COLORS[topic.colorVariant];
+        
+        // Map color variants to semantic color tokens
+        const badgeColorMap: Record<string, string> = {
+          cyan: SEMANTIC_COLORS.status.info,
+          lime: SEMANTIC_COLORS.status.success,
+          orange: SEMANTIC_COLORS.status.warning,
+          purple: SEMANTIC_COLORS.highlight.primary,
+          magenta: SEMANTIC_COLORS.highlight.mark,
+          blue: SEMANTIC_COLORS.status.info,
+        };
+        const badgeColor = badgeColorMap[topic.colorVariant] || SEMANTIC_COLORS.status.info;
 
         return (
           <motion.div
@@ -124,7 +134,7 @@ export function TopicNavigator({
               <Badge
                 variant="outline"
                 className={cn(
-                  neonColor.badge,
+                  badgeColor,
                   sizeClass,
                   ANIMATION.transition.base,
                   "cursor-pointer group relative",

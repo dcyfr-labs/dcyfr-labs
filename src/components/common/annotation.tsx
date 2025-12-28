@@ -113,7 +113,7 @@ export function Annotation({
   const getDefaultColor = () => {
     switch (type) {
       case "highlight":
-        return "oklch(0.95 0.15 85)"; // Warm yellow
+        return "var(--warning)"; // Warm yellow
       case "underline":
       case "strike-through":
         return "var(--primary)";
@@ -216,7 +216,7 @@ export function Annotation({
 export const AnnotationVariants = {
   /** Yellow highlighter effect */
   Highlight: (props: Omit<AnnotationProps, "type">) => (
-    <Annotation type="highlight" color="oklch(0.95 0.15 85)" {...props} />
+    <Annotation type="highlight" color="var(--warning)" {...props} />
   ),
   
   /** Primary color underline */

@@ -41,6 +41,49 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  
+  /* Semantic Colors */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-light: var(--success-light);
+  --color-success-dark: var(--success-dark);
+  --color-success-subtle: var(--success-subtle);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-light: var(--warning-light);
+  --color-warning-dark: var(--warning-dark);
+  --color-warning-subtle: var(--warning-subtle);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-error-light: var(--error-light);
+  --color-error-dark: var(--error-dark);
+  --color-error-subtle: var(--error-subtle);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-info-light: var(--info-light);
+  --color-info-dark: var(--info-dark);
+  --color-info-subtle: var(--info-subtle);
+  
+  /* Semantic Accent Colors */
+  --color-semantic-cyan: var(--semantic-cyan);
+  --color-semantic-cyan-subtle: var(--semantic-cyan-subtle);
+  --color-semantic-orange: var(--semantic-orange);
+  --color-semantic-orange-subtle: var(--semantic-orange-subtle);
+  --color-semantic-purple: var(--semantic-purple);
+  --color-semantic-purple-subtle: var(--semantic-purple-subtle);
+  --color-semantic-emerald: var(--semantic-emerald);
+  --color-semantic-emerald-subtle: var(--semantic-emerald-subtle);
+  --color-semantic-violet: var(--semantic-violet);
+  --color-semantic-violet-subtle: var(--semantic-violet-subtle);
+  --color-semantic-pink: var(--semantic-pink);
+  --color-semantic-pink-subtle: var(--semantic-pink-subtle);
+  --color-semantic-lime: var(--semantic-lime);
+  --color-semantic-lime-subtle: var(--semantic-lime-subtle);
+  --color-semantic-indigo: var(--semantic-indigo);
+  --color-semantic-indigo-subtle: var(--semantic-indigo-subtle);
+  --color-semantic-sky: var(--semantic-sky);
+  --color-semantic-sky-subtle: var(--semantic-sky-subtle);
+  
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -119,6 +162,64 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.88 0 0);
   --sidebar-ring: oklch(0.60 0 0);
+
+  /* ============================================================================
+     SEMANTIC COLORS - Unified Color System
+     ============================================================================
+     Philosophy: Consistent color meanings across the entire application
+     - Success: Positive outcomes, confirmations, active states
+     - Warning: Cautions, important notices, pending states
+     - Error: Errors, destructive actions, critical issues
+     - Info: Informational content, neutral highlights
+     ============================================================================ */
+
+  /* Success - Green (positive outcomes, confirmations) */
+  --success: oklch(0.55 0.15 145);               /* Green 600 */
+  --success-foreground: oklch(0.98 0.05 145);    /* Green 50 */
+  --success-light: oklch(0.65 0.14 145);         /* Green 500 */
+  --success-dark: oklch(0.45 0.16 145);          /* Green 700 */
+  --success-subtle: oklch(0.55 0.15 145 / 10%);  /* Background tint */
+
+  /* Warning - Amber/Yellow (cautions, pending states) */
+  --warning: oklch(0.70 0.15 85);                /* Amber 500 */
+  --warning-foreground: oklch(0.20 0.10 85);     /* Amber 950 */
+  --warning-light: oklch(0.75 0.14 85);          /* Amber 400 */
+  --warning-dark: oklch(0.60 0.16 85);           /* Amber 600 */
+  --warning-subtle: oklch(0.70 0.15 85 / 10%);   /* Background tint */
+
+  /* Error - Red (errors, destructive actions) */
+  --error: oklch(0.55 0.22 25);                  /* Red 600 */
+  --error-foreground: oklch(0.98 0.05 25);       /* Red 50 */
+  --error-light: oklch(0.63 0.24 25);            /* Red 500 */
+  --error-dark: oklch(0.47 0.20 25);             /* Red 700 */
+  --error-subtle: oklch(0.55 0.22 25 / 10%);     /* Background tint */
+
+  /* Info - Blue (informational, neutral highlights) */
+  --info: oklch(0.55 0.18 250);                  /* Blue 600 */
+  --info-foreground: oklch(0.98 0.05 250);       /* Blue 50 */
+  --info-light: oklch(0.63 0.20 250);            /* Blue 500 */
+  --info-dark: oklch(0.47 0.16 250);             /* Blue 700 */
+  --info-subtle: oklch(0.55 0.18 250 / 10%);     /* Background tint */
+
+  /* Semantic Accent Colors - For categorization and theming */
+  --semantic-cyan: oklch(0.60 0.12 195);         /* Cyan 600 */
+  --semantic-cyan-subtle: oklch(0.60 0.12 195 / 10%);
+  --semantic-orange: oklch(0.65 0.18 45);        /* Orange 500 */
+  --semantic-orange-subtle: oklch(0.65 0.18 45 / 10%);
+  --semantic-purple: oklch(0.55 0.20 295);       /* Purple 600 */
+  --semantic-purple-subtle: oklch(0.55 0.20 295 / 10%);
+  --semantic-emerald: oklch(0.60 0.15 155);      /* Emerald 600 */
+  --semantic-emerald-subtle: oklch(0.60 0.15 155 / 10%);
+  --semantic-violet: oklch(0.55 0.22 285);       /* Violet 600 */
+  --semantic-violet-subtle: oklch(0.55 0.22 285 / 10%);
+  --semantic-pink: oklch(0.65 0.22 350);         /* Pink 500 */
+  --semantic-pink-subtle: oklch(0.65 0.22 350 / 10%);
+  --semantic-lime: oklch(0.70 0.16 125);         /* Lime 500 */
+  --semantic-lime-subtle: oklch(0.70 0.16 125 / 10%);
+  --semantic-indigo: oklch(0.52 0.20 270);       /* Indigo 600 */
+  --semantic-indigo-subtle: oklch(0.52 0.20 270 / 10%);
+  --semantic-sky: oklch(0.63 0.14 230);          /* Sky 500 */
+  --semantic-sky-subtle: oklch(0.63 0.14 230 / 10%);
 }
 
 .dark {
@@ -153,6 +254,58 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 16%);
   --sidebar-ring: oklch(0.65 0 0);
+
+  /* ============================================================================
+     SEMANTIC COLORS - Dark Theme
+     ============================================================================ */
+
+  /* Success - Green (adjusted for dark mode readability) */
+  --success: oklch(0.60 0.14 145);               /* Green 500 */
+  --success-foreground: oklch(0.98 0.05 145);    /* Green 50 */
+  --success-light: oklch(0.70 0.13 145);         /* Green 400 */
+  --success-dark: oklch(0.50 0.15 145);          /* Green 600 */
+  --success-subtle: oklch(0.60 0.14 145 / 20%);  /* Stronger in dark mode */
+
+  /* Warning - Amber/Yellow (adjusted for dark mode readability) */
+  --warning: oklch(0.75 0.14 85);                /* Amber 400 */
+  --warning-foreground: oklch(0.15 0.08 85);     /* Amber 950 */
+  --warning-light: oklch(0.80 0.13 85);          /* Amber 300 */
+  --warning-dark: oklch(0.65 0.15 85);           /* Amber 500 */
+  --warning-subtle: oklch(0.75 0.14 85 / 20%);   /* Stronger in dark mode */
+
+  /* Error - Red (adjusted for dark mode readability) */
+  --error: oklch(0.63 0.24 25);                  /* Red 500 */
+  --error-foreground: oklch(0.98 0.05 25);       /* Red 50 */
+  --error-light: oklch(0.72 0.22 25);            /* Red 400 */
+  --error-dark: oklch(0.55 0.22 25);             /* Red 600 */
+  --error-subtle: oklch(0.63 0.24 25 / 20%);     /* Stronger in dark mode */
+
+  /* Info - Blue (adjusted for dark mode readability) */
+  --info: oklch(0.63 0.20 250);                  /* Blue 500 */
+  --info-foreground: oklch(0.98 0.05 250);       /* Blue 50 */
+  --info-light: oklch(0.72 0.18 250);            /* Blue 400 */
+  --info-dark: oklch(0.55 0.18 250);             /* Blue 600 */
+  --info-subtle: oklch(0.63 0.20 250 / 20%);     /* Stronger in dark mode */
+
+  /* Semantic Accent Colors - Dark Theme */
+  --semantic-cyan: oklch(0.68 0.14 195);         /* Cyan 400 */
+  --semantic-cyan-subtle: oklch(0.68 0.14 195 / 20%);
+  --semantic-orange: oklch(0.72 0.17 45);        /* Orange 400 */
+  --semantic-orange-subtle: oklch(0.72 0.17 45 / 20%);
+  --semantic-purple: oklch(0.65 0.22 295);       /* Purple 500 */
+  --semantic-purple-subtle: oklch(0.65 0.22 295 / 20%);
+  --semantic-emerald: oklch(0.70 0.14 155);      /* Emerald 400 */
+  --semantic-emerald-subtle: oklch(0.70 0.14 155 / 20%);
+  --semantic-violet: oklch(0.65 0.24 285);       /* Violet 500 */
+  --semantic-violet-subtle: oklch(0.65 0.24 285 / 20%);
+  --semantic-pink: oklch(0.75 0.20 350);         /* Pink 400 */
+  --semantic-pink-subtle: oklch(0.75 0.20 350 / 20%);
+  --semantic-lime: oklch(0.78 0.15 125);         /* Lime 400 */
+  --semantic-lime-subtle: oklch(0.78 0.15 125 / 20%);
+  --semantic-indigo: oklch(0.60 0.22 270);       /* Indigo 500 */
+  --semantic-indigo-subtle: oklch(0.60 0.22 270 / 20%);
+  --semantic-sky: oklch(0.72 0.16 230);          /* Sky 400 */
+  --semantic-sky-subtle: oklch(0.72 0.16 230 / 20%);
 }
 
 @layer base {

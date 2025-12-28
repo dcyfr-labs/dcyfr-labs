@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useTransition, useEffect } from "react";
+import { useState, useTransition } from "react";
 import { SPACING } from "@/lib/design-tokens";
 import { useBlogKeyboard } from "@/components/blog/blog-keyboard-provider";
-import { SidebarSearch } from "./sidebar-search";
 import { SidebarFilters } from "./sidebar-filters";
 import { SidebarCategories } from "./sidebar-categories";
 import { SidebarTopics } from "./sidebar-topics";
+import { SidebarAuthors } from "./sidebar-authors";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -18,6 +18,8 @@ interface BlogSidebarProps {
   categoryList: string[];
   categoryDisplayMap: Record<string, string>;
   tagList: Array<{ tag: string; count: number }>;
+  authors: Array<{ id: string; name: string; avatarImagePath?: string }>;
+  selectedAuthor: string;
   query: string;
   sortBy: string;
   dateRange: string;
@@ -47,6 +49,8 @@ export function BlogSidebar({
   categoryList,
   categoryDisplayMap,
   tagList,
+  authors,
+  selectedAuthor,
   query,
   sortBy,
   dateRange,
@@ -56,12 +60,12 @@ export function BlogSidebar({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
-  const [searchValue, setSearchValue] = useState(query);
   const { searchInputRef } = useBlogKeyboard();
   const [expandedSections, setExpandedSections] = useState({
     filters: true,
     categories: true,
     topics: true,
+    authors: true,
   });
 
   const updateParam = (key: string, value: string) => {
@@ -83,16 +87,6 @@ export function BlogSidebar({
     });
   };
 
-  // Debounced search
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (searchValue !== query) {
-        updateParam("q", searchValue);
-      }
-    }, 300);
-    return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchValue, query]);
 
   const toggleTag = (tag: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -131,41 +125,55 @@ export function BlogSidebar({
     });
   };
 
+  const setAuthor = (authorId: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    
+    if (!authorId || authorId === selectedAuthor) {
+      params.delete("author");
+    } else {
+      params.set("author", authorId);
+    }
+    
+    params.delete("page");
+    
+    startTransition(() => {
+      router.push(`/blog?${params.toString()}`, { scroll: false });
+    });
+  };
+
   const clearAllFilters = () => {
     startTransition(() => {
       router.push("/blog", { scroll: false });
     });
-    setSearchValue("");
   };
 
   const activeFilterCount = [
-    query,
     selectedCategory && "category",
     selectedTags.length > 0 && "tags",
     readingTime && "readingTime",
     sortBy !== "newest" && "sort",
     dateRange !== "all" && "date",
+    selectedAuthor && "author",
   ].filter(Boolean).length;
 
-  const toggleSection = (section: "filters" | "categories" | "topics") => {
+  const toggleSection = (section: "filters" | "categories" | "topics" | "authors") => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
   return (
     <aside className={cn("flex flex-col", SPACING.subsection)}>
-      <SidebarSearch
-        searchValue={searchValue}
-        onSearchChange={setSearchValue}
-        searchInputRef={searchInputRef}
-        totalResults={totalResults}
-        totalPosts={totalPosts}
-        activeFilterCount={activeFilterCount}
-        onClearAll={clearAllFilters}
-        isPending={isPending}
+      {/* Search Section */}
+      <SidebarAuthors
+        authors={authors}
+        selectedAuthor={selectedAuthor}
+        isExpanded={expandedSections.authors}
+        onToggle={() => toggleSection("authors")}
+        onAuthorSelect={setAuthor}
       />
 
       <div className="border-t border-border/50" />
 
+      {/* Filters Section */}
       <SidebarFilters
         sortBy={sortBy}
         dateRange={dateRange}
@@ -179,6 +187,7 @@ export function BlogSidebar({
 
       <div className="border-t border-border/50" />
 
+      {/* Categories Section */}
       <SidebarCategories
         categoryList={categoryList}
         categoryDisplayMap={categoryDisplayMap}
@@ -190,6 +199,7 @@ export function BlogSidebar({
 
       <div className="border-t border-border/50" />
 
+      {/* Topics Section */}
       <SidebarTopics
         tagList={tagList}
         selectedTags={selectedTags}

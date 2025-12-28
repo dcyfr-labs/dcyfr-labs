@@ -355,10 +355,10 @@ export function getCanonicalSlug(slug: string, allPosts: Post[]): string {
 }
 
 /**
- * Get a post by any of its slugs (current or previous).
+ * Get a post by any of its slugs (current or previous) or by its post ID.
  * Returns null if the slug doesn't exist or if it's a draft in production.
  *
- * @param slug - The slug to look up (can be old or current)
+ * @param slug - The slug to look up (can be old slug, current slug, or post ID)
  * @param allPosts - Array of all posts
  * @returns The post object and whether it required a redirect, or null if not found
  * @example
@@ -372,15 +372,28 @@ export function getPostByAnySlug(
   slug: string,
   allPosts: Post[]
 ): { post: Post; needsRedirect: boolean; canonicalSlug: string } | null {
-  // First try direct match
+  // First try direct match on current slug
   const post = allPosts.find((p) => p.slug === slug);
   if (post) {
     return { post, needsRedirect: false, canonicalSlug: post.slug };
   }
 
+  // Then check if it's a post ID (redirect to slug)
+  const postById = allPosts.find((p) => p.id === slug);
+  if (postById) {
+    return { post: postById, needsRedirect: true, canonicalSlug: postById.slug };
+  }
+
   // Then check previousSlugs for matches
   for (const p of allPosts) {
     if (p.previousSlugs?.includes(slug)) {
+      return { post: p, needsRedirect: true, canonicalSlug: p.slug };
+    }
+  }
+
+  // Finally check previousIds (for analytics migration)
+  for (const p of allPosts) {
+    if (p.previousIds?.includes(slug)) {
       return { post: p, needsRedirect: true, canonicalSlug: p.slug };
     }
   }

@@ -5,7 +5,8 @@
  */
 
 import { Badge } from "@/components/ui/badge";
-import { SEMANTIC_COLORS, NEON_COLORS } from "@/lib/design-tokens";
+import { cn } from "@/lib/utils";
+import { SEMANTIC_COLORS } from "@/lib/design-tokens";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -25,7 +26,7 @@ export function WorkflowStatusBadge({
   if (status === "in_progress" || status === "queued") {
     return (
       <Badge variant="secondary" className="gap-1">
-        <span className={`h-2 w-2 rounded-full ${NEON_COLORS.cyan.dot} animate-pulse`} />
+        <span className="h-2 w-2 rounded-full bg-cyan-500 dark:bg-cyan-400 animate-pulse" />
         {status === "queued" ? "Queued" : "Running"}
       </Badge>
     );
@@ -33,8 +34,8 @@ export function WorkflowStatusBadge({
 
   if (conclusion === "success") {
     return (
-      <Badge variant="outline" className={`gap-1 ${NEON_COLORS.lime.badge}`}>
-        <span className={`h-2 w-2 rounded-full ${NEON_COLORS.lime.dot}`} />
+      <Badge variant="outline" className={cn("gap-1", SEMANTIC_COLORS.status.success.badge)}>
+        <span className={cn("h-2 w-2 rounded-full", SEMANTIC_COLORS.status.success.dot)} />
         Success
       </Badge>
     );
@@ -42,8 +43,8 @@ export function WorkflowStatusBadge({
 
   if (conclusion === "failure" || conclusion === "timed_out" || conclusion === "action_required") {
     return (
-      <Badge variant="outline" className={`gap-1 ${NEON_COLORS.red.badge}`}>
-        <span className={`h-2 w-2 rounded-full ${NEON_COLORS.red.dot}`} />
+      <Badge variant="outline" className={cn("gap-1", SEMANTIC_COLORS.status.error.badge)}>
+        <span className={cn("h-2 w-2 rounded-full", SEMANTIC_COLORS.status.error.dot)} />
         Failed
       </Badge>
     );
@@ -51,8 +52,8 @@ export function WorkflowStatusBadge({
 
   if (conclusion === "cancelled" || conclusion === "skipped") {
     return (
-      <Badge variant="outline" className={`gap-1 ${NEON_COLORS.yellow.badge}`}>
-        <span className={`h-2 w-2 rounded-full ${NEON_COLORS.yellow.dot}`} />
+      <Badge variant="outline" className={cn("gap-1", SEMANTIC_COLORS.status.warning.badge)}>
+        <span className={cn("h-2 w-2 rounded-full", SEMANTIC_COLORS.status.warning.dot)} />
         {conclusion === "cancelled" ? "Cancelled" : "Skipped"}
       </Badge>
     );

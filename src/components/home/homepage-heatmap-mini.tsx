@@ -7,7 +7,7 @@ import { Calendar, Zap, ArrowRight } from "lucide-react";
 import CalendarHeatmap from "react-calendar-heatmap";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { TYPOGRAPHY, SPACING, NEON_COLORS } from "@/lib/design-tokens";
+import { TYPOGRAPHY, SPACING, SEMANTIC_COLORS } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import type { ActivityItem } from "@/lib/activity/types";
 import {
@@ -103,7 +103,7 @@ export function HomepageHeatmapMini({
           {/* Header with View All */}
           <div className={cn("flex items-center justify-between gap-4 mb-4 md:mb-6")}>
             <div className="flex items-center gap-4">
-              <span className={cn("h-2 w-2 rounded-full animate-pulse", NEON_COLORS.lime.dot)} aria-hidden="true" />
+              <span className={cn("h-2 w-2 rounded-full animate-pulse", SEMANTIC_COLORS.status.success)} aria-hidden="true" />
               <h3 className={TYPOGRAPHY.h3.standard}>Activity</h3>
             </div>
             <Button

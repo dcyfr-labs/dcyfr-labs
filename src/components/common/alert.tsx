@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { AlertTriangle, Info, AlertCircle, CheckCircle } from "lucide-react";
-import { NEON_COLORS, BORDERS } from "@/lib/design-tokens";
+import { SEMANTIC_COLORS, BORDERS } from "@/lib/design-tokens";
 
 /**
  * Alert Banner Component for MDX
@@ -49,12 +49,12 @@ const iconMap = {
 };
 
 export function Alert({ type = 'info', children, className = '' }: AlertProps) {
-  // Map alert types to neon color variants
+  // Map alert types to semantic color variants
   const colorMap = {
-    critical: NEON_COLORS.red,
-    warning: NEON_COLORS.orange,
-    info: NEON_COLORS.cyan,
-    success: NEON_COLORS.lime,
+    critical: SEMANTIC_COLORS.alert.critical,
+    warning: SEMANTIC_COLORS.alert.warning,
+    info: SEMANTIC_COLORS.alert.info,
+    success: SEMANTIC_COLORS.alert.success,
   };
 
   const colors = colorMap[type];

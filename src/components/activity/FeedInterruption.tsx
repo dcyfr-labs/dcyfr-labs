@@ -13,13 +13,14 @@ import {
   Quote,
   ExternalLink,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { SEMANTIC_COLORS } from "@/lib/design-tokens";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import {
   HOVER_EFFECTS,
   ANIMATION,
-  NEON_COLORS,
+  SERIES_COLORS,
   GRADIENTS,
   TYPOGRAPHY,
   SHADOWS,
@@ -104,7 +105,13 @@ function CTAInterruption({
   animationDelay = 0,
   className,
 }: CTAInterruptionProps) {
-  const themeColors = NEON_COLORS[theme];
+  // Map themes to series colors for consistent styling
+  const themeMapping: Record<string, typeof SERIES_COLORS.security | typeof SERIES_COLORS.design | typeof SERIES_COLORS.tips | typeof SERIES_COLORS.default> = {
+    cyan: SERIES_COLORS.security,
+    magenta: SERIES_COLORS.design,
+    lime: SERIES_COLORS.tips,
+  };
+  const themeColors = themeMapping[theme] || SERIES_COLORS.default;
 
   return (
     <motion.div
@@ -115,7 +122,7 @@ function CTAInterruption({
       <Card
         className={cn(
           "relative overflow-hidden border-2 bg-card/40 backdrop-blur-sm",
-          themeColors.container,
+          themeColors.card,
           SHADOWS.card.rest,
           className
         )}
@@ -134,7 +141,7 @@ function CTAInterruption({
             <div
               className={cn(
                 "shrink-0 w-10 h-10 rounded-lg flex items-center justify-center",
-                themeColors.container
+                themeColors.card
               )}
             >
               {icon || <Sparkles className={cn("w-5 h-5", themeColors.icon)} />}
@@ -256,8 +263,6 @@ function NewsletterInterruption({
   animationDelay = 0,
   className,
 }: NewsletterInterruptionProps) {
-  const themeColors = NEON_COLORS.magenta;
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -267,7 +272,6 @@ function NewsletterInterruption({
       <Card
         className={cn(
           "relative overflow-hidden bg-card/40 backdrop-blur-sm",
-          themeColors.container,
           SHADOWS.card.rest,
           className
         )}
@@ -311,8 +315,6 @@ function SponsorInterruption({
   animationDelay = 0,
   className,
 }: SponsorInterruptionProps) {
-  const themeColors = NEON_COLORS.orange;
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -322,12 +324,12 @@ function SponsorInterruption({
       <Card
         className={cn(
           "relative overflow-hidden border-dashed bg-card/40 backdrop-blur-sm",
-          themeColors.container,
+          SEMANTIC_COLORS.accent.orange.badge,
           className
         )}
       >
         <CardContent className="p-4 text-center">
-          <Coffee className={cn("w-8 h-8 mx-auto mb-2", themeColors.icon)} />
+          <Coffee className={cn("w-8 h-8 mx-auto mb-2", SEMANTIC_COLORS.accent.orange.text)} />
           <h4 className={cn(TYPOGRAPHY.label.standard, "mb-1")}>{title}</h4>
           <p className="text-sm text-muted-foreground mb-3">{description}</p>
           <Button asChild size="sm" variant="outline">
@@ -349,7 +351,15 @@ function QuoteInterruption({
   animationDelay = 0,
   className,
 }: QuoteInterruptionProps) {
-  const themeColors = NEON_COLORS[theme];
+  // Map themes to series colors for consistent styling
+  const themeMapping: Record<string, typeof SERIES_COLORS.security | typeof SERIES_COLORS.design | typeof SERIES_COLORS.tips | typeof SERIES_COLORS.performance | typeof SERIES_COLORS.architecture | typeof SERIES_COLORS.default> = {
+    cyan: SERIES_COLORS.security,
+    magenta: SERIES_COLORS.design,
+    lime: SERIES_COLORS.tips,
+    orange: SERIES_COLORS.performance,
+    purple: SERIES_COLORS.architecture,
+  };
+  const themeColors = themeMapping[theme] || SERIES_COLORS.default;
 
   return (
     <motion.div
@@ -359,13 +369,10 @@ function QuoteInterruption({
     >
       <Card
         className={cn(
-          "relative overflow-hidden border-l-4 bg-card/40 backdrop-blur-sm",
-          themeColors.container,
+          "relative overflow-hidden bg-card/40 backdrop-blur-sm",
+          themeColors.card,
           className
         )}
-        style={{
-          borderLeftColor: `hsl(var(--${theme === "cyan" ? "primary" : theme === "magenta" ? "destructive" : theme === "lime" ? "success" : theme === "orange" ? "warning" : "secondary"}))`,
-        }}
       >
         {/* Quote icon */}
         <div
@@ -392,10 +399,7 @@ function QuoteInterruption({
 
           {source && (
             <cite
-              className={cn(
-                "block mt-2 text-sm not-italic",
-                themeColors.text
-              )}
+              className="block mt-2 text-sm not-italic text-muted-foreground"
             >
               — {source}
             </cite>

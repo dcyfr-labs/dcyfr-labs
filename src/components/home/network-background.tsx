@@ -103,13 +103,13 @@ const PHYSICS = {
   },
   // Accretion disk particles (reduced for mobile performance)
   particles: {
-    countPerNode: 12,        // Was 32, reduced 60% for mobile
+    countPerNode: 16,        // Was 32, reduced 50% for mobile
     speed: 0.25,
     fade: 0.4,
   },
   // Relativistic jet parameters (simplified)
   jets: {
-    particleCount: 8,        // Reduced
+    particleCount: 16,        // Reduced 50% for mobile
     speed: 0.6,
     length: 1.8,             // Shorter jets to prevent overlap
     spread: 0.12,
@@ -228,92 +228,120 @@ function BlackHole({ node, position, themeColor, accentColor, jetColor, elapsedT
     }
   });
 
-  // Accretion disk color temperature (hotter = bluer for high accretion)
-  const diskColor = node.accretionRate > 0.6 ? '#88ccff' : themeColor;
-
   return (
     <group ref={meshRef} position={position} rotation={node.axisRotation}>
       {/* EVENT HORIZON - The point of no return (Schwarzschild radius)
-          Mobile optimized: 12 segments instead of 20 */}
-      <mesh>
-        <sphereGeometry args={[visuals.eventHorizonSize, 12, 12]} />
-        <meshBasicMaterial
-          color="#000000"
-          transparent
-          opacity={depthOpacity * 0.9}
-        />
-      </mesh>
-
-      {/* PHOTON SPHERE - Where light orbits (1.5 Rs)
-          Mobile optimized: 10 segments, using BasicMaterial for performance */}
-      <mesh>
-        <sphereGeometry args={[visuals.photonSphereSize, 10, 10]} />
+          Low poly: 6 segments for geometric appearance */}
+      <mesh renderOrder={1}>
+        <sphereGeometry args={[visuals.eventHorizonSize, 6, 6]} />
         <meshBasicMaterial
           color={themeColor}
           transparent
-          opacity={depthOpacity * 0.35}
+          opacity={depthOpacity * 0.7}
+          depthWrite={false}
+          flatShading
+        />
+      </mesh>
+
+      {/* PHOTON SPHERE - Where light orbits (1.5 Rs) 
+          Low poly: 5 segments for geometric appearance */}
+      <mesh renderOrder={2}>
+        <sphereGeometry args={[visuals.photonSphereSize, 5, 5]} />
+        <meshBasicMaterial
+          color={themeColor}
+          transparent
+          opacity={depthOpacity * 0.45}
+          depthWrite={false}
+          flatShading
         />
       </mesh>
 
       {/* ERGOSPHERE - Frame-dragging region (only for high-spin black holes)
-          Mobile optimized: Only render for spin > 0.4, 8 segments */}
+          Low poly: 4 segments for geometric appearance */}
       {node.spin > 0.4 && (
-        <mesh>
-          <sphereGeometry args={[visuals.ergosphereSize, 8, 8]} />
+        <mesh renderOrder={3}>
+          <sphereGeometry args={[visuals.ergosphereSize, 4, 4]} />
           <meshBasicMaterial
             color={accentColor}
             transparent
             opacity={depthOpacity * 0.12 * node.spin}
+            depthWrite={false}
+            flatShading
           />
         </mesh>
       )}
 
       {/* ACCRETION DISK - Flattened torus at ISCO
-          Mobile optimized: 6 radial segments, 16 tubular */}
+          Low poly: 3 radial segments, 8 tubular for geometric appearance */}
       {node.accretionRate > 0.3 && (
-        <mesh rotation={[Math.PI / 2 - node.inclination, 0, 0]}>
-          <torusGeometry args={[visuals.iscoSize * 1.5, visuals.iscoSize * 0.15, 4, 16]} />
+        <mesh rotation={[Math.PI / 2 - node.inclination, 0, 0]} renderOrder={4}>
+          <torusGeometry
+            args={[visuals.iscoSize * 1.5, visuals.iscoSize * 0.15, 3, 8]}
+          />
           <meshBasicMaterial
-            color={diskColor}
+            color={themeColor}
             transparent
             opacity={depthOpacity * 0.25 * node.accretionRate}
+            depthWrite={false}
           />
         </mesh>
       )}
 
       {/* RELATIVISTIC JETS - Blandford-Znajek mechanism
-          Mobile optimized: 6 segments, only for spin > 0.6 */}
+          Low poly: 4 segments for geometric appearance */}
       {node.hasJets && node.spin > 0.6 && visuals.jetIntensity > 0.15 && (
         <>
           {/* Upper jet (north pole) */}
-          <mesh position={[0, visuals.eventHorizonSize * 1.5, 0]}>
-            <coneGeometry args={[visuals.eventHorizonSize * 0.2, visuals.eventHorizonSize * PHYSICS.jets.length, 6]} />
+          <mesh position={[0, visuals.eventHorizonSize * 1.5, 0]} renderOrder={5}>
+            <coneGeometry
+              args={[
+                visuals.eventHorizonSize * 0.2,
+                visuals.eventHorizonSize * PHYSICS.jets.length,
+                4,
+              ]}
+            />
             <meshBasicMaterial
               color={jetColor}
               transparent
               opacity={depthOpacity * 0.2 * visuals.jetIntensity}
+              depthWrite={false}
+              flatShading
             />
           </mesh>
           {/* Lower jet (south pole) */}
-          <mesh position={[0, -visuals.eventHorizonSize * 1.5, 0]} rotation={[Math.PI, 0, 0]}>
-            <coneGeometry args={[visuals.eventHorizonSize * 0.2, visuals.eventHorizonSize * PHYSICS.jets.length, 6]} />
+          <mesh
+            position={[0, -visuals.eventHorizonSize * 1.5, 0]}
+            rotation={[Math.PI, 0, 0]}
+            renderOrder={5}
+          >
+            <coneGeometry
+              args={[
+                visuals.eventHorizonSize * 0.2,
+                visuals.eventHorizonSize * PHYSICS.jets.length,
+                4,
+              ]}
+            />
             <meshBasicMaterial
               color={jetColor}
               transparent
               opacity={depthOpacity * 0.2 * visuals.jetIntensity}
+              depthWrite={false}
+              flatShading
             />
           </mesh>
         </>
       )}
 
       {/* GRAVITATIONAL LENSING HALO - Outermost visible influence
-          Mobile optimized: 8 segments */}
-      <mesh>
-        <sphereGeometry args={[visuals.ergosphereSize * 1.2, 8, 8]} />
+          Low poly: 4 segments for geometric appearance */}
+      <mesh renderOrder={0}>
+        <sphereGeometry args={[visuals.ergosphereSize * 1.2, 4, 4]} />
         <meshBasicMaterial
           color={themeColor}
           transparent
-          opacity={depthOpacity * 0.06}
+          opacity={depthOpacity * .05}
+          depthWrite={false}
+          flatShading
         />
       </mesh>
     </group>
@@ -414,7 +442,7 @@ function ParticleSystem({ nodes, positions, themeColor, elapsedTime }: ParticleS
         color={themeColor}
         size={0.025}
         transparent
-        opacity={0.35}
+        opacity={0.45}
         sizeAttenuation
         depthWrite={false}
       />
@@ -463,7 +491,7 @@ function ConnectionLines({ nodes, positions, themeColor }: ConnectionLinesProps)
 
       // Opacity based on combined gravitational influence
       const avgDepth = (nodes[0].depth + nodes[i].depth) / 2;
-      const opacity = 0.06 + (1 - Math.abs(avgDepth)) * 0.06;
+      const opacity = 0.07 + (1 - Math.abs(avgDepth)) * 0.07;
 
       result.push({ start, end, opacity });
     }
@@ -542,9 +570,9 @@ function NetworkNodes() {
     // Ultramassive black hole powering central cluster galaxy
     {
       name: 'PhoenixA',
-      basePosition: [0, 0, 1],
+      basePosition: [-0.98, 0.72, 0.54],
       color: themeColor,
-      mass: 6.0,                           // ~100 billion solar masses
+      mass: 18.0,                           // ~100 billion solar masses
       spin: 0.75,                          // Active nucleus implies high spin
       accretionRate: 0.65,                 // Moderate-high (cooling flow cluster)
       inclination: Math.PI * 0.15,
@@ -557,9 +585,9 @@ function NetworkNodes() {
     // Extreme accretion, powerful relativistic jets
     {
       name: 'TON618',
-      basePosition: [-2.0, 2.2, 3.0],
+      basePosition: [-2.41, 2.88, 3.12],
       color: themeColor,
-      mass: 5.5,                           // ~40-66 billion solar masses
+      mass: 16.5,                           // ~40-66 billion solar masses
       spin: 0.92,                          // Very high spin (extreme luminosity)
       accretionRate: 0.95,                 // Near-Eddington accretion
       inclination: Math.PI * 0.1,          // Nearly face-on (quasar)
@@ -572,9 +600,9 @@ function NetworkNodes() {
     // One of largest directly measured, unusually large for its galaxy
     {
       name: 'Holm15A',
-      basePosition: [2.8, 1.2, -2.5],
+      basePosition: [2.98, 1.12, -2.25],
       color: themeColor,
-      mass: 5.0,                           // ~40 billion solar masses
+      mass: 10.0,                           // ~40 billion solar masses
       spin: 0.15,                          // Low spin (dormant)
       accretionRate: 0.08,                 // Very low (dormant core)
       inclination: Math.PI * 0.25,
@@ -587,9 +615,9 @@ function NetworkNodes() {
     // Largest event horizon of any dormant SMBH
     {
       name: 'NGC4889',
-      basePosition: [3.2, -0.8, -0.5],
+      basePosition: [3.22, -0.68, -0.35],
       color: themeColor,
-      mass: 4.5,                           // ~21 billion solar masses
+      mass: 5.25,                           // ~21 billion solar masses
       spin: 0.2,                           // Low spin (dormant)
       accretionRate: 0.05,                 // Minimal (dormant)
       inclination: Math.PI * 0.35,
@@ -602,9 +630,9 @@ function NetworkNodes() {
     // Famous for quasi-periodic optical outbursts every ~12 years
     {
       name: 'OJ287',
-      basePosition: [0.8, 2.8, -3.0],
+      basePosition: [0.84, 2.86, -3.02],
       color: themeColor,
-      mass: 4.2,                           // ~18 billion solar masses (primary)
+      mass: 4.5,                           // ~18 billion solar masses (primary)
       spin: 0.85,                          // High spin (blazar)
       accretionRate: 0.7,                  // Variable (binary interaction)
       inclination: Math.PI * 0.05,         // Nearly aligned (blazar)
@@ -617,9 +645,9 @@ function NetworkNodes() {
     // Famous 5000 ly relativistic jet, spin measured at ~0.9
     {
       name: 'M87',
-      basePosition: [-2.5, -1.5, 2.2],
+      basePosition: [-2.57, -1.59, 2.22],
       color: themeColor,
-      mass: 3.5,                           // ~6.5 billion solar masses
+      mass: 4.0,                           // ~6.5 billion solar masses (scaled up 2x)
       spin: 0.9,                           // Measured via jet analysis
       accretionRate: 0.55,                 // Moderate (LLAGN)
       inclination: Math.PI * 0.18,         // ~17° from face-on
@@ -633,9 +661,9 @@ function NetworkNodes() {
     // Relatively quiescent with occasional flares
     {
       name: 'SagA',
-      basePosition: [-0.5, -2.5, 0.5],
+      basePosition: [-0.53, -2.57, 0.56],
       color: themeColor,
-      mass: 2.0,                           // ~4 million solar masses
+      mass: 3.0,                           // ~4 million solar masses (scaled up 2x)
       spin: 0.5,                           // Moderate spin (estimated)
       accretionRate: 0.15,                 // Low (quiescent)
       inclination: Math.PI * 0.22,
@@ -748,7 +776,7 @@ export function NetworkBackground() {
         height: '100%',
         width: '100%',
         zIndex: 0,
-        opacity: isVisible ? 0.4 : 0,  // Reduced from 0.5 for subtler effect
+        opacity: isVisible ? 0.5 : 0,
       }}
     >
       <Suspense fallback={<div className="absolute inset-0 bg-linear-to-br from-foreground/5 via-foreground/3 to-foreground/5" />}>

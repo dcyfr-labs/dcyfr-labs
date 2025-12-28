@@ -72,9 +72,9 @@ export function DevBanner() {
     >
       <div className={cn("rounded-lg p-3 flex items-center justify-between", SEMANTIC_COLORS.alert.info.border, SEMANTIC_COLORS.alert.info.container)}>
         <div className="flex items-center gap-3">
-          <strong className={cn("text-sm", SEMANTIC_COLORS.alert.info.text)}>Development Mode</strong>
+          <strong className={cn("text-sm", SEMANTIC_COLORS.alert.info.text)}>DEV Mode</strong>
           <span className={cn("text-sm", SEMANTIC_COLORS.alert.info.text)}>
-            This site is running in development. Some features may be incomplete or not work as expected.
+            This is a development build of the site. Features here may be unstable or incomplete.
           </span>
         </div>
 

@@ -740,20 +740,30 @@ export const SPACING = {
 
 /**
  * Semantic color tokens for consistent alert, status, and interactive states
- * All colors automatically handle dark mode via Tailwind's dark: modifier
+ * All colors automatically handle dark mode via CSS custom properties
  * 
- * @example
+ * Philosophy:
+ * - Success: Positive outcomes, confirmations, active states (green)
+ * - Warning: Cautions, important notices, pending states (amber/yellow)
+ * - Error: Errors, destructive actions, critical issues (red)
+ * - Info: Informational content, neutral highlights (blue)
+ * - Semantic accents: Categorization and theming (cyan, orange, purple, etc.)
+ * 
+ * @example Alert state
  * ```tsx
- * // Alert state
  * <div className={SEMANTIC_COLORS.alert.critical.container}>
  *   <IconComponent className={SEMANTIC_COLORS.alert.critical.icon} />
  *   <p className={SEMANTIC_COLORS.alert.critical.text}>Error message</p>
  * </div>
+ * ```
  * 
- * // Status indicator
+ * @example Status indicator
+ * ```tsx
  * <Badge className={SEMANTIC_COLORS.status.success}>Complete</Badge>
+ * ```
  * 
- * // Interactive focus state
+ * @example Interactive focus state
+ * ```tsx
  * <button className={SEMANTIC_COLORS.interactive.focus}>Button</button>
  * ```
  */
@@ -761,42 +771,42 @@ export const SEMANTIC_COLORS = {
   /** Alert/notification state colors */
   alert: {
     critical: {
-      border: "border-l-4 border-l-destructive/60",
-      container: "bg-destructive/10 dark:bg-destructive/20",
-      text: "text-destructive dark:text-destructive/90",
-      icon: "text-destructive dark:text-destructive/80",
-      label: "text-destructive dark:text-destructive/90",
+      border: "border-l-4 border-l-error",
+      container: "bg-error-subtle",
+      text: "text-error",
+      icon: "text-error-dark dark:text-error-light",
+      label: "text-error",
     },
     warning: {
-      border: "border-l-4 border-l-amber-500/60 dark:border-l-amber-500/70",
-      container: "bg-amber-500/10 dark:bg-amber-500/20",
-      text: "text-amber-900 dark:text-amber-100",
-      icon: "text-amber-600 dark:text-amber-400",
-      label: "text-amber-700 dark:text-amber-300",
+      border: "border-l-4 border-l-warning",
+      container: "bg-warning-subtle",
+      text: "text-warning-foreground",
+      icon: "text-warning-dark dark:text-warning-light",
+      label: "text-warning-dark dark:text-warning-light",
     },
     info: {
-      border: "border-l-4 border-l-primary/60",
-      container: "bg-primary/10 dark:bg-primary/20",
-      text: "text-primary dark:text-primary/90",
-      icon: "text-primary dark:text-primary/80",
-      label: "text-primary dark:text-primary/90",
+      border: "border-l-4 border-l-info",
+      container: "bg-info-subtle",
+      text: "text-info",
+      icon: "text-info-dark dark:text-info-light",
+      label: "text-info",
     },
     success: {
-      border: "border-l-4 border-l-green-500/60 dark:border-l-green-500/70",
-      container: "bg-green-500/10 dark:bg-green-500/20",
-      text: "text-green-900 dark:text-green-100",
-      icon: "text-green-600 dark:text-green-400",
-      label: "text-green-700 dark:text-green-300",
+      border: "border-l-4 border-l-success",
+      container: "bg-success-subtle",
+      text: "text-success",
+      icon: "text-success-dark dark:text-success-light",
+      label: "text-success",
     },
   },
   
   /** Status indicators (analytics, progress, metrics) */
   status: {
-    success: "bg-green-500 text-green-50 dark:bg-green-600 dark:text-green-50",
-    warning: "bg-yellow-500 text-yellow-50 dark:bg-yellow-600 dark:text-yellow-50",
-    info: "bg-blue-500 text-blue-50 dark:bg-blue-600 dark:text-blue-50",
-    inProgress: "bg-amber-500 text-amber-50 dark:bg-amber-600 dark:text-amber-50",
-    error: "bg-red-500 text-red-50 dark:bg-red-600 dark:text-red-50",
+    success: "bg-success text-success-foreground",
+    warning: "bg-warning text-warning-foreground",
+    info: "bg-info text-info-foreground",
+    inProgress: "bg-warning text-warning-foreground",
+    error: "bg-error text-error-foreground",
     neutral: "bg-muted text-muted-foreground dark:bg-muted/50",
   },
 
@@ -808,9 +818,9 @@ export const SEMANTIC_COLORS = {
       /** Active state - full contrast when focused/hovered */
       active: "text-foreground hover:text-foreground/80",
       /** Liked state - warm red color */
-      liked: "text-red-500 dark:text-red-400",
+      liked: "text-error dark:text-error-light",
       /** Bookmarked state - warm amber color */
-      bookmarked: "text-amber-500 dark:text-amber-400",
+      bookmarked: "text-warning dark:text-warning-light",
     },
   },
 
@@ -833,9 +843,58 @@ export const SEMANTIC_COLORS = {
   
   /** Content highlighting and marks */
   highlight: {
-    primary: "bg-yellow-200/80 dark:bg-yellow-500/30 text-foreground",
+    primary: "bg-warning-subtle text-foreground",
     mark: "bg-primary/10 dark:bg-primary/20 text-foreground",
     muted: "bg-muted/50 dark:bg-muted/30 text-muted-foreground",
+  },
+
+  /** Semantic accent colors for categorization */
+  accent: {
+    cyan: {
+      badge: "bg-semantic-cyan-subtle text-semantic-cyan border-semantic-cyan/20",
+      text: "text-semantic-cyan",
+      bg: "bg-semantic-cyan",
+    },
+    orange: {
+      badge: "bg-semantic-orange-subtle text-semantic-orange border-semantic-orange/20",
+      text: "text-semantic-orange",
+      bg: "bg-semantic-orange",
+    },
+    purple: {
+      badge: "bg-semantic-purple-subtle text-semantic-purple border-semantic-purple/20",
+      text: "text-semantic-purple",
+      bg: "bg-semantic-purple",
+    },
+    emerald: {
+      badge: "bg-semantic-emerald-subtle text-semantic-emerald border-semantic-emerald/20",
+      text: "text-semantic-emerald",
+      bg: "bg-semantic-emerald",
+    },
+    violet: {
+      badge: "bg-semantic-violet-subtle text-semantic-violet border-semantic-violet/20",
+      text: "text-semantic-violet",
+      bg: "bg-semantic-violet",
+    },
+    pink: {
+      badge: "bg-semantic-pink-subtle text-semantic-pink border-semantic-pink/20",
+      text: "text-semantic-pink",
+      bg: "bg-semantic-pink",
+    },
+    lime: {
+      badge: "bg-semantic-lime-subtle text-semantic-lime border-semantic-lime/20",
+      text: "text-semantic-lime",
+      bg: "bg-semantic-lime",
+    },
+    indigo: {
+      badge: "bg-semantic-indigo-subtle text-semantic-indigo border-semantic-indigo/20",
+      text: "text-semantic-indigo",
+      bg: "bg-semantic-indigo",
+    },
+    sky: {
+      badge: "bg-semantic-sky-subtle text-semantic-sky border-semantic-sky/20",
+      text: "text-semantic-sky",
+      bg: "bg-semantic-sky",
+    },
   },
 } as const;
 
@@ -867,7 +926,7 @@ export const OPACITY = {
  * All colors are optimized for light/dark mode with accessible contrast ratios.
  *
  * Color Selection Philosophy:
- * - Maps to existing gradient categories (brand, warm, cool, neutral, vibrant)
+ * - Maps to semantic color categories (success, warning, error, info, accents)
  * - Semantic names tied to common series themes (tutorial, security, performance, etc.)
  * - WCAG AA contrast compliance for text on backgrounds
  * - Consistent with existing design token system
@@ -885,119 +944,119 @@ export const OPACITY = {
  * ```
  */
 export const SERIES_COLORS = {
-  /** Default series color (primary brand blue) */
+  /** Default series color (primary brand) */
   default: {
     /** Badge background/text */
-    badge: "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary/90 border-primary/20",
+    badge: "bg-primary/10 text-primary border-primary/20",
     /** Card accent (border, highlights) */
     card: "border-primary/20 hover:border-primary/40",
     /** Icon color */
-    icon: "text-primary dark:text-primary/90",
+    icon: "text-primary",
     /** Gradient key for hero images */
     gradient: "brand.primary" as const,
   },
 
-  /** Tutorial/educational series (blue → violet) */
+  /** Tutorial/educational series (blue → info) */
   tutorial: {
-    badge: "bg-blue-500/10 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 border-blue-500/20",
-    card: "border-blue-500/20 hover:border-blue-500/40",
-    icon: "text-blue-600 dark:text-blue-400",
+    badge: SEMANTIC_COLORS.accent.sky.badge,
+    card: "border-semantic-sky/20 hover:border-semantic-sky/40",
+    icon: SEMANTIC_COLORS.accent.sky.text,
     gradient: "brand.primary" as const,
   },
 
-  /** Security/hardening series (shield theme - cyan → indigo) */
+  /** Security/hardening series (shield theme - cyan) */
   security: {
-    badge: "bg-cyan-500/10 text-cyan-700 dark:bg-cyan-500/20 dark:text-cyan-300 border-cyan-500/20",
-    card: "border-cyan-500/20 hover:border-cyan-500/40",
-    icon: "text-cyan-600 dark:text-cyan-400",
+    badge: SEMANTIC_COLORS.accent.cyan.badge,
+    card: "border-semantic-cyan/20 hover:border-semantic-cyan/40",
+    icon: SEMANTIC_COLORS.accent.cyan.text,
     gradient: "brand.accent" as const,
   },
 
-  /** Performance/optimization series (lightning theme - orange → red) */
+  /** Performance/optimization series (lightning theme - orange) */
   performance: {
-    badge: "bg-orange-500/10 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300 border-orange-500/20",
-    card: "border-orange-500/20 hover:border-orange-500/40",
-    icon: "text-orange-600 dark:text-orange-400",
+    badge: SEMANTIC_COLORS.accent.orange.badge,
+    card: "border-semantic-orange/20 hover:border-semantic-orange/40",
+    icon: SEMANTIC_COLORS.accent.orange.text,
     gradient: "warm.fire" as const,
   },
 
-  /** Architecture/design series (violet → pink) */
+  /** Architecture/design series (violet) */
   architecture: {
-    badge: "bg-violet-500/10 text-violet-700 dark:bg-violet-500/20 dark:text-violet-300 border-violet-500/20",
-    card: "border-violet-500/20 hover:border-violet-500/40",
-    icon: "text-violet-600 dark:text-violet-400",
+    badge: SEMANTIC_COLORS.accent.violet.badge,
+    card: "border-semantic-violet/20 hover:border-semantic-violet/40",
+    icon: SEMANTIC_COLORS.accent.violet.text,
     gradient: "brand.secondary" as const,
   },
 
-  /** Development/coding series (emerald → teal) */
+  /** Development/coding series (emerald) */
   development: {
-    badge: "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 border-emerald-500/20",
-    card: "border-emerald-500/20 hover:border-emerald-500/40",
-    icon: "text-emerald-600 dark:text-emerald-400",
+    badge: SEMANTIC_COLORS.accent.emerald.badge,
+    card: "border-semantic-emerald/20 hover:border-semantic-emerald/40",
+    icon: SEMANTIC_COLORS.accent.emerald.text,
     gradient: "cool.teal" as const,
   },
 
-  /** Testing/QA series (green theme) */
+  /** Testing/QA series (green → success) */
   testing: {
-    badge: "bg-green-500/10 text-green-700 dark:bg-green-500/20 dark:text-green-300 border-green-500/20",
-    card: "border-green-500/20 hover:border-green-500/40",
-    icon: "text-green-600 dark:text-green-400",
+    badge: "bg-success-subtle text-success border-success/20",
+    card: "border-success/20 hover:border-success/40",
+    icon: "text-success",
     gradient: "cool.forest" as const,
   },
 
-  /** DevOps/deployment series (sky → blue) */
+  /** DevOps/deployment series (sky) */
   devops: {
-    badge: "bg-sky-500/10 text-sky-700 dark:bg-sky-500/20 dark:text-sky-300 border-sky-500/20",
-    card: "border-sky-500/20 hover:border-sky-500/40",
-    icon: "text-sky-600 dark:text-sky-400",
+    badge: SEMANTIC_COLORS.accent.sky.badge,
+    card: "border-semantic-sky/20 hover:border-semantic-sky/40",
+    icon: SEMANTIC_COLORS.accent.sky.text,
     gradient: "cool.sky" as const,
   },
 
-  /** Career/soft skills series (amber → orange) */
+  /** Career/soft skills series (warning → amber) */
   career: {
-    badge: "bg-amber-500/10 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300 border-amber-500/20",
-    card: "border-amber-500/20 hover:border-amber-500/40",
-    icon: "text-amber-600 dark:text-amber-400",
+    badge: "bg-warning-subtle text-warning-dark dark:text-warning-light border-warning/20",
+    card: "border-warning/20 hover:border-warning/40",
+    icon: "text-warning-dark dark:text-warning-light",
     gradient: "warm.amber" as const,
   },
 
-  /** Deep dive/advanced series (indigo → purple) */
+  /** Deep dive/advanced series (indigo) */
   advanced: {
-    badge: "bg-indigo-500/10 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 border-indigo-500/20",
-    card: "border-indigo-500/20 hover:border-indigo-500/40",
-    icon: "text-indigo-600 dark:text-indigo-400",
+    badge: SEMANTIC_COLORS.accent.indigo.badge,
+    card: "border-semantic-indigo/20 hover:border-semantic-indigo/40",
+    icon: SEMANTIC_COLORS.accent.indigo.text,
     gradient: "cool.ocean" as const,
   },
 
-  /** Design/UI/UX series (pink → rose) */
+  /** Design/UI/UX series (pink) */
   design: {
-    badge: "bg-pink-500/10 text-pink-700 dark:bg-pink-500/20 dark:text-pink-300 border-pink-500/20",
-    card: "border-pink-500/20 hover:border-pink-500/40",
-    icon: "text-pink-600 dark:text-pink-400",
+    badge: SEMANTIC_COLORS.accent.pink.badge,
+    card: "border-semantic-pink/20 hover:border-semantic-pink/40",
+    icon: SEMANTIC_COLORS.accent.pink.text,
     gradient: "warm.rose" as const,
   },
 
-  /** Quick tips/snippets series (lime → green) */
+  /** Quick tips/snippets series (lime) */
   tips: {
-    badge: "bg-lime-500/10 text-lime-700 dark:bg-lime-500/20 dark:text-lime-300 border-lime-500/20",
-    card: "border-lime-500/20 hover:border-lime-500/40",
-    icon: "text-lime-600 dark:text-lime-400",
+    badge: SEMANTIC_COLORS.accent.lime.badge,
+    card: "border-semantic-lime/20 hover:border-semantic-lime/40",
+    icon: SEMANTIC_COLORS.accent.lime.text,
     gradient: "vibrant.neon" as const,
   },
 
-  /** Troubleshooting/debugging series (red → orange) */
+  /** Troubleshooting/debugging series (error → red) */
   debugging: {
-    badge: "bg-red-500/10 text-red-700 dark:bg-red-500/20 dark:text-red-300 border-red-500/20",
-    card: "border-red-500/20 hover:border-red-500/40",
-    icon: "text-red-600 dark:text-red-400",
+    badge: "bg-error-subtle text-error border-error/20",
+    card: "border-error/20 hover:border-error/40",
+    icon: "text-error",
     gradient: "warm.fire" as const,
   },
 
-  /** Neutral/general series (slate) */
+  /** Neutral/general series (muted) */
   general: {
-    badge: "bg-slate-500/10 text-slate-700 dark:bg-slate-500/20 dark:text-slate-300 border-slate-500/20",
-    card: "border-slate-500/20 hover:border-slate-500/40",
-    icon: "text-slate-600 dark:text-slate-400",
+    badge: "bg-muted/50 text-muted-foreground border-border",
+    card: "border-border hover:border-muted-foreground/40",
+    icon: "text-muted-foreground",
     gradient: "neutral.slate" as const,
   },
 } as const;
@@ -1831,133 +1890,6 @@ export type StatusVariant = keyof typeof SEMANTIC_COLORS.status;
 export type GridPattern = keyof typeof GRID_PATTERNS;
 
 // ============================================================================
-// NEON COLOR PALETTE
-// ============================================================================
-
-/**
- * Neon color palette for badges, indicators, and accent elements
- * Designed to work in both light and dark modes with vibrant, glowing aesthetics
- *
- * Color Philosophy:
- * - Light mode: Muted neon with darker text for readability
- * - Dark mode: Bright, saturated neon with glow effects
- * - All colors maintain WCAG AA contrast ratios
- *
- * Usage:
- * - Status badges and indicators
- * - Activity feed verb badges (published, updated, trending, etc.)
- * - Alert banners and notifications
- * - Dev tools and debugging UI elements
- *
- * @example
- * ```tsx
- * // Badge with neon accent
- * <Badge className={NEON_COLORS.cyan.badge}>Active</Badge>
- *
- * // Status indicator dot
- * <span className={`h-2 w-2 rounded-full ${NEON_COLORS.green.dot} animate-pulse`} />
- *
- * // Alert banner
- * <div className={NEON_COLORS.magenta.container}>
- *   <Icon className={NEON_COLORS.magenta.icon} />
- *   <p className={NEON_COLORS.magenta.text}>Message</p>
- * </div>
- * ```
- */
-export const NEON_COLORS = {
-  /** Electric cyan - for info, primary actions, and active states */
-  cyan: {
-    /** Badge styling (text + background) */
-    badge: "bg-cyan-100 dark:bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border-cyan-300 dark:border-cyan-400/50 dark:shadow-[0_0_8px_rgba(34,211,238,0.3)]",
-    /** Container/card background */
-    container: "bg-cyan-50 dark:bg-cyan-500/10 border-cyan-200 dark:border-cyan-400/30",
-    /** Text color */
-    text: "text-cyan-700 dark:text-cyan-300",
-    /** Icon color with glow */
-    icon: "text-cyan-600 dark:text-cyan-400 dark:drop-shadow-[0_0_4px_rgba(34,211,238,0.5)]",
-    /** Pulsing status dot */
-    dot: "bg-cyan-500 dark:bg-cyan-400 dark:shadow-[0_0_8px_rgba(34,211,238,0.6)]",
-  },
-
-  /** Hot magenta/pink - for critical, destructive, or high-priority items */
-  magenta: {
-    badge: "bg-fuchsia-100 dark:bg-fuchsia-500/20 text-fuchsia-700 dark:text-fuchsia-300 border-fuchsia-300 dark:border-fuchsia-400/50 dark:shadow-[0_0_8px_rgba(217,70,239,0.3)]",
-    container: "bg-fuchsia-50 dark:bg-fuchsia-500/10 border-fuchsia-200 dark:border-fuchsia-400/30",
-    text: "text-fuchsia-700 dark:text-fuchsia-300",
-    icon: "text-fuchsia-600 dark:text-fuchsia-400 dark:drop-shadow-[0_0_4px_rgba(217,70,239,0.5)]",
-    dot: "bg-fuchsia-500 dark:bg-fuchsia-400 dark:shadow-[0_0_8px_rgba(217,70,239,0.6)]",
-  },
-
-  /** Electric lime - for success, completion, and positive states */
-  lime: {
-    badge: "bg-lime-100 dark:bg-lime-500/20 text-lime-700 dark:text-lime-300 border-lime-300 dark:border-lime-400/50 dark:shadow-[0_0_8px_rgba(132,204,22,0.3)]",
-    container: "bg-lime-50 dark:bg-lime-500/10 border-lime-200 dark:border-lime-400/30",
-    text: "text-lime-700 dark:text-lime-300",
-    icon: "text-lime-600 dark:text-lime-400 dark:drop-shadow-[0_0_4px_rgba(132,204,22,0.5)]",
-    dot: "bg-lime-500 dark:bg-lime-400 dark:shadow-[0_0_8px_rgba(132,204,22,0.6)]",
-  },
-
-  /** Neon orange - for warnings, updates, and in-progress states */
-  orange: {
-    badge: "bg-orange-100 dark:bg-orange-500/20 text-orange-700 dark:text-orange-300 border-orange-300 dark:border-orange-400/50 dark:shadow-[0_0_8px_rgba(249,115,22,0.3)]",
-    container: "bg-orange-50 dark:bg-orange-500/10 border-orange-200 dark:border-orange-400/30",
-    text: "text-orange-700 dark:text-orange-300",
-    icon: "text-orange-600 dark:text-orange-400 dark:drop-shadow-[0_0_4px_rgba(249,115,22,0.5)]",
-    dot: "bg-orange-500 dark:bg-orange-400 dark:shadow-[0_0_8px_rgba(249,115,22,0.6)]",
-  },
-
-  /** Electric purple - for special, featured, or launched items */
-  purple: {
-    badge: "bg-purple-100 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-400/50 dark:shadow-[0_0_8px_rgba(168,85,247,0.3)]",
-    container: "bg-purple-50 dark:bg-purple-500/10 border-purple-200 dark:border-purple-400/30",
-    text: "text-purple-700 dark:text-purple-300",
-    icon: "text-purple-600 dark:text-purple-400 dark:drop-shadow-[0_0_4px_rgba(168,85,247,0.5)]",
-    dot: "bg-purple-500 dark:bg-purple-400 dark:shadow-[0_0_8px_rgba(168,85,247,0.6)]",
-  },
-
-  /** Electric blue - for information, engagement, and neutral states */
-  blue: {
-    badge: "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-400/50 dark:shadow-[0_0_8px_rgba(59,130,246,0.3)]",
-    container: "bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-400/30",
-    text: "text-blue-700 dark:text-blue-300",
-    icon: "text-blue-600 dark:text-blue-400 dark:drop-shadow-[0_0_4px_rgba(59,130,246,0.5)]",
-    dot: "bg-blue-500 dark:bg-blue-400 dark:shadow-[0_0_8px_rgba(59,130,246,0.6)]",
-  },
-
-  /** Electric yellow - for highlights, milestones, and achievements */
-  yellow: {
-    badge: "bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 border-yellow-300 dark:border-yellow-400/50 dark:shadow-[0_0_8px_rgba(234,179,8,0.3)]",
-    container: "bg-yellow-50 dark:bg-yellow-500/10 border-yellow-200 dark:border-yellow-400/30",
-    text: "text-yellow-700 dark:text-yellow-300",
-    icon: "text-yellow-600 dark:text-yellow-400 dark:drop-shadow-[0_0_4px_rgba(234,179,8,0.5)]",
-    dot: "bg-yellow-500 dark:bg-yellow-400 dark:shadow-[0_0_8px_rgba(234,179,8,0.6)]",
-  },
-
-  /** Electric red - for errors, fire/trending, and urgent states */
-  red: {
-    badge: "bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-300 border-red-300 dark:border-red-400/50 dark:shadow-[0_0_8px_rgba(239,68,68,0.3)]",
-    container: "bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-400/30",
-    text: "text-red-700 dark:text-red-300",
-    icon: "text-red-600 dark:text-red-400 dark:drop-shadow-[0_0_4px_rgba(239,68,68,0.5)]",
-    dot: "bg-red-500 dark:bg-red-400 dark:shadow-[0_0_8px_rgba(239,68,68,0.6)]",
-  },
-
-  /** Neutral gray - for secondary, neutral, or committed states */
-  slate: {
-    badge: "bg-slate-100 dark:bg-slate-500/20 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-400/50 dark:shadow-[0_0_8px_rgba(100,116,139,0.3)]",
-    container: "bg-slate-50 dark:bg-slate-500/10 border-slate-200 dark:border-slate-400/30",
-    text: "text-slate-700 dark:text-slate-300",
-    icon: "text-slate-600 dark:text-slate-400 dark:drop-shadow-[0_0_4px_rgba(100,116,139,0.5)]",
-    dot: "bg-slate-500 dark:bg-slate-400 dark:shadow-[0_0_8px_rgba(100,116,139,0.6)]",
-  },
-} as const;
-
-/**
- * Type for neon color variants
- */
-export type NeonColorVariant = keyof typeof NEON_COLORS;
-
-// ============================================================================
 // GRADIENTS
 // ============================================================================
 
@@ -2252,7 +2184,7 @@ export const ARCHIVE_CARD_VARIANTS = {
   /** Elevated image card - image on top, content below (recommended) */
   elevated: {
     container: "group rounded-xl border bg-card overflow-hidden hover:shadow-xl transition-all duration-300",
-    imageWrapper: "relative aspect-[16/9] sm:aspect-[21/9] overflow-hidden",
+    imageWrapper: "relative aspect-[16/9] sm:aspect-[21/9] overflow-hidden bg-muted/50 dark:bg-muted/30",
     image: "object-cover group-hover:scale-105 transition-transform duration-500",
     /** Modern dark overlay matching blog cards */
     overlay: "absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70",
@@ -2265,7 +2197,7 @@ export const ARCHIVE_CARD_VARIANTS = {
   /** Background image card - reduced overlay for visibility */
   background: {
     container: "group relative rounded-xl border bg-card overflow-hidden hover:shadow-xl transition-all duration-300 min-h-[280px] md:min-h-[320px]",
-    imageWrapper: "absolute inset-0 z-0",
+    imageWrapper: "absolute inset-0 z-0 bg-muted/50 dark:bg-muted/30",
     image: "object-cover group-hover:scale-105 transition-transform duration-500",
     /** Modern dark overlay */
     overlay: "absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70",
@@ -2277,7 +2209,7 @@ export const ARCHIVE_CARD_VARIANTS = {
   /** Side-by-side layout - image left, content right */
   sideBySide: {
     container: "group flex gap-4 rounded-xl border bg-card overflow-hidden hover:shadow-lg transition-shadow duration-300",
-    imageWrapper: "relative w-48 flex-shrink-0 overflow-hidden",
+    imageWrapper: "relative w-48 flex-shrink-0 overflow-hidden bg-muted/50 dark:bg-muted/30",
     image: "object-cover group-hover:scale-105 transition-transform duration-500",
     overlay: "hidden",
     badgeContainer: "flex gap-2",
@@ -2289,7 +2221,7 @@ export const ARCHIVE_CARD_VARIANTS = {
   /** Hero card - large featured card */
   hero: {
     container: "group relative rounded-2xl overflow-hidden h-[500px] md:h-[600px] cursor-pointer hover:shadow-2xl transition-shadow duration-300",
-    imageWrapper: "absolute inset-0 z-0",
+    imageWrapper: "absolute inset-0 z-0 bg-muted/50 dark:bg-muted/30",
     image: "object-cover group-hover:scale-105 transition-transform duration-700",
     /** Modern dark overlay */
     overlay: "absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70",

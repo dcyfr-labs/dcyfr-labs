@@ -27,7 +27,7 @@ import {
   BookmarkCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ANIMATION, NEON_COLORS, TOUCH_TARGET } from "@/lib/design-tokens";
+import { ANIMATION, TOUCH_TARGET, SEMANTIC_COLORS } from "@/lib/design-tokens";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import {
   type ActivityItem as ActivityItemType,
@@ -64,7 +64,7 @@ const SOURCE_ICONS: Record<ActivitySource, typeof FileText> = {
 /**
  * Get display information for activity verbs
  * Shows visual distinction between published (new) vs updated (modified)
- * Uses neon color palette for vibrant, glowing badges in dark mode
+ * Uses semantic color system for consistent theming
  */
 function getVerbDisplay(verb: ActivityItemType["verb"]) {
   const verbConfig: Record<
@@ -74,42 +74,42 @@ function getVerbDisplay(verb: ActivityItemType["verb"]) {
     published: {
       icon: Check,
       label: "Published",
-      badge: NEON_COLORS.lime.badge,
+      badge: SEMANTIC_COLORS.status.success,
     },
     updated: {
       icon: Pencil,
       label: "Updated",
-      badge: NEON_COLORS.cyan.badge,
+      badge: SEMANTIC_COLORS.accent.cyan.badge,
     },
     launched: {
       icon: Megaphone,
       label: "Launched",
-      badge: NEON_COLORS.purple.badge,
+      badge: SEMANTIC_COLORS.accent.purple.badge,
     },
     released: {
       icon: Trophy,
       label: "Released",
-      badge: NEON_COLORS.orange.badge,
+      badge: SEMANTIC_COLORS.accent.orange.badge,
     },
     committed: {
       icon: GitCommit,
       label: "Committed",
-      badge: NEON_COLORS.slate.badge,
+      badge: SEMANTIC_COLORS.status.neutral,
     },
     achieved: {
       icon: Trophy,
       label: "Achieved",
-      badge: NEON_COLORS.yellow.badge,
+      badge: SEMANTIC_COLORS.status.warning,
     },
     earned: {
       icon: Award,
       label: "Earned",
-      badge: NEON_COLORS.blue.badge,
+      badge: SEMANTIC_COLORS.status.info,
     },
     reached: {
       icon: TrendingUp,
       label: "Reached",
-      badge: NEON_COLORS.lime.badge,
+      badge: SEMANTIC_COLORS.status.success,
     },
   };
 
@@ -339,7 +339,7 @@ export function ActivityItem({
                   <span className="text-xs text-muted-foreground">•</span>
                   <Badge
                     variant="secondary"
-                    className={`text-xs px-1.5 py-0 ${NEON_COLORS.orange.badge}`}
+                    className={cn("text-xs px-1.5 py-0", SEMANTIC_COLORS.accent.orange.badge)}
                   >
                     <TrendingUp className="h-3 w-3 mr-1" />
                     Trending
@@ -353,7 +353,7 @@ export function ActivityItem({
                   <span className="text-xs text-muted-foreground">•</span>
                   <Badge
                     variant="secondary"
-                    className={`text-xs px-1.5 py-0 ${NEON_COLORS.yellow.badge}`}
+                    className={cn("text-xs px-1.5 py-0", SEMANTIC_COLORS.status.warning.badge)}
                   >
                     <Trophy className="h-3 w-3 mr-1" />
                     {activity.meta.milestone.toLocaleString()} milestone
@@ -368,7 +368,7 @@ export function ActivityItem({
                     <span className="text-xs text-muted-foreground">•</span>
                     <Badge
                       variant="secondary"
-                      className={`text-xs px-1.5 py-0 ${NEON_COLORS.red.badge}`}
+                      className={cn("text-xs px-1.5 py-0", SEMANTIC_COLORS.status.warning)}
                     >
                       <Flame className="h-3 w-3 mr-1" />
                       {activity.meta.engagement.toFixed(1)}% engaged

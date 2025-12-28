@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown } from "lucide-react";
-import { NEON_COLORS } from "@/lib/design-tokens";
 import { NAVIGATION } from "@/lib/navigation-config";
 import { useDropdown } from "@/hooks/use-dropdown";
+import { cn } from "@/lib/utils";
+import { SEMANTIC_COLORS } from "@/lib/design-tokens";
 
 export default function DevToolsDropdown() {
   const dropdown = useDropdown();
@@ -15,7 +16,7 @@ export default function DevToolsDropdown() {
     <div ref={dropdown.ref} className="relative">
       <Badge
         variant="outline"
-        className={`cursor-pointer transition-colors gap-1 px-2.5 ${NEON_COLORS.magenta.badge} hover:opacity-90`}
+        className={cn("cursor-pointer transition-colors gap-1 px-2.5 hover:opacity-90", SEMANTIC_COLORS.accent.pink.badge)}
         onClick={dropdown.toggle}
         role="button"
         aria-haspopup="menu"

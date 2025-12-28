@@ -9,3 +9,4 @@ export { SidebarSearch } from "./sidebar-search";
 export { SidebarFilters } from "./sidebar-filters";
 export { SidebarCategories } from "./sidebar-categories";
 export { SidebarTopics } from "./sidebar-topics";
+export { SidebarAuthors } from "./sidebar-authors";

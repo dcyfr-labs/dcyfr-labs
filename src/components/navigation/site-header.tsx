@@ -47,7 +47,10 @@ export function SiteHeader() {
 
   /* eslint-disable react-hooks/refs -- dropdown.ref/isOpen/toggle are hook return values, not ref.current access */
   return (
-    <header className={cn("sticky top-0 z-40 backdrop-blur supports-backdrop-filter:bg-background/60 site-header", hasScrolled && "border-b")}>
+    <header className={cn(
+      "sticky top-0 z-40 site-header transition-colors", ANIMATION.duration.fast,
+      hasScrolled ? "backdrop-blur supports-backdrop-filter:bg-background/60 border-b" : "bg-transparent"
+    )}>
       <div className={cn("mx-auto", CONTAINER_WIDTHS.dashboard, "px-4", "sm:px-8", "md:px-8", "h-14", "md:h-16", "flex", "items-center", "justify-between", "gap-2")}>
         {/* Logo - always visible */}
         <Link href="/" onClick={handleLogoClick} className={cn("touch-target", "shrink-0", "-ml-2")} aria-label="DCYFR Labs Home">

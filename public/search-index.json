@@ -15,7 +15,7 @@
       "series": "Portfolio",
       "publishedAt": "2026-01-15T12:00:00Z",
       "readingTime": 6,
-      "url": "/blog/post-20260115-7b4e92c1"
+      "url": "/blog/event-driven-architecture"
     },
     {
       "id": "post-20251226-8581f290",
@@ -31,7 +31,7 @@
       "series": null,
       "publishedAt": "2025-12-26T00:00:00Z",
       "readingTime": 3,
-      "url": "/blog/post-20251226-8581f290"
+      "url": "/blog/getting-started-with-react-hooks"
     },
     {
       "id": "post-20251222-ui-demo",
@@ -48,7 +48,7 @@
       "series": null,
       "publishedAt": "2025-12-22T12:00:00Z",
       "readingTime": 6,
-      "url": "/blog/post-20251222-ui-demo"
+      "url": "/blog/demo-ui"
     },
     {
       "id": "post-20251219-7f3a9c2e",
@@ -67,7 +67,7 @@
       "series": null,
       "publishedAt": "2025-12-19T12:00:00Z",
       "readingTime": 16,
-      "url": "/blog/post-20251219-7f3a9c2e"
+      "url": "/blog/owasp-top-10-agentic-ai"
     },
     {
       "id": "post-20251203-47dac952",
@@ -88,7 +88,7 @@
       "series": null,
       "publishedAt": "2025-12-03T12:00:00Z",
       "readingTime": 15,
-      "url": "/blog/post-20251203-47dac952"
+      "url": "/blog/cve-2025-55182-react2shell"
     },
     {
       "id": "post-20251112-26db545c",
@@ -106,7 +106,7 @@
       "series": "Features",
       "publishedAt": "2025-11-12T12:00:00Z",
       "readingTime": 5,
-      "url": "/blog/post-20251112-26db545c"
+      "url": "/blog/demo-latex-math"
     },
     {
       "id": "post-20251111-446fbfc7",
@@ -123,7 +123,7 @@
       "series": null,
       "publishedAt": "2025-11-11T12:00:00Z",
       "readingTime": 5,
-      "url": "/blog/post-20251111-446fbfc7"
+      "url": "/blog/ai-development-workflow"
     },
     {
       "id": "post-20251109-7c4f3e2a",
@@ -140,7 +140,7 @@
       "series": "Features",
       "publishedAt": "2025-11-09T00:00:00Z",
       "readingTime": 3,
-      "url": "/blog/post-20251109-7c4f3e2a"
+      "url": "/blog/demo-diagrams"
     },
     {
       "id": "post-20251005-cadc6db5",
@@ -157,7 +157,7 @@
       "series": "Portfolio",
       "publishedAt": "2025-10-05T12:00:00Z",
       "readingTime": 5,
-      "url": "/blog/post-20251005-cadc6db5"
+      "url": "/blog/hardening-developer-portfolio"
     },
     {
       "id": "post-20250910-39db73be",
@@ -174,7 +174,7 @@
       "series": "Portfolio",
       "publishedAt": "2025-09-10T12:00:00Z",
       "readingTime": 3,
-      "url": "/blog/post-20250910-39db73be"
+      "url": "/blog/shipping-developer-portfolio"
     },
     {
       "id": "post-20200108-647bfe00",
@@ -191,7 +191,7 @@
       "series": "Features",
       "publishedAt": "2020-01-08T12:00:00Z",
       "readingTime": 2,
-      "url": "/blog/post-20200108-647bfe00"
+      "url": "/blog/demo-code"
     },
     {
       "id": "post-20200107-04d94a8e",
@@ -207,7 +207,7 @@
       "series": "Features",
       "publishedAt": "2020-01-07T12:00:00Z",
       "readingTime": 4,
-      "url": "/blog/post-20200107-04d94a8e"
+      "url": "/blog/demo-markdown"
     }
   ],
   "tags": [
@@ -267,5 +267,5 @@
     "Features",
     "Portfolio"
   ],
-  "generatedAt": "2025-12-28T02:14:57.921Z"
+  "generatedAt": "2025-12-28T05:51:20.404Z"
 }

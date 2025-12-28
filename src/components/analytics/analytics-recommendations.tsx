@@ -8,6 +8,8 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { SEMANTIC_COLORS } from "@/lib/design-tokens";
 import { 
   Lightbulb, 
   TrendingUp, 
@@ -19,7 +21,7 @@ import {
 } from "lucide-react";
 import { PostAnalytics } from "@/types/analytics";
 import Link from "next/link";
-import { TYPOGRAPHY, SEMANTIC_COLORS } from "@/lib/design-tokens";
+import { TYPOGRAPHY } from "@/lib/design-tokens";
 
 interface Recommendation {
   id: string;
@@ -318,29 +320,27 @@ const typeIcons = {
 
 const typeColors = {
   opportunity: {
-    icon: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20',
-    border: 'border-emerald-200 dark:border-emerald-900/50',
+    icon: cn(SEMANTIC_COLORS.accent.emerald.text, SEMANTIC_COLORS.accent.emerald.bg, 'dark:bg-semantic-emerald-subtle'),
+    border: 'border-semantic-emerald/30',
   },
   warning: {
-    // eslint-disable-next-line no-restricted-syntax -- Icon accent color configuration
-    icon: 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/20',
-    border: 'border-orange-200 dark:border-orange-900/50',
+    icon: cn(SEMANTIC_COLORS.accent.orange.text, SEMANTIC_COLORS.accent.orange.bg, 'dark:bg-semantic-orange-subtle'),
+    border: 'border-semantic-orange/30',
   },
   insight: {
-    // eslint-disable-next-line no-restricted-syntax -- Icon accent color configuration
-    icon: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/20',
-    border: 'border-blue-200 dark:border-blue-900/50',
+    icon: cn(SEMANTIC_COLORS.status.info, 'dark:bg-info-subtle'),
+    border: 'border-info/30',
   },
   action: {
-    icon: 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/20',
-    border: 'border-purple-200 dark:border-purple-900/50',
+    icon: cn(SEMANTIC_COLORS.accent.purple.text, SEMANTIC_COLORS.accent.purple.bg, 'dark:bg-semantic-purple-subtle'),
+    border: 'border-semantic-purple/30',
   },
 };
 
 const priorityBorders = {
-  high: 'border-l-destructive',
-  medium: 'border-l-amber-500 dark:border-l-amber-500',
-  low: SEMANTIC_COLORS.status.info.split(' ')[0].replace('bg-', 'border-l-'),
+  high: 'border-l-error',
+  medium: 'border-l-warning',
+  low: 'border-l-info',
 };
 
 export function AnalyticsRecommendations({ posts, compact = false }: AnalyticsRecommendationsProps) {

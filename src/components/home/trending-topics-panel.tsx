@@ -8,10 +8,9 @@ import { Hash } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   TYPOGRAPHY,
-  NEON_COLORS,
   ANIMATION,
   SPACING,
-  type NeonColorVariant,
+  SEMANTIC_COLORS,
 } from "@/lib/design-tokens";
 
 // ============================================================================
@@ -21,7 +20,7 @@ import {
 interface TopicData {
   tag: string;
   count: number;
-  colorVariant: NeonColorVariant;
+  colorVariant: string;
 }
 
 interface TrendingTopicsPanelProps {
@@ -111,7 +110,17 @@ export function TrendingTopicsPanel({
       <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3">
         {displayTopics.map((topic, index) => {
           const sizeClass = getTopicSize(topic.count, minCount, maxCount);
-          const neonColor = NEON_COLORS[topic.colorVariant];
+          
+          // Map color variants to semantic color tokens
+          const badgeColorMap: Record<string, string> = {
+            cyan: SEMANTIC_COLORS.status.info,
+            lime: SEMANTIC_COLORS.status.success,
+            orange: SEMANTIC_COLORS.status.warning,
+            purple: SEMANTIC_COLORS.highlight.primary,
+            magenta: SEMANTIC_COLORS.highlight.mark,
+            blue: SEMANTIC_COLORS.status.info,
+          };
+          const badgeColor = badgeColorMap[topic.colorVariant] || SEMANTIC_COLORS.status.info;
 
           return (
             <motion.div
@@ -128,7 +137,7 @@ export function TrendingTopicsPanel({
                 <Badge
                   variant="outline"
                   className={cn(
-                    neonColor.badge,
+                    badgeColor,
                     sizeClass,
                     ANIMATION.transition.base,
                     "cursor-pointer group relative",

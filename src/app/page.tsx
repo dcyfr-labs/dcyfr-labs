@@ -351,17 +351,18 @@ export default async function Home() {
         scrollOffset={SCROLL_BEHAVIOR.offset.standard}
         className={SPACING.section}
       >
-        {/* 1. Hero Section - Full-screen immersive experience (accounts for header height) */}
+        {/* 1. Hero Section - Full-screen immersive experience with navigation overlay */}
         <Section
           id="hero"
-          className="relative overflow-hidden min-h-[calc(100vh-56px)] md:min-h-[calc(100vh-64px)]"
-          style={{ minHeight: "calc(100vh - 56px)" }}
+          className="relative overflow-hidden min-h-screen -mt-14 md:-mt-16 pt-14 md:pt-16"
         >
           {/* Optimized Network Background */}
-          <NetworkBackground />
+          <div className="bg-accent/25 *:backdrop-blur-lg *:backdrop-filter absolute inset-0 z-0 *:pointer-events-none">
+            <NetworkBackground />
+          </div>
 
           {/* Centered Content Container */}
-          <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="absolute inset-0 flex items-center justify-center z-10 pb-18">
             <div
               className={cn(
                 "flex flex-col items-center justify-center w-full",
@@ -371,7 +372,7 @@ export default async function Home() {
               <div
                 className={cn(
                   "text-center flex flex-col items-center w-full mx-auto",
-                  SPACING.content
+                  SPACING.content.tight
                 )}
                 style={{ maxWidth: "48rem" }}
               >

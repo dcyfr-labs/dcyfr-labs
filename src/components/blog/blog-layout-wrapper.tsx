@@ -46,7 +46,7 @@ export function BlogLayoutWrapper({ children }: BlogLayoutWrapperProps) {
   return (
     <BlogLayoutContext.Provider value={{ sidebarVisible }}>
       <BlogKeyboardProvider onToggleSidebar={handleToggleSidebar}>
-        <div className={`grid gap-4 items-start ${sidebarVisible ? 'lg:grid-cols-[280px_1fr]' : 'lg:grid-cols-1'}`}>
+        <div className={`grid gap-4 items-start ${sidebarVisible ? 'lg:grid-cols-[1fr_280px]' : 'lg:grid-cols-1'}`}>
           {children}
         </div>
       </BlogKeyboardProvider>
