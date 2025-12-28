@@ -4,7 +4,7 @@ import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useSearch } from "./search-provider";
-import { TYPOGRAPHY } from "@/lib/design-tokens";
+import { TYPOGRAPHY, TOUCH_TARGET } from "@/lib/design-tokens";
 
 /**
  * SearchButton Component
@@ -56,7 +56,7 @@ export function SearchButton({ variant = "default", className }: SearchButtonPro
       className={cn("relative", className)}
       aria-label="Search"
     >
-      <Search className="h-5 w-5" />
+      <Search className="h-4 w-4" />
       <span className="sr-only">Search (/)</span>
     </Button>
   );

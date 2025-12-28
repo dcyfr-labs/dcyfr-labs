@@ -96,8 +96,6 @@ export function ProjectList({
           return (
             <ScrollReveal
               key={project.slug}
-              animation="fade-up"
-              delay={index * 50}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card} flex flex-col h-full`}>
                 <Link href={`${basePath}/${project.slug}`} className="flex flex-col h-full">
@@ -161,8 +159,6 @@ export function ProjectList({
           return (
             <ScrollReveal
               key={project.slug}
-              animation="fade-up"
-              delay={index * 80}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}>
                 <Link href={`${basePath}/${project.slug}`} className="block">
@@ -220,8 +216,6 @@ export function ProjectList({
           return (
             <ScrollReveal
               key={project.slug}
-              animation="fade-up"
-              delay={index * 50}
             >
               <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}>
                 <Link href={`${basePath}/${project.slug}`} className="block">
@@ -260,8 +254,6 @@ export function ProjectList({
         return (
           <ScrollReveal
             key={project.slug}
-            animation="fade-up"
-            delay={index * 50}
           >
             <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card} flex flex-col h-full`}>
               <Link href={`${basePath}/${project.slug}`} className="flex flex-col h-full">

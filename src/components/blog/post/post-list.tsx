@@ -215,7 +215,7 @@ export function PostList({
           // Hero layout for first post - featured prominent card
           if (isFirstPost) {
             return (
-              <ScrollReveal key={p.slug} animation="fade-up" delay={0}>
+              <ScrollReveal key={p.slug}>
                 <article
                   className={`group rounded-xl border border-border/40 overflow-hidden relative bg-card shadow-md hover:shadow-lg transition-all duration-300 ${HOVER_EFFECTS.card}`}
                 >
@@ -322,7 +322,7 @@ export function PostList({
           // Alternating horizontal layout for remaining posts - modern card design
           const isSecondRow = index === 1 || index === 2;
           return (
-            <ScrollReveal key={p.slug} animation="fade-up" delay={index * 50}>
+            <ScrollReveal key={p.slug}>
               <article
                 className={`group rounded-lg border border-border/40 overflow-hidden relative bg-card shadow-sm hover:shadow-md transition-all duration-300 ${HOVER_EFFECTS.card}`}
               >
@@ -439,7 +439,7 @@ export function PostList({
 
             if (isFirstPost) {
               return (
-                <ScrollReveal key={p.slug} animation="fade-up" delay={0}>
+                <ScrollReveal key={p.slug}>
                   <article
                     className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}
                   >
@@ -533,7 +533,7 @@ export function PostList({
 
             // Remaining posts in compact cards
             return (
-              <ScrollReveal key={p.slug} animation="fade-up" delay={index * 50}>
+              <ScrollReveal key={p.slug}>
                 <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}>
                   <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
                     <BookmarkButton slug={p.slug} size="icon" variant="ghost" className="bg-background/80 backdrop-blur-sm hover:bg-background" />
@@ -590,7 +590,7 @@ export function PostList({
     return (
       <div data-testid="post-list">
         {/* Hero section - First post */}
-        <ScrollReveal animation="fade-up" delay={0} className="mb-6">
+        <ScrollReveal className="mb-6">
           <article className={`group rounded-xl border border-border/40 overflow-hidden relative bg-card shadow-md hover:shadow-lg transition-all ${HOVER_EFFECTS.card}`}>
             {/* Featured badge - only show if post is featured */}
             {posts[0].featured && (
@@ -687,8 +687,6 @@ export function PostList({
           {posts.slice(1).map((p, index) => (
             <ScrollReveal
               key={p.slug}
-              animation="fade-up"
-              delay={(index + 1) * 50}
             >
               <article className={`group rounded-lg border border-border/40 overflow-hidden relative bg-card shadow-md hover:shadow-lg transition-all flex flex-col h-full ${HOVER_EFFECTS.card}`}>
                 {/* Bookmark Button - Top Right Corner */}
@@ -781,7 +779,7 @@ export function PostList({
       <div className={SPACING.subsection} data-testid="post-list">
         {posts.map((p, index) => {
           return (
-            <ScrollReveal key={p.slug} animation="fade-up" delay={index * 80}>
+            <ScrollReveal key={p.slug} delay={index * 80}>
               <article
                 className={`group rounded-lg border border-border/40 overflow-hidden relative bg-card shadow-md hover:shadow-lg transition-all ${HOVER_EFFECTS.card}`}
               >
@@ -889,7 +887,7 @@ export function PostList({
       <div className={SPACING.postList} data-testid="post-list">
         {posts.map((p, index) => {
           return (
-            <ScrollReveal key={p.slug} animation="fade-up" delay={index * 50}>
+            <ScrollReveal key={p.slug}>
               <article
                 className={`group rounded-lg border border-border/40 overflow-hidden relative bg-card shadow-sm hover:shadow-md transition-all ${HOVER_EFFECTS.card}`}
               >
@@ -968,7 +966,7 @@ export function PostList({
   return (
     <div className={SPACING.subsection} data-testid="post-list">
       {posts.map((p, index) => (
-        <ScrollReveal key={p.slug} animation="fade-up" delay={index * 50}>
+        <ScrollReveal key={p.slug}>
           <article
             className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}
           >

@@ -10,7 +10,7 @@ import { MobileNav } from "@/components/navigation/mobile-nav";
 import { SearchButton } from "@/components/search";
 import DevToolsDropdown from "@/components/common/dev-tools-dropdown";
 import { cn } from "@/lib/utils";
-import { CONTAINER_WIDTHS, ANIMATION } from "@/lib/design-tokens";
+import { CONTAINER_WIDTHS, ANIMATION, TOUCH_TARGET } from "@/lib/design-tokens";
 import { NAVIGATION, BLOG_NAV, WORK_NAV, isNavItemActive, getAriaCurrent } from "@/lib/navigation";
 import { useDropdown } from "@/hooks/use-dropdown";
 import { useLogoClick } from "@/hooks/use-navigation";
@@ -102,7 +102,7 @@ export function SiteHeader() {
               aria-haspopup="menu"
             >
               Blog
-              <ChevronDown className={cn("h-3 w-3", ANIMATION.transition.fast, blogDropdown.isOpen && "rotate-180")} aria-hidden="true" />
+              <ChevronDown className={cn("h-4 w-4", ANIMATION.transition.fast, blogDropdown.isOpen && "rotate-180")} aria-hidden="true" />
             </button>
             {blogDropdown.isOpen && (
               <div
@@ -156,7 +156,7 @@ export function SiteHeader() {
               aria-haspopup="menu"
             >
               Our Work
-              <ChevronDown className={cn("h-3 w-3", ANIMATION.transition.fast, workDropdown.isOpen && "rotate-180")} aria-hidden="true" />
+              <ChevronDown className={cn("h-4 w-4", ANIMATION.transition.fast, workDropdown.isOpen && "rotate-180")} aria-hidden="true" />
             </button>
             {workDropdown.isOpen && (
               <div

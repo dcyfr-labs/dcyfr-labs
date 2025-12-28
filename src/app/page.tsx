@@ -375,20 +375,17 @@ export default async function Home() {
                 )}
                 style={{ maxWidth: "48rem" }}
               >
-                {/* Logo Title - Larger scale for hero with fade-in */}
-                <div className={cn("animate-in fade-in delay-200", ANIMATION.duration.slow)}>
+                {/* Logo Title - Larger scale for hero */}
+                <div>
                   <SiteLogo
                     size="lg"
                     className="justify-center scale-110 md:scale-125"
                   />
                 </div>
 
-                {/* Search Bar - Prominent, wide placement with fade-in */}
-                <div className={cn(`w-full mt-4 md:mt-6 *:md:w-3/4 lg:w-2/3`, "animate-in fade-in delay-500", ANIMATION.duration.slow)}>
-                  <div
-                    className="w-full mx-auto"
-                    style={{ maxWidth: "28rem" }}
-                  >
+                {/* Search Bar - Prominent, wide placement */}
+                <div className={cn(`w-full mt-4 md:mt-6 *:md:w-3/4 lg:w-2/3`)}>
+                  <div className="w-full mx-auto" style={{ maxWidth: "28rem" }}>
                     <SearchButton variant="input" />
                   </div>
                 </div>
@@ -423,7 +420,7 @@ export default async function Home() {
           id="featured-post"
           className={cn(PAGE_LAYOUT.section.container)}
         >
-          <ScrollReveal animation="fade-up" delay={100}>
+          <ScrollReveal>
             <div className={SPACING.content}>
               <FeaturedPostHero post={featuredPost} />
             </div>
@@ -438,7 +435,7 @@ export default async function Home() {
             CONTAINER_VERTICAL_PADDING
           )}
         >
-          <ScrollReveal animation="fade-up" delay={150}>
+          <ScrollReveal>
             <div className={SPACING.content}>
               <SectionHeader
                 title="Trending"
@@ -456,7 +453,7 @@ export default async function Home() {
           </ScrollReveal>
         </Section>
 
-        {/* 6. Blog Series - Organized content paths */}
+        {/* 6. TODO: Blog Series - Organized content paths -- pending more series 
         {allSeries.length > 0 && (
           <Section
             id="series"
@@ -465,7 +462,7 @@ export default async function Home() {
               CONTAINER_VERTICAL_PADDING
             )}
           >
-            <ScrollReveal animation="fade-up" delay={200}>
+            <ScrollReveal>
               <div className={SPACING.content}>
                 <SectionHeader
                   title="Featured Series"
@@ -476,14 +473,14 @@ export default async function Home() {
               </div>
             </ScrollReveal>
           </Section>
-        )}
+        )} */}
 
         {/* 7. Recent Activity - Updates feed */}
         <Section
           id="recent-activity"
           className={cn(PAGE_LAYOUT.section.container)}
         >
-          <ScrollReveal animation="fade-up" delay={225}>
+          <ScrollReveal>
             <div className={SPACING.content}>
               <SectionHeader
                 title="Recent Activity"
@@ -517,7 +514,7 @@ export default async function Home() {
             </div>
           </ScrollReveal>
         </Section> */}
-        
+
         {/* 3. Explore Cards - Primary navigation hub (consolidated) */}
         <Section
           id="explore"
@@ -528,7 +525,7 @@ export default async function Home() {
             "border-y border-border/50"
           )}
         >
-          <ScrollReveal animation="fade-up" delay={125}>
+          <ScrollReveal>
             <div className={SPACING.content}>
               <SectionHeader title="Explore More" />
               <ExploreCards

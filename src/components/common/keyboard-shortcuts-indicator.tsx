@@ -34,8 +34,7 @@ export function KeyboardShortcutIndicator() {
       className={cn(
         "fixed bottom-4 right-4 z-50",
         "bg-card border rounded-lg shadow-lg",
-        "px-4 py-3",
-        `animate-in fade-in slide-in-from-bottom-2 ${ANIMATION.duration.normal}`
+        "px-4 py-3"
       )}
       role="status"
       aria-live="polite"

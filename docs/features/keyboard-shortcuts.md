@@ -9,10 +9,11 @@ Keyboard shortcuts provide power users with quick navigation and control of the 
 | Key | Action | Description |
 |-----|--------|-------------|
 | `/` | Focus Search | Jump directly to the search input to start typing |
-| `1` | Compact View | Switch to compact list layout (default) |
+| `1` | Magazine View | Switch to magazine layout with large images |
 | `2` | Grid View | Switch to grid layout with cards |
-| `3` | Magazine View | Switch to magazine layout with large images |
-| `4` | Masonry View | Switch to Pinterest-style masonry layout |
+| `3` | List View | Switch to list layout with full details |
+| `4` | Compact View | Switch to compact list layout |
+| `5` | Grouped View | Switch to grouped layout organized by category |
 | `f` | Toggle Filters | Collapse/expand the sidebar filters |
 | `Esc` | Clear Search | Clear the search query and show all posts |
 | `?` | Show Help | Display the keyboard shortcuts help dialog |

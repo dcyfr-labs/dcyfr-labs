@@ -18,7 +18,7 @@
 
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Command } from "cmdk";
 import Fuse from "fuse.js";
@@ -96,6 +96,7 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
   const [search, setSearch] = useState("");
   const [searchIndex, setSearchIndex] = useState<SearchIndex | null>(null);
   const [fuse, setFuse] = useState<Fuse<SearchablePost> | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [recentSearches, setRecentSearches] = useState<string[]>(() => {
     if (typeof window === 'undefined') return [];
     const stored = localStorage.getItem("dcyfr-recent-searches");
@@ -147,6 +148,29 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
   }, [onOpenChange]);
+
+  // Prevent arrow keys from scrolling the page when modal is open
+  useEffect(() => {
+    if (!open) return;
+
+    const preventArrowScroll = (e: KeyboardEvent) => {
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener("keydown", preventArrowScroll);
+    return () => document.removeEventListener("keydown", preventArrowScroll);
+  }, [open]);
+
+  // Force focus on input when modal opens
+  useEffect(() => {
+    if (open && inputRef.current) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+    }
+  }, [open]);
 
   // Theme toggle
   const toggleTheme = useCallback(() => {
@@ -274,21 +298,36 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm pointer-events-auto"
       onClick={() => onOpenChange(false)}
     >
       <div
-        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl"
+        className={cn(
+          "fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
+          "w-[calc(100%-3rem)] sm:w-[calc(100%-6rem)] max-w-2xl",
+          "max-h-[calc(100vh-6rem)] sm:max-h-[calc(100vh-8rem)]",
+          "pointer-events-auto"
+        )}
         onClick={(e) => e.stopPropagation()}
       >
-        <Command className={cn("rounded-xl border border-border shadow-2xl overflow-hidden", "bg-muted/50 hover:bg-muted/80 dark:bg-muted/40")}>
+        <Command 
+          className={cn(
+            "rounded-xl border border-border shadow-2xl",
+            "bg-muted/80 dark:bg-muted/40",
+            "overflow-hidden h-full flex flex-col"
+          )}
+          value=""
+          shouldFilter={false}
+        >
           {/* Search Input */}
           <div className="flex items-center border-b border-border/50 px-4">
             <Search className="mr-2 h-4 w-4 shrink-0 text-muted-foreground" />
             <Command.Input
+              ref={inputRef}
               value={search}
               onValueChange={setSearch}
               placeholder="Search posts, navigate, or toggle theme..."
+              autoFocus
               className={cn(
                 "flex h-14 w-full bg-transparent py-3 text-sm outline-none",
                 "placeholder:text-muted-foreground",
@@ -300,7 +339,7 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
             </kbd>
           </div>
 
-          <Command.List className="max-h-[400px] overflow-y-auto p-2">
+          <Command.List className="flex-1 overflow-y-auto p-2">
             {/* Loading State */}
             {!searchIndex && (
               <Command.Loading>
@@ -443,8 +482,8 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
               </Command.Group>
             )}
 
-            {/* Action Commands */}
-            {filteredActionCommands.length > 0 && (
+            {/* Action Commands - Only show when searching */}
+            {hasSearchQuery && filteredActionCommands.length > 0 && (
               <Command.Group heading="Appearance">
                 {filteredActionCommands.map((cmd) => {
                   const Icon = cmd.icon;

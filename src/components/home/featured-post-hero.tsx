@@ -96,7 +96,7 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
         onMouseLeave={handleMouseLeave}
         onMouseEnter={handleMouseEnter}
         style={{
-          transform: `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(${isHovered ? 1.02 : 1})`,
+          transform: `perspective(1000px) rotateX(${isHovered ? tiltX : 0}deg) rotateY(${isHovered ? tiltY : 0}deg) scale(${isHovered ? 1.01 : 1})`,
           transition: 'transform 0.2s ease-out',
           willChange: isHovered ? 'transform' : 'auto',
         }}
@@ -119,11 +119,6 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
             maskComposite: 'exclude',
             padding: '2px',
           }}
-        />
-
-        {/* Accent bar with glow effect */}
-        <div
-          className={cn("absolute inset-x-0 top-0 h-1 z-20 rounded-t-xl group-hover:h-1.5 group-hover:shadow-lg bg-primary", ANIMATION.transition.base)}
         />
         
         {/* Background image - fills entire container */}

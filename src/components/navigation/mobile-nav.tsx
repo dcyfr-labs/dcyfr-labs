@@ -59,7 +59,7 @@ export function MobileNav() {
         aria-label="Open navigation menu"
         onClick={() => {}} // No-op until mounted
       >
-        <MenuIcon className="h-5 w-5" />
+        <MenuIcon className="h-4 w-4" />
       </Button>
     );
   }
@@ -73,7 +73,7 @@ export function MobileNav() {
           className="touch-target"
           aria-label="Open navigation menu"
         >
-          <MenuIcon className="h-5 w-5" />
+          <MenuIcon className="h-4 w-4" />
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="w-70 sm:w-[320px] p-4 overflow-y-auto">

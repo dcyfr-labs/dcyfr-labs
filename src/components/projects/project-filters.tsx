@@ -123,7 +123,7 @@ export function ProjectFilters({
 
       {/* Collapsible Filters Section */}
       {isExpanded && (
-        <div className={cn(SPACING.subsection, "animate-in fade-in slide-in-from-top-2", ANIMATION.duration.fast)}>
+        <div className={cn(SPACING.subsection)}>
           <ProjectSort sortBy={sortBy} onSortChange={setSort} />
           <ProjectStatusFilter status={status} onStatusChange={setStatus} />
           <ProjectTechFilter

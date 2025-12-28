@@ -29,7 +29,7 @@ interface BlogKeyboardProviderProps {
  * 
  * Provides keyboard shortcut functionality for the blog page:
  * - f : Toggle sidebar visibility
- * - 1-4 : Switch layouts (compact, grid, list, magazine)
+ * - 1-5 : Switch layouts (magazine, grid, list, compact, grouped)
  * - / : Focus search input
  * - ? : Show help dialog
  * - Esc : Clear search (when search is focused)
