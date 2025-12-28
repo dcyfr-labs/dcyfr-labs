@@ -211,7 +211,7 @@ export function ThreadActions({
 // ============================================================================
 
 interface ActionButtonProps {
-  icon: React.ElementType;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   label?: string;
   globalCount?: number;
   active?: boolean;
@@ -258,7 +258,6 @@ function ActionButton({
           active && "group-hover/action:scale-110"
         )}
       >
-        {/* @ts-expect-error - Icon component type inference issue */}
         <Icon />
       </span>
       {label && (

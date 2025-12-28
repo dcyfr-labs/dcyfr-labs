@@ -158,7 +158,7 @@ export function PostInteractions({
 // ============================================================================
 
 interface ActionButtonProps {
-  icon: React.ElementType;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   label?: string;
   active?: boolean;
   onClick?: () => void;
@@ -209,7 +209,6 @@ function ActionButton({
           active && "group-hover/action:scale-110"
         )}
       >
-        {/* @ts-expect-error - Icon component type inference issue */}
         <Icon />
       </span>
       {label && (
