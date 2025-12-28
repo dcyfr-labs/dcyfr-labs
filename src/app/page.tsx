@@ -86,7 +86,6 @@ const FeaturedPostHero = dynamic(
         </div>
       </Card>
     ),
-    ssr: true,
   }
 );
 
@@ -100,7 +99,6 @@ const InfiniteActivitySection = dynamic(
         ))}
       </div>
     ),
-    ssr: true,
   }
 );
 
@@ -110,7 +108,6 @@ const HomepageHeatmapMini = dynamic(
     loading: () => (
       <div className="h-48 w-full bg-muted rounded-lg animate-pulse" />
     ),
-    ssr: true,
   }
 );
 
@@ -124,7 +121,6 @@ const ExploreCards = dynamic(
         ))}
       </div>
     ),
-    ssr: true,
   }
 );
 
@@ -138,7 +134,6 @@ const SeriesShowcase = dynamic(
         ))}
       </div>
     ),
-    ssr: true,
   }
 );
 
@@ -362,70 +357,43 @@ export default async function Home() {
           className="relative overflow-hidden min-h-[calc(100vh-56px)] md:min-h-[calc(100vh-64px)]"
           style={{ minHeight: "calc(100vh - 56px)" }}
         >
-          {/* 3D Network Background */}
+          {/* Optimized Network Background */}
           <NetworkBackground />
 
           {/* Centered Content Container */}
           <div className="absolute inset-0 flex items-center justify-center z-10">
-            <ScrollReveal animation="fade-up" className="w-full">
+            <div
+              className={cn(
+                "flex flex-col items-center justify-center w-full",
+                CONTAINER_PADDING
+              )}
+            >
               <div
                 className={cn(
-                  "flex flex-col items-center justify-center w-full",
-                  CONTAINER_PADDING
+                  "text-center flex flex-col items-center w-full mx-auto",
+                  SPACING.content
                 )}
+                style={{ maxWidth: "48rem" }}
               >
-                <div
-                  className={cn(
-                    "text-center flex flex-col items-center w-full mx-auto",
-                    SPACING.content
-                  )}
-                  style={{ maxWidth: "48rem" }}
-                >
-                  {/* Avatar - Larger for full-screen impact  
+                {/* Logo Title - Larger scale for hero with fade-in */}
+                <div className={cn("animate-in fade-in delay-200", ANIMATION.duration.slow)}>
+                  <SiteLogo
+                    size="lg"
+                    className="justify-center scale-110 md:scale-125"
+                  />
+                </div>
+
+                {/* Search Bar - Prominent, wide placement with fade-in */}
+                <div className={cn(`w-full mt-4 md:mt-6 *:md:w-3/4 lg:w-2/3`, "animate-in fade-in delay-500", ANIMATION.duration.slow)}>
                   <div
-                    className={cn(
-                      "flex justify-center w-full",
-                      ANIMATION.effects.pulse
-                    )}
-                    role="img"
-                    aria-label="Avatar - Click to flip"
+                    className="w-full mx-auto"
+                    style={{ maxWidth: "28rem" }}
                   >
-                    <FlippableAvatar size="md" priority animated backdrop />
-                  </div> */}
-
-                  {/* Logo Title - Larger scale for hero */}
-                  <div>
-                    <SiteLogo
-                      size="lg"
-                      className="justify-center scale-110 md:scale-125"
-                    />
-                  </div>
-
-                  {/* Description - Larger text for readability 
-                  <p
-                    className={cn(
-                      "text-muted-foreground leading-relaxed",
-                      "mx-auto w-full text-center max-w-2xl",
-                      "text-base md:text-lg lg:text-xl",
-                      "px-4 md:px-0"
-                    )}
-                  >
-                    Exploring cyber architecture, coding, and security insights to
-                    build a safer digital future.
-                  </p> */}
-
-                  {/* Search Bar - Prominent, wide placement */}
-                  <div className={`w-full mt-4 md:mt-6 *:md:w-3/4 lg:w-2/3`}>
-                    <div
-                      className="w-full mx-auto"
-                      style={{ maxWidth: "28rem" }}
-                    >
-                      <SearchButton variant="input" />
-                    </div>
+                    <SearchButton variant="input" />
                   </div>
                 </div>
               </div>
-            </ScrollReveal>
+            </div>
           </div>
         </Section>
 
