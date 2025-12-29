@@ -27,10 +27,7 @@ import {
   MDXCVEDecisionTree,
 } from "@/components/common";
 import { FAQ } from "@/components/common";
-import {
-  ProgressiveParagraph,
-  ContrastText,
-} from "@/components/common";
+import { ProgressiveParagraph, ContrastText } from "@/components/common";
 import {
   Check,
   X,
@@ -55,7 +52,7 @@ import {
   MDXProgressionContext,
   MDXProgressionProvider,
   MDXParagraphComponent,
-} from "@/components/common";
+} from "./mdx-progression-context";
 
 /**
  * MDX Paragraph Component with Progressive Styling

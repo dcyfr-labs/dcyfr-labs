@@ -17,7 +17,7 @@ export { SeriesShowcase } from "./SeriesShowcase";
 export { TrendingSection } from "./trending-section";
 export { TrendingPostsPanel } from "./trending-posts-panel";
 export { TrendingTopicsPanel } from "./trending-topics-panel";
-export { TrendingProjectsPanel } from "./trending-projects-panel";
+export {TrendingProjectsPanel, TrendingProject, TrendingVelocity} from "./trending-projects-panel";
 
 // Modern enhancements
 export { NetworkBackground } from "./network-background";

@@ -55,12 +55,12 @@ export default async function PrivacyPage() {
           <h2 className={TYPOGRAPHY.h2.standard}>Our Privacy Principles</h2>
           <ul className={`${SPACING.compact} list-disc pl-6`}>
             <li className={TYPOGRAPHY.body}>
-              <strong>Minimal Data Collection:</strong> We only collect what&apos;s
-              absolutely necessary
+              <strong>Minimal Data Collection:</strong> We only collect
+              what&apos;s absolutely necessary
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>No Tracking:</strong> We don&apos;t use cookies, analytics, or
-              third-party trackers
+              <strong>No Tracking:</strong> We don&apos;t use cookies,
+              analytics, or third-party trackers
             </li>
             <li className={TYPOGRAPHY.body}>
               <strong>Transparent Processing:</strong> You know exactly what
@@ -205,8 +205,8 @@ export default async function PrivacyPage() {
           </p>
           <ul className="space-y-2 list-disc pl-6">
             <li className={TYPOGRAPHY.body}>
-              <strong>Cookies:</strong> We don&apos;t use any cookies (first-party or
-              third-party)
+              <strong>Cookies:</strong> We don&apos;t use any cookies
+              (first-party or third-party)
             </li>
             <li className={TYPOGRAPHY.body}>
               <strong>Invasive Analytics:</strong> No Google Analytics, Facebook
@@ -645,7 +645,8 @@ export default async function PrivacyPage() {
           </p>
           <ul className="space-y-1 list-disc pl-6">
             <li className={TYPOGRAPHY.body}>
-              We will update the &quot;Last Updated&quot; date at the top of this page
+              We will update the &quot;Last Updated&quot; date at the top of
+              this page
             </li>
             <li className={TYPOGRAPHY.body}>
               For significant changes, we will provide prominent notice on our

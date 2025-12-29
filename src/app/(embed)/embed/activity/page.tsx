@@ -27,7 +27,6 @@ import {
 } from "@/lib/activity";
 import type { ActivityItem } from "@/lib/activity";
 import { ActivityEmbedClient } from "./activity-embed-client";
-
 // ============================================================================
 // REDIS CLIENT HELPER
 // ============================================================================

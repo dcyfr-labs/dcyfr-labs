@@ -8,6 +8,7 @@
  */
 
 export { AnalyticsOverview } from "./analytics-overview";
+export { AnalyticsFilters } from "./analytics-filters";
 export { AnalyticsTrending } from "./analytics-trending";
 export { AnalyticsRecommendations } from "./analytics-recommendations";
 

@@ -8,7 +8,7 @@
 "use client";
 
 import { useNavigationShortcuts } from "@/hooks/use-navigation-shortcuts";
-import { KeyboardShortcuts } from "@/components/common";
+import { KeyboardShortcutsHelp } from "@/components/common";
 
 export function NavigationShortcutsProvider() {
   // Enable navigation shortcuts globally
@@ -22,5 +22,5 @@ export function NavigationShortcutsProvider() {
     },
   });
 
-  return <KeyboardShortcuts />;
+  return <KeyboardShortcutsHelp />;
 }

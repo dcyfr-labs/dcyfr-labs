@@ -202,13 +202,14 @@ interface BlackHoleProps {
   accentColor: string;
   jetColor: string;
   elapsedTime: number;
+  scaleFactor: number;
 }
 
-function BlackHole({ node, position, themeColor, accentColor, jetColor, elapsedTime }: BlackHoleProps) {
+function BlackHole({ node, position, themeColor, accentColor, jetColor, elapsedTime, scaleFactor }: BlackHoleProps) {
   const meshRef = useRef<THREE.Group>(null);
 
-  // Compute physics-based visual properties
-  const visuals = useMemo(() => computeBlackHoleVisuals(node), [node]);
+  // Compute physics-based visual properties with responsive scale
+  const visuals = useMemo(() => computeBlackHoleVisuals(node, scaleFactor), [node, scaleFactor]);
 
   // Calculate depth-based opacity for parallax effect
   const depthOpacity = useMemo(() => {
@@ -358,9 +359,10 @@ interface ParticleSystemProps {
   positions: THREE.Vector3[];
   themeColor: string;
   elapsedTime: number;
+  scaleFactor: number;
 }
 
-function ParticleSystem({ nodes, positions, themeColor, elapsedTime }: ParticleSystemProps) {
+function ParticleSystem({ nodes, positions, themeColor, elapsedTime, scaleFactor }: ParticleSystemProps) {
   const pointsRef = useRef<THREE.Points>(null);
 
   const { particleGeometry } = useMemo(() => {
@@ -370,7 +372,7 @@ function ParticleSystem({ nodes, positions, themeColor, elapsedTime }: ParticleS
 
     let idx = 0;
     nodes.forEach((node) => {
-      const visuals = computeBlackHoleVisuals(node);
+      const visuals = computeBlackHoleVisuals(node, scaleFactor);
 
       for (let i = 0; i < PHYSICS.particles.countPerNode; i++) {
         // Particles orbit between ISCO and outer disk edge
@@ -394,7 +396,7 @@ function ParticleSystem({ nodes, positions, themeColor, elapsedTime }: ParticleS
     geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
     return { particleGeometry: geometry };
-  }, [nodes]);
+  }, [nodes, scaleFactor]);
 
   // Animate with Keplerian orbital mechanics: v ∝ 1/√r
   useFrame(() => {
@@ -405,7 +407,7 @@ function ParticleSystem({ nodes, positions, themeColor, elapsedTime }: ParticleS
       let idx = 0;
       nodes.forEach((node, nodeIdx) => {
         const nodePos = positions[nodeIdx];
-        const visuals = computeBlackHoleVisuals(node);
+        const visuals = computeBlackHoleVisuals(node, scaleFactor);
         // Base angular velocity from physics
         const baseOmega = PHYSICS.particles.speed / Math.sqrt(node.mass);
 
@@ -459,20 +461,21 @@ interface ConnectionLinesProps {
   nodes: BlackHoleNode[];
   positions: THREE.Vector3[];
   themeColor: string;
+  scaleFactor: number;
 }
 
-function ConnectionLines({ nodes, positions, themeColor }: ConnectionLinesProps) {
+function ConnectionLines({ nodes, positions, themeColor, scaleFactor }: ConnectionLinesProps) {
   const lines = useMemo(() => {
     const result: { start: THREE.Vector3; end: THREE.Vector3; opacity: number }[] = [];
 
     // Connect all nodes to central node (index 0)
     const centralPos = positions[0];
-    const centralVisuals = computeBlackHoleVisuals(nodes[0]);
+    const centralVisuals = computeBlackHoleVisuals(nodes[0], scaleFactor);
     const centralRadius = centralVisuals.ergosphereSize;
 
     for (let i = 1; i < nodes.length; i++) {
       const nodePos = positions[i];
-      const nodeVisuals = computeBlackHoleVisuals(nodes[i]);
+      const nodeVisuals = computeBlackHoleVisuals(nodes[i], scaleFactor);
       const nodeRadius = nodeVisuals.ergosphereSize;
 
       // Calculate direction vector
@@ -498,7 +501,7 @@ function ConnectionLines({ nodes, positions, themeColor }: ConnectionLinesProps)
     }
 
     return result;
-  }, [nodes, positions]);
+  }, [nodes, positions, scaleFactor]);
 
   return (
     <>
@@ -741,6 +744,7 @@ function NetworkNodes() {
           accentColor={accentColor}
           jetColor={jetColor}
           elapsedTime={elapsedTime}
+          scaleFactor={scaleFactor}
         />
       ))}
 
@@ -749,6 +753,7 @@ function NetworkNodes() {
         nodes={blackHoles}
         positions={currentPositions}
         themeColor={themeColor}
+        scaleFactor={scaleFactor}
       />
 
       {/* Particle system - accretion disks around each black hole */}
@@ -757,6 +762,7 @@ function NetworkNodes() {
         positions={currentPositions}
         themeColor={themeColor}
         elapsedTime={elapsedTime}
+        scaleFactor={scaleFactor}
       />
     </group>
   );
@@ -796,7 +802,7 @@ export function NetworkBackground() {
         height: '100%',
         width: '100%',
         zIndex: 0,
-        opacity: isVisible ? 0.5 : 0,
+        opacity: isVisible ? 0.65 : 0,  // Increased from 0.5 for better visibility
       }}
     >
       <Suspense fallback={<div className="absolute inset-0 bg-linear-to-br from-foreground/5 via-foreground/3 to-foreground/5" />}>

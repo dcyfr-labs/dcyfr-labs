@@ -40,3 +40,5 @@ export type { ArticleFooterProps } from './article-footer';
 
 // Docs Layout
 export { DocsLayout } from './docs-layout';
+
+export { ArchiveHero } from "./archive-hero";

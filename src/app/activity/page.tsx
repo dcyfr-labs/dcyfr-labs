@@ -37,7 +37,6 @@ import {
 } from "@/lib/activity";
 import type { ActivityItem } from "@/lib/activity";
 import { createClient } from "redis";
-
 // ============================================================================
 // REDIS CLIENT HELPER
 // ============================================================================
