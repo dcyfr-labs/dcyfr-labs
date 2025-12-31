@@ -343,12 +343,7 @@ server.addTool({
   parameters: z.object({
     hardcodedValue: z.string().describe("Hardcoded Tailwind class or value"),
     category: z
-      .enum([
-        "spacing",
-        "typography",
-        "containers",
-        "breakpoints",
-      ])
+      .enum(["spacing", "typography", "containers", "breakpoints"])
       .optional()
       .describe("Token category to search in"),
   }),
