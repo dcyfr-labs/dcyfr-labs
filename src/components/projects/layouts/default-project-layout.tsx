@@ -183,7 +183,11 @@ export function DefaultProjectLayout({
 
       {/* Other Projects */}
       <div className={`${SPACING.sectionDivider.container} border-t`}>
-        <h2 className={`${TYPOGRAPHY.h2.standard} ${SPACING.sectionDivider.heading}`}>Other Projects</h2>
+        <h2
+          className={`${TYPOGRAPHY.h2.standard} ${SPACING.sectionDivider.heading}`}
+        >
+          Other Projects
+        </h2>
         <div className={`grid ${SPACING.sectionDivider.grid} sm:grid-cols-2`}>
           {visibleProjects
             .filter((p) => p.slug !== project.slug)

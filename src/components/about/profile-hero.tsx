@@ -1,6 +1,11 @@
 import { ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
-import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS, CONTAINER_PADDING } from "@/lib/design-tokens";
+import {
+  TYPOGRAPHY,
+  SPACING,
+  CONTAINER_WIDTHS,
+  CONTAINER_PADDING,
+} from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import { Section, ProfileAvatar } from "@/components/common";
 import type { UserProfile } from "@/types/user-profile";

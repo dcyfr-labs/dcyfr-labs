@@ -1,5 +1,10 @@
 // Common/shared components
-export { BlogPostCTA, ProjectsCTA, AvailabilityBanner, type CTAProps } from "./cta";
+export {
+  BlogPostCTA,
+  ProjectsCTA,
+  AvailabilityBanner,
+  type CTAProps,
+} from "./cta";
 export { Alert, type AlertProps } from "./alert";
 export { KeyTakeaway, type KeyTakeawayProps } from "./key-takeaway";
 export { ContextClue, type ContextClueProps } from "./context-clue";
@@ -14,7 +19,13 @@ export { MDX } from "./mdx";
 export { ZoomableImage } from "./zoomable-image";
 export { Figure, FigureProvider } from "./figure-caption";
 export { TableCaption, type TableCaptionProps } from "./table-caption";
-export { FAQ, FAQQuestion, FAQAnswer, type FAQProps, type FAQItem } from "./faq";
+export {
+  FAQ,
+  FAQQuestion,
+  FAQAnswer,
+  type FAQProps,
+  type FAQItem,
+} from "./faq";
 export { ProfileAvatar, type AvatarSize } from "./profile-avatar";
 export { ScrollIndicator } from "./scroll-indicator";
 export { RelatedPosts } from "./related-posts";
@@ -36,20 +47,28 @@ export { CodePlayground } from "./code-playground";
 export type { CodePlaygroundProps } from "./code-playground";
 
 // Progressive content and depth styling
-export { 
-  ProgressiveParagraph, 
-  ContentBlock, 
+export {
+  ProgressiveParagraph,
+  ContentBlock,
   ContrastText,
-  analyzeContentDepth
+  analyzeContentDepth,
 } from "./progressive-content";
 
 // Hero Overlays - light/dark mode aware contrast for hero images
-export { HeroOverlay, BlogPostHeroOverlay, ProjectHeroOverlay, type HeroOverlayProps, type OverlayVariant, type OverlayDirection, type OverlayIntensity } from "./hero-overlay";
+export {
+  HeroOverlay,
+  BlogPostHeroOverlay,
+  ProjectHeroOverlay,
+  type HeroOverlayProps,
+  type OverlayVariant,
+  type OverlayDirection,
+  type OverlayIntensity,
+} from "./hero-overlay";
 
 // Math components
-export { 
-  InlineMath, 
-  DisplayMath, 
+export {
+  InlineMath,
+  DisplayMath,
   getMathClasses,
   INLINE_MATH_CLASSES,
   type InlineMathProps,
@@ -58,12 +77,12 @@ export {
 } from "./inline-math";
 
 // Annotation (Rough Notation) - hand-drawn text annotations
-export { 
-  Annotation, 
+export {
+  Annotation,
   AnnotationVariants,
-  type AnnotationProps, 
+  type AnnotationProps,
   type AnnotationType,
-  type BracketType 
+  type BracketType,
 } from "./annotation";
 
 // Interactive Diagrams (React Flow) - node-based diagrams
@@ -72,7 +91,7 @@ export {
   createLinearFlow,
   createBranchingFlow,
   type InteractiveDiagramProps,
-  type BaseNodeData
+  type BaseNodeData,
 } from "./interactive-diagram";
 
 // Diagram Presets (lazy-loaded for SSR compatibility)
@@ -91,9 +110,7 @@ export {
   MDXCVEDecisionTree,
 } from "./mdx-diagram-wrapper";
 
-export {
-  type DiagramPresetProps
-} from "./diagram-presets";
+export { type DiagramPresetProps } from "./diagram-presets";
 
 // Error boundaries
 export { ErrorBoundary } from "./error-boundaries/error-boundary";
@@ -116,7 +133,10 @@ export { MediaCard, type MediaCardProps } from "./cards";
 export { QuoteCard, type QuoteCardProps } from "./cards";
 
 // Post Interactions
-export { PostInteractions, type PostInteractionsProps } from "./PostInteractions";
+export {
+  PostInteractions,
+  type PostInteractionsProps,
+} from "./PostInteractions";
 
 // Activity (replaces deprecated RecentActivity)
 export * from "../activity";
