@@ -11,6 +11,9 @@ tools:
     "arxiv/*",
     "axiom/*",
     "context/*",
+    "dcyfr-analytics/*",
+    "dcyfr-contentmanager/*",
+    "dcyfr-designtokens/*",
     "filesystem/*",
     "github/*",
     "octocode/*",
@@ -18,9 +21,6 @@ tools:
     "sentry/*",
     "vercel/*",
     "agent",
-    "dcyfr-analytics/*",
-    "dcyfr-designtokens/*",
-    "dcyfr-contentmanager/*",
     "memory",
     "todo",
   ]
@@ -81,30 +81,28 @@ Create a new /bookmarks page:
 
 ### **Core Patterns**
 
-| Document                                                                                            | Covers                                                                  |
-| --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| [**COMPONENT_PATTERNS.md**](patterns/component-patterns.md)                                         | Layout selection (PageLayout 90% rule), barrel exports, import strategy |
-| [**API_PATTERNS.md**](patterns/api-patterns.md)                                                     | Validate→Queue→Respond, Inngest integration, rate limiting              |
-| [**TESTING_PATTERNS.md**](patterns/testing-patterns.md)                                             | 99% pass rate target, strategic skips, when to test                     |
-| [**CODEQL_SUPPRESSIONS.md**](patterns/codeql-suppressions.md)                                       | LGTM syntax, false positive patterns, verification                      |
-| [**SECURITY_VULNERABILITY_TROUBLESHOOTING.md**](patterns/SECURITY_VULNERABILITY_TROUBLESHOOTING.md) | Code scanning alert analysis, SSRF prevention, security testing         |
+| Document                                                      | Covers                                                                  |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| [**Component Patterns**](../../docs/ai/component-patterns.md) | Layout selection (PageLayout 90% rule), barrel exports, import strategy |
+| [**Best Practices**](../../docs/ai/best-practices.md)         | API patterns, Inngest integration, quality checks                       |
+| [**Testing Guide**](../../docs/testing/README.md)             | 99% pass rate target, strategic skips, when to test                     |
+| [**Quick Reference**](../../docs/ai/quick-reference.md)       | Commands, imports, common patterns                                      |
 
 ### **Enforcement Rules**
 
-| Document                                                           | Covers                                                                      |
-| ------------------------------------------------------------------ | --------------------------------------------------------------------------- |
-| [**DESIGN_TOKENS.md**](enforcement/design-tokens.md)               | Token enforcement (NON-NEGOTIABLE), categories, ESLint rules, compliance    |
-| [**APPROVAL_GATES.md**](enforcement/approval-gates.md)             | Breaking changes, architecture decisions, security-sensitive work           |
-| [**VALIDATION_CHECKLIST.md**](enforcement/validation-checklist.md) | Pre-completion checks, common failures, bypass criteria                     |
-| [**TEST_DATA_PREVENTION.md**](enforcement/TEST_DATA_PREVENTION.md) | Environment-aware code, no fabricated data in production, cleanup practices |
+| Document                                                    | Covers                                                                      |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------- |
+| [**Design System**](../../docs/ai/design-system.md)         | Token enforcement (NON-NEGOTIABLE), categories, ESLint rules, compliance    |
+| [**Enforcement Rules**](../../docs/ai/enforcement-rules.md) | Breaking changes, architecture decisions, security-sensitive work           |
+| [**Testing Guide**](../../docs/testing/README.md)           | Environment-aware code, no fabricated data in production, cleanup practices |
 
 ### **Learning & Optimization**
 
-| Document                                                      | Covers                                                  |
-| ------------------------------------------------------------- | ------------------------------------------------------- |
-| [**PERFORMANCE_METRICS.md**](learning/performance-metrics.md) | Token budgets, efficiency targets, dashboards           |
-| [**CONTINUOUS_LEARNING.md**](learning/continuous-learning.md) | Pattern recognition, feedback loops, self-improvement   |
-| [**KNOWLEDGE_BASE.md**](learning/KNOWLEDGE_BASE.md)           | Session handoff, knowledge transfer, long-term learning |
+| Document                                                | Covers                                                |
+| ------------------------------------------------------- | ----------------------------------------------------- |
+| [**Decision Trees**](../../docs/ai/decision-trees.md)   | Workflow decisions, pattern selection, visual guides  |
+| [**Best Practices**](../../docs/ai/best-practices.md)   | Pattern recognition, feedback loops, self-improvement |
+| [**Quick Reference**](../../docs/ai/quick-reference.md) | Commands, common workflows                            |
 
 ---
 
@@ -125,7 +123,7 @@ import { SPACING, TYPOGRAPHY, CONTAINER_WIDTHS } from "@/lib/design-tokens";
 </div>
 ```
 
-**See:** [DESIGN_TOKENS.md](enforcement/design-tokens.md) for complete token reference
+**See:** [Design System Guide](../../docs/ai/design-system.md) for complete token reference
 
 ### 2. **Layouts (90% PageLayout Rule)**
 
@@ -137,7 +135,7 @@ export default function Page() {
 ```
 
 **Special cases only:** ArticleLayout (blog posts), ArchiveLayout (collections)  
-**See:** [COMPONENT_PATTERNS.md](patterns/component-patterns.md#layout-selection)
+**See:** [Component Patterns](../../docs/ai/component-patterns.md)
 
 ### 3. **Imports (Barrel Exports Only)**
 
@@ -150,7 +148,7 @@ import { PageLayout } from "@/components/layouts";
 import PostList from "@/components/blog/post-list";
 ```
 
-**See:** [COMPONENT_PATTERNS.md](patterns/component-patterns.md#import-strategy)
+**See:** [Component Patterns](../../docs/ai/component-patterns.md)
 
 ### 4. **API Routes (Validate → Queue → Respond)**
 
@@ -162,7 +160,7 @@ export async function POST(request: NextRequest) {
 }
 ```
 
-**See:** [API_PATTERNS.md](patterns/api-patterns.md)
+**See:** [Best Practices](../../docs/ai/best-practices.md)
 
 ### 5. **Testing (99% Pass Rate Target)**
 
@@ -170,7 +168,7 @@ export async function POST(request: NextRequest) {
 - When to test: Logic, API routes, utilities, state
 - When NOT to test: Static pages, trivial changes, pure CSS
 
-**See:** [TESTING_PATTERNS.md](patterns/testing-patterns.md)
+**See:** [Testing Guide](../../docs/testing/README.md)
 
 ### 6. **Test Data Prevention (MANDATORY)**
 
@@ -234,7 +232,7 @@ DCYFR **pauses and requests approval** for:
 - **Security-sensitive work** (auth, rate limits, CORS, sanitization)
 - **Test data changes** (new test data sources, modifications to safeguards)
 
-**See:** [APPROVAL_GATES.md](enforcement/APPROVAL_GATES.md) for process details
+**See:** [Enforcement Rules](../../docs/ai/enforcement-rules.md) for process details
 
 ---
 
@@ -360,7 +358,7 @@ DCYFR has access to specialized external research tools for discovering patterns
 3. Target line ranges (5x faster)
 4. Cache common patterns
 
-**See:** [PERFORMANCE_METRICS.md](learning/PERFORMANCE_METRICS.md) for details
+**See:** [Quick Reference](../../docs/ai/quick-reference.md) for details
 
 ---
 
@@ -374,30 +372,7 @@ Before marking work complete, DCYFR validates:
 - [ ] Design tokens ≥90% compliance
 - [ ] No breaking changes (or approved)
 
-**See:** [VALIDATION_CHECKLIST.md](enforcement/VALIDATION_CHECKLIST.md) for detailed checks
-
----
-
-## 🗂️ Documentation Structure
-
-```
-.github/agents/
-├── patterns/                     # Implementation patterns
-│   ├── component-patterns.md    # Layouts, imports, exports
-│   ├── api-patterns.md          # Inngest, validation, responses
-│   ├── testing-patterns.md      # 99% target, when/when-not-to-test
-│   └── codeql-suppressions.md   # LGTM syntax, false positives
-│
-├── enforcement/                  # Quality gates
-│   ├── design-tokens.md         # Token enforcement, categories
-│   ├── approval-gates.md        # Breaking changes, security
-│   └── validation-checklist.md  # Pre-completion checks
-│
-└── learning/                     # Optimization & learning
-    ├── performance-metrics.md   # Token budgets, dashboards
-    ├── continuous-learning.md   # Self-improvement, pattern capture
-    └── knowledge-base.md        # Session handoff, long-term learning
-```
+**See:** [Best Practices](../../docs/ai/best-practices.md) for detailed validation steps
 
 ---
 
