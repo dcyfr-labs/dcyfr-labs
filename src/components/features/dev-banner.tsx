@@ -2,11 +2,12 @@
 /**
  * DevBanner
  *
- * Displays a dismissible development banner with fade animations when
+ * Displays a dismissible development banner with fade and slide animations when
  * running in development. The dismissed state is preserved only for the
  * duration of the browser session (sessionStorage).
- * 
- * Positioned absolutely to avoid shifting the header navigation.
+ *
+ * Positioned in the document flow to push down the site navigation.
+ * Scrolls out of view naturally as the user scrolls down the page.
  */
 import { useState, useRef, useLayoutEffect } from "react";
 import { X } from "lucide-react";
@@ -26,17 +27,23 @@ export function DevBanner() {
 
   const handleClose = () => {
     setIsAnimating(true);
-    // Wait for fade out animation to complete
+    // Wait for slide-up animation to complete
     setTimeout(() => {
       try {
         const storage = persistAcrossSessions ? localStorage : sessionStorage;
         storage.setItem(STORAGE_KEY, "true");
+        // Dispatch storage event for same-window listeners
+        window.dispatchEvent(new StorageEvent('storage', {
+          key: STORAGE_KEY,
+          newValue: 'true',
+          storageArea: storage,
+        }));
       } catch (err) {
         // ignore
       }
       setIsOpen(false);
       setIsAnimating(false);
-    }, 200); // Match animation duration
+    }, 300); // Match animation duration
   };
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
@@ -78,14 +85,13 @@ export function DevBanner() {
       role="region"
       aria-label="Dev Banner"
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 pointer-events-none",
-        "transition-opacity",
+        "w-full bg-background transition-all",
         ANIMATION.duration.standard,
-        isAnimating ? "opacity-0" : "opacity-100"
+        isAnimating ? "opacity-0 -translate-y-full" : "opacity-100 translate-y-0"
       )}
     >
-      <div className={cn("mx-auto", CONTAINER_WIDTHS.content, CONTAINER_PADDING, "pt-4")}>
-        <div className={cn("rounded-lg p-3 flex items-center justify-between pointer-events-auto", SEMANTIC_COLORS.alert.info.border, SEMANTIC_COLORS.alert.info.container)}>
+      <div className={cn("mx-auto", CONTAINER_WIDTHS.content, CONTAINER_PADDING, "py-3")}>
+        <div className={cn("rounded-lg p-3 flex items-center justify-between", SEMANTIC_COLORS.alert.info.border, SEMANTIC_COLORS.alert.info.container)}>
           <div className="flex items-center gap-3">
             <strong className={cn("text-sm", SEMANTIC_COLORS.alert.info.text)}>DEV Mode</strong>
             <span className={cn("text-sm", SEMANTIC_COLORS.alert.info.text)}>

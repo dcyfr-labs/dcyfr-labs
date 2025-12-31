@@ -736,6 +736,16 @@ export const SPACING = {
   /** Alternative subsection spacing (backwards compatibility, single value) */
   subsectionAlt: "space-y-6",
 
+  /** Section divider spacing (bordered sections like "Other Projects", "Related Posts") */
+  sectionDivider: {
+    /** Container spacing: top margin and padding for bordered sections */
+    container: "mt-8 md:mt-10 lg:mt-12 pt-6 md:pt-7 lg:pt-8",
+    /** Heading bottom margin */
+    heading: "mb-4 md:mb-5 lg:mb-6",
+    /** Grid gap for card layouts */
+    grid: "gap-4",
+  },
+
   /** Activity feed spacing (content-focused, generous breathing room) */
   activity: {
     /** Spacing between individual threads (generous for visual separation) */
@@ -1764,7 +1774,7 @@ export const PAGE_LAYOUT = {
   /** Hero section spacing - larger than standard sections */
   hero: {
     /** Container for hero content - responsive top padding (mobile-first, scales up) */
-    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-16 md:pt-24 lg:pt-32 pb-8 md:pb-12`,
+    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-16 md:pt-24 lg:pt-32`,
     /** Hero title + description wrapper */
     content: SPACING.proseHero,
   },

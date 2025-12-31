@@ -83,8 +83,8 @@ export function PostInteractions({
   // contentId is already the slug (e.g., "my-post" or "my-project")
   const activityId = contentId;
 
-  const { isLiked, toggleLike, getCount } = useActivityReactions(contentType);
-  const { isBookmarked, toggle: toggleBookmark, getBookmarkCount } = useBookmarks(contentType);
+  const { isLiked, toggleLike, getCount } = useActivityReactions();
+  const { isBookmarked, toggle: toggleBookmark, getBookmarkCount } = useBookmarks();
 
   // Fetch global engagement counts
   const { globalLikes, globalBookmarks } = useGlobalEngagementCounts({

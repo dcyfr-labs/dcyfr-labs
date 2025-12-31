@@ -7,7 +7,7 @@ import {
   generatePostId,
   isScheduledPost,
   isPostVisible,
-} from '@/lib/blog'
+} from '@/lib/blog.server'
 import type { Post } from '@/data/posts'
 
 /**

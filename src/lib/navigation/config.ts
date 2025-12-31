@@ -1,19 +1,19 @@
 /**
  * Navigation Configuration
- * 
+ *
  * Centralized source of truth for all navigation structures.
  * Used by: Header, MobileNav, BottomNav, Footer, CommandPalette
- * 
+ *
  * SEO Optimized:
  * - Semantic link structure
  * - Clear hierarchy
  * - Descriptive labels
  * - Keyboard navigation support
- * 
+ *
  * @example
  * ```tsx
  * import { NAVIGATION } from '@/lib/navigation/config';
- * 
+ *
  * // Use in components
  * NAVIGATION.header.map(item => <NavLink item={item} />)
  * ```
@@ -52,7 +52,7 @@ export const HEADER_NAV: NavItem[] = [
     shortLabel: "Home",
     icon: Home,
     shortcut: "g h",
-    description: "Return to homepage",
+    description: "Return home",
     exactMatch: true,
   },
   {
@@ -61,7 +61,7 @@ export const HEADER_NAV: NavItem[] = [
     shortLabel: "About",
     icon: User,
     shortcut: "g a",
-    description: "Learn about DCYFR Labs and our team",
+    description: "Learn about us and our team",
   },
   {
     href: "/blog",
@@ -105,13 +105,18 @@ export const BLOG_NAV: NavItem[] = [
   {
     href: "/blog",
     label: "All Posts",
-    description: "Browse all blog articles",
+    description: "Browse our blog articles",
     exactMatch: true,
   },
   {
     href: "/blog/series",
     label: "Blog Series",
-    description: "Multi-part article collections",
+    description: "In-depth multi-part articles",
+  },
+  {
+    href: "/blog?category=AI",
+    label: "Artificial Intelligence",
+    description: "Artificial intelligence and development",
   },
   {
     href: "/blog?category=DevSecOps",
@@ -119,9 +124,9 @@ export const BLOG_NAV: NavItem[] = [
     description: "Cybersecurity and secure development",
   },
   {
-    href: "/blog?category=AI",
-    label: "AI",
-    description: "Artificial intelligence and development",
+    href: "/blog?category=Web",
+    label: "Web Development",
+    description: "Modern full-stack web development",
   },
 ];
 
@@ -150,7 +155,7 @@ export const WORK_NAV: NavItem[] = [
     href: "/work?category=startup",
     label: "Startup",
     description: "Early-stage product development",
-  }
+  },
 ];
 
 // ============================================================================
@@ -437,7 +442,12 @@ export const NAVIGATION: NavigationConfig = {
 // ============================================================================
 
 // All utility functions are implemented in utils.ts and re-exported here for convenience
-export { isNavItemActive, getAriaCurrent, getNavAnalytics, formatShortcut } from "./utils";
+export {
+  isNavItemActive,
+  getAriaCurrent,
+  getNavAnalytics,
+  formatShortcut,
+} from "./utils";
 
 /**
  * Get all keyboard shortcuts from navigation
@@ -475,4 +485,3 @@ export function findNavItem(href: string): NavItem | undefined {
 
   return allItems.find((item) => item.href === href);
 }
-

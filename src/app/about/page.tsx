@@ -4,7 +4,6 @@ import { getOgImageUrl } from "@/lib/site-config";
 import { getAboutPageSchema, getJsonLdScriptProps } from "@/lib/json-ld";
 import { headers } from "next/headers";
 import {
-  TYPOGRAPHY,
   SPACING,
   PAGE_LAYOUT,
   SCROLL_BEHAVIOR,
@@ -59,7 +58,7 @@ export default async function AboutPage() {
 
       <SectionNavigator
         scrollOffset={SCROLL_BEHAVIOR.offset.standard}
-        className="space-y-12"
+        className={SPACING.section}
       >
         {/* Hero Section - Organization Introduction */}
         <Section id="about-hero">
@@ -76,35 +75,36 @@ export default async function AboutPage() {
         {/* Organization Philosophy */}
         <Section
           id="our-philosophy"
-          className={`${PAGE_LAYOUT.proseSection.container}`}
+          className={PAGE_LAYOUT.proseSection.container}
         >
-          <ScrollReveal animation="fade-up" delay={125}>
+          <ScrollReveal animation="fade-up" delay={100}>
             <AboutDcyfrLabs />
           </ScrollReveal>
         </Section>
 
         {/* Meet the Team */}
         <Section id="meet-the-team" className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={50}>
+          <ScrollReveal animation="fade-up" delay={200}>
             <TeamSpotlights />
           </ScrollReveal>
         </Section>
 
-        {/* Latest Badges */}
-        <Section id="badges" className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={100}>
+        {/* Team Certifications */}
+        <Section id="certifications" className={PAGE_LAYOUT.section.container}>
+          <ScrollReveal animation="fade-up" delay={300}>
             <BadgeWallet
+              username="dcyfr"
               showLatestOnly
               limit={3}
-              viewMoreUrl="/about/drew/resume#badges"
-              viewMoreText="View all badges on my resume"
+              viewMoreUrl="/about/drew/resume#certifications"
+              viewMoreText="View all certifications"
             />
           </ScrollReveal>
         </Section>
 
         {/* Connect with Us */}
         <Section id="connect-with-us" className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={150}>
+          <ScrollReveal animation="fade-up" delay={400}>
             <ConnectWithUs />
           </ScrollReveal>
         </Section>

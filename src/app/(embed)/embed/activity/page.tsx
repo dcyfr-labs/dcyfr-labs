@@ -24,7 +24,7 @@ import {
   transformGitHubTraffic,
   transformGoogleAnalytics,
   transformSearchConsole,
-} from "@/lib/activity";
+} from "@/lib/activity/server";
 import type { ActivityItem } from "@/lib/activity";
 import { ActivityEmbedClient } from "./activity-embed-client";
 // ============================================================================
@@ -83,7 +83,7 @@ export default async function ActivityEmbedPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const params = await searchParams;
-  
+
   // Get nonce from proxy for CSP
   const nonce = (await headers()).get("x-nonce") || "";
 
@@ -187,9 +187,10 @@ export default async function ActivityEmbedPage({
   // Serialize activities for client
   const serializedActivities = allActivities.map((activity) => ({
     ...activity,
-    timestamp: activity.timestamp instanceof Date 
-      ? activity.timestamp.toISOString() 
-      : activity.timestamp,
+    timestamp:
+      activity.timestamp instanceof Date
+        ? activity.timestamp.toISOString()
+        : activity.timestamp,
   }));
 
   // Extract URL parameters for filtering

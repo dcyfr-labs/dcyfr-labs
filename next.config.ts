@@ -12,8 +12,8 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig: NextConfig = {
   /* config options here */
   skipTrailingSlashRedirect: true,
+  serverExternalPackages: ["redis"],
   experimental: {
-    serverExternalPackages: ["redis"],
     optimizePackageImports: [
       "@radix-ui/react-icons",
       "lucide-react",

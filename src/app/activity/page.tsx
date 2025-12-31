@@ -11,7 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { ActivityPageClient } from "./activity-client";
 import { PageLayout, ArchiveHero } from "@/components/layouts";
-import { FeedDropdown } from "@/components/blog";
+import { FeedDropdown } from "@/components/blog/client";
 import { posts } from "@/data/posts";
 import { projects } from "@/data/projects";
 import { changelog } from "@/data/changelog";
@@ -34,7 +34,7 @@ import {
   transformGitHubTraffic,
   transformGoogleAnalytics,
   transformSearchConsole,
-} from "@/lib/activity";
+} from "@/lib/activity/server";
 import type { ActivityItem } from "@/lib/activity";
 import { createClient } from "redis";
 // ============================================================================

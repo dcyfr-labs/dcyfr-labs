@@ -260,9 +260,9 @@ export function CodeProjectLayout({ project, nonce, basePath = '/work' }: CodePr
       </div>
 
       {/* Other Projects */}
-      <div className="mt-12 pt-8 border-t">
-        <h2 className={`${TYPOGRAPHY.h2.standard} mb-6`}>Other Projects</h2>
-        <div className="grid gap-4 sm:grid-cols-2">
+      <div className={`${SPACING.sectionDivider.container} border-t`}>
+        <h2 className={`${TYPOGRAPHY.h2.standard} ${SPACING.sectionDivider.heading}`}>Other Projects</h2>
+        <div className={`grid ${SPACING.sectionDivider.grid} sm:grid-cols-2`}>
           {visibleProjects
             .filter((p) => p.slug !== project.slug)
             .slice(0, 2)

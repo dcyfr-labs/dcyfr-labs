@@ -1,4 +1,4 @@
-import { getAllPosts } from "@/lib/blog";
+import { getAllPosts } from "@/lib/blog.server";
 
 // Re-export category types and labels from centralized file (client-safe)
 export type { PostCategory } from "@/lib/post-categories";
@@ -207,9 +207,7 @@ export function getSeriesForPost(post: Post): SeriesMetadata | undefined {
  * }
  * ```
  */
-export function getSeriesByAnySlug(
-  slug: string
-): {
+export function getSeriesByAnySlug(slug: string): {
   series: SeriesMetadata;
   needsRedirect: boolean;
   canonicalSlug: string;

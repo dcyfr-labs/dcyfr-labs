@@ -2,22 +2,31 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import { posts, postsBySeries } from "@/data/posts";
-import { getPostByAnySlug } from "@/lib/blog";
+import { getPostByAnySlug } from "@/lib/blog.server";
 import { SITE_URL, AUTHOR_NAME } from "@/lib/site-config";
 import "katex/dist/katex.min.css"; // KaTeX styles for math rendering in blog posts
 import { extractHeadings } from "@/lib/toc";
 import { headers } from "next/headers";
 import { getArticleData } from "@/lib/article";
-import { CONTAINER_WIDTHS, CONTAINER_PADDING, CONTAINER_VERTICAL_PADDING, SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
+import {
+  CONTAINER_WIDTHS,
+  CONTAINER_PADDING,
+  CONTAINER_VERTICAL_PADDING,
+  SPACING,
+  TYPOGRAPHY,
+} from "@/lib/design-tokens";
 import {
   createArticlePageMetadata,
   createArticleSchema,
   createBreadcrumbSchema,
-  getJsonLdScriptProps
+  getJsonLdScriptProps,
 } from "@/lib/metadata";
-import { ArticleLayout, ArticleHeader, ArticleFooter } from "@/components/layouts";
 import {
-  BlogPostSidebarWrapper,
+  ArticleLayout,
+  ArticleHeader,
+  ArticleFooter,
+} from "@/components/layouts";
+import {
   BlogPostLayoutWrapper,
   CollapsibleBlogSidebar,
   SeriesNavigation,
@@ -25,10 +34,13 @@ import {
   BlogAnalyticsTracker,
   SidebarVisibilityProvider,
   HideWhenSidebarVisible,
+} from "@/components/blog";
+import {
   ViewCountDisplay,
   ViewCountSkeleton,
+  BlogPostSidebarWrapper,
   getHottestPostSlug,
-} from "@/components/blog";
+} from "@/components/blog/server";
 import {
   MDX,
   FigureProvider,
@@ -44,7 +56,7 @@ import { ShareButtons } from "@/components/features";
 import { LazyGiscusComments } from "@/components/features";
 import { ViewTracker } from "@/components/features";
 import { PostBadges } from "@/components/blog";
-import { PostInteractions } from '@/components/common';
+import { PostInteractions } from "@/components/common";
 
 // Enable Incremental Static Regeneration with 1 hour revalidation
 export const revalidate = 3600; // 1 hour in seconds
@@ -56,19 +68,19 @@ export const experimental_ppr = true;
 // Pre-generate all blog post pages at build time
 export async function generateStaticParams() {
   const allParams = [];
-  
+
   // Add current slugs
   for (const post of posts) {
     allParams.push({ slug: post.slug });
   }
-  
+
   // Add post IDs for redirect pages (e.g., /blog/post-20200107-04d94a8e → /blog/demo-markdown)
   for (const post of posts) {
     if (post.id !== post.slug) {
       allParams.push({ slug: post.id });
     }
   }
-  
+
   // Add previous slugs for redirect pages
   for (const post of posts) {
     if (post.previousSlugs) {
@@ -77,7 +89,7 @@ export async function generateStaticParams() {
       }
     }
   }
-  
+
   // Add previous IDs for redirect pages (analytics migration)
   for (const post of posts) {
     if (post.previousIds) {
@@ -86,21 +98,27 @@ export async function generateStaticParams() {
       }
     }
   }
-  
+
   return allParams;
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
   const result = getPostByAnySlug(slug, posts);
-  
+
   if (!result) return {};
-  
+
   const post = result.post;
-  
+
   // Use hero image for OG if available
-  const heroImageUrl = post.image?.url ? `${SITE_URL}${post.image.url}` : undefined;
-  
+  const heroImageUrl = post.image?.url
+    ? `${SITE_URL}${post.image.url}`
+    : undefined;
+
   return createArticlePageMetadata({
     title: post.title,
     description: post.summary,
@@ -116,47 +134,53 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   });
 }
 
-export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function PostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
   const result = getPostByAnySlug(slug, posts);
-  
+
   if (!result) {
     notFound();
   }
-  
+
   const { post, needsRedirect, canonicalSlug } = result;
-  
+
   // If this is an old slug, redirect to the current one
   if (needsRedirect) {
     redirect(`/blog/${canonicalSlug}`);
   }
-  
+
   // Get nonce from proxy for CSP
   const nonce = (await headers()).get("x-nonce") || "";
-  
+
   // Use Article Pattern for navigation and related posts
   const articleData = getArticleData({
     item: post,
     allItems: posts,
-    relatedFields: ['tags'],
-    idField: 'slug',
-    dateField: 'publishedAt',
+    relatedFields: ["tags"],
+    idField: "slug",
+    dateField: "publishedAt",
     maxRelated: 3,
   });
-  
+
   // Get hottest post slug (streams with PPR)
   const hottestSlug = await getHottestPostSlug(posts);
-  
+
   const latestPost = [...posts]
-    .filter(p => !p.archived && !p.draft)
+    .filter((p) => !p.archived && !p.draft)
     .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1))[0];
-  
+
   // Get series posts if this post is part of a series
-  const seriesPosts = post.series ? postsBySeries[post.series.name] ?? [] : [];
-  
+  const seriesPosts = post.series
+    ? (postsBySeries[post.series.name] ?? [])
+    : [];
+
   // Extract headings for table of contents
   const headings = extractHeadings(post.body);
-  
+
   // JSON-LD structured data for SEO
   const articleSchema = createArticleSchema({
     title: post.title,
@@ -168,13 +192,13 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     image: post.image?.url ? `${SITE_URL}${post.image.url}` : undefined,
     tags: post.tags,
   });
-  
+
   const breadcrumbSchema = createBreadcrumbSchema([
     { name: "Home", url: SITE_URL },
     { name: "Blog", url: `${SITE_URL}/blog` },
     { name: post.title, url: `${SITE_URL}/blog/${post.slug}` },
   ]);
-  
+
   // Combine schemas in a graph
   const jsonLd = {
     "@context": "https://schema.org",
@@ -206,135 +230,159 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
 
       {/* Desktop Layout: Three-column (Content + TOC + Sidebar) - DOM order optimized for accessibility */}
-      <div className={`container ${CONTAINER_WIDTHS.dashboard} mx-auto ${CONTAINER_PADDING} pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12`}>
+      <div
+        className={`container ${CONTAINER_WIDTHS.dashboard} mx-auto ${CONTAINER_PADDING} pt-6 md:pt-8 lg:pt-36`}
+      >
         <BlogPostLayoutWrapper>
           {/* Center: Main Content (DOM first for accessibility/SEO) */}
           <SidebarVisibilityProvider>
-          <div className="min-w-0 lg:order-2">
-            <ArticleLayout
-              useProseWidth={false}
-              className="py-0! max-w-none px-0"
-            >
-              <Breadcrumbs
-                items={[
-                  { label: "Home", href: "/" },
-                  { label: "Blog", href: "/blog" },
-                  { label: post.title },
-                ]}
-              />
-
-              <ArticleHeader
-                title={post.title}
-                subtitle={post.subtitle}
-                backgroundImage={post.image ? {
-                  url: post.image.url,
-                  alt: post.image.alt || `Hero image for ${post.title}`,
-                  position: (post.image.position === 'background' ? 'center' : post.image.position) || 'center',
-                  caption: post.image.caption,
-                  credit: post.image.credit,
-                  priority: post.featured || false, // Prioritize hero image loading for featured posts
-                  hideHero: post.image.hideHero,
-                } : undefined}
+            <div className="min-w-0 lg:order-2">
+              <ArticleLayout
+                useProseWidth={false}
+                className="py-0! max-w-none px-0"
               >
-                {/* Metadata shown only when sidebar is hidden */}
-                <HideWhenSidebarVisible>
-                  <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mt-4">
-                    <time dateTime={post.publishedAt}>
-                      {new Date(post.publishedAt).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </time>
-                    <span aria-hidden="true">·</span>
-                    <span>{post.readingTime.text}</span>
-                    <Suspense fallback={<ViewCountSkeleton />}>
-                      <ViewCountDisplay postId={post.id} />
-                    </Suspense>
-                  </div>
-                </HideWhenSidebarVisible>
-              </ArticleHeader>
-
-              {/* Series navigation */}
-              {post.series && seriesPosts.length > 0 && (
-                <SeriesNavigation
-                  currentPost={post}
-                  seriesPosts={seriesPosts}
+                <Breadcrumbs
+                  items={[
+                    { label: "Home", href: "/" },
+                    { label: "Blog", href: "/blog" },
+                    { label: post.title },
+                  ]}
                 />
-              )}
 
-              <div className="prose my-8">
-                <FigureProvider>
-                  <MDX source={post.body} useFontContrast={true} />
-                </FigureProvider>
-              </div>
-
-              {/* Post interactions (like, bookmark, share) */}
-              <div className="my-6">
-                <PostInteractions
-                  contentId={post.slug}
-                  contentType="post"
+                <ArticleHeader
                   title={post.title}
-                  description={post.summary}
-                  href={`/blog/${post.slug}`}
-                  variant="default"
-                  showCounts={true}
-                />
-              </div>
-
-              <ArticleFooter>
-                {/* Status badges and category - hidden when sidebar is visible */}
-                <HideWhenSidebarVisible>
-                  <div className="flex flex-wrap items-center gap-2 mb-6">
-                    <PostBadges post={post} isLatestPost={latestPost?.slug === post.slug} isHotPost={hottestSlug === post.slug} showCategory={true} />
-                  </div>
-                </HideWhenSidebarVisible>
-
-                {/* Tags section - hidden when sidebar is visible */}
-                <HideWhenSidebarVisible>
-                  {post.tags.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-2 mb-6">
-                      <span className="text-sm text-muted-foreground">Tagged:</span>
-                      {post.tags.map((tag: string) => (
-                        <a key={tag} href={`/blog?tag=${encodeURIComponent(tag)}`}>
-                          <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 cursor-pointer">
-                            {tag}
-                          </span>
-                        </a>
-                      ))}
+                  subtitle={post.subtitle}
+                  backgroundImage={
+                    post.image
+                      ? {
+                          url: post.image.url,
+                          alt: post.image.alt || `Hero image for ${post.title}`,
+                          position:
+                            (post.image.position === "background"
+                              ? "center"
+                              : post.image.position) || "center",
+                          caption: post.image.caption,
+                          credit: post.image.credit,
+                          priority: post.featured || false, // Prioritize hero image loading for featured posts
+                          hideHero: post.image.hideHero,
+                        }
+                      : undefined
+                  }
+                >
+                  {/* Metadata shown only when sidebar is hidden */}
+                  <HideWhenSidebarVisible>
+                    <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mt-4">
+                      <time dateTime={post.publishedAt}>
+                        {new Date(post.publishedAt).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }
+                        )}
+                      </time>
+                      <span aria-hidden="true">·</span>
+                      <span>{post.readingTime.text}</span>
+                      <Suspense fallback={<ViewCountSkeleton />}>
+                        <ViewCountDisplay postId={post.id} />
+                      </Suspense>
                     </div>
-                  )}
-                </HideWhenSidebarVisible>
+                  </HideWhenSidebarVisible>
+                </ArticleHeader>
 
-                {/* Share section - hidden when sidebar is visible */}
-                <HideWhenSidebarVisible>
-                  <div className="space-y-4">
-                    <h2 className={TYPOGRAPHY.h2.standard}>Share this blog post</h2>
-                    <ShareButtons
-                      url={`${SITE_URL}/blog/${post.slug}`}
-                      title={post.title}
-                      postId={post.id}
-                      initialShareCount={0}
-                    />
-                  </div>
-                </HideWhenSidebarVisible>
-                
-                {/* Related posts section */}
-                <RelatedPosts
-                  posts={articleData.relatedItems}
-                  currentSlug={post.slug}
-                />
-              </ArticleFooter>
+                {/* Series navigation */}
+                {post.series && seriesPosts.length > 0 && (
+                  <SeriesNavigation
+                    currentPost={post}
+                    seriesPosts={seriesPosts}
+                  />
+                )}
 
-              {/* Comments section - hidden for draft posts */}
-              {!post.draft && <LazyGiscusComments />}
-            </ArticleLayout>
+                <div className="prose my-8">
+                  <FigureProvider>
+                    <MDX source={post.body} useFontContrast={true} />
+                  </FigureProvider>
+                </div>
 
-            {/* Mobile/Tablet ToC - positioned after content for better mobile UX */}
-            <div className="lg:hidden mt-8">
-              <TableOfContents headings={headings} slug={post.slug} />
+                {/* Post interactions (like, bookmark, share) */}
+                <div className="my-6">
+                  <PostInteractions
+                    contentId={post.slug}
+                    contentType="post"
+                    title={post.title}
+                    description={post.summary}
+                    href={`/blog/${post.slug}`}
+                    variant="default"
+                    showCounts={true}
+                  />
+                </div>
+
+                <ArticleFooter>
+                  {/* Status badges and category - hidden when sidebar is visible */}
+                  <HideWhenSidebarVisible>
+                    <div className="flex flex-wrap items-center gap-2 mb-6">
+                      <PostBadges
+                        post={post}
+                        isLatestPost={latestPost?.slug === post.slug}
+                        isHotPost={hottestSlug === post.slug}
+                        showCategory={true}
+                      />
+                    </div>
+                  </HideWhenSidebarVisible>
+
+                  {/* Tags section - hidden when sidebar is visible */}
+                  <HideWhenSidebarVisible>
+                    {post.tags.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-2 mb-6">
+                        <span className="text-sm text-muted-foreground">
+                          Tagged:
+                        </span>
+                        {post.tags.map((tag: string) => (
+                          <a
+                            key={tag}
+                            href={`/blog?tag=${encodeURIComponent(tag)}`}
+                          >
+                            <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 cursor-pointer">
+                              {tag}
+                            </span>
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </HideWhenSidebarVisible>
+
+                  {/* Share section - hidden when sidebar is visible */}
+                  <HideWhenSidebarVisible>
+                    <div className="space-y-4">
+                      <h2 className={TYPOGRAPHY.h2.standard}>
+                        Share this blog post
+                      </h2>
+                      <ShareButtons
+                        url={`${SITE_URL}/blog/${post.slug}`}
+                        title={post.title}
+                        postId={post.id}
+                        initialShareCount={0}
+                      />
+                    </div>
+                  </HideWhenSidebarVisible>
+
+                  {/* Related posts section */}
+                  <RelatedPosts
+                    posts={articleData.relatedItems}
+                    currentSlug={post.slug}
+                  />
+                </ArticleFooter>
+
+                {/* Comments section - hidden for draft posts */}
+                {!post.draft && <LazyGiscusComments />}
+              </ArticleLayout>
+
+              {/* Mobile/Tablet ToC - positioned after content for better mobile UX */}
+              <div className="lg:hidden mt-8">
+                <TableOfContents headings={headings} slug={post.slug} />
+              </div>
             </div>
-          </div>
           </SidebarVisibilityProvider>
 
           {/* Left Rail: Table of Contents (desktop only, visually left via CSS Grid order) */}
@@ -352,7 +400,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               postTitle={post.title}
               metadata={{
                 publishedAt: new Date(post.publishedAt),
-                updatedAt: post.updatedAt ? new Date(post.updatedAt) : undefined,
+                updatedAt: post.updatedAt
+                  ? new Date(post.updatedAt)
+                  : undefined,
                 readingTime: post.readingTime.text,
                 tags: post.tags,
                 category: post.category,

@@ -139,7 +139,7 @@ export function AvailabilityBanner({ className }: { className?: string }) {
           <div className={cn(TYPOGRAPHY.label.standard, "mb-1")}>
             We&apos;re currently available for new projects!
           </div>
-          <p className={`text-sm text-muted-foreground mb-${SPACING.md}`}>
+          <p className="text-sm text-muted-foreground mb-4">
             Our calendar is now open! Whether you&apos;re looking for advice on
             secure coding practices, application performance, or architecture,
             we&apos;re here to help.
@@ -279,7 +279,7 @@ export function ProjectsCTA({ className }: { className?: string }) {
         )}
       >
         <h2 className={cn(TYPOGRAPHY.h2.featured, `mb-${SPACING.sm}`)}>
-          Interested in collaborating?
+          Interested in a collaboration?
         </h2>
         <p className={`text-muted-foreground mb-${SPACING.lg}`}>
           Whether you have a project in mind or just want to connect, we&apos;d

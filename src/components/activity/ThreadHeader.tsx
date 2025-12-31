@@ -22,7 +22,13 @@ import { SEMANTIC_COLORS } from "@/lib/design-tokens";
 import { getActivitySourceIcon } from "@/lib/activity";
 import type { ActivityItem } from "@/lib/activity";
 import { cn } from "@/lib/utils";
-import { TYPOGRAPHY, SPACING, HOVER_EFFECTS, ANIMATION, ACTIVITY_IMAGE } from "@/lib/design-tokens";
+import {
+  TYPOGRAPHY,
+  SPACING,
+  HOVER_EFFECTS,
+  ANIMATION,
+  ACTIVITY_IMAGE,
+} from "@/lib/design-tokens";
 import { Flame, TrendingUp } from "lucide-react";
 
 // ============================================================================
@@ -34,17 +40,17 @@ import { Flame, TrendingUp } from "lucide-react";
  */
 function getVerbColor(verb: ActivityItem["verb"]): string {
   const colorMap: Record<ActivityItem["verb"], string> = {
-    published: SEMANTIC_COLORS.status.success,
-    updated: SEMANTIC_COLORS.status.info,
-    launched: SEMANTIC_COLORS.highlight.primary,
-    released: SEMANTIC_COLORS.status.warning,
+    published: SEMANTIC_COLORS.status.neutral,
+    updated: SEMANTIC_COLORS.status.neutral,
+    launched: SEMANTIC_COLORS.status.neutral,
+    released: SEMANTIC_COLORS.status.neutral,
     committed: SEMANTIC_COLORS.status.neutral,
-    achieved: SEMANTIC_COLORS.status.warning,
-    earned: SEMANTIC_COLORS.status.info,
-    reached: SEMANTIC_COLORS.status.success,
+    achieved: SEMANTIC_COLORS.status.neutral,
+    earned: SEMANTIC_COLORS.status.neutral,
+    reached: SEMANTIC_COLORS.status.neutral,
   };
 
-  return colorMap[verb] || SEMANTIC_COLORS.status.success;
+  return colorMap[verb] || SEMANTIC_COLORS.status.neutral;
 }
 
 export interface ThreadHeaderProps {
@@ -80,7 +86,10 @@ export function ThreadHeader({
         {/* Header: Source + Verb Badges + Trending */}
         <div className="flex items-center gap-2 mb-1.5 flex-wrap">
           <Badge variant="default" className="gap-1.5 px-2 h-6">
-            {createElement(sourceIconComponent, { className: "h-3.5 w-3.5", "aria-hidden": "true" })}
+            {createElement(sourceIconComponent, {
+              className: "h-3.5 w-3.5",
+              "aria-hidden": "true",
+            })}
             <span className="capitalize">{activity.source}</span>
           </Badge>
 
@@ -90,17 +99,30 @@ export function ThreadHeader({
 
           {/* Trending Badge (Weekly takes priority over Monthly) */}
           {activity.meta?.trendingStatus?.isWeeklyTrending && (
-            <Badge variant="secondary" className={cn("px-2 h-6 flex items-center gap-1", SEMANTIC_COLORS.status.warning)}>
+            <Badge
+              variant="secondary"
+              className={cn(
+                "px-2 h-6 flex items-center gap-1",
+                SEMANTIC_COLORS.status.warning
+              )}
+            >
               <Flame className="w-3 h-3" aria-hidden="true" />
               Trending this week
             </Badge>
           )}
-          {!activity.meta?.trendingStatus?.isWeeklyTrending && activity.meta?.trendingStatus?.isMonthlyTrending && (
-            <Badge variant="secondary" className={cn("px-2 h-6 flex items-center gap-1", SEMANTIC_COLORS.status.info)}>
-              <TrendingUp className="w-3 h-3" aria-hidden="true" />
-              Trending this month
-            </Badge>
-          )}
+          {!activity.meta?.trendingStatus?.isWeeklyTrending &&
+            activity.meta?.trendingStatus?.isMonthlyTrending && (
+              <Badge
+                variant="secondary"
+                className={cn(
+                  "px-2 h-6 flex items-center gap-1",
+                  SEMANTIC_COLORS.status.info
+                )}
+              >
+                <TrendingUp className="w-3 h-3" aria-hidden="true" />
+                Trending this month
+              </Badge>
+            )}
         </div>
 
         {/* Content: Title, Featured Image, Description, Metadata */}
@@ -120,7 +142,12 @@ export function ThreadHeader({
 
           {/* Featured Image (if present) */}
           {activity.meta?.image && (
-            <div className={cn(ACTIVITY_IMAGE.container, ACTIVITY_IMAGE.sizes.header)}>
+            <div
+              className={cn(
+                ACTIVITY_IMAGE.container,
+                ACTIVITY_IMAGE.sizes.header
+              )}
+            >
               <Image
                 src={activity.meta.image.url}
                 alt={activity.meta.image.alt || activity.title}
@@ -150,7 +177,12 @@ export function ThreadHeader({
 
               {/* Stats */}
               {activity.meta.stats && (
-                <div className={cn(TYPOGRAPHY.activity.metadata, "flex items-center gap-2")}>
+                <div
+                  className={cn(
+                    TYPOGRAPHY.activity.metadata,
+                    "flex items-center gap-2"
+                  )}
+                >
                   {activity.meta.stats.views !== undefined && (
                     <span>{activity.meta.stats.views} views</span>
                   )}
@@ -166,21 +198,21 @@ export function ThreadHeader({
           )}
         </div>
 
-          {/* Action Buttons (now includes share button in footer) */}
-          <div className="mt-4">
-            <ThreadActions
-              activityId={activity.id}
-              timestamp={activity.timestamp}
-              activity={{
-                title: activity.title,
-                description: activity.description,
-                href: activity.href,
-              }}
-              showBookmarkCount
-              showShareCount
-            />
-          </div>
+        {/* Action Buttons (now includes share button in footer) */}
+        <div className="mt-4">
+          <ThreadActions
+            activityId={activity.id}
+            timestamp={activity.timestamp}
+            activity={{
+              title: activity.title,
+              description: activity.description,
+              href: activity.href,
+            }}
+            showBookmarkCount
+            showShareCount
+          />
         </div>
+      </div>
 
       {/* Thread Connector Line (if has replies) */}
       {hasReplies && (

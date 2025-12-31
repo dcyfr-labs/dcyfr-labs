@@ -11,7 +11,10 @@
 import type { Post } from "@/data/posts";
 import type { ActivityItem, ActivitySource, ActivityVerb } from "./types";
 import type { CredlyBadge, CredlyBadgesResponse } from "@/types/credly";
-import { getMultiplePostViews, getMultiplePostViewsInRange } from "@/lib/views";
+import {
+  getMultiplePostViews,
+  getMultiplePostViewsInRange,
+} from "@/lib/views.server";
 import { getPostCommentsBulk } from "@/lib/comments";
 import {
   getActivityReactionsBulk,

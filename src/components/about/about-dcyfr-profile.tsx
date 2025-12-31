@@ -1,6 +1,4 @@
-import Image from "next/image";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { dcyfr } from "@/data/dcyfr";
 import {
   TYPOGRAPHY,
@@ -10,8 +8,12 @@ import {
   BORDERS,
 } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
-import { Section, ProfileAvatar } from "@/components/common";
+import { Section } from "@/components/common";
 import { Zap, Code, Brain, Shield, FileText } from "lucide-react";
+import { ProfileHero } from "./profile-hero";
+import { ProfileCapabilityCard } from "./profile-capability-card";
+import { ProfileListSection } from "./profile-list-section";
+import { DcyfrActivityStats } from "./dcyfr-activity-stats";
 
 /**
  * About DCYFR Profile Component
@@ -21,48 +23,38 @@ import { Zap, Code, Brain, Shield, FileText } from "lucide-react";
  * followed by detailed capabilities, philosophy, and integration information.
  */
 export function AboutDcyfrProfile() {
+  // Icon mapping for capabilities
+  const capabilityIcons: Record<string, React.ReactNode> = {
+    "Code Development": <Code className="w-4 h-4 text-primary" />,
+    "Security Analysis": <Shield className="w-4 h-4 text-primary" />,
+    "Documentation & Knowledge Management": (
+      <FileText className="w-4 h-4 text-primary" />
+    ),
+    "Code Review & Quality Assurance": <Zap className="w-4 h-4 text-primary" />,
+    "Architecture & Planning": <Brain className="w-4 h-4 text-primary" />,
+  };
+
   return (
     <>
       {/* DCYFR Hero Section */}
-      <Section id="dcyfr-hero" className={PAGE_LAYOUT.hero.container}>
-        <div
-          className={cn(
-            `flex flex-col md:flex-row items-center md:items-start gap-${SPACING.md}`,
-            SPACING.content
-          )}
-        >
-          {/* Avatar */}
-          <div className="shrink-0 *:mt-0">
-            <ProfileAvatar userProfile="dcyfr" size="lg" />
-          </div>
+      <ProfileHero
+        userProfile="dcyfr"
+        name={dcyfr.name}
+        title={dcyfr.title}
+        subtitle={dcyfr.subtitle}
+        summary={dcyfr.summary}
+        badges={[
+          { icon: <Zap className="w-3 h-3" />, label: "AI-Powered" },
+          {
+            icon: <Shield className="w-3 h-3" />,
+            label: "Innovation by Design",
+          },
+          { icon: <Code className="w-3 h-3" />, label: "Full-Stack Automation" },
+        ]}
+      />
 
-          {/* Content */}
-          <div className={`flex-1 space-y-${SPACING.md}`}>
-            <div>
-              <h2 className={cn(TYPOGRAPHY.h1.hero, "font-serif")}>
-                {dcyfr.name}
-              </h2>
-              <p className="">{dcyfr.title}</p>
-              <p className="text-sm text-muted-foreground">{dcyfr.subtitle}</p>
-            </div>
-            <p className={TYPOGRAPHY.description}>{dcyfr.summary}</p>
-            <div className={`flex flex-wrap gap-${SPACING.sm}`}>
-              <Badge variant="secondary" className="gap-1">
-                <Zap className="w-3 h-3" />
-                AI-Powered
-              </Badge>
-              <Badge variant="secondary" className="gap-1">
-                <Shield className="w-3 h-3" />
-                Innovation by Design
-              </Badge>
-              <Badge variant="secondary" className="gap-1">
-                <Code className="w-3 h-3" />
-                Full-Stack Automation
-              </Badge>
-            </div>
-          </div>
-        </div>
-      </Section>
+      {/* AI Activity Stats */}
+      <DcyfrActivityStats />
 
       {/* Capabilities Section */}
       <Section
@@ -73,50 +65,13 @@ export function AboutDcyfrProfile() {
           <h3 className={TYPOGRAPHY.h2.standard}>Core Capabilities</h3>
           <div className="grid gap-4 md:grid-cols-2">
             {dcyfr.capabilities.map((capability, idx) => (
-              <Card
+              <ProfileCapabilityCard
                 key={idx}
-                className={cn("p-8 space-y-3", SHADOWS.card.rest, BORDERS.card)}
-              >
-                <div className="flex items-start gap-3">
-                  <div className="shrink-0 w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                    {capability.name === "Code Development" && (
-                      <Code className="w-4 h-4 text-primary" />
-                    )}
-                    {capability.name === "Security Analysis" && (
-                      <Shield className="w-4 h-4 text-primary" />
-                    )}
-                    {capability.name ===
-                      "Documentation & Knowledge Management" && (
-                      <FileText className="w-4 h-4 text-primary" />
-                    )}
-                    {capability.name === "Code Review & Quality Assurance" && (
-                      <Zap className="w-4 h-4 text-primary" />
-                    )}
-                    {capability.name === "Architecture & Planning" && (
-                      <Brain className="w-4 h-4 text-primary" />
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <h4 className={TYPOGRAPHY.h3.standard}>
-                      {capability.name}
-                    </h4>
-                  </div>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  {capability.description}
-                </p>
-                <ul className="space-y-1.5 text-sm text-muted-foreground">
-                  {capability.examples.map((example, exIdx) => (
-                    <li
-                      key={exIdx}
-                      className={`flex items-start gap-${SPACING.sm}`}
-                    >
-                      <span className="text-primary mt-1">•</span>
-                      <span>{example}</span>
-                    </li>
-                  ))}
-                </ul>
-              </Card>
+                icon={capabilityIcons[capability.name]}
+                title={capability.name}
+                description={capability.description}
+                examples={capability.examples}
+              />
             ))}
           </div>
         </div>
@@ -126,21 +81,7 @@ export function AboutDcyfrProfile() {
       <Section id="dcyfr-philosophy" className={PAGE_LAYOUT.section.container}>
         <div className={SPACING.content}>
           <h3 className={TYPOGRAPHY.h2.standard}>Guiding Philosophy</h3>
-          <Card
-            className={cn(`p-${SPACING.xl}`, SHADOWS.card.rest, BORDERS.card)}
-          >
-            <ul className={`space-y-${SPACING.md}`}>
-              {dcyfr.philosophy.map((principle, idx) => (
-                <li key={idx} className={`flex items-start gap-${SPACING.md}`}>
-                  {}
-                  <span className="text-primary text-xl font-bold mt-0.5">
-                    •
-                  </span>
-                  <span className="text-muted-foreground">{principle}</span>
-                </li>
-              ))}
-            </ul>
-          </Card>
+          <ProfileListSection items={dcyfr.philosophy} bulletStyle="bullet" />
         </div>
       </Section>
 
@@ -150,15 +91,11 @@ export function AboutDcyfrProfile() {
           <h3 className={TYPOGRAPHY.h2.standard}>
             Integration with DCYFR Labs
           </h3>
-          <div className={`space-y-${SPACING.md}`}>
+          <div className={SPACING.content}>
             {dcyfr.integration.map((item, idx) => (
               <Card
                 key={idx}
-                className={cn(
-                  `p-${SPACING.xl} space-y-${SPACING.sm}`,
-                  SHADOWS.tier3.combined,
-                  BORDERS.card
-                )}
+                className={cn("p-8", SHADOWS.card.rest, BORDERS.card, SPACING.compact)}
               >
                 <h4 className={cn(TYPOGRAPHY.h3.standard, "text-foreground")}>
                   {item.aspect}
@@ -174,23 +111,7 @@ export function AboutDcyfrProfile() {
       <Section id="dcyfr-approach" className={PAGE_LAYOUT.section.container}>
         <div className={SPACING.content}>
           <h3 className={TYPOGRAPHY.h2.standard}>Development Approach</h3>
-          <Card
-            className={cn(`p-${SPACING.xl}`, SHADOWS.card.rest, BORDERS.card)}
-          >
-            <ul className="space-y-2.5">
-              {dcyfr.approach.map((principle, idx) => (
-                <li
-                  key={idx}
-                  className={`flex items-start gap-${SPACING.md} text-muted-foreground`}
-                >
-                  <span className="text-primary font-mono text-sm mt-0.5">
-                    →
-                  </span>
-                  <span>{principle}</span>
-                </li>
-              ))}
-            </ul>
-          </Card>
+          <ProfileListSection items={dcyfr.approach} bulletStyle="arrow" />
         </div>
       </Section>
     </>

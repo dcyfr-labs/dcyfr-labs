@@ -1,20 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { blockExternalAccess } from "@/lib/api-security";
-import { getMultiplePostViewsInRange } from "@/lib/views";
+import { getMultiplePostViewsInRange } from "@/lib/views.server";
 import { posts } from "@/data/posts";
-import { rateLimit, getClientIp, createRateLimitHeaders } from "@/lib/rate-limit";
+import {
+  rateLimit,
+  getClientIp,
+  createRateLimitHeaders,
+} from "@/lib/rate-limit";
 import { handleApiError } from "@/lib/error-handler";
 
 /**
  * Analytics Daily Time-Series Endpoint
- * 
+ *
  * Returns aggregated daily analytics data for chart visualization.
  * This is a lightweight endpoint focused on time-series data for the dashboard charts.
- * 
+ *
  * Query Parameters:
  * - days: Number of days to fetch (1-365) or "all" for all available data
- * 
+ *
  * Response Format:
  * {
  *   success: boolean,
@@ -23,12 +27,14 @@ import { handleApiError } from "@/lib/error-handler";
  *     ...
  *   ]
  * }
- * 
+ *
  * Note: Currently daily granularity for shares/comments is not implemented,
  * so those return 0. This endpoint is prepared for future analytics expansion.
  */
 
-const isDevelopment = process.env.NODE_ENV === "development" || process.env.VERCEL_ENV === "preview";
+const isDevelopment =
+  process.env.NODE_ENV === "development" ||
+  process.env.VERCEL_ENV === "preview";
 
 const RATE_LIMIT_CONFIG = {
   limit: isDevelopment ? 60 : 10,
@@ -39,7 +45,9 @@ function validateApiKey(request: Request): boolean {
   const adminKey = process.env.ADMIN_API_KEY;
 
   if (!adminKey) {
-    console.error("[Analytics Daily API] ADMIN_API_KEY not configured - endpoint disabled");
+    console.error(
+      "[Analytics Daily API] ADMIN_API_KEY not configured - endpoint disabled"
+    );
     return false;
   }
 
@@ -55,15 +63,15 @@ function validateApiKey(request: Request): boolean {
     : authHeader;
 
   try {
-    const tokenBuf = Buffer.from(token, 'utf8');
-    const keyBuf = Buffer.from(adminKey, 'utf8');
+    const tokenBuf = Buffer.from(token, "utf8");
+    const keyBuf = Buffer.from(adminKey, "utf8");
 
     if (tokenBuf.length !== keyBuf.length) {
       return false;
     }
 
     // Use timing-safe comparison
-    return require('crypto').timingSafeEqual(tokenBuf, keyBuf);
+    return require("crypto").timingSafeEqual(tokenBuf, keyBuf);
   } catch (error) {
     console.error("[Analytics Daily API] Error during key validation:", error);
     return false;
@@ -78,7 +86,11 @@ function isAllowedEnvironment(): boolean {
     return false;
   }
 
-  if (nodeEnv === "development" || vercelEnv === "preview" || nodeEnv === "test") {
+  if (
+    nodeEnv === "development" ||
+    vercelEnv === "preview" ||
+    nodeEnv === "test"
+  ) {
     return true;
   }
 
@@ -109,7 +121,7 @@ function generateDateRange(days: number | null): Date[] {
  * Formats a date as ISO string (YYYY-MM-DD)
  */
 function formatDate(date: Date): string {
-  return date.toISOString().split('T')[0];
+  return date.toISOString().split("T")[0];
 }
 
 export async function GET(request: NextRequest) {
@@ -120,9 +132,9 @@ export async function GET(request: NextRequest) {
   // Layer 1: Environment validation
   if (!isAllowedEnvironment()) {
     return NextResponse.json(
-      { 
+      {
         error: "Analytics not available in production",
-        message: "This endpoint is disabled in production for security reasons"
+        message: "This endpoint is disabled in production for security reasons",
       },
       { status: 403 }
     );
@@ -131,9 +143,10 @@ export async function GET(request: NextRequest) {
   // Layer 2: API key authentication
   if (!validateApiKey(request)) {
     return NextResponse.json(
-      { 
+      {
         error: "Unauthorized",
-        message: "Valid API key required. Use Authorization header with Bearer token."
+        message:
+          "Valid API key required. Use Authorization header with Bearer token.",
       },
       { status: 401 }
     );
@@ -145,16 +158,19 @@ export async function GET(request: NextRequest) {
 
   if (!rateLimitResult.success) {
     return NextResponse.json(
-      { 
+      {
         error: "Rate limit exceeded",
-        message: "Maximum requests per minute exceeded. Please try again later.",
+        message:
+          "Maximum requests per minute exceeded. Please try again later.",
         retryAfter: Math.ceil((rateLimitResult.reset - Date.now()) / 1000),
       },
-      { 
+      {
         status: 429,
         headers: {
           ...createRateLimitHeaders(rateLimitResult),
-          "Retry-After": Math.ceil((rateLimitResult.reset - Date.now()) / 1000).toString(),
+          "Retry-After": Math.ceil(
+            (rateLimitResult.reset - Date.now()) / 1000
+          ).toString(),
         },
       }
     );
@@ -174,7 +190,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json(
           {
             error: "Invalid days parameter",
-            message: "Days must be a number between 1 and 365, or 'all'"
+            message: "Days must be a number between 1 and 365, or 'all'",
           },
           { status: 400 }
         );
@@ -184,10 +200,10 @@ export async function GET(request: NextRequest) {
 
     // Generate date range
     const dateRange = generateDateRange(days);
-    
+
     // Get all post IDs
     const postIds = posts.map((p) => p.id);
-    
+
     // Fetch views data for the entire range
     const viewsRangeMap = await getMultiplePostViewsInRange(postIds, days);
 
@@ -202,14 +218,15 @@ export async function GET(request: NextRequest) {
     // Using a slight weighted distribution toward more recent days (realistic for blog traffic)
     const dailyData = dateRange.map((date, index) => {
       const dateStr = formatDate(date);
-      
+
       // Weight distribution: more recent days get slightly more weight
       // Formula: weight = (index + 1) / total indices
       const weight = (index + 1) / dateRange.length;
-      const distributedViews = totalViewsInRange > 0 
-        ? Math.round((totalViewsInRange * weight) / dateRange.length)
-        : 0;
-      
+      const distributedViews =
+        totalViewsInRange > 0
+          ? Math.round((totalViewsInRange * weight) / dateRange.length)
+          : 0;
+
       return {
         date: dateStr,
         views: Math.max(0, distributedViews), // Ensure non-negative
@@ -226,7 +243,7 @@ export async function GET(request: NextRequest) {
       },
       {
         headers: {
-          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+          "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
           ...createRateLimitHeaders(rateLimitResult),
         },
       }
@@ -243,7 +260,7 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { 
+      {
         error: "Failed to fetch daily analytics",
         success: false,
       },

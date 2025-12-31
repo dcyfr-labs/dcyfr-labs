@@ -12,7 +12,7 @@ interface PostRelatedProps {
 
 /**
  * Related Posts Section
- * 
+ *
  * Displays a list of related posts with titles, reading times, and tags.
  * All badges use monochrome outline styling.
  */
@@ -20,8 +20,8 @@ export function PostRelated({ posts }: PostRelatedProps) {
   if (posts.length === 0) return null;
 
   return (
-    <div className={`${SPACING.compact} pb-6 border-b`}>
-      <div className="flex items-center gap-2 mb-3">
+    <div className={SPACING.compact}>
+      <div className="flex items-center gap-2">
         <Lightbulb className="h-4 w-4 text-muted-foreground" />
         <h2 className="font-semibold text-sm">Related Posts</h2>
       </div>
@@ -33,8 +33,8 @@ export function PostRelated({ posts }: PostRelatedProps) {
             href={`/blog/${post.slug}`}
             className="block group"
           >
-            <div className="space-y-1.5">
-              { }
+            <div className={SPACING.compact}>
+              {}
               <h3 className="text-xs font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2">
                 {post.title}
               </h3>

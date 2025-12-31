@@ -146,7 +146,7 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
 
         <div className={cn("relative z-10 p-4 md:p-8", SPACING.content)}>
           {/* Featured Badge */}
-          <div className={`flex items-center gap-${SPACING.md}`}>
+          <div className="flex items-center gap-6">
             <Badge
               variant="default"
               className={cn(
@@ -184,7 +184,7 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
           </div>
 
           {/* Title & Summary */}
-          <div className={`space-y-${SPACING.sm} md:space-y-${SPACING.md}`}>
+          <div className="space-y-3 md:space-y-6">
             <h2
               className={cn(
                 TYPOGRAPHY.h2.featured,
@@ -222,11 +222,11 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
 
           {/* Metadata & CTA */}
           <div
-            className={`flex flex-col sm:flex-row sm:items-center justify-between gap-${SPACING.md} sm:gap-${SPACING.md} pt-${SPACING.md} md:pt-${SPACING.md}`}
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-6"
           >
             <div
               className={cn(
-                `flex items-center gap-${SPACING.md} text-sm`,
+                "flex items-center gap-6 text-sm",
                 post.image && post.image.url && !post.image.hideCard
                   ? "text-white/70"
                   : "text-foreground/60"

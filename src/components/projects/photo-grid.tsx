@@ -5,11 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { LayoutGrid, Rows3, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { PhotoCard, type Photo } from "./photo-card";
 import { IMAGE_PLACEHOLDER, TOUCH_TARGET } from "@/lib/design-tokens";
@@ -30,33 +26,33 @@ interface PhotoGridProps {
 
 /**
  * PhotoGrid Component
- * 
+ *
  * Instagram-style photo grid with layout toggle and lightbox.
- * 
+ *
  * Features:
  * - Masonry layout (varied heights based on aspect ratio)
  * - Uniform layout (square crops)
  * - Toggle between layouts (persisted in URL params + localStorage)
  * - Lightbox with keyboard navigation
  * - Responsive column sizing
- * 
+ *
  * @example
  * ```tsx
- * <PhotoGrid 
- *   photos={photos} 
+ * <PhotoGrid
+ *   photos={photos}
  *   columns={3}
  *   basePath="/work/my-project"
  * />
  * ```
  */
-export function PhotoGrid({ 
-  photos, 
+export function PhotoGrid({
+  photos,
   columns = 3,
   basePath = "",
 }: PhotoGridProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   // Get initial layout from URL or localStorage
   const layoutParam = searchParams.get("layout") as GalleryLayout | null;
   const getInitialLayout = (): GalleryLayout => {
@@ -79,12 +75,12 @@ export function PhotoGrid({
   // Handle layout toggle
   const handleLayoutChange = (newLayout: GalleryLayout) => {
     setLayout(newLayout);
-    
+
     // Save to localStorage
     if (typeof window !== "undefined") {
       localStorage.setItem(STORAGE_KEY, newLayout);
     }
-    
+
     // Update URL params
     const params = new URLSearchParams(searchParams.toString());
     params.set("layout", newLayout);
@@ -110,17 +106,20 @@ export function PhotoGrid({
   }, [photos.length]);
 
   // Keyboard navigation for lightbox
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === "ArrowLeft") {
-      e.preventDefault();
-      goToPrevious();
-    } else if (e.key === "ArrowRight") {
-      e.preventDefault();
-      goToNext();
-    } else if (e.key === "Escape") {
-      closeLightbox();
-    }
-  }, [goToPrevious, goToNext, closeLightbox]);
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        goToPrevious();
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        goToNext();
+      } else if (e.key === "Escape") {
+        closeLightbox();
+      }
+    },
+    [goToPrevious, goToNext, closeLightbox]
+  );
 
   const currentPhoto = photos[currentPhotoIndex];
 
@@ -141,9 +140,9 @@ export function PhotoGrid({
     <>
       {/* Layout Toggle */}
       <div className="flex justify-end mb-4">
-        <div 
-          className="flex items-center gap-1 rounded-lg border p-1 bg-card" 
-          role="group" 
+        <div
+          className="flex items-center gap-1 rounded-lg border p-1 bg-card"
+          role="group"
           aria-label="Gallery layout options"
         >
           <Button
@@ -203,7 +202,7 @@ export function PhotoGrid({
 
       {/* Lightbox Dialog */}
       <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
-        <DialogContent 
+        <DialogContent
           className="max-w-[95vw] max-h-[95vh] p-0 bg-black/95 border-none"
           showCloseButton={false}
           onKeyDown={handleKeyDown}
@@ -211,13 +210,16 @@ export function PhotoGrid({
           <DialogTitle className="sr-only">
             {currentPhoto?.alt || "Photo viewer"}
           </DialogTitle>
-          
+
           {/* Close button */}
           <Button
             variant="ghost"
             size="icon"
             onClick={closeLightbox}
-            className={cn("absolute top-4 right-4 z-50 text-white hover:bg-white/10", TOUCH_TARGET.close)}
+            className={cn(
+              "absolute top-4 right-4 z-50 text-white hover:bg-white/10",
+              TOUCH_TARGET.close
+            )}
             aria-label="Close lightbox"
           >
             <X className="h-5 w-5" />

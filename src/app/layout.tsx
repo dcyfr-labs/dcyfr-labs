@@ -3,8 +3,13 @@ import { Geist, Geist_Mono, Alegreya } from "next/font/google";
 import "./globals.css";
 import "@/styles/print.css";
 import "@/styles/katex.css";
-import { ThemeProvider } from "@/components/features/theme/theme-provider";
-import { PageTransitionProvider } from "@/components/features/page-transition-provider";
+import {
+  ThemeProvider,
+  PageTransitionProvider,
+  LayoutUtilities,
+  DevBanner,
+  ScrollToAnchor,
+} from "@/components/features";
 import {
   SITE_URL,
   SITE_TITLE,
@@ -17,11 +22,8 @@ import {
 import { MOBILE_SAFE_PADDING } from "@/lib/design-tokens";
 import { SiteHeader, SiteFooter, BottomNav } from "@/components/navigation";
 import { Toaster } from "@/components/ui/sonner";
-import { LayoutUtilities } from "@/components/features/layout-utilities";
-import { DevBanner } from "@/components/features/dev-banner";
-import { ScrollToAnchor } from "@/components/features/scroll-to-anchor";
 import { UnifiedCommand } from "@/components/app";
-import { NavigationShortcutsProvider } from "@/components/common/navigation-shortcuts-provider";
+import { NavigationShortcutsProvider } from "@/components/common";
 import { SearchProvider } from "@/components/search";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";

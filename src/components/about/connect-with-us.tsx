@@ -1,5 +1,5 @@
 import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
-import { SocialLinksGrid } from "@/components/sections/social-links-grid";
+import { SocialLinksGrid } from "@/components/sections";
 import { AvailabilityBanner } from "@/components/common";
 
 /**

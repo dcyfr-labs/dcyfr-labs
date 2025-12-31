@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { getPostBadgeMetadata } from '@/lib/post-badges';
+import { getPostBadgeMetadata } from '@/lib/post-badges.server';
 import type { Post } from '@/data/posts';
 import * as viewsModule from '@/lib/views';
 

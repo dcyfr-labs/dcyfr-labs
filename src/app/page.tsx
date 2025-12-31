@@ -2,8 +2,8 @@ import { featuredProjects, projects } from "@/data/projects";
 import { posts, featuredPosts, allSeries } from "@/data/posts";
 import { visibleChangelog, changelog } from "@/data/changelog";
 import { getSocialUrls } from "@/data/socials";
-import { getPostBadgeMetadata } from "@/lib/post-badges";
-import { getMultiplePostViews } from "@/lib/views";
+import { getPostBadgeMetadata } from "@/lib/post-badges.server";
+import { getMultiplePostViews } from "@/lib/views.server";
 import { calculateYearsWithCertifications } from "@/lib/years-calculator";
 import {
   SITE_URL,
@@ -55,10 +55,11 @@ import {
   transformGitHubTraffic,
   transformGoogleAnalytics,
   transformSearchConsole,
-} from "@/lib/activity";
+} from "@/lib/activity/server";
 import {
   HomepageStats,
   CombinedStatsExplore,
+  ExploreSection,
   HomepageHeroHeadline,
   FlippableAvatar,
   NetworkBackground,
@@ -396,12 +397,12 @@ export default async function Home() {
         {/* Hero Section - Full-screen immersive experience with navigation overlay */}
         <Section
           id="hero"
-          className="relative overflow-hidden min-h-screen -mt-[calc(3.5rem+2rem)] md:-mt-[calc(4rem+3rem)] lg:-mt-[calc(4rem+4rem)] pt-[calc(3.5rem+2rem)] md:pt-[calc(4rem+3rem)] lg:pt-[calc(4rem+4rem)]"
+          className="relative overflow-hidden min-h-screen -mt-16 pt-16 md:pt-24 lg:pt-32 "
         >
-          {/* Hero background */}
+          {/* Hero background 
           <div className="bg-accent/25 *:backdrop-blur-lg *:backdrop-filter absolute inset-0 z-0 *:pointer-events-none">
             <NetworkBackground />
-          </div>
+          </div> */}
 
           {/* Hero content */}
           <div className="absolute inset-0 flex items-center justify-center z-10 pb-18">
@@ -518,7 +519,7 @@ export default async function Home() {
           </ScrollReveal>
         </Section>
 
-        {/* Combined Stats & Explore - Unified dashboard section */}
+        {/* Explore Section - Professional landing page navigation 
         <Section
           id="explore"
           className={cn(
@@ -530,19 +531,20 @@ export default async function Home() {
         >
           <ScrollReveal>
             <div className={SPACING.content}>
-              <SectionHeader title="Explore More" />
-              <CombinedStatsExplore
+              <SectionHeader
+                title="Explore"
+                description="Discover my work, writings, and recent activity"
+              />
+              <ExploreSection
                 postsCount={activePosts.length}
                 projectsCount={projects.length}
                 yearsOfExperience={yearsOfExperience}
                 technologiesCount={uniqueTechnologies.size}
                 activityCount={allActivities.length}
-                totalLikes={totalLikes}
-                totalBookmarks={totalBookmarks}
               />
             </div>
           </ScrollReveal>
-        </Section>
+        </Section> */}
 
         {/* Recent Activity - Updates feed */}
         <Section
