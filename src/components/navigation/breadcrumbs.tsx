@@ -12,19 +12,19 @@ export interface BreadcrumbItem {
 
 /**
  * Breadcrumbs Component
- * 
+ *
  * Displays hierarchical navigation path for improved UX and SEO.
  * Shows clickable links for all items except the current page.
- * 
+ *
  * Features:
  * - Mobile-responsive: collapses middle items on small screens
  * - Home icon for first item on mobile
  * - Semantic HTML with aria-label for accessibility
  * - Muted colors for visual hierarchy
  * - Chevron separators between items
- * 
+ *
  * @param props.items - Array of breadcrumb items (label + optional href)
- * 
+ *
  * @example
  * ```tsx
  * <Breadcrumbs items={[
@@ -52,10 +52,10 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
           const isFirst = index === 0;
           const isLast = index === items.length - 1;
           const isMiddle = !isFirst && !isLast;
-          
+
           // On mobile, hide middle items when there are more than 2 items
           const hiddenOnMobile = showCollapsed && isMiddle;
-          
+
           return (
             <Fragment key={`${item.label}-${index}`}>
               <li
@@ -66,7 +66,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
                 {item.href && !isLast ? (
                   <Link
                     href={item.href}
-                    className="hover:text-foreground transition-colors flex items-center gap-1 shrink-0"
+                    className="hover:text-foreground transition-theme flex items-center gap-1 shrink-0"
                   >
                     {/* Show home icon on mobile for first item */}
                     {isFirst ? (

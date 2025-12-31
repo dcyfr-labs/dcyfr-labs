@@ -1,14 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import { ThemeToggle } from "@/components/features";
 import { MobileNav } from "@/components/navigation";
 import { SearchButton } from "@/components/search";
-import { DevToolsDropdown } from "@/components/common";
+import { DevToolsDropdown, ThemeAwareLogo } from "@/components/common";
 import { cn } from "@/lib/utils";
 import { CONTAINER_WIDTHS, ANIMATION, TOUCH_TARGET } from "@/lib/design-tokens";
 import {
@@ -65,7 +64,7 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 site-header transition-colors duration-300 mt-0.5 md:mt-2 lg:mt-4",
+        "sticky top-0 z-40 site-header transition-theme duration-300 mt-0.5 md:mt-2 lg:mt-4",
         ANIMATION.duration.fast,
         hasScrolled
           ? "backdrop-blur supports-backdrop-filter:bg-background/60 border-b"
@@ -95,13 +94,10 @@ export function SiteHeader() {
           )}
           aria-label="DCYFR Labs Home"
         >
-          <Image
-            src="/images/dcyfr-avatar.svg"
-            alt="DCYFR Labs Logo"
+          <ThemeAwareLogo
             width={40}
             height={40}
-            className="w-[clamp(2rem,2.5vw+1.25rem,2.5rem)] h-[clamp(2rem,2.5vw+1.25rem,2.5rem)] rounded-full"
-            priority
+            className="w-[clamp(2rem,2.5vw+1.25rem,2rem)] h-[clamp(2rem,2.5vw+1.25rem,2rem)] rounded-full"
           />
         </Link>
 

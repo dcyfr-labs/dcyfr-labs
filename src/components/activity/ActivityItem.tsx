@@ -225,7 +225,7 @@ export function ActivityItem({
             TOUCH_TARGET.close,
             "opacity-0 group-hover:opacity-100",
             ANIMATION.transition.movement,
-
+            "items-center justify-center",
             isBookmarked(bookmarkId) &&
               "opacity-100 text-amber-500 hover:text-amber-600"
           )}

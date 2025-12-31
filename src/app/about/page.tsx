@@ -3,11 +3,7 @@ import dynamic from "next/dynamic";
 import { getOgImageUrl } from "@/lib/site-config";
 import { getAboutPageSchema, getJsonLdScriptProps } from "@/lib/json-ld";
 import { headers } from "next/headers";
-import {
-  SPACING,
-  PAGE_LAYOUT,
-  SCROLL_BEHAVIOR,
-} from "@/lib/design-tokens";
+import { SPACING, PAGE_LAYOUT, SCROLL_BEHAVIOR } from "@/lib/design-tokens";
 import { createPageMetadata } from "@/lib/metadata";
 import { PageLayout, PageHero } from "@/components/layouts";
 import {
@@ -77,21 +73,21 @@ export default async function AboutPage() {
           id="our-philosophy"
           className={PAGE_LAYOUT.proseSection.container}
         >
-          <ScrollReveal animation="fade-up" delay={100}>
+          <ScrollReveal animation="fade-up" delay={1}>
             <AboutDcyfrLabs />
           </ScrollReveal>
         </Section>
 
         {/* Meet the Team */}
         <Section id="meet-the-team" className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={200}>
+          <ScrollReveal animation="fade-up" delay={2}>
             <TeamSpotlights />
           </ScrollReveal>
         </Section>
 
         {/* Team Certifications */}
         <Section id="certifications" className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={300}>
+          <ScrollReveal animation="fade-up" delay={3}>
             <BadgeWallet
               username="dcyfr"
               showLatestOnly
@@ -104,7 +100,7 @@ export default async function AboutPage() {
 
         {/* Connect with Us */}
         <Section id="connect-with-us" className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={400}>
+          <ScrollReveal animation="fade-up" delay={4}>
             <ConnectWithUs />
           </ScrollReveal>
         </Section>

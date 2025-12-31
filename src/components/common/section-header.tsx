@@ -45,13 +45,12 @@ export function SectionHeader({
   level = "h2",
 }: SectionHeaderProps) {
   const HeadingTag = level;
-  const headingClass = level === "h2" ? TYPOGRAPHY.h2.standard : TYPOGRAPHY.h1.standard;
+  const headingClass =
+    level === "h2" ? TYPOGRAPHY.h2.standard : TYPOGRAPHY.h1.standard;
 
   return (
-    <div className="flex items-center justify-between mb-8 pb-2 border-b">
-      <HeadingTag className={headingClass}>
-        {title}
-      </HeadingTag>
+    <div className="flex items-center justify-between mb-8">
+      <HeadingTag className={headingClass}>{title}</HeadingTag>
       {actionHref && (
         <Button variant="ghost" asChild>
           <Link href={actionHref}>{actionLabel}</Link>

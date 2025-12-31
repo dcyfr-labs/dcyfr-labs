@@ -390,7 +390,7 @@ export function AnalyticsFilters({
               <button
                 onClick={onRefresh}
                 disabled={isRefreshing}
-                className="inline-flex items-center gap-1.5 px-2 py-1.5 text-xs rounded border border-border hover:bg-muted transition-colors disabled:opacity-50 h-8"
+                className="inline-flex items-center gap-1.5 px-2 py-1.5 text-xs rounded border border-border hover:bg-muted transition-theme disabled:opacity-50 h-8"
                 title="Refresh data"
               >
                 <RefreshCw

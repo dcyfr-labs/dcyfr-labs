@@ -26,8 +26,17 @@ interface ContentTypeToggleProps {
  * Allows users to switch between viewing blog posts and series.
  * Replaces the separate /blog/series page with an integrated filter.
  *
+ * **Why this uses Framer Motion:**
+ * This component uses spring physics (type: "spring") for the sliding indicator
+ * animation. Spring animations provide natural, momentum-based motion that feels
+ * more responsive than CSS easing. CSS lacks spring physics capabilities.
+ *
+ * **Bundle justification:** This is a high-frequency component used on /blog page.
+ * The spring animation significantly improves perceived interactivity. Consider
+ * migrating to CSS if Tailwind v4 adds spring animation support.
+ *
  * Features:
- * - Smooth animated transitions
+ * - Smooth spring-based animated transitions
  * - Item counts for each type
  * - URL parameter synchronization
  * - Keyboard accessible

@@ -67,7 +67,7 @@ export default async function DrewResumePage() {
 
         {/* Stats Overview */}
         <section id="stats" className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={50}>
+          <ScrollReveal animation="fade-up" delay={1}>
             <div className={cn(SPACING.content, "p-4", "bg-card")}>
               <ResumeStats />
             </div>
@@ -80,7 +80,7 @@ export default async function DrewResumePage() {
           className={PAGE_LAYOUT.section.container}
           aria-labelledby="timeline-heading"
         >
-          <ScrollReveal animation="fade-up" delay={150}>
+          <ScrollReveal animation="fade-up" delay={2}>
             <div className={cn(SPACING.content, "p-4", "bg-card")}>
               <h2 id="timeline-heading" className={TYPOGRAPHY.h2.standard}>
                 Professional Timeline
@@ -100,7 +100,7 @@ export default async function DrewResumePage() {
           className={PAGE_LAYOUT.section.container}
           aria-labelledby="certifications-heading"
         >
-          <ScrollReveal animation="fade-up" delay={200}>
+          <ScrollReveal animation="fade-up" delay={3}>
             <div className={cn(SPACING.content, "p-4", "bg-card")}>
               <MiniBadgeList username="dcyfr" />
             </div>
@@ -113,7 +113,7 @@ export default async function DrewResumePage() {
           className={PAGE_LAYOUT.section.container}
           aria-labelledby="skills-heading"
         >
-          <ScrollReveal animation="fade-up" delay={250}>
+          <ScrollReveal animation="fade-up" delay={4}>
             <div className={cn(SPACING.content, "p-4", "bg-card")}>
               <MiniSkillsList username="dcyfr" />
             </div>

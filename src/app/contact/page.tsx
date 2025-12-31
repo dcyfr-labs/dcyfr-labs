@@ -65,7 +65,7 @@ export default async function ContactPage() {
             "px-4 sm:px-8 md:px-8"
           )}
         >
-          <ScrollReveal animation="fade-up" delay={100}>
+          <ScrollReveal animation="fade-up" delay={1}>
             <div className="text-center mb-8">
               {/* hidden to limit repeating elements
               <h2 className={TYPOGRAPHY.h2.featured}>Send us a Message</h2>
@@ -102,7 +102,7 @@ export default async function ContactPage() {
             "px-4 sm:px-8 md:px-8"
           )}
         >
-          <ScrollReveal animation="fade-up" delay={200}>
+          <ScrollReveal animation="fade-up" delay={2}>
             <ContactSocialLinks />
           </ScrollReveal>
         </section>

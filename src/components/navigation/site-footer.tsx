@@ -36,8 +36,8 @@ export function SiteFooter() {
           )}
         >
           <div className="flex items-center justify-center text-[clamp(0.875rem,1vw+0.75rem,1rem)] text-muted-foreground gap-2">
-            &copy; {new Date().getFullYear()}
-            <SiteLogo size="sm" iconClassName="opacity-80" />
+            &copy; {new Date().getFullYear()} <strong>DCYFR Labs</strong>{" "}
+            <SiteLogo size="sm" iconClassName="opacity-80" showText={false} />
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
             {NAVIGATION.footer.map((item) => (

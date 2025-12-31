@@ -2,22 +2,31 @@
 
 import Image from "next/image";
 import React, { useState, useCallback } from "react";
+import { useTheme } from "next-themes";
+import { Logo } from "@/components/common";
 import { cn } from "@/lib/utils";
 import { IMAGE_PLACEHOLDER, ANIMATION } from "@/lib/design-tokens";
 
 /**
  * FlippableAvatar Component
- * 
+ *
  * A coin-flip style avatar that shows Drew on one side and DCYFR on the other.
- * Clicking flips between the two sides with a subtle, lifelike animation.
- * 
+ * Clicking flips between the two sides with a 3D coin-flip animation.
+ *
+ * **Why this uses CSS transforms (not Framer Motion):**
+ * This component requires true 3D transforms with `preserve-3d` and `rotateY(180deg)`
+ * to create the coin-flip effect. While CSS can handle this, it uses CSS-in-JS for
+ * dynamic state management (flipped/not flipped). This is a legitimate use of CSS 3D
+ * transforms, not a case requiring Framer Motion.
+ *
  * Features:
- * - 3D coin flip animation on click
+ * - 3D coin flip animation on click (rotateY 0deg ↔ 180deg)
+ * - Uses transform-style: preserve-3d for true 3D rendering
  * - Alternates between Drew and DCYFR avatars
  * - Subtle wobble effect for realism
- * - Smooth easing for natural feel
+ * - Smooth easing for natural feel (CSS transitions)
  * - Maintains circular shape during flip
- * 
+ *
  * @component
  */
 
@@ -67,10 +76,23 @@ export function FlippableAvatar({
   const [drewLoaded, setDrewLoaded] = useState(false);
   const [dcyfrLoaded, setDcyfrLoaded] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
-  
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
   const sizeClass = sizeConfig[size];
   const isLoaded = drewLoaded || dcyfrLoaded;
-  
+
+  // Wait until mounted to avoid hydration mismatch
+  React.useEffect(() => {
+    setMounted(true);
+    // Mark DCYFR logo as loaded immediately since it's an SVG
+    setDcyfrLoaded(true);
+  }, []);
+
+  // Determine logo fill color based on theme
+  const logoFillColor =
+    mounted && resolvedTheme === "dark" ? "#f9fafb" : "#111827";
+
   // Mark as initialized after first load to prevent both avatars showing
   React.useEffect(() => {
     if (isLoaded && !isInitialized) {
@@ -81,7 +103,7 @@ export function FlippableAvatar({
   const handleFlip = useCallback(() => {
     if (isAnimating) return;
     setIsAnimating(true);
-    setIsFlipped(prev => !prev);
+    setIsFlipped((prev) => !prev);
     // Reset animating state after animation completes
     setTimeout(() => setIsAnimating(false), 800);
   }, [isAnimating]);
@@ -132,25 +154,24 @@ export function FlippableAvatar({
         {/* Front face - DCYFR */}
         <div
           className={cn(
-            "absolute inset-0 rounded-full overflow-hidden ring-2 ring-border shadow-lg transition-opacity",
+            "absolute inset-0 rounded-full overflow-hidden ring-2 ring-border shadow-lg transition-opacity flex items-center justify-center",
             ANIMATION.duration.normal,
             !isInitialized && "opacity-0",
             isInitialized && !isFlipped && "opacity-100",
-            isInitialized && isFlipped && "opacity-0"
+            isInitialized && isFlipped && "opacity-0",
+            // Add background for logo visibility
+            resolvedTheme === "dark" ? "bg-gray-900" : "bg-gray-100"
           )}
           style={{
             backfaceVisibility: "hidden",
             WebkitBackfaceVisibility: "hidden",
           }}
         >
-          <Image
-            src="/images/dcyfr-avatar.svg"
-            alt="DCYFR's avatar"
-            fill
-            sizes={sizeClass.sizes}
-            className="object-cover"
-            onLoad={() => setDcyfrLoaded(true)}
-            priority={false}
+          <Logo
+            width="60%"
+            height="60%"
+            fill={logoFillColor}
+            className={`transition-colors ${ANIMATION.duration.fast}`}
           />
         </div>
 

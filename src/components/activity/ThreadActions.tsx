@@ -76,7 +76,11 @@ export function ThreadActions({
   showShareCount = false,
 }: ThreadActionsProps) {
   const { isLiked, toggleLike, getCount } = useActivityReactions();
-  const { isBookmarked, toggle: toggleBookmark, getBookmarkCount } = useBookmarks();
+  const {
+    isBookmarked,
+    toggle: toggleBookmark,
+    getBookmarkCount,
+  } = useBookmarks();
   const { getShareCount } = useShare();
 
   // Normalize activity ID for blog posts to match /likes and /bookmarks pages
@@ -110,16 +114,18 @@ export function ThreadActions({
   // Use useSyncExternalStore for proper client-side hydration without ESLint warnings
   const isHydrated = useSyncExternalStore(
     () => () => {}, // subscribe (no-op since we don't need to listen for changes)
-    () => true,      // getSnapshot (client)
-    () => false      // getServerSnapshot (server)
+    () => true, // getSnapshot (client)
+    () => false // getServerSnapshot (server)
   );
 
   // Only show actual values after hydration
   const liked = isHydrated ? isLiked(normalizedId) : false;
   const bookmarked = isHydrated ? isBookmarked(normalizedId) : false;
   const likeCount = isHydrated ? getCount(normalizedId) : 0;
-  const bookmarkCount = isHydrated && showBookmarkCount ? getBookmarkCount(normalizedId) : 0;
-  const shareCount = isHydrated && showShareCount ? getShareCount(normalizedId) : 0;
+  const bookmarkCount =
+    isHydrated && showBookmarkCount ? getBookmarkCount(normalizedId) : 0;
+  const shareCount =
+    isHydrated && showShareCount ? getShareCount(normalizedId) : 0;
 
   // Log engagement state after checks
   if (isHydrated) {
@@ -145,7 +151,11 @@ export function ThreadActions({
       {/* Like Button */}
       <ActionButton
         icon={Heart}
-        label={globalLikes > 0 ? `${globalLikes}${globalLikes > 1 ? '+' : ''}` : undefined}
+        label={
+          globalLikes > 0
+            ? `${globalLikes}${globalLikes > 1 ? "+" : ""}`
+            : undefined
+        }
         globalCount={globalLikes}
         active={liked}
         onClick={() => toggleLike(normalizedId)}
@@ -157,7 +167,11 @@ export function ThreadActions({
       {/* Bookmark Button */}
       <ActionButton
         icon={Bookmark}
-        label={globalBookmarks > 0 ? `${globalBookmarks}${globalBookmarks > 1 ? '+' : ''}` : undefined}
+        label={
+          globalBookmarks > 0
+            ? `${globalBookmarks}${globalBookmarks > 1 ? "+" : ""}`
+            : undefined
+        }
         globalCount={globalBookmarks}
         active={bookmarked}
         onClick={() => toggleBookmark(normalizedId)}
@@ -193,10 +207,7 @@ export function ThreadActions({
       {!hideTimestamp && (
         <time
           dateTime={timestamp.toISOString()}
-          className={cn(
-            TYPOGRAPHY.metadata,
-            "text-muted-foreground ml-auto"
-          )}
+          className={cn(TYPOGRAPHY.metadata, "text-muted-foreground ml-auto")}
           title={timestamp.toLocaleString()}
         >
           {formatDistanceToNow(timestamp, { addSuffix: true })}
@@ -232,7 +243,8 @@ function ActionButton({
   activeColor = "text-primary",
 }: ActionButtonProps) {
   const iconSize = size === "compact" ? "h-4 w-4" : "h-5 w-5";
-  const textSize = size === "compact" ? TYPOGRAPHY.label.xs : TYPOGRAPHY.label.small;
+  const textSize =
+    size === "compact" ? TYPOGRAPHY.label.xs : TYPOGRAPHY.label.small;
 
   return (
     <Button
@@ -241,14 +253,15 @@ function ActionButton({
       onClick={onClick}
       aria-label={ariaLabel}
       className={cn(
-        "group/action h-auto gap-1.5 px-2 py-1",
+        "group/action h-auto px-2 py-1.5 items-center",
+        "gap-1.5",
         ANIMATION.transition.base,
         ANIMATION.activity.like,
         "hover:bg-accent/50"
       )}
       suppressHydrationWarning
     >
-      <span
+      <Icon
         className={cn(
           iconSize,
           ANIMATION.transition.base,
@@ -257,9 +270,7 @@ function ActionButton({
           !active && SEMANTIC_COLORS.activity.action.default,
           active && "group-hover/action:scale-110"
         )}
-      >
-        <Icon />
-      </span>
+      />
       {label && (
         <span
           className={cn(

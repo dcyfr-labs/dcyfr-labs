@@ -25,12 +25,14 @@ grep "useDebounce" --type ts         # Find debounce usage
 ```
 
 **Check standard locations:**
+
 - `src/components/layouts/` - Layout patterns (PageLayout, PageHero, etc.)
 - `src/components/ui/` - UI primitives (Button, Card, Badge, etc.)
 - `src/components/common/` - Shared components (Phase 4 goal)
 - `src/components/analytics/` - Well-organized feature directory
 
 **Verify no duplication before creating:**
+
 - Does a component with this functionality exist?
 - Can I extend an existing component instead of creating new?
 - Is this pattern already implemented elsewhere?
@@ -42,96 +44,121 @@ grep "useDebounce" --type ts         # Find debounce usage
 ```typescript
 // Always import from design tokens
 import {
-  SPACING,              // Vertical/horizontal spacing
-  TYPOGRAPHY,           // Heading/body text styles (includes label, accordion, logo)
-  ANIMATION,            // Duration tokens and transition utilities
-  HOVER_EFFECTS,        // Consistent hover transitions
-  CONTAINER_WIDTHS,     // Max-width constraints
-  PAGE_LAYOUT,          // Page-level layout constants
-  ARCHIVE_LAYOUT,       // Archive/list page constants
-  ARTICLE_LAYOUT,       // Article/blog post constants
+  SPACING, // Vertical/horizontal spacing
+  TYPOGRAPHY, // Heading/body text styles (includes label, accordion, logo)
+  ANIMATION, // Duration tokens and transition utilities
+  HOVER_EFFECTS, // Consistent hover transitions
+  CONTAINER_WIDTHS, // Max-width constraints
+  PAGE_LAYOUT, // Page-level layout constants
+  ARCHIVE_LAYOUT, // Archive/list page constants
+  ARTICLE_LAYOUT, // Article/blog post constants
 } from "@/lib/design-tokens";
 ```
 
 **Available design tokens:**
 
 **SPACING:**
+
 ```typescript
-SPACING.section       // "space-y-12" - Between major sections
-SPACING.content       // "space-y-8" - Between content blocks
-SPACING.element       // "space-y-4" - Between related elements
-SPACING.tight         // "space-y-2" - Between tightly related items
-SPACING.grid          // "gap-4" - Grid/flex gap
+SPACING.section; // "space-y-12" - Between major sections
+SPACING.content; // "space-y-8" - Between content blocks
+SPACING.element; // "space-y-4" - Between related elements
+SPACING.tight; // "space-y-2" - Between tightly related items
+SPACING.grid; // "gap-4" - Grid/flex gap
 ```
 
 **TYPOGRAPHY:**
+
 ```typescript
-TYPOGRAPHY.h1.standard    // Page titles
-TYPOGRAPHY.h1.large       // Hero titles
-TYPOGRAPHY.h2.standard    // Section headings
-TYPOGRAPHY.h3.standard    // Subsection headings
-TYPOGRAPHY.body.default   // Body text
-TYPOGRAPHY.body.large     // Large body text
-TYPOGRAPHY.body.small     // Small text
-TYPOGRAPHY.body.muted     // Muted text
+TYPOGRAPHY.h1.standard; // Page titles
+TYPOGRAPHY.h1.large; // Hero titles
+TYPOGRAPHY.h2.standard; // Section headings
+TYPOGRAPHY.h3.standard; // Subsection headings
+TYPOGRAPHY.body.default; // Body text
+TYPOGRAPHY.body.large; // Large body text
+TYPOGRAPHY.body.small; // Small text
+TYPOGRAPHY.body.muted; // Muted text
 ```
 
 **CONTAINER_WIDTHS:**
+
 ```typescript
-CONTAINER_WIDTHS.narrow    // "max-w-4xl" (768px) - Forms, focused content
-CONTAINER_WIDTHS.standard  // "max-w-5xl" (1024px) - Core pages (home, about, contact, resume)
-CONTAINER_WIDTHS.content   // "max-w-6xl" (1152px) - Content pages with sidebars (blog posts, project details)
-CONTAINER_WIDTHS.archive   // "max-w-7xl" (1280px) - Archive/listing pages (blog listing, projects listing)
-CONTAINER_WIDTHS.dashboard // "max-w-[1536px]" (1536px) - Full-width dashboards with data tables, charts, analytics
+CONTAINER_WIDTHS.narrow; // "max-w-4xl" (768px) - Forms, focused content
+CONTAINER_WIDTHS.standard; // "max-w-5xl" (1024px) - Core pages (home, about, contact, resume)
+CONTAINER_WIDTHS.content; // "max-w-6xl" (1152px) - Content pages with sidebars (blog posts, project details)
+CONTAINER_WIDTHS.archive; // "max-w-7xl" (1280px) - Archive/listing pages (blog listing, projects listing)
+CONTAINER_WIDTHS.dashboard; // "max-w-[1536px]" (1536px) - Full-width dashboards with data tables, charts, analytics
 ```
 
 **ANIMATION:**
+
 ```typescript
 // Duration tokens (use these instead of duration-* classes)
-ANIMATION.duration.fast    // "duration-150" - Quick UI responses (hover, focus)
-ANIMATION.duration.normal  // "duration-300" - Standard transitions (cards, modals)
-ANIMATION.duration.slow    // "duration-500" - Dramatic effects (page transitions)
+ANIMATION.duration.fast    // "duration-[150ms]" - Quick UI responses (hover, focus)
+ANIMATION.duration.normal  // "duration-[300ms]" - Standard transitions (cards, modals)
+ANIMATION.duration.slow    // "duration-[500ms]" - Dramatic effects (page transitions)
 
 // Transition utilities (prefer these over manual animation classes)
-ANIMATION.transition.movement    // "transition-movement" - Transforms (scale, translate, rotate)
-ANIMATION.transition.appearance  // "transition-appearance" - Opacity, backdrop-blur
-ANIMATION.transition.theme       // "transition-theme" - Theme switching (colors, backgrounds)
+ANIMATION.transition.base       // "transition-base" - Opacity + transform (default choice)
+ANIMATION.transition.movement   // "transition-movement" - Transform only (hover states)
+ANIMATION.transition.theme      // "transition-theme" - Colors only (theme switching)
 
 // Usage examples:
+className={ANIMATION.transition.base}           // Most common
+className={ANIMATION.transition.movement}       // For hover effects
+className={ANIMATION.transition.theme}          // For color changes
+```
+
+**HOVER_EFFECTS:**
+
+```typescript
+// Decision guide: Which hover effect to use?
+HOVER_EFFECTS.card         // 80% use case - Standard interactive cards
+HOVER_EFFECTS.cardSubtle   // 15% use case - Secondary/less prominent cards
+HOVER_EFFECTS.button       // 5% use case - Action buttons
+HOVER_EFFECTS.link         // Text links with underline
+
+// Special effects (use sparingly)
+HOVER_EFFECTS.cardGlow     // Premium/attention-grabbing content
+HOVER_EFFECTS.cardTilt     // Playful 3D effects
+
+// Usage:
+className={HOVER_EFFECTS.card}  // Most common pattern
 className={ANIMATION.duration.fast}           // Fast hover effect
 className="transition-movement"               // For scale/translate animations
 className={cn("transition-theme", ANIMATION.duration.normal)}  // Theme transition
 ```
 
 **TYPOGRAPHY (Extended):**
+
 ```typescript
 // Standard headings (most common)
-TYPOGRAPHY.h1.standard    // "text-3xl font-semibold" - Page titles
-TYPOGRAPHY.h2.standard    // "text-2xl font-semibold" - Section headings
-TYPOGRAPHY.h3.standard    // "text-xl font-semibold" - Subsection headings
-TYPOGRAPHY.h4.standard    // "text-lg font-semibold" - Card titles
-TYPOGRAPHY.h5.standard    // "text-base font-semibold" - Small headings
-TYPOGRAPHY.h6.standard    // "text-sm font-semibold" - Micro headings
+TYPOGRAPHY.h1.standard; // "text-3xl font-semibold" - Page titles
+TYPOGRAPHY.h2.standard; // "text-2xl font-semibold" - Section headings
+TYPOGRAPHY.h3.standard; // "text-xl font-semibold" - Subsection headings
+TYPOGRAPHY.h4.standard; // "text-lg font-semibold" - Card titles
+TYPOGRAPHY.h5.standard; // "text-base font-semibold" - Small headings
+TYPOGRAPHY.h6.standard; // "text-sm font-semibold" - Micro headings
 
 // Labels (form fields, badges, metadata)
-TYPOGRAPHY.label.standard // "text-sm font-medium" - Form labels, card metadata
-TYPOGRAPHY.label.small    // "text-xs font-medium" - Small badges, timestamps
-TYPOGRAPHY.label.xs       // "text-[0.625rem] font-medium leading-tight" - Micro labels
+TYPOGRAPHY.label.standard; // "text-sm font-medium" - Form labels, card metadata
+TYPOGRAPHY.label.small; // "text-xs font-medium" - Small badges, timestamps
+TYPOGRAPHY.label.xs; // "text-[0.625rem] font-medium leading-tight" - Micro labels
 
 // Accordion tokens (collapsible sections)
-TYPOGRAPHY.accordion.heading  // "text-xl font-semibold" - Accordion section titles
-TYPOGRAPHY.accordion.trigger  // "text-base font-medium" - Accordion toggle buttons
+TYPOGRAPHY.accordion.heading; // "text-xl font-semibold" - Accordion section titles
+TYPOGRAPHY.accordion.trigger; // "text-base font-medium" - Accordion toggle buttons
 
 // Logo sizing (site branding)
-TYPOGRAPHY.logo.small     // "text-xl font-bold" - Mobile/compact logo
-TYPOGRAPHY.logo.medium    // "text-2xl font-bold" - Standard logo
-TYPOGRAPHY.logo.large     // "text-3xl font-bold" - Hero logo
+TYPOGRAPHY.logo.small; // "text-xl font-bold" - Mobile/compact logo
+TYPOGRAPHY.logo.medium; // "text-2xl font-bold" - Standard logo
+TYPOGRAPHY.logo.large; // "text-3xl font-bold" - Hero logo
 
 // Body text (paragraph content)
-TYPOGRAPHY.body.default   // "text-base" - Standard paragraphs
-TYPOGRAPHY.body.large     // "text-lg" - Emphasized content
-TYPOGRAPHY.body.small     // "text-sm" - Captions, metadata
-TYPOGRAPHY.body.muted     // "text-sm text-muted-foreground" - Secondary text
+TYPOGRAPHY.body.default; // "text-base" - Standard paragraphs
+TYPOGRAPHY.body.large; // "text-lg" - Emphasized content
+TYPOGRAPHY.body.small; // "text-sm" - Captions, metadata
+TYPOGRAPHY.body.muted; // "text-sm text-muted-foreground" - Secondary text
 ```
 
 ### 3. Validate Reusability
@@ -466,7 +493,7 @@ import { PageLayout } from "@/components/layouts";
 - [ ] Props interface documented
 - [ ] Usage examples if complex
 
-```typescript
+````typescript
 /**
  * Displays a project card with title, tags, and description
  *
@@ -478,7 +505,7 @@ import { PageLayout } from "@/components/layouts";
 export function ProjectCard({ project }: ProjectCardProps) {
   // ...
 }
-```
+````
 
 ### 5. Tests
 
@@ -525,19 +552,22 @@ npm run build      # Build must succeed
 ## Component Design System Checklist
 
 ### Discovery
+
 - [ ] Searched for similar components (Grep/Glob)
 - [ ] Reviewed src/lib/design-tokens.ts
 - [ ] Confirmed no duplication exists
 
 ### Implementation
+
 - [ ] Imported SPACING, TYPOGRAPHY tokens
 - [ ] Used PageLayout/PageHero if page component
-- [ ] Used UI primitives from @/components/ui/*
+- [ ] Used UI primitives from @/components/ui/\*
 - [ ] No hardcoded spacing (space-y-6, gap-8, p-7)
 - [ ] No inline typography (text-3xl font-semibold)
 - [ ] Semantic colors only (bg-card, text-primary)
 
 ### Validation
+
 - [ ] JSDoc comment added
 - [ ] Tests added/updated
 - [ ] npm run typecheck (passes)
@@ -674,7 +704,7 @@ node scripts/validate-design-tokens.mjs
 #### Step 2: Import design tokens
 
 ```tsx
-import { SPACING, TYPOGRAPHY, HOVER_EFFECTS } from '@/lib/design-tokens'
+import { SPACING, TYPOGRAPHY, HOVER_EFFECTS } from "@/lib/design-tokens";
 ```
 
 #### Step 3: Replace hardcoded values
@@ -704,6 +734,185 @@ node scripts/validate-design-tokens.mjs --files src/components/my-component.tsx
 - **UI primitives**: [`src/components/ui/`](../../src/components/ui/)
 - **Validation script**: `scripts/validate-design-tokens.mjs`
 - **Best practices**: [`/docs/ai/BEST_PRACTICES.md`](./best-practices)
+- **Animation analysis**: [`/docs/design/ANIMATION_SYSTEM_ANALYSIS.md`](../design/ANIMATION_SYSTEM_ANALYSIS.md)
+
+---
+
+## Animation Decision Tree
+
+**Quick reference for choosing the right animation pattern.**
+
+### When to Add Animation?
+
+```
+Need animation? Start here:
+│
+├─ Page navigation between routes?
+│  └─ ✅ Use: TransitionLink (View Transitions API)
+│     └─ import { TransitionLink } from "@/components/common"
+│
+├─ Scroll-triggered reveal?
+│  └─ ✅ Use: <ScrollReveal> component
+│     ├─ animation="fade-up" (default)
+│     ├─ delay={1-6} for stagger effect
+│     └─ import { ScrollReveal } from "@/components/features"
+│
+├─ Hover/interactive feedback?
+│  ├─ Card/Container? → HOVER_EFFECTS.card (80% use case)
+│  ├─ Button? → HOVER_EFFECTS.button
+│  ├─ Link? → HOVER_EFFECTS.link
+│  └─ import { HOVER_EFFECTS } from "@/lib/design-tokens"
+│
+├─ Loading state?
+│  └─ ✅ Use: ANIMATION.effects.shimmer
+│     └─ className="animate-shimmer"
+│
+├─ Micro-interaction?
+│  ├─ Like/reaction? → ANIMATION.activity.like
+│  ├─ Button press? → ANIMATION.interactive.press
+│  └─ Count increment? → ANIMATION.effects.countUp
+│
+├─ Advanced animation needed?
+│  ├─ 3D transforms (rotateX + rotateY + perspective)?
+│  │  └─ ⚠️ Use: Framer Motion (CSS lacks multi-axis 3D)
+│  │     └─ Example: featured-post-hero (3D tilt), flippable-avatar (coin flip)
+│  │
+│  ├─ Physics-based (spring, inertia)?
+│  │  └─ ⚠️ Use: Framer Motion (CSS lacks physics)
+│  │     └─ Example: content-type-toggle (spring), table-of-contents (smooth scroll)
+│  │
+│  ├─ Gesture interactions (drag, swipe)?
+│  │  └─ ⚠️ Use: Framer Motion (CSS lacks gesture detection)
+│  │     └─ Example: interactive-diagram (node dragging)
+│  │
+│  └─ Scroll-linked (parallax, useScroll)?
+│     └─ ⚠️ Use: Framer Motion (CSS lacks scroll binding)
+│        └─ Example: scroll-progress-indicator
+│
+└─ Custom transition?
+   └─ ✅ Use: ANIMATION.transition.* + custom CSS
+      ├─ .transition.base (opacity + transform) - DEFAULT
+      ├─ .transition.movement (transform only) - for hover
+      └─ .transition.theme (colors only) - for theme switching
+```
+
+### CSS vs Framer Motion: When to Use Each
+
+**🎯 Use CSS Animations (Default - 95% of cases):**
+
+- Simple fades, slides, scales, rotations (single axis)
+- Hover effects, focus states, active states
+- Loading spinners, progress bars
+- Stagger animations with fixed delays
+- **Benefits:** Zero JS, GPU-accelerated, respects prefers-reduced-motion, smaller bundle
+
+**⚠️ Use Framer Motion (Advanced - 5% of cases):**
+
+- 3D transforms with perspective (rotateX + rotateY combined)
+- Spring physics, momentum, inertia
+- Gesture interactions (drag, swipe, pinch)
+- Scroll-linked animations (parallax, scroll progress)
+- Complex choreography with AnimatePresence
+- **Trade-off:** +60-80 KB bundle, requires manual a11y, more complexity
+
+**Decision Rule:** Can you achieve 90% of the effect with CSS? → Use CSS. Need advanced features CSS lacks? → Use Framer Motion.
+
+### Animation Pattern Examples
+
+**Scroll Reveal (Homepage, Blog Posts):**
+
+```tsx
+import { ScrollReveal } from "@/components/features";
+
+{
+  posts.map((post, i) => (
+    <ScrollReveal key={post.slug} animation="fade-up" delay={i % 3}>
+      <PostCard post={post} />
+    </ScrollReveal>
+  ));
+}
+```
+
+**Card Hover Effect (Most Common):**
+
+```tsx
+import { HOVER_EFFECTS } from "@/lib/design-tokens";
+
+<Card className={HOVER_EFFECTS.card}>
+  <CardContent>{content}</CardContent>
+</Card>;
+```
+
+**Button Press Feedback:**
+
+```tsx
+import { ANIMATION } from "@/lib/design-tokens";
+
+<Button className={cn(ANIMATION.interactive.press)}>Click me</Button>;
+```
+
+**Custom Transition:**
+
+```tsx
+import { ANIMATION } from "@/lib/design-tokens";
+
+<div className={cn(ANIMATION.transition.base, "hover:shadow-lg")}>
+  {content}
+</div>;
+```
+
+**Page Navigation:**
+
+```tsx
+import { TransitionLink } from "@/components/common";
+
+<TransitionLink href="/blog/post-slug">Read more →</TransitionLink>;
+```
+
+**3D Tilt Effect (Legitimate Framer Motion Use):**
+
+```tsx
+import { motion } from "framer-motion";
+
+<motion.div
+  style={{
+    transform: `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`,
+    transition: "transform 0.2s ease-out",
+  }}
+>
+  {content}
+</motion.div>;
+```
+
+### Common Mistakes to Avoid
+
+**❌ DON'T:**
+
+- Use hardcoded `duration-200`, `duration-300` (use `ANIMATION.duration.*`)
+- Use deprecated `.transition-colors` (use `.transition-theme`)
+- Use Framer Motion for simple fade/slide effects (use CSS animations)
+- Skip `HOVER_EFFECTS.*` for standard cards (duplicates token)
+- Use arbitrary delay values in ScrollReveal (use stagger 1-6)
+- Add Framer Motion without justifying why CSS is insufficient
+
+**✅ DO:**
+
+- Import `ANIMATION` from design tokens
+- Use `HOVER_EFFECTS.*` for consistent hover patterns
+- Use `ScrollReveal` for scroll-triggered animations
+- Use `ANIMATION.transition.*` for transitions
+- Respect `prefers-reduced-motion` (CSS handles automatically)
+- Document why Framer Motion is needed (3D, physics, gestures) in JSDoc
+
+### Animation Performance Checklist
+
+- [ ] Uses `transform` and `opacity` only (GPU-accelerated)
+- [ ] Imports from `ANIMATION` design tokens (no hardcoded values)
+- [ ] Uses CSS animations (not JavaScript, except Framer Motion for complex cases)
+- [ ] Respects `prefers-reduced-motion` (CSS @media query handles this)
+- [ ] 60fps on low-end devices (test with Chrome DevTools)
+
+---
 
 ## Logging Security Best Practices
 
@@ -748,7 +957,7 @@ console.log("✅ Service account JSON is valid");
 ```javascript
 // ✅ CORRECT: Mask email for verification
 const maskEmail = (email) => {
-  const [local, domain] = email.split('@');
+  const [local, domain] = email.split("@");
   return `${local.substring(0, 2)}***@${domain}`;
 };
 console.log(`Service Account: ${maskEmail(credentials.client_email)}`);
@@ -781,18 +990,20 @@ console.log(`User login: ${username}:${password}`);
 // ✅ CORRECT - Log only non-sensitive metadata
 console.log(`Authentication attempt for user account`);
 console.log(`Auth provider: ${authProvider}`);
-console.log(`Status: ${result.success ? 'success' : 'failed'}`);
+console.log(`Status: ${result.success ? "success" : "failed"}`);
 ```
 
 ## Getting Help
 
 **If you're unsure whether to create a new component:**
+
 1. Search the codebase first (Grep/Glob)
 2. Check if design tokens exist for the pattern
 3. Ask if the pattern should be abstracted
 4. Prefer extending existing components over creating new ones
 
 **If you need a new design token:**
+
 1. Check if existing tokens can be combined
 2. Propose the new token with use cases
 3. Add to `src/lib/design-tokens.ts` with clear naming
