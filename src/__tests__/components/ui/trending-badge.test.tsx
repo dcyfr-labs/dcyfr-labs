@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { TrendingBadge } from "@/components/ui/trending-badge";
+import { Flame, TrendingUp, Star, Rocket } from "lucide-react";
 
 // ============================================================================
 // TESTS
@@ -13,8 +14,10 @@ describe("TrendingBadge", () => {
 
       const badge = screen.getByRole("status");
       expect(badge).toBeInTheDocument();
-      expect(badge).toHaveTextContent("🔥");
       expect(badge).toHaveTextContent("Hot");
+      // Icon is rendered as SVG via Lucide React
+      const icon = badge.querySelector("svg");
+      expect(icon).toBeInTheDocument();
     });
 
     it("should render Rising badge with correct icon and label", () => {
@@ -22,8 +25,10 @@ describe("TrendingBadge", () => {
 
       const badge = screen.getByRole("status");
       expect(badge).toBeInTheDocument();
-      expect(badge).toHaveTextContent("📈");
       expect(badge).toHaveTextContent("Rising");
+      // Icon is rendered as SVG via Lucide React
+      const icon = badge.querySelector("svg");
+      expect(icon).toBeInTheDocument();
     });
 
     it("should render Top badge with correct icon and label", () => {
@@ -31,8 +36,10 @@ describe("TrendingBadge", () => {
 
       const badge = screen.getByRole("status");
       expect(badge).toBeInTheDocument();
-      expect(badge).toHaveTextContent("⭐");
       expect(badge).toHaveTextContent("Top");
+      // Icon is rendered as SVG via Lucide React
+      const icon = badge.querySelector("svg");
+      expect(icon).toBeInTheDocument();
     });
 
     it("should render Accelerating badge with correct icon and label", () => {
@@ -40,8 +47,10 @@ describe("TrendingBadge", () => {
 
       const badge = screen.getByRole("status");
       expect(badge).toBeInTheDocument();
-      expect(badge).toHaveTextContent("🚀");
       expect(badge).toHaveTextContent("Accelerating");
+      // Icon is rendered as SVG via Lucide React
+      const icon = badge.querySelector("svg");
+      expect(icon).toBeInTheDocument();
     });
   });
 
@@ -50,32 +59,35 @@ describe("TrendingBadge", () => {
       render(<TrendingBadge variant="hot" />);
 
       const badge = screen.getByRole("status");
-      expect(badge).toHaveClass("px-2");
-      expect(badge).toHaveClass("rounded");
+      expect(badge).toHaveClass("bg-red-500/10");
+      expect(badge).toHaveClass("text-red-500");
+      expect(badge).toHaveClass("border-red-500/20");
     });
 
     it("should apply Rising badge styling", () => {
       render(<TrendingBadge variant="rising" />);
 
       const badge = screen.getByRole("status");
-      expect(badge).toHaveClass("px-2");
-      expect(badge).toHaveClass("rounded");
+      expect(badge).toHaveClass("bg-blue-500/10");
+      expect(badge).toHaveClass("text-blue-500");
+      expect(badge).toHaveClass("border-blue-500/20");
     });
 
     it("should apply Top badge styling", () => {
       render(<TrendingBadge variant="top" />);
 
       const badge = screen.getByRole("status");
-      expect(badge).toHaveClass("px-2");
-      expect(badge).toHaveClass("rounded");
+      expect(badge).toHaveClass("bg-neutral-500/10");
+      expect(badge).toHaveClass("border-neutral-500/20");
     });
 
     it("should apply Accelerating badge styling", () => {
       render(<TrendingBadge variant="accelerating" />);
 
       const badge = screen.getByRole("status");
-      expect(badge).toHaveClass("px-2");
-      expect(badge).toHaveClass("rounded");
+      expect(badge).toHaveClass("bg-purple-500/10");
+      expect(badge).toHaveClass("text-purple-500");
+      expect(badge).toHaveClass("border-purple-500/20");
     });
 
     it("should apply custom className", () => {
@@ -111,10 +123,9 @@ describe("TrendingBadge", () => {
     it("should mark icon as aria-hidden", () => {
       const { container } = render(<TrendingBadge variant="hot" />);
 
-      // Icon span should have aria-hidden
-      const iconSpan = container.querySelector('[aria-hidden="true"]');
-      expect(iconSpan).toBeInTheDocument();
-      expect(iconSpan).toHaveTextContent("🔥");
+      // Icon SVG should have aria-hidden
+      const iconSvg = container.querySelector('svg[aria-hidden="true"]');
+      expect(iconSvg).toBeInTheDocument();
     });
   });
 
@@ -144,6 +155,6 @@ describe("TrendingBadge", () => {
       const badge = screen.getByRole("status");
       expect(badge).toHaveClass("border");
       expect(badge).toHaveClass("border-red-500/20");
-    });
+    }); // Verify variant-specific border color
   });
 });

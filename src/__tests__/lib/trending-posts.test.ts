@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { transformTrendingPosts } from "@/lib/activity";
+import { transformTrendingPosts } from "@/lib/activity/server";
 import type { Post } from "@/data/posts";
 
 // Mock posts
@@ -57,7 +57,7 @@ describe("transformTrendingPosts", () => {
 
   it("returns trending posts from fallback when limit is 1", async () => {
     const result = await transformTrendingPosts(mockPosts, 1);
-    
+
     expect(result).toHaveLength(1);
     expect(result[0].title).toBe("First Post");
     // Should include month-based formatting: "Recently published in [Month Year]"
@@ -67,7 +67,7 @@ describe("transformTrendingPosts", () => {
 
   it("filters out draft and archived posts", async () => {
     const result = await transformTrendingPosts(mockPosts, 5);
-    
+
     // Should only have 2 posts (first-post, second-post)
     expect(result).toHaveLength(2);
     expect(result.map((r) => r.title)).toEqual(["First Post", "Second Post"]);
@@ -75,14 +75,14 @@ describe("transformTrendingPosts", () => {
 
   it("uses the most recent posts when ordered by publishedAt", async () => {
     const result = await transformTrendingPosts(mockPosts, 2);
-    
+
     expect(result[0].title).toBe("First Post");
     expect(result[1].title).toBe("Second Post");
   });
 
   it("has trending metadata set correctly", async () => {
     const result = await transformTrendingPosts(mockPosts, 1);
-    
+
     expect(result.length).toBe(1);
     const item = result[0];
     expect(item).toBeDefined();
