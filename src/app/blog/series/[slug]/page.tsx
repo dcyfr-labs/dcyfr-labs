@@ -3,9 +3,14 @@ import { notFound, redirect } from "next/navigation";
 import { allSeries, getSeriesByAnySlug } from "@/data/posts";
 import { PageLayout } from "@/components/layouts";
 import { ArchiveHero } from "@/components/layouts/archive-hero";
-import { PostList, SeriesPageAnalyticsTracker } from "@/components/blog";
+import { SeriesPageAnalyticsTracker } from "@/components/blog";
+import { PostList } from "@/components/blog/client";
 import { SITE_TITLE_PLAIN, SITE_URL, getOgImageUrl } from "@/lib/site-config";
-import { CONTAINER_WIDTHS, CONTAINER_PADDING, SPACING } from "@/lib/design-tokens";
+import {
+  CONTAINER_WIDTHS,
+  CONTAINER_PADDING,
+  SPACING,
+} from "@/lib/design-tokens";
 
 /**
  * Generate static paths for all series at build time
@@ -43,9 +48,9 @@ export const revalidate = 86400;
  * Generate metadata for series page
  */
 export async function generateMetadata({
-  params
+  params,
 }: {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
   const result = getSeriesByAnySlug(slug);
@@ -54,7 +59,8 @@ export async function generateMetadata({
 
   const { series } = result;
   const title = `${series.name} Series`;
-  const description = series.description || `All posts in the ${series.name} series`;
+  const description =
+    series.description || `All posts in the ${series.name} series`;
 
   return {
     title,
@@ -129,11 +135,13 @@ export default async function SeriesPage({
         variant="medium"
         title={series.name}
         description={series.description}
-        stats={`${series.postCount} ${series.postCount === 1 ? 'post' : 'posts'} • ${series.totalReadingTime} min read`}
+        stats={`${series.postCount} ${series.postCount === 1 ? "post" : "posts"} • ${series.totalReadingTime} min read`}
       />
 
       {/* Content section with archive-width container */}
-      <div className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING}`}>
+      <div
+        className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING}`}
+      >
         <div className={SPACING.section}>
           <PostList
             posts={series.posts}

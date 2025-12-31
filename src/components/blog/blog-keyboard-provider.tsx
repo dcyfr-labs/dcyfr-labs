@@ -2,7 +2,7 @@
 
 import { useRef, useState, createContext, useContext, type RefObject } from "react";
 import { useBlogKeyboardShortcuts } from "@/hooks/use-blog-keyboard-shortcuts";
-import { KeyboardShortcutsHelp } from "@/components/common/keyboard-shortcuts-help";
+import { KeyboardShortcutsHelp } from "@/components/common";
 
 interface BlogKeyboardContextType {
   searchInputRef: RefObject<HTMLInputElement | null>;

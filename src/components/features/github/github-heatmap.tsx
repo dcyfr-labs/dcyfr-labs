@@ -1,4 +1,3 @@
- 
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
@@ -7,7 +6,16 @@ import CalendarHeatmap from "react-calendar-heatmap";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ExternalLink, Flame, TrendingUp, Calendar, Target, FolderGit2, Star, GitFork } from "lucide-react";
+import {
+  ExternalLink,
+  Flame,
+  TrendingUp,
+  Calendar,
+  Target,
+  FolderGit2,
+  Star,
+  GitFork,
+} from "lucide-react";
 import { GitHubHeatmapSkeleton } from "@/components/common";
 import { sanitizeUrl, cn } from "@/lib/utils";
 import { TYPOGRAPHY, SEMANTIC_COLORS } from "@/lib/design-tokens";
@@ -113,11 +121,18 @@ function calculateStreaks(contributions: ContributionDay[]): {
     if (sorted[i].count > 0) {
       // Calculate current streak (only if not yet ended)
       if (!currentStreakEnded) {
-        if (i === 0 && (contribDate.getTime() === today.getTime() || contribDate.getTime() === yesterday.getTime())) {
+        if (
+          i === 0 &&
+          (contribDate.getTime() === today.getTime() ||
+            contribDate.getTime() === yesterday.getTime())
+        ) {
           currentStreak++;
           lastStreakDate = contribDate;
         } else if (currentStreak > 0 && lastStreakDate) {
-          const dayDiff = Math.floor((lastStreakDate.getTime() - contribDate.getTime()) / (1000 * 60 * 60 * 24));
+          const dayDiff = Math.floor(
+            (lastStreakDate.getTime() - contribDate.getTime()) /
+              (1000 * 60 * 60 * 24)
+          );
           if (dayDiff === 1) {
             currentStreak++;
             lastStreakDate = contribDate;
@@ -153,13 +168,17 @@ function calculateActivityStats(contributions: ContributionDay[]): {
     return { busiestDay: null, averagePerDay: 0, totalDaysActive: 0 };
   }
 
-  const busiestDay = contributions.reduce((max, day) =>
-    day.count > (max?.count || 0) ? day : max
-  , contributions[0]);
+  const busiestDay = contributions.reduce(
+    (max, day) => (day.count > (max?.count || 0) ? day : max),
+    contributions[0]
+  );
 
-  const totalContributions = contributions.reduce((sum, day) => sum + day.count, 0);
+  const totalContributions = contributions.reduce(
+    (sum, day) => sum + day.count,
+    0
+  );
   const averagePerDay = totalContributions / contributions.length;
-  const totalDaysActive = contributions.filter(day => day.count > 0).length;
+  const totalDaysActive = contributions.filter((day) => day.count > 0).length;
 
   return {
     busiestDay: busiestDay.count > 0 ? busiestDay : null,
@@ -193,7 +212,7 @@ function formatTooltipDate(dateString: string): string {
  * ⚠️ SKELETON SYNC REQUIRED
  * When updating this component's structure, also update:
  * - src/components/github-heatmap-skeleton.tsx
- * 
+ *
  * Key structural elements that must match:
  * - Card: p-6 padding
  * - Header section: flex justify-between with title + username link
@@ -203,7 +222,7 @@ function formatTooltipDate(dateString: string): string {
  * - Heatmap section: overflow-x-auto with inline-flex
  *   - 53 weeks × 7 days grid structure
  * - Footer: flex justify-between with contributions summary + date range
- * 
+ *
  * @component
  * @param {GitHubHeatmapProps} props - Component props
  * @param {string} [props.username="dcyfr"] - GitHub username to fetch contributions for
@@ -224,32 +243,40 @@ function formatTooltipDate(dateString: string): string {
  * @note Loading state displays a skeleton loader to prevent layout shift (CLS).
  *
  * @performance Uses react-calendar-heatmap for efficient rendering of 365+ cells.
- * 
+ *
  * @see {@link /docs/components/github-heatmap.md} for detailed documentation
  * @see {@link /docs/components/skeleton-sync-strategy.md} for skeleton sync guidelines
  */
-export function GitHubHeatmap({ username = DEFAULT_GITHUB_USERNAME }: GitHubHeatmapProps) {
+export function GitHubHeatmap({
+  username = DEFAULT_GITHUB_USERNAME,
+}: GitHubHeatmapProps) {
   const [contributions, setContributions] = useState<ContributionDay[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalContributions, setTotalContributions] = useState<number>(0);
   const [totalRepositories, setTotalRepositories] = useState<number>(0);
-  const [pinnedRepositories, setPinnedRepositories] = useState<PinnedRepository[]>([]);
+  const [pinnedRepositories, setPinnedRepositories] = useState<
+    PinnedRepository[]
+  >([]);
   const [warning, setWarning] = useState<string | null>(null);
   const [source, setSource] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await fetch(`/api/github-contributions?username=${username}`);
-        
+        const response = await fetch(
+          `/api/github-contributions?username=${username}`
+        );
+
         if (!response.ok) {
           throw new Error(`Failed to fetch contributions: ${response.status}`);
         }
 
         const data: ContributionResponse = await response.json();
-        
+
         setContributions(data.contributions || []);
-        setTotalContributions(data.totalContributions || data.contributions?.length || 0);
+        setTotalContributions(
+          data.totalContributions || data.contributions?.length || 0
+        );
         setTotalRepositories(data.totalRepositories || 0);
         setPinnedRepositories(data.pinnedRepositories || []);
         setWarning(data.warning || null);
@@ -257,7 +284,9 @@ export function GitHubHeatmap({ username = DEFAULT_GITHUB_USERNAME }: GitHubHeat
       } catch (err) {
         // Throw error to be caught by error boundary
         throw new Error(
-          err instanceof Error ? err.message : "Failed to load GitHub contributions"
+          err instanceof Error
+            ? err.message
+            : "Failed to load GitHub contributions"
         );
       } finally {
         setLoading(false);
@@ -269,8 +298,14 @@ export function GitHubHeatmap({ username = DEFAULT_GITHUB_USERNAME }: GitHubHeat
   }, [username]);
 
   // Calculate statistics
-  const streaks = useMemo(() => calculateStreaks(contributions), [contributions]);
-  const activityStats = useMemo(() => calculateActivityStats(contributions), [contributions]);
+  const streaks = useMemo(
+    () => calculateStreaks(contributions),
+    [contributions]
+  );
+  const activityStats = useMemo(
+    () => calculateActivityStats(contributions),
+    [contributions]
+  );
 
   const endDate = new Date();
   const startDate = new Date(endDate);
@@ -302,56 +337,6 @@ export function GitHubHeatmap({ username = DEFAULT_GITHUB_USERNAME }: GitHubHeat
               </a>
             </div>
 
-            {warning && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className={cn(
-                  "rounded-lg p-3",
-                  SEMANTIC_COLORS.alert.warning.container,
-                  SEMANTIC_COLORS.alert.warning.border
-                )}
-              >
-                <div className="flex items-start gap-2">
-                  <svg
-                    className={cn(
-                      "w-4 h-4 mt-0.5 shrink-0",
-                      SEMANTIC_COLORS.alert.warning.icon
-                    )}
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <div className="flex-1 space-y-1">
-                    {/* Notice/warning header */}
-                    <p
-                      className={cn(
-                        TYPOGRAPHY.label.small,
-                        SEMANTIC_COLORS.alert.warning.text
-                      )}
-                    >
-                      Notice
-                    </p>
-                    <p
-                      className={cn(
-                        "text-xs",
-                        SEMANTIC_COLORS.alert.warning.text
-                      )}
-                    >
-                      {warning}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Busiest Day */}
             {activityStats.busiestDay && (
               <motion.div
                 initial={{ opacity: 0 }}

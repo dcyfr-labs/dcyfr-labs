@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { FilterSelect } from "@/components/common/filters/components/filter-select";
+import { FilterSelect } from "@/components/common/filters";
 import { Clock } from "lucide-react";
 
 describe("FilterSelect", () => {

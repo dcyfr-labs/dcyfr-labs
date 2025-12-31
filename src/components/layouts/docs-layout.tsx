@@ -37,7 +37,7 @@ export function DocsLayout({
         className={cn(
           "container mx-auto max-w-[1600px]",
           CONTAINER_PADDING,
-          "pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12"
+          "pt-6 md:pt-8 lg:pt-10 pb-8 md:pb-12"
         )}
       >
         <div

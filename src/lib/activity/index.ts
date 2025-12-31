@@ -161,19 +161,3 @@ export {
   getTrendingProjects,
   getMockTrendingProjects,
 } from "./trending-projects";
-
-// Server-side transformers (only use in server components/API routes)
-export {
-  transformPostsWithViews,
-  transformTrendingPosts,
-  transformMilestones,
-  transformHighEngagementPosts,
-  transformCommentMilestones,
-  transformWebhookGitHubCommits,
-  transformGitHubActivity,
-  transformVercelAnalytics,
-  transformGitHubTraffic,
-  transformGoogleAnalytics,
-  transformSearchConsole,
-  transformCredlyBadges,
-} from "./sources.server";

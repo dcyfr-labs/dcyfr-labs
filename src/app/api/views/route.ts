@@ -70,7 +70,7 @@ import {
   isValidSessionId,
   getClientIp,
 } from "@/lib/anti-spam";
-import { incrementPostViews } from "@/lib/views";
+import { incrementPostViews } from "@/lib/views.server";
 import { rateLimit } from "@/lib/rate-limit";
 
 type ViewRequest = {
@@ -102,7 +102,9 @@ function createRateLimitHeaders(rateLimitResult: {
   };
 }
 
-export async function POST(request: NextRequest): Promise<NextResponse<ViewResponse>> {
+export async function POST(
+  request: NextRequest
+): Promise<NextResponse<ViewResponse>> {
   const clientIp = getClientIp(request);
 
   try {

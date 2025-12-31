@@ -8,7 +8,7 @@ export function SiteFooter() {
     <>
       {/* Mobile footer - hidden on mobile since bottom nav is used */}
       <footer className="hidden md:hidden mt-8 site-footer border-t pb-2">
-        <div className="mx-auto px-4 sm:px-8 h-16 flex items-center justify-center text-sm text-muted-foreground gap-2">
+        <div className="mx-auto px-4 sm:px-8 h-16 flex items-center justify-center text-[clamp(0.875rem,1vw+0.75rem,1rem)] text-muted-foreground gap-2">
           <SiteLogo size="md" />
         </div>
       </footer>
@@ -30,12 +30,12 @@ export function SiteFooter() {
             "justify-between",
             "gap-4",
             "md:gap-0",
-            "text-sm",
+            "text-[clamp(0.875rem,1vw+0.75rem,1rem)]",
             "py-4",
             "md:py-0"
           )}
         >
-          <div className="flex items-center justify-center text-sm text-muted-foreground gap-2">
+          <div className="flex items-center justify-center text-[clamp(0.875rem,1vw+0.75rem,1rem)] text-muted-foreground gap-2">
             &copy; {new Date().getFullYear()}
             <SiteLogo size="sm" iconClassName="opacity-80" />
           </div>

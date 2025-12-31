@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import VercelInsights from '@/components/analytics';
+import { VercelInsights } from '@/components/analytics';
 
 describe('VercelInsights component', () => {
   it('renders top pages, referrers, and devices when data is provided', () => {

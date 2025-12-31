@@ -137,7 +137,7 @@ export function ArchivePagination({
 
   return (
     <nav
-      className={cn(`flex items-center justify-center gap-${SPACING.sm}`, className)}
+      className={cn("flex items-center justify-center gap-2", className)}
       aria-label="Pagination"
     >
       {/* Previous Button */}
@@ -146,7 +146,7 @@ export function ArchivePagination({
         size="default"
         asChild
         disabled={!hasPrevPage}
-        className={`gap-${SPACING.xs}`}
+        className="gap-1"
       >
         {hasPrevPage ? (
           <Link
@@ -166,7 +166,7 @@ export function ArchivePagination({
       </Button>
 
       {/* Page Numbers */}
-      <div className={`hidden sm:flex items-center gap-${SPACING.xs}`}>
+      <div className="hidden sm:flex items-center gap-1">
         {pageNumbers.map((pageNum, index) => {
           if (pageNum === 'ellipsis') {
             return (

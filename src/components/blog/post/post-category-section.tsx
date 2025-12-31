@@ -6,7 +6,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import { PostList } from '@/components/blog';
+import { PostList } from "@/components/blog/client";
 import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
 import type { Post } from "@/data/posts";
 import type { PostCategory } from "@/lib/post-categories";

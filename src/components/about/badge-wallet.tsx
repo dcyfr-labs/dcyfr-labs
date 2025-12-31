@@ -65,10 +65,8 @@ function BadgeCard({ badge }: BadgeCardProps) {
       rel="noopener noreferrer"
       className="block group"
     >
-      <Card className={cn(`p-${SPACING.md} h-full`, HOVER_EFFECTS.card)}>
-        <div
-          className={`flex flex-col items-center text-center gap-${SPACING.md}`}
-        >
+      <Card className={cn("p-4 h-full", HOVER_EFFECTS.card)}>
+        <div className="flex flex-col items-center text-center gap-4">
           {/* Badge Image */}
           <div className="relative w-36 h-36 shrink-0">
             <Image
@@ -83,7 +81,7 @@ function BadgeCard({ badge }: BadgeCardProps) {
           </div>
 
           {/* Badge Info */}
-          <div className={`flex-1 space-y-${SPACING.sm}`}>
+          <div className="flex-1 space-y-2">
             <h3
               className={cn(
                 TYPOGRAPHY.h3.standard,
@@ -168,10 +166,8 @@ export function BadgeWallet({
 
   if (loading) {
     return (
-      <div className={cn(`space-y-${SPACING.md}`, className)}>
-        <div
-          className={`flex items-center gap-${SPACING.sm} text-muted-foreground`}
-        >
+      <div className={cn("space-y-4", className)}>
+        <div className="flex items-center gap-2 text-muted-foreground">
           <Award className="h-5 w-5 animate-pulse" />
           <span>Loading badges...</span>
         </div>
@@ -199,7 +195,7 @@ export function BadgeWallet({
     <div className={cn(SPACING.subsection, className)}>
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className={`flex items-center gap-${SPACING.sm}`}>
+        <div className="flex items-center gap-2">
           <Award className="h-5 w-5 text-primary" />
           <h3 className={TYPOGRAPHY.h3.standard}>
             {showLatestOnly ? "Latest Badges" : "Badges"}
@@ -211,9 +207,7 @@ export function BadgeWallet({
       </div>
 
       {/* Badge Grid */}
-      <div
-        className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-${SPACING.md}`}
-      >
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {displayedBadges.map((badge) => (
           <BadgeCard key={badge.id} badge={badge} />
         ))}
@@ -225,7 +219,7 @@ export function BadgeWallet({
           <Link
             href="/about/drew/resume#certifications"
             className={cn(
-              `inline-flex items-center gap-${SPACING.sm} text-primary`,
+              "inline-flex items-center gap-2 text-primary",
               HOVER_EFFECTS.link
             )}
           >

@@ -8,14 +8,14 @@ import { sanitizeUrl } from "@/lib/utils";
 import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
 import { Logo } from "@/components/common";
 import { ProjectsCTA } from "@/components/common";
+import { PostInteractions } from "@/components/common";
 import { OtherProjectCard } from "@/components/projects";
 import { ArticleHeader } from "@/components/layouts";
-import { PostInteractions } from '@/components/common';
 
 const STATUS_LABEL: Record<Project["status"], string> = {
-  "active": "Active",
+  active: "Active",
   "in-progress": "In Progress",
-  "archived": "Archived",
+  archived: "Archived",
 };
 
 interface DefaultProjectLayoutProps {
@@ -29,7 +29,7 @@ interface DefaultProjectLayoutProps {
 
 /**
  * DefaultProjectLayout Component
- * 
+ *
  * Standard layout for community, nonprofit, and startup projects.
  * Displays project information in a structured format with:
  * - Header with title, timeline, and status badge
@@ -40,13 +40,17 @@ interface DefaultProjectLayoutProps {
  * - Key highlights
  * - Other projects section
  * - Call-to-action
- * 
+ *
  * @example
  * ```tsx
  * <DefaultProjectLayout project={project} nonce={nonce} basePath="/work" />
  * ```
  */
-export function DefaultProjectLayout({ project, nonce, basePath = '/work' }: DefaultProjectLayoutProps) {
+export function DefaultProjectLayout({
+  project,
+  nonce,
+  basePath = "/work",
+}: DefaultProjectLayoutProps) {
   // Check if we have any metadata to show
   const hasTech = project.tech && project.tech.length > 0;
   const hasTags = project.tags && project.tags.length > 0;
@@ -64,7 +68,10 @@ export function DefaultProjectLayout({ project, nonce, basePath = '/work' }: Def
             {/* Status Badge - only show for non-active statuses */}
             {project.status !== "active" && (
               <Link href={`${basePath}?status=${project.status}`}>
-                <Badge variant="default" className="cursor-pointer hover:opacity-80 transition-opacity">
+                <Badge
+                  variant="default"
+                  className="cursor-pointer hover:opacity-80 transition-opacity"
+                >
                   {STATUS_LABEL[project.status]}
                 </Badge>
               </Link>
@@ -72,22 +79,30 @@ export function DefaultProjectLayout({ project, nonce, basePath = '/work' }: Def
             {/* Category Badge */}
             {project.category && (
               <Link href={`${basePath}?category=${project.category}`}>
-                <Badge variant="outline" className="cursor-pointer hover:opacity-80 transition-opacity">
-                  {project.category.charAt(0).toUpperCase() + project.category.slice(1)}
+                <Badge
+                  variant="outline"
+                  className="cursor-pointer hover:opacity-80 transition-opacity"
+                >
+                  {project.category.charAt(0).toUpperCase() +
+                    project.category.slice(1)}
                 </Badge>
               </Link>
             )}
           </>
         }
-        backgroundImage={project.image ? {
-          url: project.image.url,
-          alt: project.image.alt,
-          position: project.image.position || 'center',
-          caption: project.image.caption,
-          credit: project.image.credit,
-          priority: project.featured || false,
-          hideHero: project.image.hideHero,
-        } : undefined}
+        backgroundImage={
+          project.image
+            ? {
+                url: project.image.url,
+                alt: project.image.alt,
+                position: project.image.position || "center",
+                caption: project.image.caption,
+                credit: project.image.credit,
+                priority: project.featured || false,
+                hideHero: project.image.hideHero,
+              }
+            : undefined
+        }
       />
 
       {/* Project Description */}
@@ -121,7 +136,7 @@ export function DefaultProjectLayout({ project, nonce, basePath = '/work' }: Def
           })}
         </div>
       )}
-      
+
       {/* Key Highlights */}
       {hasHighlights && (
         <section className="mb-8">
@@ -153,7 +168,7 @@ export function DefaultProjectLayout({ project, nonce, basePath = '/work' }: Def
 
       {/* TODO: Tag Badges */}
 
-      {/* Post Interactions (like, bookmark, share) */}
+      {/* Post interactions (like, bookmark, share) */}
       <div className="my-8">
         <PostInteractions
           contentId={project.slug}
@@ -167,9 +182,9 @@ export function DefaultProjectLayout({ project, nonce, basePath = '/work' }: Def
       </div>
 
       {/* Other Projects */}
-      <div className="mt-12 pt-8 border-t">
-        <h2 className={`${TYPOGRAPHY.h2.standard} mb-6`}>Other Projects</h2>
-        <div className="grid gap-4 sm:grid-cols-2">
+      <div className={`${SPACING.sectionDivider.container} border-t`}>
+        <h2 className={`${TYPOGRAPHY.h2.standard} ${SPACING.sectionDivider.heading}`}>Other Projects</h2>
+        <div className={`grid ${SPACING.sectionDivider.grid} sm:grid-cols-2`}>
           {visibleProjects
             .filter((p) => p.slug !== project.slug)
             .slice(0, 2)

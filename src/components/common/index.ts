@@ -26,6 +26,7 @@ export { TableOfContentsSidebar } from "./table-of-contents-sidebar";
 export { TransitionLink } from "./transition-link";
 export { ViewToggle } from "./view-toggle";
 export { default as DevToolsDropdown } from "./dev-tools-dropdown";
+export { NavigationShortcutsProvider } from "./navigation-shortcuts-provider";
 
 // Search components
 export { SearchHighlight, SearchInput } from "./search";
@@ -113,6 +114,9 @@ export { UnifiedTimeline } from "./stats/unified-timeline";
 // Cards (enhanced media cards)
 export { MediaCard, type MediaCardProps } from "./cards";
 export { QuoteCard, type QuoteCardProps } from "./cards";
+
+// Post Interactions
+export { PostInteractions, type PostInteractionsProps } from "./PostInteractions";
 
 // Activity (replaces deprecated RecentActivity)
 export * from "../activity";

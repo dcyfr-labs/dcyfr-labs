@@ -35,10 +35,10 @@ type StatItemProps = {
 function StatItem({ value, label, suffix }: StatItemProps) {
   return (
     <div className={cn(
-      `flex flex-col items-center p-${SPACING.md} md:p-${SPACING.xl} rounded-lg border bg-card`,
+      "flex flex-col items-center p-6 md:p-8 rounded-lg border bg-card",
       HOVER_EFFECTS.cardSubtle
     )}>
-      <div className={cn(TYPOGRAPHY.display.statLarge, `mb-${SPACING.md}`)}>
+      <div className={cn(TYPOGRAPHY.display.statLarge, "mb-4")}>
         {value}
         {suffix && <span className="text-muted-foreground">{suffix}</span>}
       </div>

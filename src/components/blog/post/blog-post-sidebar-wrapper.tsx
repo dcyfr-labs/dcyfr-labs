@@ -1,6 +1,6 @@
 /**
  * Blog Post Sidebar Wrapper (Server Component)
- * 
+ *
  * Wraps the BlogPostSidebar with Suspense boundaries for view count.
  * Handles progressive reveal of dynamic data.
  */
@@ -8,7 +8,7 @@
 import { Suspense } from "react";
 import type { TocHeading } from "@/lib/toc";
 import type { Post, PostCategory } from "@/data/posts";
-import { getPostViews } from "@/lib/views";
+import { getPostViews } from "@/lib/views.server";
 import { BlogPostSidebar } from "./blog-post-sidebar";
 
 interface BlogPostSidebarWrapperProps {
@@ -38,7 +38,7 @@ interface BlogPostSidebarWrapperProps {
 
 async function SidebarWithViewCount(props: BlogPostSidebarWrapperProps) {
   const viewCount = await getPostViews(props.postId);
-  
+
   return (
     <BlogPostSidebar
       {...props}
@@ -64,7 +64,7 @@ function SidebarSkeleton(props: Omit<BlogPostSidebarWrapperProps, "postId">) {
 
 export function BlogPostSidebarWrapper(props: BlogPostSidebarWrapperProps) {
   const { postId, ...sidebarProps } = props;
-  
+
   return (
     <Suspense fallback={<SidebarSkeleton {...sidebarProps} />}>
       <SidebarWithViewCount {...props} />

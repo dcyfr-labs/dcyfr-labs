@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { posts, type Post } from "@/data/posts";
 import { POST_CATEGORY_LABEL } from "@/lib/post-categories";
 import { getArchiveData } from "@/lib/archive";
-import { getPostBadgeMetadata } from "@/lib/post-badges";
+import { getPostBadgeMetadata } from "@/lib/post-badges.server";
 import {
   groupPostsByCategory,
   sortCategoriesByCount,
@@ -16,7 +16,7 @@ import {
 import { AUTHOR_NAME, SITE_URL } from "@/lib/site-config";
 import { teamMembers } from "@/data/team";
 import { headers } from "next/headers";
-import { getMultiplePostViews } from "@/lib/views";
+import { getMultiplePostViews } from "@/lib/views.server";
 import {
   CONTAINER_WIDTHS,
   CONTAINER_PADDING,
@@ -29,17 +29,17 @@ import {
   PageLayout,
 } from "@/components/layouts";
 import {
-  PostList,
   BlogSearchAnalytics,
   BlogSidebarWrapper,
   BlogLayoutManager,
   BlogLayoutWrapper,
   MobileFilterBar,
-  DynamicBlogContent,
   BlogListSkeleton,
   ModernBlogGrid,
   FeedDropdown,
 } from "@/components/blog";
+import { PostList } from "@/components/blog/client";
+import { DynamicBlogContent } from "@/components/blog/server";
 import { ViewToggle, SmoothScrollToHash } from "@/components/common";
 
 const pageTitle = "Blog";
@@ -74,7 +74,6 @@ async function ModernBlogGridWrapper({
         posts={posts}
         latestSlug={latestSlug}
         hottestSlug={hottestSlug}
-        viewCounts={viewCounts}
         searchQuery={query}
         variant="elevated"
       />

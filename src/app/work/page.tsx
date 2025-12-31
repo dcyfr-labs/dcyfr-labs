@@ -24,7 +24,7 @@ import {
 } from "@/lib/design-tokens";
 import { ProjectList, ProjectFilters } from "@/components/projects";
 import { SmoothScrollToHash } from "@/components/common";
-import { FeedDropdown } from "@/components/blog";
+import { FeedDropdown } from "@/components/blog/client";
 
 const basePageTitle = "Our Work";
 const basePageDescription =

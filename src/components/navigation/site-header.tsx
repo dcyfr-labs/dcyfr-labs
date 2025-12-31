@@ -43,28 +43,18 @@ export function SiteHeader() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Calculate threshold based on header height + top margin
+      // Calculate threshold based on header height
       const isMobile = window.innerWidth < 768;
-      const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
-
-      let threshold = isMobile ? 56 : 64; // Base header height (h-14 = 56px, md:h-16 = 64px)
-
-      // Add top margin (now applied to all pages)
-      if (isMobile) {
-        threshold += 32; // mt-8 = 2rem = 32px
-      } else if (isTablet) {
-        threshold += 48; // md:mt-12 = 3rem = 48px
-      } else {
-        threshold += 64; // lg:mt-16 = 4rem = 64px
-      }
+      const threshold = isMobile ? 56 : 64; // Base header height (h-14 = 56px, md:h-16 = 64px)
 
       const scrolled = window.scrollY > threshold;
       setHasScrolled(scrolled);
     };
 
-    handleScroll(); // Check on mount
+    handleScroll(); // Check scroll on mount
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", handleScroll, { passive: true });
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
@@ -75,7 +65,7 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 site-header transition-colors mt-8 md:mt-12 lg:mt-16",
+        "sticky top-0 z-40 site-header transition-colors duration-300 mt-0.5 md:mt-2 lg:mt-4",
         ANIMATION.duration.fast,
         hasScrolled
           ? "backdrop-blur supports-backdrop-filter:bg-background/60 border-b"
@@ -86,15 +76,9 @@ export function SiteHeader() {
         className={cn(
           "mx-auto",
           CONTAINER_WIDTHS.dashboard,
-          "px-4",
-          "sm:px-8",
-          "md:px-8",
-          "h-14",
-          "md:h-16",
-          "flex",
-          "items-center",
-          "gap-2",
-          "lg:relative"
+          "px-4 md:px-6 lg:px-8",
+          "h-16",
+          "flex items-center gap-2 lg:relative"
         )}
       >
         {/* Logo - always visible */}
@@ -114,9 +98,9 @@ export function SiteHeader() {
           <Image
             src="/images/dcyfr-avatar.svg"
             alt="DCYFR Labs Logo"
-            width={32}
-            height={32}
-            className="w-8 h-8 rounded-full"
+            width={40}
+            height={40}
+            className="w-[clamp(2rem,2.5vw+1.25rem,2.5rem)] h-[clamp(2rem,2.5vw+1.25rem,2.5rem)] rounded-full"
             priority
           />
         </Link>
@@ -124,7 +108,7 @@ export function SiteHeader() {
         {/* Desktop Navigation - hidden on mobile, visible md and up */}
         <nav
           aria-label="Main navigation"
-          className="hidden md:flex items-center justify-center gap-1 sm:gap-3 md:gap-4 text-sm h-full lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2"
+          className="hidden md:flex items-center justify-center gap-1 sm:gap-3 md:gap-4 text-[clamp(0.875rem,1vw+0.75rem,1rem)] h-full lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2"
         >
           {/* Direct links (About, Sponsors, Contact) */}
           {NAVIGATION.header
@@ -171,7 +155,7 @@ export function SiteHeader() {
               Blog
               <ChevronDown
                 className={cn(
-                  "h-4 w-4",
+                  "w-[clamp(0.875rem,1vw+0.75rem,1rem)] h-[clamp(0.875rem,1vw+0.75rem,1rem)]",
                   ANIMATION.transition.fast,
                   blogDropdown.isOpen && "rotate-180"
                 )}
@@ -192,7 +176,7 @@ export function SiteHeader() {
                       key={item.href}
                       href={item.href}
                       className={cn(
-                        "block px-3 py-2.5 text-sm rounded-md",
+                        "block px-3 py-2.5 text-[clamp(0.875rem,1vw+0.75rem,1rem)] rounded-md",
                         ANIMATION.transition.base,
                         "hover:bg-accent hover:text-accent-foreground",
                         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -232,7 +216,7 @@ export function SiteHeader() {
               Our Work
               <ChevronDown
                 className={cn(
-                  "h-4 w-4",
+                  "w-[clamp(0.875rem,1vw+0.75rem,1rem)] h-[clamp(0.875rem,1vw+0.75rem,1rem)]",
                   ANIMATION.transition.fast,
                   workDropdown.isOpen && "rotate-180"
                 )}
@@ -257,7 +241,7 @@ export function SiteHeader() {
                       <Link
                         href={item.href}
                         className={cn(
-                          "block px-3 py-2.5 text-sm rounded-md",
+                          "block px-3 py-2.5 text-[clamp(0.875rem,1vw+0.75rem,1rem)] rounded-md",
                           ANIMATION.transition.base,
                           "hover:bg-accent hover:text-accent-foreground",
                           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",

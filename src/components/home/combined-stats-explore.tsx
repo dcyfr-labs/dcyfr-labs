@@ -171,7 +171,7 @@ export function CombinedStatsExplore({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-${SPACING.md} md:gap-${SPACING.md} mb-${SPACING.xl}`}
+        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6 mb-8"
       >
         <StatItem value={postsCount} label="Blog Posts" />
         <StatItem value={projectsCount} label="Projects" />
@@ -186,11 +186,11 @@ export function CombinedStatsExplore({
       </motion.div>
 
       {/* Divider */}
-      <div className={`h-px bg-border/50 mb-${SPACING.xl}`} />
+      <div className="h-px bg-border/50 mb-8" />
 
       {/* Primary Content Cards */}
       <div
-        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-${SPACING.md} mb-${SPACING.lg}`}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"
       >
         {cards.map((card, index) => (
           <motion.div
@@ -217,11 +217,11 @@ export function CombinedStatsExplore({
                 />
 
                 <CardContent
-                  className={`p-${SPACING.md} md:p-5 flex flex-col h-full`}
+                  className="p-6 md:p-5 flex flex-col h-full"
                 >
                   {/* Icon + Label + Count */}
                   <div
-                    className={`flex items-start justify-between mb-${SPACING.md}`}
+                    className="flex items-start justify-between mb-4"
                   >
                     <div className="flex items-center gap-2">
                       <div

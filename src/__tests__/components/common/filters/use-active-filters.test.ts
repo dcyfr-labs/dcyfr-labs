@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { renderHook } from "@testing-library/react";
-import { useActiveFilters } from "@/components/common/filters/hooks/use-active-filters";
+import { useActiveFilters } from "@/components/common/filters";
 
 describe("useActiveFilters", () => {
   it("should return no active filters for empty state", () => {

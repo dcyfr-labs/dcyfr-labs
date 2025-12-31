@@ -8,6 +8,7 @@ export { QuickLinksRibbon } from "./quick-links-ribbon";
 export { HomepageHeatmapMini } from "./homepage-heatmap-mini";
 export { ExploreCards } from "./explore-cards";
 export { CombinedStatsExplore } from "./combined-stats-explore";
+export { ExploreSection } from "./explore-section";
 export { ExploreNavigation } from "./explore-navigation";
 export { InfiniteActivitySection } from "./infinite-activity-section";
 export { TopicNavigator } from "./TopicNavigator";

@@ -21,6 +21,7 @@ import {
   transformChangelog,
   aggregateActivities,
 } from "@/lib/activity";
+
 import {
   transformPostsWithViews,
   transformTrendingPosts,
@@ -33,7 +34,8 @@ import {
   transformGitHubTraffic,
   transformGoogleAnalytics,
   transformSearchConsole,
-} from "@/lib/activity";
+ } from "@/lib/activity/server";
+
 import { createClient } from "redis";
 
 // ============================================================================

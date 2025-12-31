@@ -54,7 +54,7 @@ import { AnalyticsOverview } from '@/components/analytics';
 import { ConversionMetrics } from '@/components/analytics';
 import { AnalyticsInsights } from '@/components/analytics';
 import { AnalyticsRecommendations } from '@/components/analytics';
-import VercelInsights from '@/components/analytics';
+import { VercelInsights } from '@/components/analytics';
 import dynamic from "next/dynamic";
 
 const AnalyticsCharts = dynamic(() => import("@/components/analytics/analytics-charts").then(mod => ({ default: mod.AnalyticsCharts })), {

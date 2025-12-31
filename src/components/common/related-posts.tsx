@@ -82,9 +82,13 @@ export function RelatedPosts({ posts, currentSlug }: RelatedPostsProps) {
   };
 
   return (
-    <aside className="mt-12 border-t pt-6">
-      <h2 className={`${TYPOGRAPHY.h2.standard} mb-4`}>Related Posts</h2>
-      <div className={`grid gap-${SPACING.md} sm:grid-cols-2`}>
+    <aside className={SPACING.sectionDivider.container}>
+      <h2
+        className={`${TYPOGRAPHY.h2.standard} ${SPACING.sectionDivider.heading}`}
+      >
+        Related Posts
+      </h2>
+      <div className={`grid ${SPACING.sectionDivider.grid} sm:grid-cols-2`}>
         {posts.map((post, index) => {
           const featuredImage = ensurePostImage(post.image, {
             title: post.title,
@@ -98,7 +102,7 @@ export function RelatedPosts({ posts, currentSlug }: RelatedPostsProps) {
               onClick={() => handleClick(post.slug, index)}
               className={`group block rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}
             >
-              <div className={`space-y-${SPACING.sm} p-${SPACING.md}`}>
+              <div className="space-y-3 p-4">
                 <h3 className="font-medium leading-tight group-hover:text-primary transition-colors">
                   {post.title}
                 </h3>

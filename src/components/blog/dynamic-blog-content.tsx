@@ -13,11 +13,18 @@ import { Suspense } from "react";
 import type { ArchiveData } from "@/lib/archive";
 import type { Post } from "@/data/posts";
 import type { PostCategory } from "@/lib/post-categories";
-import { getMultiplePostViews } from "@/lib/views";
-import { calculateActiveFilterCount } from "@/lib/blog";
+import { getMultiplePostViews } from "@/lib/views.server";
+import { calculateActiveFilterCount } from "@/lib/blog.server";
 import { SPACING } from "@/lib/design-tokens";
 import { ArchivePagination } from "@/components/layouts";
-import { PostList, PostCategorySection, MobileFilterBar, FloatingFilterFab, HorizontalFilterChips, LayoutToggle } from "@/components/blog";
+import {
+  PostList,
+  PostCategorySection,
+  MobileFilterBar,
+  FloatingFilterFab,
+  HorizontalFilterChips,
+  LayoutToggle,
+} from "@/components/blog";
 
 interface DynamicBlogContentProps {
   /** Archive data with filtered/paginated posts */
