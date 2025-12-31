@@ -15,6 +15,7 @@ import {
 import { headers } from "next/headers";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
+import { Suspense } from "react";
 import {
   TYPOGRAPHY,
   SPACING,
@@ -165,6 +166,166 @@ export const metadata: Metadata = createPageMetadata({
 // Enable Incremental Static Regeneration for homepage
 export const revalidate = 3600; // 1 hour
 
+// ============================================================================
+// HELPER FUNCTION: Load activities in parallel (non-blocking)
+// ============================================================================
+async function loadActivitiesData() {
+  const activities: ActivityItem[] = [];
+
+  await Promise.all([
+    // Blog posts with views
+    transformPostsWithViews(posts)
+      .then((items) => activities.push(...items))
+      .catch((err) =>
+        console.error("[Homepage] Blog posts fetch failed:", err)
+      ),
+
+    // Projects
+    Promise.resolve(transformProjects([...projects]))
+      .then((items) => activities.push(...items))
+      .catch((err) => console.error("[Homepage] Projects fetch failed:", err)),
+
+    // Changelog
+    Promise.resolve(transformChangelog(changelog))
+      .then((items) => activities.push(...items))
+      .catch((err) => console.error("[Homepage] Changelog fetch failed:", err)),
+
+    // Milestones
+    transformMilestones(posts)
+      .then((items) => activities.push(...items))
+      .catch((err) =>
+        console.error("[Homepage] Milestones fetch failed:", err)
+      ),
+
+    // High engagement posts
+    transformHighEngagementPosts(posts)
+      .then((items) => activities.push(...items))
+      .catch((err) =>
+        console.error("[Homepage] High engagement posts fetch failed:", err)
+      ),
+
+    // Comment milestones
+    transformCommentMilestones(posts)
+      .then((items) => activities.push(...items))
+      .catch((err) =>
+        console.error("[Homepage] Comment milestones fetch failed:", err)
+      ),
+
+    // Credly badges
+    transformCredlyBadges("dcyfr")
+      .then((items) => activities.push(...items))
+      .catch((err) =>
+        console.error("[Homepage] Credly badges fetch failed:", err)
+      ),
+
+    // Vercel Analytics
+    transformVercelAnalytics()
+      .then((items) => activities.push(...items))
+      .catch((err) =>
+        console.error("[Homepage] Vercel Analytics fetch failed:", err)
+      ),
+
+    // GitHub Traffic
+    transformGitHubTraffic()
+      .then((items) => activities.push(...items))
+      .catch((err) =>
+        console.error("[Homepage] GitHub Traffic fetch failed:", err)
+      ),
+
+    // Google Analytics
+    transformGoogleAnalytics()
+      .then((items) => activities.push(...items))
+      .catch((err) =>
+        console.error("[Homepage] Google Analytics fetch failed:", err)
+      ),
+
+    // Search Console
+    transformSearchConsole()
+      .then((items) => activities.push(...items))
+      .catch((err) =>
+        console.error("[Homepage] Search Console fetch failed:", err)
+      ),
+  ]);
+
+  // Sort by timestamp (most recent first)
+  return activities.sort(
+    (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
+  );
+}
+
+// ============================================================================
+// COMPONENT: Trending Section with data loading
+// ============================================================================
+async function TrendingSectionData({
+  viewCountsMap,
+  topTopics,
+}: {
+  viewCountsMap: Map<string, number>;
+  topTopics: Array<{ tag: string; count: number }>;
+}) {
+  const trendingProjects = await getTrendingProjects([...projects], {
+    limit: 5,
+  });
+
+  const activePosts = posts.filter((p) => !p.archived);
+  const featuredPost = featuredPosts[0];
+
+  return (
+    <Section
+      id="trending"
+      className={cn(PAGE_LAYOUT.section.container, CONTAINER_VERTICAL_PADDING)}
+    >
+      <ScrollReveal>
+        <div className={SPACING.content}>
+          <SectionHeader
+            title="Trending"
+            actionHref="/blog"
+            actionLabel="View all"
+          />
+          <TrendingSection
+            posts={activePosts.filter((p) => p.id !== featuredPost?.id)}
+            viewCounts={viewCountsMap}
+            topics={topTopics}
+            projects={trendingProjects}
+            defaultTab="posts"
+          />
+        </div>
+      </ScrollReveal>
+    </Section>
+  );
+}
+
+// ============================================================================
+// COMPONENT: Recent Activity Section with Suspense
+// ============================================================================
+async function RecentActivitySectionData() {
+  const activities = await loadActivitiesData();
+
+  return (
+    <Section id="recent-activity" className={cn(PAGE_LAYOUT.section.container)}>
+      <ScrollReveal>
+        <div className={SPACING.content}>
+          <SectionHeader
+            title="Recent Activity"
+            actionHref="/activity"
+            actionLabel="View all activity"
+          />
+          <InfiniteActivitySection
+            items={activities}
+            totalActivities={activities.length}
+            initialCount={3}
+            pageSize={0}
+            showProgress
+            maxItemsBeforeCTA={3}
+            ctaText="View all activity"
+            ctaHref="/activity"
+          />
+        </div>
+      </ScrollReveal>
+    </Section>
+  );
+}
+
 export default async function Home() {
   // Get nonce from proxy for CSP
   const nonce = (await headers()).get("x-nonce") || "";
@@ -178,10 +339,10 @@ export default async function Home() {
     .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1));
   // No limit - use all posts for timeline
 
-  // Get badge metadata (latest and hottest posts)
+  // Get badge metadata (latest and hottest posts) - FAST, no await needed for hero
   const { latestSlug, hottestSlug } = await getPostBadgeMetadata(posts);
 
-  // Get view counts for trending posts
+  // Get view counts for trending posts - FAST, no await needed for hero
   const viewCounts = await getMultiplePostViews(posts.map((p) => p.id));
 
   const socialImage = getOgImageUrl();
@@ -240,112 +401,6 @@ export default async function Home() {
     ],
   };
 
-  // Gather activity from all sources (unified timeline)
-  const activities: ActivityItem[] = [];
-
-  await Promise.all([
-    // Blog posts with views
-    transformPostsWithViews(posts)
-      .then((items) => activities.push(...items))
-      .catch((err) =>
-        console.error("[Homepage] Blog posts fetch failed:", err)
-      ),
-
-    // Projects
-    Promise.resolve(transformProjects([...projects]))
-      .then((items) => activities.push(...items))
-      .catch((err) => console.error("[Homepage] Projects fetch failed:", err)),
-
-    // Changelog
-    Promise.resolve(transformChangelog(changelog))
-      .then((items) => activities.push(...items))
-      .catch((err) => console.error("[Homepage] Changelog fetch failed:", err)),
-
-    // Trending posts - DISABLED: Now shown as badges on published events
-    // transformTrendingPosts(posts)
-    //   .then((items) => activities.push(...items))
-    //   .catch((err) => console.error("[Homepage] Trending posts fetch failed:", err)),
-
-    // Milestones
-    transformMilestones(posts)
-      .then((items) => activities.push(...items))
-      .catch((err) =>
-        console.error("[Homepage] Milestones fetch failed:", err)
-      ),
-
-    // High engagement posts
-    transformHighEngagementPosts(posts)
-      .then((items) => activities.push(...items))
-      .catch((err) =>
-        console.error("[Homepage] High engagement posts fetch failed:", err)
-      ),
-
-    // Comment milestones
-    transformCommentMilestones(posts)
-      .then((items) => activities.push(...items))
-      .catch((err) =>
-        console.error("[Homepage] Comment milestones fetch failed:", err)
-      ),
-
-    // GitHub activity (DISABLED)
-    // transformGitHubActivity("dcyfr", ["dcyfr-labs"])
-    //   .then((items) => activities.push(...items))
-    //   .catch((err) => console.error("[Homepage] GitHub activity fetch failed:", err)),
-
-    // Webhook GitHub commits (DISABLED)
-    // transformWebhookGitHubCommits()
-    //   .then((items) => activities.push(...items))
-    //   .catch((err) => console.error("[Homepage] Webhook commits fetch failed:", err)),
-
-    // Credly badges
-    transformCredlyBadges("dcyfr")
-      .then((items) => activities.push(...items))
-      .catch((err) =>
-        console.error("[Homepage] Credly badges fetch failed:", err)
-      ),
-
-    // Vercel Analytics
-    transformVercelAnalytics()
-      .then((items) => activities.push(...items))
-      .catch((err) =>
-        console.error("[Homepage] Vercel Analytics fetch failed:", err)
-      ),
-
-    // GitHub Traffic
-    transformGitHubTraffic()
-      .then((items) => activities.push(...items))
-      .catch((err) =>
-        console.error("[Homepage] GitHub Traffic fetch failed:", err)
-      ),
-
-    // Google Analytics
-    transformGoogleAnalytics()
-      .then((items) => activities.push(...items))
-      .catch((err) =>
-        console.error("[Homepage] Google Analytics fetch failed:", err)
-      ),
-
-    // Search Console
-    transformSearchConsole()
-      .then((items) => activities.push(...items))
-      .catch((err) =>
-        console.error("[Homepage] Search Console fetch failed:", err)
-      ),
-  ]);
-
-  // Sort by timestamp (most recent first)
-  const timelineActivities = activities.sort(
-    (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
-  );
-
-  // All activities for heatmap
-  const allActivities = timelineActivities;
-
-  // Calculate total likes from all activities with likes metadata
-  const totalLikes = allActivities.reduce((sum, activity) => {
-    return sum + (activity.meta?.stats?.likes || 0);
-  }, 0);
-
   // Note: Bookmarks are stored in localStorage on client side
   // For now, we'll pass 0 and can be updated if server-side bookmark tracking is added
   const totalBookmarks = 0;
@@ -376,10 +431,9 @@ export default async function Home() {
 
   const topTopics = sortedTopics.slice(0, 12);
 
-  // Calculate trending projects with real GitHub stats
-  const trendingProjects = await getTrendingProjects([...projects], {
-    limit: 5,
-  });
+  // ========== REMOVED BLOCKING AWAIT =========
+  // Previously: const trendingProjects = await getTrendingProjects([...projects], { limit: 5 });
+  // Now: Moved to TrendingSectionData component below for non-blocking rendering
 
   return (
     <PageLayout>
@@ -391,6 +445,7 @@ export default async function Home() {
         className={SPACING.section}
       >
         {/* Hero Section - Full-screen immersive experience with navigation overlay */}
+        {/* ⚡ OPTIMIZATION: Hero renders IMMEDIATELY - no data dependencies */}
         <Section
           id="hero"
           className="relative overflow-hidden min-h-screen -mt-16 pt-16 md:pt-24 lg:pt-32 "
@@ -490,30 +545,39 @@ export default async function Home() {
         )} */}
 
         {/* Trending Section - Posts, Topics, and Projects */}
-        <Section
-          id="trending"
-          className={cn(
-            PAGE_LAYOUT.section.container,
-            CONTAINER_VERTICAL_PADDING
-          )}
+        {/* ⚡ OPTIMIZATION: Wrapped in Suspense - loads while user scrolls */}
+        <Suspense
+          fallback={
+            <Section
+              id="trending"
+              className={cn(
+                PAGE_LAYOUT.section.container,
+                CONTAINER_VERTICAL_PADDING
+              )}
+            >
+              <div className={SPACING.content}>
+                <SectionHeader
+                  title="Trending"
+                  actionHref="/blog"
+                  actionLabel="View all"
+                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[...Array(4)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-40 bg-muted rounded-lg animate-pulse"
+                    />
+                  ))}
+                </div>
+              </div>
+            </Section>
+          }
         >
-          <ScrollReveal>
-            <div className={SPACING.content}>
-              <SectionHeader
-                title="Trending"
-                actionHref="/blog"
-                actionLabel="View all"
-              />
-              <TrendingSection
-                posts={activePosts.filter((p) => p.id !== featuredPost?.id)}
-                viewCounts={viewCountsMap}
-                topics={topTopics}
-                projects={trendingProjects}
-                defaultTab="posts"
-              />
-            </div>
-          </ScrollReveal>
-        </Section>
+          <TrendingSectionData
+            viewCountsMap={viewCountsMap}
+            topTopics={topTopics}
+          />
+        </Suspense>
 
         {/* Explore Section - Professional landing page navigation 
         <Section
@@ -543,30 +607,33 @@ export default async function Home() {
         </Section> */}
 
         {/* Recent Activity - Updates feed */}
-        <Section
-          id="recent-activity"
-          className={cn(PAGE_LAYOUT.section.container)}
+        {/* ⚡ OPTIMIZATION: Wrapped in Suspense - loads in background */}
+        <Suspense
+          fallback={
+            <Section
+              id="recent-activity"
+              className={cn(PAGE_LAYOUT.section.container)}
+            >
+              <div className={SPACING.content}>
+                <SectionHeader
+                  title="Recent Activity"
+                  actionHref="/activity"
+                  actionLabel="View all activity"
+                />
+                <div className="space-y-4">
+                  {[...Array(3)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-24 bg-muted rounded-lg animate-pulse"
+                    />
+                  ))}
+                </div>
+              </div>
+            </Section>
+          }
         >
-          <ScrollReveal>
-            <div className={SPACING.content}>
-              <SectionHeader
-                title="Recent Activity"
-                actionHref="/activity"
-                actionLabel="View all activity"
-              />
-              <InfiniteActivitySection
-                items={timelineActivities}
-                totalActivities={timelineActivities.length}
-                initialCount={3}
-                pageSize={0}
-                showProgress
-                maxItemsBeforeCTA={3}
-                ctaText="View all activity"
-                ctaHref="/activity"
-              />
-            </div>
-          </ScrollReveal>
-        </Section>
+          <RecentActivitySectionData />
+        </Suspense>
       </SectionNavigator>
     </PageLayout>
   );
