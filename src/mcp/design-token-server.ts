@@ -317,7 +317,7 @@ server.addTool({
   execute: async ({ code, filePath }) => {
     const cacheKey = `validate:${code}`;
     const cached = validationCache.get(cacheKey);
-    if (cached) return JSON.parse(cached);
+    if (cached) return cached;
 
     const result = validateCode(code);
 
@@ -329,8 +329,9 @@ server.addTool({
       filePath,
     };
 
-    validationCache.set(cacheKey, JSON.stringify(output));
-    return output;
+    const jsonOutput = JSON.stringify(output, null, 2);
+    validationCache.set(cacheKey, jsonOutput);
+    return jsonOutput;
   },
 });
 
@@ -345,11 +346,7 @@ server.addTool({
       .enum([
         "spacing",
         "typography",
-        "colors",
         "containers",
-        "radius",
-        "shadows",
-        "transitions",
         "breakpoints",
       ])
       .optional()
@@ -358,12 +355,14 @@ server.addTool({
   execute: async ({ hardcodedValue, category }) => {
     const suggestions = suggestToken(hardcodedValue, category);
 
-    return {
+    const output = {
       hardcodedValue,
       category: category || "all",
       suggestions,
       recommended: suggestions[0] || null,
     };
+
+    return JSON.stringify(output, null, 2);
   },
 });
 
@@ -381,7 +380,7 @@ server.addTool({
   execute: async ({ filePath }) => {
     const result = await calculateCompliance(filePath);
 
-    return {
+    const output = {
       compliance: `${result.percentage}%`,
       totalFiles: result.totalFiles,
       totalViolations: result.totalViolations,
@@ -389,6 +388,8 @@ server.addTool({
       target: "90%",
       fileBreakdown: result.fileBreakdown,
     };
+
+    return JSON.stringify(output, null, 2);
   },
 });
 
@@ -405,13 +406,15 @@ server.addTool({
   }),
   execute: async ({ tokenName }) => {
     // Simplified implementation - would use grep or AST search in production
-    return {
+    const output = {
       tokenName,
       usages: [],
       count: 0,
       message:
         "Token usage search requires AST analysis - see grep-search for quick lookup",
     };
+
+    return JSON.stringify(output, null, 2);
   },
 });
 
@@ -432,7 +435,7 @@ server.addTool({
       const validation = validateCode(content);
       const compliance = await calculateCompliance(filePath);
 
-      return {
+      const output = {
         filePath,
         compliance: compliance.percentage,
         violations: validation.violations,
@@ -453,6 +456,8 @@ server.addTool({
         },
         recommendations: validation.suggestions,
       };
+
+      return JSON.stringify(output, null, 2);
     } catch (error) {
       throw new Error(
         `Failed to analyze file: ${error instanceof Error ? error.message : String(error)}`
@@ -471,7 +476,7 @@ server.addResource({
   name: "Design Token Categories",
   description: "All design token categories with examples and patterns",
   mimeType: "application/json",
-  fetch: async () => {
+  async load() {
     const categories = Object.entries(TOKEN_CATEGORIES).map(([key, value]) => ({
       name: key,
       description: value.description,
@@ -491,7 +496,7 @@ server.addResource({
   name: "Current Design Token Compliance",
   description: "Real-time compliance statistics",
   mimeType: "application/json",
-  fetch: async () => {
+  async load() {
     const compliance = await calculateCompliance();
 
     return {
@@ -516,7 +521,7 @@ server.addResource({
   name: "Recent Design Token Violations",
   description: "Recent ESLint violations found",
   mimeType: "application/json",
-  fetch: async () => {
+  async load() {
     return {
       text: JSON.stringify(
         {
@@ -537,7 +542,7 @@ server.addResource({
   name: "Design Token Anti-Patterns",
   description: "Common anti-patterns to avoid",
   mimeType: "application/json",
-  fetch: async () => {
+  async load() {
     const antiPatterns = [
       {
         pattern: "Hardcoded spacing values",
@@ -572,68 +577,71 @@ server.addResource({
 // MCP Prompts
 // ============================================================================
 
+// NOTE: Prompts are currently disabled due to FastMCP API compatibility
+// TODO: Re-enable after verifying correct FastMCP prompt API
+
 // Prompt 1: Token migration plan
-server.addPrompt({
-  name: "token-migration",
-  description:
-    "Generate migration plan for converting hardcoded values to design tokens",
-  arguments: [
-    {
-      name: "filePath",
-      description: "File to migrate",
-      required: false,
-    },
-  ],
-  run: async (args) => {
-    const filePath = args?.filePath;
-
-    return {
-      messages: [
-        {
-          role: "user" as const,
-          content: {
-            type: "text" as const,
-            text: `Generate a step-by-step migration plan to convert hardcoded Tailwind classes to design tokens${filePath ? ` for ${filePath}` : ""}. Include:
-1. Current violations count
-2. Priority order (spacing > typography > colors)
-3. Specific replacements needed
-4. Testing strategy
-5. Estimated effort
-
-Use tokens:analyzeFile${filePath ? `({ filePath: "${filePath}" })` : ""} to get current state.`,
-          },
-        },
-      ],
-    };
-  },
-});
+// server.addPrompt({
+//   name: "token-migration",
+//   description:
+//     "Generate migration plan for converting hardcoded values to design tokens",
+//   arguments: [
+//     {
+//       name: "filePath",
+//       description: "File to migrate",
+//       required: false,
+//     },
+//   ],
+//   execute: async (args) => {
+//     const filePath = args?.filePath;
+//
+//     return {
+//       messages: [
+//         {
+//           role: "user" as const,
+//           content: {
+//             type: "text" as const,
+//             text: `Generate a step-by-step migration plan to convert hardcoded Tailwind classes to design tokens${filePath ? ` for ${filePath}` : ""}. Include:
+// 1. Current violations count
+// 2. Priority order (spacing > typography > colors)
+// 3. Specific replacements needed
+// 4. Testing strategy
+// 5. Estimated effort
+//
+// Use tokens:analyzeFile${filePath ? `({ filePath: "${filePath}" })` : ""} to get current state.`,
+//           },
+//         },
+//       ],
+//     };
+//   },
+// });
 
 // Prompt 2: Compliance report
-server.addPrompt({
-  name: "compliance-report",
-  description: "Generate comprehensive compliance analysis report",
-  arguments: [],
-  run: async () => {
-    return {
-      messages: [
-        {
-          role: "user" as const,
-          content: {
-            type: "text" as const,
-            text: `Generate a comprehensive design token compliance report. Include:
-1. Current compliance percentage (use tokens:getCompliance)
-2. Breakdown by category (spacing, typography, colors)
-3. Top violating files
-4. Recommended next steps
-5. Timeline to reach 90% compliance
-
-Format as actionable insights with specific recommendations.`,
-          },
-        },
-      ],
-    };
-  },
-});
+// server.addPrompt({
+//   name: "compliance-report",
+//   description: "Generate comprehensive compliance analysis report",
+//   arguments: [],
+//   execute: async () => {
+//     return {
+//       messages: [
+//         {
+//           role: "user" as const,
+//           content: {
+//             type: "text" as const,
+//             text: `Generate a comprehensive design token compliance report. Include:
+// 1. Current compliance percentage (use tokens:getCompliance)
+// 2. Breakdown by category (spacing, typography, colors)
+// 3. Top violating files
+// 4. Recommended next steps
+// 5. Timeline to reach 90% compliance
+//
+// Format as actionable insights with specific recommendations.`,
+//           },
+//         },
+//       ],
+//     };
+//   },
+// });
 
 // ============================================================================
 // Start Server
