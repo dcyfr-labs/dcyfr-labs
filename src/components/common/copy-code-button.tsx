@@ -3,13 +3,15 @@
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { motion, AnimatePresence } from "framer-motion";
 import { TOUCH_TARGET } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 
 /**
  * Copy code button component for code blocks.
  * Appears on hover and provides visual feedback on copy success.
+ *
+ * **Animation approach:** Uses CSS animations (Tailwind animate-in) instead of Framer Motion.
+ * The icon swap animation is a simple scale/rotate effect that CSS handles efficiently.
  */
 export function CopyCodeButton({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
@@ -37,29 +39,15 @@ export function CopyCodeButton({ code }: { code: string }) {
       onClick={handleCopy}
       aria-label={copied ? "Copied!" : "Copy code"}
     >
-      <AnimatePresence mode="wait" initial={false}>
-        {copied ? (
-          <motion.div
-            key="check"
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            exit={{ scale: 0, rotate: 180 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Check className="h-4 w-4 text-emerald-500" />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="copy"
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            exit={{ scale: 0, rotate: 180 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Copy className="h-4 w-4" />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {copied ? (
+        <div className="animate-in spin-in-0 zoom-in-0 duration-200">
+          <Check className="h-4 w-4 text-emerald-500" />
+        </div>
+      ) : (
+        <div className="animate-in spin-in-0 zoom-in-0 duration-200">
+          <Copy className="h-4 w-4" />
+        </div>
+      )}
     </Button>
   );
 }

@@ -21,7 +21,19 @@ interface FeaturedPostHeroProps {
  * Designed to be visually prominent on the homepage between
  * the hero section and regular post listings.
  *
+ * **Why this uses CSS instead of Framer Motion:**
+ * This component implements 3D perspective transforms (rotateX + rotateY combined)
+ * with mouse-tracking for a parallax tilt effect. While simple rotations can be
+ * done with CSS, the dynamic calculation and smooth interpolation based on mouse
+ * position is more maintainable with inline styles. CSS animations cannot bind to
+ * real-time mouse coordinates.
+ *
+ * **Note:** Consider this a legitimate use of advanced CSS transforms (not Framer Motion).
+ * The component uses vanilla CSS transforms with inline styles for dynamic values.
+ *
  * Features:
+ * - 3D tilt effect following mouse position (perspective + rotateX/Y)
+ * - Radial gradient glow following mouse cursor
  * - Large, prominent card design
  * - Featured tag badge
  * - Post metadata (date, reading time)
@@ -29,7 +41,6 @@ interface FeaturedPostHeroProps {
  * - Clear call-to-action button
  * - Responsive layout (stacks on mobile, horizontal on desktop)
  * - Dark mode support
- * - Hover effects for interactivity
  *
  * @component
  * @param {FeaturedPostHeroProps} props - Component props
@@ -50,7 +61,7 @@ interface FeaturedPostHeroProps {
  * @styling
  * - Uses Card component for consistent design
  * - Gradient border for visual emphasis
- * - Hover scale effect for interactivity
+ * - 3D perspective tilt (rotateX + rotateY) for interactivity
  * - Responsive padding and spacing
  */
 export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
@@ -221,9 +232,7 @@ export function FeaturedPostHero({ post }: FeaturedPostHeroProps) {
           </div>
 
           {/* Metadata & CTA */}
-          <div
-            className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-6"
-          >
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-6">
             <div
               className={cn(
                 "flex items-center gap-6 text-sm",

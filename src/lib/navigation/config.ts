@@ -119,14 +119,14 @@ export const BLOG_NAV: NavItem[] = [
     description: "Artificial intelligence and development",
   },
   {
-    href: "/blog?category=DevSecOps",
-    label: "DevSecOps",
-    description: "Cybersecurity and secure development",
-  },
-  {
     href: "/blog?category=Web",
     label: "Web Development",
     description: "Modern full-stack web development",
+  },
+  {
+    href: "/blog?category=DevSecOps",
+    label: "DevSecOps",
+    description: "Cybersecurity and secure development",
   },
 ];
 

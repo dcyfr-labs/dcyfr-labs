@@ -1284,13 +1284,19 @@ export function getSeriesColors(theme: string = "default") {
  * Hover effect patterns for interactive elements
  * Ensures consistent feedback across different component types
  *
+ * **Decision Guide:**
+ * - **80% use case:** `card` - Standard interactive cards, posts, projects
+ * - **15% use case:** `cardSubtle` - Less prominent secondary cards
+ * - **5% use case:** `button` or `link` - Specific interactive elements
+ * - **Rare:** `cardGlow`, `cardTilt` - Special effects only
+ *
  * All hover effects include:
- * - Smooth transitions (duration-300)
+ * - Smooth transitions (300ms for cards, 200ms for minimal)
  * - Shadow elevation changes
  * - Optional transforms (lift, scale)
- * - Active state feedback
+ * - Active state feedback (scale-down for tactile feel)
  *
- * @example Standard card hover (most common)
+ * @example Standard card hover (most common - 80% of use cases)
  * ```tsx
  * import { Card } from '@/components/ui/card'
  * import { HOVER_EFFECTS } from '@/lib/design-tokens'
@@ -1301,18 +1307,6 @@ export function getSeriesColors(theme: string = "default") {
  *   </CardHeader>
  *   <CardContent>
  *     Project details...
- *   </CardContent>
- * </Card>
- * ```
- *
- * @example CTA card with border highlight
- * ```tsx
- * <Card className={HOVER_EFFECTS.cardCTA}>
- *   <CardHeader>
- *     <CardTitle>Get Started</CardTitle>
- *   </CardHeader>
- *   <CardContent>
- *     Sign up today!
  *   </CardContent>
  * </Card>
  * ```
@@ -1330,39 +1324,82 @@ export function getSeriesColors(theme: string = "default") {
  *   Click me
  * </button>
  * ```
+ *
+ * @see docs/design/ANIMATION_SYSTEM_ANALYSIS.md for complete animation guidelines
  */
 export const HOVER_EFFECTS = {
-  /** Standard card hover (projects, posts, content cards) */
+  /**
+   * Standard card hover (DEFAULT - use for 80% of interactive cards)
+   *
+   * Use for: Blog posts, projects, content cards, archive items
+   * Effect: Lift (0.5px), shadow increase, border highlight, press feedback
+   */
   card: "transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:-translate-y-0.5 active:scale-[0.98] active:shadow-md",
 
-  /** CTA card hover - highlights border instead of background */
-  cardCTA:
-    "transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:-translate-y-0.5 active:scale-[0.98] active:shadow-md",
-
-  /** Subtle hover for secondary/inline cards */
+  /**
+   * Subtle hover for secondary/inline cards
+   *
+   * Use for: Sidebar cards, inline content, less prominent elements
+   * Effect: Smaller lift (0.5px), medium shadow, press feedback
+   */
   cardSubtle:
     "transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]",
 
-  /** Featured/hero cards (already prominent, minimal transform) */
+  /**
+   * Featured/hero cards (already prominent elements)
+   *
+   * Use for: Hero sections, featured content, primary CTAs
+   * Effect: Lift (0.5px), extra-large shadow, border highlight, press feedback
+   */
   cardFeatured:
     "transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] active:shadow-md",
 
-  /** Minimal hover for tertiary/subtle cards (shadow only) */
+  /**
+   * Minimal hover for tertiary/subtle cards
+   *
+   * Use for: Lightweight interactions, nested cards, minimal UI
+   * Effect: Shadow only (no transform), faster transition (200ms)
+   */
   cardMinimal: "transition-shadow duration-200 hover:shadow-md",
 
-  /** Lift effect on hover (larger shadow + small upward transform) */
+  /**
+   * Lift effect on hover (larger upward movement)
+   *
+   * Use for: Special emphasis cards, gallery items
+   * Effect: Larger lift (1px), shadow increase
+   */
   cardLift: "transition-all duration-300 hover:shadow-lg hover:-translate-y-1",
 
-  /** Interactive buttons (FAB, CTAs) */
+  /**
+   * Interactive buttons (FABs, CTAs)
+   *
+   * Use for: Action buttons, floating action buttons
+   * Effect: Shadow increase, press scale-down feedback
+   */
   button: "transition-shadow hover:shadow-xl active:scale-95 active:shadow-lg",
 
-  /** Text links */
-  link: "hover:underline underline-offset-4 decoration-skip-ink-none will-change-auto transition-colors active:opacity-70",
+  /**
+   * Text links
+   *
+   * Use for: Inline links, text-based navigation
+   * Effect: Underline on hover, color transition, opacity feedback on press
+   */
+  link: "hover:underline underline-offset-4 decoration-skip-ink-none will-change-auto transition-theme active:opacity-70",
 
-  /** Card glow effect on hover */
+  /**
+   * Card glow effect on hover (SPECIALTY - use sparingly)
+   *
+   * Use for: Premium content, special highlights, attention-grabbing elements
+   * Effect: Glow shadow (custom shadow-glow utility)
+   */
   cardGlow: "transition-all duration-300 hover:shadow-glow",
 
-  /** Card tilt effect on hover (3D transform) */
+  /**
+   * Card tilt effect on hover (SPECIALTY - use sparingly)
+   *
+   * Use for: Playful interactions, creative portfolios, 3D effects
+   * Effect: Slight rotation (1deg) + scale (1.02x)
+   */
   cardTilt:
     "transition-transform duration-300 hover:rotate-1 hover:scale-[1.02]",
 } as const;
@@ -1502,17 +1539,23 @@ export const ANIMATION = {
 } as const;
 
 /**
- * @deprecated Use ANIMATION instead. These are kept for backwards compatibility.
- * Animation duration patterns for consistent motion design
+ * @deprecated Use ANIMATION.duration instead. This constant will be removed in a future version.
+ *
+ * Migration guide:
+ * - `ANIMATIONS.fast` → `ANIMATION.duration.fast`
+ * - `ANIMATIONS.standard` → `ANIMATION.duration.normal`
+ * - `ANIMATIONS.slow` → `ANIMATION.duration.slow`
+ *
+ * @see ANIMATION.duration for the current implementation
  */
 export const ANIMATIONS = {
-  /** Fast transitions (hover states, small movements) */
+  /** @deprecated Use ANIMATION.duration.fast instead */
   fast: "duration-200",
 
-  /** Standard transitions (most UI interactions) */
+  /** @deprecated Use ANIMATION.duration.normal instead */
   standard: "duration-300",
 
-  /** Slow transitions (dramatic reveals, page transitions) */
+  /** @deprecated Use ANIMATION.duration.slow instead */
   slow: "duration-500",
 } as const;
 

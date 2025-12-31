@@ -15,6 +15,7 @@ export { HorizontalRule } from "./horizontal-rule";
 export { KeyboardShortcutsHelp } from "./keyboard-shortcuts-help";
 export { default as Logo } from "./logo";
 export { SiteLogo } from "./site-logo";
+export { ThemeAwareLogo } from "./theme-aware-logo";
 export { MDX } from "./mdx";
 export { ZoomableImage } from "./zoomable-image";
 export { Figure, FigureProvider } from "./figure-caption";

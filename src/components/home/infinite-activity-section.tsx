@@ -1,11 +1,10 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ThreadedActivityFeed } from '@/components/activity';
+import { ThreadedActivityFeed } from "@/components/activity";
 import { useInfiniteActivity } from "@/hooks/use-infinite-activity";
 import { cn } from "@/lib/utils";
 import type { ActivityItem } from "@/lib/activity";
@@ -52,7 +51,7 @@ const SCROLL_HINT_HIDE_DELAY = 5000; // Hide scroll hint after 5s
  *
  * Homepage section that displays activity feed with dynamic page-flow loading
  * using the Threads-inspired threaded activity layout.
- * 
+ *
  * As the user scrolls down the page, more items load automatically using
  * Intersection Observer API.
  *
@@ -140,7 +139,7 @@ export function InfiniteActivitySection({
     <div className={cn("relative w-full", className)}>
       {/* Progress indicator */}
       {showProgress && (
-        <div className="mb-12 text-xs text-muted-foreground">
+        <div className="mb-12 text-xs text-muted-foreground -mt-8">
           <span className="font-medium">
             Showing <span className="text-foreground">{visibleCount}</span> of{" "}
             <span className="text-foreground">{totalCount}</span> activities
@@ -151,32 +150,17 @@ export function InfiniteActivitySection({
       {/* Timeline wrapper */}
       <div className="relative">
         {/* Threaded Activity Feed */}
-        <ThreadedActivityFeed
-          activities={visibleItems}
-          className="mb-8"
-        />
+        <ThreadedActivityFeed activities={visibleItems} className="" />
 
         {/* Loading indicator with entrance animation */}
-        <AnimatePresence>
-          {isLoadingMore && !shouldShowCTA && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="py-4 text-center"
-            >
-              <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                  className="h-4 w-4 border-2 border-current border-t-transparent rounded-full"
-                />
-                Loading more...
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {isLoadingMore && !shouldShowCTA && (
+          <div className="py-4 text-center animate-in fade-in slide-in-from-bottom-2 duration-200">
+            <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+              Loading more...
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Load trigger point for Intersection Observer */}
@@ -190,12 +174,7 @@ export function InfiniteActivitySection({
 
       {/* CTA to full activity page */}
       {shouldShowCTA && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="text-center pt-8 pb-24 md:pb-8 border-t border-border/50 mt-8"
-        >
+        <div className="text-center pt-8 pb-24 md:pb-8 border-t border-border/50 mt-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
           <p className="text-sm text-muted-foreground mb-3">
             Viewing {visibleCount} of {totalCount} activities
           </p>
@@ -205,16 +184,12 @@ export function InfiniteActivitySection({
               <ExternalLink className="h-4 w-4" />
             </Link>
           </Button>
-        </motion.div>
+        </div>
       )}
 
       {/* End indicator */}
       {!hasMore && visibleCount > 0 && !shouldShowCTA && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center text-sm text-muted-foreground pt-8 pb-24 md:pb-8 border-t border-border/50 mt-8"
-        >
+        <div className="text-center text-sm text-muted-foreground pt-8 pb-24 md:pb-8 border-t border-border/50 mt-8 animate-in fade-in duration-300">
           <p className="mb-3">You&apos;ve reached the end of recent activity</p>
           <Button asChild variant="outline" size="sm">
             <Link href={ctaHref} className="gap-2">
@@ -222,7 +197,7 @@ export function InfiniteActivitySection({
               <ExternalLink className="h-3 w-3" />
             </Link>
           </Button>
-        </motion.div>
+        </div>
       )}
     </div>
   );

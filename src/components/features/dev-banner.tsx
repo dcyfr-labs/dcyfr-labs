@@ -9,12 +9,11 @@
  * Positioned in the document flow to push down the site navigation.
  * Scrolls out of view naturally as the user scrolls down the page.
  */
-import { useState, useRef, useLayoutEffect } from "react";
-import { X } from "lucide-react";
+import { useState, useLayoutEffect } from "react";
+import { Alert } from "@/components/common";
 import {
   CONTAINER_WIDTHS,
   CONTAINER_PADDING,
-  SEMANTIC_COLORS,
   ANIMATION,
 } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
@@ -52,21 +51,6 @@ export function DevBanner() {
       setIsOpen(false);
       setIsAnimating(false);
     }, 300); // Match animation duration
-  };
-  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
-
-  // Attach a native click event handler as a fallback for environments
-  // where synthetic React events may not fire as expected (e.g., some E2E runners)
-  // Use a callback ref to ensure the handler is attached/unattached as the
-  // button mounts/unmounts during the component's lifecycle.
-  const setCloseButtonRef = (el: HTMLButtonElement | null) => {
-    if (closeButtonRef.current) {
-      closeButtonRef.current.removeEventListener("click", handleClose);
-    }
-    closeButtonRef.current = el;
-    if (el) {
-      el.addEventListener("click", handleClose);
-    }
   };
 
   // Read the storage on mount and update `isOpen` to reflect the user's
@@ -108,38 +92,16 @@ export function DevBanner() {
           "py-3"
         )}
       >
-        <div
-          className={cn(
-            "rounded-lg p-3 flex items-center justify-between",
-            SEMANTIC_COLORS.alert.info.border,
-            SEMANTIC_COLORS.alert.info.container
-          )}
+        <Alert
+          type="info"
+          dismissible
+          onDismiss={handleClose}
+          dismissLabel="Close Dev Banner"
+          className="my-0"
         >
-          <div className="flex items-center gap-3">
-            <strong className={cn("text-sm", SEMANTIC_COLORS.alert.info.text)}>
-              DEV Mode
-            </strong>
-            <span className={cn("text-sm", SEMANTIC_COLORS.alert.info.text)}>
-              This is a development build of the site. Features here may be
-              unstable or incomplete.
-            </span>
-          </div>
-
-          <button
-            type="button"
-            aria-label="Close Dev Banner"
-            className={cn(
-              "p-2 rounded-md hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1",
-              SEMANTIC_COLORS.alert.info.icon
-            )}
-            data-testid="dev-banner-close"
-            onClick={handleClose}
-            onPointerDown={handleClose}
-            ref={setCloseButtonRef}
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
+          <strong>DEV MODE</strong>: This is a live preview and some features
+          may be experimental or incomplete.
+        </Alert>
       </div>
     </div>
   );
