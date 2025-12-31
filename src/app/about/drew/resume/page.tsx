@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { resume, getSummary } from "@/data/resume";
-import { TYPOGRAPHY, PAGE_LAYOUT, SPACING, BORDERS } from "@/lib/design-tokens";
+import { TYPOGRAPHY, PAGE_LAYOUT, SPACING } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import { createPageMetadata } from "@/lib/metadata";
 import { getResumePageSchema, getJsonLdScriptProps } from "@/lib/json-ld";

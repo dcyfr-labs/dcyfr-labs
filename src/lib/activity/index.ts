@@ -117,6 +117,8 @@ export {
   isActivityLiked,
   getSimulatedReactionCount,
   getReactionStats,
+  type ReactionType,
+  type ReactionCollection,
 } from "./reactions";
 
 // Topics

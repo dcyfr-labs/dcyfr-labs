@@ -257,7 +257,6 @@ function BlackHole({
           transparent
           opacity={depthOpacity * 0.7}
           depthWrite={false}
-          flatShading
         />
       </mesh>
 
@@ -270,7 +269,6 @@ function BlackHole({
           transparent
           opacity={depthOpacity * 0.45}
           depthWrite={false}
-          flatShading
         />
       </mesh>
 
@@ -284,7 +282,6 @@ function BlackHole({
             transparent
             opacity={depthOpacity * 0.12 * node.spin}
             depthWrite={false}
-            flatShading
           />
         </mesh>
       )}
@@ -326,7 +323,6 @@ function BlackHole({
               transparent
               opacity={depthOpacity * 0.2 * visuals.jetIntensity}
               depthWrite={false}
-              flatShading
             />
           </mesh>
           {/* Lower jet (south pole) */}
@@ -347,7 +343,6 @@ function BlackHole({
               transparent
               opacity={depthOpacity * 0.2 * visuals.jetIntensity}
               depthWrite={false}
-              flatShading
             />
           </mesh>
         </>
@@ -362,7 +357,6 @@ function BlackHole({
           transparent
           opacity={depthOpacity * 0.05}
           depthWrite={false}
-          flatShading
         />
       </mesh>
     </group>

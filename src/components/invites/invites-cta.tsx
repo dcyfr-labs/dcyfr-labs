@@ -12,9 +12,7 @@ export function InvitesCTA() {
           reach out! We&apos;re always looking for valuable platforms to
           recommend to our community.
         </p>
-        <div
-          className={`mt-${SPACING.lg} flex flex-col sm:flex-row gap-${SPACING.md} justify-center`}
-        >
+        <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
           <a
             href="/contact"
             className={`inline-flex items-center justify-center rounded-md bg-primary px-4 py-3 text-primary-foreground shadow transition-colors hover:bg-primary/90 ${TYPOGRAPHY.label.small}`}

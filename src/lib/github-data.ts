@@ -7,13 +7,15 @@
  */
 
 // Conditional import to prevent client-side bundling
-const createClient =
-  typeof window === "undefined"
-    ? (async () => {
-        const { createClient } = await import("redis");
-        return createClient;
-      })()
-    : null;
+let createClientFn: any = null;
+
+async function getCreateClient() {
+  if (typeof window === "undefined" && !createClientFn) {
+    const { createClient } = await import("redis");
+    createClientFn = createClient;
+  }
+  return createClientFn;
+}
 
 // ============================================================================
 // TYPES
@@ -64,6 +66,12 @@ async function getRedisClient() {
   }
 
   try {
+    const createClient = await getCreateClient();
+    if (!createClient) {
+      console.warn("[GitHub Data] Redis client not available on client-side");
+      return null;
+    }
+
     const redis = createClient({
       url: redisUrl,
       socket: {

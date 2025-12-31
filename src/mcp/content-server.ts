@@ -295,19 +295,26 @@ server.addTool({
     const results = await queryContent(type, query, limit);
 
     return {
-      type,
-      query: query || "all",
-      count: results.length,
-      results: results.map((item) => ({
-        slug: item.slug,
-        title: item.metadata.title,
-        description: item.metadata.description,
-        date: item.metadata.date,
-        tags: item.metadata.tags,
-        category: item.metadata.category,
-        readingTime: item.metadata.readingTime,
-        filePath: item.filePath.replace(process.cwd(), ""),
-      })),
+      type: "text",
+      text: JSON.stringify(
+        {
+          type,
+          query: query || "all",
+          count: results.length,
+          results: results.map((item) => ({
+            slug: item.slug,
+            title: item.metadata.title,
+            description: item.metadata.description,
+            date: item.metadata.date,
+            tags: item.metadata.tags,
+            category: item.metadata.category,
+            readingTime: item.metadata.readingTime,
+            filePath: item.filePath.replace(process.cwd(), ""),
+          })),
+        },
+        null,
+        2
+      ),
     };
   },
 });
@@ -323,8 +330,15 @@ server.addTool({
     const analysis = await analyzeContent(filePath);
 
     return {
-      filePath,
-      ...analysis,
+      type: "text",
+      text: JSON.stringify(
+        {
+          filePath,
+          ...analysis,
+        },
+        null,
+        2
+      ),
     };
   },
 });
@@ -341,14 +355,21 @@ server.addTool({
     const related = await findRelatedContent(filePath, limit);
 
     return {
-      filePath,
-      relatedCount: related.length,
-      related: related.map((item) => ({
-        slug: item.slug,
-        title: item.metadata.title,
-        tags: item.metadata.tags,
-        filePath: item.filePath.replace(process.cwd(), ""),
-      })),
+      type: "text",
+      text: JSON.stringify(
+        {
+          filePath,
+          relatedCount: related.length,
+          related: related.map((item) => ({
+            slug: item.slug,
+            title: item.metadata.title,
+            tags: item.metadata.tags,
+            filePath: item.filePath.replace(process.cwd(), ""),
+          })),
+        },
+        null,
+        2
+      ),
     };
   },
 });
@@ -371,9 +392,16 @@ server.addTool({
       .map(([topic, count]) => ({ topic, count }));
 
     return {
-      type: type || "all",
-      totalTopics: sorted.length,
-      topics: sorted,
+      type: "text",
+      text: JSON.stringify(
+        {
+          type: type || "all",
+          totalTopics: sorted.length,
+          topics: sorted,
+        },
+        null,
+        2
+      ),
     };
   },
 });
@@ -406,18 +434,25 @@ server.addTool({
     });
 
     return {
-      query,
-      type: type || "all",
-      count: results.length,
-      results: results.slice(0, 20).map((item) => ({
-        type: item.type,
-        slug: item.slug,
-        title: item.metadata.title,
-        description: item.metadata.description,
-        excerpt: item.excerpt,
-        tags: item.metadata.tags,
-        filePath: item.filePath.replace(process.cwd(), ""),
-      })),
+      type: "text",
+      text: JSON.stringify(
+        {
+          query,
+          type: type || "all",
+          count: results.length,
+          results: results.slice(0, 20).map((item) => ({
+            type: item.type,
+            slug: item.slug,
+            title: item.metadata.title,
+            description: item.metadata.description,
+            excerpt: item.excerpt,
+            tags: item.metadata.tags,
+            filePath: item.filePath.replace(process.cwd(), ""),
+          })),
+        },
+        null,
+        2
+      ),
     };
   },
 });
@@ -456,194 +491,18 @@ server.addTool({
     }
 
     return {
-      filePath,
-      isValid: errors.length === 0,
-      errors,
-      warnings,
-      frontmatter: data,
-    };
-  },
-});
-
-// ============================================================================
-// MCP Resources
-// ============================================================================
-
-// Resource 1: All blog posts
-server.addResource({
-  uri: "content://blog/all",
-  name: "All Blog Posts",
-  description: "Metadata for all blog posts",
-  mimeType: "application/json",
-  fetch: async () => {
-    const posts = await queryContent("blog", undefined, 100);
-
-    return {
+      type: "text",
       text: JSON.stringify(
         {
-          count: posts.length,
-          posts: posts.map((p) => ({
-            slug: p.slug,
-            title: p.metadata.title,
-            date: p.metadata.date,
-            tags: p.metadata.tags,
-          })),
+          filePath,
+          isValid: errors.length === 0,
+          errors,
+          warnings,
+          frontmatter: data,
         },
         null,
         2
       ),
-    };
-  },
-});
-
-// Resource 2: All projects
-server.addResource({
-  uri: "content://projects/all",
-  name: "All Projects",
-  description: "Metadata for all projects",
-  mimeType: "application/json",
-  fetch: async () => {
-    const projects = await queryContent("project", undefined, 100);
-
-    return {
-      text: JSON.stringify(
-        {
-          count: projects.length,
-          projects: projects.map((p) => ({
-            slug: p.slug,
-            title: p.metadata.title,
-            tags: p.metadata.tags,
-          })),
-        },
-        null,
-        2
-      ),
-    };
-  },
-});
-
-// Resource 3: Topics taxonomy
-server.addResource({
-  uri: "content://topics",
-  name: "Content Topics",
-  description: "Topic taxonomy across all content",
-  mimeType: "application/json",
-  fetch: async () => {
-    const taxonomy = await getTopicTaxonomy();
-
-    return {
-      text: JSON.stringify(
-        {
-          totalTopics: Object.keys(taxonomy).length,
-          topics: Object.entries(taxonomy)
-            .sort(([, a], [, b]) => b - a)
-            .map(([topic, count]) => ({ topic, count })),
-        },
-        null,
-        2
-      ),
-    };
-  },
-});
-
-// Resource 4: Recent blog posts
-server.addResource({
-  uri: "content://recent/blog",
-  name: "Recent Blog Posts",
-  description: "Blog posts from the last 30 days",
-  mimeType: "application/json",
-  fetch: async () => {
-    const allPosts = await queryContent("blog");
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-    const recent = allPosts.filter((post) => {
-      if (!post.metadata.date) return false;
-      return new Date(post.metadata.date) >= thirtyDaysAgo;
-    });
-
-    return {
-      text: JSON.stringify(
-        {
-          count: recent.length,
-          posts: recent.map((p) => ({
-            slug: p.slug,
-            title: p.metadata.title,
-            date: p.metadata.date,
-          })),
-        },
-        null,
-        2
-      ),
-    };
-  },
-});
-
-// ============================================================================
-// MCP Prompts
-// ============================================================================
-
-// Prompt 1: Content strategy
-server.addPrompt({
-  name: "content-strategy",
-  description: "Analyze content strategy and identify gaps",
-  arguments: [],
-  run: async () => {
-    return {
-      messages: [
-        {
-          role: "user" as const,
-          content: {
-            type: "text" as const,
-            text: `Analyze the content strategy for dcyfr-labs. Use:
-1. content:getTopics() to see topic distribution
-2. content://blog/all to get all blog posts
-3. content://recent/blog to see recent activity
-
-Provide insights on:
-- Topic coverage (what's over/under-represented)
-- Content gaps (topics missing or underserved)
-- Publishing frequency and trends
-- Recommendations for next 3 posts`,
-          },
-        },
-      ],
-    };
-  },
-});
-
-// Prompt 2: Topic analysis
-server.addPrompt({
-  name: "topic-analysis",
-  description: "Deep dive on specific topic coverage",
-  arguments: [
-    {
-      name: "topic",
-      description: "Topic to analyze",
-      required: true,
-    },
-  ],
-  run: async (args) => {
-    const topic = args?.topic || "engineering";
-
-    return {
-      messages: [
-        {
-          role: "user" as const,
-          content: {
-            type: "text" as const,
-            text: `Analyze coverage of "${topic}" across dcyfr-labs content. Use:
-1. content:search({ query: "${topic}" }) to find all related content
-2. content:getTopics() to see related topics
-
-Provide:
-- Total articles on this topic
-- Related topics and crossover
-- Content quality assessment
-- Recommendations for expansion`,
-          },
-        },
-      ],
     };
   },
 });

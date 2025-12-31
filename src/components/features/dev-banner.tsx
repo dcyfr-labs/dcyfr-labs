@@ -1,4 +1,4 @@
-"use client"
+"use client";
 /**
  * DevBanner
  *
@@ -11,13 +11,19 @@
  */
 import { useState, useRef, useLayoutEffect } from "react";
 import { X } from "lucide-react";
-import { CONTAINER_WIDTHS, CONTAINER_PADDING, SEMANTIC_COLORS, ANIMATION } from "@/lib/design-tokens";
+import {
+  CONTAINER_WIDTHS,
+  CONTAINER_PADDING,
+  SEMANTIC_COLORS,
+  ANIMATION,
+} from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 
 const STORAGE_KEY = "dev-banner-dismissed";
 
 export function DevBanner() {
-  const persistAcrossSessions = process.env.NEXT_PUBLIC_DEV_BANNER_PERSIST === 'true';
+  const persistAcrossSessions =
+    process.env.NEXT_PUBLIC_DEV_BANNER_PERSIST === "true";
 
   // Initialize to true for server-rendered and initial client hydration to
   // avoid hydration mismatches. The real value is read on mount (useEffect)
@@ -33,11 +39,13 @@ export function DevBanner() {
         const storage = persistAcrossSessions ? localStorage : sessionStorage;
         storage.setItem(STORAGE_KEY, "true");
         // Dispatch storage event for same-window listeners
-        window.dispatchEvent(new StorageEvent('storage', {
-          key: STORAGE_KEY,
-          newValue: 'true',
-          storageArea: storage,
-        }));
+        window.dispatchEvent(
+          new StorageEvent("storage", {
+            key: STORAGE_KEY,
+            newValue: "true",
+            storageArea: storage,
+          })
+        );
       } catch (err) {
         // ignore
       }
@@ -53,11 +61,11 @@ export function DevBanner() {
   // button mounts/unmounts during the component's lifecycle.
   const setCloseButtonRef = (el: HTMLButtonElement | null) => {
     if (closeButtonRef.current) {
-      closeButtonRef.current.removeEventListener('click', handleClose);
+      closeButtonRef.current.removeEventListener("click", handleClose);
     }
     closeButtonRef.current = el;
     if (el) {
-      el.addEventListener('click', handleClose);
+      el.addEventListener("click", handleClose);
     }
   };
 
@@ -67,7 +75,7 @@ export function DevBanner() {
   useLayoutEffect(() => {
     try {
       const storage = persistAcrossSessions ? localStorage : sessionStorage;
-      const dismissed = storage.getItem(STORAGE_KEY) === 'true';
+      const dismissed = storage.getItem(STORAGE_KEY) === "true";
       // It's safe to synchronously set the state here on mount to reflect the
       // persisted dismissal preference. This avoids a flash of content during
       // hydration and ensures client state reflects persisted storage.
@@ -86,23 +94,44 @@ export function DevBanner() {
       aria-label="Dev Banner"
       className={cn(
         "w-full bg-background transition-all",
-        ANIMATION.duration.standard,
-        isAnimating ? "opacity-0 -translate-y-full" : "opacity-100 translate-y-0"
+        ANIMATION.duration.normal,
+        isAnimating
+          ? "opacity-0 -translate-y-full"
+          : "opacity-100 translate-y-0"
       )}
     >
-      <div className={cn("mx-auto", CONTAINER_WIDTHS.content, CONTAINER_PADDING, "py-3")}>
-        <div className={cn("rounded-lg p-3 flex items-center justify-between", SEMANTIC_COLORS.alert.info.border, SEMANTIC_COLORS.alert.info.container)}>
+      <div
+        className={cn(
+          "mx-auto",
+          CONTAINER_WIDTHS.content,
+          CONTAINER_PADDING,
+          "py-3"
+        )}
+      >
+        <div
+          className={cn(
+            "rounded-lg p-3 flex items-center justify-between",
+            SEMANTIC_COLORS.alert.info.border,
+            SEMANTIC_COLORS.alert.info.container
+          )}
+        >
           <div className="flex items-center gap-3">
-            <strong className={cn("text-sm", SEMANTIC_COLORS.alert.info.text)}>DEV Mode</strong>
+            <strong className={cn("text-sm", SEMANTIC_COLORS.alert.info.text)}>
+              DEV Mode
+            </strong>
             <span className={cn("text-sm", SEMANTIC_COLORS.alert.info.text)}>
-              This is a development build of the site. Features here may be unstable or incomplete.
+              This is a development build of the site. Features here may be
+              unstable or incomplete.
             </span>
           </div>
 
           <button
             type="button"
             aria-label="Close Dev Banner"
-            className={cn("p-2 rounded-md hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1", SEMANTIC_COLORS.alert.info.icon)}
+            className={cn(
+              "p-2 rounded-md hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1",
+              SEMANTIC_COLORS.alert.info.icon
+            )}
             data-testid="dev-banner-close"
             onClick={handleClose}
             onPointerDown={handleClose}

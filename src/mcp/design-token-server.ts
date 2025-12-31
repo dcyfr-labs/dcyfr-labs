@@ -20,19 +20,10 @@ import {
   TYPOGRAPHY,
   CONTAINER_WIDTHS,
   BREAKPOINTS,
-  COLORS,
-  BORDER_RADIUS,
-  SHADOWS,
-  TRANSITIONS,
 } from "@/lib/design-tokens";
 
 // Shared utilities
 import { SimpleCache } from "./shared/cache";
-import type {
-  MCPToolInput,
-  MCPToolOutput,
-  MCPResourceData,
-} from "./shared/types";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -80,26 +71,6 @@ const TOKEN_CATEGORIES = {
     tokens: CONTAINER_WIDTHS,
     patterns: [/max-w-\w+/, /min-w-\w+/],
     description: "Container width tokens",
-  },
-  colors: {
-    tokens: COLORS,
-    patterns: [/text-\w+-\d+/, /bg-\w+-\d+/, /border-\w+-\d+/, /ring-\w+-\d+/],
-    description: "Color tokens for text, backgrounds, borders",
-  },
-  radius: {
-    tokens: BORDER_RADIUS,
-    patterns: [/rounded(-\w+)?/],
-    description: "Border radius tokens",
-  },
-  shadows: {
-    tokens: SHADOWS,
-    patterns: [/shadow(-\w+)?/],
-    description: "Shadow tokens",
-  },
-  transitions: {
-    tokens: TRANSITIONS,
-    patterns: [/transition(-\w+)?/, /duration-\d+/, /ease-\w+/],
-    description: "Transition and animation tokens",
   },
   breakpoints: {
     tokens: BREAKPOINTS,

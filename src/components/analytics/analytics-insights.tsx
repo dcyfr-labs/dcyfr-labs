@@ -189,7 +189,7 @@ export function AnalyticsInsights({
 
   if (compact) {
     return (
-      <DashboardStats columns={4} className={`mb-${SPACING.lg}`}>
+      <DashboardStats columns={4} className="mb-6">
         <DashboardStat
           label="Highest Single Day"
           value={insights.highestSingleDayViews.views.toLocaleString()}
@@ -233,7 +233,7 @@ export function AnalyticsInsights({
   }
 
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-3 gap-${SPACING.md}`}>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {/* All-Time Records */}
       <Card className="md:col-span-1">
         <CardHeader className="pb-3">

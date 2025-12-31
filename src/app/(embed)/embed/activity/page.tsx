@@ -1,7 +1,5 @@
-import { headers } from "next/headers";
 import type { Metadata } from "next";
 import { createClient } from "redis";
-import { SITE_URL } from "@/lib/site-config";
 import { posts } from "@/data/posts";
 import { projects } from "@/data/projects";
 import { changelog } from "@/data/changelog";
@@ -13,7 +11,6 @@ import {
 } from "@/lib/activity";
 import {
   transformPostsWithViews,
-  transformTrendingPosts,
   transformMilestones,
   transformHighEngagementPosts,
   transformCommentMilestones,
@@ -83,9 +80,6 @@ export default async function ActivityEmbedPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const params = await searchParams;
-
-  // Get nonce from proxy for CSP
-  const nonce = (await headers()).get("x-nonce") || "";
 
   // Fetch activities (cache-first strategy)
   let allActivities: ActivityItem[] = [];
@@ -202,7 +196,6 @@ export default async function ActivityEmbedPage({
     <ActivityEmbedClient
       activities={serializedActivities}
       error={error}
-      nonce={nonce}
       initialSource={source}
       initialTimeRange={timeRange}
       limit={limit}
