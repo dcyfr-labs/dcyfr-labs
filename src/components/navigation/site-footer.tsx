@@ -1,6 +1,6 @@
 import { SiteLogo } from "@/components/common";
 import { cn } from "@/lib/utils";
-import { CONTAINER_WIDTHS } from "@/lib/design-tokens";
+import { CONTAINER_WIDTHS, NAVIGATION_HEIGHT } from "@/lib/design-tokens";
 import { NAVIGATION } from "@/lib/navigation-config";
 
 export function SiteFooter() {
@@ -8,7 +8,13 @@ export function SiteFooter() {
     <>
       {/* Mobile footer - hidden on mobile since bottom nav is used */}
       <footer className="hidden md:hidden mt-8 site-footer border-t pb-2">
-        <div className="mx-auto px-4 sm:px-8 h-16 flex items-center justify-center text-[clamp(0.875rem,1vw+0.75rem,1rem)] text-muted-foreground gap-2">
+        <div
+          className={cn(
+            "mx-auto px-4 sm:px-8",
+            NAVIGATION_HEIGHT,
+            "flex items-center justify-center text-[clamp(0.875rem,1vw+0.75rem,1rem)] text-muted-foreground gap-2"
+          )}
+        >
           <SiteLogo size="md" />
         </div>
       </footer>
@@ -22,7 +28,7 @@ export function SiteFooter() {
             "px-4",
             "sm:px-8",
             "md:px-8",
-            "h-16",
+            NAVIGATION_HEIGHT,
             "flex",
             "flex-col",
             "md:flex-row",

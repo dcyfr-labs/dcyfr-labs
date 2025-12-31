@@ -470,16 +470,31 @@ export default async function Home() {
                 )}
                 style={{ maxWidth: "48rem" }}
               >
-                {/* Logo Title - Larger scale for hero */}
-                <div>
+                {/* Logo Title - Larger scale for hero with entrance animation */}
+                <div
+                  className="opacity-0 translate-y-3 animate-fade-in-up"
+                  style={{
+                    animationDelay: "200ms",
+                    animationFillMode: "forwards",
+                  }}
+                >
                   <SiteLogo
                     size="lg"
                     className="justify-center scale-110 md:scale-125"
                   />
                 </div>
 
-                {/* Search Bar - Prominent, wide placement */}
-                <div className={cn(`w-full mt-4 md:mt-6 *:md:w-3/4 lg:w-2/3`)}>
+                {/* Search Bar - Prominent, wide placement with delayed entrance animation */}
+                <div
+                  className={cn(
+                    `w-full mt-4 md:mt-6 *:md:w-3/4 lg:w-2/3`,
+                    "opacity-0 translate-y-3 animate-fade-in-up"
+                  )}
+                  style={{
+                    animationDelay: "400ms",
+                    animationFillMode: "forwards",
+                  }}
+                >
                   <div className="w-full mx-auto" style={{ maxWidth: "28rem" }}>
                     <SearchButton variant="input" />
                   </div>

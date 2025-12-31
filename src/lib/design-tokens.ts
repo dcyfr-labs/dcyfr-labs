@@ -91,6 +91,12 @@ export const CONTAINER_WIDTHS = {
 export const CONTAINER_PADDING = "px-4 sm:px-6 md:px-8" as const;
 
 /**
+ * Navigation component height
+ * Used for consistent header, footer, and bottom nav heights
+ */
+export const NAVIGATION_HEIGHT = "h-16" as const;
+
+/**
  * Horizontal padding for archive container (reduced vertical padding)
  */
 export const ARCHIVE_CONTAINER_PADDING = "px-4 sm:px-6 md:px-8" as const;
