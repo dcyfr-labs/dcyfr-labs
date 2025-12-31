@@ -1,44 +1,50 @@
 /**
- * Blog Feed (Atom 1.0)
- * 
- * Provides a feed of blog posts only.
- * Available at: /blog/feed
- * 
+ * Blog Feed (Unified)
+ *
+ * Provides a feed of blog posts in multiple formats via query parameter.
+ * Available at:
+ * - /blog/feed (Atom - default)
+ * - /blog/feed?format=atom (Atom 1.0)
+ * - /blog/feed?format=rss (RSS 2.0)
+ * - /blog/feed?format=json (JSON Feed 1.1)
+ *
  * @see src/lib/feeds.ts for feed generation logic
  */
 
 import { NextRequest, NextResponse } from "next/server";
 import { posts } from "@/data/posts";
 import { buildBlogFeed } from "@/lib/feeds";
+import type { FeedFormat } from "@/lib/feeds";
 
-// Make this route dynamic to allow content negotiation via Accept header
+// Make this route dynamic to allow query parameter-based format selection
 export const dynamic = "force-dynamic";
 
 export const revalidate = 3600; // 1 hour
 
 export async function GET(request: NextRequest) {
   try {
-    // Check Accept header for format preference (auto-detection)
-    const acceptHeader = request.headers.get("accept") || "";
-    const prefersJson = acceptHeader.includes("application/json") || 
-                       acceptHeader.includes("application/feed+json");
-    
-    if (prefersJson) {
-      const json = await buildBlogFeed(posts, "json", 20);
-      
-      return new NextResponse(json, {
-        headers: {
-          "Content-Type": "application/feed+json; charset=utf-8",
-          "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
-        },
-      });
+    // Get format from query parameter (default: atom)
+    const { searchParams } = new URL(request.url);
+    const formatParam = searchParams.get("format")?.toLowerCase();
+
+    // Validate and determine format
+    let format: FeedFormat = "atom"; // Default to Atom
+    let contentType = "application/atom+xml; charset=utf-8";
+
+    if (formatParam === "rss") {
+      format = "rss";
+      contentType = "application/rss+xml; charset=utf-8";
+    } else if (formatParam === "json") {
+      format = "json";
+      contentType = "application/feed+json; charset=utf-8";
     }
-    
-    const xml = await buildBlogFeed(posts, "atom", 20);
-    
-    return new NextResponse(xml, {
+
+    // Generate feed in requested format
+    const feed = await buildBlogFeed(posts, format, 20);
+
+    return new NextResponse(feed, {
       headers: {
-        "Content-Type": "application/atom+xml; charset=utf-8",
+        "Content-Type": contentType,
         "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
       },
     });

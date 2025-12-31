@@ -49,11 +49,9 @@ import {
 import { Breadcrumbs } from "@/components/navigation";
 import {
   ReadingProgress,
-  ShareButtons,
   LazyGiscusComments,
   ViewTracker,
 } from "@/components/features";
-import { PostBadges } from "@/components/blog";
 
 // Enable Incremental Static Regeneration with 1 hour revalidation
 export const revalidate = 3600; // 1 hour in seconds
@@ -320,53 +318,6 @@ export default async function PostPage({
                 </div>
 
                 <ArticleFooter>
-                  {/* Status badges and category - hidden when sidebar is visible */}
-                  <HideWhenSidebarVisible>
-                    <div className="flex flex-wrap items-center gap-2 mb-6">
-                      <PostBadges
-                        post={post}
-                        isLatestPost={latestPost?.slug === post.slug}
-                        isHotPost={hottestSlug === post.slug}
-                        showCategory={true}
-                      />
-                    </div>
-                  </HideWhenSidebarVisible>
-
-                  {/* Tags section - hidden when sidebar is visible */}
-                  <HideWhenSidebarVisible>
-                    {post.tags.length > 0 && (
-                      <div className="flex flex-wrap items-center gap-2 mb-6">
-                        <span className="text-sm text-muted-foreground">
-                          Tagged:
-                        </span>
-                        {post.tags.map((tag: string) => (
-                          <a
-                            key={tag}
-                            href={`/blog?tag=${encodeURIComponent(tag)}`}
-                          >
-                            <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 cursor-pointer">
-                              {tag}
-                            </span>
-                          </a>
-                        ))}
-                      </div>
-                    )}
-                  </HideWhenSidebarVisible>
-
-                  {/* Share section - hidden when sidebar is visible */}
-                  <HideWhenSidebarVisible>
-                    <div className="space-y-4">
-                      <h2 className={TYPOGRAPHY.h2.standard}>
-                        Share this blog post
-                      </h2>
-                      <ShareButtons
-                        url={`${SITE_URL}/blog/${post.slug}`}
-                        title={post.title}
-                        postId={post.id}
-                        initialShareCount={0}
-                      />
-                    </div>
-                  </HideWhenSidebarVisible>
 
                   {/* Related posts section */}
                   <RelatedPosts

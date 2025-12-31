@@ -9,7 +9,12 @@ import { MobileNav } from "@/components/navigation";
 import { SearchButton } from "@/components/search";
 import { DevToolsDropdown, ThemeAwareLogo } from "@/components/common";
 import { cn } from "@/lib/utils";
-import { CONTAINER_WIDTHS, ANIMATION, TOUCH_TARGET } from "@/lib/design-tokens";
+import {
+  CONTAINER_WIDTHS,
+  ANIMATION,
+  TOUCH_TARGET,
+  NAVIGATION_HEIGHT,
+} from "@/lib/design-tokens";
 import {
   NAVIGATION,
   BLOG_NAV,
@@ -76,7 +81,7 @@ export function SiteHeader() {
           "mx-auto",
           CONTAINER_WIDTHS.dashboard,
           "px-4 md:px-6 lg:px-8",
-          "h-16",
+          NAVIGATION_HEIGHT,
           "flex items-center gap-2 lg:relative"
         )}
       >
