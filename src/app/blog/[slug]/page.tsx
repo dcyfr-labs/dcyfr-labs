@@ -317,7 +317,6 @@ export default async function PostPage({
                 </div>
 
                 <ArticleFooter>
-
                   {/* Related posts section */}
                   <RelatedPosts
                     posts={articleData.relatedItems}
