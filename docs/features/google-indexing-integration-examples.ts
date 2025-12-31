@@ -1,6 +1,6 @@
 /**
  * Example: Integrating Google Indexing API with Blog Publishing
- * 
+ *
  * This file demonstrates how to automatically submit blog posts to Google
  * when they're published. Adapt this pattern to your specific workflow.
  */
@@ -67,10 +67,7 @@ export async function unpublishBlogPost(slug: string) {
  * Example 3: Updating Existing Posts
  * Trigger re-indexing when content is updated
  */
-export async function updateBlogPost(
-  slug: string,
-  updates: Record<string, any>
-) {
+export async function updateBlogPost(slug: string) {
   // 1. Update the post
   // ... your logic ...
 
@@ -155,10 +152,7 @@ export async function POST(request: NextRequest) {
         break;
 
       default:
-        return NextResponse.json(
-          { error: "Invalid action" },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: "Invalid action" }, { status: 400 });
     }
 
     return NextResponse.json({
@@ -210,14 +204,16 @@ export const reindexImportantPosts = inngest.createFunction(
  * Trigger indexing when MDX files are modified
  */
 import { watch } from "fs";
-import { join } from "path";
 
 export function watchBlogContent(contentDir: string) {
-  watch(contentDir, { recursive: true }, async (eventType, filename) => {
+  watch(contentDir, { recursive: true }, async (_eventType, filename) => {
     if (!filename?.endsWith(".mdx")) return;
 
     // Extract slug from filename
-    const slug = filename.replace(/\.mdx$/, "").split("/").pop();
+    const slug = filename
+      .replace(/\.mdx$/, "")
+      .split("/")
+      .pop();
     if (!slug) return;
 
     const url = `${SITE_URL}/blog/${slug}`;
@@ -240,24 +236,24 @@ export function watchBlogContent(contentDir: string) {
 
 /**
  * Best Practices:
- * 
+ *
  * 1. **Don't Block Publishing**
  *    - Always wrap Google API calls in try-catch
  *    - Don't fail the main operation if indexing fails
- * 
+ *
  * 2. **Respect Rate Limits**
  *    - Use batch functions for multiple URLs
  *    - Space out submissions throughout the day
- * 
+ *
  * 3. **Only Submit Published Content**
  *    - Don't submit drafts or unpublished posts
  *    - Check `published` flag before submission
- * 
+ *
  * 4. **Monitor Quota Usage**
  *    - Default: 200 requests/day
  *    - Track your submissions
  *    - Request increase if needed
- * 
+ *
  * 5. **Handle Errors Gracefully**
  *    - Log errors but don't crash
  *    - Inngest has automatic retries

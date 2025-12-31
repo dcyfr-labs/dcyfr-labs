@@ -28,6 +28,7 @@ import {
   handleToolError,
   logToolExecution,
   measurePerformance,
+  getTimeRangeMs,
 } from "./shared/utils.js";
 import { analyticsCache } from "./shared/cache.js";
 import type {
@@ -82,10 +83,10 @@ server.addTool({
 
         // Query Redis for page views using actual key pattern: views:post:*
         const keys = await redis.keys("views:post:*");
-        
+
         // Filter out daily tracking keys (views:post:{id}:day:{date})
-        const baseKeys = keys.filter(key => !key.includes(":day:"));
-        
+        const baseKeys = keys.filter((key) => !key.includes(":day:"));
+
         if (!baseKeys || baseKeys.length === 0) {
           warnProductionFallback("views:post:*");
           return {
@@ -101,10 +102,10 @@ server.addTool({
         if (args.path) {
           // Try to find a matching key for the specific path
           // Path could be post slug or full path
-          const matchingKey = baseKeys.find(k => k.includes(args.path!));
-          
+          const matchingKey = baseKeys.find((k) => k.includes(args.path!));
+
           if (matchingKey) {
-            const views = parseInt(await redis.get(matchingKey) || "0", 10);
+            const views = parseInt((await redis.get(matchingKey)) || "0", 10);
             data = {
               path: args.path,
               views,
@@ -115,7 +116,6 @@ server.addTool({
               path: args.path,
               views: 0,
               timeRange: args.timeRange,
-              message: `No data for ${args.path}`,
             };
           }
         } else {
@@ -125,7 +125,7 @@ server.addTool({
             const value = await redis.get(key);
             totalViews += parseInt(value || "0", 10);
           }
-          
+
           data = {
             path: "all",
             views: totalViews,
@@ -184,9 +184,9 @@ server.addTool({
 
         // Query Redis for all post views using actual key pattern: views:post:*
         const keys = await redis.keys("views:post:*");
-        
+
         // Filter out daily tracking keys (views:post:{id}:day:{date})
-        const baseKeys = keys.filter(key => !key.includes(":day:"));
+        const baseKeys = keys.filter((key) => !key.includes(":day:"));
 
         if (!baseKeys || baseKeys.length === 0) {
           warnProductionFallback("views:post:*");
@@ -195,11 +195,11 @@ server.addTool({
 
         // Get all view counts and map to post IDs
         const trendingItems: TrendingContent[] = [];
-        
+
         for (const key of baseKeys) {
           const postId = key.replace("views:post:", "");
-          const views = parseInt(await redis.get(key) || "0", 10);
-          
+          const views = parseInt((await redis.get(key)) || "0", 10);
+
           if (views > 0) {
             trendingItems.push({
               path: `/blog/${postId}`,
@@ -266,7 +266,14 @@ server.addTool({
         }
 
         // Query Redis for likes and bookmarks using all content type patterns
-        const [postLikes, projectLikes, activityLikes, postBookmarks, projectBookmarks, activityBookmarks] = await Promise.all([
+        const [
+          postLikes,
+          projectLikes,
+          activityLikes,
+          postBookmarks,
+          projectBookmarks,
+          activityBookmarks,
+        ] = await Promise.all([
           redis.keys("likes:post:*"),
           redis.keys("likes:project:*"),
           redis.keys("likes:activity:*"),
@@ -276,9 +283,16 @@ server.addTool({
         ]);
 
         const likeKeys = [...postLikes, ...projectLikes, ...activityLikes];
-        const bookmarkKeys = [...postBookmarks, ...projectBookmarks, ...activityBookmarks];
+        const bookmarkKeys = [
+          ...postBookmarks,
+          ...projectBookmarks,
+          ...activityBookmarks,
+        ];
 
-        if ((!likeKeys || likeKeys.length === 0) && (!bookmarkKeys || bookmarkKeys.length === 0)) {
+        if (
+          (!likeKeys || likeKeys.length === 0) &&
+          (!bookmarkKeys || bookmarkKeys.length === 0)
+        ) {
           warnProductionFallback("likes:* and bookmarks:*");
           return {
             totalLikes: 0,
@@ -376,19 +390,24 @@ server.addTool({
         }
 
         // Get recent activity from view history sorted sets
-        const activities: Array<{ type: string; path: string; timestamp: number; data: Record<string, unknown> }> = [];
-        
+        const activities: Array<{
+          type: string;
+          path: string;
+          timestamp: number;
+          data: Record<string, unknown>;
+        }> = [];
+
         for (const key of historyKeys) {
           const postId = key.replace("views:history:post:", "");
-          
+
           // Get recent entries from sorted set (within time range)
           const now = Date.now();
           const timeRangeMs = getTimeRangeMs(args.timeRange);
           const minScore = now - timeRangeMs;
-          
+
           // zRangeByScore returns members with scores between min and max
           const entries = await redis.zRangeByScore(key, minScore, now);
-          
+
           for (const entry of entries) {
             const timestamp = parseInt(entry, 10);
             activities.push({
@@ -410,9 +429,13 @@ server.addTool({
         let filtered = activities;
         if (args.query) {
           const queryLower = args.query.toLowerCase();
-          filtered = activities.filter(activity =>
-            activity.path.toLowerCase().includes(queryLower) ||
-            activity.data.postId?.toString().toLowerCase().includes(queryLower),
+          filtered = activities.filter(
+            (activity) =>
+              activity.path.toLowerCase().includes(queryLower) ||
+              activity.data.postId
+                ?.toString()
+                .toLowerCase()
+                .includes(queryLower)
           );
         }
 
@@ -517,7 +540,7 @@ server.addResource({
       ]);
 
       // Filter out daily tracking keys
-      const viewKeys = allViewKeys.filter(key => !key.includes(":day:"));
+      const viewKeys = allViewKeys.filter((key) => !key.includes(":day:"));
 
       // Sum all views
       let totalViews = 0;
@@ -530,7 +553,7 @@ server.addResource({
         ? JSON.parse(milestonesData)
         : [];
       const recent24h = milestones.filter((m) =>
-        isWithinTimeRange(m.achievedAt, "24h"),
+        isWithinTimeRange(m.achievedAt, "24h")
       );
 
       const summary: AnalyticsSummary = {
@@ -570,14 +593,14 @@ server.addResource({
 
       // Query actual Redis keys
       const allViewKeys = await redis.keys("views:post:*");
-      const viewKeys = allViewKeys.filter(key => !key.includes(":day:"));
+      const viewKeys = allViewKeys.filter((key) => !key.includes(":day:"));
 
       if (!viewKeys || viewKeys.length === 0) {
         return {
           text: JSON.stringify(
             { message: "No page view data available", pages: [] },
             null,
-            2,
+            2
           ),
         };
       }
@@ -586,15 +609,13 @@ server.addResource({
       const pages: Array<{ path: string; views: number }> = [];
       for (const key of viewKeys) {
         const postId = key.replace("views:post:", "");
-        const views = parseInt(await redis.get(key) || "0", 10);
+        const views = parseInt((await redis.get(key)) || "0", 10);
         if (views > 0) {
           pages.push({ path: `/blog/${postId}`, views });
         }
       }
 
-      const topPages = pages
-        .sort((a, b) => b.views - a.views)
-        .slice(0, 20); // Top 20 pages
+      const topPages = pages.sort((a, b) => b.views - a.views).slice(0, 20); // Top 20 pages
 
       const result = {
         topPages,
@@ -630,7 +651,14 @@ server.addResource({
       }
 
       // Query actual Redis keys for likes and bookmarks across all content types
-      const [postLikes, projectLikes, activityLikes, postBookmarks, projectBookmarks, activityBookmarks] = await Promise.all([
+      const [
+        postLikes,
+        projectLikes,
+        activityLikes,
+        postBookmarks,
+        projectBookmarks,
+        activityBookmarks,
+      ] = await Promise.all([
         redis.keys("likes:post:*"),
         redis.keys("likes:project:*"),
         redis.keys("likes:activity:*"),
@@ -640,9 +668,16 @@ server.addResource({
       ]);
 
       const likeKeys = [...postLikes, ...projectLikes, ...activityLikes];
-      const bookmarkKeys = [...postBookmarks, ...projectBookmarks, ...activityBookmarks];
+      const bookmarkKeys = [
+        ...postBookmarks,
+        ...projectBookmarks,
+        ...activityBookmarks,
+      ];
 
-      if ((!likeKeys || likeKeys.length === 0) && (!bookmarkKeys || bookmarkKeys.length === 0)) {
+      if (
+        (!likeKeys || likeKeys.length === 0) &&
+        (!bookmarkKeys || bookmarkKeys.length === 0)
+      ) {
         return {
           text: JSON.stringify(
             {
@@ -652,7 +687,7 @@ server.addResource({
               totalInteractions: 0,
             },
             null,
-            2,
+            2
           ),
         };
       }
@@ -684,98 +719,6 @@ server.addResource({
     } catch (error) {
       return { text: handleToolError(error) };
     }
-  },
-});
-
-// ============================================================================
-// Prompt 1: Analytics Summary
-// ============================================================================
-
-server.addPrompt({
-  name: "analytics-summary",
-  description:
-    "Generate a comprehensive analytics summary with insights and trends",
-  arguments: [
-    {
-      name: "timeRange",
-      description: "Time range for analysis (24h, 7d, 30d, all)",
-      required: false,
-    },
-  ],
-  async render(args) {
-    const timeRange = (args?.timeRange as string) || "7d";
-
-    return {
-      messages: [
-        {
-          role: "user",
-          content: {
-            type: "text",
-            text: `Analyze dcyfr-labs analytics for the past ${timeRange} and provide:
-
-1. **Traffic Overview**: Total page views, top performing pages, traffic trends
-2. **Engagement Analysis**: Click rates, shares, interactions, engagement patterns
-3. **Key Insights**: Notable trends, unexpected patterns, growth opportunities
-4. **Recommendations**: Actionable suggestions to improve content performance
-
-Use the following tools to gather data:
-- analytics:getPageViews for traffic data
-- analytics:getTrending for popular content
-- analytics:getEngagement for interaction metrics
-- analytics://recent for 24h snapshot
-- analytics://top-pages for most viewed pages
-
-Focus on actionable insights that can guide content strategy.`,
-          },
-        },
-      ],
-    };
-  },
-});
-
-// ============================================================================
-// Prompt 2: Content Performance Analysis
-// ============================================================================
-
-server.addPrompt({
-  name: "content-performance",
-  description:
-    "Analyze content performance to identify top and underperforming pieces",
-  arguments: [
-    {
-      name: "contentType",
-      description: "Type of content to analyze (blog, projects, all)",
-      required: false,
-    },
-  ],
-  async render(args) {
-    const contentType = (args?.contentType as string) || "all";
-
-    return {
-      messages: [
-        {
-          role: "user",
-          content: {
-            type: "text",
-            text: `Perform a content performance analysis for ${contentType} content:
-
-1. **Top Performers**: Identify highest-traffic content and analyze why it succeeds
-2. **Underperformers**: Find low-traffic content that could be improved
-3. **Engagement Patterns**: Analyze which content types drive the most interaction
-4. **Optimization Opportunities**: Suggest improvements for underperforming content
-5. **Content Gaps**: Identify topics or formats that are missing
-
-Use these tools for analysis:
-- analytics:getTrending to find top content
-- analytics:getEngagement for interaction data
-- analytics:searchActivity to understand user behavior
-- analytics://engagement/summary for overall metrics
-
-Provide specific, data-driven recommendations for content optimization.`,
-          },
-        },
-      ],
-    };
   },
 });
 

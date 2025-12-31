@@ -14,7 +14,7 @@ export function InvitesStats({
   return (
     <div className={SPACING.content}>
       <div className="bg-card border border-border rounded-lg p-8 text-center">
-        <div className={`grid grid-cols-2 md:grid-cols-4 gap-${SPACING.md}`}>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
             <p className={`${TYPOGRAPHY.display.stat} text-primary`}>
               {totalInvites}

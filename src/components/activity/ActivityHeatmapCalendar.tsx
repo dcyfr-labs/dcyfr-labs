@@ -163,13 +163,11 @@ export function ActivityHeatmapCalendar({
       className={className}
     >
       <Card>
-        <CardContent className={`p-${SPACING.section}`} ref={heatmapRef}>
+        <CardContent className="p-6" ref={heatmapRef}>
           {/* Header */}
-          <div
-            className={`flex items-center justify-between flex-wrap gap-${SPACING.md} mb-${SPACING.lg}`}
-          >
+          <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
             <h3 className={TYPOGRAPHY.h3.standard}>Activity Heatmap</h3>
-            <div className={`flex items-center gap-${SPACING.sm}`}>
+            <div className="flex items-center gap-3">
               <Badge variant="secondary" className="text-xs">
                 {stats.totalActivities.toLocaleString()} activities in{" "}
                 {monthsToShow} months
@@ -179,7 +177,7 @@ export function ActivityHeatmapCalendar({
                 size="sm"
                 onClick={handleExport}
                 disabled={isExporting}
-                className={`gap-${SPACING.sm}`}
+                className="gap-3"
               >
                 <Download className="h-4 w-4" />
                 {isExporting ? "Exporting..." : "Export PNG"}
@@ -188,9 +186,7 @@ export function ActivityHeatmapCalendar({
           </div>
 
           {/* Statistics Grid */}
-          <div
-            className={`grid grid-cols-2 md:grid-cols-4 gap-${SPACING.md} mb-${SPACING.lg}`}
-          >
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {/* Total Activities */}
             <motion.div
               className="bg-muted/50 rounded-lg p-3 border border-border hover:border-primary/50 transition-colors"

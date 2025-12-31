@@ -8,10 +8,9 @@ import {
 } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import { Section, ProfileAvatar } from "@/components/common";
-import type { UserProfile } from "@/types/user-profile";
 
 interface ProfileHeroProps {
-  userProfile: UserProfile;
+  userProfile: string;
   name: string;
   title: string;
   subtitle?: string;

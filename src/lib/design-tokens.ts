@@ -757,6 +757,33 @@ export const SPACING = {
     /** Spacing between action buttons (like, bookmark, share) */
     actionGap: "gap-6",
   },
+
+  // Numeric-like properties for use in template literals (TEMPORARY - should be refactored)
+  // These map to standard Tailwind values: xs=2, sm=3, md=4, lg=6, xl=8, 2xl=10
+  xs: "2",
+  sm: "3",
+  md: "4",
+  lg: "6",
+  xl: "8",
+  "2xl": "10",
+  "1.5": "3",
+  "0.5": "1",
+} as const;
+
+// ============================================================================
+// NUMERIC SPACING (for padding, gaps, margins - NOT space-y)
+// ============================================================================
+
+/**
+ * Numeric spacing values for use with padding (p-*), gaps (gap-*), margins (m-*)
+ * These complement SPACING which is only for vertical spacing (space-y-*)
+ */
+export const SPACING_VALUES = {
+  xs: "2", // 0.5rem
+  sm: "3", // 0.75rem
+  md: "4", // 1rem
+  lg: "6", // 1.5rem
+  xl: "8", // 2rem
 } as const;
 
 // ============================================================================

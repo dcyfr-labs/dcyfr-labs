@@ -7,10 +7,13 @@
 
 "use client";
 
+import { useState } from "react";
 import { useNavigationShortcuts } from "@/hooks/use-navigation-shortcuts";
 import { KeyboardShortcutsHelp } from "@/components/common";
 
 export function NavigationShortcutsProvider() {
+  const [showHelp, setShowHelp] = useState(false);
+
   // Enable navigation shortcuts globally
   useNavigationShortcuts({
     enabled: true,
@@ -22,5 +25,5 @@ export function NavigationShortcutsProvider() {
     },
   });
 
-  return <KeyboardShortcutsHelp />;
+  return <KeyboardShortcutsHelp open={showHelp} onOpenChange={setShowHelp} />;
 }

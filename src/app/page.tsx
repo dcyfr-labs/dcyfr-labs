@@ -78,14 +78,14 @@ const FeaturedPostHero = dynamic(
     })),
   {
     loading: () => (
-      <Card className={`p-${SPACING.md} md:p-${SPACING.xl} animate-pulse`}>
+      <Card className="p-4 md:p-6 animate-pulse">
         <div className={cn("flex items-center", SPACING.compact)}>
-          <div className={`flex items-center gap-${SPACING.md}`}>
+          <div className="flex items-center gap-4">
             <div className="h-5 w-16 bg-muted rounded" />
             <div className="h-5 w-20 bg-muted rounded" />
           </div>
         </div>
-        <div className={cn(`mt-${SPACING.md}`, SPACING.compact)}>
+        <div className={cn("mt-4", SPACING.compact)}>
           <div className="h-8 bg-muted rounded w-3/4" />
           <div className="h-6 bg-muted rounded w-full" />
         </div>
@@ -127,9 +127,7 @@ const ExploreCards = dynamic(
     import("@/components/home").then((mod) => ({ default: mod.ExploreCards })),
   {
     loading: () => (
-      <div
-        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-${SPACING.md}`}
-      >
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {[...Array(3)].map((_, i) => (
           <div key={i} className="h-32 bg-muted rounded-lg animate-pulse" />
         ))}
@@ -145,9 +143,7 @@ const SeriesShowcase = dynamic(
     })),
   {
     loading: () => (
-      <div
-        className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-${SPACING.md}`}
-      >
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {[...Array(3)].map((_, i) => (
           <div key={i} className="h-48 bg-muted rounded-lg animate-pulse" />
         ))}
@@ -415,7 +411,7 @@ export default async function Home() {
               <div
                 className={cn(
                   "text-center flex flex-col items-center w-full mx-auto",
-                  SPACING.content.tight
+                  SPACING.content
                 )}
                 style={{ maxWidth: "48rem" }}
               >
