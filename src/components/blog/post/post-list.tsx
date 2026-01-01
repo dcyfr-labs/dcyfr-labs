@@ -440,7 +440,7 @@ export function PostList({
 
                     {/* Content section */}
                     <div
-                      className={`p-4 md:p-6 flex flex-col justify-between ${p.image && p.image.url && !p.image.hideCard ? (index === 1 ? "md:w-3/5" : "md:w-2/5") : "w-full"}`}
+                      className={`p-4 md:p-8 flex flex-col justify-between ${p.image && p.image.url && !p.image.hideCard ? (index === 1 ? "md:w-3/5" : "md:w-2/5") : "w-full"}`}
                     >
                       {/* Badges */}
                       <div className="flex flex-nowrap items-center gap-x-2.5 text-sm text-muted-foreground mb-2.5 overflow-x-auto">

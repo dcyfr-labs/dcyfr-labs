@@ -127,7 +127,7 @@ export function TrendingProjectsPanel({
             <Link href={`/projects/${project.slug}`}>
               <Card
                 className={cn(
-                  "p-6 border cursor-pointer group",
+                  "p-4 border cursor-pointer group",
                   ANIMATION.transition.base,
                   HOVER_EFFECTS.cardGlow,
                   "hover:bg-muted/30 hover:border-primary/50 hover:-translate-y-0.5"

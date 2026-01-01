@@ -63,7 +63,7 @@ export function DcyfrActivityStats() {
           {stats.map((stat, idx) => (
             <Card
               key={idx}
-              className={cn("p-6", SHADOWS.card.rest, BORDERS.card, SPACING.content)}
+              className={cn("p-4", SHADOWS.card.rest, BORDERS.card, SPACING.content)}
             >
               <div className="flex items-center gap-3 mb-2">
                 <div className="shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">

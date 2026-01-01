@@ -171,7 +171,7 @@ export function CombinedStatsExplore({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6 mb-8"
+        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8"
       >
         <StatItem value={postsCount} label="Blog Posts" />
         <StatItem value={projectsCount} label="Projects" />
@@ -190,7 +190,7 @@ export function CombinedStatsExplore({
 
       {/* Primary Content Cards */}
       <div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4"
       >
         {cards.map((card, index) => (
           <motion.div
@@ -217,7 +217,7 @@ export function CombinedStatsExplore({
                 />
 
                 <CardContent
-                  className="p-6 md:p-5 flex flex-col h-full"
+                  className="p-4 md:p-8 flex flex-col h-full"
                 >
                   {/* Icon + Label + Count */}
                   <div

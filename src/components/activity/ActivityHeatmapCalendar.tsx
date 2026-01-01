@@ -163,7 +163,7 @@ export function ActivityHeatmapCalendar({
       className={className}
     >
       <Card>
-        <CardContent className="p-6" ref={heatmapRef}>
+        <CardContent className="p-4 md:p-8" ref={heatmapRef}>
           {/* Header */}
           <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
             <h3 className={TYPOGRAPHY.h3.standard}>Activity Heatmap</h3>

@@ -79,7 +79,7 @@ const FeaturedPostHero = dynamic(
     })),
   {
     loading: () => (
-      <Card className="p-4 md:p-6 animate-pulse">
+      <Card className="p-4 md:p-8 animate-pulse">
         <div className={cn("flex items-center", SPACING.compact)}>
           <div className="flex items-center gap-4">
             <div className="h-5 w-16 bg-muted rounded" />

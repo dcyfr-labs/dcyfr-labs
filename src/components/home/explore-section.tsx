@@ -142,7 +142,7 @@ export function ExploreSection({
             transition={{ duration: 0.4, delay: index * 0.1 }}
           >
             <Card className={cn("border-0 bg-muted/30", HOVER_EFFECTS.cardSubtle)}>
-              <CardContent className="p-4 md:p-6">
+              <CardContent className="p-4 md:p-8">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-baseline gap-1">
@@ -168,7 +168,7 @@ export function ExploreSection({
       </motion.div>
 
       {/* Main Explore Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {cards.map((card, index) => (
           <motion.div
             key={card.href}
@@ -194,7 +194,7 @@ export function ExploreSection({
                   )}
                 />
 
-                <CardContent className="p-6 md:p-8 relative z-10">
+                <CardContent className="p-4 md:p-8 relative z-10">
                   {/* Icon */}
                   <div
                     className={cn(
@@ -242,7 +242,7 @@ export function ExploreSection({
                       <span
                         className={cn(
                           TYPOGRAPHY.display.stat,
-                          "text-2xl font-bold text-foreground"
+                          "text-foreground"
                         )}
                       >
                         {card.count}

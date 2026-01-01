@@ -339,7 +339,7 @@ server.addTool({
 server.addTool({
   name: "tokens:suggest",
   description:
-    "Get design token suggestions for a hardcoded value (e.g., 'gap-8', 'text-3xl')",
+    "Get design token suggestions for a hardcoded value (e.g., 'gap-4', 'text-2xl')",
   parameters: z.object({
     hardcodedValue: z.string().describe("Hardcoded Tailwind class or value"),
     category: z
@@ -541,13 +541,13 @@ server.addResource({
     const antiPatterns = [
       {
         pattern: "Hardcoded spacing values",
-        wrong: "className='gap-8 p-4'",
-        correct: "className={`gap-${SPACING.content} p-${SPACING.section}`}",
+        wrong: "className='gap-4 p-4'",
+        correct: "className={`gap-4 p-4`}",
       },
       {
         pattern: "Hardcoded typography",
-        wrong: "className='text-3xl font-semibold'",
-        correct: "className={TYPOGRAPHY.h1.standard}",
+        wrong: "className='text-xl font-bold'",
+        correct: "className={TYPOGRAPHY.h2.standard}",
       },
       {
         pattern: "Direct color values",

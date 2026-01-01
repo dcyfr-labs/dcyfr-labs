@@ -80,7 +80,7 @@ export function SiteHeader() {
         className={cn(
           "mx-auto",
           CONTAINER_WIDTHS.dashboard,
-          "px-4 md:px-6 lg:px-8",
+          "px-4 md:px-8",
           NAVIGATION_HEIGHT,
           "flex items-center gap-2 lg:relative"
         )}
