@@ -16,6 +16,7 @@ import {
   ConnectWithUs,
   AboutDcyfrLabs,
   BadgeWallet,
+  SkillsWallet,
 } from "@/components/about";
 
 const ScrollReveal = dynamic(
@@ -98,9 +99,22 @@ export default async function AboutPage() {
           </ScrollReveal>
         </Section>
 
+        {/* Team Skills */}
+        <Section id="skills" className={PAGE_LAYOUT.section.container}>
+          <ScrollReveal animation="fade-up" delay={4}>
+            <SkillsWallet
+              username="dcyfr"
+              limit={9}
+              excludeSkills={["CompTIA"]}
+              viewMoreUrl="/about/drew/resume#skills"
+              viewMoreText="View all skills"
+            />
+          </ScrollReveal>
+        </Section>
+
         {/* Connect with Us */}
         <Section id="connect-with-us" className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={4}>
+          <ScrollReveal animation="fade-up" delay={5}>
             <ConnectWithUs />
           </ScrollReveal>
         </Section>
