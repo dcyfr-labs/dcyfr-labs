@@ -59,7 +59,7 @@ export function MiniBadgeList({
       <div className="flex items-center gap-3 mb-6">
         <Award className="h-5 w-5 text-primary" />
         <h3 className={TYPOGRAPHY.h3.standard}>Certifications</h3>
-        <Badge variant="secondary">{badges.length} Active</Badge>
+        <Badge variant="secondary">{badges.length} Total</Badge>
       </div>
 
       {/* Minimalistic badge grid - just images */}
@@ -84,14 +84,14 @@ export function MiniBadgeList({
               className="group relative"
               title={`${badge.badge_template.name} - Issued ${issuedDate}`}
             >
-              <div className={cn("relative w-20 h-20 transition-transform hover:scale-110 hover:-translate-y-1", ANIMATION.duration.fast)}>
+              <div className={cn("relative w-20 h-20 p-2 rounded-lg bg-white/80 dark:bg-slate-800/60 transition-transform hover:scale-110 hover:-translate-y-1", ANIMATION.duration.fast)}>
                 <Image
                   src={badge.image_url}
                   alt={badge.badge_template.name}
                   fill
                   sizes="80px"
                   quality={95}
-                  className="object-contain"
+                  className="object-contain p-1"
                 />
               </div>
               
