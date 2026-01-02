@@ -52,6 +52,15 @@ export function SkillsWallet({
     const filtered = skills.filter(
       (item) => !excludeSkills.includes(item.skill.name)
     );
+
+    // Debug: Log excluded skills if any
+    if (excludeSkills.length > 0 && process.env.NODE_ENV === 'development') {
+      const excluded = skills.filter((item) => excludeSkills.includes(item.skill.name));
+      if (excluded.length > 0) {
+        console.warn('[SkillsWallet] Excluded skills:', excluded.map((s) => s.skill.name));
+      }
+    }
+
     return limit ? filtered.slice(0, limit) : filtered;
   }, [skills, limit, excludeSkills]);
 
@@ -112,12 +121,10 @@ export function SkillsWallet({
   return (
     <div className={cn(SPACING.subsection, className)}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Lightbulb className="h-5 w-5 text-primary" />
-          <h3 className={TYPOGRAPHY.h3.standard}>Top Skills</h3>
-        </div>
-        <Badge variant="secondary">{displayedSkills.length} Skills</Badge>
+      <div className="flex items-center gap-2">
+        <Lightbulb className="h-5 w-5 text-primary" />
+        <h3 className={TYPOGRAPHY.h3.standard}>Top Skills</h3>
+        <Badge variant="secondary">{displayedSkills.length} Total</Badge>
       </div>
 
       {/* Skills Grid */}

@@ -184,13 +184,11 @@ export function BadgeWallet({
   return (
     <div className={cn(SPACING.subsection, className)}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Award className="h-5 w-5 text-primary" />
-          <h3 className={TYPOGRAPHY.h3.standard}>
-            {showLatestOnly ? "Latest Badges" : "Badges"}
-          </h3>
-        </div>
+      <div className="flex items-center gap-2">
+        <Award className="h-5 w-5 text-primary" />
+        <h3 className={TYPOGRAPHY.h3.standard}>
+          {showLatestOnly ? "Latest Badges" : "Badges"}
+        </h3>
         {totalCount > 0 && (
           <Badge variant="secondary">{totalCount} Total</Badge>
         )}

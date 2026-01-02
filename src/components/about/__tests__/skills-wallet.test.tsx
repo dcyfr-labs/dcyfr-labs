@@ -188,7 +188,7 @@ describe("SkillsWallet", () => {
     render(<SkillsWallet username="dcyfr" />);
 
     await waitFor(() => {
-      expect(screen.getByText("3 Skills")).toBeInTheDocument();
+      expect(screen.getByText("3 Total")).toBeInTheDocument();
     });
   });
 
@@ -252,6 +252,65 @@ describe("SkillsWallet", () => {
         "https://www.credly.com/skills/cybersecurity"
       );
       expect(cybersecurityLink).toHaveAttribute("target", "_blank");
+    });
+  });
+
+  it("excludes specified skills from display", async () => {
+    const badgesWithCompTIA: CredlyBadge[] = [
+      ...mockBadges,
+      {
+        id: "badge-3",
+        badge_template: {
+          id: "template-3",
+          name: "CompTIA+ Certification",
+          description: "CompTIA cert",
+          image_url: "https://example.com/badge3.png",
+          skills: [
+            { id: "skill-4", name: "CompTIA", vanity_slug: "comptia" },
+            { id: "skill-5", name: "System Administration", vanity_slug: "system-administration" },
+          ],
+        },
+        image_url: "https://example.com/badge3.png",
+        issued_at: "2024-03-20T00:00:00Z",
+        expires_at: null,
+        issuer: {
+          summary: "CompTIA",
+          entities: [
+            {
+              label: "CompTIA",
+              primary: true,
+              entity: {
+                type: "Organization",
+                id: "issuer-3",
+                name: "CompTIA",
+                url: "https://comptia.org",
+              },
+            },
+          ],
+        },
+        user: { id: "user-1", name: "Drew" },
+      },
+    ];
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        badges: badgesWithCompTIA,
+        total_count: 3,
+        count: 3,
+      }),
+    });
+
+    render(<SkillsWallet username="dcyfr" excludeSkills={["CompTIA"]} />);
+
+    await waitFor(() => {
+      // CompTIA should be excluded
+      expect(screen.queryByText("CompTIA")).not.toBeInTheDocument();
+      // Other skills should still be present
+      expect(screen.getByText("Cybersecurity")).toBeInTheDocument();
+      expect(screen.getByText("System Administration")).toBeInTheDocument();
+      // Should show 4 total (3 original + 1 new - 1 excluded)
+      expect(screen.getByText("4 Total")).toBeInTheDocument();
     });
   });
 });

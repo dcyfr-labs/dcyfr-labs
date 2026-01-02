@@ -232,4 +232,21 @@ describe("BadgeWallet", () => {
       expect(container.querySelector(".custom-class")).toBeInTheDocument();
     });
   });
+
+  it("displays total count in header", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        badges: mockBadgesResponse.data,
+        total_count: 2,
+        count: 2,
+      }),
+    });
+
+    render(<BadgeWallet username="dcyfr" showLatestOnly />);
+
+    await waitFor(() => {
+      expect(screen.getByText("2 Total")).toBeInTheDocument();
+    });
+  });
 });
