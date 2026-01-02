@@ -25,7 +25,7 @@ const ScrollReveal = dynamic(
 
 const pageTitle = "Drew's Professional Resume";
 const pageDescription =
-  "Explore Drew's professional experience, skills, and certifications as a cyber architect and security engineer.";
+  "Explore Drew's professional experience, badges, and skills in computer science and cybersecurity.";
 
 export const metadata: Metadata = createPageMetadata({
   title: pageTitle,
@@ -94,11 +94,11 @@ export default async function DrewResumePage() {
           </ScrollReveal>
         </section>
 
-        {/* Certifications */}
+        {/* Badges */}
         <section
-          id="certifications"
+          id="badges"
           className={PAGE_LAYOUT.section.container}
-          aria-labelledby="certifications-heading"
+          aria-labelledby="badges-heading"
         >
           <ScrollReveal animation="fade-up" delay={3}>
             <div className={cn(SPACING.content, "p-4", "bg-card")}>
