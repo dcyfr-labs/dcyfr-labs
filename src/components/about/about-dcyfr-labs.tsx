@@ -3,7 +3,7 @@ import { HOVER_EFFECTS, SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
 import { FocusAreaCard } from "./focus-area-card";
 
 /**
- * About DCYFR Component
+ * About dcyfr.aiponent
  *
  * Describes DCYFR Labs as a virtual partnership focused on cyber architecture,
  * security, and innovation. Highlights the mission, three content pillars,

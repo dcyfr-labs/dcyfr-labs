@@ -8,32 +8,34 @@ This guide documents all environment variables used in the project, their purpos
 
 ## Quick Reference
 
-| Variable | Required | Purpose | Default Behavior |
-|----------|----------|---------|------------------|
-| `INNGEST_EVENT_KEY` | Production only | Inngest event sending | Functions work in dev mode only |
-| `INNGEST_SIGNING_KEY` | Production only | Inngest webhook verification | Functions work in dev mode only |
-| `INNGEST_ERROR_ALERTS_EMAIL` | Recommended | Email alerts for function failures | Failures logged but no email alerts |
-| `RESEND_API_KEY` | Production only | Email delivery (contact form, milestones) | Logs submissions, shows warning |
-| `ADMIN_API_KEY` | Required for analytics | Secure analytics endpoint access | Endpoint disabled without key |
-| `GITHUB_TOKEN` | Recommended | GitHub API rate limits (60 → 5,000/hr) | Uses unauthenticated API (60 req/hr) |
-| `REDIS_URL` | Recommended | Blog analytics, view counts, rate limiting | Disables analytics, falls back to in-memory |
-| `NEXT_PUBLIC_GISCUS_REPO` | Optional | Comments system - repository | Comments section hidden |
-| `NEXT_PUBLIC_GISCUS_REPO_ID` | Optional | Comments system - repo ID | Comments section hidden |
-| `NEXT_PUBLIC_GISCUS_CATEGORY` | Optional | Comments system - category | Comments section hidden |
-| `NEXT_PUBLIC_GISCUS_CATEGORY_ID` | Optional | Comments system - category ID | Comments section hidden |
-| `NEXT_PUBLIC_SITE_URL` | Optional | Site URL override | Uses environment-based defaults |
-| `NEXT_PUBLIC_SITE_DOMAIN` | Optional | Domain override | Uses environment-based defaults |
+| Variable                         | Required               | Purpose                                    | Default Behavior                            |
+| -------------------------------- | ---------------------- | ------------------------------------------ | ------------------------------------------- |
+| `INNGEST_EVENT_KEY`              | Production only        | Inngest event sending                      | Functions work in dev mode only             |
+| `INNGEST_SIGNING_KEY`            | Production only        | Inngest webhook verification               | Functions work in dev mode only             |
+| `INNGEST_ERROR_ALERTS_EMAIL`     | Recommended            | Email alerts for function failures         | Failures logged but no email alerts         |
+| `RESEND_API_KEY`                 | Production only        | Email delivery (contact form, milestones)  | Logs submissions, shows warning             |
+| `ADMIN_API_KEY`                  | Required for analytics | Secure analytics endpoint access           | Endpoint disabled without key               |
+| `GITHUB_TOKEN`                   | Recommended            | GitHub API rate limits (60 → 5,000/hr)     | Uses unauthenticated API (60 req/hr)        |
+| `REDIS_URL`                      | Recommended            | Blog analytics, view counts, rate limiting | Disables analytics, falls back to in-memory |
+| `NEXT_PUBLIC_GISCUS_REPO`        | Optional               | Comments system - repository               | Comments section hidden                     |
+| `NEXT_PUBLIC_GISCUS_REPO_ID`     | Optional               | Comments system - repo ID                  | Comments section hidden                     |
+| `NEXT_PUBLIC_GISCUS_CATEGORY`    | Optional               | Comments system - category                 | Comments section hidden                     |
+| `NEXT_PUBLIC_GISCUS_CATEGORY_ID` | Optional               | Comments system - category ID              | Comments section hidden                     |
+| `NEXT_PUBLIC_SITE_URL`           | Optional               | Site URL override                          | Uses environment-based defaults             |
+| `NEXT_PUBLIC_SITE_DOMAIN`        | Optional               | Domain override                            | Uses environment-based defaults             |
 
 ## Setup
 
 ### Local Development
 
 1. **Copy the example file:**
+
    ```bash
    cp .env.example .env.local
    ```
 
 2. **Start development (works immediately):**
+
    ```bash
    npm run dev
    ```
@@ -52,17 +54,19 @@ This guide documents all environment variables used in the project, their purpos
 ### Site Configuration
 
 #### `NEXT_PUBLIC_SITE_URL`
+
 - **Type:** String (URL)
 - **Required:** No
 - **Example:** `https://www.dcyfr.ai`
 - **Purpose:** Override the full site URL for absolute links, sitemap, OpenGraph, etc.
 - **Default:** Determined by `src/lib/site-config.ts` based on environment:
-  - Development: `https://dcyfr.net`
+  - Development: `https://dcyfr.dev`
   - Preview (Vercel): `https://dcyfr-preview.vercel.app`
   - Production: `https://www.dcyfr.ai`
 - **When to use:** Custom domain testing, non-standard deployments
 
 #### `NEXT_PUBLIC_SITE_DOMAIN`
+
 - **Type:** String (domain)
 - **Required:** No
 - **Example:** `www.dcyfr.ai`
@@ -72,6 +76,7 @@ This guide documents all environment variables used in the project, their purpos
 - **Priority:** Lower than `NEXT_PUBLIC_SITE_URL` if both are set
 
 #### `NEXT_PUBLIC_VERCEL_ENV`
+
 - **Type:** String (`production` | `preview` | `development`)
 - **Required:** No
 - **Managed by:** Vercel (automatically set)
@@ -82,6 +87,7 @@ This guide documents all environment variables used in the project, their purpos
 ### Email Configuration
 
 #### `RESEND_API_KEY`
+
 - **Type:** String (API key)
 - **Required:** Yes (for production)
 - **Purpose:** Send emails via Resend API from contact form and milestone notifications
@@ -93,20 +99,23 @@ This guide documents all environment variables used in the project, their purpos
   4. Add key to environment variables
 
 **Behavior without key:**
+
 - ✅ Contact form still displays and queues events
 - ✅ Form validation works
 - ✅ Rate limiting applies
-- ⚠️  Inngest functions run but skip email steps
-- ⚠️  Logs indicate email not configured
+- ⚠️ Inngest functions run but skip email steps
+- ⚠️ Logs indicate email not configured
 - ❌ No actual emails sent
 
 **Implementation:**
+
 - File: `src/inngest/contact-functions.ts`
 - Used by: Contact form submissions, milestone notifications
 
 ### Background Jobs (Inngest)
 
 #### `INNGEST_EVENT_KEY`
+
 - **Type:** String (API key)
 - **Required:** Yes (for production event sending)
 - **Purpose:** Authentication for sending events to Inngest Cloud
@@ -118,13 +127,15 @@ This guide documents all environment variables used in the project, their purpos
   4. Add to environment variables
 
 **Behavior without key:**
+
 - ✅ Dev mode works perfectly (local Inngest Dev Server)
 - ✅ All functions testable locally
 - ✅ View dev UI at http://localhost:3001/api/inngest
 - ❌ Events can't be sent in production
-- ⚠️  Functions won't trigger in production
+- ⚠️ Functions won't trigger in production
 
 #### `INNGEST_SIGNING_KEY`
+
 - **Type:** String (signing key)
 - **Required:** Yes (for production webhook verification)
 - **Purpose:** Verify requests from Inngest Cloud to your function endpoint
@@ -135,11 +146,13 @@ This guide documents all environment variables used in the project, their purpos
   3. Configure webhook URL in Inngest: `https://www.dcyfr.ai/api/inngest`
 
 **Behavior without key:**
+
 - ✅ Dev mode works (no verification needed locally)
 - ❌ Production webhook requests rejected
-- ⚠️  Functions registered but won't execute
+- ⚠️ Functions registered but won't execute
 
 **Current Inngest Functions:**
+
 1. **Contact Form** (`contactFormSubmitted`) - Async email delivery
 2. **GitHub Refresh** (`refreshGitHubData`) - Scheduled every 5 minutes
 3. **Manual GitHub Refresh** (`manualRefreshGitHubData`) - On-demand
@@ -152,6 +165,7 @@ This guide documents all environment variables used in the project, their purpos
 **Documentation:** See `/docs/features/inngest-integration.md`
 
 #### `INNGEST_ERROR_ALERTS_EMAIL`
+
 - **Type:** String (email address)
 - **Required:** No (highly recommended for production)
 - **Purpose:** Receive email alerts when Inngest functions fail after all retry attempts
@@ -161,18 +175,21 @@ This guide documents all environment variables used in the project, their purpos
   3. Automatic: no further configuration needed
 
 **Behavior without key:**
+
 - ✅ Function failures still logged in Inngest dashboard
 - ✅ Errors still reported to Sentry
 - ❌ No email alerts sent
-- ⚠️  You won't be notified immediately of failures
+- ⚠️ You won't be notified immediately of failures
 
 **Alert Rules (Automatic):**
+
 - **CRITICAL** (contact form, payments) → Immediate email
 - **HIGH** (GitHub, security, analytics) → Email + Sentry
 - **MEDIUM** (trending, milestones) → Sentry only
 - **LOW** (logging, monitoring) → Console log only
 
 **Email Alert Includes:**
+
 - Function name, ID, and execution ID
 - Full error message and stack trace
 - Event data that triggered the error
@@ -182,17 +199,19 @@ This guide documents all environment variables used in the project, their purpos
 **Documentation:** See `/docs/features/inngest-error-alerting.md`
 
 ### Email Configuration (Legacy - Now via Inngest)
+
 - Check: `const isEmailConfigured = !!process.env.RESEND_API_KEY`
 - Returns: 200 status with warning instead of 500 error
 
 ### GitHub Integration
 
 #### `GITHUB_TOKEN`
+
 - **Type:** String (Personal Access Token)
 - **Required:** No (recommended for production)
 - **Purpose:** Increase GitHub API rate limits for contributions heatmap
 - **Get token at:** [github.com/settings/tokens](https://github.com/settings/tokens)
-- **Scopes needed:** 
+- **Scopes needed:**
   - `public_repo` (for public repositories)
   - OR `read:user` (for public profile only)
   - No write access needed
@@ -206,31 +225,35 @@ This guide documents all environment variables used in the project, their purpos
 
 **Rate Limits:**
 
-| Scenario | Rate Limit | Notes |
-|----------|------------|-------|
-| Without token | 60 requests/hour | Per IP address |
-| With token | 5,000 requests/hour | Per token |
-| Server cache | 5 minutes | Reduces API calls |
+| Scenario      | Rate Limit          | Notes             |
+| ------------- | ------------------- | ----------------- |
+| Without token | 60 requests/hour    | Per IP address    |
+| With token    | 5,000 requests/hour | Per token         |
+| Server cache  | 5 minutes           | Reduces API calls |
 
 **Behavior without token:**
+
 - ✅ Heatmap still works
 - ✅ Uses unauthenticated GitHub GraphQL API
-- ⚠️  Lower rate limits (60/hour)
-- ⚠️  May fail during heavy development
+- ⚠️ Lower rate limits (60/hour)
+- ⚠️ May fail during heavy development
 - ✅ Server-side cache helps (5-minute cache)
 
 **Behavior with token:**
+
 - ✅ Higher rate limits (5,000/hour)
 - ✅ More reliable
 - ✅ Better for production
 - ✅ Required for high-traffic sites
 
 **Security:**
-- ⚠️  API route validates username (`dcyfr`) to prevent abuse
-- ⚠️  Only allows fetching data for portfolio owner
-- ⚠️  Rate limiting applied (10 requests/minute per IP)
+
+- ⚠️ API route validates username (`dcyfr`) to prevent abuse
+- ⚠️ Only allows fetching data for portfolio owner
+- ⚠️ Rate limiting applied (10 requests/minute per IP)
 
 **Implementation:**
+
 - File: `src/app/api/github-contributions/route.ts`
 - Conditional header: Only adds `Authorization` when token exists
 - No empty header sent when missing
@@ -238,6 +261,7 @@ This guide documents all environment variables used in the project, their purpos
 ### Analytics Security
 
 #### `ADMIN_API_KEY`
+
 - **Type:** String (secure random key)
 - **Required:** Yes (to enable `/api/analytics` endpoint)
 - **Purpose:** Secure access to analytics dashboard data
@@ -255,6 +279,7 @@ This guide documents all environment variables used in the project, their purpos
   3. Add to Vercel environment variables (preview/staging only)
 
 **Usage:**
+
 ```bash
 # Local development
 curl http://localhost:3000/api/analytics \
@@ -266,12 +291,14 @@ curl http://localhost:3000/api/analytics?days=7 \
 ```
 
 **Security Features:**
+
 1. **API Key Authentication**: Bearer token required in Authorization header
 2. **Environment Protection**: BLOCKED in production (Vercel production environment)
 3. **Rate Limiting**: 5 requests/minute per IP (Redis-backed)
 4. **Audit Logging**: All access attempts logged with IP, timestamp, user agent
 
 **Allowed Environments:**
+
 - ✅ Local development (`NODE_ENV=development`)
 - ✅ Vercel preview deployments (`VERCEL_ENV=preview`)
 - ✅ Test environment (`NODE_ENV=test`)
@@ -279,20 +306,22 @@ curl http://localhost:3000/api/analytics?days=7 \
 
 **Error Responses:**
 
-| Status | Reason | Response |
-|--------|--------|----------|
-| 403 | Production environment | Analytics not available in production |
-| 401 | Missing/invalid API key | Valid API key required |
-| 429 | Rate limit exceeded | Maximum 5 requests per minute |
-| 500 | Server error | Failed to fetch analytics |
+| Status | Reason                  | Response                              |
+| ------ | ----------------------- | ------------------------------------- |
+| 403    | Production environment  | Analytics not available in production |
+| 401    | Missing/invalid API key | Valid API key required                |
+| 429    | Rate limit exceeded     | Maximum 5 requests per minute         |
+| 500    | Server error            | Failed to fetch analytics             |
 
 **Behavior without key:**
+
 - ❌ Endpoint completely disabled
 - ❌ Returns 401 Unauthorized for all requests
-- ⚠️  Server logs error: "ADMIN_API_KEY not configured"
+- ⚠️ Server logs error: "ADMIN_API_KEY not configured"
 - ✅ Analytics data never exposed without authentication
 
 **Best Practices:**
+
 - 🔒 Never commit `ADMIN_API_KEY` to version control
 - 🔒 Use different keys for preview vs local development
 - 🔒 Rotate keys periodically
@@ -300,6 +329,7 @@ curl http://localhost:3000/api/analytics?days=7 \
 - 🔒 Never enable in production environment
 
 **Implementation:**
+
 - File: `src/app/api/analytics/route.ts`
 - Protection: 4-layer security (environment, API key, rate limit, audit)
 - Documentation: `/docs/security/api-security-audit.md`
@@ -307,23 +337,27 @@ curl http://localhost:3000/api/analytics?days=7 \
 ### Comments System (Giscus)
 
 #### `NEXT_PUBLIC_GISCUS_REPO`
+
 - **Type:** String (repository in "owner/repo" format)
 - **Required:** No
 - **Example:** `dcyfr/dcyfr-labs`
 - **Purpose:** GitHub repository for Giscus comments
 
 #### `NEXT_PUBLIC_GISCUS_REPO_ID`
+
 - **Type:** String (repository ID)
 - **Required:** No
 - **Purpose:** GitHub repository ID (from Giscus setup)
 
 #### `NEXT_PUBLIC_GISCUS_CATEGORY`
+
 - **Type:** String (category name)
 - **Required:** No
 - **Example:** `Blog Comments`
 - **Purpose:** Discussion category name for comments
 
 #### `NEXT_PUBLIC_GISCUS_CATEGORY_ID`
+
 - **Type:** String (category ID)
 - **Required:** No
 - **Purpose:** Discussion category ID (from Giscus setup)
@@ -360,12 +394,14 @@ curl http://localhost:3000/api/analytics?days=7 \
    ```
 
 **Behavior without Giscus:**
+
 - ✅ Blog posts work normally
 - ❌ Comments section not displayed
 - ✅ No errors or broken UI
 - ✅ Silent graceful degradation
 
 **Behavior with Giscus:**
+
 - ✅ Comments section appears on all blog posts
 - ✅ Users can comment with GitHub account
 - ✅ Comments sync with GitHub Discussions
@@ -374,6 +410,7 @@ curl http://localhost:3000/api/analytics?days=7 \
 - ✅ Lazy loading for better performance
 
 **Features:**
+
 - Automatic theme synchronization with site theme
 - Lazy loading (loads when scrolled into view)
 - Pathname-based mapping (each blog post gets its own discussion)
@@ -381,6 +418,7 @@ curl http://localhost:3000/api/analytics?days=7 \
 - Reactions enabled
 
 **Implementation:**
+
 - Component: `src/components/giscus-comments.tsx`
 - Check: All four env vars must be present to render
 - Integration: Appears after share buttons on blog posts
@@ -389,6 +427,7 @@ curl http://localhost:3000/api/analytics?days=7 \
 ### Redis (View Counts)
 
 #### `REDIS_URL`
+
 - **Type:** String (Redis connection URL)
 - **Required:** No
 - **Purpose:** Track and display view counts for blog posts
@@ -399,6 +438,7 @@ curl http://localhost:3000/api/analytics?days=7 \
   - Any Redis provider
 
 **Setup (Vercel KV):**
+
 1. Go to Vercel dashboard
 2. Storage tab → Create Database → KV
 3. Name it (e.g., "portfolio-views")
@@ -406,12 +446,14 @@ curl http://localhost:3000/api/analytics?days=7 \
 5. Environment variables automatically added
 
 **Setup (Upstash):**
+
 1. Sign up at [console.upstash.com](https://console.upstash.com)
 2. Create database
 3. Copy Redis URL (REST API URL for serverless)
 4. Add to environment variables
 
 **Behavior without Redis:**
+
 - ✅ Blog posts still load
 - ❌ No view counts displayed
 - ❌ No view tracking
@@ -419,12 +461,14 @@ curl http://localhost:3000/api/analytics?days=7 \
 - ✅ Silent graceful degradation
 
 **Behavior with Redis:**
+
 - ✅ View counts tracked per post
 - ✅ Displayed on blog list and post pages
 - ✅ Atomic increments (concurrent-safe)
 - ✅ Persisted across deploys
 
 **Implementation:**
+
 - File: `src/lib/views.ts`
 - Check: `if (!redisUrl) return null`
 - Graceful: Returns null if Redis unavailable
@@ -435,12 +479,14 @@ curl http://localhost:3000/api/analytics?days=7 \
 These are automatically configured by Vercel when you enable the respective features. No manual setup needed.
 
 #### `NEXT_PUBLIC_VERCEL_ANALYTICS_ID`
+
 - **Managed by:** Vercel
 - **Purpose:** Vercel Analytics tracking
 - **Setup:** Enable in Vercel project settings → Analytics
 - **Docs:** [vercel.com/analytics](https://vercel.com/analytics)
 
 #### `NEXT_PUBLIC_VERCEL_SPEED_INSIGHTS_ID`
+
 - **Managed by:** Vercel
 - **Purpose:** Vercel Speed Insights
 - **Setup:** Enable in Vercel project settings → Speed Insights
@@ -453,6 +499,7 @@ These are automatically configured by Vercel when you enable the respective feat
 ### Vercel Analytics Proxy & Token (Optional, recommended for dashboard)
 
 #### `VERCEL_ANALYTICS_ENDPOINT`
+
 - **Type:** String (API endpoint URL)
 - **Required:** No (recommended for analytics dashboard)
 - **Purpose:** A small proxy or Vercel API endpoint that returns a normalized JSON shape containing analytics metrics (top pages, referrers, devices). This is used by the `syncVercelAnalytics` Inngest job and the `/api/analytics` endpoint.
@@ -460,6 +507,7 @@ These are automatically configured by Vercel when you enable the respective feat
 - **Notes:** If not set, the dashboard gracefully falls back to the internal Redis analytics only (view counts and trending).
 
 #### `VERCEL_TOKEN`
+
 - **Type:** String (Vercel personal token)
 - **Required:** No (recommended for enabling Vercel API calls)
 - **Purpose:** Authenticate with Vercel API (or your proxy) to fetch analytics data.
@@ -573,6 +621,7 @@ npm run dev
 ### Test Individual Features
 
 **Contact Form:**
+
 ```bash
 curl -X POST http://localhost:3000/api/contact \
   -H "Content-Type: application/json" \
@@ -580,11 +629,13 @@ curl -X POST http://localhost:3000/api/contact \
 ```
 
 **GitHub Heatmap:**
+
 ```bash
 curl http://localhost:3000/api/github-contributions?username=dcyfr
 ```
 
 **Redis (if configured):**
+
 ```bash
 # Visit any blog post and check console for view count increment
 ```
@@ -592,21 +643,25 @@ curl http://localhost:3000/api/github-contributions?username=dcyfr
 ## Troubleshooting
 
 ### Contact Form Returns 500 Error
+
 - **Problem:** Missing `RESEND_API_KEY`
 - **Solution:** Should return 200 with warning (check implementation)
 - **Fix:** Update to latest code with graceful fallback
 
 ### GitHub Heatmap Rate Limited
+
 - **Problem:** Too many requests without token
 - **Solution:** Add `GITHUB_TOKEN` for higher limits
 - **Workaround:** Server-side cache helps (5-minute cache)
 
 ### View Counts Not Showing
+
 - **Problem:** Missing `REDIS_URL`
 - **Solution:** Add Redis configuration
 - **Expected:** Should gracefully degrade (no errors)
 
 ### Wrong Domain in Links
+
 - **Problem:** Incorrect site URL
 - **Solution:** Set `NEXT_PUBLIC_SITE_URL` or `NEXT_PUBLIC_SITE_DOMAIN`
 - **Check:** `src/lib/site-config.ts` for default logic
@@ -614,6 +669,7 @@ curl http://localhost:3000/api/github-contributions?username=dcyfr
 ## Security Best Practices
 
 ### Never Commit Secrets
+
 ```bash
 # ✅ Good - ignored by git
 .env.local
@@ -627,16 +683,19 @@ curl http://localhost:3000/api/github-contributions?username=dcyfr
 ```
 
 ### Use Environment-Specific Keys
+
 - Development: Separate API keys for testing
 - Staging: Separate keys from production
 - Production: Production-only keys with restrictions
 
 ### Rotate Keys Regularly
+
 - GitHub tokens: Rotate every 90 days
 - API keys: Rotate on schedule
 - Redis: Use strong passwords
 
 ### Principle of Least Privilege
+
 - GitHub token: Read-only access only
 - API keys: Minimum required permissions
 - Redis: Connection-level auth only

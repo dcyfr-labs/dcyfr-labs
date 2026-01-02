@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import { createPageMetadata, getJsonLdScriptProps } from "@/lib/metadata";
 import { PageLayout } from "@/components/layouts";
 import { PageHero } from "@/components/layouts";
-import { Section, TeamMemberCard, SmoothScrollToHash } from "@/components/common";
+import {
+  Section,
+  TeamMemberCard,
+  SmoothScrollToHash,
+} from "@/components/common";
 import {
   TYPOGRAPHY,
   SPACING,
@@ -36,7 +40,8 @@ export const revalidate = 3600;
 // Contribution text for core contributors (maps to team member IDs)
 const contributorDescriptions: Record<string, string> = {
   drew: "Secure development, incident response, and building resilient systems",
-  dcyfr: "Context-aware coding and security assistance accelerating implementation, analysis, and docs",
+  dcyfr:
+    "Context-aware coding and security assistance accelerating implementation, analysis, and docs",
 };
 
 export default async function SponsorsPage() {
@@ -54,20 +59,18 @@ export default async function SponsorsPage() {
   });
 
   // Sort tiers by amount (highest first)
-  const sortedTiers = Array.from(tierMap.entries()).sort(
-    ([a], [b]) => b - a
-  );
+  const sortedTiers = Array.from(tierMap.entries()).sort(([a], [b]) => b - a);
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
     name: pageTitle,
     description: pageDescription,
-    url: "https://dcyfr.com/sponsors",
+    url: "https://dcyfr.ai/sponsors",
     isPartOf: {
       "@type": "WebSite",
       name: "dcyfr",
-      url: "https://dcyfr.com",
+      url: "https://dcyfr.ai",
     },
   };
 
@@ -87,11 +90,8 @@ export default async function SponsorsPage() {
           />
         </Section>
 
-                {/* Sponsors Section */}
-        <Section
-          id="sponsors"
-          className={PAGE_LAYOUT.section.container}
-        >
+        {/* Sponsors Section */}
+        <Section id="sponsors" className={PAGE_LAYOUT.section.container}>
           <div className={SPACING.content}>
             {sponsors.length === 0 ? (
               <div className="text-center mt-8">
@@ -151,7 +151,11 @@ export default async function SponsorsPage() {
                   member={member}
                   layout="compact"
                   contribution={contributorDescriptions[member.id]}
-                  avatarUrl={member.avatarType === "image" && member.id === "drew" ? "https://github.com/dcyfr.png" : undefined}
+                  avatarUrl={
+                    member.avatarType === "image" && member.id === "drew"
+                      ? "https://github.com/dcyfr.png"
+                      : undefined
+                  }
                   linkTo={member.profileUrl}
                 />
               ))}
@@ -160,20 +164,18 @@ export default async function SponsorsPage() {
         </Section>
 
         {/* Invites Section */}
-        <Section
-          id="invites"
-          className={PAGE_LAYOUT.section.container}
-        >
+        <Section id="invites" className={PAGE_LAYOUT.section.container}>
           <div className={SPACING.content}>
             <div className="flex items-center gap-3 mb-6">
               <div>
                 <h2 className={TYPOGRAPHY.h2.standard}>Invites</h2>
                 <p className="text-muted-foreground mt-2">
-                  Join our favorite platforms and communities. Featured partnerships that support our work.
+                  Join our favorite platforms and communities. Featured
+                  partnerships that support our work.
                 </p>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
               {featuredInviteCodes.map((code) => (
                 <InviteCodeCard
@@ -187,9 +189,7 @@ export default async function SponsorsPage() {
             {/* Link to full list */}
             <div className="text-center mt-8">
               <Button variant="outline" asChild>
-                <Link href="/invites">
-                  View All Invites
-                </Link>
+                <Link href="/invites">View All Invites</Link>
               </Button>
             </div>
           </div>

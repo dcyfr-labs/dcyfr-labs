@@ -400,7 +400,7 @@ Before marking work complete, DCYFR validates:
 - [ ] Review enforcement rules (enforcement/ directory)
 - [ ] Provide clear requirements + templates if applicable
 
-**After DCYFR completes:**
+**After dcyfr.aipletes:**
 
 - [ ] Review validation report
 - [ ] Run `npm run check` locally

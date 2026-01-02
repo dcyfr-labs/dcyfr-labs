@@ -11,7 +11,10 @@ import {
   InvitesCategorySection,
   InvitesFeatured,
 } from "@/components/invites";
-import { groupInviteCodesByCategory, sortCategoriesByCount } from "@/lib/invites";
+import {
+  groupInviteCodesByCategory,
+  sortCategoriesByCount,
+} from "@/lib/invites";
 import { headers } from "next/headers";
 
 const pageTitle = "Invites";
@@ -35,11 +38,11 @@ export default async function InvitesPage() {
     "@type": "WebPage",
     name: pageTitle,
     description: pageDescription,
-    url: "https://dcyfr.com/invites",
+    url: "https://dcyfr.ai/invites",
     isPartOf: {
       "@type": "WebSite",
       name: "dcyfr",
-      url: "https://dcyfr.com",
+      url: "https://dcyfr.ai",
     },
   };
 
@@ -78,7 +81,7 @@ export default async function InvitesPage() {
         {sortedCategories.map(([category, codes]) => {
           // Filter out featured codes from category sections
           const nonFeaturedCodes = codes.filter((c) => !c.featured);
-          
+
           // Skip category if all codes are featured
           if (nonFeaturedCodes.length === 0) {
             return null;

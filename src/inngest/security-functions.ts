@@ -57,32 +57,35 @@ const SEVERITY_RANK: Record<string, number> = {
 /**
  * Check if severity meets threshold for a package
  */
-function meetsSeverityThreshold(severity: string, packageName: string): boolean {
+function meetsSeverityThreshold(
+  severity: string,
+  packageName: string
+): boolean {
   const severityRank = SEVERITY_RANK[severity?.toLowerCase()] || 0;
-  
+
   // RSC packages: alert on medium+
   if (RSC_PACKAGES.has(packageName)) {
     return severityRank >= SEVERITY_RANK.medium;
   }
-  
+
   // Core packages: alert on high+
   return severityRank >= SEVERITY_RANK.high;
 }
 
 /**
  * Security Advisory Monitor - Background Job
- * 
+ *
  * Runs hourly to check for new security advisories affecting
  * our core dependencies (React, Next.js, RSC packages).
- * 
+ *
  * This provides a backup to the GitHub Actions workflow and
  * enables email notifications via Resend.
- * 
+ *
  * @remarks
  * - Polls GHSA database for npm package advisories
  * - Stores seen advisory IDs to avoid duplicate alerts
  * - Sends email alerts for critical/high severity (medium+ for RSC)
- * 
+ *
  * Created in response to CVE-2025-55182 which had a 13-hour detection gap.
  */
 export const securityAdvisoryMonitor = inngest.createFunction(
@@ -94,27 +97,36 @@ export const securityAdvisoryMonitor = inngest.createFunction(
   { cron: "0 0,8,16 * * *" },
   async ({ step }) => {
     // Step 1: Fetch advisories from GHSA
-    const advisories = await step.run("fetch-ghsa-advisories", async () => {
-      console.warn(`[security-advisory-monitor] Starting GHSA fetch for ${MONITORED_PACKAGES.length} packages`);
+    const advisories = (await step.run("fetch-ghsa-advisories", async () => {
+      console.warn(
+        `[security-advisory-monitor] Starting GHSA fetch for ${MONITORED_PACKAGES.length} packages`
+      );
       const results: SecurityAdvisory[] = [];
-      
+
       for (const packageName of MONITORED_PACKAGES) {
         try {
-          console.warn(`[security-advisory-monitor] Fetching advisories for: ${packageName}`);
+          console.warn(
+            `[security-advisory-monitor] Fetching advisories for: ${packageName}`
+          );
           // Query GHSA API for npm advisories using a helper that implements
           // exponential backoff for transient (5xx/network) failures but
           // special-cases 422/4xx (don't aggressively retry which may be
           // treated as spam by the GHSA endpoint).
           const data = await fetchGhsaAdvisories(packageName);
-          console.warn(`[security-advisory-monitor] Fetched ${data.length} total advisories for ${packageName}`);
-          
+          console.warn(
+            `[security-advisory-monitor] Fetched ${data.length} total advisories for ${packageName}`
+          );
+
           for (const adv of data) {
             // Only include recent advisories (last 7 days for hourly check)
             const publishedAt = new Date(adv.published_at);
             const sevenDaysAgo = new Date();
             sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-            if (publishedAt >= sevenDaysAgo && meetsSeverityThreshold(adv.severity, packageName)) {
+            if (
+              publishedAt >= sevenDaysAgo &&
+              meetsSeverityThreshold(adv.severity, packageName)
+            ) {
               results.push({
                 package: packageName,
                 severity: adv.severity?.toUpperCase() || "UNKNOWN",
@@ -122,19 +134,28 @@ export const securityAdvisoryMonitor = inngest.createFunction(
                 cveId: adv.cve_id,
                 cvssScore: adv.cvss?.score || "N/A",
                 summary: adv.summary,
-                patchedVersion: adv.vulnerabilities?.[0]?.first_patched_version || "Not available",
-                vulnerableRange: adv.vulnerabilities?.[0]?.vulnerable_version_range || "Unknown",
+                patchedVersion:
+                  adv.vulnerabilities?.[0]?.first_patched_version ||
+                  "Not available",
+                vulnerableRange:
+                  adv.vulnerabilities?.[0]?.vulnerable_version_range ||
+                  "Unknown",
                 url: adv.html_url,
                 publishedAt: adv.published_at,
               });
-              console.warn(`[security-advisory-monitor] Included advisory for ${packageName}: ${adv.ghsa_id} (${adv.severity})`);
+              console.warn(
+                `[security-advisory-monitor] Included advisory for ${packageName}: ${adv.ghsa_id} (${adv.severity})`
+              );
             }
           }
         } catch (error) {
-          console.error(`[security-advisory-monitor] Error fetching GHSA for ${packageName}:`, {
-            error: error instanceof Error ? error.message : String(error),
-            stack: error instanceof Error ? error.stack : undefined,
-          });
+          console.error(
+            `[security-advisory-monitor] Error fetching GHSA for ${packageName}:`,
+            {
+              error: error instanceof Error ? error.message : String(error),
+              stack: error instanceof Error ? error.stack : undefined,
+            }
+          );
         }
 
         // Small delay between package requests to avoid burst/spam triggers
@@ -142,23 +163,30 @@ export const securityAdvisoryMonitor = inngest.createFunction(
       }
 
       return results;
-    }) as SecurityAdvisory[];
+    })) as SecurityAdvisory[];
 
     // Step 2: Check for new advisories (not previously seen) and filter by installed version impact
-    const newAdvisories = await step.run("filter-new-advisories", async () => {
+    const newAdvisories = (await step.run("filter-new-advisories", async () => {
       // In production, this would check against a KV store or database
       // For now, we alert on all advisories from the last 24 hours
       const oneDayAgo = new Date();
       oneDayAgo.setDate(oneDayAgo.getDate() - 1);
 
-      const recentAdvisories = advisories.filter((adv) => new Date(adv.publishedAt) >= oneDayAgo);
+      const recentAdvisories = advisories.filter(
+        (adv) => new Date(adv.publishedAt) >= oneDayAgo
+      );
 
       // Load package-lock.json to check if advisories actually affect our installed versions
       const lockData = parsePackageLock();
-      
+
       if (!lockData) {
-        console.warn("Could not parse package-lock.json - proceeding with caution, alerting on all advisories");
-        return recentAdvisories.map(adv => ({ ...adv, affectsInstalledVersion: true }));
+        console.warn(
+          "Could not parse package-lock.json - proceeding with caution, alerting on all advisories"
+        );
+        return recentAdvisories.map((adv) => ({
+          ...adv,
+          affectsInstalledVersion: true,
+        }));
       }
 
       // Filter advisories to only those affecting our installed versions
@@ -176,31 +204,39 @@ export const securityAdvisoryMonitor = inngest.createFunction(
         if (!versionCheck.isVulnerable) {
           console.warn(
             `Filtered out advisory ${adv.ghsaId} for ${adv.package}: ` +
-            `${versionCheck.reason}`
+              `${versionCheck.reason}`
           );
         }
 
         return versionCheck.isVulnerable;
       });
-    }) as SecurityAdvisory[];
+    })) as SecurityAdvisory[];
 
     // Step 3: Send email alert if new advisories found
     if (newAdvisories.length > 0) {
       await step.run("send-email-alert", async () => {
         const resendApiKey = process.env.RESEND_API_KEY;
-        const alertEmail = process.env.SECURITY_ALERT_EMAIL || process.env.CONTACT_EMAIL;
+        const alertEmail =
+          process.env.SECURITY_ALERT_EMAIL || process.env.CONTACT_EMAIL;
 
         if (!resendApiKey || !alertEmail) {
-          console.warn("RESEND_API_KEY or SECURITY_ALERT_EMAIL not configured - skipping email");
+          console.warn(
+            "RESEND_API_KEY or SECURITY_ALERT_EMAIL not configured - skipping email"
+          );
           return { skipped: true };
         }
 
-        const criticalCount = newAdvisories.filter((a) => a.severity === "CRITICAL").length;
-        const highCount = newAdvisories.filter((a) => a.severity === "HIGH").length;
+        const criticalCount = newAdvisories.filter(
+          (a) => a.severity === "CRITICAL"
+        ).length;
+        const highCount = newAdvisories.filter(
+          (a) => a.severity === "HIGH"
+        ).length;
 
-        const subject = criticalCount > 0
-          ? `🚨 CRITICAL: ${newAdvisories.length} Security Advisories Detected`
-          : `⚠️ Security Alert: ${newAdvisories.length} New Advisories`;
+        const subject =
+          criticalCount > 0
+            ? `🚨 CRITICAL: ${newAdvisories.length} Security Advisories Detected`
+            : `⚠️ Security Alert: ${newAdvisories.length} New Advisories`;
 
         const advisoryList = newAdvisories
           .map(
@@ -242,7 +278,7 @@ This alert was generated by the dcyfr-labs Security Advisory Monitor.
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            from: "security@dcyfr.com",
+            from: "security@dcyfr.ai",
             to: alertEmail,
             subject,
             text: emailBody,
@@ -254,7 +290,11 @@ This alert was generated by the dcyfr-labs Security Advisory Monitor.
           throw new Error(`Resend API error: ${error}`);
         }
 
-        return { sent: true, to: alertEmail, advisoryCount: newAdvisories.length };
+        return {
+          sent: true,
+          to: alertEmail,
+          advisoryCount: newAdvisories.length,
+        };
       });
 
       // Step 4: Send event for downstream processing
@@ -305,66 +345,86 @@ export async function fetchGhsaAdvisories(packageName: string) {
 
   while (attempt < maxRetries) {
     try {
-      console.warn(`[fetchGhsaAdvisories] Attempting to fetch ${packageName} (attempt ${attempt + 1}/${maxRetries})`);
+      console.warn(
+        `[fetchGhsaAdvisories] Attempting to fetch ${packageName} (attempt ${attempt + 1}/${maxRetries})`
+      );
       const response = await fetch(url, { headers });
 
       if (response.ok) {
         const data = await response.json();
-        console.warn(`[fetchGhsaAdvisories] Successfully fetched ${packageName}: ${Array.isArray(data) ? data.length : data?.length ?? '?'} advisories`);
+        console.warn(
+          `[fetchGhsaAdvisories] Successfully fetched ${packageName}: ${Array.isArray(data) ? data.length : (data?.length ?? "?")} advisories`
+        );
         return data;
       }
 
       // Read body for diagnostics
       const body = await response.text().catch(() => "<no-body>");
-      const remaining = response.headers?.get?.("x-ratelimit-remaining") ?? "unknown";
-      
+      const remaining =
+        response.headers?.get?.("x-ratelimit-remaining") ?? "unknown";
+
       // Don't log raw response body to avoid PII scanner issues
       // Just log the status and rate limit info
-      console.error(`[fetchGhsaAdvisories] GHSA API error for ${packageName}: ${response.status}`, {
-        statusCode: response.status,
-        remaining,
-      });
+      console.error(
+        `[fetchGhsaAdvisories] GHSA API error for ${packageName}: ${response.status}`,
+        {
+          statusCode: response.status,
+          remaining,
+        }
+      );
 
       // For client errors (including 422), don't retry - return empty result
       if (response.status >= 400 && response.status < 500) {
-        console.warn(`[fetchGhsaAdvisories] Client error (${response.status}) for ${packageName} - not retrying, returning empty`);
+        console.warn(
+          `[fetchGhsaAdvisories] Client error (${response.status}) for ${packageName} - not retrying, returning empty`
+        );
         return [];
       }
 
       // Server errors: retry with backoff
       attempt++;
       const backoffMs = Math.min(100 * 2 ** attempt, 3000);
-      console.warn(`[fetchGhsaAdvisories] Server error (${response.status}) for ${packageName} - retrying in ${backoffMs}ms`);
+      console.warn(
+        `[fetchGhsaAdvisories] Server error (${response.status}) for ${packageName} - retrying in ${backoffMs}ms`
+      );
       await sleep(backoffMs);
     } catch (error) {
       attempt++;
       if (attempt >= maxRetries) {
         // Re-throw the last error so caller can decide (Inngest step will catch)
-        console.error(`Max retries reached for ${packageName} after ${attempt} attempts`, {
-          error: error instanceof Error ? error.message : String(error),
-          stack: error instanceof Error ? error.stack : undefined,
-        });
+        console.error(
+          `Max retries reached for ${packageName} after ${attempt} attempts`,
+          {
+            error: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined,
+          }
+        );
         throw error;
       }
       const backoffMs = Math.min(100 * 2 ** attempt, 3000);
-      console.warn(`Network error fetching GHSA for ${packageName} (attempt ${attempt}/${maxRetries}), retrying in ${backoffMs}ms:`, {
-        error: error instanceof Error ? error.message : String(error),
-        type: error instanceof Error ? error.constructor.name : typeof error,
-      });
+      console.warn(
+        `Network error fetching GHSA for ${packageName} (attempt ${attempt}/${maxRetries}), retrying in ${backoffMs}ms:`,
+        {
+          error: error instanceof Error ? error.message : String(error),
+          type: error instanceof Error ? error.constructor.name : typeof error,
+        }
+      );
       await sleep(backoffMs);
     }
   }
 
-  console.warn(`fetchGhsaAdvisories(${packageName}): Max retries exhausted, returning empty result`);
+  console.warn(
+    `fetchGhsaAdvisories(${packageName}): Max retries exhausted, returning empty result`
+  );
   return [];
 }
 
 /**
  * Security Advisory Handler - Event-Driven
- * 
+ *
  * Processes security advisory detection events from any source
  * (GitHub Actions, scheduled job, manual trigger).
- * 
+ *
  * This function can be extended to:
  * - Create GitHub issues
  * - Update dashboards
@@ -459,34 +519,37 @@ export const dailySecurityTest = inngest.createFunction(
       : "http://localhost:3000";
 
     // Test 1: Invalid API key attempts
-    const invalidKeyResults = await step.run("test-invalid-api-keys", async () => {
-      const results = [];
+    const invalidKeyResults = await step.run(
+      "test-invalid-api-keys",
+      async () => {
+        const results = [];
 
-      for (let i = 1; i <= 3; i++) {
-        try {
-          const response = await fetch(`${baseUrl}/api/analytics`, {
-            headers: {
-              "x-internal-request": "true",
-              "Authorization": `Bearer inngest_test_invalid_${i}_${Date.now()}`,
-            },
-          });
+        for (let i = 1; i <= 3; i++) {
+          try {
+            const response = await fetch(`${baseUrl}/api/analytics`, {
+              headers: {
+                "x-internal-request": "true",
+                Authorization: `Bearer inngest_test_invalid_${i}_${Date.now()}`,
+              },
+            });
 
-          results.push({
-            attempt: i,
-            status: response.status,
-            success: response.status === 401,
-          });
-        } catch (error) {
-          results.push({
-            attempt: i,
-            error: error instanceof Error ? error.message : "Unknown error",
-            success: false,
-          });
+            results.push({
+              attempt: i,
+              status: response.status,
+              success: response.status === 401,
+            });
+          } catch (error) {
+            results.push({
+              attempt: i,
+              error: error instanceof Error ? error.message : "Unknown error",
+              success: false,
+            });
+          }
         }
-      }
 
-      return results;
-    });
+        return results;
+      }
+    );
 
     // Test 2: Brute force simulation (15 attempts to trigger alert)
     const bruteForceResults = await step.run("test-brute-force", async () => {
@@ -497,7 +560,7 @@ export const dailySecurityTest = inngest.createFunction(
           const response = await fetch(`${baseUrl}/api/analytics`, {
             headers: {
               "x-internal-request": "true",
-              "Authorization": `Bearer brute_force_${i}_${Date.now()}`,
+              Authorization: `Bearer brute_force_${i}_${Date.now()}`,
             },
           });
 
@@ -508,7 +571,7 @@ export const dailySecurityTest = inngest.createFunction(
           });
 
           // Small delay to avoid overwhelming the server
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 100));
         } catch (error) {
           results.push({
             attempt: i,
@@ -530,7 +593,7 @@ export const dailySecurityTest = inngest.createFunction(
           const response = await fetch(`${baseUrl}/api/analytics`, {
             headers: {
               "x-internal-request": "true",
-              "Authorization": `Bearer rate_test_${i}_${Date.now()}`,
+              Authorization: `Bearer rate_test_${i}_${Date.now()}`,
             },
           });
 
@@ -558,7 +621,7 @@ export const dailySecurityTest = inngest.createFunction(
         const response = await fetch(`${baseUrl}/api/admin/api-usage`, {
           headers: {
             "x-internal-request": "true",
-            "Authorization": `Bearer inngest_admin_test_${Date.now()}`,
+            Authorization: `Bearer inngest_admin_test_${Date.now()}`,
           },
         });
 
@@ -578,32 +641,45 @@ export const dailySecurityTest = inngest.createFunction(
     const summary = {
       timestamp: now.toISOString(),
       mountainTime: now.toLocaleString("en-US", { timeZone: "America/Denver" }),
-      daysRemaining: Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)),
+      daysRemaining: Math.ceil(
+        (endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+      ),
       tests: {
         invalidKeys: {
           total: invalidKeyResults.length,
-          successful: invalidKeyResults.filter(r => r.success).length,
+          successful: invalidKeyResults.filter((r) => r.success).length,
         },
         bruteForce: {
           total: bruteForceResults.length,
-          successful: bruteForceResults.filter(r => r.success).length,
-          expectedSentryAlert: bruteForceResults.filter(r => r.success).length >= 10,
+          successful: bruteForceResults.filter((r) => r.success).length,
+          expectedSentryAlert:
+            bruteForceResults.filter((r) => r.success).length >= 10,
         },
         rateLimits: {
           total: rateLimitResults.length,
-          rateLimited: rateLimitResults.filter(r => 'rateLimited' in r && r.rateLimited).length,
+          rateLimited: rateLimitResults.filter(
+            (r) => "rateLimited" in r && r.rateLimited
+          ).length,
         },
         adminApi: adminApiResults,
       },
       expectedOutcomes: {
         sentryEvents: invalidKeyResults.length + bruteForceResults.length + 1,
-        sentryAlerts: bruteForceResults.filter(r => r.success).length >= 10 ? 1 : 0,
-        axiomLogs: invalidKeyResults.length + bruteForceResults.length + rateLimitResults.length + 1,
+        sentryAlerts:
+          bruteForceResults.filter((r) => r.success).length >= 10 ? 1 : 0,
+        axiomLogs:
+          invalidKeyResults.length +
+          bruteForceResults.length +
+          rateLimitResults.length +
+          1,
       },
     };
 
     // Log summary for monitoring
-    console.warn("Daily Security Test Summary:", JSON.stringify(summary, null, 2));
+    console.warn(
+      "Daily Security Test Summary:",
+      JSON.stringify(summary, null, 2)
+    );
 
     return summary;
   }
