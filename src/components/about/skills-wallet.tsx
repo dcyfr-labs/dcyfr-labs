@@ -17,6 +17,7 @@ interface SkillsWalletProps {
   viewMoreUrl?: string;
   viewMoreText?: string;
   className?: string;
+  excludeSkills?: string[];
 }
 
 interface SkillWithCount {
@@ -41,14 +42,18 @@ export function SkillsWallet({
   viewMoreUrl,
   viewMoreText = "View all skills",
   className,
+  excludeSkills = [],
 }: SkillsWalletProps) {
   // Use the cached hook for better performance and automatic skill aggregation
   const { skills, loading, error } = useCredlySkills({ username });
 
   // Memoize displayed skills to prevent unnecessary re-renders
   const displayedSkills = useMemo(() => {
-    return limit ? skills.slice(0, limit) : skills;
-  }, [skills, limit]);
+    const filtered = skills.filter(
+      (item) => !excludeSkills.includes(item.skill.name)
+    );
+    return limit ? filtered.slice(0, limit) : filtered;
+  }, [skills, limit, excludeSkills]);
 
   if (loading) {
     return (
@@ -107,10 +112,12 @@ export function SkillsWallet({
   return (
     <div className={cn(SPACING.subsection, className)}>
       {/* Header */}
-      <div className="flex items-center gap-2">
-        <Lightbulb className="h-5 w-5 text-primary" />
-        <h3 className={TYPOGRAPHY.h3.standard}>Top Skills</h3>
-        <Badge variant="secondary">{skills.length} Skills</Badge>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Lightbulb className="h-5 w-5 text-primary" />
+          <h3 className={TYPOGRAPHY.h3.standard}>Top Skills</h3>
+        </div>
+        <Badge variant="secondary">{displayedSkills.length} Skills</Badge>
       </div>
 
       {/* Skills Grid */}

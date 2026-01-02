@@ -12,6 +12,7 @@ import {
   TYPOGRAPHY,
   HOVER_EFFECTS,
   ANIMATION,
+  BORDERS,
 } from "@/lib/design-tokens";
 import { cn, ensureAbsoluteUrl } from "@/lib/utils";
 import { useCredlyBadges } from "@/hooks/use-credly";
@@ -41,13 +42,6 @@ function BadgeCard({ badge }: BadgeCardProps) {
     month: "long",
   });
 
-  const expiresDate = badge.expires_at
-    ? new Date(badge.expires_at).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-      })
-    : null;
-
   // Extract issuer name from entities array (find primary entity)
   const issuerName =
     badge.issuer.entities.find((e) => e.primary)?.entity.name ||
@@ -68,7 +62,12 @@ function BadgeCard({ badge }: BadgeCardProps) {
       <Card className={cn("p-4 h-full", HOVER_EFFECTS.card)}>
         <div className="flex flex-col items-center text-center gap-4">
           {/* Badge Image */}
-          <div className="relative w-36 h-36 shrink-0">
+          <div
+            className={cn(
+              "relative w-36 h-36 shrink-0 bg-muted/30 p-3",
+              BORDERS.card
+            )}
+          >
             <Image
               src={badge.image_url}
               alt={badge.badge_template.name}
@@ -95,18 +94,9 @@ function BadgeCard({ badge }: BadgeCardProps) {
               Issued by {issuerName}
             </p>
 
-            <div
-              className={cn(
-                "flex flex-col items-center gap-1",
-                TYPOGRAPHY.label.xs,
-                "text-muted-foreground"
-              )}
-            >
-              <div className="flex items-center gap-1.5">
-                <Clock className="h-3.5 w-3.5" />
-                <span>Issued {issuedDate}</span>
-              </div>
-              {expiresDate && <span>Expires {expiresDate}</span>}
+            <div className="flex items-center gap-1.5 justify-center text-muted-foreground">
+              <Clock className="h-3.5 w-3.5" />
+              <span className={TYPOGRAPHY.label.xs}>Issued {issuedDate}</span>
             </div>
           </div>
 

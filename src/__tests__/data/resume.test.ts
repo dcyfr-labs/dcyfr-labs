@@ -379,17 +379,40 @@ describe('Resume Data', () => {
 
     it('getYearsOfExperience calculates from earliest experience', () => {
       const years = getYearsOfExperience()
-      const currentYear = new Date().getFullYear()
+      const now = new Date()
 
-      // Find the actual earliest year across all experience entries
-      const allYears: number[] = []
+      // Parse earliest start date from all experience entries
+      let earliestDate: Date | null = null
       resume.experience.forEach(exp => {
-        const year = parseInt(exp.duration.match(/\d{4}/)?.[0] || "2021")
-        allYears.push(year)
+        const dateMatch = exp.duration.match(/^([A-Za-z]+)\s+(\d{4})/)
+        if (dateMatch) {
+          const monthStr = dateMatch[1].toLowerCase()
+          const year = parseInt(dateMatch[2])
+          const months: { [key: string]: number } = {
+            'jan': 0, 'january': 0, 'feb': 1, 'february': 1, 'mar': 2, 'march': 2,
+            'apr': 3, 'april': 3, 'may': 4, 'jun': 5, 'june': 5, 'jul': 6, 'july': 6,
+            'aug': 7, 'august': 7, 'sep': 8, 'september': 8, 'oct': 9, 'october': 9,
+            'nov': 10, 'november': 10, 'dec': 11, 'december': 11,
+          }
+          const monthIndex = months[monthStr]
+          if (monthIndex !== undefined) {
+            const date = new Date(year, monthIndex, 1)
+            if (!earliestDate || date < earliestDate) {
+              earliestDate = date
+            }
+          }
+        }
       })
-      const earliestYear = Math.min(...allYears)
 
-      expect(years).toBe(currentYear - earliestYear)
+      // Calculate expected years (accounting for month/day)
+      if (earliestDate) {
+        let expectedYears = now.getFullYear() - (earliestDate as Date).getFullYear()
+        const monthDiff = now.getMonth() - (earliestDate as Date).getMonth()
+        if (monthDiff < 0) {
+          expectedYears--
+        }
+        expect(years).toBe(expectedYears)
+      }
     })
 
     it('getShortSummary includes calculated years', () => {
