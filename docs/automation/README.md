@@ -174,11 +174,11 @@ See AUTOMATED_UPDATES.md#troubleshooting
 - `AGENTS.md` — AI instruction system (includes automation section)
 - `.github/dependabot.yml` — Dependency update policy
 - `.github/workflows/` — All automation workflows
-- `scripts/sync-ai-instructions.mjs` — Sync script
+- `scripts/ci/sync-agents.mjs` — Agent sync script
 
 **Command reference:**
 ```bash
-npm run sync:ai          # Manually sync docs
+npm run sync:agents      # Manually sync agent docs
 npm run mcp:check        # Check MCP servers
 npm run check            # All quality gates
 ```
@@ -196,7 +196,7 @@ Weekly (Mon 9 AM PT):
   → Auto-merge workflow
 
 Monthly (1st Mon 9 AM PT):
-  → Scheduled Instruction Sync
+  → Automated agent sync (via sync-agents.mjs)
 
 Continuous:
   → Automated Metrics Collection

@@ -153,9 +153,9 @@ const SeriesShowcase = dynamic(
   }
 );
 
-// Optimized meta description for homepage (157 characters)
+// Optimized meta description for homepage (158 characters - within 150-160 range)
 const pageDescription =
-  "Discover insights on cyber architecture, coding, and security at DCYFR Labs. Stay updated with our latest articles and projects.";
+  "Discover insights on cyber architecture, coding, and security at DCYFR Labs. Explore our latest articles, projects, and innovative solutions.";
 
 export const metadata: Metadata = createPageMetadata({
   title: SITE_TITLE_PLAIN,
@@ -525,7 +525,7 @@ export default async function Home() {
           </ScrollReveal>
         </Section> */}
 
-        {/* Featured Article - Highlighted section */}
+        {/* Featured Article - Highlighted section 
         <Section
           id="featured-post"
           className={cn(PAGE_LAYOUT.section.container)}
@@ -535,7 +535,7 @@ export default async function Home() {
               <FeaturedPostHero post={featuredPost} />
             </div>
           </ScrollReveal>
-        </Section>
+        </Section> */}
 
         {/* TODO: Blog Series - Organized content paths -- pending more series 
         {allSeries.length > 0 && (
@@ -560,7 +560,7 @@ export default async function Home() {
         )} */}
 
         {/* Trending Section - Posts, Topics, and Projects */}
-        {/* ⚡ OPTIMIZATION: Wrapped in Suspense - loads while user scrolls */}
+        {/* ⚡ OPTIMIZATION: Wrapped in Suspense - loads while user scrolls 
         <Suspense
           fallback={
             <Section
@@ -592,7 +592,7 @@ export default async function Home() {
             viewCountsMap={viewCountsMap}
             topTopics={topTopics}
           />
-        </Suspense>
+        </Suspense> */}
 
         {/* Explore Section - Professional landing page navigation 
         <Section
@@ -622,7 +622,7 @@ export default async function Home() {
         </Section> */}
 
         {/* Recent Activity - Updates feed */}
-        {/* ⚡ OPTIMIZATION: Wrapped in Suspense - loads in background */}
+        {/* ⚡ OPTIMIZATION: Wrapped in Suspense - loads in background 
         <Suspense
           fallback={
             <Section
@@ -648,7 +648,7 @@ export default async function Home() {
           }
         >
           <RecentActivitySectionData />
-        </Suspense>
+        </Suspense> */}
       </SectionNavigator>
     </PageLayout>
   );

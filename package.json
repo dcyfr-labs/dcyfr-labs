@@ -45,7 +45,6 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
     "test:ci": "vitest run --coverage && playwright test",
-    "sync:ai": "node scripts/ci/sync-ai-instructions.mjs",
     "sync:agents": "node scripts/ci/sync-agents.mjs",
     "sync:agents:dry": "node scripts/ci/sync-agents.mjs --dry-run",
     "sync:agents:copilot": "node scripts/ci/sync-agents.mjs --target=copilot",
