@@ -246,6 +246,38 @@ import { Rocket, CheckCircle, XCircle, AlertTriangle, Lightbulb } from 'lucide-r
 5. ✅ Security scanning passes (CodeQL/manual review)
 6. Update `todo.md` and `done.md`
 
+## Project Maintenance
+
+**Health Monitoring:**
+
+- **Monthly**: Run health check (15 min) - See [`docs/operations/MAINTENANCE_PLAYBOOK.md`](docs/operations/MAINTENANCE_PLAYBOOK.md)
+- **Quarterly**: Deep cleanup (2-3 hours) - Dependencies, unused code, documentation
+- **Annually**: Full audit (1 day) - Architecture, performance, security review
+
+**Quick Health Check:**
+
+```bash
+npm outdated              # Check dependency updates
+npm audit                 # Security vulnerabilities
+npm run test:run          # Test suite health
+npm run build             # Build verification
+npx depcheck              # Find unused dependencies
+```
+
+**Key Maintenance Documents:**
+
+- [`docs/operations/PROJECT_HEALTH_AUDIT.md`](docs/operations/PROJECT_HEALTH_AUDIT.md) - Latest comprehensive audit
+- [`docs/operations/MAINTENANCE_PLAYBOOK.md`](docs/operations/MAINTENANCE_PLAYBOOK.md) - Repeatable processes
+- [`docs/operations/todo.md`](docs/operations/todo.md) - Current priorities
+- [`docs/operations/done.md`](docs/operations/done.md) - Completed work
+
+**Red Flags (Take Action Immediately):**
+
+- Test pass rate <95%
+- Critical security vulnerabilities
+- Build failures
+- Bundle size increase >10%
+
 **Security Vulnerability Handling (CRITICAL):**
 
 When discovering a CodeQL alert or security issue:

@@ -60,6 +60,11 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# Test output logs
+test-output.log
+**/e2e-test-results.log
+**/*-test-results.log
+
 # ========================================
 # Environment & Secrets
 # ========================================
