@@ -131,7 +131,37 @@ const sessionId = globalThis.crypto?.randomUUID?.() ||
 
 ---
 
-### Pattern 4: actions/missing-workflow-permissions
+### Pattern 4: js/missing-origin-check
+
+**Rule:** `js/missing-origin-check`  
+**Severity:** Warning/Medium  
+**False Positive When:**
+- Origin check exists within the message handler function body
+- `ALLOWED_ORIGINS` list validates `event.origin`
+- CodeQL doesn't recognize internal function checks
+
+**Example:**
+```typescript
+// lgtm [js/missing-origin-check] - Origin verified at line 21 via ALLOWED_ORIGINS check
+const handleMessage = (event: MessageEvent) => {
+  // Security: Verify origin before processing message
+  if (!ALLOWED_ORIGINS.includes(event.origin)) {
+    console.warn("Rejected message from unauthorized origin:", event.origin);
+    return;
+  }
+  
+  // Process message safely
+  if (event.data && event.data.type === "setTheme") {
+    // ...
+  }
+};
+```
+
+**Context:** `src/app/(embed)/embed-theme-handler.tsx` - Embed iframe communication
+
+---
+
+### Pattern 5: actions/missing-workflow-permissions
 
 **Rule:** `actions/missing-workflow-permissions`  
 **Severity:** Warning  
