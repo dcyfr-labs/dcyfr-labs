@@ -96,7 +96,9 @@ const InfiniteActivitySection = dynamic(
       default: mod.InfiniteActivitySection,
     })),
   {
-    loading: () => <InfiniteActivitySectionComponent loading initialCount={3} />,
+    loading: () => (
+      <InfiniteActivitySectionComponent loading initialCount={3} />
+    ),
   }
 );
 
@@ -423,18 +425,18 @@ export default async function Home() {
         {/* ⚡ OPTIMIZATION: Hero renders IMMEDIATELY - no data dependencies */}
         <Section
           id="hero"
-          className="relative overflow-hidden min-h-screen -mt-16 pt-16 md:pt-24 lg:pt-32 "
+          className="relative overflow-hidden min-h-screen -mt-16 pt-16 md:pt-24 lg:pt-32"
         >
           {/* Hero background 
-          <div className="bg-accent/25 *:backdrop-blur-lg *:backdrop-filter absolute inset-0 z-0 *:pointer-events-none">
+          <div className="*:backdrop-blur-lg *:backdrop-filter absolute inset-0 z-0 *:pointer-events-none">
             <NetworkBackground />
           </div> */}
 
           {/* Hero content */}
-          <div className="absolute inset-0 flex items-center justify-center z-10 pb-18">
+          <div className="relative z-10 flex flex-col">
             <div
               className={cn(
-                "flex flex-col items-center justify-center w-full",
+                "flex flex-col items-center justify-center w-full min-h-[60vh] py-12 md:py-16 lg:py-20",
                 CONTAINER_PADDING
               )}
             >
@@ -474,31 +476,15 @@ export default async function Home() {
                     <SearchButton variant="input" />
                   </div>
                 </div>
+
+                {/* Quick Links Ribbon - Key sections for immediate access */}
+                <div className="mt-6 md:mt-8 w-full">
+                  <QuickLinksRibbon />
+                </div>
               </div>
             </div>
           </div>
         </Section>
-
-        {/* TODO: Featured CVE Alert - Cybersecurity focus -- needs something
-        <Section
-          id="cve-alert"
-          className={cn(PAGE_LAYOUT.section.container)}
-        >
-          <ScrollReveal animation="fade-up" delay={75}>
-            <div className={SPACING.content}>
-              <FeaturedCVEBanner />
-            </div>
-          </ScrollReveal>
-        </Section> */}
-
-        {/* 2. TODO: Activity Heatmap -- needs work
-        <Section id="activity-heatmap" className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={50}>
-            <div className={SPACING.content}>
-              <HomepageHeatmapMini activities={allActivities} />
-            </div>
-          </ScrollReveal>
-        </Section> */}
 
         {/* Featured Article - Highlighted section 
         <Section
