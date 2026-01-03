@@ -14,11 +14,6 @@ Local validation
 
 1. Confirm the workspace MCP configuration is present at `.vscode/mcp.json`.
 2. Ensure sensitive tokens in `.env.local` are not committed and are present in local environment when testing (example: `PERPLEXITY_API_KEY`).
-3. Use the `sync:ai` script to refresh docs that list available MCP servers:
-
-```bash
-npm run sync:ai
-```
 
 Recommended MCP health checks (manual)
 ------------------------------------
@@ -72,7 +67,6 @@ Add a simple GitHub Actions job to keep `AGENTS.md` in sync and verify instructi
 
 Key guidance for pipeline:
 - Run `npm ci` or `npm install` depending on your pipeline.
-- Run `node scripts/sync-ai-instructions.mjs` (keeps documentation accurate for MCP servers and test counts).
 - Run `node scripts/validate-instructions.mjs` to ensure instruction files remain consistent.
 - Optionally run `node scripts/check-mcp-servers.mjs` (strict or non-strict depending on token availability) and publish a summary to PR checks.
 
@@ -86,6 +80,6 @@ Further reading
 ---------------
 - `AGENTS.md` - central hub (decision tree & instructions)
 - `.vscode/mcp.json` - MCP configuration (project workspace)
-- `scripts/sync-ai-instructions.mjs` - sync script that updates doc counts & MCP server list
+- `scripts/ci/sync-agents.mjs` - agent sync script
 
 Status: informational – add a minimal script and CI integration when ready.

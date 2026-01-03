@@ -97,7 +97,7 @@ export const BOTTOM_NAV: NavItem[] = [
     href: "/work",
     label: "Work",
     icon: FolderGit2,
-  }
+  },
 ] as const;
 
 /**
@@ -112,7 +112,7 @@ export const BLOG_CATEGORIES: NavItem[] = [
   {
     href: "/blog/series",
     label: "Blog Series",
-  }
+  },
 ] as const;
 
 /**
@@ -177,12 +177,12 @@ export const FOOTER_NAV: NavItem[] = [
     label: "Likes",
   },
   {
-    href: "/contact",
-    label: "Contact",
-  },
-  {
     href: "/sponsors",
     label: "Sponsors",
+  },
+  {
+    href: "/contact",
+    label: "Contact",
   },
   {
     href: "/feeds",
@@ -209,21 +209,21 @@ export const MOBILE_NAV: NavItem[] = [
     label: "About",
   },
   {
+    href: "/work",
+    label: "Work",
+  },
+  {
     href: "/blog",
     label: "Blog",
   },
   {
-    href: "/work",
-    label: "Work",
+    href: "/sponsors",
+    label: "Sponsors",
   },
   {
     href: "/contact",
     label: "Contact",
   },
-  {
-    href: "/sponsors",
-    label: "Sponsors",
-  }
 ] as const;
 
 /**
@@ -243,14 +243,18 @@ export const NAVIGATION = {
  * Extract all keyboard shortcuts from navigation config
  * Useful for generating keyboard shortcut help or command palette
  */
-export function getKeyboardShortcuts(): Array<{ shortcut: string; label: string; href: string }> {
-  return PRIMARY_NAV
-    .filter((item): item is NavItem & { shortcut: string } => !!item.shortcut)
-    .map((item) => ({
-      shortcut: item.shortcut,
-      label: item.label,
-      href: item.href,
-    }));
+export function getKeyboardShortcuts(): Array<{
+  shortcut: string;
+  label: string;
+  href: string;
+}> {
+  return PRIMARY_NAV.filter(
+    (item): item is NavItem & { shortcut: string } => !!item.shortcut
+  ).map((item) => ({
+    shortcut: item.shortcut,
+    label: item.label,
+    href: item.href,
+  }));
 }
 
 /**

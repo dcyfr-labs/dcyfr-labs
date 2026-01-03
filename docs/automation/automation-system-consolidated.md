@@ -171,15 +171,15 @@ PR Type Analysis:
 
 2. **Documentation Update:**
    ```bash
-   # Update AI instructions with current metrics
-   node scripts/sync-ai-instructions.mjs
+   # Update agent documentation with current patterns
+   npm run sync:agents
    ```
 
 3. **PR Creation:**
    ```bash
    # Create PR for review
-   gh pr create --title "Quarterly AI instruction sync" \
-                --body "Auto-generated metrics update"
+   gh pr create --title "Quarterly agent documentation sync" \
+                --body "Auto-generated pattern updates"
    ```
 
 ### Metrics Collection

@@ -295,6 +295,15 @@ export function createArticlePageMetadata(options: ArticleMetadataOptions): Meta
           alt: imageAlt || `${title}`,
         },
       ],
+      // Article-specific metadata (only for og:type="article")
+      ...(type === 'article' && {
+        article: {
+          publishedTime: publishedAt?.toISOString(),
+          modifiedTime: modifiedAt?.toISOString() || publishedAt?.toISOString(),
+          authors: authorNames,
+          tags: keywords,
+        },
+      }),
     },
     twitter: {
       card: 'summary_large_image',
@@ -360,7 +369,7 @@ export interface ArticleSchemaOptions {
 
 /**
  * Generate Article structured data (JSON-LD) for SEO
- * 
+ *
  * @example
  * ```tsx
  * const schema = createArticleSchema({
@@ -372,7 +381,7 @@ export interface ArticleSchemaOptions {
  *   image: post.image?.url ? `${SITE_URL}${post.image.url}` : undefined,
  *   tags: post.tags,
  * });
- * 
+ *
  * // In JSX:
  * <script
  *   type="application/ld+json"
@@ -403,6 +412,14 @@ export function createArticleSchema(options: ArticleSchemaOptions) {
     author: {
       '@type': 'Person',
       name: author,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: SITE_TITLE_PLAIN,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE_URL}/icon?size=512`,
+      },
     },
     image: image || undefined,
     keywords: tags?.join(', '),

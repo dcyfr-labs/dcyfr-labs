@@ -73,7 +73,7 @@ export const HEADER_NAV: NavItem[] = [
   },
   {
     href: "/work",
-    label: "Our Work",
+    label: "Work",
     shortLabel: "Work",
     icon: Briefcase,
     shortcut: "g w",
@@ -193,7 +193,7 @@ export const MOBILE_NAV_SECTIONS: NavSection[] = [
       },
       {
         href: "/work",
-        label: "Our Work",
+        label: "Work",
         icon: Briefcase,
         description: "View our portfolio",
       },

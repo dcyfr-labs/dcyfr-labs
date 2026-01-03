@@ -113,7 +113,7 @@ export function SiteHeader() {
         >
           {/* Direct links (About, Sponsors, Contact) */}
           {NAVIGATION.header
-            .filter((item) => !["Blog", "Our Work"].includes(item.label))
+            .filter((item) => !["Blog", "Work"].includes(item.label))
             .filter((item) => item.href !== "/") // Exclude home (handled by logo)
             .map((item) => {
               const isActive = isNavItemActive(item, pathname);
@@ -169,39 +169,45 @@ export function SiteHeader() {
                 className="absolute top-full left-0 mt-2 w-52 rounded-lg border bg-card p-1.5 shadow-xl z-50"
                 role="menu"
               >
-                {BLOG_NAV.map((item) => {
+                {BLOG_NAV.map((item, index) => {
                   const isActive = isNavItemActive(item, pathname);
 
                   return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={cn(
-                        "block px-3 py-2.5 text-[clamp(0.875rem,1vw+0.75rem,1rem)] rounded-md",
-                        ANIMATION.transition.base,
-                        "hover:bg-accent hover:text-accent-foreground",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                        isActive && "bg-accent/50 font-medium"
+                    <div key={item.href}>
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          "block px-3 py-2.5 text-[clamp(0.875rem,1vw+0.75rem,1rem)] rounded-md",
+                          ANIMATION.transition.base,
+                          "hover:bg-accent hover:text-accent-foreground",
+                          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                          isActive && "bg-accent/50 font-medium"
+                        )}
+                        onClick={blogDropdown.close}
+                        role="menuitem"
+                        aria-label={item.description}
+                        prefetch={false}
+                      >
+                        <div className="font-medium">{item.label}</div>
+                        {item.description && (
+                          <div className="text-xs text-muted-foreground mt-0.5">
+                            {item.description}
+                          </div>
+                        )}
+                      </Link>
+
+                      {/* Separator before blog categories */}
+                      {index === 1 && (
+                        <div className="my-1.5 border-t" role="separator" />
                       )}
-                      onClick={blogDropdown.close}
-                      role="menuitem"
-                      aria-label={item.description}
-                      prefetch={false}
-                    >
-                      <div className="font-medium">{item.label}</div>
-                      {item.description && (
-                        <div className="text-xs text-muted-foreground mt-0.5">
-                          {item.description}
-                        </div>
-                      )}
-                    </Link>
+                    </div>
                   );
                 })}
               </div>
             )}
           </div>
 
-          {/* Our Work dropdown */}
+          {/* Work dropdown */}
           <div ref={workDropdown.ref} className="relative">
             <button
               {...workDropdown.triggerProps}
@@ -214,7 +220,7 @@ export function SiteHeader() {
               aria-expanded={workDropdown.isOpen}
               aria-haspopup="menu"
             >
-              Our Work
+              Work
               <ChevronDown
                 className={cn(
                   "w-[clamp(0.875rem,1vw+0.75rem,1rem)] h-[clamp(0.875rem,1vw+0.75rem,1rem)]",
@@ -235,10 +241,6 @@ export function SiteHeader() {
 
                   return (
                     <div key={item.href}>
-                      {/* Separator before Services 
-                      {index === WORK_NAV.length - 1 && (
-                        <div className="my-1.5 border-t" role="separator" />
-                      )} */}
                       <Link
                         href={item.href}
                         className={cn(
@@ -260,6 +262,11 @@ export function SiteHeader() {
                           </div>
                         )}
                       </Link>
+
+                      {/* Separator before categories  */}
+                      {index === WORK_NAV.length - 4 && (
+                        <div className="my-1.5 border-t" role="separator" />
+                      )}
                     </div>
                   );
                 })}
