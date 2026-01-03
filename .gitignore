@@ -171,6 +171,12 @@ $RECYCLE.BIN/
 .Spotlight-V100
 .Trashes
 
+# Local backup files
+*.bak
+*.old
+*.orig
+*.save
+
 # Cache directories
 .cache/
 .temp/
