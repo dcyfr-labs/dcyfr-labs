@@ -5,8 +5,9 @@
 ## 🎯 Start Here
 
 **[AUTOMATION SYSTEM GUIDE](./automation-system-consolidated.md)** - Complete guide with:
+
 - 🚀 **Quick Setup** (5-minute start)
-- 📊 **System Overview** (visual architecture) 
+- 📊 **System Overview** (visual architecture)
 - 🛠️ **Implementation Details** (technical depth)
 - ✅ **Setup Checklist** (step-by-step)
 
@@ -15,19 +16,22 @@
 ## 📋 What's Included
 
 ### Quick Setup (5 Minutes)
+
 - Enable auto-merge in 3 steps
 - Verify all 4 automation layers
 - Quick reference commands
 
 ### System Architecture
+
 - Dependency auto-merge (safe patches/minors)
 - Quarterly instruction sync (AI docs)
 - Continuous test metrics (real-time)
 - Daily security scanning (early detection)
 
 ### Complete Implementation
+
 - Workflow configurations
-- Decision logic diagrams  
+- Decision logic diagrams
 - Monitoring & alerting setup
 - Troubleshooting procedures
 
@@ -81,24 +85,28 @@ docs/automation/
 ## 🚀 Automation Layers
 
 ### 1. Dependency Auto-Merge (Weekly)
+
 - **What:** Auto-merges safe npm & GitHub Actions updates
 - **When:** Per Dependabot PR
 - **Safe:** Dev patches/minors, prod patches
 - **Risky:** Major versions (requires review)
 
 ### 2. Documentation Sync (Monthly)
+
 - **What:** Syncs AI docs with current metrics
 - **When:** 1st Monday at 9 AM PT
 - **Updates:** Test stats, MCP status, compliance
 - **Creates:** PR for review & merge
 
 ### 3. Test Metrics (Continuous)
+
 - **What:** Captures test results & perf data
 - **When:** After each test run
 - **Tracks:** Pass rate, Lighthouse scores, bundle size
 - **Auto-commits:** When metrics change
 
 ### 4. Security Scanning (Daily)
+
 - **What:** Scans dependencies for vulnerabilities
 - **When:** Daily at 6 AM PT + on dependency PRs
 - **Checks:** npm audit, outdated packages
@@ -109,25 +117,28 @@ docs/automation/
 ## ✅ Setup Steps (5 Minutes)
 
 ### 1. Enable Auto-Merge (2 min)
+
 Settings → Pull Requests → ☑ Allow auto-merge → Save
 
 ### 2. Enable Workflow Permissions (1 min)
+
 Settings → Actions → General → ☑ Read and write → Save
 
 ### 3. Test (2 min)
+
 Wait for next Dependabot run or trigger manually
 
 ---
 
 ## 📊 Impact
 
-| Metric | Improvement |
-|--------|------------|
-| Manual merge work | 80% reduction |
+| Metric             | Improvement         |
+| ------------------ | ------------------- |
+| Manual merge work  | 80% reduction       |
 | Dependency updates | 100% auto-evaluated |
-| Security checks | Daily + per-PR |
-| Doc freshness | Monthly sync |
-| Time to enable | 5 minutes |
+| Security checks    | Daily + per-PR      |
+| Doc freshness      | Monthly sync        |
+| Time to enable     | 5 minutes           |
 
 ---
 
@@ -136,15 +147,18 @@ Wait for next Dependabot run or trigger manually
 After enabling:
 
 ✅ **When Dependabot creates PR:**
+
 - Auto-merge workflow evaluates
 - Safe updates: Auto-approved
 - Major updates: "review-required" label added
 
 ✅ **In Actions tab:**
+
 - Workflows appear in run history
 - Check logs for "auto-merge enabled" message
 
 ✅ **On GitHub:**
+
 - PRs show auto-merge is enabled
 - Merge happens when CI passes
 
@@ -153,15 +167,18 @@ After enabling:
 ## 📞 Support
 
 ### Check Status
+
 ```bash
 gh workflow list
 gh run list --limit 10
 ```
 
 ### Troubleshoot
+
 See AUTOMATED_UPDATES.md#troubleshooting
 
 ### Get Help
+
 - Check relevant documentation file
 - Review workflow logs in GitHub Actions
 - Create issue with error details
@@ -171,12 +188,14 @@ See AUTOMATED_UPDATES.md#troubleshooting
 ## 🔗 Related Files
 
 **In this project:**
+
 - `AGENTS.md` — AI instruction system (includes automation section)
 - `.github/dependabot.yml` — Dependency update policy
 - `.github/workflows/` — All automation workflows
 - `scripts/ci/sync-agents.mjs` — Agent sync script
 
 **Command reference:**
+
 ```bash
 npm run sync:agents      # Manually sync agent docs
 npm run mcp:check        # Check MCP servers
