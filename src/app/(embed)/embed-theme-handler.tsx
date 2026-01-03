@@ -15,6 +15,7 @@ const ALLOWED_ORIGINS = [
 export function EmbedThemeHandler() {
   useEffect(() => {
     // Listen for theme messages from parent window
+    // lgtm [js/missing-origin-check] - Origin verified at line 20 via ALLOWED_ORIGINS check
     const handleMessage = (event: MessageEvent) => {
       // Security: Verify origin before processing message
       if (!ALLOWED_ORIGINS.includes(event.origin)) {
