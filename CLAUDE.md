@@ -29,6 +29,7 @@ Project is in **maintenance mode** with data-driven enhancements ready for next 
 **Stack**: Next.js 16 + React 19 + TypeScript + Tailwind v4 + shadcn/ui + MDX
 **Commands**: `npm run dev` • `npm run build` • `npm run lint` • `npm run test`
 **Imports**: Always use `@/*` alias (never relative paths)
+**Versioning**: Calendar Versioning (`YYYY.MM.DD`) - see [VERSIONING.md](docs/operations/VERSIONING.md)
 
 ## Essential Patterns
 
@@ -244,7 +245,8 @@ import { Rocket, CheckCircle, XCircle, AlertTriangle, Lightbulb } from 'lucide-r
 3. ✅ Lint passes (`npm run lint`)
 4. ✅ Design tokens used (no hardcoded values)
 5. ✅ Security scanning passes (CodeQL/manual review)
-6. Update `todo.md` and `done.md`
+6. Update `CHANGELOG.md` with CalVer date (format: `YYYY.MM.DD`)
+7. Update `todo.md` and `done.md`
 
 ## Project Maintenance
 
@@ -268,6 +270,7 @@ npx depcheck              # Find unused dependencies
 
 - [`docs/operations/PROJECT_HEALTH_AUDIT.md`](docs/operations/PROJECT_HEALTH_AUDIT.md) - Latest comprehensive audit
 - [`docs/operations/MAINTENANCE_PLAYBOOK.md`](docs/operations/MAINTENANCE_PLAYBOOK.md) - Repeatable processes
+- [`docs/operations/VERSIONING.md`](docs/operations/VERSIONING.md) - Calendar versioning scheme
 - [`docs/operations/todo.md`](docs/operations/todo.md) - Current priorities
 - [`docs/operations/done.md`](docs/operations/done.md) - Completed work
 

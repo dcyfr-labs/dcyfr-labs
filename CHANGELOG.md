@@ -3,9 +3,11 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project uses [Calendar Versioning](https://calver.org/) with the `YYYY.MM.DD[.MICRO]` format.
 
-## [Unreleased]
+**Breaking changes** are marked with ⚠️ BREAKING in the version header.
+
+## [2026.01.02]
 
 ### Added
 - **Bookmark/Reading List Feature** - Complete bookmark functionality for blog posts
@@ -29,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added a small delay between package requests to reduce spam/validation errors from the GHSA API
   - Improved diagnostic logging to capture response bodies and rate-limit headers
 
-## [1.0.0-preview] - 2025-12-07
+## [2025.12.07] - Production Deployment ⚠️ BREAKING
 
 ### Summary
 
@@ -71,7 +73,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Performance baselines will be populated after first production deployment
 - All blocking items resolved; ready for production deployment
 
-## [Unreleased - Prior]
+## [2025.12.06]
 
 ### Added
 - Repository documentation templates (PR template, issue templates, code of conduct)
@@ -84,7 +86,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optimized GitHub Actions workflows with concurrency and timeouts
 - Updated github-script actions to v8
 
-## [1.0.0-alpha] - 2025-11-26
+## [2025.11.26] - Initial Release ⚠️ BREAKING
 
 ### Summary
 
