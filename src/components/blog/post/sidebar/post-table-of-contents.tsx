@@ -155,7 +155,7 @@ export function PostTableOfContents({ headings, slug }: PostTableOfContentsProps
     <div>
       <h2 className="font-semibold mb-3 text-sm">On this page</h2>
       <nav ref={navRef} aria-label="Table of contents" className="max-h-[calc(100vh-12rem)] overflow-y-auto scrollbar-hide">
-        <ul className={cn(SPACING.compact, "text-sm")}>
+        <ul className={cn("list-none", SPACING.compact, "text-sm")}>
           {headings.map((heading, index) => {
             const isActive = activeId === heading.id;
             const isH3 = heading.level === 3;

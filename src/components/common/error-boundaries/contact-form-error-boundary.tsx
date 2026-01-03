@@ -29,7 +29,7 @@ function ContactFormErrorFallback({ error, resetError }: ErrorFallbackProps) {
           <p className={cn("text-sm", "font-medium")}>
             Alternative contact methods:
           </p>
-          <ul className={`text-sm text-muted-foreground space-y-${"1.5"}`}>
+          <ul className={`list-none text-sm text-muted-foreground space-y-${"1.5"}`}>
             <li className={`flex gap-${SPACING.sm} items-start`}>
               <Logo
                 width={12}
