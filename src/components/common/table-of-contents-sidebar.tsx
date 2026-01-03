@@ -227,7 +227,7 @@ export function TableOfContentsSidebar({ headings, slug }: TableOfContentsSideba
         )}
 
         <div ref={scrollContainerRef} className="max-h-[calc(100vh-16rem)] overflow-y-auto scrollbar-hide">
-          <ul className="relative space-y-2 text-sm border-l-2 border-border">
+          <ul className="list-none relative space-y-2 text-sm border-l-2 border-border">
             {/* Sliding active indicator */}
             {activeIndex >= 0 && (
               <motion.div

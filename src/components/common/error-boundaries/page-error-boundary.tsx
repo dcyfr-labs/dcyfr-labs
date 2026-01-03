@@ -33,7 +33,7 @@ function PageErrorFallback({ error, resetError }: ErrorFallbackProps) {
 
         <div className="space-y-3">
           <p className={cn("text-sm", "font-medium")}>What you can do:</p>
-          <ul className="text-sm text-muted-foreground space-y-2">
+          <ul className="list-none text-sm text-muted-foreground space-y-2">
             <li className="flex gap-2 items-start">
               <Logo
                 width={12}

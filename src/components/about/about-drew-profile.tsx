@@ -1,10 +1,6 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
-import {
-  resume,
-  getYearsOfExperience,
-  getShortSummary,
-} from "@/data/resume";
+import { resume, getYearsOfExperience, getShortSummary } from "@/data/resume";
 import {
   TYPOGRAPHY,
   SPACING,
@@ -14,10 +10,7 @@ import {
   BORDERS,
 } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
-import {
-  Section,
-  GitHubHeatmapErrorBoundary,
-} from "@/components/common";
+import { Section, GitHubHeatmapErrorBoundary } from "@/components/common";
 import { ServerGitHubHeatmap } from "@/components/features";
 import { ResumeStats } from "@/components/resume";
 import { BadgeWallet } from "./badge-wallet";
@@ -178,7 +171,7 @@ export function AboutDrewProfile() {
         </div>
       </Section>
 
-      {/* Certifications Section - Badge Wallet */}
+      {/* Certifications Section - Badge Wallet 
       <Section
         id="drew-certifications"
         className={PAGE_LAYOUT.section.container}
@@ -190,9 +183,9 @@ export function AboutDrewProfile() {
           viewMoreUrl="/about/drew/resume#certifications"
           viewMoreText="View all certifications"
         />
-      </Section>
+      </Section> */}
 
-      {/* Skills Section - Skills Wallet */}
+      {/* Skills Section - Skills Wallet 
       <Section id="drew-skills" className={PAGE_LAYOUT.section.container}>
         <SkillsWallet
           username="dcyfr"
@@ -200,7 +193,7 @@ export function AboutDrewProfile() {
           viewMoreUrl="/about/drew/resume#skills"
           viewMoreText="View all skills"
         />
-      </Section>
+      </Section> */}
     </>
   );
 }
