@@ -20,19 +20,29 @@ npm run check               # Type + lint check
 
 ---
 
-## 🎯 Development Strategy: Primary + Secondary Model
+## 🎯 Development Strategy: Multi-Tier AI Architecture
 
-**DCYFR-labs uses a Primary/Secondary agent strategy** to maximize effectiveness for each tool:
+**DCYFR-labs uses a multi-tier AI strategy** with primary, secondary, fallback, and supporting tools:
 
 - **🔴 PRIMARY: Claude Code** (80% development focus)
   - Auto-delegation, full reasoning, complete toolset
   - Handles complex production work, testing, pattern enforcement
   - Optimized for depth and correctness
+  - 200K token context window
 
 - **🟡 SECONDARY: GitHub Copilot** (20% maintenance focus)
   - Real-time quick patterns, auto-synced from Claude Code
   - Handles inline suggestions and 80/20 quick reference
   - Optimized for speed (<2 seconds)
+  - ~8K token context
+
+- **🟢 FALLBACK: OpenCode.ai** (Token exhaustion scenarios)
+  - 75+ AI provider options (OpenAI, Anthropic, Gemini, Groq, local models)
+  - Cost optimization (10-100x cheaper with budget providers)
+  - Extended context windows (up to 2M with Gemini)
+  - Offline support via Ollama
+  - VS Code extension with keyboard shortcuts
+  - **Trigger conditions:** Rate limits, budget exhaustion, extended sessions (6+ hours)
 
 - **🔵 SUPPORTING: Claude General + VS Code Mode**
   - Research, architecture decisions, deep exploration
@@ -48,6 +58,7 @@ npm run check               # Type + lint check
 | ------------------------ | ---------------- | ------------------------------------------------------------- | ------------------------------------------------- | ---------------------------------------------------------------------- |
 | **DCYFR (Claude Code)**  | 🔴 **PRIMARY**   | Production enforcement with auto-delegation                   | Feature work, testing, quick fixes, complex tasks | [`.claude/agents/`](./.claude/agents/) - 3 specialized agents          |
 | **GitHub Copilot**       | 🟡 **SECONDARY** | Real-time code completion & quick suggestions                 | Inline coding, auto-fix, quick patterns           | [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) |
+| **OpenCode.ai**          | 🟢 **FALLBACK**  | Multi-provider AI fallback (75+ models)                       | Token exhaustion, cost optimization, offline work | [`docs/ai/opencode-fallback-architecture.md`](docs/ai/opencode-fallback-architecture.md) |
 | **Claude (General)**     | 🔵 SUPPORTING    | Deep research, architecture, complex debugging                | System design, documentation, investigation       | [`CLAUDE.md`](./CLAUDE.md)                                             |
 | **DCYFR (VS Code Mode)** | 🔵 SUPPORTING    | Production enforcement, pattern validation, strict compliance | Feature work, bug fixes, detailed exploration     | [`.github/agents/DCYFR.agent.md`](./.github/agents/DCYFR.agent.md)     |
 
@@ -735,7 +746,19 @@ Each instruction file maintains this metadata:
 
 ## 📋 Recent Updates
 
-## 📋 Recent Updates
+### January 5, 2026
+
+- ✅ **Integrated OpenCode.ai as AI fallback tool**
+  - Added OpenCode.ai to AI tool hierarchy (🟢 FALLBACK tier)
+  - Comprehensive architecture documentation (`docs/ai/opencode-fallback-architecture.md`)
+  - VS Code extension integration (`sst-dev.opencode`)
+  - Added to `.vscode/extensions.json` recommendations
+  - 75+ AI provider support (OpenAI, Anthropic, Gemini, Groq, Ollama)
+  - Cost optimization capabilities (10-100x cheaper with Groq)
+  - Offline development support via local models
+  - NPM scripts: `ai:opencode`, `ai:opencode:groq`, `ai:opencode:local`, `ai:setup`
+  - Trigger conditions: Rate limits, token exhaustion, extended sessions, cost optimization
+  - VS Code keyboard shortcuts: `Cmd+Esc` (launch), `Cmd+Shift+Esc` (new session), `Cmd+Option+K` (file refs)
 
 ### December 28, 2025
 

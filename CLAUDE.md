@@ -443,6 +443,44 @@ See [`docs/ai/OPTIMIZATION_STRATEGY.md`](docs/ai/OPTIMIZATION_STRATEGY.md) for d
 - Test suite on PR
 - Lighthouse CI on deploy
 
+## AI Development Tool Hierarchy
+
+**Primary: Claude Code** (200K context) → Complex refactoring, architectural work
+**Secondary: GitHub Copilot** (~8K context) → Inline suggestions, quick edits
+**Fallback: OpenCode.ai** (75+ providers) → Token exhaustion, cost optimization, offline work
+
+### When to Use OpenCode.ai
+
+**Trigger Conditions:**
+
+- ❌ Claude Code rate limit exceeded
+- ❌ Token budget exhausted for the day
+- ✅ Extended development sessions (6+ hours)
+- ✅ Cost optimization needed (10-100x cheaper with Groq)
+- ✅ Offline development (local models via Ollama)
+- ✅ Alternative AI perspectives (GPT-4, Gemini, etc.)
+
+**Quick Start:**
+
+```bash
+npm run ai:setup          # One-time setup
+npm run ai:opencode       # Start session (primary provider)
+npm run ai:opencode:groq  # Cost-effective provider
+npm run ai:opencode:local # Offline (local models)
+```
+
+**VS Code Extension:**
+
+Install [sst-dev.opencode](https://marketplace.visualstudio.com/items?itemName=sst-dev.opencode) for seamless IDE integration:
+
+- **Quick Launch:** `Cmd+Esc` (Mac) or `Ctrl+Esc` (Windows/Linux)
+- **New Session:** `Cmd+Shift+Esc` (Mac) or `Ctrl+Shift+Esc` (Windows/Linux)
+- **File References:** `Cmd+Option+K` (Mac) or `Alt+Ctrl+K` (Windows/Linux)
+- **Context Sharing:** Automatically shares current selection/tab
+- **Editor Button:** Quick access from title bar
+
+**See:** [`docs/ai/opencode-fallback-architecture.md`](docs/ai/opencode-fallback-architecture.md) for complete setup guide
+
 ## MCP Servers (Chat)
 
 Perplexity, Context, Axiom, Filesystem, GitHub, Vercel, Sentry, arXiv

@@ -105,6 +105,8 @@ mcp.json
 # local configs
 .anthropic/
 .openai/
+.opencode/
+.opencode.config.json
 
 # IDE & Editor Configs
 # ========================================

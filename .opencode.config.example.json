@@ -1,0 +1,191 @@
+{
+  "$schema": "https://opencode.ai/schema/config.json",
+  "version": "1.0",
+  "description": "OpenCode.ai configuration for dcyfr-labs project - fallback AI development tool",
+
+  "providers": {
+    "primary": {
+      "type": "anthropic",
+      "apiKey": "${ANTHROPIC_API_KEY}",
+      "model": "claude-3-5-sonnet-20241022",
+      "maxTokens": 8192,
+      "temperature": 0.7,
+      "topP": 1.0
+    },
+    "fallback": {
+      "type": "openai",
+      "apiKey": "${OPENAI_API_KEY}",
+      "model": "gpt-4-turbo-preview",
+      "maxTokens": 4096,
+      "temperature": 0.7,
+      "topP": 1.0
+    },
+    "cost-effective": {
+      "type": "groq",
+      "apiKey": "${GROQ_API_KEY}",
+      "model": "llama3-70b-8192",
+      "maxTokens": 8192,
+      "temperature": 0.5
+    },
+    "gemini": {
+      "type": "google",
+      "apiKey": "${GOOGLE_API_KEY}",
+      "model": "gemini-1.5-pro",
+      "maxTokens": 8192,
+      "temperature": 0.7
+    },
+    "local": {
+      "type": "ollama",
+      "baseUrl": "http://localhost:11434",
+      "model": "codellama:34b",
+      "maxTokens": 4096
+    }
+  },
+
+  "defaultProvider": "primary",
+
+  "agents": {
+    "build": {
+      "provider": "primary",
+      "description": "Expert full-stack developer for implementing features",
+      "systemPrompt": "You are an expert full-stack developer specializing in Next.js 16, React 19, TypeScript, Tailwind v4, and shadcn/ui. You follow the project's design system strictly (SPACING, TYPOGRAPHY tokens from design-tokens.ts). You never hardcode spacing or colors. You maintain test coverage and run tests after changes. You update documentation alongside code changes.",
+      "tools": ["filesystem", "shell", "browser"]
+    },
+    "plan": {
+      "provider": "cost-effective",
+      "description": "Software architect for planning and design",
+      "systemPrompt": "You are a software architect focused on planning and design. You analyze codebases for patterns, duplication, and opportunities for improvement. You create detailed implementation plans before code changes. You consider trade-offs and recommend best approaches.",
+      "tools": ["filesystem", "shell"]
+    },
+    "debug": {
+      "provider": "primary",
+      "description": "Debugging specialist for complex issues",
+      "systemPrompt": "You are a debugging specialist. You analyze error messages, stack traces, and test failures to identify root causes. You propose minimal fixes that address the underlying issue without over-engineering. You verify fixes with tests.",
+      "tools": ["filesystem", "shell", "browser"]
+    },
+    "review": {
+      "provider": "fallback",
+      "description": "Code reviewer for quality and standards",
+      "systemPrompt": "You are a code reviewer focused on quality, security, and maintainability. You check for design system violations, test coverage, security issues, and architectural consistency. You provide constructive feedback with specific examples.",
+      "tools": ["filesystem"]
+    },
+    "document": {
+      "provider": "cost-effective",
+      "description": "Documentation specialist",
+      "systemPrompt": "You are a technical documentation specialist. You create clear, comprehensive documentation for code, APIs, and architectural decisions. You update docs alongside code changes. You write in active voice with concrete examples.",
+      "tools": ["filesystem"]
+    }
+  },
+
+  "project": {
+    "name": "dcyfr-labs",
+    "type": "nextjs",
+    "rootPath": ".",
+    "primaryLanguages": ["typescript", "tsx", "javascript"],
+    "ignorePatterns": [
+      "node_modules/**",
+      ".next/**",
+      "out/**",
+      "build/**",
+      "dist/**",
+      "coverage/**",
+      ".git/**",
+      "*.log",
+      ".env*",
+      "!.env.example"
+    ],
+    "codePatterns": {
+      "components": "src/components/**/*.{ts,tsx}",
+      "pages": "src/app/**/*.{ts,tsx}",
+      "lib": "src/lib/**/*.ts",
+      "tests": "src/**/*.test.{ts,tsx}",
+      "docs": "docs/**/*.md"
+    }
+  },
+
+  "workflow": {
+    "beforeEdit": [
+      "Read relevant files to understand context",
+      "Check design system rules in src/lib/design-tokens.ts",
+      "Review existing tests for the component/feature"
+    ],
+    "afterEdit": [
+      "Run npm run typecheck",
+      "Run npm run lint",
+      "Run npm run test for affected files",
+      "Update documentation if needed"
+    ],
+    "completionCriteria": [
+      "TypeScript compiles with no errors",
+      "All tests pass (≥99% pass rate)",
+      "ESLint passes with no errors",
+      "Design tokens used (no hardcoded values)",
+      "Documentation updated"
+    ]
+  },
+
+  "designSystem": {
+    "enforce": true,
+    "tokensFile": "src/lib/design-tokens.ts",
+    "rules": {
+      "noHardcodedSpacing": true,
+      "noHardcodedTypography": true,
+      "noHardcodedColors": true,
+      "useSemanticColors": true,
+      "requireDesignTokens": true
+    },
+    "prohibited": [
+      "space-y-*",
+      "gap-*",
+      "p-*",
+      "m-*",
+      "text-* (except semantic)",
+      "font-*",
+      "bg-white",
+      "bg-black",
+      "text-gray-*"
+    ],
+    "required": [
+      "SPACING.* from design-tokens",
+      "TYPOGRAPHY.* from design-tokens",
+      "Semantic colors (bg-card, text-primary, etc.)"
+    ]
+  },
+
+  "testing": {
+    "framework": "vitest",
+    "runAfterChanges": true,
+    "minimumPassRate": 0.99,
+    "coverageTargets": {
+      "statements": 80,
+      "branches": 75,
+      "functions": 80,
+      "lines": 80
+    }
+  },
+
+  "commands": {
+    "dev": "npm run dev",
+    "build": "npm run build",
+    "test": "npm run test",
+    "test:watch": "npm run test:watch",
+    "test:coverage": "npm run test:coverage",
+    "lint": "npm run lint",
+    "lint:fix": "npm run lint:fix",
+    "typecheck": "npm run typecheck",
+    "check": "npm run check"
+  },
+
+  "monitoring": {
+    "trackTokenUsage": true,
+    "dailyBudget": 1000000,
+    "alertThreshold": 0.8,
+    "logProviderSwitches": true
+  },
+
+  "session": {
+    "autoSave": true,
+    "saveInterval": 300,
+    "historySize": 100
+  }
+}

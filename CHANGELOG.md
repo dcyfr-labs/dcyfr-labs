@@ -7,6 +7,38 @@ and this project uses [Calendar Versioning](https://calver.org/) with the `YYYY.
 
 **Breaking changes** are marked with ⚠️ BREAKING in the version header.
 
+## [2026.01.05]
+
+### Added
+
+- **OpenCode.ai Fallback Integration** - Multi-provider AI development tool for token exhaustion scenarios
+  - Comprehensive architecture documentation (`docs/ai/opencode-fallback-architecture.md`)
+  - 75+ AI provider support (OpenAI, Anthropic, Google Gemini, Groq, local models)
+  - Cost optimization (10-100x cheaper with Groq vs Claude Code)
+  - Offline development support via Ollama local models
+  - NPM scripts: `ai:opencode`, `ai:opencode:groq`, `ai:opencode:local`, `ai:setup`
+  - Example configuration file (`.opencode.config.example.json`)
+  - Automated setup script (`scripts/setup-opencode.sh`)
+  - Environment variable support for all major AI providers
+  - Three-tier AI tool hierarchy: Claude Code → GitHub Copilot → OpenCode.ai
+  - Provider-specific agents (build, plan, debug, review, document)
+  - Design system enforcement in OpenCode.ai configuration
+  - Session management and token usage tracking
+  - **VS Code Extension Integration** (`sst-dev.opencode`)
+    - Keyboard shortcuts: `Cmd+Esc` (launch), `Cmd+Shift+Esc` (new session), `Cmd+Option+K` (file refs)
+    - Context awareness: Automatically shares current selection/tab
+    - Editor integration: Button in title bar for quick access
+    - Independent terminal sessions per OpenCode instance
+    - Compatible with VS Code, Cursor, Windsurf, and VSCodium
+
+### Changed
+
+- Updated `CLAUDE.md` with AI tool hierarchy, OpenCode.ai trigger conditions, and VS Code extension info
+- Updated `AGENTS.md` with OpenCode.ai fallback tier (🟢 FALLBACK) and multi-tier AI architecture
+- Updated `.env.example` with comprehensive OpenCode.ai provider configuration
+- Updated `.vscode/extensions.json` to recommend `sst-dev.opencode` extension
+- Updated `.gitignore` to exclude OpenCode.ai session data and configs
+
 ## [2026.01.02]
 
 ### Added
