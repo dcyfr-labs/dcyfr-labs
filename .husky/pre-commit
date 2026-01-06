@@ -1,5 +1,165 @@
-# Run PI/PII scan on staged files
-npm run scan:pi
+#!/bin/bash
+# Husky pre-commit hook with comprehensive governance checks
+# Migrated from .githooks/pre-commit for better quality control
 
-# Run lint-staged (includes ESLint and design token validation)
-npx lint-staged
+set -e
+
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+ERRORS=0
+WARNINGS=0
+
+echo "🔍 Running pre-commit governance checks..."
+
+# Check 1: Sensitive files in public docs
+echo -n "  Checking for sensitive files in public docs... "
+SENSITIVE_FILES=$(git diff --cached --name-only 2>/dev/null | grep -E "^docs/" | grep -v "^docs/private/" | grep -E "(FINDINGS|AUDIT|REPORT|ANALYSIS|METRICS|VULNERABILITY|STATUS|BACKLOG|COMPLETION|CAMPAIGN|PHASE[0-9])\.md$" || true)
+
+if [ -n "$SENSITIVE_FILES" ]; then
+  echo -e "${RED}FAIL${NC}"
+  echo -e "${RED}❌ ERROR: Sensitive files detected in public docs/${NC}"
+  echo "   These files should be in docs/private/ instead:"
+  echo "$SENSITIVE_FILES" | sed 's/^/      /'
+  echo ""
+  ERRORS=$((ERRORS+1))
+else
+  echo -e "${GREEN}PASS${NC}"
+fi
+
+# Check 2: Credentials in code
+echo -n "  Checking for hardcoded credentials... "
+# Look for actual credential assignments, not just keyword mentions
+SECRETS=$(git diff --cached -U0 2>/dev/null | grep -E "^\+" | grep -E "(API_KEY|SECRET|PASSWORD|TOKEN|CREDENTIAL|PRIVATE_KEY|ACCESS_KEY)\s*[:=]\s*['\"]" | grep -v "^+++\|#\|//\|/\*" || true)
+
+if [ -n "$SECRETS" ]; then
+  echo -e "${RED}FAIL${NC}"
+  echo -e "${RED}❌ ERROR: Possible credentials detected in staged changes${NC}"
+  echo "   Use environment variables or .env.local instead:"
+  echo "$SECRETS" | head -5 | sed 's/^/      /'
+  echo ""
+  ERRORS=$((ERRORS+1))
+else
+  echo -e "${GREEN}PASS${NC}"
+fi
+
+# Check 3: Large files
+echo -n "  Checking for suspiciously large files... "
+LARGE_FILES=$(git diff --cached --name-only --diff-filter=A 2>/dev/null | while read FILE; do
+  if [ -f "$FILE" ]; then
+    SIZE=$(stat -f%z "$FILE" 2>/dev/null || stat -c%s "$FILE" 2>/dev/null || echo 0)
+    if [ "$SIZE" -gt 5242880 ]; then  # 5MB
+      echo "$FILE ($((SIZE/1048576))MB)"
+    fi
+  fi
+done)
+
+if [ -n "$LARGE_FILES" ]; then
+  echo -e "${YELLOW}WARN${NC}"
+  echo -e "${YELLOW}⚠️  WARNING: Large files detected${NC}"
+  echo "$LARGE_FILES" | sed 's/^/      /'
+  WARNINGS=$((WARNINGS+1))
+else
+  echo -e "${GREEN}PASS${NC}"
+fi
+
+# Check 4: docs/private directory exists
+echo -n "  Checking docs/private directory... "
+if [ ! -d "docs/private" ]; then
+  mkdir -p docs/private
+  echo -e "${YELLOW}WARN${NC} (created)"
+else
+  echo -e "${GREEN}PASS${NC}"
+fi
+
+# Check 5: Misplaced operational docs
+echo -n "  Checking for misplaced operational documents... "
+OPERATIONAL=$(git diff --cached --name-only 2>/dev/null | grep -E "^docs/(ai|api|architecture|components|testing|templates)/" | grep -iE "(todo|status|backlog|operational|metrics)" || true)
+
+if [ -n "$OPERATIONAL" ]; then
+  echo -e "${YELLOW}WARN${NC}"
+  echo -e "${YELLOW}⚠️  WARNING: Operational docs may belong in docs/private${NC}"
+  echo "$OPERATIONAL" | sed 's/^/      /'
+  WARNINGS=$((WARNINGS+1))
+else
+  echo -e "${GREEN}PASS${NC}"
+fi
+
+# Check 6: PI/PII scan on staged files
+echo -n "  Scanning for Personal Information... "
+if npm run scan:pi --silent 2>&1 | grep -q "violations"; then
+  echo -e "${RED}FAIL${NC}"
+  echo -e "${RED}❌ ERROR: PII/PI detected in staged files${NC}"
+  npm run scan:pi 2>&1 | head -10 | sed 's/^/      /'
+  ERRORS=$((ERRORS+1))
+else
+  echo -e "${GREEN}PASS${NC}"
+fi
+
+# Check 7: Design token compliance
+echo -n "  Checking design token compliance... "
+if command -v node &> /dev/null; then
+  if node scripts/find-token-violations.mjs --check 2>/dev/null | grep -q "violations"; then
+    echo -e "${YELLOW}WARN${NC}"
+    echo -e "${YELLOW}⚠️  WARNING: Design token violations detected${NC}"
+    echo "   Run: npm run find:token-violations (to review)"
+    echo "   Or: npm run fix:tokens (to auto-fix common patterns)"
+    WARNINGS=$((WARNINGS+1))
+  else
+    echo -e "${GREEN}PASS${NC}"
+  fi
+else
+  echo -e "${YELLOW}SKIP${NC} (node not available)"
+fi
+
+# Check 8: Test data in production code
+echo -n "  Checking for test data in production... "
+if command -v node &> /dev/null; then
+  TEST_DATA_OUTPUT=$(node scripts/check-test-data.mjs 2>/dev/null || true)
+  if echo "$TEST_DATA_OUTPUT" | grep -q "CRITICAL"; then
+    echo -e "${RED}FAIL${NC}"
+    echo -e "${RED}❌ ERROR: Test data detected in production code${NC}"
+    echo "$TEST_DATA_OUTPUT" | head -10 | sed 's/^/      /'
+    ERRORS=$((ERRORS+1))
+  else
+    echo -e "${GREEN}PASS${NC}"
+  fi
+else
+  echo -e "${YELLOW}SKIP${NC} (node not available)"
+fi
+
+# Check 9: ESLint and lint-staged
+echo -n "  Running ESLint and lint-staged... "
+if npx lint-staged --quiet 2>&1; then
+  echo -e "${GREEN}PASS${NC}"
+else
+  echo -e "${RED}FAIL${NC}"
+  echo -e "${RED}❌ ERROR: lint-staged failed${NC}"
+  ERRORS=$((ERRORS+1))
+fi
+
+# Summary
+echo ""
+echo "📊 Summary:"
+if [ $ERRORS -eq 0 ]; then
+  echo -e "${GREEN}✅ No errors found${NC}"
+else
+  echo -e "${RED}❌ $ERRORS error(s) found${NC}"
+fi
+
+if [ $WARNINGS -gt 0 ]; then
+  echo -e "${YELLOW}⚠️  $WARNINGS warning(s) found${NC}"
+fi
+
+echo ""
+
+# Exit with error if there are violations
+if [ $ERRORS -gt 0 ]; then
+  echo -e "${RED}Commit blocked due to governance violations.${NC}"
+  echo "See docs/governance/DOCS_GOVERNANCE.md for guidelines."
+  exit 1
+fi
+
+exit 0

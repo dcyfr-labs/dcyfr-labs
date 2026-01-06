@@ -1,9 +1,0 @@
-[
-  {
-    "rule": "Private Key",
-    "description": "Potential Private Key",
-    "file": "docs/features/google-indexing-api.md",
-    "line": 20,
-    "entropy": 4.0
-  }
-]

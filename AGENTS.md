@@ -54,13 +54,13 @@ npm run check               # Type + lint check
 
 ## 🎯 Quick Navigation
 
-| Agent                    | Priority         | Purpose                                                       | Best For                                          | Instructions                                                           |
-| ------------------------ | ---------------- | ------------------------------------------------------------- | ------------------------------------------------- | ---------------------------------------------------------------------- |
-| **DCYFR (Claude Code)**  | 🔴 **PRIMARY**   | Production enforcement with auto-delegation                   | Feature work, testing, quick fixes, complex tasks | [`.claude/agents/`](./.claude/agents/) - 3 specialized agents          |
-| **GitHub Copilot**       | 🟡 **SECONDARY** | Real-time code completion & quick suggestions                 | Inline coding, auto-fix, quick patterns           | [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) |
+| Agent                    | Priority         | Purpose                                                       | Best For                                          | Instructions                                                                             |
+| ------------------------ | ---------------- | ------------------------------------------------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| **DCYFR (Claude Code)**  | 🔴 **PRIMARY**   | Production enforcement with auto-delegation                   | Feature work, testing, quick fixes, complex tasks | [`.claude/agents/`](./.claude/agents/) - 3 specialized agents                            |
+| **GitHub Copilot**       | 🟡 **SECONDARY** | Real-time code completion & quick suggestions                 | Inline coding, auto-fix, quick patterns           | [`.github/copilot-instructions.md`](./.github/copilot-instructions.md)                   |
 | **OpenCode.ai**          | 🟢 **FALLBACK**  | Multi-provider AI fallback (75+ models)                       | Token exhaustion, cost optimization, offline work | [`docs/ai/opencode-fallback-architecture.md`](docs/ai/opencode-fallback-architecture.md) |
-| **Claude (General)**     | 🔵 SUPPORTING    | Deep research, architecture, complex debugging                | System design, documentation, investigation       | [`CLAUDE.md`](./CLAUDE.md)                                             |
-| **DCYFR (VS Code Mode)** | 🔵 SUPPORTING    | Production enforcement, pattern validation, strict compliance | Feature work, bug fixes, detailed exploration     | [`.github/agents/DCYFR.agent.md`](./.github/agents/DCYFR.agent.md)     |
+| **Claude (General)**     | 🔵 SUPPORTING    | Deep research, architecture, complex debugging                | System design, documentation, investigation       | [`CLAUDE.md`](./CLAUDE.md)                                                               |
+| **DCYFR (VS Code Mode)** | 🔵 SUPPORTING    | Production enforcement, pattern validation, strict compliance | Feature work, bug fixes, detailed exploration     | [`.github/agents/DCYFR.agent.md`](./.github/agents/DCYFR.agent.md)                       |
 
 ---
 
@@ -973,7 +973,7 @@ A: Quarterly automatic review, or immediately when adding new agents or major in
 - ✅ `/docs/operations/private/PERFORMANCE_METRICS.md`
 - ❌ `/docs/security/VULNERABILITY_REPORT.md` (should be in private/ subfolder)
 
-**Rationale:** Subdirectory-specific `private/` folders prevent duplicate content and keep related materials together. See [DOCS_GOVERNANCE.md](docs/DOCS_GOVERNANCE.md) for complete policy.
+**Rationale:** Subdirectory-specific `private/` folders prevent duplicate content and keep related materials together. See [DOCS_GOVERNANCE.md](docs/governance/DOCS_GOVERNANCE.md) for complete policy.
 
 ---
 
