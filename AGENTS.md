@@ -741,7 +741,7 @@ Claude General → Deep research and architecture decisions
 - Updates to `.github/agents/` may inform internal improvements to `.claude/agents/`
 - Public repository only references `.github/agents/` documentation
 
-### Quarterly Manual Review (Every 3 months)
+### Manual Review (As Needed)
 
 - [ ] Verify `.github/agents/` documentation is current and complete
 - [ ] Check that `.github/agents/` is the primary reference for public users
@@ -756,16 +756,8 @@ Claude General → Deep research and architecture decisions
 # Update shared .github/agents/ documentation
 git add .github/agents/
 git commit -m "docs: update shared agent documentation"
-
-
-# Sync specific target
-npm run sync:agents --target=copilot
-npm run sync:agents --target=claude
-npm run sync:agents --target=vscode
-
-# Check sync status
-npm run sync:agents --status
-````
+git push origin <branch>
+```
 
 **On Breaking Changes:**
 
@@ -852,6 +844,15 @@ Each instruction file maintains this metadata:
 ---
 
 ## 📋 Recent Updates
+
+### January 7, 2026
+
+- ✅ **Removed quarterly sync automation system** (complete removal)
+  - Deleted `.github/workflows/ai-instructions-sync.yml` workflow
+  - Merged all 13 open pull requests (171-183) into preview branch
+  - Removed quarterly instruction sync process entirely (was creating duplicate PRs)
+  - No more automated AI instructions or metrics collection workflows
+  - Documentation now maintained manually as needed
 
 ### January 5, 2026
 
