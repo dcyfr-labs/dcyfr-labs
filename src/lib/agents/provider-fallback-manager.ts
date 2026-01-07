@@ -405,8 +405,9 @@ export class ProviderFallbackManager {
         }
 
         // Unknown error, try next provider
+        const errorMessage = error instanceof Error ? error.message : String(error);
         console.warn(
-          `⚠️  Error with ${provider}: ${error.message}, trying next provider...`,
+          `⚠️  Error with ${provider}: ${errorMessage}, trying next provider...`,
         );
         continue;
       }

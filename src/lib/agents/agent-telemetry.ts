@@ -347,7 +347,8 @@ export class AgentTelemetryManager {
       (sum, s) => sum + s.metrics.executionTime,
       0,
     );
-    const averageSessionTime = totalTime / totalSessions || 0;
+    const averageExecutionTime = totalTime / totalSessions || 0;
+    const averageSessionTime = averageExecutionTime; // Same metric, different context
 
     const outcomes = {
       success: sessions.filter((s) => s.outcome === 'success').length,
@@ -555,7 +556,7 @@ export class AgentTelemetryManager {
     );
 
     // Analyze cost efficiency
-    const freeAgents = Object.entries(stats).filter(([ ], s) => s.cost.totalCost === 0);
+    const freeAgents = Object.entries(stats).filter(([, s]) => s.cost.totalCost === 0);
 
     if (freeAgents.length > 0) {
       recommendations.push(
