@@ -8,7 +8,9 @@ interface HandoffPatternsSummaryProps {
   period: string;
 }
 
-export function HandoffPatternsSummary({ period }: HandoffPatternsSummaryProps) {
+export function HandoffPatternsSummary({
+  period,
+}: HandoffPatternsSummaryProps) {
   const [patterns, setPatterns] = useState<{
     totalHandoffs: number;
     byReason: Record<string, number>;
@@ -48,13 +50,17 @@ export function HandoffPatternsSummary({ period }: HandoffPatternsSummaryProps) 
             <Zap className="h-3 w-3" />
             Automatic
           </div>
-          <div className="text-2xl font-bold">{automaticPercent.toFixed(0)}%</div>
+          <div className="text-2xl font-bold">
+            {automaticPercent.toFixed(0)}%
+          </div>
         </div>
       </div>
 
       {/* Most Common Path */}
       <div className="p-3 bg-muted rounded-lg">
-        <div className="text-sm text-muted-foreground mb-1">Most Common Path</div>
+        <div className="text-sm text-muted-foreground mb-1">
+          Most Common Path
+        </div>
         <div className="flex items-center gap-2 font-semibold">
           <span>{patterns.mostCommonPath.split(" → ")[0]}</span>
           <ArrowRight className="h-4 w-4" />
@@ -71,7 +77,10 @@ export function HandoffPatternsSummary({ period }: HandoffPatternsSummaryProps) 
             .map(([reason, count]) => {
               const percent = (count / patterns.totalHandoffs) * 100;
               return (
-                <div key={reason} className="flex items-center justify-between text-sm">
+                <div
+                  key={reason}
+                  className="flex items-center justify-between text-sm"
+                >
                   <span className="capitalize">{reason.replace("-", " ")}</span>
                   <span className="font-semibold">
                     {count} ({percent.toFixed(0)}%)

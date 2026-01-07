@@ -16,12 +16,16 @@ interface QualityComparisonChartProps {
   comparison: ComparisonStats;
 }
 
-export function QualityComparisonChart({ comparison }: QualityComparisonChartProps) {
+export function QualityComparisonChart({
+  comparison,
+}: QualityComparisonChartProps) {
   const data = Object.entries(comparison.agents)
     .filter(([, stats]) => stats.totalSessions > 0)
     .map(([agent, stats]) => ({
       agent: agent.charAt(0).toUpperCase() + agent.slice(1),
-      "Token Compliance": (stats.quality.averageTokenCompliance * 100).toFixed(1),
+      "Token Compliance": (stats.quality.averageTokenCompliance * 100).toFixed(
+        1
+      ),
       "Test Pass Rate": (stats.quality.averageTestPassRate * 100).toFixed(1),
     }));
 
@@ -39,7 +43,11 @@ export function QualityComparisonChart({ comparison }: QualityComparisonChartPro
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="agent" />
         <YAxis domain={[0, 100]} />
-        <Tooltip formatter={(value: number | undefined) => value !== undefined ? `${value}%` : '0%'} />
+        <Tooltip
+          formatter={(value: number | undefined) =>
+            value !== undefined ? `${value}%` : "0%"
+          }
+        />
         <Legend />
         <Bar dataKey="Token Compliance" fill="hsl(var(--chart-1))" />
         <Bar dataKey="Test Pass Rate" fill="hsl(var(--chart-2))" />

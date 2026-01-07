@@ -134,7 +134,6 @@ export default function AgentsClient() {
         </div>
       }
     >
-
       {loading ? (
         <LoadingSkeleton />
       ) : comparison ? (
@@ -160,9 +159,7 @@ export default function AgentsClient() {
                 return (
                   <DashboardStat
                     key={agent}
-                    label={
-                      agent.charAt(0).toUpperCase() + agent.slice(1)
-                    }
+                    label={agent.charAt(0).toUpperCase() + agent.slice(1)}
                     value={`${usagePercent.toFixed(0)}%`}
                     secondaryValue={`${stats.totalSessions} sessions`}
                     icon={
@@ -258,7 +255,9 @@ export default function AgentsClient() {
       ) : (
         <div className="text-center py-12 text-muted-foreground">
           <p>No telemetry data available.</p>
-          <p className="text-sm mt-2">Start tracking sessions to see analytics.</p>
+          <p className="text-sm mt-2">
+            Start tracking sessions to see analytics.
+          </p>
         </div>
       )}
     </DashboardLayout>

@@ -39,7 +39,11 @@ export function CostTrackingChart({ comparison }: CostTrackingChartProps) {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="agent" />
         <YAxis />
-        <Tooltip formatter={(value: number | undefined) => value !== undefined ? `$${value.toFixed(2)}` : '$0.00'} />
+        <Tooltip
+          formatter={(value: number | undefined) =>
+            value !== undefined ? `$${value.toFixed(2)}` : "$0.00"
+          }
+        />
         <Legend />
         <Bar dataKey="Total Cost" fill="hsl(var(--chart-3))" />
         <Bar dataKey="Avg Cost/Session" fill="hsl(var(--chart-4))" />

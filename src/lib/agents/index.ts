@@ -1,6 +1,6 @@
 /**
  * @/lib/agents barrel export
- * 
+ *
  * Central export point for agent telemetry and provider fallback management.
  */
 
@@ -10,7 +10,7 @@ export {
   trackAgentSession,
   TelemetrySessionManager,
   AgentTelemetryManager,
-} from './agent-telemetry';
+} from "./agent-telemetry";
 
 export type {
   AgentType,
@@ -24,7 +24,7 @@ export type {
   CostEstimate,
   AgentStats,
   ComparisonStats,
-} from './agent-telemetry';
+} from "./agent-telemetry";
 
 // Export everything from provider-fallback-manager
 export {
@@ -34,7 +34,7 @@ export {
   ProviderFallbackManager,
   RateLimitError,
   ProviderUnavailableError,
-} from './provider-fallback-manager';
+} from "./provider-fallback-manager";
 
 export type {
   ProviderType,
@@ -43,4 +43,4 @@ export type {
   TaskContext,
   ExecutionResult,
   ProviderHealth,
-} from './provider-fallback-manager';
+} from "./provider-fallback-manager";

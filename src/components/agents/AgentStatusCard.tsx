@@ -35,23 +35,31 @@ const agentConfig: Record<
   },
 };
 
-export function AgentStatusCard({ agent, stats, health }: AgentStatusCardProps) {
+export function AgentStatusCard({
+  agent,
+  stats,
+  health,
+}: AgentStatusCardProps) {
   const config = agentConfig[agent];
   const usagePercent =
     stats.totalSessions > 0
-      ? ((stats.totalSessions /
+      ? (stats.totalSessions /
           Object.values(stats).reduce(
             (sum: number, s: any) =>
-              sum + (typeof s === "object" && "totalSessions" in s ? s.totalSessions : 0),
+              sum +
+              (typeof s === "object" && "totalSessions" in s
+                ? s.totalSessions
+                : 0),
             0
           )) *
-          100 || 0)
+          100 || 0
       : 0;
 
   const isAvailable = health?.available ?? true;
-  const successRate = stats.totalSessions > 0
-    ? (stats.outcomes.success / stats.totalSessions) * 100
-    : 0;
+  const successRate =
+    stats.totalSessions > 0
+      ? (stats.outcomes.success / stats.totalSessions) * 100
+      : 0;
 
   return (
     <Card className="relative overflow-hidden">
@@ -62,7 +70,9 @@ export function AgentStatusCard({ agent, stats, health }: AgentStatusCardProps) 
         <div className="flex items-start justify-between">
           <div>
             <CardTitle className="text-lg">{config.name}</CardTitle>
-            <p className="text-sm text-muted-foreground">{config.description}</p>
+            <p className="text-sm text-muted-foreground">
+              {config.description}
+            </p>
           </div>
           {isAvailable ? (
             <CheckCircle2 className="h-5 w-5 text-green-500" />
@@ -103,7 +113,9 @@ export function AgentStatusCard({ agent, stats, health }: AgentStatusCardProps) 
               <DollarSign className="h-3 w-3" />
               Cost
             </div>
-            <div className="font-semibold">${stats.cost.totalCost.toFixed(2)}</div>
+            <div className="font-semibold">
+              ${stats.cost.totalCost.toFixed(2)}
+            </div>
           </div>
 
           <div>
@@ -119,7 +131,8 @@ export function AgentStatusCard({ agent, stats, health }: AgentStatusCardProps) 
           <div className="text-xs text-muted-foreground border-t pt-2">
             {isAvailable ? (
               <span>
-                Response: {health.responseTime ? `${health.responseTime}ms` : "N/A"}
+                Response:{" "}
+                {health.responseTime ? `${health.responseTime}ms` : "N/A"}
               </span>
             ) : (
               <span className="text-red-500">

@@ -1,11 +1,6 @@
 import { ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
-import {
-  TYPOGRAPHY,
-  SPACING,
-  CONTAINER_WIDTHS,
-  CONTAINER_PADDING,
-} from "@/lib/design-tokens";
+import { TYPOGRAPHY, SPACING, PAGE_LAYOUT } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import { Section, ProfileAvatar } from "@/components/common";
 
@@ -39,7 +34,7 @@ export function ProfileHero({
   return (
     <Section
       id={`${userProfile}-hero`}
-      className={`mx-auto ${CONTAINER_WIDTHS.prose} ${CONTAINER_PADDING} pt-16 md:pt-24 lg:pt-32`}
+      className={`${PAGE_LAYOUT.proseSection.container} md:pt-24 lg:pt-32`}
     >
       <div
         className={cn(

@@ -1,6 +1,13 @@
 "use client";
 
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Legend,
+  Tooltip,
+} from "recharts";
 import type { ComparisonStats } from "@/lib/agents";
 
 interface UsageDistributionChartProps {
@@ -14,7 +21,9 @@ const COLORS = {
   ollama: "hsl(var(--chart-4))",
 };
 
-export function UsageDistributionChart({ comparison }: UsageDistributionChartProps) {
+export function UsageDistributionChart({
+  comparison,
+}: UsageDistributionChartProps) {
   const data = Object.entries(comparison.agents)
     .map(([agent, stats]) => ({
       name: agent.charAt(0).toUpperCase() + agent.slice(1),
@@ -54,7 +63,10 @@ export function UsageDistributionChart({ comparison }: UsageDistributionChartPro
           ))}
         </Pie>
         <Tooltip
-          formatter={(value: number | undefined) => [`${value ?? 0} sessions`, "Sessions"]}
+          formatter={(value: number | undefined) => [
+            `${value ?? 0} sessions`,
+            "Sessions",
+          ]}
         />
         <Legend />
       </PieChart>

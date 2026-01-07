@@ -54,18 +54,26 @@ export function RecentSessionsTable({
           {sessions.slice(0, limit).map((session) => {
             const duration = session.endTime
               ? Math.round(
-                  (session.endTime.getTime() - session.startTime.getTime()) / 1000 / 60
+                  (session.endTime.getTime() - session.startTime.getTime()) /
+                    1000 /
+                    60
                 )
               : 0;
 
             return (
-              <tr key={session.sessionId} className="border-b hover:bg-muted/50">
+              <tr
+                key={session.sessionId}
+                className="border-b hover:bg-muted/50"
+              >
                 <td className="py-3">
                   <Badge variant="outline">
-                    {session.agent.charAt(0).toUpperCase() + session.agent.slice(1)}
+                    {session.agent.charAt(0).toUpperCase() +
+                      session.agent.slice(1)}
                   </Badge>
                 </td>
-                <td className="py-3 max-w-xs truncate">{session.taskDescription}</td>
+                <td className="py-3 max-w-xs truncate">
+                  {session.taskDescription}
+                </td>
                 <td className="py-3">
                   <Badge variant="secondary">{session.taskType}</Badge>
                 </td>
@@ -90,7 +98,9 @@ export function RecentSessionsTable({
                   )}
                 </td>
                 <td className="py-3 text-sm">{duration}m</td>
-                <td className="py-3 text-sm">${session.cost.estimatedCost.toFixed(2)}</td>
+                <td className="py-3 text-sm">
+                  ${session.cost.estimatedCost.toFixed(2)}
+                </td>
                 <td className="py-3 text-sm">
                   {(session.metrics.tokenCompliance * 100).toFixed(0)}%
                 </td>
