@@ -273,54 +273,56 @@ npm run check               # Type + lint check
 
 **Core Components:**
 
-| Directory | Files | Purpose |
-|-----------|-------|---------|
-| **patterns/** | 3 files | Provider selection, VS Code integration, offline development |
+| Directory        | Files   | Purpose                                                                  |
+| ---------------- | ------- | ------------------------------------------------------------------------ |
+| **patterns/**    | 3 files | Provider selection, VS Code integration, offline development             |
 | **enforcement/** | 3 files | Hybrid enforcement (STRICT/FLEXIBLE), enhanced validation, quality gates |
-| **workflows/** | 3 files | Session handoff, cost optimization, troubleshooting |
-| **scripts/** | 3 files | Validation, health checks, session management |
+| **workflows/**   | 3 files | Session handoff, cost optimization, troubleshooting                      |
+| **scripts/**     | 3 files | Validation, health checks, session management                            |
 
 **Detailed Files:**
 
 #### Patterns Directory (.opencode/patterns/)
 
-| File | Lines | Covers |
-|------|-------|--------|
-| [PROVIDER_SELECTION.md](patterns/PROVIDER_SELECTION.md) | 200+ | Decision tree, free model optimization, when to use each provider |
-| [VS_CODE_INTEGRATION.md](patterns/VS_CODE_INTEGRATION.md) | 150+ | Extension setup, keyboard shortcuts (Cmd+Esc), provider configuration |
-| [OFFLINE_DEVELOPMENT.md](patterns/OFFLINE_DEVELOPMENT.md) | 300+ | Ollama setup, model selection (CodeLlama 34B, Qwen2.5 Coder 7B), hybrid workflow |
+| File                                                      | Lines | Covers                                                                           |
+| --------------------------------------------------------- | ----- | -------------------------------------------------------------------------------- |
+| [PROVIDER_SELECTION.md](patterns/PROVIDER_SELECTION.md)   | 200+  | Decision tree, free model optimization, when to use each provider                |
+| [VS_CODE_INTEGRATION.md](patterns/VS_CODE_INTEGRATION.md) | 150+  | Extension setup, keyboard shortcuts (Cmd+Esc), provider configuration            |
+| [OFFLINE_DEVELOPMENT.md](patterns/OFFLINE_DEVELOPMENT.md) | 300+  | Ollama setup, model selection (CodeLlama 34B, Qwen2.5 Coder 7B), hybrid workflow |
 
 #### Enforcement Directory (.opencode/enforcement/)
 
-| File | Lines | Covers |
-|------|-------|--------|
-| [HYBRID_ENFORCEMENT.md](enforcement/HYBRID_ENFORCEMENT.md) | 400+ | STRICT rules (hard block): design tokens, PageLayout, barrel exports, test data, emojis; FLEXIBLE rules (warn): API patterns, test coverage |
-| [VALIDATION_ENHANCED.md](enforcement/VALIDATION_ENHANCED.md) | 450+ | Manual checklists for free/offline models, escalation triggers, provider capability matrix |
-| [QUALITY_GATES.md](enforcement/QUALITY_GATES.md) | 500+ | Pre-commit validation by provider tier, security gates, performance gates |
+| File                                                         | Lines | Covers                                                                                                                                      |
+| ------------------------------------------------------------ | ----- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| [HYBRID_ENFORCEMENT.md](enforcement/HYBRID_ENFORCEMENT.md)   | 400+  | STRICT rules (hard block): design tokens, PageLayout, barrel exports, test data, emojis; FLEXIBLE rules (warn): API patterns, test coverage |
+| [VALIDATION_ENHANCED.md](enforcement/VALIDATION_ENHANCED.md) | 450+  | Manual checklists for free/offline models, escalation triggers, provider capability matrix                                                  |
+| [QUALITY_GATES.md](enforcement/QUALITY_GATES.md)             | 500+  | Pre-commit validation by provider tier, security gates, performance gates                                                                   |
 
 #### Workflows Directory (.opencode/workflows/)
 
-| File | Lines | Covers |
-|------|-------|--------|
-| [SESSION_HANDOFF.md](workflows/SESSION_HANDOFF.md) | 400+ | Claude ↔ OpenCode switching, session state schema v2.0, git workflow integration |
-| [COST_OPTIMIZATION.md](workflows/COST_OPTIMIZATION.md) | 450+ | 80/20 strategy (80% free, 20% premium), monthly cost tracking, ROI analysis |
-| [TROUBLESHOOTING.md](workflows/TROUBLESHOOTING.md) | 600+ | Provider-specific issues (Groq rate limits, Ollama OOM, validation failures) |
+| File                                                   | Lines | Covers                                                                            |
+| ------------------------------------------------------ | ----- | --------------------------------------------------------------------------------- |
+| [SESSION_HANDOFF.md](workflows/SESSION_HANDOFF.md)     | 400+  | Claude ↔ OpenCode switching, session state schema v2.0, git workflow integration |
+| [COST_OPTIMIZATION.md](workflows/COST_OPTIMIZATION.md) | 450+  | 80/20 strategy (80% free, 20% premium), monthly cost tracking, ROI analysis       |
+| [TROUBLESHOOTING.md](workflows/TROUBLESHOOTING.md)     | 600+  | Provider-specific issues (Groq rate limits, Ollama OOM, validation failures)      |
 
 #### Scripts Directory (.opencode/scripts/)
 
-| File | Purpose | Integration |
-|------|---------|-------------|
-| `validate-after-fallback.sh` | STRICT rules hard block, FLEXIBLE warnings | `npm run check:opencode` |
-| `session-handoff.sh` | Combined save + restore + validation | `npm run session:handoff` |
-| `check-provider-health.sh` | Groq/Ollama/Claude connectivity | `npm run opencode:health` |
+| File                         | Purpose                                    | Integration               |
+| ---------------------------- | ------------------------------------------ | ------------------------- |
+| `validate-after-fallback.sh` | STRICT rules hard block, FLEXIBLE warnings | `npm run check:opencode`  |
+| `session-handoff.sh`         | Combined save + restore + validation       | `npm run session:handoff` |
+| `check-provider-health.sh`   | Groq/Ollama/Claude connectivity            | `npm run opencode:health` |
 
 **Session State System (Universal v2.0):**
+
 - **Schema**: Git branch, issues/PRs, time estimates, validation status
 - **Locations**: `.opencode/.session-state.json`, `.claude/.session-state.json`, `.github/copilot-session-state.json`
 - **Scripts**: `scripts/save-session-state.sh`, `scripts/restore-session-state.sh` (shared across all agents)
 - **Git-ignored**: Added to `.gitignore` (never committed)
 
 **Provider Configuration (.opencode/config.json):**
+
 ```json
 {
   "groq_primary": "llama-3.3-70b-versatile (free tier)",
@@ -332,6 +334,7 @@ npm run check               # Type + lint check
 ```
 
 **Recommended Allocation:**
+
 - **Groq (free)**: 70-80% of tasks (bug fixes, refactoring, UI updates)
 - **Ollama (offline)**: 5-10% of tasks (drafting when offline)
 - **Claude (premium)**: 15-25% of tasks (security, architecture, complex debugging)
@@ -1007,19 +1010,19 @@ npm run check
 
 ## ❓ FAQ
 
-**Q: Which file should I read first?**  
+**Q: Which file should I read first?**
 A: Start with [`CLAUDE.md`](./CLAUDE.md) for context, then use the decision tree in this file to pick your agent.
 
-**Q: Can I use multiple agents?**  
+**Q: Can I use multiple agents?**
 A: Yes, but serially (not simultaneously). Finish one task with one agent before switching.
 
-**Q: What if instructions conflict?**  
+**Q: What if instructions conflict?**
 A: DCYFR (specialized) supersedes Claude (general) for DCYFR-specific work. Copilot is always for quick, inline tasks.
 
-**Q: How do I report an instruction issue?**  
+**Q: How do I report an instruction issue?**
 A: Create an issue in `.github/ISSUE_TEMPLATE/` or update the relevant instruction file directly with a PR.
 
-**Q: When should AGENTS.md be updated?**  
+**Q: When should AGENTS.md be updated?**
 A: Quarterly automatic review, or immediately when adding new agents or major instruction changes.
 
 ---
@@ -1085,8 +1088,9 @@ A: Quarterly automatic review, or immediately when adding new agents or major in
 
 ---
 
-**Status:** Production Ready  
-**Last Reviewed:** December 25, 2025 (Test Data Prevention Update)  
+**Status:** Production Ready
+**Last Reviewed:** December 25, 2025 (Test Data Prevention Update)
 **Next Review:** March 25, 2026 (Quarterly)
 
 For issues, updates, or new agents: Submit PR with AGENTS.md changes first.
+````
