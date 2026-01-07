@@ -13,7 +13,7 @@ Project is in **maintenance mode** with data-driven enhancements ready for next 
 **Key Metrics** (see [`docs/operations/todo.md`](docs/operations/todo.md) and [`docs/operations/done.md`](docs/operations/done.md)):
 
 - ✅ Phase 1-6 complete (Activity Feed Enhancement fully implemented)
-- ✅ 2193/2202 tests passing (99.6%)
+- ✅ 1185/1197 passing (99.0%)
 - ✅ 2250+ unit/integration/E2E tests
 - ✅ TypeScript strict: 0 errors
 - ✅ ESLint: 0 errors
@@ -381,7 +381,6 @@ See [`docs/ai/OPTIMIZATION_STRATEGY.md`](docs/ai/OPTIMIZATION_STRATEGY.md) for d
 ## MCP Servers (Chat)
 
 
-- Context7 (library documentation)
 - Playwright (browser automation, E2E testing)
 - Axiom (log queries, monitoring)
 - Filesystem, GitHub, Vercel, Sentry
