@@ -33,10 +33,15 @@
  * ```
  */
 
-export type AgentType = 'claude' | 'copilot' | 'groq' | 'ollama';
-export type TaskType = 'feature' | 'bug' | 'refactor' | 'quick-fix' | 'research';
-export type TaskOutcome = 'success' | 'escalated' | 'failed';
-export type ValidationStatus = 'pass' | 'fail' | 'pending' | 'skipped';
+export type AgentType = "claude" | "copilot" | "groq" | "ollama";
+export type TaskType =
+  | "feature"
+  | "bug"
+  | "refactor"
+  | "quick-fix"
+  | "research";
+export type TaskOutcome = "success" | "escalated" | "failed";
+export type ValidationStatus = "pass" | "fail" | "pending" | "skipped";
 
 export interface TelemetrySession {
   sessionId: string;
@@ -77,8 +82,8 @@ export interface TelemetryMetrics {
 
 export interface ViolationRecord {
   timestamp: Date;
-  type: 'design-token' | 'eslint' | 'typescript' | 'test' | 'security';
-  severity: 'error' | 'warning';
+  type: "design-token" | "eslint" | "typescript" | "test" | "security";
+  severity: "error" | "warning";
   message: string;
   file?: string;
   line?: number;
@@ -89,7 +94,7 @@ export interface HandoffRecord {
   timestamp: Date;
   fromAgent: AgentType;
   toAgent: AgentType;
-  reason: 'rate-limit' | 'quality' | 'manual' | 'cost-optimization' | 'offline';
+  reason: "rate-limit" | "quality" | "manual" | "cost-optimization" | "offline";
   automatic: boolean;
 }
 
@@ -98,7 +103,7 @@ export interface CostEstimate {
   inputTokens: number;
   outputTokens: number;
   estimatedCost: number; // USD
-  currency: 'USD';
+  currency: "USD";
 }
 
 export interface AgentStats {
@@ -148,7 +153,7 @@ export class TelemetrySessionManager {
     sessionId: string,
     agent: AgentType,
     taskType: TaskType,
-    taskDescription: string,
+    taskDescription: string
   ) {
     this.startTime = Date.now();
     this.session = {
@@ -167,11 +172,11 @@ export class TelemetrySessionManager {
         filesModified: 0,
         linesChanged: 0,
         validations: {
-          typescript: 'pending',
-          eslint: 'pending',
-          tests: 'pending',
-          designTokens: 'pending',
-          security: 'pending',
+          typescript: "pending",
+          eslint: "pending",
+          tests: "pending",
+          designTokens: "pending",
+          security: "pending",
         },
       },
       violations: [],
@@ -181,7 +186,7 @@ export class TelemetrySessionManager {
         inputTokens: 0,
         outputTokens: 0,
         estimatedCost: 0,
-        currency: 'USD',
+        currency: "USD",
       },
     };
   }
@@ -190,8 +195,8 @@ export class TelemetrySessionManager {
    * Record a metric value
    */
   recordMetric(
-    metric: keyof Omit<TelemetryMetrics, 'validations'>,
-    value: number,
+    metric: keyof Omit<TelemetryMetrics, "validations">,
+    value: number
   ): void {
     this.session.metrics[metric] = value;
   }
@@ -200,8 +205,8 @@ export class TelemetrySessionManager {
    * Record validation status
    */
   recordValidation(
-    validation: keyof TelemetryMetrics['validations'],
-    status: ValidationStatus,
+    validation: keyof TelemetryMetrics["validations"],
+    status: ValidationStatus
   ): void {
     this.session.metrics.validations[validation] = status;
   }
@@ -209,16 +214,16 @@ export class TelemetrySessionManager {
   /**
    * Record a violation
    */
-  recordViolation(violation: Omit<ViolationRecord, 'timestamp'>): void {
+  recordViolation(violation: Omit<ViolationRecord, "timestamp">): void {
     this.session.violations.push({
       timestamp: new Date(),
       ...violation,
     });
 
     // Update violation count
-    if (violation.type === 'eslint') {
+    if (violation.type === "eslint") {
       this.session.metrics.lintViolations++;
-    } else if (violation.type === 'typescript') {
+    } else if (violation.type === "typescript") {
       this.session.metrics.typeErrors++;
     }
   }
@@ -226,7 +231,7 @@ export class TelemetrySessionManager {
   /**
    * Record a handoff to another agent
    */
-  recordHandoff(handoff: Omit<HandoffRecord, 'timestamp' | 'fromAgent'>): void {
+  recordHandoff(handoff: Omit<HandoffRecord, "timestamp" | "fromAgent">): void {
     this.session.handoffs.push({
       timestamp: new Date(),
       fromAgent: this.session.agent,
@@ -243,10 +248,11 @@ export class TelemetrySessionManager {
 
     // Calculate cost based on provider
     const costPerMillionTokens = this.getCostPerMillionTokens(
-      this.session.agent,
+      this.session.agent
     );
     const totalTokens = inputTokens + outputTokens;
-    this.session.cost.estimatedCost += (totalTokens / 1_000_000) * costPerMillionTokens;
+    this.session.cost.estimatedCost +=
+      (totalTokens / 1_000_000) * costPerMillionTokens;
 
     // Update tokens used metric
     this.session.metrics.tokensUsed = totalTokens;
@@ -289,7 +295,7 @@ export class TelemetrySessionManager {
  */
 export class AgentTelemetryManager {
   private activeSessions: Map<string, TelemetrySessionManager>;
-  private storageKey = 'agent-telemetry';
+  private storageKey = "agent-telemetry";
 
   constructor() {
     this.activeSessions = new Map();
@@ -303,14 +309,14 @@ export class AgentTelemetryManager {
     options: {
       taskType: TaskType;
       description: string;
-    },
+    }
   ): TelemetrySessionManager {
     const sessionId = this.generateSessionId();
     const session = new TelemetrySessionManager(
       sessionId,
       agent,
       options.taskType,
-      options.description,
+      options.description
     );
 
     this.activeSessions.set(sessionId, session);
@@ -339,21 +345,21 @@ export class AgentTelemetryManager {
   /**
    * Get statistics for a specific agent
    */
-  async getAgentStats(agent: AgentType, period = '30d'): Promise<AgentStats> {
+  async getAgentStats(agent: AgentType, period = "30d"): Promise<AgentStats> {
     const sessions = await this.getSessionsForPeriod(agent, period);
 
     const totalSessions = sessions.length;
     const totalTime = sessions.reduce(
       (sum, s) => sum + s.metrics.executionTime,
-      0,
+      0
     );
     const averageExecutionTime = totalTime / totalSessions || 0;
     const averageSessionTime = averageExecutionTime; // Same metric, different context
 
     const outcomes = {
-      success: sessions.filter((s) => s.outcome === 'success').length,
-      escalated: sessions.filter((s) => s.outcome === 'escalated').length,
-      failed: sessions.filter((s) => s.outcome === 'failed').length,
+      success: sessions.filter((s) => s.outcome === "success").length,
+      escalated: sessions.filter((s) => s.outcome === "escalated").length,
+      failed: sessions.filter((s) => s.outcome === "failed").length,
     };
 
     const quality = {
@@ -365,11 +371,11 @@ export class AgentTelemetryManager {
           totalSessions || 0,
       totalViolations: sessions.reduce(
         (sum, s) => sum + s.violations.length,
-        0,
+        0
       ),
       violationsFixed: sessions.reduce(
         (sum, s) => sum + s.violations.filter((v) => v.fixed).length,
-        0,
+        0
       ),
     };
 
@@ -377,7 +383,7 @@ export class AgentTelemetryManager {
       averageExecutionTime,
       totalTokensUsed: sessions.reduce(
         (sum, s) => sum + s.metrics.tokensUsed,
-        0,
+        0
       ),
       averageFilesModified:
         sessions.reduce((sum, s) => sum + s.metrics.filesModified, 0) /
@@ -397,7 +403,7 @@ export class AgentTelemetryManager {
         acc[s.taskType] = (acc[s.taskType] || 0) + 1;
         return acc;
       },
-      {} as Record<TaskType, number>,
+      {} as Record<TaskType, number>
     );
 
     return {
@@ -417,8 +423,8 @@ export class AgentTelemetryManager {
   /**
    * Compare stats across all agents
    */
-  async compareAgents(period = '30d'): Promise<ComparisonStats> {
-    const agents: AgentType[] = ['claude', 'copilot', 'groq', 'ollama'];
+  async compareAgents(period = "30d"): Promise<ComparisonStats> {
+    const agents: AgentType[] = ["claude", "copilot", "groq", "ollama"];
     const stats: Record<AgentType, AgentStats> = {} as Record<
       AgentType,
       AgentStats
@@ -440,9 +446,9 @@ export class AgentTelemetryManager {
   /**
    * Get handoff patterns
    */
-  async getHandoffPatterns(period = '30d'): Promise<{
+  async getHandoffPatterns(period = "30d"): Promise<{
     totalHandoffs: number;
-    byReason: Record<HandoffRecord['reason'], number>;
+    byReason: Record<HandoffRecord["reason"], number>;
     mostCommonPath: string;
     automaticVsManual: { automatic: number; manual: number };
   }> {
@@ -456,7 +462,7 @@ export class AgentTelemetryManager {
         acc[h.reason] = (acc[h.reason] || 0) + 1;
         return acc;
       },
-      {} as Record<HandoffRecord['reason'], number>,
+      {} as Record<HandoffRecord["reason"], number>
     );
 
     const paths: Record<string, number> = {};
@@ -466,7 +472,7 @@ export class AgentTelemetryManager {
     });
 
     const mostCommonPath =
-      Object.entries(paths).sort((a, b) => b[1] - a[1])[0]?.[0] || 'None';
+      Object.entries(paths).sort((a, b) => b[1] - a[1])[0]?.[0] || "None";
 
     const automaticVsManual = {
       automatic: allHandoffs.filter((h) => h.automatic).length,
@@ -487,18 +493,18 @@ export class AgentTelemetryManager {
 
   private async getSessionsForPeriod(
     agent: AgentType,
-    period: string,
+    period: string
   ): Promise<TelemetrySession[]> {
     const allSessions = await loadTelemetrySessions();
     const cutoffDate = this.getPeriodCutoffDate(period);
 
     return allSessions.filter(
-      (s) => s.agent === agent && s.startTime >= cutoffDate,
+      (s) => s.agent === agent && s.startTime >= cutoffDate
     );
   }
 
   private async getAllSessionsForPeriod(
-    period: string,
+    period: string
   ): Promise<TelemetrySession[]> {
     const allSessions = await loadTelemetrySessions();
     const cutoffDate = this.getPeriodCutoffDate(period);
@@ -516,11 +522,11 @@ export class AgentTelemetryManager {
     const unit = match[2];
 
     switch (unit) {
-      case 'd':
+      case "d":
         return new Date(now.getTime() - value * 24 * 60 * 60 * 1000);
-      case 'h':
+      case "h":
         return new Date(now.getTime() - value * 60 * 60 * 1000);
-      case 'm':
+      case "m":
         return new Date(now.getTime() - value * 60 * 1000);
       default:
         return new Date(0);
@@ -528,19 +534,19 @@ export class AgentTelemetryManager {
   }
 
   private calculateCostByTaskType(
-    sessions: TelemetrySession[],
+    sessions: TelemetrySession[]
   ): Record<TaskType, number> {
     return sessions.reduce(
       (acc, s) => {
         acc[s.taskType] = (acc[s.taskType] || 0) + s.cost.estimatedCost;
         return acc;
       },
-      {} as Record<TaskType, number>,
+      {} as Record<TaskType, number>
     );
   }
 
   private generateRecommendations(
-    stats: Record<AgentType, AgentStats>,
+    stats: Record<AgentType, AgentStats>
   ): string[] {
     const recommendations: string[] = [];
 
@@ -548,31 +554,33 @@ export class AgentTelemetryManager {
     const bestQuality = Object.entries(stats).sort(
       (a, b) =>
         b[1].quality.averageTokenCompliance -
-        a[1].quality.averageTokenCompliance,
+        a[1].quality.averageTokenCompliance
     )[0];
 
     recommendations.push(
-      `Use ${bestQuality[0]} for highest quality work (${(bestQuality[1].quality.averageTokenCompliance * 100).toFixed(1)}% token compliance)`,
+      `Use ${bestQuality[0]} for highest quality work (${(bestQuality[1].quality.averageTokenCompliance * 100).toFixed(1)}% token compliance)`
     );
 
     // Analyze cost efficiency
-    const freeAgents = Object.entries(stats).filter(([, s]) => s.cost.totalCost === 0);
+    const freeAgents = Object.entries(stats).filter(
+      ([, s]) => s.cost.totalCost === 0
+    );
 
     if (freeAgents.length > 0) {
       recommendations.push(
-        `Use ${freeAgents.map(([agent]) => agent).join(' or ')} for cost optimization (free tier)`,
+        `Use ${freeAgents.map(([agent]) => agent).join(" or ")} for cost optimization (free tier)`
       );
     }
 
     // Analyze task type patterns
     Object.entries(stats).forEach(([agent, agentStats]) => {
       const topTaskType = Object.entries(agentStats.taskTypes).sort(
-        (a, b) => b[1] - a[1],
+        (a, b) => b[1] - a[1]
       )[0];
 
       if (topTaskType) {
         recommendations.push(
-          `${agent} is most used for ${topTaskType[0]} tasks (${topTaskType[1]} sessions)`,
+          `${agent} is most used for ${topTaskType[0]} tasks (${topTaskType[1]} sessions)`
         );
       }
     });
@@ -587,23 +595,23 @@ export class AgentTelemetryManager {
 function saveTelemetrySession(session: TelemetrySession): void {
   // In production, save to database/Redis/file
   // For now, use localStorage in browser or file in Node.js
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     const existing = JSON.parse(
-      localStorage.getItem('agent-telemetry') || '[]',
+      localStorage.getItem("agent-telemetry") || "[]"
     );
     existing.push(session);
-    localStorage.setItem('agent-telemetry', JSON.stringify(existing));
+    localStorage.setItem("agent-telemetry", JSON.stringify(existing));
   } else {
     // Node.js environment - append to file
     // (Actual implementation would use fs.appendFileSync or database)
-    console.warn('Telemetry session saved:', session.sessionId);
+    console.warn("Telemetry session saved:", session.sessionId);
   }
 }
 
 async function loadTelemetrySessions(): Promise<TelemetrySession[]> {
   // In production, load from database/Redis/file
-  if (typeof window !== 'undefined') {
-    return JSON.parse(localStorage.getItem('agent-telemetry') || '[]');
+  if (typeof window !== "undefined") {
+    return JSON.parse(localStorage.getItem("agent-telemetry") || "[]");
   } else {
     // Node.js environment - read from file
     // (Actual implementation would use fs.readFileSync or database)
@@ -622,7 +630,7 @@ export const telemetry = new AgentTelemetryManager();
 export function trackAgentSession(
   agent: AgentType,
   taskType: TaskType,
-  description: string,
+  description: string
 ): TelemetrySessionManager {
   return telemetry.startSession(agent, { taskType, description });
 }

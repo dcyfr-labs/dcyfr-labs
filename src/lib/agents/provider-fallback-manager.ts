@@ -24,7 +24,7 @@
  * ```
  */
 
-export type ProviderType = 'claude' | 'groq' | 'ollama' | 'copilot';
+export type ProviderType = "claude" | "groq" | "ollama" | "copilot";
 
 export interface ProviderConfig {
   name: ProviderType;
@@ -41,19 +41,19 @@ export interface FallbackManagerConfig {
   autoReturn: boolean; // Return to primary when available
   healthCheckInterval: number; // ms
   sessionStatePath?: string;
-  validationLevel: 'standard' | 'enhanced' | 'strict';
+  validationLevel: "standard" | "enhanced" | "strict";
 }
 
 export interface TaskContext {
   description: string;
-  phase: 'planning' | 'implementation' | 'validation' | 'complete';
+  phase: "planning" | "implementation" | "validation" | "complete";
   estimatedTime?: string;
   filesInProgress: string[];
   validationStatus?: {
-    typescript?: 'pass' | 'fail' | 'pending';
-    eslint?: 'pass' | 'fail' | 'pending';
-    tests?: 'pass' | 'fail' | 'pending';
-    designTokens?: 'pass' | 'fail' | 'pending';
+    typescript?: "pass" | "fail" | "pending";
+    eslint?: "pass" | "fail" | "pending";
+    tests?: "pass" | "fail" | "pending";
+    designTokens?: "pass" | "fail" | "pending";
   };
 }
 
@@ -82,20 +82,20 @@ export class RateLimitError extends Error {
   constructor(
     message: string,
     public provider: ProviderType,
-    public retryAfter?: number,
+    public retryAfter?: number
   ) {
     super(message);
-    this.name = 'RateLimitError';
+    this.name = "RateLimitError";
   }
 }
 
 export class ProviderUnavailableError extends Error {
   constructor(
     message: string,
-    public provider: ProviderType,
+    public provider: ProviderType
   ) {
     super(message);
-    this.name = 'ProviderUnavailableError';
+    this.name = "ProviderUnavailableError";
   }
 }
 
@@ -124,29 +124,29 @@ export class ProviderFallbackManager {
   private initializeProviderConfigs(): void {
     const defaultConfigs: ProviderConfig[] = [
       {
-        name: 'claude',
-        healthCheckUrl: 'https://api.anthropic.com/v1/messages',
+        name: "claude",
+        healthCheckUrl: "https://api.anthropic.com/v1/messages",
         maxRetries: 3,
         retryDelay: 1000,
         timeout: 30000,
       },
       {
-        name: 'groq',
-        healthCheckUrl: 'https://api.groq.com/openai/v1/models',
+        name: "groq",
+        healthCheckUrl: "https://api.groq.com/openai/v1/models",
         maxRetries: 2,
         retryDelay: 500,
         timeout: 20000,
       },
       {
-        name: 'ollama',
-        apiEndpoint: 'http://localhost:11434',
-        healthCheckUrl: 'http://localhost:11434/api/tags',
+        name: "ollama",
+        apiEndpoint: "http://localhost:11434",
+        healthCheckUrl: "http://localhost:11434/api/tags",
         maxRetries: 1,
         retryDelay: 100,
         timeout: 10000,
       },
       {
-        name: 'copilot',
+        name: "copilot",
         maxRetries: 2,
         retryDelay: 500,
         timeout: 15000,
@@ -164,7 +164,7 @@ export class ProviderFallbackManager {
   }
 
   private async checkProviderHealth(
-    provider: ProviderType,
+    provider: ProviderType
   ): Promise<ProviderHealth> {
     const config = this.providerConfigs.get(provider);
     if (!config) {
@@ -172,7 +172,7 @@ export class ProviderFallbackManager {
         provider,
         available: false,
         lastChecked: new Date(),
-        error: 'Provider configuration not found',
+        error: "Provider configuration not found",
       };
     }
 
@@ -191,22 +191,20 @@ export class ProviderFallbackManager {
 
       // Simple HEAD request to check availability
       const response = await fetch(config.healthCheckUrl, {
-        method: 'HEAD',
+        method: "HEAD",
         signal: AbortSignal.timeout(config.timeout),
       });
 
       const responseTime = Date.now() - startTime;
 
       // Extract rate limit info from headers (if available)
-      const rateLimitRemaining = response.headers.get(
-        'x-ratelimit-remaining',
-      )
-        ? parseInt(response.headers.get('x-ratelimit-remaining')!, 10)
+      const rateLimitRemaining = response.headers.get("x-ratelimit-remaining")
+        ? parseInt(response.headers.get("x-ratelimit-remaining")!, 10)
         : undefined;
 
-      const rateLimitReset = response.headers.get('x-ratelimit-reset')
+      const rateLimitReset = response.headers.get("x-ratelimit-reset")
         ? new Date(
-            parseInt(response.headers.get('x-ratelimit-reset')!, 10) * 1000,
+            parseInt(response.headers.get("x-ratelimit-reset")!, 10) * 1000
           )
         : undefined;
 
@@ -224,7 +222,7 @@ export class ProviderFallbackManager {
         available: false,
         responseTime: Date.now() - startTime,
         lastChecked: new Date(),
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
@@ -233,7 +231,7 @@ export class ProviderFallbackManager {
     this.healthCheckTimer = setInterval(async () => {
       // Check primary provider health
       const primaryHealth = await this.checkProviderHealth(
-        this.config.primaryProvider,
+        this.config.primaryProvider
       );
       this.healthStatus.set(this.config.primaryProvider, primaryHealth);
 
@@ -243,7 +241,7 @@ export class ProviderFallbackManager {
         primaryHealth.available
       ) {
         console.warn(
-          `✅ Primary provider ${this.config.primaryProvider} available again, switching back...`,
+          `✅ Primary provider ${this.config.primaryProvider} available again, switching back...`
         );
         await this.switchProvider(this.config.primaryProvider);
       }
@@ -256,7 +254,7 @@ export class ProviderFallbackManager {
     }
 
     console.warn(
-      `🔄 Switching provider: ${this.currentProvider} → ${targetProvider}`,
+      `🔄 Switching provider: ${this.currentProvider} → ${targetProvider}`
     );
 
     // Save current session state
@@ -283,10 +281,10 @@ export class ProviderFallbackManager {
 
   private async restoreSessionState(
     targetProvider: ProviderType,
-    sourceProvider: ProviderType,
+    sourceProvider: ProviderType
   ): Promise<void> {
     console.warn(
-      `📂 Restoring session state from ${sourceProvider} to ${targetProvider}`,
+      `📂 Restoring session state from ${sourceProvider} to ${targetProvider}`
     );
 
     // In production, this would call:
@@ -296,7 +294,7 @@ export class ProviderFallbackManager {
   private async executeWithProvider<T>(
     provider: ProviderType,
     task: TaskContext,
-    executor: (provider: ProviderType) => Promise<T>,
+    executor: (provider: ProviderType) => Promise<T>
   ): Promise<ExecutionResult<T>> {
     const config = this.providerConfigs.get(provider);
     if (!config) {
@@ -310,7 +308,7 @@ export class ProviderFallbackManager {
     for (let attempt = 1; attempt <= config.maxRetries; attempt++) {
       try {
         console.warn(
-          `🔄 Executing with ${provider} (attempt ${attempt}/${config.maxRetries})`,
+          `🔄 Executing with ${provider} (attempt ${attempt}/${config.maxRetries})`
         );
 
         const data = await executor(provider);
@@ -331,21 +329,23 @@ export class ProviderFallbackManager {
         // Check if rate limit error
         if (
           error instanceof Error &&
-          (error.message.includes('rate limit') ||
-            error.message.includes('429'))
+          (error.message.includes("rate limit") ||
+            error.message.includes("429"))
         ) {
           throw new RateLimitError(
             `Rate limit exceeded for ${provider}`,
-            provider,
+            provider
           );
         }
 
         // Retry with delay if not last attempt
         if (attempt < config.maxRetries) {
           console.warn(
-            `⏳ Retrying in ${config.retryDelay}ms (attempt ${attempt}/${config.maxRetries})...`,
+            `⏳ Retrying in ${config.retryDelay}ms (attempt ${attempt}/${config.maxRetries})...`
           );
-          await new Promise((resolve) => setTimeout(resolve, config.retryDelay));
+          await new Promise((resolve) =>
+            setTimeout(resolve, config.retryDelay)
+          );
         }
       }
     }
@@ -353,7 +353,7 @@ export class ProviderFallbackManager {
     // All retries failed
     throw new ProviderUnavailableError(
       `Provider ${provider} unavailable after ${config.maxRetries} attempts: ${lastError?.message}`,
-      provider,
+      provider
     );
   }
 
@@ -362,7 +362,7 @@ export class ProviderFallbackManager {
    */
   public async executeWithFallback<T>(
     task: TaskContext,
-    executor: (provider: ProviderType) => Promise<T>,
+    executor: (provider: ProviderType) => Promise<T>
   ): Promise<ExecutionResult<T>> {
     const providers = [this.currentProvider, ...this.config.fallbackChain];
     let lastError: Error | undefined;
@@ -392,22 +392,23 @@ export class ProviderFallbackManager {
 
         if (error instanceof RateLimitError) {
           console.warn(
-            `⏱️  Rate limit hit on ${provider}, trying next provider...`,
+            `⏱️  Rate limit hit on ${provider}, trying next provider...`
           );
           continue;
         }
 
         if (error instanceof ProviderUnavailableError) {
           console.warn(
-            `❌ Provider ${provider} unavailable, trying next provider...`,
+            `❌ Provider ${provider} unavailable, trying next provider...`
           );
           continue;
         }
 
         // Unknown error, try next provider
-        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
         console.warn(
-          `⚠️  Error with ${provider}: ${errorMessage}, trying next provider...`,
+          `⚠️  Error with ${provider}: ${errorMessage}, trying next provider...`
         );
         continue;
       }
@@ -415,7 +416,7 @@ export class ProviderFallbackManager {
 
     // All providers failed
     throw new Error(
-      `All providers exhausted. Last error: ${lastError?.message || 'Unknown'}`,
+      `All providers exhausted. Last error: ${lastError?.message || "Unknown"}`
     );
   }
 
@@ -438,7 +439,7 @@ export class ProviderFallbackManager {
    */
   public async fallbackToNext(): Promise<void> {
     const currentIndex = this.config.fallbackChain.indexOf(
-      this.currentProvider,
+      this.currentProvider
     );
     const nextProvider =
       this.config.fallbackChain[currentIndex + 1] ||
@@ -471,7 +472,7 @@ export class ProviderFallbackManager {
 let globalManager: ProviderFallbackManager | null = null;
 
 export function initializeGlobalFallbackManager(
-  config: FallbackManagerConfig,
+  config: FallbackManagerConfig
 ): ProviderFallbackManager {
   if (globalManager) {
     globalManager.destroy();
