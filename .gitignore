@@ -105,8 +105,21 @@ mcp.json
 # local configs
 .anthropic/
 .openai/
-.opencode/
 .opencode.config.json
+
+# AI Agent Session State (local only - exclude all session state files)
+*.session-state.json
+.opencode/.session-state.json
+.claude/.session-state.json
+.github/copilot-session-state.json
+
+# Session checkpoints (auto-generated, keep structure)
+.git/agent-checkpoints/*.json
+.git/agent-checkpoints/.auto-checkpoint-*.pid
+
+# OpenCode cache and temporary files
+.opencode/.cache/
+.opencode/.sessions/
 
 # IDE & Editor Configs
 # ========================================
