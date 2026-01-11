@@ -551,7 +551,19 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
       aria-label="Bar Chart"
     />
   ),
+  BarChartIcon: () => (
+    <BarChart
+      className="inline-block w-5 h-5 align-text-bottom text-muted-foreground"
+      aria-label="Bar Chart"
+    />
+  ),
   Shield: () => (
+    <Shield
+      className="inline-block w-5 h-5 align-text-bottom text-muted-foreground"
+      aria-label="Shield"
+    />
+  ),
+  ShieldIcon: () => (
     <Shield
       className="inline-block w-5 h-5 align-text-bottom text-muted-foreground"
       aria-label="Shield"
