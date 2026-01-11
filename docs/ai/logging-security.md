@@ -18,7 +18,7 @@ This guide provides comprehensive patterns for secure logging practices in the d
 
 ### Definitions
 - **PI (Proprietary Information)** — Information that confers competitive or business advantage and should be protected; defined per NIST: https://csrc.nist.gov/glossary/term/proprietary_information
-- **PI (Proprietary Information)** — Information that confers competitive or business advantage and should be protected; defined per NIST: https://csrc.nist.gov/glossary/term/proprietary_information. See `docs/security/pi-policy.md` for handling guidance.
+- **PI (Proprietary Information)** — Information that confers competitive or business advantage and should be protected; defined per NIST: https://csrc.nist.gov/glossary/term/proprietary_information. See `docs/security/private/pi-policy.md` for handling guidance.
 - **PII (Personally Identifiable Information)** — Data that identifies an individual (email, phone, SSN, etc.). Do not log PII in cleartext.
 
 ### Never Log
@@ -105,7 +105,7 @@ console.log(`User role: ${user.role}`); // Only if role is non-sensitive
 
 ### 3a. IP Addresses (PII under GDPR/CCPA)
 
-**IP addresses are considered PII** and must be handled carefully. See docs/security/pi-policy.md for full policy.
+**IP addresses are considered PII** and must be handled carefully. See docs/security/private/pi-policy.md for full policy.
 
 ```javascript
 // ❌ WRONG: Logs full IP address

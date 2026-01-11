@@ -65,7 +65,7 @@ This project implements comprehensive security controls:
 - ✅ Secure environment variable handling
 
 - ✅ PI (Proprietary Information) protection — Treat proprietary information similarly to PII in terms of storage, logging, and access control. See NIST's definition: https://csrc.nist.gov/glossary/term/proprietary_information
- - ✅ See `docs/security/pi-policy.md` for a full policy and handling checklist for PI/PII and private drafts.
+ - ✅ See `docs/security/private/pi-policy.md` for a full policy and handling checklist for PI/PII and private drafts.
 
 ### Input Validation
 

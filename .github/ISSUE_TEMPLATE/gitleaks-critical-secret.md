@@ -64,7 +64,7 @@ See the workflow run link below for detailed list of files and line numbers.
 
 ### References
 
-- [PI/PII Policy & Security Guidelines](../../docs/security/pi-policy.md)
+- [PI/PII Policy & Security Guidelines](../../docs/security/private/pi-policy.md)
 - [Security Findings & Action Items](../../docs/security/FINDINGS_AND_ACTION_ITEMS.md)
 - [PII Allowlist Documentation](../../.pii-allowlist.json)
 - [Gitleaks Documentation](https://github.com/gitleaks/gitleaks)
