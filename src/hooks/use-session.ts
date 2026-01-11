@@ -27,6 +27,8 @@ function getSessionId(): string | null {
 
   let id = sessionStorage.getItem("viewTrackingSessionId");
   if (!id) {
+    // Session IDs are for analytics tracking only, not security-sensitive operations.
+    // lgtm[js/insecure-randomness]
     id = generateSessionId();
     sessionStorage.setItem("viewTrackingSessionId", id);
   }

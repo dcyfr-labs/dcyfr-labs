@@ -5,7 +5,7 @@ import { generateSessionId } from "@/lib/anti-spam-client";
 
 /**
  * Client-side view tracking hook with anti-spam protection
- * 
+ *
  * Features:
  * - Session-based tracking (stored in sessionStorage)
  * - Visibility API integration (only tracks visible pages)
@@ -13,7 +13,7 @@ import { generateSessionId } from "@/lib/anti-spam-client";
  * - Automatic submission when thresholds met
  * - Handles page visibility changes
  * - Graceful error handling
- * 
+ *
  * @param postId - Permanent post identifier
  * @param enabled - Whether tracking is enabled (default: true)
  * @returns Object with tracking status and manual trigger function
@@ -40,6 +40,8 @@ export function useViewTracking(postId: string, enabled = true) {
     // Get or create session ID
     let sessionId = sessionStorage.getItem("viewTrackingSessionId");
     if (!sessionId) {
+      // Session IDs are for analytics tracking only, not security-sensitive operations.
+      // lgtm[js/insecure-randomness]
       sessionId = generateSessionId();
       sessionStorage.setItem("viewTrackingSessionId", sessionId);
     }
@@ -58,10 +60,11 @@ export function useViewTracking(postId: string, enabled = true) {
     const submitView = async () => {
       // Prevent multiple simultaneous submissions
       if (hasTrackedRef.current || isSubmittingRef.current) return;
-      
+
       isSubmittingRef.current = true;
 
-      const timeOnPage = Date.now() - startTimeRef.current + visibilityTimeRef.current;
+      const timeOnPage =
+        Date.now() - startTimeRef.current + visibilityTimeRef.current;
       const isVisible = !document.hidden;
 
       try {
@@ -81,7 +84,7 @@ export function useViewTracking(postId: string, enabled = true) {
         // Handle blocked API endpoints gracefully (404 from security lockdown)
         if (response.status === 404) {
           // API endpoint is blocked - fail silently in development
-          if (process.env.NODE_ENV === 'development') {
+          if (process.env.NODE_ENV === "development") {
             // console.warn("View tracking API is blocked in development");
             isSubmittingRef.current = false;
             return;
@@ -109,11 +112,17 @@ export function useViewTracking(postId: string, enabled = true) {
           }
         } else {
           // Don't show errors to user for rate limiting or duplicates
-          if (response.status !== 429 && !data.message?.includes("already recorded")) {
+          if (
+            response.status !== 429 &&
+            !data.message?.includes("already recorded")
+          ) {
             setError(data.error || "Failed to track view");
           }
           // Still mark as tracked if it's a duplicate or rate limit
-          if (response.status === 429 || data.message?.includes("already recorded")) {
+          if (
+            response.status === 429 ||
+            data.message?.includes("already recorded")
+          ) {
             hasTrackedRef.current = true;
           }
         }
@@ -128,7 +137,7 @@ export function useViewTracking(postId: string, enabled = true) {
     // Check if we should submit (after 5 seconds of visible time)
     const checkAndSubmit = () => {
       trackVisibilityTime();
-      
+
       // Only submit if page has been visible for at least 5 seconds
       if (visibilityTimeRef.current >= 5000 && !document.hidden) {
         submitView();
@@ -138,7 +147,7 @@ export function useViewTracking(postId: string, enabled = true) {
     // Set up visibility change handler
     const handleVisibilityChange = () => {
       trackVisibilityTime();
-      
+
       // If page becomes visible again and we haven't tracked yet, check if we should
       if (!document.hidden && !hasTrackedRef.current) {
         checkAndSubmit();
@@ -184,10 +193,13 @@ export function useViewTracking(postId: string, enabled = true) {
 
   // Manual trigger function (for testing or special cases)
   const triggerView = async () => {
-    if (hasTrackedRef.current) return { success: false, message: "Already tracked" };
+    if (hasTrackedRef.current)
+      return { success: false, message: "Already tracked" };
 
-    const sessionId = sessionStorage.getItem("viewTrackingSessionId") || generateSessionId();
-    const timeOnPage = Date.now() - startTimeRef.current + visibilityTimeRef.current;
+    const sessionId =
+      sessionStorage.getItem("viewTrackingSessionId") || generateSessionId();
+    const timeOnPage =
+      Date.now() - startTimeRef.current + visibilityTimeRef.current;
 
     try {
       const response = await fetch("/api/views", {

@@ -488,10 +488,11 @@ export class AgentTelemetryManager {
   }
 
   private generateSessionId(): string {
-    // lgtm[js/insecure-randomness] - Telemetry session IDs are for internal analytics
-    // and performance tracking only, not for authentication or authorization.
-    // Uniqueness (not cryptographic security) is the only requirement here.
-    return `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`; // lgtm[js/insecure-randomness]
+    // Telemetry session IDs are for internal analytics and performance tracking only,
+    // not for authentication or authorization. Uniqueness (not cryptographic security)
+    // is the only requirement here.
+    // lgtm[js/insecure-randomness]
+    return `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
 
   private async getSessionsForPeriod(

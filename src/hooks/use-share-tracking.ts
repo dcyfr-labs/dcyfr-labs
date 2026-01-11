@@ -4,14 +4,14 @@ import { useState, useRef } from "react";
 
 /**
  * Client-side share tracking hook with anti-spam protection
- * 
+ *
  * Features:
  * - Session-based tracking (stored in sessionStorage)
  * - Time-on-page validation (minimum 2 seconds)
  * - Rate limiting on client side (prevents rapid clicks)
  * - Graceful error handling
  * - Returns share count after successful tracking
- * 
+ *
  * @param postId - Permanent post identifier
  * @returns Object with share function and tracking status
  */
@@ -26,7 +26,11 @@ export function useShareTracking(postId: string) {
    * Track a share action
    * Call this when user clicks a share button
    */
-  const trackShare = async (): Promise<{ success: boolean; message?: string; count?: number | null }> => {
+  const trackShare = async (): Promise<{
+    success: boolean;
+    message?: string;
+    count?: number | null;
+  }> => {
     // Client-side throttling (prevent rapid clicks)
     const now = Date.now();
     const timeSinceLastShare = now - lastShareTimeRef.current;
@@ -42,6 +46,8 @@ export function useShareTracking(postId: string) {
       let sessionId = sessionStorage.getItem("viewTrackingSessionId");
       if (!sessionId) {
         const { generateSessionId } = await import("@/lib/anti-spam-client");
+        // Session IDs are for analytics tracking only, not security-sensitive operations.
+        // lgtm[js/insecure-randomness]
         sessionId = generateSessionId();
         sessionStorage.setItem("viewTrackingSessionId", sessionId);
       }
@@ -69,7 +75,11 @@ export function useShareTracking(postId: string) {
           return { success: true, count: data.count };
         } else {
           // Duplicate or already recorded
-          return { success: true, message: data.message || "Share already recorded", count: data.count };
+          return {
+            success: true,
+            message: data.message || "Share already recorded",
+            count: data.count,
+          };
         }
       } else {
         const errorMessage = data.error || "Failed to track share";

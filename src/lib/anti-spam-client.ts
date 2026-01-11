@@ -17,10 +17,10 @@ export function generateSessionId(): string {
   }
 
   // Fallback for older browsers
-  // lgtm[js/insecure-randomness] - Session IDs are for analytics tracking only,
-  // not authentication or security-sensitive operations. These IDs are used to
-  // deduplicate page views in the same browser session, not for any security purpose.
-  return `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`; // lgtm[js/insecure-randomness]
+  // Session IDs are for analytics tracking only, not authentication or security-sensitive operations.
+  // These IDs are used to deduplicate page views in the same browser session, not for any security purpose.
+  // lgtm[js/insecure-randomness]
+  return `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
 }
 
 /**
