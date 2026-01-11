@@ -7,6 +7,33 @@ and this project uses [Calendar Versioning](https://calver.org/) with the `YYYY.
 
 **Breaking changes** are marked with ⚠️ BREAKING in the version header.
 
+## [2026.01.11]
+
+### Added
+
+- **Environment Variable Documentation** - Comprehensive setup for academic research and AI development tools
+  - `SEMANTIC_SCHOLAR_API_KEY` documentation for academic research and citation analysis
+  - Multiple AI provider API keys (OpenAI, Groq, Google, etc.) for multi-provider fallback via OpenCode.ai
+  - Advanced setup instructions in `.env.example`
+
+### Changed
+
+- **DCYFR Agent Documentation Overhaul** - Major improvements to `.github/agents/DCYFR.agent.md`
+  - Expanded tool support including arxiv, octocode, and dcyfr-* modules
+  - Updated references to core patterns, enforcement rules, and learning resources
+  - Clarified best practices for component patterns, design tokens, API routes, and testing
+  - Added explicit guidance prohibiting emojis in public content with React icon requirements
+  - Updated all documentation links to point to new or reorganized locations
+  - Enhanced DCYFR philosophy section emphasizing consistency, validation, and test-driven development
+- Updated `.github/ISSUE_TEMPLATE/gitleaks-critical-secret.md` to reference new PI/PII policy documentation location
+- Improved formatting and clarity of automated workflow messages in security templates
+
+### Removed
+
+- **Pre-commit Hook Removal** - Removed `.githooks/pre-commit` script
+  - Previously enforced documentation governance checks, sensitive file detection, and pre-commit validations
+  - Decision made to streamline local development workflow
+
 ## [2026.01.05]
 
 ### Added
