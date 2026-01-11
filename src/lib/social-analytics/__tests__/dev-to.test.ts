@@ -119,6 +119,79 @@ describe('DEV.to Analytics', () => {
         expect.any(Object)
       );
     });
+
+    // SSRF Prevention Tests
+    describe('input validation (SSRF prevention)', () => {
+      it('should reject usernames with path traversal', async () => {
+        const result = await fetchDevToArticle('../../../etc', 'test');
+        expect(result).toBeNull();
+        expect(fetch).not.toHaveBeenCalled();
+      });
+
+      it('should reject slugs with path traversal', async () => {
+        const result = await fetchDevToArticle('dcyfr', '../../../etc/passwd');
+        expect(result).toBeNull();
+        expect(fetch).not.toHaveBeenCalled();
+      });
+
+      it('should reject usernames with special characters', async () => {
+        const result = await fetchDevToArticle('user@evil.com', 'test');
+        expect(result).toBeNull();
+        expect(fetch).not.toHaveBeenCalled();
+      });
+
+      it('should reject slugs with URL encoded characters', async () => {
+        const result = await fetchDevToArticle('dcyfr', 'test%2F..%2Fetc');
+        expect(result).toBeNull();
+        expect(fetch).not.toHaveBeenCalled();
+      });
+
+      it('should accept valid alphanumeric usernames with hyphens', async () => {
+        const mockArticle: DevToArticle = {
+          id: 123456,
+          title: 'Test Article',
+          slug: 'test-article',
+          url: 'https://dev.to/valid-user-123/test-article',
+          published_at: '2024-01-01T00:00:00Z',
+          page_views_count: 100,
+          public_reactions_count: 5,
+          comments_count: 1,
+          tag_list: [],
+        };
+
+        vi.mocked(fetch).mockResolvedValueOnce({
+          ok: true,
+          json: async () => mockArticle,
+        } as Response);
+
+        const result = await fetchDevToArticle('valid-user-123', 'test-article');
+        expect(result).toEqual(mockArticle);
+        expect(fetch).toHaveBeenCalled();
+      });
+
+      it('should accept valid slugs with underscores', async () => {
+        const mockArticle: DevToArticle = {
+          id: 123456,
+          title: 'Test Article',
+          slug: 'valid_slug_123',
+          url: 'https://dev.to/dcyfr/valid_slug_123',
+          published_at: '2024-01-01T00:00:00Z',
+          page_views_count: 100,
+          public_reactions_count: 5,
+          comments_count: 1,
+          tag_list: [],
+        };
+
+        vi.mocked(fetch).mockResolvedValueOnce({
+          ok: true,
+          json: async () => mockArticle,
+        } as Response);
+
+        const result = await fetchDevToArticle('dcyfr', 'valid_slug_123');
+        expect(result).toEqual(mockArticle);
+        expect(fetch).toHaveBeenCalled();
+      });
+    });
   });
 
   describe('fetchDevToMetrics', () => {
