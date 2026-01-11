@@ -1,30 +1,30 @@
 {
-  "updated": "2025-12-28T01:09:39.095Z",
+  "updated": "2026-01-11T01:09:59.594Z",
   "data": [
     {
       "browser": "chrome",
-      "version": "111",
-      "release_date": "2023-05-09"
+      "version": "112",
+      "release_date": "2023-07-04"
     },
     {
       "browser": "chrome_android",
-      "version": "111",
-      "release_date": "2023-05-09"
+      "version": "112",
+      "release_date": "2023-07-04"
     },
     {
       "browser": "edge",
-      "version": "111",
-      "release_date": "2023-05-09"
+      "version": "112",
+      "release_date": "2023-07-04"
     },
     {
       "browser": "firefox",
-      "version": "114",
-      "release_date": "2023-06-06"
+      "version": "115",
+      "release_date": "2023-07-04"
     },
     {
       "browser": "firefox_android",
-      "version": "114",
-      "release_date": "2023-06-06"
+      "version": "115",
+      "release_date": "2023-07-04"
     },
     {
       "browser": "safari",
@@ -38,10 +38,10 @@
     },
     {
       "browser": "opera",
-      "version": "97",
-      "release_date": "2023-03-22",
+      "version": "98",
+      "release_date": "2023-04-20",
       "engine": "Blink",
-      "engine_version": "111"
+      "engine_version": "112"
     },
     {
       "browser": "opera_android",
@@ -52,17 +52,17 @@
     },
     {
       "browser": "samsunginternet_android",
-      "version": "22.0",
-      "release_date": "2023-07-14",
+      "version": "23.0",
+      "release_date": "2023-10-18",
       "engine": "Blink",
-      "engine_version": "111"
+      "engine_version": "115"
     },
     {
       "browser": "webview_android",
-      "version": "111",
-      "release_date": "2023-03-01",
+      "version": "112",
+      "release_date": "2023-04-04",
       "engine": "Blink",
-      "engine_version": "111"
+      "engine_version": "112"
     },
     {
       "browser": "ya_android",
