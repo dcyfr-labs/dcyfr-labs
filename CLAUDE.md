@@ -4,7 +4,7 @@ Full-stack developer portfolio with Next.js 16 App Router, TypeScript, Tailwind 
 
 > **For GitHub Copilot users:** See [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) for a concise quick-reference guide focusing on the 80/20 patterns you'll use most.
 
-## Current Focus (December 2025)
+## Current Focus (January 2026)
 
 **All major phases complete** ✅
 

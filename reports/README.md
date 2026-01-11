@@ -45,10 +45,11 @@ ls -t reports/predeployment/ | head -1
 ## Notes
 
 - All files in this directory are ignored by git (see `.gitignore`)
+- **Exception:** Historical audit reports (accessibility, privacy, industry) are committed for documentation
 - Reports are named with timestamps for historical tracking
 - Safe to delete old reports to manage disk space
 - CI/CD pipelines can generate reports here without polluting the codebase
 
 ---
 
-**Last Updated:** December 11, 2025
+**Last Updated:** January 11, 2026
