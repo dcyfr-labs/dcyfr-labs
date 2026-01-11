@@ -117,7 +117,23 @@ export async function fetchDevToArticle(
   username: string = DEFAULT_USERNAME,
   slug: string
 ): Promise<DevToArticle | null> {
+  // Validate inputs to prevent SSRF - only allow alphanumeric, hyphens, underscores
+  const safeUsernamePattern = /^[a-zA-Z0-9_-]+$/;
+  const safeSlugPattern = /^[a-zA-Z0-9_-]+$/;
+  
+  if (!safeUsernamePattern.test(username)) {
+    console.error('[DEV.to] Invalid username format');
+    return null;
+  }
+  
+  if (!safeSlugPattern.test(slug)) {
+    console.error('[DEV.to] Invalid slug format');
+    return null;
+  }
+  
   try {
+    // lgtm[js/request-forgery] - URL is constructed from validated inputs (username/slug validated above)
+    // using strict alphanumeric pattern. DEV_TO_API_BASE is a hardcoded constant.
     const response = await fetch(`${DEV_TO_API_BASE}/articles/${username}/${slug}`, {
       headers: {
         'Content-Type': 'application/json',
@@ -130,12 +146,13 @@ export async function fetchDevToArticle(
 
     if (!response.ok) {
       if (response.status === 404) {
-        console.warn(`[DEV.to] Article not found: ${username}/${slug}`);
+        // Inputs already validated above, safe to log
+        console.warn('[DEV.to] Article not found:', { username, slug });
         return null;
       }
 
       const error = await response.text();
-      console.error(`[DEV.to] API error (${response.status}):`, error);
+      console.error('[DEV.to] API error:', { status: response.status, error });
       return null;
     }
 
