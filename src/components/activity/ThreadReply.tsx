@@ -23,10 +23,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { ThreadActions } from "./ThreadActions";
-import { getActivitySourceIcon } from "@/lib/activity/types";
-import type { ActivityItem } from "@/lib/activity/types";
+import { getActivitySourceIcon } from "@/lib/activity";
+import type { ActivityItem } from "@/lib/activity";
 import { cn } from "@/lib/utils";
-import { TYPOGRAPHY, ANIMATION, NEON_COLORS, ACTIVITY_IMAGE, SPACING } from "@/lib/design-tokens";
+import {
+  TYPOGRAPHY,
+  ANIMATION,
+  ACTIVITY_IMAGE,
+  SPACING,
+  SEMANTIC_COLORS,
+} from "@/lib/design-tokens";
 import { Flame, TrendingUp } from "lucide-react";
 
 // ============================================================================
@@ -34,21 +40,21 @@ import { Flame, TrendingUp } from "lucide-react";
 // ============================================================================
 
 /**
- * Maps activity verb to neon color badge class
+ * Maps activity verb to semantic color badge class
  */
 function getVerbColor(verb: ActivityItem["verb"]): string {
   const colorMap: Record<ActivityItem["verb"], string> = {
-    published: NEON_COLORS.lime.badge,
-    updated: NEON_COLORS.cyan.badge,
-    launched: NEON_COLORS.purple.badge,
-    released: NEON_COLORS.orange.badge,
-    committed: NEON_COLORS.slate.badge,
-    achieved: NEON_COLORS.yellow.badge,
-    earned: NEON_COLORS.blue.badge,
-    reached: NEON_COLORS.lime.badge,
+    published: SEMANTIC_COLORS.status.neutral,
+    updated: SEMANTIC_COLORS.status.neutral,
+    launched: SEMANTIC_COLORS.status.neutral,
+    released: SEMANTIC_COLORS.status.neutral,
+    committed: SEMANTIC_COLORS.status.neutral,
+    achieved: SEMANTIC_COLORS.status.neutral,
+    earned: SEMANTIC_COLORS.status.neutral,
+    reached: SEMANTIC_COLORS.status.neutral,
   };
 
-  return colorMap[verb] || NEON_COLORS.lime.badge;
+  return colorMap[verb] || SEMANTIC_COLORS.status.neutral;
 }
 
 export interface ThreadReplyProps {
@@ -79,9 +85,10 @@ export function ThreadReply({
 
   // Get icon component reference
   const sourceIconComponent = getActivitySourceIcon(activity.source);
-  
+
   // Hide verb badge if it's the same as primary to reduce duplication
-  const showVerbBadge = !primaryActivity || activity.verb !== primaryActivity.verb;
+  const showVerbBadge =
+    !primaryActivity || activity.verb !== primaryActivity.verb;
 
   return (
     <div className={cn("group/reply relative", className)}>
@@ -104,11 +111,11 @@ export function ThreadReply({
         <div className="flex-1 min-w-0 pb-8">
           {/* Header: Source + Verb Badges + Trending (Compact) */}
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <Badge
-              variant="secondary"
-              className="gap-1 px-1.5 h-5 text-xs"
-            >
-              {createElement(sourceIconComponent, { className: "h-3 w-3", "aria-hidden": "true" })}
+            <Badge variant="secondary" className="gap-1 px-1.5 h-5 text-xs">
+              {createElement(sourceIconComponent, {
+                className: "h-3 w-3",
+                "aria-hidden": "true",
+              })}
               <span className="capitalize">{activity.source}</span>
             </Badge>
 
@@ -123,17 +130,30 @@ export function ThreadReply({
 
             {/* Trending Badge (Compact) - Weekly takes priority */}
             {activity.meta?.trendingStatus?.isWeeklyTrending && (
-              <Badge variant="secondary" className={cn("px-1.5 h-5 text-xs flex items-center gap-0.5", NEON_COLORS.orange.badge)}>
+              <Badge
+                variant="secondary"
+                className={cn(
+                  "px-1.5 h-5 text-xs flex items-center gap-0.5",
+                  SEMANTIC_COLORS.accent.orange.badge
+                )}
+              >
                 <Flame className="w-3 h-3" aria-hidden="true" />
                 Week
               </Badge>
             )}
-            {!activity.meta?.trendingStatus?.isWeeklyTrending && activity.meta?.trendingStatus?.isMonthlyTrending && (
-              <Badge variant="secondary" className={cn("px-1.5 h-5 text-xs flex items-center gap-0.5", NEON_COLORS.blue.badge)}>
-                <TrendingUp className="w-3 h-3" aria-hidden="true" />
-                Month
-              </Badge>
-            )}
+            {!activity.meta?.trendingStatus?.isWeeklyTrending &&
+              activity.meta?.trendingStatus?.isMonthlyTrending && (
+                <Badge
+                  variant="secondary"
+                  className={cn(
+                    "px-1.5 h-5 text-xs flex items-center gap-0.5",
+                    SEMANTIC_COLORS.status.info
+                  )}
+                >
+                  <TrendingUp className="w-3 h-3" aria-hidden="true" />
+                  Month
+                </Badge>
+              )}
           </div>
 
           {/* Content: Title, Image, Description, Metadata */}
@@ -153,7 +173,12 @@ export function ThreadReply({
 
             {/* Featured Image (if present, smaller for replies) */}
             {activity.meta?.image && (
-              <div className={cn(ACTIVITY_IMAGE.container, ACTIVITY_IMAGE.sizes.reply)}>
+              <div
+                className={cn(
+                  ACTIVITY_IMAGE.container,
+                  ACTIVITY_IMAGE.sizes.reply
+                )}
+              >
                 <Image
                   src={activity.meta.image.url}
                   alt={activity.meta.image.alt || activity.title}
@@ -182,7 +207,10 @@ export function ThreadReply({
 
                 {/* Trending Badge */}
                 {activity.meta.trending && (
-                  <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                  <Badge
+                    variant="secondary"
+                    className="text-xs flex items-center gap-1"
+                  >
                     <Flame className="w-3 h-3" aria-hidden="true" />
                     Trending
                   </Badge>

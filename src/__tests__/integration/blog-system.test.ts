@@ -1,9 +1,9 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
-import { getAllPosts, getPostByAnySlug, generatePostId, calculateReadingTime } from '@/lib/blog'
+import { getAllPosts, getPostByAnySlug, generatePostId, calculateReadingTime } from '@/lib/blog.server'
 import { posts, postsBySlug, postTagCounts, featuredPosts, postsBySeries } from '@/data/posts'
 import { getRelatedPosts } from '@/lib/related-posts'
 import { extractHeadings } from '@/lib/toc'
-import { getPostBadgeMetadata } from '@/lib/post-badges'
+import { getPostBadgeMetadata } from '@/lib/post-badges.server'
 import type { Post } from '@/data/posts'
 
 describe('Blog System Integration', () => {

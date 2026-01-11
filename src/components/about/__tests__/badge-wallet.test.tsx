@@ -99,13 +99,18 @@ describe("BadgeWallet", () => {
   });
 
   it("renders loading state initially", () => {
-    mockFetch.mockImplementation(
-      () => new Promise(() => {}) // Never resolves
-    );
+    const { container } = render(<BadgeWallet username="dcyfr" loading limit={3} />);
 
-    render(<BadgeWallet username="dcyfr" />);
+    // Check that skeleton is rendered (no actual badge links)
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
 
-    expect(screen.getByText("Loading badges...")).toBeInTheDocument();
+    // Skeleton should have grid layout with skeleton cards
+    const gridContainer = container.querySelector(".grid");
+    expect(gridContainer).toBeInTheDocument();
+
+    // Should have 3 skeleton cards (matching limit)
+    const skeletonCards = container.querySelectorAll(".rounded-lg.border");
+    expect(skeletonCards).toHaveLength(3);
   });
 
   it("fetches and displays badges successfully", async () => {
@@ -230,6 +235,23 @@ describe("BadgeWallet", () => {
 
     await waitFor(() => {
       expect(container.querySelector(".custom-class")).toBeInTheDocument();
+    });
+  });
+
+  it("displays total count in header", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        badges: mockBadgesResponse.data,
+        total_count: 2,
+        count: 2,
+      }),
+    });
+
+    render(<BadgeWallet username="dcyfr" showLatestOnly />);
+
+    await waitFor(() => {
+      expect(screen.getByText("2 Total")).toBeInTheDocument();
     });
   });
 });

@@ -16,7 +16,7 @@ vi.mock('framer-motion', () => ({
   AnimatePresence: ({ children }: any) => <>{children}</>,
 }));
 
-import { BackToTop } from '@/components/navigation/back-to-top';
+import { BackToTop } from '@/components/navigation';
 
 describe('BackToTop', () => {
   let scrollToSpy: ReturnType<typeof vi.fn>;

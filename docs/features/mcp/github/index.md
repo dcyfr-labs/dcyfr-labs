@@ -17,11 +17,11 @@ This directory contains comprehensive documentation for GitHub MCP (Model Contex
 ```
 Are you setting up for the first time?
 ├─ YES → Read: docs/mcp/github/setup.md (15 min)
-│        Then: docs/mcp/github/quick-reference.md (5 min)
+│        Then: docs/features/mcp/MCP_QUICK_REFERENCE.md (5 min)
 │        Then: Try it out!
 │
 └─ NO → Do you need quick answers?
-   ├─ YES → Read: docs/mcp/github/quick-reference.md (5 min)
+   ├─ YES → Read: docs/features/mcp/MCP_QUICK_REFERENCE.md (5 min)
         │
         └─ NO → Need deep understanding?
       └─ Read: docs/mcp/github/implementation.md (30 min)
@@ -47,13 +47,13 @@ Are you setting up for the first time?
 ---
 
 ### Quick Reference
-**File**: `docs/mcp/github/quick-reference.md`  
-**Read Time**: 5 minutes  
-**For**: Quick lookups and common tasks  
+**File**: `docs/features/mcp/MCP_QUICK_REFERENCE.md`
+**Read Time**: 5 minutes
+**For**: Quick lookups and common tasks
 **Contains**:
 - Quick start summary
 - Configuration file locations
-- Available toolsets
+- Available toolsets (all 6 MCPs)
 - Example queries
 - Pro tips and tricks
 - Quick troubleshooting matrix
@@ -118,7 +118,7 @@ Are you setting up for the first time?
 
 ### For Existing Users
 
-- **Need to do something?** → `docs/mcp/github/quick-reference.md`
+- **Need to do something?** → `docs/features/mcp/MCP_QUICK_REFERENCE.md`
 - **Run into a problem?** → `docs/mcp/github/setup.md` (Troubleshooting section)
 - **Want to learn more?** → `docs/mcp/github/implementation.md`
 
@@ -131,12 +131,12 @@ Are you setting up for the first time?
 | Goal | Read | Try This |
 |------|------|----------|
 | Get started | docs/mcp/github/setup.md | Follow steps 1-4 |
-| Check syntax | docs/mcp/github/quick-reference.md | Look at "Configuration Files" |
+| Check syntax | docs/features/mcp/MCP_QUICK_REFERENCE.md | Look at "GitHub MCP" section |
 | Understand all features | docs/mcp/github/implementation.md | "Capabilities" section |
-| Fix a problem | docs/mcp/github/setup.md + docs/mcp/github/quick-reference.md | Troubleshooting sections |
+| Fix a problem | docs/mcp/github/setup.md + docs/features/mcp/MCP_QUICK_REFERENCE.md | Troubleshooting sections |
 | Learn about toolsets | docs/mcp/github/implementation.md | "Configuration & Customization" |
 | Understand security | docs/mcp/github/implementation.md | "Security Considerations" |
-| Find command reference | docs/mcp/github/quick-reference.md | "Docker Management" section |
+| Find command reference | docs/features/mcp/MCP_QUICK_REFERENCE.md | "GitHub MCP" section |
 | Set up read-only mode | docs/mcp/github/implementation.md | "Read-Only Mode" section |
 | Customize toolsets | docs/mcp/github/implementation.md | "Toolsets" section |
 | Share with team | .github/copilot-instructions.md + docs/mcp/github/setup.md | .github/copilot-instructions.md |
@@ -147,15 +147,14 @@ Are you setting up for the first time?
 
 ```
 docs/
-├── mcp/github/setup.md                  ← START HERE (first-time)
-├── mcp/github/quick-reference.md        ← Quick reference
-├── mcp/github/implementation.md         ← Complete guide
-├── mcp/github/implementation-summary.md ← What was done
-├── mcp/github/index.md                  ← This file
-│
-├── mcp/filesystem-git/integration.md    ← Filesystem server guide
-├── mcp/quick-reference.md               ← General MCP quick ref
-├── mcp/servers.md                       ← MCP servers list
+├── features/mcp/
+│   ├── github/setup.md                  ← START HERE (first-time)
+│   ├── github/implementation.md         ← Complete guide
+│   ├── github/implementation-summary.md ← What was done
+│   ├── github/index.md                  ← This file
+│   ├── MCP_QUICK_REFERENCE.md           ← Consolidated MCP quick ref (all 6 MCPs)
+│   ├── filesystem-git/integration.md    ← Filesystem server guide
+│   └── servers.md                       ← MCP servers list
 └── ... (other documentation)
 ```
 
@@ -224,7 +223,7 @@ A: See "Documents" section above or use the decision tree at top.
 
 **Getting help**: Check the appropriate document's troubleshooting section:
 - Setup issues → `docs/mcp/github/setup.md` - "Common First-Time Issues"
-- Quick questions → `docs/mcp/github/quick-reference.md` - "Troubleshooting Quick Fixes"
+- Quick questions → `docs/features/mcp/MCP_QUICK_REFERENCE.md` - "Troubleshooting" section
 - Advanced issues → `docs/mcp/github/implementation.md` - "Troubleshooting"
 - Implementation questions → `docs/mcp/github/implementation-summary.md` - "Q&A"
 
@@ -254,7 +253,7 @@ MCP Ecosystem Status:
 
 ### For Developers New to MCP
 1. Read: `docs/mcp/github/setup.md` (understand what GitHub MCP is)
-2. Read: `docs/mcp/github/quick-reference.md` (see what it can do)
+2. Read: `docs/features/mcp/MCP_QUICK_REFERENCE.md` (see what all MCPs can do)
 3. Try: Set it up and run simple queries
 4. Read: `docs/mcp/github/implementation.md` (understand advanced features)
 5. Use: Build workflows combining multiple MCPs
@@ -288,19 +287,20 @@ MCP Ecosystem Status:
 | Document | Owner | Last Updated | Status |
 |----------|-------|--------------|--------|
 | docs/mcp/github/setup.md | dcyfr-labs team | Oct 18, 2025 | ✅ Current |
-| docs/mcp/github/quick-reference.md | dcyfr-labs team | Oct 18, 2025 | ✅ Current |
+| docs/features/mcp/MCP_QUICK_REFERENCE.md | dcyfr-labs team | Jan 5, 2026 | ✅ Current (consolidated) |
 | docs/mcp/github/implementation.md | dcyfr-labs team | Oct 18, 2025 | ✅ Current |
 | docs/mcp/github/implementation-summary.md | dcyfr-labs team | Oct 18, 2025 | ✅ Current |
-| This index | dcyfr-labs team | Oct 18, 2025 | ✅ Current |
+| This index | dcyfr-labs team | Jan 5, 2026 | ✅ Current |
 
 ---
 
 ## 🔗 Related Documentation
 
-- **Filesystem MCP Docs**: See files under `docs/mcp/filesystem-git/`
+- **Consolidated MCP Quick Reference**: `docs/features/mcp/MCP_QUICK_REFERENCE.md` (all 6 MCPs)
+- **Filesystem MCP Docs**: See files under `docs/features/mcp/filesystem-git/`
 - **Project Instructions**: `.github/copilot-instructions.md`
 - **Team Guide**: `agents.md`
-- **General MCP Info**: `docs/mcp/quick-reference.md`, `docs/mcp/servers.md`
+- **MCP Servers List**: `docs/features/mcp/servers.md`
 
 ---
 
@@ -309,13 +309,13 @@ MCP Ecosystem Status:
 **Choose your path:**
 
 - **First time?** → Read [`docs/mcp/github/setup.md`](./setup)
-- **Need quick help?** → Read [`docs/mcp/github/quick-reference.md`](./quick-reference)
+- **Need quick help?** → Read [`docs/features/mcp/MCP_QUICK_REFERENCE.md`](../MCP_QUICK_REFERENCE.md)
 - **Want everything?** → Read [`docs/mcp/github/implementation.md`](./implementation)
 - **Need background?** → Read [`docs/mcp/github/implementation-summary.md`](./implementation-summary)
 
 ---
 
-**Last Updated**: October 18, 2025  
-**Status**: ✅ Ready for Use  
-**Questions?** See documents above or official GitHub MCP repo  
+**Last Updated**: January 5, 2026
+**Status**: ✅ Ready for Use
+**Questions?** See documents above or official GitHub MCP repo
 **Ready to start?** Open `docs/mcp/github/setup.md` → 👈

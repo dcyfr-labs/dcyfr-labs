@@ -7,7 +7,7 @@ import { Shield, Code, Brain } from "lucide-react";
 
 /**
  * TechnicalCapabilities Component
- * 
+ *
  * Displays technical skills and capabilities organized by domain
  * (Security, Development, AI).
  */
@@ -26,15 +26,15 @@ export function TechnicalCapabilities() {
       <div className="text-center mb-12">
         <h2 className={TYPOGRAPHY.h1.standard}>Technical Capabilities</h2>
         <p className={`${TYPOGRAPHY.description} mt-4 max-w-3xl mx-auto`}>
-          Deep expertise across security, modern web development, and AI integration
-          with production-proven tools and frameworks.
+          Deep expertise across security, modern web development, and AI
+          integration with production-proven tools and frameworks.
         </p>
       </div>
 
       <div className="grid md:grid-cols-3 gap-4">
         {capabilities.map((capability, idx) => {
           const IconComponent = getIcon(capability.domain);
-          
+
           return (
             <Card key={idx} className="p-4">
               <div className="space-y-4">
@@ -43,7 +43,9 @@ export function TechnicalCapabilities() {
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                     <IconComponent className="w-5 h-5 text-primary" />
                   </div>
-                  <h3 className={TYPOGRAPHY.h3.standard}>{capability.domain}</h3>
+                  <h3 className={TYPOGRAPHY.h3.standard}>
+                    {capability.domain}
+                  </h3>
                 </div>
 
                 {/* Skills List */}

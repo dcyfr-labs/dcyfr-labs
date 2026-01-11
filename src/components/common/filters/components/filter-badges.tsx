@@ -39,7 +39,7 @@ export function FilterBadges({
           {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
           {label && (
             <>
-              {/* eslint-disable-next-line no-restricted-syntax */}
+              { }
               <span className="text-sm font-medium text-muted-foreground">
                 {label}
               </span>

@@ -1,9 +1,9 @@
 /**
  * DynamicBlogContent
- * 
+ *
  * Server Component for blog post list and pagination
  * Wrapped in Suspense in BlogPage to enable streaming
- * 
+ *
  * This component is called after the static shell renders,
  * allowing the page to show structure immediately and stream
  * the post list and pagination as the data loads.
@@ -13,16 +13,18 @@ import { Suspense } from "react";
 import type { ArchiveData } from "@/lib/archive";
 import type { Post } from "@/data/posts";
 import type { PostCategory } from "@/lib/post-categories";
-import { getMultiplePostViews } from "@/lib/views";
-import { calculateActiveFilterCount } from "@/lib/blog";
+import { getMultiplePostViews } from "@/lib/views.server";
+import { calculateActiveFilterCount } from "@/lib/blog.server";
 import { SPACING } from "@/lib/design-tokens";
-import { ArchivePagination } from "@/components/layouts/archive-pagination";
-import { PostList } from "@/components/blog/post/post-list";
-import { PostCategorySection } from "@/components/blog/post/post-category-section";
-import { MobileFilterBar } from "@/components/blog/filters/mobile-filter-bar";
-import { FloatingFilterFab } from "@/components/blog/filters/floating-filter-fab";
-import { HorizontalFilterChips } from "@/components/blog/filters/horizontal-filter-chips";
-import { LayoutToggle } from "@/components/blog/layout-toggle";
+import { ArchivePagination } from "@/components/layouts";
+import {
+  PostList,
+  PostCategorySection,
+  MobileFilterBar,
+  FloatingFilterFab,
+  HorizontalFilterChips,
+  LayoutToggle,
+} from "@/components/blog";
 
 interface DynamicBlogContentProps {
   /** Archive data with filtered/paginated posts */
@@ -82,7 +84,9 @@ async function DynamicBlogContentImpl({
   groupedCategories,
 }: DynamicBlogContentProps) {
   // Fetch view counts for all filtered posts (this is the async operation that gets streamed)
-  const postIds = sortedArchiveData.allFilteredItems.map((post: Post) => post.id);
+  const postIds = sortedArchiveData.allFilteredItems.map(
+    (post: Post) => post.id
+  );
   const viewCounts = await getMultiplePostViews(postIds);
 
   // Apply sort by popularity if requested (after view counts are loaded)
@@ -106,7 +110,8 @@ async function DynamicBlogContentImpl({
   });
 
   // Feature flag: Horizontal filter chips can be toggled off for now to simplify mobile UI
-  const showHorizontalFilterChips = process.env.NEXT_PUBLIC_FEATURE_HORIZONTAL_FILTER_CHIPS === 'true';
+  const showHorizontalFilterChips =
+    process.env.NEXT_PUBLIC_FEATURE_HORIZONTAL_FILTER_CHIPS === "true";
 
   return (
     <div id="blog-posts" className="w-full">
@@ -187,7 +192,9 @@ async function DynamicBlogContentImpl({
               currentPage={sortedArchiveData.currentPage}
               totalPages={sortedArchiveData.totalPages}
               hasPrevPage={sortedArchiveData.currentPage > 1}
-              hasNextPage={sortedArchiveData.currentPage < sortedArchiveData.totalPages}
+              hasNextPage={
+                sortedArchiveData.currentPage < sortedArchiveData.totalPages
+              }
             />
           </div>
         )}
@@ -200,8 +207,6 @@ async function DynamicBlogContentImpl({
  * Public export - wrapper component with Suspense boundary
  * to be called from BlogPage with fallback skeleton
  */
-export async function DynamicBlogContent(
-  props: DynamicBlogContentProps
-) {
+export async function DynamicBlogContent(props: DynamicBlogContentProps) {
   return <DynamicBlogContentImpl {...props} />;
 }

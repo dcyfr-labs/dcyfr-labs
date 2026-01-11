@@ -2,16 +2,16 @@
 
 /**
  * MDX Diagram Wrapper Components
- * 
+ *
  * These are client-side only wrapper components that safely embed
  * diagram presets into MDX-rendered server components.
- * 
+ *
  * Using "use client" here ensures:
  * - MDXRemote (RSC) doesn't try to render dynamic imports on server
  * - Diagram presets load only on client side
  * - No "Bail out to client-side rendering" errors
  * - React Flow CSS applies correctly at client hydration
- * 
+ *
  * Note: We use dynamic() at the component level (not module level) to ensure
  * props are properly passed through and components render correctly.
  */
@@ -25,9 +25,7 @@ const MCPArchitectureDynamic = dynamic(
   () => import("./diagram-presets").then((mod) => mod.MCPArchitecture),
   {
     ssr: false,
-    loading: () => (
-      <div className="h-[350px] bg-muted animate-pulse rounded-lg" />
-    ),
+    loading: () => <div className="h-[350px] skeleton-shimmer rounded-lg" />,
   }
 );
 
@@ -39,9 +37,7 @@ const AuthenticationFlowDynamic = dynamic(
   () => import("./diagram-presets").then((mod) => mod.AuthenticationFlow),
   {
     ssr: false,
-    loading: () => (
-      <div className="h-[450px] bg-muted animate-pulse rounded-lg" />
-    ),
+    loading: () => <div className="h-[450px] skeleton-shimmer rounded-lg" />,
   }
 );
 
@@ -53,9 +49,7 @@ const PipelineFlowDynamic = dynamic(
   () => import("./diagram-presets").then((mod) => mod.PipelineFlow),
   {
     ssr: false,
-    loading: () => (
-      <div className="h-[420px] bg-muted animate-pulse rounded-lg" />
-    ),
+    loading: () => <div className="h-[420px] skeleton-shimmer rounded-lg" />,
   }
 );
 
@@ -67,9 +61,7 @@ const CVEDecisionTreeDynamic = dynamic(
   () => import("./diagram-presets").then((mod) => mod.CVEDecisionTree),
   {
     ssr: false,
-    loading: () => (
-      <div className="h-[360px] bg-muted animate-pulse rounded-lg" />
-    ),
+    loading: () => <div className="h-[360px] skeleton-shimmer rounded-lg" />,
   }
 );
 

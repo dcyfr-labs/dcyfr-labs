@@ -1,7 +1,8 @@
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import type { Post } from "@/data/posts";
 import { POST_CATEGORY_LABEL } from "@/lib/post-categories";
-import { NEON_COLORS } from "@/lib/design-tokens";
+import { SEMANTIC_COLORS } from "@/lib/design-tokens";
 
 interface PostBadgesProps {
   post: Post;
@@ -9,28 +10,47 @@ interface PostBadgesProps {
   isLatestPost?: boolean;
   isHotPost?: boolean;
   showCategory?: boolean;
+  showFeatured?: boolean;
 }
 
 /**
- * Display status badges for a blog post (Draft, Archived, Hot, New, etc.)
+ * Display status badges for a blog post (Featured, Draft, Archived, Hot, New, etc.)
  * Badges are displayed inline to the right of the title text
  * Note: These badges are NOT links since they're rendered inside clickable cards
  */
-export function PostBadges({ 
-  post, 
+export function PostBadges({
+  post,
   size = "default",
   isLatestPost,
   isHotPost,
   showCategory = false,
+  showFeatured = true,
 }: PostBadgesProps) {
   const badges = [];
+
+  // Featured badge - displayed first for prominence
+  if (showFeatured && post.featured) {
+    badges.push(
+      <Badge
+        key="featured"
+        className={cn(
+          size === "sm" ? "text-xs" : "",
+          "pointer-events-none",
+          SEMANTIC_COLORS.status.success
+        )}
+      >
+        Featured
+      </Badge>
+    );
+  }
 
   // Draft badge (development only)
   if (process.env.NODE_ENV === "development" && post.draft) {
     badges.push(
       <Badge
         key="draft"
-        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none ${NEON_COLORS.blue.badge}`}
+        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
+        variant="outline"
       >
         Draft
       </Badge>
@@ -55,7 +75,11 @@ export function PostBadges({
     badges.push(
       <Badge
         key="new"
-        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none ${NEON_COLORS.lime.badge}`}
+        className={cn(
+          size === "sm" ? "text-xs" : "",
+          "pointer-events-none",
+          SEMANTIC_COLORS.status.success
+        )}
       >
         New
       </Badge>
@@ -67,7 +91,11 @@ export function PostBadges({
     badges.push(
       <Badge
         key="hot"
-        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none ${NEON_COLORS.red.badge}`}
+        className={cn(
+          size === "sm" ? "text-xs" : "",
+          "pointer-events-none",
+          SEMANTIC_COLORS.status.error
+        )}
       >
         Hot
       </Badge>

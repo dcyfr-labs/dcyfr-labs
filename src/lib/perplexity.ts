@@ -268,8 +268,8 @@ async function callPerplexityAPI(
  *   search_recency_filter: "week"
  * });
  *
- * console.log(result.content);
- * console.log(result.citations);
+ * console.warn(result.content);
+ * console.warn(result.citations);
  * ```
  */
 export async function research(

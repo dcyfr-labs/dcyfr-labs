@@ -30,7 +30,7 @@
  */
 
 import { CONTAINER_WIDTHS, SPACING, CONTAINER_VERTICAL_PADDING, CONTAINER_PADDING } from '@/lib/design-tokens';
-import { PageHero } from '@/components/layouts/page-hero';
+import { PageHero } from '@/components/layouts';
 import { cn } from '@/lib/utils';
 
 export interface ArchiveLayoutProps {

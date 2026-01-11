@@ -4,20 +4,26 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { Post } from "@/data/posts";
-import { PostBadges } from "@/components/blog/post/post-badges";
-import { SeriesBadge } from "@/components/blog/post/series-badge";
+import { PostBadges } from "@/components/blog";
+import { SeriesBadge } from "@/components/blog";
 import { Badge } from "@/components/ui/badge";
-import { PostThumbnail } from "@/components/blog/post/post-thumbnail";
-import { HighlightText } from "@/components/common/highlight-text";
-import { BookmarkButton } from "@/components/blog/bookmark-button";
+import { PostThumbnail } from "@/components/blog";
+import { HighlightText } from "@/components/common";
+import { BookmarkButton } from "@/components/blog";
 import dynamic from "next/dynamic";
 import { HOVER_EFFECTS, SPACING, ANIMATION } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 
-const ScrollReveal = dynamic(() => import("@/components/features/scroll-reveal").then(mod => ({ default: mod.ScrollReveal })), {
-  loading: () => <div className="contents" />,
-  ssr: true,
-});
+const ScrollReveal = dynamic(
+  () =>
+    import("@/components/features/scroll-reveal").then((mod) => ({
+      default: mod.ScrollReveal,
+    })),
+  {
+    loading: () => <div className="contents" />,
+    ssr: true,
+  }
+);
 
 /**
  * Props for the PostList component
@@ -67,7 +73,7 @@ interface PostListProps {
  * ⚠️ SKELETON SYNC REQUIRED
  * When updating this component's structure, also update:
  * - src/components/post-list-skeleton.tsx
- * 
+ *
  * Key structural elements that must match:
  * - article: rounded-lg, border, overflow-hidden
  * - Mobile (< md): Vertical layout
@@ -96,8 +102,8 @@ interface PostListProps {
  *
  * @example
  * // Display posts with badges on homepage
- * <PostList 
- *   posts={featuredPosts} 
+ * <PostList
+ *   posts={featuredPosts}
  *   latestSlug={latestPost.slug}
  *   hottestSlug={trendingPost.slug}
  *   emptyMessage="No featured posts yet."
@@ -105,7 +111,7 @@ interface PostListProps {
  *
  * @example
  * // Display search results with h3 headings
- * <PostList 
+ * <PostList
  *   posts={searchResults}
  *   titleLevel="h3"
  *   emptyMessage={`No posts found for "${query}"`}
@@ -117,13 +123,13 @@ interface PostListProps {
  * - Content padding: p-3 sm:p-4
  * - Simplified metadata (date + reading time, tags hidden)
  * - Full card is tappable with large touch target
- * 
+ *
  * **Desktop (≥ md breakpoint):**
  * - Horizontal layout with side thumbnail (128x96px)
  * - Content displays inline with thumbnail
  * - Full metadata visible (date + reading time + tags)
  * - Hover lift effect (-translate-y-0.5)
- * 
+ *
  * **Common:**
  * - Rounded corners with border
  * - Transition effects on hover
@@ -156,8 +162,8 @@ interface PostListProps {
  * @see src/data/posts.ts for Post type definition
  * @see /docs/components/skeleton-sync-strategy.md for skeleton sync guidelines
  */
-export function PostList({ 
-  posts, 
+export function PostList({
+  posts,
   latestSlug,
   hottestSlug,
   titleLevel = "h2",
@@ -166,10 +172,10 @@ export function PostList({
   viewCounts,
   onClearFilters,
   hasActiveFilters = false,
-  searchQuery
+  searchQuery,
 }: PostListProps) {
   const router = useRouter();
-  
+
   // Helper to format view count
   const formatViews = (count: number): string => {
     if (count >= 1000) {
@@ -177,13 +183,13 @@ export function PostList({
     }
     return count.toString();
   };
-  
+
   // Handle clear filters
   const handleClearFilters = () => {
     if (onClearFilters) {
       onClearFilters();
     } else {
-      router.push('/blog');
+      router.push("/blog");
     }
   };
 
@@ -215,15 +221,20 @@ export function PostList({
           // Hero layout for first post - featured prominent card
           if (isFirstPost) {
             return (
-              <ScrollReveal key={p.slug} animation="fade-up" delay={0}>
+              <ScrollReveal key={p.slug}>
                 <article
-                  className={`group rounded-xl border border-border/40 overflow-hidden relative bg-card shadow-md hover:shadow-lg transition-all duration-300 ${HOVER_EFFECTS.card}`}
+                  className={`group rounded-xl border border-border/40 overflow-hidden relative bg-card shadow-md hover:shadow-lg transition-all ${ANIMATION.duration.normal} ${HOVER_EFFECTS.card}`}
                 >
                   {/* Bookmark Button - Top Right Corner */}
                   <div className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <BookmarkButton slug={p.slug} size="icon" variant="ghost" className="bg-background/80 backdrop-blur-sm hover:bg-background" />
+                    <BookmarkButton
+                      slug={p.slug}
+                      size="icon"
+                      variant="ghost"
+                      className="bg-background/80 backdrop-blur-sm hover:bg-background"
+                    />
                   </div>
-                  
+
                   {/* Background image with modern overlay */}
                   {p.image && p.image.url && !p.image.hideCard && (
                     <div className="absolute inset-0 z-0">
@@ -244,7 +255,13 @@ export function PostList({
                     {/* Content */}
                     <div className="p-4 md:p-10 lg:p-12 relative z-10 flex flex-col justify-end min-h-96 md:min-h-128">
                       {/* Badges - modern layout */}
-                      <div className="flex flex-nowrap items-center gap-x-3 text-sm mb-4 text-zinc-300 dark:text-zinc-400 overflow-x-auto">
+                      <div
+                        className={`flex flex-nowrap items-center gap-x-3 text-sm mb-4 overflow-x-auto ${
+                          p.image && p.image.url && !p.image.hideCard
+                            ? "text-white/70"
+                            : "text-muted-foreground"
+                        }`}
+                      >
                         <PostBadges
                           post={p}
                           isLatestPost={latestSlug === p.slug}
@@ -255,39 +272,99 @@ export function PostList({
                       </div>
 
                       {/* Meta info - desktop only */}
-                      <div className="hidden md:flex flex-nowrap items-center gap-x-3 text-sm mb-5 text-zinc-300 dark:text-zinc-400 overflow-x-auto">
-                        <time dateTime={p.publishedAt} className="whitespace-nowrap">
+                      <div
+                        className={`hidden md:flex flex-nowrap items-center gap-x-3 text-sm mb-5 overflow-x-auto ${
+                          p.image && p.image.url && !p.image.hideCard
+                            ? "text-white/70"
+                            : "text-muted-foreground"
+                        }`}
+                      >
+                        <time
+                          dateTime={p.publishedAt}
+                          className="whitespace-nowrap"
+                        >
                           {new Date(p.publishedAt).toLocaleDateString("en-US", {
                             year: "numeric",
                             month: "long",
                             day: "numeric",
                           })}
                         </time>
-                        <span aria-hidden="true" className="text-zinc-500">•</span>
-                        <span className="whitespace-nowrap">{p.readingTime.text}</span>
-                        {viewCounts && viewCounts.has(p.id) && viewCounts.get(p.id)! > 0 && (
-                          <>
-                            <span aria-hidden="true" className="text-zinc-500">•</span>
-                            <span className="whitespace-nowrap">{formatViews(viewCounts.get(p.id)!)} views</span>
-                          </>
-                        )}
+                        <span
+                          aria-hidden="true"
+                          className={
+                            p.image && p.image.url && !p.image.hideCard
+                              ? "text-white/50"
+                              : "text-muted-foreground"
+                          }
+                        >
+                          •
+                        </span>
+                        <span className="whitespace-nowrap">
+                          {p.readingTime.text}
+                        </span>
+                        {viewCounts &&
+                          viewCounts.has(p.id) &&
+                          viewCounts.get(p.id)! > 0 && (
+                            <>
+                              <span
+                                aria-hidden="true"
+                                className={
+                                  p.image && p.image.url && !p.image.hideCard
+                                    ? "text-white/50"
+                                    : "text-muted-foreground"
+                                }
+                              >
+                                •
+                              </span>
+                              <span className="whitespace-nowrap">
+                                {formatViews(viewCounts.get(p.id)!)} views
+                              </span>
+                            </>
+                          )}
                       </div>
 
                       {/* Title - large and bold */}
-                      <TitleTag className="font-bold text-4xl md:text-5xl lg:text-6xl leading-tight line-clamp-3 mb-4 text-white">
-                        <HighlightText text={p.title} searchQuery={searchQuery} />
+                      <TitleTag
+                        className={`font-bold text-4xl md:text-5xl lg:text-6xl leading-tight line-clamp-3 mb-4 ${
+                          p.image && p.image.url && !p.image.hideCard
+                            ? "text-white"
+                            : "text-foreground"
+                        }`}
+                      >
+                        <HighlightText
+                          text={p.title}
+                          searchQuery={searchQuery}
+                        />
                       </TitleTag>
 
                       {/* Subtitle if available */}
                       {p.subtitle && (
-                        <p className="font-medium text-lg md:text-xl text-zinc-200 dark:text-zinc-300 mb-4 line-clamp-2">
-                          <HighlightText text={p.subtitle} searchQuery={searchQuery} />
+                        <p
+                          className={`font-medium text-lg md:text-xl mb-4 line-clamp-2 ${
+                            p.image && p.image.url && !p.image.hideCard
+                              ? "text-white/80"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          <HighlightText
+                            text={p.subtitle}
+                            searchQuery={searchQuery}
+                          />
                         </p>
                       )}
 
                       {/* Summary */}
-                      <p className="text-base md:text-lg leading-relaxed text-zinc-300 dark:text-zinc-300 line-clamp-2 md:line-clamp-3 mb-6">
-                        <HighlightText text={p.summary} searchQuery={searchQuery} />
+                      <p
+                        className={`text-base md:text-lg leading-relaxed line-clamp-2 md:line-clamp-3 mb-6 ${
+                          p.image && p.image.url && !p.image.hideCard
+                            ? "text-white/80"
+                            : "text-muted-foreground"
+                        }`}
+                      >
+                        <HighlightText
+                          text={p.summary}
+                          searchQuery={searchQuery}
+                        />
                       </p>
 
                       {/* Tags with modern styling */}
@@ -321,21 +398,34 @@ export function PostList({
 
           // Alternating horizontal layout for remaining posts - modern card design
           const isSecondRow = index === 1 || index === 2;
+          const isEven = index % 2 === 0; // Alternate left/right image position
           return (
-            <ScrollReveal key={p.slug} animation="fade-up" delay={index * 50}>
+            <ScrollReveal key={p.slug}>
               <article
-                className={`group rounded-lg border border-border/40 overflow-hidden relative bg-card shadow-sm hover:shadow-md transition-all duration-300 ${HOVER_EFFECTS.card}`}
+                className={`group rounded-lg border border-border/40 overflow-hidden relative bg-card shadow-sm hover:shadow-md transition-all ${ANIMATION.duration.normal} ${HOVER_EFFECTS.card}`}
               >
                 {/* Bookmark Button */}
                 <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <BookmarkButton slug={p.slug} size="icon" variant="ghost" className="bg-background/80 backdrop-blur-sm hover:bg-background" />
+                  <BookmarkButton
+                    slug={p.slug}
+                    size="icon"
+                    variant="ghost"
+                    className="bg-background/80 backdrop-blur-sm hover:bg-background"
+                  />
                 </div>
-                
+
                 <Link href={`/blog/${p.slug}`} className="block h-full">
-                  <div className="h-full flex flex-col md:flex-row md:items-stretch">
+                  <div
+                    className={cn(
+                      "h-full flex flex-col md:items-stretch",
+                      isEven ? "md:flex-row" : "md:flex-row-reverse"
+                    )}
+                  >
                     {/* Image section - dynamic sizing based on position */}
                     {p.image && p.image.url && !p.image.hideCard && (
-                      <div className={`relative overflow-hidden bg-muted shrink-0 ${index === 1 ? 'md:w-2/5' : 'md:w-3/5'}`}>
+                      <div
+                        className={`relative overflow-hidden bg-muted shrink-0 ${index === 1 ? "md:w-2/5" : "md:w-3/5"}`}
+                      >
                         <Image
                           src={p.image.url}
                           alt={p.image.alt || p.title}
@@ -349,13 +439,11 @@ export function PostList({
                     )}
 
                     {/* Content section */}
-                    <div className={`p-4 md:p-6 flex flex-col justify-between ${p.image && p.image.url && !p.image.hideCard ? (index === 1 ? 'md:w-3/5' : 'md:w-2/5') : 'w-full'}`}>
+                    <div
+                      className={`p-4 md:p-8 flex flex-col justify-between ${p.image && p.image.url && !p.image.hideCard ? (index === 1 ? "md:w-3/5" : "md:w-2/5") : "w-full"}`}
+                    >
                       {/* Badges */}
                       <div className="flex flex-nowrap items-center gap-x-2.5 text-sm text-muted-foreground mb-2.5 overflow-x-auto">
-                        {/* Featured badge */}
-                        {p.featured && (
-                          <Badge className="bg-linear-to-r from-amber-500 to-orange-500 text-white border-none flex-shrink-0 text-xs">Featured</Badge>
-                        )}
                         <PostBadges
                           post={p}
                           size="sm"
@@ -368,31 +456,58 @@ export function PostList({
 
                       {/* Meta info - desktop only */}
                       <div className="hidden md:flex flex-nowrap items-center gap-x-2.5 text-sm text-muted-foreground mb-2.5 overflow-x-auto">
-                        <time dateTime={p.publishedAt} className="whitespace-nowrap">
+                        <time
+                          dateTime={p.publishedAt}
+                          className="whitespace-nowrap"
+                        >
                           {new Date(p.publishedAt).toLocaleDateString("en-US", {
                             year: "numeric",
                             month: "short",
                             day: "numeric",
                           })}
                         </time>
-                        <span aria-hidden="true" className="text-zinc-400">•</span>
-                        <span className="whitespace-nowrap">{p.readingTime.text}</span>
-                        {viewCounts && viewCounts.has(p.id) && viewCounts.get(p.id)! > 0 && (
-                          <>
-                            <span aria-hidden="true" className="text-zinc-400">•</span>
-                            <span className="whitespace-nowrap">{formatViews(viewCounts.get(p.id)!)} views</span>
-                          </>
-                        )}
+                        <span
+                          aria-hidden="true"
+                          className="text-muted-foreground"
+                        >
+                          •
+                        </span>
+                        <span className="whitespace-nowrap">
+                          {p.readingTime.text}
+                        </span>
+                        {viewCounts &&
+                          viewCounts.has(p.id) &&
+                          viewCounts.get(p.id)! > 0 && (
+                            <>
+                              <span
+                                aria-hidden="true"
+                                className="text-muted-foreground"
+                              >
+                                •
+                              </span>
+                              <span className="whitespace-nowrap">
+                                {formatViews(viewCounts.get(p.id)!)} views
+                              </span>
+                            </>
+                          )}
                       </div>
 
                       {/* Title */}
-                      <TitleTag className={`font-bold leading-tight line-clamp-2 mb-3 text-foreground ${isSecondRow ? 'text-lg md:text-2xl' : 'text-xl md:text-3xl'}`}>
-                        <HighlightText text={p.title} searchQuery={searchQuery} />
+                      <TitleTag
+                        className={`font-bold leading-tight line-clamp-2 mb-3 text-foreground ${isSecondRow ? "text-lg md:text-2xl" : "text-xl md:text-3xl"}`}
+                      >
+                        <HighlightText
+                          text={p.title}
+                          searchQuery={searchQuery}
+                        />
                       </TitleTag>
 
                       {/* Summary */}
                       <p className="text-sm md:text-base leading-relaxed text-muted-foreground line-clamp-2 md:line-clamp-3 mb-3">
-                        <HighlightText text={p.summary} searchQuery={searchQuery} />
+                        <HighlightText
+                          text={p.summary}
+                          searchQuery={searchQuery}
+                        />
                       </p>
 
                       {/* Tags */}
@@ -408,10 +523,7 @@ export function PostList({
                             </Badge>
                           ))}
                           {p.tags.length > 3 && (
-                            <Badge
-                              variant="outline"
-                              className="text-xs"
-                            >
+                            <Badge variant="outline" className="text-xs">
                               +{p.tags.length - 3}
                             </Badge>
                           )}
@@ -439,13 +551,18 @@ export function PostList({
 
             if (isFirstPost) {
               return (
-                <ScrollReveal key={p.slug} animation="fade-up" delay={0}>
+                <ScrollReveal key={p.slug}>
                   <article
                     className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}
                   >
                     {/* Bookmark Button - Top Right Corner */}
                     <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <BookmarkButton slug={p.slug} size="icon" variant="ghost" className="bg-background/80 backdrop-blur-sm hover:bg-background" />
+                      <BookmarkButton
+                        slug={p.slug}
+                        size="icon"
+                        variant="ghost"
+                        className="bg-background/80 backdrop-blur-sm hover:bg-background"
+                      />
                     </div>
 
                     {/* Background image */}
@@ -464,11 +581,7 @@ export function PostList({
 
                     <Link href={`/blog/${p.slug}`} className="block">
                       <div className="p-4 md:p-10 lg:p-12 relative z-10">
-                        <div className="flex flex-nowrap items-center gap-x-3 text-sm mb-4 text-zinc-300 dark:text-zinc-300 overflow-x-auto">
-                          {/* Featured badge */}
-                          {p.featured && (
-                            <Badge className="bg-linear-to-r from-amber-500 to-orange-500 text-white border-none flex-shrink-0">Featured</Badge>
-                          )}
+                        <div className="flex flex-nowrap items-center gap-x-3 text-sm mb-4 text-muted overflow-x-auto">
                           <PostBadges
                             post={p}
                             isLatestPost={latestSlug === p.slug}
@@ -478,47 +591,82 @@ export function PostList({
                           <SeriesBadge post={p} />
                         </div>
 
-                        <div className="hidden md:flex flex-nowrap items-center gap-x-3 text-sm mb-4 text-zinc-700 dark:text-zinc-300 overflow-x-auto">
+                        <div className="hidden md:flex flex-nowrap items-center gap-x-3 text-sm mb-4 text-foreground overflow-x-auto">
                           <time dateTime={p.publishedAt}>
-                            {new Date(p.publishedAt).toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            })}
+                            {new Date(p.publishedAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              }
+                            )}
                           </time>
-                          <span aria-hidden="true" className="text-zinc-500">•</span>
-                          <span className="text-zinc-700 dark:text-zinc-300">{p.readingTime.text}</span>
-                          {viewCounts && viewCounts.has(p.id) && viewCounts.get(p.id)! > 0 && (
-                            <>
-                              <span aria-hidden="true" className="text-zinc-500">•</span>
-                              <span className="text-zinc-700 dark:text-zinc-300">{formatViews(viewCounts.get(p.id)!)} views</span>
-                            </>
-                          )}
+                          <span
+                            aria-hidden="true"
+                            className="text-muted-foreground"
+                          >
+                            •
+                          </span>
+                          <span className="text-foreground">
+                            {p.readingTime.text}
+                          </span>
+                          {viewCounts &&
+                            viewCounts.has(p.id) &&
+                            viewCounts.get(p.id)! > 0 && (
+                              <>
+                                <span
+                                  aria-hidden="true"
+                                  className="text-muted-foreground"
+                                >
+                                  •
+                                </span>
+                                <span className="text-foreground">
+                                  {formatViews(viewCounts.get(p.id)!)} views
+                                </span>
+                              </>
+                            )}
                         </div>
 
-                        <TitleTag className="font-bold text-3xl md:text-4xl lg:text-5xl leading-tight line-clamp-3 mb-4 text-zinc-900 dark:text-zinc-100">
-                          <HighlightText text={p.title} searchQuery={searchQuery} />
+                        <TitleTag className="font-bold text-3xl md:text-4xl lg:text-5xl leading-tight line-clamp-3 mb-4 text-foreground">
+                          <HighlightText
+                            text={p.title}
+                            searchQuery={searchQuery}
+                          />
                         </TitleTag>
 
                         {p.subtitle && (
-                          <p className="font-medium text-lg md:text-xl text-zinc-600 dark:text-zinc-400 mb-4">
-                            <HighlightText text={p.subtitle} searchQuery={searchQuery} />
+                          <p className="font-medium text-lg md:text-xl text-muted-foreground mb-4">
+                            <HighlightText
+                              text={p.subtitle}
+                              searchQuery={searchQuery}
+                            />
                           </p>
                         )}
 
-                        <p className="text-base md:text-xl leading-relaxed text-zinc-700 dark:text-zinc-300 line-clamp-2 md:line-clamp-3 mb-5">
-                          <HighlightText text={p.summary} searchQuery={searchQuery} />
+                        <p className="text-base md:text-xl leading-relaxed text-foreground line-clamp-2 md:line-clamp-3 mb-5">
+                          <HighlightText
+                            text={p.summary}
+                            searchQuery={searchQuery}
+                          />
                         </p>
 
                         {p.tags.length > 0 && (
                           <div className="flex flex-wrap gap-2">
                             {p.tags.slice(0, 5).map((tag) => (
-                              <Badge key={tag} variant="secondary" className="text-xs md:text-sm bg-zinc-200/80 text-zinc-800 dark:bg-zinc-700/80 dark:text-zinc-200">
+                              <Badge
+                                key={tag}
+                                variant="secondary"
+                                className="text-xs md:text-sm bg-muted/80 text-foreground"
+                              >
                                 {tag}
                               </Badge>
                             ))}
                             {p.tags.length > 5 && (
-                              <Badge variant="secondary" className="text-xs md:text-sm bg-zinc-200/80 text-zinc-800 dark:bg-zinc-700/80 dark:text-zinc-200">
+                              <Badge
+                                variant="secondary"
+                                className="text-xs md:text-sm bg-muted/80 text-foreground"
+                              >
                                 +{p.tags.length - 5} more
                               </Badge>
                             )}
@@ -533,10 +681,17 @@ export function PostList({
 
             // Remaining posts in compact cards
             return (
-              <ScrollReveal key={p.slug} animation="fade-up" delay={index * 50}>
-                <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}>
+              <ScrollReveal key={p.slug}>
+                <article
+                  className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}
+                >
                   <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <BookmarkButton slug={p.slug} size="icon" variant="ghost" className="bg-background/80 backdrop-blur-sm hover:bg-background" />
+                    <BookmarkButton
+                      slug={p.slug}
+                      size="icon"
+                      variant="ghost"
+                      className="bg-background/80 backdrop-blur-sm hover:bg-background"
+                    />
                   </div>
                   {p.image && p.image.url && !p.image.hideCard && (
                     <div className="absolute inset-0 z-0">
@@ -553,24 +708,43 @@ export function PostList({
                   <Link href={`/blog/${p.slug}`} className="block">
                     <div className="p-4 md:p-8 relative z-10">
                       <div className="flex flex-nowrap items-center gap-x-2.5 text-sm text-muted-foreground mb-3 overflow-x-auto">
-                        <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
+                        <PostBadges
+                          post={p}
+                          size="sm"
+                          isLatestPost={latestSlug === p.slug}
+                          isHotPost={hottestSlug === p.slug}
+                          showCategory={true}
+                        />
                         <SeriesBadge post={p} size="sm" />
                       </div>
-                      <TitleTag className="font-bold text-xl md:text-2xl lg:text-3xl leading-tight line-clamp-2 mb-3 text-zinc-900 dark:text-zinc-100">
-                        <HighlightText text={p.title} searchQuery={searchQuery} />
+                      <TitleTag className="font-bold text-xl md:text-2xl lg:text-3xl leading-tight line-clamp-2 mb-3 text-foreground">
+                        <HighlightText
+                          text={p.title}
+                          searchQuery={searchQuery}
+                        />
                       </TitleTag>
-                      <p className="text-sm md:text-base leading-relaxed text-zinc-600 dark:text-zinc-400 line-clamp-2 lg:line-clamp-3 mb-4">
-                        <HighlightText text={p.summary} searchQuery={searchQuery} />
+                      <p className="text-sm md:text-base leading-relaxed text-muted-foreground line-clamp-2 lg:line-clamp-3 mb-4">
+                        <HighlightText
+                          text={p.summary}
+                          searchQuery={searchQuery}
+                        />
                       </p>
                       {p.tags.length > 0 && (
                         <div className="flex flex-wrap gap-2">
                           {p.tags.slice(0, 3).map((tag) => (
-                            <Badge key={tag} variant="outline" className="text-xs border-zinc-300 text-zinc-700 dark:border-zinc-600 dark:text-zinc-300">
+                            <Badge
+                              key={tag}
+                              variant="outline"
+                              className="text-xs border-border text-foreground"
+                            >
                               {tag}
                             </Badge>
                           ))}
                           {p.tags.length > 3 && (
-                            <Badge variant="outline" className="text-xs border-zinc-300 text-zinc-500 dark:border-zinc-600 dark:text-zinc-400">
+                            <Badge
+                              variant="outline"
+                              className="text-xs border-border text-muted-foreground"
+                            >
                               +{p.tags.length - 3}
                             </Badge>
                           )}
@@ -590,34 +764,36 @@ export function PostList({
     return (
       <div data-testid="post-list">
         {/* Hero section - First post */}
-        <ScrollReveal animation="fade-up" delay={0} className="mb-6">
-          <article className={`group rounded-xl border border-border/40 overflow-hidden relative bg-card shadow-md hover:shadow-lg transition-all ${HOVER_EFFECTS.card}`}>
-            {/* Featured badge - only show if post is featured */}
-            {posts[0].featured && (
-              <div className="absolute top-4 left-4 z-20">
-                <Badge className="bg-linear-to-r from-amber-500 to-orange-500 text-white border-none">Featured</Badge>
-              </div>
-            )}
-
+        <ScrollReveal className="mb-6">
+          <article
+            className={`group rounded-xl border border-border/40 overflow-hidden relative bg-card shadow-md hover:shadow-lg transition-all ${HOVER_EFFECTS.card}`}
+          >
             {/* Bookmark Button - Top Right Corner */}
             <div className="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-              <BookmarkButton slug={posts[0].slug} size="icon" variant="ghost" className="bg-background/80 backdrop-blur-sm hover:bg-background" />
+              <BookmarkButton
+                slug={posts[0].slug}
+                size="icon"
+                variant="ghost"
+                className="bg-background/80 backdrop-blur-sm hover:bg-background"
+              />
             </div>
 
             {/* Background image with scale effect */}
-            {posts[0].image && posts[0].image.url && !posts[0].image.hideCard && (
-              <div className="absolute inset-0 z-0 overflow-hidden">
-                <Image
-                  src={posts[0].image.url}
-                  alt={posts[0].image.alt || posts[0].title}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform"
-                  style={{ transitionDuration: ANIMATION.duration.slow }}
-                  sizes="(max-width: 768px) 100vw, 100vw"
-                />
-                <div className="absolute inset-0 bg-linear-to-b from-black/30 via-black/50 to-black/70" />
-              </div>
-            )}
+            {posts[0].image &&
+              posts[0].image.url &&
+              !posts[0].image.hideCard && (
+                <div className="absolute inset-0 z-0 overflow-hidden">
+                  <Image
+                    src={posts[0].image.url}
+                    alt={posts[0].image.alt || posts[0].title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform"
+                    style={{ transitionDuration: ANIMATION.duration.slow }}
+                    sizes="(max-width: 768px) 100vw, 100vw"
+                  />
+                  <div className="absolute inset-0 bg-linear-to-b from-black/30 via-black/50 to-black/70" />
+                </div>
+              )}
 
             <Link href={`/blog/${posts[0].slug}`} className="block">
               <div className="min-h-96 md:min-h-128 p-4 md:p-10 lg:p-12 relative z-10 flex flex-col justify-end">
@@ -633,40 +809,59 @@ export function PostList({
 
                 <div className="hidden md:flex flex-nowrap items-center gap-x-3 text-sm mb-4 text-white/70 overflow-x-auto">
                   <time dateTime={posts[0].publishedAt}>
-                    {new Date(posts[0].publishedAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                    {new Date(posts[0].publishedAt).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )}
                   </time>
                   <span aria-hidden="true">•</span>
                   <span>{posts[0].readingTime.text}</span>
-                  {viewCounts && viewCounts.has(posts[0].id) && viewCounts.get(posts[0].id)! > 0 && (
-                    <>
-                      <span aria-hidden="true">•</span>
-                      <span>{formatViews(viewCounts.get(posts[0].id)!)} views</span>
-                    </>
-                  )}
+                  {viewCounts &&
+                    viewCounts.has(posts[0].id) &&
+                    viewCounts.get(posts[0].id)! > 0 && (
+                      <>
+                        <span aria-hidden="true">•</span>
+                        <span>
+                          {formatViews(viewCounts.get(posts[0].id)!)} views
+                        </span>
+                      </>
+                    )}
                 </div>
 
                 <TitleTag className="font-bold text-4xl md:text-5xl lg:text-6xl leading-tight line-clamp-3 mb-4 text-white">
-                  <HighlightText text={posts[0].title} searchQuery={searchQuery} />
+                  <HighlightText
+                    text={posts[0].title}
+                    searchQuery={searchQuery}
+                  />
                 </TitleTag>
 
                 {posts[0].subtitle && (
                   <p className="font-medium text-lg md:text-xl text-white/90 mb-4">
-                    <HighlightText text={posts[0].subtitle} searchQuery={searchQuery} />
+                    <HighlightText
+                      text={posts[0].subtitle}
+                      searchQuery={searchQuery}
+                    />
                   </p>
                 )}
 
                 <p className="text-base md:text-lg leading-relaxed text-white/80 line-clamp-2 md:line-clamp-3 mb-5">
-                  <HighlightText text={posts[0].summary} searchQuery={searchQuery} />
+                  <HighlightText
+                    text={posts[0].summary}
+                    searchQuery={searchQuery}
+                  />
                 </p>
 
                 {posts[0].tags.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {posts[0].tags.slice(0, 5).map((tag) => (
-                      <Badge key={tag} className="bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm border border-white/20">
+                      <Badge
+                        key={tag}
+                        className="bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm border border-white/20"
+                      >
                         {tag}
                       </Badge>
                     ))}
@@ -683,17 +878,25 @@ export function PostList({
         </ScrollReveal>
 
         {/* Grid section - Remaining posts in 2-column layout */}
-        <div className={cn("grid grid-cols-1 md:grid-cols-2 gap-4", SPACING.section)}>
+        <div
+          className={cn(
+            "grid grid-cols-1 md:grid-cols-2 gap-4",
+            SPACING.section
+          )}
+        >
           {posts.slice(1).map((p, index) => (
-            <ScrollReveal
-              key={p.slug}
-              animation="fade-up"
-              delay={(index + 1) * 50}
-            >
-              <article className={`group rounded-lg border border-border/40 overflow-hidden relative bg-card shadow-md hover:shadow-lg transition-all flex flex-col h-full ${HOVER_EFFECTS.card}`}>
+            <ScrollReveal key={p.slug}>
+              <article
+                className={`group rounded-lg border border-border/40 overflow-hidden relative bg-card shadow-md hover:shadow-lg transition-all flex flex-col h-full ${HOVER_EFFECTS.card}`}
+              >
                 {/* Bookmark Button - Top Right Corner */}
                 <div className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <BookmarkButton slug={p.slug} size="icon" variant="ghost" className="bg-background/80 backdrop-blur-sm hover:bg-background" />
+                  <BookmarkButton
+                    slug={p.slug}
+                    size="icon"
+                    variant="ghost"
+                    className="bg-background/80 backdrop-blur-sm hover:bg-background"
+                  />
                 </div>
 
                 {/* Background image with scale effect */}
@@ -712,7 +915,9 @@ export function PostList({
                 )}
                 <Link href={`/blog/${p.slug}`} className="flex flex-col h-full">
                   <div className="flex-1 flex flex-col p-4 md:p-8 relative z-10">
-                    <div className={`flex flex-wrap items-center gap-x-2 gap-y-1 mb-3 text-sm ${p.image && p.image.url && !p.image.hideCard ? 'text-white/70' : 'text-muted-foreground'}`}>
+                    <div
+                      className={`flex flex-wrap items-center gap-x-2 gap-y-1 mb-3 text-sm ${p.image && p.image.url && !p.image.hideCard ? "text-white/70" : "text-muted-foreground"}`}
+                    >
                       <PostBadges
                         post={p}
                         size="default"
@@ -723,7 +928,9 @@ export function PostList({
                       <SeriesBadge post={p} size="default" />
                     </div>
 
-                    <div className={`hidden md:flex flex-nowrap items-center gap-x-2 mb-3 text-xs ${p.image && p.image.url && !p.image.hideCard ? 'text-white/60' : 'text-muted-foreground'}`}>
+                    <div
+                      className={`hidden md:flex flex-nowrap items-center gap-x-2 mb-3 text-xs ${p.image && p.image.url && !p.image.hideCard ? "text-white/60" : "text-muted-foreground"}`}
+                    >
                       <time dateTime={p.publishedAt}>
                         {new Date(p.publishedAt).toLocaleDateString("en-US", {
                           year: "numeric",
@@ -733,31 +940,47 @@ export function PostList({
                       </time>
                       <span aria-hidden="true">•</span>
                       <span>{p.readingTime.text}</span>
-                      {viewCounts && viewCounts.has(p.id) && viewCounts.get(p.id)! > 0 && (
-                        <>
-                          <span aria-hidden="true">•</span>
-                          <span>{formatViews(viewCounts.get(p.id)!)} views</span>
-                        </>
-                      )}
+                      {viewCounts &&
+                        viewCounts.has(p.id) &&
+                        viewCounts.get(p.id)! > 0 && (
+                          <>
+                            <span aria-hidden="true">•</span>
+                            <span>
+                              {formatViews(viewCounts.get(p.id)!)} views
+                            </span>
+                          </>
+                        )}
                     </div>
 
-                    <TitleTag className={`font-semibold text-lg md:text-xl line-clamp-2 mb-3 ${p.image && p.image.url && !p.image.hideCard ? 'text-white' : 'text-foreground'}`}>
+                    <TitleTag
+                      className={`font-semibold text-lg md:text-xl line-clamp-2 mb-3 ${p.image && p.image.url && !p.image.hideCard ? "text-white" : "text-foreground"}`}
+                    >
                       <HighlightText text={p.title} searchQuery={searchQuery} />
                     </TitleTag>
 
-                    <p className={`text-sm line-clamp-3 md:line-clamp-4 flex-1 ${p.image && p.image.url && !p.image.hideCard ? 'text-white/80' : 'text-muted-foreground'}`}>
-                      <HighlightText text={p.summary} searchQuery={searchQuery} />
+                    <p
+                      className={`text-sm line-clamp-3 md:line-clamp-4 flex-1 ${p.image && p.image.url && !p.image.hideCard ? "text-white/80" : "text-muted-foreground"}`}
+                    >
+                      <HighlightText
+                        text={p.summary}
+                        searchQuery={searchQuery}
+                      />
                     </p>
 
                     {p.tags.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-4">
-                        {p.tags.slice(0, 3).map(tag => (
-                          <Badge key={tag} className={`backdrop-blur-sm border ${p.image && p.image.url && !p.image.hideCard ? 'bg-white/20 text-white border-white/30 hover:bg-white/30' : 'bg-white/10 text-foreground hover:bg-white/20 border-border/40'}`}>
+                        {p.tags.slice(0, 3).map((tag) => (
+                          <Badge
+                            key={tag}
+                            className={`backdrop-blur-sm border ${p.image && p.image.url && !p.image.hideCard ? "bg-white/20 text-white border-white/30 hover:bg-white/30" : "bg-white/10 text-foreground hover:bg-white/20 border-border/40"}`}
+                          >
                             {tag}
                           </Badge>
                         ))}
                         {p.tags.length > 3 && (
-                          <Badge className={`backdrop-blur-sm border ${p.image && p.image.url && !p.image.hideCard ? 'bg-white/20 text-white/70 border-white/30 hover:bg-white/30' : 'bg-white/10 text-muted-foreground hover:bg-white/20 border-border/40'}`}>
+                          <Badge
+                            className={`backdrop-blur-sm border ${p.image && p.image.url && !p.image.hideCard ? "bg-white/20 text-white/70 border-white/30 hover:bg-white/30" : "bg-white/10 text-muted-foreground hover:bg-white/20 border-border/40"}`}
+                          >
                             +{p.tags.length - 3}
                           </Badge>
                         )}
@@ -775,21 +998,24 @@ export function PostList({
 
   // List layout: single column with full details
   if (layout === "list") {
-
-
     return (
       <div className={SPACING.subsection} data-testid="post-list">
         {posts.map((p, index) => {
           return (
-            <ScrollReveal key={p.slug} animation="fade-up" delay={index * 80}>
+            <ScrollReveal key={p.slug} delay={index * 80}>
               <article
                 className={`group rounded-lg border border-border/40 overflow-hidden relative bg-card shadow-md hover:shadow-lg transition-all ${HOVER_EFFECTS.card}`}
               >
                 {/* Bookmark Button - Top Right Corner */}
                 <div className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <BookmarkButton slug={p.slug} size="icon" variant="ghost" className="bg-background/80 backdrop-blur-sm hover:bg-background" />
+                  <BookmarkButton
+                    slug={p.slug}
+                    size="icon"
+                    variant="ghost"
+                    className="bg-background/80 backdrop-blur-sm hover:bg-background"
+                  />
                 </div>
-                
+
                 {/* Background image with scale effect - only if explicitly defined in post and not hidden */}
                 {p.image && p.image.url && !p.image.hideCard && (
                   <div className="absolute inset-0 z-0 overflow-hidden">
@@ -808,7 +1034,9 @@ export function PostList({
                 <Link href={`/blog/${p.slug}`} className="block">
                   <div className="p-4 md:p-8 lg:p-10 relative z-10">
                     {/* Badges - show on all posts */}
-                    <div className={`flex flex-nowrap items-center gap-x-2 text-xs mb-4 overflow-x-auto ${p.image && p.image.url && !p.image.hideCard ? 'text-white/70' : 'text-muted-foreground'}`}>
+                    <div
+                      className={`flex flex-nowrap items-center gap-x-2 text-xs mb-4 overflow-x-auto ${p.image && p.image.url && !p.image.hideCard ? "text-white/70" : "text-muted-foreground"}`}
+                    >
                       <PostBadges
                         post={p}
                         size="sm"
@@ -820,7 +1048,9 @@ export function PostList({
                     </div>
 
                     {/* Time/reading time/views - desktop only */}
-                    <div className={`hidden md:flex flex-nowrap items-center gap-x-2 text-xs mb-4 overflow-x-auto ${p.image && p.image.url && !p.image.hideCard ? 'text-white/60' : 'text-muted-foreground'}`}>
+                    <div
+                      className={`hidden md:flex flex-nowrap items-center gap-x-2 text-xs mb-4 overflow-x-auto ${p.image && p.image.url && !p.image.hideCard ? "text-white/60" : "text-muted-foreground"}`}
+                    >
                       <time dateTime={p.publishedAt}>
                         {new Date(p.publishedAt).toLocaleDateString("en-US", {
                           year: "numeric",
@@ -843,12 +1073,16 @@ export function PostList({
                     </div>
 
                     {/* Title */}
-                    <TitleTag className={`font-semibold text-2xl md:text-3xl lg:text-4xl line-clamp-2 mb-4 ${p.image && p.image.url && !p.image.hideCard ? 'text-white' : 'text-foreground'}`}>
+                    <TitleTag
+                      className={`font-semibold text-2xl md:text-3xl lg:text-4xl line-clamp-2 mb-4 ${p.image && p.image.url && !p.image.hideCard ? "text-white" : "text-foreground"}`}
+                    >
                       <HighlightText text={p.title} searchQuery={searchQuery} />
                     </TitleTag>
 
                     {/* Summary - more lines visible */}
-                    <p className={`text-base md:text-lg line-clamp-3 md:line-clamp-4 mb-5 ${p.image && p.image.url && !p.image.hideCard ? 'text-white/80' : 'text-muted-foreground'}`}>
+                    <p
+                      className={`text-base md:text-lg line-clamp-3 md:line-clamp-4 mb-5 ${p.image && p.image.url && !p.image.hideCard ? "text-white/80" : "text-muted-foreground"}`}
+                    >
                       <HighlightText
                         text={p.summary}
                         searchQuery={searchQuery}
@@ -861,13 +1095,15 @@ export function PostList({
                         {p.tags.slice(0, 5).map((tag) => (
                           <Badge
                             key={tag}
-                            className={`backdrop-blur-sm border text-xs ${p.image && p.image.url && !p.image.hideCard ? 'bg-white/20 text-white border-white/30 hover:bg-white/30' : 'bg-white/10 text-foreground hover:bg-white/20 border-border/40'}`}
+                            className={`backdrop-blur-sm border text-xs ${p.image && p.image.url && !p.image.hideCard ? "bg-white/20 text-white border-white/30 hover:bg-white/30" : "bg-white/10 text-foreground hover:bg-white/20 border-border/40"}`}
                           >
                             {tag}
                           </Badge>
                         ))}
                         {p.tags.length > 5 && (
-                          <Badge className={`backdrop-blur-sm border text-xs ${p.image && p.image.url && !p.image.hideCard ? 'bg-white/20 text-white/70 border-white/30 hover:bg-white/30' : 'bg-white/10 text-muted-foreground hover:bg-white/20 border-border/40'}`}>
+                          <Badge
+                            className={`backdrop-blur-sm border text-xs ${p.image && p.image.url && !p.image.hideCard ? "bg-white/20 text-white/70 border-white/30 hover:bg-white/30" : "bg-white/10 text-muted-foreground hover:bg-white/20 border-border/40"}`}
+                          >
                             +{p.tags.length - 5}
                           </Badge>
                         )}
@@ -889,15 +1125,20 @@ export function PostList({
       <div className={SPACING.postList} data-testid="post-list">
         {posts.map((p, index) => {
           return (
-            <ScrollReveal key={p.slug} animation="fade-up" delay={index * 50}>
+            <ScrollReveal key={p.slug}>
               <article
                 className={`group rounded-lg border border-border/40 overflow-hidden relative bg-card shadow-sm hover:shadow-md transition-all ${HOVER_EFFECTS.card}`}
               >
                 {/* Bookmark Button - Top Right Corner */}
                 <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <BookmarkButton slug={p.slug} size="sm" variant="ghost" className="bg-background/80 backdrop-blur-sm hover:bg-background" />
+                  <BookmarkButton
+                    slug={p.slug}
+                    size="sm"
+                    variant="ghost"
+                    className="bg-background/80 backdrop-blur-sm hover:bg-background"
+                  />
                 </div>
-                
+
                 {/* Background image with scale effect - only if explicitly defined in post and not hidden */}
                 {p.image && p.image.url && !p.image.hideCard && (
                   <div className="absolute inset-0 z-0 overflow-hidden">
@@ -916,7 +1157,9 @@ export function PostList({
                 <Link href={`/blog/${p.slug}`} className="block">
                   <div className="p-3 md:p-4 relative z-10 min-h-24 flex flex-col justify-end">
                     {/* Badges - show on all posts */}
-                    <div className={`flex flex-nowrap items-center gap-x-1.5 text-xs mb-1.5 overflow-x-auto ${p.image && p.image.url && !p.image.hideCard ? 'text-white/70' : 'text-muted-foreground'}`}>
+                    <div
+                      className={`flex flex-nowrap items-center gap-x-1.5 text-xs mb-1.5 overflow-x-auto ${p.image && p.image.url && !p.image.hideCard ? "text-white/70" : "text-muted-foreground"}`}
+                    >
                       <PostBadges
                         post={p}
                         size="sm"
@@ -928,7 +1171,9 @@ export function PostList({
                     </div>
 
                     {/* Time/reading time/views - desktop only */}
-                    <div className={`hidden md:flex flex-nowrap items-center gap-x-1 text-xs mb-2 overflow-x-auto ${p.image && p.image.url && !p.image.hideCard ? 'text-white/60' : 'text-muted-foreground'}`}>
+                    <div
+                      className={`hidden md:flex flex-nowrap items-center gap-x-1 text-xs mb-2 overflow-x-auto ${p.image && p.image.url && !p.image.hideCard ? "text-white/60" : "text-muted-foreground"}`}
+                    >
                       <time dateTime={p.publishedAt}>
                         {new Date(p.publishedAt).toLocaleDateString("en-US", {
                           month: "short",
@@ -951,7 +1196,9 @@ export function PostList({
                     </div>
 
                     {/* Title - compact */}
-                    <TitleTag className={`font-medium text-sm md:text-base line-clamp-2 ${p.image && p.image.url && !p.image.hideCard ? 'text-white' : 'text-foreground'}`}>
+                    <TitleTag
+                      className={`font-medium text-sm md:text-base line-clamp-2 ${p.image && p.image.url && !p.image.hideCard ? "text-white" : "text-foreground"}`}
+                    >
                       <HighlightText text={p.title} searchQuery={searchQuery} />
                     </TitleTag>
                   </div>
@@ -968,12 +1215,17 @@ export function PostList({
   return (
     <div className={SPACING.subsection} data-testid="post-list">
       {posts.map((p, index) => (
-        <ScrollReveal key={p.slug} animation="fade-up" delay={index * 50}>
+        <ScrollReveal key={p.slug}>
           <article
             className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}
           >
             <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-              <BookmarkButton slug={p.slug} size="icon" variant="ghost" className="bg-background/80 backdrop-blur-sm hover:bg-background" />
+              <BookmarkButton
+                slug={p.slug}
+                size="icon"
+                variant="ghost"
+                className="bg-background/80 backdrop-blur-sm hover:bg-background"
+              />
             </div>
             {p.image && p.image.url && !p.image.hideCard && (
               <div className="absolute inset-0 z-0">
@@ -1007,30 +1259,46 @@ export function PostList({
                       day: "numeric",
                     })}
                   </time>
-                  <span aria-hidden="true" className="text-zinc-400">•</span>
+                  <span aria-hidden="true" className="text-muted-foreground">
+                    •
+                  </span>
                   <span>{p.readingTime.text}</span>
-                  {viewCounts && viewCounts.has(p.id) && viewCounts.get(p.id)! > 0 && (
-                    <>
-                      <span aria-hidden="true" className="text-zinc-400">•</span>
-                      <span>{formatViews(viewCounts.get(p.id)!)} views</span>
-                    </>
-                  )}
+                  {viewCounts &&
+                    viewCounts.has(p.id) &&
+                    viewCounts.get(p.id)! > 0 && (
+                      <>
+                        <span
+                          aria-hidden="true"
+                          className="text-muted-foreground"
+                        >
+                          •
+                        </span>
+                        <span>{formatViews(viewCounts.get(p.id)!)} views</span>
+                      </>
+                    )}
                 </div>
-                <TitleTag className="font-bold text-xl md:text-2xl lg:text-3xl leading-tight line-clamp-2 mb-3 text-zinc-900 dark:text-zinc-100">
+                <TitleTag className="font-bold text-xl md:text-2xl lg:text-3xl leading-tight line-clamp-2 mb-3 text-foreground">
                   <HighlightText text={p.title} searchQuery={searchQuery} />
                 </TitleTag>
-                <p className="text-sm md:text-base leading-relaxed text-zinc-600 dark:text-zinc-400 line-clamp-2 lg:line-clamp-3 mb-4">
+                <p className="text-sm md:text-base leading-relaxed text-muted-foreground line-clamp-2 lg:line-clamp-3 mb-4">
                   <HighlightText text={p.summary} searchQuery={searchQuery} />
                 </p>
                 {p.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {p.tags.slice(0, 3).map((tag) => (
-                      <Badge key={tag} variant="outline" className="text-xs border-zinc-300 text-zinc-700 dark:border-zinc-600 dark:text-zinc-300">
+                      <Badge
+                        key={tag}
+                        variant="outline"
+                        className="text-xs border-border text-foreground"
+                      >
                         {tag}
                       </Badge>
                     ))}
                     {p.tags.length > 3 && (
-                      <Badge variant="outline" className="text-xs border-zinc-300 text-zinc-500 dark:border-zinc-600 dark:text-zinc-400">
+                      <Badge
+                        variant="outline"
+                        className="text-xs border-border text-muted-foreground"
+                      >
                         +{p.tags.length - 3}
                       </Badge>
                     )}

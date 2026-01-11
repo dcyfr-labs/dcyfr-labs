@@ -16,6 +16,13 @@ export {
 // Import analytics functions
 export { updateAnalyticsMilestones } from "./update-analytics-milestones";
 
+// Import social analytics functions
+export {
+  syncDevToMetrics,
+  manualDevToSync,
+  aggregateReferrals,
+} from "./social-analytics-functions";
+
 /**
  * Hello World function - demonstrates basic Inngest function pattern
  * 

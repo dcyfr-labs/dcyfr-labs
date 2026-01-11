@@ -2,12 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { timingSafeEqual } from "crypto";
 import * as Sentry from "@sentry/nextjs";
 import { blockExternalAccess } from "@/lib/api-security";
-import { getMultiplePostViews, getMultiplePostViews24h, getMultiplePostViewsInRange } from "@/lib/views";
+import {
+  getMultiplePostViews,
+  getMultiplePostViews24h,
+  getMultiplePostViewsInRange,
+} from "@/lib/views.server";
 import { getPostSharesBulk, getPostShares24hBulk } from "@/lib/shares";
 import { getPostCommentsBulk, getPostComments24hBulk } from "@/lib/comments";
 import { posts } from "@/data/posts";
 import { createClient } from "redis";
-import { rateLimit, getClientIp, createRateLimitHeaders } from "@/lib/rate-limit";
+import {
+  rateLimit,
+  getClientIp,
+  createRateLimitHeaders,
+} from "@/lib/rate-limit";
 import { handleApiError } from "@/lib/error-handler";
 
 /**
@@ -39,7 +47,7 @@ import { handleApiError } from "@/lib/error-handler";
  * - Logs all access attempts (success and failure)
  * - Includes timestamp, IP, user agent, endpoint params
  * - Enables security monitoring and incident response
- * 
+ *
  * Configuration via environment variables:
  * - ADMIN_API_KEY: Required API key for authentication
  * - REDIS_URL: Optional Redis for rate limiting (fallback to memory)
@@ -53,10 +61,12 @@ import { handleApiError } from "@/lib/error-handler";
 // Rate limit configuration based on environment
 // Development/Preview: More generous for testing and development
 // Production: Stricter limits (though production access is blocked entirely)
-const isDevelopment = process.env.NODE_ENV === "development" || process.env.VERCEL_ENV === "preview";
+const isDevelopment =
+  process.env.NODE_ENV === "development" ||
+  process.env.VERCEL_ENV === "preview";
 
 const RATE_LIMIT_CONFIG = {
-  limit: isDevelopment ? 60 : 10,  // 60/min in dev, 10/min otherwise
+  limit: isDevelopment ? 60 : 10, // 60/min in dev, 10/min otherwise
   windowInSeconds: 60,
 };
 
@@ -76,7 +86,9 @@ function validateApiKey(request: Request): boolean {
 
   // If no admin key is configured, deny all access
   if (!adminKey) {
-    console.error("[Analytics API] ADMIN_API_KEY not configured - endpoint disabled");
+    console.error(
+      "[Analytics API] ADMIN_API_KEY not configured - endpoint disabled"
+    );
     return false;
   }
 
@@ -93,8 +105,8 @@ function validateApiKey(request: Request): boolean {
 
   // Use timing-safe comparison to prevent timing attacks
   try {
-    const tokenBuf = Buffer.from(token, 'utf8');
-    const keyBuf = Buffer.from(adminKey, 'utf8');
+    const tokenBuf = Buffer.from(token, "utf8");
+    const keyBuf = Buffer.from(adminKey, "utf8");
 
     // Ensure buffers are same length to prevent length-based timing
     if (tokenBuf.length !== keyBuf.length) {
@@ -111,11 +123,11 @@ function validateApiKey(request: Request): boolean {
 
 /**
  * Checks if the current environment allows analytics access
- * 
+ *
  * - Development: Always allowed
  * - Preview/Test: Allowed with valid API key
  * - Production: BLOCKED (even with valid key)
- * 
+ *
  * @returns true if environment is safe, false if blocked
  */
 function isAllowedEnvironment(): boolean {
@@ -128,7 +140,11 @@ function isAllowedEnvironment(): boolean {
   }
 
   // Allow development and preview environments
-  if (nodeEnv === "development" || vercelEnv === "preview" || nodeEnv === "test") {
+  if (
+    nodeEnv === "development" ||
+    vercelEnv === "preview" ||
+    nodeEnv === "test"
+  ) {
     return true;
   }
 
@@ -153,7 +169,11 @@ function isAllowedEnvironment(): boolean {
  * @param status - "success" or "denied"
  * @param reason - Reason for denial (if applicable)
  */
-function logAccess(request: Request, status: "success" | "denied", reason?: string) {
+function logAccess(
+  request: Request,
+  status: "success" | "denied",
+  reason?: string
+) {
   const url = new URL(request.url);
   const timestamp = new Date().toISOString();
   const ip = getClientIp(request);
@@ -175,7 +195,7 @@ function logAccess(request: Request, status: "success" | "denied", reason?: stri
   };
 
   // Structured JSON logging for Axiom/Vercel logs
-  console.log(JSON.stringify(logData));
+  console.warn(JSON.stringify(logData));
 
   // Send security events to Sentry for alerting
   if (status === "denied") {
@@ -220,7 +240,8 @@ function logAccess(request: Request, status: "success" | "denied", reason?: stri
         contexts: {
           admin_access: logData,
           security: {
-            alert: "Production admin access should be blocked by blockExternalAccess()",
+            alert:
+              "Production admin access should be blocked by blockExternalAccess()",
             investigation_required: true,
           },
         },
@@ -254,9 +275,9 @@ export async function GET(request: NextRequest) {
   if (!isAllowedEnvironment()) {
     logAccess(request, "denied", "production environment blocked");
     return NextResponse.json(
-      { 
+      {
         error: "Analytics not available in production",
-        message: "This endpoint is disabled in production for security reasons"
+        message: "This endpoint is disabled in production for security reasons",
       },
       { status: 403 }
     );
@@ -266,9 +287,10 @@ export async function GET(request: NextRequest) {
   if (!validateApiKey(request)) {
     logAccess(request, "denied", "invalid or missing API key");
     return NextResponse.json(
-      { 
+      {
         error: "Unauthorized",
-        message: "Valid API key required. Use Authorization header with Bearer token."
+        message:
+          "Valid API key required. Use Authorization header with Bearer token.",
       },
       { status: 401 }
     );
@@ -281,16 +303,18 @@ export async function GET(request: NextRequest) {
   if (!rateLimitResult.success) {
     logAccess(request, "denied", "rate limit exceeded");
     return NextResponse.json(
-      { 
+      {
         error: "Rate limit exceeded",
         message: "Maximum 5 requests per minute. Please try again later.",
         retryAfter: Math.ceil((rateLimitResult.reset - Date.now()) / 1000),
       },
-      { 
+      {
         status: 429,
         headers: {
           ...createRateLimitHeaders(rateLimitResult),
-          "Retry-After": Math.ceil((rateLimitResult.reset - Date.now()) / 1000).toString(),
+          "Retry-After": Math.ceil(
+            (rateLimitResult.reset - Date.now()) / 1000
+          ).toString(),
         },
       }
     );
@@ -314,7 +338,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json(
           {
             error: "Invalid days parameter",
-            message: "Days must be a number between 1 and 365, or 'all'"
+            message: "Days must be a number between 1 and 365, or 'all'",
           },
           { status: 400 }
         );
@@ -364,14 +388,35 @@ export async function GET(request: NextRequest) {
       .sort((a, b) => b.views - a.views);
 
     // Calculate statistics
-    const totalViews = postsWithViews.reduce((sum, post) => sum + post.views, 0);
-    const totalViews24h = postsWithViews.reduce((sum, post) => sum + post.views24h, 0);
-    const totalViewsRange = postsWithViews.reduce((sum, post) => sum + post.viewsRange, 0);
-    const totalShares = postsWithViews.reduce((sum, post) => sum + post.shares, 0);
-    const totalShares24h = postsWithViews.reduce((sum, post) => sum + post.shares24h, 0);
-    const totalComments = postsWithViews.reduce((sum, post) => sum + post.comments, 0);
-    const totalComments24h = postsWithViews.reduce((sum, post) => sum + post.comments24h, 0);
-    
+    const totalViews = postsWithViews.reduce(
+      (sum, post) => sum + post.views,
+      0
+    );
+    const totalViews24h = postsWithViews.reduce(
+      (sum, post) => sum + post.views24h,
+      0
+    );
+    const totalViewsRange = postsWithViews.reduce(
+      (sum, post) => sum + post.viewsRange,
+      0
+    );
+    const totalShares = postsWithViews.reduce(
+      (sum, post) => sum + post.shares,
+      0
+    );
+    const totalShares24h = postsWithViews.reduce(
+      (sum, post) => sum + post.shares24h,
+      0
+    );
+    const totalComments = postsWithViews.reduce(
+      (sum, post) => sum + post.comments,
+      0
+    );
+    const totalComments24h = postsWithViews.reduce(
+      (sum, post) => sum + post.comments24h,
+      0
+    );
+
     const averageViews =
       postsWithViews.length > 0 ? totalViews / postsWithViews.length : 0;
     const averageViews24h =
@@ -386,25 +431,37 @@ export async function GET(request: NextRequest) {
       postsWithViews.length > 0 ? totalComments / postsWithViews.length : 0;
     const averageComments24h =
       postsWithViews.length > 0 ? totalComments24h / postsWithViews.length : 0;
-    
+
     const topPost = postsWithViews[0];
-    
+
     // Get top posts in last 24 hours
-    const topPost24h = [...postsWithViews].sort((a, b) => b.views24h - a.views24h)[0];
-    
+    const topPost24h = [...postsWithViews].sort(
+      (a, b) => b.views24h - a.views24h
+    )[0];
+
     // Get top posts in selected range
-    const topPostRange = [...postsWithViews].sort((a, b) => b.viewsRange - a.viewsRange)[0];
-    
+    const topPostRange = [...postsWithViews].sort(
+      (a, b) => b.viewsRange - a.viewsRange
+    )[0];
+
     // Get most shared posts
-    const mostSharedPost = [...postsWithViews].sort((a, b) => b.shares - a.shares)[0];
-    const mostSharedPost24h = [...postsWithViews].sort((a, b) => b.shares24h - a.shares24h)[0];
-    
+    const mostSharedPost = [...postsWithViews].sort(
+      (a, b) => b.shares - a.shares
+    )[0];
+    const mostSharedPost24h = [...postsWithViews].sort(
+      (a, b) => b.shares24h - a.shares24h
+    )[0];
+
     // Get most commented posts
-    const mostCommentedPost = [...postsWithViews].sort((a, b) => b.comments - a.comments)[0];
-    const mostCommentedPost24h = [...postsWithViews].sort((a, b) => b.comments24h - a.comments24h)[0];
-    
+    const mostCommentedPost = [...postsWithViews].sort(
+      (a, b) => b.comments - a.comments
+    )[0];
+    const mostCommentedPost24h = [...postsWithViews].sort(
+      (a, b) => b.comments24h - a.comments24h
+    )[0];
+
     const trendingPosts = postsWithViews.slice(0, 5);
-    
+
     // Get trending data from Redis if available
     let trendingFromRedis = null;
     const redis = await getRedisClient();
@@ -417,173 +474,185 @@ export async function GET(request: NextRequest) {
           // Redis trending contains: postId, totalViews, recentViews, score
           // We need to merge with posts to get slug and then match with postsWithViews
           trendingFromRedis = parsedTrending
-            .map((trending: { postId: string; totalViews: number; recentViews: number; score: number }) => {
-              // Find the post by its postId, then match by slug with postsWithViews
-              const post = posts.find(p => p.id === trending.postId);
-              if (post) {
-                const fullPost = postsWithViews.find(p => p.slug === post.slug);
-                if (fullPost) {
-                  return {
-                    ...fullPost,
-                    // Override views24h with recentViews from trending for more accurate recent data
-                    trendingScore: trending.score,
-                  };
+            .map(
+              (trending: {
+                postId: string;
+                totalViews: number;
+                recentViews: number;
+                score: number;
+              }) => {
+                // Find the post by its postId, then match by slug with postsWithViews
+                const post = posts.find((p) => p.id === trending.postId);
+                if (post) {
+                  const fullPost = postsWithViews.find(
+                    (p) => p.slug === post.slug
+                  );
+                  if (fullPost) {
+                    return {
+                      ...fullPost,
+                      // Override views24h with recentViews from trending for more accurate recent data
+                      trendingScore: trending.score,
+                    };
+                  }
                 }
+                return null;
               }
-              return null;
-            })
+            )
             .filter(Boolean);
         }
-          // keep connection open for additional reads (vercel keys) until the end
+        // keep connection open for additional reads (vercel keys) until the end
       } catch (error) {
         console.error("Failed to fetch trending data:", error);
       }
     }
 
-      // Attempt to read Vercel analytics sync data from Redis (optional)
-      let vercelData = null;
-      let vercelLastSynced = null;
-      if (redis) {
-        try {
-          const vPages = await redis.get("vercel:topPages:daily");
-          const vReferrers = await redis.get("vercel:topReferrers:daily");
-          const vDevices = await redis.get("vercel:topDevices:daily");
-          const vSynced = await redis.get("vercel:metrics:lastSynced");
+    // Attempt to read Vercel analytics sync data from Redis (optional)
+    let vercelData = null;
+    let vercelLastSynced = null;
+    if (redis) {
+      try {
+        const vPages = await redis.get("vercel:topPages:daily");
+        const vReferrers = await redis.get("vercel:topReferrers:daily");
+        const vDevices = await redis.get("vercel:topDevices:daily");
+        const vSynced = await redis.get("vercel:metrics:lastSynced");
 
-          vercelLastSynced = vSynced || null;
-          vercelData = {
-            topPages: vPages ? JSON.parse(vPages) : [],
-            topReferrers: vReferrers ? JSON.parse(vReferrers) : [],
-            topDevices: vDevices ? JSON.parse(vDevices) : [],
-          };
-        } catch (error) {
-          console.error("Failed to fetch vercel analytics from redis:", error);
-        }
+        vercelLastSynced = vSynced || null;
+        vercelData = {
+          topPages: vPages ? JSON.parse(vPages) : [],
+          topReferrers: vReferrers ? JSON.parse(vReferrers) : [],
+          topDevices: vDevices ? JSON.parse(vDevices) : [],
+        };
+      } catch (error) {
+        console.error("Failed to fetch vercel analytics from redis:", error);
       }
+    }
 
     // Close Redis connection (best-effort) after we've read trending & vercel keys
     if (redis) {
       try {
         await redis.quit();
       } catch (error) {
-        console.warn('Failed to close redis connection:', error);
+        console.warn("Failed to close redis connection:", error);
       }
     }
 
-    return NextResponse.json({
-      success: true,
-      timestamp: new Date().toISOString(),
-      dateRange: days === null ? "all" : `${days}d`,
-      summary: {
-        totalPosts: postsWithViews.length,
-        totalViews,
-        totalViews24h,
-        totalViewsRange,
-        totalShares,
-        totalShares24h,
-        totalComments,
-        totalComments24h,
-        averageViews: Math.round(averageViews),
-        averageViews24h: Math.round(averageViews24h),
-        averageViewsRange: Math.round(averageViewsRange),
-        averageShares: Math.round(averageShares),
-        averageShares24h: Math.round(averageShares24h),
-        averageComments: Math.round(averageComments),
-        averageComments24h: Math.round(averageComments24h),
-        topPost: topPost
-          ? {
-              slug: topPost.slug,
-              title: topPost.title,
-              views: topPost.views,
-              views24h: topPost.views24h,
-              viewsRange: topPost.viewsRange,
-              shares: topPost.shares,
-              shares24h: topPost.shares24h,
-              comments: topPost.comments,
-              comments24h: topPost.comments24h,
-            }
-          : null,
-        topPost24h: topPost24h
-          ? {
-              slug: topPost24h.slug,
-              title: topPost24h.title,
-              views: topPost24h.views,
-              views24h: topPost24h.views24h,
-              viewsRange: topPost24h.viewsRange,
-              shares: topPost24h.shares,
-              shares24h: topPost24h.shares24h,
-              comments: topPost24h.comments,
-              comments24h: topPost24h.comments24h,
-            }
-          : null,
-        topPostRange: topPostRange
-          ? {
-              slug: topPostRange.slug,
-              title: topPostRange.title,
-              views: topPostRange.views,
-              views24h: topPostRange.views24h,
-              viewsRange: topPostRange.viewsRange,
-              shares: topPostRange.shares,
-              shares24h: topPostRange.shares24h,
-              comments: topPostRange.comments,
-              comments24h: topPostRange.comments24h,
-            }
-          : null,
-        mostSharedPost: mostSharedPost
-          ? {
-              slug: mostSharedPost.slug,
-              title: mostSharedPost.title,
-              views: mostSharedPost.views,
-              shares: mostSharedPost.shares,
-              shares24h: mostSharedPost.shares24h,
-              comments: mostSharedPost.comments,
-              comments24h: mostSharedPost.comments24h,
-            }
-          : null,
-        mostSharedPost24h: mostSharedPost24h
-          ? {
-              slug: mostSharedPost24h.slug,
-              title: mostSharedPost24h.title,
-              views: mostSharedPost24h.views,
-              shares: mostSharedPost24h.shares,
-              shares24h: mostSharedPost24h.shares24h,
-              comments: mostSharedPost24h.comments,
-              comments24h: mostSharedPost24h.comments24h,
-            }
-          : null,
-        mostCommentedPost: mostCommentedPost
-          ? {
-              slug: mostCommentedPost.slug,
-              title: mostCommentedPost.title,
-              views: mostCommentedPost.views,
-              shares: mostCommentedPost.shares,
-              shares24h: mostCommentedPost.shares24h,
-              comments: mostCommentedPost.comments,
-              comments24h: mostCommentedPost.comments24h,
-            }
-          : null,
-        mostCommentedPost24h: mostCommentedPost24h
-          ? {
-              slug: mostCommentedPost24h.slug,
-              title: mostCommentedPost24h.title,
-              views: mostCommentedPost24h.views,
-              shares: mostCommentedPost24h.shares,
-              shares24h: mostCommentedPost24h.shares24h,
-              comments: mostCommentedPost24h.comments,
-              comments24h: mostCommentedPost24h.comments24h,
-            }
-          : null,
+    return NextResponse.json(
+      {
+        success: true,
+        timestamp: new Date().toISOString(),
+        dateRange: days === null ? "all" : `${days}d`,
+        summary: {
+          totalPosts: postsWithViews.length,
+          totalViews,
+          totalViews24h,
+          totalViewsRange,
+          totalShares,
+          totalShares24h,
+          totalComments,
+          totalComments24h,
+          averageViews: Math.round(averageViews),
+          averageViews24h: Math.round(averageViews24h),
+          averageViewsRange: Math.round(averageViewsRange),
+          averageShares: Math.round(averageShares),
+          averageShares24h: Math.round(averageShares24h),
+          averageComments: Math.round(averageComments),
+          averageComments24h: Math.round(averageComments24h),
+          topPost: topPost
+            ? {
+                slug: topPost.slug,
+                title: topPost.title,
+                views: topPost.views,
+                views24h: topPost.views24h,
+                viewsRange: topPost.viewsRange,
+                shares: topPost.shares,
+                shares24h: topPost.shares24h,
+                comments: topPost.comments,
+                comments24h: topPost.comments24h,
+              }
+            : null,
+          topPost24h: topPost24h
+            ? {
+                slug: topPost24h.slug,
+                title: topPost24h.title,
+                views: topPost24h.views,
+                views24h: topPost24h.views24h,
+                viewsRange: topPost24h.viewsRange,
+                shares: topPost24h.shares,
+                shares24h: topPost24h.shares24h,
+                comments: topPost24h.comments,
+                comments24h: topPost24h.comments24h,
+              }
+            : null,
+          topPostRange: topPostRange
+            ? {
+                slug: topPostRange.slug,
+                title: topPostRange.title,
+                views: topPostRange.views,
+                views24h: topPostRange.views24h,
+                viewsRange: topPostRange.viewsRange,
+                shares: topPostRange.shares,
+                shares24h: topPostRange.shares24h,
+                comments: topPostRange.comments,
+                comments24h: topPostRange.comments24h,
+              }
+            : null,
+          mostSharedPost: mostSharedPost
+            ? {
+                slug: mostSharedPost.slug,
+                title: mostSharedPost.title,
+                views: mostSharedPost.views,
+                shares: mostSharedPost.shares,
+                shares24h: mostSharedPost.shares24h,
+                comments: mostSharedPost.comments,
+                comments24h: mostSharedPost.comments24h,
+              }
+            : null,
+          mostSharedPost24h: mostSharedPost24h
+            ? {
+                slug: mostSharedPost24h.slug,
+                title: mostSharedPost24h.title,
+                views: mostSharedPost24h.views,
+                shares: mostSharedPost24h.shares,
+                shares24h: mostSharedPost24h.shares24h,
+                comments: mostSharedPost24h.comments,
+                comments24h: mostSharedPost24h.comments24h,
+              }
+            : null,
+          mostCommentedPost: mostCommentedPost
+            ? {
+                slug: mostCommentedPost.slug,
+                title: mostCommentedPost.title,
+                views: mostCommentedPost.views,
+                shares: mostCommentedPost.shares,
+                shares24h: mostCommentedPost.shares24h,
+                comments: mostCommentedPost.comments,
+                comments24h: mostCommentedPost.comments24h,
+              }
+            : null,
+          mostCommentedPost24h: mostCommentedPost24h
+            ? {
+                slug: mostCommentedPost24h.slug,
+                title: mostCommentedPost24h.title,
+                views: mostCommentedPost24h.views,
+                shares: mostCommentedPost24h.shares,
+                shares24h: mostCommentedPost24h.shares24h,
+                comments: mostCommentedPost24h.comments,
+                comments24h: mostCommentedPost24h.comments24h,
+              }
+            : null,
+        },
+        posts: postsWithViews,
+        trending: trendingFromRedis || trendingPosts,
+        vercel: vercelData,
+        vercelLastSynced: vercelLastSynced,
       },
-      posts: postsWithViews,
-      trending: trendingFromRedis || trendingPosts,
-      vercel: vercelData,
-      vercelLastSynced: vercelLastSynced,
-    }, {
-      headers: {
-        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
-        ...createRateLimitHeaders(rateLimitResult),
-      },
-    });
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+          ...createRateLimitHeaders(rateLimitResult),
+        },
+      }
+    );
   } catch (error) {
     const errorInfo = handleApiError(error, {
       route: "/api/analytics",

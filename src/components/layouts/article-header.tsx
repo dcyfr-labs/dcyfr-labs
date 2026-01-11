@@ -202,8 +202,6 @@ export function ArticleHeader({
               )}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
             />
-            {/* Dark overlay for text contrast - modern pattern matching archive cards */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30" />
           </div>
 
           {/* Caption and Credit - show only when present */}

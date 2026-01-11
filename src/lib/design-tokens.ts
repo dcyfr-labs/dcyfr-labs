@@ -1,9 +1,9 @@
 /**
  * Design Tokens - Single Source of Truth for Design Decisions
- * 
+ *
  * This file centralizes all design decisions to ensure consistency across the site.
  * Use these constants instead of magic strings in components.
- * 
+ *
  * @see /docs/design/ux-ui-consistency-analysis.md for rationale and usage guidelines
  */
 
@@ -73,13 +73,13 @@ export const CONTAINER_WIDTHS = {
 
   /** Standard width for core pages (homepage, about, contact, resume) */
   standard: "max-w-5xl",
-  
+
   /** Content-heavy pages with sidebar (individual blog posts, project detail pages) */
   content: "max-w-6xl",
-  
+
   /** Archive/listing pages with filters and grids (blog listing, projects listing) */
   archive: "max-w-7xl",
-  
+
   /** Full-width dashboard pages with data tables, charts, and analytics (dashboard pages, dev tools) */
   dashboard: "max-w-[1536px]",
 } as const;
@@ -89,6 +89,12 @@ export const CONTAINER_WIDTHS = {
  * Provides consistent edge spacing across breakpoints
  */
 export const CONTAINER_PADDING = "px-4 sm:px-6 md:px-8" as const;
+
+/**
+ * Navigation component height
+ * Used for consistent header, footer, and bottom nav heights
+ */
+export const NAVIGATION_HEIGHT = "h-16" as const;
 
 /**
  * Horizontal padding for archive container (reduced vertical padding)
@@ -110,10 +116,10 @@ export const MOBILE_SAFE_PADDING = "pb-24 md:pb-8" as const;
 
 /**
  * Utility function to build complete container classes
- * 
+ *
  * @param width - Container width variant
  * @returns Complete className string with centering, width, and padding
- * 
+ *
  * @example
  * ```tsx
  * <div className={getContainerClasses('narrow')}>
@@ -122,20 +128,20 @@ export const MOBILE_SAFE_PADDING = "pb-24 md:pb-8" as const;
  * ```
  */
 export function getContainerClasses(
-  width: keyof typeof CONTAINER_WIDTHS = 'standard'
+  width: keyof typeof CONTAINER_WIDTHS = "standard"
 ): string {
   return `mx-auto ${CONTAINER_WIDTHS[width]} pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12 ${CONTAINER_PADDING}`;
 }
 
 /**
  * Dynamic Content Depth Classifier
- * 
+ *
  * Analyzes content characteristics and returns appropriate depth styling.
  * Implements varying depth based on paragraph length and position.
- * 
+ *
  * @param options - Content analysis options
  * @returns Appropriate depth class string
- * 
+ *
  * @example
  * ```tsx
  * const depthClass = getContentDepthClass({
@@ -150,13 +156,18 @@ export function getContentDepthClass(options: {
   /** Character length of content */
   length?: number;
   /** Position in content flow */
-  position?: 'opening' | 'body' | 'closing';
+  position?: "opening" | "body" | "closing";
   /** Whether content is contextual/supporting */
   isContextual?: boolean;
   /** Whether to apply font contrast system */
   useFontContrast?: boolean;
 }): string {
-  const { length = 0, position = 'body', isContextual = false, useFontContrast = false } = options;
+  const {
+    length = 0,
+    position = "body",
+    isContextual = false,
+    useFontContrast = false,
+  } = options;
 
   // Base font system
   if (useFontContrast) {
@@ -169,11 +180,11 @@ export function getContentDepthClass(options: {
   }
 
   // Position-based styling
-  if (position === 'opening') {
+  if (position === "opening") {
     return PROGRESSIVE_TEXT.opening;
   }
-  
-  if (position === 'closing') {
+
+  if (position === "closing") {
     return PROGRESSIVE_TEXT.closing;
   }
 
@@ -187,13 +198,13 @@ export function getContentDepthClass(options: {
 
 /**
  * Content Block Depth Helper
- * 
+ *
  * Applies consistent hierarchy patterns to content blocks.
  * Based on the about page's content organization patterns.
- * 
+ *
  * @param variant - Content block type
  * @returns Object with title, content, and container classes
- * 
+ *
  * @example
  * ```tsx
  * const styles = getContentBlockStyles('primary');
@@ -232,7 +243,8 @@ export function getContentBlockStyles(
  */
 export const ACTIVITY_IMAGE = {
   /** Base container with 16:9 aspect ratio and overflow handling, with light background for transparent images */
-  container: "aspect-[16/9] relative overflow-hidden rounded-lg mb-4 bg-muted/30 dark:bg-muted/10",
+  container:
+    "aspect-[16/9] relative overflow-hidden rounded-lg mb-4 bg-muted/30 dark:bg-muted/10",
 
   /** Image size variants for different activity types - width controls size via aspect ratio */
   sizes: {
@@ -243,7 +255,8 @@ export const ACTIVITY_IMAGE = {
   },
 
   /** Image styling with hover zoom effect */
-  image: "object-cover w-full h-full transition-transform duration-300 hover:scale-105",
+  image:
+    "object-cover w-full h-full transition-transform duration-300 hover:scale-105",
 } as const;
 
 // ============================================================================
@@ -252,7 +265,7 @@ export const ACTIVITY_IMAGE = {
 
 /**
  * Typography patterns for consistent heading hierarchy and text styles
- * 
+ *
  * @example
  * ```tsx
  * <h1 className={TYPOGRAPHY.h1.standard}>Page Title</h1>
@@ -265,7 +278,8 @@ export const TYPOGRAPHY = {
     /** Standard page titles (about, projects, contact, blog listing)
      * Fluid: 30px (mobile) → 36px (desktop)
      */
-    standard: "text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-semibold tracking-tight",
+    standard:
+      "text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-semibold tracking-tight",
 
     /** Archive/listing page titles (about, blog archive, portfolio archive)
      * Fluid: 30px (mobile) → 36px (desktop)
@@ -275,12 +289,14 @@ export const TYPOGRAPHY = {
     /** Blog post titles (larger, more prominent)
      * Fluid: 30px (mobile) → 48px (desktop)
      */
-    article: "font-serif text-[clamp(1.875rem,5vw+0.75rem,3rem)] font-semibold tracking-tight leading-tight ws-md",
+    article:
+      "font-serif text-[clamp(1.875rem,5vw+0.75rem,3rem)] font-semibold tracking-tight leading-tight ws-md",
 
     /** Portfolio project titles
      * Fluid: 30px (mobile) → 48px (desktop)
      */
-    project: "font-serif text-[clamp(1.875rem,5vw+0.75rem,3rem)] font-semibold tracking-tight leading-tight ws-md",
+    project:
+      "font-serif text-[clamp(1.875rem,5vw+0.75rem,3rem)] font-semibold tracking-tight leading-tight ws-md",
 
     /** MDX content headings
      * Fluid: 30px (mobile) → 36px (desktop)
@@ -298,7 +314,8 @@ export const TYPOGRAPHY = {
     /** Featured content headings (blog post cards, featured sections)
      * Fluid: 24px (mobile) → 30px (desktop)
      */
-    featured: "font-serif text-[clamp(1.5rem,3vw+0.875rem,1.875rem)] font-semibold tracking-tight ws-sm",
+    featured:
+      "font-serif text-[clamp(1.5rem,3vw+0.875rem,1.875rem)] font-semibold tracking-tight ws-sm",
 
     /** MDX content headings
      * Fluid: 24px (mobile) → 30px (desktop)
@@ -342,7 +359,7 @@ export const TYPOGRAPHY = {
      */
     mdx: "font-sans text-sm font-semibold tracking-tight",
   },
-  
+
   /** Special display text (stats, error titles, large numbers) */
   display: {
     /** Error page titles
@@ -364,14 +381,15 @@ export const TYPOGRAPHY = {
   /** Lead text / page descriptions
    * Fluid: 18px (mobile) → 20px (desktop)
    */
-  description: "text-[clamp(1.125rem,2vw+0.75rem,1.25rem)] text-muted-foreground ws-xs",
-  
+  description:
+    "text-[clamp(1.125rem,2vw+0.75rem,1.25rem)] text-muted-foreground ws-xs",
+
   /** Metadata text (dates, reading time, etc.) */
   metadata: "text-sm text-muted-foreground",
-  
+
   /** Body text for long-form content */
   body: "text-base text-foreground leading-relaxed ws-xs",
-  
+
   /** Label and small UI text */
   label: {
     /** Card/section labels (e.g., "Trending Posts", "Recommendations") */
@@ -387,7 +405,8 @@ export const TYPOGRAPHY = {
     /** Primary activity titles (larger, prominent, good hierarchy)
      * Fluid: 20px (mobile) → 24px (tablet) → 30px (desktop)
      */
-    title: "text-[clamp(1.25rem,3vw+0.75rem,1.875rem)] font-semibold tracking-tight",
+    title:
+      "text-[clamp(1.25rem,3vw+0.75rem,1.875rem)] font-semibold tracking-tight",
 
     /** Activity subtitles (optional secondary text)
      * Fluid: 16px (mobile) → 18px (desktop)
@@ -422,7 +441,7 @@ export const TYPOGRAPHY = {
     /** FAQ question trigger */
     trigger: "text-left text-lg font-bold",
   },
-  
+
   /** Logo/branding text */
   logo: {
     /** Small logo text (mobile nav, compact views)
@@ -433,22 +452,24 @@ export const TYPOGRAPHY = {
     /** Medium logo text (default)
      * Fluid: 20px (mobile) → 24px (desktop)
      */
-    medium: "text-[clamp(1.25rem,2.5vw+0.75rem,1.5rem)] font-serif font-semibold leading-none",
+    medium:
+      "text-[clamp(1.25rem,2.5vw+0.75rem,1.5rem)] font-serif font-semibold leading-none",
 
     /** Large logo text (headers, hero sections)
      * Fluid: 30px (mobile) → 36px (desktop)
      */
-    large: "text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-serif font-semibold leading-none",
+    large:
+      "text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-serif font-semibold leading-none",
   },
 
   /**
    * Depth-Based Text Hierarchy
-   * 
+   *
    * Creates visual hierarchy through progressive text treatments.
    * Inspired by the about page's varying depth patterns.
-   * 
+   *
    * Usage: Apply to content blocks, subsections, and contextual information
-   * 
+   *
    * @example
    * ```tsx
    * <div className={TYPOGRAPHY.depth.primary}>Main content here</div>
@@ -459,16 +480,16 @@ export const TYPOGRAPHY = {
   depth: {
     /** Primary content - emphasized, full contrast */
     primary: "font-medium text-foreground",
-    
+
     /** Secondary content - medium emphasis, slight reduction */
     secondary: "font-normal text-foreground/90",
-    
+
     /** Tertiary content - supporting information, muted */
     tertiary: "font-normal text-muted-foreground",
-    
+
     /** Accent content - highlighted information */
     accent: "font-semibold text-foreground",
-    
+
     /** Subtle content - least emphasis, background information */
     subtle: "font-light text-muted-foreground/70",
   },
@@ -480,17 +501,17 @@ export const TYPOGRAPHY = {
 
 /**
  * Content Hierarchy Patterns
- * 
+ *
  * Defines consistent patterns for creating depth and emphasis in content blocks.
  * Based on the varying depth style from the about page, these patterns create
  * visual hierarchy through strategic use of font weights and text opacity.
- * 
+ *
  * Use Cases:
  * - Blog post content sections
  * - About page information blocks
  * - Card descriptions and supporting text
  * - Contextual information panels
- * 
+ *
  * @example
  * ```tsx
  * <div className={CONTENT_HIERARCHY.primary.container}>
@@ -507,21 +528,21 @@ export const CONTENT_HIERARCHY = {
     content: "text-foreground leading-relaxed",
     container: "space-y-3",
   },
-  
+
   /** Supporting content blocks - contextual information */
   supporting: {
     title: "font-medium text-foreground/90",
     content: "text-muted-foreground leading-relaxed",
     container: "space-y-2 mt-1",
   },
-  
+
   /** Accent content blocks - highlighted information */
   accent: {
     title: "font-semibold text-foreground",
     content: "text-foreground/95 leading-relaxed",
     container: "space-y-3",
   },
-  
+
   /** Subtle content blocks - background information */
   subtle: {
     title: "font-normal text-muted-foreground",
@@ -532,20 +553,20 @@ export const CONTENT_HIERARCHY = {
 
 /**
  * Progressive Text Patterns
- * 
+ *
  * Dynamic text styling based on paragraph position or content length.
  * Implements the "muted text dynamically by paragraph length" concept.
- * 
+ *
  * Usage: Apply programmatically based on content analysis or position.
- * 
+ *
  * @example
  * ```tsx
  * // For first paragraph
  * <p className={PROGRESSIVE_TEXT.opening}>Introduction text</p>
- * 
+ *
  * // For subsequent paragraphs
  * <p className={PROGRESSIVE_TEXT.body}>Regular body text</p>
- * 
+ *
  * // For final/closing paragraphs
  * <p className={PROGRESSIVE_TEXT.closing}>Closing thoughts</p>
  * ```
@@ -553,26 +574,26 @@ export const CONTENT_HIERARCHY = {
 export const PROGRESSIVE_TEXT = {
   /** Opening paragraph - full emphasis */
   opening: "text-foreground font-normal leading-relaxed text-lg",
-  
+
   /** Body paragraphs - standard treatment */
   body: "text-foreground leading-relaxed",
-  
+
   /** Long paragraphs - slightly reduced emphasis */
   extended: "text-foreground/95 leading-relaxed text-[15px]",
-  
+
   /** Closing paragraphs - subtle reduction */
   closing: "text-foreground/90 leading-relaxed",
-  
+
   /** Contextual paragraphs - background information */
   contextual: "text-muted-foreground leading-relaxed text-sm",
 } as const;
 
 /**
  * Font Weight Contrast System
- * 
+ *
  * Establishes clear contrast between thin base fonts and bold weights.
  * Addresses the "thinner base font in contrast to bold weight" requirement.
- * 
+ *
  * @example
  * ```tsx
  * <p className={FONT_CONTRAST.base}>Base content with thin weight</p>
@@ -583,16 +604,16 @@ export const PROGRESSIVE_TEXT = {
 export const FONT_CONTRAST = {
   /** Base text - lighter weight for better contrast */
   base: "font-light text-foreground leading-relaxed",
-  
+
   /** Medium emphasis - slight increase from base */
   medium: "font-normal text-foreground leading-relaxed",
-  
+
   /** Strong emphasis - clear contrast from base */
   emphasis: "font-semibold text-foreground",
-  
+
   /** Bold elements - maximum contrast */
   bold: "font-bold text-foreground",
-  
+
   /** Heading contrast - optimized for headings */
   heading: "font-medium text-foreground",
 } as const;
@@ -680,46 +701,56 @@ export const FONT_CONTRAST = {
 export const SPACING = {
   /** Between major page sections (largest gaps) */
   section: "space-y-8 md:space-y-10 lg:space-y-14",
-  
+
   /** Between related content blocks within a section */
   subsection: "space-y-5 md:space-y-6 lg:space-y-8",
-  
+
   /** Within content blocks (tightest spacing) */
   content: "space-y-3 md:space-y-4 lg:space-y-5",
   // NOTE: Do NOT use SPACING.content in ArticleLayout wrapper
   // Blog content uses prose CSS classes from globals.css for natural paragraph spacing
-  
+
   /** Running text and prose paragraphs (better readability for long-form content) */
   prose: "space-y-5 md:space-y-6 lg:space-y-8",
   // NOTE: Only use SPACING.prose for manually structured sections
   // Blog/article content relies on prose CSS classes, not design tokens
-  
+
   /** Page hero/header sections with prose wrapper */
   proseHero: "prose space-y-4",
-  
+
   /** Generic prose sections */
   proseSection: "prose space-y-4",
-  
+
   /** Compact vertical spacing for lists and alerts (improved mobile space utilization) */
   compact: "space-y-2",
-  
+
   /** Reduced spacing for list items (optimized for mobile scaling) - minimal gap between items */
   list: "",
-  
+
   /** Blog post card lists (compact, optimized spacing for post grids) */
   postList: "space-y-2",
-  
+
   /** Image elements in blog content (top/bottom margins) */
   image: "my-6 md:my-8",
-  
+
   /** Blog post layout spacing (intentional gap-8 for visual hierarchy) */
   blogLayout: "gap-8",
-  
+
   /** Content grid spacing (card grids, portfolio items) */
   contentGrid: "gap-6",
-  
+
   /** Alternative subsection spacing (backwards compatibility, single value) */
   subsectionAlt: "space-y-6",
+
+  /** Section divider spacing (bordered sections like "Other Projects", "Related Posts") */
+  sectionDivider: {
+    /** Container spacing: top margin and padding for bordered sections */
+    container: "mt-8 md:mt-10 lg:mt-12 pt-6 md:pt-7 lg:pt-8",
+    /** Heading bottom margin */
+    heading: "mb-4 md:mb-5 lg:mb-6",
+    /** Grid gap for card layouts */
+    grid: "gap-4",
+  },
 
   /** Activity feed spacing (content-focused, generous breathing room) */
   activity: {
@@ -732,6 +763,33 @@ export const SPACING = {
     /** Spacing between action buttons (like, bookmark, share) */
     actionGap: "gap-6",
   },
+
+  // Numeric-like properties for use in template literals (TEMPORARY - should be refactored)
+  // These map to standard Tailwind values: xs=2, sm=3, md=4, lg=6, xl=8, 2xl=10
+  xs: "2",
+  sm: "3",
+  md: "4",
+  lg: "6",
+  xl: "8",
+  "2xl": "10",
+  "1.5": "3",
+  "0.5": "1",
+} as const;
+
+// ============================================================================
+// NUMERIC SPACING (for padding, gaps, margins - NOT space-y)
+// ============================================================================
+
+/**
+ * Numeric spacing values for use with padding (p-*), gaps (gap-*), margins (m-*)
+ * These complement SPACING which is only for vertical spacing (space-y-*)
+ */
+export const SPACING_VALUES = {
+  xs: "2", // 0.5rem
+  sm: "3", // 0.75rem
+  md: "4", // 1rem
+  lg: "6", // 1.5rem
+  xl: "8", // 2rem
 } as const;
 
 // ============================================================================
@@ -740,20 +798,30 @@ export const SPACING = {
 
 /**
  * Semantic color tokens for consistent alert, status, and interactive states
- * All colors automatically handle dark mode via Tailwind's dark: modifier
- * 
- * @example
+ * All colors automatically handle dark mode via CSS custom properties
+ *
+ * Philosophy:
+ * - Success: Positive outcomes, confirmations, active states (green)
+ * - Warning: Cautions, important notices, pending states (amber/yellow)
+ * - Error: Errors, destructive actions, critical issues (red)
+ * - Info: Informational content, neutral highlights (blue)
+ * - Semantic accents: Categorization and theming (cyan, orange, purple, etc.)
+ *
+ * @example Alert state
  * ```tsx
- * // Alert state
  * <div className={SEMANTIC_COLORS.alert.critical.container}>
  *   <IconComponent className={SEMANTIC_COLORS.alert.critical.icon} />
  *   <p className={SEMANTIC_COLORS.alert.critical.text}>Error message</p>
  * </div>
- * 
- * // Status indicator
+ * ```
+ *
+ * @example Status indicator
+ * ```tsx
  * <Badge className={SEMANTIC_COLORS.status.success}>Complete</Badge>
- * 
- * // Interactive focus state
+ * ```
+ *
+ * @example Interactive focus state
+ * ```tsx
  * <button className={SEMANTIC_COLORS.interactive.focus}>Button</button>
  * ```
  */
@@ -761,42 +829,49 @@ export const SEMANTIC_COLORS = {
   /** Alert/notification state colors */
   alert: {
     critical: {
-      border: "border-l-4 border-l-destructive/60",
-      container: "bg-destructive/10 dark:bg-destructive/20",
-      text: "text-destructive dark:text-destructive/90",
-      icon: "text-destructive dark:text-destructive/80",
-      label: "text-destructive dark:text-destructive/90",
+      border: "border-l-4 border-l-error",
+      container: "bg-error-subtle",
+      text: "text-error",
+      icon: "text-error-dark dark:text-error-light",
+      label: "text-error",
     },
     warning: {
-      border: "border-l-4 border-l-amber-500/60 dark:border-l-amber-500/70",
-      container: "bg-amber-500/10 dark:bg-amber-500/20",
-      text: "text-amber-900 dark:text-amber-100",
-      icon: "text-amber-600 dark:text-amber-400",
-      label: "text-amber-700 dark:text-amber-300",
+      border: "border-l-4 border-l-warning",
+      container: "bg-warning-subtle",
+      text: "text-warning-foreground",
+      icon: "text-warning-dark dark:text-warning-light",
+      label: "text-warning-dark dark:text-warning-light",
     },
     info: {
-      border: "border-l-4 border-l-primary/60",
-      container: "bg-primary/10 dark:bg-primary/20",
-      text: "text-primary dark:text-primary/90",
-      icon: "text-primary dark:text-primary/80",
-      label: "text-primary dark:text-primary/90",
+      border: "border-l-4 border-l-info",
+      container: "bg-info-subtle",
+      text: "text-info",
+      icon: "text-info-dark dark:text-info-light",
+      label: "text-info",
     },
     success: {
-      border: "border-l-4 border-l-green-500/60 dark:border-l-green-500/70",
-      container: "bg-green-500/10 dark:bg-green-500/20",
-      text: "text-green-900 dark:text-green-100",
-      icon: "text-green-600 dark:text-green-400",
-      label: "text-green-700 dark:text-green-300",
+      border: "border-l-4 border-l-success",
+      container: "bg-success-subtle",
+      text: "text-success",
+      icon: "text-success-dark dark:text-success-light",
+      label: "text-success",
+    },
+    notice: {
+      border: "border-l-4 border-l-muted-foreground/30",
+      container: "bg-muted/30 dark:bg-muted/20",
+      text: "text-foreground",
+      icon: "text-muted-foreground",
+      label: "text-foreground",
     },
   },
-  
+
   /** Status indicators (analytics, progress, metrics) */
   status: {
-    success: "bg-green-500 text-green-50 dark:bg-green-600 dark:text-green-50",
-    warning: "bg-yellow-500 text-yellow-50 dark:bg-yellow-600 dark:text-yellow-50",
-    info: "bg-blue-500 text-blue-50 dark:bg-blue-600 dark:text-blue-50",
-    inProgress: "bg-amber-500 text-amber-50 dark:bg-amber-600 dark:text-amber-50",
-    error: "bg-red-500 text-red-50 dark:bg-red-600 dark:text-red-50",
+    success: "bg-success text-success-foreground",
+    warning: "bg-warning text-warning-foreground",
+    info: "bg-info text-info-foreground",
+    inProgress: "bg-warning text-warning-foreground",
+    error: "bg-error text-error-foreground",
     neutral: "bg-muted text-muted-foreground dark:bg-muted/50",
   },
 
@@ -808,9 +883,9 @@ export const SEMANTIC_COLORS = {
       /** Active state - full contrast when focused/hovered */
       active: "text-foreground hover:text-foreground/80",
       /** Liked state - warm red color */
-      liked: "text-red-500 dark:text-red-400",
+      liked: "text-error dark:text-error-light",
       /** Bookmarked state - warm amber color */
-      bookmarked: "text-amber-500 dark:text-amber-400",
+      bookmarked: "text-warning dark:text-warning-light",
     },
   },
 
@@ -822,20 +897,253 @@ export const SEMANTIC_COLORS = {
     quaternary: "bg-chart-4 text-chart-4",
     quinary: "bg-chart-5 text-chart-5",
   },
-  
+
   /** Interactive element states */
   interactive: {
     hover: "hover:bg-muted/50 dark:hover:bg-muted/30",
     active: "active:bg-muted dark:active:bg-muted/40",
-    focus: "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:focus-visible:ring-offset-background",
-    disabled: "disabled:pointer-events-none disabled:opacity-50 dark:disabled:opacity-40",
+    focus:
+      "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:focus-visible:ring-offset-background",
+    disabled:
+      "disabled:pointer-events-none disabled:opacity-50 dark:disabled:opacity-40",
   },
-  
+
   /** Content highlighting and marks */
   highlight: {
-    primary: "bg-yellow-200/80 dark:bg-yellow-500/30 text-foreground",
+    primary: "bg-warning-subtle text-foreground",
     mark: "bg-primary/10 dark:bg-primary/20 text-foreground",
     muted: "bg-muted/50 dark:bg-muted/30 text-muted-foreground",
+  },
+
+  /**
+   * Semantic accent colors for categorization
+   *
+   * Comprehensive color library with consistent structure:
+   * - badge: Background + text + border for badge components
+   * - text: Text color only
+   * - bg: Background color only
+   * - light: 15% lighter variant
+   * - dark: 15% darker variant
+   *
+   * Currently mapped to greyscale (chroma = 0)
+   * To add color: Update CSS variables in globals.css (change chroma from 0 to 0.15-0.20)
+   *
+   * P3 wide-gamut support: @media (color-gamut: p3) queries ready for colorization
+   *
+   * Color groups:
+   * - Blues: blue, cyan, sky, indigo, teal
+   * - Greens: green, emerald, lime
+   * - Purples/Pinks: purple, violet, pink, fuchsia, rose
+   * - Reds/Oranges: red, orange, amber
+   * - Yellows: yellow
+   * - Neutrals: slate, neutral
+   */
+  accent: {
+    // Blues
+    blue: {
+      badge:
+        "bg-semantic-blue-subtle text-semantic-blue border-semantic-blue/20",
+      text: "text-semantic-blue",
+      bg: "bg-semantic-blue",
+      light: "bg-semantic-blue-light text-foreground",
+      dark: "bg-semantic-blue-dark text-background",
+    },
+    cyan: {
+      badge:
+        "bg-semantic-cyan-subtle text-semantic-cyan border-semantic-cyan/20",
+      text: "text-semantic-cyan",
+      bg: "bg-semantic-cyan",
+      light: "bg-semantic-cyan-light text-foreground",
+      dark: "bg-semantic-cyan-dark text-background",
+    },
+    sky: {
+      badge: "bg-semantic-sky-subtle text-semantic-sky border-semantic-sky/20",
+      text: "text-semantic-sky",
+      bg: "bg-semantic-sky",
+      light: "bg-semantic-sky-light text-foreground",
+      dark: "bg-semantic-sky-dark text-background",
+    },
+    indigo: {
+      badge:
+        "bg-semantic-indigo-subtle text-semantic-indigo border-semantic-indigo/20",
+      text: "text-semantic-indigo",
+      bg: "bg-semantic-indigo",
+      light: "bg-semantic-indigo-light text-foreground",
+      dark: "bg-semantic-indigo-dark text-background",
+    },
+    teal: {
+      badge:
+        "bg-semantic-teal-subtle text-semantic-teal border-semantic-teal/20",
+      text: "text-semantic-teal",
+      bg: "bg-semantic-teal",
+      light: "bg-semantic-teal-light text-foreground",
+      dark: "bg-semantic-teal-dark text-background",
+    },
+
+    // Greens
+    green: {
+      badge:
+        "bg-semantic-green-subtle text-semantic-green border-semantic-green/20",
+      text: "text-semantic-green",
+      bg: "bg-semantic-green",
+      light: "bg-semantic-green-light text-foreground",
+      dark: "bg-semantic-green-dark text-background",
+    },
+    emerald: {
+      badge:
+        "bg-semantic-emerald-subtle text-semantic-emerald border-semantic-emerald/20",
+      text: "text-semantic-emerald",
+      bg: "bg-semantic-emerald",
+      light: "bg-semantic-emerald-light text-foreground",
+      dark: "bg-semantic-emerald-dark text-background",
+    },
+    lime: {
+      badge:
+        "bg-semantic-lime-subtle text-semantic-lime border-semantic-lime/20",
+      text: "text-semantic-lime",
+      bg: "bg-semantic-lime",
+      light: "bg-semantic-lime-light text-foreground",
+      dark: "bg-semantic-lime-dark text-background",
+    },
+
+    // Purples & Pinks
+    purple: {
+      badge:
+        "bg-semantic-purple-subtle text-semantic-purple border-semantic-purple/20",
+      text: "text-semantic-purple",
+      bg: "bg-semantic-purple",
+      light: "bg-semantic-purple-light text-foreground",
+      dark: "bg-semantic-purple-dark text-background",
+    },
+    violet: {
+      badge:
+        "bg-semantic-violet-subtle text-semantic-violet border-semantic-violet/20",
+      text: "text-semantic-violet",
+      bg: "bg-semantic-violet",
+      light: "bg-semantic-violet-light text-foreground",
+      dark: "bg-semantic-violet-dark text-background",
+    },
+    pink: {
+      badge:
+        "bg-semantic-pink-subtle text-semantic-pink border-semantic-pink/20",
+      text: "text-semantic-pink",
+      bg: "bg-semantic-pink",
+      light: "bg-semantic-pink-light text-foreground",
+      dark: "bg-semantic-pink-dark text-background",
+    },
+    fuchsia: {
+      badge:
+        "bg-semantic-fuchsia-subtle text-semantic-fuchsia border-semantic-fuchsia/20",
+      text: "text-semantic-fuchsia",
+      bg: "bg-semantic-fuchsia",
+      light: "bg-semantic-fuchsia-light text-foreground",
+      dark: "bg-semantic-fuchsia-dark text-background",
+    },
+    rose: {
+      badge:
+        "bg-semantic-rose-subtle text-semantic-rose border-semantic-rose/20",
+      text: "text-semantic-rose",
+      bg: "bg-semantic-rose",
+      light: "bg-semantic-rose-light text-foreground",
+      dark: "bg-semantic-rose-dark text-background",
+    },
+
+    // Reds & Oranges
+    red: {
+      badge: "bg-semantic-red-subtle text-semantic-red border-semantic-red/20",
+      text: "text-semantic-red",
+      bg: "bg-semantic-red",
+      light: "bg-semantic-red-light text-foreground",
+      dark: "bg-semantic-red-dark text-background",
+    },
+    orange: {
+      badge:
+        "bg-semantic-orange-subtle text-semantic-orange border-semantic-orange/20",
+      text: "text-semantic-orange",
+      bg: "bg-semantic-orange",
+      light: "bg-semantic-orange-light text-foreground",
+      dark: "bg-semantic-orange-dark text-background",
+    },
+    amber: {
+      badge:
+        "bg-semantic-amber-subtle text-semantic-amber border-semantic-amber/20",
+      text: "text-semantic-amber",
+      bg: "bg-semantic-amber",
+      light: "bg-semantic-amber-light text-foreground",
+      dark: "bg-semantic-amber-dark text-background",
+    },
+
+    // Yellows
+    yellow: {
+      badge:
+        "bg-semantic-yellow-subtle text-semantic-yellow border-semantic-yellow/20",
+      text: "text-semantic-yellow",
+      bg: "bg-semantic-yellow",
+      light: "bg-semantic-yellow-light text-foreground",
+      dark: "bg-semantic-yellow-dark text-background",
+    },
+
+    // Neutrals & Grays
+    slate: {
+      badge:
+        "bg-semantic-slate-subtle text-semantic-slate border-semantic-slate/20",
+      text: "text-semantic-slate",
+      bg: "bg-semantic-slate",
+      light: "bg-semantic-slate-light text-foreground",
+      dark: "bg-semantic-slate-dark text-background",
+    },
+    neutral: {
+      badge:
+        "bg-semantic-neutral-subtle text-semantic-neutral border-semantic-neutral/20",
+      text: "text-semantic-neutral",
+      bg: "bg-semantic-neutral",
+      light: "bg-semantic-neutral-light text-foreground",
+      dark: "bg-semantic-neutral-dark text-background",
+    },
+  },
+
+  /**
+   * Code syntax highlighting tokens
+   *
+   * Semantic color mapping for code blocks:
+   * - keyword: Blue (info) - Language keywords (if, else, const, function, etc.)
+   * - string: Green (success) - String literals
+   * - function: Orange (semantic-orange) - Function names and calls
+   * - comment: Neutral gray (muted-foreground) - Comments (italicized)
+   * - variable: Blue (info) - Variables and parameters
+   * - operator: Foreground - Operators (+, -, =, etc.)
+   * - constant: Purple (semantic-purple) - Constants and boolean values
+   * - class: Purple (semantic-purple) - Class names
+   * - number: Green (success) - Numeric literals
+   * - punctuation: Foreground - Braces, parentheses, commas
+   * - tag: Red (error) - HTML/JSX tags
+   * - attribute: Orange (semantic-orange) - HTML/JSX attributes
+   *
+   * CSS variables defined in globals.css (:root and .dark)
+   * Automatically adapts to P3 wide-gamut displays
+   *
+   * @example Code block with syntax highlighting
+   * ```tsx
+   * // Comment (neutral gray, italic)
+   * const greeting = "Hello"; // string (green), keyword (blue)
+   * function sayHello() {     // function (orange), keyword (blue)
+   *   return greeting;        // variable (blue)
+   * }
+   * ```
+   */
+  syntax: {
+    keyword: "text-[hsl(var(--syntax-keyword))]",
+    string: "text-[hsl(var(--syntax-string))]",
+    function: "text-[hsl(var(--syntax-function))]",
+    comment: "text-[hsl(var(--syntax-comment))] italic",
+    variable: "text-[hsl(var(--syntax-variable))]",
+    operator: "text-[hsl(var(--syntax-operator))]",
+    constant: "text-[hsl(var(--syntax-constant))]",
+    class: "text-[hsl(var(--syntax-class))]",
+    number: "text-[hsl(var(--syntax-number))]",
+    punctuation: "text-[hsl(var(--syntax-punctuation))]",
+    tag: "text-[hsl(var(--syntax-tag))]",
+    attribute: "text-[hsl(var(--syntax-attribute))]",
   },
 } as const;
 
@@ -867,7 +1175,7 @@ export const OPACITY = {
  * All colors are optimized for light/dark mode with accessible contrast ratios.
  *
  * Color Selection Philosophy:
- * - Maps to existing gradient categories (brand, warm, cool, neutral, vibrant)
+ * - Maps to semantic color categories (success, warning, error, info, accents)
  * - Semantic names tied to common series themes (tutorial, security, performance, etc.)
  * - WCAG AA contrast compliance for text on backgrounds
  * - Consistent with existing design token system
@@ -885,119 +1193,120 @@ export const OPACITY = {
  * ```
  */
 export const SERIES_COLORS = {
-  /** Default series color (primary brand blue) */
+  /** Default series color (primary brand) */
   default: {
     /** Badge background/text */
-    badge: "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary/90 border-primary/20",
+    badge: "bg-primary/10 text-primary border-primary/20",
     /** Card accent (border, highlights) */
     card: "border-primary/20 hover:border-primary/40",
     /** Icon color */
-    icon: "text-primary dark:text-primary/90",
+    icon: "text-primary",
     /** Gradient key for hero images */
     gradient: "brand.primary" as const,
   },
 
-  /** Tutorial/educational series (blue → violet) */
+  /** Tutorial/educational series (blue → info) */
   tutorial: {
-    badge: "bg-blue-500/10 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 border-blue-500/20",
-    card: "border-blue-500/20 hover:border-blue-500/40",
-    icon: "text-blue-600 dark:text-blue-400",
+    badge: SEMANTIC_COLORS.accent.sky.badge,
+    card: "border-semantic-sky/20 hover:border-semantic-sky/40",
+    icon: SEMANTIC_COLORS.accent.sky.text,
     gradient: "brand.primary" as const,
   },
 
-  /** Security/hardening series (shield theme - cyan → indigo) */
+  /** Security/hardening series (shield theme - cyan) */
   security: {
-    badge: "bg-cyan-500/10 text-cyan-700 dark:bg-cyan-500/20 dark:text-cyan-300 border-cyan-500/20",
-    card: "border-cyan-500/20 hover:border-cyan-500/40",
-    icon: "text-cyan-600 dark:text-cyan-400",
+    badge: SEMANTIC_COLORS.accent.cyan.badge,
+    card: "border-semantic-cyan/20 hover:border-semantic-cyan/40",
+    icon: SEMANTIC_COLORS.accent.cyan.text,
     gradient: "brand.accent" as const,
   },
 
-  /** Performance/optimization series (lightning theme - orange → red) */
+  /** Performance/optimization series (lightning theme - orange) */
   performance: {
-    badge: "bg-orange-500/10 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300 border-orange-500/20",
-    card: "border-orange-500/20 hover:border-orange-500/40",
-    icon: "text-orange-600 dark:text-orange-400",
+    badge: SEMANTIC_COLORS.accent.orange.badge,
+    card: "border-semantic-orange/20 hover:border-semantic-orange/40",
+    icon: SEMANTIC_COLORS.accent.orange.text,
     gradient: "warm.fire" as const,
   },
 
-  /** Architecture/design series (violet → pink) */
+  /** Architecture/design series (violet) */
   architecture: {
-    badge: "bg-violet-500/10 text-violet-700 dark:bg-violet-500/20 dark:text-violet-300 border-violet-500/20",
-    card: "border-violet-500/20 hover:border-violet-500/40",
-    icon: "text-violet-600 dark:text-violet-400",
+    badge: SEMANTIC_COLORS.accent.violet.badge,
+    card: "border-semantic-violet/20 hover:border-semantic-violet/40",
+    icon: SEMANTIC_COLORS.accent.violet.text,
     gradient: "brand.secondary" as const,
   },
 
-  /** Development/coding series (emerald → teal) */
+  /** Development/coding series (emerald) */
   development: {
-    badge: "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 border-emerald-500/20",
-    card: "border-emerald-500/20 hover:border-emerald-500/40",
-    icon: "text-emerald-600 dark:text-emerald-400",
+    badge: SEMANTIC_COLORS.accent.emerald.badge,
+    card: "border-semantic-emerald/20 hover:border-semantic-emerald/40",
+    icon: SEMANTIC_COLORS.accent.emerald.text,
     gradient: "cool.teal" as const,
   },
 
-  /** Testing/QA series (green theme) */
+  /** Testing/QA series (green → success) */
   testing: {
-    badge: "bg-green-500/10 text-green-700 dark:bg-green-500/20 dark:text-green-300 border-green-500/20",
-    card: "border-green-500/20 hover:border-green-500/40",
-    icon: "text-green-600 dark:text-green-400",
+    badge: "bg-success-subtle text-success border-success/20",
+    card: "border-success/20 hover:border-success/40",
+    icon: "text-success",
     gradient: "cool.forest" as const,
   },
 
-  /** DevOps/deployment series (sky → blue) */
+  /** DevOps/deployment series (sky) */
   devops: {
-    badge: "bg-sky-500/10 text-sky-700 dark:bg-sky-500/20 dark:text-sky-300 border-sky-500/20",
-    card: "border-sky-500/20 hover:border-sky-500/40",
-    icon: "text-sky-600 dark:text-sky-400",
+    badge: SEMANTIC_COLORS.accent.sky.badge,
+    card: "border-semantic-sky/20 hover:border-semantic-sky/40",
+    icon: SEMANTIC_COLORS.accent.sky.text,
     gradient: "cool.sky" as const,
   },
 
-  /** Career/soft skills series (amber → orange) */
+  /** Career/soft skills series (warning → amber) */
   career: {
-    badge: "bg-amber-500/10 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300 border-amber-500/20",
-    card: "border-amber-500/20 hover:border-amber-500/40",
-    icon: "text-amber-600 dark:text-amber-400",
+    badge:
+      "bg-warning-subtle text-warning-dark dark:text-warning-light border-warning/20",
+    card: "border-warning/20 hover:border-warning/40",
+    icon: "text-warning-dark dark:text-warning-light",
     gradient: "warm.amber" as const,
   },
 
-  /** Deep dive/advanced series (indigo → purple) */
+  /** Deep dive/advanced series (indigo) */
   advanced: {
-    badge: "bg-indigo-500/10 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 border-indigo-500/20",
-    card: "border-indigo-500/20 hover:border-indigo-500/40",
-    icon: "text-indigo-600 dark:text-indigo-400",
+    badge: SEMANTIC_COLORS.accent.indigo.badge,
+    card: "border-semantic-indigo/20 hover:border-semantic-indigo/40",
+    icon: SEMANTIC_COLORS.accent.indigo.text,
     gradient: "cool.ocean" as const,
   },
 
-  /** Design/UI/UX series (pink → rose) */
+  /** Design/UI/UX series (pink) */
   design: {
-    badge: "bg-pink-500/10 text-pink-700 dark:bg-pink-500/20 dark:text-pink-300 border-pink-500/20",
-    card: "border-pink-500/20 hover:border-pink-500/40",
-    icon: "text-pink-600 dark:text-pink-400",
+    badge: SEMANTIC_COLORS.accent.pink.badge,
+    card: "border-semantic-pink/20 hover:border-semantic-pink/40",
+    icon: SEMANTIC_COLORS.accent.pink.text,
     gradient: "warm.rose" as const,
   },
 
-  /** Quick tips/snippets series (lime → green) */
+  /** Quick tips/snippets series (lime) */
   tips: {
-    badge: "bg-lime-500/10 text-lime-700 dark:bg-lime-500/20 dark:text-lime-300 border-lime-500/20",
-    card: "border-lime-500/20 hover:border-lime-500/40",
-    icon: "text-lime-600 dark:text-lime-400",
+    badge: SEMANTIC_COLORS.accent.lime.badge,
+    card: "border-semantic-lime/20 hover:border-semantic-lime/40",
+    icon: SEMANTIC_COLORS.accent.lime.text,
     gradient: "vibrant.neon" as const,
   },
 
-  /** Troubleshooting/debugging series (red → orange) */
+  /** Troubleshooting/debugging series (error → red) */
   debugging: {
-    badge: "bg-red-500/10 text-red-700 dark:bg-red-500/20 dark:text-red-300 border-red-500/20",
-    card: "border-red-500/20 hover:border-red-500/40",
-    icon: "text-red-600 dark:text-red-400",
+    badge: "bg-error-subtle text-error border-error/20",
+    card: "border-error/20 hover:border-error/40",
+    icon: "text-error",
     gradient: "warm.fire" as const,
   },
 
-  /** Neutral/general series (slate) */
+  /** Neutral/general series (muted) */
   general: {
-    badge: "bg-slate-500/10 text-slate-700 dark:bg-slate-500/20 dark:text-slate-300 border-slate-500/20",
-    card: "border-slate-500/20 hover:border-slate-500/40",
-    icon: "text-slate-600 dark:text-slate-400",
+    badge: "bg-muted/50 text-muted-foreground border-border",
+    card: "border-border hover:border-muted-foreground/40",
+    icon: "text-muted-foreground",
     gradient: "neutral.slate" as const,
   },
 } as const;
@@ -1020,7 +1329,7 @@ export type SeriesColorTheme = keyof typeof SERIES_COLORS;
  * <Badge className={colors.badge}>Security Series</Badge>
  * ```
  */
-export function getSeriesColors(theme: string = 'default') {
+export function getSeriesColors(theme: string = "default") {
   return SERIES_COLORS[theme as SeriesColorTheme] || SERIES_COLORS.default;
 }
 
@@ -1032,13 +1341,19 @@ export function getSeriesColors(theme: string = 'default') {
  * Hover effect patterns for interactive elements
  * Ensures consistent feedback across different component types
  *
+ * **Decision Guide:**
+ * - **80% use case:** `card` - Standard interactive cards, posts, projects
+ * - **15% use case:** `cardSubtle` - Less prominent secondary cards
+ * - **5% use case:** `button` or `link` - Specific interactive elements
+ * - **Rare:** `cardGlow`, `cardTilt` - Special effects only
+ *
  * All hover effects include:
- * - Smooth transitions (duration-300)
+ * - Smooth transitions (300ms for cards, 200ms for minimal)
  * - Shadow elevation changes
  * - Optional transforms (lift, scale)
- * - Active state feedback
+ * - Active state feedback (scale-down for tactile feel)
  *
- * @example Standard card hover (most common)
+ * @example Standard card hover (most common - 80% of use cases)
  * ```tsx
  * import { Card } from '@/components/ui/card'
  * import { HOVER_EFFECTS } from '@/lib/design-tokens'
@@ -1049,18 +1364,6 @@ export function getSeriesColors(theme: string = 'default') {
  *   </CardHeader>
  *   <CardContent>
  *     Project details...
- *   </CardContent>
- * </Card>
- * ```
- *
- * @example CTA card with border highlight
- * ```tsx
- * <Card className={HOVER_EFFECTS.cardCTA}>
- *   <CardHeader>
- *     <CardTitle>Get Started</CardTitle>
- *   </CardHeader>
- *   <CardContent>
- *     Sign up today!
  *   </CardContent>
  * </Card>
  * ```
@@ -1078,37 +1381,84 @@ export function getSeriesColors(theme: string = 'default') {
  *   Click me
  * </button>
  * ```
+ *
+ * @see docs/design/ANIMATION_SYSTEM_ANALYSIS.md for complete animation guidelines
  */
 export const HOVER_EFFECTS = {
-  /** Standard card hover (projects, posts, content cards) */
+  /**
+   * Standard card hover (DEFAULT - use for 80% of interactive cards)
+   *
+   * Use for: Blog posts, projects, content cards, archive items
+   * Effect: Lift (0.5px), shadow increase, border highlight, press feedback
+   */
   card: "transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:-translate-y-0.5 active:scale-[0.98] active:shadow-md",
-  
-  /** CTA card hover - highlights border instead of background */
-  cardCTA: "transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:-translate-y-0.5 active:scale-[0.98] active:shadow-md",
-  
-  /** Subtle hover for secondary/inline cards */
-  cardSubtle: "transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]",
-  
-  /** Featured/hero cards (already prominent, minimal transform) */
-  cardFeatured: "transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] active:shadow-md",
-  
-  /** Minimal hover for tertiary/subtle cards (shadow only) */
-  cardMinimal: "transition-shadow duration-200 hover:shadow-md",
-  
-  /** Lift effect on hover (larger shadow + small upward transform) */
-  cardLift: "transition-all duration-300 hover:shadow-lg hover:-translate-y-1",
-  
-  /** Interactive buttons (FAB, CTAs) */
-  button: "transition-shadow hover:shadow-xl active:scale-95 active:shadow-lg",
-  
-  /** Text links */
-  link: "hover:underline underline-offset-4 decoration-skip-ink-none will-change-auto transition-colors active:opacity-70",
 
-  /** Card glow effect on hover */
+  /**
+   * Subtle hover for secondary/inline cards
+   *
+   * Use for: Sidebar cards, inline content, less prominent elements
+   * Effect: Smaller lift (0.5px), medium shadow, press feedback
+   */
+  cardSubtle:
+    "transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]",
+
+  /**
+   * Featured/hero cards (already prominent elements)
+   *
+   * Use for: Hero sections, featured content, primary CTAs
+   * Effect: Lift (0.5px), extra-large shadow, border highlight, press feedback
+   */
+  cardFeatured:
+    "transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] active:shadow-md",
+
+  /**
+   * Minimal hover for tertiary/subtle cards
+   *
+   * Use for: Lightweight interactions, nested cards, minimal UI
+   * Effect: Shadow only (no transform), faster transition (200ms)
+   */
+  cardMinimal: "transition-shadow duration-200 hover:shadow-md",
+
+  /**
+   * Lift effect on hover (larger upward movement)
+   *
+   * Use for: Special emphasis cards, gallery items
+   * Effect: Larger lift (1px), shadow increase
+   */
+  cardLift: "transition-all duration-300 hover:shadow-lg hover:-translate-y-1",
+
+  /**
+   * Interactive buttons (FABs, CTAs)
+   *
+   * Use for: Action buttons, floating action buttons
+   * Effect: Shadow increase, press scale-down feedback
+   */
+  button: "transition-shadow hover:shadow-xl active:scale-95 active:shadow-lg",
+
+  /**
+   * Text links
+   *
+   * Use for: Inline links, text-based navigation
+   * Effect: Underline on hover, color transition, opacity feedback on press
+   */
+  link: "hover:underline underline-offset-4 decoration-skip-ink-none will-change-auto transition-theme active:opacity-70",
+
+  /**
+   * Card glow effect on hover (SPECIALTY - use sparingly)
+   *
+   * Use for: Premium content, special highlights, attention-grabbing elements
+   * Effect: Glow shadow (custom shadow-glow utility)
+   */
   cardGlow: "transition-all duration-300 hover:shadow-glow",
 
-  /** Card tilt effect on hover (3D transform) */
-  cardTilt: "transition-transform duration-300 hover:rotate-1 hover:scale-[1.02]",
+  /**
+   * Card tilt effect on hover (SPECIALTY - use sparingly)
+   *
+   * Use for: Playful interactions, creative portfolios, 3D effects
+   * Effect: Slight rotation (1deg) + scale (1.02x)
+   */
+  cardTilt:
+    "transition-transform duration-300 hover:rotate-1 hover:scale-[1.02]",
 } as const;
 
 // ============================================================================
@@ -1117,21 +1467,21 @@ export const HOVER_EFFECTS = {
 
 /**
  * Animation System - Performance-First, CSS-Native
- * 
+ *
  * Philosophy:
  * 1. CSS handles everything - no JavaScript animation libraries needed
  * 2. Use transform + opacity only (GPU-accelerated, 60fps)
  * 3. CSS handles reduced-motion globally via @media query
  * 4. Simple utility classes for common patterns
- * 
+ *
  * The CSS custom properties are defined in globals.css under @theme inline.
  * These TypeScript constants reference those values for documentation.
- * 
+ *
  * @example
  * ```tsx
  * // Scroll reveal with stagger (CSS classes)
  * {items.map((item, i) => (
- *   <div 
+ *   <div
  *     key={item.id}
  *     className={cn(
  *       ANIMATION.reveal.base,
@@ -1143,33 +1493,33 @@ export const HOVER_EFFECTS = {
  *     {item.content}
  *   </div>
  * ))}
- * 
+ *
  * // Simple hover effect
  * <Card className={ANIMATION.hover.lift}>...</Card>
- * 
+ *
  * // Color transition (theme changes)
  * <div className={ANIMATION.transition.colors}>...</div>
  * ```
- * 
+ *
  * @see src/app/globals.css for CSS custom properties and utility classes
  */
 export const ANIMATION = {
   /** Duration scale (references CSS custom properties) */
   duration: {
-    instant: "duration-[0ms]",    // --duration-instant (0ms) - No animation
-    fast: "duration-[150ms]",     // --duration-fast (150ms) - Quick interactions
-    normal: "duration-[300ms]",   // --duration-normal (300ms) - Standard transitions
-    slow: "duration-[500ms]",     // --duration-slow (500ms) - Complex animations
+    instant: "duration-[0ms]", // --duration-instant (0ms) - No animation
+    fast: "duration-[150ms]", // --duration-fast (150ms) - Quick interactions
+    normal: "duration-[300ms]", // --duration-normal (300ms) - Standard transitions
+    slow: "duration-[500ms]", // --duration-slow (500ms) - Complex animations
   },
-  
+
   /** Easing functions for animation curves */
   easing: {
-    default: "ease",        // Default cubic-bezier
-    in: "ease-in",          // Slow start
-    out: "ease-out",        // Slow end
-    inOut: "ease-in-out",   // Slow start and end
+    default: "ease", // Default cubic-bezier
+    in: "ease-in", // Slow start
+    out: "ease-out", // Slow end
+    inOut: "ease-in-out", // Slow start and end
   },
-  
+
   /** Transition utilities - Performance optimized */
   transition: {
     /** Base (opacity + transform, 300ms) - Default choice */
@@ -1187,7 +1537,7 @@ export const ANIMATION = {
     /** @deprecated Use .transition-theme instead */
     colors: "transition-colors",
   },
-  
+
   /** Scroll-reveal animation classes */
   reveal: {
     /** Initial hidden state - add this by default */
@@ -1201,17 +1551,17 @@ export const ANIMATION = {
     right: "reveal-right",
     scale: "reveal-scale",
   },
-  
+
   /** Hover effects */
   hover: {
-    lift: "hover-lift",           // Subtle lift on hover
+    lift: "hover-lift", // Subtle lift on hover
   },
-  
+
   /** Interactive feedback */
   interactive: {
-    press: "press-effect",        // Scale down on active/press
+    press: "press-effect", // Scale down on active/press
   },
-  
+
   /** Stagger delays for lists (50ms increments) */
   stagger: {
     1: "stagger-1",
@@ -1246,18 +1596,139 @@ export const ANIMATION = {
 } as const;
 
 /**
- * @deprecated Use ANIMATION instead. These are kept for backwards compatibility.
- * Animation duration patterns for consistent motion design
+ * Animation Timing & Easing Constants
+ *
+ * Centralized animation configuration for consistent motion design.
+ * All animations respect `prefers-reduced-motion` via globals.css.
+ *
+ * Replaces deprecated Tailwind utility-based ANIMATIONS constant.
+ *
+ * Usage:
+ * ```tsx
+ * // In component styles
+ * style={{ animation: ANIMATIONS.types.fadeIn }}
+ *
+ * // For transitions
+ * style={{ transition: ANIMATIONS.transition.colors }}
+ *
+ * // With stagger effect
+ * style={{ animationDelay: `${ANIMATIONS.stagger.normal * index}ms` }}
+ * ```
+ *
+ * @see /src/app/globals.css - Animation keyframes and reduced-motion support
  */
 export const ANIMATIONS = {
-  /** Fast transitions (hover states, small movements) */
-  fast: "duration-200",
-  
-  /** Standard transitions (most UI interactions) */
-  standard: "duration-300",
-  
-  /** Slow transitions (dramatic reveals, page transitions) */
-  slow: "duration-500",
+  /**
+   * Animation durations
+   * Based on Material Design motion guidelines
+   */
+  duration: {
+    /** Instant feedback (150ms) - Micro-interactions, hovers */
+    instant: "150ms",
+
+    /** Fast response (300ms) - UI state changes, tooltips, dropdowns */
+    fast: "300ms",
+
+    /** Normal transition (500ms) - Content reveals, page transitions */
+    normal: "500ms",
+
+    /** Slow ambient (2s) - Background animations, shimmer effects */
+    slow: "2s",
+
+    /** Extended ambient (3s) - Floating animations, parallax */
+    extended: "3s",
+  },
+
+  /**
+   * Easing functions
+   * Matches Tailwind's built-in easing curves
+   */
+  easing: {
+    /** Default easing - Most transitions */
+    default: "cubic-bezier(0.4, 0, 0.2, 1)", // ease-out
+
+    /** Smooth easing - Organic movement */
+    smooth: "ease-in-out",
+
+    /** Bounce easing - Playful interactions */
+    bounce: "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+
+    /** Linear - Constant speed (shimmer, loading bars) */
+    linear: "linear",
+
+    /** Sharp entry - Emphasize arrival */
+    sharp: "cubic-bezier(0.4, 0, 0.6, 1)", // ease-in-out but sharper
+  },
+
+  /**
+   * Pre-composed animation strings
+   * Ready to use with CSS `animation` property
+   */
+  types: {
+    /** Shimmer effect for skeleton loaders (2s linear infinite) */
+    shimmer: "shimmer 2s linear infinite",
+
+    /** Fade in content (500ms ease-out) */
+    fadeIn: "fade-in 0.5s ease-out forwards",
+
+    /** Fade in with upward slide (500ms ease-out) */
+    fadeInUp: "fade-in-up 0.5s ease-out forwards",
+
+    /** Single pulse effect (300ms ease-in-out) */
+    pulseOnce: "pulse-once 300ms ease-in-out",
+
+    /** Subtle continuous pulse (2s ease-in-out infinite) */
+    pulseSubtle: "pulse-subtle 2s ease-in-out infinite",
+
+    /** Floating parallax effect (3s ease-in-out infinite) */
+    float: "float 3s ease-in-out infinite",
+
+    /** Highlight flash for TOC navigation (2s ease-in-out) */
+    highlightPulse: "highlight-pulse 2s ease-in-out",
+
+    /** Count-up number reveal (500ms ease-out) */
+    countUp: "count-up 500ms ease-out forwards",
+
+    /** Loading bar progress (500ms ease-in-out) */
+    loadingBar: "loading-bar 0.5s ease-in-out forwards",
+  },
+
+  /**
+   * Transition utilities
+   * For use with Tailwind's transition classes
+   */
+  transition: {
+    /** All properties with normal duration */
+    all: "all 500ms cubic-bezier(0.4, 0, 0.2, 1)",
+
+    /** Colors only (backgrounds, borders, text) */
+    colors:
+      "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), border-color 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1)",
+
+    /** Transform only (scale, translate, rotate) */
+    transform: "transform 200ms cubic-bezier(0.4, 0, 0.2, 1)",
+
+    /** Opacity only */
+    opacity: "opacity 200ms ease",
+
+    /** Box shadow (for hover effects) */
+    shadow: "box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1)",
+  },
+
+  /**
+   * Stagger delays for list animations
+   * Multiply by index: `style={{ animationDelay: `${ANIMATIONS.stagger.normal * index}ms` }}`
+   */
+  stagger: {
+    /** 50ms between items - Fast reveal */
+    fast: 50,
+
+    /** 100ms between items - Standard reveal */
+    normal: 100,
+
+    /** 150ms between items - Slow reveal */
+    slow: 150,
+  },
 } as const;
 
 // ============================================================================
@@ -1270,39 +1741,39 @@ export const ANIMATIONS = {
 export const BORDERS = {
   /** Default card/component border radius */
   card: "rounded-lg",
-  
+
   /** Button border radius */
   button: "rounded-md",
-  
+
   /** Input border radius */
   input: "rounded-md",
-  
+
   /** Badge border radius */
   badge: "rounded-md",
-  
+
   /** Circular elements (avatars, FABs) */
   circle: "rounded-full",
-  
+
   /** Dialog/modal border radius */
   dialog: "rounded-lg",
-  
+
   /** Dropdown/popover border radius */
   dropdown: "rounded-md",
-  
+
   /** Larger containers (hero sections, containers) */
   container: "rounded-xl",
 } as const;
 
 /**
  * Shadow elevation patterns
- * 
+ *
  * Includes both the 3-tier content hierarchy system and semantic UI shadows.
- * 
+ *
  * @example
  * ```tsx
  * // Content hierarchy (code blocks, tables, alerts)
  * <pre className={SHADOWS.tier1.combined}>...</pre>
- * 
+ *
  * // Semantic UI shadows
  * <Card className={SHADOWS.card.rest}>
  *   {content}
@@ -1317,9 +1788,10 @@ export const SHADOWS = {
     /** Dark mode shadow */
     dark: "dark:shadow-[0_2px_8px_rgb(0_0_0_/_0.3)]",
     /** Combined (light + dark) */
-    combined: "shadow-[0_2px_8px_rgb(0_0_0_/_0.12)] dark:shadow-[0_2px_8px_rgb(0_0_0_/_0.3)]",
+    combined:
+      "shadow-[0_2px_8px_rgb(0_0_0_/_0.12)] dark:shadow-[0_2px_8px_rgb(0_0_0_/_0.3)]",
   },
-  
+
   /** Tier 2: Data content - Tables, structured content (medium prominence) */
   tier2: {
     /** Light mode shadow */
@@ -1327,11 +1799,13 @@ export const SHADOWS = {
     /** Dark mode shadow */
     dark: "dark:shadow-[0_1px_4px_rgb(0_0_0_/_0.2)]",
     /** Combined (light + dark) */
-    combined: "shadow-[0_1px_4px_rgb(0_0_0_/_0.08)] dark:shadow-[0_1px_4px_rgb(0_0_0_/_0.2)]",
+    combined:
+      "shadow-[0_1px_4px_rgb(0_0_0_/_0.08)] dark:shadow-[0_1px_4px_rgb(0_0_0_/_0.2)]",
     /** Hover state for interactive depth */
-    hover: "hover:shadow-[0_4px_12px_rgb(0_0_0_/_0.12)] dark:hover:shadow-[0_4px_12px_rgb(0_0_0_/_0.25)]",
+    hover:
+      "hover:shadow-[0_4px_12px_rgb(0_0_0_/_0.12)] dark:hover:shadow-[0_4px_12px_rgb(0_0_0_/_0.25)]",
   },
-  
+
   /** Tier 3: Inline/embedded content - Alert banners, context clues (subtle) */
   tier3: {
     /** Light mode shadow */
@@ -1339,40 +1813,41 @@ export const SHADOWS = {
     /** Dark mode shadow */
     dark: "dark:shadow-[0_1px_2px_rgb(0_0_0_/_0.15)]",
     /** Combined (light + dark) */
-    combined: "shadow-[0_1px_2px_rgb(0_0_0_/_0.05)] dark:shadow-[0_1px_2px_rgb(0_0_0_/_0.15)]",
+    combined:
+      "shadow-[0_1px_2px_rgb(0_0_0_/_0.05)] dark:shadow-[0_1px_2px_rgb(0_0_0_/_0.15)]",
   },
-  
+
   /** Subtle elevation (cards at rest) */
   sm: "shadow-sm",
-  
+
   /** Standard elevation (hover states) */
   md: "shadow-md",
-  
+
   /** High elevation (focused elements, modals) */
   lg: "shadow-lg",
-  
+
   /** Maximum elevation (floating action buttons) */
   xl: "shadow-xl",
-  
+
   /** Extra shadow (overlay, stacked elements) */
   "2xl": "shadow-2xl",
-  
+
   /** Semantic card shadows */
   card: {
     rest: "shadow-sm",
     hover: "shadow-md",
     active: "shadow-lg",
   },
-  
+
   /** Dropdown/popover shadows */
   dropdown: "shadow-lg",
-  
+
   /** Modal shadows */
   modal: "shadow-xl",
-  
+
   /** FAB shadows */
   fab: "shadow-xl",
-  
+
   /** No shadow */
   none: "shadow-none",
 } as const;
@@ -1386,33 +1861,33 @@ export const SHADOWS = {
  * Based on Tailwind's default breakpoints
  */
 export const BREAKPOINTS = {
-  sm: "640px",   // Small devices (phones in landscape)
-  md: "768px",   // Medium devices (tablets)
-  lg: "1024px",  // Large devices (laptops)
-  xl: "1280px",  // Extra large devices (desktops)
+  sm: "640px", // Small devices (phones in landscape)
+  md: "768px", // Medium devices (tablets)
+  lg: "1024px", // Large devices (laptops)
+  xl: "1280px", // Extra large devices (desktops)
   "2xl": "1536px", // 2X large devices (large desktops)
 } as const;
 
 /**
  * Touch target sizes and button sizing for mobile accessibility
- * 
+ *
  * Following Apple HIG and Material Design guidelines:
  * - Minimum touch target: 44x44px (accessible for most users)
  * - Comfortable spacing: 8px minimum between targets
  * - Mobile-first: All buttons 44px+ on mobile, can reduce on desktop with md: prefix
- * 
+ *
  * @example
  * ```tsx
  * // Icon button (mobile first)
  * <button className={TOUCH_TARGET.iconMobile}>
  *   <Icon />
  * </button>
- * 
+ *
  * // Text button (mobile first)
  * <button className={TOUCH_TARGET.textMobile}>
  *   Action
  * </button>
- * 
+ *
  * // Responsive icon (44px mobile, 36px tablet+)
  * <button className="h-11 w-11 md:h-9 md:w-9">
  *   <Icon />
@@ -1423,58 +1898,58 @@ export const TOUCH_TARGET = {
   // ========== Size Standards ==========
   /** Minimum touch target (44x44px per WCAG AAA) */
   minimum: "44px",
-  
+
   /** Comfortable touch target (48x48px) */
   comfortable: "48px",
-  
+
   /** Large touch target for thumbs (56x56px) */
   large: "56px",
-  
+
   /** Minimum spacing between targets (8px) */
   spacing: "8px",
 
   // ========== Mobile Icon Buttons (default) ==========
   /** Icon-only button (44x44px) - matches min touch target */
   iconMobile: "h-11 w-11",
-  
+
   /** Small icon button (36x36px) - for dense layouts, use with caution */
   iconSmall: "h-9 w-9",
-  
+
   // ========== Mobile Text Buttons ==========
   /** Standard text button (44px height with padding) */
   textMobile: "h-11 px-4",
-  
+
   /** Large text button (48px height) */
   textLarge: "h-12 px-5",
-  
+
   /** Small text button (36px height) - use sparingly */
   textSmall: "h-9 px-3",
 
   // ========== Combined Button Sizes ==========
   /** Standard button/link size (square) */
   standard: "h-12 w-12",
-  
+
   /** Minimum recommended size (44x44px) */
   min: "min-h-11 min-w-11",
-  
+
   // ========== Desktop Responsive Sizing ==========
   /** Icon button: 44px mobile, 36px tablet+, 32px desktop+ */
   iconResponsive: "h-11 w-11 md:h-9 md:w-9 lg:h-8 lg:w-8",
-  
+
   /** Text button: 44px mobile, 40px tablet+, 36px desktop+ */
   textResponsive: "h-11 md:h-10 lg:h-9 px-4 md:px-3 lg:px-2",
-  
+
   // ========== Action Group Spacing ==========
   /** Spacing between action buttons in a group (like, reply, share) */
   actionGroupGap: "gap-2 md:gap-1",
-  
+
   // ========== Special Cases ==========
   /** FAB (floating action button) - always prominent */
   fab: "h-14 w-14",
-  
+
   /** Mobile menu toggle button */
   menuToggle: "h-11 w-11",
-  
+
   /** Close/dismiss button */
   close: "h-11 w-11 md:h-9 md:w-9",
 } as const;
@@ -1487,33 +1962,33 @@ export const BUTTON_SIZES = {
   // ========== Mobile-First Variants ==========
   /** Icon-only buttons (mobile) */
   iconMobile: "h-11 w-11",
-  
+
   /** Small text buttons (mobile) - fits activity action buttons */
   smallMobile: "h-11 px-3",
-  
+
   /** Standard buttons (mobile) */
   standardMobile: "h-11 px-4",
-  
+
   /** Large CTA buttons (mobile) */
   largeMobile: "h-12 px-6",
-  
+
   // ========== Desktop Variants ==========
   /** Icon-only buttons (desktop) */
   iconDesktop: "h-9 w-9",
-  
+
   /** Standard buttons (desktop) */
   standardDesktop: "h-10 px-5",
-  
+
   /** Large buttons (desktop) */
   largeDesktop: "h-11 px-6",
-  
+
   // ========== Responsive (Mobile-First) ==========
   /** Icon button with responsive sizing (44px → 36px → 32px) */
   iconResponsive: "h-11 w-11 md:h-9 md:w-9 lg:h-8 lg:w-8",
-  
+
   /** Text button with responsive sizing */
   textResponsive: "h-11 md:h-10 px-4 md:px-3",
-  
+
   /** Large button with responsive sizing */
   largeResponsive: "h-12 md:h-11 px-6 md:px-5",
 } as const;
@@ -1525,7 +2000,7 @@ export const BUTTON_SIZES = {
 /**
  * Page-level layout patterns for core pages (/, /about, /contact, /resume)
  * Ensures consistent structure and spacing across all main pages
- * 
+ *
  * @example
  * ```tsx
  * <div className={PAGE_LAYOUT.wrapper}>
@@ -1536,12 +2011,12 @@ export const BUTTON_SIZES = {
  */
 export const PAGE_LAYOUT = {
   /** Root page wrapper - provides consistent vertical rhythm */
-  wrapper: "min-h-screen",
-  
+  wrapper: "",
+
   /** Hero section spacing - larger than standard sections */
   hero: {
     /** Container for hero content - responsive top padding (mobile-first, scales up) */
-    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-16 md:pt-24 lg:pt-32 pb-8 md:pb-12`,
+    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-16 md:pt-24 lg:pt-32`,
     /** Hero title + description wrapper */
     content: SPACING.proseHero,
   },
@@ -1562,7 +2037,7 @@ export const PAGE_LAYOUT = {
       minimal: "pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12",
     },
   },
-  
+
   /** Standard page section spacing */
   section: {
     /** Section container - no vertical padding (handled by parent gap) */
@@ -1570,7 +2045,7 @@ export const PAGE_LAYOUT = {
     /** Section content wrapper */
     content: SPACING.subsection,
   },
-  
+
   /** Prose/reading-optimized section (about page, long-form content) */
   proseSection: {
     /** Container for prose content - optimal reading width (65ch) */
@@ -1578,7 +2053,7 @@ export const PAGE_LAYOUT = {
     /** Prose content wrapper */
     content: SPACING.prose,
   },
-  
+
   /** Narrow section for forms (contact page) */
   narrowSection: {
     /** Container for narrow content */
@@ -1598,14 +2073,14 @@ export const HERO_VARIANTS = {
     description: TYPOGRAPHY.description,
     spacing: SPACING.proseHero,
   },
-  
+
   /** Homepage hero (larger, more prominent) */
   homepage: {
     title: TYPOGRAPHY.h1.hero,
     description: TYPOGRAPHY.description,
     spacing: SPACING.proseHero,
   },
-  
+
   /** Article hero (blog posts) */
   article: {
     title: TYPOGRAPHY.h1.article,
@@ -1620,7 +2095,7 @@ export const HERO_VARIANTS = {
 
 /**
  * Scroll behavior and navigation settings
- * 
+ *
  * @example
  * ```tsx
  * // Smooth scroll with offset for fixed header
@@ -1636,7 +2111,7 @@ export const SCROLL_BEHAVIOR = {
     smooth: "smooth" as const,
     instant: "auto" as const,
   },
-  
+
   /** Standard scroll offsets for fixed headers */
   offset: {
     /** Standard header height (80px) */
@@ -1646,7 +2121,7 @@ export const SCROLL_BEHAVIOR = {
     /** Mobile with bottom nav (104px from bottom + header) */
     mobile: 104,
   },
-  
+
   /** Scroll thresholds for UI elements */
   threshold: {
     /** Show back-to-top button after ~1.5 viewports */
@@ -1654,7 +2129,7 @@ export const SCROLL_BEHAVIOR = {
     /** Show floating elements after minimal scroll */
     floating: 200,
   },
-  
+
   /** Scroll snap settings */
   snap: {
     /** Scroll snap type for section navigation */
@@ -1671,9 +2146,9 @@ export const SCROLL_BEHAVIOR = {
 /**
  * Word spacing scale for improved typography and readability
  * Applied to headings and body text for better visual hierarchy
- * 
+ *
  * Reference: https://tailkits.com/blog/tailwind-css-word-spacing/
- * 
+ *
  * Usage patterns:
  * - ws-xs (0.05em): Metadata, small text, inline elements
  * - ws-sm (0.1em): Headings, lead text, subtle spacing
@@ -1682,15 +2157,15 @@ export const SCROLL_BEHAVIOR = {
  * - ws-lg (0.5em): Extra-large display text, special emphasis
  * - ws-xl (0.75em): Decorative/ceremonial text
  * - ws-2xl (1em): Maximum spacing, special occasions
- * 
+ *
  * @example
  * ```tsx
  * // Large article title with increased word spacing
  * <h1 className="text-5xl font-serif ws-md">Long Article Title Here</h1>
- * 
+ *
  * // Body text with subtle spacing
  * <p className={`${TYPOGRAPHY.body} ws-xs`}>Reading content...</p>
- * 
+ *
  * // Responsive word spacing
  * <h2 className="text-2xl ws-xs md:ws-sm">Responsive Heading</h2>
  * ```
@@ -1698,22 +2173,22 @@ export const SCROLL_BEHAVIOR = {
 export const WORD_SPACING = {
   /** Extra small spacing for metadata and fine print (0.05em) */
   xs: "ws-xs",
-  
+
   /** Small spacing for headings and lead text (0.1em) */
   sm: "ws-sm",
-  
+
   /** Base spacing for standard body text (0.15em) */
   base: "ws-base",
-  
+
   /** Medium spacing for large article titles (0.25em) */
   md: "ws-md",
-  
+
   /** Large spacing for display text (0.5em) */
   lg: "ws-lg",
-  
+
   /** Extra large spacing for special emphasis (0.75em) */
   xl: "ws-xl",
-  
+
   /** Maximum spacing for decorative text (1em) */
   "2xl": "ws-2xl",
 } as const;
@@ -1724,7 +2199,7 @@ export const WORD_SPACING = {
 
 /**
  * Grid layout patterns for consistent multi-column layouts
- * 
+ *
  * @example
  * ```tsx
  * <div className={GRID_PATTERNS.two}>
@@ -1736,24 +2211,24 @@ export const WORD_SPACING = {
 export const GRID_PATTERNS = {
   /** Two-column grid (1 col mobile, 2 col tablet+) */
   two: "grid grid-cols-1 md:grid-cols-2 gap-6",
-  
+
   /** Three-column grid (1 col mobile, 3 col desktop) */
   three: "grid grid-cols-1 md:grid-cols-3 gap-6",
-  
+
   /** Four-column grid (2 cols mobile, 4 cols desktop) */
   four: "grid grid-cols-2 md:grid-cols-4 gap-4",
-  
+
   /** Auto-responsive grid (1 → 2 → 3 → 4 columns) */
   auto: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6",
 } as const;
 
 /**
  * Form input patterns for consistent form styling
- * 
+ *
  * @example
  * ```tsx
  * import { cn } from "@/lib/utils";
- * <input 
+ * <input
  *   className={cn(
  *     FORM_PATTERNS.input.base,
  *     FORM_PATTERNS.input.padding,
@@ -1767,19 +2242,23 @@ export const FORM_PATTERNS = {
   input: {
     base: "border border-input bg-background dark:bg-background/50",
     padding: "px-3 py-2",
-    focus: "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:focus-visible:ring-offset-background",
-    disabled: "disabled:cursor-not-allowed disabled:opacity-50 dark:disabled:opacity-40",
+    focus:
+      "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:focus-visible:ring-offset-background",
+    disabled:
+      "disabled:cursor-not-allowed disabled:opacity-50 dark:disabled:opacity-40",
   },
-  
+
   /** Textarea styles (extends input) */
   textarea: {
     base: "border border-input bg-background dark:bg-background/50 resize-none",
     padding: "px-3 py-2",
-    focus: "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:focus-visible:ring-offset-background",
+    focus:
+      "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:focus-visible:ring-offset-background",
   },
-  
+
   /** Label styles */
-  label: "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+  label:
+    "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
 } as const;
 
 /**
@@ -1788,13 +2267,13 @@ export const FORM_PATTERNS = {
 export const COMPONENT_PATTERNS = {
   /** Page hero section (title + description) */
   pageHero: `${SPACING.proseHero}`,
-  
+
   /** Card base styles (before hover effects) */
   card: `${BORDERS.card} border overflow-hidden`,
-  
+
   /** Section wrapper */
   section: SPACING.section,
-  
+
   /** Content wrapper */
   contentBlock: SPACING.content,
 } as const;
@@ -1831,133 +2310,6 @@ export type StatusVariant = keyof typeof SEMANTIC_COLORS.status;
 export type GridPattern = keyof typeof GRID_PATTERNS;
 
 // ============================================================================
-// NEON COLOR PALETTE
-// ============================================================================
-
-/**
- * Neon color palette for badges, indicators, and accent elements
- * Designed to work in both light and dark modes with vibrant, glowing aesthetics
- *
- * Color Philosophy:
- * - Light mode: Muted neon with darker text for readability
- * - Dark mode: Bright, saturated neon with glow effects
- * - All colors maintain WCAG AA contrast ratios
- *
- * Usage:
- * - Status badges and indicators
- * - Activity feed verb badges (published, updated, trending, etc.)
- * - Alert banners and notifications
- * - Dev tools and debugging UI elements
- *
- * @example
- * ```tsx
- * // Badge with neon accent
- * <Badge className={NEON_COLORS.cyan.badge}>Active</Badge>
- *
- * // Status indicator dot
- * <span className={`h-2 w-2 rounded-full ${NEON_COLORS.green.dot} animate-pulse`} />
- *
- * // Alert banner
- * <div className={NEON_COLORS.magenta.container}>
- *   <Icon className={NEON_COLORS.magenta.icon} />
- *   <p className={NEON_COLORS.magenta.text}>Message</p>
- * </div>
- * ```
- */
-export const NEON_COLORS = {
-  /** Electric cyan - for info, primary actions, and active states */
-  cyan: {
-    /** Badge styling (text + background) */
-    badge: "bg-cyan-100 dark:bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border-cyan-300 dark:border-cyan-400/50 dark:shadow-[0_0_8px_rgba(34,211,238,0.3)]",
-    /** Container/card background */
-    container: "bg-cyan-50 dark:bg-cyan-500/10 border-cyan-200 dark:border-cyan-400/30",
-    /** Text color */
-    text: "text-cyan-700 dark:text-cyan-300",
-    /** Icon color with glow */
-    icon: "text-cyan-600 dark:text-cyan-400 dark:drop-shadow-[0_0_4px_rgba(34,211,238,0.5)]",
-    /** Pulsing status dot */
-    dot: "bg-cyan-500 dark:bg-cyan-400 dark:shadow-[0_0_8px_rgba(34,211,238,0.6)]",
-  },
-
-  /** Hot magenta/pink - for critical, destructive, or high-priority items */
-  magenta: {
-    badge: "bg-fuchsia-100 dark:bg-fuchsia-500/20 text-fuchsia-700 dark:text-fuchsia-300 border-fuchsia-300 dark:border-fuchsia-400/50 dark:shadow-[0_0_8px_rgba(217,70,239,0.3)]",
-    container: "bg-fuchsia-50 dark:bg-fuchsia-500/10 border-fuchsia-200 dark:border-fuchsia-400/30",
-    text: "text-fuchsia-700 dark:text-fuchsia-300",
-    icon: "text-fuchsia-600 dark:text-fuchsia-400 dark:drop-shadow-[0_0_4px_rgba(217,70,239,0.5)]",
-    dot: "bg-fuchsia-500 dark:bg-fuchsia-400 dark:shadow-[0_0_8px_rgba(217,70,239,0.6)]",
-  },
-
-  /** Electric lime - for success, completion, and positive states */
-  lime: {
-    badge: "bg-lime-100 dark:bg-lime-500/20 text-lime-700 dark:text-lime-300 border-lime-300 dark:border-lime-400/50 dark:shadow-[0_0_8px_rgba(132,204,22,0.3)]",
-    container: "bg-lime-50 dark:bg-lime-500/10 border-lime-200 dark:border-lime-400/30",
-    text: "text-lime-700 dark:text-lime-300",
-    icon: "text-lime-600 dark:text-lime-400 dark:drop-shadow-[0_0_4px_rgba(132,204,22,0.5)]",
-    dot: "bg-lime-500 dark:bg-lime-400 dark:shadow-[0_0_8px_rgba(132,204,22,0.6)]",
-  },
-
-  /** Neon orange - for warnings, updates, and in-progress states */
-  orange: {
-    badge: "bg-orange-100 dark:bg-orange-500/20 text-orange-700 dark:text-orange-300 border-orange-300 dark:border-orange-400/50 dark:shadow-[0_0_8px_rgba(249,115,22,0.3)]",
-    container: "bg-orange-50 dark:bg-orange-500/10 border-orange-200 dark:border-orange-400/30",
-    text: "text-orange-700 dark:text-orange-300",
-    icon: "text-orange-600 dark:text-orange-400 dark:drop-shadow-[0_0_4px_rgba(249,115,22,0.5)]",
-    dot: "bg-orange-500 dark:bg-orange-400 dark:shadow-[0_0_8px_rgba(249,115,22,0.6)]",
-  },
-
-  /** Electric purple - for special, featured, or launched items */
-  purple: {
-    badge: "bg-purple-100 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-400/50 dark:shadow-[0_0_8px_rgba(168,85,247,0.3)]",
-    container: "bg-purple-50 dark:bg-purple-500/10 border-purple-200 dark:border-purple-400/30",
-    text: "text-purple-700 dark:text-purple-300",
-    icon: "text-purple-600 dark:text-purple-400 dark:drop-shadow-[0_0_4px_rgba(168,85,247,0.5)]",
-    dot: "bg-purple-500 dark:bg-purple-400 dark:shadow-[0_0_8px_rgba(168,85,247,0.6)]",
-  },
-
-  /** Electric blue - for information, engagement, and neutral states */
-  blue: {
-    badge: "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-400/50 dark:shadow-[0_0_8px_rgba(59,130,246,0.3)]",
-    container: "bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-400/30",
-    text: "text-blue-700 dark:text-blue-300",
-    icon: "text-blue-600 dark:text-blue-400 dark:drop-shadow-[0_0_4px_rgba(59,130,246,0.5)]",
-    dot: "bg-blue-500 dark:bg-blue-400 dark:shadow-[0_0_8px_rgba(59,130,246,0.6)]",
-  },
-
-  /** Electric yellow - for highlights, milestones, and achievements */
-  yellow: {
-    badge: "bg-yellow-100 dark:bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 border-yellow-300 dark:border-yellow-400/50 dark:shadow-[0_0_8px_rgba(234,179,8,0.3)]",
-    container: "bg-yellow-50 dark:bg-yellow-500/10 border-yellow-200 dark:border-yellow-400/30",
-    text: "text-yellow-700 dark:text-yellow-300",
-    icon: "text-yellow-600 dark:text-yellow-400 dark:drop-shadow-[0_0_4px_rgba(234,179,8,0.5)]",
-    dot: "bg-yellow-500 dark:bg-yellow-400 dark:shadow-[0_0_8px_rgba(234,179,8,0.6)]",
-  },
-
-  /** Electric red - for errors, fire/trending, and urgent states */
-  red: {
-    badge: "bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-300 border-red-300 dark:border-red-400/50 dark:shadow-[0_0_8px_rgba(239,68,68,0.3)]",
-    container: "bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-400/30",
-    text: "text-red-700 dark:text-red-300",
-    icon: "text-red-600 dark:text-red-400 dark:drop-shadow-[0_0_4px_rgba(239,68,68,0.5)]",
-    dot: "bg-red-500 dark:bg-red-400 dark:shadow-[0_0_8px_rgba(239,68,68,0.6)]",
-  },
-
-  /** Neutral gray - for secondary, neutral, or committed states */
-  slate: {
-    badge: "bg-slate-100 dark:bg-slate-500/20 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-400/50 dark:shadow-[0_0_8px_rgba(100,116,139,0.3)]",
-    container: "bg-slate-50 dark:bg-slate-500/10 border-slate-200 dark:border-slate-400/30",
-    text: "text-slate-700 dark:text-slate-300",
-    icon: "text-slate-600 dark:text-slate-400 dark:drop-shadow-[0_0_4px_rgba(100,116,139,0.5)]",
-    dot: "bg-slate-500 dark:bg-slate-400 dark:shadow-[0_0_8px_rgba(100,116,139,0.6)]",
-  },
-} as const;
-
-/**
- * Type for neon color variants
- */
-export type NeonColorVariant = keyof typeof NEON_COLORS;
-
-// ============================================================================
 // GRADIENTS
 // ============================================================================
 
@@ -1988,79 +2340,79 @@ export const GRADIENTS = {
   brand: {
     /** Primary brand gradient: blue-500 → violet-500 */
     primary: "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)",
-    
+
     /** Secondary brand gradient: violet-500 → pink-500 */
     secondary: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
-    
+
     /** Accent brand gradient: blue-500 → cyan-500 */
     accent: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
-    
+
     /** Inverted brand gradient: violet-500 → blue-500 */
     inverted: "linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%)",
   },
-  
+
   /** Warm color gradients */
   warm: {
     /** Sunset: orange-500 → red-500 → pink-500 */
     sunset: "linear-gradient(135deg, #f97316 0%, #ef4444 50%, #ec4899 100%)",
-    
+
     /** Fire: red-500 → orange-500 */
     fire: "linear-gradient(135deg, #ef4444 0%, #f97316 100%)",
-    
+
     /** Amber: yellow-500 → orange-500 */
     amber: "linear-gradient(135deg, #eab308 0%, #f97316 100%)",
-    
+
     /** Rose: pink-400 → rose-500 */
     rose: "linear-gradient(135deg, #f472b6 0%, #f43f5e 100%)",
-    
+
     /** Coral: orange-400 → pink-500 */
     coral: "linear-gradient(135deg, #fb923c 0%, #ec4899 100%)",
   },
-  
+
   /** Cool color gradients */
   cool: {
     /** Ocean: sky-500 → blue-600 → indigo-600 */
     ocean: "linear-gradient(135deg, #0ea5e9 0%, #2563eb 50%, #4f46e5 100%)",
-    
+
     /** Teal: emerald-500 → teal-500 */
     teal: "linear-gradient(135deg, #10b981 0%, #14b8a6 100%)",
-    
+
     /** Sky: cyan-400 → blue-500 */
     sky: "linear-gradient(135deg, #22d3ee 0%, #3b82f6 100%)",
-    
+
     /** Forest: green-600 → emerald-500 */
     forest: "linear-gradient(135deg, #16a34a 0%, #10b981 100%)",
-    
+
     /** Arctic: cyan-300 → indigo-400 */
     arctic: "linear-gradient(135deg, #67e8f9 0%, #818cf8 100%)",
   },
-  
+
   /** Neutral/grayscale gradients */
   neutral: {
     /** Slate: slate-700 → slate-900 */
     slate: "linear-gradient(135deg, #334155 0%, #0f172a 100%)",
-    
+
     /** Charcoal: slate-800 → slate-950 */
     charcoal: "linear-gradient(135deg, #1e293b 0%, #020617 100%)",
-    
+
     /** Silver: slate-400 → slate-600 */
     silver: "linear-gradient(135deg, #94a3b8 0%, #475569 100%)",
-    
+
     /** Midnight: slate-900 → blue-950 */
     midnight: "linear-gradient(135deg, #0f172a 0%, #172554 100%)",
   },
-  
+
   /** Vibrant/high-contrast gradients */
   vibrant: {
     /** Electric: purple-500 → fuchsia-500 */
     electric: "linear-gradient(135deg, #a855f7 0%, #d946ef 100%)",
-    
+
     /** Neon: lime-400 → green-500 */
     neon: "linear-gradient(135deg, #a3e635 0%, #22c55e 100%)",
-    
+
     /** Plasma: violet-600 → fuchsia-500 → orange-500 */
     plasma: "linear-gradient(135deg, #7c3aed 0%, #d946ef 50%, #f97316 100%)",
-    
+
     /** Aurora: emerald-400 → cyan-400 → blue-500 */
     aurora: "linear-gradient(135deg, #34d399 0%, #22d3ee 50%, #3b82f6 100%)",
   },
@@ -2068,13 +2420,15 @@ export const GRADIENTS = {
   /** Effect gradients for animations and visual polish */
   effects: {
     /** Shimmer effect: subtle animated gradient for loading states */
-    shimmer: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%)",
+    shimmer:
+      "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%)",
 
     /** Glow effect: soft gradient for hover states and borders */
     glow: "linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(139,92,246,0.1) 100%)",
 
     /** Glow effect (dark mode): enhanced glow for dark backgrounds */
-    glowDark: "linear-gradient(135deg, rgba(59,130,246,0.2) 0%, rgba(139,92,246,0.2) 100%)",
+    glowDark:
+      "linear-gradient(135deg, rgba(59,130,246,0.2) 0%, rgba(139,92,246,0.2) 100%)",
   },
 } as const;
 
@@ -2112,8 +2466,14 @@ export const GRADIENT_KEYS = [
  * @example getGradient("brand.primary") → "linear-gradient(...)"
  */
 export function getGradient(key: string): string {
-  const [category, variant] = key.split(".") as [keyof typeof GRADIENTS, string];
-  return (GRADIENTS[category] as Record<string, string>)[variant] || GRADIENTS.brand.primary;
+  const [category, variant] = key.split(".") as [
+    keyof typeof GRADIENTS,
+    string,
+  ];
+  return (
+    (GRADIENTS[category] as Record<string, string>)[variant] ||
+    GRADIENTS.brand.primary
+  );
 }
 
 // ============================================================================
@@ -2151,10 +2511,10 @@ export const IMAGE_PLACEHOLDER = {
 
 /**
  * App-specific design tokens for interactive, app-like features
- * 
+ *
  * These tokens support progressive web app features, command palette,
  * gestures, and other native-like interactions.
- * 
+ *
  * @example
  * ```tsx
  * <div className={`transition-all ${APP_TOKENS.ANIMATIONS.pageTransition}`}>
@@ -2174,7 +2534,7 @@ export const APP_TOKENS = {
     /** Maximum movement allowed for tap */
     tapMaxMovement: "10px",
   },
-  
+
   /** Animation timing and easing for app interactions */
   ANIMATIONS: {
     /** Page/view transition timing */
@@ -2190,7 +2550,7 @@ export const APP_TOKENS = {
     /** Toast notification entrance */
     toast: "duration-300 ease-out",
   },
-  
+
   /** Touch target sizes following accessibility guidelines */
   TOUCH_TARGETS: {
     /** iOS Human Interface Guidelines minimum (44x44pt) */
@@ -2200,7 +2560,7 @@ export const APP_TOKENS = {
     /** Generous target for frequently-used actions */
     large: "min-h-[56px] min-w-[56px]",
   },
-  
+
   /** Z-index layering system for app UI elements */
   Z_INDEX: {
     /** Base content layer */
@@ -2218,11 +2578,12 @@ export const APP_TOKENS = {
     /** Toast notifications */
     toast: "z-60",
   },
-  
+
   /** Keyboard shortcuts display formatting */
   KEYBOARD: {
     /** Key badge styling (Cmd, K, etc.) */
-    keyBadge: "px-1.5 py-0.5 text-xs font-mono bg-muted border border-border rounded",
+    keyBadge:
+      "px-1.5 py-0.5 text-xs font-mono bg-muted border border-border rounded",
     /** Shortcut separator (between keys) */
     separator: "text-muted-foreground/50",
   },
@@ -2251,24 +2612,32 @@ export const APP_TOKENS = {
 export const ARCHIVE_CARD_VARIANTS = {
   /** Elevated image card - image on top, content below (recommended) */
   elevated: {
-    container: "group rounded-xl border bg-card overflow-hidden hover:shadow-xl transition-all duration-300",
-    imageWrapper: "relative aspect-[16/9] sm:aspect-[21/9] overflow-hidden",
-    image: "object-cover group-hover:scale-105 transition-transform duration-500",
+    container:
+      "group rounded-xl border bg-card overflow-hidden hover:shadow-xl transition-all duration-300",
+    imageWrapper:
+      "relative aspect-[16/9] sm:aspect-[21/9] overflow-hidden bg-muted/50 dark:bg-muted/30",
+    image:
+      "object-cover group-hover:scale-105 transition-transform duration-500",
     /** Modern dark overlay matching blog cards */
-    overlay: "absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70",
+    overlay:
+      "absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70",
     badgeContainer: "absolute bottom-3 left-3 flex gap-2 z-10",
-    badge: "backdrop-blur-md bg-white/20 dark:bg-white/20 border border-white/30 text-white",
+    badge:
+      "backdrop-blur-md bg-white/20 dark:bg-white/20 border border-white/30 text-white",
     glassCard: "bg-background/95 backdrop-blur-sm rounded-lg p-4",
     content: "p-4 md:p-6 space-y-3",
   },
 
   /** Background image card - reduced overlay for visibility */
   background: {
-    container: "group relative rounded-xl border bg-card overflow-hidden hover:shadow-xl transition-all duration-300 min-h-[280px] md:min-h-[320px]",
-    imageWrapper: "absolute inset-0 z-0",
-    image: "object-cover group-hover:scale-105 transition-transform duration-500",
+    container:
+      "group relative rounded-xl border bg-card overflow-hidden hover:shadow-xl transition-all duration-300 min-h-[280px] md:min-h-[320px]",
+    imageWrapper: "absolute inset-0 z-0 bg-muted/50 dark:bg-muted/30",
+    image:
+      "object-cover group-hover:scale-105 transition-transform duration-500",
     /** Modern dark overlay */
-    overlay: "absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70",
+    overlay:
+      "absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70",
     content: "relative z-10 p-6 md:p-8 flex flex-col justify-end h-full",
     /** Elevated glass card for content */
     glassCard: "bg-background/80 backdrop-blur-md rounded-t-2xl p-6 border-t",
@@ -2276,9 +2645,12 @@ export const ARCHIVE_CARD_VARIANTS = {
 
   /** Side-by-side layout - image left, content right */
   sideBySide: {
-    container: "group flex gap-4 rounded-xl border bg-card overflow-hidden hover:shadow-lg transition-shadow duration-300",
-    imageWrapper: "relative w-48 flex-shrink-0 overflow-hidden",
-    image: "object-cover group-hover:scale-105 transition-transform duration-500",
+    container:
+      "group flex gap-4 rounded-xl border bg-card overflow-hidden hover:shadow-lg transition-shadow duration-300",
+    imageWrapper:
+      "relative w-48 flex-shrink-0 overflow-hidden bg-muted/50 dark:bg-muted/30",
+    image:
+      "object-cover group-hover:scale-105 transition-transform duration-500",
     overlay: "hidden",
     badgeContainer: "flex gap-2",
     badge: "inline-flex",
@@ -2288,11 +2660,14 @@ export const ARCHIVE_CARD_VARIANTS = {
 
   /** Hero card - large featured card */
   hero: {
-    container: "group relative rounded-2xl overflow-hidden h-[500px] md:h-[600px] cursor-pointer hover:shadow-2xl transition-shadow duration-300",
-    imageWrapper: "absolute inset-0 z-0",
-    image: "object-cover group-hover:scale-105 transition-transform duration-700",
+    container:
+      "group relative rounded-2xl overflow-hidden h-[500px] md:h-[600px] cursor-pointer hover:shadow-2xl transition-shadow duration-300",
+    imageWrapper: "absolute inset-0 z-0 bg-muted/50 dark:bg-muted/30",
+    image:
+      "object-cover group-hover:scale-105 transition-transform duration-700",
     /** Modern dark overlay */
-    overlay: "absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70",
+    overlay:
+      "absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70",
     content: "absolute inset-x-0 bottom-0 p-6 md:p-12 text-white z-10",
     contentWrapper: "max-w-3xl",
   },

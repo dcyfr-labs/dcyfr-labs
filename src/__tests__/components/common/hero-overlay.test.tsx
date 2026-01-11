@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { HeroOverlay, BlogPostHeroOverlay, ProjectHeroOverlay } from '@/components/common/hero-overlay';
+import { HeroOverlay, BlogPostHeroOverlay, ProjectHeroOverlay } from '@/components/common';
 
 describe('HeroOverlay Component', () => {
   describe('Basic Rendering', () => {

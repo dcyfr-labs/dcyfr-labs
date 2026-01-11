@@ -185,69 +185,65 @@ export const resume: Resume = {
 };
 
 /**
- * Extract the earliest year from a date string or range
- * Handles formats like:
- * - "Jan 2025 → Present"
- * - "Jul 2022 → Jul 2023"
- * - "Dec 2020"
- * - "2024"
- * @param dateStr - Date string to parse
- * @returns Earliest year found, or null if no valid year
- */
-function extractEarliestYear(dateStr: string | undefined): number | null {
-  if (!dateStr) return null;
-  
-  // Match all 4-digit years in the string
-  const yearMatches = dateStr.match(/\b(19|20)\d{2}\b/g);
-  if (!yearMatches || yearMatches.length === 0) return null;
-  
-  // Convert to numbers and find the earliest
-  const years = yearMatches.map(y => parseInt(y, 10));
-  return Math.min(...years);
-}
-
-/**
- * Calculate years of experience from all dated resume items
- * Checks experience, education, and certifications (if provided)
- * @param certificationDates - Optional array of certification issued dates from Credly
- * @returns Number of years from earliest dated item to present
+ * Calculate years of experience from formal work experience only
+ * Counts from earliest job start date to present using precise date calculations
+ * Does NOT include education or certifications in the year calculation
+ * @param certificationDates - Optional array of certification issued dates from Credly (not used for YOE calculation)
+ * @returns Approximate number of years from earliest formal work experience to present, rounded down
  */
 export function getYearsOfExperience(certificationDates?: string[]): number {
-  const currentYear = new Date().getFullYear();
-  const years: number[] = [];
+  const now = new Date();
+  let earliestDate: Date | null = null;
 
-  // Extract years from experience
+  // Parse all experience entries to find the earliest start date
   resume.experience.forEach(exp => {
-    const year = extractEarliestYear(exp.duration);
-    if (year) years.push(year);
-  });
+    // Extract first date from duration string (e.g., "Mar 2020" or "Sep 2019")
+    const dateMatch = exp.duration.match(/^([A-Za-z]+)\s+(\d{4})/);
+    if (dateMatch) {
+      const monthStr = dateMatch[1];
+      const year = parseInt(dateMatch[2]);
 
-  // Extract years from education
-  resume.education.forEach(edu => {
-    const year = extractEarliestYear(edu.duration);
-    if (year) years.push(year);
-  });
+      // Month names to numbers (using first day of month as approximation)
+      const months: { [key: string]: number } = {
+        'jan': 0, 'january': 0,
+        'feb': 1, 'february': 1,
+        'mar': 2, 'march': 2,
+        'apr': 3, 'april': 3,
+        'may': 4,
+        'jun': 5, 'june': 5,
+        'jul': 6, 'july': 6,
+        'aug': 7, 'august': 7,
+        'sep': 8, 'september': 8,
+        'oct': 9, 'october': 9,
+        'nov': 10, 'november': 10,
+        'dec': 11, 'december': 11,
+      };
 
-  // Extract years from certification dates if provided
-  if (certificationDates && certificationDates.length > 0) {
-    certificationDates.forEach(dateStr => {
-      const date = new Date(dateStr);
-      if (!isNaN(date.getTime())) {
-        years.push(date.getFullYear());
+      const monthIndex = months[monthStr.toLowerCase()];
+      if (monthIndex !== undefined) {
+        const date = new Date(year, monthIndex, 1);
+        if (!earliestDate || date < earliestDate) {
+          earliestDate = date;
+        }
       }
-    });
+    }
+  });
+
+  // If no dates found, return 0
+  if (!earliestDate) {
+    return 0;
   }
 
-  // If no dates found, fallback to earliest experience entry
-  if (years.length === 0) {
-    const firstExperience = resume.experience[resume.experience.length - 1];
-    const startYear = parseInt(firstExperience.duration.match(/\d{4}/)?.[0] || `${currentYear}`);
-    return currentYear - startYear;
+  // Calculate difference in years (accounting for months and days)
+  let yearsDiff = now.getFullYear() - (earliestDate as Date).getFullYear();
+  const monthDiff = now.getMonth() - (earliestDate as Date).getMonth();
+
+  // Adjust if we haven't reached the anniversary month yet this year
+  if (monthDiff < 0) {
+    yearsDiff--;
   }
 
-  // Find the earliest year across all sources
-  const earliestYear = Math.min(...years);
-  return currentYear - earliestYear;
+  return yearsDiff;
 }
 
 /**

@@ -7,12 +7,12 @@
  * Reference: docs/accessibility/acronym-pronunciation.md
  */
 
-import React from 'react';
+import React from "react";
 import {
   getAcronymLabel,
   getAcronymExplanation,
   validateAcronymPronunciations,
-} from '@/lib/accessibility/acronym-pronunciation';
+} from "./acronym-pronunciation";
 
 /**
  * Example 1: Logo with pronunciation hint
@@ -25,7 +25,7 @@ export function LogoExample() {
       {/* In actual implementation, Logo component includes this */}
       <svg
         role="img"
-        aria-label={getAcronymLabel('DCYFR', 'Labs')}
+        aria-label={getAcronymLabel("DCYFR", "Labs")}
         className="w-6 h-6"
       >
         <circle cx="12" cy="12" r="10" fill="currentColor" />
@@ -46,10 +46,11 @@ export function FirstMentionExample() {
     <article>
       <p>
         <strong>
-          {getAcronymLabel('DCYFR')}
-          <span className="sr-only">{getAcronymExplanation('DCYFR')}</span>
-        </strong>
-        {' '}is an AI assistant focused on automating security reviews and code documentation.
+          {getAcronymLabel("DCYFR")}
+          <span className="sr-only">{getAcronymExplanation("DCYFR")}</span>
+        </strong>{" "}
+        is an AI assistant focused on automating security reviews and code
+        documentation.
       </p>
     </article>
   );
@@ -65,8 +66,8 @@ export function TeamMemberExample() {
     <div>
       <h2>Meet DCYFR</h2>
       <p>
-        DCYFR (pronounced &quot;Decipher&quot;) is an AI lab assistant dedicated to
-        enhancing developer productivity with intelligent code review and
+        DCYFR (pronounced &quot;Decipher&quot;) is an AI lab assistant dedicated
+        to enhancing developer productivity with intelligent code review and
         security analysis.
       </p>
     </div>
@@ -102,15 +103,18 @@ export function AcronymBadgeExample({
  * - Useful in tests or build scripts
  */
 export function validateAcronymsExample() {
-  const acronymsUsedInProject = ['DCYFR', 'API', 'CVE'];
-  const missingPronunciations =
-    validateAcronymPronunciations(acronymsUsedInProject);
+  const acronymsUsedInProject = ["DCYFR", "API", "CVE"];
+  const missingPronunciations = validateAcronymPronunciations(
+    acronymsUsedInProject
+  );
 
   if (missingPronunciations.length > 0) {
     console.warn(
-      `⚠️ Missing pronunciations for: ${missingPronunciations.join(', ')}`
+      `⚠️ Missing pronunciations for: ${missingPronunciations.join(", ")}`
     );
-    console.warn('Add them to ACRONYM_PRONUNCIATIONS in src/lib/accessibility/acronym-pronunciation.ts');
+    console.warn(
+      "Add them to ACRONYM_PRONUNCIATIONS in src/lib/accessibility/acronym-pronunciation.ts"
+    );
   }
 
   return missingPronunciations;
@@ -125,12 +129,13 @@ export function MultipleAcronymsExample() {
   return (
     <section>
       <h2>
-        <abbr aria-label={getAcronymLabel('DCYFR')}>DCYFR</abbr>
-        {' '}Security Framework
+        <abbr aria-label={getAcronymLabel("DCYFR")}>DCYFR</abbr> Security
+        Framework
       </h2>
       <p>
-        Our <abbr aria-label={getAcronymLabel('DCYFR')}>DCYFR</abbr> approach
-        integrates <abbr title="API">API</abbr> security with code review best practices.
+        Our <abbr aria-label={getAcronymLabel("DCYFR")}>DCYFR</abbr> approach
+        integrates <abbr title="API">API</abbr> security with code review best
+        practices.
       </p>
     </section>
   );
@@ -145,16 +150,14 @@ export function ContextualPronunciationExample() {
   return (
     <div>
       {/* In header navigation - short */}
-      <button aria-label={getAcronymLabel('DCYFR')}>
-        DCYFR
-      </button>
+      <button aria-label={getAcronymLabel("DCYFR")}>DCYFR</button>
 
       {/* In detailed description - full context */}
       <div>
-        <strong>About {getAcronymLabel('DCYFR', 'Labs')}:</strong>
+        <strong>About {getAcronymLabel("DCYFR", "Labs")}:</strong>
         <p>
-          DCYFR (pronounced &quot;Decipher&quot;) was founded to bring security-first
-          thinking to modern development practices.
+          DCYFR (pronounced &quot;Decipher&quot;) was founded to bring
+          security-first thinking to modern development practices.
         </p>
       </div>
     </div>

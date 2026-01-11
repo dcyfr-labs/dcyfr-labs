@@ -3,14 +3,14 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Share2, Bookmark, Link2, Linkedin, BookOpen, Heart } from "lucide-react";
+import { Bookmark, Link2, Linkedin, BookOpen, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { AUTHOR_NAME, SITE_TITLE_PLAIN } from "@/lib/site-config";
 import { SPACING } from "@/lib/design-tokens";
 import { useBookmarks } from "@/hooks/use-bookmarks";
-import { useShare } from "@/hooks/use-share";
 import { useActivityReactions } from "@/hooks/use-activity-reactions";
 import { useGlobalEngagementCounts } from "@/hooks/use-global-engagement-counts";
+import { ThreadShareButton } from "@/components/activity";
 
 interface PostQuickActionsProps {
   slug?: string;
@@ -20,12 +20,15 @@ interface PostQuickActionsProps {
 
 /**
  * Post Quick Actions Section
- * 
+ *
  * Provides bookmark, share, copy link, copy IEEE citation, and LinkedIn share buttons.
  */
-export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActionsProps) {
+export function PostQuickActions({
+  slug,
+  postTitle,
+  publishedAt,
+}: PostQuickActionsProps) {
   const { isBookmarked, toggle, getBookmarkCount } = useBookmarks();
-  const { getShareCount } = useShare();
   const { isLiked, toggleLike, getCount } = useActivityReactions();
   const [isHydrated, setIsHydrated] = React.useState(false);
 
@@ -39,9 +42,10 @@ export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActi
     contentType: "activity",
   });
 
-  const bookmarked = isHydrated && activityId ? isBookmarked(activityId) : false;
-  const bookmarkCount = isHydrated && activityId ? getBookmarkCount(activityId) : 0;
-  const shareCount = isHydrated && activityId ? getShareCount(activityId) : 0;
+  const bookmarked =
+    isHydrated && activityId ? isBookmarked(activityId) : false;
+  const bookmarkCount =
+    isHydrated && activityId ? getBookmarkCount(activityId) : 0;
   const liked = isHydrated && activityId ? isLiked(activityId) : false;
   const likeCount = isHydrated && activityId ? getCount(activityId) : 0;
 
@@ -58,24 +62,6 @@ export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActi
     }
   };
 
-  const handleShare = async () => {
-    const url = window.location.href;
-    const title = postTitle || "Check out this article";
-
-    if (navigator.share) {
-      try {
-        await navigator.share({ title, url });
-        toast.success("Shared successfully!");
-      } catch (err) {
-        if ((err as Error).name !== "AbortError") {
-          await copyToClipboard(url);
-        }
-      }
-    } else {
-      await copyToClipboard(url);
-    }
-  };
-
   const handleCopyLink = async () => {
     await copyToClipboard(window.location.href);
   };
@@ -83,13 +69,17 @@ export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActi
   const handleLinkedInShare = () => {
     const url = encodeURIComponent(window.location.href);
     const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
-    window.open(linkedInUrl, "_blank", "noopener,noreferrer,width=600,height=600");
+    window.open(
+      linkedInUrl,
+      "_blank",
+      "noopener,noreferrer,width=600,height=600"
+    );
   };
 
   const handleBookmark = () => {
     if (!activityId) return;
 
-    console.debug("[PostQuickActions] Toggling bookmark:", {
+    console.warn("[PostQuickActions] Toggling bookmark:", {
       activityId,
       wasBookmarked: bookmarked,
     });
@@ -101,7 +91,7 @@ export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActi
   const handleLike = () => {
     if (!activityId) return;
 
-    console.debug("[PostQuickActions] Toggling like:", {
+    console.warn("[PostQuickActions] Toggling like:", {
       activityId,
       wasLiked: liked,
     });
@@ -113,15 +103,15 @@ export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActi
   const generateIEEECitation = (): string => {
     const url = window.location.href;
     const date = publishedAt ? new Date(publishedAt) : new Date();
-    const formattedDate = date.toLocaleDateString("en-US", { 
-      year: "numeric", 
-      month: "long", 
-      day: "numeric" 
+    const formattedDate = date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
 
     // IEEE format: [#] Initial(s). Surname, "Article title," Website Name, Month Day, Year. [Online]. Available: URL. [Accessed: Month Day, Year].
     const citation = `[1] ${AUTHOR_NAME}, "${postTitle}," ${SITE_TITLE_PLAIN}, ${formattedDate}. [Online]. Available: ${url}. [Accessed: ${new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}].`;
-    
+
     return citation;
   };
 
@@ -146,10 +136,18 @@ export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActi
         className="w-full justify-start gap-2"
         onClick={handleLike}
       >
-        <Heart className={cn("h-4 w-4", liked && "fill-destructive text-destructive")} />
+        <Heart
+          className={cn(
+            "h-4 w-4",
+            liked && "fill-destructive text-destructive"
+          )}
+        />
         {liked ? "Liked" : "Like"}
         {globalLikes > 0 && (
-          <span className="ml-auto text-xs text-muted-foreground">{globalLikes}{globalLikes > 1 ? '+' : ''}</span>
+          <span className="ml-auto text-xs text-muted-foreground">
+            {globalLikes}
+            {globalLikes > 1 ? "+" : ""}
+          </span>
         )}
       </Button>
 
@@ -163,23 +161,27 @@ export function PostQuickActions({ slug, postTitle, publishedAt }: PostQuickActi
         <Bookmark className={cn("h-4 w-4", bookmarked && "fill-current")} />
         {bookmarked ? "Bookmarked" : "Bookmark"}
         {globalBookmarks > 0 && (
-          <span className="ml-auto text-xs text-muted-foreground">{globalBookmarks}{globalBookmarks > 1 ? '+' : ''}</span>
+          <span className="ml-auto text-xs text-muted-foreground">
+            {globalBookmarks}
+            {globalBookmarks > 1 ? "+" : ""}
+          </span>
         )}
       </Button>
 
-      {/* Share Button */}
-      <Button
-        variant="outline"
-        size="sm"
-        className="w-full justify-start gap-2"
-        onClick={handleShare}
-      >
-        <Share2 className="h-4 w-4" />
-        Share Post
-        {shareCount > 0 && (
-          <span className="ml-auto text-xs text-muted-foreground">{shareCount}</span>
-        )}
-      </Button>
+      {/* Share Button - Uses ThreadShareButton modal */}
+      <div className="w-full">
+        <ThreadShareButton
+          activity={{
+            id: slug || "",
+            title: postTitle || "Check out this article",
+            description: undefined,
+            href: `/blog/${slug}`,
+          }}
+          variant="outline"
+          size="sm"
+          className="w-full justify-start"
+        />
+      </div>
 
       {/* Copy Link Button */}
       <Button

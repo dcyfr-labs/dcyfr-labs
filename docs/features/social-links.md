@@ -2,7 +2,7 @@
 
 Centralized management of social media accounts and profiles across the site with intelligent internal/external link handling.
 
-**Last Updated:** November 9, 2025
+**Last Updated:** January 8, 2026
 
 ## Overview
 
@@ -26,15 +26,16 @@ export type SocialLink = {
 
 ### Supported Platforms
 
-- Homepage (www.dcyfr.ai)
-- Email (drew@www.dcyfr.ai)
 - Cal.com (Scheduling)
+- Twitter/X (@dcyfr_)
+- DEV (@dcyfr)
 - LinkedIn
+- Peerlist
+- Wellfound
 - GitHub
 - GitHub Sponsors
-- Peerlist
-- Goodreads
 - Credly (Professional Certifications)
+- Goodreads
 - ORCID (Researcher Profile)
 
 ### Usage
@@ -132,15 +133,17 @@ Example:
 ## Icon Mapping
 
 The about page uses lucide-react icons:
-- `homepage` → `Home`
-- `email` → `Mail`
+
 - `calendar` → `Calendar`
+- `twitter` → `Twitter`
+- `dev` → `Code` or `Code2`
 - `linkedin` → `Linkedin`
-- `github` → `Github`
-- `github-sponsor` → `Heart`
 - `peerlist` → `Users`
-- `goodreads` → `BookOpen`
+- `wellfound` → `Briefcase`
+- `github` → `Github`
+- `sponsors` → `Heart`
 - `credly` → `Award`
+- `goodreads` → `BookOpen`
 - `orcid` → `GraduationCap`
 - Default → `ExternalLink`
 

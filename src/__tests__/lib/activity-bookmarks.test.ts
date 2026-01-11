@@ -22,8 +22,8 @@ import {
   downloadBookmarks,
   type BookmarkCollection,
   type Bookmark,
-} from "@/lib/activity/bookmarks";
-import type { ActivityItem } from "@/lib/activity/types";
+} from "@/lib/activity";
+import type { ActivityItem } from "@/lib/activity";
 
 // Mock localStorage
 const localStorageMock = {

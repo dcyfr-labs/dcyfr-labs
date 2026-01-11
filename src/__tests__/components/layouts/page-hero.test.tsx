@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import type React from 'react'
-import { PageHero } from '@/components/layouts/page-hero'
+import { PageHero } from '@/components/layouts'
 
 // Mock dependencies
 vi.mock('@/components/ui/skeleton', () => ({

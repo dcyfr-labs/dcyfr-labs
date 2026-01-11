@@ -24,24 +24,28 @@ The print-friendly styling system automatically optimizes article pages for prin
 ## Features
 
 ### 1. **Navigation & UI Hiding**
+
 - Navigation bars and headers automatically hidden
 - Sidebars removed from print output
 - Share buttons and related articles hidden
 - Interactive elements (buttons, forms) hidden
 
 ### 2. **Typography Optimization**
+
 - Serif fonts for optimal readability (Georgia → Times New Roman)
 - Proper heading hierarchy preserved (H1: 28pt → H6: 12pt)
 - Optimized line height (1.6) for comfortable reading
 - Consistent spacing between sections
 
 ### 3. **Color & Contrast**
+
 - Black text on white background for clarity
 - Backgrounds removed (paper efficiency)
 - External links show URL after text: "Learn More (https://example.com)"
 - Code blocks preserve background color for distinction
 
 ### 4. **Page Break Control**
+
 - Prevents orphaned headings (widow/orphan control)
 - Keeps related content together (page-break-inside: avoid)
 - Forces strategic breaks for multi-page articles
@@ -50,34 +54,40 @@ The print-friendly styling system automatically optimizes article pages for prin
 ### 5. **Content-Specific Styling**
 
 #### Code Blocks
+
 - Light background (#f5f5f5) with border
 - Monospace font (Courier New) at 10pt
 - Automatic scrolling for long code
 - page-break-inside: avoid
 
 #### Tables
+
 - Border collapse for clean appearance
 - Gray header background (#e0e0e0)
 - Proper cell padding and borders
 - Row-level page-break-inside: avoid
 
 #### Lists
+
 - Proper indentation (2em)
 - Controlled spacing between items
 - Page-break-inside: avoid for list items
 
 #### Blockquotes
+
 - Left border (4pt solid #999)
 - Proper indentation
 - Orphan/widow control
 
 #### Images
+
 - Max-width: 100% for responsiveness
 - Height: auto for aspect ratio preservation
 - Alt text displayed after image: "Figure 1 (Alt text here)"
 - page-break-inside: avoid
 
 ### 6. **Metadata Display**
+
 - Publication date, author, and metadata shown at top
 - "Updated on" date shown if available
 - Reading time displayed
@@ -85,6 +95,7 @@ The print-friendly styling system automatically optimizes article pages for prin
 - Sources section preserved and formatted
 
 ### 7. **Browser Compatibility**
+
 - Chrome/Edge/Safari support verified
 - Firefox-specific font rendering fixes
 - Landscape orientation support
@@ -95,15 +106,17 @@ The print-friendly styling system automatically optimizes article pages for prin
 ## How It Works
 
 ### Import
+
 The print styles are automatically imported in `ArticleLayout`:
 
 ```typescript
-import '@/styles/print.css';
+import "@/styles/print.css";
 ```
 
 This ensures all article pages have print optimization without additional configuration.
 
 ### Media Query
+
 The stylesheet uses standard `@media print` queries:
 
 ```css
@@ -115,6 +128,7 @@ The stylesheet uses standard `@media print` queries:
 These styles **only apply when printing** or in print preview mode—they don't affect the normal screen display.
 
 ### CSS Specificity
+
 Print styles use `!important` on critical rules to ensure they override component-level Tailwind utilities when printing.
 
 ---
@@ -123,7 +137,7 @@ Print styles use `!important` on critical rules to ensure they override componen
 
 ### For Users: Printing an Article
 
-1. **Open any blog post** (e.g., `https://dcyfr.com/blog/article-slug`)
+1. **Open any blog post** (e.g., `https://dcyfr.ai/blog/article-slug`)
 2. **Press `Ctrl+P` (Windows/Linux) or `Cmd+P` (Mac)**
 3. **Preview in print dialog:**
    - Navigation disappears
@@ -139,15 +153,15 @@ Print styles use `!important` on critical rules to ensure they override componen
 ### For Developers: Customizing Print Styles
 
 #### Add Print-Hide Class to Elements
+
 Elements with `print-hidden` or `data-print-hide="true"` will be hidden:
 
 ```tsx
-<div className="print-hidden">
-  {/* Hidden only when printing */}
-</div>
+<div className="print-hidden">{/* Hidden only when printing */}</div>
 ```
 
 #### Control Page Breaks
+
 ```css
 /* Prevent page break inside element */
 .my-component {
@@ -166,6 +180,7 @@ Elements with `print-hidden` or `data-print-hide="true"` will be hidden:
 ```
 
 #### Print-Only Content
+
 Show content only when printing:
 
 ```css
@@ -181,14 +196,17 @@ Show content only when printing:
 ## CSS Structure
 
 ### File Location
+
 `src/styles/print.css`
 
 ### Media Queries
+
 1. **`@media print`** - Main print styles
 2. **`@media print and (prefers-color-scheme: light)`** - Light mode adjustments
 3. **`@media print and (orientation: landscape)`** - Landscape-specific styles
 
 ### Key Sections
+
 1. **Global Print Styles** - Hide non-essential elements
 2. **Color & Background** - Optimize for paper
 3. **Typography** - Font sizes, line-height, spacing
@@ -204,6 +222,7 @@ Show content only when printing:
 ## Testing Print Styles
 
 ### Visual Testing
+
 1. Open a blog post in your browser
 2. Open DevTools print preview:
    - **Chrome:** Ctrl+Shift+P → "Print"
@@ -217,6 +236,7 @@ Show content only when printing:
    - Proper spacing
 
 ### Automated Tests
+
 Unit tests verify the HTML structure supports print CSS:
 
 ```bash
@@ -224,6 +244,7 @@ npm run test -- print.test.tsx
 ```
 
 Tests verify:
+
 - ✅ Article element exists for CSS targeting
 - ✅ Header and footer are properly positioned
 - ✅ Content is between header and footer
@@ -233,12 +254,12 @@ Tests verify:
 
 ## Browser Support
 
-| Browser | Support | Notes |
-|---------|---------|-------|
-| Chrome/Edge | ✅ Full | All features including landscape |
-| Firefox | ✅ Full | Font rendering optimizations included |
-| Safari | ✅ Full | Works with Safari print preview |
-| Print-to-PDF | ✅ Full | All browsers can save as PDF |
+| Browser      | Support | Notes                                 |
+| ------------ | ------- | ------------------------------------- |
+| Chrome/Edge  | ✅ Full | All features including landscape      |
+| Firefox      | ✅ Full | Font rendering optimizations included |
+| Safari       | ✅ Full | Works with Safari print preview       |
+| Print-to-PDF | ✅ Full | All browsers can save as PDF          |
 
 ---
 
@@ -247,6 +268,7 @@ Tests verify:
 **CSS File Size:** ~8KB (uncompressed)
 
 The print stylesheet is only applied when:
+
 - User opens print dialog
 - User selects "Print to PDF"
 - User accesses print preview
@@ -258,6 +280,7 @@ It **does not impact** page load time for normal viewing.
 ## Future Enhancements
 
 ### Potential Improvements
+
 - [ ] Add "Print-Friendly" button with direct print dialog
 - [ ] Generate table of contents for multi-page articles
 - [ ] Add page numbers and article URL in header/footer
@@ -266,7 +289,9 @@ It **does not impact** page load time for normal viewing.
 - [ ] Generate QR codes linking to online versions
 
 ### Data-Driven Decisions
+
 Enhancements will be implemented based on:
+
 - User print frequency tracking
 - Analytics on print preview usage
 - Feedback from users

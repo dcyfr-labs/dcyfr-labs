@@ -1,6 +1,12 @@
 "use client";
 
-import { Briefcase, FolderOpen, Tags, ArrowUpDown, Activity } from "lucide-react";
+import {
+  Briefcase,
+  FolderOpen,
+  Tags,
+  ArrowUpDown,
+  Activity,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import {
@@ -11,7 +17,7 @@ import {
   FilterBadges,
   FilterClearButton,
   type FilterOption,
-} from "@/components/common/filters";
+} from "@/components/common";
 
 export interface ProjectFiltersProps {
   selectedCategory: string;
@@ -70,34 +76,45 @@ export function ProjectFilters({
   statusList,
   statusDisplayMap,
   query,
-  sortBy = 'newest',
+  sortBy = "newest",
   totalResults,
   hasActiveFilters: hasActiveFiltersProp,
 }: ProjectFiltersProps) {
-  const { updateParam, toggleMultiParam, clearAll } = useFilterParams({ basePath: "/work" });
-  const { searchValue, setSearchValue } = useFilterSearch({ query, basePath: "/work" });
-
-  const { hasActive, count } = useActiveFilters({
-    category: selectedCategory,
-    tags: selectedTags,
-    status: selectedStatus,
+  const { updateParam, toggleMultiParam, clearAll } = useFilterParams({
+    basePath: "/work",
+  });
+  const { searchValue, setSearchValue } = useFilterSearch({
     query,
-    sortBy,
-  }, {
-    sortBy: "newest",
+    basePath: "/work",
   });
 
+  const { hasActive, count } = useActiveFilters(
+    {
+      category: selectedCategory,
+      tags: selectedTags,
+      status: selectedStatus,
+      query,
+      sortBy,
+    },
+    {
+      sortBy: "newest",
+    }
+  );
+
   // Use prop if provided, otherwise use computed value
-  const hasActiveFilters = hasActiveFiltersProp !== undefined ? hasActiveFiltersProp : hasActive;
+  const hasActiveFilters =
+    hasActiveFiltersProp !== undefined ? hasActiveFiltersProp : hasActive;
 
   // Category uses single-select with lowercase URL values
-  const setCategory = (category: string) => updateParam("category", category, "");
+  const setCategory = (category: string) =>
+    updateParam("category", category, "");
 
   // Status uses single-select
   const setStatus = (status: string) => updateParam("status", status, "");
 
   // Tags use lowercase for URL matching
-  const toggleTag = (tag: string) => toggleMultiParam("tag", tag.toLowerCase(), selectedTags);
+  const toggleTag = (tag: string) =>
+    toggleMultiParam("tag", tag.toLowerCase(), selectedTags);
 
   // Badge filter helper - click to toggle
   const renderFilterBadges = (
@@ -121,7 +138,13 @@ export function ProjectFilters({
               key={option.value}
               variant={isSelected ? "default" : "outline"}
               className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors select-none text-xs"
-              onClick={() => updateParam(paramName, isSelected ? defaultValue : option.value, defaultValue)}
+              onClick={() =>
+                updateParam(
+                  paramName,
+                  isSelected ? defaultValue : option.value,
+                  defaultValue
+                )
+              }
             >
               {option.label}
               {isSelected && <X className="ml-1 h-3 w-3" />}
@@ -133,7 +156,7 @@ export function ProjectFilters({
   );
 
   // Convert status list to options
-  const statusOptions: FilterOption[] = statusList.map(status => ({
+  const statusOptions: FilterOption[] = statusList.map((status) => ({
     value: status,
     label: statusDisplayMap[status] || status,
   }));
@@ -150,7 +173,7 @@ export function ProjectFilters({
         />
         {totalResults !== undefined && (
           <span className="text-sm text-muted-foreground whitespace-nowrap">
-            {totalResults} {totalResults === 1 ? 'project' : 'projects'}
+            {totalResults} {totalResults === 1 ? "project" : "projects"}
           </span>
         )}
       </div>
@@ -166,14 +189,15 @@ export function ProjectFilters({
           "Sort"
         )}
 
-        {statusOptions.length > 0 && renderFilterBadges(
-          statusOptions,
-          selectedStatus || "all",
-          "all",
-          "status",
-          <Activity className="h-4 w-4" />,
-          "Status"
-        )}
+        {statusOptions.length > 0 &&
+          renderFilterBadges(
+            statusOptions,
+            selectedStatus || "all",
+            "all",
+            "status",
+            <Activity className="h-4 w-4" />,
+            "Status"
+          )}
 
         {/* Clear All Button */}
         <FilterClearButton

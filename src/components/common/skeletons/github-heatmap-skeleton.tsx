@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 /**
  * Skeleton loader for GitHub heatmap component.
  * Displays while contribution data is loading.
- * 
+ *
  * Matches the structure of GitHubHeatmap component:
  * - Header with title and username link
  * - Statistics grid (5 stat cards)
@@ -24,7 +24,10 @@ export function GitHubHeatmapSkeleton() {
         {/* Statistics Grid - 5 stat cards */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="bg-muted/50 rounded-lg p-3 border border-border">
+            <div
+              key={i}
+              className="bg-muted/50 rounded-lg p-3 border border-border"
+            >
               <Skeleton className="h-4 w-20 mb-2" /> {/* Stat label */}
               <Skeleton className="h-8 w-12 mb-1" /> {/* Stat value */}
               <Skeleton className="h-3 w-8" /> {/* "days" or unit */}
@@ -47,7 +50,8 @@ export function GitHubHeatmapSkeleton() {
 
         {/* Footer with contributions summary */}
         <div className="flex items-center justify-between flex-wrap gap-2 text-sm">
-          <Skeleton className="h-4 w-56" /> {/* "X contributions in the last year" */}
+          <Skeleton className="h-4 w-56" />{" "}
+          {/* "X contributions in the last year" */}
           <Skeleton className="h-4 w-32" /> {/* Date range */}
         </div>
       </div>

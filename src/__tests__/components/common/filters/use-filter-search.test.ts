@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { renderHook, act, waitFor } from "@testing-library/react";
-import { useFilterSearch } from "@/components/common/filters/hooks/use-filter-search";
+import { useFilterSearch } from "@/components/common/filters";
 
 // Mock Next.js navigation
 const mockPush = vi.fn();

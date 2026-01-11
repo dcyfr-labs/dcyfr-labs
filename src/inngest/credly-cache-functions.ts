@@ -47,7 +47,7 @@ export const refreshCredlyCache = inngest.createFunction(
   async ({ step }) => {
     // Step 1: Refresh primary user badge cache
     await step.run("refresh-dcyfr-badges", async () => {
-      console.log("[Credly Cache] Refreshing badge cache for dcyfr user...");
+      console.warn("[Credly Cache] Refreshing badge cache for dcyfr user...");
       
       try {
         // Pre-load all common badge configurations
@@ -71,7 +71,7 @@ export const refreshCredlyCache = inngest.createFunction(
         const { getCredlyCacheStats } = await import("@/lib/credly-cache");
         
         const stats = getCredlyCacheStats();
-        console.log("[Credly Cache] Cache validation:", stats);
+        console.warn("[Credly Cache] Cache validation:", stats);
         
         if (stats.validEntries === 0) {
           throw new Error("No valid cache entries after refresh");
@@ -130,7 +130,7 @@ export const clearCredlyCache = inngest.createFunction(
     const { reason = "manual", requestedBy = "system" } = event.data;
     
     await step.run("clear-cache", async () => {
-      console.log(`[Credly Cache] Clearing cache - Reason: ${reason}, Requested by: ${requestedBy}`);
+      console.warn(`[Credly Cache] Clearing cache - Reason: ${reason}, Requested by: ${requestedBy}`);
       
       try {
         const { clearCredlyCache } = await import("@/lib/credly-cache");

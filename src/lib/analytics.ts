@@ -1,16 +1,16 @@
 /**
  * Custom Analytics Tracking Library
- * 
+ *
  * Provides type-safe utilities for tracking custom events with Vercel Analytics.
  * All events are tracked client-side and server-side where appropriate.
- * 
+ *
  * Features:
  * - Type-safe event tracking with TypeScript
  * - Client-side and server-side tracking
  * - Privacy-respecting (no PII collection)
  * - Graceful degradation when analytics unavailable
  * - Debug mode for development
- * 
+ *
  * @see https://vercel.com/docs/analytics/custom-events
  */
 
@@ -258,19 +258,24 @@ function sanitizeProperties(
   properties: Record<string, unknown>
 ): Record<string, string | number | boolean | null> {
   const sanitized: Record<string, string | number | boolean | null> = {};
-  
+
   for (const [key, value] of Object.entries(properties)) {
     if (Array.isArray(value)) {
       // Convert arrays to comma-separated strings
       sanitized[key] = value.join(", ");
-    } else if (typeof value === "string" || typeof value === "number" || typeof value === "boolean" || value === null) {
+    } else if (
+      typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "boolean" ||
+      value === null
+    ) {
       sanitized[key] = value;
     } else {
       // Convert other types to strings
       sanitized[key] = String(value);
     }
   }
-  
+
   return sanitized;
 }
 
@@ -280,10 +285,10 @@ function sanitizeProperties(
 
 /**
  * Track a custom analytics event (client-side)
- * 
+ *
  * @param event - The event to track with name and properties
  * @returns Promise that resolves when tracking completes
- * 
+ *
  * @example
  * ```typescript
  * trackEvent({
@@ -305,7 +310,7 @@ export async function trackEvent(event: AnalyticsEvent): Promise<void> {
 
   // Debug mode in development
   if (process.env.NODE_ENV === "development") {
-    console.log("[Analytics]", event.name, event.properties);
+    console.warn("[Analytics]", event.name, event.properties);
   }
 
   try {
@@ -323,12 +328,12 @@ export async function trackEvent(event: AnalyticsEvent): Promise<void> {
 
 /**
  * Track a server-side analytics event
- * 
+ *
  * Use this for events that happen on the server (API routes, server actions, etc.)
- * 
+ *
  * @param event - The event to track with name and properties
  * @returns Promise that resolves when tracking completes
- * 
+ *
  * @example
  * ```typescript
  * // In a server action or API route
@@ -350,7 +355,7 @@ export async function trackServerEvent(event: AnalyticsEvent): Promise<void> {
 
   // Debug mode in development
   if (process.env.NODE_ENV === "development") {
-    console.log("[Analytics Server]", event.name, event.properties);
+    console.warn("[Analytics Server]", event.name, event.properties);
   }
 
   try {
@@ -373,7 +378,12 @@ export async function trackServerEvent(event: AnalyticsEvent): Promise<void> {
 /**
  * Track blog post view
  */
-export function trackBlogView(slug: string, title: string, tags: string[], readingTime: number) {
+export function trackBlogView(
+  slug: string,
+  title: string,
+  tags: string[],
+  readingTime: number
+) {
   return trackEvent({
     name: "blog_post_viewed",
     properties: { slug, title, tags, readingTime },
@@ -383,7 +393,11 @@ export function trackBlogView(slug: string, title: string, tags: string[], readi
 /**
  * Track blog post completion (user spent time and scrolled)
  */
-export function trackBlogCompleted(slug: string, timeSpent: number, scrollDepth: number) {
+export function trackBlogCompleted(
+  slug: string,
+  timeSpent: number,
+  scrollDepth: number
+) {
   return trackEvent({
     name: "blog_post_completed",
     properties: { slug, timeSpent, scrollDepth },
@@ -393,7 +407,11 @@ export function trackBlogCompleted(slug: string, timeSpent: number, scrollDepth:
 /**
  * Track blog scroll milestone (25%, 50%, 75%, 90%)
  */
-export function trackScrollMilestone(slug: string, milestone: 25 | 50 | 75 | 90, timeOnPage: number) {
+export function trackScrollMilestone(
+  slug: string,
+  milestone: 25 | 50 | 75 | 90,
+  timeOnPage: number
+) {
   return trackEvent({
     name: "blog_scroll_milestone",
     properties: { slug, milestone, timeOnPage },
@@ -413,7 +431,11 @@ export function trackToCClick(slug: string, heading: string, level: number) {
 /**
  * Track related post click
  */
-export function trackRelatedPostClick(fromSlug: string, toSlug: string, position: number) {
+export function trackRelatedPostClick(
+  fromSlug: string,
+  toSlug: string,
+  position: number
+) {
   return trackEvent({
     name: "blog_related_post_clicked",
     properties: { fromSlug, toSlug, position },
@@ -433,7 +455,10 @@ export function trackCodeCopy(slug: string, language: string) {
 /**
  * Track social share
  */
-export function trackShare(slug: string, platform: "linkedin" | "facebook" | "reddit" | "copy") {
+export function trackShare(
+  slug: string,
+  platform: "linkedin" | "facebook" | "reddit" | "copy"
+) {
   return trackEvent({
     name: "blog_share_clicked",
     properties: { slug, platform },
@@ -523,7 +548,11 @@ export function trackThemeToggle(theme: "light" | "dark" | "system") {
 /**
  * Track contact form submission (server-side)
  */
-export function trackContactFormSubmission(messageLength: number, hasGitHub: boolean, hasLinkedIn: boolean) {
+export function trackContactFormSubmission(
+  messageLength: number,
+  hasGitHub: boolean,
+  hasLinkedIn: boolean
+) {
   return trackServerEvent({
     name: "contact_form_submitted",
     properties: { messageLength, hasGitHub, hasLinkedIn },
@@ -657,7 +686,7 @@ export function sanitizeUrl(url: string): string {
     const urlObj = new URL(url);
     // Remove common sensitive query params
     const sensitiveParams = ["token", "key", "secret", "password", "email"];
-    sensitiveParams.forEach(param => {
+    sensitiveParams.forEach((param) => {
       urlObj.searchParams.delete(param);
     });
     return urlObj.toString();
@@ -676,3 +705,16 @@ export function isAnalyticsEnabled(): boolean {
     !!process.env.NEXT_PUBLIC_VERCEL_ANALYTICS_ID
   );
 }
+
+// ============================================================================
+// Re-export Referral Tracker
+// ============================================================================
+
+export {
+  detectReferralSource,
+  trackReferral,
+  shouldTrackReferral,
+  getPlatformDisplayName,
+  type ReferralSource,
+  type ReferralTrackingResult,
+} from "./analytics/referral-tracker";

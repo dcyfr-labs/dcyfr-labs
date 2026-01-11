@@ -1,22 +1,35 @@
 /**
  * Feed Discovery Hub
- * 
+ *
  * Central page for discovering and subscribing to all available feeds.
  * Lists available feeds with descriptions, update frequencies, and format options.
+ *
+ * Features:
+ * - Modern responsive layout with staggered animations
+ * - Interactive feed cards with hover effects
+ * - Multiple format options (RSS 2.0, Atom, JSON Feed)
+ * - Accessibility-first design with semantic HTML
  */
 
 import { Metadata } from "next";
 import { PageLayout } from "@/components/layouts";
-import { PageHero } from "@/components/layouts/page-hero";
+import { PageHero } from "@/components/layouts";
 import { Button } from "@/components/ui/button";
 import { createPageMetadata } from "@/lib/metadata";
 import { SITE_URL, SITE_TITLE } from "@/lib/site-config";
-import { SPACING, TYPOGRAPHY, PAGE_LAYOUT } from "@/lib/design-tokens";
-import { Rss, Activity, FileText, Briefcase } from "lucide-react";
+import {
+  SPACING,
+  TYPOGRAPHY,
+  CONTAINER_WIDTHS,
+  CONTAINER_PADDING,
+  ANIMATION,
+} from "@/lib/design-tokens";
+import { Rss, Activity, FileText, Briefcase, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Subscribe to Feeds",
-  description: "Subscribe to RSS/Atom feeds for blog posts, projects, activity updates, and more. Stay up to date with the latest content.",
+  title: "Web Feeds",
+  description:
+    "Stay updated with the latest content via our RSS/Atom feeds. Subscribe to blog posts, projects, and more in your preferred format.",
   path: "/feeds",
 });
 
@@ -38,51 +51,79 @@ const feeds: FeedInfo[] = [
   {
     id: "activity",
     title: "Activity Feed",
-    description: "Complete timeline of all content: blog posts, projects, milestones, GitHub activity, and site updates. The most comprehensive feed available.",
-    url: "/activity/rss.xml",
-    updateFrequency: "Updated every 5 minutes",
+    description:
+      "Complete timeline of all content: blog posts, projects, milestones, GitHub activity, and site updates. The most comprehensive feed available.",
+    url: "/activity/feed",
+    updateFrequency: "Updated hourly",
     icon: Activity,
     formats: [
-      { label: "RSS 2.0", url: "/activity/rss.xml", type: "application/rss+xml" },
-      { label: "Atom", url: "/activity/feed", type: "application/atom+xml" },
-      { label: "JSON Feed", url: "/activity/feed.json", type: "application/feed+json" },
+      {
+        label: "Atom",
+        url: "/activity/feed",
+        type: "application/atom+xml",
+      },
+      {
+        label: "RSS",
+        url: "/activity/feed?format=rss",
+        type: "application/rss+xml",
+      },
+      {
+        label: "JSON",
+        url: "/activity/feed?format=json",
+        type: "application/feed+json",
+      },
     ],
   },
   {
     id: "blog",
     title: "Blog Feed",
-    description: "Latest blog posts covering web development, security, TypeScript, and tech insights.",
-    url: "/blog/rss.xml",
-    updateFrequency: "Updated hourly",
+    description:
+      "Latest blog posts covering web development, security, TypeScript, and tech insights.",
+    url: "/blog/feed",
+    updateFrequency: "Updated daily",
     icon: FileText,
     formats: [
-      { label: "RSS 2.0", url: "/blog/rss.xml", type: "application/rss+xml" },
-      { label: "Atom", url: "/blog/feed", type: "application/atom+xml" },
-      { label: "JSON Feed", url: "/blog/feed.json", type: "application/feed+json" },
+      {
+        label: "Atom",
+        url: "/blog/feed",
+        type: "application/atom+xml",
+      },
+      {
+        label: "RSS",
+        url: "/blog/feed?format=rss",
+        type: "application/rss+xml",
+      },
+      {
+        label: "JSON",
+        url: "/blog/feed?format=json",
+        type: "application/feed+json",
+      },
     ],
   },
   {
     id: "work",
     title: "Projects Feed",
-    description: "Portfolio projects, open-source contributions, and creative works.",
-    url: "/work/rss.xml",
-    updateFrequency: "Updated every 6 hours",
+    description:
+      "Portfolio projects, open-source contributions, and creative works.",
+    url: "/work/feed",
+    updateFrequency: "Updated daily",
     icon: Briefcase,
     formats: [
-      { label: "RSS 2.0", url: "/work/rss.xml", type: "application/rss+xml" },
-      { label: "Atom", url: "/work/feed", type: "application/atom+xml" },
-      { label: "JSON Feed", url: "/work/feed.json", type: "application/feed+json" },
-    ],
-  },
-  {
-    id: "unified",
-    title: "Legacy Unified Feed",
-    description: "Combined blog posts and projects feed. Redirects to Activity Feed (kept for backward compatibility).",
-    url: "/feed",
-    updateFrequency: "Redirects to Activity Feed",
-    icon: Rss,
-    formats: [
-      { label: "Atom", url: "/feed", type: "application/atom+xml" },
+      {
+        label: "Atom",
+        url: "/work/feed",
+        type: "application/atom+xml",
+      },
+      {
+        label: "RSS",
+        url: "/work/feed?format=rss",
+        type: "application/rss+xml",
+      },
+      {
+        label: "JSON",
+        url: "/work/feed?format=json",
+        type: "application/feed+json",
+      },
     ],
   },
 ];
@@ -92,106 +133,216 @@ export default function FeedsPage() {
     <PageLayout>
       {/* Hero Section */}
       <PageHero
-        title="Subscribe to our Feeds"
+        title="Subscribe to our Web Feeds"
         description={`Stay up to date with the latest content from ${SITE_TITLE}. Choose from our various feeds based on your interests and preferred update frequency.`}
+        align="center"
       />
 
       {/* Main Content */}
-      <div className={PAGE_LAYOUT.section.container}>
-        <div className={SPACING.section}>
-          {/* What are feeds? */}
-          <div>
-            <h2 className={TYPOGRAPHY.h2.standard}>What are RSS/Atom feeds?</h2>
-            <p className="text-muted-foreground mt-4">
-              Feeds allow you to subscribe to content updates without visiting the website. Use a feed reader like{" "}
-              <a href="https://www.inoreader.com" target="_blank" rel="noopener noreferrer" className="underline">
+      <div
+        className={`mx-auto mt-24 ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING}`}
+      >
+        {/* Section: What are feeds */}
+        <section className={`${SPACING.section}`}>
+          <div className="space-y-4">
+            <h2 className={TYPOGRAPHY.h2.standard}>What are Web Feeds?</h2>
+            <p className={`${TYPOGRAPHY.body} text-muted-foreground`}>
+              Web feeds allow you to subscribe to content updates without
+              visiting the website. You can use a feed reader like{" "}
+              <a
+                href="https://www.inoreader.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium underline decoration-primary/40 hover:decoration-primary transition-colors"
+              >
                 Inoreader
-              </a>
-              {" "}or{" "}
-              <a href="https://netnewswire.com" target="_blank" rel="noopener noreferrer" className="underline">
+              </a>{" "}
+              or{" "}
+              <a
+                href="https://netnewswire.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium underline decoration-primary/40 hover:decoration-primary transition-colors"
+              >
                 NetNewsWire
               </a>{" "}
               to aggregate updates from multiple sources in one place.
             </p>
           </div>
 
-          {/* Feed List */}
+          {/* Format Options Grid */}
+          <div className="grid gap-4 md:grid-cols-3">
+            <FormatOption
+              title="Atom"
+              description="Modern XML feed format with enhanced features, strict validation, excellent reader support, and standardized fields."
+              index={0}
+            />
+            <FormatOption
+              title="RSS"
+              description="Widely supported XML format with excellent compatibility across all feed readers. Includes rich metadata and engagement stats."
+              index={1}
+            />
+            <FormatOption
+              title="JSON"
+              description="Modern JSON-based format that's easier to parse for developers building custom integrations and automation."
+              index={2}
+            />
+          </div>
+        </section>
+
+        {/* Section: Available Feeds */}
+        <section className={`${SPACING.section} pt-6 md:pt-8`}>
+          <h2 className={`${TYPOGRAPHY.h2.standard} mb-8`}>Available Feeds</h2>
+
+          {/* Feed Cards Grid */}
           <div className="grid gap-4">
-          {feeds.filter((feed) => feed.id !== "unified").map((feed) => {
-            const Icon = feed.icon;
-            return (
-              <div
-                key={feed.id}
-                className="border rounded-lg p-4 hover:border-primary/50 transition-colors"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="mt-1 p-2 rounded-md bg-muted">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <div className="flex-1 space-y-2">
-                    <div>
-                      <h3 className={TYPOGRAPHY.h3.standard}>{feed.title}</h3>
-                      <p className="text-muted-foreground">{feed.description}</p>
-                    </div>
-                    
-                    <div className="text-sm text-muted-foreground">
-                      {feed.updateFrequency}
-                    </div>
+            {feeds.map((feed, index) => (
+              <FeedCard key={feed.id} feed={feed} index={index} />
+            ))}
+          </div>
+        </section>
+      </div>
+    </PageLayout>
+  );
+}
 
-                    {/* Format Links */}
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      {feed.formats.map((format) => (
-                        <Button
-                          key={format.label}
-                          variant="outline"
-                          size="sm"
-                          asChild
-                        >
-                          <a
-                            href={`${SITE_URL}${format.url}`}
-                            type={format.type}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <Rss className="h-4 w-4" />
-                            Subscribe via {format.label}
-                          </a>
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+// ============================================================================
+// FEED CARD COMPONENT
+// ============================================================================
 
-          {/* Additional Info */}
-          <div className="pt-8 border-t">
-            <h2 className={TYPOGRAPHY.h2.standard}>Format Options</h2>
-            <dl className={`${SPACING.subsection} mt-6`}>
-              <div>
-                <dt className={TYPOGRAPHY.h3.standard}>RSS 2.0</dt>
-                <dd className="text-muted-foreground ml-0 mt-2">
-                  Widely-supported XML feed format with excellent compatibility across all feed readers. Includes rich metadata and engagement stats.
-                </dd>
-              </div>
-              <div>
-                <dt className={TYPOGRAPHY.h3.standard}>Atom</dt>
-                <dd className="text-muted-foreground ml-0 mt-2">
-                  Modern XML feed format with enhanced features and strict validation. Excellent reader support.
-                </dd>
-              </div>
-              <div>
-                <dt className={TYPOGRAPHY.h3.standard}>JSON Feed</dt>
-                <dd className="text-muted-foreground ml-0 mt-2">
-                  Modern JSON-based format that&apos;s easier to parse for developers building custom integrations.
-                </dd>
-              </div>
-            </dl>
+interface FeedCardProps {
+  feed: FeedInfo;
+  index: number;
+}
+
+function FeedCard({ feed, index }: FeedCardProps) {
+  const Icon = feed.icon;
+  // Start feed cards after the format options finish animating for top-to-bottom flow
+  const animationDelay = 400 + index * 120;
+
+  return (
+    <div
+      className="group animate-fade-in-up"
+      style={{
+        animationDelay: `${animationDelay}ms`,
+      }}
+    >
+      <div
+        className={`
+          border rounded-xl p-4 md:p-8
+          bg-card hover:bg-accent/50
+          transition-all duration-300
+          hover:border-primary/50 hover:shadow-lg
+          active:scale-95
+        `}
+      >
+        <div className="flex items-start gap-4">
+          {/* Icon Container */}
+          <div
+            className={`
+              flex-shrink-0 p-3 rounded-lg
+              bg-muted group-hover:bg-primary/10
+              transition-colors duration-300
+            `}
+          >
+            <Icon
+              className={`
+                h-6 w-6
+                text-muted-foreground group-hover:text-primary
+                transition-colors duration-300
+              `}
+              aria-hidden="true"
+            />
+          </div>
+
+          {/* Content Container */}
+          <div className="flex-1 space-y-3 min-w-0">
+            {/* Title and Description */}
+            <div>
+              <h3 className={`${TYPOGRAPHY.h3.standard}`}>{feed.title}</h3>
+              <p className={`${TYPOGRAPHY.body} text-muted-foreground mt-2`}>
+                {feed.description}
+              </p>
+            </div>
+
+            {/* Update Frequency 
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span
+                className="h-2 w-2 rounded-full bg-primary/40"
+                aria-hidden="true"
+              />
+              {feed.updateFrequency}
+            </div> */}
+
+            {/* Format Buttons */}
+            <div className="flex flex-wrap gap-2 pt-2">
+              {feed.formats.map((format, formatIndex) => (
+                <Button
+                  key={format.label}
+                  variant="outline"
+                  size="sm"
+                  asChild
+                  className={`
+                    ${ANIMATION.transition.base}
+                    hover:bg-primary/10 hover:border-primary/50
+                  `}
+                  style={{
+                    transitionDelay: `${(formatIndex + 1) * 50}ms`,
+                  }}
+                >
+                  <a
+                    href={`${SITE_URL}${format.url}`}
+                    type={format.type}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2"
+                  >
+                    <Rss className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+                    <span>{format.label}</span>
+                  </a>
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </PageLayout>
+    </div>
+  );
+}
+
+// ============================================================================
+// FORMAT OPTION COMPONENT
+// ============================================================================
+
+interface FormatOptionProps {
+  title: string;
+  description: string;
+  index: number;
+}
+
+function FormatOption({ title, description, index }: FormatOptionProps) {
+  const animationDelay = index * 120;
+
+  return (
+    <div
+      className="animate-fade-in-up"
+      style={{
+        animationDelay: `${animationDelay}ms`,
+      }}
+    >
+      <div
+        className={`
+          p-4 rounded-lg border border-muted
+          hover:border-primary/30 hover:bg-muted/50
+          transition-all duration-300
+          h-full flex flex-col
+        `}
+      >
+        <h3 className={`${TYPOGRAPHY.h3.standard} mb-3`}>{title}</h3>
+        <p className={`${TYPOGRAPHY.body} text-muted-foreground flex-1`}>
+          {description}
+        </p>
+      </div>
+    </div>
   );
 }

@@ -80,7 +80,7 @@ export function handleApiError(
 
   // For connection errors, log at debug level (not an error)
   if (isConnError) {
-    console.debug(
+    console.warn(
       `Client connection closed ${context?.route ? `(${context.route})` : ""}:`,
       error instanceof Error ? error.message : "Unknown error"
     );

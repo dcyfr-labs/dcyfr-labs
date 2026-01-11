@@ -4,6 +4,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonHeading, SkeletonText } from "@/components/ui/skeleton-primitives";
 import { BookOpen, Clock, ArrowRight } from "lucide-react";
 import type { SeriesMetadata } from "@/data/posts";
 import { TYPOGRAPHY, HOVER_EFFECTS, ANIMATION, SPACING } from "@/lib/design-tokens";
@@ -15,11 +17,13 @@ import { cn } from "@/lib/utils";
 
 interface SeriesShowcaseProps {
   /** Array of blog series to display */
-  series: SeriesMetadata[];
+  series?: SeriesMetadata[];
   /** Maximum number of series to show */
   maxSeries?: number;
   /** Class name for container */
   className?: string;
+  /** Loading state - renders skeleton version */
+  loading?: boolean;
 }
 
 // ============================================================================
@@ -45,6 +49,10 @@ function getProgressPercentage(series: SeriesMetadata): number {
  * Displays blog series with visual progress indicators.
  * Shows series metadata, post count, reading time, and completion status.
  *
+ * **Loading State:**
+ * Pass `loading={true}` to render skeleton version that matches the real component structure.
+ * This ensures loading states never drift from the actual component layout.
+ *
  * Features:
  * - Gradient backgrounds per series
  * - Animated progress bars
@@ -55,17 +63,77 @@ function getProgressPercentage(series: SeriesMetadata): number {
  *
  * @example
  * ```tsx
- * <SeriesShowcase
- *   series={allSeries}
- *   maxSeries={3}
- * />
+ * <SeriesShowcase series={allSeries} maxSeries={3} />
  * ```
+ *
+ * @example
+ * // Show loading skeleton
+ * <SeriesShowcase loading maxSeries={3} />
  */
 export function SeriesShowcase({
-  series,
+  series = [],
   maxSeries = 3,
   className,
+  loading = false,
 }: SeriesShowcaseProps) {
+  // Loading state - skeleton version matching real component structure
+  if (loading) {
+    return (
+      <div
+        className={cn(
+          "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4",
+          className
+        )}
+      >
+        {[...Array(maxSeries)].map((_, i) => (
+          <Card
+            key={i}
+            className="h-full"
+            style={{
+              animationDelay: `${i * 100}ms`, // Stagger effect
+            }}
+          >
+            {/* Header - icon + title */}
+            <div className="p-6 pb-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-2 flex-1">
+                  <Skeleton className="h-9 w-9 rounded-lg" />
+                  <SkeletonHeading level="h3" width="w-3/4" />
+                </div>
+              </div>
+
+              {/* Metadata badges */}
+              <div className="flex items-center gap-2 pt-2">
+                <Skeleton className="h-5 w-16 rounded-md" />
+                <Skeleton className="h-5 w-20 rounded-md" />
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="px-6 pb-6">
+              {/* Description */}
+              <div className="mb-4">
+                <SkeletonText lines={2} />
+              </div>
+
+              {/* Progress bar */}
+              <div className="space-y-2 mb-4">
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-3 w-16" />
+                  <Skeleton className="h-3 w-8" />
+                </div>
+                <Skeleton className="h-2 w-full rounded-full" />
+              </div>
+
+              {/* CTA */}
+              <Skeleton className="h-5 w-24" />
+            </div>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
   const displaySeries = series.slice(0, maxSeries);
 
   if (displaySeries.length === 0) {

@@ -6,8 +6,8 @@
  * configurably-provided endpoint (VERCEL_ANALYTICS_ENDPOINT) rather than hard-
  * coding a Vercel REST path which can change over time.
  */
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 export type VercelTopPage = { path: string; views: number; url?: string };
 export type VercelReferrer = { referrer: string; views: number };
@@ -25,9 +25,13 @@ function getProjectId(): string | null {
   if (process.env.VERCEL_PROJECT_ID) return process.env.VERCEL_PROJECT_ID;
 
   try {
-    const projectJsonPath = path.resolve(process.cwd(), '.vercel', 'project.json');
+    const projectJsonPath = path.resolve(
+      process.cwd(),
+      ".vercel",
+      "project.json"
+    );
     if (fs.existsSync(projectJsonPath)) {
-      const raw = fs.readFileSync(projectJsonPath, 'utf-8');
+      const raw = fs.readFileSync(projectJsonPath, "utf-8");
       const parsed = JSON.parse(raw);
       if (parsed && parsed.projectId) return parsed.projectId;
     }
@@ -45,7 +49,9 @@ function getProjectId(): string | null {
  * a single Vercel REST version. If that variable isn't set the function will
  * return null to indicate: not configured.
  */
-export async function fetchVercelAnalytics(days = 1): Promise<VercelAnalyticsResult | null> {
+export async function fetchVercelAnalytics(
+  days = 1
+): Promise<VercelAnalyticsResult | null> {
   const token = process.env.VERCEL_TOKEN;
   const endpoint = process.env.VERCEL_ANALYTICS_ENDPOINT;
 
@@ -55,20 +61,20 @@ export async function fetchVercelAnalytics(days = 1): Promise<VercelAnalyticsRes
   // Build URL with some sensible query params
   const projectId = getProjectId();
   const url = new URL(endpoint);
-  if (projectId) url.searchParams.set('projectId', projectId);
-  url.searchParams.set('days', String(days));
+  if (projectId) url.searchParams.set("projectId", projectId);
+  url.searchParams.set("days", String(days));
 
   try {
     const res = await fetch(url.toString(), {
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
+        Accept: "application/json",
       },
     });
 
     if (!res.ok) {
       // Non-200 from proxy/api
-      console.warn('[Vercel Analytics] Non-OK response', res.status);
+      console.warn("[Vercel Analytics] Non-OK response", res.status);
       return null;
     }
 
@@ -78,15 +84,25 @@ export async function fetchVercelAnalytics(days = 1): Promise<VercelAnalyticsRes
     // shape is returned, fall back to null so callers can implement graceful
     // degradation.
     const topPages: VercelTopPage[] = Array.isArray(json.topPages)
-      ? json.topPages.map((p: any) => ({ path: p.path || p.url || p.slug || '', views: Number(p.views || 0), url: p.url }))
+      ? json.topPages.map((p: any) => ({
+          path: p.path || p.url || p.slug || "",
+          views: Number(p.views || 0),
+          url: p.url,
+        }))
       : [];
 
     const topReferrers: VercelReferrer[] = Array.isArray(json.topReferrers)
-      ? json.topReferrers.map((r: any) => ({ referrer: r.referrer || r.source || 'unknown', views: Number(r.views || 0) }))
+      ? json.topReferrers.map((r: any) => ({
+          referrer: r.referrer || r.source || "unknown",
+          views: Number(r.views || 0),
+        }))
       : [];
 
     const topDevices: VercelDevice[] = Array.isArray(json.topDevices)
-      ? json.topDevices.map((d: any) => ({ device: d.device || d.name || 'unknown', views: Number(d.views || 0) }))
+      ? json.topDevices.map((d: any) => ({
+          device: d.device || d.name || "unknown",
+          views: Number(d.views || 0),
+        }))
       : [];
 
     return {
@@ -97,7 +113,7 @@ export async function fetchVercelAnalytics(days = 1): Promise<VercelAnalyticsRes
     };
   } catch (error) {
     // Swallow errors - this should not crash scheduled jobs or APIs
-    console.warn('[Vercel Analytics] Fetch failed:', error);
+    console.warn("[Vercel Analytics] Fetch failed:", error);
     return null;
   }
 }

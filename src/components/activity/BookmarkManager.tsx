@@ -15,7 +15,12 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -44,7 +49,7 @@ import {
 import { cn } from "@/lib/utils";
 import { SPACING, TYPOGRAPHY, SEMANTIC_COLORS } from "@/lib/design-tokens";
 import { useBookmarks } from "@/hooks/use-bookmarks";
-import type { Bookmark as BookmarkType, ExportFormat } from "@/lib/activity/bookmarks";
+import type { Bookmark as BookmarkType, ExportFormat } from "@/lib/activity";
 
 export interface BookmarkManagerProps {
   className?: string;
@@ -68,7 +73,9 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState<string>("all");
-  const [editingBookmark, setEditingBookmark] = useState<BookmarkType | null>(null);
+  const [editingBookmark, setEditingBookmark] = useState<BookmarkType | null>(
+    null
+  );
   const [showImport, setShowImport] = useState(false);
   const [importText, setImportText] = useState("");
   const [mergeImport, setMergeImport] = useState(true);
@@ -85,8 +92,16 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
       bookmarks = filterByTag(selectedTag);
     }
 
-    return bookmarks.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-  }, [collection.bookmarks, searchQuery, selectedTag, searchBookmarks, filterByTag]);
+    return bookmarks.sort(
+      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+    );
+  }, [
+    collection.bookmarks,
+    searchQuery,
+    selectedTag,
+    searchBookmarks,
+    filterByTag,
+  ]);
 
   const allTags = getAllTags();
 
@@ -124,7 +139,7 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
 
   const handleAddTag = () => {
     if (!editingBookmark) return;
-    
+
     const tag = prompt("Add tag:");
     if (tag && tag.trim()) {
       const newTags = [...(editingBookmark.tags || []), tag.trim()];
@@ -134,15 +149,23 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
 
   const handleRemoveTag = (tagToRemove: string) => {
     if (!editingBookmark) return;
-    
-    const newTags = editingBookmark.tags?.filter(tag => tag !== tagToRemove) || [];
+
+    const newTags =
+      editingBookmark.tags?.filter((tag) => tag !== tagToRemove) || [];
     setEditingBookmark({ ...editingBookmark, tags: newTags });
   };
 
   if (loading) {
     return (
-      <div className={cn("flex items-center justify-center p-8", className)}>
-        <div className="text-sm text-muted-foreground">Loading bookmarks...</div>
+      <div
+        className={cn(
+          `flex items-center justify-center p-${SPACING.xl}`,
+          className
+        )}
+      >
+        <div className="text-sm text-muted-foreground">
+          Loading bookmarks...
+        </div>
       </div>
     );
   }
@@ -157,33 +180,35 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
             {collection.count} bookmark{collection.count !== 1 ? "s" : ""} saved
           </p>
         </div>
-        
-        <div className="flex items-center gap-2">
+
+        <div className={`flex items-center gap-${SPACING.sm}`}>
           <Button
             variant="outline"
             size="sm"
             onClick={() => setShowImport(true)}
           >
-            <Upload className="h-4 w-4 mr-2" />
+            <Upload className={`h-4 w-4 mr-${SPACING.sm}`} />
             Import
           </Button>
-          
-          <Select onValueChange={(value) => handleExport(value as ExportFormat)}>
+
+          <Select
+            onValueChange={(value) => handleExport(value as ExportFormat)}
+          >
             <SelectTrigger asChild>
               <Button variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
+                <Download className={`h-4 w-4 mr-${SPACING.sm}`} />
                 Export
               </Button>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="json">
-                <div className="flex items-center gap-2">
+                <div className={`flex items-center gap-${SPACING.sm}`}>
                   <FileJson className="h-4 w-4" />
                   JSON
                 </div>
               </SelectItem>
               <SelectItem value="csv">
-                <div className="flex items-center gap-2">
+                <div className={`flex items-center gap-${SPACING.sm}`}>
                   <FileText className="h-4 w-4" />
                   CSV
                 </div>
@@ -196,12 +221,16 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
       {collection.count === 0 ? (
         /* Empty state */
         <Card>
-          <CardContent className="flex flex-col items-center justify-center p-12 text-center">
-            <BookmarkX className="h-12 w-12 text-muted-foreground mb-4" />
+          <CardContent
+            className={`flex flex-col items-center justify-center p-${SPACING["2xl"]} text-center`}
+          >
+            <BookmarkX
+              className={`h-12 w-12 text-muted-foreground mb-${SPACING.md}`}
+            />
             <h3 className={TYPOGRAPHY.h3.standard}>No bookmarks yet</h3>
             <p className="text-sm text-muted-foreground max-w-md">
-              Bookmark activity items to save them for later reference. Click the bookmark
-              icon on any activity to get started.
+              Bookmark activity items to save them for later reference. Click
+              the bookmark icon on any activity to get started.
             </p>
           </CardContent>
         </Card>
@@ -209,8 +238,8 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
         <>
           {/* Filters */}
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-4">
+            <CardContent className={`p-${SPACING.md}`}>
+              <div className={`flex items-center gap-${SPACING.md}`}>
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -220,7 +249,7 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
                     className="pl-10"
                   />
                 </div>
-                
+
                 <Select value={selectedTag} onValueChange={setSelectedTag}>
                   <SelectTrigger className="w-40">
                     <SelectValue />
@@ -229,7 +258,7 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
                     <SelectItem value="all">All tags</SelectItem>
                     {allTags.map((tag) => (
                       <SelectItem key={tag} value={tag}>
-                        <div className="flex items-center gap-2">
+                        <div className={`flex items-center gap-${SPACING.sm}`}>
                           <Tag className="h-3 w-3" />
                           {tag}
                         </div>
@@ -242,10 +271,10 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
           </Card>
 
           {/* Bookmarks list */}
-          <div className="grid gap-4">
+          <div className={`grid gap-${SPACING.md}`}>
             {filteredBookmarks.length === 0 ? (
               <Card>
-                <CardContent className="p-8 text-center">
+                <CardContent className={`p-${SPACING.xl} text-center`}>
                   <p className="text-sm text-muted-foreground">
                     No bookmarks match your search criteria.
                   </p>
@@ -272,7 +301,7 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
             <DialogHeader>
               <DialogTitle>Edit Bookmark</DialogTitle>
             </DialogHeader>
-            
+
             <div className="space-y-4">
               <div>
                 <Label htmlFor="notes">Notes</Label>
@@ -281,17 +310,20 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
                   placeholder="Add notes about this bookmark..."
                   value={editingBookmark.notes || ""}
                   onChange={(e) =>
-                    setEditingBookmark({ ...editingBookmark, notes: e.target.value })
+                    setEditingBookmark({
+                      ...editingBookmark,
+                      notes: e.target.value,
+                    })
                   }
-                  className="mt-2"
+                  className={`mt-${SPACING.sm}`}
                 />
               </div>
-              
+
               <div>
                 <Label>Tags</Label>
-                <div className="mt-2 space-y-2">
+                <div className={`mt-${SPACING.sm} space-y-${SPACING.sm}`}>
                   {editingBookmark.tags && editingBookmark.tags.length > 0 ? (
-                    <div className="flex flex-wrap gap-1">
+                    <div className={`flex flex-wrap gap-${SPACING.xs}`}>
                       {editingBookmark.tags.map((tag) => (
                         <Badge
                           key={tag}
@@ -301,7 +333,7 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
                           {tag}
                           <button
                             onClick={() => handleRemoveTag(tag)}
-                            className="ml-1 hover:text-destructive"
+                            className={`ml-${SPACING.xs} hover:text-destructive`}
                           >
                             <X className="h-3 w-3" />
                           </button>
@@ -311,26 +343,23 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
                   ) : (
                     <p className="text-sm text-muted-foreground">No tags</p>
                   )}
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleAddTag}
-                  >
-                    <Plus className="h-3 w-3 mr-1" />
+
+                  <Button variant="outline" size="sm" onClick={handleAddTag}>
+                    <Plus className={`h-3 w-3 mr-${SPACING.xs}`} />
                     Add tag
                   </Button>
                 </div>
               </div>
             </div>
-            
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setEditingBookmark(null)}>
+
+            <div className={`flex justify-end gap-${SPACING.sm}`}>
+              <Button
+                variant="outline"
+                onClick={() => setEditingBookmark(null)}
+              >
                 Cancel
               </Button>
-              <Button onClick={handleSaveEdit}>
-                Save changes
-              </Button>
+              <Button onClick={handleSaveEdit}>Save changes</Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -343,7 +372,7 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
             <DialogHeader>
               <DialogTitle>Import Bookmarks</DialogTitle>
             </DialogHeader>
-            
+
             <div className="space-y-4">
               <div>
                 <Label htmlFor="import-data">JSON Data</Label>
@@ -356,7 +385,7 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
                   rows={8}
                 />
               </div>
-              
+
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -367,7 +396,7 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
                 <Label htmlFor="merge">Merge with existing bookmarks</Label>
               </div>
             </div>
-            
+
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setShowImport(false)}>
                 Cancel
@@ -401,25 +430,25 @@ function BookmarkCard({ bookmark, onEdit, onRemove }: BookmarkCardProps) {
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
-              {/* eslint-disable-next-line no-restricted-syntax -- Bookmark status color (icon color, not semantic) */}
-              <Bookmark className="h-4 w-4 text-amber-500 shrink-0" />
+              {}
+              <Bookmark className="h-4 w-4 text-warning-light shrink-0" />
               <code className="text-sm bg-muted px-2 py-0.5 rounded font-mono">
                 {bookmark.activityId}
               </code>
             </div>
-            
+
             {bookmark.notes && (
               <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
                 {bookmark.notes}
               </p>
             )}
-            
+
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Calendar className="h-3 w-3" />
               <time dateTime={bookmark.createdAt.toISOString()}>
                 {bookmark.createdAt.toLocaleDateString()}
               </time>
-              
+
               {bookmark.tags && bookmark.tags.length > 0 && (
                 <>
                   <span>•</span>
@@ -443,7 +472,7 @@ function BookmarkCard({ bookmark, onEdit, onRemove }: BookmarkCardProps) {
               )}
             </div>
           </div>
-          
+
           <div className="flex items-center gap-1 ml-2">
             <Button variant="ghost" size="icon" onClick={onEdit}>
               <Edit className="h-4 w-4" />

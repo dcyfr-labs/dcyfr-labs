@@ -5,7 +5,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useBookmarks } from "@/hooks/use-bookmarks";
-import type { ActivityItem } from "@/lib/activity/types";
+import type { ActivityItem } from "@/lib/activity";
 
 // Mock the bookmark utilities
 vi.mock("@/lib/activity/bookmarks", () => ({
@@ -27,7 +27,7 @@ vi.mock("@/lib/activity/bookmarks", () => ({
   syncBookmarksWithServer: vi.fn(),
 }));
 
-import * as bookmarksModule from "@/lib/activity/bookmarks";
+import * as bookmarksModule from "@/lib/activity";
 
 const mockBookmarksModule = bookmarksModule as any;
 

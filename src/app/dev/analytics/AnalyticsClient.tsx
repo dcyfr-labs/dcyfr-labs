@@ -49,12 +49,13 @@ import { useDashboardFilters } from "@/hooks/use-dashboard-filters";
 import { useDashboardSort } from "@/hooks/use-dashboard-sort";
 
 // Components
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
-import { AnalyticsOverview } from "@/components/analytics/analytics-overview";
-import { ConversionMetrics } from "@/components/analytics/conversion-metrics";
-import { AnalyticsInsights } from "@/components/analytics/analytics-insights";
-import { AnalyticsRecommendations } from "@/components/analytics/analytics-recommendations";
-import VercelInsights from "@/components/analytics/vercel-insights";
+import { DashboardLayout } from "@/components/dashboard";
+import { AnalyticsOverview } from '@/components/analytics';
+import { ConversionMetrics } from '@/components/analytics';
+import { AnalyticsInsights } from '@/components/analytics';
+import { AnalyticsRecommendations } from '@/components/analytics';
+import { VercelInsights } from '@/components/analytics';
+import { SocialMetrics } from '@/components/analytics';
 import dynamic from "next/dynamic";
 
 const AnalyticsCharts = dynamic(() => import("@/components/analytics/analytics-charts").then(mod => ({ default: mod.AnalyticsCharts })), {
@@ -83,7 +84,7 @@ function SortIndicator({ field, sortField, sortDirection }: SortIndicatorProps) 
     <ArrowUp className="h-3 w-3 text-primary" />
   );
 }
-import { AnalyticsTrending } from "@/components/analytics/analytics-trending";
+import { AnalyticsTrending } from '@/components/analytics';
 
 // Types
 import { PostAnalytics, DateRange, DATE_RANGE_LABELS } from "@/types/analytics";
@@ -102,14 +103,14 @@ import {
   filterByPublicationCohort,
   filterByPerformanceTier,
   filterByTagsWithMode
-} from "@/lib/dashboard/table-utils";
-import { exportData } from "@/lib/dashboard/export-utils";
+} from "@/lib/dashboard";
+import { exportData } from "@/lib/dashboard";
 import { 
   PublicationCohort, 
   PerformanceTierFilter, 
   TagFilterMode 
 } from "@/types/analytics";
-import { AnalyticsFilters } from "@/components/analytics/analytics-filters";
+import { AnalyticsFilters } from '@/components/analytics';
 
 type SortField = "title" | "views" | "views24h" | "publishedAt" | "viewsRange" | "shares" | "shares24h" | "comments" | "comments24h" | "engagementRate";
 
@@ -620,6 +621,12 @@ export default function AnalyticsDashboard() {
       {/* Analytics Overview */}
       <AnalyticsOverview
         summary={filteredSummary}
+      />
+
+      {/* Social Media Metrics */}
+      <SocialMetrics
+        posts={sortedPosts}
+        defaultCollapsed={false}
       />
 
       {/* Conversion Goals & Metrics */}

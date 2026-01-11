@@ -1,6 +1,6 @@
 /**
  * Analytics Charts Component
- * 
+ *
  * Time-series visualizations for views, shares, and comments over time.
  * Uses Recharts for responsive, interactive charts with real daily data.
  */
@@ -8,7 +8,13 @@
 "use client";
 
 import { useAnalyticsData } from "@/hooks/use-analytics-data";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -32,18 +38,23 @@ interface AnalyticsChartsProps {
   dateRange: DateRange;
 }
 
-import type { DailyData } from '@/types/analytics';
+import type { DailyData } from "@/types/analytics";
 
 /**
  * Time-series charts for analytics dashboard
- * 
+ *
  * Shows trends over time with multiple views:
  * - Views trend
  * - Engagement trend (shares + comments)
  * - Combined metrics
  */
 export function AnalyticsCharts({ posts, dateRange }: AnalyticsChartsProps) {
-  const { daily: dailyData, loading, error, refresh } = useAnalyticsData({ dateRange, autoRefresh: false, dataType: 'daily' });
+  const {
+    daily: dailyData,
+    loading,
+    error,
+    refresh,
+  } = useAnalyticsData({ dateRange, autoRefresh: false, dataType: "daily" });
   const chartData: DailyData[] = Array.isArray(dailyData) ? dailyData : [];
 
   if (posts.length === 0) {
@@ -78,7 +89,7 @@ export function AnalyticsCharts({ posts, dateRange }: AnalyticsChartsProps) {
   }
 
   // Check if we have any actual data (non-zero views)
-  const hasData = chartData.some(d => d.views > 0);
+  const hasData = chartData.some((d) => d.views > 0);
 
   if (!hasData) {
     return (
@@ -92,12 +103,13 @@ export function AnalyticsCharts({ posts, dateRange }: AnalyticsChartsProps) {
         <CardContent className="p-4 pt-0">
           <div className="flex items-center justify-center h-[300px] text-center">
             <div className="space-y-2">
-              {/* eslint-disable-next-line no-restricted-syntax */}
+              {}
               <p className="text-sm font-medium text-muted-foreground">
                 No daily tracking data available yet
               </p>
               <p className="text-xs text-muted-foreground">
-                Daily metrics will appear here as users view your posts. Visit a blog post to generate your first data point.
+                Daily metrics will appear here as users view your posts. Visit a
+                blog post to generate your first data point.
               </p>
             </div>
           </div>
@@ -117,9 +129,15 @@ export function AnalyticsCharts({ posts, dateRange }: AnalyticsChartsProps) {
       <CardContent className="p-4 pt-0">
         <Tabs defaultValue="views" className="space-y-4">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="views" className="text-xs">Views</TabsTrigger>
-            <TabsTrigger value="engagement" className="text-xs">Engagement</TabsTrigger>
-            <TabsTrigger value="combined" className="text-xs">Combined</TabsTrigger>
+            <TabsTrigger value="views" className="text-xs">
+              Views
+            </TabsTrigger>
+            <TabsTrigger value="engagement" className="text-xs">
+              Engagement
+            </TabsTrigger>
+            <TabsTrigger value="combined" className="text-xs">
+              Combined
+            </TabsTrigger>
           </TabsList>
 
           {/* Views Chart */}
@@ -132,18 +150,21 @@ export function AnalyticsCharts({ posts, dateRange }: AnalyticsChartsProps) {
                     <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                <XAxis 
-                  dataKey="date" 
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="rgba(255,255,255,0.1)"
+                />
+                <XAxis
+                  dataKey="date"
                   stroke="rgba(255,255,255,0.5)"
                   tick={{ fontSize: 12, fill: "rgba(255,255,255,0.7)" }}
                 />
-                <YAxis 
+                <YAxis
                   stroke="rgba(255,255,255,0.5)"
                   tick={{ fontSize: 12, fill: "rgba(255,255,255,0.7)" }}
                 />
-                <Tooltip 
-                  contentStyle={{ 
+                <Tooltip
+                  contentStyle={{
                     backgroundColor: "rgba(0,0,0,0.9)",
                     border: "1px solid rgba(255,255,255,0.2)",
                     borderRadius: "6px",
@@ -166,18 +187,21 @@ export function AnalyticsCharts({ posts, dateRange }: AnalyticsChartsProps) {
           <TabsContent value="engagement" className="space-y-4">
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                <XAxis 
-                  dataKey="date" 
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="rgba(255,255,255,0.1)"
+                />
+                <XAxis
+                  dataKey="date"
                   stroke="rgba(255,255,255,0.5)"
                   tick={{ fontSize: 12, fill: "rgba(255,255,255,0.7)" }}
                 />
-                <YAxis 
+                <YAxis
                   stroke="rgba(255,255,255,0.5)"
                   tick={{ fontSize: 12, fill: "rgba(255,255,255,0.7)" }}
                 />
-                <Tooltip 
-                  contentStyle={{ 
+                <Tooltip
+                  contentStyle={{
                     backgroundColor: "rgba(0,0,0,0.9)",
                     border: "1px solid rgba(255,255,255,0.2)",
                     borderRadius: "6px",
@@ -185,8 +209,11 @@ export function AnalyticsCharts({ posts, dateRange }: AnalyticsChartsProps) {
                     color: "#fff",
                   }}
                 />
-                <Legend 
-                  wrapperStyle={{ fontSize: "12px", color: "rgba(255,255,255,0.7)" }}
+                <Legend
+                  wrapperStyle={{
+                    fontSize: "12px",
+                    color: "rgba(255,255,255,0.7)",
+                  }}
                 />
                 <Line
                   type="monotone"
@@ -210,18 +237,21 @@ export function AnalyticsCharts({ posts, dateRange }: AnalyticsChartsProps) {
           <TabsContent value="combined" className="space-y-4">
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                <XAxis 
-                  dataKey="date" 
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="rgba(255,255,255,0.1)"
+                />
+                <XAxis
+                  dataKey="date"
                   stroke="rgba(255,255,255,0.5)"
                   tick={{ fontSize: 12, fill: "rgba(255,255,255,0.7)" }}
                 />
-                <YAxis 
+                <YAxis
                   stroke="rgba(255,255,255,0.5)"
                   tick={{ fontSize: 12, fill: "rgba(255,255,255,0.7)" }}
                 />
-                <Tooltip 
-                  contentStyle={{ 
+                <Tooltip
+                  contentStyle={{
                     backgroundColor: "rgba(0,0,0,0.9)",
                     border: "1px solid rgba(255,255,255,0.2)",
                     borderRadius: "6px",
@@ -229,8 +259,11 @@ export function AnalyticsCharts({ posts, dateRange }: AnalyticsChartsProps) {
                     color: "#fff",
                   }}
                 />
-                <Legend 
-                  wrapperStyle={{ fontSize: "12px", color: "rgba(255,255,255,0.7)" }}
+                <Legend
+                  wrapperStyle={{
+                    fontSize: "12px",
+                    color: "rgba(255,255,255,0.7)",
+                  }}
                 />
                 <Line
                   type="monotone"

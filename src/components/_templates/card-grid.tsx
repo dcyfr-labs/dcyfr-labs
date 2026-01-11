@@ -174,7 +174,7 @@ export function FeatureCardGrid({ features }: { features: Feature[] }) {
  */
 export function CTACard() {
   return (
-    <Card className={HOVER_EFFECTS.cardCTA}>
+    <Card className={HOVER_EFFECTS.card}>
       <CardHeader>
         <CardTitle className={TYPOGRAPHY.h2.standard}>
           Stay Updated

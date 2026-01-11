@@ -33,10 +33,7 @@ Sentry.init({
     }
 
     // Health/monitoring routes: sample at 1%
-    if (
-      name.includes("/api/health") ||
-      name.includes("/monitoring")
-    ) {
+    if (name.includes("/api/health") || name.includes("/monitoring")) {
       return 0.01;
     }
 
@@ -63,7 +60,8 @@ Sentry.init({
   // Enable logs to be sent to Sentry
   enableLogs: true,
 
-  // Enable sending user PII (Personally Identifiable Information)
+  // Disable sending user PII (Personally Identifiable Information) for privacy compliance
+  // The app handles its own PII masking (IP anonymization, email domain-only logging)
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
-  sendDefaultPii: true,
+  sendDefaultPii: false,
 });

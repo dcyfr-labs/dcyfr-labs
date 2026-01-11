@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
-import { getTrendingProjects, getMockTrendingProjects } from "@/lib/activity/trending-projects";
+import { getTrendingProjects, getMockTrendingProjects } from "@/lib/activity";
 import type { Project } from "@/data/projects";
 
 // ============================================================================

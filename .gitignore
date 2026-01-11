@@ -13,6 +13,7 @@
 /test-results/*
 /scripts/reports/*
 /scripts/__tests__/*
+/.playwright-mcp/*
 /playwright-report/*
 /playwright/.cache/
 /lighthouse/
@@ -59,6 +60,11 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# Test output logs
+test-output.log
+**/e2e-test-results.log
+**/*-test-results.log
+
 # ========================================
 # Environment & Secrets
 # ========================================
@@ -99,6 +105,21 @@ mcp.json
 # local configs
 .anthropic/
 .openai/
+.opencode.config.json
+
+# AI Agent Session State (local only - exclude all session state files)
+*.session-state.json
+.opencode/.session-state.json
+.claude/.session-state.json
+.github/copilot-session-state.json
+
+# Session checkpoints (auto-generated, keep structure)
+.git/agent-checkpoints/*.json
+.git/agent-checkpoints/.auto-checkpoint-*.pid
+
+# OpenCode cache and temporary files
+.opencode/.cache/
+.opencode/.sessions/
 
 # IDE & Editor Configs
 # ========================================
@@ -164,6 +185,12 @@ Desktop.ini
 $RECYCLE.BIN/
 .Spotlight-V100
 .Trashes
+
+# Local backup files
+*.bak
+*.old
+*.orig
+*.save
 
 # Cache directories
 .cache/

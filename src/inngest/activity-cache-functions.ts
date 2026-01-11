@@ -20,7 +20,8 @@ import {
   transformProjects,
   transformChangelog,
   aggregateActivities,
-} from "@/lib/activity/sources";
+} from "@/lib/activity";
+
 import {
   transformPostsWithViews,
   transformTrendingPosts,
@@ -33,7 +34,8 @@ import {
   transformGitHubTraffic,
   transformGoogleAnalytics,
   transformSearchConsole,
-} from "@/lib/activity/sources.server";
+ } from "@/lib/activity/server";
+
 import { createClient } from "redis";
 
 // ============================================================================
@@ -102,7 +104,7 @@ export const refreshActivityFeed = inngest.createFunction(
       const now = new Date();
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-      console.log("[Activity Cache] Gathering activities from all sources...");
+      console.warn("[Activity Cache] Gathering activities from all sources...");
 
       const results = await Promise.allSettled([
         transformPostsWithViews(posts),
@@ -138,7 +140,7 @@ export const refreshActivityFeed = inngest.createFunction(
       const sorted = allActivities.sort(
         (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
       );
-      console.log(`[Activity Cache] Sorted ${sorted.length} activities`);
+      console.warn(`[Activity Cache] Sorted ${sorted.length} activities`);
 
       return sorted;
     });
@@ -151,7 +153,7 @@ export const refreshActivityFeed = inngest.createFunction(
       try {
         await redis.setEx(cacheKey, ttl, JSON.stringify(activities));
 
-        console.log(
+        console.warn(
           `[Activity Cache] ✅ Cached ${activities.length} activities (TTL: ${ttl}s)`
         );
 
@@ -207,7 +209,7 @@ export const invalidateActivityFeed = inngest.createFunction(
 
       try {
         const deleted = await redis.del(cacheKey);
-        console.log(
+        console.warn(
           `[Activity Cache] Cache invalidated (reason: ${event.data.reason || "manual"})`
         );
         return { deleted: deleted > 0 };
@@ -223,7 +225,7 @@ export const invalidateActivityFeed = inngest.createFunction(
     // Note: This sends an event to schedule the refresh function
     // The actual refresh will happen asynchronously
     await step.run("trigger-refresh", async () => {
-      console.log("[Activity Cache] Triggering immediate refresh...");
+      console.warn("[Activity Cache] Triggering immediate refresh...");
       // The cron job will pick this up in the next cycle
       // For truly immediate refresh, you could call the function directly
       // or implement a separate on-demand refresh function

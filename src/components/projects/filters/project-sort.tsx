@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowDownUp } from "lucide-react";
-import { FilterBadges } from "@/components/common/filters";
+import { FilterBadges } from "@/components/common";
 
 const SORT_OPTIONS = [
   { value: "newest", label: "Newest" },
@@ -17,18 +17,22 @@ interface ProjectSortProps {
 
 /**
  * Project Sort Section
- * 
+ *
  * Sort by badges for project filtering.
  */
 export function ProjectSort({ sortBy, onSortChange }: ProjectSortProps) {
   return (
     <FilterBadges
-      items={SORT_OPTIONS.map(o => o.value)}
+      items={SORT_OPTIONS.map((o) => o.value)}
       selected={[sortBy]}
-      onToggle={(sort) => onSortChange(sort === sortBy && sort !== "newest" ? "newest" : sort)}
+      onToggle={(sort) =>
+        onSortChange(sort === sortBy && sort !== "newest" ? "newest" : sort)
+      }
       icon={ArrowDownUp}
       label="Sort by"
-      displayMap={Object.fromEntries(SORT_OPTIONS.map(o => [o.value, o.label]))}
+      displayMap={Object.fromEntries(
+        SORT_OPTIONS.map((o) => [o.value, o.label])
+      )}
     />
   );
 }

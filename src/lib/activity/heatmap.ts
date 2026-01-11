@@ -64,20 +64,25 @@ export interface ActivityHeatmapStats {
  */
 export function aggregateActivitiesByDate(
   activities: ActivityItem[],
-  startDate: Date = new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
+  startDate: Date = new Date(
+    new Date().setFullYear(new Date().getFullYear() - 1)
+  ),
   endDate: Date = new Date()
 ): ActivityHeatmapDay[] {
   // Create map for efficient lookup
-  const dateMap = new Map<string, {
-    count: number;
-    sources: Map<string, number>;
-    activityIds: string[];
-  }>();
+  const dateMap = new Map<
+    string,
+    {
+      count: number;
+      sources: Map<string, number>;
+      activityIds: string[];
+    }
+  >();
 
   // Process each activity
   activities.forEach((activity) => {
     const dateStr = formatDateToISO(activity.timestamp);
-    
+
     // Skip dates outside range
     if (activity.timestamp < startDate || activity.timestamp > endDate) {
       return;
@@ -149,7 +154,7 @@ export function aggregateActivitiesByDate(
 export function calculateHeatmapStats(
   heatmapData: ActivityHeatmapDay[]
 ): ActivityHeatmapStats {
-  const activeDays = heatmapData.filter(day => day.count > 0);
+  const activeDays = heatmapData.filter((day) => day.count > 0);
   const totalActivities = heatmapData.reduce((sum, day) => sum + day.count, 0);
   const averagePerDay = totalActivities / heatmapData.length;
 
@@ -190,16 +195,16 @@ function calculateStreaks(heatmapData: ActivityHeatmapDay[]): {
 
   // Iterate from most recent to oldest for current streak
   const reversedData = [...heatmapData].reverse();
-  
+
   for (let i = 0; i < reversedData.length; i++) {
     if (reversedData[i].count > 0) {
       tempStreak++;
-      
+
       // Update current streak (only for consecutive days from today)
       if (i === 0 || (i > 0 && reversedData[i - 1].count > 0)) {
         currentStreak = tempStreak;
       }
-      
+
       // Update longest streak
       if (tempStreak > longestStreak) {
         longestStreak = tempStreak;

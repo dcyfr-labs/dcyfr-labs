@@ -81,15 +81,15 @@ export function loadReactions(): ReactionCollection {
 
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY);
-    console.debug("[Reactions] loadReactions() called - stored data:", stored ? `${stored.length} bytes` : "null");
+    console.warn("[Reactions] loadReactions() called - stored data:", stored ? `${stored.length} bytes` : "null");
 
     if (!stored) {
-      console.debug("[Reactions] No stored reactions found, returning empty collection");
+      console.warn("[Reactions] No stored reactions found, returning empty collection");
       return createEmptyCollection();
     }
 
     const parsed = JSON.parse(stored) as ReactionCollection;
-    console.debug("[Reactions] Parsed reactions:", {
+    console.warn("[Reactions] Parsed reactions:", {
       total: parsed.reactions.length,
       activityIds: parsed.reactions.map(r => r.activityId),
       lastUpdated: parsed.lastUpdated,
@@ -103,7 +103,7 @@ export function loadReactions(): ReactionCollection {
 
     // Schema migration if needed
     if (parsed.version < SCHEMA_VERSION) {
-      console.info("[Reactions] Schema migration needed", { oldVersion: parsed.version, newVersion: SCHEMA_VERSION });
+      console.warn("[Reactions] Schema migration needed", { oldVersion: parsed.version, newVersion: SCHEMA_VERSION });
       return migrateSchema(parsed);
     }
 
@@ -124,7 +124,7 @@ export function saveReactions(collection: ReactionCollection): boolean {
   }
 
   try {
-    console.debug("[Reactions] saveReactions() called with:", {
+    console.warn("[Reactions] saveReactions() called with:", {
       reactionsCount: collection.reactions.length,
       activityIds: collection.reactions.map(r => r.activityId),
       lastUpdated: collection.lastUpdated,
@@ -137,9 +137,9 @@ export function saveReactions(collection: ReactionCollection): boolean {
     }
 
     const serialized = JSON.stringify(collection);
-    console.debug("[Reactions] Serialized size:", `${serialized.length} bytes`);
+    console.warn("[Reactions] Serialized size:", `${serialized.length} bytes`);
     window.localStorage.setItem(STORAGE_KEY, serialized);
-    console.info("[Reactions] Successfully saved to localStorage");
+    console.warn("[Reactions] Successfully saved to localStorage");
     return true;
   } catch (error) {
     // Likely quota exceeded
@@ -153,7 +153,7 @@ export function saveReactions(collection: ReactionCollection): boolean {
         reactions: collection.reactions.slice(-500), // Keep most recent 500
       };
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(reduced));
-      console.info("[Reactions] Successfully saved reduced dataset");
+      console.warn("[Reactions] Successfully saved reduced dataset");
       return true;
     } catch (retryError) {
       console.error("[Reactions] Failed to save even with reduced dataset:", retryError);
@@ -176,7 +176,7 @@ export function toggleReaction(
   type: ReactionType = "like"
 ): ReactionCollection {
   const isCurrentlyLiked = isActivityLiked(activityId, currentCollection, type);
-  console.debug("[Reactions] toggleReaction() called:", {
+  console.warn("[Reactions] toggleReaction() called:", {
     activityId,
     type,
     isCurrentlyLiked,
@@ -199,7 +199,7 @@ export function toggleReaction(
         },
       ];
 
-  console.debug("[Reactions] toggleReaction() result:", {
+  console.warn("[Reactions] toggleReaction() result:", {
     afterCount: updatedReactions.length,
     changeType: isCurrentlyLiked ? "removed" : "added",
   });
@@ -224,7 +224,7 @@ export function isActivityLiked(
   );
   // Only log if true to reduce noise
   if (result) {
-    console.debug("[Reactions] isActivityLiked():", { activityId, type, result });
+    console.warn("[Reactions] isActivityLiked():", { activityId, type, result });
   }
   return result;
 }

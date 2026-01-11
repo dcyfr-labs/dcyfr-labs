@@ -1,14 +1,20 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
 
 /**
  * Dashboard stats card component for displaying key metrics
- * 
+ *
  * Renders a card with an optional icon, label, primary value, and secondary value.
  * Supports hover effects and responsive layouts.
- * 
+ *
  * @example
  * ```tsx
  * <DashboardStat
@@ -16,7 +22,7 @@ import { TYPOGRAPHY } from "@/lib/design-tokens";
  *   value={42}
  *   icon={FileText}
  * />
- * 
+ *
  * <DashboardStat
  *   label="Total Views"
  *   value={15234}
@@ -53,10 +59,15 @@ export function DashboardStat({
   trend,
 }: DashboardStatProps) {
   return (
-    <Card className={cn("overflow-hidden hover:shadow-md transition-shadow p-3", className)}>
+    <Card
+      className={cn(
+        "overflow-hidden hover:shadow-md transition-shadow p-3",
+        className
+      )}
+    >
       <div className="space-y-1">
         <div className="flex items-center justify-between">
-          {/* eslint-disable-next-line no-restricted-syntax */}
+          {}
           <CardTitle className="text-xs font-medium text-muted-foreground">
             {label}
           </CardTitle>
@@ -78,7 +89,7 @@ export function DashboardStat({
               <span
                 className={cn(
                   TYPOGRAPHY.label.xs,
-                  trend.direction === "up" && "text-emerald-600",
+                  trend.direction === "up" && "text-success",
                   trend.direction === "down" && "text-destructive",
                   trend.direction === "neutral" && "text-muted-foreground"
                 )}
@@ -96,9 +107,9 @@ export function DashboardStat({
 
 /**
  * Grid container for dashboard stats
- * 
+ *
  * Renders a responsive grid of stat cards with proper spacing.
- * 
+ *
  * @example
  * ```tsx
  * <DashboardStats>
@@ -117,7 +128,11 @@ interface DashboardStatsProps {
   className?: string;
 }
 
-export function DashboardStats({ children, columns = 4, className }: DashboardStatsProps) {
+export function DashboardStats({
+  children,
+  columns = 4,
+  className,
+}: DashboardStatsProps) {
   return (
     <div
       className={cn(
@@ -134,9 +149,9 @@ export function DashboardStats({ children, columns = 4, className }: DashboardSt
 
 /**
  * Featured metric card with larger layout
- * 
+ *
  * Used for highlighting top-level metrics like "Top Post" or "Best Performer".
- * 
+ *
  * @example
  * ```tsx
  * <DashboardFeaturedStat
@@ -181,7 +196,7 @@ export function DashboardFeaturedStat({
 
 /**
  * Grid container for featured stats
- * 
+ *
  * @example
  * ```tsx
  * <DashboardFeaturedStats>

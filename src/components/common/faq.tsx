@@ -9,7 +9,7 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { TYPOGRAPHY } from "@/lib/design-tokens";
+import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
 import {
   Accordion,
   AccordionContent,
@@ -85,15 +85,24 @@ export function FAQ({ items, title, className, children }: FAQProps) {
         {title && (
           <h2
             id="faq-title"
-            className={cn(TYPOGRAPHY.accordion.heading, "mb-4")}
+            className={cn(TYPOGRAPHY.accordion.heading, `mb-${SPACING.md}`)}
             style={{ fontFamily: "var(--font-sans)" }}
           >
             {title}
           </h2>
         )}
-        <Accordion type="single" collapsible defaultValue={"item-0"} className="w-full">
+        <Accordion
+          type="single"
+          collapsible
+          defaultValue={"item-0"}
+          className="w-full"
+        >
           {items.map((item, index) => (
-            <AccordionItem key={index} value={`item-${index}`} className="border-none">
+            <AccordionItem
+              key={index}
+              value={`item-${index}`}
+              className="border-none"
+            >
               <div className="relative">
                 <AccordionTrigger className={TYPOGRAPHY.accordion.trigger}>
                   {item.question}
@@ -131,9 +140,18 @@ export function FAQ({ items, title, className, children }: FAQProps) {
               {title}
             </h2>
           )}
-          <Accordion type="single" collapsible defaultValue={"item-0"} className="w-full">
+          <Accordion
+            type="single"
+            collapsible
+            defaultValue={"item-0"}
+            className="w-full"
+          >
             {faqItems.map((item, index) => (
-              <AccordionItem key={index} value={`item-${index}`} className="border-none">
+              <AccordionItem
+                key={index}
+                value={`item-${index}`}
+                className="border-none"
+              >
                 <div className="relative">
                   <AccordionTrigger className="text-left font-medium">
                     {item.question}
@@ -157,7 +175,7 @@ export function FAQ({ items, title, className, children }: FAQProps) {
         {title && (
           <h2
             id="faq-title"
-            className={cn(TYPOGRAPHY.accordion.heading, "mb-4")}
+            className={cn(TYPOGRAPHY.accordion.heading, `mb-${SPACING.md}`)}
             style={{ fontFamily: "var(--font-sans)" }}
           >
             {title}
@@ -211,9 +229,15 @@ function parseFAQChildren(children: React.ReactNode): FAQItem[] {
           : "";
 
     // Check if this is a heading (h3, h4) - treat as question
-    if (typeName === "h3" || typeName === "h4" || type === "h3" || type === "h4") {
+    if (
+      typeName === "h3" ||
+      typeName === "h4" ||
+      type === "h3" ||
+      type === "h4"
+    ) {
       flushCurrentItem();
-      currentQuestion = (child.props as { children?: React.ReactNode }).children;
+      currentQuestion = (child.props as { children?: React.ReactNode })
+        .children;
     } else if (currentQuestion) {
       // This is answer content
       currentAnswer.push(child);

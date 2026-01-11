@@ -5,7 +5,8 @@
  * Used in ActivityCard to show matched search results.
  */
 
-import { highlightSearchTerms } from "@/lib/activity/search";
+import { cn } from "@/lib/utils";
+import { highlightSearchTerms } from "@/lib/activity";
 import { SEMANTIC_COLORS } from "@/lib/design-tokens";
 
 // ============================================================================
@@ -47,7 +48,7 @@ export function SearchHighlight({
               key={index}
               className={
                 highlightClassName ||
-                `bg-yellow-200 dark:bg-yellow-800 text-gray-900 dark:text-gray-100 font-medium px-0.5 rounded`
+                cn(SEMANTIC_COLORS.highlight.primary, "font-medium px-0.5 rounded")
               }
             >
               {segment.text}

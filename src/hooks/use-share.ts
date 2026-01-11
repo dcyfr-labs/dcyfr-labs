@@ -73,6 +73,7 @@ export interface UseShareReturn {
 
 export interface SocialShareUrls {
   twitter: string;
+  dev: string;
   linkedin: string;
   facebook: string;
   email: string;
@@ -214,6 +215,7 @@ export function useShare(): UseShareReturn {
 
     return {
       twitter: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
+      dev: `https://dev.to/new?prefill=${encodedUrl}`,
       linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
       facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
       email: `mailto:?subject=${encodedTitle}&body=${encodedText}%0A%0A${encodedUrl}`,

@@ -1,15 +1,20 @@
 import { cn } from "@/lib/utils";
-import { TYPOGRAPHY, CONTAINER_WIDTHS, CONTAINER_PADDING, CONTAINER_VERTICAL_PADDING } from "@/lib/design-tokens";
+import {
+  TYPOGRAPHY,
+  CONTAINER_WIDTHS,
+  CONTAINER_PADDING,
+  CONTAINER_VERTICAL_PADDING,
+} from "@/lib/design-tokens";
 
 /**
  * Universal dashboard layout component for admin/developer tools
- * 
+ *
  * Provides consistent structure for all dashboard pages with:
  * - Standardized spacing and max-width constraints
  * - Title, description, and action buttons
  * - Optional filter section
  * - Responsive padding
- * 
+ *
  * @example
  * ```tsx
  * <DashboardLayout
@@ -48,7 +53,15 @@ export function DashboardLayout({
   className,
 }: DashboardLayoutProps) {
   return (
-    <div className={cn("mx-auto", CONTAINER_WIDTHS.dashboard, CONTAINER_PADDING, CONTAINER_VERTICAL_PADDING, className)}>
+    <div
+      className={cn(
+        "mx-auto",
+        CONTAINER_WIDTHS.dashboard,
+        CONTAINER_PADDING,
+        CONTAINER_VERTICAL_PADDING,
+        className
+      )}
+    >
       {/* Header Section */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
@@ -58,23 +71,15 @@ export function DashboardLayout({
           )}
         </div>
         {actions && (
-          <div className="flex items-center gap-2 shrink-0">
-            {actions}
-          </div>
+          <div className="flex items-center gap-2 shrink-0">{actions}</div>
         )}
       </div>
 
       {/* Filters Section */}
-      {filters && (
-        <div className="mb-6">
-          {filters}
-        </div>
-      )}
+      {filters && <div className="mb-6">{filters}</div>}
 
       {/* Content Section */}
-      <div className="space-y-4">
-        {children}
-      </div>
+      <div className="space-y-4">{children}</div>
     </div>
   );
 }

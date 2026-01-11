@@ -4,14 +4,14 @@ Essential commands and patterns for immediate productivity.
 
 ## Commands
 
-| Task | Command |
-|------|---------|
-| **Develop** | `npm run dev` |
-| **Build** | `npm run build` |
-| **Test** | `npm run test` (unit) / `npm run test:e2e` (E2E) |
-| **Lint** | `npm run lint` / `npm run lint:fix` |
-| **Typecheck** | `npm run typecheck` |
-| **Check All** | `npm run check` |
+| Task          | Command                                          |
+| ------------- | ------------------------------------------------ |
+| **Develop**   | `npm run dev`                                    |
+| **Build**     | `npm run build`                                  |
+| **Test**      | `npm run test` (unit) / `npm run test:e2e` (E2E) |
+| **Lint**      | `npm run lint` / `npm run lint:fix`              |
+| **Typecheck** | `npm run typecheck`                              |
+| **Check All** | `npm run check`                                  |
 
 ## Import Patterns
 
@@ -29,13 +29,13 @@ import PostList from "../../components/blog/post-list";
 
 ## Most Common Patterns (80% Usage)
 
-| Decision | Default Choice | Import From |
-|----------|---------------|-------------|
-| **Layout** | `PageLayout` | `@/components/layouts` |
-| **Container** | `CONTAINER_WIDTHS.standard` | `@/lib/design-tokens` |
-| **Metadata** | `createPageMetadata()` | `@/lib/metadata` |
-| **Spacing** | Use directly: `SPACING.content` | `@/lib/design-tokens` |
-| **Typography** | `TYPOGRAPHY.h1.standard` | `@/lib/design-tokens` |
+| Decision       | Default Choice                  | Import From            |
+| -------------- | ------------------------------- | ---------------------- |
+| **Layout**     | `PageLayout`                    | `@/components/layouts` |
+| **Container**  | `CONTAINER_WIDTHS.standard`     | `@/lib/design-tokens`  |
+| **Metadata**   | `createPageMetadata()`          | `@/lib/metadata`       |
+| **Spacing**    | Use directly: `SPACING.content` | `@/lib/design-tokens`  |
+| **Typography** | `TYPOGRAPHY.h1.standard`        | `@/lib/design-tokens`  |
 
 ### ⚠️ SPACING Token Critical Rules
 
@@ -60,16 +60,19 @@ import PostList from "../../components/blog/post-list";
 ## Quick Decision Trees
 
 **Which layout?**
+
 - Blog post → `ArticleLayout`
 - Filterable list → `ArchiveLayout`
 - Everything else → `PageLayout` (90% of pages)
 
 **Which metadata helper?**
+
 - Standard page → `createPageMetadata()`
 - List/archive → `createArchivePageMetadata()`
 - Blog post → `createArticlePageMetadata()`
 
 **Need error boundary?**
+
 - External API call → Yes
 - User form → Yes
 - Static content → No
@@ -101,18 +104,19 @@ Use VS Code subagents for context-isolated research or analysis. Enable the `run
 
 ## MDX Content Components
 
-| Component | Usage | Purpose |
-|-----------|-------|---------|
-| `<KeyTakeaway>` | `<KeyTakeaway>Your insight here</KeyTakeaway>` | Critical insights and takeaways |
-| `<ContextClue>` | `<ContextClue>Background info here</ContextClue>` | Context and setup information |
-| `<Alert type="warning">` | `<Alert type="warning">Warning text</Alert>` | Status messages, warnings |
-| `<Figure>` | Auto-numbered captions | Image captions with numbering |
-| `<ZoomableImage>` | Auto-enabled on all `<img>` | Click-to-zoom functionality |
+| Component                | Usage                                             | Purpose                         |
+| ------------------------ | ------------------------------------------------- | ------------------------------- |
+| `<KeyTakeaway>`          | `<KeyTakeaway>Your insight here</KeyTakeaway>`    | Critical insights and takeaways |
+| `<ContextClue>`          | `<ContextClue>Background info here</ContextClue>` | Context and setup information   |
+| `<Alert type="warning">` | `<Alert type="warning">Warning text</Alert>`      | Status messages, warnings       |
+| `<Figure>`               | Auto-numbered captions                            | Image captions with numbering   |
+| `<ZoomableImage>`        | Auto-enabled on all `<img>`                       | Click-to-zoom functionality     |
 
 **Quick MDX Tips:**
-- KeyTakeaway automatically adds "Key Takeaway:" prefix
+
+- KeyTakeaway automatically adds "Takeaway" prefix
 - ContextClue automatically adds "Context:" prefix
-- Alert types: `critical`, `warning`, `info`, `success`  
+- Alert types: `critical`, `warning`, `info`, `success`
 - All components use design tokens for consistency
 
 ## Prose Style Guidelines
@@ -121,12 +125,12 @@ Use VS Code subagents for context-isolated research or analysis. Enable the `run
 
 AI models tend to overuse em-dashes (`--`) as a crutch to extend sentences. Limit usage to sound more authoritative and human.
 
-| Pattern | Example | Fix |
-| ------- | ------- | --- |
-| **Lazy Conjunction** | `systems are reactive--Agentic AI is proactive` | Use period: `systems are reactive. Agentic AI is proactive.` |
-| **Double Dash** | `components--tools, plugins, models--infiltrate` | Use parentheses: `components (tools, plugins, models) infiltrate` |
-| **However Trap** | `is significant--however,` | Always: `. However,` |
-| **Legitimate Use** | `a framework--developed by 100+ experts` | Keep: emphasis/expansion is valid |
+| Pattern              | Example                                          | Fix                                                               |
+| -------------------- | ------------------------------------------------ | ----------------------------------------------------------------- |
+| **Lazy Conjunction** | `systems are reactive--Agentic AI is proactive`  | Use period: `systems are reactive. Agentic AI is proactive.`      |
+| **Double Dash**      | `components--tools, plugins, models--infiltrate` | Use parentheses: `components (tools, plugins, models) infiltrate` |
+| **However Trap**     | `is significant--however,`                       | Always: `. However,`                                              |
+| **Legitimate Use**   | `a framework--developed by 100+ experts`         | Keep: emphasis/expansion is valid                                 |
 
 **Rule of Thumb:**
 
@@ -159,6 +163,7 @@ src/
 ---
 
 **Need more detail?** See:
+
 - [Component Patterns](./component-patterns) - Layout usage, barrel exports
 - [Enforcement Rules](./enforcement-rules) - Design tokens, validation
 - [Templates](../templates/) - Copy-paste starting points

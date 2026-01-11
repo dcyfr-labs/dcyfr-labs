@@ -4,14 +4,15 @@ import { Card } from "@/components/ui/card";
 import { TrendingUp, Award, Code, Briefcase } from "lucide-react";
 import { useEffect, useState } from "react";
 import { resume, getYearsOfExperience } from "@/data/resume";
+import { useCredlyBadges } from "@/hooks/use-credly";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
 
 /**
  * Resume Stats Component
- * 
+ *
  * Displays key career metrics with animated counters.
- * Optimized for resume page to show experience, certifications, and skills.
- * 
+ * Optimized for resume page to show experience, badges, and skills.
+ *
  * @component
  * @example
  * ```tsx
@@ -28,7 +29,13 @@ type Stat = {
   suffix?: string;
 };
 
-function AnimatedNumber({ target, suffix = "" }: { target: number; suffix?: string }) {
+function AnimatedNumber({
+  target,
+  suffix = "",
+}: {
+  target: number;
+  suffix?: string;
+}) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -61,8 +68,11 @@ function AnimatedNumber({ target, suffix = "" }: { target: number; suffix?: stri
 
 export function ResumeStats() {
   const yearsExp = getYearsOfExperience();
-  const totalCerts = resume.certifications.reduce((sum, cat) => sum + cat.certifications.length, 0);
-  const totalSkills = resume.skills.reduce((sum, cat) => sum + cat.skills.length, 0);
+  const { totalCount: totalCerts } = useCredlyBadges({ username: "dcyfr" });
+  const totalSkills = resume.skills.reduce(
+    (sum, cat) => sum + cat.skills.length,
+    0
+  );
   const totalRoles = resume.experience.length;
 
   const stats: Stat[] = [
@@ -70,20 +80,20 @@ export function ResumeStats() {
       label: "Years Experience",
       value: `${yearsExp}+`,
       icon: TrendingUp,
-      description: "In cybersecurity",
+      description: "AI & Cybersecurity",
       animateNumber: yearsExp,
       suffix: "+",
     },
     {
-      label: "Certifications",
+      label: "Badges Earned",
       value: `${totalCerts}`,
       icon: Award,
-      description: "Active credentials",
+      description: "Professional recognitions",
       animateNumber: totalCerts,
       suffix: "",
     },
     {
-      label: "Technologies",
+      label: "Technologies Used",
       value: `${totalSkills}+`,
       icon: Code,
       description: "Tools & platforms",
@@ -91,7 +101,7 @@ export function ResumeStats() {
       suffix: "+",
     },
     {
-      label: "Roles",
+      label: "Roles Held",
       value: `${totalRoles}`,
       icon: Briefcase,
       description: "Career progression",
@@ -113,20 +123,38 @@ export function ResumeStats() {
               <div className="min-w-0 flex-1">
                 {stat.animateNumber !== undefined ? (
                   <>
-                    { }
-                    <div className={`${TYPOGRAPHY.display.stat} tabular-nums mb-1`} suppressHydrationWarning>
-                      <AnimatedNumber target={stat.animateNumber} suffix={stat.suffix} />
+                    {}
+                    <div
+                      className={`${TYPOGRAPHY.display.stat} tabular-nums mb-1`}
+                      suppressHydrationWarning
+                    >
+                      <AnimatedNumber
+                        target={stat.animateNumber}
+                        suffix={stat.suffix}
+                      />
                     </div>
                   </>
                 ) : (
                   <>
-                    { }
-                    <div className={`${TYPOGRAPHY.display.stat} tabular-nums mb-1`} suppressHydrationWarning>{stat.value}</div>
+                    {}
+                    <div
+                      className={`${TYPOGRAPHY.display.stat} tabular-nums mb-1`}
+                      suppressHydrationWarning
+                    >
+                      {stat.value}
+                    </div>
                   </>
                 )}
-                {/* eslint-disable-next-line no-restricted-syntax */}
-                <p className="text-sm font-medium text-foreground mb-0.5" suppressHydrationWarning>{stat.label}</p>
-                <p className="text-xs text-muted-foreground leading-tight">{stat.description}</p>
+                {}
+                <p
+                  className="text-sm font-medium text-foreground mb-0.5"
+                  suppressHydrationWarning
+                >
+                  {stat.label}
+                </p>
+                <p className="text-xs text-muted-foreground leading-tight">
+                  {stat.description}
+                </p>
               </div>
             </div>
           </Card>

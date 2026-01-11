@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { FloatingFilterFab } from "@/components/blog/filters/floating-filter-fab";
+import { FloatingFilterFab } from '@/components/blog';
 
 const mockOpen = vi.fn();
 const mockClose = vi.fn();

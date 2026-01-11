@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { ContactSocialLinks } from '@/components/contact/contact-social-links';
+import { ContactSocialLinks } from '@/components/contact';
 
 describe('ContactSocialLinks Component', () => {
   it('renders without crashing', () => {

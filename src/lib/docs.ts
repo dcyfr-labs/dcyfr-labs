@@ -37,7 +37,7 @@ export interface DocCategory {
 let docsCache: DocFile[] | null = null;
 let docsCacheTime: number = 0;
 // In development, cache for 1 minute; in production, cache for 1 hour
-const CACHE_TTL = process.env.NODE_ENV === 'production' ? 3600_000 : 60_000;
+const CACHE_TTL = process.env.NODE_ENV === "production" ? 3600_000 : 60_000;
 
 /**
  * Get all documentation files from the docs directory
@@ -46,47 +46,51 @@ const CACHE_TTL = process.env.NODE_ENV === 'production' ? 3600_000 : 60_000;
 export function getAllDocs(): DocFile[] {
   // Check cache validity
   const now = Date.now();
-  if (docsCache && (now - docsCacheTime) < CACHE_TTL) {
+  if (docsCache && now - docsCacheTime < CACHE_TTL) {
     return docsCache;
   }
 
   const docs: DocFile[] = [];
-  
+
   function readDocsRecursive(dir: string, basePath: string = ""): void {
     if (!fs.existsSync(dir)) return;
-    
+
     const entries = fs.readdirSync(dir, { withFileTypes: true });
-    
+
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
       const relativePath = path.join(basePath, entry.name);
-      
+
       if (entry.isFile() && entry.name.endsWith(".md")) {
         // Skip private content - files in any private/ subdirectory
-        if (relativePath.includes("/private/") || relativePath.startsWith("private/")) {
+        if (
+          relativePath.includes("/private/") ||
+          relativePath.startsWith("private/")
+        ) {
           return;
         }
-        
+
         try {
           const fileContent = fs.readFileSync(fullPath, "utf8");
           const { data: frontmatter, content } = matter(fileContent, {
             engines: {
-              yaml: (s: string) => yaml.load(s, { schema: yaml.DEFAULT_SCHEMA }) as object
-            }
+              yaml: (s: string) =>
+                yaml.load(s, { schema: yaml.DEFAULT_SCHEMA }) as object,
+            },
           });
           const stats = fs.statSync(fullPath);
-          
+
           // Extract category from path
           const pathParts = relativePath.split(path.sep);
           const category = pathParts[0] || "general";
           const subcategory = pathParts.length > 2 ? pathParts[1] : undefined;
-          
+
           // Create slug from file path
           const slug = relativePath
             .replace(/\.md$/, "")
             .replace(/\\/g, "/") // Normalize path separators
             .replace(/^\/+|\/+$/g, ""); // Remove leading/trailing slashes
-          
+
           const doc: DocFile = {
             id: slug,
             slug,
@@ -105,20 +109,24 @@ export function getAllDocs(): DocFile[] {
             subcategory,
             lastModified: stats.mtime,
           };
-          
+
           docs.push(doc);
         } catch (error) {
           console.warn(`Failed to process doc file ${fullPath}:`, error);
         }
-      } else if (entry.isDirectory() && !entry.name.startsWith(".") && entry.name !== "private") {
+      } else if (
+        entry.isDirectory() &&
+        !entry.name.startsWith(".") &&
+        entry.name !== "private"
+      ) {
         // Skip private directories entirely
         readDocsRecursive(fullPath, relativePath);
       }
     }
   }
-  
+
   readDocsRecursive(DOCS_DIR);
-  
+
   // Sort by category, then by order, then by title
   const sortedDocs = docs.sort((a, b) => {
     if (a.category !== b.category) {
@@ -142,25 +150,29 @@ export function getAllDocs(): DocFile[] {
  */
 export function getDocBySlug(slug: string): DocFile | null {
   const docs = getAllDocs();
-  const doc = docs.find(doc => doc.slug === slug);
-  
+  const doc = docs.find((doc) => doc.slug === slug);
+
   if (doc) {
     return doc;
   }
-  
+
   // If no exact match, try folder-level documents in priority order
   // 1. Try INDEX.md (or index.md) in the folder
-  const indexDoc = docs.find(doc => doc.slug === `${slug}/index` || doc.slug === `${slug}/INDEX`);
+  const indexDoc = docs.find(
+    (doc) => doc.slug === `${slug}/index` || doc.slug === `${slug}/INDEX`
+  );
   if (indexDoc) {
     return indexDoc;
   }
-  
-  // 2. Try README.md (or readme.md) in the folder  
-  const readmeDoc = docs.find(doc => doc.slug === `${slug}/README` || doc.slug === `${slug}/readme`);
+
+  // 2. Try README.md (or readme.md) in the folder
+  const readmeDoc = docs.find(
+    (doc) => doc.slug === `${slug}/README` || doc.slug === `${slug}/readme`
+  );
   if (readmeDoc) {
     return readmeDoc;
   }
-  
+
   return null;
 }
 
@@ -174,46 +186,59 @@ export function getFolderContents(folderPath: string): {
   subfolders: string[];
 } {
   const docs = getAllDocs();
-  
+
   // Find all documents in this folder
-  const folderDocs = docs.filter(doc => {
+  const folderDocs = docs.filter((doc) => {
     if (folderPath === "") {
       // Root level - only docs with no path separator
       return !doc.slug.includes("/");
     }
-    return doc.slug.startsWith(`${folderPath}/`) && 
-           doc.slug.split("/").length === folderPath.split("/").length + 1;
+    return (
+      doc.slug.startsWith(`${folderPath}/`) &&
+      doc.slug.split("/").length === folderPath.split("/").length + 1
+    );
   });
-  
+
   // Find INDEX and README documents
-  const indexDoc = docs.find(doc => 
-    doc.slug === `${folderPath}/index` || doc.slug === `${folderPath}/INDEX`
-  ) || null;
-  
-  const readmeDoc = docs.find(doc => 
-    doc.slug === `${folderPath}/README` || doc.slug === `${folderPath}/readme`
-  ) || null;
-  
+  const indexDoc =
+    docs.find(
+      (doc) =>
+        doc.slug === `${folderPath}/index` || doc.slug === `${folderPath}/INDEX`
+    ) || null;
+
+  const readmeDoc =
+    docs.find(
+      (doc) =>
+        doc.slug === `${folderPath}/README` ||
+        doc.slug === `${folderPath}/readme`
+    ) || null;
+
   // Filter out INDEX and README from regular files
-  const files = folderDocs.filter(doc => 
-    !doc.slug.endsWith("/index") && 
-    !doc.slug.endsWith("/INDEX") && 
-    !doc.slug.endsWith("/README") && 
-    !doc.slug.endsWith("/readme")
+  const files = folderDocs.filter(
+    (doc) =>
+      !doc.slug.endsWith("/index") &&
+      !doc.slug.endsWith("/INDEX") &&
+      !doc.slug.endsWith("/README") &&
+      !doc.slug.endsWith("/readme")
   );
-  
+
   // Find subfolders
-  const subfolders = [...new Set(
-    docs
-      .filter(doc => doc.slug.startsWith(`${folderPath}/`) && 
-                    doc.slug.split("/").length > folderPath.split("/").length + 1)
-      .map(doc => {
-        const parts = doc.slug.split("/");
-        const folderParts = folderPath ? folderPath.split("/") : [];
-        return parts[folderParts.length];
-      })
-  )];
-  
+  const subfolders = [
+    ...new Set(
+      docs
+        .filter(
+          (doc) =>
+            doc.slug.startsWith(`${folderPath}/`) &&
+            doc.slug.split("/").length > folderPath.split("/").length + 1
+        )
+        .map((doc) => {
+          const parts = doc.slug.split("/");
+          const folderParts = folderPath ? folderPath.split("/") : [];
+          return parts[folderParts.length];
+        })
+    ),
+  ];
+
   return { indexDoc, readmeDoc, files, subfolders };
 }
 
@@ -223,14 +248,14 @@ export function getFolderContents(folderPath: string): {
 export function getDocsByCategory(): Record<string, DocFile[]> {
   const docs = getAllDocs();
   const byCategory: Record<string, DocFile[]> = {};
-  
+
   for (const doc of docs) {
     if (!byCategory[doc.category]) {
       byCategory[doc.category] = [];
     }
     byCategory[doc.category].push(doc);
   }
-  
+
   return byCategory;
 }
 
@@ -240,17 +265,19 @@ export function getDocsByCategory(): Record<string, DocFile[]> {
 export function searchDocs(query: string): DocFile[] {
   const docs = getAllDocs();
   const searchTerm = query.toLowerCase();
-  
-  return docs.filter(doc => {
+
+  return docs.filter((doc) => {
     const title = (doc.meta.title || "").toLowerCase();
     const description = (doc.meta.description || "").toLowerCase();
     const content = doc.content.toLowerCase();
     const tags = doc.meta.tags?.join(" ").toLowerCase() || "";
-    
-    return title.includes(searchTerm) ||
-           description.includes(searchTerm) ||
-           content.includes(searchTerm) ||
-           tags.includes(searchTerm);
+
+    return (
+      title.includes(searchTerm) ||
+      description.includes(searchTerm) ||
+      content.includes(searchTerm) ||
+      tags.includes(searchTerm)
+    );
   });
 }
 
@@ -265,7 +292,7 @@ export function extractTableOfContents(content: string): Array<{
   const headingRegex = /^(#{1,6})\s+(.+)$/gm;
   const headings: Array<{ id: string; title: string; level: number }> = [];
   const usedIds = new Set<string>();
-  
+
   let match;
   while ((match = headingRegex.exec(content)) !== null) {
     const level = match[1].length;
@@ -274,14 +301,14 @@ export function extractTableOfContents(content: string): Array<{
       .toLowerCase()
       .replace(/[^a-z0-9\s-]/g, "")
       .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")  // Replace multiple dashes with single dash
+      .replace(/-+/g, "-") // Replace multiple dashes with single dash
       .replace(/^-|-$/g, ""); // Remove leading/trailing dashes
-    
+
     // Ensure ID is not empty
     if (!baseId) {
       baseId = "heading";
     }
-    
+
     // Make ID unique by adding suffix if needed
     let id = baseId;
     let counter = 1;
@@ -289,10 +316,10 @@ export function extractTableOfContents(content: string): Array<{
       id = `${baseId}-${counter}`;
       counter++;
     }
-    
+
     usedIds.add(id);
     headings.push({ id, title, level });
   }
-  
+
   return headings;
 }

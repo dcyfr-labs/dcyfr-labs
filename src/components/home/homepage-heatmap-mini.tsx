@@ -7,14 +7,15 @@ import { Calendar, Zap, ArrowRight } from "lucide-react";
 import CalendarHeatmap from "react-calendar-heatmap";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { TYPOGRAPHY, SPACING, NEON_COLORS } from "@/lib/design-tokens";
+import { Skeleton } from "@/components/ui/skeleton";
+import { TYPOGRAPHY, SPACING, SEMANTIC_COLORS } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
-import type { ActivityItem } from "@/lib/activity/types";
+import type { ActivityItem } from "@/lib/activity";
 import {
   aggregateActivitiesByDate,
   calculateHeatmapStats,
   getHeatmapColorClass,
-} from "@/lib/activity/heatmap";
+} from "@/lib/activity";
 
 // Import styles for react-calendar-heatmap
 import "react-calendar-heatmap/dist/styles.css";
@@ -25,9 +26,11 @@ import "react-calendar-heatmap/dist/styles.css";
 
 interface HomepageHeatmapMiniProps {
   /** Activity items to visualize */
-  activities: ActivityItem[];
+  activities?: ActivityItem[];
   /** Class name for container */
   className?: string;
+  /** Loading state - renders skeleton version */
+  loading?: boolean;
 }
 
 // ============================================================================
@@ -41,18 +44,27 @@ interface HomepageHeatmapMiniProps {
  * Shows activity intensity with simplified stats (active days + current streak).
  * Clicking navigates to the full activity page.
  *
+ * **Loading State:**
+ * Pass `loading={true}` to render skeleton version that matches the real component structure.
+ * This ensures loading states never drift from the actual component layout.
+ *
  * @example
  * ```tsx
  * <HomepageHeatmapMini activities={activities} />
  * ```
+ *
+ * @example
+ * // Show loading skeleton
+ * <HomepageHeatmapMini loading />
  */
 export function HomepageHeatmapMini({
-  activities,
+  activities = [],
   className,
+  loading = false,
 }: HomepageHeatmapMiniProps) {
   const router = useRouter();
 
-  // Calculate date range - last 3 months
+  // Calculate date range - last 3 months (always call hooks before returns)
   const { startDate, endDate } = useMemo(() => {
     const end = new Date();
     const start = new Date();
@@ -68,10 +80,15 @@ export function HomepageHeatmapMini({
   );
 
   // Calculate statistics
-  const stats = useMemo(() => calculateHeatmapStats(heatmapData), [heatmapData]);
+  const stats = useMemo(
+    () => calculateHeatmapStats(heatmapData),
+    [heatmapData]
+  );
 
   // Handle date click - navigate to activity page with date filter
-  const handleDateClick = (value: { date: string; count?: number } | undefined) => {
+  const handleDateClick = (
+    value: { date: string; count?: number } | undefined
+  ) => {
     if (!value || !value.count) {
       // If empty day, just go to activity page
       router.push("/activity");
@@ -91,6 +108,81 @@ export function HomepageHeatmapMini({
     });
   };
 
+  // Loading state - skeleton version matching real component structure
+  if (loading) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className={className}
+      >
+        <Card className="overflow-hidden">
+          <CardContent className="p-4 md:p-8">
+            {/* Header with View All skeleton */}
+            <div className={cn("flex items-center justify-between gap-4 mb-4 md:mb-6")}>
+              <div className="flex items-center gap-4">
+                <Skeleton className="h-2 w-2 rounded-full" />
+                <Skeleton className="h-6 w-24" />
+              </div>
+              <Skeleton className="h-9 w-24" />
+            </div>
+
+            {/* Compact Stats Row skeleton */}
+            <div className={cn("flex items-center gap-4 mb-4 md:mb-6")}>
+              {/* Active Days */}
+              <div className="flex items-center gap-4">
+                <Skeleton className="w-4 h-4 rounded" />
+                <Skeleton className="h-4 w-28" />
+              </div>
+
+              {/* Current Streak */}
+              <div className="flex items-center gap-4">
+                <Skeleton className="w-4 h-4 rounded" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+            </div>
+
+            {/* Heatmap Calendar skeleton */}
+            <div className={SPACING.content}>
+              <div className="space-y-2">
+                {/* Month labels */}
+                <Skeleton className="h-3 w-full mb-2" />
+                {/* Heatmap grid - simplified skeleton */}
+                {[...Array(4)].map((_, weekIndex) => (
+                  <div key={weekIndex} className="flex gap-1">
+                    {[...Array(7)].map((_, dayIndex) => (
+                      <Skeleton
+                        key={dayIndex}
+                        className="h-3 w-3 rounded-sm"
+                        style={{
+                          animationDelay: `${(weekIndex * 7 + dayIndex) * 10}ms`,
+                        }}
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
+
+              {/* Legend skeleton */}
+              <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground mt-4">
+                <Skeleton className="h-3 w-10" />
+                <div className="flex items-center gap-4">
+                  <Skeleton className="w-2 h-2 rounded-sm" />
+                  <Skeleton className="w-2 h-2 rounded-sm" />
+                  <Skeleton className="w-2 h-2 rounded-sm" />
+                  <Skeleton className="w-2 h-2 rounded-sm" />
+                  <Skeleton className="w-2 h-2 rounded-sm" />
+                </div>
+                <Skeleton className="h-3 w-10" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    );
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -101,9 +193,19 @@ export function HomepageHeatmapMini({
       <Card className="overflow-hidden">
         <CardContent className="p-4 md:p-8">
           {/* Header with View All */}
-          <div className={cn("flex items-center justify-between gap-4 mb-4 md:mb-6")}>
+          <div
+            className={cn(
+              "flex items-center justify-between gap-4 mb-4 md:mb-6"
+            )}
+          >
             <div className="flex items-center gap-4">
-              <span className={cn("h-2 w-2 rounded-full animate-pulse", NEON_COLORS.lime.dot)} aria-hidden="true" />
+              <span
+                className={cn(
+                  "h-2 w-2 rounded-full animate-pulse",
+                  SEMANTIC_COLORS.status.success
+                )}
+                aria-hidden="true"
+              />
               <h3 className={TYPOGRAPHY.h3.standard}>Activity</h3>
             </div>
             <Button
@@ -174,8 +276,18 @@ export function HomepageHeatmapMini({
                 showWeekdayLabels={false}
                 showMonthLabels={true}
                 monthLabels={[
-                  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+                  "Jan",
+                  "Feb",
+                  "Mar",
+                  "Apr",
+                  "May",
+                  "Jun",
+                  "Jul",
+                  "Aug",
+                  "Sep",
+                  "Oct",
+                  "Nov",
+                  "Dec",
                 ]}
                 showOutOfRangeDays={true}
                 gutterSize={3}
@@ -186,7 +298,7 @@ export function HomepageHeatmapMini({
             <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
               <span>Less</span>
               <div className="flex items-center gap-4">
-                { }
+                {}
                 <div className="w-2 h-2 rounded-sm bg-muted border border-border" />
                 <div className="w-2 h-2 rounded-sm bg-chart-1/20 dark:bg-chart-1/30" />
                 <div className="w-2 h-2 rounded-sm bg-chart-1/40 dark:bg-chart-1/50" />

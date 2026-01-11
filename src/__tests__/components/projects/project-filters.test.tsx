@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { ProjectFilters } from "@/components/projects/project-filters";
+import { ProjectFilters } from "@/components/projects";
 import type { ReadonlyURLSearchParams } from "next/navigation";
 
 // Mock Next.js navigation

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { HorizontalFilterChips } from "@/components/blog/filters/horizontal-filter-chips";
+import { HorizontalFilterChips } from '@/components/blog';
 
 // Mock next/navigation
 vi.mock("next/navigation", () => ({

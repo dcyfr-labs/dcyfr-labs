@@ -51,13 +51,13 @@ export function ThemeToggle() {
   const getThemeIcon = () => {
     switch (currentTheme) {
       case "system":
-        return <Monitor className="size-5" aria-hidden="true" />;
+        return <Monitor className="h-4 w-4" aria-hidden="true" />;
       case "light":
-        return <Sun className="size-5" aria-hidden="true" />;
+        return <Sun className="h-4 w-4" aria-hidden="true" />;
       case "dark":
-        return <Moon className="size-5" aria-hidden="true" />;
+        return <Moon className="h-4 w-4" aria-hidden="true" />;
       default:
-        return <Monitor className="size-5" aria-hidden="true" />;
+        return <Monitor className="h-4 w-4" aria-hidden="true" />;
     }
   };
 
@@ -84,7 +84,7 @@ export function ThemeToggle() {
         className="opacity-0"
         disabled
       >
-        <Monitor className="size-5" aria-hidden="true" />
+        <Monitor className="h-4 w-4" aria-hidden="true" />
       </Button>
     );
   }

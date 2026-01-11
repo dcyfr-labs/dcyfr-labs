@@ -8,7 +8,7 @@
 
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { PostBadges } from "@/components/blog/post/post-badges";
+import { PostBadges } from '@/components/blog';
 import { POST_CATEGORY_LABEL, type PostCategory } from "@/lib/post-categories";
 import type { Post } from "@/data/posts";
 

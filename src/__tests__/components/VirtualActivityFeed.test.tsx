@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { VirtualActivityFeed } from "@/components/activity/VirtualActivityFeed";
+import { VirtualActivityFeed } from "@/components/activity";
 import type { ActivityItem } from "@/lib/activity";
 
 // Mock dependencies with return values

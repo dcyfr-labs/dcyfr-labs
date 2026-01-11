@@ -11,7 +11,7 @@
  * 
  * @example
  * ```tsx
- * import { ProjectLayoutStrategy } from '@/components/projects/layouts';
+ * import { ProjectLayoutStrategy } from '@/components/projects';
  * 
  * // In [slug]/page.tsx
  * <ProjectLayoutStrategy project={project} nonce={nonce} />

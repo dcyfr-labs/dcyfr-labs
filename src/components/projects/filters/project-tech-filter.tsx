@@ -1,7 +1,7 @@
 "use client";
 
 import { Code2 } from "lucide-react";
-import { FilterBadges } from "@/components/common/filters";
+import { FilterBadges } from "@/components/common";
 
 interface ProjectTechFilterProps {
   techList: string[];
@@ -11,10 +11,14 @@ interface ProjectTechFilterProps {
 
 /**
  * Project Tech Stack Filter Section
- * 
+ *
  * Tech stack filter badges for project filtering.
  */
-export function ProjectTechFilter({ techList, selectedTech, onTechToggle }: ProjectTechFilterProps) {
+export function ProjectTechFilter({
+  techList,
+  selectedTech,
+  onTechToggle,
+}: ProjectTechFilterProps) {
   if (techList.length === 0) return null;
 
   return (

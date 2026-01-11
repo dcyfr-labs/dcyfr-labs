@@ -1,10 +1,11 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
-import { BlogAnalyticsTracker } from '@/components/blog/blog-analytics-tracker'
+import { BlogAnalyticsTracker } from '@/components/blog'
 
 // Mock dependencies
 const mockUseBlogAnalytics = vi.fn()
 const mockTrackBlogView = vi.fn()
+const mockUseReferralTracking = vi.fn()
 
 vi.mock('@/hooks/use-blog-analytics', () => ({
   useBlogAnalytics: (props: unknown) => mockUseBlogAnalytics(props),
@@ -12,6 +13,10 @@ vi.mock('@/hooks/use-blog-analytics', () => ({
 
 vi.mock('@/lib/analytics', () => ({
   trackBlogView: (...args: unknown[]) => mockTrackBlogView(...args),
+}))
+
+vi.mock('@/hooks/use-referral-tracking', () => ({
+  useReferralTracking: (postId: string) => mockUseReferralTracking(postId),
 }))
 
 describe('BlogAnalyticsTracker', () => {

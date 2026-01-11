@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { ArticleLayout } from '@/components/layouts/article-layout'
-import { ArticleHeader } from '@/components/layouts/article-header'
-import { ArticleFooter } from '@/components/layouts/article-footer'
+import { ArticleLayout } from '@/components/layouts'
+import { ArticleHeader } from '@/components/layouts'
+import { ArticleFooter } from '@/components/layouts'
 
 describe('Print Styles - ArticleLayout', () => {
   describe('CSS Import', () => {
@@ -45,12 +45,7 @@ describe('Print Styles - ArticleLayout', () => {
       const { container } = render(
         <ArticleLayout
           header={<ArticleHeader title="Test" />}
-          footer={
-            <ArticleFooter
-              shareUrl="https://example.com"
-              tags={['test']}
-            />
-          }
+          footer={<ArticleFooter />}
         >
           <p>Content</p>
         </ArticleLayout>
@@ -64,7 +59,7 @@ describe('Print Styles - ArticleLayout', () => {
       const { container } = render(
         <ArticleLayout
           header={<ArticleHeader title="Test" />}
-          footer={<ArticleFooter shareUrl="https://example.com" />}
+          footer={<ArticleFooter />}
         >
           <div data-testid="article-content">Test Content</div>
         </ArticleLayout>
@@ -180,7 +175,7 @@ describe('Print Styles - ArticleLayout', () => {
       const { container } = render(
         <ArticleLayout
           header={<ArticleHeader title="Article Title" />}
-          footer={<ArticleFooter shareUrl="https://example.com" />}
+          footer={<ArticleFooter />}
         >
           <p>Article body content</p>
         </ArticleLayout>

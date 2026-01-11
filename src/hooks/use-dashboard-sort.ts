@@ -9,7 +9,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { SortDirection } from "@/lib/dashboard/table-utils";
+import { SortDirection } from "@/lib/dashboard";
 
 interface UseDashboardSortOptions<T> {
   /** Initial sort field */

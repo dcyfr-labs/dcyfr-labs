@@ -3,8 +3,8 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { generateRSSFeed, filterActivitiesForRSS } from "@/lib/activity/rss";
-import type { ActivityItem } from "@/lib/activity/types";
+import { generateRSSFeed, filterActivitiesForRSS } from "@/lib/activity";
+import type { ActivityItem } from "@/lib/activity";
 
 // ============================================================================
 // TEST DATA

@@ -1,7 +1,12 @@
 "use client";
 
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
-import { PostList } from "@/components/blog/post/post-list";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
+import { PostList } from "@/components/blog/client";
 import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
 import type { Post } from "@/data/posts";
 import type { PostCategory } from "@/lib/post-categories";
@@ -56,13 +61,19 @@ export function PostCategorySection({
 
   return (
     <Accordion type="multiple" defaultValue={[category]} className="w-full">
-      <AccordionItem value={category} className="border-none" style={{ paddingTop: SPACING.section }}>
+      <AccordionItem
+        value={category}
+        className="border-none"
+        style={{ paddingTop: SPACING.section }}
+      >
         <AccordionTrigger className="hover:no-underline py-4 px-0 group">
           <div className="flex items-center gap-4 flex-1 text-left">
             {/* Category label and count */}
             <div className="flex items-baseline gap-3 flex-1">
               <h2 className={TYPOGRAPHY.h2.standard}>{label}</h2>
-              <span className={`inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-foreground whitespace-nowrap transition-colors ${TYPOGRAPHY.label.small}`}>
+              <span
+                className={`inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-foreground whitespace-nowrap transition-colors ${TYPOGRAPHY.label.small}`}
+              >
                 {postCount} {postCount === 1 ? "post" : "posts"}
               </span>
             </div>

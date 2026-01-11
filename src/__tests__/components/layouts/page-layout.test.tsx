@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import type React from 'react'
-import { PageLayout } from '@/components/layouts/page-layout'
+import { PageLayout } from '@/components/layouts'
 
 // Mock dependencies
 vi.mock('@/components/features/draft-banner', () => ({

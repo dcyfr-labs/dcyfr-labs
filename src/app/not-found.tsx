@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PageLayout } from "@/components/layouts";
-import { PageHero } from "@/components/layouts/page-hero";
+import { PageHero } from "@/components/layouts";
 import { Button } from "@/components/ui/button";
 import {
   CONTAINER_WIDTHS,

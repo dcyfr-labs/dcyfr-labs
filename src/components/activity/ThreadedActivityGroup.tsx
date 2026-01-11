@@ -23,8 +23,8 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { ThreadHeader } from "./ThreadHeader";
 import { ThreadReply } from "./ThreadReply";
-import { getCollapsedSummary } from "@/lib/activity/threading";
-import type { ActivityThread } from "@/lib/activity/threading";
+import { getCollapsedSummary } from "@/lib/activity";
+import type { ActivityThread } from "@/lib/activity";
 import { cn } from "@/lib/utils";
 import { TYPOGRAPHY, SPACING, ANIMATION } from "@/lib/design-tokens";
 

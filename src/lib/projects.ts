@@ -49,7 +49,11 @@ export function generateProjectId(slug: string, publishedAt?: string): string {
  * Calculate reading time for project content
  * @internal Exported for testing purposes only
  */
-export function calculateReadingTime(body: string): { words: number; minutes: number; text: string } {
+export function calculateReadingTime(body: string): {
+  words: number;
+  minutes: number;
+  text: string;
+} {
   const words = body
     .replace(/```[\s\S]*?```/g, " ") // Ignore code blocks
     .replace(/<[^>]*>/g, " ") // Ignore HTML tags
@@ -70,7 +74,10 @@ export function calculateReadingTime(body: string): { words: number; minutes: nu
  * @param title - The project title (for alt text)
  * @returns Image object if found, undefined otherwise
  */
-function getColocatedHeroImage(slug: string, title: string): Project["image"] | undefined {
+function getColocatedHeroImage(
+  slug: string,
+  title: string
+): Project["image"] | undefined {
   const projectDir = path.join(CONTENT_DIR, slug);
 
   // Only check if the project uses folder structure (not flat file)
@@ -79,7 +86,7 @@ function getColocatedHeroImage(slug: string, title: string): Project["image"] | 
   }
 
   // Check for hero images in order of preference
-  const heroExtensions = ['.svg', '.jpg', '.jpeg', '.png', '.webp'];
+  const heroExtensions = [".svg", ".jpg", ".jpeg", ".png", ".webp"];
 
   for (const ext of heroExtensions) {
     const heroPath = path.join(projectDir, `hero${ext}`);
@@ -138,10 +145,13 @@ function scanContentDirectory(contentDir: string): Project[] {
     const publishedAt = data.publishedAt as string | undefined;
 
     // Use explicit ID from frontmatter, or auto-generate deterministically
-    const id = (data.id as string | undefined) || generateProjectId(slug, publishedAt);
+    const id =
+      (data.id as string | undefined) || generateProjectId(slug, publishedAt);
 
     // Check for co-located hero image if not specified in frontmatter
-    const image = data.image as Project["image"] | undefined || getColocatedHeroImage(slug, data.title as string);
+    const image =
+      (data.image as Project["image"] | undefined) ||
+      getColocatedHeroImage(slug, data.title as string);
 
     projects.push({
       id,
@@ -160,7 +170,7 @@ function scanContentDirectory(contentDir: string): Project[] {
       body: content,
       previousSlugs: (data.previousSlugs as string[]) || undefined,
       readingTime: content ? calculateReadingTime(content) : undefined,
-      publishedAt: publishedAt || new Date().toISOString().split('T')[0], // Default to today's date
+      publishedAt: publishedAt || new Date().toISOString().split("T")[0], // Default to today's date
     } satisfies Project);
   }
 
@@ -175,9 +185,10 @@ export function getAllProjects(): Project[] {
   const allProjects = scanContentDirectory(CONTENT_DIR);
 
   // Filter hidden projects in production
-  const visibleProjects = process.env.NODE_ENV === "production"
-    ? allProjects.filter(p => !p.hidden)
-    : allProjects;
+  const visibleProjects =
+    process.env.NODE_ENV === "production"
+      ? allProjects.filter((p) => !p.hidden)
+      : allProjects;
 
   // Sort by publishedAt (newest first), with fallback to title
   return visibleProjects.sort((a, b) => {
@@ -213,10 +224,13 @@ export function getProjectBySlug(slug: string): Project | undefined {
   });
 
   const publishedAt = data.publishedAt as string | undefined;
-  const id = (data.id as string | undefined) || generateProjectId(slug, publishedAt);
+  const id =
+    (data.id as string | undefined) || generateProjectId(slug, publishedAt);
 
   // Check for co-located hero image if not specified in frontmatter
-  const image = data.image as Project["image"] | undefined || getColocatedHeroImage(slug, data.title as string);
+  const image =
+    (data.image as Project["image"] | undefined) ||
+    getColocatedHeroImage(slug, data.title as string);
 
   const project: Project = {
     id,
@@ -235,7 +249,7 @@ export function getProjectBySlug(slug: string): Project | undefined {
     body: content,
     previousSlugs: (data.previousSlugs as string[]) || undefined,
     readingTime: content ? calculateReadingTime(content) : undefined,
-    publishedAt: publishedAt || new Date().toISOString().split('T')[0],
+    publishedAt: publishedAt || new Date().toISOString().split("T")[0],
   };
 
   // Don't return hidden projects in production

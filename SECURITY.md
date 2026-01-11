@@ -65,7 +65,7 @@ This project implements comprehensive security controls:
 - ✅ Secure environment variable handling
 
 - ✅ PI (Proprietary Information) protection — Treat proprietary information similarly to PII in terms of storage, logging, and access control. See NIST's definition: https://csrc.nist.gov/glossary/term/proprietary_information
- - ✅ See `docs/security/pi-policy.md` for a full policy and handling checklist for PI/PII and private drafts.
+- ✅ See `docs/security/private/pi-policy.md` for a full policy and handling checklist for PI/PII and private drafts.
 
 ### Input Validation
 
@@ -91,12 +91,12 @@ This project implements comprehensive security controls:
 
 ## 📋 Vulnerability Severity Levels
 
-| Severity | Description | Response Time | Example |
-|----------|-------------|---------------|---------|
-| **Critical** | Remote code execution, authentication bypass, data breach | 24 hours | SQL injection, auth bypass |
-| **High** | Privilege escalation, XSS, sensitive data exposure | 3-5 days | Stored XSS, broken access control |
-| **Medium** | CSRF, information disclosure, security misconfiguration | 7-14 days | CSRF on non-critical endpoints |
-| **Low** | Minor security issues with limited impact | 30 days | Verbose error messages |
+| Severity     | Description                                               | Response Time | Example                           |
+| ------------ | --------------------------------------------------------- | ------------- | --------------------------------- |
+| **Critical** | Remote code execution, authentication bypass, data breach | 24 hours      | SQL injection, auth bypass        |
+| **High**     | Privilege escalation, XSS, sensitive data exposure        | 3-5 days      | Stored XSS, broken access control |
+| **Medium**   | CSRF, information disclosure, security misconfiguration   | 7-14 days     | CSRF on non-critical endpoints    |
+| **Low**      | Minor security issues with limited impact                 | 30 days       | Verbose error messages            |
 
 ## 🔍 Security Testing
 
@@ -107,6 +107,7 @@ We continuously monitor security through:
 - **Dependency Scanning:** Dependabot (daily) + npm audit
 - **Code Security:** GitHub CodeQL (on push, PR, and daily schedule)
 - **Secret Scanning:** GitHub Secret Scanning
+
 ### PI/PII Scanning
 
 - Local pre-commit scanning: run `npm run scan:pi` locally to scan staged files for likely PII or proprietary markers
@@ -177,7 +178,7 @@ We believe in responsible disclosure and will:
 
 We thank the following security researchers for their responsible disclosure:
 
-*No vulnerabilities have been reported to date.*
+_No vulnerabilities have been reported to date._
 
 ## 📞 Contact
 

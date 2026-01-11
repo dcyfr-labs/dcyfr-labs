@@ -1,0 +1,39 @@
+{
+  "version": "2.0.0",
+  "agent": "copilot",
+  "lastUpdated": "2026-01-05T00:00:00Z",
+  "session": {
+    "taskDescription": "Example: Implementing inline code suggestions",
+    "currentPhase": "planning|implementation|validation|complete",
+    "estimatedTimeRemaining": "unknown",
+    "git": {
+      "branch": "main",
+      "uncommittedFiles": 0,
+      "lastCommit": "unknown"
+    },
+    "tracking": {
+      "relatedIssue": "",
+      "relatedPR": "",
+      "milestone": ""
+    },
+    "filesInProgress": [],
+    "provider": "github-copilot",
+    "validationStatus": {
+      "typescript": "pending",
+      "eslint": "pending",
+      "tests": "pending",
+      "designTokens": "pending",
+      "manualReview": "pending"
+    },
+    "handoffNotes": [
+      "This is a template session state file for GitHub Copilot agent",
+      "Use npm run session:save copilot \"task description\" to create actual state"
+    ],
+    "context": {
+      "relatedFiles": [],
+      "referencePatterns": [],
+      "dependencies": []
+    }
+  },
+  "history": []
+}

@@ -1,6 +1,6 @@
 /**
  * React Hooks for Credly Data
- * 
+ *
  * Provides React hooks with built-in caching, loading states, and error handling
  * for Credly API data. Uses the centralized caching utility for optimal performance.
  */
@@ -46,9 +46,9 @@ export function useCredlyBadges({
 }: UseCredlyBadgesOptions = {}): UseCredlyBadgesResult {
   const [badges, setBadges] = useState<CredlyBadge[]>([]);
   const [totalCount, setTotalCount] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Start with true to show loading
   const [error, setError] = useState<string | null>(null);
-  
+
   // Use ref to prevent unnecessary re-fetches on parameter changes
   const paramsRef = useRef({ username, limit, enabled });
   const isMountedRef = useRef(true);
@@ -57,21 +57,19 @@ export function useCredlyBadges({
     if (!enabled) return;
 
     try {
-      setLoading(true);
-      setError(null);
-
       const data = await fetchCredlyBadgesCached(username, limit);
-      
+
       // Only update state if component is still mounted
       if (isMountedRef.current) {
         setBadges(data.badges || []);
         setTotalCount(data.total_count || 0);
+        setError(null);
       }
     } catch (err) {
       if (isMountedRef.current) {
         setError(err instanceof Error ? err.message : "Failed to load badges");
-        setBadges([]);
-        setTotalCount(0);
+        // Keep stale data if available
+        setBadges((prev) => (prev.length === 0 ? [] : prev));
       }
     } finally {
       if (isMountedRef.current) {
@@ -107,9 +105,12 @@ export function useCredlyBadges({
 export function useCredlySkills({
   username = "dcyfr",
   enabled = true,
-}: Pick<UseCredlyBadgesOptions, "username" | "enabled"> = {}): UseCredlySkillsResult {
+}: Pick<
+  UseCredlyBadgesOptions,
+  "username" | "enabled"
+> = {}): UseCredlySkillsResult {
   const [skills, setSkills] = useState<SkillWithCount[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Start with true to show loading
   const [error, setError] = useState<string | null>(null);
 
   const isMountedRef = useRef(true);
@@ -118,9 +119,6 @@ export function useCredlySkills({
     if (!enabled) return;
 
     try {
-      setLoading(true);
-      setError(null);
-
       // Fetch all badges (no limit for skills aggregation)
       const data = await fetchCredlyBadgesCached(username);
       const badges = data.badges || [];
@@ -136,7 +134,7 @@ export function useCredlySkills({
           if (skill.name.length > 80) {
             return;
           }
-          
+
           const existing = skillMap.get(skill.id);
           if (existing) {
             existing.count++;
@@ -152,24 +150,24 @@ export function useCredlySkills({
       });
 
       // Convert to array and sort by count (descending), then alphabetically
-      const aggregatedSkills = Array.from(skillMap.values()).sort(
-        (a, b) => {
-          // Primary sort: count descending
-          if (b.count !== a.count) {
-            return b.count - a.count;
-          }
-          // Secondary sort: name ascending
-          return a.skill.name.localeCompare(b.skill.name);
+      const aggregatedSkills = Array.from(skillMap.values()).sort((a, b) => {
+        // Primary sort: count descending
+        if (b.count !== a.count) {
+          return b.count - a.count;
         }
-      );
+        // Secondary sort: name ascending
+        return a.skill.name.localeCompare(b.skill.name);
+      });
 
       if (isMountedRef.current) {
         setSkills(aggregatedSkills);
+        setError(null);
       }
     } catch (err) {
       if (isMountedRef.current) {
         setError(err instanceof Error ? err.message : "Failed to load skills");
-        setSkills([]);
+        // Keep stale data if available
+        setSkills((prev) => (prev.length === 0 ? [] : prev));
       }
     } finally {
       if (isMountedRef.current) {

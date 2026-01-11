@@ -9,7 +9,7 @@ import { ExternalLink, Github, FileText, TrendingUp } from "lucide-react";
 
 /**
  * CaseStudies Component
- * 
+ *
  * Showcases featured projects and client work with detailed
  * challenges, solutions, results, and metrics.
  */
@@ -39,7 +39,10 @@ export function CaseStudies() {
 
       <div className={SPACING.content}>
         {caseStudies.map((study, idx) => (
-          <Card key={idx} className="p-4 md:p-5 hover:shadow-xl transition-shadow">
+          <Card
+            key={idx}
+            className="p-4 md:p-5 hover:shadow-xl transition-shadow"
+          >
             <div className="space-y-4">
               {/* Header */}
               <div>
@@ -50,9 +53,11 @@ export function CaseStudies() {
               </div>
 
               {/* Challenge & Solution */}
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className={`grid md:grid-cols-2 gap-${SPACING.md}`}>
                 <div>
-                  <h4 className={cn(TYPOGRAPHY.label.small, "mb-2 text-primary")}>
+                  <h4
+                    className={cn(TYPOGRAPHY.label.small, "mb-2 text-primary")}
+                  >
                     Challenge
                   </h4>
                   <p className="text-sm text-muted-foreground">
@@ -60,7 +65,9 @@ export function CaseStudies() {
                   </p>
                 </div>
                 <div>
-                  <h4 className={cn(TYPOGRAPHY.label.small, "mb-2 text-primary")}>
+                  <h4
+                    className={cn(TYPOGRAPHY.label.small, "mb-2 text-primary")}
+                  >
                     Solution
                   </h4>
                   <p className="text-sm text-muted-foreground">
@@ -71,19 +78,24 @@ export function CaseStudies() {
 
               {/* Metrics (if available) */}
               {study.metrics && study.metrics.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div
+                  className={`grid grid-cols-2 md:grid-cols-4 gap-${SPACING.md}`}
+                >
                   {study.metrics.map((metric, metricIdx) => (
                     <Card
                       key={metricIdx}
-                      className="p-4 bg-linear-to-br from-primary/5 to-primary/10 border-primary/20"
+                      className={`p-${SPACING.md} bg-linear-to-br from-primary/5 to-primary/10 border-primary/20`}
                     >
-                      <div className="flex items-center gap-2 mb-1">
+                      <div
+                        className={`flex items-center gap-${SPACING.sm} mb-${SPACING["1.5"]}`}
+                      >
                         <TrendingUp className="w-4 h-4 text-primary" />
                         <p className={TYPOGRAPHY.display.stat}>
                           {metric.value}
-                          {metric.value !== "0" && !metric.value.includes("x") && (
-                            <span className="text-lg">%</span>
-                          )}
+                          {metric.value !== "0" &&
+                            !metric.value.includes("x") && (
+                              <span className="text-lg">%</span>
+                            )}
                         </p>
                       </div>
                       <p className="text-xs text-muted-foreground">
@@ -96,7 +108,12 @@ export function CaseStudies() {
 
               {/* Results */}
               <div>
-                <h4 className={cn(TYPOGRAPHY.label.small, "mb-3 flex items-center gap-2")}>
+                <h4
+                  className={cn(
+                    TYPOGRAPHY.label.small,
+                    "mb-3 flex items-center gap-2"
+                  )}
+                >
                   <TrendingUp className="w-4 h-4 text-primary" />
                   Key Results
                 </h4>
@@ -115,7 +132,9 @@ export function CaseStudies() {
 
               {/* Tech Stack */}
               <div>
-                <h4 className={cn(TYPOGRAPHY.label.small, "mb-3")}>Technology Stack</h4>
+                <h4 className={cn(TYPOGRAPHY.label.small, "mb-3")}>
+                  Technology Stack
+                </h4>
                 <div className="flex flex-wrap gap-2">
                   {study.tech.map((tech, techIdx) => (
                     <Badge key={techIdx} variant="outline" className="text-xs">

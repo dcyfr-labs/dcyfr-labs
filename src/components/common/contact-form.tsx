@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Alert } from "@/components/common/alert";
+import { Alert } from "@/components/common";
 import { toast } from "@/lib/toast";
 import { Loader2 } from "lucide-react";
 import { SPACING } from "@/lib/design-tokens";
@@ -105,7 +105,7 @@ export function ContactForm() {
   return (
     <div>
       {/* Informational banner using unified Alert component */}
-      <Alert type="info" className="mb-8">
+      <Alert type="notice" className={`mb-${SPACING.xl}`}>
         <strong>Multiple ways to connect:</strong> You can use the form below or
         reach out directly via email and social media.
       </Alert>
@@ -186,10 +186,14 @@ export function ContactForm() {
         </div>
 
         <p className="text-muted-foreground text-xs">
-          By submitting this form, you agree to our data handling practices. We
-          collect only the information you provide (name, email, message) to
-          respond to your inquiry. Your data is not shared with third parties and
-          is handled securely.
+          By submitting this form, you agree to our data handling practices
+          described in our{" "}
+          <a href="/privacy" className="text-primary hover:underline">
+            Privacy Policy
+          </a>
+          . We collect only the information you provide (name, email, message)
+          to respond to your inquiry. Your data is not shared with third parties
+          and is handled securely.
         </p>
 
         <Button

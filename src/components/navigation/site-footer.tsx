@@ -1,6 +1,6 @@
-import { SiteLogo } from "@/components/common/site-logo";
+import { SiteLogo } from "@/components/common";
 import { cn } from "@/lib/utils";
-import { CONTAINER_WIDTHS } from "@/lib/design-tokens";
+import { CONTAINER_WIDTHS, NAVIGATION_HEIGHT } from "@/lib/design-tokens";
 import { NAVIGATION } from "@/lib/navigation-config";
 
 export function SiteFooter() {
@@ -8,7 +8,13 @@ export function SiteFooter() {
     <>
       {/* Mobile footer - hidden on mobile since bottom nav is used */}
       <footer className="hidden md:hidden mt-8 site-footer border-t pb-2">
-        <div className="mx-auto px-4 sm:px-8 h-16 flex items-center justify-center text-sm text-muted-foreground gap-2">
+        <div
+          className={cn(
+            "mx-auto px-4 sm:px-8",
+            NAVIGATION_HEIGHT,
+            "flex items-center justify-center text-[clamp(0.875rem,1vw+0.75rem,1rem)] text-muted-foreground gap-2"
+          )}
+        >
           <SiteLogo size="md" />
         </div>
       </footer>
@@ -20,31 +26,32 @@ export function SiteFooter() {
             "mx-auto",
             CONTAINER_WIDTHS.dashboard,
             "px-4",
-            "sm:px-8",
+            "sm:px-6",
             "md:px-8",
-            "h-16",
+            "lg:px-8",
+            NAVIGATION_HEIGHT,
             "flex",
             "flex-col",
-            "md:flex-row",
+            "lg:flex-row",
             "items-center",
             "justify-between",
             "gap-4",
-            "md:gap-0",
-            "text-sm",
+            "lg:gap-0",
+            "text-[clamp(0.875rem,1vw+0.75rem,1rem)]",
             "py-4",
-            "md:py-0"
+            "lg:py-0"
           )}
         >
-          <div className="flex items-center justify-center text-sm text-muted-foreground gap-2">
-            &copy; {new Date().getFullYear()}
-            <SiteLogo size="sm" iconClassName="opacity-80" />
+          <div className="flex items-center justify-center text-[clamp(0.875rem,1vw+0.75rem,1rem)] text-muted-foreground gap-2">
+            &copy; {new Date().getFullYear()} DCYFR Labs{" "}
+            <SiteLogo size="sm" iconClassName="opacity-80" showText={false} />
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-2 lg:gap-4 pb-4 lg:pb-0">
             {NAVIGATION.footer.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
-                className="hover:underline underline-offset-4 will-change-auto whitespace-nowrap px-1.5 py-1"
+                className="hover:underline underline-offset-4 will-change-auto whitespace-nowrap px-1 sm:px-1.5 py-1 text-[clamp(0.75rem,0.9vw+0.625rem,0.875rem)]"
               >
                 {item.label}
               </a>

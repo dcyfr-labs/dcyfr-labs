@@ -216,7 +216,7 @@ ${JSON.stringify(errorData.event.data, null, 2)}
             html: htmlBody,
           });
 
-          console.log("Alert email sent:", {
+          console.warn("Alert email sent:", {
             messageId: result.data?.id,
             to: alertEmail,
             functionId: errorData.functionId,
@@ -244,7 +244,7 @@ ${JSON.stringify(errorData.event.data, null, 2)}
       try {
         // Future: Store in Redis or external analytics
         // For now, just log structured data
-        console.log("Inngest function failure recorded", {
+        console.warn("Inngest function failure recorded", {
           functionId: errorData.functionId,
           severity,
           timestamp: errorData.timestamp,

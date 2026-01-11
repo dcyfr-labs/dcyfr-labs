@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import type { ActivityItem } from "@/lib/activity";
-import type { FeedInterruptionProps } from "@/components/activity/FeedInterruption";
+import type { FeedInterruptionProps } from '@/components/activity';
 
 // ============================================================================
 // TYPES

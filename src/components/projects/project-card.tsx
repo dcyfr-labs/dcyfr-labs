@@ -4,7 +4,13 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ExternalLink, Eye } from "lucide-react";
 import { Project, ProjectStatus } from "@/data/projects";
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn, sanitizeUrl, formatNumber } from "@/lib/utils";
@@ -13,9 +19,9 @@ import { HOVER_EFFECTS, SPACING } from "@/lib/design-tokens";
 
 // Human-readable status labels
 const STATUS_LABEL: Record<ProjectStatus, string> = {
-  "active": "Active",
+  active: "Active",
   "in-progress": "In progress",
-  "archived": "Archived",
+  archived: "Archived",
 };
 
 export interface ProjectCardProps {
@@ -29,19 +35,19 @@ export interface ProjectCardProps {
 
 /**
  * ProjectCard Component
- * 
- * @deprecated **Currently unused** - The `/work` page uses `ProjectList` which renders 
+ *
+ * @deprecated **Currently unused** - The `/work` page uses `ProjectList` which renders
  * cards inline with multiple layout variants. Consider using `ProjectList` for archive views
  * or `OtherProjectCard` for compact card displays. This component is retained for potential
  * future use (e.g., homepage featured projects section).
- * 
+ *
  * Displays a portfolio project card in archive view with link to detail page.
  * The entire card is clickable and links to the project detail page.
- * 
+ *
  * **Loading State Support:**
  * Pass `loading={true}` to render skeleton version automatically. This ensures
  * the skeleton is always in sync with the actual component structure.
- * 
+ *
  * Key structural elements (auto-synced with skeleton):
  * - Wrapper: block, group, cursor-pointer styling
  * - Card: flex, h-full, relative positioning, overflow-hidden
@@ -50,41 +56,46 @@ export interface ProjectCardProps {
  *   - Title (text-base sm:text-lg md:text-xl)
  *   - Description (CardDescription)
  *   - Tech Stack (flex-wrap, gap-1.5, Badge variant="outline", max 3 shown)
- * 
+ *
  * @example Standard usage
  * ```tsx
  * <ProjectCard project={projectData} />
  * ```
- * 
+ *
  * @example Loading state
  * ```tsx
  * <ProjectCard loading />
  * ```
- * 
+ *
  * @example In a list with loading state
  * ```tsx
- * {isLoading 
+ * {isLoading
  *   ? Array.from({ length: 3 }).map((_, i) => <ProjectCard key={i} loading />)
  *   : projects.map(p => <ProjectCard key={p.slug} project={p} />)
  * }
  * ```
- * 
+ *
  * @see {@link /docs/components/skeleton-sync-strategy.md} for skeleton sync guidelines
  * @see ProjectList - Used for /work archive page with grid/list/compact layouts
  * @see OtherProjectCard - Used for "Other Projects" section on detail pages
  */
-export function ProjectCard({ 
+export function ProjectCard({
   project,
   viewCount,
   loading = false,
 }: ProjectCardProps) {
   const router = useRouter();
-  
+
   // Loading state - render skeleton with IDENTICAL structure
   if (loading || !project) {
     return (
       <div className="block group cursor-pointer">
-        <Card className={cn("holo-card flex h-full flex-col overflow-hidden relative", HOVER_EFFECTS.card)}>
+        <Card
+          className={cn(
+            "holo-card flex h-full flex-col overflow-hidden relative",
+            HOVER_EFFECTS.card
+          )}
+        >
           {/* Content - matches CardHeader structure exactly */}
           <CardHeader className="space-y-1.5 px-4 py-4 sm:py-4">
             {/* Timeline with status badge */}
@@ -92,7 +103,7 @@ export function ProjectCard({
               <Skeleton className="h-5 w-16" />
               <Skeleton className="h-3 w-24" />
             </div>
-            
+
             {/* Title */}
             <Skeleton className="h-6 sm:h-7 md:h-8 w-48 sm:w-56" />
 
@@ -113,33 +124,38 @@ export function ProjectCard({
       </div>
     );
   }
-  
+
   // Use project image if provided, otherwise no background image
   const image = project.image;
-  
+
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // Don't navigate if clicking on an interactive element
     const target = e.target as HTMLElement;
-    if (target.closest('a, button')) {
+    if (target.closest("a, button")) {
       return;
     }
     router.push(`/work/${project.slug}`);
   };
-  
+
   return (
-    <div 
+    <div
       onClick={handleCardClick}
       className="block group cursor-pointer"
       role="link"
       tabIndex={0}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           router.push(`/work/${project.slug}`);
         }
       }}
     >
-      <Card className={cn("holo-card flex h-full flex-col overflow-hidden relative p-0", HOVER_EFFECTS.card)}>
+      <Card
+        className={cn(
+          "holo-card flex h-full flex-col overflow-hidden relative p-0",
+          HOVER_EFFECTS.card
+        )}
+      >
         {/* Background image - only if defined */}
         {image && (
           <div className="absolute inset-0 z-0">
@@ -159,9 +175,7 @@ export function ProjectCard({
           {/* Status badge - show on all screens */}
           {project.status !== "active" && (
             <div className="mb-2">
-              <Badge variant="default">
-                {STATUS_LABEL[project.status]}
-              </Badge>
+              <Badge variant="default">{STATUS_LABEL[project.status]}</Badge>
             </div>
           )}
 
@@ -179,7 +193,7 @@ export function ProjectCard({
           )}
           <div className="flex flex-wrap items-center gap-2">
             <CardTitle className="text-base sm:text-lg md:text-xl flex align-middle gap-2">
-             {project.title}
+              {project.title}
             </CardTitle>
           </div>
           <CardDescription className="text-sm sm:text-base md:text-[0.95rem] leading-relaxed">
@@ -188,12 +202,19 @@ export function ProjectCard({
           {project.tech && project.tech.length > 0 && (
             <div className="flex flex-wrap gap-1.5 pt-1">
               {project.tech.slice(0, 3).map((tech) => (
-                <Badge key={tech} variant="outline" className="font-normal text-xs sm:text-sm">
+                <Badge
+                  key={tech}
+                  variant="outline"
+                  className="font-normal text-xs sm:text-sm"
+                >
                   {tech}
                 </Badge>
               ))}
               {project.tech.length > 3 && (
-                <Badge variant="outline" className="font-normal text-xs sm:text-sm">
+                <Badge
+                  variant="outline"
+                  className="font-normal text-xs sm:text-sm"
+                >
                   +{project.tech.length - 3}
                 </Badge>
               )}

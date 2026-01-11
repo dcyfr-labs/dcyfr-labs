@@ -91,7 +91,7 @@ export function DocSidebar({ docs, currentSlug, className }: DocSidebarProps) {
               </div>
 
               {isExpanded && (
-                <ul className="space-y-1 ml-4 mt-1">
+                <ul className="list-none space-y-1 ml-4 mt-1">
                   {categoryDocs.map((doc) => (
                     <li key={doc.slug}>
                       <Link
@@ -207,7 +207,7 @@ export function DocTableOfContents({ headings }: DocTableOfContentsProps) {
     <aside className="sticky top-24 h-fit max-h-[calc(100vh-6rem)] overflow-y-auto">
       <h3 className={cn(TYPOGRAPHY.h3.standard, "mb-4")}>Table of Contents</h3>
       <nav>
-        <ul className="space-y-1">
+        <ul className="list-none space-y-1">
           {headings.map((heading) => (
             <li key={heading.id} style={{ marginLeft: (heading.level - 1) * 12 }}>
               <a

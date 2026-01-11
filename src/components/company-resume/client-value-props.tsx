@@ -59,7 +59,7 @@ export function ClientValueProps() {
         <h3 className={cn(TYPOGRAPHY.h2.standard, "mb-4")}>
           Ready to Build Something Secure & Scalable?
         </h3>
-        {/* eslint-disable-next-line no-restricted-syntax -- max-w-2xl is for text width, not page container */}
+        { }
         <p className={cn(TYPOGRAPHY.description, "mb-6 max-w-2xl mx-auto")}>
           Let&apos;s discuss how DCYFR Labs can help you navigate the complex landscape
           of cyber architecture and modern web development.

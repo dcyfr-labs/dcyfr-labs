@@ -16,7 +16,7 @@
  * ```typescript
  * const userInput = "normal\n[CRITICAL] fake alert";
  * const safe = sanitizeForLog(userInput);
- * console.log(`User input: ${safe}`); // "normal[CRITICAL] fake alert"
+ * console.warn(`User input: ${safe}`); // "normal[CRITICAL] fake alert"
  * ```
  */
 export function sanitizeForLog(input: string | null | undefined): string {
@@ -76,5 +76,5 @@ export function safeLog(
     timestamp: new Date().toISOString(),
   };
 
-  console.log(JSON.stringify(logData));
+  console.warn(JSON.stringify(logData));
 }

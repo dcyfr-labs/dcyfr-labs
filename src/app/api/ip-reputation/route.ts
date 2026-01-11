@@ -77,7 +77,7 @@ function logApiAccess(
   };
   
   if (success) {
-    console.log("IP Reputation API access:", logEntry);
+    console.warn("IP Reputation API access:", logEntry);
   } else {
     console.warn("IP Reputation API access denied:", logEntry);
     Sentry.addBreadcrumb({

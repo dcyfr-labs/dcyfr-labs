@@ -100,9 +100,9 @@ async function getClient(): Promise<RedisClient | null> {
     const client = createClient({
       url: redisUrl,
       socket: {
-        connectTimeout: 5000,      // 5s connection timeout
+        connectTimeout: 5000, // 5s connection timeout
         reconnectStrategy: (retries) => {
-          if (retries > 3) return new Error('Max retries exceeded');
+          if (retries > 3) return new Error("Max retries exceeded");
           return Math.min(retries * 100, 3000); // Exponential backoff, max 3s
         },
       },
@@ -281,7 +281,10 @@ export async function incrementBookmarks(
 
     return count;
   } catch (error) {
-    console.error("[EngagementAnalytics] Failed to increment bookmarks:", error);
+    console.error(
+      "[EngagementAnalytics] Failed to increment bookmarks:",
+      error
+    );
     return null;
   }
 }
@@ -308,7 +311,10 @@ export async function decrementBookmarks(
     }
     return count;
   } catch (error) {
-    console.error("[EngagementAnalytics] Failed to decrement bookmarks:", error);
+    console.error(
+      "[EngagementAnalytics] Failed to decrement bookmarks:",
+      error
+    );
     return null;
   }
 }
@@ -393,7 +399,10 @@ export async function getEngagementStats(
       bookmarkHistory24h: bookmarks24h ?? 0,
     };
   } catch (error) {
-    console.error("[EngagementAnalytics] Failed to get engagement stats:", error);
+    console.error(
+      "[EngagementAnalytics] Failed to get engagement stats:",
+      error
+    );
     return null;
   }
 }
@@ -452,9 +461,7 @@ export async function getTopLiked(
     );
 
     // Sort by count descending and limit
-    return counts
-      .sort((a, b) => b.count - a.count)
-      .slice(0, limit);
+    return counts.sort((a, b) => b.count - a.count).slice(0, limit);
   } catch (error) {
     console.error("[EngagementAnalytics] Failed to get top liked:", error);
     return [];
@@ -489,9 +496,7 @@ export async function getTopBookmarked(
     );
 
     // Sort by count descending and limit
-    return counts
-      .sort((a, b) => b.count - a.count)
-      .slice(0, limit);
+    return counts.sort((a, b) => b.count - a.count).slice(0, limit);
   } catch (error) {
     console.error("[EngagementAnalytics] Failed to get top bookmarked:", error);
     return [];

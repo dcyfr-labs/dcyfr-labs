@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { SPACING, TYPOGRAPHY, ANIMATION } from "@/lib/design-tokens";
-import type { Topic } from "@/lib/activity/topics";
+import type { Topic } from "@/lib/activity";
 
 // ============================================================================
 // TYPES

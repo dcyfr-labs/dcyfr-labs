@@ -8,23 +8,38 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeKatex from "rehype-katex";
 import type { Options as RehypePrettyCodeOptions } from "rehype-pretty-code";
-import { CopyCodeButton } from "@/components/common/copy-code-button";
-import { HorizontalRule } from "@/components/common/horizontal-rule";
-import { ZoomableImage } from "@/components/common/zoomable-image";
-import { Alert } from "@/components/common/alert";
-import { KeyTakeaway } from "@/components/common/key-takeaway";
-import { ContextClue } from "@/components/common/context-clue";
-import { Figure, FigureProvider } from "@/components/common/figure-caption";
-import { TableCaption } from "@/components/common/table-caption";
-import { CodePlayground } from "@/components/common/code-playground";
-import { 
-  MDXMCPArchitecture, 
-  MDXAuthenticationFlow, 
-  MDXPipelineFlow, 
-  MDXCVEDecisionTree 
-} from "@/components/common/mdx-diagram-wrapper";
-import { FAQ } from "@/components/common/faq";
-import { ProgressiveParagraph, ContrastText } from "@/components/common/progressive-content";
+import {
+  CopyCodeButton,
+  CodeBlockWithHeader,
+  EnhancedInlineCode,
+  getInlineCodeVariant,
+  HorizontalRule,
+  ZoomableImage,
+  Alert,
+  KeyTakeaway,
+  ContextClue,
+  Figure,
+  FigureProvider,
+  TableCaption,
+  CodePlayground,
+} from "@/components/common";
+import {
+  RiskAccordion,
+  RiskAccordionGroup,
+  ReadingProgressTracker,
+  TLDRSummary,
+  GlossaryTooltip,
+  SectionShare,
+  CollapsibleSection,
+} from "@/components/blog";
+import {
+  MDXMCPArchitecture,
+  MDXAuthenticationFlow,
+  MDXPipelineFlow,
+  MDXCVEDecisionTree,
+} from "@/components/common";
+import { FAQ } from "@/components/common";
+import { ProgressiveParagraph, ContrastText } from "@/components/common";
 import {
   Check,
   X,
@@ -34,11 +49,24 @@ import {
   Lightbulb,
   Zap,
   Lock,
-  Rocket
+  Star,
+  Rocket,
+  BarChart,
+  Shield,
 } from "lucide-react";
-import { TYPOGRAPHY, SPACING, PROGRESSIVE_TEXT, FONT_CONTRAST, ANIMATION } from "@/lib/design-tokens";
+import {
+  TYPOGRAPHY,
+  SPACING,
+  PROGRESSIVE_TEXT,
+  FONT_CONTRAST,
+  ANIMATION,
+} from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
-import { MDXProgressionContext, MDXProgressionProvider, MDXParagraphComponent } from "@/components/common/mdx-progression-context";
+import {
+  MDXProgressionContext,
+  MDXProgressionProvider,
+  MDXParagraphComponent,
+} from "./mdx-progression-context";
 
 /**
  * MDX Paragraph Component with Progressive Styling
@@ -56,18 +84,20 @@ import { MDXProgressionContext, MDXProgressionProvider, MDXParagraphComponent } 
 function TableWrapper(props: React.HTMLAttributes<HTMLTableElement>) {
   const tableId = React.useId();
   return (
-    <figure className="my-8 w-full group" role="table" aria-labelledby={`${tableId}-caption`}>
-      <div className={cn(
-        "relative overflow-hidden rounded-xl border border-border bg-card shadow-sm",
-        ANIMATION.transition.theme,
-        "hover:shadow-md"
-      )}>
+    <figure
+      className="my-8 w-full group"
+      role="table"
+      aria-labelledby={`${tableId}-caption`}
+    >
+      <div
+        className={cn(
+          "relative overflow-hidden rounded-xl border border-border bg-card shadow-sm",
+          ANIMATION.transition.theme,
+          "hover:shadow-md"
+        )}
+      >
         <div className="overflow-x-auto">
-          <table 
-            {...props} 
-            className="w-full border-collapse" 
-            id={tableId}
-          />
+          <table {...props} className="w-full border-collapse" id={tableId} />
         </div>
       </div>
     </figure>
@@ -76,27 +106,22 @@ function TableWrapper(props: React.HTMLAttributes<HTMLTableElement>) {
 
 /**
  * Configuration for the rehype-pretty-code plugin
- * Enables syntax highlighting with Shiki using custom neon cyberpunk themes:
- * - Dark theme: github-dark with CSS variable overrides for neon effects
- * - Light theme: github-light for subtle colors
- *
- * Features:
- * - Custom neon cyberpunk colors via CSS variable overrides
- * - Automatic theme switching based on user's theme preference
+ * Uses GitHub's high contrast theme for better visibility
+ * - GitHub Dark High Contrast theme for dark mode
+ * - GitHub Light High Contrast theme for light mode
  * - Line and character highlighting support
  * - Empty line prevention in grid layout
  * - Configurable default language (plaintext for unknown languages)
  *
  * @type {RehypePrettyCodeOptions}
  */
-// Configure syntax highlighting with built-in themes + CSS overrides
 const rehypePrettyCodeOptions: RehypePrettyCodeOptions = {
   theme: {
-    dark: "github-dark",
-    light: "github-light",
+    dark: "github-dark-high-contrast",
+    light: "github-light-high-contrast",
   },
   defaultLang: "plaintext",
-  keepBackground: false,
+  keepBackground: true,
   // Prevent lines from collapsing in `display: grid` mode
   onVisitLine(node) {
     if (node.children.length === 0) {
@@ -124,14 +149,13 @@ function rehypeReplaceFootnoteEmoji() {
         // Look for footnote backref links (they have specific class patterns)
         if (node.properties?.href?.toString().includes("user-content-fnref")) {
           // Check if the link contains the ↩ emoji
-          const hasEmoji = node.children?.some((child: any) =>
-            child.type === "text" && child.value?.includes("↩")
+          const hasEmoji = node.children?.some(
+            (child: any) => child.type === "text" && child.value?.includes("↩")
           );
-          
+
           if (hasEmoji) {
             // Replace text children containing ↩ with a marker we can target
             node.children = node.children?.map((child: any) =>
-
               child.type === "text" && child.value?.includes("↩")
                 ? { type: "text", value: "FOOTNOTE_BACKREF" }
                 : child
@@ -142,13 +166,80 @@ function rehypeReplaceFootnoteEmoji() {
           }
         }
       }
-      
+
       // Recursively visit children
       if (node.children && Array.isArray(node.children)) {
         node.children.forEach(visit);
       }
     };
-    
+
+    visit(tree);
+  };
+}
+
+/**
+ * Custom rehype plugin to capture code block language from rehype-pretty-code
+ *
+ * Problem: rehype-pretty-code v0.10+ changed behavior - it doesn't always add
+ * data-language to the code element in a way React can access.
+ *
+ * Solution: This plugin runs after rehypePrettyCode and extracts the language
+ * from the pre element's data-language attribute (if present) and ensures
+ * the code child has it accessible to React components.
+ */
+function rehypeCaptureCodeLanguage() {
+  return (tree: any) => {
+    const visit = (node: any) => {
+      // Look for pre elements
+      if (node.type === "element" && node.tagName === "pre") {
+        const codeChild = node.children?.find(
+          (child: any) => child.type === "element" && child.tagName === "code"
+        );
+
+        if (codeChild && codeChild.properties) {
+          // The pre element itself should have language info from rehypePrettyCode
+          // Check various possible attributes where language might be stored
+          let language =
+            node.properties?.["data-language"] || // pre element might have it
+            codeChild.properties["data-language"] || // code element might have it
+            node.properties?.["data-meta"]?.[0] || // meta might contain language
+            undefined;
+
+          // If we still don't have a language but the code was highlighted,
+          // we can infer it was processed by rehypePrettyCode
+          // Check if code child has any span children with style attributes (syntax highlighting)
+          const hasHighlight =
+            codeChild.children?.some(
+              (child: any) =>
+                child.type === "element" &&
+                child.tagName === "span" &&
+                child.properties?.style
+            ) || codeChild.properties?.style;
+
+          // Ensure data-language is set
+          if (
+            !codeChild.properties["data-language"] ||
+            codeChild.properties["data-language"] === ""
+          ) {
+            codeChild.properties["data-language"] = language || "plaintext";
+          }
+
+          // Also ensure the pre element has it for reference
+          if (!node.properties) {
+            node.properties = {};
+          }
+          if (!node.properties["data-language"]) {
+            node.properties["data-language"] = language || "plaintext";
+          }
+        }
+      }
+
+      // Recursively visit children
+      if (node.children && Array.isArray(node.children)) {
+        node.children.forEach(visit);
+      }
+    };
+
     visit(tree);
   };
 }
@@ -189,7 +280,10 @@ function extractTextFromChildren(children: React.ReactNode): string {
 // Map a few elements to tailwind-styled components
 const components: NonNullable<MDXRemoteProps["components"]> = {
   h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h1 {...props} className={`${TYPOGRAPHY.h1.mdx} mt-8 first:mt-0 scroll-mt-20 group`} />
+    <h1
+      {...props}
+      className={`${TYPOGRAPHY.h1.mdx} mt-8 first:mt-0 scroll-mt-20 group`}
+    />
   ),
   h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h2 {...props} className={`${TYPOGRAPHY.h2.mdx} mt-8 scroll-mt-20 group`} />
@@ -208,41 +302,41 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
   ),
   p: MDXParagraphComponent,
   blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => (
-    <blockquote 
-      {...props} 
+    <blockquote
+      {...props}
       className="mt-6 border-l-4 border-primary/30 pl-4 italic text-muted-foreground not:first:mt-0"
     />
   ),
   table: TableWrapper,
   thead: (props: React.HTMLAttributes<HTMLTableSectionElement>) => (
-    <thead 
-      {...props} 
-      className="bg-gradient-to-r from-muted/80 to-muted/60 backdrop-blur-sm" 
+    <thead
+      {...props}
+      className="bg-linear-to-r from-muted/80 to-muted/60 backdrop-blur-sm"
     />
   ),
   tbody: (props: React.HTMLAttributes<HTMLTableSectionElement>) => (
     <tbody {...props} />
   ),
   tr: (props: React.HTMLAttributes<HTMLTableRowElement>) => (
-    <tr 
-      {...props} 
-      className="border-b border-border/50 transition-colors hover:bg-muted/30 last:border-b-0" 
+    <tr
+      {...props}
+      className="border-b border-border/50 transition-colors hover:bg-muted/30 last:border-b-0"
     />
   ),
   th: (props: React.HTMLAttributes<HTMLTableCellElement>) => (
-    <th 
-      {...props} 
+    <th
+      {...props}
       className={cn(
         "px-4 py-4 text-left font-semibold",
         TYPOGRAPHY.label.small,
         "text-foreground/90 tracking-wide"
-      )} 
+      )}
     />
   ),
   td: (props: React.HTMLAttributes<HTMLTableCellElement>) => (
-    <td 
-      {...props} 
-      className="px-4 py-4 text-sm leading-relaxed text-foreground/90" 
+    <td
+      {...props}
+      className="px-4 py-4 text-sm leading-relaxed text-foreground/90"
     />
   ),
   strong: (props: React.HTMLAttributes<HTMLElement>) => (
@@ -262,76 +356,104 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
     // Inline code (no data-language attribute)
     const isInline = !props["data-language" as keyof typeof props];
     if (isInline) {
+      // Extract text content to determine variant
+      const textContent = React.Children.toArray(props.children)
+        .map((child) => (typeof child === "string" ? child : ""))
+        .join("");
+
+      const variant = getInlineCodeVariant(textContent);
+
       return (
-        <code 
-          {...props} 
-          className="rounded-md bg-primary/10 px-2 py-1 text-[0.875em] font-mono font-semibold border border-primary/20 text-primary"
-        />
+        <EnhancedInlineCode {...props} variant={variant}>
+          {props.children}
+        </EnhancedInlineCode>
       );
     }
     // Code blocks handled by pre > code (rehype-pretty-code)
     return <code {...props} />;
   },
   pre: (props: React.HTMLAttributes<HTMLPreElement>) => {
-    // Extract the code content for the copy button
-    const codeContent = React.Children.toArray(props.children)
-      .map((child) => {
-        if (React.isValidElement(child)) {
-          const childProps = child.props as { children?: React.ReactNode };
-          return extractTextFromChildren(childProps.children);
-        }
-        return "";
-      })
-      .join("");
+    // Extract language from the code child element's data-language attribute
+    // or from the pre element itself (fallback)
+    const codeChild = React.Children.toArray(props.children).find(
+      (child): child is React.ReactElement =>
+        React.isValidElement(child) && child.type === "code"
+    );
+
+    let language = codeChild?.props
+      ? ((codeChild.props as any)["data-language"] as string | undefined)
+      : undefined;
+
+    // Fallback: check if language is on the pre element itself
+    if (!language && props["data-language" as keyof typeof props]) {
+      language = props["data-language" as keyof typeof props] as string;
+    }
 
     return (
-      <div className="relative group">
-        <CopyCodeButton code={codeContent} />
-        <pre
-          {...props}
-          className="[&>code]:grid [&>code]:text-[0.875rem] overflow-x-auto"
-        />
-      </div>
+      <CodeBlockWithHeader language={language}>
+        {props.children}
+      </CodeBlockWithHeader>
     );
   },
+  kbd: (props: React.HTMLAttributes<HTMLElement>) => (
+    <kbd
+      {...props}
+      className={cn(
+        "inline-flex items-center",
+        "px-2 py-0.5",
+        "text-[0.75em] font-mono font-semibold",
+        "rounded border",
+        "bg-muted/50 text-muted-foreground border-border",
+        "shadow-sm",
+        "hover:bg-muted/70 hover:border-border-hover",
+        ANIMATION.transition.theme,
+        props.className
+      )}
+    />
+  ),
   hr: () => <HorizontalRule />,
   a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
-    const isHeaderAnchor = props.className?.includes('no-underline');
-    const href = props.href || '';
-    const isExternal = href.startsWith('http://') || href.startsWith('https://');
-    const isFootnoteBackref = href.includes('user-content-fnref');
-    
+    const isHeaderAnchor = props.className?.includes("no-underline");
+    const href = props.href || "";
+    const isExternal =
+      href.startsWith("http://") || href.startsWith("https://");
+    const isFootnoteBackref = href.includes("user-content-fnref");
+
     // Handle footnote backref links - replace emoji with icon
     if (isFootnoteBackref) {
       return (
-        <a 
+        <a
           {...props}
           href={href}
-          className="no-underline inline-flex items-center pl-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 transition-colors"
+          className="no-underline inline-flex items-center pl-2 text-muted-foreground hover:text-foreground transition-colors"
           title="Back to note reference"
         >
-          <ArrowUpLeft className="inline-block w-3 h-3" aria-label="Back to note" />
+          <ArrowUpLeft
+            className="inline-block w-3 h-3"
+            aria-label="Back to note"
+          />
         </a>
       );
     }
-    
+
     // Convert relative docs links to proper /dev/docs/ paths
     let adjustedHref = href;
-    if (href.startsWith('./')) {
+    if (href.startsWith("./")) {
       adjustedHref = `/dev/docs/${href.slice(2)}`;
     }
-    
+
     return (
-      <a 
-        {...props} 
+      <a
+        {...props}
         href={adjustedHref}
-        className={isHeaderAnchor 
-          ? "hover:text-primary" 
-          : "inline-flex items-center gap-1 underline underline-offset-4 hover:text-primary"
+        className={
+          isHeaderAnchor
+            ? "hover:text-primary"
+            : "inline-flex items-center gap-1 underline underline-offset-4 hover:text-primary"
         }
         {...(isExternal && {
           target: "_blank",
-          rel: "noopener noreferrer"
+          rel: "noopener noreferrer",
         })}
       >
         {props.children}
@@ -355,24 +477,99 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
     );
   },
   img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
-    <ZoomableImage 
-      {...props} 
+    <ZoomableImage
+      {...props}
       className={`${SPACING.image} rounded-lg max-w-full h-auto`}
     />
   ),
   // Icon components for consistent styling across the site
-  // Note: Icon colors (text-*-500/600) are excluded from SEMANTIC_COLORS enforcement
-  /* eslint-disable no-restricted-syntax -- MDX icon components use accent colors */
-  CheckIcon: () => <Check className="inline-block w-5 h-5 align-text-bottom text-green-600 dark:text-green-400" aria-label="Check" />,
-  XIcon: () => <X className="inline-block w-5 h-5 align-text-bottom text-red-600 dark:text-red-400" aria-label="Cross" />,
-  ReturnIcon: () => <ArrowUpLeft className="inline-block w-5 h-5 align-text-bottom text-muted-foreground" aria-label="Return" />,
-  WarningIcon: () => <AlertTriangle className="inline-block w-5 h-5 align-text-bottom text-yellow-600 dark:text-yellow-400" aria-label="Warning" />,
-  InfoIcon: () => <Info className="inline-block w-5 h-5 align-text-bottom text-blue-600 dark:text-blue-400" aria-label="Information" />,
-  IdeaIcon: () => <Lightbulb className="inline-block w-5 h-5 align-text-bottom text-yellow-600 dark:text-yellow-400" aria-label="Idea" />,
-  ZapIcon: () => <Zap className="inline-block w-5 h-5 align-text-bottom text-purple-600 dark:text-purple-400" aria-label="Lightning" />,
-  LockIcon: () => <Lock className="inline-block w-5 h-5 align-text-bottom text-muted-foreground" aria-label="Lock" />,
-  RocketIcon: () => <Rocket className="inline-block w-5 h-5 align-text-bottom text-blue-600 dark:text-blue-400" aria-label="Rocket" />,
-  /* eslint-enable no-restricted-syntax */
+  // Note: Icon colors converted to monochrome (text-muted-foreground)
+
+  CheckIcon: () => (
+    <Check
+      className="inline-block w-5 h-5 align-text-bottom text-success"
+      aria-label="Check"
+    />
+  ),
+  XIcon: () => (
+    <X
+      className="inline-block w-5 h-5 align-text-bottom text-error"
+      aria-label="Cross"
+    />
+  ),
+  ReturnIcon: () => (
+    <ArrowUpLeft
+      className="inline-block w-5 h-5 align-text-bottom text-muted-foreground"
+      aria-label="Return"
+    />
+  ),
+  WarningIcon: () => (
+    <AlertTriangle
+      className="inline-block w-5 h-5 align-text-bottom text-muted-foreground"
+      aria-label="Warning"
+    />
+  ),
+  InfoIcon: () => (
+    <Info
+      className="inline-block w-5 h-5 align-text-bottom text-info"
+      aria-label="Information"
+    />
+  ),
+  IdeaIcon: () => (
+    <Lightbulb
+      className="inline-block w-5 h-5 align-text-bottom text-muted-foreground"
+      aria-label="Idea"
+    />
+  ),
+  ZapIcon: () => (
+    <Zap
+      className="inline-block w-5 h-5 align-text-bottom text-muted-foreground"
+      aria-label="Lightning"
+    />
+  ),
+  LockIcon: () => (
+    <Lock
+      className="inline-block w-5 h-5 align-text-bottom text-muted-foreground"
+      aria-label="Lock"
+    />
+  ),
+  StarIcon: () => (
+    <Star
+      className="inline-block w-5 h-5 align-text-bottom text-muted-foreground"
+      aria-label="Star"
+    />
+  ),
+  RocketIcon: () => (
+    <Rocket
+      className="inline-block w-5 h-5 align-text-bottom text-muted-foreground"
+      aria-label="Rocket"
+    />
+  ),
+  BarChart: () => (
+    <BarChart
+      className="inline-block w-5 h-5 align-text-bottom text-muted-foreground"
+      aria-label="Bar Chart"
+    />
+  ),
+  BarChartIcon: () => (
+    <BarChart
+      className="inline-block w-5 h-5 align-text-bottom text-muted-foreground"
+      aria-label="Bar Chart"
+    />
+  ),
+  Shield: () => (
+    <Shield
+      className="inline-block w-5 h-5 align-text-bottom text-muted-foreground"
+      aria-label="Shield"
+    />
+  ),
+  ShieldIcon: () => (
+    <Shield
+      className="inline-block w-5 h-5 align-text-bottom text-muted-foreground"
+      aria-label="Shield"
+    />
+  ),
+
   // Diagram presets (using ReactFlow) - imported from client-side wrapper
   // These use "use client" to prevent SSR bailout errors
   MCPArchitecture: MDXMCPArchitecture as any,
@@ -385,6 +582,14 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
   Alert,
   // Key Takeaway component for insights
   KeyTakeaway,
+  // TLDR Summary component for executive summaries
+  TLDRSummary,
+  // Glossary Tooltip component for technical terms
+  GlossaryTooltip,
+  // Section Share component for per-section social sharing
+  SectionShare,
+  // Collapsible Section component for expandable content
+  CollapsibleSection,
   // Context Clue component for background information
   ContextClue,
   // Figure caption component for automatic figure numbering
@@ -393,32 +598,43 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
   TableCaption,
   // Code Playground component for interactive examples
   CodePlayground,
+  // Risk Accordion components for interactive risk sections
+  RiskAccordion,
+  RiskAccordionGroup,
+  // Reading Progress Tracker for engagement tracking
+  ReadingProgressTracker,
   // Footnote superscripts with icon
   sup: (props: React.HTMLAttributes<HTMLElement>) => {
     // Check if this contains a link (footnote reference) or has footnote-related attributes
     const children = React.Children.toArray(props.children);
     const hasLink = children.some(
-      child => React.isValidElement(child) && child?.type === 'a'
+      (child) => React.isValidElement(child) && child?.type === "a"
     );
-    
+
     if (hasLink) {
       // This is a footnote reference - replace the content with our icon
       // Get the href from the link to preserve navigation
       const linkChild = children.find(
-        child => React.isValidElement(child) && child?.type === 'a'
+        (child) => React.isValidElement(child) && child?.type === "a"
       ) as React.ReactElement | undefined;
-      
+
       const href = (linkChild?.props as { href?: string })?.href;
-      
+
       return (
         <sup {...props} className="ml-0.5 inline-flex items-center">
-          <a href={href} className="no-underline hover:opacity-70 transition-opacity">
-            <ArrowUpLeft className="inline-block w-3 h-3 text-primary" aria-label="Footnote reference" />
+          <a
+            href={href}
+            className="no-underline hover:opacity-70 transition-opacity"
+          >
+            <ArrowUpLeft
+              className="inline-block w-3 h-3 text-primary"
+              aria-label="Footnote reference"
+            />
           </a>
         </sup>
       );
     }
-    
+
     // Default superscript for non-footnote uses
     return <sup {...props} />;
   },
@@ -477,11 +693,11 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
  *
  * @see /docs/components/mdx.md for detailed documentation
  */
-export function MDX({ 
-  source, 
-  useFontContrast = false 
-}: { 
-  source: string; 
+export function MDX({
+  source,
+  useFontContrast = false,
+}: {
+  source: string;
   useFontContrast?: boolean;
 }) {
   return (
@@ -498,17 +714,19 @@ export function MDX({
             rehypePlugins: [
               rehypeSlug,
               [rehypePrettyCode, rehypePrettyCodeOptions],
+              rehypeCaptureCodeLanguage, // Capture language from rehypePrettyCode output
               rehypeKatex, // Render math with KaTeX
               rehypeReplaceFootnoteEmoji, // Replace footnote emoji with icon
               [
-                rehypeAutolinkHeadings, 
-                { 
+                rehypeAutolinkHeadings,
+                {
                   behavior: "wrap",
                   properties: {
-                    className: "no-underline hover:text-primary transition-colors"
-                  }
-                }
-              ]
+                    className:
+                      "no-underline hover:text-primary transition-colors",
+                  },
+                },
+              ],
             ],
           },
         }}

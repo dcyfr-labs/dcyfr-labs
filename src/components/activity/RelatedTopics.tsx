@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
-import { getRelatedTopics, type TopicCooccurrence } from "@/lib/activity/topics";
+import { getRelatedTopics, type TopicCooccurrence } from "@/lib/activity";
 import { Hash } from "lucide-react";
 
 // ============================================================================

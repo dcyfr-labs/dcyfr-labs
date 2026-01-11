@@ -17,8 +17,9 @@ This guide provides comprehensive patterns for secure logging practices in the d
 ## Quick Rules
 
 ### Definitions
+
 - **PI (Proprietary Information)** — Information that confers competitive or business advantage and should be protected; defined per NIST: https://csrc.nist.gov/glossary/term/proprietary_information
-- **PI (Proprietary Information)** — Information that confers competitive or business advantage and should be protected; defined per NIST: https://csrc.nist.gov/glossary/term/proprietary_information. See `docs/security/pi-policy.md` for handling guidance.
+- **PI (Proprietary Information)** — Information that confers competitive or business advantage and should be protected; defined per NIST: https://csrc.nist.gov/glossary/term/proprietary_information. See `docs/security/private/pi-policy.md` for handling guidance.
 - **PII (Personally Identifiable Information)** — Data that identifies an individual (email, phone, SSN, etc.). Do not log PII in cleartext.
 
 ### Never Log
@@ -94,7 +95,7 @@ console.log(`Processing request from: ${user.email}`);
 console.log(`User contact: ${user.phone}`);
 
 // ❌ WRONG: Logs user ID if it's sensitive
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === "production") {
   console.log(`User ID: ${sensitiveUserId}`);
 }
 
@@ -105,7 +106,7 @@ console.log(`User role: ${user.role}`); // Only if role is non-sensitive
 
 ### 3a. IP Addresses (PII under GDPR/CCPA)
 
-**IP addresses are considered PII** and must be handled carefully. See docs/security/pi-policy.md for full policy.
+**IP addresses are considered PII** and must be handled carefully. See docs/security/private/pi-policy.md for full policy.
 
 ```javascript
 // ❌ WRONG: Logs full IP address
@@ -123,7 +124,10 @@ console.log("Rate limit applied to request");
 console.log("Contact form submission received");
 
 // ✅ CORRECT: If debugging is truly needed, mask the IP
-const maskedIp = ip.split('.').map((octet, i) => i < 2 ? octet : 'xxx').join('.');
+const maskedIp = ip
+  .split(".")
+  .map((octet, i) => (i < 2 ? octet : "xxx"))
+  .join(".");
 console.log(`Debug context: ${maskedIp}`); // Output: "192.168.xxx.xxx"
 
 // ✅ CORRECT: Use IP for rate limiting (not logging)
@@ -223,14 +227,15 @@ console.log("Retry attempt 3/5");
 Use this for test scripts, configuration validation, and development utilities.
 
 **Best when:**
+
 - Logging is only for development/debugging
 - The script is not user-facing
 - Sensitive data isn't needed for diagnosis
 
 ```javascript
 // scripts/test-google-indexing.mjs
-import { config } from 'dotenv';
-config({ path: '.env.local' });
+import { config } from "dotenv";
+config({ path: ".env.local" });
 
 if (!process.env.GOOGLE_INDEXING_API_KEY) {
   console.error("❌ Error: GOOGLE_INDEXING_API_KEY not configured");
@@ -241,12 +246,18 @@ if (!process.env.GOOGLE_INDEXING_API_KEY) {
 try {
   const credentials = JSON.parse(process.env.GOOGLE_INDEXING_API_KEY);
 
-  const requiredFields = ['type', 'project_id', 'private_key', 'client_email', 'client_id'];
-  const missingFields = requiredFields.filter(field => !credentials[field]);
+  const requiredFields = [
+    "type",
+    "project_id",
+    "private_key",
+    "client_email",
+    "client_id",
+  ];
+  const missingFields = requiredFields.filter((field) => !credentials[field]);
 
   if (missingFields.length > 0) {
     console.error("❌ Error: Invalid service account JSON");
-    console.error(`   Missing fields: ${missingFields.join(', ')}`);
+    console.error(`   Missing fields: ${missingFields.join(", ")}`);
     process.exit(1);
   }
 
@@ -257,7 +268,6 @@ try {
   console.log("  → Add the service account email from GOOGLE_INDEXING_API_KEY");
   console.log("  → Visit: https://search.google.com/search-console");
   console.log("  → Permission: Owner");
-
 } catch (error) {
   console.error("❌ Error: Failed to parse GOOGLE_INDEXING_API_KEY");
   console.error(`   ${error.message}`);
@@ -270,6 +280,7 @@ try {
 Use this when you need to verify the data exists without exposing it.
 
 **Best when:**
+
 - Need to confirm data type/format for debugging
 - Verification is critical for diagnosis
 - Can create generic representations
@@ -277,7 +288,7 @@ Use this when you need to verify the data exists without exposing it.
 ```javascript
 // Example 1: Mask email address
 const maskEmail = (email) => {
-  const [local, domain] = email.split('@');
+  const [local, domain] = email.split("@");
   return `${local.substring(0, 2)}***@${domain}`;
 };
 
@@ -286,8 +297,8 @@ console.log(`Service Account: ${maskEmail(credentials.client_email)}`);
 
 // Example 2: Mask API key (show last 4 chars only)
 const maskApiKey = (key) => {
-  if (key.length <= 4) return '***';
-  return '***' + key.substring(key.length - 4);
+  if (key.length <= 4) return "***";
+  return "***" + key.substring(key.length - 4);
 };
 
 console.log(`API Key configured: ${maskApiKey(apiKey)}`);
@@ -295,7 +306,7 @@ console.log(`API Key configured: ${maskApiKey(apiKey)}`);
 
 // Example 3: Mask database connection string
 const maskConnectionString = (connStr) => {
-  return connStr.replace(/(:\/\/)([^:]+):([^@]+)@/, '$1***:***@');
+  return connStr.replace(/(:\/\/)([^:]+):([^@]+)@/, "$1***:***@");
 };
 
 console.log(`Database: ${maskConnectionString(dbUrl)}`);
@@ -383,7 +394,9 @@ function initializeGoogleAPI() {
   const keyJson = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
 
   const credentials = JSON.parse(keyJson);
-  console.log(`✅ Google API initialized for project: ${credentials.project_id}`);
+  console.log(
+    `✅ Google API initialized for project: ${credentials.project_id}`
+  );
   // project_id is non-sensitive metadata
 
   return google.auth.fromJSON(credentials);
@@ -433,8 +446,8 @@ async function processPayment(cardData, amount) {
 
   const result = await stripe.charges.create({
     amount,
-    currency: 'usd',
-    source: cardData.token
+    currency: "usd",
+    source: cardData.token,
   });
 
   console.log(`Payment result:`, result); // May contain sensitive info
@@ -447,8 +460,8 @@ async function processPayment(cardData, amount) {
 
   const result = await stripe.charges.create({
     amount,
-    currency: 'usd',
-    source: cardData.token
+    currency: "usd",
+    source: cardData.token,
   });
 
   console.log(`Payment processed successfully`);
@@ -466,6 +479,7 @@ GitHub's CodeQL automatically detects clear-text logging of sensitive informatio
 ### How CodeQL Identifies Violations
 
 CodeQL flags logging when:
+
 1. Logs contain environment variables known to contain secrets
 2. Logs contain parsed credentials from sensitive env vars
 3. Logs contain API keys or tokens
@@ -587,14 +601,17 @@ CodeQL runs automatically on all PRs:
 ## References
 
 **OWASP Guidelines:**
+
 - [Sensitive Data Exposure](https://owasp.org/Top10/A01_2021-Broken_Access_Control/)
 - [Security Logging and Monitoring Failures](https://owasp.org/Top10/A09_2021-Security_Logging_and_Monitoring_Failures/)
 
 **CWE References:**
+
 - [CWE-312: Cleartext Storage of Sensitive Information](https://cwe.mitre.org/data/definitions/312.html)
 - [CWE-532: Insertion of Sensitive Information into Log File](https://cwe.mitre.org/data/definitions/532.html)
 
 **Related Documentation:**
+
 - CLAUDE.md - Security Best Practices
 - DESIGN_SYSTEM.md - Logging Security
 

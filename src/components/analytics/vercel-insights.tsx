@@ -1,4 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -23,13 +29,22 @@ export function VercelInsights({ vercel, lastSynced }: VercelInsightsProps) {
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className={cn(TYPOGRAPHY.label.standard, "flex items-center gap-2")}>
+              <CardTitle
+                className={cn(
+                  TYPOGRAPHY.label.standard,
+                  "flex items-center gap-2"
+                )}
+              >
                 Vercel Insights
               </CardTitle>
-              <CardDescription className="text-xs">Top traffic by pages, referrers, and devices</CardDescription>
+              <CardDescription className="text-xs">
+                Top traffic by pages, referrers, and devices
+              </CardDescription>
             </div>
             {lastSynced && (
-              <Badge variant="outline" className="text-xs">Last: {new Date(lastSynced).toLocaleString()}</Badge>
+              <Badge variant="outline" className="text-xs">
+                Last: {new Date(lastSynced).toLocaleString()}
+              </Badge>
             )}
           </div>
         </CardHeader>
@@ -39,8 +54,15 @@ export function VercelInsights({ vercel, lastSynced }: VercelInsightsProps) {
             <ul className="text-xs text-muted-foreground space-y-1 mt-2">
               {topPages.slice(0, 5).map((p) => (
                 <li key={p.path} className="flex items-center justify-between">
-                  <Link href={p.url || p.path} className="hover:underline break-words pr-2">{p.path}</Link>
-                  <span className={cn("ml-2", TYPOGRAPHY.label.small)}>{p.views}</span>
+                  <Link
+                    href={p.url || p.path}
+                    className="hover:underline break-words pr-2"
+                  >
+                    {p.path}
+                  </Link>
+                  <span className={cn("ml-2", TYPOGRAPHY.label.small)}>
+                    {p.views}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -49,9 +71,14 @@ export function VercelInsights({ vercel, lastSynced }: VercelInsightsProps) {
             <h3 className={TYPOGRAPHY.label.small}>Top Referrers</h3>
             <ul className="text-xs text-muted-foreground space-y-1 mt-2">
               {topReferrers.slice(0, 5).map((r) => (
-                <li key={r.referrer} className="flex items-center justify-between">
+                <li
+                  key={r.referrer}
+                  className="flex items-center justify-between"
+                >
                   <span className="break-words pr-2">{r.referrer}</span>
-                  <span className={cn("ml-2", TYPOGRAPHY.label.small)}>{r.views}</span>
+                  <span className={cn("ml-2", TYPOGRAPHY.label.small)}>
+                    {r.views}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -60,9 +87,14 @@ export function VercelInsights({ vercel, lastSynced }: VercelInsightsProps) {
             <h3 className={TYPOGRAPHY.label.small}>Top Devices</h3>
             <ul className="text-xs text-muted-foreground space-y-1 mt-2">
               {topDevices.slice(0, 5).map((d) => (
-                <li key={d.device} className="flex items-center justify-between">
+                <li
+                  key={d.device}
+                  className="flex items-center justify-between"
+                >
                   <span className="break-words pr-2">{d.device}</span>
-                  <span className={cn("ml-2", TYPOGRAPHY.label.small)}>{d.views}</span>
+                  <span className={cn("ml-2", TYPOGRAPHY.label.small)}>
+                    {d.views}
+                  </span>
                 </li>
               ))}
             </ul>

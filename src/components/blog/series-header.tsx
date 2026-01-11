@@ -35,19 +35,19 @@ export function SeriesHeader({
     <div className={SPACING.section}>
       <h1 className={TYPOGRAPHY.h1.standard}>{name}</h1>
       <p className={TYPOGRAPHY.description}>
-        {postCount === 1 ? "1 post" : `${postCount} posts`} •{" "}
-        {totalMinutes} min read
+        {postCount === 1 ? "1 post" : `${postCount} posts`} • {totalMinutes} min
+        read
       </p>
 
       {/* Stats row */}
-      <div className="flex flex-wrap gap-4 mt-4 text-sm text-muted-foreground">
-        <div className="flex items-center gap-2">
+      <div
+        className={`flex flex-wrap gap-${SPACING.md} mt-${SPACING.md} text-sm text-muted-foreground`}
+      >
+        <div className={`flex items-center gap-${SPACING.sm}`}>
           <BookOpen className="w-4 h-4" />
-          <span>
-            {postCount === 1 ? "1 post" : `${postCount} posts`}
-          </span>
+          <span>{postCount === 1 ? "1 post" : `${postCount} posts`}</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className={`flex items-center gap-${SPACING.sm}`}>
           <Clock className="w-4 h-4" />
           <span>
             {totalMinutes} min {totalMinutes === 1 ? "read" : "read"}

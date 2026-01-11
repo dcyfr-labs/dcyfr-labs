@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PageLayout } from "@/components/layouts/page-layout";
-import { PageHero } from "@/components/layouts/page-hero";
+import { PageLayout } from "@/components/layouts";
+import { PageHero } from "@/components/layouts";
 import { Section } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ImpactStats } from "@/components/sponsors/impact-stats";
+import { ImpactStats } from "@/components/sponsors";
 import { SponsorshipTracker } from "./sponsorship-tracker";
 import {
   TYPOGRAPHY,
@@ -16,7 +16,7 @@ import {
 } from "@/lib/design-tokens";
 import { BookOpen, Code, Linkedin, Github, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getGitHubSponsors } from "@/lib/sponsors/github-sponsors";
+import { getGitHubSponsors } from "@/lib/sponsors";
 
 export const metadata: Metadata = {
   title: "Thank You!",

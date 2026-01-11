@@ -1,18 +1,24 @@
 ---
 id: "post-20251112-26db545c"
 title: "LaTeX & Mathematical Expressions"
-summary: "Complete demonstration of LaTeX and mathematical expression rendering with KaTeX, including inline equations, integrals, matrices, and calculus."
+summary: "Complete demonstration of LaTeX and mathematical expression rendering with KaTeX, including inline equations, integrals, matrices, calculus, and accessibility features."
 publishedAt: "2025-11-12T12:00:00Z"
-updatedAt: "2025-11-30T12:00:00Z"
+updatedAt: "2026-01-11T12:00:00Z"
 category: "Demo"
-tags: ["LaTeX", "Math", "KaTeX", "Equations", "Calculus", "Demo"]
+tags:
+  ["LaTeX", "Math", "KaTeX", "Equations", "Calculus", "Demo", "Accessibility"]
 draft: true
 series:
   name: "Features"
   order: 4
 ---
 
-This post demonstrates mathematical expression rendering using **KaTeX**, providing beautiful typesetting for mathematical content inline and as block equations.
+This post demonstrates mathematical expression rendering using <GlossaryTooltip term="KaTeX" definition="Fast math typesetting library for the web, based on TeX">**KaTeX**</GlossaryTooltip>, providing beautiful typesetting for mathematical content inline and as block equations.
+
+<SectionShare
+  sectionId="introduction"
+  sectionTitle="LaTeX & Mathematical Expressions"
+/>
 
 ---
 
@@ -65,6 +71,8 @@ $$
 
 **Solution**: $x = 2, y = 3$
 
+<SectionShare sectionId="block-math" sectionTitle="Block Math Examples" />
+
 ---
 
 ## Matrix Operations
@@ -109,6 +117,54 @@ g & h & i
 \end{bmatrix} = a(ei-fh) - b(di-fg) + c(dh-eg)
 $$
 
+<CollapsibleSection id="advanced-math" title="Advanced Mathematical Concepts">
+
+### Complex Analysis
+
+**Cauchy-Riemann Equations**:
+
+$$
+\frac{\partial u}{\partial x} = \frac{\partial v}{\partial y}, \quad \frac{\partial u}{\partial y} = -\frac{\partial v}{\partial x}
+$$
+
+**Residue Theorem**:
+
+$$
+\oint_C f(z) \, dz = 2\pi i \sum_{k} \text{Res}(f, z_k)
+$$
+
+### Advanced Calculus
+
+**Green's Theorem**:
+
+$$
+\oint_C (P \, dx + Q \, dy) = \iint_D \left(\frac{\partial Q}{\partial x} - \frac{\partial P}{\partial y}\right) dA
+$$
+
+**Stokes' Theorem**:
+
+$$
+\oint_C \mathbf{F} \cdot d\mathbf{r} = \iint_S (\nabla \times \mathbf{F}) \cdot \mathbf{n} \, dS
+$$
+
+### Number Theory
+
+**Euler's Totient Function**:
+
+$$
+\phi(n) = n \prod_{p|n} \left(1 - \frac{1}{p}\right)
+$$
+
+**Prime Number Theorem**:
+
+$$
+\pi(x) \sim \frac{x}{\ln x}
+$$
+
+</CollapsibleSection>
+
+<SectionShare sectionId="matrix-operations" sectionTitle="Matrix Operations" />
+
 ---
 
 ## Summation and Products
@@ -146,16 +202,19 @@ $$
 ### Derivative Rules
 
 Power rule:
+
 $$
 \frac{d}{dx}(x^n) = nx^{n-1}
 $$
 
 Product rule:
+
 $$
 \frac{d}{dx}(uv) = u\frac{dv}{dx} + v\frac{du}{dx}
 $$
 
 Chain rule:
+
 $$
 \frac{d}{dx}(f(g(x))) = f'(g(x)) \cdot g'(x)
 $$
@@ -163,11 +222,13 @@ $$
 ### Integral Rules
 
 Power integral:
+
 $$
 \int x^n \, dx = \frac{x^{n+1}}{n+1} + C, \quad n \neq -1
 $$
 
 Integration by parts:
+
 $$
 \int u \, dv = uv - \int v \, du
 $$

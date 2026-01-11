@@ -26,8 +26,10 @@ const layoutDecisionTree = {
           next: null,
           result: {
             title: "Use ArticleLayout",
-            description: "Blog posts get the full article treatment with reading time, TOC, related posts, and metadata",
-            usage: "Import from @/components/layouts and use with createArticlePageMetadata",
+            description:
+              "Blog posts get the full article treatment with reading time, TOC, related posts, and metadata",
+            usage:
+              "Import from @/components/layouts and use with createArticlePageMetadata",
             code: `import { ArticleLayout } from "@/components/layouts";
 import { createArticlePageMetadata } from "@/lib/metadata";
 
@@ -64,8 +66,10 @@ export default function BlogPost() {
           next: null,
           result: {
             title: "Use ArchiveLayout",
-            description: "List pages with filters get dedicated archive treatment",
-            usage: "Import from @/components/layouts and use with createArchivePageMetadata",
+            description:
+              "List pages with filters get dedicated archive treatment",
+            usage:
+              "Import from @/components/layouts and use with createArchivePageMetadata",
             code: `import { ArchiveLayout } from "@/components/layouts";
 import { createArchivePageMetadata } from "@/lib/metadata";
 
@@ -78,7 +82,7 @@ export const metadata = createArchivePageMetadata({
 export default function BlogArchive() {
   return (
     <ArchiveLayout>
-      <PostList posts={posts} />
+        <PostList posts={posts} client />
     </ArchiveLayout>
   );
 }`,
@@ -89,8 +93,10 @@ export default function BlogArchive() {
           next: null,
           result: {
             title: "Use PageLayout",
-            description: "Standard wrapper for 90% of pages with consistent spacing and SEO",
-            usage: "Import from @/components/layouts and use with createPageMetadata",
+            description:
+              "Standard wrapper for 90% of pages with consistent spacing and SEO",
+            usage:
+              "Import from @/components/layouts and use with createPageMetadata",
             code: `import { PageLayout } from "@/components/layouts";
 import { createPageMetadata } from "@/lib/metadata";
 
@@ -128,8 +134,10 @@ const metadataDecisionTree = {
           next: null,
           result: {
             title: "Use createPageMetadata",
-            description: "Standard metadata for most pages with OpenGraph and Twitter Card",
-            usage: "Import from @/lib/metadata and pass title, description, and path",
+            description:
+              "Standard metadata for most pages with OpenGraph and Twitter Card",
+            usage:
+              "Import from @/lib/metadata and pass title, description, and path",
             code: `import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata = createPageMetadata({
@@ -144,8 +152,10 @@ export const metadata = createPageMetadata({
           next: null,
           result: {
             title: "Use createArchivePageMetadata",
-            description: "Enhanced metadata for filterable lists with item counts",
-            usage: "Import from @/lib/metadata and pass title, itemCount, and optional filters",
+            description:
+              "Enhanced metadata for filterable lists with item counts",
+            usage:
+              "Import from @/lib/metadata and pass title, itemCount, and optional filters",
             code: `import { createArchivePageMetadata } from "@/lib/metadata";
 
 export const metadata = createArchivePageMetadata({
@@ -161,7 +171,8 @@ export const metadata = createArchivePageMetadata({
           next: null,
           result: {
             title: "Use createArticlePageMetadata",
-            description: "Rich metadata for articles with publication date, tags, and structured data",
+            description:
+              "Rich metadata for articles with publication date, tags, and structured data",
             usage: "Import from @/lib/metadata with full article details",
             code: `import { createArticlePageMetadata } from "@/lib/metadata";
 
@@ -209,7 +220,8 @@ const containerDecisionTree = {
           next: null,
           result: {
             title: "Use CONTAINER_WIDTHS.standard",
-            description: "896px max-width - most common choice for 80% of pages",
+            description:
+              "896px max-width - most common choice for 80% of pages",
             usage: "Import from @/lib/design-tokens",
             code: `import { CONTAINER_WIDTHS } from "@/lib/design-tokens";
 
@@ -251,7 +263,8 @@ const containerDecisionTree = {
           next: null,
           result: {
             title: "Use CONTAINER_WIDTHS.dashboard",
-            description: "1536px max-width - full-width layouts for data displays",
+            description:
+              "1536px max-width - full-width layouts for data displays",
             usage: "Import from @/lib/design-tokens",
             code: `import { CONTAINER_WIDTHS } from "@/lib/design-tokens";
 
@@ -282,13 +295,17 @@ export default function DecisionTreesPage() {
         <div>
           <h1 className={TYPOGRAPHY.h1.standard}>Interactive Decision Trees</h1>
           <p className="text-lg text-muted-foreground mt-4">
-            Click through these interactive flowcharts to quickly determine which
-            architectural patterns to use. Each tree provides copy-paste code
-            examples at the end.
+            Click through these interactive flowcharts to quickly determine
+            which architectural patterns to use. Each tree provides copy-paste
+            code examples at the end.
           </p>
         </div>
 
-        <DecisionTreeClient layoutDecisionTree={layoutDecisionTree} metadataDecisionTree={metadataDecisionTree} containerDecisionTree={containerDecisionTree} />
+        <DecisionTreeClient
+          layoutDecisionTree={layoutDecisionTree}
+          metadataDecisionTree={metadataDecisionTree}
+          containerDecisionTree={containerDecisionTree}
+        />
       </div>
     </PageLayout>
   );

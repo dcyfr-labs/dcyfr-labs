@@ -107,7 +107,7 @@ export function loadBookmarksFromStorage(): BookmarkCollection {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) {
-      console.log("[Bookmarks] 📂 No bookmarks found in localStorage");
+      console.warn("[Bookmarks] 📂 No bookmarks found in localStorage");
       return {
         bookmarks: [],
         lastUpdated: new Date(),
@@ -149,7 +149,7 @@ export function loadBookmarksFromStorage(): BookmarkCollection {
       lastSyncedAt: b.lastSyncedAt ? new Date(b.lastSyncedAt) : undefined,
     }));
 
-    console.log(`[Bookmarks] 📂 Loaded ${bookmarks.length} bookmarks from localStorage:`, bookmarks.map(b => b.activityId));
+    console.warn(`[Bookmarks] 📂 Loaded ${bookmarks.length} bookmarks from localStorage:`, bookmarks.map(b => b.activityId));
 
     return {
       bookmarks,
@@ -216,7 +216,7 @@ export function addBookmark(
 ): BookmarkCollection {
   // Don't duplicate
   if (isBookmarked(activityId, collection)) {
-    console.log(`[Bookmarks] Skipping duplicate bookmark: ${activityId}`);
+    console.warn(`[Bookmarks] Skipping duplicate bookmark: ${activityId}`);
     return collection;
   }
 
@@ -234,7 +234,7 @@ export function addBookmark(
     syncStatus: "pending",
   };
 
-  console.log(`[Bookmarks] ✅ Added bookmark: ${activityId} (total: ${updated.count})`);
+  console.warn(`[Bookmarks] ✅ Added bookmark: ${activityId} (total: ${updated.count})`);
   saveBookmarksToStorage(updated);
   return updated;
 }
@@ -255,7 +255,7 @@ export function removeBookmark(
     syncStatus: "pending",
   };
 
-  console.log(`[Bookmarks] ❌ Removed bookmark: ${activityId} (remaining: ${updated.count})`);
+  console.warn(`[Bookmarks] ❌ Removed bookmark: ${activityId} (remaining: ${updated.count})`);
   saveBookmarksToStorage(updated);
   return updated;
 }
@@ -509,7 +509,7 @@ export async function syncBookmarksWithServer(
 ): Promise<BookmarkCollection> {
   // TODO: Implement server sync when authentication is available
   // For now, just mark as local-only
-  console.info("[Bookmarks] Server sync not yet implemented");
+  console.warn("[Bookmarks] Server sync not yet implemented");
   
   return {
     ...collection,

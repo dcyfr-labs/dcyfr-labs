@@ -8,21 +8,34 @@ test.describe("Command Palette", () => {
   test("should open command palette with / (forward slash)", async ({
     page,
   }) => {
+    // Wait for page to be fully loaded
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500); // Allow for component hydration
+
     // Press / key
     await page.keyboard.press("Slash");
 
+    // Wait for dialog to appear with timeout
+    await page.waitForSelector('[role="dialog"]', { state: 'visible', timeout: 10000 });
+    
     // Command palette should be visible
-    await expect(page.getByRole("dialog")).toBeVisible();
-    await expect(page.getByPlaceholder("Search commands...")).toBeVisible();
+    await expect(page.getByRole("dialog")).toBeVisible({ timeout: 10000 });
+    await expect(page.getByPlaceholder("Search commands...")).toBeVisible({ timeout: 5000 });
   });
 
   test("should close command palette with Escape", async ({ page }) => {
+    // Wait for page load
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(500);
+
     // Open command palette
     await page.keyboard.press("Slash");
-    await expect(page.getByRole("dialog")).toBeVisible();
+    await page.waitForSelector('[role="dialog"]', { state: 'visible', timeout: 10000 });
+    await expect(page.getByRole("dialog")).toBeVisible({ timeout: 10000 });
 
     // Close with Escape
     await page.keyboard.press("Escape");
+    await page.waitForSelector('[role="dialog"]', { state: 'hidden', timeout: 5000 });
     await expect(page.getByRole("dialog")).not.toBeVisible();
   });
 

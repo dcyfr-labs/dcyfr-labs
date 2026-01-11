@@ -1,12 +1,12 @@
 /**
  * Security Version Checker
- * 
+ *
  * Utility to check if installed dependency versions are affected by security advisories.
  * Uses local package-lock.json parsing to avoid network calls and determine vulnerability.
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 export interface PackageLockData {
   packages: Record<string, { version: string }>;
@@ -23,16 +23,18 @@ export interface VersionCheckResult {
  * @param lockfilePath - Path to package-lock.json (defaults to project root)
  * @returns Parsed package lock data with installed versions
  */
-export function parsePackageLock(lockfilePath = 'package-lock.json'): PackageLockData | null {
+export function parsePackageLock(
+  lockfilePath = "package-lock.json"
+): PackageLockData | null {
   try {
-    const resolvedPath = path.isAbsolute(lockfilePath) 
-      ? lockfilePath 
+    const resolvedPath = path.isAbsolute(lockfilePath)
+      ? lockfilePath
       : path.join(process.cwd(), lockfilePath);
-    
-    const content = fs.readFileSync(resolvedPath, 'utf-8');
+
+    const content = fs.readFileSync(resolvedPath, "utf-8");
     return JSON.parse(content);
   } catch (error) {
-    console.error('Failed to parse package-lock.json:', error);
+    console.error("Failed to parse package-lock.json:", error);
     return null;
   }
 }
@@ -43,18 +45,21 @@ export function parsePackageLock(lockfilePath = 'package-lock.json'): PackageLoc
  * @param packageName - Package name to look up
  * @returns The installed version string or null if not found
  */
-export function getInstalledVersion(lockData: PackageLockData, packageName: string): string | null {
+export function getInstalledVersion(
+  lockData: PackageLockData,
+  packageName: string
+): string | null {
   try {
     // Check root level packages first
     if (lockData.packages?.[packageName]) {
       return lockData.packages[packageName].version;
     }
-    
+
     // Check node_modules nested packages
     if (lockData.packages?.[`node_modules/${packageName}`]) {
       return lockData.packages[`node_modules/${packageName}`].version;
     }
-    
+
     return null;
   } catch (error) {
     console.error(`Error getting installed version for ${packageName}:`, error);
@@ -67,21 +72,23 @@ export function getInstalledVersion(lockData: PackageLockData, packageName: stri
  * @param version - Version string (e.g., "16.0.7", "1.2.3-rc.1")
  * @returns Object with major, minor, patch components or null if invalid
  */
-export function parseVersion(version: string): { major: number; minor: number; patch: number } | null {
+export function parseVersion(
+  version: string
+): { major: number; minor: number; patch: number } | null {
   try {
     // Remove any prerelease or build metadata (e.g., "16.0.7-rc.1" -> "16.0.7")
-    const cleanVersion = version.split('-')[0].split('+')[0];
-    const parts = cleanVersion.split('.');
-    
+    const cleanVersion = version.split("-")[0].split("+")[0];
+    const parts = cleanVersion.split(".");
+
     if (parts.length < 2) return null;
-    
+
     const major = parseInt(parts[0], 10);
     const minor = parseInt(parts[1], 10);
     const patch = parseInt(parts[2], 10) || 0;
-    
+
     // Validate that we got valid numbers
     if (isNaN(major) || isNaN(minor)) return null;
-    
+
     return { major, minor, patch };
   } catch {
     return null;
@@ -95,9 +102,9 @@ export function parseVersion(version: string): { major: number; minor: number; p
 export function compareVersions(v1: string, v2: string): number {
   const parsed1 = parseVersion(v1);
   const parsed2 = parseVersion(v2);
-  
+
   if (!parsed1 || !parsed2) return 0;
-  
+
   if (parsed1.major !== parsed2.major) {
     return parsed1.major < parsed2.major ? -1 : 1;
   }
@@ -107,14 +114,14 @@ export function compareVersions(v1: string, v2: string): number {
   if (parsed1.patch !== parsed2.patch) {
     return parsed1.patch < parsed2.patch ? -1 : 1;
   }
-  
+
   return 0;
 }
 
 /**
  * Parse vulnerability range from GHSA format
  * Examples: "< 16.0.7", ">= 16.0.0, < 16.0.7", "= 16.0.6"
- * 
+ *
  * @param vulnerableRange - Range string from advisory
  * @returns Object describing the vulnerability range or null if unparseable
  */
@@ -123,43 +130,45 @@ export interface VulnerabilityRange {
   max?: { version: string; inclusive: boolean };
 }
 
-export function parseVulnerabilityRange(vulnerableRange: string): VulnerabilityRange | null {
-  if (!vulnerableRange || typeof vulnerableRange !== 'string') {
+export function parseVulnerabilityRange(
+  vulnerableRange: string
+): VulnerabilityRange | null {
+  if (!vulnerableRange || typeof vulnerableRange !== "string") {
     return null;
   }
-  
+
   const range: VulnerabilityRange = {};
-  
+
   try {
     // Split by comma to handle multiple conditions
-    const conditions = vulnerableRange.split(',').map(c => c.trim());
-    
+    const conditions = vulnerableRange.split(",").map((c) => c.trim());
+
     for (const condition of conditions) {
       // Handle exact version match (= X.Y.Z)
-      if (condition.startsWith('=')) {
+      if (condition.startsWith("=")) {
         const version = condition.slice(1).trim();
         range.min = { version, inclusive: true };
         range.max = { version, inclusive: true };
         continue;
       }
-      
+
       // Handle < or <=
-      if (condition.startsWith('<')) {
-        const isInclusive = condition.startsWith('<=');
+      if (condition.startsWith("<")) {
+        const isInclusive = condition.startsWith("<=");
         const version = condition.slice(isInclusive ? 2 : 1).trim();
         range.max = { version, inclusive: isInclusive };
         continue;
       }
-      
+
       // Handle > or >=
-      if (condition.startsWith('>')) {
-        const isInclusive = condition.startsWith('>=');
+      if (condition.startsWith(">")) {
+        const isInclusive = condition.startsWith(">=");
         const version = condition.slice(isInclusive ? 2 : 1).trim();
         range.min = { version, inclusive: isInclusive };
         continue;
       }
     }
-    
+
     return Object.keys(range).length > 0 ? range : null;
   } catch {
     return null;
@@ -180,16 +189,17 @@ export function isVersionVulnerable(
   if (!vulnerableRange) {
     return true;
   }
-  
-  const range = typeof vulnerableRange === 'string' 
-    ? parseVulnerabilityRange(vulnerableRange)
-    : vulnerableRange;
-  
+
+  const range =
+    typeof vulnerableRange === "string"
+      ? parseVulnerabilityRange(vulnerableRange)
+      : vulnerableRange;
+
   if (!range) {
     // If we can't parse the range, be conservative
     return true;
   }
-  
+
   // Check minimum bound
   if (range.min) {
     const cmp = compareVersions(installedVersion, range.min.version);
@@ -197,7 +207,7 @@ export function isVersionVulnerable(
       return false; // Version is below minimum
     }
   }
-  
+
   // Check maximum bound
   if (range.max) {
     const cmp = compareVersions(installedVersion, range.max.version);
@@ -205,7 +215,7 @@ export function isVersionVulnerable(
       return false; // Version is above maximum
     }
   }
-  
+
   return true; // Version is within vulnerable range
 }
 
@@ -224,25 +234,26 @@ export function checkAdvisoryImpact(
   lockData: PackageLockData
 ): VersionCheckResult {
   const installedVersion = getInstalledVersion(lockData, packageName);
-  
+
   // If we can't find the installed version, be conservative and alert
   if (!installedVersion) {
     return {
       isVulnerable: true,
       installedVersion: null,
-      reason: 'Could not determine installed version from package-lock.json',
+      reason: "Could not determine installed version from package-lock.json",
     };
   }
-  
+
   // If we can't parse the vulnerable range or patched version, be conservative
   if (!vulnerableRange && !patchedVersion) {
     return {
       isVulnerable: true,
       installedVersion,
-      reason: 'Advisory missing vulnerability range and patched version information',
+      reason:
+        "Advisory missing vulnerability range and patched version information",
     };
   }
-  
+
   // Try using vulnerable range first
   if (vulnerableRange) {
     const vulnerable = isVersionVulnerable(installedVersion, vulnerableRange);
@@ -254,9 +265,9 @@ export function checkAdvisoryImpact(
       };
     }
   }
-  
+
   // If vulnerable range says it's vulnerable, check if patched version is available
-  if (patchedVersion && patchedVersion !== 'Not available') {
+  if (patchedVersion && patchedVersion !== "Not available") {
     const isPatched = compareVersions(installedVersion, patchedVersion) >= 0;
     if (isPatched) {
       return {
@@ -266,7 +277,7 @@ export function checkAdvisoryImpact(
       };
     }
   }
-  
+
   // If we got here and have a vulnerable range, the version is vulnerable
   if (vulnerableRange) {
     return {
@@ -275,11 +286,11 @@ export function checkAdvisoryImpact(
       reason: `Installed version ${installedVersion} is within vulnerable range: ${vulnerableRange}`,
     };
   }
-  
+
   // Last resort: if we can't determine, be conservative
   return {
     isVulnerable: true,
     installedVersion,
-    reason: 'Could not fully evaluate advisory impact',
+    reason: "Could not fully evaluate advisory impact",
   };
 }

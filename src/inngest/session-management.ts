@@ -21,18 +21,18 @@ export const sessionCleanup = inngest.createFunction(
     cron: "0 2 * * *", // Daily at 2 AM
   },
   async ({ step }) => {
-    console.log("🧹 Starting daily session cleanup...");
+    console.warn("🧹 Starting daily session cleanup...");
 
     const result = await step.run("cleanup-expired-sessions", async () => {
       return await SecureSessionManager.cleanupExpiredSessions();
     });
 
     await step.run("log-cleanup-results", async () => {
-      console.log(`✅ Session cleanup completed: ${result.cleaned} sessions removed`);
+      console.warn(`✅ Session cleanup completed: ${result.cleaned} sessions removed`);
       
       // Get updated stats after cleanup
       const stats = await SecureSessionManager.getSessionStats();
-      console.log("📊 Session stats after cleanup:", stats);
+      console.warn("📊 Session stats after cleanup:", stats);
       
       return {
         cleaned: result.cleaned,
@@ -101,18 +101,18 @@ export const sessionMonitoring = inngest.createFunction(
 
     // Log monitoring results
     await step.run("log-monitoring-results", async () => {
-      console.log("📊 Session monitoring stats:", {
+      console.warn("📊 Session monitoring stats:", {
         timestamp: new Date().toISOString(),
         ...stats
       });
 
       if (alerts.length > 0) {
-        console.log("⚠️ Session alerts:", alerts);
+        console.warn("⚠️ Session alerts:", alerts);
         
         // In production, send alerts to monitoring system
         if (process.env.NODE_ENV === 'production') {
           // TODO: Integrate with your monitoring/alerting system
-          console.log("🚨 Production alerts would be sent to monitoring system");
+          console.warn("🚨 Production alerts would be sent to monitoring system");
         }
       }
     });
@@ -140,18 +140,18 @@ export const revokeUserSessions = inngest.createFunction(
   async ({ event, step }) => {
     const { userId, reason } = event.data;
 
-    console.log(`🔒 Revoking sessions for user: ${userId}, reason: ${reason}`);
+    console.warn(`🔒 Revoking sessions for user: ${userId}, reason: ${reason}`);
 
     const result = await step.run("revoke-sessions", async () => {
       return await SecureSessionManager.revokeUserSessions(userId);
     });
 
     await step.run("log-revocation", async () => {
-      console.log(`✅ Revoked ${result.revoked} sessions for user ${userId}`);
+      console.warn(`✅ Revoked ${result.revoked} sessions for user ${userId}`);
       
       // TODO: In production, log to audit trail
       if (process.env.NODE_ENV === 'production') {
-        console.log("📝 Session revocation logged to audit trail");
+        console.warn("📝 Session revocation logged to audit trail");
       }
     });
 
@@ -178,7 +178,7 @@ export const sessionSecurityAudit = inngest.createFunction(
     cron: "0 3 * * 0", // Weekly on Sunday at 3 AM
   },
   async ({ step }) => {
-    console.log("🔍 Starting weekly session security audit...");
+    console.warn("🔍 Starting weekly session security audit...");
 
     const auditResults = await step.run("perform-security-audit", async () => {
       const stats = await SecureSessionManager.getSessionStats();
@@ -210,10 +210,10 @@ export const sessionSecurityAudit = inngest.createFunction(
     });
 
     await step.run("log-audit-results", async () => {
-      console.log("🔍 Security audit results:", auditResults);
+      console.warn("🔍 Security audit results:", auditResults);
       
       if (auditResults.recommendations.length > 0) {
-        console.log("💡 Audit recommendations:", auditResults.recommendations);
+        console.warn("💡 Audit recommendations:", auditResults.recommendations);
       }
     });
 
@@ -236,7 +236,7 @@ export const emergencySessionLockdown = inngest.createFunction(
   async ({ event, step }) => {
     const { reason, initiatedBy } = event.data;
 
-    console.log(`🚨 EMERGENCY SESSION LOCKDOWN initiated by ${initiatedBy}: ${reason}`);
+    console.warn(`🚨 EMERGENCY SESSION LOCKDOWN initiated by ${initiatedBy}: ${reason}`);
 
     const result = await step.run("destroy-all-sessions", async () => {
       const stats = await SecureSessionManager.getSessionStats();
@@ -246,7 +246,7 @@ export const emergencySessionLockdown = inngest.createFunction(
       
       // TODO: In a real emergency, you might want to clear ALL Redis session keys
       // This would require additional SecureSessionManager method
-      console.log(`🔥 Emergency cleanup: ${cleanup.cleaned} sessions destroyed`);
+      console.warn(`🔥 Emergency cleanup: ${cleanup.cleaned} sessions destroyed`);
       
       return {
         beforeLockdown: stats,
@@ -255,7 +255,7 @@ export const emergencySessionLockdown = inngest.createFunction(
     });
 
     await step.run("log-emergency-action", async () => {
-      console.log("🚨 EMERGENCY LOCKDOWN COMPLETED", {
+      console.warn("🚨 EMERGENCY LOCKDOWN COMPLETED", {
         timestamp: new Date().toISOString(),
         reason,
         initiatedBy,
@@ -264,7 +264,7 @@ export const emergencySessionLockdown = inngest.createFunction(
       
       // TODO: In production, send critical alert
       if (process.env.NODE_ENV === 'production') {
-        console.log("🚨 CRITICAL: Emergency lockdown alert sent to security team");
+        console.warn("🚨 CRITICAL: Emergency lockdown alert sent to security team");
       }
     });
 

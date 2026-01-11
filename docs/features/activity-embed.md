@@ -17,7 +17,7 @@ The Activity Feed Embed feature allows you to display your dcyfr-labs activity f
 
 ### 1. Generate Embed Code
 
-Visit [https://dcyfr.com/activity](https://dcyfr.com/activity) and click "Show Embed Code" to access the embed generator.
+Visit [https://dcyfr.ai/activity](https://dcyfr.ai/activity) and click "Show Embed Code" to access the embed generator.
 
 ### 2. Customize Options
 
@@ -38,7 +38,7 @@ Copy the generated iframe code and paste it into your website's HTML.
 
 ```html
 <iframe
-  src="https://dcyfr.com/activity/embed"
+  src="https://dcyfr.ai/activity/embed"
   width="100%"
   height="600px"
   frameborder="0"
@@ -49,11 +49,11 @@ Copy the generated iframe code and paste it into your website's HTML.
 
 <script>
   // Auto-resize iframe based on content height
-  window.addEventListener('message', function(e) {
-    if (e.data.type === 'activity-embed-resize') {
+  window.addEventListener("message", function (e) {
+    if (e.data.type === "activity-embed-resize") {
       const iframe = document.querySelector('iframe[src*="/activity/embed"]');
       if (iframe) {
-        iframe.style.height = e.data.height + 'px';
+        iframe.style.height = e.data.height + "px";
       }
     }
   });
@@ -64,7 +64,7 @@ Copy the generated iframe code and paste it into your website's HTML.
 
 ```html
 <iframe
-  src="https://dcyfr.com/activity/embed?source=blog&limit=10"
+  src="https://dcyfr.ai/activity/embed?source=blog&limit=10"
   width="100%"
   height="600px"
   frameborder="0"
@@ -77,7 +77,7 @@ Copy the generated iframe code and paste it into your website's HTML.
 
 ```html
 <iframe
-  src="https://dcyfr.com/activity/embed?timeRange=week&limit=20"
+  src="https://dcyfr.ai/activity/embed?timeRange=week&limit=20"
   width="100%"
   height="600px"
   frameborder="0"
@@ -92,11 +92,11 @@ Copy the generated iframe code and paste it into your website's HTML.
 
 ### URL Parameters
 
-| Parameter | Type | Values | Default | Description |
-|-----------|------|--------|---------|-------------|
-| `source` | string | `blog`, `project`, `github`, `trending`, `milestone`, `certification`, `engagement` | All | Filter by activity source |
-| `timeRange` | string | `today`, `week`, `month`, `year`, `all` | `all` | Filter by time period |
-| `limit` | number | 1-100 | 20 | Maximum number of items to display |
+| Parameter   | Type   | Values                                                                              | Default | Description                        |
+| ----------- | ------ | ----------------------------------------------------------------------------------- | ------- | ---------------------------------- |
+| `source`    | string | `blog`, `project`, `github`, `trending`, `milestone`, `certification`, `engagement` | All     | Filter by activity source          |
+| `timeRange` | string | `today`, `week`, `month`, `year`, `all`                                             | `all`   | Filter by time period              |
+| `limit`     | number | 1-100                                                                               | 20      | Maximum number of items to display |
 
 ### Examples
 
@@ -104,16 +104,20 @@ Copy the generated iframe code and paste it into your website's HTML.
 
 ```html
 <!-- Blog posts from the last month -->
-<iframe src="https://dcyfr.com/activity/embed?source=blog&timeRange=month"></iframe>
+<iframe
+  src="https://dcyfr.ai/activity/embed?source=blog&timeRange=month"
+></iframe>
 
 <!-- Recent GitHub activity (last 7 days) -->
-<iframe src="https://dcyfr.com/activity/embed?source=github&timeRange=week&limit=15"></iframe>
+<iframe
+  src="https://dcyfr.ai/activity/embed?source=github&timeRange=week&limit=15"
+></iframe>
 
 <!-- Top 5 trending items -->
-<iframe src="https://dcyfr.com/activity/embed?source=trending&limit=5"></iframe>
+<iframe src="https://dcyfr.ai/activity/embed?source=trending&limit=5"></iframe>
 
 <!-- All milestones -->
-<iframe src="https://dcyfr.com/activity/embed?source=milestone"></iframe>
+<iframe src="https://dcyfr.ai/activity/embed?source=milestone"></iframe>
 ```
 
 ---
@@ -124,11 +128,11 @@ The embed automatically adjusts its height based on content using the `postMessa
 
 ```html
 <script>
-  window.addEventListener('message', function(e) {
-    if (e.data.type === 'activity-embed-resize') {
+  window.addEventListener("message", function (e) {
+    if (e.data.type === "activity-embed-resize") {
       const iframe = document.querySelector('iframe[src*="/activity/embed"]');
       if (iframe) {
-        iframe.style.height = e.data.height + 'px';
+        iframe.style.height = e.data.height + "px";
       }
     }
   });
@@ -142,7 +146,7 @@ For mobile-optimized layouts, use responsive width:
 ```html
 <div style="max-width: 100%; overflow: hidden;">
   <iframe
-    src="https://dcyfr.com/activity/embed?limit=10"
+    src="https://dcyfr.ai/activity/embed?limit=10"
     width="100%"
     height="auto"
     style="min-height: 400px;"
@@ -159,7 +163,7 @@ The embed uses a minimal, clean design that matches the dcyfr-labs brand. You ca
 ```html
 <div class="activity-embed-container">
   <iframe
-    src="https://dcyfr.com/activity/embed"
+    src="https://dcyfr.ai/activity/embed"
     width="100%"
     height="600px"
     frameborder="0"
@@ -174,7 +178,7 @@ The embed uses a minimal, clean design that matches the dcyfr-labs brand. You ca
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
   }
-  
+
   .activity-embed-container iframe {
     display: block;
     border: none;
@@ -199,6 +203,7 @@ X-Frame-Options: ALLOWALL
 ### No Tracking
 
 The embed does not:
+
 - Set cookies
 - Track user behavior across sites
 - Collect personal information
@@ -206,7 +211,7 @@ The embed does not:
 
 ### Content Security Policy
 
-The embed is safe to include on sites with strict CSP policies. It only loads content from `dcyfr.com` and does not execute external scripts.
+The embed is safe to include on sites with strict CSP policies. It only loads content from `dcyfr.ai` and does not execute external scripts.
 
 ---
 
@@ -238,8 +243,7 @@ The embed is safe to include on sites with strict CSP policies. It only loads co
 
 ```javascript
 // Test in browser console
-fetch('https://dcyfr.com/activity/embed')
-  .then(r => console.log(r.status)) // Should be 200
+fetch("https://dcyfr.ai/activity/embed").then((r) => console.log(r.status)); // Should be 200
 ```
 
 ### Height Not Auto-Adjusting
@@ -249,11 +253,11 @@ fetch('https://dcyfr.com/activity/embed')
 
 ```html
 <script>
-  window.addEventListener('message', function(e) {
-    if (e.data.type === 'activity-embed-resize') {
+  window.addEventListener("message", function (e) {
+    if (e.data.type === "activity-embed-resize") {
       const iframe = document.querySelector('iframe[src*="/activity/embed"]');
       if (iframe) {
-        iframe.style.height = e.data.height + 'px';
+        iframe.style.height = e.data.height + "px";
       }
     }
   });
@@ -266,7 +270,7 @@ fetch('https://dcyfr.com/activity/embed')
 **Solution:** Add frame-src directive to CSP:
 
 ```http
-Content-Security-Policy: frame-src https://dcyfr.com;
+Content-Security-Policy: frame-src https://dcyfr.ai;
 ```
 
 ### Filters Not Working
@@ -276,10 +280,12 @@ Content-Security-Policy: frame-src https://dcyfr.com;
 
 ```html
 <!-- ✅ Correct -->
-<iframe src="https://dcyfr.com/activity/embed?source=blog&timeRange=week"></iframe>
+<iframe
+  src="https://dcyfr.ai/activity/embed?source=blog&timeRange=week"
+></iframe>
 
 <!-- ❌ Incorrect -->
-<iframe src="https://dcyfr.com/activity/embed?source:blog"></iframe>
+<iframe src="https://dcyfr.ai/activity/embed?source:blog"></iframe>
 ```
 
 ---
@@ -296,11 +302,11 @@ The embed route uses **ISR (Incremental Static Regeneration)** with a 5-minute r
 
 ### Load Times
 
-| Metric | Target | Actual |
-|--------|--------|--------|
-| Initial Load | <2s | ~800ms |
-| Cached Load | <500ms | ~200ms |
-| Auto-Resize | <100ms | ~50ms |
+| Metric       | Target | Actual |
+| ------------ | ------ | ------ |
+| Initial Load | <2s    | ~800ms |
+| Cached Load  | <500ms | ~200ms |
+| Auto-Resize  | <100ms | ~50ms  |
 
 ### Optimization Tips
 
@@ -310,8 +316,8 @@ The embed route uses **ISR (Incremental Static Regeneration)** with a 5-minute r
 4. **Preconnect:** Add DNS prefetch for faster connections
 
 ```html
-<link rel="preconnect" href="https://dcyfr.com">
-<iframe loading="lazy" src="https://dcyfr.com/activity/embed?limit=10"></iframe>
+<link rel="preconnect" href="https://dcyfr.ai" />
+<iframe loading="lazy" src="https://dcyfr.ai/activity/embed?limit=10"></iframe>
 ```
 
 ---
@@ -325,7 +331,7 @@ Showcase your latest work and achievements:
 ```html
 <section class="activity-section">
   <h2>Recent Activity</h2>
-  <iframe src="https://dcyfr.com/activity/embed?limit=15"></iframe>
+  <iframe src="https://dcyfr.ai/activity/embed?limit=15"></iframe>
 </section>
 ```
 
@@ -336,8 +342,8 @@ Display recent blog posts in sidebar:
 ```html
 <aside class="sidebar">
   <h3>Latest Posts</h3>
-  <iframe 
-    src="https://dcyfr.com/activity/embed?source=blog&limit=5"
+  <iframe
+    src="https://dcyfr.ai/activity/embed?source=blog&limit=5"
     height="400px"
   ></iframe>
 </aside>
@@ -350,8 +356,8 @@ Show GitHub activity for open-source projects:
 ```html
 <div class="github-activity">
   <h2>Development Activity</h2>
-  <iframe 
-    src="https://dcyfr.com/activity/embed?source=github&timeRange=month&limit=20"
+  <iframe
+    src="https://dcyfr.ai/activity/embed?source=github&timeRange=month&limit=20"
   ></iframe>
 </div>
 ```
@@ -363,8 +369,8 @@ Embed changelog and milestones:
 ```html
 <div class="changelog">
   <h2>What's New</h2>
-  <iframe 
-    src="https://dcyfr.com/activity/embed?source=milestone&limit=10"
+  <iframe
+    src="https://dcyfr.ai/activity/embed?source=milestone&limit=10"
   ></iframe>
 </div>
 ```

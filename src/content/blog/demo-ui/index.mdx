@@ -3,10 +3,11 @@ id: "post-20251222-ui-demo"
 title: "UI Elements and Components"
 subtitle: "A comprehensive demonstration of all available visual components and styling options"
 authors: ["dcyfr"]
-summary: "Explore the full range of UI components, MDX elements, code highlighting, alerts, callouts, and visual features available in this blog system."
+summary: "Explore the full range of UI components, MDX elements, code highlighting, alerts, callouts, and visual features available in this blog system. Includes modern engagement components and React 19 patterns."
 publishedAt: "2025-12-22T12:00:00Z"
+updatedAt: "2026-01-11T12:00:00Z"
 category: "Design"
-tags: ["Demo", "UI", "Design System", "Components", "MDX"]
+tags: ["Demo", "UI", "Design System", "Components", "MDX", "React 19"]
 draft: true
 ---
 
@@ -19,22 +20,30 @@ This post demonstrates every visual element, component, and styling option avail
 ## Typography Hierarchy
 
 # Heading 1: Main Title
+
 The largest heading, typically used only once per page as the article title.
 
 ## Heading 2: Major Sections
+
 Primary section headers that divide your content into major parts.
 
 ### Heading 3: Subsections
+
 Secondary headers for breaking down sections into smaller topics.
 
 #### Heading 4: Details
+
 Tertiary headers for fine-grained organization.
 
 ##### Heading 5: Minor Points
+
 Fourth-level headers for very specific topics.
 
 ###### Heading 6: Smallest Heading
+
 The smallest heading level, rarely used but available.
+
+<SectionShare sectionId="typography" sectionTitle="Typography Hierarchy" />
 
 ---
 
@@ -42,7 +51,7 @@ The smallest heading level, rarely used but available.
 
 Regular paragraph text provides the foundation for your content. It should be easy to read with appropriate line height and spacing. The system uses a responsive typography scale that adapts to different screen sizes.
 
-You can use **bold text** to emphasize important points, *italic text* for subtle emphasis, or ***bold italic*** for maximum impact. Use ~~strikethrough~~ for deprecated content or corrections.
+You can use **bold text** to emphasize important points, _italic text_ for subtle emphasis, or **_bold italic_** for maximum impact. Use ~~strikethrough~~ for deprecated content or corrections.
 
 Inline `code snippets` are perfect for mentioning variables, functions, or commands within sentences. For example: `npm install` or `const myVariable = true;`.
 
@@ -85,31 +94,39 @@ Inline `code snippets` are perfect for mentioning variables, functions, or comma
 ### KeyTakeaway
 
 <KeyTakeaway>
-The design system ensures visual consistency across all blog posts by using semantic color tokens and standardized component patterns. This makes content creation faster and the user experience more predictable.
+  The design system ensures visual consistency across all blog posts by using
+  semantic color tokens and standardized component patterns. This makes content
+  creation faster and the user experience more predictable.
 </KeyTakeaway>
 
 ### ContextClue
 
 <ContextClue>
-This blog system is built on Next.js 15 with React 19, using TypeScript for type safety and Tailwind CSS v4 for styling. The component architecture follows server-first principles with selective client-side interactivity.
+  This blog system is built on Next.js 15 with React 19, using TypeScript for
+  type safety and Tailwind CSS v4 for styling. The component architecture
+  follows server-first principles with selective client-side interactivity.
 </ContextClue>
 
 ### Alerts
 
 <Alert type="info">
-**Information:** This is a standard informational alert. Use it for helpful tips and general information.
+  **Information:** This is a standard informational alert. Use it for helpful
+  tips and general information.
 </Alert>
 
 <Alert type="warning">
-**Warning:** This is a warning alert. Use it for cautions, deprecations, or important notices that need attention.
+  **Warning:** This is a warning alert. Use it for cautions, deprecations, or
+  important notices that need attention.
 </Alert>
 
 <Alert type="critical">
-**Critical:** This is a critical alert. Use it for urgent information, breaking changes, or security issues.
+  **Critical:** This is a critical alert. Use it for urgent information,
+  breaking changes, or security issues.
 </Alert>
 
 <Alert type="success">
-**Success:** This is a success alert. Use it for confirmations, achievements, or positive outcomes.
+  **Success:** This is a success alert. Use it for confirmations, achievements,
+  or positive outcomes.
 </Alert>
 
 ---
@@ -142,7 +159,7 @@ const createPost = (data: BlogPost): BlogPost => {
 
 // Arrow function with type inference
 const filterFeatured = (posts: BlogPost[]): BlogPost[] => {
-  return posts.filter(post => post.featured === true);
+  return posts.filter((post) => post.featured === true);
 };
 ```
 
@@ -157,27 +174,23 @@ function calculateReadingTime(content) {
 
 // ES6 features
 const posts = [1, 2, 3, 4, 5];
-const doubled = posts.map(n => n * 2);
-const evens = posts.filter(n => n % 2 === 0);
+const doubled = posts.map((n) => n * 2);
+const evens = posts.filter((n) => n % 2 === 0);
 ```
 
 ```jsx
 // React component example
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export function Counter() {
   const [count, setCount] = useState(0);
-  
+
   return (
     <div className="flex items-center gap-4">
-      <Button onClick={() => setCount(count - 1)}>
-        Decrease
-      </Button>
+      <Button onClick={() => setCount(count - 1)}>Decrease</Button>
       <span className="text-2xl font-bold">{count}</span>
-      <Button onClick={() => setCount(count + 1)}>
-        Increase
-      </Button>
+      <Button onClick={() => setCount(count + 1)}>Increase</Button>
     </div>
   );
 }
@@ -193,11 +206,11 @@ def fibonacci(n: int) -> list[int]:
         return [0]
     elif n == 2:
         return [0, 1]
-    
+
     sequence = [0, 1]
     for i in range(2, n):
         sequence.append(sequence[i-1] + sequence[i-2])
-    
+
     return sequence
 
 # List comprehension
@@ -263,7 +276,7 @@ $ npm run build
 
 ```sql
 -- SQL query example
-SELECT 
+SELECT
   u.id,
   u.username,
   COUNT(p.id) as post_count,
@@ -276,6 +289,62 @@ HAVING COUNT(p.id) > 5
 ORDER BY post_count DESC
 LIMIT 10;
 ```
+
+<CollapsibleSection id="advanced-code" title="Advanced Code Patterns">
+
+### React 19 Concurrent Features
+
+```tsx
+// React 19 with concurrent features
+import { use, Suspense } from "react";
+
+function UserProfile({ userPromise }: { userPromise: Promise<User> }) {
+  const user = use(userPromise); // React 19 use() hook
+
+  return (
+    <div className="p-6 space-y-4">
+      <h2 className="text-2xl font-bold">{user.name}</h2>
+      <p className="text-muted-foreground">{user.email}</p>
+    </div>
+  );
+}
+
+function App() {
+  const userPromise = fetchUser("123");
+
+  return (
+    <Suspense fallback={<UserSkeleton />}>
+      <UserProfile userPromise={userPromise} />
+    </Suspense>
+  );
+}
+```
+
+### Next.js 16 App Router Patterns
+
+```typescript
+// Enhanced metadata with Next.js 16
+import { type Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Dynamic Page",
+    description: "Generated at build time",
+    openGraph: {
+      title: "Dynamic Page",
+      description: "Enhanced social sharing"
+    }
+  };
+}
+
+export default function Page() {
+  return <div>Content</div>;
+}
+```
+
+</CollapsibleSection>
+
+<SectionShare sectionId="code-examples" sectionTitle="Code Examples" />
 
 ---
 
@@ -301,24 +370,24 @@ Like that!
 
 Tables are fully responsive and styled with the design system:
 
-| Feature | Status | Priority | Notes |
-|---------|--------|----------|-------|
-| MDX Support | ✅ Shipped | High | Full MDX rendering with components |
-| Syntax Highlighting | ✅ Shipped | High | Shiki with multiple themes |
-| Dark Mode | ✅ Shipped | High | CSS variable based theming |
-| Search | ✅ Shipped | Medium | Client-side fuzzy search |
-| Comments | ⏳ Planned | Low | Considering giscus integration |
-| Analytics | ✅ Shipped | Medium | View counts and trending |
+| Feature             | Status     | Priority | Notes                              |
+| ------------------- | ---------- | -------- | ---------------------------------- |
+| MDX Support         | ✓ Shipped  | High     | Full MDX rendering with components |
+| Syntax Highlighting | ✓ Shipped  | High     | Shiki with multiple themes         |
+| Dark Mode           | ✓ Shipped  | High     | CSS variable based theming         |
+| Search              | ✓ Shipped  | Medium   | Client-side fuzzy search           |
+| Comments            | ⏳ Planned | Low      | Considering giscus integration     |
+| Analytics           | ✓ Shipped  | Medium   | View counts and trending           |
 
 ### Complex Table
 
-| Language | Type | Use Case | Performance | Learning Curve |
-|----------|------|----------|-------------|----------------|
-| TypeScript | Compiled | Web Apps | ⭐⭐⭐⭐ | Medium |
-| Python | Interpreted | Data Science | ⭐⭐⭐ | Easy |
-| Rust | Compiled | Systems | ⭐⭐⭐⭐⭐ | Hard |
-| Go | Compiled | Backend | ⭐⭐⭐⭐ | Easy |
-| JavaScript | Interpreted | Web | ⭐⭐⭐ | Easy |
+| Language   | Type        | Use Case     | Performance | Learning Curve |
+| ---------- | ----------- | ------------ | ----------- | -------------- |
+| TypeScript | Compiled    | Web Apps     | ⭐⭐⭐⭐    | Medium         |
+| Python     | Interpreted | Data Science | ⭐⭐⭐      | Easy           |
+| Rust       | Compiled    | Systems      | ⭐⭐⭐⭐⭐  | Hard           |
+| Go         | Compiled    | Backend      | ⭐⭐⭐⭐    | Easy           |
+| JavaScript | Interpreted | Web          | ⭐⭐⭐      | Easy           |
 
 ---
 
@@ -331,13 +400,15 @@ The system automatically handles smart typography:
 - "Smart quotes" and 'single quotes'
 - Apostrophes don't break
 
-Emojis work great: 🚀 ✅ ❌ ⚠️ 💡 🔒 ⚡
+Icon components for visual indicators:
 
-Icon replacements are also available:
-- <CheckIcon /> Checkmark
-- <XIcon /> Cross
-- <WarningIcon /> Warning
-- <InfoIcon /> Info
+- <RocketIcon /> Launch and deployment
+- ✓ Success and completion
+- ✗ Errors and failures
+- ⚠ Caution and warnings
+- <IdeaIcon /> Tips and insights
+- <LockIcon /> Security and privacy
+- <ZapIcon /> Performance and speed
 - <IdeaIcon /> Lightbulb
 - <ZapIcon /> Lightning
 - <LockIcon /> Lock
@@ -370,29 +441,26 @@ $$
 You can combine multiple elements for rich content:
 
 1. **First**: Start with a numbered list
-   
+
    > Add a blockquote within the list
-   
+
    ```typescript
    // Include code examples
    const example = "nested content";
    ```
 
 2. **Second**: Continue with more items
-   
    - Nested unordered list
    - Another nested item
-   
-   <KeyTakeaway>
-   Even custom components work inside lists!
-   </KeyTakeaway>
+
+   <KeyTakeaway>Even custom components work inside lists!</KeyTakeaway>
 
 3. **Third**: Complex nesting patterns
-   
-   | Column 1 | Column 2 |
-   |----------|----------|
-   | Data | More data |
-   
+
+   | Column 1 | Column 2  |
+   | -------- | --------- |
+   | Data     | More data |
+
    And regular paragraph text flows naturally.
 
 ---
@@ -404,6 +472,7 @@ While this demo doesn't include actual images, here's how they would work:
 ![Alt text for accessibility](/blog/images/default/hero.svg)
 
 Images are automatically optimized with Next.js Image component and include:
+
 - Lazy loading
 - Responsive sizing
 - Click-to-zoom functionality
@@ -425,13 +494,14 @@ The design system uses semantic color tokens:
 
 - **Primary**: Brand color for CTAs and links
 - **Success**: Green for confirmations
-- **Warning**: Yellow/orange for cautions  
+- **Warning**: Yellow/orange for cautions
 - **Critical**: Red for errors and urgent items
 - **Info**: Blue for informational content
 
 ### Spacing Scale
 
 Consistent spacing using design tokens:
+
 - Compact: Small gaps for related items
 - Content: Standard spacing between paragraphs
 - Subsection: Space between subsections
@@ -441,6 +511,7 @@ Consistent spacing using design tokens:
 ### Animation
 
 Subtle animations enhance the user experience:
+
 - Reveal animations on scroll
 - Hover effects on interactive elements
 - Smooth theme transitions
@@ -511,7 +582,8 @@ This showcase demonstrates the full range of visual elements available in the bl
 - Ensure accessibility in all content
 
 <KeyTakeaway>
-A consistent design system enables faster content creation while maintaining high quality and accessibility standards across all blog posts.
+  A consistent design system enables faster content creation while maintaining
+  high quality and accessibility standards across all blog posts.
 </KeyTakeaway>
 
 ---
@@ -522,4 +594,3 @@ A consistent design system enables faster content creation while maintaining hig
 - [Component Patterns](/dev/docs/component-patterns)
 - [MDX Guide](/dev/docs/mdx)
 - [Content Creation Guide](/dev/docs/content-creation)
-

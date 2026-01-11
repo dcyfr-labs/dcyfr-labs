@@ -75,7 +75,7 @@ export const trackPostView = inngest.createFunction(
         // Get current view count (already incremented by /api/views)
         const views = await redis.get(`${VIEW_KEY_PREFIX}${postId}`);
         const count = parseInt(views || '0');
-        console.log(`Post view tracked: ${slug} (${count} total views)`);
+        console.warn(`Post view tracked: ${slug} (${count} total views)`);
         
         // Track in Vercel Analytics
         await track('blog_post_viewed', {
@@ -112,7 +112,7 @@ export const trackPostView = inngest.createFunction(
               new Date().toISOString()
             );
 
-            console.log(`🎉 Milestone reached: ${title} hit ${milestone} views!`);
+            console.warn(`🎉 Milestone reached: ${title} hit ${milestone} views!`);
           }
         }
         
@@ -147,7 +147,7 @@ export const handleMilestone = inngest.createFunction(
 
     // Step 1: Log the milestone
     await step.run("log-milestone", async () => {
-      console.log(`
+      console.warn(`
         🎉 MILESTONE ACHIEVED! 🎉
         Post: ${title}
         Slug: ${slug}
@@ -182,7 +182,7 @@ export const handleMilestone = inngest.createFunction(
       //   },
       // });
       
-      console.log(`Milestone notification: ${title} reached ${milestone} views (email integration not yet implemented)`);
+      console.warn(`Milestone notification: ${title} reached ${milestone} views (email integration not yet implemented)`);
     });
 
     return {
@@ -272,7 +272,7 @@ export const calculateTrending = inngest.createFunction(
           { EX: 60 * 60 } // Cache for 1 hour
         );
         
-        console.log(`Updated trending posts: ${trending.length} posts`);
+        console.warn(`Updated trending posts: ${trending.length} posts`);
         
         // Track in Vercel Analytics
         await track('trending_posts_calculated', {
@@ -379,7 +379,7 @@ export const generateAnalyticsSummary = inngest.createFunction(
           { EX: 90 * 24 * 60 * 60 } // Keep for 90 days
         );
         
-        console.log(`Analytics summary generated for ${period}:`, {
+        console.warn(`Analytics summary generated for ${period}:`, {
           totalViews: summary.totalViews,
           posts: summary.uniquePosts,
         });
@@ -427,7 +427,7 @@ export const dailyAnalyticsSummary = inngest.createFunction(
         },
       });
       
-      console.log(`Daily analytics summary triggered for ${dateStr}`);
+      console.warn(`Daily analytics summary triggered for ${dateStr}`);
     });
 
     return { success: true, triggered: true };
@@ -471,7 +471,7 @@ export const syncVercelAnalytics = inngest.createFunction(
         // Track that we fetched Vercel analytics - helpful for audit
         await track('vercel_analytics_synced', { fetchedAt, topPagesCount: topPages.length });
 
-        console.log(`Vercel analytics synced: ${topPages.length} pages, ${topReferrers.length} referrers, ${topDevices.length} devices`);
+        console.warn(`Vercel analytics synced: ${topPages.length} pages, ${topReferrers.length} referrers, ${topDevices.length} devices`);
       } catch (error) {
         console.error("Failed to sync Vercel analytics:", error);
       }

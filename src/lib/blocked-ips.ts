@@ -1,6 +1,6 @@
 /**
  * Blocked IPs management system
- * 
+ *
  * Provides Redis-based storage and retrieval for blocked/suspicious IP lists
  * Integrates with existing rate limiting and security systems
  */
@@ -45,7 +45,9 @@ function maskIp(ip?: string): string {
 async function getBlockedIpsClient(): Promise<RedisClient | null> {
   const redisUrl = process.env.REDIS_URL;
   if (!redisUrl) {
-    console.warn("REDIS_URL not configured. Blocked IPs functionality disabled.");
+    console.warn(
+      "REDIS_URL not configured. Blocked IPs functionality disabled."
+    );
     return null;
   }
 
@@ -55,19 +57,19 @@ async function getBlockedIpsClient(): Promise<RedisClient | null> {
       socket: {
         connectTimeout: 5000,
         reconnectStrategy: (retries) => {
-          if (retries > 3) return new Error('Max retries exceeded');
+          if (retries > 3) return new Error("Max retries exceeded");
           return Math.min(retries * 100, 3000);
         },
       },
     });
-    
+
     client.on("error", (error) => {
       console.error("Blocked IPs Redis error:", error);
       Sentry.captureException(error, {
         tags: { component: "blocked-ips-cache" },
       });
     });
-    
+
     globalThis.__blockedIpsRedisClient = client;
   }
 
@@ -134,7 +136,7 @@ export class BlockedIPsManager {
       const blockedEntry = await this.client.hGet(BLOCKED_IPS_KEY, ip);
       if (blockedEntry) {
         const entry: BlockedIPEntry = JSON.parse(blockedEntry);
-        
+
         // Check if temporary block has expired
         if (entry.blocked_until) {
           const expiryTime = new Date(entry.blocked_until);
@@ -185,8 +187,10 @@ export class BlockedIPsManager {
     }
 
     const blockedAt = new Date().toISOString();
-    const blockedUntil = options.temporary_hours 
-      ? new Date(Date.now() + options.temporary_hours * 60 * 60 * 1000).toISOString()
+    const blockedUntil = options.temporary_hours
+      ? new Date(
+          Date.now() + options.temporary_hours * 60 * 60 * 1000
+        ).toISOString()
       : undefined;
 
     const entry: BlockedIPEntry = {
@@ -205,22 +209,27 @@ export class BlockedIPsManager {
       await this.client.hSet(BLOCKED_IPS_KEY, ip, JSON.stringify(entry));
 
       // Add to block history for analytics
-      const historyKey = `${IP_BLOCK_HISTORY_KEY}:${new Date().toISOString().split('T')[0]}`;
-      await this.client.lPush(historyKey, JSON.stringify({
-        ...entry,
-        action: "blocked",
-        timestamp: blockedAt,
-      }));
+      const historyKey = `${IP_BLOCK_HISTORY_KEY}:${new Date().toISOString().split("T")[0]}`;
+      await this.client.lPush(
+        historyKey,
+        JSON.stringify({
+          ...entry,
+          action: "blocked",
+          timestamp: blockedAt,
+        })
+      );
       await this.client.expire(historyKey, 86400 * 30); // Keep history for 30 days
 
       // Set expiry for temporary blocks
       if (blockedUntil) {
-        const ttlSeconds = Math.floor((new Date(blockedUntil).getTime() - Date.now()) / 1000);
+        const ttlSeconds = Math.floor(
+          (new Date(blockedUntil).getTime() - Date.now()) / 1000
+        );
         await this.client.expire(`${BLOCKED_IPS_KEY}:${ip}`, ttlSeconds);
       }
 
       const maskedIp = maskIp(ip);
-      console.log(`Blocked client (reason: ${reason}, source: ${source})`);
+      console.warn(`Blocked client (reason: ${reason}, source: ${source})`);
 
       // Log to Sentry for monitoring (mask IPs in telemetry)
       Sentry.addBreadcrumb({
@@ -235,7 +244,6 @@ export class BlockedIPsManager {
           confidence: options.confidence_score,
         },
       });
-
     } catch (error) {
       const maskedIp = maskIp(ip);
       console.error("Error blocking client address (details redacted).", error);
@@ -257,19 +265,22 @@ export class BlockedIPsManager {
 
     try {
       const removed = await this.client.hDel(BLOCKED_IPS_KEY, ip);
-      
+
       if (removed) {
         // Add to unblock history
-        const historyKey = `${IP_BLOCK_HISTORY_KEY}:${new Date().toISOString().split('T')[0]}`;
-        await this.client.lPush(historyKey, JSON.stringify({
-          ip,
-          action: "unblocked",
-          reason,
-          timestamp: new Date().toISOString(),
-        }));
+        const historyKey = `${IP_BLOCK_HISTORY_KEY}:${new Date().toISOString().split("T")[0]}`;
+        await this.client.lPush(
+          historyKey,
+          JSON.stringify({
+            ip,
+            action: "unblocked",
+            reason,
+            timestamp: new Date().toISOString(),
+          })
+        );
 
         const maskedIp = maskIp(ip);
-        console.log(`Unblocked client (reason: ${reason})`);
+        console.warn(`Unblocked client (reason: ${reason})`);
 
         Sentry.addBreadcrumb({
           category: "security",
@@ -280,7 +291,10 @@ export class BlockedIPsManager {
       }
     } catch (error) {
       const maskedIp = maskIp(ip);
-      console.error("Error unblocking client address (details redacted).", error);
+      console.error(
+        "Error unblocking client address (details redacted).",
+        error
+      );
       Sentry.captureException(error, {
         tags: { component: "blocked-ips", operation: "unblock" },
         extra: { ip_masked: maskedIp, reason },
@@ -307,14 +321,17 @@ export class BlockedIPsManager {
       };
 
       await this.client.hSet(SUSPICIOUS_IPS_KEY, ip, JSON.stringify(entry));
-      
+
       // Set TTL for suspicious marking (24 hours)
       await this.client.expire(`${SUSPICIOUS_IPS_KEY}:${ip}`, 86400);
 
-      console.log(`Marked client as suspicious (source: ${source})`);
+      console.warn(`Marked client as suspicious (source: ${source})`);
     } catch (error) {
       const maskedIp = maskIp(ip);
-      console.error("Error marking client as suspicious (details redacted).", error);
+      console.error(
+        "Error marking client as suspicious (details redacted).",
+        error
+      );
     }
   }
 
@@ -329,7 +346,10 @@ export class BlockedIPsManager {
       return entry === 1;
     } catch (error) {
       const maskedIp = maskIp(ip);
-      console.error("Error checking if client address (details redacted).", error);
+      console.error(
+        "Error checking if client address (details redacted).",
+        error
+      );
       return false;
     }
   }
@@ -342,7 +362,7 @@ export class BlockedIPsManager {
 
     try {
       const entries = await this.client.hGetAll(BLOCKED_IPS_KEY);
-      return Object.values(entries).map(entry => JSON.parse(entry));
+      return Object.values(entries).map((entry) => JSON.parse(entry));
     } catch (error) {
       console.error("Error getting all blocked IPs:", error);
       return [];
@@ -354,14 +374,16 @@ export class BlockedIPsManager {
    */
   async getBlockStats(): Promise<IPBlockStats> {
     const blockedIPs = await this.getAllBlockedIPs();
-    
+
     return {
       total_blocked: blockedIPs.length,
-      malicious_count: blockedIPs.filter(ip => ip.reason === "malicious").length,
-      suspicious_count: blockedIPs.filter(ip => ip.reason === "suspicious").length,
-      manual_count: blockedIPs.filter(ip => ip.reason === "manual").length,
-      temporary_count: blockedIPs.filter(ip => ip.blocked_until).length,
-      permanent_count: blockedIPs.filter(ip => !ip.blocked_until).length,
+      malicious_count: blockedIPs.filter((ip) => ip.reason === "malicious")
+        .length,
+      suspicious_count: blockedIPs.filter((ip) => ip.reason === "suspicious")
+        .length,
+      manual_count: blockedIPs.filter((ip) => ip.reason === "manual").length,
+      temporary_count: blockedIPs.filter((ip) => ip.blocked_until).length,
+      permanent_count: blockedIPs.filter((ip) => !ip.blocked_until).length,
     };
   }
 
@@ -386,7 +408,7 @@ export class BlockedIPsManager {
       }
 
       if (cleanedCount > 0) {
-        console.log(`Cleaned up ${cleanedCount} expired IP blocks`);
+        console.warn(`Cleaned up ${cleanedCount} expired IP blocks`);
       }
 
       return cleanedCount;
@@ -416,20 +438,15 @@ export class BlockedIPsManager {
 
       // Determine block type based on classification
       if (entry.classification === "malicious") {
-        await this.blockIP(
-          entry.ip,
-          "malicious",
-          source,
-          {
-            confidence_score: entry.confidence_score,
-            metadata: {
-              country: entry.metadata?.country,
-              asn: entry.metadata?.asn,
-              organization: entry.metadata?.organization,
-              tags: entry.tags,
-            },
-          }
-        );
+        await this.blockIP(entry.ip, "malicious", source, {
+          confidence_score: entry.confidence_score,
+          metadata: {
+            country: entry.metadata?.country,
+            asn: entry.metadata?.asn,
+            organization: entry.metadata?.organization,
+            tags: entry.tags,
+          },
+        });
         blocked++;
       } else if (entry.classification === "suspicious") {
         await this.markSuspicious(entry.ip, source, entry.metadata);

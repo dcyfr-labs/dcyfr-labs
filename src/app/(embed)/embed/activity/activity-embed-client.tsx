@@ -1,10 +1,8 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { ThreadedActivityFeed } from "@/components/activity/ThreadedActivityFeed";
+import { ThreadedActivityFeed } from "@/components/activity";
 import type { ActivityItem, ActivitySource } from "@/lib/activity";
-import { searchActivities, createSearchIndex } from "@/lib/activity/search";
-import { cn } from "@/lib/utils";
 
 // ============================================================================
 // TYPES
@@ -19,7 +17,6 @@ interface SerializedActivity extends Omit<ActivityItem, "timestamp"> {
 interface ActivityEmbedClientProps {
   activities: SerializedActivity[];
   error: string | null;
-  nonce: string;
   initialSource?: string;
   initialTimeRange?: string;
   limit?: number;
@@ -32,7 +29,6 @@ interface ActivityEmbedClientProps {
 export function ActivityEmbedClient({
   activities: serializedActivities,
   error,
-  nonce,
   initialSource,
   initialTimeRange,
   limit = 20,
@@ -48,10 +44,10 @@ export function ActivityEmbedClient({
   );
 
   // State
-  const [selectedSources, setSelectedSources] = useState<ActivitySource[]>(
+  const [selectedSources] = useState<ActivitySource[]>(
     initialSource ? [initialSource as ActivitySource] : []
   );
-  const [timeRange, setTimeRange] = useState<TimeRangeFilter>(
+  const [timeRange] = useState<TimeRangeFilter>(
     (initialTimeRange as TimeRangeFilter) || "all"
   );
 
@@ -89,10 +85,7 @@ export function ActivityEmbedClient({
   useEffect(() => {
     const sendHeight = () => {
       const height = document.documentElement.scrollHeight;
-      window.parent.postMessage(
-        { type: "activity-embed-resize", height },
-        "*"
-      );
+      window.parent.postMessage({ type: "activity-embed-resize", height }, "*");
     };
 
     // Send initial height
@@ -107,8 +100,7 @@ export function ActivityEmbedClient({
 
   if (error) {
     return (
-      // eslint-disable-next-line no-restricted-syntax
-      <div className="p-4 border rounded-lg text-sm bg-red-50 border-red-200 text-red-800">
+      <div className="p-4 border rounded-lg text-sm bg-error-subtle border-error-light text-error">
         <p className="font-semibold">Failed to load activity feed</p>
         <p className="mt-1">{error}</p>
       </div>
@@ -117,9 +109,7 @@ export function ActivityEmbedClient({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <ThreadedActivityFeed
-        activities={filteredActivities}
-      />
+      <ThreadedActivityFeed activities={filteredActivities} />
     </div>
   );
 }

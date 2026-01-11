@@ -1,4 +1,4 @@
-import { getAllPosts } from "@/lib/blog";
+import { getAllPosts } from "@/lib/blog.server";
 
 // Re-export category types and labels from centralized file (client-safe)
 export type { PostCategory } from "@/lib/post-categories";
@@ -54,41 +54,56 @@ export type Post = {
 // Retrieve all posts from the file system
 export const posts: Post[] = getAllPosts();
 
-export const postsBySlug = Object.fromEntries(posts.map((post) => [post.slug, post])) as Record<string, Post>;
+export const postsBySlug = Object.fromEntries(
+  posts.map((post) => [post.slug, post])
+) as Record<string, Post>;
 
-export const postTagCounts = posts.reduce<Record<string, number>>((acc, post) => {
-  for (const tag of post.tags) {
-    acc[tag] = (acc[tag] ?? 0) + 1;
-  }
-  return acc;
-}, {});
+export const postTagCounts = posts.reduce<Record<string, number>>(
+  (acc, post) => {
+    for (const tag of post.tags) {
+      acc[tag] = (acc[tag] ?? 0) + 1;
+    }
+    return acc;
+  },
+  {}
+);
 
 export const allPostTags = Object.freeze(Object.keys(postTagCounts).sort());
 
-export const postCategoryCounts = posts.reduce<Record<string, number>>((acc, post) => {
-  if (post.category) {
-    acc[post.category] = (acc[post.category] ?? 0) + 1;
-  }
-  return acc;
-}, {});
+export const postCategoryCounts = posts.reduce<Record<string, number>>(
+  (acc, post) => {
+    if (post.category) {
+      acc[post.category] = (acc[post.category] ?? 0) + 1;
+    }
+    return acc;
+  },
+  {}
+);
 
-export const allPostCategories = Object.freeze(Object.keys(postCategoryCounts).sort());
+export const allPostCategories = Object.freeze(
+  Object.keys(postCategoryCounts).sort()
+);
 
-export const featuredPosts = Object.freeze(posts.filter((post) => post.featured));
+export const featuredPosts = Object.freeze(
+  posts.filter((post) => post.featured)
+);
 
 // Group posts by series
-const postsBySeriesUnsorted = posts.reduce<Record<string, Post[]>>((acc, post) => {
-  if (post.series) {
-    if (!acc[post.series.name]) {
-      acc[post.series.name] = [];
+const postsBySeriesUnsorted = posts.reduce<Record<string, Post[]>>(
+  (acc, post) => {
+    if (post.series) {
+      if (!acc[post.series.name]) {
+        acc[post.series.name] = [];
+      }
+      acc[post.series.name].push(post);
     }
-    acc[post.series.name].push(post);
-  }
-  return acc;
-}, {});
+    return acc;
+  },
+  {}
+);
 
 // Sort posts within each series by order
-Object.keys(postsBySeriesUnsorted).forEach(seriesName => {
+Object.keys(postsBySeriesUnsorted).forEach((seriesName) => {
   postsBySeriesUnsorted[seriesName].sort((a, b) => {
     const orderA = a.series?.order ?? 0;
     const orderB = b.series?.order ?? 0;
@@ -98,8 +113,10 @@ Object.keys(postsBySeriesUnsorted).forEach(seriesName => {
 
 // Rebuild postsBySeries with sorted keys for consistency
 export const postsBySeries: Record<string, Post[]> = {};
-const sortedSeriesNames = Object.keys(postsBySeriesUnsorted).sort((a, b) => a.localeCompare(b));
-sortedSeriesNames.forEach(seriesName => {
+const sortedSeriesNames = Object.keys(postsBySeriesUnsorted).sort((a, b) =>
+  a.localeCompare(b)
+);
+sortedSeriesNames.forEach((seriesName) => {
   postsBySeries[seriesName] = postsBySeriesUnsorted[seriesName];
 });
 
@@ -134,8 +151,9 @@ export type SeriesMetadata = {
 export const allSeries: SeriesMetadata[] = allSeriesNames.map((name) => {
   const seriesPosts = postsBySeries[name];
   const firstPost = seriesPosts[0];
-  const latestPost = [...seriesPosts].sort((a, b) =>
-    new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+  const latestPost = [...seriesPosts].sort(
+    (a, b) =>
+      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
   )[0];
 
   return {
@@ -143,9 +161,12 @@ export const allSeries: SeriesMetadata[] = allSeriesNames.map((name) => {
     slug: name.toLowerCase().replace(/\s+/g, "-"),
     description: firstPost.series?.description || firstPost.summary,
     icon: firstPost.series?.icon,
-    color: firstPost.series?.color || 'default',
+    color: firstPost.series?.color || "default",
     postCount: seriesPosts.length,
-    totalReadingTime: seriesPosts.reduce((sum, p) => sum + p.readingTime.minutes, 0),
+    totalReadingTime: seriesPosts.reduce(
+      (sum, p) => sum + p.readingTime.minutes,
+      0
+    ),
     posts: seriesPosts,
     firstPost,
     latestPost,
@@ -158,7 +179,7 @@ export const allSeries: SeriesMetadata[] = allSeriesNames.map((name) => {
  * @returns SeriesMetadata or undefined if not found
  */
 export function getSeriesBySlug(slug: string): SeriesMetadata | undefined {
-  return allSeries.find(s => s.slug === slug);
+  return allSeries.find((s) => s.slug === slug);
 }
 
 /**
@@ -168,7 +189,7 @@ export function getSeriesBySlug(slug: string): SeriesMetadata | undefined {
  */
 export function getSeriesForPost(post: Post): SeriesMetadata | undefined {
   if (!post.series) return undefined;
-  return allSeries.find(s => s.name === post.series!.name);
+  return allSeries.find((s) => s.name === post.series!.name);
 }
 
 /**
@@ -186,9 +207,11 @@ export function getSeriesForPost(post: Post): SeriesMetadata | undefined {
  * }
  * ```
  */
-export function getSeriesByAnySlug(
-  slug: string
-): { series: SeriesMetadata; needsRedirect: boolean; canonicalSlug: string } | null {
+export function getSeriesByAnySlug(slug: string): {
+  series: SeriesMetadata;
+  needsRedirect: boolean;
+  canonicalSlug: string;
+} | null {
   // First try direct match by current slug
   const series = allSeries.find((s) => s.slug === slug);
   if (series) {
@@ -197,8 +220,8 @@ export function getSeriesByAnySlug(
 
   // Then check previousSlugs in any post from the series
   for (const s of allSeries) {
-    const hasPreviousSlug = s.posts.some(
-      (post) => post.series?.previousSlugs?.includes(slug)
+    const hasPreviousSlug = s.posts.some((post) =>
+      post.series?.previousSlugs?.includes(slug)
     );
     if (hasPreviousSlug) {
       return { series: s, needsRedirect: true, canonicalSlug: s.slug };

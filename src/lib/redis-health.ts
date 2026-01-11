@@ -1,6 +1,6 @@
 /**
  * Redis Health Check Utility
- * 
+ *
  * Validates Redis configuration and connection status.
  * Used by dev tools to diagnose Redis availability.
  */
@@ -48,7 +48,7 @@ export async function testRedisConnection(): Promise<RedisHealthStatus> {
 
   try {
     const client = createClient({ url: redisUrl });
-    
+
     // Add error handler before connecting
     let connectionError: string | null = null;
     client.on("error", (err) => {
@@ -67,7 +67,7 @@ export async function testRedisConnection(): Promise<RedisHealthStatus> {
     // Test basic set/get
     const testKey = `redis-health-check-${Date.now()}`;
     const testValue = "test-value";
-    
+
     await client.set(testKey, testValue);
     const retrievedValue = await client.get(testKey);
     await client.del(testKey);
@@ -81,7 +81,10 @@ export async function testRedisConnection(): Promise<RedisHealthStatus> {
       configured: true,
       connected: success,
       message: "Redis connected successfully",
-      url: configured && redisUrl ? redisUrl.replace(/:[^:]*@/, ":***@") : undefined, // Hide password
+      url:
+        configured && redisUrl
+          ? redisUrl.replace(/:[^:]*@/, ":***@")
+          : undefined, // Hide password
       testResult: {
         success,
         latency: Math.max(latency, pingLatency),
@@ -94,7 +97,10 @@ export async function testRedisConnection(): Promise<RedisHealthStatus> {
       configured: true,
       connected: false,
       message: "Failed to connect to Redis",
-      url: configured && redisUrl ? redisUrl.replace(/:[^:]*@/, ":***@") : undefined, // Hide password
+      url:
+        configured && redisUrl
+          ? redisUrl.replace(/:[^:]*@/, ":***@")
+          : undefined, // Hide password
       error: error instanceof Error ? error.message : "Unknown error",
       testResult: {
         success: false,

@@ -17,14 +17,17 @@ interface KeyboardShortcutsHelpProps {
 
 /**
  * Keyboard Shortcuts Help Dialog
- * 
+ *
  * Displays available keyboard shortcuts for the blog page.
  * Triggered by pressing '?' key.
- * 
+ *
  * Shortcuts are centrally defined in @/config/keyboard-shortcuts.ts
  * for easy maintenance and platform-specific customization.
  */
-export function KeyboardShortcutsHelp({ open, onOpenChange }: KeyboardShortcutsHelpProps) {
+export function KeyboardShortcutsHelp({
+  open,
+  onOpenChange,
+}: KeyboardShortcutsHelpProps) {
   const shortcuts = getShortcutsByCategory();
 
   return (
@@ -36,7 +39,7 @@ export function KeyboardShortcutsHelp({ open, onOpenChange }: KeyboardShortcutsH
             Quick actions to navigate and filter blog posts
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="space-y-4">
           {shortcuts.map((section) => (
             <div key={section.category}>
@@ -65,11 +68,15 @@ export function KeyboardShortcutsHelp({ open, onOpenChange }: KeyboardShortcutsH
 
         <div className="text-xs text-muted-foreground mt-4 pt-4 border-t">
           <p>
-            <strong>Tip:</strong> Press <Badge variant="outline" className="font-mono text-xs mx-1">?</Badge> 
+            <strong>Tip:</strong> Press{" "}
+            <Badge variant="outline" className="font-mono text-xs mx-1">
+              ?
+            </Badge>
             anytime to view these shortcuts
           </p>
           <p className="mt-2 text-xs opacity-75">
-            All shortcuts are single keys that don&apos;t conflict with browser shortcuts like Cmd+F (find) or Cmd+S (save).
+            All shortcuts are single keys that don&apos;t conflict with browser
+            shortcuts like Cmd+F (find) or Cmd+S (save).
           </p>
         </div>
       </DialogContent>

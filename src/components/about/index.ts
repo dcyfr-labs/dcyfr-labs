@@ -22,3 +22,14 @@ export { BadgeWallet } from "./badge-wallet";
 export { SkillsWallet } from "./skills-wallet";
 export { MiniBadgeList } from "./mini-badge-list";
 export { MiniSkillsList } from "./mini-skills-list";
+
+// Shared profile components
+export { ProfileHero } from "./profile-hero";
+export { ProfileCapabilityCard } from "./profile-capability-card";
+export { ProfileListSection } from "./profile-list-section";
+export { DcyfrActivityStats } from "./dcyfr-activity-stats";
+export { FocusAreaCard } from "./focus-area-card";
+
+// Loading skeletons
+export { BadgeWalletSkeleton } from "./badge-wallet-skeleton";
+export { SkillsWalletSkeleton } from "./skills-wallet-skeleton";

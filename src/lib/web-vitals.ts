@@ -77,7 +77,7 @@ export function reportWebVitals(metric: Metric): void {
     process.env.NODE_ENV !== "production" &&
     process.env.NEXT_PUBLIC_ENABLE_WEB_VITALS !== "true"
   ) {
-    console.log("[Web Vitals]", metric.name, metric.value, metric.rating);
+    console.warn("[Web Vitals]", metric.name, metric.value, metric.rating);
     return;
   }
 
@@ -100,7 +100,7 @@ export function reportWebVitals(metric: Metric): void {
     const rating = getMetricRating(metric.name, metric.value);
     const emoji = rating === "good" ? "✅" : rating === "needs-improvement" ? "⚠️" : "❌";
     
-    console.log(
+    console.warn(
       `[Web Vitals] ${emoji} ${metric.name}:`,
       metric.value.toFixed(2),
       `(${rating})`

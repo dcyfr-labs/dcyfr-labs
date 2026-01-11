@@ -44,14 +44,12 @@ Updated documentation files in `docs/mcp/`:
    - Updated configuration examples
    - Added to "When to Use Each MCP Server" table
 
-2. **github/quick-reference.md** - GitHub MCP Quick Reference
+2. **MCP_QUICK_REFERENCE.md** - Consolidated MCP Quick Reference (all 6 MCPs)
    - Updated for HTTP MCP configuration
    - Simplified setup (no token required)
    - Updated activation steps
-   - GitHub token creation walkthrough
-   - Docker preparation instructions
-   - First-time verification tests
-   - Security checklist
+   - Includes Filesystem, Git, and GitHub MCPs
+   - Comprehensive workflows and examples
 
 ## Current MCP Ecosystem (5 total)
 
@@ -162,8 +160,8 @@ Before you can use GitHub MCP, you need:
 
 ### Then Read
 1. `docs/mcp/github/setup.md` - Step-by-step setup guide
-2. `docs/mcp/github/quick-reference.md` - Common operations
-3. `docs/mcp/github/implementation.md` - Full reference
+2. `docs/features/mcp/MCP_QUICK_REFERENCE.md` - Common operations (all 6 MCPs)
+3. `docs/mcp/github/implementation.md` - Full GitHub MCP reference
 
 ### Then Use
 ```
@@ -183,7 +181,7 @@ Before you can use GitHub MCP, you need:
 
 ### Created (3 documentation files)
 - `docs/mcp/github/implementation.md` - Complete guide
-- `docs/mcp/github/quick-reference.md` - Quick reference
+- `docs/mcp/github/quick-reference.md` - Quick reference (later consolidated into MCP_QUICK_REFERENCE.md)
 - `docs/mcp/github/setup.md` - Setup instructions
 - `docs/mcp/github/implementation-summary.md` - This file
 

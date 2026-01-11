@@ -1,10 +1,19 @@
 ---
 id: "post-20251109-7c4f3e2a"
 title: "Interactive Diagrams with ReactFlow"
-summary: "Explore interactive, accessible diagrams built with ReactFlow for visualizing architecture, workflows, and decision trees."
+summary: "Explore interactive, accessible diagrams built with ReactFlow for visualizing architecture, workflows, and decision trees. Features modern diagram presets and accessibility patterns."
 publishedAt: "2025-11-09T00:00:00Z"
+updatedAt: "2026-01-11T12:00:00Z"
 category: "Demo"
-tags: ["Diagrams", "ReactFlow", "Interactive", "Visualization", "Demo"]
+tags:
+  [
+    "Diagrams",
+    "ReactFlow",
+    "Interactive",
+    "Visualization",
+    "Demo",
+    "Accessibility",
+  ]
 draft: true
 series:
   name: "Features"
@@ -14,7 +23,12 @@ series:
   color: "tutorial"
 ---
 
-After migrating away from Mermaid, we've built a set of interactive diagrams using [ReactFlow](https://xyflow.com/) that provide better performance, accessibility, and customization. These diagrams are fully interactive—you can pan, zoom, and explore them freely.
+After migrating away from Mermaid, we've built a set of interactive diagrams using <GlossaryTooltip term="ReactFlow" definition="A highly customizable React library for building node-based editors and interactive diagrams">**ReactFlow**</GlossaryTooltip> that provide better performance, accessibility, and customization. These diagrams are fully interactive—you can pan, zoom, and explore them freely.
+
+<SectionShare
+  sectionId="introduction"
+  sectionTitle="Interactive Diagrams with ReactFlow"
+/>
 
 ---
 
@@ -38,9 +52,13 @@ We've created several reusable diagram components that you can drop into any blo
 
 The Model Context Protocol (MCP) architecture follows a three-tier client-server model:
 
-<MCPArchitecture height={300} caption="The three-tier MCP architecture: AI clients communicate with MCP servers through the protocol, which then access data sources via APIs." />
+<MCPArchitecture
+  height={300}
+  caption="The three-tier MCP architecture: AI clients communicate with MCP servers through the protocol, which then access data sources via APIs."
+/>
 
 **Use this when:**
+
 - Explaining multi-tier system architecture
 - Showing communication protocols between systems
 - Visualizing client-server relationships
@@ -57,9 +75,13 @@ export default function MyPage() {
 
 This diagram shows a typical user authentication flow with decision points:
 
-<AuthenticationFlow height={500} caption="A user authentication flow showing the decision point where valid credentials lead to the dashboard while invalid credentials redirect to the login page." />
+<AuthenticationFlow
+  height={500}
+  caption="A user authentication flow showing the decision point where valid credentials lead to the dashboard while invalid credentials redirect to the login page."
+/>
 
 **Use this when:**
+
 - Explaining authentication workflows
 - Showing valid vs. invalid paths
 - Visualizing multi-step login processes
@@ -77,9 +99,13 @@ export default function MyPage() {
 
 This diagram illustrates how markdown files are transformed into rendered HTML through multiple processing stages:
 
-<PipelineFlow height={600} caption="The MDX processing pipeline transforms raw markdown through remark parsing, rehype transformation, syntax highlighting, React compilation, and finally browser rendering." />
+<PipelineFlow
+  height={600}
+  caption="The MDX processing pipeline transforms raw markdown through remark parsing, rehype transformation, syntax highlighting, React compilation, and finally browser rendering."
+/>
 
 **Use this when:**
+
 - Explaining content processing pipelines
 - Showing multi-stage transformations
 - Visualizing data flow through systems
@@ -94,6 +120,11 @@ The six stages are:
 5. **Render as React Component** - MDX compilation
 6. **Display in Browser** - Final rendered output
 
+<SectionShare
+  sectionId="diagram-presets"
+  sectionTitle="Available Diagram Presets"
+/>
+
 ```tsx
 import { PipelineFlow } from "@/components/common/diagram-presets";
 
@@ -106,9 +137,13 @@ export default function MyPage() {
 
 This vulnerability assessment decision tree helps readers quickly determine if they're affected by a specific CVE:
 
-<CVEDecisionTree height={400} caption="A decision tree for assessing CVE-2025-55182 impact: users determine vulnerability by checking if they use React Server Components and their React version." />
+<CVEDecisionTree
+  height={400}
+  caption="A decision tree for assessing CVE-2025-55182 impact: users determine vulnerability by checking if they use React Server Components and their React version."
+/>
 
 **Use this when:**
+
 - Documenting security vulnerabilities
 - Helping users assess impact
 - Creating decision trees for complex conditions
@@ -137,10 +172,10 @@ All diagram presets accept the same props for customization:
 
 ```tsx
 interface DiagramPresetProps {
-  showControls?: boolean;  // Show pan/zoom controls (default: true)
-  height?: number | string;  // Diagram height (default: varies)
-  className?: string;  // Additional CSS classes
-  caption?: string;  // Caption text displayed below the diagram
+  showControls?: boolean; // Show pan/zoom controls (default: true)
+  height?: number | string; // Diagram height (default: varies)
+  className?: string; // Additional CSS classes
+  caption?: string; // Caption text displayed below the diagram
 }
 ```
 
@@ -148,15 +183,15 @@ interface DiagramPresetProps {
 
 ```tsx
 // Full height diagram with controls and caption
-<MCPArchitecture 
-  height="100%" 
+<MCPArchitecture
+  height="100%"
   showControls={true}
   caption="The three-tier MCP architecture"
 />
 
 // Compact diagram with custom caption
-<AuthenticationFlow 
-  height={300} 
+<AuthenticationFlow
+  height={300}
   showControls={false}
   caption="User login flow showing valid and invalid paths"
 />
@@ -180,14 +215,14 @@ import { InteractiveDiagram } from "@/components/common/interactive-diagram";
 import { type Node, type Edge } from "@xyflow/react";
 
 const nodes: Node[] = [
-  { id: '1', position: { x: 0, y: 0 }, data: { label: 'Start' } },
-  { id: '2', position: { x: 250, y: 0 }, data: { label: 'Process' } },
-  { id: '3', position: { x: 500, y: 0 }, data: { label: 'End' } },
+  { id: "1", position: { x: 0, y: 0 }, data: { label: "Start" } },
+  { id: "2", position: { x: 250, y: 0 }, data: { label: "Process" } },
+  { id: "3", position: { x: 500, y: 0 }, data: { label: "End" } },
 ];
 
 const edges: Edge[] = [
-  { id: 'e1-2', source: '1', target: '2' },
-  { id: 'e2-3', source: '2', target: '3' },
+  { id: "e1-2", source: "1", target: "2" },
+  { id: "e2-3", source: "2", target: "3" },
 ];
 
 export function CustomDiagram() {

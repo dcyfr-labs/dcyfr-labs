@@ -170,10 +170,10 @@ describe.skip('Performance Benchmark Tests', () => {
       const minTime = Math.min(...responseTimes)
 
       // Log for performance analysis
-      console.log(`Performance Metrics (${iterations} iterations):`)
-      console.log(`  Average: ${avgTime.toFixed(2)}ms`)
-      console.log(`  Min: ${minTime.toFixed(2)}ms`)
-      console.log(`  Max: ${maxTime.toFixed(2)}ms`)
+      console.warn(`Performance Metrics (${iterations} iterations):`)
+      console.warn(`  Average: ${avgTime.toFixed(2)}ms`)
+      console.warn(`  Min: ${minTime.toFixed(2)}ms`)
+      console.warn(`  Max: ${maxTime.toFixed(2)}ms`)
 
       // Average should be well under threshold
       expect(avgTime).toBeLessThan(PERFORMANCE_THRESHOLD_MS)

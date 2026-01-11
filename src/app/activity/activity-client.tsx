@@ -3,9 +3,9 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { ActivityFilters } from "@/components/activity";
-import { ThreadedActivityFeed } from "@/components/activity/ThreadedActivityFeed";
+import { ThreadedActivityFeed } from '@/components/activity';
 import type { ActivityItem, ActivitySource } from "@/lib/activity";
-import { searchActivities, createSearchIndex } from "@/lib/activity/search";
+import { searchActivities, createSearchIndex } from "@/lib/activity";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import { SPACING, CONTAINER_WIDTHS, CONTAINER_PADDING } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";

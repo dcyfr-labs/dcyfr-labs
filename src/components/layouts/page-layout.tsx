@@ -1,10 +1,10 @@
 /**
  * PageLayout - Universal wrapper for all core pages
- * 
+ *
  * Provides consistent structure, spacing, and max-width constraints for pages
  * like homepage, about, contact, and resume. This component ensures all pages
  * have the same vertical rhythm and responsive behavior.
- * 
+ *
  * @example Basic usage
  * ```tsx
  * <PageLayout>
@@ -12,14 +12,14 @@
  *   <PageSection>{content}</PageSection>
  * </PageLayout>
  * ```
- * 
+ *
  * @example With custom className
  * ```tsx
  * <PageLayout className="bg-gradient-to-b from-background to-muted">
  *   {children}
  * </PageLayout>
  * ```
- * 
+ *
  * @example With draft mode
  * ```tsx
  * <PageLayout isDraft>
@@ -28,25 +28,29 @@
  * ```
  */
 
-import { ReactNode } from 'react'
-import { PAGE_LAYOUT } from '@/lib/design-tokens'
-import { cn } from '@/lib/utils'
-import { DraftBanner } from '@/components/features/draft-banner'
+import { ReactNode } from "react";
+import { PAGE_LAYOUT } from "@/lib/design-tokens";
+import { cn } from "@/lib/utils";
+import { DraftBanner } from "@/components/features";
 
 export interface PageLayoutProps {
   /** Page content */
-  children: ReactNode
+  children: ReactNode;
   /** Additional CSS classes */
-  className?: string
+  className?: string;
   /** Whether this is a draft page (shows banner in development) */
-  isDraft?: boolean
+  isDraft?: boolean;
 }
 
-export function PageLayout({ children, className, isDraft = false }: PageLayoutProps) {
+export function PageLayout({
+  children,
+  className,
+  isDraft = false,
+}: PageLayoutProps) {
   return (
     <div className={cn(PAGE_LAYOUT.wrapper, "pb-16 md:pb-0", className)}>
-      {isDraft && process.env.NODE_ENV === 'development' && <DraftBanner />}
+      {isDraft && process.env.NODE_ENV === "development" && <DraftBanner />}
       {children}
     </div>
-  )
+  );
 }

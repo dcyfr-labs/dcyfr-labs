@@ -64,7 +64,7 @@ export function PostSeriesNav({ series, seriesPosts, currentSlug }: PostSeriesNa
 
               {isCurrent ? (
                 <div className="flex-1 min-w-0">
-                  {/* eslint-disable-next-line no-restricted-syntax */}
+                  { }
                   <span className="text-xs font-medium text-primary block truncate">
                     {post.title}
                   </span>

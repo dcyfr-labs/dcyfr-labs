@@ -101,17 +101,17 @@ describe('Log Injection Prevention', () => {
       const maliciousState = 'state\n[CRITICAL] fake';
       const maliciousError = 'error\u001b[31mred';
 
-      // Capture console.log output
+      // Capture console.warn output (safeLog uses console.warn)
       const logs: string[] = [];
-      const originalLog = console.log;
-      console.log = (msg: string) => logs.push(msg);
+      const originalWarn = console.warn;
+      console.warn = (msg: string) => logs.push(msg);
 
       safeLog('info', 'Test message', {
         state: maliciousState,
         error: maliciousError,
       });
 
-      console.log = originalLog;
+      console.warn = originalWarn;
 
       expect(logs).toHaveLength(1);
       const logData = JSON.parse(logs[0]);
@@ -124,8 +124,8 @@ describe('Log Injection Prevention', () => {
 
     it('should preserve numbers and booleans', () => {
       const logs: string[] = [];
-      const originalLog = console.log;
-      console.log = (msg: string) => logs.push(msg);
+      const originalWarn = console.warn;
+      console.warn = (msg: string) => logs.push(msg);
 
       safeLog('info', 'Test message', {
         count: 42,
@@ -133,7 +133,7 @@ describe('Log Injection Prevention', () => {
         isError: false,
       });
 
-      console.log = originalLog;
+      console.warn = originalWarn;
 
       const logData = JSON.parse(logs[0]);
 
@@ -144,15 +144,15 @@ describe('Log Injection Prevention', () => {
 
     it('should handle null and undefined values', () => {
       const logs: string[] = [];
-      const originalLog = console.log;
-      console.log = (msg: string) => logs.push(msg);
+      const originalWarn = console.warn;
+      console.warn = (msg: string) => logs.push(msg);
 
       safeLog('info', 'Test message', {
         nullValue: null,
         undefinedValue: undefined,
       });
 
-      console.log = originalLog;
+      console.warn = originalWarn;
 
       const logData = JSON.parse(logs[0]);
 
@@ -162,15 +162,15 @@ describe('Log Injection Prevention', () => {
 
     it('should replace objects with [object] string', () => {
       const logs: string[] = [];
-      const originalLog = console.log;
-      console.log = (msg: string) => logs.push(msg);
+      const originalWarn = console.warn;
+      console.warn = (msg: string) => logs.push(msg);
 
       safeLog('info', 'Test message', {
         nestedObject: { key: 'value' },
         array: [1, 2, 3],
       });
 
-      console.log = originalLog;
+      console.warn = originalWarn;
 
       const logData = JSON.parse(logs[0]);
 
@@ -180,12 +180,12 @@ describe('Log Injection Prevention', () => {
 
     it('should include timestamp in ISO format', () => {
       const logs: string[] = [];
-      const originalLog = console.log;
-      console.log = (msg: string) => logs.push(msg);
+      const originalWarn = console.warn;
+      console.warn = (msg: string) => logs.push(msg);
 
       safeLog('info', 'Test message');
 
-      console.log = originalLog;
+      console.warn = originalWarn;
 
       const logData = JSON.parse(logs[0]);
 
@@ -196,14 +196,14 @@ describe('Log Injection Prevention', () => {
 
     it('should support all log levels', () => {
       const logs: string[] = [];
-      const originalLog = console.log;
-      console.log = (msg: string) => logs.push(msg);
+      const originalWarn = console.warn;
+      console.warn = (msg: string) => logs.push(msg);
 
       safeLog('info', 'Info message');
       safeLog('warn', 'Warning message');
       safeLog('error', 'Error message');
 
-      console.log = originalLog;
+      console.warn = originalWarn;
 
       expect(logs).toHaveLength(3);
       expect(JSON.parse(logs[0]).level).toBe('info');
@@ -213,14 +213,14 @@ describe('Log Injection Prevention', () => {
 
     it('should output valid JSON', () => {
       const logs: string[] = [];
-      const originalLog = console.log;
-      console.log = (msg: string) => logs.push(msg);
+      const originalWarn = console.warn;
+      console.warn = (msg: string) => logs.push(msg);
 
       safeLog('info', 'Test message', {
         key: 'value\nwith\nnewlines',
       });
 
-      console.log = originalLog;
+      console.warn = originalWarn;
 
       expect(() => JSON.parse(logs[0])).not.toThrow();
     });

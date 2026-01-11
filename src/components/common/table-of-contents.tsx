@@ -285,7 +285,7 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
     }, [activeId]);
 
     return (
-      <ul ref={listRef} className="relative space-y-2 text-sm border-l-2 border-border">
+      <ul ref={listRef} className="list-none relative space-y-2 text-sm border-l-2 border-border">
         {/* Sliding active indicator */}
         {activeIndex !== null && (
           <motion.div

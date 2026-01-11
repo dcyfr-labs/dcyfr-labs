@@ -13,8 +13,8 @@
  * ```ts
  * const threads = groupActivitiesIntoThreads(activities);
  * threads.forEach(thread => {
- *   console.log('Primary:', thread.primary.title);
- *   console.log('Replies:', thread.replies.length);
+ *   console.warn('Primary:', thread.primary.title);
+ *   console.warn('Replies:', thread.replies.length);
  * });
  * ```
  */

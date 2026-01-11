@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { CopyCodeButton } from "@/components/common/copy-code-button";
+import { CopyCodeButton } from "@/components/common";
 
 // Mock framer-motion to simplify animations in tests
 vi.mock("framer-motion", () => ({
@@ -27,7 +27,7 @@ vi.mock("@/components/ui/button", () => ({
 }));
 
 describe("CopyCodeButton Component", () => {
-  const mockCode = "console.log('Hello, World!');";
+  const mockCode = "console.warn('Hello, World!');";
 
   // Helper to flush promises with fake timers
   const flushPromises = () => act(async () => {
@@ -199,7 +199,7 @@ describe("CopyCodeButton Component", () => {
 
     it("should copy multi-line code correctly", async () => {
       const multiLineCode = `function greet(name) {
-  console.log(\`Hello, \${name}!\`);
+  console.warn(\`Hello, \${name}!\`);
 }`;
       render(<CopyCodeButton code={multiLineCode} />);
       

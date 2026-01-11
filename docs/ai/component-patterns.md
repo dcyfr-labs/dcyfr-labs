@@ -59,12 +59,14 @@ export type { MyComponentProps } from "./my-component";
 ### PageLayout (Default - 90% of pages)
 
 **When to use:**
+
 - Homepage
 - About, Contact, Resume
 - Standard content pages
 - Any page without special features
 
 **Example:**
+
 ```typescript
 import { PageLayout } from "@/components/layouts";
 import { createPageMetadata } from "@/lib/metadata";
@@ -87,10 +89,12 @@ export default function AboutPage() {
 ### ArticleLayout (Blog Posts Only)
 
 **When to use:**
+
 - ONLY for blog posts at `src/app/blog/[slug]/page.tsx`
 - Never use for other content types
 
 **Features:**
+
 - Reading time calculation
 - Table of contents (auto-generated)
 - Related posts
@@ -98,6 +102,7 @@ export default function AboutPage() {
 - Publication metadata
 
 **Example:**
+
 ```typescript
 import { ArticleLayout } from "@/components/layouts";
 import { createArticlePageMetadata } from "@/lib/metadata";
@@ -123,17 +128,20 @@ export default function BlogPost() {
 ### ArchiveLayout (Filterable Lists Only)
 
 **When to use:**
+
 - Blog archive (`/blog`)
 - Project listing (`/work`)
 - Any page with filters, pagination, or sorting
 
 **Features:**
+
 - Filter controls
 - Pagination
 - Item count badge
 - View toggles (grid/list)
 
 **Example:**
+
 ```typescript
 import { ArchiveLayout } from "@/components/layouts";
 import { createArchivePageMetadata } from "@/lib/metadata";
@@ -167,13 +175,14 @@ export default function BlogArchive() {
 import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata = createPageMetadata({
-  title: "About",               // Required
-  description: "About me",      // Required
-  path: "/about",               // Required
+  title: "About", // Required
+  description: "About me", // Required
+  path: "/about", // Required
 });
 ```
 
 **Generates:**
+
 - `<title>` tag with site name template
 - OpenGraph metadata (og:title, og:description, og:image)
 - Twitter Card metadata
@@ -188,14 +197,15 @@ export const metadata = createPageMetadata({
 import { createArchivePageMetadata } from "@/lib/metadata";
 
 export const metadata = createArchivePageMetadata({
-  title: "Blog",                // Required
-  itemCount: posts.length,      // Required
-  activeTag: "Next.js",         // Optional
-  description: "Custom desc",   // Optional (auto-generated if omitted)
+  title: "Blog", // Required
+  itemCount: posts.length, // Required
+  activeTag: "Next.js", // Optional
+  description: "Custom desc", // Optional (auto-generated if omitted)
 });
 ```
 
 **Generates:**
+
 - Everything from `createPageMetadata`
 - Dynamic description with item count
 - Filter-aware metadata (if activeTag provided)
@@ -208,17 +218,18 @@ export const metadata = createArchivePageMetadata({
 import { createArticlePageMetadata } from "@/lib/metadata";
 
 export const metadata = createArticlePageMetadata({
-  title: post.title,                    // Required
-  description: post.summary,            // Required
-  path: `/blog/${post.slug}`,           // Required
+  title: post.title, // Required
+  description: post.summary, // Required
+  path: `/blog/${post.slug}`, // Required
   publishedAt: new Date(post.publishedAt), // Required
-  tags: post.tags,                      // Optional
-  image: post.image?.url,               // Optional
-  author: "Drew",                  // Optional
+  tags: post.tags, // Optional
+  image: post.image?.url, // Optional
+  author: "Drew", // Optional
 });
 ```
 
 **Generates:**
+
 - Everything from `createPageMetadata`
 - Article schema (structured data for Google)
 - Publication date metadata
@@ -238,13 +249,13 @@ import { CONTAINER_WIDTHS } from "@/lib/design-tokens";
 
 ### Available Widths
 
-| Token | Max Width | Usage |
-|-------|-----------|-------|
-| `narrow` | 672px | Long-form text, documentation |
-| `standard` | 896px | **Most common (80%)** - forms, simple content |
-| `content` | 1120px | Rich layouts, media-heavy pages |
-| `archive` | 1280px | Filterable lists with sidebars |
-| `dashboard` | 1536px | Analytics, admin panels |
+| Token       | Max Width | Usage                                         |
+| ----------- | --------- | --------------------------------------------- |
+| `narrow`    | 672px     | Long-form text, documentation                 |
+| `standard`  | 896px     | **Most common (80%)** - forms, simple content |
+| `content`   | 1120px    | Rich layouts, media-heavy pages               |
+| `archive`   | 1280px    | Filterable lists with sidebars                |
+| `dashboard` | 1536px    | Analytics, admin panels                       |
 
 ### Examples
 
@@ -269,11 +280,13 @@ import { CONTAINER_WIDTHS } from "@/lib/design-tokens";
 ### When to Wrap
 
 **YES - Wrap these:**
+
 - External API calls (GitHub API, weather data, etc.)
 - User forms (contact forms, search inputs)
 - Expensive computations (data processing, charts)
 
 **NO - Don't wrap these:**
+
 - Static text content
 - Navigation menus
 - Simple lists
@@ -322,14 +335,14 @@ import { ContactFormErrorBoundary } from "@/components/errors";
 import { ANIMATION } from "@/lib/design-tokens";
 
 // Duration tokens (replace duration-* classes)
-ANIMATION.duration.fast    // "duration-150" - Quick UI responses (hover, focus)
-ANIMATION.duration.normal  // "duration-300" - Standard transitions (cards, modals)
-ANIMATION.duration.slow    // "duration-500" - Dramatic effects (page transitions)
+ANIMATION.duration.fast; // "duration-150" - Quick UI responses (hover, focus)
+ANIMATION.duration.normal; // "duration-300" - Standard transitions (cards, modals)
+ANIMATION.duration.slow; // "duration-500" - Dramatic effects (page transitions)
 
 // Transition utilities (prefer these for common patterns)
-ANIMATION.transition.movement    // "transition-movement" - transform (scale, translate, rotate)
-ANIMATION.transition.appearance  // "transition-appearance" - opacity, backdrop-blur
-ANIMATION.transition.theme       // "transition-theme" - theme switching (colors, backgrounds)
+ANIMATION.transition.movement; // "transition-movement" - transform (scale, translate, rotate)
+ANIMATION.transition.appearance; // "transition-appearance" - opacity, backdrop-blur
+ANIMATION.transition.theme; // "transition-theme" - theme switching (colors, backgrounds)
 ```
 
 ### Usage Patterns
@@ -358,12 +371,12 @@ ANIMATION.transition.theme       // "transition-theme" - theme switching (colors
 
 ### When to Use Which
 
-| Pattern | Use Token | Use Utility | Example |
-|---------|-----------|-------------|---------|
-| Hover scale/translate | ✅ | ✅ | `.transition-movement` |
-| Fade in/out | ✅ | ✅ | `.transition-appearance` |
-| Theme switching | ❌ | ✅ | `.transition-theme` (slow by design) |
-| Custom timing | ✅ | ❌ | `{ANIMATION.duration.slow}` |
+| Pattern               | Use Token | Use Utility | Example                              |
+| --------------------- | --------- | ----------- | ------------------------------------ |
+| Hover scale/translate | ✅        | ✅          | `.transition-movement`               |
+| Fade in/out           | ✅        | ✅          | `.transition-appearance`             |
+| Theme switching       | ❌        | ✅          | `.transition-theme` (slow by design) |
+| Custom timing         | ✅        | ❌          | `{ANIMATION.duration.slow}`          |
 
 ---
 
@@ -412,7 +425,7 @@ export function ProjectCard({ project, loading }: ProjectCardProps) {
       </Card>
     );
   }
-  
+
   return (
     <Card>
       <CardHeader>
@@ -467,20 +480,23 @@ import {
 **Purpose:** Highlight critical takeaways and insights in blog content.
 
 **Use for:**
+
 - Important security principles
-- Critical technical insights  
+- Critical technical insights
 - Key business implications
 - Essential conclusions
 
 ```mdx
 <KeyTakeaway>
-If an agent's goals can be hijacked, it becomes a weapon turned against you---using its own legitimate access to cause harm.
+  If an agent's goals can be hijacked, it becomes a weapon turned against
+  you---using its own legitimate access to cause harm.
 </KeyTakeaway>
 ```
 
 **Features:**
+
 - Lightbulb icon for visual prominence
-- Automatic "Key Takeaway:" prefix
+- Automatic "Takeaway" prefix
 - Semantic info color theming
 - Responsive typography and spacing
 
@@ -489,6 +505,7 @@ If an agent's goals can be hijacked, it becomes a weapon turned against you---us
 **Purpose:** Provide important background context and setup information.
 
 **Use for:**
+
 - Background information readers need
 - Prerequisites or assumptions
 - Research methodology context
@@ -496,40 +513,115 @@ If an agent's goals can be hijacked, it becomes a weapon turned against you---us
 
 ```mdx
 <ContextClue>
-As AI agents become more autonomous and capable of taking real-world actions, the security landscape is evolving rapidly.
+  As AI agents become more autonomous and capable of taking real-world actions,
+  the security landscape is evolving rapidly.
 </ContextClue>
 ```
 
 **Features:**
+
 - Info icon for contextual information
 - Automatic "Context:" prefix
 - Subtle blue theming
 - `role="complementary"` for accessibility
+
+### SectionShare - Social Sharing Buttons
+
+**Purpose:** Per-section social sharing to increase engagement and SEO.
+
+**Use for:**
+
+- After major content sections
+- Following key insights or case studies
+- At natural content breakpoints
+- Bottom of long-form articles
+
+```mdx
+<SectionShare
+  sectionId="asi01-goal-hijack"
+  sectionTitle="ASI01: Agent Goal Hijack"
+/>
+```
+
+**Features:**
+
+- Twitter share with pre-filled content
+- LinkedIn professional sharing
+- Copy link with visual feedback ("Copied!" message)
+- Section URL with hash anchor (#section-id)
+- Theme-aware muted background
+- WCAG AA accessible with aria-labels
+
+**SEO Benefits:**
+
+- Increases social shares and backlinks
+- Generates trackable section-specific URLs
+- Improves content discoverability
+- Encourages viral content distribution
+
+### CollapsibleSection - Expandable Content
+
+**Purpose:** Progressive disclosure for optional or detailed content.
+
+**Use for:**
+
+- Technical deep dives that might overwhelm casual readers
+- Role-specific action plans (Security/Business/Developer)
+- Optional background information
+- Advanced techniques or edge cases
+
+```mdx
+<CollapsibleSection
+  id="security-professional-actions"
+  title="For Security Professionals"
+  defaultExpanded={false}
+>
+
+- Extend threat models to include goal hijacking
+- Implement agent-specific monitoring
+- Establish incident response playbooks
+
+</CollapsibleSection>
+```
+
+**Features:**
+
+- Smooth expand/collapse animation (max-height transition)
+- LocalStorage persistence (state saved per section ID)
+- Chevron rotation indicator (0° → 180°)
+- Keyboard accessible (Enter, Space)
+- Theme-aware card styling with shadow
+- WCAG AA compliant (aria-expanded, aria-controls)
+
+**UX Benefits:**
+
+- Reduces initial page complexity
+- Improves scanability for different audiences
+- Allows readers to explore at their own pace
+- Remembers user preferences across sessions
 
 ### Alert - Status Messages
 
 **Purpose:** Warnings, errors, or important notifications.
 
 ```mdx
-<Alert type="warning">
-**Important:** This feature is in beta.
-</Alert>
+<Alert type="warning">**Important:** This feature is in beta.</Alert>
 
-<Alert type="critical">
-**Security Alert:** Update immediately.
-</Alert>
+<Alert type="critical">**Security Alert:** Update immediately.</Alert>
 ```
 
 **Types:** `critical`, `warning`, `info`, `success`
 
 ### When to Use Which
 
-| Component | Use For | Don't Use For |
-|-----------|---------|---------------|
-| `<KeyTakeaway>` | Insights, conclusions, principles | Quotes, citations, warnings |
-| `<ContextClue>` | Background info, prerequisites, setup | Main content, key insights |
-| `<Alert>` | Warnings, status messages | Insights, regular content |
-| `<blockquote>` | Citations, quotes | Key takeaways, alerts, context |
+| Component              | Use For                                        | Don't Use For                  |
+| ---------------------- | ---------------------------------------------- | ------------------------------ |
+| `<KeyTakeaway>`        | Insights, conclusions, principles              | Quotes, citations, warnings    |
+| `<ContextClue>`        | Background info, prerequisites, setup          | Main content, key insights     |
+| `<SectionShare>`       | After key sections for social sharing          | Every paragraph, header        |
+| `<CollapsibleSection>` | Optional/advanced content, role-specific plans | Core content everyone needs    |
+| `<Alert>`              | Warnings, status messages                      | Insights, regular content      |
+| `<blockquote>`         | Citations, quotes                              | Key takeaways, alerts, context |
 
 ---
 

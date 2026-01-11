@@ -26,14 +26,14 @@ const CACHE_PREFIX = "giscus:reactions:";
 
 // GitHub Discussions reaction types
 export type ReactionType =
-  | "THUMBS_UP"    // 👍
-  | "THUMBS_DOWN"  // 👎
-  | "LAUGH"        // 😄
-  | "HOORAY"       // 🎉
-  | "CONFUSED"     // 😕
-  | "HEART"        // ❤️
-  | "ROCKET"       // 🚀
-  | "EYES";        // 👀
+  | "THUMBS_UP" // 👍
+  | "THUMBS_DOWN" // 👎
+  | "LAUGH" // 😄
+  | "HOORAY" // 🎉
+  | "CONFUSED" // 😕
+  | "HEART" // ❤️
+  | "ROCKET" // 🚀
+  | "EYES"; // 👀
 
 // ============================================================================
 // TYPES
@@ -115,7 +115,9 @@ async function getRedisClient() {
 /**
  * Get cached reactions from Redis
  */
-async function getCachedReactions(activityId: string): Promise<GiscusReactions | null> {
+async function getCachedReactions(
+  activityId: string
+): Promise<GiscusReactions | null> {
   const redis = await getRedisClient();
   if (!redis) return null;
 
@@ -124,7 +126,10 @@ async function getCachedReactions(activityId: string): Promise<GiscusReactions |
     await redis.quit();
     return cached ? JSON.parse(cached) : null;
   } catch (error) {
-    console.error(`[GiscusReactions] Cache read failed for ${activityId}:`, error);
+    console.error(
+      `[GiscusReactions] Cache read failed for ${activityId}:`,
+      error
+    );
     return null;
   }
 }
@@ -132,15 +137,25 @@ async function getCachedReactions(activityId: string): Promise<GiscusReactions |
 /**
  * Set cached reactions in Redis
  */
-async function setCachedReactions(activityId: string, reactions: GiscusReactions): Promise<void> {
+async function setCachedReactions(
+  activityId: string,
+  reactions: GiscusReactions
+): Promise<void> {
   const redis = await getRedisClient();
   if (!redis) return;
 
   try {
-    await redis.setEx(`${CACHE_PREFIX}${activityId}`, CACHE_TTL, JSON.stringify(reactions));
+    await redis.setEx(
+      `${CACHE_PREFIX}${activityId}`,
+      CACHE_TTL,
+      JSON.stringify(reactions)
+    );
     await redis.quit();
   } catch (error) {
-    console.error(`[GiscusReactions] Cache write failed for ${activityId}:`, error);
+    console.error(
+      `[GiscusReactions] Cache write failed for ${activityId}:`,
+      error
+    );
   }
 }
 
@@ -194,7 +209,9 @@ export async function getActivityReactions(
 
   const [owner, repo] = siteConfig.services.giscus.repo.split("/");
   if (!owner || !repo) {
-    console.warn("[GiscusReactions] Invalid repo format, expected 'owner/repo'");
+    console.warn(
+      "[GiscusReactions] Invalid repo format, expected 'owner/repo'"
+    );
     return emptyReactions;
   }
 
@@ -306,7 +323,8 @@ export async function getActivityReactionsBulk(
   items: Array<{ activityId: string; discussionPath: string }>
 ): Promise<Record<string, GiscusReactions>> {
   const results: Record<string, GiscusReactions> = {};
-  const uncachedItems: Array<{ activityId: string; discussionPath: string }> = [];
+  const uncachedItems: Array<{ activityId: string; discussionPath: string }> =
+    [];
 
   // Check cache for all items first
   for (const item of items) {
@@ -325,7 +343,10 @@ export async function getActivityReactionsBulk(
       const batch = uncachedItems.slice(i, i + BATCH_SIZE);
       const reactions = await Promise.all(
         batch.map(async (item) => {
-          const data = await getActivityReactions(item.activityId, item.discussionPath);
+          const data = await getActivityReactions(
+            item.activityId,
+            item.discussionPath
+          );
           return { activityId: item.activityId, reactions: data };
         })
       );
