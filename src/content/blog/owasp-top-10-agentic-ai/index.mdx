@@ -5,6 +5,7 @@ subtitle: "Understanding the critical security risks facing autonomous AI system
 summary: "OWASP's first Top 10 for Agentic Applications (2026): Learn the 10 critical security risks facing autonomous AI systems—from goal hijacking to rogue agents. Expert analysis with real-world CVEs and mitigation strategies."
 authors: ["drew", "dcyfr"]
 publishedAt: "2025-12-19T12:00:00Z"
+updatedAt: "2026-01-11T12:00:00Z"
 category: "DevSecOps"
 tags:
   [
@@ -38,7 +39,7 @@ previousSlugs: ["owasp-top-10-agentic-ai-2026"]
   mostCommon={[
     "ASI01 Goal Hijack - Prompt injection attacks redirecting agent objectives",
     "ASI02 Tool Misuse - Legitimate tools weaponized through agent manipulation",
-    "ASI03 Memory Poisoning - Long-term context corruption influencing future decisions",
+    "ASI06 Memory Poisoning - Long-term context corruption influencing future decisions",
   ]}
   mostDangerous={[
     "ASI10 Rogue Agents - Persistent malicious behavior outlasting initial compromise",
@@ -133,31 +134,6 @@ OWASP has also mapped the Agentic Top 10 to its **Non-Human Identities (NHI) Top
 
 ---
 
-## Moving Forward: Building Secure Agentic Systems
-
-Agentic AI represents one of the most significant shifts in computing since the internet. These systems promise unprecedented automation, efficiency, and capability. But only if we build them securely from the ground up.
-
-The OWASP Top 10 for Agentic Applications provides a roadmap. AI agents already deliver real business value. The question is not whether to adopt them, but how to understand their unique risks and implement safeguards before small vulnerabilities cascade into catastrophic failures.
-
-**For security professionals**, extend traditional application security into the agentic realm. Treat goal hijacking, tool misuse, memory poisoning, and cascading failures as first-class threats alongside SQL injection and cross-site scripting.
-
-<KeyTakeaway variant="tip" title="Practical First Steps">
-  Start with observability: comprehensive logging of agent actions, tool
-  invocations, and goal changes. You can't secure what you can't see.
-</KeyTakeaway>
-
-**For business leaders**, ask hard questions before deploying autonomous agents: What happens if this agent is compromised? What's the blast radius? Do we have proper observability and kill switches? Are we implementing least privilege and human-in-the-loop controls for high-impact actions?
-
-**For all of us navigating this landscape**, the most powerful AI systems require the most rigorous security thinking. The autonomy that makes agents useful is the same autonomy that makes them dangerous. That paradox demands our full attention.
-
-<KeyTakeaway variant="insight" title="The Autonomy Paradox">
-  Every capability that makes agentic AI powerful--autonomous planning, tool
-  execution, persistent memory, multi-agent coordination--is also an attack
-  vector. Security must evolve alongside capability.
-</KeyTakeaway>
-
----
-
 ## The OWASP Agentic Top 10: A Breakdown
 
 The OWASP Top 10 for Agentic Applications identifies the most critical security risks organizations face when deploying autonomous AI. Explore each risk below—expand the sections that matter most to your security posture.
@@ -240,6 +216,11 @@ Microsoft Copilot Studio agents were public by default without authentication, a
   entities that can be tricked into abusing their own privileges.
 </KeyTakeaway>
 
+<SectionShare
+  sectionId="asi03-identity-privilege"
+  sectionTitle="ASI03: Identity and Privilege Abuse"
+/>
+
 </RiskAccordion>
 
 <RiskAccordion
@@ -292,6 +273,11 @@ Security researchers demonstrated command injection in Visual Studio Code's agen
   potential backdoor.
 </KeyTakeaway>
 
+<SectionShare
+  sectionId="asi05-code-execution"
+  sectionTitle="ASI05: Unexpected Code Execution (RCE)"
+/>
+
 </RiskAccordion>
 
 <RiskAccordion
@@ -316,6 +302,11 @@ In a travel booking scenario, attackers repeatedly reinforced a fake flight pric
   is compromised, all subsequent actions become suspect.
 </KeyTakeaway>
 
+<SectionShare
+  sectionId="asi06-memory-poisoning"
+  sectionTitle="ASI06: Memory and Context Poisoning"
+/>
+
 </RiskAccordion>
 
 <RiskAccordion
@@ -337,6 +328,11 @@ In a travel booking scenario, attackers repeatedly reinforced a fake flight pric
   In multi-agent systems, trust without verification becomes a liability. One
   bad agent can corrupt an entire network.
 </KeyTakeaway>
+
+<SectionShare
+  sectionId="asi07-inter-agent-communication"
+  sectionTitle="ASI07: Insecure Inter-Agent Communication"
+/>
 
 </RiskAccordion>
 
@@ -362,6 +358,11 @@ In cybersecurity applications, a false alert about an imminent attack could prop
   isolated. They multiply.
 </KeyTakeaway>
 
+<SectionShare
+  sectionId="asi08-cascading-failures"
+  sectionTitle="ASI08: Cascading Failures"
+/>
+
 </RiskAccordion>
 
 <RiskAccordion
@@ -384,6 +385,11 @@ Memory poisoning retrained security agents to label malicious activity as normal
   oversee them into making harmful decisions.
 </KeyTakeaway>
 
+<SectionShare
+  sectionId="asi09-trust-exploitation"
+  sectionTitle="ASI09: Human-Agent Trust Exploitation"
+/>
+
 </RiskAccordion>
 
 <RiskAccordion
@@ -405,6 +411,11 @@ Researchers demonstrated that compromised agents continue scanning and transmitt
   Rogue agents represent the nightmare scenario: AI systems that develop
   persistent, autonomous harmful behavior outlasting the initial attack.
 </KeyTakeaway>
+
+<SectionShare
+  sectionId="asi10-rogue-agents"
+  sectionTitle="ASI10: Rogue Agents"
+/>
 
 </RiskAccordion>
 
@@ -505,13 +516,19 @@ Require human approval for privileged operations, irreversible changes, or goal-
 
 </CollapsibleSection>
 
-### Role-Based Next Steps
-
 ### The Path Forward
+
+Agentic AI represents one of the most significant shifts in computing since the internet. These systems promise unprecedented automation, efficiency, and capability--but only if we build them securely from the ground up.
 
 The future of work, productivity, and innovation increasingly depends on autonomous AI. But that future only materializes if we build it securely. The OWASP Top 10 for Agentic Applications gives us the framework--now execution becomes the differentiator.
 
 Organizations that treat agentic security as an afterthought will learn through costly breaches. Those that embed these principles from design through deployment will unlock AI's potential while containing its risks.
+
+<KeyTakeaway variant="insight" title="The Autonomy Paradox">
+  Every capability that makes agentic AI powerful--autonomous planning, tool
+  execution, persistent memory, multi-agent coordination--is also an attack
+  vector. Security must evolve alongside capability.
+</KeyTakeaway>
 
 **The autonomy that makes agents powerful is precisely what makes them dangerous.** That paradox demands our full attention, our best security thinking, and our commitment to building systems that are both capable and trustworthy.
 
