@@ -258,7 +258,7 @@ export function PostList({
                       <div
                         className={`flex flex-nowrap items-center gap-x-3 text-sm mb-4 overflow-x-auto ${
                           p.image && p.image.url && !p.image.hideCard
-                            ? "text-zinc-300 dark:text-zinc-400"
+                            ? "text-white/70"
                             : "text-muted-foreground"
                         }`}
                       >
@@ -275,7 +275,7 @@ export function PostList({
                       <div
                         className={`hidden md:flex flex-nowrap items-center gap-x-3 text-sm mb-5 overflow-x-auto ${
                           p.image && p.image.url && !p.image.hideCard
-                            ? "text-zinc-300 dark:text-zinc-400"
+                            ? "text-white/70"
                             : "text-muted-foreground"
                         }`}
                       >
@@ -293,7 +293,7 @@ export function PostList({
                           aria-hidden="true"
                           className={
                             p.image && p.image.url && !p.image.hideCard
-                              ? "text-zinc-500"
+                              ? "text-white/50"
                               : "text-muted-foreground"
                           }
                         >
@@ -310,7 +310,7 @@ export function PostList({
                                 aria-hidden="true"
                                 className={
                                   p.image && p.image.url && !p.image.hideCard
-                                    ? "text-zinc-500"
+                                    ? "text-white/50"
                                     : "text-muted-foreground"
                                 }
                               >
@@ -342,7 +342,7 @@ export function PostList({
                         <p
                           className={`font-medium text-lg md:text-xl mb-4 line-clamp-2 ${
                             p.image && p.image.url && !p.image.hideCard
-                              ? "text-zinc-200 dark:text-zinc-300"
+                              ? "text-white/80"
                               : "text-muted-foreground"
                           }`}
                         >
@@ -357,7 +357,7 @@ export function PostList({
                       <p
                         className={`text-base md:text-lg leading-relaxed line-clamp-2 md:line-clamp-3 mb-6 ${
                           p.image && p.image.url && !p.image.hideCard
-                            ? "text-zinc-300 dark:text-zinc-300"
+                            ? "text-white/80"
                             : "text-muted-foreground"
                         }`}
                       >
@@ -444,12 +444,6 @@ export function PostList({
                     >
                       {/* Badges */}
                       <div className="flex flex-nowrap items-center gap-x-2.5 text-sm text-muted-foreground mb-2.5 overflow-x-auto">
-                        {/* Featured badge */}
-                        {p.featured && (
-                          <Badge className="bg-zinc-700 text-white border-none flex-shrink-0 text-xs">
-                            Featured
-                          </Badge>
-                        )}
                         <PostBadges
                           post={p}
                           size="sm"
@@ -587,13 +581,7 @@ export function PostList({
 
                     <Link href={`/blog/${p.slug}`} className="block">
                       <div className="p-4 md:p-10 lg:p-12 relative z-10">
-                        <div className="flex flex-nowrap items-center gap-x-3 text-sm mb-4 text-zinc-300 dark:text-zinc-300 overflow-x-auto">
-                          {/* Featured badge */}
-                          {p.featured && (
-                            <Badge className="bg-zinc-700 text-white border-none flex-shrink-0">
-                              Featured
-                            </Badge>
-                          )}
+                        <div className="flex flex-nowrap items-center gap-x-3 text-sm mb-4 text-muted overflow-x-auto">
                           <PostBadges
                             post={p}
                             isLatestPost={latestSlug === p.slug}
@@ -603,7 +591,7 @@ export function PostList({
                           <SeriesBadge post={p} />
                         </div>
 
-                        <div className="hidden md:flex flex-nowrap items-center gap-x-3 text-sm mb-4 text-zinc-700 dark:text-zinc-300 overflow-x-auto">
+                        <div className="hidden md:flex flex-nowrap items-center gap-x-3 text-sm mb-4 text-foreground overflow-x-auto">
                           <time dateTime={p.publishedAt}>
                             {new Date(p.publishedAt).toLocaleDateString(
                               "en-US",
@@ -614,10 +602,13 @@ export function PostList({
                               }
                             )}
                           </time>
-                          <span aria-hidden="true" className="text-zinc-500">
+                          <span
+                            aria-hidden="true"
+                            className="text-muted-foreground"
+                          >
                             •
                           </span>
-                          <span className="text-zinc-700 dark:text-zinc-300">
+                          <span className="text-foreground">
                             {p.readingTime.text}
                           </span>
                           {viewCounts &&
@@ -626,18 +617,18 @@ export function PostList({
                               <>
                                 <span
                                   aria-hidden="true"
-                                  className="text-zinc-500"
+                                  className="text-muted-foreground"
                                 >
                                   •
                                 </span>
-                                <span className="text-zinc-700 dark:text-zinc-300">
+                                <span className="text-foreground">
                                   {formatViews(viewCounts.get(p.id)!)} views
                                 </span>
                               </>
                             )}
                         </div>
 
-                        <TitleTag className="font-bold text-3xl md:text-4xl lg:text-5xl leading-tight line-clamp-3 mb-4 text-zinc-900 dark:text-zinc-100">
+                        <TitleTag className="font-bold text-3xl md:text-4xl lg:text-5xl leading-tight line-clamp-3 mb-4 text-foreground">
                           <HighlightText
                             text={p.title}
                             searchQuery={searchQuery}
@@ -645,7 +636,7 @@ export function PostList({
                         </TitleTag>
 
                         {p.subtitle && (
-                          <p className="font-medium text-lg md:text-xl text-zinc-600 dark:text-zinc-400 mb-4">
+                          <p className="font-medium text-lg md:text-xl text-muted-foreground mb-4">
                             <HighlightText
                               text={p.subtitle}
                               searchQuery={searchQuery}
@@ -653,7 +644,7 @@ export function PostList({
                           </p>
                         )}
 
-                        <p className="text-base md:text-xl leading-relaxed text-zinc-700 dark:text-zinc-300 line-clamp-2 md:line-clamp-3 mb-5">
+                        <p className="text-base md:text-xl leading-relaxed text-foreground line-clamp-2 md:line-clamp-3 mb-5">
                           <HighlightText
                             text={p.summary}
                             searchQuery={searchQuery}
@@ -666,7 +657,7 @@ export function PostList({
                               <Badge
                                 key={tag}
                                 variant="secondary"
-                                className="text-xs md:text-sm bg-zinc-200/80 text-zinc-800 dark:bg-zinc-700/80 dark:text-zinc-200"
+                                className="text-xs md:text-sm bg-muted/80 text-foreground"
                               >
                                 {tag}
                               </Badge>
@@ -674,7 +665,7 @@ export function PostList({
                             {p.tags.length > 5 && (
                               <Badge
                                 variant="secondary"
-                                className="text-xs md:text-sm bg-zinc-200/80 text-zinc-800 dark:bg-zinc-700/80 dark:text-zinc-200"
+                                className="text-xs md:text-sm bg-muted/80 text-foreground"
                               >
                                 +{p.tags.length - 5} more
                               </Badge>
@@ -726,13 +717,13 @@ export function PostList({
                         />
                         <SeriesBadge post={p} size="sm" />
                       </div>
-                      <TitleTag className="font-bold text-xl md:text-2xl lg:text-3xl leading-tight line-clamp-2 mb-3 text-zinc-900 dark:text-zinc-100">
+                      <TitleTag className="font-bold text-xl md:text-2xl lg:text-3xl leading-tight line-clamp-2 mb-3 text-foreground">
                         <HighlightText
                           text={p.title}
                           searchQuery={searchQuery}
                         />
                       </TitleTag>
-                      <p className="text-sm md:text-base leading-relaxed text-zinc-600 dark:text-zinc-400 line-clamp-2 lg:line-clamp-3 mb-4">
+                      <p className="text-sm md:text-base leading-relaxed text-muted-foreground line-clamp-2 lg:line-clamp-3 mb-4">
                         <HighlightText
                           text={p.summary}
                           searchQuery={searchQuery}
@@ -744,7 +735,7 @@ export function PostList({
                             <Badge
                               key={tag}
                               variant="outline"
-                              className="text-xs border-zinc-300 text-zinc-700 dark:border-zinc-600 dark:text-zinc-300"
+                              className="text-xs border-border text-foreground"
                             >
                               {tag}
                             </Badge>
@@ -752,7 +743,7 @@ export function PostList({
                           {p.tags.length > 3 && (
                             <Badge
                               variant="outline"
-                              className="text-xs border-zinc-300 text-zinc-500 dark:border-zinc-600 dark:text-zinc-400"
+                              className="text-xs border-border text-muted-foreground"
                             >
                               +{p.tags.length - 3}
                             </Badge>
@@ -777,15 +768,6 @@ export function PostList({
           <article
             className={`group rounded-xl border border-border/40 overflow-hidden relative bg-card shadow-md hover:shadow-lg transition-all ${HOVER_EFFECTS.card}`}
           >
-            {/* Featured badge - only show if post is featured */}
-            {posts[0].featured && (
-              <div className="absolute top-4 left-4 z-20">
-                <Badge className="bg-zinc-700 text-white border-none">
-                  Featured
-                </Badge>
-              </div>
-            )}
-
             {/* Bookmark Button - Top Right Corner */}
             <div className="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
               <BookmarkButton
@@ -1277,7 +1259,7 @@ export function PostList({
                       day: "numeric",
                     })}
                   </time>
-                  <span aria-hidden="true" className="text-zinc-400">
+                  <span aria-hidden="true" className="text-muted-foreground">
                     •
                   </span>
                   <span>{p.readingTime.text}</span>
@@ -1285,17 +1267,20 @@ export function PostList({
                     viewCounts.has(p.id) &&
                     viewCounts.get(p.id)! > 0 && (
                       <>
-                        <span aria-hidden="true" className="text-zinc-400">
+                        <span
+                          aria-hidden="true"
+                          className="text-muted-foreground"
+                        >
                           •
                         </span>
                         <span>{formatViews(viewCounts.get(p.id)!)} views</span>
                       </>
                     )}
                 </div>
-                <TitleTag className="font-bold text-xl md:text-2xl lg:text-3xl leading-tight line-clamp-2 mb-3 text-zinc-900 dark:text-zinc-100">
+                <TitleTag className="font-bold text-xl md:text-2xl lg:text-3xl leading-tight line-clamp-2 mb-3 text-foreground">
                   <HighlightText text={p.title} searchQuery={searchQuery} />
                 </TitleTag>
-                <p className="text-sm md:text-base leading-relaxed text-zinc-600 dark:text-zinc-400 line-clamp-2 lg:line-clamp-3 mb-4">
+                <p className="text-sm md:text-base leading-relaxed text-muted-foreground line-clamp-2 lg:line-clamp-3 mb-4">
                   <HighlightText text={p.summary} searchQuery={searchQuery} />
                 </p>
                 {p.tags.length > 0 && (
@@ -1304,7 +1289,7 @@ export function PostList({
                       <Badge
                         key={tag}
                         variant="outline"
-                        className="text-xs border-zinc-300 text-zinc-700 dark:border-zinc-600 dark:text-zinc-300"
+                        className="text-xs border-border text-foreground"
                       >
                         {tag}
                       </Badge>
@@ -1312,7 +1297,7 @@ export function PostList({
                     {p.tags.length > 3 && (
                       <Badge
                         variant="outline"
-                        className="text-xs border-zinc-300 text-zinc-500 dark:border-zinc-600 dark:text-zinc-400"
+                        className="text-xs border-border text-muted-foreground"
                       >
                         +{p.tags.length - 3}
                       </Badge>

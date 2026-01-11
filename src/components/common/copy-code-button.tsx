@@ -13,7 +13,13 @@ import { cn } from "@/lib/utils";
  * **Animation approach:** Uses CSS animations (Tailwind animate-in) instead of Framer Motion.
  * The icon swap animation is a simple scale/rotate effect that CSS handles efficiently.
  */
-export function CopyCodeButton({ code }: { code: string }) {
+export function CopyCodeButton({
+  code,
+  variant = "overlay",
+}: {
+  code: string;
+  variant?: "overlay" | "header";
+}) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -31,17 +37,21 @@ export function CopyCodeButton({ code }: { code: string }) {
       variant="ghost"
       size="icon"
       className={cn(
-        "absolute top-2 right-2",
+        // Conditional positioning based on variant
+        variant === "overlay" && [
+          "absolute top-2 right-2",
+          "opacity-0 group-hover:opacity-100 transition-opacity",
+        ],
+        variant === "header" && ["relative", "hover:bg-muted/50"],
         // Mobile-first: 44x44px minimum, scale down on tablet+
-        TOUCH_TARGET.close,
-        "opacity-0 group-hover:opacity-100 transition-opacity"
+        TOUCH_TARGET.close
       )}
       onClick={handleCopy}
       aria-label={copied ? "Copied!" : "Copy code"}
     >
       {copied ? (
         <div className="animate-in spin-in-0 zoom-in-0 duration-200">
-          <Check className="h-4 w-4 text-emerald-500" />
+          <Check className="h-4 w-4 text-success-light" />
         </div>
       ) : (
         <div className="animate-in spin-in-0 zoom-in-0 duration-200">

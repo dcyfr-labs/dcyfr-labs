@@ -62,7 +62,11 @@ export default async function DrewResumePage() {
       <SmoothScrollToHash />
       <div className={SPACING.section}>
         <section id="hero">
-          <PageHero title="Drew's Resume" description={getSummary()} />
+          <PageHero
+            title="Drew's Resume"
+            description={getSummary()}
+            align="center"
+          />
         </section>
 
         {/* Stats Overview */}

@@ -79,19 +79,19 @@ export function RecentSessionsTable({
                 </td>
                 <td className="py-3">
                   {session.outcome === "success" && (
-                    <div className="flex items-center gap-1 text-green-600">
+                    <div className="flex items-center gap-1 text-success">
                       <CheckCircle2 className="h-4 w-4" />
                       <span className="text-sm">Success</span>
                     </div>
                   )}
                   {session.outcome === "escalated" && (
-                    <div className="flex items-center gap-1 text-yellow-600">
+                    <div className="flex items-center gap-1 text-warning">
                       <ArrowUpCircle className="h-4 w-4" />
                       <span className="text-sm">Escalated</span>
                     </div>
                   )}
                   {session.outcome === "failed" && (
-                    <div className="flex items-center gap-1 text-red-600">
+                    <div className="flex items-center gap-1 text-error">
                       <XCircle className="h-4 w-4" />
                       <span className="text-sm">Failed</span>
                     </div>

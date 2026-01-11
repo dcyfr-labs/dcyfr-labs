@@ -55,6 +55,7 @@ import { ConversionMetrics } from '@/components/analytics';
 import { AnalyticsInsights } from '@/components/analytics';
 import { AnalyticsRecommendations } from '@/components/analytics';
 import { VercelInsights } from '@/components/analytics';
+import { SocialMetrics } from '@/components/analytics';
 import dynamic from "next/dynamic";
 
 const AnalyticsCharts = dynamic(() => import("@/components/analytics/analytics-charts").then(mod => ({ default: mod.AnalyticsCharts })), {
@@ -620,6 +621,12 @@ export default function AnalyticsDashboard() {
       {/* Analytics Overview */}
       <AnalyticsOverview
         summary={filteredSummary}
+      />
+
+      {/* Social Media Metrics */}
+      <SocialMetrics
+        posts={sortedPosts}
+        defaultCollapsed={false}
       />
 
       {/* Conversion Goals & Metrics */}

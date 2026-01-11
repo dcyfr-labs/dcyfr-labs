@@ -135,6 +135,7 @@ export default function FeedsPage() {
       <PageHero
         title="Subscribe to our Web Feeds"
         description={`Stay up to date with the latest content from ${SITE_TITLE}. Choose from our various feeds based on your interests and preferred update frequency.`}
+        align="center"
       />
 
       {/* Main Content */}

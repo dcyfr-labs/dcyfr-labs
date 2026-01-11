@@ -12,11 +12,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  TYPOGRAPHY,
-  HOVER_EFFECTS,
-  ANIMATION,
-} from "@/lib/design-tokens";
+import { TYPOGRAPHY, HOVER_EFFECTS, ANIMATION } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 
 // ============================================================================
@@ -86,7 +82,7 @@ export function ExploreSection({
       description: "Articles on security, development, and technology",
       count: postsCount,
       countLabel: "articles",
-      color: "text-blue-500",
+      color: "text-semantic-blue",
     },
     {
       href: "/work",
@@ -95,7 +91,7 @@ export function ExploreSection({
       description: "Featured work and open source contributions",
       count: projectsCount,
       countLabel: "projects",
-      color: "text-purple-500",
+      color: "text-semantic-purple",
     },
     {
       href: "/activity",
@@ -104,7 +100,7 @@ export function ExploreSection({
       description: "Recent updates, commits, and milestones",
       count: activityCount,
       countLabel: "updates",
-      color: "text-green-500",
+      color: "text-success",
     },
   ];
 
@@ -114,14 +110,14 @@ export function ExploreSection({
       suffix: "+",
       label: "Years Experience",
       icon: GraduationCap,
-      color: "text-amber-500",
+      color: "text-semantic-amber",
     },
     {
       value: technologiesCount,
       suffix: "+",
       label: "Technologies",
       icon: Code2,
-      color: "text-cyan-500",
+      color: "text-semantic-cyan",
     },
   ];
 
@@ -141,21 +137,34 @@ export function ExploreSection({
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4, delay: index * 0.1 }}
           >
-            <Card className={cn("border-0 bg-muted/30", HOVER_EFFECTS.cardSubtle)}>
+            <Card
+              className={cn("border-0 bg-muted/30", HOVER_EFFECTS.cardSubtle)}
+            >
               <CardContent className="p-4 md:p-8">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-baseline gap-1">
-                      <span className={cn(TYPOGRAPHY.display.statLarge, stat.color)}>
+                      <span
+                        className={cn(TYPOGRAPHY.display.statLarge, stat.color)}
+                      >
                         {stat.value}
                       </span>
                       {stat.suffix && (
-                        <span className={cn("text-xl font-semibold text-muted-foreground")}>
+                        <span
+                          className={cn(
+                            "text-xl font-semibold text-muted-foreground"
+                          )}
+                        >
                           {stat.suffix}
                         </span>
                       )}
                     </div>
-                    <p className={cn(TYPOGRAPHY.label.small, "text-muted-foreground mt-1")}>
+                    <p
+                      className={cn(
+                        TYPOGRAPHY.label.small,
+                        "text-muted-foreground mt-1"
+                      )}
+                    >
                       {stat.label}
                     </p>
                   </div>
@@ -247,7 +256,12 @@ export function ExploreSection({
                       >
                         {card.count}
                       </span>
-                      <span className={cn(TYPOGRAPHY.label.small, "text-muted-foreground")}>
+                      <span
+                        className={cn(
+                          TYPOGRAPHY.label.small,
+                          "text-muted-foreground"
+                        )}
+                      >
                         {card.countLabel}
                       </span>
                     </div>

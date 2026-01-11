@@ -24,26 +24,26 @@ const BADGE_CONFIG = {
   hot: {
     icon: Flame,
     label: "Hot",
-    color: "bg-red-500/10 text-red-500 border-red-500/20",
+    color: "bg-error-subtle text-error border-error-light",
     description: "Rapid growth this week",
   },
   rising: {
     icon: TrendingUp,
     label: "Rising",
-    color: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+    color: "bg-info-subtle text-info border-info-light",
     description: "Steady growth this month",
   },
   top: {
     icon: Star,
     label: "Top",
-    color:
-      "bg-neutral-500/10 text-neutral-700 dark:text-neutral-300 border-neutral-500/20",
+    color: "bg-muted text-foreground border-border",
     description: "Highest in category",
   },
   accelerating: {
     icon: Rocket,
     label: "Accelerating",
-    color: "bg-purple-500/10 text-purple-500 border-purple-500/20",
+    color:
+      "bg-semantic-purple/10 text-semantic-purple border-semantic-purple/20",
     description: "Growth rate increasing",
   },
 } as const;

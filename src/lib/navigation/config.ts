@@ -236,7 +236,7 @@ export const MOBILE_NAV_SECTIONS: NavSection[] = [
       },
       {
         href: "/feeds",
-        label: "RSS Feeds",
+        label: "Feeds",
         icon: Rss,
         description: "Subscribe to updates",
       },
@@ -254,20 +254,19 @@ export const MOBILE_NAV_SECTIONS: NavSection[] = [
  */
 export const BOTTOM_NAV: NavItem[] = [
   {
-    href: "/",
-    label: "Home",
-    icon: Home,
-    exactMatch: true,
+    href: "/activity",
+    label: "Activity",
+    icon: Activity,
   },
   {
-    href: "/blog",
-    label: "Blog",
-    icon: FileText,
+    href: "/bookmarks",
+    label: "Bookmarks",
+    icon: Bookmark,
   },
   {
-    href: "/work",
-    label: "Work",
-    icon: Briefcase,
+    href: "/likes",
+    label: "Likes",
+    icon: Heart,
   },
 ];
 
@@ -346,7 +345,7 @@ export const FOOTER_NAV_SECTIONS: NavSection[] = [
     items: [
       {
         href: "/feeds",
-        label: "RSS Feeds",
+        label: "Feeds",
         icon: Rss,
         description: "Subscribe to updates",
       },

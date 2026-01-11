@@ -48,8 +48,26 @@ export { SeriesCard } from "./series-card";
 export { ContentTypeToggle } from "./content-type-toggle";
 
 // Sidebar context for hiding duplicate content
+
+// RIVET framework components
+export { ReadingProgressBar } from "./rivet/navigation";
+export { KeyTakeaway, TLDRSummary } from "./rivet/visual";
+export {
+  GlossaryTooltip,
+  SectionShare,
+  CollapsibleSection,
+} from "./rivet/interactive";
 export {
   SidebarVisibilityProvider,
   useSidebarVisibility,
   HideWhenSidebarVisible,
 } from "./post/sidebar-context";
+
+// Engagement components
+export { RiskAccordion, RiskAccordionGroup } from "./risk-accordion";
+export {
+  ReadingProgressTracker,
+  ProgressDots,
+} from "./reading-progress-tracker";
+export { RiskCardGrid } from "./risk-card-grid";
+export type { RiskCardData } from "./risk-card-grid";

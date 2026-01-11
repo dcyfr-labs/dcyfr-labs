@@ -105,7 +105,7 @@ export function ContactForm() {
   return (
     <div>
       {/* Informational banner using unified Alert component */}
-      <Alert type="info" className={`mb-${SPACING.xl}`}>
+      <Alert type="notice" className={`mb-${SPACING.xl}`}>
         <strong>Multiple ways to connect:</strong> You can use the form below or
         reach out directly via email and social media.
       </Alert>

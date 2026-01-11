@@ -39,7 +39,8 @@ export function EmbedGenerator() {
     if (options.source) params.set("source", options.source);
     if (options.timeRange) params.set("timeRange", options.timeRange);
     if (options.limit) params.set("limit", options.limit.toString());
-    if (options.theme && options.theme !== "auto") params.set("theme", options.theme);
+    if (options.theme && options.theme !== "auto")
+      params.set("theme", options.theme);
 
     const queryString = params.toString();
     return `${SITE_URL}/activity/embed${queryString ? `?${queryString}` : ""}`;
@@ -67,7 +68,9 @@ export function EmbedGenerator() {
     }
   
   // Send theme to iframe (if auto-detect is enabled)
-  ${options.theme === "auto" ? `
+  ${
+    options.theme === "auto"
+      ? `
   const getTheme = () => {
     // Detect user's theme preference
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -93,7 +96,9 @@ export function EmbedGenerator() {
       }, '*');
     });
   }
-  ` : ""}
+  `
+      : ""
+  }
   });
 </script>`;
 
@@ -109,22 +114,26 @@ export function EmbedGenerator() {
   };
 
   return (
-    <div className="border border-zinc-200 rounded-lg p-4">
+    <div className="border border-border rounded-lg p-4">
       <div className="flex items-center gap-2 mb-4">
         <Code className="w-5 h-5" />
         <h3 className={TYPOGRAPHY.h3.standard}>Embed Activity Feed</h3>
       </div>
 
-        <p className="text-sm text-zinc-600 mb-6">
-        Customize and embed your activity feed on external websites, blogs, or portfolio sites.
+      <p className="text-sm text-muted-foreground mb-6">
+        Customize and embed your activity feed on external websites, blogs, or
+        portfolio sites.
       </p>
 
       {/* Options */}
       <div className="space-y-4 mb-8">
         {/* Source Filter */}
         <div>
-          { }
-          <label htmlFor="embed-source" className="block mb-2 text-sm font-medium">
+          {}
+          <label
+            htmlFor="embed-source"
+            className="block mb-2 text-sm font-medium"
+          >
             Filter by Source (optional)
           </label>
           <select
@@ -151,8 +160,11 @@ export function EmbedGenerator() {
 
         {/* Time Range */}
         <div>
-          { }
-          <label htmlFor="embed-timeRange" className="block mb-2 text-sm font-medium">
+          {}
+          <label
+            htmlFor="embed-timeRange"
+            className="block mb-2 text-sm font-medium"
+          >
             Time Range (optional)
           </label>
           <select
@@ -176,8 +188,11 @@ export function EmbedGenerator() {
 
         {/* Limit */}
         <div>
-          { }
-          <label htmlFor="embed-limit" className="block mb-2 text-sm font-medium">
+          {}
+          <label
+            htmlFor="embed-limit"
+            className="block mb-2 text-sm font-medium"
+          >
             Number of Items
           </label>
           <input
@@ -195,8 +210,11 @@ export function EmbedGenerator() {
 
         {/* Width */}
         <div>
-          { }
-          <label htmlFor="embed-width" className="block mb-2 text-sm font-medium">
+          {}
+          <label
+            htmlFor="embed-width"
+            className="block mb-2 text-sm font-medium"
+          >
             Width
           </label>
           <input
@@ -205,16 +223,17 @@ export function EmbedGenerator() {
             className="w-full px-3 py-2 border rounded-lg text-sm"
             placeholder="100%"
             value={options.width}
-            onChange={(e) =>
-              setOptions({ ...options, width: e.target.value })
-            }
+            onChange={(e) => setOptions({ ...options, width: e.target.value })}
           />
         </div>
 
         {/* Height */}
         <div>
-          { }
-          <label htmlFor="embed-height" className="block mb-2 text-sm font-medium">
+          {}
+          <label
+            htmlFor="embed-height"
+            className="block mb-2 text-sm font-medium"
+          >
             Height
           </label>
           <input
@@ -223,16 +242,17 @@ export function EmbedGenerator() {
             className="w-full px-3 py-2 border rounded-lg text-sm"
             placeholder="600px"
             value={options.height}
-            onChange={(e) =>
-              setOptions({ ...options, height: e.target.value })
-            }
+            onChange={(e) => setOptions({ ...options, height: e.target.value })}
           />
         </div>
 
         {/* Theme */}
         <div>
-          { }
-          <label htmlFor="embed-theme" className="block mb-2 text-sm font-medium">
+          {}
+          <label
+            htmlFor="embed-theme"
+            className="block mb-2 text-sm font-medium"
+          >
             Theme
           </label>
           <select
@@ -250,7 +270,7 @@ export function EmbedGenerator() {
             <option value="light">Light theme</option>
             <option value="dark">Dark theme</option>
           </select>
-          <p className="text-xs text-zinc-500 mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             Auto-detect will match the theme of the page hosting the embed
           </p>
         </div>
@@ -262,7 +282,7 @@ export function EmbedGenerator() {
           href={embedUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700"  
+          className="inline-flex items-center gap-2 text-sm text-info hover:text-info-dark"
         >
           <ExternalLink className="w-4 h-4" />
           Preview embed in new window
@@ -271,12 +291,10 @@ export function EmbedGenerator() {
 
       {/* Generated Code */}
       <div className="relative">
-        { }
-        <label className="block mb-2 text-sm font-medium">
-          Embed Code
-        </label>
+        {}
+        <label className="block mb-2 text-sm font-medium">Embed Code</label>
         <div className="relative">
-          <pre className="bg-zinc-50 border rounded-lg p-4 text-xs overflow-x-auto">
+          <pre className="bg-muted border rounded-lg p-4 text-xs overflow-x-auto">
             <code>{iframeCode}</code>
           </pre>
           <button
@@ -285,19 +303,31 @@ export function EmbedGenerator() {
               "absolute top-2 right-2 p-2 rounded-lg transition-colors",
               copied
                 ? SEMANTIC_COLORS.status.success
-                : "bg-white border hover:bg-zinc-50"
+                : "bg-card border hover:bg-muted/50"
             )}
             aria-label="Copy embed code"
           >
-            {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+            {copied ? (
+              <Check className="w-4 h-4" />
+            ) : (
+              <Copy className="w-4 h-4" />
+            )}
           </button>
         </div>
       </div>
 
       {/* Usage Instructions */}
-      <div className={cn("mt-6 p-4 border rounded-lg text-sm", SEMANTIC_COLORS.status.info, "dark:border-info/30")}> { }
+      <div
+        className={cn(
+          "mt-6 p-4 border rounded-lg text-sm",
+          SEMANTIC_COLORS.status.info,
+          "dark:border-info/30"
+        )}
+      >
+        {" "}
+        {}
         <p className="mb-2 font-semibold">Usage Instructions:</p>
-        <ol className="list-decimal list-inside space-y-1 text-zinc-700">
+        <ol className="list-decimal list-inside space-y-1 text-foreground">
           <li>Customize the options above to fit your needs</li>
           <li>Copy the generated embed code</li>
           <li>Paste it into your website&apos;s HTML</li>

@@ -217,32 +217,42 @@ export default async function PostPage({
       </div>
 
       {/* Desktop Layout: Sidebar + Content */}
+      {/* Desktop Layout: Two-column (Sidebar+TOC + Content) - Left sidebar with content on right */}
       <div
         className={`container ${CONTAINER_WIDTHS.archive} mx-auto ${CONTAINER_PADDING} pt-6 md:pt-8 lg:pt-10 pb-8 md:pb-12`}
       >
-        <div className="grid lg:grid-cols-[280px_1fr] lg:items-start gap-4">
-          {/* Left Sidebar (desktop only) - Streams view count with PPR */}
-          <BlogPostSidebarWrapper
-            headings={headings}
-            slug={post.slug}
-            postId={post.id}
-            authors={post.authors}
-            postTitle={post.title}
-            metadata={{
-              publishedAt: new Date(post.publishedAt),
-              updatedAt: post.updatedAt ? new Date(post.updatedAt) : undefined,
-              readingTime: post.readingTime.text,
-              tags: post.tags,
-              category: post.category,
-              isDraft: post.draft,
-              isArchived: post.archived,
-              isLatest: latestPost?.slug === post.slug,
-              isHot: hottestSlug === post.slug,
-            }}
-            series={post.series}
-            seriesPosts={seriesPosts}
-            relatedPosts={articleData.relatedItems}
-          />
+        <div
+          className={`grid lg:grid-cols-[280px_1fr] lg:items-start ${SPACING.blogLayout}`}
+        >
+          {/* Left Sidebar (desktop only) - Metadata + TOC (TOC sticky) */}
+          <div className="hidden lg:block space-y-8">
+            <BlogPostSidebarWrapper
+              headings={headings}
+              slug={post.slug}
+              postId={post.id}
+              authors={post.authors}
+              postTitle={post.title}
+              metadata={{
+                publishedAt: new Date(post.publishedAt),
+                updatedAt: post.updatedAt
+                  ? new Date(post.updatedAt)
+                  : undefined,
+                readingTime: post.readingTime.text,
+                tags: post.tags,
+                category: post.category,
+                isDraft: post.draft,
+                isArchived: post.archived,
+                isLatest: latestPost?.slug === post.slug,
+                isHot: hottestSlug === post.slug,
+              }}
+              series={post.series}
+              seriesPosts={seriesPosts}
+              relatedPosts={articleData.relatedItems}
+            />
+            <div className="sticky top-24">
+              <TableOfContents headings={headings} slug={post.slug} />
+            </div>
+          </div>
 
           {/* Main Content */}
           <SidebarVisibilityProvider>
@@ -328,6 +338,11 @@ export default async function PostPage({
                 {/* Comments section - hidden for draft posts */}
                 {!post.draft && <LazyGiscusComments />}
               </ArticleLayout>
+
+              {/* Mobile/Tablet ToC - positioned after content for better mobile UX */}
+              <div className="lg:hidden mt-8">
+                <TableOfContents headings={headings} slug={post.slug} />
+              </div>
             </div>
           </SidebarVisibilityProvider>
         </div>

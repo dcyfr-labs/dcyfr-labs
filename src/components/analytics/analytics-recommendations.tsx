@@ -138,7 +138,7 @@ function detectMissingSources(posts: PostAnalytics[]): MissingSource[] {
     id: "referral-tracking",
     name: "Detailed Referral Source Tracking",
     description:
-      "Currently tracking basic views but not detailed referral sources (Twitter, Dev.to, Reddit, etc).",
+      "Currently tracking basic views but not detailed referral sources (Twitter/X, DEV, Reddit, etc).",
     impact: "high",
     estimatedBenefit: "40-60% better content distribution strategy",
     implementation: {

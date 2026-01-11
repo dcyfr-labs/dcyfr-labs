@@ -12,7 +12,7 @@ import { Alert } from "./alert";
  *
  * Features:
  * - Prominent lightbulb icon to indicate insight
- * - Highlighted "Key Takeaway:" prefix
+ * - Highlighted "Takeaway" prefix
  * - Semantic color theming using design tokens
  * - Responsive padding and typography
  * - Accessible markup with proper roles
@@ -44,8 +44,8 @@ export interface KeyTakeawayProps {
 
 export function KeyTakeaway({ children, className = "" }: KeyTakeawayProps) {
   return (
-    <Alert type="info" icon={Lightbulb} role="note" className={className}>
-      <span className="font-semibold">Key Takeaway:</span> {children}
+    <Alert type="notice" icon={Lightbulb} role="note" className={className}>
+      <span className="font-semibold">Takeaway</span> {children}
     </Alert>
   );
 }

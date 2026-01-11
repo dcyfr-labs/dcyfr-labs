@@ -131,3 +131,14 @@ export class SimpleCache<T> {
 export const analyticsCache = new SimpleCache(60000); // 1 minute
 export const tokensCache = new SimpleCache(300000); // 5 minutes
 export const contentCache = new SimpleCache(300000); // 5 minutes
+
+/**
+ * Semantic Scholar MCP cache instances
+ * - scholarPapersCache: Hot cache for paper metadata (1 minute)
+ * - scholarSearchCache: Search results cache (5 minutes)
+ * - scholarAuthorsCache: Author metadata cache (5 minutes)
+ * Note: Long-term persistence (90 days) is handled via Redis in the MCP server
+ */
+export const scholarPapersCache = new SimpleCache(60000); // 1 minute
+export const scholarSearchCache = new SimpleCache(300000); // 5 minutes
+export const scholarAuthorsCache = new SimpleCache(300000); // 5 minutes

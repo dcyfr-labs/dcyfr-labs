@@ -3,7 +3,7 @@ id: "post-20251005-cadc6db5"
 title: "Hardening a Developer Portfolio"
 subtitle: "A multi-part series on building production-ready developer platforms"
 summary: "A multi-part series on building production-ready developer platforms: implementing CSP, rate limiting, INP optimization, analytics, and comprehensive security features."
-authors: ["drew","dcyfr"]
+authors: ["drew", "dcyfr"]
 publishedAt: "2025-10-05T12:00:00Z"
 updatedAt: "2025-10-15T12:00:00Z"
 category: "DevSecOps"
@@ -38,11 +38,17 @@ This series documents the patterns and decisions that took it from prototype to 
 ## Production Features Overview
 
 **Current Architecture (December 2025):**
-- 🔒 **Security**: CSP headers, rate limiting, input validation, automated vulnerability scanning
-- 📊 **Analytics**: Redis-powered view tracking, trending posts, milestone detection
-- ⚡ **Performance**: Server components, edge caching, image optimization, Core Web Vitals monitoring
-- 🚀 **Infrastructure**: Background jobs with Inngest, GitHub integration, automated deployments
-- 🛡️ **Monitoring**: Sentry error tracking, Vercel Analytics, comprehensive logging
+
+- 🔒 **Security**: CSP headers, rate limiting, input validation,
+  automated vulnerability scanning
+- 📊 **Analytics**: Redis-powered view
+  tracking, trending posts, milestone detection
+- ⚡ **Performance**: Server components, edge caching, image
+  optimization, Core Web Vitals monitoring
+- 🚀 **Infrastructure**: Background jobs with Inngest, GitHub
+  integration, automated deployments
+- 🛡 **Monitoring**: Sentry error tracking,
+  Vercel Analytics, comprehensive logging
 
 ---
 
@@ -55,18 +61,21 @@ This series documents the patterns and decisions that took it from prototype to 
 The site had zero CSP headers, making it vulnerable to XSS attacks and clickjacking. I implemented a defense-in-depth approach using Next.js middleware and Vercel configuration.
 
 **What I Built:**
+
 - Dynamic CSP with unique nonce generation per request
 - Next.js middleware (`src/middleware.ts`) for HTML routes
 - Two-layer architecture: dynamic middleware + static `vercel.json` fallback
 - Support for third-party scripts (Vercel Analytics, Speed Insights)
 
 **Key Learnings:**
+
 - Middleware runs on every request, so keep it lightweight (34.2 kB bundle)
 - Nonces are critical for inline scripts in modern frameworks
 - Testing CSP requires browser DevTools and careful header inspection
 - Vercel's CDN can strip headers; middleware provides reliable enforcement
 
 **Technical Highlights:**
+
 ```typescript
 // Generate unique nonce per request
 const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
@@ -81,12 +90,15 @@ const csp = `
   frame-ancestors 'none';
   base-uri 'self';
   form-action 'self';
-`.replace(/\s{2,}/g, ' ').trim();
+`
+  .replace(/\s{2,}/g, " ")
+  .trim();
 
 response.headers.set("Content-Security-Policy", csp);
 ```
 
 **Results:**
+
 - XSS attack mitigation
 - Clickjacking protection via `frame-ancestors 'none'`
 - Strict resource loading policies
@@ -99,6 +111,7 @@ response.headers.set("Content-Security-Policy", csp);
 The contact form API endpoint had no rate limiting, making it vulnerable to spam and abuse. I implemented a zero-dependency, in-memory rate limiter.
 
 **What I Built:**
+
 - Custom rate limiter utility in `src/lib/rate-limit.ts` (146 lines)
 - IP-based tracking with Vercel header support (`X-Forwarded-For`)
 - Standard rate limit headers (`X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`)
@@ -106,21 +119,23 @@ The contact form API endpoint had no rate limiting, making it vulnerable to spam
 - Automated test suite (`scripts/test-rate-limit.mjs`)
 
 **Key Learnings:**
+
 - In-memory storage works for single-instance deployments (Vercel serverless)
 - For multi-region or high-scale, upgrade to Vercel KV or Upstash Redis
 - Rate limit headers improve client-side UX (show retry time)
 - IP-based tracking requires careful proxy header handling
 
 **Technical Highlights:**
+
 ```typescript
 // Rate limiter with automatic cleanup
 export class RateLimiter {
   private requests = new Map<string, RequestRecord>();
-  
+
   async check(identifier: string): Promise<RateLimitResult> {
     const now = Date.now();
     const record = this.requests.get(identifier);
-    
+
     // Check if rate limited
     if (record && record.requests.length >= this.limit) {
       const oldestRequest = record.requests[0];
@@ -129,11 +144,11 @@ export class RateLimiter {
           success: false,
           limit: this.limit,
           remaining: 0,
-          reset: new Date(oldestRequest + this.windowMs)
+          reset: new Date(oldestRequest + this.windowMs),
         };
       }
     }
-    
+
     // Allow request and update tracking
     return this.recordRequest(identifier, now);
   }
@@ -141,6 +156,7 @@ export class RateLimiter {
 ```
 
 **Results:**
+
 - Contact form protected from spam (5 requests per 15 minutes)
 - Zero external dependencies
 - Automated testing with `npm run test:rate-limit`
@@ -153,6 +169,7 @@ export class RateLimiter {
 Google's Core Web Vitals showed poor INP scores (664ms+) on navigation links. The culprit: Next.js hover prefetching blocking the main thread.
 
 **What I Fixed:**
+
 - Disabled hover prefetching on `<Link>` components (`prefetch={false}`)
 - Added CSS performance hints (`will-change-auto`, `contain: layout style`)
 - Hardware-accelerated transitions (`transform: translateZ(0)`)
@@ -160,12 +177,14 @@ Google's Core Web Vitals showed poor INP scores (664ms+) on navigation links. Th
 - Non-blocking form submissions
 
 **Key Learnings:**
+
 - Hover prefetching is great for UX but terrible for INP
 - Links still prefetch on viewport intersection (better trade-off)
 - CSS containment prevents expensive layout recalculations
 - React 18+ `useTransition` keeps UI responsive during state updates
 
 **Technical Highlights:**
+
 ```tsx
 // Non-blocking theme toggle
 export function ThemeToggle() {
@@ -179,8 +198,8 @@ export function ThemeToggle() {
   };
 
   return (
-    <Button 
-      onClick={toggleTheme} 
+    <Button
+      onClick={toggleTheme}
       disabled={isPending}
       className="will-change-auto"
     >
@@ -191,6 +210,7 @@ export function ThemeToggle() {
 ```
 
 **Results:**
+
 - INP score improved from 664ms+ to under 200ms (Good)
 - Smoother navigation and interactions
 - Theme toggle feels instant
@@ -203,6 +223,7 @@ export function ThemeToggle() {
 I added a live GitHub contributions heatmap to the homepage to showcase activity.
 
 **What I Built:**
+
 - GitHub GraphQL API integration (`/api/github-contributions`)
 - Client-side caching (24-hour duration) via localStorage
 - Fallback to sample data if API unavailable
@@ -210,12 +231,14 @@ I added a live GitHub contributions heatmap to the homepage to showcase activity
 - Optional `GITHUB_TOKEN` env var for higher rate limits
 
 **Key Learnings:**
+
 - GitHub's public API has low rate limits (60 req/hour)
 - Personal access tokens (no scopes needed) bump it to 5,000 req/hour
 - Client-side caching is essential for API rate limit management
 - Always have fallback data for better UX
 
 **Technical Highlights:**
+
 ```tsx
 // Fetch with caching
 const fetchContributions = async (): Promise<ContributionResponse> => {
@@ -227,22 +250,26 @@ const fetchContributions = async (): Promise<ContributionResponse> => {
       return data;
     }
   }
-  
+
   // Fetch from API
-  const response = await fetch('/api/github-contributions');
+  const response = await fetch("/api/github-contributions");
   const data = await response.json();
-  
+
   // Cache result
-  localStorage.setItem(CACHE_KEY, JSON.stringify({
-    ...data,
-    timestamp: Date.now()
-  }));
-  
+  localStorage.setItem(
+    CACHE_KEY,
+    JSON.stringify({
+      ...data,
+      timestamp: Date.now(),
+    })
+  );
+
   return data;
 };
 ```
 
 **Results:**
+
 - Live contribution data on homepage
 - 24-hour client-side cache reduces API calls
 - Graceful fallback to sample data
@@ -255,17 +282,20 @@ const fetchContributions = async (): Promise<ContributionResponse> => {
 I created comprehensive instructions for AI coding assistants (GitHub Copilot, Cursor, etc.) to maintain code quality and architectural consistency.
 
 **What I Built:**
+
 - Detailed guide in `.github/copilot-instructions.md`
 - MCP (Model Context Protocol) server guidelines
 - Stack decisions, architecture patterns, and conventions
 
 **Key Learnings:**
+
 - AI assistants benefit from explicit architectural constraints
 - Document "what not to change" as much as "how to build"
 - Include import alias patterns and file organization rules
 - MCP servers enable secure, local-first AI integrations
 
 **Results:**
+
 - Consistent code quality across AI-assisted changes
 - Clear boundaries and conventions
 - Faster onboarding for contributors
@@ -287,6 +317,7 @@ I created comprehensive instructions for AI coding assistants (GitHub Copilot, C
 ## What's Next?
 
 Future improvements on my radar:
+
 - Search functionality for blog posts
 - Tag filtering and navigation
 - View counts and analytics

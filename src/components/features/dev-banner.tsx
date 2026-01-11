@@ -93,7 +93,7 @@ export function DevBanner() {
         )}
       >
         <Alert
-          type="info"
+          type="notice"
           dismissible
           onDismiss={handleClose}
           dismissLabel="Close Dev Banner"

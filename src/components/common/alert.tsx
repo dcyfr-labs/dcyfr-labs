@@ -49,7 +49,7 @@ import { cn } from "@/lib/utils";
  */
 
 export interface AlertProps {
-  type?: "critical" | "warning" | "info" | "success";
+  type?: "critical" | "warning" | "info" | "success" | "notice";
   children: React.ReactNode;
   className?: string;
   dismissible?: boolean;
@@ -66,6 +66,7 @@ const iconMap = {
   warning: AlertTriangle,
   info: Info,
   success: CheckCircle,
+  notice: Info,
 };
 
 export function Alert({
@@ -88,6 +89,7 @@ export function Alert({
     warning: SEMANTIC_COLORS.alert.warning,
     info: SEMANTIC_COLORS.alert.info,
     success: SEMANTIC_COLORS.alert.success,
+    notice: SEMANTIC_COLORS.alert.notice,
   };
 
   const colors = colorMap[type];
@@ -123,11 +125,13 @@ export function Alert({
             "flex-1 text-xs sm:text-sm leading-snug max-w-none",
             colors.text,
             "[&>p]:m-0 [&>p]:leading-snug",
+            "[&>p+p]:mt-3",
             "[&>strong]:font-semibold",
             "[&>em]:italic",
             "[&>ul]:space-y-0",
             "[&>ol]:space-y-0",
-            "[&>li]:leading-snug"
+            "[&>li]:leading-snug",
+            "[&_p]:mb-2 [&_p:last-child]:mb-0"
           )}
         >
           {label && (

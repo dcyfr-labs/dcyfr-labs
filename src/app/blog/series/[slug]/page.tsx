@@ -136,6 +136,7 @@ export default async function SeriesPage({
         title={series.name}
         description={series.description}
         stats={`${series.postCount} ${series.postCount === 1 ? "post" : "posts"} • ${series.totalReadingTime} min read`}
+        align="center"
       />
 
       {/* Content section with archive-width container */}

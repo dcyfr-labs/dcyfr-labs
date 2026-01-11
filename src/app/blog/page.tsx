@@ -385,14 +385,32 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         description={pageDescription}
         stats={`${sortedArchiveData.totalItems} ${sortedArchiveData.totalItems === 1 ? "article" : "articles"} across ${sortedArchiveData.availableTags.length} ${sortedArchiveData.availableTags.length === 1 ? "topic" : "topics"}`}
         actions={<FeedDropdown feedType="blog" />}
+        align="center"
       />
 
       {/* Blog layout with sidebar on desktop */}
       <div
         className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING} ${MOBILE_SAFE_PADDING}`}
       >
-        {/* Main grid: Content + Sidebar */}
+        {/* Main grid: Sidebar + Content */}
         <BlogLayoutWrapper>
+          {/* Sidebar (desktop only) - positioned on left, toggled via 'f' key */}
+          <BlogSidebarWrapper
+            selectedCategory={selectedCategory}
+            selectedTags={selectedTags}
+            readingTime={readingTime}
+            categoryList={availableCategories}
+            categoryDisplayMap={categoryDisplayMap}
+            tagList={availableTagsWithCounts}
+            authors={serializableAuthors}
+            selectedAuthor={selectedAuthor}
+            query={query}
+            sortBy={sortBy}
+            dateRange={dateRange}
+            totalResults={sortedArchiveData.totalItems}
+            totalPosts={posts.length}
+          />
+
           {/* Main content area with Suspense for PPR */}
           <Suspense
             fallback={<BlogListSkeleton layout={layout} itemCount={3} />}
@@ -428,23 +446,6 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
               />
             )}
           </Suspense>
-
-          {/* Sidebar (desktop only) - positioned on right, toggled via 'f' key */}
-          <BlogSidebarWrapper
-            selectedCategory={selectedCategory}
-            selectedTags={selectedTags}
-            readingTime={readingTime}
-            categoryList={availableCategories}
-            categoryDisplayMap={categoryDisplayMap}
-            tagList={availableTagsWithCounts}
-            authors={serializableAuthors}
-            selectedAuthor={selectedAuthor}
-            query={query}
-            sortBy={sortBy}
-            dateRange={dateRange}
-            totalResults={sortedArchiveData.totalItems}
-            totalPosts={posts.length}
-          />
         </BlogLayoutWrapper>
       </div>
     </PageLayout>

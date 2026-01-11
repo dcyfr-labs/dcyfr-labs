@@ -2,19 +2,23 @@
 
 ## Overview
 
-The `ShareButtons` component provides social media sharing functionality for blog posts. It includes buttons for Twitter, LinkedIn, and copy-to-clipboard, with responsive design and accessibility features.
+The `ShareButtons` component provides social media sharing functionality for blog posts. It includes buttons for Twitter/X, DEV, LinkedIn, and copy-to-clipboard, with responsive design and accessibility features.
 
-**Location:** `src/components/share-buttons.tsx`  
-**Type:** Client Component (`"use client"`)  
-**Dependencies:** `lucide-react`, `sonner`, shadcn/ui `Button`
+**Location:** `src/components/features/sharing/share-buttons.tsx`
+**Type:** Client Component (`"use client"`)
+**Dependencies:** `lucide-react`, `framer-motion`, shadcn/ui `Button`
+**Last Updated:** January 8, 2026
 
 ---
 
 ## Features
 
 ### Sharing Options
-- **Twitter** - Share with pre-filled text, URL, and up to 3 hashtags from post tags
+
+- **Twitter/X** - Share with pre-filled text and URL
+- **DEV** - Share article with URL prefill (opens DEV editor)
 - **LinkedIn** - Share post URL (LinkedIn doesn't support pre-filled text)
+- **Native Share** - Use device's native share menu (mobile only)
 - **Copy Link** - Copy URL to clipboard with visual feedback and toast notification
 
 ### User Experience
@@ -67,7 +71,8 @@ import { ShareButtons } from "@/components/share-buttons";
 |------|------|----------|-------------|
 | `url` | `string` | Yes | The full URL to share (must be absolute) |
 | `title` | `string` | Yes | The title of the content being shared |
-| `tags` | `string[]` | No | Array of tags for Twitter hashtags (max 3 used) |
+| `postId` | `string` | Yes | Unique post ID for tracking shares |
+| `initialShareCount` | `number` | No | Initial share count from server (default: 0) |
 
 ---
 
@@ -179,15 +184,17 @@ const handleShare = (shareUrl: string, platform: string) => {
 ## Styling & Responsiveness
 
 ### Desktop View
-```
-[Share2 Icon] Share this post
-[Twitter Icon] Twitter  [LinkedIn Icon] LinkedIn  [Link Icon] Copy Link
+
+```text
+[Share2 Icon] Share this post                                42 shares
+[Share Icon] Share  [Twitter Icon] Twitter/X  [DEV Icon] DEV  [LinkedIn Icon] LinkedIn  [Link Icon] Copy Link
 ```
 
 ### Mobile View (< 640px)
-```
-[Share2 Icon] Share this post
-[Twitter Icon]  [LinkedIn Icon]  [Link Icon]
+
+```text
+[Share2 Icon] Share this post                                42 shares
+[Share Icon]  [Twitter Icon]  [DEV Icon]  [LinkedIn Icon]  [Link Icon]
 ```
 
 - Labels hidden on mobile with `hidden sm:inline`

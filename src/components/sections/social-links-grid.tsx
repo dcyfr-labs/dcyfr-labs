@@ -12,6 +12,9 @@ import {
   Award,
   GraduationCap,
   ExternalLink,
+  Twitter,
+  Code2,
+  Briefcase,
 } from "lucide-react";
 
 /**
@@ -40,21 +43,27 @@ export function SocialLinksGrid() {
         const IconComponent =
           social.platform === "calendar"
             ? Calendar
-            : social.platform === "linkedin"
-              ? Linkedin
-              : social.platform === "github"
-                ? Github
-                : social.platform === "sponsors"
-                  ? Heart
+            : social.platform === "twitter"
+              ? Twitter
+              : social.platform === "dev"
+                ? Code2
+                : social.platform === "linkedin"
+                  ? Linkedin
                   : social.platform === "peerlist"
                     ? Users
-                    : social.platform === "goodreads"
-                      ? BookOpen
-                      : social.platform === "credly"
-                        ? Award
-                        : social.platform === "orcid"
-                          ? GraduationCap
-                          : ExternalLink;
+                    : social.platform === "wellfound"
+                      ? Briefcase
+                      : social.platform === "github"
+                        ? Github
+                        : social.platform === "sponsors"
+                          ? Heart
+                          : social.platform === "credly"
+                            ? Award
+                            : social.platform === "goodreads"
+                              ? BookOpen
+                              : social.platform === "orcid"
+                                ? GraduationCap
+                                : ExternalLink;
 
         // All social links are external, render with <a> tag
         return (

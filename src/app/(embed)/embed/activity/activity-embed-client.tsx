@@ -100,7 +100,7 @@ export function ActivityEmbedClient({
 
   if (error) {
     return (
-      <div className="p-4 border rounded-lg text-sm bg-red-50 border-red-200 text-red-800">
+      <div className="p-4 border rounded-lg text-sm bg-error-subtle border-error-light text-error">
         <p className="font-semibold">Failed to load activity feed</p>
         <p className="mt-1">{error}</p>
       </div>

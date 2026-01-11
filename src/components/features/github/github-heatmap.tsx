@@ -485,7 +485,7 @@ export function GitHubHeatmap({
               <div className="bg-muted/50 rounded-lg p-3 border border-border hover:border-primary/50 transition-colors">
                 <div className="flex items-center gap-2 mb-1">
                   <FolderGit2
-                    className="w-4 h-4 text-cyan-500"
+                    className="w-4 h-4 text-semantic-cyan"
                     aria-hidden="true"
                   />
                   <span className="text-xs text-muted-foreground">
@@ -503,7 +503,7 @@ export function GitHubHeatmap({
                 <div className="flex items-center gap-2 mb-1">
                   {/* Icon color for statistics visualization */}
                   <Calendar
-                    className="w-4 h-4 text-blue-500"
+                    className="w-4 h-4 text-semantic-blue"
                     aria-hidden="true"
                   />
                   <span className="text-xs text-muted-foreground">
@@ -521,7 +521,7 @@ export function GitHubHeatmap({
                 <div className="flex items-center gap-2 mb-1">
                   {/* Icon color for statistics visualization */}
                   <TrendingUp
-                    className="w-4 h-4 text-purple-500"
+                    className="w-4 h-4 text-semantic-purple"
                     aria-hidden="true"
                   />
                   <span className="text-xs text-muted-foreground">
@@ -541,7 +541,7 @@ export function GitHubHeatmap({
                 <div className="flex items-center gap-2 mb-1">
                   {/* Icon color for statistics visualization */}
                   <TrendingUp
-                    className="w-4 h-4 text-green-500"
+                    className="w-4 h-4 text-success-light"
                     aria-hidden="true"
                   />
                   <span className="text-xs text-muted-foreground">
@@ -559,7 +559,7 @@ export function GitHubHeatmap({
                 <div className="flex items-center gap-2 mb-1">
                   {/* eslint-disable-next-line no-restricted-syntax -- Icon accent color */}
               {/* <Flame
-                    className="w-4 h-4 text-orange-500"
+                    className="w-4 h-4 text-semantic-orange"
                     aria-hidden="true"
                   />
                   <span className="text-xs text-muted-foreground">

@@ -13,6 +13,7 @@ export { AnalyticsTrending } from "./analytics-trending";
 export { AnalyticsRecommendations } from "./analytics-recommendations";
 export { AnalyticsInsights } from "./analytics-insights";
 export { ConversionMetrics } from "./conversion-metrics";
+export { SocialMetrics } from "./social-metrics";
 export { default as VercelInsights } from "./vercel-insights";
 export { VercelInsights as VercelInsightsComponent } from "./vercel-insights";
 

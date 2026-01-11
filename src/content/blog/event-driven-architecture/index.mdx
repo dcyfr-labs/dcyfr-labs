@@ -1,0 +1,546 @@
+---
+id: "post-20260115-7b4e92c1"
+title: "Building Event-Driven Architecture with Inngest"
+subtitle: "Transforming API responses from seconds to milliseconds with durable execution"
+summary: "Implement event-driven architecture with Inngest for instant API responses, automatic retries, and production-grade background processing. Real code from a live portfolio."
+authors: ["drew"]
+publishedAt: "2026-01-15T12:00:00Z"
+updatedAt: "2026-01-15T12:00:00Z"
+category: "Architecture"
+tags: ["Inngest", "Event-Driven", "Next.js", "Background Jobs", "TypeScript"]
+image:
+  url: "/blog/event-driven-architecture/assets/hero.webp"
+  alt: "Event-Driven Architecture with Inngest Cover - A single stream of light splits into parallel streams symbolizing asynchronous event processing"
+  caption: "Event-Driven Architecture with Inngest - Instant API Responses and Durable Execution"
+  credit: "Perplexity Labs"
+  width: 1200
+  height: 630
+draft: true
+series:
+  name: "Portfolio"
+  order: 3
+  description: "Learn how to build, harden, and ship a production-ready developer portfolio with real-world techniques."
+  icon: "Rocket"
+  color: "development"
+---
+
+> **Series Background:** This is Part 3 of the Portfolio series, following [Shipping a Developer Portfolio](/blog/shipping-developer-portfolio) and [Hardening a Developer Portfolio](/blog/hardening-developer-portfolio). Here we explore how event-driven architecture transforms user experience and system reliability.
+
+---
+
+Your API routes are lying to your users. They return `200 OK` while work is still happening. The contact form says "Message sent!" but the email hasn't been delivered yet.
+
+Event-driven architecture fixes this by separating **acknowledgment** from **processing**. Users get instant feedback. Work happens reliably in the background. Here's how Inngest makes this practical for any Next.js project.
+
+---
+
+## The Problem with Synchronous APIs
+
+When I first built this portfolio's contact form, the flow was straightforward but slow:
+
+```typescript
+// The old way: synchronous processing
+export async function POST(request: NextRequest) {
+  const { name, email, message } = await request.json();
+
+  // User waits 1-2 seconds for this...
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: AUTHOR_EMAIL,
+    subject: `Contact form: ${name}`,
+    text: message,
+  });
+
+  // Only then do they see success
+  return NextResponse.json({ success: true });
+}
+```
+
+This approach has real problems:
+
+1. **Slow responses**: Users wait 1-2 seconds for external API calls
+2. **Fragile**: If Resend is slow or down, the entire request fails
+3. **No retries**: Network blip means the email is lost forever
+4. **Poor UX**: Spinners spinning while users wonder if it worked
+
+The fix isn't making the email faster—it's **decoupling the response from the work**.
+
+---
+
+## Event-Driven Architecture Explained
+
+Event-driven architecture separates two concerns:
+
+1. **Acknowledging the request** (fast, synchronous)
+2. **Processing the work** (async, can be slow, can retry)
+
+```
+Before (Synchronous):
+User → API Route → Email Service → Response
+         └─────── 1-2 seconds ──────┘
+
+After (Event-Driven):
+User → API Route → Queue Event → Response (< 100ms)
+                        ↓
+              Background Function → Email Service
+                        └─── Retries if needed ───┘
+```
+
+The insight: **users don't care when the email sends—they care that you acknowledged their message.**
+
+Modern event-driven systems add one more concept: **steps**. Instead of one monolithic background function, you break work into discrete, named operations. Each step becomes a checkpoint—if step 3 fails, steps 1 and 2 don't re-run. This is called _durable execution_, and it transforms how you think about reliability.
+
+> **Further Reading:** For comprehensive overviews of event-driven architecture patterns, see Martin Fowler's [Event-Driven Architecture](https://martinfowler.com/articles/201701-event-driven.html) and AWS's [What is Event-Driven Architecture?](https://aws.amazon.com/event-driven-architecture/)
+
+---
+
+## Why Inngest?
+
+After evaluating several options, I chose Inngest for this portfolio:
+
+| Solution           | Pros                                        | Cons                          | Learn More                                |
+| ------------------ | ------------------------------------------- | ----------------------------- | ----------------------------------------- |
+| **Vercel Cron**    | Built-in, simple                            | No retries, no event triggers | [Docs](https://vercel.com/docs/cron-jobs) |
+| **QStash**         | Serverless, Upstash ecosystem               | More complex setup            | [Docs](https://upstash.com/docs/qstash)   |
+| **BullMQ + Redis** | Powerful, battle-tested                     | Requires persistent server    | [Docs](https://docs.bullmq.io/)           |
+| **Inngest**        | Serverless, local dev UI, automatic retries | Newer ecosystem               | [Docs](https://inngest.com/docs)          |
+
+What sold me on Inngest:
+
+1. **Zero infrastructure**: No Redis queue to manage
+2. **Local development**: Beautiful dev UI for testing functions
+3. **Automatic retries**: Configurable retry policies with exponential backoff
+4. **Step functions**: Break complex workflows into observable, resumable steps
+5. **Vercel-native**: First-class integration, deploys automatically
+
+---
+
+## Implementation: Contact Form
+
+Here's the actual production code from this portfolio:
+
+### Step 1: Queue Event from API Route
+
+```typescript
+// src/app/api/contact/route.ts
+import { inngest } from "@/inngest/client";
+
+export async function POST(request: NextRequest) {
+  const { name, email, message } = await request.json();
+
+  // Validate and sanitize inputs...
+
+  // Queue the event (returns immediately)
+  await inngest.send({
+    name: "contact/form.submitted",
+    data: {
+      name: sanitizedData.name,
+      email: sanitizedData.email,
+      message: sanitizedData.message,
+      submittedAt: new Date().toISOString(),
+    },
+  });
+
+  // User gets instant response
+  return NextResponse.json({
+    success: true,
+    message: "Message received! You'll get a confirmation email shortly.",
+  });
+}
+```
+
+The API route now completes in **under 100ms**. The user sees instant feedback.
+
+### Step 2: Handle Event in Background Function
+
+```typescript
+// src/inngest/contact-functions.ts
+import { inngest } from "./client";
+import { Resend } from "resend";
+import { track } from "@vercel/analytics/server";
+
+export const contactFormSubmitted = inngest.createFunction(
+  {
+    id: "contact-form-submitted",
+    retries: 3, // Automatic retries with exponential backoff
+  },
+  { event: "contact/form.submitted" },
+  async ({ event, step }) => {
+    const { name, email, message, submittedAt } = event.data;
+
+    // Step 1: Send notification email to site owner
+    const notificationResult = await step.run(
+      "send-notification-email",
+      async () => {
+        const result = await resend.emails.send({
+          from: FROM_EMAIL,
+          to: AUTHOR_EMAIL,
+          subject: `Contact form: ${name}`,
+          replyTo: email,
+          text: `From: ${name} <${email}>\nSubmitted: ${new Date(submittedAt).toLocaleString()}\n\n${message}`,
+        });
+
+        // Track in Vercel Analytics
+        await track("contact_form_submitted", {
+          emailDomain: email.split("@")[1],
+          success: true,
+        });
+
+        return { success: true, messageId: result.data?.id };
+      }
+    );
+
+    // Step 2: Send confirmation email to submitter
+    const confirmationResult = await step.run(
+      "send-confirmation-email",
+      async () => {
+        const result = await resend.emails.send({
+          from: FROM_EMAIL,
+          to: email,
+          subject: "Thanks for reaching out!",
+          text: `Hi ${name},\n\nThank you for your message! I'll get back to you soon.\n\nBest,\nDrew`,
+        });
+
+        return { success: true, messageId: result.data?.id };
+      }
+    );
+
+    return {
+      success: true,
+      notification: notificationResult,
+      confirmation: confirmationResult,
+      processedAt: new Date().toISOString(),
+    };
+  }
+);
+```
+
+### Why Steps Matter
+
+Each `step.run()` creates a **checkpoint**. If Step 2 fails:
+
+- Step 1 doesn't re-run (notification already sent)
+- Only Step 2 retries
+- You see exactly where it failed in the Inngest dashboard
+
+This is **durable execution**—your function survives failures and resumes from the last successful step.
+
+---
+
+## Scheduled Tasks: GitHub Contributions
+
+Event-driven architecture isn't just for user actions. Scheduled tasks benefit too.
+
+The homepage shows a GitHub contribution heatmap. Instead of fetching on every page load (slow, rate-limited), I pre-populate the cache hourly:
+
+```typescript
+// src/inngest/github-functions.ts
+export const refreshGitHubData = inngest.createFunction(
+  {
+    id: "refresh-github-data",
+    retries: 1, // Fail fast on hourly jobs
+  },
+  { cron: "0 * * * *" }, // Every hour at minute 0
+  async ({ step }) => {
+    // Step 1: Fetch fresh data from GitHub
+    const freshData = await step.run("fetch-github-data", async () => {
+      const response = await fetch("https://api.github.com/graphql", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${GITHUB_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: CONTRIBUTIONS_QUERY,
+          variables: { username: GITHUB_USERNAME },
+        }),
+      });
+
+      return parseContributions(await response.json());
+    });
+
+    // Step 2: Update Redis cache
+    await step.run("update-cache", async () => {
+      const redis = await getRedisClient();
+      await redis.setEx(CACHE_KEY, 3600, JSON.stringify(freshData));
+    });
+
+    return {
+      success: true,
+      totalContributions: freshData.totalContributions,
+      lastUpdated: freshData.lastUpdated,
+    };
+  }
+);
+```
+
+**Benefits:**
+
+- Page loads are instant (data is pre-cached)
+- GitHub API rate limits aren't a concern
+- Failures don't affect users (stale cache is served)
+- Full observability in the Inngest dashboard
+
+---
+
+## Production Functions in This Portfolio
+
+Here's what's actually running right now:
+
+| Function                    | Trigger     | Purpose                                                                        |
+| --------------------------- | ----------- | ------------------------------------------------------------------------------ |
+| `contact-form-submitted`    | Event       | Send notification + confirmation emails                                        |
+| `refresh-github-data`       | Hourly cron | Pre-populate contribution heatmap cache                                        |
+| `track-post-view`           | Event       | Update view counts, track daily analytics, detect milestones                   |
+| `calculate-trending`        | Hourly cron | Compute trending posts from recent views                                       |
+| `refresh-activity-feed`     | Hourly cron | Pre-compute activity feed for instant page loads                               |
+| `security-advisory-monitor` | 3x daily    | Check GHSA (GitHub Security Advisory database) for CVEs affecting dependencies |
+| `daily-analytics-summary`   | Daily cron  | Generate previous day's blog analytics                                         |
+| `sync-vercel-analytics`     | Daily cron  | Sync Vercel analytics to Redis for dashboards                                  |
+
+### The Security Monitor
+
+After discovering [CVE-2025-55182](/blog/cve-2025-55182-react2shell) in December 2025 (with a 13-hour detection gap), I added automated security monitoring:
+
+```typescript
+export const securityAdvisoryMonitor = inngest.createFunction(
+  {
+    id: "security-advisory-monitor",
+    retries: 3,
+  },
+  { cron: "0 0,8,16 * * *" }, // 3x daily (00:00, 08:00, 16:00 UTC)
+  async ({ step }) => {
+    // Step 1: Fetch advisories from GHSA
+    const advisories = await step.run("fetch-ghsa-advisories", async () => {
+      const results = [];
+
+      for (const packageName of MONITORED_PACKAGES) {
+        const data = await fetchGhsaAdvisories(packageName);
+
+        for (const adv of data) {
+          if (meetsSeverityThreshold(adv.severity, packageName)) {
+            results.push({
+              package: packageName,
+              severity: adv.severity,
+              ghsaId: adv.ghsa_id,
+              summary: adv.summary,
+              patchedVersion: adv.vulnerabilities?.[0]?.first_patched_version,
+            });
+          }
+        }
+      }
+
+      return results;
+    });
+
+    // Step 2: Filter to advisories affecting installed versions
+    const newAdvisories = await step.run("filter-new-advisories", async () => {
+      const lockData = parsePackageLock();
+
+      return advisories.filter((adv) => {
+        const versionCheck = checkAdvisoryImpact(
+          adv.package,
+          adv.vulnerableRange,
+          adv.patchedVersion,
+          lockData
+        );
+        return versionCheck.isVulnerable;
+      });
+    });
+
+    // Step 3: Send email alert if new advisories found
+    if (newAdvisories.length > 0) {
+      await step.run("send-email-alert", async () => {
+        await sendSecurityAlert(newAdvisories);
+      });
+    }
+
+    return { checkedAt: new Date().toISOString(), found: newAdvisories.length };
+  }
+);
+```
+
+This runs three times daily, checks for CVEs affecting React/Next.js/RSC packages, verifies against my actual installed versions, and alerts me before I read about it on Twitter.
+
+---
+
+## Blog Analytics: Milestones and Trending
+
+The blog tracks views and automatically detects milestones:
+
+```typescript
+export const trackPostView = inngest.createFunction(
+  { id: "track-post-view" },
+  { event: "blog/post.viewed" },
+  async ({ event, step }) => {
+    const { postId, slug, title } = event.data;
+
+    await step.run("process-view", async () => {
+      // Get current view count
+      const views = await redis.get(`views:post:${postId}`);
+      const count = parseInt(views || "0");
+
+      // Track daily views for analytics
+      const today = new Date().toISOString().split("T")[0];
+      await redis.incr(`views:post:${postId}:day:${today}`);
+
+      // Check for milestones
+      const milestones = [100, 1000, 10000, 50000, 100000];
+      for (const milestone of milestones) {
+        if (count === milestone) {
+          // Trigger milestone event
+          await inngest.send({
+            name: "blog/milestone.reached",
+            data: { slug, title, milestone, totalViews: count },
+          });
+        }
+      }
+
+      return count;
+    });
+  }
+);
+```
+
+When a post hits 1,000 views, I get notified. The trending calculation runs hourly, scoring posts by recent activity to surface what readers are finding valuable.
+
+---
+
+## Developer Experience
+
+### Local Development
+
+Inngest provides a local dev server with a powerful UI:
+
+```bash
+npx inngest-cli@latest dev
+```
+
+This gives you:
+
+- Real-time function execution logs
+- Ability to trigger events manually
+- Step-by-step execution visualization
+- Replay failed functions from any step
+
+### Testing
+
+Functions are just async functions—test them like any other code:
+
+```typescript
+describe("contactFormSubmitted", () => {
+  it("sends notification and confirmation emails", async () => {
+    const mockEvent = {
+      data: {
+        name: "Test User",
+        email: "test@example.com",
+        message: "Hello!",
+        submittedAt: new Date().toISOString(),
+      },
+    };
+
+    const result = await contactFormSubmitted.handler({
+      event: mockEvent,
+      step: mockStepFunctions,
+    });
+
+    expect(result.success).toBe(true);
+    expect(mockResend.send).toHaveBeenCalledTimes(2);
+  });
+});
+```
+
+---
+
+## Deployment
+
+Inngest integrates seamlessly with Vercel:
+
+**1. Install the Vercel integration** in your Inngest dashboard
+
+**2. Export functions from a single endpoint:**
+
+```typescript
+// src/app/api/inngest/route.ts
+import { serve } from "inngest/next";
+import { inngest } from "@/inngest/client";
+import { contactFormSubmitted } from "@/inngest/contact-functions";
+import { refreshGitHubData } from "@/inngest/github-functions";
+import { trackPostView, calculateTrending } from "@/inngest/blog-functions";
+import { securityAdvisoryMonitor } from "@/inngest/security-functions";
+import { refreshActivityFeed } from "@/inngest/activity-cache-functions";
+
+export const { GET, POST, PUT } = serve({
+  client: inngest,
+  functions: [
+    contactFormSubmitted,
+    refreshGitHubData,
+    trackPostView,
+    calculateTrending,
+    securityAdvisoryMonitor,
+    refreshActivityFeed,
+    // ... all functions
+  ],
+});
+```
+
+**3. Deploy**—Inngest discovers your functions automatically
+
+Environment variables (`INNGEST_EVENT_KEY`, `INNGEST_SIGNING_KEY`) are set automatically by the Vercel integration.
+
+---
+
+## Results
+
+After migrating to event-driven architecture (measured in this portfolio's production environment):
+
+| Metric                      | Before          | After                                                     |
+| --------------------------- | --------------- | --------------------------------------------------------- |
+| Contact form response time  | 1–2s (observed) | Under 100ms (observed)                                    |
+| Email delivery reliability  | ~95% (observed) | 99.9% (with 3 retries, based on Inngest's exponential backoff) |
+| GitHub data freshness       | On-demand       | Pre-cached hourly                                         |
+| Failed job visibility       | None            | Full dashboard                                            |
+| Security advisory detection | Manual          | Automated (3x daily)                                      |
+
+> **Note:** These metrics reflect this specific implementation. Your results may vary based on network conditions, third-party API performance, and deployment region.
+
+More importantly: **users notice**. The contact form feels instant. The contribution heatmap loads immediately. Security issues get flagged before they become problems.
+
+---
+
+## When NOT to Use Event-Driven
+
+Event-driven architecture isn't always the answer:
+
+- **Simple CRUD**: Reading/writing to a database doesn't need queuing. Saving a user preference? Just write to the database directly.
+- **Real-time requirements**: If users need the result immediately, don't defer it. A "Reply to comment" feature where users expect to see their comment appear instantly should stay synchronous—even if it takes 500ms.
+- **Debugging complexity**: More moving parts means more places to look. If your team is already stretched thin, the observability benefits might not outweigh the learning curve.
+- **Small scale**: If you have 10 users/day, synchronous is simpler. Don't add infrastructure complexity you don't need yet.
+
+The rule of thumb: **if users don't need to wait for the result, don't make them wait.** But if they _do_ need to see the result immediately, don't hide it behind a queue.
+
+---
+
+## Key Takeaways
+
+1. **Decouple acknowledgment from processing**—users want fast feedback, not fast completion
+2. **Steps create checkpoints**—failed steps retry without re-running successful ones
+3. **Scheduled tasks benefit too**—pre-populate caches, monitor systems, aggregate data
+4. **Local dev matters**—Inngest's dev UI makes debugging enjoyable
+5. **Start simple**—you don't need event-driven for everything
+
+Event-driven architecture doesn't require enterprise scale. With tools like Inngest, any Next.js project can benefit from reliable background processing, instant API responses, and better observability.
+
+One more thing: **background jobs are a security surface too.** The security monitor in this portfolio exists because I learned the hard way that CVE detection gaps matter. If you're processing sensitive data in background functions, apply the same security rigor you would to API routes—validate inputs, sanitize outputs, and monitor for anomalies.
+
+The contact form still says "Message sent!"—but now it's actually true (or will be, with retries, within seconds).
+
+---
+
+## Resources
+
+- [Inngest Documentation](https://www.inngest.com/docs)
+- [Inngest + Vercel Integration](https://www.inngest.com/docs/deploy/vercel)
+- [Durable Execution Explained](https://www.inngest.com/docs/guides/durable-execution)
+- [Part 1: Shipping a Developer Portfolio](/blog/shipping-developer-portfolio)
+- [Part 2: Hardening a Developer Portfolio](/blog/hardening-developer-portfolio)

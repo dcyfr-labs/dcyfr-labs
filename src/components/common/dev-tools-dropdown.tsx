@@ -17,8 +17,7 @@ export default function DevToolsDropdown() {
       <Badge
         variant="outline"
         className={cn(
-          "cursor-pointer transition-colors gap-1 px-2.5 hover:opacity-90 text-[clamp(0.875rem,1vw+0.75rem,1rem)]",
-          SEMANTIC_COLORS.accent.pink.badge
+          "cursor-pointer transition-colors gap-1 px-2.5 hover:opacity-90 text-[clamp(0.875rem,1vw+0.75rem,1rem)]"
         )}
         onClick={dropdown.toggle}
         role="button"

@@ -227,7 +227,7 @@ export function ActivityItem({
             ANIMATION.transition.movement,
             "items-center justify-center",
             isBookmarked(bookmarkId) &&
-              "opacity-100 text-amber-500 hover:text-amber-600"
+              "opacity-100 text-warning hover:text-warning-light"
           )}
           aria-label={
             isBookmarked(bookmarkId) ? "Remove bookmark" : "Add bookmark"
@@ -593,7 +593,7 @@ function TimelineItem({
             // Bookmarked state: always visible with amber color
 
             isBookmarked(bookmarkId) &&
-              "opacity-100 scale-100 text-amber-500 hover:text-amber-600"
+              "opacity-100 scale-100 text-warning hover:text-warning-light"
           )}
           aria-label={
             isBookmarked(bookmarkId) ? "Remove bookmark" : "Add bookmark"

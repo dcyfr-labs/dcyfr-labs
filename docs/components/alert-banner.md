@@ -97,18 +97,18 @@ The Alert component is a unified banner system for displaying important informat
 
 ## Props
 
-| Prop                | Type                                             | Default           | Description                                   |
-| ------------------- | ------------------------------------------------ | ----------------- | --------------------------------------------- |
-| `type`              | `'critical' \| 'warning' \| 'info' \| 'success'` | `'info'`          | Alert severity level                          |
-| `children`          | `React.ReactNode`                                | Required          | Alert content (supports MDX formatting)       |
-| `className`         | `string`                                         | `''`              | Additional CSS classes                        |
-| `dismissible`       | `boolean`                                        | `false`           | Show dismiss button                           |
-| `onDismiss`         | `() => void`                                     | `undefined`       | Callback when dismissed                       |
-| `dismissLabel`      | `string`                                         | `'Dismiss alert'` | Aria-label for dismiss button                 |
-| `label`             | `string`                                         | `undefined`       | Optional prefix label (e.g., "Key Takeaway:") |
-| `icon`              | `React.ComponentType`                            | Auto-selected     | Custom icon component                         |
-| `containerOverride` | `string`                                         | `undefined`       | Override background container classes         |
-| `role`              | `'alert' \| 'note' \| 'complementary'`           | `'alert'`         | ARIA role for accessibility                   |
+| Prop                | Type                                             | Default           | Description                              |
+| ------------------- | ------------------------------------------------ | ----------------- | ---------------------------------------- |
+| `type`              | `'critical' \| 'warning' \| 'info' \| 'success'` | `'info'`          | Alert severity level                     |
+| `children`          | `React.ReactNode`                                | Required          | Alert content (supports MDX formatting)  |
+| `className`         | `string`                                         | `''`              | Additional CSS classes                   |
+| `dismissible`       | `boolean`                                        | `false`           | Show dismiss button                      |
+| `onDismiss`         | `() => void`                                     | `undefined`       | Callback when dismissed                  |
+| `dismissLabel`      | `string`                                         | `'Dismiss alert'` | Aria-label for dismiss button            |
+| `label`             | `string`                                         | `undefined`       | Optional prefix label (e.g., "Takeaway") |
+| `icon`              | `React.ComponentType`                            | Auto-selected     | Custom icon component                    |
+| `containerOverride` | `string`                                         | `undefined`       | Override background container classes    |
+| `role`              | `'alert' \| 'note' \| 'complementary'`           | `'alert'`         | ARIA role for accessibility              |
 
 ## Styling
 
@@ -232,7 +232,7 @@ Features:
 
 - Uses Alert with `type="info"`
 - Custom Lightbulb icon
-- "Key Takeaway:" label prefix
+- "Takeaway" label prefix
 - `role="note"` for accessibility
 
 ### ContextClue

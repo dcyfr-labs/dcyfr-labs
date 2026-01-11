@@ -6,12 +6,19 @@ import Image from "next/image";
 import { Eye, TrendingUp, Share2, Bookmark } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PostBadges } from '@/components/blog';
-import { SeriesBadge } from '@/components/blog';
-import { BookmarkButton } from '@/components/blog';
+import { PostBadges } from "@/components/blog";
+import { SeriesBadge } from "@/components/blog";
+import { BookmarkButton } from "@/components/blog";
 import { HighlightText } from "@/components/common";
 import type { Post } from "@/data/posts";
-import { ARCHIVE_CARD_VARIANTS, ARCHIVE_ANIMATIONS, TOUCH_TARGET, TYPOGRAPHY, SEMANTIC_COLORS, IMAGE_PLACEHOLDER } from "@/lib/design-tokens";
+import {
+  ARCHIVE_CARD_VARIANTS,
+  ARCHIVE_ANIMATIONS,
+  TOUCH_TARGET,
+  TYPOGRAPHY,
+  SEMANTIC_COLORS,
+  IMAGE_PLACEHOLDER,
+} from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import { useShare } from "@/hooks/use-share";
 import { useShareTracking } from "@/hooks/use-share-tracking";
@@ -89,15 +96,19 @@ export function ModernPostCard({
       await share({
         title: post.title,
         text: post.summary,
-        url: `${typeof window !== 'undefined' ? window.location.origin : ''}/blog/${post.slug}`,
+        url: `${typeof window !== "undefined" ? window.location.origin : ""}/blog/${post.slug}`,
       });
       // Track the share
       const result = await trackShare();
-      if (result.success && result.count !== undefined && result.count !== null) {
+      if (
+        result.success &&
+        result.count !== undefined &&
+        result.count !== null
+      ) {
         setShareCount(result.count);
       }
     } catch (error) {
-      console.error('Failed to share:', error);
+      console.error("Failed to share:", error);
     }
   };
 
@@ -211,7 +222,12 @@ export function ModernPostCard({
               {hottestSlug === post.slug && (
                 <>
                   <span aria-hidden="true">•</span>
-                  <span className={cn("flex items-center gap-1", SEMANTIC_COLORS.alert.warning.label)}>
+                  <span
+                    className={cn(
+                      "flex items-center gap-1",
+                      SEMANTIC_COLORS.alert.warning.label
+                    )}
+                  >
                     <TrendingUp className="h-3 w-3" />
                     Trending
                   </span>
@@ -220,7 +236,12 @@ export function ModernPostCard({
             </div>
 
             {/* Title */}
-            <TitleTag className={cn(TYPOGRAPHY.h2.standard, "font-bold line-clamp-2 group-hover:text-primary transition-colors")}>
+            <TitleTag
+              className={cn(
+                TYPOGRAPHY.h2.standard,
+                "font-bold line-clamp-2 group-hover:text-primary transition-colors"
+              )}
+            >
               <HighlightText text={post.title} searchQuery={searchQuery} />
             </TitleTag>
 
@@ -311,7 +332,7 @@ export function ModernPostCard({
             {/* Glass card for content */}
             <div className={cardVariant.glassCard}>
               {/* Metadata */}
-              <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+              <div className="flex items-center gap-2 text-xs text-white/70 mb-3">
                 <time dateTime={post.publishedAt}>
                   {new Date(post.publishedAt).toLocaleDateString("en-US", {
                     month: "short",
@@ -332,12 +353,17 @@ export function ModernPostCard({
               </div>
 
               {/* Title */}
-              <TitleTag className={cn(TYPOGRAPHY.h2.mdx, "font-bold mb-2 line-clamp-2")}>
+              <TitleTag
+                className={cn(
+                  TYPOGRAPHY.h2.mdx,
+                  "font-bold mb-2 line-clamp-2 text-white"
+                )}
+              >
                 <HighlightText text={post.title} searchQuery={searchQuery} />
               </TitleTag>
 
               {/* Summary */}
-              <p className="text-sm text-muted-foreground line-clamp-2">
+              <p className="text-sm text-white/80 line-clamp-2">
                 <HighlightText text={post.summary} searchQuery={searchQuery} />
               </p>
             </div>
@@ -433,10 +459,10 @@ export function ModernPostCard({
 
             {showActions && (
               <div className="flex gap-1">
-                <BookmarkButton 
-                  slug={post.slug} 
-                  size="icon" 
-                  variant="ghost" 
+                <BookmarkButton
+                  slug={post.slug}
+                  size="icon"
+                  variant="ghost"
                   className={TOUCH_TARGET.close}
                 />
                 <Button

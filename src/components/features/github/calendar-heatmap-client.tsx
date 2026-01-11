@@ -315,7 +315,7 @@ export function ClientGitHubHeatmap({
             year
           </Badge>
           {process.env.NODE_ENV === "development" && (
-            <Badge variant="outline" className="text-xs">
+            <Badge variant="destructive" className="text-xs">
               Mock Data
             </Badge>
           )}

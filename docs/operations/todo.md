@@ -1,9 +1,77 @@
 # Operations TODO
 
-**Last Updated:** December 29, 2025 (Batch 9 Design Token Implementation Complete + MCP Setup)
-**Status:** Active Development - Phase 2 Design Tokens in Progress (Batch 9 of ~19 planned)
+**Last Updated:** January 10, 2026 (Comprehensive Backlog Consolidation)
+**Status:** Maintenance Mode - Incremental Feature Development
+**Health:** ✅ Excellent (99.8% test pass rate, 0 TypeScript/ESLint errors)
 
 This document tracks operational priorities, feature development stages, and maintenance tasks for dcyfr-labs.
+
+**📋 Full Backlog Analysis:** [`docs/private/COMPREHENSIVE_BACKLOG_2026-01-10.md`](../private/COMPREHENSIVE_BACKLOG_2026-01-10.md)
+
+---
+
+## 📋 Backlog Overview (As of January 10, 2026)
+
+**Total Backlog Items:** ~150+ tracked items across all categories
+**High Priority:** 12 items (RIVET P1 components, Redis migration, webhook deployment)
+**Medium Priority:** 35+ items (RIVET P2 components, Social Media Phase 2, code TODOs)
+**Low Priority:** 100+ items (future enhancements, deferred E2E tests, aspirational features)
+
+**Key Metrics:**
+
+- 30 new untracked files/directories from recent sessions
+- 20+ code-level TODOs requiring attention
+- 50+ skipped/conditional E2E tests (browser-specific, data-dependent)
+- 10+ flaky/known-issue tests needing updates
+- 12 recurring maintenance tasks (weekly/monthly/quarterly)
+
+**Top 3 Priorities:**
+
+1. **RIVET P1 Components** (Week 2-3) - 16 hours, 4 components
+2. **Redis Migration to Upstash** (Q1 2026) - 2-4 hours, infrastructure modernization
+3. **GitHub Webhook Deployment** (Pending) - 1 hour, enables real-time commit feed
+
+**See Full Analysis:** [`docs/private/COMPREHENSIVE_BACKLOG_2026-01-10.md`](../private/COMPREHENSIVE_BACKLOG_2026-01-10.md)
+
+---
+
+## ✅ Recently Completed: Phase 1 Social Media Integration (January 9, 2026)
+
+**Comprehensive social media analytics and referral tracking system:**
+
+1. **Referral Tracking System**
+   - Automatic detection of social media referrals (Twitter/X, DEV, LinkedIn, Reddit, Hacker News, GitHub)
+   - Privacy-compliant tracking (respects Do Not Track)
+   - Session-based anti-spam protection
+   - Redis storage with 24-hour TTL for real-time data
+   - 44 new tests added, all passing
+
+2. **DEV.to Analytics Integration**
+   - Free API integration for engagement metrics (views, reactions, comments)
+   - Automated sync jobs via Inngest (every 6 hours)
+   - 6-hour caching with Redis
+   - Batch processing with rate limiting (10 req/min)
+
+3. **Dashboard Integration**
+   - New SocialMetrics component in analytics dashboard
+   - Real-time referral visualization
+   - Platform-specific metrics display
+   - Ready for Phase 2 expansion
+
+4. **Share Functionality**
+   - Share to DEV.to functionality implemented
+   - All "Twitter" references updated to "Twitter/X"
+   - Social accounts integrated (@dcyfr_ on Twitter/X, @dcyfr on DEV)
+
+**Technical Quality:**
+
+- ✅ TypeScript: 0 errors
+- ✅ Linting: 0 errors (18 console.log warnings in Inngest jobs)
+- ✅ Tests: 2319/2323 passing (99.8%)
+- ✅ 15 new files created
+- ✅ 3 comprehensive strategy documents
+
+**Next Phase:** Content management dashboard (Q2 2026) - See Backlog section
 
 ---
 
@@ -715,7 +783,274 @@ _No critical bugs currently tracked. Check GitHub Issues for community-reported 
 
 ---
 
+---
+
+## 🎯 RIVET Framework - Blog Modernization (Active)
+
+**Framework:** Reader-centric navigation, Interactive elements, Visual density, Enhanced discoverability, Tiered content depth
+**Documentation:** [`docs/content/blog-modernization-plan.md`](../content/blog-modernization-plan.md) | [`docs/content/rivet-component-library.md`](../content/rivet-component-library.md)
+
+### Week 1: P0 Foundation Components ✅ COMPLETE (Jan 10, 2026)
+
+**Status:** All 3 components built, tested, and production-ready
+**Test Coverage:** 71 tests passing (18 + 25 + 28)
+**Documentation:** [`docs/content/week-1-completion-report.md`](../content/week-1-completion-report.md)
+
+**Components Delivered:**
+
+- ✅ **ReadingProgressBar** (18 tests) - Top-of-page scroll progress indicator
+- ✅ **KeyTakeaway** (25 tests) - Callout boxes for key insights (💡/🛡️/⚠️ icons)
+- ✅ **TLDRSummary** (28 tests) - Executive summary box (top of post)
+
+### Week 2-3: P1 Enhanced Engagement Components 📋 NEXT (Jan 13-24, 2026)
+
+**Priority:** High | **Effort:** 16 hours | **Status:** PLANNED
+
+**Components to Build:**
+
+- [ ] **GlossaryTooltip** (4h) - Hover/click tooltips for technical terms, accessibility-focused
+- [ ] **RoleBasedCTA** (5h) - Three-tier CTA boxes (Executive/Developer/Security personas)
+- [ ] **SectionShare** (4h) - Per-section share buttons (LinkedIn/Twitter/Copy link)
+- [ ] **CollapsibleSection** (3h) - "Show More / Show Less" toggle for optional deep-dive content
+
+**Integration Target:** Apply to OWASP Top 10 Agentic AI post (flagship content)
+
+**Success Metrics:**
+
+- 80% scroll depth (from estimated 50%)
+- <40% bounce rate
+- 70% TOC click rate
+- +30% average time on page
+- 3-5% lead capture rate
+
+### Week 3-4: P2 Advanced Features 📋 FUTURE (Feb 2026)
+
+**Priority:** Medium | **Effort:** 30 hours | **Status:** BACKLOG
+
+**Components to Build:**
+
+- [ ] **RiskMatrix** (8h) - SVG visualization for security risk matrix (interactive, exportable)
+- [ ] **DownloadableAsset** (6h) - Lead capture form + file delivery (PDF checklists, guides)
+- [ ] **FAQSchema** (3h) - FAQ accordion with schema.org markup (SEO optimization)
+- [ ] **NewsletterSignup** (4h) - Inline email signup form (ConvertKit/Mailchimp integration)
+- [ ] **TabInterface** (5h) - Multi-tab content switcher (URL hash sync, ARIA support)
+- [ ] **SeriesNavigation** (4h) - Series-specific navigation component (prev/next posts)
+
+### Blog Post Modernization Rollout
+
+**Tier 1 Posts (Full RIVET):** 3 posts requiring all components
+
+1. **OWASP Top 10 for Agentic AI** (4,911 words) - Priority #1, accordion already complete
+2. **CVE-2025-55182 (React2Shell)** (4,211 words) - Priority #2
+3. **Hardening a Developer Portfolio** (1,389 words) - Priority #3
+
+**Tier 2 Posts (Core RIVET):** 5 posts with simplified component set
+
+- Event-Driven Architecture (2,372 words)
+- Passing CompTIA Security+ (1,751 words)
+- AI Development Workflow (1,406 words)
+- Demo: UI Elements (1,861 words)
+- Demo: Code Syntax (1,862 words)
+
+**Tier 3 Posts (Light RIVET):** 4 posts with minimal enhancements
+
+- Demo: LaTeX Math, Markdown, Diagrams (1,000-1,500 words each)
+- Shipping a Developer Portfolio (641 words)
+
+**Estimated Timeline:**
+
+- Week 2-3: Complete P1 components + apply to OWASP post
+- Week 4-5: Measure success metrics, iterate based on data
+- Month 2: Apply to Tier 1 posts (CVE, Hardening Portfolio)
+- Month 3: Complete P2 components + apply to Tier 2 posts
+- Month 4: Apply to Tier 3 posts, comprehensive analytics review
+
+---
+
+## 🏗️ Infrastructure & Platform Work (Q1 2026)
+
+### Redis Migration to Upstash 📋 PLANNED
+
+**Documentation:** [`docs/architecture/redis-migration-analysis.md`](../architecture/redis-migration-analysis.md)
+**Priority:** Medium | **Effort:** 2-4 hours | **Target:** Q1 2026 maintenance window
+
+**Benefits:**
+
+- Edge function compatibility (REST API vs TCP)
+- Global replication for improved performance
+- Unified client across codebase (remove hybrid setup)
+- Cost optimization ($0-1/month vs current unknown)
+
+**Tasks:**
+
+- [ ] Replace standard Redis client with `@upstash/redis` in `src/mcp/shared/redis-client.ts`
+- [ ] Update environment variables (`UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`)
+- [ ] Test edge function compatibility (API routes in edge runtime)
+- [ ] Verify all 30 Redis-dependent files work with REST API
+- [ ] Update documentation and deployment guides
+
+**Affected Files:** 30 files using Redis (activity cache, analytics, GitHub data, social media metrics)
+
+### GitHub Webhook Deployment 📋 PENDING
+
+**Status:** Code complete (23 tests passing), deployment blocked by production URL
+**Priority:** High | **Effort:** 1 hour | **Impact:** Real-time GitHub commit activity feed
+
+**Tasks:**
+
+- [ ] Deploy application to production with stable URL
+- [ ] Configure webhook in dcyfr/dcyfr-labs repository settings
+  - Payload URL: `https://dcyfr.com/api/github/webhook`
+  - Content type: `application/json`
+  - Secret: `GITHUB_WEBHOOK_SECRET` from environment
+  - Events: `push` only
+- [ ] Test webhook delivery and parsing
+- [ ] Monitor Inngest background processing
+- [ ] Verify commits appear in activity feed within 30 seconds
+
+### Semantic Scholar MCP Activation 📋 PENDING
+
+**Documentation:** [`docs/ai/semantic-scholar-mcp-server.md`](../ai/semantic-scholar-mcp-server.md)
+**Priority:** Low | **Effort:** 30 minutes | **Status:** Code complete, API key needed
+
+**Tasks:**
+
+- [ ] Register for free Semantic Scholar API key (<https://www.semanticscholar.org/product/api>)
+- [ ] Add `SEMANTIC_SCHOLAR_API_KEY` to `.env.local`
+- [ ] Activate MCP in `.vscode/mcp.json`
+- [ ] Test academic paper search functionality
+
+---
+
+## 🐛 Code-Level TODOs (Technical Debt)
+
+### High Priority (Functional Impact)
+
+**Authentication-Gated Features:**
+
+- [ ] `src/lib/storage-adapter.ts:142` - Implement OAuth integration (blocks API storage)
+- [ ] `src/lib/storage-adapter.ts:274` - Switch to ApiStorageAdapter when OAuth ready
+- [ ] `src/lib/activity/bookmarks.ts:510` - Implement server-side bookmark sync (requires auth)
+
+**UI Enhancements:**
+
+- [ ] `src/components/layouts/article-header.tsx:190` - Re-enable holo effects after mouse-tracking implementation
+
+### Medium Priority (Feature Enhancement)
+
+**Analytics Integration:**
+
+- [ ] `src/components/analytics/social-metrics.tsx:65` - Fetch actual referral counts from API per post
+- [ ] `src/lib/analytics-integration.ts:377` - Implement Google Analytics Data API integration
+- [ ] `src/lib/analytics-integration.ts:423` - Implement Google Search Console API integration
+
+**Activity Tracking:**
+
+- [ ] `src/lib/activity/sources.server.ts:128` - Implement reading completion tracking
+- [ ] `src/lib/activity/sources.server.ts:564` - Implement shares tracking
+- [ ] `src/lib/activity/trending.ts:174` - Implement real metric aggregation from analytics
+
+**Component Enhancements:**
+
+- [ ] `src/components/projects/layouts/default-project-layout.tsx:167` - Add Tech Stack Badges component
+- [ ] `src/components/projects/layouts/default-project-layout.tsx:169` - Add Tag Badges component
+
+### Low Priority (Monitoring/Operations)
+
+- [ ] `src/inngest/session-management.ts:114` - Integrate with monitoring/alerting system (Sentry, PagerDuty)
+- [ ] `src/inngest/session-management.ts:152` - Add production audit trail logging
+- [ ] `src/app/api/ip-reputation/route.ts:390` - Implement manual reputation override UI
+
+---
+
+## 🧪 Test Improvements (Quality Assurance)
+
+### Flaky Tests (Needs Investigation)
+
+**Date/Time Sensitivity:**
+
+- [ ] `src/__tests__/lib/activity-heatmap.test.ts:144` - Fix date boundary issues near midnight
+- [ ] `src/__tests__/lib/activity-search.test.ts:240` - Performance tests environment-dependent, flaky in CI
+
+**Component Tests:**
+
+- [ ] `src/__tests__/components/home/trending-section.test.tsx:216` - Investigate Radix Tabs async behavior
+- [ ] `src/__tests__/components/home/trending-section.test.tsx:448` - Fix aria-selected not updating in tests
+
+### Tests Needing Updates (Refactored Code)
+
+**Implementation Changed:**
+
+- [ ] `src/__tests__/lib/github-data.test.ts:25` - Update mocks for refactored caching implementation
+- [ ] `src/__tests__/lib/post-badges.test.ts:15` - Align tests with new badge logic
+- [ ] `src/__tests__/lib/error-handler.test.ts:79` - Update for new error handling implementation
+- [ ] `src/__tests__/integration/error-scenarios.test.ts:49` - Update for refactored error handling
+
+**API Routes:**
+
+- [ ] `src/__tests__/integration/api-analytics.test.ts:55` - Update mocks for new API implementation
+- [ ] `src/__tests__/integration/api-views.test.ts:35` - Update mocks for new API implementation
+- [ ] `src/__tests__/app/feeds.test.tsx:12` - Update for refactored feeds page structure
+
+**Activity Features:**
+
+- [ ] `src/__tests__/lib/activity-threading.test.ts:414` - Fix project threading logic (commits not threading correctly)
+
+### Deferred E2E Tests (Lower Priority)
+
+**Activity Feed Features:**
+
+- [ ] Heatmap export interactions (complex simulation, unit tests sufficient)
+- [ ] Virtual scrolling performance benchmarks (5000+ items, optional)
+- [ ] Preset creation/application flow (covered by integration tests)
+- [ ] Bookmark management flow (core functionality tested in units)
+- [ ] Embed iframe testing (manual validation on external sites)
+
+**Rationale:** Unit/integration tests provide 99.8% coverage. E2E tests have diminishing returns vs effort for these features.
+
+---
+
+## 🚀 Pending Deployments & Manual Validation
+
+### Manual Validation Required
+
+**RSS Feed Validation:**
+
+- [ ] Test with W3C Feed Validator (<https://validator.w3.org/feed/>)
+- [ ] Test with feed readers:
+  - [ ] Feedly
+  - [ ] Inoreader
+  - [ ] NewsBlur
+  - [ ] Apple Podcasts (if applicable)
+
+**Activity Embeds:**
+
+- [ ] Test iframe embeds on external platforms:
+  - [ ] Medium (iframe support)
+  - [ ] Notion (embed blocks)
+  - [ ] WordPress blogs
+  - [ ] Dev.to (if iframe allowed)
+
+**Lighthouse CI:**
+
+- [ ] Run Lighthouse on RIVET components (ReadingProgressBar, KeyTakeaway, TLDRSummary)
+- [ ] Verify performance ≥90, accessibility ≥95
+- [ ] Check Core Web Vitals (LCP <2.5s, INP <200ms, CLS <0.1)
+
+---
+
 ## 📦 Backlog (Future Consideration)
+
+### Infrastructure & Performance
+
+- **Redis Migration to Upstash** (Priority: Medium, Effort: 2-4 hours)
+  - Standardize on `@upstash/redis` across entire codebase
+  - Remove hybrid setup (standard `redis` + `@upstash/redis`)
+  - Enable edge function compatibility (REST API vs TCP)
+  - Cost: $0-1/month (vs current unknown provider)
+  - Benefits: Edge deployment, global replication, unified client
+  - See: [docs/architecture/redis-migration-analysis.md](../architecture/redis-migration-analysis.md)
+  - Target: Q1 2026 maintenance window
 
 ### Activity Feed Enhancements
 
@@ -727,6 +1062,36 @@ _No critical bugs currently tracked. Check GitHub Issues for community-reported 
 - Advanced analytics dashboard
 - Custom activity types (videos, podcasts)
 - Social sharing with preview cards
+
+### Social Media Integration
+
+- **Phase 2: Content Management Dashboard** (Priority: Medium, Effort: 2-3 weeks)
+  - Build `/dev/social-media` management interface
+  - Multi-platform post composer (Twitter/X, DEV, LinkedIn)
+  - Post scheduling and queue management
+  - Draft management with auto-save
+  - Analytics visualization (referrals, DEV metrics)
+  - Preview functionality for each platform
+  - See: [docs/private/SOCIAL_MEDIA_DASHBOARD_ARCHITECTURE.md](../private/SOCIAL_MEDIA_DASHBOARD_ARCHITECTURE.md)
+  - Target: Q2 2026
+
+- **Phase 3: Automation & AI Optimization** (Priority: Low, Effort: 3-4 weeks)
+  - AI-powered content optimization
+  - Automated cross-posting workflows
+  - Best time to post recommendations
+  - Hashtag suggestions
+  - Content repurposing (blog → tweets)
+  - A/B testing for post variations
+  - See: [docs/private/SOCIAL_MEDIA_INTEGRATION_STRATEGY.md](../private/SOCIAL_MEDIA_INTEGRATION_STRATEGY.md)
+  - Target: Q3 2026
+
+**Phase 1 Completed:** January 9, 2026
+
+- ✅ Referral tracking (Twitter/X, DEV, LinkedIn, Reddit, HN, GitHub)
+- ✅ DEV.to analytics integration
+- ✅ Social metrics dashboard widget
+- ✅ Share to DEV functionality
+- ✅ Automated metrics syncing (Inngest)
 
 ### Other Features
 

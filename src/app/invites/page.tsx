@@ -58,6 +58,7 @@ export default async function InvitesPage() {
             title={pageTitle}
             description={pageDescription}
             className={PAGE_LAYOUT.hero.content}
+            align="center"
           />
         </Section>
 

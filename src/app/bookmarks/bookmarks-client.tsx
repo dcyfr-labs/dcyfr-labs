@@ -228,6 +228,7 @@ export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
         <PageHero
           title="Bookmarks"
           description="Your saved content for later reading"
+          align="center"
         />
         <div className="flex flex-col items-center justify-center py-16 px-4">
           <BookmarkX className="h-16 w-16 text-muted-foreground/50 mb-4" />
@@ -243,6 +244,7 @@ export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
       <PageHero
         title="Bookmarks"
         description="Your saved content for later reading"
+        align="center"
       />
 
       {/* Dynamic Count and Actions */}
@@ -365,7 +367,7 @@ export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
 
         {/* Info Banner */}
         {isMounted && totalBookmarked > 0 && (
-          <Alert type="info" className="mt-8">
+          <Alert type="notice" className="mt-8">
             <div>
               <p className="font-medium mb-1">Bookmarks stored locally</p>
               <p className="text-sm">

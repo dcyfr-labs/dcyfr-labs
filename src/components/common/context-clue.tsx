@@ -45,14 +45,8 @@ export interface ContextClueProps {
 
 export function ContextClue({ children, className = "" }: ContextClueProps) {
   return (
-    <Alert
-      type="info"
-      icon={Info}
-      role="complementary"
-      containerOverride="bg-primary/5 dark:bg-primary/10"
-      className={className}
-    >
-      <span className="font-semibold">Context:</span> {children}
+    <Alert type="notice" icon={Info} role="complementary" className={className}>
+      <span className="font-semibold">Context</span> {children}
     </Alert>
   );
 }

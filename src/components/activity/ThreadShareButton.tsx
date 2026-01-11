@@ -24,7 +24,7 @@
 
 "use client";
 
-import { Share2, Twitter, Linkedin, Link2, Check } from "lucide-react";
+import { Share2, Twitter, Linkedin, Link2, Check, Code2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -144,10 +144,18 @@ export function ThreadShareButton({
 
         {/* Twitter/X */}
         <DropdownMenuItem
-          onClick={() => handleSocialShare(socialUrls.twitter, "Twitter")}
+          onClick={() => handleSocialShare(socialUrls.twitter, "Twitter/X")}
         >
           <Twitter className="mr-2 h-4 w-4" aria-hidden="true" />
-          <span>Share on Twitter</span>
+          <span>Share on Twitter/X</span>
+        </DropdownMenuItem>
+
+        {/* DEV */}
+        <DropdownMenuItem
+          onClick={() => handleSocialShare(socialUrls.dev, "DEV")}
+        >
+          <Code2 className="mr-2 h-4 w-4" aria-hidden="true" />
+          <span>Share on DEV</span>
         </DropdownMenuItem>
 
         {/* LinkedIn */}

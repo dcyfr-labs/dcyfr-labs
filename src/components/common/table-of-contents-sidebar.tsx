@@ -1,24 +1,24 @@
 "use client";
 
 import * as React from "react";
-import { Link2, Search, X } from "lucide-react";
-import { motion } from "framer-motion";
+import { Search, X, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import type { TocHeading } from "@/lib/toc";
 import { trackToCClick } from "@/lib/analytics";
 import { Input } from "@/components/ui/input";
-import { toastSuccess } from "@/lib/toast";
 import { TYPOGRAPHY, SCROLL_BEHAVIOR } from "@/lib/design-tokens";
 
-// Scroll behavior constants derived from design tokens for consistency
-const SCROLL_OFFSET = SCROLL_BEHAVIOR.offset.standard; // 80px - Distance from top for scroll-to behavior (matches SmoothScrollToHash)
-const ACTIVE_THRESHOLD = SCROLL_BEHAVIOR.offset.tall; // 100px - Distance threshold for marking heading as active
-const BOTTOM_THRESHOLD = 100; // Distance from bottom to activate last heading
+// Scroll behavior constants
+const SCROLL_OFFSET = SCROLL_BEHAVIOR.offset.standard; // 80px
+const ACTIVE_THRESHOLD = SCROLL_BEHAVIOR.offset.tall; // 100px
+const BOTTOM_THRESHOLD = 100;
 
-// TOC list item dimensions for indicator animation
-// These match the Tailwind classes: min-h-11 (44px) and space-y-2 (8px gap)
-const ITEM_HEIGHT = 44; // px - Height of each TOC item (min-h-11)
-const ITEM_GAP = 8; // px - Gap between items (space-y-2)
+// Group h3 headings under their parent h2
+type HeadingGroup = {
+  h2: TocHeading;
+  h3s: TocHeading[];
+};
 
 type TableOfContentsSidebarProps = {
   headings: TocHeading[];
@@ -27,27 +27,55 @@ type TableOfContentsSidebarProps = {
 
 /**
  * TableOfContentsSidebar Component
- * 
- * Desktop-only sidebar version of TableOfContents for left rail in blog posts.
- * - Always visible on desktop (lg+)
- * - Sticky positioning with scroll tracking
- * - Hierarchical indentation for h3 sub-headings
- * - Smooth scroll to heading on click
- * - Search filter for long TOCs (15+ headings)
- * 
- * @param headings - Array of TocHeading objects from parsed MDX
- * @param slug - Optional blog post slug for analytics tracking
+ *
+ * Simplified architecture:
+ * - Single source of truth: scroll position determines active heading
+ * - Auto-expand: sections open/close based on active heading only
+ * - Click handling: just scrolls to element, scroll detection handles the rest
+ * - No manual state management - everything driven by scroll position
  */
-export function TableOfContentsSidebar({ headings, slug }: TableOfContentsSidebarProps) {
+export function TableOfContentsSidebar({
+  headings,
+  slug,
+}: TableOfContentsSidebarProps) {
   const [activeId, setActiveId] = React.useState<string>("");
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [expandedSections, setExpandedSections] = React.useState<Set<string>>(
+    new Set()
+  );
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
-  const itemRefs = React.useRef<Map<string, HTMLLIElement>>(new Map());
-  const lastScrollY = React.useRef(0);
-  const ticking = React.useRef(false);
-  const isScrollingRef = React.useRef(false);
+  const updateTimeoutRef = React.useRef<NodeJS.Timeout | undefined>(undefined);
 
-  // Optimized scroll-based heading detection
+  // Group headings by h2 sections
+  const headingGroups = React.useMemo(() => {
+    const groups: HeadingGroup[] = [];
+    let currentGroup: HeadingGroup | null = null;
+
+    headings.forEach((heading) => {
+      if (heading.level === 2) {
+        if (currentGroup) {
+          groups.push(currentGroup);
+        }
+        currentGroup = { h2: heading, h3s: [] };
+      } else if (heading.level === 3 && currentGroup) {
+        // Don't include h3s under FAQ sections
+        const isFaqSection =
+          currentGroup.h2.text.toLowerCase().includes("faq") ||
+          currentGroup.h2.text.toLowerCase().includes("frequently asked");
+        if (!isFaqSection) {
+          currentGroup.h3s.push(heading);
+        }
+      }
+    });
+
+    if (currentGroup) {
+      groups.push(currentGroup);
+    }
+
+    return groups;
+  }, [headings]);
+
+  // Single effect: scroll position → active heading → auto-expand
   React.useEffect(() => {
     if (typeof window === "undefined" || headings.length === 0) return;
 
@@ -55,151 +83,171 @@ export function TableOfContentsSidebar({ headings, slug }: TableOfContentsSideba
       const scrollY = window.scrollY;
       const viewportHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
-      
-      // Bottom of page - activate last heading
+
+      let currentId = "";
+
+      // Bottom of page
       if (scrollY + viewportHeight >= documentHeight - BOTTOM_THRESHOLD) {
         const lastHeading = headings[headings.length - 1];
-        if (lastHeading && activeId !== lastHeading.id) {
-          setActiveId(lastHeading.id);
+        if (lastHeading) {
+          currentId = lastHeading.id;
         }
-        return;
-      }
-      
-      // Find the current heading based on scroll position
-      // Heading is "active" when it's above the threshold line
-      let currentId = "";
-      
-      for (let i = headings.length - 1; i >= 0; i--) {
-        const heading = headings[i];
-        const element = document.getElementById(heading.id);
-        
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          // Check if heading is above the active threshold
-          if (rect.top <= ACTIVE_THRESHOLD) {
-            currentId = heading.id;
-            break;
+      } else {
+        // Find closest heading above threshold
+        for (let i = headings.length - 1; i >= 0; i--) {
+          const heading = headings[i];
+          const element = document.getElementById(heading.id);
+
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            if (rect.top <= ACTIVE_THRESHOLD) {
+              currentId = heading.id;
+              break;
+            }
           }
         }
+
+        // Fallback to first heading near top
+        if (!currentId && scrollY < ACTIVE_THRESHOLD && headings[0]) {
+          currentId = headings[0].id;
+        }
       }
-      
-      // Fallback to first heading if nothing is active and we're near the top
-      if (!currentId && scrollY < ACTIVE_THRESHOLD && headings[0]) {
-        currentId = headings[0].id;
+
+      // Debounced state update
+      if (currentId !== activeId) {
+        if (updateTimeoutRef.current) {
+          clearTimeout(updateTimeoutRef.current);
+        }
+
+        updateTimeoutRef.current = setTimeout(() => {
+          setActiveId(currentId);
+        }, 50); // Small debounce to prevent rapid updates
       }
-      
-      if (currentId && currentId !== activeId) {
-        setActiveId(currentId);
-      }
-      
-      lastScrollY.current = scrollY;
-      ticking.current = false;
     };
 
     const handleScroll = () => {
-      if (!ticking.current) {
-        window.requestAnimationFrame(updateActiveHeading);
-        ticking.current = true;
-      }
+      updateActiveHeading();
     };
-    
+
     // Initial update
     updateActiveHeading();
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
+      if (updateTimeoutRef.current) {
+        clearTimeout(updateTimeoutRef.current);
+      }
     };
   }, [headings, activeId]);
 
-  // Auto-scroll active item into view with debouncing
+  // Auto-expand and scroll based on active heading
   React.useEffect(() => {
-    if (!activeId || isScrollingRef.current) return;
-    
-    const activeElement = itemRefs.current.get(activeId);
-    const scrollContainer = scrollContainerRef.current;
-      
-    if (activeElement && scrollContainer) {
-      isScrollingRef.current = true;
-      
-      requestAnimationFrame(() => {
-        const containerRect = scrollContainer.getBoundingClientRect();
-        const elementRect = activeElement.getBoundingClientRect();
-          
-        const isAboveView = elementRect.top < containerRect.top + 20;
-        const isBelowView = elementRect.bottom > containerRect.bottom - 20;
-          
-        if (isAboveView || isBelowView) {
-          const elementTop = activeElement.offsetTop;
-          const containerHeight = scrollContainer.clientHeight;
-          const elementHeight = activeElement.clientHeight;
-          const scrollTo = elementTop - (containerHeight / 2) + (elementHeight / 2);
-            
-          scrollContainer.scrollTo({
-            top: scrollTo,
-            behavior: 'smooth',
-          });
-        }
-        
-        // Reset scrolling flag after animation
-        setTimeout(() => {
-          isScrollingRef.current = false;
-        }, 500);
-      });
+    if (!activeId) {
+      setExpandedSections(new Set());
+      return;
     }
-  }, [activeId]);
+
+    // Find which section contains the active heading
+    const activeGroup = headingGroups.find(
+      (group) =>
+        group.h2.id === activeId || group.h3s.some((h3) => h3.id === activeId)
+    );
+
+    if (activeGroup) {
+      // Auto-expand only the active section
+      setExpandedSections(new Set([activeGroup.h2.id]));
+
+      // Auto-scroll TOC to keep active section visible (only if sidebar is scrollable)
+      if (scrollContainerRef.current) {
+        const container = scrollContainerRef.current;
+        const groupElement = container.querySelector(
+          `[data-group-id="${activeGroup.h2.id}"]`
+        );
+
+        if (groupElement) {
+          const containerRect = container.getBoundingClientRect();
+          const elementRect = groupElement.getBoundingClientRect();
+
+          // Only scroll TOC if element is outside visible area
+          const isAboveView = elementRect.top < containerRect.top;
+          const isBelowView = elementRect.bottom > containerRect.bottom;
+
+          if (isAboveView || isBelowView) {
+            groupElement.scrollIntoView({
+              behavior: "smooth",
+              block: "nearest",
+            });
+          }
+        }
+      }
+    }
+  }, [activeId, headingGroups]);
 
   if (headings.length === 0) return null;
 
-  const filteredHeadings = searchQuery
-    ? headings.filter((h) =>
-        h.text.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : headings;
-
-  const handleCopyLink = async (e: React.MouseEvent, id: string, text: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const url = `${window.location.origin}${window.location.pathname}#${id}`;
-    
-    try {
-      await navigator.clipboard.writeText(url);
-      toastSuccess(`Link copied: ${text}`);
-      
-      if (slug) {
-        trackToCClick(slug, text, 0);
+  // Manual toggle for chevron clicks (optional, for user control)
+  const toggleSection = (sectionId: string) => {
+    setExpandedSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(sectionId)) {
+        next.delete(sectionId);
+      } else {
+        next.add(sectionId);
       }
-    } catch (err) {
-      console.error("Failed to copy link:", err);
-    }
+      return next;
+    });
   };
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string, heading: TocHeading) => {
+  // Filter groups for search
+  const filteredGroups = searchQuery
+    ? headingGroups
+        .map((group) => ({
+          h2: group.h2,
+          h3s: group.h3s.filter((h3) =>
+            h3.text.toLowerCase().includes(searchQuery.toLowerCase())
+          ),
+        }))
+        .filter(
+          (group) =>
+            group.h2.text.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            group.h3s.length > 0
+        )
+    : headingGroups;
+
+  // Simplified click: just scroll, let scroll detection handle everything else
+  const handleClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    id: string,
+    heading: TocHeading
+  ) => {
     e.preventDefault();
-    
+
     if (slug) {
       trackToCClick(slug, heading.text, heading.level);
     }
-    
+
     const element = document.getElementById(id);
     if (element) {
-      const top = element.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
+      const top =
+        element.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
       window.scrollTo({ top, behavior: "smooth" });
-      setActiveId(id);
     }
   };
 
-  const activeIndex = filteredHeadings.findIndex((h) => h.id === activeId);
-
   return (
     <nav
-      className="sticky top-24 h-fit max-h-[calc(100vh-8rem)] bg-background border rounded-lg p-4"
+      className="h-fit max-h-[calc(100vh-8rem)] bg-background border rounded-lg p-4"
       aria-label="Table of contents"
     >
       <div className="space-y-3">
-        <h2 className={cn("font-semibold text-foreground", TYPOGRAPHY.label.standard)}>
+        <h2
+          className={cn(
+            "font-semibold text-foreground",
+            TYPOGRAPHY.label.standard
+          )}
+        >
           On this page
         </h2>
 
@@ -226,68 +274,97 @@ export function TableOfContentsSidebar({ headings, slug }: TableOfContentsSideba
           </div>
         )}
 
-        <div ref={scrollContainerRef} className="max-h-[calc(100vh-16rem)] overflow-y-auto scrollbar-hide">
-          <ul className="list-none relative space-y-2 text-sm border-l-2 border-border">
-            {/* Sliding active indicator */}
-            {activeIndex >= 0 && (
-              <motion.div
-                layoutId="toc-sidebar-indicator"
-                className="absolute left-0 -ml-0.5 w-0.5 bg-primary"
-                initial={false}
-                animate={{
-                  top: `${activeIndex * (ITEM_HEIGHT + ITEM_GAP)}px`,
-                  height: `${ITEM_HEIGHT}px`,
-                }}
-                transition={{
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 30,
-                }}
-              />
-            )}
-            
-            {filteredHeadings.map((heading) => {
-              const isActive = activeId === heading.id;
-              const isH3 = heading.level === 3;
+        <div
+          ref={scrollContainerRef}
+          className="max-h-[calc(100vh-16rem)] overflow-y-auto scrollbar-hide"
+        >
+          <ul className="list-none m-0 p-0 space-y-1 text-sm">
+            {filteredGroups.map((group) => {
+              const isExpanded = expandedSections.has(group.h2.id);
+              const isH2Active = activeId === group.h2.id;
+              const hasActiveChild = group.h3s.some((h3) => h3.id === activeId);
+              const hasChildren = group.h3s.length > 0;
 
               return (
                 <li
-                  key={heading.id}
-                  ref={(el) => {
-                    if (el) itemRefs.current.set(heading.id, el);
-                  }}
+                  key={group.h2.id}
+                  className="space-y-1"
+                  data-group-id={group.h2.id}
                 >
+                  {/* H2 Heading */}
                   <div
                     className={cn(
-                      "group flex items-center justify-between py-2 border-l-2 -ml-0.5 transition-colors min-h-11",
-                      isH3 ? "pl-8" : "pl-4",
-                      isActive
-                        ? "border-transparent text-primary font-medium"
-                        : "border-transparent text-muted-foreground"
+                      "group flex items-center justify-between py-2 px-3 rounded-md transition-all",
+                      isH2Active || hasActiveChild
+                        ? "bg-primary/10 text-primary font-medium"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                     )}
                   >
                     <a
-                      href={`#${heading.id}`}
-                      onClick={(e) => handleClick(e, heading.id, heading)}
-                      className={cn(
-                        "flex-1 cursor-pointer transition-colors",
-                        !isActive && "hover:text-foreground"
-                      )}
+                      href={`#${group.h2.id}`}
+                      onClick={(e) => handleClick(e, group.h2.id, group.h2)}
+                      className="flex-1 cursor-pointer"
                     >
-                      {heading.text}
+                      {group.h2.text}
                     </a>
-                    <button
-                      onClick={(e) => handleCopyLink(e, heading.id, heading.text)}
-                      className={cn(
-                        "opacity-0 group-hover:opacity-100 focus:opacity-100 p-1 mr-2 transition-opacity",
-                        "hover:text-foreground focus:ring-2 focus:ring-primary rounded"
-                      )}
-                      aria-label={`Copy link to ${heading.text}`}
-                      title="Copy link"
-                    >
-                      <Link2 className="h-3.5 w-3.5" />
-                    </button>
+                    {hasChildren && (
+                      <button
+                        onClick={() => toggleSection(group.h2.id)}
+                        className="p-1 hover:bg-background/80 rounded transition-transform"
+                        aria-label={
+                          isExpanded ? "Collapse section" : "Expand section"
+                        }
+                        aria-expanded={isExpanded}
+                      >
+                        <ChevronDown
+                          className={cn(
+                            "h-4 w-4 transition-transform",
+                            isExpanded && "rotate-180"
+                          )}
+                        />
+                      </button>
+                    )}
                   </div>
+
+                  {/* H3 Subsections - Collapsible */}
+                  {hasChildren && (
+                    <AnimatePresence initial={false}>
+                      {isExpanded && (
+                        <motion.ul
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2, ease: "easeInOut" }}
+                          className="list-none m-0 p-0 overflow-hidden space-y-1 pl-4"
+                        >
+                          {group.h3s.map((h3) => {
+                            const isH3Active = activeId === h3.id;
+
+                            return (
+                              <li key={h3.id}>
+                                <div
+                                  className={cn(
+                                    "group flex items-center justify-between py-2 px-3 rounded-md transition-colors",
+                                    isH3Active
+                                      ? "bg-primary/10 text-primary font-medium"
+                                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                  )}
+                                >
+                                  <a
+                                    href={`#${h3.id}`}
+                                    onClick={(e) => handleClick(e, h3.id, h3)}
+                                    className="flex-1 cursor-pointer text-sm"
+                                  >
+                                    {h3.text}
+                                  </a>
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </motion.ul>
+                      )}
+                    </AnimatePresence>
+                  )}
                 </li>
               );
             })}

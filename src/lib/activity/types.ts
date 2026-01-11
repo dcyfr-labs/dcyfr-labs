@@ -244,52 +244,48 @@ export const ACTIVITY_SOURCE_COLORS: Record<
   { icon: string; border: string }
 > = {
   blog: {
-    icon: "text-muted-foreground",
-    border: "border-l-muted-foreground",
+    icon: SEMANTIC_COLORS.accent.sky.text,
+    border: "border-l-info",
   },
   project: {
-    icon: "text-muted-foreground",
-    border: "border-l-muted-foreground",
+    icon: SEMANTIC_COLORS.accent.cyan.text,
+    border: "border-l-info",
   },
   github: {
-    icon: "text-muted-foreground",
-    border: "border-l-muted-foreground",
+    icon: SEMANTIC_COLORS.accent.slate.text,
+    border: "border-l-slate-600",
   },
   changelog: {
-    icon: "text-muted-foreground",
-    border: "border-l-muted-foreground",
+    icon: SEMANTIC_COLORS.accent.sky.text,
+    border: "border-l-info",
   },
   milestone: {
-    icon: SEMANTIC_COLORS.alert.warning.icon,
-    border: "border-l-amber-600",
+    icon: SEMANTIC_COLORS.accent.amber.text,
+    border: "border-l-warning",
   },
   trending: {
-     
-    icon: "text-muted-foreground",
+    icon: SEMANTIC_COLORS.accent.orange.text,
     border: "border-l-orange-600",
   },
   engagement: {
     icon: SEMANTIC_COLORS.alert.critical.icon,
-    border: "border-l-red-600",
+    border: "border-l-error",
   },
   certification: {
-    icon: "text-muted-foreground",
-    border: "border-l-muted-foreground",
+    icon: SEMANTIC_COLORS.alert.success.icon,
+    border: "border-l-success",
   },
   analytics: {
-     
-    icon: "text-muted-foreground",
-    border: "border-l-blue-600",
+    icon: SEMANTIC_COLORS.accent.indigo.text,
+    border: "border-l-indigo-600",
   },
   "github-traffic": {
-     
-    icon: "text-muted-foreground",
+    icon: SEMANTIC_COLORS.accent.violet.text,
     border: "border-l-purple-600",
   },
   seo: {
-     
-    icon: "text-muted-foreground",
-    border: "border-l-green-600",
+    icon: SEMANTIC_COLORS.alert.success.icon,
+    border: "border-l-success",
   },
 } as const;
 

@@ -10,6 +10,11 @@ export { KeyTakeaway, type KeyTakeawayProps } from "./key-takeaway";
 export { ContextClue, type ContextClueProps } from "./context-clue";
 export { ContactForm } from "./contact-form";
 export { CopyCodeButton } from "./copy-code-button";
+export { CodeBlockWithHeader } from "./code-block-with-header";
+export {
+  EnhancedInlineCode,
+  getInlineCodeVariant,
+} from "./enhanced-inline-code";
 export { HighlightText } from "./highlight-text";
 export { HorizontalRule } from "./horizontal-rule";
 export { KeyboardShortcutsHelp } from "./keyboard-shortcuts-help";

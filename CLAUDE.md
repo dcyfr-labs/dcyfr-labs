@@ -60,30 +60,30 @@ Project is in **maintenance mode** with data-driven enhancements ready for next 
 ### Building a New Page
 
 ```tsx
-import { PageLayout } from '@/components/layouts/page-layout'
-import { PageHero } from '@/components/layouts/page-hero'
-import { SPACING, CONTAINER_WIDTHS } from '@/lib/design-tokens'
+import { PageLayout } from "@/components/layouts/page-layout";
+import { PageHero } from "@/components/layouts/page-hero";
+import { SPACING, CONTAINER_WIDTHS } from "@/lib/design-tokens";
 
 export default function NewPage() {
   return (
     <PageLayout>
       <PageHero title="Page Title" description="Page description" />
 
-      <section className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}>
-        <div className={SPACING.section}>
-          {/* Your content here */}
-        </div>
+      <section
+        className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}
+      >
+        <div className={SPACING.section}>{/* Your content here */}</div>
       </section>
     </PageLayout>
-  )
+  );
 }
 ```
 
 ### Building a Card Grid
 
 ```tsx
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { HOVER_EFFECTS } from '@/lib/design-tokens'
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { HOVER_EFFECTS } from "@/lib/design-tokens";
 
 export function ProjectGrid({ projects }) {
   return (
@@ -97,17 +97,17 @@ export function ProjectGrid({ projects }) {
         </Card>
       ))}
     </div>
-  )
+  );
 }
 ```
 
 ### Building a Form
 
 ```tsx
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { SPACING } from '@/lib/design-tokens'
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { SPACING } from "@/lib/design-tokens";
 
 export function ContactForm() {
   return (
@@ -118,11 +118,32 @@ export function ContactForm() {
       </div>
       <Button type="submit">Send</Button>
     </form>
-  )
+  );
 }
 ```
 
 **More Examples**: See templates in `/src/components/_templates/` for hero sections, CTAs, content sections, and more.
+
+### MDX Components for Blog Posts
+
+**Available components for blog content** (interactive and engaging):
+
+| Component                | Usage                                                                  | Purpose                                          |
+| ------------------------ | ---------------------------------------------------------------------- | ------------------------------------------------ |
+| `<KeyTakeaway>`          | `<KeyTakeaway>Your insight</KeyTakeaway>`                              | Highlight key insights and conclusions           |
+| `<ContextClue>`          | `<ContextClue>Background info</ContextClue>`                           | Provide background context                       |
+| `<Alert type="warning">` | `<Alert type="warning">Warning</Alert>`                                | Warnings and status messages                     |
+| `<SectionShare>`         | `<SectionShare sectionId="id" sectionTitle="Title" />`                 | Social sharing buttons (Twitter, LinkedIn, Copy) |
+| `<CollapsibleSection>`   | `<CollapsibleSection id="id" title="Title">...</CollapsibleSection>`   | Expandable content with LocalStorage             |
+| `<GlossaryTooltip>`      | `<GlossaryTooltip term="Term" definition="Def">text</GlossaryTooltip>` | Interactive tooltips for technical terms         |
+
+**Engagement Best Practices:**
+
+- Add `<SectionShare>` after major sections for social sharing and SEO (increases backlinks)
+- Use `<CollapsibleSection>` for role-specific or advanced content (progressive disclosure)
+- Wrap technical terms in `<GlossaryTooltip>` for better accessibility and comprehension
+- SectionShare creates trackable section-specific URLs with hash anchors for SEO
+- CollapsibleSection reduces initial page complexity while maintaining depth
 
 ## Design System Rules (MANDATORY)
 
@@ -133,12 +154,14 @@ export function ContactForm() {
 3. **Reuse components** from `layouts/` and `ui/`
 
 **Always use:**
+
 - ✅ `TYPOGRAPHY.h1.standard` for headings
 - ✅ `SPACING.content` for spacing
 - ✅ Semantic colors: `bg-card`, `text-primary`
 - ✅ `PageLayout`, `PageHero` for layouts
 
 **Never use:**
+
 - ❌ Hardcoded spacing: `space-y-6`, `gap-8`, `p-7`
 - ❌ Inline typography: `text-3xl font-semibold`
 - ❌ Hardcoded colors: `bg-white dark:bg-gray-900`
@@ -167,12 +190,13 @@ export function ContactForm() {
 
 ```typescript
 // ✅ CORRECT: Environment-aware with explicit warning
-const isProduction = process.env.NODE_ENV === 'production' 
-  || process.env.VERCEL_ENV === 'production';
+const isProduction =
+  process.env.NODE_ENV === "production" ||
+  process.env.VERCEL_ENV === "production";
 
 if (isProduction && !hasRealData) {
-  console.error('❌ CRITICAL: Using demo data in production!');
-  return null;  // Don't use fake data - return empty or error
+  console.error("❌ CRITICAL: Using demo data in production!");
+  return null; // Don't use fake data - return empty or error
 }
 
 // Safe to use test data in development only
@@ -202,12 +226,14 @@ import { Rocket, CheckCircle, XCircle, AlertTriangle, Lightbulb } from 'lucide-r
 ```
 
 **Prohibited locations:**
+
 - Blog posts (`src/content/blog/*.mdx`)
 - Projects (`src/content/projects/*.mdx`)
 - Public UI components
 - User-facing text
 
 **Acceptable locations:**
+
 - Internal docs (`docs/`, `.github/`)
 - Code comments (`//`, `/* */`)
 - Console.log statements
@@ -216,6 +242,7 @@ import { Rocket, CheckCircle, XCircle, AlertTriangle, Lightbulb } from 'lucide-r
 ## Key Constraints
 
 **Do NOT change without discussion:**
+
 - UI framework (Tailwind + shadcn/ui)
 - Import alias (`@/*`)
 - SEO routes (`sitemap.ts`, `robots.ts` location)
@@ -284,6 +311,7 @@ npx depcheck              # Find unused dependencies
 **Security Vulnerability Handling (CRITICAL):**
 
 When discovering a CodeQL alert or security issue:
+
 1. Analyze using [SECURITY_VULNERABILITY_TROUBLESHOOTING.md](/.github/agents/patterns/SECURITY_VULNERABILITY_TROUBLESHOOTING.md)
 2. Implement fix with defense-in-depth approach
 3. Add comprehensive security tests (attack vectors + valid patterns)
@@ -339,7 +367,7 @@ See: [APPROVAL_GATES.md#security-vulnerability-fixes](/.github/agents/enforcemen
 
 - **`/arch-review`** - Architectural pattern enforcement
   - Validates Next.js App Router & server-first patterns
-  - Ensures @/* import aliases (no relative paths)
+  - Ensures @/\* import aliases (no relative paths)
   - Detects code duplication & suggests refactoring
 
 **Quick start:** Type `/agent-help` to see all agents and usage guide
@@ -364,6 +392,7 @@ Maintaining:
 ```
 
 **For Detailed Patterns & Enforcement:**
+
 - **Public/Shared:** See [`.github/agents/DCYFR.agent.md`](./.github/agents/DCYFR.agent.md) for modular enforcement documentation
 - **Internal Only:** For Claude Code users with access to proprietary `.claude/agents/` files, see your internal documentation (not available in public repo)
 
@@ -383,7 +412,8 @@ Never log sensitive information in clear text. Use one of two approaches:
 1. **Mask sensitive data** (when verification logging needed)
 
 ```javascript
-const maskEmail = (email) => `${email.split('@')[0].substring(0, 2)}***@${email.split('@')[1]}`;
+const maskEmail = (email) =>
+  `${email.split("@")[0].substring(0, 2)}***@${email.split("@")[1]}`;
 console.log(`Service Account: ${maskEmail(credentials.client_email)}`);
 ```
 
@@ -420,6 +450,7 @@ console.log(`Service Account: ${maskEmail(credentials.client_email)}`);
 - Use agents **judiciously** (prefer direct tools)
 
 **Typical budgets:**
+
 - Quick fix: <20k tokens
 - Feature: <50k tokens
 - Refactoring: <100k tokens
@@ -526,7 +557,7 @@ Install [sst-dev.opencode](https://marketplace.visualstudio.com/items?itemName=s
 
 Perplexity, Context, Axiom, Filesystem, GitHub, Vercel, Sentry, arXiv
 
-*Note: Memory and Sequential Thinking MCPs removed Dec 2025 - replaced by native Claude/Copilot capabilities and built-in memory tools.*
+_Note: Memory and Sequential Thinking MCPs removed Dec 2025 - replaced by native Claude/Copilot capabilities and built-in memory tools._
 
 ---
 

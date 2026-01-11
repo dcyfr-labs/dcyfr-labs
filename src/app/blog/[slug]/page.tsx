@@ -34,6 +34,7 @@ import {
   BlogAnalyticsTracker,
   SidebarVisibilityProvider,
   HideWhenSidebarVisible,
+  ReadingProgressBar,
 } from "@/components/blog";
 import {
   ViewCountDisplay,
@@ -50,7 +51,6 @@ import {
   TableOfContentsSidebar,
 } from "@/components/common";
 import { Breadcrumbs } from "@/components/navigation";
-import { ReadingProgress } from "@/components/features";
 import { ArticleReadingProgress } from "@/components/app";
 import { LazyGiscusComments } from "@/components/features";
 import { ViewTracker } from "@/components/features";
@@ -223,16 +223,48 @@ export default async function PostPage({
         }}
       />
 
-      <ReadingProgress />
+      <ReadingProgressBar />
       <SmoothScrollToHash />
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
 
-      {/* Desktop Layout: Three-column (Content + TOC + Sidebar) - DOM order optimized for accessibility */}
+      {/* Desktop Layout: Three-column (Sidebar + Content + Empty Right) - DOM order optimized for accessibility */}
       <div
-        className={`container ${CONTAINER_WIDTHS.dashboard} mx-auto ${CONTAINER_PADDING} pt-6 md:pt-8 lg:pt-36`}
+        className={`container ${CONTAINER_WIDTHS.archive} mx-auto ${CONTAINER_PADDING} pt-6 md:pt-8 lg:pt-36`}
       >
         <BlogPostLayoutWrapper>
-          {/* Center: Main Content (DOM first for accessibility/SEO) */}
+          {/* Left Rail: Sidebar + Table of Contents (desktop only) */}
+          <div className="hidden lg:block lg:order-1 relative space-y-8">
+            <CollapsibleBlogSidebar>
+              <BlogPostSidebarWrapper
+                headings={headings}
+                slug={post.slug}
+                postId={post.id}
+                authors={post.authors}
+                postTitle={post.title}
+                metadata={{
+                  publishedAt: new Date(post.publishedAt),
+                  updatedAt: post.updatedAt
+                    ? new Date(post.updatedAt)
+                    : undefined,
+                  readingTime: post.readingTime.text,
+                  tags: post.tags,
+                  category: post.category,
+                  isDraft: post.draft,
+                  isArchived: post.archived,
+                  isLatest: latestPost?.slug === post.slug,
+                  isHot: hottestSlug === post.slug,
+                }}
+                series={post.series}
+                seriesPosts={seriesPosts}
+                relatedPosts={articleData.relatedItems}
+              />
+            </CollapsibleBlogSidebar>
+            <div className="sticky top-24">
+              <TableOfContentsSidebar headings={headings} slug={post.slug} />
+            </div>
+          </div>
+
+          {/* Center: Main Content (DOM order for accessibility/SEO) */}
           <SidebarVisibilityProvider>
             <div className="min-w-0 lg:order-2">
               <ArticleLayout
@@ -267,26 +299,23 @@ export default async function PostPage({
                       : undefined
                   }
                 >
-                  {/* Metadata shown only when sidebar is hidden */}
-                  <HideWhenSidebarVisible>
-                    <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mt-4">
-                      <time dateTime={post.publishedAt}>
-                        {new Date(post.publishedAt).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          }
-                        )}
-                      </time>
-                      <span aria-hidden="true">·</span>
-                      <span>{post.readingTime.text}</span>
-                      <Suspense fallback={<ViewCountSkeleton />}>
-                        <ViewCountDisplay postId={post.id} />
-                      </Suspense>
-                    </div>
-                  </HideWhenSidebarVisible>
+                  {/* Metadata shown only when sidebar is hidden 
+                  <HideWhenSidebarVisible> */}
+                  <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mt-4">
+                    <time dateTime={post.publishedAt}>
+                      {new Date(post.publishedAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </time>
+                    <span aria-hidden="true">·</span>
+                    <span>{post.readingTime.text}</span>
+                    <Suspense fallback={<ViewCountSkeleton />}>
+                      <ViewCountDisplay postId={post.id} />
+                    </Suspense>
+                  </div>
+                  {/* </HideWhenSidebarVisible> */}
                 </ArticleHeader>
 
                 {/* Series navigation */}
@@ -335,37 +364,10 @@ export default async function PostPage({
             </div>
           </SidebarVisibilityProvider>
 
-          {/* Left Rail: Table of Contents (desktop only, visually left via CSS Grid order) */}
-          <div className="hidden lg:block lg:order-1">
-            <TableOfContentsSidebar headings={headings} slug={post.slug} />
-          </div>
-
-          {/* Right Rail: Collapsible Sidebar (desktop only) - Streams view count with PPR */}
-          <CollapsibleBlogSidebar className="lg:order-3">
-            <BlogPostSidebarWrapper
-              headings={headings}
-              slug={post.slug}
-              postId={post.id}
-              authors={post.authors}
-              postTitle={post.title}
-              metadata={{
-                publishedAt: new Date(post.publishedAt),
-                updatedAt: post.updatedAt
-                  ? new Date(post.updatedAt)
-                  : undefined,
-                readingTime: post.readingTime.text,
-                tags: post.tags,
-                category: post.category,
-                isDraft: post.draft,
-                isArchived: post.archived,
-                isLatest: latestPost?.slug === post.slug,
-                isHot: hottestSlug === post.slug,
-              }}
-              series={post.series}
-              seriesPosts={seriesPosts}
-              relatedPosts={articleData.relatedItems}
-            />
-          </CollapsibleBlogSidebar>
+          {/* Right Rail: Empty (reserved for future use)
+          <div className="hidden xl:block xl:order-3 relative"> */}
+          {/* Empty - reserved for future use 
+          </div> */}
         </BlogPostLayoutWrapper>
       </div>
     </ArticleReadingProgress>

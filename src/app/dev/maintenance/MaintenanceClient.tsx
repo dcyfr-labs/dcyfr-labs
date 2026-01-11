@@ -4,13 +4,13 @@
  * Maintenance Dashboard - Client Component
  *
  * Main component that orchestrates the maintenance dashboard
- * 
+ *
  * Displays:
  * - Workflow status grid (4 tracked workflows)
  * - 52-week trend visualization
  * - Recent workflow history
  * - Auto-refresh every 60 seconds
- * 
+ *
  * Modular structure:
  * - types.ts: Type definitions
  * - hooks.ts: useMaintenanceDashboard hook
@@ -18,14 +18,28 @@
  */
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { AlertCircle, RefreshCw, ExternalLink, TrendingUp } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
 
 // Import components
-import { WorkflowCard, WorkflowGridSkeleton, WorkflowStatusBadge } from "./components/workflow";
-import { ApiHealthCard, DesignSystemReportCard, RedisHealthCard } from "./components/status-cards";
+import {
+  WorkflowCard,
+  WorkflowGridSkeleton,
+  WorkflowStatusBadge,
+} from "./components/workflow";
+import {
+  ApiHealthCard,
+  DesignSystemReportCard,
+  RedisHealthCard,
+} from "./components/status-cards";
 import { TrendChart } from "./components/trends";
 
 // Import hook and types
@@ -92,7 +106,7 @@ export default function MaintenanceClient() {
                   type="checkbox"
                   checked={state.autoRefresh}
                   onChange={(e) => setAutoRefresh(e.target.checked)}
-                  className="rounded border-gray-300"
+                  className="rounded border-border"
                 />
                 Auto-refresh (60s)
               </label>

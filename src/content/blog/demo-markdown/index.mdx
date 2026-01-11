@@ -1,40 +1,49 @@
 ---
 id: "post-20200107-04d94a8e"
 title: "Markdown Elements & Typography"
-summary: "Complete demonstration of markdown elements including typography, lists, blockquotes, tables, and HTML components."
+summary: "Complete demonstration of markdown elements including typography, lists, blockquotes, tables, and HTML components. Features Lora serif font with modern MDX enhancements."
 publishedAt: "2020-01-07T12:00:00Z"
-updatedAt: "2025-11-30T12:00:00Z"
+updatedAt: "2026-01-11T12:00:00Z"
 category: "Demo"
-tags: ["Typography", "Markdown", "MDX", "Demo"]
+tags: ["Typography", "Markdown", "MDX", "Demo", "Accessibility"]
 draft: true
 series:
   name: "Features"
   order: 2
 ---
 
-This page demonstrates all markdown elements and typographic styles used throughout the site. It showcases the **Lora** serif font for body text paired with **Geist Sans** for UI elements.
+This page demonstrates all markdown elements and typographic styles used throughout the site. It showcases the <GlossaryTooltip term="Lora" definition="A serif typeface designed for optimal reading on screens and in print">**Lora**</GlossaryTooltip> serif font for body text paired with <GlossaryTooltip term="Geist Sans" definition="A modern sans-serif font family optimized for user interfaces">**Geist Sans**</GlossaryTooltip> for UI elements.
+
+<SectionShare
+  sectionId="introduction"
+  sectionTitle="Markdown Elements & Typography"
+/>
 
 ---
 
 ## Typography Styles
 
 ### Heading Level 3
+
 This is how a third-level heading looks with the current typography system.
 
 #### Heading Level 4
+
 Fourth-level headings are slightly smaller but still maintain hierarchy.
 
 ##### Heading Level 5
+
 Fifth-level headings for deeply nested content.
 
 ###### Heading Level 6
+
 The smallest heading level available.
 
 ---
 
 ## Text Formatting
 
-You can use **bold text** for emphasis, *italic text* for subtle emphasis, and ***bold italic*** for maximum emphasis. Use ~~strikethrough~~ for deleted text.
+You can use **bold text** for emphasis, _italic text_ for subtle emphasis, and **_bold italic_** for maximum emphasis. Use ~~strikethrough~~ for deleted text.
 
 Inline `code snippets` are styled with monospace font and background highlighting. You can also use <kbd>Cmd</kbd> + <kbd>K</kbd> to show keyboard shortcuts.
 
@@ -69,6 +78,8 @@ This paragraph includes a [link to Next.js](https://nextjs.org/) and an external
 - [ ] Incomplete task
 - [ ] Another incomplete task
 
+<SectionShare sectionId="lists" sectionTitle="Lists and Organization" />
+
 ---
 
 ## Blockquotes
@@ -76,10 +87,10 @@ This paragraph includes a [link to Next.js](https://nextjs.org/) and an external
 > This is a single-line blockquote.
 
 > This is a multi-line blockquote with multiple sentences.
-> 
+>
 > It can span multiple paragraphs and includes proper spacing and styling to make quoted content stand out from the main text.
 
-> **Pro tip:** Blockquotes can contain **formatted text**, *italics*, and even `code snippets` for maximum flexibility.
+> **Pro tip:** Blockquotes can contain **formatted text**, _italics_, and even `code snippets` for maximum flexibility.
 
 ---
 
@@ -87,21 +98,45 @@ This paragraph includes a [link to Next.js](https://nextjs.org/) and an external
 
 ### Simple Table
 
-| Name    | Role      | Status |
-|---------|-----------|--------|
-| Alice   | Admin     | Active |
-| Bob     | Editor    | Active |
-| Charlie | Viewer    | Inactive |
+| Name    | Role   | Status   |
+| ------- | ------ | -------- |
+| Alice   | Admin  | Active   |
+| Bob     | Editor | Active   |
+| Charlie | Viewer | Inactive |
 
 ### Complex Table with Alignment
 
-| Feature | Free | Pro | Enterprise |
-|---------|:----:|:---:|:----------:|
-| Users | 1 | 10 | Unlimited |
-| Storage | 1GB | 100GB | Custom |
-| Support | Email | Priority | 24/7 Phone |
-| Custom Domain | <XIcon /> | <CheckIcon /> | <CheckIcon /> |
-| API Access | <XIcon /> | Limited | Unlimited |
+| Feature       | Free  |   Pro    | Enterprise |
+| ------------- | :---: | :------: | :--------: |
+| Users         |   1   |    10    | Unlimited  |
+| Storage       |  1GB  |  100GB   |   Custom   |
+| Support       | Email | Priority | 24/7 Phone |
+| Custom Domain |   ✗   |    ✓     |     ✓      |
+| API Access    |   ✗   | Limited  | Unlimited  |
+
+<CollapsibleSection id="advanced-tables" title="Advanced Table Patterns">
+
+### Responsive Data Table
+
+| Metric     | Q1 2025 | Q2 2025 | Q3 2025 | Q4 2025 | Change |
+| ---------- | ------- | ------- | ------- | ------- | ------ |
+| Revenue    | $125K   | $140K   | $160K   | $180K   | +44%   |
+| Users      | 1,250   | 1,800   | 2,400   | 3,200   | +156%  |
+| Conversion | 3.2%    | 4.1%    | 4.8%    | 5.2%    | +62.5% |
+| Retention  | 85%     | 88%     | 91%     | 93%     | +9.4%  |
+
+### Feature Matrix with Icons
+
+| Component | Mobile | Desktop | Tablet | PWA | Notes                 |
+| --------- | :----: | :-----: | :----: | :-: | --------------------- |
+| Header    |   ✓    |    ✓    |   ✓    |  ✓  | Responsive navigation |
+| Sidebar   |   ✗    |    ✓    |   ⚠   |  ✓  | Collapsible on tablet |
+| Footer    |   ✓    |    ✓    |   ✓    |  ✓  | Sticky on mobile      |
+| Search    |   ✓    |    ✓    |   ✓    |  ⓘ  | Voice search on PWA   |
+
+</CollapsibleSection>
+
+<SectionShare sectionId="tables" sectionTitle="Tables and Data" />
 
 ---
 
@@ -113,11 +148,11 @@ Three or more dashes create a horizontal rule:
 
 Three or more asterisks also work:
 
-***
+---
 
 Three or more underscores as well:
 
-___
+---
 
 ---
 
@@ -125,7 +160,7 @@ ___
 
 ![Avatar](/images/avatar.jpg)
 
-*Image caption: This is how images render with optional captions.*
+_Image caption: This is how images render with optional captions._
 
 ---
 
@@ -153,33 +188,33 @@ MDX supports custom icon components for consistent styling across the site:
 
 ### Status Icons
 
-- <CheckIcon /> Features that are available
-- <XIcon /> Features that are not available
-- <WarningIcon /> Features that need attention
+- ✓ Features that are available
+- ✗ Features that are not available
+- ⚠ Features that need attention
 
 ### Contextual Icons
 
-- <InfoIcon /> Helpful information and tips
-- <IdeaIcon /> Pro tips and best practices
-- <ZapIcon /> Performance and speed features
-- <RocketIcon /> New launches and releases
-- <LockIcon /> Security and private features
-- <ReturnIcon /> Return or continuation indicators
+- ⓘ Helpful information and tips
+- 💡 Pro tips and best practices
+- ⚡ Performance and speed features
+- 🚀 New launches and releases
+- 🔒 Security and private features
+- ↩ Return or continuation indicators
 
 ### Icon Tables
 
 Icons work great in tables for feature comparison:
 
-| Icon | Name | Use Case |
-|:----:|------|----------|
-| <CheckIcon /> | Check | Success, completion, available |
-| <XIcon /> | Cross | Error, unavailable, denied |
-| <WarningIcon /> | Warning | Caution, deprecation |
-| <InfoIcon /> | Info | Helpful notes, documentation |
-| <IdeaIcon /> | Idea | Tips, insights |
-| <ZapIcon /> | Zap | Performance, speed |
-| <RocketIcon /> | Rocket | Launch, deployment |
-| <LockIcon /> | Lock | Security, privacy |
+| Icon | Name    | Use Case                       |
+| :--: | ------- | ------------------------------ |
+|  ✓   | Check   | Success, completion, available |
+|  ✗   | Cross   | Error, unavailable, denied     |
+|  ⚠  | Warning | Caution, deprecation           |
+|  ⓘ   | Info    | Helpful notes, documentation   |
+|  💡  | Idea    | Tips, insights                 |
+|  ⚡  | Zap     | Performance, speed             |
+|  🚀  | Rocket  | Launch, deployment             |
+|  🔒  | Lock    | Security, privacy              |
 
 ---
 
@@ -188,18 +223,19 @@ Icons work great in tables for feature comparison:
 You can also use HTML elements when needed:
 
 <div className="p-4 bg-accent rounded-lg my-4">
-  <strong>Custom HTML:</strong> This is a custom HTML element styled with Tailwind classes.
+  <strong>Custom HTML:</strong> This is a custom HTML element styled with
+  Tailwind classes.
 </div>
 
-<details>
-  <summary>Click to expand</summary>
-  
-  Hidden content that reveals when you click the summary.
-  
-  - Can contain markdown
-  - Including lists
-  - And other elements
-</details>
+<CollapsibleSection id="html-details-example" title="Click to expand">
+
+Hidden content that reveals when you click the summary.
+
+- Can contain markdown
+- Including lists
+- And other elements
+
+</CollapsibleSection>
 
 ---
 
@@ -228,13 +264,13 @@ The site supports interactive diagrams for flowcharts and architecture visualiza
 You can combine multiple markdown elements:
 
 > **Important Note:**
-> 
+>
 > When working with TypeScript, remember to:
-> 
+>
 > 1. Define proper types for all function parameters
 > 2. Use interfaces for object shapes
 > 3. Leverage generics for reusable code
-> 
+>
 > See the [Code Examples](/blog/demo-code) for detailed examples.
 
 ---

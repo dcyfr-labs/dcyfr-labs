@@ -8,7 +8,7 @@ describe("KeyTakeaway Component", () => {
     render(<KeyTakeaway>{testContent}</KeyTakeaway>);
 
     expect(screen.getByText(testContent)).toBeInTheDocument();
-    expect(screen.getByText("Key Takeaway:")).toBeInTheDocument();
+    expect(screen.getByText("Takeaway")).toBeInTheDocument();
   });
 
   it("has proper accessibility attributes", () => {

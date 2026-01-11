@@ -75,9 +75,9 @@ export function AgentStatusCard({
             </p>
           </div>
           {isAvailable ? (
-            <CheckCircle2 className="h-5 w-5 text-green-500" />
+            <CheckCircle2 className="h-5 w-5 text-success-light" />
           ) : (
-            <XCircle className="h-5 w-5 text-red-500" />
+            <XCircle className="h-5 w-5 text-error-light" />
           )}
         </div>
       </CardHeader>
@@ -135,7 +135,7 @@ export function AgentStatusCard({
                 {health.responseTime ? `${health.responseTime}ms` : "N/A"}
               </span>
             ) : (
-              <span className="text-red-500">
+              <span className="text-error">
                 {health.error || "Unavailable"}
               </span>
             )}

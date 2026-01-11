@@ -1,15 +1,17 @@
 /**
  * Blog Post Analytics Tracker
- * 
+ *
  * Client component that tracks comprehensive blog post analytics:
  * - Initial view event with post metadata
  * - Reading progress and completion
  * - Time on page and scroll depth
- * 
+ * - Social media referrals (Twitter/X, DEV, LinkedIn, Reddit, HN, GitHub)
+ *
  * Integrates with both:
  * - Custom view tracking system (Redis-backed counts)
  * - Vercel Analytics (custom events for insights)
- * 
+ * - Referral tracking system (social media sources)
+ *
  * Usage:
  * ```tsx
  * <BlogAnalyticsTracker
@@ -29,6 +31,7 @@
 import { useEffect } from "react";
 import { useBlogAnalytics } from "@/hooks/use-blog-analytics";
 import { trackBlogView } from "@/lib/analytics";
+import { useReferralTracking } from "@/hooks/use-referral-tracking";
 
 interface BlogAnalyticsTrackerProps {
   post: {
@@ -43,6 +46,9 @@ interface BlogAnalyticsTrackerProps {
 export function BlogAnalyticsTracker({ post }: BlogAnalyticsTrackerProps) {
   // Track reading progress and completion
   useBlogAnalytics({ slug: post.slug });
+
+  // Track referrals from social media
+  useReferralTracking(post.id);
 
   // Track initial page view
   useEffect(() => {

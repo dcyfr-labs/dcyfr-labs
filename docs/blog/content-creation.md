@@ -32,11 +32,13 @@ This guide covers everything you need to know about creating, editing, and publi
 ### Creating Your First Post
 
 1. **Create a new MDX file:**
+
    ```bash
    touch src/content/blog/my-awesome-post.mdx
    ```
 
 2. **Add frontmatter and content:**
+
    ```mdx
    ---
    title: "My Awesome Post"
@@ -52,6 +54,7 @@ This guide covers everything you need to know about creating, editing, and publi
    ```
 
 3. **Preview locally:**
+
    ```bash
    npm run dev
    # Visit http://localhost:3000/blog/my-awesome-post
@@ -73,6 +76,7 @@ This guide covers everything you need to know about creating, editing, and publi
 ### Location
 
 All blog posts live in:
+
 ```
 src/content/blog/
 ├── my-first-post.mdx
@@ -83,11 +87,13 @@ src/content/blog/
 ### Naming Conventions
 
 **File names become URL slugs:**
+
 - `my-first-post.mdx` → `/blog/my-first-post`
 - `shipping-tiny-portfolio.mdx` → `/blog/shipping-tiny-portfolio`
 - `nextjs-app-router-guide.mdx` → `/blog/nextjs-app-router-guide`
 
 **Best Practices:**
+
 - ✅ Use lowercase letters
 - ✅ Separate words with hyphens (`-`)
 - ✅ Keep slugs concise but descriptive
@@ -97,6 +103,7 @@ src/content/blog/
 - ❌ Avoid dates in filenames (use frontmatter instead)
 
 **Examples:**
+
 ```bash
 # Good
 building-a-blog-with-nextjs.mdx
@@ -154,6 +161,7 @@ sources:
 ### Field Descriptions
 
 #### `title` (required)
+
 - **Type:** String
 - **Purpose:** Main post heading, appears in listings, browser tabs, and social previews
 - **Best Practices:**
@@ -163,6 +171,7 @@ sources:
   - Include primary keyword when possible
 
 **Examples:**
+
 ```yaml
 title: "Building a Blog with Next.js and MDX"
 title: "TypeScript Generics: A Complete Guide"
@@ -170,6 +179,7 @@ title: "How I Optimized My Site to Load in Under 1 Second"
 ```
 
 #### `summary` (required)
+
 - **Type:** String
 - **Purpose:** Brief description for listings, meta descriptions, and social cards
 - **Best Practices:**
@@ -179,6 +189,7 @@ title: "How I Optimized My Site to Load in Under 1 Second"
   - Front-load important information
 
 **Examples:**
+
 ```yaml
 summary: "Learn how to build a modern blog with Next.js 16 App Router, MDX for content, and Tailwind CSS for styling. Includes full source code."
 
@@ -186,17 +197,20 @@ summary: "A deep dive into TypeScript generics with practical examples, common p
 ```
 
 #### `publishedAt` (required)
+
 - **Type:** String (ISO date format)
 - **Purpose:** Publication date for sorting and display
 - **Format:** `YYYY-MM-DD`
 
 **Examples:**
+
 ```yaml
 publishedAt: "2025-10-24"
 publishedAt: "2025-01-15"
 ```
 
 #### `tags` (required)
+
 - **Type:** Array of strings
 - **Purpose:** Categorization, filtering, and related post recommendations
 - **Best Practices:**
@@ -206,6 +220,7 @@ publishedAt: "2025-01-15"
   - Be specific enough to be useful, broad enough to group posts
 
 **View all existing tags:**
+
 ```typescript
 import { allPostTags, postTagCounts } from "@/data/posts";
 console.log(allPostTags); // All unique tags
@@ -213,6 +228,7 @@ console.log(postTagCounts); // Tag usage counts
 ```
 
 **Examples:**
+
 ```yaml
 tags: ["Next.js", "React", "Tutorial"]
 tags: ["TypeScript", "JavaScript", "Types"]
@@ -221,18 +237,21 @@ tags: ["Performance", "Optimization", "Web Vitals"]
 ```
 
 #### `updatedAt` (optional)
+
 - **Type:** String (ISO date format)
 - **Purpose:** Last significant update date
 - **Format:** `YYYY-MM-DD`
 - **When to use:** Major content revisions, not minor typo fixes
 
 **Examples:**
+
 ```yaml
 publishedAt: "2025-09-10"
-updatedAt: "2025-10-24"  # Updated 6 weeks later
+updatedAt: "2025-10-24" # Updated 6 weeks later
 ```
 
 #### `featured` (optional)
+
 - **Type:** Boolean
 - **Purpose:** Highlight post on homepage and featured sections
 - **Default:** `false`
@@ -242,47 +261,55 @@ updatedAt: "2025-10-24"  # Updated 6 weeks later
   - Update periodically to keep homepage fresh
 
 **Examples:**
+
 ```yaml
 featured: true   # Show on homepage
 featured: false  # Don't feature (default)
 ```
 
 #### `archived` (optional)
+
 - **Type:** Boolean
 - **Purpose:** Mark posts as outdated but keep them accessible
 - **Default:** `false`
 - **When to use:** Content is no longer current but has historical value
 
 **Examples:**
+
 ```yaml
 archived: true   # Show "Archived" badge
 archived: false  # Current content (default)
 ```
 
 **Effect:**
+
 - Shows "Archived" badge on post
 - Still visible in search and listings
 - Still indexed by search engines
 - Signals to readers content may be outdated
 
 #### `draft` (optional)
+
 - **Type:** Boolean
 - **Purpose:** Hide post in production, visible only in development
 - **Default:** `false`
 - **When to use:** Work-in-progress content, unpublished posts
 
 **Examples:**
+
 ```yaml
 draft: true   # Visible only in development
 draft: false  # Published (default)
 ```
 
 **Behavior:**
+
 - **Development (`npm run dev`):** Drafts visible at `/blog/slug`
 - **Production:** Drafts completely hidden (404)
 - Shows "Draft" badge in development
 
 #### `sources` (optional)
+
 - **Type:** Array of objects with `label` and `href`
 - **Purpose:** Cite references, link to related resources
 - **Best Practices:**
@@ -292,6 +319,7 @@ draft: false  # Published (default)
   - Order by relevance
 
 **Examples:**
+
 ```yaml
 sources:
   - label: "Next.js Documentation"
@@ -311,6 +339,7 @@ sources:
 After frontmatter, write your content using standard Markdown/MDX syntax.
 
 **Recommended Structure:**
+
 ```mdx
 ---
 # ... frontmatter ...
@@ -347,6 +376,7 @@ Summarize key points and provide next steps or calls to action.
 - **H4-H6** - Fine-grained organization (not in TOC)
 
 **Example:**
+
 ```markdown
 ## Getting Started
 
@@ -358,6 +388,7 @@ Summarize key points and provide next steps or calls to action.
 ```
 
 **Best Practices:**
+
 - Start with H2 for main sections
 - Don't skip heading levels
 - Keep headings concise and descriptive
@@ -375,14 +406,15 @@ All standard GFM features are supported via `remark-gfm`.
 
 ```markdown
 **Bold text**
-*Italic text*
+_Italic text_
 ~~Strikethrough~~
 `inline code`
 ```
 
 **Rendered:**
+
 - **Bold text**
-- *Italic text*
+- _Italic text_
 - ~~Strikethrough~~
 - `inline code`
 
@@ -394,12 +426,14 @@ Internal link
 ```
 
 **Auto-detected:**
+
 - External links open in new tab with `rel="noopener noreferrer"`
 - Internal links navigate normally
 
 #### Lists
 
 **Unordered:**
+
 ```markdown
 - Item 1
 - Item 2
@@ -409,6 +443,7 @@ Internal link
 ```
 
 **Ordered:**
+
 ```markdown
 1. First step
 2. Second step
@@ -416,6 +451,7 @@ Internal link
 ```
 
 **Task Lists:**
+
 ```markdown
 - [x] Completed task
 - [ ] Pending task
@@ -432,6 +468,7 @@ Internal link
 ```
 
 **Rendered:**
+
 > This is a blockquote.
 > It can span multiple lines.
 
@@ -446,26 +483,27 @@ Use for section breaks or thematic transitions.
 #### Tables
 
 ```markdown
-| Feature       | Status | Notes          |
-|---------------|--------|----------------|
-| Server Comps  | ✅     | Default        |
-| Client Comps  | ✅     | When needed    |
-| Streaming     | ✅     | Built-in       |
+| Feature      | Status | Notes       |
+| ------------ | ------ | ----------- |
+| Server Comps | ✅     | Default     |
+| Client Comps | ✅     | When needed |
+| Streaming    | ✅     | Built-in    |
 ```
 
 **Rendered:**
 
-| Feature       | Status | Notes          |
-|---------------|--------|----------------|
-| Server Comps  | ✅     | Default        |
-| Client Comps  | ✅     | When needed    |
-| Streaming     | ✅     | Built-in       |
+| Feature      | Status | Notes       |
+| ------------ | ------ | ----------- |
+| Server Comps | ✅     | Default     |
+| Client Comps | ✅     | When needed |
+| Streaming    | ✅     | Built-in    |
 
 **Alignment:**
+
 ```markdown
-| Left    | Center  | Right   |
-|---------|:-------:|--------:|
-| A       | B       | C       |
+| Left | Center | Right |
+| ---- | :----: | ----: |
+| A    |   B    |     C |
 ```
 
 ---
@@ -485,12 +523,14 @@ Use the `npm run dev` command to start the dev server.
 
 Specify language for automatic syntax highlighting:
 
-```markdown
+````markdown
 ```typescript
 const greeting: string = "Hello, World!";
 console.log(greeting);
 ```
-```
+````
+
+````
 
 **Supported Languages:**
 - `typescript`, `javascript`, `jsx`, `tsx`
@@ -514,16 +554,20 @@ export default function Example() {
     </div>
   );
 }
-```
-```
+````
+
+````
 
 #### Code Without Language
 
 ```markdown
-```
+````
+
 Plain text code block
 No syntax highlighting
+
 ```
+
 ```
 
 ---
@@ -531,11 +575,13 @@ No syntax highlighting
 ### Images (Coming Soon)
 
 **Current State:**
+
 ```markdown
 ![Alt text](https://example.com/image.jpg)
 ```
 
 **Future Enhancement:**
+
 - Use `next/image` for optimization
 - Store images in `public/blog/` or external CDN
 - Automatic responsive images and lazy loading
@@ -546,16 +592,82 @@ No syntax highlighting
 
 MDX allows you to use React components in markdown.
 
-**Example - Custom Callout (future):**
-```mdx
-<Callout type="warning">
-  This feature is experimental and may change in future releases.
-</Callout>
-```
+**Available Interactive Components:**
 
-**Current Custom Components:**
-- Standard HTML elements with Tailwind styling
-- See [MDX Component docs](../components/mdx) for full list
+| Component                | Purpose                      | Usage                                                                  |
+| ------------------------ | ---------------------------- | ---------------------------------------------------------------------- |
+| `<KeyTakeaway>`          | Highlight key insights       | `<KeyTakeaway>Your insight</KeyTakeaway>`                              |
+| `<ContextClue>`          | Provide background context   | `<ContextClue>Background info</ContextClue>`                           |
+| `<Alert type="warning">` | Warnings and status messages | `<Alert type="warning">Warning</Alert>`                                |
+| `<SectionShare>`         | Social sharing buttons       | `<SectionShare sectionId="id" sectionTitle="Title" />`                 |
+| `<CollapsibleSection>`   | Expandable content           | `<CollapsibleSection id="id" title="Title">...</CollapsibleSection>`   |
+| `<GlossaryTooltip>`      | Interactive tooltips         | `<GlossaryTooltip term="Term" definition="Def">text</GlossaryTooltip>` |
+
+**Engagement Best Practices:**
+
+**Social Sharing with `<SectionShare>`:**
+
+- Place after major sections for maximum engagement
+- Increases backlinks through trackable section-specific URLs
+- Creates hash anchors (e.g., `/blog/post#section-id`) for SEO
+- Example usage:
+
+  ```mdx
+  ## Major Section Title
+
+  Content here...
+
+  <SectionShare
+    sectionId="major-section-title"
+    sectionTitle="Major Section Title"
+  />
+  ```
+
+**Progressive Disclosure with `<CollapsibleSection>`:**
+
+- Use for role-specific content (developers, security pros, business leaders)
+- Reduces initial page complexity while maintaining depth
+- Persists user preferences via LocalStorage
+- Example usage:
+  ```mdx
+  <CollapsibleSection
+    id="developer-actions"
+    title="For Developers Building Agentic Systems"
+    defaultExpanded={false}
+  >
+    - Action item 1 - Action item 2 - Action item 3
+  </CollapsibleSection>
+  ```
+
+**Technical Terms with `<GlossaryTooltip>`:**
+
+- Improves accessibility for technical content
+- Persists "visited" state so readers don't see tooltips twice
+- Example usage:
+  ```mdx
+  The <GlossaryTooltip term="SSR" definition="Server-Side Rendering">SSR</GlossaryTooltip>
+  approach improves initial page load.
+  ```
+
+**SEO & Engagement Benefits:**
+
+- **SectionShare**:
+  - Increases social shares and viral distribution
+  - Generates trackable backlinks to specific sections
+  - Improves content discoverability through granular URLs
+- **CollapsibleSection**:
+  - Improves scanability for different audiences
+  - Reduces bounce rate by allowing self-paced exploration
+  - Better mobile UX (less scrolling for casual readers)
+- **GlossaryTooltip**:
+  - Enhances comprehension without disrupting flow
+  - Reduces need for external glossary pages
+  - Improves accessibility scores
+
+**See Full Documentation:**
+
+- [Component Patterns Guide](../ai/component-patterns.md)
+- [RIVET Component Library](../content/rivet-component-library.md)
 
 ---
 
@@ -566,11 +678,13 @@ MDX allows you to use React components in markdown.
 **Purpose:** Work-in-progress content not ready for publication
 
 **Configuration:**
+
 ```yaml
 draft: true
 ```
 
 **Behavior:**
+
 - ✅ Visible in development (`npm run dev`)
 - ❌ Hidden in production builds
 - 🏷️ Shows "Draft" badge in development
@@ -578,6 +692,7 @@ draft: true
 - 📊 Not counted in post statistics
 
 **Workflow:**
+
 1. Create post with `draft: true`
 2. Develop and preview locally
 3. When ready, change to `draft: false`
@@ -588,11 +703,13 @@ draft: true
 **Purpose:** Outdated content with historical value
 
 **Configuration:**
+
 ```yaml
 archived: true
 ```
 
 **Behavior:**
+
 - ✅ Visible in all environments
 - 🏷️ Shows "Archived" badge
 - 📋 Appears in listings (sorted by date)
@@ -600,12 +717,14 @@ archived: true
 - 📊 Counted in statistics
 
 **When to Archive:**
+
 - Technology has moved on
 - Better alternatives exist
 - Content is historically interesting
 - Don't want to delete for SEO/history
 
 **Example:**
+
 ```yaml
 ---
 title: "Getting Started with Webpack 4"
@@ -624,16 +743,19 @@ tags: ["Webpack", "Build Tools"]
 **Purpose:** Highlight best/most important content
 
 **Configuration:**
+
 ```yaml
 featured: true
 ```
 
 **Behavior:**
+
 - 🌟 Appears on homepage
 - 📋 Included in featured post sections
 - 🎯 Prioritized in recommendations
 
 **Best Practices:**
+
 - Feature 2-5 posts maximum
 - Choose evergreen, high-quality content
 - Update periodically
@@ -646,12 +768,14 @@ featured: true
 ### Title Optimization
 
 **Guidelines:**
+
 - 50-60 characters for optimal display in search results
 - Include primary keyword near the beginning
 - Make it compelling and click-worthy
 - Use pipes (`|`) or colons (`:`) for subtitles
 
 **Examples:**
+
 ```yaml
 # Good
 title: "Next.js App Router: Complete Guide to Server Components"
@@ -666,12 +790,14 @@ title: "The Complete Comprehensive Ultra-Detailed Guide to Everything About Buil
 ### Summary/Meta Description
 
 **Guidelines:**
+
 - 150-160 characters for optimal search result display
 - Include primary and secondary keywords naturally
 - Describe what readers will learn or gain
 - Include a call to action when appropriate
 
 **Examples:**
+
 ```yaml
 # Good
 summary: "Learn how to use TypeScript generics to build reusable, type-safe functions and classes. Includes practical examples and common patterns."
@@ -686,12 +812,14 @@ summary: "Read this now!"  # No information
 ### Tags for Discoverability
 
 **Guidelines:**
+
 - Use 2-5 tags per post
 - Check existing tags for consistency
 - Mix broad and specific tags
 - Consider what readers might search for
 
 **Example Strategy:**
+
 ```yaml
 tags: ["Next.js", "Tutorial", "Performance"]
 # "Next.js" - broad category
@@ -702,12 +830,14 @@ tags: ["Next.js", "Tutorial", "Performance"]
 ### URL Slugs
 
 **Guidelines:**
+
 - Keep slugs short but descriptive
 - Include primary keyword
 - Use hyphens to separate words
 - Avoid stop words when possible
 
 **Examples:**
+
 ```bash
 # Good
 nextjs-app-router-guide.mdx
@@ -722,12 +852,14 @@ the-ultimate-guide-to-using-nextjs-app-router-in-2025.mdx  # Too long
 ### Content Freshness
 
 **Update Strategy:**
+
 1. Add `updatedAt` for significant revisions
 2. Add update notices for major changes
 3. Archive outdated content instead of deleting
 4. Refresh featured posts periodically
 
 **Example Update Notice:**
+
 ```mdx
 > **Update (Oct 2025):** This post has been updated to reflect Next.js 16 and React 19 changes. The original concepts still apply.
 ```
@@ -741,20 +873,23 @@ the-ultimate-guide-to-using-nextjs-app-router-in-2025.mdx  # Too long
 **Step-by-step:**
 
 1. **Research existing content:**
+
    ```bash
    # List all posts
    ls src/content/blog/
-   
+
    # Check existing tags
    grep -h "^tags:" src/content/blog/*.mdx | sort | uniq
    ```
 
 2. **Create the file:**
+
    ```bash
    touch src/content/blog/your-post-slug.mdx
    ```
 
 3. **Start with frontmatter template:**
+
    ```mdx
    ---
    title: ""
@@ -772,6 +907,7 @@ the-ultimate-guide-to-using-nextjs-app-router-in-2025.mdx  # Too long
    - Write conclusion
 
 5. **Preview locally:**
+
    ```bash
    npm run dev
    # Visit http://localhost:3000/blog/your-post-slug
@@ -784,8 +920,9 @@ the-ultimate-guide-to-using-nextjs-app-router-in-2025.mdx  # Too long
    - Proofread content
 
 7. **Publish:**
+
    ```yaml
-   draft: false  # Change from true to false
+   draft: false # Change from true to false
    ```
 
 8. **Deploy:**
@@ -798,6 +935,7 @@ the-ultimate-guide-to-using-nextjs-app-router-in-2025.mdx  # Too long
 ### Updating Existing Posts
 
 **Minor Updates (typos, formatting):**
+
 ```bash
 # Edit the file
 vim src/content/blog/post-slug.mdx
@@ -809,12 +947,13 @@ git push
 ```
 
 **Major Updates (content changes):**
+
 ```mdx
 ---
 title: "..."
 summary: "..."
 publishedAt: "2025-09-10"
-updatedAt: "2025-10-24"  # Add this
+updatedAt: "2025-10-24" # Add this
 ---
 
 > **Update (Oct 2025):** This post has been updated with new information about [topic].
@@ -832,6 +971,7 @@ updatedAt: "2025-10-24"  # Add this
 4. Keep content for historical reference
 
 **Example:**
+
 ```mdx
 ---
 title: "Getting Started with Webpack 4"
@@ -859,10 +999,12 @@ tags: ["TypeScript", "Series"]
 > **Series:** This is Part 1 of 3. Continue with Part 2: Advanced Types and Part 3: Generics.
 
 ## Introduction
+
 ...
 ```
 
 **End with next post link:**
+
 ```markdown
 ## Next Steps
 
@@ -872,11 +1014,13 @@ Continue to Part 2: Advanced Types to learn about union types, intersection type
 ### Update Notices
 
 **At the top of post:**
+
 ```mdx
 > **Update (Oct 2025):** This post is now part of a series! Check out Part 2: Advanced Topics for the follow-up.
 ```
 
 **For deprecation:**
+
 ```mdx
 > **Deprecation Notice:** The approach described here has been replaced by [newer method]. See Updated Guide for current best practices.
 ```
@@ -884,7 +1028,8 @@ Continue to Part 2: Advanced Types to learn about union types, intersection type
 ### Code Samples with Explanations
 
 **Pattern:**
-```markdown
+
+````markdown
 Here's how to implement this feature:
 
 ```typescript
@@ -892,12 +1037,15 @@ export function myFunction(param: string): string {
   return `Hello, ${param}!`;
 }
 ```
+````
 
 **Key points:**
+
 - The function takes a `string` parameter
 - It returns a formatted string
 - TypeScript enforces type safety
-```
+
+````
 
 ### External References
 
@@ -907,9 +1055,10 @@ sources:
     href: "https://example.com/docs"
   - label: "GitHub Repository"
     href: "https://github.com/user/repo"
-```
+````
 
 **In content:**
+
 ```markdown
 For more details, see the [official documentation](https://example.com/docs).
 ```
@@ -921,6 +1070,7 @@ For more details, see the [official documentation](https://example.com/docs).
 ### Post Not Showing Up
 
 **Checklist:**
+
 1. ✅ File is in `src/content/blog/` directory
 2. ✅ File has `.mdx` extension
 3. ✅ Frontmatter is valid YAML (no syntax errors)
@@ -929,6 +1079,7 @@ For more details, see the [official documentation](https://example.com/docs).
 6. ✅ Build succeeded without errors
 
 **Debug:**
+
 ```bash
 # Rebuild the project
 npm run build
@@ -940,22 +1091,28 @@ npm run build
 ### Syntax Highlighting Not Working
 
 **Checklist:**
+
 1. ✅ Code block has language identifier
 2. ✅ Language is supported by Shiki
 3. ✅ No extra spaces before/after backticks
 
 **Example:**
-```markdown
-❌ Wrong:
-``` typescript
-const x = 1;
-```
 
-✅ Correct:
+````markdown
+❌ Wrong:
+
 ```typescript
 const x = 1;
 ```
+````
+
+✅ Correct:
+
+```typescript
+const x = 1;
 ```
+
+````
 
 ### Table of Contents Empty
 
@@ -970,36 +1127,39 @@ Content here...
 ### Subsection
 
 More content...
-```
+````
 
 ### Frontmatter Parsing Errors
 
 **Common Issues:**
 
 1. **Missing quotes around values with colons:**
+
    ```yaml
    # ❌ Wrong
    title: Next.js: A Guide
-   
+
    # ✅ Correct
    title: "Next.js: A Guide"
    ```
 
 2. **Incorrect date format:**
+
    ```yaml
    # ❌ Wrong
    publishedAt: 10/24/2025
    publishedAt: Oct 24, 2025
-   
+
    # ✅ Correct
    publishedAt: "2025-10-24"
    ```
 
 3. **Tags not as array:**
+
    ```yaml
    # ❌ Wrong
    tags: Next.js, React
-   
+
    # ✅ Correct
    tags: ["Next.js", "React"]
    ```
@@ -1007,14 +1167,17 @@ More content...
 ### Build Errors
 
 **"Cannot read property 'title'"**
+
 - Missing required frontmatter field
 - Check all required fields are present
 
 **"Invalid date"**
+
 - Check date format: `YYYY-MM-DD`
 - Ensure dates are strings in quotes
 
 **"Unexpected token"**
+
 - YAML syntax error in frontmatter
 - Check for unescaped special characters
 - Ensure proper indentation

@@ -17,7 +17,7 @@ interface MiniBadgeListProps {
 
 /**
  * MiniBadgeList Component
- * 
+ *
  * Minimalistic display of Credly badges - just images with tooltips.
  * Designed for resume pages where space is premium.
  */
@@ -30,9 +30,16 @@ export function MiniBadgeList({
 
   if (loading) {
     return (
-      <div className={cn("flex items-center gap-2 text-muted-foreground", className)}>
+      <div
+        className={cn(
+          "flex items-center gap-2 text-muted-foreground",
+          className
+        )}
+      >
         <Award className="h-4 w-4 animate-pulse" />
-        <span className={TYPOGRAPHY.label.small}>Loading certifications...</span>
+        <span className={TYPOGRAPHY.label.small}>
+          Loading certifications...
+        </span>
       </div>
     );
   }
@@ -65,15 +72,19 @@ export function MiniBadgeList({
       {/* Minimalistic badge grid - just images */}
       <div className="flex flex-wrap gap-4">
         {badges.map((badge) => {
-          const issuerName = badge.issuer.entities.find(e => e.primary)?.entity.name ||
+          const issuerName =
+            badge.issuer.entities.find((e) => e.primary)?.entity.name ||
             badge.issuer.entities[0]?.entity.name ||
             "Unknown Issuer";
           const publicUrl = `https://www.credly.com/badges/${badge.id}`;
           const safeUrl = ensureAbsoluteUrl(publicUrl);
-          const issuedDate = new Date(badge.issued_at).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-          });
+          const issuedDate = new Date(badge.issued_at).toLocaleDateString(
+            "en-US",
+            {
+              year: "numeric",
+              month: "short",
+            }
+          );
 
           return (
             <Link
@@ -84,7 +95,12 @@ export function MiniBadgeList({
               className="group relative"
               title={`${badge.badge_template.name} - Issued ${issuedDate}`}
             >
-              <div className={cn("relative w-20 h-20 p-2 rounded-lg bg-white/80 dark:bg-slate-800/60 transition-transform hover:scale-110 hover:-translate-y-1", ANIMATION.duration.fast)}>
+              <div
+                className={cn(
+                  "relative w-20 h-20 p-2 rounded-lg bg-card/90 transition-transform hover:scale-110 hover:-translate-y-1",
+                  ANIMATION.duration.fast
+                )}
+              >
                 <Image
                   src={badge.image_url}
                   alt={badge.badge_template.name}
@@ -94,7 +110,7 @@ export function MiniBadgeList({
                   className="object-contain p-1"
                 />
               </div>
-              
+
               {/* Tooltip on hover */}
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-popover text-popover-foreground rounded-md shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-10 whitespace-nowrap text-xs">
                 <div className="font-medium">{badge.badge_template.name}</div>
@@ -109,7 +125,9 @@ export function MiniBadgeList({
       {/* View on Credly link */}
       <div className="mt-6 pt-4 border-t">
         <Link
-          href={ensureAbsoluteUrl(`https://www.credly.com/users/${username}/badges`)}
+          href={ensureAbsoluteUrl(
+            `https://www.credly.com/users/${username}/badges`
+          )}
           target="_blank"
           rel="noopener noreferrer"
           className={cn(

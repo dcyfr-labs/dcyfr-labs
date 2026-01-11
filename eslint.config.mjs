@@ -1,9 +1,3 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 // Import Next.js ESLint configs directly
 import nextPlugin from "eslint-config-next";
 
@@ -16,7 +10,10 @@ const eslintConfig = [
       ".next/**",
       "out/**",
       "build/**",
+      "coverage/**",
       "next-env.d.ts",
+      "src/content/**/*.mdx",
+      "src/content/**/*.md",
     ],
   },
   {
@@ -78,17 +75,40 @@ const eslintConfig = [
             "  Performance impact: transition-all ~10x slower than specific transitions\n" +
             "  See /docs/ai/design-system.md#animation-tokens",
         },
+        // COMPREHENSIVE COLOR ENFORCEMENT: Catch ALL hardcoded Tailwind colors
         {
           selector:
-            "Literal[value=/(bg-green-|bg-yellow-|bg-red-|bg-blue-|bg-amber-|bg-orange-|text-green-|text-yellow-|text-red-|text-blue-|text-amber-|text-orange-)\\d{3,}/]",
+            "Literal[value=/(bg-slate-|bg-gray-|bg-zinc-|bg-neutral-|bg-stone-|bg-red-|bg-orange-|bg-amber-|bg-yellow-|bg-lime-|bg-green-|bg-emerald-|bg-teal-|bg-cyan-|bg-sky-|bg-blue-|bg-indigo-|bg-violet-|bg-purple-|bg-fuchsia-|bg-pink-|bg-rose-|text-slate-|text-gray-|text-zinc-|text-neutral-|text-stone-|text-red-|text-orange-|text-amber-|text-yellow-|text-lime-|text-green-|text-emerald-|text-teal-|text-cyan-|text-sky-|text-blue-|text-indigo-|text-violet-|text-purple-|text-fuchsia-|text-pink-|text-rose-|border-slate-|border-gray-|border-zinc-|border-neutral-|border-stone-|border-red-|border-orange-|border-amber-|border-yellow-|border-lime-|border-green-|border-emerald-|border-teal-|border-cyan-|border-sky-|border-blue-|border-indigo-|border-violet-|border-purple-|border-fuchsia-|border-pink-|border-rose-)(50|100|200|300|400|500|600|700|800|900|950)/]",
           message:
-            "Hardcoded color detected. Use SEMANTIC_COLORS tokens from @/lib/design-tokens:\n" +
-            "  - Alert states → SEMANTIC_COLORS.alert.{critical|warning|info|success}\n" +
-            "  - Status badges → SEMANTIC_COLORS.status.{success|warning|info|inProgress|neutral}\n" +
-            "  - Interactive states → SEMANTIC_COLORS.interactive.{hover|active|focus|disabled}\n" +
-            "  - Highlighting → SEMANTIC_COLORS.highlight.{primary|mark|muted}\n" +
-            "  EXCLUDES: Icon colors (text-*-500), accent colors in CTA, chart colors\n" +
-            "  See /docs/ai/design-system.md#semantic-colors",
+            "❌ HARDCODED COLOR DETECTED. Use semantic design tokens instead:\n" +
+            "\n" +
+            "ALERT STATES (success/error/warning/info):\n" +
+            "  - green-500/600 → text-success, text-success-light\n" +
+            "  - red-500/600 → text-error, bg-error-subtle, border-error-light\n" +
+            "  - amber-500/600, yellow-600 → text-warning, text-warning-light\n" +
+            "  - blue-500/600 → text-info, text-info-dark\n" +
+            "\n" +
+            "NEUTRALS (typography/backgrounds/borders):\n" +
+            "  - zinc-900/800/700 → text-foreground\n" +
+            "  - zinc-600/500/400 → text-muted-foreground\n" +
+            "  - zinc-300/200 → text-muted\n" +
+            "  - zinc-700/50, gray-200, slate-800 → bg-muted, bg-card\n" +
+            "  - zinc-300/200, gray-300 → border-border\n" +
+            "\n" +
+            "ACCENT COLORS (semantic visualization):\n" +
+            "  - cyan-500 → text-semantic-cyan\n" +
+            "  - purple-500 → text-semantic-purple\n" +
+            "  - orange-500 → text-semantic-orange\n" +
+            "\n" +
+            "EXEMPTIONS (use eslint-disable-next-line with justification):\n" +
+            "  ✅ Icon colors for semantic meaning (with comment)\n" +
+            "  ✅ Chart/visualization colors (use SEMANTIC_COLORS.chart)\n" +
+            "  ✅ External embed styling (data-embed attribute)\n" +
+            "  ✅ Brand colors in hero CTAs (primary actions only)\n" +
+            "\n" +
+            "See: /docs/design/color-token-migration-plan.md\n" +
+            "Tokens: /src/lib/design-tokens.ts → SEMANTIC_COLORS\n" +
+            "CSS vars: /src/app/globals.css → --success, --error, --warning, etc.",
         },
         {
           selector:

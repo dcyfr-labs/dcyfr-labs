@@ -10,6 +10,9 @@ import rehypeKatex from "rehype-katex";
 import type { Options as RehypePrettyCodeOptions } from "rehype-pretty-code";
 import {
   CopyCodeButton,
+  CodeBlockWithHeader,
+  EnhancedInlineCode,
+  getInlineCodeVariant,
   HorizontalRule,
   ZoomableImage,
   Alert,
@@ -20,6 +23,15 @@ import {
   TableCaption,
   CodePlayground,
 } from "@/components/common";
+import {
+  RiskAccordion,
+  RiskAccordionGroup,
+  ReadingProgressTracker,
+  TLDRSummary,
+  GlossaryTooltip,
+  SectionShare,
+  CollapsibleSection,
+} from "@/components/blog";
 import {
   MDXMCPArchitecture,
   MDXAuthenticationFlow,
@@ -39,6 +51,8 @@ import {
   Lock,
   Star,
   Rocket,
+  BarChart,
+  Shield,
 } from "lucide-react";
 import {
   TYPOGRAPHY,
@@ -92,23 +106,22 @@ function TableWrapper(props: React.HTMLAttributes<HTMLTableElement>) {
 
 /**
  * Configuration for the rehype-pretty-code plugin
- * Enables minimal syntax highlighting with monochrome theme:
- * - Single gray shade for keywords (planning to reintroduce color later)
- * - Automatic theme switching based on user's theme preference
+ * Uses GitHub's high contrast theme for better visibility
+ * - GitHub Dark High Contrast theme for dark mode
+ * - GitHub Light High Contrast theme for light mode
  * - Line and character highlighting support
  * - Empty line prevention in grid layout
  * - Configurable default language (plaintext for unknown languages)
  *
  * @type {RehypePrettyCodeOptions}
  */
-// Configure syntax highlighting with minimal monochrome style
 const rehypePrettyCodeOptions: RehypePrettyCodeOptions = {
   theme: {
-    dark: "github-dark",
-    light: "github-light",
+    dark: "github-dark-high-contrast",
+    light: "github-light-high-contrast",
   },
   defaultLang: "plaintext",
-  keepBackground: false,
+  keepBackground: true,
   // Prevent lines from collapsing in `display: grid` mode
   onVisitLine(node) {
     if (node.children.length === 0) {
@@ -231,7 +244,7 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
   thead: (props: React.HTMLAttributes<HTMLTableSectionElement>) => (
     <thead
       {...props}
-      className="bg-gradient-to-r from-muted/80 to-muted/60 backdrop-blur-sm"
+      className="bg-linear-to-r from-muted/80 to-muted/60 backdrop-blur-sm"
     />
   ),
   tbody: (props: React.HTMLAttributes<HTMLTableSectionElement>) => (
@@ -276,38 +289,55 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
     // Inline code (no data-language attribute)
     const isInline = !props["data-language" as keyof typeof props];
     if (isInline) {
+      // Extract text content to determine variant
+      const textContent = React.Children.toArray(props.children)
+        .map((child) => (typeof child === "string" ? child : ""))
+        .join("");
+
+      const variant = getInlineCodeVariant(textContent);
+
       return (
-        <code
-          {...props}
-          className="rounded-md bg-primary/10 px-2 py-1 text-[0.875em] font-mono font-semibold border border-primary/20 text-primary"
-        />
+        <EnhancedInlineCode {...props} variant={variant}>
+          {props.children}
+        </EnhancedInlineCode>
       );
     }
     // Code blocks handled by pre > code (rehype-pretty-code)
     return <code {...props} />;
   },
   pre: (props: React.HTMLAttributes<HTMLPreElement>) => {
-    // Extract the code content for the copy button
-    const codeContent = React.Children.toArray(props.children)
-      .map((child) => {
-        if (React.isValidElement(child)) {
-          const childProps = child.props as { children?: React.ReactNode };
-          return extractTextFromChildren(childProps.children);
-        }
-        return "";
-      })
-      .join("");
+    // Extract language from the code child element's data-language attribute
+    const codeChild = React.Children.toArray(props.children).find(
+      (child): child is React.ReactElement =>
+        React.isValidElement(child) && child.type === "code"
+    );
+
+    const language = codeChild?.props
+      ? ((codeChild.props as any)["data-language"] as string | undefined)
+      : undefined;
 
     return (
-      <div className="relative group">
-        <CopyCodeButton code={codeContent} />
-        <pre
-          {...props}
-          className="[&>code]:grid [&>code]:text-[0.875rem] overflow-x-auto"
-        />
-      </div>
+      <CodeBlockWithHeader language={language}>
+        {props.children}
+      </CodeBlockWithHeader>
     );
   },
+  kbd: (props: React.HTMLAttributes<HTMLElement>) => (
+    <kbd
+      {...props}
+      className={cn(
+        "inline-flex items-center",
+        "px-2 py-0.5",
+        "text-[0.75em] font-mono font-semibold",
+        "rounded border",
+        "bg-muted/50 text-muted-foreground border-border",
+        "shadow-sm",
+        "hover:bg-muted/70 hover:border-border-hover",
+        ANIMATION.transition.theme,
+        props.className
+      )}
+    />
+  ),
   hr: () => <HorizontalRule />,
   a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
     const isHeaderAnchor = props.className?.includes("no-underline");
@@ -322,7 +352,7 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
         <a
           {...props}
           href={href}
-          className="no-underline inline-flex items-center pl-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 transition-colors"
+          className="no-underline inline-flex items-center pl-2 text-muted-foreground hover:text-foreground transition-colors"
           title="Back to note reference"
         >
           <ArrowUpLeft
@@ -384,13 +414,13 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
 
   CheckIcon: () => (
     <Check
-      className="inline-block w-5 h-5 align-text-bottom text-green-600"
+      className="inline-block w-5 h-5 align-text-bottom text-success"
       aria-label="Check"
     />
   ),
   XIcon: () => (
     <X
-      className="inline-block w-5 h-5 align-text-bottom text-red-600"
+      className="inline-block w-5 h-5 align-text-bottom text-error"
       aria-label="Cross"
     />
   ),
@@ -408,7 +438,7 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
   ),
   InfoIcon: () => (
     <Info
-      className="inline-block w-5 h-5 align-text-bottom text-blue-600"
+      className="inline-block w-5 h-5 align-text-bottom text-info"
       aria-label="Information"
     />
   ),
@@ -442,6 +472,18 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
       aria-label="Rocket"
     />
   ),
+  BarChart: () => (
+    <BarChart
+      className="inline-block w-5 h-5 align-text-bottom text-muted-foreground"
+      aria-label="Bar Chart"
+    />
+  ),
+  Shield: () => (
+    <Shield
+      className="inline-block w-5 h-5 align-text-bottom text-muted-foreground"
+      aria-label="Shield"
+    />
+  ),
 
   // Diagram presets (using ReactFlow) - imported from client-side wrapper
   // These use "use client" to prevent SSR bailout errors
@@ -455,6 +497,14 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
   Alert,
   // Key Takeaway component for insights
   KeyTakeaway,
+  // TLDR Summary component for executive summaries
+  TLDRSummary,
+  // Glossary Tooltip component for technical terms
+  GlossaryTooltip,
+  // Section Share component for per-section social sharing
+  SectionShare,
+  // Collapsible Section component for expandable content
+  CollapsibleSection,
   // Context Clue component for background information
   ContextClue,
   // Figure caption component for automatic figure numbering
@@ -463,6 +513,11 @@ const components: NonNullable<MDXRemoteProps["components"]> = {
   TableCaption,
   // Code Playground component for interactive examples
   CodePlayground,
+  // Risk Accordion components for interactive risk sections
+  RiskAccordion,
+  RiskAccordionGroup,
+  // Reading Progress Tracker for engagement tracking
+  ReadingProgressTracker,
   // Footnote superscripts with icon
   sup: (props: React.HTMLAttributes<HTMLElement>) => {
     // Check if this contains a link (footnote reference) or has footnote-related attributes

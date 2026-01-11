@@ -204,3 +204,152 @@ export interface CacheOptions {
   ttl: number;
   key: string;
 }
+
+// ============================================================================
+// Semantic Scholar MCP Types
+// ============================================================================
+
+/**
+ * Author information from Semantic Scholar
+ */
+export interface ScholarAuthor {
+  authorId: string;
+  name: string;
+  affiliations?: string[];
+  homepage?: string;
+  paperCount?: number;
+  citationCount?: number;
+  hIndex?: number;
+  url?: string;
+}
+
+/**
+ * Paper information from Semantic Scholar
+ */
+export interface ScholarPaper {
+  paperId: string;
+  corpusId?: number;
+  title: string;
+  abstract?: string;
+  venue?: string;
+  year?: number;
+  publicationDate?: string;
+  citationCount?: number;
+  influentialCitationCount?: number;
+  referenceCount?: number;
+  authors?: ScholarAuthor[];
+  fieldsOfStudy?: string[];
+  openAccessPdf?: {
+    url: string;
+    status: string;
+  };
+  externalIds?: {
+    DOI?: string;
+    ArXiv?: string;
+    MAG?: string;
+    ACL?: string;
+    PubMed?: string;
+    CorpusId?: number;
+  };
+  url?: string;
+  tldr?: {
+    model: string;
+    text: string;
+  };
+}
+
+/**
+ * Citation context from Semantic Scholar
+ */
+export interface ScholarCitation {
+  citingPaper: ScholarPaper;
+  contexts?: string[];
+  intents?: string[];
+  isInfluential?: boolean;
+}
+
+/**
+ * Reference information from Semantic Scholar
+ */
+export interface ScholarReference {
+  citedPaper: ScholarPaper;
+  contexts?: string[];
+  intents?: string[];
+  isInfluential?: boolean;
+}
+
+/**
+ * Search result from Semantic Scholar paper search
+ */
+export interface ScholarSearchResult {
+  total: number;
+  offset: number;
+  next?: number;
+  data: ScholarPaper[];
+}
+
+/**
+ * Bulk search result with pagination token
+ */
+export interface ScholarBulkSearchResult {
+  total?: number;
+  token?: string;
+  data: ScholarPaper[];
+}
+
+/**
+ * Author search result
+ */
+export interface ScholarAuthorSearchResult {
+  total: number;
+  offset: number;
+  next?: number;
+  data: ScholarAuthor[];
+}
+
+/**
+ * Paper recommendation
+ */
+export interface ScholarRecommendation {
+  recommendedPapers: ScholarPaper[];
+}
+
+/**
+ * Query parameters for paper search
+ */
+export interface ScholarSearchParams {
+  query: string;
+  fields?: string[];
+  year?: string;
+  publicationTypes?: string[];
+  openAccessPdf?: boolean;
+  minCitationCount?: number;
+  venue?: string;
+  fieldsOfStudy?: string[];
+  limit?: number;
+  offset?: number;
+  token?: string;
+}
+
+/**
+ * Cache statistics for Semantic Scholar MCP
+ */
+export interface ScholarCacheStats {
+  papers: {
+    total: number;
+    valid: number;
+    expired: number;
+  };
+  searches: {
+    total: number;
+    valid: number;
+    expired: number;
+  };
+  authors: {
+    total: number;
+    valid: number;
+    expired: number;
+  };
+  hitRate: number;
+  missRate: number;
+}

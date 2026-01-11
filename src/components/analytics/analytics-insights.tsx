@@ -239,7 +239,7 @@ export function AnalyticsInsights({
         <CardHeader className="pb-3">
           <div className={`flex items-center gap-${SPACING.sm}`}>
             {}
-            <Trophy className="h-4 w-4 text-amber-600" />
+            <Trophy className="h-4 w-4 text-warning" />
             <div>
               <CardTitle className="text-sm">All-Time Records</CardTitle>
               <CardDescription className="text-xs">

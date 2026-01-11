@@ -13,12 +13,12 @@ Next.js 16 + React 19 + TypeScript + Tailwind v4 + shadcn/ui + MDX portfolio.
 
 ### Core References (Start Here)
 
-| Resource | Description | View |
-|----------|-------------|------|
-| **[Quick Reference](docs/ai/quick-reference.md)** | Commands, imports, 80/20 patterns | Essential for speed |
-| **[Component Patterns](docs/ai/component-patterns.md)** | Layouts, barrel exports, metadata | Mandatory patterns |
-| **[Enforcement Rules](docs/ai/enforcement-rules.md)** | Design tokens, validation, CI/CD | Quality gates |
-| **[Decision Trees](docs/ai/decision-trees.md)** | Visual flowcharts for decisions | Quick answers |
+| Resource                                                | Description                       | View                |
+| ------------------------------------------------------- | --------------------------------- | ------------------- |
+| **[Quick Reference](docs/ai/quick-reference.md)**       | Commands, imports, 80/20 patterns | Essential for speed |
+| **[Component Patterns](docs/ai/component-patterns.md)** | Layouts, barrel exports, metadata | Mandatory patterns  |
+| **[Enforcement Rules](docs/ai/enforcement-rules.md)**   | Design tokens, validation, CI/CD  | Quality gates       |
+| **[Decision Trees](docs/ai/decision-trees.md)**         | Visual flowcharts for decisions   | Quick answers       |
 
 ### Interactive Tools
 
@@ -28,16 +28,16 @@ Next.js 16 + React 19 + TypeScript + Tailwind v4 + shadcn/ui + MDX portfolio.
 
 ### Templates (Copy-Paste Ready)
 
-| Template | Use Case |
-|----------|----------|
-| [NEW_PAGE.tsx](docs/templates/new-page.tsx.md) | Standard pages with PageLayout |
-| [ARCHIVE_PAGE.tsx](docs/templates/archive-page.tsx.md) | Filterable list pages |
-| [API_ROUTE.ts](docs/templates/api-route.ts.md) | API routes with Inngest |
-| [INNGEST_FUNCTION.ts](docs/templates/INNGEST_FUNCTION.ts.md) | Background jobs |
-| [COMPONENT_WITH_BARREL.tsx](docs/templates/COMPONENT_WITH_BARREL.tsx.md) | New component with exports |
-| [METADATA_ONLY.ts](docs/templates/METADATA_ONLY.ts.md) | Metadata generation |
-| [ERROR_BOUNDARY.tsx](docs/templates/ERROR_BOUNDARY.tsx.md) | Error handling wrapper |
-| [TEST_SUITE.test.tsx](docs/templates/TEST_SUITE.test.tsx.md) | Test suite setup |
+| Template                                                                 | Use Case                       |
+| ------------------------------------------------------------------------ | ------------------------------ |
+| [NEW_PAGE.tsx](docs/templates/new-page.tsx.md)                           | Standard pages with PageLayout |
+| [ARCHIVE_PAGE.tsx](docs/templates/archive-page.tsx.md)                   | Filterable list pages          |
+| [API_ROUTE.ts](docs/templates/api-route.ts.md)                           | API routes with Inngest        |
+| [INNGEST_FUNCTION.ts](docs/templates/INNGEST_FUNCTION.ts.md)             | Background jobs                |
+| [COMPONENT_WITH_BARREL.tsx](docs/templates/COMPONENT_WITH_BARREL.tsx.md) | New component with exports     |
+| [METADATA_ONLY.ts](docs/templates/METADATA_ONLY.ts.md)                   | Metadata generation            |
+| [ERROR_BOUNDARY.tsx](docs/templates/ERROR_BOUNDARY.tsx.md)               | Error handling wrapper         |
+| [TEST_SUITE.test.tsx](docs/templates/TEST_SUITE.test.tsx.md)             | Test suite setup               |
 
 ---
 
@@ -125,6 +125,7 @@ import { SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
 ### 3. Use PageLayout by Default
 
 90% of pages should use `PageLayout`. Only use specialized layouts when necessary:
+
 - **ArticleLayout** - Blog posts only (`/blog/[slug]`)
 - **ArchiveLayout** - Filterable lists only (`/blog`, `/work`)
 
@@ -134,12 +135,12 @@ import { SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
 // API route: Validate → Process → Queue → Respond
 export async function POST(request: NextRequest) {
   const data = await request.json();
-  
+
   await inngest.send({
     name: "domain/event.name",
     data,
   });
-  
+
   return NextResponse.json({ success: true });
 }
 ```
@@ -148,12 +149,13 @@ export async function POST(request: NextRequest) {
 
 ```typescript
 // ✅ CORRECT: Test data protected by environment check
-const isProduction = process.env.NODE_ENV === 'production' 
-  || process.env.VERCEL_ENV === 'production';
+const isProduction =
+  process.env.NODE_ENV === "production" ||
+  process.env.VERCEL_ENV === "production";
 
 if (isProduction && !hasRealData) {
-  console.error('❌ CRITICAL: Using demo data in production!');
-  return null;  // Return empty, not fake data
+  console.error("❌ CRITICAL: Using demo data in production!");
+  return null; // Return empty, not fake data
 }
 
 // Safe to use test data in dev only
@@ -161,7 +163,7 @@ return mockData;
 
 // ❌ WRONG: Test data without environment check
 function getMetrics() {
-  return { stars: 15, forks: 0 };  // Always runs, even in production!
+  return { stars: 15, forks: 0 }; // Always runs, even in production!
 }
 ```
 
@@ -183,7 +185,7 @@ import { Rocket, CheckCircle, BarChart } from 'lucide-react';
 
 ## Features Overview
 - <Rocket className="inline-block" /> Fast performance
-- <CheckCircle className="inline-block" /> Full type safety  
+- <CheckCircle className="inline-block" /> Full type safety
 - <BarChart className="inline-block" /> Built-in analytics
 
 // ✅ ACCEPTABLE: Emojis in code comments and console.log
@@ -192,12 +194,14 @@ console.log('✅ Validation passed');
 ```
 
 **Where emojis are prohibited:**
+
 - Blog posts (`src/content/blog/*.mdx`)
 - Project descriptions (`src/content/projects/*.mdx`)
 - Public-facing UI components
 - User-visible text and labels
 
 **Where emojis are acceptable:**
+
 - Internal documentation (`docs/`, `.github/`)
 - Code comments (`//`, `/* */`)
 - Console.log statements
@@ -210,16 +214,16 @@ console.log('✅ Validation passed');
 
 ### Need to Know...
 
-| Question | Resource |
-|----------|----------|
-| What command to run? | [Quick Reference](docs/ai/QUICK_REFERENCE.md#commands) |
-| Which layout to use? | [Decision Trees](docs/ai/DECISION_TREES.md#which-layout-should-i-use) |
-| How to import components? | [Component Patterns](docs/ai/component-patterns.md#barrel-exports) |
-| Design token rules? | [Enforcement Rules](docs/ai/enforcement-rules.md#design-token-enforcement) |
-| Test data safety? | [TEST_DATA_PREVENTION.md](.github/agents/enforcement/TEST_DATA_PREVENTION.md) |
-| Copy-paste template? | [Templates](docs/templates/) |
-| Current priorities? | [todo.md](docs/operations/todo.md) |
-| Architecture decisions? | [docs/architecture/](docs/architecture/) |
+| Question                  | Resource                                                                      |
+| ------------------------- | ----------------------------------------------------------------------------- |
+| What command to run?      | [Quick Reference](docs/ai/QUICK_REFERENCE.md#commands)                        |
+| Which layout to use?      | [Decision Trees](docs/ai/DECISION_TREES.md#which-layout-should-i-use)         |
+| How to import components? | [Component Patterns](docs/ai/component-patterns.md#barrel-exports)            |
+| Design token rules?       | [Enforcement Rules](docs/ai/enforcement-rules.md#design-token-enforcement)    |
+| Test data safety?         | [TEST_DATA_PREVENTION.md](.github/agents/enforcement/TEST_DATA_PREVENTION.md) |
+| Copy-paste template?      | [Templates](docs/templates/)                                                  |
+| Current priorities?       | [todo.md](docs/operations/todo.md)                                            |
+| Architecture decisions?   | [docs/architecture/](docs/architecture/)                                      |
 
 ### Search Strategies
 
@@ -278,11 +282,19 @@ npm run test:e2e        # E2E tests
 
 ### MDX Components
 
-| Component | Usage |
-|-----------|-------|
-| `<KeyTakeaway>` | `<KeyTakeaway>Your insight</KeyTakeaway>` |
-| `<ContextClue>` | `<ContextClue>Background info</ContextClue>` |
-| `<Alert type="warning">` | `<Alert type="warning">Warning</Alert>` |
+| Component | Usage | Purpose |\n|-----------|-------|---------|
+| `<KeyTakeaway>` | `<KeyTakeaway>Your insight</KeyTakeaway>` | Highlight key insights and conclusions |
+| `<ContextClue>` | `<ContextClue>Background info</ContextClue>` | Provide background context |
+| `<Alert type="warning">` | `<Alert type="warning">Warning</Alert>` | Warnings and status messages |
+| `<SectionShare>` | `<SectionShare sectionId="id" sectionTitle="Title" />` | Social sharing buttons (Twitter, LinkedIn, Copy) |
+| `<CollapsibleSection>` | `<CollapsibleSection id="id" title="Title">...</CollapsibleSection>` | Expandable content with LocalStorage |
+| `<GlossaryTooltip>` | `<GlossaryTooltip term="Term" definition="Def">text</GlossaryTooltip>` | Interactive tooltips for technical terms |
+
+**Engagement Best Practices:**
+
+- Add `<SectionShare>` after major sections for social sharing and SEO
+- Use `<CollapsibleSection>` for role-specific or advanced content
+- Wrap technical terms in `<GlossaryTooltip>` for better accessibility
 
 ---
 
@@ -309,6 +321,7 @@ To use VS Code subagents (context-isolated helpers) with Copilot and the Chat vi
 ```
 
 Quick usage tips:
+
 - Enable the `runSubagent` tool in the tool picker (Chat view) or include `runSubagent` in the `tools` frontmatter of custom prompt files/agents.
 - Use `#runSubagent` in prompts to spawn a context-isolated subagent for research or analysis.
 - Check the Agent Sessions view in the sidebar to monitor subagent progress and to delegate tasks to other agents.

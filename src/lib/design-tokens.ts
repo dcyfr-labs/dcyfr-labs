@@ -856,6 +856,13 @@ export const SEMANTIC_COLORS = {
       icon: "text-success-dark dark:text-success-light",
       label: "text-success",
     },
+    notice: {
+      border: "border-l-4 border-l-muted-foreground/30",
+      container: "bg-muted/30 dark:bg-muted/20",
+      text: "text-foreground",
+      icon: "text-muted-foreground",
+      label: "text-foreground",
+    },
   },
 
   /** Status indicators (analytics, progress, metrics) */
@@ -1093,6 +1100,50 @@ export const SEMANTIC_COLORS = {
       light: "bg-semantic-neutral-light text-foreground",
       dark: "bg-semantic-neutral-dark text-background",
     },
+  },
+
+  /**
+   * Code syntax highlighting tokens
+   *
+   * Semantic color mapping for code blocks:
+   * - keyword: Blue (info) - Language keywords (if, else, const, function, etc.)
+   * - string: Green (success) - String literals
+   * - function: Orange (semantic-orange) - Function names and calls
+   * - comment: Neutral gray (muted-foreground) - Comments (italicized)
+   * - variable: Blue (info) - Variables and parameters
+   * - operator: Foreground - Operators (+, -, =, etc.)
+   * - constant: Purple (semantic-purple) - Constants and boolean values
+   * - class: Purple (semantic-purple) - Class names
+   * - number: Green (success) - Numeric literals
+   * - punctuation: Foreground - Braces, parentheses, commas
+   * - tag: Red (error) - HTML/JSX tags
+   * - attribute: Orange (semantic-orange) - HTML/JSX attributes
+   *
+   * CSS variables defined in globals.css (:root and .dark)
+   * Automatically adapts to P3 wide-gamut displays
+   *
+   * @example Code block with syntax highlighting
+   * ```tsx
+   * // Comment (neutral gray, italic)
+   * const greeting = "Hello"; // string (green), keyword (blue)
+   * function sayHello() {     // function (orange), keyword (blue)
+   *   return greeting;        // variable (blue)
+   * }
+   * ```
+   */
+  syntax: {
+    keyword: "text-[hsl(var(--syntax-keyword))]",
+    string: "text-[hsl(var(--syntax-string))]",
+    function: "text-[hsl(var(--syntax-function))]",
+    comment: "text-[hsl(var(--syntax-comment))] italic",
+    variable: "text-[hsl(var(--syntax-variable))]",
+    operator: "text-[hsl(var(--syntax-operator))]",
+    constant: "text-[hsl(var(--syntax-constant))]",
+    class: "text-[hsl(var(--syntax-class))]",
+    number: "text-[hsl(var(--syntax-number))]",
+    punctuation: "text-[hsl(var(--syntax-punctuation))]",
+    tag: "text-[hsl(var(--syntax-tag))]",
+    attribute: "text-[hsl(var(--syntax-attribute))]",
   },
 } as const;
 
@@ -1651,7 +1702,8 @@ export const ANIMATIONS = {
     all: "all 500ms cubic-bezier(0.4, 0, 0.2, 1)",
 
     /** Colors only (backgrounds, borders, text) */
-    colors: "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), border-color 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1)",
+    colors:
+      "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), border-color 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1)",
 
     /** Transform only (scale, translate, rotate) */
     transform: "transform 200ms cubic-bezier(0.4, 0, 0.2, 1)",
@@ -1959,7 +2011,7 @@ export const BUTTON_SIZES = {
  */
 export const PAGE_LAYOUT = {
   /** Root page wrapper - provides consistent vertical rhythm */
-  wrapper: "min-h-screen",
+  wrapper: "",
 
   /** Hero section spacing - larger than standard sections */
   hero: {

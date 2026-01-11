@@ -431,7 +431,7 @@ function BookmarkCard({ bookmark, onEdit, onRemove }: BookmarkCardProps) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
               {}
-              <Bookmark className="h-4 w-4 text-amber-500 shrink-0" />
+              <Bookmark className="h-4 w-4 text-warning-light shrink-0" />
               <code className="text-sm bg-muted px-2 py-0.5 rounded font-mono">
                 {bookmark.activityId}
               </code>

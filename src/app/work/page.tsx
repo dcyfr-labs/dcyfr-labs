@@ -372,6 +372,7 @@ export default async function WorkPage({ searchParams }: WorkPageProps) {
         description={pageDescription}
         stats={`${sortedArchiveData.totalItems} ${sortedArchiveData.totalItems === 1 ? "project" : "projects"} • ${uniqueTechnologies.size} ${uniqueTechnologies.size === 1 ? "technology" : "technologies"}`}
         actions={<FeedDropdown feedType="work" />}
+        align="center"
       />
 
       {/* Content section with archive-width container */}

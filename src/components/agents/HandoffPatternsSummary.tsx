@@ -94,11 +94,11 @@ export function HandoffPatternsSummary({
       {/* Manual vs Automatic */}
       <div className="flex items-center gap-4 text-sm border-t pt-3">
         <div className="flex items-center gap-2">
-          <Zap className="h-4 w-4 text-blue-500" />
+          <Zap className="h-4 w-4 text-semantic-blue" />
           <span>Auto: {patterns.automaticVsManual.automatic}</span>
         </div>
         <div className="flex items-center gap-2">
-          <Hand className="h-4 w-4 text-orange-500" />
+          <Hand className="h-4 w-4 text-semantic-orange" />
           <span>Manual: {patterns.automaticVsManual.manual}</span>
         </div>
       </div>
