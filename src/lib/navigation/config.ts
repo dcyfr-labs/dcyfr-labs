@@ -234,12 +234,6 @@ export const MOBILE_NAV_SECTIONS: NavSection[] = [
         icon: Heart,
         description: "Content you've liked",
       },
-      {
-        href: "/feeds",
-        label: "Feeds",
-        icon: Rss,
-        description: "Subscribe to updates",
-      },
     ],
   },
 ];

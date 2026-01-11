@@ -149,7 +149,7 @@ export default async function Home() {
           {/* Hero Content - Centered and Minimal */}
           <div
             className={cn(
-              "max-w-2xl mx-auto text-center",
+              "w-full max-w-3xl mx-auto text-center",
               CONTAINER_PADDING,
               "opacity-0 translate-y-2 animate-fade-in-up"
             )}
