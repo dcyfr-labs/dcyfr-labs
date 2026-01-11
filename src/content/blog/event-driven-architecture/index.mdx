@@ -4,8 +4,8 @@ title: "Building Event-Driven Architecture with Inngest"
 subtitle: "Transforming API responses from seconds to milliseconds with durable execution"
 summary: "Implement event-driven architecture with Inngest for instant API responses, automatic retries, and production-grade background processing. Real code from a live portfolio."
 authors: ["drew"]
-publishedAt: "2026-01-15T12:00:00Z"
-updatedAt: "2026-01-15T12:00:00Z"
+publishedAt: "2026-01-11T12:00:00Z"
+updatedAt: "2026-01-11T12:00:00Z"
 category: "Architecture"
 tags: ["Inngest", "Event-Driven", "Next.js", "Background Jobs", "TypeScript"]
 image:
@@ -494,13 +494,13 @@ Environment variables (`INNGEST_EVENT_KEY`, `INNGEST_SIGNING_KEY`) are set autom
 
 After migrating to event-driven architecture (measured in this portfolio's production environment):
 
-| Metric                      | Before          | After                                                     |
-| --------------------------- | --------------- | --------------------------------------------------------- |
-| Contact form response time  | 1–2s (observed) | Under 100ms (observed)                                    |
+| Metric                      | Before          | After                                                          |
+| --------------------------- | --------------- | -------------------------------------------------------------- |
+| Contact form response time  | 1–2s (observed) | Under 100ms (observed)                                         |
 | Email delivery reliability  | ~95% (observed) | 99.9% (with 3 retries, based on Inngest's exponential backoff) |
-| GitHub data freshness       | On-demand       | Pre-cached hourly                                         |
-| Failed job visibility       | None            | Full dashboard                                            |
-| Security advisory detection | Manual          | Automated (3x daily)                                      |
+| GitHub data freshness       | On-demand       | Pre-cached hourly                                              |
+| Failed job visibility       | None            | Full dashboard                                                 |
+| Security advisory detection | Manual          | Automated (3x daily)                                           |
 
 > **Note:** These metrics reflect this specific implementation. Your results may vary based on network conditions, third-party API performance, and deployment region.
 
