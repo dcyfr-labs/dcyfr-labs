@@ -1,30 +1,19 @@
 /**
- * Work Feed - JSON Format
- * 
- * JSON Feed 1.1 format for portfolio projects.
- * Available at: /work/feed.json
- * 
- * @see src/lib/feeds.ts for feed generation logic
+ * Work Feed - JSON Format (Legacy Redirect)
+ *
+ * Redirects to the unified feed endpoint with JSON format.
+ * Old: /work/feed.json
+ * New: /work/feed?format=json
  */
 
 import { NextResponse } from "next/server";
-import { projects } from "@/data/projects";
-import { buildProjectsFeed } from "@/lib/feeds";
-
-export const revalidate = 21600; // 6 hours (same as Atom feed)
 
 export async function GET() {
-  try {
-    const json = await buildProjectsFeed(projects, "json", 20, "/work");
-    
-    return new NextResponse(json, {
-      headers: {
-        "Content-Type": "application/feed+json; charset=utf-8",
-        "Cache-Control": "public, s-maxage=21600, stale-while-revalidate=86400",
-      },
-    });
-  } catch (error) {
-    console.error("Error generating work JSON feed:", error);
-    return new NextResponse("Error generating feed", { status: 500 });
-  }
+  return NextResponse.redirect(
+    new URL(
+      "/work/feed?format=json",
+      process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+    ),
+    301
+  );
 }

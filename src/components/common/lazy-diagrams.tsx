@@ -10,20 +10,32 @@ import type { DiagramPresetProps } from "./diagram-presets";
 
 export const MCPArchitecture = dynamic(
   () => import("./diagram-presets").then((mod) => mod.MCPArchitecture),
-  { ssr: false, loading: () => <div className="h-[350px] bg-muted animate-pulse rounded-lg" /> }
+  {
+    ssr: false,
+    loading: () => <div className="h-[350px] skeleton-shimmer rounded-lg" />,
+  }
 );
 
 export const AuthenticationFlow = dynamic(
   () => import("./diagram-presets").then((mod) => mod.AuthenticationFlow),
-  { ssr: false, loading: () => <div className="h-[450px] bg-muted animate-pulse rounded-lg" /> }
+  {
+    ssr: false,
+    loading: () => <div className="h-[450px] skeleton-shimmer rounded-lg" />,
+  }
 );
 
 export const PipelineFlow = dynamic(
   () => import("./diagram-presets").then((mod) => mod.PipelineFlow),
-  { ssr: false, loading: () => <div className="h-[420px] bg-muted animate-pulse rounded-lg" /> }
+  {
+    ssr: false,
+    loading: () => <div className="h-[420px] skeleton-shimmer rounded-lg" />,
+  }
 );
 
 export const CVEDecisionTree = dynamic(
   () => import("./diagram-presets").then((mod) => mod.CVEDecisionTree),
-  { ssr: false, loading: () => <div className="h-[360px] bg-muted animate-pulse rounded-lg" /> }
+  {
+    ssr: false,
+    loading: () => <div className="h-[360px] skeleton-shimmer rounded-lg" />,
+  }
 );

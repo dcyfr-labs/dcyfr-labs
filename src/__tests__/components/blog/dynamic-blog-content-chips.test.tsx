@@ -15,7 +15,7 @@ vi.mock('@/components/blog/filters/horizontal-filter-chips', async () => {
   };
 });
 
-import { DynamicBlogContent } from '@/components/blog/dynamic-blog-content';
+import { DynamicBlogContent } from '@/components/blog/server';
 
 const defaultProps: any = {
   sortedArchiveData: { allFilteredItems: [], totalItems: 0, currentPage: 1, totalPages: 1 },

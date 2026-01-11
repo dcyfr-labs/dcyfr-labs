@@ -1,7 +1,8 @@
-{/* TLP:CLEAR */}
+{/_ TLP:CLEAR _/}
+
 # Documentation Index
 
-**Last Updated:** December 15, 2025  
+**Last Updated:** January 11, 2026  
 **Status:** Production-ready documentation ✅  
 **Classification:** TLP Implementation - Most content TLP:CLEAR (public)
 
@@ -43,20 +44,24 @@ The documentation is organized into **16 focused directories**:
 ## 🚀 Quick Navigation
 
 ### Getting Started
+
 - **[README.md](./readme)** - Directory overview and quick links
 - **[QUICK_START.md](./quick-start)** - Single-page navigation hub
 
 ### Architecture & Code
+
 - **[architecture/README.md](./architecture/readme)** - Architecture overview
 - **[architecture/migration-guide.md](./architecture/migration-guide)** - Step-by-step migration
 - **[components/](./components/)** - Component documentation
 
 ### Blog System
+
 - **[blog/architecture.md](./blog/architecture)** - Complete blog architecture
 - **[blog/quick-reference.md](./blog/quick-reference)** - Common patterns
 - **[blog/feeds/](./blog/feeds/)** - RSS/Atom feed documentation
 
 ### Features
+
 - **[features/inngest-integration.md](./features/inngest-integration)** - Background jobs
 - **[features/github-integration.md](./features/github-integration)** - GitHub API
 - **[features/mcp/](./features/mcp/)** - Model Context Protocol
@@ -67,6 +72,7 @@ The documentation is organized into **16 focused directories**:
 - **features/FUTURE_IDEAS.md** - ✨ **Post-launch feature ideas & evaluation**
 
 ### Design System
+
 - **[design/typography/](./design/typography/)** - Typography system
 - **[design/mobile/](./design/mobile/)** - Mobile-first design
 - **[design/spacing/](./design/spacing/)** - Spacing standards
@@ -74,6 +80,7 @@ The documentation is organized into **16 focused directories**:
 - **design/DESIGN_TOKEN_COMPLIANCE_REPORT.md** - ✨ **Series refactor compliance audit**
 
 ### Automation
+
 - **automation/AUTOMATED_UPDATES.md** - ✨ **Complete automation system guide**
 - **automation/ENABLE_AUTO_MERGE.md** - ✨ **Auto-merge setup instructions**
 - **automation/IMPLEMENTATION_SUMMARY.md** - ✨ **Deployment guide**
@@ -102,13 +109,16 @@ The documentation is organized into **16 focused directories**:
 - Contributor guidelines for documentation
 
 **[DOCUMENTATION_CONSOLIDATION_GUIDE.md](./DOCUMENTATION_CONSOLIDATION_GUIDE.md)** - How to find everything
+
 - Complete index of all documentation locations
 - Migration status of recent reorganization
 - Guardrails in place (pre-commit hooks, .gitignore)
 - Setup instructions for your machine
 
 ---
+
 ### Development
+
 - **[testing/README.md](./testing/readme)** - Testing overview
 - **[testing/coverage-roadmap.md](./testing/coverage-roadmap)** - 3-phase coverage plan
 - **[testing/quick-reference.md](./testing/quick-reference)** - Testing commands & patterns
@@ -116,36 +126,46 @@ The documentation is organized into **16 focused directories**:
 - **[optimization/](./optimization/)** - SEO + accessibility + analytics
 
 ### Configuration
+
 - **[platform/environment-variables.md](./platform/environment-variables)** - Complete env setup
 - **[security/](./security/)** - CSP, rate limiting, security guides
 - **[api/routes/overview.md](./api/routes/overview)** - API architecture
 
 ### Operations
+
 - **operations/todo.md** - Active tasks
 - **operations/done.md** - Completed work
 - **[operations/KNOWN_ISSUES.md](./operations/known-issues)** - ✨ **Known issues & acceptable warnings**
+- **[.github/docs/PREVIEW_BRANCH_WORKFLOW.md](../.github/docs/PREVIEW_BRANCH_WORKFLOW)** - Preview branch management and protection
 
 ---
 
 ## 🎯 Directory Purposes
 
 ### `architecture/`
+
 Architecture patterns, refactoring guides, migration docs, best practices
 
 ### `blog/`
+
 Blog system architecture, content creation, MDX processing, frontmatter schema, RSS feeds, content strategy
 
 ### `components/`
+
 Component docs covering UI components, error boundaries, loading states, and advanced features
 
 ### `api/`
+
 API integration references, route documentation, rate limiting, error handling
 
 ### `features/`
+
 Feature guides for Inngest, GitHub integration, MCP servers, analytics, OG images, activity feed automation, blog series refactor, and future ideas tracking
 
 ### `design/`
+
 Design system organized by topic:
+
 - `typography/` - Font system and rendering
 - `mobile/` - Mobile-first optimization
 - `print/` - Print stylesheet
@@ -155,7 +175,9 @@ Design system organized by topic:
 - Design token compliance audits
 
 ### `automation/`
+
 Automated update system:
+
 - Dependabot auto-merge configuration
 - Quarterly AI instruction sync
 - Continuous test metrics collection
@@ -163,30 +185,39 @@ Automated update system:
 - Setup and deployment guides
 
 ### `security/`
+
 Security implementation guides for CSP, rate limiting, and security best practices
 
 ### `platform/`
+
 Platform configuration: environment variables, site config, view counts, deployment
 
 ### `operations/`
+
 Project management: todo lists, completed work, deployment guides, automation
 
 ### `development/`
+
 Performance: Lighthouse CI, bundle analysis, INP optimization, ISR
 
 ### `testing/`
+
 Test infrastructure setup (Vitest, Playwright, Testing Library), coverage roadmap, mocking strategies
 
 ### `optimization/`
+
 SEO, accessibility, and analytics: meta tags, alt text, JSON-LD, tag analytics
 
 ### `content/`
+
 Content validation, markdown standards, Mermaid best practices
 
 ### `ai/`
+
 AI contributor guides and discovery research
 
 ### `maintenance/`
+
 Dashboard modularization patterns and maintenance documentation
 
 ---

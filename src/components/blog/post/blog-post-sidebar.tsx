@@ -41,10 +41,10 @@ interface BlogPostSidebarProps {
 
 /**
  * Blog Post Sidebar Component
- * 
+ *
  * Left-aligned sidebar for blog post pages containing table of contents
  * and other post-related navigation/metadata.
- * 
+ *
  * Features:
  * - Post metadata (date, reading time, views, tags)
  * - Post author (name, title, avatar, description)
@@ -55,7 +55,7 @@ interface BlogPostSidebarProps {
  * - Sticky positioning within viewport
  * - Hierarchical heading display (h2/h3)
  * - Smooth scroll navigation
- * 
+ *
  * Modularized into separate components:
  * - PostMetadata: Date, time, views, status badges, tags
  * - PostAuthor: Author information with avatar and bio
@@ -64,15 +64,15 @@ interface BlogPostSidebarProps {
  * - PostRelated: Related posts list
  * - PostTableOfContents: Heading navigation with active tracking
  */
-export function BlogPostSidebar({ 
-  headings, 
-  slug, 
+export function BlogPostSidebar({
+  headings,
+  slug,
   authors = ["dcyfr"], // Default to dcyfr if not provided
-  metadata, 
-  postTitle, 
-  series, 
-  seriesPosts, 
-  relatedPosts 
+  metadata,
+  postTitle,
+  series,
+  seriesPosts,
+  relatedPosts,
 }: BlogPostSidebarProps) {
   if (headings.length === 0) {
     return null;

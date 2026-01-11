@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * CompanyOverview Component
- * 
+ *
  * Hero section displaying DCYFR Labs company information, mission,
  * and key differentiators.
  */
@@ -22,7 +22,7 @@ export function CompanyOverview() {
         <p className={`${TYPOGRAPHY.h3.standard} text-muted-foreground`}>
           {overview.tagline}
         </p>
-        
+
         {/* Company Details */}
         <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1.5">
@@ -54,7 +54,9 @@ export function CompanyOverview() {
         <div className="grid md:grid-cols-2 gap-4">
           {overview.differentiators.map((diff, idx) => (
             <Card key={idx} className="p-5 hover:shadow-lg transition-shadow">
-              <h3 className={`${TYPOGRAPHY.h3.standard} mb-2 flex items-center gap-2`}>
+              <h3
+                className={`${TYPOGRAPHY.h3.standard} mb-2 flex items-center gap-2`}
+              >
                 <span className="text-primary text-xl">✓</span>
                 {diff.title}
               </h3>

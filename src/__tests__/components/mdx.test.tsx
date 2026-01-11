@@ -1,19 +1,33 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { MDX } from "@/components/common/mdx";
+import { MDX } from "@/components/common";
 
 // Mock the heavy dependencies
 vi.mock("next-mdx-remote/rsc", () => ({
-  MDXRemote: ({ components }: { source: string; components: Record<string, unknown> }) => {
+  MDXRemote: ({
+    components,
+  }: {
+    source: string;
+    components: Record<string, unknown>;
+  }) => {
     // Simple mock that renders some common elements for testing
     const H1 = components?.h1 as React.ComponentType<{ children: string }>;
     const H2 = components?.h2 as React.ComponentType<{ children: string }>;
     const P = components?.p as React.ComponentType<{ children: string }>;
     const Code = components?.code as React.ComponentType<{ children: string }>;
-    const A = components?.a as React.ComponentType<{ href: string; children: string }>;
-    const Ul = components?.ul as React.ComponentType<{ children: React.ReactNode }>;
-    const Blockquote = components?.blockquote as React.ComponentType<{ children: string }>;
-    const Table = components?.table as React.ComponentType<{ children: React.ReactNode }>;
+    const A = components?.a as React.ComponentType<{
+      href: string;
+      children: string;
+    }>;
+    const Ul = components?.ul as React.ComponentType<{
+      children: React.ReactNode;
+    }>;
+    const Blockquote = components?.blockquote as React.ComponentType<{
+      children: string;
+    }>;
+    const Table = components?.table as React.ComponentType<{
+      children: React.ReactNode;
+    }>;
     const Hr = components?.hr as React.ComponentType;
     const CheckIcon = components?.CheckIcon as React.ComponentType;
     const XIcon = components?.XIcon as React.ComponentType;
@@ -27,9 +41,21 @@ vi.mock("next-mdx-remote/rsc", () => ({
         {Code && <Code>inline code</Code>}
         {A && <A href="https://example.com">External Link</A>}
         {A && <A href="/internal">Internal Link</A>}
-        {Ul && <Ul><li>List item</li></Ul>}
+        {Ul && (
+          <Ul>
+            <li>List item</li>
+          </Ul>
+        )}
         {Blockquote && <Blockquote>Quote text</Blockquote>}
-        {Table && <Table><tbody><tr><td>Cell</td></tr></tbody></Table>}
+        {Table && (
+          <Table>
+            <tbody>
+              <tr>
+                <td>Cell</td>
+              </tr>
+            </tbody>
+          </Table>
+        )}
         {Hr && <Hr />}
         {CheckIcon && <CheckIcon />}
         {XIcon && <XIcon />}
@@ -48,7 +74,9 @@ vi.mock("@/components/common/horizontal-rule", () => ({
 }));
 
 vi.mock("@/components/common/mermaid", () => ({
-  Mermaid: ({ chart }: { chart: string }) => <div data-testid="mermaid-diagram">{chart}</div>,
+  Mermaid: ({ chart }: { chart: string }) => (
+    <div data-testid="mermaid-diagram">{chart}</div>
+  ),
 }));
 
 describe("MDX Component", () => {
@@ -182,7 +210,7 @@ describe("MDX Component", () => {
       const icon = screen.getByLabelText("Check");
       expect(icon).toBeInTheDocument();
       // Icon colors (text-*-500/600) are excluded from SEMANTIC_COLORS enforcement
-      // eslint-disable-next-line no-restricted-syntax -- Testing CSS class for icon color
+
       expect(icon.className).toContain("text-green-600");
     });
 
@@ -191,7 +219,7 @@ describe("MDX Component", () => {
       const icon = screen.getByLabelText("Cross");
       expect(icon).toBeInTheDocument();
       // Icon colors (text-*-500/600) are excluded from SEMANTIC_COLORS enforcement
-      // eslint-disable-next-line no-restricted-syntax -- Testing CSS class for icon color
+
       expect(icon.className).toContain("text-red-600");
     });
     it("should render InfoIcon component", () => {
@@ -199,7 +227,7 @@ describe("MDX Component", () => {
       const icon = screen.getByLabelText("Information");
       expect(icon).toBeInTheDocument();
       // Icon colors (text-*-500/600) are excluded from SEMANTIC_COLORS enforcement
-      // eslint-disable-next-line no-restricted-syntax -- Testing CSS class for icon color
+
       expect(icon.className).toContain("text-blue-600");
     });
   });

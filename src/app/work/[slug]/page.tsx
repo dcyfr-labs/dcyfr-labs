@@ -105,7 +105,7 @@ export default async function WorkItemPage({ params }: { params: Promise<{ slug:
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         suppressHydrationWarning
       />
-      <div className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12`}>
+      <div className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-6 md:pt-8 lg:pt-10 pb-8 md:pb-12`}>
         {/* Back to Our Work */}
         <Link
           href="/work"

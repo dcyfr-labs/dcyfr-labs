@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { LayoutGrid, List, Columns2, Square, FolderKanban } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SPACING } from "@/lib/design-tokens";
 
 interface LayoutOption {
   id: "grid" | "list" | "magazine" | "compact" | "grouped";
@@ -63,14 +64,18 @@ export function LayoutToggle({ currentLayout }: LayoutToggleProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const handleLayoutChange = (layout: "grid" | "list" | "magazine" | "compact" | "grouped") => {
+  const handleLayoutChange = (
+    layout: "grid" | "list" | "magazine" | "compact" | "grouped"
+  ) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("layout", layout);
     router.push(`/blog?${params.toString()}`, { scroll: false });
   };
 
   return (
-    <div className="hidden md:flex items-center gap-1 rounded-lg border border-border bg-background/50 p-1">
+    <div
+      className={`hidden md:flex items-center gap-${SPACING.xs} rounded-lg border border-border bg-background/50 p-${SPACING.xs}`}
+    >
       {LAYOUT_OPTIONS.map(({ id, icon: Icon, title }) => (
         <button
           key={id}
@@ -79,7 +84,7 @@ export function LayoutToggle({ currentLayout }: LayoutToggleProps) {
           aria-label={title}
           aria-pressed={currentLayout === id}
           className={cn(
-            "flex items-center justify-center gap-2 px-3 py-2 rounded transition-colors",
+            `flex items-center justify-center gap-${SPACING.sm} px-3 py-2 rounded transition-colors`,
             currentLayout === id
               ? "bg-primary text-primary-foreground"
               : "text-muted-foreground hover:text-foreground hover:bg-muted/50"

@@ -8,20 +8,20 @@ export function InvitesCTA() {
         <p
           className={`text-muted-foreground mt-4 ${CONTAINER_WIDTHS.narrow} mx-auto`}
         >
-          If you have an invite code or referral link you&apos;d like us to
-          add, reach out! We&apos;re always looking for valuable platforms to
+          If you have an invite code or referral link you&apos;d like us to add,
+          reach out! We&apos;re always looking for valuable platforms to
           recommend to our community.
         </p>
-        <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+        <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
           <a
             href="/contact"
-            className={`inline-flex items-center justify-center rounded-md bg-primary px-4 py-3 text-primary-foreground shadow transition-colors hover:bg-primary/90 ${TYPOGRAPHY.label.small}`}
+            className={`inline-flex items-center justify-center rounded-md bg-primary px-4 py-3 text-primary-foreground shadow transition-theme hover:bg-primary/90 ${TYPOGRAPHY.label.small}`}
           >
             Contact Us
           </a>
           <a
             href="/sponsors"
-            className={`inline-flex items-center justify-center rounded-md border border-border bg-background px-4 py-3 shadow-sm transition-colors hover:bg-muted ${TYPOGRAPHY.label.small}`}
+            className={`inline-flex items-center justify-center rounded-md border border-border bg-background px-4 py-3 shadow-sm transition-theme hover:bg-muted ${TYPOGRAPHY.label.small}`}
           >
             View Sponsors
           </a>

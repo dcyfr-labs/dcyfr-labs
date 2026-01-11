@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import type React from 'react'
-import { ArchiveLayout } from '@/components/layouts/archive-layout'
+import { ArchiveLayout } from '@/components/layouts'
 
 // Mock PageHero component
 vi.mock('@/components/layouts/page-hero', () => ({

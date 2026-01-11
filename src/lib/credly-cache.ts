@@ -1,6 +1,6 @@
 /**
  * Credly Data Caching Utilities
- * 
+ *
  * Provides client-side caching for Credly API data to improve performance
  * and reduce redundant API calls across multiple components on the same page.
  */
@@ -10,6 +10,13 @@ import type { CredlyBadge, CredlyBadgesResponse } from "@/types/credly";
 // Cache configuration
 const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes in milliseconds
 const CACHE_KEY_PREFIX = "credly_cache_";
+
+// Fallback empty state for immediate display while loading
+const EMPTY_BADGES_RESPONSE = {
+  badges: [],
+  total_count: 0,
+  count: 0,
+};
 
 interface CacheEntry<T> {
   data: T;
@@ -72,11 +79,11 @@ function setCachedData<T>(cacheKey: string, data: T): void {
  * Fetch Credly badges with caching
  */
 export async function fetchCredlyBadgesCached(
-  username: string = "dcyfr", 
+  username: string = "dcyfr",
   limit?: number
 ): Promise<BadgesApiResponse> {
   const cacheKey = createBadgesCacheKey(username, limit);
-  
+
   // Check cache first
   const cached = getCachedData<BadgesApiResponse>(cacheKey);
   if (cached) {
@@ -90,22 +97,23 @@ export async function fetchCredlyBadgesCached(
   });
 
   // Construct absolute URL for fetch
-  const baseUrl = typeof window !== 'undefined' 
-    ? window.location.origin 
-    : process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-  
+  const baseUrl =
+    typeof window !== "undefined"
+      ? window.location.origin
+      : process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
   const apiUrl = new URL(`/api/credly/badges?${params}`, baseUrl).toString();
   const response = await fetch(apiUrl);
-  
+
   if (!response.ok) {
     throw new Error(`Failed to fetch badges: ${response.status}`);
   }
 
   const data: BadgesApiResponse = await response.json();
-  
+
   // Cache the response
   setCachedData(cacheKey, data);
-  
+
   return data;
 }
 
@@ -118,7 +126,7 @@ export function clearCredlyCache(): void {
       cache.delete(key);
     }
   }
-  console.log("[Credly Cache] ✅ Cache cleared");
+  console.warn("[Credly Cache] ✅ Cache cleared");
 }
 
 /**
@@ -130,13 +138,13 @@ export function getCredlyCacheStats(): {
   expiredEntries: number;
   cacheKeys: string[];
 } {
-  const credlyKeys = Array.from(cache.keys()).filter(key => 
+  const credlyKeys = Array.from(cache.keys()).filter((key) =>
     key.startsWith(CACHE_KEY_PREFIX)
   );
-  
+
   let validEntries = 0;
   let expiredEntries = 0;
-  
+
   for (const key of credlyKeys) {
     const entry = cache.get(key);
     if (entry) {
@@ -147,7 +155,7 @@ export function getCredlyCacheStats(): {
       }
     }
   }
-  
+
   return {
     totalEntries: credlyKeys.length,
     validEntries,
@@ -170,7 +178,7 @@ export async function preloadCredlyData(
       fetchCredlyBadgesCached(username, 10), // Top 10
       fetchCredlyBadgesCached(username, 3), // Top 3
     ]);
-    console.log(`[Credly Cache] ✅ Preloaded data for ${username}`);
+    console.warn(`[Credly Cache] ✅ Preloaded data for ${username}`);
   } catch (error) {
     console.error(`[Credly Cache] ❌ Preload failed for ${username}:`, error);
   }

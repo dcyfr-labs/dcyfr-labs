@@ -323,9 +323,7 @@ export function VirtualActivityFeed({
           onClick={scrollToTop}
           size="icon"
           className={cn(
-            "fixed bottom-6 right-6 rounded-full shadow-lg z-50",
-            ANIMATION.duration.normal,
-            "animate-in fade-in slide-in-from-bottom-2"
+            "fixed bottom-6 right-6 rounded-full shadow-lg z-50"
           )}
           aria-label="Scroll to top"
         >

@@ -1,12 +1,16 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import { PostCategorySection } from "@/components/blog/post/post-category-section";
+import { PostCategorySection } from '@/components/blog';
 import type { Post } from "@/data/posts";
 
 // Mock the PostList component
 vi.mock("@/components/blog/post/post-list", () => ({
   PostList: ({ posts, layout, titleLevel }: any) => (
-    <div data-testid="post-list" data-layout={layout} data-title-level={titleLevel}>
+    <div
+      data-testid="post-list"
+      data-layout={layout}
+      data-title-level={titleLevel}
+    >
       <div data-testid="post-count">{posts.length}</div>
       {posts.map((post: Post) => (
         <div key={post.id} data-testid={`post-${post.id}`}>
@@ -54,13 +58,7 @@ describe("PostCategorySection", () => {
   });
 
   it("should display post count in header badge", () => {
-    render(
-      <PostCategorySection
-        category="AI"
-        label="AI"
-        posts={mockPosts}
-      />
-    );
+    render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
     expect(screen.getByText("2 posts")).toBeInTheDocument();
   });
@@ -68,38 +66,21 @@ describe("PostCategorySection", () => {
   it("should use singular 'post' for single post", () => {
     const singlePost = [mockPosts[0]];
 
-    render(
-      <PostCategorySection
-        category="AI"
-        label="AI"
-        posts={singlePost}
-      />
-    );
+    render(<PostCategorySection category="AI" label="AI" posts={singlePost} />);
 
     expect(screen.getByText("1 post")).toBeInTheDocument();
   });
 
-  it("should render post count badge with primary/10 background", () => {
-    render(
-      <PostCategorySection
-        category="AI"
-        label="AI"
-        posts={mockPosts}
-      />
-    );
+  it("should render post count badge with glass morphism background", () => {
+    render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
     const badge = screen.getByText("2 posts").closest("span");
-    expect(badge).toHaveClass("bg-primary/10", "text-primary");
+    expect(badge).toHaveClass("bg-white/10");
+    expect(badge).toHaveClass("backdrop-blur-sm");
   });
 
   it("should render chevron icon for expand/collapse", () => {
-    render(
-      <PostCategorySection
-        category="AI"
-        label="AI"
-        posts={mockPosts}
-      />
-    );
+    render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
     // ChevronDown icon should be present (aria-hidden)
     const chevron = screen.getByRole("button").querySelector("svg");
@@ -107,39 +88,21 @@ describe("PostCategorySection", () => {
   });
 
   it("should render PostList with compact layout", () => {
-    render(
-      <PostCategorySection
-        category="AI"
-        label="AI"
-        posts={mockPosts}
-      />
-    );
+    render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
     const postList = screen.getByTestId("post-list");
     expect(postList).toHaveAttribute("data-layout", "compact");
   });
 
   it("should pass h3 as titleLevel to PostList", () => {
-    render(
-      <PostCategorySection
-        category="AI"
-        label="AI"
-        posts={mockPosts}
-      />
-    );
+    render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
     const postList = screen.getByTestId("post-list");
     expect(postList).toHaveAttribute("data-title-level", "h3");
   });
 
   it("should pass all posts to PostList", () => {
-    render(
-      <PostCategorySection
-        category="AI"
-        label="AI"
-        posts={mockPosts}
-      />
-    );
+    render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
     const postCount = screen.getByTestId("post-count");
     expect(postCount).toHaveTextContent("2");
@@ -149,26 +112,14 @@ describe("PostCategorySection", () => {
   });
 
   it("should start with accordion expanded by default", () => {
-    render(
-      <PostCategorySection
-        category="AI"
-        label="AI"
-        posts={mockPosts}
-      />
-    );
+    render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
     // Posts should be visible when rendered (defaultValue includes category)
     expect(screen.getByTestId("post-list")).toBeInTheDocument();
   });
 
   it("should allow toggling accordion expansion", () => {
-    render(
-      <PostCategorySection
-        category="AI"
-        label="AI"
-        posts={mockPosts}
-      />
-    );
+    render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
     const trigger = screen.getByRole("button");
 
@@ -232,41 +183,25 @@ describe("PostCategorySection", () => {
   });
 
   it("should handle empty posts array gracefully", () => {
-    render(
-      <PostCategorySection
-        category="AI"
-        label="AI"
-        posts={[]}
-      />
-    );
+    render(<PostCategorySection category="AI" label="AI" posts={[]} />);
 
     expect(screen.getByText("0 posts")).toBeInTheDocument();
     expect(screen.getByTestId("post-list")).toBeInTheDocument();
   });
 
   it("should render without optional props", () => {
-    render(
-      <PostCategorySection
-        category="AI"
-        label="AI"
-        posts={mockPosts}
-      />
-    );
+    render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
     expect(screen.getByText("AI")).toBeInTheDocument();
     expect(screen.getByTestId("post-list")).toBeInTheDocument();
   });
 
   it("should have no border on accordion item", () => {
-    render(
-      <PostCategorySection
-        category="AI"
-        label="AI"
-        posts={mockPosts}
-      />
-    );
+    render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
-    const accordionItem = screen.getByRole("button").closest("[class*='accordion-item']");
+    const accordionItem = screen
+      .getByRole("button")
+      .closest("[class*='accordion-item']");
     if (accordionItem) {
       expect(accordionItem).toHaveClass("border-none");
     }

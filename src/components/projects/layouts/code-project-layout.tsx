@@ -7,10 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { sanitizeUrl } from "@/lib/utils";
 import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
 import { ProjectsCTA } from "@/components/common";
-import { OtherProjectCard } from "@/components/projects/other-project-card";
+import { OtherProjectCard } from "@/components/projects";
 import { ArticleHeader } from "@/components/layouts";
-import { MDX } from "@/components/common/mdx";
-import { PostInteractions } from "@/components/common/PostInteractions";
+import { MDX } from "@/components/common";
+import { PostInteractions } from '@/components/common';
 
 const STATUS_LABEL: Record<Project["status"], string> = {
   "active": "Active",
@@ -260,9 +260,9 @@ export function CodeProjectLayout({ project, nonce, basePath = '/work' }: CodePr
       </div>
 
       {/* Other Projects */}
-      <div className="mt-12 pt-8 border-t">
-        <h2 className={`${TYPOGRAPHY.h2.standard} mb-6`}>Other Projects</h2>
-        <div className="grid gap-4 sm:grid-cols-2">
+      <div className={`${SPACING.sectionDivider.container} border-t`}>
+        <h2 className={`${TYPOGRAPHY.h2.standard} ${SPACING.sectionDivider.heading}`}>Other Projects</h2>
+        <div className={`grid ${SPACING.sectionDivider.grid} sm:grid-cols-2`}>
           {visibleProjects
             .filter((p) => p.slug !== project.slug)
             .slice(0, 2)

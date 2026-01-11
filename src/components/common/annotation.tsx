@@ -2,21 +2,24 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { annotate } from "rough-notation";
-import type { RoughAnnotation, RoughAnnotationConfig } from "rough-notation/lib/model";
+import type {
+  RoughAnnotation,
+  RoughAnnotationConfig,
+} from "rough-notation/lib/model";
 
 /**
  * Annotation type options for Rough Notation
- * 
+ *
  * @see https://roughnotation.com/ for visual examples
  */
-export type AnnotationType = 
-  | "underline"     // Underline the element
-  | "box"           // Box around the element
-  | "circle"        // Circle around the element
-  | "highlight"     // Highlight effect (like marker)
+export type AnnotationType =
+  | "underline" // Underline the element
+  | "box" // Box around the element
+  | "circle" // Circle around the element
+  | "highlight" // Highlight effect (like marker)
   | "strike-through" // Strike through the element
-  | "crossed-off"   // X pattern over the element
-  | "bracket";      // Bracket around the element
+  | "crossed-off" // X pattern over the element
+  | "bracket"; // Bracket around the element
 
 /**
  * Bracket type for bracket annotations
@@ -57,11 +60,11 @@ export interface AnnotationProps {
 
 /**
  * Annotation Component
- * 
+ *
  * Hand-drawn style annotations using Rough Notation library.
  * Perfect for highlighting text, drawing attention to key points,
  * or adding a playful touch to content.
- * 
+ *
  * @component
  * @example
  * ```tsx
@@ -69,18 +72,18 @@ export interface AnnotationProps {
  * <Annotation type="underline" color="var(--primary)">
  *   Important text
  * </Annotation>
- * 
+ *
  * // Highlight on scroll
  * <Annotation type="highlight" animateOnScroll color="#fef08a">
  *   Highlighted content
  * </Annotation>
- * 
+ *
  * // Box with custom styling
  * <Annotation type="box" strokeWidth={2} padding={8}>
  *   Boxed content
  * </Annotation>
  * ```
- * 
+ *
  * @features
  * - Hand-drawn aesthetic using Rough.js
  * - Multiple annotation types (underline, box, circle, highlight, etc.)
@@ -113,7 +116,7 @@ export function Annotation({
   const getDefaultColor = () => {
     switch (type) {
       case "highlight":
-        return "oklch(0.95 0.15 85)"; // Warm yellow
+        return "oklch(0.95 0.15 85)"; // Warm yellow highlight
       case "underline":
       case "strike-through":
         return "var(--primary)";
@@ -155,7 +158,16 @@ export function Annotation({
         annotationRef.current.remove();
       }
     };
-  }, [type, annotationColor, strokeWidth, animationDuration, iterations, padding, multiline, brackets]);
+  }, [
+    type,
+    annotationColor,
+    strokeWidth,
+    animationDuration,
+    iterations,
+    padding,
+    multiline,
+    brackets,
+  ]);
 
   // Handle show prop
   useEffect(() => {
@@ -218,27 +230,27 @@ export const AnnotationVariants = {
   Highlight: (props: Omit<AnnotationProps, "type">) => (
     <Annotation type="highlight" color="oklch(0.95 0.15 85)" {...props} />
   ),
-  
+
   /** Primary color underline */
   Underline: (props: Omit<AnnotationProps, "type">) => (
     <Annotation type="underline" {...props} />
   ),
-  
+
   /** Circled text */
   Circle: (props: Omit<AnnotationProps, "type">) => (
     <Annotation type="circle" padding={10} {...props} />
   ),
-  
+
   /** Boxed text */
   Box: (props: Omit<AnnotationProps, "type">) => (
     <Annotation type="box" {...props} />
   ),
-  
+
   /** Strikethrough for corrections */
   StrikeThrough: (props: Omit<AnnotationProps, "type">) => (
     <Annotation type="strike-through" color="var(--destructive)" {...props} />
   ),
-  
+
   /** Crossed off (X pattern) */
   CrossedOff: (props: Omit<AnnotationProps, "type">) => (
     <Annotation type="crossed-off" color="var(--destructive)" {...props} />

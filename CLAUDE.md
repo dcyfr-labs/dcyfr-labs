@@ -4,7 +4,7 @@ Full-stack developer portfolio with Next.js 16 App Router, TypeScript, Tailwind 
 
 > **For GitHub Copilot users:** See [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) for a concise quick-reference guide focusing on the 80/20 patterns you'll use most.
 
-## Current Focus (December 2025)
+## Current Focus (January 2026)
 
 **All major phases complete** ✅
 
@@ -29,6 +29,7 @@ Project is in **maintenance mode** with data-driven enhancements ready for next 
 **Stack**: Next.js 16 + React 19 + TypeScript + Tailwind v4 + shadcn/ui + MDX
 **Commands**: `npm run dev` • `npm run build` • `npm run lint` • `npm run test`
 **Imports**: Always use `@/*` alias (never relative paths)
+**Versioning**: Calendar Versioning (`YYYY.MM.DD`) - see [VERSIONING.md](docs/operations/VERSIONING.md)
 
 ## Essential Patterns
 
@@ -59,30 +60,30 @@ Project is in **maintenance mode** with data-driven enhancements ready for next 
 ### Building a New Page
 
 ```tsx
-import { PageLayout } from '@/components/layouts/page-layout'
-import { PageHero } from '@/components/layouts/page-hero'
-import { SPACING, CONTAINER_WIDTHS } from '@/lib/design-tokens'
+import { PageLayout } from "@/components/layouts/page-layout";
+import { PageHero } from "@/components/layouts/page-hero";
+import { SPACING, CONTAINER_WIDTHS } from "@/lib/design-tokens";
 
 export default function NewPage() {
   return (
     <PageLayout>
       <PageHero title="Page Title" description="Page description" />
 
-      <section className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}>
-        <div className={SPACING.section}>
-          {/* Your content here */}
-        </div>
+      <section
+        className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}
+      >
+        <div className={SPACING.section}>{/* Your content here */}</div>
       </section>
     </PageLayout>
-  )
+  );
 }
 ```
 
 ### Building a Card Grid
 
 ```tsx
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { HOVER_EFFECTS } from '@/lib/design-tokens'
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { HOVER_EFFECTS } from "@/lib/design-tokens";
 
 export function ProjectGrid({ projects }) {
   return (
@@ -96,17 +97,17 @@ export function ProjectGrid({ projects }) {
         </Card>
       ))}
     </div>
-  )
+  );
 }
 ```
 
 ### Building a Form
 
 ```tsx
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { SPACING } from '@/lib/design-tokens'
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { SPACING } from "@/lib/design-tokens";
 
 export function ContactForm() {
   return (
@@ -117,11 +118,32 @@ export function ContactForm() {
       </div>
       <Button type="submit">Send</Button>
     </form>
-  )
+  );
 }
 ```
 
 **More Examples**: See templates in `/src/components/_templates/` for hero sections, CTAs, content sections, and more.
+
+### MDX Components for Blog Posts
+
+**Available components for blog content** (interactive and engaging):
+
+| Component                | Usage                                                                  | Purpose                                          |
+| ------------------------ | ---------------------------------------------------------------------- | ------------------------------------------------ |
+| `<KeyTakeaway>`          | `<KeyTakeaway>Your insight</KeyTakeaway>`                              | Highlight key insights and conclusions           |
+| `<ContextClue>`          | `<ContextClue>Background info</ContextClue>`                           | Provide background context                       |
+| `<Alert type="warning">` | `<Alert type="warning">Warning</Alert>`                                | Warnings and status messages                     |
+| `<SectionShare>`         | `<SectionShare sectionId="id" sectionTitle="Title" />`                 | Social sharing buttons (Twitter, LinkedIn, Copy) |
+| `<CollapsibleSection>`   | `<CollapsibleSection id="id" title="Title">...</CollapsibleSection>`   | Expandable content with LocalStorage             |
+| `<GlossaryTooltip>`      | `<GlossaryTooltip term="Term" definition="Def">text</GlossaryTooltip>` | Interactive tooltips for technical terms         |
+
+**Engagement Best Practices:**
+
+- Add `<SectionShare>` after major sections for social sharing and SEO (increases backlinks)
+- Use `<CollapsibleSection>` for role-specific or advanced content (progressive disclosure)
+- Wrap technical terms in `<GlossaryTooltip>` for better accessibility and comprehension
+- SectionShare creates trackable section-specific URLs with hash anchors for SEO
+- CollapsibleSection reduces initial page complexity while maintaining depth
 
 ## Design System Rules (MANDATORY)
 
@@ -132,12 +154,14 @@ export function ContactForm() {
 3. **Reuse components** from `layouts/` and `ui/`
 
 **Always use:**
+
 - ✅ `TYPOGRAPHY.h1.standard` for headings
 - ✅ `SPACING.content` for spacing
 - ✅ Semantic colors: `bg-card`, `text-primary`
 - ✅ `PageLayout`, `PageHero` for layouts
 
 **Never use:**
+
 - ❌ Hardcoded spacing: `space-y-6`, `gap-8`, `p-7`
 - ❌ Inline typography: `text-3xl font-semibold`
 - ❌ Hardcoded colors: `bg-white dark:bg-gray-900`
@@ -166,12 +190,13 @@ export function ContactForm() {
 
 ```typescript
 // ✅ CORRECT: Environment-aware with explicit warning
-const isProduction = process.env.NODE_ENV === 'production' 
-  || process.env.VERCEL_ENV === 'production';
+const isProduction =
+  process.env.NODE_ENV === "production" ||
+  process.env.VERCEL_ENV === "production";
 
 if (isProduction && !hasRealData) {
-  console.error('❌ CRITICAL: Using demo data in production!');
-  return null;  // Don't use fake data - return empty or error
+  console.error("❌ CRITICAL: Using demo data in production!");
+  return null; // Don't use fake data - return empty or error
 }
 
 // Safe to use test data in development only
@@ -182,9 +207,42 @@ return mockData;
 
 **History:** [December 25, 2025] Removed 13 fabricated analytics items from production Redis.
 
+### 6. Never Use Emojis in Public Content
+
+```typescript
+// ❌ WRONG: Emoji in blog post
+Emojis work great: 🚀 ✅ ❌ ⚠️ 💡
+
+// ✅ CORRECT: Use React icons
+import { Rocket, CheckCircle, XCircle, AlertTriangle, Lightbulb } from 'lucide-react';
+
+<div className="flex gap-2">
+  <Rocket className="w-4 h-4" />
+  <CheckCircle className="w-4 h-4" />
+  <XCircle className="w-4 h-4" />
+  <AlertTriangle className="w-4 h-4" />
+  <Lightbulb className="w-4 h-4" />
+</div>
+```
+
+**Prohibited locations:**
+
+- Blog posts (`src/content/blog/*.mdx`)
+- Projects (`src/content/projects/*.mdx`)
+- Public UI components
+- User-facing text
+
+**Acceptable locations:**
+
+- Internal docs (`docs/`, `.github/`)
+- Code comments (`//`, `/* */`)
+- Console.log statements
+- Test files
+
 ## Key Constraints
 
 **Do NOT change without discussion:**
+
 - UI framework (Tailwind + shadcn/ui)
 - Import alias (`@/*`)
 - SEO routes (`sitemap.ts`, `robots.ts` location)
@@ -214,11 +272,46 @@ return mockData;
 3. ✅ Lint passes (`npm run lint`)
 4. ✅ Design tokens used (no hardcoded values)
 5. ✅ Security scanning passes (CodeQL/manual review)
-6. Update `todo.md` and `done.md`
+6. Update `CHANGELOG.md` with CalVer date (format: `YYYY.MM.DD`)
+7. Update `todo.md` and `done.md`
+
+## Project Maintenance
+
+**Health Monitoring:**
+
+- **Monthly**: Run health check (15 min) - See [`docs/operations/MAINTENANCE_PLAYBOOK.md`](docs/operations/MAINTENANCE_PLAYBOOK.md)
+- **Quarterly**: Deep cleanup (2-3 hours) - Dependencies, unused code, documentation
+- **Annually**: Full audit (1 day) - Architecture, performance, security review
+
+**Quick Health Check:**
+
+```bash
+npm outdated              # Check dependency updates
+npm audit                 # Security vulnerabilities
+npm run test:run          # Test suite health
+npm run build             # Build verification
+npx depcheck              # Find unused dependencies
+```
+
+**Key Maintenance Documents:**
+
+- [`docs/operations/PROJECT_HEALTH_AUDIT.md`](docs/operations/PROJECT_HEALTH_AUDIT.md) - Latest comprehensive audit
+- [`docs/operations/MAINTENANCE_PLAYBOOK.md`](docs/operations/MAINTENANCE_PLAYBOOK.md) - Repeatable processes
+- [`docs/operations/VERSIONING.md`](docs/operations/VERSIONING.md) - Calendar versioning scheme
+- [`docs/operations/todo.md`](docs/operations/todo.md) - Current priorities
+- [`docs/operations/done.md`](docs/operations/done.md) - Completed work
+
+**Red Flags (Take Action Immediately):**
+
+- Test pass rate <95%
+- Critical security vulnerabilities
+- Build failures
+- Bundle size increase >10%
 
 **Security Vulnerability Handling (CRITICAL):**
 
 When discovering a CodeQL alert or security issue:
+
 1. Analyze using [SECURITY_VULNERABILITY_TROUBLESHOOTING.md](/.github/agents/patterns/SECURITY_VULNERABILITY_TROUBLESHOOTING.md)
 2. Implement fix with defense-in-depth approach
 3. Add comprehensive security tests (attack vectors + valid patterns)
@@ -274,7 +367,7 @@ See: [APPROVAL_GATES.md#security-vulnerability-fixes](/.github/agents/enforcemen
 
 - **`/arch-review`** - Architectural pattern enforcement
   - Validates Next.js App Router & server-first patterns
-  - Ensures @/* import aliases (no relative paths)
+  - Ensures @/\* import aliases (no relative paths)
   - Detects code duplication & suggests refactoring
 
 **Quick start:** Type `/agent-help` to see all agents and usage guide
@@ -299,6 +392,7 @@ Maintaining:
 ```
 
 **For Detailed Patterns & Enforcement:**
+
 - **Public/Shared:** See [`.github/agents/DCYFR.agent.md`](./.github/agents/DCYFR.agent.md) for modular enforcement documentation
 - **Internal Only:** For Claude Code users with access to proprietary `.claude/agents/` files, see your internal documentation (not available in public repo)
 
@@ -318,7 +412,8 @@ Never log sensitive information in clear text. Use one of two approaches:
 1. **Mask sensitive data** (when verification logging needed)
 
 ```javascript
-const maskEmail = (email) => `${email.split('@')[0].substring(0, 2)}***@${email.split('@')[1]}`;
+const maskEmail = (email) =>
+  `${email.split("@")[0].substring(0, 2)}***@${email.split("@")[1]}`;
 console.log(`Service Account: ${maskEmail(credentials.client_email)}`);
 ```
 
@@ -355,6 +450,7 @@ console.log(`Service Account: ${maskEmail(credentials.client_email)}`);
 - Use agents **judiciously** (prefer direct tools)
 
 **Typical budgets:**
+
 - Quick fix: <20k tokens
 - Feature: <50k tokens
 - Refactoring: <100k tokens
@@ -378,14 +474,90 @@ See [`docs/ai/OPTIMIZATION_STRATEGY.md`](docs/ai/OPTIMIZATION_STRATEGY.md) for d
 - Test suite on PR
 - Lighthouse CI on deploy
 
+## AI Development Tool Hierarchy
+
+**Primary: Claude Code** (200K context) → Complex refactoring, architectural work
+**Secondary: GitHub Copilot** (~8K context) → Inline suggestions, quick edits
+**Fallback: OpenCode.ai** (75+ providers) → Token exhaustion, cost optimization, offline work
+
+**NEW:** See [AI Agent Architecture Improvements](docs/operations/AI_AGENT_ARCHITECTURE_IMPROVEMENTS_2026-01-06.md) for complete system documentation.
+
+### Agent Operational Systems (NEW - January 2026)
+
+**Three systems ensure continuous, data-driven development:**
+
+1. **Session Recovery System** - Auto-checkpoint every 30 minutes
+   - `npm run checkpoint:start <agent>` - Start background checkpointing
+   - `npm run session:recover <agent> latest` - Recover from interruption
+   - Prevents data loss from crashes, rate limits, network failures
+   - See: [SESSION_RECOVERY_SYSTEM.md](docs/operations/SESSION_RECOVERY_SYSTEM.md)
+
+2. **Provider Fallback Manager** - Automatic failover on rate limits
+   - `npm run fallback:status` - Check provider health
+   - `npm run fallback:health` - Monitor all providers
+   - Seamless switch: Claude → Groq → Ollama
+   - See: [PROVIDER_FALLBACK_SYSTEM.md](docs/operations/PROVIDER_FALLBACK_SYSTEM.md)
+
+3. **Agent Telemetry System** - Track usage, quality, costs
+   - `npm run telemetry:stats <agent> 7d` - Agent-specific metrics
+   - `npm run telemetry:compare` - Compare all agents
+   - `npm run telemetry:handoffs` - Handoff analytics
+   - See: [agent-telemetry.ts](src/lib/agents/agent-telemetry.ts)
+
+**Quick Start Workflow:**
+
+```bash
+# 1. Start development with auto-recovery
+npm run dev &
+npm run checkpoint:start claude &
+
+# 2. Work normally - failover is automatic
+# ... develop features ...
+
+# 3. If interrupted, recover instantly
+npm run session:recover claude latest
+
+# 4. View analytics
+npm run telemetry:compare
+```
+
+### When to Use OpenCode.ai
+
+**Trigger Conditions:**
+
+- ❌ Claude Code rate limit exceeded
+- ❌ Token budget exhausted for the day
+- ✅ Extended development sessions (6+ hours)
+- ✅ Cost optimization needed (10-100x cheaper with Groq)
+- ✅ Offline development (local models via Ollama)
+- ✅ Alternative AI perspectives (GPT-4, Gemini, etc.)
+
+**Quick Start:**
+
+```bash
+npm run ai:setup          # One-time setup
+npm run ai:opencode       # Start session (primary provider)
+npm run ai:opencode:groq  # Cost-effective provider
+npm run ai:opencode:local # Offline (local models)
+```
+
+**VS Code Extension:**
+
+Install [sst-dev.opencode](https://marketplace.visualstudio.com/items?itemName=sst-dev.opencode) for seamless IDE integration:
+
+- **Quick Launch:** `Cmd+Esc` (Mac) or `Ctrl+Esc` (Windows/Linux)
+- **New Session:** `Cmd+Shift+Esc` (Mac) or `Ctrl+Shift+Esc` (Windows/Linux)
+- **File References:** `Cmd+Option+K` (Mac) or `Alt+Ctrl+K` (Windows/Linux)
+- **Context Sharing:** Automatically shares current selection/tab
+- **Editor Button:** Quick access from title bar
+
+**See:** [`docs/ai/opencode-fallback-architecture.md`](docs/ai/opencode-fallback-architecture.md) for complete setup guide
+
 ## MCP Servers (Chat)
 
+Perplexity, Context, Axiom, Filesystem, GitHub, Vercel, Sentry, arXiv
 
-- Playwright (browser automation, E2E testing)
-- Axiom (log queries, monitoring)
-- Filesystem, GitHub, Vercel, Sentry
-
-*Note: Memory and Sequential Thinking MCPs removed Dec 2025 - replaced by native Claude/Copilot capabilities and built-in memory tools.*
+_Note: Memory and Sequential Thinking MCPs removed Dec 2025 - replaced by native Claude/Copilot capabilities and built-in memory tools._
 
 ---
 

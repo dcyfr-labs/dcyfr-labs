@@ -14,7 +14,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { getTemplate } from "@/lib/playground-templates";
 import { SPACING, CONTAINER_WIDTHS, TYPOGRAPHY, ANIMATION } from "@/lib/design-tokens";
 import { AlertTriangle, Code, Loader, ExternalLink, Lightbulb } from "lucide-react";
-import { Alert } from "@/components/common/alert";
+import { Alert } from "@/components/common";
 import { cn } from "@/lib/utils";
 
 interface CodePlaygroundProps {

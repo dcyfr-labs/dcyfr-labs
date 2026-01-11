@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { Alert } from "@/components/common/alert";
+import { Alert } from "@/components/common";
 import { Lightbulb, ExternalLink } from "lucide-react";
 import { SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
 import { cn, ensureAbsoluteUrl } from "@/lib/utils";

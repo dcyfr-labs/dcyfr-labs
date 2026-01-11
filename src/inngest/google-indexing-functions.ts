@@ -225,7 +225,7 @@ export const submitUrlToGoogle = inngest.createFunction(
         // Record submission for rate limit tracking
         recordSubmission();
 
-        console.log(`✓ Submitted ${url} to Google Indexing API:`, response.data);
+        console.warn(`✓ Submitted ${url} to Google Indexing API:`, response.data);
 
         return {
           success: true,
@@ -338,7 +338,7 @@ export const validateSitemapAndGetMissing = inngest.createFunction(
       };
     }
 
-    console.log(`🔍 Validating ${sitemapUrls.length} URLs against Google Search Console...`);
+    console.warn(`🔍 Validating ${sitemapUrls.length} URLs against Google Search Console...`);
 
     // Step 2: Check indexing status for each URL
     const statusResults = await step.run("check-all-urls", async () => {
@@ -394,10 +394,10 @@ export const validateSitemapAndGetMissing = inngest.createFunction(
       return { indexed, missing, pending };
     });
 
-    console.log(`✓ Sitemap validation complete:`);
-    console.log(`  📖 Indexed: ${categorized.indexed.length}`);
-    console.log(`  ❌ Missing: ${categorized.missing.length}`);
-    console.log(`  ⏳ Pending: ${categorized.pending.length}`);
+    console.warn(`✓ Sitemap validation complete:`);
+    console.warn(`  📖 Indexed: ${categorized.indexed.length}`);
+    console.warn(`  ❌ Missing: ${categorized.missing.length}`);
+    console.warn(`  ⏳ Pending: ${categorized.pending.length}`);
 
     return {
       success: true,
@@ -477,7 +477,7 @@ export const deleteUrlFromGoogle = inngest.createFunction(
         // Record submission for rate limit tracking
         recordSubmission();
 
-        console.log(`✓ Submitted deletion for ${url} to Google:`, response.data);
+        console.warn(`✓ Submitted deletion for ${url} to Google:`, response.data);
 
         return {
           success: true,
@@ -538,7 +538,7 @@ export const batchSubmitBlogPosts = inngest.createFunction(
       };
     }
 
-    console.log(`Starting batch submission of ${urls.length} URLs to Google...`);
+    console.warn(`Starting batch submission of ${urls.length} URLs to Google...`);
 
     // Process each URL sequentially to respect rate limits
     const results = [];
@@ -565,7 +565,7 @@ export const batchSubmitBlogPosts = inngest.createFunction(
       results.push(result);
     }
 
-    console.log(`✓ Batch submission completed. Processed ${results.length} URLs.`);
+    console.warn(`✓ Batch submission completed. Processed ${results.length} URLs.`);
 
     return {
       success: true,
@@ -671,7 +671,7 @@ export const submitMissingPagesToGoogle = inngest.createFunction(
     });
 
     const missingUrls = validationResult.missing || [];
-    console.log(`Found ${missingUrls.length} missing/unindexed pages`);
+    console.warn(`Found ${missingUrls.length} missing/unindexed pages`);
 
     // Step 3: Determine how many we can submit given quota
     const quotaInfo = await step.run("check-quota", async () => {
@@ -688,7 +688,7 @@ export const submitMissingPagesToGoogle = inngest.createFunction(
       };
     });
 
-    console.log(`📊 Quota info:`, quotaInfo);
+    console.warn(`📊 Quota info:`, quotaInfo);
 
     // Step 4: Submit missing URLs respecting quota
     const submissionResults = await step.run("submit-missing-urls", async () => {
@@ -718,7 +718,7 @@ export const submitMissingPagesToGoogle = inngest.createFunction(
           recordSubmission();
           submitted.push(url);
 
-          console.log(`✓ Submitted ${url}`);
+          console.warn(`✓ Submitted ${url}`);
 
           // Respectful delay between submissions
           if (i < urlsToSubmit.length - 1) {

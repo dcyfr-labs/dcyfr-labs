@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { ContactMethods } from '@/components/contact/contact-methods';
+import { ContactMethods } from '@/components/contact';
 
 describe('ContactMethods Component', () => {
   it('renders without crashing', () => {

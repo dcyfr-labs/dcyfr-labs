@@ -23,7 +23,7 @@ describe("Alert", () => {
     );
     
     expect(screen.getByText("Warning alert message")).toBeInTheDocument();
-    // eslint-disable-next-line no-restricted-syntax -- Testing CSS selector for alert styling
+     
     const alertDiv = container.querySelector("[class*='bg-amber-500']");
     expect(alertDiv || screen.getByText("Warning alert message").closest('[class*="bg"]')).toBeInTheDocument();
   });
@@ -48,7 +48,7 @@ describe("Alert", () => {
     );
     
     expect(screen.getByText("Success alert message")).toBeInTheDocument();
-    // eslint-disable-next-line no-restricted-syntax -- Testing CSS selector for alert styling
+     
     const alertDiv = container.querySelector("[class*='bg-green-500']");
     expect(alertDiv || screen.getByText("Success alert message").closest('[class*="bg"]')).toBeInTheDocument();
   });
@@ -104,6 +104,6 @@ describe("Alert", () => {
     
     const alertDiv = container.querySelector(".rounded-lg");
     expect(alertDiv).toBeInTheDocument();
-    expect(alertDiv).toHaveClass("p-4", "sm:p-5", "my-6", "rounded-lg");
+    expect(alertDiv).toHaveClass("p-4", "sm:p-5", "my-4", "rounded-lg");
   });
 });

@@ -11,9 +11,15 @@
 import type { Post } from "@/data/posts";
 import type { ActivityItem, ActivitySource, ActivityVerb } from "./types";
 import type { CredlyBadge, CredlyBadgesResponse } from "@/types/credly";
-import { getMultiplePostViews, getMultiplePostViewsInRange } from "@/lib/views";
+import {
+  getMultiplePostViews,
+  getMultiplePostViewsInRange,
+} from "@/lib/views.server";
 import { getPostCommentsBulk } from "@/lib/comments";
-import { getActivityReactionsBulk, mapGiscusReactionsToLikes } from "@/lib/giscus-reactions";
+import {
+  getActivityReactionsBulk,
+  mapGiscusReactionsToLikes,
+} from "@/lib/giscus-reactions";
 import { createClient } from "redis";
 import { calculateTrendingStatus, type EngagementMetrics } from "./trending";
 
@@ -62,44 +68,47 @@ async function getRedisClient() {
  * - Comment counts from GitHub Discussions (Giscus)
  * - Reaction counts (likes) from Giscus
  */
-export async function transformPostsWithViews(posts: Post[]): Promise<ActivityItem[]> {
+export async function transformPostsWithViews(
+  posts: Post[]
+): Promise<ActivityItem[]> {
   const publishedPosts = posts.filter((p) => !p.archived && !p.draft);
   const postIds = publishedPosts.map((p) => p.id);
   const slugs = publishedPosts.map((p) => p.slug);
 
   // Fetch data in parallel (view counts, comments, reactions)
-  const [viewsMap, weeklyViewsMap, monthlyViewsMap, commentsMap, reactionsMap] = await Promise.all([
-    // All-time view counts from Redis (for display)
-    getMultiplePostViews(postIds).catch((error) => {
-      console.error("[Activity] Failed to fetch view counts:", error);
-      return new Map<string, number>();
-    }),
-    // Weekly view counts for trending calculation (past 7 days)
-    getMultiplePostViewsInRange(postIds, 7).catch((error) => {
-      console.error("[Activity] Failed to fetch weekly view counts:", error);
-      return new Map<string, number>();
-    }),
-    // Monthly view counts for trending calculation (past 30 days)
-    getMultiplePostViewsInRange(postIds, 30).catch((error) => {
-      console.error("[Activity] Failed to fetch monthly view counts:", error);
-      return new Map<string, number>();
-    }),
-    // Comment counts from Giscus (GitHub Discussions)
-    getPostCommentsBulk(slugs).catch((error) => {
-      console.error("[Activity] Failed to fetch comment counts:", error);
-      return {} as Record<string, number>;
-    }),
-    // Reaction counts from Giscus (👍 = likes)
-    getActivityReactionsBulk(
-      publishedPosts.map((post) => ({
-        activityId: `blog-${post.id}`,
-        discussionPath: `/blog/${post.slug}`,
-      }))
-    ).catch((error) => {
-      console.error("[Activity] Failed to fetch Giscus reactions:", error);
-      return {} as Record<string, any>;
-    }),
-  ]);
+  const [viewsMap, weeklyViewsMap, monthlyViewsMap, commentsMap, reactionsMap] =
+    await Promise.all([
+      // All-time view counts from Redis (for display)
+      getMultiplePostViews(postIds).catch((error) => {
+        console.error("[Activity] Failed to fetch view counts:", error);
+        return new Map<string, number>();
+      }),
+      // Weekly view counts for trending calculation (past 7 days)
+      getMultiplePostViewsInRange(postIds, 7).catch((error) => {
+        console.error("[Activity] Failed to fetch weekly view counts:", error);
+        return new Map<string, number>();
+      }),
+      // Monthly view counts for trending calculation (past 30 days)
+      getMultiplePostViewsInRange(postIds, 30).catch((error) => {
+        console.error("[Activity] Failed to fetch monthly view counts:", error);
+        return new Map<string, number>();
+      }),
+      // Comment counts from Giscus (GitHub Discussions)
+      getPostCommentsBulk(slugs).catch((error) => {
+        console.error("[Activity] Failed to fetch comment counts:", error);
+        return {} as Record<string, number>;
+      }),
+      // Reaction counts from Giscus (👍 = likes)
+      getActivityReactionsBulk(
+        publishedPosts.map((post) => ({
+          activityId: `blog-${post.id}`,
+          discussionPath: `/blog/${post.slug}`,
+        }))
+      ).catch((error) => {
+        console.error("[Activity] Failed to fetch Giscus reactions:", error);
+        return {} as Record<string, any>;
+      }),
+    ]);
 
   return publishedPosts.map((post) => {
     const views = viewsMap.get(post.id) || undefined;
@@ -143,7 +152,10 @@ export async function transformPostsWithViews(posts: Post[]): Promise<ActivityIt
         tags: post.tags.slice(0, 3),
         category: post.category,
         image: post.image
-          ? { url: post.image.url, alt: post.image.alt || post.image.caption || post.title }
+          ? {
+              url: post.image.url,
+              alt: post.image.alt || post.image.caption || post.title,
+            }
           : undefined,
         readingTime: post.readingTime?.text,
         stats: {
@@ -183,7 +195,7 @@ interface TrendingPost {
 /**
  * Validate trending post data for consistency and quality
  * Returns validation result with warnings/errors for missing data
- * 
+ *
  * Handles slug migration: trending data may reference old post slugs (stored as postId)
  * while posts now use new slugs. This function maps old slugs to current post IDs
  * by checking previousSlugs in post frontmatter.
@@ -197,11 +209,11 @@ function validateTrendingData(
   // Build slug-to-post mapping including previous slugs for backward compatibility
   const postsBySlug = new Map<string, Post>();
   const postsByPreviousSlug = new Map<string, Post>();
-  
+
   for (const post of posts) {
     postsBySlug.set(post.slug, post);
     postsBySlug.set(post.id, post); // Also map by current post ID
-    
+
     // Map previous slugs to current post for slug migration support
     if (post.previousSlugs && Array.isArray(post.previousSlugs)) {
       for (const prevSlug of post.previousSlugs) {
@@ -217,8 +229,9 @@ function validateTrendingData(
     }
 
     // Try to find post by current ID first, then by current slug, then by previous slug
-    let post = postsBySlug.get(item.postId) || postsByPreviousSlug.get(item.postId);
-    
+    let post =
+      postsBySlug.get(item.postId) || postsByPreviousSlug.get(item.postId);
+
     if (!post) {
       warnings.push(`Post ${item.postId} not found in posts data`);
       return false;
@@ -275,42 +288,58 @@ export async function transformTrendingPosts(
       if (trendingData) {
         try {
           const parsed = JSON.parse(trendingData);
-          
+
           // Double validation: check if data is valid
           if (Array.isArray(parsed) && parsed.length > 0) {
             trending = parsed;
             trendingSource = "redis";
-            console.log(`[Activity] Successfully fetched ${trending.length} trending posts from Redis`);
+            console.warn(
+              `[Activity] Successfully fetched ${trending.length} trending posts from Redis`
+            );
           } else {
             // This is expected when trending data hasn't been populated yet
             // (e.g., first deployment, or after Redis reset)
-            console.log("[Activity] Redis trending data not yet populated, using fallback");
+            console.warn(
+              "[Activity] Redis trending data not yet populated, using fallback"
+            );
           }
         } catch (parseError) {
-          console.error("[Activity] Failed to parse trending data from Redis:", parseError);
+          console.error(
+            "[Activity] Failed to parse trending data from Redis:",
+            parseError
+          );
         }
       } else {
         // This is expected when trending data hasn't been populated yet
-        console.log("[Activity] No trending data in Redis yet (key: blog:trending), using fallback");
+        console.warn(
+          "[Activity] No trending data in Redis yet (key: blog:trending), using fallback"
+        );
       }
 
       await redis.quit();
     } catch (error) {
-      console.error("[Activity] Failed to fetch trending posts from Redis:", error);
+      console.error(
+        "[Activity] Failed to fetch trending posts from Redis:",
+        error
+      );
       if (error instanceof Error && error.message.includes("ECONNREFUSED")) {
         console.warn("[Activity] Redis connection refused - likely offline");
       }
     }
   } else {
-    console.log("[Activity] Redis client unavailable (REDIS_URL not configured), using fallback");
+    console.warn(
+      "[Activity] Redis client unavailable (REDIS_URL not configured), using fallback"
+    );
   }
 
   // Fallback: use most recent published posts if Redis is unavailable or invalid
   if (!trending) {
     const validPosts = posts.filter((p) => !p.archived && !p.draft);
-    const sorted = validPosts
-      .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
-    
+    const sorted = validPosts.sort(
+      (a, b) =>
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+    );
+
     const limited = limit ? sorted.slice(0, limit) : sorted;
 
     trending = limited.map((post) => ({
@@ -321,7 +350,7 @@ export async function transformTrendingPosts(
     }));
 
     trendingSource = "fallback";
-    console.log(
+    console.warn(
       `[Activity] Using fallback: ${trending.length} most recent posts (Redis unavailable)`
     );
   }
@@ -344,7 +373,9 @@ export async function transformTrendingPosts(
 
   const trendingActivities: ActivityItem[] = [];
 
-  const itemsToProcess = limit ? validation.valid.slice(0, limit) : validation.valid;
+  const itemsToProcess = limit
+    ? validation.valid.slice(0, limit)
+    : validation.valid;
   for (const item of itemsToProcess) {
     const post = posts.find((p) => p.id === item.postId);
     if (!post || post.archived || post.draft) continue;
@@ -357,8 +388,11 @@ export async function transformTrendingPosts(
     // Build description with view stats and time period
     let description: string;
     const timestamp = new Date(post.updatedAt || post.publishedAt);
-    const trendingMonth = timestamp.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
-    
+    const trendingMonth = timestamp.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+    });
+
     if (options?.description) {
       // Custom description base - add view stats if available
       if (item.recentViews > 0) {
@@ -368,9 +402,10 @@ export async function transformTrendingPosts(
       }
     } else {
       // Default description - always show the month for clarity
-      description = item.recentViews > 0
-        ? `Trending in ${trendingMonth} with ${item.recentViews.toLocaleString()} views in the last 7 days`
-        : `Recently published in ${trendingMonth}`;
+      description =
+        item.recentViews > 0
+          ? `Trending in ${trendingMonth} with ${item.recentViews.toLocaleString()} views in the last 7 days`
+          : `Recently published in ${trendingMonth}`;
     }
 
     trendingActivities.push({
@@ -385,7 +420,10 @@ export async function transformTrendingPosts(
         tags: post.tags.slice(0, 3),
         category: post.category,
         image: post.image
-          ? { url: post.image.url, alt: post.image.alt || post.image.caption || post.title }
+          ? {
+              url: post.image.url,
+              alt: post.image.alt || post.image.caption || post.title,
+            }
           : undefined,
         readingTime: post.readingTime?.text,
         stats: {
@@ -430,7 +468,7 @@ export async function transformMilestones(
 
     // Fetch timestamps for all milestone keys
     const milestoneActivities: ActivityItem[] = [];
-    
+
     for (const key of keys) {
       const timestamp = await redis.get(key);
       if (!timestamp) continue;
@@ -455,7 +493,10 @@ export async function transformMilestones(
           tags: post.tags.slice(0, 3),
           category: post.category,
           image: post.image
-            ? { url: post.image.url, alt: post.image.alt || post.image.caption || post.title }
+            ? {
+                url: post.image.url,
+                alt: post.image.alt || post.image.caption || post.title,
+              }
             : undefined,
           stats: {
             views: parseInt(milestoneCount, 10),
@@ -467,9 +508,10 @@ export async function transformMilestones(
 
     await redis.quit();
 
-    const sorted = milestoneActivities
-      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-    
+    const sorted = milestoneActivities.sort(
+      (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
+    );
+
     return limit ? sorted.slice(0, limit) : sorted;
   } catch (error) {
     console.error("[Activity] Failed to fetch milestones:", error);
@@ -533,7 +575,7 @@ export async function transformHighEngagementPosts(
       })
       .filter((data) => data.engagementRate >= threshold && data.views >= 100) // Min 100 views
       .sort((a, b) => b.engagementRate - a.engagementRate);
-    
+
     const limitedData = limit ? engagementData.slice(0, limit) : engagementData;
 
     return limitedData.map((data) => ({
@@ -548,7 +590,13 @@ export async function transformHighEngagementPosts(
         tags: data.post.tags.slice(0, 3),
         category: data.post.category,
         image: data.post.image
-          ? { url: data.post.image.url, alt: data.post.image.alt || data.post.image.caption || data.post.title }
+          ? {
+              url: data.post.image.url,
+              alt:
+                data.post.image.alt ||
+                data.post.image.caption ||
+                data.post.title,
+            }
           : undefined,
         readingTime: data.post.readingTime?.text,
         stats: {
@@ -587,7 +635,7 @@ export async function transformCommentMilestones(
     const milestones = publishedPosts
       .map((post) => {
         const commentCount = commentsMap[post.slug] || 0;
-        
+
         // Find the highest milestone reached
         const milestone = COMMENT_MILESTONES.filter(
           (m) => commentCount >= m
@@ -603,7 +651,7 @@ export async function transformCommentMilestones(
       })
       .filter((data): data is NonNullable<typeof data> => data !== null)
       .sort((a, b) => b.milestone - a.milestone);
-    
+
     const limitedMilestones = limit ? milestones.slice(0, limit) : milestones;
 
     return limitedMilestones.map((data) => ({
@@ -618,7 +666,13 @@ export async function transformCommentMilestones(
         tags: data.post.tags.slice(0, 3),
         category: data.post.category,
         image: data.post.image
-          ? { url: data.post.image.url, alt: data.post.image.alt || data.post.image.caption || data.post.title }
+          ? {
+              url: data.post.image.url,
+              alt:
+                data.post.image.alt ||
+                data.post.image.caption ||
+                data.post.title,
+            }
           : undefined,
         stats: {
           comments: data.commentCount,
@@ -669,8 +723,12 @@ export async function transformWebhookGitHubCommits(
 
   try {
     // Get the list of recent commit keys
-    const commitKeys = await redis.lRange("github:commits:recent", 0, limit ? limit - 1 : 999);
-    
+    const commitKeys = await redis.lRange(
+      "github:commits:recent",
+      0,
+      limit ? limit - 1 : 999
+    );
+
     if (commitKeys.length === 0) {
       return [];
     }
@@ -681,7 +739,7 @@ export async function transformWebhookGitHubCommits(
     );
 
     const activities: ActivityItem[] = [];
-    
+
     for (const data of commitDataList) {
       if (!data) continue;
       try {
@@ -722,7 +780,9 @@ export async function transformGitHubActivity(
 ): Promise<ActivityItem[]> {
   const githubToken = process.env.GITHUB_TOKEN;
   if (!githubToken) {
-    console.warn("[Activity] GITHUB_TOKEN not configured, GitHub activity unavailable");
+    console.warn(
+      "[Activity] GITHUB_TOKEN not configured, GitHub activity unavailable"
+    );
     return [];
   }
 
@@ -744,7 +804,7 @@ export async function transformGitHubActivity(
 
       if (commitsResponse.ok) {
         const commits: GitHubCommit[] = await commitsResponse.json();
-        
+
         activities.push(
           ...commits.map((commit) => ({
             id: `github-commit-${commit.sha}`,
@@ -760,10 +820,14 @@ export async function transformGitHubActivity(
           }))
         );
       } else if (commitsResponse.status === 401) {
-        console.error("[Activity] GitHub API authentication failed (401) - check GITHUB_TOKEN validity");
+        console.error(
+          "[Activity] GitHub API authentication failed (401) - check GITHUB_TOKEN validity"
+        );
         return []; // Stop processing if auth fails
       } else {
-        console.warn(`[Activity] Failed to fetch commits for ${repo}: ${commitsResponse.status}`);
+        console.warn(
+          `[Activity] Failed to fetch commits for ${repo}: ${commitsResponse.status}`
+        );
       }
 
       // Fetch recent releases
@@ -780,14 +844,15 @@ export async function transformGitHubActivity(
 
       if (releasesResponse.ok) {
         const releases: GitHubRelease[] = await releasesResponse.json();
-        
+
         activities.push(
           ...releases.map((release) => ({
             id: `github-release-${release.id}`,
             source: "github" as const,
             verb: "released" as const,
             title: release.name || release.tag_name,
-            description: release.body?.split("\n")[0] || `Released ${release.tag_name}`,
+            description:
+              release.body?.split("\n")[0] || `Released ${release.tag_name}`,
             timestamp: new Date(release.published_at),
             href: release.html_url,
             meta: {
@@ -797,16 +862,21 @@ export async function transformGitHubActivity(
           }))
         );
       } else if (releasesResponse.status === 401) {
-        console.error("[Activity] GitHub API authentication failed (401) - check GITHUB_TOKEN validity");
+        console.error(
+          "[Activity] GitHub API authentication failed (401) - check GITHUB_TOKEN validity"
+        );
         return []; // Stop processing if auth fails
       } else {
-        console.warn(`[Activity] Failed to fetch releases for ${repo}: ${releasesResponse.status}`);
+        console.warn(
+          `[Activity] Failed to fetch releases for ${repo}: ${releasesResponse.status}`
+        );
       }
     }
 
-    const sorted = activities
-      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-    
+    const sorted = activities.sort(
+      (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
+    );
+
     return limit ? sorted.slice(0, limit) : sorted;
   } catch (error) {
     console.error("[Activity] Failed to fetch GitHub activity:", error);
@@ -832,34 +902,35 @@ export async function transformVercelAnalytics(
     // Fetch analytics milestones from Redis
     const milestonesKey = "analytics:milestones";
     const milestonesData = await redis.get(milestonesKey);
-    
+
     if (!milestonesData) {
-      console.log("[Activity] No Vercel Analytics milestones found in Redis");
+      console.warn("[Activity] No Vercel Analytics milestones found in Redis");
       await redis.quit();
       return [];
     }
 
     interface AnalyticsMilestone {
-      type: 'monthly_visitors' | 'total_views' | 'unique_visitors';
+      type: "monthly_visitors" | "total_views" | "unique_visitors";
       threshold: number;
       reached_at: string;
       value: number;
     }
 
     const milestones: AnalyticsMilestone[] = JSON.parse(milestonesData);
-    const sorted = milestones.sort((a, b) => 
-      new Date(b.reached_at).getTime() - new Date(a.reached_at).getTime()
+    const sorted = milestones.sort(
+      (a, b) =>
+        new Date(b.reached_at).getTime() - new Date(a.reached_at).getTime()
     );
-    
+
     const limited = limit ? sorted.slice(0, limit) : sorted;
 
     await redis.quit();
 
     return limited.map((milestone) => {
       const typeLabels = {
-        monthly_visitors: 'Monthly Visitors',
-        total_views: 'Total Page Views',
-        unique_visitors: 'Unique Visitors',
+        monthly_visitors: "Monthly Visitors",
+        total_views: "Total Page Views",
+        unique_visitors: "Unique Visitors",
       };
 
       return {
@@ -905,43 +976,44 @@ export async function transformGitHubTraffic(
     // Fetch GitHub traffic milestones from Redis
     const milestonesKey = "github:traffic:milestones";
     const milestonesData = await redis.get(milestonesKey);
-    
+
     if (!milestonesData) {
-      console.log("[Activity] No GitHub traffic milestones found in Redis");
+      console.warn("[Activity] No GitHub traffic milestones found in Redis");
       await redis.quit();
       return [];
     }
 
     interface GitHubTrafficMilestone {
       repo: string;
-      type: 'views' | 'clones' | 'stars' | 'forks';
+      type: "views" | "clones" | "stars" | "forks";
       threshold: number;
       reached_at: string;
       value: number;
     }
 
     const milestones: GitHubTrafficMilestone[] = JSON.parse(milestonesData);
-    const sorted = milestones.sort((a, b) => 
-      new Date(b.reached_at).getTime() - new Date(a.reached_at).getTime()
+    const sorted = milestones.sort(
+      (a, b) =>
+        new Date(b.reached_at).getTime() - new Date(a.reached_at).getTime()
     );
-    
+
     const limited = limit ? sorted.slice(0, limit) : sorted;
 
     await redis.quit();
 
     return limited.map((milestone) => {
       const typeLabels = {
-        views: 'Repository Views',
-        clones: 'Repository Clones',
-        stars: 'GitHub Stars',
-        forks: 'Repository Forks',
+        views: "Repository Views",
+        clones: "Repository Clones",
+        stars: "GitHub Stars",
+        forks: "Repository Forks",
       };
 
       const typeEmoji = {
-        views: '👀',
-        clones: '📥',
-        stars: '⭐',
-        forks: '🍴',
+        views: "👀",
+        clones: "📥",
+        stars: "⭐",
+        forks: "🍴",
       };
 
       return {
@@ -985,15 +1057,19 @@ export async function transformGoogleAnalytics(
     // Fetch GA milestones from Redis
     const milestonesKey = "google:analytics:milestones";
     const milestonesData = await redis.get(milestonesKey);
-    
+
     if (!milestonesData) {
-      console.log("[Activity] No Google Analytics milestones found in Redis");
+      console.warn("[Activity] No Google Analytics milestones found in Redis");
       await redis.quit();
       return [];
     }
 
     interface GAMilestone {
-      type: 'monthly_users' | 'session_duration' | 'pages_per_session' | 'bounce_rate';
+      type:
+        | "monthly_users"
+        | "session_duration"
+        | "pages_per_session"
+        | "bounce_rate";
       threshold: number;
       reached_at: string;
       value: number;
@@ -1001,29 +1077,30 @@ export async function transformGoogleAnalytics(
     }
 
     const milestones: GAMilestone[] = JSON.parse(milestonesData);
-    const sorted = milestones.sort((a, b) => 
-      new Date(b.reached_at).getTime() - new Date(a.reached_at).getTime()
+    const sorted = milestones.sort(
+      (a, b) =>
+        new Date(b.reached_at).getTime() - new Date(a.reached_at).getTime()
     );
-    
+
     const limited = limit ? sorted.slice(0, limit) : sorted;
 
     await redis.quit();
 
     return limited.map((milestone) => {
       const typeLabels = {
-        monthly_users: 'Monthly Active Users',
-        session_duration: 'Average Session Duration',
-        pages_per_session: 'Pages per Session',
-        bounce_rate: 'Bounce Rate Below',
+        monthly_users: "Monthly Active Users",
+        session_duration: "Average Session Duration",
+        pages_per_session: "Pages per Session",
+        bounce_rate: "Bounce Rate Below",
       };
 
       const formatValue = (type: string, value: number) => {
         switch (type) {
-          case 'session_duration':
+          case "session_duration":
             return `${Math.floor(value / 60)}m ${value % 60}s`;
-          case 'pages_per_session':
+          case "pages_per_session":
             return value.toFixed(1);
-          case 'bounce_rate':
+          case "bounce_rate":
             return `${value}%`;
           default:
             return value.toLocaleString();
@@ -1035,7 +1112,7 @@ export async function transformGoogleAnalytics(
         source: "analytics" as const,
         verb: "achieved" as const,
         title: `${typeLabels[milestone.type]}: ${formatValue(milestone.type, milestone.threshold)}`,
-        description: milestone.month 
+        description: milestone.month
           ? `${milestone.month} achieved ${formatValue(milestone.type, milestone.value)} ${typeLabels[milestone.type].toLowerCase()}`
           : `Achieved ${formatValue(milestone.type, milestone.value)} ${typeLabels[milestone.type].toLowerCase()}`,
         timestamp: new Date(milestone.reached_at),
@@ -1073,15 +1150,15 @@ export async function transformSearchConsole(
     // Fetch Search Console milestones from Redis
     const milestonesKey = "search:console:milestones";
     const milestonesData = await redis.get(milestonesKey);
-    
+
     if (!milestonesData) {
-      console.log("[Activity] No Search Console milestones found in Redis");
+      console.warn("[Activity] No Search Console milestones found in Redis");
       await redis.quit();
       return [];
     }
 
     interface SearchConsoleMilestone {
-      type: 'impressions' | 'clicks' | 'ctr' | 'position' | 'top_keyword';
+      type: "impressions" | "clicks" | "ctr" | "position" | "top_keyword";
       threshold?: number;
       reached_at: string;
       value: number | string;
@@ -1090,10 +1167,11 @@ export async function transformSearchConsole(
     }
 
     const milestones: SearchConsoleMilestone[] = JSON.parse(milestonesData);
-    const sorted = milestones.sort((a, b) => 
-      new Date(b.reached_at).getTime() - new Date(a.reached_at).getTime()
+    const sorted = milestones.sort(
+      (a, b) =>
+        new Date(b.reached_at).getTime() - new Date(a.reached_at).getTime()
     );
-    
+
     const limited = limit ? sorted.slice(0, limit) : sorted;
 
     await redis.quit();
@@ -1103,25 +1181,25 @@ export async function transformSearchConsole(
       let description: string;
 
       switch (milestone.type) {
-        case 'impressions':
+        case "impressions":
           title = `${(milestone.value as number).toLocaleString()} Search Impressions`;
           description = `Site reached ${(milestone.value as number).toLocaleString()} total impressions in Google Search`;
           break;
-        case 'clicks':
+        case "clicks":
           title = `${(milestone.value as number).toLocaleString()} Search Clicks`;
           description = `Site reached ${(milestone.value as number).toLocaleString()} total clicks from Google Search`;
           break;
-        case 'ctr':
+        case "ctr":
           title = `${milestone.value}% Click-Through Rate`;
           description = `Search click-through rate improved to ${milestone.value}%`;
           break;
-        case 'position':
+        case "position":
           title = `Top ${milestone.value} Search Ranking`;
-          description = milestone.query 
+          description = milestone.query
             ? `Ranked position ${milestone.value} for "${milestone.query}"`
             : `Achieved top ${milestone.value} position in search results`;
           break;
-        case 'top_keyword':
+        case "top_keyword":
           title = `#1 Ranking: "${milestone.value}"`;
           description = `Achieved top position for "${milestone.value}" in Google Search`;
           break;
@@ -1140,9 +1218,12 @@ export async function transformSearchConsole(
         href: milestone.page || "/activity",
         meta: {
           category: "SEO Performance",
-          stats: typeof milestone.value === 'number' ? {
-            views: milestone.value,
-          } : undefined,
+          stats:
+            typeof milestone.value === "number"
+              ? {
+                  views: milestone.value,
+                }
+              : undefined,
         },
       };
     });
@@ -1180,14 +1261,17 @@ export async function transformCredlyBadges(
     const badges = data.data || [];
 
     // Sort by issued_at descending
-    const sortedBadges = badges
-      .sort((a, b) => new Date(b.issued_at).getTime() - new Date(a.issued_at).getTime());
-    
+    const sortedBadges = badges.sort(
+      (a, b) =>
+        new Date(b.issued_at).getTime() - new Date(a.issued_at).getTime()
+    );
+
     const limitedBadges = limit ? sortedBadges.slice(0, limit) : sortedBadges;
 
     return limitedBadges.map((badge) => {
-      const issuerName = badge.issuer.entities.find(e => e.primary)?.entity.name || 
-        badge.issuer.entities[0]?.entity.name || 
+      const issuerName =
+        badge.issuer.entities.find((e) => e.primary)?.entity.name ||
+        badge.issuer.entities[0]?.entity.name ||
         "Unknown Issuer";
 
       return {

@@ -61,7 +61,7 @@ export function ReadingProgressIndicator({
         className={`${config.container} flex items-center justify-center`}
         aria-label="Article completed"
       >
-        <CheckCircle2 className={`${config.icon} text-green-500`} />
+        <CheckCircle2 className={`${config.icon} text-muted-foreground`} />
       </div>
     );
   }

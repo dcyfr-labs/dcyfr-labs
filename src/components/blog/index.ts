@@ -4,8 +4,12 @@ export { MobileFilterBar } from "./filters/mobile-filter-bar";
 export { FloatingFilterFab } from "./filters/floating-filter-fab";
 export { HorizontalFilterChips } from "./filters/horizontal-filter-chips";
 export { BlogSidebar } from "./sidebar/blog-sidebar";
+export type { BlogSidebarProps } from "./sidebar/blog-sidebar";
 export { BlogSidebarWrapper } from "./blog-sidebar-wrapper";
-export { BlogKeyboardProvider } from "./blog-keyboard-provider";
+export {
+  BlogKeyboardProvider,
+  useBlogKeyboard,
+} from "./blog-keyboard-provider";
 export { BlogLayoutManager } from "./blog-layout-manager";
 export { BlogLayoutWrapper, useBlogLayout } from "./blog-layout-wrapper";
 export { BlogPostLayoutWrapper } from "./blog-post-layout-wrapper";
@@ -18,17 +22,16 @@ export { SeriesPageAnalyticsTracker } from "./series-page-analytics-tracker";
 export { BookmarkButton } from "./bookmark-button";
 export { LayoutToggle } from "./layout-toggle";
 export { RSSFeedButton } from "./rss-feed-button";
+export { FeedDropdown } from "./feed-dropdown";
 
 // Search components
 export { BlogSearchClient, useBlogSearch } from "./blog-search-client";
 
 // Partial Prerendering components
-export { DynamicBlogContent } from "./dynamic-blog-content";
-export { BlogListSkeleton } from "./blog-list-skeleton";
+export { PostListSkeleton as BlogListSkeleton } from "./post/post-list-skeleton";
 
 // Blog post components
 export { BlogPostSidebar } from "./post/blog-post-sidebar";
-export { BlogPostSidebarWrapper } from "./post/blog-post-sidebar-wrapper";
 export { BlogPostSkeleton } from "./post/blog-post-skeleton";
 export { PostList } from "./post/post-list";
 export { ModernPostCard } from "./post/modern-post-card";
@@ -45,8 +48,26 @@ export { SeriesCard } from "./series-card";
 export { ContentTypeToggle } from "./content-type-toggle";
 
 // Sidebar context for hiding duplicate content
-export { SidebarVisibilityProvider, useSidebarVisibility, HideWhenSidebarVisible } from "./post/sidebar-context";
 
-// Server components for progressive reveal (PPR)
-export { ViewCountDisplay, ViewCountSkeleton } from "./view-count-display";
-export { getHottestPostSlug } from "./hottest-post-calculator";
+// RIVET framework components
+export { ReadingProgressBar } from "./rivet/navigation";
+export { KeyTakeaway, TLDRSummary } from "./rivet/visual";
+export {
+  GlossaryTooltip,
+  SectionShare,
+  CollapsibleSection,
+} from "./rivet/interactive";
+export {
+  SidebarVisibilityProvider,
+  useSidebarVisibility,
+  HideWhenSidebarVisible,
+} from "./post/sidebar-context";
+
+// Engagement components
+export { RiskAccordion, RiskAccordionGroup } from "./risk-accordion";
+export {
+  ReadingProgressTracker,
+  ProgressDots,
+} from "./reading-progress-tracker";
+export { RiskCardGrid } from "./risk-card-grid";
+export type { RiskCardData } from "./risk-card-grid";

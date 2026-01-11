@@ -12,21 +12,24 @@ import {
   Award,
   GraduationCap,
   ExternalLink,
+  Twitter,
+  Code2,
+  Briefcase,
 } from "lucide-react";
 
 /**
  * Social Links Grid Component
- * 
+ *
  * Displays social media and professional profile links in a responsive grid layout.
  * All links are external and open in a new tab with proper security attributes.
- * 
+ *
  * Features:
  * - Responsive grid (1 col mobile, 2 cols desktop)
  * - Platform-specific icons
  * - Hover effects with border/icon color transitions
  * - External link indicators
  * - URL sanitization for security
- * 
+ *
  * @example
  * ```tsx
  * <SocialLinksGrid />
@@ -40,21 +43,27 @@ export function SocialLinksGrid() {
         const IconComponent =
           social.platform === "calendar"
             ? Calendar
-            : social.platform === "linkedin"
-              ? Linkedin
-              : social.platform === "github"
-                ? Github
-                : social.platform === "sponsors"
-                  ? Heart
+            : social.platform === "twitter"
+              ? Twitter
+              : social.platform === "dev"
+                ? Code2
+                : social.platform === "linkedin"
+                  ? Linkedin
                   : social.platform === "peerlist"
                     ? Users
-                    : social.platform === "goodreads"
-                      ? BookOpen
-                      : social.platform === "credly"
-                        ? Award
-                        : social.platform === "orcid"
-                          ? GraduationCap
-                          : ExternalLink;
+                    : social.platform === "wellfound"
+                      ? Briefcase
+                      : social.platform === "github"
+                        ? Github
+                        : social.platform === "sponsors"
+                          ? Heart
+                          : social.platform === "credly"
+                            ? Award
+                            : social.platform === "goodreads"
+                              ? BookOpen
+                              : social.platform === "orcid"
+                                ? GraduationCap
+                                : ExternalLink;
 
         // All social links are external, render with <a> tag
         return (

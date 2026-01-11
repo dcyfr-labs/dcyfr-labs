@@ -9,6 +9,8 @@ export type SocialPlatform =
   | "linkedin"
   | "github"
   | "sponsors"
+  | "twitter"
+  | "dev"
   | "peerlist"
   | "wellfound"
   | "goodreads"
@@ -34,6 +36,20 @@ export const socialLinks: SocialLink[] = [
       url: "https://cal.com/dcyfr",
       icon: "calendar",
       description: "Meet with us"
+    },
+    {
+      platform: "twitter",
+      label: "Twitter/X",
+      url: "https://x.com/dcyfr_",
+      icon: "twitter",
+      description: "Follow us on Twitter/X"
+    },
+    {
+      platform: "dev",
+      label: "DEV",
+      url: "https://dev.to/dcyfr",
+      icon: "code",
+      description: "Read our articles on DEV"
     },
     {
       platform: "linkedin",
@@ -104,6 +120,8 @@ export function getSocialUrls(): string[] {
  * Username/handle constants for dynamic URL construction
  */
 export const SOCIAL_HANDLES = {
+  twitter: "dcyfr_",
+  dev: "dcyfr",
   github: "dcyfr",
   linkedin: "dcyfr",
   peerlist: "dcyfr",

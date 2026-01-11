@@ -21,33 +21,40 @@
  * ```
  */
 
-'use client'
+"use client";
 
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Button } from '@/components/ui/button'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { SPACING, TYPOGRAPHY, CONTAINER_WIDTHS, CONTAINER_PADDING } from '@/lib/design-tokens'
-import { Mail, Send, CheckCircle } from 'lucide-react'
-import { useState } from 'react'
-import { cn } from '@/lib/utils'
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  SPACING,
+  TYPOGRAPHY,
+  CONTAINER_WIDTHS,
+  CONTAINER_PADDING,
+} from "@/lib/design-tokens";
+import { Mail, Send, CheckCircle } from "lucide-react";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 /**
  * Basic Contact Form
  * Use for: Contact pages, support forms
  */
 export function ContactFormBasic() {
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setStatus('loading')
+    e.preventDefault();
+    setStatus("loading");
 
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    setStatus('success')
-  }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setStatus("success");
+  };
 
   return (
     <div className={`mx-auto ${CONTAINER_WIDTHS.narrow} ${CONTAINER_PADDING}`}>
@@ -97,7 +104,7 @@ export function ContactFormBasic() {
             rows={6}
             required
           />
-          <p className={cn(TYPOGRAPHY.metadata, 'text-xs')}>
+          <p className={cn(TYPOGRAPHY.metadata, "text-xs")}>
             Minimum 20 characters
           </p>
         </div>
@@ -106,11 +113,11 @@ export function ContactFormBasic() {
         <Button
           type="submit"
           size="lg"
-          disabled={status === 'loading'}
+          disabled={status === "loading"}
           className="w-full"
         >
-          {status === 'loading' ? (
-            'Sending...'
+          {status === "loading" ? (
+            "Sending..."
           ) : (
             <>
               Send Message
@@ -120,7 +127,7 @@ export function ContactFormBasic() {
         </Button>
 
         {/* Success message */}
-        {status === 'success' && (
+        {status === "success" && (
           <Alert>
             <CheckCircle className="h-4 w-4" />
             <AlertDescription>
@@ -130,7 +137,7 @@ export function ContactFormBasic() {
         )}
 
         {/* Error message */}
-        {status === 'error' && (
+        {status === "error" && (
           <Alert variant="destructive">
             <AlertDescription>
               Something went wrong. Please try again or email me directly.
@@ -139,7 +146,7 @@ export function ContactFormBasic() {
         )}
       </form>
     </div>
-  )
+  );
 }
 
 /**
@@ -147,20 +154,20 @@ export function ContactFormBasic() {
  * Use for: Footer, sidebar, dedicated signup pages
  */
 export function NewsletterForm() {
-  const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle')
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setStatus('loading')
+    e.preventDefault();
+    setStatus("loading");
 
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    setStatus('success')
-    setEmail('')
-  }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setStatus("success");
+    setEmail("");
+  };
 
-  if (status === 'success') {
+  if (status === "success") {
     return (
       <Alert>
         <CheckCircle className="h-4 w-4" />
@@ -168,7 +175,7 @@ export function NewsletterForm() {
           You&apos;re subscribed! Check your email to confirm.
         </AlertDescription>
       </Alert>
-    )
+    );
   }
 
   return (
@@ -187,9 +194,9 @@ export function NewsletterForm() {
             required
             className="flex-1"
           />
-          <Button type="submit" disabled={status === 'loading'}>
-            {status === 'loading' ? (
-              'Subscribing...'
+          <Button type="submit" disabled={status === "loading"}>
+            {status === "loading" ? (
+              "Subscribing..."
             ) : (
               <>
                 Subscribe
@@ -199,11 +206,11 @@ export function NewsletterForm() {
           </Button>
         </div>
       </div>
-      <p className={cn(TYPOGRAPHY.metadata, 'text-xs')}>
+      <p className={cn(TYPOGRAPHY.metadata, "text-xs")}>
         No spam. Unsubscribe at any time.
       </p>
     </form>
-  )
+  );
 }
 
 /**
@@ -211,13 +218,13 @@ export function NewsletterForm() {
  * Use for: Site search, blog search
  */
 export function SearchForm() {
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState("");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     // Handle search
-    console.log('Searching for:', query)
-  }
+    console.warn("Searching for:", query);
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -242,7 +249,7 @@ export function SearchForm() {
         </Button>
       </div>
     </form>
-  )
+  );
 }
 
 /**
@@ -253,14 +260,12 @@ export function InlineEmailSignup() {
   return (
     <div className="bg-muted/50 border border-border rounded-lg p-8">
       <div className={SPACING.content}>
-        <h3 className={TYPOGRAPHY.h3.standard}>
-          Enjoyed this article?
-        </h3>
+        <h3 className={TYPOGRAPHY.h3.standard}>Enjoyed this article?</h3>
         <p className={TYPOGRAPHY.body}>
           Subscribe to get notified when I publish new content.
         </p>
         <NewsletterForm />
       </div>
     </div>
-  )
+  );
 }

@@ -90,6 +90,7 @@ npm run parse:gitleaks-report ./gitleaks-report.json
 ```
 
 ### PII vs. PI Allowlisting Guidelines (Short Version)
+
 - PII allowlist entries are for test data or placeholders (e.g., `example.com`, `test@test.com`) and should be treated conservatively; preference is to redact or mask. Add to `piiPaths` or `paths` as appropriate.
 - PI allowlist entries (business or proprietary content) are for documentation that explains or defines proprietary systems (e.g., `docs/ai/logging-security.md`) and require stronger justification and an owner signoff; add to `piPaths` or `proprietaryPaths` as appropriate.
 
@@ -137,13 +138,14 @@ All documentation is organized into **public** and **private** tiers to protect 
    - ❌ `report.md` (unclear)
 
 3. **Verify placement:** Pre-commit hook checks:
+
    ```bash
    git add docs/your-file.md
    git commit -m "docs: add documentation"
    # Hook runs automatically and blocks if file is in wrong place
    ```
 
-4. **For detailed standards:** See [DOCS_GOVERNANCE.md](docs/DOCS_GOVERNANCE.md)
+4. **For detailed standards:** See [DOCS_GOVERNANCE.md](docs/governance/DOCS_GOVERNANCE.md)
 
 ---
 
@@ -165,7 +167,7 @@ This project uses specialized AI agent instructions and pattern enforcement syst
 ✅ **Follow** documented design patterns and standards  
 ✅ **Request DCYFR mode** for your feature work  
 ✅ **Suggest improvements** via GitHub Issues  
-✅ **Contribute** code that follows published patterns  
+✅ **Contribute** code that follows published patterns
 
 #### What You CANNOT Do
 
@@ -173,7 +175,7 @@ This project uses specialized AI agent instructions and pattern enforcement syst
 ❌ **Use DCYFR architecture** in competing projects  
 ❌ **Modify** proprietary specifications without approval  
 ❌ **Copy** enforcement system to other repositories  
-❌ **Claim ownership** of DCYFR system components  
+❌ **Claim ownership** of DCYFR system components
 
 #### How to Extend DCYFR
 

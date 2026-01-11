@@ -5,11 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { NAVIGATION, isNavItemActive, getAriaCurrent } from "@/lib/navigation";
-import { ANIMATION } from "@/lib/design-tokens";
+import { ANIMATION, NAVIGATION_HEIGHT } from "@/lib/design-tokens";
 
 /**
  * Bottom navigation bar for mobile devices
- * 
+ *
  * Features:
  * - Fixed at bottom of viewport on mobile only (< md breakpoint)
  * - 3 primary destinations: Home, Blog, Work
@@ -18,7 +18,7 @@ import { ANIMATION } from "@/lib/design-tokens";
  * - Icon + label layout
  * - Backdrop blur effect
  * - Semantic HTML and ARIA labels
- * 
+ *
  * @example
  * ```tsx
  * // Add to layout.tsx
@@ -33,7 +33,14 @@ export function BottomNav() {
       className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t backdrop-blur supports-backdrop-filter:bg-background/95 bg-background"
       aria-label="Bottom navigation"
     >
-      <div className={cn("grid grid-cols-3 h-16", "max-w-lg", "mx-auto")}>
+      <div
+        className={cn(
+          "grid grid-cols-3",
+          NAVIGATION_HEIGHT,
+          "max-w-lg",
+          "mx-auto"
+        )}
+      >
         {NAVIGATION.bottom.map((item) => {
           const Icon = item.icon;
           const isActive = isNavItemActive(item, pathname);
@@ -52,7 +59,11 @@ export function BottomNav() {
                   : "text-muted-foreground hover:text-foreground"
               )}
               prefetch={item.prefetch ?? false}
-              aria-current={getAriaCurrent(item.href, pathname, item.exactMatch)}
+              aria-current={getAriaCurrent(
+                item.href,
+                pathname,
+                item.exactMatch
+              )}
               aria-label={item.description || item.label}
             >
               {Icon && (

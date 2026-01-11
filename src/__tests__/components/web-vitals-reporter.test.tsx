@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { render } from '@testing-library/react'
-import { WebVitalsReporter } from '@/components/features/web-vitals-reporter'
+import { WebVitalsReporter } from '@/components/features'
 
 // Mock the initWebVitals function
 const mockInitWebVitals = vi.fn()

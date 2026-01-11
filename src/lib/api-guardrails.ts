@@ -252,7 +252,7 @@ export function getServiceUsageStats(
  */
 export function resetUsageTracking(): void {
   usageTracking.clear();
-  console.log("[API GUARDRAILS] Usage tracking reset");
+  console.warn("[API GUARDRAILS] Usage tracking reset");
 }
 
 /**
@@ -331,7 +331,7 @@ export function recordApiCall(
 
   // Log detailed metrics
   if (process.env.NODE_ENV === "development") {
-    console.log(
+    console.warn(
       `[API CALL] ${service}${endpoint ? `:${endpoint}` : ""}`,
       options
     );
@@ -456,18 +456,18 @@ export function logDailyUsageSummary(): void {
   const summary = getUsageSummary();
   const stats = getAllUsageStats();
 
-  console.log("\n" + "=".repeat(60));
-  console.log("📊 DAILY API USAGE SUMMARY");
-  console.log("=".repeat(60));
-  console.log(`Total Services: ${summary.totalServices}`);
-  console.log(`Total Estimated Cost: $${summary.totalCost.toFixed(2)}`);
-  console.log(
+  console.warn("\n" + "=".repeat(60));
+  console.warn("📊 DAILY API USAGE SUMMARY");
+  console.warn("=".repeat(60));
+  console.warn(`Total Services: ${summary.totalServices}`);
+  console.warn(`Total Estimated Cost: $${summary.totalCost.toFixed(2)}`);
+  console.warn(
     `Services Near Limit: ${summary.servicesNearLimit.length}`
   );
-  console.log(`Services At Limit: ${summary.servicesAtLimit.length}`);
-  console.log("\nDetailed Stats:");
+  console.warn(`Services At Limit: ${summary.servicesAtLimit.length}`);
+  console.warn("\nDetailed Stats:");
   stats.forEach((stat) => {
-    console.log(
+    console.warn(
       `  - ${stat.service}: ${stat.count}/${stat.limit} (${stat.percentUsed.toFixed(1)}%)${
         stat.estimatedCost
           ? ` - $${stat.estimatedCost.toFixed(2)}`
@@ -475,5 +475,5 @@ export function logDailyUsageSummary(): void {
       }`
     );
   });
-  console.log("=".repeat(60) + "\n");
+  console.warn("=".repeat(60) + "\n");
 }

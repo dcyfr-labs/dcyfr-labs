@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { render } from '@testing-library/react'
-import { ViewTracker } from '@/components/features/view-tracker'
+import { ViewTracker } from '@/components/features'
 
 // Mock the hook
 const mockUseViewTracking = vi.fn()

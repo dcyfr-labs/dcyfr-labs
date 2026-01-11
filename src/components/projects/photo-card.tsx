@@ -2,7 +2,11 @@
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { HOVER_EFFECTS, IMAGE_PLACEHOLDER, ANIMATION } from "@/lib/design-tokens";
+import {
+  HOVER_EFFECTS,
+  IMAGE_PLACEHOLDER,
+  ANIMATION,
+} from "@/lib/design-tokens";
 
 export interface Photo {
   url: string;
@@ -27,30 +31,30 @@ interface PhotoCardProps {
 
 /**
  * PhotoCard Component
- * 
+ *
  * Individual photo card for the gallery grid.
  * Supports both masonry (natural aspect ratio) and uniform (square) layouts.
- * 
+ *
  * Features:
  * - Responsive image sizing
  * - Hover effects with lift animation
  * - Optional caption overlay
  * - Click handler for lightbox integration
- * 
+ *
  * @example
  * ```tsx
- * <PhotoCard 
- *   photo={photo} 
- *   index={0} 
- *   layout="masonry" 
- *   onClick={handleClick} 
+ * <PhotoCard
+ *   photo={photo}
+ *   index={0}
+ *   layout="masonry"
+ *   onClick={handleClick}
  * />
  * ```
  */
-export function PhotoCard({ 
-  photo, 
-  index, 
-  layout, 
+export function PhotoCard({
+  photo,
+  index,
+  layout,
   onClick,
   priority = false,
 }: PhotoCardProps) {
@@ -79,14 +83,18 @@ export function PhotoCard({
       aria-label={onClick ? `View ${photo.alt}` : undefined}
     >
       {/* Image */}
-      <div 
+      <div
         className={cn(
           "relative w-full overflow-hidden",
           layout === "uniform" ? "aspect-square" : ""
         )}
-        style={layout === "masonry" ? { 
-          aspectRatio: `${photo.width} / ${photo.height}` 
-        } : undefined}
+        style={
+          layout === "masonry"
+            ? {
+                aspectRatio: `${photo.width} / ${photo.height}`,
+              }
+            : undefined
+        }
       >
         <Image
           src={photo.url}
@@ -106,15 +114,15 @@ export function PhotoCard({
 
       {/* Caption overlay (shown on hover) */}
       {photo.caption && (
-        <div className={cn(
-          "absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent",
-          "px-3 py-2 translate-y-full transition-transform",
-          ANIMATION.duration.normal,
-          "group-hover:translate-y-0"
-        )}>
-          <p className="text-sm text-white line-clamp-2">
-            {photo.caption}
-          </p>
+        <div
+          className={cn(
+            "absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent",
+            "px-3 py-2 translate-y-full transition-transform",
+            ANIMATION.duration.normal,
+            "group-hover:translate-y-0"
+          )}
+        >
+          <p className="text-sm text-white line-clamp-2">{photo.caption}</p>
         </div>
       )}
     </div>

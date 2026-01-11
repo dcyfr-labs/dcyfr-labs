@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { PostHeroImage } from '@/components/blog/post/post-hero-image'
+import { PostHeroImage } from '@/components/blog'
 
 describe('PostHeroImage', () => {
   it('uses caption as alt text when caption is provided', () => {

@@ -154,7 +154,7 @@ export function PageHero({
     return (
       <section
         className={cn(
-          "w-full pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12 relative overflow-visible",
+          "w-full pt-6 md:pt-8 lg:pt-10 pb-8 md:pb-12 relative overflow-visible",
           align === "center" && "flex flex-col items-center",
           className
         )}

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { Logo } from "@/components/common/logo";
+import { Logo } from "@/components/common";
 import type { Education } from "@/data/resume";
 
 interface CollapsibleEducationProps {

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ModernPostCard } from "@/components/blog/post/modern-post-card";
+import { ModernPostCard } from '@/components/blog';
 import { ARCHIVE_ANIMATIONS, VIEW_MODES } from "@/lib/design-tokens";
 import type { Post } from "@/data/posts";
 

@@ -14,9 +14,7 @@ Sentry.init({
   enabled: !isDev,
 
   // Add optional integrations for additional features
-  integrations: [
-    Sentry.replayIntegration(),
-  ],
+  integrations: [Sentry.replayIntegration()],
 
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1,
@@ -69,9 +67,10 @@ Sentry.init({
     /^https?:\/\/[^/]*\.intercom\.io\//i,
   ],
 
-  // Enable sending user PII (Personally Identifiable Information)
+  // Disable sending user PII (Personally Identifiable Information) for privacy compliance
+  // The app handles its own PII masking (IP anonymization, email domain-only logging)
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
-  sendDefaultPii: true,
+  sendDefaultPii: false,
 });
 
 // Initialize BotID for bot detection and protection

@@ -1,9 +1,9 @@
 /**
  * JSON-LD Schema Utilities
- * 
+ *
  * Helper functions for generating Schema.org structured data (JSON-LD) for SEO.
  * These utilities create consistent, valid schemas across the site.
- * 
+ *
  * References:
  * - https://schema.org/
  * - https://developers.google.com/search/docs/appearance/structured-data
@@ -57,7 +57,7 @@ export function getWebSiteSchema() {
 /**
  * BreadcrumbList schema for navigation
  * Helps search engines understand site hierarchy
- * 
+ *
  * @param items - Array of breadcrumb items with name and url
  * @example
  * getBreadcrumbSchema([
@@ -66,7 +66,9 @@ export function getWebSiteSchema() {
  *   { name: "Post Title", url: "https://example.com/blog/post-slug" }
  * ])
  */
-export function getBreadcrumbSchema(items: Array<{ name: string; url: string }>) {
+export function getBreadcrumbSchema(
+  items: Array<{ name: string; url: string }>
+) {
   return {
     "@type": "BreadcrumbList" as const,
     itemListElement: items.map((item, index) => ({
@@ -81,12 +83,16 @@ export function getBreadcrumbSchema(items: Array<{ name: string; url: string }>)
 /**
  * Enhanced Article schema for blog posts
  * Includes all recommended properties for Google Rich Results
- * 
+ *
  * @param post - Post object with metadata
  * @param viewCount - Optional view count for interaction statistics
  * @param imageUrl - Social preview image URL
  */
-export function getArticleSchema(post: Post, viewCount: number | null, imageUrl: string) {
+export function getArticleSchema(
+  post: Post,
+  viewCount: number | null,
+  imageUrl: string
+) {
   return {
     "@type": "Article" as const,
     "@id": `${SITE_URL}/blog/${post.slug}#article`,
@@ -120,9 +126,9 @@ export function getArticleSchema(post: Post, viewCount: number | null, imageUrl:
     timeRequired: post.readingTime.text,
     inLanguage: "en-US",
     isAccessibleForFree: true,
-    ...(post.archived && { 
+    ...(post.archived && {
       creativeWorkStatus: "Archived",
-      archivedAt: post.updatedAt || post.publishedAt 
+      archivedAt: post.updatedAt || post.publishedAt,
     }),
     ...(typeof viewCount === "number" && viewCount > 0
       ? {
@@ -139,12 +145,16 @@ export function getArticleSchema(post: Post, viewCount: number | null, imageUrl:
 /**
  * CollectionPage with ItemList schema for blog listing
  * Shows all blog posts in a structured list
- * 
+ *
  * @param posts - Array of posts to include in the list
  * @param title - Page title (e.g., "Blog" or "Blog - JavaScript")
  * @param description - Page description
  */
-export function getBlogCollectionSchema(posts: Post[], title: string, description: string) {
+export function getBlogCollectionSchema(
+  posts: Post[],
+  title: string,
+  description: string
+) {
   return {
     "@type": "CollectionPage" as const,
     "@id": `${SITE_URL}/blog#collection`,
@@ -170,7 +180,7 @@ export function getBlogCollectionSchema(posts: Post[], title: string, descriptio
 /**
  * AboutPage and ProfilePage schema
  * Combines AboutPage (for site structure) and ProfilePage (for personal info)
- * 
+ *
  * @param description - About page description
  * @param socialImage - Optional profile image URL
  */
@@ -209,7 +219,7 @@ export function getAboutPageSchema(description: string, socialImage?: string) {
 /**
  * ContactPage schema
  * Helps search engines understand contact information
- * 
+ *
  * @param description - Contact page description
  */
 export function getContactPageSchema(description: string) {
@@ -232,7 +242,7 @@ export function getContactPageSchema(description: string) {
 /**
  * ResumePage schema with Person and work experience
  * Provides rich structured data for resume/CV pages
- * 
+ *
  * @param description - Resume page description
  * @param experience - Array of work experience objects
  */
@@ -259,18 +269,19 @@ export function getResumePageSchema(
       },
       {
         ...getPersonSchema(),
-        ...(experience && experience.length > 0 && {
-          workExperience: experience.map((exp) => ({
-            "@type": "EmploymentHistory",
-            name: exp.title,
-            employmentType: "FULL_TIME",
-            employer: {
-              "@type": "Organization",
-              name: exp.company,
-            },
-            description: exp.duration,
-          })),
-        }),
+        ...(experience &&
+          experience.length > 0 && {
+            workExperience: experience.map((exp) => ({
+              "@type": "EmploymentHistory",
+              name: exp.title,
+              employmentType: "FULL_TIME",
+              employer: {
+                "@type": "Organization",
+                name: exp.company,
+              },
+              description: exp.duration,
+            })),
+          }),
       },
     ],
   };
@@ -279,14 +290,14 @@ export function getResumePageSchema(
 /**
  * Generate complete JSON-LD script tag content
  * Handles nonce for CSP and proper JSON stringification
- * 
+ *
  * @param schema - Schema object(s) to serialize
  * @param nonce - CSP nonce for inline scripts (pass as non-undefined for CSP compliance)
  * @returns Props for script tag
- * 
+ *
  * NOTE: This is exported from metadata.ts for consistency with the rest of the codebase.
  * Import from there instead to avoid duplicate implementations.
- * 
+ *
  * @deprecated Use getJsonLdScriptProps from @/lib/metadata instead
  */
 export { getJsonLdScriptProps } from "./metadata";

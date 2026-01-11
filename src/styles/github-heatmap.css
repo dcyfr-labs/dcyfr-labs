@@ -1,0 +1,99 @@
+/* ===================================================================
+   GitHub Heatmap Styles
+   ================================================================
+   Styles for react-calendar-heatmap component used in GitHub
+   contribution visualization.
+   
+   Features:
+   - Fade-in animations for cells
+   - Grayscale color scales for light/dark modes
+   - Hover effects and transitions
+   - Text label styling
+   ================================================================ */
+
+/* Heatmap cell animations */
+.react-calendar-heatmap rect {
+  animation: heatmap-cell-fade-in 0.3s ease-out;
+  animation-fill-mode: both;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+/* Stagger animation delay based on cell position */
+.react-calendar-heatmap rect:nth-child(n) {
+  animation-delay: calc(var(--cell-index, 0) * 2ms);
+}
+
+.react-calendar-heatmap rect:hover {
+  opacity: 0.8;
+  transform: scale(1.1);
+}
+
+@keyframes heatmap-cell-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.react-calendar-heatmap .color-empty {
+  fill: hsl(var(--muted));
+}
+
+/* Light mode - grayscale opacity gradient (black → transparent) */
+.react-calendar-heatmap .color-scale-1 {
+  fill: oklch(0.80 0 0);
+}
+
+.react-calendar-heatmap .color-scale-2 {
+  fill: oklch(0.60 0 0);
+}
+
+.react-calendar-heatmap .color-scale-3 {
+  fill: oklch(0.40 0 0);
+}
+
+.react-calendar-heatmap .color-scale-4 {
+  fill: oklch(0.20 0 0);
+}
+
+/* Dark mode - grayscale opacity gradient (white → transparent) */
+.dark .react-calendar-heatmap .color-empty {
+  fill: oklch(0.25 0 0);
+  stroke: oklch(0.30 0 0);
+  stroke-width: 1px;
+}
+
+.dark .react-calendar-heatmap .color-scale-1 {
+  fill: oklch(0.40 0 0);
+  stroke: oklch(0.35 0 0);
+  stroke-width: 1px;
+}
+
+.dark .react-calendar-heatmap .color-scale-2 {
+  fill: oklch(0.55 0 0);
+  stroke: oklch(0.50 0 0);
+  stroke-width: 1px;
+}
+
+.dark .react-calendar-heatmap .color-scale-3 {
+  fill: oklch(0.70 0 0);
+  stroke: oklch(0.65 0 0);
+  stroke-width: 1px;
+}
+
+.dark .react-calendar-heatmap .color-scale-4 {
+  fill: oklch(0.85 0 0);
+  stroke: oklch(0.80 0 0);
+  stroke-width: 1px;
+}
+
+/* Text labels */
+.react-calendar-heatmap text {
+  fill: hsl(var(--muted-foreground));
+  font-size: 10px;
+}

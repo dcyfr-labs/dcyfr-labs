@@ -11,7 +11,7 @@ import {
   importPresets,
   DEFAULT_PRESETS,
   type ActivityFilterPreset,
-} from "@/lib/activity/presets";
+} from "@/lib/activity";
 
 describe("Activity Filter Presets", () => {
   beforeEach(() => {

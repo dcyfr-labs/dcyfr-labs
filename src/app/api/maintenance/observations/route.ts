@@ -22,15 +22,15 @@ let inMemoryObservations: Observation[] = [];
  */
 async function getRedisClient() {
   if (!redisUrl) {
-    console.log("[Redis] REDIS_URL not configured");
+    console.warn("[Redis] REDIS_URL not configured");
     return null;
   }
 
   try {
-    console.log("[Redis] Attempting connection...");
+    console.warn("[Redis] Attempting connection...");
     const client = createClient({ url: redisUrl });
     await client.connect();
-    console.log("[Redis] Successfully connected");
+    console.warn("[Redis] Successfully connected");
     return client;
   } catch (err) {
     const errorMsg = err instanceof Error ? err.message : String(err);
@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
       try {
         const cached = await redis.lRange(OBSERVATIONS_KEY, 0, -1);
         const cachedLength = Array.isArray(cached) ? cached.length : 0;
-        console.log(`[Redis LRANGE] Retrieved ${cachedLength} items from ${OBSERVATIONS_KEY}`);
+        console.warn(`[Redis LRANGE] Retrieved ${cachedLength} items from ${OBSERVATIONS_KEY}`);
 
         if (Array.isArray(cached) && cached.length > 0) {
           observations = cached
@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
             })
             .filter((item: Observation | null): item is Observation => item !== null);
           fetchedFromRedis = true;
-          console.log(`[Redis] Successfully parsed ${observations.length} observations`);
+          console.warn(`[Redis] Successfully parsed ${observations.length} observations`);
         }
       } catch (redisError) {
         console.error("Failed to fetch from Redis:", {
@@ -103,7 +103,7 @@ export async function GET(request: NextRequest) {
 
     // Fall back to in-memory storage if Redis not available or empty
     if (observations.length === 0) {
-      console.log(`[Fallback] Using in-memory storage with ${inMemoryObservations.length} observations`);
+      console.warn(`[Fallback] Using in-memory storage with ${inMemoryObservations.length} observations`);
       observations = [...inMemoryObservations];
     }
 
@@ -210,13 +210,13 @@ export async function POST(request: NextRequest) {
     if (redis) {
       try {
         // Add to front of list (most recent first)
-        console.log(`[Redis] Attempting to store observation: ${observation.id}`);
+        console.warn(`[Redis] Attempting to store observation: ${observation.id}`);
         const pushResult = await redis.lPush(OBSERVATIONS_KEY, JSON.stringify(observation));
-        console.log(`[Redis LPUSH] Success. New list length: ${pushResult}`);
+        console.warn(`[Redis LPUSH] Success. New list length: ${pushResult}`);
 
         // Trim to keep only last MAX_OBSERVATIONS
         const trimResult = await redis.lTrim(OBSERVATIONS_KEY, 0, MAX_OBSERVATIONS - 1);
-        console.log(`[Redis LTRIM] Success. Trimmed to max ${MAX_OBSERVATIONS}`);
+        console.warn(`[Redis LTRIM] Success. Trimmed to max ${MAX_OBSERVATIONS}`);
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : String(err);
         const errorStack = err instanceof Error ? err.stack : "";
@@ -242,10 +242,10 @@ export async function POST(request: NextRequest) {
     // Use in-memory storage if Redis not available or failed
     if (usingFallback) {
       inMemoryObservations = [observation, ...inMemoryObservations].slice(0, MAX_OBSERVATIONS);
-      console.log(`[In-Memory] Stored observation. Total in memory: ${inMemoryObservations.length}`);
+      console.warn(`[In-Memory] Stored observation. Total in memory: ${inMemoryObservations.length}`);
     }
 
-    console.log('[Observation] Created:', {
+    console.warn('[Observation] Created:', {
       severity: severity.toUpperCase(),
       titleLength: title.length,
       storage: usingFallback ? 'in-memory' : 'Redis',

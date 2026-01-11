@@ -3,11 +3,11 @@
 import * as React from "react";
 import Link from "next/link";
 import type { Post } from "@/data/posts";
-import type { ActivityItem } from "@/lib/activity/types";
-import { PostList } from "@/components/blog/post/post-list";
+import type { ActivityItem } from "@/lib/activity";
+import { PostList } from "@/components/blog/client";
 import { ActivityFeed } from "@/components/activity";
 import { Button } from "@/components/ui/button";
-import { PageHero } from "@/components/layouts/page-hero";
+import { PageHero } from "@/components/layouts";
 import { Alert } from "@/components/common";
 import {
   Dialog,
@@ -20,7 +20,12 @@ import {
 import { Trash2, Heart, HeartOff, Sparkles, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { useActivityReactions } from "@/hooks/use-activity-reactions";
-import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS, CONTAINER_PADDING } from "@/lib/design-tokens";
+import {
+  TYPOGRAPHY,
+  SPACING,
+  CONTAINER_WIDTHS,
+  CONTAINER_PADDING,
+} from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 
 // Recommended starter posts to like
@@ -51,14 +56,16 @@ interface LikesClientProps {
  */
 export function LikesClient({ posts, activities }: LikesClientProps) {
   const { isLiked, toggleLike, getLikedIds } = useActivityReactions();
-  const [layout] = React.useState<"grid" | "list" | "magazine" | "compact">("magazine");
+  const [layout] = React.useState<"grid" | "list" | "magazine" | "compact">(
+    "magazine"
+  );
   const [isMounted, setIsMounted] = React.useState(false);
   const [showClearDialog, setShowClearDialog] = React.useState(false);
 
   // Get recommended posts that aren't already liked
   const recommendedPosts = React.useMemo(() => {
     if (!isMounted || !posts) return [];
-    return posts.filter(post => {
+    return posts.filter((post) => {
       const inRecommended = RECOMMENDED_LIKES.includes(post.slug);
       if (!inRecommended) return false;
       return !isLiked(post.slug);
@@ -68,14 +75,14 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
   // Filter posts to only show liked ones (only after mount to prevent hydration mismatch)
   const likedPosts = React.useMemo(() => {
     if (!isMounted || !posts) return [];
-    return posts.filter(post => isLiked(post.slug));
+    return posts.filter((post) => isLiked(post.slug));
   }, [posts, isLiked, isMounted]);
 
   // Filter activities to only show liked ones
   // This catches all activity types: blog posts, projects, GitHub commits, etc.
   const likedActivities = React.useMemo(() => {
     if (!isMounted || !activities) return [];
-    return activities.filter(activity => {
+    return activities.filter((activity) => {
       // For blog posts, check if slug from href is liked
       if (activity.source === "blog" && activity.href.startsWith("/blog/")) {
         const slug = activity.href.replace("/blog/", "");
@@ -90,9 +97,9 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
   const totalLiked = React.useMemo(() => {
     if (!isMounted) return 0;
     // Count unique items (avoid double-counting blog posts that appear in both lists)
-    const postSlugs = new Set(likedPosts.map(p => p.slug));
-    const nonBlogActivities = likedActivities.filter(a =>
-      !(a.source === "blog" && a.href.startsWith("/blog/"))
+    const postSlugs = new Set(likedPosts.map((p) => p.slug));
+    const nonBlogActivities = likedActivities.filter(
+      (a) => !(a.source === "blog" && a.href.startsWith("/blog/"))
     );
     return postSlugs.size + nonBlogActivities.length;
   }, [likedPosts, likedActivities, isMounted]);
@@ -100,8 +107,8 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
   // Non-blog activities to display (avoid duplicating blog posts shown in PostList)
   const nonBlogLikedActivities = React.useMemo(() => {
     if (!isMounted) return [];
-    return likedActivities.filter(a =>
-      !(a.source === "blog" && a.href.startsWith("/blog/"))
+    return likedActivities.filter(
+      (a) => !(a.source === "blog" && a.href.startsWith("/blog/"))
     );
   }, [likedActivities, isMounted]);
 
@@ -117,9 +124,9 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
       return;
     }
 
-    recommendedPosts.forEach(post => toggleLike(post.slug));
+    recommendedPosts.forEach((post) => toggleLike(post.slug));
     toast.success(
-      `Liked ${recommendedPosts.length} recommended post${recommendedPosts.length === 1 ? '' : 's'}!`,
+      `Liked ${recommendedPosts.length} recommended post${recommendedPosts.length === 1 ? "" : "s"}!`,
       { duration: 3000 }
     );
   };
@@ -127,7 +134,7 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
   // Clear all likes using the hook's method
   const handleClearAll = () => {
     const likedIds = getLikedIds("like");
-    likedIds.forEach(id => toggleLike(id));
+    likedIds.forEach((id) => toggleLike(id));
     setShowClearDialog(false);
     toast.success("All likes cleared");
   };
@@ -139,6 +146,7 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
         <PageHero
           title="Likes"
           description="Content you've liked and engaged with"
+          align="center"
         />
         <div className="flex flex-col items-center justify-center py-16 px-4">
           <HeartOff className="h-16 w-16 text-muted-foreground/50 mb-4" />
@@ -154,6 +162,7 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
       <PageHero
         title="Likes"
         description="Content you've liked and engaged with"
+        align="center"
       />
 
       {/* Dynamic Count and Actions */}
@@ -264,11 +273,12 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
 
         {/* Info Banner */}
         {isMounted && totalLiked > 0 && (
-          <Alert type="info" className="mt-8">
+          <Alert type="notice" className="mt-8">
             <div>
               <p className="font-medium mb-1">Likes stored locally</p>
               <p className="text-sm">
-                Your likes are saved in your browser&apos;s local storage. They won&apos;t sync across devices or be visible to others.
+                Your likes are saved in your browser&apos;s local storage. They
+                won&apos;t sync across devices or be visible to others.
               </p>
             </div>
           </Alert>

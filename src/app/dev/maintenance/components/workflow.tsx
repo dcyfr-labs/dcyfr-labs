@@ -1,13 +1,20 @@
 /**
  * Workflow Components
- * 
+ *
  * WorkflowStatusBadge and WorkflowCard components for displaying workflow status
  */
 
 import { Badge } from "@/components/ui/badge";
-import { SEMANTIC_COLORS, NEON_COLORS } from "@/lib/design-tokens";
+import { cn } from "@/lib/utils";
+import { SEMANTIC_COLORS } from "@/lib/design-tokens";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ExternalLink } from "lucide-react";
 import type { WorkflowSummary } from "@/types/maintenance";
@@ -25,7 +32,7 @@ export function WorkflowStatusBadge({
   if (status === "in_progress" || status === "queued") {
     return (
       <Badge variant="secondary" className="gap-1">
-        <span className={`h-2 w-2 rounded-full ${NEON_COLORS.cyan.dot} animate-pulse`} />
+        <span className="h-2 w-2 rounded-full bg-semantic-cyan animate-pulse" />
         {status === "queued" ? "Queued" : "Running"}
       </Badge>
     );
@@ -33,17 +40,27 @@ export function WorkflowStatusBadge({
 
   if (conclusion === "success") {
     return (
-      <Badge variant="outline" className={`gap-1 ${NEON_COLORS.lime.badge}`}>
-        <span className={`h-2 w-2 rounded-full ${NEON_COLORS.lime.dot}`} />
+      <Badge
+        variant="outline"
+        className={cn("gap-1", SEMANTIC_COLORS.status.success)}
+      >
+        <span className="h-2 w-2 rounded-full bg-success" />
         Success
       </Badge>
     );
   }
 
-  if (conclusion === "failure" || conclusion === "timed_out" || conclusion === "action_required") {
+  if (
+    conclusion === "failure" ||
+    conclusion === "timed_out" ||
+    conclusion === "action_required"
+  ) {
     return (
-      <Badge variant="outline" className={`gap-1 ${NEON_COLORS.red.badge}`}>
-        <span className={`h-2 w-2 rounded-full ${NEON_COLORS.red.dot}`} />
+      <Badge
+        variant="outline"
+        className={cn("gap-1", SEMANTIC_COLORS.status.error)}
+      >
+        <span className="h-2 w-2 rounded-full bg-error" />
         Failed
       </Badge>
     );
@@ -51,8 +68,11 @@ export function WorkflowStatusBadge({
 
   if (conclusion === "cancelled" || conclusion === "skipped") {
     return (
-      <Badge variant="outline" className={`gap-1 ${NEON_COLORS.yellow.badge}`}>
-        <span className={`h-2 w-2 rounded-full ${NEON_COLORS.yellow.dot}`} />
+      <Badge
+        variant="outline"
+        className={cn("gap-1", SEMANTIC_COLORS.status.warning)}
+      >
+        <span className="h-2 w-2 rounded-full bg-warning" />
         {conclusion === "cancelled" ? "Cancelled" : "Skipped"}
       </Badge>
     );
@@ -74,12 +94,15 @@ export function WorkflowCard({ workflow }: { workflow: WorkflowSummary }) {
           <div>
             <CardTitle className="text-lg">{workflow.workflow_name}</CardTitle>
             <CardDescription className="mt-1">
-              Pass rate: {workflow.pass_rate.toFixed(1)}% ({workflow.successful_runs}/
-              {workflow.total_runs})
+              Pass rate: {workflow.pass_rate.toFixed(1)}% (
+              {workflow.successful_runs}/{workflow.total_runs})
             </CardDescription>
           </div>
           {lastRun && (
-            <WorkflowStatusBadge status={lastRun.status} conclusion={lastRun.conclusion} />
+            <WorkflowStatusBadge
+              status={lastRun.status}
+              conclusion={lastRun.conclusion}
+            />
           )}
         </div>
       </CardHeader>
@@ -96,7 +119,9 @@ export function WorkflowCard({ workflow }: { workflow: WorkflowSummary }) {
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Branch:</span>
-              <span className="font-mono text-xs">{lastRun.head_branch || "N/A"}</span>
+              <span className="font-mono text-xs">
+                {lastRun.head_branch || "N/A"}
+              </span>
             </div>
             <div className="mt-4">
               <Button variant="outline" size="sm" className="w-full" asChild>

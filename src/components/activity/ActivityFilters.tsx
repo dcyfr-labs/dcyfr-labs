@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS, CONTAINER_PADDING } from "@/lib/design-tokens";
 import { type ActivitySource } from "@/lib/activity";
-import { Logo } from "@/components/common/logo";
+import { Logo } from "@/components/common";
 
 // ============================================================================
 // TYPES

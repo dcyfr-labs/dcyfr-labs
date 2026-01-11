@@ -4,20 +4,14 @@ import { SPACING, TYPOGRAPHY, HOVER_EFFECTS } from "@/lib/design-tokens";
 import { AUTHOR_EMAIL } from "@/lib/site-config";
 import { getSocialLink } from "@/data/socials";
 import { cn } from "@/lib/utils";
-import {
-  Mail,
-  Calendar,
-  Linkedin,
-  Github,
-  ExternalLink,
-} from "lucide-react";
+import { Mail, Calendar, Linkedin, Github, ExternalLink } from "lucide-react";
 
 /**
  * Contact Methods Component
- * 
+ *
  * Displays primary contact methods including email and key social platforms.
  * Provides users with multiple ways to reach out beyond the contact form.
- * 
+ *
  * Features:
  * - Direct email link
  * - Key social platforms (LinkedIn, GitHub, Calendar)
@@ -25,7 +19,7 @@ import {
  * - External link indicators
  * - Responsive grid layout
  * - Full design token compliance
- * 
+ *
  * @example
  * ```tsx
  * <ContactMethods />
@@ -114,10 +108,7 @@ export function ContactMethods() {
                     <p className="font-semibold text-sm group-hover:text-primary transition-colors flex items-center justify-center gap-1.5">
                       {method.label}
                       {isExternal && (
-                        <ExternalLink
-                          className="h-3 w-3"
-                          aria-hidden="true"
-                        />
+                        <ExternalLink className="h-3 w-3" aria-hidden="true" />
                       )}
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">

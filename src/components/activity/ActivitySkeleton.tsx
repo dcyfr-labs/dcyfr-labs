@@ -22,7 +22,7 @@
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SPACING } from "@/lib/design-tokens";
-import type { ActivityVariant } from "@/lib/activity/types";
+import type { ActivityVariant } from "@/lib/activity";
 
 // ============================================================================
 // TYPES

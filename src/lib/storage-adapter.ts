@@ -275,7 +275,7 @@ export function createStorageAdapter(
   if (isAuthenticated && authToken) {
     // For now, still use localStorage (API not implemented)
     // return new ApiStorageAdapter("/api/user/engagement", authToken);
-    console.log("[StorageAdapter] OAuth not yet implemented, using localStorage");
+    console.warn("[StorageAdapter] OAuth not yet implemented, using localStorage");
     return new LocalStorageAdapter();
   }
 
@@ -311,6 +311,6 @@ export async function migrateLocalStorageToApi(adapter: StorageAdapter): Promise
     }
   }
 
-  console.log(`[Migration] Migrated ${migratedCount} items to API storage`);
+  console.warn(`[Migration] Migrated ${migratedCount} items to API storage`);
   return migratedCount;
 }

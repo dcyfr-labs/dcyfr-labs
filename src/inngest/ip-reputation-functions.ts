@@ -311,7 +311,7 @@ async function fetchIpsFromAxiom(config: IPReputationConfig): Promise<string[]> 
     // const axiomResult = await axiomClient.query(config.axiom_dataset, config.axiom_query);
     // return axiomResult.results.map(r => r.ip).filter(ip => r.count > config.min_request_threshold);
     
-    console.log("Axiom integration not implemented yet - returning empty IP list");
+    console.warn("Axiom integration not implemented yet - returning empty IP list");
     return [];
   } catch (error) {
     console.error("Failed to fetch IPs from Axiom:", error);
@@ -329,8 +329,8 @@ async function updateBlockedIpsList(ips: string[], reason: string): Promise<void
   try {
     // This would update your Redis-based blocking system
     // Implementation depends on your current blocking mechanism
-    console.log(`Would block ${ips.length} IPs for reason: ${reason}`);
-    console.log("Blocked IPs:", ips);
+    console.warn(`Would block ${ips.length} IPs for reason: ${reason}`);
+    console.warn("Blocked IPs:", ips);
   } catch (error) {
     console.error("Failed to update blocked IPs list:", error);
     Sentry.captureException(error, {
@@ -345,8 +345,8 @@ async function updateBlockedIpsList(ips: string[], reason: string): Promise<void
 async function updateSuspiciousIpsList(ips: string[]): Promise<void> {
   try {
     // This would update your rate limiting configuration
-    console.log(`Would apply enhanced rate limiting to ${ips.length} IPs`);
-    console.log("Rate limited IPs:", ips);
+    console.warn(`Would apply enhanced rate limiting to ${ips.length} IPs`);
+    console.warn("Rate limited IPs:", ips);
   } catch (error) {
     console.error("Failed to update suspicious IPs list:", error);
     Sentry.captureException(error, {

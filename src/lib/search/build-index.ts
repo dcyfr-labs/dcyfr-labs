@@ -62,7 +62,7 @@ function generateSearchIndex(): SearchIndex {
         series: post.series?.name || null,
         publishedAt: post.publishedAt,
         readingTime: post.readingTime.minutes,
-        url: `/blog/${post.id}`,
+        url: `/blog/${post.slug}`,
       };
     });
 
@@ -87,7 +87,7 @@ function generateSearchIndex(): SearchIndex {
  * Main execution
  */
 function main() {
-  console.log("[SearchIndex] Generating search index...");
+  console.warn("[SearchIndex] Generating search index...");
 
   const index = generateSearchIndex();
 
@@ -106,12 +106,12 @@ function main() {
   // Log stats
   const sizeKB = (fs.statSync(outputPath).size / 1024).toFixed(2);
 
-  console.log(`[SearchIndex] ✅ Generated search index:`);
-  console.log(`  - Posts: ${index.posts.length}`);
-  console.log(`  - Tags: ${index.tags.length}`);
-  console.log(`  - Series: ${index.series.length}`);
-  console.log(`  - Size: ${sizeKB} KB`);
-  console.log(`  - Output: ${outputPath}`);
+  console.warn(`[SearchIndex] ✅ Generated search index:`);
+  console.warn(`  - Posts: ${index.posts.length}`);
+  console.warn(`  - Tags: ${index.tags.length}`);
+  console.warn(`  - Series: ${index.series.length}`);
+  console.warn(`  - Size: ${sizeKB} KB`);
+  console.warn(`  - Output: ${outputPath}`);
 }
 
 // Run if called directly

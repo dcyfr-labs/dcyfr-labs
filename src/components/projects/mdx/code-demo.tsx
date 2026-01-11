@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { MDX } from "@/components/common/mdx";
+import { MDX } from "@/components/common";
 import { SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
 
 interface CodeDemoProps {

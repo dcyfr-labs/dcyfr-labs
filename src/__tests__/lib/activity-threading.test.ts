@@ -9,8 +9,8 @@ import {
   groupActivitiesIntoThreads,
   getCollapsedSummary,
   type ActivityThread,
-} from "@/lib/activity/threading";
-import type { ActivityItem } from "@/lib/activity/types";
+} from "@/lib/activity";
+import type { ActivityItem } from "@/lib/activity";
 
 // ============================================================================
 // TEST DATA FACTORIES
@@ -293,8 +293,8 @@ describe("Activity Threading System", () => {
       const commit2 = createCommit("my-app", "fix: bug fix", 0);
 
       // Debug: log the meta values
-      console.log("Project meta:", project.meta);
-      console.log("Commit1 meta:", commit1.meta);
+      console.warn("Project meta:", project.meta);
+      console.warn("Commit1 meta:", commit1.meta);
 
       // Project first to be primary
       const threads = groupActivitiesIntoThreads([project, commit1, commit2]);

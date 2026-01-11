@@ -112,13 +112,13 @@ interface TrendingSectionProps {
 **Usage:**
 
 ```tsx
-import { TrendingSection } from '@/components/home/trending-section'
+import { TrendingSection } from "@/components/home/trending-section";
 
 export default async function HomePage() {
-  const posts = await getAllPosts()
-  const viewCounts = await getViewCounts()
-  const topics = calculateTrendingTopics(posts)
-  const projects = await getTrendingProjects(allProjects)
+  const posts = await getAllPosts();
+  const viewCounts = await getViewCounts();
+  const topics = calculateTrendingTopics(posts);
+  const projects = await getTrendingProjects(allProjects);
 
   return (
     <TrendingSection
@@ -128,7 +128,7 @@ export default async function HomePage() {
       projects={projects}
       defaultTab="posts"
     />
-  )
+  );
 }
 ```
 
@@ -142,7 +142,7 @@ export default async function HomePage() {
 
 ```typescript
 // Engagement score = views + (comments × 5) + (shares × 3)
-const score = viewCount + (comments * 5) + (shares * 3)
+const score = viewCount + comments * 5 + shares * 3;
 ```
 
 **Features:**
@@ -174,16 +174,16 @@ interface TrendingPostsPanelProps {
 ```typescript
 // Count frequency of each tag across all posts
 const topicCounts = posts.reduce((acc, post) => {
-  post.tags.forEach(tag => {
-    acc[tag] = (acc[tag] || 0) + 1
-  })
-  return acc
-}, {})
+  post.tags.forEach((tag) => {
+    acc[tag] = (acc[tag] || 0) + 1;
+  });
+  return acc;
+}, {});
 
 // Sort by count descending
 const sorted = Object.entries(topicCounts)
   .sort(([, a], [, b]) => b - a)
-  .slice(0, maxTopics)
+  .slice(0, maxTopics);
 ```
 
 **Features:**
@@ -261,10 +261,12 @@ interface TrendingProject {
 The Trending Projects feature uses the GitHub API for real-time repository statistics.
 
 **Without Token:**
+
 - ❌ Rate limit: 60 requests/hour (shared across all visitors)
 - ⚠️ May hit rate limit on high-traffic sites
 
 **With Token:**
+
 - ✅ Rate limit: 5,000 requests/hour
 - ✅ More reliable for production
 
@@ -292,7 +294,7 @@ The system uses the **Stargazers API with timestamps** for accurate recent star 
 const { data: stargazers } = await octokit.activity.listStargazersForRepo({
   owner: repoOwner,
   repo: repoName,
-  headers: { Accept: 'application/vnd.github.star+json' },
+  headers: { Accept: "application/vnd.github.star+json" },
   per_page: 100,
   page: 1,
 });
@@ -323,15 +325,16 @@ When GitHub API fails (rate limit, network error, invalid token):
 
 ```typescript
 // Fallback scoring based on project metadata
-const baseScore = 50;                                    // Base score
-const featuredBonus = project.featured ? 20 : 0;        // +20 if featured
+const baseScore = 50; // Base score
+const featuredBonus = project.featured ? 20 : 0; // +20 if featured
 const statusBonus = project.status === "active" ? 15 : 10; // +15 if active
-const techBonus = (project.tech?.length || 0) * 2;      // +2 per tech
+const techBonus = (project.tech?.length || 0) * 2; // +2 per tech
 
 return baseScore + featuredBonus + statusBonus + techBonus;
 ```
 
 **User Experience:**
+
 - Projects still appear in trending section
 - No star counts shown
 - Status badges shown instead (Active/In Progress)
@@ -357,7 +360,7 @@ return baseScore + featuredBonus + statusBonus + techBonus;
 
 ```typescript
 // Modify in the component
-const engagementScore = viewCount + (comments * 10) + (shares * 5); // Increase comment weight
+const engagementScore = viewCount + comments * 10 + shares * 5; // Increase comment weight
 ```
 
 ### Trending Topics
@@ -389,11 +392,11 @@ const topics = topTags.map((tag, index) => ({
 
 ```typescript
 const DEFAULT_OPTIONS = {
-  limit: 5,               // Top 5 projects
-  recentStarsWeight: 5,   // Recent activity importance
-  totalStarsWeight: 1,    // Total popularity importance
-  forksWeight: 2,         // Usage indicator importance
-  recencyWeight: 1.5,     // Boost for new projects (<6 months)
+  limit: 5, // Top 5 projects
+  recentStarsWeight: 5, // Recent activity importance
+  totalStarsWeight: 1, // Total popularity importance
+  forksWeight: 2, // Usage indicator importance
+  recencyWeight: 1.5, // Boost for new projects (<6 months)
 };
 ```
 
@@ -401,9 +404,9 @@ const DEFAULT_OPTIONS = {
 
 ```typescript
 const trendingProjects = await getTrendingProjects(allProjects, {
-  limit: 10,              // Show top 10
-  recentStarsWeight: 10,  // Emphasize recent activity more
-  totalStarsWeight: 0.5,  // De-emphasize total stars
+  limit: 10, // Show top 10
+  recentStarsWeight: 10, // Emphasize recent activity more
+  totalStarsWeight: 0.5, // De-emphasize total stars
 });
 ```
 
@@ -509,11 +512,11 @@ const trendingProjects = await getTrendingProjects(allProjects, {
 
 ### Test Summary
 
-| Category           | Tests | Passing | Coverage |
-|--------------------|-------|---------|----------|
-| Unit (Projects)    | 20    | 20      | 100%     |
-| Component (UI)     | 19    | 15      | 79%      |
-| **Total**          | **39**| **35**  | **90%**  |
+| Category        | Tests  | Passing | Coverage |
+| --------------- | ------ | ------- | -------- |
+| Unit (Projects) | 20     | 20      | 100%     |
+| Component (UI)  | 19     | 15      | 79%      |
+| **Total**       | **39** | **35**  | **90%**  |
 
 **Note:** Component test coverage is intentionally 79% as panel component tests were deemed unnecessary (simple presentational components covered by parent integration tests).
 
@@ -526,6 +529,7 @@ const trendingProjects = await getTrendingProjects(allProjects, {
 **Goal:** Merge "Trending Posts" and "Popular Topics" into unified tabbed interface
 
 **Completed:**
+
 - [x] Create TrendingSection parent component
 - [x] Create TrendingPostsPanel
 - [x] Create TrendingTopicsPanel
@@ -539,6 +543,7 @@ const trendingProjects = await getTrendingProjects(allProjects, {
 **Goal:** Add third "Trending Projects" tab with GitHub API integration
 
 **Completed:**
+
 - [x] Create TrendingProjectsPanel
 - [x] Implement GitHub API integration (Octokit)
 - [x] Accurate recent stars tracking (Stargazers API)
@@ -559,14 +564,15 @@ Add fourth tab showing trending tech stack usage:
 ```typescript
 // Track tech stack popularity across posts + projects
 const techCounts = {
-  "React": 15,
-  "TypeScript": 12,
+  React: 15,
+  TypeScript: 12,
   "Next.js": 10,
   // ...
-}
+};
 ```
 
 **Benefits:**
+
 - See which technologies are most featured
 - Discover new tools/frameworks
 - Identify skill gaps
@@ -581,10 +587,11 @@ const trendingSeries = [
   { name: "React Deep Dive", posts: 5, views: 1200 },
   { name: "TypeScript Tips", posts: 8, views: 980 },
   // ...
-]
+];
 ```
 
 **Benefits:**
+
 - Discover ongoing content series
 - Track reading progress
 - See multi-part narratives
@@ -606,6 +613,7 @@ Add dropdown to select trending timeframe:
 ```
 
 **Benefits:**
+
 - See daily hot takes vs. long-term classics
 - Compare short-term vs. sustained popularity
 - Discover evergreen content
@@ -620,6 +628,7 @@ Add dynamic badges based on growth rate:
 - 🚀 **Accelerating** - Growth rate increasing week-over-week
 
 **Benefits:**
+
 - Visual cues for momentum
 - Identify breakout content
 - Highlight sustained vs. temporary trends
@@ -736,18 +745,22 @@ npm run dev
 **Common Issues:**
 
 **Issue:** Projects tab shows "0 projects"
+
 - **Cause:** No active/in-progress projects with GitHub links
 - **Fix:** Add GitHub links to projects in [`data/projects.ts`](../../src/data/projects.ts)
 
 **Issue:** Tab switching doesn't work
+
 - **Cause:** Missing client component directive
 - **Fix:** Ensure `"use client"` at top of `trending-section.tsx`
 
 **Issue:** View counts not showing
+
 - **Cause:** Analytics Redis not configured
 - **Fix:** Set `REDIS_URL` environment variable
 
 **Issue:** Projects show without star counts
+
 - **Cause:** GitHub API call failed, using fallback
 - **Fix:** Check logs, verify `GITHUB_TOKEN`, check rate limits
 
@@ -784,11 +797,13 @@ await redis.set(cacheKey, JSON.stringify(trending), 'EX', 3600);
 ### Bundle Size
 
 **Current:**
+
 - TrendingSection: ~4KB (gzipped)
 - Radix UI Tabs: ~8KB (gzipped)
 - **Total:** ~12KB
 
 **Optimizations:**
+
 - ✅ Static imports (no dynamic require())
 - ✅ Tree-shaking enabled
 - ✅ Icons loaded from lucide-react (shared chunk)
@@ -822,6 +837,7 @@ await redis.set(cacheKey, JSON.stringify(trending), 'EX', 3600);
 ```
 
 **Benefits:**
+
 - 60% less vertical space
 - Cleaner visual hierarchy
 - Consistent spacing
@@ -840,21 +856,25 @@ Visual badges that show momentum and growth velocity alongside static metrics. P
 ### Badge Types
 
 **🔥 Hot** - Rapid growth (>50% in recent period)
+
 - Calculation: `(recentStars / totalStars) * 100 > 50`
 - Example: 60 recent stars out of 100 total = 60% growth
 - Color: Red (`text-red-500`, `bg-red-500/10`)
 
 **📈 Rising** - Steady growth (>20% in recent period)
+
 - Calculation: `(recentStars / totalStars) * 100 > 20`
 - Example: 25 recent stars out of 100 total = 25% growth
 - Color: Blue (`text-blue-500`, `bg-blue-500/10`)
 
 **⭐ Top** - Highest score in category
+
 - Automatically assigned to #1 ranked project
 - Only one project can be "Top" at a time
 - Color: Yellow (`text-yellow-500`, `bg-yellow-500/10`)
 
 **🚀 Accelerating** - Fast-growing new repositories
+
 - Calculation: `growthRate > 30% AND totalStars < 1000`
 - Highlights breakout projects gaining momentum
 - Color: Purple (`text-purple-500`, `bg-purple-500/10`)
@@ -871,12 +891,14 @@ Only the highest-priority badge is shown per project:
 ### Implementation
 
 **TrendingBadge Component:**
+
 ```tsx
 <TrendingBadge variant="hot" />
 <TrendingBadge variant="rising" ariaLabel="Custom label" />
 ```
 
 **Velocity Calculation:**
+
 ```typescript
 // src/lib/activity/trending-projects.ts
 function calculateVelocity(stars: number, recentStars: number) {
@@ -893,22 +915,25 @@ function calculateVelocity(stars: number, recentStars: number) {
 ```
 
 **UI Integration:**
+
 ```tsx
 // Automatically displayed in TrendingProjectsPanel
-{primaryBadge && (
-  <TrendingBadge variant={primaryBadge} />
-)}
+{
+  primaryBadge && <TrendingBadge variant={primaryBadge} />;
+}
 ```
 
 ### Testing Coverage
 
-**Component Tests** ([src/__tests__/components/ui/trending-badge.test.tsx](../../../src/__tests__/components/ui/trending-badge.test.tsx)):
+**Component Tests** ([src/**tests**/components/ui/trending-badge.test.tsx](../../../src/__tests__/components/ui/trending-badge.test.tsx)):
+
 - 16 tests covering rendering, styling, and accessibility
 - All badge variants (hot, rising, top, accelerating)
 - Custom className support
 - ARIA attributes validation
 
-**Unit Tests** ([src/__tests__/lib/trending-projects.test.ts](../../../src/__tests__/lib/trending-projects.test.ts)):
+**Unit Tests** ([src/**tests**/lib/trending-projects.test.ts](../../../src/__tests__/lib/trending-projects.test.ts)):
+
 - 6 tests for velocity indicator calculations
 - Growth rate calculation accuracy
 - Badge assignment logic (Hot, Rising, Top, Accelerating)
@@ -919,17 +944,20 @@ function calculateVelocity(stars: number, recentStars: number) {
 ### Benefits
 
 **Visual Hierarchy:**
+
 - Instant scanning - spot hot/rising items at a glance
 - Emotional engagement - emoji badges create visual interest
 - Context without calculation - users see momentum without math
 
 **Content Discovery:**
+
 - **Hot** badges highlight viral content (FOMO effect)
 - **Top** badges validate quality (social proof)
 - **Accelerating** badges show emerging trends
 - **Rising** badges indicate sustained growth
 
 **User Psychology:**
+
 - 🔥 Creates urgency ("check this out now")
 - ⭐ Validates quality (established leader)
 - 🚀 Sparks curiosity (what's building momentum?)
@@ -949,17 +977,19 @@ function calculateVelocity(stars: number, recentStars: number) {
 ### Configuration
 
 **Adjust Thresholds:**
+
 ```typescript
 // src/lib/activity/trending-projects.ts
 return {
-  isHot: growthRate > 50,        // Default: 50%
-  isRising: growthRate > 20,     // Default: 20%
+  isHot: growthRate > 50, // Default: 50%
+  isRising: growthRate > 20, // Default: 20%
   isAccelerating: growthRate > 30 && stars < 1000, // Defaults: 30%, 1000 stars
   growthRate,
 };
 ```
 
 **Disable Badges:**
+
 ```typescript
 // TrendingProjectsPanel
 const primaryBadge = null; // Don't show badges
@@ -985,6 +1015,7 @@ interface StarHistory {
 ```
 
 **Benefits:**
+
 - Perfect accuracy (no approximation)
 - Zero API calls for recent star calculation
 - Supports arbitrary time windows (7 days, 30 days, 90 days)
@@ -1020,7 +1051,11 @@ Add "Export" button to download trending data:
 Add `<iframe>` embed code for external sites:
 
 ```html
-<iframe src="https://dcyfr.com/embed/trending" width="100%" height="600"></iframe>
+<iframe
+  src="https://dcyfr.ai/embed/trending"
+  width="100%"
+  height="600"
+></iframe>
 ```
 
 ---

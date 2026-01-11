@@ -4,6 +4,7 @@ import type { FormEvent } from "react";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
+import { SPACING } from "@/lib/design-tokens";
 
 /**
  * Props for the BlogSearchForm component
@@ -60,7 +61,11 @@ type BlogSearchFormProps = {
  * @see /blog page for usage context
  * @see src/lib/blog.ts for server-side filtering logic
  */
-export function BlogSearchForm({ query, tag, readingTime }: BlogSearchFormProps) {
+export function BlogSearchForm({
+  query,
+  tag,
+  readingTime,
+}: BlogSearchFormProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -74,29 +79,30 @@ export function BlogSearchForm({ query, tag, readingTime }: BlogSearchFormProps)
 
   const applySearch = useCallback(
     (next: string) => {
-    const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParams.toString());
 
-    if (next) {
-      params.set("q", next);
-    } else {
-      params.delete("q");
-    }
+      if (next) {
+        params.set("q", next);
+      } else {
+        params.delete("q");
+      }
 
-    if (tag) {
-      params.set("tag", tag);
-    } else {
-      params.delete("tag");
-    }
-    
-    if (readingTime) {
-      params.set("readingTime", readingTime);
-    }
+      if (tag) {
+        params.set("tag", tag);
+      } else {
+        params.delete("tag");
+      }
 
-    const target = params.size > 0 ? `${pathname}?${params.toString()}` : pathname;
+      if (readingTime) {
+        params.set("readingTime", readingTime);
+      }
 
-    startTransition(() => {
-      router.replace(target, { scroll: false });
-    });
+      const target =
+        params.size > 0 ? `${pathname}?${params.toString()}` : pathname;
+
+      startTransition(() => {
+        router.replace(target, { scroll: false });
+      });
     },
     [pathname, router, searchParams, tag, readingTime]
   );
@@ -121,12 +127,11 @@ export function BlogSearchForm({ query, tag, readingTime }: BlogSearchFormProps)
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      role="search"
-      className="mt-6"
-    >
-      <div className="flex w-full items-center gap-2" aria-live="polite">
+    <form onSubmit={handleSubmit} role="search" className="mt-6">
+      <div
+        className={`flex w-full items-center gap-${SPACING.sm}`}
+        aria-live="polite"
+      >
         <Input
           type="search"
           name="q"

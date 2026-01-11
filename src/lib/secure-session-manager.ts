@@ -140,7 +140,7 @@ export class SecureSessionManager {
     const key = `${this.SESSION_PREFIX}${sessionToken}`;
     await redis.setex(key, expirySeconds, JSON.stringify(encryptedData));
 
-    console.log(`🔐 Created secure session: ${sessionToken.substring(0, 8)}... (expires in ${expirySeconds}s)`);
+    console.warn(`🔐 Created secure session: ${sessionToken.substring(0, 8)}... (expires in ${expirySeconds}s)`);
     
     return { sessionToken, csrfToken };
   }
@@ -234,7 +234,7 @@ export class SecureSessionManager {
       const key = `${this.SESSION_PREFIX}${sessionToken}`;
       const result = await redis.del(key);
       
-      console.log(`🗑️  Destroyed session: ${sessionToken.substring(0, 8)}...`);
+      console.warn(`🗑️  Destroyed session: ${sessionToken.substring(0, 8)}...`);
       return result === 1;
     } catch (error) {
       console.error('Error destroying session:', error);
@@ -282,7 +282,7 @@ export class SecureSessionManager {
         }
       }
 
-      console.log(`🧹 Cleaned up ${cleaned} expired sessions`);
+      console.warn(`🧹 Cleaned up ${cleaned} expired sessions`);
       return { cleaned };
     } catch (error) {
       console.error('Error during session cleanup:', error);
@@ -367,7 +367,7 @@ export class SecureSessionManager {
         }
       }
 
-      console.log(`🔒 Revoked ${revoked} sessions for user: ${userId}`);
+      console.warn(`🔒 Revoked ${revoked} sessions for user: ${userId}`);
       return { revoked };
     } catch (error) {
       console.error('Error revoking user sessions:', error);

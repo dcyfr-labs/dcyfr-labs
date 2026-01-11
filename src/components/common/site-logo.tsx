@@ -1,5 +1,5 @@
 import React from "react";
-import { Logo } from "@/components/common/logo";
+import { Logo } from "@/components/common";
 import { LOGO_CONFIG } from "@/lib/logo-config";
 import { cn } from "@/lib/utils";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
@@ -35,10 +35,25 @@ interface SiteLogoProps {
   collapseOnMobile?: boolean;
 }
 
-const sizeConfig: Record<SiteLogoSize, { text: string; icon: number; gap: string }> = {
-  sm: { text: TYPOGRAPHY.logo.small, icon: LOGO_CONFIG.sizes.small, gap: "gap-2" },
-  md: { text: TYPOGRAPHY.logo.medium, icon: LOGO_CONFIG.sizes.medium, gap: "gap-2.5" },
-  lg: { text: TYPOGRAPHY.logo.large, icon: LOGO_CONFIG.sizes.large, gap: "gap-3" },
+const sizeConfig: Record<
+  SiteLogoSize,
+  { text: string; icon: number; gap: string }
+> = {
+  sm: {
+    text: TYPOGRAPHY.logo.small,
+    icon: LOGO_CONFIG.sizes.small,
+    gap: "gap-2",
+  },
+  md: {
+    text: TYPOGRAPHY.logo.medium,
+    icon: LOGO_CONFIG.sizes.medium,
+    gap: "gap-2.5",
+  },
+  lg: {
+    text: TYPOGRAPHY.logo.large,
+    icon: LOGO_CONFIG.sizes.large,
+    gap: "gap-3",
+  },
 };
 
 export const SiteLogo: React.FC<SiteLogoProps> = ({
@@ -52,19 +67,27 @@ export const SiteLogo: React.FC<SiteLogoProps> = ({
   const config = sizeConfig[size];
 
   return (
-    <span className={cn("inline-flex items-center", config.gap, className)}>
+    <span
+      className={cn(
+        "inline-flex items-center text-foreground",
+        config.gap,
+        className
+      )}
+    >
       {showText && (
         <span
-          className={cn(
-            config.text,
-            collapseOnMobile && "hidden sm:inline"
-          )}
+          className={cn(config.text, collapseOnMobile && "hidden sm:inline")}
         >
           DCYFR Labs
         </span>
       )}
       {showIcon && (
-        <Logo width={config.icon} height={config.icon} aria-hidden="true" className={iconClassName} />
+        <Logo
+          width={config.icon}
+          height={config.icon}
+          aria-hidden="true"
+          className={cn("text-foreground", iconClassName)}
+        />
       )}
     </span>
   );

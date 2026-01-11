@@ -16,8 +16,8 @@ series:
   color: "development"
 image:
   url: "/blog/shipping-developer-portfolio/assets/hero.webp"
-  alt: "Shipping a Developer Portfolio Hero Image"
-  caption: "Shipping a Developer Portfolio Hero Image"
+  alt: "Developer portfolio architecture diagrams and modals showcasing Next.js App Router, Tailwind v4, and shadcn/ui components."
+  caption: "Shipping a Developer Portfolio"
   credit: "Perplexity Labs"
   width: 1200
   height: 630
@@ -48,7 +48,7 @@ In this portfolio, I only use client components where it actually matters, theme
 
 ## Architecture cheat sheet
 
-```
+```text
 src/
 ├── app/           # App Router pages and API routes
 ├── components/    # Reusable UI components
@@ -60,20 +60,24 @@ src/
 ### Stack deep dive
 
 **Next.js 15 + React 19**
+
 - App Router with server components by default
 - Turbopack for lightning-fast dev server (production builds use Webpack)
 - File-based metadata with zero config
 
 **TypeScript (strict)**
+
 - Type definitions for posts and projects ensure type safety
 - Server routes validate payloads aggressively
 - Strict mode catches errors at compile time
 
 **Tailwind CSS v4**
+
 - CSS-first mental model
 - Dark mode via CSS variables, no class juggling
 
 **shadcn/ui**
+
 - Accessible Radix primitives (Dialog, Dropdown, Tooltip, etc.)
 - Headless building blocks with CVA variants
 - Copy-paste component library that you own

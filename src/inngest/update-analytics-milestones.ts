@@ -44,7 +44,7 @@ export const updateAnalyticsMilestones = inngest.createFunction(
 
     // Log start
     await step.run("log-start", async () => {
-      console.log(`📊 Analytics update started (triggered by: ${triggeredBy})`);
+      console.warn(`📊 Analytics update started (triggered by: ${triggeredBy})`);
       return { triggered_by: triggeredBy, started_at: new Date().toISOString() };
     });
 
@@ -56,7 +56,7 @@ export const updateAnalyticsMilestones = inngest.createFunction(
     // Log completion
     await step.run("log-completion", async () => {
       if (result.success) {
-        console.log(`✅ Analytics update complete: ${result.updated.join(", ")}`);
+        console.warn(`✅ Analytics update complete: ${result.updated.join(", ")}`);
       } else {
         console.warn(
           `⚠️  Analytics update completed with errors:`,

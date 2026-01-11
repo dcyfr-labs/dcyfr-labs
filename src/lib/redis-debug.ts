@@ -392,7 +392,7 @@ class RedisConnectionManager {
       const stats = this.stats.get(clientId);
       const isOpen = client?.isOpen || false;
 
-      console.log(`  ${clientId}:`, {
+      console.warn(`  ${clientId}:`, {
         connected: isOpen,
         stats,
       });

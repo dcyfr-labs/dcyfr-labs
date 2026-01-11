@@ -3,14 +3,15 @@ import { cn } from "@/lib/utils";
 import { ANIMATION } from "@/lib/design-tokens";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 
-export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
-  /** Error message to display (also applies error styling) */
-  error?: string | null;
-  /** Show success indicator */
-  success?: boolean;
-  /** Wrapper div className for error/success message positioning */
-  wrapperClassName?: string;
-};
+export type TextareaProps =
+  React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+    /** Error message to display (also applies error styling) */
+    error?: string | null;
+    /** Show success indicator */
+    success?: boolean;
+    /** Wrapper div className for error/success message positioning */
+    wrapperClassName?: string;
+  };
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, error, success, wrapperClassName, ...props }, ref) => {
@@ -46,7 +47,9 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             showSuccess &&
               "border-success pr-10 focus-visible:ring-success/20 focus:border-success hover:border-success",
             // Default (no error/success)
-            !hasError && !showSuccess && "border-input hover:border-ring/50 focus:border-ring focus-visible:ring-ring",
+            !hasError &&
+              !showSuccess &&
+              "border-input hover:border-ring/50 focus:border-ring focus-visible:ring-ring",
             className
           )}
           ref={ref}

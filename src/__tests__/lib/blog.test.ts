@@ -7,7 +7,7 @@ import {
   generatePostId,
   isScheduledPost,
   isPostVisible,
-} from '@/lib/blog'
+} from '@/lib/blog.server'
 import type { Post } from '@/data/posts'
 
 /**
@@ -181,7 +181,7 @@ describe('blog utilities', () => {
         Some text before.
         \`\`\`javascript
         function example() {
-          console.log("This code should be ignored");
+          console.warn("This code should be ignored");
           const manyWordsInCode = "lots of words here that should not count";
         }
         \`\`\`

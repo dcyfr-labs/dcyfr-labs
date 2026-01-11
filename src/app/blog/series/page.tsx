@@ -4,7 +4,13 @@ import { PageLayout } from "@/components/layouts";
 import { ArchiveHero } from "@/components/layouts/archive-hero";
 import { SeriesCard, SeriesAnalyticsTracker } from "@/components/blog";
 import { SITE_TITLE_PLAIN, SITE_URL, getOgImageUrl } from "@/lib/site-config";
-import { CONTAINER_WIDTHS, CONTAINER_PADDING, GRID_PATTERNS, SPACING, MOBILE_SAFE_PADDING } from "@/lib/design-tokens";
+import {
+  CONTAINER_WIDTHS,
+  CONTAINER_PADDING,
+  GRID_PATTERNS,
+  SPACING,
+  MOBILE_SAFE_PADDING,
+} from "@/lib/design-tokens";
 
 /**
  * Revalidate every 24 hours for series index page
@@ -16,7 +22,8 @@ export const revalidate = 86400;
  */
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Blog Series";
-  const description = "Explore multi-part content series organized by topic.. Deep dives into development, security, performance, and more.";
+  const description =
+    "Explore multi-part content series organized by topic.. Deep dives into development, security, performance, and more.";
 
   return {
     title,
@@ -72,7 +79,10 @@ export default function SeriesIndexPage() {
   });
 
   // Calculate total posts across all series
-  const totalPosts = sortedSeries.reduce((sum, series) => sum + series.postCount, 0);
+  const totalPosts = sortedSeries.reduce(
+    (sum, series) => sum + series.postCount,
+    0
+  );
 
   return (
     <PageLayout>
@@ -84,20 +94,29 @@ export default function SeriesIndexPage() {
         variant="medium"
         title="Blog Series"
         description="Explore multi-part content series organized by topic."
-        stats={`${sortedSeries.length} ${sortedSeries.length === 1 ? 'series' : 'series'} • ${totalPosts} total ${totalPosts === 1 ? 'post' : 'posts'}`}
+        stats={`${sortedSeries.length} ${sortedSeries.length === 1 ? "series" : "series"} • ${totalPosts} total ${totalPosts === 1 ? "post" : "posts"}`}
+        align="center"
       />
 
       {/* Content section with archive-width container */}
-      <div className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING} ${MOBILE_SAFE_PADDING}`}>
+      <div
+        className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING} ${MOBILE_SAFE_PADDING}`}
+      >
         {sortedSeries.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">No series found. Check back soon!</p>
+            <p className="text-muted-foreground">
+              No series found. Check back soon!
+            </p>
           </div>
         ) : (
           <div className={SPACING.section}>
             <div className={GRID_PATTERNS.three}>
               {sortedSeries.map((series, index) => (
-                <SeriesCard key={series.slug} series={series} position={index} />
+                <SeriesCard
+                  key={series.slug}
+                  series={series}
+                  position={index}
+                />
               ))}
             </div>
           </div>

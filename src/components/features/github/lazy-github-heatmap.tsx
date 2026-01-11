@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { GitHubHeatmapSkeleton } from "@/components/common/skeletons/github-heatmap-skeleton";
+import { GitHubHeatmapSkeleton } from "@/components/common";
 
 /**
  * Lazy-loaded GitHub heatmap wrapper

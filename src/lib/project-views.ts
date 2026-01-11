@@ -10,8 +10,10 @@ declare global {
   var __redisClient: RedisClient | undefined;
 }
 
-const formatProjectKey = (projectSlug: string) => `${PROJECT_VIEW_KEY_PREFIX}${projectSlug}`;
-const formatProjectHistoryKey = (projectSlug: string) => `${PROJECT_VIEW_HISTORY_KEY_PREFIX}${projectSlug}`;
+const formatProjectKey = (projectSlug: string) =>
+  `${PROJECT_VIEW_KEY_PREFIX}${projectSlug}`;
+const formatProjectHistoryKey = (projectSlug: string) =>
+  `${PROJECT_VIEW_HISTORY_KEY_PREFIX}${projectSlug}`;
 
 async function getClient(): Promise<RedisClient | null> {
   if (!redisUrl) return null;
@@ -43,23 +45,29 @@ async function getClient(): Promise<RedisClient | null> {
  * @param projectSlug Project slug identifier (from project.slug field)
  * @returns Updated view count, or null if Redis unavailable
  */
-export async function incrementProjectViews(projectSlug: string): Promise<number | null> {
+export async function incrementProjectViews(
+  projectSlug: string
+): Promise<number | null> {
   const client = await getClient();
   if (!client) return null;
   try {
     const count = await client.incr(formatProjectKey(projectSlug));
-    
+
     // Record view in sorted set with timestamp for 24-hour tracking
     const now = Date.now();
     await client.zAdd(formatProjectHistoryKey(projectSlug), {
       score: now,
       value: `${now}`,
     });
-    
+
     // Clean up views older than 24 hours
     const twentyFourHoursAgo = now - 24 * 60 * 60 * 1000;
-    await client.zRemRangeByScore(formatProjectHistoryKey(projectSlug), "-inf", twentyFourHoursAgo);
-    
+    await client.zRemRangeByScore(
+      formatProjectHistoryKey(projectSlug),
+      "-inf",
+      twentyFourHoursAgo
+    );
+
     return count;
   } catch {
     return null;
@@ -71,7 +79,9 @@ export async function incrementProjectViews(projectSlug: string): Promise<number
  * @param projectSlug Project slug identifier (from project.slug field)
  * @returns View count, or null if Redis unavailable
  */
-export async function getProjectViews(projectSlug: string): Promise<number | null> {
+export async function getProjectViews(
+  projectSlug: string
+): Promise<number | null> {
   const client = await getClient();
   if (!client) return null;
   try {
@@ -88,16 +98,18 @@ export async function getProjectViews(projectSlug: string): Promise<number | nul
  * @param projectSlugs Array of project slug identifiers
  * @returns Map of projectSlug -> view count
  */
-export async function getMultipleProjectViews(projectSlugs: string[]): Promise<Map<string, number>> {
+export async function getMultipleProjectViews(
+  projectSlugs: string[]
+): Promise<Map<string, number>> {
   const client = await getClient();
   const viewMap = new Map<string, number>();
-  
+
   if (!client) return viewMap;
-  
+
   try {
     const keys = projectSlugs.map(formatProjectKey);
     const values = await client.mGet(keys);
-    
+
     projectSlugs.forEach((slug, index) => {
       const value = values[index];
       const parsed = value === null ? 0 : Number(value);
@@ -108,7 +120,7 @@ export async function getMultipleProjectViews(projectSlugs: string[]): Promise<M
   } catch {
     // Return empty map on error
   }
-  
+
   return viewMap;
 }
 
@@ -117,27 +129,29 @@ export async function getMultipleProjectViews(projectSlugs: string[]): Promise<M
  * @param projectSlugs Array of project slug identifiers
  * @returns Map of projectSlug -> 24h view count
  */
-export async function getMultipleProjectViews24h(projectSlugs: string[]): Promise<Map<string, number>> {
+export async function getMultipleProjectViews24h(
+  projectSlugs: string[]
+): Promise<Map<string, number>> {
   const client = await getClient();
   const viewMap = new Map<string, number>();
-  
+
   if (!client) return viewMap;
-  
+
   try {
     const now = Date.now();
     const twentyFourHoursAgo = now - 24 * 60 * 60 * 1000;
-    
+
     // Use Redis pipeline to batch all zCount operations
     const pipeline = client.multi();
     projectSlugs.forEach((slug) => {
       pipeline.zCount(formatProjectHistoryKey(slug), twentyFourHoursAgo, now);
     });
-    
+
     const results = await pipeline.exec();
-    
+
     if (results) {
       results.forEach((result, index) => {
-        const count = typeof result === 'number' ? result : 0;
+        const count = typeof result === "number" ? result : 0;
         if (Number.isFinite(count)) {
           viewMap.set(projectSlugs[index], count);
         }
@@ -146,6 +160,6 @@ export async function getMultipleProjectViews24h(projectSlugs: string[]): Promis
   } catch {
     // Return empty map on error
   }
-  
+
   return viewMap;
 }

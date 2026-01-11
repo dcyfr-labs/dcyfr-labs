@@ -116,7 +116,7 @@ export async function fetchVercelAnalyticsMilestones(
             "Set VERCEL_TOKEN and VERCEL_ANALYTICS_ENDPOINT."
         );
       } else {
-        console.log(
+        console.warn(
           "📊 Vercel Analytics not configured (development mode). " +
             "Set VERCEL_TOKEN and VERCEL_ANALYTICS_ENDPOINT to enable."
         );
@@ -163,7 +163,7 @@ export async function fetchVercelAnalyticsMilestones(
       }
     }
 
-    console.log(
+    console.warn(
       `✅ Fetched Vercel Analytics: ${totalViews} views, ${milestones.length} milestones`
     );
     return milestones;
@@ -187,7 +187,7 @@ export async function storeVercelAnalyticsMilestones(): Promise<void> {
   const milestones = await fetchVercelAnalyticsMilestones();
 
   if (milestones.length === 0) {
-    console.log("📊 No Vercel Analytics milestones to store");
+    console.warn("📊 No Vercel Analytics milestones to store");
     return;
   }
 
@@ -199,7 +199,9 @@ export async function storeVercelAnalyticsMilestones(): Promise<void> {
 
   try {
     await redis.set("analytics:milestones", JSON.stringify(milestones));
-    console.log(`✅ Stored ${milestones.length} Vercel Analytics milestones in Redis`);
+    console.warn(
+      `✅ Stored ${milestones.length} Vercel Analytics milestones in Redis`
+    );
   } catch (error) {
     console.error("❌ Failed to store analytics milestones:", error);
   } finally {
@@ -237,7 +239,9 @@ export async function fetchGitHubTrafficMilestones(
         "❌ CRITICAL: GITHUB_TOKEN not set in production. GitHub traffic unavailable."
       );
     } else {
-      console.log("📊 GITHUB_TOKEN not set (development). GitHub traffic unavailable.");
+      console.warn(
+        "📊 GITHUB_TOKEN not set (development). GitHub traffic unavailable."
+      );
     }
     return [];
   }
@@ -291,13 +295,16 @@ export async function fetchGitHubTrafficMilestones(
       });
     }
 
-    console.log(
+    console.warn(
       `✅ Fetched GitHub metrics: ${repoData.stargazers_count} stars, ${repoData.forks_count} forks`
     );
     return milestones;
   } catch (error) {
     if (isProduction) {
-      console.error("❌ CRITICAL: Failed to fetch GitHub traffic in production:", error);
+      console.error(
+        "❌ CRITICAL: Failed to fetch GitHub traffic in production:",
+        error
+      );
     } else {
       console.warn("⚠️  Failed to fetch GitHub traffic (dev mode):", error);
     }
@@ -312,7 +319,7 @@ export async function storeGitHubTrafficMilestones(): Promise<void> {
   const milestones = await fetchGitHubTrafficMilestones();
 
   if (milestones.length === 0) {
-    console.log("📊 No GitHub traffic milestones to store");
+    console.warn("📊 No GitHub traffic milestones to store");
     return;
   }
 
@@ -324,7 +331,9 @@ export async function storeGitHubTrafficMilestones(): Promise<void> {
 
   try {
     await redis.set("github:traffic:milestones", JSON.stringify(milestones));
-    console.log(`✅ Stored ${milestones.length} GitHub traffic milestones in Redis`);
+    console.warn(
+      `✅ Stored ${milestones.length} GitHub traffic milestones in Redis`
+    );
   } catch (error) {
     console.error("❌ Failed to store GitHub traffic milestones:", error);
   } finally {
@@ -362,7 +371,7 @@ export async function fetchGoogleAnalyticsMilestones(): Promise<
         "Implement OAuth 2.0 integration when ready."
     );
   } else {
-    console.log("📊 Google Analytics not configured (placeholder)");
+    console.warn("📊 Google Analytics not configured (placeholder)");
   }
 
   // TODO: Implement Google Analytics Data API integration
@@ -374,7 +383,7 @@ export async function fetchGoogleAnalyticsMilestones(): Promise<
  * Store Google Analytics milestones (placeholder)
  */
 export async function storeGoogleAnalyticsMilestones(): Promise<void> {
-  console.log("📊 Google Analytics storage (placeholder - not implemented)");
+  console.warn("📊 Google Analytics storage (placeholder - not implemented)");
   // TODO: Implement when GA integration is ready
 }
 
@@ -408,7 +417,7 @@ export async function fetchSearchConsoleMilestones(): Promise<
         "Implement OAuth 2.0 integration when ready."
     );
   } else {
-    console.log("📊 Google Search Console not configured (placeholder)");
+    console.warn("📊 Google Search Console not configured (placeholder)");
   }
 
   // TODO: Implement Google Search Console API integration
@@ -420,7 +429,7 @@ export async function fetchSearchConsoleMilestones(): Promise<
  * Store Search Console milestones (placeholder)
  */
 export async function storeSearchConsoleMilestones(): Promise<void> {
-  console.log("📊 Search Console storage (placeholder - not implemented)");
+  console.warn("📊 Search Console storage (placeholder - not implemented)");
   // TODO: Implement when Search Console integration is ready
 }
 
@@ -447,7 +456,7 @@ export async function updateAllAnalyticsMilestones(): Promise<{
   updated: string[];
   failed: string[];
 }> {
-  console.log("📊 Starting analytics milestones update...");
+  console.warn("📊 Starting analytics milestones update...");
 
   const updated: string[] = [];
   const failed: string[] = [];
@@ -489,7 +498,7 @@ export async function updateAllAnalyticsMilestones(): Promise<{
   }
 
   const success = failed.length === 0;
-  console.log(
+  console.warn(
     success
       ? `✅ Analytics update complete: ${updated.join(", ")}`
       : `⚠️  Analytics update completed with errors: updated [${updated.join(", ")}], failed [${failed.join(", ")}]`

@@ -11,6 +11,7 @@ This document serves as the **single source of truth** for discovering, routing,
 **Testing Commands:** Always use `npm run test:run` or `vitest run` instead of `npm test` to avoid watch mode hanging. See [Automated Testing Guide](docs/testing/automated-testing-guide.md) for details.
 
 **Quick Commands:**
+
 ```bash
 npm run test:run <file>    # Run tests once (no watch)
 vitest run <file>           # Direct vitest (no watch)
@@ -19,19 +20,29 @@ npm run check               # Type + lint check
 
 ---
 
-## 🎯 Development Strategy: Primary + Secondary Model
+## 🎯 Development Strategy: Multi-Tier AI Architecture
 
-**DCYFR-labs uses a Primary/Secondary agent strategy** to maximize effectiveness for each tool:
+**DCYFR-labs uses a multi-tier AI strategy** with primary, secondary, fallback, and supporting tools:
 
 - **🔴 PRIMARY: Claude Code** (80% development focus)
   - Auto-delegation, full reasoning, complete toolset
   - Handles complex production work, testing, pattern enforcement
   - Optimized for depth and correctness
+  - 200K token context window
 
 - **🟡 SECONDARY: GitHub Copilot** (20% maintenance focus)
   - Real-time quick patterns, auto-synced from Claude Code
   - Handles inline suggestions and 80/20 quick reference
   - Optimized for speed (<2 seconds)
+  - ~8K token context
+
+- **🟢 FALLBACK: OpenCode.ai** (Token exhaustion scenarios)
+  - 75+ AI provider options (OpenAI, Anthropic, Gemini, Groq, local models)
+  - Cost optimization (10-100x cheaper with budget providers)
+  - Extended context windows (up to 2M with Gemini)
+  - Offline support via Ollama
+  - VS Code extension with keyboard shortcuts
+  - **Trigger conditions:** Rate limits, budget exhaustion, extended sessions (6+ hours)
 
 - **🔵 SUPPORTING: Claude General + VS Code Mode**
   - Research, architecture decisions, deep exploration
@@ -43,18 +54,20 @@ npm run check               # Type + lint check
 
 ## 🎯 Quick Navigation
 
-| Agent | Priority | Purpose | Best For | Instructions |
-|-------|----------|---------|----------|--------------|
-| **DCYFR (Claude Code)** | 🔴 **PRIMARY** | Production enforcement with auto-delegation | Feature work, testing, quick fixes, complex tasks | [`.claude/agents/`](./.claude/agents/) - 3 specialized agents |
-| **GitHub Copilot** | 🟡 **SECONDARY** | Real-time code completion & quick suggestions | Inline coding, auto-fix, quick patterns | [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) |
-| **Claude (General)** | 🔵 SUPPORTING | Deep research, architecture, complex debugging | System design, documentation, investigation | [`CLAUDE.md`](./CLAUDE.md) |
-| **DCYFR (VS Code Mode)** | 🔵 SUPPORTING | Production enforcement, pattern validation, strict compliance | Feature work, bug fixes, detailed exploration | [`.github/agents/DCYFR.agent.md`](./.github/agents/DCYFR.agent.md) |
+| Agent                    | Priority         | Purpose                                                       | Best For                                          | Instructions                                                                             |
+| ------------------------ | ---------------- | ------------------------------------------------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| **DCYFR (Claude Code)**  | 🔴 **PRIMARY**   | Production enforcement with auto-delegation                   | Feature work, testing, quick fixes, complex tasks | [`.claude/agents/`](./.claude/agents/) - 3 specialized agents                            |
+| **GitHub Copilot**       | 🟡 **SECONDARY** | Real-time code completion & quick suggestions                 | Inline coding, auto-fix, quick patterns           | [`.github/copilot-instructions.md`](./.github/copilot-instructions.md)                   |
+| **OpenCode.ai**          | 🟢 **FALLBACK**  | Multi-provider AI fallback (75+ models)                       | Token exhaustion, cost optimization, offline work | [`docs/ai/opencode-fallback-architecture.md`](docs/ai/opencode-fallback-architecture.md) |
+| **Claude (General)**     | 🔵 SUPPORTING    | Deep research, architecture, complex debugging                | System design, documentation, investigation       | [`CLAUDE.md`](./CLAUDE.md)                                                               |
+| **DCYFR (VS Code Mode)** | 🔵 SUPPORTING    | Production enforcement, pattern validation, strict compliance | Feature work, bug fixes, detailed exploration     | [`.github/agents/DCYFR.agent.md`](./.github/agents/DCYFR.agent.md)                       |
 
 ---
 
 ## 📋 Instruction Files Registry
 
 ### 1. GitHub Copilot Instructions
+
 **File:** [`.github/copilot-instructions.md`](./.github/copilot-instructions.md)  
 **Lines:** 240  
 **Last Updated:** December 8, 2025  
@@ -62,6 +75,7 @@ npm run check               # Type + lint check
 **Format:** Quick-reference with 80/20 patterns
 
 **Covers:**
+
 - Essential commands (build, test, lint)
 - Most common patterns (PageLayout, design tokens)
 - Import strategies (barrel exports)
@@ -69,11 +83,13 @@ npm run check               # Type + lint check
 - Decision trees for layouts and metadata
 
 **When to update:**
+
 - New common patterns emerge
 - Commands or setup change
 - Decision logic shifts
 
 **Version tracking:**
+
 ```json
 {
   "file": ".github/copilot-instructions.md",
@@ -88,6 +104,7 @@ npm run check               # Type + lint check
 ---
 
 ### 2. Claude Instructions (Full)
+
 **File:** [`CLAUDE.md`](./CLAUDE.md)  
 **Lines:** 175  
 **Last Updated:** December 8, 2025  
@@ -95,6 +112,7 @@ npm run check               # Type + lint check
 **Format:** Narrative + patterns
 
 **Covers:**
+
 - Project context and current focus
 - Stack overview
 - Essential patterns (layouts, metadata, design tokens)
@@ -103,11 +121,13 @@ npm run check               # Type + lint check
 - Workflow guidelines
 
 **When to update:**
+
 - Project status changes (phases complete, maintenance mode)
 - New mandatory constraints
 - Workflow changes
 
 **Version tracking:**
+
 ```json
 {
   "file": "CLAUDE.md",
@@ -122,6 +142,7 @@ npm run check               # Type + lint check
 ---
 
 ### 3. DCYFR Agent Instructions (Modular v2.0)
+
 **Hub File:** [`.github/agents/DCYFR.agent.md`](./.github/agents/DCYFR.agent.md)  
 **Lines:** 195 (hub) + 2600+ (modular files)  
 **Last Updated:** December 9, 2025  
@@ -129,6 +150,7 @@ npm run check               # Type + lint check
 **Format:** Hub with links to modular documentation
 
 **Hub File (.github/agents/DCYFR.agent.md) Covers:**
+
 - Agent purpose and quick start
 - When to use/not use DCYFR
 - 5 core rules (Design Tokens, Layouts, Imports, API, Testing)
@@ -139,35 +161,40 @@ npm run check               # Type + lint check
 **Modular Files Organization:**
 
 #### Patterns Directory (.github/agents/patterns/)
-| File | Lines | Covers |
-|------|-------|--------|
-| [COMPONENT_PATTERNS.md](patterns/COMPONENT_PATTERNS.md) | 466 | Layout selection (PageLayout 90% rule), barrel exports, import strategy, anti-patterns |
-| [API_PATTERNS.md](patterns/API_PATTERNS.md) | 405 | Validate→Queue→Respond, Inngest integration, error handling, rate limiting |
-| [TESTING_PATTERNS.md](patterns/TESTING_PATTERNS.md) | 370 | 99% pass rate target, strategic skips, when/when-not-to-test, E2E strategy |
-| [CODEQL_SUPPRESSIONS.md](patterns/CODEQL_SUPPRESSIONS.md) | 310 | LGTM syntax, false positive patterns, common suppressions, verification |
-| [SECURITY_VULNERABILITY_TROUBLESHOOTING.md](patterns/SECURITY_VULNERABILITY_TROUBLESHOOTING.md) | 510 | Code scanning analysis workflow, SSRF/CWE-918 prevention, security testing patterns, lessons learned |
+
+| File                                                                                            | Lines | Covers                                                                                               |
+| ----------------------------------------------------------------------------------------------- | ----- | ---------------------------------------------------------------------------------------------------- |
+| [COMPONENT_PATTERNS.md](patterns/COMPONENT_PATTERNS.md)                                         | 466   | Layout selection (PageLayout 90% rule), barrel exports, import strategy, anti-patterns               |
+| [API_PATTERNS.md](patterns/API_PATTERNS.md)                                                     | 405   | Validate→Queue→Respond, Inngest integration, error handling, rate limiting                           |
+| [TESTING_PATTERNS.md](patterns/TESTING_PATTERNS.md)                                             | 370   | 99% pass rate target, strategic skips, when/when-not-to-test, E2E strategy                           |
+| [CODEQL_SUPPRESSIONS.md](patterns/CODEQL_SUPPRESSIONS.md)                                       | 310   | LGTM syntax, false positive patterns, common suppressions, verification                              |
+| [SECURITY_VULNERABILITY_TROUBLESHOOTING.md](patterns/SECURITY_VULNERABILITY_TROUBLESHOOTING.md) | 510   | Code scanning analysis workflow, SSRF/CWE-918 prevention, security testing patterns, lessons learned |
 
 #### Enforcement Directory (.github/agents/enforcement/)
-| File | Lines | Covers |
-|------|-------|--------|
-| [DESIGN_TOKENS.md](enforcement/DESIGN_TOKENS.md) | 360 | Token enforcement (NON-NEGOTIABLE), categories, ESLint rules, compliance targets |
-| [APPROVAL_GATES.md](enforcement/APPROVAL_GATES.md) | 380 | Breaking changes, architecture decisions, security-sensitive work, approval process |
-| [VALIDATION_CHECKLIST.md](enforcement/VALIDATION_CHECKLIST.md) | 360 | Pre-completion checks, automated/manual validation, common failures, bypass criteria |
+
+| File                                                           | Lines | Covers                                                                               |
+| -------------------------------------------------------------- | ----- | ------------------------------------------------------------------------------------ |
+| [DESIGN_TOKENS.md](enforcement/DESIGN_TOKENS.md)               | 360   | Token enforcement (NON-NEGOTIABLE), categories, ESLint rules, compliance targets     |
+| [APPROVAL_GATES.md](enforcement/APPROVAL_GATES.md)             | 380   | Breaking changes, architecture decisions, security-sensitive work, approval process  |
+| [VALIDATION_CHECKLIST.md](enforcement/VALIDATION_CHECKLIST.md) | 360   | Pre-completion checks, automated/manual validation, common failures, bypass criteria |
 
 #### Learning Directory (.github/agents/learning/)
-| File | Lines | Covers |
-|------|-------|--------|
-| [PERFORMANCE_METRICS.md](learning/PERFORMANCE_METRICS.md) | 340 | Token budgets, efficiency targets, dashboards, metrics tracking |
-| [CONTINUOUS_LEARNING.md](learning/CONTINUOUS_LEARNING.md) | 420 | Pattern recognition, feedback loops, self-improvement triggers, knowledge base evolution |
-| [KNOWLEDGE_BASE.md](learning/KNOWLEDGE_BASE.md) | 350 | Session handoff, knowledge transfer, long-term learning, monthly reports |
+
+| File                                                      | Lines | Covers                                                                                   |
+| --------------------------------------------------------- | ----- | ---------------------------------------------------------------------------------------- |
+| [PERFORMANCE_METRICS.md](learning/PERFORMANCE_METRICS.md) | 340   | Token budgets, efficiency targets, dashboards, metrics tracking                          |
+| [CONTINUOUS_LEARNING.md](learning/CONTINUOUS_LEARNING.md) | 420   | Pattern recognition, feedback loops, self-improvement triggers, knowledge base evolution |
+| [KNOWLEDGE_BASE.md](learning/KNOWLEDGE_BASE.md)           | 350   | Session handoff, knowledge transfer, long-term learning, monthly reports                 |
 
 **When to update:**
+
 - **Hub file:** When changing core rules, philosophy, approval gates, or adding new modular files
 - **Pattern files:** When implementing or discovering new architectural patterns
 - **Enforcement files:** When enforcement rules change (design tokens, validation gates)
 - **Learning files:** When optimizing DCYFR performance or evolving self-improvement strategy
 
 **Version tracking:**
+
 ```json
 {
   "file": ".github/agents/DCYFR.agent.md",
@@ -191,6 +218,7 @@ npm run check               # Type + lint check
 ---
 
 ### 4. DCYFR Claude Code Agents (v2.1.0) - PROPRIETARY/INTERNAL ONLY
+
 **⚠️ NOTE:** Files in `.claude/agents/` are **proprietary and not available in the public repository**. This section is for documentation purposes only.
 
 **Hub Directory:** `.claude/agents/` (Not in public repo)  
@@ -200,13 +228,14 @@ npm run check               # Type + lint check
 
 **Primary Agents (Used in Public Projects):**
 
-| Agent | File | Purpose |
-|-------|------|---------|
-| **Production Enforcer** | `DCYFR.md` | Full production implementation with mandatory enforcement |
-| **Quick Fix** | `quick-fix.md` | Fast pattern fixes and token compliance |
-| **Test Specialist** | `test-specialist.md` | Test coverage maintenance and quality assurance |
+| Agent                   | File                 | Purpose                                                   |
+| ----------------------- | -------------------- | --------------------------------------------------------- |
+| **Production Enforcer** | `DCYFR.md`           | Full production implementation with mandatory enforcement |
+| **Quick Fix**           | `quick-fix.md`       | Fast pattern fixes and token compliance                   |
+| **Test Specialist**     | `test-specialist.md` | Test coverage maintenance and quality assurance           |
 
 **Supporting Agents (Proprietary Specializations):**
+
 - `architecture-reviewer.md` - Architecture review and technical decisions
 - `content-creator.md` - Content and documentation generation
 - `content-editor.md` - Content refinement and polish
@@ -215,17 +244,234 @@ npm run check               # Type + lint check
 - `performance-specialist.md` - Performance optimization and metrics
 - `security-specialist.md` - Security hardening and compliance
 - `seo-specialist.md` - SEO optimization and metadata
-- *(Additional agents may be added internally)*
+- _(Additional agents may be added internally)_
 
 **⚠️ Important Clarifications:**
+
 - ✅ `.github/agents/` directory (patterns, enforcement, learning) - **PUBLIC/SHARED**
 - ❌ `.claude/agents/` directory - **PROPRIETARY/INTERNAL ONLY**
 - These proprietary agent files are **not included in the public repository**
 - Public users should reference **`.github/agents/DCYFR.agent.md`** instead
 
 **When to reference:**
+
 - For **public/shared work:** Use `.github/agents/DCYFR.agent.md` and its modular documentation
 - For **internal development:** Use `.claude/agents/` files (not available publicly)
+
+---
+
+### 5. OpenCode.ai Fallback System (v1.0.0)
+
+**Hub Directory:** `.opencode/`  
+**Last Updated:** January 5, 2026  
+**Audience:** All developers (fallback tier when primary/secondary exhausted)  
+**Format:** Modular documentation with provider-specific guides
+
+**Hub File:** [`.opencode/DCYFR.opencode.md`](./.opencode/DCYFR.opencode.md) (212 lines)
+
+**Purpose**: Multi-provider AI fallback supporting 75+ models for cost optimization and offline development.
+
+**Core Components:**
+
+| Directory        | Files   | Purpose                                                                  |
+| ---------------- | ------- | ------------------------------------------------------------------------ |
+| **patterns/**    | 3 files | Provider selection, VS Code integration, offline development             |
+| **enforcement/** | 3 files | Hybrid enforcement (STRICT/FLEXIBLE), enhanced validation, quality gates |
+| **workflows/**   | 3 files | Session handoff, cost optimization, troubleshooting                      |
+| **scripts/**     | 3 files | Validation, health checks, session management                            |
+
+**Detailed Files:**
+
+#### Patterns Directory (.opencode/patterns/)
+
+| File                                                      | Lines | Covers                                                                           |
+| --------------------------------------------------------- | ----- | -------------------------------------------------------------------------------- |
+| [PROVIDER_SELECTION.md](patterns/PROVIDER_SELECTION.md)   | 200+  | Decision tree, free model optimization, when to use each provider                |
+| [VS_CODE_INTEGRATION.md](patterns/VS_CODE_INTEGRATION.md) | 150+  | Extension setup, keyboard shortcuts (Cmd+Esc), provider configuration            |
+| [OFFLINE_DEVELOPMENT.md](patterns/OFFLINE_DEVELOPMENT.md) | 300+  | Ollama setup, model selection (CodeLlama 34B, Qwen2.5 Coder 7B), hybrid workflow |
+
+#### Enforcement Directory (.opencode/enforcement/)
+
+| File                                                         | Lines | Covers                                                                                                                                      |
+| ------------------------------------------------------------ | ----- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| [HYBRID_ENFORCEMENT.md](enforcement/HYBRID_ENFORCEMENT.md)   | 400+  | STRICT rules (hard block): design tokens, PageLayout, barrel exports, test data, emojis; FLEXIBLE rules (warn): API patterns, test coverage |
+| [VALIDATION_ENHANCED.md](enforcement/VALIDATION_ENHANCED.md) | 450+  | Manual checklists for free/offline models, escalation triggers, provider capability matrix                                                  |
+| [QUALITY_GATES.md](enforcement/QUALITY_GATES.md)             | 500+  | Pre-commit validation by provider tier, security gates, performance gates                                                                   |
+
+#### Workflows Directory (.opencode/workflows/)
+
+| File                                                   | Lines | Covers                                                                            |
+| ------------------------------------------------------ | ----- | --------------------------------------------------------------------------------- |
+| [SESSION_HANDOFF.md](workflows/SESSION_HANDOFF.md)     | 400+  | Claude ↔ OpenCode switching, session state schema v2.0, git workflow integration |
+| [COST_OPTIMIZATION.md](workflows/COST_OPTIMIZATION.md) | 450+  | 80/20 strategy (80% free, 20% premium), monthly cost tracking, ROI analysis       |
+| [TROUBLESHOOTING.md](workflows/TROUBLESHOOTING.md)     | 600+  | Provider-specific issues (Groq rate limits, Ollama OOM, validation failures)      |
+
+#### Scripts Directory (.opencode/scripts/)
+
+| File                         | Purpose                                    | Integration               |
+| ---------------------------- | ------------------------------------------ | ------------------------- |
+| `validate-after-fallback.sh` | STRICT rules hard block, FLEXIBLE warnings | `npm run check:opencode`  |
+| `session-handoff.sh`         | Combined save + restore + validation       | `npm run session:handoff` |
+| `check-provider-health.sh`   | Groq/Ollama/Claude connectivity            | `npm run opencode:health` |
+
+**Session State System (Universal v2.0):**
+
+- **Schema**: Git branch, issues/PRs, time estimates, validation status
+- **Locations**: `.opencode/.session-state.json`, `.claude/.session-state.json`, `.github/copilot-session-state.json`
+- **Scripts**: `scripts/save-session-state.sh`, `scripts/restore-session-state.sh` (shared across all agents)
+- **Git-ignored**: Added to `.gitignore` (never committed)
+
+**Provider Configuration (.opencode/config.json):**
+
+```json
+{
+  "groq_primary": "llama-3.3-70b-versatile (free tier)",
+  "groq_speed": "llama-3.3-70b-specdec (fast free tier)",
+  "offline_primary": "codellama:34b (requires 64GB RAM)",
+  "offline_balanced": "qwen2.5-coder:7b (requires 16GB RAM)",
+  "claude": "claude-3-5-sonnet-20241022 (premium)"
+}
+```
+
+**Recommended Allocation:**
+
+- **Groq (free)**: 70-80% of tasks (bug fixes, refactoring, UI updates)
+- **Ollama (offline)**: 5-10% of tasks (drafting when offline)
+- **Claude (premium)**: 15-25% of tasks (security, architecture, complex debugging)
+
+**When to update:**
+
+- **Hub file**: When adding new providers or changing fallback strategy
+- **Pattern files**: When discovering new free model optimization techniques
+- **Enforcement files**: When enforcement rules change (shared with `.github/agents/`)
+- **Workflow files**: When optimizing cost allocation or handoff procedures
+
+**Version tracking:**
+
+```json
+{
+  "file": ".opencode/",
+  "format": "modular-fallback-system",
+  "version": "1.0.0",
+  "scope": "multi-provider-fallback",
+  "coverage": "Free models (Groq), offline (Ollama), premium (Claude)",
+  "last_updated": "2026-01-05",
+  "source_of_truth": "AGENTS.md",
+  "modular_structure": {
+    "hub": ".opencode/DCYFR.opencode.md (212 lines)",
+    "patterns": 3,
+    "enforcement": 3,
+    "workflows": 3,
+    "scripts": 3,
+    "total_modular_lines": 3000
+  }
+}
+```
+
+---
+
+## 🌐 External Context Sources: Octocode-MCP
+
+**Status:** ✅ Integrated December 28, 2025  
+**Repository:** [bgauryy/octocode-mcp](https://github.com/bgauryy/octocode-mcp)  
+**Version:** Latest (`octocode-mcp@latest`)  
+**Configuration:** [`.vscode/mcp.json`](./.vscode/mcp.json)
+
+### What Octocode Provides
+
+Octocode is an **agentic code research MCP server** that gives AI assistants intelligent access to GitHub repositories for deep code research and pattern discovery.
+
+**Core Tools:**
+
+- `githubSearchCode` - Find code patterns across repositories
+- `githubSearchRepositories` - Discover repos by topic/keywords
+- `githubViewRepoStructure` - Explore directory structures
+- `githubGetFileContent` - Read files with smart extraction
+- `githubSearchPullRequests` - Analyze PR changes and discussions
+
+**AI Commands:**
+
+- `/research` - Deep code investigation (patterns, flows, best practices)
+- `/plan` - Research → Plan → Implement complex features
+- `/review_pull_request` - Expert-level PR analysis
+- `/review_security` - Security audit of reference implementations
+
+### When to Use Octocode
+
+✅ **Use Octocode for:**
+
+- Researching production patterns from high-quality codebases
+- Understanding how popular projects solve architectural problems
+- Learning security best practices and auth implementations
+- Finding reference implementations for complex features
+- Cross-repository flow analysis and pattern comparison
+
+❌ **Don't use Octocode for:**
+
+- Quick code fixes (use Copilot)
+- Internal dcyfr-labs code analysis (use GitHub MCP or local tools)
+- General conversations (use Claude)
+- When Perplexity/GitHub MCP are sufficient
+
+### Setup & Authentication
+
+**GitHub CLI (Recommended):**
+
+```bash
+brew install gh          # or your package manager
+gh auth login           # Authenticate with your GitHub account
+```
+
+**Personal Access Token (Alternative):**
+
+1. Create token at [github.com/settings/tokens](https://github.com/settings/tokens)
+2. Scopes: `repo`, `read:user`, `read:org`
+3. Add to `.env.local` (never commit)
+
+### Usage Examples
+
+**Research Production Patterns:**
+
+```
+/research How do popular Next.js portfolios (vercel/next.js, examples)
+structure design tokens and metadata generation?
+```
+
+**Plan Implementation:**
+
+```
+/plan Implement an Inngest integration similar to production codebases.
+Research best practices first, then create implementation plan.
+```
+
+**Security Review:**
+
+```
+/review_security https://github.com/popular-auth-lib/repo
+Analyze authentication and authorization patterns.
+```
+
+**PR Analysis:**
+
+```
+/review_pull_request https://github.com/facebook/react/pull/28000
+Spot potential issues, performance concerns, and design decisions.
+```
+
+### Integration with DCYFR
+
+Octocode is available to DCYFR agents as `mcp_octocode/*` tools. When building features or researching patterns:
+
+1. **Research Phase**: Use `/research` to discover production implementations
+2. **Planning Phase**: Use `/plan` to synthesize research into implementation strategy
+3. **Building Phase**: Reference findings from Octocode in code comments
+4. **Validation Phase**: Use `/review_pull_request` for pre-merge analysis
+
+### Documentation & Support
+
+- **Official Docs:** [octocode.ai](https://octocode.ai/)
+- **GitHub Discussions:** [bgauryy/octocode-mcp discussions](https://github.com/bgauryy/octocode-mcp/discussions)
+- **Video Tutorials:** [YouTube Channel](https://www.youtube.com/@Octocode-ai)
 
 ---
 
@@ -247,14 +493,51 @@ START: "I need AI help with dcyfr-labs"
   ├─ Building feature following strict patterns?
   │  └─ YES → Use DCYFR (VS Code Mode)
   │     └─ Reference: .github/agents/DCYFR.agent.md
+  │     └─ May use: Octocode /research for pattern discovery
+  │
+  ├─ Need to research production implementations?
+  │  └─ YES → Use Octocode MCP
+  │     └─ Commands: /research, /plan, /review_security
   │
   ├─ Bug fix with compliance enforcement?
   │  └─ YES → Use DCYFR (VS Code Mode)
   │     └─ Reference: .github/agents/DCYFR.agent.md
   │
-  ├─ General investigation/documentation?
-  │  └─ Use Claude (General)
-  │     └─ Reference: CLAUDE.md + docs/
+  └─ General investigation/documentation?
+     └─ Use Claude (General)
+        └─ Reference: CLAUDE.md + docs/
+```
+
+**When to use Octocode in DCYFR work:**
+
+- Research existing patterns before implementing new features
+- Understand security best practices from production codebases
+- Discover how high-quality projects structure similar features
+- Validate architectural decisions against real implementations
+
+### Quick Rules
+
+| Scenario                           | Agent           | Tool     | Why                              |
+| ---------------------------------- | --------------- | -------- | -------------------------------- |
+| "Complete this code snippet"       | Copilot         | -        | Real-time, inline                |
+| "I need design token suggestions"  | Copilot         | -        | Quick patterns                   |
+| "Refactor this function"           | Copilot         | -        | Line-level edits                 |
+| "What's our architecture pattern?" | Claude          | -        | Deep context needed              |
+| "How should we approach X?"        | Claude          | Octocode | Investigation + pattern research |
+| "Create new /bookmarks page"       | DCYFR           | Octocode | Pattern enforcement + research   |
+| "Research auth patterns"           | DCYFR           | Octocode | `/research` command              |
+| "Fix SPACING token violation"      | Quick Fix       | -        | Fast compliance                  |
+| "Bug in PostCard component"        | DCYFR           | -        | Root cause + test fix            |
+| "Tests failing after changes"      | Test Specialist | -        | Test coverage focus              |
+
+├─ Bug fix with compliance enforcement?
+│ └─ YES → Use DCYFR (VS Code Mode)
+│ └─ Reference: .github/agents/DCYFR.agent.md
+│
+├─ General investigation/documentation?
+│ └─ Use Claude (General)
+│ └─ Reference: CLAUDE.md + docs/
+
 ```
 
 **Note on Claude Code:** Claude Code users in your organization may have access to proprietary `.claude/agents/` files for auto-delegation and specialized task routing. These are **not** included in the public repository. For public contributions, use `.github/agents/DCYFR.agent.md` instead.
@@ -267,18 +550,18 @@ START: "I need AI help with dcyfr-labs"
 
 ### Quick Rules
 
-| Scenario | Agent | Why |
-|----------|-------|-----|
-| "Complete this code snippet" | Copilot | Real-time, inline |
-| "I need design token suggestions" | Copilot | Quick patterns |
-| "Refactor this function" | Copilot | Line-level edits |
-| "What's our architecture pattern?" | Claude | Deep context needed |
-| "How should we approach X?" | Claude | Investigation mode |
-| "Create new /bookmarks page" | DCYFR (Claude Code/VS Code) | Pattern enforcement |
-| "Fix SPACING token violation" | Quick Fix (Claude Code) | Fast compliance |
-| "Bug in PostCard component" | DCYFR (Claude Code/VS Code) | Root cause + test fix |
-| "Tests failing after changes" | Test Specialist (Claude Code) | Test coverage focus |
-| "Should I use PageLayout?" | DCYFR (any mode) | Decision trees available |
+| Scenario                           | Agent                         | Why                      |
+| ---------------------------------- | ----------------------------- | ------------------------ |
+| "Complete this code snippet"       | Copilot                       | Real-time, inline        |
+| "I need design token suggestions"  | Copilot                       | Quick patterns           |
+| "Refactor this function"           | Copilot                       | Line-level edits         |
+| "What's our architecture pattern?" | Claude                        | Deep context needed      |
+| "How should we approach X?"        | Claude                        | Investigation mode       |
+| "Create new /bookmarks page"       | DCYFR (Claude Code/VS Code)   | Pattern enforcement      |
+| "Fix SPACING token violation"      | Quick Fix (Claude Code)       | Fast compliance          |
+| "Bug in PostCard component"        | DCYFR (Claude Code/VS Code)   | Root cause + test fix    |
+| "Tests failing after changes"      | Test Specialist (Claude Code) | Test coverage focus      |
+| "Should I use PageLayout?"         | DCYFR (any mode)              | Decision trees available |
 
 ---
 
@@ -352,21 +635,21 @@ AGENTS.md (This file)
 
 ## 📊 Instruction File Comparison
 
-| Aspect | Copilot (🟡) | Claude (🔵) | DCYFR VS Code (🔵) | DCYFR Claude Code (🔴) |
-|--------|---------|--------|-----------------|---------------------|
-| **Status** | Secondary | Supporting | Supporting | **PRIMARY** |
-| **Development Focus** | Maintain/Sync | Reference | Pattern reference | **80% effort** |
-| **Format** | Quick-ref, 80/20 | Narrative, full context | Modular hub v2.0 | 3 specialized agents |
-| **Lines** | 240 | 175 | 195 (hub) + 2600 (modular) | 800+ (3 agents) |
-| **Update Frequency** | Monthly (auto-sync) | On phase changes | On enforcement changes | **Ongoing development** |
-| **Scope** | Real-time coding | Project-wide context | Strict pattern validation | **Auto-delegated enforcement** |
-| **Decision Support** | Basic (layouts, imports) | Exploratory (why/how) | Systematic (10 modular files) | **Task-specific routing** |
-| **Enforcement** | ESLint violations | Guidelines | Mandatory gates + tests | **Proactive compliance** |
-| **Best For** | Speed (<2 sec) | Understanding (mins) | Rigor (hours) | **Balanced efficiency** |
-| **Activation** | Always in VS Code | Always available | Conversation mode | **Auto-delegation** |
-| **Structure** | Monolithic | Narrative | Hub + 3 directories | **11 specialized agents** |
-| **Model Selection** | N/A | User choice | Single model | **Internal use only** |
-| **Sync Source** | ← Transforms FROM shared docs | - | - | **← Source of Truth** |
+| Aspect                | Copilot (🟡)                  | Claude (🔵)             | DCYFR VS Code (🔵)            | DCYFR Claude Code (🔴)         |
+| --------------------- | ----------------------------- | ----------------------- | ----------------------------- | ------------------------------ |
+| **Status**            | Secondary                     | Supporting              | Supporting                    | **PRIMARY**                    |
+| **Development Focus** | Maintain/Sync                 | Reference               | Pattern reference             | **80% effort**                 |
+| **Format**            | Quick-ref, 80/20              | Narrative, full context | Modular hub v2.0              | 3 specialized agents           |
+| **Lines**             | 240                           | 175                     | 195 (hub) + 2600 (modular)    | 800+ (3 agents)                |
+| **Update Frequency**  | Monthly (auto-sync)           | On phase changes        | On enforcement changes        | **Ongoing development**        |
+| **Scope**             | Real-time coding              | Project-wide context    | Strict pattern validation     | **Auto-delegated enforcement** |
+| **Decision Support**  | Basic (layouts, imports)      | Exploratory (why/how)   | Systematic (10 modular files) | **Task-specific routing**      |
+| **Enforcement**       | ESLint violations             | Guidelines              | Mandatory gates + tests       | **Proactive compliance**       |
+| **Best For**          | Speed (<2 sec)                | Understanding (mins)    | Rigor (hours)                 | **Balanced efficiency**        |
+| **Activation**        | Always in VS Code             | Always available        | Conversation mode             | **Auto-delegation**            |
+| **Structure**         | Monolithic                    | Narrative               | Hub + 3 directories           | **11 specialized agents**      |
+| **Model Selection**   | N/A                           | User choice             | Single model                  | **Internal use only**          |
+| **Sync Source**       | ← Transforms FROM shared docs | -                       | -                             | **← Source of Truth**          |
 
 ---
 
@@ -407,14 +690,15 @@ Documentation Flow:
 🟡 SECONDARY Maintenance:
 .github/copilot-instructions.md (80/20 quick reference)
 └─ Auto-synced from shared docs
-   ├─ Essential patterns only
-   ├─ Speed optimized (<2 seconds)
-   └─ No auto-delegation (Copilot limitation)
+├─ Essential patterns only
+├─ Speed optimized (<2 seconds)
+└─ No auto-delegation (Copilot limitation)
 
 Supporting:
 VS Code DCYFR mode → Modular hub with comprehensive validation
 Claude General → Deep research and architecture decisions
-```
+
+````
 
 **Development Allocation:**
 
@@ -460,7 +744,7 @@ Claude General → Deep research and architecture decisions
 - Updates to `.github/agents/` may inform internal improvements to `.claude/agents/`
 - Public repository only references `.github/agents/` documentation
 
-### Quarterly Manual Review (Every 3 months)
+### Manual Review (As Needed)
 
 - [ ] Verify `.github/agents/` documentation is current and complete
 - [ ] Check that `.github/agents/` is the primary reference for public users
@@ -475,18 +759,11 @@ Claude General → Deep research and architecture decisions
 # Update shared .github/agents/ documentation
 git add .github/agents/
 git commit -m "docs: update shared agent documentation"
-
-
-# Sync specific target
-npm run sync:agents --target=copilot
-npm run sync:agents --target=claude
-npm run sync:agents --target=vscode
-
-# Check sync status
-npm run sync:agents --status
+git push origin <branch>
 ```
 
 **On Breaking Changes:**
+
 - [ ] Update DCYFR.agent.md
 - [ ] Update CLAUDE.md constraints
 - [ ] Run `npm run sync:agents` to propagate changes
@@ -495,6 +772,7 @@ npm run sync:agents --status
 - [ ] Add entry to AGENTS.md "Recent Updates"
 
 **On Phase Completion:**
+
 - [ ] Update CLAUDE.md "Current Focus"
 - [ ] Archive completed patterns
 - [ ] Update docs/operations/todo.md
@@ -548,17 +826,20 @@ Each instruction file maintains this metadata:
 ## 📚 Related Documentation
 
 **Foundational (Read First):**
+
 - [`CLAUDE.md`](./CLAUDE.md) - Project context & constraints
 - [`docs/ai/quick-reference.md`](docs/ai/quick-reference.md) - Commands & imports
 - [`docs/ai/decision-trees.md`](docs/ai/decision-trees.md) - Visual decision flowcharts
- - [`docs/ai/mcp-checks.md`](docs/ai/mcp-checks.md) - MCP server health checks & CI guidance
+- [`docs/ai/mcp-checks.md`](docs/ai/mcp-checks.md) - MCP server health checks & CI guidance
 
 **Deep Dives (Reference as Needed):**
+
 - [`docs/ai/component-patterns.md`](docs/ai/component-patterns.md) - Layout & import patterns
 - [`docs/ai/enforcement-rules.md`](docs/ai/enforcement-rules.md) - Design token validation
 - [`docs/ai/design-system.md`](docs/ai/design-system.md) - Token system deep dive
 
 **Practical (Copy-Paste Ready):**
+
 - [`docs/templates/`](docs/templates/) - Component, page, and API templates
 - [`docs/operations/todo.md`](docs/operations/todo.md) - Current priorities
 - `scripts/check-mcp-servers.mjs` - MCP server health checks (dev/CI)
@@ -567,9 +848,68 @@ Each instruction file maintains this metadata:
 
 ## 📋 Recent Updates
 
-## 📋 Recent Updates
+### January 10, 2026
+
+- ✅ **Enhanced blog engagement and SEO strategy documentation**
+  - Updated `.github/copilot-instructions.md` with MDX components table (SectionShare, CollapsibleSection, GlossaryTooltip)
+  - Added "Engagement Best Practices" section to Copilot instructions
+  - Updated `docs/ai/component-patterns.md` with comprehensive SectionShare and CollapsibleSection sections
+  - Added SEO benefits documentation (trackable URLs, backlinks, social sharing)
+  - Added UX benefits documentation (progressive disclosure, scanability, accessibility)
+  - Updated `docs/blog/content-creation.md` with interactive components guide
+  - Added social sharing strategy (place `<SectionShare>` after major sections)
+  - Added progressive disclosure strategy (use `<CollapsibleSection>` for role-specific content)
+  - Updated `CLAUDE.md` with MDX components quick reference
+  - Updated `docs/content/rivet-component-library.md` with Week 2 P1 completion status
+  - Documented all three P1 components: GlossaryTooltip (26/26 tests), SectionShare (13/20 tests), CollapsibleSection (26/26 tests)
+  - Overall Week 2 metrics: 65/72 tests passing (90% coverage)
+
+### January 7, 2026
+
+- ✅ **Removed quarterly sync automation system** (complete removal)
+  - Deleted `.github/workflows/ai-instructions-sync.yml` workflow
+  - Merged all 13 open pull requests (171-183) into preview branch
+  - Removed quarterly instruction sync process entirely (was creating duplicate PRs)
+  - No more automated AI instructions or metrics collection workflows
+  - Documentation now maintained manually as needed
+
+### January 5, 2026
+
+- ✅ **Integrated OpenCode.ai as AI fallback tool**
+  - Added OpenCode.ai to AI tool hierarchy (🟢 FALLBACK tier)
+  - Comprehensive architecture documentation (`docs/ai/opencode-fallback-architecture.md`)
+  - VS Code extension integration (`sst-dev.opencode`)
+  - Added to `.vscode/extensions.json` recommendations
+  - 75+ AI provider support (OpenAI, Anthropic, Gemini, Groq, Ollama)
+  - Cost optimization capabilities (10-100x cheaper with Groq)
+  - Offline development support via local models
+  - NPM scripts: `ai:opencode`, `ai:opencode:groq`, `ai:opencode:local`, `ai:setup`
+  - Trigger conditions: Rate limits, token exhaustion, extended sessions, cost optimization
+  - VS Code keyboard shortcuts: `Cmd+Esc` (launch), `Cmd+Shift+Esc` (new session), `Cmd+Option+K` (file refs)
+
+### December 28, 2025
+
+- ✅ **Integrated Octocode-MCP as external context source**
+  - Added Octocode to `.vscode/mcp.json` MCP server configuration
+  - Updated DCYFR.agent.md tools list to include `mcp_octocode/*`
+  - Added "External Context Sources" section to DCYFR.agent.md with Octocode documentation
+  - Updated `docs/ai/mcp-checks.md` to include Octocode health checks and authentication guidance
+  - Documented `/research`, `/plan`, `/review_pull_request`, `/review_security` commands
+  - Configured for GitHub CLI auth (recommended) or Personal Access Token
+  - Use case: Research production patterns, architecture decisions, security implementations from GitHub codebases
+
+### December 28, 2025 (Earlier)
+
+- ✅ **Added emoji prohibition rule to all AI instructions**
+  - Created `scripts/analyze-emoji-usage.mjs` for comprehensive emoji analysis
+  - Updated `.github/copilot-instructions.md` with emoji prohibition rule
+  - Updated `CLAUDE.md` with emoji usage guidelines
+  - Added rule to `.github/agents/DCYFR.agent.md`
+  - Identified 17 emojis in public content requiring replacement with React icons
+  - Documented acceptable emoji locations (internal docs, comments, logs, tests)
 
 ### December 25, 2025
+
 - ✅ **Created comprehensive Test Data Prevention enforcement**
   - Created `.github/agents/enforcement/TEST_DATA_PREVENTION.md` (300+ lines)
   - Added 7 best practice patterns with before/after examples
@@ -596,6 +936,7 @@ Each instruction file maintains this metadata:
   - Documented decision tree now includes data quality considerations
 
 ### December 17, 2025
+
 - ✅ **Removed Playwright MCP support** to optimize tool availability (138 tool limit)
   - Removed Playwright MCP server from `.vscode/mcp.json`
   - Updated `docs/ai/mcp-checks.md` to remove Playwright references
@@ -603,6 +944,7 @@ Each instruction file maintains this metadata:
   - Note: VS Code Playwright extension (`ms-playwright.playwright`) remains for local E2E test execution
 
 ### December 10, 2025
+
 - ✅ **Created DCYFR Claude Code Agent Collection (v2.1.0)**
   - Replicated `.github/agents/DCYFR.agent.md` to `.claude/agents/`
   - Optimized for Claude Code sub-agent specifications
@@ -624,6 +966,7 @@ Each instruction file maintains this metadata:
   - Documented synchronization strategy and automated commands
 
 ### December 9, 2025
+
 - ✅ **Enhanced automation system**
   - Enabled full Dependabot auto-merge for safe updates
   - Created `scheduled-instruction-sync.yml` for quarterly doc updates
@@ -638,6 +981,7 @@ Each instruction file maintains this metadata:
 - ✅ Updated AGENTS.md with modular file structure and automation reference
 
 ### December 8, 2025
+
 - ✅ Created `AGENTS.md` as centralized hub
 - ✅ Documented all three instruction files
 - ✅ Established decision tree for agent selection
@@ -654,14 +998,14 @@ dcyfr-labs uses a **comprehensive multi-layer automation system** to keep depend
 
 ### What's Automated
 
-| System | Frequency | Purpose |
-|--------|-----------|---------|
-| **Dependabot Updates** | Weekly | Auto-updates npm and GitHub Actions |
-| **Auto-Merge Workflow** | Per PR | Safely auto-merges patches & minor updates |
-| **Instruction Sync** | Monthly | Keeps AI docs in sync with project metrics |
-| **Security Pre-Checks** | Daily | Scans for vulnerabilities |
-| **Test Metrics** | Per run | Captures test & performance data |
-| **Lighthouse CI** | Per push | Validates performance & accessibility |
+| System                  | Frequency | Purpose                                    |
+| ----------------------- | --------- | ------------------------------------------ |
+| **Dependabot Updates**  | Weekly    | Auto-updates npm and GitHub Actions        |
+| **Auto-Merge Workflow** | Per PR    | Safely auto-merges patches & minor updates |
+| **Instruction Sync**    | Monthly   | Keeps AI docs in sync with project metrics |
+| **Security Pre-Checks** | Daily     | Scans for vulnerabilities                  |
+| **Test Metrics**        | Per run   | Captures test & performance data           |
+| **Lighthouse CI**       | Per push  | Validates performance & accessibility      |
 
 ### Quick Reference
 
@@ -682,19 +1026,19 @@ npm run check
 
 ## ❓ FAQ
 
-**Q: Which file should I read first?**  
+**Q: Which file should I read first?**
 A: Start with [`CLAUDE.md`](./CLAUDE.md) for context, then use the decision tree in this file to pick your agent.
 
-**Q: Can I use multiple agents?**  
+**Q: Can I use multiple agents?**
 A: Yes, but serially (not simultaneously). Finish one task with one agent before switching.
 
-**Q: What if instructions conflict?**  
+**Q: What if instructions conflict?**
 A: DCYFR (specialized) supersedes Claude (general) for DCYFR-specific work. Copilot is always for quick, inline tasks.
 
-**Q: How do I report an instruction issue?**  
+**Q: How do I report an instruction issue?**
 A: Create an issue in `.github/ISSUE_TEMPLATE/` or update the relevant instruction file directly with a PR.
 
-**Q: When should AGENTS.md be updated?**  
+**Q: When should AGENTS.md be updated?**
 A: Quarterly automatic review, or immediately when adding new agents or major instruction changes.
 
 ---
@@ -702,6 +1046,7 @@ A: Quarterly automatic review, or immediately when adding new agents or major in
 ## 🔐 Consistency Rules
 
 **Always:**
+
 - [ ] Reference AGENTS.md as source of truth
 - [ ] Keep file paths absolute (from repo root)
 - [ ] Update sync metadata when changing instructions
@@ -709,6 +1054,7 @@ A: Quarterly automatic review, or immediately when adding new agents or major in
 - [ ] **Store sensitive files in `**/private/**` directories** (see below)
 
 **Never:**
+
 - [ ] Create instructions without updating AGENTS.md
 - [ ] Have conflicting patterns in different files
 - [ ] Leave sync status undefined
@@ -754,12 +1100,13 @@ A: Quarterly automatic review, or immediately when adding new agents or major in
 - ✅ `/docs/operations/private/PERFORMANCE_METRICS.md`
 - ❌ `/docs/security/VULNERABILITY_REPORT.md` (should be in private/ subfolder)
 
-**Rationale:** Subdirectory-specific `private/` folders prevent duplicate content and keep related materials together. See [DOCS_GOVERNANCE.md](docs/DOCS_GOVERNANCE.md) for complete policy.
+**Rationale:** Subdirectory-specific `private/` folders prevent duplicate content and keep related materials together. See [DOCS_GOVERNANCE.md](docs/governance/DOCS_GOVERNANCE.md) for complete policy.
 
 ---
 
-**Status:** Production Ready  
-**Last Reviewed:** December 25, 2025 (Test Data Prevention Update)  
-**Next Review:** March 25, 2026 (Quarterly)
+**Status:** Production Ready
+**Last Reviewed:** January 11, 2026 (Project Cleanup & Organization Update)
+**Next Review:** April 11, 2026 (Quarterly)
 
 For issues, updates, or new agents: Submit PR with AGENTS.md changes first.
+````

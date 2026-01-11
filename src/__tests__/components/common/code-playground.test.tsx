@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { CodePlayground } from "@/components/common/code-playground";
+import { CodePlayground } from "@/components/common";
 
 describe("CodePlayground Component", () => {
   describe("rendering", () => {

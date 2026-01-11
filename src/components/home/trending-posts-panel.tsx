@@ -1,13 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, MessageSquare, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Post } from "@/data/posts";
-import { ANIMATION, TYPOGRAPHY, HOVER_EFFECTS, SPACING } from "@/lib/design-tokens";
+import {
+  ANIMATION,
+  TYPOGRAPHY,
+  HOVER_EFFECTS,
+  SPACING,
+} from "@/lib/design-tokens";
 
 // ============================================================================
 // TYPES
@@ -29,12 +33,16 @@ interface TrendingPostsPanelProps {
  * Displays trending blog posts in a clean, social media-style format.
  * Used within the TrendingSection tabs.
  *
+ * **Animation approach:** Uses CSS animations (Tailwind animate-in) instead of Framer Motion.
+ * Stagger effects are achieved with CSS delay utilities for efficient rendering.
+ *
  * Features:
  * - Ranked display (#1, #2, #3)
  * - View counts with trending indicator
  * - Reading time estimate
  * - Primary tag badge
  * - Smooth hover animations
+ * - CSS-based stagger animations with delays
  * - Fallback to recent posts if no views
  *
  * @example
@@ -64,7 +72,10 @@ export function TrendingPostsPanel({
   // Fallback: if no posts with views, show most recent posts
   if (sortedPosts.length === 0) {
     sortedPosts = [...posts]
-      .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+      .sort(
+        (a, b) =>
+          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+      )
       .slice(0, limit)
       .map((post) => ({
         post,
@@ -80,7 +91,9 @@ export function TrendingPostsPanel({
         <p className={cn(TYPOGRAPHY.label.standard, "text-muted-foreground")}>
           Trending posts will appear here
         </p>
-        <p className={cn(TYPOGRAPHY.body.small, "text-muted-foreground/70 mt-1")}>
+        <p
+          className={cn(TYPOGRAPHY.body.small, "text-muted-foreground/70 mt-1")}
+        >
           Check back soon as content gains traction
         </p>
       </Card>
@@ -90,12 +103,14 @@ export function TrendingPostsPanel({
   return (
     <div className={SPACING.compact}>
       {sortedPosts.map(({ post, views }, index) => {
+        // Use CSS stagger delays for smooth entrance animations
+        const staggerDelay = index * 50; // 50ms increments
+
         return (
-          <motion.div
+          <div
             key={post.id}
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.05, ease: "easeOut" }}
+            className="animate-in fade-in slide-in-from-left-2 duration-300"
+            style={{ animationDelay: `${staggerDelay}ms` }}
           >
             <Link href={`/blog/${post.slug}`}>
               <Card
@@ -155,7 +170,10 @@ export function TrendingPostsPanel({
                         )}
                       >
                         <TrendingUp
-                          className={cn("h-3 w-3 group-hover:scale-110", ANIMATION.transition.movement)}
+                          className={cn(
+                            "h-3 w-3 group-hover:scale-110",
+                            ANIMATION.transition.movement
+                          )}
                         />
                         <span className={ANIMATION.effects.countUp}>
                           {views.toLocaleString()}
@@ -170,7 +188,7 @@ export function TrendingPostsPanel({
                 </div>
               </Card>
             </Link>
-          </motion.div>
+          </div>
         );
       })}
 

@@ -28,7 +28,7 @@ export {
   isSortActive,
   type SortDirection,
   type SortConfig,
-} from "@/lib/dashboard/table-utils";
+} from "@/lib/dashboard";
 
 export {
   exportToCSV,
@@ -36,4 +36,4 @@ export {
   exportData,
   generateTimestampedFilename,
   type ExportFormat,
-} from "@/lib/dashboard/export-utils";
+} from "@/lib/dashboard";

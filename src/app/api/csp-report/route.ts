@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
 
     // Always log to console for debugging (captured by Vercel logs)
     if (isFalsePositive) {
-      console.info("CSP Violation (Known False Positive):", JSON.stringify({
+      console.warn("CSP Violation (Known False Positive):", JSON.stringify({
         ...violationData,
         reason: "Browser extension or development environment",
         filtered: true,

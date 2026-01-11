@@ -14,7 +14,7 @@ import { TeamMemberCard } from "@/components/common";
 export function TeamSpotlights() {
   return (
     <div className={SPACING.subsection}>
-      <div className="space-y-2">
+      <div className={SPACING.compact}>
         <h2 className={TYPOGRAPHY.h2.standard}>Meet the Team</h2>
         <p className="text-muted-foreground">{teamDescription}</p>
       </div>

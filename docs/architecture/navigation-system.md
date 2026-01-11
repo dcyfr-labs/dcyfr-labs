@@ -17,27 +17,27 @@ The navigation system consists of five core foundational pieces:
 ### Using Navigation Config
 
 ```tsx
-import { NAVIGATION } from '@/lib/navigation-config';
+import { NAVIGATION } from "@/lib/navigation-config";
 
 // Use primary navigation items
-NAVIGATION.primary.map(item => (
+NAVIGATION.primary.map((item) => (
   <Link key={item.href} href={item.href}>
     {item.label}
   </Link>
-))
+));
 
 // Use blog categories
-NAVIGATION.blog.map(item => (
+NAVIGATION.blog.map((item) => (
   <Link key={item.href} href={item.href}>
     {item.label}
   </Link>
-))
+));
 ```
 
 ### Using Active State Detection
 
 ```tsx
-import { useNavigation } from '@/hooks/use-navigation';
+import { useNavigation } from "@/hooks/use-navigation";
 
 function NavItem({ href, label }) {
   const { isActive } = useNavigation();
@@ -45,7 +45,7 @@ function NavItem({ href, label }) {
   return (
     <Link
       href={href}
-      className={isActive(href) ? 'text-primary' : 'text-muted-foreground'}
+      className={isActive(href) ? "text-primary" : "text-muted-foreground"}
     >
       {label}
     </Link>
@@ -56,7 +56,7 @@ function NavItem({ href, label }) {
 ### Using Dropdown Logic
 
 ```tsx
-import { useDropdown } from '@/hooks/use-dropdown';
+import { useDropdown } from "@/hooks/use-dropdown";
 
 function Dropdown() {
   const { isOpen, ref, triggerProps, contentProps } = useDropdown();
@@ -83,13 +83,13 @@ The `NAVIGATION` object contains all navigation structures organized by context:
 
 ```typescript
 export const NAVIGATION = {
-  primary: PRIMARY_NAV,        // Header, mobile menu
-  bottom: BOTTOM_NAV,          // Bottom mobile navigation (3 items)
-  mobile: MOBILE_NAV,          // Extended mobile menu
-  blog: BLOG_CATEGORIES,       // Blog category dropdown
-  work: WORK_CATEGORIES,       // Work category dropdown
-  devTools: DEV_TOOLS_NAV,     // Dev tools (development only)
-  footer: FOOTER_NAV,          // Footer links
+  primary: PRIMARY_NAV, // Header, mobile menu
+  bottom: BOTTOM_NAV, // Bottom mobile navigation (3 items)
+  mobile: MOBILE_NAV, // Extended mobile menu
+  blog: BLOG_CATEGORIES, // Blog category dropdown
+  work: WORK_CATEGORIES, // Work category dropdown
+  devTools: DEV_TOOLS_NAV, // Dev tools (development only)
+  footer: FOOTER_NAV, // Footer links
 } as const;
 ```
 
@@ -97,12 +97,12 @@ export const NAVIGATION = {
 
 ```typescript
 interface NavItem {
-  href: string;              // Navigation destination
-  label: string;             // Display text
-  icon?: LucideIcon;         // Optional icon component
-  shortcut?: string;         // Keyboard shortcut (e.g., "g h")
-  prefetch?: boolean;        // Next.js prefetch behavior
-  exactMatch?: boolean;      // Active state matching mode
+  href: string; // Navigation destination
+  label: string; // Display text
+  icon?: LucideIcon; // Optional icon component
+  shortcut?: string; // Keyboard shortcut (e.g., "g h")
+  prefetch?: boolean; // Next.js prefetch behavior
+  exactMatch?: boolean; // Active state matching mode
 }
 ```
 
@@ -156,7 +156,7 @@ The navigation system includes GitHub-style two-key keyboard shortcuts for fast 
 ### Using Keyboard Shortcuts
 
 ```tsx
-import { useNavigationShortcuts } from '@/hooks/use-navigation-shortcuts';
+import { useNavigationShortcuts } from "@/hooks/use-navigation-shortcuts";
 
 function App() {
   // Enable shortcuts globally
@@ -171,13 +171,16 @@ function App() {
 The system includes built-in UI components for keyboard shortcuts:
 
 ```tsx
-import { KeyboardShortcutIndicator, KeyboardShortcutsHelp } from '@/components/common/keyboard-shortcuts-indicator';
+import {
+  KeyboardShortcutIndicator,
+  KeyboardShortcutsHelp,
+} from "@/components/common/keyboard-shortcuts-indicator";
 
 function Layout() {
   return (
     <>
-      <KeyboardShortcutIndicator />  {/* Shows when 'g' is pressed */}
-      <KeyboardShortcutsHelp />       {/* Modal triggered by '?' */}
+      <KeyboardShortcutIndicator /> {/* Shows when 'g' is pressed */}
+      <KeyboardShortcutsHelp /> {/* Modal triggered by '?' */}
     </>
   );
 }
@@ -217,11 +220,7 @@ function MyDropdown() {
         <ChevronDown className={isOpen ? "rotate-180" : ""} />
       </button>
 
-      {isOpen && (
-        <div {...contentProps}>
-          {/* Dropdown content */}
-        </div>
-      )}
+      {isOpen && <div {...contentProps}>{/* Dropdown content */}</div>}
     </div>
   );
 }
@@ -246,11 +245,11 @@ function ControlledDropdown() {
 
 ```typescript
 interface UseDropdownOptions {
-  defaultOpen?: boolean;           // Initial state (uncontrolled)
-  isOpen?: boolean;                // Controlled state
-  onOpenChange?: (open: boolean) => void;  // State change callback
-  closeOnEscape?: boolean;         // Close on Escape key (default: true)
-  closeOnClickOutside?: boolean;   // Close on click outside (default: true)
+  defaultOpen?: boolean; // Initial state (uncontrolled)
+  isOpen?: boolean; // Controlled state
+  onOpenChange?: (open: boolean) => void; // State change callback
+  closeOnEscape?: boolean; // Close on Escape key (default: true)
+  closeOnClickOutside?: boolean; // Close on click outside (default: true)
 }
 ```
 
@@ -258,17 +257,19 @@ interface UseDropdownOptions {
 
 ```typescript
 interface UseDropdownReturn {
-  isOpen: boolean;                 // Current open state
-  open: () => void;                // Open the dropdown
-  close: () => void;               // Close the dropdown
-  toggle: () => void;              // Toggle open/closed
-  ref: React.RefObject;            // Attach to container
-  triggerProps: {                  // Spread on button
+  isOpen: boolean; // Current open state
+  open: () => void; // Open the dropdown
+  close: () => void; // Close the dropdown
+  toggle: () => void; // Toggle open/closed
+  ref: React.RefObject; // Attach to container
+  triggerProps: {
+    // Spread on button
     onClick: () => void;
     "aria-haspopup": "menu";
     "aria-expanded": boolean;
   };
-  contentProps: {                  // Spread on content
+  contentProps: {
+    // Spread on content
     role: "menu";
   };
 }
@@ -295,10 +296,7 @@ function NavLink({ href, label }) {
   return (
     <Link
       href={href}
-      className={cn(
-        "nav-link",
-        isActive(href) && "nav-link-active"
-      )}
+      className={cn("nav-link", isActive(href) && "nav-link-active")}
       aria-current={getAriaCurrent(href)}
     >
       {label}
@@ -313,15 +311,15 @@ function NavLink({ href, label }) {
 const { isActive } = useNavigation();
 
 // StartsWith matching (default)
-isActive("/blog")
+isActive("/blog");
 // Returns true for: /blog, /blog/post-1, /blog/series
 
 // Exact matching
-isActive("/blog", true)
+isActive("/blog", true);
 // Returns true only for: /blog
 
 // Root path always requires exact match
-isActive("/")
+isActive("/");
 // Always exact, even without second parameter
 ```
 
@@ -332,10 +330,7 @@ function SmartNavLink({ item }: { item: NavItem }) {
   const { isNavItemActive } = useNavigation();
 
   return (
-    <Link
-      href={item.href}
-      className={isNavItemActive(item) ? 'active' : ''}
-    >
+    <Link href={item.href} className={isNavItemActive(item) ? "active" : ""}>
       {item.label}
     </Link>
   );
@@ -373,6 +368,7 @@ interface UseNavigationReturn {
 ### Migrating from Inline Navigation Arrays
 
 **Before:**
+
 ```tsx
 // site-header.tsx
 const blogCategories = [
@@ -382,6 +378,7 @@ const blogCategories = [
 ```
 
 **After:**
+
 ```tsx
 // site-header.tsx
 import { NAVIGATION } from '@/lib/navigation-config';
@@ -393,6 +390,7 @@ import { NAVIGATION } from '@/lib/navigation-config';
 ### Migrating from Manual Click-Outside Detection
 
 **Before:**
+
 ```tsx
 const [open, setOpen] = useState(false);
 const ref = useRef<HTMLDivElement>(null);
@@ -409,6 +407,7 @@ useEffect(() => {
 ```
 
 **After:**
+
 ```tsx
 const { isOpen, ref, triggerProps } = useDropdown();
 // Click-outside detection built-in!
@@ -417,13 +416,16 @@ const { isOpen, ref, triggerProps } = useDropdown();
 ### Migrating from Custom Active State Logic
 
 **Before:**
+
 ```tsx
 const pathname = usePathname();
-const isActive = pathname === item.href ||
+const isActive =
+  pathname === item.href ||
   (item.href !== "/" && pathname.startsWith(item.href));
 ```
 
 **After:**
+
 ```tsx
 const { isActive } = useNavigation();
 // Handles all edge cases automatically
@@ -434,8 +436,8 @@ const { isActive } = useNavigation();
 ### Header with Dropdown
 
 ```tsx
-import { useDropdown } from '@/hooks/use-dropdown';
-import { NAVIGATION } from '@/lib/navigation-config';
+import { useDropdown } from "@/hooks/use-dropdown";
+import { NAVIGATION } from "@/lib/navigation-config";
 
 function Header() {
   const blog = useDropdown();
@@ -454,7 +456,7 @@ function Header() {
           </button>
           {blog.isOpen && (
             <div {...blog.contentProps}>
-              {NAVIGATION.blog.map(item => (
+              {NAVIGATION.blog.map((item) => (
                 <Link key={item.href} href={item.href}>
                   {item.label}
                 </Link>
@@ -466,12 +468,12 @@ function Header() {
         {/* Work Dropdown */}
         <div ref={work.ref}>
           <button {...work.triggerProps}>
-            Our Work
+            Work
             <ChevronDown className={work.isOpen ? "rotate-180" : ""} />
           </button>
           {work.isOpen && (
             <div {...work.contentProps}>
-              {NAVIGATION.work.map(item => (
+              {NAVIGATION.work.map((item) => (
                 <Link key={item.href} href={item.href}>
                   {item.label}
                 </Link>
@@ -488,15 +490,15 @@ function Header() {
 ### Mobile Navigation
 
 ```tsx
-import { useNavigation } from '@/hooks/use-navigation';
-import { NAVIGATION } from '@/lib/navigation-config';
+import { useNavigation } from "@/hooks/use-navigation";
+import { NAVIGATION } from "@/lib/navigation-config";
 
 function MobileNav() {
   const { isNavItemActive, getAriaCurrent } = useNavigation();
 
   return (
     <nav>
-      {NAVIGATION.mobile.map(item => {
+      {NAVIGATION.mobile.map((item) => {
         const Icon = item.icon;
 
         return (
@@ -522,15 +524,15 @@ function MobileNav() {
 ### Bottom Navigation
 
 ```tsx
-import { useNavigation } from '@/hooks/use-navigation';
-import { NAVIGATION } from '@/lib/navigation-config';
+import { useNavigation } from "@/hooks/use-navigation";
+import { NAVIGATION } from "@/lib/navigation-config";
 
 function BottomNav() {
   const { isNavItemActive } = useNavigation();
 
   return (
     <nav className="fixed bottom-0 md:hidden">
-      {NAVIGATION.bottom.map(item => {
+      {NAVIGATION.bottom.map((item) => {
         const Icon = item.icon;
         const active = isNavItemActive(item);
 
@@ -554,8 +556,9 @@ function BottomNav() {
 ## Testing
 
 All hooks are fully tested. See:
-- [src/hooks/__tests__/use-dropdown.test.ts](../../src/hooks/__tests__/use-dropdown.test.ts)
-- [src/hooks/__tests__/use-navigation.test.ts](../../src/hooks/__tests__/use-navigation.test.ts)
+
+- [src/hooks/**tests**/use-dropdown.test.ts](../../src/hooks/__tests__/use-dropdown.test.ts)
+- [src/hooks/**tests**/use-navigation.test.ts](../../src/hooks/__tests__/use-navigation.test.ts)
 
 ### Running Tests
 
@@ -575,7 +578,7 @@ The command palette automatically generates navigation commands from the navigat
 ### Auto-Generated Commands
 
 ```tsx
-import { NAVIGATION } from '@/lib/navigation-config';
+import { NAVIGATION } from "@/lib/navigation-config";
 
 const commands: CommandAction[] = [
   // Auto-generated from NAVIGATION.primary config
@@ -583,7 +586,9 @@ const commands: CommandAction[] = [
     id: `nav-${navItem.href.slice(1) || "home"}`,
     label: navItem.label,
     icon: navItem.icon,
-    shortcut: navItem.shortcut ? navItem.shortcut.toUpperCase().replace(" ", " → ") : undefined,
+    shortcut: navItem.shortcut
+      ? navItem.shortcut.toUpperCase().replace(" ", " → ")
+      : undefined,
     onSelect: () => router.push(navItem.href),
   })),
 ];

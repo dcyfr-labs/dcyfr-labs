@@ -1,7 +1,5 @@
-import { headers } from "next/headers";
 import type { Metadata } from "next";
 import { createClient } from "redis";
-import { SITE_URL } from "@/lib/site-config";
 import { posts } from "@/data/posts";
 import { projects } from "@/data/projects";
 import { changelog } from "@/data/changelog";
@@ -10,10 +8,9 @@ import {
   transformProjects,
   transformChangelog,
   aggregateActivities,
-} from "@/lib/activity/sources";
+} from "@/lib/activity";
 import {
   transformPostsWithViews,
-  transformTrendingPosts,
   transformMilestones,
   transformHighEngagementPosts,
   transformCommentMilestones,
@@ -24,10 +21,9 @@ import {
   transformGitHubTraffic,
   transformGoogleAnalytics,
   transformSearchConsole,
-} from "@/lib/activity/sources.server";
-import type { ActivityItem } from "@/lib/activity/types";
+} from "@/lib/activity/server";
+import type { ActivityItem } from "@/lib/activity";
 import { ActivityEmbedClient } from "./activity-embed-client";
-
 // ============================================================================
 // REDIS CLIENT HELPER
 // ============================================================================
@@ -84,9 +80,6 @@ export default async function ActivityEmbedPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const params = await searchParams;
-  
-  // Get nonce from proxy for CSP
-  const nonce = (await headers()).get("x-nonce") || "";
 
   // Fetch activities (cache-first strategy)
   let allActivities: ActivityItem[] = [];
@@ -188,9 +181,10 @@ export default async function ActivityEmbedPage({
   // Serialize activities for client
   const serializedActivities = allActivities.map((activity) => ({
     ...activity,
-    timestamp: activity.timestamp instanceof Date 
-      ? activity.timestamp.toISOString() 
-      : activity.timestamp,
+    timestamp:
+      activity.timestamp instanceof Date
+        ? activity.timestamp.toISOString()
+        : activity.timestamp,
   }));
 
   // Extract URL parameters for filtering
@@ -202,7 +196,6 @@ export default async function ActivityEmbedPage({
     <ActivityEmbedClient
       activities={serializedActivities}
       error={error}
-      nonce={nonce}
       initialSource={source}
       initialTimeRange={timeRange}
       limit={limit}

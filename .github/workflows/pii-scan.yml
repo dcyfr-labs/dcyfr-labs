@@ -178,7 +178,7 @@ ${FILE_LIST}
 
 ### References
 
-- [PI/PII Policy](docs/security/pi-policy.md)
+- [PI/PII Policy](docs/security/private/pi-policy.md)
 - [Security Findings](docs/security/FINDINGS_AND_ACTION_ITEMS.md)
 - [Allowlist Documentation](.pii-allowlist.json)
 

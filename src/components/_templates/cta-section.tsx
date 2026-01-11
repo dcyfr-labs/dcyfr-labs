@@ -98,7 +98,7 @@ export function CTASectionDual() {
 export function CTASectionCard() {
   return (
     <section className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pb-8 md:pb-12`}>
-      <Card className={HOVER_EFFECTS.cardCTA}>
+      <Card className={HOVER_EFFECTS.card}>
         <CardHeader>
           <CardTitle className={TYPOGRAPHY.h2.standard}>
             Want to Work Together?

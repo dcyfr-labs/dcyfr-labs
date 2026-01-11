@@ -24,7 +24,7 @@ import { fetchCredlyBadgesCached } from "@/lib/credly-cache";
  * @example
  * ```typescript
  * const years = await calculateYearsWithCertifications();
- * console.log(`${years}+ years of experience`);
+ * console.warn(`${years}+ years of experience`);
  * ```
  */
 export async function calculateYearsWithCertifications(

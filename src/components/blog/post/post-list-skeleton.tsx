@@ -28,10 +28,14 @@ import { SPACING } from "@/lib/design-tokens";
 
 interface PostListSkeletonProps {
   count?: number;
-  layout?: "grid" | "list" | "magazine" | "compact";
+  /** @deprecated Use count instead. Provided for backward compatibility with BlogListSkeleton */
+  itemCount?: number;
+  layout?: "grid" | "list" | "magazine" | "compact" | "grouped";
 }
 
-export function PostListSkeleton({ count = 3, layout = "compact" }: PostListSkeletonProps) {
+export function PostListSkeleton({ count: countProp, itemCount, layout = "compact" }: PostListSkeletonProps) {
+  // Support both count and itemCount for backward compatibility
+  const count = countProp ?? itemCount ?? 3;
   // Compact layout (default) - dense list style
   if (layout === "compact") {
     return (
@@ -164,6 +168,44 @@ export function PostListSkeleton({ count = 3, layout = "compact" }: PostListSkel
                   <Skeleton className="h-4 w-full" />
                 </CardContent>
               </Card>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Grouped layout - categorized posts by category
+  if (layout === "grouped") {
+    return (
+      <div className={SPACING.subsection}>
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="border-b pb-4 last:border-b-0">
+            {/* Category heading */}
+            <Skeleton className="h-8 w-48 mb-4" />
+            {/* Posts in this category */}
+            <div className={SPACING.content}>
+              {Array.from({ length: 4 }).map((_, j) => (
+                <article key={j} className="group rounded-lg border overflow-hidden relative">
+                  {/* Background placeholder */}
+                  <div className="absolute inset-0 z-0 bg-muted/20">
+                    <div className="absolute inset-0 bg-linear-to-b from-background/60 via-background/70 to-background/80" />
+                  </div>
+
+                  {/* Compact post content */}
+                  <div className="relative z-10 p-3 sm:p-4">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs mb-2">
+                      <Skeleton className="h-4 w-16" />
+                      <Skeleton className="h-4 w-24" />
+                    </div>
+                    <Skeleton className="h-5 sm:h-6 w-3/4 mb-1" />
+                    <div className="space-y-1">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-5/6" />
+                    </div>
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
         ))}

@@ -27,8 +27,8 @@ import {
   type BookmarkCollection,
   type Bookmark,
   type ExportFormat,
-} from "@/lib/activity/bookmarks";
-import type { ActivityItem } from "@/lib/activity/types";
+} from "@/lib/activity";
+import type { ActivityItem } from "@/lib/activity";
 
 export interface UseBookmarksReturn {
   // State
@@ -42,7 +42,7 @@ export interface UseBookmarksReturn {
   getAllTags: () => string[];
   
   // Operations
-  toggle: (activityId: string, options?: { notes?: string; tags?: string[] }) => void;
+  toggle: (activityId: string, options?: { notes?: string; tags?: string[]; contentType?: "post" | "project" | "activity" }) => void;
   add: (activityId: string, options?: { notes?: string; tags?: string[] }) => void;
   remove: (activityId: string) => void;
   updateNotes: (activityId: string, notes: string) => void;
@@ -66,6 +66,7 @@ export interface UseBookmarksReturn {
 /**
  * Hook for managing activity bookmarks
  * 
+ * @param defaultContentType - Default content type for Redis sync (post, project, or activity)
  * @example
  * ```tsx
  * const { isBookmarked, toggle, collection } = useBookmarks();
@@ -132,8 +133,8 @@ export function useBookmarks(): UseBookmarksReturn {
 
   // Mutation operations
   const toggle = useCallback(
-    (activityId: string, options?: { notes?: string; tags?: string[] }) => {
-      console.debug("[useBookmarks] toggle() called:", {
+    (activityId: string, options?: { notes?: string; tags?: string[]; contentType?: "post" | "project" | "activity" }) => {
+      console.warn("[useBookmarks] toggle() called:", {
         activityId,
         options,
         currentBookmarksCount: collection.bookmarks.length,
@@ -141,7 +142,7 @@ export function useBookmarks(): UseBookmarksReturn {
 
       // Check if currently bookmarked before toggling
       const wasBookmarked = isBookmarked(activityId, collection);
-      console.debug("[useBookmarks] toggle() before update:", {
+      console.warn("[useBookmarks] toggle() before update:", {
         activityId,
         wasBookmarked,
         action: wasBookmarked ? "remove" : "add",
@@ -150,7 +151,7 @@ export function useBookmarks(): UseBookmarksReturn {
       // Optimistic localStorage update
       setCollection((prev) => {
         const updated = toggleBookmark(activityId, prev, options);
-        console.debug("[useBookmarks] toggle() state updated:", {
+        console.warn("[useBookmarks] toggle() state updated:", {
           beforeCount: prev.bookmarks.length,
           afterCount: updated.bookmarks.length,
           action: wasBookmarked ? "removed" : "added",
@@ -159,10 +160,10 @@ export function useBookmarks(): UseBookmarksReturn {
       });
 
       // Sync with Redis analytics (fire and forget)
-      const contentType = "activity";
+      const contentType = options?.contentType || "activity";
       const action = wasBookmarked ? "unbookmark" : "bookmark";
 
-      console.debug("[useBookmarks] Syncing with Redis:", {
+      console.warn("[useBookmarks] Syncing with Redis:", {
         slug: activityId,
         contentType,
         action,
@@ -178,7 +179,7 @@ export function useBookmarks(): UseBookmarksReturn {
         }),
       })
         .then(() => {
-          console.debug("[useBookmarks] Successfully synced bookmark to Redis:", { slug: activityId, action });
+          console.warn("[useBookmarks] Successfully synced bookmark to Redis:", { slug: activityId, action });
         })
         .catch((error) => {
           console.error("[useBookmarks] Failed to sync bookmark to Redis:", { slug: activityId, action, error });

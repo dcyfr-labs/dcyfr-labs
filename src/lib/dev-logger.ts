@@ -93,18 +93,18 @@ class DevLogger {
       output += ` ${colors.gray}[${memUsage}]${colors.reset}`;
     }
 
-    console.log(output);
+    console.warn(output);
 
     // Log error stack trace if present
     if (context?.error) {
       const error = context.error;
       if (error instanceof Error) {
-        console.log(`${colors.red}  Error: ${error.message}${colors.reset}`);
+        console.warn(`${colors.red}  Error: ${error.message}${colors.reset}`);
         if (error.stack) {
-          console.log(`${colors.dim}  ${error.stack.split('\n').slice(1).join('\n  ')}${colors.reset}`);
+          console.warn(`${colors.dim}  ${error.stack.split('\n').slice(1).join('\n  ')}${colors.reset}`);
         }
       } else {
-        console.log(`${colors.red}  Error: ${JSON.stringify(error)}${colors.reset}`);
+        console.warn(`${colors.red}  Error: ${JSON.stringify(error)}${colors.reset}`);
       }
     }
   }
@@ -255,7 +255,7 @@ class DevLogger {
     this.startTimes.forEach((startTime, operationId) => {
       const elapsed = now - startTime;
       const color = elapsed > 5000 ? colors.red : elapsed > 2000 ? colors.yellow : colors.white;
-      console.log(`  ${color}${operationId}: ${elapsed}ms elapsed${colors.reset}`);
+      console.warn(`  ${color}${operationId}: ${elapsed}ms elapsed${colors.reset}`);
     });
   }
 

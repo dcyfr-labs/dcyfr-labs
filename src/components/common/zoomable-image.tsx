@@ -77,7 +77,7 @@ export function ZoomableImage(props: React.ImgHTMLAttributes<HTMLImageElement>) 
   const modalElement = isOpen && (
     <div
       ref={modalRef}
-      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 backdrop-blur-sm animate-in fade-in ${ANIMATION.duration.fast}`}
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 backdrop-blur-sm"
       onClick={() => setIsOpen(false)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}

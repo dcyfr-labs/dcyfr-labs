@@ -67,7 +67,7 @@ export function ResumeSectionNav() {
             >
               <Icon className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
               <div className="text-center">
-                {/* eslint-disable-next-line no-restricted-syntax */}
+                { }
                 <p className="text-sm font-medium text-foreground" suppressHydrationWarning>{section.label}</p>
                 <p className="text-xs text-muted-foreground hidden sm:block">{section.description}</p>
               </div>

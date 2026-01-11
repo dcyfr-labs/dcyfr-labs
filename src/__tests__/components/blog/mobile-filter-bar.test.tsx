@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { MobileFilterBar } from "@/components/blog/filters/mobile-filter-bar";
+import { MobileFilterBar } from '@/components/blog';
 
 const mockPush = vi.fn();
 vi.mock("next/navigation", () => ({

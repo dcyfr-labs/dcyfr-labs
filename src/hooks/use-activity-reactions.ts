@@ -27,7 +27,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import type { ReactionType, ReactionCollection } from "@/lib/activity/reactions";
+import type { ReactionType, ReactionCollection } from "@/lib/activity";
 import {
   loadReactions,
   saveReactions,
@@ -35,7 +35,7 @@ import {
   isActivityLiked as isLikedUtil,
   getSimulatedReactionCount,
   getReactionStats,
-} from "@/lib/activity/reactions";
+} from "@/lib/activity";
 
 // ============================================================================
 // TYPES
@@ -46,7 +46,11 @@ export interface UseActivityReactionsReturn {
   isLiked: (activityId: string, type?: ReactionType) => boolean;
 
   /** Toggle like state for an activity (optimistic update) */
-  toggleLike: (activityId: string, type?: ReactionType) => void;
+  toggleLike: (
+    activityId: string,
+    type?: ReactionType,
+    contentTypeOverride?: "post" | "project" | "activity"
+  ) => void;
 
   /** Get real reaction count (0 if not reacted, 1 if reacted by user) */
   getCount: (activityId: string, type?: ReactionType) => number;
@@ -70,22 +74,32 @@ export interface UseActivityReactionsReturn {
 
 /**
  * Hook for managing activity reactions
+ * @param defaultContentType - Default content type for Redis sync (post, project, or activity)
  */
-export function useActivityReactions(): UseActivityReactionsReturn {
+export function useActivityReactions(
+  defaultContentType: "post" | "project" | "activity" = "activity"
+): UseActivityReactionsReturn {
   // Initialize from loadReactions to avoid setState in effect
   const [reactions, setReactions] = useState<ReactionCollection>(() => {
     // Only run on client-side
-    if (typeof window === 'undefined') {
-      console.debug("[useActivityReactions] SSR context, returning empty collection");
+    if (typeof window === "undefined") {
+      console.warn(
+        "[useActivityReactions] SSR context, returning empty collection"
+      );
       return {
         reactions: [],
         lastUpdated: new Date().toISOString(),
         version: 1,
       };
     }
-    console.debug("[useActivityReactions] Initializing hook, loading reactions from storage");
+    console.warn(
+      "[useActivityReactions] Initializing hook, loading reactions from storage"
+    );
     const loaded = loadReactions();
-    console.info("[useActivityReactions] Hook initialized with", `${loaded.reactions.length} reactions`);
+    console.warn(
+      "[useActivityReactions] Hook initialized with",
+      `${loaded.reactions.length} reactions`
+    );
     return loaded;
   });
 
@@ -93,8 +107,11 @@ export function useActivityReactions(): UseActivityReactionsReturn {
 
   // Sync to localStorage whenever reactions change
   useEffect(() => {
-    if (!loading && typeof window !== 'undefined') {
-      console.debug("[useActivityReactions] useEffect: Syncing reactions to localStorage, count:", `${reactions.reactions.length}`);
+    if (!loading && typeof window !== "undefined") {
+      console.warn(
+        "[useActivityReactions] useEffect: Syncing reactions to localStorage, count:",
+        `${reactions.reactions.length}`
+      );
       saveReactions(reactions);
     }
   }, [reactions, loading]);
@@ -104,9 +121,13 @@ export function useActivityReactions(): UseActivityReactionsReturn {
    */
   const isLiked = useCallback(
     (activityId: string, type: ReactionType = "like"): boolean => {
-      if (typeof window === 'undefined') return false; // Suppress client-only data during SSR
+      if (typeof window === "undefined") return false; // Suppress client-only data during SSR
       const liked = isLikedUtil(activityId, reactions, type);
-      console.debug("[useActivityReactions] isLiked() check:", { activityId, type, result: liked });
+      console.warn("[useActivityReactions] isLiked() check:", {
+        activityId,
+        type,
+        result: liked,
+      });
       return liked;
     },
     [reactions]
@@ -116,8 +137,12 @@ export function useActivityReactions(): UseActivityReactionsReturn {
    * Toggle like state with optimistic update and Redis sync
    */
   const toggleLike = useCallback(
-    (activityId: string, type: ReactionType = "like"): void => {
-      console.debug("[useActivityReactions] toggleLike() called:", {
+    (
+      activityId: string,
+      type: ReactionType = "like",
+      contentTypeOverride?: "post" | "project" | "activity"
+    ): void => {
+      console.warn("[useActivityReactions] toggleLike() called:", {
         activityId,
         type,
         currentReactionsCount: reactions.reactions.length,
@@ -125,11 +150,14 @@ export function useActivityReactions(): UseActivityReactionsReturn {
 
       // Optimistic localStorage update
       const wasLiked = isLikedUtil(activityId, reactions, type);
-      console.debug("[useActivityReactions] toggleLike() before state update:", `wasLiked=${wasLiked}`);
+      console.warn(
+        "[useActivityReactions] toggleLike() before state update:",
+        `wasLiked=${wasLiked}`
+      );
 
       setReactions((current) => {
         const updated = toggleReactionUtil(activityId, current, type);
-        console.debug("[useActivityReactions] toggleLike() state updated:", {
+        console.warn("[useActivityReactions] toggleLike() state updated:", {
           beforeCount: current.reactions.length,
           afterCount: updated.reactions.length,
           action: wasLiked ? "removed" : "added",
@@ -138,12 +166,11 @@ export function useActivityReactions(): UseActivityReactionsReturn {
       });
 
       // Sync with Redis analytics (fire and forget)
-      // Determine contentType from activityId if possible
-      // Default to "activity" for activity feed items
-      const contentType = "activity";
+      // Use contentTypeOverride if provided, otherwise use defaultContentType
+      const contentType = contentTypeOverride || defaultContentType;
       const action = wasLiked ? "unlike" : "like";
 
-      console.debug("[useActivityReactions] Syncing with Redis:", {
+      console.warn("[useActivityReactions] Syncing with Redis:", {
         slug: activityId,
         contentType,
         action,
@@ -159,16 +186,25 @@ export function useActivityReactions(): UseActivityReactionsReturn {
         }),
       })
         .then(() => {
-          console.debug("[useActivityReactions] Successfully synced like to Redis:", { slug: activityId, action });
+          console.warn(
+            "[useActivityReactions] Successfully synced like to Redis:",
+            { slug: activityId, action }
+          );
         })
         .catch((error) => {
-          console.error("[useActivityReactions] Failed to sync like to Redis:", { slug: activityId, action, error });
+          console.error(
+            "[useActivityReactions] Failed to sync like to Redis:",
+            { slug: activityId, action, error }
+          );
           if (process.env.NODE_ENV === "development") {
-            console.warn("[useActivityReactions] Redis sync error details:", error);
+            console.warn(
+              "[useActivityReactions] Redis sync error details:",
+              error
+            );
           }
         });
     },
-    [reactions]
+    [reactions, defaultContentType]
   );
 
   /**
@@ -176,9 +212,13 @@ export function useActivityReactions(): UseActivityReactionsReturn {
    */
   const getCount = useCallback(
     (activityId: string, type: ReactionType = "like"): number => {
-      if (typeof window === 'undefined') return 0; // Suppress client-only data during SSR
+      if (typeof window === "undefined") return 0; // Suppress client-only data during SSR
       const count = getSimulatedReactionCount(activityId, reactions, type);
-      console.debug("[useActivityReactions] getCount():", { activityId, type, count });
+      console.warn("[useActivityReactions] getCount():", {
+        activityId,
+        type,
+        count,
+      });
       return count;
     },
     [reactions]

@@ -127,7 +127,7 @@ export async function submitUrlToGoogle(
       },
     });
 
-    console.log(`✓ Submitted ${url} to Google Indexing API`);
+    console.warn(`✓ Submitted ${url} to Google Indexing API`);
 
     return {
       success: true,
@@ -170,7 +170,7 @@ export async function validateSitemapUrls(
   const pending = [];
   const errors = [];
 
-  console.log(`🔍 Validating ${sitemapUrls.length} URLs...`);
+  console.warn(`🔍 Validating ${sitemapUrls.length} URLs...`);
 
   for (let i = 0; i < sitemapUrls.length; i++) {
     const url = sitemapUrls[i];
@@ -244,7 +244,7 @@ export async function submitMissingPagesToGoogle(
   const urlsToSubmit = missingUrls.slice(0, toSubmit);
   const urlsToSkip = missingUrls.slice(toSubmit);
 
-  console.log(`📤 Submitting ${urlsToSubmit.length} URL(s) to Google...`);
+  console.warn(`📤 Submitting ${urlsToSubmit.length} URL(s) to Google...`);
 
   for (let i = 0; i < urlsToSubmit.length; i++) {
     const url = urlsToSubmit[i];
@@ -351,26 +351,26 @@ export async function validateAndSubmitMissingPages(
 
   try {
     // Step 1: Validate sitemap
-    console.log("\n📋 Step 1: Validating sitemap...");
+    console.warn("\n📋 Step 1: Validating sitemap...");
     const validation = await validateSitemapUrls(sitemapUrls, authClient);
 
-    console.log(`✓ Validation complete:`);
-    console.log(`  📖 Indexed: ${validation.indexed.length}`);
-    console.log(`  ❌ Missing: ${validation.missing.length}`);
-    console.log(`  ⏳ Pending: ${validation.pending.length}`);
+    console.warn(`✓ Validation complete:`);
+    console.warn(`  📖 Indexed: ${validation.indexed.length}`);
+    console.warn(`  ❌ Missing: ${validation.missing.length}`);
+    console.warn(`  ⏳ Pending: ${validation.pending.length}`);
 
     // Step 2: Submit missing pages
-    console.log("\n📤 Step 2: Submitting missing pages...");
+    console.warn("\n📤 Step 2: Submitting missing pages...");
     const submission = await submitMissingPagesToGoogle(
       validation.missing,
       authClient,
       maxSubmissions
     );
 
-    console.log(`✓ Submission complete:`);
-    console.log(`  ✅ Submitted: ${submission.submitted.length}`);
-    console.log(`  ❌ Failed: ${submission.failed.length}`);
-    console.log(`  ⏸ Skipped: ${submission.skipped.length}`);
+    console.warn(`✓ Submission complete:`);
+    console.warn(`  ✅ Submitted: ${submission.submitted.length}`);
+    console.warn(`  ❌ Failed: ${submission.failed.length}`);
+    console.warn(`  ⏸ Skipped: ${submission.skipped.length}`);
 
     return {
       success: true,

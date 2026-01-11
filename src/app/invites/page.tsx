@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { createPageMetadata, getJsonLdScriptProps } from "@/lib/metadata";
-import { PageLayout } from "@/components/layouts/page-layout";
-import { PageHero } from "@/components/layouts/page-hero";
+import { PageLayout } from "@/components/layouts";
+import { PageHero } from "@/components/layouts";
 import { Section, SmoothScrollToHash } from "@/components/common";
 import { SPACING, PAGE_LAYOUT } from "@/lib/design-tokens";
 import { inviteCodes, INVITE_CODE_CATEGORY_LABELS } from "@/data/invites";
@@ -11,7 +11,10 @@ import {
   InvitesCategorySection,
   InvitesFeatured,
 } from "@/components/invites";
-import { groupInviteCodesByCategory, sortCategoriesByCount } from "@/lib/invites";
+import {
+  groupInviteCodesByCategory,
+  sortCategoriesByCount,
+} from "@/lib/invites";
 import { headers } from "next/headers";
 
 const pageTitle = "Invites";
@@ -35,11 +38,11 @@ export default async function InvitesPage() {
     "@type": "WebPage",
     name: pageTitle,
     description: pageDescription,
-    url: "https://dcyfr.com/invites",
+    url: "https://dcyfr.ai/invites",
     isPartOf: {
       "@type": "WebSite",
       name: "dcyfr",
-      url: "https://dcyfr.com",
+      url: "https://dcyfr.ai",
     },
   };
 
@@ -55,6 +58,7 @@ export default async function InvitesPage() {
             title={pageTitle}
             description={pageDescription}
             className={PAGE_LAYOUT.hero.content}
+            align="center"
           />
         </Section>
 
@@ -78,7 +82,7 @@ export default async function InvitesPage() {
         {sortedCategories.map(([category, codes]) => {
           // Filter out featured codes from category sections
           const nonFeaturedCodes = codes.filter((c) => !c.featured);
-          
+
           // Skip category if all codes are featured
           if (nonFeaturedCodes.length === 0) {
             return null;

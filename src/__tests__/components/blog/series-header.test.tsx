@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { SeriesHeader } from "@/components/blog/series-header";
+import { SeriesHeader } from '@/components/blog';
 
 describe("SeriesHeader", () => {
   it("should render series title", () => {

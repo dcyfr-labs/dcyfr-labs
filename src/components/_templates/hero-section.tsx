@@ -25,7 +25,7 @@
  * ```
  */
 
-import { PageHero } from '@/components/layouts/page-hero'
+import { PageHero } from '@/components/layouts'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Mail } from 'lucide-react'
 import Link from 'next/link'

@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ANIMATION } from "@/lib/design-tokens";
-import { useFilterParams } from "@/components/common/filters";
+import { useFilterParams } from "@/components/common";
 import { useMobileFilterSheet } from "@/hooks/use-mobile-filter-sheet";
 
 interface HorizontalFilterChipsProps {

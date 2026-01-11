@@ -12,7 +12,7 @@
  */
 
 import type { Project } from "@/data/projects";
-import type { TrendingProject, TrendingVelocity } from "@/components/home/trending-projects-panel";
+import type { TrendingProject, TrendingVelocity } from "@/components/home";
 
 // ============================================================================
 // TYPES
@@ -89,7 +89,7 @@ async function fetchAccurateRecentStars(
     // Skip if repo has too many stars (would require too many API calls)
     const maxStarsToCheck = MAX_STARGAZER_PAGES * 100;
     if (totalStars > maxStarsToCheck) {
-      console.log(
+      console.warn(
         `[TrendingProjects] ${repoOwner}/${repoName} has ${totalStars} stars (>${maxStarsToCheck}), using approximation`
       );
       return null; // Fall back to approximation
@@ -139,7 +139,7 @@ async function fetchAccurateRecentStars(
       page++;
     }
 
-    console.log(
+    console.warn(
       `[TrendingProjects] ${repoOwner}/${repoName}: ${recentStarCount} stars in last 7 days (${page - 1} pages fetched)`
     );
 

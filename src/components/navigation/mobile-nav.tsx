@@ -12,14 +12,14 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/features/theme/theme-toggle";
+import { ThemeToggle } from "@/components/features";
 import { cn } from "@/lib/utils";
 import { NAVIGATION, isNavItemActive, getAriaCurrent } from "@/lib/navigation";
 import { TYPOGRAPHY, SPACING, ANIMATION } from "@/lib/design-tokens";
 
 /**
  * Mobile navigation component with hamburger menu
- * 
+ *
  * Features:
  * - Sheet drawer with large touch targets (56px height)
  * - Sectioned navigation for better organization
@@ -27,7 +27,7 @@ import { TYPOGRAPHY, SPACING, ANIMATION } from "@/lib/design-tokens";
  * - Shows active page indicator
  * - Includes theme toggle
  * - Full accessibility support
- * 
+ *
  * @example
  * ```tsx
  * <MobileNav />
@@ -59,7 +59,7 @@ export function MobileNav() {
         aria-label="Open navigation menu"
         onClick={() => {}} // No-op until mounted
       >
-        <MenuIcon className="h-5 w-5" />
+        <MenuIcon className="h-4 w-4" />
       </Button>
     );
   }
@@ -73,10 +73,13 @@ export function MobileNav() {
           className="touch-target"
           aria-label="Open navigation menu"
         >
-          <MenuIcon className="h-5 w-5" />
+          <MenuIcon className="h-4 w-4" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-70 sm:w-[320px] p-4 overflow-y-auto">
+      <SheetContent
+        side="left"
+        className="w-70 sm:w-[320px] p-4 overflow-y-auto"
+      >
         <SheetHeader>
           <SheetTitle className="text-left">Navigation</SheetTitle>
         </SheetHeader>
@@ -86,12 +89,20 @@ export function MobileNav() {
           {NAVIGATION.mobile.map((section) => (
             <section key={section.id} className="mb-8 last:mb-0">
               {/* Section Heading */}
-              <h3 className={cn(TYPOGRAPHY.label.small, "text-muted-foreground uppercase tracking-wide px-4 mb-2")}>
+              <h3
+                className={cn(
+                  TYPOGRAPHY.label.small,
+                  "text-muted-foreground uppercase tracking-wide px-4 mb-2"
+                )}
+              >
                 {section.label}
               </h3>
 
               {/* Section Items */}
-              <nav aria-label={section.description || section.label} className="flex flex-col gap-1">
+              <nav
+                aria-label={section.description || section.label}
+                className="flex flex-col gap-1"
+              >
                 {section.items.map((item) => {
                   const isActive = isNavItemActive(item, pathname);
                   const Icon = item.icon;
@@ -105,22 +116,35 @@ export function MobileNav() {
                         ANIMATION.transition.base,
                         "hover:bg-accent hover:text-accent-foreground",
                         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                        isActive && "bg-accent text-accent-foreground font-medium"
+                        isActive &&
+                          "bg-accent text-accent-foreground font-medium"
                       )}
-                      aria-current={getAriaCurrent(item.href, pathname, item.exactMatch)}
+                      aria-current={getAriaCurrent(
+                        item.href,
+                        pathname,
+                        item.exactMatch
+                      )}
                       aria-label={item.description}
                       prefetch={item.prefetch ?? false}
                     >
                       {Icon && (
                         <Icon
-                          className={cn("h-5 w-5 shrink-0", isActive && "stroke-[2.5]")}
+                          className={cn(
+                            "h-5 w-5 shrink-0",
+                            isActive && "stroke-[2.5]"
+                          )}
                           aria-hidden="true"
                         />
                       )}
                       <div className="flex-1 min-w-0">
                         <div className="truncate">{item.label}</div>
                         {item.description && (
-                          <div className={cn(TYPOGRAPHY.metadata, "text-muted-foreground truncate")}>
+                          <div
+                            className={cn(
+                              TYPOGRAPHY.metadata,
+                              "text-muted-foreground truncate"
+                            )}
+                          >
                             {item.description}
                           </div>
                         )}

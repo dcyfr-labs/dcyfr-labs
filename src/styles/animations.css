@@ -1,0 +1,273 @@
+/* ============================================================================
+   ANIMATION UTILITIES
+   ============================================================================
+   Simple, performant animation classes using CSS custom properties.
+   All animations use transform + opacity for GPU acceleration.
+   ============================================================================ */
+
+/* Base transition utility */
+.transition-base {
+  transition-property: opacity, transform;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-default);
+}
+
+.transition-fast {
+  transition-property: opacity, transform;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-default);
+}
+
+.transition-slow {
+  transition-property: opacity, transform;
+  transition-duration: var(--duration-slow);
+  transition-timing-function: var(--ease-out);
+}
+
+/* Optimized transition utilities for specific use cases */
+
+/* Movement - transform only (best for hover, interactive elements) */
+.transition-movement {
+  transition-property: transform;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-default);
+}
+
+/* Appearance - opacity + transform (best for reveal animations) */
+.transition-appearance {
+  transition-property: opacity, transform;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-default);
+}
+
+/* Theme - colors only (best for theme changes, hover states) */
+.transition-theme {
+  transition-property: color, background-color, border-color, fill, stroke;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-default);
+}
+
+/* Legacy alias - use .transition-theme instead */
+.transition-colors {
+  transition-property: color, background-color, border-color, fill, stroke;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-default);
+}
+
+/* 
+ * Scroll-triggered reveal animations
+ * Usage: Add .reveal-hidden initially, then add .reveal-visible when in viewport
+ */
+
+/* Initial hidden state */
+.reveal-hidden {
+  opacity: 0;
+}
+
+/* Visible state */
+.reveal-visible {
+  opacity: 1;
+}
+
+/* Fade up variant */
+.reveal-hidden.reveal-up {
+  opacity: 0;
+  transform: translateY(var(--slide-distance));
+}
+
+.reveal-visible.reveal-up {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Fade down variant */
+.reveal-hidden.reveal-down {
+  opacity: 0;
+  transform: translateY(calc(-1 * var(--slide-distance)));
+}
+
+.reveal-visible.reveal-down {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Fade left variant */
+.reveal-hidden.reveal-left {
+  opacity: 0;
+  transform: translateX(var(--slide-distance));
+}
+
+.reveal-visible.reveal-left {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Fade right variant */
+.reveal-hidden.reveal-right {
+  opacity: 0;
+  transform: translateX(calc(-1 * var(--slide-distance)));
+}
+
+.reveal-visible.reveal-right {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Scale variant */
+.reveal-hidden.reveal-scale {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.reveal-visible.reveal-scale {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Card hover lift effect */
+.hover-lift {
+  transition-property: transform, box-shadow;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-default);
+}
+
+.hover-lift:hover {
+  transform: translateY(calc(-1 * var(--lift-distance)));
+}
+
+/* Button press effect */
+.press-effect:active {
+  transform: scale(0.98);
+}
+
+/* Stagger delay utilities for lists (combine with reveal classes) */
+.stagger-1 {
+  transition-delay: calc(1 * 50ms);
+}
+
+.stagger-2 {
+  transition-delay: calc(2 * 50ms);
+}
+
+.stagger-3 {
+  transition-delay: calc(3 * 50ms);
+}
+
+.stagger-4 {
+  transition-delay: calc(4 * 50ms);
+}
+
+.stagger-5 {
+  transition-delay: calc(5 * 50ms);
+}
+
+.stagger-6 {
+  transition-delay: calc(6 * 50ms);
+}
+
+/* ========================================
+   REDUCED MOTION - Accessibility (Unified)
+   ========================================
+   Single source of truth for reduced motion handling.
+   CSS handles this globally - no JavaScript checks needed.
+   
+   Philosophy:
+   - Instant state changes (no animation)
+   - Preserve functional feedback (focus, hover states)
+   - No layout shifts
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+
+  /* Global: Disable all animations and transitions */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  /* Reveal animations: instant visibility */
+  .reveal-hidden,
+  .reveal-hidden.reveal-up,
+  .reveal-hidden.reveal-down,
+  .reveal-hidden.reveal-left,
+  .reveal-hidden.reveal-right,
+  .reveal-hidden.reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* No stagger delays */
+  [class*="stagger-"] {
+    transition-delay: 0ms !important;
+  }
+
+  /* Disable skeleton shimmer */
+  .skeleton-shimmer {
+    animation: none !important;
+    background: hsl(var(--muted)) !important;
+  }
+
+  /* Disable holographic effects */
+  .holographic-card::before {
+    animation: none !important;
+  }
+
+  /* Disable card hover transforms */
+  .hover-lift:hover,
+  .press-effect:active,
+  .group.rounded-lg.border:hover,
+  .flex.h-full.flex-col:hover {
+    transform: none !important;
+  }
+
+  /* Disable heatmap animations */
+  .react-calendar-heatmap rect {
+    animation: none !important;
+  }
+
+  .react-calendar-heatmap rect:hover {
+    transform: none !important;
+  }
+
+  /* Disable activity feed animations (like button, pulse, count) */
+  .animate-pulse-once {
+    animation: none !important;
+  }
+
+  /* Disable loading bar animation */
+  .animate-loading-bar {
+    animation: none !important;
+    transform: scaleX(1) !important;
+  }
+
+  /* Disable fade-in animations */
+  .animate-fade-in {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  /* Disable highlight pulse animation */
+  .animate-highlight {
+    animation: none !important;
+  }
+
+  /* Disable all scale transforms on interactive elements */
+  button:active,
+  a:active,
+  [role="button"]:active {
+    transform: none !important;
+  }
+
+  /* Disable view transitions */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms !important;
+  }
+}

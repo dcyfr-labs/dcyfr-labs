@@ -27,7 +27,7 @@ import {
   BookmarkCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ANIMATION, NEON_COLORS, TOUCH_TARGET } from "@/lib/design-tokens";
+import { ANIMATION, TOUCH_TARGET, SEMANTIC_COLORS } from "@/lib/design-tokens";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import {
   type ActivityItem as ActivityItemType,
@@ -64,7 +64,7 @@ const SOURCE_ICONS: Record<ActivitySource, typeof FileText> = {
 /**
  * Get display information for activity verbs
  * Shows visual distinction between published (new) vs updated (modified)
- * Uses neon color palette for vibrant, glowing badges in dark mode
+ * Uses semantic color system for consistent theming
  */
 function getVerbDisplay(verb: ActivityItemType["verb"]) {
   const verbConfig: Record<
@@ -74,42 +74,42 @@ function getVerbDisplay(verb: ActivityItemType["verb"]) {
     published: {
       icon: Check,
       label: "Published",
-      badge: NEON_COLORS.lime.badge,
+      badge: SEMANTIC_COLORS.status.neutral,
     },
     updated: {
       icon: Pencil,
       label: "Updated",
-      badge: NEON_COLORS.cyan.badge,
+      badge: SEMANTIC_COLORS.status.neutral,
     },
     launched: {
       icon: Megaphone,
       label: "Launched",
-      badge: NEON_COLORS.purple.badge,
+      badge: SEMANTIC_COLORS.status.neutral,
     },
     released: {
       icon: Trophy,
       label: "Released",
-      badge: NEON_COLORS.orange.badge,
+      badge: SEMANTIC_COLORS.status.neutral,
     },
     committed: {
       icon: GitCommit,
       label: "Committed",
-      badge: NEON_COLORS.slate.badge,
+      badge: SEMANTIC_COLORS.status.neutral,
     },
     achieved: {
       icon: Trophy,
       label: "Achieved",
-      badge: NEON_COLORS.yellow.badge,
+      badge: SEMANTIC_COLORS.status.neutral,
     },
     earned: {
       icon: Award,
       label: "Earned",
-      badge: NEON_COLORS.blue.badge,
+      badge: SEMANTIC_COLORS.status.neutral,
     },
     reached: {
       icon: TrendingUp,
       label: "Reached",
-      badge: NEON_COLORS.lime.badge,
+      badge: SEMANTIC_COLORS.status.neutral,
     },
   };
 
@@ -158,7 +158,11 @@ export function ActivityItem({
   className,
 }: ActivityItemProps) {
   const Icon = SOURCE_ICONS[activity.source] || FileText;
-  const colors = ACTIVITY_SOURCE_COLORS[activity.source] || { icon: "", text: "", bg: "" };
+  const colors = ACTIVITY_SOURCE_COLORS[activity.source] || {
+    icon: "",
+    text: "",
+    bg: "",
+  };
   const sourceLabel = ACTIVITY_SOURCE_LABELS[activity.source] || "Activity";
   const { isBookmarked, toggle } = useBookmarks();
 
@@ -221,10 +225,13 @@ export function ActivityItem({
             TOUCH_TARGET.close,
             "opacity-0 group-hover:opacity-100",
             ANIMATION.transition.movement,
-            // eslint-disable-next-line no-restricted-syntax -- Bookmark status color (icon color, not semantic)
-            isBookmarked(bookmarkId) && "opacity-100 text-amber-500 hover:text-amber-600"
+            "items-center justify-center",
+            isBookmarked(bookmarkId) &&
+              "opacity-100 text-warning hover:text-warning-light"
           )}
-          aria-label={isBookmarked(bookmarkId) ? "Remove bookmark" : "Add bookmark"}
+          aria-label={
+            isBookmarked(bookmarkId) ? "Remove bookmark" : "Add bookmark"
+          }
         >
           {isBookmarked(bookmarkId) ? (
             <BookmarkCheck className="h-4 w-4" />
@@ -233,7 +240,8 @@ export function ActivityItem({
           )}
         </Button>
 
-        <div className="flex gap-3 pr-10">{/* Add right padding for bookmark button */}
+        <div className="flex gap-3 pr-10">
+          {/* Add right padding for bookmark button */}
           {/* Activity icon */}
           <div
             className={cn(
@@ -339,7 +347,10 @@ export function ActivityItem({
                   <span className="text-xs text-muted-foreground">•</span>
                   <Badge
                     variant="secondary"
-                    className={`text-xs px-1.5 py-0 ${NEON_COLORS.orange.badge}`}
+                    className={cn(
+                      "text-xs px-1.5 py-0",
+                      SEMANTIC_COLORS.accent.orange.badge
+                    )}
                   >
                     <TrendingUp className="h-3 w-3 mr-1" />
                     Trending
@@ -353,7 +364,10 @@ export function ActivityItem({
                   <span className="text-xs text-muted-foreground">•</span>
                   <Badge
                     variant="secondary"
-                    className={`text-xs px-1.5 py-0 ${NEON_COLORS.yellow.badge}`}
+                    className={cn(
+                      "text-xs px-1.5 py-0",
+                      SEMANTIC_COLORS.status.warning
+                    )}
                   >
                     <Trophy className="h-3 w-3 mr-1" />
                     {activity.meta.milestone.toLocaleString()} milestone
@@ -368,7 +382,10 @@ export function ActivityItem({
                     <span className="text-xs text-muted-foreground">•</span>
                     <Badge
                       variant="secondary"
-                      className={`text-xs px-1.5 py-0 ${NEON_COLORS.red.badge}`}
+                      className={cn(
+                        "text-xs px-1.5 py-0",
+                        SEMANTIC_COLORS.status.warning
+                      )}
                     >
                       <Flame className="h-3 w-3 mr-1" />
                       {activity.meta.engagement.toFixed(1)}% engaged
@@ -412,7 +429,11 @@ function CompactItem({
   className?: string;
 }) {
   const Icon = SOURCE_ICONS[activity.source] || FileText;
-  const colors = ACTIVITY_SOURCE_COLORS[activity.source] || { icon: "", text: "", bg: "" };
+  const colors = ACTIVITY_SOURCE_COLORS[activity.source] || {
+    icon: "",
+    text: "",
+    bg: "",
+  };
 
   return (
     <Link
@@ -494,7 +515,11 @@ function TimelineItem({
   className?: string;
 }) {
   const Icon = SOURCE_ICONS[activity.source] || FileText;
-  const colors = ACTIVITY_SOURCE_COLORS[activity.source] || { icon: "", text: "", bg: "" };
+  const colors = ACTIVITY_SOURCE_COLORS[activity.source] || {
+    icon: "",
+    text: "",
+    bg: "",
+  };
   const sourceLabel = ACTIVITY_SOURCE_LABELS[activity.source] || "Activity";
   const { isBookmarked, toggle } = useBookmarks();
 
@@ -515,7 +540,10 @@ function TimelineItem({
   };
 
   return (
-    <div className={cn("relative flex gap-4 group", className)} data-testid="activity-item">
+    <div
+      className={cn("relative flex gap-4 group", className)}
+      data-testid="activity-item"
+    >
       {/* Timeline connector line */}
       {showConnector && !isLast && (
         <div
@@ -563,19 +591,28 @@ function TimelineItem({
             // Active state: slight bounce
             "active:scale-90",
             // Bookmarked state: always visible with amber color
-            // eslint-disable-next-line no-restricted-syntax -- Bookmark status color (icon color, not semantic)
-            isBookmarked(bookmarkId) && "opacity-100 scale-100 text-amber-500 hover:text-amber-600"
+
+            isBookmarked(bookmarkId) &&
+              "opacity-100 scale-100 text-warning hover:text-warning-light"
           )}
-          aria-label={isBookmarked(bookmarkId) ? "Remove bookmark" : "Add bookmark"}
+          aria-label={
+            isBookmarked(bookmarkId) ? "Remove bookmark" : "Add bookmark"
+          }
         >
           {isBookmarked(bookmarkId) ? (
-            <BookmarkCheck className={cn("h-4 w-4 animate-in zoom-in-50", ANIMATION.duration.fast)} />
+            <BookmarkCheck
+              className={cn(
+                "h-4 w-4 animate-in zoom-in-50",
+                ANIMATION.duration.fast
+              )}
+            />
           ) : (
             <Bookmark className="h-4 w-4" />
           )}
         </Button>
 
-        <div className="flex items-start justify-between gap-2 mb-1 pr-10">{/* Add right padding for bookmark button */}
+        <div className="flex items-start justify-between gap-2 mb-1 pr-10">
+          {/* Add right padding for bookmark button */}
           <Link
             href={activity.href}
             className="font-medium hover:text-primary transition-colors line-clamp-1"

@@ -43,6 +43,8 @@ describe('Socials Data', () => {
       // Only test platforms that are actually in use in socialLinks array
       const platformsInUse = [
         'calendar',
+        'twitter',
+        'dev',
         'linkedin',
         'peerlist',
         'wellfound',

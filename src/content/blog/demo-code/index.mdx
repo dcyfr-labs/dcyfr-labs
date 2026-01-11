@@ -1,18 +1,32 @@
 ---
 id: "post-20200108-647bfe00"
 title: "Code Examples & Syntax Highlighting"
-summary: "Complete showcase of syntax highlighting with code examples in 20+ programming languages supported by Shiki."
+summary: "Complete showcase of syntax highlighting with code examples in 20+ programming languages supported by Shiki, featuring React 19 and Next.js 16 patterns."
 publishedAt: "2020-01-08T12:00:00Z"
-updatedAt: "2025-11-30T12:00:00Z"
+updatedAt: "2026-01-11T12:00:00Z"
 category: "Demo"
-tags: ["Code", "Syntax Highlighting", "MDX", "Programming Languages", "Demo"]
+tags:
+  [
+    "Code",
+    "Syntax Highlighting",
+    "MDX",
+    "Programming Languages",
+    "Demo",
+    "React 19",
+    "Next.js 16",
+  ]
 draft: true
 series:
   name: "Features"
   order: 3
 ---
 
-This page showcases syntax highlighting for code examples across all major programming languages supported by **Shiki** via `rehype-pretty-code`. Code blocks automatically receive theme-aware syntax highlighting with support for light and dark modes.
+This page showcases syntax highlighting for code examples across all major programming languages supported by <GlossaryTooltip term="Shiki" definition="Fast syntax highlighter built on VS Code's TextMate grammars">**Shiki**</GlossaryTooltip> via `rehype-pretty-code`. Code blocks automatically receive theme-aware syntax highlighting with support for light and dark modes.
+
+<SectionShare
+  sectionId="introduction"
+  sectionTitle="Code Examples & Syntax Highlighting"
+/>
 
 ---
 
@@ -23,88 +37,132 @@ Complete TypeScript examples with types, interfaces, and generics:
 ```typescript
 // Type definitions and interfaces
 type User = {
-  id: string
-  name: string
-  email: string
-  roles: ("admin" | "editor" | "viewer")[]
-}
+  id: string;
+  name: string;
+  email: string;
+  roles: ("admin" | "editor" | "viewer")[];
+};
 
 interface ApiResponse<T> {
-  data: T
-  status: number
-  message?: string
+  data: T;
+  status: number;
+  message?: string;
 }
 
 // Generics and utility functions
 export async function fetchUser(id: string): Promise<ApiResponse<User>> {
-  const response = await fetch(`/api/users/${id}`)
-  const data = await response.json()
-  
+  const response = await fetch(`/api/users/${id}`);
+  const data = await response.json();
+
   if (!response.ok) {
-    throw new Error(data.message ?? "Failed to fetch user")
+    throw new Error(data.message ?? "Failed to fetch user");
   }
-  
+
   return {
     data,
     status: response.status,
-    message: "User fetched successfully"
-  }
+    message: "User fetched successfully",
+  };
 }
 
 // Using the function
-const result = await fetchUser("user-123")
-console.log(`Hello, ${result.data.name}!`)
+const result = await fetchUser("user-123");
+console.log(`Hello, ${result.data.name}!`);
 ```
+
+<SectionShare sectionId="typescript" sectionTitle="TypeScript Examples" />
 
 ---
 
 ## React & TSX
 
-React components with TypeScript and hooks:
+React components with TypeScript, React 19 features, and modern hooks:
 
 ```tsx
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 interface CounterProps {
-  initialCount?: number
-  step?: number
+  initialCount?: number;
+  step?: number;
 }
 
 export function Counter({ initialCount = 0, step = 1 }: CounterProps) {
-  const [count, setCount] = useState(initialCount)
-  
+  const [count, setCount] = useState(initialCount);
+
   return (
     <Card className="p-6 space-y-4">
       <h2 className="text-2xl font-bold">Count: {count}</h2>
-      
+
       <div className="flex gap-2">
-        <Button 
-          onClick={() => setCount(c => c + step)}
-          variant="default"
-        >
+        <Button onClick={() => setCount((c) => c + step)} variant="default">
           Increment
         </Button>
-        
-        <Button 
-          onClick={() => setCount(c => c - step)}
-          variant="outline"
-        >
+
+        <Button onClick={() => setCount((c) => c - step)} variant="outline">
           Decrement
         </Button>
-        
-        <Button 
-          onClick={() => setCount(initialCount)}
-          variant="ghost"
-        >
+
+        <Button onClick={() => setCount(initialCount)} variant="ghost">
           Reset
         </Button>
       </div>
     </Card>
-  )
+  );
 }
 ```
+
+<CollapsibleSection id="react19-features" title="React 19 Advanced Features">
+
+```tsx
+// React 19 use() hook for async data
+import { use, Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+
+function UserProfile({ userPromise }: { userPromise: Promise<User> }) {
+  const user = use(userPromise); // React 19 use() hook
+
+  return (
+    <div className="space-y-2">
+      <h3 className="font-semibold">{user.name}</h3>
+      <p className="text-sm text-muted-foreground">{user.email}</p>
+    </div>
+  );
+}
+
+// React 19 enhanced error boundaries
+function UserContainer() {
+  const userPromise = fetchUser("123");
+
+  return (
+    <ErrorBoundary fallback={<div>Error loading user</div>}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <UserProfile userPromise={userPromise} />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+
+// React 19 improved useFormState
+import { useActionState } from "react";
+
+function ContactForm() {
+  const [state, formAction] = useActionState(submitForm, null);
+
+  return (
+    <form action={formAction}>
+      <input name="email" type="email" required />
+      <button type="submit">Submit</button>
+      {state?.error && <p className="text-red-500">{state.error}</p>}
+    </form>
+  );
+}
+```
+
+</CollapsibleSection>
+
+<SectionShare sectionId="react-tsx" sectionTitle="React & TSX" />
 
 ---
 
@@ -117,25 +175,25 @@ Modern JavaScript with ES6+ features:
 const users = [
   { id: 1, name: "Alice", age: 30 },
   { id: 2, name: "Bob", age: 25 },
-  { id: 3, name: "Charlie", age: 35 }
-]
+  { id: 3, name: "Charlie", age: 35 },
+];
 
 // Array methods and destructuring
 const adults = users
-  .filter(user => user.age >= 30)
-  .map(({ name, age }) => `${name} (${age})`)
+  .filter((user) => user.age >= 30)
+  .map(({ name, age }) => `${name} (${age})`);
 
-console.log(adults) // ["Alice (30)", "Charlie (35)"]
+console.log(adults); // ["Alice (30)", "Charlie (35)"]
 
 // Async/await
 async function getData() {
   try {
-    const response = await fetch('/api/data')
-    const json = await response.json()
-    return json
+    const response = await fetch("/api/data");
+    const json = await response.json();
+    return json;
   } catch (error) {
-    console.error('Error:', error)
-    throw error
+    console.error("Error:", error);
+    throw error;
   }
 }
 ```
@@ -231,17 +289,27 @@ JSON configuration and data structures:
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
-    "next": "^15.0.0",
+    "next": "^16.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwindcss": "^4.0.0"
+    "tailwindcss": "^4.0.0",
+    "@tailwindcss/typography": "^0.5.15",
+    "lucide-react": "^0.460.0"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "@types/node": "^20.0.0"
+    "typescript": "^5.6.3",
+    "@types/node": "^22.9.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "vitest": "^2.1.8",
+    "playwright": "^1.49.0",
+    "eslint": "^9.15.0",
+    "eslint-config-next": "^16.0.0"
   }
 }
 ```
@@ -295,7 +363,7 @@ PostgreSQL queries and database operations:
 
 ```sql
 -- PostgreSQL query example
-SELECT 
+SELECT
   u.id,
   u.name,
   u.email,
@@ -334,36 +402,36 @@ HTML markup and semantic structure:
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Example Page</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <header>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/about">About</a>
-      <a href="/contact">Contact</a>
-    </nav>
-  </header>
-  
-  <main>
-    <article>
-      <h1>Article Title</h1>
-      <p>Article content goes here.</p>
-      <section>
-        <h2>Section</h2>
-        <p>More content in a section.</p>
-      </section>
-    </article>
-  </main>
-  
-  <footer>
-    <p>&copy; 2025. All rights reserved.</p>
-  </footer>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Example Page</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <h1>Article Title</h1>
+        <p>Article content goes here.</p>
+        <section>
+          <h2>Section</h2>
+          <p>More content in a section.</p>
+        </section>
+      </article>
+    </main>
+
+    <footer>
+      <p>&copy; 2025. All rights reserved.</p>
+    </footer>
+  </body>
 </html>
 ```
 
@@ -375,7 +443,7 @@ YAML configuration files (Docker Compose, Kubernetes, etc.):
 
 ```yaml
 # Docker Compose example
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -388,14 +456,14 @@ services:
     depends_on:
       - db
       - redis
-  
+
   db:
     image: postgres:16-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-  
+
   redis:
     image: redis:7-alpine
     ports:
@@ -451,7 +519,7 @@ func getUser(w http.ResponseWriter, r *http.Request) {
     Name:  "Alice",
     Email: "alice@example.com",
   }
-  
+
   w.Header().Set("Content-Type", "application/json")
   fmt.Fprintf(w, `{"id":%d,"name":"%s","email":"%s"}`, user.ID, user.Name, user.Email)
 }
@@ -667,10 +735,12 @@ Markdown syntax reference:
 
 ```markdown
 # Heading 1
+
 ## Heading 2
+
 ### Heading 3
 
-**Bold text** and *italic text*
+**Bold text** and _italic text_
 
 - Unordered list
   - Nested item
@@ -688,7 +758,7 @@ const code = "block";
 \`\`\`
 
 | Column 1 | Column 2 |
-|----------|----------|
+| -------- | -------- |
 | Cell 1   | Cell 2   |
 ```
 
@@ -698,7 +768,7 @@ const code = "block";
 
 Plain text without syntax highlighting:
 
-```
+```text
 This is a plaintext code block without syntax highlighting.
 It's useful for showing raw output, logs, or plain text content.
 
@@ -725,7 +795,7 @@ index abc123..def456 100644
  import { clsx, type ClassValue } from "clsx"
  import { twMerge } from "tailwind-merge"
 +import { cache } from "react"
- 
+
 -export function cn(...inputs: ClassValue[]) {
 +export const cn = cache((...inputs: ClassValue[]) => {
    return twMerge(clsx(inputs))
@@ -764,17 +834,18 @@ All code blocks support:
 
 To add a code block, use the following syntax:
 
-~~~markdown
+````markdown
 ```language-name
 your code here
 ```
-~~~
+````
 
 Examples:
-- `` ```typescript `` for TypeScript
-- `` ```python `` for Python
-- `` ```jsx `` for JSX
-- `` ```bash `` for Bash
+
+- ` ```typescript ` for TypeScript
+- ` ```python ` for Python
+- ` ```jsx ` for JSX
+- ` ```bash ` for Bash
 
 The language identifier is required for proper syntax highlighting.
 

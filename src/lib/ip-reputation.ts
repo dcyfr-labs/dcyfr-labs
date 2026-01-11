@@ -1,6 +1,6 @@
 /**
  * GreyNoise API client for IP reputation lookups
- * 
+ *
  * Integrates with GreyNoise API v3 to provide IP reputation data
  * Features rate limiting, caching, and error handling
  */
@@ -41,19 +41,19 @@ async function getIpReputationClient(): Promise<RedisClient | null> {
       socket: {
         connectTimeout: 5000,
         reconnectStrategy: (retries) => {
-          if (retries > 3) return new Error('Max retries exceeded');
+          if (retries > 3) return new Error("Max retries exceeded");
           return Math.min(retries * 100, 3000);
         },
       },
     });
-    
+
     client.on("error", (error) => {
       console.error("IP Reputation Redis error:", error);
       Sentry.captureException(error, {
         tags: { component: "ip-reputation-cache" },
       });
     });
-    
+
     globalThis.__ipReputationRedisClient = client;
   }
 
@@ -77,9 +77,11 @@ export class GreyNoiseClient {
   constructor(apiKey?: string) {
     this.apiKey = apiKey || process.env.GREYNOISE_API_KEY || "";
     this.baseUrl = GREYNOISE_BASE_URL;
-    
+
     if (!this.apiKey) {
-      console.warn("GreyNoise API key not configured. Some features may not work.");
+      console.warn(
+        "GreyNoise API key not configured. Some features may not work."
+      );
     }
   }
 
@@ -87,24 +89,26 @@ export class GreyNoiseClient {
    * Make authenticated request to GreyNoise API
    */
   private async makeRequest<T>(
-    endpoint: string, 
+    endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
-    
+
     const response = await fetch(url, {
       ...options,
       headers: {
         "Content-Type": "application/json",
-        ...(this.apiKey && { "key": this.apiKey }),
+        ...(this.apiKey && { key: this.apiKey }),
         ...options.headers,
       },
     });
 
     if (!response.ok) {
-      const error = new Error(`GreyNoise API error: ${response.status} ${response.statusText}`);
+      const error = new Error(
+        `GreyNoise API error: ${response.status} ${response.statusText}`
+      );
       Sentry.captureException(error, {
-        tags: { 
+        tags: {
           component: "greynoise-api",
           endpoint,
           status: response.status,
@@ -169,9 +173,12 @@ export class IPReputationService {
   /**
    * Get cached IP reputation or fetch from GreyNoise
    */
-  async getIpReputation(ip: string, useCache = true): Promise<IPReputationCheck> {
+  async getIpReputation(
+    ip: string,
+    useCache = true
+  ): Promise<IPReputationCheck> {
     const startTime = Date.now();
-    
+
     // Check cache first
     if (useCache && this.cacheClient) {
       try {
@@ -192,7 +199,8 @@ export class IPReputationService {
         this.greynoiseClient.riotCheck(ip),
       ]);
 
-      const greynoiseData = context.status === "fulfilled" ? context.value : null;
+      const greynoiseData =
+        context.status === "fulfilled" ? context.value : null;
       const riotData = riot.status === "fulfilled" ? riot.value : null;
 
       // Create reputation entry
@@ -212,7 +220,6 @@ export class IPReputationService {
       }
 
       return this.buildReputationCheck(ip, reputation, false, startTime);
-
     } catch (error) {
       console.error("GreyNoise lookup error:", error);
       Sentry.captureException(error, {
@@ -241,22 +248,24 @@ export class IPReputationService {
   async bulkCheckReputation(ips: string[]): Promise<IPReputationBulkResult> {
     const startTime = Date.now();
     const results: IPReputationCheck[] = [];
-    
+
     // Process in batches to respect API limits
     const batches = this.chunkArray(ips, BULK_BATCH_SIZE);
-    
+
     for (const batch of batches) {
       const batchResults = await Promise.all(
-        batch.map(ip => this.getIpReputation(ip))
+        batch.map((ip) => this.getIpReputation(ip))
       );
       results.push(...batchResults);
     }
 
     // Calculate statistics
-    const malicious_count = results.filter(r => r.is_malicious).length;
-    const suspicious_count = results.filter(r => r.is_suspicious).length;
-    const benign_count = results.filter(r => r.is_benign).length;
-    const unknown_count = results.filter(r => !r.is_malicious && !r.is_suspicious && !r.is_benign).length;
+    const malicious_count = results.filter((r) => r.is_malicious).length;
+    const suspicious_count = results.filter((r) => r.is_suspicious).length;
+    const benign_count = results.filter((r) => r.is_benign).length;
+    const unknown_count = results.filter(
+      (r) => !r.is_malicious && !r.is_suspicious && !r.is_benign
+    ).length;
 
     return {
       total_checked: results.length,
@@ -278,7 +287,7 @@ export class IPReputationService {
     riotData: GreyNoiseRiotData | null
   ): IPReputationEntry {
     const now = new Date().toISOString();
-    
+
     // RIOT data indicates known business/legitimate services
     if (riotData?.riot) {
       return {
@@ -331,11 +340,13 @@ export class IPReputationService {
     if (greynoiseData?.metadata?.tor) suspiciousFactors.push("tor");
     if (greynoiseData?.vpn) suspiciousFactors.push("vpn");
     if (greynoiseData?.bot) suspiciousFactors.push("bot");
-    if (greynoiseData?.tags?.some(tag => 
-      ["scanner", "bruteforce", "exploit", "malware"].some(bad => 
-        tag.toLowerCase().includes(bad)
+    if (
+      greynoiseData?.tags?.some((tag) =>
+        ["scanner", "bruteforce", "exploit", "malware"].some((bad) =>
+          tag.toLowerCase().includes(bad)
+        )
       )
-    )) {
+    ) {
       suspiciousFactors.push("scanning");
     }
 
@@ -398,7 +409,9 @@ export class IPReputationService {
       is_suspicious: reputation.classification === "suspicious",
       is_benign: reputation.classification === "benign",
       should_block: reputation.classification === "malicious",
-      should_rate_limit: ["malicious", "suspicious"].includes(reputation.classification),
+      should_rate_limit: ["malicious", "suspicious"].includes(
+        reputation.classification
+      ),
       confidence: reputation.confidence_score,
       sources: [reputation.source],
       details: reputation,

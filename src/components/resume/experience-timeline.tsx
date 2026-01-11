@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { highlightMetrics } from "@/lib/highlight-metrics";
 import { HOVER_EFFECTS, TYPOGRAPHY } from "@/lib/design-tokens";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { Logo } from "@/components/common/logo";
+import { Logo } from "@/components/common";
 import type { Experience } from "@/data/resume";
 import { cn } from "@/lib/utils";
 

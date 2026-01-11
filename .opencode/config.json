@@ -1,0 +1,103 @@
+{
+  "version": "1.0.0",
+  "project": "dcyfr-labs",
+  "description": "OpenCode.ai configuration for DCYFR portfolio project with free model optimization",
+  
+  "providers": {
+    "primary-free": {
+      "type": "groq",
+      "apiKey": "${GROQ_API_KEY}",
+      "model": "llama-3.3-70b-versatile",
+      "maxTokens": 8192,
+      "temperature": 0.3,
+      "description": "Best free model for feature implementation (Groq Llama 3.3 70B)"
+    },
+    "planning-free": {
+      "type": "groq",
+      "apiKey": "${GROQ_API_KEY}",
+      "model": "llama-3.1-70b-versatile",
+      "maxTokens": 8192,
+      "temperature": 0.5,
+      "description": "Best free model for planning and architecture (Groq Llama 3.1 70B)"
+    },
+    "speed-free": {
+      "type": "groq",
+      "apiKey": "${GROQ_API_KEY}",
+      "model": "llama-3.3-70b-specdec",
+      "maxTokens": 8192,
+      "temperature": 0.2,
+      "description": "Fastest free model for quick tasks (Groq Llama 3.3 SpecDec)"
+    },
+    "offline": {
+      "type": "ollama",
+      "baseUrl": "http://localhost:11434",
+      "model": "codellama:34b-instruct",
+      "maxTokens": 4096,
+      "temperature": 0.3,
+      "description": "Best offline model for development (CodeLlama 34B)"
+    },
+    "offline-fast": {
+      "type": "ollama",
+      "baseUrl": "http://localhost:11434",
+      "model": "qwen2.5-coder:7b",
+      "maxTokens": 4096,
+      "temperature": 0.2,
+      "description": "Fast offline model for quick tasks (Qwen2.5 Coder 7B)"
+    }
+  },
+  
+  "presets": {
+    "dcyfr-feature": {
+      "provider": "primary-free",
+      "systemPrompt": "You are a DCYFR agent following strict design token enforcement, PageLayout preference, and barrel import patterns. STRICT RULES (NON-NEGOTIABLE): 1) Design tokens only (no hardcoded gap-8, text-3xl), 2) PageLayout for 90% of pages, 3) Barrel imports only (import from @/components/blog not @/components/blog/post-list), 4) Test data must have environment checks, 5) No emojis in public content (use lucide-react icons). See .opencode/DCYFR.opencode.md for complete rules."
+    },
+    "dcyfr-plan": {
+      "provider": "planning-free",
+      "systemPrompt": "You are planning DCYFR-compliant features. Focus on architecture decisions, design token usage strategy, and layout selection. Output detailed plans with file lists and step-by-step implementation guide. Follow DCYFR patterns documented in .github/agents/ and .opencode/ directories."
+    },
+    "dcyfr-quick": {
+      "provider": "speed-free",
+      "systemPrompt": "Quick DCYFR compliance fixes: design tokens (SPACING, TYPOGRAPHY, CONTAINER_WIDTHS), barrel imports (@/components/blog), PageLayout validation. Fast iterations, focused changes only."
+    },
+    "dcyfr-offline": {
+      "provider": "offline",
+      "systemPrompt": "Offline DCYFR development using local models. Reference .opencode/ and .github/agents/ docs for patterns. IMPORTANT: Manual validation required - run npm run check:opencode after completion. STRICT rules still apply: design tokens, barrel imports, PageLayout, environment checks, no emojis."
+    }
+  },
+  
+  "defaultProvider": "primary-free",
+  "defaultPreset": "dcyfr-feature",
+  
+  "validation": {
+    "runAfterCompletion": true,
+    "script": ".opencode/scripts/validate-after-fallback.sh",
+    "enforcementMode": "hybrid",
+    "strictRules": [
+      "design-tokens",
+      "barrel-imports",
+      "layout-usage",
+      "test-data-protection",
+      "no-emojis"
+    ],
+    "flexibleRules": [
+      "api-patterns",
+      "test-coverage"
+    ]
+  },
+  
+  "agent": {
+    "instructionFile": ".opencode/DCYFR.opencode.md",
+    "sharedPatterns": ".github/agents/",
+    "enforcementDocs": ".github/agents/enforcement/",
+    "patternDocs": ".github/agents/patterns/"
+  },
+  
+  "sessionState": {
+    "enabled": true,
+    "location": ".opencode/.session-state.json",
+    "autoSave": true,
+    "trackGit": true,
+    "trackIssues": true,
+    "trackTimeEstimates": true
+  }
+}

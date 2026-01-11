@@ -11,12 +11,14 @@
 ### Suppress Locally (Preferred for Patterns)
 
 **Best for:**
+
 - Recurring false positives in similar code
 - Patterns that appear multiple times
 - Code that should document why it's safe
 - Team-wide learning opportunities
 
 **Benefits:**
+
 - ✅ Visible in source code
 - ✅ Documents reasoning inline
 - ✅ Persists across branches/resets
@@ -28,11 +30,13 @@
 ### Dismiss via GitHub API (For One-Offs)
 
 **Best for:**
+
 - Single false positives
 - Alerts that are truly irrelevant
 - Deprecated/archived code
 
 **Benefits:**
+
 - ✅ Cleaner GitHub UI
 - ✅ No code changes needed
 
@@ -54,11 +58,11 @@ const riskyOperation = doSomething();
 ```javascript
 /**
  * lgtm [js/file-access-to-http]
- * 
+ *
  * URLs come from trusted configuration (MCP servers list),
  * not user input. This script is build-time only.
  */
-const res = await fetch(url, { method: 'HEAD' });
+const res = await fetch(url, { method: "HEAD" });
 ```
 
 ### Multiple Rules
@@ -77,14 +81,16 @@ const value = unsafeOperation();
 **Rule:** `js/file-access-to-http`  
 **Severity:** Warning  
 **False Positive When:**
+
 - URLs from trusted configuration (not user input)
 - Build-time/dev-time scripts (not production)
 - Legitimate HTTP requests are the entire purpose
 
 **Example:**
+
 ```javascript
 // lgtm [js/file-access-to-http] - URLs from trusted MCP server configuration
-const res = await fetch(url, { method: 'HEAD' });
+const res = await fetch(url, { method: "HEAD" });
 ```
 
 **Context:** `scripts/check-mcp-servers.mjs` - health check utility
@@ -96,11 +102,13 @@ const res = await fetch(url, { method: 'HEAD' });
 **Rule:** `js/stored-xss`  
 **Severity:** High  
 **False Positive When:**
+
 - Data from trusted sources (MDX files, version-controlled content)
 - React JSX auto-escapes by default
 - No `dangerouslySetInnerHTML` used
 
 **Example:**
+
 ```typescript
 // lgtm [js/stored-xss] - Image URLs from trusted MDX frontmatter, React escapes output
 const image = ensurePostImage(post.image);
@@ -116,31 +124,67 @@ return <Image src={image} alt={post.title} />;
 **Rule:** `js/insecure-randomness`  
 **Severity:** High  
 **False Positive When:**
+
 - Not used for security-sensitive decisions (not auth)
 - Primary path uses `crypto.randomUUID()`
 - Fallback for legacy browsers only
 - Non-security use case (analytics, sessions)
 
 **Example:**
+
 ```typescript
 // lgtm [js/insecure-randomness] - Non-security context (analytics session ID)
 // Primary: crypto.randomUUID(), Fallback: Math.random() for old browsers
-const sessionId = globalThis.crypto?.randomUUID?.() || 
-                  Math.random().toString(36).substring(7);
+const sessionId =
+  globalThis.crypto?.randomUUID?.() || Math.random().toString(36).substring(7);
 ```
 
 ---
 
-### Pattern 4: actions/missing-workflow-permissions
+### Pattern 4: js/missing-origin-check
+
+**Rule:** `js/missing-origin-check`  
+**Severity:** Warning/Medium  
+**False Positive When:**
+
+- Origin check exists within the message handler function body
+- `ALLOWED_ORIGINS` list validates `event.origin`
+- CodeQL doesn't recognize internal function checks
+
+**Example:**
+
+```typescript
+// lgtm [js/missing-origin-check] - Origin verified at line 21 via ALLOWED_ORIGINS check
+const handleMessage = (event: MessageEvent) => {
+  // Security: Verify origin before processing message
+  if (!ALLOWED_ORIGINS.includes(event.origin)) {
+    console.warn("Rejected message from unauthorized origin:", event.origin);
+    return;
+  }
+
+  // Process message safely
+  if (event.data && event.data.type === "setTheme") {
+    // ...
+  }
+};
+```
+
+**Context:** `src/app/(embed)/embed-theme-handler.tsx` - Embed iframe communication
+
+---
+
+### Pattern 5: actions/missing-workflow-permissions
 
 **Rule:** `actions/missing-workflow-permissions`  
 **Severity:** Warning  
 **False Positive When:**
+
 - Workflow has explicit permissions block
 - Permissions properly scoped to minimal needed
 - Already in `.github/workflows/*.yml`
 
 **Example:**
+
 ```yaml
 name: Test Workflow
 permissions:
@@ -157,9 +201,9 @@ This file contains 3 `fetch()` calls flagged as `js/file-access-to-http`:
 ```javascript
 /**
  * MCP Server Health Check
- * 
+ *
  * Checks if configured MCP servers are reachable.
- * 
+ *
  * URLs come from trusted servers configuration in .env or hardcoded list.
  * Not exposed to user input. Build-time utility only.
  */
@@ -168,45 +212,45 @@ async function checkServer(url, name, opts = {}) {
   try {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
-    
+
     // lgtm [js/file-access-to-http] - URLs from trusted MCP server configuration, not user input
-    const res = await fetch(url, { 
-      method: 'HEAD', 
-      headers, 
-      signal: controller.signal 
+    const res = await fetch(url, {
+      method: "HEAD",
+      headers,
+      signal: controller.signal,
     });
-    
+
     clearTimeout(timer);
-    
+
     if (res.status === 405) {
       // Try GET fallback
       const controller2 = new AbortController();
       const timer2 = setTimeout(() => controller2.abort(), timeoutMs * 2);
-      
+
       // lgtm [js/file-access-to-http] - URLs from trusted MCP server configuration, not user input
-      const res2 = await fetch(url, { 
-        method: 'GET', 
-        headers, 
-        signal: controller2.signal 
+      const res2 = await fetch(url, {
+        method: "GET",
+        headers,
+        signal: controller2.signal,
       });
-      
+
       clearTimeout(timer2);
       return { ok: res2.ok };
     }
-    
+
     return { ok: res.ok };
   } catch (err) {
     try {
       const controller3 = new AbortController();
       const timer3 = setTimeout(() => controller3.abort(), timeoutMs * 2);
-      
+
       // lgtm [js/file-access-to-http] - URLs from trusted MCP server configuration, not user input
-      const res3 = await fetch(url, { 
-        method: 'GET', 
-        headers, 
-        signal: controller3.signal 
+      const res3 = await fetch(url, {
+        method: "GET",
+        headers,
+        signal: controller3.signal,
       });
-      
+
       clearTimeout(timer3);
       return { ok: res3.ok };
     } catch (err2) {
@@ -242,20 +286,23 @@ gh code-scanning alerts list
 ## Documentation Standards
 
 ### Minimum Requirement
+
 ```javascript
 // lgtm [rule-id] - Brief reason
 ```
 
 ### Recommended
+
 ```javascript
 // lgtm [rule-id] - Specific reason explaining why this is safe
 ```
 
 ### Best Practice (Team Learning)
+
 ```javascript
 /**
  * lgtm [rule-id]
- * 
+ *
  * Detailed explanation of:
  * 1. Why the rule triggered
  * 2. Why it's a false positive in this context
@@ -273,14 +320,14 @@ The `lgtm` syntax comes from **LGTM.com** (Looks Good To Me), a legacy code anal
 
 ## Quick Reference
 
-| Task | Method |
-|------|--------|
-| **False positive (recurring)** | Add `// lgtm` comment |
-| **False positive (one-off)** | Dismiss via GitHub |
-| **Document reasoning** | Use multi-line comment |
-| **Multiple rules** | `lgtm [rule1, rule2]` |
-| **Verify suppression** | `gh code-scanning alerts list` |
-| **Check CodeQL status** | GitHub Security tab |
+| Task                           | Method                         |
+| ------------------------------ | ------------------------------ |
+| **False positive (recurring)** | Add `// lgtm` comment          |
+| **False positive (one-off)**   | Dismiss via GitHub             |
+| **Document reasoning**         | Use multi-line comment         |
+| **Multiple rules**             | `lgtm [rule1, rule2]`          |
+| **Verify suppression**         | `gh code-scanning alerts list` |
+| **Check CodeQL status**        | GitHub Security tab            |
 
 ---
 

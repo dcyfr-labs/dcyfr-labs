@@ -26,6 +26,7 @@ reports/
 ## Usage
 
 **Generating Reports:**
+
 ```bash
 # Full predeployment check
 npm run check && npm run test && npm run build && npm run perf:check && npm run test:e2e
@@ -37,6 +38,7 @@ npm run test:e2e        # E2E test results
 ```
 
 **Viewing Latest Report:**
+
 ```bash
 # Most recent predeployment report
 ls -t reports/predeployment/ | head -1
@@ -45,10 +47,11 @@ ls -t reports/predeployment/ | head -1
 ## Notes
 
 - All files in this directory are ignored by git (see `.gitignore`)
+- **Exception:** Historical audit reports (accessibility, privacy, industry) are committed for documentation
 - Reports are named with timestamps for historical tracking
 - Safe to delete old reports to manage disk space
 - CI/CD pipelines can generate reports here without polluting the codebase
 
 ---
 
-**Last Updated:** December 11, 2025
+**Last Updated:** January 11, 2026

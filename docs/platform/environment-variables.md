@@ -20,24 +20,24 @@ This guide documents all environment variables for dcyfr-labs portfolio, their p
 
 ## Quick Reference
 
-| Variable | Priority | Purpose | Default Behavior |
-|----------|----------|---------|------------------|
-| `INNGEST_EVENT_KEY` | 🔴 Required | Inngest event sending | Dev mode only, production jobs fail |
-| `INNGEST_SIGNING_KEY` | 🔴 Required | Inngest webhook verification | Dev mode only, production webhooks rejected |
-| `RESEND_API_KEY` | 🔴 Required | Contact form email delivery | Logs only, shows warning banner |
-| `GITHUB_TOKEN` | 🟡 Recommended | GitHub API rate limits (60→5K/hr) | Lower rate limit, may hit fallback data |
-| `REDIS_URL` | 🟡 Recommended | View counts & analytics | Features disabled, graceful degradation |
-| `SENTRY_DSN` | 🟡 Recommended | Error tracking & monitoring | No error tracking, harder debugging |
-| `SENTRY_AUTH_TOKEN` | 🟡 Recommended | Source map uploads (build-time) | Minified stack traces only |
-| `NEXT_PUBLIC_FROM_EMAIL` | 🟢 Optional | Override sender email | Uses `no-reply@www.dcyfr.ai` |
-| `NEXT_PUBLIC_GISCUS_REPO` | 🟢 Optional | Comments system repository | Comments section hidden |
-| `NEXT_PUBLIC_GISCUS_REPO_ID` | 🟢 Optional | Comments repo ID | Comments section hidden |
-| `NEXT_PUBLIC_GISCUS_CATEGORY` | 🟢 Optional | Comments category name | Comments section hidden |
-| `NEXT_PUBLIC_GISCUS_CATEGORY_ID` | 🟢 Optional | Comments category ID | Comments section hidden |
-| `NEXT_PUBLIC_SITE_URL` | 🟢 Optional | Site URL override | Auto-detected from environment |
-| `NEXT_PUBLIC_SITE_DOMAIN` | 🟢 Optional | Domain override | Auto-detected from environment |
-| `DISABLE_DEV_PAGES` | 🟢 Optional | Hide dev pages in development | Dev pages visible in dev mode |
-| `VERCEL_TOKEN` | 🟢 Optional | Deployment checks (GitHub Secrets) | Set in GitHub Secrets, not Vercel |
+| Variable                         | Priority       | Purpose                            | Default Behavior                            |
+| -------------------------------- | -------------- | ---------------------------------- | ------------------------------------------- |
+| `INNGEST_EVENT_KEY`              | 🔴 Required    | Inngest event sending              | Dev mode only, production jobs fail         |
+| `INNGEST_SIGNING_KEY`            | 🔴 Required    | Inngest webhook verification       | Dev mode only, production webhooks rejected |
+| `RESEND_API_KEY`                 | 🔴 Required    | Contact form email delivery        | Logs only, shows warning banner             |
+| `GITHUB_TOKEN`                   | 🟡 Recommended | GitHub API rate limits (60→5K/hr)  | Lower rate limit, may hit fallback data     |
+| `REDIS_URL`                      | 🟡 Recommended | View counts & analytics            | Features disabled, graceful degradation     |
+| `SENTRY_DSN`                     | 🟡 Recommended | Error tracking & monitoring        | No error tracking, harder debugging         |
+| `SENTRY_AUTH_TOKEN`              | 🟡 Recommended | Source map uploads (build-time)    | Minified stack traces only                  |
+| `NEXT_PUBLIC_FROM_EMAIL`         | 🟢 Optional    | Override sender email              | Uses `no-reply@www.dcyfr.ai`                |
+| `NEXT_PUBLIC_GISCUS_REPO`        | 🟢 Optional    | Comments system repository         | Comments section hidden                     |
+| `NEXT_PUBLIC_GISCUS_REPO_ID`     | 🟢 Optional    | Comments repo ID                   | Comments section hidden                     |
+| `NEXT_PUBLIC_GISCUS_CATEGORY`    | 🟢 Optional    | Comments category name             | Comments section hidden                     |
+| `NEXT_PUBLIC_GISCUS_CATEGORY_ID` | 🟢 Optional    | Comments category ID               | Comments section hidden                     |
+| `NEXT_PUBLIC_SITE_URL`           | 🟢 Optional    | Site URL override                  | Auto-detected from environment              |
+| `NEXT_PUBLIC_SITE_DOMAIN`        | 🟢 Optional    | Domain override                    | Auto-detected from environment              |
+| `DISABLE_DEV_PAGES`              | 🟢 Optional    | Hide dev pages in development      | Dev pages visible in dev mode               |
+| `VERCEL_TOKEN`                   | 🟢 Optional    | Deployment checks (GitHub Secrets) | Set in GitHub Secrets, not Vercel           |
 
 ---
 
@@ -107,17 +107,19 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
 ### Site Configuration
 
 #### `NEXT_PUBLIC_SITE_URL`
+
 - **Type:** String (URL)
 - **Required:** No
 - **Example:** `https://www.dcyfr.ai`
 - **Purpose:** Override full site URL for absolute links, sitemap, OpenGraph
 - **Default:** Based on environment:
-  - Development: `https://dcyfr.net`
+  - Development: `https://dcyfr.dev`
   - Vercel Preview: `https://dcyfr-preview.vercel.app`
   - Production: `https://www.dcyfr.ai`
 - **When to use:** Custom domain testing, non-standard deployments
 
 #### `NEXT_PUBLIC_SITE_DOMAIN`
+
 - **Type:** String (domain)
 - **Required:** No
 - **Example:** `www.dcyfr.ai`
@@ -126,6 +128,7 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
 - **Priority:** Lower than `NEXT_PUBLIC_SITE_URL` if both set
 
 #### `NEXT_PUBLIC_VERCEL_ENV` (Auto-managed)
+
 - **Type:** String (`production` | `preview` | `development`)
 - **Managed by:** Vercel (automatic)
 - **Purpose:** Detect Vercel preview deployments
@@ -148,6 +151,7 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
   4. Add to environment variables
 
 **Behavior without key:**
+
 - ✅ Contact form displays
 - ✅ Form validation works
 - ⚠️ Submissions logged, not sent
@@ -155,6 +159,7 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
 - ❌ No actual emails sent
 
 **Implementation:**
+
 - File: `src/inngest/contact-functions.ts`
 - Used by: Contact form, milestone notifications
 - Fallback: Graceful degradation with warning
@@ -169,6 +174,7 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
 - **When to use:** Custom domain, different sender branding
 
 **Implementation:**
+
 - File: `src/lib/site-config.ts`
 - Used by: Contact form emails, milestone notifications
 
@@ -189,6 +195,7 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
   4. Add to environment variables
 
 **Behavior without key:**
+
 - ✅ Dev mode works perfectly (local Inngest Dev Server)
 - ✅ All functions testable locally
 - ✅ View UI at http://localhost:3001/api/inngest
@@ -206,10 +213,12 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
   3. Configure webhook URL in Inngest: `https://www.dcyfr.ai/api/inngest`
 
 **Behavior without key:**
+
 - ✅ Dev mode works (no verification locally)
 - ❌ Production webhooks rejected
 
 **Inngest Functions:**
+
 1. **contactFormSubmitted** - Async email delivery
 2. **refreshGitHubData** - Scheduled every 5 minutes
 3. **manualRefreshGitHubData** - On-demand
@@ -241,29 +250,33 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
 
 **Rate Limits:**
 
-| Scenario | Limit | Notes |
-|----------|-------|-------|
-| Without token | 60/hour | Per IP |
-| With token | 5,000/hour | Per token |
-| Server cache | 5 minutes | Reduces calls |
+| Scenario      | Limit      | Notes         |
+| ------------- | ---------- | ------------- |
+| Without token | 60/hour    | Per IP        |
+| With token    | 5,000/hour | Per token     |
+| Server cache  | 5 minutes  | Reduces calls |
 
 **Behavior without token:**
+
 - ✅ Heatmap works
 - ⚠️ Lower rate limits (60/hour)
 - ⚠️ May fail during heavy development
 - ✅ Server cache helps (5-minute TTL)
 
 **Behavior with token:**
+
 - ✅ Higher limits (5,000/hour)
 - ✅ More reliable
 - ✅ Required for production
 
 **Security:**
+
 - ⚠️ API route validates username (`dcyfr`) to prevent abuse
 - ⚠️ Rate limited (10 requests/minute per IP)
 - Only adds header when token exists
 
 **Implementation:**
+
 - File: `src/app/api/github-contributions/route.ts`
 - Conditional: Only sends Authorization header when token configured
 
@@ -272,20 +285,24 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
 ## Comments System (Giscus)
 
 ### `NEXT_PUBLIC_GISCUS_REPO`
+
 - **Type:** String ("owner/repo")
 - **Example:** `dcyfr/dcyfr-labs`
 - **Purpose:** GitHub repository for comments
 
 ### `NEXT_PUBLIC_GISCUS_REPO_ID`
+
 - **Type:** String (repository ID)
 - **Purpose:** GitHub repo ID from Giscus setup
 
 ### `NEXT_PUBLIC_GISCUS_CATEGORY`
+
 - **Type:** String (category name)
 - **Example:** `Blog Comments`
 - **Purpose:** Discussion category name
 
 ### `NEXT_PUBLIC_GISCUS_CATEGORY_ID`
+
 - **Type:** String (category ID)
 - **Purpose:** Discussion category ID from Giscus setup
 
@@ -318,11 +335,13 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
    ```
 
 **Behavior without Giscus:**
+
 - ✅ Blog posts work normally
 - ❌ Comments section hidden
 - ✅ No errors or broken UI
 
 **Behavior with Giscus:**
+
 - ✅ Comments section appears
 - ✅ GitHub account authentication
 - ✅ Synced with GitHub Discussions
@@ -330,6 +349,7 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
 - ✅ Reactions, replies, moderation
 
 **Implementation:**
+
 - Component: `src/components/giscus-comments.tsx`
 - Check: All four env vars required
 - Integration: After share buttons on posts
@@ -351,30 +371,35 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
   - Any Redis provider
 
 **Setup (Vercel KV):**
+
 1. Vercel Dashboard → Storage → Create Database → KV
 2. Name: "portfolio-views"
 3. Link to project
 4. Environment variables auto-added
 
 **Setup (Upstash):**
+
 1. Sign up at [console.upstash.com](https://console.upstash.com)
 2. Create database
 3. Copy Redis URL
 4. Add to environment variables
 
 **Behavior without Redis:**
+
 - ✅ Blog posts load normally
 - ❌ No view counts displayed
 - ❌ No tracking
 - ✅ Silent graceful degradation
 
 **Behavior with Redis:**
+
 - ✅ View counts tracked
 - ✅ Displayed on blog list and posts
 - ✅ Atomic concurrent increments
 - ✅ Persisted across deploys
 
 **Implementation:**
+
 - File: `src/lib/views.ts`
 - Key format: `views:post:{slug}`
 - Fallback: Returns null if unavailable
@@ -384,11 +409,13 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
 ## Analytics (Auto-configured)
 
 ### `NEXT_PUBLIC_VERCEL_ANALYTICS_ID`
+
 - **Managed by:** Vercel
 - **Setup:** Project settings → Analytics (enable)
 - **Docs:** [vercel.com/analytics](https://vercel.com/analytics)
 
 ### `NEXT_PUBLIC_VERCEL_SPEED_INSIGHTS_ID`
+
 - **Managed by:** Vercel
 - **Setup:** Project settings → Speed Insights (enable)
 - **Docs:** [vercel.com/docs/speed-insights](https://vercel.com/docs/speed-insights)
@@ -420,11 +447,13 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
 - **When to use:** Testing production-like behavior, demonstrations, screenshots
 
 **Behavior:**
+
 - Default: Dev pages visible in development (`NODE_ENV=development`)
 - With `DISABLE_DEV_PAGES=1`: Dev pages hidden in all environments
 - Production: Dev pages always hidden (regardless of this flag)
 
 **Implementation:**
+
 - File: `src/lib/dev-only.ts`
 - Returns `false` for dev page visibility when flag is set
 
@@ -441,12 +470,14 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
 - **Get at:** [sentry.io](https://sentry.io)
 
 **Setup (Sentry.io):**
+
 1. Sign up at [sentry.io](https://sentry.io) (free tier available)
 2. Create a new Next.js project
 3. Copy the DSN from Project Settings → Client Keys (DSN)
 4. Add to environment variables
 
 **Behavior without Sentry:**
+
 - ✅ App works normally
 - ✅ Errors logged to console
 - ❌ No centralized error tracking
@@ -454,6 +485,7 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
 - ❌ No performance insights
 
 **Behavior with Sentry:**
+
 - ✅ Real-time error tracking
 - ✅ CSP violations centralized in Sentry dashboard
 - ✅ Performance monitoring (traces)
@@ -461,12 +493,14 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
 - ✅ Email/Slack alerts on critical issues
 
 **Configuration:**
+
 - Server config: `sentry.server.config.ts`
 - Client config: `sentry.client.config.ts`
 - Edge config: `sentry.edge.config.ts`
 - CSP integration: `src/app/api/csp-report/route.ts`
 
 **Privacy Settings:**
+
 - `sendDefaultPii: false` - No PII sent to Sentry
 - `tracesSampleRate: 0.1` - 10% performance sampling in production
 - `replaysOnErrorSampleRate: 1.0` - Capture 100% of error sessions
@@ -480,28 +514,33 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
 - **Get at:** Sentry → Settings → Account → Auth Tokens
 
 **Setup:**
+
 1. Go to Sentry → Settings → Auth Tokens
 2. Create token with `project:releases` scope
 3. Add to `.env.sentry-build-plugin` (auto-created by wizard)
 4. Token is used during `npm run build` only
 
 **Behavior without token:**
+
 - ✅ Sentry still works
 - ❌ Error stack traces show minified code
 - ❌ Harder to debug production issues
 
 **Behavior with token:**
+
 - ✅ Full source code context in errors
 - ✅ Original file names and line numbers
 - ✅ Better debugging experience
 
 **Security:**
+
 - Token stored in `.env.sentry-build-plugin`
 - Auto-added to `.gitignore`
 - Only needed for builds (CI/CD, Vercel)
 - For Vercel: Use [Sentry Vercel Integration](https://vercel.com/integrations/sentry)
 
 **Vercel Setup (Recommended):**
+
 1. Install [Sentry Vercel Integration](https://vercel.com/integrations/sentry)
 2. Link your Sentry project
 3. Auth token automatically managed
@@ -594,6 +633,7 @@ npm run dev
 ### Test Individual Features
 
 **Contact Form:**
+
 ```bash
 curl -X POST http://localhost:3000/api/contact \
   -H "Content-Type: application/json" \
@@ -601,11 +641,13 @@ curl -X POST http://localhost:3000/api/contact \
 ```
 
 **GitHub Heatmap:**
+
 ```bash
 curl http://localhost:3000/api/github-contributions?username=dcyfr
 ```
 
 **Redis (if configured):**
+
 - Visit any blog post
 - Check console for view count increment
 
@@ -613,13 +655,13 @@ curl http://localhost:3000/api/github-contributions?username=dcyfr
 
 ## Troubleshooting
 
-| Problem | Likely Cause | Solution |
-|---------|--------------|----------|
+| Problem                  | Likely Cause             | Solution                                   |
+| ------------------------ | ------------------------ | ------------------------------------------ |
 | Contact form returns 500 | Missing `RESEND_API_KEY` | Should show warning (check implementation) |
-| Heatmap rate limited | No `GITHUB_TOKEN` | Add token for 5,000 req/hr |
-| No view counts | Missing `REDIS_URL` | Add Redis or accept graceful degradation |
-| Wrong domain in links | Incorrect site config | Set `NEXT_PUBLIC_SITE_URL` |
-| Comments section missing | Missing Giscus env vars | Check all 4 Giscus variables set |
+| Heatmap rate limited     | No `GITHUB_TOKEN`        | Add token for 5,000 req/hr                 |
+| No view counts           | Missing `REDIS_URL`      | Add Redis or accept graceful degradation   |
+| Wrong domain in links    | Incorrect site config    | Set `NEXT_PUBLIC_SITE_URL`                 |
+| Comments section missing | Missing Giscus env vars  | Check all 4 Giscus variables set           |
 
 ---
 
@@ -691,4 +733,3 @@ NEXT_PUBLIC_GISCUS_CATEGORY_ID=
 - **2025-10-26:** Consolidated from operations/ to platform/
 - **2025-10-20:** Comprehensive `.env.example` with all variables
 - **2025-10-20:** Added graceful fallbacks for missing keys
-

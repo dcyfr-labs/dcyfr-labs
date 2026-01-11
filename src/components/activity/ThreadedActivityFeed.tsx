@@ -24,9 +24,9 @@
 import { useMemo } from "react";
 import { Eye, Lock, Zap } from "lucide-react";
 import { ThreadedActivityGroup } from "./ThreadedActivityGroup";
-import { Alert } from "@/components/common/alert";
-import { groupActivitiesIntoThreads } from "@/lib/activity/threading";
-import type { ActivityItem } from "@/lib/activity/types";
+import { Alert } from "@/components/common";
+import { groupActivitiesIntoThreads } from "@/lib/activity";
+import type { ActivityItem } from "@/lib/activity";
 import { cn } from "@/lib/utils";
 import { CONTAINER_WIDTHS, SPACING } from "@/lib/design-tokens";
 

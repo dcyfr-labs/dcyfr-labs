@@ -1,11 +1,8 @@
 {
   "recommendations": [
     "GitHub.copilot",
-    "GitHub.copilot-chat"
-  ]
-}
-{
-  "recommendations": [
+    "GitHub.copilot-chat",
+    "sst-dev.opencode",
     "vitest.explorer",
     "ms-playwright.playwright",
     "usernamehw.errorlens",

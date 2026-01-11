@@ -23,14 +23,14 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS } from "@/lib/design-tokens";
-import type { ActivityFilterPreset } from "@/lib/activity/presets";
+import type { ActivityFilterPreset } from "@/lib/activity";
 import {
   deletePreset,
   updatePreset,
   exportPresets,
   importPresets,
   downloadPresetsAsFile,
-} from "@/lib/activity/presets";
+} from "@/lib/activity";
 
 // ============================================================================
 // PROPS
@@ -106,12 +106,14 @@ export function PresetManager({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
+        <Button variant="outline" size="sm" className={`gap-${SPACING.sm}`}>
           <Settings className="h-4 w-4" />
           Manage Presets
         </Button>
       </DialogTrigger>
-      <DialogContent className={`${CONTAINER_WIDTHS.standard} max-h-[80vh] overflow-y-auto`}>
+      <DialogContent
+        className={`${CONTAINER_WIDTHS.standard} max-h-[80vh] overflow-y-auto`}
+      >
         <DialogHeader>
           <DialogTitle>Manage Filter Presets</DialogTitle>
           <DialogDescription>
@@ -123,16 +125,21 @@ export function PresetManager({
         <div className={SPACING.subsection}>
           {/* Default Presets */}
           <div>
-            <h3 className={cn(TYPOGRAPHY.h3.standard, "mb-3 flex items-center gap-2")}>
-              {/* eslint-disable-next-line no-restricted-syntax */}
-              <Star className="h-4 w-4 text-yellow-500" />
+            <h3
+              className={cn(
+                TYPOGRAPHY.h3.standard,
+                "mb-3 flex items-center gap-2"
+              )}
+            >
+              {}
+              <Star className="h-4 w-4 text-muted-foreground" />
               Default Presets
             </h3>
             <div className="space-y-2">
               {defaultPresets.map((preset) => (
                 <div
                   key={preset.id}
-                  className="flex items-center gap-3 p-3 rounded-lg border bg-muted/30"
+                  className={`flex items-center gap-${SPACING.md} p-${SPACING.md} rounded-lg border bg-muted/30`}
                 >
                   <GripVertical className="h-4 w-4 text-muted-foreground opacity-50" />
                   <div className="flex-1">
@@ -160,12 +167,12 @@ export function PresetManager({
                 {userPresets.map((preset) => (
                   <div
                     key={preset.id}
-                    className="flex items-center gap-3 p-3 rounded-lg border hover:bg-accent/50 transition-theme"
+                    className={`flex items-center gap-${SPACING.md} p-${SPACING.md} rounded-lg border hover:bg-accent/50 transition-theme`}
                   >
                     <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
                     <div className="flex-1">
                       {editingId === preset.id ? (
-                        <div className="flex items-center gap-2">
+                        <div className={`flex items-center gap-${SPACING.sm}`}>
                           <Input
                             value={editingName}
                             onChange={(e) => setEditingName(e.target.value)}
@@ -201,8 +208,12 @@ export function PresetManager({
                             {preset.filters.sources.length} sources •{" "}
                             {preset.filters.timeRange}
                             {preset.lastUsedAt && (
-                              <> • Last used{" "}
-                                {new Date(preset.lastUsedAt).toLocaleDateString()}
+                              <>
+                                {" "}
+                                • Last used{" "}
+                                {new Date(
+                                  preset.lastUsedAt
+                                ).toLocaleDateString()}
                               </>
                             )}
                           </p>
@@ -224,12 +235,22 @@ export function PresetManager({
           </div>
 
           {/* Export/Import */}
-          <div className="flex gap-2 pt-4 border-t">
-            <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
+          <div className={`flex gap-${SPACING.sm} pt-${SPACING.md} border-t`}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExport}
+              className={`gap-${SPACING.sm}`}
+            >
               <Download className="h-4 w-4" />
               Export All
             </Button>
-            <Button variant="outline" size="sm" onClick={handleImport} className="gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleImport}
+              className={`gap-${SPACING.sm}`}
+            >
               <Upload className="h-4 w-4" />
               Import
             </Button>

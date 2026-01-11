@@ -1,6 +1,7 @@
 # GitHub MCP Setup & Getting Started
 
-**Implementation Date**: October 18, 2025  
+**Implementation Date**: October 18, 2025
+**Last Updated**: January 5, 2026
 **Current Status**: ✅ Configured (Awaiting First Use)
 
 ## Overview
@@ -280,7 +281,7 @@ gh auth status
 | `~/.../Code/User/mcp.json` | VS Code MCP configuration (includes GitHub) |
 | `./mcp.json` | Project reference configuration |
 | `docs/mcp/github/implementation.md` | Full documentation |
-| `docs/mcp/github/quick-reference.md` | Quick reference |
+| `docs/features/mcp/MCP_QUICK_REFERENCE.md` | Consolidated MCP quick reference (all 6 MCPs) |
 | `docs/mcp/github/setup.md` | This file |
 
 ## Getting Help
@@ -310,8 +311,8 @@ You know it's working when:
 
 Once verified:
 
-1. **Read** `docs/mcp/github/quick-reference.md` (5 min) - Common operations
-2. **Explore** `docs/mcp/github/implementation.md` (30 min) - Full capabilities
+1. **Read** `docs/features/mcp/MCP_QUICK_REFERENCE.md` (5 min) - Common operations across all 6 MCPs
+2. **Explore** `docs/mcp/github/implementation.md` (30 min) - Full GitHub MCP capabilities
 3. **Experiment** - Try different queries and toolsets
 4. **Integrate** - Use GitHub MCP in your daily workflow
 5. **Share** - Help teammates set up their GitHub MCPs

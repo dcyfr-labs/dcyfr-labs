@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ProgressiveParagraph } from "@/components/common/progressive-content";
+import { ProgressiveParagraph } from "@/components/common";
 
 /**
  * Context for tracking paragraph progression in MDX content

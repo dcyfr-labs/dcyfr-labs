@@ -328,14 +328,14 @@ export async function POST(request: NextRequest) {
 
   // Perform research
   try {
-    console.log('[Research API] Processing request:', {
+    console.warn('[Research API] Processing request:', {
       messageCount: messages.length,
       timestamp: new Date().toISOString(),
     });
 
     const result: ResearchResult = await research(messages, options);
 
-    console.log(
+    console.warn(
       `[Research API] Success - ${result.usage.totalTokens} tokens used`
     );
 
@@ -351,7 +351,7 @@ export async function POST(request: NextRequest) {
       tokens: result.usage.totalTokens,
     });
 
-    console.log(
+    console.warn(
       `[Research API] Estimated cost: $${estimatedCost.toFixed(4)}`
     );
 

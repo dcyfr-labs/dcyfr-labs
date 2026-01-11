@@ -157,7 +157,6 @@ export function ProfileAvatar({
         ${sizeClass.container}
         ${animated ? `hover:scale-110 transition-transform ${ANIMATION.duration.normal} ease-out` : ""}
         ${animated ? "will-change-transform" : ""}
-        ${isLoaded ? "animate-fade-in" : "opacity-0"}
         ${className || ""}
       `}
     >

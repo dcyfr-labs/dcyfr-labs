@@ -1,13 +1,14 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { ANIMATIONS } from "@/lib/design-tokens";
 
 /**
  * Design-Token-Aware Skeleton Primitives
- * 
+ *
  * These primitives automatically size based on the design system's typography
  * and spacing tokens. Using these ensures skeletons stay in sync with content
  * without manual dimension updates.
- * 
+ *
  * @see /docs/components/skeleton-sync-strategy.md
  */
 
@@ -30,11 +31,11 @@ export interface SkeletonTextProps {
  * Multi-line text skeleton for body content.
  * Automatically creates realistic text block appearance.
  */
-export function SkeletonText({ 
-  lines = 3, 
+export function SkeletonText({
+  lines = 3,
   lastLineWidth = "w-3/4",
   className,
-  gap = "normal"
+  gap = "normal",
 }: SkeletonTextProps) {
   const gapClass = {
     tight: "space-y-1",
@@ -45,12 +46,9 @@ export function SkeletonText({
   return (
     <div className={cn(gapClass, className)}>
       {Array.from({ length: lines }).map((_, i) => (
-        <Skeleton 
-          key={i} 
-          className={cn(
-            "h-4",
-            i === lines - 1 ? lastLineWidth : "w-full"
-          )} 
+        <Skeleton
+          key={i}
+          className={cn("h-4", i === lines - 1 ? lastLineWidth : "w-full")}
         />
       ))}
     </div>
@@ -72,39 +70,37 @@ export interface SkeletonHeadingProps {
  * Heading skeleton tied to typography token sizes.
  * Heights match the actual heading typography scale.
  */
-export function SkeletonHeading({ 
-  level, 
+export function SkeletonHeading({
+  level,
   width = "w-3/4",
   variant = "standard",
-  className 
+  className,
 }: SkeletonHeadingProps) {
   // Heights match TYPOGRAPHY tokens in design-tokens.ts
   const heights: Record<string, Record<string, string>> = {
     h1: {
-      standard: "h-8 md:h-10",      // text-3xl md:text-4xl
-      hero: "h-10 md:h-12",          // larger for homepage
-      article: "h-10 md:h-14",       // text-3xl md:text-5xl
+      standard: "h-8 md:h-10", // text-3xl md:text-4xl
+      hero: "h-10 md:h-12", // larger for homepage
+      article: "h-10 md:h-14", // text-3xl md:text-5xl
     },
     h2: {
-      standard: "h-6 md:h-8",        // text-xl md:text-2xl
+      standard: "h-6 md:h-8", // text-xl md:text-2xl
       hero: "h-8 md:h-10",
       article: "h-8 md:h-10",
     },
     h3: {
-      standard: "h-5 md:h-6",        // text-lg md:text-xl
+      standard: "h-5 md:h-6", // text-lg md:text-xl
       hero: "h-6 md:h-7",
       article: "h-6 md:h-7",
     },
     h4: {
-      standard: "h-4 md:h-5",        // text-base md:text-lg
+      standard: "h-4 md:h-5", // text-base md:text-lg
       hero: "h-5 md:h-6",
       article: "h-5 md:h-6",
     },
   };
 
-  return (
-    <Skeleton className={cn(heights[level][variant], width, className)} />
-  );
+  return <Skeleton className={cn(heights[level][variant], width, className)} />;
 }
 
 export interface SkeletonDescriptionProps {
@@ -120,20 +116,20 @@ export interface SkeletonDescriptionProps {
  * Description/lead text skeleton.
  * Matches TYPOGRAPHY.description size (text-lg md:text-xl).
  */
-export function SkeletonDescription({ 
-  lines = 2, 
+export function SkeletonDescription({
+  lines = 2,
   lastLineWidth = "w-3/4",
-  className 
+  className,
 }: SkeletonDescriptionProps) {
   return (
     <div className={cn("space-y-2", className)}>
       {Array.from({ length: lines }).map((_, i) => (
-        <Skeleton 
-          key={i} 
+        <Skeleton
+          key={i}
           className={cn(
             "h-5 md:h-6", // text-lg md:text-xl
             i === lines - 1 ? lastLineWidth : "w-full"
-          )} 
+          )}
         />
       ))}
     </div>
@@ -154,7 +150,10 @@ export interface SkeletonAvatarProps {
 /**
  * Avatar skeleton with standard sizes.
  */
-export function SkeletonAvatar({ size = "md", className }: SkeletonAvatarProps) {
+export function SkeletonAvatar({
+  size = "md",
+  className,
+}: SkeletonAvatarProps) {
   const sizes = {
     sm: "h-8 w-8",
     md: "h-12 w-12",
@@ -178,14 +177,11 @@ export interface SkeletonBadgeProps {
 export function SkeletonBadges({ count = 3, className }: SkeletonBadgeProps) {
   // Varying widths for realistic appearance
   const widths = ["w-12", "w-16", "w-14", "w-20", "w-10"];
-  
+
   return (
     <div className={cn("flex flex-wrap gap-2", className)}>
       {Array.from({ length: count }).map((_, i) => (
-        <Skeleton 
-          key={i} 
-          className={cn("h-5", widths[i % widths.length])} 
-        />
+        <Skeleton key={i} className={cn("h-5", widths[i % widths.length])} />
       ))}
     </div>
   );
@@ -203,10 +199,10 @@ export interface SkeletonButtonProps {
 /**
  * Button skeleton matching standard button sizes.
  */
-export function SkeletonButton({ 
-  size = "default", 
+export function SkeletonButton({
+  size = "default",
   width = "w-24",
-  className 
+  className,
 }: SkeletonButtonProps) {
   const heights = {
     sm: "h-8",
@@ -234,14 +230,16 @@ export interface SkeletonMetadataProps {
  * Metadata line skeleton for blog posts, articles.
  * Matches TYPOGRAPHY.metadata size.
  */
-export function SkeletonMetadata({ 
-  showDate = true, 
-  showReadingTime = true, 
+export function SkeletonMetadata({
+  showDate = true,
+  showReadingTime = true,
   showViews = false,
-  className 
+  className,
 }: SkeletonMetadataProps) {
   return (
-    <div className={cn("flex flex-wrap items-center gap-x-2 gap-y-1", className)}>
+    <div
+      className={cn("flex flex-wrap items-center gap-x-2 gap-y-1", className)}
+    >
       {showDate && <Skeleton className="h-4 w-24" />}
       {showDate && showReadingTime && <Skeleton className="h-3 w-1" />}
       {showReadingTime && <Skeleton className="h-4 w-16" />}
@@ -271,17 +269,17 @@ export interface SkeletonParagraphsProps {
 /**
  * Multiple paragraph skeleton for article/blog content.
  */
-export function SkeletonParagraphs({ 
-  count = 3, 
+export function SkeletonParagraphs({
+  count = 3,
   linesPerParagraph = 3,
-  className 
+  className,
 }: SkeletonParagraphsProps) {
   return (
     <div className={cn("space-y-4", className)}>
       {Array.from({ length: count }).map((_, i) => (
-        <SkeletonText 
-          key={i} 
-          lines={linesPerParagraph} 
+        <SkeletonText
+          key={i}
+          lines={linesPerParagraph}
           lastLineWidth={i === count - 1 ? "w-2/3" : "w-4/5"}
         />
       ))}
@@ -299,9 +297,9 @@ export interface SkeletonImageProps {
 /**
  * Image placeholder skeleton with standard aspect ratios.
  */
-export function SkeletonImage({ 
-  aspectRatio = "video", 
-  className 
+export function SkeletonImage({
+  aspectRatio = "video",
+  className,
 }: SkeletonImageProps) {
   const ratios = {
     square: "aspect-square",
@@ -310,9 +308,7 @@ export function SkeletonImage({
     portrait: "aspect-[3/4]",
   };
 
-  return (
-    <Skeleton className={cn("w-full", ratios[aspectRatio], className)} />
-  );
+  return <Skeleton className={cn("w-full", ratios[aspectRatio], className)} />;
 }
 
 // ============================================================================
@@ -326,20 +322,23 @@ export interface SkeletonCardProps {
   showImage?: boolean;
   /** Additional classes */
   className?: string;
+  /** Inline styles (for animation delays, etc.) */
+  style?: React.CSSProperties;
 }
 
 /**
  * Complete card skeleton matching common card patterns.
  * Use this for consistent card loading states.
  */
-export function SkeletonCard({ 
-  variant = "simple", 
+export function SkeletonCard({
+  variant = "simple",
   showImage = true,
-  className 
+  className,
+  style,
 }: SkeletonCardProps) {
   if (variant === "post") {
     return (
-      <div className={cn("rounded-lg border overflow-hidden", className)}>
+      <div className={cn("rounded-lg border overflow-hidden", className)} style={style}>
         {showImage && <SkeletonImage aspectRatio="video" />}
         <div className="p-4 space-y-3">
           <SkeletonMetadata />
@@ -353,15 +352,15 @@ export function SkeletonCard({
 
   if (variant === "project") {
     return (
-      <div className={cn("rounded-lg border overflow-hidden relative", className)}>
+      <div
+        className={cn("rounded-lg border overflow-hidden relative", className)}
+        style={style}
+      >
         {/* Background */}
         <div className="absolute inset-0 bg-muted/20" />
-        
+
         {/* Content */}
-        <div
-           
-          className="relative z-10 p-4 sm:p-8 space-y-3"
-        >
+        <div className="relative z-10 p-4 sm:p-8 space-y-3">
           <div className="flex items-center gap-2">
             <Skeleton className="h-5 w-16" />
             <Skeleton className="h-4 w-24" />
@@ -376,7 +375,7 @@ export function SkeletonCard({
 
   // Simple card
   return (
-    <div className={cn("rounded-lg border p-4 space-y-3", className)}>
+    <div className={cn("rounded-lg border p-4 space-y-3", className)} style={style}>
       <SkeletonHeading level="h3" width="w-2/3" />
       <SkeletonText lines={2} />
     </div>
@@ -396,28 +395,59 @@ export interface SkeletonListProps<T extends SkeletonCardProps["variant"]> {
   layout?: "list" | "grid";
   /** Grid columns */
   columns?: 1 | 2 | 3;
+  /** Enable stagger animation (items appear sequentially) */
+  stagger?: boolean | "fast" | "normal" | "slow";
   /** Additional classes */
   className?: string;
 }
 
 /**
- * List of skeleton cards with configurable layout.
+ * List of skeleton cards with configurable layout and optional stagger animation.
+ *
+ * Stagger animation creates a sequential reveal effect where each skeleton
+ * appears slightly after the previous one, providing better visual feedback.
+ *
+ * @example
+ * ```tsx
+ * // With stagger animation
+ * <SkeletonList count={5} stagger="normal" variant="post" />
+ *
+ * // Without stagger
+ * <SkeletonList count={5} variant="post" />
+ * ```
  */
-export function SkeletonList({ 
-  count = 3, 
+export function SkeletonList({
+  count = 3,
   variant = "simple",
   layout = "list",
   columns = 2,
-  className 
+  stagger = false,
+  className,
 }: SkeletonListProps<SkeletonCardProps["variant"]>) {
-  const layoutClass = layout === "grid" 
-    ? `grid gap-4 ${columns === 1 ? "" : columns === 2 ? "sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3"}`
-    : "space-y-4";
+  const layoutClass =
+    layout === "grid"
+      ? `grid gap-4 ${columns === 1 ? "" : columns === 2 ? "sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3"}`
+      : "space-y-4";
+
+  // Get stagger delay value
+  const getStaggerDelay = (index: number): string | undefined => {
+    if (!stagger) return undefined;
+
+    const speed = stagger === true ? "normal" : stagger;
+    const delay = ANIMATIONS.stagger[speed] * index;
+    return `${delay}ms`;
+  };
 
   return (
     <div className={cn(layoutClass, className)}>
       {Array.from({ length: count }).map((_, i) => (
-        <SkeletonCard key={i} variant={variant} />
+        <SkeletonCard
+          key={i}
+          variant={variant}
+          style={{
+            animationDelay: getStaggerDelay(i),
+          }}
+        />
       ))}
     </div>
   );

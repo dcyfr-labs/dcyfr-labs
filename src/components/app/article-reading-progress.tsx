@@ -1,7 +1,7 @@
 "use client";
 
 import { useReadingProgress } from "@/hooks/use-reading-progress";
-import { ReadingProgressBar } from "@/components/app/reading-progress-bar";
+import { ReadingProgressBar } from '@/components/app';
 
 /**
  * Article Reading Progress Wrapper

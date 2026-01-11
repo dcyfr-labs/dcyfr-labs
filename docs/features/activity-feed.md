@@ -10,6 +10,7 @@ The Activity Feed is a universal timeline that aggregates content from multiple 
 ## Features
 
 ### Core Functionality
+
 - ✅ **Multi-source aggregation** - Blog, projects, GitHub, milestones, certifications, analytics
 - ✅ **Time-based filtering** - Today, week, month, year, all time
 - ✅ **Source filtering** - Filter by content type
@@ -35,6 +36,7 @@ TypeScript
 ```
 
 This searches in:
+
 - **Titles** - Main activity title (boosted 2x)
 - **Descriptions** - Activity descriptions
 - **Tags** - Metadata tags (boosted 1.5x)
@@ -152,6 +154,7 @@ Engagement-based trending indicators that appear as badges on published events i
 ### How It Works
 
 **Engagement Score Calculation:**
+
 ```
 Raw Score = (views × 1) + (likes × 5) + (comments × 10) + (completion × 2)
 Daily Score = Raw Score / periodDays
@@ -159,10 +162,12 @@ Normalized Score = min(100, (Daily Score / 10) × 100)
 ```
 
 **Time Windows:**
+
 - **Weekly Trending** (🔥 orange badge): Score ≥ 60 with views from past 7 days
 - **Monthly Trending** (📈 blue badge): Score ≥ 50 with views from past 30 days
 
 **Anti-Spam Protection:**
+
 - Minimum 10 views required in time window
 - Comments weighted 10x higher than views (strongest engagement signal)
 - Likes weighted 5x higher than views
@@ -177,6 +182,7 @@ Normalized Score = min(100, (Daily Score / 10) × 100)
 ### Visual Design
 
 **Badge Hierarchy:**
+
 ```
 [Source] [Verb] [Trending (if applicable)]
   ↓       ↓            ↓
@@ -184,6 +190,7 @@ Normalized Score = min(100, (Daily Score / 10) × 100)
 ```
 
 **Badge Priority:**
+
 - Weekly badge shown preferentially if both conditions met
 - Compact variants for reply threads (shortened labels)
 
@@ -334,14 +341,14 @@ const SEARCH_CONFIG = {
   fields: ["title", "description", "tags", "category"],
   storeFields: ["id"],
   searchOptions: {
-    boost: { 
-      title: 2,        // Increase title importance
-      tags: 1.5,       // Increase tag importance
+    boost: {
+      title: 2, // Increase title importance
+      tags: 1.5, // Increase tag importance
       description: 1,
-      category: 1 
+      category: 1,
     },
-    fuzzy: 0.2,        // Adjust typo tolerance (0.0-1.0)
-    prefix: true,      // Match word prefixes
+    fuzzy: 0.2, // Adjust typo tolerance (0.0-1.0)
+    prefix: true, // Match word prefixes
     combineWith: "AND" as const, // OR for broader results
   },
 };
@@ -354,11 +361,13 @@ const SEARCH_CONFIG = {
 ### Benchmarks
 
 **Search Performance (1000 items):**
+
 - Basic search: ~14ms (target: <100ms) ✅
 - Complex query: ~9ms (target: <100ms) ✅
 - Fuzzy search: ~15ms ✅
 
 **Optimization Strategies:**
+
 1. **Pre-built search index** - Created once on mount, reused for all searches
 2. **Memoized deserialization** - Timestamps deserialized once
 3. **Efficient filtering** - Filters applied after search, not during
@@ -377,6 +386,7 @@ const SEARCH_CONFIG = {
 ### Unit Tests (35 tests)
 
 **Coverage:**
+
 - Query parsing (6 tests)
 - Search functionality (11 tests)
 - Performance benchmarks (2 tests)
@@ -385,6 +395,7 @@ const SEARCH_CONFIG = {
 - Highlighting (6 tests)
 
 **Run tests:**
+
 ```bash
 npm test -- activity-search.test.ts
 ```
@@ -392,6 +403,7 @@ npm test -- activity-search.test.ts
 ### E2E Tests (15 scenarios)
 
 **Coverage:**
+
 - Basic search
 - Advanced syntax (tag:, source:, -, "exact")
 - Keyboard shortcuts (Cmd+K)
@@ -400,6 +412,7 @@ npm test -- activity-search.test.ts
 - UI interactions
 
 **Run E2E tests:**
+
 ```bash
 npm run test:e2e -- activity-search.spec.ts
 ```
@@ -409,6 +422,7 @@ npm run test:e2e -- activity-search.spec.ts
 ## Accessibility
 
 ### Keyboard Navigation
+
 - **Cmd+K / Ctrl+K** - Focus search input
 - **Enter** - Submit search
 - **Escape** - Blur search input
@@ -416,6 +430,7 @@ npm run test:e2e -- activity-search.spec.ts
 - **Arrow keys** - Navigate search history dropdown
 
 ### Screen Readers
+
 - Search input has descriptive label
 - Keyboard shortcut hint is visible
 - Results count announced
@@ -423,6 +438,7 @@ npm run test:e2e -- activity-search.spec.ts
 - ARIA attributes on interactive elements
 
 ### Color Contrast
+
 - Search input meets WCAG AA standards
 - Highlighted search terms have sufficient contrast
 - Focus indicators are visible
@@ -434,27 +450,31 @@ npm run test:e2e -- activity-search.spec.ts
 ### Search returns no results
 
 **Possible causes:**
+
 1. **Typo tolerance too strict** - Increase `fuzzy` setting in `SEARCH_CONFIG`
 2. **Query syntax error** - Check for malformed tag: or source: filters
 3. **No matching items** - Verify data is loaded correctly
 
 **Solutions:**
+
 ```typescript
 // Lower threshold for more lenient fuzzy matching
-fuzzy: 0.3  // Default: 0.2
+fuzzy: 0.3; // Default: 0.2
 
 // Check browser console for search debug info
-console.log('Parsed query:', parseSearchQuery(query));
+console.log("Parsed query:", parseSearchQuery(query));
 ```
 
 ### Search is slow
 
 **Possible causes:**
+
 1. **Large dataset** - Optimize search index
 2. **Re-creating index** - Ensure index is memoized
 3. **Complex regex** - Simplify search terms
 
 **Solutions:**
+
 ```typescript
 // Pre-build index and pass to searchActivities
 const searchIndex = useMemo(() => createSearchIndex(items), [items]);
@@ -464,19 +484,21 @@ const results = searchActivities(items, query, searchIndex);
 ### Search history not saving
 
 **Possible causes:**
+
 1. **localStorage disabled** - Check browser settings
 2. **Private/incognito mode** - localStorage is session-only
 3. **Storage quota exceeded** - Clear other localStorage data
 
 **Solutions:**
+
 ```javascript
 // Check localStorage availability
-if (typeof window !== 'undefined' && window.localStorage) {
+if (typeof window !== "undefined" && window.localStorage) {
   // Safe to use localStorage
 }
 
 // Clear search history manually
-localStorage.removeItem('dcyfr-activity-search-history');
+localStorage.removeItem("dcyfr-activity-search-history");
 ```
 
 ---
@@ -490,12 +512,14 @@ The Activity Heatmap provides a calendar-based visualization of activity intensi
 ### Features
 
 #### Calendar View
+
 - **12-month view** - Desktop displays full year of activity
 - **6-month view** - Tablet displays half year
 - **3-month view** - Mobile displays quarter
 - **Responsive** - Automatically adjusts based on viewport
 
 #### Color Intensity Scale
+
 - **Empty** - No activities (gray)
 - **Low (1-3)** - Light green
 - **Medium (4-6)** - Medium green
@@ -503,6 +527,7 @@ The Activity Heatmap provides a calendar-based visualization of activity intensi
 - **Very High (10+)** - Darkest green
 
 #### Interactive Features
+
 - **Hover tooltips** - Show date, activity count, and top 3 sources
 - **Click-to-filter** - Click any date to filter timeline view to that day
 - **Statistics cards** - Display:
@@ -513,6 +538,7 @@ The Activity Heatmap provides a calendar-based visualization of activity intensi
 - **Smooth animations** - Framer Motion transitions for data loading
 
 #### Performance
+
 - **Optimized rendering** - Uses useMemo for expensive calculations
 - **<500ms render time** - Tested with 1 year of data
 - **Lazy loading** - Calendar library only loads visible cells
@@ -529,7 +555,7 @@ import { ActivityHeatmapCalendar } from "@/components/activity";
     console.log(`Clicked ${date}`, activityIds);
   }}
   monthsToShow={12}
-/>
+/>;
 ```
 
 ### Integration
@@ -544,23 +570,27 @@ Both views share the same filters (sources, time range, search), allowing users 
 ### Technical Details
 
 **Data Aggregation:**
+
 - Groups activities by date (ISO format YYYY-MM-DD)
 - Counts activities per day
 - Tracks top 3 sources by frequency
 - Stores activity IDs for click-to-filter
 
 **Color Mapping:**
+
 - `getHeatmapColorClass()` - Maps count to CSS class
 - `getHeatmapIntensity()` - Returns 0-4 intensity level
 - Uses chart visualization color exception (green gradient)
 
 **Statistics Calculation:**
+
 - Total activities across all days
 - Active days count (count > 0)
 - Average activities per day (rounded to 1 decimal)
 - Current/longest streak algorithm
 
 **Files:**
+
 - [ActivityHeatmapCalendar.tsx](../../src/components/activity/ActivityHeatmapCalendar.tsx) - Main component
 - [heatmap.ts](../../src/lib/activity/heatmap.ts) - Aggregation utilities
 - [activity-heatmap.test.ts](../../src/__tests__/lib/activity-heatmap.test.ts) - Unit tests (21 tests)
@@ -576,6 +606,7 @@ Both views share the same filters (sources, time range, search), allowing users 
 ### Features Implemented
 
 #### 1. Virtual Scrolling Engine
+
 - Uses `@tanstack/react-virtual` (14.2KB, TypeScript-first)
 - Only renders visible items (saves memory)
 - Variable item heights by source type:
@@ -586,6 +617,7 @@ Both views share the same filters (sources, time range, search), allowing users 
 - **Performance:** 100+ items render with <100 DOM nodes
 
 #### 2. Scroll-to-Top Button
+
 - Floating button with Framer Motion animations
 - Appears after scrolling 500px
 - Smooth scroll to top with visual feedback
@@ -593,12 +625,14 @@ Both views share the same filters (sources, time range, search), allowing users 
 - Accessible with `aria-label`
 
 #### 3. Scroll Position Restoration
+
 - Saves scroll offset to `sessionStorage`
 - Restores position on back button navigation
 - Clears on page refresh (fresh start)
 - Custom `useScrollRestoration` hook
 
 #### 4. Infinite Scroll Support
+
 - Loads more items at 90% scroll threshold
 - Batch loading with loading indicator
 - Prevents duplicate requests with ref flag
@@ -606,6 +640,7 @@ Both views share the same filters (sources, time range, search), allowing users 
 - `hasMore` and `isLoadingMore` state props
 
 #### 5. Time Group Headers
+
 - Sticky headers stay visible during scroll
 - Flattened virtual items array (headers + activities)
 - Backdrop blur for visual separation
@@ -624,13 +659,13 @@ import { VirtualActivityFeed } from "@/components/activity";
   showGroups                   // Show time group headers
   isLoading={false}            // Show skeleton loaders
   emptyMessage="No activity"   // Custom empty state
-  
+
   // Infinite scroll (optional)
   enableInfiniteScroll
   onLoadMore={loadMoreActivities}
   isLoadingMore={loading}
   hasMore={hasNextPage}
-  
+
   className="custom-class"     // CSS overrides
 />
 ```
@@ -648,13 +683,13 @@ return <div ref={scrollRef}>...</div>;
 
 ### Performance Characteristics
 
-| Metric | Standard ActivityFeed | VirtualActivityFeed |
-|--------|----------------------|---------------------|
-| DOM Nodes (1000 items) | ~3000 nodes | ~100 nodes |
-| Memory Usage | ~50MB | ~8MB |
-| Initial Render | ~800ms | ~150ms |
-| Scroll FPS | ~45 FPS | ~60 FPS |
-| Scroll Smoothness | Janky at 500+ items | Smooth at 5000+ items |
+| Metric                 | Standard ActivityFeed | VirtualActivityFeed   |
+| ---------------------- | --------------------- | --------------------- |
+| DOM Nodes (1000 items) | ~3000 nodes           | ~100 nodes            |
+| Memory Usage           | ~50MB                 | ~8MB                  |
+| Initial Render         | ~800ms                | ~150ms                |
+| Scroll FPS             | ~45 FPS               | ~60 FPS               |
+| Scroll Smoothness      | Janky at 500+ items   | Smooth at 5000+ items |
 
 ### Files Created
 
@@ -666,6 +701,7 @@ return <div ref={scrollRef}>...</div>;
 ### Testing
 
 **Unit Tests (16 tests):**
+
 - ✅ Loading & empty states
 - ✅ Rendering with/without groups
 - ✅ All 4 variants (timeline, compact, minimal, standard)
@@ -680,26 +716,27 @@ The activity feed is available as an RSS 2.0 feed for syndication. All major con
 
 ### Available Feeds
 
-| Feed | RSS 2.0 | Atom | JSON Feed |
-|------|---------|------|-----------|
+| Feed         | RSS 2.0             | Atom             | JSON Feed             |
+| ------------ | ------------------- | ---------------- | --------------------- |
 | **Activity** | `/activity/rss.xml` | `/activity/feed` | `/activity/feed.json` |
-| **Blog** | `/blog/rss.xml` | `/blog/feed` | `/blog/feed.json` |
-| **Projects** | `/work/rss.xml` | `/work/feed` | `/work/feed.json` |
+| **Blog**     | `/blog/rss.xml`     | `/blog/feed`     | `/blog/feed.json`     |
+| **Projects** | `/work/rss.xml`     | `/work/feed`     | `/work/feed.json`     |
 
-**Discovery:** All feeds are listed on the [/feeds](https://dcyfr.com/feeds) page with format descriptions and subscription buttons.
+**Discovery:** All feeds are listed on the [/feeds](https://dcyfr.ai/feeds) page with format descriptions and subscription buttons.
 
 ### Accessing the Feed
 
-**Feed URL:** `https://dcyfr.com/activity/rss.xml`
+**Feed URL:** `https://dcyfr.ai/activity/rss.xml`
 
 The RSS feed includes all activity types with proper metadata formatting:
+
 - Blog posts with reading time, views, and comments
 - Projects with star counts
 - Milestones with achievement metrics
 - GitHub activity
 - Certifications and analytics achievements
 
-**Discovery:** The feed is listed on the [/feeds](https://dcyfr.com/feeds) page alongside other available feeds (Atom, JSON Feed).
+**Discovery:** The feed is listed on the [/feeds](https://dcyfr.ai/feeds) page alongside other available feeds (Atom, JSON Feed).
 
 ### Feed Features
 
@@ -714,26 +751,27 @@ The RSS feed includes all activity types with proper metadata formatting:
 
 Each activity item in the RSS feed includes:
 
-| Field | Content |
-|-------|---------|
-| **Title** | Verb + Activity Title (e.g., "Published: Test Blog Post") |
-| **Link** | Full URL to the activity |
-| **Description** | HTML-formatted description with metadata badges |
-| **Category** | Activity source type (Blog Post, Project, Milestone, etc.) |
-| **PubDate** | RFC 2822 formatted timestamp |
-| **GUID** | Unique stable identifier |
+| Field           | Content                                                    |
+| --------------- | ---------------------------------------------------------- |
+| **Title**       | Verb + Activity Title (e.g., "Published: Test Blog Post")  |
+| **Link**        | Full URL to the activity                                   |
+| **Description** | HTML-formatted description with metadata badges            |
+| **Category**    | Activity source type (Blog Post, Project, Milestone, etc.) |
+| **PubDate**     | RFC 2822 formatted timestamp                               |
+| **GUID**        | Unique stable identifier                                   |
 
 ### Subscribe via Feed Reader
 
 Add this feed to your favorite RSS reader:
 
 **Popular readers:**
+
 - [Feedly](https://feedly.com/)
 - [Inoreader](https://www.inoreader.com/)
 - [NewsBlur](https://newsblur.com/)
 - [The Old Reader](https://theoldreader.com/)
 
-**Manual subscription:** Copy `https://dcyfr.com/activity/rss.xml` into your feed reader
+**Manual subscription:** Copy `https://dcyfr.ai/activity/rss.xml` into your feed reader
 
 ### API Reference
 
@@ -761,13 +799,16 @@ const rssActivities = filterActivitiesForRSS(activities);
 ## 📦 Backlog (Future Consideration)
 
 ### Stage 6+ Ideas
+
 - Export heatmap as image (PNG/SVG)
 - Real-time activity updates (WebSocket/Polling)
 - Activity detail modal with deep context
 - Collaborative filtering ("Similar to you" recommendations)
 
 ### Next Priority: Stage 6 (Content Extensions & Integrations)
+
 See [todo.md](../operations/todo.md#stage-6-content-extensions--integrations--next) for detailed planning:
+
 - RSS Feed Generation (#51)
 - Bookmarking System (#47)
 - Real-time GitHub Commit Feed (#123)
@@ -779,6 +820,7 @@ See [todo.md](../operations/todo.md#stage-6-content-extensions--integrations--ne
 ## Resources
 
 **Files:**
+
 - [ActivityFilters.tsx](../../src/components/activity/ActivityFilters.tsx) - Filter UI + search
 - [ActivityHeatmapCalendar.tsx](../../src/components/activity/ActivityHeatmapCalendar.tsx) - Heatmap visualization
 - [VirtualActivityFeed.tsx](../../src/components/activity/VirtualActivityFeed.tsx) - Virtual scrolling
@@ -793,6 +835,7 @@ See [todo.md](../operations/todo.md#stage-6-content-extensions--integrations--ne
 - [activity-search.spec.ts](../../e2e/activity-search.spec.ts) - Search E2E tests (15 tests)
 
 **Related Documentation:**
+
 - [Activity Feed Stages](../operations/todo.md#-active-development-activity-feed-enhancement-5-stage-plan)
 - [Stage 6 RSS Feed](../operations/todo.md#stage-6-content-extensions--integrations--next)
 - [Virtual Scrolling Evaluation](../architecture/virtual-scrolling-evaluation.md)
@@ -800,6 +843,7 @@ See [todo.md](../operations/todo.md#stage-6-content-extensions--integrations--ne
 - [Design Tokens](../ai/design-system.md)
 
 **External:**
+
 - [MiniSearch Documentation](https://lucaong.github.io/minisearch/)
 - [react-calendar-heatmap](https://github.com/kevinsqi/react-calendar-heatmap)
 - [TanStack Virtual Documentation](https://tanstack.com/virtual/latest)

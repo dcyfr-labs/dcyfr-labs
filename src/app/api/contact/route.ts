@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
         // // Only block if BotID confidently identifies this as a bot (not a verified bot like search engines)
         // // Verified bots (search engines, monitoring) are allowed through
         // if (verification.isBot && !verification.isVerifiedBot && !verification.bypassed) {
-        //   console.log("[Contact API] Bot detected by BotID - blocking request");
+        //   console.warn("[Contact API] Bot detected by BotID - blocking request");
         //   return NextResponse.json(
         //     { error: "Access denied" },
         //     { status: 403 }
@@ -186,7 +186,7 @@ export async function POST(request: NextRequest) {
 
     // Honeypot validation - if filled, it's likely a bot
     if (website && website.trim() !== "") {
-      console.log("[Contact API] Honeypot triggered - likely bot submission");
+      console.warn("[Contact API] Honeypot triggered - likely bot submission");
       // Return success to avoid revealing the honeypot
       return NextResponse.json(
         { 
@@ -258,7 +258,7 @@ export async function POST(request: NextRequest) {
 
       // Log submission (anonymized)
       // Log an anonymized summary to avoid storing user-provided content in logs
-      console.info("Contact form submission queued:", {
+      console.warn("Contact form submission queued:", {
         nameLength: sanitizedData.name.length,
         emailDomain: sanitizedData.email.split('@')[1] || 'unknown',
         messageLength: sanitizedData.message.length,

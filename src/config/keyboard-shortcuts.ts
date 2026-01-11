@@ -34,10 +34,10 @@ export const KEYBOARD_SHORTCUTS = {
     windows: "/",
   },
 
-  // Views (numbers 1-4)
-  VIEW_COMPACT: {
+  // Views (numbers 1-5)
+  VIEW_MAGAZINE: {
     key: "1",
-    description: "Compact view",
+    description: "Magazine view",
     category: "Views",
     mac: "1",
     windows: "1",
@@ -56,12 +56,19 @@ export const KEYBOARD_SHORTCUTS = {
     mac: "3",
     windows: "3",
   },
-  VIEW_MAGAZINE: {
+  VIEW_COMPACT: {
     key: "4",
-    description: "Magazine view",
+    description: "Compact view",
     category: "Views",
     mac: "4",
     windows: "4",
+  },
+  VIEW_GROUPED: {
+    key: "5",
+    description: "Grouped view",
+    category: "Views",
+    mac: "5",
+    windows: "5",
   },
 
   // Filters & Sidebar

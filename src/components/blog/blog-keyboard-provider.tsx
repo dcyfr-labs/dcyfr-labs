@@ -2,7 +2,7 @@
 
 import { useRef, useState, createContext, useContext, type RefObject } from "react";
 import { useBlogKeyboardShortcuts } from "@/hooks/use-blog-keyboard-shortcuts";
-import { KeyboardShortcutsHelp } from "@/components/common/keyboard-shortcuts-help";
+import { KeyboardShortcutsHelp } from "@/components/common";
 
 interface BlogKeyboardContextType {
   searchInputRef: RefObject<HTMLInputElement | null>;
@@ -29,7 +29,7 @@ interface BlogKeyboardProviderProps {
  * 
  * Provides keyboard shortcut functionality for the blog page:
  * - f : Toggle sidebar visibility
- * - 1-4 : Switch layouts (compact, grid, list, magazine)
+ * - 1-5 : Switch layouts (magazine, grid, list, compact, grouped)
  * - / : Focus search input
  * - ? : Show help dialog
  * - Esc : Clear search (when search is focused)

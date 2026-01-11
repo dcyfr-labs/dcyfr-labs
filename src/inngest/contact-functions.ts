@@ -36,7 +36,7 @@ export const contactFormSubmitted = inngest.createFunction(
     const { name, email, message, submittedAt } = event.data;
 
     // Log function execution for debugging
-    console.info("[Contact Function] Processing submission:", {
+    console.warn("[Contact Function] Processing submission:", {
       fromEmail: email,
       messageLength: message.length,
       emailConfigured: isEmailConfigured,
@@ -71,7 +71,7 @@ export const contactFormSubmitted = inngest.createFunction(
           `,
         });
 
-        console.log("Notification email sent:", {
+        console.warn("Notification email sent:", {
           messageId: result.data?.id,
           to: AUTHOR_EMAIL,
           from: FROM_EMAIL,
@@ -126,7 +126,7 @@ export const contactFormSubmitted = inngest.createFunction(
           `,
         });
 
-        console.log("Confirmation email sent:", {
+        console.warn("Confirmation email sent:", {
           messageId: result.data?.id,
           to: email,
           from: FROM_EMAIL,
@@ -150,7 +150,7 @@ export const contactFormSubmitted = inngest.createFunction(
     // Step 3: Track the result
     await step.run("track-result", async () => {
       // Could send analytics event, update database, etc.
-      console.log("Contact form processed:", {
+      console.warn("Contact form processed:", {
         notification: notificationResult.success,
         confirmation: confirmationResult.success,
         emailDomain: email.split('@')[1],

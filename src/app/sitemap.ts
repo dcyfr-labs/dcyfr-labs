@@ -30,6 +30,7 @@ const pageConfig = {
   "/work": { changeFrequency: "monthly" as const, priority: 0.7 },
   "/services": { changeFrequency: "monthly" as const, priority: 0.7 },
   "/contact": { changeFrequency: "yearly" as const, priority: 0.6 },
+  "/privacy": { changeFrequency: "yearly" as const, priority: 0.4 },
   "/activity": { changeFrequency: "hourly" as const, priority: 0.7 },
   "/bookmarks": { changeFrequency: "daily" as const, priority: 0.6 },
   "/likes": { changeFrequency: "daily" as const, priority: 0.6 },

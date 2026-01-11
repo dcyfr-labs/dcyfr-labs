@@ -3,32 +3,48 @@ import { Suspense } from "react";
 import { posts, type Post } from "@/data/posts";
 import { POST_CATEGORY_LABEL } from "@/lib/post-categories";
 import { getArchiveData } from "@/lib/archive";
-import { getPostBadgeMetadata } from "@/lib/post-badges";
-import { groupPostsByCategory, sortCategoriesByCount } from "@/lib/blog-grouping";
-import { createArchivePageMetadata, createCollectionSchema, getJsonLdScriptProps } from "@/lib/metadata";
-import { AUTHOR_NAME, SITE_URL } from "@/lib/site-config";
-import { headers } from "next/headers";
-import { getMultiplePostViews } from "@/lib/views";
-import { CONTAINER_WIDTHS, CONTAINER_PADDING, SPACING, MOBILE_SAFE_PADDING } from "@/lib/design-tokens";
-import { ArchivePagination } from "@/components/layouts/archive-pagination";
+import { getPostBadgeMetadata } from "@/lib/post-badges.server";
 import {
-  PostList,
+  groupPostsByCategory,
+  sortCategoriesByCount,
+} from "@/lib/blog-grouping";
+import {
+  createArchivePageMetadata,
+  createCollectionSchema,
+  getJsonLdScriptProps,
+} from "@/lib/metadata";
+import { AUTHOR_NAME, SITE_URL } from "@/lib/site-config";
+import { teamMembers } from "@/data/team";
+import { headers } from "next/headers";
+import { getMultiplePostViews } from "@/lib/views.server";
+import {
+  CONTAINER_WIDTHS,
+  CONTAINER_PADDING,
+  SPACING,
+  MOBILE_SAFE_PADDING,
+} from "@/lib/design-tokens";
+import {
+  ArchivePagination,
+  ArchiveHero,
+  PageLayout,
+} from "@/components/layouts";
+import {
   BlogSearchAnalytics,
   BlogSidebarWrapper,
   BlogLayoutManager,
   BlogLayoutWrapper,
   MobileFilterBar,
-  DynamicBlogContent,
   BlogListSkeleton,
   ModernBlogGrid,
-  RSSFeedButton,
+  FeedDropdown,
 } from "@/components/blog";
+import { PostList } from "@/components/blog/client";
+import { DynamicBlogContent } from "@/components/blog/server";
 import { ViewToggle, SmoothScrollToHash } from "@/components/common";
-import { PageLayout } from "@/components/layouts";
-import { ArchiveHero } from "@/components/layouts/archive-hero";
 
 const pageTitle = "Blog";
-const pageDescription = "Blog posts on software development, cybersecurity, emerging technologies, and more.";
+const pageDescription =
+  "Blog posts on software development, cybersecurity, emerging technologies, and more.";
 const POSTS_PER_PAGE = 12;
 
 /**
@@ -58,7 +74,6 @@ async function ModernBlogGridWrapper({
         posts={posts}
         latestSlug={latestSlug}
         hottestSlug={hottestSlug}
-        viewCounts={viewCounts}
         searchQuery={query}
         variant="elevated"
       />
@@ -70,7 +85,9 @@ async function ModernBlogGridWrapper({
             currentPage={sortedArchiveData.currentPage}
             totalPages={sortedArchiveData.totalPages}
             hasPrevPage={sortedArchiveData.currentPage > 1}
-            hasNextPage={sortedArchiveData.currentPage < sortedArchiveData.totalPages}
+            hasNextPage={
+              sortedArchiveData.currentPage < sortedArchiveData.totalPages
+            }
           />
         </div>
       )}
@@ -118,14 +135,14 @@ interface BlogPageProps {
 export default async function BlogPage({ searchParams }: BlogPageProps) {
   // Get nonce from proxy for CSP
   const nonce = (await headers()).get("x-nonce") || "";
-  
+
   // Resolve search parameters
   const resolvedParams = (await searchParams) ?? {};
   const getParam = (key: string) => {
     const value = resolvedParams[key];
-    return Array.isArray(value) ? value[0] ?? "" : value ?? "";
+    return Array.isArray(value) ? (value[0] ?? "") : (value ?? "");
   };
-  
+
   // A/B test parameter for modern cards
   const modern = getParam("modern") === "true";
 
@@ -135,47 +152,67 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
 
   // Support multiple tags (comma-separated, case-insensitive)
   const tagParam = getParam("tag");
-  const selectedTags = tagParam ? tagParam.split(",").filter(Boolean).map(t => t.toLowerCase()) : [];
+  const selectedTags = tagParam
+    ? tagParam
+        .split(",")
+        .filter(Boolean)
+        .map((t) => t.toLowerCase())
+    : [];
+
+  // Support author filter
+  const authorParam = getParam("author");
+  const selectedAuthor = authorParam || "";
+
   const query = getParam("q");
   const readingTime = getParam("readingTime");
   const sortBy = getParam("sortBy") || "newest";
   const dateRange = getParam("dateRange") || "all";
   const layoutParam = getParam("layout");
-  const layout = (["grid", "list", "magazine", "compact", "grouped"].includes(layoutParam)) ? layoutParam as "grid" | "list" | "magazine" | "compact" | "grouped" : "magazine";
-  
+  const layout = ["grid", "list", "magazine", "compact", "grouped"].includes(
+    layoutParam
+  )
+    ? (layoutParam as "grid" | "list" | "magazine" | "compact" | "grouped")
+    : "magazine";
+
   // Apply category filter first (case-insensitive)
   const postsWithCategoryFilter = selectedCategory
-    ? posts.filter((post) => 
-        post.category && post.category.toLowerCase() === selectedCategory
+    ? posts.filter(
+        (post) =>
+          post.category && post.category.toLowerCase() === selectedCategory
       )
     : posts;
-  
+
   // Apply archived filter when sortBy=archived
-  const postsWithArchivedFilter = sortBy === "archived"
-    ? postsWithCategoryFilter.filter((post) => post.archived)
-    : postsWithCategoryFilter;
-  
+  const postsWithArchivedFilter =
+    sortBy === "archived"
+      ? postsWithCategoryFilter.filter((post) => post.archived)
+      : postsWithCategoryFilter;
+
   // Apply drafts filter when sortBy=drafts (development only)
-  const postsWithDraftsFilter = sortBy === "drafts" && process.env.NODE_ENV === "development"
-    ? postsWithArchivedFilter.filter((post) => post.draft)
-    : postsWithArchivedFilter;
-  
+  const postsWithDraftsFilter =
+    sortBy === "drafts" && process.env.NODE_ENV === "development"
+      ? postsWithArchivedFilter.filter((post) => post.draft)
+      : postsWithArchivedFilter;
+
   // Apply date range filter
   const now = new Date();
-  const postsWithDateFilter = dateRange !== "all"
-    ? postsWithDraftsFilter.filter((post) => {
-        const postDate = new Date(post.publishedAt);
-        const daysDiff = Math.floor((now.getTime() - postDate.getTime()) / (1000 * 60 * 60 * 24));
-        
-        if (dateRange === "30d") return daysDiff <= 30;
-        if (dateRange === "90d") return daysDiff <= 90;
-        if (dateRange === "year") {
-          return postDate.getFullYear() === now.getFullYear();
-        }
-        return true;
-      })
-    : postsWithDraftsFilter;
-  
+  const postsWithDateFilter =
+    dateRange !== "all"
+      ? postsWithDraftsFilter.filter((post) => {
+          const postDate = new Date(post.publishedAt);
+          const daysDiff = Math.floor(
+            (now.getTime() - postDate.getTime()) / (1000 * 60 * 60 * 24)
+          );
+
+          if (dateRange === "30d") return daysDiff <= 30;
+          if (dateRange === "90d") return daysDiff <= 90;
+          if (dateRange === "year") {
+            return postDate.getFullYear() === now.getFullYear();
+          }
+          return true;
+        })
+      : postsWithDraftsFilter;
+
   // Apply reading time filter (custom filter not in Archive pattern)
   const postsWithReadingTimeFilter = readingTime
     ? postsWithDateFilter.filter((post) => {
@@ -186,20 +223,29 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         return true;
       })
     : postsWithDateFilter;
-  
+
   // Apply multiple tag filter manually before Archive pattern (case-insensitive)
-  const postsWithTagFilter = selectedTags.length > 0
-    ? postsWithReadingTimeFilter.filter((post) =>
-        selectedTags.every((tag) => 
-          post.tags.some(t => t.toLowerCase() === tag)
+  const postsWithTagFilter =
+    selectedTags.length > 0
+      ? postsWithReadingTimeFilter.filter((post) =>
+          selectedTags.every((tag) =>
+            post.tags.some((t) => t.toLowerCase() === tag)
+          )
         )
-      )
-    : postsWithReadingTimeFilter;
-  
+      : postsWithReadingTimeFilter;
+
+  // Apply author filter
+  const postsWithAuthorFilter = selectedAuthor
+    ? postsWithTagFilter.filter((post) => {
+        const postAuthors = post.authors || ["dcyfr"];
+        return postAuthors.includes(selectedAuthor);
+      })
+    : postsWithTagFilter;
+
   // Use Archive Pattern for filtering, sorting, pagination (without tag filter)
   const archiveData = getArchiveData<Post>(
     {
-      items: postsWithTagFilter,
+      items: postsWithAuthorFilter,
       searchFields: ["title", "summary", "body"],
       tagField: "tags",
       dateField: "publishedAt",
@@ -210,25 +256,27 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       page: getParam("page"),
     }
   );
-  
+
   // NOTE: View count fetching and popularity sorting moved to DynamicBlogContent
   // This keeps the static shell rendering fast for PPR
-  
+
   // For non-popularity sorts, we can still sort here
   let sortedItems = archiveData.allFilteredItems;
   if (sortBy === "oldest") {
     sortedItems = [...archiveData.allFilteredItems].sort((a, b) => {
-      return new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime();
+      return (
+        new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime()
+      );
     });
   }
   // "newest" is already the default sort from archiveData
   // "popular" sort will be handled in DynamicBlogContent after fetching view counts
-  
+
   // Re-paginate sorted items
   const startIndex = (archiveData.currentPage - 1) * archiveData.itemsPerPage;
   const endIndex = startIndex + archiveData.itemsPerPage;
   const paginatedItems = sortedItems.slice(startIndex, endIndex);
-  
+
   // Update archiveData with sorted items
   const sortedArchiveData = {
     ...archiveData,
@@ -244,12 +292,14 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
 
   // Transform availableTags to include counts and sort by count (highest first)
   const availableTagsWithCounts = sortedArchiveData.availableTags
-    .map(tag => ({
+    .map((tag) => ({
       tag,
-      count: sortedArchiveData.allFilteredItems.filter(post => post.tags.includes(tag)).length,
+      count: sortedArchiveData.allFilteredItems.filter((post) =>
+        post.tags.includes(tag)
+      ).length,
     }))
     .sort((a, b) => b.count - a.count);
-  
+
   // Get available categories from all posts (for filter UI)
   // Use centralized category label mapping as single source of truth
   const categoryDisplayMap = POST_CATEGORY_LABEL;
@@ -260,41 +310,51 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         .filter((c): c is NonNullable<typeof c> => !!c)
     )
   ).sort();
-  
+
   // Check if filters are active for empty state
   const hasActiveFilters = Boolean(
-    query || 
-    selectedCategory ||
-    selectedTags.length > 0 || 
-    readingTime || 
-    sortBy !== 'newest' || 
-    dateRange !== 'all'
+    query ||
+      selectedCategory ||
+      selectedTags.length > 0 ||
+      readingTime ||
+      sortBy !== "newest" ||
+      dateRange !== "all" ||
+      selectedAuthor
   );
-  
+
   // Get badge metadata (latest and hottest posts)
   const { latestSlug, hottestSlug } = await getPostBadgeMetadata(posts);
-  
+
   // Featured posts disabled - always show all posts
   // const activeFeaturedPosts = featuredPosts.filter(p => !p.archived && !p.draft);
   // const shouldShowFeaturedSection = activeFeaturedPosts.length > 0 && !hasActiveFilters;
   const shouldShowFeaturedSection = false;
-  
+
+  // Create serializable authors list for client component (without icon objects)
+  const serializableAuthors = teamMembers.map((author) => ({
+    id: author.id,
+    name: author.name,
+    avatarImagePath: author.avatarImagePath,
+  }));
+
   // Exclude featured posts from main list only when featured section is shown
-  const mainListPosts = shouldShowFeaturedSection 
-    ? sortedArchiveData.items.filter(p => !p.featured)
+  const mainListPosts = shouldShowFeaturedSection
+    ? sortedArchiveData.items.filter((p) => !p.featured)
     : sortedArchiveData.items;
-  
+
   // JSON-LD structured data
-  const collectionTitle = selectedTags.length > 0 ? `Blog - ${selectedTags.join(", ")}` : pageTitle;
-  const collectionDescription = selectedTags.length > 0 
-    ? `Articles tagged with "${selectedTags.join('", "')}"` 
-    : pageDescription;
-  
+  const collectionTitle =
+    selectedTags.length > 0 ? `Blog - ${selectedTags.join(", ")}` : pageTitle;
+  const collectionDescription =
+    selectedTags.length > 0
+      ? `Articles tagged with "${selectedTags.join('", "')}"`
+      : pageDescription;
+
   const jsonLd = createCollectionSchema({
     name: collectionTitle,
     description: collectionDescription,
     url: `${SITE_URL}/blog`,
-    items: sortedArchiveData.allFilteredItems.map(post => ({
+    items: sortedArchiveData.allFilteredItems.map((post) => ({
       name: post.title,
       description: post.summary,
       url: `${SITE_URL}/blog/${post.slug}`,
@@ -302,7 +362,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       author: AUTHOR_NAME,
     })),
   });
-  
+
   return (
     <PageLayout>
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
@@ -318,17 +378,20 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       {/* Layout preference manager */}
       <BlogLayoutManager />
 
-      {/* Hero section with RSS Feed button */}
+      {/* Hero section with Feed dropdown */}
       <ArchiveHero
         variant="full"
         title={pageTitle}
         description={pageDescription}
-        stats={`${sortedArchiveData.totalItems} ${sortedArchiveData.totalItems === 1 ? 'article' : 'articles'} across ${sortedArchiveData.availableTags.length} ${sortedArchiveData.availableTags.length === 1 ? 'topic' : 'topics'}`}
-        actions={<RSSFeedButton />}
+        stats={`${sortedArchiveData.totalItems} ${sortedArchiveData.totalItems === 1 ? "article" : "articles"} across ${sortedArchiveData.availableTags.length} ${sortedArchiveData.availableTags.length === 1 ? "topic" : "topics"}`}
+        actions={<FeedDropdown feedType="blog" />}
+        align="center"
       />
 
       {/* Blog layout with sidebar on desktop */}
-      <div className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING} ${MOBILE_SAFE_PADDING}`}>
+      <div
+        className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING} ${MOBILE_SAFE_PADDING}`}
+      >
         {/* Main grid: Sidebar + Content */}
         <BlogLayoutWrapper>
           {/* Sidebar (desktop only) - positioned on left, toggled via 'f' key */}
@@ -339,6 +402,8 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
             categoryList={availableCategories}
             categoryDisplayMap={categoryDisplayMap}
             tagList={availableTagsWithCounts}
+            authors={serializableAuthors}
+            selectedAuthor={selectedAuthor}
             query={query}
             sortBy={sortBy}
             dateRange={dateRange}
@@ -347,7 +412,9 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
           />
 
           {/* Main content area with Suspense for PPR */}
-          <Suspense fallback={<BlogListSkeleton layout={layout} itemCount={3} />}>
+          <Suspense
+            fallback={<BlogListSkeleton layout={layout} itemCount={3} />}
+          >
             {modern ? (
               <ModernBlogGridWrapper
                 posts={mainListPosts}
@@ -373,7 +440,9 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
                 dateRange={dateRange}
                 layout={layout}
                 hasActiveFilters={hasActiveFilters}
-                groupedCategories={layout === "grouped" ? sortedCategories : undefined}
+                groupedCategories={
+                  layout === "grouped" ? sortedCategories : undefined
+                }
               />
             )}
           </Suspense>

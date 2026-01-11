@@ -8,11 +8,18 @@
 import { Card, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Eye, FileText, MessageSquare, Share2, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  Eye,
+  FileText,
+  MessageSquare,
+  Share2,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DashboardStats, DashboardStat } from "@/components/dashboard";
 import { AnalyticsSummary } from "@/types/analytics";
-import { getBenchmark } from "@/lib/dashboard/table-utils";
+import { getBenchmark } from "@/lib/dashboard";
 import Link from "next/link";
 import { useState } from "react";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
@@ -24,7 +31,7 @@ interface AnalyticsOverviewProps {
 
 /**
  * Analytics overview section with stats cards and top posts
- * 
+ *
  * @example
  * ```tsx
  * <AnalyticsOverview
@@ -32,9 +39,7 @@ interface AnalyticsOverviewProps {
  * />
  * ```
  */
-export function AnalyticsOverview({
-  summary,
-}: AnalyticsOverviewProps) {
+export function AnalyticsOverview({ summary }: AnalyticsOverviewProps) {
   const [showStats, setShowStats] = useState(true);
   const [showFeaturedPosts, setShowFeaturedPosts] = useState(true);
 
@@ -76,19 +81,19 @@ export function AnalyticsOverview({
                 value={summary.totalPosts}
                 icon={FileText}
               />
-              
+
               <DashboardStat
                 label="Total Views"
                 value={summary.totalViews.toLocaleString()}
                 icon={Eye}
               />
-              
+
               <DashboardStat
                 label="Total Shares"
                 value={summary.totalShares.toLocaleString()}
                 icon={Share2}
               />
-              
+
               <DashboardStat
                 label="Total Comments"
                 value={summary.totalComments.toLocaleString()}
@@ -103,13 +108,13 @@ export function AnalyticsOverview({
                 value={summary.averageViews.toLocaleString()}
                 icon={Eye}
               />
-              
+
               <DashboardStat
                 label="Average Shares"
                 value={summary.averageShares.toLocaleString()}
                 icon={Share2}
               />
-              
+
               <DashboardStat
                 label="Average Comments"
                 value={summary.averageComments.toLocaleString()}
@@ -154,11 +159,13 @@ export function AnalyticsOverview({
               <div className="space-y-3">
                 <div>
                   <h4 className={TYPOGRAPHY.label.small}>Top Post</h4>
-                  <p className="text-xs text-muted-foreground">Most viewed post overall</p>
+                  <p className="text-xs text-muted-foreground">
+                    Most viewed post overall
+                  </p>
                 </div>
                 {summary.topPost ? (
                   <div className="space-y-2">
-                    <Link 
+                    <Link
                       href={`/blog/${summary.topPost.slug}`}
                       className="font-medium text-sm line-clamp-2 hover:underline block"
                     >
@@ -179,11 +186,13 @@ export function AnalyticsOverview({
               <div className="space-y-3">
                 <div>
                   <h4 className={TYPOGRAPHY.label.small}>Most Shared</h4>
-                  <p className="text-xs text-muted-foreground">Most shared post overall</p>
+                  <p className="text-xs text-muted-foreground">
+                    Most shared post overall
+                  </p>
                 </div>
                 {summary.mostSharedPost ? (
                   <div className="space-y-2">
-                    <Link 
+                    <Link
                       href={`/blog/${summary.mostSharedPost.slug}`}
                       className="font-medium text-sm line-clamp-2 hover:underline block"
                     >
@@ -204,18 +213,21 @@ export function AnalyticsOverview({
               <div className="space-y-3">
                 <div>
                   <h4 className={TYPOGRAPHY.label.small}>Most Commented</h4>
-                  <p className="text-xs text-muted-foreground">Most commented post overall</p>
+                  <p className="text-xs text-muted-foreground">
+                    Most commented post overall
+                  </p>
                 </div>
                 {summary.mostCommentedPost ? (
                   <div className="space-y-2">
-                    <Link 
+                    <Link
                       href={`/blog/${summary.mostCommentedPost.slug}`}
                       className="font-medium text-sm line-clamp-2 hover:underline block"
                     >
                       {summary.mostCommentedPost.title}
                     </Link>
                     <p className={TYPOGRAPHY.display.stat}>
-                      {summary.mostCommentedPost.comments.toLocaleString()} comments
+                      {summary.mostCommentedPost.comments.toLocaleString()}{" "}
+                      comments
                     </p>
                   </div>
                 ) : (

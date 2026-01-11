@@ -149,7 +149,7 @@ export const refreshGitHubData = inngest.createFunction(
   async ({ step }) => {
     // Step 1: Fetch fresh data from GitHub
     const freshData = await step.run("fetch-github-data", async () => {
-      console.log("Fetching GitHub contributions for:", GITHUB_USERNAME);
+      console.warn("Fetching GitHub contributions for:", GITHUB_USERNAME);
       return await fetchGitHubContributions();
     });
 
@@ -174,7 +174,7 @@ export const refreshGitHubData = inngest.createFunction(
           JSON.stringify(freshData)
         );
 
-        console.log("GitHub data cached successfully:", {
+        console.warn("GitHub data cached successfully:", {
           totalContributions: freshData.totalContributions,
           lastUpdated: freshData.lastUpdated,
         });
@@ -230,7 +230,7 @@ export const manualRefreshGitHubData = inngest.createFunction(
             const age = Date.now() - new Date(cached.lastUpdated).getTime();
             
             if (age < CACHE_DURATION) {
-              console.log("Cache is still fresh, skipping refresh");
+              console.warn("Cache is still fresh, skipping refresh");
               return { fresh: true, age };
             }
           }

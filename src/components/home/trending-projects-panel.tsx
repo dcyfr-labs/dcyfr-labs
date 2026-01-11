@@ -104,7 +104,7 @@ export function TrendingProjectsPanel({
         <p className={cn(TYPOGRAPHY.label.standard, "text-muted-foreground")}>
           Trending projects will appear here
         </p>
-        <p className={cn(TYPOGRAPHY.body.small, "text-muted-foreground/70 mt-1")}>
+        <p className={cn(TYPOGRAPHY.body.small, "text-muted-foreground/70 mt-2")}>
           Projects are ranked by GitHub activity
         </p>
       </Card>
@@ -135,8 +135,8 @@ export function TrendingProjectsPanel({
               >
                 <div className={SPACING.compact}>
                   {/* Header: Rank + Trending Badge + Category */}
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
                       <Badge
                         variant="outline"
                         className={cn(

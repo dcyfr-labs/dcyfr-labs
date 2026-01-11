@@ -49,7 +49,7 @@ async function trackSponsorConversion(sponsorName: string | null | undefined, ti
 
   // Debug mode in development
   if (process.env.NODE_ENV === "development") {
-    console.log("[Analytics] sponsor_conversion", {
+    console.warn("[Analytics] sponsor_conversion", {
       sponsor: sponsorName || "anonymous",
       tier: tierName || "unknown",
       timestamp: Date.now(),

@@ -5,14 +5,14 @@
  */
 
 import { describe, it, expect } from "vitest";
-import type { ActivityItem } from "@/lib/activity/types";
+import type { ActivityItem } from "@/lib/activity";
 import {
   extractTopics,
   filterByTopics,
   buildCooccurrenceMatrix,
   getRelatedTopics,
   getActivityTopics,
-} from "@/lib/activity/topics";
+} from "@/lib/activity";
 
 // ============================================================================
 // TEST DATA
