@@ -175,28 +175,28 @@ Modern JavaScript with ES6+ features:
 const users = [
   { id: 1, name: "Alice", age: 30 },
   { id: 2, name: "Bob", age: 25 },
-  { id: 3, name: "Charlie", age: 35 }
-]
+  { id: 3, name: "Charlie", age: 35 },
+];
 
 // Array methods and destructuring
 const adults = users
-  .filter(user => user.age >= 30)
-  .map(({ name, age }) => `${name} (${age})`)
+  .filter((user) => user.age >= 30)
+  .map(({ name, age }) => `${name} (${age})`);
 
-console.log(adults) // ["Alice (30)", "Charlie (35)"]
+console.log(adults); // ["Alice (30)", "Charlie (35)"]
 
 // Async/await
 async function getData() {
   try {
-    const response = await fetch('/api/data')
-    const json = await response.json()
-    return json
+    const response = await fetch("/api/data");
+    const json = await response.json();
+    return json;
   } catch (error) {
-    console.error('Error:', error)
-    throw error
+    console.error("Error:", error);
+    throw error;
   }
 }
-````
+```
 
 ---
 
@@ -768,7 +768,7 @@ const code = "block";
 
 Plain text without syntax highlighting:
 
-```
+```text
 This is a plaintext code block without syntax highlighting.
 It's useful for showing raw output, logs, or plain text content.
 

@@ -73,7 +73,7 @@ Event-driven architecture separates two concerns:
 1. **Acknowledging the request** (fast, synchronous)
 2. **Processing the work** (async, can be slow, can retry)
 
-```
+```text
 Before (Synchronous):
 User → API Route → Email Service → Response
          └─────── 1-2 seconds ──────┘

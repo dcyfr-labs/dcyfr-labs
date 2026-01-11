@@ -70,6 +70,8 @@ export function CodeBlockWithHeader({
       dockerfile: "Dockerfile",
       gitignore: "Git Ignore",
       plaintext: "Plain Text",
+      text: "Text",
+      txt: "Text",
     };
 
     return (
