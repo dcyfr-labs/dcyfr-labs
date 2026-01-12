@@ -246,7 +246,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/html2canvas": "^1.0.0",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "25.0.3",
+    "@types/node": "25.0.6",
     "@types/react": "^19.2.7",
     "@types/react-calendar-heatmap": "^1.9.0",
     "@types/react-dom": "19.2.3",
