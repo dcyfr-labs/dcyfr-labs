@@ -23,6 +23,12 @@ export {
   aggregateReferrals,
 } from "./social-analytics-functions";
 
+// Import API cost monitoring functions
+export {
+  monitorApiCosts,
+  monthlyApiCostReport,
+} from "./api-cost-monitoring";
+
 /**
  * Hello World function - demonstrates basic Inngest function pattern
  * 

@@ -75,6 +75,8 @@
     "cleanup:links": "node scripts/cleanup-broken-links.mjs",
     "verify:links": "node scripts/verify-links.mjs",
     "mcp:check": "node scripts/ci/check-mcp-servers.mjs",
+    "mcp:health": "node scripts/ci/generate-mcp-health-report.mjs",
+    "mcp:validate": "node scripts/ci/validate-critical-mcps.mjs",
     "mcp:analytics": "tsx src/mcp/analytics-server.ts",
     "mcp:tokens": "tsx src/mcp/design-token-server.ts",
     "mcp:content": "tsx src/mcp/content-server.ts",
