@@ -250,6 +250,23 @@ const eslintConfig = [
       ],
     },
   },
+  {
+    // PageLayout 90% Enforcement Rule
+    // RULE: 90% of page components should use PageLayout wrapper
+    // This ensures consistent layout, navigation, and metadata across pages
+    files: ["src/app/**/*.tsx"],
+    rules: {
+      "no-restricted-syntax": [
+        "warn",
+        {
+          selector:
+            "JSXElement[openingElement.name.name!='PageLayout'][openingElement.name.object.name!='PageLayout']:not([parent.openingElement.name.name='PageLayout']) > JSXElement[openingElement.name.name='main'], JSXElement[openingElement.name.name!='PageLayout'][openingElement.name.object.name!='PageLayout']:not([parent.openingElement.name.name='PageLayout']) > JSXElement[openingElement.name.name='section']",
+          message:
+            "⚠️  PageLayout Enforcement Rule: 90% of pages should use PageLayout wrapper.\n\n❌ WRONG:\nexport default function Page() {\n  return (\n    <main>\n      <h1>Title</h1>\n    </main>\n  );\n}\n\n✅ RIGHT:\nexport default function Page() {\n  return (\n    <PageLayout title=\"Page Title\">\n      <h1>Title</h1>\n    </PageLayout>\n  );\n}\n\nWhy: PageLayout provides:\n  - Consistent page structure and spacing\n  - Integrated navigation and header\n  - Automatic metadata management\n  - Semantic <main> and <section> elements\n  - Mobile responsiveness\n  - Proper SEO optimization\n\nWhen to NOT use PageLayout (document exceptions):\n  - Custom layout pages (with eslint-disable comment)\n  - Admin/internal pages\n  - Specialized landing pages\n  - API routes and redirects\n\nSee: docs/ai/component-patterns.md#pagelayout-90-percent-rule\nGuidance: .github/agents/patterns/COMPONENT_PATTERNS.md#pagelayout-selection",
+        },
+      ],
+    },
+  },
 ];
 
 export default eslintConfig;

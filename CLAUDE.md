@@ -236,18 +236,19 @@ import { Rocket, CheckCircle, XCircle, AlertTriangle, Lightbulb } from 'lucide-r
 ```
 
 **Prohibited locations:**
-
 - Blog posts (`src/content/blog/*.mdx`)
 - Projects (`src/content/projects/*.mdx`)
 - Public UI components
 - User-facing text
 
 **Acceptable locations:**
-
 - Internal docs (`docs/`, `.github/`)
 - Code comments (`//`, `/* */`)
 - Console.log statements
 - Test files
+
+**For comprehensive emoji enforcement and additional context, see:**
+[.github/agents/DCYFR.agent.md - Never Use Emojis Section](./.github/agents/DCYFR.agent.md)
 
 ## Key Constraints
 

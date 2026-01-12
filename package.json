@@ -68,6 +68,7 @@
     "redis:keys": "node scripts/check-redis-keys.mjs",
     "check:emoji": "node scripts/analyze-emoji-usage.mjs",
     "check:emoji:strict": "node scripts/analyze-emoji-usage.mjs --strict",
+    "validate:emojis": "node scripts/validate-emojis.mjs",
     "scan:pi": "node scripts/ci/check-for-pii.mjs",
     "scan:pi:all": "node scripts/ci/check-for-pii.mjs --all",
     "scan:reports": "node scripts/validation/check-reports-for-pii.mjs",

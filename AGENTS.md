@@ -45,8 +45,9 @@ npm run check               # Type + lint check
   - **Trigger conditions:** Rate limits, budget exhaustion, extended sessions (6+ hours)
 
 - **🔵 SUPPORTING: Claude General + VS Code Mode**
-  - Research, architecture decisions, deep exploration
-  - Pattern validation in conversation mode
+   - Research, architecture decisions, deep exploration
+   - Pattern validation in conversation mode
+   - **CLAUDE.md has extended capability:** Contains production-level knowledge suitable for extended development sessions (when PRIMARY is rate-limited)
 
 **Rationale:** [See `docs/ai/AGENT_UNIFICATION_ANALYSIS.md`](docs/ai/AGENT_UNIFICATION_ANALYSIS.md) for detailed feasibility analysis and why unification isn't viable.
 
@@ -59,8 +60,10 @@ npm run check               # Type + lint check
 | **DCYFR (Claude Code)**  | 🔴 **PRIMARY**   | Production enforcement with auto-delegation                   | Feature work, testing, quick fixes, complex tasks | [`.claude/agents/`](./.claude/agents/) - 3 specialized agents                            |
 | **GitHub Copilot**       | 🟡 **SECONDARY** | Real-time code completion & quick suggestions                 | Inline coding, auto-fix, quick patterns           | [`.github/copilot-instructions.md`](./.github/copilot-instructions.md)                   |
 | **OpenCode.ai**          | 🟢 **FALLBACK**  | Multi-provider AI fallback (75+ models)                       | Token exhaustion, cost optimization, offline work | [`docs/ai/opencode-fallback-architecture.md`](docs/ai/opencode-fallback-architecture.md) |
-| **Claude (General)**     | 🔵 SUPPORTING    | Deep research, architecture, complex debugging                | System design, documentation, investigation       | [`CLAUDE.md`](./CLAUDE.md)                                                               |
+| **Claude (General)**     | 🔵 SUPPORTING*  | Deep research, architecture, complex debugging                | System design, documentation, investigation       | [`CLAUDE.md`](./CLAUDE.md)                                                               |
 | **DCYFR (VS Code Mode)** | 🔵 SUPPORTING    | Production enforcement, pattern validation, strict compliance | Feature work, bug fixes, detailed exploration     | [`.github/agents/DCYFR.agent.md`](./.github/agents/DCYFR.agent.md)                       |
+
+*CLAUDE.md also contains semi-PRIMARY capability for extended sessions when Claude Code is rate-limited
 
 ---
 
@@ -562,6 +565,46 @@ START: "I need AI help with dcyfr-labs"
 | "Bug in PostCard component"        | DCYFR (Claude Code/VS Code)   | Root cause + test fix    |
 | "Tests failing after changes"      | Test Specialist (Claude Code) | Test coverage focus      |
 | "Should I use PageLayout?"         | DCYFR (any mode)              | Decision trees available |
+
+---
+
+## 🟢 When CLAUDE.md Becomes PRIMARY-Level Tool
+
+**CLAUDE.md is positioned as SUPPORTING tier but contains semi-PRIMARY-level knowledge suitable for extended development sessions:**
+
+### Scenarios Where CLAUDE.md Is Primary-Capable
+
+- ✅ **Extended sessions** (4+ hours) when Claude Code rate limits near
+- ✅ **Security vulnerability analysis** - Contains production vulnerability procedures
+- ✅ **Architecture decisions** - System design and pattern enforcement guidance
+- ✅ **Project maintenance** - Health monitoring, cleanup procedures, maintenance playbooks
+- ✅ **Deep research** - Comprehensive project context and constraints
+- ✅ **Operational knowledge** - Session recovery systems, provider fallback strategies
+
+### How CLAUDE.md Differs from PRIMARY Tier
+
+| Aspect | PRIMARY (Claude Code) | CLAUDE.md (SUPPORTING) |
+|--------|----------------------|----------------------|
+| **Automation** | Auto-delegation to sub-agents | Manual validation gates |
+| **Speed** | Fast execution (Sonnet) | Research-oriented (extended context) |
+| **Enforcement** | Proactive pattern enforcement | Guidance + examples |
+| **Scope** | Single tasks, features | Deep investigation, architecture |
+| **When to Use** | Quick fixes, features, bugs | When PRIMARY is rate-limited or unavailable |
+
+### Recommended Workflow
+
+```
+START: Need to implement feature
+  │
+  ├─ Claude Code available? → YES → Use PRIMARY
+  │                        → NO  → Check CLAUDE.md capability
+  │
+  ├─ CLAUDE.md can handle? → YES → Use CLAUDE.md (semi-PRIMARY mode)
+  │                       → NO  → Wait for PRIMARY or use OpenCode + enhanced validation
+  │
+  └─ Extended session (6+ hours)? → YES → Preemptively switch to CLAUDE.md (cheaper)
+                                 → NO  → Stay in PRIMARY
+```
 
 ---
 
