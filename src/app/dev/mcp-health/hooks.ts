@@ -145,39 +145,46 @@ export function useMcpHealthDashboard() {
     }
 
     try {
-      // Fetch latest health report
-      // In development without proper API, generate mock data
-      const response = await fetch("/api/mcp/health", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
+      // Default mock data for development
+      const mockHealthReport: McpHealthReport = {
+        timestamp: new Date().toISOString(),
+        servers: [
+          { name: "Filesystem", status: "ok", responseTimeMs: 45, timestamp: new Date().toISOString() },
+          { name: "GitHub", status: "ok", responseTimeMs: 120, timestamp: new Date().toISOString() },
+          { name: "Vercel", status: "ok", responseTimeMs: 85, timestamp: new Date().toISOString() },
+          { name: "Sentry", status: "ok", responseTimeMs: 150, timestamp: new Date().toISOString() },
+          { name: "Perplexity", status: "ok", responseTimeMs: 200, timestamp: new Date().toISOString() },
+          { name: "Inngest", status: "ok", responseTimeMs: 95, timestamp: new Date().toISOString() },
+          { name: "Resend", status: "ok", responseTimeMs: 110, timestamp: new Date().toISOString() },
+          { name: "Octocode", status: "ok", responseTimeMs: 180, timestamp: new Date().toISOString() },
+          { name: "DCYFR Analytics", status: "ok", responseTimeMs: 75, timestamp: new Date().toISOString() },
+          { name: "DCYFR DesignTokens", status: "ok", responseTimeMs: 60, timestamp: new Date().toISOString() },
+          { name: "DCYFR ContentManager", status: "ok", responseTimeMs: 55, timestamp: new Date().toISOString() },
+          { name: "DCYFR SemanticScholar", status: "ok", responseTimeMs: 90, timestamp: new Date().toISOString() },
+          { name: "GreyNoise", status: "ok", responseTimeMs: 140, timestamp: new Date().toISOString() },
+        ],
+        summary: { total: 13, ok: 13, degraded: 0, down: 0 },
+      };
 
-      let healthReport: McpHealthReport;
+      let healthReport: McpHealthReport = mockHealthReport;
 
-      if (response.ok) {
-        const data = await response.json();
-        healthReport = data.report;
-      } else {
-        // Generate mock data for development
-        healthReport = {
-          timestamp: new Date().toISOString(),
-          servers: [
-            { name: "Filesystem", status: "ok", responseTimeMs: 45, timestamp: new Date().toISOString() },
-            { name: "GitHub", status: "ok", responseTimeMs: 120, timestamp: new Date().toISOString() },
-            { name: "Vercel", status: "ok", responseTimeMs: 85, timestamp: new Date().toISOString() },
-            { name: "Sentry", status: "ok", responseTimeMs: 150, timestamp: new Date().toISOString() },
-            { name: "Perplexity", status: "ok", responseTimeMs: 200, timestamp: new Date().toISOString() },
-            { name: "Inngest", status: "ok", responseTimeMs: 95, timestamp: new Date().toISOString() },
-            { name: "Resend", status: "ok", responseTimeMs: 110, timestamp: new Date().toISOString() },
-            { name: "Octocode", status: "ok", responseTimeMs: 180, timestamp: new Date().toISOString() },
-            { name: "DCYFR Analytics", status: "ok", responseTimeMs: 75, timestamp: new Date().toISOString() },
-            { name: "DCYFR DesignTokens", status: "ok", responseTimeMs: 60, timestamp: new Date().toISOString() },
-            { name: "DCYFR ContentManager", status: "ok", responseTimeMs: 55, timestamp: new Date().toISOString() },
-            { name: "DCYFR SemanticScholar", status: "ok", responseTimeMs: 90, timestamp: new Date().toISOString() },
-            { name: "GreyNoise", status: "ok", responseTimeMs: 140, timestamp: new Date().toISOString() },
-          ],
-          summary: { total: 13, ok: 13, degraded: 0, down: 0 },
-        };
+      // Try to fetch from API, fall back to mock data
+      try {
+        const response = await fetch("/api/mcp/health", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          // Only use API data if it has valid structure
+          if (data?.report?.servers && Array.isArray(data.report.servers)) {
+            healthReport = data.report;
+          }
+        }
+      } catch {
+        // Silently fall back to mock data
+        console.warn("[MCP Health] API unavailable, using mock data");
       }
 
       // Generate history and calculate metrics
