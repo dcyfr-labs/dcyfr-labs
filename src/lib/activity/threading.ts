@@ -246,8 +246,8 @@ function isProjectRelated(
 ): boolean {
   // GitHub commits related to project
   if (candidate.source === "github") {
-    // Extract repo name from project title or metadata
-    const projectRepo = extractRepoName(project.title) || project.meta?.repo;
+    // Prioritize explicit metadata over title parsing
+    const projectRepo = project.meta?.repo || extractRepoName(project.title);
     const candidateRepo = candidate.meta?.repo;
 
     if (projectRepo && candidateRepo) {

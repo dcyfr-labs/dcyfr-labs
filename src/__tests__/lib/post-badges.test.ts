@@ -5,15 +5,14 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { getPostBadgeMetadata } from '@/lib/post-badges.server';
 import type { Post } from '@/data/posts';
-import * as viewsModule from '@/lib/views';
+import * as viewsModule from '@/lib/views.server';
 
 // Mock the views module
-vi.mock('@/lib/views', () => ({
+vi.mock('@/lib/views.server', () => ({
   getMultiplePostViews: vi.fn(),
 }));
 
-// TODO: Post badges implementation changed - update tests for new badge logic
-describe.skip('getPostBadgeMetadata', () => {
+describe('getPostBadgeMetadata', () => {
   // Sample posts for testing
   const mockPosts: Post[] = [
     {

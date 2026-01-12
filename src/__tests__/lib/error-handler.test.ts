@@ -76,12 +76,11 @@ describe("isConnectionError", () => {
   });
 });
 
-// TODO: Error handling implementation changed - update tests
-describe.skip("handleApiError", () => {
+describe("handleApiError", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Mock console methods
-    vi.spyOn(console, "debug").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
     vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
@@ -98,8 +97,8 @@ describe.skip("handleApiError", () => {
     expect(result.shouldRetry).toBe(false);
     expect(result.statusCode).toBe(499);
     expect(result.logLevel).toBe("debug");
-    // eslint-disable-next-line no-console -- Testing console.debug mock
-    expect(console.debug).toHaveBeenCalledWith(
+     
+    expect(console.warn).toHaveBeenCalledWith(
       expect.stringContaining("Client connection closed"),
       expect.any(String)
     );

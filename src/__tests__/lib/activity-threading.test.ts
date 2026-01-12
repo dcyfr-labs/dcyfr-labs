@@ -287,14 +287,10 @@ describe("Activity Threading System", () => {
   });
 
   describe("Project + GitHub Threading", () => {
-    it.skip("should thread project with its commits", () => {
+    it("should thread project with its commits", () => {
       const project = createProject("My App", "my-app", 2);
       const commit1 = createCommit("my-app", "feat: add feature", 1);
       const commit2 = createCommit("my-app", "fix: bug fix", 0);
-
-      // Debug: log the meta values
-      console.warn("Project meta:", project.meta);
-      console.warn("Commit1 meta:", commit1.meta);
 
       // Project first to be primary
       const threads = groupActivitiesIntoThreads([project, commit1, commit2]);
@@ -304,7 +300,7 @@ describe("Activity Threading System", () => {
       expect(threads[0].replies).toHaveLength(2);
     });
 
-    it.skip("should NOT thread commits from different repos", () => {
+    it("should NOT thread commits from different repos", () => {
       const project1 = createProject("App 1", "app-1", 3);
       const commit1 = createCommit("app-1", "Update", 2);
       const project2 = createProject("App 2", "app-2", 1);
@@ -411,8 +407,7 @@ describe("Activity Threading System", () => {
   });
 
   describe("Mixed Activity Threading", () => {
-    // TODO: Fix project threading logic - commits not threading with projects
-    it.skip("should correctly thread mixed activity types", () => {
+    it("should correctly thread mixed activity types", () => {
       const blogPost = createBlogPost("My Post", "my-post", 5);
       const trending = createTrendingPost("My Post", "my-post", 4);
       const project = createProject("My Project", "my-project", 2);
