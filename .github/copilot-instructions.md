@@ -93,208 +93,53 @@ export default function Page() {
 
 ---
 
-## 🎯 Key Principles (Never Violate)
+## 🎯 Core Rules (Never Violate)
 
-### 1. Always Use Barrel Exports
+These 5 rules are enforced across all development. For comprehensive details and code examples:
+**See: [DCYFR.agent.md - Boundaries & Rules](./.github/agents/DCYFR.agent.md)**
 
-```typescript
-// ✅ CORRECT
-import { PostList } from "@/components/blog";
-import { PageLayout } from "@/components/layouts";
+### Quick Reference
 
-// ❌ WRONG
-import PostList from "@/components/blog/post-list";
-import PostList from "../../components/blog/post-list";
-```
+1. **Design Tokens Only** - Never hardcode spacing/colors
+   ```typescript
+   import { SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
+   ```
 
-### 2. Always Use Design Tokens
-
-```typescript
-// ✅ CORRECT
-import { SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
-<div className={`gap-${SPACING.content}`}>
-  <h1 className={TYPOGRAPHY.h1.standard}>Title</h1>
-</div>
-
-// ❌ WRONG (ESLint will flag)
-<div className="gap-8">
-  <h1 className="text-3xl font-semibold">Title</h1>
-</div>
-```
-
-### 3. Use PageLayout by Default
-
-90% of pages should use `PageLayout`. Only use specialized layouts when necessary:
-
-- **ArticleLayout** - Blog posts only (`/blog/[slug]`)
-- **ArchiveLayout** - Filterable lists only (`/blog`, `/work`)
-
-### 4. API Routes → Inngest Pattern
-
-```typescript
-// API route: Validate → Process → Queue → Respond
-export async function POST(request: NextRequest) {
-  const data = await request.json();
-
-  await inngest.send({
-    name: "domain/event.name",
-    data,
-  });
-
-  return NextResponse.json({ success: true });
-}
-```
-
-### 5. Never Commit Test Data to Production
-
-```typescript
-// ✅ CORRECT: Test data protected by environment check
-const isProduction =
-  process.env.NODE_ENV === "production" ||
-  process.env.VERCEL_ENV === "production";
-
-if (isProduction && !hasRealData) {
-  console.error("❌ CRITICAL: Using demo data in production!");
-  return null; // Return empty, not fake data
-}
-
-// Safe to use test data in dev only
-return mockData;
-
-// ❌ WRONG: Test data without environment check
-function getMetrics() {
-  return { stars: 15, forks: 0 }; // Always runs, even in production!
-}
-```
-
-**Key:** Check both `NODE_ENV` and `VERCEL_ENV`. Log CRITICAL errors for production fallback.
-
-**See:** [TEST_DATA_PREVENTION.md](.github/agents/enforcement/TEST_DATA_PREVENTION.md)
-
-### 6. Never Use Emojis in Public Content
-
-```typescript
-// ❌ WRONG: Emoji in blog post MDX content
-## Features Overview
-- 🚀 Fast performance
-- ✅ Full type safety
-- 📊 Built-in analytics
-
-// ✅ CORRECT: Use React icons from lucide-react
-import { Rocket, CheckCircle, BarChart } from 'lucide-react';
-
-## Features Overview
-- <Rocket className="inline-block" /> Fast performance
-- <CheckCircle className="inline-block" /> Full type safety
-- <BarChart className="inline-block" /> Built-in analytics
-
-// ✅ ACCEPTABLE: Emojis in code comments and console.log
-// 🚨 CRITICAL: Check production status before proceeding
-console.log('✅ Validation passed');
-```
-
-**Where emojis are prohibited:**
-
-- Blog posts (`src/content/blog/*.mdx`)
-- Project descriptions (`src/content/projects/*.mdx`)
-- Public-facing UI components
-- User-visible text and labels
-
-**Where emojis are acceptable:**
-
-- Internal documentation (`docs/`, `.github/`)
-- Code comments (`//`, `/* */`)
-- Console.log statements
-- Test files
-- AI instruction files (AGENTS.md, CLAUDE.md)
+2. **PageLayout by Default** - 90% of pages use PageLayout
+   
+3. **Barrel Imports** - `import { Component } from "@/components/blog"`
+   
+4. **Test Data Protection** - Environment checks: `NODE_ENV + VERCEL_ENV`
+   
+5. **No Emojis in Public Content** - Use `lucide-react` icons instead
 
 ---
 
-## 🔍 Finding Information Fast
+## 📚 Quick Links
 
-### Need to Know...
-
-| Question                  | Resource                                                                      |
-| ------------------------- | ----------------------------------------------------------------------------- |
-| What command to run?      | [Quick Reference](docs/ai/QUICK_REFERENCE.md#commands)                        |
-| Which layout to use?      | [Decision Trees](docs/ai/DECISION_TREES.md#which-layout-should-i-use)         |
-| How to import components? | [Component Patterns](docs/ai/component-patterns.md#barrel-exports)            |
-| Design token rules?       | [Enforcement Rules](docs/ai/enforcement-rules.md#design-token-enforcement)    |
-| Test data safety?         | [TEST_DATA_PREVENTION.md](.github/agents/enforcement/TEST_DATA_PREVENTION.md) |
-| Copy-paste template?      | [Templates](docs/templates/)                                                  |
-| Current priorities?       | [todo.md](docs/operations/todo.md)                                            |
-| Architecture decisions?   | [docs/architecture/](docs/architecture/)                                      |
-
-### Search Strategies
-
-```bash
-# Find component usage patterns
-grep -r "PageLayout" src/app/
-
-# Check current priorities
-cat docs/operations/todo.md | head -20
-
-# Validate design tokens
-node scripts/validate-design-tokens.mjs
-
-# Recent changes
-git log --oneline -10
-```
+- **Rules & Examples:** [DCYFR.agent.md](./.github/agents/DCYFR.agent.md)
+- **Component Patterns:** [docs/ai/component-patterns.md](docs/ai/component-patterns.md)
+- **Decision Trees:** [docs/ai/decision-trees.md](docs/ai/decision-trees.md)
+- **Templates:** [docs/templates/](docs/templates/)
+- **Current Priorities:** [todo.md](docs/operations/todo.md)
 
 ---
 
-## 🚨 Validation & Enforcement
+## ✅ Validation
 
-### Pre-commit Hooks (Automatic)
+**Pre-commit:** ESLint auto-fix, design token warnings  
+**CI/CD:** ESLint (0 errors), TypeScript (0 errors), Tests (≥99% pass rate), Lighthouse (≥90%)  
+**Manual:** Design tokens (≥90% compliance)
 
-- ESLint auto-fix
-- Design token validation (warnings)
-- Commit blocked if linting errors remain
-
-### CI/CD Requirements (Must Pass)
-
-- ✅ ESLint (0 errors)
-- ✅ TypeScript strict mode (0 type errors)
-- ✅ Tests ≥99% pass rate
-- ✅ Lighthouse (≥90% perf, ≥95% a11y)
-- ✅ Design tokens ≥90% compliance
-
-### Manual Checks
-
-```bash
-npm run check           # Run all validations
-npm run lint            # ESLint only
-npm run typecheck       # TypeScript only
-npm run test            # Unit tests
-npm run test:e2e        # E2E tests
-```
+For detailed validation checklist: [VALIDATION_CHECKLIST.md](./.github/agents/enforcement/VALIDATION_CHECKLIST.md)
 
 ---
 
 ## 📦 Tech Stack
 
-- **Framework:** Next.js 16 (App Router) + React 19
-- **Styling:** Tailwind v4 + shadcn/ui
-- **Content:** MDX (next-mdx-remote)
-- **Jobs:** Inngest (background tasks)
-- **Database:** Redis (analytics)
-- **Deployment:** Vercel
-
-### MDX Components
-
-| Component | Usage | Purpose |\n|-----------|-------|---------|
-| `<KeyTakeaway>` | `<KeyTakeaway>Your insight</KeyTakeaway>` | Highlight key insights and conclusions |
-| `<ContextClue>` | `<ContextClue>Background info</ContextClue>` | Provide background context |
-| `<Alert type="warning">` | `<Alert type="warning">Warning</Alert>` | Warnings and status messages |
-| `<SectionShare>` | `<SectionShare sectionId="id" sectionTitle="Title" />` | Social sharing buttons (Twitter, LinkedIn, Copy) |
-| `<CollapsibleSection>` | `<CollapsibleSection id="id" title="Title">...</CollapsibleSection>` | Expandable content with LocalStorage |
-| `<GlossaryTooltip>` | `<GlossaryTooltip term="Term" definition="Def">text</GlossaryTooltip>` | Interactive tooltips for technical terms |
-
-**Engagement Best Practices:**
-
-- Add `<SectionShare>` after major sections for social sharing and SEO
-- Use `<CollapsibleSection>` for role-specific or advanced content
-- Wrap technical terms in `<GlossaryTooltip>` for better accessibility
+**Framework:** Next.js 16 (App Router) + React 19  
+**Styling:** Tailwind v4 + shadcn/ui  
+**Content:** MDX with `<KeyTakeaway>`, `<Alert>`, `<SectionShare>`, `<CollapsibleSection>`, `<GlossaryTooltip>`
 
 ---
 
