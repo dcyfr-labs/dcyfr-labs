@@ -20,7 +20,7 @@ if [[ $# -lt 2 ]]; then
   echo "Example:"
   echo "  $0 claude opencode"
   echo "  $0 opencode claude"
-  echo "  $0 opencode opencode --provider groq_primary"
+  echo "  $0 opencode opencode --provider dcyfr-feature"
   exit 1
 fi
 

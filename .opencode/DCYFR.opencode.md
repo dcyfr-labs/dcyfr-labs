@@ -1,8 +1,8 @@
 # DCYFR OpenCode.ai Agent
 
-**Version:** 1.0.0 (Modular)  
-**Last Updated:** January 5, 2026  
-**Purpose:** Production-ready feature implementation with multi-provider AI fallback support and session state tracking
+**Version:** 2.0.0 (GitHub Copilot Integration)  
+**Last Updated:** January 11, 2026  
+**Purpose:** Production-ready feature implementation with GitHub Copilot integration and session state tracking
 
 ---
 
@@ -10,12 +10,12 @@
 
 DCYFR OpenCode.ai is a **fallback AI agent** that enables continuous development when Claude Code encounters rate limits or token exhaustion. It provides:
 
-- ✅ **Multi-provider flexibility** - Use free models (Groq Llama 3.3 70B) or offline models (CodeLlama 34B)
-- ✅ **Cost optimization** - 10-100x cheaper development with budget providers
-- ✅ **Offline support** - Continue development without internet via local models
+- ✅ **GitHub Copilot integration** - Access GPT-5 Mini and Raptor Mini (free with subscription)
+- ✅ **Code-specialized models** - Fine-tuned for coding tasks with 16K context windows
+- ✅ **Zero additional cost** - Free models included with existing Copilot subscription
 - ✅ **Session state tracking** - Seamless handoffs between agents (Claude ↔ OpenCode ↔ Copilot)
 - ✅ **DCYFR pattern enforcement** - Strict design token, layout, and import rules maintained
-- ✅ **Enhanced validation** - Additional quality checks for free/offline provider output
+- ✅ **Enhanced validation** - Additional quality checks for GitHub Copilot output
 
 ---
 
@@ -25,9 +25,8 @@ DCYFR OpenCode.ai is a **fallback AI agent** that enables continuous development
 
 - **Claude Code rate limited** - Hit API limits or token budget exhausted
 - **Extended sessions** - Development work lasting 6+ hours
-- **Cost optimization** - Use free Groq models for planning, documentation, refactoring
-- **Offline development** - Work without internet using Ollama local models
-- **Provider diversity** - Test multiple AI perspectives (Llama 3.3, GPT-4, Gemini)
+- **Cost optimization** - Use GitHub Copilot models included with subscription
+- **Provider diversity** - Test multiple AI perspectives (GPT-5 Mini, Claude, Gemini)
 
 ### ❌ Don't use OpenCode.ai for:
 
@@ -70,14 +69,12 @@ These rules are **strongly recommended** but validated manually:
 ### Start OpenCode Session
 
 ```bash
-# Use default preset (dcyfr-feature with Groq Llama 3.3 70B)
+# Use default preset (dcyfr-feature with GitHub Copilot GPT-5 Mini)
 opencode
 
 # Use specific preset
-opencode --preset dcyfr-feature    # Feature implementation (Groq 3.3 70B)
-opencode --preset dcyfr-plan       # Planning mode (Groq 3.1 70B)
-opencode --preset dcyfr-quick      # Quick fixes (Groq SpecDec)
-opencode --preset dcyfr-offline    # Offline work (CodeLlama 34B)
+opencode --preset dcyfr-feature    # Feature implementation (GPT-5 Mini, 16K context)
+opencode --preset dcyfr-quick      # Quick fixes (Raptor Mini, 8K context)
 ```
 
 ### Session State Management
@@ -99,7 +96,7 @@ cat .opencode/.session-state.json | jq
 # Standard validation (all agents)
 npm run check
 
-# Enhanced validation (OpenCode free/offline providers)
+# Enhanced validation (GitHub Copilot providers)
 npm run check:opencode
 
 # Provider health check
@@ -114,9 +111,8 @@ npm run opencode:health
 
 | Document | Covers |
 |----------|--------|
-| [**PROVIDER_SELECTION.md**](patterns/PROVIDER_SELECTION.md) | Decision tree for choosing providers, free vs premium trade-offs |
+| [**PROVIDER_SELECTION.md**](patterns/PROVIDER_SELECTION.md) | Decision tree for choosing providers, GitHub Copilot vs premium trade-offs |
 | [**VS_CODE_INTEGRATION.md**](patterns/VS_CODE_INTEGRATION.md) | Extension setup, keyboard shortcuts, file references |
-| [**OFFLINE_DEVELOPMENT.md**](patterns/OFFLINE_DEVELOPMENT.md) | Ollama setup, model selection, offline workflows |
 
 ### Enforcement (Quality Gates & Validation)
 
@@ -144,7 +140,7 @@ npm run opencode:health
 1. Hit Claude Code rate limit mid-feature
 2. Save session: npm run session:save claude "Add blog filter" implementation "1h"
 3. Start OpenCode: opencode --preset dcyfr-feature
-4. Continue work with free Groq model
+4. Continue work with GitHub Copilot GPT-5 Mini
 5. Complete feature, run enhanced validation: npm run check:opencode
 6. Restore to Claude when available: npm run session:restore opencode claude
 ```
@@ -152,19 +148,19 @@ npm run opencode:health
 ### Workflow 2: Cost-Optimized Planning
 
 ```
-1. Use cheap model for planning: opencode --preset dcyfr-plan
+1. Use GitHub Copilot for planning: opencode --preset dcyfr-feature
 2. Generate architecture plan and file list
-3. Switch to premium model for implementation: Use Claude Code
-4. Validate with budget model: opencode --preset dcyfr-feature (review changes)
+3. Switch to Claude Code for complex implementation if needed
+4. Validate with GitHub Copilot: opencode --preset dcyfr-feature (review changes)
 ```
 
-### Workflow 3: Offline Development
+### Workflow 3: Multi-Provider Comparison
 
 ```
-1. Pull offline model: ollama pull codellama:34b-instruct
-2. Start offline session: opencode --preset dcyfr-offline
-3. Reference .github/agents/ docs for patterns (no tool access)
-4. Manual validation required (run npm run check:opencode when online)
+1. Implement feature with GitHub Copilot: opencode --preset dcyfr-feature
+2. Review with Claude Sonnet (premium): Switch to Claude via OpenCode provider menu
+3. Compare outputs and merge best approaches
+4. Final validation: npm run check:opencode
 ```
 
 ---
@@ -178,7 +174,7 @@ npm run opencode:health
 - [ ] Tests ≥99% pass rate (`npm run test:run`)
 - [ ] Design tokens ≥90% compliance
 
-### Enhanced Checklist (Free/Offline Providers)
+### Enhanced Checklist (GitHub Copilot Providers)
 
 Additional manual review required:
 
@@ -237,14 +233,14 @@ Additional manual review required:
 
 Configured in [config.json](config.json):
 
-| Preset | Provider | Model | Use For |
-|--------|----------|-------|---------|
-| `dcyfr-feature` | Groq | Llama 3.3 70B Versatile | Feature implementation, bug fixes |
-| `dcyfr-plan` | Groq | Llama 3.1 70B | Planning, architecture decisions |
-| `dcyfr-quick` | Groq | Llama 3.3 70B SpecDec | Quick fixes, fast iterations |
-| `dcyfr-offline` | Ollama | CodeLlama 34B | Offline development, air-gapped work |
+| Preset | Provider | Model | Context | Use For |
+|--------|----------|-------|---------|---------|
+| `dcyfr-feature` | GitHub Copilot | GPT-5 Mini | 16K | Feature implementation, bug fixes, planning |
+| `dcyfr-quick` | GitHub Copilot | Raptor Mini | 8K | Quick fixes, fast iterations, refactoring |
 
 **All presets include DCYFR system prompts with pattern enforcement guidance.**
+
+**Note:** Both models included with GitHub Copilot subscription (0 cost multiplier).
 
 ---
 

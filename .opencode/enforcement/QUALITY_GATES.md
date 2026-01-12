@@ -1,7 +1,8 @@
 # Quality Gates for OpenCode Development
 
 **Status**: Production Ready  
-**Last Updated**: January 5, 2026  
+**Last Updated**: January 11, 2026  
+**Version**: 2.0.0 (GitHub Copilot Migration)  
 **Purpose**: Pre-completion validation checklists organized by provider tier to ensure consistent quality across all AI models
 
 ---
@@ -10,9 +11,8 @@
 
 Quality gates are **mandatory validation checkpoints** before committing code. The checklist varies by AI provider capability:
 
-- **Premium providers** (Claude, GPT-4): Standard checklist
-- **Free providers** (Groq): Enhanced checklist + manual review
-- **Offline providers** (Ollama): Full manual review required
+- **Premium providers** (Claude): Standard checklist
+- **GitHub Copilot** (GPT-5 Mini, Raptor Mini, GPT-4o): Enhanced checklist + manual review
 
 **Philosophy**: Quality should be consistent regardless of which AI model generated the code.
 

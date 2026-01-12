@@ -1,7 +1,8 @@
 # Troubleshooting OpenCode & AI Provider Issues
 
 **Status**: Production Ready  
-**Last Updated**: January 5, 2026  
+**Last Updated**: January 11, 2026  
+**Version**: 2.0.0 (GitHub Copilot Migration)  
 **Purpose**: Common issues, root cause analysis, and recovery procedures for OpenCode.ai fallback system
 
 ---
@@ -11,7 +12,7 @@
 Run the health check script to identify issues:
 
 ```bash
-scripts/check-provider-health.sh
+npm run opencode:health
 
 # Output will show:
 # ✅ Provider available
@@ -23,253 +24,177 @@ scripts/check-provider-health.sh
 
 ## Common Issues by Provider
 
-### Groq (Free Tier)
+### GitHub Copilot (Primary)
 
-#### Issue: Rate Limit Exceeded
+#### Issue: Authentication Failed
 
 **Symptom**:
 ```
-Error: Rate limit exceeded (30 requests/minute)
-Please wait 45 seconds before retrying
+Error: GitHub Copilot authentication failed
+Please authenticate using device code flow
 ```
 
-**Root Cause**: Exceeded 30 requests/minute free tier limit.
+**Root Cause**: Not authenticated with GitHub Copilot, or session expired.
 
 **Immediate Fix**:
 ```bash
-# Option 1: Wait for rate limit reset (1 minute)
-sleep 60
-opencode --preset groq_primary  # Retry
+# Launch OpenCode and connect to GitHub Copilot
+opencode
 
-# Option 2: Switch to alternative Groq model (separate limit)
-opencode --preset groq_speed  # Llama 3.3 70B SpecDec
+# In OpenCode UI:
+# 1. Type: /connect
+# 2. Select: "GitHub Copilot"
+# 3. Follow device code authentication flow
+# 4. Enter code at: https://github.com/login/device
+# 5. Authorize OpenCode access
 
-# Option 3: Fallback to Ollama (offline)
-opencode --preset offline_primary
-
-# Option 4: Escalate to premium (if critical)
-opencode --preset claude
+# Verify connection
+# Type: /models
+# Expected: gpt-5-mini, raptor-mini, gpt-4o
 ```
 
 **Long-Term Fix**:
-```bash
-# Add rate limit delay in OpenCode settings
-# .vscode/settings.json:
-{
-  "opencode.rateLimit.delay": 2000  // 2 seconds between requests
-}
-
-# Or batch operations (combine multiple tasks in one request)
-```
+- Authenticate once per machine (session persists)
+- Re-authenticate if token expires (rare)
+- No API keys needed (device code flow)
 
 **Prevention**:
-- Monitor daily request count: `cat .opencode/metrics/usage.json | jq '.providers.groq_primary.requests'`
-- Use session state to reduce context tokens
-- Batch similar operations
+- Keep GitHub Copilot subscription active
+- Don't revoke OpenCode authorization in GitHub settings
+- Session state stored in VS Code settings (automatic)
 
 ---
 
-#### Issue: Daily Quota Exhausted
+#### Issue: GitHub Copilot Model Not Available
 
 **Symptom**:
 ```
-Error: Daily quota exceeded (14,400 requests/day)
-Resets at midnight UTC
+Error: Model "gpt-5-mini" not found
+Or: Model "raptor-mini" unavailable
 ```
 
-**Root Cause**: Exceeded 14,400 requests/day (rare for single developer).
+**Root Cause**: Model name changed, or access tier insufficient.
 
 **Immediate Fix**:
 ```bash
-# Switch to Ollama (no quota limits)
-opencode --preset offline_primary
+# Check available models
+opencode
+# Type: /models
 
-# Or escalate to premium
-opencode --preset claude
-```
+# Expected models with GitHub Copilot subscription:
+# - gpt-5-mini (GA, 16K context)
+# - raptor-mini (Preview, 8K context)
+# - gpt-4o (GA, 128K context)
 
-**Investigation**:
-```bash
-# Check if script/automation caused spike
-cat .opencode/metrics/usage.json | jq '.providers.groq_primary.requests'
+# If model missing, verify subscription status:
+# https://github.com/settings/copilot
 
-# Expected: <1,000 requests/day for normal development
-# Concerning: >5,000 requests/day (investigate automation)
-```
-
-**Long-Term Fix**:
-- Identify automation causing spike
-- Add request throttling to scripts
-- Consider premium tier if sustained high usage
-
----
-
-#### Issue: Model Not Available
-
-**Symptom**:
-```
-Error: Model "llama-3.3-70b-versatile" not found
-```
-
-**Root Cause**: Model name changed or deprecated by Groq.
-
-**Immediate Fix**:
-```bash
-# List available models
-curl https://api.groq.com/openai/v1/models \
-  -H "Authorization: Bearer $GROQ_API_KEY" | jq '.data[].id'
-
-# Update config with correct model name
+# Update config if model name changed
 nano .opencode/config.json
 # Update "model" field to match available model
 ```
 
-**Prevention**:
-- Check Groq changelog quarterly: https://console.groq.com/docs/changelog
-- Subscribe to Groq status updates: https://status.groq.com
-
----
-
-### Ollama (Offline)
-
-#### Issue: Ollama Service Not Running
-
-**Symptom**:
-```
-Error: Failed to connect to Ollama at http://localhost:11434
-Connection refused
-```
-
-**Root Cause**: Ollama service not started.
-
-**Immediate Fix**:
-```bash
-# Check if Ollama is running
-ps aux | grep ollama
-
-# Start service
-ollama serve  # Foreground (for debugging)
-
-# Or start as background service
-brew services start ollama  # macOS
-systemctl start ollama      # Linux
-```
-
 **Verification**:
 ```bash
-# Test connection
-curl http://localhost:11434/api/tags
+# Test with available model
+opencode --preset dcyfr-feature
+# Should use gpt-5-mini
 
-# Expected: JSON response with installed models
+# Or use speed preset
+opencode --preset dcyfr-quick
+# Should use raptor-mini
 ```
 
 **Prevention**:
-```bash
-# Enable auto-start on boot
-brew services enable ollama  # macOS
-systemctl enable ollama      # Linux
-```
+- Keep GitHub Copilot subscription active ($10-20/month)
+- Subscribe to GitHub Copilot changelog: https://github.blog/tag/copilot/
+- Check model availability before major updates
 
 ---
 
-#### Issue: Model Not Pulled
+#### Issue: Rate Limit / Usage Cap
 
 **Symptom**:
 ```
-Error: Model "codellama:34b" not found locally
-Pull the model first with: ollama pull codellama:34b
+Error: GitHub Copilot usage cap reached
+Or: Too many requests, please slow down
 ```
 
-**Root Cause**: Model not downloaded yet.
+**Root Cause**: Exceeded GitHub Copilot usage limits (varies by tier).
 
 **Immediate Fix**:
 ```bash
-# Pull recommended models
-ollama pull codellama:34b     # Best quality (requires 40GB RAM)
-ollama pull qwen2.5-coder:7b  # Balanced (requires 8GB RAM)
+# Option 1: Wait for limit reset (check error message for timing)
+# GitHub Copilot limits reset hourly or daily depending on tier
 
-# Verify models
-ollama list
+# Option 2: Switch to alternative GitHub Copilot model (may have separate limits)
+opencode --preset dcyfr-quick  # Try raptor-mini instead of gpt-5-mini
+
+# Option 3: Escalate to premium (if critical)
+npm run session:save opencode
+opencode --preset claude
+npm run session:restore opencode
 ```
 
-**Download Time Estimates**:
-- CodeLlama 34B (19GB): ~10-20 minutes on fast connection
-- Qwen2.5 Coder 7B (4.7GB): ~3-5 minutes
+**Long-Term Fix**:
+```bash
+# Monitor usage patterns
+# Check GitHub Copilot usage dashboard:
+# https://github.com/settings/copilot
+
+# Optimize request patterns
+# - Batch similar operations
+# - Use session state to reduce context tokens
+# - Reserve GitHub Copilot for active development (not exploratory)
+
+# Consider upgrading GitHub Copilot tier if sustained high usage
+```
 
 **Prevention**:
-- Pre-pull models during setup (documented in [OFFLINE_DEVELOPMENT.md](../patterns/OFFLINE_DEVELOPMENT.md))
-- Verify models exist before first use: `ollama list`
+- Monitor daily usage: Check GitHub Copilot dashboard weekly
+- Use session state to reduce context tokens
+- Batch operations when possible
+- Strategic allocation: 80% GitHub Copilot, 20% premium (Claude)
 
 ---
 
-#### Issue: Out of Memory (OOM)
+#### Issue: Slow Response Times
 
-**Symptom**:
-```
-Ollama process killed by system
-Or: Response very slow (>2 min for simple request)
-```
+**Symptom**: Each request takes >15 seconds.
 
-**Root Cause**: Model too large for available RAM.
+**Root Cause**: GitHub Copilot service degradation or network issues.
 
 **Immediate Fix**:
 ```bash
-# Switch to smaller model
-ollama pull qwen2.5-coder:7b  # Requires only 8GB RAM
+# Check GitHub Copilot status
+# Visit: https://www.githubstatus.com/
+# Look for: "Copilot" service status
 
-# Update OpenCode config
-nano .opencode/config.json
-# Change "offline_primary" to use qwen2.5-coder:7b
+# Option 1: Switch to faster model (if available)
+opencode --preset dcyfr-quick  # raptor-mini may be faster
 
-# Or switch to Groq (free, no local memory required)
-opencode --preset groq_primary
+# Option 2: Escalate to premium (Claude Sonnet is fast)
+opencode --preset claude
+
+# Option 3: Check local network
+ping github.com
+# Expected: <100ms response times
 ```
 
 **Long-Term Fix**:
-- Upgrade RAM (64GB recommended for CodeLlama 34B)
-- Use cloud instance with sufficient RAM
-- Stick with smaller models (Qwen2.5 Coder 7B)
-
-**RAM Requirements**:
-- CodeLlama 34B: 40GB minimum, 64GB recommended
-- CodeLlama 13B: 16GB minimum, 32GB recommended
-- Qwen2.5 Coder 7B: 8GB minimum, 16GB recommended
-- DeepSeek Coder 6.7B: 4GB minimum, 8GB recommended
-
----
-
-#### Issue: Slow Inference Speed
-
-**Symptom**: Each request takes >30 seconds.
-
-**Root Cause**: No GPU acceleration, or CPU-only inference.
-
-**Immediate Fix**:
-```bash
-# Check if GPU detected
-nvidia-smi  # Linux (NVIDIA)
-# Or check Activity Monitor → GPU tab (macOS Metal)
-
-# If no GPU, switch to faster model
-ollama pull deepseek-coder:6.7b  # Faster on CPU
-
-# Or use Groq (cloud inference, very fast)
-opencode --preset groq_speed  # Llama 3.3 70B SpecDec
-```
-
-**Long-Term Fix**:
-- **macOS**: Ollama auto-uses Metal on M1/M2/M3 (no config needed)
-- **Linux**: Install NVIDIA drivers + CUDA toolkit
-- **Windows**: Install CUDA toolkit from NVIDIA
+- Monitor GitHub Status: https://www.githubstatus.com/
+- Configure request timeouts in `.opencode/config.json`
+- Set fallback providers for critical work
 
 **Expected Speeds**:
-- **With GPU**: 50-100 tokens/second (acceptable)
-- **Without GPU**: 5-20 tokens/second (slow but usable)
-- **Groq Cloud**: 200-500 tokens/second (very fast, but rate limited)
+- **GitHub Copilot GPT-5 Mini**: 50-100 tokens/second (typical)
+- **GitHub Copilot Raptor Mini**: 100-200 tokens/second (faster, preview)
+- **GitHub Copilot GPT-4o**: 30-60 tokens/second (slower, premium quality)
+- **Claude Sonnet**: 40-80 tokens/second (premium baseline)
 
 ---
 
-### Claude (Premium)
+### Claude (Premium Fallback)
 
 #### Issue: Rate Limit / Quota Exceeded
 
@@ -279,20 +204,24 @@ Error: Rate limit exceeded
 Your organization has reached the maximum requests per minute
 ```
 
-**Root Cause**: Claude Pro/API rate limits hit.
+**Root Cause**: Claude API rate limits hit.
 
 **Immediate Fix**:
 ```bash
-# Fallback to Groq (free tier)
+# Fallback to GitHub Copilot (included with subscription)
 npm run session:save claude
-opencode --preset groq_primary
+opencode --preset dcyfr-feature
 npm run session:restore claude
 ```
 
 **Long-Term Fix**:
 - Upgrade to higher Claude tier (if available)
-- Use Claude strategically (20% premium, 80% free)
+- Use Claude strategically (20% premium, 80% GitHub Copilot)
 - Implement request queuing (batch operations)
+
+**Recommended Allocation**:
+- **GitHub Copilot (80%)**: Features, bug fixes, refactoring, UI updates
+- **Claude (20%)**: Security, architecture, complex debugging, critical paths
 
 ---
 
@@ -355,6 +284,14 @@ code --list-extensions | grep opencode
 # Expected: sst-dev.opencode
 ```
 
+**Recommended Extensions** (from `.vscode/extensions.json`):
+```bash
+# Also install recommended extensions
+code --install-extension dbaeumer.vscode-eslint
+code --install-extension esbenp.prettier-vscode
+code --install-extension bradlc.vscode-tailwindcss
+```
+
 ---
 
 #### Issue: Extension Not Activated
@@ -376,6 +313,11 @@ code --list-extensions | grep opencode
 # Look for OpenCode icon in sidebar
 ```
 
+**Keyboard Shortcuts** (from docs):
+- `Cmd+Esc` - Launch OpenCode
+- `Cmd+Shift+Esc` - New OpenCode session
+- `Cmd+Option+K` - Add file references
+
 ---
 
 #### Issue: Provider Configuration Not Loaded
@@ -396,15 +338,24 @@ ls .opencode/config.json
 # Validate JSON syntax
 cat .opencode/config.json | jq .
 
-# If missing, create from template
+# If missing or corrupted, restore from git
+git checkout HEAD -- .opencode/config.json
+
+# Or create fresh config (GitHub Copilot default)
 mkdir -p .opencode
 cat > .opencode/config.json <<'EOF'
 {
-  "groq_primary": {
-    "provider": "groq",
-    "model": "llama-3.3-70b-versatile",
-    "apiKey": "${GROQ_API_KEY}",
-    "description": "Primary free model for feature implementation"
+  "primary": {
+    "provider": "github-copilot",
+    "model": "gpt-5-mini",
+    "contextWindow": 16384,
+    "description": "GitHub Copilot GPT-5 Mini - Primary model (GA, 16K context)"
+  },
+  "speed": {
+    "provider": "github-copilot",
+    "model": "raptor-mini",
+    "contextWindow": 8192,
+    "description": "GitHub Copilot Raptor Mini - Fast model (Preview, 8K context)"
   }
 }
 EOF
@@ -419,13 +370,16 @@ EOF
 
 ### Issue: STRICT Rule Violations Not Caught
 
-**Symptom**: Free model generates code with design token violations, but no error.
+**Symptom**: GitHub Copilot generates code with design token violations, but no error.
 
 **Root Cause**: Enhanced validation script not run.
 
 **Immediate Fix**:
 ```bash
 # Run enhanced validation manually
+npm run check:opencode
+
+# Or run validation script directly
 scripts/validate-after-fallback.sh
 
 # Expected: Exit code 1 if STRICT violations found
@@ -434,16 +388,18 @@ echo $?  # 0 = pass, 1 = violations
 
 **Long-Term Fix**:
 ```bash
-# Add pre-commit hook
-cat > .git/hooks/pre-commit <<'EOF'
-#!/bin/bash
-scripts/validate-after-fallback.sh || exit 1
-EOF
+# Pre-commit hook already configured (verify)
+cat .git/hooks/pre-commit
 
-chmod +x .git/hooks/pre-commit
+# If missing, reinstall hooks
+npm run prepare
 
 # Now validation runs automatically on commit
 ```
+
+**Validation Coverage**:
+- ✅ **STRICT (Hard Block)**: Design tokens, PageLayout 90% rule, barrel exports, test data, emojis
+- ⚠️ **FLEXIBLE (Warn)**: API patterns, test coverage, advanced patterns
 
 ---
 
@@ -467,19 +423,20 @@ export async function POST(request: Request) {
 - No script changes needed
 - Comment documents rationale
 - Reviewed during PR process (not blocking)
+- See: `.opencode/enforcement/HYBRID_ENFORCEMENT.md`
 
 ---
 
-### Issue: Tests Fail After Free Model Changes
+### Issue: Tests Fail After GitHub Copilot Changes
 
-**Symptom**: `npm run test:run` shows 5 new failures.
+**Symptom**: `npm run test:run` shows new failures.
 
-**Root Cause**: Free model generated code with subtle bugs (missing edge cases).
+**Root Cause**: GitHub Copilot generated code with subtle bugs (missing edge cases).
 
 **Immediate Fix**:
 ```bash
 # Run tests in verbose mode
-npm run test -- --reporter=verbose
+npm run test:run -- --reporter=verbose
 
 # Identify failures
 # Option 1: Fix tests if expectations wrong
@@ -492,7 +449,24 @@ npm run check:opencode
 **Escalation Trigger**:
 - If >3 test failures AND implementation looks correct:
   - Escalate to Claude for review
-  - Free model may have misunderstood requirements
+  - GitHub Copilot may have misunderstood requirements
+  - Claude has better reasoning for complex edge cases
+
+**Workflow**:
+```bash
+# Save current state
+npm run session:save opencode
+
+# Switch to Claude for debugging
+opencode --preset claude
+# Prompt: "Review test failures and suggest fixes"
+
+# Apply fixes, verify tests pass
+npm run test:run
+
+# Return to GitHub Copilot
+opencode --preset dcyfr-feature
+```
 
 ---
 
@@ -507,12 +481,13 @@ npm run check:opencode
 **Immediate Fix**:
 ```bash
 # Delete corrupted session state
-rm .<agent>/.session-state.json
+rm .opencode/.session-state.json
 
 # Create fresh session state
-npm run session:save <agent>
+npm run session:save opencode
 
 # Manually document current context (if needed)
+echo "Task: <description>" > .opencode/session-notes.txt
 ```
 
 **Prevention**:
@@ -541,42 +516,54 @@ npm run session:save opencode
 ls -la .opencode/.session-state.json
 ```
 
+**Session State Schema** (v2.0):
+```json
+{
+  "version": "2.0",
+  "timestamp": "2026-01-11T...",
+  "git_branch": "main",
+  "issues": [],
+  "pull_requests": [],
+  "time_estimate": "2 hours remaining",
+  "validation_status": "STRICT_PASS"
+}
+```
+
 ---
 
 ## Network & Connectivity Issues
 
 ### Issue: No Internet Connection (Offline)
 
-**Symptom**: Groq/Claude requests fail with "Network unreachable".
+**Symptom**: GitHub Copilot/Claude requests fail with "Network unreachable".
 
 **Root Cause**: No internet access.
 
 **Immediate Fix**:
 ```bash
-# Switch to Ollama (offline capable)
-opencode --preset offline_primary
+# OpenCode v2.0 does NOT support offline development
+# GitHub Copilot requires internet connection
 
-# Verify Ollama service running locally
-curl http://localhost:11434/api/tags
+# Options:
+# 1. Wait for internet to restore
+# 2. Use mobile hotspot as temporary connection
+# 3. Work on non-AI tasks (documentation, planning)
+
+# When back online:
+npm run opencode:health  # Verify connection
+npm run check:opencode   # Validate any manual changes
 ```
 
-**Recovery** (when back online):
-```bash
-# Run enhanced validation
-scripts/validate-after-fallback.sh
-
-# Fix any STRICT violations
-opencode --preset groq_primary
-
-# Commit if clean
-npm run check:opencode && git commit
-```
+**Future Offline Support**:
+- See backlog: `docs/backlog/msty-ai-offline-support.md`
+- Msty.ai planned for offline development (P3 priority)
+- Uses local models (Qwen2.5-Coder, DeepSeek-Coder)
 
 ---
 
 ### Issue: Proxy/Firewall Blocking API Requests
 
-**Symptom**: Groq/Claude requests timeout after 30 seconds.
+**Symptom**: GitHub Copilot/Claude requests timeout after 30 seconds.
 
 **Root Cause**: Corporate proxy or firewall blocking API endpoints.
 
@@ -586,84 +573,111 @@ npm run check:opencode && git commit
 export HTTP_PROXY=http://proxy.company.com:8080
 export HTTPS_PROXY=http://proxy.company.com:8080
 
+# Add to ~/.zshrc or ~/.bashrc for persistence
+echo 'export HTTP_PROXY=http://proxy.company.com:8080' >> ~/.zshrc
+echo 'export HTTPS_PROXY=http://proxy.company.com:8080' >> ~/.zshrc
+
 # Restart VS Code to apply proxy settings
 
-# Option 2: Use Ollama (no external requests)
-opencode --preset offline_primary
+# Option 2: Configure proxy in VS Code settings
+# .vscode/settings.json:
+{
+  "http.proxy": "http://proxy.company.com:8080",
+  "http.proxyStrictSSL": false
+}
 ```
 
 **Verification**:
 ```bash
-# Test connectivity to Groq API
-curl -I https://api.groq.com/openai/v1/models
+# Test connectivity to GitHub Copilot
+curl -I https://api.github.com
 
 # Expected: HTTP 200 or 401 (not timeout)
+
+# Test connectivity to Claude API
+curl -I https://api.anthropic.com
+
+# Expected: HTTP 200 or 403 (not timeout)
 ```
+
+**Corporate Network Checklist**:
+- [ ] Whitelist: `api.github.com` (GitHub Copilot)
+- [ ] Whitelist: `api.anthropic.com` (Claude)
+- [ ] Configure proxy settings in environment
+- [ ] Disable SSL verification if using MITM proxy (not recommended)
 
 ---
 
 ## Quality Issues
 
-### Issue: Free Model Generates Low-Quality Code
+### Issue: GitHub Copilot Generates Low-Quality Code
 
 **Symptom**: Code works but violates DCYFR patterns repeatedly.
 
-**Root Cause**: Free model (Groq/Ollama) has 60-90% pattern adherence (vs. Claude's 95%).
+**Root Cause**: GitHub Copilot has 70-85% pattern adherence (vs. Claude's 95%).
 
-**Not a Bug**: This is expected behavior. Free models require enhanced validation.
+**Not a Bug**: This is expected behavior. Free-tier models require enhanced validation.
 
 **Immediate Fix**:
 ```bash
 # Run enhanced validation
-scripts/validate-after-fallback.sh
+npm run check:opencode
 
 # Review manual checklist
 cat .opencode/enforcement/VALIDATION_ENHANCED.md
 
 # Fix violations manually or escalate
-opencode --preset claude  # If too many violations
+opencode --preset claude  # If too many violations (>5)
 ```
 
 **Long-Term Fix**:
-- Accept that free models need more validation
+- Accept that GitHub Copilot needs more validation
 - Budget 10-15% extra time for manual review
-- Use free models for 80% of work, premium for 20%
+- Use GitHub Copilot for 80% of work, Claude for 20%
+- Focus Claude usage on: security, architecture, complex bugs
+
+**Expected Pattern Adherence**:
+- **GitHub Copilot GPT-5 Mini**: 70-85% (good for drafting)
+- **GitHub Copilot GPT-4o**: 80-90% (better, but slower)
+- **Claude Sonnet**: 95%+ (premium, strategic use)
 
 ---
 
-### Issue: Offline Model Misses Patterns Entirely
+### Issue: GitHub Copilot Misses Patterns Entirely
 
-**Symptom**: Ollama generates code without PageLayout, uses deep imports, etc.
+**Symptom**: GitHub Copilot generates code without PageLayout, uses deep imports, etc.
 
-**Root Cause**: Offline models (CodeLlama, Qwen) have 50-70% pattern adherence.
-
-**Not a Bug**: Offline models are for **drafting only**, not production-ready code.
+**Root Cause**: Model context not fully loaded, or pattern not emphasized.
 
 **Recommended Workflow**:
 ```bash
-# Step 1: Draft offline (Ollama)
-opencode --preset offline_primary
-# Implement feature (fast, zero cost)
+# Step 1: Draft with GitHub Copilot (fast, $0 additional)
+opencode --preset dcyfr-feature
+# Implement feature
 
-# Step 2: When back online, validate
-scripts/validate-after-fallback.sh
+# Step 2: Validate (automated)
+npm run check:opencode
 # Identify all violations
 
-# Step 3: Fix with Groq (free, online)
-opencode --preset groq_primary
-# Fix STRICT violations
+# Step 3: Fix STRICT violations (GitHub Copilot or manual)
+opencode --preset dcyfr-feature
+# Fix design tokens, PageLayout, barrel exports
 
-# Step 4: Final validation
+# Step 4: Escalate if >5 violations (Claude)
+opencode --preset claude
+# Claude fixes complex pattern violations
+
+# Step 5: Final validation
 npm run check:opencode
 # Ensure production-ready
 ```
 
 **Expected Time**:
-- Offline draft: 2 hours
-- Online validation + fixes: 30 minutes
+- GitHub Copilot draft: 2 hours
+- Validation + fixes: 30 minutes (GitHub Copilot) or 15 minutes (Claude)
 - Total: 2.5 hours (vs. 2 hours if Claude-only)
 
-**Trade-off**: +25% time, but 100% cost savings.
+**Trade-off**: +25% time, but 55-85% cost savings.
 
 ---
 
@@ -685,8 +699,7 @@ rm .claude/.session-state.json
 rm .github/copilot-session-state.json
 
 # Step 3: Reset OpenCode config
-rm .opencode/config.json
-cp .opencode/config.json.template .opencode/config.json
+git checkout HEAD -- .opencode/config.json
 
 # Step 4: Reinstall OpenCode extension
 code --uninstall-extension sst-dev.opencode
@@ -695,23 +708,29 @@ code --install-extension sst-dev.opencode
 # Step 5: Reload VS Code
 # Command Palette → "Reload Window"
 
-# Step 6: Test basic functionality
-opencode --preset groq_primary
+# Step 6: Re-authenticate with GitHub Copilot
+opencode
+# Type: /connect
+# Select: GitHub Copilot
+# Follow device code flow
+
+# Step 7: Test basic functionality
+opencode --preset dcyfr-feature
 # Prompt: "console.log('test')"
 
-# Step 7: Restore work if successful
+# Step 8: Restore work if successful
 git stash pop
 ```
 
 **If still failing**:
 - Check provider status pages:
-  - Groq: https://status.groq.com
-  - Anthropic: https://status.anthropic.com
-  - Ollama: `systemctl status ollama`
-
-- Escalate to premium provider:
-  - Switch to Claude temporarily
+  - GitHub Copilot: https://www.githubstatus.com/
+  - Claude: https://status.anthropic.com
+  
+- Escalate:
   - File issue with OpenCode: https://github.com/sst-dev/opencode/issues
+  - Check GitHub Copilot subscription status: https://github.com/settings/copilot
+  - Use VS Code GitHub Copilot extension as temporary alternative
 
 ---
 
@@ -720,18 +739,19 @@ git stash pop
 ### Provider Health Check
 
 ```bash
-scripts/check-provider-health.sh
+npm run opencode:health
 
 # Checks:
-# - Groq API connectivity + rate limits
-# - Ollama service status + models
+# - GitHub Copilot connectivity (manual verification)
 # - OpenCode CLI installation
-# - Environment variables (API keys)
+# - Configuration file validity
+# - Environment variables (Claude API key if configured)
 
 # Output:
-# ✅ All providers healthy
-# ⚠️ Groq rate limited (retry in 30s)
-# ❌ Ollama service down (start with: ollama serve)
+# ✅ OpenCode CLI installed
+# ✅ Config file valid
+# ⚠️ GitHub Copilot auth required (run: opencode → /connect)
+# ✅ Claude API key configured (optional)
 ```
 
 ---
@@ -742,15 +762,11 @@ scripts/check-provider-health.sh
 # Check all required environment variables
 cat <<'EOF' > /tmp/check-env.sh
 #!/bin/bash
-echo "🔍 Environment Check"
+echo "🔍 Environment Check (OpenCode v2.0 - GitHub Copilot)"
 echo ""
 
-# Check API keys
-[ -n "$GROQ_API_KEY" ] && echo "✅ GROQ_API_KEY set" || echo "❌ GROQ_API_KEY missing"
-[ -n "$ANTHROPIC_API_KEY" ] && echo "✅ ANTHROPIC_API_KEY set" || echo "⚠️ ANTHROPIC_API_KEY missing (optional)"
-
-# Check services
-curl -s http://localhost:11434/api/tags > /dev/null && echo "✅ Ollama running" || echo "⚠️ Ollama not running"
+# Check API keys (Claude optional)
+[ -n "$ANTHROPIC_API_KEY" ] && echo "✅ ANTHROPIC_API_KEY set (optional)" || echo "⚠️ ANTHROPIC_API_KEY missing (Claude won't work)"
 
 # Check OpenCode CLI
 command -v opencode > /dev/null && echo "✅ OpenCode CLI installed" || echo "❌ OpenCode CLI not found"
@@ -758,6 +774,13 @@ command -v opencode > /dev/null && echo "✅ OpenCode CLI installed" || echo "�
 # Check config
 [ -f .opencode/config.json ] && echo "✅ Config file exists" || echo "❌ Config file missing"
 jq . .opencode/config.json > /dev/null 2>&1 && echo "✅ Config valid JSON" || echo "❌ Config invalid JSON"
+
+# Check GitHub Copilot subscription
+echo ""
+echo "📋 Manual Checks:"
+echo "   1. Verify GitHub Copilot subscription: https://github.com/settings/copilot"
+echo "   2. Authenticate OpenCode: opencode → /connect → GitHub Copilot"
+echo "   3. Verify models: opencode → /models (should show gpt-5-mini, raptor-mini)"
 EOF
 
 bash /tmp/check-env.sh
@@ -771,20 +794,14 @@ bash /tmp/check-env.sh
 # Run all validation checks
 npm run check:opencode
 
-# Check TypeScript
-npm run type-check
+# Individual checks
+npm run type-check    # TypeScript
+npm run lint          # ESLint
+npm run test:run      # Vitest
 
-# Check ESLint
-npm run lint
-
-# Check tests
-npm run test:run
-
-# Check STRICT rules
-scripts/validate-after-fallback.sh --strict-only
-
-# Check FLEXIBLE rules
-scripts/validate-after-fallback.sh --flexible-only
+# DCYFR-specific validation
+scripts/validate-after-fallback.sh --strict-only    # Hard blocks
+scripts/validate-after-fallback.sh --flexible-only  # Warnings
 ```
 
 ---
@@ -794,18 +811,18 @@ scripts/validate-after-fallback.sh --flexible-only
 ### Internal Resources
 
 1. **Documentation**:
-   - [Provider Selection Guide](../patterns/PROVIDER_SELECTION.md)
-   - [Offline Development](../patterns/OFFLINE_DEVELOPMENT.md)
-   - [Enhanced Validation](../enforcement/VALIDATION_ENHANCED.md)
+   - [Provider Selection Guide](../patterns/PROVIDER_SELECTION.md) - GitHub Copilot decision tree
+   - [Enhanced Validation](../enforcement/VALIDATION_ENHANCED.md) - Quality checks
+   - [VS Code Integration](../patterns/VS_CODE_INTEGRATION.md) - Extension setup
 
 2. **Scripts**:
-   - `scripts/check-provider-health.sh`
-   - `scripts/validate-after-fallback.sh`
-   - `scripts/session-handoff.sh`
+   - `npm run opencode:health` - Provider health check
+   - `npm run check:opencode` - Full validation suite
+   - `npm run session:handoff` - Session state management
 
-3. **Config Templates**:
-   - `.opencode/config.json.template`
-   - `.claude/.session-state.json.template`
+3. **Config**:
+   - `.opencode/config.json` - GitHub Copilot provider configuration
+   - `.env.local` - API keys (Claude optional)
 
 ---
 
@@ -816,17 +833,13 @@ scripts/validate-after-fallback.sh --flexible-only
    - Issues: https://github.com/sst-dev/opencode/issues
    - Docs: https://opencode.ai/docs
 
-2. **Groq**:
-   - Status: https://status.groq.com
-   - Docs: https://console.groq.com/docs
-   - Rate Limits: https://console.groq.com/docs/rate-limits
+2. **GitHub Copilot**:
+   - Status: https://www.githubstatus.com/
+   - Subscription: https://github.com/settings/copilot
+   - Docs: https://docs.github.com/copilot
+   - Changelog: https://github.blog/tag/copilot/
 
-3. **Ollama**:
-   - GitHub: https://github.com/ollama/ollama
-   - Issues: https://github.com/ollama/ollama/issues
-   - Models: https://ollama.com/library
-
-4. **Claude**:
+3. **Claude**:
    - Status: https://status.anthropic.com
    - Docs: https://docs.anthropic.com
    - Support: https://support.anthropic.com
@@ -836,20 +849,21 @@ scripts/validate-after-fallback.sh --flexible-only
 ## Related Documentation
 
 **Workflows**:
-- [Session Handoff](./SESSION_HANDOFF.md) - Model switching procedures
-- [Cost Optimization](./COST_OPTIMIZATION.md) - Strategic provider usage
+- [Session Handoff](./SESSION_HANDOFF.md) - Model switching procedures (GitHub Copilot ↔ Claude)
+- [Cost Optimization](./COST_OPTIMIZATION.md) - Strategic provider usage (80/20 split)
 
 **Patterns**:
-- [Provider Selection](../patterns/PROVIDER_SELECTION.md) - Decision tree
-- [VS Code Integration](../patterns/VS_CODE_INTEGRATION.md) - Extension setup
-- [Offline Development](../patterns/OFFLINE_DEVELOPMENT.md) - Ollama workflow
+- [Provider Selection](../patterns/PROVIDER_SELECTION.md) - Decision tree (GitHub Copilot-focused)
+- [VS Code Integration](../patterns/VS_CODE_INTEGRATION.md) - Extension setup and keyboard shortcuts
 
 **Enforcement**:
-- [Enhanced Validation](../enforcement/VALIDATION_ENHANCED.md) - Quality checks
+- [Hybrid Enforcement](../enforcement/HYBRID_ENFORCEMENT.md) - STRICT vs FLEXIBLE rules
+- [Enhanced Validation](../enforcement/VALIDATION_ENHANCED.md) - Quality checks for GitHub Copilot
 - [Quality Gates](../enforcement/QUALITY_GATES.md) - Pre-commit validation
 
 ---
 
 **Status**: Production Ready  
+**Version**: 2.0.0 (GitHub Copilot Migration)  
 **Maintenance**: Update as new issues discovered  
 **Owner**: Developer Experience Team

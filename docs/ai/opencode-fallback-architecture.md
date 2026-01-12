@@ -1,10 +1,10 @@
 # OpenCode.ai Fallback Architecture
 
-**Last Updated:** January 5, 2026
+**Last Updated:** January 11, 2026
 
 ## Overview
 
-OpenCode.ai serves as a fallback AI development tool when Claude Code or GitHub Copilot encounter token exhaustion or rate limiting. This document outlines when and how to use OpenCode.ai as part of our multi-provider AI architecture.
+OpenCode.ai serves as a fallback AI development tool when Claude Code or GitHub Copilot encounter token exhaustion or rate limiting. With GitHub Copilot integration (GPT-5 Mini + Raptor Mini), OpenCode provides free, high-quality AI assistance included with your existing Copilot subscription.
 
 ---
 
@@ -12,22 +12,22 @@ OpenCode.ai serves as a fallback AI development tool when Claude Code or GitHub 
 
 ### Primary: Claude Code
 - **Context Window**: 200K tokens
-- **Best For**: Complex multi-file refactoring, architectural analysis, Phase 4 tasks
+- **Best For**: Complex multi-file refactoring, architectural analysis, critical production work
 - **Limitations**: API rate limits, daily token budgets, cost constraints
 
-### Secondary: GitHub Copilot
+### Secondary: GitHub Copilot (Inline)
 - **Context Window**: ~8K tokens
 - **Best For**: Inline suggestions, single-file edits, quick completions
-- **Limitations**: Limited context, no multi-file refactoring, restricted to GitHub
+- **Limitations**: Limited context, no multi-file refactoring, inline-only
 
-### Fallback: OpenCode.ai
-- **Context Window**: Provider-dependent (100K+ with Claude, GPT-4, Gemini)
-- **Best For**: Extended sessions, alternative providers, cost optimization
+### Fallback: OpenCode.ai (GitHub Copilot Integration)
+- **Context Window**: 16K (GPT-5 Mini), 8K (Raptor Mini), up to 200K (Claude Sonnet)
+- **Best For**: Extended sessions, multi-file work when Claude Code rate-limited
 - **Advantages**:
-  - 75+ AI provider options
+  - GitHub Copilot models included (GPT-5 Mini, Raptor Mini, GPT-4o at 0 multiplier)
+  - 75+ AI provider options (Claude, Gemini, OpenAI, etc.)
   - No vendor lock-in
-  - Local model support
-  - Cost flexibility
+  - Cost flexibility (free with Copilot subscription)
 
 ---
 
@@ -38,21 +38,22 @@ OpenCode.ai serves as a fallback AI development tool when Claude Code or GitHub 
 #### 1. Token Exhaustion
 ```
 ❌ Claude Code: "Rate limit exceeded" or "Token budget exhausted"
-✅ Switch to: OpenCode.ai with alternative provider (OpenAI, Gemini, Groq)
+✅ Switch to: OpenCode.ai with GitHub Copilot GPT-5 Mini (free, 16K context)
 ```
 
 #### 2. Extended Development Sessions
 ```
-Scenario: Multi-hour refactoring session (Phase 4 tasks)
+Scenario: Multi-hour refactoring session
 Risk: Exceeding Claude API daily limits
-Solution: Start with Claude Code, switch to OpenCode.ai mid-session
+Solution: Start with Claude Code, switch to OpenCode.ai GitHub Copilot mid-session
+Benefit: Continue work with no additional cost (included with subscription)
 ```
 
 #### 3. Cost Optimization
 ```
-Task: Exploratory analysis, documentation generation
-Strategy: Use OpenCode.ai with cost-effective providers (Groq, local models)
-Savings: 10-100x cost reduction vs Claude API
+Task: Routine development, refactoring, documentation
+Strategy: Use OpenCode.ai with GitHub Copilot models (0 multiplier)
+Savings: $0 additional cost vs Claude API usage fees
 ```
 
 #### 4. Provider Diversity
@@ -60,60 +61,54 @@ Savings: 10-100x cost reduction vs Claude API
 Use Case: Testing multiple AI perspectives on complex problems
 Workflow:
   1. Claude Code for initial analysis
-  2. OpenCode.ai with GPT-4 for alternative approach
-  3. OpenCode.ai with Gemini for third opinion
+  2. OpenCode.ai with GitHub Copilot GPT-5 Mini for implementation
+  3. OpenCode.ai with Claude Sonnet for validation (premium, if needed)
 ```
 
-#### 5. Offline/Air-Gapped Development
+#### 5. Multi-File Operations
 ```
-Scenario: No internet or restricted network
-Solution: OpenCode.ai with local models (Ollama, LM Studio)
+Scenario: GitHub Copilot inline limited to single file
+Need: Cross-file refactoring, architecture analysis
+Solution: OpenCode.ai with GitHub Copilot GPT-5 Mini (16K context, multi-file support)
 ```
 
 ---
 
 ## Supported AI Providers
 
-OpenCode.ai connects to these providers (configure via `~/.opencode/config.json`):
+OpenCode.ai connects to these providers (configure via device authentication):
 
-### Cloud Providers
+### GitHub Copilot Models (Included with Subscription)
+
+| Provider | Model | Context | Cost Multiplier | Speed |
+|----------|-------|---------|-----------------|-------|
+| **GitHub Copilot** | GPT-5 Mini | 16K | 0 (free*) | Fast |
+| **GitHub Copilot** | Raptor Mini | 8K | 0 (free*) | Very Fast |
+| **GitHub Copilot** | GPT-4o | 128K | 0 (free*) | Fast |
+
+**Included with GitHub Copilot subscription ($10-20/month flat fee)*
+
+### Premium Cloud Providers (Occasional Use)
+
+| Provider | Model Examples | Context | Cost Multiplier | Speed |
+|----------|---------------|---------|-----------------|-------|
+| **Anthropic** | Claude Sonnet 4, Opus | 200K | 1 | Fast |
+| **Google** | Gemini 1.5 Pro, Flash | 1M | 1 | Fast |
+| **OpenAI** | GPT-4 Turbo | 128K | 1 | Fast |
+
+### Future: Offline Support (Msty.ai)
 
 | Provider | Model Examples | Context | Cost | Speed |
 |----------|---------------|---------|------|-------|
-| **Anthropic** | Claude 3.5 Sonnet, Opus | 200K | High | Fast |
-| **OpenAI** | GPT-4 Turbo, GPT-4o | 128K | High | Fast |
-| **Google** | Gemini 1.5 Pro, Flash | 2M | Med | Fast |
-| **Groq** | Llama 3 70B, Mixtral | 32K | Low | Ultra Fast |
-| **AWS Bedrock** | Claude, Llama, Titan | Varies | Med | Fast |
-| **Azure OpenAI** | GPT-4, GPT-3.5 | 128K | High | Fast |
-| **OpenRouter** | 100+ models | Varies | Varies | Varies |
+| **Msty.ai** | Llama 3, CodeLlama, Qwen | 32K | Free | Med |
 
-### Local Models (Offline)
-
-| Provider | Model Examples | Context | Cost | Speed |
-|----------|---------------|---------|------|-------|
-| **Ollama** | Llama 3, CodeLlama, Mistral | 32K | Free | Med |
-| **LM Studio** | Any GGUF model | Varies | Free | Med |
-| **llama.cpp** | Llama, CodeLlama | 32K | Free | Fast |
+**Note:** Offline support via Ollama removed in v2.0. See `docs/backlog/msty-ai-offline-support.md` for future plans.
 
 ---
 
 ## Installation & Setup
 
-### 1. Install OpenCode CLI
-
-```bash
-# Using npm (recommended)
-npm install -g opencode-ai
-
-# Or using Homebrew (macOS)
-brew install opencode-ai/tap/opencode
-
-# Or download binary from GitHub releases
-# https://github.com/opencode-ai/opencode/releases
-```
-
-### 2. Install VS Code Extension (Recommended)
+### 1. Install VS Code Extension (Recommended)
 
 OpenCode has a native VS Code extension that provides seamless IDE integration:
 
@@ -142,82 +137,90 @@ OpenCode has a native VS Code extension that provides seamless IDE integration:
 
 **Compatibility:** Works with VS Code, Cursor, Windsurf, and VSCodium
 
-### 3. Verify Installation
+### 2. Authenticate with GitHub Copilot
+
+OpenCode uses device code authentication (no API keys required):
 
 ```bash
-opencode --version
-# Expected: opencode version 0.x.x
+# Launch OpenCode
+opencode
+
+# In OpenCode interface, connect to GitHub Copilot
+/connect
+
+# Select "GitHub Copilot" from provider list
+
+# Follow on-screen instructions:
+# 1. Navigate to: https://github.com/login/device
+# 2. Enter code shown in terminal
+# 3. Authorize OpenCode.ai
+
+# Verify connection
+/models
+# Should show: gpt-5-mini, raptor-mini, gpt-4o, claude-sonnet-4, etc.
 ```
 
-### 3. Initialize Configuration
+**No API key needed** - Uses your existing GitHub Copilot subscription.
 
-```bash
-opencode init
+### 3. Configure Project Presets
 
-# Creates ~/.opencode/config.json with default settings
-```
-
-### 4. Configure Primary Fallback Provider
-
-Edit `~/.opencode/config.json`:
+The project includes pre-configured presets in `.opencode/config.json`:
 
 ```json
 {
-  "providers": {
-    "primary": {
-      "type": "anthropic",
-      "apiKey": "${ANTHROPIC_API_KEY}",
-      "model": "claude-3-5-sonnet-20241022",
-      "maxTokens": 8192
-    },
-    "fallback": {
-      "type": "openai",
-      "apiKey": "${OPENAI_API_KEY}",
-      "model": "gpt-4-turbo-preview",
-      "maxTokens": 4096
-    },
-    "cost-effective": {
-      "type": "groq",
-      "apiKey": "${GROQ_API_KEY}",
-      "model": "llama3-70b-8192",
-      "maxTokens": 8192
-    },
-    "local": {
-      "type": "ollama",
-      "baseUrl": "http://localhost:11434",
-      "model": "codellama:34b"
-    }
+  "primary": {
+    "provider": "github-copilot",
+    "model": "gpt-5-mini",
+    "temperature": 0.3,
+    "maxTokens": 16384,
+    "description": "Primary GitHub Copilot model (16K context)"
   },
-  "defaultProvider": "primary",
-  "agents": {
-    "build": {
-      "provider": "primary",
-      "systemPrompt": "You are an expert full-stack developer specializing in Next.js, TypeScript, and React."
+  "speed": {
+    "provider": "github-copilot",
+    "model": "raptor-mini",
+    "temperature": 0.2,
+    "maxTokens": 8192,
+    "description": "Fast GitHub Copilot model (8K context, code-tuned)"
+  },
+  "presets": {
+    "dcyfr-feature": {
+      "providerId": "primary",
+      "systemPrompt": "DCYFR pattern enforcement (design tokens, PageLayout, barrel exports)"
     },
-    "plan": {
-      "provider": "cost-effective",
-      "systemPrompt": "You are a software architect focused on planning and design."
+    "dcyfr-quick": {
+      "providerId": "speed",
+      "systemPrompt": "DCYFR quick fixes (use existing patterns)"
     }
   }
 }
 ```
 
-### 5. Set Environment Variables
+### 4. Optional: Add Premium Providers
 
-Add to `.env.local` (project-level):
+If you need occasional premium model access:
 
 ```bash
-# OpenCode.ai Providers (Fallback)
-ANTHROPIC_API_KEY=sk-ant-...
-OPENAI_API_KEY=sk-...
-GROQ_API_KEY=gsk_...
-GOOGLE_API_KEY=AI...
+# Add to .env.local (optional)
+ANTHROPIC_API_KEY=sk-ant-...    # For Claude Sonnet 4
+GOOGLE_API_KEY=...              # For Gemini 1.5 Pro
+OPENAI_API_KEY=sk-...           # For direct GPT-4 access
 ```
 
-Add to `~/.zshrc` or `~/.bashrc` (global):
+### 5. Verify Setup
 
 ```bash
-# OpenCode.ai configuration
+# Check provider health
+npm run opencode:health
+
+# Launch OpenCode with GitHub Copilot
+opencode --preset dcyfr-feature
+
+# Test connection
+/models
+# Should show GitHub Copilot models
+```
+
+---
 export ANTHROPIC_API_KEY="sk-ant-..."
 export OPENAI_API_KEY="sk-..."
 export GROQ_API_KEY="gsk_..."
@@ -453,16 +456,18 @@ Optimization:
 
 ## Cost Analysis
 
-### Estimated Costs per Phase 4 Task
+### Cost Comparison per Development Session
 
-| Task | Claude Code | OpenCode (GPT-4) | OpenCode (Groq) | OpenCode (Local) |
-|------|-------------|------------------|-----------------|------------------|
-| **Phase 4.1** (6 hrs) | $15-20 | $12-15 | $0.50-1.00 | $0 |
-| **Phase 4.2** (4 hrs) | $10-15 | $8-10 | $0.30-0.50 | $0 |
-| **Phase 4.4** (5 hrs) | $12-18 | $10-12 | $0.40-0.60 | $0 |
-| **Total Phase 4** | $50-75 | $40-50 | $2-5 | $0 |
+| Task | Claude Code | OpenCode (GitHub Copilot) | OpenCode (Claude Sonnet) |
+|------|-------------|---------------------------|--------------------------|
+| **Feature Development** (6 hrs) | $15-20 | $0* | $15-20 |
+| **Bug Fixes** (4 hrs) | $10-15 | $0* | $10-15 |
+| **Refactoring** (5 hrs) | $12-18 | $0* | $12-18 |
+| **Total** | $50-75 | $0* | $50-75 |
 
-**Savings**: 50-95% by using OpenCode.ai with cost-effective providers
+**GitHub Copilot models included with subscription ($10-20/month flat fee)*
+
+**Key Insight**: Use GitHub Copilot models (GPT-5 Mini, Raptor Mini) for 80% of work at $0 additional cost, reserve Claude Sonnet for complex/security tasks (20%).
 
 ---
 

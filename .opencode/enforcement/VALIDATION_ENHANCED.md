@@ -1,24 +1,25 @@
-# Enhanced Validation for Free/Offline Models
+# Enhanced Validation for GitHub Copilot Models
 
 **Status**: Production Ready  
-**Last Updated**: January 5, 2026  
-**Purpose**: Comprehensive validation checklists for Groq and Ollama implementations to compensate for lower pattern recognition
+**Last Updated**: January 11, 2026  
+**Version**: 2.0.0 (GitHub Copilot Migration)  
+**Purpose**: Comprehensive validation checklists for GitHub Copilot implementations to compensate for lower pattern recognition
 
 ---
 
 ## Overview
 
-Free and offline AI models (Groq Llama 3.3 70B, Ollama CodeLlama 34B) have **60-90% pattern recognition accuracy** compared to Claude Sonnet 3.5's 95%. Enhanced validation bridges this gap through:
+GitHub Copilot models (GPT-5 Mini, Raptor Mini) have **70-85% pattern recognition accuracy** compared to Claude Sonnet's 95%. Enhanced validation bridges this gap through:
 
 1. **Automated checks**: TypeScript, ESLint, tests (same for all providers)
-2. **Manual review checklists**: Pattern-specific validation (unique to free/offline)
-3. **Escalation triggers**: When to switch to premium model
+2. **Manual review checklists**: Pattern-specific validation (unique to GitHub Copilot)
+3. **Escalation triggers**: When to switch to premium model (Claude)
 
 ---
 
 ## Validation Workflow by Provider
 
-### Premium Providers (Claude Sonnet 3.5, GPT-4)
+### Premium Providers (Claude Sonnet)
 
 **Accuracy**: 95%+ pattern adherence  
 **Validation**: Standard automated checks only
@@ -34,14 +35,14 @@ npm run check
 
 ---
 
-### Free Providers (Groq Llama 3.3 70B)
+### GitHub Copilot (GPT-5 Mini, Raptor Mini, GPT-4o)
 
-**Accuracy**: 80-90% pattern adherence  
+**Accuracy**: 70-85% pattern adherence  
 **Validation**: Automated checks + **manual FLEXIBLE rule review**
 
 ```bash
 # Run enhanced validation
-scripts/validate-after-fallback.sh
+npm run check:opencode
 
 # Expected: 
 # - STRICT rules: Hard block (exit 1) if violations
@@ -50,36 +51,19 @@ scripts/validate-after-fallback.sh
 
 **Manual checklist required** for FLEXIBLE rules (API patterns, test coverage).
 
----
-
-### Offline Providers (Ollama CodeLlama 34B, Qwen2.5 Coder 7B)
-
-**Accuracy**: 50-70% pattern adherence  
-**Validation**: Automated checks + **manual ALL rule review**
-
-```bash
-# Step 1: Run local checks offline
-npm run type-check
-npm run lint
-npm run test:run
-
-# Step 2: When back online, run enhanced validation
-scripts/validate-after-fallback.sh
-
-# Step 3: Review full manual checklist (STRICT + FLEXIBLE)
-```
-
-**Full manual checklist required** (lower confidence in offline models).
-
-**Recommendation**: Use offline for **drafting only**, validate online before committing.
+**Recommended Workflow**:
+1. Draft with GitHub Copilot (fast, $0 additional cost)
+2. Run `npm run check:opencode`
+3. Review manual checklist
+4. Escalate to Claude if >5 violations
 
 ---
 
 ## Manual Validation Checklists
 
-### STRICT Rules Checklist (Required for Offline Models)
+### FLEXIBLE Rules Checklist (Required for GitHub Copilot)
 
-Run this checklist **when back online** after offline development session.
+Run this checklist **after GitHub Copilot implementation** to catch common pattern misses.
 
 #### ✅ Design Token Compliance
 
@@ -95,9 +79,9 @@ npm run lint | grep "@dcyfr/no-hardcoded-values"
 - [ ] Search for hardcoded typography: `rg "className=\".*(?:text-(?:xs|sm|base|lg|xl))" --type tsx`
 - [ ] Verify token imports: `rg "from ['\"]@/design-system/tokens" --count` (should match file count)
 
-**Common Offline Model Mistakes**:
+**Common GitHub Copilot Mistakes**:
 ```tsx
-// ❌ Offline models often generate:
+// ❌ GitHub Copilot often generates:
 <div className="px-8 py-4 text-gray-600">
 
 // ✅ Should be:
@@ -536,7 +520,7 @@ scripts/validate-after-fallback.sh
 
 **Patterns**:
 - [Provider Selection](../patterns/PROVIDER_SELECTION.md) - When to use each provider
-- [Offline Development](../patterns/OFFLINE_DEVELOPMENT.md) - Ollama workflow
+- [VS Code Integration](../patterns/VS_CODE_INTEGRATION.md) - Extension setup
 - [Session Handoff](../workflows/SESSION_HANDOFF.md) - Model switching
 
 **Scripts**:

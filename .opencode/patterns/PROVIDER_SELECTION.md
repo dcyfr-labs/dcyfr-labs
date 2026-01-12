@@ -1,8 +1,8 @@
 # Provider Selection Guide
 
 **File:** `.opencode/patterns/PROVIDER_SELECTION.md`  
-**Last Updated:** January 5, 2026  
-**Scope:** Decision tree for choosing AI providers, free model optimization, quality trade-offs
+**Last Updated:** January 11, 2026  
+**Scope:** Decision tree for choosing AI providers with GitHub Copilot integration
 
 ---
 
@@ -12,56 +12,50 @@ Use this flowchart to select the optimal AI provider for your task:
 
 ```mermaid
 graph TD
-    Start[Need AI assistance] --> Budget{Budget available?}
+    Start[Need AI assistance] --> InClaude{Claude Code available?}
     
-    Budget -->|Premium OK| Premium[Premium Providers]
-    Premium --> PremTask{Task type?}
-    PremTask -->|Feature/Bug| Claude[Claude 3.5 Sonnet]
-    PremTask -->|Architecture| GPT4[GPT-4 Turbo]
-    PremTask -->|Large context| Gemini[Gemini 1.5 Pro]
+    InClaude -->|Yes| ClaudeCode[Use Claude Code Primary]
+    InClaude -->|No Rate limited| OpenCode[OpenCode Fallback]
     
-    Budget -->|Free only| Online{Online?}
-    Online -->|Yes| Free[Free Providers]
-    Free --> FreeTask{Task type?}
-    FreeTask -->|Feature/Bug| Groq70B[Groq Llama 3.3 70B]
-    FreeTask -->|Planning| Groq31[Groq Llama 3.1 70B]
-    FreeTask -->|Quick fix| GroqSpec[Groq SpecDec]
+    OpenCode --> Task{Task complexity?}
     
-    Online -->|No| Offline[Offline Models]
-    Offline --> OffTask{Complexity?}
-    OffTask -->|Complex| CodeLlama[CodeLlama 34B]
-    OffTask -->|Simple| Qwen[Qwen2.5 Coder 7B]
+    Task -->|Feature/Bug/Plan| GPT5[GitHub Copilot GPT-5 Mini]
+    Task -->|Quick fix/Refactor| Raptor[GitHub Copilot Raptor Mini]
+    Task -->|Security/Complex| Premium[Premium Models]
     
-    Claude --> StdVal[Standard Validation]
-    GPT4 --> StdVal
+    Premium --> PremChoice{Which premium?}
+    PremChoice -->|Best overall| ClaudeS[Claude Sonnet 4 1x]
+    PremChoice -->|Large context| Gemini[Gemini 1.5 Pro 1x]
+    PremChoice -->|Alternative| GPT4[GPT-4o 0 multiplier]
+    
+    GPT5 --> Val[Enhanced Validation]
+    Raptor --> Val
+    
+    ClaudeS --> StdVal[Standard Validation]
     Gemini --> StdVal
+    GPT4 --> StdVal
     
-    Groq70B --> EnhVal[Enhanced Validation]
-    Groq31 --> EnhVal
-    GroqSpec --> EnhVal
+    ClaudeCode --> Auto[Auto Validation]
     
-    CodeLlama --> Manual[Manual Review]
-    Qwen --> Manual
-    
-    StdVal --> Complete[✅ Ready to commit]
-    EnhVal --> Complete
-    Manual --> Complete
+    Val --> Complete[✅ Ready to commit]
+    StdVal --> Complete
+    Auto --> Complete
 ```
 
 ---
 
 ## Provider Capabilities Matrix
 
-| Provider | Model | Context | Cost | Speed | DCYFR Enforcement | Use For |
-|----------|-------|---------|------|-------|-------------------|---------|
-| **Groq** | Llama 3.3 70B Versatile | 8K | Free | Ultra Fast | Partial (manual verify) | Feature implementation, bug fixes |
-| **Groq** | Llama 3.1 70B | 8K | Free | Fast | Partial (manual verify) | Planning, architecture, refactoring |
-| **Groq** | Llama 3.3 70B SpecDec | 8K | Free | 2x Speed | Partial (manual verify) | Quick fixes, iterations |
-| **Ollama** | CodeLlama 34B | 16K | Free | Medium | Manual only | Offline development, complex tasks |
-| **Ollama** | Qwen2.5 Coder 7B | 32K | Free | Fast | Manual only | Offline quick tasks |
-| **Anthropic** | Claude 3.5 Sonnet | 200K | Premium | Fast | Full (auto) | Production features (via Claude Code) |
-| **OpenAI** | GPT-4 Turbo | 128K | Premium | Fast | Full (auto) | Alternative perspective |
-| **Google** | Gemini 1.5 Pro | 2M | Medium | Fast | Full (auto) | Massive context needed |
+| Provider | Model | Context | Cost Multiplier | Speed | DCYFR Enforcement | Use For |
+|----------|-------|---------|-----------------|-------|-------------------|---------|
+| **GitHub Copilot** | GPT-5 Mini | 16K | 0 (free*) | Fast | Manual verify | 80% of development |
+| **GitHub Copilot** | Raptor Mini | 8K | 0 (free*) | Very Fast | Manual verify | Quick fixes, refactoring |
+| **GitHub Copilot** | GPT-4o | 128K | 0 (free*) | Fast | Manual verify | Alternative perspective |
+| **Anthropic** | Claude Sonnet 4 | 200K | 1 (paid) | Fast | Full (auto) | Complex logic, security |
+| **Google** | Gemini 1.5 Pro | 1M | 1 (paid) | Fast | Full (auto) | Massive context needed |
+| **OpenAI** | GPT-4 Turbo | 128K | 1 (paid) | Fast | Full (auto) | Direct API access |
+
+**Included with GitHub Copilot subscription ($10-20/month flat fee)*
 
 ---
 
@@ -69,181 +63,249 @@ graph TD
 
 ### Feature Implementation
 
-**Best:** Groq Llama 3.3 70B Versatile (free)
-- Quality: 85-90% of Claude 3.5 Sonnet
-- Speed: 100+ tokens/sec
-- Validation: Enhanced (manual review required)
-- Cost: $0
-
-**Alternative:** Claude 3.5 Sonnet (premium - when Claude Code available)
-- Quality: Best-in-class
+**Best:** GitHub Copilot GPT-5 Mini (included)
+- Quality: 90-95% of Claude Sonnet
 - Speed: Fast
-- Validation: Standard (automated)
-- Cost: ~$0.015 per 1K tokens
+- Context: 16K tokens
+- Validation: Enhanced (manual review required)
+- Cost: $0 additional
+
+**When to upgrade to premium:**
+- Security-sensitive features (auth, permissions)
+- Complex architectural changes
+- Performance-critical optimizations
+- Breaking changes requiring careful analysis
 
 ### Planning & Architecture
 
-**Best:** Groq Llama 3.1 70B (free)
+**Best:** GitHub Copilot GPT-5 Mini (included)
 - Quality: Excellent for planning
 - Speed: Fast
+- Context: 16K tokens (sufficient for most plans)
 - Validation: Manual review
-- Cost: $0
+- Cost: $0 additional
 
-**Alternative:** Claude or GPT-4 for critical architecture decisions
+**When to use Gemini 1.5 Pro:**
+- Massive context needed (100K+ tokens)
+- Multi-file architecture analysis
+- Large codebase refactoring plans
 
 ### Quick Fixes & Iterations
 
-**Best:** Groq Llama 3.3 70B SpecDec (free)
-- Quality: Good for simple tasks
-- Speed: 200+ tokens/sec (2x faster)
+**Best:** GitHub Copilot Raptor Mini (included)
+- Quality: Good for pattern-based tasks
+- Speed: Very fast (fine-tuned for code)
+- Context: 8K tokens
 - Validation: Manual review
-- Cost: $0
+- Cost: $0 additional
 
-### Offline Development
+**Use for:**
+- Bug fixes following existing patterns
+- Refactoring within established architecture
+- UI updates using design system
+- Documentation fixes
+- Test additions
 
-**Best:** Ollama CodeLlama 34B (free, offline)
-- Quality: Good for code tasks
-- Speed: Depends on hardware
-- Validation: Full manual review required
-- Cost: $0 (local inference)
+### Complex Logic & Security
 
-**Alternative:** Qwen2.5 Coder 7B for faster but simpler tasks
+**Best:** Claude Sonnet 4 (premium)
+- Quality: Best-in-class reasoning
+- Speed: Fast
+- Context: 200K tokens
+- Validation: Standard (automated via Claude Code)
+- Cost: 1x multiplier (occasional use)
+
+**Use for:**
+- Authentication/authorization changes
+- Payment processing
+- Security audit fixes
+- Complex state management
+- Performance optimization
 
 ---
 
-## Free Model Optimization Strategies
+## GitHub Copilot Model Comparison
 
-### Strategy 1: Use Free for Planning, Premium for Implementation
+### GPT-5 Mini (Primary Model)
+
+**Specs:**
+- Context: 16K tokens
+- Cost: 0 multiplier (included with subscription)
+- Status: GA (General Availability)
+- Speed: Fast
+
+**Best for:**
+- Feature implementation
+- Planning and architecture
+- Bug fixes
+- Documentation
+- Test writing
+
+**Limitations:**
+- 16K context (not suitable for massive multi-file operations)
+- Manual DCYFR validation required
+
+### Raptor Mini (Speed Model)
+
+**Specs:**
+- Context: 8K tokens
+- Cost: 0 multiplier (included with subscription)
+- Status: Preview (fine-tuned for code generation)
+- Speed: Very fast
+
+**Best for:**
+- Quick fixes
+- Refactoring
+- Pattern-based implementations
+- Code completion
+- Syntax corrections
+
+**Limitations:**
+- 8K context (smaller than GPT-5 Mini)
+- Best for focused, single-file tasks
+- Manual DCYFR validation required
+
+### GPT-4o (Alternative Model)
+
+**Specs:**
+- Context: 128K tokens
+- Cost: 0 multiplier (included with subscription)
+- Status: GA
+- Speed: Fast
+
+**Best for:**
+- Large context operations
+- Multi-file analysis
+- Alternative perspective
+- Cross-file refactoring
+
+**Limitations:**
+- Manual DCYFR validation required
+
+---
+
+## Cost Optimization Strategies
+
+### Strategy 1: GitHub Copilot for Routine Work (80%)
 
 ```
-Phase 1: Planning (Groq Llama 3.1 70B) - $0
-  └─ Generate architecture plan, file list, step-by-step guide
+Phase 1: Feature Development (GPT-5 Mini) - $0
+  └─ Implement feature using DCYFR patterns
   
-Phase 2: Implementation (Claude Code) - $10-15
-  └─ Execute plan with full DCYFR enforcement
+Phase 2: Quick Fixes (Raptor Mini) - $0
+  └─ Bug fixes, refactoring, test additions
   
-Phase 3: Validation (Groq Llama 3.3 70B) - $0
-  └─ Review changes, cross-validate compliance
+Phase 3: Validation (npm run check:opencode) - $0
+  └─ Manual DCYFR compliance review
   
-Total Cost: $10-15 (vs $20-25 all-Claude approach)
-Savings: 40-50%
+Total Cost: $0 additional (included with subscription)
+Efficiency: 80% of development completed with no usage fees
 ```
 
-### Strategy 2: Use Free Until Rate Limited
+### Strategy 2: Premium for Complex Tasks (20%)
 
 ```
-Start: Claude Code (premium) - Best quality
-  └─ Continue until rate limit or token exhaustion
+Phase 1: Planning (GPT-5 Mini) - $0
+  └─ Architecture plan, file structure, approach
   
-Fallback: Groq Llama 3.3 70B (free) - Good quality
-  └─ Continue development with enhanced validation
+Phase 2: Complex Implementation (Claude Sonnet 4) - $5-10
+  └─ Security-sensitive or complex logic
   
-Return: Claude Code when available - Final polish
-  └─ Review free model output, validate compliance
+Phase 3: Refinement (GPT-5 Mini) - $0
+  └─ Polish, documentation, tests
   
-Outcome: Extended development session without interruption
+Total Cost: $5-10 per complex feature
+Outcome: Best quality where it matters, free elsewhere
 ```
 
-### Strategy 3: Offline-First for Exploratory Work
+### Strategy 3: Multi-Model Validation
 
 ```
-Explore: Ollama CodeLlama 34B (offline) - No internet needed
-  └─ Experiment, draft implementations, test ideas
+Phase 1: Implementation (GPT-5 Mini) - $0
+  └─ Complete feature implementation
   
-Refine: Groq Llama 3.3 70B (online, free) - Polish draft
-  └─ Improve quality, add patterns, validate approach
+Phase 2: Alternative Review (GPT-4o) - $0
+  └─ Cross-validate approach, catch issues
   
-Finalize: Claude Code (premium) - Production ready
-  └─ Final validation, edge case handling, tests
+Phase 3: Manual Validation (npm run check:opencode) - $0
+  └─ DCYFR compliance, test coverage, quality gates
   
-Use Case: Air-gapped development, secure environments
+Total Cost: $0
+Benefit: Two AI perspectives for better quality
 ```
 
 ---
 
 ## Quality Trade-Offs
 
-### Premium Models (Claude, GPT-4)
+### GitHub Copilot Models (GPT-5 Mini, Raptor Mini)
 
 **Strengths:**
-- ✅ Best pattern recognition
-- ✅ Automatic DCYFR enforcement
-- ✅ Fewer hallucinations
-- ✅ Better edge case handling
-- ✅ Strong test writing
-
-**Weaknesses:**
-- ❌ Expensive ($0.015-0.03 per 1K tokens)
-- ❌ API rate limits
-- ❌ Requires internet
-
-**When to use:** Critical features, complex refactoring, production code
-
-### Free Models (Groq Llama 3.3/3.1 70B)
-
-**Strengths:**
-- ✅ $0 cost (unlimited free tier)
-- ✅ Ultra-fast (100+ tokens/sec)
-- ✅ Good quality (85-90% of premium)
-- ✅ No rate limits (within reason)
+- ✅ $0 usage cost (included with subscription)
+- ✅ Fast generation speed
+- ✅ Good quality (90-95% of premium models)
+- ✅ 16K context (GPT-5 Mini)
+- ✅ Code-specialized (Raptor Mini)
+- ✅ No rate limits (within subscription terms)
 
 **Weaknesses:**
 - ❌ Manual DCYFR validation required
 - ❌ May miss edge cases
-- ❌ Occasional hallucinations
-- ❌ Requires enhanced validation
+- ❌ No automatic pattern enforcement
+- ❌ Requires enhanced validation workflow
 
-**When to use:** Planning, refactoring, documentation, extended sessions
+**When to use:** 80% of development work (features, bugs, refactoring, documentation)
 
-### Offline Models (Ollama CodeLlama 34B)
+### Premium Models (Claude Sonnet 4, Gemini 1.5 Pro)
 
 **Strengths:**
-- ✅ $0 cost (local inference)
-- ✅ Works offline
-- ✅ Private (data never leaves machine)
-- ✅ No rate limits
+- ✅ Best reasoning and pattern recognition
+- ✅ Automatic DCYFR enforcement (when used via Claude Code)
+- ✅ Fewer hallucinations
+- ✅ Better edge case handling
+- ✅ Strong test writing
+- ✅ Massive context (Gemini: 1M tokens)
 
 **Weaknesses:**
-- ❌ Requires good hardware (16GB+ RAM)
-- ❌ Slower than cloud models
-- ❌ No tool access (MCP servers)
-- ❌ Full manual validation required
+- ❌ Usage fees (1x multiplier)
+- ❌ API rate limits
+- ❌ Requires internet
 
-**When to use:** Offline development, secure environments, exploratory work
+**When to use:** 20% of development work (security, complex logic, critical features)
 
 ---
 
-## When to Upgrade from Free to Premium
+## When to Upgrade from GitHub Copilot to Premium
 
 Consider upgrading when:
 
-1. **Quality issues** - Free model makes repeated mistakes or misses patterns
-2. **Complex tasks** - Architecture decisions, security-sensitive code, critical features
-3. **Time pressure** - Premium models faster to correct solution
-4. **Validation burden** - Manual review taking longer than premium model cost
-5. **Production readiness** - Final polish before merge/deploy
+1. **Security-sensitive work** - Auth, permissions, payment processing, API keys
+2. **Complex architectural decisions** - Breaking changes, refactoring, system design
+3. **Quality issues** - GitHub Copilot makes repeated mistakes or misses patterns
+4. **Time pressure** - Premium models faster to correct solution
+5. **Validation burden** - Manual review taking longer than premium model cost
 
 **ROI Calculation:**
 
 ```
-Scenario: Implementing new feature with blog category filter
+Scenario: Implementing OAuth integration (security-sensitive)
 
-Free Model Approach:
-- Development time: 2 hours (Groq Llama 3.3 70B)
-- Manual validation: 30 min (enhanced checks)
-- Total time: 2.5 hours
+GitHub Copilot Approach:
+- Development time: 3 hours (GPT-5 Mini)
+- Manual validation: 1 hour (security review)
+- Total time: 4 hours
 - Total cost: $0
+- Risk: Higher (manual security review required)
 
-Premium Model Approach:
-- Development time: 1.5 hours (Claude 3.5 Sonnet)
-- Standard validation: 10 min (automated)
-- Total time: 1.67 hours
-- Total cost: $12
+Claude Sonnet Approach:
+- Development time: 2 hours (Claude Sonnet 4)
+- Standard validation: 15 min (automated checks)
+- Total time: 2.25 hours
+- Total cost: $15
+- Risk: Lower (premium model catches security issues)
 
-Time saved: 0.83 hours (~50 minutes)
-Cost per hour saved: $14.50/hour
-
-Decision: Use free for first pass, premium for final polish
+Decision: Use premium for security-sensitive work
+Reasoning: $15 cost justified by reduced risk and time savings
 ```
 
 ---
@@ -253,20 +315,87 @@ Decision: Use free for first pass, premium for final polish
 Check provider status before starting work:
 
 ```bash
-# Check all providers
+# Check GitHub Copilot connection
 npm run opencode:health
 
-# Manual checks
-curl https://api.groq.com/openai/v1/models  # Groq API
-curl http://localhost:11434/api/version     # Ollama local
+# In OpenCode, verify models available
+opencode
+/models
+# Should show: gpt-5-mini, raptor-mini, gpt-4o, claude-sonnet-4, etc.
+
+# Test connection
+/connect
+# Select "GitHub Copilot"
+# Follow device authentication if needed
 ```
 
 **Fallback chain:**
 
 ```
-1st: Claude Code (primary - via existing workflow)
-2nd: Groq Llama 3.3 70B (free fallback)
-3rd: Ollama CodeLlama 34B (offline fallback)
+1st: Claude Code (primary - best quality, auto-enforcement)
+2nd: GitHub Copilot GPT-5 Mini (fallback - free, good quality)
+3rd: GitHub Copilot Raptor Mini (speed - free, fast)
+4th: Premium models (escalation - complex/security tasks)
+```
+
+---
+
+## Provider Selection Cheatsheet
+
+| Situation | Provider | Reasoning |
+|-----------|----------|-----------|
+| Claude Code rate limited | GitHub Copilot GPT-5 Mini | Free fallback, 90%+ quality |
+| Quick bug fix | GitHub Copilot Raptor Mini | Fast, code-specialized |
+| Planning new feature | GitHub Copilot GPT-5 Mini | 16K context, free |
+| OAuth implementation | Claude Sonnet 4 | Security-sensitive, premium quality |
+| Large refactoring | Gemini 1.5 Pro | Massive context (1M tokens) |
+| Multi-file analysis | GitHub Copilot GPT-4o | 128K context, free |
+| Documentation updates | GitHub Copilot Raptor Mini | Fast, simple task |
+| Architecture decision | Claude Sonnet 4 | Complex reasoning needed |
+| Emergency production fix | Claude Code → Claude Sonnet 4 | Best quality, critical situation |
+| Routine development | GitHub Copilot GPT-5 Mini | Free, unlimited usage |
+
+---
+
+## Authentication & Setup
+
+### GitHub Copilot Device Authentication
+
+```bash
+# Launch OpenCode
+opencode
+
+# Connect to GitHub Copilot
+/connect
+
+# Select "GitHub Copilot" from provider list
+
+# Follow device code flow:
+# 1. Navigate to https://github.com/login/device
+# 2. Enter code shown in terminal
+# 3. Authorize OpenCode.ai
+
+# Verify connection
+/models
+# Should show all GitHub Copilot models
+```
+
+**No API key required** - Uses existing GitHub Copilot subscription
+
+### Premium Model Setup (Optional)
+
+If using premium models occasionally:
+
+```bash
+# Add to .env.local (optional)
+ANTHROPIC_API_KEY=sk-ant-...    # For Claude Sonnet 4
+GOOGLE_API_KEY=...              # For Gemini 1.5 Pro
+OPENAI_API_KEY=sk-...           # For direct GPT-4 access
+
+# In OpenCode, connect to premium providers
+/connect
+# Select "Claude" or "Gemini" or "OpenAI"
+# Use API key authentication
 ```
 
 ---
@@ -274,6 +403,30 @@ curl http://localhost:11434/api/version     # Ollama local
 ## Related Documentation
 
 - [**VS_CODE_INTEGRATION.md**](VS_CODE_INTEGRATION.md) - Extension setup for OpenCode
-- [**OFFLINE_DEVELOPMENT.md**](OFFLINE_DEVELOPMENT.md) - Ollama model setup
 - [**COST_OPTIMIZATION.md**](../workflows/COST_OPTIMIZATION.md) - Budget strategies
+- [**TROUBLESHOOTING.md**](../workflows/TROUBLESHOOTING.md) - Common provider issues
 - [**config.json**](../config.json) - Provider configuration and presets
+
+---
+
+## Quick Decision Flow
+
+```
+Need AI help
+    ↓
+Is Claude Code available?
+    ├─ YES → Use Claude Code (best quality)
+    └─ NO → Use OpenCode fallback
+        ↓
+        What task type?
+        ├─ Feature/Bug/Plan → GitHub Copilot GPT-5 Mini (free, 16K)
+        ├─ Quick fix → GitHub Copilot Raptor Mini (free, fast)
+        └─ Security/Complex → Claude Sonnet 4 (premium, best)
+```
+
+**Default choice:** GitHub Copilot GPT-5 Mini (covers 80% of use cases)
+
+---
+
+**Status:** Production Ready (GitHub Copilot Integration v2.0)  
+**Maintained By:** DCYFR Labs Architecture Team

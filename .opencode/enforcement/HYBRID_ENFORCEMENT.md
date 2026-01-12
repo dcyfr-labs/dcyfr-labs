@@ -1,7 +1,8 @@
 # Hybrid Enforcement Strategy
 
 **Status**: Production Ready  
-**Last Updated**: January 5, 2026  
+**Last Updated**: January 11, 2026  
+**Version**: 2.0.0 (GitHub Copilot Migration)  
 **Purpose**: Balance strict pattern compliance with flexible development workflows using provider-aware enforcement
 
 ---
@@ -13,7 +14,7 @@ DCYFR OpenCode uses a **hybrid enforcement model** that adapts to provider capab
 - **STRICT rules**: Hard block violations (exit 1) - Non-negotiable patterns
 - **FLEXIBLE rules**: Warn only - Best practices with context-dependent exceptions
 
-**Rationale**: Free/offline models have lower pattern recognition capabilities than premium models (Claude Sonnet 3.5). Hybrid enforcement prevents false positives while maintaining quality standards.
+**Rationale**: GitHub Copilot models have lower pattern recognition capabilities (70-85%) than premium models like Claude Sonnet (95%). Hybrid enforcement prevents false positives while maintaining quality standards.
 
 ---
 
@@ -529,8 +530,8 @@ export async function POST(request: Request) {
 
 **Provider-Specific**:
 - [Provider Selection Guide](../patterns/PROVIDER_SELECTION.md) - When to use each provider
-- [Offline Development](../patterns/OFFLINE_DEVELOPMENT.md) - Ollama workflow
-- [Enhanced Validation](./VALIDATION_ENHANCED.md) - Free/offline model validation
+- [VS Code Integration](../patterns/VS_CODE_INTEGRATION.md) - Extension setup and keyboard shortcuts
+- [Enhanced Validation](./VALIDATION_ENHANCED.md) - GitHub Copilot model validation
 
 **Quality Assurance**:
 - [Quality Gates](./QUALITY_GATES.md) - Pre-completion checklists

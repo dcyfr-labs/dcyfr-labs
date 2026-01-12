@@ -1,8 +1,8 @@
 # Session Handoff Between AI Models
 
 **Status**: Production Ready  
-**Last Updated**: January 5, 2026  
-**Purpose**: Seamless context transfer when switching between Claude, Copilot, and OpenCode agents
+**Last Updated**: January 11, 2026  
+**Purpose**: Seamless context transfer when switching between Claude, GitHub Copilot, and OpenCode agents
 
 ---
 
@@ -15,10 +15,10 @@ Session handoff enables you to **switch between AI agents mid-task** while prese
 - Session metadata (start time, provider, estimated completion)
 
 **Use Cases**:
-- Claude → OpenCode (rate limit reached)
-- Groq → Claude (escalation needed for complex fix)
-- Ollama → Groq (back online after offline work)
+- Claude Code → OpenCode with GitHub Copilot (rate limit reached)
+- GitHub Copilot → Claude Sonnet (escalation needed for complex logic)
 - OpenCode → Claude (need deep research capabilities)
+- GitHub Copilot GPT-5 Mini → Claude Sonnet (security-sensitive work)
 
 ---
 
@@ -35,9 +35,9 @@ All agents use a **universal session state format** for compatibility.
 ```json
 {
   "version": "2.0",
-  "timestamp": "2026-01-05T12:30:00Z",
+  "timestamp": "2026-01-11T12:30:00Z",
   "agent": "opencode",
-  "provider": "groq_primary",
+  "provider": "github-copilot-gpt5-mini",
   "task": {
     "description": "Implement user authentication with NextAuth",
     "status": "in_progress",
@@ -82,15 +82,15 @@ All agents use a **universal session state format** for compatibility.
 
 ## Handoff Workflows
 
-### 1. Claude Code → OpenCode (Rate Limit)
+### 1. Claude Code → OpenCode with GitHub Copilot (Rate Limit)
 
-**Scenario**: Claude hits rate limit mid-implementation, need to continue with Groq.
+**Scenario**: Claude hits rate limit mid-implementation, need to continue with GitHub Copilot GPT-5 Mini.
 
 **Process**:
 
 ```bash
 # Step 1: Save Claude session state
-npm run session:save claude
+npm run session:save claude "Implementing auth" in_progress "2h"
 # Creates: .claude/.session-state.json
 
 # Step 2: Review what was saved
@@ -98,547 +98,516 @@ cat .claude/.session-state.json | jq .
 
 # Step 3: Commit current work (if stable)
 git add .
-git commit -m "wip: nextauth integration (switching to opencode)"
+git commit -m "wip: auth implementation (switching to OpenCode)"
 
-# Step 4: Start OpenCode
-opencode --preset groq_primary
+# Step 4: Restore session to OpenCode
+npm run session:restore claude opencode
 
-# Step 5: In OpenCode chat, restore context
-npm run session:restore claude
-# Displays: Task description, files modified, next steps
+# Step 5: Launch OpenCode with GitHub Copilot
+opencode --preset dcyfr-feature
 
-# Step 6: Continue work
-# OpenCode now has full context to continue
+# Step 6: In OpenCode, provide context
+# "Continue implementing NextAuth integration from Claude session.
+#  Files modified: [see .opencode/.session-state.json]
+#  Next steps: Add session provider, test login flow"
 ```
 
 **OpenCode Prompt Template**:
 ```
-I'm continuing work from Claude Code. Session state restored:
+Continue implementing [TASK] from Claude Code session.
 
-Task: Implement user authentication with NextAuth
-Progress: 45 minutes in, 1h 15m remaining
-Status: in_progress
+Context from session state:
+- Task: [DESCRIPTION]
+- Files modified: [LIST]
+- Next steps: [LIST]
+- Current branch: [BRANCH]
+- Issues: [ISSUE_NUMBERS]
 
-Modified files:
-- app/api/auth/[...nextauth]/route.ts (staged)
-- lib/auth.ts
-
-Next steps:
-1. Add session provider to layout
-2. Test login flow
-3. Update environment variables
-
-Please continue from step 1.
+Please continue following DCYFR patterns (design tokens, PageLayout, barrel exports).
+Run validation when complete: npm run check:opencode
 ```
 
 ---
 
-### 2. OpenCode (Groq) → Claude Code (Escalation)
+### 2. OpenCode (GitHub Copilot) → Claude Sonnet (Escalation)
 
-**Scenario**: Groq struggles with complex refactoring, need Claude's deeper reasoning.
+**Scenario**: GitHub Copilot GPT-5 Mini struggles with complex logic, need Claude Sonnet's deeper reasoning.
 
 **Process**:
 
 ```bash
 # Step 1: Save OpenCode session state
-npm run session:save opencode
-# Creates: .opencode/.session-state.json
+npm run session:save opencode "Complex auth logic" blocked "1h"
 
 # Step 2: Run validation to identify issues
-scripts/validate-after-fallback.sh
-# Output: 3 STRICT rule violations (design tokens)
-
-# Step 3: Document escalation reason
-echo "Escalation: 3+ STRICT violations after 2 auto-fix attempts" >> .opencode/.session-state.json
-
-# Step 4: Switch to Claude Code
-# (Claude Code automatically detects .claude/.session-state.json if present)
-
-# Step 5: In Claude Code, restore OpenCode session
-npm run session:restore opencode
-
-# Step 6: Claude Code fixes violations
-# Uses premium model for pattern adherence
-
-# Step 7: Save fixed state back to OpenCode format
-npm run session:save claude
-cp .claude/.session-state.json .opencode/.session-state.json
-```
-
-**Claude Code Handoff Message**:
-```
-Escalated from OpenCode (Groq) due to STRICT rule violations.
-
-Issue: Design token compliance failures (3 violations)
-- app/components/Header.tsx: hardcoded px-8
-- app/components/Footer.tsx: hardcoded bg-blue-500
-- app/page.tsx: hardcoded text-gray-600
-
-Previous attempts: 2 auto-fix failures
-
-Please fix violations using design tokens from @/design-system/tokens.
-```
-
----
-
-### 3. Ollama → Groq (Back Online)
-
-**Scenario**: Drafted implementation offline, now online and need validation.
-
-**Process**:
-
-```bash
-# Step 1: Save Ollama session state (while offline)
-npm run session:save opencode
-# Note: Uses "offline_primary" provider in metadata
-
-# Step 2: Run local checks (offline)
-npm run type-check
-npm run lint
-npm run test:run
-# Record results in session state
-
-# Step 3: When back online, restore session
-npm run session:restore opencode
-
-# Step 4: Run enhanced validation
-scripts/validate-after-fallback.sh
-# Output: Manual checklist for STRICT + FLEXIBLE rules
-
-# Step 5: Fix violations with Groq
-opencode --preset groq_primary
-# Prompt: "Fix STRICT rule violations from offline session"
-
-# Step 6: Validate fixes
 npm run check:opencode
-# Expected: All STRICT rules pass
+# Note violations/failures
 
-# Step 7: Commit if clean
+# Step 3: Commit current work (even if incomplete)
 git add .
-git commit -m "feat: implement feature (offline draft + online validation)"
+git commit -m "wip: auth logic (escalating to Claude for complex issue)"
+
+# Step 4: Switch to Claude Sonnet via OpenCode provider menu
+opencode
+/connect
+# Select "Claude Sonnet 4"
+
+# Step 5: Provide escalation context
+# "GitHub Copilot session struggled with complex auth state management.
+#  Validation issues: [LIST]
+#  Need deeper reasoning for edge cases."
 ```
 
-**Groq Validation Prompt**:
+**Claude Escalation Prompt**:
 ```
-Offline session completed with Ollama CodeLlama 34B.
+Escalated from OpenCode (GitHub Copilot GPT-5 Mini) due to complex logic.
 
-Validation results:
-✅ TypeScript: pass
-✅ ESLint: pass
-✅ Tests: 99% pass rate
-⚠️ STRICT rules: 2 violations pending review
+Session context:
+- Task: [DESCRIPTION]
+- Issue: [PROBLEM_DESCRIPTION]
+- Validation failures: [LIST]
+- Files involved: [LIST]
 
-Violations:
-1. PageLayout missing in app/new-page/page.tsx
-2. Deep import in components/NewFeature.tsx
-
-Please fix these violations before committing.
+Please review implementation and fix logic issues.
+Ensure DCYFR compliance (design tokens, PageLayout, barrel exports).
 ```
 
 ---
 
-### 4. OpenCode → Claude (Research Needed)
+### 3. GitHub Copilot Raptor Mini → GPT-5 Mini (Context Exceeded)
 
-**Scenario**: Implementation blocked by architectural question, need Claude's research tools.
+**Scenario**: Started with Raptor Mini (8K context), need more context for multi-file refactoring.
 
 **Process**:
 
 ```bash
-# Step 1: Save OpenCode session state
-npm run session:save opencode
+# Step 1: Save current session
+npm run session:save opencode "Refactor auth" in_progress "30min"
 
-# Step 2: Switch to Claude (conversation mode)
-# Use Claude web interface or VS Code extension
+# Step 2: Switch to GPT-5 Mini (16K context)
+opencode --preset dcyfr-feature
 
-# Step 3: In Claude, provide context
-cat .opencode/.session-state.json
+# Step 3: In OpenCode, switch model
+/models
+# Select "gpt-5-mini" (16K context)
 
-# Step 4: Ask architectural question
-# Claude uses Octocode, web search, docs to research
-
-# Step 5: Claude provides recommendation
-
-# Step 6: Return to OpenCode to implement
-opencode --preset groq_primary
-npm run session:restore opencode
-
-# Step 7: Implement based on Claude's research
-```
-
-**Claude Research Handoff**:
-```
-Context from OpenCode session:
-
-Task: Implement real-time notifications
-Blocker: Unsure whether to use WebSockets, SSE, or polling
-
-Files in progress:
-- app/api/notifications/route.ts (empty)
-- lib/notifications.ts (planning)
-
-Question: What's the best approach for real-time notifications in Next.js App Router?
-
-Please research using Octocode/web search and provide architectural recommendation.
+# Step 4: Continue work with larger context
+# "Continue refactoring auth module.
+#  Previous session used Raptor Mini but hit 8K context limit.
+#  Need to analyze [LIST_FILES] together."
 ```
 
 ---
 
-## Session State Scripts
+### 4. GitHub Copilot → Claude Sonnet (Security Work)
 
-### `npm run session:save <agent>`
+**Scenario**: Implementing OAuth - security-sensitive, always use premium Claude Sonnet.
 
-**Purpose**: Save current session state for specified agent.
+**Process**:
 
-**Usage**:
 ```bash
-# Save Claude session
-npm run session:save claude
+# Step 1: Save OpenCode session (if already started)
+npm run session:save opencode "OAuth integration" planning "2h"
 
-# Save OpenCode session
-npm run session:save opencode
+# Step 2: Switch to Claude Sonnet
+opencode
+/connect
+# Select "Claude Sonnet 4"
 
-# Save Copilot session
-npm run session:save copilot
+# Step 3: Security-focused prompt
+# "Implementing OAuth 2.0 authentication with GitHub provider.
+#  Security-sensitive work requiring careful PKCE flow implementation.
+#  Follow DCYFR patterns + OWASP best practices."
 ```
 
-**Implementation** (uses `scripts/save-session-state.sh`):
-```bash
-#!/bin/bash
-# Saves current session state to agent-specific file
-
-AGENT=$1
-TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-BRANCH=$(git branch --show-current)
-MODIFIED=$(git diff --name-only)
-STAGED=$(git diff --cached --name-only)
-LAST_COMMIT=$(git rev-parse --short HEAD)
-ISSUES=$(gh issue list --assignee @me --json number --jq '.[].number' | paste -sd "," -)
-
-# Detect current provider (from OpenCode config or defaults)
-PROVIDER="unknown"
-if command -v opencode &> /dev/null; then
-  PROVIDER=$(cat .opencode/config.json | jq -r '.default_provider // "groq_primary"')
-fi
-
-# Build session state JSON
-cat > ".${AGENT}/.session-state.json" <<EOF
-{
-  "version": "2.0",
-  "timestamp": "$TIMESTAMP",
-  "agent": "$AGENT",
-  "provider": "$PROVIDER",
-  "git": {
-    "branch": "$BRANCH",
-    "uncommitted_changes": $([ -n "$MODIFIED" ] && echo true || echo false),
-    "staged_files": [$(echo "$STAGED" | jq -R -s -c 'split("\n") | map(select(length > 0))')],
-    "last_commit": "$LAST_COMMIT",
-    "issues": [$(echo "$ISSUES" | sed 's/,/","/g' | sed 's/^/"/' | sed 's/$/"/')]
-  }
-}
-EOF
-
-echo "✅ Session state saved to .${AGENT}/.session-state.json"
-```
+**Why use Claude Sonnet**: Security work always uses premium model (100% allocation, no GitHub Copilot).
 
 ---
 
-### `npm run session:restore <agent>`
+## Handoff Script Usage
 
-**Purpose**: Display saved session state from specified agent.
+### Automated Handoff
 
-**Usage**:
 ```bash
-# Restore Claude session
-npm run session:restore claude
+# General syntax
+scripts/session-handoff.sh <from-agent> <to-agent> [--provider <provider>]
 
-# Restore OpenCode session
-npm run session:restore opencode
-```
-
-**Implementation** (uses `scripts/restore-session-state.sh`):
-```bash
-#!/bin/bash
-# Displays saved session state from agent-specific file
-
-AGENT=$1
-SESSION_FILE=".${AGENT}/.session-state.json"
-
-if [ ! -f "$SESSION_FILE" ]; then
-  echo "❌ No session state found for $AGENT"
-  echo "   Run: npm run session:save $AGENT"
-  exit 1
-fi
-
-echo "📋 Restoring session from $AGENT"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-# Parse and display session state
-TIMESTAMP=$(jq -r '.timestamp' "$SESSION_FILE")
-PROVIDER=$(jq -r '.provider' "$SESSION_FILE")
-BRANCH=$(jq -r '.git.branch' "$SESSION_FILE")
-LAST_COMMIT=$(jq -r '.git.last_commit' "$SESSION_FILE")
-MODIFIED_FILES=$(jq -r '.context.files_modified[]?' "$SESSION_FILE" | wc -l)
-
-echo "🕐 Session saved: $TIMESTAMP"
-echo "🤖 Previous agent: $AGENT ($PROVIDER)"
-echo "🌿 Git branch: $BRANCH"
-echo "📝 Last commit: $LAST_COMMIT"
-echo "📁 Modified files: $MODIFIED_FILES"
-
-if [ "$MODIFIED_FILES" -gt 0 ]; then
-  echo ""
-  echo "Modified files:"
-  jq -r '.context.files_modified[]?' "$SESSION_FILE" | sed 's/^/  - /'
-fi
-
-NEXT_STEPS=$(jq -r '.context.next_steps[]?' "$SESSION_FILE" | wc -l)
-if [ "$NEXT_STEPS" -gt 0 ]; then
-  echo ""
-  echo "Next steps:"
-  jq -r '.context.next_steps[]?' "$SESSION_FILE" | nl -w2 -s'. '
-fi
-
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-```
-
-**Example Output**:
-```
-📋 Restoring session from claude
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🕐 Session saved: 2026-01-05T12:30:00Z
-🤖 Previous agent: claude (claude-sonnet-3.5)
-🌿 Git branch: feat/nextauth-integration
-📝 Last commit: abc123
-📁 Modified files: 2
-
-Modified files:
-  - app/api/auth/[...nextauth]/route.ts
-  - lib/auth.ts
-
-Next steps:
- 1. Add session provider to layout
- 2. Test login flow
- 3. Update environment variables
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
----
-
-## Advanced Handoff: `scripts/session-handoff.sh`
-
-**Purpose**: Combined save + restore + validation for seamless model switching.
-
-**Usage**:
-```bash
-# Switch from Claude to OpenCode
+# Examples:
 scripts/session-handoff.sh claude opencode
-
-# Switch from OpenCode to Claude
 scripts/session-handoff.sh opencode claude
-
-# Switch from Ollama to Groq (both use OpenCode)
-scripts/session-handoff.sh opencode opencode --provider groq_primary
+scripts/session-handoff.sh opencode opencode --provider dcyfr-feature
 ```
 
-**Workflow**:
-1. Save current agent session state
-2. Run git status check (warn if uncommitted changes)
-3. Display validation status
-4. Restore target agent session state
-5. Print handoff summary
+**What the script does**:
+1. Saves current agent session state
+2. Checks git status (warns if uncommitted changes)
+3. Restores session state to target agent
+4. Provides context prompt template
+5. Validates session transfer
 
-**Example Output**:
+### Manual Handoff
+
+```bash
+# Step 1: Save current session
+npm run session:save <agent> "<task>" <status> "<estimate>"
+
+# Step 2: Review state
+cat .<agent>/.session-state.json | jq .
+
+# Step 3: Commit work (optional)
+git add .
+git commit -m "wip: switching agents"
+
+# Step 4: Restore to new agent
+npm run session:restore <from-agent> <to-agent>
+
+# Step 5: Launch new agent
+opencode --preset dcyfr-feature  # Or other agent
 ```
-🔄 Session Handoff: claude → opencode
 
-Step 1: Saving claude session state...
-✅ Session saved to .claude/.session-state.json
+---
 
-Step 2: Git status check...
-⚠️  Uncommitted changes detected (2 files)
-   Consider committing before switching agents
+## Provider Transition Patterns
 
-Step 3: Validation status...
-✅ TypeScript: pass
-✅ ESLint: pass
-⚠️  Tests: not run yet
+### Pattern 1: Performance → Quality
 
-Step 4: Restoring opencode session state...
-📋 Restoring session from claude
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🕐 Session saved: 2026-01-05T12:30:00Z
-🤖 Previous agent: claude (claude-sonnet-3.5)
-🌿 Git branch: feat/nextauth-integration
-📁 Modified files: 2
+**Transition**: Raptor Mini (fast, 8K) → GPT-5 Mini (balanced, 16K) → Claude Sonnet (best, 200K)
 
-Next steps:
- 1. Add session provider to layout
- 2. Test login flow
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**Use when**: Task complexity increases during development.
 
-Step 5: Handoff complete!
+```bash
+# Start fast
+opencode --preset dcyfr-quick  # Raptor Mini
 
-✨ Ready to continue in opencode
-   Run: opencode --preset groq_primary
+# If complexity increases, upgrade to GPT-5 Mini
+opencode --preset dcyfr-feature
 
-📝 Handoff Summary:
-   From: claude (claude-sonnet-3.5)
-   To: opencode (groq_primary)
-   Reason: Rate limit / cost optimization
-   Files in progress: 2
-   Next action: Implement session provider
+# If still stuck, escalate to Claude Sonnet
+opencode
+/connect → Claude Sonnet 4
+```
+
+### Pattern 2: Free → Premium
+
+**Transition**: GitHub Copilot (included) → Claude Sonnet (premium)
+
+**Use when**: Encountering security-sensitive work or complex logic.
+
+```bash
+# Start with included model
+opencode --preset dcyfr-feature  # GitHub Copilot GPT-5 Mini ($0)
+
+# Escalate to premium if needed
+opencode
+/connect → Claude Sonnet 4  # Premium (usage fee)
+```
+
+### Pattern 3: Multi-Model Validation
+
+**Transition**: GPT-5 Mini → GPT-4o (cross-validation) → Claude Sonnet (tiebreaker)
+
+**Use when**: Uncertainty about implementation approach.
+
+```bash
+# Implementation with GPT-5 Mini
+opencode --preset dcyfr-feature
+
+# Cross-validate with GPT-4o (different architecture)
+opencode
+/models → gpt-4o
+
+# If discrepancy, use Claude Sonnet as tiebreaker
+opencode
+/connect → Claude Sonnet 4
 ```
 
 ---
 
 ## Git Workflow Integration
 
-### Commit Before Handoff (Recommended)
+### Recommended Git Strategy
 
-**Why**: Prevents work-in-progress loss if session state gets corrupted.
-
-**Process**:
+**Commit before handoff** (recommended):
 ```bash
-# Step 1: Save session state
-npm run session:save claude
-
-# Step 2: Commit work-in-progress
+# Save clean state before switching
 git add .
-git commit -m "wip: nextauth integration (switching agents)"
-
-# Step 3: Switch agents
-opencode --preset groq_primary
-npm run session:restore claude
-
-# Step 4: Continue work
-# If things go wrong, can `git reset HEAD~1` to undo WIP commit
+git commit -m "wip: feature X (switching from GitHub Copilot to Claude)"
+npm run session:restore opencode claude
 ```
 
-### Stash Before Handoff (Alternative)
-
-**Why**: Keep git history clean (no WIP commits).
-
-**Process**:
+**Stash if uncommitted** (alternative):
 ```bash
-# Step 1: Save session state
-npm run session:save claude
-
-# Step 2: Stash uncommitted changes
-git stash push -m "claude session handoff"
-
-# Step 3: Switch agents
-opencode --preset groq_primary
-npm run session:restore claude
-
-# Step 4: Restore changes
+# Stash work if not ready to commit
+git stash push -m "feature X mid-implementation"
+npm run session:restore opencode claude
+# After handoff, restore if needed:
 git stash pop
-
-# Step 5: Continue work
 ```
 
-**Recommendation**: Use **commit** for long handoffs (>1 hour), **stash** for quick switches.
+**Branch per agent** (advanced):
+```bash
+# Create feature branch per agent session
+git checkout -b feat/auth-copilot
+# Work with GitHub Copilot...
+git commit -m "feat: auth implementation (GitHub Copilot)"
+
+# Switch to Claude branch
+git checkout -b feat/auth-claude
+git merge feat/auth-copilot
+# Continue with Claude...
+```
 
 ---
 
-## Best Practices
+## Session State Management
 
-### ✅ Do
+### Save Session State
 
-- **Save session state before switching** (always)
-- **Commit or stash changes** before handoff (prevents loss)
-- **Document escalation reason** in session state
-- **Run validation** before handoff (know what needs fixing)
-- **Use session:restore** to load context (don't re-explain manually)
-- **Update session state** if task changes mid-work
+```bash
+# Manual save
+npm run session:save <agent> "<task>" <status> "<estimate>"
 
-### ❌ Don't
+# Examples:
+npm run session:save opencode "Implement auth" in_progress "2h"
+npm run session:save claude "Debug OAuth" blocked "30min"
+npm run session:save copilot "Refactor components" planning "1h"
 
-- **Switch agents without saving state** (lose context)
-- **Mix sessions** (one task = one session state file)
-- **Commit session state files** (git-ignored for a reason)
-- **Edit session state manually** (use scripts only)
-- **Skip validation** before handoff (next agent inherits problems)
+# Status options: planning, in_progress, blocked, complete
+```
+
+### Restore Session State
+
+```bash
+# Restore from one agent to another
+npm run session:restore <from-agent> <to-agent>
+
+# Examples:
+npm run session:restore claude opencode
+npm run session:restore opencode claude
+npm run session:restore copilot opencode
+```
+
+### View Session State
+
+```bash
+# View OpenCode session
+cat .opencode/.session-state.json | jq .
+
+# View Claude session
+cat .claude/.session-state.json | jq .
+
+# View GitHub Copilot session
+cat .github/copilot-session-state.json | jq .
+
+# Compare sessions
+diff <(cat .opencode/.session-state.json | jq .) \
+     <(cat .claude/.session-state.json | jq .)
+```
+
+---
+
+## Validation After Handoff
+
+### Standard Validation
+
+After any agent handoff, run validation:
+
+```bash
+# Type + lint + test
+npm run check
+
+# Enhanced validation (GitHub Copilot sessions)
+npm run check:opencode
+```
+
+### STRICT Rule Validation
+
+Ensure STRICT rules followed:
+
+```bash
+# Check design tokens
+npm run lint | grep "@dcyfr/no-hardcoded-values"
+
+# Check PageLayout usage
+grep -r "<PageLayout" app --include="page.tsx" | wc -l
+
+# Check barrel exports
+# (Manual review - ensure no deep imports like @/components/blog/PostCard)
+
+# Check test data environment checks
+grep -r "fabricated\|test data" --include="*.ts" --include="*.tsx"
+
+# Check no emojis in public content
+grep -r "[😀-🙏]" app src --include="*.tsx" --include="*.md"
+```
 
 ---
 
 ## Troubleshooting
 
-### Session State File Not Found
+### Issue 1: Session State Not Saved
 
-**Symptom**: `npm run session:restore <agent>` says "No session state found"
-
-**Cause**: Session state not saved yet, or file deleted
+**Symptoms**: `.opencode/.session-state.json` missing or outdated
 
 **Fix**:
 ```bash
-# Create new session state
-npm run session:save <agent>
+# Manually save session
+npm run session:save opencode "Current task" in_progress "estimate"
 
-# Verify file exists
-ls -la .<agent>/.session-state.json
+# Verify file created
+ls -la .opencode/.session-state.json
+```
+
+### Issue 2: Context Lost During Handoff
+
+**Symptoms**: New agent doesn't have full context
+
+**Fix**:
+```bash
+# Review session state file
+cat .opencode/.session-state.json | jq .
+
+# Manually provide context in prompt:
+# "Continue from OpenCode session:
+#  Task: [DESCRIPTION]
+#  Files: [LIST]
+#  Next steps: [LIST]"
+```
+
+### Issue 3: Git Conflicts After Handoff
+
+**Symptoms**: Merge conflicts when switching branches/agents
+
+**Fix**:
+```bash
+# Commit before handoff (always)
+git add .
+git commit -m "wip: before switching agents"
+
+# Or stash:
+git stash push -m "before agent switch"
+
+# After handoff:
+git stash pop  # If stashed
+```
+
+### Issue 4: Provider Switch Failed
+
+**Symptoms**: OpenCode can't switch to GitHub Copilot
+
+**Fix**:
+```bash
+# Check GitHub Copilot authentication
+opencode
+/connect → GitHub Copilot
+# Follow device code flow if needed
+
+# Verify models available
+/models
+# Should show: gpt-5-mini, raptor-mini, gpt-4o
+
+# Check provider health
+npm run opencode:health
 ```
 
 ---
 
-### Session State Out of Sync
+## Best Practices
 
-**Symptom**: Restored session shows old files/branches
+### 1. Always Save Before Switching
 
-**Cause**: Session saved long ago, git state changed since
-
-**Fix**:
 ```bash
-# Delete old session state
-rm .<agent>/.session-state.json
+# GOOD: Save before switching
+npm run session:save opencode "Task" in_progress "1h"
+npm run session:restore opencode claude
 
-# Create fresh session state
-npm run session:save <agent>
+# BAD: Switch without saving (context lost)
+opencode  # Stop
+opencode  # Restart (context lost)
 ```
 
-**Prevention**: Re-save session state after major git changes (branch switch, large commits).
+### 2. Commit Frequently
+
+```bash
+# Commit at natural breakpoints
+git commit -m "feat: implement auth flow (GitHub Copilot)"
+# Switch agents...
+git commit -m "feat: refine auth logic (Claude Sonnet)"
+```
+
+### 3. Use Descriptive Session Names
+
+```bash
+# GOOD: Descriptive
+npm run session:save opencode "Implement OAuth PKCE flow with GitHub provider" in_progress "2h"
+
+# BAD: Vague
+npm run session:save opencode "Auth stuff" in_progress "1h"
+```
+
+### 4. Validate After Premium Escalation
+
+```bash
+# After using Claude Sonnet (premium), validate quality
+npm run check:opencode
+
+# Ensure premium model delivered expected quality
+# If issues remain, consider different approach
+```
+
+### 5. Document Handoff Reasoning
+
+```bash
+# In git commit message:
+git commit -m "wip: switching from GitHub Copilot to Claude Sonnet
+
+Reason: Complex state management logic requires deeper reasoning.
+GitHub Copilot GPT-5 Mini struggled with edge cases after 3 attempts.
+Escalating to Claude Sonnet 4 for premium quality."
+```
 
 ---
 
-### Handoff Script Fails
+## Provider Selection Decision Tree
 
-**Symptom**: `scripts/session-handoff.sh` exits with error
-
-**Cause**: Missing dependencies (jq, gh CLI)
-
-**Fix**:
-```bash
-# Install jq (JSON parser)
-brew install jq
-
-# Install GitHub CLI
-brew install gh
-gh auth login
-
-# Verify installation
-jq --version
-gh --version
+```
+Need to switch agents?
+    ↓
+What's the reason?
+    │
+    ├─ Rate limit → Use OpenCode with GitHub Copilot ($0)
+    ├─ Complex logic → Escalate to Claude Sonnet (premium)
+    ├─ Security work → Always use Claude Sonnet (premium)
+    ├─ Context exceeded → Switch to larger context model
+    │   ├─ 8K → 16K: Raptor Mini → GPT-5 Mini ($0)
+    │   ├─ 16K → 128K: GPT-5 Mini → GPT-4o ($0)
+    │   └─ 128K+: Use Claude Sonnet (premium, 200K)
+    └─ Quality issues → Try different model or escalate premium
 ```
 
 ---
 
-## Related Documentation
+## Summary
 
-**Workflows**:
-- [Provider Selection](../patterns/PROVIDER_SELECTION.md) - When to switch models
-- [Cost Optimization](./COST_OPTIMIZATION.md) - Strategic handoff for budget
-- [Troubleshooting](./TROUBLESHOOTING.md) - Common handoff issues
+**Handoff Process**:
+1. Save current session: `npm run session:save <agent> "<task>" <status> "<estimate>"`
+2. Commit work: `git commit -m "wip: switching agents"`
+3. Restore session: `npm run session:restore <from> <to>`
+4. Launch new agent: `opencode --preset dcyfr-feature` (or other)
+5. Validate: `npm run check:opencode`
 
-**Enforcement**:
-- [Enhanced Validation](../enforcement/VALIDATION_ENHANCED.md) - Pre-handoff checks
-- [Quality Gates](../enforcement/QUALITY_GATES.md) - Validation before switching
+**Common Transitions**:
+- Claude Code → OpenCode (GitHub Copilot): Rate limit
+- GitHub Copilot → Claude Sonnet: Escalation
+- Raptor Mini → GPT-5 Mini: Context limit
+- GPT-5 Mini → Claude Sonnet: Security/complex work
 
-**Scripts**:
-- `scripts/save-session-state.sh` - Save session
-- `scripts/restore-session-state.sh` - Restore session
-- `scripts/session-handoff.sh` - Combined handoff workflow
+**Cost Optimization**:
+- Use GitHub Copilot (GPT-5 Mini, Raptor Mini) for 80% of work ($0)
+- Escalate to Claude Sonnet for 20% of work (premium)
 
 ---
 
 **Status**: Production Ready  
-**Maintenance**: Update schema when new fields added  
-**Owner**: Developer Experience Team
+**Next Review**: February 11, 2026  
+**See Also**: [COST_OPTIMIZATION.md](COST_OPTIMIZATION.md), [TROUBLESHOOTING.md](TROUBLESHOOTING.md)

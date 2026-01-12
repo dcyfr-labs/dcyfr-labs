@@ -395,6 +395,6 @@ OpenCode VS Code extension works with:
 ## Related Documentation
 
 - [**PROVIDER_SELECTION.md**](PROVIDER_SELECTION.md) - Provider decision tree
-- [**OFFLINE_DEVELOPMENT.md**](OFFLINE_DEVELOPMENT.md) - Ollama setup for offline work
+- [**TROUBLESHOOTING.md**](../workflows/TROUBLESHOOTING.md) - Common issues and fixes
 - [**SESSION_HANDOFF.md**](../workflows/SESSION_HANDOFF.md) - Agent transition workflows
 - [**DCYFR.opencode.md**](../DCYFR.opencode.md) - Main hub file
