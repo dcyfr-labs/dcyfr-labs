@@ -4,7 +4,6 @@
  * This module provides functions to fetch real analytics data from:
  * - Vercel Analytics API
  * - GitHub Traffic API (requires repository admin access)
- * - Google Analytics API (requires OAuth setup)
  * - Google Search Console API (requires OAuth setup)
  *
  * All functions gracefully degrade to empty arrays if:
@@ -16,8 +15,7 @@
  * - VERCEL_TOKEN: Vercel API token
  * - VERCEL_ANALYTICS_ENDPOINT: Custom analytics endpoint
  * - GITHUB_TOKEN: GitHub Personal Access Token with `repo` scope
- * - GOOGLE_ANALYTICS_CREDENTIALS: Service account JSON (optional)
- * - GOOGLE_SEARCH_CONSOLE_CREDENTIALS: Service account JSON (optional)
+ * - SEARCH_CONSOLE_CLIENT_EMAIL / SEARCH_CONSOLE_PRIVATE_KEY: Service account (optional)
  */
 
 import { createClient } from "redis";
@@ -36,12 +34,6 @@ interface AnalyticsMilestone {
 
 interface GitHubTrafficMilestone {
   type: "stars" | "forks" | "watchers" | "contributors";
-  value: number;
-  reached_at: string;
-}
-
-interface GoogleAnalyticsMilestone {
-  type: "users" | "sessions" | "pageviews" | "bounce_rate";
   value: number;
   reached_at: string;
 }
@@ -359,7 +351,7 @@ export async function storeGitHubTrafficMilestones(): Promise<void> {
  * 5. Set GOOGLE_ANALYTICS_CREDENTIALS environment variable
  */
 export async function fetchGoogleAnalyticsMilestones(): Promise<
-  GoogleAnalyticsMilestone[]
+  AnalyticsMilestone[]
 > {
   const isProduction =
     process.env.NODE_ENV === "production" ||

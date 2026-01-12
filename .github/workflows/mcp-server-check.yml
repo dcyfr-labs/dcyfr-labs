@@ -2,7 +2,7 @@ name: MCP Server Health Check
 
 on:
   schedule:
-    - cron: '0 5 * * 1' # Weekly on Monday at 05:00 UTC
+    - cron: '0 */6 * * *' # Every 6 hours
   workflow_dispatch: {}
 
 jobs:
@@ -15,11 +15,46 @@ jobs:
         with:
           node-version: '20'
       - run: npm ci
-      - name: Run MCP check (non-strict)
+
+      - name: Run MCP health check
+        id: mcp-check
         env:
-          # Optional: secrets can be added to the repo to test authenticated endpoints
+          # API keys for authenticated MCP servers
           PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SEMANTIC_SCHOLAR_API_KEY: ${{ secrets.SEMANTIC_SCHOLAR_API_KEY }}
         run: |
-          node scripts/ci/check-mcp-servers.mjs --no-auth || echo 'MCP checks failed but continuing';
+          # Generate health report in API-compatible format
+          node scripts/ci/generate-mcp-health-report.mjs > mcp-health-report.json || true
+          
+          # Display results for GitHub Actions log
+          echo "=== MCP Health Check Results ==="
+          cat mcp-health-report.json | jq '.' || cat mcp-health-report.json
+
+      - name: Upload health report to API
+        if: always()
+        env:
+          ADMIN_API_KEY: ${{ secrets.ADMIN_API_KEY }}
+          SITE_URL: ${{ secrets.SITE_URL || 'https://www.dcyfr.ai' }}
+        run: |
+          # POST health report to API endpoint
+          curl -X POST "$SITE_URL/api/mcp/health" \
+            -H "Authorization: Bearer $ADMIN_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d @mcp-health-report.json \
+            --fail-with-body || echo "Failed to upload health report to API"
+
+      - name: Validate critical MCP servers
+        if: always()
+        run: |
+          # Run critical server validation
+          node scripts/ci/validate-critical-mcps.mjs mcp-health-report.json
+
+      - name: Upload health report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-health-report-${{ github.run_id }}
+          path: mcp-health-report.json
+          retention-days: 7

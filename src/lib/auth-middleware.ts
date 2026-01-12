@@ -145,19 +145,6 @@ export function withReadOnlyAuth(
   });
 }
 
-/**
- * Middleware for LinkedIn-specific routes
- */
-export function withLinkedInAuth(
-  handler: (req: NextRequest, context?: any) => Promise<NextResponse>
-) {
-  return withAuth(handler, {
-    requireAuth: true,
-    requireCSRF: true,
-    requiredPermissions: ['linkedin:post'],
-    updateActivity: true
-  });
-}
 
 /**
  * Extract authenticated user from request (for use within protected handlers)
