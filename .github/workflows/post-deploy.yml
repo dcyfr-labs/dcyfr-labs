@@ -1,0 +1,58 @@
+name: Post-Deploy Cache Invalidation
+
+on:
+  # Trigger on successful Vercel deployments
+  deployment_status:
+
+  # Manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment (production/preview)'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - preview
+
+jobs:
+  invalidate-cache:
+    name: Invalidate Cache
+    # Only run for production deployments that succeeded
+    if: |
+      (github.event_name == 'workflow_dispatch') ||
+      (github.event.deployment_status.state == 'success' &&
+       github.event.deployment.environment == 'Production')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --production=false
+
+      - name: Invalidate activity cache
+        env:
+          INNGEST_EVENT_KEY: ${{ secrets.INNGEST_EVENT_KEY }}
+          VERCEL_ENV: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
+          VERCEL_GIT_COMMIT_SHA: ${{ github.sha }}
+        run: npm run deploy:invalidate
+
+      - name: Post-deployment summary
+        run: |
+          echo "### 🔄 Cache Invalidation Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Timestamp:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Activity cache has been invalidated" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Fresh data will be fetched on next request" >> $GITHUB_STEP_SUMMARY
