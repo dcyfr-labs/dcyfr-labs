@@ -229,7 +229,7 @@
     "unified": "^11.0.5",
     "web-vitals": "^5.1.0",
     "zod": "^4.3.4",
-    "zustand": "^5.0.9"
+    "zustand": "^5.0.10"
   },
   "devDependencies": {
     "@axe-core/cli": "^4.11.0",
