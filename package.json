@@ -199,7 +199,7 @@
     "framer-motion": "^12.24.0",
     "fuse.js": "^7.1.0",
     "glob": "^10.0.0",
-    "googleapis": "^169.0.0",
+    "googleapis": "^170.0.0",
     "gray-matter": "^4.0.3",
     "html2canvas": "^1.4.1",
     "inngest": "^3.48.1",
