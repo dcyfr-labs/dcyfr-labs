@@ -31,6 +31,50 @@ Project is in **maintenance mode** with data-driven enhancements ready for next 
 **Imports**: Always use `@/*` alias (never relative paths)
 **Versioning**: Calendar Versioning (`YYYY.MM.DD`) - see [VERSIONING.md](docs/operations/VERSIONING.md)
 
+## "What's Next?" Workflow - Backlog Intelligence System ✨
+
+When starting a session or completing a task, use the automated Backlog Intelligence System to get prioritized recommendations:
+
+```bash
+# Daily standup: "What should I work on today?" (2-4 hours)
+npm run tasks:next:today
+
+# Quick wins: Find 1-2 hour tasks (between meetings)
+npm run tasks:next:quick
+
+# Weekly planning: Top 10 tasks for the week
+npm run tasks:next:week
+
+# Full statistics: See all 237 backlog items
+npm run tasks:stats
+```
+
+**How it works:**
+1. **Scanner** (Layer 1) - Discovers tasks from todo.md, code TODOs, tests, git history
+2. **Priority Engine** (Layer 2) - Ranks by effort (15%), impact (35%), urgency (20%), readiness (20%), context (10%)
+3. **CLI Tool** (Layer 3) - Displays human-readable recommendations with context
+
+**Output includes:**
+- Task title + effort hours
+- Priority score (0-10, color-coded)
+- Impact rating (stars)
+- Status (ready, blocked, in progress)
+- Files affected & related docs
+- Blockers/dependencies
+
+**Example:**
+```
+🎯 MONDAY'S TASK QUEUE
+📋 4 tasks queued (4.5h total)
+
+1. Fix date boundary issues in heatmap tests (1h) [🟠 7.1/10]
+   Impact: ⭐⭐⭐ 6/10
+   Status: ✅ Ready
+   Files: src/__tests__/lib/activity-heatmap.test.ts
+```
+
+**See full guide:** [`docs/operations/backlog-automation-guide.md`](docs/operations/backlog-automation-guide.md)
+
 ## Essential Patterns
 
 **Layouts** (`src/components/layouts/`):

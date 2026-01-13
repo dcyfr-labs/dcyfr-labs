@@ -1,0 +1,127 @@
+{
+  "generated_at": "2026-01-13T04:37:13.436Z",
+  "version": "1.0.0",
+  "categories": [
+    {
+      "id": "test-infrastructure",
+      "name": "Test Infrastructure",
+      "description": "Test maintenance and reliability",
+      "task_count": 4,
+      "total_effort_hours": 4.5,
+      "tasks": [
+        {
+          "id": "test-flaky-ewswv5hmw",
+          "title": "Fix date boundary issues in heatmap tests",
+          "description": "Flaky test at src/__tests__/lib/activity-heatmap.test.ts:144",
+          "category": "Test Infrastructure",
+          "effort_hours": 1,
+          "impact_score": 6,
+          "priority": "high",
+          "status": "pending",
+          "blockers": [],
+          "files_affected": [
+            "src/__tests__/lib/activity-heatmap.test.ts"
+          ],
+          "related_docs": [
+            "docs/operations/todo.md"
+          ],
+          "tags": [
+            "test",
+            "flaky"
+          ],
+          "created_at": "2025-12-23",
+          "last_updated": "2026-01-13"
+        },
+        {
+          "id": "test-flaky-s5o0vv4yq",
+          "title": "Fix performance tests (environment-dependent, flaky in CI)",
+          "description": "Flaky test at src/__tests__/lib/activity-search.test.ts:240",
+          "category": "Test Infrastructure",
+          "effort_hours": 1,
+          "impact_score": 5,
+          "priority": "high",
+          "status": "pending",
+          "blockers": [],
+          "files_affected": [
+            "src/__tests__/lib/activity-search.test.ts"
+          ],
+          "related_docs": [
+            "docs/operations/todo.md"
+          ],
+          "tags": [
+            "test",
+            "flaky"
+          ],
+          "created_at": "2025-12-23",
+          "last_updated": "2026-01-13"
+        },
+        {
+          "id": "test-flaky-vmvmdses1",
+          "title": "Fix Radix Tabs async behavior in tests",
+          "description": "Flaky test at src/__tests__/components/home/trending-section.test.tsx:216",
+          "category": "Test Infrastructure",
+          "effort_hours": 1.5,
+          "impact_score": 6,
+          "priority": "high",
+          "status": "pending",
+          "blockers": [],
+          "files_affected": [
+            "src/__tests__/components/home/trending-section.test.tsx"
+          ],
+          "related_docs": [
+            "docs/operations/todo.md"
+          ],
+          "tags": [
+            "test",
+            "flaky"
+          ],
+          "created_at": "2025-12-23",
+          "last_updated": "2026-01-13"
+        },
+        {
+          "id": "test-flaky-e0c9o1v3o",
+          "title": "Fix aria-selected not updating in tests",
+          "description": "Flaky test at src/__tests__/components/home/trending-section.test.tsx:448",
+          "category": "Test Infrastructure",
+          "effort_hours": 1,
+          "impact_score": 5,
+          "priority": "high",
+          "status": "pending",
+          "blockers": [],
+          "files_affected": [
+            "src/__tests__/components/home/trending-section.test.tsx"
+          ],
+          "related_docs": [
+            "docs/operations/todo.md"
+          ],
+          "tags": [
+            "test",
+            "flaky"
+          ],
+          "created_at": "2025-12-23",
+          "last_updated": "2026-01-13"
+        }
+      ]
+    }
+  ],
+  "statistics": {
+    "total_tasks": 237,
+    "ready_to_start": 118,
+    "blocked": 0,
+    "in_progress": 0,
+    "completed": 119,
+    "total_effort_hours": 4.5
+  },
+  "recent_git_activity": [
+    "b315f660 fix: Address critical bugs in backlog automation system",
+    "e620d060 feat: Implement Backlog Intelligence System (3-layer automation)",
+    "f3579c02 Merge branch 'preview' of https://github.com/dcyfr/dcyfr-labs into preview",
+    "a56fcfe5 fix(layout): adjust hero container width for improved responsiveness and remove unused mobile nav section",
+    "2f0857a4 2026.01.11 Cleanup & Update (#187)",
+    "274e5981 ✅ Resolution Complete All 7 code scanning findings have been resolved by optimizing CodeQL suppression syntax:",
+    "484e5cac fix(changelog): correct formatting for tool support and add spacing for clarity",
+    "c76ebef2 chore(changelog): update for 2026.01.11 release with environment variable documentation and DCYFR agent improvements",
+    "2e34e1de fix(layout): remove overflow styles from globals.css refactor(site-header): simplify class names for header component",
+    "027f35f1 fix(layout): prevent horizontal viewport overflow on mobile"
+  ]
+}
