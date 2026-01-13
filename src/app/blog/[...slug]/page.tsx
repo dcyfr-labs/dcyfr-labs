@@ -49,9 +49,9 @@ import {
 } from "@/components/common";
 import { Breadcrumbs } from "@/components/navigation";
 import {
-   ReadingProgress,
-   LazyGiscusComments,
-   ViewTracker,
+  ReadingProgress,
+  LazyGiscusComments,
+  ViewTracker,
 } from "@/components/features";
 
 // Enable Incremental Static Regeneration with 1 hour revalidation
@@ -205,6 +205,9 @@ export default async function PostPage({
           readingTime: post.readingTime.minutes,
         }}
       />
+
+      {/* Auto-expand collapsed components when navigating to anchor links */}
+      <AnchorExpansionWrapper />
 
       <ReadingProgress />
       <SmoothScrollToHash />

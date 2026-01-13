@@ -35,6 +35,7 @@ import {
   SidebarVisibilityProvider,
   HideWhenSidebarVisible,
   ReadingProgressBar,
+  AnchorExpansionWrapper,
 } from "@/components/blog";
 import {
   ViewCountDisplay,
@@ -222,6 +223,9 @@ export default async function PostPage({
           readingTime: post.readingTime.minutes,
         }}
       />
+
+      {/* Auto-expand collapsed components when navigating to anchor links */}
+      <AnchorExpansionWrapper />
 
       <ReadingProgressBar />
       <SmoothScrollToHash />
