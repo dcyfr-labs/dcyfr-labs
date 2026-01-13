@@ -120,18 +120,19 @@ describe("ContactForm - Role Parameter", () => {
       expect(roleInput).toHaveAttribute("aria-hidden", "true");
     });
 
-    it("should populate hidden role field from URL parameter", () => {
+    it("should populate hidden role field from URL parameter", async () => {
       const mockGet = vi.fn((key: string) => (key === "role" ? "developer" : null));
       const mockSearchParams = { get: mockGet };
       vi.mocked(useSearchParams).mockReturnValue(mockSearchParams as any);
 
       render(<ContactForm />);
 
-      // Wait a bit for useEffect to run
-      setTimeout(() => {
+      // Wait for the role input to be populated
+      await waitFor(() => {
         const roleInput = document.querySelector('input[name="role"]') as HTMLInputElement;
+        expect(roleInput).toBeInTheDocument();
         expect(roleInput.value).toBe("developer");
-      }, 100);
+      });
     });
   });
 });

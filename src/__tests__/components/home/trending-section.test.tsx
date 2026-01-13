@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi } from "vitest";
 import { TrendingSection } from "@/components/home";
 import type { Post } from "@/data/posts";
@@ -213,8 +214,7 @@ describe("TrendingSection", () => {
     });
   });
 
-  // TODO: Tab switching tests flaky - needs investigation of Radix Tabs behavior
-  describe.skip("Tab Switching", () => {
+  describe("Tab Switching", () => {
     it("should switch to Topics tab when clicked", async () => {
       render(
         <TrendingSection
@@ -225,17 +225,19 @@ describe("TrendingSection", () => {
       );
 
       const topicsTab = screen.getByRole("tab", { name: /topics/i });
-      fireEvent.click(topicsTab);
+      await userEvent.click(topicsTab);
 
-      // Topics panel content should be visible
+      // Wait for content visibility
       await waitFor(() => {
         expect(screen.getByTestId("trending-topics-panel")).toBeInTheDocument();
       });
 
-      expect(screen.getByTestId("topics-count")).toHaveTextContent("3");
+      // Wait for aria-selected attribute update
+      await waitFor(() => {
+        expect(topicsTab).toHaveAttribute("aria-selected", "true");
+      });
 
-      // Topics tab should be selected
-      expect(topicsTab).toHaveAttribute("aria-selected", "true");
+      expect(screen.getByTestId("topics-count")).toHaveTextContent("3");
     });
 
     it("should switch to Projects tab when clicked", async () => {
@@ -249,17 +251,19 @@ describe("TrendingSection", () => {
       );
 
       const projectsTab = screen.getByRole("tab", { name: /projects/i });
-      fireEvent.click(projectsTab);
+      await userEvent.click(projectsTab);
 
-      // Projects panel content should be visible
+      // Wait for content visibility
       await waitFor(() => {
         expect(screen.getByTestId("trending-projects-panel")).toBeInTheDocument();
       });
 
-      expect(screen.getByTestId("projects-count")).toHaveTextContent("2");
+      // Wait for aria-selected attribute update
+      await waitFor(() => {
+        expect(projectsTab).toHaveAttribute("aria-selected", "true");
+      });
 
-      // Projects tab should be selected
-      expect(projectsTab).toHaveAttribute("aria-selected", "true");
+      expect(screen.getByTestId("projects-count")).toHaveTextContent("2");
     });
 
     it("should handle multiple tab switches", async () => {
@@ -277,25 +281,25 @@ describe("TrendingSection", () => {
       const projectsTab = screen.getByRole("tab", { name: /projects/i });
 
       // Switch to Topics
-      fireEvent.click(topicsTab);
+      await userEvent.click(topicsTab);
       await waitFor(() => {
         expect(screen.getByTestId("trending-topics-panel")).toBeInTheDocument();
+        expect(topicsTab).toHaveAttribute("aria-selected", "true");
       });
-      expect(topicsTab).toHaveAttribute("aria-selected", "true");
 
       // Switch to Projects
-      fireEvent.click(projectsTab);
+      await userEvent.click(projectsTab);
       await waitFor(() => {
         expect(screen.getByTestId("trending-projects-panel")).toBeInTheDocument();
+        expect(projectsTab).toHaveAttribute("aria-selected", "true");
       });
-      expect(projectsTab).toHaveAttribute("aria-selected", "true");
 
       // Switch back to Posts
-      fireEvent.click(postsTab);
+      await userEvent.click(postsTab);
       await waitFor(() => {
         expect(screen.getByTestId("trending-posts-panel")).toBeInTheDocument();
+        expect(postsTab).toHaveAttribute("aria-selected", "true");
       });
-      expect(postsTab).toHaveAttribute("aria-selected", "true");
     });
   });
 
@@ -445,8 +449,7 @@ describe("TrendingSection", () => {
       expect(screen.getAllByRole("tab")).toHaveLength(3);
     });
 
-    // TODO: Tab switching in tests appears async - Radix Tabs not updating aria-selected
-    it.skip("should mark active tab with aria-selected", async () => {
+    it("should mark active tab with aria-selected", async () => {
       render(
         <TrendingSection
           posts={mockPosts}
@@ -456,16 +459,22 @@ describe("TrendingSection", () => {
       );
 
       const postsTab = screen.getByRole("tab", { name: /posts/i });
-      expect(postsTab).toHaveAttribute("aria-selected", "true");
-
-      // Switch to Topics
       const topicsTab = screen.getByRole("tab", { name: /topics/i });
-      fireEvent.click(topicsTab);
 
+      // Wait for initial render - Radix Tabs hydration
+      await waitFor(() => {
+        expect(postsTab).toHaveAttribute("aria-selected", "true");
+        expect(topicsTab).toHaveAttribute("aria-selected", "false");
+      });
+
+      // Switch to Topics using userEvent
+      await userEvent.click(topicsTab);
+
+      // Wait for both tabs to update (React batched updates)
       await waitFor(() => {
         expect(topicsTab).toHaveAttribute("aria-selected", "true");
+        expect(postsTab).toHaveAttribute("aria-selected", "false");
       });
-      expect(postsTab).toHaveAttribute("aria-selected", "false");
     });
 
     it("should support keyboard navigation between tabs", () => {

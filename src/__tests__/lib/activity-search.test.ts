@@ -237,30 +237,70 @@ describe("searchActivities", () => {
 // SEARCH PERFORMANCE TESTS
 // ============================================================================
 
-// TODO: Performance tests are environment-dependent and flaky in CI
-describe.skip("searchActivities - Performance", () => {
-  it("should complete search in <100ms for 1000 items", () => {
+describe("searchActivities - Performance", () => {
+  // Environment-aware thresholds: 3x margin for CI environments
+  const getPerformanceThreshold = (baseMs: number): number => {
+    const isCI = Boolean(
+      process.env.CI ||
+      process.env.GITHUB_ACTIONS ||
+      process.env.VERCEL_ENV === "preview"
+    );
+    return isCI ? baseMs * 3 : baseMs;
+  };
+
+  // Warmup to eliminate cold start penalty from JIT compilation
+  const warmupSearch = (dataset: ActivityItem[], index: ReturnType<typeof createSearchIndex>) => {
+    for (let i = 0; i < 3; i++) {
+      searchActivities(dataset, "warmup query", index);
+    }
+  };
+
+  it("should complete search in reasonable time for 1000 items", () => {
     const largeDataset = generateLargeDataset(1000);
     const index = createSearchIndex(largeDataset);
 
-    const startTime = performance.now();
-    searchActivities(largeDataset, "TypeScript Tutorial", index);
-    const endTime = performance.now();
+    // Warmup: eliminate cold start penalty
+    warmupSearch(largeDataset, index);
 
-    const duration = endTime - startTime;
-    expect(duration).toBeLessThan(100);
+    // Run multiple iterations for statistical reliability
+    const durations: number[] = [];
+    for (let i = 0; i < 5; i++) {
+      const startTime = performance.now();
+      searchActivities(largeDataset, "TypeScript Tutorial", index);
+      const endTime = performance.now();
+      durations.push(endTime - startTime);
+    }
+
+    // Use median to remove outliers
+    const sorted = [...durations].sort((a, b) => a - b);
+    const medianDuration = sorted[Math.floor(sorted.length / 2)];
+    const threshold = getPerformanceThreshold(100);
+
+    expect(medianDuration).toBeLessThan(threshold);
   });
 
-  it("should complete complex search in <100ms for 1000 items", () => {
+  it("should complete complex search in reasonable time for 1000 items", () => {
     const largeDataset = generateLargeDataset(1000);
     const index = createSearchIndex(largeDataset);
 
-    const startTime = performance.now();
-    searchActivities(largeDataset, 'tag:tag-1 source:blog -github "Tutorial"', index);
-    const endTime = performance.now();
+    // Warmup: eliminate cold start penalty
+    warmupSearch(largeDataset, index);
 
-    const duration = endTime - startTime;
-    expect(duration).toBeLessThan(100);
+    // Run multiple iterations for statistical reliability
+    const durations: number[] = [];
+    for (let i = 0; i < 5; i++) {
+      const startTime = performance.now();
+      searchActivities(largeDataset, 'tag:tag-1 source:blog -github "Tutorial"', index);
+      const endTime = performance.now();
+      durations.push(endTime - startTime);
+    }
+
+    // Use median to remove outliers
+    const sorted = [...durations].sort((a, b) => a - b);
+    const medianDuration = sorted[Math.floor(sorted.length / 2)];
+    const threshold = getPerformanceThreshold(100);
+
+    expect(medianDuration).toBeLessThan(threshold);
   });
 });
 

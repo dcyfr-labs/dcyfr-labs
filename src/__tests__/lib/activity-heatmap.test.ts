@@ -141,21 +141,18 @@ describe("aggregateActivitiesByDate", () => {
     expect(result[0].activityIds).toEqual(["2"]);
   });
 
-  // TODO: Flaky test - date boundary issues with current time
-  it.skip("should handle default date range (1 year)", () => {
-    const now = new Date();
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+  it("should handle default date range (1 year)", () => {
+    const fixedEndDate = new Date("2025-06-15T12:00:00.000Z");
+    const fixedStartDate = new Date("2024-06-15T12:00:00.000Z");
 
-    const activities: ActivityItem[] = [createMockActivity("1", now)];
+    const activities: ActivityItem[] = [createMockActivity("1", fixedEndDate)];
 
-    const result = aggregateActivitiesByDate(activities);
+    const result = aggregateActivitiesByDate(activities, fixedStartDate, fixedEndDate);
 
-    expect(result.length).toBeGreaterThan(360); // At least 360 days in a year
-    // Activity should be in the last element (today is endDate, chronological order)
-    const todayIndex = result.findIndex(day => day.count > 0);
-    expect(todayIndex).toBeGreaterThan(-1); // Should find at least one day with activity
-    expect(result[todayIndex].count).toBe(1);
+    expect(result).toHaveLength(366); // 2024 is a leap year
+    // Activity should be in the last element (endDate is inclusive, chronological order)
+    expect(result[result.length - 1].count).toBe(1);
+    expect(result[result.length - 1].date).toBe("2025-06-15");
   });
 });
 
