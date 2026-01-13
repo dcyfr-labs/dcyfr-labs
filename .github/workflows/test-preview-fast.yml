@@ -1,18 +1,27 @@
-name: Test
+name: Test (Preview - Fast Track)
+
+# Fast-track test workflow for preview branch
+# Optimized for quick feedback: Lint + TypeCheck + Unit Tests + Build only
+# Skips E2E, Lighthouse, and heavy security scans (deferred to main branch)
+#
+# Expected total time: 12-15 minutes (vs 40+ minutes for full suite)
+#
+# To enable: Keep this file active for preview branch
+# To force E2E on preview: Add "e2e-required" label to PR
 
 on:
   push:
-    branches: [main]
+    branches: [preview]
     paths:
       - 'src/**'
       - 'e2e/**'
       - 'tests/**'
       - 'package*.json'
-      - '.github/workflows/test.yml'
+      - '.github/workflows/test-preview-fast.yml'
   pull_request:
-    branches: [main]
+    branches: [preview]
 
-# Cancel in-progress runs for same workflow on same PR/branch
+# Cancel in-progress runs for same PR/branch
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -22,7 +31,7 @@ jobs:
   setup:
     name: Setup Dependencies
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 3
     permissions:
       contents: read
 
@@ -45,12 +54,12 @@ jobs:
           path: node_modules
           key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
 
-  # Quick checks - fail fast
+  # Quick checks - fail fast (lint + typecheck: ~2 min)
   quality:
     needs: setup
-    name: Code Quality
+    name: Lint & Type Check
     runs-on: ubuntu-latest
-    timeout-minutes: 3  # Reduced from 5
+    timeout-minutes: 3
     permissions:
       contents: read
 
@@ -69,18 +78,19 @@ jobs:
           path: node_modules
           key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
           fail-on-cache-miss: true
-      
+
       - name: Lint and typecheck in parallel
         run: |
           npm run lint:ci &
           npm run typecheck &
           wait
-  
+
+  # Unit tests only - NO E2E (fast: ~6 min)
   unit:
     needs: setup
-    name: Unit & Integration Tests
+    name: Unit Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 8  # Reduced from 10
+    timeout-minutes: 8
     permissions:
       contents: read
 
@@ -99,24 +109,16 @@ jobs:
           path: node_modules
           key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
           fail-on-cache-miss: true
-      
-      - name: Run unit tests with coverage
-        run: npm run test:coverage
-      
-      - name: Upload coverage to Codecov
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/preview'
-        uses: codecov/codecov-action@v5
-        with:
-          files: ./coverage/lcov.info
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: false  # Don't fail CI if Codecov has issues
 
-  bundle:
+      - name: Run unit tests (no coverage for preview)
+        run: npm run test:run
+
+  # Build validation - ensure production build works (~5 min)
+  build:
     needs: setup
-    name: Bundle Size Check
+    name: Production Build
     runs-on: ubuntu-latest
-    timeout-minutes: 8  # Reduced from 10
+    timeout-minutes: 8
     permissions:
       contents: read
 
@@ -135,36 +137,23 @@ jobs:
           path: node_modules
           key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
           fail-on-cache-miss: true
-      
-      # Add Next.js build cache for faster builds with cross-branch fallback
-      - name: Cache Next.js build
-        uses: actions/cache@v4
-        with:
-          path: |
-            .next/cache
-            .next
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-build-v1
-          restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-build-v1-
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
-            ${{ runner.os }}-nextjs-build-v1-
-            ${{ runner.os }}-nextjs-
 
       - name: Build production bundle
         run: npm run build
         env:
           NODE_ENV: production
 
-      - name: Check bundle sizes
-        run: npm run perf:check
-
-  e2e:
+  # Optional: E2E tests only if specifically requested (label: e2e-required)
+  # This job is conditional and can be triggered manually via label
+  e2e-optional:
     needs: setup
-    name: E2E Tests
+    name: E2E Tests (Optional)
     runs-on: ubuntu-latest
-    timeout-minutes: 12  # Reduced from 15
+    timeout-minutes: 15
     permissions:
       contents: read
+    # Only run if PR has "e2e-required" label (optional, deferred to main by default)
+    if: contains(github.event.pull_request.labels.*.name, 'e2e-required')
 
     steps:
       - name: Checkout code
@@ -181,28 +170,28 @@ jobs:
           path: node_modules
           key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
           fail-on-cache-miss: true
-      
+
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
-      
+
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
-      
+
       - name: Install Playwright deps only
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps
-      
+
       - name: Run E2E tests
         run: npm run test:e2e
         env:
           CI: true
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
-      
+
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v5
@@ -210,11 +199,31 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-      
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: test-results
-          path: test-results/
-          retention-days: 30
+
+  # Summary job - shows results
+  summary:
+    needs: [quality, unit, build]
+    name: Test Summary
+    runs-on: ubuntu-latest
+    if: always()
+    permissions:
+      contents: read
+
+    steps:
+      - name: Generate summary
+        run: |
+          echo "### ✅ Preview Test Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Lint & Type Check:** ${{ needs.quality.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Unit Tests:** ${{ needs.unit.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Build:** ${{ needs.build.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**E2E Tests:** ⏭️ Deferred to main branch (add 'e2e-required' label to force)" >> $GITHUB_STEP_SUMMARY
+          echo "**Lighthouse:** ⏭️ Deferred to main branch" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ needs.quality.result }}" == "failure" ] || [ "${{ needs.unit.result }}" == "failure" ] || [ "${{ needs.build.result }}" == "failure" ]; then
+            echo "❌ **Status:** Failed - Fix issues before merging to main" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "✅ **Status:** Passed - Ready for merge to main" >> $GITHUB_STEP_SUMMARY
+          fi
