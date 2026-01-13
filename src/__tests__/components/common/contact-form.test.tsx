@@ -130,7 +130,7 @@ describe("ContactForm - Role Parameter", () => {
       // Wait for the role input to be populated
       await waitFor(() => {
         const roleInput = document.querySelector('input[name="role"]') as HTMLInputElement;
-        expect(roleInput).toBeTruthy();
+        expect(roleInput).toBeInTheDocument();
         expect(roleInput.value).toBe("developer");
       });
     });
