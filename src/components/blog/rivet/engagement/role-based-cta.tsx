@@ -93,7 +93,7 @@ export function RoleBasedCTA({
   return (
     <div
       className={cn(
-        "flex flex-col gap-4 p-6 rounded-lg border transition-all my-8 max-w-md",
+        "flex items-center gap-6 p-6 rounded-lg border transition-all my-8 w-full",
         BORDERS.card,
         theme.bgColor,
         theme.borderColor,
@@ -103,33 +103,37 @@ export function RoleBasedCTA({
       data-testid={`role-based-cta-${role}`}
     >
       {/* Icon */}
-      <div className="flex items-center gap-3">
-        <Icon className={cn("h-6 w-6", theme.color)} aria-hidden="true" />
-        <h3 className={cn(TYPOGRAPHY.h3.standard)}>
-          {title}
-        </h3>
+      <div className="flex-shrink-0">
+        <Icon className={cn("h-8 w-8", theme.color)} aria-hidden="true" />
       </div>
 
-      {/* Description */}
-      <p className={cn("text-sm leading-relaxed text-muted-foreground flex-1")}>
-        {description}
-      </p>
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        <h3 className={cn(TYPOGRAPHY.h3.standard, "mb-2")}>
+          {title}
+        </h3>
+        <p className={cn("text-sm leading-relaxed text-muted-foreground")}>
+          {description}
+        </p>
+      </div>
 
       {/* Button */}
-      <a
-        href={buttonHref}
-        onClick={handleClick}
-        className={cn(
-          "inline-flex items-center justify-center px-4 py-2 rounded-md",
-          "text-sm font-medium transition-colors",
-          "bg-primary text-primary-foreground hover:bg-primary/90",
-          "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background"
-        )}
-        role="button"
-        aria-label={`${buttonText} for ${title}`}
-      >
-        {buttonText}
-      </a>
+      <div className="flex-shrink-0">
+        <a
+          href={buttonHref}
+          onClick={handleClick}
+          className={cn(
+            "inline-flex items-center justify-center px-6 py-3 rounded-md whitespace-nowrap",
+            "text-sm font-medium transition-colors",
+            "bg-primary text-primary-foreground hover:bg-primary/90",
+            "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background"
+          )}
+          role="button"
+          aria-label={`${buttonText} for ${title}`}
+        >
+          {buttonText}
+        </a>
+      </div>
     </div>
   );
 }

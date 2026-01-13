@@ -331,11 +331,11 @@ describe("RoleBasedCTA", () => {
   });
 
   describe("Responsive Behavior", () => {
-    it("should apply max-width constraint", () => {
+    it("should be full-width", () => {
       const { container } = render(<RoleBasedCTA {...defaultProps} />);
       
       const card = container.querySelector("[data-testid='role-based-cta-executive']");
-      expect(card?.className).toMatch(/max-w-md/);
+      expect(card?.className).toMatch(/w-full/);
     });
 
     it("should have margin on y-axis", () => {
@@ -343,6 +343,13 @@ describe("RoleBasedCTA", () => {
       
       const card = container.querySelector("[data-testid='role-based-cta-executive']");
       expect(card?.className).toMatch(/my-8/);
+    });
+
+    it("should use horizontal layout with flexbox", () => {
+      const { container } = render(<RoleBasedCTA {...defaultProps} />);
+      
+      const card = container.querySelector("[data-testid='role-based-cta-executive']");
+      expect(card?.className).toMatch(/flex items-center/);
     });
   });
 
