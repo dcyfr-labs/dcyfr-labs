@@ -49,12 +49,12 @@ import {
   SmoothScrollToHash,
   TableOfContents,
   TableOfContentsSidebar,
+  PostInteractions,
 } from "@/components/common";
 import { Breadcrumbs } from "@/components/navigation";
 import { ArticleReadingProgress } from "@/components/app";
 import { LazyGiscusComments } from "@/components/features";
 import { ViewTracker } from "@/components/features";
-import { PostInteractions } from "@/components/common";
 
 // Enable Incremental Static Regeneration with 1 hour revalidation
 export const revalidate = 3600; // 1 hour in seconds

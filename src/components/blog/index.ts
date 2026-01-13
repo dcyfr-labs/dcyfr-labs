@@ -46,6 +46,7 @@ export { SeriesNavigation } from "./post/series-navigation";
 export { SeriesHeader } from "./series-header";
 export { SeriesCard } from "./series-card";
 export { ContentTypeToggle } from "./content-type-toggle";
+export { AnchorExpansionWrapper } from "./anchor-expansion-wrapper";
 
 // Sidebar context for hiding duplicate content
 

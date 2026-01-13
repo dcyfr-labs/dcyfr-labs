@@ -32,6 +32,7 @@ import {
   BlogAnalyticsTracker,
   SidebarVisibilityProvider,
   HideWhenSidebarVisible,
+  AnchorExpansionWrapper,
 } from "@/components/blog";
 import {
   ViewCountDisplay,
@@ -48,9 +49,9 @@ import {
 } from "@/components/common";
 import { Breadcrumbs } from "@/components/navigation";
 import {
-  ReadingProgress,
-  LazyGiscusComments,
-  ViewTracker,
+   ReadingProgress,
+   LazyGiscusComments,
+   ViewTracker,
 } from "@/components/features";
 
 // Enable Incremental Static Regeneration with 1 hour revalidation
