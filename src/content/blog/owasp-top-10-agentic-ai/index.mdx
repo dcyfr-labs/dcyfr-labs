@@ -86,7 +86,23 @@ According to Gartner, by 2028, 33% of enterprise software will incorporate agent
 
 The OWASP Agentic Top 10 reflects real incidents already happening in production environments. From the EchoLeak attack on Microsoft Copilot to supply chain compromises in Amazon Q, attackers are actively exploiting these vulnerabilities.
 
-According to Forrester's 2026 Cybersecurity Predictions, agentic AI deployments will likely trigger major security breaches and lead to employee dismissals if organizations fail to implement proper safeguards. The research firm emphasizes that these breaches stem from "cascading failures" in autonomous systems, not individual mistakes.[^10] Yet according to PwC and McKinsey surveys, 79% of organizations report at least some level of AI agent adoption, with 62% already experimenting with or scaling agentic AI systems.[^11]
+<CollapsibleSection
+  id="adoption-statistics"
+  title="AI Agent Adoption Statistics (2025-2026)"
+  defaultExpanded={false}
+>
+
+According to major research firms, agentic AI adoption is accelerating faster than security controls:
+
+- **PwC & McKinsey Surveys**: 79% of organizations report at least some level of AI agent adoption, with 62% already experimenting with or scaling agentic AI systems in production
+- **Forrester's 2026 Cybersecurity Predictions**: Agentic AI deployments will likely trigger major security breaches and lead to employee dismissals if organizations fail to implement proper safeguards. The research firm emphasizes that these breaches stem from "cascading failures" in autonomous systems, not individual mistakes
+- **Gartner Analysis**: By 2028, 33% of enterprise software will incorporate agentic AI, and 15% of daily business decisions will be handled autonomously. That's up from less than 1% in 2024
+
+The challenge is clear: **we're deploying these systems faster than we're securing them.** Yet the same capabilities that make agents powerful make them dangerous when compromised. A single vulnerability can cascade across interconnected systems, amplifying traditional security risks and introducing entirely new attack vectors.
+
+</CollapsibleSection>
+
+Yet according to Forrester, most organizations lack the security controls to prevent what the firm predicts will be "major breaches and employee dismissals" stemming from agentic AI compromises in 2026. The research firm emphasizes that these breaches stem from "cascading failures" in autonomous systems, not individual mistakes.[^10] Yet according to PwC and McKinsey surveys, 79% of organizations report at least some level of AI agent adoption, with 62% already experimenting with or scaling agentic AI systems.[^11]
 
 <KeyTakeaway variant="security" title="Defense in Depth for AI">
   No single control prevents all attacks. Layer **least agency** (minimize
@@ -113,14 +129,22 @@ The OWASP framework emphasizes foundational principles organizations must implem
 
 The OWASP Agentic Top 10 builds on the organization's existing **OWASP Top 10 for Large Language Models (LLMs)**, recognizing that agentic systems amplify traditional LLM vulnerabilities through autonomy and multi-step execution.
 
-It aligns with other major frameworks:
+<CollapsibleSection
+  id="framework-comparisons"
+  title="How OWASP Agentic Relates to Other Security Frameworks"
+  defaultExpanded={false}
+>
 
-- **NIST AI Risk Management Framework**: Provides governance structure and risk management processes
-- **MITRE ATLAS**: Catalogs specific adversarial tactics and attack techniques against AI systems
-- **ISO 42001**: Establishes international standards for AI management systems
-- **EU AI Act**: Sets regulatory requirements for high-risk AI applications
+The Agentic Top 10 aligns with major security frameworks across the industry:
 
-OWASP has also mapped the Agentic Top 10 to its **Non-Human Identities (NHI) Top 10**, recognizing that agents are autonomous non-human identities requiring dedicated security controls around credential management, privilege scoping, and lifecycle governance.
+- **NIST AI Risk Management Framework**: Provides governance structure and risk management processes for AI systems across organizations
+- **MITRE ATLAS**: Catalogs specific adversarial tactics and attack techniques against AI systems, building on MITRE ATT&CK
+- **ISO 42001**: Establishes international standards for AI management systems and governance
+- **EU AI Act**: Sets regulatory requirements for high-risk AI applications in the European market
+
+OWASP has also mapped the Agentic Top 10 to its **Non-Human Identities (NHI) Top 10**, recognizing that agents are autonomous non-human identities requiring dedicated security controls around credential management, privilege scoping, and lifecycle governance. This connection is critical for enterprises implementing comprehensive identity and access management strategies across human and non-human entities.
+
+</CollapsibleSection>
 
 <RoleBasedCTA
   role="security"
@@ -460,7 +484,13 @@ The attacks aren't theoretical. From Microsoft Copilot's **EchoLeak vulnerabilit
 
 </Alert>
 
-**Emerging Systemic Risks** (Building Threat Landscape)
+<CollapsibleSection
+  id="emerging-threats-technical-analysis"
+  title="Emerging Systemic Risks - Technical Analysis"
+  defaultExpanded={false}
+>
+
+These threats are building in real-world systems and pose increasing risks as agent deployments scale:
 
 | Risk Category                 | Attack Vector                                          | Real-World Impact                                               | Detection Difficulty                          |
 | ----------------------------- | ------------------------------------------------------ | --------------------------------------------------------------- | --------------------------------------------- |
@@ -472,7 +502,15 @@ The attacks aren't theoretical. From Microsoft Copilot's **EchoLeak vulnerabilit
 
 **ASI09: Trust Exploitation** leverages automation bias--our tendency to trust confident AI recommendations. When a compromised finance agent authorizes fraudulent payments with compelling justification, the human approver becomes the vulnerability. Traditional security tools can't detect manipulation of human decision-making.
 
+</CollapsibleSection>
+
 ### The Complete OWASP Agentic Top 10 Framework
+
+<CollapsibleSection
+  id="complete-framework-reference"
+  title="Quick Reference: Complete List of 10 Risks"
+  defaultExpanded={false}
+>
 
 1. **ASI01: Agent Goal Hijack** - Prompt injection redirects agent objectives (EchoLeak CVE-2025-32711)
 2. **ASI02: Tool Misuse and Exploitation** - Legitimate tools weaponized through manipulation
@@ -484,6 +522,10 @@ The attacks aren't theoretical. From Microsoft Copilot's **EchoLeak vulnerabilit
 8. **ASI08: Cascading Failures** - Single faults propagating across autonomous systems
 9. **ASI09: Human-Agent Trust Exploitation** - Automation bias exploited to approve malicious actions
 10. **ASI10: Rogue Agents** - Persistent harmful behavior outlasting initial compromise
+
+See the detailed risk accordion sections above for comprehensive analysis of each vulnerability, real-world examples, and mitigation strategies.
+
+</CollapsibleSection>
 
 ### Your Action Plan: Where to Start
 
@@ -526,6 +568,42 @@ Design assuming components will fail or be compromised. Implement blast-radius c
 >
 
 Require human approval for privileged operations, irreversible changes, or goal-modifying decisions. The seconds of friction prevent hours of incident response.
+
+</CollapsibleSection>
+
+<CollapsibleSection
+  id="getting-started-checklist"
+  title="Getting Started: First 30 Days Security Checklist"
+  defaultExpanded={false}
+>
+
+Not sure where to begin? Start with these foundational steps:
+
+**Week 1: Inventory & Assessment**
+- Enumerate all agentic AI deployments (approved and shadow IT)
+- Document what each agent can access (databases, APIs, email, cloud resources)
+- Identify agents handling sensitive data or critical workflows
+- Note which agents coordinate with other agents
+
+**Week 2: Access Control Review**
+- Map privilege boundaries for each agent
+- Check for credential sharing or inherited permissions
+- Identify delegation chains that may exceed intended scope
+- Document the blast radius if each agent is compromised
+
+**Week 3: Observability & Logging**
+- Implement comprehensive logging of agent actions and tool invocations
+- Set up monitoring for anomalous agent behavior
+- Create dashboards for goal changes, memory modifications, and privilege escalations
+- Establish baselines for normal agent activity
+
+**Week 4: Protective Controls**
+- Establish human-in-the-loop approvals for high-impact actions
+- Configure kill switches for emergency agent shutdown
+- Test rollback procedures for compromised agents
+- Document incident response playbooks for agentic AI breaches
+
+After these initial 30 days, you'll have foundational visibility and controls that address 70% of OWASP risks.
 
 </CollapsibleSection>
 
@@ -632,11 +710,118 @@ Test AI agents using: adversarial prompt injection attempts to hijack goals, val
 
 ## Further Reading
 
-For deeper exploration of agentic AI security, these resources provide comprehensive frameworks and ongoing research:
+<CollapsibleSection
+  id="cve-technical-details"
+  title="CVE Technical Deep Dive"
+  defaultExpanded={false}
+>
 
-- **[OWASP Top 10 for Agentic Applications](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/)** - The complete framework with detailed mitigation strategies
-- **[OWASP Top 10 for LLMs](https://owasp.org/www-project-top-10-for-large-language-model-applications/)** - Foundation security principles for language models
-- **[MITRE ATLAS](https://atlas.mitre.org/)** - Adversarial tactics and techniques for AI systems
+### CVE-2025-32711: EchoLeak - Microsoft 365 Copilot Zero-Click Data Exfiltration
+
+**Severity:** Critical (CVSS 9.3)  
+**Discovered:** June 2025 by Aim Security  
+**Patched:** May 2025
+
+**What happened:** A crafted email containing hidden prompt injection instructions caused Microsoft 365 Copilot to silently exfiltrate confidential emails, files, and chat logs without user interaction. The agent interpreted attacker commands embedded in the message as legitimate goals and executed them.
+
+**Attack mechanism:**
+1. Attacker sends email with hidden instructions to target organization
+2. Copilot processes email and extracts attachments/content
+3. Hidden instructions redirect Copilot to collect sensitive data
+4. Data exfiltrated without user knowledge or approval
+
+**Impact:** Complete compromise of email, OneDrive, and Teams data accessible to the victim's account.
+
+---
+
+### CVE-2025-55319: Visual Studio Code Agentic AI Command Injection
+
+**Severity:** High (CVSS 8.8)  
+**Discovered:** September 2025 by ZeroPath Security  
+**Affected:** VS Code agentic AI workflows
+
+**What happened:** Command injection vulnerability in VS Code's agentic AI features allowed remote attackers to execute arbitrary commands on developers' machines through prompt injections hidden in README files, code comments, or repository metadata.
+
+**Attack mechanism:**
+1. Attacker creates malicious repository with hidden command injection payload in README or code comments
+2. Developer uses VS Code's agentic AI features to analyze or generate code from the repository
+3. Agent processes malicious content and interprets it as a legitimate instruction
+4. Arbitrary commands executed on developer's local machine
+
+**Impact:** Remote code execution (RCE) enabling malware installation, credential theft, and supply chain attacks.
+
+---
+
+### Amazon Q Supply Chain Compromise (July 2025)
+
+**Affected:** Amazon Q coding assistant for VS Code (v1.84.0)  
+**Downloads compromised:** 950,000+  
+**Patched:** v1.85.0
+
+**What happened:** An attacker submitted a malicious pull request to Amazon Q that was merged into production. The poisoned prompt instructed the AI to delete user files and AWS cloud resources.
+
+**Attack mechanism:**
+1. Attacker submits PR with malicious prompt injection in code comments
+2. PR passes code review (payload not detected as malicious)
+3. Change merged into production Amazon Q version
+4. 950,000 users download compromised version
+5. Agent follows malicious instructions to delete files/resources
+
+**Impact:** Potential data loss and cloud infrastructure destruction for hundreds of thousands of developers.
+
+---
+
+### First Malicious MCP Server (September 2025)
+
+**Package:** fake "postmark-mcp" on npm  
+**Downloads:** ~1,500 in first week before removal  
+**Discovered:** Koi Security
+
+**What happened:** Attackers created a malicious Model Context Protocol (MCP) server impersonating the legitimate Postmark email service. The server quietly added attacker-controlled BCC addresses to outgoing emails, harvesting thousands of messages.
+
+**Attack mechanism:**
+1. Developer installs what appears to be legitimate postmark-mcp package
+2. Agent integrates MCP server into its tool set
+3. When agent composes or sends emails, malicious server intercepts
+4. Server BCC's attacker's email address on all messages
+5. Attacker passively collects all email correspondence
+
+**Impact:** Silent exfiltration of email communications, credential leaks in email bodies, exposure of customer data.
+
+---
+
+These real-world CVEs demonstrate that agentic AI attack vectors are not theoretical—they're being actively weaponized in production systems. Security must be treated as a first-class priority, not an afterthought.
+
+</CollapsibleSection>
+
+<CollapsibleSection
+  id="additional-resources"
+  title="Additional Resources & Research"
+  defaultExpanded={false}
+>
+
+### Official OWASP & Governance Frameworks
+
+- **[OWASP Top 10 for Agentic Applications](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/)** - The complete framework with detailed mitigation strategies for all 10 risks
+- **[OWASP Top 10 for LLMs](https://owasp.org/www-project-top-10-for-large-language-model-applications/)** - Foundation security principles for language models that agentic systems build upon
+- **[OWASP Non-Human Identities (NHI) Top 10](https://owasp.org/www-project-nhi/)** - Specialized framework for securing autonomous agents as non-human entities
+
+### Complementary Security Frameworks
+
+- **[NIST AI Risk Management Framework](https://airc.nist.gov/mitigating-ai-risks-and-managing-change)** - Governance structure and risk management processes for AI systems
+- **[MITRE ATLAS](https://atlas.mitre.org/)** - Adversarial tactics and techniques for AI systems (AI-specific extension of ATT&CK)
+- **[ISO 42001](https://www.iso.org/standard/81230.html)** - International standards for AI management systems
+- **[EU AI Act](https://eur-lex.europa.eu/eli/reg/2024/1689/oj)** - Regulatory framework for high-risk AI applications in Europe
+
+### Agentic AI Security Research
+
+- **[Aim Security - EchoLeak Research](https://www.aimsecurity.ai/)** - Zero-click prompt injection attacks on Microsoft 365 Copilot
+- **[Johann Rehberger - Embrace The Red](https://embracethered.com/blog/)** - Deep dives into agentic AI vulnerabilities and attack demonstrations
+- **[Snyk - Supply Chain Security for AI](https://snyk.io/blog/malicious-mcp-server-on-npm-postmark-mcp-harvests-emails/)** - Analysis of malicious MCP servers and dependencies
+
+</CollapsibleSection>
+
+For deeper exploration of agentic AI security, see the resources below for comprehensive frameworks and ongoing research:
 
 ---
 
