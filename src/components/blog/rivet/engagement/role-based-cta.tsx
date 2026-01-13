@@ -4,71 +4,42 @@ import * as React from "react";
 import { Briefcase, Code, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-  SPACING,
   TYPOGRAPHY,
-  SEMANTIC_COLORS,
   BORDERS,
-  SHADOWS,
-  ANIMATION,
 } from "@/lib/design-tokens";
 
 /**
- * RoleBasedCTA - Role-specific call-to-action component
+ * RoleBasedCTA - Single role-specific call-to-action card
  *
- * Displays three-tier CTAs for different audience personas (Executive/Developer/Security).
- * Each role has customizable title, description, and button action.
+ * Displays a single CTA card for a specific audience persona (Executive/Developer/Security).
+ * Each instance renders only one card. Multiple instances can be placed in content to show
+ * different roles side-by-side or sequentially.
  *
  * Features:
- * - Responsive grid (mobile: stacked, desktop: 3-column)
+ * - Single card per instance (one role per component)
  * - Card-based design with hover effects
  * - Role-specific icons and color theming
  * - Analytics tracking for CTA clicks
  * - WCAG AA accessible
  * - Design token compliant
  *
- * @example
- * ```tsx
- * <RoleBasedCTA
- *   executive={{
- *     title: "For Executives",
- *     description: "Get the business impact summary",
- *     buttonText: "Schedule Assessment",
- *     buttonHref: "/contact?role=executive"
- *   }}
- *   developer={{
- *     title: "For Developers",
- *     description: "See implementation patterns",
- *     buttonText: "View Code Examples",
- *     buttonHref: "/contact?role=developer"
- *   }}
- *   security={{
- *     title: "For Security Teams",
- *     description: "Access threat models and audits",
- *     buttonText: "Download Checklist",
- *     buttonHref: "/contact?role=security"
- *   }}
- * />
- * ```
+ * Usage: Place multiple instances for different roles
+ * Each instance shows only one card based on the role prop
  */
 
-interface RoleConfig {
-  /** Role-specific title */
+type RoleType = "executive" | "developer" | "security";
+
+interface RoleBasedCTAProps {
+  /** Which role this card represents */
+  role: RoleType;
+  /** Card title */
   title: string;
-  /** Role-specific description */
+  /** Card description */
   description: string;
   /** Button text */
   buttonText: string;
-  /** Button href */
+  /** Button href (usually /contact?role=...) */
   buttonHref: string;
-}
-
-interface RoleBasedCTAProps {
-  /** Executive tier config */
-  executive?: RoleConfig;
-  /** Developer tier config */
-  developer?: RoleConfig;
-  /** Security tier config */
-  security?: RoleConfig;
   /** Optional className */
   className?: string;
 }
@@ -97,12 +68,14 @@ const roleConfig = {
   },
 };
 
-interface RoleCardProps {
-  role: "executive" | "developer" | "security";
-  config: RoleConfig;
-}
-
-function RoleCard({ role, config }: RoleCardProps) {
+export function RoleBasedCTA({
+  role,
+  title,
+  description,
+  buttonText,
+  buttonHref,
+  className,
+}: RoleBasedCTAProps) {
   const theme = roleConfig[role];
   const Icon = theme.icon;
 
@@ -112,7 +85,7 @@ function RoleCard({ role, config }: RoleCardProps) {
       window.gtag("event", "cta_click", {
         cta_type: "role_based",
         role,
-        button_text: config.buttonText,
+        button_text: buttonText,
       });
     }
   };
@@ -120,29 +93,31 @@ function RoleCard({ role, config }: RoleCardProps) {
   return (
     <div
       className={cn(
-        "flex flex-col gap-4 p-6 rounded-lg border transition-all",
+        "flex flex-col gap-4 p-6 rounded-lg border transition-all my-8 max-w-md",
         BORDERS.card,
         theme.bgColor,
         theme.borderColor,
-        theme.hoverBg
+        theme.hoverBg,
+        className
       )}
+      data-testid={`role-based-cta-${role}`}
     >
       {/* Icon */}
       <div className="flex items-center gap-3">
         <Icon className={cn("h-6 w-6", theme.color)} aria-hidden="true" />
         <h3 className={cn(TYPOGRAPHY.h3.standard)}>
-          {config.title}
+          {title}
         </h3>
       </div>
 
       {/* Description */}
       <p className={cn("text-sm leading-relaxed text-muted-foreground flex-1")}>
-        {config.description}
+        {description}
       </p>
 
       {/* Button */}
       <a
-        href={config.buttonHref}
+        href={buttonHref}
         onClick={handleClick}
         className={cn(
           "inline-flex items-center justify-center px-4 py-2 rounded-md",
@@ -151,39 +126,12 @@ function RoleCard({ role, config }: RoleCardProps) {
           "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background"
         )}
         role="button"
-        aria-label={`${config.buttonText} for ${config.title}`}
+        aria-label={`${buttonText} for ${title}`}
       >
-        {config.buttonText}
+        {buttonText}
       </a>
     </div>
   );
 }
 
-export function RoleBasedCTA({
-  executive,
-  developer,
-  security,
-  className,
-}: RoleBasedCTAProps) {
-  // Return null if no roles provided
-  if (!executive && !developer && !security) {
-    return null;
-  }
-
-  return (
-    <div
-      className={cn(
-        `grid gap-${SPACING.content} md:grid-cols-3 my-8`,
-        className
-      )}
-      role="region"
-      aria-label="Role-based call-to-action options"
-    >
-      {executive && <RoleCard role="executive" config={executive} />}
-      {developer && <RoleCard role="developer" config={developer} />}
-      {security && <RoleCard role="security" config={security} />}
-    </div>
-  );
-}
-
-export type { RoleBasedCTAProps, RoleConfig };
+export type { RoleBasedCTAProps };

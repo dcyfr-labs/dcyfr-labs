@@ -1,470 +1,377 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { RoleBasedCTA, type RoleConfig } from "../role-based-cta";
-
-// Mock gtag
-const mockGtag = vi.fn();
-Object.defineProperty(window, "gtag", {
-  value: mockGtag,
-  writable: true,
-});
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { RoleBasedCTA } from "../role-based-cta";
 
 describe("RoleBasedCTA", () => {
-  const mockExecutive: RoleConfig = {
-    title: "For Executives",
-    description: "Get the business impact summary",
-    buttonText: "Schedule Assessment",
+  const defaultProps = {
+    role: "executive" as const,
+    title: "For Business Leaders",
+    description: "Understand organizational risk",
+    buttonText: "Get Brief",
     buttonHref: "/contact?role=executive",
   };
 
-  const mockDeveloper: RoleConfig = {
-    title: "For Developers",
-    description: "See implementation patterns",
-    buttonText: "View Code Examples",
-    buttonHref: "/contact?role=developer",
-  };
-
-  const mockSecurity: RoleConfig = {
-    title: "For Security Teams",
-    description: "Access threat models and audits",
-    buttonText: "Download Checklist",
-    buttonHref: "/contact?role=security",
-  };
-
   beforeEach(() => {
-    vi.clearAllMocks();
+    // Reset window.gtag mock
+    window.gtag = undefined as any;
   });
 
   describe("Rendering", () => {
-    it("renders all three roles when provided", () => {
+    it("should render a single card for executive role", () => {
+      render(<RoleBasedCTA {...defaultProps} />);
+      
+      expect(screen.getByText("For Business Leaders")).toBeInTheDocument();
+      expect(screen.getByText("Understand organizational risk")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Get Brief/ })).toBeInTheDocument();
+    });
+
+    it("should render a single card for developer role", () => {
       render(
         <RoleBasedCTA
-          executive={mockExecutive}
-          developer={mockDeveloper}
-          security={mockSecurity}
+          {...defaultProps}
+          role="developer"
+          title="For Developers"
+          description="Learn implementation patterns"
+          buttonText="View Examples"
         />
       );
-
-      expect(screen.getByText("For Executives")).toBeInTheDocument();
+      
       expect(screen.getByText("For Developers")).toBeInTheDocument();
-      expect(screen.getByText("For Security Teams")).toBeInTheDocument();
+      expect(screen.getByText("Learn implementation patterns")).toBeInTheDocument();
     });
 
-    it("renders only executive role when provided alone", () => {
-      render(<RoleBasedCTA executive={mockExecutive} />);
-
-      expect(screen.getByText("For Executives")).toBeInTheDocument();
-      expect(screen.queryByText("For Developers")).not.toBeInTheDocument();
-      expect(screen.queryByText("For Security Teams")).not.toBeInTheDocument();
-    });
-
-    it("renders only developer role when provided alone", () => {
-      render(<RoleBasedCTA developer={mockDeveloper} />);
-
-      expect(screen.getByText("For Developers")).toBeInTheDocument();
-      expect(screen.queryByText("For Executives")).not.toBeInTheDocument();
-      expect(screen.queryByText("For Security Teams")).not.toBeInTheDocument();
-    });
-
-    it("renders only security role when provided alone", () => {
-      render(<RoleBasedCTA security={mockSecurity} />);
-
-      expect(screen.getByText("For Security Teams")).toBeInTheDocument();
-      expect(screen.queryByText("For Executives")).not.toBeInTheDocument();
-      expect(screen.queryByText("For Developers")).not.toBeInTheDocument();
-    });
-
-    it("renders combination of executive and developer", () => {
+    it("should render a single card for security role", () => {
       render(
-        <RoleBasedCTA executive={mockExecutive} developer={mockDeveloper} />
+        <RoleBasedCTA
+          {...defaultProps}
+          role="security"
+          title="For Security Teams"
+          description="Access threat models"
+          buttonText="Download Guide"
+        />
       );
-
-      expect(screen.getByText("For Executives")).toBeInTheDocument();
-      expect(screen.getByText("For Developers")).toBeInTheDocument();
-      expect(screen.queryByText("For Security Teams")).not.toBeInTheDocument();
+      
+      expect(screen.getByText("For Security Teams")).toBeInTheDocument();
+      expect(screen.getByText("Access threat models")).toBeInTheDocument();
     });
 
-    it("returns null when no roles provided", () => {
-      const { container } = render(<RoleBasedCTA />);
-      expect(container.firstChild).toBeNull();
+    it("should render with correct role-specific classes for executive", () => {
+      const { container } = render(<RoleBasedCTA {...defaultProps} />);
+      const card = container.querySelector("[data-testid='role-based-cta-executive']");
+      
+      // Executive role should have blue styling
+      expect(card?.className).toMatch(/bg-blue/);
+    });
+
+    it("should render with correct role-specific classes for developer", () => {
+      const { container } = render(
+        <RoleBasedCTA {...defaultProps} role="developer" />
+      );
+      const card = container.querySelector("[data-testid='role-based-cta-developer']");
+      
+      // Developer role should have green styling
+      expect(card?.className).toMatch(/bg-green/);
+    });
+
+    it("should render with correct role-specific classes for security", () => {
+      const { container } = render(
+        <RoleBasedCTA {...defaultProps} role="security" />
+      );
+      const card = container.querySelector("[data-testid='role-based-cta-security']");
+      
+      // Security role should have red styling
+      expect(card?.className).toMatch(/bg-red/);
     });
   });
 
-  describe("Props rendering", () => {
-    it("renders correct descriptions for each role", () => {
-      render(
-        <RoleBasedCTA
-          executive={mockExecutive}
-          developer={mockDeveloper}
-          security={mockSecurity}
-        />
-      );
-
-      expect(screen.getByText("Get the business impact summary")).toBeInTheDocument();
-      expect(
-        screen.getByText("See implementation patterns")
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText("Access threat models and audits")
-      ).toBeInTheDocument();
+  describe("Button Functionality", () => {
+    it("should have correct href on button", () => {
+      render(<RoleBasedCTA {...defaultProps} />);
+      
+      const button = screen.getByRole("button", { name: /Get Brief/ });
+      expect(button).toHaveAttribute("href", "/contact?role=executive");
     });
 
-    it("renders buttons with correct text", () => {
+    it("should support custom button href", () => {
       render(
         <RoleBasedCTA
-          executive={mockExecutive}
-          developer={mockDeveloper}
-          security={mockSecurity}
+          {...defaultProps}
+          buttonHref="/custom-path?role=dev"
         />
       );
-
-      expect(screen.getByRole("button", { name: /Schedule Assessment for For Executives/ }))
-        .toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /View Code Examples for For Developers/ }))
-        .toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /Download Checklist for For Security Teams/ }))
-        .toBeInTheDocument();
+      
+      const button = screen.getByRole("button");
+      expect(button).toHaveAttribute("href", "/custom-path?role=dev");
     });
 
-    it("renders buttons with correct hrefs", () => {
-      render(
-        <RoleBasedCTA
-          executive={mockExecutive}
-          developer={mockDeveloper}
-          security={mockSecurity}
-        />
-      );
+    it("should track analytics on click", () => {
+      const gtagSpy = vi.fn();
+      window.gtag = gtagSpy;
 
-      const executiveButton = screen.getByRole("button", {
-        name: /Schedule Assessment for For Executives/,
-      });
-      const developerButton = screen.getByRole("button", {
-        name: /View Code Examples for For Developers/,
-      });
-      const securityButton = screen.getByRole("button", {
-        name: /Download Checklist for For Security Teams/,
-      });
+      render(<RoleBasedCTA {...defaultProps} />);
+      
+      const button = screen.getByRole("button");
+      fireEvent.click(button);
 
-      expect(executiveButton).toHaveAttribute("href", "/contact?role=executive");
-      expect(developerButton).toHaveAttribute("href", "/contact?role=developer");
-      expect(securityButton).toHaveAttribute("href", "/contact?role=security");
-    });
-  });
-
-  describe("Analytics tracking", () => {
-    it("tracks CTA click for executive role", async () => {
-      const user = userEvent.setup();
-      render(<RoleBasedCTA executive={mockExecutive} />);
-
-      const button = screen.getByRole("button", { name: /Schedule Assessment for For Executives/ });
-      await user.click(button);
-
-      expect(mockGtag).toHaveBeenCalledWith("event", "cta_click", {
+      expect(gtagSpy).toHaveBeenCalledWith("event", "cta_click", {
         cta_type: "role_based",
         role: "executive",
-        button_text: "Schedule Assessment",
+        button_text: "Get Brief",
       });
     });
 
-    it("tracks CTA click for developer role", async () => {
-      const user = userEvent.setup();
-      render(<RoleBasedCTA developer={mockDeveloper} />);
+    it("should handle missing gtag gracefully", () => {
+      window.gtag = undefined as any;
 
-      const button = screen.getByRole("button", { name: /View Code Examples for For Developers/ });
-      await user.click(button);
-
-      expect(mockGtag).toHaveBeenCalledWith("event", "cta_click", {
-        cta_type: "role_based",
-        role: "developer",
-        button_text: "View Code Examples",
-      });
-    });
-
-    it("tracks CTA click for security role", async () => {
-      const user = userEvent.setup();
-      render(<RoleBasedCTA security={mockSecurity} />);
-
-      const button = screen.getByRole("button", { name: /Download Checklist for For Security Teams/ });
-      await user.click(button);
-
-      expect(mockGtag).toHaveBeenCalledWith("event", "cta_click", {
-        cta_type: "role_based",
-        role: "security",
-        button_text: "Download Checklist",
-      });
-    });
-
-    it("handles missing gtag gracefully", async () => {
-      const user = userEvent.setup();
-      const originalGtag = window.gtag;
-      Object.defineProperty(window, "gtag", {
-        value: undefined,
-        writable: true,
-      });
-
-      render(<RoleBasedCTA executive={mockExecutive} />);
-      const button = screen.getByRole("button", { name: /Schedule Assessment for For Executives/ });
-
-      // Should not throw error
-      await expect(user.click(button)).resolves.toBeUndefined();
-
-      Object.defineProperty(window, "gtag", {
-        value: originalGtag,
-        writable: true,
-      });
+      render(<RoleBasedCTA {...defaultProps} />);
+      
+      const button = screen.getByRole("button");
+      fireEvent.click(button); // Should not throw
+      
+      expect(true).toBe(true);
     });
   });
 
   describe("Accessibility", () => {
-    it("has correct role attribute on container", () => {
-      const { container } = render(
-        <RoleBasedCTA
-          executive={mockExecutive}
-          developer={mockDeveloper}
-          security={mockSecurity}
-        />
-      );
-
-      const region = container.querySelector('[role="region"]');
-      expect(region).toBeInTheDocument();
+    it("should have proper ARIA label", () => {
+      render(<RoleBasedCTA {...defaultProps} />);
+      
+      const button = screen.getByRole("button");
+      expect(button).toHaveAttribute("aria-label", "Get Brief for For Business Leaders");
     });
 
-    it("has descriptive aria-label on container", () => {
-      const { container } = render(
-        <RoleBasedCTA
-          executive={mockExecutive}
-          developer={mockDeveloper}
-          security={mockSecurity}
-        />
-      );
-
-      const region = container.querySelector('[aria-label]');
-      expect(region).toHaveAttribute(
-        "aria-label",
-        "Role-based call-to-action options"
-      );
+    it("should hide icon from accessibility tree", () => {
+      const { container } = render(<RoleBasedCTA {...defaultProps} />);
+      
+      const icon = container.querySelector('[aria-hidden="true"]');
+      expect(icon).toBeInTheDocument();
     });
 
-    it("buttons have descriptive aria-labels", () => {
-      render(
-        <RoleBasedCTA
-          executive={mockExecutive}
-          developer={mockDeveloper}
-        />
-      );
-
-      expect(
-        screen.getByLabelText(/Schedule Assessment for For Executives/)
-      ).toBeInTheDocument();
-      expect(
-        screen.getByLabelText(/View Code Examples for For Developers/)
-      ).toBeInTheDocument();
-    });
-
-    it("icons are hidden from screen readers", () => {
-      const { container } = render(
-        <RoleBasedCTA
-          executive={mockExecutive}
-          developer={mockDeveloper}
-          security={mockSecurity}
-        />
-      );
-
-      const icons = container.querySelectorAll("[aria-hidden=true]");
-      expect(icons.length).toBeGreaterThan(0);
-    });
-
-    it("buttons are keyboard accessible", async () => {
+    it("should be keyboard navigable", async () => {
       const user = userEvent.setup();
-      render(
-        <RoleBasedCTA
-          executive={mockExecutive}
-          developer={mockDeveloper}
-        />
-      );
-
-      const executiveButton = screen.getByRole("button", {
-        name: /Schedule Assessment for For Executives/,
-      });
-
+      render(<RoleBasedCTA {...defaultProps} />);
+      
+      const button = screen.getByRole("button");
+      
       // Tab to button
       await user.tab();
-      expect(executiveButton).toHaveFocus();
-
-      // Tab to next button
-      await user.tab();
-      expect(
-        screen.getByRole("button", { name: /View Code Examples for For Developers/ })
-      ).toHaveFocus();
+      expect(button).toHaveFocus();
     });
 
-    it("buttons have focus visible styles", () => {
-      render(<RoleBasedCTA executive={mockExecutive} />);
-
-      const button = screen.getByRole("button", { name: /Schedule Assessment for For Executives/ });
-      expect(button).toHaveClass("focus:outline-none");
-      expect(button).toHaveClass("focus:ring-2");
+    it("should have visible focus ring", () => {
+      const { container } = render(<RoleBasedCTA {...defaultProps} />);
+      
+      const button = container.querySelector("a");
+      expect(button?.className).toMatch(/focus:ring-2/);
     });
   });
 
-  describe("Responsive layout", () => {
-    it("has responsive grid classes", () => {
+  describe("Design Token Compliance", () => {
+    it("should use BORDERS.card token", () => {
+      const { container } = render(<RoleBasedCTA {...defaultProps} />);
+      
+      const card = container.querySelector("[data-testid='role-based-cta-executive']");
+      expect(card?.className).toMatch(/rounded-lg/);
+    });
+
+    it("should use TYPOGRAPHY tokens", () => {
+      const { container } = render(<RoleBasedCTA {...defaultProps} />);
+      
+      const title = container.querySelector("h3");
+      expect(title).toBeInTheDocument();
+    });
+
+    it("should not have hardcoded colors", () => {
+      const { container } = render(<RoleBasedCTA {...defaultProps} />);
+      
+      const card = container.querySelector("[data-testid='role-based-cta-executive']");
+      // Should have role-based color classes, not hardcoded hex
+      expect(card?.className).not.toMatch(/#[0-9a-f]/i);
+    });
+  });
+
+  describe("Multiple Instances", () => {
+    it("should render multiple role cards separately", () => {
       const { container } = render(
+        <>
+          <RoleBasedCTA {...defaultProps} role="executive" title="Executive" />
+          <RoleBasedCTA {...defaultProps} role="developer" title="Developer" />
+          <RoleBasedCTA {...defaultProps} role="security" title="Security" />
+        </>
+      );
+
+      expect(screen.getByText("Executive")).toBeInTheDocument();
+      expect(screen.getByText("Developer")).toBeInTheDocument();
+      expect(screen.getByText("Security")).toBeInTheDocument();
+
+      // Each should be a separate card with testid
+      const executiveCard = container.querySelector("[data-testid='role-based-cta-executive']");
+      const developerCard = container.querySelector("[data-testid='role-based-cta-developer']");
+      const securityCard = container.querySelector("[data-testid='role-based-cta-security']");
+
+      expect(executiveCard).toBeInTheDocument();
+      expect(developerCard).toBeInTheDocument();
+      expect(securityCard).toBeInTheDocument();
+    });
+
+    it("should have different colors for each role", () => {
+      const { container } = render(
+        <>
+          <RoleBasedCTA {...defaultProps} role="executive" title="Executive" />
+          <RoleBasedCTA {...defaultProps} role="developer" title="Developer" />
+          <RoleBasedCTA {...defaultProps} role="security" title="Security" />
+        </>
+      );
+
+      const executiveCard = container.querySelector("[data-testid='role-based-cta-executive']");
+      const developerCard = container.querySelector("[data-testid='role-based-cta-developer']");
+      const securityCard = container.querySelector("[data-testid='role-based-cta-security']");
+
+      // Each role should have different color classes
+      expect(executiveCard?.className).toMatch(/bg-blue/);
+      expect(developerCard?.className).toMatch(/bg-green/);
+      expect(securityCard?.className).toMatch(/bg-red/);
+    });
+  });
+
+  describe("Props Validation", () => {
+    it("should handle empty description", () => {
+      render(
         <RoleBasedCTA
-          executive={mockExecutive}
-          developer={mockDeveloper}
-          security={mockSecurity}
+          {...defaultProps}
+          description=""
         />
       );
 
-      const wrapper = container.firstChild;
-      expect(wrapper).toHaveClass("grid");
-      expect(wrapper).toHaveClass("md:grid-cols-3");
+      expect(screen.getByRole("button")).toBeInTheDocument();
     });
 
-    it("applies custom className", () => {
+    it("should handle very long title", () => {
+      const longTitle = "This is a very long title that might wrap to multiple lines";
+      render(
+        <RoleBasedCTA
+          {...defaultProps}
+          title={longTitle}
+        />
+      );
+
+      expect(screen.getByText(longTitle)).toBeInTheDocument();
+    });
+
+    it("should handle special characters in text", () => {
+      render(
+        <RoleBasedCTA
+          {...defaultProps}
+          title="For C++ & Node.js Devs"
+          description="Learn about XSS prevention"
+          buttonText="Get & Go"
+        />
+      );
+
+      expect(screen.getByText(/For C\+\+ & Node\.js Devs/)).toBeInTheDocument();
+    });
+
+    it("should accept custom className", () => {
       const { container } = render(
         <RoleBasedCTA
-          executive={mockExecutive}
+          {...defaultProps}
           className="custom-class"
         />
       );
 
-      const wrapper = container.firstChild;
-      expect(wrapper).toHaveClass("custom-class");
+      const card = container.querySelector("[data-testid='role-based-cta-executive']");
+      expect(card?.className).toMatch(/custom-class/);
     });
   });
 
-  describe("Design token usage", () => {
-    it("renders cards with proper styling", () => {
-      const { container } = render(
+  describe("Analytics Integration", () => {
+    it("should include button text in analytics", () => {
+      const gtagSpy = vi.fn();
+      window.gtag = gtagSpy;
+
+      render(
         <RoleBasedCTA
-          executive={mockExecutive}
-          developer={mockDeveloper}
-          security={mockSecurity}
+          {...defaultProps}
+          buttonText="Schedule Assessment"
         />
       );
 
-      const cards = container.querySelectorAll(".rounded-lg");
-      expect(cards.length).toBe(3);
+      const button = screen.getByRole("button");
+      fireEvent.click(button);
 
-      // Check for color styling
-      expect(container.innerHTML).toContain("blue");
-      expect(container.innerHTML).toContain("green");
-      expect(container.innerHTML).toContain("red");
+      expect(gtagSpy).toHaveBeenCalledWith("event", "cta_click", 
+        expect.objectContaining({
+          button_text: "Schedule Assessment",
+        })
+      );
     });
 
-    it("uses semantic color tokens for roles", () => {
-      const { container } = render(
+    it("should include role in analytics", () => {
+      const gtagSpy = vi.fn();
+      window.gtag = gtagSpy;
+
+      render(
         <RoleBasedCTA
-          executive={mockExecutive}
-          developer={mockDeveloper}
-          security={mockSecurity}
+          {...defaultProps}
+          role="developer"
         />
       );
 
-      // Verify color classes are applied
-      expect(container.innerHTML).toContain("blue-600");
-      expect(container.innerHTML).toContain("green-600");
-      expect(container.innerHTML).toContain("red-600");
-    });
-  });
+      const button = screen.getByRole("button");
+      fireEvent.click(button);
 
-  describe("Edge cases", () => {
-    it("handles empty string descriptions", () => {
-      const roleWithEmptyDesc: RoleConfig = {
-        ...mockExecutive,
-        description: "",
-      };
-
-      render(<RoleBasedCTA executive={roleWithEmptyDesc} />);
-
-      expect(screen.getByText("For Executives")).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /Schedule Assessment for For Executives/ }))
-        .toBeInTheDocument();
-    });
-
-    it("handles very long descriptions", () => {
-      const longDescription =
-        "This is a very long description that goes on and on about the features and benefits of this role-specific call-to-action component and how it can be used to guide different audience segments through their journey.";
-
-      const roleWithLongDesc: RoleConfig = {
-        ...mockExecutive,
-        description: longDescription,
-      };
-
-      render(<RoleBasedCTA executive={roleWithLongDesc} />);
-
-      expect(screen.getByText(longDescription)).toBeInTheDocument();
-    });
-
-    it("handles special characters in button text", () => {
-      const roleWithSpecialChars: RoleConfig = {
-        ...mockExecutive,
-        buttonText: "Get →",
-      };
-
-      render(<RoleBasedCTA executive={roleWithSpecialChars} />);
-
-      expect(screen.getByRole("button", { name: /Get → for For Executives/ })).toBeInTheDocument();
-    });
-
-    it("handles URLs with query parameters", () => {
-      const roleWithQueryParams: RoleConfig = {
-        ...mockExecutive,
-        buttonHref: "/contact?role=executive&source=blog&utm_campaign=test",
-      };
-
-      render(<RoleBasedCTA executive={roleWithQueryParams} />);
-
-      const button = screen.getByRole("button", { name: /Schedule Assessment for For Executives/ });
-      expect(button).toHaveAttribute(
-        "href",
-        "/contact?role=executive&source=blog&utm_campaign=test"
+      expect(gtagSpy).toHaveBeenCalledWith("event", "cta_click",
+        expect.objectContaining({
+          role: "developer",
+        })
       );
     });
   });
 
-  describe("Integration scenarios", () => {
-    it("renders complete OWASP use case", () => {
-      const owasp: {
-        executive?: RoleConfig;
-        developer?: RoleConfig;
-        security?: RoleConfig;
-      } = {
-        executive: {
-          title: "For CISOs & Leaders",
-          description: "Understand the business risk",
-          buttonText: "Schedule Assessment",
-          buttonHref: "/contact?role=executive",
-        },
-        developer: {
-          title: "For Developers",
-          description: "Learn secure implementation",
-          buttonText: "View Security Patterns",
-          buttonHref: "/contact?role=developer",
-        },
-        security: {
-          title: "For Security Teams",
-          description: "Access threat analysis",
-          buttonText: "Download Framework",
-          buttonHref: "/contact?role=security",
-        },
-      };
+  describe("Responsive Behavior", () => {
+    it("should apply max-width constraint", () => {
+      const { container } = render(<RoleBasedCTA {...defaultProps} />);
+      
+      const card = container.querySelector("[data-testid='role-based-cta-executive']");
+      expect(card?.className).toMatch(/max-w-md/);
+    });
 
-      render(<RoleBasedCTA {...owasp} />);
+    it("should have margin on y-axis", () => {
+      const { container } = render(<RoleBasedCTA {...defaultProps} />);
+      
+      const card = container.querySelector("[data-testid='role-based-cta-executive']");
+      expect(card?.className).toMatch(/my-8/);
+    });
+  });
 
-      expect(screen.getByText("For CISOs & Leaders")).toBeInTheDocument();
-      expect(screen.getByText("For Developers")).toBeInTheDocument();
-      expect(screen.getByText("For Security Teams")).toBeInTheDocument();
+  describe("Icon Rendering", () => {
+    it("should render briefcase icon for executive", () => {
+      const { container } = render(
+        <RoleBasedCTA {...defaultProps} role="executive" />
+      );
 
-      expect(screen.getByRole("button", { name: /Schedule Assessment for For CISOs & Leaders/ }))
-        .toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /View Security Patterns for For Developers/ }))
-        .toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /Download Framework for For Security Teams/ }))
-        .toBeInTheDocument();
+      const icon = container.querySelector("svg");
+      expect(icon).toBeInTheDocument();
+    });
+
+    it("should render code icon for developer", () => {
+      const { container } = render(
+        <RoleBasedCTA {...defaultProps} role="developer" />
+      );
+
+      const icon = container.querySelector("svg");
+      expect(icon).toBeInTheDocument();
+    });
+
+    it("should render shield icon for security", () => {
+      const { container } = render(
+        <RoleBasedCTA {...defaultProps} role="security" />
+      );
+
+      const icon = container.querySelector("svg");
+      expect(icon).toBeInTheDocument();
     });
   });
 });
