@@ -460,4 +460,148 @@ Content three
       });
     });
   });
+
+  describe('Collapsible Components (RiskAccordion, CollapsibleSection, Footnotes)', () => {
+    it('skips headings inside RiskAccordion components', () => {
+      const content = `
+## Main Section
+
+<RiskAccordion title="Hidden Risk">
+## This heading should be skipped
+Some content
+</RiskAccordion>
+
+## Another Main Section
+`;
+      const headings = extractHeadings(content);
+      expect(headings).toHaveLength(2);
+      expect(headings[0].text).toBe('Main Section');
+      expect(headings[1].text).toBe('Another Main Section');
+    });
+
+    it('skips headings inside RiskAccordionGroup components', () => {
+      const content = `
+## Introduction
+
+<RiskAccordionGroup>
+## Hidden in accordion group
+More content
+</RiskAccordionGroup>
+
+## Conclusion
+`;
+      const headings = extractHeadings(content);
+      expect(headings).toHaveLength(2);
+      expect(headings[0].text).toBe('Introduction');
+      expect(headings[1].text).toBe('Conclusion');
+    });
+
+    it('skips headings inside CollapsibleSection components', () => {
+      const content = `
+## Visible Section
+
+<CollapsibleSection title="Advanced Topic">
+### Hidden Advanced Content
+Details here
+</CollapsibleSection>
+
+## Another Visible Section
+`;
+      const headings = extractHeadings(content);
+      expect(headings).toHaveLength(2);
+      expect(headings[0].text).toBe('Visible Section');
+      expect(headings[1].text).toBe('Another Visible Section');
+    });
+
+    it('skips headings inside Footnotes components', () => {
+      const content = `
+## Main Content
+
+<Footnotes>
+## Footnotes (should be skipped)
+1. First note
+</Footnotes>
+
+## Further Reading
+`;
+      const headings = extractHeadings(content);
+      expect(headings).toHaveLength(2);
+      expect(headings[0].text).toBe('Main Content');
+      expect(headings[1].text).toBe('Further Reading');
+    });
+
+    it('handles multiple collapsible components', () => {
+      const content = `
+## Section One
+
+<RiskAccordion>
+## Hidden Risk 1
+</RiskAccordion>
+
+## Section Two
+
+<CollapsibleSection>
+## Hidden Details
+</CollapsibleSection>
+
+## Section Three
+`;
+      const headings = extractHeadings(content);
+      expect(headings).toHaveLength(3);
+      expect(headings.map(h => h.text)).toEqual([
+        'Section One',
+        'Section Two',
+        'Section Three'
+      ]);
+    });
+
+    it('handles nested JSX components', () => {
+      const content = `
+## Outer Section
+
+<RiskAccordion>
+<div>
+## Nested but inside accordion
+</div>
+</RiskAccordion>
+
+## Normal Section
+`;
+      const headings = extractHeadings(content);
+      expect(headings).toHaveLength(2);
+      expect(headings[0].text).toBe('Outer Section');
+      expect(headings[1].text).toBe('Normal Section');
+    });
+
+    it('handles self-closing tags correctly', () => {
+      const content = `
+## Section One
+
+<Component attribute="value" />
+
+## Section Two
+`;
+      const headings = extractHeadings(content);
+      expect(headings).toHaveLength(2);
+      expect(headings[0].text).toBe('Section One');
+      expect(headings[1].text).toBe('Section Two');
+    });
+
+    it('handles collapsible component with attributes', () => {
+      const content = `
+## Visible Content
+
+<CollapsibleSection title="Advanced" defaultOpen={false}>
+## Hidden Advanced
+Content here
+</CollapsibleSection>
+
+## End Section
+`;
+      const headings = extractHeadings(content);
+      expect(headings).toHaveLength(2);
+      expect(headings[0].text).toBe('Visible Content');
+      expect(headings[1].text).toBe('End Section');
+    });
+  });
 });
