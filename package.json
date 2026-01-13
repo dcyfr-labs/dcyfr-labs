@@ -151,7 +151,14 @@
     "prelhci:collect": "npm run update:baseline",
     "prelhci:autorun": "npm run update:baseline",
     "prelhci:assert": "npm run update:baseline",
-    "prelighthouse:ci": "npm run update:baseline"
+    "prelighthouse:ci": "npm run update:baseline",
+    "tasks:scan": "node scripts/backlog/scan-backlog.mjs",
+    "tasks:prioritize": "node scripts/backlog/prioritize-tasks.mjs",
+    "tasks:next": "npm run tasks:scan && npm run tasks:prioritize && node scripts/backlog/whats-next.mjs",
+    "tasks:next:quick": "npm run tasks:scan && npm run tasks:prioritize -- --time=quick && node scripts/backlog/whats-next.mjs --time=quick",
+    "tasks:next:today": "npm run tasks:scan && npm run tasks:prioritize -- --time=half-day && node scripts/backlog/whats-next.mjs --time=half-day",
+    "tasks:next:week": "npm run tasks:scan && npm run tasks:prioritize -- --time=full-day --limit=10 && node scripts/backlog/whats-next.mjs --time=full-day --limit=10",
+    "tasks:stats": "npm run tasks:scan && npm run tasks:prioritize && node scripts/backlog/whats-next.mjs --stats"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
