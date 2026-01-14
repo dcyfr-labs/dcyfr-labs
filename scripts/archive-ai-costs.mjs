@@ -36,15 +36,25 @@ async function ensureDirectories() {
   await fs.mkdir(MONTHLY_DIR, { recursive: true });
 }
 
-// Fetch cost data from API
-async function fetchCostData(period = "30d") {
-  try {
-    const response = await fetch(`${API_URL}/api/dev/ai-costs/unified?period=${period}`);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    return await response.json();
-  } catch (error) {
-    console.error(`❌ Failed to fetch cost data: ${error.message}`);
-    throw error;
+// Fetch cost data from API with retry
+async function fetchCostData(period = "30d", retries = 3) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(`${API_URL}/api/dev/ai-costs/unified?period=${period}`, {
+        timeout: 10000, // 10 second timeout
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return await response.json();
+    } catch (error) {
+      if (i < retries - 1) {
+        const delay = Math.pow(2, i) * 1000; // Exponential backoff
+        console.warn(`⚠️  Retry ${i + 1}/${retries} after ${delay}ms: ${error.message}`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      } else {
+        console.error(`❌ Failed to fetch cost data after ${retries} retries: ${error.message}`);
+        throw error;
+      }
+    }
   }
 }
 
