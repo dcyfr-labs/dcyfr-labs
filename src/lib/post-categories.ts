@@ -1,23 +1,23 @@
 /**
  * Post Category Types and Labels
- * 
+ *
  * IMPORTANT: This is the SINGLE SOURCE OF TRUTH for post categories.
  * This file is safe to import in both client and server components.
- * 
+ *
  * WHY THIS FILE EXISTS:
  * - Previously, category labels were duplicated in multiple files
  * - Categories in MDX frontmatter didn't match the hardcoded labels
  * - This caused missing category badges on blog lists and post pages
- * 
+ *
  * WHEN ADDING NEW CATEGORIES:
  * 1. Add to PostCategory type below
  * 2. Add to POST_CATEGORY_LABEL mapping
  * 3. Use the new category in your MDX frontmatter
- * 
+ *
  * DO NOT:
  * - Create duplicate CATEGORY_LABEL maps in other files
  * - Import from @/data/posts in client components (use this file instead)
- * 
+ *
  * @see src/__tests__/components/post-badges.test.tsx for regression tests
  */
 
@@ -31,6 +31,7 @@ const CATEGORIES = [
   { id: "Architecture", label: "Architecture" },
   { id: "Career", label: "Career" },
   { id: "Demo", label: "Demo" },
+  { id: "Design", label: "Design" },
   { id: "DevSecOps", label: "DevSecOps" },
   { id: "Web", label: "Web Development" },
   // Legacy lowercase (backwards compatibility)
@@ -42,15 +43,43 @@ const CATEGORIES = [
 ] as const;
 
 // Auto-generate type from CATEGORIES - no duplication needed
-export type PostCategory = typeof CATEGORIES[number]["id"];
+export type PostCategory = (typeof CATEGORIES)[number]["id"];
 
 /**
  * Auto-generated labels from CATEGORIES - always in sync
  * This is the single source of truth - import from here, don't duplicate!
  */
 export const POST_CATEGORY_LABEL = Object.fromEntries(
-  CATEGORIES.map(cat => [cat.id, cat.label])
+  CATEGORIES.map((cat) => [cat.id, cat.label])
 ) as Record<PostCategory, string>;
 
 // Export for test generation (allows dynamic test updates)
 export { CATEGORIES };
+
+/**
+ * Validate if a category exists in the mapping
+ * Returns true if valid, false otherwise
+ */
+export function isValidCategory(category: string): category is PostCategory {
+  return category in POST_CATEGORY_LABEL;
+}
+
+/**
+ * Get category label with fallback
+ * Returns the label if found, otherwise returns the category itself or a default
+ */
+export function getCategoryLabel(
+  category: string | undefined,
+  fallback: string = "Uncategorized"
+): string {
+  if (!category) return fallback;
+  return POST_CATEGORY_LABEL[category as PostCategory] || fallback;
+}
+
+/**
+ * Get all valid category IDs
+ * Useful for validation and autocomplete
+ */
+export function getValidCategories(): readonly PostCategory[] {
+  return CATEGORIES.map((cat) => cat.id);
+}

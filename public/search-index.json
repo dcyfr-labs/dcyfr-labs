@@ -180,6 +180,23 @@
       "url": "/blog/shipping-developer-portfolio"
     },
     {
+      "id": "post-20200216-d4d016cb",
+      "title": "Passing CompTIA Security+",
+      "summary": "A comprehensive guide to passing CompTIA's Security+ exam.",
+      "content": "CompTIA's Security+ Certification is a globally recognized, government-approved, industry-standard certification that validates the baseline skills needed to perform core security functions and pursue an IT security career. Security+ is compliant with ISO 17024 standards and approved by the U.S. Department of Defense (DoD) to meet Directive 8140/8570.01-M requirements. --- According to The Bureau of Labor Statistics, the average annual wage for Information Security Analysts was $98,350 with 108,",
+      "tags": [
+        "CompTIA",
+        "Security+",
+        "Certification",
+        "IT Career",
+        "Cybersecurity"
+      ],
+      "series": null,
+      "publishedAt": "2020-02-16T12:00:00Z",
+      "readingTime": 8,
+      "url": "/blog/passing-comptia-security-plus"
+    },
+    {
       "id": "post-20200108-647bfe00",
       "title": "Code Examples & Syntax Highlighting",
       "summary": "Complete showcase of syntax highlighting with code examples in 20+ programming languages supported by Shiki, featuring React 19 and Next.js 16 patterns.",
@@ -227,7 +244,9 @@
     "Background Jobs",
     "CVE",
     "Calculus",
+    "Certification",
     "Code",
+    "CompTIA",
     "Components",
     "Cybersecurity",
     "Demo",
@@ -238,6 +257,7 @@
     "Equations",
     "Event-Driven",
     "Hooks",
+    "IT Career",
     "Inngest",
     "Interactive",
     "JavaScript",
@@ -262,6 +282,7 @@
     "React2Shell",
     "ReactFlow",
     "Security",
+    "Security+",
     "Syntax Highlighting",
     "Tailwind CSS",
     "Threat Intelligence",
@@ -276,5 +297,5 @@
     "Features",
     "Portfolio"
   ],
-  "generatedAt": "2026-01-14T06:24:24.032Z"
+  "generatedAt": "2026-01-14T06:37:51.436Z"
 }

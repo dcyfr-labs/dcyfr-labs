@@ -104,15 +104,36 @@ export function PostBadges({
 
   // Category badge
   if (showCategory && post.category) {
-    badges.push(
-      <Badge
-        key="category"
-        variant="outline"
-        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
-      >
-        {POST_CATEGORY_LABEL[post.category]}
-      </Badge>
-    );
+    const categoryLabel = POST_CATEGORY_LABEL[post.category];
+
+    // Only render if category label exists (prevents empty badges)
+    if (categoryLabel) {
+      badges.push(
+        <Badge
+          key="category"
+          variant="outline"
+          className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
+        >
+          {categoryLabel}
+        </Badge>
+      );
+    } else if (process.env.NODE_ENV === "development") {
+      // Show warning badge in development for undefined categories
+      badges.push(
+        <Badge
+          key="category-error"
+          variant="outline"
+          className={`${size === "sm" ? "text-xs" : ""} pointer-events-none bg-destructive/10 text-destructive border-destructive/50`}
+        >
+          Invalid Category: {post.category}
+        </Badge>
+      );
+      console.warn(
+        `[PostBadges] Category "${post.category}" not found in POST_CATEGORY_LABEL mapping.`,
+        `Add it to src/lib/post-categories.ts`,
+        `Post: ${post.title || post.id || "unknown"}`
+      );
+    }
   }
 
   if (badges.length === 0) {

@@ -45,7 +45,7 @@ function extractPlainText(content: string): string {
  */
 function generateSearchIndex(): SearchIndex {
   const searchablePosts: SearchablePost[] = posts
-    .filter((post) => !post.archived) // Exclude archived posts
+    // Include archived posts in search results
     .map((post) => {
       // Extract plain text from body content
       const plainContent = extractPlainText(post.body || "");

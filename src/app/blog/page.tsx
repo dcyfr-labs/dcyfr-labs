@@ -174,25 +174,25 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     ? (layoutParam as "grid" | "list" | "magazine" | "compact" | "grouped")
     : "magazine";
 
-  // Apply category filter first (case-insensitive)
+  // Filter out archived posts by default (unless explicitly viewing archived)
+  const postsWithoutArchived =
+    sortBy === "archived"
+      ? posts.filter((post) => post.archived) // Show only archived when explicitly requested
+      : posts.filter((post) => !post.archived); // Hide archived by default
+
+  // Apply category filter (case-insensitive)
   const postsWithCategoryFilter = selectedCategory
-    ? posts.filter(
+    ? postsWithoutArchived.filter(
         (post) =>
           post.category && post.category.toLowerCase() === selectedCategory
       )
-    : posts;
-
-  // Apply archived filter when sortBy=archived
-  const postsWithArchivedFilter =
-    sortBy === "archived"
-      ? postsWithCategoryFilter.filter((post) => post.archived)
-      : postsWithCategoryFilter;
+    : postsWithoutArchived;
 
   // Apply drafts filter when sortBy=drafts (development only)
   const postsWithDraftsFilter =
     sortBy === "drafts" && process.env.NODE_ENV === "development"
-      ? postsWithArchivedFilter.filter((post) => post.draft)
-      : postsWithArchivedFilter;
+      ? postsWithCategoryFilter.filter((post) => post.draft)
+      : postsWithCategoryFilter;
 
   // Apply date range filter
   const now = new Date();
