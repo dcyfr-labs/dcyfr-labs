@@ -52,13 +52,53 @@ These rules are **NON-NEGOTIABLE** regardless of provider used:
 3. **Imports** - Barrel exports only (import from `@/components/blog` not `@/components/blog/post-list`)
 4. **Test Data Prevention** - All test data must have environment checks (`NODE_ENV` + `VERCEL_ENV`)
 5. **No Emojis** - Public content uses React icons from `lucide-react` only
+6. **Documentation Location** - All .md files go ONLY in `/docs` folder (NOT in root)
 
 ### FLEXIBLE Rules (Warning Only)
 
 These rules are **strongly recommended** but validated manually:
 
-6. **API Routes** - Follow Validate→Queue→Respond pattern with Inngest
-7. **Testing** - Maintain ≥99% test pass rate target
+7. **API Routes** - Follow Validate→Queue→Respond pattern with Inngest
+8. **Testing** - Maintain ≥99% test pass rate target
+
+---
+
+## 📁 Documentation Placement Rule (MANDATORY)
+
+**ALL documentation must be created ONLY in the `/docs` folder structure.**
+
+### Correct Placement
+```
+✅ docs/analysis/findings.md
+✅ docs/security/private/audit.md
+✅ docs/architecture/ADR-001.md
+✅ docs/[category]/private/sensitive-report.md
+```
+
+### Incorrect Placement (BLOCKED)
+```
+❌ ANALYSIS.md (root - commits will be rejected)
+❌ ./REPORT.md (root - pre-commit hook blocks)
+❌ FINDINGS.md (root - fails validation)
+```
+
+### When Creating Documentation
+
+1. Determine category (analysis, security, architecture, operations, etc.)
+2. Create in: `docs/[category]/FILENAME.md`
+3. If sensitive/internal: `docs/[category]/private/FILENAME.md`
+4. Never create in root directory
+5. Update `docs/README.md` index if new section
+
+### Enforcement
+
+- **Pre-commit hook**: Blocks root-level .md files (except allowed exceptions)
+- **Validation script**: `npm run validate:docs-structure` audits structure
+- **See:** `docs/governance/AGENT_DOCUMENTATION_ENFORCEMENT.md`
+
+### Supported Categories (30+)
+
+accessibility, analysis, api, architecture, authentication, automation, backlog, blog, components, content, debugging, design, design-system, features, governance, maintenance, mcp, operations, optimization, performance, platform, proposals, refactoring, research, security, sessions, templates, testing, troubleshooting
 
 **See:** [enforcement/HYBRID_ENFORCEMENT.md](enforcement/HYBRID_ENFORCEMENT.md) for detailed enforcement strategy
 

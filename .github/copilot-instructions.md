@@ -113,6 +113,21 @@ These 5 rules are enforced across all development. For comprehensive details and
    
 5. **No Emojis in Public Content** - Use `lucide-react` icons instead
 
+6. **Documentation in `/docs` Only** - All .md files go in docs/ folder
+   ```
+   ✅ docs/analysis/findings.md
+   ✅ docs/security/private/audit.md
+   ❌ ANALYSIS.md (root - BLOCKED)
+   ❌ report.md (root - BLOCKED)
+   ```
+   Categories: accessibility, analysis, api, architecture, authentication, automation, backlog, blog, components, content, debugging, design, design-system, features, governance, maintenance, mcp, operations, optimization, performance, platform, proposals, refactoring, research, security, sessions, templates, testing, troubleshooting
+   
+   When creating docs:
+   - Determine category and create in `docs/[category]/FILENAME.md`
+   - Sensitive content: `docs/[category]/private/FILENAME.md`
+   - Never create in root directory
+   - See: `docs/governance/AGENT_DOCUMENTATION_ENFORCEMENT.md`
+
 ---
 
 ## 📚 Quick Links
