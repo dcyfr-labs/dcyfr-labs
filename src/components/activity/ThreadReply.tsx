@@ -33,7 +33,7 @@ import {
   SPACING,
   SEMANTIC_COLORS,
 } from "@/lib/design-tokens";
-import { Flame, TrendingUp } from "lucide-react";
+import { ExternalLink, Calendar, Tag } from "lucide-react";
 
 // ============================================================================
 // TYPES & HELPERS
@@ -109,7 +109,7 @@ export function ThreadReply({
 
         {/* Content Column */}
         <div className="flex-1 min-w-0 pb-8">
-          {/* Header: Source + Verb Badges + Trending (Compact) */}
+          {/* Header: Source + Verb Badges (Compact) */}
           <div className="flex items-center gap-2 mb-1 flex-wrap">
             <Badge variant="secondary" className="gap-1 px-1.5 h-5 text-xs">
               {createElement(sourceIconComponent, {
@@ -127,33 +127,6 @@ export function ThreadReply({
                 {activity.verb}
               </Badge>
             )}
-
-            {/* Trending Badge (Compact) - Weekly takes priority */}
-            {activity.meta?.trendingStatus?.isWeeklyTrending && (
-              <Badge
-                variant="secondary"
-                className={cn(
-                  "px-1.5 h-5 text-xs flex items-center gap-0.5",
-                  SEMANTIC_COLORS.accent.orange.badge
-                )}
-              >
-                <Flame className="w-3 h-3" aria-hidden="true" />
-                Week
-              </Badge>
-            )}
-            {!activity.meta?.trendingStatus?.isWeeklyTrending &&
-              activity.meta?.trendingStatus?.isMonthlyTrending && (
-                <Badge
-                  variant="secondary"
-                  className={cn(
-                    "px-1.5 h-5 text-xs flex items-center gap-0.5",
-                    SEMANTIC_COLORS.status.info
-                  )}
-                >
-                  <TrendingUp className="w-3 h-3" aria-hidden="true" />
-                  Month
-                </Badge>
-              )}
           </div>
 
           {/* Content: Title, Image, Description, Metadata */}
@@ -202,17 +175,6 @@ export function ThreadReply({
                 {activity.meta.milestone && (
                   <Badge variant="secondary" className="text-xs">
                     {activity.meta.milestone.toLocaleString()}
-                  </Badge>
-                )}
-
-                {/* Trending Badge */}
-                {activity.meta.trending && (
-                  <Badge
-                    variant="secondary"
-                    className="text-xs flex items-center gap-1"
-                  >
-                    <Flame className="w-3 h-3" aria-hidden="true" />
-                    Trending
                   </Badge>
                 )}
 

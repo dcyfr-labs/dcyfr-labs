@@ -29,7 +29,7 @@ import {
   ANIMATION,
   ACTIVITY_IMAGE,
 } from "@/lib/design-tokens";
-import { Flame, TrendingUp } from "lucide-react";
+import { ExternalLink, Calendar, Tag } from "lucide-react";
 
 // ============================================================================
 // TYPES & HELPERS
@@ -83,7 +83,7 @@ export function ThreadHeader({
     <div className={cn("group/thread relative", className)}>
       {/* Content Layout (Full Width) */}
       <div className="w-full">
-        {/* Header: Source + Verb Badges + Trending */}
+        {/* Header: Source + Verb Badges */}
         <div className="flex items-center gap-2 mb-1.5 flex-wrap">
           <Badge variant="default" className="gap-1.5 px-2 h-6">
             {createElement(sourceIconComponent, {
@@ -96,33 +96,6 @@ export function ThreadHeader({
           <Badge variant="outline" className={cn("px-2 h-6", verbColor)}>
             {activity.verb}
           </Badge>
-
-          {/* Trending Badge (Weekly takes priority over Monthly) */}
-          {activity.meta?.trendingStatus?.isWeeklyTrending && (
-            <Badge
-              variant="secondary"
-              className={cn(
-                "px-2 h-6 flex items-center gap-1",
-                SEMANTIC_COLORS.status.warning
-              )}
-            >
-              <Flame className="w-3 h-3" aria-hidden="true" />
-              Trending this week
-            </Badge>
-          )}
-          {!activity.meta?.trendingStatus?.isWeeklyTrending &&
-            activity.meta?.trendingStatus?.isMonthlyTrending && (
-              <Badge
-                variant="secondary"
-                className={cn(
-                  "px-2 h-6 flex items-center gap-1",
-                  SEMANTIC_COLORS.status.info
-                )}
-              >
-                <TrendingUp className="w-3 h-3" aria-hidden="true" />
-                Trending this month
-              </Badge>
-            )}
         </div>
 
         {/* Content: Title, Featured Image, Description, Metadata */}

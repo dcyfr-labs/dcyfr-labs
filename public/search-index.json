@@ -4,7 +4,7 @@
       "id": "post-20260115-7b4e92c1",
       "title": "Building Event-Driven Architecture with Inngest",
       "summary": "Implement event-driven architecture with Inngest for instant API responses, automatic retries, and production-grade background processing. Real code from a live portfolio.",
-      "content": "> Series Background: This is Part 3 of the Portfolio series, following Shipping a Developer Portfolio and Hardening a Developer Portfolio. Here we explore how event-driven architecture transforms user experience and system reliability. --- Your API routes are lying to your users. They return while work is still happening. The contact form says \"Message sent!\" but the email hasn't been delivered yet. Event-driven architecture fixes this by separating acknowledgment from processing. Users get inst",
+      "content": "> Series Background: This is Part 3 of the Portfolio series, following Shipping a Developer Portfolio and Hardening a Developer Portfolio. Here we explore how event-driven architecture transforms user experience and system reliability. Your API routes are lying to your users. They return while work is still happening. The contact form says \"Message sent!\" but the email hasn't been delivered yet. Event-driven architecture fixes this by separating acknowledgment from processing. Users get instant ",
       "tags": [
         "Inngest",
         "Event-Driven",
@@ -14,8 +14,8 @@
       ],
       "series": "Portfolio",
       "publishedAt": "2026-01-11T12:00:00Z",
-      "readingTime": 7,
-      "url": "/blog/event-driven-architecture"
+      "readingTime": 6,
+      "url": "/blog/building-event-driven-architecture"
     },
     {
       "id": "post-20251226-8581f290",
@@ -124,7 +124,7 @@
       ],
       "series": null,
       "publishedAt": "2025-11-11T12:00:00Z",
-      "readingTime": 5,
+      "readingTime": 4,
       "url": "/blog/building-with-ai"
     },
     {
@@ -276,5 +276,5 @@
     "Features",
     "Portfolio"
   ],
-  "generatedAt": "2026-01-13T09:27:39.454Z"
+  "generatedAt": "2026-01-14T06:20:39.835Z"
 }
