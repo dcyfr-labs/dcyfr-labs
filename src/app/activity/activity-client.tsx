@@ -44,6 +44,10 @@ export function ActivityPageClient({
     useState<TimeRangeFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isBookmarksFilter, setIsBookmarksFilter] = useState(false);
+  
+  // Pagination state - start with 15 threads to reduce initial DOM size
+  const [displayedThreadCount, setDisplayedThreadCount] = useState(15);
+  const THREADS_PER_PAGE = 15;
 
   // Deserialize activities once
   const deserializedActivities = useMemo<ActivityItem[]>(() => {
@@ -136,6 +140,14 @@ export function ActivityPageClient({
     }, 0);
   }, [threads]);
 
+  // Display only the first N threads to reduce DOM size (pagination)
+  const displayedThreads = threads.slice(0, displayedThreadCount);
+  const hasMoreThreads = threads.length > displayedThreadCount;
+
+  const handleLoadMore = () => {
+    setDisplayedThreadCount(prev => prev + THREADS_PER_PAGE);
+  };
+
   return (
     <>
       {/* Search & Filter Section */}
@@ -151,31 +163,49 @@ export function ActivityPageClient({
         filteredCount={filteredActivityCount}
       />
 
-      <div className={`${CONTAINER_WIDTHS.standard} mx-auto ${CONTAINER_PADDING} py-12 md:py-16 pb-24 md:pb-16`}>
-        {/* Timeline Feed - Render threads directly */}
-        {threads.length === 0 ? (
-          <div className={cn(CONTAINER_WIDTHS.thread, "mx-auto")}>
-            <Alert type="info">No activities match your filters</Alert>
-          </div>
-        ) : (
-          <div className={cn(CONTAINER_WIDTHS.thread, "mx-auto")}>
-            <div className={SPACING.subsection}>
-              {threads.map((thread, index) => (
-                <div key={thread.id}>
-                  <ThreadedActivityGroup thread={thread} />
-                  {/* Divider between threads (except last) */}
-                  {index < threads.length - 1 && (
-                    <div
-                      className="my-12 border-t border-border/50"
-                      aria-hidden="true"
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+       <div className={`${CONTAINER_WIDTHS.standard} mx-auto ${CONTAINER_PADDING} py-12 md:py-16 pb-24 md:pb-16`}>
+         {/* Timeline Feed - Render threads directly */}
+         {threads.length === 0 ? (
+           <div className={cn(CONTAINER_WIDTHS.thread, "mx-auto")}>
+             <Alert type="info">No activities match your filters</Alert>
+           </div>
+         ) : (
+           <div className={cn(CONTAINER_WIDTHS.thread, "mx-auto")}>
+             <div className={SPACING.subsection}>
+               {displayedThreads.map((thread, index) => (
+                 <div key={thread.id}>
+                   <ThreadedActivityGroup thread={thread} />
+                   {/* Divider between threads (except last) */}
+                   {index < displayedThreads.length - 1 && (
+                     <div
+                       className="my-12 border-t border-border/50"
+                       aria-hidden="true"
+                     />
+                   )}
+                 </div>
+               ))}
+             </div>
+
+             {/* Load More Button - Only show if there are more threads to display */}
+             {hasMoreThreads && (
+               <div className={cn("flex justify-center mt-16 pb-8")}>
+                 <button
+                   onClick={handleLoadMore}
+                   className={cn(
+                     "px-6 py-2 rounded-full border border-border/50 hover:border-border",
+                     "text-sm font-medium text-muted-foreground hover:text-foreground",
+                     "transition-colors duration-200",
+                     "hover:bg-muted/30"
+                   )}
+                   aria-label={`Load more activities. ${threads.length - displayedThreadCount} remaining`}
+                 >
+                   Load more ({threads.length - displayedThreadCount} remaining)
+                 </button>
+               </div>
+             )}
+           </div>
+         )}
+       </div>
     </>
   );
 }
