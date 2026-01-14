@@ -74,6 +74,12 @@ The site had zero CSP headers, making it vulnerable to XSS attacks and clickjack
 - Testing CSP requires browser DevTools and careful header inspection
 - Vercel's CDN can strip headers; middleware provides reliable enforcement
 
+<CollapsibleSection
+  id="hardening-csp-technical-details"
+  title="CSP Implementation: Technical Details"
+  defaultExpanded={false}
+>
+
 **Technical Highlights:**
 
 ```typescript
@@ -104,6 +110,8 @@ response.headers.set("Content-Security-Policy", csp);
 - Strict resource loading policies
 - All builds passing with middleware enabled
 
+</CollapsibleSection>
+
 ---
 
 **Rate Limiting Implementation**
@@ -124,6 +132,12 @@ The contact form API endpoint had no rate limiting, making it vulnerable to spam
 - For multi-region or high-scale, upgrade to Vercel KV or Upstash Redis
 - Rate limit headers improve client-side UX (show retry time)
 - IP-based tracking requires careful proxy header handling
+
+<CollapsibleSection
+  id="hardening-rate-limiting-technical-details"
+  title="Rate Limiting: Technical Implementation"
+  defaultExpanded={false}
+>
 
 **Technical Highlights:**
 
@@ -162,6 +176,8 @@ export class RateLimiter {
 - Automated testing with `npm run test:rate-limit`
 - Graceful user feedback on rate limit
 
+</CollapsibleSection>
+
 ### Part 2: Performance Optimization
 
 **INP (Interaction to Next Paint) Improvements**
@@ -182,6 +198,12 @@ Google's Core Web Vitals showed poor INP scores (664ms+) on navigation links. Th
 - Links still prefetch on viewport intersection (better trade-off)
 - CSS containment prevents expensive layout recalculations
 - React 18+ `useTransition` keeps UI responsive during state updates
+
+<CollapsibleSection
+  id="hardening-inp-optimization-technical-details"
+  title="INP Optimization: Technical Details"
+  defaultExpanded={false}
+>
 
 **Technical Highlights:**
 
@@ -216,6 +238,8 @@ export function ThemeToggle() {
 - Theme toggle feels instant
 - No layout shifts or visual jank
 
+</CollapsibleSection>
+
 ---
 
 **GitHub Contributions Heatmap**
@@ -236,6 +260,12 @@ I added a live GitHub contributions heatmap to the homepage to showcase activity
 - Personal access tokens (no scopes needed) bump it to 5,000 req/hour
 - Client-side caching is essential for API rate limit management
 - Always have fallback data for better UX
+
+<CollapsibleSection
+  id="hardening-github-integration-technical-details"
+  title="GitHub Integration: Technical Implementation"
+  defaultExpanded={false}
+>
 
 **Technical Highlights:**
 
@@ -274,6 +304,8 @@ const fetchContributions = async (): Promise<ContributionResponse> => {
 - 24-hour client-side cache reduces API calls
 - Graceful fallback to sample data
 - Under 5KB bundle size increase
+
+</CollapsibleSection>
 
 ### Part 3: Developer Experience
 
@@ -316,6 +348,12 @@ I created comprehensive instructions for AI coding assistants (GitHub Copilot, C
 
 ## What's Next?
 
+<CollapsibleSection
+  id="hardening-future-improvements"
+  title="Future Improvements & Roadmap"
+  defaultExpanded={false}
+>
+
 Future improvements on my radar:
 
 - Search functionality for blog posts
@@ -323,6 +361,8 @@ Future improvements on my radar:
 - View counts and analytics
 - Upgrade rate limiter to Vercel KV for multi-region
 - Add E2E tests with Playwright
+
+</CollapsibleSection>
 
 ---
 

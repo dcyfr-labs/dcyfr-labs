@@ -35,6 +35,12 @@ Event-driven architecture fixes this by separating **acknowledgment** from **pro
 
 ## The Problem with Synchronous APIs
 
+<CollapsibleSection
+  id="event-driven-synchronous-problem"
+  title="Before Event-Driven: The Synchronous API Problem"
+  defaultExpanded={true}
+>
+
 When I first built this portfolio's contact form, the flow was straightforward but slow:
 
 ```typescript
@@ -63,6 +69,8 @@ This approach has real problems:
 4. **Poor UX**: Spinners spinning while users wonder if it worked
 
 The fix isn't making the email faster—it's **decoupling the response from the work**.
+
+</CollapsibleSection>
 
 ---
 
@@ -95,6 +103,12 @@ Modern event-driven systems add one more concept: **steps**. Instead of one mono
 
 ## Why Inngest?
 
+<CollapsibleSection
+  id="event-driven-alternatives-comparison"
+  title="Alternative Solutions Comparison"
+  defaultExpanded={false}
+>
+
 After evaluating several options, I chose Inngest for this portfolio:
 
 | Solution           | Pros                                        | Cons                          | Learn More                                |
@@ -111,6 +125,8 @@ What sold me on Inngest:
 3. **Automatic retries**: Configurable retry policies with exponential backoff
 4. **Step functions**: Break complex workflows into observable, resumable steps
 5. **Vercel-native**: First-class integration, deploys automatically
+
+</CollapsibleSection>
 
 ---
 
@@ -299,7 +315,13 @@ Here's what's actually running right now:
 
 ### The Security Monitor
 
-After discovering [CVE-2025-55182](/blog/cve-2025-55182-react2shell) in December 2025 (with a 13-hour detection gap), I added automated security monitoring:
+After discovering [CVE-2025-55182](/blog/cve-2025-55182-react2shell) in December 2025 (with a 13-hour detection gap), I added automated security monitoring.
+
+<CollapsibleSection
+  id="event-driven-security-monitor-implementation"
+  title="Security Monitor Implementation Details"
+  defaultExpanded={false}
+>
 
 ```typescript
 export const securityAdvisoryMonitor = inngest.createFunction(
@@ -359,11 +381,19 @@ export const securityAdvisoryMonitor = inngest.createFunction(
 );
 ```
 
+</CollapsibleSection>
+
 This runs three times daily, checks for CVEs affecting React/Next.js/RSC packages, verifies against my actual installed versions, and alerts me before I read about it on Twitter.
 
 ---
 
 ## Blog Analytics: Milestones and Trending
+
+<CollapsibleSection
+  id="event-driven-blog-analytics-implementation"
+  title="Blog Analytics Implementation Details"
+  defaultExpanded={false}
+>
 
 The blog tracks views and automatically detects milestones:
 
@@ -402,6 +432,8 @@ export const trackPostView = inngest.createFunction(
 ```
 
 When a post hits 1,000 views, I get notified. The trending calculation runs hourly, scoring posts by recent activity to surface what readers are finding valuable.
+
+</CollapsibleSection>
 
 ---
 
@@ -538,8 +570,16 @@ The contact form still says "Message sent!"—but now it's actually true (or wil
 
 ## Resources
 
+<CollapsibleSection
+  id="event-driven-further-reading"
+  title="Further Reading & Resources"
+  defaultExpanded={false}
+>
+
 - [Inngest Documentation](https://www.inngest.com/docs)
 - [Inngest + Vercel Integration](https://www.inngest.com/docs/deploy/vercel)
 - [Durable Execution Explained](https://www.inngest.com/docs/guides/durable-execution)
 - [Part 1: Shipping a Developer Portfolio](/blog/shipping-developer-portfolio)
 - [Part 2: Hardening a Developer Portfolio](/blog/hardening-developer-portfolio)
+
+</CollapsibleSection>

@@ -48,6 +48,12 @@ MCP follows a client-server model:
 
 ## Real-World Example: This Portfolio
 
+<CollapsibleSection
+  id="building-ai-mcp-configuration"
+  title="MCP Configuration Example"
+  defaultExpanded={true}
+>
+
 This portfolio uses several MCP servers in the development workflow. Here's the actual configuration from my `.github/copilot-instructions.md`:
 
 ```markdown
@@ -64,7 +70,15 @@ This portfolio uses several MCP servers in the development workflow. Here's the 
 - **GitHub** - Repository operations and PR management
 ```
 
+</CollapsibleSection>
+
 ### Practical Use Cases
+
+<CollapsibleSection
+  id="building-ai-mcp-use-cases"
+  title="Practical MCP Use Cases"
+  defaultExpanded={false}
+>
 
 **1. Production Debugging with Sentry MCP**
 
@@ -116,9 +130,17 @@ const logs = await mcp_vercel_get_deployment_build_logs({
 });
 ```
 
+</CollapsibleSection>
+
 ---
 
 ## Building Your Own MCP Server
+
+<CollapsibleSection
+  id="building-ai-custom-mcp-server-guide"
+  title="Building Your Own MCP Server"
+  defaultExpanded={false}
+>
 
 MCP servers are surprisingly simple to build. The official SDK[^mcp-github] provides everything you need. Here's a minimal example:
 
@@ -172,9 +194,17 @@ const transport = new StdioServerTransport();
 await server.connect(transport);
 ```
 
+</CollapsibleSection>
+
 ---
 
 ## Patterns I've Learned
+
+<CollapsibleSection
+  id="building-ai-advanced-mcp-patterns"
+  title="Advanced MCP Patterns"
+  defaultExpanded={false}
+>
 
 After using MCP extensively on this portfolio, here are some patterns that work well:
 
@@ -230,6 +260,8 @@ const config = await mcp_filesystem_read_file({
 
 The file contents stay on your machine.
 
+</CollapsibleSection>
+
 ---
 
 ## The Developer Experience
@@ -275,6 +307,12 @@ From the MCP security guidelines[^mcp-intro]:
 
 ## Getting Started
 
+<CollapsibleSection
+  id="building-ai-getting-started-setup"
+  title="Getting Started: Setup Guide"
+  defaultExpanded={true}
+>
+
 To start using MCP with GitHub Copilot in VS Code:
 
 **1. Install MCP servers:**
@@ -317,6 +355,8 @@ Add to `.vscode/settings.json` or user settings:
 "Use Memory to recall our authentication architecture"
 ```
 
+</CollapsibleSection>
+
 ---
 
 ## What's Next for MCP?
@@ -340,6 +380,12 @@ If you're building AI tools or just trying to improve your development workflow,
 
 ---
 
+<CollapsibleSection
+  id="building-ai-further-reading-resources"
+  title="Further Reading & Resources"
+  defaultExpanded={false}
+>
+
 _This post was written with assistance from GitHub Copilot using MCP servers for Memory, Sequential Thinking, and Context7 documentation lookup. The irony is not lost on me._
 
 [^mcp-intro]: [Introducing the Model Context Protocol](https://www.anthropic.com/news/model-context-protocol) - Anthropic
@@ -351,3 +397,5 @@ _This post was written with assistance from GitHub Copilot using MCP servers for
 [^mcp-github]: [MCP GitHub Organization](https://github.com/modelcontextprotocol)
 
 [^nextjs-15]: [Next.js 15 Release Notes](https://nextjs.org/blog/next-15)
+
+</CollapsibleSection>
