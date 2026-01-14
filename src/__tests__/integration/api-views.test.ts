@@ -10,7 +10,7 @@ import {
   validateTiming,
   isValidSessionId,
 } from '@/lib/anti-spam'
-import { incrementPostViews } from '@/lib/views'
+import { incrementPostViews } from '@/lib/views.server'
 
 // Mock dependencies
 vi.mock('@/lib/rate-limit', () => ({
@@ -28,12 +28,22 @@ vi.mock('@/lib/anti-spam', () => ({
   isValidSessionId: vi.fn(),
 }))
 
-vi.mock('@/lib/views', () => ({
+vi.mock('@/lib/views.server', () => ({
   incrementPostViews: vi.fn(),
 }))
 
-// TODO: API refactored - update mocks to match new implementation
-describe.skip('Views API Integration', () => {
+/**
+ * Views API Integration Tests
+ * 
+ * Tests for POST /api/views endpoint which records page views.
+ * Uses Mock Service Worker (MSW) to intercept API calls during testing.
+ * 
+ * Skip Reason (Phase 1): API refactored - mocks needed updating
+ * Re-enabled (Phase 2): MSW handlers now provide mock responses
+ * 
+ * @link docs/testing/SKIPPED_TESTS_DOCUMENTATION.md#12-views-api-integration
+ */
+describe('Views API Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
