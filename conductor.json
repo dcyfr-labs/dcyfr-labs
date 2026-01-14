@@ -1,6 +1,25 @@
 {
-    "scripts": {
-        "setup": "",
-        "run": ""
+  "name": "dcyfr-labs",
+  "description": "Full-stack developer portfolio with Next.js 16, TypeScript, Tailwind v4, shadcn/ui, MDX blog, GitHub integration",
+  "scripts": {
+    "setup": "npm install && npm run build:search && npm run typecheck",
+    "run": "npm run dev",
+    "test": "npm run test:ci",
+    "lint": "npm run lint && npm run typecheck",
+    "build": "npm run build:search && next build"
+  },
+  "workspace": {
+    "branch": "dcyfr/config-audit",
+    "target_branch": "preview",
+    "agent_configs": {
+      "default": {
+        "model": "claude-opus-4.5",
+        "max_turns": 25
+      },
+      "quick_fixes": {
+        "model": "claude-haiku-4.5",
+        "max_turns": 10
+      }
     }
+  }
 }

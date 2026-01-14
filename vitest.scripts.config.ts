@@ -1,5 +1,19 @@
-import { defineConfig } from 'vitest/config'
-import path from 'path'
+import { defineConfig } from 'vitest/config';
+import path from 'path';
+
+/**
+ * Vitest Configuration for Build/Script Tests
+ *
+ * Separate configuration for testing build scripts and utilities.
+ * Uses Node.js environment (no React/browser dependencies).
+ *
+ * Usage:
+ * npm run test:scripts       # Single run
+ * npm run test:scripts:watch # Watch mode
+ *
+ * Note: For active test development, consider consolidating this with
+ * the main vitest.config.ts using environment detection.
+ */
 
 export default defineConfig({
   test: {
@@ -8,8 +22,6 @@ export default defineConfig({
     environment: 'node',
     // Use thread pool for parallel execution of script tests
     pool: 'threads',
-    // Allow Vitest to use 75% of available cores for faster parallelism
-    // maxThreads removed: not supported by current vitest InlineConfig types; rely on 'pool' and CI worker settings
     // Cache directory for faster re-runs
     cache: {
       dir: 'node_modules/.vitest-scripts',
@@ -20,4 +32,4 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-})
+});

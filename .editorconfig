@@ -1,0 +1,90 @@
+# EditorConfig helps maintain consistent coding styles for multiple developers
+# working on the same project across various editors and IDEs.
+#
+# EditorConfig is a widely supported standard:
+# - VS Code: native support (no extension needed)
+# - IntelliJ/JetBrains: built-in support
+# - Sublime: EditorConfig plugin
+# - Vim/Neovim: editorconfig-vim plugin
+# - Emacs: editorconfig-emacs
+#
+# Reference: https://editorconfig.org
+
+# Root setting - stop looking for .editorconfig files in parent directories
+root = true
+
+# Default settings for all files
+[*]
+# Use Unix-style line endings (LF) across all platforms
+end_of_line = lf
+# Ensure files end with a newline character (POSIX standard)
+insert_final_newline = true
+# Use UTF-8 encoding (standard for modern projects)
+charset = utf-8
+# Remove trailing whitespace
+trim_trailing_whitespace = true
+
+# TypeScript/JavaScript files
+[*.{ts,tsx,js,jsx,mjs,cjs}]
+# Indentation: 2 spaces (Next.js/React convention)
+indent_style = space
+indent_size = 2
+
+# JSON files (strict formatting)
+[*.json]
+# JSON doesn't support comments, so keep formatting strict
+indent_style = space
+indent_size = 2
+
+# YAML files (GitHub Actions, config files)
+[*.{yml,yaml}]
+# YAML standard uses 2-space indentation
+indent_style = space
+indent_size = 2
+
+# Markdown files (documentation)
+[*.md]
+# Markdown: preserve formatting, allow flexible indentation
+indent_style = space
+indent_size = 2
+# Note: Prettier handles markdown formatting via config, EditorConfig just sets basics
+
+# MDX files (React components in Markdown)
+[*.mdx]
+indent_style = space
+indent_size = 2
+
+# CSS/PostCSS files
+[*.{css,postcss}]
+indent_style = space
+indent_size = 2
+
+# Shell scripts
+[*.{sh,bash}]
+indent_style = space
+indent_size = 2
+
+# Makefile (requires tabs for commands)
+[Makefile]
+# Makefiles require tabs (not spaces) for recipe lines
+indent_style = tab
+
+# Configuration files in root
+[.{env,env.example,gitignore,dcignore,prettierignore}]
+indent_style = space
+indent_size = 2
+
+# TOML files (package managers)
+[*.toml]
+indent_style = space
+indent_size = 2
+
+# INI files
+[*.ini]
+indent_style = space
+indent_size = 2
+
+# XML files
+[*.{xml,svg}]
+indent_style = space
+indent_size = 2
