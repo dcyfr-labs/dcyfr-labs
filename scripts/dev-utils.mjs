@@ -5,9 +5,11 @@
  * Quick development tasks and health checks
  */
 
+import { spawn } from 'child_process';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import chalk from 'chalk';
+import { parseArgs } from 'util';
 
 const execAsync = promisify(exec);
 
@@ -23,6 +25,10 @@ const TASKS = {
   'reset': {
     description: 'Reset development environment (clean + install)',
     fn: resetProject
+  },
+  'check': {
+    description: 'Run pre-flight checks (lint, typecheck, tests, build)',
+    fn: runPreflight
   },
   'perf': {
     description: 'Run performance benchmarks',
@@ -125,6 +131,147 @@ async function runTestWatch() {
     await execAsync('npm run test', { stdio: 'inherit' });
   } catch (error) {
     console.log(chalk.red('❌ Test watch failed:'), error.message);
+  }
+}
+
+async function runPreflight() {
+  // Parse arguments for check command
+  const args = parseArgs({
+    options: {
+      fast: { type: 'boolean', default: false },
+      fix: { type: 'boolean', default: false },
+      verbose: { type: 'boolean', default: false },
+    },
+    allowPositionals: true,
+  });
+
+  const results = [];
+  let totalDuration = 0;
+
+  function logResult(name, passed, duration) {
+    const icon = passed ? '✅' : '❌';
+    const color = passed ? 'green' : 'red';
+    const durationText = duration ? ` (${duration}ms)` : '';
+    console.log(chalk[color](`${icon} ${name}${durationText}`));
+  }
+
+  async function runCommand(command, cmdArgs = [], options = {}) {
+    const startTime = Date.now();
+
+    return new Promise((resolve) => {
+      const child = spawn(command, cmdArgs, {
+        stdio: args.values.verbose ? 'inherit' : 'pipe',
+        shell: true,
+        ...options,
+      });
+
+      let stdout = '';
+      let stderr = '';
+
+      if (!args.values.verbose) {
+        child.stdout?.on('data', (data) => (stdout += data));
+        child.stderr?.on('data', (data) => (stderr += data));
+      }
+
+      child.on('close', (code) => {
+        const duration = Date.now() - startTime;
+        const passed = code === 0;
+
+        if (!passed && !args.values.verbose && (stdout || stderr)) {
+          console.log(stdout);
+          console.error(stderr);
+        }
+
+        resolve({ passed, duration, stdout, stderr });
+      });
+    });
+  }
+
+  async function runCheck(name, command, cmdArgs = [], options = {}) {
+    console.log(chalk.cyan(`\n🔍 Running ${name}...`));
+
+    const result = await runCommand(command, cmdArgs, options);
+
+    results.push({ name, ...result });
+    totalDuration += result.duration;
+
+    logResult(name, result.passed, result.duration);
+
+    return result.passed;
+  }
+
+  const startTime = Date.now();
+
+  console.log(chalk.bold(chalk.cyan('🚀 Developer Pre-flight Checks\n')));
+  console.log(`Mode: ${args.values.fast ? 'Fast' : 'Full'} | Fix: ${args.values.fix ? 'Yes' : 'No'}`);
+
+  // Step 1: PII Scan
+  await runCheck('PII/PI Scan', 'npm', ['run', 'scan:pi']);
+
+  // Step 2: Lint (with auto-fix if requested)
+  if (args.values.fix) {
+    await runCheck('ESLint (auto-fix)', 'npm', ['run', 'lint:fix']);
+  } else {
+    await runCheck('ESLint', 'npm', ['run', 'lint']);
+  }
+
+  // Step 3: TypeScript
+  await runCheck('TypeScript', 'npm', ['run', 'typecheck']);
+
+  // Step 4: Unit Tests
+  if (!args.values.fast) {
+    await runCheck('Unit Tests', 'npm', ['run', 'test:unit']);
+  } else {
+    console.log(chalk.yellow('\n⏩ Skipping unit tests (--fast mode)'));
+  }
+
+  // Step 5: Build
+  await runCheck('Production Build', 'npm', ['run', 'build']);
+
+  // Step 6: Bundle Size Check
+  if (!args.values.fast) {
+    await runCheck('Bundle Size Check', 'npm', ['run', 'perf:check']);
+  }
+
+  // Step 7: Design Token Validation
+  try {
+    await runCheck('Design Token Validation', 'node', [
+      'scripts/validation/validate-design-tokens.mjs',
+    ]);
+  } catch {
+    console.log(chalk.yellow('⚠️  Design token validation script not found, skipping'));
+  }
+
+  // Summary
+  const endTime = Date.now();
+  const totalTime = ((endTime - startTime) / 1000).toFixed(2);
+
+  console.log('\n' + chalk.bold('📊 Summary'));
+  console.log('─'.repeat(60));
+
+  const passed = results.filter((r) => r.passed).length;
+  const failed = results.filter((r) => !r.passed).length;
+  const total = results.length;
+
+  results.forEach((r) => logResult(r.name, r.passed));
+
+  console.log('\n' + '─'.repeat(60));
+  const summaryColor = failed === 0 ? 'green' : 'red';
+  console.log(chalk[summaryColor](`Total: ${passed}/${total} passed, ${failed} failed`));
+  console.log(chalk.cyan(`Duration: ${totalTime}s`));
+
+  if (failed === 0) {
+    console.log('\n' + chalk.bold(chalk.green('🎉 All checks passed! Ready to push.')));
+    process.exit(0);
+  } else {
+    console.log('\n' + chalk.bold(chalk.red('❌ Some checks failed. Fix issues before pushing.')));
+
+    if (!args.values.fix) {
+      console.log(chalk.yellow('\n💡 Tip: Run with --fix to auto-fix some issues:'));
+      console.log(chalk.yellow('   npm run dev:check -- --fix'));
+    }
+
+    process.exit(1);
   }
 }
 
