@@ -72,8 +72,6 @@ This portfolio uses several MCP servers in the development workflow. Here's the 
 
 </CollapsibleSection>
 
-### Practical Use Cases
-
 <CollapsibleSection
   id="building-ai-mcp-use-cases"
   title="Practical MCP Use Cases"
@@ -131,10 +129,6 @@ const logs = await mcp_vercel_get_deployment_build_logs({
 ```
 
 </CollapsibleSection>
-
----
-
-## Building Your Own MCP Server
 
 <CollapsibleSection
   id="building-ai-custom-mcp-server-guide"
@@ -195,10 +189,6 @@ await server.connect(transport);
 ```
 
 </CollapsibleSection>
-
----
-
-## Patterns I've Learned
 
 <CollapsibleSection
   id="building-ai-advanced-mcp-patterns"
@@ -261,8 +251,6 @@ const config = await mcp_filesystem_read_file({
 The file contents stay on your machine.
 
 </CollapsibleSection>
-
----
 
 ## The Developer Experience
 
@@ -357,8 +345,6 @@ Add to `.vscode/settings.json` or user settings:
 
 </CollapsibleSection>
 
----
-
 ## What's Next for MCP?
 
 The protocol is still evolving. Anthropic recently announced code execution capabilities[^mcp-code-execution], and the direction is clear:
@@ -380,11 +366,7 @@ If you're building AI tools or just trying to improve your development workflow,
 
 ---
 
-<CollapsibleSection
-  id="building-ai-further-reading-resources"
-  title="Further Reading & Resources"
-  defaultExpanded={false}
->
+## Further Reading & Resources
 
 _This post was written with assistance from GitHub Copilot using MCP servers for Memory, Sequential Thinking, and Context7 documentation lookup. The irony is not lost on me._
 
@@ -397,5 +379,3 @@ _This post was written with assistance from GitHub Copilot using MCP servers for
 [^mcp-github]: [MCP GitHub Organization](https://github.com/modelcontextprotocol)
 
 [^nextjs-15]: [Next.js 15 Release Notes](https://nextjs.org/blog/next-15)
-
-</CollapsibleSection>

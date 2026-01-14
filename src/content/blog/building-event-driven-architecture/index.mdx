@@ -21,24 +21,20 @@ series:
   description: "Learn how to build, harden, and ship a production-ready developer portfolio with real-world techniques."
   icon: "Rocket"
   color: "development"
+previousSlugs:
+  - "event-driven-architecture"
 ---
 
 > **Series Background:** This is Part 3 of the Portfolio series, following [Shipping a Developer Portfolio](/blog/shipping-developer-portfolio) and [Hardening a Developer Portfolio](/blog/hardening-developer-portfolio). Here we explore how event-driven architecture transforms user experience and system reliability.
-
----
 
 Your API routes are lying to your users. They return `200 OK` while work is still happening. The contact form says "Message sent!" but the email hasn't been delivered yet.
 
 Event-driven architecture fixes this by separating **acknowledgment** from **processing**. Users get instant feedback. Work happens reliably in the background. Here's how Inngest makes this practical for any Next.js project.
 
----
-
-## The Problem with Synchronous APIs
-
 <CollapsibleSection
   id="event-driven-synchronous-problem"
   title="Before Event-Driven: The Synchronous API Problem"
-  defaultExpanded={true}
+  defaultExpanded={false}
 >
 
 When I first built this portfolio's contact form, the flow was straightforward but slow:
@@ -72,8 +68,6 @@ The fix isn't making the email faster—it's **decoupling the response from the 
 
 </CollapsibleSection>
 
----
-
 ## Event-Driven Architecture Explained
 
 Event-driven architecture separates two concerns:
@@ -99,10 +93,6 @@ Modern event-driven systems add one more concept: **steps**. Instead of one mono
 
 > **Further Reading:** For comprehensive overviews of event-driven architecture patterns, see Martin Fowler's [Event-Driven Architecture](https://martinfowler.com/articles/201701-event-driven.html) and AWS's [What is Event-Driven Architecture?](https://aws.amazon.com/event-driven-architecture/)
 
----
-
-## Why Inngest?
-
 <CollapsibleSection
   id="event-driven-alternatives-comparison"
   title="Alternative Solutions Comparison"
@@ -127,8 +117,6 @@ What sold me on Inngest:
 5. **Vercel-native**: First-class integration, deploys automatically
 
 </CollapsibleSection>
-
----
 
 ## Implementation: Contact Form
 
@@ -385,17 +373,15 @@ export const securityAdvisoryMonitor = inngest.createFunction(
 
 This runs three times daily, checks for CVEs affecting React/Next.js/RSC packages, verifies against my actual installed versions, and alerts me before I read about it on Twitter.
 
----
+### Blog Analytics
 
-## Blog Analytics: Milestones and Trending
+The blog tracks views and automatically detects milestones:
 
 <CollapsibleSection
   id="event-driven-blog-analytics-implementation"
   title="Blog Analytics Implementation Details"
   defaultExpanded={false}
 >
-
-The blog tracks views and automatically detects milestones:
 
 ```typescript
 export const trackPostView = inngest.createFunction(
@@ -434,8 +420,6 @@ export const trackPostView = inngest.createFunction(
 When a post hits 1,000 views, I get notified. The trending calculation runs hourly, scoring posts by recent activity to surface what readers are finding valuable.
 
 </CollapsibleSection>
-
----
 
 ## Developer Experience
 
@@ -539,19 +523,6 @@ More importantly: **users notice**. The contact form feels instant. The contribu
 
 ---
 
-## When NOT to Use Event-Driven
-
-Event-driven architecture isn't always the answer:
-
-- **Simple CRUD**: Reading/writing to a database doesn't need queuing. Saving a user preference? Just write to the database directly.
-- **Real-time requirements**: If users need the result immediately, don't defer it. A "Reply to comment" feature where users expect to see their comment appear instantly should stay synchronous—even if it takes 500ms.
-- **Debugging complexity**: More moving parts means more places to look. If your team is already stretched thin, the observability benefits might not outweigh the learning curve.
-- **Small scale**: If you have 10 users/day, synchronous is simpler. Don't add infrastructure complexity you don't need yet.
-
-The rule of thumb: **if users don't need to wait for the result, don't make them wait.** But if they _do_ need to see the result immediately, don't hide it behind a queue.
-
----
-
 ## Key Takeaways
 
 1. **Decouple acknowledgment from processing**—users want fast feedback, not fast completion
@@ -562,24 +533,27 @@ The rule of thumb: **if users don't need to wait for the result, don't make them
 
 Event-driven architecture doesn't require enterprise scale. With tools like Inngest, any Next.js project can benefit from reliable background processing, instant API responses, and better observability.
 
+### When NOT to Use Event-Driven
+
+Event-driven architecture isn't always the answer:
+
+- **Simple CRUD**: Reading/writing to a database doesn't need queuing. Saving a user preference? Just write to the database directly.
+- **Real-time requirements**: If users need the result immediately, don't defer it. A "Reply to comment" feature where users expect to see their comment appear instantly should stay synchronous—even if it takes 500ms.
+- **Debugging complexity**: More moving parts means more places to look. If your team is already stretched thin, the observability benefits might not outweigh the learning curve.
+- **Small scale**: If you have 10 users/day, synchronous is simpler. Don't add infrastructure complexity you don't need yet.
+
+The rule of thumb: **if users don't need to wait for the result, don't make them wait.** But if they _do_ need to see the result immediately, don't hide it behind a queue.
+
 One more thing: **background jobs are a security surface too.** The security monitor in this portfolio exists because I learned the hard way that CVE detection gaps matter. If you're processing sensitive data in background functions, apply the same security rigor you would to API routes—validate inputs, sanitize outputs, and monitor for anomalies.
 
 The contact form still says "Message sent!"—but now it's actually true (or will be, with retries, within seconds).
 
 ---
 
-## Resources
-
-<CollapsibleSection
-  id="event-driven-further-reading"
-  title="Further Reading & Resources"
-  defaultExpanded={false}
->
+## Further Reading & Resources
 
 - [Inngest Documentation](https://www.inngest.com/docs)
 - [Inngest + Vercel Integration](https://www.inngest.com/docs/deploy/vercel)
 - [Durable Execution Explained](https://www.inngest.com/docs/guides/durable-execution)
 - [Part 1: Shipping a Developer Portfolio](/blog/shipping-developer-portfolio)
 - [Part 2: Hardening a Developer Portfolio](/blog/hardening-developer-portfolio)
-
-</CollapsibleSection>

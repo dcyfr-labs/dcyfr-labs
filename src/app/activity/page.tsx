@@ -23,7 +23,6 @@ import {
 } from "@/lib/activity";
 import {
   transformPostsWithViews,
-  transformTrendingPosts,
   transformMilestones,
   transformHighEngagementPosts,
   transformCommentMilestones,
@@ -73,9 +72,10 @@ export default async function ActivityPage() {
     // STEP 1: Try versioned cache first
     const cached = await activityFeedCache.get("feed:all");
     if (cached) {
-      allActivities = cached;
+      // Filter out trending items (disabled feature)
+      allActivities = cached.filter((item) => item.source !== "trending");
       console.warn(
-        `[Activity Page] ✅ Loaded from versioned cache: ${allActivities.length} items`
+        `[Activity Page] ✅ Loaded from versioned cache: ${allActivities.length} items (trending filtered)`
       );
     }
 
@@ -182,10 +182,10 @@ export default async function ActivityPage() {
           ),
       ]);
 
-      // Sort by timestamp (no filtering, no aggregation - unified timeline)
-      allActivities = activities.sort(
-        (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
-      );
+      // Sort by timestamp and filter out trending items (disabled feature)
+      allActivities = activities
+        .filter((item) => item.source !== "trending")
+        .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
       // DEBUG: Log all sources of activities
       const sourceCounts: Record<string, number> = {};
