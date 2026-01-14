@@ -131,7 +131,29 @@ else
   echo -e "${YELLOW}SKIP${NC} (node not available)"
 fi
 
-# Check 9: ESLint and lint-staged
+# Check 9: Documentation placement validation
+echo -n "  Checking documentation placement... "
+ROOT_DOCS=$(git diff --cached --name-only 2>/dev/null | grep -E "\.md$" | grep -v "^docs/" | grep -v "^README.md$" | grep -v "^CONTRIBUTING.md$" | grep -v "^CHANGELOG.md$" | grep -v "^LICENSE.md$" | grep -v "^SECURITY.md$" | grep -v "^AGENTS.md$" | grep -v "^CLAUDE.md$" || true)
+
+if [ -n "$ROOT_DOCS" ]; then
+  echo -e "${RED}FAIL${NC}"
+  echo -e "${RED}❌ ERROR: Documentation files found outside /docs folder${NC}"
+  echo "   These files must be in docs/ subdirectories:"
+  echo "$ROOT_DOCS" | sed 's/^/      /'
+  echo ""
+  echo "   Guidelines:"
+  echo "      - Analysis docs → docs/analysis/"
+  echo "      - Reports → docs/[category]/private/"
+  echo "      - Guides → docs/[category]/"
+  echo "      - Sensitive → docs/[category]/private/"
+  echo ""
+  echo "   See: docs/governance/AGENT_DOCUMENTATION_ENFORCEMENT.md"
+  ERRORS=$((ERRORS+1))
+else
+  echo -e "${GREEN}PASS${NC}"
+fi
+
+# Check 10: ESLint and lint-staged
 echo -n "  Running ESLint and lint-staged... "
 if npx lint-staged --quiet 2>&1; then
   echo -e "${GREEN}PASS${NC}"

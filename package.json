@@ -5,6 +5,7 @@
   "scripts": {
     "validate:allowlist": "node scripts/validation/validate-allowlist.mjs",
     "validate:contrast": "node scripts/validate-contrast.mjs",
+    "validate:docs-structure": "node scripts/ci/validate-docs-structure.mjs",
     "audit:allowlist": "node scripts/validation/audit-allowlist.mjs",
     "parse:gitleaks-report": "node scripts/ci/parse-gitleaks-report.mjs gitleaks-report.json",
     "validate:botid": "node scripts/validation/validate-botid-setup.mjs",
