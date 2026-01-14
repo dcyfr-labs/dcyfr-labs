@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ActivityFilters, ThreadedActivityGroup } from "@/components/activity";
+// Use page-exports to only bundle components needed for this page
+// This prevents unused activity components from being included in the bundle
+import { ActivityFilters, ThreadedActivityGroup } from "@/components/activity/page-exports";
 import type { ActivityItem, ActivitySource } from "@/lib/activity";
 import { searchActivities, createSearchIndex, groupActivitiesIntoThreads } from "@/lib/activity";
 import { useBookmarks } from "@/hooks/use-bookmarks";

@@ -222,11 +222,12 @@ const eslintConfig = [
                 "!@/components/*/client",
                 "!@/components/*/server",
                 "!@/components/*/layouts",
+                "!@/components/*/page-exports",
                 "!@/components/common/filters",
                 "!@/components/layouts/archive-hero",
               ],
               message:
-                "❌ WRONG: Don't import from component subdirectories directly. Use barrel exports.\n\n❌ import PostCard from '@/components/blog/post-card';\n✅ import { PostCard } from '@/components/blog';\n\nWhy: Barrel exports maintain encapsulation and allow refactoring without breaking imports.\nSee: docs/ai/component-patterns.md#barrel-exports\n\nEXCEPTIONS:\n  - */client (client-only barrel exports) - allowed in client components\n  - */server (server-only barrel exports) - allowed in server components\n  - */layouts (layout-specific exports) - allowed for complex layouts\n  - common/filters (has own barrel export) - allowed for filter components\n  - layouts/archive-hero (specialized layout) - allowed for archive pages",
+                "❌ WRONG: Don't import from component subdirectories directly. Use barrel exports.\n\n❌ import PostCard from '@/components/blog/post-card';\n✅ import { PostCard } from '@/components/blog';\n\nWhy: Barrel exports maintain encapsulation and allow refactoring without breaking imports.\nSee: docs/ai/component-patterns.md#barrel-exports\n\nEXCEPTIONS:\n  - */client (client-only barrel exports) - allowed in client components\n  - */server (server-only barrel exports) - allowed in server components\n  - */layouts (layout-specific exports) - allowed for complex layouts\n  - */page-exports (page-specific exports) - minimal exports for performance\n  - common/filters (has own barrel export) - allowed for filter components\n  - layouts/archive-hero (specialized layout) - allowed for archive pages",
             },
             {
               group: ["@/lib/*/index", "@/lib/*/index.ts", "@/lib/*/index.tsx"],
