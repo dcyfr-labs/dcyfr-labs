@@ -1,0 +1,143 @@
+# Prettier Ignore Configuration
+# Files and directories that Prettier should NOT format
+# Reference: https://prettier.io/docs/en/ignore.html
+
+# Dependencies (managed by npm/yarn)
+node_modules/
+.pnp
+.yarn/
+
+# Build outputs
+/.next/
+/out/
+/build/
+/dist/
+.vercel/
+
+# Test coverage
+/coverage/
+
+# Test artifacts and snapshots
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/e2e/**-spec.ts-snapshots/
+**/*-spec.ts-snapshots/
+**/*.spec.ts-snapshots/
+
+# Playwright visual regression
+reports/e2e-artifacts/
+
+# Security scanning outputs
+nuclei-results.json
+nuclei-report.md
+nuclei-*.json
+nuclei-*.md
+
+# Lighthouse reports
+/lighthouse/
+/.lighthouseci/
+
+# Environment files (must not be formatted - security)
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE specific
+.vscode/
+.idea/
+.VSCode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.sublime-workspace
+
+# Git
+.git/
+.gitignore
+
+# Misc
+*.log
+yarn-error.log*
+npm-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Generated files
+src/content/generated/
+scripts/reports/
+scripts/__tests__/
+
+# Third-party generated content (do not modify)
+public/
+
+# Lock files (must not be formatted)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Vendor/cache directories
+vendor/
+.cache/
+
+# Docker
+Dockerfile*
+.dockerignore
+docker-compose*.yml
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.circleci/
+.travis.yml
+
+# Architecture diagrams and binary files
+*.drawio
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.webp
+*.ico
+
+# Compiled/Binary files
+*.o
+*.so
+*.a
+*.exe
+*.dll
+*.dylib
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.python-version
+venv/
+env/
+
+# Ruby (if applicable)
+Gemfile.lock
+.ruby-version
+
+# Node-specific (already covered but explicit)
+npm-shrinkwrap.json
+
+# Custom project exclusions
+.claude/
+.context/
+.opencode/
+docs/private/

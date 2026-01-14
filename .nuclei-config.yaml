@@ -110,9 +110,15 @@ system-resolvers: true             # Use system DNS
 # no-stdin: true                   # Uncomment for CI/CD
 
 # Update Settings
-# Templates auto-update in workflow
-update-templates: true
-templates-version: latest
+# Templates are pinned to specific version for supply chain security
+# This prevents auto-injection of malicious templates during updates
+# To update templates:
+#   1. Review ProjectDiscovery changelog: https://github.com/projectdiscovery/nuclei-templates/releases
+#   2. Test new version in staging environment
+#   3. Verify all critical templates still work as expected
+#   4. Update version below and commit with detailed changelog entry
+update-templates: false
+templates-version: '9.8.5'  # Last verified: January 13, 2026
 
 # Nuclei Cloud (disabled - using open-source)
 # cloud-upload: false
