@@ -9,15 +9,32 @@ export type TocHeading = {
 };
 
 /**
- * Generates a slug from heading text (same logic as rehype-slug)
+ * Generates a slug from heading text (same logic as rehype-slug/github-slugger)
+ * 
+ * Key behaviors:
+ * - Preserves accented characters (café, naïve)
+ * - Removes punctuation (!@#$%^&*()[], etc.)
+ * - Preserves hyphens and underscores
+ * - Each space becomes a hyphen (including consecutive spaces for consecutive hyphens)
+ * 
+ * Examples:
+ * - "café" → "café" (preserves accents)
+ * - "Café ☕ and Résumé 📄" → "café--and-résumé-" (emoji removed, 2 spaces → 2 hyphens)
+ * - "Further Reading & Resources" → "further-reading--resources" (& removed, space → hyphen)
+ * 
+ * Note: github-slugger uses a massive Unicode regex to determine what to remove.
+ * This function removes all non-word ASCII chars except hyphens/underscores, plus emojis.
+ * Non-ASCII letters (é, ñ, etc.) are preserved.
  */
 function generateSlug(text: string): string {
   return text
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-');
+    // Remove common punctuation but keep accented characters
+    // Matches: !"#$%&'()*+,./:;<=>?@[\]^`{|}~ and control chars
+    // Preserves: a-z, A-Z, 0-9, -, _, and accented chars (é, ñ, etc.)
+    .replace(/[^\p{L}\p{N}\s\-_]/gu, '')  // Keep letters (including accented), numbers, spaces, hyphens, underscores
+    .replace(/\s/g, '-');                  // Each space becomes a hyphen
 }
 
 /**
