@@ -2,8 +2,8 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
+import { CollapsibleSection } from "./collapsible-section";
 import {
-  SPACING,
   TYPOGRAPHY,
   ANIMATION,
 } from "@/lib/design-tokens";
@@ -20,6 +20,7 @@ import {
  * - Theme-aware styling
  * - Smooth expand/collapse animation
  * - WCAG AA compliant
+ * - Uses CollapsibleSection component for consistency with other collapsible content
  */
 
 interface FootnotesProps {
@@ -28,89 +29,17 @@ interface FootnotesProps {
 }
 
 export function Footnotes({ children, className }: FootnotesProps) {
-  const [isExpanded, setIsExpanded] = React.useState(false);
-
-  const handleToggle = () => {
-    setIsExpanded(!isExpanded);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      handleToggle();
-    }
-  };
-
   return (
-    <section
-      className={cn(
-        "rounded-lg border border-border",
-        "bg-card shadow-sm hover:shadow-md",
-        "overflow-hidden",
-        ANIMATION.transition.base,
-        "my-8",
-        className
-      )}
+    <CollapsibleSection
+      id="footnotes"
+      title="Footnotes"
+      defaultExpanded={false}
+      reducedSpacing={true}
+      className={className}
     >
-      <button
-        type="button"
-        onClick={handleToggle}
-        onKeyDown={handleKeyDown}
-        aria-expanded={isExpanded}
-        aria-controls="footnotes-content"
-        className={cn(
-          "w-full flex items-center justify-between gap-4",
-          "p-4 sm:p-5",
-          "text-left",
-          "bg-card",
-          "hover:bg-muted/30",
-          "focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2",
-          ANIMATION.transition.colors
-        )}
-      >
-        <h3
-          className={cn(
-            TYPOGRAPHY.h3.standard,
-            "text-card-foreground",
-            "font-semibold"
-          )}
-        >
-          Footnotes
-        </h3>
-
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={cn(
-            "w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0",
-            "text-muted-foreground",
-            ANIMATION.transition.movement,
-            isExpanded && "rotate-180"
-          )}
-          aria-hidden="true"
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </button>
-
-      <div
-        id="footnotes-content"
-        role="region"
-        className={cn(
-          "overflow-hidden",
-          ANIMATION.transition.appearance,
-          isExpanded ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0"
-        )}
-      >
-        <div className={`p-4 sm:p-5 pt-0 ${SPACING.content} text-card-foreground`}>
-          {children}
-        </div>
+      <div className="space-y-3 md:space-y-4 lg:space-y-5 text-card-foreground">
+        {children}
       </div>
-    </section>
+    </CollapsibleSection>
   );
 }

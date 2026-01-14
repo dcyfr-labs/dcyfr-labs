@@ -43,6 +43,8 @@ interface CollapsibleSectionProps {
   defaultExpanded?: boolean;
   /** Optional className for custom styling */
   className?: string;
+  /** Use reduced spacing (mb-2 instead of my-4) for sections following other collapsibles */
+  reducedSpacing?: boolean;
 }
 
 const STORAGE_KEY = "dcyfr-collapsible-sections";
@@ -53,6 +55,7 @@ export function CollapsibleSection({
   children,
   defaultExpanded = false,
   className,
+  reducedSpacing = false,
 }: CollapsibleSectionProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   const [isMounted, setIsMounted] = useState(false);
@@ -115,7 +118,7 @@ export function CollapsibleSection({
         "bg-card shadow-sm hover:shadow-md",
         "overflow-hidden",
         ANIMATION.transition.base,
-        `my-${SPACING_VALUES.md}`,
+        reducedSpacing ? "mb-2" : `my-${SPACING_VALUES.md}`,
         className
       )}
     >
