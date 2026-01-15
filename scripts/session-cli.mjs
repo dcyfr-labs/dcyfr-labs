@@ -2,20 +2,20 @@
 
 /**
  * Unified Session Management CLI
- * 
+ *
  * Single entry point for session state management across all AI agents.
  * Handles saving, restoring, recovering, and tracking session state.
- * 
+ *
  * Usage:
  *   npm run session <command> [options]
- * 
+ *
  * Commands:
  *   save <agent> <task>      - Save session state for an agent
  *   restore <agent>          - Restore session state from saved state
  *   recover                  - Recover last known session
  *   handoff                  - Initiate handoff to another agent
  *   track [report|last|clear] - Track and manage session metrics
- * 
+ *
  * Agents: claude, opencode, copilot
  */
 
@@ -65,7 +65,8 @@ function saveSession(agent, taskDescription, phase = 'in-progress', timeRemainin
       shell: false,
     });
     if (result.error) throw result.error;
-    if (result.status !== 0 && result.status !== null) throw new Error(`Script exited with code ${result.status}`);
+    if (result.status !== 0 && result.status !== null)
+      throw new Error(`Script exited with code ${result.status}`);
     console.log('✅ Session saved');
   } catch (error) {
     console.error(`❌ Failed to save session: ${error.message}`);
@@ -88,7 +89,8 @@ function restoreSession(agent) {
       shell: false,
     });
     if (result.error) throw result.error;
-    if (result.status !== 0 && result.status !== null) throw new Error(`Script exited with code ${result.status}`);
+    if (result.status !== 0 && result.status !== null)
+      throw new Error(`Script exited with code ${result.status}`);
     console.log('✅ Session restored');
   } catch (error) {
     console.error(`❌ Failed to restore session: ${error.message}`);
@@ -106,7 +108,8 @@ function recoverSession() {
       shell: false,
     });
     if (result.error) throw result.error;
-    if (result.status !== 0 && result.status !== null) throw new Error(`Script exited with code ${result.status}`);
+    if (result.status !== 0 && result.status !== null)
+      throw new Error(`Script exited with code ${result.status}`);
     console.log('✅ Session recovered');
   } catch (error) {
     console.error(`❌ Failed to recover session: ${error.message}`);
@@ -127,7 +130,8 @@ function handoffSession(fromAgent = 'claude', toAgent = 'opencode') {
         env: { ...process.env, FROM_AGENT: fromAgent, TO_AGENT: toAgent },
       });
       if (result.error) throw result.error;
-      if (result.status !== 0 && result.status !== null) throw new Error(`Script exited with code ${result.status}`);
+      if (result.status !== 0 && result.status !== null)
+        throw new Error(`Script exited with code ${result.status}`);
     } else {
       // Fallback: save from one, restore to other
       saveSession(fromAgent, 'Handoff in progress', 'handoff');
@@ -151,7 +155,8 @@ function trackSession(subcommand = 'report') {
         shell: false,
       });
       if (result.error) throw result.error;
-      if (result.status !== 0 && result.status !== null) throw new Error(`Script exited with code ${result.status}`);
+      if (result.status !== 0 && result.status !== null)
+        throw new Error(`Script exited with code ${result.status}`);
     } else {
       console.warn('⚠️  Session tracking not available');
     }

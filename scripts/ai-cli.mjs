@@ -2,29 +2,29 @@
 
 /**
  * Unified AI Tooling CLI
- * 
+ *
  * Single entry point for all AI provider management commands.
  * Consolidates costs, fallback management, and telemetry tracking.
- * 
+ *
  * Usage:
  *   npm run ai <command> [options]
- * 
+ *
  * Command Groups:
- * 
+ *
  *   AI Costs:
  *     costs              - View current AI costs
  *     costs view         - View cost summary
  *     costs export:json  - Export costs as JSON
  *     costs export:csv   - Export costs as CSV
  *     costs archive      - Archive and reset cost tracking
- * 
+ *
  *   Provider Fallback:
  *     fallback:init      - Initialize fallback system
  *     fallback:status    - Check fallback status
  *     fallback:health    - Check provider health
  *     fallback:trigger   - Trigger manual fallback
  *     fallback:return    - Return to primary provider
- * 
+ *
  *   Telemetry:
  *     telemetry:stats    - View agent statistics
  *     telemetry:compare  - Compare agent performance
