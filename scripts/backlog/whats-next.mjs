@@ -19,7 +19,7 @@
 
 import fs from "fs";
 import path from "path";
-import { execSync } from "child_process";
+import { spawnSync } from "child_process";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -216,10 +216,13 @@ async function main() {
   if (!fs.existsSync(prioritizedPath)) {
     console.log("📋 Generating prioritized tasks...");
     try {
-      execSync(`node ${path.resolve(__dirname, "prioritize-tasks.mjs")}`, {
+      const result = spawnSync('node', [path.resolve(__dirname, "prioritize-tasks.mjs")], {
         cwd: path.resolve(__dirname, "../.."),
         stdio: "inherit",
+        shell: false,
       });
+      if (result.error) throw result.error;
+      if (result.status !== 0 && result.status !== null) throw new Error(`Script exited with code ${result.status}`);
     } catch (error) {
       console.error("❌ Failed to prioritize tasks");
       process.exit(1);

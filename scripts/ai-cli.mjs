@@ -32,7 +32,7 @@
  *     telemetry:export   - Export telemetry data
  */
 
-import { execSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -177,18 +177,18 @@ function runCommand(command, extraArgs = []) {
       const fullPath = path.join(__dirname, script);
       const args = [...(info.args || []), ...extraArgs];
 
-      let cmd;
-      if (info.isTsx) {
-        cmd = `tsx "${fullPath}"`;
-      } else {
-        cmd = `node "${fullPath}"`;
-      }
+      const runner = info.isTsx ? 'tsx' : 'node';
+      const result = spawnSync(runner, [fullPath, ...args], {
+        stdio: 'inherit',
+        shell: false,
+      });
 
-      if (args.length > 0) {
-        cmd += ` ${args.join(' ')}`;
+      if (result.error) {
+        throw result.error;
       }
-
-      execSync(cmd, { stdio: 'inherit' });
+      if (result.status !== 0 && result.status !== null) {
+        throw new Error(`Command exited with code ${result.status}`);
+      }
     }
   } catch (error) {
     console.error(`\n❌ Command failed: ${command}`);

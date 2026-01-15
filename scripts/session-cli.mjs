@@ -19,7 +19,7 @@
  * Agents: claude, opencode, copilot
  */
 
-import { execSync, spawnSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -60,9 +60,12 @@ function saveSession(agent, taskDescription, phase = 'in-progress', timeRemainin
   try {
     // Try to use the shell script first for compatibility
     const scriptPath = path.join(__dirname, 'save-session-state.sh');
-    execSync(`bash "${scriptPath}" "${agent}" "${taskDescription}" "${phase}" "${timeRemaining}"`, {
+    const result = spawnSync('bash', [scriptPath, agent, taskDescription, phase, timeRemaining], {
       stdio: 'inherit',
+      shell: false,
     });
+    if (result.error) throw result.error;
+    if (result.status !== 0 && result.status !== null) throw new Error(`Script exited with code ${result.status}`);
     console.log('✅ Session saved');
   } catch (error) {
     console.error(`❌ Failed to save session: ${error.message}`);
@@ -80,9 +83,12 @@ function restoreSession(agent) {
 
   try {
     const scriptPath = path.join(__dirname, 'restore-session-state.sh');
-    execSync(`bash "${scriptPath}" "${agent}"`, {
+    const result = spawnSync('bash', [scriptPath, agent], {
       stdio: 'inherit',
+      shell: false,
     });
+    if (result.error) throw result.error;
+    if (result.status !== 0 && result.status !== null) throw new Error(`Script exited with code ${result.status}`);
     console.log('✅ Session restored');
   } catch (error) {
     console.error(`❌ Failed to restore session: ${error.message}`);
@@ -95,9 +101,12 @@ function recoverSession() {
 
   try {
     const scriptPath = path.join(__dirname, 'session-recovery.sh');
-    execSync(`bash "${scriptPath}"`, {
+    const result = spawnSync('bash', [scriptPath], {
       stdio: 'inherit',
+      shell: false,
     });
+    if (result.error) throw result.error;
+    if (result.status !== 0 && result.status !== null) throw new Error(`Script exited with code ${result.status}`);
     console.log('✅ Session recovered');
   } catch (error) {
     console.error(`❌ Failed to recover session: ${error.message}`);
@@ -112,10 +121,13 @@ function handoffSession(fromAgent = 'claude', toAgent = 'opencode') {
     // Try the OpenCode-specific handoff script
     const scriptPath = path.join(__dirname, '../.opencode/scripts/session-handoff.sh');
     if (fs.existsSync(scriptPath)) {
-      execSync(`bash "${scriptPath}"`, {
+      const result = spawnSync('bash', [scriptPath], {
         stdio: 'inherit',
+        shell: false,
         env: { ...process.env, FROM_AGENT: fromAgent, TO_AGENT: toAgent },
       });
+      if (result.error) throw result.error;
+      if (result.status !== 0 && result.status !== null) throw new Error(`Script exited with code ${result.status}`);
     } else {
       // Fallback: save from one, restore to other
       saveSession(fromAgent, 'Handoff in progress', 'handoff');
@@ -134,9 +146,12 @@ function trackSession(subcommand = 'report') {
   try {
     const scriptPath = path.join(__dirname, '../.opencode/scripts/track-session.mjs');
     if (fs.existsSync(scriptPath)) {
-      execSync(`node "${scriptPath}" ${subcommand}`, {
+      const result = spawnSync('node', [scriptPath, subcommand], {
         stdio: 'inherit',
+        shell: false,
       });
+      if (result.error) throw result.error;
+      if (result.status !== 0 && result.status !== null) throw new Error(`Script exited with code ${result.status}`);
     } else {
       console.warn('⚠️  Session tracking not available');
     }
