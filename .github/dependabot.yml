@@ -23,9 +23,6 @@ updates:
       time: "09:00"
       timezone: "America/Los_Angeles"
     
-    # Limit open PRs to prevent notification spam
-    open-pull-requests-limit: 10
-    
     # Grouping strategy - reduces PR noise by combining related updates
     groups:
       # Framework core - Next.js, React, and Vercel integrations
@@ -150,6 +147,11 @@ updates:
     # Pull request versioning (keep PR titles consistent)
     pull-request-branch-name:
       separator: "/"
+  
+  # NOTE: Node.js version updates are tracked automatically from .nvmrc/.node-version
+  # files when the npm ecosystem is configured (no separate ecosystem entry needed).
+  # Dependabot will create PRs when .nvmrc or .node-version changes upstream.
+  
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -167,3 +169,5 @@ updates:
       - dependency-type: "all"
     rebase-strategy: "auto"
     open-pull-requests-limit: 20
+
+

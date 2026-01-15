@@ -27,6 +27,29 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       
+      - name: Handle Node.js version updates
+        id: node-version
+        run: |
+          DEPENDENCY="${{ steps.metadata.outputs.dependency-names }}"
+          if [[ "$DEPENDENCY" == "node" ]]; then
+            echo "is-node-update=true" >> $GITHUB_OUTPUT
+            
+            # Extract version from PR title (e.g., "bump node from 24.13.0 to 24.13.1")
+            VERSION=$(echo "${{ github.event.pull_request.title }}" | grep -oP 'v?\d+\.\d+\.\d+' | tail -1)
+            echo "node-version=$VERSION" >> $GITHUB_OUTPUT
+            
+            # Auto-merge patches only (minor/major require manual review)
+            if [[ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-patch" ]]; then
+              echo "safe=true" >> $GITHUB_OUTPUT
+              echo "reason=Node.js patch update (security patches included)" >> $GITHUB_OUTPUT
+            else
+              echo "safe=false" >> $GITHUB_OUTPUT
+              echo "reason=Node.js minor/major update requires manual review" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "is-node-update=false" >> $GITHUB_OUTPUT
+          fi
+      
       - name: Define safe packages
         id: safe-packages
         run: |
@@ -98,7 +121,6 @@ jobs:
           eslint-plugin-jsx-a11y
           eslint-plugin-react
           eslint-plugin-react-hooks
-          estree-walker
           estree-walker
           etag
           execa
@@ -504,8 +526,6 @@ jobs:
           yocto-queue
           zod
           SAFE_PACKAGES
-          
-          wc -l < /tmp/safe_packages.txt
       
       - name: Determine if safe to auto-merge
         id: check
@@ -518,54 +538,64 @@ jobs:
           SAFE="false"
           REASON=""
           
-          # Check if dependency is in safe packages list
-          IS_SAFE_PACKAGE="false"
-          while IFS= read -r pkg; do
-            if [[ "${{ steps.metadata.outputs.dependency-names }}" == *"$pkg"* ]]; then
-              IS_SAFE_PACKAGE="true"
-              break
-            fi
-          done < /tmp/safe_packages.txt
-          
-          # Auto-merge dev dependencies (patch and minor updates)
-          if [[ "${{ steps.metadata.outputs.dependency-type }}" == "direct:development" ]] || \
-             [[ "${{ steps.metadata.outputs.dependency-type }}" == "indirect:development" ]]; then
-            if [[ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-patch" ]] || \
-               [[ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-minor" ]]; then
+          # Handle Node.js version updates first
+          if [[ "${{ steps.node-version.outputs.is-node-update }}" == "true" ]]; then
+            if [[ "${{ steps.node-version.outputs.safe }}" == "true" ]]; then
               SAFE="true"
-              REASON="Dev dependency patch/minor update"
+              REASON="Node.js patch update (security patches included)"
+            else
+              REASON="Node.js minor/major update requires manual review"
             fi
-          fi
-          
-          # Auto-merge production patch updates for safe packages (with breaking change check)
-          if [[ "${{ steps.metadata.outputs.dependency-type }}" == "direct:production" ]]; then
-            if [[ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-patch" ]]; then
-              if [[ "$IS_SAFE_PACKAGE" == "true" ]]; then
+          else
+            # Check if dependency is in safe packages list
+            IS_SAFE_PACKAGE="false"
+            while IFS= read -r pkg; do
+              if [[ "${{ steps.metadata.outputs.dependency-names }}" == *"$pkg"* ]]; then
+                IS_SAFE_PACKAGE="true"
+                break
+              fi
+            done < /tmp/safe_packages.txt
+            
+            # Auto-merge dev dependencies (patch and minor updates)
+            if [[ "${{ steps.metadata.outputs.dependency-type }}" == "direct:development" ]] || \
+               [[ "${{ steps.metadata.outputs.dependency-type }}" == "indirect:development" ]]; then
+              if [[ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-patch" ]] || \
+                 [[ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-minor" ]]; then
+                SAFE="true"
+                REASON="Dev dependency patch/minor update"
+              fi
+            fi
+            
+            # Auto-merge production patch updates for safe packages (with breaking change check)
+            if [[ "${{ steps.metadata.outputs.dependency-type }}" == "direct:production" ]]; then
+              if [[ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-patch" ]]; then
+                if [[ "$IS_SAFE_PACKAGE" == "true" ]]; then
+                  if ! echo "${{ github.event.pull_request.body }}" | grep -iq "breaking"; then
+                    SAFE="true"
+                    REASON="Production patch update (safe package) without breaking changes"
+                  else
+                    REASON="Breaking changes detected in patch update"
+                  fi
+                else
+                  REASON="Production patch update for non-allowlisted package - requires review"
+                fi
+              fi
+            fi
+            
+            # Framework updates always require review (except patches for safe packages)
+            if [[ "${{ steps.metadata.outputs.dependency-names }}" =~ ^(next|react|react-dom|@vercel|tailwindcss)$ ]]; then
+              if [[ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-patch" ]]; then
                 if ! echo "${{ github.event.pull_request.body }}" | grep -iq "breaking"; then
                   SAFE="true"
-                  REASON="Production patch update (safe package) without breaking changes"
+                  REASON="Framework patch without breaking changes"
                 else
-                  REASON="Breaking changes detected in patch update"
+                  SAFE="false"
+                  REASON="Framework with breaking changes - requires review"
                 fi
               else
-                REASON="Production patch update for non-allowlisted package - requires review"
-              fi
-            fi
-          fi
-          
-          # Framework updates always require review (except patches for safe packages)
-          if [[ "${{ steps.metadata.outputs.dependency-names }}" =~ ^(next|react|react-dom|@vercel|tailwindcss)$ ]]; then
-            if [[ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-patch" ]]; then
-              if ! echo "${{ github.event.pull_request.body }}" | grep -iq "breaking"; then
-                SAFE="true"
-                REASON="Framework patch without breaking changes"
-              else
                 SAFE="false"
-                REASON="Framework with breaking changes - requires review"
+                REASON="Framework minor/major update - requires review"
               fi
-            else
-              SAFE="false"
-              REASON="Framework minor/major update - requires review"
             fi
           fi
           
@@ -593,6 +623,7 @@ jobs:
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
       - name: Enable auto-merge
         if: steps.check.outputs.safe == 'true'
         run: |
@@ -643,12 +674,12 @@ jobs:
             echo "This PR will be automatically merged once CI checks pass." >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "**Reason:** ${{ steps.check.outputs.reason }}" >> $GITHUB_STEP_SUMMARY
-           else
-             echo "### ⚠️ Manual review required" >> $GITHUB_STEP_SUMMARY
-             echo "This PR requires manual review before merging." >> $GITHUB_STEP_SUMMARY
-             echo "" >> $GITHUB_STEP_SUMMARY
-             echo "**Reason:** ${{ steps.check.outputs.reason }}" >> $GITHUB_STEP_SUMMARY
-           fi
+          else
+            echo "### ⚠️ Manual review required" >> $GITHUB_STEP_SUMMARY
+            echo "This PR requires manual review before merging." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Reason:** ${{ steps.check.outputs.reason }}" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Update details:**" >> $GITHUB_STEP_SUMMARY
           echo "- Dependency: ${{ steps.metadata.outputs.dependency-names }}" >> $GITHUB_STEP_SUMMARY
