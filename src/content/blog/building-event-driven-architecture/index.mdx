@@ -29,7 +29,7 @@ previousSlugs:
 
 Your API routes are lying to your users. They return `200 OK` while work is still happening. The contact form says "Message sent!" but the email hasn't been delivered yet.
 
-Event-driven architecture fixes this by separating **acknowledgment** from **processing**. Users get instant feedback. Work happens reliably in the background. Here's how Inngest makes this practical for any Next.js project.
+Event-driven architecture fixes this by separating **acknowledgment** from **processing**. Users get instant feedback. Work happens reliably in the background. Here's how <GlossaryTooltip term="Inngest" definition="A serverless background job platform with durable execution, automatic retries, and step functions for building reliable event-driven systems">Inngest</GlossaryTooltip> makes this practical for any <GlossaryTooltip term="Next.js" definition="Next.js - a React framework providing server-side rendering, static site generation, API routes, and file-based routing for building production-ready web applications">Next.js</GlossaryTooltip> project.
 
 <CollapsibleSection
   id="event-driven-synchronous-problem"
@@ -68,9 +68,11 @@ The fix isn't making the email faster—it's **decoupling the response from the 
 
 </CollapsibleSection>
 
+---
+
 ## Event-Driven Architecture Explained
 
-Event-driven architecture separates two concerns:
+<GlossaryTooltip term="Event-Driven Architecture" definition="A software design pattern where components communicate by publishing and consuming events asynchronously, enabling loosely coupled, scalable systems">Event-driven architecture</GlossaryTooltip> separates two concerns:
 
 1. **Acknowledging the request** (fast, synchronous)
 2. **Processing the work** (async, can be slow, can retry)
@@ -89,9 +91,11 @@ User → API Route → Queue Event → Response (< 100ms)
 
 The insight: **users don't care when the email sends—they care that you acknowledged their message.**
 
-Modern event-driven systems add one more concept: **steps**. Instead of one monolithic background function, you break work into discrete, named operations. Each step becomes a checkpoint—if step 3 fails, steps 1 and 2 don't re-run. This is called _durable execution_, and it transforms how you think about reliability.
+Modern event-driven systems add one more concept: **steps**. Instead of one monolithic background function, you break work into discrete, named operations. Each step becomes a checkpoint—if step 3 fails, steps 1 and 2 don't re-run. This is called <GlossaryTooltip term="Durable Execution" definition="A programming model where function execution state is automatically persisted, allowing workflows to resume from the last successful checkpoint after failures or interruptions">durable execution</GlossaryTooltip>, and it transforms how you think about reliability.
 
 > **Further Reading:** For comprehensive overviews of event-driven architecture patterns, see Martin Fowler's [Event-Driven Architecture](https://martinfowler.com/articles/201701-event-driven.html) and AWS's [What is Event-Driven Architecture?](https://aws.amazon.com/event-driven-architecture/)
+
+<SectionShare sectionId="event-driven-explained" sectionTitle="Event-Driven Architecture Explained" />
 
 <CollapsibleSection
   id="event-driven-alternatives-comparison"
@@ -117,6 +121,8 @@ What sold me on Inngest:
 5. **Vercel-native**: First-class integration, deploys automatically
 
 </CollapsibleSection>
+
+---
 
 ## Implementation: Contact Form
 
@@ -220,7 +226,9 @@ Each `step.run()` creates a **checkpoint**. If Step 2 fails:
 - Only Step 2 retries
 - You see exactly where it failed in the Inngest dashboard
 
-This is **durable execution**—your function survives failures and resumes from the last successful step.
+This is <GlossaryTooltip term="Durable Execution" definition="A programming model where function execution survives failures by creating checkpoints between steps, allowing automatic retries from the last successful point without re-running completed work">**durable execution**</GlossaryTooltip>—your function survives failures and resumes from the last successful step.
+
+<SectionShare sectionId="implementation-contact-form" sectionTitle="Implementation: Contact Form" />
 
 ---
 
@@ -237,7 +245,7 @@ export const refreshGitHubData = inngest.createFunction(
     id: 'refresh-github-data',
     retries: 1, // Fail fast on hourly jobs
   },
-  { cron: '0 * * * *' }, // Every hour at minute 0
+  { cron: '0 * * * *' }, // Every hour at minute 0 - uses <GlossaryTooltip term="Cron Expression" definition="A time-based scheduling format using five fields (minute, hour, day, month, weekday) to define recurring task schedules. '0 * * * *' means 'run at minute 0 of every hour'">cron syntax</GlossaryTooltip>
   async ({ step }) => {
     // Step 1: Fetch fresh data from GitHub
     const freshData = await step.run('fetch-github-data', async () => {
@@ -256,7 +264,7 @@ export const refreshGitHubData = inngest.createFunction(
       return parseContributions(await response.json());
     });
 
-    // Step 2: Update Redis cache
+    // Step 2: Update <GlossaryTooltip term="Redis" definition="An in-memory data structure store used as a database, cache, and message broker. Known for extremely fast read/write operations and built-in data expiration">Redis cache</GlossaryTooltip>
     await step.run('update-cache', async () => {
       const redis = await getRedisClient();
       await redis.setEx(CACHE_KEY, 3600, JSON.stringify(freshData));
@@ -277,6 +285,8 @@ export const refreshGitHubData = inngest.createFunction(
 - GitHub API rate limits aren't a concern
 - Failures don't affect users (stale cache is served)
 - Full observability in the Inngest dashboard
+
+<SectionShare sectionId="scheduled-tasks-github-contributions" sectionTitle="Scheduled Tasks: GitHub Contributions" />
 
 ---
 
@@ -415,6 +425,8 @@ When a post hits 1,000 views, I get notified. The trending calculation runs hour
 
 </CollapsibleSection>
 
+---
+
 ## Developer Experience
 
 ### Local Development
@@ -544,7 +556,7 @@ The contact form still says "Message sent!"—but now it's actually true (or wil
 
 ---
 
-## Further Reading & Resources
+## Resources
 
 - [Inngest Documentation](https://www.inngest.com/docs)
 - [Inngest + Vercel Integration](https://www.inngest.com/docs/deploy/vercel)

@@ -93,7 +93,7 @@ export function RoleBasedCTA({
   return (
     <div
       className={cn(
-        "flex items-center gap-6 p-6 rounded-lg border transition-all my-8 w-full",
+        "flex flex-col md:flex-row md:items-center gap-4 md:gap-6 p-6 rounded-lg border transition-all my-8 w-full",
         BORDERS.card,
         theme.bgColor,
         theme.borderColor,
@@ -118,12 +118,12 @@ export function RoleBasedCTA({
       </div>
 
       {/* Button */}
-      <div className="flex-shrink-0">
+      <div className="flex-shrink-0 w-full md:w-auto">
         <a
           href={buttonHref}
           onClick={handleClick}
           className={cn(
-            "inline-flex items-center justify-center px-6 py-3 rounded-md whitespace-nowrap",
+            "inline-flex items-center justify-center px-6 py-3 rounded-md whitespace-nowrap w-full md:w-auto",
             "text-sm font-medium transition-colors",
             "bg-primary text-primary-foreground hover:bg-primary/90",
             "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background"

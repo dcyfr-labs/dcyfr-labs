@@ -1,10 +1,10 @@
 {
   "posts": [
     {
-      "id": "post-20260114-nodejs-security-cves",
+      "id": "post-20260114-b4f5e2c2",
       "title": "Node.js January 2026 Security Release: 8 CVEs Explained",
       "summary": "On January 13, 2026, Node.js released security patches for 8 vulnerabilities (3 HIGH, 4 MEDIUM, 1 LOW) affecting all active release lines. This post breaks down each CVE, explains who is affected, and provides actionable remediation guidance.",
-      "content": "Upgrade Required: Node.js released security patches on January 13, 2026 for 8 vulnerabilities affecting all active release lines (20.x, 22.x, 24.x, 25.x). Upgrade immediately to v20.20.0, v22.22.0, v24.13.0, or v25.3.0. --- TL;DR On January 13, 2026, the Node.js project released security patches addressing: - 3 HIGH severity vulnerabilities (buffer memory leak, symlink bypass, HTTP/2 DoS) - 4 MEDIUM severity vulnerabilities (AsyncLocalStorage crashes, TLS memory leak, UDS bypass, TLS callback Do",
+      "content": "Upgrade Required: Node.js released security patches on January 13, 2026 for 8 vulnerabilities affecting all active release lines (20.x, 22.x, 24.x, 25.x). Upgrade immediately to v20.20.0, v22.22.0, v24.13.0, or v25.3.0. --- TL;DR Quick Decision Guide: | Your Situation | Action Required | Risk Level | | --------------------------------------- | ----------------------------------------------- | ----------------------- | | Running Node.js v20-v23 + any framework | Upgrade immediately to v20.20.0 / ",
       "tags": [
         "Node.js",
         "Security",
@@ -16,8 +16,8 @@
       ],
       "series": null,
       "publishedAt": "2026-01-14T12:00:00Z",
-      "readingTime": 9,
-      "url": "/blog/nodejs-jan2026-security"
+      "readingTime": 11,
+      "url": "/blog/nodejs-vulnerabilities-january-2026"
     },
     {
       "id": "post-20260115-7b4e92c1",
@@ -53,7 +53,7 @@
       "url": "/blog/getting-started-with-react-hooks"
     },
     {
-      "id": "post-20251222-ui-demo",
+      "id": "post-20251222-f8c3d4e1",
       "title": "UI Elements and Components",
       "summary": "Explore the full range of UI components, MDX elements, code highlighting, alerts, callouts, and visual features available in this blog system. Includes modern engagement components and React 19 patterns.",
       "content": "> Note: This is a demonstration post showcasing all available UI elements and components. It serves as a visual reference for content creators and developers. This post demonstrates every visual element, component, and styling option available in the blog system. Use this as a reference when creating new content. --- Typography Hierarchy Heading 1: Main Title The largest heading, typically used only once per page as the article title. Heading 2: Major Sections Primary section headers that divide",
@@ -319,5 +319,5 @@
     "Features",
     "Portfolio"
   ],
-  "generatedAt": "2026-01-14T21:13:26.397Z"
+  "generatedAt": "2026-01-15T05:42:45.942Z"
 }

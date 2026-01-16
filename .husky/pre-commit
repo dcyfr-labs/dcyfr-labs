@@ -163,6 +163,37 @@ else
   ERRORS=$((ERRORS+1))
 fi
 
+# Check 11: Frontmatter validation for blog posts
+echo -n "  Validating blog post frontmatter... "
+CHANGED_POSTS=$(git diff --cached --name-only 2>/dev/null | grep "^src/content/blog/.*\.mdx$" || true)
+if [ -n "$CHANGED_POSTS" ]; then
+  if tsx scripts/validate-frontmatter.mjs 2>&1 | grep -q "failed validation"; then
+    echo -e "${RED}FAIL${NC}"
+    echo -e "${RED}❌ ERROR: Blog post frontmatter validation failed${NC}"
+    tsx scripts/validate-frontmatter.mjs 2>&1 | tail -20 | sed 's/^/      /'
+    ERRORS=$((ERRORS+1))
+  else
+    echo -e "${GREEN}PASS${NC}"
+  fi
+else
+  echo -e "${YELLOW}SKIP${NC} (no blog posts changed)"
+fi
+
+# Check 12: Footnote validation for blog posts
+echo -n "  Validating blog post footnotes... "
+if [ -n "$CHANGED_POSTS" ]; then
+  if node scripts/validate-footnotes.mjs 2>&1 | grep -q "failed validation"; then
+    echo -e "${RED}FAIL${NC}"
+    echo -e "${RED}❌ ERROR: Blog post footnote validation failed${NC}"
+    node scripts/validate-footnotes.mjs 2>&1 | tail -20 | sed 's/^/      /'
+    ERRORS=$((ERRORS+1))
+  else
+    echo -e "${GREEN}PASS${NC}"
+  fi
+else
+  echo -e "${YELLOW}SKIP${NC} (no blog posts changed)"
+fi
+
 # Summary
 echo ""
 echo "📊 Summary:"

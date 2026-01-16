@@ -1,25 +1,25 @@
 ---
-id: "post-20251111-446fbfc7"
-title: "Building with AI"
-subtitle: "How Model Context Protocol is Transforming AI-Assisted Development"
+id: 'post-20251111-446fbfc7'
+title: 'Building with AI'
+subtitle: 'How Model Context Protocol is Transforming AI-Assisted Development'
 summary: "Exploring the Model Context Protocol (MCP) and how it's enabling new patterns for AI-assisted development with practical examples from real projects."
-authors: ["drew", "dcyfr"]
-publishedAt: "2025-11-11T12:00:00Z"
-updatedAt: "2025-11-18T12:00:00Z"
-category: "AI"
-tags: ["AI", "MCP", "Developer Tools", "Productivity", "Architecture"]
+authors: ['drew', 'dcyfr']
+publishedAt: '2025-11-11T12:00:00Z'
+updatedAt: '2025-11-18T12:00:00Z'
+category: 'AI'
+tags: ['AI', 'MCP', 'Developer Tools', 'Productivity', 'Architecture']
 image:
-  url: "/blog/building-with-ai/assets/hero.webp"
-  alt: "Illustration of AI-assisted development workflow with interconnected tools and data sources"
-  caption: "Building with AI"
-  credit: "Perplexity Labs"
+  url: '/blog/building-with-ai/assets/hero.webp'
+  alt: 'Illustration of AI-assisted development workflow with interconnected tools and data sources'
+  caption: 'Building with AI'
+  credit: 'Perplexity Labs'
   width: 1200
   height: 630
 previousSlugs:
-  - "ai-development-workflow"
+  - 'ai-development-workflow'
 ---
 
-AI coding assistants are everywhere now, but there's a critical gap: **how do they access your actual development context?** Your database schema, API routes, recent commits, production errors, all the things you need to write real code. This is the problem Model Context Protocol (MCP) was designed to solve.
+AI coding assistants are everywhere now, but there's a critical gap: **how do they access your actual development context?** Your database schema, <GlossaryTooltip term="API Routes" definition="API Routes - server-side endpoints in Next.js that handle HTTP requests, enabling backend functionality without a separate server">API routes</GlossaryTooltip>, recent commits, production errors, all the things you need to write real code. This is the problem <GlossaryTooltip term="MCP" definition="Model Context Protocol - an open standard that enables AI assistants to securely connect with external data sources and tools through a universal client-server architecture">Model Context Protocol (MCP)</GlossaryTooltip> was designed to solve.
 
 ---
 
@@ -39,10 +39,12 @@ MCP follows a client-server model:
 
 **Key benefits:**
 
-- **Security**: Credentials stay server-side; AI never sees your tokens
+- **Security**: <GlossaryTooltip term="Credentials" definition="Credentials - authentication tokens, API keys, and secrets used to access protected resources; in MCP, these remain server-side for enhanced security">Credentials</GlossaryTooltip> stay server-side; AI never sees your tokens
 - **Standardization**: One protocol for many tools
 - **Composability**: Mix and match servers for your workflow
 - **Local-first**: Servers run on your machine, not in the cloud
+
+<SectionShare sectionId="mcp-architecture" sectionTitle="What is Model Context Protocol?" />
 
 ---
 
@@ -85,12 +87,12 @@ Instead of copying error traces into chat, the AI can directly query production 
 ```typescript
 // AI can analyze real production errors
 const issues = await mcp_sentry_search_issues({
-  naturalLanguageQuery: "database errors from last hour",
+  naturalLanguageQuery: 'database errors from last hour',
 });
 
 // Then get detailed stack traces
 const details = await mcp_sentry_get_issue_details({
-  issueId: "PROJECT-123",
+  issueId: 'PROJECT-123',
 });
 ```
 
@@ -103,8 +105,8 @@ When working with a library, the AI can fetch current docs:
 ```typescript
 // Get up-to-date Next.js documentation
 const docs = await mcp_context7_get_library_docs({
-  context7CompatibleLibraryID: "/vercel/next.js",
-  topic: "server actions",
+  context7CompatibleLibraryID: '/vercel/next.js',
+  topic: 'server actions',
 });
 ```
 
@@ -117,14 +119,14 @@ The AI can check build status and logs:
 ```typescript
 // Check deployment status
 const deployment = await mcp_vercel_get_deployment({
-  idOrUrl: "my-app-abc123.vercel.app",
-  teamId: "team_xyz",
+  idOrUrl: 'my-app-abc123.vercel.app',
+  teamId: 'team_xyz',
 });
 
 // Get build logs if something fails
 const logs = await mcp_vercel_get_deployment_build_logs({
-  idOrUrl: "my-app-abc123.vercel.app",
-  teamId: "team_xyz",
+  idOrUrl: 'my-app-abc123.vercel.app',
+  teamId: 'team_xyz',
 });
 ```
 
@@ -136,16 +138,16 @@ const logs = await mcp_vercel_get_deployment_build_logs({
   defaultExpanded={false}
 >
 
-MCP servers are surprisingly simple to build. The official SDK[^mcp-github] provides everything you need. Here's a minimal example:
+MCP servers are surprisingly simple to build. The official <GlossaryTooltip term="SDK" definition="Software Development Kit - a collection of tools, libraries, documentation, and code samples that simplify building applications for a specific platform or protocol">SDK</GlossaryTooltip>[^mcp-github] provides everything you need. Here's a minimal example:
 
 ```typescript
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 
 const server = new Server(
   {
-    name: "my-custom-server",
-    version: "1.0.0",
+    name: 'my-custom-server',
+    version: '1.0.0',
   },
   {
     capabilities: {
@@ -159,14 +161,14 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
       {
-        name: "query_database",
-        description: "Query the development database",
+        name: 'query_database',
+        description: 'Query the development database',
         inputSchema: {
-          type: "object",
+          type: 'object',
           properties: {
-            query: { type: "string" },
+            query: { type: 'string' },
           },
-          required: ["query"],
+          required: ['query'],
         },
       },
     ],
@@ -175,10 +177,10 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 
 // Handle tool calls
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  if (request.params.name === "query_database") {
+  if (request.params.name === 'query_database') {
     const result = await db.query(request.params.arguments.query);
     return {
-      content: [{ type: "text", text: JSON.stringify(result) }],
+      content: [{ type: 'text', text: JSON.stringify(result) }],
     };
   }
 });
@@ -207,12 +209,12 @@ Use the Memory MCP to store project-specific knowledge:
 await mcp_memory_create_entities({
   entities: [
     {
-      name: "Blog System",
-      entityType: "Architecture",
+      name: 'Blog System',
+      entityType: 'Architecture',
       observations: [
-        "Uses MDX with next-mdx-remote",
-        "Syntax highlighting via Shiki",
-        "View counts stored in Redis",
+        'Uses MDX with next-mdx-remote',
+        'Syntax highlighting via Shiki',
+        'View counts stored in Redis',
       ],
     },
   ],
@@ -228,7 +230,7 @@ For architectural decisions or debugging, use Sequential Thinking to break down 
 ```typescript
 // AI uses this internally for multi-step reasoning
 await mcp_thinking_sequentialthinking({
-  thought: "First, analyze the current rate limiting implementation...",
+  thought: 'First, analyze the current rate limiting implementation...',
   thoughtNumber: 1,
   totalThoughts: 5,
   nextThoughtNeeded: true,
@@ -244,13 +246,15 @@ Never upload credentials or sensitive files. MCP filesystem servers let AI read 
 ```typescript
 // AI reads local files securely
 const config = await mcp_filesystem_read_file({
-  path: "./.env.local",
+  path: './.env.local',
 });
 ```
 
 The file contents stay on your machine.
 
 </CollapsibleSection>
+
+---
 
 ## The Developer Experience
 
@@ -275,6 +279,8 @@ Here's what a typical workflow looks like:
 4. Deploy and verify
 
 The difference is dramatic. **The AI works with your actual project state**, not a text summary you typed.
+
+<SectionShare sectionId="developer-experience" sectionTitle="The Developer Experience with MCP" />
 
 ---
 
@@ -345,6 +351,8 @@ Add to `.vscode/settings.json` or user settings:
 
 </CollapsibleSection>
 
+---
+
 ## What's Next for MCP?
 
 The protocol is still evolving. Anthropic recently announced code execution capabilities[^mcp-code-execution], and the direction is clear:
@@ -362,11 +370,11 @@ Model Context Protocol represents a shift in how we think about AI-assisted deve
 
 The key insight: **context is everything**. An AI that can query your production errors, read your actual codebase, and fetch current documentation is infinitely more useful than one working from a text description.
 
-If you're building AI tools or just trying to improve your development workflow, MCP is worth exploring. The protocol is open, the SDKs are straightforward, and the ecosystem is growing fast. With frameworks like Next.js 15[^nextjs-15] embracing server components and actions, the synergy with MCP-powered AI assistants is only getting stronger.
+If you're building AI tools or just trying to improve your development workflow, MCP is worth exploring. The protocol is open, the SDKs are straightforward, and the ecosystem is growing fast. With frameworks like Next.js 15[^nextjs-15] embracing <GlossaryTooltip term="React Server Components" definition="A new React architecture that renders components on the server, enabling zero-bundle-size data fetching, automatic code splitting, and improved performance by streaming HTML to the client">server components</GlossaryTooltip> and actions, the synergy with MCP-powered AI assistants is only getting stronger.
 
 ---
 
-## Further Reading & Resources
+## Resources
 
 _This post was written with assistance from GitHub Copilot using MCP servers for Memory, Sequential Thinking, and Context7 documentation lookup. The irony is not lost on me._
 

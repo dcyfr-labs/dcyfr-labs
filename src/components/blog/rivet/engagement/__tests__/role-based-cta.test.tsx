@@ -345,11 +345,18 @@ describe("RoleBasedCTA", () => {
       expect(card?.className).toMatch(/my-8/);
     });
 
-    it("should use horizontal layout with flexbox", () => {
+    it("should use responsive layout with flexbox", () => {
       const { container } = render(<RoleBasedCTA {...defaultProps} />);
       
       const card = container.querySelector("[data-testid='role-based-cta-executive']");
-      expect(card?.className).toMatch(/flex items-center/);
+      expect(card?.className).toMatch(/flex flex-col md:flex-row/);
+    });
+
+    it("should have responsive button sizing (full-width on mobile, auto on desktop)", () => {
+      const { container } = render(<RoleBasedCTA {...defaultProps} />);
+      
+      const button = container.querySelector("a");
+      expect(button?.className).toMatch(/w-full md:w-auto/);
     });
   });
 

@@ -669,6 +669,116 @@ MDX allows you to use React components in markdown.
 - [Component Patterns Guide](../ai/component-patterns.md)
 - [RIVET Component Library](../content/rivet-component-library.md)
 
+### Specialized Components
+
+**Post-Specific Custom Components:**
+
+Some blog posts use specialized components for unique content needs. These are **not** part of the standard RIVET library and should be used sparingly.
+
+| Component | Purpose | Used In | Props |
+|-----------|---------|---------|-------|
+| `<Figure>` | Captioned images/diagrams | `cve-2025-55182-react2shell` | `src`, `alt`, `caption` |
+| `<MCPArchitecture>` | MCP architecture diagram | `building-with-ai` | `height` (optional) |
+| `<RoleBasedCTA>` | Role-specific CTAs | `owasp-top-10-agentic-ai` | `role`, `children` |
+| `<TLDRSummary>` | Executive summary | `owasp-top-10-agentic-ai` | `children` |
+| `<FAQ>` | FAQ accordion | `owasp-top-10-agentic-ai` | `question`, `answer` |
+| `<RiskAccordion>` | Security risk details | `owasp-top-10-agentic-ai` | `riskId`, `title`, `children` |
+| `<RiskAccordionGroup>` | Risk accordion wrapper | `owasp-top-10-agentic-ai` | `children` |
+
+**Icon Components:**
+
+Direct icon imports from `lucide-react` can be used for inline visual emphasis:
+
+```mdx
+import { LockIcon, BarChartIcon, ZapIcon, RocketIcon, ShieldIcon } from 'lucide-react';
+
+<LockIcon className="inline-block h-4 w-4" />
+```
+
+**Used in:**
+- `hardening-developer-portfolio` (LockIcon, BarChartIcon, ZapIcon, RocketIcon, ShieldIcon)
+
+**Guidelines:**
+
+- ⚠️ **Use sparingly** - Custom components increase maintenance burden
+- ✅ **Document usage** - If creating a new custom component, document it here
+- ✅ **Consider RIVET first** - Check if existing RIVET components can solve the need
+- ❌ **Avoid duplication** - Don't create custom components that duplicate RIVET functionality
+- ❌ **No undocumented components** - Every custom component must be listed here
+
+**Migration Path:**
+
+If a custom component is used in 3+ posts, consider:
+1. Moving it to the RIVET component library
+2. Writing comprehensive tests (see `docs/content/rivet-component-library.md`)
+3. Adding it to the standard MDX components table above
+
+### Component Usage Guidelines Matrix
+
+**Quick Reference for Content Creators:**
+
+| Component | When to Use | Count Per Post | Placement Strategy | Example Use Case |
+|-----------|-------------|----------------|-------------------|------------------|
+| **SectionShare** | Major sections for social engagement | 1-3 | After H2 headings | "Share this security checklist" |
+| **GlossaryTooltip** | First usage of technical terms | 5-10+ | Inline with technical content | CSP, XSS, API, SDK, RSC |
+| **CollapsibleSection** | Optional/advanced content | 0-10 | Around supplementary info | Implementation details, statistics |
+| **Alert** | Important notices | 0-3 | Top of post or before critical sections | Breaking changes, deprecations |
+| **KeyTakeaway** | Highlight key insights | 1-3 | After important explanations | "80% of breaches use this vector" |
+| **ContextClue** | Post introduction | 1 | Very top (after frontmatter) | Article summary/preview |
+
+**Usage Best Practices:**
+
+✅ **DO:**
+- Use SectionShare after your best/most shareable sections
+- Add GlossaryTooltip for every acronym and domain-specific term
+- Use CollapsibleSection for role-specific content ("For Developers", "For Security Pros")
+- Place Alert components at the top for critical information
+- Use KeyTakeaway to emphasize important statistics or insights
+
+❌ **DON'T:**
+- Add SectionShare to every section (1-3 is ideal)
+- Hide core content in CollapsibleSection (only optional/advanced content)
+- Overuse Alert components (reserve for truly important notices)
+- Use custom components when RIVET components exist
+- Create undocumented custom components
+
+**Good vs. Bad Examples:**
+
+**❌ Bad: No engagement components**
+```mdx
+## Important Security Finding
+
+Content about CSP and XSS...
+
+## Implementation Guide
+
+More content...
+```
+
+**✅ Good: Balanced component usage**
+```mdx
+## Important Security Finding
+
+Content about <GlossaryTooltip term="CSP" definition="Content Security Policy">CSP</GlossaryTooltip> 
+and <GlossaryTooltip term="XSS" definition="Cross-Site Scripting">XSS</GlossaryTooltip>...
+
+<KeyTakeaway variant="security" title="Critical Insight">
+  80% of XSS attacks can be prevented with proper CSP implementation.
+</KeyTakeaway>
+
+<SectionShare sectionId="important-security-finding" sectionTitle="Important Security Finding" />
+
+## Implementation Guide
+
+<CollapsibleSection id="technical-details" title="Technical Implementation Details" defaultExpanded={false}>
+  Advanced configuration steps...
+</CollapsibleSection>
+```
+
+**For Complete Audit Guidance:**
+- See [Content Audit Checklist](./content-audit-checklist.md) for pre-publication validation
+- See [Component Patterns Guide](../ai/component-patterns.md) for detailed usage examples
+
 ---
 
 ## Post States

@@ -29,13 +29,13 @@ previousSlugs:
 
 ---
 
-I wanted to build a focused portfolio that is fast to load, easy to iterate on, and simple to host. After trying a few prototypes, I settled on a modern stack that prioritizes server rendering, typed data, and tiny bundles.
+I wanted to build a focused portfolio that is fast to load, easy to iterate on, and simple to host. After trying a few prototypes, I settled on a modern stack that prioritizes <GlossaryTooltip term="Server Rendering" definition="Server Rendering - the process of generating HTML on the server before sending it to the client, improving initial page load performance and SEO">server rendering</GlossaryTooltip>, typed data, and tiny bundles.
 
 ---
 
 ## Why App Router?
 
-The Next.js App Router represents a fundamental shift toward server-first rendering. Unlike the Pages Router, App Router makes server components the default, which means:
+The Next.js <GlossaryTooltip term="App Router" definition="Next.js 13+ routing system that leverages React Server Components by default, enabling server-first rendering with improved performance and developer experience">App Router</GlossaryTooltip> represents a fundamental shift toward server-first rendering. Unlike the Pages Router, App Router makes server components the default, which means:
 
 - **Better performance**: Initial page loads are faster since most components render on the server.
 - **Improved SEO**: Content is fully rendered before it reaches the browser.
@@ -62,7 +62,7 @@ src/
 **Next.js 15 + React 19**
 
 - App Router with server components by default
-- Turbopack for lightning-fast dev server (production builds use Webpack)
+- <GlossaryTooltip term="Turbopack" definition="Next.js's Rust-based successor to Webpack, offering up to 700x faster updates in local development with incremental computation and smart caching">Turbopack</GlossaryTooltip> for lightning-fast dev server (production builds use Webpack)
 - File-based metadata with zero config
 
 **TypeScript (strict)**
@@ -78,8 +78,8 @@ src/
 
 **shadcn/ui**
 
-- Accessible Radix primitives (Dialog, Dropdown, Tooltip, etc.)
-- Headless building blocks with CVA variants
+- Accessible <GlossaryTooltip term="Radix UI" definition="A low-level UI component library providing unstyled, accessible primitives for building high-quality design systems and web applications">Radix primitives</GlossaryTooltip> (Dialog, Dropdown, Tooltip, etc.)
+- Headless building blocks with <GlossaryTooltip term="CVA" definition="Class Variance Authority - a utility for creating type-safe component variants with Tailwind CSS classes, enabling consistent UI patterns">CVA variants</GlossaryTooltip>
 - Copy-paste component library that you own
 
 ---
@@ -111,6 +111,8 @@ MDX content is rendered with `next-mdx-remote` and enhanced with rehype plugins 
 - Type-safe frontmatter catches errors before deployment
 
 Search and tag filtering are now live without compromising the stack's simplicity, and view counts remain on the roadmap.
+
+<SectionShare sectionId="key-takeaways" sectionTitle="Shipping a Developer Portfolio: Key Takeaways" />
 
 ---
 
