@@ -1,4 +1,7 @@
-"use client";
+'use client';
+
+/* eslint-disable no-restricted-syntax */
+// Dev tools page - intentionally not using PageLayout for internal admin interface
 
 /**
  * MCP Health Dashboard - Client Component
@@ -14,11 +17,12 @@
  * - Auto-refresh every 60 seconds
  */
 
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { RefreshCw, AlertCircle, ExternalLink } from "lucide-react";
-import { DashboardLayout } from "@/components/dashboard";
-import { TYPOGRAPHY } from "@/lib/design-tokens";
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { RefreshCw, AlertCircle, ExternalLink } from 'lucide-react';
+import { DashboardLayout } from '@/components/dashboard';
+import { TYPOGRAPHY } from '@/lib/design-tokens';
 
 // Import components
 import {
@@ -27,10 +31,10 @@ import {
   McpUptimeChart,
   McpIncidentsTimeline,
   McpSummaryCard,
-} from "./components";
+} from './components';
 
 // Import hook
-import { useMcpHealthDashboard } from "./hooks";
+import { useMcpHealthDashboard } from './hooks';
 
 /**
  * Main MCP Health Client Component
@@ -63,17 +67,10 @@ export default function McpHealthClient() {
             disabled={loading}
             className="gap-2"
           >
-            <RefreshCw
-              className={loading ? "h-4 w-4 animate-spin" : "h-4 w-4"}
-            />
+            <RefreshCw className={loading ? 'h-4 w-4 animate-spin' : 'h-4 w-4'} />
             Refresh
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            asChild
-            className="gap-2"
-          >
+          <Button variant="outline" size="sm" asChild className="gap-2">
             <a
               href="https://github.com/dcyfr/dcyfr-labs/actions/workflows/mcp-server-check.yml"
               target="_blank"
@@ -86,7 +83,7 @@ export default function McpHealthClient() {
         </div>
       }
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
         {/* Error Alert */}
         {error && (
           <Alert variant="destructive">
@@ -138,13 +135,13 @@ export default function McpHealthClient() {
         {/* Documentation Link */}
         <section className="text-center text-sm text-muted-foreground">
           <p>
-            Health checks run every 6 hours via CI.{" "}
-            <a
+            Health checks run every 6 hours via CI.{' '}
+            <Link
               href="/dev/docs/features/mcp-health-monitoring"
               className="underline hover:text-foreground"
             >
               View documentation
-            </a>
+            </Link>
           </p>
         </section>
       </div>

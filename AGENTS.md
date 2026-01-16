@@ -45,9 +45,9 @@ npm run check               # Type + lint check
   - **Trigger conditions:** Rate limits, budget exhaustion, extended sessions (6+ hours)
 
 - **🔵 SUPPORTING: Claude General + VS Code Mode**
-   - Research, architecture decisions, deep exploration
-   - Pattern validation in conversation mode
-   - **CLAUDE.md has extended capability:** Contains production-level knowledge suitable for extended development sessions (when PRIMARY is rate-limited)
+  - Research, architecture decisions, deep exploration
+  - Pattern validation in conversation mode
+  - **CLAUDE.md has extended capability:** Contains production-level knowledge suitable for extended development sessions (when PRIMARY is rate-limited)
 
 **Rationale:** [See `docs/ai/AGENT_UNIFICATION_ANALYSIS.md`](docs/ai/AGENT_UNIFICATION_ANALYSIS.md) for detailed feasibility analysis and why unification isn't viable.
 
@@ -60,10 +60,10 @@ npm run check               # Type + lint check
 | **DCYFR (Claude Code)**  | 🔴 **PRIMARY**   | Production enforcement with auto-delegation                   | Feature work, testing, quick fixes, complex tasks | [`.claude/agents/`](./.claude/agents/) - 3 specialized agents                            |
 | **GitHub Copilot**       | 🟡 **SECONDARY** | Real-time code completion & quick suggestions                 | Inline coding, auto-fix, quick patterns           | [`.github/copilot-instructions.md`](./.github/copilot-instructions.md)                   |
 | **OpenCode.ai**          | 🟢 **FALLBACK**  | Multi-provider AI fallback (75+ models)                       | Token exhaustion, cost optimization, offline work | [`docs/ai/opencode-fallback-architecture.md`](docs/ai/opencode-fallback-architecture.md) |
-| **Claude (General)**     | 🔵 SUPPORTING*  | Deep research, architecture, complex debugging                | System design, documentation, investigation       | [`CLAUDE.md`](./CLAUDE.md)                                                               |
+| **Claude (General)**     | 🔵 SUPPORTING\*  | Deep research, architecture, complex debugging                | System design, documentation, investigation       | [`CLAUDE.md`](./CLAUDE.md)                                                               |
 | **DCYFR (VS Code Mode)** | 🔵 SUPPORTING    | Production enforcement, pattern validation, strict compliance | Feature work, bug fixes, detailed exploration     | [`.github/agents/DCYFR.agent.md`](./.github/agents/DCYFR.agent.md)                       |
 
-*CLAUDE.md also contains semi-PRIMARY capability for extended sessions when Claude Code is rate-limited
+\*CLAUDE.md also contains semi-PRIMARY capability for extended sessions when Claude Code is rate-limited
 
 ---
 
@@ -278,7 +278,7 @@ npm run check               # Type + lint check
 
 | Directory        | Files   | Purpose                                                                  |
 | ---------------- | ------- | ------------------------------------------------------------------------ |
-| **patterns/**    | 2 files | Provider selection, VS Code integration             |
+| **patterns/**    | 2 files | Provider selection, VS Code integration                                  |
 | **enforcement/** | 3 files | Hybrid enforcement (STRICT/FLEXIBLE), enhanced validation, quality gates |
 | **workflows/**   | 3 files | Session handoff, cost optimization, troubleshooting                      |
 | **scripts/**     | 3 files | Validation, health checks, session management                            |
@@ -287,17 +287,17 @@ npm run check               # Type + lint check
 
 #### Patterns Directory (.opencode/patterns/)
 
-| File                                                      | Lines | Covers                                                                           |
-| --------------------------------------------------------- | ----- | -------------------------------------------------------------------------------- |
-| [PROVIDER_SELECTION.md](patterns/PROVIDER_SELECTION.md)   | 200+  | Decision tree, free model optimization, when to use each provider                |
-| [VS_CODE_INTEGRATION.md](patterns/VS_CODE_INTEGRATION.md) | 150+  | Extension setup, keyboard shortcuts (Cmd+Esc), provider configuration            |
+| File                                                      | Lines | Covers                                                                |
+| --------------------------------------------------------- | ----- | --------------------------------------------------------------------- |
+| [PROVIDER_SELECTION.md](patterns/PROVIDER_SELECTION.md)   | 200+  | Decision tree, free model optimization, when to use each provider     |
+| [VS_CODE_INTEGRATION.md](patterns/VS_CODE_INTEGRATION.md) | 150+  | Extension setup, keyboard shortcuts (Cmd+Esc), provider configuration |
 
 #### Enforcement Directory (.opencode/enforcement/)
 
 | File                                                         | Lines | Covers                                                                                                                                      |
 | ------------------------------------------------------------ | ----- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | [HYBRID_ENFORCEMENT.md](enforcement/HYBRID_ENFORCEMENT.md)   | 400+  | STRICT rules (hard block): design tokens, PageLayout, barrel exports, test data, emojis; FLEXIBLE rules (warn): API patterns, test coverage |
-| [VALIDATION_ENHANCED.md](enforcement/VALIDATION_ENHANCED.md) | 450+  | Manual checklists for GitHub Copilot models, escalation triggers, provider capability matrix                                                  |
+| [VALIDATION_ENHANCED.md](enforcement/VALIDATION_ENHANCED.md) | 450+  | Manual checklists for GitHub Copilot models, escalation triggers, provider capability matrix                                                |
 | [QUALITY_GATES.md](enforcement/QUALITY_GATES.md)             | 500+  | Pre-commit validation by provider tier, security gates, performance gates                                                                   |
 
 #### Workflows Directory (.opencode/workflows/)
@@ -306,7 +306,7 @@ npm run check               # Type + lint check
 | ------------------------------------------------------ | ----- | --------------------------------------------------------------------------------- |
 | [SESSION_HANDOFF.md](workflows/SESSION_HANDOFF.md)     | 400+  | Claude ↔ OpenCode switching, session state schema v2.0, git workflow integration |
 | [COST_OPTIMIZATION.md](workflows/COST_OPTIMIZATION.md) | 450+  | 80/20 strategy (80% free, 20% premium), monthly cost tracking, ROI analysis       |
-| [TROUBLESHOOTING.md](workflows/TROUBLESHOOTING.md)     | 600+  | Provider-specific issues (GitHub Copilot auth, rate limits, validation failures)      |
+| [TROUBLESHOOTING.md](workflows/TROUBLESHOOTING.md)     | 600+  | Provider-specific issues (GitHub Copilot auth, rate limits, validation failures)  |
 
 #### Scripts Directory (.opencode/scripts/)
 
@@ -366,6 +366,101 @@ npm run check               # Type + lint check
   }
 }
 ```
+
+---
+
+### 6. AITMPL.com Template Agents (v1.0.0)
+
+**Hub Directory:** `.claude/agents/` (4 specialized agents from aitmpl.com templates)  
+**Last Updated:** January 16, 2026  
+**Audience:** Claude Code auto-delegation system (internal use)  
+**Format:** Individual agent files optimized for specific tasks from community templates
+
+**Purpose**: Enhanced capabilities from [aitmpl.com](https://www.aitmpl.com/) template library for React optimization, TypeScript mastery, code review automation, and test engineering.
+
+**Template Agents:**
+
+| Agent                  | File                    | Lines | Purpose                                                              |
+| ---------------------- | ----------------------- | ----- | -------------------------------------------------------------------- |
+| **Frontend Developer** | `frontend-developer.md` | 50    | React UI components, responsive design, accessibility                |
+| **TypeScript Pro**     | `typescript-pro.md`     | 55    | Advanced type system, generic constraints, strict typing             |
+| **Code Reviewer**      | `code-reviewer.md`      | 40    | Quality gates, security scanning, pre-commit validation              |
+| **Test Engineer**      | `test-engineer.md`      | 936   | Test pyramid, coverage optimization, E2E automation (Comprehensive!) |
+
+**Template Commands (New from Integration):**
+
+| Command          | File               | Agent              | Purpose                                  |
+| ---------------- | ------------------ | ------------------ | ---------------------------------------- |
+| `/code-review`   | `code-review.md`   | code-reviewer      | Pre-commit validation, security scanning |
+| `/frontend`      | `frontend.md`      | frontend-developer | React optimization, accessibility        |
+| `/typescript`    | `typescript.md`    | typescript-pro     | Advanced types, generic constraints      |
+| `/test-strategy` | `test-strategy.md` | test-engineer      | Test coverage, E2E planning              |
+
+**Skills (from aitmpl.com):**
+
+| Skill                  | Category        | Status       | Integration                               |
+| ---------------------- | --------------- | ------------ | ----------------------------------------- |
+| `react-best-practices` | web-development | ✅ Installed | React 19 patterns, performance guidelines |
+
+**Integration with DCYFR:**
+
+Enhanced `.claude/agents/DCYFR.md` (v2.2.0) now includes:
+
+- **Delegation strategy** to template agents
+- **Proactive triggers** for automatic agent invocation
+- **Quality gates** from code-reviewer patterns
+- **Skills array** with template capabilities
+
+**Delegation Map:**
+
+```yaml
+# When DCYFR encounters:
+UI Component Work → frontend-developer
+Complex TypeScript → typescript-pro
+Code Review → code-reviewer
+Test Strategy → test-engineer
+```
+
+**When to update:**
+
+- **Template agents**: When new versions available on aitmpl.com
+- **Commands**: When adding new template-based workflows
+- **Skills**: When installing new skills from aitmpl.com/skills
+- **DCYFR integration**: When delegation patterns evolve
+
+**Version tracking:**
+
+```json
+{
+  "file": ".claude/agents/[template-name].md",
+  "format": "aitmpl-template-agent",
+  "version": "1.0.0",
+  "source": "https://www.aitmpl.com/agents",
+  "scope": "specialized-delegation",
+  "coverage": "React, TypeScript, Testing, Code Quality",
+  "last_updated": "2026-01-16",
+  "source_of_truth": "AGENTS.md",
+  "integration": {
+    "dcyfr_agent": "v2.2.0 (enhanced with delegation)",
+    "new_commands": 4,
+    "new_skills": 1,
+    "total_agents": 15
+  }
+}
+```
+
+**Resources:**
+
+- **AITMPL.com**: https://www.aitmpl.com/
+- **Agents Gallery**: https://www.aitmpl.com/agents (174+ agents)
+- **Skills Gallery**: https://www.aitmpl.com/skills (355+ skills)
+- **Documentation**: https://docs.aitmpl.com/
+- **Installation**: `npx claude-code-templates@latest --agent=<name> --yes`
+
+**See Also:**
+
+- [Enhancement Plan](docs/ai/aitmpl-enhancement-plan.md) - Full integration strategy
+- [Integration Summary](docs/ai/aitmpl-integration-summary.md) - What was integrated
 
 ---
 
@@ -579,13 +674,13 @@ START: "I need AI help with dcyfr-labs"
 
 ### How CLAUDE.md Differs from PRIMARY Tier
 
-| Aspect | PRIMARY (Claude Code) | CLAUDE.md (SUPPORTING) |
-|--------|----------------------|----------------------|
-| **Automation** | Auto-delegation to sub-agents | Manual validation gates |
-| **Speed** | Fast execution (Sonnet) | Research-oriented (extended context) |
-| **Enforcement** | Proactive pattern enforcement | Guidance + examples |
-| **Scope** | Single tasks, features | Deep investigation, architecture |
-| **When to Use** | Quick fixes, features, bugs | When PRIMARY is rate-limited or unavailable |
+| Aspect          | PRIMARY (Claude Code)         | CLAUDE.md (SUPPORTING)                      |
+| --------------- | ----------------------------- | ------------------------------------------- |
+| **Automation**  | Auto-delegation to sub-agents | Manual validation gates                     |
+| **Speed**       | Fast execution (Sonnet)       | Research-oriented (extended context)        |
+| **Enforcement** | Proactive pattern enforcement | Guidance + examples                         |
+| **Scope**       | Single tasks, features        | Deep investigation, architecture            |
+| **When to Use** | Quick fixes, features, bugs   | When PRIMARY is rate-limited or unavailable |
 
 ### Recommended Workflow
 
@@ -886,6 +981,30 @@ Each instruction file maintains this metadata:
 ---
 
 ## 📋 Recent Updates
+
+### January 16, 2026
+
+- ✅ **Installed claude-code-templates plugins and organized documentation**
+  - Installed 10 plugin packages from claude-code-templates marketplace
+  - Plugins: ai-ml-toolkit, devops-automation, documentation-generator, git-workflow, nextjs-vercel-pro, performance-optimizer, project-management-suite, security-pro, testing-suite, supabase-toolkit
+  - Executed utilities: ultra-think, generate-tests, create-architecture-documentation, code-review, refactor-code, commit, update-docs
+  - Relocated 11 root-level summary files to `docs/operations/sessions/2026-01/`
+  - Created session archive README for operational tracking
+  - Updated `docs/INDEX.md` with new sections (performance, governance directories)
+  - Enhanced `docs/ai/INSTRUCTION_ALIGNMENT_INDEX.md` with extended AI documentation
+  - Added comprehensive AI documentation: AITMPL integration, testing strategy, component lifecycle, error handling, state management, animation patterns
+  - Documentation now organized into 18 focused directories
+
+- ✅ **Integrated AITMPL.com template agents (v1.0.0)**
+  - Added 4 specialized agents from aitmpl.com community templates
+  - Installed: frontend-developer, typescript-pro, code-reviewer, test-engineer
+  - Created 4 new commands: `/code-review`, `/frontend`, `/typescript`, `/test-strategy`
+  - Enhanced DCYFR.md (v2.2.0) with delegation strategy and proactive triggers
+  - Updated AGENTS.md with template agent documentation section
+  - Created comprehensive enhancement plan (`docs/ai/aitmpl-enhancement-plan.md`)
+  - Created integration summary (`docs/ai/aitmpl-integration-summary.md`)
+  - Total agents: 15 (11 existing + 4 from templates)
+  - Enhanced capabilities: React optimization, TypeScript mastery, code review automation, test engineering
 
 ### January 11, 2026
 

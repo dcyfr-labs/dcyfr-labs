@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-01-13T04:37:13.436Z",
+  "generated_at": "2026-01-16T17:43:55.332Z",
   "version": "1.0.0",
   "categories": [
     {
@@ -10,7 +10,7 @@
       "total_effort_hours": 4.5,
       "tasks": [
         {
-          "id": "test-flaky-ewswv5hmw",
+          "id": "test-flaky-0xkrlxhd0",
           "title": "Fix date boundary issues in heatmap tests",
           "description": "Flaky test at src/__tests__/lib/activity-heatmap.test.ts:144",
           "category": "Test Infrastructure",
@@ -30,10 +30,10 @@
             "flaky"
           ],
           "created_at": "2025-12-23",
-          "last_updated": "2026-01-13"
+          "last_updated": "2026-01-16"
         },
         {
-          "id": "test-flaky-s5o0vv4yq",
+          "id": "test-flaky-kfnr8l4h4",
           "title": "Fix performance tests (environment-dependent, flaky in CI)",
           "description": "Flaky test at src/__tests__/lib/activity-search.test.ts:240",
           "category": "Test Infrastructure",
@@ -53,10 +53,10 @@
             "flaky"
           ],
           "created_at": "2025-12-23",
-          "last_updated": "2026-01-13"
+          "last_updated": "2026-01-16"
         },
         {
-          "id": "test-flaky-vmvmdses1",
+          "id": "test-flaky-zm0p1pjnl",
           "title": "Fix Radix Tabs async behavior in tests",
           "description": "Flaky test at src/__tests__/components/home/trending-section.test.tsx:216",
           "category": "Test Infrastructure",
@@ -76,10 +76,10 @@
             "flaky"
           ],
           "created_at": "2025-12-23",
-          "last_updated": "2026-01-13"
+          "last_updated": "2026-01-16"
         },
         {
-          "id": "test-flaky-e0c9o1v3o",
+          "id": "test-flaky-pjjhou7kc",
           "title": "Fix aria-selected not updating in tests",
           "description": "Flaky test at src/__tests__/components/home/trending-section.test.tsx:448",
           "category": "Test Infrastructure",
@@ -99,29 +99,29 @@
             "flaky"
           ],
           "created_at": "2025-12-23",
-          "last_updated": "2026-01-13"
+          "last_updated": "2026-01-16"
         }
       ]
     }
   ],
   "statistics": {
-    "total_tasks": 237,
-    "ready_to_start": 118,
+    "total_tasks": 252,
+    "ready_to_start": 124,
     "blocked": 0,
     "in_progress": 0,
-    "completed": 119,
+    "completed": 128,
     "total_effort_hours": 4.5
   },
   "recent_git_activity": [
-    "b315f660 fix: Address critical bugs in backlog automation system",
-    "e620d060 feat: Implement Backlog Intelligence System (3-layer automation)",
-    "f3579c02 Merge branch 'preview' of https://github.com/dcyfr/dcyfr-labs into preview",
-    "a56fcfe5 fix(layout): adjust hero container width for improved responsiveness and remove unused mobile nav section",
-    "2f0857a4 2026.01.11 Cleanup & Update (#187)",
-    "274e5981 ✅ Resolution Complete All 7 code scanning findings have been resolved by optimizing CodeQL suppression syntax:",
-    "484e5cac fix(changelog): correct formatting for tool support and add spacing for clarity",
-    "c76ebef2 chore(changelog): update for 2026.01.11 release with environment variable documentation and DCYFR agent improvements",
-    "2e34e1de fix(layout): remove overflow styles from globals.css refactor(site-header): simplify class names for header component",
-    "027f35f1 fix(layout): prevent horizontal viewport overflow on mobile"
+    "46ea5d52 fix: stack blog CTAs vertically on mobile with responsive layout",
+    "2498fb7b fix: improve nuclei scan timeout and reliability",
+    "f9b78c5c chore(deps)(deps): bump next in the nextjs-core group (#202)",
+    "4a28640a chore(deps-dev)(deps-dev): bump the dev-tools group with 4 updates (#203)",
+    "57b7c5e0 chore(deps-dev)(deps-dev): bump @types/node (#204)",
+    "bc1b77ce chore(deps)(deps): bump framer-motion in the ui-framework group (#205)",
+    "d9282fdf chore: format security-fixed scripts with prettier",
+    "932cc8d5 security: resolve CodeQL command injection vulnerabilities in CLI scripts",
+    "4ecacbe4 chore: standardize quotes and formatting in event-driven architecture blog post",
+    "9b54f593 feat: add Node.js January 2026 security post and update search index"
   ]
 }

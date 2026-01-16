@@ -57,7 +57,11 @@ import { ArticleReadingProgress } from "@/components/app";
 import { LazyGiscusComments } from "@/components/features";
 import { ViewTracker } from "@/components/features";
 
-// Enable Incremental Static Regeneration with 1 hour revalidation
+// Force dynamic rendering - don't attempt to prerender during build
+// This page uses headers() for CSP nonce which requires runtime
+export const dynamic = 'force-dynamic';
+
+// Enable Incremental Static Regeneration with 1 hour revalidation (when rendered dynamically)
 export const revalidate = 3600; // 1 hour in seconds
 
 // Enable Partial Prerendering for faster initial page load

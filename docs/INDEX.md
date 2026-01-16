@@ -2,8 +2,8 @@
 
 # Documentation Index
 
-**Last Updated:** January 11, 2026  
-**Status:** Production-ready documentation ✅  
+**Last Updated:** January 16, 2026
+**Status:** Production-ready documentation ✅
 **Classification:** TLP Implementation - Most content TLP:CLEAR (public)
 
 🔒 **Note:** This documentation is public. Sensitive content (security findings, operational metrics, compliance audits) is in subdirectory `private/` folders (e.g., `/docs/security/private/`, `/docs/operations/private/`). See [DOCS_GOVERNANCE.md](./DOCS_GOVERNANCE.md) for policies.
@@ -12,7 +12,7 @@
 
 ## 📊 Current Structure
 
-The documentation is organized into **16 focused directories**:
+The documentation is organized into **18 focused directories**:
 
 ### 📁 Core Documentation (10 directories)
 
@@ -194,11 +194,37 @@ Platform configuration: environment variables, site config, view counts, deploym
 
 ### `operations/`
 
-Project management: todo lists, completed work, deployment guides, automation
+Project management: todo lists, completed work, deployment guides, automation, and session archives.
+
+**Subdirectories:**
+- `sessions/` - Archived session summaries and audit reports
+  - `2026-01/` - January 2026 session summaries (RIVET phases, audits, bundle optimization)
 
 ### `development/`
 
 Performance: Lighthouse CI, bundle analysis, INP optimization, ISR
+
+### `performance/`
+
+Performance optimization documentation including bundle optimization strategies, image optimization guides, and audit results.
+
+**Key Documents:**
+- `bundle-optimization-strategy.md` - Bundle size reduction techniques
+- `image-optimization-guide.md` - Image format and sizing best practices
+- `week-1-image-audit-results.md` - Comprehensive image audit findings
+
+### `governance/`
+
+Project governance documentation including legal pages implementation, documentation policies, and agent security governance.
+
+**Key Documents:**
+- `DOCS_GOVERNANCE.md` - Documentation classification and policies
+- `LEGAL_PAGES_ANALYSIS_AND_RECOMMENDATIONS.md` - Legal pages requirements
+- `LEGAL_PAGES_IMPLEMENTATION_PLAN.md` - Implementation strategy
+- `LEGAL_PAGES_IMPLEMENTATION_SUMMARY.md` - Completion summary
+- `LEGAL_PAGES_VALIDATION_SUMMARY.md` - Validation results
+- `AGENT-SECURITY-GOVERNANCE.md` - AI agent security policies
+- `data-governance-policy.md` - Data handling and privacy policies
 
 ### `testing/`
 
@@ -214,7 +240,18 @@ Content validation, markdown standards, Mermaid best practices
 
 ### `ai/`
 
-AI contributor guides and discovery research
+AI contributor guides, instruction alignment analysis, AITMPL integration documentation, and discovery research. Includes comprehensive testing strategy, component lifecycle patterns, error handling, state management, and animation decision matrices.
+
+**Key Documents:**
+- `INSTRUCTION_ALIGNMENT_INDEX.md` - Guide to instruction alignment analysis
+- `aitmpl-enhancement-plan.md` - AITMPL template integration strategy
+- `aitmpl-integration-summary.md` - Integration completion summary
+- `testing-strategy.md` - Comprehensive testing approach
+- `component-lifecycle.md` - React component patterns
+- `error-handling-patterns.md` - Error handling best practices
+- `state-management-matrix.md` - State management decision guide
+- `animation-decision-matrix.md` - Animation implementation patterns
+- `claude-code-validation-report.md` - Validation results
 
 ### `maintenance/`
 

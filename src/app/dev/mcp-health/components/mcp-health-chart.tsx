@@ -4,16 +4,10 @@
  * Response time trend visualization using Recharts
  */
 
-"use client";
+'use client';
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   LineChart,
   Line,
@@ -23,9 +17,9 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from "recharts";
-import type { McpServerStatus } from "../types";
-import { CRITICAL_MCPS } from "../types";
+} from '@/components/charts';
+import type { McpServerStatus } from '../types';
+import { CRITICAL_MCPS } from '../types';
 
 interface McpHealthChartProps {
   historyData: Record<string, McpServerStatus[]>;
@@ -34,14 +28,14 @@ interface McpHealthChartProps {
 
 // Color palette for chart lines
 const CHART_COLORS = [
-  "#2563eb", // blue-600
-  "#16a34a", // green-600
-  "#dc2626", // red-600
-  "#ca8a04", // yellow-600
-  "#9333ea", // purple-600
-  "#0891b2", // cyan-600
-  "#ea580c", // orange-600
-  "#4f46e5", // indigo-600
+  '#2563eb', // blue-600
+  '#16a34a', // green-600
+  '#dc2626', // red-600
+  '#ca8a04', // yellow-600
+  '#9333ea', // purple-600
+  '#0891b2', // cyan-600
+  '#ea580c', // orange-600
+  '#4f46e5', // indigo-600
 ];
 
 /**
@@ -65,18 +59,18 @@ function transformDataForChart(historyData: Record<string, McpServerStatus[]>) {
   return sortedTimestamps.map((timestamp) => {
     const point: Record<string, number | string> = {
       timestamp,
-      time: new Date(timestamp).toLocaleString("en-US", {
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
+      time: new Date(timestamp).toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
       }),
     };
 
     for (const [serverName, history] of Object.entries(historyData)) {
       const check = history.find((h) => h.timestamp === timestamp);
       // Use shortName for chart display
-      const shortName = serverName.replace("DCYFR ", "");
+      const shortName = serverName.replace('DCYFR ', '');
       point[shortName] = check?.responseTimeMs ?? 0;
     }
 
@@ -103,18 +97,12 @@ export function McpHealthChart({ historyData, loading }: McpHealthChartProps) {
   }
 
   const chartData = transformDataForChart(historyData);
-  const serverNames = Object.keys(historyData).map((name) =>
-    name.replace("DCYFR ", "")
-  );
+  const serverNames = Object.keys(historyData).map((name) => name.replace('DCYFR ', ''));
 
   // Filter to show only critical MCPs and a few others for readability
-  const criticalShortNames = CRITICAL_MCPS.map((name) =>
-    name.replace("DCYFR ", "")
-  );
+  const criticalShortNames = CRITICAL_MCPS.map((name) => name.replace('DCYFR ', ''));
   const displayNames = serverNames.filter(
-    (name) =>
-      criticalShortNames.includes(name) ||
-      ["GitHub", "Vercel", "Sentry"].includes(name)
+    (name) => criticalShortNames.includes(name) || ['GitHub', 'Vercel', 'Sentry'].includes(name)
   );
 
   if (chartData.length === 0) {
@@ -122,9 +110,7 @@ export function McpHealthChart({ historyData, loading }: McpHealthChartProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Response Time Trends</CardTitle>
-          <CardDescription className="text-xs">
-            No historical data available yet
-          </CardDescription>
+          <CardDescription className="text-xs">No historical data available yet</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex h-[300px] items-center justify-center text-muted-foreground">
@@ -145,10 +131,7 @@ export function McpHealthChart({ historyData, loading }: McpHealthChartProps) {
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart
-            data={chartData}
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-          >
+          <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
             <XAxis
               dataKey="time"
@@ -161,27 +144,24 @@ export function McpHealthChart({ historyData, loading }: McpHealthChartProps) {
               tick={{ fontSize: 10 }}
               tickLine={false}
               axisLine={false}
-              domain={[0, "auto"]}
+              domain={[0, 'auto']}
               label={{
-                value: "ms",
+                value: 'ms',
                 angle: -90,
-                position: "insideLeft",
+                position: 'insideLeft',
                 fontSize: 10,
               }}
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: "hsl(var(--card))",
-                border: "1px solid hsl(var(--border))",
-                borderRadius: "var(--radius)",
-                fontSize: "12px",
+                backgroundColor: 'hsl(var(--card))',
+                border: '1px solid hsl(var(--border))',
+                borderRadius: 'var(--radius)',
+                fontSize: '12px',
               }}
               labelStyle={{ fontWeight: 600 }}
             />
-            <Legend
-              wrapperStyle={{ fontSize: "11px", paddingTop: "10px" }}
-              iconSize={8}
-            />
+            <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} iconSize={8} />
             {displayNames.map((name, index) => (
               <Line
                 key={name}
@@ -228,9 +208,7 @@ export function McpUptimeChart({
     );
   }
 
-  const sortedMetrics = Object.values(metrics).sort(
-    (a, b) => b.percentage - a.percentage
-  );
+  const sortedMetrics = Object.values(metrics).sort((a, b) => b.percentage - a.percentage);
 
   return (
     <Card>
@@ -249,24 +227,18 @@ export function McpUptimeChart({
             const percentage = metric.percentage;
             const barColor =
               percentage >= 99.5
-                ? "bg-green-500"
+                ? 'bg-green-500'
                 : percentage >= 95
-                  ? "bg-yellow-500"
-                  : "bg-red-500";
+                  ? 'bg-yellow-500'
+                  : 'bg-red-500';
 
             return (
               <div key={metric.serverName} className="space-y-1">
                 <div className="flex items-center justify-between text-xs">
-                  <span
-                    className={
-                      isCritical ? "font-medium text-primary" : "text-foreground"
-                    }
-                  >
+                  <span className={isCritical ? 'font-medium text-primary' : 'text-foreground'}>
                     {metric.serverName}
                   </span>
-                  <span className="text-muted-foreground">
-                    {percentage.toFixed(2)}%
-                  </span>
+                  <span className="text-muted-foreground">{percentage.toFixed(2)}%</span>
                 </div>
                 <div className="h-2 w-full rounded-full bg-muted">
                   <div

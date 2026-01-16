@@ -9,6 +9,10 @@ import {
   ANIMATION,
 } from "@/lib/design-tokens";
 
+// Force dynamic rendering - don't attempt to prerender during build
+// 404 page is rendered on-demand when routes are not found
+export const dynamic = 'force-dynamic';
+
 const recommendedLinks = [
   {
     label: "Home",

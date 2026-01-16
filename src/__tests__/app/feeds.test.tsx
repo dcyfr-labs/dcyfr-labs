@@ -9,17 +9,15 @@ import { render, screen } from "@testing-library/react";
 import FeedsPage, { metadata } from "@/app/feeds/page";
 import { SITE_TITLE, SITE_URL } from "@/lib/site-config";
 
-// TODO: Feeds page refactored - tests need update to match new structure
-describe.skip("FeedsPage", () => {
+describe("FeedsPage", () => {
   describe("Metadata", () => {
     it("should have correct page title", () => {
-      expect(metadata.title).toBe("Subscribe to Feeds");
+      expect(metadata.title).toBe("Web Feeds");
     });
 
     it("should have descriptive page description", () => {
       expect(metadata.description).toContain("RSS/Atom feeds");
       expect(metadata.description).toContain("blog posts");
-      expect(metadata.description).toContain("projects");
     });
 
     it("should have correct canonical path", () => {
@@ -34,14 +32,14 @@ describe.skip("FeedsPage", () => {
 
     it("should render page layout successfully", () => {
       const heading = screen.getByRole("heading", {
-        name: /Subscribe to our Feeds/i,
+        name: /Subscribe to our Web Feeds/i,
       });
       expect(heading).toBeInTheDocument();
     });
 
     it("should display main heading", () => {
       const heading = screen.getByRole("heading", {
-        name: /Subscribe to our Feeds/i,
+        name: /Subscribe to our Web Feeds/i,
       });
       expect(heading).toBeInTheDocument();
     });
@@ -59,15 +57,15 @@ describe.skip("FeedsPage", () => {
       render(<FeedsPage />);
     });
 
-    it("should render 'What are RSS/Atom feeds?' section", () => {
+    it("should render 'What are Web Feeds?' section", () => {
       const section = screen.getByRole("heading", {
-        name: /What are RSS\/Atom feeds\?/i,
+        name: /What are Web Feeds\?/i,
       });
       expect(section).toBeInTheDocument();
     });
 
     it("should explain feed readers", () => {
-      const text = screen.getByText(/Use a feed reader like/i);
+      const text = screen.getByText(/Web feeds allow you to subscribe to content updates/i);
       expect(text).toBeInTheDocument();
     });
 
@@ -135,32 +133,32 @@ describe.skip("FeedsPage", () => {
       render(<FeedsPage />);
     });
 
-    it("should display Activity Feed RSS 2.0 button", () => {
-      const buttons = screen.getAllByRole("link", { name: /RSS 2\.0/ });
+    it("should display RSS buttons", () => {
+      const buttons = screen.getAllByRole("link", { name: /RSS/i });
       expect(buttons.length).toBeGreaterThan(0);
     });
 
-    it("should display Activity Feed Atom button", () => {
-      const buttons = screen.getAllByRole("link", { name: /Atom/ });
+    it("should display Atom buttons", () => {
+      const buttons = screen.getAllByRole("link", { name: /Atom/i });
       expect(buttons.length).toBeGreaterThan(0);
     });
 
-    it("should display JSON Feed buttons", () => {
-      const buttons = screen.getAllByRole("link", { name: /JSON Feed/ });
+    it("should display JSON buttons", () => {
+      const buttons = screen.getAllByRole("link", { name: /JSON/i });
       expect(buttons.length).toBeGreaterThan(0);
     });
 
     it("should link to correct Activity Feed RSS endpoint", () => {
-      const rssButtons = screen.getAllByRole("link", { name: /RSS 2\.0/ });
+      const rssButtons = screen.getAllByRole("link", { name: /RSS/i });
       const activityRssButton = rssButtons.find((btn) =>
-        btn.getAttribute("href")?.includes("/activity/rss.xml")
+        btn.getAttribute("href")?.includes("/activity/feed?format=rss")
       );
       expect(activityRssButton).toBeInTheDocument();
       expect(activityRssButton).toHaveAttribute("type", "application/rss+xml");
     });
 
     it("should link to correct Blog Feed Atom endpoint", () => {
-      const atomButtons = screen.getAllByRole("link", { name: /Atom/ });
+      const atomButtons = screen.getAllByRole("link", { name: /Atom/i });
       const blogAtomButton = atomButtons.find((btn) =>
         btn.getAttribute("href")?.includes("/blog/feed")
       );
@@ -169,9 +167,9 @@ describe.skip("FeedsPage", () => {
     });
 
     it("should link to correct Projects Feed JSON endpoint", () => {
-      const jsonButtons = screen.getAllByRole("link", { name: /JSON Feed/ });
+      const jsonButtons = screen.getAllByRole("link", { name: /JSON/i });
       const projectsJsonButton = jsonButtons.find((btn) =>
-        btn.getAttribute("href")?.includes("/work/feed.json")
+        btn.getAttribute("href")?.includes("/work/feed?format=json")
       );
       expect(projectsJsonButton).toBeInTheDocument();
       expect(projectsJsonButton).toHaveAttribute(
@@ -186,16 +184,16 @@ describe.skip("FeedsPage", () => {
       render(<FeedsPage />);
     });
 
-    it("should display 'Format Options' heading", () => {
-      const heading = screen.getByRole("heading", {
-        name: /Format Options/i,
+    it("should display format option cards", () => {
+      const atomCard = screen.getByRole("heading", {
+        name: /^Atom$/i,
       });
-      expect(heading).toBeInTheDocument();
+      expect(atomCard).toBeInTheDocument();
     });
 
-    it("should explain RSS 2.0 format", () => {
+    it("should explain RSS format", () => {
       const description = screen.getByText(
-        /Widely-supported XML feed format with excellent compatibility/i
+        /Widely supported XML format with excellent compatibility/i
       );
       expect(description).toBeInTheDocument();
     });
@@ -222,7 +220,7 @@ describe.skip("FeedsPage", () => {
 
     it("should have proper heading hierarchy", () => {
       const h1 = screen.getByRole("heading", {
-        name: /Subscribe to our Feeds/i,
+        name: /Subscribe to our Web Feeds/i,
       });
       const h2s = screen.getAllByRole("heading", { level: 2 });
       const h3s = screen.getAllByRole("heading", { level: 3 });
@@ -249,7 +247,8 @@ describe.skip("FeedsPage", () => {
     });
   });
 
-  describe("Feed Update Frequencies", () => {
+  // Update frequencies are currently commented out in the page
+  describe.skip("Feed Update Frequencies", () => {
     beforeEach(() => {
       render(<FeedsPage />);
     });
@@ -261,12 +260,12 @@ describe.skip("FeedsPage", () => {
 
     it("should display Blog Feed update frequency", () => {
       const frequencies = screen.getAllByText(/Updated daily/);
-      expect(frequencies.length).toBeGreaterThanOrEqual(2); // Blog and Projects both have "Updated daily"
+      expect(frequencies.length).toBeGreaterThanOrEqual(2);
     });
 
     it("should display Projects Feed update frequency", () => {
       const frequencies = screen.getAllByText(/Updated daily/);
-      expect(frequencies.length).toBeGreaterThanOrEqual(2); // Blog and Projects both have "Updated daily"
+      expect(frequencies.length).toBeGreaterThanOrEqual(2);
     });
   });
 

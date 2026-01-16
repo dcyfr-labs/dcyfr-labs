@@ -29,8 +29,8 @@
  * ```
  */
 
-import { createClient } from "redis";
-import type { RedisClientType } from "redis";
+import { createClient } from 'redis';
+import type { RedisClientType } from 'redis';
 
 // ============================================================================
 // TYPES
@@ -68,7 +68,7 @@ export interface CachedData<T> {
 async function getRedisClient(): Promise<RedisClientType | null> {
   const redisUrl = process.env.REDIS_URL;
   if (!redisUrl) {
-    console.warn("[Cache] REDIS_URL not configured");
+    console.warn('[Cache] REDIS_URL not configured');
     return null;
   }
 
@@ -78,7 +78,7 @@ async function getRedisClient(): Promise<RedisClientType | null> {
       socket: {
         connectTimeout: 5000,
         reconnectStrategy: (retries) => {
-          if (retries > 3) return new Error("Max retries exceeded");
+          if (retries > 3) return new Error('Max retries exceeded');
           return Math.min(retries * 100, 3000);
         },
       },
@@ -90,7 +90,7 @@ async function getRedisClient(): Promise<RedisClientType | null> {
 
     return client as RedisClientType;
   } catch (error) {
-    console.error("[Cache] Redis connection failed:", error);
+    console.error('[Cache] Redis connection failed:', error);
     return null;
   }
 }
@@ -132,7 +132,7 @@ export class VersionedCache<T = any> {
       const raw = await redis.get(versionedKey);
 
       if (!raw) {
-        console.log(
+        console.warn(
           `[Cache] Miss: ${versionedKey} (${this.config.description || this.config.namespace})`
         );
         return null;
@@ -160,7 +160,7 @@ export class VersionedCache<T = any> {
         return null;
       }
 
-      console.log(
+      console.warn(
         `[Cache] Hit: ${versionedKey} (${this.config.description || this.config.namespace}, ${this.formatAge(cached.metadata.cachedAt)})`
       );
 
@@ -198,7 +198,7 @@ export class VersionedCache<T = any> {
 
       await redis.setEx(versionedKey, ttl, JSON.stringify(cached));
 
-      console.log(
+      console.warn(
         `[Cache] Set: ${versionedKey} (${this.config.description || this.config.namespace}, TTL: ${ttl}s)`
       );
 
@@ -222,9 +222,7 @@ export class VersionedCache<T = any> {
       const versionedKey = this.getVersionedKey(key);
       const deleted = await redis.del(versionedKey);
 
-      console.log(
-        `[Cache] Deleted: ${versionedKey} (${deleted > 0 ? "success" : "not found"})`
-      );
+      console.warn(`[Cache] Deleted: ${versionedKey} (${deleted > 0 ? 'success' : 'not found'})`);
 
       return deleted > 0;
     } catch (error) {
@@ -249,14 +247,12 @@ export class VersionedCache<T = any> {
       const keys = await redis.keys(pattern);
 
       if (keys.length === 0) {
-        console.log(`[Cache] No keys found matching: ${pattern}`);
+        console.warn(`[Cache] No keys found matching: ${pattern}`);
         return 0;
       }
 
       const deleted = await redis.del(keys);
-      console.log(
-        `[Cache] Deleted ${deleted} versions of ${this.config.namespace}:${key}`
-      );
+      console.warn(`[Cache] Deleted ${deleted} versions of ${this.config.namespace}:${key}`);
 
       return deleted;
     } catch (error) {
@@ -282,7 +278,7 @@ export class VersionedCache<T = any> {
     }
 
     try {
-      const versionedKey = this.getVersionedKey("*");
+      const versionedKey = this.getVersionedKey('*');
       const keys = await redis.keys(versionedKey);
 
       if (keys.length === 0) {
@@ -321,16 +317,16 @@ export class VersionedCache<T = any> {
     const ageMs = now - cached;
     const ageMinutes = Math.floor(ageMs / 60000);
 
-    if (ageMinutes < 1) return "< 1 minute ago";
-    if (ageMinutes === 1) return "1 minute ago";
+    if (ageMinutes < 1) return '< 1 minute ago';
+    if (ageMinutes === 1) return '1 minute ago';
     if (ageMinutes < 60) return `${ageMinutes} minutes ago`;
 
     const ageHours = Math.floor(ageMinutes / 60);
-    if (ageHours === 1) return "1 hour ago";
+    if (ageHours === 1) return '1 hour ago';
     if (ageHours < 24) return `${ageHours} hours ago`;
 
     const ageDays = Math.floor(ageHours / 24);
-    if (ageDays === 1) return "1 day ago";
+    if (ageDays === 1) return '1 day ago';
     return `${ageDays} days ago`;
   }
 }
@@ -365,10 +361,10 @@ export const CACHE_VERSIONS = {
  * Activity feed cache with validation
  */
 export const activityFeedCache = new VersionedCache({
-  namespace: "activity",
+  namespace: 'activity',
   version: CACHE_VERSIONS.ACTIVITY_FEED,
   ttl: 3600, // 1 hour
-  description: "Activity feed with threading",
+  description: 'Activity feed with threading',
   validate: (data): data is any[] => {
     if (!Array.isArray(data)) return false;
     if (data.length === 0) return true; // Empty is valid
@@ -376,11 +372,11 @@ export const activityFeedCache = new VersionedCache({
     // Validate first item has required fields
     const item = data[0];
     return (
-      typeof item === "object" &&
+      typeof item === 'object' &&
       item !== null &&
-      "id" in item &&
-      "source" in item &&
-      "timestamp" in item
+      'id' in item &&
+      'source' in item &&
+      'timestamp' in item
     );
   },
 });

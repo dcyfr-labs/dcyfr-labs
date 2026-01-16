@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   BarChart,
@@ -9,8 +9,8 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from "recharts";
-import type { ComparisonStats } from "@/lib/agents";
+} from '@/components/charts';
+import type { ComparisonStats } from '@/lib/agents';
 
 interface CostTrackingChartProps {
   comparison: ComparisonStats;
@@ -20,10 +20,10 @@ export function CostTrackingChart({ comparison }: CostTrackingChartProps) {
   const data = Object.entries(comparison.agents)
     .map(([agent, stats]) => ({
       agent: agent.charAt(0).toUpperCase() + agent.slice(1),
-      "Total Cost": stats.cost.totalCost,
-      "Avg Cost/Session": stats.cost.averageCostPerSession,
+      'Total Cost': stats.cost.totalCost,
+      'Avg Cost/Session': stats.cost.averageCostPerSession,
     }))
-    .filter((item) => item["Total Cost"] > 0 || item["Avg Cost/Session"] > 0);
+    .filter((item) => item['Total Cost'] > 0 || item['Avg Cost/Session'] > 0);
 
   if (data.length === 0) {
     return (
@@ -40,9 +40,7 @@ export function CostTrackingChart({ comparison }: CostTrackingChartProps) {
         <XAxis dataKey="agent" />
         <YAxis />
         <Tooltip
-          formatter={(value: number | undefined) =>
-            value !== undefined ? `$${value.toFixed(2)}` : "$0.00"
-          }
+          formatter={(value) => (typeof value === 'number' ? `$${value.toFixed(2)}` : '$0.00')}
         />
         <Legend />
         <Bar dataKey="Total Cost" fill="hsl(var(--chart-3))" />

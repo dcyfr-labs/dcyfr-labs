@@ -13,11 +13,11 @@
  * - Rate limiting: 10 requests per minute
  */
 
-import { NextRequest, NextResponse } from "next/server";
-import { timingSafeEqual } from "crypto";
-import * as Sentry from "@sentry/nextjs";
-import { blockExternalAccess } from "@/lib/api-security";
-import { rateLimit, getClientIp, createRateLimitHeaders } from "@/lib/rate-limit";
+import { NextRequest, NextResponse } from 'next/server';
+import { timingSafeEqual } from 'crypto';
+import * as Sentry from '@sentry/nextjs';
+import { blockExternalAccess } from '@/lib/api-security';
+import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
 import {
   storeHealthReport,
   getLatestHealthReport,
@@ -26,7 +26,7 @@ import {
   getAlertHistory,
   isRedisAvailable,
   type McpHealthReport,
-} from "@/lib/mcp-health-tracker";
+} from '@/lib/mcp-health-tracker';
 
 // ============================================================================
 // TYPES
@@ -60,11 +60,11 @@ interface PostRequestBody {
  * Expected format: "Bearer YOUR_API_KEY"
  */
 function isAuthenticated(request: NextRequest): boolean {
-  const authHeader = request.headers.get("authorization");
+  const authHeader = request.headers.get('authorization');
   const adminKey = process.env.ADMIN_API_KEY;
 
   if (!adminKey) {
-    console.warn("[MCP Health API] ADMIN_API_KEY not configured - endpoint disabled");
+    console.warn('[MCP Health API] ADMIN_API_KEY not configured - endpoint disabled');
     return false;
   }
 
@@ -72,7 +72,7 @@ function isAuthenticated(request: NextRequest): boolean {
     return false;
   }
 
-  const token = authHeader.replace("Bearer ", "");
+  const token = authHeader.replace('Bearer ', '');
 
   // Use timing-safe comparison to prevent timing attacks
   try {
@@ -85,7 +85,7 @@ function isAuthenticated(request: NextRequest): boolean {
 
     return timingSafeEqual(tokenBuf, keyBuf);
   } catch (error) {
-    console.error("[MCP Health API] Error during key validation:", error);
+    console.error('[MCP Health API] Error during key validation:', error);
     return false;
   }
 }
@@ -158,22 +158,19 @@ export async function POST(request: NextRequest) {
 
   // Layer 1: Check authentication
   if (!isAuthenticated(request)) {
-    Sentry.captureMessage("MCP Health API: Unauthorized POST attempt", {
-      level: "warning",
+    Sentry.captureMessage('MCP Health API: Unauthorized POST attempt', {
+      level: 'warning',
       tags: {
-        endpoint: "/api/mcp/health",
-        method: "POST",
+        endpoint: '/api/mcp/health',
+        method: 'POST',
       },
       extra: {
         ip: getClientIp(request),
-        userAgent: request.headers.get("user-agent"),
+        userAgent: request.headers.get('user-agent'),
       },
     });
 
-    return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   // Layer 2: Rate limiting
@@ -187,14 +184,14 @@ export async function POST(request: NextRequest) {
     const retryAfter = Math.ceil((rateLimitResult.reset - Date.now()) / 1000);
     return NextResponse.json(
       {
-        error: "Rate limit exceeded",
+        error: 'Rate limit exceeded',
         retryAfter,
       },
       {
         status: 429,
         headers: {
           ...createRateLimitHeaders(rateLimitResult),
-          "Retry-After": retryAfter.toString(),
+          'Retry-After': retryAfter.toString(),
         },
       }
     );
@@ -205,55 +202,48 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     if (!validateHealthReport(body)) {
-      return NextResponse.json(
-        { error: "Invalid health report format" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid health report format' }, { status: 400 });
     }
 
     // Check Redis availability
     const redisAvailable = await isRedisAvailable();
     if (!redisAvailable) {
-      console.error("[MCP Health API] Redis unavailable");
-      return NextResponse.json(
-        { error: "Storage service unavailable" },
-        { status: 503 }
-      );
+      console.error('[MCP Health API] Redis unavailable');
+      return NextResponse.json({ error: 'Storage service unavailable' }, { status: 503 });
     }
 
     // Store health report
     const healthReport: McpHealthReport = body as McpHealthReport;
     await storeHealthReport(healthReport);
 
-    console.log(`[MCP Health API] Stored health report: ${healthReport.summary.ok}/${healthReport.summary.total} servers healthy`);
+    console.warn(
+      `[MCP Health API] Stored health report: ${healthReport.summary.ok}/${healthReport.summary.total} servers healthy`
+    );
 
     return NextResponse.json(
       {
         success: true,
-        message: "Health report stored successfully",
+        message: 'Health report stored successfully',
         timestamp: healthReport.timestamp,
         summary: healthReport.summary,
       },
       {
         status: 200,
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       }
     );
   } catch (error) {
-    console.error("[MCP Health API] Error processing POST request:", error);
+    console.error('[MCP Health API] Error processing POST request:', error);
     Sentry.captureException(error, {
       tags: {
-        endpoint: "/api/mcp/health",
-        method: "POST",
+        endpoint: '/api/mcp/health',
+        method: 'POST',
       },
     });
 
-    return NextResponse.json(
-      { error: "Failed to process health report" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to process health report' }, { status: 500 });
   }
 }
 
@@ -282,11 +272,11 @@ export async function GET(request: NextRequest) {
   if (blockResponse) return blockResponse;
 
   // Environment check - only allow in dev/preview
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.NODE_ENV === 'production') {
     return NextResponse.json(
       {
-        error: "Forbidden",
-        message: "MCP health endpoint is disabled in production for security",
+        error: 'Forbidden',
+        message: 'MCP health endpoint is disabled in production for security',
       },
       { status: 403 }
     );
@@ -303,14 +293,14 @@ export async function GET(request: NextRequest) {
     const retryAfter = Math.ceil((rateLimitResult.reset - Date.now()) / 1000);
     return NextResponse.json(
       {
-        error: "Rate limit exceeded",
+        error: 'Rate limit exceeded',
         retryAfter,
       },
       {
         status: 429,
         headers: {
           ...createRateLimitHeaders(rateLimitResult),
-          "Retry-After": retryAfter.toString(),
+          'Retry-After': retryAfter.toString(),
         },
       }
     );
@@ -320,18 +310,18 @@ export async function GET(request: NextRequest) {
     // Check Redis availability
     const redisAvailable = await isRedisAvailable();
     if (!redisAvailable) {
-      console.warn("[MCP Health API] Redis unavailable - returning unavailable status");
+      console.warn('[MCP Health API] Redis unavailable - returning unavailable status');
       return NextResponse.json(
         {
-          status: "unavailable",
-          message: "Health data storage is currently unavailable",
+          status: 'unavailable',
+          message: 'Health data storage is currently unavailable',
           timestamp: new Date().toISOString(),
         },
         {
           status: 503,
           headers: {
-            "Cache-Control": "no-store, must-revalidate",
-            "Content-Type": "application/json",
+            'Cache-Control': 'no-store, must-revalidate',
+            'Content-Type': 'application/json',
           },
         }
       );
@@ -347,15 +337,15 @@ export async function GET(request: NextRequest) {
     if (!latestReport) {
       return NextResponse.json(
         {
-          status: "no_data",
-          message: "No health check data available yet",
+          status: 'no_data',
+          message: 'No health check data available yet',
           timestamp: new Date().toISOString(),
         },
         {
           status: 200,
           headers: {
-            "Cache-Control": "no-store, must-revalidate",
-            "Content-Type": "application/json",
+            'Cache-Control': 'no-store, must-revalidate',
+            'Content-Type': 'application/json',
           },
         }
       );
@@ -363,7 +353,7 @@ export async function GET(request: NextRequest) {
 
     // Build response
     const response = {
-      status: "ok",
+      status: 'ok',
       timestamp: new Date().toISOString(),
       latest: latestReport,
       uptime: uptimeMetrics,
@@ -385,30 +375,30 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(response, {
       status: 200,
       headers: {
-        "Cache-Control": "no-store, must-revalidate",
-        "Content-Type": "application/json",
+        'Cache-Control': 'no-store, must-revalidate',
+        'Content-Type': 'application/json',
       },
     });
   } catch (error) {
-    console.error("[MCP Health API] Error processing GET request:", error);
+    console.error('[MCP Health API] Error processing GET request:', error);
     Sentry.captureException(error, {
       tags: {
-        endpoint: "/api/mcp/health",
-        method: "GET",
+        endpoint: '/api/mcp/health',
+        method: 'GET',
       },
     });
 
     return NextResponse.json(
       {
-        status: "error",
-        message: "Failed to retrieve health data",
+        status: 'error',
+        message: 'Failed to retrieve health data',
         timestamp: new Date().toISOString(),
       },
       {
         status: 500,
         headers: {
-          "Cache-Control": "no-store, must-revalidate",
-          "Content-Type": "application/json",
+          'Cache-Control': 'no-store, must-revalidate',
+          'Content-Type': 'application/json',
         },
       }
     );

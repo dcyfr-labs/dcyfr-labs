@@ -19,18 +19,25 @@ import {
   type PerplexityResponse,
 } from "@/lib/perplexity";
 
-// Mock fetch
-global.fetch = vi.fn();
+// Store original fetch to restore it later
+const originalFetch = global.fetch;
+
+// Mock fetch with proper typing
+const mockFetch = vi.fn();
 
 describe("perplexity.ts", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     clearCache();
     delete process.env.PERPLEXITY_API_KEY;
+    // Replace global fetch with our mock for each test
+    global.fetch = mockFetch as any;
   });
 
   afterEach(() => {
     clearCache();
+    // Restore original fetch after each test
+    global.fetch = originalFetch;
   });
 
   describe("isPerplexityConfigured", () => {
@@ -108,7 +115,7 @@ describe("perplexity.ts", () => {
         ],
       };
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
       });
@@ -167,7 +174,7 @@ describe("perplexity.ts", () => {
         ],
       };
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
       });
@@ -212,7 +219,7 @@ describe("perplexity.ts", () => {
         ],
       };
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
       });
@@ -253,7 +260,7 @@ describe("perplexity.ts", () => {
         ],
       };
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
       });
@@ -295,7 +302,7 @@ describe("perplexity.ts", () => {
         ],
       };
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
       });
@@ -322,7 +329,7 @@ describe("perplexity.ts", () => {
     });
 
     it("should throw error on API failure", async () => {
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 500,
         json: async () => ({
@@ -353,7 +360,7 @@ describe("perplexity.ts", () => {
     });
 
     it("should handle API error without message", async () => {
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 400,
         json: async () => ({
@@ -396,7 +403,7 @@ describe("perplexity.ts", () => {
         ],
       };
 
-      (global.fetch as any).mockResolvedValue({
+      mockFetch.mockResolvedValue({
         ok: true,
         json: async () => mockResponse,
       });
@@ -440,7 +447,7 @@ describe("perplexity.ts", () => {
         ],
       };
 
-      (global.fetch as any).mockResolvedValue({
+      mockFetch.mockResolvedValue({
         ok: true,
         json: async () => mockResponse,
       });
@@ -483,7 +490,7 @@ describe("perplexity.ts", () => {
         ],
       };
 
-      (global.fetch as any).mockResolvedValue({
+      mockFetch.mockResolvedValue({
         ok: true,
         json: async () => mockResponse,
       });
@@ -529,7 +536,7 @@ describe("perplexity.ts", () => {
         ],
       };
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
       });
@@ -568,7 +575,7 @@ describe("perplexity.ts", () => {
         ],
       };
 
-      (global.fetch as any).mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
       });
@@ -620,7 +627,7 @@ describe("perplexity.ts", () => {
         ],
       };
 
-      (global.fetch as any).mockResolvedValue({
+      mockFetch.mockResolvedValue({
         ok: true,
         json: async () => mockResponse,
       });

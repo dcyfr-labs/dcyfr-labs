@@ -1,29 +1,20 @@
-"use client";
+'use client';
 
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Legend,
-  Tooltip,
-} from "recharts";
-import type { ComparisonStats } from "@/lib/agents";
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from '@/components/charts';
+import type { ComparisonStats } from '@/lib/agents';
 
 interface UsageDistributionChartProps {
   comparison: ComparisonStats;
 }
 
 const COLORS = {
-  claude: "hsl(var(--chart-1))",
-  copilot: "hsl(var(--chart-2))",
-  groq: "hsl(var(--chart-3))",
-  ollama: "hsl(var(--chart-4))",
+  claude: 'hsl(var(--chart-1))',
+  copilot: 'hsl(var(--chart-2))',
+  groq: 'hsl(var(--chart-3))',
+  ollama: 'hsl(var(--chart-4))',
 };
 
-export function UsageDistributionChart({
-  comparison,
-}: UsageDistributionChartProps) {
+export function UsageDistributionChart({ comparison }: UsageDistributionChartProps) {
   const data = Object.entries(comparison.agents)
     .map(([agent, stats]) => ({
       name: agent.charAt(0).toUpperCase() + agent.slice(1),
@@ -56,17 +47,11 @@ export function UsageDistributionChart({
           dataKey="value"
         >
           {data.map((entry, index) => (
-            <Cell
-              key={`cell-${index}`}
-              fill={COLORS[entry.agent as keyof typeof COLORS]}
-            />
+            <Cell key={`cell-${index}`} fill={COLORS[entry.agent as keyof typeof COLORS]} />
           ))}
         </Pie>
         <Tooltip
-          formatter={(value: number | undefined) => [
-            `${value ?? 0} sessions`,
-            "Sessions",
-          ]}
+          formatter={(value) => [`${typeof value === 'number' ? value : 0} sessions`, 'Sessions']}
         />
         <Legend />
       </PieChart>
