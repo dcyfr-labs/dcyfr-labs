@@ -63,56 +63,56 @@
  */
 export const CONTAINER_WIDTHS = {
   /** Prose/reading content - optimal line length (45-75 chars/line per typography research) */
-  prose: "max-w-4xl",
+  prose: 'max-w-4xl',
 
   /** Narrow width for forms and focused content (contact forms) */
-  narrow: "max-w-4xl",
+  narrow: 'max-w-4xl',
 
   /** Thread-style single-column feed (Threads-inspired activity timeline) */
-  thread: "max-w-2xl",
+  thread: 'max-w-2xl',
 
   /** Standard width for core pages (homepage, about, contact, resume) */
-  standard: "max-w-5xl",
+  standard: 'max-w-5xl',
 
   /** Content-heavy pages with sidebar (individual blog posts, project detail pages) */
-  content: "max-w-6xl",
+  content: 'max-w-6xl',
 
   /** Archive/listing pages with filters and grids (blog listing, projects listing) */
-  archive: "max-w-7xl",
+  archive: 'max-w-7xl',
 
   /** Full-width dashboard pages with data tables, charts, and analytics (dashboard pages, dev tools) */
-  dashboard: "max-w-[1536px]",
+  dashboard: 'max-w-[1536px]',
 } as const;
 
 /**
  * Standard horizontal padding for all containers
  * Provides consistent edge spacing across breakpoints
  */
-export const CONTAINER_PADDING = "px-4 sm:px-6 md:px-8" as const;
+export const CONTAINER_PADDING = 'px-4 sm:px-6 md:px-8' as const;
 
 /**
  * Navigation component height
  * Used for consistent header, footer, and bottom nav heights
  */
-export const NAVIGATION_HEIGHT = "h-16" as const;
+export const NAVIGATION_HEIGHT = 'h-18' as const;
 
 /**
  * Horizontal padding for archive container (reduced vertical padding)
  */
-export const ARCHIVE_CONTAINER_PADDING = "px-4 sm:px-6 md:px-8" as const;
+export const ARCHIVE_CONTAINER_PADDING = 'px-4 sm:px-6 md:px-8' as const;
 
 /**
  * Standard vertical padding for page containers
  * Provides consistent top/bottom spacing
  */
-export const CONTAINER_VERTICAL_PADDING = "py-8 md:py-12" as const;
+export const CONTAINER_VERTICAL_PADDING = 'py-8 md:py-12' as const;
 
 /**
  * Mobile-safe bottom padding that accounts for BottomNav (64px) + safe clearance
  * - Mobile: 96px (BottomNav 64px + 32px clearance)
  * - Desktop: 32px (standard padding, no BottomNav)
  */
-export const MOBILE_SAFE_PADDING = "pb-24 md:pb-8" as const;
+export const MOBILE_SAFE_PADDING = 'pb-24 md:pb-8' as const;
 
 /**
  * Utility function to build complete container classes
@@ -127,9 +127,7 @@ export const MOBILE_SAFE_PADDING = "pb-24 md:pb-8" as const;
  * </div>
  * ```
  */
-export function getContainerClasses(
-  width: keyof typeof CONTAINER_WIDTHS = "standard"
-): string {
+export function getContainerClasses(width: keyof typeof CONTAINER_WIDTHS = 'standard'): string {
   return `mx-auto ${CONTAINER_WIDTHS[width]} pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12 ${CONTAINER_PADDING}`;
 }
 
@@ -156,18 +154,13 @@ export function getContentDepthClass(options: {
   /** Character length of content */
   length?: number;
   /** Position in content flow */
-  position?: "opening" | "body" | "closing";
+  position?: 'opening' | 'body' | 'closing';
   /** Whether content is contextual/supporting */
   isContextual?: boolean;
   /** Whether to apply font contrast system */
   useFontContrast?: boolean;
 }): string {
-  const {
-    length = 0,
-    position = "body",
-    isContextual = false,
-    useFontContrast = false,
-  } = options;
+  const { length = 0, position = 'body', isContextual = false, useFontContrast = false } = options;
 
   // Base font system
   if (useFontContrast) {
@@ -180,11 +173,11 @@ export function getContentDepthClass(options: {
   }
 
   // Position-based styling
-  if (position === "opening") {
+  if (position === 'opening') {
     return PROGRESSIVE_TEXT.opening;
   }
 
-  if (position === "closing") {
+  if (position === 'closing') {
     return PROGRESSIVE_TEXT.closing;
   }
 
@@ -214,9 +207,7 @@ export function getContentDepthClass(options: {
  * </div>
  * ```
  */
-export function getContentBlockStyles(
-  variant: keyof typeof CONTENT_HIERARCHY
-): {
+export function getContentBlockStyles(variant: keyof typeof CONTENT_HIERARCHY): {
   title: string;
   content: string;
   container: string;
@@ -243,20 +234,18 @@ export function getContentBlockStyles(
  */
 export const ACTIVITY_IMAGE = {
   /** Base container with 16:9 aspect ratio and overflow handling, with light background for transparent images */
-  container:
-    "aspect-[16/9] relative overflow-hidden rounded-lg mb-4 bg-muted/30 dark:bg-muted/10",
+  container: 'aspect-[16/9] relative overflow-hidden rounded-lg mb-4 bg-muted/30 dark:bg-muted/10',
 
   /** Image size variants for different activity types - width controls size via aspect ratio */
   sizes: {
     /** Primary activity header (larger, more prominent) - full width, aspect ratio controls height */
-    header: "w-full",
+    header: 'w-full',
     /** Reply/nested activity (smaller, compact) - full width, aspect ratio controls height */
-    reply: "w-full",
+    reply: 'w-full',
   },
 
   /** Image styling with hover zoom effect */
-  image:
-    "object-cover w-full h-full transition-transform duration-300 hover:scale-105",
+  image: 'object-cover w-full h-full transition-transform duration-300 hover:scale-105',
 } as const;
 
 // ============================================================================
@@ -278,30 +267,29 @@ export const TYPOGRAPHY = {
     /** Standard page titles (about, projects, contact, blog listing)
      * Fluid: 30px (mobile) → 36px (desktop)
      */
-    standard:
-      "text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-semibold tracking-tight",
+    standard: 'text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-semibold tracking-tight',
 
     /** Archive/listing page titles (about, blog archive, portfolio archive)
      * Fluid: 30px (mobile) → 36px (desktop)
      */
-    hero: "font-serif text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-semibold tracking-tight ws-sm",
+    hero: 'font-serif text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-semibold tracking-tight ws-sm',
 
     /** Blog post titles (larger, more prominent)
      * Fluid: 30px (mobile) → 48px (desktop)
      */
     article:
-      "font-serif text-[clamp(1.875rem,5vw+0.75rem,3rem)] font-semibold tracking-tight leading-tight ws-md",
+      'font-serif text-[clamp(1.875rem,5vw+0.75rem,3rem)] font-semibold tracking-tight leading-tight ws-md',
 
     /** Portfolio project titles
      * Fluid: 30px (mobile) → 48px (desktop)
      */
     project:
-      "font-serif text-[clamp(1.875rem,5vw+0.75rem,3rem)] font-semibold tracking-tight leading-tight ws-md",
+      'font-serif text-[clamp(1.875rem,5vw+0.75rem,3rem)] font-semibold tracking-tight leading-tight ws-md',
 
     /** MDX content headings
      * Fluid: 30px (mobile) → 36px (desktop)
      */
-    mdx: "text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-semibold tracking-tight ws-sm",
+    mdx: 'text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-semibold tracking-tight ws-sm',
   },
 
   /** H2 heading variants */
@@ -309,18 +297,18 @@ export const TYPOGRAPHY = {
     /** Standard section headings
      * Fluid: 20px (mobile) → 24px (desktop)
      */
-    standard: "text-[clamp(1.25rem,2.5vw+0.75rem,1.5rem)] font-medium ws-xs",
+    standard: 'text-[clamp(1.25rem,2.5vw+0.75rem,1.5rem)] font-medium ws-xs',
 
     /** Featured content headings (blog post cards, featured sections)
      * Fluid: 24px (mobile) → 30px (desktop)
      */
     featured:
-      "font-serif text-[clamp(1.5rem,3vw+0.875rem,1.875rem)] font-semibold tracking-tight ws-sm",
+      'font-serif text-[clamp(1.5rem,3vw+0.875rem,1.875rem)] font-semibold tracking-tight ws-sm',
 
     /** MDX content headings
      * Fluid: 24px (mobile) → 30px (desktop)
      */
-    mdx: "text-[clamp(1.5rem,3vw+0.875rem,1.875rem)] font-semibold tracking-tight ws-sm",
+    mdx: 'text-[clamp(1.5rem,3vw+0.875rem,1.875rem)] font-semibold tracking-tight ws-sm',
   },
 
   /** H3 heading variants */
@@ -328,12 +316,12 @@ export const TYPOGRAPHY = {
     /** Standard subsection headings
      * Fluid: 18px (mobile) → 20px (desktop)
      */
-    standard: "text-[clamp(1.125rem,2vw+0.75rem,1.25rem)] font-medium ws-xs",
+    standard: 'text-[clamp(1.125rem,2vw+0.75rem,1.25rem)] font-medium ws-xs',
 
     /** MDX content headings
      * Fluid: 18px (mobile) → 20px (desktop)
      */
-    mdx: "font-sans text-[clamp(1.125rem,2vw+0.75rem,1.25rem)] font-bold tracking-tight ws-xs",
+    mdx: 'font-sans text-[clamp(1.125rem,2vw+0.75rem,1.25rem)] font-bold tracking-tight ws-xs',
   },
 
   /** H4 heading variants */
@@ -341,7 +329,7 @@ export const TYPOGRAPHY = {
     /** MDX content headings
      * Fluid: 16px (mobile) → 18px (desktop)
      */
-    mdx: "font-sans text-[clamp(1rem,1.5vw+0.75rem,1.125rem)] font-bold tracking-tight",
+    mdx: 'font-sans text-[clamp(1rem,1.5vw+0.75rem,1.125rem)] font-bold tracking-tight',
   },
 
   /** H5 heading variants */
@@ -349,7 +337,7 @@ export const TYPOGRAPHY = {
     /** MDX content headings
      * Fluid: 14px (mobile) → 16px (desktop)
      */
-    mdx: "font-sans text-[clamp(0.875rem,1vw+0.75rem,1rem)] font-semibold tracking-tight",
+    mdx: 'font-sans text-[clamp(0.875rem,1vw+0.75rem,1rem)] font-semibold tracking-tight',
   },
 
   /** H6 heading variants */
@@ -357,7 +345,7 @@ export const TYPOGRAPHY = {
     /** MDX content headings
      * Stays at 14px across viewports
      */
-    mdx: "font-sans text-sm font-semibold tracking-tight",
+    mdx: 'font-sans text-sm font-semibold tracking-tight',
   },
 
   /** Special display text (stats, error titles, large numbers) */
@@ -365,39 +353,38 @@ export const TYPOGRAPHY = {
     /** Error page titles
      * Fluid: 30px (mobile) → 36px (desktop)
      */
-    error: "text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-bold ws-xs",
+    error: 'text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-bold ws-xs',
 
     /** Large statistics/metrics display
      * Stays at 30px across viewports (single value, no scaling needed)
      */
-    stat: "text-3xl font-bold tracking-tight ws-xs",
+    stat: 'text-3xl font-bold tracking-tight ws-xs',
 
     /** Extra large statistics display (homepage stats)
      * Fluid: 36px (mobile) → 48px (desktop)
      */
-    statLarge: "text-[clamp(2.25rem,4.5vw+1rem,3rem)] font-bold ws-sm",
+    statLarge: 'text-[clamp(2.25rem,4.5vw+1rem,3rem)] font-bold ws-sm',
   },
 
   /** Lead text / page descriptions
    * Fluid: 18px (mobile) → 20px (desktop)
    */
-  description:
-    "text-[clamp(1.125rem,2vw+0.75rem,1.25rem)] text-muted-foreground ws-xs",
+  description: 'text-[clamp(1.125rem,2vw+0.75rem,1.25rem)] text-muted-foreground ws-xs',
 
   /** Metadata text (dates, reading time, etc.) */
-  metadata: "text-sm text-muted-foreground",
+  metadata: 'text-sm text-muted-foreground',
 
   /** Body text for long-form content */
-  body: "text-base text-foreground leading-relaxed ws-xs",
+  body: 'text-base text-foreground leading-relaxed ws-xs',
 
   /** Label and small UI text */
   label: {
     /** Card/section labels (e.g., "Trending Posts", "Recommendations") */
-    standard: "text-base font-semibold",
+    standard: 'text-base font-semibold',
     /** Smaller labels for list items, badges */
-    small: "text-sm font-semibold",
+    small: 'text-sm font-semibold',
     /** Extra small labels */
-    xs: "text-xs font-semibold",
+    xs: 'text-xs font-semibold',
   },
 
   /** Activity feed typography (content-focused, Medium/Substack inspired) */
@@ -405,41 +392,40 @@ export const TYPOGRAPHY = {
     /** Primary activity titles (larger, prominent, good hierarchy)
      * Fluid: 20px (mobile) → 24px (tablet) → 30px (desktop)
      */
-    title:
-      "text-[clamp(1.25rem,3vw+0.75rem,1.875rem)] font-semibold tracking-tight",
+    title: 'text-[clamp(1.25rem,3vw+0.75rem,1.875rem)] font-semibold tracking-tight',
 
     /** Activity subtitles (optional secondary text)
      * Fluid: 16px (mobile) → 18px (desktop)
      */
-    subtitle: "text-[clamp(1rem,1.5vw+0.75rem,1.125rem)] text-muted-foreground",
+    subtitle: 'text-[clamp(1rem,1.5vw+0.75rem,1.125rem)] text-muted-foreground',
 
     /** Activity descriptions (enhanced readability, optimal line height)
      * Stays at 16px (base size, no scaling needed)
      */
-    description: "text-base leading-relaxed text-foreground/90",
+    description: 'text-base leading-relaxed text-foreground/90',
 
     /** Activity metadata (timestamps, counts, badges)
      * Stays at 14px (small text, no scaling needed)
      */
-    metadata: "text-sm text-muted-foreground",
+    metadata: 'text-sm text-muted-foreground',
 
     /** Reply/nested activity titles (smaller than primary, still readable)
      * Fluid: 16px (mobile) → 18px (desktop)
      */
-    replyTitle: "text-[clamp(1rem,1.5vw+0.75rem,1.125rem)] font-medium",
+    replyTitle: 'text-[clamp(1rem,1.5vw+0.75rem,1.125rem)] font-medium',
 
     /** Reply descriptions (compact but readable)
      * Stays at 14px (small text, no scaling needed)
      */
-    replyDescription: "text-sm leading-relaxed text-muted-foreground",
+    replyDescription: 'text-sm leading-relaxed text-muted-foreground',
   },
 
   /** Accordion/FAQ specific styling */
   accordion: {
     /** FAQ section heading */
-    heading: "font-semibold text-2xl",
+    heading: 'font-semibold text-2xl',
     /** FAQ question trigger */
-    trigger: "text-left text-lg font-bold",
+    trigger: 'text-left text-lg font-bold',
   },
 
   /** Logo/branding text */
@@ -447,19 +433,17 @@ export const TYPOGRAPHY = {
     /** Small logo text (mobile nav, compact views)
      * Stays at 14px (small text, no scaling needed)
      */
-    small: "text-sm font-serif font-semibold leading-none",
+    small: 'text-sm font-serif font-semibold leading-none',
 
     /** Medium logo text (default)
      * Fluid: 20px (mobile) → 24px (desktop)
      */
-    medium:
-      "text-[clamp(1.25rem,2.5vw+0.75rem,1.5rem)] font-serif font-semibold leading-none",
+    medium: 'text-[clamp(1.25rem,2.5vw+0.75rem,1.5rem)] font-serif font-semibold leading-none',
 
     /** Large logo text (headers, hero sections)
      * Fluid: 30px (mobile) → 36px (desktop)
      */
-    large:
-      "text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-serif font-semibold leading-none",
+    large: 'text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-serif font-semibold leading-none',
   },
 
   /**
@@ -479,19 +463,19 @@ export const TYPOGRAPHY = {
    */
   depth: {
     /** Primary content - emphasized, full contrast */
-    primary: "font-medium text-foreground",
+    primary: 'font-medium text-foreground',
 
     /** Secondary content - medium emphasis, slight reduction */
-    secondary: "font-normal text-foreground/90",
+    secondary: 'font-normal text-foreground/90',
 
     /** Tertiary content - supporting information, muted */
-    tertiary: "font-normal text-muted-foreground",
+    tertiary: 'font-normal text-muted-foreground',
 
     /** Accent content - highlighted information */
-    accent: "font-semibold text-foreground",
+    accent: 'font-semibold text-foreground',
 
     /** Subtle content - least emphasis, background information */
-    subtle: "font-light text-muted-foreground/70",
+    subtle: 'font-light text-muted-foreground/70',
   },
 } as const;
 
@@ -524,30 +508,30 @@ export const TYPOGRAPHY = {
 export const CONTENT_HIERARCHY = {
   /** Primary content blocks - main information */
   primary: {
-    title: "font-medium text-foreground",
-    content: "text-foreground leading-relaxed",
-    container: "space-y-3",
+    title: 'font-medium text-foreground',
+    content: 'text-foreground leading-relaxed',
+    container: 'space-y-3',
   },
 
   /** Supporting content blocks - contextual information */
   supporting: {
-    title: "font-medium text-foreground/90",
-    content: "text-muted-foreground leading-relaxed",
-    container: "space-y-2 mt-1",
+    title: 'font-medium text-foreground/90',
+    content: 'text-muted-foreground leading-relaxed',
+    container: 'space-y-2 mt-1',
   },
 
   /** Accent content blocks - highlighted information */
   accent: {
-    title: "font-semibold text-foreground",
-    content: "text-foreground/95 leading-relaxed",
-    container: "space-y-3",
+    title: 'font-semibold text-foreground',
+    content: 'text-foreground/95 leading-relaxed',
+    container: 'space-y-3',
   },
 
   /** Subtle content blocks - background information */
   subtle: {
-    title: "font-normal text-muted-foreground",
-    content: "text-muted-foreground/80 leading-relaxed text-sm",
-    container: "space-y-2",
+    title: 'font-normal text-muted-foreground',
+    content: 'text-muted-foreground/80 leading-relaxed text-sm',
+    container: 'space-y-2',
   },
 } as const;
 
@@ -573,19 +557,19 @@ export const CONTENT_HIERARCHY = {
  */
 export const PROGRESSIVE_TEXT = {
   /** Opening paragraph - full emphasis */
-  opening: "text-foreground font-normal leading-relaxed text-lg",
+  opening: 'text-foreground font-normal leading-relaxed text-lg',
 
   /** Body paragraphs - standard treatment */
-  body: "text-foreground leading-relaxed",
+  body: 'text-foreground leading-relaxed',
 
   /** Long paragraphs - slightly reduced emphasis */
-  extended: "text-foreground/95 leading-relaxed text-[15px]",
+  extended: 'text-foreground/95 leading-relaxed text-[15px]',
 
   /** Closing paragraphs - subtle reduction */
-  closing: "text-foreground/90 leading-relaxed",
+  closing: 'text-foreground/90 leading-relaxed',
 
   /** Contextual paragraphs - background information */
-  contextual: "text-muted-foreground leading-relaxed text-sm",
+  contextual: 'text-muted-foreground leading-relaxed text-sm',
 } as const;
 
 /**
@@ -603,19 +587,19 @@ export const PROGRESSIVE_TEXT = {
  */
 export const FONT_CONTRAST = {
   /** Base text - lighter weight for better contrast */
-  base: "font-light text-foreground leading-relaxed",
+  base: 'font-light text-foreground leading-relaxed',
 
   /** Medium emphasis - slight increase from base */
-  medium: "font-normal text-foreground leading-relaxed",
+  medium: 'font-normal text-foreground leading-relaxed',
 
   /** Strong emphasis - clear contrast from base */
-  emphasis: "font-semibold text-foreground",
+  emphasis: 'font-semibold text-foreground',
 
   /** Bold elements - maximum contrast */
-  bold: "font-bold text-foreground",
+  bold: 'font-bold text-foreground',
 
   /** Heading contrast - optimized for headings */
-  heading: "font-medium text-foreground",
+  heading: 'font-medium text-foreground',
 } as const;
 
 // ============================================================================
@@ -700,80 +684,80 @@ export const FONT_CONTRAST = {
  */
 export const SPACING = {
   /** Between major page sections (largest gaps) */
-  section: "space-y-8 md:space-y-10 lg:space-y-14",
+  section: 'space-y-8 md:space-y-10 lg:space-y-14',
 
   /** Between related content blocks within a section */
-  subsection: "space-y-5 md:space-y-6 lg:space-y-8",
+  subsection: 'space-y-5 md:space-y-6 lg:space-y-8',
 
   /** Within content blocks (tightest spacing) */
-  content: "space-y-3 md:space-y-4 lg:space-y-5",
+  content: 'space-y-3 md:space-y-4 lg:space-y-5',
   // NOTE: Do NOT use SPACING.content in ArticleLayout wrapper
   // Blog content uses prose CSS classes from globals.css for natural paragraph spacing
 
   /** Running text and prose paragraphs (better readability for long-form content) */
-  prose: "space-y-5 md:space-y-6 lg:space-y-8",
+  prose: 'space-y-5 md:space-y-6 lg:space-y-8',
   // NOTE: Only use SPACING.prose for manually structured sections
   // Blog/article content relies on prose CSS classes, not design tokens
 
   /** Page hero/header sections with prose wrapper */
-  proseHero: "prose space-y-4",
+  proseHero: 'prose space-y-4',
 
   /** Generic prose sections */
-  proseSection: "prose space-y-4",
+  proseSection: 'prose space-y-4',
 
   /** Compact vertical spacing for lists and alerts (improved mobile space utilization) */
-  compact: "space-y-2",
+  compact: 'space-y-2',
 
   /** Reduced spacing for list items (optimized for mobile scaling) - minimal gap between items */
-  list: "",
+  list: '',
 
   /** Blog post card lists (compact, optimized spacing for post grids) */
-  postList: "space-y-2",
+  postList: 'space-y-2',
 
   /** Image elements in blog content (top/bottom margins) */
-  image: "my-6 md:my-8",
+  image: 'my-6 md:my-8',
 
   /** Blog post layout spacing (intentional gap-8 for visual hierarchy) */
-  blogLayout: "gap-8",
+  blogLayout: 'gap-8',
 
   /** Content grid spacing (card grids, portfolio items) */
-  contentGrid: "gap-6",
+  contentGrid: 'gap-6',
 
   /** Alternative subsection spacing (backwards compatibility, single value) */
-  subsectionAlt: "space-y-6",
+  subsectionAlt: 'space-y-6',
 
   /** Section divider spacing (bordered sections like "Other Projects", "Related Posts") */
   sectionDivider: {
     /** Container spacing: top margin and padding for bordered sections */
-    container: "mt-8 md:mt-10 lg:mt-12 pt-6 md:pt-7 lg:pt-8",
+    container: 'mt-8 md:mt-10 lg:mt-12 pt-6 md:pt-7 lg:pt-8',
     /** Heading bottom margin */
-    heading: "mb-4 md:mb-5 lg:mb-6",
+    heading: 'mb-4 md:mb-5 lg:mb-6',
     /** Grid gap for card layouts */
-    grid: "gap-4",
+    grid: 'gap-4',
   },
 
   /** Activity feed spacing (content-focused, generous breathing room) */
   activity: {
     /** Spacing between individual threads (generous for visual separation) */
-    threadGap: "space-y-8 md:space-y-10",
+    threadGap: 'space-y-8 md:space-y-10',
     /** Spacing between replies within a thread (comfortable but connected) */
-    replyGap: "space-y-4",
+    replyGap: 'space-y-4',
     /** Spacing within activity content (title, description, metadata) */
-    contentGap: "space-y-3",
+    contentGap: 'space-y-3',
     /** Spacing between action buttons (like, bookmark, share) */
-    actionGap: "gap-6",
+    actionGap: 'gap-6',
   },
 
   // Numeric-like properties for use in template literals (TEMPORARY - should be refactored)
   // These map to standard Tailwind values: xs=2, sm=3, md=4, lg=6, xl=8, 2xl=10
-  xs: "2",
-  sm: "3",
-  md: "4",
-  lg: "6",
-  xl: "8",
-  "2xl": "10",
-  "1.5": "3",
-  "0.5": "1",
+  xs: '2',
+  sm: '3',
+  md: '4',
+  lg: '6',
+  xl: '8',
+  '2xl': '10',
+  '1.5': '3',
+  '0.5': '1',
 } as const;
 
 // ============================================================================
@@ -785,11 +769,11 @@ export const SPACING = {
  * These complement SPACING which is only for vertical spacing (space-y-*)
  */
 export const SPACING_VALUES = {
-  xs: "2", // 0.5rem
-  sm: "3", // 0.75rem
-  md: "4", // 1rem
-  lg: "6", // 1.5rem
-  xl: "8", // 2rem
+  xs: '2', // 0.5rem
+  sm: '3', // 0.75rem
+  md: '4', // 1rem
+  lg: '6', // 1.5rem
+  xl: '8', // 2rem
 } as const;
 
 // ============================================================================
@@ -829,90 +813,89 @@ export const SEMANTIC_COLORS = {
   /** Alert/notification state colors */
   alert: {
     critical: {
-      border: "border-l-4 border-l-error",
-      container: "bg-error-subtle",
-      text: "text-error",
-      icon: "text-error-dark dark:text-error-light",
-      label: "text-error",
+      border: 'border-l-4 border-l-error',
+      container: 'bg-error-subtle',
+      text: 'text-error',
+      icon: 'text-error-dark dark:text-error-light',
+      label: 'text-error',
     },
     warning: {
-      border: "border-l-4 border-l-warning",
-      container: "bg-warning-subtle",
-      text: "text-warning-foreground",
-      icon: "text-warning-dark dark:text-warning-light",
-      label: "text-warning-dark dark:text-warning-light",
+      border: 'border-l-4 border-l-warning',
+      container: 'bg-warning-subtle',
+      text: 'text-warning-foreground',
+      icon: 'text-warning-dark dark:text-warning-light',
+      label: 'text-warning-dark dark:text-warning-light',
     },
     info: {
-      border: "border-l-4 border-l-info",
-      container: "bg-info-subtle",
-      text: "text-info",
-      icon: "text-info-dark dark:text-info-light",
-      label: "text-info",
+      border: 'border-l-4 border-l-info',
+      container: 'bg-info-subtle',
+      text: 'text-info',
+      icon: 'text-info-dark dark:text-info-light',
+      label: 'text-info',
     },
     success: {
-      border: "border-l-4 border-l-success",
-      container: "bg-success-subtle",
-      text: "text-success",
-      icon: "text-success-dark dark:text-success-light",
-      label: "text-success",
+      border: 'border-l-4 border-l-success',
+      container: 'bg-success-subtle',
+      text: 'text-success',
+      icon: 'text-success-dark dark:text-success-light',
+      label: 'text-success',
     },
     notice: {
-      border: "border-l-4 border-l-muted-foreground/30",
-      container: "bg-muted/30 dark:bg-muted/20",
-      text: "text-foreground",
-      icon: "text-muted-foreground",
-      label: "text-foreground",
+      border: 'border-l-4 border-l-muted-foreground/30',
+      container: 'bg-muted/30 dark:bg-muted/20',
+      text: 'text-foreground',
+      icon: 'text-muted-foreground',
+      label: 'text-foreground',
     },
   },
 
   /** Status indicators (analytics, progress, metrics) */
   status: {
-    success: "bg-success text-success-foreground",
-    warning: "bg-warning text-warning-foreground",
-    info: "bg-info text-info-foreground",
-    inProgress: "bg-warning text-warning-foreground",
-    error: "bg-error text-error-foreground",
-    neutral: "bg-muted text-muted-foreground dark:bg-muted/50",
+    success: 'bg-success text-success-foreground',
+    warning: 'bg-warning text-warning-foreground',
+    info: 'bg-info text-info-foreground',
+    inProgress: 'bg-warning text-warning-foreground',
+    error: 'bg-error text-error-foreground',
+    neutral: 'bg-muted text-muted-foreground dark:bg-muted/50',
   },
 
   /** Activity feed interaction states (content-focused, subtle actions) */
   activity: {
     action: {
       /** Default state - subtle, low contrast (appears on hover) */
-      default: "text-muted-foreground/60 hover:text-muted-foreground",
+      default: 'text-muted-foreground/60 hover:text-muted-foreground',
       /** Active state - full contrast when focused/hovered */
-      active: "text-foreground hover:text-foreground/80",
+      active: 'text-foreground hover:text-foreground/80',
       /** Liked state - warm red color */
-      liked: "text-error dark:text-error-light",
+      liked: 'text-error dark:text-error-light',
       /** Bookmarked state - warm amber color */
-      bookmarked: "text-warning dark:text-warning-light",
+      bookmarked: 'text-warning dark:text-warning-light',
     },
   },
 
   /** Chart colors (map to CSS custom properties) */
   chart: {
-    primary: "bg-chart-1 text-chart-1",
-    secondary: "bg-chart-2 text-chart-2",
-    tertiary: "bg-chart-3 text-chart-3",
-    quaternary: "bg-chart-4 text-chart-4",
-    quinary: "bg-chart-5 text-chart-5",
+    primary: 'bg-chart-1 text-chart-1',
+    secondary: 'bg-chart-2 text-chart-2',
+    tertiary: 'bg-chart-3 text-chart-3',
+    quaternary: 'bg-chart-4 text-chart-4',
+    quinary: 'bg-chart-5 text-chart-5',
   },
 
   /** Interactive element states */
   interactive: {
-    hover: "hover:bg-muted/50 dark:hover:bg-muted/30",
-    active: "active:bg-muted dark:active:bg-muted/40",
+    hover: 'hover:bg-muted/50 dark:hover:bg-muted/30',
+    active: 'active:bg-muted dark:active:bg-muted/40',
     focus:
-      "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:focus-visible:ring-offset-background",
-    disabled:
-      "disabled:pointer-events-none disabled:opacity-50 dark:disabled:opacity-40",
+      'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:focus-visible:ring-offset-background',
+    disabled: 'disabled:pointer-events-none disabled:opacity-50 dark:disabled:opacity-40',
   },
 
   /** Content highlighting and marks */
   highlight: {
-    primary: "bg-warning-subtle text-foreground",
-    mark: "bg-primary/10 dark:bg-primary/20 text-foreground",
-    muted: "bg-muted/50 dark:bg-muted/30 text-muted-foreground",
+    primary: 'bg-warning-subtle text-foreground',
+    mark: 'bg-primary/10 dark:bg-primary/20 text-foreground',
+    muted: 'bg-muted/50 dark:bg-muted/30 text-muted-foreground',
   },
 
   /**
@@ -941,164 +924,147 @@ export const SEMANTIC_COLORS = {
   accent: {
     // Blues
     blue: {
-      badge:
-        "bg-semantic-blue-subtle text-semantic-blue border-semantic-blue/20",
-      text: "text-semantic-blue",
-      bg: "bg-semantic-blue",
-      light: "bg-semantic-blue-light text-foreground",
-      dark: "bg-semantic-blue-dark text-background",
+      badge: 'bg-semantic-blue-subtle text-semantic-blue border-semantic-blue/20',
+      text: 'text-semantic-blue',
+      bg: 'bg-semantic-blue',
+      light: 'bg-semantic-blue-light text-foreground',
+      dark: 'bg-semantic-blue-dark text-background',
     },
     cyan: {
-      badge:
-        "bg-semantic-cyan-subtle text-semantic-cyan border-semantic-cyan/20",
-      text: "text-semantic-cyan",
-      bg: "bg-semantic-cyan",
-      light: "bg-semantic-cyan-light text-foreground",
-      dark: "bg-semantic-cyan-dark text-background",
+      badge: 'bg-semantic-cyan-subtle text-semantic-cyan border-semantic-cyan/20',
+      text: 'text-semantic-cyan',
+      bg: 'bg-semantic-cyan',
+      light: 'bg-semantic-cyan-light text-foreground',
+      dark: 'bg-semantic-cyan-dark text-background',
     },
     sky: {
-      badge: "bg-semantic-sky-subtle text-semantic-sky border-semantic-sky/20",
-      text: "text-semantic-sky",
-      bg: "bg-semantic-sky",
-      light: "bg-semantic-sky-light text-foreground",
-      dark: "bg-semantic-sky-dark text-background",
+      badge: 'bg-semantic-sky-subtle text-semantic-sky border-semantic-sky/20',
+      text: 'text-semantic-sky',
+      bg: 'bg-semantic-sky',
+      light: 'bg-semantic-sky-light text-foreground',
+      dark: 'bg-semantic-sky-dark text-background',
     },
     indigo: {
-      badge:
-        "bg-semantic-indigo-subtle text-semantic-indigo border-semantic-indigo/20",
-      text: "text-semantic-indigo",
-      bg: "bg-semantic-indigo",
-      light: "bg-semantic-indigo-light text-foreground",
-      dark: "bg-semantic-indigo-dark text-background",
+      badge: 'bg-semantic-indigo-subtle text-semantic-indigo border-semantic-indigo/20',
+      text: 'text-semantic-indigo',
+      bg: 'bg-semantic-indigo',
+      light: 'bg-semantic-indigo-light text-foreground',
+      dark: 'bg-semantic-indigo-dark text-background',
     },
     teal: {
-      badge:
-        "bg-semantic-teal-subtle text-semantic-teal border-semantic-teal/20",
-      text: "text-semantic-teal",
-      bg: "bg-semantic-teal",
-      light: "bg-semantic-teal-light text-foreground",
-      dark: "bg-semantic-teal-dark text-background",
+      badge: 'bg-semantic-teal-subtle text-semantic-teal border-semantic-teal/20',
+      text: 'text-semantic-teal',
+      bg: 'bg-semantic-teal',
+      light: 'bg-semantic-teal-light text-foreground',
+      dark: 'bg-semantic-teal-dark text-background',
     },
 
     // Greens
     green: {
-      badge:
-        "bg-semantic-green-subtle text-semantic-green border-semantic-green/20",
-      text: "text-semantic-green",
-      bg: "bg-semantic-green",
-      light: "bg-semantic-green-light text-foreground",
-      dark: "bg-semantic-green-dark text-background",
+      badge: 'bg-semantic-green-subtle text-semantic-green border-semantic-green/20',
+      text: 'text-semantic-green',
+      bg: 'bg-semantic-green',
+      light: 'bg-semantic-green-light text-foreground',
+      dark: 'bg-semantic-green-dark text-background',
     },
     emerald: {
-      badge:
-        "bg-semantic-emerald-subtle text-semantic-emerald border-semantic-emerald/20",
-      text: "text-semantic-emerald",
-      bg: "bg-semantic-emerald",
-      light: "bg-semantic-emerald-light text-foreground",
-      dark: "bg-semantic-emerald-dark text-background",
+      badge: 'bg-semantic-emerald-subtle text-semantic-emerald border-semantic-emerald/20',
+      text: 'text-semantic-emerald',
+      bg: 'bg-semantic-emerald',
+      light: 'bg-semantic-emerald-light text-foreground',
+      dark: 'bg-semantic-emerald-dark text-background',
     },
     lime: {
-      badge:
-        "bg-semantic-lime-subtle text-semantic-lime border-semantic-lime/20",
-      text: "text-semantic-lime",
-      bg: "bg-semantic-lime",
-      light: "bg-semantic-lime-light text-foreground",
-      dark: "bg-semantic-lime-dark text-background",
+      badge: 'bg-semantic-lime-subtle text-semantic-lime border-semantic-lime/20',
+      text: 'text-semantic-lime',
+      bg: 'bg-semantic-lime',
+      light: 'bg-semantic-lime-light text-foreground',
+      dark: 'bg-semantic-lime-dark text-background',
     },
 
     // Purples & Pinks
     purple: {
-      badge:
-        "bg-semantic-purple-subtle text-semantic-purple border-semantic-purple/20",
-      text: "text-semantic-purple",
-      bg: "bg-semantic-purple",
-      light: "bg-semantic-purple-light text-foreground",
-      dark: "bg-semantic-purple-dark text-background",
+      badge: 'bg-semantic-purple-subtle text-semantic-purple border-semantic-purple/20',
+      text: 'text-semantic-purple',
+      bg: 'bg-semantic-purple',
+      light: 'bg-semantic-purple-light text-foreground',
+      dark: 'bg-semantic-purple-dark text-background',
     },
     violet: {
-      badge:
-        "bg-semantic-violet-subtle text-semantic-violet border-semantic-violet/20",
-      text: "text-semantic-violet",
-      bg: "bg-semantic-violet",
-      light: "bg-semantic-violet-light text-foreground",
-      dark: "bg-semantic-violet-dark text-background",
+      badge: 'bg-semantic-violet-subtle text-semantic-violet border-semantic-violet/20',
+      text: 'text-semantic-violet',
+      bg: 'bg-semantic-violet',
+      light: 'bg-semantic-violet-light text-foreground',
+      dark: 'bg-semantic-violet-dark text-background',
     },
     pink: {
-      badge:
-        "bg-semantic-pink-subtle text-semantic-pink border-semantic-pink/20",
-      text: "text-semantic-pink",
-      bg: "bg-semantic-pink",
-      light: "bg-semantic-pink-light text-foreground",
-      dark: "bg-semantic-pink-dark text-background",
+      badge: 'bg-semantic-pink-subtle text-semantic-pink border-semantic-pink/20',
+      text: 'text-semantic-pink',
+      bg: 'bg-semantic-pink',
+      light: 'bg-semantic-pink-light text-foreground',
+      dark: 'bg-semantic-pink-dark text-background',
     },
     fuchsia: {
-      badge:
-        "bg-semantic-fuchsia-subtle text-semantic-fuchsia border-semantic-fuchsia/20",
-      text: "text-semantic-fuchsia",
-      bg: "bg-semantic-fuchsia",
-      light: "bg-semantic-fuchsia-light text-foreground",
-      dark: "bg-semantic-fuchsia-dark text-background",
+      badge: 'bg-semantic-fuchsia-subtle text-semantic-fuchsia border-semantic-fuchsia/20',
+      text: 'text-semantic-fuchsia',
+      bg: 'bg-semantic-fuchsia',
+      light: 'bg-semantic-fuchsia-light text-foreground',
+      dark: 'bg-semantic-fuchsia-dark text-background',
     },
     rose: {
-      badge:
-        "bg-semantic-rose-subtle text-semantic-rose border-semantic-rose/20",
-      text: "text-semantic-rose",
-      bg: "bg-semantic-rose",
-      light: "bg-semantic-rose-light text-foreground",
-      dark: "bg-semantic-rose-dark text-background",
+      badge: 'bg-semantic-rose-subtle text-semantic-rose border-semantic-rose/20',
+      text: 'text-semantic-rose',
+      bg: 'bg-semantic-rose',
+      light: 'bg-semantic-rose-light text-foreground',
+      dark: 'bg-semantic-rose-dark text-background',
     },
 
     // Reds & Oranges
     red: {
-      badge: "bg-semantic-red-subtle text-semantic-red border-semantic-red/20",
-      text: "text-semantic-red",
-      bg: "bg-semantic-red",
-      light: "bg-semantic-red-light text-foreground",
-      dark: "bg-semantic-red-dark text-background",
+      badge: 'bg-semantic-red-subtle text-semantic-red border-semantic-red/20',
+      text: 'text-semantic-red',
+      bg: 'bg-semantic-red',
+      light: 'bg-semantic-red-light text-foreground',
+      dark: 'bg-semantic-red-dark text-background',
     },
     orange: {
-      badge:
-        "bg-semantic-orange-subtle text-semantic-orange border-semantic-orange/20",
-      text: "text-semantic-orange",
-      bg: "bg-semantic-orange",
-      light: "bg-semantic-orange-light text-foreground",
-      dark: "bg-semantic-orange-dark text-background",
+      badge: 'bg-semantic-orange-subtle text-semantic-orange border-semantic-orange/20',
+      text: 'text-semantic-orange',
+      bg: 'bg-semantic-orange',
+      light: 'bg-semantic-orange-light text-foreground',
+      dark: 'bg-semantic-orange-dark text-background',
     },
     amber: {
-      badge:
-        "bg-semantic-amber-subtle text-semantic-amber border-semantic-amber/20",
-      text: "text-semantic-amber",
-      bg: "bg-semantic-amber",
-      light: "bg-semantic-amber-light text-foreground",
-      dark: "bg-semantic-amber-dark text-background",
+      badge: 'bg-semantic-amber-subtle text-semantic-amber border-semantic-amber/20',
+      text: 'text-semantic-amber',
+      bg: 'bg-semantic-amber',
+      light: 'bg-semantic-amber-light text-foreground',
+      dark: 'bg-semantic-amber-dark text-background',
     },
 
     // Yellows
     yellow: {
-      badge:
-        "bg-semantic-yellow-subtle text-semantic-yellow border-semantic-yellow/20",
-      text: "text-semantic-yellow",
-      bg: "bg-semantic-yellow",
-      light: "bg-semantic-yellow-light text-foreground",
-      dark: "bg-semantic-yellow-dark text-background",
+      badge: 'bg-semantic-yellow-subtle text-semantic-yellow border-semantic-yellow/20',
+      text: 'text-semantic-yellow',
+      bg: 'bg-semantic-yellow',
+      light: 'bg-semantic-yellow-light text-foreground',
+      dark: 'bg-semantic-yellow-dark text-background',
     },
 
     // Neutrals & Grays
     slate: {
-      badge:
-        "bg-semantic-slate-subtle text-semantic-slate border-semantic-slate/20",
-      text: "text-semantic-slate",
-      bg: "bg-semantic-slate",
-      light: "bg-semantic-slate-light text-foreground",
-      dark: "bg-semantic-slate-dark text-background",
+      badge: 'bg-semantic-slate-subtle text-semantic-slate border-semantic-slate/20',
+      text: 'text-semantic-slate',
+      bg: 'bg-semantic-slate',
+      light: 'bg-semantic-slate-light text-foreground',
+      dark: 'bg-semantic-slate-dark text-background',
     },
     neutral: {
-      badge:
-        "bg-semantic-neutral-subtle text-semantic-neutral border-semantic-neutral/20",
-      text: "text-semantic-neutral",
-      bg: "bg-semantic-neutral",
-      light: "bg-semantic-neutral-light text-foreground",
-      dark: "bg-semantic-neutral-dark text-background",
+      badge: 'bg-semantic-neutral-subtle text-semantic-neutral border-semantic-neutral/20',
+      text: 'text-semantic-neutral',
+      bg: 'bg-semantic-neutral',
+      light: 'bg-semantic-neutral-light text-foreground',
+      dark: 'bg-semantic-neutral-dark text-background',
     },
   },
 
@@ -1132,18 +1098,18 @@ export const SEMANTIC_COLORS = {
    * ```
    */
   syntax: {
-    keyword: "text-[hsl(var(--syntax-keyword))]",
-    string: "text-[hsl(var(--syntax-string))]",
-    function: "text-[hsl(var(--syntax-function))]",
-    comment: "text-[hsl(var(--syntax-comment))] italic",
-    variable: "text-[hsl(var(--syntax-variable))]",
-    operator: "text-[hsl(var(--syntax-operator))]",
-    constant: "text-[hsl(var(--syntax-constant))]",
-    class: "text-[hsl(var(--syntax-class))]",
-    number: "text-[hsl(var(--syntax-number))]",
-    punctuation: "text-[hsl(var(--syntax-punctuation))]",
-    tag: "text-[hsl(var(--syntax-tag))]",
-    attribute: "text-[hsl(var(--syntax-attribute))]",
+    keyword: 'text-[hsl(var(--syntax-keyword))]',
+    string: 'text-[hsl(var(--syntax-string))]',
+    function: 'text-[hsl(var(--syntax-function))]',
+    comment: 'text-[hsl(var(--syntax-comment))] italic',
+    variable: 'text-[hsl(var(--syntax-variable))]',
+    operator: 'text-[hsl(var(--syntax-operator))]',
+    constant: 'text-[hsl(var(--syntax-constant))]',
+    class: 'text-[hsl(var(--syntax-class))]',
+    number: 'text-[hsl(var(--syntax-number))]',
+    punctuation: 'text-[hsl(var(--syntax-punctuation))]',
+    tag: 'text-[hsl(var(--syntax-tag))]',
+    attribute: 'text-[hsl(var(--syntax-attribute))]',
   },
 } as const;
 
@@ -1153,15 +1119,15 @@ export const SEMANTIC_COLORS = {
  */
 export const OPACITY = {
   /** Barely visible (5%) */
-  ghost: "/5",
+  ghost: '/5',
   /** Very subtle (10%) */
-  subtle: "/10",
+  subtle: '/10',
   /** Muted (20%) */
-  muted: "/20",
+  muted: '/20',
   /** Medium transparency (50%) */
-  medium: "/50",
+  medium: '/50',
   /** Strong/prominent (80%) */
-  strong: "/80",
+  strong: '/80',
 } as const;
 
 // ============================================================================
@@ -1196,118 +1162,117 @@ export const SERIES_COLORS = {
   /** Default series color (primary brand) */
   default: {
     /** Badge background/text */
-    badge: "bg-primary/10 text-primary border-primary/20",
+    badge: 'bg-primary/10 text-primary border-primary/20',
     /** Card accent (border, highlights) */
-    card: "border-primary/20 hover:border-primary/40",
+    card: 'border-primary/20 hover:border-primary/40',
     /** Icon color */
-    icon: "text-primary",
+    icon: 'text-primary',
     /** Gradient key for hero images */
-    gradient: "brand.primary" as const,
+    gradient: 'brand.primary' as const,
   },
 
   /** Tutorial/educational series (blue → info) */
   tutorial: {
     badge: SEMANTIC_COLORS.accent.sky.badge,
-    card: "border-semantic-sky/20 hover:border-semantic-sky/40",
+    card: 'border-semantic-sky/20 hover:border-semantic-sky/40',
     icon: SEMANTIC_COLORS.accent.sky.text,
-    gradient: "brand.primary" as const,
+    gradient: 'brand.primary' as const,
   },
 
   /** Security/hardening series (shield theme - cyan) */
   security: {
     badge: SEMANTIC_COLORS.accent.cyan.badge,
-    card: "border-semantic-cyan/20 hover:border-semantic-cyan/40",
+    card: 'border-semantic-cyan/20 hover:border-semantic-cyan/40',
     icon: SEMANTIC_COLORS.accent.cyan.text,
-    gradient: "brand.accent" as const,
+    gradient: 'brand.accent' as const,
   },
 
   /** Performance/optimization series (lightning theme - orange) */
   performance: {
     badge: SEMANTIC_COLORS.accent.orange.badge,
-    card: "border-semantic-orange/20 hover:border-semantic-orange/40",
+    card: 'border-semantic-orange/20 hover:border-semantic-orange/40',
     icon: SEMANTIC_COLORS.accent.orange.text,
-    gradient: "warm.fire" as const,
+    gradient: 'warm.fire' as const,
   },
 
   /** Architecture/design series (violet) */
   architecture: {
     badge: SEMANTIC_COLORS.accent.violet.badge,
-    card: "border-semantic-violet/20 hover:border-semantic-violet/40",
+    card: 'border-semantic-violet/20 hover:border-semantic-violet/40',
     icon: SEMANTIC_COLORS.accent.violet.text,
-    gradient: "brand.secondary" as const,
+    gradient: 'brand.secondary' as const,
   },
 
   /** Development/coding series (emerald) */
   development: {
     badge: SEMANTIC_COLORS.accent.emerald.badge,
-    card: "border-semantic-emerald/20 hover:border-semantic-emerald/40",
+    card: 'border-semantic-emerald/20 hover:border-semantic-emerald/40',
     icon: SEMANTIC_COLORS.accent.emerald.text,
-    gradient: "cool.teal" as const,
+    gradient: 'cool.teal' as const,
   },
 
   /** Testing/QA series (green → success) */
   testing: {
-    badge: "bg-success-subtle text-success border-success/20",
-    card: "border-success/20 hover:border-success/40",
-    icon: "text-success",
-    gradient: "cool.forest" as const,
+    badge: 'bg-success-subtle text-success border-success/20',
+    card: 'border-success/20 hover:border-success/40',
+    icon: 'text-success',
+    gradient: 'cool.forest' as const,
   },
 
   /** DevOps/deployment series (sky) */
   devops: {
     badge: SEMANTIC_COLORS.accent.sky.badge,
-    card: "border-semantic-sky/20 hover:border-semantic-sky/40",
+    card: 'border-semantic-sky/20 hover:border-semantic-sky/40',
     icon: SEMANTIC_COLORS.accent.sky.text,
-    gradient: "cool.sky" as const,
+    gradient: 'cool.sky' as const,
   },
 
   /** Career/soft skills series (warning → amber) */
   career: {
-    badge:
-      "bg-warning-subtle text-warning-dark dark:text-warning-light border-warning/20",
-    card: "border-warning/20 hover:border-warning/40",
-    icon: "text-warning-dark dark:text-warning-light",
-    gradient: "warm.amber" as const,
+    badge: 'bg-warning-subtle text-warning-dark dark:text-warning-light border-warning/20',
+    card: 'border-warning/20 hover:border-warning/40',
+    icon: 'text-warning-dark dark:text-warning-light',
+    gradient: 'warm.amber' as const,
   },
 
   /** Deep dive/advanced series (indigo) */
   advanced: {
     badge: SEMANTIC_COLORS.accent.indigo.badge,
-    card: "border-semantic-indigo/20 hover:border-semantic-indigo/40",
+    card: 'border-semantic-indigo/20 hover:border-semantic-indigo/40',
     icon: SEMANTIC_COLORS.accent.indigo.text,
-    gradient: "cool.ocean" as const,
+    gradient: 'cool.ocean' as const,
   },
 
   /** Design/UI/UX series (pink) */
   design: {
     badge: SEMANTIC_COLORS.accent.pink.badge,
-    card: "border-semantic-pink/20 hover:border-semantic-pink/40",
+    card: 'border-semantic-pink/20 hover:border-semantic-pink/40',
     icon: SEMANTIC_COLORS.accent.pink.text,
-    gradient: "warm.rose" as const,
+    gradient: 'warm.rose' as const,
   },
 
   /** Quick tips/snippets series (lime) */
   tips: {
     badge: SEMANTIC_COLORS.accent.lime.badge,
-    card: "border-semantic-lime/20 hover:border-semantic-lime/40",
+    card: 'border-semantic-lime/20 hover:border-semantic-lime/40',
     icon: SEMANTIC_COLORS.accent.lime.text,
-    gradient: "vibrant.neon" as const,
+    gradient: 'vibrant.neon' as const,
   },
 
   /** Troubleshooting/debugging series (error → red) */
   debugging: {
-    badge: "bg-error-subtle text-error border-error/20",
-    card: "border-error/20 hover:border-error/40",
-    icon: "text-error",
-    gradient: "warm.fire" as const,
+    badge: 'bg-error-subtle text-error border-error/20',
+    card: 'border-error/20 hover:border-error/40',
+    icon: 'text-error',
+    gradient: 'warm.fire' as const,
   },
 
   /** Neutral/general series (muted) */
   general: {
-    badge: "bg-muted/50 text-muted-foreground border-border",
-    card: "border-border hover:border-muted-foreground/40",
-    icon: "text-muted-foreground",
-    gradient: "neutral.slate" as const,
+    badge: 'bg-muted/50 text-muted-foreground border-border',
+    card: 'border-border hover:border-muted-foreground/40',
+    icon: 'text-muted-foreground',
+    gradient: 'neutral.slate' as const,
   },
 } as const;
 
@@ -1329,7 +1294,7 @@ export type SeriesColorTheme = keyof typeof SERIES_COLORS;
  * <Badge className={colors.badge}>Security Series</Badge>
  * ```
  */
-export function getSeriesColors(theme: string = "default") {
+export function getSeriesColors(theme: string = 'default') {
   return SERIES_COLORS[theme as SeriesColorTheme] || SERIES_COLORS.default;
 }
 
@@ -1391,7 +1356,7 @@ export const HOVER_EFFECTS = {
    * Use for: Blog posts, projects, content cards, archive items
    * Effect: Lift (0.5px), shadow increase, border highlight, press feedback
    */
-  card: "transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:-translate-y-0.5 active:scale-[0.98] active:shadow-md",
+  card: 'transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:-translate-y-0.5 active:scale-[0.98] active:shadow-md',
 
   /**
    * Subtle hover for secondary/inline cards
@@ -1400,7 +1365,7 @@ export const HOVER_EFFECTS = {
    * Effect: Smaller lift (0.5px), medium shadow, press feedback
    */
   cardSubtle:
-    "transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]",
+    'transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]',
 
   /**
    * Featured/hero cards (already prominent elements)
@@ -1409,7 +1374,7 @@ export const HOVER_EFFECTS = {
    * Effect: Lift (0.5px), extra-large shadow, border highlight, press feedback
    */
   cardFeatured:
-    "transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] active:shadow-md",
+    'transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] active:shadow-md',
 
   /**
    * Minimal hover for tertiary/subtle cards
@@ -1417,7 +1382,7 @@ export const HOVER_EFFECTS = {
    * Use for: Lightweight interactions, nested cards, minimal UI
    * Effect: Shadow only (no transform), faster transition (200ms)
    */
-  cardMinimal: "transition-shadow duration-200 hover:shadow-md",
+  cardMinimal: 'transition-shadow duration-200 hover:shadow-md',
 
   /**
    * Lift effect on hover (larger upward movement)
@@ -1425,7 +1390,7 @@ export const HOVER_EFFECTS = {
    * Use for: Special emphasis cards, gallery items
    * Effect: Larger lift (1px), shadow increase
    */
-  cardLift: "transition-all duration-300 hover:shadow-lg hover:-translate-y-1",
+  cardLift: 'transition-all duration-300 hover:shadow-lg hover:-translate-y-1',
 
   /**
    * Interactive buttons (FABs, CTAs)
@@ -1433,7 +1398,7 @@ export const HOVER_EFFECTS = {
    * Use for: Action buttons, floating action buttons
    * Effect: Shadow increase, press scale-down feedback
    */
-  button: "transition-shadow hover:shadow-xl active:scale-95 active:shadow-lg",
+  button: 'transition-shadow hover:shadow-xl active:scale-95 active:shadow-lg',
 
   /**
    * Text links
@@ -1441,7 +1406,7 @@ export const HOVER_EFFECTS = {
    * Use for: Inline links, text-based navigation
    * Effect: Underline on hover, color transition, opacity feedback on press
    */
-  link: "hover:underline underline-offset-4 decoration-skip-ink-none will-change-auto transition-theme active:opacity-70",
+  link: 'hover:underline underline-offset-4 decoration-skip-ink-none will-change-auto transition-theme active:opacity-70',
 
   /**
    * Card glow effect on hover (SPECIALTY - use sparingly)
@@ -1449,7 +1414,7 @@ export const HOVER_EFFECTS = {
    * Use for: Premium content, special highlights, attention-grabbing elements
    * Effect: Glow shadow (custom shadow-glow utility)
    */
-  cardGlow: "transition-all duration-300 hover:shadow-glow",
+  cardGlow: 'transition-all duration-300 hover:shadow-glow',
 
   /**
    * Card tilt effect on hover (SPECIALTY - use sparingly)
@@ -1457,8 +1422,7 @@ export const HOVER_EFFECTS = {
    * Use for: Playful interactions, creative portfolios, 3D effects
    * Effect: Slight rotation (1deg) + scale (1.02x)
    */
-  cardTilt:
-    "transition-transform duration-300 hover:rotate-1 hover:scale-[1.02]",
+  cardTilt: 'transition-transform duration-300 hover:rotate-1 hover:scale-[1.02]',
 } as const;
 
 // ============================================================================
@@ -1506,92 +1470,92 @@ export const HOVER_EFFECTS = {
 export const ANIMATION = {
   /** Duration scale (references CSS custom properties) */
   duration: {
-    instant: "duration-[0ms]", // --duration-instant (0ms) - No animation
-    fast: "duration-[150ms]", // --duration-fast (150ms) - Quick interactions
-    normal: "duration-[300ms]", // --duration-normal (300ms) - Standard transitions
-    slow: "duration-[500ms]", // --duration-slow (500ms) - Complex animations
+    instant: 'duration-[0ms]', // --duration-instant (0ms) - No animation
+    fast: 'duration-[150ms]', // --duration-fast (150ms) - Quick interactions
+    normal: 'duration-[300ms]', // --duration-normal (300ms) - Standard transitions
+    slow: 'duration-[500ms]', // --duration-slow (500ms) - Complex animations
   },
 
   /** Easing functions for animation curves */
   easing: {
-    default: "ease", // Default cubic-bezier
-    in: "ease-in", // Slow start
-    out: "ease-out", // Slow end
-    inOut: "ease-in-out", // Slow start and end
+    default: 'ease', // Default cubic-bezier
+    in: 'ease-in', // Slow start
+    out: 'ease-out', // Slow end
+    inOut: 'ease-in-out', // Slow start and end
   },
 
   /** Transition utilities - Performance optimized */
   transition: {
     /** Base (opacity + transform, 300ms) - Default choice */
-    base: "transition-base",
+    base: 'transition-base',
     /** Fast variant (opacity + transform, 150ms) */
-    fast: "transition-fast",
+    fast: 'transition-fast',
     /** Slow variant (opacity + transform, 500ms) */
-    slow: "transition-slow",
+    slow: 'transition-slow',
     /** Movement only (transform, 150ms) - Best for hover/interactive */
-    movement: "transition-movement",
+    movement: 'transition-movement',
     /** Appearance (opacity + transform, 300ms) - Best for reveals */
-    appearance: "transition-appearance",
+    appearance: 'transition-appearance',
     /** Theme (colors, 150ms) - Best for theme changes/hover states */
-    theme: "transition-theme",
+    theme: 'transition-theme',
     /** @deprecated Use .transition-theme instead */
-    colors: "transition-colors",
+    colors: 'transition-colors',
   },
 
   /** Scroll-reveal animation classes */
   reveal: {
     /** Initial hidden state - add this by default */
-    hidden: "reveal-hidden",
+    hidden: 'reveal-hidden',
     /** Visible state - add when element enters viewport */
-    visible: "reveal-visible",
+    visible: 'reveal-visible',
     /** Direction variants (combine with hidden/visible) */
-    up: "reveal-up",
-    down: "reveal-down",
-    left: "reveal-left",
-    right: "reveal-right",
-    scale: "reveal-scale",
+    up: 'reveal-up',
+    down: 'reveal-down',
+    left: 'reveal-left',
+    right: 'reveal-right',
+    scale: 'reveal-scale',
   },
 
   /** Hover effects */
   hover: {
-    lift: "hover-lift", // Subtle lift on hover
+    lift: 'hover-lift', // Subtle lift on hover
   },
 
   /** Interactive feedback */
   interactive: {
-    press: "press-effect", // Scale down on active/press
+    press: 'press-effect', // Scale down on active/press
   },
 
   /** Stagger delays for lists (50ms increments) */
   stagger: {
-    1: "stagger-1",
-    2: "stagger-2",
-    3: "stagger-3",
-    4: "stagger-4",
-    5: "stagger-5",
-    6: "stagger-6",
+    1: 'stagger-1',
+    2: 'stagger-2',
+    3: 'stagger-3',
+    4: 'stagger-4',
+    5: 'stagger-5',
+    6: 'stagger-6',
   },
 
   /** Activity feed engagement animations */
   activity: {
     /** Like button interaction (scale down on click, smooth transition) */
-    like: "transition-all duration-200 active:scale-95",
+    like: 'transition-all duration-200 active:scale-95',
     /** Pulse animation (one-time pulse effect for reactions) */
-    pulse: "animate-pulse-once",
+    pulse: 'animate-pulse-once',
     /** Count increment (scale up briefly when count changes) */
-    countIncrement: "transition-transform duration-300 scale-110",
+    countIncrement: 'transition-transform duration-300 scale-110',
   },
 
   /** Homepage visual effect animations */
   effects: {
     /** Count-up animation for number reveals */
-    countUp: "animate-count-up",
+    countUp: 'animate-count-up',
     /** Shimmer effect for loading and polish */
-    shimmer: "animate-shimmer",
+    shimmer: 'animate-shimmer',
     /** Subtle pulse for interactive elements */
-    pulse: "animate-pulse-subtle",
+    pulse: 'animate-pulse-subtle',
     /** Floating animation for parallax elements */
-    float: "animate-float",
+    float: 'animate-float',
   },
 } as const;
 
@@ -1624,19 +1588,19 @@ export const ANIMATIONS = {
    */
   duration: {
     /** Instant feedback (150ms) - Micro-interactions, hovers */
-    instant: "150ms",
+    instant: '150ms',
 
     /** Fast response (300ms) - UI state changes, tooltips, dropdowns */
-    fast: "300ms",
+    fast: '300ms',
 
     /** Normal transition (500ms) - Content reveals, page transitions */
-    normal: "500ms",
+    normal: '500ms',
 
     /** Slow ambient (2s) - Background animations, shimmer effects */
-    slow: "2s",
+    slow: '2s',
 
     /** Extended ambient (3s) - Floating animations, parallax */
-    extended: "3s",
+    extended: '3s',
   },
 
   /**
@@ -1645,19 +1609,19 @@ export const ANIMATIONS = {
    */
   easing: {
     /** Default easing - Most transitions */
-    default: "cubic-bezier(0.4, 0, 0.2, 1)", // ease-out
+    default: 'cubic-bezier(0.4, 0, 0.2, 1)', // ease-out
 
     /** Smooth easing - Organic movement */
-    smooth: "ease-in-out",
+    smooth: 'ease-in-out',
 
     /** Bounce easing - Playful interactions */
-    bounce: "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+    bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
 
     /** Linear - Constant speed (shimmer, loading bars) */
-    linear: "linear",
+    linear: 'linear',
 
     /** Sharp entry - Emphasize arrival */
-    sharp: "cubic-bezier(0.4, 0, 0.6, 1)", // ease-in-out but sharper
+    sharp: 'cubic-bezier(0.4, 0, 0.6, 1)', // ease-in-out but sharper
   },
 
   /**
@@ -1666,31 +1630,31 @@ export const ANIMATIONS = {
    */
   types: {
     /** Shimmer effect for skeleton loaders (2s linear infinite) */
-    shimmer: "shimmer 2s linear infinite",
+    shimmer: 'shimmer 2s linear infinite',
 
     /** Fade in content (500ms ease-out) */
-    fadeIn: "fade-in 0.5s ease-out forwards",
+    fadeIn: 'fade-in 0.5s ease-out forwards',
 
     /** Fade in with upward slide (500ms ease-out) */
-    fadeInUp: "fade-in-up 0.5s ease-out forwards",
+    fadeInUp: 'fade-in-up 0.5s ease-out forwards',
 
     /** Single pulse effect (300ms ease-in-out) */
-    pulseOnce: "pulse-once 300ms ease-in-out",
+    pulseOnce: 'pulse-once 300ms ease-in-out',
 
     /** Subtle continuous pulse (2s ease-in-out infinite) */
-    pulseSubtle: "pulse-subtle 2s ease-in-out infinite",
+    pulseSubtle: 'pulse-subtle 2s ease-in-out infinite',
 
     /** Floating parallax effect (3s ease-in-out infinite) */
-    float: "float 3s ease-in-out infinite",
+    float: 'float 3s ease-in-out infinite',
 
     /** Highlight flash for TOC navigation (2s ease-in-out) */
-    highlightPulse: "highlight-pulse 2s ease-in-out",
+    highlightPulse: 'highlight-pulse 2s ease-in-out',
 
     /** Count-up number reveal (500ms ease-out) */
-    countUp: "count-up 500ms ease-out forwards",
+    countUp: 'count-up 500ms ease-out forwards',
 
     /** Loading bar progress (500ms ease-in-out) */
-    loadingBar: "loading-bar 0.5s ease-in-out forwards",
+    loadingBar: 'loading-bar 0.5s ease-in-out forwards',
   },
 
   /**
@@ -1699,20 +1663,20 @@ export const ANIMATIONS = {
    */
   transition: {
     /** All properties with normal duration */
-    all: "all 500ms cubic-bezier(0.4, 0, 0.2, 1)",
+    all: 'all 500ms cubic-bezier(0.4, 0, 0.2, 1)',
 
     /** Colors only (backgrounds, borders, text) */
     colors:
-      "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), border-color 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1)",
+      'background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), border-color 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1)',
 
     /** Transform only (scale, translate, rotate) */
-    transform: "transform 200ms cubic-bezier(0.4, 0, 0.2, 1)",
+    transform: 'transform 200ms cubic-bezier(0.4, 0, 0.2, 1)',
 
     /** Opacity only */
-    opacity: "opacity 200ms ease",
+    opacity: 'opacity 200ms ease',
 
     /** Box shadow (for hover effects) */
-    shadow: "box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1)",
+    shadow: 'box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1)',
   },
 
   /**
@@ -1740,28 +1704,28 @@ export const ANIMATIONS = {
  */
 export const BORDERS = {
   /** Default card/component border radius */
-  card: "rounded-lg",
+  card: 'rounded-lg',
 
   /** Button border radius */
-  button: "rounded-md",
+  button: 'rounded-md',
 
   /** Input border radius */
-  input: "rounded-md",
+  input: 'rounded-md',
 
   /** Badge border radius */
-  badge: "rounded-md",
+  badge: 'rounded-md',
 
   /** Circular elements (avatars, FABs) */
-  circle: "rounded-full",
+  circle: 'rounded-full',
 
   /** Dialog/modal border radius */
-  dialog: "rounded-lg",
+  dialog: 'rounded-lg',
 
   /** Dropdown/popover border radius */
-  dropdown: "rounded-md",
+  dropdown: 'rounded-md',
 
   /** Larger containers (hero sections, containers) */
-  container: "rounded-xl",
+  container: 'rounded-xl',
 } as const;
 
 /**
@@ -1784,72 +1748,69 @@ export const SHADOWS = {
   /** Tier 1: Reference content - Code blocks, important callouts (most prominent) */
   tier1: {
     /** Light mode shadow */
-    light: "shadow-[0_2px_8px_rgb(0_0_0_/_0.12)]",
+    light: 'shadow-[0_2px_8px_rgb(0_0_0_/_0.12)]',
     /** Dark mode shadow */
-    dark: "dark:shadow-[0_2px_8px_rgb(0_0_0_/_0.3)]",
+    dark: 'dark:shadow-[0_2px_8px_rgb(0_0_0_/_0.3)]',
     /** Combined (light + dark) */
-    combined:
-      "shadow-[0_2px_8px_rgb(0_0_0_/_0.12)] dark:shadow-[0_2px_8px_rgb(0_0_0_/_0.3)]",
+    combined: 'shadow-[0_2px_8px_rgb(0_0_0_/_0.12)] dark:shadow-[0_2px_8px_rgb(0_0_0_/_0.3)]',
   },
 
   /** Tier 2: Data content - Tables, structured content (medium prominence) */
   tier2: {
     /** Light mode shadow */
-    light: "shadow-[0_1px_4px_rgb(0_0_0_/_0.08)]",
+    light: 'shadow-[0_1px_4px_rgb(0_0_0_/_0.08)]',
     /** Dark mode shadow */
-    dark: "dark:shadow-[0_1px_4px_rgb(0_0_0_/_0.2)]",
+    dark: 'dark:shadow-[0_1px_4px_rgb(0_0_0_/_0.2)]',
     /** Combined (light + dark) */
-    combined:
-      "shadow-[0_1px_4px_rgb(0_0_0_/_0.08)] dark:shadow-[0_1px_4px_rgb(0_0_0_/_0.2)]",
+    combined: 'shadow-[0_1px_4px_rgb(0_0_0_/_0.08)] dark:shadow-[0_1px_4px_rgb(0_0_0_/_0.2)]',
     /** Hover state for interactive depth */
     hover:
-      "hover:shadow-[0_4px_12px_rgb(0_0_0_/_0.12)] dark:hover:shadow-[0_4px_12px_rgb(0_0_0_/_0.25)]",
+      'hover:shadow-[0_4px_12px_rgb(0_0_0_/_0.12)] dark:hover:shadow-[0_4px_12px_rgb(0_0_0_/_0.25)]',
   },
 
   /** Tier 3: Inline/embedded content - Alert banners, context clues (subtle) */
   tier3: {
     /** Light mode shadow */
-    light: "shadow-[0_1px_2px_rgb(0_0_0_/_0.05)]",
+    light: 'shadow-[0_1px_2px_rgb(0_0_0_/_0.05)]',
     /** Dark mode shadow */
-    dark: "dark:shadow-[0_1px_2px_rgb(0_0_0_/_0.15)]",
+    dark: 'dark:shadow-[0_1px_2px_rgb(0_0_0_/_0.15)]',
     /** Combined (light + dark) */
-    combined:
-      "shadow-[0_1px_2px_rgb(0_0_0_/_0.05)] dark:shadow-[0_1px_2px_rgb(0_0_0_/_0.15)]",
+    combined: 'shadow-[0_1px_2px_rgb(0_0_0_/_0.05)] dark:shadow-[0_1px_2px_rgb(0_0_0_/_0.15)]',
   },
 
   /** Subtle elevation (cards at rest) */
-  sm: "shadow-sm",
+  sm: 'shadow-sm',
 
   /** Standard elevation (hover states) */
-  md: "shadow-md",
+  md: 'shadow-md',
 
   /** High elevation (focused elements, modals) */
-  lg: "shadow-lg",
+  lg: 'shadow-lg',
 
   /** Maximum elevation (floating action buttons) */
-  xl: "shadow-xl",
+  xl: 'shadow-xl',
 
   /** Extra shadow (overlay, stacked elements) */
-  "2xl": "shadow-2xl",
+  '2xl': 'shadow-2xl',
 
   /** Semantic card shadows */
   card: {
-    rest: "shadow-sm",
-    hover: "shadow-md",
-    active: "shadow-lg",
+    rest: 'shadow-sm',
+    hover: 'shadow-md',
+    active: 'shadow-lg',
   },
 
   /** Dropdown/popover shadows */
-  dropdown: "shadow-lg",
+  dropdown: 'shadow-lg',
 
   /** Modal shadows */
-  modal: "shadow-xl",
+  modal: 'shadow-xl',
 
   /** FAB shadows */
-  fab: "shadow-xl",
+  fab: 'shadow-xl',
 
   /** No shadow */
-  none: "shadow-none",
+  none: 'shadow-none',
 } as const;
 
 // ============================================================================
@@ -1861,11 +1822,11 @@ export const SHADOWS = {
  * Based on Tailwind's default breakpoints
  */
 export const BREAKPOINTS = {
-  sm: "640px", // Small devices (phones in landscape)
-  md: "768px", // Medium devices (tablets)
-  lg: "1024px", // Large devices (laptops)
-  xl: "1280px", // Extra large devices (desktops)
-  "2xl": "1536px", // 2X large devices (large desktops)
+  sm: '640px', // Small devices (phones in landscape)
+  md: '768px', // Medium devices (tablets)
+  lg: '1024px', // Large devices (laptops)
+  xl: '1280px', // Extra large devices (desktops)
+  '2xl': '1536px', // 2X large devices (large desktops)
 } as const;
 
 /**
@@ -1897,61 +1858,61 @@ export const BREAKPOINTS = {
 export const TOUCH_TARGET = {
   // ========== Size Standards ==========
   /** Minimum touch target (44x44px per WCAG AAA) */
-  minimum: "44px",
+  minimum: '44px',
 
   /** Comfortable touch target (48x48px) */
-  comfortable: "48px",
+  comfortable: '48px',
 
   /** Large touch target for thumbs (56x56px) */
-  large: "56px",
+  large: '56px',
 
   /** Minimum spacing between targets (8px) */
-  spacing: "8px",
+  spacing: '8px',
 
   // ========== Mobile Icon Buttons (default) ==========
   /** Icon-only button (44x44px) - matches min touch target */
-  iconMobile: "h-11 w-11",
+  iconMobile: 'h-11 w-11',
 
   /** Small icon button (36x36px) - for dense layouts, use with caution */
-  iconSmall: "h-9 w-9",
+  iconSmall: 'h-9 w-9',
 
   // ========== Mobile Text Buttons ==========
   /** Standard text button (44px height with padding) */
-  textMobile: "h-11 px-4",
+  textMobile: 'h-11 px-4',
 
   /** Large text button (48px height) */
-  textLarge: "h-12 px-5",
+  textLarge: 'h-12 px-5',
 
   /** Small text button (36px height) - use sparingly */
-  textSmall: "h-9 px-3",
+  textSmall: 'h-9 px-3',
 
   // ========== Combined Button Sizes ==========
   /** Standard button/link size (square) */
-  standard: "h-12 w-12",
+  standard: 'h-12 w-12',
 
   /** Minimum recommended size (44x44px) */
-  min: "min-h-11 min-w-11",
+  min: 'min-h-11 min-w-11',
 
   // ========== Desktop Responsive Sizing ==========
   /** Icon button: 44px mobile, 36px tablet+, 32px desktop+ */
-  iconResponsive: "h-11 w-11 md:h-9 md:w-9 lg:h-8 lg:w-8",
+  iconResponsive: 'h-11 w-11 md:h-9 md:w-9 lg:h-8 lg:w-8',
 
   /** Text button: 44px mobile, 40px tablet+, 36px desktop+ */
-  textResponsive: "h-11 md:h-10 lg:h-9 px-4 md:px-3 lg:px-2",
+  textResponsive: 'h-11 md:h-10 lg:h-9 px-4 md:px-3 lg:px-2',
 
   // ========== Action Group Spacing ==========
   /** Spacing between action buttons in a group (like, reply, share) */
-  actionGroupGap: "gap-2 md:gap-1",
+  actionGroupGap: 'gap-2 md:gap-1',
 
   // ========== Special Cases ==========
   /** FAB (floating action button) - always prominent */
-  fab: "h-14 w-14",
+  fab: 'h-14 w-14',
 
   /** Mobile menu toggle button */
-  menuToggle: "h-11 w-11",
+  menuToggle: 'h-11 w-11',
 
   /** Close/dismiss button */
-  close: "h-11 w-11 md:h-9 md:w-9",
+  close: 'h-11 w-11 md:h-9 md:w-9',
 } as const;
 
 /**
@@ -1961,36 +1922,36 @@ export const TOUCH_TARGET = {
 export const BUTTON_SIZES = {
   // ========== Mobile-First Variants ==========
   /** Icon-only buttons (mobile) */
-  iconMobile: "h-11 w-11",
+  iconMobile: 'h-11 w-11',
 
   /** Small text buttons (mobile) - fits activity action buttons */
-  smallMobile: "h-11 px-3",
+  smallMobile: 'h-11 px-3',
 
   /** Standard buttons (mobile) */
-  standardMobile: "h-11 px-4",
+  standardMobile: 'h-11 px-4',
 
   /** Large CTA buttons (mobile) */
-  largeMobile: "h-12 px-6",
+  largeMobile: 'h-12 px-6',
 
   // ========== Desktop Variants ==========
   /** Icon-only buttons (desktop) */
-  iconDesktop: "h-9 w-9",
+  iconDesktop: 'h-9 w-9',
 
   /** Standard buttons (desktop) */
-  standardDesktop: "h-10 px-5",
+  standardDesktop: 'h-10 px-5',
 
   /** Large buttons (desktop) */
-  largeDesktop: "h-11 px-6",
+  largeDesktop: 'h-11 px-6',
 
   // ========== Responsive (Mobile-First) ==========
   /** Icon button with responsive sizing (44px → 36px → 32px) */
-  iconResponsive: "h-11 w-11 md:h-9 md:w-9 lg:h-8 lg:w-8",
+  iconResponsive: 'h-11 w-11 md:h-9 md:w-9 lg:h-8 lg:w-8',
 
   /** Text button with responsive sizing */
-  textResponsive: "h-11 md:h-10 px-4 md:px-3",
+  textResponsive: 'h-11 md:h-10 px-4 md:px-3',
 
   /** Large button with responsive sizing */
-  largeResponsive: "h-12 md:h-11 px-6 md:px-5",
+  largeResponsive: 'h-12 md:h-11 px-6 md:px-5',
 } as const;
 
 // ============================================================================
@@ -2011,30 +1972,36 @@ export const BUTTON_SIZES = {
  */
 export const PAGE_LAYOUT = {
   /** Root page wrapper - provides consistent vertical rhythm */
-  wrapper: "",
+  wrapper: '',
 
   /** Hero section spacing - larger than standard sections */
   hero: {
-    /** Container for hero content - responsive top padding (mobile-first, scales up) */
-    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-16 md:pt-24 lg:pt-32`,
+    /** Container for hero content - responsive top padding (mobile-first, scales up)
+     * Includes compensation for fixed header (h-18 = 72px)
+     */
+    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-28 md:pt-36 lg:pt-44`,
     /** Hero title + description wrapper */
     content: SPACING.proseHero,
   },
 
   /** Archive page hero (blog, work, portfolio listings) - matches standard hero spacing */
   archiveHero: {
-    /** Container for archive hero - consistent with standard hero for unified layout */
-    container: `mx-auto ${CONTAINER_WIDTHS.archive} ${ARCHIVE_CONTAINER_PADDING} pt-16 md:pt-24 lg:pt-32 pb-8 md:pb-12`,
+    /** Container for archive hero - consistent with standard hero for unified layout
+     * Includes compensation for fixed header (h-18 = 72px)
+     */
+    container: `mx-auto ${CONTAINER_WIDTHS.archive} ${ARCHIVE_CONTAINER_PADDING} pt-28 md:pt-36 lg:pt-44 pb-8 md:pb-12`,
     /** Archive hero title + description wrapper */
     content: SPACING.proseHero,
-    /** Padding variants for different archive hero styles */
+    /** Padding variants for different archive hero styles
+     * All variants include compensation for fixed header (h-18 = 72px)
+     */
     padding: {
       /** Full variant - maximum breathing room with background images */
-      full: "pt-24 md:pt-28 lg:pt-32 pb-12 md:pb-16 lg:pb-20",
+      full: 'pt-36 md:pt-40 lg:pt-44 pb-12 md:pb-16 lg:pb-20',
       /** Medium variant - moderate padding for minimal backgrounds */
-      medium: "pt-24 md:pt-28 lg:pt-32 pb-10 md:pb-14",
+      medium: 'pt-36 md:pt-40 lg:pt-44 pb-10 md:pb-14',
       /** Minimal variant - standard padding without backgrounds */
-      minimal: "pt-24 md:pt-28 lg:pt-32 pb-8 md:pb-12",
+      minimal: 'pt-36 md:pt-40 lg:pt-44 pb-8 md:pb-12',
     },
   },
 
@@ -2108,8 +2075,8 @@ export const HERO_VARIANTS = {
 export const SCROLL_BEHAVIOR = {
   /** Scroll behavior modes */
   behavior: {
-    smooth: "smooth" as const,
-    instant: "auto" as const,
+    smooth: 'smooth' as const,
+    instant: 'auto' as const,
   },
 
   /** Standard scroll offsets for fixed headers */
@@ -2133,9 +2100,9 @@ export const SCROLL_BEHAVIOR = {
   /** Scroll snap settings */
   snap: {
     /** Scroll snap type for section navigation */
-    type: "scroll-snap-y scroll-snap-mandatory" as const,
+    type: 'scroll-snap-y scroll-snap-mandatory' as const,
     /** Scroll snap alignment */
-    align: "scroll-snap-start" as const,
+    align: 'scroll-snap-start' as const,
   },
 } as const;
 
@@ -2172,25 +2139,25 @@ export const SCROLL_BEHAVIOR = {
  */
 export const WORD_SPACING = {
   /** Extra small spacing for metadata and fine print (0.05em) */
-  xs: "ws-xs",
+  xs: 'ws-xs',
 
   /** Small spacing for headings and lead text (0.1em) */
-  sm: "ws-sm",
+  sm: 'ws-sm',
 
   /** Base spacing for standard body text (0.15em) */
-  base: "ws-base",
+  base: 'ws-base',
 
   /** Medium spacing for large article titles (0.25em) */
-  md: "ws-md",
+  md: 'ws-md',
 
   /** Large spacing for display text (0.5em) */
-  lg: "ws-lg",
+  lg: 'ws-lg',
 
   /** Extra large spacing for special emphasis (0.75em) */
-  xl: "ws-xl",
+  xl: 'ws-xl',
 
   /** Maximum spacing for decorative text (1em) */
-  "2xl": "ws-2xl",
+  '2xl': 'ws-2xl',
 } as const;
 
 // ============================================================================
@@ -2210,16 +2177,16 @@ export const WORD_SPACING = {
  */
 export const GRID_PATTERNS = {
   /** Two-column grid (1 col mobile, 2 col tablet+) */
-  two: "grid grid-cols-1 md:grid-cols-2 gap-6",
+  two: 'grid grid-cols-1 md:grid-cols-2 gap-6',
 
   /** Three-column grid (1 col mobile, 3 col desktop) */
-  three: "grid grid-cols-1 md:grid-cols-3 gap-6",
+  three: 'grid grid-cols-1 md:grid-cols-3 gap-6',
 
   /** Four-column grid (2 cols mobile, 4 cols desktop) */
-  four: "grid grid-cols-2 md:grid-cols-4 gap-4",
+  four: 'grid grid-cols-2 md:grid-cols-4 gap-4',
 
   /** Auto-responsive grid (1 → 2 → 3 → 4 columns) */
-  auto: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6",
+  auto: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6',
 } as const;
 
 /**
@@ -2240,25 +2207,24 @@ export const GRID_PATTERNS = {
 export const FORM_PATTERNS = {
   /** Input base styles (border, background) */
   input: {
-    base: "border border-input bg-background dark:bg-background/50",
-    padding: "px-3 py-2",
+    base: 'border border-input bg-background dark:bg-background/50',
+    padding: 'px-3 py-2',
     focus:
-      "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:focus-visible:ring-offset-background",
-    disabled:
-      "disabled:cursor-not-allowed disabled:opacity-50 dark:disabled:opacity-40",
+      'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:focus-visible:ring-offset-background',
+    disabled: 'disabled:cursor-not-allowed disabled:opacity-50 dark:disabled:opacity-40',
   },
 
   /** Textarea styles (extends input) */
   textarea: {
-    base: "border border-input bg-background dark:bg-background/50 resize-none",
-    padding: "px-3 py-2",
+    base: 'border border-input bg-background dark:bg-background/50 resize-none',
+    padding: 'px-3 py-2',
     focus:
-      "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:focus-visible:ring-offset-background",
+      'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:focus-visible:ring-offset-background',
   },
 
   /** Label styles */
   label:
-    "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+    'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
 } as const;
 
 /**
@@ -2339,96 +2305,94 @@ export const GRADIENTS = {
   /** Primary brand gradients */
   brand: {
     /** Primary brand gradient: blue-500 → violet-500 */
-    primary: "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)",
+    primary: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
 
     /** Secondary brand gradient: violet-500 → pink-500 */
-    secondary: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
+    secondary: 'linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)',
 
     /** Accent brand gradient: blue-500 → cyan-500 */
-    accent: "linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)",
+    accent: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
 
     /** Inverted brand gradient: violet-500 → blue-500 */
-    inverted: "linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%)",
+    inverted: 'linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%)',
   },
 
   /** Warm color gradients */
   warm: {
     /** Sunset: orange-500 → red-500 → pink-500 */
-    sunset: "linear-gradient(135deg, #f97316 0%, #ef4444 50%, #ec4899 100%)",
+    sunset: 'linear-gradient(135deg, #f97316 0%, #ef4444 50%, #ec4899 100%)',
 
     /** Fire: red-500 → orange-500 */
-    fire: "linear-gradient(135deg, #ef4444 0%, #f97316 100%)",
+    fire: 'linear-gradient(135deg, #ef4444 0%, #f97316 100%)',
 
     /** Amber: yellow-500 → orange-500 */
-    amber: "linear-gradient(135deg, #eab308 0%, #f97316 100%)",
+    amber: 'linear-gradient(135deg, #eab308 0%, #f97316 100%)',
 
     /** Rose: pink-400 → rose-500 */
-    rose: "linear-gradient(135deg, #f472b6 0%, #f43f5e 100%)",
+    rose: 'linear-gradient(135deg, #f472b6 0%, #f43f5e 100%)',
 
     /** Coral: orange-400 → pink-500 */
-    coral: "linear-gradient(135deg, #fb923c 0%, #ec4899 100%)",
+    coral: 'linear-gradient(135deg, #fb923c 0%, #ec4899 100%)',
   },
 
   /** Cool color gradients */
   cool: {
     /** Ocean: sky-500 → blue-600 → indigo-600 */
-    ocean: "linear-gradient(135deg, #0ea5e9 0%, #2563eb 50%, #4f46e5 100%)",
+    ocean: 'linear-gradient(135deg, #0ea5e9 0%, #2563eb 50%, #4f46e5 100%)',
 
     /** Teal: emerald-500 → teal-500 */
-    teal: "linear-gradient(135deg, #10b981 0%, #14b8a6 100%)",
+    teal: 'linear-gradient(135deg, #10b981 0%, #14b8a6 100%)',
 
     /** Sky: cyan-400 → blue-500 */
-    sky: "linear-gradient(135deg, #22d3ee 0%, #3b82f6 100%)",
+    sky: 'linear-gradient(135deg, #22d3ee 0%, #3b82f6 100%)',
 
     /** Forest: green-600 → emerald-500 */
-    forest: "linear-gradient(135deg, #16a34a 0%, #10b981 100%)",
+    forest: 'linear-gradient(135deg, #16a34a 0%, #10b981 100%)',
 
     /** Arctic: cyan-300 → indigo-400 */
-    arctic: "linear-gradient(135deg, #67e8f9 0%, #818cf8 100%)",
+    arctic: 'linear-gradient(135deg, #67e8f9 0%, #818cf8 100%)',
   },
 
   /** Neutral/grayscale gradients */
   neutral: {
     /** Slate: slate-700 → slate-900 */
-    slate: "linear-gradient(135deg, #334155 0%, #0f172a 100%)",
+    slate: 'linear-gradient(135deg, #334155 0%, #0f172a 100%)',
 
     /** Charcoal: slate-800 → slate-950 */
-    charcoal: "linear-gradient(135deg, #1e293b 0%, #020617 100%)",
+    charcoal: 'linear-gradient(135deg, #1e293b 0%, #020617 100%)',
 
     /** Silver: slate-400 → slate-600 */
-    silver: "linear-gradient(135deg, #94a3b8 0%, #475569 100%)",
+    silver: 'linear-gradient(135deg, #94a3b8 0%, #475569 100%)',
 
     /** Midnight: slate-900 → blue-950 */
-    midnight: "linear-gradient(135deg, #0f172a 0%, #172554 100%)",
+    midnight: 'linear-gradient(135deg, #0f172a 0%, #172554 100%)',
   },
 
   /** Vibrant/high-contrast gradients */
   vibrant: {
     /** Electric: purple-500 → fuchsia-500 */
-    electric: "linear-gradient(135deg, #a855f7 0%, #d946ef 100%)",
+    electric: 'linear-gradient(135deg, #a855f7 0%, #d946ef 100%)',
 
     /** Neon: lime-400 → green-500 */
-    neon: "linear-gradient(135deg, #a3e635 0%, #22c55e 100%)",
+    neon: 'linear-gradient(135deg, #a3e635 0%, #22c55e 100%)',
 
     /** Plasma: violet-600 → fuchsia-500 → orange-500 */
-    plasma: "linear-gradient(135deg, #7c3aed 0%, #d946ef 50%, #f97316 100%)",
+    plasma: 'linear-gradient(135deg, #7c3aed 0%, #d946ef 50%, #f97316 100%)',
 
     /** Aurora: emerald-400 → cyan-400 → blue-500 */
-    aurora: "linear-gradient(135deg, #34d399 0%, #22d3ee 50%, #3b82f6 100%)",
+    aurora: 'linear-gradient(135deg, #34d399 0%, #22d3ee 50%, #3b82f6 100%)',
   },
 
   /** Effect gradients for animations and visual polish */
   effects: {
     /** Shimmer effect: subtle animated gradient for loading states */
-    shimmer:
-      "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%)",
+    shimmer: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%)',
 
     /** Glow effect: soft gradient for hover states and borders */
-    glow: "linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(139,92,246,0.1) 100%)",
+    glow: 'linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(139,92,246,0.1) 100%)',
 
     /** Glow effect (dark mode): enhanced glow for dark backgrounds */
-    glowDark:
-      "linear-gradient(135deg, rgba(59,130,246,0.2) 0%, rgba(139,92,246,0.2) 100%)",
+    glowDark: 'linear-gradient(135deg, rgba(59,130,246,0.2) 0%, rgba(139,92,246,0.2) 100%)',
   },
 } as const;
 
@@ -2437,28 +2401,28 @@ export const GRADIENTS = {
  * Flattened array of all gradient paths for indexing
  */
 export const GRADIENT_KEYS = [
-  "brand.primary",
-  "brand.secondary",
-  "brand.accent",
-  "brand.inverted",
-  "warm.sunset",
-  "warm.fire",
-  "warm.amber",
-  "warm.rose",
-  "warm.coral",
-  "cool.ocean",
-  "cool.teal",
-  "cool.sky",
-  "cool.forest",
-  "cool.arctic",
-  "neutral.slate",
-  "neutral.charcoal",
-  "neutral.silver",
-  "neutral.midnight",
-  "vibrant.electric",
-  "vibrant.neon",
-  "vibrant.plasma",
-  "vibrant.aurora",
+  'brand.primary',
+  'brand.secondary',
+  'brand.accent',
+  'brand.inverted',
+  'warm.sunset',
+  'warm.fire',
+  'warm.amber',
+  'warm.rose',
+  'warm.coral',
+  'cool.ocean',
+  'cool.teal',
+  'cool.sky',
+  'cool.forest',
+  'cool.arctic',
+  'neutral.slate',
+  'neutral.charcoal',
+  'neutral.silver',
+  'neutral.midnight',
+  'vibrant.electric',
+  'vibrant.neon',
+  'vibrant.plasma',
+  'vibrant.aurora',
 ] as const;
 
 /**
@@ -2466,14 +2430,8 @@ export const GRADIENT_KEYS = [
  * @example getGradient("brand.primary") → "linear-gradient(...)"
  */
 export function getGradient(key: string): string {
-  const [category, variant] = key.split(".") as [
-    keyof typeof GRADIENTS,
-    string,
-  ];
-  return (
-    (GRADIENTS[category] as Record<string, string>)[variant] ||
-    GRADIENTS.brand.primary
-  );
+  const [category, variant] = key.split('.') as [keyof typeof GRADIENTS, string];
+  return (GRADIENTS[category] as Record<string, string>)[variant] || GRADIENTS.brand.primary;
 }
 
 // ============================================================================
@@ -2502,7 +2460,7 @@ export function getGradient(key: string): string {
  */
 export const IMAGE_PLACEHOLDER = {
   /** Standard gray blur placeholder (matches muted background) */
-  blur: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlNWU3ZWIiLz48L3N2Zz4=",
+  blur: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlNWU3ZWIiLz48L3N2Zz4=',
 } as const;
 
 // ============================================================================
@@ -2526,66 +2484,65 @@ export const APP_TOKENS = {
   /** Gesture interaction thresholds and parameters */
   GESTURES: {
     /** Minimum distance to trigger swipe action */
-    swipeThreshold: "50px",
+    swipeThreshold: '50px',
     /** Duration to hold for long-press detection */
-    longPressDelay: "500ms",
+    longPressDelay: '500ms',
     /** Maximum time for tap detection */
-    tapMaxDuration: "200ms",
+    tapMaxDuration: '200ms',
     /** Maximum movement allowed for tap */
-    tapMaxMovement: "10px",
+    tapMaxMovement: '10px',
   },
 
   /** Animation timing and easing for app interactions */
   ANIMATIONS: {
     /** Page/view transition timing */
-    pageTransition: "duration-200 ease-in-out",
+    pageTransition: 'duration-200 ease-in-out',
     /** Optimistic UI update feedback */
-    optimisticUpdate: "duration-100 ease-out",
+    optimisticUpdate: 'duration-100 ease-out',
     /** Pull-to-refresh animation */
-    pullToRefresh: "duration-300",
+    pullToRefresh: 'duration-300',
     /** Command palette open/close */
-    commandPalette: "duration-200 ease-in-out",
+    commandPalette: 'duration-200 ease-in-out',
     /** Modal/dialog transitions */
-    modal: "duration-150 ease-out",
+    modal: 'duration-150 ease-out',
     /** Toast notification entrance */
-    toast: "duration-300 ease-out",
+    toast: 'duration-300 ease-out',
   },
 
   /** Touch target sizes following accessibility guidelines */
   TOUCH_TARGETS: {
     /** iOS Human Interface Guidelines minimum (44x44pt) */
-    minimum: "min-h-[44px] min-w-[44px]",
+    minimum: 'min-h-[44px] min-w-[44px]',
     /** Material Design comfortable target (48x48dp) */
-    comfortable: "min-h-[48px] min-w-[48px]",
+    comfortable: 'min-h-[48px] min-w-[48px]',
     /** Generous target for frequently-used actions */
-    large: "min-h-[56px] min-w-[56px]",
+    large: 'min-h-[56px] min-w-[56px]',
   },
 
   /** Z-index layering system for app UI elements */
   Z_INDEX: {
     /** Base content layer */
-    base: "z-0",
+    base: 'z-0',
     /** Sticky headers and navigation */
-    sticky: "z-10",
+    sticky: 'z-10',
     /** Floating action buttons */
-    fab: "z-20",
+    fab: 'z-20',
     /** Dropdown menus and tooltips */
-    dropdown: "z-30",
+    dropdown: 'z-30',
     /** Modal overlays */
-    modal: "z-40",
+    modal: 'z-40',
     /** Command palette */
-    commandPalette: "z-50",
+    commandPalette: 'z-50',
     /** Toast notifications */
-    toast: "z-60",
+    toast: 'z-60',
   },
 
   /** Keyboard shortcuts display formatting */
   KEYBOARD: {
     /** Key badge styling (Cmd, K, etc.) */
-    keyBadge:
-      "px-1.5 py-0.5 text-xs font-mono bg-muted border border-border rounded",
+    keyBadge: 'px-1.5 py-0.5 text-xs font-mono bg-muted border border-border rounded',
     /** Shortcut separator (between keys) */
-    separator: "text-muted-foreground/50",
+    separator: 'text-muted-foreground/50',
   },
 } as const;
 
@@ -2613,63 +2570,54 @@ export const ARCHIVE_CARD_VARIANTS = {
   /** Elevated image card - image on top, content below (recommended) */
   elevated: {
     container:
-      "group rounded-xl border bg-card overflow-hidden hover:shadow-xl transition-all duration-300",
+      'group rounded-xl border bg-card overflow-hidden hover:shadow-xl transition-all duration-300',
     imageWrapper:
-      "relative aspect-[16/9] sm:aspect-[21/9] overflow-hidden bg-muted/50 dark:bg-muted/30",
-    image:
-      "object-cover group-hover:scale-105 transition-transform duration-500",
+      'relative aspect-[16/9] sm:aspect-[21/9] overflow-hidden bg-muted/50 dark:bg-muted/30',
+    image: 'object-cover group-hover:scale-105 transition-transform duration-500',
     /** Modern dark overlay matching blog cards */
-    overlay:
-      "absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70",
-    badgeContainer: "absolute bottom-3 left-3 flex gap-2 z-10",
-    badge:
-      "backdrop-blur-md bg-white/20 dark:bg-white/20 border border-white/30 text-white",
-    glassCard: "bg-background/95 backdrop-blur-sm rounded-lg p-4",
-    content: "p-4 md:p-6 space-y-3",
+    overlay: 'absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70',
+    badgeContainer: 'absolute bottom-3 left-3 flex gap-2 z-10',
+    badge: 'backdrop-blur-md bg-white/20 dark:bg-white/20 border border-white/30 text-white',
+    glassCard: 'bg-background/95 backdrop-blur-sm rounded-lg p-4',
+    content: 'p-4 md:p-6 space-y-3',
   },
 
   /** Background image card - reduced overlay for visibility */
   background: {
     container:
-      "group relative rounded-xl border bg-card overflow-hidden hover:shadow-xl transition-all duration-300 min-h-[280px] md:min-h-[320px]",
-    imageWrapper: "absolute inset-0 z-0 bg-muted/50 dark:bg-muted/30",
-    image:
-      "object-cover group-hover:scale-105 transition-transform duration-500",
+      'group relative rounded-xl border bg-card overflow-hidden hover:shadow-xl transition-all duration-300 min-h-[280px] md:min-h-[320px]',
+    imageWrapper: 'absolute inset-0 z-0 bg-muted/50 dark:bg-muted/30',
+    image: 'object-cover group-hover:scale-105 transition-transform duration-500',
     /** Modern dark overlay */
-    overlay:
-      "absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70",
-    content: "relative z-10 p-6 md:p-8 flex flex-col justify-end h-full",
+    overlay: 'absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70',
+    content: 'relative z-10 p-6 md:p-8 flex flex-col justify-end h-full',
     /** Elevated glass card for content */
-    glassCard: "bg-background/80 backdrop-blur-md rounded-t-2xl p-6 border-t",
+    glassCard: 'bg-background/80 backdrop-blur-md rounded-t-2xl p-6 border-t',
   },
 
   /** Side-by-side layout - image left, content right */
   sideBySide: {
     container:
-      "group flex gap-4 rounded-xl border bg-card overflow-hidden hover:shadow-lg transition-shadow duration-300",
-    imageWrapper:
-      "relative w-48 flex-shrink-0 overflow-hidden bg-muted/50 dark:bg-muted/30",
-    image:
-      "object-cover group-hover:scale-105 transition-transform duration-500",
-    overlay: "hidden",
-    badgeContainer: "flex gap-2",
-    badge: "inline-flex",
-    glassCard: "hidden",
-    content: "flex-1 p-4 md:p-6 flex flex-col justify-between",
+      'group flex gap-4 rounded-xl border bg-card overflow-hidden hover:shadow-lg transition-shadow duration-300',
+    imageWrapper: 'relative w-48 flex-shrink-0 overflow-hidden bg-muted/50 dark:bg-muted/30',
+    image: 'object-cover group-hover:scale-105 transition-transform duration-500',
+    overlay: 'hidden',
+    badgeContainer: 'flex gap-2',
+    badge: 'inline-flex',
+    glassCard: 'hidden',
+    content: 'flex-1 p-4 md:p-6 flex flex-col justify-between',
   },
 
   /** Hero card - large featured card */
   hero: {
     container:
-      "group relative rounded-2xl overflow-hidden h-[500px] md:h-[600px] cursor-pointer hover:shadow-2xl transition-shadow duration-300",
-    imageWrapper: "absolute inset-0 z-0 bg-muted/50 dark:bg-muted/30",
-    image:
-      "object-cover group-hover:scale-105 transition-transform duration-700",
+      'group relative rounded-2xl overflow-hidden h-[500px] md:h-[600px] cursor-pointer hover:shadow-2xl transition-shadow duration-300',
+    imageWrapper: 'absolute inset-0 z-0 bg-muted/50 dark:bg-muted/30',
+    image: 'object-cover group-hover:scale-105 transition-transform duration-700',
     /** Modern dark overlay */
-    overlay:
-      "absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70",
-    content: "absolute inset-x-0 bottom-0 p-6 md:p-12 text-white z-10",
-    contentWrapper: "max-w-3xl",
+    overlay: 'absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70',
+    content: 'absolute inset-x-0 bottom-0 p-6 md:p-12 text-white z-10',
+    contentWrapper: 'max-w-3xl',
   },
 } as const;
 
@@ -2718,7 +2666,7 @@ export const ARCHIVE_ANIMATIONS = {
       y: 0,
       transition: {
         duration: 0.3,
-        ease: "easeOut",
+        ease: 'easeOut',
       },
     },
   },
@@ -2729,7 +2677,7 @@ export const ARCHIVE_ANIMATIONS = {
     scale: 1.02,
     transition: {
       duration: 0.2,
-      ease: "easeOut",
+      ease: 'easeOut',
     },
   },
 
@@ -2741,7 +2689,7 @@ export const ARCHIVE_ANIMATIONS = {
       opacity: 1,
       transition: {
         duration: 0.3,
-        ease: "easeOut",
+        ease: 'easeOut',
       },
     },
   },
@@ -2762,29 +2710,29 @@ export const ARCHIVE_ANIMATIONS = {
 export const VIEW_MODES = {
   /** Compact grid - auto-fit columns */
   grid: {
-    grid: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6",
-    cardPadding: "p-4",
-    imageHeight: "aspect-[16/9]",
+    grid: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6',
+    cardPadding: 'p-4',
+    imageHeight: 'aspect-[16/9]',
   },
 
   /** List view - single column with more detail */
   list: {
-    grid: "space-y-6",
-    cardPadding: "p-6",
-    imageHeight: "aspect-[21/9]",
+    grid: 'space-y-6',
+    cardPadding: 'p-6',
+    imageHeight: 'aspect-[21/9]',
   },
 
   /** Magazine - hero + grid */
   magazine: {
-    grid: "space-y-6",
-    cardPadding: "p-4 md:p-6",
-    imageHeight: "aspect-[16/9] md:aspect-[21/9]",
+    grid: 'space-y-6',
+    cardPadding: 'p-4 md:p-6',
+    imageHeight: 'aspect-[16/9] md:aspect-[21/9]',
   },
 
   /** Masonry - Pinterest-style */
   masonry: {
-    grid: "columns-1 md:columns-2 lg:columns-3 gap-6",
-    cardPadding: "p-4 mb-6 break-inside-avoid",
-    imageHeight: "aspect-auto",
+    grid: 'columns-1 md:columns-2 lg:columns-3 gap-6',
+    cardPadding: 'p-4 mb-6 break-inside-avoid',
+    imageHeight: 'aspect-auto',
   },
 } as const;

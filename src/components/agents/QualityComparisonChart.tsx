@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   BarChart,
@@ -9,24 +9,20 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from "recharts";
-import type { ComparisonStats } from "@/lib/agents";
+} from '@/components/charts';
+import type { ComparisonStats } from '@/lib/agents';
 
 interface QualityComparisonChartProps {
   comparison: ComparisonStats;
 }
 
-export function QualityComparisonChart({
-  comparison,
-}: QualityComparisonChartProps) {
+export function QualityComparisonChart({ comparison }: QualityComparisonChartProps) {
   const data = Object.entries(comparison.agents)
     .filter(([, stats]) => stats.totalSessions > 0)
     .map(([agent, stats]) => ({
       agent: agent.charAt(0).toUpperCase() + agent.slice(1),
-      "Token Compliance": (stats.quality.averageTokenCompliance * 100).toFixed(
-        1
-      ),
-      "Test Pass Rate": (stats.quality.averageTestPassRate * 100).toFixed(1),
+      'Token Compliance': (stats.quality.averageTokenCompliance * 100).toFixed(1),
+      'Test Pass Rate': (stats.quality.averageTestPassRate * 100).toFixed(1),
     }));
 
   if (data.length === 0) {
@@ -44,8 +40,8 @@ export function QualityComparisonChart({
         <XAxis dataKey="agent" />
         <YAxis domain={[0, 100]} />
         <Tooltip
-          formatter={(value: number | undefined) =>
-            value !== undefined ? `${value}%` : "0%"
+          formatter={(value) =>
+            typeof value === 'number' || typeof value === 'string' ? `${value}%` : '0%'
           }
         />
         <Legend />

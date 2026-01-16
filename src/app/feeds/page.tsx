@@ -11,26 +11,26 @@
  * - Accessibility-first design with semantic HTML
  */
 
-import { Metadata } from "next";
-import { PageLayout } from "@/components/layouts";
-import { PageHero } from "@/components/layouts";
-import { Button } from "@/components/ui/button";
-import { createPageMetadata } from "@/lib/metadata";
-import { SITE_URL, SITE_TITLE } from "@/lib/site-config";
+import { Metadata } from 'next';
+import { PageLayout } from '@/components/layouts';
+import { PageHero } from '@/components/layouts';
+import { Button } from '@/components/ui/button';
+import { createPageMetadata } from '@/lib/metadata';
+import { SITE_URL, SITE_TITLE } from '@/lib/site-config';
 import {
   SPACING,
   TYPOGRAPHY,
   CONTAINER_WIDTHS,
   CONTAINER_PADDING,
   ANIMATION,
-} from "@/lib/design-tokens";
-import { Rss, Activity, FileText, Briefcase, ArrowRight } from "lucide-react";
+} from '@/lib/design-tokens';
+import { Rss, Activity, FileText, Briefcase, ArrowRight } from 'lucide-react';
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Web Feeds",
+  title: 'Web Feeds',
   description:
-    "Stay updated with the latest content via our RSS/Atom feeds. Subscribe to blog posts, projects, and more in your preferred format.",
-  path: "/feeds",
+    'Stay updated with the latest content via our RSS/Atom feeds. Subscribe to blog posts, projects, and more in your preferred format.',
+  path: '/feeds',
 });
 
 interface FeedInfo {
@@ -49,80 +49,79 @@ interface FeedInfo {
 
 const feeds: FeedInfo[] = [
   {
-    id: "activity",
-    title: "Activity Feed",
+    id: 'activity',
+    title: 'Activity Feed',
     description:
-      "Complete timeline of all content: blog posts, projects, milestones, GitHub activity, and site updates. The most comprehensive feed available.",
-    url: "/activity/feed",
-    updateFrequency: "Updated hourly",
+      'Complete timeline of all content: blog posts, projects, milestones, GitHub activity, and site updates. The most comprehensive feed available.',
+    url: '/activity/feed',
+    updateFrequency: 'Updated hourly',
     icon: Activity,
     formats: [
       {
-        label: "Atom",
-        url: "/activity/feed",
-        type: "application/atom+xml",
+        label: 'Atom',
+        url: '/activity/feed',
+        type: 'application/atom+xml',
       },
       {
-        label: "RSS",
-        url: "/activity/feed?format=rss",
-        type: "application/rss+xml",
+        label: 'RSS',
+        url: '/activity/feed?format=rss',
+        type: 'application/rss+xml',
       },
       {
-        label: "JSON",
-        url: "/activity/feed?format=json",
-        type: "application/feed+json",
+        label: 'JSON',
+        url: '/activity/feed?format=json',
+        type: 'application/feed+json',
       },
     ],
   },
   {
-    id: "blog",
-    title: "Blog Feed",
+    id: 'blog',
+    title: 'Blog Feed',
     description:
-      "Latest blog posts covering web development, security, TypeScript, and tech insights.",
-    url: "/blog/feed",
-    updateFrequency: "Updated daily",
+      'Latest blog posts covering web development, security, TypeScript, and tech insights.',
+    url: '/blog/feed',
+    updateFrequency: 'Updated daily',
     icon: FileText,
     formats: [
       {
-        label: "Atom",
-        url: "/blog/feed",
-        type: "application/atom+xml",
+        label: 'Atom',
+        url: '/blog/feed',
+        type: 'application/atom+xml',
       },
       {
-        label: "RSS",
-        url: "/blog/feed?format=rss",
-        type: "application/rss+xml",
+        label: 'RSS',
+        url: '/blog/feed?format=rss',
+        type: 'application/rss+xml',
       },
       {
-        label: "JSON",
-        url: "/blog/feed?format=json",
-        type: "application/feed+json",
+        label: 'JSON',
+        url: '/blog/feed?format=json',
+        type: 'application/feed+json',
       },
     ],
   },
   {
-    id: "work",
-    title: "Projects Feed",
-    description:
-      "Portfolio projects, open-source contributions, and creative works.",
-    url: "/work/feed",
-    updateFrequency: "Updated daily",
+    id: 'work',
+    title: 'Projects Feed',
+    description: 'Portfolio projects, open-source contributions, and creative works.',
+    url: '/work/feed',
+    updateFrequency: 'Updated daily',
     icon: Briefcase,
     formats: [
       {
-        label: "Atom",
-        url: "/work/feed",
-        type: "application/atom+xml",
+        label: 'Atom',
+        url: '/work/feed',
+        type: 'application/atom+xml',
       },
       {
-        label: "RSS",
-        url: "/work/feed?format=rss",
-        type: "application/rss+xml",
+        label: 'RSS',
+        url: '/work/feed?format=rss',
+        type: 'application/rss+xml',
       },
       {
-        label: "JSON",
-        url: "/work/feed?format=json",
-        type: "application/feed+json",
+        label: 'JSON',
+        url: '/work/feed?format=json',
+        type: 'application/feed+json',
       },
     ],
   },
@@ -139,16 +138,14 @@ export default function FeedsPage() {
       />
 
       {/* Main Content */}
-      <div
-        className={`mx-auto mt-24 ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING}`}
-      >
+      <div className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING}`}>
         {/* Section: What are feeds */}
         <section className={`${SPACING.section}`}>
           <div className="space-y-4">
             <h2 className={TYPOGRAPHY.h2.standard}>What are Web Feeds?</h2>
             <p className={`${TYPOGRAPHY.body} text-muted-foreground`}>
-              Web feeds allow you to subscribe to content updates without
-              visiting the website. You can use a feed reader like{" "}
+              Web feeds allow you to subscribe to content updates without visiting the website. You
+              can use a feed reader like{' '}
               <a
                 href="https://www.inoreader.com"
                 target="_blank"
@@ -156,8 +153,8 @@ export default function FeedsPage() {
                 className="font-medium underline decoration-primary/40 hover:decoration-primary transition-colors"
               >
                 Inoreader
-              </a>{" "}
-              or{" "}
+              </a>{' '}
+              or{' '}
               <a
                 href="https://netnewswire.com"
                 target="_blank"
@@ -165,7 +162,7 @@ export default function FeedsPage() {
                 className="font-medium underline decoration-primary/40 hover:decoration-primary transition-colors"
               >
                 NetNewsWire
-              </a>{" "}
+              </a>{' '}
               to aggregate updates from multiple sources in one place.
             </p>
           </div>
@@ -260,9 +257,7 @@ function FeedCard({ feed, index }: FeedCardProps) {
             {/* Title and Description */}
             <div>
               <h3 className={`${TYPOGRAPHY.h3.standard}`}>{feed.title}</h3>
-              <p className={`${TYPOGRAPHY.body} text-muted-foreground mt-2`}>
-                {feed.description}
-              </p>
+              <p className={`${TYPOGRAPHY.body} text-muted-foreground mt-2`}>{feed.description}</p>
             </div>
 
             {/* Update Frequency 
@@ -339,9 +334,7 @@ function FormatOption({ title, description, index }: FormatOptionProps) {
         `}
       >
         <h3 className={`${TYPOGRAPHY.h3.standard} mb-3`}>{title}</h3>
-        <p className={`${TYPOGRAPHY.body} text-muted-foreground flex-1`}>
-          {description}
-        </p>
+        <p className={`${TYPOGRAPHY.body} text-muted-foreground flex-1`}>{description}</p>
       </div>
     </div>
   );

@@ -4,16 +4,10 @@
  * 30-day cost trend visualization using Recharts
  */
 
-"use client";
+'use client';
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   AreaChart,
   Area,
@@ -25,9 +19,9 @@ import {
   BarChart,
   Bar,
   Legend,
-} from "recharts";
-import type { DailyUsagePoint } from "../types";
-import { SERVICE_CONFIG } from "../types";
+} from '@/components/charts';
+import type { DailyUsagePoint } from '../types';
+import { SERVICE_CONFIG } from '../types';
 
 interface CostTrendChartProps {
   data: DailyUsagePoint[];
@@ -57,9 +51,7 @@ export function CostTrendChart({ data, loading }: CostTrendChartProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Cost Trends</CardTitle>
-          <CardDescription className="text-xs">
-            No cost data available yet
-          </CardDescription>
+          <CardDescription className="text-xs">No cost data available yet</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex h-[250px] items-center justify-center text-muted-foreground">
@@ -74,16 +66,11 @@ export function CostTrendChart({ data, loading }: CostTrendChartProps) {
     <Card>
       <CardHeader>
         <CardTitle className="text-base">30-Day Cost Trend</CardTitle>
-        <CardDescription className="text-xs">
-          Daily API costs over the past month
-        </CardDescription>
+        <CardDescription className="text-xs">Daily API costs over the past month</CardDescription>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={250}>
-          <AreaChart
-            data={data}
-            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-          >
+          <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="costGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3} />
@@ -106,13 +93,15 @@ export function CostTrendChart({ data, loading }: CostTrendChartProps) {
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: "hsl(var(--card))",
-                border: "1px solid hsl(var(--border))",
-                borderRadius: "var(--radius)",
-                fontSize: "12px",
+                backgroundColor: 'hsl(var(--card))',
+                border: '1px solid hsl(var(--border))',
+                borderRadius: 'var(--radius)',
+                fontSize: '12px',
               }}
               labelStyle={{ fontWeight: 600 }}
-              formatter={(value) => value !== undefined ? [`$${Number(value).toFixed(3)}`, "Cost"] : ["", ""]}
+              formatter={(value) =>
+                value !== undefined ? [`$${Number(value).toFixed(3)}`, 'Cost'] : ['', '']
+              }
             />
             <Area
               type="monotone"
@@ -154,10 +143,7 @@ export function RequestsTrendChart({ data, loading }: CostTrendChartProps) {
   const chartData = data.map((point) => ({
     date: point.displayDate,
     ...Object.fromEntries(
-      Object.entries(point.byService).map(([service, { requests }]) => [
-        service,
-        requests,
-      ])
+      Object.entries(point.byService).map(([service, { requests }]) => [service, requests])
     ),
   }));
 
@@ -168,16 +154,11 @@ export function RequestsTrendChart({ data, loading }: CostTrendChartProps) {
     <Card>
       <CardHeader>
         <CardTitle className="text-base">Request Volume</CardTitle>
-        <CardDescription className="text-xs">
-          Daily API requests by service
-        </CardDescription>
+        <CardDescription className="text-xs">Daily API requests by service</CardDescription>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={250}>
-          <BarChart
-            data={chartData}
-            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-          >
+          <BarChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
             <XAxis
               dataKey="date"
@@ -186,24 +167,17 @@ export function RequestsTrendChart({ data, loading }: CostTrendChartProps) {
               axisLine={false}
               interval="preserveStartEnd"
             />
-            <YAxis
-              tick={{ fontSize: 10 }}
-              tickLine={false}
-              axisLine={false}
-            />
+            <YAxis tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
             <Tooltip
               contentStyle={{
-                backgroundColor: "hsl(var(--card))",
-                border: "1px solid hsl(var(--border))",
-                borderRadius: "var(--radius)",
-                fontSize: "12px",
+                backgroundColor: 'hsl(var(--card))',
+                border: '1px solid hsl(var(--border))',
+                borderRadius: 'var(--radius)',
+                fontSize: '12px',
               }}
               labelStyle={{ fontWeight: 600 }}
             />
-            <Legend
-              wrapperStyle={{ fontSize: "10px", paddingTop: "10px" }}
-              iconSize={8}
-            />
+            <Legend wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }} iconSize={8} />
             {servicesWithData.map((service) => {
               const config = SERVICE_CONFIG[service];
               return (
@@ -211,7 +185,7 @@ export function RequestsTrendChart({ data, loading }: CostTrendChartProps) {
                   key={service}
                   dataKey={service}
                   name={config?.displayName ?? service}
-                  fill={config?.color ?? "#666"}
+                  fill={config?.color ?? '#666'}
                   stackId="requests"
                 />
               );

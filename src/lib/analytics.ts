@@ -79,6 +79,68 @@ export type BlogEvent =
     };
 
 /**
+ * RIVET Component Events
+ */
+export type RivetEvent =
+  | {
+      name: "rivet_key_takeaway_viewed";
+      properties: {
+        slug: string;
+        variant: "insight" | "security" | "warning" | "tip";
+        title: string | null; // Optional title
+        position: number; // 1-indexed position in post
+      };
+    }
+  | {
+      name: "rivet_role_based_cta_viewed";
+      properties: {
+        slug: string;
+        role: "executive" | "developer" | "security";
+        title: string;
+        position: number; // 1-indexed position in post
+      };
+    }
+  | {
+      name: "rivet_role_based_cta_clicked";
+      properties: {
+        slug: string;
+        role: "executive" | "developer" | "security";
+        title: string;
+        buttonText: string;
+        buttonHref: string;
+        position: number; // 1-indexed position in post
+      };
+    }
+  | {
+      name: "rivet_collapsible_section_toggled";
+      properties: {
+        slug: string;
+        sectionId: string;
+        title: string;
+        action: "expanded" | "collapsed";
+        position: number; // 1-indexed position in post
+      };
+    }
+  | {
+      name: "rivet_glossary_tooltip_viewed";
+      properties: {
+        slug: string;
+        term: string;
+        position: number; // 1-indexed position in post
+      };
+    }
+  | {
+      name: "rivet_section_share_clicked";
+      properties: {
+        slug: string;
+        sectionId: string;
+        sectionTitle: string;
+        platform: "linkedin" | "twitter" | "copy";
+        position: number; // 1-indexed position in post
+      };
+    };
+
+/**
  * Series Events
  */
 export type SeriesEvent =
@@ -239,6 +301,7 @@ export type PerformanceEvent = {
  */
 export type AnalyticsEvent =
   | BlogEvent
+  | RivetEvent
   | SeriesEvent
   | SearchEvent
   | NavigationEvent
@@ -671,6 +734,103 @@ export function trackSeriesNavigation(
   return trackEvent({
     name: "series_navigation_clicked",
     properties: { seriesSlug, fromPostSlug, toPostSlug, direction },
+  });
+}
+
+// ============================================================================
+// RIVET Component Tracking Functions
+// ============================================================================
+
+/**
+ * Track KeyTakeaway component view (intersection observer)
+ */
+export function trackKeyTakeawayView(
+  slug: string,
+  variant: "insight" | "security" | "warning" | "tip",
+  title: string | null,
+  position: number
+) {
+  return trackEvent({
+    name: "rivet_key_takeaway_viewed",
+    properties: { slug, variant, title, position },
+  });
+}
+
+/**
+ * Track RoleBasedCTA component view (intersection observer)
+ */
+export function trackRoleBasedCTAView(
+  slug: string,
+  role: "executive" | "developer" | "security",
+  title: string,
+  position: number
+) {
+  return trackEvent({
+    name: "rivet_role_based_cta_viewed",
+    properties: { slug, role, title, position },
+  });
+}
+
+/**
+ * Track RoleBasedCTA button click
+ */
+export function trackRoleBasedCTAClick(
+  slug: string,
+  role: "executive" | "developer" | "security",
+  title: string,
+  buttonText: string,
+  buttonHref: string,
+  position: number
+) {
+  return trackEvent({
+    name: "rivet_role_based_cta_clicked",
+    properties: { slug, role, title, buttonText, buttonHref, position },
+  });
+}
+
+/**
+ * Track CollapsibleSection toggle (expand/collapse)
+ */
+export function trackCollapsibleSectionToggle(
+  slug: string,
+  sectionId: string,
+  title: string,
+  action: "expanded" | "collapsed",
+  position: number
+) {
+  return trackEvent({
+    name: "rivet_collapsible_section_toggled",
+    properties: { slug, sectionId, title, action, position },
+  });
+}
+
+/**
+ * Track GlossaryTooltip view (hover or click)
+ */
+export function trackGlossaryTooltipView(
+  slug: string,
+  term: string,
+  position: number
+) {
+  return trackEvent({
+    name: "rivet_glossary_tooltip_viewed",
+    properties: { slug, term, position },
+  });
+}
+
+/**
+ * Track SectionShare button click
+ */
+export function trackSectionShareClick(
+  slug: string,
+  sectionId: string,
+  sectionTitle: string,
+  platform: "linkedin" | "twitter" | "copy",
+  position: number
+) {
+  return trackEvent({
+    name: "rivet_section_share_clicked",
+    properties: { slug, sectionId, sectionTitle, platform, position },
   });
 }
 

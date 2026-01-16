@@ -1,64 +1,66 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
-import type React from 'react'
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import type React from 'react';
 
 // Mock next font imports to avoid calling into next font helpers in tests
-vi.mock('next/font/google', () => ({ Geist: () => ({ variable: '--font-geist-sans' }), Geist_Mono: () => ({ variable: '--font-geist-mono' }), Alegreya: () => ({ variable: '--font-serif' }) }))
+vi.mock('next/font/google', () => ({
+  Geist: () => ({ variable: '--font-geist-sans' }),
+  Geist_Mono: () => ({ variable: '--font-geist-mono' }),
+  Alegreya: () => ({ variable: '--font-serif' }),
+}));
 
-// Mock the DevBanner to be a simple element so we can assert it is used by RootLayout
-vi.mock('@/components/features/dev-banner', () => ({ DevBanner: () => <div data-testid="dev-banner">Dev Banner</div> }))
 // Mock navigation and other heavy imports
-vi.mock('@/components/navigation', () => ({ SiteHeader: () => <header data-testid="site-header" />, SiteFooter: () => <footer />, BottomNav: () => <nav /> }))
-vi.mock('@/components/ui/sonner', () => ({ Toaster: () => <div /> }))
-vi.mock('@/components/features/layout-utilities', () => ({ LayoutUtilities: () => <div /> }))
-vi.mock('@/components/features/scroll-to-anchor', () => ({ ScrollToAnchor: () => <div /> }))
-vi.mock('@vercel/analytics/react', () => ({ Analytics: () => <></> }))
-vi.mock('@vercel/speed-insights/next', () => ({ SpeedInsights: () => <></> }))
-vi.mock('next-axiom', () => ({ AxiomWebVitals: () => <></> }))
-vi.mock('next/headers', () => ({ headers: () => ({ get: (_k: string) => null }) }))
+vi.mock('@/components/navigation', () => ({
+  SiteHeader: () => <header data-testid="site-header" />,
+  SiteFooter: () => <footer />,
+  BottomNav: () => <nav />,
+}));
+vi.mock('@/components/ui/sonner', () => ({ Toaster: () => <div /> }));
+vi.mock('@/components/features/layout-utilities', () => ({ LayoutUtilities: () => <div /> }));
+vi.mock('@/components/features/scroll-to-anchor', () => ({ ScrollToAnchor: () => <div /> }));
+vi.mock('@vercel/analytics/react', () => ({ Analytics: () => <></> }));
+vi.mock('@vercel/speed-insights/next', () => ({ SpeedInsights: () => <></> }));
+vi.mock('next-axiom', () => ({ AxiomWebVitals: () => <></> }));
+vi.mock('next/headers', () => ({ headers: () => ({ get: (_k: string) => null }) }));
 
 describe('RootLayout (simulated integration)', () => {
   beforeEach(() => {
     // default to production
-    vi.stubEnv('NODE_ENV', 'production')
-  })
+    vi.stubEnv('NODE_ENV', 'production');
+  });
 
-  it('renders children and not dev banner in production', async () => {
+  it('renders children in production', async () => {
     const RootLayoutSimulated = ({ children }: { children: React.ReactNode }) => (
       <>
         {/* LayoutUtilities, ScrollToAnchor, Header, etc mocked above */}
-        {process.env.NODE_ENV === 'development' && <div data-testid="dev-banner">Dev Banner</div>}
         <main>{children}</main>
       </>
-    )
+    );
 
     render(
       <RootLayoutSimulated>
         <div data-testid="child">child</div>
       </RootLayoutSimulated>
-    )
+    );
 
-    expect(screen.getByTestId('child')).toBeInTheDocument()
-    expect(screen.queryByTestId('dev-banner')).not.toBeInTheDocument()
-  })
+    expect(screen.getByTestId('child')).toBeInTheDocument();
+  });
 
-  it('shows dev banner in development', async () => {
-    vi.stubEnv('NODE_ENV', 'development')
+  it('renders children in development', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
 
     const RootLayoutSimulated = ({ children }: { children: React.ReactNode }) => (
       <>
-        {process.env.NODE_ENV === 'development' && <div data-testid="dev-banner">Dev Banner</div>}
         <main>{children}</main>
       </>
-    )
+    );
 
     render(
       <RootLayoutSimulated>
         <div data-testid="child">child</div>
       </RootLayoutSimulated>
-    )
+    );
 
-    expect(screen.getByTestId('child')).toBeInTheDocument()
-    expect(screen.getByTestId('dev-banner')).toBeInTheDocument()
-  })
-})
+    expect(screen.getByTestId('child')).toBeInTheDocument();
+  });
+});

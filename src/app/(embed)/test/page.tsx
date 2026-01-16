@@ -1,3 +1,7 @@
+// Force dynamic rendering - don't attempt to prerender during build
+// Test page for embed route group functionality
+export const dynamic = 'force-dynamic';
+
 export default function EmbedTest() {
   return (
     <div style={{ padding: '20px', background: 'yellow', border: '5px solid red' }}>

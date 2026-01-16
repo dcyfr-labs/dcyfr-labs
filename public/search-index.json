@@ -133,7 +133,7 @@
       "id": "post-20251111-446fbfc7",
       "title": "Building with AI",
       "summary": "Exploring the Model Context Protocol (MCP) and how it's enabling new patterns for AI-assisted development with practical examples from real projects.",
-      "content": "AI coding assistants are everywhere now, but there's a critical gap: how do they access your actual development context? Your database schema, API routes, recent commits, production errors, all the things you need to write real code. This is the problem Model Context Protocol (MCP) was designed to solve. --- What is Model Context Protocol? Model Context Protocol[^mcp-intro] is an open standard introduced by Anthropic that enables AI assistants to securely connect with external data sources and t",
+      "content": "AI coding assistants are everywhere now, but there's a critical gap: how do they access your actual development context? Your database schema, API routes , recent commits, production errors, all the things you need to write real code. This is the problem Model Context Protocol (MCP) was designed to solve. --- What is Model Context Protocol? Model Context Protocol[^mcp-intro] is an open standard introduced by Anthropic that enables AI assistants to securely connect with external data sources and ",
       "tags": [
         "AI",
         "MCP",
@@ -178,7 +178,7 @@
       ],
       "series": "Portfolio",
       "publishedAt": "2025-10-05T12:00:00Z",
-      "readingTime": 5,
+      "readingTime": 6,
       "url": "/blog/hardening-developer-portfolio"
     },
     {
@@ -319,5 +319,5 @@
     "Features",
     "Portfolio"
   ],
-  "generatedAt": "2026-01-15T05:42:45.942Z"
+  "generatedAt": "2026-01-16T21:47:42.058Z"
 }

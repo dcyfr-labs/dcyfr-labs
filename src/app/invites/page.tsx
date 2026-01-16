@@ -17,6 +17,10 @@ import {
 } from "@/lib/invites";
 import { headers } from "next/headers";
 
+// Force dynamic rendering - don't attempt to prerender during build
+// This page uses headers() for CSP nonce which requires runtime
+export const dynamic = 'force-dynamic';
+
 const pageTitle = "Invites";
 const pageDescription =
   "Join our favorite platforms and communities. Curated list of invite codes, referral links, and professional networks we recommend.";

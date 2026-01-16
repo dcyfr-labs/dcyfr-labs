@@ -65,7 +65,11 @@ export const metadata: Metadata = {
   },
 };
 
-// Enable ISR for embed page - revalidate every 5 minutes
+// Force dynamic rendering - don't attempt to prerender during build
+// This page requires Redis and external APIs that aren't available at build time
+export const dynamic = 'force-dynamic';
+
+// Enable ISR for embed page - revalidate every 5 minutes (when rendered dynamically)
 export const revalidate = 300;
 
 // ============================================================================

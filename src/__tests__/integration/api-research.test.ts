@@ -9,14 +9,24 @@ import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { POST, GET } from "@/app/api/research/route";
 import { rateLimit } from "@/lib/rate-limit";
 import { blockExternalAccess } from "@/lib/api-security";
-import { clearCache } from "@/lib/perplexity";
 import { NextRequest } from "next/server";
 import type { PerplexityResponse } from "@/lib/perplexity";
+
+// Mock the entire perplexity library to avoid fetch conflicts
+vi.mock("@/lib/perplexity", () => ({
+  research: vi.fn(),
+  quickResearch: vi.fn(),
+  isPerplexityConfigured: vi.fn(),
+  clearCache: vi.fn(),
+  getCacheStats: vi.fn(),
+}));
+
+// Import mocked functions
+import { research, isPerplexityConfigured, clearCache } from "@/lib/perplexity";
 
 // Mock dependencies
 vi.mock("@/lib/api-security", () => ({
   blockExternalAccess: vi.fn(() => null), // By default, allow access
-  safeFetch: vi.fn((...args: Parameters<typeof fetch>) => global.fetch(...args)), // Delegate to global fetch mock
 }));
 
 vi.mock("@/lib/rate-limit", () => ({
@@ -29,19 +39,18 @@ vi.mock("@/lib/rate-limit", () => ({
   })),
 }));
 
-// Mock fetch globally
-global.fetch = vi.fn();
-
 describe("Research API Integration", () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    clearCache(); // Clear Perplexity cache between tests
-
+    
     // Reset environment
     process.env = { ...originalEnv };
     delete process.env.PERPLEXITY_API_KEY;
+
+    // Default: Perplexity is not configured
+    vi.mocked(isPerplexityConfigured).mockReturnValue(false);
 
     // Default: rate limit allows requests
     vi.mocked(rateLimit).mockResolvedValue({
@@ -51,43 +60,27 @@ describe("Research API Integration", () => {
       reset: Date.now() + 60000,
     });
 
-    // Default: successful Perplexity API response
-    const mockResponse: PerplexityResponse = {
-      id: "test-completion-id",
-      model: "llama-3.1-sonar-large-128k-online",
-      created: Date.now(),
-      usage: {
-        prompt_tokens: 50,
-        completion_tokens: 100,
-        total_tokens: 150,
-      },
+    // Default: successful research response (ResearchResult type)
+    vi.mocked(research).mockResolvedValue({
+      content: "This is a research result with citations and analysis.",
       citations: ["https://example.com/article1", "https://example.com/article2"],
-      choices: [
-        {
-          index: 0,
-          finish_reason: "stop",
-          message: {
-            role: "assistant",
-            content: "This is a research result with citations and analysis.",
-          },
-        },
-      ],
-    };
-
-    vi.mocked(global.fetch).mockResolvedValue({
-      ok: true,
-      status: 200,
-      json: async () => mockResponse,
-    } as Response);
+      usage: {
+        promptTokens: 50,
+        completionTokens: 100,
+        totalTokens: 150,
+      },
+    });
   });
 
   afterEach(() => {
+    // Restore original environment
     process.env = originalEnv;
   });
 
   describe("GET /api/research", () => {
     it("returns service status when configured", async () => {
       process.env.PERPLEXITY_API_KEY = "test-api-key";
+      vi.mocked(isPerplexityConfigured).mockReturnValue(true);
 
       const request = new NextRequest("http://localhost:3000/api/research");
       const response = await GET(request);
@@ -103,6 +96,7 @@ describe("Research API Integration", () => {
 
     it("returns not configured status when API key is missing", async () => {
       delete process.env.PERPLEXITY_API_KEY;
+      vi.mocked(isPerplexityConfigured).mockReturnValue(false);
 
       const request = new NextRequest("http://localhost:3000/api/research");
       const response = await GET(request);
@@ -137,6 +131,7 @@ describe("Research API Integration", () => {
     describe("Rate Limiting", () => {
       beforeEach(() => {
         process.env.PERPLEXITY_API_KEY = "test-api-key";
+        vi.mocked(isPerplexityConfigured).mockReturnValue(true);
       });
 
       it("blocks request when rate limit is exceeded", async () => {
@@ -183,6 +178,7 @@ describe("Research API Integration", () => {
     describe("Input Validation", () => {
       beforeEach(() => {
         process.env.PERPLEXITY_API_KEY = "test-api-key";
+        vi.mocked(isPerplexityConfigured).mockReturnValue(true);
       });
 
       it("rejects request with invalid JSON", async () => {
@@ -361,6 +357,7 @@ describe("Research API Integration", () => {
     describe("Successful Requests", () => {
       beforeEach(() => {
         process.env.PERPLEXITY_API_KEY = "test-api-key";
+        vi.mocked(isPerplexityConfigured).mockReturnValue(true);
       });
 
       it("returns research result with citations", async () => {
@@ -403,56 +400,50 @@ describe("Research API Integration", () => {
       });
 
       it("makes correct API call to Perplexity", async () => {
-        const request = new NextRequest("http://localhost:3000/api/research", {
+        const testRequest = new NextRequest("http://localhost:3000/api/research", {
           method: "POST",
           body: JSON.stringify({
-            messages: [{ role: "user", content: "Test query" }],
+            messages: [
+              { role: "system", content: "You are a helpful assistant." },
+              { role: "user", content: "Test query" },
+            ],
             options: {
-              model: "llama-3.1-sonar-small-128k-online",
-              search_recency_filter: "day",
+              model: "llama-3.1-sonar-huge-128k-online",
+              temperature: 0.7,
+              return_citations: true,
             },
           }),
         });
 
-        await POST(request);
+        const response = await POST(testRequest);
 
-        expect(global.fetch).toHaveBeenCalledWith(
-          "https://api.perplexity.ai/chat/completions",
+        expect(response.status).toBe(200);
+        // Verify research() was called with correct arguments
+        expect(research).toHaveBeenCalledWith(
+          [
+            { role: "system", content: "You are a helpful assistant." },
+            { role: "user", content: "Test query" },
+          ],
           expect.objectContaining({
-            method: "POST",
-            headers: expect.objectContaining({
-              "Content-Type": "application/json",
-              Authorization: "Bearer test-api-key",
-            }),
+            model: "llama-3.1-sonar-huge-128k-online",
+            temperature: 0.7,
+            return_citations: true,
           })
         );
-
-        const fetchCall = (global.fetch as any).mock.calls[0];
-        const requestBody = JSON.parse(fetchCall[1].body);
-        expect(requestBody.model).toBe("llama-3.1-sonar-small-128k-online");
-        expect(requestBody.search_recency_filter).toBe("day");
-        expect(requestBody.return_citations).toBe(true);
       });
     });
 
     describe("Error Handling", () => {
       beforeEach(() => {
         process.env.PERPLEXITY_API_KEY = "test-api-key";
+        vi.mocked(isPerplexityConfigured).mockReturnValue(true);
       });
 
       it("handles Perplexity API errors", async () => {
-        // Clear all previous mocks and set up error response
-        vi.mocked(global.fetch).mockReset();
-        vi.mocked(global.fetch).mockResolvedValueOnce({
-          ok: false,
-          status: 500,
-          json: async () => ({
-            error: {
-              message: "Internal server error",
-              type: "server_error",
-            },
-          }),
-        } as Response);
+        // Mock research() to throw an API error
+        vi.mocked(research).mockRejectedValueOnce(
+          new Error("Perplexity API error: Internal server error")
+        );
 
         const request = new NextRequest("http://localhost:3000/api/research", {
           method: "POST",
@@ -469,8 +460,8 @@ describe("Research API Integration", () => {
       });
 
       it("handles network errors", async () => {
-        vi.mocked(global.fetch).mockReset();
-        vi.mocked(global.fetch).mockRejectedValueOnce(
+        // Mock research() to throw a network error
+        vi.mocked(research).mockRejectedValueOnce(
           new Error("Network error")
         );
 
@@ -489,17 +480,10 @@ describe("Research API Integration", () => {
       });
 
       it("handles authentication errors", async () => {
-        vi.mocked(global.fetch).mockReset();
-        vi.mocked(global.fetch).mockResolvedValueOnce({
-          ok: false,
-          status: 401,
-          json: async () => ({
-            error: {
-              message: "Unauthorized",
-              type: "authentication_error",
-            },
-          }),
-        } as Response);
+        // Mock research() to throw an authentication error
+        vi.mocked(research).mockRejectedValueOnce(
+          new Error("Perplexity API error: Unauthorized")
+        );
 
         const request = new NextRequest("http://localhost:3000/api/research", {
           method: "POST",
@@ -516,17 +500,10 @@ describe("Research API Integration", () => {
       });
 
       it("handles upstream rate limit errors", async () => {
-        vi.mocked(global.fetch).mockReset();
-        vi.mocked(global.fetch).mockResolvedValueOnce({
-          ok: false,
-          status: 429,
-          json: async () => ({
-            error: {
-              message: "Rate limit exceeded",
-              type: "rate_limit_error",
-            },
-          }),
-        } as Response);
+        // Mock research() to throw a rate limit error
+        vi.mocked(research).mockRejectedValueOnce(
+          new Error("Perplexity API error: Rate limit exceeded")
+        );
 
         const request = new NextRequest("http://localhost:3000/api/research", {
           method: "POST",

@@ -13,8 +13,8 @@
  * ```
  */
 
-import { Home, FileText, FolderGit2, Mail, Rss, Heart } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { Home, FileText, FolderGit2, Mail, Rss, Heart } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 export interface NavItem {
   href: string;
@@ -47,34 +47,34 @@ export interface NavCategory {
  */
 export const PRIMARY_NAV: NavItem[] = [
   {
-    href: "/",
-    label: "Home",
+    href: '/',
+    label: 'Home',
     icon: Home,
-    shortcut: "g h",
+    shortcut: 'g h',
     exactMatch: true,
   },
   {
-    href: "/about",
-    label: "About",
-    shortcut: "g a",
+    href: '/about',
+    label: 'About',
+    shortcut: 'g a',
   },
   {
-    href: "/blog",
-    label: "Blog",
+    href: '/blog',
+    label: 'Blog',
     icon: FileText,
-    shortcut: "g b",
+    shortcut: 'g b',
   },
   {
-    href: "/work",
-    label: "Work",
+    href: '/work',
+    label: 'Work',
     icon: FolderGit2,
-    shortcut: "g w",
+    shortcut: 'g w',
   },
   {
-    href: "/contact",
-    label: "Contact",
+    href: '/contact',
+    label: 'Contact',
     icon: Mail,
-    shortcut: "g c",
+    shortcut: 'g c',
   },
 ] as const;
 
@@ -83,19 +83,19 @@ export const PRIMARY_NAV: NavItem[] = [
  */
 export const BOTTOM_NAV: NavItem[] = [
   {
-    href: "/",
-    label: "Home",
+    href: '/',
+    label: 'Home',
     icon: Home,
     exactMatch: true,
   },
   {
-    href: "/blog",
-    label: "Blog",
+    href: '/blog',
+    label: 'Blog',
     icon: FileText,
   },
   {
-    href: "/work",
-    label: "Work",
+    href: '/work',
+    label: 'Work',
     icon: FolderGit2,
   },
 ] as const;
@@ -105,13 +105,13 @@ export const BOTTOM_NAV: NavItem[] = [
  */
 export const BLOG_CATEGORIES: NavItem[] = [
   {
-    href: "/blog",
-    label: "All Posts",
+    href: '/blog',
+    label: 'All Posts',
     exactMatch: true,
   },
   {
-    href: "/blog/series",
-    label: "Blog Series",
+    href: '/blog/series',
+    label: 'Blog Series',
   },
 ] as const;
 
@@ -120,21 +120,21 @@ export const BLOG_CATEGORIES: NavItem[] = [
  */
 export const WORK_CATEGORIES: NavItem[] = [
   {
-    href: "/work",
-    label: "All Projects",
+    href: '/work',
+    label: 'All Projects',
     exactMatch: true,
   },
   {
-    href: "/work?category=community",
-    label: "Community",
+    href: '/work?category=community',
+    label: 'Community',
   },
   {
-    href: "/work?category=nonprofit",
-    label: "Nonprofit",
+    href: '/work?category=nonprofit',
+    label: 'Nonprofit',
   },
   {
-    href: "/work?category=startup",
-    label: "Startup",
+    href: '/work?category=startup',
+    label: 'Startup',
   },
 ] as const;
 
@@ -143,32 +143,32 @@ export const WORK_CATEGORIES: NavItem[] = [
  */
 export const DEV_TOOLS_NAV: NavItem[] = [
   {
-    href: "/dev/docs",
-    label: "Docs",
+    href: '/dev/docs',
+    label: 'Docs',
   },
   {
-    href: "/dev/analytics",
-    label: "Analytics",
+    href: '/dev/analytics',
+    label: 'Analytics',
   },
   {
-    href: "/dev/agents",
-    label: "AI Agents",
+    href: '/dev/agents',
+    label: 'AI Agents',
   },
   {
-    href: "/dev/maintenance",
-    label: "Maintenance",
+    href: '/dev/maintenance',
+    label: 'Maintenance',
   },
   {
-    href: "/dev/mcp-health",
-    label: "MCP Health",
+    href: '/dev/mcp-health',
+    label: 'MCP Health',
   },
   {
-    href: "/dev/api-costs",
-    label: "API Costs",
+    href: '/dev/api-costs',
+    label: 'API Costs',
   },
   {
-    href: "/dev/unified-ai-costs",
-    label: "AI Cost Dashboard",
+    href: '/dev/unified-ai-costs',
+    label: 'AI Cost Dashboard',
   },
 ] as const;
 
@@ -177,37 +177,41 @@ export const DEV_TOOLS_NAV: NavItem[] = [
  */
 export const FOOTER_NAV: NavItem[] = [
   {
-    href: "/about",
-    label: "About",
+    href: '/about',
+    label: 'About',
   },
   {
-    href: "/activity",
-    label: "Activity",
+    href: '/contact',
+    label: 'Contact',
   },
   {
-    href: "/bookmarks",
-    label: "Bookmarks",
+    href: '/sponsors',
+    label: 'Sponsors',
   },
   {
-    href: "/likes",
-    label: "Likes",
+    href: '/activity',
+    label: 'Activity',
   },
   {
-    href: "/sponsors",
-    label: "Sponsors",
+    href: '/likes',
+    label: 'Likes',
   },
   {
-    href: "/contact",
-    label: "Contact",
+    href: '/bookmarks',
+    label: 'Bookmarks',
   },
   {
-    href: "/feeds",
-    label: "Feeds",
+    href: '/feeds',
+    label: 'Feeds',
     icon: Rss,
   },
   {
-    href: "/sitemap.xml",
-    label: "Sitemap",
+    href: '/legal',
+    label: 'Legal',
+  },
+  {
+    href: '/sitemap.xml',
+    label: 'Sitemap',
   },
 ] as const;
 
@@ -216,29 +220,29 @@ export const FOOTER_NAV: NavItem[] = [
  */
 export const MOBILE_NAV: NavItem[] = [
   {
-    href: "/",
-    label: "Home",
+    href: '/',
+    label: 'Home',
     exactMatch: true,
   },
   {
-    href: "/about",
-    label: "About",
+    href: '/about',
+    label: 'About',
   },
   {
-    href: "/work",
-    label: "Work",
+    href: '/work',
+    label: 'Work',
   },
   {
-    href: "/blog",
-    label: "Blog",
+    href: '/blog',
+    label: 'Blog',
   },
   {
-    href: "/sponsors",
-    label: "Sponsors",
+    href: '/sponsors',
+    label: 'Sponsors',
   },
   {
-    href: "/contact",
-    label: "Contact",
+    href: '/contact',
+    label: 'Contact',
   },
 ] as const;
 
@@ -264,13 +268,13 @@ export function getKeyboardShortcuts(): Array<{
   label: string;
   href: string;
 }> {
-  return PRIMARY_NAV.filter(
-    (item): item is NavItem & { shortcut: string } => !!item.shortcut
-  ).map((item) => ({
-    shortcut: item.shortcut,
-    label: item.label,
-    href: item.href,
-  }));
+  return PRIMARY_NAV.filter((item): item is NavItem & { shortcut: string } => !!item.shortcut).map(
+    (item) => ({
+      shortcut: item.shortcut,
+      label: item.label,
+      href: item.href,
+    })
+  );
 }
 
 /**

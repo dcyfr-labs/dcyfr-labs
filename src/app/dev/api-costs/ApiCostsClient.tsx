@@ -1,4 +1,7 @@
-"use client";
+'use client';
+
+/* eslint-disable no-restricted-syntax */
+// Dev tools page - intentionally not using PageLayout for internal admin interface
 
 /**
  * API Cost Dashboard - Client Component
@@ -15,11 +18,12 @@
  * - Auto-refresh every 60 seconds
  */
 
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { RefreshCw, AlertCircle, ExternalLink } from "lucide-react";
-import { DashboardLayout } from "@/components/dashboard";
-import { TYPOGRAPHY } from "@/lib/design-tokens";
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { RefreshCw, AlertCircle, ExternalLink } from 'lucide-react';
+import { DashboardLayout } from '@/components/dashboard';
+import { TYPOGRAPHY } from '@/lib/design-tokens';
 
 // Import components
 import {
@@ -30,10 +34,10 @@ import {
   TopEndpointsTable,
   ServiceSummaryCards,
   ExportButton,
-} from "./components";
+} from './components';
 
 // Import hook
-import { useApiCostsDashboard } from "./hooks";
+import { useApiCostsDashboard } from './hooks';
 
 /**
  * Main API Costs Client Component
@@ -48,14 +52,7 @@ export default function ApiCostsClient() {
     fetchCostData(true);
   };
 
-  const {
-    serviceUsage,
-    dailyTrend,
-    topEndpoints,
-    budgetStatus,
-    loading,
-    error,
-  } = state;
+  const { serviceUsage, dailyTrend, topEndpoints, budgetStatus, loading, error } = state;
 
   // Prepare export data
   const exportData = serviceUsage.map((s) => ({
@@ -84,17 +81,11 @@ export default function ApiCostsClient() {
             disabled={loading}
             className="gap-2"
           >
-            <RefreshCw
-              className={loading ? "h-4 w-4 animate-spin" : "h-4 w-4"}
-            />
+            <RefreshCw className={loading ? 'h-4 w-4 animate-spin' : 'h-4 w-4'} />
             Refresh
           </Button>
           <Button variant="outline" size="sm" asChild className="gap-2">
-            <a
-              href="https://dashboard.inngest.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://dashboard.inngest.com" target="_blank" rel="noopener noreferrer">
               <ExternalLink className="h-4 w-4" />
               Inngest
             </a>
@@ -102,7 +93,7 @@ export default function ApiCostsClient() {
         </div>
       }
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
         {/* Error Alert */}
         {error && (
           <Alert variant="destructive">
@@ -112,13 +103,11 @@ export default function ApiCostsClient() {
         )}
 
         {/* Budget Alert for Warning/Critical */}
-        {budgetStatus.status !== "ok" && (
-          <Alert
-            variant={budgetStatus.status === "critical" ? "destructive" : "default"}
-          >
+        {budgetStatus.status !== 'ok' && (
+          <Alert variant={budgetStatus.status === 'critical' ? 'destructive' : 'default'}>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              {budgetStatus.status === "critical"
+              {budgetStatus.status === 'critical'
                 ? `Critical: Budget usage at ${budgetStatus.percentUsed.toFixed(1)}%. Projected to exceed limit.`
                 : `Warning: Budget usage at ${budgetStatus.percentUsed.toFixed(1)}%. Monitor closely.`}
             </AlertDescription>
@@ -158,13 +147,13 @@ export default function ApiCostsClient() {
         {/* Documentation Link */}
         <section className="text-center text-sm text-muted-foreground">
           <p>
-            Cost monitoring runs daily via Inngest.{" "}
-            <a
+            Cost monitoring runs daily via Inngest.{' '}
+            <Link
               href="/dev/docs/features/api-cost-monitoring"
               className="underline hover:text-foreground"
             >
               View documentation
-            </a>
+            </Link>
           </p>
         </section>
       </div>

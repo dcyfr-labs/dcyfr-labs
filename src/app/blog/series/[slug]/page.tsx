@@ -38,6 +38,10 @@ export async function generateStaticParams() {
   return allParams;
 }
 
+// Force dynamic rendering - skip prerendering during build
+// This prevents build-time data issues with series generation
+export const dynamic = 'force-dynamic';
+
 /**
  * Revalidate every 24 hours for series pages
  * (regenerate on-demand if new posts are added to a series)
