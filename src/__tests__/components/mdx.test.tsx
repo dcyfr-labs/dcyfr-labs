@@ -181,7 +181,9 @@ describe("MDX Component", () => {
     it("should apply hover styles to links", () => {
       render(<MDX source="[Link](/test)" />);
       const link = screen.getByText("Internal Link");
-      expect(link.className).toContain("underline");
+      // Links use CSS text-decoration (not Tailwind underline class)
+      // and have hover:text-primary for color transitions
+      expect(link.className).toContain("inline-flex");
       expect(link.className).toContain("hover:text-primary");
     });
   });

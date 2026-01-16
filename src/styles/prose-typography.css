@@ -625,9 +625,9 @@ figcaption p {
  */
 
 /* Default link styling - Clean, underlined, accessible */
-.prose a,
-.prose a:link,
-.prose a:visited {
+.prose a:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a),
+.prose a:link:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a),
+.prose a:visited:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a) {
   /* Color: Slightly lighter than body text for distinction */
   color: hsl(var(--foreground) / 0.85) !important;
 
@@ -647,14 +647,14 @@ figcaption p {
 }
 
 /* Hover state - Elegant fade with thicker underline */
-.prose a:hover {
+.prose a:hover:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a) {
   color: hsl(var(--foreground) / 0.65) !important;
   text-decoration-thickness: 1.5px !important;
   text-decoration-color: hsl(var(--foreground) / 0.5) !important;
 }
 
 /* Active state - Subtle press feedback */
-.prose a:active {
+.prose a:active:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a) {
   color: hsl(var(--foreground) / 0.55) !important;
   transition-duration: 50ms;
 }
@@ -667,13 +667,44 @@ figcaption p {
 }
 
 /* Dark mode adjustments - Enhanced visibility */
-.dark .prose a,
-.dark .prose a:link,
-.dark .prose a:visited {
+.dark .prose a:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a),
+.dark .prose a:link:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a),
+.dark .prose a:visited:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a) {
   color: hsl(var(--foreground) / 0.9) !important;
 }
 
-.dark .prose a:hover {
+.dark .prose a:hover:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a) {
   color: hsl(var(--foreground) / 0.7) !important;
   text-decoration-color: hsl(var(--foreground) / 0.6) !important;
+}
+
+/* Header links - Remove underline decoration with high specificity */
+.prose h1 > a,
+.prose h2 > a,
+.prose h3 > a,
+.prose h4 > a,
+.prose h5 > a,
+.prose h6 > a,
+.prose h1 a,
+.prose h2 a,
+.prose h3 a,
+.prose h4 a,
+.prose h5 a,
+.prose h6 a {
+  text-decoration: none !important;
+}
+
+.prose h1 > a:hover,
+.prose h2 > a:hover,
+.prose h3 > a:hover,
+.prose h4 > a:hover,
+.prose h5 > a:hover,
+.prose h6 > a:hover,
+.prose h1 a:hover,
+.prose h2 a:hover,
+.prose h3 a:hover,
+.prose h4 a:hover,
+.prose h5 a:hover,
+.prose h6 a:hover {
+  text-decoration: none !important;
 }
