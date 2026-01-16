@@ -64,11 +64,12 @@
 export { ReadingProgressBar } from "./navigation";
 
 // Visual (V - Visual density)
-export { KeyTakeaway, TLDRSummary } from "./visual";
+export { KeyTakeaway, TLDRSummary, RiskMatrix } from "./visual";
+export type { RiskMatrixProps, RiskItem, RiskLevel } from "./visual";
 
 // Interactive (I - Interactive elements)
 export { GlossaryTooltip, SectionShare, CollapsibleSection } from "./interactive";
 
 // Engagement (E - Enhanced discoverability)
-export { RoleBasedCTA } from "./engagement";
-export type { RoleBasedCTAProps } from "./engagement";
+export { RoleBasedCTA, FAQSchema, NewsletterSignup } from "./engagement";
+export type { RoleBasedCTAProps, FAQSchemaProps, FAQItem, NewsletterSignupProps, NewsletterVariant } from "./engagement";
