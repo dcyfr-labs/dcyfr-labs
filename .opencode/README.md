@@ -1,18 +1,37 @@
 # OpenCode.ai Integration for DCYFR Labs
 
-**Multi-provider AI fallback system with GitHub Copilot integration (GPT-5 Mini + Raptor Mini).**
+**Multi-provider AI fallback system with MCP integration, GitHub Copilot, and DCYFR-specific skills.**
+
+---
+
+## ⚡ What's Configured
+
+This project is fully configured with:
+
+✅ **14 MCP Servers** - Memory, Filesystem, GitHub, Context7, Octocode, Perplexity, Vercel, Sentry, Axiom, 3 custom DCYFR MCPs  
+✅ **3 DCYFR Skills** - Design tokens, component patterns, quick fixes  
+✅ **GitHub Copilot Integration** - GPT-5 Mini + Raptor Mini (free with subscription)  
+✅ **Automated Validation** - Enhanced OpenCode-specific quality checks
+
+**Configuration Files:**
+- `opencode.json` - MCP servers, tools, agent permissions, formatters
+- `.opencode/skill/*/SKILL.md` - DCYFR-specific reusable skills
 
 ---
 
 ## Quick Start
 
-### 1. Install OpenCode Extension
+### 1. Install OpenCode CLI
 
 ```bash
-# VS Code extension
-code --install-extension sst-dev.opencode
+# Using npm (recommended)
+npm install -g opencode-ai
 
-# Or install via UI: Extensions → Search "OpenCode.ai"
+# Or using Homebrew
+brew install anomalyco/tap/opencode
+
+# Or using the install script
+curl -fsSL https://opencode.ai/install | bash
 ```
 
 ### 2. Authenticate with GitHub Copilot
