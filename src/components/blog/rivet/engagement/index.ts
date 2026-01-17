@@ -8,3 +8,6 @@ export type { FAQSchemaProps, FAQItem } from "./faq-schema";
 
 export { NewsletterSignup } from "./newsletter-signup";
 export type { NewsletterSignupProps, NewsletterVariant } from "./newsletter-signup";
+
+export { DownloadableAsset } from "./downloadable-asset";
+export type { DownloadableAssetProps } from "./downloadable-asset";
