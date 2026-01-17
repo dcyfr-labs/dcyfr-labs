@@ -5,3 +5,6 @@
  */
 
 export { ReadingProgressBar } from "./reading-progress-bar";
+
+export { SeriesNavigation } from "./series-navigation";
+export type { SeriesNavigationProps, SeriesItem } from "./series-navigation";

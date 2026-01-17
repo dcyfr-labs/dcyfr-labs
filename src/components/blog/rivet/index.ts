@@ -61,15 +61,17 @@
  */
 
 // Navigation (R - Reader-centric)
-export { ReadingProgressBar } from "./navigation";
+export { ReadingProgressBar, SeriesNavigation } from "./navigation";
+export type { SeriesNavigationProps, SeriesItem } from "./navigation";
 
 // Visual (V - Visual density)
 export { KeyTakeaway, TLDRSummary, RiskMatrix } from "./visual";
 export type { RiskMatrixProps, RiskItem, RiskLevel } from "./visual";
 
 // Interactive (I - Interactive elements)
-export { GlossaryTooltip, SectionShare, CollapsibleSection } from "./interactive";
+export { GlossaryTooltip, SectionShare, CollapsibleSection, TabInterface } from "./interactive";
+export type { TabInterfaceProps, TabItem } from "./interactive";
 
 // Engagement (E - Enhanced discoverability)
-export { RoleBasedCTA, FAQSchema, NewsletterSignup } from "./engagement";
-export type { RoleBasedCTAProps, FAQSchemaProps, FAQItem, NewsletterSignupProps, NewsletterVariant } from "./engagement";
+export { RoleBasedCTA, FAQSchema, NewsletterSignup, DownloadableAsset } from "./engagement";
+export type { RoleBasedCTAProps, FAQSchemaProps, FAQItem, NewsletterSignupProps, NewsletterVariant, DownloadableAssetProps } from "./engagement";
