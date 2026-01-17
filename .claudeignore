@@ -1,0 +1,217 @@
+# .claudeignore - Reduce Claude Code context window usage
+# This file excludes directories and files from being loaded into context
+# Estimated context reduction: 40-60%
+#
+# Last Updated: January 17, 2026
+# Documentation: docs/ai/claude-code-enhancements.md
+
+# =============================================================================
+# BUILD OUTPUTS
+# =============================================================================
+# Next.js build artifacts
+.next/
+out/
+
+# General build outputs
+dist/
+build/
+.turbo/
+
+# Compiled files
+*.tsbuildinfo
+
+# =============================================================================
+# DEPENDENCIES
+# =============================================================================
+# Node modules (largest exclusion - typically 500MB+)
+node_modules/
+
+# Package manager caches
+.pnp/
+.pnp.js
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+
+# =============================================================================
+# CACHES
+# =============================================================================
+# Next.js cache
+.cache/
+
+# Vercel cache
+.vercel/
+
+# ESLint cache
+.eslintcache
+
+# Prettier cache
+.prettiercache
+
+# TypeScript cache
+*.tsbuildinfo
+
+# =============================================================================
+# TESTING ARTIFACTS
+# =============================================================================
+# Coverage reports
+coverage/
+
+# Playwright artifacts
+playwright-report/
+playwright/.cache/
+test-results/
+
+# Jest artifacts
+.jest/
+
+# =============================================================================
+# IDE & EDITOR
+# =============================================================================
+# JetBrains IDEs
+.idea/
+
+# VS Code (keep workspace settings, exclude user settings)
+.vscode/settings.json
+.vscode/launch.json
+.vscode/*.code-workspace
+
+# Vim/Neovim
+*.swp
+*.swo
+*~
+
+# =============================================================================
+# LOGS & DEBUG
+# =============================================================================
+# NPM logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Application logs
+*.log
+logs/
+
+# =============================================================================
+# ENVIRONMENT & SECRETS
+# =============================================================================
+# Environment files (security)
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+
+# Credentials
+*.pem
+*.key
+credentials.json
+service-account*.json
+
+# =============================================================================
+# GENERATED FILES
+# =============================================================================
+# Auto-generated content
+*.generated.*
+*.gen.*
+
+# Sitemap & robots (generated during build)
+public/sitemap*.xml
+public/robots.txt
+
+# Search index (generated)
+public/search-index.json
+
+# =============================================================================
+# LARGE ASSETS
+# =============================================================================
+# Video files
+public/videos/
+*.mp4
+*.mov
+*.avi
+*.webm
+
+# Large downloads
+public/downloads/
+*.zip
+*.tar.gz
+*.rar
+
+# Large images (keep regular images)
+*.psd
+*.ai
+*.sketch
+
+# =============================================================================
+# SENSITIVE DIRECTORIES
+# =============================================================================
+# Private documentation (security audits, internal docs)
+**/private/
+
+# Local Claude settings (may contain API keys)
+.claude/settings.local.json
+
+# Session checkpoints (user-specific)
+~/.claude/
+
+# =============================================================================
+# PROJECT-SPECIFIC EXCLUSIONS
+# =============================================================================
+# Temporary files
+tmp/
+temp/
+.tmp/
+
+# Backup files
+*.bak
+*.backup
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Git
+.git/
+
+# =============================================================================
+# DOCUMENTATION ARTIFACTS
+# =============================================================================
+# Generated API docs (keep source, exclude generated)
+docs/api/generated/
+
+# Storybook build
+storybook-static/
+
+# =============================================================================
+# OPTIONAL: Heavy but useful (uncomment to exclude)
+# =============================================================================
+# Uncomment these if context window is severely constrained:
+
+# # All test files (drastic - loses test context)
+# **/*.test.ts
+# **/*.test.tsx
+# **/*.spec.ts
+# **/*.spec.tsx
+
+# # All story files (if not working on components)
+# **/*.stories.tsx
+# **/*.stories.ts
+
+# # Content files (if not working on blog/content)
+# src/content/blog/
+# src/content/projects/
+
+# =============================================================================
+# NOTES
+# =============================================================================
+# To check what would be excluded, run:
+#   find . -type f | grep -v node_modules | head -100
+#
+# To estimate context savings, compare:
+#   Before: find . -type f -name "*.ts" -o -name "*.tsx" | wc -l
+#   After:  find . -type f \( -name "*.ts" -o -name "*.tsx" \) \
+#           -not -path "./.next/*" -not -path "./node_modules/*" | wc -l
