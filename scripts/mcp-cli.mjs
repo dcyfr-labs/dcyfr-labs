@@ -48,8 +48,7 @@ function printHelp() {
   console.log('To run MCP servers:');
   console.log('  npm run mcp:analytics  - Run analytics MCP server');
   console.log('  npm run mcp:tokens     - Run design tokens MCP server');
-  console.log('  npm run mcp:content    - Run content MCP server');
-  console.log('  npm run mcp:scholar    - Run semantic scholar MCP server\n');
+  console.log('  npm run mcp:content    - Run content MCP server\n');
   console.log('Examples:');
   console.log('  npm run mcp check');
   console.log('  npm run mcp health');
