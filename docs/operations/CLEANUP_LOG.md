@@ -14,14 +14,16 @@
   - **Reason:** Exact duplicate of `docs/design/mobile/` directory content
   - **Recovery:** `git show HEAD~1:docs/private/mobile-design-token-updates.md`
 
-#### Completed Session Logs (6 files, 68KB total)
+#### Completed Session Logs (8 files, ~80KB total)
 - `docs/operations/sessions/2026-01/PHASE-1-BUNDLE-OPTIMIZATION-COMPLETE.md`
 - `docs/operations/sessions/2026-01/RIVET-P1-CVE-POST-COMPLETE.md`
 - `docs/operations/sessions/2026-01/RIVET-P1-HARDENING-POST-COMPLETE.md`
 - `docs/operations/sessions/2026-01/RIVET-P1-VALIDATION-COMPLETE.md`
 - `docs/operations/sessions/2026-01/SESSION-COMPLETE-SUMMARY.md`
 - `docs/operations/sessions/2026-01/TEST-INFRASTRUCTURE-FIXES-COMPLETE.md`
-  - **Reason:** Completed work documentation from January 16, 2026
+- `docs/archive/sessions/week1-implementation-summary.md`
+- `docs/archive/sessions/week2-implementation-summary.md`
+  - **Reason:** Completed work documentation from January 2026
   - **Recovery:** Git history, commits from 2026-01-16
 
 #### Deprecated Workflows (3 files)
@@ -56,9 +58,9 @@
 
 | Category | Files Deleted | Files Consolidated | Disk Space Saved |
 |----------|---------------|-------------------|------------------|
-| Documentation | 7 | 2 | ~76 KB |
+| Documentation | 9 | 2 | ~88 KB |
 | Workflows | 3 | 0 | ~3 KB |
-| **Total** | **10** | **2** | **~79 KB** |
+| **Total** | **12** | **2** | **~91 KB** |
 
 **Verification:**
 ```bash

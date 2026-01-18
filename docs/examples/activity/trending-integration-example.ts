@@ -4,11 +4,14 @@
  * This file demonstrates how to integrate trending calculation into activity sources.
  * Copy the relevant patterns into your actual activity source files (sources.ts, etc.)
  *
- * @module lib/activity/trending-integration-example
+ * NOTE: This is example code only. Imports are relative to original location (src/lib/activity/).
+ * Update imports when copying to actual implementation files.
+ *
+ * @module docs/examples/activity/trending-integration-example
  */
 
-import type { ActivityItem } from "./types";
-import { calculateTrendingStatus, type EngagementMetrics } from "./trending";
+import type { ActivityItem } from "@/lib/activity/types";
+import { calculateTrendingStatus, type EngagementMetrics } from "@/lib/activity/trending";
 
 // ============================================================================
 // EXAMPLE: Enriching Blog Post Activities with Trending Status

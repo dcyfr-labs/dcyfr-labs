@@ -187,7 +187,6 @@ export function ArticleHeader({
       {backgroundImage && !backgroundImage.hideHero && (
         <figure className="not-prose mb-8">
           <div className="relative w-full aspect-video overflow-hidden bg-muted/30 dark:bg-muted/20 rounded-lg border shadow-md">
-            {/* TODO: Re-enable holo effects after mouse-tracking implementation for dynamic pivoting */}
             <Image
               src={backgroundImage.url}
               alt={backgroundImage.alt}

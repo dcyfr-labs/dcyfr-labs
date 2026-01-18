@@ -164,10 +164,6 @@ export function DefaultProjectLayout({
         </section>
       )}
 
-      {/* TODO: Tech Stack Badges */}
-
-      {/* TODO: Tag Badges */}
-
       {/* Post interactions (like, bookmark, share) */}
       <div className="my-8">
         <PostInteractions
