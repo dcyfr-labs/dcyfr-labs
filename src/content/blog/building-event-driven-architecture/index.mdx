@@ -10,8 +10,9 @@ category: 'Architecture'
 tags: ['Inngest', 'Event-Driven', 'Next.js', 'Background Jobs', 'TypeScript']
 image:
   url: '/blog/building-event-driven-architecture/assets/hero.webp'
-  alt: 'A single stream of light splits into parallel streams symbolizing asynchronous event processing.'
-  caption: 'Event-Driven Architecture'
+  alt: 'High-speed light beam and data stream flowing through digital prism creating multicolor spectrum on dark background representing data transfer and network speed'
+  caption: 'Abstract illustration of light-speed data transfer through digital prism with orange, blue, and purple color spectrum representing high-performance network architecture'
+  description: 'Dynamic abstract illustration depicting high-speed data transmission flowing through a digital prism, splitting into vibrant orange, cyan, and purple light streams with motion blur effects, symbolizing rapid data transfer, network optimization, and next-generation connectivity infrastructure'
   credit: 'Perplexity Labs'
   width: 1200
   height: 630
@@ -72,7 +73,13 @@ The fix isn't making the email faster—it's **decoupling the response from the 
 
 ## Event-Driven Architecture Explained
 
-<GlossaryTooltip term="Event-Driven Architecture" definition="A software design pattern where components communicate by publishing and consuming events asynchronously, enabling loosely coupled, scalable systems">Event-driven architecture</GlossaryTooltip> separates two concerns:
+<GlossaryTooltip
+  term="Event-Driven Architecture"
+  definition="A software design pattern where components communicate by publishing and consuming events asynchronously, enabling loosely coupled, scalable systems"
+>
+  Event-driven architecture
+</GlossaryTooltip>
+separates two concerns:
 
 1. **Acknowledging the request** (fast, synchronous)
 2. **Processing the work** (async, can be slow, can retry)
@@ -95,7 +102,10 @@ Modern event-driven systems add one more concept: **steps**. Instead of one mono
 
 > **Further Reading:** For comprehensive overviews of event-driven architecture patterns, see Martin Fowler's [Event-Driven Architecture](https://martinfowler.com/articles/201701-event-driven.html) and AWS's [What is Event-Driven Architecture?](https://aws.amazon.com/event-driven-architecture/)
 
-<SectionShare sectionId="event-driven-explained" sectionTitle="Event-Driven Architecture Explained" />
+<SectionShare
+  sectionId="event-driven-explained"
+  sectionTitle="Event-Driven Architecture Explained"
+/>
 
 <CollapsibleSection
   id="event-driven-alternatives-comparison"
@@ -286,7 +296,10 @@ export const refreshGitHubData = inngest.createFunction(
 - Failures don't affect users (stale cache is served)
 - Full observability in the Inngest dashboard
 
-<SectionShare sectionId="scheduled-tasks-github-contributions" sectionTitle="Scheduled Tasks: GitHub Contributions" />
+<SectionShare
+  sectionId="scheduled-tasks-github-contributions"
+  sectionTitle="Scheduled Tasks: GitHub Contributions"
+/>
 
 ---
 
