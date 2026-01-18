@@ -46,7 +46,14 @@ async function getClient(): Promise<RedisClient | null> {
   if (!client) return null;
 
   if (!client.isOpen) {
-    await client.connect();
+    try {
+      await client.connect();
+    } catch (error) {
+      if (process.env.NODE_ENV !== "production") {
+        console.error("Failed to connect to Redis:", error);
+      }
+      return null;
+    }
   }
 
   return client;
