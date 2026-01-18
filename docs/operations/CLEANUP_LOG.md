@@ -120,3 +120,30 @@ git show HEAD~1:.github/workflows/test-optimized.yml
 
 **Last Updated:** January 17, 2026  
 **Next Cleanup:** Quarterly review (April 2026)
+
+---
+
+## January 17, 2026 - Phase 3 Consolidation
+
+### Documentation Consolidation
+
+#### Inngest Documentation (Lightweight Consolidation)
+- **Created:** `docs/features/inngest/INDEX.md` (388 lines)
+  - Central navigation hub for all Inngest documentation
+  - Quick start guide and common workflows
+  - Defers full consolidation to gradual approach
+- **Kept:** All 20 original files (gradual consolidation strategy)
+- **Reason:** INDEX provides immediate navigation value without risk of massive content reshuffling
+
+#### Instruction Alignment Documentation (Archived 3 files)
+- **Deleted:** `docs/ai/INSTRUCTION_ALIGNMENT_ANALYSIS.md` (1,122 lines)
+  - Completed analysis from January 11, 2026
+- **Deleted:** `docs/ai/INSTRUCTION_ALIGNMENT_CONSOLIDATION_DECISION.md` (232 lines)
+  - Decision document, now superseded by implementation
+- **Deleted:** `docs/ai/INSTRUCTION_ALIGNMENT_IMPLEMENTATION.md` (642 lines)
+  - Implementation completed, tracked in INDEX and SUMMARY
+- **Kept:** `docs/ai/INSTRUCTION_ALIGNMENT_INDEX.md` (364 lines) - Active navigation
+- **Kept:** `docs/ai/INSTRUCTION_ALIGNMENT_SUMMARY.md` (340 lines) - Executive summary
+- **Reason:** Analysis and implementation work complete, keep only navigation and summary
+
+---
