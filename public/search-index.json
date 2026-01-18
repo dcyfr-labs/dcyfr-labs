@@ -4,7 +4,7 @@
       "id": "post-20260114-b4f5e2c2",
       "title": "Node.js January 2026 Security Release: 8 CVEs Explained",
       "summary": "On January 13, 2026, Node.js released security patches for 8 vulnerabilities (3 HIGH, 4 MEDIUM, 1 LOW) affecting all active release lines. This post breaks down each CVE, explains who is affected, and provides actionable remediation guidance.",
-      "content": "Upgrade Required: Node.js released security patches on January 13, 2026 for 8 vulnerabilities affecting all active release lines (20.x, 22.x, 24.x, 25.x). Upgrade immediately to v20.20.0, v22.22.0, v24.13.0, or v25.3.0. --- Quick Decision Guide | Your Situation | Action Required | Risk Level | | --------------------------------------- | ----------------------------------------------- | ----------------------- | | Running Node.js v20-v23 + any framework | Upgrade immediately to v20.20.0 / v22.22.",
+      "content": "Upgrade Required: Node.js released security patches on January 13, 2026 for 8 vulnerabilities affecting all active release lines (20.x, 22.x, 24.x, 25.x). Upgrade immediately to v20.20.0, v22.22.0, v24.13.0, or v25.3.0. Vulnerability Summary: --- Quick Decision Guide | Your Situation | Action Required | Risk Level | | --------------------------------------- | ----------------------------------------------- | ----------------------- | | Running Node.js v20-v23 + any framework | Upgrade immediatel",
       "tags": [
         "Node.js",
         "Security",
@@ -93,7 +93,7 @@
       "id": "post-20251203-47dac952",
       "title": "CVE-2025-55182 (React2Shell)",
       "summary": "CVE-2025-55182 (React2Shell) is a critical RCE vulnerability in React Server Components under active exploitation since December 4, 2025. This post explores the vulnerability, confirmed botnet integration, attack patterns, detection methods, and why upgrading is essential.",
-      "content": "JANUARY 2026 UPDATE: One month after disclosure, React2Shell remains under sustained exploitation with over 8.1 million attack sessions recorded[^1]. Security firm GreyNoise reports 300,000-400,000 daily attacks from 8,163 unique IPs across 101 countries[^1]. Over 644,000 domains remain vulnerable despite patches being available since December 3, 2025[^2]. CISA's federal remediation deadline (December 26, 2025) has passed[^3]. If you haven't upgraded to React 19.2.3[^4] and Next.js 16.0.10+, you",
+      "content": "JANUARY 2026 UPDATE: One month after disclosure, React2Shell ( ) remains under sustained exploitation with over 8.1 million attack sessions recorded[^1]. Security firm GreyNoise reports 300,000-400,000 daily attacks from 8,163 unique IPs across 101 countries[^1]. Over 644,000 domains remain vulnerable despite patches being available since December 3, 2025[^2]. CISA's federal remediation deadline (December 26, 2025) has passed[^3]. If you haven't upgraded to React 19.2.3[^4] and Next.js 16.0.10+,",
       "tags": [
         "Next.js",
         "React",
@@ -319,5 +319,5 @@
     "Features",
     "Portfolio"
   ],
-  "generatedAt": "2026-01-18T04:50:19.796Z"
+  "generatedAt": "2026-01-18T05:42:49.587Z"
 }

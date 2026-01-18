@@ -11,26 +11,25 @@
  * - Accessibility-first design with semantic HTML
  */
 
-import { Metadata } from 'next';
-import { PageLayout } from '@/components/layouts';
-import { PageHero } from '@/components/layouts';
-import { Button } from '@/components/ui/button';
-import { createPageMetadata } from '@/lib/metadata';
-import { SITE_URL, SITE_TITLE } from '@/lib/site-config';
+import { Metadata } from "next";
+import { PageLayout, PageHero } from "@/components/layouts";
+import { Button } from "@/components/ui/button";
+import { createPageMetadata } from "@/lib/metadata";
+import { SITE_URL, SITE_TITLE } from "@/lib/site-config";
 import {
   SPACING,
   TYPOGRAPHY,
   CONTAINER_WIDTHS,
   CONTAINER_PADDING,
   ANIMATION,
-} from '@/lib/design-tokens';
-import { Rss, Activity, FileText, Briefcase, ArrowRight } from 'lucide-react';
+} from "@/lib/design-tokens";
+import { Rss, Activity, FileText, Briefcase } from "lucide-react";
 
 export const metadata: Metadata = createPageMetadata({
-  title: 'Web Feeds',
+  title: "Web Feeds",
   description:
-    'Stay updated with the latest content via our RSS/Atom feeds. Subscribe to blog posts, projects, and more in your preferred format.',
-  path: '/feeds',
+    "Stay updated with the latest content via our RSS/Atom feeds. Subscribe to blog posts, projects, and more in your preferred format.",
+  path: "/feeds",
 });
 
 interface FeedInfo {
@@ -49,79 +48,80 @@ interface FeedInfo {
 
 const feeds: FeedInfo[] = [
   {
-    id: 'activity',
-    title: 'Activity Feed',
+    id: "activity",
+    title: "Activity Feed",
     description:
-      'Complete timeline of all content: blog posts, projects, milestones, GitHub activity, and site updates. The most comprehensive feed available.',
-    url: '/activity/feed',
-    updateFrequency: 'Updated hourly',
+      "Complete timeline of all content: blog posts, projects, milestones, GitHub activity, and site updates. The most comprehensive feed available.",
+    url: "/activity/feed",
+    updateFrequency: "Updated hourly",
     icon: Activity,
     formats: [
       {
-        label: 'Atom',
-        url: '/activity/feed',
-        type: 'application/atom+xml',
+        label: "Atom",
+        url: "/activity/feed",
+        type: "application/atom+xml",
       },
       {
-        label: 'RSS',
-        url: '/activity/feed?format=rss',
-        type: 'application/rss+xml',
+        label: "RSS",
+        url: "/activity/feed?format=rss",
+        type: "application/rss+xml",
       },
       {
-        label: 'JSON',
-        url: '/activity/feed?format=json',
-        type: 'application/feed+json',
+        label: "JSON",
+        url: "/activity/feed?format=json",
+        type: "application/feed+json",
       },
     ],
   },
   {
-    id: 'blog',
-    title: 'Blog Feed',
+    id: "blog",
+    title: "Blog Feed",
     description:
-      'Latest blog posts covering web development, security, TypeScript, and tech insights.',
-    url: '/blog/feed',
-    updateFrequency: 'Updated daily',
+      "Latest blog posts covering web development, security, TypeScript, and tech insights.",
+    url: "/blog/feed",
+    updateFrequency: "Updated daily",
     icon: FileText,
     formats: [
       {
-        label: 'Atom',
-        url: '/blog/feed',
-        type: 'application/atom+xml',
+        label: "Atom",
+        url: "/blog/feed",
+        type: "application/atom+xml",
       },
       {
-        label: 'RSS',
-        url: '/blog/feed?format=rss',
-        type: 'application/rss+xml',
+        label: "RSS",
+        url: "/blog/feed?format=rss",
+        type: "application/rss+xml",
       },
       {
-        label: 'JSON',
-        url: '/blog/feed?format=json',
-        type: 'application/feed+json',
+        label: "JSON",
+        url: "/blog/feed?format=json",
+        type: "application/feed+json",
       },
     ],
   },
   {
-    id: 'work',
-    title: 'Projects Feed',
-    description: 'Portfolio projects, open-source contributions, and creative works.',
-    url: '/work/feed',
-    updateFrequency: 'Updated daily',
+    id: "work",
+    title: "Projects Feed",
+    description:
+      "Portfolio projects, open-source contributions, and creative works.",
+    url: "/work/feed",
+    updateFrequency: "Updated daily",
     icon: Briefcase,
     formats: [
       {
-        label: 'Atom',
-        url: '/work/feed',
-        type: 'application/atom+xml',
+        label: "Atom",
+        url: "/work/feed",
+        type: "application/atom+xml",
       },
       {
-        label: 'RSS',
-        url: '/work/feed?format=rss',
-        type: 'application/rss+xml',
+        label: "RSS",
+        url: "/work/feed?format=rss",
+        type: "application/rss+xml",
       },
       {
-        label: 'JSON',
-        url: '/work/feed?format=json',
-        type: 'application/feed+json',
+        label: "JSON",
+        url: "/work/feed?format=json",
+        type: "application/feed+json",
       },
     ],
   },
@@ -134,18 +134,19 @@ export default function FeedsPage() {
       <PageHero
         title="Subscribe to our Web Feeds"
         description={`Stay up to date with the latest content from ${SITE_TITLE}. Choose from our various feeds based on your interests and preferred update frequency.`}
-        align="center"
       />
 
       {/* Main Content */}
-      <div className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING}`}>
+      <div
+        className={`mx-auto mt-24 ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING}`}
+      >
         {/* Section: What are feeds */}
         <section className={`${SPACING.section}`}>
           <div className="space-y-4">
             <h2 className={TYPOGRAPHY.h2.standard}>What are Web Feeds?</h2>
             <p className={`${TYPOGRAPHY.body} text-muted-foreground`}>
-              Web feeds allow you to subscribe to content updates without visiting the website. You
-              can use a feed reader like{' '}
+              Web feeds allow you to subscribe to content updates without
+              visiting the website. You can use a feed reader like{" "}
               <a
                 href="https://www.inoreader.com"
                 target="_blank"
@@ -153,8 +154,8 @@ export default function FeedsPage() {
                 className="font-medium underline decoration-primary/40 hover:decoration-primary transition-colors"
               >
                 Inoreader
-              </a>{' '}
-              or{' '}
+              </a>{" "}
+              or{" "}
               <a
                 href="https://netnewswire.com"
                 target="_blank"
@@ -162,13 +163,13 @@ export default function FeedsPage() {
                 className="font-medium underline decoration-primary/40 hover:decoration-primary transition-colors"
               >
                 NetNewsWire
-              </a>{' '}
+              </a>{" "}
               to aggregate updates from multiple sources in one place.
             </p>
           </div>
 
           {/* Format Options Grid */}
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-3">
             <FormatOption
               title="Atom"
               description="Modern XML feed format with enhanced features, strict validation, excellent reader support, and standardized fields."
@@ -192,7 +193,7 @@ export default function FeedsPage() {
           <h2 className={`${TYPOGRAPHY.h2.standard} mb-8`}>Available Feeds</h2>
 
           {/* Feed Cards Grid */}
-          <div className="grid gap-4">
+          <div className="grid gap-6 md:gap-8">
             {feeds.map((feed, index) => (
               <FeedCard key={feed.id} feed={feed} index={index} />
             ))}
@@ -214,8 +215,7 @@ interface FeedCardProps {
 
 function FeedCard({ feed, index }: FeedCardProps) {
   const Icon = feed.icon;
-  // Start feed cards after the format options finish animating for top-to-bottom flow
-  const animationDelay = 400 + index * 120;
+  const animationDelay = index * 100; // Stagger animations
 
   return (
     <div
@@ -226,14 +226,14 @@ function FeedCard({ feed, index }: FeedCardProps) {
     >
       <div
         className={`
-          border rounded-xl p-4 md:p-8
+          border rounded-xl p-6 md:p-8
           bg-card hover:bg-accent/50
           transition-all duration-300
           hover:border-primary/50 hover:shadow-lg
           active:scale-95
         `}
       >
-        <div className="flex items-start gap-4">
+        <div className="flex items-start gap-4 md:gap-6">
           {/* Icon Container */}
           <div
             className={`
@@ -257,7 +257,9 @@ function FeedCard({ feed, index }: FeedCardProps) {
             {/* Title and Description */}
             <div>
               <h3 className={`${TYPOGRAPHY.h3.standard}`}>{feed.title}</h3>
-              <p className={`${TYPOGRAPHY.body} text-muted-foreground mt-2`}>{feed.description}</p>
+              <p className={`${TYPOGRAPHY.body} text-muted-foreground mt-2`}>
+                {feed.description}
+              </p>
             </div>
 
             {/* Update Frequency 
@@ -316,25 +318,27 @@ interface FormatOptionProps {
 }
 
 function FormatOption({ title, description, index }: FormatOptionProps) {
-  const animationDelay = index * 120;
+  const animationDelay = index * 100;
 
   return (
     <div
       className="animate-fade-in-up"
       style={{
-        animationDelay: `${animationDelay}ms`,
+        animationDelay: `${animationDelay + 400}ms`,
       }}
     >
       <div
         className={`
-          p-4 rounded-lg border border-muted
+          p-6 rounded-lg border border-muted
           hover:border-primary/30 hover:bg-muted/50
           transition-all duration-300
           h-full flex flex-col
         `}
       >
         <h3 className={`${TYPOGRAPHY.h3.standard} mb-3`}>{title}</h3>
-        <p className={`${TYPOGRAPHY.body} text-muted-foreground flex-1`}>{description}</p>
+        <p className={`${TYPOGRAPHY.body} text-muted-foreground flex-1`}>
+          {description}
+        </p>
       </div>
     </div>
   );

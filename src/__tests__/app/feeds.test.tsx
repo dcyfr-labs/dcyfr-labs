@@ -6,7 +6,7 @@
  */
 
 import { render, screen } from "@testing-library/react";
-import FeedsPage, { metadata } from "@/app/feeds/page";
+import FeedsPage, { metadata } from "@/app/(main)/feeds/page";
 import { SITE_TITLE, SITE_URL } from "@/lib/site-config";
 
 describe("FeedsPage", () => {
@@ -65,7 +65,7 @@ describe("FeedsPage", () => {
     });
 
     it("should explain feed readers", () => {
-      const text = screen.getByText(/Web feeds allow you to subscribe to content updates/i);
+      const text = screen.getByText(/Use a feed reader like/i);
       expect(text).toBeInTheDocument();
     });
 
@@ -133,13 +133,14 @@ describe("FeedsPage", () => {
       render(<FeedsPage />);
     });
 
-    it("should display RSS buttons", () => {
+    it("should display Activity Feed RSS button", () => {
       const buttons = screen.getAllByRole("link", { name: /RSS/i });
-      expect(buttons.length).toBeGreaterThan(0);
+      // Should have RSS buttons for each feed (Activity, Blog, Projects)
+      expect(buttons.length).toBeGreaterThanOrEqual(3);
     });
 
-    it("should display Atom buttons", () => {
-      const buttons = screen.getAllByRole("link", { name: /Atom/i });
+    it("should display Activity Feed Atom button", () => {
+      const buttons = screen.getAllByRole("link", { name: /Atom/ });
       expect(buttons.length).toBeGreaterThan(0);
     });
 
@@ -158,7 +159,7 @@ describe("FeedsPage", () => {
     });
 
     it("should link to correct Blog Feed Atom endpoint", () => {
-      const atomButtons = screen.getAllByRole("link", { name: /Atom/i });
+      const atomButtons = screen.getAllByRole("link", { name: /Atom/ });
       const blogAtomButton = atomButtons.find((btn) =>
         btn.getAttribute("href")?.includes("/blog/feed")
       );
@@ -179,39 +180,6 @@ describe("FeedsPage", () => {
     });
   });
 
-  describe("Format Options Section", () => {
-    beforeEach(() => {
-      render(<FeedsPage />);
-    });
-
-    it("should display format option cards", () => {
-      const atomCard = screen.getByRole("heading", {
-        name: /^Atom$/i,
-      });
-      expect(atomCard).toBeInTheDocument();
-    });
-
-    it("should explain RSS format", () => {
-      const description = screen.getByText(
-        /Widely supported XML format with excellent compatibility/i
-      );
-      expect(description).toBeInTheDocument();
-    });
-
-    it("should explain Atom format", () => {
-      const description = screen.getByText(
-        /Modern XML feed format with enhanced features/i
-      );
-      expect(description).toBeInTheDocument();
-    });
-
-    it("should explain JSON Feed format", () => {
-      const description = screen.getByText(
-        /Modern JSON-based format that's easier to parse/i
-      );
-      expect(description).toBeInTheDocument();
-    });
-  });
 
   describe("Accessibility", () => {
     beforeEach(() => {
@@ -247,27 +215,6 @@ describe("FeedsPage", () => {
     });
   });
 
-  // Update frequencies are currently commented out in the page
-  describe.skip("Feed Update Frequencies", () => {
-    beforeEach(() => {
-      render(<FeedsPage />);
-    });
-
-    it("should display Activity Feed update frequency", () => {
-      const frequency = screen.getByText(/Updated hourly/);
-      expect(frequency).toBeInTheDocument();
-    });
-
-    it("should display Blog Feed update frequency", () => {
-      const frequencies = screen.getAllByText(/Updated daily/);
-      expect(frequencies.length).toBeGreaterThanOrEqual(2);
-    });
-
-    it("should display Projects Feed update frequency", () => {
-      const frequencies = screen.getAllByText(/Updated daily/);
-      expect(frequencies.length).toBeGreaterThanOrEqual(2);
-    });
-  });
 
   describe("External Links", () => {
     beforeEach(() => {
