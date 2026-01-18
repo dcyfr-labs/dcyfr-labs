@@ -1,28 +1,29 @@
 ---
-id: "post-20250910-39db73be"
-title: "Shipping a Developer Portfolio"
-subtitle: "How I used Next.js App Router, Tailwind v4, and shadcn/ui to build a production-ready developer portfolio"
-authors: ["drew"]
-summary: "How I used Next.js App Router, Tailwind v4, and shadcn/ui to build a production-ready developer portfolio with modern architecture patterns."
-publishedAt: "2025-09-10T12:00:00Z"
-updatedAt: "2025-10-05T12:00:00Z"
-category: "Web"
-tags: ["Next.js", "Tailwind CSS", "TypeScript", "shadcn/ui", "Portfolio"]
+id: 'post-20250910-39db73be'
+title: 'Shipping a Developer Portfolio'
+subtitle: 'How I used Next.js App Router, Tailwind v4, and shadcn/ui to build a production-ready developer portfolio'
+authors: ['drew']
+summary: 'How I used Next.js App Router, Tailwind v4, and shadcn/ui to build a production-ready developer portfolio with modern architecture patterns.'
+publishedAt: '2025-09-10T12:00:00Z'
+updatedAt: '2025-10-05T12:00:00Z'
+category: 'Web'
+tags: ['Next.js', 'Tailwind CSS', 'TypeScript', 'shadcn/ui', 'Portfolio']
 series:
-  name: "Portfolio"
+  name: 'Portfolio'
   order: 1
-  description: "Learn how to build, harden, and ship a production-ready developer portfolio with real-world techniques."
-  icon: "Rocket"
-  color: "development"
+  description: 'Learn how to build, harden, and ship a production-ready developer portfolio with real-world techniques.'
+  icon: 'Rocket'
+  color: 'development'
 image:
-  url: "/blog/shipping-developer-portfolio/assets/hero.webp"
-  alt: "Developer portfolio architecture diagrams and modals showcasing Next.js App Router, Tailwind v4, and shadcn/ui components."
-  caption: "Shipping a Developer Portfolio"
-  credit: "Perplexity Labs"
+  url: '/blog/shipping-developer-portfolio/assets/hero.webp'
+  alt: 'Isometric illustration of layered web application interface design with cyan accents, data flow arrows, and wireframe UI components on dark background'
+  caption: 'Abstract isometric 3D illustration of stacked application interface layers with modern UI design elements and data visualization on dark background'
+  description: 'Modern isometric illustration depicting layered software interface architecture with interconnected UI components, data flow visualization, and contemporary design elements featuring a dark navy background with bright cyan/turquoise accents'
+  credit: 'Perplexity Labs'
   width: 1200
   height: 630
 previousSlugs:
-  - "shipping-tiny-portfolio"
+  - 'shipping-tiny-portfolio'
 ---
 
 > **Update (December 2025):** This post is now part of a series! What started as a minimal portfolio has evolved into a [production-ready platform with comprehensive security](https://github.com/dcyfr/dcyfr-labs), featuring CSP headers, rate limiting, Redis analytics, background job processing, and extensive monitoring. Check out [Hardening a Developer Portfolio](/blog/hardening-developer-portfolio) for the follow-up covering production deployment patterns.
@@ -62,7 +63,13 @@ src/
 **Next.js 15 + React 19**
 
 - App Router with server components by default
-- <GlossaryTooltip term="Turbopack" definition="Next.js's Rust-based successor to Webpack, offering up to 700x faster updates in local development with incremental computation and smart caching">Turbopack</GlossaryTooltip> for lightning-fast dev server (production builds use Webpack)
+- <GlossaryTooltip
+    term="Turbopack"
+    definition="Next.js's Rust-based successor to Webpack, offering up to 700x faster updates in local development with incremental computation and smart caching"
+  >
+    Turbopack
+  </GlossaryTooltip>
+  for lightning-fast dev server (production builds use Webpack)
 - File-based metadata with zero config
 
 **TypeScript (strict)**
@@ -112,7 +119,10 @@ MDX content is rendered with `next-mdx-remote` and enhanced with rehype plugins 
 
 Search and tag filtering are now live without compromising the stack's simplicity, and view counts remain on the roadmap.
 
-<SectionShare sectionId="key-takeaways" sectionTitle="Shipping a Developer Portfolio: Key Takeaways" />
+<SectionShare
+  sectionId="key-takeaways"
+  sectionTitle="Shipping a Developer Portfolio: Key Takeaways"
+/>
 
 ---
 

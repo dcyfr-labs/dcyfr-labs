@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import {
   SPACING,
@@ -63,6 +64,7 @@ export function GlossaryTooltip({
   });
 
   const [position, setPosition] = useState<"top" | "bottom">("bottom");
+  const [tooltipStyle, setTooltipStyle] = useState<React.CSSProperties>({});
   const triggerRef = useRef<HTMLButtonElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
@@ -75,8 +77,25 @@ export function GlossaryTooltip({
 
       // If not enough space below (300px for tooltip), show above
       const newPosition = spaceBelow < 300 && spaceAbove > 300 ? "top" : "bottom";
+      
+      // Calculate absolute position for portal
+      const style: React.CSSProperties = {
+        position: "fixed",
+        left: `${rect.left + rect.width / 2}px`,
+        transform: "translateX(-50%)",
+        zIndex: 50,
+      };
+
+      if (newPosition === "top") {
+        style.bottom = `${window.innerHeight - rect.top + 8}px`;
+      } else {
+        style.top = `${rect.bottom + 8}px`;
+      }
+
       // eslint-disable-next-line react-hooks/set-state-in-effect -- useLayoutEffect with setState is appropriate for layout measurements per React docs
       setPosition(newPosition);
+       
+      setTooltipStyle(style);
     }
   }, [isOpen]);
 
@@ -178,91 +197,93 @@ export function GlossaryTooltip({
         )}
       </button>
 
-      {/* Tooltip Content */}
-      {isOpen && (
-        <div
-          ref={tooltipRef}
-          id={`tooltip-${term.replace(/\s+/g, "-")}`}
-          role="tooltip"
-          className={cn(
-            "absolute z-50 w-80 max-w-[calc(100vw-2rem)]",
-            position === "top" ? "bottom-full mb-2" : "top-full mt-2",
-            "left-1/2 -translate-x-1/2",
-            "p-4 rounded-lg",
-            "bg-popover dark:bg-popover",
-            "border border-border dark:border-border",
-            "shadow-lg dark:shadow-2xl",
-            ANIMATION.transition.appearance,
-            "animate-in fade-in-0 zoom-in-95 duration-200"
-          )}
-        >
-          {/* Arrow */}
+      {/* Tooltip Content - Rendered via Portal */}
+      {isOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
           <div
+            ref={tooltipRef}
+            id={`tooltip-${term.replace(/\s+/g, "-")}`}
+            role="tooltip"
+            style={tooltipStyle}
             className={cn(
-              "absolute left-1/2 -translate-x-1/2 w-3 h-3",
-              position === "top" ? "bottom-[-6px]" : "top-[-6px]",
-              "rotate-45",
+              "w-80 max-w-[calc(100vw-2rem)]",
+              "p-4 rounded-lg",
               "bg-popover dark:bg-popover",
-              "border-r border-b border-border dark:border-border"
+              "border border-border dark:border-border",
+              "shadow-lg dark:shadow-2xl",
+              ANIMATION.transition.appearance,
+              "animate-in fade-in-0 zoom-in-95 duration-200"
             )}
-            aria-hidden="true"
-          />
-
-          {/* Content */}
-          <div className="relative space-y-2">
-            <h4
-              className={cn(
-                TYPOGRAPHY.h4.mdx,
-                "text-popover-foreground dark:text-popover-foreground",
-                "font-semibold"
-              )}
-            >
-              {term}
-            </h4>
-            <p
-              className={cn(
-                TYPOGRAPHY.body.small,
-                "text-popover-foreground/80 dark:text-popover-foreground/80",
-                "leading-relaxed"
-              )}
-            >
-              {definition}
-            </p>
-          </div>
-
-          {/* Close button for mobile */}
-          <button
-            type="button"
-            onClick={() => setIsOpen(false)}
-            className={cn(
-              "absolute top-2 right-2",
-              "w-6 h-6 rounded-md",
-              "flex items-center justify-center",
-              "text-popover-foreground/60 hover:text-popover-foreground",
-              "hover:bg-popover-foreground/10",
-              SEMANTIC_COLORS.interactive.focus,
-              ANIMATION.transition.colors,
-              "md:hidden"
-            )}
-            aria-label="Close tooltip"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="w-4 h-4"
+            {/* Arrow */}
+            <div
+              className={cn(
+                "absolute left-1/2 -translate-x-1/2 w-3 h-3",
+                position === "top" ? "bottom-[-6px]" : "top-[-6px]",
+                "rotate-45",
+                "bg-popover dark:bg-popover",
+                "border-r border-b border-border dark:border-border"
+              )}
               aria-hidden="true"
+            />
+
+            {/* Content */}
+            <div className="relative space-y-2">
+              <h4
+                className={cn(
+                  TYPOGRAPHY.h4.mdx,
+                  "text-popover-foreground dark:text-popover-foreground",
+                  "font-semibold"
+                )}
+              >
+                {term}
+              </h4>
+              <p
+                className={cn(
+                  TYPOGRAPHY.body.small,
+                  "text-popover-foreground/80 dark:text-popover-foreground/80",
+                  "leading-relaxed"
+                )}
+              >
+                {definition}
+              </p>
+            </div>
+
+            {/* Close button for mobile */}
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              className={cn(
+                "absolute top-2 right-2",
+                "w-6 h-6 rounded-md",
+                "flex items-center justify-center",
+                "text-popover-foreground/60 hover:text-popover-foreground",
+                "hover:bg-popover-foreground/10",
+                SEMANTIC_COLORS.interactive.focus,
+                ANIMATION.transition.colors,
+                "md:hidden"
+              )}
+              aria-label="Close tooltip"
             >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-        </div>
-      )}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-4 h-4"
+                aria-hidden="true"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>,
+          document.body
+        )}
     </span>
   );
 }

@@ -16,8 +16,9 @@ series:
   color: 'development'
 image:
   url: '/blog/hardening-developer-portfolio/assets/hero.webp'
-  alt: 'A fortified digital fortress symbolizing a hardened developer portfolio.'
-  caption: 'Hardening a Developer Portfolio'
+  alt: '3D isometric security shield with padlock icon surrounded by concentric protection rings and checkmark validation symbols on dark background'
+  caption: 'Cybersecurity protection illustration featuring 3D shield with padlock icon, security rings, and verification checkmarks representing data security and compliance'
+  description: 'Isometric 3D illustration of a blue and orange layered security shield with an illuminated padlock emblem, encircled by concentric protection rings with validation checkmarks, depicting cybersecurity infrastructure, data protection, and verified security protocols'
   credit: 'Perplexity Labs'
   width: 1200
   height: 630
@@ -34,7 +35,10 @@ After building the initial portfolio, I systematically addressed security vulner
 This series documents the patterns and decisions that took it from prototype to production.
 
 <KeyTakeaway variant="insight" title="From Prototype to Production">
-Hardening a developer portfolio isn't just about adding features—it's about **systematically addressing security, performance, and scalability**. This post covers CSP implementation, rate limiting, INP optimization (664ms → <200ms), and GitHub integration. All with zero external dependencies where possible.
+  Hardening a developer portfolio isn't just about adding features—it's about **systematically
+  addressing security, performance, and scalability**. This post covers CSP implementation, rate
+  limiting, INP optimization (664ms → &lt;200ms), and GitHub integration. All with zero external
+  dependencies where possible.
 </KeyTakeaway>
 
 ---
@@ -72,12 +76,20 @@ The site had zero <GlossaryTooltip term="CSP" definition="Content Security Polic
 **Key Learnings:**
 
 - Middleware runs on every request, so keep it lightweight (34.2 kB bundle)
-- <GlossaryTooltip term="Nonce" definition="Number used once - a unique, cryptographically random value generated per request to allow specific inline scripts while maintaining CSP security">Nonces</GlossaryTooltip> are critical for inline scripts in modern frameworks
+- <GlossaryTooltip
+    term="Nonce"
+    definition="Number used once - a unique, cryptographically random value generated per request to allow specific inline scripts while maintaining CSP security"
+  >
+    Nonces
+  </GlossaryTooltip>
+  are critical for inline scripts in modern frameworks
 - Testing CSP requires browser DevTools and careful header inspection
 - Vercel's <GlossaryTooltip term="CDN" definition="Content Delivery Network - a geographically distributed network of servers that delivers web content to users based on their location for improved performance">CDN</GlossaryTooltip> can strip headers; middleware provides reliable enforcement
 
 <KeyTakeaway variant="security" title="CSP Defense-in-Depth">
-Content Security Policy is your **first line of defense** against XSS attacks. Use a two-layer architecture: dynamic middleware for HTML routes + static `vercel.json` fallback. Generate unique nonces per request and support third-party scripts with explicit allowlisting.
+  Content Security Policy is your **first line of defense** against XSS attacks. Use a two-layer
+  architecture: dynamic middleware for HTML routes + static `vercel.json` fallback. Generate unique
+  nonces per request and support third-party scripts with explicit allowlisting.
 </KeyTakeaway>
 
 <CollapsibleSection
@@ -140,7 +152,9 @@ The contact form API endpoint had no rate limiting, making it vulnerable to spam
 - IP-based tracking requires careful proxy header handling
 
 <KeyTakeaway variant="tip" title="Zero Dependencies Win">
-Custom rate limiter = **146 lines, zero external dependencies**. In-memory storage works perfectly for single-instance serverless deployments. Add standard headers (`X-RateLimit-*`) for better client UX. Upgrade to Redis only when you need multi-region or high-scale.
+  Custom rate limiter = **146 lines, zero external dependencies**. In-memory storage works perfectly
+  for single-instance serverless deployments. Add standard headers (`X-RateLimit-*`) for better
+  client UX. Upgrade to Redis only when you need multi-region or high-scale.
 </KeyTakeaway>
 
 <CollapsibleSection
@@ -188,7 +202,10 @@ export class RateLimiter {
 
 </CollapsibleSection>
 
-<SectionShare sectionId="rate-limiting-implementation" sectionTitle="Rate Limiting Implementation" />
+<SectionShare
+  sectionId="rate-limiting-implementation"
+  sectionTitle="Rate Limiting Implementation"
+/>
 
 ### Part 2: Performance Optimization
 
@@ -212,7 +229,7 @@ Google's Core Web Vitals showed poor INP scores (664ms+) on navigation links. Th
 - React 18+ `useTransition` keeps UI responsive during state updates
 
 <KeyTakeaway variant="warning" title="Hover Prefetching Trade-off">
-Next.js hover prefetching can **block the main thread** and destroy INP scores (664ms+). Disable with `prefetch={false}` on `<Link>` components. Links still prefetch on viewport intersection—a better trade-off that improved INP to <200ms (Good).
+Next.js hover prefetching can **block the main thread** and destroy INP scores (664ms+). Disable with `prefetch={false}` on `<Link>` components. Links still prefetch on viewport intersection—a better trade-off that improved INP to &lt;200ms (Good).
 </KeyTakeaway>
 
 <CollapsibleSection
@@ -358,39 +375,7 @@ I created comprehensive instructions for AI coding assistants (GitHub Copilot, C
 
 ---
 
-<RoleBasedCTA
-  role="executive"
-  title="For Business Leaders"
-  description="Need production readiness assessment for your developer platform? Get a comprehensive security audit covering CSP implementation, rate limiting, and Core Web Vitals optimization."
-  buttonText="Request Security Audit"
-  buttonHref="/contact?role=executive&topic=security-audit"
-/>
-
-<RoleBasedCTA
-  role="developer"
-  title="For Developers"
-  description="Learn the complete implementation strategy: CSP setup, zero-dependency rate limiting, INP optimization (664ms → <200ms), and GitHub API integration with caching."
-  buttonText="View Implementation Guide"
-  buttonHref="/blog/shipping-developer-portfolio"
-/>
-
-<RoleBasedCTA
-  role="security"
-  title="For Security Teams"
-  description="Explore defense-in-depth patterns: dynamic CSP with nonce generation, IP-based rate limiting, automated security scanning, and comprehensive monitoring with Sentry."
-  buttonText="Download Security Checklist"
-  buttonHref="/contact?role=security&topic=security-checklist"
-/>
-
----
-
 ## What's Next?
-
-<CollapsibleSection
-  id="hardening-future-improvements"
-  title="Future Improvements & Roadmap"
-  defaultExpanded={false}
->
 
 Future improvements on my radar:
 
@@ -399,8 +384,6 @@ Future improvements on my radar:
 - View counts and analytics
 - Upgrade rate limiter to Vercel KV for multi-region
 - Add E2E tests with Playwright
-
-</CollapsibleSection>
 
 ---
 
