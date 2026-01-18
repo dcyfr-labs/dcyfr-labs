@@ -64,6 +64,22 @@ export const HEADER_NAV: NavItem[] = [
     description: 'Learn about us and our team',
   },
   {
+    href: '/contact',
+    label: 'Contact',
+    shortLabel: 'Contact',
+    icon: Mail,
+    shortcut: 'g c',
+    description: 'Get in touch with us',
+  },
+  {
+    href: '/sponsors',
+    label: 'Sponsors',
+    shortLabel: 'Sponsors',
+    icon: Heart,
+    shortcut: 'g s',
+    description: 'Support open source development',
+  },
+  {
     href: '/blog',
     label: 'Blog',
     shortLabel: 'Blog',
@@ -78,22 +94,6 @@ export const HEADER_NAV: NavItem[] = [
     icon: Briefcase,
     shortcut: 'g w',
     description: 'Explore our portfolio and client work',
-  },
-  {
-    href: '/sponsors',
-    label: 'Sponsors',
-    shortLabel: 'Sponsors',
-    icon: Heart,
-    shortcut: 'g s',
-    description: 'Support open source development',
-  },
-  {
-    href: '/contact',
-    label: 'Contact',
-    shortLabel: 'Contact',
-    icon: Mail,
-    shortcut: 'g c',
-    description: 'Get in touch with us',
   },
 ];
 
@@ -186,18 +186,6 @@ export const MOBILE_NAV_SECTIONS: NavSection[] = [
         description: 'Learn about DCYFR Labs',
       },
       {
-        href: '/blog',
-        label: 'Blog',
-        icon: FileText,
-        description: 'Read our articles',
-      },
-      {
-        href: '/work',
-        label: 'Work',
-        icon: Briefcase,
-        description: 'View our portfolio',
-      },
-      {
         href: '/sponsors',
         label: 'Sponsors',
         icon: Heart,
@@ -208,6 +196,18 @@ export const MOBILE_NAV_SECTIONS: NavSection[] = [
         label: 'Contact',
         icon: Mail,
         description: 'Get in touch',
+      },
+      {
+        href: '/blog',
+        label: 'Blog',
+        icon: FileText,
+        description: 'Read our articles',
+      },
+      {
+        href: '/work',
+        label: 'Work',
+        icon: Briefcase,
+        description: 'View our portfolio',
       },
     ],
   },
@@ -234,6 +234,13 @@ export const MOBILE_NAV_SECTIONS: NavSection[] = [
         icon: Briefcase,
         description: 'Explore our projects',
       },
+      {
+        href: '/bookmarks',
+        label: 'Bookmarks',
+        icon: Bookmark,
+        description: 'Your saved items',
+      },
+      { href: '/likes', label: 'Likes', icon: Heart, description: 'Content you liked' },
     ],
   },
 ];
@@ -248,9 +255,9 @@ export const MOBILE_NAV_SECTIONS: NavSection[] = [
  */
 export const BOTTOM_NAV: NavItem[] = [
   {
-    href: '/activity',
-    label: 'Activity',
-    icon: Activity,
+    href: '/likes',
+    label: 'Likes',
+    icon: Heart,
   },
   {
     href: '/bookmarks',
@@ -258,9 +265,19 @@ export const BOTTOM_NAV: NavItem[] = [
     icon: Bookmark,
   },
   {
-    href: '/likes',
-    label: 'Likes',
-    icon: Heart,
+    href: '/activity',
+    label: 'Activity',
+    icon: Activity,
+  },
+  {
+    href: '/blog',
+    label: 'Blog',
+    icon: FileText,
+  },
+  {
+    href: '/work',
+    label: 'Work',
+    icon: Briefcase,
   },
 ];
 

@@ -12,7 +12,7 @@ import { ANIMATION, NAVIGATION_HEIGHT } from '@/lib/design-tokens';
  *
  * Features:
  * - Fixed at bottom of viewport on mobile only (< md breakpoint)
- * - 3 primary destinations: Home, Blog, Work
+ * - 5 primary destinations: Activity, Bookmarks, Likes, Blog, Work
  * - 64px height (matches NAVIGATION_HEIGHT for site header)
  * - Shows when scrolling down, hides when scrolling up (except at top)
  * - Active state highlighting
@@ -70,7 +70,7 @@ export function BottomNav() {
       aria-label="Bottom navigation"
       aria-hidden={!isVisible}
     >
-      <div className={cn('grid grid-cols-3', NAVIGATION_HEIGHT, 'max-w-lg', 'mx-auto')}>
+      <div className={cn('grid grid-cols-5', NAVIGATION_HEIGHT, 'max-w-screen-md', 'mx-auto')}>
         {NAVIGATION.bottom.map((item) => {
           const Icon = item.icon;
           const isActive = isNavItemActive(item, pathname);

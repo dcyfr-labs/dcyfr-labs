@@ -73,6 +73,7 @@ This document tracks operational priorities, feature development stages, and mai
    - **Decision:** Keep multi-file architecture; Copilot requires `.github/`
 
 **Backlogged for Future:**
+
 - More DCYFR override skills (dcyfr-debugging, dcyfr-git-workflow)
 - Test superpowers integration with real feature workflow
 
@@ -108,6 +109,7 @@ This document tracks operational priorities, feature development stages, and mai
    - **Root cause:** Tests were already fixed in previous work, just needed verification
 
 **Quality Metrics:**
+
 - ✅ Test pass rate: 100% (2816/2816 passing, 103 skipped)
 - ✅ 0 failing test files
 - ✅ 4 files removed (~2000 lines of unused code)
@@ -115,6 +117,7 @@ This document tracks operational priorities, feature development stages, and mai
 - ✅ ESLint: 0 errors
 
 **Impact:**
+
 - Achieved 100% test pass rate for non-skipped tests
 - Reduced codebase complexity
 - Eliminated maintenance burden for unused feature
@@ -156,6 +159,7 @@ This document tracks operational priorities, feature development stages, and mai
    - Complete archive README with cross-references
 
 **Quality Metrics:**
+
 - ✅ Documentation: 18 focused directories (up from 16)
 - ✅ Session Archives: 11 files properly organized
 - ✅ New AI Docs: 8 comprehensive pattern files
@@ -192,7 +196,7 @@ This document tracks operational priorities, feature development stages, and mai
 4. **Share Functionality**
    - Share to DEV.to functionality implemented
    - All "Twitter" references updated to "Twitter/X"
-   - Social accounts integrated (@dcyfr_ on Twitter/X, @dcyfr on DEV)
+   - Social accounts integrated (@dcyfr\_ on Twitter/X, @dcyfr on DEV)
 
 **Technical Quality:**
 
@@ -608,6 +612,7 @@ This document tracks operational priorities, feature development stages, and mai
 ### Web Link Library 📋 BACKLOG
 
 **Inspiration Sources:**
+
 - [Library of Babel](https://libraryofbabel.info) - Infinite library concept
 - [Awesome Useful Websites](https://github.com/atakanaltok/awesome-useful-websites) - Curated list of 1000+ useful websites
 - Other awesome lists ecosystem
@@ -1219,14 +1224,14 @@ All previously failing tests have been fixed:
 
 ### Summary Metrics
 
-| Metric | Target | Achieved | Status |
-|--------|--------|----------|--------|
-| **Bundle Reduction** | -300KB+ | **-360KB (72%)** | ✅ Exceeded |
-| **Test Pass Rate** | >95% | **95.2% (0 failing)** | ✅ Met |
-| **RIVET Posts** | 2 posts | **2 complete** | ✅ Met |
-| **RIVET Components** | 40+ | **43 total** | ✅ Exceeded |
-| **Build Success** | All pass | **TypeScript/ESLint/build ✅** | ✅ Met |
-| **Documentation** | 4+ docs | **5 comprehensive** | ✅ Exceeded |
+| Metric               | Target   | Achieved                       | Status      |
+| -------------------- | -------- | ------------------------------ | ----------- |
+| **Bundle Reduction** | -300KB+  | **-360KB (72%)**               | ✅ Exceeded |
+| **Test Pass Rate**   | >95%     | **95.2% (0 failing)**          | ✅ Met      |
+| **RIVET Posts**      | 2 posts  | **2 complete**                 | ✅ Met      |
+| **RIVET Components** | 40+      | **43 total**                   | ✅ Exceeded |
+| **Build Success**    | All pass | **TypeScript/ESLint/build ✅** | ✅ Met      |
+| **Documentation**    | 4+ docs  | **5 comprehensive**            | ✅ Exceeded |
 
 **Session Completed:** January 16, 2026
 
@@ -1488,6 +1493,17 @@ All previously flaky tests are now passing consistently:
 - ✅ Social metrics dashboard widget
 - ✅ Share to DEV functionality
 - ✅ Automated metrics syncing (Inngest)
+
+### Mobile Experience
+
+- **Consolidate FAB Icons into Mobile Footer Menu** (Priority: Low, Effort: 2-4 hours)
+  - Blog archive and blog pages currently have unique FAB (Floating Action Button) icons
+  - Consolidate these into the mobile footer navigation for unified experience
+  - Benefits: Consistent navigation across all pages, reduced UI clutter, single source of truth
+  - Consider: Icon selection (5 items max), action priority (share, filter, search)
+  - Related: Bottom nav currently has Activity, Bookmarks, Likes, Blog, Work
+  - Target: Q2 2026
+  - See: `src/components/navigation/bottom-nav.tsx`
 
 ### Other Features
 
