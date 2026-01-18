@@ -10,10 +10,10 @@
 
 Both **Sentry** and **Axiom** MCPs are configured and accessible via Claude Code for troubleshooting:
 
-| Service | Type | Status | Authentication | Primary Use |
-|---------|------|--------|-----------------|-------------|
-| **Sentry** | HTTP | ✅ Active | OAuth + Token | Error tracking, exceptions, performance |
-| **Axiom** | stdio | ✅ Active | API Key | Logs, CSP violations, security events |
+| Service    | Type  | Status    | Authentication | Primary Use                             |
+| ---------- | ----- | --------- | -------------- | --------------------------------------- |
+| **Sentry** | HTTP  | ✅ Active | OAuth + Token  | Error tracking, exceptions, performance |
+| **Axiom**  | stdio | ✅ Active | API Key        | Logs, CSP violations, security events   |
 
 **TL;DR:** Use `/research` command in Claude Code to access both services for investigating blog loading errors, security alerts, and performance issues.
 
@@ -22,6 +22,7 @@ Both **Sentry** and **Axiom** MCPs are configured and accessible via Claude Code
 ## 🔧 Configuration Status
 
 ### Sentry MCP (HTTP)
+
 - **Endpoint:** `https://mcp.sentry.dev/mcp/dcyfr-labs/dcyfr-labs`
 - **Authentication:** `SENTRY_AUTH_TOKEN` (in `.env.local`)
 - **Health Check:** ✅ Responds with 401 (expected - needs auth token header)
@@ -37,6 +38,7 @@ Both **Sentry** and **Axiom** MCPs are configured and accessible via Claude Code
 ```
 
 ### Axiom MCP (stdio)
+
 - **Type:** Remote MCP via `mcp-remote`
 - **Endpoint:** `https://mcp.axiom.co/mcp`
 - **Command:** `npx -y mcp-remote https://mcp.axiom.co/mcp`
@@ -60,6 +62,7 @@ Both **Sentry** and **Axiom** MCPs are configured and accessible via Claude Code
 ### Method 1: Claude Code Direct Access (Recommended)
 
 **For Sentry Issues:**
+
 ```
 @Sentry find organization dcyfr-labs
 @Sentry find project dcyfr-labs
@@ -68,6 +71,7 @@ Both **Sentry** and **Axiom** MCPs are configured and accessible via Claude Code
 ```
 
 **For Axiom Logs:**
+
 ```
 @Axiom query "['event'] == 'admin_access'"
 @Axiom search CSP violations
@@ -77,11 +81,13 @@ Both **Sentry** and **Axiom** MCPs are configured and accessible via Claude Code
 ### Method 2: Manual Dashboard Access
 
 **Sentry:**
+
 - **URL:** https://sentry.io/organizations/dcyfr-labs/issues/
 - **Project:** dcyfr-labs
 - **Auth:** Use your Sentry account (OAuth configured)
 
 **Axiom:**
+
 - **URL:** https://app.axiom.co/dcyfr-1fc7
 - **Dashboard:** https://app.axiom.co/dcyfr-1fc7/dashboards/jgTPB1LvUpcfnCTR5d
 - **Auth:** Use your Axiom organization credentials
@@ -89,11 +95,13 @@ Both **Sentry** and **Axiom** MCPs are configured and accessible via Claude Code
 ### Method 3: CLI Scripts
 
 **Check MCP Health:**
+
 ```bash
 npm run mcp:health
 ```
 
 **Generate Health Report:**
+
 ```bash
 npm run mcp:health > health-report.json
 ```
@@ -105,6 +113,7 @@ npm run mcp:health > health-report.json
 ### Scenario 1: Blog Loading Errors (Like Error ID: 426590469)
 
 **Step 1: Check Sentry for Redis errors**
+
 ```
 Use: @Sentry search "redis" OR "connection"
 Look for: "Failed to connect to Redis" messages
@@ -112,12 +121,14 @@ Timeframe: Last 24 hours
 ```
 
 **Step 2: Check Axiom for view count failures**
+
 ```
 Use: @Axiom query "['service'] == 'blog' AND ['severity'] == 'error'"
 Look for: view count fetch failures
 ```
 
 **Step 3: Review MCP Health Status**
+
 ```bash
 npm run mcp:health | grep -E "Analytics|Axiom|Sentry"
 ```
@@ -129,13 +140,15 @@ npm run mcp:health | grep -E "Analytics|Axiom|Sentry"
 ### Scenario 2: Security Alert Investigation
 
 **Step 1: Query Admin Access Events in Axiom**
+
 ```sql
-['event'] == "admin_access" 
+['event'] == "admin_access"
 | where timestamp > now() - 1h
 | sort by timestamp desc
 ```
 
 **Step 2: Check for Brute Force Attempts**
+
 ```sql
 ['event'] == "admin_access"
 and ['result'] == "denied"
@@ -144,6 +157,7 @@ and ['result'] == "denied"
 ```
 
 **Step 3: View Sentry Alerts**
+
 ```
 @Sentry search level:error tag:admin_access
 ```
@@ -155,6 +169,7 @@ and ['result'] == "denied"
 ### Scenario 3: Performance Investigation
 
 **Step 1: Check Response Times in Axiom**
+
 ```sql
 ['service'] == 'blog'
 | project timestamp, duration, endpoint
@@ -163,12 +178,14 @@ and ['result'] == "denied"
 ```
 
 **Step 2: Check Sentry Performance Metrics**
+
 ```
 @Sentry query metric:duration
 @Sentry get performance profile
 ```
 
 **Step 3: Review MCP Response Times**
+
 ```bash
 npm run mcp:health | grep responseTimeMs
 ```
@@ -178,6 +195,7 @@ npm run mcp:health | grep responseTimeMs
 ## 📊 Available Data Sources
 
 ### Sentry Provides
+
 - ✅ Error stack traces with line numbers
 - ✅ Browser session replays
 - ✅ Performance profiling data
@@ -186,9 +204,10 @@ npm run mcp:health | grep responseTimeMs
 - ✅ Performance monitoring (transactions)
 - ✅ Real User Monitoring (RUM)
 
-**Best For:** Understanding *what went wrong* and *where* in the code
+**Best For:** Understanding _what went wrong_ and _where_ in the code
 
 ### Axiom Provides
+
 - ✅ Structured log events (JSON)
 - ✅ CSP violations and security events
 - ✅ Request/response metadata
@@ -197,7 +216,7 @@ npm run mcp:health | grep responseTimeMs
 - ✅ Real-time log streaming
 - ✅ Full-text search over all logs
 
-**Best For:** Understanding *why* something happened and *when* patterns occur
+**Best For:** Understanding _why_ something happened and _when_ patterns occur
 
 ---
 
@@ -216,7 +235,9 @@ NEXT_PUBLIC_SENTRY_DSN="https://5f7d3fe14a9829d4fafcf00da6cbc87f@o45103496919121
 ```
 
 ### Sentry Token Scopes
+
 The current token has these scopes:
+
 - ✅ `org:read` - Read organization data
 - ✅ `project:read` - Read project configuration
 - ✅ `project:write` - Update project settings
@@ -225,6 +246,7 @@ The current token has these scopes:
 - ✅ `event:write` - Create/update events
 
 **To regenerate token:**
+
 1. Go to https://sentry.io/settings/account/api/auth-tokens/
 2. Create new token with scopes above
 3. Update `SENTRY_AUTH_TOKEN` in `.env.local`
@@ -247,6 +269,7 @@ npm run mcp:health | grep Axiom
 ```
 
 **Expected Results:**
+
 ```
 ✓ Sentry (url) - OK [401]           # 401 = needs auth (normal)
 ✓ Axiom (command) - OK              # stdio command server
@@ -263,16 +286,19 @@ node scripts/ci/check-mcp-servers.mjs --debug
 ## 📚 Documentation References
 
 ### For Sentry MCP
+
 - **Setup Guide:** `docs/troubleshooting/private/sentry-mcp-setup.md`
 - **Sentry Docs:** https://docs.sentry.io/product/sentry-mcp/
 - **Sentry Alerts Setup:** `docs/security/private/sentry-manual-alert-setup.md`
 
 ### For Axiom MCP
+
 - **Security Queries:** `docs/security/private/axiom-security-queries.md` (15+ pre-built queries)
 - **Web Vitals Setup:** `docs/optimization/axiom-web-vitals-setup.md`
 - **Dashboard:** https://app.axiom.co/dcyfr-1fc7/dashboards/jgTPB1LvUpcfnCTR5d
 
 ### General MCP Reference
+
 - **Health Monitoring:** `docs/features/mcp-health-monitoring.md`
 - **MCP Configuration:** `.vscode/mcp.json` (TIER 1/2 allocation strategy)
 - **AI MCP Checks:** `docs/ai/mcp-checks.md`
@@ -282,16 +308,19 @@ node scripts/ci/check-mcp-servers.mjs --debug
 ## 🚨 Known Limitations & Workarounds
 
 ### Sentry Limitations
+
 - **Issue:** Semantic search (`search_issues`) requires `OPENAI_API_KEY`
 - **Workaround:** Use Axiom's full-text search instead for log analysis
 - **Status:** Document notes this in `docs/troubleshooting/private/sentry-mcp-setup.md`
 
 ### Axiom Limitations
+
 - **Issue:** Geographic queries need IP geolocation enrichment
 - **Workaround:** Query manually on Axiom dashboard with geo_info enrichment
 - **Status:** See `docs/security/private/axiom-security-queries.md` line 142
 
 ### Rate Limiting
+
 - **Sentry:** 100 requests/minute per token
 - **Axiom:** Rate limits per subscription plan
 - **Mitigation:** MCP health checks are cached; individual queries not cached
@@ -303,12 +332,14 @@ node scripts/ci/check-mcp-servers.mjs --debug
 ### Context: Recent Blog Loading Error Fix
 
 **Error Details:**
+
 - **Error ID:** 426590469
 - **Issue:** Unhandled promise rejection in Redis connection
 - **Root Cause:** `getClient()` in `src/lib/views.server.ts` attempted connection without error handling
 - **Fix Applied:** Added try-catch around `await client.connect()`
 
 **How to Verify the Fix:**
+
 ```bash
 # 1. Check Sentry for no new Redis errors
 @Sentry search "redis" OR "connection" after:2026-01-18
@@ -331,18 +362,21 @@ curl http://localhost:3000/blog
 ## 📞 Support Escalation
 
 ### If Sentry MCP Not Working
+
 1. Verify `SENTRY_AUTH_TOKEN` in `.env.local`
 2. Check token scopes at https://sentry.io/settings/account/api/auth-tokens/
 3. Verify organization: https://sentry.io/settings/dcyfr-labs/projects/
 4. See: `docs/troubleshooting/private/sentry-mcp-setup.md`
 
 ### If Axiom MCP Not Working
+
 1. Verify Vercel integration at https://axiom.co (check datasources)
 2. Check `mcp-remote` binary: `which mcp-remote`
 3. Test endpoint: `curl https://mcp.axiom.co/mcp`
 4. Verify logs arriving: Check Axiom dashboard for recent events
 
 ### If Both MCPs Down
+
 1. Run `npm run mcp:health --debug` to see error details
 2. Check `.vscode/mcp.json` configuration
 3. Verify environment variables in `.env.local`
