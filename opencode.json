@@ -1,9 +1,5 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "version": "2.0.0",
-  "project": "dcyfr-labs",
-  "description": "OpenCode configuration for DCYFR portfolio with MCP integration and DCYFR-specific skills",
-
   "mcp": {
     "memory": {
       "type": "local",
@@ -13,14 +9,19 @@
     },
     "filesystem": {
       "type": "local",
-      "command": ["npx", "-y", "@modelcontextprotocol/server-filesystem", "${workspaceFolder}"],
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/drew/DCYFR/code/dcyfr-labs"
+      ],
       "enabled": true,
       "timeout": 5000
     },
     "github": {
       "type": "remote",
       "url": "https://api.githubcopilot.com/mcp/",
-      "enabled": true,
+      "enabled": false,
       "timeout": 10000
     },
     "context7": {
@@ -47,44 +48,19 @@
     "vercel": {
       "type": "remote",
       "url": "https://mcp.vercel.com",
-      "enabled": true,
+      "enabled": false,
       "timeout": 5000
     },
     "sentry": {
       "type": "remote",
       "url": "https://mcp.sentry.dev/mcp/dcyfr-labs/dcyfr-labs",
-      "enabled": true,
+      "enabled": false,
       "oauth": {},
       "timeout": 5000
     },
     "axiom": {
       "type": "local",
       "command": ["npx", "-y", "mcp-remote", "https://mcp.axiom.co/mcp"],
-      "enabled": true,
-      "timeout": 5000
-    },
-    "dcyfr_analytics": {
-      "type": "local",
-      "command": ["npm", "run", "mcp:analytics"],
-      "cwd": "${workspaceFolder}",
-      "enabled": true,
-      "environment": {
-        "UPSTASH_REDIS_REST_URL": "{env:UPSTASH_REDIS_REST_URL}",
-        "UPSTASH_REDIS_REST_TOKEN": "{env:UPSTASH_REDIS_REST_TOKEN}"
-      },
-      "timeout": 5000
-    },
-    "dcyfr_tokens": {
-      "type": "local",
-      "command": ["npm", "run", "mcp:tokens"],
-      "cwd": "${workspaceFolder}",
-      "enabled": true,
-      "timeout": 5000
-    },
-    "dcyfr_content": {
-      "type": "local",
-      "command": ["npm", "run", "mcp:content"],
-      "cwd": "${workspaceFolder}",
       "enabled": true,
       "timeout": 5000
     },
@@ -131,9 +107,6 @@
     "vercel_*": true,
     "sentry_*": false,
     "axiom_*": false,
-    "dcyfr_analytics_*": true,
-    "dcyfr_tokens_*": true,
-    "dcyfr_content_*": true,
     "deepgraph_nextjs_*": false,
     "deepgraph_typescript_*": false,
     "playwright_*": false,
@@ -160,8 +133,6 @@
     "dcyfr-feature": {
       "tools": {
         "*": true,
-        "dcyfr_tokens_*": true,
-        "dcyfr_content_*": true,
         "filesystem_*": true,
         "memory_*": true
       },
@@ -174,7 +145,6 @@
     "dcyfr-quick": {
       "tools": {
         "*": true,
-        "dcyfr_tokens_*": true,
         "filesystem_*": true
       },
       "permission": {
@@ -182,15 +152,47 @@
           "dcyfr-quick-fix": "allow"
         }
       }
+    },
+    "dcyfr-analytics": {
+      "tools": {
+        "*": true,
+        "filesystem_*": true,
+        "memory_*": true
+      },
+      "permission": {
+        "skill": {
+          "dcyfr-*": "allow"
+        }
+      },
+      "description": "Analytics data analysis and Redis operations for DCYFR project metrics"
+    },
+    "dcyfr-tokens": {
+      "tools": {
+        "*": true,
+        "filesystem_*": true,
+        "memory_*": true
+      },
+      "permission": {
+        "skill": {
+          "dcyfr-design-tokens": "allow",
+          "dcyfr-*": "allow"
+        }
+      },
+      "description": "Design token validation, analysis, and compliance checking"
+    },
+    "dcyfr-content": {
+      "tools": {
+        "*": true,
+        "filesystem_*": true,
+        "memory_*": true
+      },
+      "permission": {
+        "skill": {
+          "dcyfr-mdx-authoring": "allow",
+          "dcyfr-*": "allow"
+        }
+      },
+      "description": "Blog and content management, MDX authoring, and content analysis"
     }
-  },
-
-  "formatters": {
-    "typescript": "prettier",
-    "typescriptreact": "prettier",
-    "javascript": "prettier",
-    "javascriptreact": "prettier",
-    "json": "prettier",
-    "markdown": "prettier"
   }
 }
