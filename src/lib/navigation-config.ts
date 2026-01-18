@@ -170,6 +170,10 @@ export const DEV_TOOLS_NAV: NavItem[] = [
     href: '/dev/unified-ai-costs',
     label: 'AI Cost Dashboard',
   },
+  {
+    href: '/dev/news',
+    label: 'Tech News',
+  },
 ] as const;
 
 /**
