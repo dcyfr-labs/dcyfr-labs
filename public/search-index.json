@@ -4,7 +4,7 @@
       "id": "post-20260114-b4f5e2c2",
       "title": "Node.js January 2026 Security Release: 8 CVEs Explained",
       "summary": "On January 13, 2026, Node.js released security patches for 8 vulnerabilities (3 HIGH, 4 MEDIUM, 1 LOW) affecting all active release lines. This post breaks down each CVE, explains who is affected, and provides actionable remediation guidance.",
-      "content": "Upgrade Required: Node.js released security patches on January 13, 2026 for 8 vulnerabilities affecting all active release lines (20.x, 22.x, 24.x, 25.x). Upgrade immediately to v20.20.0, v22.22.0, v24.13.0, or v25.3.0. --- TL;DR Quick Decision Guide: | Your Situation | Action Required | Risk Level | | --------------------------------------- | ----------------------------------------------- | ----------------------- | | Running Node.js v20-v23 + any framework | Upgrade immediately to v20.20.0 / ",
+      "content": "Upgrade Required: Node.js released security patches on January 13, 2026 for 8 vulnerabilities affecting all active release lines (20.x, 22.x, 24.x, 25.x). Upgrade immediately to v20.20.0, v22.22.0, v24.13.0, or v25.3.0. --- Quick Decision Guide | Your Situation | Action Required | Risk Level | | --------------------------------------- | ----------------------------------------------- | ----------------------- | | Running Node.js v20-v23 + any framework | Upgrade immediately to v20.20.0 / v22.22.",
       "tags": [
         "Node.js",
         "Security",
@@ -319,5 +319,5 @@
     "Features",
     "Portfolio"
   ],
-  "generatedAt": "2026-01-18T03:05:00.342Z"
+  "generatedAt": "2026-01-18T04:50:19.796Z"
 }

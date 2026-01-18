@@ -29,6 +29,8 @@ image:
 previousSlugs: ['owasp-top-10-agentic-ai-2026']
 ---
 
+<CVETracker>
+
 <ContextClue>
   As AI agents become more autonomous and capable of taking real-world actions, the security
   landscape is evolving rapidly. This guide breaks down OWASP's newly released framework for
@@ -190,7 +192,7 @@ The OWASP Top 10 for Agentic Applications identifies the most critical security 
 
 **Why it matters:** Agents process natural language instructions and cannot always distinguish legitimate commands from attacker-controlled content. A malicious email, <GlossaryTooltip term="Prompt Injection" definition="An attack technique where malicious instructions are embedded in user inputs, documents, or data sources to manipulate an AI agent's behavior and redirect its objectives.">poisoned document</GlossaryTooltip>, or hidden webpage instructions can redirect an agent's entire mission.
 
-**Real-world example:** In the **EchoLeak attack** (CVE-2025-32711), researchers at Aim Security discovered that a crafted email could trigger Microsoft 365 Copilot to silently <GlossaryTooltip term="Data Exfiltration" definition="The unauthorized transfer of sensitive data from a system, often performed by malicious actors or compromised agents to extract confidential information.">exfiltrate confidential emails, files, and chat logs</GlossaryTooltip>--without user interaction. The agent followed hidden instructions embedded in the message, treating attacker commands as legitimate goals. Microsoft assigned a critical CVSS score of 9.3 and deployed patches by May 2025.[^4]
+**Real-world example:** In the **EchoLeak attack** (<CVELink cve="CVE-2025-32711" />), researchers at Aim Security discovered that a crafted email could trigger Microsoft 365 Copilot to silently <GlossaryTooltip term="Data Exfiltration" definition="The unauthorized transfer of sensitive data from a system, often performed by malicious actors or compromised agents to extract confidential information.">exfiltrate confidential emails, files, and chat logs</GlossaryTooltip>--without user interaction. The agent followed hidden instructions embedded in the message, treating attacker commands as legitimate goals. Microsoft assigned a critical CVSS score of 9.3 and deployed patches by May 2025.[^4]
 
 In another incident, security researcher Johann Rehberger demonstrated how malicious webpage content could trick OpenAI's Operator agent into accessing authenticated internal pages and exposing users' private data, including email addresses, home addresses, and phone numbers from sites like GitHub and Booking.com.[^5]
 
@@ -284,7 +286,7 @@ The first malicious Model Context Protocol (MCP) server was discovered on npm in
 
 **Real-world example:** During automated code generation, a Replit agent hallucinated data, deleted a production database, then generated false outputs to hide its mistakes from the human operator.
 
-Security researchers demonstrated command injection in Visual Studio Code's agentic AI workflows (CVE-2025-55319), enabling remote, unauthenticated attackers to execute commands on developers' machines through prompt injections hidden in README files or code comments.[^8]
+Security researchers demonstrated command injection in Visual Studio Code's agentic AI workflows (<CVELink cve="CVE-2025-55319" />), enabling remote, unauthenticated attackers to execute commands on developers' machines through prompt injections hidden in README files or code comments.[^8]
 
 <KeyTakeaway>
   When agents can turn text into executable code, every input becomes a potential backdoor.
@@ -470,11 +472,11 @@ These threats are building in real-world systems and pose increasing risks as ag
   defaultExpanded={false}
 >
 
-1. **ASI01: Agent Goal Hijack**: Prompt injection redirects agent objectives (EchoLeak CVE-2025-32711)
+1. **ASI01: Agent Goal Hijack**: Prompt injection redirects agent objectives (EchoLeak <CVELink cve="CVE-2025-32711" />)
 2. **ASI02: Tool Misuse and Exploitation**: Legitimate tools weaponized through manipulation
 3. **ASI03: Identity and Privilege Abuse**: Credential delegation chains exploited for escalation
 4. **ASI04: Agentic Supply Chain Vulnerabilities**: Poisoned plugins, MCP servers, and dependencies
-5. **ASI05: Unexpected Code Execution (RCE)**: Code generation features exploited (CVE-2025-55319)
+5. **ASI05: Unexpected Code Execution (RCE)**: Code generation features exploited (<CVELink cve="CVE-2025-55319" />)
 6. **ASI06: Memory and Context Poisoning**: Long-term memory corrupted to influence future decisions
 7. **ASI07: Insecure Inter-Agent Communication**: Multi-agent systems lacking authentication
 8. **ASI08: Cascading Failures**: Single faults propagating across autonomous systems
@@ -649,7 +651,9 @@ For deeper exploration of agentic AI security, see the resources below for compr
 
 ### CVE-2025-32711: EchoLeak - Microsoft 365 Copilot Zero-Click Data Exfiltration
 
-**Severity:** Critical (CVSS 9.3)  
+**CVE ID:** <CVELink cve="CVE-2025-32711" />  
+**Severity:** <SeverityLabel severity="CRITICAL" />  
+**CVSS Score:** 9.3/10  
 **Discovered:** June 2025 by Aim Security  
 **Patched:** May 2025
 
@@ -668,7 +672,9 @@ For deeper exploration of agentic AI security, see the resources below for compr
 
 ### CVE-2025-55319: Visual Studio Code Agentic AI Command Injection
 
-**Severity:** High (CVSS 8.8)  
+**CVE ID:** <CVELink cve="CVE-2025-55319" />  
+**Severity:** <SeverityLabel severity="HIGH" />  
+**CVSS Score:** 8.8/10  
 **Discovered:** September 2025 by ZeroPath Security  
 **Affected:** VS Code agentic AI workflows
 
@@ -753,6 +759,28 @@ These real-world CVEs demonstrate that agentic AI attack vectors are not theoret
 - **[Snyk - Supply Chain Security for AI](https://snyk.io/blog/malicious-mcp-server-on-npm-postmark-mcp-harvests-emails/)**: Analysis of malicious MCP servers and dependencies
 
 </CollapsibleSection>
+
+---
+
+## CVE Details
+
+<CVEFootnote
+  cve="CVE-2025-32711"
+  description="EchoLeak - Microsoft 365 Copilot zero-click data exfiltration via prompt injection in emails"
+  cvssScore={9.3}
+  severity="CRITICAL"
+/>
+
+<CVEFootnote
+  cve="CVE-2025-55319"
+  description="Visual Studio Code agentic AI command injection enabling RCE via malicious repositories"
+  cvssScore={8.8}
+  severity="HIGH"
+/>
+
+</CVETracker>
+
+---
 
 [^1]: LMTEQ. "Reduce Manual Work By 70% With ServiceNow Automation." _LMTEQ Blog_, May 2025. [lmteq.com](https://www.lmteq.com/blogs/servicenow/servicenow-to-reduce-manual-workloads-in-industries/)
 

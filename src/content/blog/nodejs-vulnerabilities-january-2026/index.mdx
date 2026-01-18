@@ -18,17 +18,25 @@ image:
   height: 630
 ---
 
+<CVETracker>
+
 <Alert type="critical">
   **Upgrade Required:** Node.js released security patches on January 13, 2026 for **8
   vulnerabilities** affecting all active release lines (20.x, 22.x, 24.x, 25.x). Upgrade immediately
   to **v20.20.0**, **v22.22.0**, **v24.13.0**, or **v25.3.0**.
 </Alert>
 
+**Vulnerability Summary:**
+
+<div className="flex flex-wrap gap-2 my-4">
+  <SeverityLabel severity="HIGH" count={3} />
+  <SeverityLabel severity="MEDIUM" count={4} />
+  <SeverityLabel severity="LOW" count={1} />
+</div>
+
 ---
 
-## TL;DR
-
-**Quick Decision Guide:**
+## Quick Decision Guide
 
 | Your Situation                          | Action Required                                 | Risk Level              |
 | --------------------------------------- | ----------------------------------------------- | ----------------------- |
@@ -81,7 +89,8 @@ These dependency patches are automatically included in the Node.js security rele
 
 ### CVE-2025-55131: Buffer Memory Leak via Race Condition
 
-**Severity:** HIGH  
+**Severity:** <SeverityLabel severity="HIGH" />  
+**CVE ID:** <CVELink cve="CVE-2025-55131" />  
 **Affected Versions:** 20.x, 22.x, 24.x, 25.x  
 **Reporter:** Nikita Skovoroda
 
@@ -573,6 +582,68 @@ Update your GitHub Actions workflows to use version pinning:
   sectionId="key-takeaways"
   sectionTitle="Node.js January 2026 Security: Key Takeaways"
 />
+
+---
+
+## CVE Details
+
+<CVEFootnote
+  cve="CVE-2025-55131"
+  description="Buffer Memory Leak via Race Condition in Node.js VM module"
+  cvssScore={7.5}
+  severity="HIGH"
+/>
+
+<CVEFootnote
+  cve="CVE-2025-55130"
+  description="Symlink Bypass in Permissions Model for File System Access"
+  cvssScore={7.3}
+  severity="HIGH"
+/>
+
+<CVEFootnote
+  cve="CVE-2025-55133"
+  description="HTTP/2 Denial of Service via Error Handling Flaw"
+  cvssScore={7.5}
+  severity="HIGH"
+/>
+
+<CVEFootnote
+  cve="CVE-2025-59466"
+  description="AsyncLocalStorage DoS via Unrecoverable Stack Exhaustion"
+  cvssScore={6.5}
+  severity="MEDIUM"
+/>
+
+<CVEFootnote
+  cve="CVE-2026-21637"
+  description="TLS Memory Leak in Session Renegotiation"
+  cvssScore={5.9}
+  severity="MEDIUM"
+/>
+
+<CVEFootnote
+  cve="CVE-2026-21636"
+  description="Unix Domain Socket Bypass in Permissions Model"
+  cvssScore={6.3}
+  severity="MEDIUM"
+/>
+
+<CVEFootnote
+  cve="CVE-2026-21638"
+  description="TLS DoS via Callback Re-entry"
+  cvssScore={5.3}
+  severity="MEDIUM"
+/>
+
+<CVEFootnote
+  cve="CVE-2025-55132"
+  description="Timestamp-based Permissions Bypass"
+  cvssScore={3.1}
+  severity="LOW"
+/>
+
+</CVETracker>
 
 ---
 

@@ -388,4 +388,65 @@ describe("RoleBasedCTA", () => {
       expect(icon).toBeInTheDocument();
     });
   });
+
+  describe("Button Styling", () => {
+    it("should use blue button for executive role", () => {
+      const { container } = render(
+        <RoleBasedCTA {...defaultProps} role="executive" />
+      );
+
+      const button = container.querySelector("a");
+      expect(button?.className).toMatch(/bg-blue-600/);
+      expect(button?.className).toMatch(/text-white/);
+    });
+
+    it("should use green button for developer role", () => {
+      const { container } = render(
+        <RoleBasedCTA {...defaultProps} role="developer" />
+      );
+
+      const button = container.querySelector("a");
+      expect(button?.className).toMatch(/bg-green-600/);
+      expect(button?.className).toMatch(/text-white/);
+    });
+
+    it("should use red button for security role", () => {
+      const { container } = render(
+        <RoleBasedCTA {...defaultProps} role="security" />
+      );
+
+      const button = container.querySelector("a");
+      expect(button?.className).toMatch(/bg-red-600/);
+      expect(button?.className).toMatch(/text-white/);
+    });
+
+    it("should have role-specific focus ring colors", () => {
+      const { container: executiveContainer } = render(
+        <RoleBasedCTA {...defaultProps} role="executive" />
+      );
+      const executiveButton = executiveContainer.querySelector("a");
+      expect(executiveButton?.className).toMatch(/focus:ring-blue-500/);
+
+      const { container: developerContainer } = render(
+        <RoleBasedCTA {...defaultProps} role="developer" />
+      );
+      const developerButton = developerContainer.querySelector("a");
+      expect(developerButton?.className).toMatch(/focus:ring-green-500/);
+
+      const { container: securityContainer } = render(
+        <RoleBasedCTA {...defaultProps} role="security" />
+      );
+      const securityButton = securityContainer.querySelector("a");
+      expect(securityButton?.className).toMatch(/focus:ring-red-500/);
+    });
+
+    it("should not have underline on button text", () => {
+      const { container } = render(
+        <RoleBasedCTA {...defaultProps} role="executive" />
+      );
+
+      const button = container.querySelector("a");
+      expect(button?.className).toMatch(/no-underline/);
+    });
+  });
 });

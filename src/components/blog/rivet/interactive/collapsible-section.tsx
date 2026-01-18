@@ -11,11 +11,13 @@ import {
 } from "@/lib/design-tokens";
 
 /**
- * CollapsibleSection - Expandable content with LocalStorage persistence
+ * CollapsibleSection - Expandable content with LocalStorage persistence and anchor links
  *
  * Features:
  * - Expand/collapse animation
  * - LocalStorage state persistence
+ * - Anchor link support (auto-expands when URL hash matches ID)
+ * - Smooth scroll to section when linked
  * - Keyboard accessible (Enter, Space)
  * - Theme-aware styling
  * - WCAG AA compliant
@@ -30,10 +32,15 @@ import {
  *   <p>Your content here...</p>
  * </CollapsibleSection>
  * ```
+ *
+ * Linking to a section:
+ * ```tsx
+ * <a href="#advanced-techniques">Jump to Advanced Techniques</a>
+ * ```
  */
 
 interface CollapsibleSectionProps {
-  /** Unique ID for LocalStorage persistence */
+  /** Unique ID for LocalStorage persistence and anchor links */
   id: string;
   /** Section title/heading */
   title: string;
@@ -84,6 +91,23 @@ export function CollapsibleSection({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted]);
 
+  // Check if this section should be expanded based on URL hash
+  useEffect(() => {
+    if (!isMounted) return;
+
+    const hash = window.location.hash.slice(1); // Remove '#' prefix
+    if (hash === id) {
+      setIsExpanded(true);
+      // Scroll to section after a brief delay to allow for expansion animation
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 150);
+    }
+  }, [isMounted, id]);
+
   // Save state to localStorage when changed
   useEffect(() => {
     if (!isMounted) return;
@@ -113,10 +137,12 @@ export function CollapsibleSection({
 
   return (
     <section
+      id={id}
       className={cn(
         "rounded-lg border border-border",
         "bg-card shadow-sm hover:shadow-md",
         "overflow-hidden",
+        "scroll-mt-20", // Offset for fixed header when scrolling to anchor
         ANIMATION.transition.base,
         reducedSpacing ? "mb-2" : `my-${SPACING_VALUES.md}`,
         className
@@ -129,6 +155,7 @@ export function CollapsibleSection({
         onKeyDown={handleKeyDown}
         aria-expanded={isExpanded}
         aria-controls={`collapsible-content-${id}`}
+        id={`collapsible-header-${id}`}
         className={cn(
           "w-full flex items-center justify-between gap-4",
           "p-4 sm:p-5",

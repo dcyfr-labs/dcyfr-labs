@@ -51,6 +51,8 @@ const roleConfig = {
     bgColor: "bg-blue-50 dark:bg-blue-950/30",
     borderColor: "border-blue-200 dark:border-blue-800",
     hoverBg: "hover:bg-blue-100 dark:hover:bg-blue-900/40",
+    buttonBg: "bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600",
+    buttonText: "text-white dark:text-white",
   },
   developer: {
     icon: Code,
@@ -58,6 +60,8 @@ const roleConfig = {
     bgColor: "bg-green-50 dark:bg-green-950/30",
     borderColor: "border-green-200 dark:border-green-800",
     hoverBg: "hover:bg-green-100 dark:hover:bg-green-900/40",
+    buttonBg: "bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600",
+    buttonText: "text-white dark:text-white",
   },
   security: {
     icon: Shield,
@@ -65,6 +69,8 @@ const roleConfig = {
     bgColor: "bg-red-50 dark:bg-red-950/30",
     borderColor: "border-red-200 dark:border-red-800",
     hoverBg: "hover:bg-red-100 dark:hover:bg-red-900/40",
+    buttonBg: "bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600",
+    buttonText: "text-white dark:text-white",
   },
 };
 
@@ -124,9 +130,13 @@ export function RoleBasedCTA({
           onClick={handleClick}
           className={cn(
             "inline-flex items-center justify-center px-6 py-3 rounded-md whitespace-nowrap w-full md:w-auto",
-            "text-sm font-medium transition-colors",
-            "bg-primary text-primary-foreground hover:bg-primary/90",
-            "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background"
+            "text-sm font-medium transition-colors no-underline",
+            theme.buttonBg,
+            theme.buttonText,
+            "focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-background",
+            role === "executive" && "focus:ring-blue-500",
+            role === "developer" && "focus:ring-green-500",
+            role === "security" && "focus:ring-red-500"
           )}
           role="button"
           aria-label={`${buttonText} for ${title}`}
