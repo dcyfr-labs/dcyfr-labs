@@ -4,7 +4,7 @@
       "id": "post-20260114-b4f5e2c2",
       "title": "Node.js January 2026 Security Release: 8 CVEs Explained",
       "summary": "On January 13, 2026, Node.js released security patches for 8 vulnerabilities (3 HIGH, 4 MEDIUM, 1 LOW) affecting all active release lines. This post breaks down each CVE, explains who is affected, and provides actionable remediation guidance.",
-      "content": "Upgrade Required: Node.js released security patches on January 13, 2026 for 8 vulnerabilities affecting all active release lines (20.x, 22.x, 24.x, 25.x). Upgrade immediately to v20.20.0, v22.22.0, v24.13.0, or v25.3.0. --- Affected Versions Matrix | CVE | Severity | v20.x | v22.x | v24.x | v25.x | Notes | | -------------- | -------- | :---: | :---: | :---: | :---: | ----------------------- | | CVE-2025-55131 | High | Yes | Yes | Yes | Yes | Buffer memory leak | | CVE-2025-55130 | High | Yes | Y",
+      "content": "Upgrade Required: Node.js released security patches on January 13, 2026 for 8 vulnerabilities affecting all active release lines (20.x, 22.x, 24.x, 25.x). Upgrade immediately to v20.20.0, v22.22.0, v24.13.0, or v25.3.0. On January 13, 2026, the Node.js project released security patches addressing: - 3 High Severity vulnerabilities (buffer memory leak, symlink bypass, HTTP/2 DoS) - 4 Medium Severity vulnerabilities (AsyncLocalStorage crashes, TLS memory leak, UDS bypass, TLS callback DoS) - 1 Low",
       "tags": [
         "Node.js",
         "Security",
@@ -319,5 +319,5 @@
     "Features",
     "Portfolio"
   ],
-  "generatedAt": "2026-01-19T05:15:23.191Z"
+  "generatedAt": "2026-01-19T06:23:04.330Z"
 }

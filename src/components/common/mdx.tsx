@@ -33,10 +33,6 @@ import {
   CollapsibleSection,
   RoleBasedCTA,
   Footnotes,
-  SeverityLabel,
-  CVELink,
-  CVETracker,
-  CVEFootnote,
 } from '@/components/blog';
 import {
   MDXMCPArchitecture,

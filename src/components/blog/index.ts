@@ -61,9 +61,6 @@ export {
 } from "./rivet/interactive";
 export { RoleBasedCTA } from "./rivet/engagement";
 export type { RoleBasedCTAProps } from "./rivet/engagement";
-// CVE components - re-enabled for blog posts
-export { SeverityLabel, CVELink, CVETracker, CVEFootnote } from "./rivet/security";
-export type { SeverityLevel } from "./rivet/security";
 export {
   SidebarVisibilityProvider,
   useSidebarVisibility,

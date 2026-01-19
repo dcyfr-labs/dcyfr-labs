@@ -65,8 +65,8 @@
 
 | Component             | Purpose                                    | RIVET Pillar            | Effort | Priority | Status                        |
 | --------------------- | ------------------------------------------ | ----------------------- | ------ | -------- | ----------------------------- |
-| **SeverityLabel**     | Color-coded CVE severity badges            | **V** - Visual Density  | 3h     | P2       | ✅ COMPLETE (24 tests)        |
-| **CVELink**           | Auto-linking with footnote tracking        | **E** - Discoverability | 4h     | P2       | ✅ COMPLETE (26 tests)        |
+| **SeverityLabel**     | Color-coded CVE severity badges            | **V** - Visual Density  | 3h     | P2       | ❌ REMOVED (Jan 18, 2026)     |
+| **CVELink**           | Auto-linking with footnote tracking        | **E** - Discoverability | 4h     | P2       | ❌ REMOVED (Jan 18, 2026)     |
 | **RiskMatrix**        | SVG visualization for security risk matrix | **V** - Visual Density  | 8h     | P2       | 🔜 Planned                    |
 | **DownloadableAsset** | Lead capture form + file delivery          | **E** - Discoverability | 6h     | P2       | 🔜 Planned                    |
 | **FAQSchema**         | FAQ accordion with schema.org markup       | **E** - Discoverability | 3h     | P2       | 🔜 Planned                    |
@@ -76,26 +76,58 @@
 
 **Week 3-4 Status (January 17, 2026):**
 
-- **Security Components (NEW)**: ✅ Complete
-  - **SeverityLabel**: Color-coded badges for CVE severity (CRITICAL/HIGH/MEDIUM/LOW/INFO)
-    - 24 tests, 100% passing
-    - Dark mode support with semantic colors
-    - Optional count display (handles zero values)
-    - ARIA labels for accessibility
-  - **CVELink**: Auto-linking with first-mention footnote tracking
-    - 26 tests, 100% passing
-    - Links to NIST NVD (nvd.nist.gov/vuln/detail/)
-    - Superscript footnote markers on first mention
-    - CVETracker context provider using useRef
-  - **CVEFootnote**: Formatted reference cards with CVE details
-    - Integrated with CVELink system
-    - CVSS scores and severity badges
-  - **Already deployed to 4 blog posts with 14 unique CVEs**
-- **Total P2 tests: 50/50 passing (100% coverage)**
+- **Security Components (REMOVED)**: ❌ Deleted (January 18, 2026)
+  - **SeverityLabel, CVELink, CVETracker, CVEFootnote** removed from codebase
+  - Reason: Zero usage across all 13 blog posts (complexity not justified)
+  - Test count reduced from 2873 → 2823 tests (50 tests removed)
+  - All remaining tests passing (100% coverage maintained)
 
 ---
 
-## Directory Structure
+## Blog Post Rollout Status
+
+### Tier 1 Posts (Priority - High Engagement) ✅ COMPLETE
+
+**Target:** All 4 Tier 1 posts with full RIVET P0+P1 deployment  
+**Status:** ✅ **4/4 posts complete (100%)**  
+**Completion Date:** January 18, 2026
+
+| Post Title                                    | Slug                                      | RIVET Status | P0 Components       | P1 Components                        | Notes                    |
+| --------------------------------------------- | ----------------------------------------- | ------------ | ------------------- | ------------------------------------ | ------------------------ |
+| **OWASP Top 10 for Agentic AI Security**      | `owasp-top-10-agentic-ai`                 | ✅ FULL      | All 3 (33 instances) | All 4 (71 instances)                 | First full deployment    |
+| **CVE-2025-55182 (React2Shell)**              | `cve-2025-55182-react2shell`              | ✅ FULL      | All 3 (6 instances)  | All 4 (23 instances)                 | **NEW: Jan 18**          |
+| **Node.js January 2026 Security Release**     | `nodejs-vulnerabilities-january-2026`     | ✅ FULL      | All 3 (1 instance)   | All 4 (20 instances)                 | **NEW: Jan 18**          |
+| **Hardening a Developer Portfolio**           | `hardening-developer-portfolio`           | ✅ FULL      | All 3 (2 instances)  | All 4 (25 instances)                 | **NEW: Jan 18**          |
+
+**Component Breakdown:**
+
+**P0 Components:**
+- ReadingProgressBar: 1 per post (auto-added)
+- KeyTakeaway: 4-6 per post (manual placement)
+- TLDRSummary: 1 per post (top of content)
+
+**P1 Components:**
+- GlossaryTooltip: 8-28 per post (inline terms)
+- RoleBasedCTA: 3 per post (Executive/Developer/Security)
+- SectionShare: 3-5 per post (major sections)
+- CollapsibleSection: 2-5 per post (optional depth)
+
+**Deployment Results:**
+- **31% of blog posts** (4/13) now have full RIVET enhancement
+- **Average component density:** 42 components per Tier 1 post
+- **Test coverage:** 2823/2823 tests passing (100%)
+- **TypeScript:** Clean (no errors)
+- **ESLint:** Clean (no errors)
+
+### Tier 2-3 Posts (Lower Priority)
+
+**Status:** GlossaryTooltip only (partial deployment)  
+**Count:** 9 remaining posts  
+**Next Steps:** Gradual rollout based on traffic analysis
+
+---
+
+## Success Criteria
 
 ### Current Structure
 

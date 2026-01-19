@@ -56,6 +56,26 @@ This feature, introduced in Node.js v20[^1], has **limited production adoption**
 
 These dependency patches are automatically included in the Node.js security releases.
 
+<TLDRSummary
+  title="TL;DR: Node.js January 2026 Security Release - The 30-Second Brief"
+  mostCommon={[
+    "8 CVEs patched (3 HIGH, 4 MEDIUM, 1 LOW)",
+    "All active release lines affected (v20-v25)",
+    "Next.js/RSC users affected by AsyncLocalStorage DoS"
+  ]}
+  mostDangerous={[
+    "CVE-2025-55131: Buffer memory leak exposes uninitialized data",
+    "CVE-2025-59466: AsyncLocalStorage crashes (impacts Next.js)",
+    "CVE-2025-59465: HTTP/2 DoS with malformed HEADERS frames"
+  ]}
+  hardestToDetect={[
+    "Memory leaks require timing analysis to trigger",
+    "3 permissions model bypasses (if you use --permission)",
+    "TLS memory leaks in certificate processing"
+  ]}
+  jumpLink="#how-to-upgrade"
+/>
+
 ---
 
 ## Affected Versions Matrix
@@ -85,6 +105,14 @@ These dependency patches are automatically included in the Node.js security rele
 | Using APM tools (all versions)          | Upgrade + review recursion depth limits         | MEDIUM-HIGH             |
 
 **All users should upgrade regardless**, but this helps you understand your specific risk exposure.
+
+<RoleBasedCTA
+  role="executive"
+  title="For Business Leaders"
+  description="Node.js released critical security patches affecting all production deployments. Your engineering teams need to upgrade immediately to prevent server crashes and data leaks. Budget emergency patching cycles for January 2026 Node.js updates."
+  buttonText="Contact Us"
+  buttonHref="/contact?role=executive&topic=nodejs-security"
+/>
 
 ---
 
@@ -128,6 +156,14 @@ function validateDepth(obj: unknown, depth = 0): boolean {
   return Object.values(obj).every((v) => validateDepth(v, depth + 1));
 }
 ```
+
+<RoleBasedCTA
+  role="developer"
+  title="For Developers"
+  description="Upgrade Node.js to v20.20.0, v22.22.0, v24.13.0, or v25.3.0 immediately. If using Next.js 13+ with App Router, add depth validation to API routes processing user input to prevent CVE-2025-59466 exploitation."
+  buttonText="View Upgrade Guide"
+  buttonHref="#how-to-upgrade"
+/>
 
 <CollapsibleSection
   id="apm-users"
@@ -262,6 +298,14 @@ Update your GitHub Actions workflows to use version pinning:
     node-version-file: '.nvmrc' # Use version from .nvmrc file
 ```
 
+<RoleBasedCTA
+  role="security"
+  title="For Security Teams"
+  description="Monitor for buffer memory leaks (CVE-2025-55131), AsyncLocalStorage crashes in Next.js apps (CVE-2025-59466), and HTTP/2 DoS patterns (CVE-2025-59465). If using --permission flags, review symlink bypasses and UDS access controls immediately."
+  buttonText="Detection Patterns"
+  buttonHref="#high-severity-vulnerabilities"
+/>
+
 ---
 
 ## High Severity Vulnerabilities
@@ -293,6 +337,12 @@ const result = runInNewContext('Buffer.alloc(1024)', {}, { timeout: 100 });
 
 **Mitigation:** Upgrade to patched versions. Avoid using `vm` module with untrusted input and timeout options in security-sensitive contexts.
 
+<KeyTakeaway variant="security" title="Buffer Memory Leak Risk">
+  CVE-2025-55131 can expose **in-process secrets** (API keys, tokens, passwords) through
+  uninitialized memory. If you use the `vm` module with timeouts and untrusted input, **upgrade
+  immediately**—this becomes remotely exploitable with precise timing attacks.
+</KeyTakeaway>
+
 ---
 
 ### CVE-2025-55130: File System Permissions Bypass via Symlinks
@@ -323,6 +373,13 @@ node --experimental-permission --allow-fs-read=/app/data ./app.js
 Only users of the Node.js permission model (`--experimental-permission` or `--permission` flags) are affected. If you're not using these flags, this CVE does not apply to your deployments.
 
 **Mitigation:** Upgrade to patched versions. Review symlink handling in permission-restricted environments.
+
+<KeyTakeaway variant="warning" title="Permissions Model Bypass">
+  If you use `--experimental-permission` or `--permission` flags, CVE-2025-55130 allows **complete
+  escape** of file system restrictions via symlink chains. This breaks expected isolation guarantees
+  and enables arbitrary file read/write. **Upgrade urgently** if you rely on the permissions model
+  for security boundaries.
+</KeyTakeaway>
 
 ---
 
@@ -376,6 +433,11 @@ server.on('secureConnection', (socket) => {
 **Who Is Affected:**
 
 Any Node.js application using HTTP/2 without explicit TLS socket error handlers. This includes many Next.js, Fastify, and custom HTTP/2 deployments.
+
+<KeyTakeaway variant="warning" title="HTTP/2 Server Crash Risk">
+  A single malformed HTTP/2 HEADERS frame can **crash your entire Node.js process** if you don't have
+  explicit error handlers on secure sockets. This affects **any HTTP/2 server** without `socket.on('error')` handlers. Add error handling NOW, then upgrade.
+</KeyTakeaway>
 
 <SectionShare sectionId="cve-2025-59465" sectionTitle="CVE-2025-59465: HTTP/2 Server DoS" />
 
@@ -441,6 +503,14 @@ The Node.js patch improves recoverability in one edge case, but the documentatio
 **Bottom line:** The risk profile for Next.js applications is significantly different between Node.js v20-v23 (high risk) and v24+ (lower risk). Upgrade regardless, but understand the context.
 
 **Further Reading:** Node.js published a detailed companion blog post: [Mitigating Denial-of-Service Vulnerability from Unrecoverable Stack Space Exhaustion for React, Next.js, and APM Users](https://nodejs.org/en/blog/vulnerability/january-2026-dos-mitigation-async-hooks)
+
+<KeyTakeaway variant="insight" title="Next.js & APM Tools Affected">
+  CVE-2025-59466 silently affects **massive portions** of the Node.js ecosystem: Next.js (cookies,
+  headers), React Server Components, and **every major APM tool** (Datadog, New Relic,
+  OpenTelemetry). On Node.js v20-v23, stack overflow errors **bypass all handlers** and crash
+  immediately. **Node.js v24+** significantly reduces risk for Next.js/RSC but APM tools using
+  `async_hooks.createHook()` remain vulnerable. Validate input depth + upgrade.
+</KeyTakeaway>
 
 <SectionShare sectionId="cve-2025-59466" sectionTitle="CVE-2025-59466: AsyncLocalStorage DoS" />
 
@@ -511,6 +581,11 @@ This causes either immediate process termination or silent file descriptor leaks
 
 TLS servers using Pre-Shared Key (PSK) authentication or Application-Layer Protocol Negotiation (ALPN) callbacks that may throw exceptions.
 
+<SectionShare
+  sectionId="medium-severity-vulnerabilities"
+  sectionTitle="Medium Severity Vulnerabilities"
+/>
+
 ---
 
 ## Low Severity Vulnerability
@@ -530,6 +605,13 @@ File metadata can be modified in read-only directories. This behavior could be u
 **Who Is Affected:**
 
 Only users of the Node.js permission model. Low impact for most deployments.
+
+<KeyTakeaway variant="tip" title="Permissions Model: Low Production Adoption">
+  **Three CVEs** (CVE-2025-55130, CVE-2026-21636, CVE-2025-55132) **only affect** users of Node.js's
+  experimental permission model (`--experimental-permission` flags). This feature has **limited
+  production adoption**—most Node.js deployments do NOT use it. Quick check: if you don't pass
+  `--permission` flags when starting Node.js, these three CVEs **don't apply** to your deployment.
+</KeyTakeaway>
 
 ---
 

@@ -28,6 +28,26 @@ previousSlugs:
 
 > **Series Background:** This is a follow-up to [Shipping a Developer Portfolio](/blog/shipping-developer-portfolio), where I built the foundation for what would become a comprehensive developer platform. This series documents the security hardening, performance optimization, and production features that transformed a simple portfolio into an enterprise-ready system.
 
+<TLDRSummary
+  title="TL;DR: Portfolio Hardening - The 30-Second Production Brief"
+  mostCommon={[
+    "CSP headers via Next.js middleware (defense-in-depth)",
+    "Zero-dependency rate limiting (200 req/min)",
+    "INP optimization: 664ms → <200ms (70% improvement)"
+  ]}
+  mostDangerous={[
+    "Missing CSP headers (XSS, clickjacking vulnerabilities)",
+    "No rate limiting (DDoS, scraping, spam attacks)",
+    "Slow INP (poor user experience, SEO penalties)"
+  ]}
+  hardestToDetect={[
+    "Vercel CDN stripping middleware headers",
+    "Hover prefetching trade-offs (bandwidth vs UX)",
+    "Redis memory leaks in analytics pipelines"
+  ]}
+  jumpLink="#production-features-overview"
+/>
+
 ---
 
 After building the initial portfolio, I systematically addressed security vulnerabilities, performance bottlenecks, and scalability concerns to create a production-ready platform. What started as a simple site now includes comprehensive monitoring, automated security headers, background job processing, and enterprise-grade features.
@@ -55,6 +75,14 @@ This series documents the patterns and decisions that took it from prototype to 
 - <RocketIcon /> **Infrastructure**: Background jobs with Inngest, GitHub integration, automated
   deployments
 - <ShieldIcon /> **Monitoring**: Sentry error tracking, Vercel Analytics, comprehensive logging
+
+<RoleBasedCTA
+  role="executive"
+  title="For Business Leaders"
+  description="Production-ready portfolios require systematic security hardening, performance optimization, and scalability planning. This post demonstrates how to build enterprise-grade developer platforms with CSP, rate limiting, Core Web Vitals monitoring, and background job processing."
+  buttonText="Contact Us"
+  buttonHref="/contact?role=executive&topic=portfolio-hardening"
+/>
 
 ---
 
@@ -132,6 +160,14 @@ response.headers.set('Content-Security-Policy', csp);
 
 <SectionShare sectionId="csp-implementation" sectionTitle="CSP Implementation" />
 
+<RoleBasedCTA
+  role="developer"
+  title="For Developers"
+  description="Implement CSP via Next.js middleware for reliable header enforcement. Use defense-in-depth with both middleware and Vercel config. Zero external dependencies for rate limiting works perfectly for serverless deployments."
+  buttonText="View Implementation Guide"
+  buttonHref="#the-journey"
+/>
+
 **Rate Limiting Implementation**
 
 The contact form API endpoint had no rate limiting, making it vulnerable to spam and abuse. I implemented a zero-dependency, in-memory rate limiter.
@@ -205,6 +241,14 @@ export class RateLimiter {
 <SectionShare
   sectionId="rate-limiting-implementation"
   sectionTitle="Rate Limiting Implementation"
+/>
+
+<RoleBasedCTA
+  role="security"
+  title="For Security Teams"
+  description="Implement defense-in-depth CSP with Next.js middleware + Vercel config, zero-dependency rate limiting for API endpoints, and automated security header validation. Monitor for XSS, clickjacking, and DDoS patterns using standard HTTP security headers."
+  buttonText="Security Patterns"
+  buttonHref="#part-1-security-hardening"
 />
 
 ### Part 2: Performance Optimization
@@ -336,6 +380,11 @@ const fetchContributions = async (): Promise<ContributionResponse> => {
 
 </CollapsibleSection>
 
+<SectionShare
+  sectionId="github-contributions-heatmap"
+  sectionTitle="GitHub Contributions Heatmap"
+/>
+
 ### Part 3: Developer Experience
 
 **AI Contributor Guide**
@@ -361,6 +410,11 @@ I created comprehensive instructions for AI coding assistants (GitHub Copilot, C
 - Clear boundaries and conventions
 - Faster onboarding for contributors
 - Reduced architectural drift
+
+<SectionShare
+  sectionId="developer-experience"
+  sectionTitle="Developer Experience"
+/>
 
 ---
 

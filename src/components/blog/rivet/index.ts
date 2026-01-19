@@ -75,7 +75,3 @@ export type { TabInterfaceProps, TabItem } from "./interactive";
 // Engagement (E - Enhanced discoverability)
 export { RoleBasedCTA, FAQSchema, NewsletterSignup, DownloadableAsset } from "./engagement";
 export type { RoleBasedCTAProps, FAQSchemaProps, FAQItem, NewsletterSignupProps, NewsletterVariant, DownloadableAssetProps } from "./engagement";
-
-// Security - CVE and vulnerability components
-export { SeverityLabel, CVELink, CVETracker, CVEFootnote } from "./security";
-export type { SeverityLevel } from "./security";
