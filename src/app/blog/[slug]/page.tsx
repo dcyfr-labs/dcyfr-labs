@@ -14,6 +14,7 @@ import {
   CONTAINER_VERTICAL_PADDING,
   SPACING,
   TYPOGRAPHY,
+  PAGE_LAYOUT,
 } from "@/lib/design-tokens";
 import {
   createArticlePageMetadata,
@@ -237,7 +238,7 @@ export default async function PostPage({
 
       {/* Desktop Layout: Three-column (Sidebar + Content + Empty Right) - DOM order optimized for accessibility */}
       <div
-        className={`container ${CONTAINER_WIDTHS.archive} mx-auto ${CONTAINER_PADDING} pt-6 md:pt-8 lg:pt-36`}
+        className={PAGE_LAYOUT.articleSection.container}
       >
         <BlogPostLayoutWrapper>
           {/* Left Rail: Sidebar + Table of Contents (desktop only) */}

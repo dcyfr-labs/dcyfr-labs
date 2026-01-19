@@ -10,6 +10,7 @@ import {
   CONTAINER_WIDTHS,
   CONTAINER_PADDING,
   SPACING,
+  PAGE_LAYOUT,
 } from "@/lib/design-tokens";
 
 /**
@@ -145,7 +146,7 @@ export default async function SeriesPage({
 
       {/* Content section with archive-width container */}
       <div
-        className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING}`}
+        className={PAGE_LAYOUT.articleSection.container}
       >
         <div className={SPACING.section}>
           <PostList

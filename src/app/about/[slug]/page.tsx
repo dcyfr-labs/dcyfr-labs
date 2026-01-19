@@ -12,7 +12,7 @@ import { AboutDrewProfile } from '@/components/about';
 import { AboutDcyfrProfile } from '@/components/about';
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CONTAINER_WIDTHS, CONTAINER_PADDING, SPACING, TYPOGRAPHY, SHADOWS, HOVER_EFFECTS } from "@/lib/design-tokens";
+import { CONTAINER_WIDTHS, CONTAINER_PADDING, SPACING, TYPOGRAPHY, SHADOWS, HOVER_EFFECTS, PAGE_LAYOUT } from "@/lib/design-tokens";
 
 /**
  * Team Member Profile Page
@@ -108,7 +108,7 @@ export default async function ProfilePage({ params }: PageProps) {
 
       {/* Profile Content */}
       <div
-        className={`mx-auto ${CONTAINER_WIDTHS.standard} ${SPACING.section}`}
+        className={PAGE_LAYOUT.articleSection.container}
       >
         {member.slug === "drew" && <AboutDrewProfile />}
         {member.slug === "dcyfr" && <AboutDcyfrProfile />}
