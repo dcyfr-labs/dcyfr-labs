@@ -128,7 +128,7 @@ export function TLDRSummary({
       className={cn(
         // Container & Layout
         "relative overflow-hidden rounded-lg",
-        "p-6 md:p-8",
+        "p-4 md:p-8",
         "my-8",
         // Inverted theme-aware gradient background
         // Light mode: Light secondary background with subtle gradient
@@ -165,7 +165,7 @@ export function TLDRSummary({
         {title}
       </h2>
 
-        <div className="grid gap-6 md:grid-cols-3">
+         <div className="grid gap-4 md:grid-cols-3">
           <TLDRSection title="Most Common" items={mostCommon} />
           <TLDRSection title="Most Dangerous" items={mostDangerous} />
           <TLDRSection title="Hardest to Detect" items={hardestToDetect} />

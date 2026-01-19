@@ -76,7 +76,7 @@ export function SeriesNavigation({
       )}
     >
       {/* Header */}
-      <div className="p-6 border-b">
+       <div className="p-4 border-b">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
@@ -119,7 +119,7 @@ export function SeriesNavigation({
 
       {/* All Parts List (Optional) */}
       {showAllParts && (
-        <div className="p-6 border-b">
+      <div className="p-4 border-b">
           <h4 className="text-sm font-semibold mb-3">All Parts</h4>
           <ol className="space-y-2">
             {items.map((item, index) => {
@@ -162,7 +162,7 @@ export function SeriesNavigation({
       )}
 
       {/* Previous/Next Navigation */}
-      <div className="p-6">
+      <div className="p-4">
         <nav
           className="flex items-center justify-between gap-4"
           aria-label="Series navigation"

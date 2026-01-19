@@ -120,7 +120,7 @@ export default function ApiCostsClient() {
         </section>
 
         {/* Budget Progress & Service Usage */}
-        <section className="grid gap-6 lg:grid-cols-2">
+         <section className="grid gap-4 lg:grid-cols-2">
           <BudgetProgressCard budgetStatus={budgetStatus} loading={loading} />
           <ServiceUsageBars services={serviceUsage} loading={loading} />
         </section>
@@ -133,7 +133,7 @@ export default function ApiCostsClient() {
               Daily API costs and request volumes over the past 30 days
             </p>
           </div>
-          <div className="grid gap-6 lg:grid-cols-2">
+           <div className="grid gap-4 lg:grid-cols-2">
             <CostTrendChart data={dailyTrend} loading={loading} />
             <RequestsTrendChart data={dailyTrend} loading={loading} />
           </div>

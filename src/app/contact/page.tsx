@@ -41,7 +41,7 @@ export default async function ContactPage() {
     <PageLayout>
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
       <SmoothScrollToHash />
-      <div className="space-y-8 md:space-y-12">
+       <div className="space-y-4 md:space-y-12">
         {/* Hero Section */}
         <section id="hero">
           <PageHero

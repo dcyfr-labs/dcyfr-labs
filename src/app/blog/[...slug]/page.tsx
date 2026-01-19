@@ -229,7 +229,7 @@ export default async function PostPage({
           className={`grid lg:grid-cols-[280px_1fr] lg:items-start ${SPACING.blogLayout}`}
         >
           {/* Left Sidebar (desktop only) - Metadata + TOC (TOC sticky) */}
-          <div className="hidden lg:block space-y-8">
+           <div className="hidden lg:block space-y-4">
             <BlogPostSidebarWrapper
               headings={headings}
               slug={post.slug}

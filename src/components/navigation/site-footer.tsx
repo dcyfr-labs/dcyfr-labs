@@ -26,7 +26,6 @@ export function SiteFooter() {
             "mx-auto",
             CONTAINER_WIDTHS.dashboard,
             "px-4",
-            "sm:px-6",
             "md:px-8",
             "lg:px-8",
             NAVIGATION_HEIGHT,

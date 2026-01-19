@@ -37,7 +37,7 @@ export function Footnotes({ children, className }: FootnotesProps) {
       reducedSpacing={true}
       className={className}
     >
-      <div className="space-y-3 md:space-y-4 lg:space-y-5 text-card-foreground">
+      <div className="space-y-3 md:space-y-4 text-card-foreground">
         {children}
       </div>
     </CollapsibleSection>

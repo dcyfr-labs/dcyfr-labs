@@ -169,7 +169,7 @@ export default function FeedsPage() {
           </div>
 
           {/* Format Options Grid */}
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-3">
             <FormatOption
               title="Atom"
               description="Modern XML feed format with enhanced features, strict validation, excellent reader support, and standardized fields."
@@ -192,8 +192,8 @@ export default function FeedsPage() {
         <section className={`${SPACING.section} pt-6 md:pt-8`}>
           <h2 className={`${TYPOGRAPHY.h2.standard} mb-8`}>Available Feeds</h2>
 
-          {/* Feed Cards Grid */}
-          <div className="grid gap-6 md:gap-8">
+           {/* Feed Cards Grid */}
+           <div className="grid gap-4 md:gap-4">
             {feeds.map((feed, index) => (
               <FeedCard key={feed.id} feed={feed} index={index} />
             ))}
@@ -226,14 +226,14 @@ function FeedCard({ feed, index }: FeedCardProps) {
     >
       <div
         className={`
-          border rounded-xl p-6 md:p-8
+          border rounded-xl p-4 md:p-8
           bg-card hover:bg-accent/50
           transition-all duration-300
           hover:border-primary/50 hover:shadow-lg
           active:scale-95
         `}
       >
-        <div className="flex items-start gap-4 md:gap-6">
+         <div className="flex items-start gap-4 md:gap-4">
           {/* Icon Container */}
           <div
             className={`
@@ -329,7 +329,7 @@ function FormatOption({ title, description, index }: FormatOptionProps) {
     >
       <div
         className={`
-          p-6 rounded-lg border border-muted
+          p-4 rounded-lg border border-muted
           hover:border-primary/30 hover:bg-muted/50
           transition-all duration-300
           h-full flex flex-col

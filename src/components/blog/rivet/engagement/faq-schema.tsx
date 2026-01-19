@@ -203,22 +203,22 @@ export function FAQSchema({
               className="border-0"
             >
               <AccordionTrigger
-                className={cn(
-                  "px-6 py-4 text-left",
-                  "hover:bg-muted/50",
-                  "transition-colors",
-                  ANIMATION.duration.fast
-                )}
+               className={cn(
+                   "px-4 py-4 text-left",
+                   "hover:bg-muted/50",
+                   "transition-colors",
+                   ANIMATION.duration.fast
+                 )}
               >
                 <span className="font-semibold">
                   {item.question}
                 </span>
               </AccordionTrigger>
               <AccordionContent
-                className={cn(
-                  "px-6 pb-4",
-                  "text-muted-foreground"
-                )}
+               className={cn(
+                   "px-4 pb-4",
+                   "text-muted-foreground"
+                 )}
               >
                 {typeof item.answer === "string" ? (
                   <p className="m-0 leading-relaxed">{item.answer}</p>

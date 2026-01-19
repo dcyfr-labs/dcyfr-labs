@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Download } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { SPACING, BORDERS } from "@/lib/design-tokens";
+import { SPACING, BORDERS, TYPOGRAPHY } from "@/lib/design-tokens";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -164,7 +164,7 @@ export function RiskMatrix({
     <div className={cn("risk-matrix-container", `my-${SPACING.lg}`, className)}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-semibold m-0">{title}</h2>
+        <h2 className={`${TYPOGRAPHY.h2.standard} m-0`}>{title}</h2>
         
         {showExport && (
           <div className="flex gap-2">
@@ -194,7 +194,7 @@ export function RiskMatrix({
       <div
         ref={matrixRef}
         className={cn(
-          "border rounded-lg p-6 bg-card",
+          "border rounded-lg p-4 bg-card",
           BORDERS.card,
           "flex items-center justify-center overflow-x-auto"
         )}

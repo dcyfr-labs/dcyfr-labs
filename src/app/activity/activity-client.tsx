@@ -191,12 +191,12 @@ export function ActivityPageClient({
                <div className={cn("flex justify-center mt-16 pb-8")}>
                  <button
                    onClick={handleLoadMore}
-                   className={cn(
-                     "px-6 py-2 rounded-full border border-border/50 hover:border-border",
-                     "text-sm font-medium text-muted-foreground hover:text-foreground",
-                     "transition-colors duration-200",
-                     "hover:bg-muted/30"
-                   )}
+                    className={cn(
+                      "px-4 py-2 rounded-full border border-border/50 hover:border-border",
+                      "text-sm font-medium text-muted-foreground hover:text-foreground",
+                      "transition-colors duration-200",
+                      "hover:bg-muted/30"
+                    )}
                    aria-label={`Load more activities. ${threads.length - displayedThreadCount} remaining`}
                  >
                    Load more ({threads.length - displayedThreadCount} remaining)

@@ -123,7 +123,7 @@ export function DownloadableAsset({
     <div
       className={cn(
         "downloadable-asset",
-        "border rounded-lg p-6 bg-card",
+        "border rounded-lg p-4 bg-card",
         BORDERS.card,
         `my-${SPACING.lg}`,
         className

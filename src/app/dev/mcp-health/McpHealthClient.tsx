@@ -119,7 +119,7 @@ export default function McpHealthClient() {
         </section>
 
         {/* Charts Section */}
-        <section className="grid gap-6 lg:grid-cols-2">
+         <section className="grid gap-4 lg:grid-cols-2">
           {/* Response Time Trends */}
           <McpHealthChart historyData={historyData} loading={loading} />
 

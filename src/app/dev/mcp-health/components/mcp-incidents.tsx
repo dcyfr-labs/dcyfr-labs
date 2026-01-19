@@ -16,6 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, CheckCircle2, Clock } from "lucide-react";
+import { TYPOGRAPHY } from "@/lib/design-tokens";
 import type { McpIncident } from "../types";
 
 interface McpIncidentsProps {
@@ -173,24 +174,24 @@ export function McpSummaryCard({
         <CardTitle className="text-sm font-medium">Current Status</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-4 gap-4 text-center">
-          <div>
-            <div className="text-2xl font-bold">{total}</div>
-            <div className="text-xs text-muted-foreground">Total</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-green-500">{ok}</div>
-            <div className="text-xs text-muted-foreground">Operational</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-yellow-500">{degraded}</div>
-            <div className="text-xs text-muted-foreground">Degraded</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-red-500">{down}</div>
-            <div className="text-xs text-muted-foreground">Down</div>
-          </div>
-        </div>
+         <div className="grid grid-cols-4 gap-4 text-center">
+           <div>
+             <div className={TYPOGRAPHY.display.stat}>{total}</div>
+             <div className="text-xs text-muted-foreground">Total</div>
+           </div>
+           <div>
+             <div className={`${TYPOGRAPHY.display.stat} text-green-500`}>{ok}</div>
+             <div className="text-xs text-muted-foreground">Operational</div>
+           </div>
+           <div>
+             <div className={`${TYPOGRAPHY.display.stat} text-yellow-500`}>{degraded}</div>
+             <div className="text-xs text-muted-foreground">Degraded</div>
+           </div>
+           <div>
+             <div className={`${TYPOGRAPHY.display.stat} text-red-500`}>{down}</div>
+             <div className="text-xs text-muted-foreground">Down</div>
+           </div>
+         </div>
       </CardContent>
     </Card>
   );

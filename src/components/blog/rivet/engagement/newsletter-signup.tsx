@@ -154,7 +154,7 @@ export function NewsletterSignup({
   const containerClasses = {
     inline: "flex flex-col sm:flex-row gap-3 items-start sm:items-center",
     card: cn(
-      "border rounded-lg p-6",
+      "border rounded-lg p-4",
       BORDERS.card,
       "bg-gradient-to-br from-primary/5 to-transparent"
     ),

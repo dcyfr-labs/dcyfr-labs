@@ -75,7 +75,7 @@ export default async function SponsorsPage() {
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
       <SmoothScrollToHash />
 
-      <div className="space-y-8 md:space-y-12">
+       <div className="space-y-4 md:space-y-12">
         {/* Hero Section */}
         <Section id="hero" className={PAGE_LAYOUT.hero.content}>
           <PageHero

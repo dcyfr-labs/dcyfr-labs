@@ -241,7 +241,7 @@ export default async function PostPage({
       >
         <BlogPostLayoutWrapper>
           {/* Left Rail: Sidebar + Table of Contents (desktop only) */}
-          <div className="hidden lg:block lg:order-1 relative space-y-8">
+           <div className="hidden lg:block lg:order-1 relative space-y-4">
             <CollapsibleBlogSidebar>
               <BlogPostSidebarWrapper
                 headings={headings}

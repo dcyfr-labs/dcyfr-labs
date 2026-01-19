@@ -183,7 +183,7 @@ export function SocialMetrics({
 
           {/* No Data State */}
           {totalReferrals === 0 && (
-            <Card className="p-6 text-center">
+            <Card className="p-4 text-center">
               <div className="flex flex-col items-center gap-2">
                 <TrendingUp className="h-8 w-8 text-muted-foreground/50" />
                 <p className="text-sm font-medium text-muted-foreground">

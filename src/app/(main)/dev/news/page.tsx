@@ -29,7 +29,7 @@ export default function DevNewsPage() {
       />
 
       <section
-        className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}
+        className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 md:px-8 pb-8 md:pb-12`}
       >
         <div className={SPACING.section}>
           <Suspense

@@ -221,18 +221,18 @@ function RiskModal({ risk, isOpen, onClose }: RiskModalProps) {
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", duration: 0.5 }}
               className={cn(
-                "relative w-full max-w-4xl max-h-[90vh] overflow-hidden",
+                `relative w-full ${CONTAINER_WIDTHS.narrow} max-h-[90vh] overflow-hidden`,
                 "bg-background rounded-2xl shadow-2xl pointer-events-auto",
                 BORDERS.card
               )}
             >
               {/* Header */}
-              <div
-                className={cn(
-                  "sticky top-0 z-10 bg-background/95 backdrop-blur",
-                  "border-b border-border p-6"
-                )}
-              >
+               <div
+                 className={cn(
+                   "sticky top-0 z-10 bg-background/95 backdrop-blur",
+                   "border-b border-border p-4"
+                 )}
+               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <Icon className={cn("h-7 w-7", colors.icon)} />
@@ -264,7 +264,7 @@ function RiskModal({ risk, isOpen, onClose }: RiskModalProps) {
               </div>
 
               {/* Content */}
-              <div className="overflow-y-auto max-h-[calc(90vh-120px)] p-6">
+              <div className="overflow-y-auto max-h-[calc(90vh-120px)] p-4">
                 <div className="prose prose-sm dark:prose-invert max-w-none">
                   {risk.content}
                 </div>

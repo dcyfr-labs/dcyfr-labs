@@ -227,9 +227,9 @@ export default function UnifiedAiCostsClient() {
         {/* Charts Section */}
         {data && (
           <section>
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid gap-4 lg:grid-cols-2">
               {/* Cost Distribution Pie Chart */}
-              <div className="rounded-lg border bg-card p-6">
+              <div className="rounded-lg border bg-card p-4">
                 <h2 className={TYPOGRAPHY.h3.standard}>Cost by Source</h2>
                 <p className="text-sm text-muted-foreground mb-4">
                   Distribution of spending across AI tools
@@ -275,7 +275,7 @@ export default function UnifiedAiCostsClient() {
               </div>
 
               {/* Session Distribution Bar Chart */}
-              <div className="rounded-lg border bg-card p-6">
+              <div className="rounded-lg border bg-card p-4">
                 <h2 className={TYPOGRAPHY.h3.standard}>Sessions by Source</h2>
                 <p className="text-sm text-muted-foreground mb-4">Usage frequency by AI tool</p>
                 <ResponsiveContainer width="100%" height={300}>
@@ -314,7 +314,7 @@ export default function UnifiedAiCostsClient() {
             <p className="text-sm text-muted-foreground mb-4">
               In-depth statistics for each AI tool
             </p>
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-3">
               {/* Claude Code */}
               <DetailCard
                 title="Claude Code"
@@ -452,12 +452,12 @@ function SummaryCard({ title, value, subtitle, icon, variant }: SummaryCardProps
   };
 
   return (
-    <div className={`rounded-lg border p-6 ${variantClasses[variant]}`}>
+    <div className={`rounded-lg border p-4 ${variantClasses[variant]}`}>
       <div className="flex items-center justify-between mb-2">
         <p className="text-sm font-medium text-muted-foreground">{title}</p>
         <div className={iconClasses[variant]}>{icon}</div>
       </div>
-      <p className="text-3xl font-bold tracking-tight">{value}</p>
+      <p className={TYPOGRAPHY.display.stat}>{value}</p>
       <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
     </div>
   );
@@ -470,7 +470,7 @@ interface DetailCardProps {
 
 function DetailCard({ title, metrics }: DetailCardProps) {
   return (
-    <div className="rounded-lg border bg-card p-6">
+    <div className="rounded-lg border bg-card p-4">
       <h3 className={`${TYPOGRAPHY.h3.standard} mb-4`}>{title}</h3>
       <dl className={SPACING.compact}>
         {metrics.map((metric) => (
