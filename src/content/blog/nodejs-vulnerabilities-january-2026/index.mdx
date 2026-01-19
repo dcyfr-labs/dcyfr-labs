@@ -24,6 +24,38 @@ image:
   to **v20.20.0**, **v22.22.0**, **v24.13.0**, or **v25.3.0**.
 </Alert>
 
+On January 13, 2026, the Node.js project released security patches addressing:
+
+- **3 High Severity** vulnerabilities (buffer memory leak, symlink bypass, HTTP/2 DoS)
+- **4 Medium Severity** vulnerabilities (AsyncLocalStorage crashes, TLS memory leak, UDS bypass, TLS callback DoS)
+- **1 Low Severity** vulnerability (timestamp permissions bypass)
+
+### Permissions Model Scope
+
+**Important context:** Three CVEs (CVE-2025-55130, CVE-2026-21636, CVE-2025-55132) **only affect users of Node.js's experimental permission model** (`--experimental-permission` or `--permission` flags).
+
+This feature, introduced in Node.js v20[^1], has **limited production adoption**. Most Node.js deployments do NOT use the permissions model.
+
+**Quick check:** If you don't explicitly pass `--permission`, `--allow-fs-read`, `--allow-fs-write`, or `--allow-net` flags when starting Node.js, these three CVEs don't apply to your deployment.
+
+**If you do use the permissions model:** These are **critical bypasses** that break your security boundaries. Upgrade immediately.
+
+**Patched Versions:**
+
+| Release Line            | Patched Version | Release Notes                                                 |
+| ----------------------- | --------------- | ------------------------------------------------------------- |
+| v25.x (Current)         | **25.3.0**      | [Release Notes](https://nodejs.org/en/blog/release/v25.3.0/)  |
+| v24.x (LTS)             | **24.13.0**     | [Release Notes](https://nodejs.org/en/blog/release/v24.13.0/) |
+| v22.x (LTS)             | **22.22.0**     | [Release Notes](https://nodejs.org/en/blog/release/v22.22.0/) |
+| v20.x (Maintenance LTS) | **20.20.0**     | [Release Notes](https://nodejs.org/en/blog/release/v20.20.0/) |
+
+**Dependency Updates Included:**
+
+- **<GlossaryTooltip term="c-ares" definition="c-ares - a C library for asynchronous DNS requests, providing high-performance DNS resolution used by Node.js for network operations">c-ares</GlossaryTooltip>** updated to 1.34.6[^2] - Fixes DNS resolver vulnerabilities including CVE-2025-62408 (use-after-free in `read_answers()`) and multiple moderate severity DNS parsing issues
+- **<GlossaryTooltip term="undici" definition="undici - a high-performance HTTP/1.1 client library written from scratch for Node.js, offering lower latency and higher throughput than the built-in http module">undici</GlossaryTooltip>** updated to 6.23.0 / 7.18.0[^3] - Addresses HTTP client vulnerabilities including CVE-2026-22036 (unbounded decompression chain leading to DoS) and request smuggling issues
+
+These dependency patches are automatically included in the Node.js security releases.
+
 ---
 
 ## Affected Versions Matrix
@@ -56,37 +88,179 @@ image:
 
 ---
 
-On January 13, 2026, the Node.js project released security patches addressing:
+## Who Should Upgrade?
 
-- **3 High Severity** vulnerabilities (buffer memory leak, symlink bypass, HTTP/2 DoS)
-- **4 Medium Severity** vulnerabilities (AsyncLocalStorage crashes, TLS memory leak, UDS bypass, TLS callback DoS)
-- **1 Low Severity** vulnerability (timestamp permissions bypass)
+**You are affected if:**
 
-### Permissions Model Scope
+- You use Next.js 13+ with App Router (uses `AsyncLocalStorage` internally)
+- You use React Server Components
+- You use `cookies()`, `headers()`, or other Next.js request context APIs
 
-**Important context:** Three CVEs (CVE-2025-55130, CVE-2026-21636, CVE-2025-55132) **only affect users of Node.js's experimental permission model** (`--experimental-permission` or `--permission` flags).
+**Critical CVEs for you:**
 
-This feature, introduced in Node.js v20[^1], has **limited production adoption**. Most Node.js deployments do NOT use the permissions model.
+- **CVE-2025-59466** (AsyncLocalStorage crashes) - Stack overflow errors in your API routes can crash your entire application
+- **CVE-2025-59465** (HTTP/2 DoS) - If serving HTTP/2 traffic, malformed requests can crash your server
 
-**Quick check:** If you don't explicitly pass `--permission`, `--allow-fs-read`, `--allow-fs-write`, or `--allow-net` flags when starting Node.js, these three CVEs don't apply to your deployment.
+**Recommended Action:**
 
-**If you do use the permissions model:** These are **critical bypasses** that break your security boundaries. Upgrade immediately.
+```bash
+# Check your Node.js version
+node --version
 
-**Patched Versions:**
+# Upgrade to patched version
+nvm install 24.13.0  # or 22.22.0, 20.20.0
 
-| Release Line            | Patched Version | Release Notes                                                 |
-| ----------------------- | --------------- | ------------------------------------------------------------- |
-| v25.x (Current)         | **25.3.0**      | [Release Notes](https://nodejs.org/en/blog/release/v25.3.0/)  |
-| v24.x (LTS)             | **24.13.0**     | [Release Notes](https://nodejs.org/en/blog/release/v24.13.0/) |
-| v22.x (LTS)             | **22.22.0**     | [Release Notes](https://nodejs.org/en/blog/release/v22.22.0/) |
-| v20.x (Maintenance LTS) | **20.20.0**     | [Release Notes](https://nodejs.org/en/blog/release/v20.20.0/) |
+# Create version pinning file
+echo "24.13.0" > .nvmrc
+```
 
-**Dependency Updates Included:**
+**Additional Mitigation:**
 
-- **<GlossaryTooltip term="c-ares" definition="c-ares - a C library for asynchronous DNS requests, providing high-performance DNS resolution used by Node.js for network operations">c-ares</GlossaryTooltip>** updated to 1.34.6[^2] - Fixes DNS resolver vulnerabilities including CVE-2025-62408 (use-after-free in `read_answers()`) and multiple moderate severity DNS parsing issues
-- **<GlossaryTooltip term="undici" definition="undici - a high-performance HTTP/1.1 client library written from scratch for Node.js, offering lower latency and higher throughput than the built-in http module">undici</GlossaryTooltip>** updated to 6.23.0 / 7.18.0[^3] - Addresses HTTP client vulnerabilities including CVE-2026-22036 (unbounded decompression chain leading to DoS) and request smuggling issues
+Validate input depth in API routes to prevent stack overflow:
 
-These dependency patches are automatically included in the Node.js security releases.
+```typescript
+const MAX_DEPTH = 10;
+
+function validateDepth(obj: unknown, depth = 0): boolean {
+  if (depth > MAX_DEPTH) return false;
+  if (typeof obj !== 'object' || obj === null) return true;
+
+  return Object.values(obj).every((v) => validateDepth(v, depth + 1));
+}
+```
+
+<CollapsibleSection
+  id="apm-users"
+  title="APM Tool Users (Datadog, New Relic, OpenTelemetry)"
+  defaultExpanded={false}
+>
+
+**You are affected if:**
+
+- You use any Application Performance Monitoring tool
+- You have `require('dd-trace')`, `require('newrelic')`, or similar APM initialization
+- You use OpenTelemetry for distributed tracing
+
+**Why APM makes CVE-2025-59466 worse:**
+
+APM tools use `async_hooks.createHook()` to trace requests across async boundaries. The moment you import an APM package, your application has `async_hooks` enabled, making stack overflow errors uncatchable.
+
+The irony: The tools you install to monitor crashes can make a category of crashes behave differently.
+
+**Recommended Action:**
+
+1. Upgrade Node.js to patched versions immediately
+2. Review recursive functions in your codebase
+3. Add depth limits to any user-input-driven recursion
+
+</CollapsibleSection>
+
+<CollapsibleSection
+  id="permissions-model-users"
+  title="Permissions Model Users"
+  defaultExpanded={false}
+>
+
+**You are affected if:**
+
+- You use `--experimental-permission` or `--permission` flags
+- You use `--allow-fs-read`, `--allow-fs-write`, or `--allow-net` flags
+
+**Critical CVEs for you:**
+
+- **CVE-2025-55130** (Symlink bypass) - Attackers can escape file system restrictions
+- **CVE-2026-21636** (UDS bypass) - v25 only, network restrictions bypassed
+- **CVE-2025-55132** (futimes bypass) - Timestamp modification in read-only directories
+
+**Recommended Action:**
+
+Upgrade immediately. The permissions model's security guarantees are broken until patched.
+
+</CollapsibleSection>
+
+<CollapsibleSection
+  id="tls-server-operators"
+  title="TLS Server Operators"
+  defaultExpanded={false}
+>
+
+**You are affected if:**
+
+- You run HTTP/2 servers with TLS
+- You use TLS client certificate authentication (mTLS)
+- You use Pre-Shared Key (PSK) or ALPN callbacks
+
+**Critical CVEs for you:**
+
+- **CVE-2025-59465** (HTTP/2 DoS) - Malformed frames crash servers
+- **CVE-2025-59464** (TLS memory leak) - Certificate processing leaks memory
+- **CVE-2026-21637** (Callback DoS) - PSK/ALPN exceptions cause crashes
+
+**Recommended Action:**
+
+1. Upgrade Node.js immediately
+2. Add explicit error handlers to TLS sockets
+3. Monitor memory usage for TLS-heavy workloads
+
+</CollapsibleSection>
+
+---
+
+## How to Upgrade
+
+### Using nvm (Node Version Manager)
+
+```bash
+# Install the patched version for your release line
+nvm install 24.13.0  # LTS (recommended)
+nvm install 22.22.0  # Previous LTS
+nvm install 20.20.0  # Maintenance LTS
+nvm install 25.3.0   # Current
+
+# Verify installation
+node --version
+# v24.13.0
+
+# Set as default
+nvm alias default 24.13.0
+
+# Create version pinning file for your project
+echo "24.13.0" > .nvmrc
+echo "24.13.0" > .node-version  # For other version managers
+```
+
+### Using Homebrew (macOS)
+
+```bash
+brew update
+brew upgrade node
+node --version
+```
+
+### Verifying the Upgrade
+
+```bash
+# Check Node.js version
+node --version
+# Should show: v20.20.0, v22.22.0, v24.13.0, or v25.3.0
+
+# Verify npm is functional
+npm --version
+
+# Run your test suite
+npm test
+```
+
+### CI/CD Considerations
+
+Update your GitHub Actions workflows to use version pinning:
+
+```yaml
+# .github/workflows/ci.yml
+- uses: actions/setup-node@v4
+  with:
+    node-version-file: '.nvmrc' # Use version from .nvmrc file
+```
 
 ---
 
@@ -356,190 +530,6 @@ File metadata can be modified in read-only directories. This behavior could be u
 **Who Is Affected:**
 
 Only users of the Node.js permission model. Low impact for most deployments.
-
----
-
-## Who Should Upgrade?
-
-<CollapsibleSection
-  id="nextjs-react-developers"
-  title="Next.js and React Developers"
-  defaultExpanded={true}
->
-
-**You are affected if:**
-
-- You use Next.js 13+ with App Router (uses `AsyncLocalStorage` internally)
-- You use React Server Components
-- You use `cookies()`, `headers()`, or other Next.js request context APIs
-
-**Critical CVEs for you:**
-
-- **CVE-2025-59466** (AsyncLocalStorage crashes) - Stack overflow errors in your API routes can crash your entire application
-- **CVE-2025-59465** (HTTP/2 DoS) - If serving HTTP/2 traffic, malformed requests can crash your server
-
-**Recommended Action:**
-
-```bash
-# Check your Node.js version
-node --version
-
-# Upgrade to patched version
-nvm install 24.13.0  # or 22.22.0, 20.20.0
-
-# Create version pinning file
-echo "24.13.0" > .nvmrc
-```
-
-**Additional Mitigation:**
-
-Validate input depth in API routes to prevent stack overflow:
-
-```typescript
-const MAX_DEPTH = 10;
-
-function validateDepth(obj: unknown, depth = 0): boolean {
-  if (depth > MAX_DEPTH) return false;
-  if (typeof obj !== 'object' || obj === null) return true;
-
-  return Object.values(obj).every((v) => validateDepth(v, depth + 1));
-}
-```
-
-</CollapsibleSection>
-
-<CollapsibleSection
-  id="apm-users"
-  title="APM Tool Users (Datadog, New Relic, OpenTelemetry)"
-  defaultExpanded={false}
->
-
-**You are affected if:**
-
-- You use any Application Performance Monitoring tool
-- You have `require('dd-trace')`, `require('newrelic')`, or similar APM initialization
-- You use OpenTelemetry for distributed tracing
-
-**Why APM makes CVE-2025-59466 worse:**
-
-APM tools use `async_hooks.createHook()` to trace requests across async boundaries. The moment you import an APM package, your application has `async_hooks` enabled, making stack overflow errors uncatchable.
-
-The irony: The tools you install to monitor crashes can make a category of crashes behave differently.
-
-**Recommended Action:**
-
-1. Upgrade Node.js to patched versions immediately
-2. Review recursive functions in your codebase
-3. Add depth limits to any user-input-driven recursion
-
-</CollapsibleSection>
-
-<CollapsibleSection
-  id="permissions-model-users"
-  title="Permissions Model Users"
-  defaultExpanded={false}
->
-
-**You are affected if:**
-
-- You use `--experimental-permission` or `--permission` flags
-- You use `--allow-fs-read`, `--allow-fs-write`, or `--allow-net` flags
-
-**Critical CVEs for you:**
-
-- **CVE-2025-55130** (Symlink bypass) - Attackers can escape file system restrictions
-- **CVE-2026-21636** (UDS bypass) - v25 only, network restrictions bypassed
-- **CVE-2025-55132** (futimes bypass) - Timestamp modification in read-only directories
-
-**Recommended Action:**
-
-Upgrade immediately. The permissions model's security guarantees are broken until patched.
-
-</CollapsibleSection>
-
-<CollapsibleSection
-  id="tls-server-operators"
-  title="TLS Server Operators"
-  defaultExpanded={false}
->
-
-**You are affected if:**
-
-- You run HTTP/2 servers with TLS
-- You use TLS client certificate authentication (mTLS)
-- You use Pre-Shared Key (PSK) or ALPN callbacks
-
-**Critical CVEs for you:**
-
-- **CVE-2025-59465** (HTTP/2 DoS) - Malformed frames crash servers
-- **CVE-2025-59464** (TLS memory leak) - Certificate processing leaks memory
-- **CVE-2026-21637** (Callback DoS) - PSK/ALPN exceptions cause crashes
-
-**Recommended Action:**
-
-1. Upgrade Node.js immediately
-2. Add explicit error handlers to TLS sockets
-3. Monitor memory usage for TLS-heavy workloads
-
-</CollapsibleSection>
-
----
-
-## How to Upgrade
-
-### Using nvm (Node Version Manager)
-
-```bash
-# Install the patched version for your release line
-nvm install 24.13.0  # LTS (recommended)
-nvm install 22.22.0  # Previous LTS
-nvm install 20.20.0  # Maintenance LTS
-nvm install 25.3.0   # Current
-
-# Verify installation
-node --version
-# v24.13.0
-
-# Set as default
-nvm alias default 24.13.0
-
-# Create version pinning file for your project
-echo "24.13.0" > .nvmrc
-echo "24.13.0" > .node-version  # For other version managers
-```
-
-### Using Homebrew (macOS)
-
-```bash
-brew update
-brew upgrade node
-node --version
-```
-
-### Verifying the Upgrade
-
-```bash
-# Check Node.js version
-node --version
-# Should show: v20.20.0, v22.22.0, v24.13.0, or v25.3.0
-
-# Verify npm is functional
-npm --version
-
-# Run your test suite
-npm test
-```
-
-### CI/CD Considerations
-
-Update your GitHub Actions workflows to use version pinning:
-
-```yaml
-# .github/workflows/ci.yml
-- uses: actions/setup-node@v4
-  with:
-    node-version-file: '.nvmrc' # Use version from .nvmrc file
-```
 
 ---
 
