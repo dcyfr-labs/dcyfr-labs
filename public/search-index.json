@@ -1,10 +1,10 @@
 {
   "posts": [
     {
-      "id": "post-20260114-nodejs-security-cves",
+      "id": "post-20260114-b4f5e2c2",
       "title": "Node.js January 2026 Security Release: 8 CVEs Explained",
       "summary": "On January 13, 2026, Node.js released security patches for 8 vulnerabilities (3 HIGH, 4 MEDIUM, 1 LOW) affecting all active release lines. This post breaks down each CVE, explains who is affected, and provides actionable remediation guidance.",
-      "content": "Upgrade Required: Node.js released security patches on January 13, 2026 for 8 vulnerabilities affecting all active release lines (20.x, 22.x, 24.x, 25.x). Upgrade immediately to v20.20.0, v22.22.0, v24.13.0, or v25.3.0. --- TL;DR On January 13, 2026, the Node.js project released security patches addressing: - 3 HIGH severity vulnerabilities (buffer memory leak, symlink bypass, HTTP/2 DoS) - 4 MEDIUM severity vulnerabilities (AsyncLocalStorage crashes, TLS memory leak, UDS bypass, TLS callback Do",
+      "content": "Upgrade Required: Node.js released security patches on January 13, 2026 for 8 vulnerabilities affecting all active release lines (20.x, 22.x, 24.x, 25.x). Upgrade immediately to v20.20.0, v22.22.0, v24.13.0, or v25.3.0. On January 13, 2026, the Node.js project released security patches addressing: - 3 High Severity vulnerabilities (buffer memory leak, symlink bypass, HTTP/2 DoS) - 4 Medium Severity vulnerabilities (AsyncLocalStorage crashes, TLS memory leak, UDS bypass, TLS callback DoS) - 1 Low",
       "tags": [
         "Node.js",
         "Security",
@@ -16,8 +16,8 @@
       ],
       "series": null,
       "publishedAt": "2026-01-14T12:00:00Z",
-      "readingTime": 9,
-      "url": "/blog/nodejs-jan2026-security"
+      "readingTime": 12,
+      "url": "/blog/nodejs-vulnerabilities-january-2026"
     },
     {
       "id": "post-20260115-7b4e92c1",
@@ -53,7 +53,7 @@
       "url": "/blog/getting-started-with-react-hooks"
     },
     {
-      "id": "post-20251222-ui-demo",
+      "id": "post-20251222-f8c3d4e1",
       "title": "UI Elements and Components",
       "summary": "Explore the full range of UI components, MDX elements, code highlighting, alerts, callouts, and visual features available in this blog system. Includes modern engagement components and React 19 patterns.",
       "content": "> Note: This is a demonstration post showcasing all available UI elements and components. It serves as a visual reference for content creators and developers. This post demonstrates every visual element, component, and styling option available in the blog system. Use this as a reference when creating new content. --- Typography Hierarchy Heading 1: Main Title The largest heading, typically used only once per page as the article title. Heading 2: Major Sections Primary section headers that divide",
@@ -93,7 +93,7 @@
       "id": "post-20251203-47dac952",
       "title": "CVE-2025-55182 (React2Shell)",
       "summary": "CVE-2025-55182 (React2Shell) is a critical RCE vulnerability in React Server Components under active exploitation since December 4, 2025. This post explores the vulnerability, confirmed botnet integration, attack patterns, detection methods, and why upgrading is essential.",
-      "content": "JANUARY 2026 UPDATE: One month after disclosure, React2Shell remains under sustained exploitation with over 8.1 million attack sessions recorded[^1]. Security firm GreyNoise reports 300,000-400,000 daily attacks from 8,163 unique IPs across 101 countries[^1]. Over 644,000 domains remain vulnerable despite patches being available since December 3, 2025[^2]. CISA's federal remediation deadline (December 26, 2025) has passed[^3]. If you haven't upgraded to React 19.2.3[^4] and Next.js 16.0.10+, you",
+      "content": "JANUARY 2026 UPDATE: One month after disclosure, React2Shell (CVE-2025-55182) remains under sustained exploitation with over 8.1 million attack sessions recorded[^1]. Security firm GreyNoise reports 300,000-400,000 daily attacks from 8,163 unique IPs across 101 countries[^1]. Over 644,000 domains remain vulnerable despite patches being available since December 3, 2025[^2]. CISA's federal remediation deadline (December 26, 2025) has passed[^3]. If you haven't upgraded to React 19.2.3[^4] and Next",
       "tags": [
         "Next.js",
         "React",
@@ -133,7 +133,7 @@
       "id": "post-20251111-446fbfc7",
       "title": "Building with AI",
       "summary": "Exploring the Model Context Protocol (MCP) and how it's enabling new patterns for AI-assisted development with practical examples from real projects.",
-      "content": "AI coding assistants are everywhere now, but there's a critical gap: how do they access your actual development context? Your database schema, API routes, recent commits, production errors, all the things you need to write real code. This is the problem Model Context Protocol (MCP) was designed to solve. --- What is Model Context Protocol? Model Context Protocol[^mcp-intro] is an open standard introduced by Anthropic that enables AI assistants to securely connect with external data sources and t",
+      "content": "AI coding assistants are everywhere now, but there's a critical gap: how do they access your actual development context? Your database schema, API routes , recent commits, production errors, all the things you need to write real code. This is the problem Model Context Protocol (MCP) was designed to solve. --- What is Model Context Protocol? Model Context Protocol[^mcp-intro] is an open standard introduced by Anthropic that enables AI assistants to securely connect with external data sources and ",
       "tags": [
         "AI",
         "MCP",
@@ -161,7 +161,7 @@
       ],
       "series": "Features",
       "publishedAt": "2025-11-09T00:00:00Z",
-      "readingTime": 3,
+      "readingTime": 2,
       "url": "/blog/demo-diagrams"
     },
     {
@@ -178,7 +178,7 @@
       ],
       "series": "Portfolio",
       "publishedAt": "2025-10-05T12:00:00Z",
-      "readingTime": 5,
+      "readingTime": 6,
       "url": "/blog/hardening-developer-portfolio"
     },
     {
@@ -319,5 +319,5 @@
     "Features",
     "Portfolio"
   ],
-  "generatedAt": "2026-01-14T21:13:26.397Z"
+  "generatedAt": "2026-01-19T10:09:12.706Z"
 }

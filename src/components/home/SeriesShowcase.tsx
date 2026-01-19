@@ -94,7 +94,7 @@ export function SeriesShowcase({
             }}
           >
             {/* Header - icon + title */}
-            <div className="p-6 pb-3">
+            <div className="p-4 pb-3">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-2 flex-1">
                   <Skeleton className="h-9 w-9 rounded-lg" />
@@ -110,7 +110,7 @@ export function SeriesShowcase({
             </div>
 
             {/* Content */}
-            <div className="px-6 pb-6">
+            <div className="px-4 pb-6">
               {/* Description */}
               <div className="mb-4">
                 <SkeletonText lines={2} />

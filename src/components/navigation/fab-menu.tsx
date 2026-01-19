@@ -1,9 +1,11 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { List, ChevronUp, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { HOVER_EFFECTS, BORDERS, SHADOWS } from "@/lib/design-tokens";
+import { useState } from 'react';
+import { List, ChevronUp, Menu } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { HOVER_EFFECTS, BORDERS, SHADOWS } from '@/lib/design-tokens';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { cn } from '@/lib/utils';
 
 /**
  * FAB Menu Component
@@ -11,6 +13,12 @@ import { HOVER_EFFECTS, BORDERS, SHADOWS } from "@/lib/design-tokens";
  * A consolidated floating action button menu that expands on hover to reveal
  * multiple action buttons. Designed for mobile blog post pages to save screen
  * space while providing quick access to TOC and scroll-to-top functionality.
+ *
+ * **Positioning Strategy:**
+ * - Position: bottom-[76px] = 64px (BottomNav) + 8px (WCAG spacing) + 4px (margin)
+ * - Safe Area: Adds pb-[env(safe-area-inset-bottom,0px)] for iOS home indicators
+ * - Touch Target: 56×56px exceeds Apple HIG (44px) and Material Design (48px)
+ * - Clearance: Never overlaps BottomNav when visible
  *
  * **Animation approach:** Uses CSS animations (Tailwind animate-in) instead of Framer Motion.
  * Simple fade-in/slide-up effects that CSS handles efficiently without JavaScript overhead.
@@ -39,13 +47,17 @@ interface FABMenuProps {
   showScrollTop: boolean;
 }
 
-export function FABMenu({
-  onTOCClick,
-  onScrollTop,
-  showTOC,
-  showScrollTop,
-}: FABMenuProps) {
+export function FABMenu({ onTOCClick, onScrollTop, showTOC, showScrollTop }: FABMenuProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
+
+  // Keyboard handler for button activation
+  const handleKeyDown = (e: React.KeyboardEvent, callback: () => void) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      callback();
+    }
+  };
 
   // Don't render if neither button should be shown
   if (!showTOC && !showScrollTop) {
@@ -55,12 +67,22 @@ export function FABMenu({
   // If only one button, show it directly without menu
   if (showTOC && !showScrollTop) {
     return (
-      <div className="md:hidden fixed bottom-22 right-4 sm:right-6 z-40 animate-in fade-in zoom-in-95 duration-200">
+      <div
+        className={cn(
+          'md:hidden fixed bottom-[76px] right-4 sm:right-6 z-40 pb-[env(safe-area-inset-bottom,0px)]',
+          !prefersReducedMotion && 'animate-in fade-in zoom-in-95 duration-200'
+        )}
+      >
         <Button
           size="icon"
           onClick={onTOCClick}
-          className={`h-14 w-14 ${BORDERS.circle} ${SHADOWS.lg} ${HOVER_EFFECTS.button}`}
+          onKeyDown={(e) => handleKeyDown(e, onTOCClick)}
+          className={cn(
+            `h-14 w-14 ${BORDERS.circle} ${SHADOWS.lg} ${HOVER_EFFECTS.button}`,
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
+          )}
           aria-label="Open table of contents"
+          tabIndex={0}
         >
           <List className="h-6 w-6" />
         </Button>
@@ -70,12 +92,22 @@ export function FABMenu({
 
   if (!showTOC && showScrollTop) {
     return (
-      <div className="md:hidden fixed bottom-22 right-4 sm:right-6 z-40 animate-in fade-in zoom-in-95 duration-200">
+      <div
+        className={cn(
+          'md:hidden fixed bottom-[76px] right-4 sm:right-6 z-40 pb-[env(safe-area-inset-bottom,0px)]',
+          !prefersReducedMotion && 'animate-in fade-in zoom-in-95 duration-200'
+        )}
+      >
         <Button
           size="icon"
           onClick={onScrollTop}
-          className={`h-14 w-14 ${BORDERS.circle} ${SHADOWS.lg} ${HOVER_EFFECTS.button}`}
+          onKeyDown={(e) => handleKeyDown(e, onScrollTop)}
+          className={cn(
+            `h-14 w-14 ${BORDERS.circle} ${SHADOWS.lg} ${HOVER_EFFECTS.button}`,
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
+          )}
           aria-label="Back to top"
+          tabIndex={0}
         >
           <ChevronUp className="h-7 w-7" strokeWidth={2.5} />
         </Button>
@@ -86,7 +118,7 @@ export function FABMenu({
   // Both buttons available - show expandable menu
   return (
     <div
-      className="md:hidden fixed bottom-22 right-4 sm:right-6 z-40"
+      className="md:hidden fixed bottom-[76px] right-4 sm:right-6 z-40 pb-[env(safe-area-inset-bottom,0px)]"
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
       onTouchStart={() => setIsExpanded(!isExpanded)}
@@ -95,24 +127,44 @@ export function FABMenu({
         {isExpanded && (
           <>
             {/* TOC Button */}
-            <div className="animate-in fade-in slide-in-from-bottom-4 zoom-in-95 duration-200 delay-75">
+            <div
+              className={cn(
+                !prefersReducedMotion &&
+                  'animate-in fade-in slide-in-from-bottom-4 zoom-in-95 duration-200 delay-75'
+              )}
+            >
               <Button
                 size="icon"
                 onClick={onTOCClick}
-                className={`h-12 w-12 ${BORDERS.circle} ${SHADOWS.lg} ${HOVER_EFFECTS.button}`}
+                onKeyDown={(e) => handleKeyDown(e, onTOCClick)}
+                className={cn(
+                  `h-12 w-12 ${BORDERS.circle} ${SHADOWS.lg} ${HOVER_EFFECTS.button}`,
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
+                )}
                 aria-label="Open table of contents"
+                tabIndex={0}
               >
                 <List className="h-5 w-5" />
               </Button>
             </div>
 
             {/* Scroll to Top Button */}
-            <div className="animate-in fade-in slide-in-from-bottom-4 zoom-in-95 duration-200">
+            <div
+              className={cn(
+                !prefersReducedMotion &&
+                  'animate-in fade-in slide-in-from-bottom-4 zoom-in-95 duration-200'
+              )}
+            >
               <Button
                 size="icon"
                 onClick={onScrollTop}
-                className={`h-12 w-12 ${BORDERS.circle} ${SHADOWS.lg} ${HOVER_EFFECTS.button}`}
+                onKeyDown={(e) => handleKeyDown(e, onScrollTop)}
+                className={cn(
+                  `h-12 w-12 ${BORDERS.circle} ${SHADOWS.lg} ${HOVER_EFFECTS.button}`,
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
+                )}
                 aria-label="Back to top"
+                tabIndex={0}
               >
                 <ChevronUp className="h-6 w-6" strokeWidth={2.5} />
               </Button>
@@ -122,15 +174,23 @@ export function FABMenu({
 
         {/* Main Menu Button - Always visible */}
         <div
-          className={`transition-transform duration-200 ${
-            isExpanded ? "rotate-90" : "rotate-0"
-          }`}
+          className={cn(
+            'transition-transform',
+            !prefersReducedMotion && 'duration-200',
+            isExpanded ? 'rotate-90' : 'rotate-0'
+          )}
         >
           <Button
             size="icon"
-            className={`h-14 w-14 ${BORDERS.circle} ${SHADOWS.lg} ${HOVER_EFFECTS.button}`}
-            aria-label={isExpanded ? "Close menu" : "Open menu"}
+            onClick={() => setIsExpanded(!isExpanded)}
+            onKeyDown={(e) => handleKeyDown(e, () => setIsExpanded(!isExpanded))}
+            className={cn(
+              `h-14 w-14 ${BORDERS.circle} ${SHADOWS.lg} ${HOVER_EFFECTS.button}`,
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
+            )}
+            aria-label={isExpanded ? 'Close menu' : 'Open menu'}
             aria-expanded={isExpanded}
+            tabIndex={0}
           >
             <Menu className="h-6 w-6" />
           </Button>

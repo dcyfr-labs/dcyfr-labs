@@ -16,7 +16,7 @@ echo "🔍 Running pre-commit governance checks..."
 
 # Check 1: Sensitive files in public docs
 echo -n "  Checking for sensitive files in public docs... "
-SENSITIVE_FILES=$(git diff --cached --name-only 2>/dev/null | grep -E "^docs/" | grep -v "^docs/private/" | grep -E "(FINDINGS|AUDIT|REPORT|ANALYSIS|METRICS|VULNERABILITY|STATUS|BACKLOG|COMPLETION|CAMPAIGN|PHASE[0-9])\.md$" || true)
+SENSITIVE_FILES=$(git diff --cached --name-only --diff-filter=AM 2>/dev/null | grep -E "^docs/" | grep -v "^docs/private/" | grep -v "^docs/.*/private/" | grep -E "(FINDINGS|AUDIT|REPORT|ANALYSIS|METRICS|VULNERABILITY|STATUS|BACKLOG|COMPLETION|CAMPAIGN|PHASE[0-9])\.md$" || true)
 
 if [ -n "$SENSITIVE_FILES" ]; then
   echo -e "${RED}FAIL${NC}"
@@ -133,7 +133,7 @@ fi
 
 # Check 9: Documentation placement validation
 echo -n "  Checking documentation placement... "
-ROOT_DOCS=$(git diff --cached --name-only 2>/dev/null | grep -E "\.md$" | grep -v "^docs/" | grep -v "^README.md$" | grep -v "^CONTRIBUTING.md$" | grep -v "^CHANGELOG.md$" | grep -v "^LICENSE.md$" | grep -v "^SECURITY.md$" | grep -v "^AGENTS.md$" | grep -v "^CLAUDE.md$" | grep -v "^\.github/.*-instructions\.md$" | grep -v "^\.opencode/.*\.md$" | grep -v "^\.claude/agents/.*\.md$" || true)
+ROOT_DOCS=$(git diff --cached --name-only 2>/dev/null | grep -E "\.md$" | grep -v "^docs/" | grep -v "^README.md$" | grep -v "^CONTRIBUTING.md$" | grep -v "^CHANGELOG.md$" | grep -v "^LICENSE.md$" | grep -v "^SECURITY.md$" | grep -v "^AGENTS.md$" | grep -v "^CLAUDE.md$" | grep -v "^\.github/.*-instructions\.md$" | grep -v "^\.github/agents/.*\.md$" | grep -v "^\.opencode/.*\.md$" | grep -v "^\.claude/agents/.*\.md$" || true)
 
 if [ -n "$ROOT_DOCS" ]; then
   echo -e "${RED}FAIL${NC}"
@@ -161,6 +161,37 @@ else
   echo -e "${RED}FAIL${NC}"
   echo -e "${RED}❌ ERROR: lint-staged failed${NC}"
   ERRORS=$((ERRORS+1))
+fi
+
+# Check 11: Frontmatter validation for blog posts
+echo -n "  Validating blog post frontmatter... "
+CHANGED_POSTS=$(git diff --cached --name-only 2>/dev/null | grep "^src/content/blog/.*\.mdx$" || true)
+if [ -n "$CHANGED_POSTS" ]; then
+  if tsx scripts/validate-frontmatter.mjs 2>&1 | grep -q "failed validation"; then
+    echo -e "${RED}FAIL${NC}"
+    echo -e "${RED}❌ ERROR: Blog post frontmatter validation failed${NC}"
+    tsx scripts/validate-frontmatter.mjs 2>&1 | tail -20 | sed 's/^/      /'
+    ERRORS=$((ERRORS+1))
+  else
+    echo -e "${GREEN}PASS${NC}"
+  fi
+else
+  echo -e "${YELLOW}SKIP${NC} (no blog posts changed)"
+fi
+
+# Check 12: Footnote validation for blog posts
+echo -n "  Validating blog post footnotes... "
+if [ -n "$CHANGED_POSTS" ]; then
+  if node scripts/validate-footnotes.mjs 2>&1 | grep -q "failed validation"; then
+    echo -e "${RED}FAIL${NC}"
+    echo -e "${RED}❌ ERROR: Blog post footnote validation failed${NC}"
+    node scripts/validate-footnotes.mjs 2>&1 | tail -20 | sed 's/^/      /'
+    ERRORS=$((ERRORS+1))
+  else
+    echo -e "${GREEN}PASS${NC}"
+  fi
+else
+  echo -e "${YELLOW}SKIP${NC} (no blog posts changed)"
 fi
 
 # Summary

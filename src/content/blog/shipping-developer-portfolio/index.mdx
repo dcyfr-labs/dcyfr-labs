@@ -1,41 +1,42 @@
 ---
-id: "post-20250910-39db73be"
-title: "Shipping a Developer Portfolio"
-subtitle: "How I used Next.js App Router, Tailwind v4, and shadcn/ui to build a production-ready developer portfolio"
-authors: ["drew"]
-summary: "How I used Next.js App Router, Tailwind v4, and shadcn/ui to build a production-ready developer portfolio with modern architecture patterns."
-publishedAt: "2025-09-10T12:00:00Z"
-updatedAt: "2025-10-05T12:00:00Z"
-category: "Web"
-tags: ["Next.js", "Tailwind CSS", "TypeScript", "shadcn/ui", "Portfolio"]
+id: 'post-20250910-39db73be'
+title: 'Shipping a Developer Portfolio'
+subtitle: 'How I used Next.js App Router, Tailwind v4, and shadcn/ui to build a production-ready developer portfolio'
+authors: ['drew']
+summary: 'How I used Next.js App Router, Tailwind v4, and shadcn/ui to build a production-ready developer portfolio with modern architecture patterns.'
+publishedAt: '2025-09-10T12:00:00Z'
+updatedAt: '2025-10-05T12:00:00Z'
+category: 'Web'
+tags: ['Next.js', 'Tailwind CSS', 'TypeScript', 'shadcn/ui', 'Portfolio']
 series:
-  name: "Portfolio"
+  name: 'Portfolio'
   order: 1
-  description: "Learn how to build, harden, and ship a production-ready developer portfolio with real-world techniques."
-  icon: "Rocket"
-  color: "development"
+  description: 'Learn how to build, harden, and ship a production-ready developer portfolio with real-world techniques.'
+  icon: 'Rocket'
+  color: 'development'
 image:
-  url: "/blog/shipping-developer-portfolio/assets/hero.webp"
-  alt: "Developer portfolio architecture diagrams and modals showcasing Next.js App Router, Tailwind v4, and shadcn/ui components."
-  caption: "Shipping a Developer Portfolio"
-  credit: "Perplexity Labs"
+  url: '/blog/shipping-developer-portfolio/assets/hero.webp'
+  alt: 'Isometric illustration of layered web application interface design with cyan accents, data flow arrows, and wireframe UI components on dark background'
+  caption: 'Abstract isometric 3D illustration of stacked application interface layers with modern UI design elements and data visualization on dark background'
+  description: 'Modern isometric illustration depicting layered software interface architecture with interconnected UI components, data flow visualization, and contemporary design elements featuring a dark navy background with bright cyan/turquoise accents'
+  credit: 'Perplexity Labs'
   width: 1200
   height: 630
 previousSlugs:
-  - "shipping-tiny-portfolio"
+  - 'shipping-tiny-portfolio'
 ---
 
 > **Update (December 2025):** This post is now part of a series! What started as a minimal portfolio has evolved into a [production-ready platform with comprehensive security](https://github.com/dcyfr/dcyfr-labs), featuring CSP headers, rate limiting, Redis analytics, background job processing, and extensive monitoring. Check out [Hardening a Developer Portfolio](/blog/hardening-developer-portfolio) for the follow-up covering production deployment patterns.
 
 ---
 
-I wanted to build a focused portfolio that is fast to load, easy to iterate on, and simple to host. After trying a few prototypes, I settled on a modern stack that prioritizes server rendering, typed data, and tiny bundles.
+I wanted to build a focused portfolio that is fast to load, easy to iterate on, and simple to host. After trying a few prototypes, I settled on a modern stack that prioritizes <GlossaryTooltip term="Server Rendering" definition="Server Rendering - the process of generating HTML on the server before sending it to the client, improving initial page load performance and SEO">server rendering</GlossaryTooltip>, typed data, and tiny bundles.
 
 ---
 
 ## Why App Router?
 
-The Next.js App Router represents a fundamental shift toward server-first rendering. Unlike the Pages Router, App Router makes server components the default, which means:
+The Next.js <GlossaryTooltip term="App Router" definition="Next.js 13+ routing system that leverages React Server Components by default, enabling server-first rendering with improved performance and developer experience">App Router</GlossaryTooltip> represents a fundamental shift toward server-first rendering. Unlike the Pages Router, App Router makes server components the default, which means:
 
 - **Better performance**: Initial page loads are faster since most components render on the server.
 - **Improved SEO**: Content is fully rendered before it reaches the browser.
@@ -57,12 +58,18 @@ src/
 └── lib/           # Utilities and helpers
 ```
 
-### Stack deep dive
+## Stack deep dive
 
 **Next.js 15 + React 19**
 
 - App Router with server components by default
-- Turbopack for lightning-fast dev server (production builds use Webpack)
+- <GlossaryTooltip
+    term="Turbopack"
+    definition="Next.js's Rust-based successor to Webpack, offering up to 700x faster updates in local development with incremental computation and smart caching"
+  >
+    Turbopack
+  </GlossaryTooltip>
+  for lightning-fast dev server (production builds use Webpack)
 - File-based metadata with zero config
 
 **TypeScript (strict)**
@@ -78,8 +85,8 @@ src/
 
 **shadcn/ui**
 
-- Accessible Radix primitives (Dialog, Dropdown, Tooltip, etc.)
-- Headless building blocks with CVA variants
+- Accessible <GlossaryTooltip term="Radix UI" definition="A low-level UI component library providing unstyled, accessible primitives for building high-quality design systems and web applications">Radix primitives</GlossaryTooltip> (Dialog, Dropdown, Tooltip, etc.)
+- Headless building blocks with <GlossaryTooltip term="CVA" definition="Class Variance Authority - a utility for creating type-safe component variants with Tailwind CSS classes, enabling consistent UI patterns">CVA variants</GlossaryTooltip>
 - Copy-paste component library that you own
 
 ---
@@ -111,6 +118,11 @@ MDX content is rendered with `next-mdx-remote` and enhanced with rehype plugins 
 - Type-safe frontmatter catches errors before deployment
 
 Search and tag filtering are now live without compromising the stack's simplicity, and view counts remain on the roadmap.
+
+<SectionShare
+  sectionId="key-takeaways"
+  sectionTitle="Shipping a Developer Portfolio: Key Takeaways"
+/>
 
 ---
 

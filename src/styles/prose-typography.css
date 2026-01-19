@@ -607,4 +607,104 @@ figcaption p {
   font-style: italic;
 }
 
+/* ===================================================================
+   PROSE LINK STYLING - Modern, Accessible Design
+   ================================================================ */
 
+/**
+ * Philosophy:
+ * 1. Links must be clearly distinguishable from body text (WCAG 2.1 AA)
+ * 2. Smooth, professional transitions matching site aesthetic
+ * 3. Subtle hover feedback without being jarring
+ * 4. Consistent with design token system
+ * 
+ * Color Strategy:
+ * - Light mode: Use primary (near-black) with medium opacity for subtle distinction
+ * - Dark mode: Use foreground with slight boost for better visibility
+ * - Hover: Reduce opacity for elegant fade effect (matches modern UI patterns)
+ */
+
+/* Default link styling - Clean, underlined, accessible */
+.prose a:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a, [role="button"]),
+.prose a:link:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a, [role="button"]),
+.prose a:visited:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a, [role="button"]) {
+  /* Color: Slightly lighter than body text for distinction */
+  color: hsl(var(--foreground) / 0.85) !important;
+
+  /* Underline: Solid, continuous, properly offset */
+  text-decoration: underline !important;
+  text-decoration-thickness: 1px !important;
+  text-underline-offset: 0.25em !important;
+  text-decoration-skip-ink: none !important;
+
+  /* Smooth transitions using design tokens */
+  transition: color var(--duration-fast) var(--ease-default),
+    text-decoration-color var(--duration-fast) var(--ease-default),
+    text-decoration-thickness var(--duration-fast) var(--ease-default);
+
+  /* Performance optimization */
+  will-change: auto;
+}
+
+/* Hover state - Elegant fade with thicker underline */
+.prose a:hover:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a, [role="button"]) {
+  color: hsl(var(--foreground) / 0.65) !important;
+  text-decoration-thickness: 1.5px !important;
+  text-decoration-color: hsl(var(--foreground) / 0.5) !important;
+}
+
+/* Active state - Subtle press feedback */
+.prose a:active:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a, [role="button"]) {
+  color: hsl(var(--foreground) / 0.55) !important;
+  transition-duration: 50ms;
+}
+
+/* Focus state - Accessible keyboard navigation */
+.prose a:focus-visible {
+  outline: 2px solid hsl(var(--ring)) !important;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Dark mode adjustments - Enhanced visibility */
+.dark .prose a:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a, [role="button"]),
+.dark .prose a:link:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a, [role="button"]),
+.dark .prose a:visited:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a, [role="button"]) {
+  color: hsl(var(--foreground) / 0.9) !important;
+}
+
+.dark .prose a:hover:not(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a, [role="button"]) {
+  color: hsl(var(--foreground) / 0.7) !important;
+  text-decoration-color: hsl(var(--foreground) / 0.6) !important;
+}
+
+/* Header links - Remove underline decoration with high specificity */
+.prose h1 > a,
+.prose h2 > a,
+.prose h3 > a,
+.prose h4 > a,
+.prose h5 > a,
+.prose h6 > a,
+.prose h1 a,
+.prose h2 a,
+.prose h3 a,
+.prose h4 a,
+.prose h5 a,
+.prose h6 a {
+  text-decoration: none !important;
+}
+
+.prose h1 > a:hover,
+.prose h2 > a:hover,
+.prose h3 > a:hover,
+.prose h4 > a:hover,
+.prose h5 > a:hover,
+.prose h6 > a:hover,
+.prose h1 a:hover,
+.prose h2 a:hover,
+.prose h3 a:hover,
+.prose h4 a:hover,
+.prose h5 a:hover,
+.prose h6 a:hover {
+  text-decoration: none !important;
+}

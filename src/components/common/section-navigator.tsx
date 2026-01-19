@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useSectionNavigation } from "@/hooks/use-section-navigation";
-import { type ReactNode } from "react";
+import { useSectionNavigation } from '@/hooks/use-section-navigation';
+import { type ReactNode } from 'react';
 
 /**
  * Props for SectionNavigator component
@@ -63,12 +63,12 @@ interface SectionNavigatorProps {
  */
 export function SectionNavigator({
   children,
-  sectionSelector = "section[data-section]",
-  scrollBehavior = "smooth",
+  sectionSelector = 'section[data-section]',
+  scrollBehavior = 'smooth',
   scrollOffset = 80,
   disabled = false,
   enableScrollSnap = false,
-  className = "",
+  className = '',
 }: SectionNavigatorProps) {
   // Initialize keyboard navigation
   useSectionNavigation({
@@ -81,16 +81,13 @@ export function SectionNavigator({
   // Apply scroll snap styling if enabled
   const scrollSnapStyles = enableScrollSnap
     ? {
-        scrollSnapType: "y mandatory",
+        scrollSnapType: 'y mandatory',
         scrollPaddingTop: `${scrollOffset}px`,
       }
     : undefined;
 
   return (
-    <div 
-      className={className}
-      style={scrollSnapStyles}
-    >
+    <div className={className} style={scrollSnapStyles}>
       {children}
     </div>
   );
@@ -104,7 +101,6 @@ export function SectionNavigator({
  *
  * @example
  * <SectionNavigator>
- *   <Section id="hero">Hero Content</Section>
  *   <Section id="features">Features Content</Section>
  *   <Section id="projects">Projects Content</Section>
  * </SectionNavigator>
@@ -112,7 +108,7 @@ export function SectionNavigator({
 export function Section({
   children,
   id,
-  className = "",
+  className = '',
   enableScrollSnap = false,
   ...props
 }: {
@@ -121,18 +117,10 @@ export function Section({
   className?: string;
   enableScrollSnap?: boolean;
 } & React.HTMLAttributes<HTMLElement>) {
-  const scrollSnapStyle = enableScrollSnap
-    ? { scrollSnapAlign: "start" as const }
-    : undefined;
+  const scrollSnapStyle = enableScrollSnap ? { scrollSnapAlign: 'start' as const } : undefined;
 
   return (
-    <section
-      id={id}
-      data-section
-      className={className}
-      style={scrollSnapStyle}
-      {...props}
-    >
+    <section id={id} data-section className={className} style={scrollSnapStyle} {...props}>
       {children}
     </section>
   );

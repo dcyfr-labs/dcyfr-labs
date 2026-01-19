@@ -1,28 +1,29 @@
-import type { Metadata } from "next";
-import { headers } from "next/headers";
-import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS } from "@/lib/design-tokens";
-import { createPageMetadata } from "@/lib/metadata";
-import { PageLayout, PageHero } from "@/components/layouts";
-import { getJsonLdScriptProps, getContactPageSchema } from "@/lib/json-ld";
+import type { Metadata } from 'next';
+import { headers } from 'next/headers';
+import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS, CONTAINER_PADDING } from '@/lib/design-tokens';
+import { createPageMetadata } from '@/lib/metadata';
+import { PageLayout, PageHero } from '@/components/layouts';
+import { getJsonLdScriptProps, getContactPageSchema } from '@/lib/json-ld';
+import { cn } from '@/lib/utils';
 
-const pageTitle = "Privacy Policy";
+const pageTitle = 'Privacy Policy';
 const pageDescription =
-  "Learn how DCYFR Labs collects, uses, and protects your information. We prioritize privacy with minimal data collection and no tracking.";
+  'Learn how DCYFR Labs collects, uses, and protects your information. We prioritize privacy with minimal data collection and no tracking.';
 
 export const metadata: Metadata = createPageMetadata({
   title: pageTitle,
   description: pageDescription,
-  path: "/privacy",
+  path: '/privacy',
 });
 
 export default async function PrivacyPage() {
   // Get nonce from proxy for CSP
-  const nonce = (await headers()).get("x-nonce") || "";
+  const nonce = (await headers()).get('x-nonce') || '';
 
   // JSON-LD structured data
   const jsonLd = getContactPageSchema(pageDescription);
 
-  const lastUpdated = "December 28, 2025";
+  const lastUpdated = 'January 16, 2026';
 
   return (
     <PageLayout>
@@ -36,14 +37,13 @@ export default async function PrivacyPage() {
       />
 
       <article
-        className={`mx-auto ${CONTAINER_WIDTHS.prose} ${SPACING.section}`}
+        className={`mx-auto ${CONTAINER_WIDTHS.prose} ${CONTAINER_PADDING} ${SPACING.section}`}
       >
         {/* Introduction */}
         <section className={SPACING.content}>
           <p className={TYPOGRAPHY.description}>
-            At DCYFR Labs, we believe in transparency and privacy by design.
-            This policy explains how we collect, use, and protect your
-            information when you visit our website.
+            At DCYFR Labs, we believe in transparency and privacy by design. This policy explains
+            how we collect, use, and protect your information when you visit our website.
           </p>
           <p className={TYPOGRAPHY.body}>
             <strong>Last Updated:</strong> {lastUpdated}
@@ -55,24 +55,21 @@ export default async function PrivacyPage() {
           <h2 className={TYPOGRAPHY.h2.standard}>Our Privacy Principles</h2>
           <ul className={`${SPACING.compact} list-disc pl-6`}>
             <li className={TYPOGRAPHY.body}>
-              <strong>Minimal Data Collection:</strong> We only collect
-              what&apos;s absolutely necessary
+              <strong>Minimal Data Collection:</strong> We only collect what&apos;s absolutely
+              necessary
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>No Tracking:</strong> We don&apos;t use cookies,
-              analytics, or third-party trackers
+              <strong>Privacy-First Analytics:</strong> We use privacy-respecting analytics that
+              don&apos;t track individuals or use cookies
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Transparent Processing:</strong> You know exactly what
-              data we handle and why
+              <strong>Transparent Processing:</strong> You know exactly what data we handle and why
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Secure Storage:</strong> All data is encrypted and
-              protected
+              <strong>Secure Storage:</strong> All data is encrypted and protected
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Your Control:</strong> You can request deletion of your
-              data at any time
+              <strong>Your Control:</strong> You can request deletion of your data at any time
             </li>
           </ul>
         </section>
@@ -82,54 +79,42 @@ export default async function PrivacyPage() {
           <h2 className={TYPOGRAPHY.h2.standard}>Information We Collect</h2>
 
           <div className={SPACING.compact}>
-            <h3 className={TYPOGRAPHY.h3.standard}>
-              1. Contact Form Submissions
-            </h3>
-            <p className={TYPOGRAPHY.body}>
-              When you submit our contact form, we collect:
-            </p>
+            <h3 className={TYPOGRAPHY.h3.standard}>1. Contact Form Submissions</h3>
+            <p className={TYPOGRAPHY.body}>When you submit our contact form, we collect:</p>
             <ul className="space-y-1 list-disc pl-6">
               <li className={TYPOGRAPHY.body}>Your name</li>
               <li className={TYPOGRAPHY.body}>Email address</li>
               <li className={TYPOGRAPHY.body}>Message content</li>
             </ul>
             <p className={TYPOGRAPHY.body}>
-              <strong>Purpose:</strong> To respond to your inquiries and provide
-              support.
+              <strong>Purpose:</strong> To respond to your inquiries and provide support.
               <br />
-              <strong>Storage:</strong> Contact form data is processed via
-              Inngest and not permanently stored. We only retain your email in
-              our inbox for correspondence purposes.
+              <strong>Storage:</strong> Contact form data is processed via Inngest and not
+              permanently stored. We only retain your email in our inbox for correspondence
+              purposes.
             </p>
           </div>
 
           <div className={SPACING.compact}>
-            <h3 className={TYPOGRAPHY.h3.standard}>
-              2. Browser Data (localStorage)
-            </h3>
+            <h3 className={TYPOGRAPHY.h3.standard}>2. Browser Data (localStorage)</h3>
             <p className={TYPOGRAPHY.body}>
-              We store preferences locally in your browser to enhance your
-              experience:
+              We store preferences locally in your browser to enhance your experience:
             </p>
             <ul className="space-y-1 list-disc pl-6">
               <li className={TYPOGRAPHY.body}>
-                <strong>Search History:</strong> Recent searches in command
-                palette
+                <strong>Search History:</strong> Recent searches in command palette
               </li>
               <li className={TYPOGRAPHY.body}>
                 <strong>Bookmarks:</strong> Saved blog posts and pages
               </li>
               <li className={TYPOGRAPHY.body}>
-                <strong>Likes:</strong> Activity engagement (blog posts,
-                projects)
+                <strong>Likes:</strong> Activity engagement (blog posts, projects)
               </li>
             </ul>
             <p className={TYPOGRAPHY.body}>
-              <strong>Purpose:</strong> Personalize your experience with saved
-              preferences.
+              <strong>Purpose:</strong> Personalize your experience with saved preferences.
               <br />
-              <strong>Storage:</strong> Client-side only (not shared with server
-              unless you log in).
+              <strong>Storage:</strong> Client-side only (not shared with server unless you log in).
               <br />
               <strong>Control:</strong> Clear via browser settings or our UI.
             </p>
@@ -138,32 +123,28 @@ export default async function PrivacyPage() {
           <div className={SPACING.compact}>
             <h3 className={TYPOGRAPHY.h3.standard}>3. Session Data</h3>
             <p className={TYPOGRAPHY.body}>
-              For certain interactive features, we create temporary encrypted
-              sessions:
+              For certain interactive features, we create temporary encrypted sessions:
             </p>
             <ul className="space-y-1 list-disc pl-6">
-              <li className={TYPOGRAPHY.body}>
-                Session identifier (randomly generated)
-              </li>
+              <li className={TYPOGRAPHY.body}>Session identifier (randomly generated)</li>
               <li className={TYPOGRAPHY.body}>Temporary preferences</li>
             </ul>
             <p className={TYPOGRAPHY.body}>
-              <strong>Purpose:</strong> To maintain state for interactive
-              features.
+              <strong>Purpose:</strong> To maintain state for interactive features.
               <br />
-              <strong>Storage:</strong> Encrypted in Redis with automatic
-              expiration (24-48 hours).
+              <strong>Storage:</strong> Encrypted in Vercel Redis (managed Redis service) with
+              automatic expiration (24-48 hours).
               <br />
-              <strong>Security:</strong> All session data is encrypted using
-              industry-standard encryption (AES-256-GCM).
+              <strong>Security:</strong> All session data is encrypted using industry-standard
+              encryption (AES-256-GCM).
+              <br />
+              <strong>Provider:</strong> Vercel (powered by Upstash infrastructure, GDPR-compliant)
             </p>
           </div>
 
           <div className={SPACING.compact}>
             <h3 className={TYPOGRAPHY.h3.standard}>4. Server Logs</h3>
-            <p className={TYPOGRAPHY.body}>
-              Our hosting provider (Vercel) automatically collects:
-            </p>
+            <p className={TYPOGRAPHY.body}>Our hosting provider (Vercel) automatically collects:</p>
             <ul className="space-y-1 list-disc pl-6">
               <li className={TYPOGRAPHY.body}>IP address (anonymized)</li>
               <li className={TYPOGRAPHY.body}>Browser type and version</li>
@@ -171,19 +152,17 @@ export default async function PrivacyPage() {
               <li className={TYPOGRAPHY.body}>Timestamps</li>
             </ul>
             <p className={TYPOGRAPHY.body}>
-              <strong>Purpose:</strong> Security monitoring, error detection,
-              and performance optimization.
+              <strong>Purpose:</strong> Security monitoring, error detection, and performance
+              optimization.
               <br />
-              <strong>Retention:</strong> Automatically deleted after 30 days
-              (Vercel&apos;s standard retention).
+              <strong>Retention:</strong> Automatically deleted after 30 days (Vercel&apos;s
+              standard retention).
             </p>
           </div>
 
           <div className={SPACING.compact}>
             <h3 className={TYPOGRAPHY.h3.standard}>5. Public Data (GitHub)</h3>
-            <p className={TYPOGRAPHY.body}>
-              We display publicly available data from GitHub:
-            </p>
+            <p className={TYPOGRAPHY.body}>We display publicly available data from GitHub:</p>
             <ul className="space-y-1 list-disc pl-6">
               <li className={TYPOGRAPHY.body}>Repository stars and forks</li>
               <li className={TYPOGRAPHY.body}>Public activity feed</li>
@@ -191,8 +170,7 @@ export default async function PrivacyPage() {
             <p className={TYPOGRAPHY.body}>
               <strong>Source:</strong> GitHub&apos;s public API.
               <br />
-              <strong>Note:</strong> This data is already publicly accessible on
-              GitHub.
+              <strong>Note:</strong> This data is already publicly accessible on GitHub.
             </p>
           </div>
         </section>
@@ -205,28 +183,29 @@ export default async function PrivacyPage() {
           </p>
           <ul className="space-y-2 list-disc pl-6">
             <li className={TYPOGRAPHY.body}>
-              <strong>Cookies:</strong> We don&apos;t use any cookies
-              (first-party or third-party)
+              <strong>Cookies:</strong> We don&apos;t use any cookies (first-party or third-party)
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Invasive Analytics:</strong> No Google Analytics, Facebook
-              Pixel, or similar user tracking
+              <strong>Individual User Tracking:</strong> No cross-site tracking, user profiles, or
+              behavioral analysis
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Advertising Data:</strong> No ad networks or retargeting
-              pixels
+              <strong>Invasive Analytics:</strong> No Google Analytics, Facebook Pixel, or similar
+              tracking platforms that follow users across the web
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Social Media Tracking:</strong> No social media plugins
-              that track you
+              <strong>Advertising Data:</strong> No ad networks or retargeting pixels
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Fingerprinting:</strong> We don&apos;t create browser
-              fingerprints
+              <strong>Social Media Tracking:</strong> No social media plugins that track you
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Personal Information:</strong> No sensitive data like SSN,
-              payment info, or health records
+              <strong>Fingerprinting:</strong> We don&apos;t create browser fingerprints or device
+              identifiers
+            </li>
+            <li className={TYPOGRAPHY.body}>
+              <strong>Sensitive Personal Information:</strong> No SSN, payment info, health records,
+              or similar sensitive data
             </li>
           </ul>
         </section>
@@ -235,9 +214,8 @@ export default async function PrivacyPage() {
         <section className={SPACING.content}>
           <h2 className={TYPOGRAPHY.h2.standard}>Analytics (Privacy-First)</h2>
           <p className={TYPOGRAPHY.body}>
-            We use <strong>Vercel Analytics</strong> and{" "}
-            <strong>Speed Insights</strong> to understand how our website
-            performs. Unlike traditional analytics platforms, these are
+            We use <strong>Vercel Analytics</strong> and <strong>Speed Insights</strong> to
+            understand how our website performs. Unlike traditional analytics platforms, these are
             privacy-first services:
           </p>
 
@@ -245,20 +223,16 @@ export default async function PrivacyPage() {
             <h3 className={TYPOGRAPHY.h3.standard}>What We Collect</h3>
             <ul className="space-y-1 list-disc pl-6">
               <li className={TYPOGRAPHY.body}>
-                <strong>Page Views:</strong> Aggregated visitor counts (no
-                individual tracking)
+                <strong>Page Views:</strong> Aggregated visitor counts (no individual tracking)
               </li>
               <li className={TYPOGRAPHY.body}>
-                <strong>Performance Metrics:</strong> Page load times, Core Web
-                Vitals
+                <strong>Performance Metrics:</strong> Page load times, Core Web Vitals
               </li>
               <li className={TYPOGRAPHY.body}>
-                <strong>Geographic Data:</strong> Country-level location (no
-                precise location)
+                <strong>Geographic Data:</strong> Country-level location (no precise location)
               </li>
               <li className={TYPOGRAPHY.body}>
-                <strong>Referrer Data:</strong> Where visitors come from
-                (aggregated)
+                <strong>Referrer Data:</strong> Where visitors come from (aggregated)
               </li>
             </ul>
           </div>
@@ -267,44 +241,36 @@ export default async function PrivacyPage() {
             <h3 className={TYPOGRAPHY.h3.standard}>Privacy Protections</h3>
             <ul className="space-y-1 list-disc pl-6">
               <li className={TYPOGRAPHY.body}>
-                <strong>No Cookies:</strong> Vercel Analytics does not use
-                cookies
+                <strong>No Cookies:</strong> Vercel Analytics does not use cookies
               </li>
               <li className={TYPOGRAPHY.body}>
-                <strong>No User Tracking:</strong> Does not track individuals
-                across sessions or websites
+                <strong>No User Tracking:</strong> Does not track individuals across sessions or
+                websites
               </li>
               <li className={TYPOGRAPHY.body}>
-                <strong>No User Profiles:</strong> Does not create profiles or
-                behavioral data
+                <strong>No User Profiles:</strong> Does not create profiles or behavioral data
               </li>
               <li className={TYPOGRAPHY.body}>
-                <strong>GDPR Compliant:</strong> Fully compliant with GDPR and
-                privacy regulations
+                <strong>GDPR Compliant:</strong> Fully compliant with GDPR and privacy regulations
               </li>
               <li className={TYPOGRAPHY.body}>
-                <strong>Aggregated Only:</strong> All data is anonymized and
-                aggregated
+                <strong>Aggregated Only:</strong> All data is anonymized and aggregated
               </li>
             </ul>
           </div>
 
           <div className={SPACING.compact}>
-            <h3 className={TYPOGRAPHY.h3.standard}>
-              How This Differs from Traditional Analytics
-            </h3>
+            <h3 className={TYPOGRAPHY.h3.standard}>How This Differs from Traditional Analytics</h3>
             <p className={TYPOGRAPHY.body}>
-              Vercel Analytics is fundamentally different from Google Analytics,
-              Facebook Pixel, and similar platforms:
+              Vercel Analytics is fundamentally different from Google Analytics, Facebook Pixel, and
+              similar platforms:
             </p>
             <ul className="space-y-1 list-disc pl-6">
               <li className={TYPOGRAPHY.body}>
-                Does <strong>not</strong> track individual users or create
-                identifiers
+                Does <strong>not</strong> track individual users or create identifiers
               </li>
               <li className={TYPOGRAPHY.body}>
-                Does <strong>not</strong> share data with advertisers or third
-                parties
+                Does <strong>not</strong> share data with advertisers or third parties
               </li>
               <li className={TYPOGRAPHY.body}>
                 Does <strong>not</strong> use cookies or persistent storage
@@ -321,18 +287,18 @@ export default async function PrivacyPage() {
           <div className={SPACING.compact}>
             <h3 className={TYPOGRAPHY.h3.standard}>Data Retention & Control</h3>
             <p className={TYPOGRAPHY.body}>
-              <strong>Retention:</strong> Analytics data is retained for 30 days
-              (Vercel&apos;s standard retention).
+              <strong>Retention:</strong> Analytics data is retained for 30 days (Vercel&apos;s
+              standard retention).
               <br />
-              <strong>Opt-out:</strong> You can opt out by enabling &quot;Do Not
-              Track&quot; in your browser settings.
+              <strong>Opt-out:</strong> You can opt out by enabling &quot;Do Not Track&quot; in your
+              browser settings.
               <br />
-              <strong>Learn More:</strong>{" "}
+              <strong>Learn More:</strong>{' '}
               <a
                 href="https://vercel.com/docs/analytics/privacy-policy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary hover:underline"
+                className="text-primary underline"
               >
                 Vercel Analytics Privacy Policy
               </a>
@@ -344,30 +310,27 @@ export default async function PrivacyPage() {
         <section className={SPACING.content}>
           <h2 className={TYPOGRAPHY.h2.standard}>Third-Party Services</h2>
           <p className={TYPOGRAPHY.body}>
-            We use the following trusted third-party services to operate our
-            website:
+            We use the following trusted third-party services to operate our website:
           </p>
 
           <div className={SPACING.compact}>
-            <h3 className={TYPOGRAPHY.h3.standard}>
-              Vercel (Hosting & Infrastructure)
-            </h3>
+            <h3 className={TYPOGRAPHY.h3.standard}>Vercel (Hosting & Infrastructure)</h3>
             <ul className="space-y-1 list-disc pl-6">
               <li className={TYPOGRAPHY.body}>
-                <strong>Purpose:</strong> Website hosting, content delivery, and
-                performance optimization
+                <strong>Purpose:</strong> Website hosting, content delivery, and performance
+                optimization
               </li>
               <li className={TYPOGRAPHY.body}>
-                <strong>Data Processed:</strong> Server logs (IP addresses, user
-                agents, page visits)
+                <strong>Data Processed:</strong> Server logs (IP addresses, user agents, page
+                visits)
               </li>
               <li className={TYPOGRAPHY.body}>
-                <strong>Privacy Policy:</strong>{" "}
+                <strong>Privacy Policy:</strong>{' '}
                 <a
                   href="https://vercel.com/legal/privacy-policy"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary hover:underline"
+                  className="text-primary underline"
                 >
                   Vercel Privacy Policy
                 </a>
@@ -379,25 +342,22 @@ export default async function PrivacyPage() {
           </div>
 
           <div className={SPACING.compact}>
-            <h3 className={TYPOGRAPHY.h3.standard}>
-              Inngest (Background Jobs)
-            </h3>
+            <h3 className={TYPOGRAPHY.h3.standard}>Inngest (Background Jobs)</h3>
             <ul className="space-y-1 list-disc pl-6">
               <li className={TYPOGRAPHY.body}>
-                <strong>Purpose:</strong> Processing contact form submissions
-                and scheduled tasks
+                <strong>Purpose:</strong> Processing contact form submissions and scheduled tasks
               </li>
               <li className={TYPOGRAPHY.body}>
-                <strong>Data Processed:</strong> Contact form data (name, email,
-                message) - transient only
+                <strong>Data Processed:</strong> Contact form data (name, email, message) -
+                transient only
               </li>
               <li className={TYPOGRAPHY.body}>
-                <strong>Privacy Policy:</strong>{" "}
+                <strong>Privacy Policy:</strong>{' '}
                 <a
                   href="https://www.inngest.com/privacy"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary hover:underline"
+                  className="text-primary underline"
                 >
                   Inngest Privacy Policy
                 </a>
@@ -409,32 +369,104 @@ export default async function PrivacyPage() {
           </div>
 
           <div className={SPACING.compact}>
-            <h3 className={TYPOGRAPHY.h3.standard}>
-              Sentry (Error Monitoring)
-            </h3>
+            <h3 className={TYPOGRAPHY.h3.standard}>Sentry (Error Monitoring)</h3>
             <ul className="space-y-1 list-disc pl-6">
               <li className={TYPOGRAPHY.body}>
-                <strong>Purpose:</strong> Error tracking, performance
-                monitoring, and uptime monitoring
+                <strong>Purpose:</strong> Error tracking, performance monitoring, and uptime
+                monitoring
               </li>
               <li className={TYPOGRAPHY.body}>
-                <strong>Data Processed:</strong> Error messages, stack traces,
-                anonymized user context
+                <strong>Data Processed:</strong> Error messages, stack traces, anonymized user
+                context
               </li>
               <li className={TYPOGRAPHY.body}>
-                <strong>Privacy Policy:</strong>{" "}
+                <strong>Privacy Policy:</strong>{' '}
                 <a
                   href="https://sentry.io/privacy/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary hover:underline"
+                  className="text-primary underline"
                 >
                   Sentry Privacy Policy
                 </a>
               </li>
               <li className={TYPOGRAPHY.body}>
-                <strong>PII Scrubbing:</strong> Automatically removes sensitive
-                information from error reports
+                <strong>PII Scrubbing:</strong> Automatically removes sensitive information from
+                error reports
+              </li>
+            </ul>
+          </div>
+
+          <div className={SPACING.compact}>
+            <h3 className={TYPOGRAPHY.h3.standard}>Axiom (Web Vitals Analytics)</h3>
+            <ul className="space-y-1 list-disc pl-6">
+              <li className={TYPOGRAPHY.body}>
+                <strong>Purpose:</strong> Real-time performance monitoring and Web Vitals tracking
+              </li>
+              <li className={TYPOGRAPHY.body}>
+                <strong>Data Collected:</strong> Core Web Vitals metrics (LCP, FID, CLS, FCP, TTFB,
+                INP), user agent, device type, connection type, geographic location (country-level),
+                route path
+              </li>
+              <li className={TYPOGRAPHY.body}>
+                <strong>Privacy Policy:</strong>{' '}
+                <a
+                  href="https://axiom.co/legal/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline"
+                >
+                  Axiom Privacy Policy
+                </a>
+              </li>
+              <li className={TYPOGRAPHY.body}>
+                <strong>Retention:</strong> Performance data retained for 30 days
+              </li>
+              <li className={TYPOGRAPHY.body}>
+                <strong>Privacy Features:</strong> No individual user tracking, aggregate metrics
+                only
+              </li>
+            </ul>
+          </div>
+
+          <div className={SPACING.compact}>
+            <h3 className={TYPOGRAPHY.h3.standard}>Vercel Redis</h3>
+            <ul className="space-y-1 list-disc pl-6">
+              <li className={TYPOGRAPHY.body}>
+                <strong>Purpose:</strong> Encrypted session storage for interactive features
+              </li>
+              <li className={TYPOGRAPHY.body}>
+                <strong>Data Stored:</strong> Encrypted session identifiers and temporary
+                preferences
+              </li>
+              <li className={TYPOGRAPHY.body}>
+                <strong>Privacy Policy:</strong>{' '}
+                <a
+                  href="https://vercel.com/legal/privacy-policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline"
+                >
+                  Vercel Privacy Policy
+                </a>
+                {' | '}
+                <a
+                  href="https://redis.io/docs/latest/operate/rc/cloud-integrations/vercel/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline"
+                >
+                  Vercel Redis Integration
+                </a>
+              </li>
+              <li className={TYPOGRAPHY.body}>
+                <strong>Infrastructure:</strong> Powered by Upstash, managed by Vercel
+              </li>
+              <li className={TYPOGRAPHY.body}>
+                <strong>Data Centers:</strong> Global regions (GDPR-compliant)
+              </li>
+              <li className={TYPOGRAPHY.body}>
+                <strong>Retention:</strong> Automatic expiration after 24-48 hours
               </li>
             </ul>
           </div>
@@ -443,20 +475,20 @@ export default async function PrivacyPage() {
             <h3 className={TYPOGRAPHY.h3.standard}>GitHub (Public Data)</h3>
             <ul className="space-y-1 list-disc pl-6">
               <li className={TYPOGRAPHY.body}>
-                <strong>Purpose:</strong> Displaying public repository activity
-                and project information
+                <strong>Purpose:</strong> Displaying public repository activity and project
+                information
               </li>
               <li className={TYPOGRAPHY.body}>
-                <strong>Data Accessed:</strong> Public repository data only
-                (stars, forks, activity feed)
+                <strong>Data Accessed:</strong> Public repository data only (stars, forks, activity
+                feed)
               </li>
               <li className={TYPOGRAPHY.body}>
-                <strong>Privacy Policy:</strong>{" "}
+                <strong>Privacy Policy:</strong>{' '}
                 <a
                   href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary hover:underline"
+                  className="text-primary underline"
                 >
                   GitHub Privacy Statement
                 </a>
@@ -467,33 +499,27 @@ export default async function PrivacyPage() {
 
         {/* How We Use Your Information */}
         <section className={SPACING.content}>
-          <h2 className={TYPOGRAPHY.h2.standard}>
-            How We Use Your Information
-          </h2>
+          <h2 className={TYPOGRAPHY.h2.standard}>How We Use Your Information</h2>
           <p className={TYPOGRAPHY.body}>
             We use the minimal data we collect only for these purposes:
           </p>
           <ul className="space-y-1 list-disc pl-6">
             <li className={TYPOGRAPHY.body}>
-              <strong>Communication:</strong> To respond to your contact form
-              inquiries
+              <strong>Communication:</strong> To respond to your contact form inquiries
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Security:</strong> To protect against abuse, spam, and
-              malicious activity
+              <strong>Security:</strong> To protect against abuse, spam, and malicious activity
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Performance:</strong> To optimize website performance and
-              fix errors
+              <strong>Performance:</strong> To optimize website performance and fix errors
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Legal Compliance:</strong> To comply with applicable laws
-              and regulations
+              <strong>Legal Compliance:</strong> To comply with applicable laws and regulations
             </li>
           </ul>
           <p className={TYPOGRAPHY.body}>
-            We <strong>never</strong> sell, rent, or share your personal
-            information with third parties for marketing purposes.
+            We <strong>never</strong> sell, rent, or share your personal information with third
+            parties for marketing purposes.
           </p>
         </section>
 
@@ -501,33 +527,27 @@ export default async function PrivacyPage() {
         <section className={SPACING.content}>
           <h2 className={TYPOGRAPHY.h2.standard}>Data Security</h2>
           <p className={TYPOGRAPHY.body}>
-            We implement industry-standard security measures to protect your
-            information:
+            We implement industry-standard security measures to protect your information:
           </p>
           <ul className="space-y-1 list-disc pl-6">
             <li className={TYPOGRAPHY.body}>
-              <strong>Encryption in Transit:</strong> All data transmitted via
-              HTTPS/TLS 1.3
+              <strong>Encryption in Transit:</strong> All data transmitted via HTTPS/TLS 1.3
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Encryption at Rest:</strong> Session data encrypted using
-              AES-256-GCM
+              <strong>Encryption at Rest:</strong> Session data encrypted using AES-256-GCM
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Access Control:</strong> Strict authentication and
-              authorization for all systems
+              <strong>Access Control:</strong> Strict authentication and authorization for all
+              systems
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Security Monitoring:</strong> 24/7 automated security
-              scanning and alerts
+              <strong>Security Monitoring:</strong> 24/7 automated security scanning and alerts
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Regular Audits:</strong> Monthly security audits and
-              vulnerability scanning
+              <strong>Regular Audits:</strong> Monthly security audits and vulnerability scanning
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Incident Response:</strong> Documented procedures for
-              security incidents
+              <strong>Incident Response:</strong> Documented procedures for security incidents
             </li>
           </ul>
         </section>
@@ -535,29 +555,22 @@ export default async function PrivacyPage() {
         {/* Data Retention */}
         <section className={SPACING.content}>
           <h2 className={TYPOGRAPHY.h2.standard}>Data Retention</h2>
-          <p className={TYPOGRAPHY.body}>
-            We retain data only as long as necessary:
-          </p>
+          <p className={TYPOGRAPHY.body}>We retain data only as long as necessary:</p>
           <ul className="space-y-1 list-disc pl-6">
             <li className={TYPOGRAPHY.body}>
-              <strong>Contact Form Data:</strong> Not stored (transient
-              processing only)
+              <strong>Contact Form Data:</strong> Not stored (transient processing only)
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Session Data:</strong> Automatically deleted after 24-48
-              hours
+              <strong>Session Data:</strong> Automatically deleted after 24-48 hours
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Server Logs:</strong> Deleted after 30 days (Vercel
-              retention policy)
+              <strong>Server Logs:</strong> Deleted after 30 days (Vercel retention policy)
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Error Logs:</strong> Retained for 90 days for debugging
-              (Sentry)
+              <strong>Error Logs:</strong> Retained for 90 days for debugging (Sentry)
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Email Correspondence:</strong> Retained in inbox until
-              conversation complete
+              <strong>Email Correspondence:</strong> Retained in inbox until conversation complete
             </li>
           </ul>
         </section>
@@ -570,28 +583,24 @@ export default async function PrivacyPage() {
           </p>
           <ul className="space-y-1 list-disc pl-6">
             <li className={TYPOGRAPHY.body}>
-              <strong>Right to Access:</strong> Request a copy of the data we
-              have about you
+              <strong>Right to Access:</strong> Request a copy of the data we have about you
             </li>
             <li className={TYPOGRAPHY.body}>
               <strong>Right to Deletion:</strong> Request deletion of your data
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Right to Correction:</strong> Request correction of
-              inaccurate data
+              <strong>Right to Correction:</strong> Request correction of inaccurate data
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Right to Object:</strong> Object to processing of your
-              data
+              <strong>Right to Object:</strong> Object to processing of your data
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Right to Portability:</strong> Request your data in a
-              portable format
+              <strong>Right to Portability:</strong> Request your data in a portable format
             </li>
           </ul>
           <p className={TYPOGRAPHY.body}>
-            To exercise these rights,{" "}
-            <a href="/contact" className="text-primary hover:underline">
+            To exercise these rights,{' '}
+            <a href="/contact" className="text-primary underline">
               contact us
             </a>
             .
@@ -602,13 +611,12 @@ export default async function PrivacyPage() {
         <section className={SPACING.content}>
           <h2 className={TYPOGRAPHY.h2.standard}>International Users</h2>
           <p className={TYPOGRAPHY.body}>
-            DCYFR Labs operates from the United States. If you access our
-            website from outside the United States, please be aware that:
+            DCYFR Labs operates from the United States. If you access our website from outside the
+            United States, please be aware that:
           </p>
           <ul className="space-y-1 list-disc pl-6">
             <li className={TYPOGRAPHY.body}>
-              Your information may be transferred to and stored in the United
-              States
+              Your information may be transferred to and stored in the United States
             </li>
             <li className={TYPOGRAPHY.body}>
               U.S. data protection laws may differ from those in your country
@@ -618,9 +626,8 @@ export default async function PrivacyPage() {
             </li>
           </ul>
           <p className={TYPOGRAPHY.body}>
-            For users in the European Economic Area (EEA), we comply with GDPR
-            requirements through our minimal data collection practices and
-            transparent processing.
+            For users in the European Economic Area (EEA), we comply with GDPR requirements through
+            our minimal data collection practices and transparent processing.
           </p>
         </section>
 
@@ -628,33 +635,26 @@ export default async function PrivacyPage() {
         <section className={SPACING.content}>
           <h2 className={TYPOGRAPHY.h2.standard}>Children&apos;s Privacy</h2>
           <p className={TYPOGRAPHY.body}>
-            Our website is not directed to children under 13 years of age. We do
-            not knowingly collect personal information from children. If you
-            believe we have inadvertently collected information from a child,
-            please contact us immediately and we will delete it.
+            Our website is not directed to children under 13 years of age. We do not knowingly
+            collect personal information from children. If you believe we have inadvertently
+            collected information from a child, please contact us immediately and we will delete it.
           </p>
         </section>
 
         {/* Changes to This Policy */}
         <section className={SPACING.content}>
-          <h2 className={TYPOGRAPHY.h2.standard}>
-            Changes to This Privacy Policy
-          </h2>
+          <h2 className={TYPOGRAPHY.h2.standard}>Changes to This Privacy Policy</h2>
           <p className={TYPOGRAPHY.body}>
             We may update this privacy policy from time to time. When we do:
           </p>
           <ul className="space-y-1 list-disc pl-6">
             <li className={TYPOGRAPHY.body}>
-              We will update the &quot;Last Updated&quot; date at the top of
-              this page
+              We will update the &quot;Last Updated&quot; date at the top of this page
             </li>
             <li className={TYPOGRAPHY.body}>
-              For significant changes, we will provide prominent notice on our
-              website
+              For significant changes, we will provide prominent notice on our website
             </li>
-            <li className={TYPOGRAPHY.body}>
-              We encourage you to review this policy periodically
-            </li>
+            <li className={TYPOGRAPHY.body}>We encourage you to review this policy periodically</li>
           </ul>
         </section>
 
@@ -662,9 +662,9 @@ export default async function PrivacyPage() {
         <section className={SPACING.content}>
           <h2 className={TYPOGRAPHY.h2.standard}>Contact Us</h2>
           <p className={TYPOGRAPHY.body}>
-            If you have questions, concerns, or requests regarding this privacy
-            policy or our data practices, please{" "}
-            <a href="/contact" className="text-primary hover:underline">
+            If you have questions, concerns, or requests regarding this privacy policy or our data
+            practices, please{' '}
+            <a href="/contact" className="text-primary underline">
               contact us
             </a>
             . We aim to respond within 48 hours.
@@ -673,25 +673,21 @@ export default async function PrivacyPage() {
 
         {/* Legal Basis */}
         <section className={SPACING.content}>
-          <h2 className={TYPOGRAPHY.h2.standard}>
-            Legal Basis for Processing (GDPR)
-          </h2>
+          <h2 className={TYPOGRAPHY.h2.standard}>Legal Basis for Processing (GDPR)</h2>
           <p className={TYPOGRAPHY.body}>
-            For users in the EEA, our legal basis for processing personal data
-            is:
+            For users in the EEA, our legal basis for processing personal data is:
           </p>
           <ul className="space-y-1 list-disc pl-6">
             <li className={TYPOGRAPHY.body}>
-              <strong>Consent:</strong> When you submit a contact form or engage
-              with interactive features
+              <strong>Consent:</strong> When you submit a contact form or engage with interactive
+              features
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Legitimate Interests:</strong> To operate our website,
-              improve performance, and ensure security
+              <strong>Legitimate Interests:</strong> To operate our website, improve performance,
+              and ensure security
             </li>
             <li className={TYPOGRAPHY.body}>
-              <strong>Legal Obligation:</strong> To comply with applicable laws
-              and regulations
+              <strong>Legal Obligation:</strong> To comply with applicable laws and regulations
             </li>
           </ul>
         </section>
@@ -702,8 +698,6 @@ export default async function PrivacyPage() {
             <strong>DCYFR Labs Privacy Policy</strong>
             <br />
             Last Updated: {lastUpdated}
-            <br />
-            Effective Date: {lastUpdated}
           </p>
         </footer>
       </article>

@@ -1,34 +1,23 @@
 ---
-id: "post-20251109-7c4f3e2a"
-title: "Interactive Diagrams with ReactFlow"
-summary: "Explore interactive, accessible diagrams built with ReactFlow for visualizing architecture, workflows, and decision trees. Features modern diagram presets and accessibility patterns."
-publishedAt: "2025-11-09T00:00:00Z"
-updatedAt: "2026-01-11T12:00:00Z"
-category: "Demo"
-tags:
-  [
-    "Diagrams",
-    "ReactFlow",
-    "Interactive",
-    "Visualization",
-    "Demo",
-    "Accessibility",
-  ]
+id: 'post-20251109-7c4f3e2a'
+title: 'Interactive Diagrams with ReactFlow'
+summary: 'Explore interactive, accessible diagrams built with ReactFlow for visualizing architecture, workflows, and decision trees. Features modern diagram presets and accessibility patterns.'
+publishedAt: '2025-11-09T00:00:00Z'
+updatedAt: '2026-01-11T12:00:00Z'
+category: 'Demo'
+tags: ['Diagrams', 'ReactFlow', 'Interactive', 'Visualization', 'Demo', 'Accessibility']
 draft: true
 series:
-  name: "Features"
+  name: 'Features'
   order: 1
-  description: "Explore interactive, accessible diagrams built with ReactFlow for visualizing architecture, workflows, and decision trees."
-  icon: "BookOpen"
-  color: "tutorial"
+  description: 'Explore interactive, accessible diagrams built with ReactFlow for visualizing architecture, workflows, and decision trees.'
+  icon: 'BookOpen'
+  color: 'tutorial'
 ---
 
 After migrating away from Mermaid, we've built a set of interactive diagrams using <GlossaryTooltip term="ReactFlow" definition="A highly customizable React library for building node-based editors and interactive diagrams">**ReactFlow**</GlossaryTooltip> that provide better performance, accessibility, and customization. These diagrams are fully interactive—you can pan, zoom, and explore them freely.
 
-<SectionShare
-  sectionId="introduction"
-  sectionTitle="Interactive Diagrams with ReactFlow"
-/>
+<SectionShare sectionId="introduction" sectionTitle="Interactive Diagrams with ReactFlow" />
 
 ---
 
@@ -64,7 +53,7 @@ The Model Context Protocol (MCP) architecture follows a three-tier client-server
 - Visualizing client-server relationships
 
 ```tsx
-import { MCPArchitecture } from "@/components/common/diagram-presets";
+import { MCPArchitecture } from '@/components/common/diagram-presets';
 
 export default function MyPage() {
   return <MCPArchitecture height={300} />;
@@ -88,7 +77,7 @@ This diagram shows a typical user authentication flow with decision points:
 - Documenting API authentication flows
 
 ```tsx
-import { AuthenticationFlow } from "@/components/common/diagram-presets";
+import { AuthenticationFlow } from '@/components/common/diagram-presets';
 
 export default function MyPage() {
   return <AuthenticationFlow height={500} />;
@@ -120,47 +109,13 @@ The six stages are:
 5. **Render as React Component** - MDX compilation
 6. **Display in Browser** - Final rendered output
 
-<SectionShare
-  sectionId="diagram-presets"
-  sectionTitle="Available Diagram Presets"
-/>
+<SectionShare sectionId="diagram-presets" sectionTitle="Available Diagram Presets" />
 
 ```tsx
-import { PipelineFlow } from "@/components/common/diagram-presets";
+import { PipelineFlow } from '@/components/common/diagram-presets';
 
 export default function MyPage() {
   return <PipelineFlow height={600} />;
-}
-```
-
-### 4. CVE Decision Tree
-
-This vulnerability assessment decision tree helps readers quickly determine if they're affected by a specific CVE:
-
-<CVEDecisionTree
-  height={400}
-  caption="A decision tree for assessing CVE-2025-55182 impact: users determine vulnerability by checking if they use React Server Components and their React version."
-/>
-
-**Use this when:**
-
-- Documenting security vulnerabilities
-- Helping users assess impact
-- Creating decision trees for complex conditions
-- Explaining version-specific issues
-
-The tree guides users through a series of questions to determine their vulnerability status:
-
-```tsx
-import { CVEDecisionTree } from "@/components/common/diagram-presets";
-
-export default function SecurityPost() {
-  return (
-    <>
-      <h3>Am I Affected?</h3>
-      <CVEDecisionTree height={400} />
-    </>
-  );
 }
 ```
 
@@ -211,29 +166,22 @@ interface DiagramPresetProps {
 If you need a custom diagram, use the base `InteractiveDiagram` component directly:
 
 ```tsx
-import { InteractiveDiagram } from "@/components/common/interactive-diagram";
-import { type Node, type Edge } from "@xyflow/react";
+import { InteractiveDiagram } from '@/components/common/interactive-diagram';
+import { type Node, type Edge } from '@xyflow/react';
 
 const nodes: Node[] = [
-  { id: "1", position: { x: 0, y: 0 }, data: { label: "Start" } },
-  { id: "2", position: { x: 250, y: 0 }, data: { label: "Process" } },
-  { id: "3", position: { x: 500, y: 0 }, data: { label: "End" } },
+  { id: '1', position: { x: 0, y: 0 }, data: { label: 'Start' } },
+  { id: '2', position: { x: 250, y: 0 }, data: { label: 'Process' } },
+  { id: '3', position: { x: 500, y: 0 }, data: { label: 'End' } },
 ];
 
 const edges: Edge[] = [
-  { id: "e1-2", source: "1", target: "2" },
-  { id: "e2-3", source: "2", target: "3" },
+  { id: 'e1-2', source: '1', target: '2' },
+  { id: 'e2-3', source: '2', target: '3' },
 ];
 
 export function CustomDiagram() {
-  return (
-    <InteractiveDiagram
-      nodes={nodes}
-      edges={edges}
-      title="My Custom Flow"
-      height={400}
-    />
-  );
+  return <InteractiveDiagram nodes={nodes} edges={edges} title="My Custom Flow" height={400} />;
 }
 ```
 

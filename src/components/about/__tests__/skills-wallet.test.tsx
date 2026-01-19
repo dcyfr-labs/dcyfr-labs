@@ -4,9 +4,11 @@ import { SkillsWallet } from "../skills-wallet";
 import { clearCredlyCache } from "@/lib/credly-cache";
 import type { CredlyBadge } from "@/types/credly";
 
+// Store original fetch to restore it later
+const originalFetch = global.fetch;
+
 // Mock fetch globally
 const mockFetch = vi.fn();
-global.fetch = mockFetch;
 
 const mockBadges: CredlyBadge[] = [
   {
@@ -79,11 +81,15 @@ describe("SkillsWallet", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     clearCredlyCache();
+    // Replace global fetch with our mock for each test
+    global.fetch = mockFetch as any;
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
     clearCredlyCache();
+    // Restore original fetch after each test
+    global.fetch = originalFetch;
   });
 
   it("renders loading state initially", () => {

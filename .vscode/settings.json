@@ -67,5 +67,6 @@
     ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
     ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ],
-  "tailwindCSS.validate": true
+  "tailwindCSS.validate": true,
+  "github-actions.workflows.pinned.workflows": []
 }

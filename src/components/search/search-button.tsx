@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { useSearch } from "./search-provider";
-import { TYPOGRAPHY, TOUCH_TARGET } from "@/lib/design-tokens";
+import { Search } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { useSearch } from './search-provider';
+import { TYPOGRAPHY, TOUCH_TARGET } from '@/lib/design-tokens';
 
 /**
  * SearchButton Component
@@ -17,27 +17,24 @@ import { TYPOGRAPHY, TOUCH_TARGET } from "@/lib/design-tokens";
  */
 
 interface SearchButtonProps {
-  variant?: "default" | "input";
+  variant?: 'default' | 'input';
   className?: string;
 }
 
-export function SearchButton({
-  variant = "default",
-  className,
-}: SearchButtonProps) {
+export function SearchButton({ variant = 'default', className }: SearchButtonProps) {
   const { setOpen } = useSearch();
 
-  if (variant === "input") {
+  if (variant === 'input') {
     return (
       <button
         onClick={() => setOpen(true)}
         className={cn(
-          "group relative flex items-center gap-3 w-full max-w-lg",
-          "px-4 py-3 rounded-xl",
-          "bg-muted/50 hover:bg-muted/80",
-          "border border-border/50",
-          "text-muted-foreground hover:text-foreground",
-          "hover:bg-accent/50 transition-colors",
+          'group relative flex items-center gap-3 w-full max-w-xl',
+          'px-4 py-3 rounded-xl',
+          'bg-muted/50 hover:bg-muted/80',
+          'border border-border/50',
+          'text-muted-foreground hover:text-foreground',
+          'hover:bg-accent/50 transition-colors',
           className
         )}
         aria-label="Search posts"
@@ -46,7 +43,7 @@ export function SearchButton({
         <span className="text-sm">Search posts, tags, topics...</span>
         <kbd
           className={cn(
-            "ml-auto hidden sm:inline-flex h-6 select-none items-center gap-1 rounded border bg-background px-2 font-mono opacity-70 group-hover:opacity-100",
+            'ml-auto hidden sm:inline-flex h-6 select-none items-center gap-1 rounded border bg-background px-2 font-mono opacity-70 group-hover:opacity-100',
             TYPOGRAPHY.label.small
           )}
         >
@@ -61,7 +58,7 @@ export function SearchButton({
       variant="ghost"
       size="icon"
       onClick={() => setOpen(true)}
-      className={cn("relative", className)}
+      className={cn('relative', className)}
       aria-label="Search"
     >
       <Search className="h-4 w-4" />

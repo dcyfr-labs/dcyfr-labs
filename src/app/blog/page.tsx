@@ -42,6 +42,10 @@ import { PostList } from "@/components/blog/client";
 import { DynamicBlogContent } from "@/components/blog/server";
 import { ViewToggle, SmoothScrollToHash } from "@/components/common";
 
+// Force dynamic rendering - don't attempt to prerender during build
+// This page uses headers() for CSP nonce which requires runtime
+export const dynamic = 'force-dynamic';
+
 const pageTitle = "Blog";
 const pageDescription =
   "Blog posts on software development, cybersecurity, emerging technologies, and more.";

@@ -4,7 +4,7 @@
  * Used by: VS Code, pre-commit hooks, CI/CD pipelines
  */
 
-export default {
+const prettierConfig = {
   // Print width matches container constants for readability
   printWidth: 100,
 
@@ -100,3 +100,5 @@ export default {
     },
   ],
 };
+
+export default prettierConfig;

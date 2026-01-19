@@ -34,8 +34,8 @@ import {
   Shield,
   Settings,
   ChartBar,
-} from "lucide-react";
-import type { NavItem, NavSection, NavigationConfig } from "./types";
+} from 'lucide-react';
+import type { NavItem, NavSection, NavigationConfig } from './types';
 
 // ============================================================================
 // PRIMARY NAVIGATION (Header & Mobile)
@@ -47,53 +47,53 @@ import type { NavItem, NavSection, NavigationConfig } from "./types";
  */
 export const HEADER_NAV: NavItem[] = [
   {
-    href: "/",
-    label: "Home",
-    shortLabel: "Home",
+    href: '/',
+    label: 'Home',
+    shortLabel: 'Home',
     icon: Home,
-    shortcut: "g h",
-    description: "Return home",
+    shortcut: 'g h',
+    description: 'Return home',
     exactMatch: true,
   },
   {
-    href: "/about",
-    label: "About",
-    shortLabel: "About",
+    href: '/about',
+    label: 'About',
+    shortLabel: 'About',
     icon: User,
-    shortcut: "g a",
-    description: "Learn about us and our team",
+    shortcut: 'g a',
+    description: 'Learn about us and our team',
   },
   {
-    href: "/blog",
-    label: "Blog",
-    shortLabel: "Blog",
-    icon: FileText,
-    shortcut: "g b",
-    description: "Read articles on security and development",
-  },
-  {
-    href: "/work",
-    label: "Work",
-    shortLabel: "Work",
-    icon: Briefcase,
-    shortcut: "g w",
-    description: "Explore our portfolio and client work",
-  },
-  {
-    href: "/sponsors",
-    label: "Sponsors",
-    shortLabel: "Sponsors",
-    icon: Heart,
-    shortcut: "g s",
-    description: "Support open source development",
-  },
-  {
-    href: "/contact",
-    label: "Contact",
-    shortLabel: "Contact",
+    href: '/contact',
+    label: 'Contact',
+    shortLabel: 'Contact',
     icon: Mail,
-    shortcut: "g c",
-    description: "Get in touch with us",
+    shortcut: 'g c',
+    description: 'Get in touch with us',
+  },
+  {
+    href: '/sponsors',
+    label: 'Sponsors',
+    shortLabel: 'Sponsors',
+    icon: Heart,
+    shortcut: 'g s',
+    description: 'Support open source development',
+  },
+  {
+    href: '/blog',
+    label: 'Blog',
+    shortLabel: 'Blog',
+    icon: FileText,
+    shortcut: 'g b',
+    description: 'Read articles on security and development',
+  },
+  {
+    href: '/work',
+    label: 'Work',
+    shortLabel: 'Work',
+    icon: Briefcase,
+    shortcut: 'g w',
+    description: 'Explore our portfolio and client work',
   },
 ];
 
@@ -103,30 +103,30 @@ export const HEADER_NAV: NavItem[] = [
 
 export const BLOG_NAV: NavItem[] = [
   {
-    href: "/blog",
-    label: "All Posts",
-    description: "Browse our blog articles",
+    href: '/blog',
+    label: 'All Posts',
+    description: 'Browse our blog articles',
     exactMatch: true,
   },
   {
-    href: "/blog/series",
-    label: "Blog Series",
-    description: "In-depth multi-part articles",
+    href: '/blog/series',
+    label: 'Blog Series',
+    description: 'In-depth multi-part articles',
   },
   {
-    href: "/blog?category=AI",
-    label: "Artificial Intelligence",
-    description: "Artificial intelligence and development",
+    href: '/blog?category=AI',
+    label: 'Artificial Intelligence',
+    description: 'Artificial intelligence and development',
   },
   {
-    href: "/blog?category=Web",
-    label: "Web Development",
-    description: "Modern full-stack web development",
+    href: '/blog?category=Web',
+    label: 'Web Development',
+    description: 'Modern full-stack web development',
   },
   {
-    href: "/blog?category=DevSecOps",
-    label: "DevSecOps",
-    description: "Cybersecurity and secure development",
+    href: '/blog?category=DevSecOps',
+    label: 'DevSecOps',
+    description: 'Cybersecurity and secure development',
   },
 ];
 
@@ -136,25 +136,25 @@ export const BLOG_NAV: NavItem[] = [
 
 export const WORK_NAV: NavItem[] = [
   {
-    href: "/work",
-    label: "All Projects",
-    description: "View complete portfolio",
+    href: '/work',
+    label: 'All Projects',
+    description: 'View complete portfolio',
     exactMatch: true,
   },
   {
-    href: "/work?category=community",
-    label: "Community",
-    description: "Open source and community work",
+    href: '/work?category=community',
+    label: 'Community',
+    description: 'Open source and community work',
   },
   {
-    href: "/work?category=nonprofit",
-    label: "Nonprofit",
-    description: "Mission-driven partnerships",
+    href: '/work?category=nonprofit',
+    label: 'Nonprofit',
+    description: 'Mission-driven partnerships',
   },
   {
-    href: "/work?category=startup",
-    label: "Startup",
-    description: "Early-stage product development",
+    href: '/work?category=startup',
+    label: 'Startup',
+    description: 'Early-stage product development',
   },
 ];
 
@@ -168,72 +168,79 @@ export const WORK_NAV: NavItem[] = [
  */
 export const MOBILE_NAV_SECTIONS: NavSection[] = [
   {
-    id: "main",
-    label: "Main Navigation",
-    description: "Primary pages",
+    id: 'main',
+    label: 'Main Navigation',
+    description: 'Primary pages',
     items: [
       {
-        href: "/",
-        label: "Home",
+        href: '/',
+        label: 'Home',
         icon: Home,
-        description: "Return to homepage",
+        description: 'Return to homepage',
         exactMatch: true,
       },
       {
-        href: "/about",
-        label: "About",
+        href: '/about',
+        label: 'About',
         icon: User,
-        description: "Learn about DCYFR Labs",
+        description: 'Learn about DCYFR Labs',
       },
       {
-        href: "/blog",
-        label: "Blog",
-        icon: FileText,
-        description: "Read our articles",
-      },
-      {
-        href: "/work",
-        label: "Work",
-        icon: Briefcase,
-        description: "View our portfolio",
-      },
-      {
-        href: "/sponsors",
-        label: "Sponsors",
+        href: '/sponsors',
+        label: 'Sponsors',
         icon: Heart,
-        description: "Support us",
+        description: 'Support us',
       },
       {
-        href: "/contact",
-        label: "Contact",
+        href: '/contact',
+        label: 'Contact',
         icon: Mail,
-        description: "Get in touch",
+        description: 'Get in touch',
+      },
+      {
+        href: '/blog',
+        label: 'Blog',
+        icon: FileText,
+        description: 'Read our articles',
+      },
+      {
+        href: '/work',
+        label: 'Work',
+        icon: Briefcase,
+        description: 'View our portfolio',
       },
     ],
   },
   {
-    id: "discover",
-    label: "Discover",
-    description: "Additional content",
+    id: 'discover',
+    label: 'Discover',
+    description: 'Additional content',
     items: [
       {
-        href: "/activity",
-        label: "Activity",
+        href: '/activity',
+        label: 'Activity',
         icon: Activity,
-        description: "Latest updates and activity",
+        description: 'Recent updates',
       },
       {
-        href: "/bookmarks",
-        label: "Bookmarks",
+        href: '/blog',
+        label: 'Blog',
+        icon: FileText,
+        description: 'Browse articles',
+      },
+      {
+        href: '/work',
+        label: 'Work',
+        icon: Briefcase,
+        description: 'Explore our projects',
+      },
+      {
+        href: '/bookmarks',
+        label: 'Bookmarks',
         icon: Bookmark,
-        description: "Curated resources and links",
+        description: 'Your saved items',
       },
-      {
-        href: "/likes",
-        label: "Likes",
-        icon: Heart,
-        description: "Content you've liked",
-      },
+      { href: '/likes', label: 'Likes', icon: Heart, description: 'Content you liked' },
     ],
   },
 ];
@@ -248,19 +255,29 @@ export const MOBILE_NAV_SECTIONS: NavSection[] = [
  */
 export const BOTTOM_NAV: NavItem[] = [
   {
-    href: "/activity",
-    label: "Activity",
-    icon: Activity,
+    href: '/likes',
+    label: 'Likes',
+    icon: Heart,
   },
   {
-    href: "/bookmarks",
-    label: "Bookmarks",
+    href: '/bookmarks',
+    label: 'Bookmarks',
     icon: Bookmark,
   },
   {
-    href: "/likes",
-    label: "Likes",
-    icon: Heart,
+    href: '/activity',
+    label: 'Activity',
+    icon: Activity,
+  },
+  {
+    href: '/blog',
+    label: 'Blog',
+    icon: FileText,
+  },
+  {
+    href: '/work',
+    label: 'Work',
+    icon: Briefcase,
   },
 ];
 
@@ -274,97 +291,117 @@ export const BOTTOM_NAV: NavItem[] = [
  */
 export const FOOTER_NAV_SECTIONS: NavSection[] = [
   {
-    id: "company",
-    label: "Company",
-    description: "Learn more about DCYFR Labs",
+    id: 'company',
+    label: 'Company',
+    description: 'Learn more about DCYFR Labs',
     items: [
       {
-        href: "/about",
-        label: "About Us",
-        description: "Our story and team",
+        href: '/about',
+        label: 'About Us',
+        description: 'Our story and team',
       },
       {
-        href: "/services",
-        label: "Services",
-        description: "What we offer",
+        href: '/services',
+        label: 'Services',
+        description: 'What we offer',
       },
       {
-        href: "/sponsors",
-        label: "Sponsors",
-        description: "Support our work",
+        href: '/sponsors',
+        label: 'Sponsors',
+        description: 'Support our work',
       },
       {
-        href: "/contact",
-        label: "Contact",
-        description: "Get in touch",
+        href: '/contact',
+        label: 'Contact',
+        description: 'Get in touch',
       },
     ],
   },
   {
-    id: "content",
-    label: "Content",
-    description: "Explore our content",
+    id: 'content',
+    label: 'Content',
+    description: 'Explore our content',
     items: [
       {
-        href: "/blog",
-        label: "Blog",
-        description: "Latest articles",
+        href: '/blog',
+        label: 'Blog',
+        description: 'Latest articles',
       },
       {
-        href: "/work",
-        label: "Portfolio",
-        description: "Our projects",
+        href: '/work',
+        label: 'Portfolio',
+        description: 'Our projects',
       },
       {
-        href: "/activity",
-        label: "Activity",
-        description: "Recent updates",
+        href: '/activity',
+        label: 'Activity',
+        description: 'Recent updates',
       },
       {
-        href: "/bookmarks",
-        label: "Bookmarks",
-        description: "Curated resources",
+        href: '/bookmarks',
+        label: 'Bookmarks',
+        description: 'Curated resources',
       },
       {
-        href: "/likes",
-        label: "Likes",
-        description: "Content you liked",
+        href: '/likes',
+        label: 'Likes',
+        description: 'Content you liked',
       },
     ],
   },
   {
-    id: "resources",
-    label: "Resources",
-    description: "Helpful links and tools",
+    id: 'resources',
+    label: 'Resources',
+    description: 'Helpful links and tools',
     items: [
       {
-        href: "/feeds",
-        label: "Feeds",
+        href: '/feeds',
+        label: 'Feeds',
         icon: Rss,
-        description: "Subscribe to updates",
+        description: 'Subscribe to updates',
       },
       {
-        href: "/sitemap.xml",
-        label: "Sitemap",
-        description: "Site structure",
+        href: '/sitemap.xml',
+        label: 'Sitemap',
+        description: 'Site structure',
         external: true,
       },
     ],
   },
   {
-    id: "legal",
-    label: "Legal",
-    description: "Policies and terms",
+    id: 'legal',
+    label: 'Legal',
+    description: 'Policies and terms',
     items: [
       {
-        href: "/privacy",
-        label: "Privacy Policy",
-        description: "How we handle your data",
+        href: '/legal',
+        label: 'Legal Overview',
+        description: 'Browse all legal policies',
       },
       {
-        href: "/terms",
-        label: "Terms of Service",
-        description: "Usage terms",
+        href: '/privacy',
+        label: 'Privacy Policy',
+        description: 'How we handle your data',
+      },
+      {
+        href: '/terms',
+        label: 'Terms of Service',
+        description: 'Usage terms',
+      },
+      {
+        href: '/security',
+        label: 'Security Policy',
+        description: 'Security measures and reporting',
+      },
+      {
+        href: '/accessibility',
+        label: 'Accessibility Statement',
+        description: 'WCAG 2.1 AA compliance',
+      },
+      {
+        href: '/acceptable-use',
+        label: 'Acceptable Use Policy',
+        description: 'Usage guidelines',
       },
     ],
   },
@@ -380,22 +417,22 @@ export const FOOTER_NAV_SECTIONS: NavSection[] = [
  */
 export const DEV_TOOLS_NAV: NavItem[] = [
   {
-    href: "/dev/docs",
-    label: "Documentation",
+    href: '/dev/docs',
+    label: 'Documentation',
     icon: FileText,
-    description: "Developer documentation",
+    description: 'Developer documentation',
   },
   {
-    href: "/dev/analytics",
-    label: "Analytics",
+    href: '/dev/analytics',
+    label: 'Analytics',
     icon: ChartBar,
-    description: "Analytics dashboard",
+    description: 'Analytics dashboard',
   },
   {
-    href: "/dev/maintenance",
-    label: "Maintenance",
+    href: '/dev/maintenance',
+    label: 'Maintenance',
     icon: Settings,
-    description: "Site maintenance tools",
+    description: 'Site maintenance tools',
   },
 ];
 
@@ -415,15 +452,15 @@ export const NAVIGATION: NavigationConfig = {
   megaMenus: {
     blog: [
       {
-        id: "categories",
-        label: "Categories",
+        id: 'categories',
+        label: 'Categories',
         items: BLOG_NAV,
       },
     ],
     work: [
       {
-        id: "portfolio",
-        label: "Portfolio",
+        id: 'portfolio',
+        label: 'Portfolio',
         items: WORK_NAV,
       },
     ],
@@ -435,12 +472,7 @@ export const NAVIGATION: NavigationConfig = {
 // ============================================================================
 
 // All utility functions are implemented in utils.ts and re-exported here for convenience
-export {
-  isNavItemActive,
-  getAriaCurrent,
-  getNavAnalytics,
-  formatShortcut,
-} from "./utils";
+export { isNavItemActive, getAriaCurrent, getNavAnalytics, formatShortcut } from './utils';
 
 /**
  * Get all keyboard shortcuts from navigation
@@ -452,14 +484,14 @@ export function getKeyboardShortcuts(): Array<{
   href: string;
   description?: string;
 }> {
-  return HEADER_NAV.filter(
-    (item): item is NavItem & { shortcut: string } => !!item.shortcut
-  ).map((item) => ({
-    shortcut: item.shortcut,
-    label: item.label,
-    href: item.href,
-    description: item.description,
-  }));
+  return HEADER_NAV.filter((item): item is NavItem & { shortcut: string } => !!item.shortcut).map(
+    (item) => ({
+      shortcut: item.shortcut,
+      label: item.label,
+      href: item.href,
+      description: item.description,
+    })
+  );
 }
 
 /**

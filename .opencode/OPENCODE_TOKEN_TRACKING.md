@@ -1,8 +1,66 @@
 # OpenCode Token Tracking & Cost Analysis
 
-**Version:** 1.0.0  
-**Last Updated:** January 12, 2026  
+**Version:** 1.1.0  
+**Last Updated:** January 17, 2026  
 **Purpose:** Track actual token usage and cost estimation for OpenCode sessions with GitHub Copilot integration
+
+---
+
+## Quick Start (2 minutes)
+
+### The Problem
+
+You're seeing **$0 cost across all OpenCode prompts** because **GitHub Copilot models are included in your $20/month subscription** at no per-token charge. This is actually correct - you're paying flat-fee, not per-token.
+
+**What you need to know:**
+- ✅ GitHub Copilot (GPT-5 Mini, Raptor Mini): Free (included)
+- ❌ Premium models (Claude, GPT-4o): Would cost $3-5 per 1M tokens
+
+### Quick Verification
+
+```bash
+# 1. Verify GitHub Copilot subscription
+# Visit: https://github.com/settings/copilot
+
+# 2. Check OpenCode is using GitHub Copilot (not other provider)
+opencode
+/models
+# Should show: gpt-5-mini, raptor-mini, gpt-4o
+
+# 3. View OpenCode token usage in GitHub dashboard
+# Visit: https://github.com/settings/copilot/logs
+```
+
+### Track Your Sessions
+
+After completing an OpenCode session, log it:
+
+```bash
+npm run opencode:track log '{
+  "userInput": "Implement blog filter component",
+  "assistantResponse": "<full response>",
+  "model": "gpt-5-mini",
+  "task": "feature",
+  "duration": 1800,
+  "quality": 5
+}'
+```
+
+### View Reports
+
+```bash
+# Text report (human-readable)
+npm run opencode:report
+
+# JSON report (for scripts/dashboards)
+npm run opencode:report:json
+
+# Last 5 sessions
+npm run opencode:track:last
+
+# Clear logs
+npm run opencode:track:clear
+```
 
 ---
 

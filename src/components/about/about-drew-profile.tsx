@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { Card } from "@/components/ui/card";
-import { resume, getYearsOfExperience, getShortSummary } from "@/data/resume";
+import Link from 'next/link';
+import { Card } from '@/components/ui/card';
+import { resume, getYearsOfExperience, getShortSummary } from '@/data/resume';
 import {
   TYPOGRAPHY,
   SPACING,
@@ -8,15 +8,15 @@ import {
   PAGE_LAYOUT,
   SHADOWS,
   BORDERS,
-} from "@/lib/design-tokens";
-import { cn } from "@/lib/utils";
-import { Section, GitHubHeatmapErrorBoundary } from "@/components/common";
-import { ServerGitHubHeatmap } from "@/components/features";
-import { ResumeStats } from "@/components/resume";
-import { BadgeWallet } from "./badge-wallet";
-import { SkillsWallet } from "./skills-wallet";
-import { ProfileHero } from "./profile-hero";
-import { Coffee, Shield, Code, Github, Briefcase } from "lucide-react";
+} from '@/lib/design-tokens';
+import { cn } from '@/lib/utils';
+import { Section, GitHubHeatmapErrorBoundary } from '@/components/common';
+import { ServerGitHubHeatmap } from '@/components/features';
+import { ResumeStats } from '@/components/resume';
+import { BadgeWallet } from './badge-wallet';
+import { SkillsWallet } from './skills-wallet';
+import { ProfileHero } from './profile-hero';
+import { Coffee, Shield, Code, Github, Briefcase } from 'lucide-react';
 
 /**
  * About Drew Profile Component
@@ -28,7 +28,7 @@ import { Coffee, Shield, Code, Github, Briefcase } from "lucide-react";
  */
 export function AboutDrewProfile() {
   return (
-    <>
+    <div className="space-y-12 md:space-y-16">
       {/* Drew Hero Section */}
       <ProfileHero
         userProfile="drew"
@@ -37,62 +37,51 @@ export function AboutDrewProfile() {
         subtitle={`Security Architect • ${getYearsOfExperience()}+ Years Experience`}
         summary={getShortSummary()}
         badges={[
-          { icon: <Coffee className="w-3 h-3" />, label: "Coffee-Powered" },
+          { icon: <Coffee className="w-3 h-3" />, label: 'Coffee-Powered' },
           {
             icon: <Shield className="w-3 h-3" />,
-            label: "Security by Design",
+            label: 'Security by Design',
           },
           {
             icon: <Code className="w-3 h-3" />,
-            label: "Full-Stack Developer",
+            label: 'Full-Stack Developer',
           },
         ]}
       />
 
       {/* Professional Background & Motivation Section */}
-      <Section
-        id="drew-background"
-        className={PAGE_LAYOUT.proseSection.container}
-      >
-        <div className="prose prose-slate dark:prose-invert">
+      <Section id="drew-background" className={PAGE_LAYOUT.section.container}>
+        <div className="">
           <h3 className={TYPOGRAPHY.h2.standard}>Professional Background</h3>
 
           <div className={SPACING.content}>
             <p>
-              With over {getYearsOfExperience()} years of experience in the
-              cybersecurity industry, I have had the privilege of working with
-              diverse organizations ranging from startups to established
-              enterprises. My journey has equipped me with a comprehensive
-              understanding of security frameworks, risk management, and
-              incident response strategies.
+              With over {getYearsOfExperience()} years of experience in the cybersecurity industry,
+              I have had the privilege of working with diverse organizations ranging from startups
+              to established enterprises. My journey has equipped me with a comprehensive
+              understanding of security frameworks, risk management, and incident response
+              strategies.
             </p>
 
             <div className={SPACING.content}>
-              <h4 className={cn(TYPOGRAPHY.h3.standard, "text-foreground")}>
-                What Drives Me
-              </h4>
+              <h4 className={cn(TYPOGRAPHY.h3.standard, 'text-foreground')}>What Drives Me</h4>
               <p>
-                My passion for cybersecurity stems from a deep-seated curiosity
-                about technology and a commitment to making the digital world a
-                safer and more secure place. I thrive on solving complex
-                problems, staying ahead of emerging threats, and continuously
+                My passion for cybersecurity stems from a deep-seated curiosity about technology and
+                a commitment to making the digital world a safer and more secure place. I thrive on
+                solving complex problems, staying ahead of emerging threats, and continuously
                 learning in this ever-evolving field.
               </p>
               <p>
-                Beyond the technical aspects, I believe that effective
-                cybersecurity is about people—educating users, fostering a
-                security-first culture, and collaborating across teams to build
-                resilient systems. I&apos;m dedicated to empowering
-                organizations to protect their assets while enabling innovation
-                and growth.
+                Beyond the technical aspects, I believe that effective cybersecurity is about
+                people—educating users, fostering a security-first culture, and collaborating across
+                teams to build resilient systems. I&apos;m dedicated to empowering organizations to
+                protect their assets while enabling innovation and growth.
               </p>
               <p>
-                When I&apos;m not immersed in security challenges, you can find
-                me exploring the latest tech trends, contributing to open-source
-                projects, or sharing insights through writing and speaking
-                engagements. I&apos;m always eager to connect with fellow
-                professionals and enthusiasts who share my passion for
-                cybersecurity.
+                When I&apos;m not immersed in security challenges, you can find me exploring the
+                latest tech trends, contributing to open-source projects, or sharing insights
+                through writing and speaking engagements. I&apos;m always eager to connect with
+                fellow professionals and enthusiasts who share my passion for cybersecurity.
               </p>
             </div>
           </div>
@@ -107,8 +96,7 @@ export function AboutDrewProfile() {
             <h3 className={TYPOGRAPHY.h2.standard}>GitHub Activity</h3>
           </div>
           <p className="text-muted-foreground mb-6">
-            A snapshot of my open source contributions and coding activity over
-            the past year.
+            A snapshot of my open source contributions and coding activity over the past year.
           </p>
           <GitHubHeatmapErrorBoundary>
             <ServerGitHubHeatmap username="dcyfr" />
@@ -117,10 +105,7 @@ export function AboutDrewProfile() {
       </Section>
 
       {/* Current Roles Section */}
-      <Section
-        id="drew-current-roles"
-        className={PAGE_LAYOUT.section.container}
-      >
+      <Section id="drew-current-roles" className={PAGE_LAYOUT.section.container}>
         <div className={SPACING.content}>
           <div className="flex items-center gap-2.5 mb-6">
             <Briefcase className="h-6 w-6 text-primary" />
@@ -134,22 +119,13 @@ export function AboutDrewProfile() {
 
           <div className={SPACING.content}>
             {resume.experience
-              .filter((role) => role.duration.includes("Present"))
+              .filter((role) => role.duration.includes('Present'))
               .map((role, idx) => (
-                <Card
-                  key={idx}
-                  className={cn("p-4", SHADOWS.card.rest, BORDERS.card)}
-                >
+                <Card key={idx} className={cn('p-4', SHADOWS.card.rest, BORDERS.card)}>
                   <div className={SPACING.compact}>
-                    <p className={cn(TYPOGRAPHY.label.small, "font-medium")}>
-                      {role.title}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {role.company}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {role.duration}
-                    </p>
+                    <p className={cn(TYPOGRAPHY.label.small, 'font-medium')}>{role.title}</p>
+                    <p className="text-sm text-muted-foreground">{role.company}</p>
+                    <p className="text-sm text-muted-foreground">{role.duration}</p>
                   </div>
                   <ul className="space-y-2.5 text-sm text-muted-foreground list-disc list-inside">
                     {role.responsibilities.map((item, idx) => (
@@ -170,30 +146,6 @@ export function AboutDrewProfile() {
           </div>
         </div>
       </Section>
-
-      {/* Certifications Section - Badge Wallet 
-      <Section
-        id="drew-certifications"
-        className={PAGE_LAYOUT.section.container}
-      >
-        <BadgeWallet
-          username="dcyfr"
-          showLatestOnly
-          limit={3}
-          viewMoreUrl="/about/drew/resume#certifications"
-          viewMoreText="View all certifications"
-        />
-      </Section> */}
-
-      {/* Skills Section - Skills Wallet 
-      <Section id="drew-skills" className={PAGE_LAYOUT.section.container}>
-        <SkillsWallet
-          username="dcyfr"
-          limit={9}
-          viewMoreUrl="/about/drew/resume#skills"
-          viewMoreText="View all skills"
-        />
-      </Section> */}
-    </>
+    </div>
   );
 }

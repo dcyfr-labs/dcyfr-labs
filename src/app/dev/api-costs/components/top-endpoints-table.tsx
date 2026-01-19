@@ -25,6 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
+import { TYPOGRAPHY } from "@/lib/design-tokens";
 import type { TopEndpoint, ServiceUsage } from "../types";
 import { SERVICE_CONFIG } from "../types";
 
@@ -200,7 +201,7 @@ export function ServiceSummaryCards({
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className={TYPOGRAPHY.display.stat}>
                 {service.cost > 0
                   ? `$${service.cost.toFixed(2)}`
                   : service.requests.toLocaleString()}

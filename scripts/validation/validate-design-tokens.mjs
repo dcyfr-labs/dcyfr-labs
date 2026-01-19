@@ -37,8 +37,10 @@ const flags = {
 // Violation patterns
 const PATTERNS = {
   spacing: {
-    regex: /\b(space-y-[5-9]|gap-[5-9]|p-[67]|px-[67]|py-[67])\b/g,
-    description: 'Prohibited spacing pattern',
+    // Match padding/spacing classes but NOT when preceded by responsive prefix or size prefix (top-, left-, etc)
+    // Negative lookbehind: ensure no responsive prefix (md:, lg:, etc) or position prefix (top-, left-, right-, bottom-)
+    regex: /\b(space-y-[5-9]|gap-[5-9])(?![\w])|([\s"])(?:(?!(?:sm|md|lg|xl|2xl|top|right|bottom|left):)(p-[67]|px-[67]|py-[67]))(?![\w])/g,
+    description: 'Prohibited spacing pattern (allowed with responsive prefixes: md:p-6 is OK)',
     suggestions: {
       'space-y-8': 'SPACING.subsection',
       'space-y-6': 'SPACING.subsection or SPACING.content',

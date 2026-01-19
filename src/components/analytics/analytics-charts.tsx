@@ -5,18 +5,12 @@
  * Uses Recharts for responsive, interactive charts with real daily data.
  */
 
-"use client";
+'use client';
 
-import { useAnalyticsData } from "@/hooks/use-analytics-data";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useAnalyticsData } from '@/hooks/use-analytics-data';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   LineChart,
   Line,
@@ -28,8 +22,8 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from "recharts";
-import { PostAnalytics, DateRange } from "@/types/analytics";
+} from '@/components/charts';
+import { PostAnalytics, DateRange } from '@/types/analytics';
 
 interface AnalyticsChartsProps {
   /** All posts with analytics data */
@@ -38,7 +32,7 @@ interface AnalyticsChartsProps {
   dateRange: DateRange;
 }
 
-import type { DailyData } from "@/types/analytics";
+import type { DailyData } from '@/types/analytics';
 
 /**
  * Time-series charts for analytics dashboard
@@ -54,7 +48,7 @@ export function AnalyticsCharts({ posts, dateRange }: AnalyticsChartsProps) {
     loading,
     error,
     refresh,
-  } = useAnalyticsData({ dateRange, autoRefresh: false, dataType: "daily" });
+  } = useAnalyticsData({ dateRange, autoRefresh: false, dataType: 'daily' });
   const chartData: DailyData[] = Array.isArray(dailyData) ? dailyData : [];
 
   if (posts.length === 0) {
@@ -80,9 +74,7 @@ export function AnalyticsCharts({ posts, dateRange }: AnalyticsChartsProps) {
       <Card className="mb-6">
         <CardHeader className="p-4">
           <CardTitle className="text-base">Performance Trends</CardTitle>
-          <CardDescription className="text-xs text-destructive">
-            {error}
-          </CardDescription>
+          <CardDescription className="text-xs text-destructive">{error}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -108,8 +100,8 @@ export function AnalyticsCharts({ posts, dateRange }: AnalyticsChartsProps) {
                 No daily tracking data available yet
               </p>
               <p className="text-xs text-muted-foreground">
-                Daily metrics will appear here as users view your posts. Visit a
-                blog post to generate your first data point.
+                Daily metrics will appear here as users view your posts. Visit a blog post to
+                generate your first data point.
               </p>
             </div>
           </div>
@@ -150,26 +142,23 @@ export function AnalyticsCharts({ posts, dateRange }: AnalyticsChartsProps) {
                     <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="rgba(255,255,255,0.1)"
-                />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                 <XAxis
                   dataKey="date"
                   stroke="rgba(255,255,255,0.5)"
-                  tick={{ fontSize: 12, fill: "rgba(255,255,255,0.7)" }}
+                  tick={{ fontSize: 12, fill: 'rgba(255,255,255,0.7)' }}
                 />
                 <YAxis
                   stroke="rgba(255,255,255,0.5)"
-                  tick={{ fontSize: 12, fill: "rgba(255,255,255,0.7)" }}
+                  tick={{ fontSize: 12, fill: 'rgba(255,255,255,0.7)' }}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "rgba(0,0,0,0.9)",
-                    border: "1px solid rgba(255,255,255,0.2)",
-                    borderRadius: "6px",
-                    fontSize: "12px",
-                    color: "#fff",
+                    backgroundColor: 'rgba(0,0,0,0.9)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    color: '#fff',
                   }}
                 />
                 <Area
@@ -187,32 +176,29 @@ export function AnalyticsCharts({ posts, dateRange }: AnalyticsChartsProps) {
           <TabsContent value="engagement" className="space-y-4">
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData}>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="rgba(255,255,255,0.1)"
-                />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                 <XAxis
                   dataKey="date"
                   stroke="rgba(255,255,255,0.5)"
-                  tick={{ fontSize: 12, fill: "rgba(255,255,255,0.7)" }}
+                  tick={{ fontSize: 12, fill: 'rgba(255,255,255,0.7)' }}
                 />
                 <YAxis
                   stroke="rgba(255,255,255,0.5)"
-                  tick={{ fontSize: 12, fill: "rgba(255,255,255,0.7)" }}
+                  tick={{ fontSize: 12, fill: 'rgba(255,255,255,0.7)' }}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "rgba(0,0,0,0.9)",
-                    border: "1px solid rgba(255,255,255,0.2)",
-                    borderRadius: "6px",
-                    fontSize: "12px",
-                    color: "#fff",
+                    backgroundColor: 'rgba(0,0,0,0.9)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    color: '#fff',
                   }}
                 />
                 <Legend
                   wrapperStyle={{
-                    fontSize: "12px",
-                    color: "rgba(255,255,255,0.7)",
+                    fontSize: '12px',
+                    color: 'rgba(255,255,255,0.7)',
                   }}
                 />
                 <Line
@@ -237,32 +223,29 @@ export function AnalyticsCharts({ posts, dateRange }: AnalyticsChartsProps) {
           <TabsContent value="combined" className="space-y-4">
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData}>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="rgba(255,255,255,0.1)"
-                />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                 <XAxis
                   dataKey="date"
                   stroke="rgba(255,255,255,0.5)"
-                  tick={{ fontSize: 12, fill: "rgba(255,255,255,0.7)" }}
+                  tick={{ fontSize: 12, fill: 'rgba(255,255,255,0.7)' }}
                 />
                 <YAxis
                   stroke="rgba(255,255,255,0.5)"
-                  tick={{ fontSize: 12, fill: "rgba(255,255,255,0.7)" }}
+                  tick={{ fontSize: 12, fill: 'rgba(255,255,255,0.7)' }}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "rgba(0,0,0,0.9)",
-                    border: "1px solid rgba(255,255,255,0.2)",
-                    borderRadius: "6px",
-                    fontSize: "12px",
-                    color: "#fff",
+                    backgroundColor: 'rgba(0,0,0,0.9)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    color: '#fff',
                   }}
                 />
                 <Legend
                   wrapperStyle={{
-                    fontSize: "12px",
-                    color: "rgba(255,255,255,0.7)",
+                    fontSize: '12px',
+                    color: 'rgba(255,255,255,0.7)',
                   }}
                 />
                 <Line

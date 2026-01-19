@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { AlertTriangle, Info, AlertCircle, CheckCircle } from "lucide-react";
-import { SEMANTIC_COLORS, BORDERS } from "@/lib/design-tokens";
-import { cn } from "@/lib/utils";
+import * as React from 'react';
+import { AlertTriangle, Info, AlertCircle, CheckCircle } from 'lucide-react';
+import { SEMANTIC_COLORS, BORDERS } from '@/lib/design-tokens';
+import { cn } from '@/lib/utils';
 
 /**
  * Alert Banner Component
@@ -49,16 +49,17 @@ import { cn } from "@/lib/utils";
  */
 
 export interface AlertProps {
-  type?: "critical" | "warning" | "info" | "success" | "notice";
+  type?: 'critical' | 'warning' | 'info' | 'success' | 'notice';
   children: React.ReactNode;
   className?: string;
   dismissible?: boolean;
   onDismiss?: () => void;
   dismissLabel?: string;
+  dismissTestId?: string;
   label?: string;
-  icon?: React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
+  icon?: React.ComponentType<{ className?: string; 'aria-hidden'?: boolean }>;
   containerOverride?: string;
-  role?: "alert" | "note" | "complementary";
+  role?: 'alert' | 'note' | 'complementary';
 }
 
 const iconMap = {
@@ -70,16 +71,17 @@ const iconMap = {
 };
 
 export function Alert({
-  type = "info",
+  type = 'info',
   children,
-  className = "",
+  className = '',
   dismissible = false,
   onDismiss,
-  dismissLabel = "Dismiss alert",
+  dismissLabel = 'Dismiss alert',
+  dismissTestId,
   label,
   icon,
   containerOverride,
-  role = "alert",
+  role = 'alert',
 }: AlertProps) {
   const [isVisible, setIsVisible] = React.useState(true);
 
@@ -106,39 +108,37 @@ export function Alert({
     <div
       role={role}
       className={cn(
-        "alert-banner",
+        'alert-banner',
         BORDERS.card,
         colors.border,
         containerOverride || colors.container,
-        "shadow-[0_1px_2px_rgb(0_0_0/0.05)] dark:shadow-[0_1px_2px_rgb(0_0_0/0.15)]",
-        "p-4 sm:p-5 my-4",
+        'shadow-[0_1px_2px_rgb(0_0_0/0.05)] dark:shadow-[0_1px_2px_rgb(0_0_0/0.15)]',
+        'p-4 sm:p-5 my-4',
         className
       )}
     >
       <div className="flex items-start gap-3 sm:gap-4">
         <Icon
-          className={cn("h-4 w-4 sm:h-5 sm:w-5 mt-0.5 shrink-0", colors.icon)}
+          className={cn('h-4 w-4 sm:h-5 sm:w-5 mt-0.5 shrink-0', colors.icon)}
           aria-hidden={true}
         />
         <div
           className={cn(
-            "flex-1 text-xs sm:text-sm leading-snug max-w-none",
+            'flex-1 text-xs sm:text-sm leading-snug max-w-none',
             colors.text,
-            "[&>p]:m-0 [&>p]:leading-snug",
-            "[&>p+p]:mt-3",
-            "[&>strong]:font-semibold",
-            "[&>em]:italic",
-            "[&>ul]:space-y-0",
-            "[&>ol]:space-y-0",
-            "[&>li]:leading-snug",
-            "[&_p]:mb-2 [&_p:last-child]:mb-0"
+            '[&>p]:m-0 [&>p]:leading-snug',
+            '[&>p+p]:mt-3',
+            '[&>strong]:font-semibold',
+            '[&>em]:italic',
+            '[&>ul]:space-y-0',
+            '[&>ol]:space-y-0',
+            '[&>li]:leading-snug',
+            '[&_p]:mb-2 [&_p:last-child]:mb-0'
           )}
         >
           {label && (
             <>
-              <span className={cn("font-semibold", colors.label)}>
-                {label}
-              </span>{" "}
+              <span className={cn('font-semibold', colors.label)}>{label}</span>{' '}
             </>
           )}
           {children}
@@ -148,11 +148,12 @@ export function Alert({
             type="button"
             onClick={handleDismiss}
             className={cn(
-              "shrink-0 p-1 rounded hover:bg-muted/60",
-              "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1",
+              'shrink-0 p-1 rounded hover:bg-muted/60',
+              'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1',
               colors.icon
             )}
             aria-label={dismissLabel}
+            data-testid={dismissTestId}
           >
             <svg
               className="h-4 w-4"

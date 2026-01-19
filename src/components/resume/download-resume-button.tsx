@@ -1,14 +1,20 @@
 "use client";
 
 import { Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { TYPOGRAPHY } from "@/lib/design-tokens";
 import { trackEvent } from "@/lib/analytics";
 
 /**
  * Download Resume Button Component
- * 
- * Opens the resume page in a new window for printing/downloading.
- * Tracks downloads via analytics.
- * 
+ *
+ * Triggers print dialog for downloading/saving resume as PDF.
+ * Features:
+ * - Tracks download events for analytics
+ * - Semantic button element
+ * - Design token compliance
+ * - Accessible with proper ARIA labels
+ *
  * @component
  * @example
  * ```tsx
@@ -19,24 +25,26 @@ export function DownloadResumeButton() {
   const handleDownload = () => {
     // Track resume download
     trackEvent({
-      name: 'resume_downloaded',
+      name: "resume_downloaded",
       properties: {
         source: window.location.pathname,
       },
     });
 
-    // Trigger print dialog directly (no new window)
+    // Trigger print dialog directly
     window.print();
   };
 
   return (
-    <button
+    <Button
       onClick={handleDownload}
-      className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+      variant="outline"
+      className="gap-2"
       aria-label="Download resume as PDF"
     >
       <Download className="h-4 w-4" aria-hidden="true" />
-      Download Resume
-    </button>
+      <span className="hidden sm:inline">Download Resume</span>
+      <span className="sm:hidden">Download</span>
+    </Button>
   );
 }

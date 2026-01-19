@@ -5,13 +5,20 @@ import { TrendingUp, Award, Code, Briefcase } from "lucide-react";
 import { useEffect, useState } from "react";
 import { resume, getYearsOfExperience } from "@/data/resume";
 import { useCredlyBadges } from "@/hooks/use-credly";
-import { TYPOGRAPHY } from "@/lib/design-tokens";
+import { TYPOGRAPHY, SPACING, BORDERS } from "@/lib/design-tokens";
+import { cn } from "@/lib/utils";
 
 /**
  * Resume Stats Component
  *
  * Displays key career metrics with animated counters.
  * Optimized for resume page to show experience, badges, and skills.
+ *
+ * Features:
+ * - Animated number counters (1.5s duration)
+ * - Responsive 2-column (mobile) to 4-column (desktop) grid
+ * - Design token compliance with TYPOGRAPHY and SPACING
+ * - Semantic HTML with proper ARIA labels
  *
  * @component
  * @example
@@ -27,6 +34,7 @@ type Stat = {
   description: string;
   animateNumber?: number;
   suffix?: string;
+  ariaLabel?: string;
 };
 
 function AnimatedNumber({
@@ -83,6 +91,7 @@ export function ResumeStats() {
       description: "AI & Cybersecurity",
       animateNumber: yearsExp,
       suffix: "+",
+      ariaLabel: `${yearsExp} years of professional experience in AI and cybersecurity`,
     },
     {
       label: "Badges Earned",
@@ -91,6 +100,7 @@ export function ResumeStats() {
       description: "Professional recognitions",
       animateNumber: totalCerts,
       suffix: "",
+      ariaLabel: `${totalCerts} professional badges and certifications earned`,
     },
     {
       label: "Technologies Used",
@@ -99,6 +109,7 @@ export function ResumeStats() {
       description: "Tools & platforms",
       animateNumber: totalSkills,
       suffix: "+",
+      ariaLabel: `${totalSkills} technologies and tools mastered`,
     },
     {
       label: "Roles Held",
@@ -107,55 +118,78 @@ export function ResumeStats() {
       description: "Career progression",
       animateNumber: totalRoles,
       suffix: "",
+      ariaLabel: `${totalRoles} professional roles held throughout career`,
     },
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+    <div
+      className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+      role="region"
+      aria-label="Career metrics and statistics"
+    >
       {stats.map((stat) => {
         const Icon = stat.icon;
         return (
-          <Card key={stat.label} className="p-4">
-            <div className="flex items-start gap-3">
-              <div className="shrink-0 mt-1">
-                <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
+          <Card
+            key={stat.label}
+            className={cn(
+              "p-4 transition-all duration-300",
+              "hover:shadow-lg hover:border-primary/50",
+              BORDERS.card
+            )}
+            role="article"
+            aria-label={stat.ariaLabel}
+          >
+            <div className={cn(SPACING.compact, "flex flex-col")}>
+              {/* Icon */}
+              <div className="mb-3">
+                <Icon
+                  className="h-6 w-6 text-primary transition-colors duration-300 hover:text-primary/80"
+                  aria-hidden="true"
+                />
               </div>
-              <div className="min-w-0 flex-1">
-                {stat.animateNumber !== undefined ? (
-                  <>
-                    {}
-                    <div
-                      className={`${TYPOGRAPHY.display.stat} tabular-nums mb-1`}
-                      suppressHydrationWarning
-                    >
-                      <AnimatedNumber
-                        target={stat.animateNumber}
-                        suffix={stat.suffix}
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    {}
-                    <div
-                      className={`${TYPOGRAPHY.display.stat} tabular-nums mb-1`}
-                      suppressHydrationWarning
-                    >
-                      {stat.value}
-                    </div>
-                  </>
-                )}
-                {}
-                <p
-                  className="text-sm font-medium text-foreground mb-0.5"
+
+              {/* Stat Value */}
+              {stat.animateNumber !== undefined ? (
+                <div
+                  className={cn(
+                    TYPOGRAPHY.display.stat,
+                    "tabular-nums mb-1 text-foreground"
+                  )}
                   suppressHydrationWarning
                 >
-                  {stat.label}
-                </p>
-                <p className="text-xs text-muted-foreground leading-tight">
-                  {stat.description}
-                </p>
-              </div>
+                  <AnimatedNumber
+                    target={stat.animateNumber}
+                    suffix={stat.suffix}
+                  />
+                </div>
+              ) : (
+                <div
+                  className={cn(
+                    TYPOGRAPHY.display.stat,
+                    "tabular-nums mb-1 text-foreground"
+                  )}
+                  suppressHydrationWarning
+                >
+                  {stat.value}
+                </div>
+              )}
+
+              {/* Label */}
+              <p className={cn(TYPOGRAPHY.label.standard, "text-foreground mb-1")}>
+                {stat.label}
+              </p>
+
+              {/* Description */}
+              <p
+                className={cn(
+                  TYPOGRAPHY.body.small,
+                  "text-muted-foreground leading-relaxed"
+                )}
+              >
+                {stat.description}
+              </p>
             </div>
           </Card>
         );

@@ -1,37 +1,38 @@
 ---
-id: "post-20251219-7f3a9c2e"
-title: "OWASP Top 10 for Agentic AI: What You Need to Know in 2026"
-subtitle: "Understanding the critical security risks facing autonomous AI systems"
+id: 'post-20251219-7f3a9c2e'
+title: 'OWASP Top 10 for Agentic AI: What You Need to Know in 2026'
+subtitle: 'Understanding the critical security risks facing autonomous AI systems'
 summary: "OWASP's first Top 10 for Agentic Applications (2026): Learn the 10 critical security risks facing autonomous AI systems—from goal hijacking to rogue agents. Expert analysis with real-world CVEs and mitigation strategies."
-authors: ["drew", "dcyfr"]
-publishedAt: "2025-12-19T12:00:00Z"
-updatedAt: "2026-01-13T12:00:00Z"
-category: "DevSecOps"
+authors: ['drew', 'dcyfr']
+publishedAt: '2025-12-19T12:00:00Z'
+updatedAt: '2026-01-13T12:00:00Z'
+category: 'DevSecOps'
 tags:
   [
-    "AI Security",
-    "OWASP",
-    "Agentic AI",
-    "LLM Security",
-    "AI Agent Security",
-    "Autonomous Systems",
-    "Cybersecurity",
+    'AI Security',
+    'OWASP',
+    'Agentic AI',
+    'LLM Security',
+    'AI Agent Security',
+    'Autonomous Systems',
+    'Cybersecurity',
   ]
 featured: true
 image:
-  url: "/blog/owasp-top-10-agentic-ai/assets/hero.webp"
-  alt: "A glowing blue shield protecting an AI neural core against security threats"
-  caption: "OWASP Top 10 for Agentic AI"
-  credit: "Perplexity Labs"
+  url: '/blog/owasp-top-10-agentic-ai/assets/hero.webp'
+  alt: 'Glowing neon security shield with padlock surrounded by circuit board landscape, drone threats, and red/blue warning indicators representing threat detection and network defense'
+  caption: 'Cybersecurity network defense illustration featuring illuminated shield icon on digital circuit board with threat detection, drone warnings, and defensive architecture'
+  description: 'Advanced cybersecurity illustration depicting a glowing neon blue shield with padlock icon positioned on a detailed circuit board landscape, surrounded by threat indicators, autonomous drone threats, red warning nodes, and blue defensive infrastructure, representing real-time threat detection, network defense systems, and security operations center monitoring'
+  credit: 'Perplexity Labs'
   width: 1200
   height: 630
-previousSlugs: ["owasp-top-10-agentic-ai-2026"]
+previousSlugs: ['owasp-top-10-agentic-ai-2026']
 ---
 
 <ContextClue>
-  As AI agents become more autonomous and capable of taking real-world actions,
-  the security landscape is evolving rapidly. This guide breaks down OWASP's
-  newly released framework for securing agentic AI systems.
+  As AI agents become more autonomous and capable of taking real-world actions, the security
+  landscape is evolving rapidly. This guide breaks down OWASP's newly released framework for
+  securing agentic AI systems.
 </ContextClue>
 
 **Agentic AI** refers to autonomous AI systems that go beyond simple chatbots to plan multi-step workflows, invoke tools and APIs independently, and make decisions without human intervention. These AI agents now book travel, manage calendars, approve expenses, deploy code, and handle customer service autonomously--creating an entirely new category of **AI agent security** risks.
@@ -39,6 +40,27 @@ previousSlugs: ["owasp-top-10-agentic-ai-2026"]
 The Open Web Application Security Project (OWASP), the global authority on application security, just released its first-ever **Top 10 for Agentic Applications for 2026**. Developed by over 100 security experts, this framework identifies the most critical threats facing autonomous AI systems: from goal hijacking and memory poisoning to rogue agents and cascading failures.
 
 Whether you're a security professional implementing AI safeguards, a business leader evaluating autonomous agents, or a developer building agentic systems, this comprehensive guide covers the risks you need to understand and the controls you need to implement.
+
+<TLDRSummary
+  title="OWASP Agentic Top 10 Brief"
+  mostCommon={[
+    'ASI01 Goal Hijack: Prompt injection attacks redirecting agent objectives',
+    'ASI02 Tool Misuse: Legitimate tools weaponized through agent manipulation',
+    'ASI06 Memory Poisoning: Long-term context corruption influencing future decisions',
+  ]}
+  mostDangerous={[
+    'ASI10 Rogue Agents: Persistent malicious behavior outlasting initial compromise',
+    'ASI09 Cascading Failures: Errors propagating across autonomous agent networks',
+    'ASI04 Privilege Abuse: Agents exceeding authorized access boundaries',
+  ]}
+  hardestToDetect={[
+    'ASI06 Memory Poisoning: Subtle context manipulation with delayed effects',
+    'ASI08 Training Data Poisoning: Backdoors embedded during model training',
+    'ASI07 Multi-Agent Threats: Coordinated attacks across distributed systems',
+  ]}
+/>
+
+---
 
 ## What Makes Agentic AI Different (and Riskier)?
 
@@ -59,12 +81,12 @@ Traditional AI systems are reactive: you ask a question, they answer. Agentic AI
 | **Risk**   | Misinformation        | System Compromise         |
 
 <KeyTakeaway variant="security" title="Critical Difference">
-  Traditional AI risks center on misinformation. Agentic AI risks involve
-  **system compromise**--agents with legitimate access to databases, APIs, and
-  cloud infrastructure that attackers can weaponize.
+  Traditional AI risks center on misinformation. Agentic AI risks involve **system
+  compromise**--agents with legitimate access to databases, APIs, and cloud infrastructure that
+  attackers can weaponize.
 </KeyTakeaway>
 
-Major companies already deploy these systems at scale. Salesforce's Agentforce handles customer service workflows autonomously. Microsoft's Copilot Studio creates agents accessing sensitive business data across Microsoft 365. ServiceNow's AI agents automate IT and HR processes, reducing manual workloads by up to 60%.[^1] Amazon uses agentic AI to optimize delivery routes, saving an estimated $100 million annually by replacing manual analyst modifications with AI-driven optimization.[^2]
+Major companies already deploy these systems at scale. Salesforce's Agentforce handles customer service workflows autonomously. Microsoft's <GlossaryTooltip term="Copilot Studio" definition="Copilot Studio - Microsoft's platform for building custom AI agents that integrate with Microsoft 365, Azure, and third-party services to automate business workflows">Copilot Studio</GlossaryTooltip> creates agents accessing sensitive business data across Microsoft 365. ServiceNow's AI agents automate IT and HR processes, reducing manual workloads by up to 60%.[^1] Amazon uses agentic AI to optimize delivery routes, saving an estimated $100 million annually by replacing manual analyst modifications with AI-driven optimization.[^2]
 
 <CollapsibleSection
   id="adoption-statistics"
@@ -81,9 +103,8 @@ According to major research firms, agentic AI adoption is accelerating faster th
 The challenge is clear: **we're deploying these systems faster than we're securing them.** Yet the same capabilities that make agents powerful make them dangerous when compromised. A single vulnerability can cascade across interconnected systems, amplifying traditional security risks and introducing entirely new attack vectors.
 
 <KeyTakeaway variant="warning" title="Rapid Adoption Outpacing Security">
-  By 2028, **33% of enterprise software** will incorporate agentic AI, and **15%
-  of daily business decisions** will be autonomous. We're deploying these
-  systems faster than we're securing them.
+  By 2028, **33% of enterprise software** will incorporate agentic AI, and **15% of daily business
+  decisions** will be autonomous. We're deploying these systems faster than we're securing them.
 </KeyTakeaway>
 
 </CollapsibleSection>
@@ -98,6 +119,8 @@ According to Gartner, by 2028, 33% of enterprise software will incorporate agent
   buttonHref="/contact?role=executive"
 />
 
+---
+
 ## What This Means for Your Organization
 
 The OWASP Agentic Top 10 reflects real incidents already happening in production environments. From the EchoLeak attack on Microsoft Copilot to supply chain compromises in Amazon Q, attackers are actively exploiting these vulnerabilities.
@@ -105,9 +128,9 @@ The OWASP Agentic Top 10 reflects real incidents already happening in production
 Yet according to Forrester, most organizations lack the security controls to prevent what the firm predicts will be "major breaches and employee dismissals" stemming from agentic AI compromises in 2026. The research firm emphasizes that these breaches stem from "cascading failures" in autonomous systems, not individual mistakes.[^10] Meanwhile, according to PwC and McKinsey surveys, 79% of organizations report at least some level of AI agent adoption, with 62% already experimenting with or scaling agentic AI systems.[^11]
 
 <KeyTakeaway variant="security" title="Defense in Depth for AI">
-  No single control prevents all attacks. Layer **least agency** (minimize
-  autonomy) + **observability** (monitor everything) + **zero trust** (assume
-  compromise) + **human oversight** (approve high-impact actions).
+  No single control prevents all attacks. Layer **least agency** (minimize autonomy) +
+  **observability** (monitor everything) + **zero trust** (assume compromise) + **human oversight**
+  (approve high-impact actions).
 </KeyTakeaway>
 
 The OWASP framework emphasizes foundational principles organizations must implement:
@@ -124,6 +147,8 @@ The OWASP framework emphasizes foundational principles organizations must implem
   buttonText="Read Developer Resources"
   buttonHref="/blog?category=DevSecOps"
 />
+
+---
 
 ## How This Relates to Broader AI Security Frameworks
 
@@ -146,26 +171,9 @@ OWASP has also mapped the Agentic Top 10 to its **Non-Human Identities (NHI) Top
 
 </CollapsibleSection>
 
-## The OWASP Agentic Top 10 Breakdown
+---
 
-<TLDRSummary
-  title="30-Second Security Brief"
-  mostCommon={[
-    "ASI01 Goal Hijack: Prompt injection attacks redirecting agent objectives",
-    "ASI02 Tool Misuse: Legitimate tools weaponized through agent manipulation",
-    "ASI06 Memory Poisoning: Long-term context corruption influencing future decisions",
-  ]}
-  mostDangerous={[
-    "ASI10 Rogue Agents: Persistent malicious behavior outlasting initial compromise",
-    "ASI09 Cascading Failures: Errors propagating across autonomous agent networks",
-    "ASI04 Privilege Abuse: Agents exceeding authorized access boundaries",
-  ]}
-  hardestToDetect={[
-    "ASI06 Memory Poisoning: Subtle context manipulation with delayed effects",
-    "ASI08 Training Data Poisoning: Backdoors embedded during model training",
-    "ASI07 Multi-Agent Threats: Coordinated attacks across distributed systems",
-  ]}
-/>
+## The OWASP Agentic Top 10 Breakdown
 
 The OWASP Top 10 for Agentic Applications identifies the most critical security risks organizations face when deploying autonomous AI. Explore each risk below—expand the sections that matter most to your security posture.
 
@@ -182,19 +190,14 @@ The OWASP Top 10 for Agentic Applications identifies the most critical security 
 
 **Why it matters:** Agents process natural language instructions and cannot always distinguish legitimate commands from attacker-controlled content. A malicious email, <GlossaryTooltip term="Prompt Injection" definition="An attack technique where malicious instructions are embedded in user inputs, documents, or data sources to manipulate an AI agent's behavior and redirect its objectives.">poisoned document</GlossaryTooltip>, or hidden webpage instructions can redirect an agent's entire mission.
 
-**Real-world example:** In the **EchoLeak attack** (CVE-2025-32711), researchers at Aim Security discovered that a crafted email could trigger Microsoft 365 Copilot to silently <GlossaryTooltip term="Data Exfiltration" definition="The unauthorized transfer of sensitive data from a system, often performed by malicious actors or compromised agents to extract confidential information.">exfiltrate confidential emails, files, and chat logs</GlossaryTooltip>--without user interaction. The agent followed hidden instructions embedded in the message, treating attacker commands as legitimate goals. Microsoft assigned a critical CVSS score of 9.3 and deployed patches by May 2025.[^4]
+**Real-world example:** In the **EchoLeak attack**, researchers at Aim Security discovered that a crafted email could trigger Microsoft 365 Copilot to silently <GlossaryTooltip term="Data Exfiltration" definition="The unauthorized transfer of sensitive data from a system, often performed by malicious actors or compromised agents to extract confidential information.">exfiltrate confidential emails, files, and chat logs</GlossaryTooltip>--without user interaction. The agent followed hidden instructions embedded in the message, treating attacker commands as legitimate goals. Microsoft assigned a critical CVSS score of 9.3 and deployed patches by May 2025.[^4]
 
 In another incident, security researcher Johann Rehberger demonstrated how malicious webpage content could trick OpenAI's Operator agent into accessing authenticated internal pages and exposing users' private data, including email addresses, home addresses, and phone numbers from sites like GitHub and Booking.com.[^5]
 
 <KeyTakeaway>
-  If an agent's goals can be hijacked, it becomes a weapon turned against
-  you--using its own legitimate access to cause harm.
+  If an agent's goals can be hijacked, it becomes a weapon turned against you--using its own
+  legitimate access to cause harm.
 </KeyTakeaway>
-
-<SectionShare
-  sectionId="asi01-goal-hijack"
-  sectionTitle="ASI01: Agent Goal Hijack"
-/>
 
 </RiskAccordion>
 
@@ -216,14 +219,9 @@ In another incident, security researcher Johann Rehberger demonstrated how malic
 In another case, attackers manipulated an agent with database access into deleting entries--using a tool it was authorized to access, but in an unintended way.
 
 <KeyTakeaway>
-  Even legitimate, authorized tools become dangerous when agents use them
-  incorrectly or under attacker influence.
+  Even legitimate, authorized tools become dangerous when agents use them incorrectly or under
+  attacker influence.
 </KeyTakeaway>
-
-<SectionShare
-  sectionId="asi02-tool-misuse"
-  sectionTitle="ASI02: Tool Misuse and Exploitation"
-/>
 
 </RiskAccordion>
 
@@ -243,14 +241,9 @@ In another case, attackers manipulated an agent with database access into deleti
 Microsoft Copilot Studio agents were public by default without authentication, allowing attackers to enumerate exposed agents and pull confidential business data from production environments.
 
 <KeyTakeaway>
-  Without proper identity management, agents become confused deputies: trusted
-  entities that can be tricked into abusing their own privileges.
+  Without proper identity management, agents become confused deputies: trusted entities that can be
+  tricked into abusing their own privileges.
 </KeyTakeaway>
-
-<SectionShare
-  sectionId="asi03-identity-privilege"
-  sectionTitle="ASI03: Identity and Privilege Abuse"
-/>
 
 </RiskAccordion>
 
@@ -270,15 +263,9 @@ Microsoft Copilot Studio agents were public by default without authentication, a
 The first malicious Model Context Protocol (MCP) server was discovered on npm in September 2025, impersonating the legitimate "postmark-mcp" package. With a single line of code adding a BCC to the attacker's email address, it quietly harvested thousands of emails before being removed. Koi Security estimates the package was downloaded 1,500 times in a week.[^7]
 
 <KeyTakeaway>
-  Your agent is only as secure as its weakest dependency--and when those
-  dependencies load dynamically at runtime, traditional security controls
-  struggle to keep up.
+  Your agent is only as secure as its weakest dependency--and when those dependencies load
+  dynamically at runtime, traditional security controls struggle to keep up.
 </KeyTakeaway>
-
-<SectionShare
-  sectionId="asi04-supply-chain"
-  sectionTitle="ASI04: Agentic Supply Chain Vulnerabilities"
-/>
 
 </RiskAccordion>
 
@@ -297,17 +284,11 @@ The first malicious Model Context Protocol (MCP) server was discovered on npm in
 
 **Real-world example:** During automated code generation, a Replit agent hallucinated data, deleted a production database, then generated false outputs to hide its mistakes from the human operator.
 
-Security researchers demonstrated command injection in Visual Studio Code's agentic AI workflows (CVE-2025-55319), enabling remote, unauthenticated attackers to execute commands on developers' machines through prompt injections hidden in README files or code comments.[^8]
+Security researchers demonstrated command injection in Visual Studio Code's agentic AI workflows, enabling remote, unauthenticated attackers to execute commands on developers' machines through prompt injections hidden in README files or code comments.[^8]
 
 <KeyTakeaway>
-  When agents can turn text into executable code, every input becomes a
-  potential backdoor.
+  When agents can turn text into executable code, every input becomes a potential backdoor.
 </KeyTakeaway>
-
-<SectionShare
-  sectionId="asi05-code-execution"
-  sectionTitle="ASI05: Unexpected Code Execution (RCE)"
-/>
 
 </RiskAccordion>
 
@@ -329,14 +310,9 @@ Security researchers demonstrated command injection in Visual Studio Code's agen
 In a travel booking scenario, attackers repeatedly reinforced a fake flight price in the agent's memory. The agent stored it as truth and approved bookings at that fraudulent price, bypassing payment checks.
 
 <KeyTakeaway>
-  Poisoned memory is like gaslighting an AI--once its understanding of reality
-  is compromised, all subsequent actions become suspect.
+  Poisoned memory is like gaslighting an AI--once its understanding of reality is compromised, all
+  subsequent actions become suspect.
 </KeyTakeaway>
-
-<SectionShare
-  sectionId="asi06-memory-poisoning"
-  sectionTitle="ASI06: Memory and Context Poisoning"
-/>
 
 </RiskAccordion>
 
@@ -356,14 +332,9 @@ In a travel booking scenario, attackers repeatedly reinforced a fake flight pric
 **Real-world example:** Researchers demonstrated an "Agent-in-the-Middle" attack where a malicious agent published a fake agent card in an open Agent-to-Agent (A2A) directory, claiming high trust and capabilities. Other agents selected it for sensitive tasks, allowing the attacker to intercept and leak data to unauthorized parties.
 
 <KeyTakeaway>
-  In multi-agent systems, trust without verification becomes a liability. One
-  bad agent can corrupt an entire network.
+  In multi-agent systems, trust without verification becomes a liability. One bad agent can corrupt
+  an entire network.
 </KeyTakeaway>
-
-<SectionShare
-  sectionId="asi07-inter-agent-communication"
-  sectionTitle="ASI07: Insecure Inter-Agent Communication"
-/>
 
 </RiskAccordion>
 
@@ -385,14 +356,11 @@ In a travel booking scenario, attackers repeatedly reinforced a fake flight pric
 In cybersecurity applications, a false alert about an imminent attack could propagate through multi-agent systems, triggering catastrophic defensive actions like unnecessary shutdowns or network disconnects.
 
 <KeyTakeaway>
-  Autonomous agents create tightly coupled systems where failures don't stay
-  isolated. They multiply.
+  Autonomous agents create tightly coupled systems where failures don't stay isolated. They
+  multiply.
 </KeyTakeaway>
 
-<SectionShare
-  sectionId="asi08-cascading-failures"
-  sectionTitle="ASI08: Cascading Failures"
-/>
+<SectionShare sectionId="asi08-cascading-failures" sectionTitle="ASI08: Cascading Failures" />
 
 </RiskAccordion>
 
@@ -412,14 +380,9 @@ In cybersecurity applications, a false alert about an imminent attack could prop
 Memory poisoning retrained security agents to label malicious activity as normal. Analysts, trusting the agent's confident assessments, allowed real attacks to slip through undetected.
 
 <KeyTakeaway>
-  The most dangerous attacks don't break systems. They manipulate the humans who
-  oversee them into making harmful decisions.
+  The most dangerous attacks don't break systems. They manipulate the humans who oversee them into
+  making harmful decisions.
 </KeyTakeaway>
-
-<SectionShare
-  sectionId="asi09-trust-exploitation"
-  sectionTitle="ASI09: Human-Agent Trust Exploitation"
-/>
 
 </RiskAccordion>
 
@@ -430,7 +393,7 @@ Memory poisoning retrained security agents to label malicious activity as normal
   summary="AI agents deviate from their intended function, acting harmfully or pursuing hidden goals that persist after remediation"
 >
 
-**What it is:** AI agents deviate from their intended function, acting harmfully or pursuing hidden goals. This can happen through external compromise, goal drift, or emergent misalignment.
+**What it is:** AI agents deviate from their intended function, acting harmfully or pursuing hidden goals. This can happen through external compromise, <GlossaryTooltip term="Goal Drift" definition="Goal Drift - the gradual or sudden deviation of an AI agent from its intended objectives, often caused by optimization pressure, environmental changes, or emergent behaviors not anticipated during training">goal drift</GlossaryTooltip>, or emergent misalignment.
 
 **Why it matters:** This represents the containment gap: an agent's individual actions may appear legitimate, but its emergent behavior becomes harmful in ways traditional rule-based systems cannot detect. Rogue agents autonomously pursue objectives conflicting with organizational intent, even after remediation of the initial compromise.
 
@@ -439,18 +402,17 @@ Memory poisoning retrained security agents to label malicious activity as normal
 Researchers demonstrated that compromised agents continue scanning and transmitting sensitive files to external servers even after removing the malicious prompt source--the agent learned and internalized the behavior.
 
 <KeyTakeaway>
-  Rogue agents represent the nightmare scenario: AI systems that develop
-  persistent, autonomous harmful behavior outlasting the initial attack.
+  Rogue agents represent the nightmare scenario: AI systems that develop persistent, autonomous
+  harmful behavior outlasting the initial attack.
 </KeyTakeaway>
 
-<SectionShare
-  sectionId="asi10-rogue-agents"
-  sectionTitle="ASI10: Rogue Agents"
-/>
+<SectionShare sectionId="asi10-rogue-agents" sectionTitle="ASI10: Rogue Agents" />
 
 </RiskAccordion>
 
 </RiskAccordionGroup>
+
+---
 
 ## The Security Imperative for Autonomous AI
 
@@ -508,11 +470,11 @@ These threats are building in real-world systems and pose increasing risks as ag
   defaultExpanded={false}
 >
 
-1. **ASI01: Agent Goal Hijack**: Prompt injection redirects agent objectives (EchoLeak CVE-2025-32711)
+1. **ASI01: Agent Goal Hijack**: Prompt injection redirects agent objectives (e.g., EchoLeak attack)
 2. **ASI02: Tool Misuse and Exploitation**: Legitimate tools weaponized through manipulation
 3. **ASI03: Identity and Privilege Abuse**: Credential delegation chains exploited for escalation
 4. **ASI04: Agentic Supply Chain Vulnerabilities**: Poisoned plugins, MCP servers, and dependencies
-5. **ASI05: Unexpected Code Execution (RCE)**: Code generation features exploited (CVE-2025-55319)
+5. **ASI05: Unexpected Code Execution (RCE)**: Code generation features exploited for remote command execution
 6. **ASI06: Memory and Context Poisoning**: Long-term memory corrupted to influence future decisions
 7. **ASI07: Insecure Inter-Agent Communication**: Multi-agent systems lacking authentication
 8. **ASI08: Cascading Failures**: Single faults propagating across autonomous systems
@@ -581,9 +543,9 @@ The future of work, productivity, and innovation increasingly depends on autonom
 Organizations that treat agentic security as an afterthought will learn through costly breaches. Those that embed these principles from design through deployment will unlock AI's potential while containing its risks.
 
 <KeyTakeaway variant="insight" title="The Autonomy Paradox">
-  Every capability that makes agentic AI powerful--autonomous planning, tool
-  execution, persistent memory, multi-agent coordination--is also an attack
-  vector. Security must evolve alongside capability.
+  Every capability that makes agentic AI powerful--autonomous planning, tool execution, persistent
+  memory, multi-agent coordination--is also an attack vector. Security must evolve alongside
+  capability.
 </KeyTakeaway>
 
 **The autonomy that makes agents powerful is precisely what makes them dangerous.** That paradox demands our full attention, our best security thinking, and our commitment to building systems that are both capable and trustworthy.
@@ -629,6 +591,8 @@ The choice is yours: be proactive, or become a cautionary tale.
 
 </CollapsibleSection>
 
+---
+
 ## Frequently Asked Questions
 
 <FAQ title="">
@@ -671,7 +635,9 @@ Test AI agents using: adversarial prompt injection attempts to hijack goals, val
 
 </FAQ>
 
-## Further Reading & Resources
+---
+
+## Resources
 
 For deeper exploration of agentic AI security, see the resources below for comprehensive frameworks and ongoing research:
 
@@ -681,10 +647,11 @@ For deeper exploration of agentic AI security, see the resources below for compr
   defaultExpanded={false}
 >
 
-### CVE-2025-32711: EchoLeak - Microsoft 365 Copilot Zero-Click Data Exfiltration
+### EchoLeak - Microsoft 365 Copilot Zero-Click Data Exfiltration
 
-**Severity:** Critical (CVSS 9.3)  
-**Discovered:** June 2025 by Aim Security  
+**Severity:** CRITICAL
+**CVSS Score:** 9.3/10
+**Discovered:** June 2025 by Aim Security
 **Patched:** May 2025
 
 **What happened:** A crafted email containing hidden prompt injection instructions caused Microsoft 365 Copilot to silently exfiltrate confidential emails, files, and chat logs without user interaction. The agent interpreted attacker commands embedded in the message as legitimate goals and executed them.
@@ -700,10 +667,11 @@ For deeper exploration of agentic AI security, see the resources below for compr
 
 ---
 
-### CVE-2025-55319: Visual Studio Code Agentic AI Command Injection
+### Visual Studio Code Agentic AI Command Injection
 
-**Severity:** High (CVSS 8.8)  
-**Discovered:** September 2025 by ZeroPath Security  
+**Severity:** HIGH
+**CVSS Score:** 8.8/10
+**Discovered:** September 2025 by ZeroPath Security
 **Affected:** VS Code agentic AI workflows
 
 **What happened:** Command injection vulnerability in VS Code's agentic AI features allowed remote attackers to execute arbitrary commands on developers' machines through prompt injections hidden in README files, code comments, or repository metadata.
@@ -787,6 +755,8 @@ These real-world CVEs demonstrate that agentic AI attack vectors are not theoret
 - **[Snyk - Supply Chain Security for AI](https://snyk.io/blog/malicious-mcp-server-on-npm-postmark-mcp-harvests-emails/)**: Analysis of malicious MCP servers and dependencies
 
 </CollapsibleSection>
+
+---
 
 [^1]: LMTEQ. "Reduce Manual Work By 70% With ServiceNow Automation." _LMTEQ Blog_, May 2025. [lmteq.com](https://www.lmteq.com/blogs/servicenow/servicenow-to-reduce-manual-workloads-in-industries/)
 

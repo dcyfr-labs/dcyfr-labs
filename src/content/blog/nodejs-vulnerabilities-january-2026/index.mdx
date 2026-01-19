@@ -1,0 +1,675 @@
+---
+id: 'post-20260114-b4f5e2c2'
+title: 'Node.js January 2026 Security Release: 8 CVEs Explained'
+subtitle: 'Critical vulnerabilities in HTTP/2, AsyncLocalStorage, and permissions model'
+summary: 'On January 13, 2026, Node.js released security patches for 8 vulnerabilities (3 HIGH, 4 MEDIUM, 1 LOW) affecting all active release lines. This post breaks down each CVE, explains who is affected, and provides actionable remediation guidance.'
+authors: ['drew', 'dcyfr']
+publishedAt: '2026-01-14T12:00:00Z'
+category: 'DevSecOps'
+tags: ['Node.js', 'Security', 'CVE', 'HTTP/2', 'AsyncLocalStorage', 'Next.js', 'React']
+featured: false
+image:
+  url: '/blog/nodejs-vulnerabilities-january-2026/assets/hero.webp'
+  alt: 'Node.js hexagonal logo with bright green branding surrounded by circuit board connections and security shield icons on dark background'
+  caption: 'Node.js framework illustration featuring iconic hexagon logo with circuit board connections, representing server-side JavaScript architecture and backend development security'
+  description: 'Technical illustration of the Node.js hexagonal logo in bright neon green displayed on a digital circuit board background with interconnected network pathways, security shield icons, and lock symbols depicting secure backend infrastructure and server-side JavaScript development'
+  credit: 'Perplexity Labs'
+  width: 1200
+  height: 630
+---
+
+<Alert type="critical">
+  **Upgrade Required:** Node.js released security patches on January 13, 2026 for **8
+  vulnerabilities** affecting all active release lines (20.x, 22.x, 24.x, 25.x). Upgrade immediately
+  to **v20.20.0**, **v22.22.0**, **v24.13.0**, or **v25.3.0**.
+</Alert>
+
+On January 13, 2026, the Node.js project released security patches addressing:
+
+- **3 High Severity** vulnerabilities (buffer memory leak, symlink bypass, HTTP/2 DoS)
+- **4 Medium Severity** vulnerabilities (AsyncLocalStorage crashes, TLS memory leak, UDS bypass, TLS callback DoS)
+- **1 Low Severity** vulnerability (timestamp permissions bypass)
+
+### Permissions Model Scope
+
+**Important context:** Three CVEs (CVE-2025-55130, CVE-2026-21636, CVE-2025-55132) **only affect users of Node.js's experimental permission model** (`--experimental-permission` or `--permission` flags).
+
+This feature, introduced in Node.js v20[^1], has **limited production adoption**. Most Node.js deployments do NOT use the permissions model.
+
+**Quick check:** If you don't explicitly pass `--permission`, `--allow-fs-read`, `--allow-fs-write`, or `--allow-net` flags when starting Node.js, these three CVEs don't apply to your deployment.
+
+**If you do use the permissions model:** These are **critical bypasses** that break your security boundaries. Upgrade immediately.
+
+**Patched Versions:**
+
+| Release Line            | Patched Version | Release Notes                                                 |
+| ----------------------- | --------------- | ------------------------------------------------------------- |
+| v25.x (Current)         | **25.3.0**      | [Release Notes](https://nodejs.org/en/blog/release/v25.3.0/)  |
+| v24.x (LTS)             | **24.13.0**     | [Release Notes](https://nodejs.org/en/blog/release/v24.13.0/) |
+| v22.x (LTS)             | **22.22.0**     | [Release Notes](https://nodejs.org/en/blog/release/v22.22.0/) |
+| v20.x (Maintenance LTS) | **20.20.0**     | [Release Notes](https://nodejs.org/en/blog/release/v20.20.0/) |
+
+**Dependency Updates Included:**
+
+- **<GlossaryTooltip term="c-ares" definition="c-ares - a C library for asynchronous DNS requests, providing high-performance DNS resolution used by Node.js for network operations">c-ares</GlossaryTooltip>** updated to 1.34.6[^2] - Fixes DNS resolver vulnerabilities including CVE-2025-62408 (use-after-free in `read_answers()`) and multiple moderate severity DNS parsing issues
+- **<GlossaryTooltip term="undici" definition="undici - a high-performance HTTP/1.1 client library written from scratch for Node.js, offering lower latency and higher throughput than the built-in http module">undici</GlossaryTooltip>** updated to 6.23.0 / 7.18.0[^3] - Addresses HTTP client vulnerabilities including CVE-2026-22036 (unbounded decompression chain leading to DoS) and request smuggling issues
+
+These dependency patches are automatically included in the Node.js security releases.
+
+<TLDRSummary
+  title="Node.js January 2026 Security Release Brief"
+  mostCommon={[
+    '8 CVEs patched (3 HIGH, 4 MEDIUM, 1 LOW)',
+    'All active release lines affected (v20-v25)',
+    'Next.js/RSC users affected by AsyncLocalStorage DoS',
+  ]}
+  mostDangerous={[
+    'CVE-2025-55131: Buffer memory leak exposes uninitialized data',
+    'CVE-2025-59466: AsyncLocalStorage crashes (impacts Next.js)',
+    'CVE-2025-59465: HTTP/2 DoS with malformed HEADERS frames',
+  ]}
+  hardestToDetect={[
+    'Memory leaks require timing analysis to trigger',
+    '3 permissions model bypasses (if you use --permission)',
+    'TLS memory leaks in certificate processing',
+  ]}
+  jumpLink="#how-to-upgrade"
+/>
+
+---
+
+## Affected Versions Matrix
+
+| CVE            | Severity | v20.x | v22.x | v24.x | v25.x | Notes                   |
+| -------------- | -------- | :---: | :---: | :---: | :---: | ----------------------- |
+| CVE-2025-55131 | High     |  Yes  |  Yes  |  Yes  |  Yes  | Buffer memory leak      |
+| CVE-2025-55130 | High     |  Yes  |  Yes  |  Yes  |  Yes  | Permissions model only  |
+| CVE-2025-59465 | High     |  Yes  |  Yes  |  Yes  |  Yes  | HTTP/2 servers          |
+| CVE-2025-59466 | Medium   |  Yes  |  Yes  |  Yes  |  Yes  | AsyncLocalStorage users |
+| CVE-2025-59464 | Medium   |  Yes  |  Yes  |  Yes  |  No   | TLS cert processing     |
+| CVE-2026-21636 | Medium   |  No   |  No   |  No   |  Yes  | v25 permissions model   |
+| CVE-2026-21637 | Medium   |  Yes  |  Yes  |  Yes  |  Yes  | PSK/ALPN callback users |
+| CVE-2025-55132 | Low      |  Yes  |  Yes  |  Yes  |  Yes  | Permissions model only  |
+
+---
+
+## Quick Decision Guide
+
+| Your Situation                          | Action Required                                 | Risk Level              |
+| --------------------------------------- | ----------------------------------------------- | ----------------------- |
+| Running Node.js v20-v23 + any framework | Upgrade immediately to v20.20.0 / v22.22.0      | HIGH                    |
+| Running Node.js v24.x + Next.js/React   | Upgrade to v24.13.0 (lower CVE-2025-59466 risk) | MEDIUM                  |
+| Running Node.js v25.x                   | Upgrade immediately to v25.3.0                  | HIGH (v25-specific CVE) |
+| Using `--permission` flags              | Upgrade urgently (3 bypasses)                   | CRITICAL                |
+| Running self-hosted HTTP/2 servers      | Review error handlers + upgrade                 | HIGH                    |
+| Using APM tools (all versions)          | Upgrade + review recursion depth limits         | MEDIUM-HIGH             |
+
+**All users should upgrade regardless**, but this helps you understand your specific risk exposure.
+
+<RoleBasedCTA
+  role="executive"
+  title="For Business Leaders"
+  description="Node.js released critical security patches affecting all production deployments. Your engineering teams need to upgrade immediately to prevent server crashes and data leaks. Budget emergency patching cycles for January 2026 Node.js updates."
+  buttonText="Contact Us"
+  buttonHref="/contact?role=executive&topic=nodejs-security"
+/>
+
+---
+
+## Who Should Upgrade?
+
+**You are affected if:**
+
+- You use Next.js 13+ with App Router (uses `AsyncLocalStorage` internally)
+- You use React Server Components
+- You use `cookies()`, `headers()`, or other Next.js request context APIs
+
+**Critical CVEs for you:**
+
+- **CVE-2025-59466** (AsyncLocalStorage crashes) - Stack overflow errors in your API routes can crash your entire application
+- **CVE-2025-59465** (HTTP/2 DoS) - If serving HTTP/2 traffic, malformed requests can crash your server
+
+**Recommended Action:**
+
+```bash
+# Check your Node.js version
+node --version
+
+# Upgrade to patched version
+nvm install 24.13.0  # or 22.22.0, 20.20.0
+
+# Create version pinning file
+echo "24.13.0" > .nvmrc
+```
+
+**Additional Mitigation:**
+
+Validate input depth in API routes to prevent stack overflow:
+
+```typescript
+const MAX_DEPTH = 10;
+
+function validateDepth(obj: unknown, depth = 0): boolean {
+  if (depth > MAX_DEPTH) return false;
+  if (typeof obj !== 'object' || obj === null) return true;
+
+  return Object.values(obj).every((v) => validateDepth(v, depth + 1));
+}
+```
+
+<RoleBasedCTA
+  role="developer"
+  title="For Developers"
+  description="Upgrade Node.js to v20.20.0, v22.22.0, v24.13.0, or v25.3.0 immediately. If using Next.js 13+ with App Router, add depth validation to API routes processing user input to prevent CVE-2025-59466 exploitation."
+  buttonText="View Upgrade Guide"
+  buttonHref="#how-to-upgrade"
+/>
+
+<CollapsibleSection
+  id="apm-users"
+  title="APM Tool Users (Datadog, New Relic, OpenTelemetry)"
+  defaultExpanded={false}
+>
+
+**You are affected if:**
+
+- You use any Application Performance Monitoring tool
+- You have `require('dd-trace')`, `require('newrelic')`, or similar APM initialization
+- You use OpenTelemetry for distributed tracing
+
+**Why APM makes CVE-2025-59466 worse:**
+
+APM tools use `async_hooks.createHook()` to trace requests across async boundaries. The moment you import an APM package, your application has `async_hooks` enabled, making stack overflow errors uncatchable.
+
+The irony: The tools you install to monitor crashes can make a category of crashes behave differently.
+
+**Recommended Action:**
+
+1. Upgrade Node.js to patched versions immediately
+2. Review recursive functions in your codebase
+3. Add depth limits to any user-input-driven recursion
+
+</CollapsibleSection>
+
+<CollapsibleSection
+  id="permissions-model-users"
+  title="Permissions Model Users"
+  defaultExpanded={false}
+>
+
+**You are affected if:**
+
+- You use `--experimental-permission` or `--permission` flags
+- You use `--allow-fs-read`, `--allow-fs-write`, or `--allow-net` flags
+
+**Critical CVEs for you:**
+
+- **CVE-2025-55130** (Symlink bypass) - Attackers can escape file system restrictions
+- **CVE-2026-21636** (UDS bypass) - v25 only, network restrictions bypassed
+- **CVE-2025-55132** (futimes bypass) - Timestamp modification in read-only directories
+
+**Recommended Action:**
+
+Upgrade immediately. The permissions model's security guarantees are broken until patched.
+
+</CollapsibleSection>
+
+<CollapsibleSection
+  id="tls-server-operators"
+  title="TLS Server Operators"
+  defaultExpanded={false}
+>
+
+**You are affected if:**
+
+- You run HTTP/2 servers with TLS
+- You use TLS client certificate authentication (mTLS)
+- You use Pre-Shared Key (PSK) or ALPN callbacks
+
+**Critical CVEs for you:**
+
+- **CVE-2025-59465** (HTTP/2 DoS) - Malformed frames crash servers
+- **CVE-2025-59464** (TLS memory leak) - Certificate processing leaks memory
+- **CVE-2026-21637** (Callback DoS) - PSK/ALPN exceptions cause crashes
+
+**Recommended Action:**
+
+1. Upgrade Node.js immediately
+2. Add explicit error handlers to TLS sockets
+3. Monitor memory usage for TLS-heavy workloads
+
+</CollapsibleSection>
+
+---
+
+## How to Upgrade
+
+### Using nvm (Node Version Manager)
+
+```bash
+# Install the patched version for your release line
+nvm install 24.13.0  # LTS (recommended)
+nvm install 22.22.0  # Previous LTS
+nvm install 20.20.0  # Maintenance LTS
+nvm install 25.3.0   # Current
+
+# Verify installation
+node --version
+# v24.13.0
+
+# Set as default
+nvm alias default 24.13.0
+
+# Create version pinning file for your project
+echo "24.13.0" > .nvmrc
+echo "24.13.0" > .node-version  # For other version managers
+```
+
+### Using Homebrew (macOS)
+
+```bash
+brew update
+brew upgrade node
+node --version
+```
+
+### Verifying the Upgrade
+
+```bash
+# Check Node.js version
+node --version
+# Should show: v20.20.0, v22.22.0, v24.13.0, or v25.3.0
+
+# Verify npm is functional
+npm --version
+
+# Run your test suite
+npm test
+```
+
+### CI/CD Considerations
+
+Update your GitHub Actions workflows to use version pinning:
+
+```yaml
+# .github/workflows/ci.yml
+- uses: actions/setup-node@v4
+  with:
+    node-version-file: '.nvmrc' # Use version from .nvmrc file
+```
+
+<RoleBasedCTA
+  role="security"
+  title="For Security Teams"
+  description="Monitor for buffer memory leaks (CVE-2025-55131), AsyncLocalStorage crashes in Next.js apps (CVE-2025-59466), and HTTP/2 DoS patterns (CVE-2025-59465). If using --permission flags, review symlink bypasses and UDS access controls immediately."
+  buttonText="Detection Patterns"
+  buttonHref="#high-severity-vulnerabilities"
+/>
+
+---
+
+## High Severity Vulnerabilities
+
+### CVE-2025-55131: Buffer Memory Leak via Race Condition
+
+**Affected Versions:** 20.x, 22.x, 24.x, 25.x  
+**Reporter:** Nikita Skovoroda
+
+A flaw in Node.js buffer allocation logic can expose uninitialized memory when allocations are interrupted while using the `vm` module with the timeout option. Under specific timing conditions, buffers allocated with `Buffer.alloc()` and <GlossaryTooltip term="TypedArray" definition="JavaScript typed arrays provide a mechanism for accessing raw binary data - includes Uint8Array, Int32Array, Float64Array, and others">TypedArray</GlossaryTooltip> instances like `Uint8Array` may contain leftover data from previous operations.
+
+**Impact:**
+
+This vulnerability allows in-process secrets like tokens, passwords, or API keys to leak, potentially causing data corruption. While exploitation typically requires precise timing or in-process code execution, it becomes remotely exploitable when untrusted input influences workload and timeouts.
+
+**Example Risk Scenario:**
+
+```typescript
+import { runInNewContext } from 'vm';
+
+// Previous operation stored sensitive data
+const sensitiveBuffer = Buffer.alloc(1024);
+sensitiveBuffer.write('SECRET_API_KEY_xyz123');
+
+// Later, with vm timeout, race condition can occur
+const result = runInNewContext('Buffer.alloc(1024)', {}, { timeout: 100 });
+// result may contain: "SECRET_API_KEY_xyz123" from previous operation
+```
+
+**Mitigation:** Upgrade to patched versions. Avoid using `vm` module with untrusted input and timeout options in security-sensitive contexts.
+
+<KeyTakeaway variant="security" title="Buffer Memory Leak Risk">
+  CVE-2025-55131 can expose **in-process secrets** (API keys, tokens, passwords) through
+  uninitialized memory. If you use the `vm` module with timeouts and untrusted input, **upgrade
+  immediately**—this becomes remotely exploitable with precise timing attacks.
+</KeyTakeaway>
+
+---
+
+### CVE-2025-55130: File System Permissions Bypass via Symlinks
+
+**Affected Versions:** 20.x, 22.x, 24.x, 25.x (permissions model users)  
+**Reporter:** natann  
+**Fix By:** RafaelGSS
+
+A flaw in Node.js's Permissions model allows attackers to bypass `--allow-fs-read` and `--allow-fs-write` restrictions using crafted relative symlink paths. By chaining directories and symlinks, a script granted access only to the current directory can escape the allowed path and read sensitive files.
+
+**Impact:**
+
+This breaks the expected isolation guarantees and enables arbitrary file read/write, potentially leading to system compromise.
+
+**Attack Pattern:**
+
+```bash
+# Application started with restricted permissions
+node --experimental-permission --allow-fs-read=/app/data ./app.js
+
+# Attacker creates symlink chain to escape /app/data
+# symlink: /app/data/escape -> ../../../etc/passwd
+# Script can now read /etc/passwd despite restrictions
+```
+
+**Who Is Affected:**
+
+Only users of the Node.js permission model (`--experimental-permission` or `--permission` flags) are affected. If you're not using these flags, this CVE does not apply to your deployments.
+
+**Mitigation:** Upgrade to patched versions. Review symlink handling in permission-restricted environments.
+
+<KeyTakeaway variant="warning" title="Permissions Model Bypass">
+  If you use `--experimental-permission` or `--permission` flags, CVE-2025-55130 allows **complete
+  escape** of file system restrictions via symlink chains. This breaks expected isolation guarantees
+  and enables arbitrary file read/write. **Upgrade urgently** if you rely on the permissions model
+  for security boundaries.
+</KeyTakeaway>
+
+---
+
+### CVE-2025-59465: HTTP/2 Server Crash via Malformed HEADERS
+
+**Affected Versions:** 20.x, 22.x, 24.x, 25.x  
+**Reporter:** dantt  
+**Fix By:** RafaelGSS
+
+A malformed <GlossaryTooltip term="HTTP/2" definition="HTTP/2 - the second major version of the HTTP network protocol, featuring multiplexing, header compression, and server push capabilities">HTTP/2</GlossaryTooltip> HEADERS frame with oversized, invalid <GlossaryTooltip term="HPACK" definition="HPACK - HTTP/2 header compression format that uses Huffman coding and dynamic table to reduce header overhead">HPACK</GlossaryTooltip> data can cause Node.js to crash by triggering an unhandled `TLSSocket` error (`ECONNRESET`). Instead of safely closing the connection, the process crashes, enabling remote denial of service.
+
+**Impact:**
+
+This vulnerability primarily affects applications that do not attach explicit error handlers to secure sockets. A remote attacker can crash your entire Node.js process with a single malformed request.
+
+**Vulnerable Pattern:**
+
+```typescript
+// Default HTTP/2 server - NO explicit error handlers
+import { createSecureServer } from 'http2';
+
+const server = createSecureServer({
+  key: privateKey,
+  cert: certificate,
+});
+
+server.on('stream', (stream, headers) => {
+  // Handle request
+});
+
+server.listen(443);
+// Attacker sends malformed HEADERS frame -> Process crashes
+```
+
+**Recommended Mitigation:**
+
+```typescript
+// Add explicit error handlers to prevent crashes
+server.on('secureConnection', (socket) => {
+  socket.on('error', (err) => {
+    console.error(
+      '<GlossaryTooltip term="TLS Socket Error" definition="TLS Socket Error - errors occurring during secure socket communication, commonly including connection resets, handshake failures, and protocol violations that can crash servers if unhandled">TLS Socket Error</GlossaryTooltip>:',
+      err.message
+    );
+    // Gracefully close instead of crashing
+    socket.destroy();
+  });
+});
+```
+
+**Who Is Affected:**
+
+Any Node.js application using HTTP/2 without explicit TLS socket error handlers. This includes many Next.js, Fastify, and custom HTTP/2 deployments.
+
+<KeyTakeaway variant="warning" title="HTTP/2 Server Crash Risk">
+  A single malformed HTTP/2 HEADERS frame can **crash your entire Node.js process** if you don't
+  have explicit error handlers on secure sockets. This affects **any HTTP/2 server** without
+  `socket.on('error')` handlers. Add error handling NOW, then upgrade.
+</KeyTakeaway>
+
+<SectionShare sectionId="cve-2025-59465" sectionTitle="CVE-2025-59465: HTTP/2 Server DoS" />
+
+---
+
+## Medium Severity Vulnerabilities
+
+### CVE-2025-59466: AsyncLocalStorage Stack Overflow Crashes
+
+**Affected Versions:** 20.x, 22.x, 24.x, 25.x  
+**Reporter:** Andrew MacPherson (AndrewMohawk), aaron_vercel  
+**Fix By:** mcollina
+
+A bug in Node.js error handling causes "Maximum call stack size exceeded" errors to become uncatchable when `async_hooks.createHook()` is enabled. Instead of reaching `process.on('uncaughtException')`, the process terminates immediately, making the crash unrecoverable.
+
+**Why This Matters:**
+
+This vulnerability silently affects a massive portion of the Node.js ecosystem because:
+
+- **React Server Components** use <GlossaryTooltip term="AsyncLocalStorage" definition="AsyncLocalStorage - a Node.js API providing context-aware storage across asynchronous operations, allowing data to persist through async call chains without explicit parameter passing">AsyncLocalStorage</GlossaryTooltip> internally
+- **Next.js** uses AsyncLocalStorage for request context tracking (cookies, headers)[^4]
+- **Every major APM tool** (Datadog[^5], New Relic[^6], Dynatrace, Elastic APM, OpenTelemetry[^7]) uses AsyncLocalStorage or `async_hooks.createHook()` to trace requests
+
+Applications whose recursion depth is controlled by unsanitized input become vulnerable to denial-of-service attacks.
+
+**Example Vulnerable Pattern:**
+
+```typescript
+// API route processing deeply nested user input
+export async function POST(request: Request) {
+  const data = await request.json();
+
+  // If data is deeply nested (1000+ levels), stack overflow occurs
+  // With AsyncLocalStorage active, error bypasses all handlers
+  // Process crashes immediately - no logging, no recovery
+  const result = processNestedData(data);
+
+  return Response.json(result);
+}
+```
+
+**Important Caveat:**
+
+The Node.js patch improves recoverability in one edge case, but the documentation explicitly states:
+
+> "Recovery from space exhaustion is unspecified, best-effort behavior and is not a reliable basis for availability or security."
+
+**Recommendation:** Don't rely on catching stack overflow errors. Prevent them by validating input depth and bounding recursion.
+
+**Important for Node.js v24+ users:** Node.js v24 fundamentally changed AsyncLocalStorage's implementation—it no longer uses `async_hooks.createHook()` internally[^8]. This means:
+
+- **React Server Components: NOT affected on Node.js v24+**
+- **Next.js (cookies, headers, etc.): NOT affected on Node.js v24+**
+- **APM tools using only AsyncLocalStorage: NOT affected on Node.js v24+**
+- **APM tools directly using `async_hooks.createHook()`: Still affected on all versions**
+
+**If you're running Node.js v24.13.0+**, CVE-2025-59466 is primarily a concern if you:
+
+1. Use APM tools that directly call `async_hooks.createHook()` (check vendor documentation)
+2. Have custom code using `async_hooks.createHook()`
+3. Run Node.js v20-v23 (where the vulnerability fully applies)
+
+**Bottom line:** The risk profile for Next.js applications is significantly different between Node.js v20-v23 (high risk) and v24+ (lower risk). Upgrade regardless, but understand the context.
+
+**Further Reading:** Node.js published a detailed companion blog post: [Mitigating Denial-of-Service Vulnerability from Unrecoverable Stack Space Exhaustion for React, Next.js, and APM Users](https://nodejs.org/en/blog/vulnerability/january-2026-dos-mitigation-async-hooks)
+
+<KeyTakeaway variant="insight" title="Next.js & APM Tools Affected">
+  CVE-2025-59466 silently affects **massive portions** of the Node.js ecosystem: Next.js (cookies,
+  headers), React Server Components, and **every major APM tool** (Datadog, New Relic,
+  OpenTelemetry). On Node.js v20-v23, stack overflow errors **bypass all handlers** and crash
+  immediately. **Node.js v24+** significantly reduces risk for Next.js/RSC but APM tools using
+  `async_hooks.createHook()` remain vulnerable. Validate input depth + upgrade.
+</KeyTakeaway>
+
+<SectionShare sectionId="cve-2025-59466" sectionTitle="CVE-2025-59466: AsyncLocalStorage DoS" />
+
+---
+
+### CVE-2025-59464: TLS Certificate Memory Leak
+
+**Affected Versions:** 20.x, 22.x, 24.x  
+**Reporter:** giant_anteater  
+**Fix By:** RafaelGSS
+
+A memory leak in Node.js's OpenSSL integration occurs when converting X.509 certificate fields to UTF-8 without freeing the allocated buffer. When applications call `socket.getPeerCertificate(true)`, each certificate field leaks memory.
+
+**Impact:**
+
+Remote clients can trigger steady memory growth through repeated TLS connections. Over time, this leads to resource exhaustion and denial of service.
+
+**Affected Pattern:**
+
+```typescript
+// TLS server processing client certificates
+server.on('secureConnection', (socket) => {
+  // Each call leaks memory
+  const cert = socket.getPeerCertificate(true);
+  // Memory never freed for certificate fields
+});
+```
+
+**Who Is Affected:**
+
+Applications that process TLS client certificates, particularly <GlossaryTooltip term="mTLS" definition="mTLS (Mutual TLS) - a security protocol requiring both client and server to authenticate each other using X.509 certificates, commonly used for zero-trust architectures and service-to-service authentication">mutual TLS (mTLS)</GlossaryTooltip> implementations and certificate-based authentication systems.
+
+---
+
+### CVE-2026-21636: Unix Domain Socket Permissions Bypass
+
+**Affected Versions:** v25.x only  
+**Reporter:** mufeedvh  
+**Fix By:** RafaelGSS
+
+A flaw in Node.js's permission model allows Unix Domain Socket (UDS) connections to bypass network restrictions when `--permission` is enabled. Even without `--allow-net`, attacker-controlled inputs (such as URLs or socketPath options) can connect to arbitrary local sockets via `net`, `tls`, or `undici/fetch`.
+
+**Impact:**
+
+This breaks the intended security boundary of the permission model and enables access to privileged local services, potentially leading to privilege escalation, data exposure, or local code execution.
+
+**Note:** Network permissions (`--allow-net`) are still in the experimental phase.
+
+**Who Is Affected:**
+
+Only users of the Node.js permission model on version v25.x. If you're using v20, v22, or v24, or not using the permission model, this CVE does not apply.
+
+---
+
+### CVE-2026-21637: TLS PSK/ALPN Callback DoS
+
+**Affected Versions:** All versions using PSK or ALPN callbacks  
+**Reporter:** 0xmaxhax  
+**Fix By:** mcollina
+
+A flaw in Node.js TLS error handling allows remote attackers to crash or exhaust resources of a TLS server when `pskCallback` or `ALPNCallback` are in use. Synchronous exceptions thrown during these callbacks bypass standard TLS error handling paths (`tlsClientError` and `error`).
+
+**Impact:**
+
+This causes either immediate process termination or silent file descriptor leaks that eventually lead to denial of service. Because these callbacks process attacker-controlled input during the TLS handshake, a remote client can repeatedly trigger the issue.
+
+**Who Is Affected:**
+
+TLS servers using Pre-Shared Key (PSK) authentication or Application-Layer Protocol Negotiation (ALPN) callbacks that may throw exceptions.
+
+<SectionShare
+  sectionId="medium-severity-vulnerabilities"
+  sectionTitle="Medium Severity Vulnerabilities"
+/>
+
+---
+
+## Low Severity Vulnerability
+
+### CVE-2025-55132: fs.futimes() Permissions Bypass
+
+**Affected Versions:** 20.x, 22.x, 24.x, 25.x (permissions model users)  
+**Reporter:** oriotie  
+**Fix By:** RafaelGSS
+
+A flaw in Node.js's permission model allows a file's access and modification timestamps to be changed via `futimes()` even when the process has only read permissions. Unlike `utimes()`, `futimes()` does not apply the expected write-permission checks.
+
+**Impact:**
+
+File metadata can be modified in read-only directories. This behavior could be used to alter timestamps in ways that obscure activity, reducing the reliability of logs and audit trails.
+
+**Who Is Affected:**
+
+Only users of the Node.js permission model. Low impact for most deployments.
+
+<KeyTakeaway variant="tip" title="Permissions Model: Low Production Adoption">
+  **Three CVEs** (CVE-2025-55130, CVE-2026-21636, CVE-2025-55132) **only affect** users of Node.js's
+  experimental permission model (`--experimental-permission` flags). This feature has **limited
+  production adoption**—most Node.js deployments do NOT use it. Quick check: if you don't pass
+  `--permission` flags when starting Node.js, these three CVEs **don't apply** to your deployment.
+</KeyTakeaway>
+
+---
+
+## Key Takeaways
+
+1. **Upgrade immediately** - All active Node.js release lines (20.x, 22.x, 24.x, 25.x) are affected by at least 6 of the 8 CVEs
+
+2. **HTTP/2 servers need error handlers** - CVE-2025-59465 can crash servers that lack explicit TLS socket error handling
+
+3. **AsyncLocalStorage affects most modern apps** - If you use Next.js, React Server Components, or any APM tool, CVE-2025-59466 applies to you
+
+4. **Prevent stack overflow, don't catch it** - Input validation and recursion depth limits are more reliable than error handling
+
+5. **Permission model users: patch urgently** - Multiple CVEs break file system and network isolation guarantees
+
+6. **Pin your Node.js version** - Use `.nvmrc` and `.node-version` files to ensure consistent versions across development and CI/CD
+
+7. **Subscribe to security notifications** - Join the [nodejs-sec mailing list](https://groups.google.com/forum/#!forum/nodejs-sec) for future advisories
+
+<SectionShare
+  sectionId="key-takeaways"
+  sectionTitle="Node.js January 2026 Security: Key Takeaways"
+/>
+
+---
+
+## References
+
+[^1]: [Node.js 20 Released, Features Experimental Permission Model](https://www.infoq.com/news/2023/04/node-20-new-permission-model/) - InfoQ
+
+[^2]: [c-ares vulnerabilities](https://c-ares.org/vulns.html) - Official c-ares vulnerability database
+
+[^3]: [The January 2026 Security Update Review](https://www.zerodayinitiative.com/blog/2026/1/13/the-january-2026-security-update-review) - Zero Day Initiative (undici CVE-2026-22036)
+
+[^4]: [Functions: cookies | Next.js](https://nextjs.org/docs/app/api-reference/functions/cookies) - Official Next.js documentation on AsyncLocalStorage usage
+
+[^5]: [Mitigation for Node.js denial-of-service vulnerability affecting APM](https://www.datadoghq.com/blog/nodejs-vulnerability-apm/) - Datadog
+
+[^6]: [Introducing AsyncLocalStorage context manager for the Node.js agent](https://docs.newrelic.com/whats-new/2023/01/whats-new-01-12-async-local-storage-context-mgr/) - New Relic
+
+[^7]: [Monitoring and Tracing | Hive Gateway](https://the-guild.dev/graphql/hive/docs/gateway/monitoring-tracing) - OpenTelemetry integration guide
+
+[^8]: [Mitigating Denial-of-Service Vulnerability from Unrecoverable Stack Space Exhaustion](https://nodejs.org/en/blog/vulnerability/january-2026-dos-mitigation-async-hooks) - Node.js Official Blog (AsyncLocalStorage v24 reimplementation)
+
+### Official Node.js Resources
+
+- [Tuesday, January 13, 2026 Security Releases](https://nodejs.org/en/blog/vulnerability/december-2025-security-releases) - Official announcement
+- [Mitigating DoS from Stack Exhaustion (AsyncLocalStorage)](https://nodejs.org/en/blog/vulnerability/january-2026-dos-mitigation-async-hooks) - Detailed technical blog post
+- [Node.js Security Policy](https://nodejs.org/en/security/) - Reporting vulnerabilities
+
+### Release Notes
+
+- [Node.js v25.3.0](https://nodejs.org/en/blog/release/v25.3.0/)
+- [Node.js v24.13.0](https://nodejs.org/en/blog/release/v24.13.0/)
+- [Node.js v22.22.0](https://nodejs.org/en/blog/release/v22.22.0/)
+- [Node.js v20.20.0](https://nodejs.org/en/blog/release/v20.20.0/)
+
+### Security Mailing List
+
+Subscribe to the low-volume, announcement-only nodejs-sec mailing list: [groups.google.com/forum/#!forum/nodejs-sec](https://groups.google.com/forum/#!forum/nodejs-sec)

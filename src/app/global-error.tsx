@@ -1,18 +1,20 @@
 "use client";
 
-import * as Sentry from "@sentry/nextjs";
-import Error from "next/error";
-import { useEffect } from "react";
-
-export default function GlobalError({ error }: { error: Error }) {
-  useEffect(() => {
-    Sentry.captureException(error);
-  }, [error]);
-
+export default function GlobalError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
   return (
     <html>
       <body>
-        {/* Your Error component here... */}
+        <div style={{ padding: '2rem', fontFamily: 'system-ui' }}>
+          <h1>Application Error</h1>
+          <p>A critical error has occurred.</p>
+          <button onClick={reset}>Try again</button>
+        </div>
       </body>
     </html>
   );

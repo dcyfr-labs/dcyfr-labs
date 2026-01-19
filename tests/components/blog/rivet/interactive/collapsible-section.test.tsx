@@ -492,4 +492,76 @@ describe("CollapsibleSection", () => {
       expect(button.className).toContain("focus-visible");
     });
   });
+
+  describe("Anchor Functionality", () => {
+    beforeEach(() => {
+      // Reset window location hash before each test
+      window.location.hash = "";
+    });
+
+    it("section has id attribute matching the prop", () => {
+      render(
+        <CollapsibleSection id="test-anchor" title="Test Title">
+          <p>Test content</p>
+        </CollapsibleSection>
+      );
+
+      const section = screen.getByRole("button", { name: /test title/i }).closest("section");
+      expect(section).toHaveAttribute("id", "test-anchor");
+    });
+
+    it("section has scroll-mt-20 class for scroll offset", () => {
+      render(
+        <CollapsibleSection id="test-anchor" title="Test Title">
+          <p>Test content</p>
+        </CollapsibleSection>
+      );
+
+      const section = screen.getByRole("button", { name: /test title/i }).closest("section");
+      expect(section?.className).toContain("scroll-mt-20");
+    });
+
+    it("expands when URL hash matches section ID", async () => {
+      // Set hash before rendering
+      window.location.hash = "#test-anchor";
+
+      render(
+        <CollapsibleSection id="test-anchor" title="Test Title" defaultExpanded={false}>
+          <p>Test content</p>
+        </CollapsibleSection>
+      );
+
+      // Wait for effects to run
+      await waitFor(() => {
+        const button = screen.getByRole("button", { name: /test title/i });
+        expect(button).toHaveAttribute("aria-expanded", "true");
+      });
+    });
+
+    it("does not expand when URL hash does not match", async () => {
+      window.location.hash = "#different-section";
+
+      render(
+        <CollapsibleSection id="test-anchor" title="Test Title" defaultExpanded={false}>
+          <p>Test content</p>
+        </CollapsibleSection>
+      );
+
+      await waitFor(() => {
+        const button = screen.getByRole("button", { name: /test title/i });
+        expect(button).toHaveAttribute("aria-expanded", "false");
+      });
+    });
+
+    it("header button has correct id for aria-labelledby", () => {
+      render(
+        <CollapsibleSection id="test-anchor" title="Test Title">
+          <p>Test content</p>
+        </CollapsibleSection>
+      );
+
+      const button = screen.getByRole("button", { name: /test title/i });
+      expect(button).toHaveAttribute("id", "collapsible-header-test-anchor");
+    });
+  });
 });

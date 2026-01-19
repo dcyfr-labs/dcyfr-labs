@@ -114,11 +114,6 @@ export default async function ActivityPage() {
             console.error("[Activity Page] Changelog fetch failed:", err)
           ),
 
-        // Trending posts - DISABLED: Now shown as badges on published events
-        // transformTrendingPosts(posts)
-        //   .then((items) => activities.push(...items))
-        //   .catch((err) => console.error("[Activity Page] Trending posts fetch failed:", err)),
-
         // Milestones - all
         transformMilestones(posts)
           .then((items) => activities.push(...items))
@@ -249,7 +244,7 @@ export default async function ActivityPage() {
 
       {/* Hero Section */}
       <ArchiveHero
-        variant="medium"
+        variant="full"
         title={pageTitle}
         description={pageDescription}
         stats={

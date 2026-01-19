@@ -1,31 +1,52 @@
 ---
-id: "post-20251005-cadc6db5"
-title: "Hardening a Developer Portfolio"
-subtitle: "A multi-part series on building production-ready developer platforms"
-summary: "A multi-part series on building production-ready developer platforms: implementing CSP, rate limiting, INP optimization, analytics, and comprehensive security features."
-authors: ["drew", "dcyfr"]
-publishedAt: "2025-10-05T12:00:00Z"
-updatedAt: "2025-10-15T12:00:00Z"
-category: "DevSecOps"
-tags: ["Next.js", "Security", "Performance", "TypeScript", "Production"]
+id: 'post-20251005-cadc6db5'
+title: 'Hardening a Developer Portfolio'
+subtitle: 'A multi-part series on building production-ready developer platforms'
+summary: 'A multi-part series on building production-ready developer platforms: implementing CSP, rate limiting, INP optimization, analytics, and comprehensive security features.'
+authors: ['drew', 'dcyfr']
+publishedAt: '2025-10-05T12:00:00Z'
+updatedAt: '2025-10-15T12:00:00Z'
+category: 'DevSecOps'
+tags: ['Next.js', 'Security', 'Performance', 'TypeScript', 'Production']
 series:
-  name: "Portfolio"
+  name: 'Portfolio'
   order: 2
-  description: "Learn how to build, harden, and ship a production-ready developer portfolio with real-world techniques."
-  icon: "Rocket"
-  color: "development"
+  description: 'Learn how to build, harden, and ship a production-ready developer portfolio with real-world techniques.'
+  icon: 'Rocket'
+  color: 'development'
 image:
-  url: "/blog/hardening-developer-portfolio/assets/hero.webp"
-  alt: "A fortified digital fortress symbolizing a hardened developer portfolio."
-  caption: "Hardening a Developer Portfolio"
-  credit: "Perplexity Labs"
+  url: '/blog/hardening-developer-portfolio/assets/hero.webp'
+  alt: '3D isometric security shield with padlock icon surrounded by concentric protection rings and checkmark validation symbols on dark background'
+  caption: 'Cybersecurity protection illustration featuring 3D shield with padlock icon, security rings, and verification checkmarks representing data security and compliance'
+  description: 'Isometric 3D illustration of a blue and orange layered security shield with an illuminated padlock emblem, encircled by concentric protection rings with validation checkmarks, depicting cybersecurity infrastructure, data protection, and verified security protocols'
+  credit: 'Perplexity Labs'
   width: 1200
   height: 630
 previousSlugs:
-  - "hardening-tiny-portfolio"
+  - 'hardening-tiny-portfolio'
 ---
 
 > **Series Background:** This is a follow-up to [Shipping a Developer Portfolio](/blog/shipping-developer-portfolio), where I built the foundation for what would become a comprehensive developer platform. This series documents the security hardening, performance optimization, and production features that transformed a simple portfolio into an enterprise-ready system.
+
+<TLDRSummary
+  title="Portfolio Hardening Brief"
+  mostCommon={[
+    'CSP headers via Next.js middleware (defense-in-depth)',
+    'Zero-dependency rate limiting (200 req/min)',
+    'INP optimization: 664ms → <200ms (70% improvement)',
+  ]}
+  mostDangerous={[
+    'Missing CSP headers (XSS, clickjacking vulnerabilities)',
+    'No rate limiting (DDoS, scraping, spam attacks)',
+    'Slow INP (poor user experience, SEO penalties)',
+  ]}
+  hardestToDetect={[
+    'Vercel CDN stripping middleware headers',
+    'Hover prefetching trade-offs (bandwidth vs UX)',
+    'Redis memory leaks in analytics pipelines',
+  ]}
+  jumpLink="#production-features-overview"
+/>
 
 ---
 
@@ -33,22 +54,35 @@ After building the initial portfolio, I systematically addressed security vulner
 
 This series documents the patterns and decisions that took it from prototype to production.
 
+<KeyTakeaway variant="insight" title="From Prototype to Production">
+  Hardening a developer portfolio isn't just about adding features—it's about **systematically
+  addressing security, performance, and scalability**. This post covers CSP implementation, rate
+  limiting, INP optimization (664ms → &lt;200ms), and GitHub integration. All with zero external
+  dependencies where possible.
+</KeyTakeaway>
+
 ---
 
 ## Production Features Overview
 
 **Current Architecture (December 2025):**
 
-- <LockIcon /> **Security**: CSP headers, rate limiting, input validation,
-  automated vulnerability scanning
-- <BarChartIcon /> **Analytics**: Redis-powered view tracking, trending posts,
-  milestone detection
-- <ZapIcon /> **Performance**: Server components, edge caching, image
-  optimization, Core Web Vitals monitoring
-- <RocketIcon /> **Infrastructure**: Background jobs with Inngest, GitHub
-  integration, automated deployments
-- <ShieldIcon /> **Monitoring**: Sentry error tracking, Vercel Analytics,
-  comprehensive logging
+- <LockIcon /> **Security**: CSP headers, rate limiting, input validation, automated vulnerability
+  scanning
+- <BarChartIcon /> **Analytics**: Redis-powered view tracking, trending posts, milestone detection
+- <ZapIcon /> **Performance**: Server components, edge caching, image optimization, Core Web Vitals
+  monitoring
+- <RocketIcon /> **Infrastructure**: Background jobs with Inngest, GitHub integration, automated
+  deployments
+- <ShieldIcon /> **Monitoring**: Sentry error tracking, Vercel Analytics, comprehensive logging
+
+<RoleBasedCTA
+  role="executive"
+  title="For Business Leaders"
+  description="Production-ready portfolios require systematic security hardening, performance optimization, and scalability planning. This post demonstrates how to build enterprise-grade developer platforms with CSP, rate limiting, Core Web Vitals monitoring, and background job processing."
+  buttonText="Contact Us"
+  buttonHref="/contact?role=executive&topic=portfolio-hardening"
+/>
 
 ---
 
@@ -58,7 +92,7 @@ This series documents the patterns and decisions that took it from prototype to 
 
 **Content Security Policy (CSP) Implementation**
 
-The site had zero CSP headers, making it vulnerable to XSS attacks and clickjacking. I implemented a defense-in-depth approach using Next.js middleware and Vercel configuration.
+The site had zero <GlossaryTooltip term="CSP" definition="Content Security Policy - an HTTP security header that helps prevent cross-site scripting (XSS), clickjacking, and other code injection attacks by controlling which resources can be loaded">CSP headers</GlossaryTooltip>, making it vulnerable to <GlossaryTooltip term="XSS" definition="Cross-Site Scripting - a security vulnerability that allows attackers to inject malicious scripts into web pages viewed by other users">XSS attacks</GlossaryTooltip> and clickjacking. I implemented a defense-in-depth approach using Next.js middleware and Vercel configuration.
 
 **What I Built:**
 
@@ -70,9 +104,21 @@ The site had zero CSP headers, making it vulnerable to XSS attacks and clickjack
 **Key Learnings:**
 
 - Middleware runs on every request, so keep it lightweight (34.2 kB bundle)
-- Nonces are critical for inline scripts in modern frameworks
+- <GlossaryTooltip
+    term="Nonce"
+    definition="Number used once - a unique, cryptographically random value generated per request to allow specific inline scripts while maintaining CSP security"
+  >
+    Nonces
+  </GlossaryTooltip>
+  are critical for inline scripts in modern frameworks
 - Testing CSP requires browser DevTools and careful header inspection
-- Vercel's CDN can strip headers; middleware provides reliable enforcement
+- Vercel's <GlossaryTooltip term="CDN" definition="Content Delivery Network - a geographically distributed network of servers that delivers web content to users based on their location for improved performance">CDN</GlossaryTooltip> can strip headers; middleware provides reliable enforcement
+
+<KeyTakeaway variant="security" title="CSP Defense-in-Depth">
+  Content Security Policy is your **first line of defense** against XSS attacks. Use a two-layer
+  architecture: dynamic middleware for HTML routes + static `vercel.json` fallback. Generate unique
+  nonces per request and support third-party scripts with explicit allowlisting.
+</KeyTakeaway>
 
 <CollapsibleSection
   id="hardening-csp-technical-details"
@@ -84,7 +130,7 @@ The site had zero CSP headers, making it vulnerable to XSS attacks and clickjack
 
 ```typescript
 // Generate unique nonce per request
-const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
 
 // Build strict CSP
 const csp = `
@@ -97,10 +143,10 @@ const csp = `
   base-uri 'self';
   form-action 'self';
 `
-  .replace(/\s{2,}/g, " ")
+  .replace(/\s{2,}/g, ' ')
   .trim();
 
-response.headers.set("Content-Security-Policy", csp);
+response.headers.set('Content-Security-Policy', csp);
 ```
 
 **Results:**
@@ -111,6 +157,16 @@ response.headers.set("Content-Security-Policy", csp);
 - All builds passing with middleware enabled
 
 </CollapsibleSection>
+
+<SectionShare sectionId="csp-implementation" sectionTitle="CSP Implementation" />
+
+<RoleBasedCTA
+  role="developer"
+  title="For Developers"
+  description="Implement CSP via Next.js middleware for reliable header enforcement. Use defense-in-depth with both middleware and Vercel config. Zero external dependencies for rate limiting works perfectly for serverless deployments."
+  buttonText="View Implementation Guide"
+  buttonHref="#the-journey"
+/>
 
 **Rate Limiting Implementation**
 
@@ -130,6 +186,12 @@ The contact form API endpoint had no rate limiting, making it vulnerable to spam
 - For multi-region or high-scale, upgrade to Vercel KV or Upstash Redis
 - Rate limit headers improve client-side UX (show retry time)
 - IP-based tracking requires careful proxy header handling
+
+<KeyTakeaway variant="tip" title="Zero Dependencies Win">
+  Custom rate limiter = **146 lines, zero external dependencies**. In-memory storage works perfectly
+  for single-instance serverless deployments. Add standard headers (`X-RateLimit-*`) for better
+  client UX. Upgrade to Redis only when you need multi-region or high-scale.
+</KeyTakeaway>
 
 <CollapsibleSection
   id="hardening-rate-limiting-technical-details"
@@ -176,9 +238,22 @@ export class RateLimiter {
 
 </CollapsibleSection>
 
+<SectionShare
+  sectionId="rate-limiting-implementation"
+  sectionTitle="Rate Limiting Implementation"
+/>
+
+<RoleBasedCTA
+  role="security"
+  title="For Security Teams"
+  description="Implement defense-in-depth CSP with Next.js middleware + Vercel config, zero-dependency rate limiting for API endpoints, and automated security header validation. Monitor for XSS, clickjacking, and DDoS patterns using standard HTTP security headers."
+  buttonText="Security Patterns"
+  buttonHref="#part-1-security-hardening"
+/>
+
 ### Part 2: Performance Optimization
 
-**INP (Interaction to Next Paint) Improvements**
+**<GlossaryTooltip term="INP" definition="Interaction to Next Paint - a Core Web Vital metric that measures the responsiveness of a page by tracking the latency of user interactions from click to visual update">INP</GlossaryTooltip> (Interaction to Next Paint) Improvements**
 
 Google's Core Web Vitals showed poor INP scores (664ms+) on navigation links. The culprit: Next.js hover prefetching blocking the main thread.
 
@@ -197,6 +272,10 @@ Google's Core Web Vitals showed poor INP scores (664ms+) on navigation links. Th
 - CSS containment prevents expensive layout recalculations
 - React 18+ `useTransition` keeps UI responsive during state updates
 
+<KeyTakeaway variant="warning" title="Hover Prefetching Trade-off">
+Next.js hover prefetching can **block the main thread** and destroy INP scores (664ms+). Disable with `prefetch={false}` on `<Link>` components. Links still prefetch on viewport intersection—a better trade-off that improved INP to &lt;200ms (Good).
+</KeyTakeaway>
+
 <CollapsibleSection
   id="hardening-inp-optimization-technical-details"
   title="INP Optimization: Technical Details"
@@ -213,16 +292,12 @@ export function ThemeToggle() {
 
   const toggleTheme = () => {
     startTransition(() => {
-      setTheme(theme === "light" ? "dark" : "light");
+      setTheme(theme === 'light' ? 'dark' : 'light');
     });
   };
 
   return (
-    <Button
-      onClick={toggleTheme}
-      disabled={isPending}
-      className="will-change-auto"
-    >
+    <Button onClick={toggleTheme} disabled={isPending} className="will-change-auto">
       {/* ... */}
     </Button>
   );
@@ -237,6 +312,8 @@ export function ThemeToggle() {
 - No layout shifts or visual jank
 
 </CollapsibleSection>
+
+<SectionShare sectionId="inp-optimization" sectionTitle="INP Optimization" />
 
 **GitHub Contributions Heatmap**
 
@@ -278,7 +355,7 @@ const fetchContributions = async (): Promise<ContributionResponse> => {
   }
 
   // Fetch from API
-  const response = await fetch("/api/github-contributions");
+  const response = await fetch('/api/github-contributions');
   const data = await response.json();
 
   // Cache result
@@ -302,6 +379,11 @@ const fetchContributions = async (): Promise<ContributionResponse> => {
 - Under 5KB bundle size increase
 
 </CollapsibleSection>
+
+<SectionShare
+  sectionId="github-contributions-heatmap"
+  sectionTitle="GitHub Contributions Heatmap"
+/>
 
 ### Part 3: Developer Experience
 
@@ -329,6 +411,8 @@ I created comprehensive instructions for AI coding assistants (GitHub Copilot, C
 - Faster onboarding for contributors
 - Reduced architectural drift
 
+<SectionShare sectionId="developer-experience" sectionTitle="Developer Experience" />
+
 ---
 
 ## Key Takeaways
@@ -344,12 +428,6 @@ I created comprehensive instructions for AI coding assistants (GitHub Copilot, C
 
 ## What's Next?
 
-<CollapsibleSection
-  id="hardening-future-improvements"
-  title="Future Improvements & Roadmap"
-  defaultExpanded={false}
->
-
 Future improvements on my radar:
 
 - Search functionality for blog posts
@@ -358,7 +436,7 @@ Future improvements on my radar:
 - Upgrade rate limiter to Vercel KV for multi-region
 - Add E2E tests with Playwright
 
-</CollapsibleSection>
+---
 
 ## Conclusion
 

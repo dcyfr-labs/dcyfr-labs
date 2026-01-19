@@ -25,10 +25,10 @@
  * ```
  */
 
-import { PageHero } from '@/components/layouts'
-import { Button } from '@/components/ui/button'
-import { ArrowRight, Mail } from 'lucide-react'
-import Link from 'next/link'
+import { PageHero } from '@/components/layouts';
+import { Button } from '@/components/ui/button';
+import { ArrowRight, Mail } from 'lucide-react';
+import Link from 'next/link';
 
 /**
  * Standard left-aligned hero (most common)
@@ -41,7 +41,7 @@ export function HeroSectionStandard() {
       description="Full-stack developer passionate about building great experiences with modern web technologies."
       variant="standard"
     />
-  )
+  );
 }
 
 /**
@@ -56,7 +56,7 @@ export function HeroSectionCentered() {
       variant="homepage"
       align="center"
     />
-  )
+  );
 }
 
 /**
@@ -86,7 +86,7 @@ export function HeroSectionWithActions() {
         </div>
       }
     />
-  )
+  );
 }
 
 /**
@@ -101,7 +101,7 @@ export function HeroSectionArchive({ itemCount = 0 }: { itemCount?: number }) {
       variant="standard"
       itemCount={itemCount}
     />
-  )
+  );
 }
 
 /**
@@ -115,5 +115,5 @@ export function HeroSectionArticle() {
       description="How we created a scalable, maintainable design system for our product"
       variant="article"
     />
-  )
+  );
 }

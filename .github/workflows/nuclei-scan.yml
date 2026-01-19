@@ -88,7 +88,7 @@ jobs:
     needs: check-deployment
     if: needs.check-deployment.outputs.should_run == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     outputs:
       vulnerabilities_found: ${{ steps.scan.outputs.vulnerabilities_found }}
@@ -102,17 +102,55 @@ jobs:
 
       - name: Install Nuclei
         run: |
-          # Install latest Nuclei from GitHub releases
-          wget -q https://github.com/projectdiscovery/nuclei/releases/latest/download/nuclei_3.3.7_linux_amd64.zip
-          unzip -q nuclei_3.3.7_linux_amd64.zip
+          # Install latest Nuclei from GitHub releases with retry logic
+          NUCLEI_URL="https://github.com/projectdiscovery/nuclei/releases/latest/download/nuclei_3.3.7_linux_amd64.zip"
+          MAX_RETRIES=3
+          RETRY_DELAY=5
+          
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "🔄 Attempt $i of $MAX_RETRIES to download Nuclei..."
+            if wget -q --timeout=30 --tries=2 "$NUCLEI_URL" -O nuclei.zip; then
+              echo "✅ Nuclei downloaded successfully"
+              break
+            elif [ $i -lt $MAX_RETRIES ]; then
+              echo "⚠️  Download attempt $i failed, retrying in ${RETRY_DELAY}s..."
+              sleep $RETRY_DELAY
+            else
+              echo "❌ Failed to download Nuclei after $MAX_RETRIES attempts"
+              exit 1
+            fi
+          done
+          
+          unzip -q nuclei.zip
           sudo mv nuclei /usr/local/bin/
+          rm -f nuclei.zip
+          echo "✅ Nuclei installed successfully"
           nuclei -version
 
       - name: Update Nuclei templates
         run: |
-          # Download latest vulnerability templates (11,000+ templates)
-          nuclei -update-templates
-          echo "✅ Nuclei templates updated successfully"
+          # Download latest vulnerability templates (11,000+ templates) with retry logic
+          echo "🔄 Starting Nuclei template update..."
+          MAX_RETRIES=2
+          RETRY_DELAY=10
+          
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "📥 Template update attempt $i of $MAX_RETRIES..."
+            if timeout 300 nuclei -update-templates -v; then
+              echo "✅ Nuclei templates updated successfully"
+              break
+            elif [ $i -lt $MAX_RETRIES ]; then
+              echo "⚠️  Template update attempt $i failed, retrying in ${RETRY_DELAY}s..."
+              sleep $RETRY_DELAY
+            else
+              echo "❌ Failed to update templates after $MAX_RETRIES attempts - continuing with existing templates"
+              # Don't exit - use existing templates if available
+            fi
+          done
+          
+          # Verify templates exist
+          TEMPLATE_COUNT=$(find ~/.nuclei/templates -name "*.yaml" 2>/dev/null | wc -l)
+          echo "📊 Available templates: $TEMPLATE_COUNT"
 
       - name: Run Nuclei vulnerability scan
         id: scan
@@ -135,8 +173,11 @@ jobs:
           fi
 
           echo "🔍 Scanning $TARGET_URL with severity threshold: $SEVERITY"
+          echo "⏱️  Scan started at $(date -u '+%H:%M:%S UTC')"
 
-          # Run Nuclei scan with comprehensive settings
+          # Run Nuclei scan with comprehensive settings and improved error handling
+          # Using -timeout at template level (not global) for better resource management
+          SCAN_START=$(date +%s)
           nuclei \
             -target "$SCAN_TARGET" \
             -severity "$SEVERITY,high,critical" \
@@ -144,22 +185,44 @@ jobs:
             -json \
             -output nuclei-results.json \
             -stats \
-            -silent \
-            -rate-limit 150 \
+            -progress \
+            -rate-limit 100 \
             -bulk-size 25 \
-            -concurrency 25 \
-            -timeout 10 \
-            -retries 1 \
+            -concurrency 20 \
+            -timeout 15 \
+            -max-templates 400 \
+            -retries 2 \
             -tags cve,exposure,misconfiguration,network,owasp,tech,vulnerability \
             -exclude-tags intrusive,dos,fuzzing || true
+          
+          SCAN_END=$(date +%s)
+          SCAN_DURATION=$((SCAN_END - SCAN_START))
+          echo "⏱️  Scan completed in $SCAN_DURATION seconds at $(date -u '+%H:%M:%S UTC')"
 
-          # Parse results
-          if [ -f nuclei-results.json ] && [ -s nuclei-results.json ]; then
-            TOTAL=$(jq -s 'length' nuclei-results.json)
-            CRITICAL=$(jq -s '[.[] | select(.info.severity=="critical")] | length' nuclei-results.json)
-            HIGH=$(jq -s '[.[] | select(.info.severity=="high")] | length' nuclei-results.json)
-            MEDIUM=$(jq -s '[.[] | select(.info.severity=="medium")] | length' nuclei-results.json)
-            LOW=$(jq -s '[.[] | select(.info.severity=="low")] | length' nuclei-results.json)
+          # Parse results with enhanced error handling
+          if [ ! -f nuclei-results.json ]; then
+            echo "⚠️  No results file generated - scan may have timed out or failed"
+            echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT
+            echo "total=0" >> $GITHUB_OUTPUT
+            echo "critical_count=0" >> $GITHUB_OUTPUT
+            echo "high_count=0" >> $GITHUB_OUTPUT
+            echo "medium_count=0" >> $GITHUB_OUTPUT
+            echo "low_count=0" >> $GITHUB_OUTPUT
+          elif [ ! -s nuclei-results.json ]; then
+            echo "✅ Scan completed - no vulnerabilities detected"
+            echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT
+            echo "total=0" >> $GITHUB_OUTPUT
+            echo "critical_count=0" >> $GITHUB_OUTPUT
+            echo "high_count=0" >> $GITHUB_OUTPUT
+            echo "medium_count=0" >> $GITHUB_OUTPUT
+            echo "low_count=0" >> $GITHUB_OUTPUT
+          else
+            echo "📋 Parsing results..."
+            TOTAL=$(jq -s 'length' nuclei-results.json 2>/dev/null || echo "0")
+            CRITICAL=$(jq -s '[.[] | select(.info.severity=="critical")] | length' nuclei-results.json 2>/dev/null || echo "0")
+            HIGH=$(jq -s '[.[] | select(.info.severity=="high")] | length' nuclei-results.json 2>/dev/null || echo "0")
+            MEDIUM=$(jq -s '[.[] | select(.info.severity=="medium")] | length' nuclei-results.json 2>/dev/null || echo "0")
+            LOW=$(jq -s '[.[] | select(.info.severity=="low")] | length' nuclei-results.json 2>/dev/null || echo "0")
 
             echo "vulnerabilities_found=true" >> $GITHUB_OUTPUT
             echo "total=$TOTAL" >> $GITHUB_OUTPUT
@@ -169,14 +232,6 @@ jobs:
             echo "low_count=$LOW" >> $GITHUB_OUTPUT
 
             echo "📊 Found $TOTAL vulnerabilities: Critical=$CRITICAL, High=$HIGH, Medium=$MEDIUM, Low=$LOW"
-          else
-            echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT
-            echo "total=0" >> $GITHUB_OUTPUT
-            echo "critical_count=0" >> $GITHUB_OUTPUT
-            echo "high_count=0" >> $GITHUB_OUTPUT
-            echo "medium_count=0" >> $GITHUB_OUTPUT
-            echo "low_count=0" >> $GITHUB_OUTPUT
-            echo "✅ No vulnerabilities detected"
           fi
 
       - name: Generate vulnerability report
@@ -188,6 +243,7 @@ jobs:
           **Target:** ${{ needs.check-deployment.outputs.target_url }}
           **Scan Date:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')
           **Trigger:** ${{ github.event_name }}
+          **Workflow:** [Run ${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
           ### Vulnerability Summary
 
@@ -218,6 +274,13 @@ jobs:
           echo "- **Nuclei Version:** $(nuclei -version 2>&1 | head -n1)" >> nuclei-report.md
           echo "- **Templates:** Latest community templates (11,000+)" >> nuclei-report.md
           echo "- **Excluded:** DoS, intrusive, fuzzing tests" >> nuclei-report.md
+          echo "- **Timeout Strategy:** Increased from 30m to 45m; template-level timeout 15s" >> nuclei-report.md
+          echo "" >> nuclei-report.md
+          echo "### Troubleshooting" >> nuclei-report.md
+          echo "If scan timed out:" >> nuclei-report.md
+          echo "- Check [GitHub Actions logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> nuclei-report.md
+          echo "- Verify target URL connectivity" >> nuclei-report.md
+          echo "- Review Nuclei templates availability" >> nuclei-report.md
           echo "" >> nuclei-report.md
           echo "See workflow artifacts for detailed JSON results." >> nuclei-report.md
 

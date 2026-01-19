@@ -45,9 +45,9 @@ npm run check               # Type + lint check
   - **Trigger conditions:** Rate limits, budget exhaustion, extended sessions (6+ hours)
 
 - **🔵 SUPPORTING: Claude General + VS Code Mode**
-   - Research, architecture decisions, deep exploration
-   - Pattern validation in conversation mode
-   - **CLAUDE.md has extended capability:** Contains production-level knowledge suitable for extended development sessions (when PRIMARY is rate-limited)
+  - Research, architecture decisions, deep exploration
+  - Pattern validation in conversation mode
+  - **CLAUDE.md has extended capability:** Contains production-level knowledge suitable for extended development sessions (when PRIMARY is rate-limited)
 
 **Rationale:** [See `docs/ai/AGENT_UNIFICATION_ANALYSIS.md`](docs/ai/AGENT_UNIFICATION_ANALYSIS.md) for detailed feasibility analysis and why unification isn't viable.
 
@@ -60,10 +60,10 @@ npm run check               # Type + lint check
 | **DCYFR (Claude Code)**  | 🔴 **PRIMARY**   | Production enforcement with auto-delegation                   | Feature work, testing, quick fixes, complex tasks | [`.claude/agents/`](./.claude/agents/) - 3 specialized agents                            |
 | **GitHub Copilot**       | 🟡 **SECONDARY** | Real-time code completion & quick suggestions                 | Inline coding, auto-fix, quick patterns           | [`.github/copilot-instructions.md`](./.github/copilot-instructions.md)                   |
 | **OpenCode.ai**          | 🟢 **FALLBACK**  | Multi-provider AI fallback (75+ models)                       | Token exhaustion, cost optimization, offline work | [`docs/ai/opencode-fallback-architecture.md`](docs/ai/opencode-fallback-architecture.md) |
-| **Claude (General)**     | 🔵 SUPPORTING*  | Deep research, architecture, complex debugging                | System design, documentation, investigation       | [`CLAUDE.md`](./CLAUDE.md)                                                               |
+| **Claude (General)**     | 🔵 SUPPORTING\*  | Deep research, architecture, complex debugging                | System design, documentation, investigation       | [`CLAUDE.md`](./CLAUDE.md)                                                               |
 | **DCYFR (VS Code Mode)** | 🔵 SUPPORTING    | Production enforcement, pattern validation, strict compliance | Feature work, bug fixes, detailed exploration     | [`.github/agents/DCYFR.agent.md`](./.github/agents/DCYFR.agent.md)                       |
 
-*CLAUDE.md also contains semi-PRIMARY capability for extended sessions when Claude Code is rate-limited
+\*CLAUDE.md also contains semi-PRIMARY capability for extended sessions when Claude Code is rate-limited
 
 ---
 
@@ -278,7 +278,7 @@ npm run check               # Type + lint check
 
 | Directory        | Files   | Purpose                                                                  |
 | ---------------- | ------- | ------------------------------------------------------------------------ |
-| **patterns/**    | 2 files | Provider selection, VS Code integration             |
+| **patterns/**    | 2 files | Provider selection, VS Code integration                                  |
 | **enforcement/** | 3 files | Hybrid enforcement (STRICT/FLEXIBLE), enhanced validation, quality gates |
 | **workflows/**   | 3 files | Session handoff, cost optimization, troubleshooting                      |
 | **scripts/**     | 3 files | Validation, health checks, session management                            |
@@ -287,17 +287,17 @@ npm run check               # Type + lint check
 
 #### Patterns Directory (.opencode/patterns/)
 
-| File                                                      | Lines | Covers                                                                           |
-| --------------------------------------------------------- | ----- | -------------------------------------------------------------------------------- |
-| [PROVIDER_SELECTION.md](patterns/PROVIDER_SELECTION.md)   | 200+  | Decision tree, free model optimization, when to use each provider                |
-| [VS_CODE_INTEGRATION.md](patterns/VS_CODE_INTEGRATION.md) | 150+  | Extension setup, keyboard shortcuts (Cmd+Esc), provider configuration            |
+| File                                                      | Lines | Covers                                                                |
+| --------------------------------------------------------- | ----- | --------------------------------------------------------------------- |
+| [PROVIDER_SELECTION.md](patterns/PROVIDER_SELECTION.md)   | 200+  | Decision tree, free model optimization, when to use each provider     |
+| [VS_CODE_INTEGRATION.md](patterns/VS_CODE_INTEGRATION.md) | 150+  | Extension setup, keyboard shortcuts (Cmd+Esc), provider configuration |
 
 #### Enforcement Directory (.opencode/enforcement/)
 
 | File                                                         | Lines | Covers                                                                                                                                      |
 | ------------------------------------------------------------ | ----- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | [HYBRID_ENFORCEMENT.md](enforcement/HYBRID_ENFORCEMENT.md)   | 400+  | STRICT rules (hard block): design tokens, PageLayout, barrel exports, test data, emojis; FLEXIBLE rules (warn): API patterns, test coverage |
-| [VALIDATION_ENHANCED.md](enforcement/VALIDATION_ENHANCED.md) | 450+  | Manual checklists for GitHub Copilot models, escalation triggers, provider capability matrix                                                  |
+| [VALIDATION_ENHANCED.md](enforcement/VALIDATION_ENHANCED.md) | 450+  | Manual checklists for GitHub Copilot models, escalation triggers, provider capability matrix                                                |
 | [QUALITY_GATES.md](enforcement/QUALITY_GATES.md)             | 500+  | Pre-commit validation by provider tier, security gates, performance gates                                                                   |
 
 #### Workflows Directory (.opencode/workflows/)
@@ -306,7 +306,7 @@ npm run check               # Type + lint check
 | ------------------------------------------------------ | ----- | --------------------------------------------------------------------------------- |
 | [SESSION_HANDOFF.md](workflows/SESSION_HANDOFF.md)     | 400+  | Claude ↔ OpenCode switching, session state schema v2.0, git workflow integration |
 | [COST_OPTIMIZATION.md](workflows/COST_OPTIMIZATION.md) | 450+  | 80/20 strategy (80% free, 20% premium), monthly cost tracking, ROI analysis       |
-| [TROUBLESHOOTING.md](workflows/TROUBLESHOOTING.md)     | 600+  | Provider-specific issues (GitHub Copilot auth, rate limits, validation failures)      |
+| [TROUBLESHOOTING.md](workflows/TROUBLESHOOTING.md)     | 600+  | Provider-specific issues (GitHub Copilot auth, rate limits, validation failures)  |
 
 #### Scripts Directory (.opencode/scripts/)
 
@@ -366,6 +366,101 @@ npm run check               # Type + lint check
   }
 }
 ```
+
+---
+
+### 6. AITMPL.com Template Agents (v1.0.0)
+
+**Hub Directory:** `.claude/agents/` (4 specialized agents from aitmpl.com templates)  
+**Last Updated:** January 16, 2026  
+**Audience:** Claude Code auto-delegation system (internal use)  
+**Format:** Individual agent files optimized for specific tasks from community templates
+
+**Purpose**: Enhanced capabilities from [aitmpl.com](https://www.aitmpl.com/) template library for React optimization, TypeScript mastery, code review automation, and test engineering.
+
+**Template Agents:**
+
+| Agent                  | File                    | Lines | Purpose                                                              |
+| ---------------------- | ----------------------- | ----- | -------------------------------------------------------------------- |
+| **Frontend Developer** | `frontend-developer.md` | 50    | React UI components, responsive design, accessibility                |
+| **TypeScript Pro**     | `typescript-pro.md`     | 55    | Advanced type system, generic constraints, strict typing             |
+| **Code Reviewer**      | `code-reviewer.md`      | 40    | Quality gates, security scanning, pre-commit validation              |
+| **Test Engineer**      | `test-engineer.md`      | 936   | Test pyramid, coverage optimization, E2E automation (Comprehensive!) |
+
+**Template Commands (New from Integration):**
+
+| Command          | File               | Agent              | Purpose                                  |
+| ---------------- | ------------------ | ------------------ | ---------------------------------------- |
+| `/code-review`   | `code-review.md`   | code-reviewer      | Pre-commit validation, security scanning |
+| `/frontend`      | `frontend.md`      | frontend-developer | React optimization, accessibility        |
+| `/typescript`    | `typescript.md`    | typescript-pro     | Advanced types, generic constraints      |
+| `/test-strategy` | `test-strategy.md` | test-engineer      | Test coverage, E2E planning              |
+
+**Skills (from aitmpl.com):**
+
+| Skill                  | Category        | Status       | Integration                               |
+| ---------------------- | --------------- | ------------ | ----------------------------------------- |
+| `react-best-practices` | web-development | ✅ Installed | React 19 patterns, performance guidelines |
+
+**Integration with DCYFR:**
+
+Enhanced `.claude/agents/DCYFR.md` (v2.2.0) now includes:
+
+- **Delegation strategy** to template agents
+- **Proactive triggers** for automatic agent invocation
+- **Quality gates** from code-reviewer patterns
+- **Skills array** with template capabilities
+
+**Delegation Map:**
+
+```yaml
+# When DCYFR encounters:
+UI Component Work → frontend-developer
+Complex TypeScript → typescript-pro
+Code Review → code-reviewer
+Test Strategy → test-engineer
+```
+
+**When to update:**
+
+- **Template agents**: When new versions available on aitmpl.com
+- **Commands**: When adding new template-based workflows
+- **Skills**: When installing new skills from aitmpl.com/skills
+- **DCYFR integration**: When delegation patterns evolve
+
+**Version tracking:**
+
+```json
+{
+  "file": ".claude/agents/[template-name].md",
+  "format": "aitmpl-template-agent",
+  "version": "1.0.0",
+  "source": "https://www.aitmpl.com/agents",
+  "scope": "specialized-delegation",
+  "coverage": "React, TypeScript, Testing, Code Quality",
+  "last_updated": "2026-01-16",
+  "source_of_truth": "AGENTS.md",
+  "integration": {
+    "dcyfr_agent": "v2.2.0 (enhanced with delegation)",
+    "new_commands": 4,
+    "new_skills": 1,
+    "total_agents": 15
+  }
+}
+```
+
+**Resources:**
+
+- **AITMPL.com**: https://www.aitmpl.com/
+- **Agents Gallery**: https://www.aitmpl.com/agents (174+ agents)
+- **Skills Gallery**: https://www.aitmpl.com/skills (355+ skills)
+- **Documentation**: https://docs.aitmpl.com/
+- **Installation**: `npx claude-code-templates@latest --agent=<name> --yes`
+
+**See Also:**
+
+- [Enhancement Plan](docs/ai/aitmpl-enhancement-plan.md) - Full integration strategy
+- [Integration Summary](docs/ai/aitmpl-integration-summary.md) - What was integrated
 
 ---
 
@@ -579,13 +674,13 @@ START: "I need AI help with dcyfr-labs"
 
 ### How CLAUDE.md Differs from PRIMARY Tier
 
-| Aspect | PRIMARY (Claude Code) | CLAUDE.md (SUPPORTING) |
-|--------|----------------------|----------------------|
-| **Automation** | Auto-delegation to sub-agents | Manual validation gates |
-| **Speed** | Fast execution (Sonnet) | Research-oriented (extended context) |
-| **Enforcement** | Proactive pattern enforcement | Guidance + examples |
-| **Scope** | Single tasks, features | Deep investigation, architecture |
-| **When to Use** | Quick fixes, features, bugs | When PRIMARY is rate-limited or unavailable |
+| Aspect          | PRIMARY (Claude Code)         | CLAUDE.md (SUPPORTING)                      |
+| --------------- | ----------------------------- | ------------------------------------------- |
+| **Automation**  | Auto-delegation to sub-agents | Manual validation gates                     |
+| **Speed**       | Fast execution (Sonnet)       | Research-oriented (extended context)        |
+| **Enforcement** | Proactive pattern enforcement | Guidance + examples                         |
+| **Scope**       | Single tasks, features        | Deep investigation, architecture            |
+| **When to Use** | Quick fixes, features, bugs   | When PRIMARY is rate-limited or unavailable |
 
 ### Recommended Workflow
 
@@ -887,6 +982,79 @@ Each instruction file maintains this metadata:
 
 ## 📋 Recent Updates
 
+### January 17, 2026
+
+- ✅ **Integrated OpenSkills universal skill distribution (v1.5.0)**
+  - Added [numman-ali/openskills](https://github.com/numman-ali/openskills) (5.4k stars) for universal skill access
+  - Created `.agent/skills` symlink to `.claude/skills` for universal tool compatibility
+  - Generated `<available_skills>` XML in AGENTS.md (22 skills available)
+  - Skills now accessible in Cursor, Windsurf, Aider, Codex via `npx openskills read <skill>`
+  - Created `docs/ai/universal-agent-configuration.md` - Analysis of agent config standards
+  - **Key finding:** No formal universal standard exists; AGENTS.md is de facto (60k+ projects)
+  - **Decision:** Keep current multi-file architecture; Copilot requires `.github/`
+  - See `docs/ai/universal-agent-configuration.md` for full analysis
+
+- ✅ **Created Accessibility Specialist Agent (v1.0.0)**
+  - New agent: `.claude/agents/accessibility-specialist.md` (WCAG 2.1 AA expertise)
+  - New command: `/a11y-audit` for comprehensive accessibility audits
+  - New skill: `dcyfr-accessibility` for OpenSkills compatibility
+  - Updated AGENT_TAXONOMY.md to v1.2.0 (62 active agents, 3 archived)
+  - Fills gap identified in "Missing Capabilities" section
+  - Integrates with existing: `e2e/utils/accessibility.ts`, `scripts/validate-color-contrast.mjs`
+
+- ✅ **Agent Consolidation (v1.3.0)**
+  - Created `/superpowers` command - Quick reference for superpowers skills
+  - Archived 3 redundant agents to `.claude/agents/_archived/`:
+    - `architect-review.md` → Use `architecture-reviewer.md`
+    - `performance-engineer.md` → Use `performance-profiler.md`
+    - `security-auditor.md` → Use `security-engineer.md`
+  - Updated AGENT_TAXONOMY.md to v1.1.0 (61 active agents, 3 archived)
+  - Simplified decision trees for Architecture, Security, and Performance families
+
+- ✅ **Integrated Superpowers skills framework (v1.0.0)**
+  - Added obra/superpowers (27.4k stars) as complementary development methodology
+  - Key skills: TDD enforcement, brainstorming workflow, subagent-driven-development
+  - Created 3 DCYFR override skills that extend Superpowers:
+    - `dcyfr-tdd` - Adds design token validation after GREEN phase
+    - `dcyfr-brainstorming` - Adds PageLayout and token decisions to design phase
+    - `dcyfr-code-review` - Adds DCYFR patterns to review checklist
+  - Plugin installation: `/plugin marketplace add obra/superpowers-marketplace` then `/plugin install superpowers@superpowers-marketplace`
+  - Philosophy alignment: TDD strictness, systematic over ad-hoc, verify before declaring success
+  - Supports Claude Code (plugin), OpenCode, and Codex
+  - See `docs/ai/superpowers-integration.md` for full integration details
+
+- ✅ **Added native oh-my-opencode features (Phase 7)**
+  - Created `scripts/check-todos-complete.mjs` - Sisyphus pattern todo completion checker
+  - Created `scripts/check-comment-density.mjs` - Prevents excessive AI-generated comments
+  - Created `.claude/commands/ultrawork.md` - Aggressive parallel agent orchestration
+  - Created `docs/ai/opencode-usage-guide.md` - OpenCode vs Claude Code decision guide
+  - Added Stop hook for todo completion enforcement
+  - Added PostToolUse hook for comment density checking
+
+### January 16, 2026
+
+- ✅ **Installed claude-code-templates plugins and organized documentation**
+  - Installed 10 plugin packages from claude-code-templates marketplace
+  - Plugins: ai-ml-toolkit, devops-automation, documentation-generator, git-workflow, nextjs-vercel-pro, performance-optimizer, project-management-suite, security-pro, testing-suite, supabase-toolkit
+  - Executed utilities: ultra-think, generate-tests, create-architecture-documentation, code-review, refactor-code, commit, update-docs
+  - Relocated 11 root-level summary files to `docs/operations/sessions/2026-01/`
+  - Created session archive README for operational tracking
+  - Updated `docs/INDEX.md` with new sections (performance, governance directories)
+  - Enhanced `docs/ai/INSTRUCTION_ALIGNMENT_INDEX.md` with extended AI documentation
+  - Added comprehensive AI documentation: AITMPL integration, testing strategy, component lifecycle, error handling, state management, animation patterns
+  - Documentation now organized into 18 focused directories
+
+- ✅ **Integrated AITMPL.com template agents (v1.0.0)**
+  - Added 4 specialized agents from aitmpl.com community templates
+  - Installed: frontend-developer, typescript-pro, code-reviewer, test-engineer
+  - Created 4 new commands: `/code-review`, `/frontend`, `/typescript`, `/test-strategy`
+  - Enhanced DCYFR.md (v2.2.0) with delegation strategy and proactive triggers
+  - Updated AGENTS.md with template agent documentation section
+  - Created comprehensive enhancement plan (`docs/ai/aitmpl-enhancement-plan.md`)
+  - Created integration summary (`docs/ai/aitmpl-integration-summary.md`)
+  - Total agents: 15 (11 existing + 4 from templates)
+  - Enhanced capabilities: React optimization, TypeScript mastery, code review automation, test engineering
+
 ### January 11, 2026
 
 - ✅ **Migrated OpenCode.ai to GitHub Copilot integration (v2.0.0)**
@@ -1167,3 +1335,168 @@ A: Quarterly automatic review, or immediately when adding new agents or major in
 
 For issues, updates, or new agents: Submit PR with AGENTS.md changes first.
 ````
+
+<skills_system priority="1">
+
+## Available Skills
+
+<!-- SKILLS_TABLE_START -->
+<usage>
+When users ask you to perform tasks, check if any of the available skills below can help complete the task more effectively. Skills provide specialized capabilities and domain knowledge.
+
+How to use skills:
+- Invoke: `npx openskills read <skill-name>` (run in your shell)
+  - For multiple: `npx openskills read skill-one,skill-two`
+- The skill content will load with detailed instructions on how to complete the task
+- Base directory provided in output for resolving bundled resources (references/, scripts/, assets/)
+
+Usage notes:
+- Only use skills listed in <available_skills> below
+- Do not invoke a skill that is already loaded in your context
+- Each skill invocation is stateless
+</usage>
+
+<available_skills>
+
+<skill>
+<name>canvas-design</name>
+<description>Create beautiful visual art in .png and .pdf documents using design philosophy. You should use this skill when the user asks to create a poster, piece of art, design, or other static piece. Create original visual designs, never copying existing artists' work to avoid copyright violations.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>code-reviewer</name>
+<description>Comprehensive code review skill for TypeScript, JavaScript, Python, Swift, Kotlin, Go. Includes automated code analysis, best practice checking, security scanning, and review checklist generation. Use when reviewing pull requests, providing code feedback, identifying issues, or ensuring code quality standards.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>dcyfr-accessibility</name>
+<description>DCYFR accessibility patterns for WCAG 2.1 AA compliance, focus states, color contrast, screen readers, and keyboard navigation. Use when auditing pages for accessibility, implementing accessible components, or fixing a11y violations.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>dcyfr-brainstorming</name>
+<description>Use when designing new features or components in dcyfr-labs. Extends superpowers:brainstorming with DCYFR-specific design decisions including PageLayout selection, design token strategy, and API pattern choices.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>dcyfr-code-review</name>
+<description>Use when reviewing code in dcyfr-labs PRs or before commits. Extends superpowers:requesting-code-review with DCYFR-specific checks for design tokens, barrel exports, PageLayout, and API patterns.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>dcyfr-design-tokens</name>
+<description>DCYFR design token system for consistent styling using SPACING, TYPOGRAPHY, and SEMANTIC_COLORS tokens. Use when creating/modifying UI components, enforcing design consistency, or fixing hardcoded style violations.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>dcyfr-inngest-patterns</name>
+<description>DCYFR Inngest integration patterns for background jobs, event-driven workflows, and the Validate→Queue→Respond API pattern. Use when building API routes, background tasks, or event-driven features.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>dcyfr-mdx-authoring</name>
+<description>DCYFR MDX authoring patterns for blog posts and content with custom components (SectionShare, CollapsibleSection, GlossaryTooltip). Use when creating blog content, adding interactive elements, or optimizing content for engagement.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>dcyfr-tdd</name>
+<description>Use when implementing any feature or bugfix in dcyfr-labs. Extends superpowers:test-driven-development with DCYFR-specific design token compliance and barrel export validation after GREEN phase.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>file-organizer</name>
+<description>Intelligently organizes your files and folders across your computer by understanding context, finding duplicates, suggesting better structures, and automating cleanup tasks. Reduces cognitive load and keeps your digital workspace tidy without manual effort.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>frontend-design</name>
+<description>Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, or applications. Generates creative, polished code that avoids generic AI aesthetics.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>git-commit-helper</name>
+<description>Generate descriptive commit messages by analyzing git diffs. Use when the user asks for help writing commit messages or reviewing staged changes.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>mcp-builder</name>
+<description>Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when building MCP servers to integrate external APIs or services, whether in Python (FastMCP) or Node/TypeScript (MCP SDK).</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>next-app-router</name>
+<description>Next.js 15 App Router patterns for server components, layouts, metadata, streaming, and caching. Use when building pages, implementing data fetching, or optimizing Next.js applications.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>pdf-processing-pro</name>
+<description>Production-ready PDF processing with forms, tables, OCR, validation, and batch operations. Use when working with complex PDF workflows in production environments, processing large volumes of PDFs, or requiring robust error handling and validation.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>react-best-practices</name>
+<description>Comprehensive React and Next.js performance optimization guide with 40+ rules for eliminating waterfalls, optimizing bundles, and improving rendering. Use when optimizing React apps, reviewing performance, or refactoring components.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>senior-architect</name>
+<description>Comprehensive software architecture skill for designing scalable, maintainable systems using ReactJS, NextJS, NodeJS, Express, React Native, Swift, Kotlin, Flutter, Postgres, GraphQL, Go, Python. Includes architecture diagram generation, system design patterns, tech stack decision frameworks, and dependency analysis. Use when designing system architecture, making technical decisions, creating architecture diagrams, evaluating trade-offs, or defining integration patterns.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>senior-backend</name>
+<description>Comprehensive backend development skill for building scalable backend systems using NodeJS, Express, Go, Python, Postgres, GraphQL, REST APIs. Includes API scaffolding, database optimization, security implementation, and performance tuning. Use when designing APIs, optimizing database queries, implementing business logic, handling authentication/authorization, or reviewing backend code.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>senior-frontend</name>
+<description>Comprehensive frontend development skill for building modern, performant web applications using ReactJS, NextJS, TypeScript, Tailwind CSS. Includes component scaffolding, performance optimization, bundle analysis, and UI best practices. Use when developing frontend features, optimizing performance, implementing UI/UX designs, managing state, or reviewing frontend code.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>skill-creator</name>
+<description>Guide for creating effective skills. This skill should be used when users want to create a new skill (or update an existing skill) that extends Claude's capabilities with specialized knowledge, workflows, or tool integrations.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>ui-design-system</name>
+<description>UI design system toolkit for Senior UI Designer including design token generation, component documentation, responsive design calculations, and developer handoff tools. Use for creating design systems, maintaining visual consistency, and facilitating design-dev collaboration.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>webapp-testing</name>
+<description>Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing browser screenshots, and viewing browser logs.</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>xlsx</name>
+<description>"Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualization. When Claude needs to work with spreadsheets (.xlsx, .xlsm, .csv, .tsv, etc) for: (1) Creating new spreadsheets with formulas and formatting, (2) Reading or analyzing data, (3) Modify existing spreadsheets while preserving formulas, (4) Data analysis and visualization in spreadsheets, or (5) Recalculating formulas"</description>
+<location>project</location>
+</skill>
+
+</available_skills>
+<!-- SKILLS_TABLE_END -->
+
+</skills_system>

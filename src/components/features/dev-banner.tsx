@@ -1,4 +1,4 @@
-"use client";
+'use client';
 /**
  * DevBanner
  *
@@ -6,23 +6,18 @@
  * running in development. The dismissed state is preserved only for the
  * duration of the browser session (sessionStorage).
  *
- * Positioned in the document flow to push down the site navigation.
- * Scrolls out of view naturally as the user scrolls down the page.
+ * Fixed positioning above the sticky header to prevent layout issues and
+ * ensure proper layering with the sticky navigation.
  */
-import { useState, useLayoutEffect } from "react";
-import { Alert } from "@/components/common";
-import {
-  CONTAINER_WIDTHS,
-  CONTAINER_PADDING,
-  ANIMATION,
-} from "@/lib/design-tokens";
-import { cn } from "@/lib/utils";
+import { useState, useLayoutEffect } from 'react';
+import { Alert } from '@/components/common';
+import { CONTAINER_WIDTHS, CONTAINER_PADDING, ANIMATION } from '@/lib/design-tokens';
+import { cn } from '@/lib/utils';
 
-const STORAGE_KEY = "dev-banner-dismissed";
+const STORAGE_KEY = 'dev-banner-dismissed';
 
 export function DevBanner() {
-  const persistAcrossSessions =
-    process.env.NEXT_PUBLIC_DEV_BANNER_PERSIST === "true";
+  const persistAcrossSessions = process.env.NEXT_PUBLIC_DEV_BANNER_PERSIST === 'true';
 
   // Initialize to true for server-rendered and initial client hydration to
   // avoid hydration mismatches. The real value is read on mount (useEffect)
@@ -36,12 +31,12 @@ export function DevBanner() {
     setTimeout(() => {
       try {
         const storage = persistAcrossSessions ? localStorage : sessionStorage;
-        storage.setItem(STORAGE_KEY, "true");
+        storage.setItem(STORAGE_KEY, 'true');
         // Dispatch storage event for same-window listeners
         window.dispatchEvent(
-          new StorageEvent("storage", {
+          new StorageEvent('storage', {
             key: STORAGE_KEY,
-            newValue: "true",
+            newValue: 'true',
             storageArea: storage,
           })
         );
@@ -59,7 +54,7 @@ export function DevBanner() {
   useLayoutEffect(() => {
     try {
       const storage = persistAcrossSessions ? localStorage : sessionStorage;
-      const dismissed = storage.getItem(STORAGE_KEY) === "true";
+      const dismissed = storage.getItem(STORAGE_KEY) === 'true';
       // It's safe to synchronously set the state here on mount to reflect the
       // persisted dismissal preference. This avoids a flash of content during
       // hydration and ensures client state reflects persisted storage.
@@ -77,30 +72,24 @@ export function DevBanner() {
       role="region"
       aria-label="Dev Banner"
       className={cn(
-        "w-full bg-background transition-all",
+        'fixed top-0 left-0 right-0 w-full z-50 bg-background border-b transition-all',
         ANIMATION.duration.normal,
         isAnimating
-          ? "opacity-0 -translate-y-full"
-          : "opacity-100 translate-y-0"
+          ? 'opacity-0 -translate-y-full pointer-events-none'
+          : 'opacity-100 translate-y-0'
       )}
     >
-      <div
-        className={cn(
-          "mx-auto",
-          CONTAINER_WIDTHS.content,
-          CONTAINER_PADDING,
-          "py-3"
-        )}
-      >
+      <div className={cn('mx-auto', CONTAINER_WIDTHS.content, CONTAINER_PADDING, 'py-3')}>
         <Alert
           type="notice"
           dismissible
           onDismiss={handleClose}
           dismissLabel="Close Dev Banner"
+          dismissTestId="dev-banner-close"
           className="my-0"
         >
-          <strong>DEV MODE</strong>: This is a live preview and some features
-          may be experimental or incomplete.
+          <strong>DEV MODE</strong>: This is a live preview and some features may be experimental or
+          incomplete.
         </Alert>
       </div>
     </div>

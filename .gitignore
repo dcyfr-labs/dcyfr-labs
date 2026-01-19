@@ -121,6 +121,9 @@ mcp.json
 .opencode/.cache/
 .opencode/.sessions/
 
+# OpenCode skills (downloaded skill files)
+skills/
+
 # AI cost archives (historical data snapshots)
 .ai-costs-archive/
 

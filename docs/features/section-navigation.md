@@ -15,6 +15,7 @@ Located: `src/hooks/use-section-navigation.ts`
 Custom React hook that enables keyboard navigation between sections on a page.
 
 **Features:**
+
 - PageUp/PageDown keyboard shortcuts
 - Smooth scroll transitions
 - Automatic section detection
@@ -25,14 +26,14 @@ Custom React hook that enables keyboard navigation between sections on a page.
 **Usage:**
 
 ```tsx
-"use client";
+'use client';
 
-import { useSectionNavigation } from "@/hooks/use-section-navigation";
+import { useSectionNavigation } from '@/hooks/use-section-navigation';
 
 function MyPage() {
   useSectionNavigation({
-    sectionSelector: "section[data-section]",
-    scrollBehavior: "smooth",
+    sectionSelector: 'section[data-section]',
+    scrollBehavior: 'smooth',
     scrollOffset: 80,
   });
 
@@ -48,12 +49,12 @@ function MyPage() {
 
 **Options:**
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `sectionSelector` | `string` | `"section[data-section]"` | CSS selector for sections |
-| `scrollBehavior` | `"smooth" \| "auto"` | `"smooth"` | Scroll animation style |
-| `scrollOffset` | `number` | `80` | Offset from top (for fixed headers) |
-| `disabled` | `boolean` | `false` | Disable keyboard navigation |
+| Option            | Type                 | Default                   | Description                         |
+| ----------------- | -------------------- | ------------------------- | ----------------------------------- |
+| `sectionSelector` | `string`             | `"section[data-section]"` | CSS selector for sections           |
+| `scrollBehavior`  | `"smooth" \| "auto"` | `"smooth"`                | Scroll animation style              |
+| `scrollOffset`    | `number`             | `80`                      | Offset from top (for fixed headers) |
+| `disabled`        | `boolean`            | `false`                   | Disable keyboard navigation         |
 
 **Returned Methods:**
 
@@ -75,6 +76,7 @@ Located: `src/components/section-navigator.tsx`
 Wrapper component that automatically enables section navigation for child elements.
 
 **Features:**
+
 - Auto-enables keyboard navigation
 - Optional scroll snap behavior
 - Zero visual impact (transparent wrapper)
@@ -83,7 +85,7 @@ Wrapper component that automatically enables section navigation for child elemen
 **Usage:**
 
 ```tsx
-import { SectionNavigator, Section } from "@/components/section-navigator";
+import { SectionNavigator, Section } from '@/components/section-navigator';
 
 function HomePage() {
   return (
@@ -107,15 +109,15 @@ function HomePage() {
 
 **Props:**
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | - | Child sections |
-| `sectionSelector` | `string` | `"section[data-section]"` | Custom selector |
-| `scrollBehavior` | `"smooth" \| "auto"` | `"smooth"` | Scroll animation |
-| `scrollOffset` | `number` | `80` | Header offset |
-| `disabled` | `boolean` | `false` | Disable navigation |
-| `enableScrollSnap` | `boolean` | `false` | Enable CSS scroll snap |
-| `className` | `string` | `""` | Custom styles |
+| Prop               | Type                 | Default                   | Description            |
+| ------------------ | -------------------- | ------------------------- | ---------------------- |
+| `children`         | `ReactNode`          | -                         | Child sections         |
+| `sectionSelector`  | `string`             | `"section[data-section]"` | Custom selector        |
+| `scrollBehavior`   | `"smooth" \| "auto"` | `"smooth"`                | Scroll animation       |
+| `scrollOffset`     | `number`             | `80`                      | Header offset          |
+| `disabled`         | `boolean`            | `false`                   | Disable navigation     |
+| `enableScrollSnap` | `boolean`            | `false`                   | Enable CSS scroll snap |
+| `className`        | `string`             | `""`                      | Custom styles          |
 
 ---
 
@@ -133,10 +135,10 @@ Pre-configured section element with `data-section` attribute.
 
 **Props:**
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `string` | - | Section ID |
-| `className` | `string` | `""` | Tailwind classes |
+| Prop               | Type      | Default | Description           |
+| ------------------ | --------- | ------- | --------------------- |
+| `id`               | `string`  | -       | Section ID            |
+| `className`        | `string`  | `""`    | Tailwind classes      |
 | `enableScrollSnap` | `boolean` | `false` | Enable snap alignment |
 
 ---
@@ -148,21 +150,21 @@ Added to `src/lib/design-tokens.ts`:
 ```typescript
 export const SCROLL_BEHAVIOR = {
   behavior: {
-    smooth: "smooth" as const,
-    instant: "auto" as const,
+    smooth: 'smooth' as const,
+    instant: 'auto' as const,
   },
   offset: {
-    standard: 80,      // Standard header
-    tall: 100,         // Tall header
-    mobile: 104,       // Mobile with bottom nav
+    standard: 80, // Standard header
+    tall: 100, // Tall header
+    mobile: 104, // Mobile with bottom nav
   },
   threshold: {
-    backToTop: 400,    // Show back-to-top
-    floating: 200,     // Show floating elements
+    backToTop: 400, // Show back-to-top
+    floating: 200, // Show floating elements
   },
   snap: {
-    type: "scroll-snap-y scroll-snap-mandatory" as const,
-    align: "scroll-snap-start" as const,
+    type: 'scroll-snap-y scroll-snap-mandatory' as const,
+    align: 'scroll-snap-start' as const,
   },
 } as const;
 ```
@@ -170,11 +172,11 @@ export const SCROLL_BEHAVIOR = {
 **Usage:**
 
 ```tsx
-import { SCROLL_BEHAVIOR } from "@/lib/design-tokens";
+import { SCROLL_BEHAVIOR } from '@/lib/design-tokens';
 
 <SectionNavigator scrollOffset={SCROLL_BEHAVIOR.offset.standard}>
   {/* sections */}
-</SectionNavigator>
+</SectionNavigator>;
 ```
 
 ---
@@ -184,24 +186,18 @@ import { SCROLL_BEHAVIOR } from "@/lib/design-tokens";
 ### Homepage (`src/app/page.tsx`)
 
 ```tsx
-import { SectionNavigator, Section } from "@/components/section-navigator";
-import { SCROLL_BEHAVIOR } from "@/lib/design-tokens";
+import { SectionNavigator, Section } from '@/components/section-navigator';
+import { SCROLL_BEHAVIOR } from '@/lib/design-tokens';
 
 export default function Home() {
   return (
     <PageLayout>
       <SectionNavigator scrollOffset={SCROLL_BEHAVIOR.offset.standard}>
-        <Section className={PAGE_LAYOUT.hero.container}>
-          {/* Hero content */}
-        </Section>
-        
-        <Section className={PAGE_LAYOUT.section.container}>
-          {/* Featured post */}
-        </Section>
-        
-        <Section className={PAGE_LAYOUT.section.container}>
-          {/* Latest articles */}
-        </Section>
+        <Section className={PAGE_LAYOUT.hero.container}>{/* Hero content */}</Section>
+
+        <Section className={PAGE_LAYOUT.section.container}>{/* Featured post */}</Section>
+
+        <Section className={PAGE_LAYOUT.section.container}>{/* Latest articles */}</Section>
       </SectionNavigator>
     </PageLayout>
   );
@@ -212,17 +208,11 @@ export default function Home() {
 
 ```tsx
 <SectionNavigator scrollOffset={SCROLL_BEHAVIOR.offset.standard}>
-  <Section className={PAGE_LAYOUT.hero.container}>
-    {/* Hero */}
-  </Section>
-  
-  <Section className={PAGE_LAYOUT.section.container}>
-    {/* About Me */}
-  </Section>
-  
-  <Section className={PAGE_LAYOUT.section.container}>
-    {/* Professional Background */}
-  </Section>
+  <Section className={PAGE_LAYOUT.hero.container}>{/* Hero */}</Section>
+
+  <Section className={PAGE_LAYOUT.section.container}>{/* About Me */}</Section>
+
+  <Section className={PAGE_LAYOUT.section.container}>{/* Professional Background */}</Section>
 </SectionNavigator>
 ```
 
@@ -243,8 +233,8 @@ Respects `prefers-reduced-motion`:
 
 ```typescript
 // In hook
-const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-const behavior = prefersReducedMotion ? "auto" : "smooth";
+const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+const behavior = prefersReducedMotion ? 'auto' : 'smooth';
 ```
 
 ### Screen Readers
@@ -329,6 +319,7 @@ Currently disabled by default. To enable:
 ```
 
 **Trade-offs:**
+
 - ✅ Smooth automatic snapping
 - ❌ Can feel "sticky" on some devices
 - ❌ May conflict with normal scrolling
@@ -353,6 +344,7 @@ Currently disabled by default. To enable:
 **Issue**: PageDown/PageUp does nothing
 
 **Solutions:**
+
 1. Ensure sections have `data-section` attribute
 2. Check that `SectionNavigator` is wrapping sections
 3. Verify no JS errors in console
@@ -363,6 +355,7 @@ Currently disabled by default. To enable:
 **Issue**: Sections scroll too high/low
 
 **Solutions:**
+
 1. Adjust `scrollOffset` prop (default: 80)
 2. Check for fixed headers/navigation
 3. Account for mobile bottom nav (offset: 104)
@@ -372,6 +365,7 @@ Currently disabled by default. To enable:
 **Issue**: PageUp/PageDown triggers other actions
 
 **Solutions:**
+
 1. Use `disabled` prop to turn off navigation
 2. Customize key bindings in hook
 3. Check for event propagation issues

@@ -10,6 +10,7 @@ import {
   CONTAINER_WIDTHS,
   CONTAINER_PADDING,
   SPACING,
+  PAGE_LAYOUT,
 } from "@/lib/design-tokens";
 
 /**
@@ -37,6 +38,10 @@ export async function generateStaticParams() {
 
   return allParams;
 }
+
+// Force dynamic rendering - skip prerendering during build
+// This prevents build-time data issues with series generation
+export const dynamic = 'force-dynamic';
 
 /**
  * Revalidate every 24 hours for series pages
@@ -141,7 +146,7 @@ export default async function SeriesPage({
 
       {/* Content section with archive-width container */}
       <div
-        className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING}`}
+        className={PAGE_LAYOUT.articleSection.container}
       >
         <div className={SPACING.section}>
           <PostList

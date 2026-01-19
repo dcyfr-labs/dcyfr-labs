@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { telemetry } from "@/lib/agents";
 import { ArrowRight, Zap, Hand } from "lucide-react";
+import { TYPOGRAPHY } from "@/lib/design-tokens";
 
 interface HandoffPatternsSummaryProps {
   period: string;
@@ -41,19 +42,19 @@ export function HandoffPatternsSummary({
     <div className="space-y-4">
       {/* Summary Stats */}
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-1">
-          <div className="text-sm text-muted-foreground">Total Handoffs</div>
-          <div className="text-2xl font-bold">{patterns.totalHandoffs}</div>
-        </div>
-        <div className="space-y-1">
-          <div className="text-sm text-muted-foreground flex items-center gap-1">
-            <Zap className="h-3 w-3" />
-            Automatic
-          </div>
-          <div className="text-2xl font-bold">
-            {automaticPercent.toFixed(0)}%
-          </div>
-        </div>
+         <div className="space-y-1">
+           <div className="text-sm text-muted-foreground">Total Handoffs</div>
+           <div className={TYPOGRAPHY.display.stat}>{patterns.totalHandoffs}</div>
+         </div>
+         <div className="space-y-1">
+           <div className="text-sm text-muted-foreground flex items-center gap-1">
+             <Zap className="h-3 w-3" />
+             Automatic
+           </div>
+           <div className={TYPOGRAPHY.display.stat}>
+             {automaticPercent.toFixed(0)}%
+           </div>
+         </div>
       </div>
 
       {/* Most Common Path */}

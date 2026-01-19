@@ -1,15 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { Briefcase, GraduationCap, Code } from "lucide-react";
+import { Briefcase, GraduationCap, Code, Award } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { TYPOGRAPHY, SPACING, BORDERS } from "@/lib/design-tokens";
+import { cn } from "@/lib/utils";
 
 /**
  * Resume Section Navigation Component
- * 
+ *
  * Quick navigation menu for jumping to resume sections.
- * Provides visual indicators and smooth scrolling.
- * 
+ * Features:
+ * - Smooth scroll navigation
+ * - Keyboard accessible
+ * - Visual indicator icons
+ * - Design token compliance
+ *
  * @component
  * @example
  * ```tsx
@@ -19,16 +25,16 @@ import { Card } from "@/components/ui/card";
 export function ResumeSectionNav() {
   const sections = [
     {
-      id: "experience",
+      id: "timeline",
       label: "Experience",
       icon: Briefcase,
       description: "Work history",
     },
     {
-      id: "education",
-      label: "Education",
-      icon: GraduationCap,
-      description: "Degrees & certs",
+      id: "badges",
+      label: "Badges",
+      icon: Award,
+      description: "Certifications",
     },
     {
       id: "skills",
@@ -54,7 +60,7 @@ export function ResumeSectionNav() {
   };
 
   return (
-    <Card className="p-4">
+    <Card className={cn(BORDERS.card, "p-4 bg-card/50 backdrop-blur-sm")}>
       <div className="grid grid-cols-3 gap-3">
         {sections.map((section) => {
           const Icon = section.icon;
@@ -63,13 +69,31 @@ export function ResumeSectionNav() {
               key={section.id}
               href={`#${section.id}`}
               onClick={(e) => handleClick(e, section.id)}
-              className="flex flex-col items-center gap-2 p-3 rounded-md hover:bg-muted/50 transition-colors group"
+              className={cn(
+                "flex flex-col items-center gap-2 p-3 rounded-md",
+                "transition-colors duration-200",
+                "hover:bg-muted/70 focus-visible:outline-2 focus-visible:outline-primary",
+                "group"
+              )}
+              aria-label={`Jump to ${section.label} section`}
             >
-              <Icon className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+              <Icon className={cn(
+                "h-5 w-5 transition-colors duration-200",
+                "text-muted-foreground group-hover:text-primary"
+              )} aria-hidden="true" />
               <div className="text-center">
-                { }
-                <p className="text-sm font-medium text-foreground" suppressHydrationWarning>{section.label}</p>
-                <p className="text-xs text-muted-foreground hidden sm:block">{section.description}</p>
+                <p
+                  className={cn(TYPOGRAPHY.label.small, "text-foreground mb-0.5")}
+                  suppressHydrationWarning
+                >
+                  {section.label}
+                </p>
+                <p className={cn(
+                  "text-xs text-muted-foreground",
+                  "hidden sm:block"
+                )}>
+                  {section.description}
+                </p>
               </div>
             </Link>
           );

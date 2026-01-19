@@ -1,37 +1,34 @@
-import type { Metadata } from "next";
-import { createPageMetadata, getJsonLdScriptProps } from "@/lib/metadata";
-import { PageLayout } from "@/components/layouts";
-import { PageHero } from "@/components/layouts";
-import {
-  Section,
-  TeamMemberCard,
-  SmoothScrollToHash,
-} from "@/components/common";
+import type { Metadata } from 'next';
+import { createPageMetadata, getJsonLdScriptProps } from '@/lib/metadata';
+import { cn } from '@/lib/utils';
+import { PageLayout } from '@/components/layouts';
+import { PageHero } from '@/components/layouts';
+import { Section, TeamMemberCard, SmoothScrollToHash } from '@/components/common';
 import {
   TYPOGRAPHY,
   SPACING,
   PAGE_LAYOUT,
   CONTAINER_WIDTHS,
   HOVER_EFFECTS,
-} from "@/lib/design-tokens";
-import { getGitHubSponsors } from "@/lib/sponsors";
-import Image from "next/image";
-import Link from "next/link";
-import { headers } from "next/headers";
-import { Button } from "@/components/ui/button";
-import { teamMembers } from "@/data/team";
-import { featuredInviteCodes } from "@/data/invites";
-import { InviteCodeCard } from "@/components/sponsors";
-import { Gift } from "lucide-react";
+} from '@/lib/design-tokens';
+import { getGitHubSponsors } from '@/lib/sponsors';
+import Image from 'next/image';
+import Link from 'next/link';
+import { headers } from 'next/headers';
+import { Button } from '@/components/ui/button';
+import { teamMembers } from '@/data/team';
+import { featuredInviteCodes } from '@/data/invites';
+import { InviteCodeCard } from '@/components/sponsors';
+import { Gift } from 'lucide-react';
 
-const pageTitle = "Sponsors";
+const pageTitle = 'Sponsors';
 const pageDescription =
-  "Thank you to all the amazing sponsors who support our open source work and content creation. Your support makes everything possible.";
+  'Thank you to all the amazing sponsors who support our open source work and content creation. Your support makes everything possible.';
 
 export const metadata: Metadata = createPageMetadata({
   title: pageTitle,
   description: pageDescription,
-  path: "/sponsors",
+  path: '/sponsors',
 });
 
 // Revalidate every hour
@@ -39,13 +36,13 @@ export const revalidate = 3600;
 
 // Contribution text for core contributors (maps to team member IDs)
 const contributorDescriptions: Record<string, string> = {
-  drew: "Secure development, incident response, and building resilient systems",
+  drew: 'Secure development, incident response, and building resilient systems',
   dcyfr:
-    "Context-aware coding and security assistance accelerating implementation, analysis, and docs",
+    'Context-aware coding and security assistance accelerating implementation, analysis, and docs',
 };
 
 export default async function SponsorsPage() {
-  const nonce = (await headers()).get("x-nonce") || "";
+  const nonce = (await headers()).get('x-nonce') || '';
   const sponsors = await getGitHubSponsors();
 
   // Group sponsors by tier
@@ -62,15 +59,15 @@ export default async function SponsorsPage() {
   const sortedTiers = Array.from(tierMap.entries()).sort(([a], [b]) => b - a);
 
   const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
     name: pageTitle,
     description: pageDescription,
-    url: "https://dcyfr.ai/sponsors",
+    url: 'https://dcyfr.ai/sponsors',
     isPartOf: {
-      "@type": "WebSite",
-      name: "dcyfr",
-      url: "https://dcyfr.ai",
+      '@type': 'WebSite',
+      name: 'dcyfr',
+      url: 'https://dcyfr.ai',
     },
   };
 
@@ -79,24 +76,17 @@ export default async function SponsorsPage() {
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
       <SmoothScrollToHash />
 
-      <div className="space-y-10 md:space-y-14">
-        {/* Hero Section */}
-        <Section id="hero" className={PAGE_LAYOUT.hero.content}>
-          <PageHero
-            title={pageTitle}
-            description={pageDescription}
-            className={PAGE_LAYOUT.hero.content}
-            align="center"
-          />
-        </Section>
+      {/* Hero Section */}
+      <PageHero title={pageTitle} description={pageDescription} align="center" />
 
+      <div className={SPACING.section}>
         {/* Sponsors Section */}
         <Section id="sponsors" className={PAGE_LAYOUT.section.container}>
           <div className={SPACING.content}>
             {sponsors.length === 0 ? (
-              <div className="text-center mt-8">
+              <div className="text-center mb-12">
                 <p className="text-muted-foreground">
-                  No sponsors yet. Be the first to support our work!{" "}
+                  No sponsors yet. Be the first to support our work!{' '}
                 </p>
               </div>
             ) : (
@@ -104,12 +94,9 @@ export default async function SponsorsPage() {
                 {/* Sponsor count */}
                 <div className="text-center mt-4 mb-12">
                   <p className="text-lg text-muted-foreground">
-                    Thank you to{" "}
-                    <span className="font-semibold text-primary">
-                      {sponsors.length}
-                    </span>{" "}
-                    {sponsors.length === 1 ? "sponsor" : "sponsors"} for their
-                    generous support!
+                    Thank you to{' '}
+                    <span className="font-semibold text-primary">{sponsors.length}</span>{' '}
+                    {sponsors.length === 1 ? 'sponsor' : 'sponsors'} for their generous support!
                   </p>
                 </div>
 
@@ -117,9 +104,7 @@ export default async function SponsorsPage() {
                 {sortedTiers.map(([tierAmount, tierSponsors]) => (
                   <div key={tierAmount} className="mb-12 last:mb-0">
                     <h2 className={TYPOGRAPHY.h2.standard}>
-                      {tierAmount > 0
-                        ? `$${tierAmount}/month`
-                        : "One-time & Custom Sponsors"}
+                      {tierAmount > 0 ? `$${tierAmount}/month` : 'One-time & Custom Sponsors'}
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
                       {tierSponsors.map((sponsor) => (
@@ -134,15 +119,12 @@ export default async function SponsorsPage() {
         </Section>
 
         {/* Core Contributors Section */}
-        <Section
-          id="core-contributors"
-          className={PAGE_LAYOUT.section.container}
-        >
+        <Section id="core-contributors" className={PAGE_LAYOUT.section.container}>
           <div className={SPACING.content}>
             <h2 className={TYPOGRAPHY.h2.standard}>Contributors</h2>
             <p className="text-muted-foreground mt-4 mb-8">
-              These contributors dedicate their expertise to advancing our
-              security research and open-source mission.
+              These contributors dedicate their expertise to advancing our security research and
+              open-source mission.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {teamMembers.map((member) => (
@@ -152,8 +134,8 @@ export default async function SponsorsPage() {
                   layout="compact"
                   contribution={contributorDescriptions[member.id]}
                   avatarUrl={
-                    member.avatarType === "image" && member.id === "drew"
-                      ? "https://github.com/dcyfr.png"
+                    member.avatarType === 'image' && member.id === 'drew'
+                      ? 'https://github.com/dcyfr.png'
                       : undefined
                   }
                   linkTo={member.profileUrl}
@@ -170,19 +152,15 @@ export default async function SponsorsPage() {
               <div>
                 <h2 className={TYPOGRAPHY.h2.standard}>Invites</h2>
                 <p className="text-muted-foreground mt-2">
-                  Join our favorite platforms and communities. Featured
-                  partnerships that support our work.
+                  Join our favorite platforms and communities. Featured partnerships that support
+                  our work.
                 </p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
               {featuredInviteCodes.map((code) => (
-                <InviteCodeCard
-                  key={code.id}
-                  code={code}
-                  showFullDescription={false}
-                />
+                <InviteCodeCard key={code.id} code={code} showFullDescription={false} />
               ))}
             </div>
 
@@ -196,23 +174,15 @@ export default async function SponsorsPage() {
         </Section>
 
         {/* Call to Action */}
-        <Section
-          id="become-a-sponsor"
-          className={PAGE_LAYOUT.section.container}
-        >
+        <Section id="become-a-sponsor" className={PAGE_LAYOUT.section.container}>
           <div className={SPACING.content}>
             <div className="bg-card border border-border rounded-lg p-8">
               {/* CTA Header */}
               <div className="text-center mb-8">
-                <h2 className={TYPOGRAPHY.h2.featured}>
-                  Looking to Sponsor Our Work?
-                </h2>
-                <p
-                  className={`text-muted-foreground mt-4 ${CONTAINER_WIDTHS.narrow} mx-auto`}
-                >
-                  Your sponsorship helps us dedicate more time to open source
-                  development, writing technical content, and creating
-                  educational resources for the community.
+                <h2 className={TYPOGRAPHY.h2.featured}>Looking to Sponsor Our Work?</h2>
+                <p className={`text-muted-foreground mt-4 ${CONTAINER_WIDTHS.narrow} mx-auto`}>
+                  Your sponsorship helps us dedicate more time to open source development, writing
+                  technical content, and creating educational resources for the community.
                 </p>
               </div>
 
@@ -274,13 +244,9 @@ function SponsorCard({ sponsor }: SponsorCardProps) {
           <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
             {displayName}
           </h3>
-          <p className="text-sm text-muted-foreground truncate">
-            @{sponsor.login}
-          </p>
+          <p className="text-sm text-muted-foreground truncate">@{sponsor.login}</p>
           {sponsor.tier && (
-            <p className="text-xs text-muted-foreground mt-1 truncate">
-              {sponsor.tier.name}
-            </p>
+            <p className="text-xs text-muted-foreground mt-1 truncate">{sponsor.tier.name}</p>
           )}
         </div>
       </div>

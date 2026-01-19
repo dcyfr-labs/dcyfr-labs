@@ -6,6 +6,10 @@ import { CONTAINER_WIDTHS } from "@/lib/design-tokens";
 import { LikesClient } from "./likes-client";
 import { getBasicActivities } from "@/lib/activity/helpers.server";
 
+// Force dynamic rendering - don't attempt to prerender during build
+// This page requires database/Redis access for activities
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = createPageMetadata({
   title: "Likes",
   description: "Content you've liked and engaged with",
