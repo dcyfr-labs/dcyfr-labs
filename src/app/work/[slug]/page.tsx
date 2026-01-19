@@ -107,8 +107,8 @@ export default async function WorkItemPage({ params }: { params: Promise<{ slug:
         suppressHydrationWarning
       />
       
-      {/* Main article section with proper spacing using PAGE_LAYOUT tokens */}
-      <article className={PAGE_LAYOUT.proseSection.container}>
+      {/* Main article section with proper spacing accounting for fixed header */}
+      <article className={PAGE_LAYOUT.articleSection.container}>
         {/* Back to Our Work navigation */}
         <nav className="mb-8">
           <Link

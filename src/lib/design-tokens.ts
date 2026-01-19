@@ -2028,6 +2028,17 @@ export const PAGE_LAYOUT = {
     /** Content wrapper */
     content: SPACING.content,
   },
+
+  /** Article/project page section with fixed header compensation */
+  articleSection: {
+    /** Container for article content - accounts for fixed header (h-18 = 72px)
+     * Provides proper spacing below navigation bar
+     * Used for individual article/project pages like /blog/[slug], /work/[slug]
+     */
+    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-28 md:pt-32 lg:pt-36 pb-8 md:pb-12`,
+    /** Article content wrapper */
+    content: SPACING.subsection,
+  },
 } as const;
 
 /**
