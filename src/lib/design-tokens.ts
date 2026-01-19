@@ -2018,7 +2018,6 @@ export const PAGE_LAYOUT = {
     /** Container for article content - accounts for fixed header (h-18 = 72px)
      * Provides proper spacing below navigation bar
      * Used for individual article/project pages like /blog/[slug], /work/[slug]
-     * Uses content width (max-w-6xl) to accommodate sidebar + wider content area
      */
     container: `mx-auto ${CONTAINER_WIDTHS.content} ${CONTAINER_PADDING} pt-28 md:pt-32 lg:pt-36 pb-8 md:pb-12`,
     /** Article content wrapper */

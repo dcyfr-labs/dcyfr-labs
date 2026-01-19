@@ -60,7 +60,6 @@ export default async function AboutPage() {
       </ScrollReveal>
 
       <SectionNavigator scrollOffset={SCROLL_BEHAVIOR.offset.standard} className={SPACING.section}>
-
         {/* Organization Philosophy */}
         <Section id="our-philosophy" className={PAGE_LAYOUT.proseSection.container}>
           <ScrollReveal animation="fade-up" delay={1}>

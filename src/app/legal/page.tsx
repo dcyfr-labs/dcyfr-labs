@@ -116,7 +116,9 @@ export default async function LegalPage() {
 
       <ArchiveHero variant="full" title={pageTitle} description={pageDescription} align="center" />
 
-      <div className={`mx-auto ${CONTAINER_WIDTHS.prose} ${CONTAINER_PADDING} ${SPACING.section}`}>
+      <div
+        className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} ${SPACING.section}`}
+      >
         {/* Introduction */}
         <section className={SPACING.content}>
           <p className={TYPOGRAPHY.description}>
@@ -166,13 +168,13 @@ export default async function LegalPage() {
           </div>
         </section>
 
-        {/* Footer Info */}
+        {/* Contact Section */}
         <section className={SPACING.content}>
-          <div className="p-4 rounded-lg border border-border bg-muted/50">
+          <div className="text-center">
             <h2 className={TYPOGRAPHY.h3.standard}>Questions About Our Legal Policies?</h2>
-            <p className={`${TYPOGRAPHY.body} mb-4`}>
-              If you have any questions about our legal policies or need clarification on any terms,
-              please don&apos;t hesitate to reach out.
+            <p className={`${TYPOGRAPHY.body} mb-8 text-muted-foreground`}>
+              If you have any questions about our legal policies or need clarification, please
+              don&apos;t hesitate to reach out.
             </p>
             <Link
               href="/contact"
@@ -180,17 +182,6 @@ export default async function LegalPage() {
             >
               Contact Us
             </Link>
-          </div>
-        </section>
-
-        {/* Transparency Statement */}
-        <section className={SPACING.content}>
-          <div className="text-center">
-            <h2 className={`${TYPOGRAPHY.h3.standard} mb-4`}>Our Commitment to Transparency</h2>
-            <p className={`${TYPOGRAPHY.body} text-muted-foreground max-w-3xl mx-auto`}>
-              We believe in clear, accessible legal documentation. All our policies are written in
-              plain language and updated regularly to reflect our practices and legal requirements.
-            </p>
           </div>
         </section>
       </div>

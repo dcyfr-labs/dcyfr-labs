@@ -100,26 +100,27 @@ export default async function SponsorThankYouPage({ searchParams }: PageProps) {
       {/* Analytics Tracker - tracks conversion once per session */}
       <SponsorshipTracker sponsorName={safeSponsorName} tierName={safeTierName} />
 
-      <div className="space-y-10 md:space-y-14">
-        {/* Hero Section */}
-        <PageHero
-          title={heroTitle}
-          description={heroDescription}
-          align="center"
-          className={PAGE_LAYOUT.hero.content}
-        />
+      {/* Hero Section */}
+      <PageHero
+        title={heroTitle}
+        description={heroDescription}
+        align="center"
+        className={PAGE_LAYOUT.hero.content}
+      />
+
+      <div className={SPACING.section}>
 
         {/* What's Next Section */}
         <Section className={PAGE_LAYOUT.section.container}>
-          <div className={SPACING.content}>
-            <div className="text-center mb-8">
+          <div className={SPACING.subsection}>
+            <div className="text-center">
               <h2 className={TYPOGRAPHY.h2.standard}>What&apos;s Next?</h2>
-              <p className={cn('text-muted-foreground mt-4 mx-auto', CONTAINER_WIDTHS.narrow)}>
+              <p className={cn('text-muted-foreground mx-auto', CONTAINER_WIDTHS.narrow)}>
                 Here are some ways to stay connected and get the most out of the community.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {nextSteps.map((step) => (
                 <Link
                   key={step.title}
@@ -127,22 +128,27 @@ export default async function SponsorThankYouPage({ searchParams }: PageProps) {
                   target={step.external ? '_blank' : undefined}
                   rel={step.external ? 'noopener noreferrer' : undefined}
                   className={cn(
-                    'group bg-card border border-border rounded-lg',
-                    SPACING.content,
+                    'group bg-card border border-border rounded-lg p-6',
                     HOVER_EFFECTS.cardSubtle
                   )}
                 >
                   <div className="flex items-start gap-4">
-                    <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                    <div className={cn(
+                      'p-3 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors',
+                      'flex-shrink-0'
+                    )}>
                       <step.icon className="w-6 h-6 text-primary" />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <h3 className={cn(
+                        'font-semibold text-foreground group-hover:text-primary transition-colors',
+                        'mb-2'
+                      )}>
                         {step.title}
                       </h3>
-                      <p className="text-sm text-muted-foreground mt-1">{step.description}</p>
-                      <div className="flex items-center gap-2 mt-3 text-sm text-primary">
-                        <span>{step.cta}</span>
+                      <p className="text-sm text-muted-foreground mb-4">{step.description}</p>
+                      <div className="flex items-center gap-2 text-sm text-primary">
+                        <span className="font-medium">{step.cta}</span>
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </div>
@@ -153,26 +159,26 @@ export default async function SponsorThankYouPage({ searchParams }: PageProps) {
           </div>
         </Section>
 
-        {/* Social Proof Section 
+        {/* Community Section */}
         <Section className={PAGE_LAYOUT.section.container}>
-          <div className={SPACING.content}>
+          <div className="text-center">
             <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-              <CardHeader className="text-center pb-3">
+              <CardHeader className={cn('text-center', SPACING.content)}>
                 <CardTitle className={TYPOGRAPHY.h2.featured}>
                   Join the Community
                 </CardTitle>
-                <CardDescription className="text-base mt-2">
+                <CardDescription className="text-base">
                   {sponsorCount > 0 ? (
                     <>
-                      You&apos;re one of{" "}
+                      You&apos;re one of{' '}
                       <span className="font-semibold text-primary">
                         {sponsorCount}
-                      </span>{" "}
-                      {sponsorCount === 1 ? "sponsor" : "sponsors"} supporting
+                      </span>{' '}
+                      {sponsorCount === 1 ? 'sponsor' : 'sponsors'} supporting
                       our work
                     </>
                   ) : (
-                    "Be part of a community supporting secure open source development"
+                    'Be part of a community supporting secure open source development'
                   )}
                 </CardDescription>
               </CardHeader>
@@ -183,19 +189,19 @@ export default async function SponsorThankYouPage({ searchParams }: PageProps) {
               </CardContent>
             </Card>
           </div>
-        </Section> */}
+        </Section>
 
-        {/* Back to Home CTA 
+        {/* Back to Home CTA */}
         <Section className={PAGE_LAYOUT.section.container}>
-          <div className={SPACING.content}>
-            <div className="text-center">
-              <p className="text-muted-foreground mb-4">Ready to explore?</p>
-              <Button asChild size="lg" variant="cta">
+          <div className="text-center">
+            <div className={SPACING.content}>
+              <p className="text-muted-foreground">Ready to explore?</p>
+              <Button asChild size="lg" variant="default">
                 <Link href="/">Back to Home</Link>
               </Button>
             </div>
           </div>
-        </Section> */}
+        </Section>
       </div>
     </PageLayout>
   );
