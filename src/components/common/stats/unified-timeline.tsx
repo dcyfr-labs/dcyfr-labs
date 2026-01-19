@@ -102,7 +102,7 @@ export function UnifiedTimeline({
           <div key={index} className="relative">
             {/* Timeline node - Logo SVG (desktop only, hidden on mobile) */}
             <div
-              className="hidden md:flex absolute left-5 top-6 w-8 h-8 -ml-[15px] items-center justify-center z-10"
+              className="hidden md:flex absolute left-5 top-6 w-8 h-8 items-center justify-center z-10 transform -translate-x-1/2"
               aria-hidden="true"
             >
               <Logo
