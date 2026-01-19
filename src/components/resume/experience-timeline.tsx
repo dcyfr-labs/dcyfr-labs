@@ -47,11 +47,17 @@ export function ExperienceTimeline({ experiences, companyUrls }: ExperienceTimel
       <div className="space-y-4">
         {visibleExperiences.map((exp, index) => (
           <div key={index} className="relative">
-            {/* Timeline dot */}
+            {/* Timeline node - Logo SVG (desktop only, hidden on mobile) */}
             <div 
-              className="hidden md:flex absolute left-8 top-6 w-4 h-4 -ml-[7px] rounded-full border-2 border-primary bg-background z-10"
+              className="hidden md:flex absolute left-5 top-6 w-8 h-8 -ml-[15px] items-center justify-center z-10"
               aria-hidden="true"
-            />
+            >
+              <Logo 
+                width={20} 
+                height={20} 
+                className="text-primary drop-shadow-sm"
+              />
+            </div>
 
             {/* Content card with left margin for timeline */}
             <Card className="p-5 md:ml-20">
