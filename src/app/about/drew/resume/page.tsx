@@ -76,15 +76,15 @@ export default async function DrewResumePage() {
         />
       </section>
 
-      {/* Resume Navigation & Download */}
-      <section id="nav" className={cn(PAGE_LAYOUT.section.container, "py-4")}>
+      {/* Resume Navigation & Download - DISABLED */}
+      {/* <section id="nav" className={cn(PAGE_LAYOUT.section.container, "py-4")}>
         <div className={cn("mx-auto", CONTAINER_WIDTHS.standard)}>
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <ResumeSectionNav />
             <DownloadResumeButton />
           </div>
         </div>
-      </section>
+      </section> */}
 
       <div className={SPACING.section}>
         {/* Stats Overview */}
@@ -101,15 +101,7 @@ export default async function DrewResumePage() {
               >
                 Career Metrics
               </h2>
-              <div
-                className={cn(
-                  "p-4 md:p-6 rounded-lg border",
-                  BORDERS.card,
-                  "bg-card/50 backdrop-blur-sm"
-                )}
-              >
-                <ResumeStats />
-              </div>
+              <ResumeStats />
             </div>
           </ScrollReveal>
         </section>
@@ -128,19 +120,11 @@ export default async function DrewResumePage() {
               >
                 Professional Timeline
               </h2>
-              <div
-                className={cn(
-                  "p-4 md:p-6 rounded-lg border",
-                  BORDERS.card,
-                  "bg-card/50 backdrop-blur-sm"
-                )}
-              >
-                <UnifiedTimeline
-                  experiences={resume.experience}
-                  education={resume.education}
-                  companyUrls={companyUrls}
-                />
-              </div>
+              <UnifiedTimeline
+                experiences={resume.experience}
+                education={resume.education}
+                companyUrls={companyUrls}
+              />
             </div>
           </ScrollReveal>
         </section>
@@ -159,15 +143,7 @@ export default async function DrewResumePage() {
               >
                 Professional Badges & Certifications
               </h2>
-              <div
-                className={cn(
-                  "p-4 md:p-6 rounded-lg border",
-                  BORDERS.card,
-                  "bg-card/50 backdrop-blur-sm"
-                )}
-              >
-                <MiniBadgeList username="dcyfr" />
-              </div>
+              <MiniBadgeList username="dcyfr" />
             </div>
           </ScrollReveal>
         </section>
@@ -186,15 +162,7 @@ export default async function DrewResumePage() {
               >
                 Technical Skills & Expertise
               </h2>
-              <div
-                className={cn(
-                  "p-4 md:p-6 rounded-lg border",
-                  BORDERS.card,
-                  "bg-card/50 backdrop-blur-sm"
-                )}
-              >
-                <MiniSkillsList username="dcyfr" />
-              </div>
+              <MiniSkillsList username="dcyfr" />
             </div>
           </ScrollReveal>
         </section>
