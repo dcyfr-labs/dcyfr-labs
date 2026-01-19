@@ -13,6 +13,7 @@ import {
 import {
   CONTAINER_WIDTHS,
   CONTAINER_PADDING,
+  PAGE_LAYOUT,
 } from "@/lib/design-tokens";
 import { headers } from "next/headers";
 import { ProjectLayoutStrategy } from "@/components/projects/layouts";
@@ -105,19 +106,23 @@ export default async function WorkItemPage({ params }: { params: Promise<{ slug:
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         suppressHydrationWarning
       />
-      <div className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-6 md:pt-8 lg:pt-10 pb-8 md:pb-12`}>
-        {/* Back to Our Work */}
-        <Link
-          href="/work"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span>Back to Our Work</span>
-        </Link>
+      
+      {/* Main article section with proper spacing using PAGE_LAYOUT tokens */}
+      <article className={PAGE_LAYOUT.proseSection.container}>
+        {/* Back to Our Work navigation */}
+        <nav className="mb-8">
+          <Link
+            href="/work"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span>Back to Our Work</span>
+          </Link>
+        </nav>
         
-        {/* Render appropriate layout based on project category */}
+        {/* Project content - rendered with appropriate layout based on category */}
         <ProjectLayoutStrategy project={project} nonce={nonce} basePath="/work" />
-      </div>
+      </article>
     </>
   );
 }
