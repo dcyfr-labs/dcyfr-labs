@@ -29,21 +29,21 @@ previousSlugs:
 > **Series Background:** This is a follow-up to [Shipping a Developer Portfolio](/blog/shipping-developer-portfolio), where I built the foundation for what would become a comprehensive developer platform. This series documents the security hardening, performance optimization, and production features that transformed a simple portfolio into an enterprise-ready system.
 
 <TLDRSummary
-  title="TL;DR: Portfolio Hardening - The 30-Second Production Brief"
+  title="Portfolio Hardening at a Glance"
   mostCommon={[
-    "CSP headers via Next.js middleware (defense-in-depth)",
-    "Zero-dependency rate limiting (200 req/min)",
-    "INP optimization: 664ms → <200ms (70% improvement)"
+    'CSP headers via Next.js middleware (defense-in-depth)',
+    'Zero-dependency rate limiting (200 req/min)',
+    'INP optimization: 664ms → <200ms (70% improvement)',
   ]}
   mostDangerous={[
-    "Missing CSP headers (XSS, clickjacking vulnerabilities)",
-    "No rate limiting (DDoS, scraping, spam attacks)",
-    "Slow INP (poor user experience, SEO penalties)"
+    'Missing CSP headers (XSS, clickjacking vulnerabilities)',
+    'No rate limiting (DDoS, scraping, spam attacks)',
+    'Slow INP (poor user experience, SEO penalties)',
   ]}
   hardestToDetect={[
-    "Vercel CDN stripping middleware headers",
-    "Hover prefetching trade-offs (bandwidth vs UX)",
-    "Redis memory leaks in analytics pipelines"
+    'Vercel CDN stripping middleware headers',
+    'Hover prefetching trade-offs (bandwidth vs UX)',
+    'Redis memory leaks in analytics pipelines',
   ]}
   jumpLink="#production-features-overview"
 />
@@ -411,10 +411,7 @@ I created comprehensive instructions for AI coding assistants (GitHub Copilot, C
 - Faster onboarding for contributors
 - Reduced architectural drift
 
-<SectionShare
-  sectionId="developer-experience"
-  sectionTitle="Developer Experience"
-/>
+<SectionShare sectionId="developer-experience" sectionTitle="Developer Experience" />
 
 ---
 

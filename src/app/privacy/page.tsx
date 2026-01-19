@@ -34,7 +34,6 @@ export default async function PrivacyPage() {
         description={pageDescription}
         variant="standard"
         align="center"
-        className={cn(CONTAINER_WIDTHS.prose, CONTAINER_PADDING)}
       />
 
       <article

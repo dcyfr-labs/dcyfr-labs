@@ -60,7 +60,13 @@
  */
 
 import { ReactNode } from 'react';
-import { PAGE_LAYOUT, HERO_VARIANTS, CONTAINER_WIDTHS } from '@/lib/design-tokens';
+import {
+  PAGE_LAYOUT,
+  HERO_VARIANTS,
+  CONTAINER_WIDTHS,
+  SPACING,
+  CONTAINER_PADDING,
+} from '@/lib/design-tokens';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
@@ -80,6 +86,8 @@ interface PageHeroProps {
   image?: ReactNode;
   /** Optional action buttons/links */
   actions?: ReactNode;
+  /** Section ID attribute (typically "hero") */
+  id?: string;
   /** Additional CSS classes for the container */
   className?: string;
   /** Additional CSS classes for the content wrapper */
@@ -99,6 +107,7 @@ export function PageHero({
   align = 'left',
   image,
   actions,
+  id = 'hero',
   className,
   contentClassName,
   itemCount,
@@ -116,8 +125,24 @@ export function PageHero({
       variant === 'homepage' ? 'h-32 w-32 md:h-40 md:w-40' : 'h-20 w-20 md:h-24 md:w-24';
 
     return (
-      <section className={cn(PAGE_LAYOUT.hero.container, className)}>
-        <div className={cn(PAGE_LAYOUT.hero.content, alignmentClasses, contentClassName)}>
+      <section
+        id={id}
+        className={cn(
+          'relative overflow-visible',
+          PAGE_LAYOUT.hero.padding,
+          align === 'center' && 'flex flex-col items-center',
+          className
+        )}
+      >
+        <div
+          className={cn(
+            PAGE_LAYOUT.hero.container,
+            PAGE_LAYOUT.hero.content,
+            alignmentClasses,
+            align === 'center' && 'flex flex-col items-center w-full',
+            contentClassName
+          )}
+        >
           {/* Image skeleton */}
           {(variant === 'homepage' || image !== undefined) && (
             <div className={cn('flex', imageJustify)}>
@@ -152,15 +177,20 @@ export function PageHero({
     // Full-width variant: background extends to edges, content is constrained to archive width
     return (
       <section
+        id={id}
         className={cn(
-          'w-full pt-8 md:pt-10 lg:pt-12 relative overflow-visible',
+          'w-full relative overflow-visible',
+          PAGE_LAYOUT.hero.padding,
           align === 'center' && 'flex flex-col items-center',
           className
         )}
       >
+        {/* Content */}
         <div
           className={cn(
-            `mx-auto ${CONTAINER_WIDTHS.prose} px-4 sm:px-8 md:px-8 space-y-4`,
+            `mx-auto ${CONTAINER_WIDTHS.prose} ${CONTAINER_PADDING}`,
+            PAGE_LAYOUT.hero.content,
+            'relative z-10',
             alignmentClasses,
             align === 'center' && 'flex flex-col items-center w-full',
             contentClassName
@@ -205,17 +235,18 @@ export function PageHero({
   // Standard variant: both background and content constrained
   return (
     <section
+      id={id}
       className={cn(
-        PAGE_LAYOUT.hero.container,
         'relative overflow-visible',
+        PAGE_LAYOUT.hero.padding,
         align === 'center' && 'flex flex-col items-center',
         className
       )}
     >
       <div
         className={cn(
+          PAGE_LAYOUT.hero.container,
           PAGE_LAYOUT.hero.content,
-          'pb-8 md:pb-12',
           alignmentClasses,
           align === 'center' && 'flex flex-col items-center w-full',
           contentClassName

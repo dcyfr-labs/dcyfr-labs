@@ -57,21 +57,21 @@ This feature, introduced in Node.js v20[^1], has **limited production adoption**
 These dependency patches are automatically included in the Node.js security releases.
 
 <TLDRSummary
-  title="TL;DR: Node.js January 2026 Security Release - The 30-Second Brief"
+  title="Node.js January 2026 Security Release at a Glance"
   mostCommon={[
-    "8 CVEs patched (3 HIGH, 4 MEDIUM, 1 LOW)",
-    "All active release lines affected (v20-v25)",
-    "Next.js/RSC users affected by AsyncLocalStorage DoS"
+    '8 CVEs patched (3 HIGH, 4 MEDIUM, 1 LOW)',
+    'All active release lines affected (v20-v25)',
+    'Next.js/RSC users affected by AsyncLocalStorage DoS',
   ]}
   mostDangerous={[
-    "CVE-2025-55131: Buffer memory leak exposes uninitialized data",
-    "CVE-2025-59466: AsyncLocalStorage crashes (impacts Next.js)",
-    "CVE-2025-59465: HTTP/2 DoS with malformed HEADERS frames"
+    'CVE-2025-55131: Buffer memory leak exposes uninitialized data',
+    'CVE-2025-59466: AsyncLocalStorage crashes (impacts Next.js)',
+    'CVE-2025-59465: HTTP/2 DoS with malformed HEADERS frames',
   ]}
   hardestToDetect={[
-    "Memory leaks require timing analysis to trigger",
-    "3 permissions model bypasses (if you use --permission)",
-    "TLS memory leaks in certificate processing"
+    'Memory leaks require timing analysis to trigger',
+    '3 permissions model bypasses (if you use --permission)',
+    'TLS memory leaks in certificate processing',
   ]}
   jumpLink="#how-to-upgrade"
 />
@@ -435,8 +435,9 @@ server.on('secureConnection', (socket) => {
 Any Node.js application using HTTP/2 without explicit TLS socket error handlers. This includes many Next.js, Fastify, and custom HTTP/2 deployments.
 
 <KeyTakeaway variant="warning" title="HTTP/2 Server Crash Risk">
-  A single malformed HTTP/2 HEADERS frame can **crash your entire Node.js process** if you don't have
-  explicit error handlers on secure sockets. This affects **any HTTP/2 server** without `socket.on('error')` handlers. Add error handling NOW, then upgrade.
+  A single malformed HTTP/2 HEADERS frame can **crash your entire Node.js process** if you don't
+  have explicit error handlers on secure sockets. This affects **any HTTP/2 server** without
+  `socket.on('error')` handlers. Add error handling NOW, then upgrade.
 </KeyTakeaway>
 
 <SectionShare sectionId="cve-2025-59465" sectionTitle="CVE-2025-59465: HTTP/2 Server DoS" />

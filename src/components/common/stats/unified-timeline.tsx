@@ -7,16 +7,16 @@
  * @component
  */
 
-"use client";
+'use client';
 
-import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { HOVER_EFFECTS, TYPOGRAPHY } from "@/lib/design-tokens";
-import { Briefcase, GraduationCap } from "lucide-react";
-import { Logo } from "@/components/common";
-import type { Experience, Education } from "@/data/resume";
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { HOVER_EFFECTS, TYPOGRAPHY } from '@/lib/design-tokens';
+import { Briefcase, GraduationCap } from 'lucide-react';
+import { Logo } from '@/components/common';
+import type { Experience, Education } from '@/data/resume';
 
 interface UnifiedTimelineProps {
   experiences: Experience[];
@@ -25,7 +25,7 @@ interface UnifiedTimelineProps {
 }
 
 type TimelineItem = {
-  type: "experience" | "education";
+  type: 'experience' | 'education';
   data: Experience | Education;
   sortDate: Date;
 };
@@ -35,7 +35,7 @@ type TimelineItem = {
  */
 function parseDuration(duration: string): Date {
   // Handle "Present" as current date
-  if (duration.includes("Present")) {
+  if (duration.includes('Present')) {
     return new Date();
   }
 
@@ -70,22 +70,18 @@ function parseDuration(duration: string): Date {
   return new Date(0); // Fallback for unparseable dates
 }
 
-export function UnifiedTimeline({
-  experiences,
-  education,
-  companyUrls,
-}: UnifiedTimelineProps) {
+export function UnifiedTimeline({ experiences, education, companyUrls }: UnifiedTimelineProps) {
   // Combine and sort all timeline items (newest first)
   const timelineItems: TimelineItem[] = [
     ...experiences.map((exp) => ({
-      type: "experience" as const,
+      type: 'experience' as const,
       data: exp,
       sortDate: parseDuration(exp.duration),
     })),
     ...education.map((edu) => ({
-      type: "education" as const,
+      type: 'education' as const,
       data: edu,
-      sortDate: parseDuration(edu.duration || ""),
+      sortDate: parseDuration(edu.duration || ''),
     })),
   ].sort((a, b) => b.sortDate.getTime() - a.sortDate.getTime()); // Sort descending (newest first)
 
@@ -102,24 +98,17 @@ export function UnifiedTimeline({
           <div key={index} className="relative">
             {/* Timeline node - Logo SVG (desktop only, hidden on mobile) */}
             <div
-              className="hidden md:flex absolute left-5 top-6 w-8 h-8 items-center justify-center z-10 transform -translate-x-1/2"
+              className="hidden md:flex absolute left-8 top-6 w-8 h-8 -ml-3.75 items-center justify-center z-10"
               aria-hidden="true"
             >
-              <Logo
-                width={20}
-                height={20}
-                className="text-primary drop-shadow-sm"
-              />
+              <Logo width={20} height={20} className="text-primary drop-shadow-sm" />
             </div>
 
             {/* Content card */}
             <Card className="p-5 md:ml-20">
-              {item?.type === "experience" ? (
-                <ExperienceCard
-                  experience={item.data as Experience}
-                  companyUrls={companyUrls}
-                />
-              ) : item?.type === "education" ? (
+              {item?.type === 'experience' ? (
+                <ExperienceCard experience={item.data as Experience} companyUrls={companyUrls} />
+              ) : item?.type === 'education' ? (
                 <EducationCard education={item.data as Education} />
               ) : null}
             </Card>
@@ -146,9 +135,7 @@ function ExperienceCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <Briefcase className="h-4 w-4 text-primary shrink-0" />
-            <h3 className={cn(TYPOGRAPHY.h3.standard, "text-foreground")}>
-              {experience.title}
-            </h3>
+            <h3 className={cn(TYPOGRAPHY.h3.standard, 'text-foreground')}>{experience.title}</h3>
           </div>
           <p className={TYPOGRAPHY.label.small}>
             {companyUrls[experience.company] ? (
@@ -161,9 +148,7 @@ function ExperienceCard({
                 {experience.company}
               </Link>
             ) : (
-              <span className="text-muted-foreground">
-                {experience.company}
-              </span>
+              <span className="text-muted-foreground">{experience.company}</span>
             )}
           </p>
         </div>
@@ -204,14 +189,10 @@ function EducationCard({ education }: { education: Education }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <GraduationCap className="h-4 w-4 text-primary shrink-0" />
-            <h3 className={cn(TYPOGRAPHY.h3.standard, "text-foreground")}>
-              {education.degree}
-            </h3>
+            <h3 className={cn(TYPOGRAPHY.h3.standard, 'text-foreground')}>{education.degree}</h3>
           </div>
           {}
-          <p className="text-sm font-medium text-muted-foreground">
-            {education.institution}
-          </p>
+          <p className="text-sm font-medium text-muted-foreground">{education.institution}</p>
         </div>
         {education.duration && (
           <time

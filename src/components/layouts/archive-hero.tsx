@@ -35,38 +35,46 @@
  * ```
  */
 
-import { ReactNode } from 'react'
-import Image from 'next/image'
-import { PAGE_LAYOUT, HERO_VARIANTS, CONTAINER_WIDTHS, ANIMATION, CONTAINER_PADDING, SPACING, TYPOGRAPHY } from '@/lib/design-tokens'
-import { Skeleton } from '@/components/ui/skeleton'
-import { cn } from '@/lib/utils'
+import { ReactNode } from 'react';
+import Image from 'next/image';
+import {
+  PAGE_LAYOUT,
+  HERO_VARIANTS,
+  CONTAINER_WIDTHS,
+  ANIMATION,
+  CONTAINER_PADDING,
+  SPACING,
+  TYPOGRAPHY,
+} from '@/lib/design-tokens';
+import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
-type ArchiveVariant = 'full' | 'medium' | 'minimal'
-type ArchiveAlign = 'left' | 'center'
+type ArchiveVariant = 'full' | 'medium' | 'minimal';
+type ArchiveAlign = 'left' | 'center';
 
 interface ArchiveHeroProps {
   /** Hero title (H1) */
-  title: string | ReactNode
+  title: string | ReactNode;
   /** Hero description/tagline */
-  description?: string | ReactNode
+  description?: string | ReactNode;
   /** Archive variant (determines background and layout) */
-  variant?: ArchiveVariant
+  variant?: ArchiveVariant;
   /** Text alignment */
-  align?: ArchiveAlign
+  align?: ArchiveAlign;
   /** Optional background image URL */
-  backgroundImage?: string
+  backgroundImage?: string;
   /** Optional stats text (e.g., "142 articles across 12 topics") */
-  stats?: string | ReactNode
+  stats?: string | ReactNode;
   /** Optional action elements (search bar, filters, CTAs) */
-  actions?: ReactNode
+  actions?: ReactNode;
   /** Item count for archive pages (e.g., "5 items") */
-  itemCount?: number
+  itemCount?: number;
   /** Loading state - renders skeleton version */
-  loading?: boolean
+  loading?: boolean;
   /** Additional CSS classes for the container */
-  className?: string
+  className?: string;
   /** Additional CSS classes for the content wrapper */
-  contentClassName?: string
+  contentClassName?: string;
 }
 
 /**
@@ -76,22 +84,19 @@ function getVariantStyles(variant: ArchiveVariant) {
   switch (variant) {
     case 'full':
       return {
-        container: PAGE_LAYOUT.archiveHero.padding.full,
         hasBackground: true,
         overlayIntensity: 'from-background/45 via-background/70 to-background/95',
-      }
+      };
     case 'medium':
       return {
-        container: PAGE_LAYOUT.archiveHero.padding.medium,
         hasBackground: true,
         overlayIntensity: 'from-background/70 via-background/85 to-background/95',
-      }
+      };
     case 'minimal':
       return {
-        container: PAGE_LAYOUT.archiveHero.padding.minimal,
         hasBackground: false,
         overlayIntensity: '',
-      }
+      };
   }
 }
 
@@ -108,14 +113,14 @@ export function ArchiveHero({
   className,
   contentClassName,
 }: ArchiveHeroProps) {
-  const variantStyles = getVariantStyles(variant)
-  const heroStyles = HERO_VARIANTS.standard
-  const alignmentClasses = align === 'center' ? 'text-center' : ''
+  const variantStyles = getVariantStyles(variant);
+  const heroStyles = HERO_VARIANTS.standard;
+  const alignmentClasses = align === 'center' ? 'text-center' : '';
 
   // Loading state
   if (loading) {
     return (
-      <section className={cn(PAGE_LAYOUT.hero.container, className)}>
+      <section className={cn(PAGE_LAYOUT.hero.archiveContainer, PAGE_LAYOUT.hero.padding, className)}>
         <div className={cn(PAGE_LAYOUT.hero.content, alignmentClasses, contentClassName)}>
           <Skeleton className={cn('h-10 md:h-12 w-48', align === 'center' && 'mx-auto')} />
           <div className="space-y-2">
@@ -124,14 +129,14 @@ export function ArchiveHero({
           </div>
         </div>
       </section>
-    )
+    );
   }
 
   return (
     <section
       className={cn(
         'w-full relative overflow-hidden',
-        variantStyles.container,
+        PAGE_LAYOUT.hero.padding,
         align === 'center' && 'flex flex-col items-center',
         className
       )}
@@ -148,14 +153,22 @@ export function ArchiveHero({
             priority
           />
           {/* Gradient overlay for text contrast */}
-          <div className={cn('absolute inset-0 bg-linear-to-b', variantStyles.overlayIntensity, ANIMATION.transition.appearance)} />
+          <div
+            className={cn(
+              'absolute inset-0 bg-linear-to-b',
+              variantStyles.overlayIntensity,
+              ANIMATION.transition.appearance
+            )}
+          />
         </div>
       )}
 
       {/* Content */}
       <div
         className={cn(
-          `mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING} ${SPACING.subsection} relative z-10`,
+          PAGE_LAYOUT.hero.archiveContainer,
+          PAGE_LAYOUT.hero.content,
+          'relative z-10',
           alignmentClasses,
           align === 'center' && 'flex flex-col items-center w-full',
           contentClassName
@@ -165,14 +178,10 @@ export function ArchiveHero({
         <h1 className={TYPOGRAPHY.h1.hero}>{title}</h1>
 
         {/* Description */}
-        {description && (
-          typeof description === 'string' ? (
+        {description &&
+          (typeof description === 'string' ? (
             <p
-              className={cn(
-                heroStyles.description,
-                'max-w-3xl',
-                align === 'center' && 'mx-auto'
-              )}
+              className={cn(heroStyles.description, 'max-w-3xl', align === 'center' && 'mx-auto')}
               style={align === 'center' ? { textAlign: 'center' } : undefined}
             >
               {description}
@@ -185,29 +194,21 @@ export function ArchiveHero({
             </p>
           ) : (
             <div
-              className={cn(
-                heroStyles.description,
-                'max-w-3xl',
-                align === 'center' && 'mx-auto'
-              )}
+              className={cn(heroStyles.description, 'max-w-3xl', align === 'center' && 'mx-auto')}
             >
               {description}
             </div>
-          )
-        )}
+          ))}
 
         {/* Stats (e.g., "142 articles across 12 topics") */}
-        {stats && (
-          typeof stats === 'string' ? (
+        {stats &&
+          (typeof stats === 'string' ? (
             <p className={cn('text-sm text-muted-foreground', align === 'center' && 'mx-auto')}>
               {stats}
             </p>
           ) : (
-            <div className={cn('text-sm', align === 'center' && 'mx-auto')}>
-              {stats}
-            </div>
-          )
-        )}
+            <div className={cn('text-sm', align === 'center' && 'mx-auto')}>{stats}</div>
+          ))}
 
         {/* Actions (search bar, filters, CTAs) */}
         {actions && (
@@ -222,5 +223,5 @@ export function ArchiveHero({
         )}
       </div>
     </section>
-  )
+  );
 }

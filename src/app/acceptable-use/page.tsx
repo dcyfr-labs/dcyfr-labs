@@ -33,7 +33,6 @@ export default async function AcceptableUsePage() {
         description={pageDescription}
         variant="standard"
         align="center"
-        className={CONTAINER_WIDTHS.prose}
       />
 
       <article

@@ -16,7 +16,7 @@
       ],
       "series": null,
       "publishedAt": "2026-01-14T12:00:00Z",
-      "readingTime": 11,
+      "readingTime": 12,
       "url": "/blog/nodejs-vulnerabilities-january-2026"
     },
     {
@@ -319,5 +319,5 @@
     "Features",
     "Portfolio"
   ],
-  "generatedAt": "2026-01-19T06:23:04.330Z"
+  "generatedAt": "2026-01-19T10:09:12.706Z"
 }

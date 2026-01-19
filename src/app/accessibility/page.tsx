@@ -33,7 +33,6 @@ export default async function AccessibilityPage() {
         description={pageDescription}
         variant="standard"
         align="center"
-        className={CONTAINER_WIDTHS.prose}
       />
 
       <article

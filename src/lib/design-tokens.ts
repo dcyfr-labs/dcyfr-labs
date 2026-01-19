@@ -1974,35 +1974,19 @@ export const PAGE_LAYOUT = {
   /** Root page wrapper - provides consistent vertical rhythm */
   wrapper: '',
 
-  /** Hero section spacing - larger than standard sections */
+  /** Unified hero section - used for all hero sections across the site
+   * Includes fixed header compensation (h-18 = 72px) for consistent spacing
+   * Works for both standard pages and archive/listing pages
+   */
   hero: {
-    /** Container for hero content - responsive top padding (mobile-first, scales up)
-     * Includes compensation for fixed header (h-18 = 72px)
-     */
-    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-28 md:pt-36 lg:pt-44`,
+    /** Standard container - used for most pages */
+    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING}`,
+    /** Archive container - used for blog/work/portfolio listings */
+    archiveContainer: `mx-auto ${CONTAINER_WIDTHS.archive} ${ARCHIVE_CONTAINER_PADDING}`,
+    /** Unified padding for all hero sections - compensates for fixed header */
+    padding: 'pt-28 md:pt-32 lg:pt-36 pb-8 md:pb-12',
     /** Hero title + description wrapper */
     content: SPACING.proseHero,
-  },
-
-  /** Archive page hero (blog, work, portfolio listings) - matches standard hero spacing */
-  archiveHero: {
-    /** Container for archive hero - consistent with standard hero for unified layout
-     * Includes compensation for fixed header (h-18 = 72px)
-     */
-    container: `mx-auto ${CONTAINER_WIDTHS.archive} ${ARCHIVE_CONTAINER_PADDING} pt-28 md:pt-36 lg:pt-44 pb-8 md:pb-12`,
-    /** Archive hero title + description wrapper */
-    content: SPACING.proseHero,
-    /** Padding variants for different archive hero styles
-     * All variants include compensation for fixed header (h-18 = 72px)
-     */
-    padding: {
-      /** Full variant - maximum breathing room with background images */
-      full: 'pt-36 md:pt-40 lg:pt-44 pb-12 md:pb-16 lg:pb-20',
-      /** Medium variant - moderate padding for minimal backgrounds */
-      medium: 'pt-36 md:pt-40 lg:pt-44 pb-10 md:pb-14',
-      /** Minimal variant - standard padding without backgrounds */
-      minimal: 'pt-36 md:pt-40 lg:pt-44 pb-8 md:pb-12',
-    },
   },
 
   /** Standard page section spacing */
@@ -2034,8 +2018,9 @@ export const PAGE_LAYOUT = {
     /** Container for article content - accounts for fixed header (h-18 = 72px)
      * Provides proper spacing below navigation bar
      * Used for individual article/project pages like /blog/[slug], /work/[slug]
+     * Uses content width (max-w-6xl) to accommodate sidebar + wider content area
      */
-    container: `mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pt-28 md:pt-32 lg:pt-36 pb-8 md:pb-12`,
+    container: `mx-auto ${CONTAINER_WIDTHS.content} ${CONTAINER_PADDING} pt-28 md:pt-32 lg:pt-36 pb-8 md:pb-12`,
     /** Article content wrapper */
     content: SPACING.subsection,
   },

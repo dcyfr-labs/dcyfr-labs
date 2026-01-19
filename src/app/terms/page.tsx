@@ -33,7 +33,6 @@ export default async function TermsPage() {
         description={pageDescription}
         variant="standard"
         align="center"
-        className={CONTAINER_WIDTHS.prose}
       />
 
       <article

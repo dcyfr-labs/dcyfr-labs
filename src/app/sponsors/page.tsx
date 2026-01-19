@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { createPageMetadata, getJsonLdScriptProps } from '@/lib/metadata';
+import { cn } from '@/lib/utils';
 import { PageLayout } from '@/components/layouts';
 import { PageHero } from '@/components/layouts';
 import { Section, TeamMemberCard, SmoothScrollToHash } from '@/components/common';
@@ -75,22 +76,15 @@ export default async function SponsorsPage() {
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
       <SmoothScrollToHash />
 
-       <div className="space-y-4 md:space-y-12">
-        {/* Hero Section */}
-        <Section id="hero" className={PAGE_LAYOUT.hero.content}>
-          <PageHero
-            title={pageTitle}
-            description={pageDescription}
-            className={PAGE_LAYOUT.hero.content}
-            align="center"
-          />
-        </Section>
+      {/* Hero Section */}
+      <PageHero title={pageTitle} description={pageDescription} align="center" />
 
+      <div className={SPACING.section}>
         {/* Sponsors Section */}
         <Section id="sponsors" className={PAGE_LAYOUT.section.container}>
           <div className={SPACING.content}>
             {sponsors.length === 0 ? (
-              <div className="text-center mt-8">
+              <div className="text-center mb-12">
                 <p className="text-muted-foreground">
                   No sponsors yet. Be the first to support our work!{' '}
                 </p>

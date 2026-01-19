@@ -41,15 +41,13 @@ export default async function ContactPage() {
     <PageLayout>
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
       <SmoothScrollToHash />
-       <div className="space-y-4 md:space-y-12">
+      <div className="space-y-4 md:space-y-12">
         {/* Hero Section */}
-        <section id="hero">
-          <PageHero
-            title="Contact Us"
-            description="Whether you have questions, feedback, or collaboration ideas, we're here to help. Choose your preferred way to connect."
-            align="center"
-          />
-        </section>
+        <PageHero
+          title="Contact Us"
+          description="Whether you have questions, feedback, or collaboration ideas, we're here to help. Choose your preferred way to connect."
+          align="center"
+        />
 
         {/* Contact Form Section */}
         <section
@@ -57,13 +55,6 @@ export default async function ContactPage() {
           className={cn('mx-auto', CONTAINER_WIDTHS.standard, 'px-4 sm:px-8 md:px-8')}
         >
           <ScrollReveal animation="fade-up" delay={1}>
-            <div className="text-center mb-8">
-              {/* hidden to limit repeating elements
-              <h2 className={TYPOGRAPHY.h2.featured}>Send us a Message</h2>
-              <p className={cn(TYPOGRAPHY.description, "mt-2")}>
-                Fill out the form below and we&apos;ll get back to you as soon as possible
-              </p> */}
-            </div>
             <ContactFormErrorBoundary>
               <ContactForm />
             </ContactFormErrorBoundary>

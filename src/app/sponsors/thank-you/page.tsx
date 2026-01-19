@@ -1,26 +1,27 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { PageLayout } from "@/components/layouts";
-import { PageHero } from "@/components/layouts";
-import { Section } from "@/components/common";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ImpactStats } from "@/components/sponsors";
-import { SponsorshipTracker } from "./sponsorship-tracker";
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { PageLayout } from '@/components/layouts';
+import { PageHero } from '@/components/layouts';
+import { Section } from '@/components/common';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ImpactStats } from '@/components/sponsors';
+import { SponsorshipTracker } from './sponsorship-tracker';
 import {
   TYPOGRAPHY,
   SPACING,
   PAGE_LAYOUT,
   CONTAINER_WIDTHS,
-  HOVER_EFFECTS
-} from "@/lib/design-tokens";
-import { BookOpen, Code, Linkedin, Github, ArrowRight } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { getGitHubSponsors } from "@/lib/sponsors";
+  HOVER_EFFECTS,
+} from '@/lib/design-tokens';
+import { BookOpen, Code, Linkedin, Github, ArrowRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { getGitHubSponsors } from '@/lib/sponsors';
 
 export const metadata: Metadata = {
-  title: "Thank You!",
-  description: "A heartfelt thank you to our sponsors for supporting open source development and educational content.",
+  title: 'Thank You!',
+  description:
+    'A heartfelt thank you to our sponsors for supporting open source development and educational content.',
   robots: {
     index: false, // Don't index transactional page
     follow: true,
@@ -45,11 +46,9 @@ export default async function SponsorThankYouPage({ searchParams }: PageProps) {
 
   // Sanitize inputs to prevent XSS
   const safeSponsorName = sponsorParam
-    ? decodeURIComponent(sponsorParam).replace(/[<>]/g, "")
+    ? decodeURIComponent(sponsorParam).replace(/[<>]/g, '')
     : null;
-  const safeTierName = tierParam
-    ? decodeURIComponent(tierParam).replace(/[<>]/g, "")
-    : null;
+  const safeTierName = tierParam ? decodeURIComponent(tierParam).replace(/[<>]/g, '') : null;
 
   // Get total sponsor count for social proof
   const sponsors = await getGitHubSponsors();
@@ -57,91 +56,66 @@ export default async function SponsorThankYouPage({ searchParams }: PageProps) {
 
   // Determine personalized vs generic messaging
   const isPersonalized = !!safeSponsorName;
-  const heroTitle = isPersonalized
-    ? `Thank you, ${safeSponsorName}!`
-    : "Thank You!";
+  const heroTitle = isPersonalized ? `Thank you, ${safeSponsorName}!` : 'Thank You!';
   const heroDescription = isPersonalized
-    ? `Your sponsorship${safeTierName ? ` via ${safeTierName}` : ""} means a lot to us. We sincerely appreciate your support! Your sponsorship helps us continue creating valuable open source projects and educational content for the developer community.`
-    : "We sincerely appreciate your support! Your sponsorship helps us continue creating valuable open source projects and educational content for the developer community.";
+    ? `Your sponsorship${safeTierName ? ` via ${safeTierName}` : ''} means a lot to us. We sincerely appreciate your support! Your sponsorship helps us continue creating valuable open source projects and educational content for the developer community.`
+    : 'We sincerely appreciate your support! Your sponsorship helps us continue creating valuable open source projects and educational content for the developer community.';
 
   // Engagement opportunities
   const nextSteps = [
     {
       icon: BookOpen,
-      title: "Explore Our Blog",
-      description: "Discover articles on security, development, and emerging technology",
-      href: "/blog",
-      cta: "Browse Posts"
+      title: 'Explore Our Blog',
+      description: 'Discover articles on security, development, and emerging technology',
+      href: '/blog',
+      cta: 'Browse Posts',
     },
     {
       icon: Code,
-      title: "View Our Work",
+      title: 'View Our Work',
       description: "Check out some of the open source projects and experiments we're working on",
-      href: "/work",
-      cta: "See Our Work"
+      href: '/work',
+      cta: 'See Our Work',
     },
     {
       icon: Linkedin,
-      title: "Connect on LinkedIn",
-      description: "Follow for updates on security, development, and industry insights",
-      href: "https://linkedin.com/in/dcyfr",
-      cta: "Connect",
-      external: true
+      title: 'Connect on LinkedIn',
+      description: 'Follow for updates on security, development, and industry insights',
+      href: 'https://linkedin.com/in/dcyfr',
+      cta: 'Connect',
+      external: true,
     },
     {
       icon: Github,
-      title: "Follow on GitHub",
-      description: "Star repositories and stay updated on new open source works",
-      href: "https://github.com/dcyfr",
-      cta: "Follow",
-      external: true
-    }
+      title: 'Follow on GitHub',
+      description: 'Star repositories and stay updated on new open source works',
+      href: 'https://github.com/dcyfr',
+      cta: 'Follow',
+      external: true,
+    },
   ];
 
   return (
     <PageLayout>
       {/* Analytics Tracker - tracks conversion once per session */}
-      <SponsorshipTracker
-        sponsorName={safeSponsorName}
-        tierName={safeTierName}
-      />
+      <SponsorshipTracker sponsorName={safeSponsorName} tierName={safeTierName} />
 
       <div className="space-y-10 md:space-y-14">
         {/* Hero Section */}
-        <Section className={PAGE_LAYOUT.hero.content}>
-          <PageHero
-            title={heroTitle}
-            description={heroDescription}
-            align="center"
-            className={PAGE_LAYOUT.hero.content}
-          />
-        </Section>
-
-        {/* Impact Stats Section 
-        <Section className={PAGE_LAYOUT.section.container}>
-          <div className={SPACING.content}>
-            <div className="text-center mb-8">
-              <h2 className={TYPOGRAPHY.h2.standard}>
-                Your Impact
-              </h2>
-              <p className={cn("text-muted-foreground mt-4 mx-auto", CONTAINER_WIDTHS.narrow)}>
-                Your sponsorship directly supports these initiatives and helps us continue creating value for the developer community.
-              </p>
-            </div>
-            <ImpactStats />
-          </div>
-        </Section> */}
+        <PageHero
+          title={heroTitle}
+          description={heroDescription}
+          align="center"
+          className={PAGE_LAYOUT.hero.content}
+        />
 
         {/* What's Next Section */}
         <Section className={PAGE_LAYOUT.section.container}>
           <div className={SPACING.content}>
             <div className="text-center mb-8">
               <h2 className={TYPOGRAPHY.h2.standard}>What&apos;s Next?</h2>
-              <p
-                className={cn("text-muted-foreground mt-4 mx-auto", CONTAINER_WIDTHS.narrow)}
-              >
-                Here are some ways to stay connected and get the most out of the
-                community.
+              <p className={cn('text-muted-foreground mt-4 mx-auto', CONTAINER_WIDTHS.narrow)}>
+                Here are some ways to stay connected and get the most out of the community.
               </p>
             </div>
 
@@ -150,9 +124,13 @@ export default async function SponsorThankYouPage({ searchParams }: PageProps) {
                 <Link
                   key={step.title}
                   href={step.href}
-                  target={step.external ? "_blank" : undefined}
-                  rel={step.external ? "noopener noreferrer" : undefined}
-                  className={cn("group bg-card border border-border rounded-lg", SPACING.content, HOVER_EFFECTS.cardSubtle)}
+                  target={step.external ? '_blank' : undefined}
+                  rel={step.external ? 'noopener noreferrer' : undefined}
+                  className={cn(
+                    'group bg-card border border-border rounded-lg',
+                    SPACING.content,
+                    HOVER_EFFECTS.cardSubtle
+                  )}
                 >
                   <div className="flex items-start gap-4">
                     <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
@@ -162,9 +140,7 @@ export default async function SponsorThankYouPage({ searchParams }: PageProps) {
                       <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
                         {step.title}
                       </h3>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {step.description}
-                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">{step.description}</p>
                       <div className="flex items-center gap-2 mt-3 text-sm text-primary">
                         <span>{step.cta}</span>
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

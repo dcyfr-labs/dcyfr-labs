@@ -49,18 +49,17 @@ export default async function AboutPage() {
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
       <SmoothScrollToHash />
 
+      {/* Hero Section - Organization Introduction */}
+      <ScrollReveal animation="fade-up" delay={0}>
+        <PageHero
+          title={pageTitle}
+          description={pageDescription}
+          variant="standard"
+          align="center"
+        />
+      </ScrollReveal>
+
       <SectionNavigator scrollOffset={SCROLL_BEHAVIOR.offset.standard} className={SPACING.section}>
-        {/* Hero Section - Organization Introduction */}
-        <Section id="about-hero">
-          <ScrollReveal animation="fade-up" delay={0}>
-            <PageHero
-              title={pageTitle}
-              description={pageDescription}
-              variant="standard"
-              align="center"
-            />
-          </ScrollReveal>
-        </Section>
 
         {/* Organization Philosophy */}
         <Section id="our-philosophy" className={PAGE_LAYOUT.proseSection.container}>

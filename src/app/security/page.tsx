@@ -33,7 +33,6 @@ export default async function SecurityPage() {
         description={pageDescription}
         variant="standard"
         align="center"
-        className={CONTAINER_WIDTHS.prose}
       />
 
       <article
