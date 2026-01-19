@@ -100,11 +100,17 @@ export function UnifiedTimeline({
       <div className="space-y-4">
         {timelineItems.map((item, index) => (
           <div key={index} className="relative">
-            {/* Timeline dot */}
+            {/* Timeline node - Logo SVG (desktop only, hidden on mobile) */}
             <div
-              className="hidden md:block absolute left-8 top-6 w-3 h-3 -ml-[5px] rounded-full bg-primary z-10"
+              className="hidden md:flex absolute left-5 top-6 w-8 h-8 -ml-[15px] items-center justify-center z-10"
               aria-hidden="true"
-            />
+            >
+              <Logo
+                width={20}
+                height={20}
+                className="text-primary drop-shadow-sm"
+              />
+            </div>
 
             {/* Content card */}
             <Card className="p-5 md:ml-20">
