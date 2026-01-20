@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi } from "vitest";
 import { TrendingSection } from "@/components/home";
@@ -477,7 +477,7 @@ describe("TrendingSection", () => {
       });
     });
 
-    it("should support keyboard navigation between tabs", () => {
+    it("should support keyboard navigation between tabs", async () => {
       render(
         <TrendingSection
           posts={mockPosts}
@@ -493,8 +493,12 @@ describe("TrendingSection", () => {
       postsTab.focus();
       expect(postsTab).toHaveFocus();
 
-      // Tab to next tab
-      fireEvent.keyDown(postsTab, { key: "Tab" });
+      // Tab to next tab - Radix UI updates asynchronously
+      await act(async () => {
+        fireEvent.keyDown(postsTab, { key: "Tab" });
+        // Wait for Radix UI's async focus management
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
 
       // Should be able to navigate with keyboard
       expect(topicsTab).toBeInTheDocument();

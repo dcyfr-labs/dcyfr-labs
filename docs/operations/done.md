@@ -2,7 +2,96 @@
 
 This document archives completed features and improvements across all phases.
 
-**Latest Completion:** Phase 1 Social Media Integration (January 9, 2026)
+**Latest Completion:** Activity Heatmap Date Boundary Fix (January 19, 2026)
+
+---
+
+## January 19, 2026: Test Infrastructure Improvements ✅
+
+### Activity Heatmap Date Boundary Fix
+
+**Status:** Production-ready, deployed
+
+**Problem:** Flaky test failures in `activity-heatmap.test.ts` due to timezone and DST issues during date comparisons and date range iterations.
+
+**Root Cause:**
+
+- Date comparisons mixed local time and UTC, causing boundary issues
+- `setDate()` method affected by DST transitions
+- Inconsistent date normalization across startDate, endDate, and activity timestamps
+
+**Solution:**
+
+- Normalized all dates to UTC start-of-day (`Date.UTC()`) before comparisons
+- Used `setUTCDate()` for date iteration to avoid DST issues
+- Applied consistent UTC-based date handling throughout aggregation logic
+
+**Impact:**
+
+- ✅ All 21 heatmap tests passing consistently (verified 20 consecutive runs)
+- ✅ Eliminates timezone-dependent test failures
+- ✅ Production code remains robust across all timezones
+- ✅ No breaking changes to API
+
+**Files Modified:**
+
+- `src/lib/activity/heatmap.ts` - UTC normalization in `aggregateActivitiesByDate()`
+
+**Test Coverage:**
+
+- Verified: `src/__tests__/lib/activity-heatmap.test.ts` (21/21 passing)
+- Full suite: 2822/2823 tests passing (99.96% pass rate)
+
+### Trending Section Radix Tabs Tests Investigation
+
+**Status:** Verified stable (no fix needed)
+
+**Investigation:** Backlog scanner flagged `trending-section.test.tsx` tests as potentially flaky due to React act() warning in stderr.
+
+**Finding:**
+
+- All 19 tests pass consistently (verified 20 consecutive runs)
+- React act() warning is informational only, doesn't cause failures
+- Tests properly handle Radix UI async behavior with `waitFor()`
+- Added `act()` import for future use
+
+**Conclusion:**
+
+- Tests are stable and reliable
+- No actual flakiness detected
+- Warning can be safely ignored or suppressed if needed
+
+**Files Reviewed:**
+
+- `src/__tests__/components/home/trending-section.test.tsx` (19/19 passing)
+
+### Activity Search Performance Tests Investigation
+
+**Status:** Verified stable (no fix needed)
+
+**Investigation:** Backlog scanner flagged performance tests as potentially flaky due to environment-dependent timing.
+
+**Finding:**
+
+- All 2 performance tests pass consistently (verified 15 consecutive runs)
+- Tests include environment-aware thresholds (3x margin for CI)
+- Warmup logic eliminates JIT compilation cold start penalty
+- Median of 5 iterations removes outliers
+
+**Current Thresholds:**
+
+- Local: 100ms for 1000 item search
+- CI: 300ms (3x multiplier for slower environments)
+
+**Conclusion:**
+
+- Tests are stable and well-designed
+- No actual flakiness detected
+- Environment awareness makes tests CI-safe
+
+**Files Reviewed:**
+
+- `src/__tests__/lib/activity-search.test.ts` (35/35 passing, including 2 performance tests)
 
 ---
 

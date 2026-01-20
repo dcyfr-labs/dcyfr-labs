@@ -20,7 +20,7 @@ This page documents recommended checks for MCP (Model Context Protocol) servers,
 - **Axiom / Sentry / Vercel**: Confirm public endpoints respond with 200/401 (401 is okay if token required) and that the host resolves.
 - **arXiv / Google Scholar / OpenReview / DBLP**: Free research servers - verify npx can resolve packages. No auth required.
 - **Octocode**: GitHub CLI auth (`gh auth login`) or Personal Access Token. Verify with `/research` command; no validation endpoint required.
-- **Analytics (Custom)**: Local MCP server requiring Redis credentials (`UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`). Test with `npm run mcp:inspect:analytics` or verify startup with `npm run mcp:analytics` (stdio mode).
+- **Analytics (Custom)**: Local MCP server requiring Redis credentials (`REDIS_URL`). Test with `npm run mcp:inspect:analytics` or verify startup with `npm run mcp:analytics` (stdio mode).
 
 ## Recommended `check-mcp-servers.mjs` script
 

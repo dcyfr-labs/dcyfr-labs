@@ -69,6 +69,22 @@ export function aggregateActivitiesByDate(
   ),
   endDate: Date = new Date()
 ): ActivityHeatmapDay[] {
+  // Normalize dates to start of day in UTC to avoid timezone issues
+  const startDateNormalized = new Date(
+    Date.UTC(
+      startDate.getUTCFullYear(),
+      startDate.getUTCMonth(),
+      startDate.getUTCDate()
+    )
+  );
+  const endDateNormalized = new Date(
+    Date.UTC(
+      endDate.getUTCFullYear(),
+      endDate.getUTCMonth(),
+      endDate.getUTCDate()
+    )
+  );
+
   // Create map for efficient lookup
   const dateMap = new Map<
     string,
@@ -83,8 +99,20 @@ export function aggregateActivitiesByDate(
   activities.forEach((activity) => {
     const dateStr = formatDateToISO(activity.timestamp);
 
-    // Skip dates outside range
-    if (activity.timestamp < startDate || activity.timestamp > endDate) {
+    // Normalize activity timestamp for comparison
+    const activityDateNormalized = new Date(
+      Date.UTC(
+        activity.timestamp.getUTCFullYear(),
+        activity.timestamp.getUTCMonth(),
+        activity.timestamp.getUTCDate()
+      )
+    );
+
+    // Skip dates outside range (use normalized dates for comparison)
+    if (
+      activityDateNormalized < startDateNormalized ||
+      activityDateNormalized > endDateNormalized
+    ) {
       return;
     }
 
@@ -110,8 +138,9 @@ export function aggregateActivitiesByDate(
   const result: ActivityHeatmapDay[] = [];
 
   // Fill in all dates in range (including empty days)
-  const currentDate = new Date(startDate);
-  while (currentDate <= endDate) {
+  // Use UTC date manipulation to avoid DST issues
+  const currentDate = new Date(startDateNormalized);
+  while (currentDate <= endDateNormalized) {
     const dateStr = formatDateToISO(currentDate);
     const dayEntry = dateMap.get(dateStr);
 
@@ -138,8 +167,8 @@ export function aggregateActivitiesByDate(
       });
     }
 
-    // Move to next day
-    currentDate.setDate(currentDate.getDate() + 1);
+    // Move to next day using UTC methods to avoid DST issues
+    currentDate.setUTCDate(currentDate.getUTCDate() + 1);
   }
 
   return result;

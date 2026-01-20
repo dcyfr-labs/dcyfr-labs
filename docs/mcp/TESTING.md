@@ -54,8 +54,7 @@ Opens web interface at `http://localhost:6274` with:
 1. Add Analytics MCP to `.vscode/mcp.json` (✅ Done)
 2. Ensure Redis credentials in `.env.local`:
    ```
-   UPSTASH_REDIS_REST_URL=https://your-redis-url
-   UPSTASH_REDIS_REST_TOKEN=your-token
+   REDIS_URL=redis://default:your-password@your-redis-host:6379
    ```
 3. Reload VS Code window
 
@@ -126,8 +125,7 @@ All tools log cache performance. Look for:
 **Solution:**
 Add to `.env.local`:
 ```
-UPSTASH_REDIS_REST_URL=https://your-redis-url
-UPSTASH_REDIS_REST_TOKEN=your-token
+REDIS_URL=redis://default:your-password@your-redis-host:6379
 ```
 
 ### Issue: "Server starts but tools don't work"
@@ -140,7 +138,7 @@ UPSTASH_REDIS_REST_TOKEN=your-token
 **Debug:**
 ```bash
 # Test Redis connection
-node -e "console.log(process.env.UPSTASH_REDIS_REST_URL)"
+node -e "console.log(process.env.REDIS_URL)"
 ```
 
 ### Issue: "Slow response times (>500ms)"
