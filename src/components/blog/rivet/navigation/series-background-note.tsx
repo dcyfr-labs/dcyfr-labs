@@ -87,7 +87,7 @@ export function SeriesBackgroundNote({
     >
       <div className="flex items-start gap-3">
         <BookOpen className="h-5 w-5 text-primary mt-0.5 shrink-0" aria-hidden="true" />
-        <div className={cn(TYPOGRAPHY.body.standard, 'text-foreground')}>
+        <div className={cn(TYPOGRAPHY.body, 'text-foreground')}>
           <strong className="font-semibold">Series Background:</strong> {description}{' '}
           {previousPost && (
             <Link

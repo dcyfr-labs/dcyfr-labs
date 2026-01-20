@@ -23,7 +23,7 @@
       "id": "post-20260115-7b4e92c1",
       "title": "Building Event-Driven Architecture with Inngest",
       "summary": "Implement event-driven architecture with Inngest for instant API responses, automatic retries, and production-grade background processing. Real code from a live portfolio.",
-      "content": "> Series Background: This is Part 3 of the Portfolio series, following Shipping a Developer Portfolio and Hardening a Developer Portfolio. Here we explore how event-driven architecture transforms user experience and system reliability. Your API routes are lying to your users. They return while work is still happening. The contact form says \"Message sent!\" but the email hasn't been delivered yet. Event-driven architecture fixes this by separating acknowledgment from processing. Users get instant ",
+      "content": "Your API routes are lying to your users. They return while work is still happening. The contact form says \"Message sent!\" but the email hasn't been delivered yet. Event-driven architecture fixes this by separating acknowledgment from processing. Users get instant feedback. Work happens reliably in the background. Here's how Inngest makes this practical for any Next.js project. When I first built this portfolio's contact form, the flow was straightforward but slow: This approach has real problems",
       "tags": [
         "Inngest",
         "Event-Driven",
@@ -92,7 +92,7 @@
     {
       "id": "post-20251203-47dac952",
       "title": "CVE-2025-55182 (React2Shell)",
-      "summary": "CVE-2025-55182 (React2Shell) is a critical RCE vulnerability in React Server Components under active exploitation since December 4, 2025. This post explores the vulnerability, confirmed botnet integration, attack patterns, detection methods, and why upgrading is essential.",
+      "summary": "CVE-2025-55182 (React2Shell) is a critical RCE vulnerability in React Server Components under active exploitation since December 3, 2025 (within hours of disclosure). This post explores the vulnerability, confirmed botnet integration, attack patterns, detection methods, and why upgrading is essential.",
       "content": "JANUARY 2026 UPDATE: One month after disclosure, React2Shell (CVE-2025-55182) remains under sustained exploitation with over 8.1 million attack sessions recorded[^1]. Security firm GreyNoise reports 300,000-400,000 daily attacks from 8,163 unique IPs across 101 countries[^1]. Over 644,000 domains remain vulnerable despite patches being available since December 3, 2025[^2]. CISA's federal remediation deadline (December 26, 2025) has passed[^3]. If you haven't upgraded to React 19.2.3[^4] and Next",
       "tags": [
         "Next.js",
@@ -168,7 +168,7 @@
       "id": "post-20251005-cadc6db5",
       "title": "Hardening a Developer Portfolio",
       "summary": "A multi-part series on building production-ready developer platforms: implementing CSP, rate limiting, INP optimization, analytics, and comprehensive security features.",
-      "content": "> Series Background: This is a follow-up to Shipping a Developer Portfolio, where I built the foundation for what would become a comprehensive developer platform. This series documents the security hardening, performance optimization, and production features that transformed a simple portfolio into an enterprise-ready system. --- After building the initial portfolio, I systematically addressed security vulnerabilities, performance bottlenecks, and scalability concerns to create a production-read",
+      "content": "--- After building the initial portfolio, I systematically addressed security vulnerabilities, performance bottlenecks, and scalability concerns to create a production-ready platform. What started as a simple site now includes comprehensive monitoring, automated security headers, background job processing, and enterprise-grade features. This series documents the patterns and decisions that took it from prototype to production. Hardening a developer portfolio isn't just about adding features—it's",
       "tags": [
         "Next.js",
         "Security",
@@ -185,7 +185,7 @@
       "id": "post-20250910-39db73be",
       "title": "Shipping a Developer Portfolio",
       "summary": "How I used Next.js App Router, Tailwind v4, and shadcn/ui to build a production-ready developer portfolio with modern architecture patterns.",
-      "content": "> Update (December 2025): This post is now part of a series! What started as a minimal portfolio has evolved into a production-ready platform with comprehensive security, featuring CSP headers, rate limiting, Redis analytics, background job processing, and extensive monitoring. Check out Hardening a Developer Portfolio for the follow-up covering production deployment patterns. --- I wanted to build a focused portfolio that is fast to load, easy to iterate on, and simple to host. After trying a f",
+      "content": "--- I wanted to build a focused portfolio that is fast to load, easy to iterate on, and simple to host. After trying a few prototypes, I settled on a modern stack that prioritizes server rendering , typed data, and tiny bundles. --- Why App Router? The Next.js App Router represents a fundamental shift toward server-first rendering. Unlike the Pages Router, App Router makes server components the default, which means: - Better performance: Initial page loads are faster since most components render",
       "tags": [
         "Next.js",
         "Tailwind CSS",
@@ -195,7 +195,7 @@
       ],
       "series": "Portfolio",
       "publishedAt": "2025-09-10T12:00:00Z",
-      "readingTime": 3,
+      "readingTime": 2,
       "url": "/blog/shipping-developer-portfolio"
     },
     {
@@ -319,5 +319,5 @@
     "Features",
     "Portfolio"
   ],
-  "generatedAt": "2026-01-19T10:09:12.706Z"
+  "generatedAt": "2026-01-20T04:38:07.169Z"
 }

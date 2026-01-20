@@ -51,7 +51,7 @@ export { AnchorExpansionWrapper } from "./anchor-expansion-wrapper";
 // Sidebar context for hiding duplicate content
 
 // RIVET framework components
-export { ReadingProgressBar } from "./rivet/navigation";
+export { ReadingProgressBar, SeriesBackgroundNote } from "./rivet/navigation";
 export { KeyTakeaway, TLDRSummary } from "./rivet/visual";
 export {
   GlossaryTooltip,
