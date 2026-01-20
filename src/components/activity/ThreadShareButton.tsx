@@ -22,20 +22,21 @@
  * ```
  */
 
-"use client";
+'use client';
 
-import { Share2, Twitter, Linkedin, Link2, Check, Code2 } from "lucide-react";
+import { Share2, Twitter, Linkedin, Link2, Check, Code2 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { useShare, openShareWindow } from "@/hooks/use-share";
-import { cn } from "@/lib/utils";
-import { ANIMATION, SEMANTIC_COLORS } from "@/lib/design-tokens";
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { useShare, openShareWindow } from '@/hooks/use-share';
+import { cn } from '@/lib/utils';
+import { SITE_URL } from '@/lib/site-config';
+import { ANIMATION, SEMANTIC_COLORS } from '@/lib/design-tokens';
 
 // ============================================================================
 // TYPES
@@ -52,9 +53,9 @@ export interface ThreadShareButtonProps {
   /** Optional CSS class */
   className?: string;
   /** Button variant */
-  variant?: "default" | "ghost" | "outline";
+  variant?: 'default' | 'ghost' | 'outline';
   /** Button size */
-  size?: "default" | "sm" | "icon";
+  size?: 'default' | 'sm' | 'icon';
 }
 
 // ============================================================================
@@ -67,30 +68,20 @@ export interface ThreadShareButtonProps {
 export function ThreadShareButton({
   activity,
   className,
-  variant = "ghost",
-  size = "sm",
+  variant = 'ghost',
+  size = 'sm',
 }: ThreadShareButtonProps) {
-  const {
-    share,
-    canUseNativeShare,
-    copyToClipboard,
-    getSocialUrls,
-    recentlyCopied,
-  } = useShare();
+  const { share, canUseNativeShare, copyToClipboard, getSocialUrls, recentlyCopied } = useShare();
 
-  // Build full URL for sharing
-  const fullUrl = activity.href
-    ? typeof window !== "undefined"
-      ? `${window.location.origin}${activity.href}`
-      : activity.href
-    : undefined;
+  // Build full URL for sharing - always use production domain
+  const fullUrl = activity.href ? `${SITE_URL}${activity.href}` : undefined;
 
   const isShareable = !!fullUrl;
 
   const shareData = {
     title: activity.title,
     text: activity.description,
-    url: fullUrl || "",
+    url: fullUrl || '',
   };
 
   const socialUrls = getSocialUrls(shareData);
@@ -99,8 +90,8 @@ export function ThreadShareButton({
   const handleNativeShare = () => {
     if (!isShareable) return;
     share(shareData, {
-      onSuccess: () => console.warn("[Share] Native share succeeded"),
-      onError: (error) => console.error("[Share] Native share failed:", error),
+      onSuccess: () => console.warn('[Share] Native share succeeded'),
+      onError: (error) => console.error('[Share] Native share failed:', error),
     });
   };
 
@@ -121,7 +112,7 @@ export function ThreadShareButton({
         <Button
           variant={variant}
           size={size}
-          className={cn("gap-1.5", className)}
+          className={cn('gap-1.5', className)}
           aria-label="Share options"
           disabled={!isShareable}
         >
@@ -143,25 +134,19 @@ export function ThreadShareButton({
         )}
 
         {/* Twitter/X */}
-        <DropdownMenuItem
-          onClick={() => handleSocialShare(socialUrls.twitter, "Twitter/X")}
-        >
+        <DropdownMenuItem onClick={() => handleSocialShare(socialUrls.twitter, 'Twitter/X')}>
           <Twitter className="mr-2 h-4 w-4" aria-hidden="true" />
           <span>Share on Twitter/X</span>
         </DropdownMenuItem>
 
         {/* DEV */}
-        <DropdownMenuItem
-          onClick={() => handleSocialShare(socialUrls.dev, "DEV")}
-        >
+        <DropdownMenuItem onClick={() => handleSocialShare(socialUrls.dev, 'DEV')}>
           <Code2 className="mr-2 h-4 w-4" aria-hidden="true" />
           <span>Share on DEV</span>
         </DropdownMenuItem>
 
         {/* LinkedIn */}
-        <DropdownMenuItem
-          onClick={() => handleSocialShare(socialUrls.linkedin, "LinkedIn")}
-        >
+        <DropdownMenuItem onClick={() => handleSocialShare(socialUrls.linkedin, 'LinkedIn')}>
           <Linkedin className="mr-2 h-4 w-4" aria-hidden="true" />
           <span>Share on LinkedIn</span>
         </DropdownMenuItem>
@@ -173,7 +158,7 @@ export function ThreadShareButton({
           {recentlyCopied ? (
             <Check
               className={cn(
-                "mr-2 h-4 w-4",
+                'mr-2 h-4 w-4',
                 SEMANTIC_COLORS.alert.success.icon,
                 ANIMATION.transition.fast
               )}
@@ -182,7 +167,7 @@ export function ThreadShareButton({
           ) : (
             <Link2 className="mr-2 h-4 w-4" aria-hidden="true" />
           )}
-          <span>{recentlyCopied ? "Copied!" : "Copy link"}</span>
+          <span>{recentlyCopied ? 'Copied!' : 'Copy link'}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

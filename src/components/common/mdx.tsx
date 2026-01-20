@@ -33,6 +33,7 @@ import {
   CollapsibleSection,
   RoleBasedCTA,
   Footnotes,
+  SeriesBackgroundNote,
 } from '@/components/blog';
 import {
   MDXMCPArchitecture,
@@ -602,6 +603,8 @@ const components: NonNullable<MDXRemoteProps['components']> = {
   CollapsibleSection,
   // Role-based CTA component for audience segmentation
   RoleBasedCTA,
+  // Series Background Note component for series context with previous post links
+  SeriesBackgroundNote,
   // Context Clue component for background information
   ContextClue,
   // Figure caption component for automatic figure numbering

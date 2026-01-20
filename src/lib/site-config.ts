@@ -1,19 +1,20 @@
 // Centralized site configuration used across the app.
 // Keep values here for easy updates across environments and build-time usage.
 
-export const DOMAIN_DEV = "localhost:3000";
-export const DOMAIN_PREVIEW = "dcyfr-preview.vercel.app";
-export const DOMAIN_PRODUCTION = "www.dcyfr.ai";
-export const DOMAIN_PRODUCTION_ALT = "dcyfr.vercel.app";
+export const DOMAIN_DEV = 'localhost:3000';
+export const DOMAIN_PREVIEW = 'www.dcyfr.dev';
+export const DOMAIN_PRODUCTION = 'www.dcyfr.ai';
+export const DOMAIN_PRODUCTION_ALT = 'dcyfr.vercel.app';
 
-export const AUTHOR_NAME = "Drew (dcyfr)";
-export const AUTHOR_EMAIL = "drew@dcyfr.ai";
+export const AUTHOR_NAME = 'Drew (dcyfr)';
+export const AUTHOR_EMAIL = 'drew@dcyfr.ai';
 
 // For display in UI (with sparkle character)
-export const SITE_TITLE = "DCYFR Labs";
-export const SITE_TITLE_PLAIN = "DCYFR Labs"; // For meta tags (without special characters)
-export const SITE_SUBTITLE = "Cyber Architecture & Design";
-export const SITE_DESCRIPTION = "Professional portfolio and blog of DCYFR Labs, exploring cyber architecture, coding, security, and tech trends.";
+export const SITE_TITLE = 'DCYFR Labs';
+export const SITE_TITLE_PLAIN = 'DCYFR Labs'; // For meta tags (without special characters)
+export const SITE_SUBTITLE = 'Cyber Architecture & Design';
+export const SITE_DESCRIPTION =
+  'Professional portfolio and blog of DCYFR Labs, exploring cyber architecture, coding, security, and tech trends.';
 
 /**
  * Feature Flags
@@ -29,7 +30,7 @@ export const FEATURES = {
   enableReadingProgress: true,
   enableTableOfContents: true,
   enableDarkMode: true,
-  enableDevTools: process.env.NODE_ENV === "development",
+  enableDevTools: process.env.NODE_ENV === 'development',
   enableRSS: true,
   enableSearchParams: true, // URL-based search/filters
   enablePrintStyles: true,
@@ -44,25 +45,25 @@ export const CONTENT_CONFIG = {
   postsPerPage: 10,
   relatedPostsCount: 3,
   recentPostsCount: 5,
-  
+
   // Reading metrics
   wordsPerMinute: 200, // for reading time calculation
-  
+
   // Badges & indicators
   newPostDays: 30, // "New" badge threshold
   hotPostViewsThreshold: 350, // "Hot" badge threshold
-  
+
   // TOC configuration
   tocMinHeadings: 3, // minimum headings to show TOC
   tocMaxDepth: 2, // H1-H2 only
-  
+
   // Excerpt/summary
   excerptLength: 160, // characters for truncated summaries
-  
+
   // Code blocks
   codeTheme: {
-    light: "github-light",
-    dark: "github-dark",
+    light: 'github-light',
+    dark: 'github-dark',
   },
 } as const;
 
@@ -72,18 +73,18 @@ export const CONTENT_CONFIG = {
  */
 export const SERVICES = {
   github: {
-    username: "dcyfr",
+    username: 'dcyfr',
     enabled: true,
     cacheMinutes: 5,
   },
-  
+
   redis: {
     enabled: !!process.env.REDIS_URL,
-    viewKeyPrefix: "views:post:",
-    historyKeyPrefix: "views:history:post:",
-    analyticsKeyPrefix: "analytics:",
+    viewKeyPrefix: 'views:post:',
+    historyKeyPrefix: 'views:history:post:',
+    analyticsKeyPrefix: 'analytics:',
   },
-  
+
   giscus: {
     enabled: !!(
       process.env.NEXT_PUBLIC_GISCUS_REPO &&
@@ -95,20 +96,20 @@ export const SERVICES = {
     repoId: process.env.NEXT_PUBLIC_GISCUS_REPO_ID,
     category: process.env.NEXT_PUBLIC_GISCUS_CATEGORY,
     categoryId: process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID,
-    mapping: "pathname" as const,
+    mapping: 'pathname' as const,
     reactionsEnabled: true,
     emitMetadata: false,
   },
-  
+
   resend: {
     enabled: !!process.env.RESEND_API_KEY,
-    fromName: "Drew",
+    fromName: 'Drew',
   },
-  
+
   inngest: {
     enabled: !!(process.env.INNGEST_EVENT_KEY && process.env.INNGEST_SIGNING_KEY),
   },
-  
+
   vercel: {
     analyticsEnabled: true,
     speedInsightsEnabled: true,
@@ -116,8 +117,8 @@ export const SERVICES = {
 
   perplexity: {
     enabled: !!process.env.PERPLEXITY_API_KEY,
-    apiUrl: "https://api.perplexity.ai",
-    defaultModel: "llama-3.1-sonar-large-128k-online" as const,
+    apiUrl: 'https://api.perplexity.ai',
+    defaultModel: 'llama-3.1-sonar-large-128k-online' as const,
     cacheMinutes: 5,
     rateLimit: {
       requestsPerMinute: 5,
@@ -150,9 +151,9 @@ export const SITE_URL = ((): string => {
 })();
 
 export const getOgImageUrl = (title?: string, description?: string): string => {
-  const url = new URL("/opengraph-image", SITE_URL);
-  if (title) url.searchParams.set("title", title);
-  if (description) url.searchParams.set("description", description);
+  const url = new URL('/opengraph-image', SITE_URL);
+  if (title) url.searchParams.set('title', title);
+  if (description) url.searchParams.set('description', description);
   return url.toString();
 };
 
@@ -162,7 +163,7 @@ export const getOgImageUrl = (title?: string, description?: string): string => {
 export const FROM_EMAIL =
   (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_FROM_EMAIL) ||
   (typeof process !== 'undefined' && process.env?.RESEND_FROM_EMAIL) ||
-  "onboarding@resend.dev"; // Default Resend testing email
+  'onboarding@resend.dev'; // Default Resend testing email
 
 const siteConfig = {
   DOMAIN_DEV,

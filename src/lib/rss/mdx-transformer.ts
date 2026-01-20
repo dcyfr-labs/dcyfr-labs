@@ -90,6 +90,27 @@ function preprocessMDXComponents(content: string): string {
     }
   );
 
+  // SeriesBackgroundNote → <blockquote> with series context
+  // Simplified transformation - just include description and context
+  // The links are already handled by remarkAbsoluteUrls plugin
+  processed = processed.replace(/<SeriesBackgroundNote\s+([^>]+)\s*\/>/g, (match, attrsStr) => {
+    const attrs = extractAttributes(attrsStr || '');
+    const description = attrs.description || '';
+    const context = attrs.context || '';
+
+    let content = description;
+    if (context) {
+      content += ` ${context}`;
+    }
+
+    // If content is empty, provide a generic message
+    if (!content.trim()) {
+      content = 'This post is part of a series.';
+    }
+
+    return `<blockquote class="series-background rss-series-background"><strong>📚 Series Background:</strong> ${content}</blockquote>`;
+  });
+
   // RoleBasedCTA → <div> (keep content)
   processed = processed.replace(
     /<RoleBasedCTA[^>]*>([\s\S]*?)<\/RoleBasedCTA>/g,
