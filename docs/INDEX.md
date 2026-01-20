@@ -197,6 +197,7 @@ Platform configuration: environment variables, site config, view counts, deploym
 Project management: todo lists, completed work, deployment guides, automation, and session archives.
 
 **Subdirectories:**
+
 - `sessions/` - Archived session summaries and audit reports
   - `2026-01/` - January 2026 session summaries (RIVET phases, audits, bundle optimization)
 
@@ -209,6 +210,7 @@ Performance: Lighthouse CI, bundle analysis, INP optimization, ISR
 Performance optimization documentation including bundle optimization strategies, image optimization guides, and audit results.
 
 **Key Documents:**
+
 - `bundle-optimization-strategy.md` - Bundle size reduction techniques
 - `image-optimization-guide.md` - Image format and sizing best practices
 - `week-1-image-audit-results.md` - Comprehensive image audit findings
@@ -218,6 +220,7 @@ Performance optimization documentation including bundle optimization strategies,
 Project governance documentation including legal pages implementation, documentation policies, and agent security governance.
 
 **Key Documents:**
+
 - `DOCS_GOVERNANCE.md` - Documentation classification and policies
 - `LEGAL_PAGES_ANALYSIS_AND_RECOMMENDATIONS.md` - Legal pages requirements
 - `LEGAL_PAGES_IMPLEMENTATION_PLAN.md` - Implementation strategy
@@ -236,13 +239,22 @@ SEO, accessibility, and analytics: meta tags, alt text, JSON-LD, tag analytics
 
 ### `content/`
 
-Content validation, markdown standards, Mermaid best practices
+Content validation, markdown standards, Mermaid best practices, and horizontal rule semantic usage
+
+**Key Documents:**
+
+- `rivet-component-library.md` - Week-by-week component implementation tracking
+- `horizontal-rule-best-practices.md` - ✨ **Semantic `<hr>` usage guidelines for blog posts**
+- `horizontal-rules-in-rss-feeds.md` - ✨ **RSS/Atom feed best practices for `<hr>` tags**
+- `horizontal-rule-audit-2026-01-19.md` - ✨ **Complete blog post analysis & compliance audit**
+- `horizontal-rule-analysis-summary.md` - ✨ **Executive summary and findings**
 
 ### `ai/`
 
 AI contributor guides, instruction alignment analysis, AITMPL integration documentation, and discovery research. Includes comprehensive testing strategy, component lifecycle patterns, error handling, state management, and animation decision matrices.
 
 **Key Documents:**
+
 - `INSTRUCTION_ALIGNMENT_INDEX.md` - Guide to instruction alignment analysis
 - `aitmpl-enhancement-plan.md` - AITMPL template integration strategy
 - `aitmpl-integration-summary.md` - Integration completion summary
