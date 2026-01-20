@@ -11,7 +11,8 @@
 **Should you include `<hr>` tags in RSS/Atom feeds?**
 
 **✅ YES - Keep them**, but with caveats:
-- RSS 2.0 allows HTML in `<description>` and `<content:encoded>` 
+
+- RSS 2.0 allows HTML in `<description>` and `<content:encoded>`
 - Atom 1.0 supports HTML in `<content type="html">`
 - Most modern feed readers support `<hr>` tags
 - Semantic meaning (thematic breaks) translates well to feeds
@@ -26,11 +27,11 @@
 **File:** `src/lib/feeds.ts` + `src/lib/mdx-to-html.ts`
 
 Our feed generation pipeline:
+
 1. **MDX → HTML conversion** (`mdxToHtml()` function)
    - Converts MDX content to HTML
    - Uses `remarkGfm` (GitHub Flavored Markdown)
    - **Preserves `<hr>` tags** from `---` in MDX
-   
 2. **HTML sanitization** (via `rehype-sanitize`)
    - Removes ARIA attributes (`aria-*`)
    - Removes data attributes (`data-*`)
@@ -41,7 +42,7 @@ Our feed generation pipeline:
    ```typescript
    const content = item.content
      ? `      <content:encoded><![CDATA[${item.content}]]></content:encoded>`
-     : "";
+     : '';
    ```
 
 **Result:** `<hr>` tags ARE currently included in feeds.
@@ -53,6 +54,7 @@ Our feed generation pipeline:
 ### RSS 2.0 Specification
 
 **HTML Support:**
+
 - `<description>` element: Can contain HTML (entity-encoded)
 - `<content:encoded>` element: Full HTML support (CDATA wrapped)
 - **No restrictions** on specific HTML elements like `<hr>`
@@ -62,6 +64,7 @@ Our feed generation pipeline:
 ### Atom 1.0 Specification
 
 **HTML Support:**
+
 ```xml
 <content type="html">
   <![CDATA[
@@ -73,6 +76,7 @@ Our feed generation pipeline:
 ```
 
 **`type="html"` attribute indicates:**
+
 - Content is HTML
 - Feed readers should render as HTML
 - Standard HTML elements supported
@@ -85,31 +89,31 @@ Our feed generation pipeline:
 
 ### Well-Supported Readers ✅
 
-| Reader | `<hr>` Support | Notes |
-|--------|----------------|-------|
-| **Feedly** | ✅ Full support | Renders as horizontal line |
-| **Inoreader** | ✅ Full support | Respects semantic meaning |
-| **NewsBlur** | ✅ Full support | Visual separator displayed |
-| **Thunderbird** | ✅ Full support | Standard HTML rendering |
-| **Apple Mail** | ✅ Full support | Native HTML support |
-| **Outlook** | ✅ Full support | Standard HTML rendering |
+| Reader          | `<hr>` Support  | Notes                      |
+| --------------- | --------------- | -------------------------- |
+| **Feedly**      | ✅ Full support | Renders as horizontal line |
+| **Inoreader**   | ✅ Full support | Respects semantic meaning  |
+| **NewsBlur**    | ✅ Full support | Visual separator displayed |
+| **Thunderbird** | ✅ Full support | Standard HTML rendering    |
+| **Apple Mail**  | ✅ Full support | Native HTML support        |
+| **Outlook**     | ✅ Full support | Standard HTML rendering    |
 
 ### Limited Support ⚠️
 
-| Reader | `<hr>` Support | Notes |
-|--------|----------------|-------|
-| **RSS Owl** | ⚠️ Partial | May strip styling |
-| **NetNewsWire** | ⚠️ Partial | Minimal HTML styling |
-| **Text-based readers** | ❌ Stripped | Plain text fallback |
+| Reader                 | `<hr>` Support | Notes                |
+| ---------------------- | -------------- | -------------------- |
+| **RSS Owl**            | ⚠️ Partial     | May strip styling    |
+| **NetNewsWire**        | ⚠️ Partial     | Minimal HTML styling |
+| **Text-based readers** | ❌ Stripped    | Plain text fallback  |
 
 ### Mobile Apps 📱
 
-| App | `<hr>` Support | Notes |
-|-----|----------------|-------|
-| **Reeder** | ✅ Full support | Renders horizontally |
-| **Unread** | ✅ Full support | Visual separator |
-| **Feedly Mobile** | ✅ Full support | Consistent with web |
-| **NetNewsWire iOS** | ⚠️ Partial | Minimal styling |
+| App                 | `<hr>` Support  | Notes                |
+| ------------------- | --------------- | -------------------- |
+| **Reeder**          | ✅ Full support | Renders horizontally |
+| **Unread**          | ✅ Full support | Visual separator     |
+| **Feedly Mobile**   | ✅ Full support | Consistent with web  |
+| **NetNewsWire iOS** | ⚠️ Partial      | Minimal styling      |
 
 ---
 
@@ -182,7 +186,7 @@ function rehypeHrToHeading() {
         node.tagName = 'h3';
         node.properties = {
           ...node.properties,
-          style: 'border-top: 1px solid #ccc; padding-top: 1em; margin-top: 2em;'
+          style: 'border-top: 1px solid #ccc; padding-top: 1em; margin-top: 2em;',
         };
         node.children = [{ type: 'text', value: '• • •' }];
       }
@@ -192,11 +196,13 @@ function rehypeHrToHeading() {
 ```
 
 **Pros:**
+
 - More visible in all readers
 - Heading hierarchy maintained
 - Clear visual separator
 
 **Cons:**
+
 - Changes semantic meaning
 - Adds noise to document outline
 - Not what author intended
@@ -210,7 +216,7 @@ function rehypeHrToDiv() {
       if (node.tagName === 'hr') {
         node.tagName = 'div';
         node.properties = {
-          style: 'border-top: 2px solid #e5e7eb; margin: 2rem 0; height: 1px;'
+          style: 'border-top: 2px solid #e5e7eb; margin: 2rem 0; height: 1px;',
         };
       }
     });
@@ -219,11 +225,13 @@ function rehypeHrToDiv() {
 ```
 
 **Pros:**
+
 - Better cross-reader support
 - Inline styles preserved in most readers
 - Visual separator maintained
 
 **Cons:**
+
 - More complex markup
 - Loses semantic `<hr>` meaning
 - Inline styles may be stripped by strict readers
@@ -245,11 +253,13 @@ function rehypeRemoveHr() {
 ```
 
 **Pros:**
+
 - Cleaner HTML
 - Smaller feed size
 - No rendering inconsistencies
 
 **Cons:**
+
 - Loses section breaks entirely
 - Worse readability in long posts
 - Inconsistent with web content
@@ -269,9 +279,9 @@ function rehypeRemoveHr() {
   <content:encoded><![CDATA[
     <h2>Section 1</h2>
     <p>Content for section 1...</p>
-    
+
     <hr />
-    
+
     <h2>Section 2</h2>
     <p>Content for section 2...</p>
   ]]></content:encoded>
@@ -279,6 +289,7 @@ function rehypeRemoveHr() {
 ```
 
 **Validation:** ✅ PASS
+
 - [W3C Feed Validation Service](https://validator.w3.org/feed/)
 - No errors with `<hr>` tags in `<content:encoded>`
 
@@ -293,9 +304,9 @@ function rehypeRemoveHr() {
   <content type="html"><![CDATA[
     <h2>Section 1</h2>
     <p>Content for section 1...</p>
-    
+
     <hr />
-    
+
     <h2>Section 2</h2>
     <p>Content for section 2...</p>
   ]]></content>
@@ -303,6 +314,7 @@ function rehypeRemoveHr() {
 ```
 
 **Validation:** ✅ PASS
+
 - No specification violations
 - Standard HTML element
 
@@ -359,23 +371,25 @@ curl -s http://localhost:3000/blog/feed | \
 **`<hr>` handling:** ✅ Preserved (via `mdxToHtml()`)
 
 **Example from actual feed:**
+
 ```xml
 <content:encoded><![CDATA[
   <p>Introduction...</p>
-  
+
   <hr />
-  
+
   <h2>Section 1</h2>
   <p>Details...</p>
-  
+
   <hr />
-  
+
   <h2>Section 2</h2>
   <p>More details...</p>
 ]]></content:encoded>
 ```
 
 **Assessment:** ✅ **Working correctly**
+
 - Validates against RSS 2.0 spec
 - Renders in tested readers (Feedly, Inoreader, NewsBlur)
 - Semantic meaning preserved
@@ -408,6 +422,7 @@ The current implementation (`src/lib/feeds.ts` + `src/lib/mdx-to-html.ts`) handl
 ### When to Reconsider
 
 Only revisit this if:
+
 - User reports rendering issues in specific readers
 - Feed validator shows new errors (unlikely)
 - Shift to text-only readers (rare scenario)
