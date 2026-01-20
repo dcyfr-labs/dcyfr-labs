@@ -268,36 +268,20 @@ export const refreshGitHubData = inngest.createFunction(
     id: 'refresh-github-data',
     retries: 1, // Fail fast on hourly jobs
   },
-  { cron: '0 * * * *' }, // Every hour at minute 0 - uses <GlossaryTooltip term="Cron Expression" definition="A time-based scheduling format using five fields (minute, hour, day, month, weekday) to define recurring task schedules. '0 * * * *' means 'run at minute 0 of every hour'">cron syntax</GlossaryTooltip>
+  { cron: '0 * * * *' }, // Every hour at minute 0
   async ({ step }) => {
-    // Step 1: Fetch fresh data from GitHub
-    const freshData = await step.run('fetch-github-data', async () => {
-      const response = await fetch('https://api.github.com/graphql', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${GITHUB_TOKEN}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: CONTRIBUTIONS_QUERY,
-          variables: { username: GITHUB_USERNAME },
-        }),
-      });
+    await step.run('fetch-github-contributions', async () => {
+      const contributions = await fetchGitHubContributions(GITHUB_USERNAME);
 
-      return parseContributions(await response.json());
+      // Store in Redis cache
+      await redis.set(
+        `github:contributions:${GITHUB_USERNAME}`,
+        JSON.stringify(contributions),
+        { EX: 60 * 60 * 2 } // Cache for 2 hours
+      );
+
+      return { fetchedAt: new Date().toISOString(), count: contributions.length };
     });
-
-    // Step 2: Update <GlossaryTooltip term="Redis" definition="An in-memory data structure store used as a database, cache, and message broker. Known for extremely fast read/write operations and built-in data expiration">Redis cache</GlossaryTooltip>
-    await step.run('update-cache', async () => {
-      const redis = await getRedisClient();
-      await redis.setEx(CACHE_KEY, 3600, JSON.stringify(freshData));
-    });
-
-    return {
-      success: true,
-      totalContributions: freshData.totalContributions,
-      lastUpdated: freshData.lastUpdated,
-    };
   }
 );
 ```
