@@ -326,7 +326,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                     contentType="post"
                     title={post.title}
                     description={post.summary}
-                    href={`/blog/${post.slug}`}
+                    href={`${SITE_URL}/blog/${post.slug}`}
                     variant="default"
                     showCounts={true}
                   />

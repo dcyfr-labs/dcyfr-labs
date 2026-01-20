@@ -26,7 +26,20 @@ previousSlugs:
   - 'event-driven-architecture'
 ---
 
-> **Series Background:** This is Part 3 of the Portfolio series, following [Shipping a Developer Portfolio](/blog/shipping-developer-portfolio) and [Hardening a Developer Portfolio](/blog/hardening-developer-portfolio). Here we explore how event-driven architecture transforms user experience and system reliability.
+<SeriesBackgroundNote
+  description="This is Part 3 of the Portfolio series."
+  previousPost={{
+    title: 'Hardening a Developer Portfolio',
+    slug: 'hardening-developer-portfolio',
+  }}
+  additionalPosts={[
+    {
+      title: 'Shipping a Developer Portfolio',
+      slug: 'shipping-developer-portfolio',
+    },
+  ]}
+  context="Following the initial build and security hardening, here we explore how event-driven architecture transforms user experience and system reliability using Inngest for background job processing."
+/>
 
 Your API routes are lying to your users. They return `200 OK` while work is still happening. The contact form says "Message sent!" but the email hasn't been delivered yet.
 

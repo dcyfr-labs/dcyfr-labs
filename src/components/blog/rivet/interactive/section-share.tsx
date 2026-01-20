@@ -1,14 +1,16 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { cn } from "@/lib/utils";
+import React, { useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { SITE_URL } from '@/lib/site-config';
 import {
   SPACING,
   SPACING_VALUES,
   TYPOGRAPHY,
   SEMANTIC_COLORS,
   ANIMATION,
-} from "@/lib/design-tokens";
+} from '@/lib/design-tokens';
 
 /**
  * SectionShare - Per-section share buttons for blog content
@@ -38,18 +40,13 @@ interface SectionShareProps {
   className?: string;
 }
 
-export function SectionShare({
-  sectionId,
-  sectionTitle,
-  className,
-}: SectionShareProps) {
+export function SectionShare({ sectionId, sectionTitle, className }: SectionShareProps) {
   const [copied, setCopied] = useState(false);
+  const pathname = usePathname();
 
-  // Build the section URL with hash
+  // Build the section URL with hash - always use production domain
   const getSectionUrl = () => {
-    if (typeof window === "undefined") return "";
-    const baseUrl = window.location.origin + window.location.pathname;
-    return `${baseUrl}#${sectionId}`;
+    return `${SITE_URL}${pathname}#${sectionId}`;
   };
 
   const handleCopyLink = async () => {
@@ -59,7 +56,7 @@ export function SectionShare({
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
-      console.warn("Failed to copy link:", error);
+      console.warn('Failed to copy link:', error);
     }
   };
 
@@ -67,24 +64,24 @@ export function SectionShare({
     const url = getSectionUrl();
     const text = `Check out "${sectionTitle}"`;
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
-    window.open(twitterUrl, "_blank", "noopener,noreferrer");
+    window.open(twitterUrl, '_blank', 'noopener,noreferrer');
   };
 
   const handleLinkedInShare = () => {
     const url = getSectionUrl();
     const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
-    window.open(linkedInUrl, "_blank", "noopener,noreferrer");
+    window.open(linkedInUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
     <div
       className={cn(
-        "flex items-center gap-2",
-        "rounded-lg p-2",
+        'flex items-center gap-2',
+        'rounded-lg p-2',
         `my-${SPACING_VALUES.md}`,
         TYPOGRAPHY.label.small,
-        "bg-muted/50",
-        "border border-border/50",
+        'bg-muted/50',
+        'border border-border/50',
         ANIMATION.transition.colors,
         className
       )}
@@ -97,10 +94,10 @@ export function SectionShare({
         type="button"
         onClick={handleTwitterShare}
         className={cn(
-          "inline-flex items-center justify-center",
-          "w-8 h-8 rounded-md",
-          "text-muted-foreground hover:text-foreground",
-          "hover:bg-muted",
+          'inline-flex items-center justify-center',
+          'w-8 h-8 rounded-md',
+          'text-muted-foreground hover:text-foreground',
+          'hover:bg-muted',
           SEMANTIC_COLORS.interactive.focus,
           ANIMATION.transition.colors
         )}
@@ -121,10 +118,10 @@ export function SectionShare({
         type="button"
         onClick={handleLinkedInShare}
         className={cn(
-          "inline-flex items-center justify-center",
-          "w-8 h-8 rounded-md",
-          "text-muted-foreground hover:text-foreground",
-          "hover:bg-muted",
+          'inline-flex items-center justify-center',
+          'w-8 h-8 rounded-md',
+          'text-muted-foreground hover:text-foreground',
+          'hover:bg-muted',
           SEMANTIC_COLORS.interactive.focus,
           ANIMATION.transition.colors
         )}
@@ -145,15 +142,15 @@ export function SectionShare({
         type="button"
         onClick={handleCopyLink}
         className={cn(
-          "inline-flex items-center justify-center",
-          "w-8 h-8 rounded-md",
-          "text-muted-foreground hover:text-foreground",
-          "hover:bg-muted",
+          'inline-flex items-center justify-center',
+          'w-8 h-8 rounded-md',
+          'text-muted-foreground hover:text-foreground',
+          'hover:bg-muted',
           SEMANTIC_COLORS.interactive.focus,
           ANIMATION.transition.colors,
-          copied && "text-success bg-success/10"
+          copied && 'text-success bg-success/10'
         )}
-        aria-label={copied ? "Link copied!" : `Copy link to "${sectionTitle}"`}
+        aria-label={copied ? 'Link copied!' : `Copy link to "${sectionTitle}"`}
       >
         {copied ? (
           <svg
@@ -189,11 +186,7 @@ export function SectionShare({
       {/* Visual feedback text */}
       {copied && (
         <span
-          className={cn(
-            TYPOGRAPHY.body.small,
-            "text-success",
-            "animate-in fade-in-0 duration-200"
-          )}
+          className={cn(TYPOGRAPHY.body.small, 'text-success', 'animate-in fade-in-0 duration-200')}
           role="status"
           aria-live="polite"
         >
