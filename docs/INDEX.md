@@ -65,11 +65,15 @@ The documentation is organized into **18 focused directories**:
 - **[features/inngest-integration.md](./features/inngest-integration)** - Background jobs
 - **[features/github-integration.md](./features/github-integration)** - GitHub API
 - **[features/mcp/](./features/mcp/)** - Model Context Protocol
-- **[features/ACTIVITY_FEED_AUTOMATION.md](./features/activity-feed-automation)** - ✨ **Activity feed automation strategy**
-- **[features/ACTIVITY_AUTOMATION_QUICK_START.md](./features/activity-automation-quick-start)** - ✨ **30-min activity caching implementation**
-- **[features/ACTIVITY_CACHING_IMPLEMENTATION.md](./features/activity-caching-implementation)** - ✨ **Implementation summary & testing guide**
-- **features/SERIES_REFACTOR_PROGRESS.md** - ✨ **Blog series refactor progress tracker**
-- **features/FUTURE_IDEAS.md** - ✨ **Post-launch feature ideas & evaluation**
+- **[features/inngest-integration.md](./features/inngest-integration)** - Background jobs
+- **[features/github-integration.md](./features/github-integration)** - GitHub API
+- **[features/mcp/](./features/mcp/)** - Model Context Protocol
+- **[features/rss-mdx-transformation.md](./features/rss-mdx-transformation)** - ✨ **RSS feed custom component transformation**
+- **[features/ACTIVITY_FEED_AUTOMATION.md](./features/activity-feed-automation)** - Activity feed automation strategy
+- **[features/ACTIVITY_AUTOMATION_QUICK_START.md](./features/activity-automation-quick-start)** - 30-min activity caching implementation
+- **[features/ACTIVITY_CACHING_IMPLEMENTATION.md](./features/activity-caching-implementation)** - Implementation summary & testing guide
+- **features/SERIES_REFACTOR_PROGRESS.md** - Blog series refactor progress tracker
+- **features/FUTURE_IDEAS.md** - Post-launch feature ideas & evaluation
 
 ### Design System
 
