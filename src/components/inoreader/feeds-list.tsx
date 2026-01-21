@@ -5,22 +5,22 @@
  * Includes search, filtering, and card-based layout.
  */
 
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Search, ExternalLink, Clock, Tag } from "lucide-react";
-import type { InoreaderArticle } from "@/types/inoreader";
-import { SPACING, HOVER_EFFECTS } from "@/lib/design-tokens";
+import { useState } from 'react';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Search, ExternalLink, Clock, Tag } from 'lucide-react';
+import type { InoreaderArticle } from '@/types/inoreader';
+import { SPACING, HOVER_EFFECTS } from '@/lib/design-tokens';
 
 interface FeedsListProps {
   articles: InoreaderArticle[];
 }
 
 export function FeedsList({ articles }: FeedsListProps) {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
   // Extract all unique tags from articles
@@ -28,10 +28,10 @@ export function FeedsList({ articles }: FeedsListProps) {
     new Set(
       articles.flatMap((article) =>
         article.categories
-          .filter((cat) => cat.startsWith("user/-/label/"))
-          .map((cat) => cat.replace("user/-/label/", "")),
-      ),
-    ),
+          .filter((cat) => cat.startsWith('user/-/label/'))
+          .map((cat) => cat.replace('user/-/label/', ''))
+      )
+    )
   ).sort();
 
   // Filter articles based on search and selected tag
@@ -65,7 +65,7 @@ export function FeedsList({ articles }: FeedsListProps) {
         {allTags.length > 0 && (
           <div className="flex items-center gap-2 overflow-x-auto pb-2">
             <Badge
-              variant={selectedTag === null ? "default" : "outline"}
+              variant={selectedTag === null ? 'default' : 'outline'}
               className="cursor-pointer whitespace-nowrap"
               onClick={() => setSelectedTag(null)}
             >
@@ -74,7 +74,7 @@ export function FeedsList({ articles }: FeedsListProps) {
             {allTags.map((tag) => (
               <Badge
                 key={tag}
-                variant={selectedTag === tag ? "default" : "outline"}
+                variant={selectedTag === tag ? 'default' : 'outline'}
                 className="cursor-pointer whitespace-nowrap"
                 onClick={() => setSelectedTag(tag)}
               >
@@ -98,7 +98,7 @@ export function FeedsList({ articles }: FeedsListProps) {
           </p>
         </div>
       ) : (
-         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredArticles.map((article) => (
             <ArticleCard key={article.id} article={article} />
           ))}
@@ -113,16 +113,16 @@ export function FeedsList({ articles }: FeedsListProps) {
  */
 function ArticleCard({ article }: { article: InoreaderArticle }) {
   // Format timestamp
-  const publishedDate = new Date(article.published * 1000).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
+  const publishedDate = new Date(article.published * 1000).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
   });
 
   // Extract plain text from HTML summary (first 200 chars)
   // Complete HTML tag removal pattern to avoid incomplete sanitization
   const plainTextSummary = article.summary.content
-    .replace(/<[^>]*?>/g, "")
+    .replace(/<[^>]*?>/g, '')
     .substring(0, 200)
     .trim();
 
@@ -132,8 +132,8 @@ function ArticleCard({ article }: { article: InoreaderArticle }) {
 
   // Extract tags
   const tags = article.categories
-    .filter((cat) => cat.startsWith("user/-/label/"))
-    .map((cat) => cat.replace("user/-/label/", ""))
+    .filter((cat) => cat.startsWith('user/-/label/'))
+    .map((cat) => cat.replace('user/-/label/', ''))
     .slice(0, 3); // Show max 3 tags
 
   return (
@@ -168,7 +168,7 @@ function ArticleCard({ article }: { article: InoreaderArticle }) {
       <CardContent>
         <p className="mb-4 line-clamp-3 text-sm text-muted-foreground">
           {plainTextSummary}
-          {article.summary.content.length > 200 && "..."}
+          {article.summary.content.length > 200 && '...'}
         </p>
 
         {/* Source */}

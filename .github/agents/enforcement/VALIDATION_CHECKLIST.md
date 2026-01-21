@@ -1,7 +1,7 @@
 # Pre-Completion Validation Checklist
 
-**File:** `.github/agents/enforcement/VALIDATION_CHECKLIST.md`  
-**Last Updated:** December 9, 2025  
+**File:** `.github/agents/enforcement/VALIDATION_CHECKLIST.md`
+**Last Updated:** December 9, 2025
 **Scope:** Automated validation gates, manual checks, completion criteria
 
 ---
@@ -82,7 +82,7 @@ gh api repos/dcyfr/dcyfr-labs/code-scanning/alerts --jq '.[] | select(.state == 
 - ✅ No log injection (CWE-117)
 - ✅ No file system race conditions (CWE-367)
 
-**Status:** ✅ **MUST PASS** for security-sensitive code  
+**Status:** ✅ **MUST PASS** for security-sensitive code
 **When Required:**
 - ✅ API routes (especially query parameters)
 - ✅ File operations
@@ -114,6 +114,24 @@ gh api repos/dcyfr/dcyfr-labs/code-scanning/alerts --jq '.[] | select(.state == 
 - ✅ API routes documented
 - ✅ Complex logic explained
 - ✅ README updated (if needed)
+- ✅ CHANGELOG.md updated (if public-facing change)
+
+**CHANGELOG.md Requirements:**
+- ✅ **New pages/components/features:** Add entry to CHANGELOG.md
+- ✅ **Bug fixes/internal changes:** May skip if truly minor
+- ✅ **Breaking changes:** MANDATORY entry, mark with ⚠️ BREAKING
+- ✅ **Format:** Use CalVer `[YYYY.MM.DD]` with standard sections (Added, Changed, Removed, Fixed)
+- ✅ **Frequency:** Update within 7 days of significant changes
+
+**Validation Commands:**
+```bash
+npm run changelog:check          # Warn if stale (>7 days)
+npm run changelog:check:strict   # Block if stale (requires --strict flag)
+npm run changelog:validate       # Validate format compliance
+npm run changelog <N>            # View last N commits for reference
+```
+
+**Reference:** [CHANGELOG.md](../../../CHANGELOG.md)
 
 ### 4. Testing Completeness
 **Checks:**
@@ -262,14 +280,14 @@ function getGitHubData() {
 
 // After
 function getGitHubData() {
-  const isProduction = process.env.NODE_ENV === 'production' 
+  const isProduction = process.env.NODE_ENV === 'production'
     || process.env.VERCEL_ENV === 'production';
-  
+
   if (isProduction) {
     console.error('❌ CRITICAL: GitHub API data unavailable');
     return null;  // Don't use fake data in production
   }
-  
+
   // Safe demo data in development
   return { stars: 15, forks: 0 };
 }

@@ -122,9 +122,22 @@ Closes #(issue number)
 
 - [ ] README.md updated (if needed)
 - [ ] `/docs` updated (if needed)
-- [ ] CHANGELOG.md updated
+- [ ] CHANGELOG.md updated (see `npm run changelog:help` for guidelines)
 - [ ] Code comments added for complex logic
 - [ ] API documentation updated (if applicable)
+
+**Changelog Validation:**
+```bash
+# Before marking complete, validate changelog format:
+npm run changelog:validate    # Check format compliance
+npm run changelog:check       # Check if stale (>7 days)
+```
+
+**Guidelines:**
+- ✅ Add entry for: New pages, components, features, breaking changes
+- ✅ May skip for: Minor bug fixes, internal changes, refactoring
+- ✅ Format: Use CalVer `[YYYY.MM.DD]` with sections (Added, Changed, Removed, Fixed)
+- ✅ Breaking changes: Mark with ⚠️ BREAKING prefix
 
 ## Checklist
 
