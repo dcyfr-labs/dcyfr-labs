@@ -7,6 +7,50 @@ and this project uses [Calendar Versioning](https://calver.org/) with the `YYYY.
 
 **Breaking changes** are marked with ⚠️ BREAKING in the version header.
 
+## [2026.01.21]
+
+### Added
+
+- **Changelog Automation & Guardrails System** - Complete 3-tier system for changelog management
+  - `scripts/validate-changelog-sync.mjs` - Detects stale changelogs (>7 days default)
+  - `scripts/validate-changelog-format.mjs` - Validates CalVer format and structure
+  - `npm run changelog:check` - Warning mode for stale detection
+  - `npm run changelog:check:strict` - Strict enforcement mode for CI/CD
+  - `npm run changelog:validate` - Format compliance validation
+  - Comprehensive implementation guide (`docs/operations/CHANGELOG_AUTOMATION_IMPLEMENTATION.md`)
+
+### Changed
+
+- **Improved `scripts/changelog.mjs`** - Enhanced user experience and compliance
+  - Removed emojis (📝 → text) for DCYFR compliance
+  - Added input validation for count and format arguments
+  - Better error messages with helpful guidance
+  - Format validation with warnings before fallback
+  - Improved output formatting and usage instructions
+
+- **Updated `.github/agents/enforcement/VALIDATION_CHECKLIST.md`**
+  - Added dedicated changelog requirements section to documentation checks
+  - Documented when to update (new features, breaking changes)
+  - Specified validation commands to run before completion
+  - Established 7-day update frequency guideline
+  - Added DCYFR enforcement for AI agents
+
+- **Updated `.github/PULL_REQUEST_TEMPLATE.md`**
+  - Enhanced documentation section with changelog guidelines
+  - Added specific validation commands and examples
+  - Clarified criteria for when changelog updates are required
+  - Provided clear guidance for developers
+
+### Rationale
+
+The changelog automation system addresses the need for consistent changelog maintenance by:
+
+- Preventing stale changelogs (>7 days without updates)
+- Ensuring proper CalVer format compliance
+- Providing both warnings (local dev) and strict enforcement (CI/CD)
+- Creating structured guardrails in DCYFR enforcement documentation
+- Helping AI agents remember changelog requirements via VALIDATION_CHECKLIST.md
+
 ## [2026.01.11]
 
 ### Added
