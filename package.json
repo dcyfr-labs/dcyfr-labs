@@ -228,7 +228,7 @@
     "critters": "^0.0.25",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
-    "fastmcp": "^3.26.7",
+    "fastmcp": "^3.27.0",
     "framer-motion": "^12.26.2",
     "fuse.js": "^7.1.0",
     "glob": "^10.0.0",
