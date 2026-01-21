@@ -221,6 +221,7 @@ describe("FAQSchema", () => {
       await user.click(expandAllButton);
       
       await waitFor(() => {
+        // lgtm [js/missing-anchor] - Test assertions for partial text matching in UI content
         expect(screen.getByText(/RIVET stands for/)).toBeVisible();
         expect(screen.getByText(/Import the component/)).toBeVisible();
         expect(screen.getByText(/schema\.org\/FAQPage/)).toBeVisible();
@@ -253,6 +254,7 @@ describe("FAQSchema", () => {
       render(<FAQSchema items={defaultItems} defaultExpanded={["faq-1", "faq-3"]} />);
       
       await waitFor(() => {
+        // lgtm [js/missing-anchor] - Test assertions for partial text matching in UI content
         expect(screen.getByText(/RIVET stands for/)).toBeVisible();
         expect(screen.getByText(/schema\.org\/FAQPage/)).toBeVisible();
         expect(screen.queryByText(/Import the component/)).not.toBeInTheDocument();

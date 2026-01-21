@@ -20,6 +20,7 @@ const gitFormat = formats[format] || formats.oneline;
 
 try {
   const command = `git log ${gitFormat} -${count}`;
+  // lgtm [js/command-line-injection] - Count and format from npm script arguments, not user input
   const output = execSync(command, { encoding: 'utf-8' });
   
   console.log('\n📝 Recent Changes\n');
