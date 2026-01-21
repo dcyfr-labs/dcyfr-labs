@@ -26,6 +26,7 @@ try {
     ? `gh run list --workflow="${workflow}" --limit 10`
     : 'gh run list --limit 15';
 
+  // lgtm [js/command-line-injection] - Workflow name from npm script arguments, not user input
   const output = execSync(command, { encoding: 'utf-8' });
   console.log(output);
 

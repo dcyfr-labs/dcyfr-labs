@@ -44,8 +44,9 @@ export async function GET(request: NextRequest) {
     // In production, compare with stored session state
     if (state) {
       // TODO: Implement session-based CSRF validation
-      // For now, just log the state for debugging
-      console.warn('OAuth state parameter:', state);
+      // Sanitize state parameter to prevent log injection
+      const sanitizedState = state.replace(/[\r\n]/g, '');
+      console.warn('OAuth state parameter:', sanitizedState);
     }
 
     // Exchange authorization code for tokens

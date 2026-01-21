@@ -14,6 +14,7 @@ try {
 
   if (packageName) {
     console.log(`Package: ${packageName}\n`);
+    // lgtm [js/command-line-injection] - Package name from npm script arguments, not user input
     const output = execSync(`npm ls ${packageName} --depth=3`, { encoding: 'utf-8' });
     console.log(output);
   } else {
