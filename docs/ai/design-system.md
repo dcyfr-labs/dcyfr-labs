@@ -4,6 +4,12 @@
 
 This comprehensive guide ensures consistency, prevents duplication, and maintains design token usage across the codebase.
 
+> **Related Documentation:**
+>
+> - **Quick Reference:** [design-system-quick-ref.md](./design-system-quick-ref.md) - For daily development (component patterns)
+> - **Complete Catalog:** [../design/design-system.md](../design/design-system.md) - Comprehensive design token catalog
+> - **Enforcement Rules:** [enforcement-rules.md](./enforcement-rules.md) - Validation and approval gates
+
 ## Phase 1: Discovery (REQUIRED FIRST)
 
 **STOP before writing any UI code. Complete this discovery phase first.**
@@ -52,7 +58,7 @@ import {
   PAGE_LAYOUT, // Page-level layout constants
   ARCHIVE_LAYOUT, // Archive/list page constants
   ARTICLE_LAYOUT, // Article/blog post constants
-} from "@/lib/design-tokens";
+} from '@/lib/design-tokens';
 ```
 
 **Available design tokens:**
@@ -473,9 +479,9 @@ grep -r 'p-[67]"' src/components/
 
 ```typescript
 // ✅ Required imports for new components
-import { SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
-import { Button, Card } from "@/components/ui/...";
-import { PageLayout } from "@/components/layouts";
+import { SPACING, TYPOGRAPHY } from '@/lib/design-tokens';
+import { Button, Card } from '@/components/ui/...';
+import { PageLayout } from '@/components/layouts';
 ```
 
 ### 3. Component Structure
@@ -704,7 +710,7 @@ node scripts/validate-design-tokens.mjs
 #### Step 2: Import design tokens
 
 ```tsx
-import { SPACING, TYPOGRAPHY, HOVER_EFFECTS } from "@/lib/design-tokens";
+import { SPACING, TYPOGRAPHY, HOVER_EFFECTS } from '@/lib/design-tokens';
 ```
 
 #### Step 3: Replace hardcoded values
@@ -822,7 +828,7 @@ Need animation? Start here:
 **Scroll Reveal (Homepage, Blog Posts):**
 
 ```tsx
-import { ScrollReveal } from "@/components/features";
+import { ScrollReveal } from '@/components/features';
 
 {
   posts.map((post, i) => (
@@ -836,7 +842,7 @@ import { ScrollReveal } from "@/components/features";
 **Card Hover Effect (Most Common):**
 
 ```tsx
-import { HOVER_EFFECTS } from "@/lib/design-tokens";
+import { HOVER_EFFECTS } from '@/lib/design-tokens';
 
 <Card className={HOVER_EFFECTS.card}>
   <CardContent>{content}</CardContent>
@@ -846,7 +852,7 @@ import { HOVER_EFFECTS } from "@/lib/design-tokens";
 **Button Press Feedback:**
 
 ```tsx
-import { ANIMATION } from "@/lib/design-tokens";
+import { ANIMATION } from '@/lib/design-tokens';
 
 <Button className={cn(ANIMATION.interactive.press)}>Click me</Button>;
 ```
@@ -854,17 +860,15 @@ import { ANIMATION } from "@/lib/design-tokens";
 **Custom Transition:**
 
 ```tsx
-import { ANIMATION } from "@/lib/design-tokens";
+import { ANIMATION } from '@/lib/design-tokens';
 
-<div className={cn(ANIMATION.transition.base, "hover:shadow-lg")}>
-  {content}
-</div>;
+<div className={cn(ANIMATION.transition.base, 'hover:shadow-lg')}>{content}</div>;
 ```
 
 **Page Navigation:**
 
 ```tsx
-import { TransitionLink } from "@/components/common";
+import { TransitionLink } from '@/components/common';
 
 <TransitionLink href="/blog/post-slug">Read more →</TransitionLink>;
 ```
@@ -872,12 +876,12 @@ import { TransitionLink } from "@/components/common";
 **3D Tilt Effect (Legitimate Framer Motion Use):**
 
 ```tsx
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
 <motion.div
   style={{
     transform: `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`,
-    transition: "transform 0.2s ease-out",
+    transition: 'transform 0.2s ease-out',
   }}
 >
   {content}
@@ -949,7 +953,7 @@ See comprehensive guide: [`docs/ai/LOGGING_SECURITY.md`](./logging-security)
 console.log(`Service Account: ${credentials.client_email}`);
 
 // ✅ CORRECT: Generic message
-console.log("✅ Service account JSON is valid");
+console.log('✅ Service account JSON is valid');
 ```
 
 **Option 2: Mask Sensitive Data** (When verification logging needed)
@@ -957,7 +961,7 @@ console.log("✅ Service account JSON is valid");
 ```javascript
 // ✅ CORRECT: Mask email for verification
 const maskEmail = (email) => {
-  const [local, domain] = email.split("@");
+  const [local, domain] = email.split('@');
   return `${local.substring(0, 2)}***@${domain}`;
 };
 console.log(`Service Account: ${maskEmail(credentials.client_email)}`);
@@ -976,8 +980,8 @@ if (!process.env.GOOGLE_API_KEY) {
 
 // ✅ CORRECT - Generic message
 if (!process.env.GOOGLE_API_KEY) {
-  console.error("Missing GOOGLE_API_KEY environment variable");
-  console.error("See: docs/setup.md for configuration instructions");
+  console.error('Missing GOOGLE_API_KEY environment variable');
+  console.error('See: docs/setup.md for configuration instructions');
 }
 ```
 
@@ -990,7 +994,7 @@ console.log(`User login: ${username}:${password}`);
 // ✅ CORRECT - Log only non-sensitive metadata
 console.log(`Authentication attempt for user account`);
 console.log(`Auth provider: ${authProvider}`);
-console.log(`Status: ${result.success ? "success" : "failed"}`);
+console.log(`Status: ${result.success ? 'success' : 'failed'}`);
 ```
 
 ## Getting Help

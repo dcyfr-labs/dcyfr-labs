@@ -1,8 +1,14 @@
 # Design System Guide
 
-**Version:** 1.0.0  
-**Last Updated:** November 8, 2025  
+**Version:** 1.0.0
+**Last Updated:** November 8, 2025
 **Maintainers:** Drew
+
+> **Related Documentation:**
+>
+> - **Quick Reference:** [../ai/design-system-quick-ref.md](../ai/design-system-quick-ref.md) - For daily development (component patterns)
+> - **Validation Guide:** [../ai/design-system.md](../ai/design-system.md) - For validation checklist and enforcement
+> - **AI Best Practices:** [../ai/best-practices.md](../ai/best-practices.md) - Development workflow guidelines
 
 ---
 
@@ -46,18 +52,23 @@ Our design system follows these core principles:
 ## Design Principles
 
 ### 1. Progressive Disclosure
+
 Show users what they need, when they need it. Don't overwhelm with information.
 
 ### 2. Consistency
+
 Similar elements should look and behave similarly across the site.
 
 ### 3. Feedback
+
 Every interaction should provide clear, immediate feedback.
 
 ### 4. Flexibility
+
 Design for various content types and screen sizes.
 
 ### 5. Clarity
+
 Prioritize legibility and comprehension over decoration.
 
 ---
@@ -72,18 +83,19 @@ All design tokens are centralized in `src/lib/design-tokens.ts`. Import and use 
 import { CONTAINER_WIDTHS, getContainerClasses } from '@/lib/design-tokens';
 
 // Five semantic width options
-CONTAINER_WIDTHS.narrow    // max-w-4xl (768px) - Forms, focused content
-CONTAINER_WIDTHS.standard  // max-w-5xl (1024px) - Core pages (home, about, contact, resume)
-CONTAINER_WIDTHS.content   // max-w-6xl (1152px) - Content pages with sidebars (blog posts, project details)
-CONTAINER_WIDTHS.archive   // max-w-7xl (1280px) - Archive/listing pages (blog listing, projects listing)
-CONTAINER_WIDTHS.dashboard // max-w-[1536px] (1536px) - Full-width dashboards with data tables, charts, analytics
+CONTAINER_WIDTHS.narrow; // max-w-4xl (768px) - Forms, focused content
+CONTAINER_WIDTHS.standard; // max-w-5xl (1024px) - Core pages (home, about, contact, resume)
+CONTAINER_WIDTHS.content; // max-w-6xl (1152px) - Content pages with sidebars (blog posts, project details)
+CONTAINER_WIDTHS.archive; // max-w-7xl (1280px) - Archive/listing pages (blog listing, projects listing)
+CONTAINER_WIDTHS.dashboard; // max-w-[1536px] (1536px) - Full-width dashboards with data tables, charts, analytics
 
 // Utility function for complete classes
-getContainerClasses('standard')
+getContainerClasses('standard');
 // Returns: "mx-auto max-w-5xl py-14 md:py-20 px-4 sm:px-6 md:px-8"
 ```
 
 **When to use each:**
+
 - **Narrow** (`max-w-4xl`): Contact form, focused content, centered text blocks
 - **Standard** (`max-w-5xl`): Homepage, about page, resume, contact page (default for most pages)
 - **Content** (`max-w-6xl`): Individual blog posts, project detail pages (with sidebar/TOC)
@@ -96,30 +108,27 @@ getContainerClasses('standard')
 import { TYPOGRAPHY } from '@/lib/design-tokens';
 
 // Heading variants
-TYPOGRAPHY.h1.standard  // Standard page titles
-TYPOGRAPHY.h1.hero      // Homepage hero
-TYPOGRAPHY.h1.article   // Blog post titles (larger)
+TYPOGRAPHY.h1.standard; // Standard page titles
+TYPOGRAPHY.h1.hero; // Homepage hero
+TYPOGRAPHY.h1.article; // Blog post titles (larger)
 
-TYPOGRAPHY.h2.standard  // Section headings
-TYPOGRAPHY.h3.standard  // Subsection headings
+TYPOGRAPHY.h2.standard; // Section headings
+TYPOGRAPHY.h3.standard; // Subsection headings
 
 // Text styles
-TYPOGRAPHY.description  // Lead text, page descriptions
-TYPOGRAPHY.metadata     // Dates, reading time
-TYPOGRAPHY.body         // Long-form content
+TYPOGRAPHY.description; // Lead text, page descriptions
+TYPOGRAPHY.metadata; // Dates, reading time
+TYPOGRAPHY.body; // Long-form content
 ```
 
 **Usage example:**
+
 ```tsx
 export default function Page() {
   return (
     <div>
-      <h1 className={TYPOGRAPHY.h1.standard}>
-        Page Title
-      </h1>
-      <p className={TYPOGRAPHY.description}>
-        A compelling description that draws readers in.
-      </p>
+      <h1 className={TYPOGRAPHY.h1.standard}>Page Title</h1>
+      <p className={TYPOGRAPHY.description}>A compelling description that draws readers in.</p>
     </div>
   );
 }
@@ -130,13 +139,14 @@ export default function Page() {
 ```typescript
 import { SPACING } from '@/lib/design-tokens';
 
-SPACING.section      // space-y-10 md:space-y-12 - Between major sections
-SPACING.subsection   // space-y-6 md:space-y-8   - Between related blocks
-SPACING.content      // space-y-4                - Within content blocks
-SPACING.proseHero    // prose space-y-4          - Page hero sections
+SPACING.section; // space-y-10 md:space-y-12 - Between major sections
+SPACING.subsection; // space-y-6 md:space-y-8   - Between related blocks
+SPACING.content; // space-y-4                - Within content blocks
+SPACING.proseHero; // prose space-y-4          - Page hero sections
 ```
 
 **Spacing hierarchy:**
+
 ```
 ┌─────────────────────────────────────┐
 │ Page Container (py-14 md:py-20)    │
@@ -160,22 +170,22 @@ SPACING.proseHero    // prose space-y-4          - Page hero sections
 ```typescript
 import { HOVER_EFFECTS } from '@/lib/design-tokens';
 
-HOVER_EFFECTS.card         // Standard cards (projects, posts)
-HOVER_EFFECTS.cardSubtle   // Secondary cards
-HOVER_EFFECTS.cardFeatured // Hero/featured cards
-HOVER_EFFECTS.button       // Buttons, FABs
-HOVER_EFFECTS.link         // Text links
+HOVER_EFFECTS.card; // Standard cards (projects, posts)
+HOVER_EFFECTS.cardSubtle; // Secondary cards
+HOVER_EFFECTS.cardFeatured; // Hero/featured cards
+HOVER_EFFECTS.button; // Buttons, FABs
+HOVER_EFFECTS.link; // Text links
 ```
 
 **Visual comparison:**
 
-| Effect | Shadow | Transform | Background | Use Case |
-|--------|--------|-----------|------------|----------|
-| `card` | lg | -translate-y-0.5 | muted/30 | Projects, posts |
-| `cardSubtle` | md | none | muted/50 | Secondary cards |
-| `cardFeatured` | xl | none | none | Hero sections |
-| `button` | xl | none | none | Buttons, FABs |
-| `link` | none | none | none | Text links |
+| Effect         | Shadow | Transform        | Background | Use Case        |
+| -------------- | ------ | ---------------- | ---------- | --------------- |
+| `card`         | lg     | -translate-y-0.5 | muted/30   | Projects, posts |
+| `cardSubtle`   | md     | none             | muted/50   | Secondary cards |
+| `cardFeatured` | xl     | none             | none       | Hero sections   |
+| `button`       | xl     | none             | none       | Buttons, FABs   |
+| `link`         | none   | none             | none       | Text links      |
 
 ---
 
@@ -189,15 +199,12 @@ Every page should use a consistent container pattern:
 import { getContainerClasses } from '@/lib/design-tokens';
 
 export default function Page() {
-  return (
-    <div className={getContainerClasses('standard')}>
-      {/* Content */}
-    </div>
-  );
+  return <div className={getContainerClasses('standard')}>{/* Content */}</div>;
 }
 ```
 
 **Generated output:**
+
 ```html
 <div class="mx-auto max-w-5xl py-14 md:py-20 px-4 sm:px-6 md:px-8">
   {/* Centered, responsive padding, consistent vertical spacing */}
@@ -216,32 +223,20 @@ export default function StandardPage() {
     <div className={getContainerClasses('standard')}>
       {/* Hero Section */}
       <header className={SPACING.proseHero}>
-        <h1 className={TYPOGRAPHY.h1.standard}>
-          Page Title
-        </h1>
-        <p className={TYPOGRAPHY.description}>
-          Page description that explains the content.
-        </p>
+        <h1 className={TYPOGRAPHY.h1.standard}>Page Title</h1>
+        <p className={TYPOGRAPHY.description}>Page description that explains the content.</p>
       </header>
 
       {/* Main Content Sections */}
       <div className={SPACING.section}>
         <section className={SPACING.subsection}>
-          <h2 className={TYPOGRAPHY.h2.standard}>
-            Section Heading
-          </h2>
-          <div className={SPACING.content}>
-            {/* Content blocks */}
-          </div>
+          <h2 className={TYPOGRAPHY.h2.standard}>Section Heading</h2>
+          <div className={SPACING.content}>{/* Content blocks */}</div>
         </section>
 
         <section className={SPACING.subsection}>
-          <h2 className={TYPOGRAPHY.h2.standard}>
-            Another Section
-          </h2>
-          <div className={SPACING.content}>
-            {/* Content blocks */}
-          </div>
+          <h2 className={TYPOGRAPHY.h2.standard}>Another Section</h2>
+          <div className={SPACING.content}>{/* Content blocks */}</div>
         </section>
       </div>
     </div>
@@ -319,22 +314,22 @@ export default function StandardPage() {
 The site uses a consistent vertical rhythm based on multiples of 4:
 
 ```typescript
-space-y-4      // 1rem (16px)
-space-y-6      // 1.5rem (24px)
-space-y-8      // 2rem (32px)
-space-y-10     // 2.5rem (40px)
-space-y-12     // 3rem (48px)
+space - y - 4; // 1rem (16px)
+space - y - 6; // 1.5rem (24px)
+space - y - 8; // 2rem (32px)
+space - y - 10; // 2.5rem (40px)
+space - y - 12; // 3rem (48px)
 ```
 
 ### When to Use Each
 
-| Spacing | Use Case | Example |
-|---------|----------|---------|
-| `space-y-4` | Within content blocks | List items, form fields |
-| `space-y-6` | Between related subsections | About page info blocks |
-| `space-y-8` | Between subsections (desktop) | Subsection spacing |
-| `space-y-10` | Between major sections | Page section dividers |
-| `space-y-12` | Between major sections (desktop) | Large section breaks |
+| Spacing      | Use Case                         | Example                 |
+| ------------ | -------------------------------- | ----------------------- |
+| `space-y-4`  | Within content blocks            | List items, form fields |
+| `space-y-6`  | Between related subsections      | About page info blocks  |
+| `space-y-8`  | Between subsections (desktop)    | Subsection spacing      |
+| `space-y-10` | Between major sections           | Page section dividers   |
+| `space-y-12` | Between major sections (desktop) | Large section breaks    |
 
 ### Prose Wrapper
 
@@ -348,6 +343,7 @@ For typography-heavy content, use the `prose` class:
 ```
 
 **When NOT to use prose:**
+
 - Custom card layouts
 - Grid/flex layouts
 - Forms
@@ -430,7 +426,7 @@ Use Skeleton components for loading states:
 ```tsx
 import { Skeleton } from '@/components/ui/skeleton';
 
-<Skeleton className="h-8 w-48" />
+<Skeleton className="h-8 w-48" />;
 ```
 
 ---
@@ -448,10 +444,8 @@ import { HOVER_EFFECTS } from '@/lib/design-tokens';
     <CardTitle>Card Title</CardTitle>
     <CardDescription>Card description</CardDescription>
   </CardHeader>
-  <CardContent>
-    {/* Content */}
-  </CardContent>
-</Card>
+  <CardContent>{/* Content */}</CardContent>
+</Card>;
 ```
 
 ### Badge Usage
@@ -561,31 +555,25 @@ To update existing components to use the design system:
 ### Example Migration
 
 **Before:**
+
 ```tsx
 <div className="mx-auto max-w-4xl py-12 px-6">
-  <h1 className="text-4xl font-bold mb-4">
-    Page Title
-  </h1>
-  <p className="text-xl text-gray-600 mb-8">
-    Description
-  </p>
+  <h1 className="text-4xl font-bold mb-4">Page Title</h1>
+  <p className="text-xl text-gray-600 mb-8">Description</p>
 </div>
 ```
 
 **After:**
+
 ```tsx
 import { getContainerClasses, TYPOGRAPHY, SPACING } from '@/lib/design-tokens';
 
 <div className={getContainerClasses('standard')}>
   <div className={SPACING.proseHero}>
-    <h1 className={TYPOGRAPHY.h1.standard}>
-      Page Title
-    </h1>
-    <p className={TYPOGRAPHY.description}>
-      Description
-    </p>
+    <h1 className={TYPOGRAPHY.h1.standard}>Page Title</h1>
+    <p className={TYPOGRAPHY.description}>Description</p>
   </div>
-</div>
+</div>;
 ```
 
 ---
@@ -603,6 +591,7 @@ import { getContainerClasses, TYPOGRAPHY, SPACING } from '@/lib/design-tokens';
 ## Changelog
 
 ### Version 1.0.0 (November 8, 2025)
+
 - Initial design system documentation
 - Defined design tokens for consistency
 - Documented component patterns

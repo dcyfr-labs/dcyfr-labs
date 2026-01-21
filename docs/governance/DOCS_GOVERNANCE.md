@@ -1,7 +1,7 @@
 # Documentation Governance Policy
 
-**Version:** 1.0.0  
-**Date:** December 15, 2025  
+**Version:** 1.0.0
+**Date:** December 15, 2025
 **Purpose:** Establish clear standards for organizing public vs. private documentation and prevent accidental exposure of sensitive content
 
 ---
@@ -28,11 +28,13 @@ Clear boundaries prevent sensitive findings, operational metrics, and internal d
 ## 📁 Public Documentation (`/docs`)
 
 ### Purpose
+
 Guidance, architecture decisions, and resources intended for external audience (community, contributors, users).
 
 ### What Belongs Here ✅
 
 **Architecture & Patterns:**
+
 - System design decisions (ADRs)
 - Component patterns and best practices
 - API design specifications
@@ -40,6 +42,7 @@ Guidance, architecture decisions, and resources intended for external audience (
 - Technology stack rationale
 
 **User-Facing Guides:**
+
 - Setup and installation instructions
 - Feature documentation
 - API reference
@@ -47,6 +50,7 @@ Guidance, architecture decisions, and resources intended for external audience (
 - FAQ sections
 
 **Contributing Standards:**
+
 - Code style guide
 - Contributing workflow
 - Testing standards
@@ -54,12 +58,14 @@ Guidance, architecture decisions, and resources intended for external audience (
 - Security best practices (general)
 
 **Project Information:**
+
 - README and quick start
 - Roadmap and future plans
 - Changelog and releases
 - Team and contact information
 
 **Decision Documentation:**
+
 - Architecture Decision Records (ADRs)
 - Feature requests and specs
 - Design proposals
@@ -83,6 +89,7 @@ Guidance, architecture decisions, and resources intended for external audience (
 ## 📁 Private Documentation (Subdirectory `private/` folders)
 
 ### Purpose
+
 Internal operational intelligence, sensitive findings, and working documents not intended for public visibility.
 
 ### Structure
@@ -131,6 +138,7 @@ docs/
 ### What Belongs Here ✅
 
 **Security & Vulnerabilities:**
+
 - Detailed vulnerability findings
 - Root cause analysis of security issues
 - CodeQL results and remediation
@@ -140,6 +148,7 @@ docs/
 - Zero-day information (until patched)
 
 **Operational Intelligence:**
+
 - Deployment checklists
 - On-call procedures and playbooks
 - Operational metrics and dashboards
@@ -149,6 +158,7 @@ docs/
 - Working backlogs and sprint notes
 
 **Team & Decision Making:**
+
 - Team decisions and reasoning
 - Meeting notes with sensitive discussions
 - Personnel and staffing decisions
@@ -157,6 +167,7 @@ docs/
 - Third-party assessment reports
 
 **Compliance & Audit:**
+
 - Full audit reports
 - Compliance gap analysis
 - Remediation tracking (sensitive items)
@@ -168,6 +179,7 @@ docs/
 ## 🚫 What Never Goes in Git
 
 Regardless of public/private, **NEVER commit:**
+
 - API keys, tokens, or credentials
 - Database passwords or connection strings
 - Private SSH keys
@@ -182,6 +194,7 @@ Regardless of public/private, **NEVER commit:**
 ## 🔄 Migration Rules
 
 ### From Public to Private ✅ (Safe)
+
 If public doc contains sensitive data found during review:
 
 1. Create `/docs/[category]/private/` copy with full details
@@ -194,19 +207,23 @@ If public doc contains sensitive data found during review:
 
 ```markdown
 # Public: docs/security/CSP_CONFIGURATION.md
+
 CSP provides protection against injection attacks.
 See Security Assessment for audit details.
 ```
 
 ```markdown
 # Private: docs/security/private/CSP_FINDINGS.md
+
 Detailed findings from October 2025 assessment:
+
 - Specific violations discovered
 - Root cause analysis
 - Remediation timeline
 ```
 
 ### From Private to Public ✅ (With Care)
+
 If private doc should be public (patterns, learnings):
 
 1. Create sanitized public version in `/docs/`
@@ -220,6 +237,7 @@ If private doc should be public (patterns, learnings):
 ## � Website Content (`src/content/`)
 
 ### Purpose
+
 Public-facing content published on the live website (blog posts, portfolio items, project showcases).
 
 **Key Difference:** `/docs` = internal project documentation; `src/content/` = user-facing website content
@@ -249,6 +267,7 @@ src/content/
 ### What Belongs Where
 
 **Published Blog Posts (`src/content/blog/{slug}/`):**
+
 - ✅ Published posts with `draft: false` or no draft field
 - ✅ All post assets (images, videos, diagrams)
 - ✅ Hero images for published posts
@@ -256,6 +275,7 @@ src/content/
 - ❌ Sensitive case studies not yet approved
 
 **Draft Blog Posts (`src/content/blog/private/{slug}/`):**
+
 - ✅ Posts marked with `draft: true`
 - ✅ Work-in-progress content
 - ✅ Unpublished series installments
@@ -263,6 +283,7 @@ src/content/
 - ✅ All draft assets (images, videos)
 
 **Portfolio Items (`public/portfolio/` or `src/content/portfolio/`):**
+
 - ✅ Public project showcases
 - ✅ Case studies (with client approval)
 - ❌ Client work without permission
@@ -270,16 +291,16 @@ src/content/
 
 ### Classification Rules
 
-| Content Type | Public | Private | Rule |
-|---|---|---|---|
-| **Published Blog Posts** | ✅ | ❌ | In `src/content/blog/{slug}/` with `draft: false` or omitted |
-| **Draft Blog Posts** | ❌ | ✅ | In `src/content/blog/private/{slug}/` with `draft: true` |
-| **Blog Images (published)** | ✅ | ❌ | In published post's `assets/` folder |
-| **Blog Images (draft)** | ❌ | ✅ | In private post's `assets/` folder |
-| **Blog Hero Images** | ✅ (published) | ✅ (draft) | Follow parent post's classification |
-| **Portfolio Items** | ✅ | ❌ | In `public/portfolio/` (always public) |
-| **Portfolio Case Studies** | ⚠️ | ⚠️ | Public only with client approval; otherwise private |
-| **MDX Components** | ✅ | ❌ | Reusable components in `src/components/mdx/` |
+| Content Type                | Public         | Private    | Rule                                                         |
+| --------------------------- | -------------- | ---------- | ------------------------------------------------------------ |
+| **Published Blog Posts**    | ✅             | ❌         | In `src/content/blog/{slug}/` with `draft: false` or omitted |
+| **Draft Blog Posts**        | ❌             | ✅         | In `src/content/blog/private/{slug}/` with `draft: true`     |
+| **Blog Images (published)** | ✅             | ❌         | In published post's `assets/` folder                         |
+| **Blog Images (draft)**     | ❌             | ✅         | In private post's `assets/` folder                           |
+| **Blog Hero Images**        | ✅ (published) | ✅ (draft) | Follow parent post's classification                          |
+| **Portfolio Items**         | ✅             | ❌         | In `public/portfolio/` (always public)                       |
+| **Portfolio Case Studies**  | ⚠️             | ⚠️         | Public only with client approval; otherwise private          |
+| **MDX Components**          | ✅             | ❌         | Reusable components in `src/components/mdx/`                 |
 
 ### Draft vs. Private
 
@@ -307,7 +328,7 @@ Two mechanisms control post visibility:
 # Published post: src/content/blog/my-post/index.mdx
 image:
   url: "/blog/my-post/assets/hero.webp"  # ✅ PUBLIC
-  
+
 # Draft post: src/content/blog/private/my-draft/index.mdx
 image:
   url: "/blog/private/my-draft/assets/hero.webp"  # ❌ PRIVATE (gitignored)
@@ -357,36 +378,36 @@ npm run validate:content  # Checks frontmatter, structure
 
 ## �📊 Document Classification Matrix
 
-| Document Type | Public | Private | Rule |
-|---|---|---|---|
-| **ADRs** | ✅ | ✅* | Public by default; private for controversial decisions |
-| **API Docs** | ✅ | ❌ | Always public (developer-facing) |
-| **Component Patterns** | ✅ | ❌ | Always public (contributor guidance) |
-| **Security Best Practices** | ✅ | ❌ | General guidance public; specific findings private |
-| **CVE/Vulnerability Reports** | ⚠️ | ✅ | Public after patch; private until patched |
-| **Performance Metrics** | ⚠️ | ✅ | Public: benchmarks; private: detailed analysis |
-| **Incident Reports** | ⚠️ | ✅ | Public: lessons learned; private: full report |
-| **Operational Status** | ❌ | ✅ | Always private (internal only) |
-| **Team Decisions** | ❌ | ✅ | Always private unless published officially |
-| **Audit Reports** | ❌ | ✅ | Always private unless publishing compliance |
-| **Security Audit Findings** | ❌ | ✅ | Always private until remediated |
-| **Budget/Financial Data** | ❌ | ✅ | Always private |
-| **Infrastructure Details** | ❌ | ✅ | Always private for security |
-| **Feature Roadmaps** | ✅ | ❌ | Public (roadmap visibility for contributors) |
-| **OAuth Setup Guides** | ⚠️ | ⚠️ | Public with redaction; private for client IDs/secrets |
-| **Integration Templates** | ✅ | ❌ | Public (templates for contributors) |
-| **Test Analysis Reports** | ❌ | ✅ | Private (contains performance/coverage metrics) |
-| **Phase Completion Reports** | ❌ | ✅ | Private (contains operational metrics) |
-| **Campaign Performance Reports** | ❌ | ✅ | Private (contains performance/timing data) |
-| **Build Optimization Reports** | ❌ | ✅ | Private (contains build timing/performance metrics) |
-| **Archived Documentation** | ❌ | ✅ | Excluded from repo (historical reference, not active guidance) |
-| **Published Blog Posts** | ✅ | ❌ | In `src/content/blog/{slug}/` with `draft: false` or omitted |
-| **Draft Blog Posts** | ❌ | ✅ | In `src/content/blog/private/{slug}/` with `draft: true` |
-| **Blog Images (published)** | ✅ | ❌ | In published post's `assets/` folder |
-| **Blog Images (draft)** | ❌ | ✅ | In private post's `assets/` folder (gitignored) |
-| **Blog Hero Images** | ✅/❌ | ✅/❌ | Follow parent post's classification |
-| **Portfolio Items** | ✅ | ❌ | Public project showcases only |
-| **Portfolio Case Studies** | ⚠️ | ⚠️ | Public with client approval; private otherwise |
+| Document Type                    | Public | Private | Rule                                                           |
+| -------------------------------- | ------ | ------- | -------------------------------------------------------------- |
+| **ADRs**                         | ✅     | ✅\*    | Public by default; private for controversial decisions         |
+| **API Docs**                     | ✅     | ❌      | Always public (developer-facing)                               |
+| **Component Patterns**           | ✅     | ❌      | Always public (contributor guidance)                           |
+| **Security Best Practices**      | ✅     | ❌      | General guidance public; specific findings private             |
+| **CVE/Vulnerability Reports**    | ⚠️     | ✅      | Public after patch; private until patched                      |
+| **Performance Metrics**          | ⚠️     | ✅      | Public: benchmarks; private: detailed analysis                 |
+| **Incident Reports**             | ⚠️     | ✅      | Public: lessons learned; private: full report                  |
+| **Operational Status**           | ❌     | ✅      | Always private (internal only)                                 |
+| **Team Decisions**               | ❌     | ✅      | Always private unless published officially                     |
+| **Audit Reports**                | ❌     | ✅      | Always private unless publishing compliance                    |
+| **Security Audit Findings**      | ❌     | ✅      | Always private until remediated                                |
+| **Budget/Financial Data**        | ❌     | ✅      | Always private                                                 |
+| **Infrastructure Details**       | ❌     | ✅      | Always private for security                                    |
+| **Feature Roadmaps**             | ✅     | ❌      | Public (roadmap visibility for contributors)                   |
+| **OAuth Setup Guides**           | ⚠️     | ⚠️      | Public with redaction; private for client IDs/secrets          |
+| **Integration Templates**        | ✅     | ❌      | Public (templates for contributors)                            |
+| **Test Analysis Reports**        | ❌     | ✅      | Private (contains performance/coverage metrics)                |
+| **Phase Completion Reports**     | ❌     | ✅      | Private (contains operational metrics)                         |
+| **Campaign Performance Reports** | ❌     | ✅      | Private (contains performance/timing data)                     |
+| **Build Optimization Reports**   | ❌     | ✅      | Private (contains build timing/performance metrics)            |
+| **Archived Documentation**       | ❌     | ✅      | Excluded from repo (historical reference, not active guidance) |
+| **Published Blog Posts**         | ✅     | ❌      | In `src/content/blog/{slug}/` with `draft: false` or omitted   |
+| **Draft Blog Posts**             | ❌     | ✅      | In `src/content/blog/private/{slug}/` with `draft: true`       |
+| **Blog Images (published)**      | ✅     | ❌      | In published post's `assets/` folder                           |
+| **Blog Images (draft)**          | ❌     | ✅      | In private post's `assets/` folder (gitignored)                |
+| **Blog Hero Images**             | ✅/❌  | ✅/❌   | Follow parent post's classification                            |
+| **Portfolio Items**              | ✅     | ❌      | Public project showcases only                                  |
+| **Portfolio Case Studies**       | ⚠️     | ⚠️      | Public with client approval; private otherwise                 |
 
 ---
 
@@ -407,6 +428,7 @@ Documentation is archived when it's no longer actively maintained but may be val
 ### How to Archive
 
 1. **Move to `docs/archive/`** with clear naming:
+
    ```
    docs/archive/
    ├── ADR-002-redux-removed.md (superseded by Zustand ADR)
@@ -416,11 +438,12 @@ Documentation is archived when it's no longer actively maintained but may be val
    ```
 
 2. **Add header to archived doc:**
+
    ```markdown
    # [ARCHIVED] Original Title
 
    ⚠️ **This documentation is archived and no longer maintained.**
-   
+
    **Superseded by:** Link to current version or replacement
    **Archived Date:** YYYY-MM-DD
    **Reason:** Why this is archived (deprecated feature, superseded pattern, etc.)
@@ -462,11 +485,13 @@ docs/security/VULNERABILITY_DETAILS.md (should be in docs/security/private/)
 ### 2. File Naming Conventions
 
 **Public docs use:**
+
 - `COMPONENT_PATTERNS.md` - General patterns
 - `API_REFERENCE.md` - API documentation
 - `SECURITY_BEST_PRACTICES.md` - General guidance
 
 **Private docs use:**
+
 - `*_FINDINGS.md` - Detailed findings
 - `*_REPORT.md` - Audit/assessment reports
 - `*_ANALYSIS.md` - Detailed analysis
@@ -519,11 +544,12 @@ GitHub Actions workflow validates docs structure:
 ```markdown
 # Document Title
 
-**Audience:** Public / Contributors / Users  
-**Last Updated:** YYYY-MM-DD  
-**Status:** Current / Archived / Draft  
+**Audience:** Public / Contributors / Users
+**Last Updated:** YYYY-MM-DD
+**Status:** Current / Archived / Draft
 
 This document is publicly visible. Do not include:
+
 - Security vulnerabilities
 - Personal information
 - Confidential data
@@ -549,6 +575,7 @@ Do not share publicly or with external parties.
 ## 📚 Public Documentation Categories
 
 ### `/docs/ai/` - AI & Copilot Guidance
+
 - ✅ Component patterns
 - ✅ Code style standards
 - ✅ Architecture decisions
@@ -556,6 +583,7 @@ Do not share publicly or with external parties.
 - ❌ Internal prompts
 
 ### `/docs/api/` - API Documentation
+
 - ✅ Endpoint reference
 - ✅ Request/response formats
 - ✅ Error handling
@@ -564,6 +592,7 @@ Do not share publicly or with external parties.
 - ❌ Database schema details
 
 ### `/docs/architecture/` - System Design
+
 - ✅ ADRs (Architecture Decision Records)
 - ✅ Technology choices and rationale
 - ✅ Data flow diagrams (anonymized)
@@ -572,6 +601,7 @@ Do not share publicly or with external parties.
 - ❌ Infrastructure credentials
 
 ### `/docs/automation/` - CI/CD & Processes
+
 - ✅ Build process explanation
 - ✅ Deployment procedures (public)
 - ✅ Testing standards
@@ -581,6 +611,7 @@ Do not share publicly or with external parties.
 - ❌ Emergency procedures
 
 ### `/docs/components/` - Component Documentation
+
 - ✅ Component usage
 - ✅ Props and API
 - ✅ Examples and patterns
@@ -589,12 +620,14 @@ Do not share publicly or with external parties.
 - ❌ Performance benchmarks
 
 ### `/docs/templates/` - Code Templates
+
 - ✅ Copy-paste starting points
 - ✅ Best practice examples
 - ✅ Common patterns
 - ❌ Project-specific implementations
 
 ### `/docs/testing/` - Testing Guidance
+
 - ✅ Testing strategies
 - ✅ Test patterns and examples
 - ✅ Coverage targets
@@ -654,6 +687,108 @@ Before committing documentation, verify:
 
 ---
 
+## 📝 Organizing New Documentation
+
+### Folder Structure Rules
+
+1. **Feature Documentation** → `/docs/features/[feature-name]/`
+   - Create folder if feature has 3+ related docs
+   - Add README.md or INDEX.md linking all docs
+   - Example: `/docs/features/mcp/`, `/docs/features/inngest/`
+
+2. **AI Development Guides** → `/docs/ai/`
+   - Patterns, best practices, optimization guides
+   - Single-file guides (no subfolders)
+   - Organized by README.md with categories
+
+3. **Architecture** → `/docs/architecture/`
+   - System design, migration guides
+   - Technology-specific patterns
+   - ADRs (Architecture Decision Records)
+
+4. **Operations** → `/docs/operations/`
+   - Maintenance, todo/done, health checks
+   - Operational runbooks
+   - Session summaries in `/docs/operations/sessions/`
+
+5. **Private Documentation** → `/docs/[category]/private/`
+   - Security findings, audit reports
+   - Performance metrics, operational data
+   - Not for public distribution
+
+### Naming Conventions
+
+- **Use kebab-case:** `feature-name.md`
+- **Be descriptive:** `inngest-error-alerting.md` (not `errors.md`)
+- **Add prefixes for series:** `phase-1-*.md`, `migration-*.md`
+- **Avoid dates in names:** Use frontmatter instead (easier to maintain)
+
+### Cross-Reference Standards
+
+- **Use relative paths:** `./folder/file.md`
+- **Always include `.md` extension**
+- **Link to sections:** `./file.md#section-name`
+- **Prefer relative over absolute paths** for portability
+- **Example:**
+  ```markdown
+  See [Component Patterns](../ai/component-patterns.md#pagelayout) for details.
+  ```
+
+### Documentation Structure Example
+
+```
+docs/
+├── features/
+│   ├── mcp/
+│   │   ├── INDEX.md            # Overview and links
+│   │   ├── perplexity-mcp.md
+│   │   ├── context7-mcp.md
+│   │   └── axiom-mcp.md
+│   └── inngest/
+│       ├── README.md           # Complete guide
+│       ├── INDEX.md            # Quick start
+│       └── private/            # Internal implementation details
+├── ai/
+│   ├── README.md               # TOC for all AI guides
+│   ├── quick-reference.md
+│   ├── best-practices.md
+│   └── component-patterns.md
+└── architecture/
+    ├── README.md
+    ├── adr-001-tech-stack.md
+    └── migration-guide.md
+```
+
+### When to Create New Folders
+
+**Create a new folder when:**
+
+- ✅ Feature has 3+ related documentation files
+- ✅ Topic requires organization by subtopic
+- ✅ Multiple contributors will work on the area
+
+**Use existing folders when:**
+
+- ❌ Single documentation file
+- ❌ Temporary or short-lived content
+- ❌ Unsure of long-term organization (start in parent folder)
+
+### Documentation Index Files
+
+**Every multi-file folder should have an index:**
+
+- **README.md:** Comprehensive guide (preferred for features)
+- **INDEX.md:** Quick reference with links (preferred for large directories)
+
+**Index file structure:**
+
+1. Overview paragraph
+2. Table of Contents or Quick Links
+3. Getting Started section
+4. Cross-references to related docs
+
+---
+
 ## 🔄 Quarterly Review Process
 
 Every 3 months:
@@ -682,22 +817,22 @@ Every 3 months:
 
 ## 📞 FAQ
 
-**Q: Can I move old docs from public to private?**  
+**Q: Can I move old docs from public to private?**
 A: Yes. Move the file and update any references. Old commit history remains; new commits will show the file in correct location.
 
-**Q: What if a public doc references private data?**  
+**Q: What if a public doc references private data?**
 A: Create a pointer: "For detailed findings, see internal documentation." Don't expose specifics.
 
-**Q: Should ADRs be public or private?**  
+**Q: Should ADRs be public or private?**
 A: Generally public (architectural decisions are shared). Only private if decision itself is sensitive (e.g., vendor selection, security vulnerability handling).
 
 **Q: Can team members access private documentation?**
 A: Yes, files in `docs/[category]/private/` folders are in the repo but gitignored from public view. Works just like other docs for the team.
 
-**Q: How do I handle a security finding discovered post-publication?**  
+**Q: How do I handle a security finding discovered post-publication?**
 A: Move to private, sanitize public doc, revert git history (or just remove sensitive details in new commit).
 
-**Q: What about customer data or incident details?**  
+**Q: What about customer data or incident details?**
 A: Always private. If incident lessons can be shared, create public version with details removed.
 
 ---
@@ -712,7 +847,7 @@ A: Always private. If incident lessons can be shared, create public version with
 
 ---
 
-**Status:** Active Policy  
-**Maintained By:** Tech Lead  
-**Last Review:** December 15, 2025  
+**Status:** Active Policy
+**Maintained By:** Tech Lead
+**Last Review:** December 15, 2025
 **Next Review:** March 15, 2026 (Quarterly)

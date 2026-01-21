@@ -29,7 +29,7 @@ npm run test:run      # Run tests once (no watch)
 |-------|------|----------|
 | **Design Tokens** | [docs/design/design-tokens.md](design/design-tokens.md) | Building UI components |
 | **Component Patterns** | [docs/ai/component-patterns.md](ai/component-patterns.md) | Creating page layouts |
-| **API Patterns** | [docs/ai/API_PATTERNS.md](ai/API_PATTERNS.md) | Building API routes |
+| **Best Practices** | [docs/ai/best-practices.md](ai/best-practices.md) | API patterns & workflows |
 | **Inngest Integration** | [docs/features/inngest/INDEX.md](features/inngest/INDEX.md) | Background jobs & workflows |
 | **Testing Patterns** | [docs/testing/automated-testing-guide.md](testing/automated-testing-guide.md) | Writing tests |
 
@@ -38,7 +38,7 @@ npm run test:run      # Run tests once (no watch)
 | Topic | Link | Use When |
 |-------|------|----------|
 | **README** | [README.md](../README.md) | Project overview |
-| **Tech Stack** | [docs/project/TECH_STACK.md](project/TECH_STACK.md) | Understanding architecture |
+| **Tech Stack** | [CLAUDE.md#quick-reference](../CLAUDE.md) | Understanding architecture |
 | **Contributing** | [CONTRIBUTING.md](../CONTRIBUTING.md) | Making contributions |
 | **Changelog** | [CHANGELOG.md](../CHANGELOG.md) | Recent changes |
 
@@ -201,8 +201,10 @@ npm run validate:build    # Validate build output
 
 ### Utilities
 ```bash
-npm run find:token-violations  # Find hardcoded values
+npm run find:token-violations  # Find hardcoded values (design tokens)
+npm run validate:tokens        # Check design token compliance (exit 0 if compliant)
 npm run fix:tokens             # Auto-fix token violations
+npm run lint:test-data         # Check for fabricated/test data in production
 npm run validate:links         # Check for broken links
 npm run mcp:check              # Check MCP server health
 ```
@@ -237,7 +239,25 @@ dcyfr-labs/
 ### Issue: Design token violations
 
 **Cause:** Hardcoded spacing/colors  
-**Fix:** Run `npm run fix:tokens` to auto-fix common patterns
+**Fix:** 
+1. Find violations: `npm run find:token-violations`
+2. Auto-fix common patterns: `npm run fix:tokens`
+3. Manually replace remaining hardcoded values with design tokens:
+   ```typescript
+   import { SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
+   ```
+
+### Issue: Test data in production
+
+**Cause:** Demo/fabricated data not environment-guarded  
+**Fix:** Ensure all test data is protected:
+```typescript
+// ✅ CORRECT
+if (process.env.NODE_ENV === 'production') {
+  return null;  // Don't use test data in production
+}
+return mockData;
+```
 
 ### Issue: Inngest function not triggering
 

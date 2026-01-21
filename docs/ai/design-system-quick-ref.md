@@ -2,10 +2,25 @@
 
 **Purpose**: Ultra-concise patterns for AI code generation. Use this for first-time compliance.
 
+> **Related Documentation:**
+>
+> - **Validation Guide:** [design-system.md](./design-system.md) - Complete validation checklist and enforcement
+> - **Complete Catalog:** [../design/design-system.md](../design/design-system.md) - Comprehensive design token catalog
+> - **Component Patterns:** [component-patterns.md](./component-patterns.md) - Layout selection and barrel exports
+
 **Import Required**:
+
 ```typescript
-import { SPACING, TYPOGRAPHY, CONTAINER_WIDTHS, SEMANTIC_COLORS, HOVER_EFFECTS, BORDERS, SHADOWS } from '@/lib/design-tokens'
-import { cn } from '@/lib/utils'
+import {
+  SPACING,
+  TYPOGRAPHY,
+  CONTAINER_WIDTHS,
+  SEMANTIC_COLORS,
+  HOVER_EFFECTS,
+  BORDERS,
+  SHADOWS,
+} from '@/lib/design-tokens';
+import { cn } from '@/lib/utils';
 ```
 
 ---
@@ -120,8 +135,8 @@ const pageDescription = "Browse our portfolio of projects."
 ### 1. Hero Section
 
 ```tsx
-import { PageHero } from '@/components/layouts/page-hero'
-import { TYPOGRAPHY } from '@/lib/design-tokens'
+import { PageHero } from '@/components/layouts/page-hero';
+import { TYPOGRAPHY } from '@/lib/design-tokens';
 
 // ✅ CORRECT
 export default function Page() {
@@ -131,7 +146,7 @@ export default function Page() {
       description="Full-stack developer passionate about building great experiences."
       variant="standard"
     />
-  )
+  );
 }
 
 // ❌ WRONG - Manual hero with hardcoded values
@@ -141,15 +156,15 @@ export default function Page() {
       <h1 className="text-3xl font-semibold">About Me</h1>
       <p className="text-lg text-gray-600">Description</p>
     </section>
-  )
+  );
 }
 ```
 
 ### 2. Card Component
 
 ```tsx
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { HOVER_EFFECTS } from '@/lib/design-tokens'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { HOVER_EFFECTS } from '@/lib/design-tokens';
 
 // ✅ CORRECT
 export function ProjectCard({ title, description, content }) {
@@ -159,11 +174,9 @@ export function ProjectCard({ title, description, content }) {
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
-      <CardContent>
-        {content}
-      </CardContent>
+      <CardContent>{content}</CardContent>
     </Card>
-  )
+  );
 }
 
 // ❌ WRONG - Manual card with hardcoded values
@@ -174,33 +187,30 @@ export function ProjectCard({ title, description, content }) {
       <p className="text-gray-600 dark:text-gray-400">{description}</p>
       <div>{content}</div>
     </div>
-  )
+  );
 }
 ```
 
 ### 3. Page Section
 
 ```tsx
-import { PageLayout } from '@/components/layouts/page-layout'
-import { PageHero } from '@/components/layouts/page-hero'
-import { SPACING, CONTAINER_WIDTHS } from '@/lib/design-tokens'
+import { PageLayout } from '@/components/layouts/page-layout';
+import { PageHero } from '@/components/layouts/page-hero';
+import { SPACING, CONTAINER_WIDTHS } from '@/lib/design-tokens';
 
 // ✅ CORRECT
 export default function AboutPage() {
   return (
     <PageLayout>
-      <PageHero
-        title="About"
-        description="Learn more about my background."
-      />
+      <PageHero title="About" description="Learn more about my background." />
 
-      <section className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}>
-        <div className={SPACING.section}>
-          {/* Content sections */}
-        </div>
+      <section
+        className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}
+      >
+        <div className={SPACING.section}>{/* Content sections */}</div>
       </section>
     </PageLayout>
-  )
+  );
 }
 
 // ❌ WRONG - Manual layout
@@ -211,22 +221,20 @@ export default function AboutPage() {
         <h1 className="text-3xl font-bold">About</h1>
         <p className="text-lg text-gray-600">Description</p>
       </section>
-      <section className="px-6 max-w-5xl mx-auto space-y-8">
-        {/* Content */}
-      </section>
+      <section className="px-6 max-w-5xl mx-auto space-y-8">{/* Content */}</section>
     </div>
-  )
+  );
 }
 ```
 
 ### 4. Form Component
 
 ```tsx
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Button } from '@/components/ui/button'
-import { SPACING } from '@/lib/design-tokens'
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { SPACING } from '@/lib/design-tokens';
 
 // ✅ CORRECT
 export function ContactForm() {
@@ -244,7 +252,7 @@ export function ContactForm() {
 
       <Button type="submit">Send Message</Button>
     </form>
-  )
+  );
 }
 
 // ❌ WRONG - Manual form with hardcoded styles
@@ -259,15 +267,15 @@ export function ContactForm() {
         />
       </div>
     </form>
-  )
+  );
 }
 ```
 
 ### 5. Grid Layout
 
 ```tsx
-import { SPACING, CONTAINER_WIDTHS } from '@/lib/design-tokens'
-import { Card } from '@/components/ui/card'
+import { SPACING, CONTAINER_WIDTHS } from '@/lib/design-tokens';
+import { Card } from '@/components/ui/card';
 
 // ✅ CORRECT
 export function ProjectGrid({ projects }) {
@@ -275,32 +283,28 @@ export function ProjectGrid({ projects }) {
     <section className={`mx-auto ${CONTAINER_WIDTHS.archive} px-4 sm:px-6 md:px-8`}>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((project) => (
-          <Card key={project.id}>
-            {/* Card content */}
-          </Card>
+          <Card key={project.id}>{/* Card content */}</Card>
         ))}
       </div>
     </section>
-  )
+  );
 }
 
 // ❌ WRONG - Hardcoded container and gap
 export function ProjectGrid({ projects }) {
   return (
     <section className="max-w-7xl mx-auto px-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {/* ... */}
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">{/* ... */}</div>
     </section>
-  )
+  );
 }
 ```
 
 ### 6. Button/CTA
 
 ```tsx
-import { Button } from '@/components/ui/button'
-import { ArrowRight } from 'lucide-react'
+import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 
 // ✅ CORRECT - Uses shadcn/ui Button
 export function CTAButton() {
@@ -314,7 +318,7 @@ export function CTAButton() {
         Learn More
       </Button>
     </div>
-  )
+  );
 }
 
 // ❌ WRONG - Manual button
@@ -323,7 +327,7 @@ export function CTAButton() {
     <button className="bg-blue-600 text-white px-6 py-3 rounded-md font-semibold">
       Get Started
     </button>
-  )
+  );
 }
 ```
 
@@ -334,9 +338,9 @@ export function CTAButton() {
 ### Scenario: Building a new page
 
 ```tsx
-import { PageLayout } from '@/components/layouts/page-layout'
-import { PageHero } from '@/components/layouts/page-hero'
-import { SPACING, CONTAINER_WIDTHS } from '@/lib/design-tokens'
+import { PageLayout } from '@/components/layouts/page-layout';
+import { PageHero } from '@/components/layouts/page-hero';
+import { SPACING, CONTAINER_WIDTHS } from '@/lib/design-tokens';
 
 export default function NewPage() {
   return (
@@ -345,21 +349,21 @@ export default function NewPage() {
       <PageHero title="Page Title" description="Page description." />
 
       {/* Main content */}
-      <section className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}>
-        <div className={SPACING.section}>
-          {/* Your content sections here */}
-        </div>
+      <section
+        className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 sm:px-6 md:px-8 pb-8 md:pb-12`}
+      >
+        <div className={SPACING.section}>{/* Your content sections here */}</div>
       </section>
     </PageLayout>
-  )
+  );
 }
 ```
 
 ### Scenario: Building a card grid
 
 ```tsx
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { HOVER_EFFECTS } from '@/lib/design-tokens'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { HOVER_EFFECTS } from '@/lib/design-tokens';
 
 export function CardGrid({ items }) {
   return (
@@ -369,22 +373,20 @@ export function CardGrid({ items }) {
           <CardHeader>
             <CardTitle>{item.title}</CardTitle>
           </CardHeader>
-          <CardContent>
-            {item.content}
-          </CardContent>
+          <CardContent>{item.content}</CardContent>
         </Card>
       ))}
     </div>
-  )
+  );
 }
 ```
 
 ### Scenario: Adding alerts/notifications
 
 ```tsx
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { AlertCircle, CheckCircle, Info } from 'lucide-react'
-import { SEMANTIC_COLORS } from '@/lib/design-tokens'
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle, CheckCircle, Info } from 'lucide-react';
+import { SEMANTIC_COLORS } from '@/lib/design-tokens';
 
 // Error alert
 export function ErrorAlert({ message }) {
@@ -393,12 +395,12 @@ export function ErrorAlert({ message }) {
       <AlertCircle className="h-4 w-4" />
       <AlertDescription>{message}</AlertDescription>
     </Alert>
-  )
+  );
 }
 
 // Custom styled alert
 export function CustomAlert({ message, type = 'info' }) {
-  const colors = SEMANTIC_COLORS.alert[type]
+  const colors = SEMANTIC_COLORS.alert[type];
 
   return (
     <div className={cn(colors.container, colors.border, 'p-4 rounded-lg')}>
@@ -407,7 +409,7 @@ export function CustomAlert({ message, type = 'info' }) {
         <p className={colors.text}>{message}</p>
       </div>
     </div>
-  )
+  );
 }
 ```
 
@@ -416,56 +418,61 @@ export function CustomAlert({ message, type = 'info' }) {
 ## Design Token Cheat Sheet
 
 ### Spacing (Vertical)
+
 ```typescript
-SPACING.section      // space-y-8 md:space-y-10 lg:space-y-14 (major sections)
-SPACING.subsection   // space-y-5 md:space-y-6 lg:space-y-8 (related blocks)
-SPACING.content      // space-y-3 md:space-y-4 lg:space-y-5 (within content)
-SPACING.prose        // space-y-5 md:space-y-6 lg:space-y-8 (reading content)
-SPACING.compact      // space-y-2 (lists, alerts)
+SPACING.section; // space-y-8 md:space-y-10 lg:space-y-14 (major sections)
+SPACING.subsection; // space-y-5 md:space-y-6 lg:space-y-8 (related blocks)
+SPACING.content; // space-y-3 md:space-y-4 lg:space-y-5 (within content)
+SPACING.prose; // space-y-5 md:space-y-6 lg:space-y-8 (reading content)
+SPACING.compact; // space-y-2 (lists, alerts)
 ```
 
 ### Typography (Headings)
+
 ```typescript
-TYPOGRAPHY.h1.standard   // Page titles (3xl md:4xl)
-TYPOGRAPHY.h1.hero       // Archive pages (3xl md:4xl serif)
-TYPOGRAPHY.h1.article    // Blog posts (3xl md:5xl serif)
-TYPOGRAPHY.h2.standard   // Section headings (xl md:2xl)
-TYPOGRAPHY.h3.standard   // Subsection headings (lg md:xl)
-TYPOGRAPHY.description   // Lead text (lg md:xl muted)
-TYPOGRAPHY.body          // Body text (base)
-TYPOGRAPHY.metadata      // Dates, tags (sm muted)
+TYPOGRAPHY.h1.standard; // Page titles (3xl md:4xl)
+TYPOGRAPHY.h1.hero; // Archive pages (3xl md:4xl serif)
+TYPOGRAPHY.h1.article; // Blog posts (3xl md:5xl serif)
+TYPOGRAPHY.h2.standard; // Section headings (xl md:2xl)
+TYPOGRAPHY.h3.standard; // Subsection headings (lg md:xl)
+TYPOGRAPHY.description; // Lead text (lg md:xl muted)
+TYPOGRAPHY.body; // Body text (base)
+TYPOGRAPHY.metadata; // Dates, tags (sm muted)
 ```
 
 ### Container Widths
+
 ```typescript
-CONTAINER_WIDTHS.prose     // max-w-4xl (reading content)
-CONTAINER_WIDTHS.narrow    // max-w-4xl (forms)
-CONTAINER_WIDTHS.standard  // max-w-5xl (core pages)
-CONTAINER_WIDTHS.content   // max-w-6xl (blog posts)
-CONTAINER_WIDTHS.archive   // max-w-7xl (listings)
-CONTAINER_WIDTHS.dashboard // max-w-[1536px] (data tables)
+CONTAINER_WIDTHS.prose; // max-w-4xl (reading content)
+CONTAINER_WIDTHS.narrow; // max-w-4xl (forms)
+CONTAINER_WIDTHS.standard; // max-w-5xl (core pages)
+CONTAINER_WIDTHS.content; // max-w-6xl (blog posts)
+CONTAINER_WIDTHS.archive; // max-w-7xl (listings)
+CONTAINER_WIDTHS.dashboard; // max-w-[1536px] (data tables)
 ```
 
 ### Hover Effects
+
 ```typescript
-HOVER_EFFECTS.card         // Standard card hover (shadow + lift)
-HOVER_EFFECTS.cardCTA      // CTA card (border highlight)
-HOVER_EFFECTS.cardSubtle   // Minimal hover
-HOVER_EFFECTS.link         // Text link underline
-HOVER_EFFECTS.button       // Button shadow + scale
+HOVER_EFFECTS.card; // Standard card hover (shadow + lift)
+HOVER_EFFECTS.cardCTA; // CTA card (border highlight)
+HOVER_EFFECTS.cardSubtle; // Minimal hover
+HOVER_EFFECTS.link; // Text link underline
+HOVER_EFFECTS.button; // Button shadow + scale
 ```
 
 ### Borders & Shadows
-```typescript
-BORDERS.card      // rounded-lg
-BORDERS.button    // rounded-md
-BORDERS.circle    // rounded-full
 
-SHADOWS.tier1.combined   // Code blocks (most prominent)
-SHADOWS.tier2.combined   // Tables (medium)
-SHADOWS.tier3.combined   // Inline content (subtle)
-SHADOWS.card.rest        // shadow-sm
-SHADOWS.card.hover       // shadow-md
+```typescript
+BORDERS.card; // rounded-lg
+BORDERS.button; // rounded-md
+BORDERS.circle; // rounded-full
+
+SHADOWS.tier1.combined; // Code blocks (most prominent)
+SHADOWS.tier2.combined; // Tables (medium)
+SHADOWS.tier3.combined; // Inline content (subtle)
+SHADOWS.card.rest; // shadow-sm
+SHADOWS.card.hover; // shadow-md
 ```
 
 ---
@@ -503,11 +510,11 @@ Before generating component code, verify:
 1. ✅ Import design tokens: `import { SPACING, TYPOGRAPHY, ... } from '@/lib/design-tokens'`
 2. ✅ Use existing layout components: `PageLayout`, `PageHero`, `Card`, etc.
 3. ✅ Use design tokens for:
-   - Vertical spacing (SPACING.*)
-   - Typography (TYPOGRAPHY.*)
-   - Container widths (CONTAINER_WIDTHS.*)
+   - Vertical spacing (SPACING.\*)
+   - Typography (TYPOGRAPHY.\*)
+   - Container widths (CONTAINER_WIDTHS.\*)
    - Colors (semantic: bg-card, text-foreground, etc.)
-4. ✅ Use numbers for: gap-*, p-*, px-*, py-*, space-y-2 (tight)
+4. ✅ Use numbers for: gap-_, p-_, px-_, py-_, space-y-2 (tight)
 5. ✅ Import utilities: `import { cn } from '@/lib/utils'`
 
 ---

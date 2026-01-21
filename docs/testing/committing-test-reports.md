@@ -47,4 +47,4 @@ Sanitization & allowlist guidance
 
 Notes:
 - The existing `npm run scan:pi` will perform a repository-wide PII scan and is a good pre-commit step for all changes.
-- Use `reports/performance/baselines/` for per-deployment budget files (see `docs/development/performance-budgets.md`).
+- Use `reports/performance/baselines/` for per-deployment budget files (see `docs/performance/private/development/performance-budgets.md`).
