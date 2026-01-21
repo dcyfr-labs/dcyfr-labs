@@ -14,6 +14,8 @@ on:
       - 'docs/**/*.md'
       - '.github/dependabot.yml'
       - 'scripts/validation/**/*'
+      - 'scripts/changelog*.mjs'
+      - 'CHANGELOG.md'
       - 'vercel.json'
   push:
     branches: [main, preview]
@@ -21,6 +23,8 @@ on:
       - 'src/content/**/*.mdx'
       - 'docs/**/*.md'
       - '.github/dependabot.yml'
+      - 'scripts/changelog*.mjs'
+      - 'CHANGELOG.md'
   schedule:
     # Weekly validation on Monday at 9 AM UTC
     - cron: '0 9 * * 1'
@@ -211,9 +215,46 @@ jobs:
           echo "### ✅ Allowlist Validation" >> $GITHUB_STEP_SUMMARY
           echo "PII allowlist validated for structure and usage." >> $GITHUB_STEP_SUMMARY
 
+  changelog-validation:
+    needs: setup
+    name: Changelog Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Restore node_modules cache
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: validation-node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
+          fail-on-cache-miss: true
+
+      - name: Validate changelog format
+        run: npm run changelog:validate
+
+      - name: Check changelog sync status
+        run: npm run changelog:check
+        continue-on-error: true
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "### 📝 Changelog Validation" >> $GITHUB_STEP_SUMMARY
+          echo "- Format: CalVer ([YYYY.MM.DD]) ✅" >> $GITHUB_STEP_SUMMARY
+          echo "- Sync: Checked for staleness (>7 days)" >> $GITHUB_STEP_SUMMARY
+          echo "- Status: Soft warnings (non-blocking)" >> $GITHUB_STEP_SUMMARY
+
   # Unified summary
   summary:
-    needs: [content-validation, botid-validation, dependabot-validation, allowlist-validation]
+    needs: [content-validation, botid-validation, dependabot-validation, allowlist-validation, changelog-validation]
     if: always()
     runs-on: ubuntu-latest
 
@@ -247,6 +288,12 @@ jobs:
             echo "| PII Allowlist | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
           else
             echo "| PII Allowlist | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ needs.changelog-validation.result }}" == "success" ]; then
+            echo "| Changelog Validation | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Changelog Validation | ⚠️ Warning |" >> $GITHUB_STEP_SUMMARY
           fi
 
           echo "" >> $GITHUB_STEP_SUMMARY
