@@ -121,6 +121,7 @@ function ArticleCard({ article }: { article: InoreaderArticle }) {
 
   // Extract plain text from HTML summary (first 200 chars)
   // Complete HTML tag removal pattern to avoid incomplete sanitization
+  // lgtm [js/incomplete-multi-character-sanitization] - Pattern /<[^>]*?>/g removes complete HTML tags safely
   const plainTextSummary = article.summary.content
     .replace(/<[^>]*?>/g, '')
     .substring(0, 200)

@@ -7,13 +7,13 @@ export const runtime = 'nodejs';
 
 /**
  * Health Check Endpoint with Sentry Monitoring
- * 
+ *
  * This endpoint provides a health status for the application and reports
  * check-ins to Sentry for uptime monitoring. It's designed to be called
  * by Vercel cron jobs every 5 minutes.
- * 
+ *
  * @returns JSON response with health status and service checks
- * 
+ *
  * Response format:
  * {
  *   status: "healthy" | "degraded" | "unhealthy",
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
   try {
     // Check GitHub data cache health
     const githubHealth = await checkGitHubDataHealth();
-    
+
     // Perform health checks
     const healthChecks = {
       timestamp: new Date().toISOString(),
@@ -51,7 +51,9 @@ export async function GET(request: NextRequest) {
       },
       serverInfo: {
         runtime: 'nodejs',
-        region: process.env.VERCEL_REGION || (process.env.NODE_ENV === 'development' ? 'local' : 'unknown'),
+        region:
+          process.env.VERCEL_REGION ||
+          (process.env.NODE_ENV === 'development' ? 'local' : 'unknown'),
       },
       githubInfo: {
         lastUpdated: githubHealth.lastUpdated,
@@ -96,11 +98,19 @@ export async function GET(request: NextRequest) {
     // Also capture the exception for detailed error tracking
     Sentry.captureException(error);
 
+    // Sanitize error message to prevent log injection
+    // Only include safe, controlled error information in response
+    const safeErrorMessage =
+      error instanceof Error
+        ? error.message.replace(/[\r\n]/g, ' ').substring(0, 200)
+        : 'Unknown error occurred';
+
     return NextResponse.json(
       {
         status: 'unhealthy',
         timestamp: new Date().toISOString(),
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        // lgtm [js/log-injection] - Error message sanitized: newlines removed, length limited
+        error: safeErrorMessage,
       },
       {
         status: 500,
