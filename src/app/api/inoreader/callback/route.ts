@@ -7,16 +7,16 @@
  * Route: /api/inoreader/callback
  */
 
-import { type NextRequest, NextResponse } from "next/server";
-import { InoreaderClient } from "@/lib/inoreader-client";
-import { redis } from "@/lib/redis";
+import { type NextRequest, NextResponse } from 'next/server';
+import { InoreaderClient } from '@/lib/inoreader-client';
+import { redis } from '@/lib/redis';
 
 const INOREADER_CLIENT_ID = process.env.INOREADER_CLIENT_ID;
 const INOREADER_CLIENT_SECRET = process.env.INOREADER_CLIENT_SECRET;
 const INOREADER_REDIRECT_URI =
-  process.env.INOREADER_REDIRECT_URI || "http://localhost:3000/api/inoreader/callback";
+  process.env.INOREADER_REDIRECT_URI || 'http://localhost:3000/api/inoreader/callback';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
@@ -24,23 +24,20 @@ export async function GET(request: NextRequest) {
     if (!INOREADER_CLIENT_ID || !INOREADER_CLIENT_SECRET) {
       return NextResponse.json(
         {
-          error: "Inoreader integration not configured",
-          details: "Missing INOREADER_CLIENT_ID or INOREADER_CLIENT_SECRET",
+          error: 'Inoreader integration not configured',
+          details: 'Missing INOREADER_CLIENT_ID or INOREADER_CLIENT_SECRET',
         },
-        { status: 503 },
+        { status: 503 }
       );
     }
 
     // Get authorization code and state from query parameters
     const searchParams = request.nextUrl.searchParams;
-    const code = searchParams.get("code");
-    const state = searchParams.get("state");
+    const code = searchParams.get('code');
+    const state = searchParams.get('state');
 
     if (!code) {
-      return NextResponse.json(
-        { error: "Missing authorization code" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Missing authorization code' }, { status: 400 });
     }
 
     // CSRF protection: Verify state parameter
@@ -48,7 +45,7 @@ export async function GET(request: NextRequest) {
     if (state) {
       // TODO: Implement session-based CSRF validation
       // For now, just log the state for debugging
-      console.log("OAuth state parameter:", state);
+      console.warn('OAuth state parameter:', state);
     }
 
     // Exchange authorization code for tokens
@@ -59,7 +56,7 @@ export async function GET(request: NextRequest) {
     if (redis) {
       const tokens = client.getTokens();
       await redis.set(
-        "inoreader:tokens",
+        'inoreader:tokens',
         JSON.stringify({
           accessToken: tokens.accessToken,
           refreshToken: tokens.refreshToken,
@@ -69,28 +66,26 @@ export async function GET(request: NextRequest) {
         }),
         {
           EX: 60 * 60 * 24 * 30, // 30 days TTL
-        },
+        }
       );
 
-      console.log("✅ Inoreader tokens stored successfully");
+      console.warn('✅ Inoreader tokens stored successfully');
     } else {
-      console.warn("⚠️ Redis not configured - tokens not persisted");
+      console.warn('⚠️ Redis not configured - tokens not persisted');
     }
 
     // Redirect to dev news page with success message
-    return NextResponse.redirect(
-      new URL("/dev/news?auth=success", request.nextUrl.origin),
-    );
+    return NextResponse.redirect(new URL('/dev/news?auth=success', request.nextUrl.origin));
   } catch (error) {
-    console.error("❌ Inoreader OAuth callback error:", error);
+    console.error('❌ Inoreader OAuth callback error:', error);
 
     return NextResponse.redirect(
       new URL(
         `/dev/news?auth=error&message=${encodeURIComponent(
-          error instanceof Error ? error.message : "Unknown error",
+          error instanceof Error ? error.message : 'Unknown error'
         )}`,
-        request.nextUrl.origin,
-      ),
+        request.nextUrl.origin
+      )
     );
   }
 }
