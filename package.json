@@ -138,6 +138,7 @@
     "ai:telemetry:handoffs": "node scripts/ai-cli.mjs telemetry:handoffs",
     "ai:telemetry:export": "node scripts/ai-cli.mjs telemetry:export",
     "check:opencode": "bash .opencode/scripts/validate-after-fallback.sh",
+    "check:private-refs": "node scripts/check-private-references.mjs",
     "opencode:health": "node scripts/health-cli.mjs providers",
     "opencode:track": "node scripts/session-cli.mjs track",
     "opencode:report": "node scripts/session-cli.mjs track report",

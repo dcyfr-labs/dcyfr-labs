@@ -376,6 +376,80 @@ npm run validate:content  # Checks frontmatter, structure
 
 ---
 
+## 🔗 Referencing Private Files from Public Docs
+
+### When It's Acceptable ✅
+
+Public documentation may reference private files when providing **optional supplementary context** for internal teams:
+
+**Acceptable patterns:**
+
+1. **Supplementary details:** "See `docs/security/private/SECURITY_QUICK_REFERENCE.md` for full findings"
+2. **Tool configuration guides:** "Configure monitoring with queries from `docs/security/private/axiom-security-queries.md`"
+3. **Advanced troubleshooting:** "For detailed root cause analysis, see `docs/operations/private/incident-*.md`"
+4. **Internal team pointers:** "Review private incident docs: `docs/operations/private/inngest-*.md`"
+
+**Critical requirements:**
+
+- ✅ Public docs must **remain functional** without the private reference
+- ✅ References should be **optional context** ("See X for details"), not core content
+- ✅ Private file path must be **accurate** (file actually exists)
+- ✅ No sensitive content excerpted or exposed in the public doc
+
+**Example:**
+
+```markdown
+# Public: docs/ai/logging-security.md
+
+**IP addresses are considered PII** and must be handled carefully.
+See docs/security/private/pi-policy.md for full policy.
+
+## Best Practices
+
+1. Never log PII in cleartext
+2. Use hashing for identifiers
+3. Implement data retention policies
+```
+
+### When It's NOT Acceptable ❌
+
+**Prohibited patterns:**
+
+1. ❌ **Exposing actual sensitive content** - No excerpts of vulnerabilities, findings, or proprietary information
+2. ❌ **Making public docs dependent** - Public docs shouldn't require private files to be useful
+3. ❌ **Linking as core documentation** - Private files aren't accessible to external contributors
+4. ❌ **Broken references** - Never reference private files that don't exist
+5. ❌ **Security through obscurity** - Don't hint at vulnerabilities ("See private docs for the 5 critical CVEs")
+
+**Example of what NOT to do:**
+
+```markdown
+# ❌ WRONG: Public doc depends on private content
+
+## Security Configuration
+
+Refer to docs/security/private/config.md for all settings.
+(No public guidance provided - external contributors can't use this)
+```
+
+### Validation
+
+Before committing public docs with private references:
+
+- [ ] Private file actually exists at the referenced path
+- [ ] Public doc is useful standalone (without access to private file)
+- [ ] Reference uses "See X for details" pattern (optional context)
+- [ ] No sensitive content exposed in public doc
+- [ ] Reference follows subdirectory-specific structure (`docs/[category]/private/`)
+
+**Automated check:**
+
+```bash
+npm run check:private-refs  # Validates private file references
+```
+
+---
+
 ## �📊 Document Classification Matrix
 
 | Document Type                    | Public | Private | Rule                                                           |
