@@ -1,5 +1,9 @@
 import { inngest } from "./client";
 
+// Import GitHub automation functions
+export { validateDesignTokens } from "./functions/design-token-validation";
+export { auditDependencies } from "./functions/dependency-security-audit";
+
 // Import IP reputation functions
 export {
   scheduleIpReputationCheck,

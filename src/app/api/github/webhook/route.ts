@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createHmac } from "crypto";
 import { inngest } from "@/inngest/client";
 
-// GitHub webhook signature header
+// GitHub webhook configuration
 const GITHUB_WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET || "";
 const GITHUB_WEBHOOK_REPO = "dcyfr/dcyfr-labs";
 
@@ -28,30 +28,75 @@ function verifyGitHubSignature(
 }
 
 /**
- * Extract commit data from GitHub push event
+ * GitHub push event payload types
  */
-interface CommitData {
-  hash: string;
+interface GitHubCommit {
+  id: string;
   message: string;
-  author: string;
-  email: string;
+  author: {
+    name: string;
+    email: string;
+  };
   url: string;
   timestamp: string;
+  added: string[];
+  modified: string[];
+  removed: string[];
 }
 
-function extractCommits(body: any): CommitData[] {
-  if (!body.commits || !Array.isArray(body.commits)) {
-    return [];
-  }
+interface GitHubPushPayload {
+  ref: string;
+  repository: {
+    full_name: string;
+  };
+  commits: GitHubCommit[];
+}
 
-  return body.commits.map((commit: any) => ({
-    hash: commit.id.slice(0, 7), // Short SHA
-    message: commit.message.split("\n")[0], // First line only
-    author: commit.author?.name || "Unknown",
-    email: commit.author?.email || "",
-    url: commit.url,
-    timestamp: commit.timestamp,
-  }));
+/**
+ * Extract changed files from commits
+ */
+function extractChangedFiles(commits: GitHubCommit[]): string[] {
+  const files = new Set<string>();
+  
+  for (const commit of commits) {
+    commit.added?.forEach((f) => files.add(f));
+    commit.modified?.forEach((f) => files.add(f));
+    commit.removed?.forEach((f) => files.add(f));
+  }
+  
+  return Array.from(files);
+}
+
+/**
+ * Detect file patterns for automation triggers
+ */
+function detectAutomationTriggers(changedFiles: string[]): {
+  designTokens: boolean;
+  dependencies: boolean;
+  blogPosts: boolean;
+  documentation: boolean;
+} {
+  return {
+    // Component files changed (design token compliance)
+    designTokens: changedFiles.some((f) =>
+      /src\/components\/.*\.(tsx?|jsx?)$/.test(f)
+    ),
+    
+    // Dependency files changed (security monitoring)
+    dependencies: changedFiles.some((f) =>
+      ["package.json", "package-lock.json", "yarn.lock", "pnpm-lock.yaml"].includes(f)
+    ),
+    
+    // Blog posts changed (SEO indexing)
+    blogPosts: changedFiles.some((f) =>
+      f.startsWith("src/content/blog/") && f.endsWith(".mdx")
+    ),
+    
+    // Documentation changed (link validation)
+    documentation: changedFiles.some((f) =>
+      f.startsWith("docs/") && f.endsWith(".md")
+    ),
+  };
 }
 
 export async function POST(request: NextRequest) {
@@ -76,7 +121,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Parse body
-    const body = JSON.parse(rawBody);
+    const body: GitHubPushPayload = JSON.parse(rawBody);
 
     // Only process push events
     const eventType = request.headers.get("x-github-event");
@@ -95,8 +140,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Extract commits
-    const commits = extractCommits(body);
+    // Extract metadata
+    const branchName = body.ref?.split("/").pop() || "unknown";
+    const commits = body.commits || [];
+    
     if (commits.length === 0) {
       return NextResponse.json(
         { message: "No commits in payload" },
@@ -104,30 +151,72 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Send to Inngest for processing
-    const branchName = body.ref?.split("/").pop() || "unknown";
-    
-    for (const commit of commits) {
+    // Analyze changed files across all commits
+    const changedFiles = extractChangedFiles(commits);
+    const triggers = detectAutomationTriggers(changedFiles);
+
+    // Track which automations were triggered
+    const triggeredAutomations: string[] = [];
+
+    // 1. Design Token Compliance Automation
+    if (triggers.designTokens) {
       await inngest.send({
-        name: "github/commit.pushed",
+        name: "github/design-tokens.validate",
         data: {
-          hash: commit.hash,
-          message: commit.message,
-          author: commit.author,
-          email: commit.email,
-          url: commit.url,
-          timestamp: commit.timestamp,
           branch: branchName,
+          changedFiles: changedFiles.filter((f) =>
+            /src\/components\/.*\.(tsx?|jsx?)$/.test(f)
+          ),
+          commits: commits.map((c) => ({
+            hash: c.id.slice(0, 7),
+            message: c.message.split("\n")[0],
+            author: c.author.name,
+          })),
           repository: GITHUB_WEBHOOK_REPO,
         },
       });
+      triggeredAutomations.push("design-token-validation");
+    }
+
+    // 2. Security Dependency Monitoring
+    if (triggers.dependencies) {
+      await inngest.send({
+        name: "github/dependencies.audit",
+        data: {
+          branch: branchName,
+          changedFiles: changedFiles.filter((f) =>
+            ["package.json", "package-lock.json", "yarn.lock", "pnpm-lock.yaml"].includes(f)
+          ),
+          commits: commits.map((c) => ({
+            hash: c.id.slice(0, 7),
+            message: c.message.split("\n")[0],
+            author: c.author.name,
+          })),
+          repository: GITHUB_WEBHOOK_REPO,
+        },
+      });
+      triggeredAutomations.push("dependency-security-audit");
+    }
+
+    // 3. Blog Post SEO Indexing (future)
+    if (triggers.blogPosts) {
+      // TODO: Implement blog post indexing
+      triggeredAutomations.push("blog-post-indexing (pending)");
+    }
+
+    // 4. Documentation Validation (future)
+    if (triggers.documentation) {
+      // TODO: Implement docs validation
+      triggeredAutomations.push("docs-validation (pending)");
     }
 
     return NextResponse.json(
       {
         success: true,
-        commitsProcessed: commits.length,
         branch: branchName,
+        commitsProcessed: commits.length,
+        filesChanged: changedFiles.length,
+        automations: triggeredAutomations,
       },
       { status: 200 }
     );
