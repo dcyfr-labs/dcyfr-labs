@@ -122,6 +122,9 @@ mcp.json
 .opencode/.cache/
 .opencode/.sessions/
 
+# OpenCode dependencies (local node_modules)
+.opencode/node_modules/
+
 # OpenCode skills (downloaded skill files)
 skills/
 
@@ -130,8 +133,15 @@ skills/
 
 # IDE & Editor Configs
 # ========================================
-# VS Code (allow workspace settings, block user settings)
-.vscode/
+# VS Code (allow workspace settings, block user overrides)
+.vscode/*
+!.vscode/mcp.json
+!.vscode/mcp.json.example
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/design-tokens.code-snippets
+.vscode/*.local.json
+.vscode/*.local
 
 # JetBrains IDEs
 .idea/

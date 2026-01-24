@@ -1,0 +1,235 @@
+{
+  // =============================================================================
+  // MCP SERVER CONFIGURATION EXAMPLE
+  // =============================================================================
+  // Copy this file to mcp.json and configure your authenticated servers
+  //
+  // Steps to setup:
+  // 1. Copy: cp .vscode/mcp.json.example .vscode/mcp.json
+  // 2. Get API tokens from providers (see URLs below)
+  // 3. Add tokens to .env.local (NEVER commit .env.local to git)
+  // 4. Update mcp.json with your specific configuration
+  // 5. Verify setup: npm run mcp:check
+  //
+  // NOTE: mcp.json is tracked in git. DO NOT add secrets directly here.
+  //       Use environment variables in .env.local with envFile property.
+  //
+  // Last Updated: January 2026
+  // Documentation: docs/ai/claude-code-enhancements.md
+  // =============================================================================
+
+  "servers": {
+    // =========================================================================
+    // TIER 1: ESSENTIAL - Always loaded, required for development
+    // =========================================================================
+
+    "Memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "_tier": "1-essential",
+      "_description": "Session memory for context persistence across conversations",
+      "_auth_required": false
+    },
+
+    "Filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "${workspaceFolder}"],
+      "type": "stdio",
+      "_tier": "1-essential",
+      "_description": "Local filesystem access for reading/writing files",
+      "_auth_required": false
+    },
+
+    "GitHub": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "_tier": "1-essential",
+      "_description": "GitHub API for repos, issues, PRs, code search",
+      "_auth_required": false,
+      "_note": "Uses GitHub Copilot authentication (no manual setup)"
+    },
+
+    "Vercel": {
+      "url": "https://mcp.vercel.com",
+      "type": "http",
+      "_tier": "1-essential",
+      "_description": "Vercel deployment management and preview URLs",
+      "_auth_required": true,
+      "_required_env": "VERCEL_TOKEN",
+      "_get_key": "https://vercel.com/account/tokens",
+      "_setup": "Add VERCEL_TOKEN to .env.local"
+    },
+
+    "DCYFR Analytics": {
+      "type": "stdio",
+      "command": "npm",
+      "args": ["run", "mcp:analytics"],
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env.local",
+      "_tier": "1-essential",
+      "_description": "Project analytics and metrics access",
+      "_auth_required": true,
+      "_required_env": "REDIS_URL",
+      "_setup": "Add REDIS_URL to .env.local"
+    },
+
+    "DCYFR DesignTokens": {
+      "type": "stdio",
+      "command": "npm",
+      "args": ["run", "mcp:tokens"],
+      "cwd": "${workspaceFolder}",
+      "_tier": "1-essential",
+      "_description": "Design token validation and lookup",
+      "_auth_required": false
+    },
+
+    "DCYFR ContentManager": {
+      "type": "stdio",
+      "command": "npm",
+      "args": ["run", "mcp:content"],
+      "cwd": "${workspaceFolder}",
+      "_tier": "1-essential",
+      "_description": "Blog and content management operations",
+      "_auth_required": false
+    },
+
+    // =========================================================================
+    // TIER 2: ON DEMAND - Loaded when first accessed
+    // =========================================================================
+
+    "Sentry": {
+      "url": "https://mcp.sentry.dev/mcp/YOUR_ORG/YOUR_PROJECT",
+      "type": "http",
+      "_tier": "2-on-demand",
+      "_description": "Error tracking and performance monitoring",
+      "_auth_required": true,
+      "_required_env": "SENTRY_AUTH_TOKEN",
+      "_get_key": "https://sentry.io/settings/account/api/auth-tokens/",
+      "_setup": "Replace YOUR_ORG and YOUR_PROJECT with your Sentry organization and project names"
+    },
+
+    "Axiom": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.axiom.co/mcp"],
+      "_tier": "2-on-demand",
+      "_description": "Log aggregation and analysis",
+      "_auth_required": false
+    },
+
+    "Context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "type": "stdio",
+      "_tier": "2-on-demand",
+      "_description": "Enhanced context retrieval from Upstash",
+      "_auth_required": false
+    },
+
+    "Octocode": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["octocode-mcp@latest"],
+      "_tier": "2-on-demand",
+      "_description": "GitHub code research and pattern discovery",
+      "_auth_required": true,
+      "_setup": "Run: gh auth login (uses GitHub CLI for authentication)"
+    },
+
+    "Perplexity": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@perplexity-ai/mcp-server"],
+      "envFile": "${workspaceFolder}/.env.local",
+      "_tier": "2-on-demand",
+      "_description": "AI-powered web search and research",
+      "_auth_required": true,
+      "_required_env": "PERPLEXITY_API_KEY",
+      "_get_key": "https://www.perplexity.ai/settings/api"
+    },
+
+    // =========================================================================
+    // TIER 3: SPECIALIZED - Heavy/niche servers, load only when needed
+    // =========================================================================
+    // Enable by removing "disabled: true" property when needed for specific tasks
+
+    "DeepGraph Next.js": {
+      "command": "npx",
+      "args": ["-y", "mcp-code-graph@latest", "vercel/next.js"],
+      "disabled": true,
+      "_tier": "3-specialized",
+      "_description": "Deep analysis of Next.js codebase patterns",
+      "_enable_for": "Next.js architecture research, pattern discovery",
+      "_enable_command": "Remove 'disabled: true' to enable",
+      "_auth_required": false
+    },
+
+    "DeepGraph TypeScript": {
+      "command": "npx",
+      "args": ["-y", "mcp-code-graph@latest", "microsoft/TypeScript"],
+      "disabled": true,
+      "_tier": "3-specialized",
+      "_description": "Deep analysis of TypeScript compiler patterns",
+      "_enable_for": "TypeScript internals research, type system exploration",
+      "_enable_command": "Remove 'disabled: true' to enable",
+      "_auth_required": false
+    },
+
+    "Playwright": {
+      "command": "npx",
+      "args": ["-y", "@executeautomation/playwright-mcp-server"],
+      "disabled": true,
+      "_tier": "3-specialized",
+      "_description": "Playwright browser automation and testing",
+      "_enable_for": "E2E test development, browser debugging",
+      "_enable_command": "Remove 'disabled: true' to enable",
+      "_auth_required": false
+    },
+
+    "Chrome DevTools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest"],
+      "disabled": true,
+      "_tier": "3-specialized",
+      "_description": "Chrome DevTools integration for debugging",
+      "_enable_for": "Performance profiling, network debugging, DOM inspection",
+      "_enable_command": "Remove 'disabled: true' to enable",
+      "_auth_required": false
+    },
+
+    "arXiv": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["arxiv-mcp-server"],
+      "disabled": true,
+      "_tier": "3-specialized",
+      "_description": "Academic paper search and retrieval",
+      "_enable_for": "Research papers, academic citations, ML papers",
+      "_enable_command": "Remove 'disabled: true' to enable",
+      "_auth_required": false
+    }
+  },
+
+  // ===========================================================================
+  // EXAMPLE .env.local FILE
+  // ===========================================================================
+  // Create .env.local in workspace root with these variables:
+  // IMPORTANT: .env.local is gitignored - NEVER commit secrets to git
+  //
+  // # Vercel (for deployments)
+  // VERCEL_TOKEN=your-vercel-token-here
+  //
+  // # Perplexity AI (for web search)
+  // PERPLEXITY_API_KEY=pplx-your-key-here
+  //
+  // # Sentry (for error tracking)
+  // SENTRY_AUTH_TOKEN=your-sentry-token-here
+  //
+  // # Redis (for DCYFR Analytics MCP)
+  // REDIS_URL=redis://localhost:6379
+  //
+  // # GitHub (Octocode uses gh CLI)
+  // # No environment variable needed - run: gh auth login
+  //
+  // ===========================================================================
+}
