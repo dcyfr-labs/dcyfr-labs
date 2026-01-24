@@ -69,6 +69,7 @@ test-output.log
 # Environment & Secrets
 # ========================================
 **/private/**
+**/archive/**
 
 # env files
 .env*
@@ -209,13 +210,9 @@ tmp/
 .pnpm-store/
 .yarn/cache/
 .yarn/install-state.gz
+
 # Playwright generated test reports
 playwright-report/
-
-# Private documentation (handled by **/private/** pattern above)
-# Subdirectory-specific private folders: docs/security/private/, docs/operations/private/, etc.
-# See: docs/DOCS_GOVERNANCE.md for documentation standards
-docs/archive/
 
 # Template documentation files containing example OAuth/API credentials
 # These are reference implementations only and should not be version controlled
