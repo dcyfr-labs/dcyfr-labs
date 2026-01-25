@@ -49,7 +49,7 @@ paths = [
   '''.env.template''',
 
   # Documentation (contains examples, curl commands, placeholders)
-  '''docs/''',
+
   '''README.md''',
   '''CHANGELOG.md''',
 
