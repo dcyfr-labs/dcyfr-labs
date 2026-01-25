@@ -253,7 +253,7 @@ if [ -n "$MD_FILES" ]; then
       echo ""
       exit 1
     fi
-    
+
     # Run location validation
     if ! node scripts/validate-doc-location.mjs > /dev/null 2>&1; then
       echo ""
@@ -266,7 +266,7 @@ if [ -n "$MD_FILES" ]; then
       echo ""
       exit 1
     fi
-    
+
     echo "${GREEN}✅ TLP compliance and location validated${NC}"
   else
     echo "${YELLOW}⚠️  Node.js not found - skipping TLP validation${NC}"

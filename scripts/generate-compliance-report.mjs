@@ -3,7 +3,7 @@
 /**
  * Generate documentation governance compliance report
  * Creates quarterly report with metrics, trends, and recommendations
- * 
+ *
  * Usage:
  *   node scripts/generate-compliance-report.mjs
  *   node scripts/generate-compliance-report.mjs --output reports/governance-YYYY-MM.md
@@ -19,20 +19,24 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 
 // Parse arguments
 const args = process.argv.slice(2);
-const outputArg = args.find(arg => arg.startsWith('--output='));
-const outputPath = outputArg 
-  ? outputArg.split('=')[1] 
-  : path.join(ROOT_DIR, 'docs/governance/private', `compliance-report-${new Date().toISOString().split('T')[0]}.md`);
+const outputArg = args.find((arg) => arg.startsWith('--output='));
+const outputPath = outputArg
+  ? outputArg.split('=')[1]
+  : path.join(
+      ROOT_DIR,
+      'docs/governance/private',
+      `compliance-report-${new Date().toISOString().split('T')[0]}.md`
+    );
 
 /**
  * Run validation and capture results
  */
 function runValidation(script) {
   try {
-    const output = execSync(`node ${script}`, { 
+    const output = execSync(`node ${script}`, {
       cwd: ROOT_DIR,
       encoding: 'utf-8',
-      stdio: 'pipe'
+      stdio: 'pipe',
     });
     return { success: true, output };
   } catch (error) {
@@ -47,7 +51,7 @@ function parseMetrics(output) {
   const passedMatch = output.match(/✅ Passed: (\d+)/);
   const warningsMatch = output.match(/⚠️\s+Warnings: (\d+)/);
   const errorsMatch = output.match(/❌ Errors: (\d+)/);
-  
+
   return {
     passed: passedMatch ? parseInt(passedMatch[1]) : 0,
     warnings: warningsMatch ? parseInt(warningsMatch[1]) : 0,
@@ -60,24 +64,23 @@ function parseMetrics(output) {
  */
 function generateReport() {
   console.log('📊 Generating Documentation Governance Compliance Report...\n');
-  
+
   // Run validations
   console.log('Running TLP compliance validation...');
   const tlpResult = runValidation(path.join(ROOT_DIR, 'scripts/validate-tlp-compliance.mjs'));
   const tlpMetrics = parseMetrics(tlpResult.output);
-  
+
   console.log('Running documentation location validation...');
   const locationResult = runValidation(path.join(ROOT_DIR, 'scripts/validate-doc-location.mjs'));
-  
+
   // Calculate statistics
   const totalFiles = tlpMetrics.passed + tlpMetrics.warnings + tlpMetrics.errors;
-  const complianceRate = totalFiles > 0 
-    ? ((tlpMetrics.passed / totalFiles) * 100).toFixed(1) 
-    : 0;
-  const errorFreeRate = totalFiles > 0
-    ? (((tlpMetrics.passed + tlpMetrics.warnings) / totalFiles) * 100).toFixed(1)
-    : 0;
-  
+  const complianceRate = totalFiles > 0 ? ((tlpMetrics.passed / totalFiles) * 100).toFixed(1) : 0;
+  const errorFreeRate =
+    totalFiles > 0
+      ? (((tlpMetrics.passed + tlpMetrics.warnings) / totalFiles) * 100).toFixed(1)
+      : 0;
+
   // Generate report content
   const report = `{/* TLP:AMBER - Internal Use Only */}
 
@@ -141,7 +144,9 @@ ${locationResult.output.trim()}
 
 ## Recommendations
 
-${tlpMetrics.errors > 0 ? `
+${
+  tlpMetrics.errors > 0
+    ? `
 ### 🔴 Critical Actions Required
 
 **Errors Detected:** ${tlpMetrics.errors} files with TLP violations
@@ -151,9 +156,13 @@ ${tlpMetrics.errors > 0 ? `
 2. Add TLP:CLEAR markers to public documentation files
 3. Move operational files to \`docs/*/private/\` subdirectories
 4. Re-run validation to confirm fixes
-` : ''}
+`
+    : ''
+}
 
-${tlpMetrics.warnings > 0 ? `
+${
+  tlpMetrics.warnings > 0
+    ? `
 ### ⚠️ Optional Improvements
 
 **Warnings Detected:** ${tlpMetrics.warnings} files with classification warnings
@@ -162,9 +171,13 @@ ${tlpMetrics.warnings > 0 ? `
 1. Review files in \`docs/*/private/\` subdirectories
 2. Change TLP:CLEAR to TLP:AMBER for internal documentation
 3. Run \`npm run docs:fix-private-markers\` for bulk updates
-` : ''}
+`
+    : ''
+}
 
-${tlpMetrics.errors === 0 && tlpMetrics.warnings === 0 ? `
+${
+  tlpMetrics.errors === 0 && tlpMetrics.warnings === 0
+    ? `
 ### ✅ Perfect Compliance Achieved
 
 **Status:** All ${totalFiles} documentation files are properly classified and located.
@@ -174,7 +187,9 @@ ${tlpMetrics.errors === 0 && tlpMetrics.warnings === 0 ? `
 2. Review quarterly compliance reports
 3. Keep validation scripts updated
 4. Document any policy changes in \`docs/governance/DOCS_GOVERNANCE.md\`
-` : ''}
+`
+    : ''
+}
 
 ---
 
@@ -235,9 +250,9 @@ GitHub Actions workflow validates on PRs and pushes:
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
   }
-  
+
   fs.writeFileSync(outputPath, report, 'utf-8');
-  
+
   console.log(`\n✅ Report generated: ${outputPath}`);
   console.log(`\n📊 Summary:`);
   console.log(`   Total Files: ${totalFiles}`);
@@ -245,7 +260,7 @@ GitHub Actions workflow validates on PRs and pushes:
   console.log(`   Warnings: ${tlpMetrics.warnings}`);
   console.log(`   Errors: ${tlpMetrics.errors}`);
   console.log(`   Compliance Rate: ${complianceRate}%`);
-  
+
   return tlpMetrics.errors === 0;
 }
 

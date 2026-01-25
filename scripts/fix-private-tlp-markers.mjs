@@ -3,7 +3,7 @@
 /**
  * Fix TLP markers in subdirectories named 'private'
  * Changes TLP:CLEAR to TLP:AMBER for internal documentation
- * 
+ *
  * Usage:
  *   node scripts/fix-private-tlp-markers.mjs           # Execute changes
  *   node scripts/fix-private-tlp-markers.mjs --dry-run # Preview only

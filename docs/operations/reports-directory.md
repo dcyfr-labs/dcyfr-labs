@@ -1,6 +1,10 @@
+{/_ TLP:CLEAR _/}
+
 # 📊 Reports Directory
 
-This directory contains generated reports and test artifacts that are **not committed to git**.
+This directory contains **temporary generated reports and test artifacts** that are **not committed to git**.
+
+**Historical Note:** Audit reports previously stored here have been relocated to appropriate `docs/*/private/` folders per governance policy (January 2026).
 
 ## Structure
 
@@ -17,11 +21,23 @@ reports/
     └── videos/
 ```
 
+## Relocated Audit Reports (January 2026)
+
+Historical audit reports have been moved to documentation:
+
+- **Accessibility audits** → `docs/accessibility/private/`
+- **Security audits** → `docs/security/private/`
+- **Privacy audits** → `docs/operations/private/reports/`
+- **Industry status** → `docs/operations/private/reports/`
+- **Design system reports** → `docs/design/private/`
+
 ## Purpose
 
 - **Predeployment Reports:** Full validation suite results before merging to main
 - **Performance Reports:** Bundle size analysis, Lighthouse audits
 - **E2E Results:** Screenshots, videos, and failure traces from Playwright tests
+
+**Note:** This directory is for temporary runtime-generated reports only. All historical/archival audit reports belong in `docs/*/private/` folders per governance policy.
 
 ## Usage
 
@@ -44,14 +60,19 @@ npm run test:e2e        # E2E test results
 ls -t reports/predeployment/ | head -1
 ```
 
+## Information Classification
+
+**TLP:CLEAR** - All reports generated in this directory are temporary, local-only artifacts not committed to git. For permanent audit/compliance documentation, see `docs/*/private/` folders.
+
 ## Notes
 
 - All files in this directory are ignored by git (see `.gitignore`)
-- **Exception:** Historical audit reports (accessibility, privacy, industry) are committed for documentation
+- **Historical audit reports:** Relocated to `docs/*/private/` (see above)
 - Reports are named with timestamps for historical tracking
 - Safe to delete old reports to manage disk space
 - CI/CD pipelines can generate reports here without polluting the codebase
 
 ---
 
-**Last Updated:** January 11, 2026
+**Last Updated:** January 24, 2026
+**Information Classification:** TLP:CLEAR (Public)

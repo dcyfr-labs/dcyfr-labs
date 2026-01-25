@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+{/_ TLP:CLEAR _/}
 
 # Governance Documentation Hub
 
