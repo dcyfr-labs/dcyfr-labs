@@ -183,7 +183,7 @@ fi
 
 # Check 9: Documentation placement validation
 echo -n "  Checking documentation placement... "
-ROOT_DOCS=$(git diff --cached --name-only 2>/dev/null | grep -E "\.md$" | grep -v "^docs/" | grep -v "^README.md$" | grep -v "^CONTRIBUTING.md$" | grep -v "^CHANGELOG.md$" | grep -v "^LICENSE.md$" | grep -v "^SECURITY.md$" | grep -v "^AGENTS.md$" | grep -v "^CLAUDE.md$" | grep -v "^\.github/.*-instructions\.md$" | grep -v "^\.github/PULL_REQUEST_TEMPLATE\.md$" | grep -v "^\.github/agents/.*\.md$" | grep -v "^\.opencode/.*\.md$" | grep -v "^\.claude/agents/.*\.md$" || true)
+ROOT_DOCS=$(git diff --cached --name-only 2>/dev/null | grep -E "\.md$" | grep -v "^docs/" | grep -v "^README.md$" | grep -v "^CONTRIBUTING.md$" | grep -v "^CHANGELOG.md$" | grep -v "^LICENSE.md$" | grep -v "^SECURITY.md$" | grep -v "^AGENTS.md$" | grep -v "^CLAUDE.md$" | grep -v "^\.github/.*\.md$" | grep -v "^\.opencode/.*\.md$" | grep -v "^\.claude/.*\.md$" | grep -v "^\.agent/.*\.md$" || true)
 
 if [ -n "$ROOT_DOCS" ]; then
   echo -e "${RED}FAIL${NC}"
