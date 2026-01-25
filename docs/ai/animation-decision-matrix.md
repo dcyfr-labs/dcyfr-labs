@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # Animation Decision Matrix
 
