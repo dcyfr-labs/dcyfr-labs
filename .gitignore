@@ -68,8 +68,13 @@ test-output.log
 # ========================================
 # Environment & Secrets
 # ========================================
-**/private/**
-**/archive/**
+# Private directories (at any level)
+**/private/
+private/
+
+# Archive directories (at any level)
+**/archive/
+archive/
 
 # env files
 .env*
