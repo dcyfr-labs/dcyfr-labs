@@ -17,8 +17,7 @@ echo "🔍 Running pre-commit governance checks..."
 # Check 0: Gitleaks secret detection (PRIMARY DEFENSE)
 echo -n "  Checking for secrets with gitleaks... "
 if command -v gitleaks &> /dev/null; then
-  GITLEAKS_OUTPUT=$(gitleaks protect --staged --redact --verbose=false --config=.gitleaks.toml 2>&1)
-  if echo "$GITLEAKS_OUTPUT" | grep -q "WRN.*leaks found"; then
+  if ! gitleaks protect --staged --redact --verbose=false --config=.gitleaks.toml > /dev/null 2>&1; then
     echo -e "${RED}FAIL${NC}"
     echo -e "${RED}❌ BLOCKED: Secrets detected in staged files!${NC}"
     echo ""

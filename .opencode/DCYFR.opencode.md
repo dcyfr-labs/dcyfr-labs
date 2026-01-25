@@ -280,7 +280,7 @@ Additional manual review required:
 
 ---
 
-## � Approval Gates
+## 🔐 Approval Gates
 
 OpenCode **pauses and requests approval** for:
 
@@ -303,7 +303,7 @@ OpenCode **pauses and requests approval** for:
 
 ---
 
-## �🔗 External Resources
+## 🔗 External Resources
 
 ### DCYFR Pattern Documentation
 

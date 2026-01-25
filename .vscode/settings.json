@@ -69,5 +69,5 @@
   ],
   "tailwindCSS.validate": true,
   "github-actions.workflows.pinned.workflows": [],
-  "githubPullRequests.pullRequestDescription": "Copilot"
+  "githubPullRequests.pullRequestDescription": "template"
 }
