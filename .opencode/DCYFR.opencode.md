@@ -280,7 +280,7 @@ Additional manual review required:
 
 ---
 
-## � Approval Gates
+## 🔐 Approval Gates
 
 OpenCode **pauses and requests approval** for:
 
