@@ -1,3 +1,5 @@
+<!-- TLP:CLEAR -->
+
 # Implementation Summary: GitHub Copilot Best Practices
 
 **Status:** ✅ COMPLETE

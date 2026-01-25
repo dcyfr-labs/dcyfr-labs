@@ -1,3 +1,5 @@
+<!-- TLP:CLEAR -->
+
 # Phase 3: Advanced Optimization & Performance Tuning
 
 **Status:** Implementation Guide

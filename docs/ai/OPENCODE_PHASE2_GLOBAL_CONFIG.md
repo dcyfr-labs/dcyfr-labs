@@ -1,3 +1,5 @@
+<!-- TLP:CLEAR -->
+
 # Phase 2: Global Configuration & Permissions Enhancement
 
 **Status:** Implementation Guide

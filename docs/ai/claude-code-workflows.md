@@ -1,3 +1,5 @@
+<!-- TLP:CLEAR -->
+
 # Claude Code Workflow Patterns
 
 **Version:** 1.0.0

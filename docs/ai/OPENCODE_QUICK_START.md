@@ -1,3 +1,5 @@
+<!-- TLP:CLEAR -->
+
 # OpenCode.ai Quick Start (5 Minutes)
 
 ## One-Time Setup

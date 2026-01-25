@@ -1,3 +1,5 @@
+<!-- TLP:CLEAR -->
+
 # Claude Code Analysis: Document Navigation Guide
 
 **Overview:** This guide shows how all Claude Code analysis documents fit together and which one to read based on your role.

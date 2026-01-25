@@ -1,3 +1,5 @@
+<!-- TLP:CLEAR -->
+
 # Implementation Guide: Claude Code Best Practices
 
 **Quick Reference for Implementing Recommendations**

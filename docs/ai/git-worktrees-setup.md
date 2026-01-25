@@ -1,3 +1,5 @@
+<!-- TLP:CLEAR -->
+
 # Using Git Worktrees for Parallel Development with Claude Code
 
 **Version:** 1.0.0

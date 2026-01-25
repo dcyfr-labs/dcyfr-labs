@@ -1,3 +1,5 @@
+<!-- TLP:CLEAR -->
+
 # OpenCode.ai Setup & Migration Guide
 
 **Status:** Phase 1 Complete (JSONC Migration)

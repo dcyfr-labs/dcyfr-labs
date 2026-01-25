@@ -31,10 +31,10 @@ const colors = {
   cyan: '\x1b[36m',
 };
 
-// TLP marker patterns
+// TLP marker patterns (supports both MDX {/* */} and HTML <!-- --> comments)
 const TLP_MARKERS = {
-  CLEAR: /\{\/\*\s*TLP:CLEAR\s*\*\/\}|TLP:CLEAR/i,
-  AMBER: /\{\/\*\s*TLP:AMBER.*?\*\/\}|TLP:AMBER/i,
+  CLEAR: /(?:\{\/\*\s*TLP:CLEAR\s*\*\/\}|<!--\s*TLP:CLEAR\s*-->|TLP:CLEAR)/i,
+  AMBER: /(?:\{\/\*\s*TLP:AMBER.*?\*\/\}|<!--\s*TLP:AMBER.*?-->|TLP:AMBER)/i,
 };
 
 // Operational filename patterns that should be in private/
@@ -139,8 +139,8 @@ function hasOperationalContent(filePath) {
       /Status:\s*COMPLETE/i,
       /Implementation Complete/i,
       /Generated:\s*\d{4}-\d{2}-\d{2}/,
-      /Overall.*Score:\s*\d+\/\d+/,
-      /Validation Score/i,
+      /Overall\s+Score:\s*\d+\/\d+/i,  // More specific: "Overall Score: X/Y"
+      /Validation Score:/i,
       /Performance Metrics Summary/i,
       /Success Metrics:/i,
     ];
@@ -286,7 +286,9 @@ function main() {
   if (errors.length > 0) {
     console.log(`${colors.red}❌ TLP compliance check FAILED${colors.reset}\n`);
     console.log(`Fix errors by:`);
-    console.log(`1. Add TLP:CLEAR marker to public docs: {/* TLP:CLEAR */}`);
+    console.log(`1. Add TLP:CLEAR marker to public docs:`);
+    console.log(`   - HTML comment: <!-- TLP:CLEAR --> (recommended for .md files)`);
+    console.log(`   - MDX comment: {/* TLP:CLEAR */} (for .mdx files)`);
     console.log(`2. Move operational files to docs/*/private/ directories`);
     console.log(`3. Move docs outside docs/ to appropriate location\n`);
     process.exit(1);
