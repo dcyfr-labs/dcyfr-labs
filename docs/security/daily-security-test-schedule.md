@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Daily Security Test Schedule - Inngest Automation
 
 **Status:** ✅ Active

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Google Indexing API - Quick Start
 
 **Status:** ✅ Refactored & Ready  

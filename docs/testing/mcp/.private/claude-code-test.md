@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Claude Code Tools Testing Guide
 
 This guide demonstrates and validates Claude Code's built-in tools in the VS Code extension.

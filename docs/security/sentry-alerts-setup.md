@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Sentry Security Alerts Setup Guide
 **Date:** December 11, 2025
 **Purpose:** Configure automated security alerts for admin endpoint monitoring

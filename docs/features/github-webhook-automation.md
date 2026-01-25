@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # GitHub Webhook Automation Architecture
 
 **Last Updated:** January 21, 2026  

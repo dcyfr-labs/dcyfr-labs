@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Diagram and Math Rendering Implementation Summary
 
 **Date:** November 11, 2025  

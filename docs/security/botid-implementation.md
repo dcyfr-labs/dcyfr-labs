@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # BotID Implementation Guide
 
 This document covers the implementation of Vercel BotID for bot protection across the application.

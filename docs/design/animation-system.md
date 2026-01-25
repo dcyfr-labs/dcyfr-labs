@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Animation System
 
 > **Philosophy:** Performance, Browser Support, Simplicity

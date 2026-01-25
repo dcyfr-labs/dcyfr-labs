@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # CSP Violation Monitoring - Quick Reference
 
 **Last Updated:** October 24, 2025

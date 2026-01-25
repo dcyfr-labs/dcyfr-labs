@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # View and Share Tracking Anti-Spam Protection
 
 **Status: ✅ VERIFIED AND DEPLOYED (November 9, 2025)**

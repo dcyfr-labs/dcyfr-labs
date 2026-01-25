@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Component Patterns
 
 **Version:** 1.0.0  

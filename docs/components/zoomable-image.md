@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # ZoomableImage Component
 
 **Component:** `ZoomableImage`  

@@ -1,4 +1,4 @@
-{/_ TLP:AMBER - Internal Use Only _/}
+{/_ TLP:CLEAR _/}
 
 # Private Documentation Analysis & Governance Update
 

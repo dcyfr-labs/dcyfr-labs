@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # GitHub Code Scanning Alert Integration
 
 This document describes how to check GitHub security code scanning alerts programmatically since the GitHub MCP server doesn't natively support this functionality.

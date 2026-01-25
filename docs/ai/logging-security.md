@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Logging Security Best Practices
 
 **CRITICAL: Never log sensitive information in clear text.**

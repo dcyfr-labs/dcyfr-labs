@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # SEO Audit Results - dcyfr-labs
 
 **Date:** December 26, 2025

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Proprietary Information (PI) & Sensitive Content Policy
 
 **Last Updated:** 2025-12-10

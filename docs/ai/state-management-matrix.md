@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # State Management Decision Matrix
 
 **Purpose**: Guide AI agents on when to use local state, context, Zustand, or server state.

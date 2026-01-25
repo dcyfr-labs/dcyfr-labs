@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Google Indexing API Setup Guide
 
 **Automatically submit blog posts to Google for faster search indexing**

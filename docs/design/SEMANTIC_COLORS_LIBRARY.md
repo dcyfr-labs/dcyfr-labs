@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Semantic Colors Library
 
 **Version:** 1.0  

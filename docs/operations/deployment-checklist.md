@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Deployment Checklist
 
 **Last Updated:** December 7, 2025  

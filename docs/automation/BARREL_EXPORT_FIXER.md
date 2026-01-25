@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Automated Barrel Export Fixer
 
 ## Purpose

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Error Handling Patterns
 
 **Purpose**: Standardize error boundaries, fallbacks, and error states across the application.

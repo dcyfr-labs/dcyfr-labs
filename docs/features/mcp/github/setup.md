@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # GitHub MCP Setup & Getting Started
 
 **Implementation Date**: October 18, 2025

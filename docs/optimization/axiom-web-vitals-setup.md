@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Axiom Web Vitals Quick Setup Guide
 
 ## What Was Done

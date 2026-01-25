@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # MCP Server Testing Guide
 
 This guide helps you validate all configured MCP servers in Claude Chat.

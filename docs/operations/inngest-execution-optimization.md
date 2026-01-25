@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Inngest Execution Optimization Report
 
 **Date:** December 18, 2025

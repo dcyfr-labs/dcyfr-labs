@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Contact Form Honeypot Documentation
 
 **Created:** October 26, 2025  

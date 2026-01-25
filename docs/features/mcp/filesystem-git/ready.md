@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Filesystem And Git MCP Integration Ready Checklist
 
 ## Summary

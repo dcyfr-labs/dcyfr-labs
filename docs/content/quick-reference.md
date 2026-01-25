@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Markdown Guardrails - Quick Reference
 
 ## TL;DR

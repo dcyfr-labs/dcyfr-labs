@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Trending Projects: GitHub API Integration
 
 **Status:** ✅ Implemented (Real API)

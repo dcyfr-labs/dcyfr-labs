@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Blog TOC Sidebar Enhancements
 
 **Implementation Date:** December 6, 2025  

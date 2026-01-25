@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Card Spacing Consistency Standards
 
 **Date:** November 4, 2025  

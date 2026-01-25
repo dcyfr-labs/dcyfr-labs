@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # UI/UX Optimization & Animation Roadmap
 
 **Analysis Date**: November 3, 2025  

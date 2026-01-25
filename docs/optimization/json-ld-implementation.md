@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # JSON-LD Structured Data Implementation
 
 ## Overview

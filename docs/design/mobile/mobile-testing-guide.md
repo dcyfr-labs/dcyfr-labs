@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Mobile Layout Testing Guide
 
 ## Quick Visual Testing Checklist

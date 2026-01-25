@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 Site configuration and environment overrides
 
 This file documents how to update site-wide values and how environment variables affect the active domain and derived values.

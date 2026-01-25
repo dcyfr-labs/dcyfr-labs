@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # AI Instructions Alignment Analysis - Complete Index
 
 **Analysis Date:** January 16, 2026

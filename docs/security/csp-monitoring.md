@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Content Security Policy (CSP) Monitoring
 
 **Last Updated:** November 19, 2025  

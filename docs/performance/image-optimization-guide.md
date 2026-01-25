@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Image Optimization Guide
 
 **Created**: January 15, 2026  

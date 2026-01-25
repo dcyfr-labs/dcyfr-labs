@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # GitHub Contributions API Endpoint
 
 **Location:** `src/app/api/github-contributions/route.ts`

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Project Cleanup Log
 
 **Purpose:** Document files removed during project cleanup and consolidation efforts.  

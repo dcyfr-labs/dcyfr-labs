@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # NEW_PAGE.tsx Template
 
 Copy-paste template for creating a new standard page with `PageLayout`.

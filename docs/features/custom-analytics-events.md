@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Custom Analytics Events Documentation
 
 Complete reference for all custom analytics events tracked via Vercel Analytics.

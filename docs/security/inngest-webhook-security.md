@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Inngest Webhook Security Documentation
 
 **Created:** October 26, 2025  

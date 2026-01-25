@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Honeypot Routes Documentation
 
 **Created:** December 2, 2025  

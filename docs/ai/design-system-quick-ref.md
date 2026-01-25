@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Design System Quick Reference (AI-Optimized)
 
 **Purpose**: Ultra-concise patterns for AI code generation. Use this for first-time compliance.

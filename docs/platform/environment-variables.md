@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Environment Variables Guide
 
 **Last Updated:** December 7, 2025  

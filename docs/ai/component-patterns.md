@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Component Patterns
 
 Mandatory patterns for components, layouts, imports, and metadata generation.

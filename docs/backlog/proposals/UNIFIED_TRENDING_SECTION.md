@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Unified Trending Section Refactor
 
 **Date:** December 27, 2025

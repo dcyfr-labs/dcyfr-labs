@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Rate Limiting Test Script
 
 **Purpose:** Validate rate limiting implementation across API endpoints

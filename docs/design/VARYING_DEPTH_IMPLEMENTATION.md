@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Varying Depth Styling System - Implementation Summary
 
 ## ✅ Completed Implementation

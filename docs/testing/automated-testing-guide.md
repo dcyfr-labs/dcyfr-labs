@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Automated Testing Guide for AI Agents
 
 **Last Updated:** December 23, 2025

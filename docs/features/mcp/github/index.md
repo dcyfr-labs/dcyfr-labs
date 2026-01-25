@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # GitHub MCP Documentation Index
 
 **Last Updated**: October 18, 2025  

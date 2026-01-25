@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # OpenCode vs Claude Code Usage Guide
 
 **Version:** 1.0.0  

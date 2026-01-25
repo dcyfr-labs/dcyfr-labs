@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Content Security Policy (CSP) Implementation
 
 **Date:** October 5, 2025  

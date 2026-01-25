@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Key Takeaway Component Template
 
 ## Overview

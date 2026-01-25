@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Syntax Highlighting System
 
 **Status:** ✅ Complete (January 11, 2026)  

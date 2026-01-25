@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Typography & Character Usage Style Guide
 
 **Date:** January 10, 2026  

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Activity Feed Documentation
 
 **Last Updated:** December 25, 2025

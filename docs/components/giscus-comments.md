@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # GiscusComments Component Documentation
 
 **Component:** `src/components/giscus-comments.tsx`  

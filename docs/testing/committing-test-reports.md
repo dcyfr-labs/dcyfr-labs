@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 Committing Test Reports
 =======================
 

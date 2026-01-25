@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # PageHero Quick Reference
 
 ## Basic Usage

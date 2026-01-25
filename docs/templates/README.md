@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Templates Library
 
 Copy-paste templates for common tasks. Each template includes inline documentation and checklists.

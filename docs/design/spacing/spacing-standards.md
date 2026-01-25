@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Spacing Standards - Quick Reference
 
 **Last Updated:** November 5, 2025  

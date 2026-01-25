@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Operations TODO
 
 **Last Updated:** January 20, 2026 (RIVET Blog Post Integration Complete)

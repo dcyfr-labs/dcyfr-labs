@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Vercel Blob Integration Plan
 
 > **Status**: Planned | **Priority**: Low | **Trigger**: When image assets exceed 50MB or video content is needed

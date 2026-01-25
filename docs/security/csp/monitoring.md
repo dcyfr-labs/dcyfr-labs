@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # CSP Violation Monitoring Guide
 
 **Implementation Date:** November 9, 2025  

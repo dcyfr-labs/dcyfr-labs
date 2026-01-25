@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Claude Code Best Practices
 
 Comprehensive workflow guidelines for using Claude Code effectively on this project.

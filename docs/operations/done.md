@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # ✅ Completed Work - January 2026
 
 This document archives completed features and improvements across all phases.

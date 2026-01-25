@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Bot Detection with Vercel BotID
 
 **Last Updated:** November 19, 2025  

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # DCYFR Agent Threat Mapping & Mitigation Strategy
 
 **Framework:** OWASP Top 10 For Agentic Applications 2026

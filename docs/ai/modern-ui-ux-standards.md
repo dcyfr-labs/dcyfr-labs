@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Modern UI/UX Standards Implementation Guide
 
 **Implementation Date:** December 2025

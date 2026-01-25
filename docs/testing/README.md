@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Testing Documentation
 
 Comprehensive testing setup for the application.

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # About Page Components Documentation
 
 ## Overview

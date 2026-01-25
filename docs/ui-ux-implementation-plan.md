@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # UI/UX Implementation Plan - January 2026
 
 **Status**: In Progress  

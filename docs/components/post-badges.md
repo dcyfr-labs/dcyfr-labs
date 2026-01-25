@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Post Badges Component
 
 **Status:** ✅ Implemented  

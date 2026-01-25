@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Section Navigation Implementation Summary
 
 **Date**: November 18, 2025  

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # GitHub Heatmap Component
 
 **Location:** `src/components/github-heatmap.tsx`

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Automation Documentation Index
 
 **📚 All automation documentation has been consolidated into a single comprehensive guide:**

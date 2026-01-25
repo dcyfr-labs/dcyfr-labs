@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Dependabot Setup Guide
 
 **Status:** ✅ **ACTIVE** (November 11, 2025)

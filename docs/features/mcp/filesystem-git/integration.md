@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Filesystem & Git MCP Integration
 
 **Status**: ✅ Integrated  

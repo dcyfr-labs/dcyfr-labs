@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Changelog CI/CD Integration Investigation
 
 **Date:** January 21, 2026

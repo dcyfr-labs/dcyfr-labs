@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # CORS (Cross-Origin Resource Sharing) Policy
 
 **Status:** Documented

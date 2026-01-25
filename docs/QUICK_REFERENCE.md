@@ -1,6 +1,9 @@
+{/_ TLP:CLEAR _/}
+
 # Quick Reference - DCYFR Labs
 
 **Fast access to frequently used documentation**
+**Information Classification:** TLP:CLEAR (Public)
 
 ---
 
@@ -25,30 +28,30 @@ npm run test:run      # Run tests once (no watch)
 
 ### Development
 
-| Topic | Link | Use When |
-|-------|------|----------|
-| **Design Tokens** | [docs/design/design-tokens.md](design/design-tokens.md) | Building UI components |
-| **Component Patterns** | [docs/ai/component-patterns.md](ai/component-patterns.md) | Creating page layouts |
-| **Best Practices** | [docs/ai/best-practices.md](ai/best-practices.md) | API patterns & workflows |
-| **Inngest Integration** | [docs/features/inngest/INDEX.md](features/inngest/INDEX.md) | Background jobs & workflows |
-| **Testing Patterns** | [docs/testing/automated-testing-guide.md](testing/automated-testing-guide.md) | Writing tests |
+| Topic                   | Link                                                                          | Use When                    |
+| ----------------------- | ----------------------------------------------------------------------------- | --------------------------- |
+| **Design Tokens**       | [docs/design/design-tokens.md](design/design-tokens.md)                       | Building UI components      |
+| **Component Patterns**  | [docs/ai/component-patterns.md](ai/component-patterns.md)                     | Creating page layouts       |
+| **Best Practices**      | [docs/ai/best-practices.md](ai/best-practices.md)                             | API patterns & workflows    |
+| **Inngest Integration** | [docs/features/inngest/INDEX.md](features/inngest/INDEX.md)                   | Background jobs & workflows |
+| **Testing Patterns**    | [docs/testing/automated-testing-guide.md](testing/automated-testing-guide.md) | Writing tests               |
 
 ### Project Info
 
-| Topic | Link | Use When |
-|-------|------|----------|
-| **README** | [README.md](../README.md) | Project overview |
-| **Tech Stack** | [CLAUDE.md#quick-reference](../CLAUDE.md) | Understanding architecture |
-| **Contributing** | [CONTRIBUTING.md](../CONTRIBUTING.md) | Making contributions |
-| **Changelog** | [CHANGELOG.md](../CHANGELOG.md) | Recent changes |
+| Topic            | Link                                      | Use When                   |
+| ---------------- | ----------------------------------------- | -------------------------- |
+| **README**       | [README.md](../README.md)                 | Project overview           |
+| **Tech Stack**   | [CLAUDE.md#quick-reference](../CLAUDE.md) | Understanding architecture |
+| **Contributing** | [CONTRIBUTING.md](../CONTRIBUTING.md)     | Making contributions       |
+| **Changelog**    | [CHANGELOG.md](../CHANGELOG.md)           | Recent changes             |
 
 ### Operations
 
-| Topic | Link | Use When |
-|-------|------|----------|
-| **Maintenance Playbook** | [docs/operations/MAINTENANCE_PLAYBOOK.md](operations/MAINTENANCE_PLAYBOOK.md) | Routine maintenance |
-| **Cleanup Log** | [docs/operations/CLEANUP_LOG.md](operations/CLEANUP_LOG.md) | Recovering deleted files |
-| **TODO Review** | [docs/operations/TODO_REVIEW.md](operations/TODO_REVIEW.md) | Understanding TODO status |
+| Topic                    | Link                                                                          | Use When                  |
+| ------------------------ | ----------------------------------------------------------------------------- | ------------------------- |
+| **Maintenance Playbook** | [docs/operations/MAINTENANCE_PLAYBOOK.md](operations/MAINTENANCE_PLAYBOOK.md) | Routine maintenance       |
+| **Cleanup Log**          | [docs/operations/CLEANUP_LOG.md](operations/CLEANUP_LOG.md)                   | Recovering deleted files  |
+| **TODO Review**          | [docs/operations/TODO_REVIEW.md](operations/TODO_REVIEW.md)                   | Understanding TODO status |
 
 ---
 
@@ -69,6 +72,7 @@ import { SPACING, TYPOGRAPHY, SEMANTIC_COLORS } from '@/lib/design-tokens';
 ```
 
 **Token Categories:**
+
 - **SPACING**: Margins, padding, gaps (`SECTION_X`, `SECTION_Y`, `STACK_XS` to `STACK_2XL`)
 - **TYPOGRAPHY**: Font sizes, weights, line heights (`TEXT_SM`, `HEADING_2XL`)
 - **SEMANTIC_COLORS**: Text, backgrounds, borders (`TEXT.PRIMARY`, `BG.SECONDARY`)
@@ -176,6 +180,7 @@ describe('ComponentName', () => {
 ## 🔧 Common Commands
 
 ### Development
+
 ```bash
 npm run dev               # Start Next.js dev server
 npm run inngest:dev       # Start Inngest dev server
@@ -185,6 +190,7 @@ npm run lint -- --fix     # Auto-fix ESLint issues
 ```
 
 ### Quality Checks
+
 ```bash
 npm run check             # TypeScript + ESLint + tests (all checks)
 npm run typecheck         # TypeScript type checking only
@@ -193,6 +199,7 @@ npm run test:coverage     # Test coverage report
 ```
 
 ### Build & Deploy
+
 ```bash
 npm run build             # Production build
 npm run start             # Start production server
@@ -200,6 +207,7 @@ npm run validate:build    # Validate build output
 ```
 
 ### Utilities
+
 ```bash
 npm run find:token-violations  # Find hardcoded values (design tokens)
 npm run validate:tokens        # Check design token compliance (exit 0 if compliant)
@@ -233,43 +241,46 @@ dcyfr-labs/
 
 ### Issue: Tests hanging
 
-**Cause:** Using `npm test` (watch mode)  
+**Cause:** Using `npm test` (watch mode)
 **Fix:** Use `npm run test:run` instead
 
 ### Issue: Design token violations
 
-**Cause:** Hardcoded spacing/colors  
-**Fix:** 
+**Cause:** Hardcoded spacing/colors
+**Fix:**
+
 1. Find violations: `npm run find:token-violations`
 2. Auto-fix common patterns: `npm run fix:tokens`
 3. Manually replace remaining hardcoded values with design tokens:
    ```typescript
-   import { SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
+   import { SPACING, TYPOGRAPHY } from '@/lib/design-tokens';
    ```
 
 ### Issue: Test data in production
 
-**Cause:** Demo/fabricated data not environment-guarded  
+**Cause:** Demo/fabricated data not environment-guarded
 **Fix:** Ensure all test data is protected:
+
 ```typescript
 // ✅ CORRECT
 if (process.env.NODE_ENV === 'production') {
-  return null;  // Don't use test data in production
+  return null; // Don't use test data in production
 }
 return mockData;
 ```
 
 ### Issue: Inngest function not triggering
 
-**Cause:** Inngest dev server not running or event name mismatch  
+**Cause:** Inngest dev server not running or event name mismatch
 **Fix:**
+
 1. Start Inngest: `npm run inngest:dev`
 2. Check event name matches exactly
 3. View logs at http://localhost:8288
 
 ### Issue: TypeScript errors
 
-**Cause:** Missing type definitions or configuration  
+**Cause:** Missing type definitions or configuration
 **Fix:** Run `npm run typecheck` to see full errors
 
 ---
@@ -279,6 +290,7 @@ return mockData;
 For complete documentation structure, see: [docs/INDEX.md](INDEX.md)
 
 **Key Sections:**
+
 - **AI**: AI agent instructions, patterns, decision trees
 - **Design**: Design system, tokens, components
 - **Features**: Feature documentation (Inngest, analytics, etc.)
@@ -287,6 +299,5 @@ For complete documentation structure, see: [docs/INDEX.md](INDEX.md)
 
 ---
 
-**Last Updated:** January 17, 2026  
+**Last Updated:** January 17, 2026
 **Maintained By:** DCYFR Labs Team
-

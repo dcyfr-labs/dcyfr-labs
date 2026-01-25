@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Blog View Counts
 
 Implements per-post view tracking using a Redis-compatible datastore.

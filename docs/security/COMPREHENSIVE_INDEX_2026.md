@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Security Documentation - Comprehensive Index
 
 **Last Updated:** January 5, 2026  

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Component-First Decision Trees
 
 Visual flowcharts for making architectural decisions in the dcyfr-labs codebase. Use these to quickly determine which patterns, layouts, and helpers to use without re-reading documentation.

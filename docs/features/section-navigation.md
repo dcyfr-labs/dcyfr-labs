@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Section Navigation Feature
 
 Keyboard-driven section navigation with smooth scrolling transitions for enhanced UX.

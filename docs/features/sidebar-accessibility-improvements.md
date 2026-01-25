@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Sidebar Accessibility Improvements - Implementation Summary
 
 **Date:** 2025-12-25

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # AI Development Documentation
 
 **Last Updated:** January 21, 2026

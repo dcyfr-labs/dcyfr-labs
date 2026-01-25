@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Post Badges Quick Reference
 
 ## Component Usage

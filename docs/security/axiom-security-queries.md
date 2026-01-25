@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Axiom Security Monitoring Queries
 **Date:** December 11, 2025
 **Purpose:** Pre-built queries for security monitoring in Axiom dashboard

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # DCYFR ASI-Aligned Mitigation Patterns
 
 **Framework:** OWASP Top 10 For Agentic Applications 2026

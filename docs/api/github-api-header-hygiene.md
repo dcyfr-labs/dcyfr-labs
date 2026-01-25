@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # GitHub API Header Hygiene
 
 **Implementation Date:** October 20, 2025  

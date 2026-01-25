@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Security Monitoring & Vulnerability Management
 
 This document outlines the security practices and automated monitoring systems for dcyfr-labs.
