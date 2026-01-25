@@ -1,3 +1,5 @@
+{/* TLP:AMBER - Internal Use Only */}
+
 # Color Token Migration - Completion Report
 
 **Completion Date:** January 11, 2026  

@@ -7,6 +7,7 @@
 The Google Indexing API allows you to notify Google immediately when new content is published or updated, drastically reducing the time it takes for your blog posts to appear in search results. Instead of waiting days or weeks for Google's crawlers to discover your content, submissions can be indexed within hours.
 
 **Benefits:**
+
 - ✅ New blog posts submitted to Google within minutes of publishing
 - ✅ Updates trigger immediate re-crawl requests
 - ✅ Better search visibility for time-sensitive content
@@ -20,6 +21,7 @@ The Google Indexing API allows you to notify Google immediately when new content
 ## Prerequisites
 
 Before you begin, ensure you have:
+
 - A Google account with access to Google Cloud Platform
 - Owner access to your domain in Google Search Console
 - Your domain verified in Google Search Console
@@ -156,8 +158,10 @@ Before you begin, ensure you have:
    - Ensure it's a single line with escaped quotes
 
 2. **Add to `.env.local`**
+
    ```bash
-   GOOGLE_INDEXING_API_KEY='{"type":"service_account","project_id":"your-project","private_key_id":"[REDACTED]","private_key":"-----BEGIN PRIVATE KEY-----\n[REDACTED - YOUR KEY HERE]\n-----END PRIVATE KEY-----\n","client_email":"indexing-service@your-project.iam.gserviceaccount.com","client_id":"[REDACTED]","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_x509_cert_url":"[REDACTED]"}'
+   # Replace <YOUR_SERVICE_ACCOUNT_JSON> with your actual service account JSON from Google Cloud Console
+   GOOGLE_INDEXING_API_KEY='<YOUR_SERVICE_ACCOUNT_JSON>'
    ```
 
 3. **For Production (Vercel)**
@@ -176,6 +180,7 @@ Before you begin, ensure you have:
 ### Test via Inngest Dev UI (Local Development)
 
 1. **Start Development Server**
+
    ```bash
    npm run dev
    ```
@@ -206,24 +211,25 @@ Before you begin, ensure you have:
 Create a test script `scripts/test-google-indexing.mjs`:
 
 ```javascript
-import { inngest } from "./src/inngest/client.js";
+import { inngest } from './src/inngest/client.js';
 
 async function testIndexing() {
   const result = await inngest.send({
-    name: "google/url.submit",
+    name: 'google/url.submit',
     data: {
-      url: "https://www.dcyfr.ai/blog/test-post",
-      type: "URL_UPDATED",
+      url: 'https://www.dcyfr.ai/blog/test-post',
+      type: 'URL_UPDATED',
     },
   });
 
-  console.log("Indexing request sent:", result);
+  console.log('Indexing request sent:', result);
 }
 
 testIndexing().catch(console.error);
 ```
 
 Run the test:
+
 ```bash
 node scripts/test-google-indexing.mjs
 ```
@@ -238,14 +244,14 @@ When publishing new blog posts, the system can automatically trigger indexing:
 
 ```typescript
 // In your blog publishing workflow
-import { inngest } from "@/inngest/client";
+import { inngest } from '@/inngest/client';
 
 async function publishBlogPost(post) {
   // ... publish logic ...
 
   // Automatically submit to Google
   await inngest.send({
-    name: "google/url.submit",
+    name: 'google/url.submit',
     data: {
       url: `https://www.dcyfr.ai/blog/${post.slug}`,
     },
@@ -259,18 +265,16 @@ To backfill all existing blog posts:
 
 ```typescript
 // scripts/backfill-google-indexing.mjs
-import { inngest } from "./src/inngest/client.js";
-import { getAllPosts } from "./src/lib/blog.js";
+import { inngest } from './src/inngest/client.js';
+import { getAllPosts } from './src/lib/blog.js';
 
 async function backfillIndexing() {
   const posts = getAllPosts();
-  
-  const urls = posts.map(
-    (post) => `https://www.dcyfr.ai/blog/${post.slug}`
-  );
+
+  const urls = posts.map((post) => `https://www.dcyfr.ai/blog/${post.slug}`);
 
   await inngest.send({
-    name: "google/urls.batch-submit",
+    name: 'google/urls.batch-submit',
     data: { urls },
   });
 
@@ -281,6 +285,7 @@ backfillIndexing().catch(console.error);
 ```
 
 Run the backfill:
+
 ```bash
 node scripts/backfill-google-indexing.mjs
 ```
@@ -290,22 +295,22 @@ node scripts/backfill-google-indexing.mjs
 For manual control:
 
 ```typescript
-import { inngest } from "@/inngest/client";
+import { inngest } from '@/inngest/client';
 
 // Submit a single URL
 await inngest.send({
-  name: "google/url.submit",
+  name: 'google/url.submit',
   data: {
-    url: "https://www.dcyfr.ai/blog/new-post",
-    type: "URL_UPDATED",
+    url: 'https://www.dcyfr.ai/blog/new-post',
+    type: 'URL_UPDATED',
   },
 });
 
 // Delete a URL from index
 await inngest.send({
-  name: "google/url.delete",
+  name: 'google/url.delete',
   data: {
-    url: "https://www.dcyfr.ai/blog/removed-post",
+    url: 'https://www.dcyfr.ai/blog/removed-post',
   },
 });
 ```
@@ -315,6 +320,7 @@ await inngest.send({
 ## Quota Management
 
 ### Default Quota
+
 - **200 URL submissions per day** (includes both updates and deletions)
 - **180 metadata requests per minute**
 - **380 total requests per minute** (across all endpoints)
@@ -345,6 +351,7 @@ If you need more than 200 submissions per day:
 **Cause:** Service account not added as owner in Google Search Console
 
 **Solution:**
+
 1. Verify service account email is added to Search Console
 2. Ensure permission level is "Owner" (not "Full" or "Restricted")
 3. Wait 5-10 minutes for permissions to propagate
@@ -354,6 +361,7 @@ If you need more than 200 submissions per day:
 **Cause:** Invalid or expired credentials
 
 **Solution:**
+
 1. Verify JSON key is correctly formatted in environment variable
 2. Check that both Indexing API and Search Console API are enabled
 3. Regenerate service account key if needed
@@ -363,6 +371,7 @@ If you need more than 200 submissions per day:
 **Cause:** Exceeded daily quota (200 requests/day)
 
 **Solution:**
+
 1. Wait until quota resets (midnight Pacific Time)
 2. Implement rate limiting in your code
 3. Request quota increase from Google
@@ -373,6 +382,7 @@ If you need more than 200 submissions per day:
 **Cause:** `GOOGLE_INDEXING_API_KEY` not configured
 
 **Solution:**
+
 1. Verify environment variable is set
 2. Check `.env.local` file exists and contains the key
 3. Restart development server after adding variable

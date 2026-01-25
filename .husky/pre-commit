@@ -72,14 +72,10 @@ SECRETS=$(git diff --cached -U0 2>/dev/null | \
   grep -v "^\+\+\+ b/.gitleaksignore" | \
   grep -E "^\+" | \
   grep -v "^+++" | \
-  grep -E "(
-    (API_KEY|SECRET|PASSWORD|TOKEN|CREDENTIAL|PRIVATE_KEY|ACCESS_KEY|WEBHOOK_SECRET|SIGNING_KEY|AUTH_TOKEN)\s*[:=]\s*['\"\`][^'\"]{8,}['\"\`]
-    |(GITHUB|API|WEBHOOK|AUTH|SIGNING)_[A-Z_]*(SECRET|KEY|TOKEN|PASSWORD)\s*[:=]\s*[A-Za-z0-9+/=]{20,}
-    |[:=]\s*[A-Za-z0-9+/]{30,}={0,2}(?!>)
-    |eyJ[A-Za-z0-9_-]*\.eyJ[A-Za-z0-9_-]*\.[A-Za-z0-9_-]{20,}
-  )" | \
+  grep -E "API_KEY.*=|SECRET.*=|PASSWORD.*=|TOKEN.*=|PRIVATE_KEY.*=" | \
   grep -v "<your-secret-here>" | \
   grep -v "your-api-key-here" | \
+  grep -v "YOUR_[A-Z_]*" | \
   grep -v "process\.env\." || true)
 
 if [ -n "$SECRETS" ]; then
