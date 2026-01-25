@@ -223,8 +223,3 @@ tmp/
 
 # Playwright generated test reports
 playwright-report/
-
-# Template documentation files containing example OAuth/API credentials
-# These are reference implementations only and should not be version controlled
-docs/templates/*.md
-!docs/templates/README.md
