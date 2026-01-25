@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Unified Trending Section
 
 **Status:** ✅ Implemented (Phases 1-2 Complete)

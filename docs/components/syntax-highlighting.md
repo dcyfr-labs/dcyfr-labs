@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Syntax Highlighting Component
 
 **Status:** ✅ Implemented  

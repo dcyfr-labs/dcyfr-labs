@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Activity Feed Caching - Implementation Summary
 
 **Date:** December 9, 2025  

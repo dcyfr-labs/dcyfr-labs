@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Activity System Examples
 
 This directory contains example implementations and integration patterns for the dcyfr-labs activity system.

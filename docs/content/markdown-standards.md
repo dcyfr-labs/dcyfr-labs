@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Markdown Standards & Best Practices
 
 Comprehensive guidelines for writing and maintaining blog posts and content in this portfolio.

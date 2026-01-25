@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Header Clearance Best Practices
 
 ## Overview

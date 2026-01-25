@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Logo System
 
 ## Overview

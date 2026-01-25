@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Error Boundaries - Quick Reference
 
 **Status:** ✅ Implemented (October 20, 2025)

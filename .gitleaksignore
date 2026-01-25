@@ -1,0 +1,12 @@
+# Gitleaks Ignore File
+# This file is for ignoring specific findings by their fingerprint hash
+#
+# To add a fingerprint:
+# 1. Run: gitleaks detect --report-format json --report-path report.json
+# 2. Find the "Fingerprint" field in the report
+# 3. Add it here, one per line
+#
+# Note: Patterns and allowlists go in .gitleaks.toml, not here
+#
+# Example:
+# abc123def456  # Known false positive in test file

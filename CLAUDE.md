@@ -50,11 +50,13 @@ npm run tasks:stats
 ```
 
 **How it works:**
+
 1. **Scanner** (Layer 1) - Discovers tasks from todo.md, code TODOs, tests, git history
 2. **Priority Engine** (Layer 2) - Ranks by effort (15%), impact (35%), urgency (20%), readiness (20%), context (10%)
 3. **CLI Tool** (Layer 3) - Displays human-readable recommendations with context
 
 **Output includes:**
+
 - Task title + effort hours
 - Priority score (0-10, color-coded)
 - Impact rating (stars)
@@ -63,6 +65,7 @@ npm run tasks:stats
 - Blockers/dependencies
 
 **Example:**
+
 ```
 🎯 MONDAY'S TASK QUEUE
 📋 4 tasks queued (4.5h total)
@@ -114,9 +117,9 @@ npm run tasks:stats
 ### Building a New Page
 
 ```tsx
-import { PageLayout } from "@/components/layouts/page-layout";
-import { PageHero } from "@/components/layouts/page-hero";
-import { SPACING, CONTAINER_WIDTHS } from "@/lib/design-tokens";
+import { PageLayout } from '@/components/layouts/page-layout';
+import { PageHero } from '@/components/layouts/page-hero';
+import { SPACING, CONTAINER_WIDTHS } from '@/lib/design-tokens';
 
 export default function NewPage() {
   return (
@@ -136,8 +139,8 @@ export default function NewPage() {
 ### Building a Card Grid
 
 ```tsx
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { HOVER_EFFECTS } from "@/lib/design-tokens";
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { HOVER_EFFECTS } from '@/lib/design-tokens';
 
 export function ProjectGrid({ projects }) {
   return (
@@ -158,10 +161,10 @@ export function ProjectGrid({ projects }) {
 ### Building a Form
 
 ```tsx
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { SPACING } from "@/lib/design-tokens";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { SPACING } from '@/lib/design-tokens';
 
 export function ContactForm() {
   return (
@@ -245,11 +248,10 @@ export function ContactForm() {
 ```typescript
 // ✅ CORRECT: Environment-aware with explicit warning
 const isProduction =
-  process.env.NODE_ENV === "production" ||
-  process.env.VERCEL_ENV === "production";
+  process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production';
 
 if (isProduction && !hasRealData) {
-  console.error("❌ CRITICAL: Using demo data in production!");
+  console.error('❌ CRITICAL: Using demo data in production!');
   return null; // Don't use fake data - return empty or error
 }
 
@@ -279,13 +281,45 @@ import { Rocket, CheckCircle, XCircle, AlertTriangle, Lightbulb } from 'lucide-r
 </div>
 ```
 
+### 7. Operational vs. Reference Documentation
+
+When creating documentation:
+
+**Place correctly:**
+
+- Reusable guide → `docs/[category]/filename.md`
+- Status/summary → `docs/[category]/private/filename-YYYY-MM-DD.md`
+- Security findings → `docs/security/private/`
+
+**Operational doc indicators (→ private/):**
+
+- Filenames: `-summary`, `-complete`, `-status`, `-report`, `-validation`
+- Filename contains date: `YYYY-MM-DD`
+- Content contains: "Status: COMPLETE", "Implementation Complete", task checklists
+- Content is point-in-time snapshot, not reusable reference
+
+**Examples:**
+
+```
+✅ CORRECT:
+- docs/ai/private/implementation-2026-01-23.md
+- docs/operations/private/cleanup-summary-2026-01.md
+
+❌ WRONG:
+- docs/ai/implementation-2026-01-23.md (should be private/)
+- docs/operations/CLEANUP_SUMMARY.md (should be private/ + dated)
+```
+
+**See:** [`docs/governance/OPERATIONAL_DOCUMENTATION_POLICY.md`](docs/governance/OPERATIONAL_DOCUMENTATION_POLICY.md)
 **Prohibited locations:**
+
 - Blog posts (`src/content/blog/*.mdx`)
 - Projects (`src/content/projects/*.mdx`)
 - Public UI components
 - User-facing text
 
 **Acceptable locations:**
+
 - Internal docs (`docs/`, `.github/`)
 - Code comments (`//`, `/* */`)
 - Console.log statements
@@ -467,8 +501,7 @@ Never log sensitive information in clear text. Use one of two approaches:
 1. **Mask sensitive data** (when verification logging needed)
 
 ```javascript
-const maskEmail = (email) =>
-  `${email.split("@")[0].substring(0, 2)}***@${email.split("@")[1]}`;
+const maskEmail = (email) => `${email.split('@')[0].substring(0, 2)}***@${email.split('@')[1]}`;
 console.log(`Service Account: ${maskEmail(credentials.client_email)}`);
 ```
 

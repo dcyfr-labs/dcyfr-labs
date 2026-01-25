@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Inoreader Integration Setup Guide
 
 **Step-by-step guide to configure the Inoreader RSS feed integration for `/dev/news`.**

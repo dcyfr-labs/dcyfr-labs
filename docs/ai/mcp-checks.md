@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 ## MCP Servers - Health Checks & CI Guidance
 
 ## Overview

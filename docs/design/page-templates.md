@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Page Templates & Patterns
 
 **Last Updated:** December 9, 2025

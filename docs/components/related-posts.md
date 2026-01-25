@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Related Posts Component
 
 **Status:** ✅ Implemented  

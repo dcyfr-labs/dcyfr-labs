@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Site Spacing & Layout System
 
 This document defines the consistent spacing system used across the site for navigation, content, footer, and FAB elements.

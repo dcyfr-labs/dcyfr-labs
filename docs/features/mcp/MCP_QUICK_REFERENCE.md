@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # MCP (Model Context Protocol) Quick Reference
 
 **Comprehensive guide** for using MCP servers with dcyfr-labs.

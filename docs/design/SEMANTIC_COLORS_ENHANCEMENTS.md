@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Semantic Colors Enhancement Implementation
 
 **Date:** December 28, 2025  

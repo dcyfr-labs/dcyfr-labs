@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # /dev/docs Complete Refactor Plan
 
 **Created:** December 22, 2025  

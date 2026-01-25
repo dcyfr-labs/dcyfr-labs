@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Blog System Architecture
 
 **Status:** ✅ Implemented  

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Axiom Web Vitals Integration
 
 ## Overview

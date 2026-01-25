@@ -128,7 +128,20 @@ These 5 rules are enforced across all development. For comprehensive details and
    - Never create in root directory
    - See: `docs/governance/AGENT_DOCUMENTATION_ENFORCEMENT.md`
 
-7. **Security: Fix > Suppress** - Always attempt to fix security findings
+7. **Operational vs. Reference Documentation** - Place docs correctly
+
+   **Quick Rule:**
+   - Reusable guide → `docs/[category]/filename.md`
+   - Status/summary → `docs/[category]/private/filename-YYYY-MM-DD.md`
+   - Security findings → `docs/security/private/`
+
+   **Operational doc indicators (→ private/):**
+   - Filenames: `-summary`, `-complete`, `-status`, `-report`, `-validation`, dates
+   - Content: "Status: COMPLETE", implementation logs, task checklists
+
+   See: `docs/governance/OPERATIONAL_DOCUMENTATION_POLICY.md`
+
+8. **Security: Fix > Suppress** - Always attempt to fix security findings
 
    When CodeQL or security scanners report an issue:
 

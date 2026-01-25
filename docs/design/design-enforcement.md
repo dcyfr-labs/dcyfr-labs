@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Design System Enforcement
 
 This document explains how the design system is enforced through automated tooling to ensure consistency across the codebase.

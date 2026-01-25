@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Form Validation Pattern: "Reward Early, Punish Late"
 
 **Implementation Date:** December 2025

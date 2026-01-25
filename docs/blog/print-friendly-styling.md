@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Print-Friendly Blog Styling
 
 **Status:** ✅ Complete (Dec 7, 2025)

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # ESLint Color Enforcement Documentation
 
 **Status:** ✅ Implemented (January 11, 2026)  

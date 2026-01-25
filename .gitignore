@@ -69,6 +69,7 @@ test-output.log
 # Environment & Secrets
 # ========================================
 **/private/**
+**/archive/**
 
 # env files
 .env*
@@ -121,6 +122,9 @@ mcp.json
 .opencode/.cache/
 .opencode/.sessions/
 
+# OpenCode dependencies (local node_modules)
+.opencode/node_modules/
+
 # OpenCode skills (downloaded skill files)
 skills/
 
@@ -129,8 +133,15 @@ skills/
 
 # IDE & Editor Configs
 # ========================================
-# VS Code (allow workspace settings, block user settings)
-.vscode/
+# VS Code (allow workspace settings, block user overrides)
+.vscode/*
+!.vscode/mcp.json
+!.vscode/mcp.json.example
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/design-tokens.code-snippets
+.vscode/*.local.json
+.vscode/*.local
 
 # JetBrains IDEs
 .idea/
@@ -209,15 +220,6 @@ tmp/
 .pnpm-store/
 .yarn/cache/
 .yarn/install-state.gz
+
 # Playwright generated test reports
 playwright-report/
-
-# Private documentation (handled by **/private/** pattern above)
-# Subdirectory-specific private folders: docs/security/private/, docs/operations/private/, etc.
-# See: docs/DOCS_GOVERNANCE.md for documentation standards
-docs/archive/
-
-# Template documentation files containing example OAuth/API credentials
-# These are reference implementations only and should not be version controlled
-docs/templates/*.md
-!docs/templates/README.md

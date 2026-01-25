@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Color Contrast Improvements (Light & Dark Mode)
 
 **Completed:** October 21, 2025

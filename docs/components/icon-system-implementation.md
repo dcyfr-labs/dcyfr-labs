@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Icon System Implementation
 
 **Date:** November 9, 2025  

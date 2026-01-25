@@ -1,6 +1,9 @@
+{/_ TLP:CLEAR _/}
+
 # Quick Start Guide
 
 **Purpose:** Single entry point for all quick-reference documentation across the project.
+**Information Classification:** TLP:CLEAR (Public)
 
 ---
 
@@ -10,7 +13,7 @@ Welcome! This guide helps you quickly find what you need across the documentatio
 
 ### First Time Setup
 
-**Start here:** [Environment Variables](./platform/environment-variables)  
+**Start here:** [Environment Variables](./platform/environment-variables)
 Set up your `.env.local` to get the dev server running.
 
 ```bash
@@ -26,24 +29,24 @@ npm run dev
 
 Quick references for all reusable components:
 
-| Component | Purpose | Quick Ref |
-|-----------|---------|-----------|
-| **About Page Components** | Avatar, stats, skills, certifications | [about-page-components.md](./components/about-page-components) |
-| **Post Badges** | Status indicators (Draft, Archived, New, Hot) | [post-badges.md](./components/post-badges) |
-| **Error Boundaries** | Error handling for async components | [error-boundaries.md](./components/error-boundaries) |
-| **Loading States** | Skeleton loaders and loading indicators | [loading-states.md](./components/loading-states) |
-| **Related Posts** | Algorithm for finding related blog content | [related-posts.md](./components/related-posts) |
-| **Table of Contents** | Auto-generated navigation for blog posts | [table-of-contents.md](./components/table-of-contents) |
-| **Reading Progress** | Visual reading progress indicator | [reading-progress.md](./components/reading-progress) |
-| **Syntax Highlighting** | Code block highlighting with Shiki | [syntax-highlighting.md](./components/syntax-highlighting) |
-| **Blog Search Form** | Search and filter blog posts | [blog-search-form.md](./components/blog-search-form) |
-| **GitHub Heatmap** | Contribution graph visualization | [github-heatmap.md](./components/github-heatmap) |
-| **MDX Components** | MDX rendering and custom components | [mdx.md](./components/mdx) |
-| **Giscus Comments** | GitHub-based comments system | [giscus-comments.md](./components/giscus-comments) |
-| **Share Buttons** | Social sharing functionality | [share-buttons.md](./components/share-buttons) |
-| **Post List** | Rendering lists of blog posts | [post-list.md](./components/post-list) |
-| **Blog Post Skeleton** | Loading skeleton for post pages | [blog-post-skeleton.md](./components/blog-post-skeleton) |
-| **Logo** | Site logo component | [logo.md](./components/logo) |
+| Component                 | Purpose                                       | Quick Ref                                                      |
+| ------------------------- | --------------------------------------------- | -------------------------------------------------------------- |
+| **About Page Components** | Avatar, stats, skills, certifications         | [about-page-components.md](./components/about-page-components) |
+| **Post Badges**           | Status indicators (Draft, Archived, New, Hot) | [post-badges.md](./components/post-badges)                     |
+| **Error Boundaries**      | Error handling for async components           | [error-boundaries.md](./components/error-boundaries)           |
+| **Loading States**        | Skeleton loaders and loading indicators       | [loading-states.md](./components/loading-states)               |
+| **Related Posts**         | Algorithm for finding related blog content    | [related-posts.md](./components/related-posts)                 |
+| **Table of Contents**     | Auto-generated navigation for blog posts      | [table-of-contents.md](./components/table-of-contents)         |
+| **Reading Progress**      | Visual reading progress indicator             | [reading-progress.md](./components/reading-progress)           |
+| **Syntax Highlighting**   | Code block highlighting with Shiki            | [syntax-highlighting.md](./components/syntax-highlighting)     |
+| **Blog Search Form**      | Search and filter blog posts                  | [blog-search-form.md](./components/blog-search-form)           |
+| **GitHub Heatmap**        | Contribution graph visualization              | [github-heatmap.md](./components/github-heatmap)               |
+| **MDX Components**        | MDX rendering and custom components           | [mdx.md](./components/mdx)                                     |
+| **Giscus Comments**       | GitHub-based comments system                  | [giscus-comments.md](./components/giscus-comments)             |
+| **Share Buttons**         | Social sharing functionality                  | [share-buttons.md](./components/share-buttons)                 |
+| **Post List**             | Rendering lists of blog posts                 | [post-list.md](./components/post-list)                         |
+| **Blog Post Skeleton**    | Loading skeleton for post pages               | [blog-post-skeleton.md](./components/blog-post-skeleton)       |
+| **Logo**                  | Site logo component                           | [logo.md](./components/logo)                                   |
 
 **All components docs:** [`/docs/components/`](./components/)
 
@@ -51,13 +54,13 @@ Quick references for all reusable components:
 
 Quick references for blog content and features:
 
-| Topic | Purpose | Doc |
-|-------|---------|-----|
-| **Architecture** | Blog system design overview | [blog/architecture.md](./blog/architecture) |
-| **Quick Reference** | Common blog tasks | [blog/quick-reference.md](./blog/quick-reference) |
-| **Content Creation** | Writing and publishing posts | [blog/content-creation.md](./blog/content-creation) |
-| **MDX Processing** | MDX pipeline and plugins | [blog/mdx-processing.md](./blog/mdx-processing) |
-| **Frontmatter Schema** | Post metadata reference | [blog/frontmatter-schema.md](./blog/frontmatter-schema) |
+| Topic                  | Purpose                      | Doc                                                     |
+| ---------------------- | ---------------------------- | ------------------------------------------------------- |
+| **Architecture**       | Blog system design overview  | [blog/architecture.md](./blog/architecture)             |
+| **Quick Reference**    | Common blog tasks            | [blog/quick-reference.md](./blog/quick-reference)       |
+| **Content Creation**   | Writing and publishing posts | [blog/content-creation.md](./blog/content-creation)     |
+| **MDX Processing**     | MDX pipeline and plugins     | [blog/mdx-processing.md](./blog/mdx-processing)         |
+| **Frontmatter Schema** | Post metadata reference      | [blog/frontmatter-schema.md](./blog/frontmatter-schema) |
 
 **All blog docs:** [`/docs/blog/`](./blog/)
 
@@ -65,11 +68,11 @@ Quick references for blog content and features:
 
 Quick references for project setup and configuration:
 
-| Topic | Purpose | Doc |
-|-------|---------|-----|
+| Topic                     | Purpose                | Doc                                                                   |
+| ------------------------- | ---------------------- | --------------------------------------------------------------------- |
 | **Environment Variables** | All env vars and setup | [platform/environment-variables.md](./platform/environment-variables) |
-| **Site Configuration** | Domain and URL setup | [platform/site-config.md](./platform/site-config) |
-| **View Counts** | Blog analytics setup | [platform/view-counts.md](./platform/view-counts) |
+| **Site Configuration**    | Domain and URL setup   | [platform/site-config.md](./platform/site-config)                     |
+| **View Counts**           | Blog analytics setup   | [platform/view-counts.md](./platform/view-counts)                     |
 
 **All platform docs:** [`/docs/platform/`](./platform/)
 
@@ -77,10 +80,10 @@ Quick references for project setup and configuration:
 
 Quick references for security features and best practices:
 
-| Topic | Purpose | Doc |
-|-------|---------|-----|
+| Topic                  | Purpose                       | Doc                                                                         |
+| ---------------------- | ----------------------------- | --------------------------------------------------------------------------- |
 | **CSP Implementation** | Content Security Policy setup | [security/csp/nonce-implementation.md](./security/csp/nonce-implementation) |
-| **Rate Limiting** | API rate limiting guide | [security/rate-limiting/guide.md](./security/rate-limiting/guide) |
+| **Rate Limiting**      | API rate limiting guide       | [security/rate-limiting/guide.md](./security/rate-limiting/guide)           |
 
 **All security docs:** [`/docs/security/`](./security/)
 
@@ -88,11 +91,11 @@ Quick references for security features and best practices:
 
 Quick references for API endpoints:
 
-| Route | Purpose | Doc |
-|-------|---------|-----|
-| **API Overview** | All routes and architecture | [api/routes/overview.md](./api/routes/overview) |
-| **Contact Endpoint** | Contact form API | [api/routes/contact.md](./api/routes/contact) |
-| **GitHub Contributions** | Heatmap data endpoint | [api/routes/github-contributions.md](./api/routes/github-contributions) |
+| Route                    | Purpose                     | Doc                                                                     |
+| ------------------------ | --------------------------- | ----------------------------------------------------------------------- |
+| **API Overview**         | All routes and architecture | [api/routes/overview.md](./api/routes/overview)                         |
+| **Contact Endpoint**     | Contact form API            | [api/routes/contact.md](./api/routes/contact)                           |
+| **GitHub Contributions** | Heatmap data endpoint       | [api/routes/github-contributions.md](./api/routes/github-contributions) |
 
 **All API docs:** [`/docs/api/`](./api/)
 
@@ -100,12 +103,12 @@ Quick references for API endpoints:
 
 Detailed guides for major features:
 
-| Feature | Purpose | Doc |
-|---------|---------|-----|
-| **GitHub Integration** | Heatmap and contribution tracking | [features/github-integration.md](./features/github-integration) |
-| **Inngest Integration** | Background jobs and async tasks | [features/inngest-integration.md](./features/inngest-integration) |
-| **OG Image Generation** | OpenGraph image automation | [features/og-image-generation.md](./features/og-image-generation) |
-| **Analytics Dashboard** | Analytics and metrics | [features/analytics-dashboard.md](./features/analytics-dashboard) |
+| Feature                 | Purpose                           | Doc                                                               |
+| ----------------------- | --------------------------------- | ----------------------------------------------------------------- |
+| **GitHub Integration**  | Heatmap and contribution tracking | [features/github-integration.md](./features/github-integration)   |
+| **Inngest Integration** | Background jobs and async tasks   | [features/inngest-integration.md](./features/inngest-integration) |
+| **OG Image Generation** | OpenGraph image automation        | [features/og-image-generation.md](./features/og-image-generation) |
+| **Analytics Dashboard** | Analytics and metrics             | [features/analytics-dashboard.md](./features/analytics-dashboard) |
 
 **All feature docs:** [`/docs/features/`](./features/)
 
@@ -113,11 +116,11 @@ Detailed guides for major features:
 
 Quick references for design patterns and styling:
 
-| Topic | Purpose | Doc |
-|-------|---------|-----|
-| **Typography** | Font and text styling | [design/typography.md](./design/typography) |
-| **Print Stylesheet** | Print-specific styles | design/print-stylesheet.md |
-| **Color Contrast** | Accessibility improvements | design/color-contrast-improvements.md |
+| Topic                | Purpose                    | Doc                                         |
+| -------------------- | -------------------------- | ------------------------------------------- |
+| **Typography**       | Font and text styling      | [design/typography.md](./design/typography) |
+| **Print Stylesheet** | Print-specific styles      | design/print-stylesheet.md                  |
+| **Color Contrast**   | Accessibility improvements | design/color-contrast-improvements.md       |
 
 **All design docs:** [`/docs/design/`](./design/)
 
@@ -125,9 +128,9 @@ Quick references for design patterns and styling:
 
 Guides for project organization and operations:
 
-| Topic | Purpose | Doc |
-|-------|---------|-----|
-| **Current Work** | Active tasks and priorities | operations/todo.md |
+| Topic              | Purpose                             | Doc                |
+| ------------------ | ----------------------------------- | ------------------ |
+| **Current Work**   | Active tasks and priorities         | operations/todo.md |
 | **Completed Work** | Historical record of finished items | operations/done.md |
 
 **All operations docs:** [`/docs/operations/`](./operations/)
@@ -139,6 +142,7 @@ Guides for project organization and operations:
 ### I need to...
 
 **Add a new component**
+
 1. Check existing components: [`/docs/components/`](./components/)
 2. Copy similar component pattern
 3. Add TypeScript types
@@ -146,44 +150,52 @@ Guides for project organization and operations:
 5. Add error boundary wrapper
 
 **Write a blog post**
+
 1. Read [Content Creation Guide](./blog/content-creation)
 2. Check [Frontmatter Schema](./blog/frontmatter-schema)
 3. Review [MDX Processing](./blog/mdx-processing) for available features
 4. Create file in `src/content/blog/`
 
 **Set up environment variables**
+
 1. Read [Environment Variables](./platform/environment-variables)
 2. Copy `.env.example` to `.env.local`
 3. Add credentials as needed
 
 **Deploy to production**
+
 1. Check [Environment Variables](./platform/environment-variables) for production config
 2. Check [Site Configuration](./platform/site-config) for domain setup
 3. Check Deployment Guide for pre-flight checklist
 
 **Fix an error**
+
 1. Check [Error Boundaries](./components/error-boundaries)
 2. Review component's quick reference
 3. Check [API Routes](./api/routes/overview) if API-related
 4. Check security docs if security-related
 
 **Improve performance**
+
 1. Read Bundle Analysis
 2. Check specific component docs
 3. Review [GitHub Integration](./features/github-integration) (has caching)
 
 **Style something**
+
 1. Check [Typography](./design/typography)
 2. Check Color Contrast
 3. Check Print Stylesheet for print styles
 
 **Debug API issues**
+
 1. Check [API Overview](./api/routes/overview)
 2. Check specific endpoint documentation
 3. Check [Rate Limiting](./security/rate-limiting/guide)
 4. Check [Environment Variables](./platform/environment-variables) for missing config
 
 **Understand a feature**
+
 1. Check [Features](./features/) directory
 2. Check related component docs
 3. Check API route docs if backend-heavy
@@ -295,6 +307,5 @@ Guides for project organization and operations:
 
 ---
 
-**Last Updated:** October 27, 2025  
+**Last Updated:** October 27, 2025
 **Consolidated documentation** from operations/ for easier navigation and maintenance.
-

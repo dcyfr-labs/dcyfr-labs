@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Vercel Deployment Checks Integration
 
 **Status:** ✅ Active  

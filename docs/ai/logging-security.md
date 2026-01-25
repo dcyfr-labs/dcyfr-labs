@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Logging Security Best Practices
 
 **CRITICAL: Never log sensitive information in clear text.**
@@ -62,7 +64,7 @@ const token = generateJWT(user);
 console.log(`Generated token: ${token}`);
 
 // ✅ CORRECT: Log only that authentication occurred
-console.log("User authentication successful");
+console.log('User authentication successful');
 console.log(`Auth method: ${authMethod}`);
 console.log(`Status: authenticated`);
 ```
@@ -80,8 +82,8 @@ console.log(`Service account: ${credentials.client_email}`);
 console.log(`Project ID: ${credentials.project_id}`);
 
 // ✅ CORRECT: Log only that connection was established
-console.log("✅ Database connection established");
-console.log("✅ Service account configuration loaded");
+console.log('✅ Database connection established');
+console.log('✅ Service account configuration loaded');
 ```
 
 ### 3. Personal User Data
@@ -95,12 +97,12 @@ console.log(`Processing request from: ${user.email}`);
 console.log(`User contact: ${user.phone}`);
 
 // ❌ WRONG: Logs user ID if it's sensitive
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === 'production') {
   console.log(`User ID: ${sensitiveUserId}`);
 }
 
 // ✅ CORRECT: Log only that processing occurred
-console.log("User request processed");
+console.log('User request processed');
 console.log(`User role: ${user.role}`); // Only if role is non-sensitive
 ```
 
@@ -120,14 +122,14 @@ console.error(`Rate limit exceeded for ${ip}`);
 console.log(`User at ${ipAddress} submitted form`);
 
 // ✅ CORRECT: Log the action without the IP
-console.log("Rate limit applied to request");
-console.log("Contact form submission received");
+console.log('Rate limit applied to request');
+console.log('Contact form submission received');
 
 // ✅ CORRECT: If debugging is truly needed, mask the IP
 const maskedIp = ip
-  .split(".")
-  .map((octet, i) => (i < 2 ? octet : "xxx"))
-  .join(".");
+  .split('.')
+  .map((octet, i) => (i < 2 ? octet : 'xxx'))
+  .join('.');
 console.log(`Debug context: ${maskedIp}`); // Output: "192.168.xxx.xxx"
 
 // ✅ CORRECT: Use IP for rate limiting (not logging)
@@ -148,16 +150,16 @@ const rateLimitResult = await rateLimit(clientIp, config);
 
 ```javascript
 // ❌ WRONG: Logs entire environment
-console.log("Environment configuration:");
+console.log('Environment configuration:');
 console.log(process.env); // Contains all secrets!
 
 // ❌ WRONG: Logs connection string with auth
 console.log(`MongoDB connection: ${mongoDbUri}`);
 
 // ✅ CORRECT: Log only non-sensitive config
-console.log("Environment: production");
-console.log("Database: MongoDB");
-console.log("Region: us-east-1");
+console.log('Environment: production');
+console.log('Database: MongoDB');
+console.log('Region: us-east-1');
 ```
 
 ## What IS Safe to Log
@@ -166,10 +168,10 @@ console.log("Region: us-east-1");
 
 ```javascript
 // ✅ GOOD: Application events without sensitive data
-console.log("Blog post published");
-console.log("Email notification sent");
-console.log("Cache cleared");
-console.log("Cron job executed: analytics-aggregation");
+console.log('Blog post published');
+console.log('Email notification sent');
+console.log('Cache cleared');
+console.log('Cron job executed: analytics-aggregation');
 ```
 
 ### 2. Request Metadata
@@ -188,15 +190,15 @@ console.log(`User agent: ${userAgent}`);
 ```javascript
 // ✅ GOOD: Validation status without exposing data
 if (!isValidEmail(email)) {
-  console.error("Email validation failed");
+  console.error('Email validation failed');
 }
 
 if (password.length < 8) {
-  console.error("Password too short");
+  console.error('Password too short');
 }
 
 if (!credentials.hasRequiredFields()) {
-  console.error("Credentials missing required fields");
+  console.error('Credentials missing required fields');
 }
 ```
 
@@ -214,10 +216,10 @@ console.log(`Response size: ${bytes} bytes`);
 
 ```javascript
 // ✅ GOOD: Application flow and state
-console.log("Processing started: batch import");
-console.log("Step 1/5 completed: validation");
-console.log("Feature flag enabled: new-checkout-flow");
-console.log("Retry attempt 3/5");
+console.log('Processing started: batch import');
+console.log('Step 1/5 completed: validation');
+console.log('Feature flag enabled: new-checkout-flow');
+console.log('Retry attempt 3/5');
 ```
 
 ## Two Recommended Approaches
@@ -234,42 +236,36 @@ Use this for test scripts, configuration validation, and development utilities.
 
 ```javascript
 // scripts/test-google-indexing.mjs
-import { config } from "dotenv";
-config({ path: ".env.local" });
+import { config } from 'dotenv';
+config({ path: '.env.local' });
 
 if (!process.env.GOOGLE_INDEXING_API_KEY) {
-  console.error("❌ Error: GOOGLE_INDEXING_API_KEY not configured");
-  console.error("See setup guide: docs/features/google-indexing-api.md");
+  console.error('❌ Error: GOOGLE_INDEXING_API_KEY not configured');
+  console.error('See setup guide: docs/features/google-indexing-api.md');
   process.exit(1);
 }
 
 try {
   const credentials = JSON.parse(process.env.GOOGLE_INDEXING_API_KEY);
 
-  const requiredFields = [
-    "type",
-    "project_id",
-    "private_key",
-    "client_email",
-    "client_id",
-  ];
+  const requiredFields = ['type', 'project_id', 'private_key', 'client_email', 'client_id'];
   const missingFields = requiredFields.filter((field) => !credentials[field]);
 
   if (missingFields.length > 0) {
-    console.error("❌ Error: Invalid service account JSON");
-    console.error(`   Missing fields: ${missingFields.join(", ")}`);
+    console.error('❌ Error: Invalid service account JSON');
+    console.error(`   Missing fields: ${missingFields.join(', ')}`);
     process.exit(1);
   }
 
   // ✅ CORRECT: Only confirm validation succeeded
-  console.log("✅ Service account JSON is valid");
+  console.log('✅ Service account JSON is valid');
 
   // ✅ CORRECT: Generic instruction without exposing email
-  console.log("  → Add the service account email from GOOGLE_INDEXING_API_KEY");
-  console.log("  → Visit: https://search.google.com/search-console");
-  console.log("  → Permission: Owner");
+  console.log('  → Add the service account email from GOOGLE_INDEXING_API_KEY');
+  console.log('  → Visit: https://search.google.com/search-console');
+  console.log('  → Permission: Owner');
 } catch (error) {
-  console.error("❌ Error: Failed to parse GOOGLE_INDEXING_API_KEY");
+  console.error('❌ Error: Failed to parse GOOGLE_INDEXING_API_KEY');
   console.error(`   ${error.message}`);
   process.exit(1);
 }
@@ -288,7 +284,7 @@ Use this when you need to verify the data exists without exposing it.
 ```javascript
 // Example 1: Mask email address
 const maskEmail = (email) => {
-  const [local, domain] = email.split("@");
+  const [local, domain] = email.split('@');
   return `${local.substring(0, 2)}***@${domain}`;
 };
 
@@ -297,8 +293,8 @@ console.log(`Service Account: ${maskEmail(credentials.client_email)}`);
 
 // Example 2: Mask API key (show last 4 chars only)
 const maskApiKey = (key) => {
-  if (key.length <= 4) return "***";
-  return "***" + key.substring(key.length - 4);
+  if (key.length <= 4) return '***';
+  return '***' + key.substring(key.length - 4);
 };
 
 console.log(`API Key configured: ${maskApiKey(apiKey)}`);
@@ -306,14 +302,15 @@ console.log(`API Key configured: ${maskApiKey(apiKey)}`);
 
 // Example 3: Mask database connection string
 const maskConnectionString = (connStr) => {
-  return connStr.replace(/(:\/\/)([^:]+):([^@]+)@/, "$1***:***@");
+  return connStr.replace(/(:\/\/)([^:]+):([^@]+)@/, '$1***:***@');
 };
 
+const dbUrl = process.env.DATABASE_URL || '<database-url-here>';
 console.log(`Database: ${maskConnectionString(dbUrl)}`);
-// Output: Database: postgres://***:***@localhost/mydb
+// Output shows masked credentials: [protocol]://***:***@[host]/[db]
 
 // Example 4: Show only safe metadata
-const credentials = JSON.parse(process.env.SERVICE_ACCOUNT_KEY);
+const credentials = JSON.parse(process.env.SERVICE_ACCOUNT_KEY || '{}');
 console.log(`Service Account Type: ${credentials.type}`);
 console.log(`Project ID: ${credentials.project_id}`);
 // DON'T log: client_email, private_key, or full credentials
@@ -374,17 +371,17 @@ function initializeGoogleAPI() {
   const keyJson = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
 
   if (!keyJson) {
-    console.error("Error: GOOGLE_SERVICE_ACCOUNT_KEY not configured");
-    throw new Error("Missing configuration");
+    console.error('Error: GOOGLE_SERVICE_ACCOUNT_KEY not configured');
+    throw new Error('Missing configuration');
   }
 
   try {
     const credentials = JSON.parse(keyJson);
     const client = google.auth.fromJSON(credentials);
-    console.log("✅ Google API initialized");
+    console.log('✅ Google API initialized');
     return client;
   } catch (error) {
-    console.error("Error: Failed to initialize Google API");
+    console.error('Error: Failed to initialize Google API');
     throw error;
   }
 }
@@ -394,9 +391,7 @@ function initializeGoogleAPI() {
   const keyJson = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
 
   const credentials = JSON.parse(keyJson);
-  console.log(
-    `✅ Google API initialized for project: ${credentials.project_id}`
-  );
+  console.log(`✅ Google API initialized for project: ${credentials.project_id}`);
   // project_id is non-sensitive metadata
 
   return google.auth.fromJSON(credentials);
@@ -421,15 +416,15 @@ async function connectToDatabase() {
   const dbUrl = process.env.DATABASE_URL;
 
   if (!dbUrl) {
-    throw new Error("DATABASE_URL not configured");
+    throw new Error('DATABASE_URL not configured');
   }
 
   try {
     await mongoose.connect(dbUrl);
-    console.log("✅ Database connection established");
+    console.log('✅ Database connection established');
     return;
   } catch (error) {
-    console.error("Error: Failed to connect to database");
+    console.error('Error: Failed to connect to database');
     throw error;
   }
 }
@@ -446,7 +441,7 @@ async function processPayment(cardData, amount) {
 
   const result = await stripe.charges.create({
     amount,
-    currency: "usd",
+    currency: 'usd',
     source: cardData.token,
   });
 
@@ -460,7 +455,7 @@ async function processPayment(cardData, amount) {
 
   const result = await stripe.charges.create({
     amount,
-    currency: "usd",
+    currency: 'usd',
     source: cardData.token,
   });
 
@@ -508,7 +503,7 @@ console.log(`Service Account: ${credentials.client_email}`); // Alert on line wi
 ```javascript
 // ❌ WRONG: Object might contain sensitive fields
 const user = await getUser(userId);
-console.log("User data:", user); // If user has password field, it's logged!
+console.log('User data:', user); // If user has password field, it's logged!
 
 // ✅ CORRECT: Log only what's needed
 console.log(`User role: ${user.role}`);
@@ -519,10 +514,10 @@ console.log(`User verified: ${user.isVerified}`);
 
 ```javascript
 // ❌ WRONG: Logs all environment variables
-console.log("Environment:", process.env); // Contains all secrets!
+console.log('Environment:', process.env); // Contains all secrets!
 
 // ✅ CORRECT: Log only non-sensitive variables
-console.log("Environment: production");
+console.log('Environment: production');
 console.log(`Node version: ${process.version}`);
 ```
 
@@ -533,7 +528,7 @@ console.log(`Node version: ${process.version}`);
 try {
   await apiCall();
 } catch (error) {
-  console.error("Error:", error); // Full error with stack and data
+  console.error('Error:', error); // Full error with stack and data
 }
 
 // ✅ CORRECT: Log only relevant error message
@@ -562,7 +557,7 @@ console.log(`Request: ${request.method} ${url.pathname}`);
 // ❌ WRONG: Response might contain tokens
 const response = await fetch(apiUrl, { headers });
 const data = await response.json();
-console.log("API Response:", data); // Might contain tokens!
+console.log('API Response:', data); // Might contain tokens!
 
 // ✅ CORRECT: Log only needed status information
 console.log(`API Response: ${response.status} ${response.statusText}`);

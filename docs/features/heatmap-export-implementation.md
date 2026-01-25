@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Activity Heatmap Export Feature
 
 **Status:** ✅ Complete (December 25, 2025)

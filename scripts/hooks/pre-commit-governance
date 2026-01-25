@@ -1,0 +1,285 @@
+#!/bin/bash
+# Enhanced pre-commit hook for dcyfr-labs governance compliance
+# Install: cp scripts/hooks/pre-commit-governance .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+# Last Updated: January 2026
+
+# Color codes for output
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+echo ""
+echo "🔍 Running governance compliance checks..."
+
+# ============================================================================
+# 1. LGTM SUPPRESSION CHECK (EXISTING - Keep as is)
+# ============================================================================
+echo "${BLUE}1/5 Checking for LGTM suppressions...${NC}"
+
+NEW_LGTM=$(git diff --cached | grep -i "^\+.*lgtm \[" | grep -v ".github/agents/patterns/CODEQL_SUPPRESSIONS.md")
+
+if [ -n "$NEW_LGTM" ]; then
+  echo ""
+  echo "${YELLOW}⚠️  ═══════════════════════════════════════════════════════════${NC}"
+  echo "${YELLOW}⚠️  WARNING: New LGTM suppression comment detected!${NC}"
+  echo "${YELLOW}⚠️  ═══════════════════════════════════════════════════════════${NC}"
+  echo ""
+  echo "${BLUE}📋 New suppression(s):${NC}"
+  echo "$NEW_LGTM"
+  echo ""
+  echo "${BLUE}🔒 REQUIRED BEFORE COMMIT:${NC}"
+  echo "   1. Spend 30+ minutes attempting to FIX the issue"
+  echo "   2. Document fix attempts in commit message"
+  echo "   3. Review: docs/security/LGTM_APPROVAL_PROCESS.md"
+  echo ""
+  echo "${GREEN}✅ Fix examples:${NC}"
+  echo "   - Input validation: /^[a-z0-9._-]+$/i"
+  echo "   - Sanitization: remove control chars + ANSI codes"
+  echo "   - Restructure: make security checks explicit"
+  echo ""
+  echo "📚 See: docs/security/private/CODEQL_FINDINGS_RESOLVED.md"
+  echo ""
+
+  # Interactive prompt
+  read -p "❓ Have you completed fix attempts (30+ min)? (y/N) " -n 1 -r
+  echo ""
+
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo ""
+    echo "${RED}❌ Commit blocked - Please attempt fixes first${NC}"
+    echo "   Required: minimum 30 minutes of fix attempts"
+    echo "   See: docs/security/LGTM_APPROVAL_PROCESS.md"
+    echo ""
+    exit 1
+  fi
+
+  echo ""
+  read -p "❓ Is this a confirmed false positive? (y/N) " -n 1 -r
+  echo ""
+
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo ""
+    echo "${RED}❌ Commit blocked - Real security issues must be fixed${NC}"
+    echo "   Suppressions only for confirmed false positives"
+    echo ""
+    exit 1
+  fi
+
+  echo ""
+  echo "${YELLOW}⚠️  Proceeding with suppression (requires PR approval)${NC}"
+  echo "   Don't forget to document fix attempts in commit message!"
+  echo ""
+fi
+
+# ============================================================================
+# 2. SENSITIVE FILE LOCATION CHECK (NEW - CRITICAL BLOCK)
+# ============================================================================
+echo "${BLUE}2/5 Checking for sensitive files in wrong locations...${NC}"
+
+# Check for files with sensitive keywords outside private/ subdirectories
+SENSITIVE_DOCS=$(git diff --cached --name-only | \
+  grep -E "docs/.*" | \
+  grep -E "(FINDINGS|REPORT|AUDIT|ANALYSIS|METRICS|STATUS|SUMMARY)" | \
+  grep -v "/private/" | \
+  grep -v "AGENTS.md" | \
+  grep -v "DOCS_GOVERNANCE.md" | \
+  grep -v "DOCUMENTATION_CONSOLIDATION_GUIDE.md")
+
+if [ -n "$SENSITIVE_DOCS" ]; then
+  echo ""
+  echo "${RED}❌ ERROR: Sensitive files detected in public docs/${NC}"
+  echo ""
+  echo "${RED}Files found:${NC}"
+  echo "$SENSITIVE_DOCS" | sed 's/^/   /'
+  echo ""
+  echo "${YELLOW}Move to appropriate docs/[category]/private/ folder:${NC}"
+  echo "   - Security findings → docs/security/private/"
+  echo "   - Performance metrics → docs/performance/private/development/"
+  echo "   - Operational status → docs/operations/private/"
+  echo ""
+  echo "📚 See: docs/governance/DOCS_GOVERNANCE.md"
+  exit 1
+fi
+
+echo "${GREEN}✅ No sensitive files in public docs${NC}"
+
+# ============================================================================
+# 3. AI CONFIGURATION CHECK (NEW - CRITICAL BLOCK)
+# ============================================================================
+echo "${BLUE}3/5 Checking AI configuration files...${NC}"
+
+# Check for .claude/ files (should NEVER be committed)
+CLAUDE_FILES=$(git diff --cached --name-only | grep "^\.claude/")
+
+if [ -n "$CLAUDE_FILES" ]; then
+  echo ""
+  echo "${RED}❌ ERROR: Proprietary .claude/ files detected!${NC}"
+  echo ""
+  echo "${RED}Files found:${NC}"
+  echo "$CLAUDE_FILES" | sed 's/^/   /'
+  echo ""
+  echo "${YELLOW}.claude/ directory is PROPRIETARY and should NOT be committed.${NC}"
+  echo "These files are for internal use only."
+  echo ""
+  echo "📚 See: AGENTS.md section on public vs. proprietary files"
+  exit 1
+fi
+
+# Check for session state files
+SESSION_STATE=$(git diff --cached --name-only | grep "\.session-state\.json$")
+
+if [ -n "$SESSION_STATE" ]; then
+  echo ""
+  echo "${RED}❌ ERROR: Session state files detected!${NC}"
+  echo ""
+  echo "${RED}Files found:${NC}"
+  echo "$SESSION_STATE" | sed 's/^/   /'
+  echo ""
+  echo "${YELLOW}Session state files are local-only and should NOT be committed.${NC}"
+  echo "They are already in .gitignore - ensure they're not force-added."
+  exit 1
+fi
+
+# Check for OpenCode node_modules
+OPENCODE_DEPS=$(git diff --cached --name-only | grep "^\.opencode/node_modules/")
+
+if [ -n "$OPENCODE_DEPS" ]; then
+  echo ""
+  echo "${RED}❌ ERROR: OpenCode dependencies detected!${NC}"
+  echo ""
+  echo "${YELLOW}.opencode/node_modules/ should be gitignored${NC}"
+  echo ""
+  echo "Add to .gitignore:"
+  echo "   .opencode/node_modules/"
+  exit 1
+fi
+
+echo "${GREEN}✅ No proprietary AI config in commit${NC}"
+
+# ============================================================================
+# 4. API KEY & CREDENTIAL CHECK (NEW - CRITICAL BLOCK)
+# ============================================================================
+echo "${BLUE}4/5 Scanning for hardcoded credentials...${NC}"
+
+# Scan staged files for potential API keys
+POTENTIAL_KEYS=$(git diff --cached | \
+  grep -E "^\+.*['\"]?[A-Z_]{3,}_(KEY|TOKEN|SECRET|PASSWORD)['\"]?\s*[:=]" | \
+  grep -v "secrets\." | \
+  grep -v "process\.env\." | \
+  grep -v "_required_env" | \
+  grep -v "_get_key")
+
+if [ -n "$POTENTIAL_KEYS" ]; then
+  echo ""
+  echo "${YELLOW}⚠️  WARNING: Possible hardcoded credentials detected!${NC}"
+  echo ""
+  echo "${YELLOW}Lines found:${NC}"
+  echo "$POTENTIAL_KEYS" | head -5 | sed 's/^/   /'
+  echo ""
+  read -p "❓ Are these environment variable references? (y/N) " -n 1 -r
+  echo ""
+
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo ""
+    echo "${RED}❌ Commit blocked - Remove hardcoded credentials${NC}"
+    echo "   Use environment variables or GitHub Secrets instead"
+    exit 1
+  fi
+fi
+
+echo "${GREEN}✅ No hardcoded credentials detected${NC}"
+
+# ============================================================================
+# 5. PRIVATE DOCS VALIDATION (NEW - MEDIUM WARN)
+# ============================================================================
+echo "${BLUE}5/5 Validating private documentation placement...${NC}"
+
+# Check that docs/private/ files are actually gitignored
+PRIVATE_DOCS=$(git diff --cached --name-only | grep "/private/" | grep -v "src/app/private")
+
+if [ -n "$PRIVATE_DOCS" ]; then
+  echo ""
+  echo "${YELLOW}⚠️  WARNING: Files in private/ subdirectories detected in commit!${NC}"
+  echo ""
+  echo "${YELLOW}Files found:${NC}"
+  echo "$PRIVATE_DOCS" | sed 's/^/   /'
+  echo ""
+  echo "${BLUE}Private docs should be gitignored automatically.${NC}"
+  echo "Check .gitignore line 70: **/private/**"
+  echo ""
+  echo "${YELLOW}If these are intentionally committed:${NC}"
+  echo "   - src/app/private/route.ts (honeypot) is OK"
+  echo "   - Verify they're not sensitive documentation"
+  echo ""
+  read -p "❓ Are these files intentionally committed? (y/N) " -n 1 -r
+  echo ""
+
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo ""
+    echo "${RED}❌ Commit blocked - Move files to correct location${NC}"
+    exit 1
+  fi
+
+  echo "${YELLOW}⚠️  Proceeding with private/ files (verify they're not sensitive)${NC}"
+fi
+
+echo "${GREEN}✅ Private documentation placement validated${NC}"
+
+# ============================================================================
+# 6. TLP COMPLIANCE & DOCUMENTATION LOCATION (NEW - HARD BLOCK)
+# ============================================================================
+echo "${BLUE}6/6 Validating TLP compliance and documentation location...${NC}"
+
+# Check if any .md files are being committed
+MD_FILES=$(git diff --cached --name-only | grep "\.md$")
+
+if [ -n "$MD_FILES" ]; then
+  # Only run validation if documentation files are being committed
+  if command -v node &> /dev/null; then
+    # Run TLP validation
+    if ! node scripts/validate-tlp-compliance.mjs > /dev/null 2>&1; then
+      echo ""
+      echo "${RED}❌ TLP compliance validation FAILED${NC}"
+      echo ""
+      echo "${BLUE}Running detailed validation:${NC}"
+      node scripts/validate-tlp-compliance.mjs
+      echo ""
+      echo "${RED}Fix errors before committing:${NC}"
+      echo "   1. Add TLP:CLEAR markers to public docs"
+      echo "   2. Move operational files to docs/*/private/"
+      echo "   3. Run: npm run check:docs"
+      echo ""
+      exit 1
+    fi
+
+    # Run location validation
+    if ! node scripts/validate-doc-location.mjs > /dev/null 2>&1; then
+      echo ""
+      echo "${RED}❌ Documentation location validation FAILED${NC}"
+      echo ""
+      echo "${BLUE}Running detailed validation:${NC}"
+      node scripts/validate-doc-location.mjs
+      echo ""
+      echo "${RED}Move documentation files to docs/ directory${NC}"
+      echo ""
+      exit 1
+    fi
+
+    echo "${GREEN}✅ TLP compliance and location validated${NC}"
+  else
+    echo "${YELLOW}⚠️  Node.js not found - skipping TLP validation${NC}"
+  fi
+else
+  echo "${GREEN}✅ No documentation files changed - skipping TLP validation${NC}"
+fi
+
+# ============================================================================
+# SUCCESS
+# ============================================================================
+echo ""
+echo "${GREEN}✅ All governance compliance checks passed!${NC}"
+echo ""
+
+exit 0

@@ -12,6 +12,13 @@ on:
   push:
     branches: [main, preview]
 
+# Explicit permissions (least privilege principle)
+# Write permissions scoped to pull_request events only
+permissions:
+  contents: read        # Required: checkout repository
+  pull-requests: ${{ github.event_name == 'pull_request' && 'write' || 'read' }}  # Write only on PRs
+  issues: ${{ github.event_name == 'pull_request' && 'write' || 'read' }}         # Write only on PRs
+
 # Cancel in-progress runs for same PR/branch
 concurrency:
   group: privacy-scan-${{ github.ref }}
@@ -21,6 +28,9 @@ jobs:
   scan:
     runs-on: ubuntu-latest
     name: PII & Privacy Scan
+    permissions:
+      contents: read
+      pull-requests: write  # Required: post scan results as PR comments (PR events only)
     steps:
       - uses: actions/checkout@v4
 
@@ -55,7 +65,7 @@ jobs:
           body: |
             ### PI/PII Scanner Results
             The repository was scanned for likely PII/Proprietary content.
-            
+
             **Scan Results:**
             ```
             ${{ steps.run-pii.outputs.scan }}
@@ -64,6 +74,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Gitleaks Secret Detection
     needs: scan
+    permissions:
+      contents: read
+      pull-requests: write  # Required: post gitleaks report as PR comments (PR events only)
+      issues: write         # Required: create remediation issues for critical secrets
     steps:
       - uses: actions/checkout@v4
 
@@ -121,88 +135,33 @@ jobs:
 
       - name: Create remediation issue for critical secrets
         if: always() && steps.parse-gitleaks.outputs.parse_exit_code == '3'
-        run: |
-          # Extract detection details from gitleaks report
-          DETECTION_COUNT=$(jq 'length' gitleaks-report.json)
-          FILE_LIST=$(jq -r '.[] | "- `\(.file)` (line \(.line // "n/a")): \(.rule)"' gitleaks-report.json | head -20)
-
-          # Add note if there are more than 20 findings
-          if [ $(jq 'length' gitleaks-report.json) -gt 20 ]; then
-            FILE_LIST="$FILE_LIST"$'\n'"- ... and $((DETECTION_COUNT - 20)) more findings (see artifact)"
-          fi
-
-          # Prepare issue body
-          ISSUE_BODY="## 🚨 Critical Secret Detected
-
-Gitleaks has detected **${DETECTION_COUNT} critical secret(s)** requiring immediate remediation.
-
-### Detection Details
-
-This automated scan found secrets matching critical patterns (AWS keys, private keys, API tokens, etc.). These must be rotated and removed from git history immediately.
-
-### Affected Files
-
-\`\`\`
-${FILE_LIST}
-\`\`\`
-
-### Remediation Checklist
-
-- [ ] **Rotate Credentials**
-  - [ ] Identify the exposed secret type
-  - [ ] Generate new credentials via the appropriate service
-  - [ ] Update environment variables in Vercel, GitHub, and other services
-  - [ ] Verify new credentials work correctly
-
-- [ ] **Remove from Git History**
-  \`\`\`bash
-  # Using BFG Repo-Cleaner (recommended for large repos)
-  # Install: npm install -g bfg
-  bfg --replace-text passwords.txt
-  git reflog expire --expire=now --all
-  git gc --prune=now --aggressive
-  \`\`\`
-
-- [ ] **Update Secrets Management**
-  - [ ] Store secret in secure vault (not committed)
-  - [ ] Add to .gitignore if file-based
-  - [ ] Use environment variables for runtime
-  - [ ] Update .pii-allowlist.json ONLY if legitimate placeholder
-
-- [ ] **Verify Remediation**
-  - [ ] Run \`npm run parse:gitleaks-report\` locally
-  - [ ] Confirm secret no longer detected
-  - [ ] Verify service access with new credentials
-
-- [ ] **Close Issue** with remediation summary
-
-### References
-
-- [PI/PII Policy](docs/security/private/pi-policy.md)
-- [Security Findings](docs/security/FINDINGS_AND_ACTION_ITEMS.md)
-- [Allowlist Documentation](.pii-allowlist.json)
-
-### Workflow Information
-
-- **Triggered by:** ${{ github.event_name }}
-- **Branch:** ${{ github.ref_name }}
-- **Commit:** ${{ github.sha }}
-- **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
----
-
-*Automated by pii-scan workflow • DO NOT bypass via allowlist without justification*"
-
-          # Create GitHub issue
-          gh issue create \
-            --title "🚨 Critical Secret Detected: $DETECTION_COUNT secret(s) found" \
-            --body "$ISSUE_BODY" \
-            --label "security" \
-            --label "critical" \
-            --label "gitleaks" \
-            --label "automated"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DETECTION_COUNT=$(jq 'length' gitleaks-report.json)
+          FILE_LIST=$(jq -r '.[] | "- \(.file) (line \(.line // "n/a")): \(.rule)"' gitleaks-report.json | head -20)
+
+          if [ $(jq 'length' gitleaks-report.json) -gt 20 ]; then
+            FILE_LIST="${FILE_LIST}\n- ... and $((DETECTION_COUNT - 20)) more findings (see artifact)"
+          fi
+
+          gh issue create \
+            --title "Critical Secret Detected: ${DETECTION_COUNT} secret(s) found" \
+            --label security --label critical --label gitleaks --label automated \
+            --body "## Critical Secret Detected
+
+          Gitleaks detected **${DETECTION_COUNT}** critical secret(s) requiring immediate remediation.
+
+          ### Affected Files
+          ${FILE_LIST}
+
+          ### Remediation Steps
+          1. Rotate credentials immediately
+          2. Remove from git history using BFG Repo-Cleaner
+          3. Update environment variables
+          4. Verify service access with new credentials
+
+          See workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
       - name: Post gitleaks report to PR
         if: always() && (github.event_name == 'pull_request')

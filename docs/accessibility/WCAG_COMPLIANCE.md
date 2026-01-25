@@ -1,8 +1,10 @@
+{/* TLP:CLEAR */}
+
 # WCAG 2.1 Level AA Compliance Statement
 
-**Version:** 1.0  
-**Last Updated:** December 28, 2025  
-**Application:** dcyfr-labs Portfolio  
+**Version:** 1.0
+**Last Updated:** December 28, 2025
+**Application:** dcyfr-labs Portfolio
 **Standard:** WCAG 2.1 Level AA
 
 ---
@@ -235,7 +237,7 @@ const focusTimer = setTimeout(() => {
 export const metadata: Metadata = {
   title: {
     default: SITE_TITLE,
-    template: "%s — " + SITE_TITLE_PLAIN,
+    template: '%s — ' + SITE_TITLE_PLAIN,
   },
 };
 ```
@@ -488,7 +490,7 @@ npm run contrast:check    # Color contrast validation
 
 ### Touch Target Testing
 
-**Minimum Size:** 44x44pt (Apple HIG compliance)  
+**Minimum Size:** 44x44pt (Apple HIG compliance)
 **Testing:** Automated via Playwright
 
 ```typescript
@@ -552,7 +554,9 @@ expect(result.passed).toBe(true);
 
 ### Internal Documentation
 
-- [Accessibility Audit Report](../reports/accessibility-audit-2025-12-28.md)
+- [Accessibility Audit Report](private/accessibility-audit-2025-12-28.md)
+- [Accessibility Resolution Summary](private/accessibility-resolution-2025-12-28.md)
+- [Accessibility Completion Status](private/accessibility-completion-2025-12-28.md)
 - [DCYFR Pronunciation Guide](./dcyfr-pronunciation.md)
 - [Design System Tokens](../design/design-tokens.md)
 
@@ -570,6 +574,6 @@ expect(result.passed).toBe(true);
 
 ---
 
-**Compliance Verified:** December 28, 2025  
-**Next Review:** March 28, 2026  
+**Compliance Verified:** December 28, 2025
+**Next Review:** March 28, 2026
 **Maintained By:** DCYFR Labs Team

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # COMPONENT_WITH_BARREL.tsx Template
 
 Template for creating a new component with barrel export setup.

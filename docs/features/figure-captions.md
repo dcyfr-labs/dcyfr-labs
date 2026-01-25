@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Figure Captions in Blog Posts
 
 Image captions are now fully supported in blog posts with automatic figure numbering.

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Architecture Patterns: Practical Examples
 
 **Last Updated:** November 10, 2025  

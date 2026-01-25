@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Content Contribution Guide for AI Assistants
 
 This guide helps AI coding assistants maintain content quality and markdown standards when working on blog posts.

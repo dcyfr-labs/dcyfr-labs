@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Active Keyboard Shortcuts Inventory
 
 **Date:** December 2024  

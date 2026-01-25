@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Blog Post Skeleton Component
 
 **Location:** `src/components/blog-post-skeleton.tsx`

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Skeleton Consolidation Pattern
 
 **Last Updated**: January 2, 2026

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Blog Search Form Component
 
 **Location:** `src/components/blog-search-form.tsx`

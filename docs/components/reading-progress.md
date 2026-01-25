@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Reading Progress Indicator
 
 **Location:** `src/components/reading-progress.tsx`

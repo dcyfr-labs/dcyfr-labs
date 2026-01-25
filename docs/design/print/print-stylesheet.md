@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Print Stylesheet Documentation
 
 **Last Updated:** October 24, 2025

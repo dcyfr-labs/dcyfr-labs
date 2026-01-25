@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Trending Badges Implementation Guide
 
 ## Overview

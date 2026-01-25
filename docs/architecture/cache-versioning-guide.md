@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Cache Versioning & Migration Guide
 
 **Status:** Production-Ready (2026-01-11)

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Activity Topic Clustering
 
 **Status:** ✅ Complete (December 2025)

@@ -1,0 +1,120 @@
+# Gitleaks Configuration
+# https://github.com/gitleaks/gitleaks#configuration
+
+title = "dcyfr-labs secret detection configuration"
+
+[extend]
+# Use default gitleaks rules as base
+useDefault = true
+
+# Custom rules for patterns not in default gitleaks
+[[rules]]
+id = "github-webhook-secret"
+description = "GitHub Webhook Secret (32-byte base64)"
+regex = '''(?i)WEBHOOK_SECRET\s*[:=]\s*[A-Za-z0-9+/]{40,}={0,2}'''
+tags = ["secret", "webhook", "github"]
+
+[[rules]]
+id = "signing-key"
+description = "Signing Key (high-entropy base64)"
+regex = '''(?i)SIGNING_KEY\s*[:=]\s*[A-Za-z0-9+/]{40,}={0,2}'''
+tags = ["secret", "signing"]
+
+[[rules]]
+id = "auth-token"
+description = "Authentication Token (high-entropy)"
+regex = '''(?i)AUTH_TOKEN\s*[:=]\s*[A-Za-z0-9+/]{40,}={0,2}'''
+tags = ["secret", "auth"]
+
+# Allowlist configuration
+[allowlist]
+description = "Legitimate patterns that are safe to commit"
+
+# Allowlist specific paths
+paths = [
+  # Gitleaks config and ignore files
+  '''.gitleaksignore''',
+  '''.gitleaks.toml''',
+
+  # Hook files (contain keywords intentionally)
+  '''.husky/''',
+  '''.git/hooks/''',
+
+  # Security scanner scripts (contain test patterns)
+  '''scripts/ci/check-docs-secrets.mjs''',
+  '''scripts/security/''',
+
+  # Configuration templates
+  '''.env.example''',
+  '''.env.template''',
+
+  # Documentation (contains examples, curl commands, placeholders)
+
+  '''README.md''',
+  '''CHANGELOG.md''',
+
+  # Archive and session notes (historical documentation)
+  '''docs/archive/''',
+  '''docs/sessions/''',
+]
+
+# Allowlist specific regexes (patterns that look like secrets but aren't)
+regexes = [
+  # Cloudflare Turnstile test key (official public test key)
+  '''1x0000000000000000000000000000000AA''',
+
+  # Stripe test key prefixes (official test keys)
+  '''pk_test_''',
+  '''sk_test_''',
+
+  # Documentation placeholders
+  '''<your-secret-here>''',
+  '''<your-api-key-here>''',
+  '''<generate-with-openssl-rand>''',
+  '''your-api-key-here''',
+  '''your-secret-here''',
+  '''YOUR_API_KEY''',
+  '''YOUR_SECRET_HERE''',
+  '''YOUR_.*_KEY''',
+  '''YOUR_.*_TOKEN''',
+
+  # Environment variable references (safe patterns)
+  '''process\.env\.''',
+  '''\$\{[A-Z_]+\}''',  # ${WEBHOOK_SECRET}, ${API_KEY}
+
+  # Git history cleanup markers (from git-filter-repo)
+  '''REDACTED''',
+  '''<redacted>''',
+  '''token-violations''',
+
+  # Curl command examples in documentation (safe)
+  '''curl -X POST http://localhost''',
+  '''curl -X GET http://localhost''',
+  '''-H "Content-Type: application/json"''',
+  '''-d '\{''',  # JSON data in curl examples
+
+  # LinkedIn test/example IDs (public examples)
+  '''linkedin''',
+
+  # npm commands and script references
+  '''npm run''',
+  '''npm install''',
+
+  # Localhost and example URLs
+  '''http://localhost:3000''',
+  '''https://example\.com''',
+  '''https://api\.example\.com''',
+]
+
+# Allowlist by commit (if needed for specific commits)
+# commits = []
+
+# Stopwords - reduce false positives
+stopwords = [
+  # Common variable names that trigger false positives
+  "example",
+  "placeholder",
+  "test",
+  "demo",
+  "sample",
+]

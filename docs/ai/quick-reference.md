@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Quick Reference
 
 Essential commands and patterns for immediate productivity.

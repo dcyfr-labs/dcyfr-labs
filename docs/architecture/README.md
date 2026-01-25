@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Architecture Documentation
 
 This directory contains comprehensive architectural plans and documentation for the www.dcyfr.ai project.

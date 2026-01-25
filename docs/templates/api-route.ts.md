@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # API_ROUTE.ts Template
 
 Copy-paste template for creating a new API route with standard POST pattern and Inngest integration.

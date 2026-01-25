@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Secure Session Management
 
 **AES-256 encrypted session storage in Redis for cross-environment authentication.**

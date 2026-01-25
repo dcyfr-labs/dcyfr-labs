@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Analytics Architecture Decision: Hybrid Approach
 
 **Date:** November 11, 2025  

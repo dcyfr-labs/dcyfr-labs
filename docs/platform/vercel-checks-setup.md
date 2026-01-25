@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Vercel Deployment Checks - Quick Setup
 
 Follow these steps to enable automated quality gates on every Vercel deployment.

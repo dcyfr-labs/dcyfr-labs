@@ -10,6 +10,9 @@
  *   "contentType": "post" | "project" | "activity",
  *   "action": "like" | "unlike"
  * }
+ *
+ * Security:
+ * - Rate limiting: 30 requests per minute per IP
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -19,6 +22,7 @@ import {
   getLikes,
   type ContentType,
 } from "@/lib/engagement-analytics";
+import { rateLimit, getClientIp, createRateLimitHeaders } from "@/lib/rate-limit";
 
 interface LikeRequestBody {
   slug: string;
@@ -27,6 +31,27 @@ interface LikeRequestBody {
 }
 
 export async function POST(request: NextRequest) {
+  // Rate limiting: 30 requests per minute per IP
+  const clientIp = getClientIp(request);
+  const rateLimitResult = await rateLimit(`engagement:like:${clientIp}`, {
+    limit: 30,
+    windowInSeconds: 60,
+  });
+
+  if (!rateLimitResult.success) {
+    const retryAfter = Math.ceil((rateLimitResult.reset - Date.now()) / 1000);
+    return NextResponse.json(
+      { error: "Rate limit exceeded", retryAfter },
+      {
+        status: 429,
+        headers: {
+          ...createRateLimitHeaders(rateLimitResult),
+          "Retry-After": retryAfter.toString(),
+        },
+      }
+    );
+  }
+
   try {
     const body = (await request.json()) as LikeRequestBody;
     const { slug, contentType, action } = body;
@@ -89,6 +114,27 @@ export async function POST(request: NextRequest) {
  * GET /api/engagement/like?slug=my-post&contentType=post
  */
 export async function GET(request: NextRequest) {
+  // Rate limiting: 60 requests per minute per IP (higher for reads)
+  const clientIp = getClientIp(request);
+  const rateLimitResult = await rateLimit(`engagement:like:get:${clientIp}`, {
+    limit: 60,
+    windowInSeconds: 60,
+  });
+
+  if (!rateLimitResult.success) {
+    const retryAfter = Math.ceil((rateLimitResult.reset - Date.now()) / 1000);
+    return NextResponse.json(
+      { error: "Rate limit exceeded", retryAfter },
+      {
+        status: 429,
+        headers: {
+          ...createRateLimitHeaders(rateLimitResult),
+          "Retry-After": retryAfter.toString(),
+        },
+      }
+    );
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const slug = searchParams.get("slug");

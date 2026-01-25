@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Scripts Index
 
 **Complete reference for all automation scripts in dcyfr-labs**

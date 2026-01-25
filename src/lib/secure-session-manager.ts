@@ -35,7 +35,36 @@ interface SessionData {
   permissions?: string[];
   lastActivity?: number;
   csrfToken?: string;
+  // Session binding for anti-hijacking (optional)
+  clientIp?: string;
+  userAgent?: string;
   [key: string]: any;
+}
+
+interface SessionBindingOptions {
+  /** Bind session to client IP address (anti-hijacking) */
+  bindIp?: boolean;
+  /** Bind session to User-Agent (anti-fixation) */
+  bindUserAgent?: boolean;
+}
+
+interface CreateSessionOptions {
+  expirySeconds?: number;
+  /** Client IP address for session binding */
+  clientIp?: string;
+  /** User-Agent string for session binding */
+  userAgent?: string;
+  /** Configure which attributes to bind the session to */
+  binding?: SessionBindingOptions;
+}
+
+interface ValidateSessionOptions {
+  /** Client IP to validate against session binding */
+  clientIp?: string;
+  /** User-Agent to validate against session binding */
+  userAgent?: string;
+  /** Strict mode: reject session if binding doesn't match (default: true) */
+  strictBinding?: boolean;
 }
 
 interface EncryptedData {
@@ -111,19 +140,40 @@ export class SecureSessionManager {
   }
 
   /**
-   * Create a new secure session
+   * Create a new secure session with optional IP/User-Agent binding
+   *
+   * @param sessionData - Initial session data
+   * @param options - Session creation options including binding configuration
+   * @returns Session token and CSRF token
+   *
+   * @example
+   * // Create session with IP binding (anti-hijacking)
+   * const { sessionToken, csrfToken } = await SecureSessionManager.createSession(
+   *   { userId: 'user123' },
+   *   {
+   *     clientIp: '192.168.1.1',
+   *     userAgent: 'Mozilla/5.0...',
+   *     binding: { bindIp: true, bindUserAgent: true }
+   *   }
+   * );
    */
   static async createSession(
-    sessionData: SessionData, 
-    expirySeconds: number = this.DEFAULT_EXPIRY
+    sessionData: SessionData,
+    options: CreateSessionOptions | number = {}
   ): Promise<{ sessionToken: string; csrfToken: string }> {
     if (!redis) {
       throw new Error('Redis not configured. Set REDIS_URL environment variable.');
     }
 
+    // Support legacy signature (expirySeconds as number)
+    const opts: CreateSessionOptions = typeof options === 'number'
+      ? { expirySeconds: options }
+      : options;
+
+    const expirySeconds = opts.expirySeconds ?? this.DEFAULT_EXPIRY;
     const sessionToken = this.generateSessionToken();
     const csrfToken = this.generateCSRFToken();
-    
+
     // Add metadata to session
     const enrichedData: SessionData = {
       ...sessionData,
@@ -133,15 +183,28 @@ export class SecureSessionManager {
       expiresAt: Date.now() + (expirySeconds * 1000)
     };
 
+    // Add session binding if configured
+    if (opts.binding?.bindIp && opts.clientIp) {
+      enrichedData.clientIp = opts.clientIp;
+    }
+    if (opts.binding?.bindUserAgent && opts.userAgent) {
+      enrichedData.userAgent = opts.userAgent;
+    }
+
     // Encrypt the session data
     const encryptedData = this.encrypt(JSON.stringify(enrichedData));
-    
+
     // Store in Redis with expiration
     const key = `${this.SESSION_PREFIX}${sessionToken}`;
     await redis.setex(key, expirySeconds, JSON.stringify(encryptedData));
 
-    console.warn(`🔐 Created secure session: ${sessionToken.substring(0, 8)}... (expires in ${expirySeconds}s)`);
-    
+    const bindingInfo = [];
+    if (enrichedData.clientIp) bindingInfo.push('IP');
+    if (enrichedData.userAgent) bindingInfo.push('UA');
+    const bindingStr = bindingInfo.length > 0 ? ` [bound: ${bindingInfo.join(',')}]` : '';
+
+    console.warn(`[Session] Created: ${sessionToken.substring(0, 8)}... (expires in ${expirySeconds}s)${bindingStr}`);
+
     return { sessionToken, csrfToken };
   }
 
@@ -179,6 +242,66 @@ export class SecureSessionManager {
       console.error('Error retrieving session:', error);
       return null;
     }
+  }
+
+  /**
+   * Validate session with optional IP/User-Agent binding check
+   *
+   * @param sessionToken - The session token to validate
+   * @param options - Validation options including current client IP and User-Agent
+   * @returns Session data if valid, null if invalid or binding mismatch
+   *
+   * @example
+   * // Validate session with binding check
+   * const session = await SecureSessionManager.validateSession(token, {
+   *   clientIp: request.ip,
+   *   userAgent: request.headers['user-agent'],
+   *   strictBinding: true
+   * });
+   */
+  static async validateSession(
+    sessionToken: string,
+    options: ValidateSessionOptions = {}
+  ): Promise<SessionData | null> {
+    const sessionData = await this.getSession(sessionToken);
+
+    if (!sessionData) {
+      return null;
+    }
+
+    const { clientIp, userAgent, strictBinding = true } = options;
+
+    // Check IP binding if session has IP bound and client IP provided
+    if (sessionData.clientIp && clientIp) {
+      if (sessionData.clientIp !== clientIp) {
+        console.warn(
+          `[Session] IP mismatch for ${sessionToken.substring(0, 8)}...: ` +
+          `expected ${sessionData.clientIp.substring(0, 8)}***, got ${clientIp.substring(0, 8)}***`
+        );
+        if (strictBinding) {
+          return null;
+        }
+      }
+    }
+
+    // Check User-Agent binding if session has UA bound and UA provided
+    if (sessionData.userAgent && userAgent) {
+      // Normalize User-Agent for comparison (ignore minor version differences)
+      const normalizeUA = (ua: string) => ua.replace(/\/[\d.]+/g, '/X').substring(0, 100);
+      const boundUA = normalizeUA(sessionData.userAgent);
+      const currentUA = normalizeUA(userAgent);
+
+      if (boundUA !== currentUA) {
+        console.warn(
+          `[Session] User-Agent mismatch for ${sessionToken.substring(0, 8)}...`
+        );
+        if (strictBinding) {
+          return null;
+        }
+      }
+    }
+
+    return sessionData;
   }
 
   /**

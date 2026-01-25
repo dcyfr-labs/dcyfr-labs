@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Testing Strategy Guide
 
 **Purpose**: Define testing levels, coverage targets, and when to use each testing approach.

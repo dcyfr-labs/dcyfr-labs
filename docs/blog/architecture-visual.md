@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Slug Redirects Implementation: Visual Architecture
 
 ## System Architecture

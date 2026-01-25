@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # JSON-LD Quick Reference
 
 Quick guide for working with JSON-LD structured data on this site.

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Best Practices: Archive & Article Patterns
 
 **Last Updated:** November 10, 2025  

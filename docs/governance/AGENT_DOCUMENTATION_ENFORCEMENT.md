@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Agent Documentation Enforcement Policy
 
 **Version:** 1.0.0  

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # GitHub Configuration Improvements - Implementation Guide
 
 **Date**: 2025-12-22

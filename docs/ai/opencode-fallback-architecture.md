@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # OpenCode.ai Fallback Architecture
 
 **Last Updated:** January 11, 2026

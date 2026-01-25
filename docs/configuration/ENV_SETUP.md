@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Environment Configuration Setup Guide
 
 Complete guide for setting up environment variables for local development and production deployments.

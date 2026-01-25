@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Skeleton Sync Quick Reference
 
 **TL;DR:** When you update a component structure, update its skeleton too!

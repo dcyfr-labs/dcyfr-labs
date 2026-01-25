@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Table of Contents Component
 
 **Status:** ✅ Implemented (Enhanced with Mobile Support - Nov 4, 2025)  

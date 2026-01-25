@@ -1,7 +1,7 @@
 # DCYFR OpenCode.ai Agent
 
-**Version:** 2.0.0 (GitHub Copilot Integration)  
-**Last Updated:** January 11, 2026  
+**Version:** 2.1.0 (Governance Compliance Update)
+**Last Updated:** January 24, 2026
 **Purpose:** Production-ready feature implementation with GitHub Copilot integration and session state tracking
 
 ---
@@ -41,7 +41,7 @@ DCYFR OpenCode.ai is a **fallback AI agent** that enables continuous development
 
 ## 🛡️ Core Rules Summary
 
-DCYFR enforces **7 core rules** with **hybrid enforcement** (strict + flexible):
+DCYFR enforces **8 core rules** with **hybrid enforcement** (strict + flexible):
 
 ### STRICT Rules (Hard Block on Violation)
 
@@ -51,15 +51,66 @@ These rules are **NON-NEGOTIABLE** regardless of provider used:
 2. **Layouts** - Use `PageLayout` for 90% of pages (exceptions: ArticleLayout, ArchiveLayout)
 3. **Imports** - Barrel exports only (import from `@/components/blog` not `@/components/blog/post-list`)
 4. **Test Data Prevention** - All test data must have environment checks (`NODE_ENV` + `VERCEL_ENV`)
+   ```typescript
+   // ✅ CORRECT: Environment-aware with explicit warning
+   const isProduction = process.env.NODE_ENV === "production" ||
+                        process.env.VERCEL_ENV === "production";
+   if (isProduction && !hasRealData) {
+     console.error("❌ CRITICAL: Using demo data in production!");
+     return null;
+   }
+   ```
 5. **No Emojis** - Public content uses React icons from `lucide-react` only
+   ```typescript
+   // ❌ WRONG: Emoji in blog post
+   ## Features
+   - 🚀 Fast performance
+
+   // ✅ CORRECT: React icon
+   import { Rocket } from 'lucide-react';
+   - <Rocket className="inline-block" /> Fast performance
+   ```
 6. **Documentation Location** - All .md files go ONLY in `/docs` folder (NOT in root)
+7. **Operational vs. Reference Documentation** - Place docs correctly based on type
+   - **Quick Decision:**
+     - Reusable pattern/guide → Public `docs/[category]/`
+     - Point-in-time status/summary → Private `docs/[category]/private/`
+     - Security/audit finding → Private `docs/security/private/`
+   - **Operational Indicators (→ Private):**
+     - Filename contains: `-summary`, `-complete`, `-status`, `-report`, `-validation`, dates (`YYYY-MM-DD`)
+     - Content contains: "Status: COMPLETE", task checklists, implementation logs
+   - **Examples:**
+     ```
+     ✅ CORRECT: docs/ai/private/claude-config-implementation-2026-01-23.md
+     ✅ CORRECT: docs/operations/private/cleanup-summary-2026-01-05.md
+     ❌ WRONG: docs/ai/claude-config-implementation.md (should be private/)
+     ```
+   - **See:** `docs/governance/OPERATIONAL_DOCUMENTATION_POLICY.md`
 
 ### FLEXIBLE Rules (Warning Only)
 
 These rules are **strongly recommended** but validated manually:
 
-7. **API Routes** - Follow Validate→Queue→Respond pattern with Inngest
-8. **Testing** - Maintain ≥99% test pass rate target
+8. **API Routes** - Follow Validate→Queue→Respond pattern with Inngest
+   ```typescript
+   export async function POST(request: NextRequest) {
+     const data = await request.json(); // Validate
+     await inngest.send({ name: "domain/event.name", data }); // Queue
+     return NextResponse.json({ success: true }); // Respond
+   }
+   ```
+9. **Testing** - Maintain ≥99% test pass rate target
+   - **When to test:** Logic, API routes, utilities, state management
+   - **When NOT to test:** Static pages, trivial changes, pure CSS
+10. **Security: Fix > Suppress** - Always attempt to fix security findings
+    - ✅ **DO:** Try to fix underlying issues first (allowlist validation, sanitization)
+    - ❌ **DON'T:** Add LGTM suppression comments without attempting fix
+    - **Fix examples:**
+      - Command injection → Allowlist validation: `/^[a-z0-9._-]+$/i`
+      - Log injection → Remove control chars: `replace(/[\x00-\x1F\x7F-\x9F]/g, '')`
+      - HTML sanitization → Multi-pass: remove `<script>`, strip tags, decode entities
+    - **Only suppress if:** Confirmed false positive with technical proof
+    - **See:** `docs/security/private/CODEQL_FINDINGS_RESOLVED.md`
 
 ---
 
@@ -229,6 +280,29 @@ Additional manual review required:
 
 ---
 
+## 🔐 Approval Gates
+
+OpenCode **pauses and requests approval** for:
+
+- **Breaking changes** (prop removal, URL changes, schema changes)
+- **Architecture decisions** (new dependencies, patterns, frameworks)
+- **Security-sensitive work** (auth, rate limits, CORS, sanitization)
+- **Test data changes** (new test data sources, modifications to safeguards)
+
+**Process:**
+1. Identify change requires approval
+2. Pause implementation and document:
+   - What change is proposed
+   - Why it's necessary
+   - Impact assessment
+3. Request approval from project maintainer
+4. Wait for approval before proceeding
+5. Document approval in commit message
+
+**See:** [enforcement/APPROVAL_GATES.md](../.github/agents/enforcement/APPROVAL_GATES.md) for detailed process
+
+---
+
 ## 🔗 External Resources
 
 ### DCYFR Pattern Documentation
@@ -284,9 +358,9 @@ Configured in [config.json](config.json):
 
 ---
 
-**Status:** Production Ready (Modular v1.0)  
-**Scope:** dcyfr-labs multi-provider fallback  
+**Status:** Production Ready (Modular v1.0)
+**Scope:** dcyfr-labs multi-provider fallback
 **Maintained By:** DCYFR Labs Team
 
-For agent selection guidance, see [AGENTS.md](../AGENTS.md)  
+For agent selection guidance, see [AGENTS.md](../AGENTS.md)
 For modular pattern documentation, explore `patterns/`, `enforcement/`, `workflows/` directories

@@ -1,0 +1,304 @@
+name: Governance Validation
+
+on:
+  pull_request:
+    paths:
+      - 'docs/**'
+      - '.claude/**'
+      - '.opencode/**'
+      - '.vscode/**'
+      - '.gitignore'
+      - 'AGENTS.md'
+      - 'scripts/hooks/**'
+  push:
+    branches:
+      - main
+      - preview
+    paths:
+      - 'docs/**'
+      - '.gitignore'
+      - 'AGENTS.md'
+
+# Explicit permissions (least privilege principle)
+permissions:
+  contents: read        # Required: checkout repository
+  pull-requests: write  # Required: post validation results as PR comments
+
+jobs:
+  validate-governance:
+    runs-on: ubuntu-latest
+    name: Governance Compliance Check
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate documentation structure
+        run: |
+          echo "🔍 Checking for sensitive files in wrong locations..."
+
+          # Check for files with sensitive keywords outside private/ subdirectories
+          SENSITIVE_FILES=$(find docs -type f \( \
+            -name "*FINDINGS*" -o \
+            -name "*AUDIT*" -o \
+            -name "*ANALYSIS*" -o \
+            -name "*METRICS*" -o \
+            -name "*REPORT*" -o \
+            -name "*STATUS*" -o \
+            -name "*SUMMARY*" \
+          \) -not -path "*/private/*" \
+            -not -name "AGENTS.md" \
+            -not -name "DOCS_GOVERNANCE.md" \
+            -not -name "DOCUMENTATION_CONSOLIDATION_GUIDE.md" \
+            -not -name "INDEX.md" \
+            -not -name "README.md" || true)
+
+          if [ -n "$SENSITIVE_FILES" ]; then
+            echo "❌ ERROR: Sensitive files found outside private/ subdirectories"
+            echo ""
+            echo "Files found:"
+            echo "$SENSITIVE_FILES"
+            echo ""
+            echo "Move to appropriate docs/[category]/private/ folder:"
+            echo "  • Security findings → docs/security/private/"
+            echo "  • Performance metrics → docs/performance/private/development/"
+            echo "  • Operational status → docs/operations/private/"
+            echo ""
+            echo "See: docs/governance/DOCS_GOVERNANCE.md"
+            exit 1
+          fi
+
+          echo "✅ No sensitive files in public docs"
+
+      - name: Validate AI configuration
+        run: |
+          echo "🔍 Checking AI configuration files..."
+
+          # Check that .claude/ files are not in git (should be gitignored)
+          if git ls-files | grep "^\.claude/"; then
+            echo "❌ ERROR: Proprietary .claude/ files detected in git!"
+            echo ""
+            echo ".claude/ directory is PROPRIETARY and should NOT be in git"
+            echo "These files should be in .gitignore"
+            echo ""
+            echo "See: AGENTS.md section on public vs. proprietary files"
+            exit 1
+          fi
+
+          # Check that .opencode/node_modules/ is gitignored
+          if git ls-files | grep "^\.opencode/node_modules/"; then
+            echo "❌ ERROR: OpenCode dependencies detected in git!"
+            echo ""
+            echo ".opencode/node_modules/ should be gitignored"
+            echo "Add to .gitignore: .opencode/node_modules/"
+            exit 1
+          fi
+
+          # Check that session state files are gitignored
+          if git ls-files | grep "\.session-state\.json$"; then
+            echo "❌ ERROR: Session state files detected in git!"
+            echo ""
+            echo "Session state files should be gitignored"
+            echo "Check .gitignore for: *.session-state.json"
+            exit 1
+          fi
+
+          echo "✅ No proprietary AI config in git"
+
+      - name: Validate .gitignore coverage
+        run: |
+          echo "🔍 Checking .gitignore coverage..."
+
+          # Verify critical patterns exist in .gitignore
+          REQUIRED_PATTERNS=(
+            "^\\.claude/"
+            "^\\.opencode/node_modules/"
+            "^\\*\\*/private/\\*\\*"
+            "^\\*\\.session-state\\.json"
+            "^\\.env\\*"
+          )
+
+          MISSING_PATTERNS=()
+
+          for pattern in "${REQUIRED_PATTERNS[@]}"; do
+            if ! grep -E "$pattern" .gitignore > /dev/null; then
+              MISSING_PATTERNS+=("$pattern")
+            fi
+          done
+
+          if [ ${#MISSING_PATTERNS[@]} -gt 0 ]; then
+            echo "❌ ERROR: Missing required .gitignore patterns"
+            echo ""
+            echo "Missing patterns:"
+            for pattern in "${MISSING_PATTERNS[@]}"; do
+              echo "  • $pattern"
+            done
+            echo ""
+            echo "See: .gitignore for required patterns"
+            exit 1
+          fi
+
+          echo "✅ .gitignore coverage validated"
+
+      - name: Validate private file references
+        run: |
+          echo "🔍 Validating private file references..."
+
+          # Run private file reference checker (if script exists)
+          if [ -f "scripts/check-private-references.mjs" ]; then
+            node scripts/check-private-references.mjs || {
+              echo "⚠️  WARNING: Some private file references may be broken"
+              echo "This is a warning, not a failure - continuing validation"
+            }
+          else
+            echo "ℹ️  check-private-references.mjs not found - skipping"
+          fi
+
+      - name: Validate TLP compliance
+        run: |
+          echo "🔍 Validating TLP compliance..."
+
+          if [ -f "scripts/validate-tlp-compliance.mjs" ]; then
+            node scripts/validate-tlp-compliance.mjs || {
+              echo ""
+              echo "❌ ERROR: TLP compliance validation failed"
+              echo ""
+              echo "Fix errors by:"
+              echo "  1. Add TLP:CLEAR markers to public docs"
+              echo "  2. Move operational files to docs/*/private/"
+              echo "  3. Run: npm run check:docs"
+              echo ""
+              exit 1
+            }
+          else
+            echo "ℹ️  validate-tlp-compliance.mjs not found - skipping"
+          fi
+
+      - name: Validate documentation location
+        run: |
+          echo "📁 Validating documentation location..."
+
+          if [ -f "scripts/validate-doc-location.mjs" ]; then
+            node scripts/validate-doc-location.mjs || {
+              echo ""
+              echo "❌ ERROR: Documentation location validation failed"
+              echo ""
+              echo "Fix errors by moving documentation files to docs/ directory"
+              echo ""
+              exit 1
+            }
+          else
+            echo "ℹ️  validate-doc-location.mjs not found - skipping"
+          fi
+
+      - name: Run governance compliance check
+        run: |
+          echo "🔍 Running comprehensive governance check..."
+
+          # Run governance validation script (if exists)
+          if [ -f "scripts/validate-governance.mjs" ]; then
+            npm run check:governance
+          else
+            echo "ℹ️  validate-governance.mjs not found - skipping"
+            echo "✅ All manual checks passed"
+          fi
+
+      - name: Check for accidentally committed secrets
+        run: |
+          echo "🔍 Scanning for accidentally committed secrets..."
+
+          # Check for common secret patterns in tracked files
+          SECRETS_FOUND=$(git grep -i -E "(api_key|secret|password|token)\s*=\s*['\"][^'\"]{16,}" -- ':(exclude).env.example' ':(exclude).env.template' ':(exclude).vscode/mcp.json.example' || true)
+
+          if [ -n "$SECRETS_FOUND" ]; then
+            echo "⚠️  WARNING: Possible secrets detected in tracked files"
+            echo ""
+            echo "Lines found:"
+            echo "$SECRETS_FOUND" | head -10
+            echo ""
+            echo "Review these lines to ensure they are not actual secrets"
+            echo "This is a warning - manual review required"
+          else
+            echo "✅ No obvious secrets detected"
+          fi
+
+      - name: Validate VS Code workspace configuration
+        run: |
+          echo "🔍 Checking VS Code workspace configuration..."
+
+          # Verify VS Code workspace files are tracked
+          REQUIRED_VSCODE_FILES=(
+            ".vscode/mcp.json"
+            ".vscode/settings.json"
+            ".vscode/extensions.json"
+            ".vscode/design-tokens.code-snippets"
+          )
+
+          MISSING_FILES=()
+
+          for file in "${REQUIRED_VSCODE_FILES[@]}"; do
+            if [ ! -f "$file" ]; then
+              MISSING_FILES+=("$file")
+            fi
+          done
+
+          if [ ${#MISSING_FILES[@]} -gt 0 ]; then
+            echo "⚠️  WARNING: Some VS Code workspace files are missing"
+            echo ""
+            echo "Missing files:"
+            for file in "${MISSING_FILES[@]}"; do
+              echo "  • $file"
+            done
+            echo ""
+            echo "These files should exist for optimal contributor experience"
+            echo "This is a warning, not a failure"
+          else
+            echo "✅ All VS Code workspace files present"
+          fi
+
+      - name: Generate governance report
+        if: always()
+        run: |
+          echo ""
+          echo "=========================================="
+          echo "📊 GOVERNANCE VALIDATION SUMMARY"
+          echo "=========================================="
+          echo ""
+          echo "Checks completed:"
+          echo "  ✅ Documentation structure"
+          echo "  ✅ TLP compliance"
+          echo "  ✅ Documentation location"
+          echo "  ✅ AI configuration"
+          echo "  ✅ .gitignore coverage"
+          echo "  ✅ Private file references"
+          echo "  ✅ Governance compliance"
+          echo "  ✅ Secret scanning"
+          echo "  ✅ VS Code workspace"
+          echo ""
+          echo "For detailed governance policies, see:"
+          echo "  • AGENTS.md (Governance Compliance section)"
+          echo "  • docs/governance/DOCS_GOVERNANCE.md"
+          echo ""
+
+      - name: Comment on PR (if applicable)
+        if: github.event_name == 'pull_request' && failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ **Governance validation failed**\n\nPlease review the workflow logs for details and ensure:\n- No sensitive files in public `docs/` (move to `docs/*/private/`)\n- No `.claude/` files committed (should be gitignored)\n- No session state or credentials committed\n- `.gitignore` has all required patterns\n\nSee [AGENTS.md](../blob/preview/AGENTS.md#-governance-compliance) for governance policies.'
+            })

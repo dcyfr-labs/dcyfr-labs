@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Dependabot Automation
 
 Automated dependency management with intelligent auto-merge capabilities.

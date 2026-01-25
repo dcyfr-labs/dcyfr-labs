@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # MCP Server Validation Test
 
 ## Overview

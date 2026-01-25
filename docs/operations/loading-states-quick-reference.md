@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Loading States - Quick Reference
 
 **Last Updated:** October 21, 2025

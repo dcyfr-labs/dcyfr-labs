@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # METADATA_ONLY.ts Template
 
 Template for pages that only generate metadata (e.g., `opengraph-image.tsx`, `twitter-image.tsx`, route groups).

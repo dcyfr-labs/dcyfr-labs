@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Public Analytics Dashboard
 
 Development-only analytics dashboard for monitoring blog performance and viewing real-time statistics with responsive mobile-first design.

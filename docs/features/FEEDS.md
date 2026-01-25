@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # RSS/Atom/JSON Feed System
 
 Comprehensive feed syndication system supporting multiple formats (Atom 1.0, JSON Feed 1.1) with automatic format detection, differential revalidation, and content-type-specific update frequencies.

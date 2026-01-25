@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # MCP (Model Context Protocol) Integration Guide
 
 **Last Updated:** January 21, 2026

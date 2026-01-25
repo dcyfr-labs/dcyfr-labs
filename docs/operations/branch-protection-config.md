@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Branch Protection Configuration
 
 This document provides the recommended branch protection rules for the `main` and `preview` branches.

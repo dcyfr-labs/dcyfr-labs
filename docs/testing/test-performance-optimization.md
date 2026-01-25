@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Test Performance Optimization Guide
 
 **Last Updated:** December 18, 2025

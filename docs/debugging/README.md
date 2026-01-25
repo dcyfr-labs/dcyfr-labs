@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Debugging Documentation
 
 **Last Updated:** 2025-12-05

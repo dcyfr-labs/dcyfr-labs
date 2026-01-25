@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Maintenance Automation System
 
 **Status:** Phase 1-4 Complete (All Automation + Dashboard Complete ✅)

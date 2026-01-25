@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Research Documentation Index
 
 **Last Updated:** January 5, 2026  

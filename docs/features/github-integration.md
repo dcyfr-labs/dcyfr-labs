@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # GitHub Integration Guide
 
 **Location:** Various (see Components & API Routes below)

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Testing Quick Reference
 
 **Quick commands and patterns for testing**

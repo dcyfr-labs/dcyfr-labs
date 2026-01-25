@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Component Lifecycle Management
 
 **Purpose**: Guide AI agents on when to create, refactor, deprecate, or remove components.

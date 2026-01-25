@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # CI/CD Pipeline Optimization - Implementation Summary
 
 **Date:** 2025-12-10

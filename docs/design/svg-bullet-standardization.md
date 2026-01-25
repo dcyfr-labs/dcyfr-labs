@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # SVG Bullet Standardization - Brand Consistency Implementation
 
 **Status:** ✅ Complete  

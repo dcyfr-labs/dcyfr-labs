@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Navigation System Architecture
 
 Unified navigation system with centralized configuration, reusable hooks, and consistent patterns across all navigation components.

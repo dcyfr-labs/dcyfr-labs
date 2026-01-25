@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Blog System Quick Reference
 
 **For:** Developers and content authors  

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Typography System
 
 This project uses a consistent, professional typography system optimized for cross-browser compatibility and readability.

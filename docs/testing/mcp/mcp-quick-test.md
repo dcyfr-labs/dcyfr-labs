@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # MCP Quick Test Script
 
 Copy-paste this into **Claude Chat** (claude.ai) to test all MCP servers at once:

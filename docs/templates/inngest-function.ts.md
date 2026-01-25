@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # INNGEST_FUNCTION.ts Template
 
 Copy-paste template for creating an Inngest background job function.

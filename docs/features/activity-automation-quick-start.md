@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Activity Feed Automation - Quick Start
 
 **Goal:** Implement activity feed caching in under 30 minutes for immediate performance gains.

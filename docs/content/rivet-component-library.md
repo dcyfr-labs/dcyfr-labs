@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # RIVET Component Library Architecture
 
 **Date Created:** January 10, 2026  

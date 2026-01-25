@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Alt Text & Accessibility Guide
 
 **Last Updated:** October 26, 2025  

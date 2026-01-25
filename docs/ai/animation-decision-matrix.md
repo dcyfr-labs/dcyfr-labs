@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Animation Decision Matrix
 
 **Purpose**: Guide AI agents and developers on when to use CSS animations vs Framer Motion (or future graphics engines).

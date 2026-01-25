@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # GitHub MCP (Model Context Protocol) Implementation
 
 **Date Implemented**: October 18, 2025  

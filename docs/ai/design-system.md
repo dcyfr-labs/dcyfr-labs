@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Design System Validation (MANDATORY)
 
 **Claude Code MUST follow this checklist before creating or modifying UI components.**

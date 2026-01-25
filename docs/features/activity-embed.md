@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Activity Feed Embed Documentation
 
 **Feature:** Embeddable activity feed for external websites  

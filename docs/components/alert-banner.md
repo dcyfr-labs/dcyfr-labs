@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Alert Banner Component
 
 **Location:** `src/components/common/alert.tsx`

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Quick Reference Consolidation - January 5, 2026
 
 **Scope:** Consolidate scattered quick-reference files into category-based guides

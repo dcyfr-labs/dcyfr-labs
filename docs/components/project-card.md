@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # ProjectCard Component Documentation
 
 **Location:** `src/components/project-card.tsx`  

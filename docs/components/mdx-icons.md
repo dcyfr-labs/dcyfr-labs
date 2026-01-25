@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # MDX Icon Components
 
 **Status:** ✅ Implemented (Nov 9, 2025)

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Share Buttons Component
 
 ## Overview

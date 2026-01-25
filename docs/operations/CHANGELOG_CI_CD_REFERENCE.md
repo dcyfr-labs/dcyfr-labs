@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Changelog CI/CD Integration - Quick Reference
 
 **Status:** 📋 Investigation Complete

@@ -1,3 +1,5 @@
+<!-- TLP:CLEAR -->
+
 # Diagram and Math Rendering Guide
 
 This guide covers how to create diagrams and render mathematical equations in your blog posts using Mermaid and KaTeX.

@@ -1,8 +1,10 @@
 # Documentation Governance Policy
 
-**Version:** 1.0.0
-**Date:** December 15, 2025
+**Version:** 2.0.0
+**Date:** January 24, 2026
 **Purpose:** Establish clear standards for organizing public vs. private documentation and prevent accidental exposure of sensitive content
+
+**Information Classification:** TLP:CLEAR (Public) - This governance policy is public to ensure transparency in documentation management.
 
 ---
 
@@ -10,7 +12,7 @@
 
 This project maintains two categories of documentation:
 
-- **`/docs`** - Public documentation (visible in git, published to community)
+- **`/docs`** - Public documentation (visible in git, published to community) - **TLP:CLEAR**
 - **Subdirectory `private/` folders** - Internal documentation (e.g., `/docs/security/private/`, `/docs/operations/private/`) - excluded from git, not public
 
 Clear boundaries prevent sensitive findings, operational metrics, and internal deliberations from being accidentally exposed publicly.
@@ -19,9 +21,67 @@ Clear boundaries prevent sensitive findings, operational metrics, and internal d
 
 ---
 
+## 🔒 Traffic Light Protocol (TLP) Classification
+
+This project uses **TLP (Traffic Light Protocol)** for information classification:
+
+### TLP:CLEAR (Public Documentation)
+
+**Definition:** Information that may be distributed without restriction.
+
+**Applies to:**
+
+- All public documentation in `/docs` (excluding `private/` subdirectories)
+- Architecture guides and patterns
+- API documentation
+- User-facing guides
+- Contributing standards
+- Public roadmaps
+
+**Marking Convention:**
+
+```markdown
+{/_ TLP:CLEAR _/}
+
+# Document Title
+
+**Information Classification:** TLP:CLEAR (Public)
+```
+
+### TLP:AMBER (Internal Use Only)
+
+**Definition:** Limited distribution to the organization and its clients on a need-to-know basis.
+
+**Applies to:**
+
+- All files in `docs/*/private/` subdirectories
+- Audit reports and findings
+- Operational metrics
+- Security vulnerability details
+- Internal status reports
+
+**Marking Convention:**
+
+```markdown
+{/_ TLP:AMBER - Internal Use Only _/}
+
+# Document Title
+
+**Information Classification:** TLP:AMBER (Limited Distribution)
+**Audience:** Internal Team Only
+```
+
+---
+
 ## 🎯 Core Principle
 
-**"Shift Left, Assume Private"** - When in doubt, put it in the appropriate subdirectory `private/` folder (e.g., `docs/security/private/`). Move to public only after vetting and cleanup.
+**"TLP:CLEAR by Default, Private When Necessary"** - All public documentation must be suitable for unrestricted distribution (TLP:CLEAR). If content contains operational metrics, audit findings, or sensitive details, it belongs in `docs/*/private/` folders (TLP:AMBER).
+
+**Classification Test:**
+
+- Can this be shared with external contributors? → TLP:CLEAR (public)
+- Contains internal metrics, findings, or status? → TLP:AMBER (private/)
+- Contains security vulnerabilities or PII? → TLP:AMBER (private/)
 
 ---
 
@@ -541,7 +601,88 @@ Documentation is archived when it's no longer actively maintained but may be val
 
 ## 🛡️ Enforcement Mechanisms
 
-### 1. Directory Structure Rules
+### 1. Automated Validation Scripts
+
+**Two validation scripts enforce documentation governance:**
+
+#### `scripts/validate-tlp-compliance.mjs`
+
+**Purpose:** Validates TLP classification markers and proper placement
+
+**Checks:**
+
+- ✅ All public docs have TLP:CLEAR markers
+- ✅ Private docs have TLP:AMBER markers (or no marker)
+- ✅ Operational files are in `private/` subdirectories
+- ✅ No documentation files outside `docs/` (except root-level standard files)
+
+**Usage:**
+
+```bash
+npm run validate:tlp              # Run TLP compliance validation
+npm run check:docs                # Run both TLP and location validation
+```
+
+**Example output:**
+
+```
+🔍 TLP Compliance Validation
+
+Found 347 markdown files to validate
+
+❌ Errors (2):
+❌ docs/operations/status-report.md - Operational file in public docs (should be in private/)
+❌ docs/api/performance-metrics.md - Missing TLP classification marker
+
+✅ Passed: 345
+⚠️  Warnings: 0
+❌ Errors: 2
+
+Fix errors by:
+1. Add TLP:CLEAR marker to public docs: {/* TLP:CLEAR */}
+2. Move operational files to docs/*/private/ directories
+```
+
+#### `scripts/validate-doc-location.mjs`
+
+**Purpose:** Ensures no documentation exists outside `docs/` directory
+
+**Checks:**
+
+- ✅ No markdown files in subdirectories (except allowed locations: `src/`, `e2e/`, etc.)
+- ✅ Only allowed root-level files (README.md, CONTRIBUTING.md, etc.)
+- ✅ All documentation properly placed in `docs/` structure
+
+**Usage:**
+
+```bash
+npm run validate:doc-location     # Run location validation
+npm run check:docs                # Run both TLP and location validation
+```
+
+**Example output:**
+
+```
+📁 Documentation Location Validation
+
+❌ Found 1 documentation file(s) in wrong location:
+
+❌ reports/accessibility-audit.md
+   Documentation file outside docs/ (found in reports/)
+
+Fix by moving files to docs/ directory:
+  mv <file> docs/<category>/<file>
+```
+
+**Integration:**
+
+Both scripts run automatically as part of:
+
+- `npm run check:docs` - Manual validation before commit
+- CI/CD pipeline (future) - Automated PR validation
+- Pre-commit hooks (recommended) - Prevent governance violations
+
+### 2. Directory Structure Rules
 
 ```
 ✅ ALLOWED:
@@ -554,6 +695,7 @@ docs/security/private/FINDINGS.md
 docs/OPERATIONAL_STATUS.md (should be in docs/operations/private/)
 docs/PERFORMANCE_METRICS.md (should be in docs/operations/private/)
 docs/security/VULNERABILITY_DETAILS.md (should be in docs/security/private/)
+reports/audit-report.md (should be in docs/[category]/private/)
 ```
 
 ### 2. File Naming Conventions
@@ -571,45 +713,84 @@ docs/security/VULNERABILITY_DETAILS.md (should be in docs/security/private/)
 - `*_ANALYSIS.md` - Detailed analysis
 - `*_TRACKING.md` - Sensitive tracking
 
-### 3. Pre-Commit Hook
+### 3. Pre-Commit Hook (5-Layer Validation)
 
-Prevents accidental commits:
+**Enhanced governance enforcement** prevents violations before commits:
+
+**Installation:**
 
 ```bash
-#!/bin/bash
-# .git/hooks/pre-commit
-
-# Check for sensitive files in wrong location
-if git diff --cached --name-only | grep -E "^docs/[^/]+/.*\.(FINDINGS|REPORT|AUDIT|ANALYSIS|METRICS)" | grep -v "/private/"; then
-  echo "❌ ERROR: Sensitive file detected in public docs/"
-  echo "   Move to appropriate docs/[category]/private/ folder before committing"
-  exit 1
-fi
-
-# Check for accidentally committed secrets
-if git diff --cached | grep -E "PRIVATE_KEY|API_KEY|PASSWORD|SECRET"; then
-  echo "❌ ERROR: Possible credential detected in code"
-  echo "   Use environment variables or .env.local instead"
-  exit 1
-fi
-
-exit 0
+cp scripts/hooks/pre-commit-governance .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
 ```
 
-### 4. CI/CD Validation
+**Validation Layers:**
 
-GitHub Actions workflow validates docs structure:
+1. **Layer 1: LGTM Suppression Validation** (existing)
+   - Requires 30+ minutes of fix attempts
+   - Confirms false positive before suppression
+   - Documents fix attempts in commit message
 
-```yaml
-- name: Validate docs structure
-  run: |
-    # Check for sensitive files in public docs (outside private/ folders)
-    if find docs -type f \( -name "*FINDINGS*" -o -name "*AUDIT*" \) -not -path "*/private/*"; then
-      echo "❌ Sensitive files found in public docs"
-      echo "   Move to appropriate docs/[category]/private/ folder"
-      exit 1
-    fi
+2. **Layer 2: Sensitive File Location Check** (CRITICAL BLOCK)
+   - Detects files with sensitive keywords (FINDINGS, REPORT, AUDIT, ANALYSIS, METRICS, STATUS, SUMMARY)
+   - Blocks commits if found outside `private/` subdirectories
+   - Enforces correct placement in `docs/[category]/private/`
+
+3. **Layer 3: AI Configuration Check** (CRITICAL BLOCK)
+   - Prevents `.claude/` files from being committed (proprietary/internal only)
+   - Blocks session state files (`.session-state.json`)
+   - Prevents OpenCode dependencies (`.opencode/node_modules/`)
+
+4. **Layer 4: API Key & Credential Detection** (CRITICAL BLOCK)
+   - Scans for hardcoded credentials in staged files
+   - Detects patterns like `API_KEY=`, `TOKEN=`, `SECRET=`
+   - Interactive prompt to confirm environment variable references
+
+5. **Layer 5: Private Docs Validation** (MEDIUM WARN)
+   - Validates files in `private/` subdirectories are gitignored
+   - Confirms intentional commits (e.g., `src/app/private/route.ts` honeypot)
+   - Prevents accidental exposure of sensitive documentation
+
+**See:** `scripts/hooks/pre-commit-governance` for full implementation
+
+**Install Pre-Commit Hook:**
+
+```bash
+cp scripts/hooks/pre-commit-governance .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
 ```
+
+### 4. CI/CD Validation (GitHub Actions)
+
+**Comprehensive automated validation** runs on every PR:
+
+**Workflow:** `.github/workflows/governance-validation.yml`
+
+**Validation Steps:**
+
+1. **Documentation Structure** - Validates no sensitive files in public `docs/`
+2. **AI Configuration** - Ensures no proprietary `.claude/` files in PR
+3. **Gitignore Coverage** - Verifies required patterns exist (.claude/, **/private/**, etc.)
+4. **Private File References** - Checks for broken references to private files
+5. \*\*Governancdocs # Run TLP and location validation
+   npm run validate:tlp # TLP compliance only
+   npm run validate:doc-location # Documentation location only
+   npm run check:private-refs # Validate private file references (future)
+
+```
+
+**See:**
+
+- `scripts/validate-tlp-compliance.mjs` - TLP classification validation
+- `scripts/validate-doc-location.mjs` - Documentation location validation
+- `.github/workflows/governance-validation.yml` - CI/CD workflow (future)
+npm run check:private-refs    # Validate private file references
+```
+
+**See:**
+
+- `.github/workflows/governance-validation.yml` - GitHub Actions workflow
+- `scripts/validate-governance.mjs` - Comprehensive validation script
 
 ### 5. File Header Requirements
 
@@ -734,30 +915,68 @@ Before committing documentation, verify:
 
 ### For Contributors Creating Docs
 
-1. **Determine audience first**
-   - Is this for public/contributors? → `/docs`
-   - Is this internal/sensitive? → `/docs/private`
+[category]/private/`
 
 2. **Use the classification matrix**
    - Check document type in matrix
    - Follow default placement rule
    - If uncertain, ask in PR
 
-3. **Add appropriate header**
-   - Include audience statement
-   - Note last updated date
-   - Flag if contains sensitive info
+3. **Add TLP classification marker**
+   - Public docs: `{/* TLP:CLEAR */}` in first 3 lines
+   - Private docs: `{/* TLP:AMBER - Internal Use Only */}` in first 3 lines
+   - Include audience statement and last updated date
 
-4. **Sanitize before public**
+4. **Validate before committing**
+
+   ```bash
+   npm run check:docs  # Run all documentation validation
+   ```
+
+5. **Sanitize before public**
    - Remove names (generic roles ok)
    - Generalize specifics
    - No metrics or numbers
    - No implementation details
 
-5. **Link appropriately**
+6. **Link appropriately**
    - Public docs can reference private: "See private docs for details"
    - Private docs can reference public: Direct links are ok
    - Avoid exposing private doc paths in public
+
+### Validation Workflow
+
+**Before committing documentation:**
+
+```bash
+# Step 1: Run validation
+npm run check:docs
+
+# Step 2: Fix any errors
+# - Add TLP markers to files missing classification
+# - Move operational files to private/ subdirectories
+# - Relocate files outside docs/ to proper location
+
+# Step 3: Re-validate
+npm run check:docs
+
+# Step 4: Commit when passing
+git add docs/
+git commit -m "docs: add [description]"
+```
+
+### Common Validation Errors & Fixes
+
+| Error                           | Fix                                               |
+| ------------------------------- | ------------------------------------------------- |
+| Missing TLP marker              | Add `{/* TLP:CLEAR */}` to first 3 lines of file  |
+| Operational file in public docs | Move to `docs/[category]/private/`                |
+| Documentation outside docs/     | Move to appropriate `docs/[category]/` folder     |
+| Private file marked TLP:CLEAR   | Change to `{/* TLP:AMBER - Internal Use Only */}` |
+
+- Public docs can reference private: "See private docs for details"
+- Private docs can reference public: Direct links are ok
+- Avoid exposing private doc paths in public
 
 ---
 
@@ -867,13 +1086,66 @@ docs/
 
 Every 3 months:
 
+- [ ] Run automated validation: `npm run check:docs`
 - [ ] Audit `/docs` for inadvertently sensitive content
-- [ ] Review `/docs/private` for stale material
-- [ ] Verify `.gitignore` protects `/docs/private`
+- [ ] Review `/docs/*/private/` for stale material
+- [ ] Verify `.gitignore` protects `**/private/**` folders
 - [ ] Check for outdated classification
 - [ ] Update contributor guidelines if needed
 - [ ] Validate pre-commit hooks work
+- [ ] Run TLP compliance audit: `npm run validate:tlp`
+- [ ] Run doc location audit: `npm run validate:doc-location`
 - [ ] Document any policy changes
+
+**Automated checks:**
+
+```bash
+# Complete quarterly validation
+npm run check:docs
+
+# Individual checks
+npm run validate:tlp              # TLP compliance
+npm run validate:doc-location     # Location validation
+
+# CI/CD validation (future)
+# Runs automatically on all PRs
+```
+
+---
+
+## 📊 Compliance Metrics
+
+**Target Goals:**
+
+- ✅ 100% TLP classification coverage (all public docs have markers)
+- ✅ 0 operational files in public docs
+- ✅ 0 documentation files outside docs/ directory
+- ✅ 100% validation passing before merge
+
+**Tracking:**
+
+Run `npm run check:docs` to get current compliance status:
+
+```
+TLP Compliance: 705/705 files passing (100%) ✅
+Location Validation: 0 violations (100%) ✅
+Errors: 0 ✅
+Warnings: 11 (private files with TLP:CLEAR markers)
+Overall Status: ✅ PASS
+```
+
+**Achievement (January 24, 2026):**
+
+- Started at 52.6% compliance (372/707 files)
+- Implemented automated validation scripts
+- Bulk-added TLP:CLEAR markers to 332 files
+- Relocated 11 operational files to private/ subdirectories
+- Achieved 100% error-free compliance (0 errors, 11 warnings)
+
+**Historical Audits:**
+
+- See `docs/governance/TLP_COMPLIANCE_AUDIT_2026-01-24.md` for baseline
+- Quarterly review findings in `docs/governance/private/`
 
 ---
 
@@ -911,6 +1183,42 @@ A: Always private. If incident lessons can be shared, create public version with
 
 ---
 
+## ✅ TLP Compliance Validation
+
+### Pre-Commit Checklist
+
+Before committing any documentation changes:
+
+- [ ] All public docs marked with `{/* TLP:CLEAR */}` or equivalent
+- [ ] No operational metrics in public docs (Status: COMPLETE, Implementation Complete, task lists)
+- [ ] No security findings in public docs
+- [ ] No internal performance/compliance metrics in public docs
+- [ ] Files with `-status`, `-summary`, `-report`, `-validation`, `-audit`, `-findings` are in `private/` folders
+- [ ] Operational status documents moved to `docs/*/private/` with date stamp
+
+### Automated Validation
+
+Run the governance check script:
+
+```bash
+npm run check:tlp-compliance    # Validates TLP markers in public docs
+npm run check:private-refs       # Validates private file references
+```
+
+### Manual Spot Check
+
+Quarterly review (suggested):
+
+```bash
+# Find public docs without TLP markers
+find docs -type f -name "*.md" ! -path "*/private/*" -exec grep -L "TLP:CLEAR" {} \;
+
+# Find operational files not in private folders
+find docs -type f -name "*-status.md" -o -name "*-summary.md" -o -name "*-report.md" | grep -v "/private/"
+```
+
+---
+
 ## 📖 Related Documentation
 
 - [CONTRIBUTING.md](../CONTRIBUTING.md) - Updated with doc guidelines
@@ -923,5 +1231,6 @@ A: Always private. If incident lessons can be shared, create public version with
 
 **Status:** Active Policy
 **Maintained By:** Tech Lead
-**Last Review:** December 15, 2025
-**Next Review:** March 15, 2026 (Quarterly)
+**Last Review:** January 24, 2026 (TLP Compliance Audit Complete)
+**Next Review:** April 24, 2026 (Quarterly)
+**Information Classification:** TLP:CLEAR (Public)

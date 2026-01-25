@@ -1,4 +1,8 @@
+<!-- TLP:CLEAR -->
+
 # DCYFR Transparency Statement
+
+**Information Classification:** TLP:CLEAR (Public)
 
 ## Our Philosophy: Open Patterns, Protected Systems
 
@@ -42,12 +46,14 @@ We believe in maintaining **transparency about what we do** while **protecting h
 ## Why This Distinction?
 
 ### Benefits of Open Patterns
+
 - **Community:** Everyone learns from quality patterns
 - **Transparency:** How we build is publicly documented
 - **Reusability:** Templates and standards help all contributors
 - **Accessibility:** New team members understand our approach quickly
 
 ### Benefits of Protected Systems
+
 - **Integrity:** DCYFR automation remains consistent across projects
 - **Strategic advantage:** Our AI agent system isn't copied to competitors
 - **Quality control:** Enforcement system isn't diluted through redistribution
@@ -58,18 +64,20 @@ We believe in maintaining **transparency about what we do** while **protecting h
 ## How Contributors Benefit
 
 ### What They Get (Free)
-✅ All public patterns and best practices  
-✅ Copy-paste templates for fast development  
-✅ Decision trees for architectural choices  
-✅ Design system documentation  
-✅ Testing strategy and guidelines  
-✅ DCYFR support for their feature work  
+
+✅ All public patterns and best practices
+✅ Copy-paste templates for fast development
+✅ Decision trees for architectural choices
+✅ Design system documentation
+✅ Testing strategy and guidelines
+✅ DCYFR support for their feature work
 
 ### What They Can't Do (Reasonable Restrictions)
-❌ Redistribute proprietary specifications  
-❌ Use DCYFR architecture in competing projects  
-❌ Modify enforcement system without approval  
-❌ Copy agent instructions to other repositories  
+
+❌ Redistribute proprietary specifications
+❌ Use DCYFR architecture in competing projects
+❌ Modify enforcement system without approval
+❌ Copy agent instructions to other repositories
 
 ---
 
@@ -113,11 +121,13 @@ cp -r dcyfr-labs/.github/agents/ my-project/
 - `.github/agents/enforcement/` - 3 enforcement files (1100 lines)
 - `.github/agents/learning/` - 3 learning files (1110 lines)
 
-**⚠️ Important Note:** 
+**⚠️ Important Note:**
+
 - ✅ `.github/agents/` - **PUBLIC/SHARED** (available in this repo)
 - ❌ `.claude/agents/` - **PROPRIETARY/INTERNAL ONLY** (not included in public repo)
 
 **What this means:**
+
 - ✅ You can see exactly how shared DCYFR patterns work
 - ✅ You can understand the public system architecture
 - ✅ You can appreciate the engineering complexity
@@ -125,6 +135,7 @@ cp -r dcyfr-labs/.github/agents/ my-project/
 - ✅ You can use and learn from all `.github/agents/` documentation
 
 **This is similar to:**
+
 - Open-source code (can see, learn, contribute)
 - Proprietary SaaS product (can use, can't clone)
 - Public research paper (can read, can't republish as your own)
@@ -136,12 +147,14 @@ cp -r dcyfr-labs/.github/agents/ my-project/
 ### "Why not make DCYFR fully open source?"
 
 **Good reasons to protect DCYFR:**
+
 1. **Differentiation** - DCYFR automation is our competitive advantage
 2. **Quality control** - Open specs get forked and diluted
 3. **System integrity** - Enforcement must stay consistent
 4. **Business sustainability** - Proprietary system funds ongoing development
 
 **Good reasons to share patterns:**
+
 1. **Community benefit** - Everyone learns and builds better
 2. **Transparency** - How we work is visible and documented
 3. **Contribution** - External input improves our patterns
@@ -159,6 +172,7 @@ cp -r dcyfr-labs/.github/agents/ my-project/
 - Follow decision trees from `/docs/ai/DECISION_TREES.md`
 
 **Can't:**
+
 - Copy `.github/agents/` system
 - Redistribute DCYFR specifications
 - Use DCYFR agent in competing projects
@@ -179,18 +193,21 @@ Just don't copy/redistribute the proprietary DCYFR architecture. Build your own.
 ## How This Works in Practice
 
 ### For dcyfr-labs Contributors
+
 - **Read:** `/docs/ai/` for patterns
 - **Use:** `/docs/templates/` for starting points
 - **Request:** DCYFR mode for feature work
 - **Benefit:** Full system support + validation
 
 ### For External Developers
+
 - **Learn:** All public patterns from `/docs/ai/`
 - **Fork:** Templates and reuse in own projects
 - **Reference:** Our approach in your architecture
 - **Don't:** Redistribute DCYFR specifications
 
 ### For Team Members
+
 - **Access:** Everything, both public and proprietary
 - **Modify:** Core patterns with approval
 - **Extend:** DCYFR system with PR review
@@ -220,25 +237,25 @@ Just don't copy/redistribute the proprietary DCYFR architecture. Build your own.
 
 ## Summary
 
-| Aspect | Status | Reason |
-|--------|--------|--------|
-| **Source code** (`/src/`) | MIT Licensed | Open for everyone |
-| **Patterns & best practices** (`/docs/ai/`) | CC Licensed | Open for learning |
-| **Templates** (`/docs/templates/`) | CC Licensed | Open for reuse |
-| **Tests & configuration** | MIT Licensed | Open for reference |
-| **DCYFR system** (`.github/agents/`) | Proprietary | Strategic advantage |
-| **Design system tokens** | Public (in `/docs/`) | Everyone uses them |
-| **Enforcement rules** | Proprietary | System integrity |
+| Aspect                                      | Status               | Reason              |
+| ------------------------------------------- | -------------------- | ------------------- |
+| **Source code** (`/src/`)                   | MIT Licensed         | Open for everyone   |
+| **Patterns & best practices** (`/docs/ai/`) | CC Licensed          | Open for learning   |
+| **Templates** (`/docs/templates/`)          | CC Licensed          | Open for reuse      |
+| **Tests & configuration**                   | MIT Licensed         | Open for reference  |
+| **DCYFR system** (`.github/agents/`)        | Proprietary          | Strategic advantage |
+| **Design system tokens**                    | Public (in `/docs/`) | Everyone uses them  |
+| **Enforcement rules**                       | Proprietary          | System integrity    |
 
 ---
 
-**Status:** Production Ready  
-**Last Updated:** December 9, 2025  
+**Status:** Production Ready
+**Last Updated:** December 9, 2025
 **Version:** 1.0.0
 
 ---
 
-For detailed access controls, see [CODEOWNERS](../.github/CODEOWNERS)  
-For public patterns, see [docs/ai/](./ai/)  
-For contribution rules, see [CONTRIBUTING.md](../CONTRIBUTING.md)  
+For detailed access controls, see [CODEOWNERS](../.github/CODEOWNERS)
+For public patterns, see [docs/ai/](./ai/)
+For contribution rules, see [CONTRIBUTING.md](../CONTRIBUTING.md)
 For agent reference, see [DCYFR.agent.md](../.github/agents/DCYFR.agent.md)

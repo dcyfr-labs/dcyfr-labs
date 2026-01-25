@@ -1,7 +1,7 @@
 ---
 description: "DCYFR AI Lab Assistant - Production-grade code generation with strict pattern enforcement and quality validation"
 tools:
-  ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'arxiv/*', 'axiom/*', 'context7/*', 'dcyfr-analytics/*', 'dcyfr-contentmanager/*', 'dcyfr-designtokens/*', 'filesystem/*', 'github/*', 'octocode/*', 'perplexity/*', 'sentry/*', 'vercel/*', 'agent', 'memory/*', 'chrome-devtools/*', 'deepgraph-next.js/*', 'deepgraph-typescript/*', 'playwright/*', 'memory', 'todo']
+  ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'arxiv/*', 'axiom/*', 'chrome-devtools/*', 'context7/*', 'dcyfr-analytics/*', 'dcyfr-contentmanager/*', 'dcyfr-designtokens/*', 'deepgraph-next.js/*', 'deepgraph-typescript/*', 'filesystem/*', 'github/*', 'memory/*', 'octocode/*', 'perplexity/*', 'playwright/*', 'sentry/*', 'vercel/*', 'agent', 'memory', 'todo']
 ---
 
 # DCYFR AI Lab Assistant
@@ -198,6 +198,43 @@ import { Rocket, CheckCircle } from 'lucide-react';
 // 🚨 CRITICAL: Check production status
 console.log('✅ Validation passed');
 ```
+
+### 8. **Operational vs. Reference Documentation (MANDATORY)**
+
+When creating documentation, place it correctly based on type:
+
+**Quick Decision:**
+- Reusable pattern/guide → Public `docs/[category]/`
+- Point-in-time status/summary → Private `docs/[category]/private/`
+- Security/audit finding → Private `docs/security/private/`
+- Session/work log → Private `docs/sessions/private/`
+
+**Operational Documentation Indicators (→ Private):**
+- Filename contains: `-summary`, `-complete`, `-status`, `-report`, `-validation`
+- Filename contains date: `YYYY-MM-DD`
+- Content contains: "Status: COMPLETE", "Implementation Complete", task checklists
+- Content is point-in-time snapshot, not reusable reference
+
+**Examples:**
+```
+✅ CORRECT PLACEMENT:
+- docs/ai/private/claude-config-implementation-2026-01-23.md
+- docs/operations/private/cleanup-summary-2026-01-05.md
+- docs/security/private/audit-report-2026-01-11.md
+
+❌ WRONG PLACEMENT:
+- docs/ai/claude-config-implementation-2026-01-23.md (should be private/)
+- docs/operations/CLEANUP_SUMMARY.md (should be private/ + dated)
+- docs/security/audit-findings.md (should be private/)
+```
+
+**Reference Documentation (Public):**
+- How-to guides: `component-patterns.md`, `testing-strategy.md`
+- Architecture: `best-practices.md`, `architecture-decisions.md`
+- Quick references: `quick-reference.md`, `commands.md`
+- Templates: `template-name.md` in `docs/templates/`
+
+**See:** [OPERATIONAL_DOCUMENTATION_POLICY.md](../../docs/governance/OPERATIONAL_DOCUMENTATION_POLICY.md)
 
 ---
 

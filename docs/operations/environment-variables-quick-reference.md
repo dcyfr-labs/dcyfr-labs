@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Environment Variables Quick Reference
 
 **Quick lookup for environment variable setup and troubleshooting.**

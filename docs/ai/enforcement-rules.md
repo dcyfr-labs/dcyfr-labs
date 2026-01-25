@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Enforcement Rules
 
 Automated validation and mandatory patterns enforced via ESLint, pre-commit hooks, and CI/CD.

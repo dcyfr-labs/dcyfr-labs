@@ -51,6 +51,24 @@ interface PostRequestBody {
 }
 
 // ============================================================================
+// LOGGING UTILITIES
+// ============================================================================
+
+/**
+ * Sanitizes values for safe logging to prevent log injection attacks (CWE-117)
+ * Removes control characters, newlines, and other potentially dangerous characters
+ */
+function sanitizeForLog(value: unknown): string {
+  const str = String(value);
+  // Remove control characters, newlines, carriage returns, and tabs
+  // This prevents log forging/injection attacks
+  return str
+    .replace(/[\x00-\x1F\x7F]/g, '') // Remove control characters
+    .replace(/[\r\n\t]/g, ' ') // Replace newlines/tabs with spaces
+    .slice(0, 200); // Limit length to prevent log flooding
+}
+
+// ============================================================================
 // AUTHENTICATION
 // ============================================================================
 
@@ -216,8 +234,9 @@ export async function POST(request: NextRequest) {
     const healthReport: McpHealthReport = body as McpHealthReport;
     await storeHealthReport(healthReport);
 
+    // Use sanitizeForLog to prevent log injection (CWE-117)
     console.warn(
-      `[MCP Health API] Stored health report: ${healthReport.summary.ok}/${healthReport.summary.total} servers healthy`
+      `[MCP Health API] Stored health report: ${sanitizeForLog(healthReport.summary.ok)}/${sanitizeForLog(healthReport.summary.total)} servers healthy`
     );
 
     return NextResponse.json(

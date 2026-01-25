@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Design System Quick Reference
 
 **Comprehensive guide** for developers working on dcyfr-labs design implementation.

@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Light/Dark Mode Consistency Fixes
 
 **Date:** November 4, 2025  

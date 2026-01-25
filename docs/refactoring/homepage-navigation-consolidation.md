@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # Homepage Navigation Consolidation Refactoring
 
 **Date:** December 17, 2025  
