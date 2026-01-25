@@ -228,6 +228,54 @@ fi
 echo "${GREEN}✅ Private documentation placement validated${NC}"
 
 # ============================================================================
+# 6. TLP COMPLIANCE & DOCUMENTATION LOCATION (NEW - HARD BLOCK)
+# ============================================================================
+echo "${BLUE}6/6 Validating TLP compliance and documentation location...${NC}"
+
+# Check if any .md files are being committed
+MD_FILES=$(git diff --cached --name-only | grep "\.md$")
+
+if [ -n "$MD_FILES" ]; then
+  # Only run validation if documentation files are being committed
+  if command -v node &> /dev/null; then
+    # Run TLP validation
+    if ! node scripts/validate-tlp-compliance.mjs > /dev/null 2>&1; then
+      echo ""
+      echo "${RED}❌ TLP compliance validation FAILED${NC}"
+      echo ""
+      echo "${BLUE}Running detailed validation:${NC}"
+      node scripts/validate-tlp-compliance.mjs
+      echo ""
+      echo "${RED}Fix errors before committing:${NC}"
+      echo "   1. Add TLP:CLEAR markers to public docs"
+      echo "   2. Move operational files to docs/*/private/"
+      echo "   3. Run: npm run check:docs"
+      echo ""
+      exit 1
+    fi
+    
+    # Run location validation
+    if ! node scripts/validate-doc-location.mjs > /dev/null 2>&1; then
+      echo ""
+      echo "${RED}❌ Documentation location validation FAILED${NC}"
+      echo ""
+      echo "${BLUE}Running detailed validation:${NC}"
+      node scripts/validate-doc-location.mjs
+      echo ""
+      echo "${RED}Move documentation files to docs/ directory${NC}"
+      echo ""
+      exit 1
+    fi
+    
+    echo "${GREEN}✅ TLP compliance and location validated${NC}"
+  else
+    echo "${YELLOW}⚠️  Node.js not found - skipping TLP validation${NC}"
+  fi
+else
+  echo "${GREEN}✅ No documentation files changed - skipping TLP validation${NC}"
+fi
+
+# ============================================================================
 # SUCCESS
 # ============================================================================
 echo ""
