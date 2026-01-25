@@ -303,7 +303,7 @@ OpenCode **pauses and requests approval** for:
 
 ---
 
-## �🔗 External Resources
+## 🔗 External Resources
 
 ### DCYFR Pattern Documentation
 
