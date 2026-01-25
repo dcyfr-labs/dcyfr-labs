@@ -1,4 +1,4 @@
-{/_ TLP:CLEAR _/}
+<!-- TLP:CLEAR -->
 
 # Quick Reference - DCYFR Labs
 

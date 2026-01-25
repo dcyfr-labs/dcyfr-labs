@@ -71,10 +71,10 @@ npm run check               # Type + lint check
 
 ### 1. GitHub Copilot Instructions
 
-**File:** [`.github/copilot-instructions.md`](./.github/copilot-instructions.md)  
-**Lines:** 240  
-**Last Updated:** December 8, 2025  
-**Audience:** GitHub Copilot users in VS Code  
+**File:** [`.github/copilot-instructions.md`](./.github/copilot-instructions.md)
+**Lines:** 240
+**Last Updated:** December 8, 2025
+**Audience:** GitHub Copilot users in VS Code
 **Format:** Quick-reference with 80/20 patterns
 
 **Covers:**
@@ -108,10 +108,10 @@ npm run check               # Type + lint check
 
 ### 2. Claude Instructions (Full)
 
-**File:** [`CLAUDE.md`](./CLAUDE.md)  
-**Lines:** 175  
-**Last Updated:** December 8, 2025  
-**Audience:** Claude AI assistant (general tasks)  
+**File:** [`CLAUDE.md`](./CLAUDE.md)
+**Lines:** 175
+**Last Updated:** December 8, 2025
+**Audience:** Claude AI assistant (general tasks)
 **Format:** Narrative + patterns
 
 **Covers:**
@@ -146,10 +146,10 @@ npm run check               # Type + lint check
 
 ### 3. DCYFR Agent Instructions (Modular v2.0)
 
-**Hub File:** [`.github/agents/DCYFR.agent.md`](./.github/agents/DCYFR.agent.md)  
-**Lines:** 195 (hub) + 2600+ (modular files)  
-**Last Updated:** December 9, 2025  
-**Audience:** DCYFR agent (specialized mode, activated in conversation)  
+**Hub File:** [`.github/agents/DCYFR.agent.md`](./.github/agents/DCYFR.agent.md)
+**Lines:** 195 (hub) + 2600+ (modular files)
+**Last Updated:** December 9, 2025
+**Audience:** DCYFR agent (specialized mode, activated in conversation)
 **Format:** Hub with links to modular documentation
 
 **Hub File (.github/agents/DCYFR.agent.md) Covers:**
@@ -224,9 +224,9 @@ npm run check               # Type + lint check
 
 **⚠️ NOTE:** Files in `.claude/agents/` are **proprietary and not available in the public repository**. This section is for documentation purposes only.
 
-**Hub Directory:** `.claude/agents/` (Not in public repo)  
-**Last Updated:** December 10, 2025  
-**Audience:** Internal use only - Claude Code with auto-delegation capabilities  
+**Hub Directory:** `.claude/agents/` (Not in public repo)
+**Last Updated:** December 10, 2025
+**Audience:** Internal use only - Claude Code with auto-delegation capabilities
 **Format:** Individual agent files optimized for Claude Code sub-agents
 
 **Primary Agents (Used in Public Projects):**
@@ -265,9 +265,9 @@ npm run check               # Type + lint check
 
 ### 5. OpenCode.ai Fallback System (v2.0.0)
 
-**Hub Directory:** `.opencode/`  
-**Last Updated:** January 11, 2026  
-**Audience:** All developers (fallback tier when primary/secondary exhausted)  
+**Hub Directory:** `.opencode/`
+**Last Updated:** January 11, 2026
+**Audience:** All developers (fallback tier when primary/secondary exhausted)
 **Format:** Modular documentation with provider-specific guides
 
 **Hub File:** [`.opencode/DCYFR.opencode.md`](./.opencode/DCYFR.opencode.md) (257 lines)
@@ -371,9 +371,9 @@ npm run check               # Type + lint check
 
 ### 6. AITMPL.com Template Agents (v1.0.0)
 
-**Hub Directory:** `.claude/agents/` (4 specialized agents from aitmpl.com templates)  
-**Last Updated:** January 16, 2026  
-**Audience:** Claude Code auto-delegation system (internal use)  
+**Hub Directory:** `.claude/agents/` (4 specialized agents from aitmpl.com templates)
+**Last Updated:** January 16, 2026
+**Audience:** Claude Code auto-delegation system (internal use)
 **Format:** Individual agent files optimized for specific tasks from community templates
 
 **Purpose**: Enhanced capabilities from [aitmpl.com](https://www.aitmpl.com/) template library for React optimization, TypeScript mastery, code review automation, and test engineering.
@@ -466,9 +466,9 @@ Test Strategy → test-engineer
 
 ## 🌐 External Context Sources: Octocode-MCP
 
-**Status:** ✅ Integrated December 28, 2025  
-**Repository:** [bgauryy/octocode-mcp](https://github.com/bgauryy/octocode-mcp)  
-**Version:** Latest (`octocode-mcp@latest`)  
+**Status:** ✅ Integrated December 28, 2025
+**Repository:** [bgauryy/octocode-mcp](https://github.com/bgauryy/octocode-mcp)
+**Version:** Latest (`octocode-mcp@latest`)
 **Configuration:** [`.vscode/mcp.json`](./.vscode/mcp.json)
 
 ### What Octocode Provides
@@ -1008,14 +1008,17 @@ git status  # Should not appear
 git status .vscode/mcp.json  # Should appear if untracked/modified
 ```
 
-#### 3. GitHub Actions (Future - Phase 2)
+#### 3. GitHub Actions (Active Governance Validation)
 
-**Workflow:** `.github/workflows/governance-validation.yml` (to be created in Phase 2)
+**Workflow:** [`.github/workflows/governance-validation.yml`](.github/workflows/governance-validation.yml) (active in CI)
 
 **Validation:**
 - Sensitive files in public docs (CI check)
 - Private file references are valid
 - AI configuration compliance
+- TLP compliance enforcement
+- .gitignore coverage
+- Secret scanning
 
 ### Manual Validation
 
@@ -1519,16 +1522,18 @@ For issues, updates, or new agents: Submit PR with AGENTS.md changes first.
 When users ask you to perform tasks, check if any of the available skills below can help complete the task more effectively. Skills provide specialized capabilities and domain knowledge.
 
 How to use skills:
+
 - Invoke: `npx openskills read <skill-name>` (run in your shell)
   - For multiple: `npx openskills read skill-one,skill-two`
 - The skill content will load with detailed instructions on how to complete the task
 - Base directory provided in output for resolving bundled resources (references/, scripts/, assets/)
 
 Usage notes:
+
 - Only use skills listed in <available_skills> below
 - Do not invoke a skill that is already loaded in your context
 - Each skill invocation is stateless
-</usage>
+  </usage>
 
 <available_skills>
 
@@ -1671,6 +1676,7 @@ Usage notes:
 </skill>
 
 </available_skills>
+
 <!-- SKILLS_TABLE_END -->
 
 </skills_system>

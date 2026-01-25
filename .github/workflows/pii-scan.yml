@@ -27,6 +27,9 @@ jobs:
   scan:
     runs-on: ubuntu-latest
     name: PII & Privacy Scan
+    permissions:
+      contents: read
+      pull-requests: write  # Required: post scan results as PR comments (PR events only)
     steps:
       - uses: actions/checkout@v4
 
@@ -70,6 +73,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Gitleaks Secret Detection
     needs: scan
+    permissions:
+      contents: read
+      pull-requests: write  # Required: post gitleaks report as PR comments (PR events only)
+      issues: write         # Required: create remediation issues for critical secrets
     steps:
       - uses: actions/checkout@v4
 

@@ -1,20 +1,20 @@
 {
-  "updated": "2026-01-18T01:09:14.701Z",
+  "updated": "2026-01-25T01:11:03.282Z",
   "data": [
     {
       "browser": "chrome",
-      "version": "112",
-      "release_date": "2023-07-04"
+      "version": "115",
+      "release_date": "2023-07-21"
     },
     {
       "browser": "chrome_android",
-      "version": "112",
-      "release_date": "2023-07-04"
+      "version": "115",
+      "release_date": "2023-07-21"
     },
     {
       "browser": "edge",
-      "version": "112",
-      "release_date": "2023-07-04"
+      "version": "115",
+      "release_date": "2023-07-21"
     },
     {
       "browser": "firefox",
@@ -38,17 +38,17 @@
     },
     {
       "browser": "opera",
-      "version": "98",
-      "release_date": "2023-04-20",
+      "version": "101",
+      "release_date": "2023-07-26",
       "engine": "Blink",
-      "engine_version": "112"
+      "engine_version": "115"
     },
     {
       "browser": "opera_android",
-      "version": "75",
-      "release_date": "2023-05-17",
+      "version": "77",
+      "release_date": "2023-08-31",
       "engine": "Blink",
-      "engine_version": "112"
+      "engine_version": "115"
     },
     {
       "browser": "samsunginternet_android",
@@ -59,17 +59,17 @@
     },
     {
       "browser": "webview_android",
-      "version": "112",
-      "release_date": "2023-04-04",
+      "version": "115",
+      "release_date": "2023-07-21",
       "engine": "Blink",
-      "engine_version": "112"
+      "engine_version": "115"
     },
     {
       "browser": "ya_android",
-      "version": "23.5",
-      "release_date": "2023-05-19",
+      "version": "23.9",
+      "release_date": "2023-09-13",
       "engine": "Blink",
-      "engine_version": "112"
+      "engine_version": "116"
     },
     {
       "browser": "uc_android",
@@ -87,17 +87,17 @@
     },
     {
       "browser": "facebook_android",
-      "version": "420",
-      "release_date": "2023-06-28",
+      "version": "430",
+      "release_date": "2023-09-03",
       "engine": "Blink",
-      "engine_version": "114"
+      "engine_version": "116"
     },
     {
       "browser": "instagram_android",
-      "version": "288",
+      "version": "292",
       "release_date": "unknown",
       "engine": "Blink",
-      "engine_version": "114"
+      "engine_version": "115"
     }
   ]
 }
