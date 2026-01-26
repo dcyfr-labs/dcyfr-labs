@@ -139,7 +139,7 @@ export const refreshGitHubData = inngest.createFunction(
       }
 
       try {
-        await redis.setex(CACHE_KEY, Math.floor(CACHE_DURATION / 1000), JSON.stringify(freshData));
+        await redis.setEx(CACHE_KEY, Math.floor(CACHE_DURATION / 1000), JSON.stringify(freshData));
 
         console.warn('GitHub data cached successfully:', {
           totalContributions: freshData.totalContributions,
@@ -223,7 +223,7 @@ export const manualRefreshGitHubData = inngest.createFunction(
 
     await step.run('update-cache', async () => {
       if (redis) {
-        await redis.setex(CACHE_KEY, Math.floor(CACHE_DURATION / 1000), JSON.stringify(freshData));
+        await redis.setEx(CACHE_KEY, Math.floor(CACHE_DURATION / 1000), JSON.stringify(freshData));
       }
     });
 
@@ -277,7 +277,7 @@ export const processGitHubCommit = inngest.createFunction(
         };
 
         // Store with 7-day expiration
-        await redis.setex(
+        await redis.setEx(
           commitKey,
           7 * 24 * 60 * 60, // 7 days in seconds
           JSON.stringify(commitData)

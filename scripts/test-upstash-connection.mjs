@@ -36,7 +36,7 @@ async function testUpstashConnection() {
       test: 'Upstash connectivity test',
     });
 
-    await redis.setex(testKey, 60, testValue); // 60 second TTL
+    await redis.setEx(testKey, 60, testValue); // 60 second TTL
     console.log(`✅ SET successful: ${testKey}`);
 
     const retrievedValue = await redis.get(testKey);

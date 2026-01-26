@@ -157,7 +157,7 @@ export class VersionedCache<T = any> {
         data,
       };
 
-      await redis.setex(versionedKey, ttl, JSON.stringify(cached));
+      await redis.setEx(versionedKey, ttl, JSON.stringify(cached));
 
       console.warn(
         `[Cache] Set: ${versionedKey} (${this.config.description || this.config.namespace}, TTL: ${ttl}s)`

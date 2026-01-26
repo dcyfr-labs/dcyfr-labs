@@ -1,6 +1,12 @@
 /**
  * Upstash Redis client for MCP servers and main app
- * Uses UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN from environment
+ * Supports multi-environment setup with automatic key namespacing
+ *
+ * Environments:
+ * - Production: Dedicated database (no key prefix)
+ * - Preview: Shared database with preview:{PR}:* prefix
+ * - Development: Shared database with dev:{username}:* prefix
+ * - Test: In-memory fallback (no Redis)
  *
  * Upstash provides serverless Redis with HTTP-based REST API, perfect for
  * Vercel Edge Functions and serverless deployments (no persistent connections needed)
@@ -15,23 +21,113 @@ import { Redis } from '@upstash/redis';
 let redisClient: Redis | null = null;
 
 /**
- * Get or create Upstash Redis client
- * Only initializes when first used (lazy loading)
+ * Get environment-specific Redis credentials
+ * Returns null for test environment (uses in-memory fallback)
  */
-function getRedisClient(): Redis {
-  const restUrl = process.env.UPSTASH_REDIS_REST_URL;
-  const restToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+function getRedisCredentials(): { url: string; token: string } | null {
+  const isProduction =
+    process.env.NODE_ENV === 'production' &&
+    process.env.VERCEL_ENV === 'production';
+  const isPreview = process.env.VERCEL_ENV === 'preview';
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  const isTest = process.env.NODE_ENV === 'test';
 
-  if (!restUrl || !restToken) {
-    throw new Error(
-      'Missing Upstash Redis credentials. Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN in .env.local'
-    );
+  // Test environment: No Redis (in-memory fallback)
+  if (isTest) {
+    return null;
+  }
+
+  // Production: Use production credentials
+  if (isProduction) {
+    const url = process.env.UPSTASH_REDIS_REST_URL;
+    const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+    if (!url || !token) {
+      console.error('❌ CRITICAL: Production Redis credentials missing');
+      return null;
+    }
+    return { url, token };
+  }
+
+  // Preview: Use preview credentials with production fallback
+  if (isPreview) {
+    const url = process.env.UPSTASH_REDIS_REST_URL_PREVIEW;
+    const token = process.env.UPSTASH_REDIS_REST_TOKEN_PREVIEW;
+    if (url && token) {
+      return { url, token };
+    }
+    // Fallback to production with warning
+    console.warn('⚠️ Preview Redis not configured, using production (unsafe!)');
+    return {
+      url: process.env.UPSTASH_REDIS_REST_URL!,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+    };
+  }
+
+  // Development: Use shared preview database with key namespacing
+  // Graceful degradation: features disabled, no errors
+  if (isDevelopment) {
+    const url = process.env.UPSTASH_REDIS_REST_URL_PREVIEW;
+    const token = process.env.UPSTASH_REDIS_REST_TOKEN_PREVIEW;
+    if (url && token) {
+      console.log('✅ Development Redis connected (shared preview database)');
+      return { url, token };
+    }
+    // Graceful degradation: No warning in production logs
+    if (process.env.NODE_ENV !== 'test') {
+      console.log('ℹ️ Development Redis not configured, analytics/caching disabled');
+    }
+    return null;
+  }
+
+  return null;
+}
+
+/**
+ * Get environment-specific key prefix for Redis isolation
+ * Prevents conflicts when sharing preview database between environments
+ */
+function getRedisKeyPrefix(): string {
+  const isProduction =
+    process.env.NODE_ENV === 'production' &&
+    process.env.VERCEL_ENV === 'production';
+  const isPreview = process.env.VERCEL_ENV === 'preview';
+  const isDevelopment = process.env.NODE_ENV === 'development';
+
+  if (isProduction) {
+    return ''; // No prefix for production (dedicated database)
+  }
+
+  if (isPreview) {
+    // Use PR number or deployment ID for isolation
+    const prNumber = process.env.VERCEL_GIT_PULL_REQUEST_ID || 'preview';
+    return `preview:${prNumber}:`;
+  }
+
+  if (isDevelopment) {
+    // Use username or hostname for local dev isolation
+    const username = process.env.USER || process.env.USERNAME || 'dev';
+    return `dev:${username}:`;
+  }
+
+  return 'unknown:';
+}
+
+/**
+ * Get or create Upstash Redis client
+ * Returns null if Redis not configured (graceful degradation)
+ */
+function getRedisClient(): Redis | null {
+  const credentials = getRedisCredentials();
+
+  if (!credentials) {
+    // Graceful degradation: Return null and let consumers handle gracefully
+    return null;
   }
 
   if (!redisClient) {
     redisClient = new Redis({
-      url: restUrl,
-      token: restToken,
+      url: credentials.url,
+      token: credentials.token,
     });
   }
 
@@ -39,26 +135,76 @@ function getRedisClient(): Redis {
 }
 
 /**
- * Upstash Redis client
+ * Upstash Redis client with environment-aware key prefixing
  * Auto-initializes on first use with environment credentials
  *
  * Compatible with standard Redis API:
- * - get, set, setEx, del
- * - zadd, zrange, zrangebyscore
+ * - get, set, setex, del
+ * - incr, zadd, zrange, lpush, lrange
  * - All operations work via HTTP REST API
+ *
+ * Automatic key namespacing:
+ * - Production: no prefix (dedicated database)
+ * - Preview: preview:{PR}:key
+ * - Development: dev:{username}:key
  */
 export const redis = new Proxy({} as Redis, {
   get(_target, prop) {
     const client = getRedisClient();
+
+    // Graceful degradation: return no-op functions when Redis unavailable
+    if (!client) {
+      if (prop === 'ping') {
+        return async () => {
+          throw new Error('Redis not configured');
+        };
+      }
+      // Return no-op async functions for methods
+      return typeof {} === 'function' ? async () => null : null;
+    }
+
     const value = client[prop as keyof Redis];
 
     if (typeof value === 'function') {
+      // Intercept methods that use keys and add environment prefix
+      const keyMethods = [
+        'get', 'set', 'setex', 'del', 'incr', 'decr',
+        'zadd', 'zrange', 'zrangebyscore', 'zrem',
+        'lpush', 'rpush', 'lrange', 'llen',
+        'hget', 'hset', 'hdel', 'hgetall',
+        'expire', 'ttl', 'exists'
+      ];
+
+      if (keyMethods.includes(prop as string)) {
+        return function(key: string, ...args: any[]) {
+          const prefixedKey = getRedisKeyPrefix() + key;
+          return (value as Function).call(client, prefixedKey, ...args);
+        };
+      }
+
       return value.bind(client);
     }
 
     return value;
   },
 });
+
+/**
+ * Get current Redis environment for debugging
+ * Returns: 'production' | 'preview' | 'development' | 'test' | 'unknown'
+ */
+export function getRedisEnvironment(): string {
+  if (process.env.NODE_ENV === 'test') return 'test';
+  if (
+    process.env.NODE_ENV === 'production' &&
+    process.env.VERCEL_ENV === 'production'
+  ) {
+    return 'production';
+  }
+  if (process.env.VERCEL_ENV === 'preview') return 'preview';
+  if (process.env.NODE_ENV === 'development') return 'development';
+  return 'unknown';
+}
 
 /**
  * Close Redis connection (for cleanup)

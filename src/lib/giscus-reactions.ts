@@ -137,8 +137,8 @@ async function setCachedReactions(activityId: string, reactions: GiscusReactions
   if (!redis) return;
 
   try {
-    await redis.setex(`${CACHE_PREFIX}${activityId}`, CACHE_TTL, JSON.stringify(reactions));
-    // No quit() needed - Upstash uses HTTP REST API (stateless)
+    await redis.setEx(`${CACHE_PREFIX}${activityId}`, CACHE_TTL, JSON.stringify(reactions));
+    await redis.quit();
   } catch (error) {
     console.error(`[GiscusReactions] Cache write failed for ${activityId}:`, error);
   }

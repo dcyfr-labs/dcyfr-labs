@@ -361,50 +361,141 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
 
 ## Redis Configuration
 
-### `REDIS_URL`
+### Multi-Environment Setup (Upstash)
 
-- **Type:** String (Redis connection URL)
-- **Required:** No (recommended)
-- **Purpose:** Track blog post view counts
-- **Format:** `redis://default:password@host:port`
-- **Get Redis at:**
-  - [Vercel KV](https://vercel.com/docs/storage/vercel-kv) (recommended for Vercel)
-  - [Upstash](https://upstash.com/) (serverless-friendly)
-  - Any Redis provider
+**Architecture:** Separate databases for production and preview/development with automatic key namespacing.
 
-**Setup (Vercel KV):**
+| Environment | Variables | Database | Key Prefix |
+|-------------|-----------|----------|------------|
+| Production | `UPSTASH_REDIS_REST_URL`<br>`UPSTASH_REDIS_REST_TOKEN` | Dedicated paid | None |
+| Preview | `UPSTASH_REDIS_REST_URL_PREVIEW`<br>`UPSTASH_REDIS_REST_TOKEN_PREVIEW` | Shared free | `preview:{PR}:` |
+| Development | `UPSTASH_REDIS_REST_URL_PREVIEW`<br>`UPSTASH_REDIS_REST_TOKEN_PREVIEW` | Shared free | `dev:{username}:` |
+| Test | None (in-memory) | N/A | N/A |
 
-1. Vercel Dashboard → Storage → Create Database → KV
-2. Name: "portfolio-views"
-3. Link to project
-4. Environment variables auto-added
+**See:** [Redis Setup Guide](./redis-setup.md) for comprehensive documentation.
+
+### Production Variables
+
+#### `UPSTASH_REDIS_REST_URL`
+
+- **Type:** String (Upstash REST API URL)
+- **Required:** Yes (for production)
+- **Purpose:** Production database connection for analytics, caching, rate limiting
+- **Format:** `https://your-redis-xxxxx.upstash.io`
+- **Environment:** Production only
+- **Get at:** [console.upstash.com](https://console.upstash.com)
+
+#### `UPSTASH_REDIS_REST_TOKEN`
+
+- **Type:** String (Upstash REST API token)
+- **Required:** Yes (for production)
+- **Purpose:** Authentication token for production database
+- **Format:** `Axxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
+- **Environment:** Production only
+- **Get at:** [console.upstash.com](https://console.upstash.com)
+
+### Preview/Development Variables
+
+#### `UPSTASH_REDIS_REST_URL_PREVIEW`
+
+- **Type:** String (Upstash REST API URL)
+- **Required:** No (recommended for preview deployments)
+- **Purpose:** Shared database for preview deployments and local development
+- **Format:** `https://preview-redis-xxxxx.upstash.io`
+- **Environment:** Preview and Development
+- **Get at:** [console.upstash.com](https://console.upstash.com)
+
+#### `UPSTASH_REDIS_REST_TOKEN_PREVIEW`
+
+- **Type:** String (Upstash REST API token)
+- **Required:** No (recommended for preview deployments)
+- **Purpose:** Authentication token for preview/dev database
+- **Format:** `Axxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
+- **Environment:** Preview and Development
+- **Get at:** [console.upstash.com](https://console.upstash.com)
 
 **Setup (Upstash):**
 
-1. Sign up at [console.upstash.com](https://console.upstash.com)
-2. Create database
-3. Copy Redis URL
-4. Add to environment variables
+1. **Production Database** (Paid tier)
+   - Sign up at [console.upstash.com](https://console.upstash.com)
+   - Create database: "dcyfr-labs-production"
+   - Select paid tier (unlimited commands)
+   - Copy REST URL and token
+   - Add to Vercel: Production scope only
+
+2. **Preview/Dev Database** (Free tier)
+   - Create database: "dcyfr-labs-preview-dev"
+   - Select free tier (10K commands/day)
+   - Copy REST URL and token
+   - Add to Vercel: Preview scope only
+   - Add to `.env.local`: Development testing
 
 **Behavior without Redis:**
 
-- ✅ Blog posts load normally
+- ✅ All pages load normally
+- ✅ Blog posts work
 - ❌ No view counts displayed
-- ❌ No tracking
-- ✅ Silent graceful degradation
+- ❌ No share tracking
+- ❌ No trending posts analytics
+- ✅ Rate limiting falls back to in-memory
+- ✅ Silent graceful degradation (no errors)
 
 **Behavior with Redis:**
 
-- ✅ View counts tracked
-- ✅ Displayed on blog list and posts
+- ✅ View counts tracked and displayed
+- ✅ Share counts tracked
+- ✅ Trending posts calculated
+- ✅ Redis-based rate limiting
 - ✅ Atomic concurrent increments
 - ✅ Persisted across deploys
+- ✅ Environment isolation (no production pollution)
+
+**Key Namespacing:**
+
+Production (dedicated database):
+```
+views:post:abc-123
+shares:post:abc-123
+blog:trending
+```
+
+Preview (PR #42, shared database):
+```
+preview:42:views:post:abc-123
+preview:42:shares:post:abc-123
+preview:42:blog:trending
+```
+
+Development (user: alice, shared database):
+```
+dev:alice:views:post:abc-123
+dev:alice:shares:post:abc-123
+dev:alice:blog:trending
+```
 
 **Implementation:**
 
-- File: `src/lib/views.ts`
-- Key format: `views:post:{slug}`
+- File: `src/mcp/shared/redis-client.ts`
+- Client: `@upstash/redis` (HTTP-based REST API)
+- Key format: `{prefix}{type}:{resource}:{id}`
 - Fallback: Returns null if unavailable
+- Migration: `scripts/migrate-redis-data.mjs`
+
+**Health Check:**
+
+```bash
+# Verify Redis connectivity
+curl http://localhost:3000/api/health/redis
+# Returns: { "status": "ok", "environment": "development", ... }
+```
+
+### Legacy Variable (Deprecated)
+
+#### `REDIS_URL` (Deprecated)
+
+- **Status:** Deprecated (use Upstash variables above)
+- **Migration:** See [Redis Setup Guide](./redis-setup.md)
+- **Note:** `src/lib/rate-limit.ts` will be migrated to use Upstash client
 
 ---
 

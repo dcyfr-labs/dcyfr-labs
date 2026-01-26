@@ -12,14 +12,16 @@ function parseRedisUrl(url: string) {
   return { url: restUrl, token };
 }
 
-const redis = process.env.REDIS_URL ? (() => {
-  const { url, token } = parseRedisUrl(process.env.REDIS_URL);
-  return new Redis({ url, token });
-})() : null;
+const redis = process.env.REDIS_URL
+  ? (() => {
+      const { url, token } = parseRedisUrl(process.env.REDIS_URL);
+      return new Redis({ url, token });
+    })()
+  : null;
 
 /**
  * Secure Session Manager
- * 
+ *
  * Provides encrypted session storage in Redis for authentication across all environments.
  * Features:
  * - AES-256-GCM encryption for all session data
@@ -77,16 +79,18 @@ export class SecureSessionManager {
   private static readonly SESSION_PREFIX = 'session:';
   private static readonly DEFAULT_EXPIRY = 24 * 60 * 60; // 24 hours in seconds
   private static readonly ALGORITHM = 'aes-256-gcm';
-  
+
   /**
    * Get encryption key from environment (must be 32 bytes for AES-256)
    */
   private static getEncryptionKey(): Buffer {
     const key = process.env.SESSION_ENCRYPTION_KEY;
     if (!key) {
-      throw new Error('SESSION_ENCRYPTION_KEY not configured. Generate with: openssl rand -base64 32');
+      throw new Error(
+        'SESSION_ENCRYPTION_KEY not configured. Generate with: openssl rand -base64 32'
+      );
     }
-    
+
     // Ensure key is exactly 32 bytes for AES-256
     return Buffer.from(createHash('sha256').update(key).digest());
   }
@@ -112,16 +116,16 @@ export class SecureSessionManager {
     const key = this.getEncryptionKey();
     const iv = randomBytes(16);
     const cipher = createCipheriv(this.ALGORITHM, key, iv);
-    
+
     let encrypted = cipher.update(data, 'utf8', 'hex');
     encrypted += cipher.final('hex');
-    
+
     const authTag = cipher.getAuthTag();
-    
+
     return {
       iv: iv.toString('hex'),
       authTag: authTag.toString('hex'),
-      encrypted
+      encrypted,
     };
   }
 
@@ -132,10 +136,10 @@ export class SecureSessionManager {
     const key = this.getEncryptionKey();
     const decipher = createDecipheriv(this.ALGORITHM, key, Buffer.from(encryptedData.iv, 'hex'));
     decipher.setAuthTag(Buffer.from(encryptedData.authTag, 'hex'));
-    
+
     let decrypted = decipher.update(encryptedData.encrypted, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
-    
+
     return decrypted;
   }
 
@@ -166,9 +170,8 @@ export class SecureSessionManager {
     }
 
     // Support legacy signature (expirySeconds as number)
-    const opts: CreateSessionOptions = typeof options === 'number'
-      ? { expirySeconds: options }
-      : options;
+    const opts: CreateSessionOptions =
+      typeof options === 'number' ? { expirySeconds: options } : options;
 
     const expirySeconds = opts.expirySeconds ?? this.DEFAULT_EXPIRY;
     const sessionToken = this.generateSessionToken();
@@ -180,7 +183,7 @@ export class SecureSessionManager {
       csrfToken,
       createdAt: Date.now(),
       lastActivity: Date.now(),
-      expiresAt: Date.now() + (expirySeconds * 1000)
+      expiresAt: Date.now() + expirySeconds * 1000,
     };
 
     // Add session binding if configured
@@ -196,14 +199,16 @@ export class SecureSessionManager {
 
     // Store in Redis with expiration
     const key = `${this.SESSION_PREFIX}${sessionToken}`;
-    await redis.setex(key, expirySeconds, JSON.stringify(encryptedData));
+    await redis.setEx(key, expirySeconds, JSON.stringify(encryptedData));
 
     const bindingInfo = [];
     if (enrichedData.clientIp) bindingInfo.push('IP');
     if (enrichedData.userAgent) bindingInfo.push('UA');
     const bindingStr = bindingInfo.length > 0 ? ` [bound: ${bindingInfo.join(',')}]` : '';
 
-    console.warn(`[Session] Created: ${sessionToken.substring(0, 8)}... (expires in ${expirySeconds}s)${bindingStr}`);
+    console.warn(
+      `[Session] Created: ${sessionToken.substring(0, 8)}... (expires in ${expirySeconds}s)${bindingStr}`
+    );
 
     return { sessionToken, csrfToken };
   }
@@ -219,14 +224,14 @@ export class SecureSessionManager {
     try {
       const key = `${this.SESSION_PREFIX}${sessionToken}`;
       const encryptedString = await redis.get<string>(key);
-      
+
       if (!encryptedString) {
         return null; // Session not found or expired
       }
 
       // Parse encrypted data
       const encryptedData: EncryptedData = JSON.parse(encryptedString);
-      
+
       // Decrypt session data
       const decryptedString = this.decrypt(encryptedData);
       const sessionData: SessionData = JSON.parse(decryptedString);
@@ -276,7 +281,7 @@ export class SecureSessionManager {
       if (sessionData.clientIp !== clientIp) {
         console.warn(
           `[Session] IP mismatch for ${sessionToken.substring(0, 8)}...: ` +
-          `expected ${sessionData.clientIp.substring(0, 8)}***, got ${clientIp.substring(0, 8)}***`
+            `expected ${sessionData.clientIp.substring(0, 8)}***, got ${clientIp.substring(0, 8)}***`
         );
         if (strictBinding) {
           return null;
@@ -292,9 +297,7 @@ export class SecureSessionManager {
       const currentUA = normalizeUA(userAgent);
 
       if (boundUA !== currentUA) {
-        console.warn(
-          `[Session] User-Agent mismatch for ${sessionToken.substring(0, 8)}...`
-        );
+        console.warn(`[Session] User-Agent mismatch for ${sessionToken.substring(0, 8)}...`);
         if (strictBinding) {
           return null;
         }
@@ -308,7 +311,7 @@ export class SecureSessionManager {
    * Update session data (with automatic encryption)
    */
   static async updateSession(
-    sessionToken: string, 
+    sessionToken: string,
     updates: Partial<SessionData>,
     extendExpiry: boolean = true
   ): Promise<boolean> {
@@ -324,7 +327,7 @@ export class SecureSessionManager {
       const updatedSession: SessionData = {
         ...currentSession,
         ...updates,
-        lastActivity: Date.now()
+        lastActivity: Date.now(),
       };
 
       // Calculate remaining TTL or extend
@@ -332,13 +335,13 @@ export class SecureSessionManager {
       if (!extendExpiry && currentSession.expiresAt) {
         expirySeconds = Math.max(60, Math.floor((currentSession.expiresAt - Date.now()) / 1000));
       } else {
-        updatedSession.expiresAt = Date.now() + (this.DEFAULT_EXPIRY * 1000);
+        updatedSession.expiresAt = Date.now() + this.DEFAULT_EXPIRY * 1000;
       }
 
       // Re-encrypt and store
       const encryptedData = this.encrypt(JSON.stringify(updatedSession));
       const key = `${this.SESSION_PREFIX}${sessionToken}`;
-      await redis.setex(key, expirySeconds, JSON.stringify(encryptedData));
+      await redis.setEx(key, expirySeconds, JSON.stringify(encryptedData));
 
       return true;
     } catch (error) {
@@ -356,7 +359,7 @@ export class SecureSessionManager {
     try {
       const key = `${this.SESSION_PREFIX}${sessionToken}`;
       const result = await redis.del(key);
-      
+
       console.warn(`🗑️  Destroyed session: ${sessionToken.substring(0, 8)}...`);
       return result === 1;
     } catch (error) {
@@ -453,7 +456,7 @@ export class SecureSessionManager {
       return {
         totalSessions: keys.length,
         activeSessions,
-        expiredSessions
+        expiredSessions,
       };
     } catch (error) {
       console.error('Error getting session stats:', error);

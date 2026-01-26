@@ -85,8 +85,8 @@ async function setCachedCommentCount(slug: string, count: number): Promise<void>
   if (!redis) return;
 
   try {
-    await redis.setex(`${CACHE_PREFIX}${slug}`, CACHE_TTL, count.toString());
-    // No quit() needed - Upstash uses HTTP REST API (stateless)
+    await redis.setEx(`${CACHE_PREFIX}${slug}`, CACHE_TTL, count.toString());
+    await redis.quit();
   } catch (error) {
     console.error(`[Comments] Cache write failed for ${slug}:`, error);
   }
