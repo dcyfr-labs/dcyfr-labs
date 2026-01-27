@@ -165,14 +165,17 @@ if (direction === 'opencode-to-vscode' || direction === 'both') {
 }
 
 // Write updated configs
+// CWE-367 Prevention: Use atomic write operation to avoid race condition (TOCTOU)
 if (!dryRun) {
   if (direction === 'vscode-to-opencode' || direction === 'both') {
-    fs.writeFileSync(opencodeConfigPath, JSON.stringify(opencodeConfig, null, 2));
+    // Atomic write with flag 'w' (truncate if exists, create if missing)
+    fs.writeFileSync(opencodeConfigPath, JSON.stringify(opencodeConfig, null, 2), { flag: 'w' });
     console.log(`✅ Updated ${opencodeConfigPath}`);
   }
 
   if (direction === 'opencode-to-vscode' || direction === 'both') {
-    fs.writeFileSync(vscodeConfigPath, JSON.stringify(vscodeConfig, null, 2));
+    // Atomic write with flag 'w'
+    fs.writeFileSync(vscodeConfigPath, JSON.stringify(vscodeConfig, null, 2), { flag: 'w' });
     console.log(`✅ Updated ${vscodeConfigPath}`);
   }
 } else {

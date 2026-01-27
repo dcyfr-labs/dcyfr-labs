@@ -15,7 +15,7 @@
  */
 
 import siteConfig from '@/lib/site-config';
-import { createClient } from 'redis';
+import { redis } from '@/mcp/shared/redis-client';
 
 // ============================================================================
 // CONSTANTS
@@ -85,44 +85,12 @@ interface DiscussionResponse {
 // ============================================================================
 
 /**
- * Get Redis client with error handling (reuses pattern from comments.ts)
- */
-async function getRedisClient() {
-  const redisUrl = process.env.REDIS_URL;
-  if (!redisUrl) return null;
-
-  try {
-    const client = createClient({
-      url: redisUrl,
-      socket: {
-        connectTimeout: 5000,
-        reconnectStrategy: (retries) => {
-          if (retries > 3) return new Error('Max retries exceeded');
-          return Math.min(retries * 100, 3000);
-        },
-      },
-    });
-    if (!client.isOpen) {
-      await client.connect();
-    }
-    return client;
-  } catch (error) {
-    console.error('[GiscusReactions] Redis connection failed:', error);
-    return null;
-  }
-}
-
-/**
  * Get cached reactions from Redis
  */
 async function getCachedReactions(activityId: string): Promise<GiscusReactions | null> {
-  const redis = await getRedisClient();
-  if (!redis) return null;
-
   try {
     const cached = await redis.get(`${CACHE_PREFIX}${activityId}`);
-    await redis.quit();
-    return cached ? JSON.parse(cached) : null;
+    return cached && typeof cached === 'string' ? JSON.parse(cached) : null;
   } catch (error) {
     console.error(`[GiscusReactions] Cache read failed for ${activityId}:`, error);
     return null;
@@ -133,12 +101,8 @@ async function getCachedReactions(activityId: string): Promise<GiscusReactions |
  * Set cached reactions in Redis
  */
 async function setCachedReactions(activityId: string, reactions: GiscusReactions): Promise<void> {
-  const redis = await getRedisClient();
-  if (!redis) return;
-
   try {
-    await redis.setEx(`${CACHE_PREFIX}${activityId}`, CACHE_TTL, JSON.stringify(reactions));
-    await redis.quit();
+    await redis.setex(`${CACHE_PREFIX}${activityId}`, CACHE_TTL, JSON.stringify(reactions));
   } catch (error) {
     console.error(`[GiscusReactions] Cache write failed for ${activityId}:`, error);
   }

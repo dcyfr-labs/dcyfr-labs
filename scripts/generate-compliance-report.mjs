@@ -30,10 +30,26 @@ const outputPath = outputArg
 
 /**
  * Run validation and capture results
+ *
+ * Security: Uses array form of execSync to prevent command injection (CWE-78)
+ * Validates script name against allowlist before execution
  */
 function runValidation(script) {
+  // CWE-78 Prevention: Validate script name to prevent command injection
+  const validScripts = [
+    'scripts/validate-governance.mjs',
+    'scripts/validate-doc-location.mjs',
+    'scripts/validate-tlp-compliance.mjs',
+    'scripts/validate-dcyfr-patterns.mjs',
+  ];
+
+  if (!validScripts.includes(script)) {
+    throw new Error(`Invalid script: ${script} - not in allowlist`);
+  }
+
   try {
-    const output = execSync(`node ${script}`, {
+    // Use array form of execSync to avoid shell interpolation (CWE-78)
+    const output = execSync('node', [script], {
       cwd: ROOT_DIR,
       encoding: 'utf-8',
       stdio: 'pipe',

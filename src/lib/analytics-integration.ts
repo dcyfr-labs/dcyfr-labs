@@ -18,7 +18,7 @@
  * - SEARCH_CONSOLE_CLIENT_EMAIL / SEARCH_CONSOLE_PRIVATE_KEY: Service account (optional)
  */
 
-import { createClient } from 'redis';
+import { redis } from '@/mcp/shared/redis-client';
 import { fetchVercelAnalytics } from './vercel-analytics-api';
 
 // ============================================================================
@@ -44,38 +44,6 @@ interface SearchConsoleMilestone {
   reached_at: string;
   query?: string;
   page?: string;
-}
-
-// ============================================================================
-// REDIS CLIENT
-// ============================================================================
-
-const redisUrl = process.env.REDIS_URL;
-
-async function getRedisClient() {
-  if (!redisUrl) return null;
-
-  try {
-    const client = createClient({
-      url: redisUrl,
-      socket: {
-        connectTimeout: 5000,
-        reconnectStrategy: (retries) => {
-          if (retries > 3) return new Error('Max retries exceeded');
-          return Math.min(retries * 100, 3000);
-        },
-      },
-    });
-
-    if (!client.isOpen) {
-      await client.connect();
-    }
-
-    return client;
-  } catch (error) {
-    console.error('[Analytics] Redis connection failed:', error);
-    return null;
-  }
 }
 
 // ============================================================================
@@ -174,19 +142,11 @@ export async function storeVercelAnalyticsMilestones(): Promise<void> {
     return;
   }
 
-  const redis = await getRedisClient();
-  if (!redis) {
-    console.error('❌ Redis not available, cannot store milestones');
-    return;
-  }
-
   try {
     await redis.set('analytics:milestones', JSON.stringify(milestones));
     console.warn(`✅ Stored ${milestones.length} Vercel Analytics milestones in Redis`);
   } catch (error) {
     console.error('❌ Failed to store analytics milestones:', error);
-  } finally {
-    // No quit() needed - Upstash uses HTTP REST API (stateless)
   }
 }
 
@@ -293,19 +253,11 @@ export async function storeGitHubTrafficMilestones(): Promise<void> {
     return;
   }
 
-  const redis = await getRedisClient();
-  if (!redis) {
-    console.error('❌ Redis not available, cannot store milestones');
-    return;
-  }
-
   try {
     await redis.set('github:traffic:milestones', JSON.stringify(milestones));
     console.warn(`✅ Stored ${milestones.length} GitHub traffic milestones in Redis`);
   } catch (error) {
     console.error('❌ Failed to store GitHub traffic milestones:', error);
-  } finally {
-    // No quit() needed - Upstash uses HTTP REST API (stateless)
   }
 }
 

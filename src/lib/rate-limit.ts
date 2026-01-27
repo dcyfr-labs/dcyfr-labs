@@ -13,52 +13,10 @@
  * - Automatic blocking of malicious IPs
  */
 
-import { createClient } from "redis";
-import { isIPBlocked, isIPSuspicious } from "./blocked-ips";
+import { redis } from '@/mcp/shared/redis-client';
+import { isIPBlocked, isIPSuspicious } from './blocked-ips';
 
-type RedisClient = ReturnType<typeof createClient>;
-
-const RATE_LIMIT_KEY_PREFIX = "ratelimit:";
-
-declare global {
-  var __rateLimitRedisClient: RedisClient | undefined;
-}
-
-/**
- * Get or create the Redis client for rate limiting
- */
-async function getRateLimitClient(): Promise<RedisClient | null> {
-  const redisUrl = process.env.REDIS_URL; // Read dynamically to allow test overrides
-  if (!redisUrl) return null;
-
-  if (!globalThis.__rateLimitRedisClient) {
-    const client = createClient({
-      url: redisUrl,
-      socket: {
-        connectTimeout: 5000, // 5s connection timeout
-        reconnectStrategy: (retries) => {
-          if (retries > 3) return new Error("Max retries exceeded");
-          return Math.min(retries * 100, 3000); // Exponential backoff, max 3s
-        },
-      },
-    });
-    client.on("error", (error) => {
-      if (process.env.NODE_ENV !== "production") {
-        console.error("Rate limit Redis error:", error);
-      }
-    });
-    globalThis.__rateLimitRedisClient = client;
-  }
-
-  const client = globalThis.__rateLimitRedisClient;
-  if (!client) return null;
-
-  if (!client.isOpen) {
-    await client.connect();
-  }
-
-  return client;
-}
+const RATE_LIMIT_KEY_PREFIX = 'ratelimit:';
 
 // In-memory fallback for local development without Redis
 type RateLimitEntry = {
@@ -73,7 +31,7 @@ const rateLimitStore = new Map<string, RateLimitEntry>();
 type IpReputationEntry = {
   abuseCount: number;
   lastAbuseTime: number;
-  classification: "unknown" | "suspicious" | "malicious";
+  classification: 'unknown' | 'suspicious' | 'malicious';
 };
 
 const localIpReputation = new Map<string, IpReputationEntry>();
@@ -96,8 +54,7 @@ function cleanup() {
 
     // Also cleanup expired reputation entries (24 hours without abuse)
     localIpReputation.forEach((entry, key) => {
-      const hoursSinceLastAbuse =
-        (now - entry.lastAbuseTime) / (1000 * 60 * 60);
+      const hoursSinceLastAbuse = (now - entry.lastAbuseTime) / (1000 * 60 * 60);
       if (hoursSinceLastAbuse > 24) {
         reputationKeysToDelete.push(key);
       }
@@ -113,11 +70,9 @@ function cleanup() {
  * Get the current local reputation classification for an IP
  * Decays abuse count after 24 hours of no new attempts
  */
-function getLocalIpReputation(
-  ip: string
-): "unknown" | "suspicious" | "malicious" {
+function getLocalIpReputation(ip: string): 'unknown' | 'suspicious' | 'malicious' {
   const entry = localIpReputation.get(ip);
-  if (!entry) return "unknown";
+  if (!entry) return 'unknown';
 
   const now = Date.now();
   const hoursSinceLastAbuse = (now - entry.lastAbuseTime) / (1000 * 60 * 60);
@@ -125,7 +80,7 @@ function getLocalIpReputation(
   // Decay: reset to unknown after 24 hours without new abuse attempts
   if (hoursSinceLastAbuse > 24) {
     localIpReputation.delete(ip);
-    return "unknown";
+    return 'unknown';
   }
 
   return entry.classification;
@@ -140,7 +95,7 @@ function recordLocalAbuseAttempt(ip: string): void {
   const entry = localIpReputation.get(ip) || {
     abuseCount: 0,
     lastAbuseTime: now,
-    classification: "unknown" as const,
+    classification: 'unknown' as const,
   };
 
   entry.abuseCount++;
@@ -148,9 +103,9 @@ function recordLocalAbuseAttempt(ip: string): void {
 
   // Escalate classification based on cumulative abuse attempts
   if (entry.abuseCount >= 10) {
-    entry.classification = "malicious";
+    entry.classification = 'malicious';
   } else if (entry.abuseCount >= 3) {
-    entry.classification = "suspicious";
+    entry.classification = 'suspicious';
   }
 
   localIpReputation.set(ip, entry);
@@ -204,7 +159,7 @@ export type RateLimitResult = {
   reputation?: {
     is_blocked: boolean;
     is_suspicious: boolean;
-    classification: "malicious" | "suspicious" | "unknown" | "benign";
+    classification: 'malicious' | 'suspicious' | 'unknown' | 'benign';
     reason?: string;
   };
 };
@@ -225,15 +180,14 @@ export async function rateLimit(
     return await rateLimitWithReputation(identifier, config);
   }
 
-  const client = await getRateLimitClient();
-
-  // Use Redis if available (distributed rate limiting)
-  if (client) {
-    return rateLimitRedis(client, identifier, config);
+  // Use Redis for distributed rate limiting
+  try {
+    return await rateLimitRedis(identifier, config);
+  } catch (error) {
+    // Fallback to in-memory on Redis errors
+    console.error('Redis rate limit error, falling back to memory:', error);
+    return rateLimitMemory(identifier, config);
   }
-
-  // Fallback to in-memory rate limiting (local development)
-  return rateLimitMemory(identifier, config);
 }
 
 /**
@@ -256,8 +210,8 @@ async function rateLimitWithReputation(
       reputation: {
         is_blocked: true,
         is_suspicious: false,
-        classification: "malicious",
-        reason: "IP is permanently blocked",
+        classification: 'malicious',
+        reason: 'IP is permanently blocked',
       },
     };
   }
@@ -270,18 +224,18 @@ async function rateLimitWithReputation(
 
   // Determine rate limit configuration based on combined reputation
   let reputationConfig: RateLimitConfig;
-  let classification: "malicious" | "suspicious" | "unknown" | "benign";
+  let classification: 'malicious' | 'suspicious' | 'unknown' | 'benign';
 
   // Escalation logic: take the stricter of external or local reputation
-  if (localReputation === "malicious" || isSuspiciousExternal) {
-    classification = "suspicious";
+  if (localReputation === 'malicious' || isSuspiciousExternal) {
+    classification = 'suspicious';
     reputationConfig = {
       limit: DEFAULT_REPUTATION_LIMITS.suspicious.limit,
       windowInSeconds: DEFAULT_REPUTATION_LIMITS.suspicious.windowInSeconds,
       failClosed: config.failClosed,
     };
-  } else if (localReputation === "suspicious") {
-    classification = "suspicious";
+  } else if (localReputation === 'suspicious') {
+    classification = 'suspicious';
     reputationConfig = {
       limit: DEFAULT_REPUTATION_LIMITS.suspicious.limit,
       windowInSeconds: DEFAULT_REPUTATION_LIMITS.suspicious.windowInSeconds,
@@ -289,17 +243,17 @@ async function rateLimitWithReputation(
     };
   } else {
     // For unknown/benign IPs, use the original config
-    classification = "unknown";
+    classification = 'unknown';
     reputationConfig = config;
   }
 
   // Apply rate limiting with reputation-adjusted config
-  const client = await getRateLimitClient();
   let result: RateLimitResult;
 
-  if (client) {
-    result = await rateLimitRedis(client, ip, reputationConfig);
-  } else {
+  try {
+    result = await rateLimitRedis(ip, reputationConfig);
+  } catch (error) {
+    console.error('Redis rate limit error, falling back to memory:', error);
     result = await rateLimitMemory(ip, reputationConfig);
   }
 
@@ -310,15 +264,15 @@ async function rateLimitWithReputation(
     // Update the result classification to reflect new escalated reputation
     const updatedLocalRep = getLocalIpReputation(ip);
     classification =
-      updatedLocalRep === "malicious" || updatedLocalRep === "suspicious"
-        ? "suspicious"
+      updatedLocalRep === 'malicious' || updatedLocalRep === 'suspicious'
+        ? 'suspicious'
         : classification;
   }
 
   // Add reputation information to result
   result.reputation = {
     is_blocked: false,
-    is_suspicious: isSuspiciousExternal || localReputation !== "unknown",
+    is_suspicious: isSuspiciousExternal || localReputation !== 'unknown',
     classification,
   };
 
@@ -339,7 +293,6 @@ function isValidIP(str: string): boolean {
  * Redis-based distributed rate limiting
  */
 async function rateLimitRedis(
-  client: RedisClient,
   identifier: string,
   config: RateLimitConfig
 ): Promise<RateLimitResult> {
@@ -350,28 +303,23 @@ async function rateLimitRedis(
 
   try {
     // Use Redis INCR with PXAT (millisecond expiration timestamp)
-    const count = await client.incr(key);
+    const count = await redis.incr(key);
 
     // Set expiration on first request
     if (count === 1) {
-      await client.pExpireAt(key, resetTime);
+      await redis.pexpireat(key, resetTime);
     }
 
     // Get the TTL - use pttl which is the millisecond version
     let ttlMs = windowMs;
     try {
-      const pttlResult = await (client.pttl
-        ? client.pttl(key)
-        : Promise.resolve(-2));
-      if (typeof pttlResult === "number" && pttlResult > 0) {
+      const pttlResult = await redis.pttl(key);
+      if (typeof pttlResult === 'number' && pttlResult > 0) {
         ttlMs = pttlResult;
       }
     } catch {
       // Fallback to window if pttl fails
-      console.warn(
-        "Could not get pttl from Redis, using window duration:",
-        windowMs
-      );
+      console.warn('Could not get pttl from Redis, using window duration:', windowMs);
       ttlMs = windowMs;
     }
     const actualResetTime = now + ttlMs;
@@ -395,9 +343,9 @@ async function rateLimitRedis(
     // On Redis error, fail according to configuration
     const shouldFailClosed = config.failClosed ?? false;
 
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV !== 'production') {
       console.error(
-        `Rate limit Redis error, failing ${shouldFailClosed ? "closed" : "open"}:`,
+        `Rate limit Redis error, failing ${shouldFailClosed ? 'closed' : 'open'}:`,
         error
       );
     }
@@ -425,10 +373,7 @@ async function rateLimitRedis(
 /**
  * In-memory rate limiting (fallback for local development)
  */
-function rateLimitMemory(
-  identifier: string,
-  config: RateLimitConfig
-): RateLimitResult {
+function rateLimitMemory(identifier: string, config: RateLimitConfig): RateLimitResult {
   cleanup();
 
   const now = Date.now();
@@ -483,19 +428,19 @@ function rateLimitMemory(
  */
 export function getClientIp(request: Request): string {
   // Vercel provides the real IP in x-forwarded-for or x-real-ip headers
-  const forwardedFor = request.headers.get("x-forwarded-for");
+  const forwardedFor = request.headers.get('x-forwarded-for');
   if (forwardedFor) {
     // x-forwarded-for can contain multiple IPs, use the first one
-    return forwardedFor.split(",")[0].trim();
+    return forwardedFor.split(',')[0].trim();
   }
 
-  const realIp = request.headers.get("x-real-ip");
+  const realIp = request.headers.get('x-real-ip');
   if (realIp) {
     return realIp;
   }
 
   // Fallback (shouldn't happen on Vercel)
-  return "unknown";
+  return 'unknown';
 }
 
 /**
@@ -505,25 +450,22 @@ export function getClientIp(request: Request): string {
  * @param result - Rate limit result
  * @returns Headers object
  */
-export function createRateLimitHeaders(
-  result: RateLimitResult
-): Record<string, string> {
+export function createRateLimitHeaders(result: RateLimitResult): Record<string, string> {
   const headers: Record<string, string> = {
-    "X-RateLimit-Limit": result.limit.toString(),
-    "X-RateLimit-Remaining": result.remaining.toString(),
-    "X-RateLimit-Reset": result.reset.toString(),
+    'X-RateLimit-Limit': result.limit.toString(),
+    'X-RateLimit-Remaining': result.remaining.toString(),
+    'X-RateLimit-Reset': result.reset.toString(),
   };
 
   // Add reputation headers if available
   if (result.reputation) {
-    headers["X-RateLimit-Reputation"] = result.reputation.classification;
+    headers['X-RateLimit-Reputation'] = result.reputation.classification;
     if (result.reputation.is_blocked) {
-      headers["X-RateLimit-Blocked"] = "true";
-      headers["X-RateLimit-Block-Reason"] =
-        result.reputation.reason || "security";
+      headers['X-RateLimit-Blocked'] = 'true';
+      headers['X-RateLimit-Block-Reason'] = result.reputation.reason || 'security';
     }
     if (result.reputation.is_suspicious) {
-      headers["X-RateLimit-Suspicious"] = "true";
+      headers['X-RateLimit-Suspicious'] = 'true';
     }
   }
 
@@ -591,8 +533,8 @@ export async function rateLimitWithProtection(
       reputation: {
         is_blocked: true,
         is_suspicious: false,
-        classification: "malicious",
-        reason: "IP is blocked due to malicious activity",
+        classification: 'malicious',
+        reason: 'IP is blocked due to malicious activity',
       },
     };
   }
@@ -606,7 +548,7 @@ export async function rateLimitWithProtection(
   result.reputation = {
     is_blocked: false,
     is_suspicious: isSuspicious,
-    classification: isSuspicious ? "suspicious" : "unknown",
+    classification: isSuspicious ? 'suspicious' : 'unknown',
   };
 
   return result;

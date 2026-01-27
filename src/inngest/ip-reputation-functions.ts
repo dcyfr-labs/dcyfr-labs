@@ -1,26 +1,27 @@
 /**
  * Inngest functions for automated IP reputation checking
- * 
+ *
  * Integrates with Axiom logs and GreyNoise API to automatically
  * identify and block malicious IPs from accessing the site.
  */
 
-import { inngest } from "./client";
-import { IPReputationService } from "@/lib/ip-reputation";
-import * as Sentry from "@sentry/nextjs";
+import { inngest } from './client';
+import { IPReputationService } from '@/lib/ip-reputation';
+import * as Sentry from '@sentry/nextjs';
 import {
   type IPReputationCheckTriggered,
   type IPReputationCheckCompleted,
   type MaliciousIPDetected,
   type IPReputationConfig,
   type IPReputationBulkResult,
-} from "@/types/ip-reputation";
+} from '@/types/ip-reputation';
 
 // Default configuration
 const DEFAULT_CONFIG: IPReputationConfig = {
   check_interval_minutes: 60, // Check hourly
-  axiom_dataset: "vercel",
-  axiom_query: "['vercel'] | where isnotnull(['request.ip']) | summarize Value = count() by ['request.ip'] | order by Value desc",
+  axiom_dataset: 'vercel',
+  axiom_query:
+    "['vercel'] | where isnotnull(['request.ip']) | summarize Value = count() by ['request.ip'] | order by Value desc",
   min_request_threshold: 10, // Only check IPs with 10+ requests
   cache_ttl_hours: 24,
   auto_block_malicious: true,
@@ -59,22 +60,22 @@ const DEFAULT_CONFIG: IPReputationConfig = {
  */
 export const scheduleIpReputationCheck = inngest.createFunction(
   {
-    id: "schedule-ip-reputation-check",
-    name: "Schedule IP Reputation Check",
+    id: 'schedule-ip-reputation-check',
+    name: 'Schedule IP Reputation Check',
   },
-  { cron: "0 0,4,8,12,16,20 * * *" }, // Every 4 hours (0, 4, 8, 12, 16, 20 UTC)
+  { cron: '0 0,4,8,12,16,20 * * *' }, // Every 4 hours (0, 4, 8, 12, 16, 20 UTC)
   async ({ step, logger }) => {
-    logger.info("Starting scheduled IP reputation check");
+    logger.info('Starting scheduled IP reputation check');
 
-    await step.sendEvent("trigger-ip-reputation-check", {
-      name: "security/ip-reputation.check-triggered",
+    await step.sendEvent('trigger-ip-reputation-check', {
+      name: 'security/ip-reputation.check-triggered',
       data: {
-        trigger_source: "scheduled",
+        trigger_source: 'scheduled',
         check_config: DEFAULT_CONFIG,
       },
     });
 
-    return { status: "scheduled" };
+    return { status: 'scheduled' };
   }
 );
 
@@ -84,19 +85,19 @@ export const scheduleIpReputationCheck = inngest.createFunction(
  */
 export const checkIpReputation = inngest.createFunction(
   {
-    id: "check-ip-reputation",
-    name: "Check IP Reputation",
+    id: 'check-ip-reputation',
+    name: 'Check IP Reputation',
     retries: 2,
   },
-  { event: "security/ip-reputation.check-triggered" },
+  { event: 'security/ip-reputation.check-triggered' },
   async ({ event, step, logger }) => {
     const { trigger_source, ip_list, check_config } = event.data;
     const config = { ...DEFAULT_CONFIG, ...check_config };
-    
+
     logger.info(`IP reputation check triggered by: ${trigger_source}`);
 
     // Step 1: Get IPs to check
-    const ipsToCheck = await step.run("get-ips-to-check", async () => {
+    const ipsToCheck = await step.run('get-ips-to-check', async () => {
       if (ip_list && ip_list.length > 0) {
         logger.info(`Using provided IP list: ${ip_list.length} IPs`);
         return ip_list;
@@ -107,32 +108,31 @@ export const checkIpReputation = inngest.createFunction(
     });
 
     if (ipsToCheck.length === 0) {
-      logger.info("No IPs to check, exiting");
-      return { status: "no-ips-to-check" };
+      logger.info('No IPs to check, exiting');
+      return { status: 'no-ips-to-check' };
     }
 
     logger.info(`Checking reputation for ${ipsToCheck.length} IPs`);
 
     // Step 2: Check IP reputations with GreyNoise
-    const reputationResult = await step.run("check-ip-reputations", async () => {
+    const reputationResult = await step.run('check-ip-reputations', async () => {
       const service = new IPReputationService();
-      await service.initialize();
       return await service.bulkCheckReputation(ipsToCheck);
     });
 
     // Step 3: Update blocking rules
-    const blockingUpdate = await step.run("update-blocking-rules", async () => {
+    const blockingUpdate = await step.run('update-blocking-rules', async () => {
       const maliciousIps = reputationResult.results
-        .filter(r => r.is_malicious && config.auto_block_malicious)
-        .map(r => r.ip);
+        .filter((r) => r.is_malicious && config.auto_block_malicious)
+        .map((r) => r.ip);
 
       const suspiciousIps = reputationResult.results
-        .filter(r => r.is_suspicious && config.auto_rate_limit_suspicious)
-        .map(r => r.ip);
+        .filter((r) => r.is_suspicious && config.auto_rate_limit_suspicious)
+        .map((r) => r.ip);
 
       // Update Redis with new blocking/rate limiting rules
       if (maliciousIps.length > 0) {
-        await updateBlockedIpsList(maliciousIps, "malicious");
+        await updateBlockedIpsList(maliciousIps, 'malicious');
       }
 
       if (suspiciousIps.length > 0) {
@@ -148,24 +148,24 @@ export const checkIpReputation = inngest.createFunction(
     });
 
     // Step 4: Generate alerts for high-risk findings
-    const alerts = await step.run("generate-alerts", async () => {
+    const alerts = await step.run('generate-alerts', async () => {
       const alertsGenerated: string[] = [];
 
       // Alert on new malicious IPs
       if (reputationResult.malicious_count > config.alert_thresholds.new_malicious_ips_per_hour) {
         const alertMessage = `High number of malicious IPs detected: ${reputationResult.malicious_count}`;
-        await sendSecurityAlert("high-malicious-ip-count", alertMessage, {
+        await sendSecurityAlert('high-malicious-ip-count', alertMessage, {
           malicious_count: reputationResult.malicious_count,
           threshold: config.alert_thresholds.new_malicious_ips_per_hour,
         });
-        alertsGenerated.push("high-malicious-ip-count");
+        alertsGenerated.push('high-malicious-ip-count');
       }
 
       // Send individual alerts for each malicious IP
-      const maliciousResults = reputationResult.results.filter(r => r.is_malicious);
+      const maliciousResults = reputationResult.results.filter((r) => r.is_malicious);
       for (const maliciousIp of maliciousResults) {
         await step.sendEvent(`malicious-ip-detected-${maliciousIp.ip}`, {
-          name: "security/malicious-ip.detected",
+          name: 'security/malicious-ip.detected',
           data: {
             ip: maliciousIp.ip,
             reputation: maliciousIp.details!,
@@ -180,8 +180,8 @@ export const checkIpReputation = inngest.createFunction(
     });
 
     // Step 5: Send completion event
-    await step.sendEvent("ip-reputation-check-completed", {
-      name: "security/ip-reputation.check-completed",
+    await step.sendEvent('ip-reputation-check-completed', {
+      name: 'security/ip-reputation.check-completed',
       data: {
         result: reputationResult,
         blocked_ips: blockingUpdate.blocked_ips,
@@ -191,10 +191,12 @@ export const checkIpReputation = inngest.createFunction(
       },
     });
 
-    logger.info(`IP reputation check completed: ${reputationResult.malicious_count} malicious, ${reputationResult.suspicious_count} suspicious`);
+    logger.info(
+      `IP reputation check completed: ${reputationResult.malicious_count} malicious, ${reputationResult.suspicious_count} suspicious`
+    );
 
     return {
-      status: "completed",
+      status: 'completed',
       statistics: {
         total_checked: reputationResult.total_checked,
         malicious: reputationResult.malicious_count,
@@ -215,21 +217,21 @@ export const checkIpReputation = inngest.createFunction(
  */
 export const handleMaliciousIpDetected = inngest.createFunction(
   {
-    id: "handle-malicious-ip-detected",
-    name: "Handle Malicious IP Detection",
+    id: 'handle-malicious-ip-detected',
+    name: 'Handle Malicious IP Detection',
   },
-  { event: "security/malicious-ip.detected" },
+  { event: 'security/malicious-ip.detected' },
   async ({ event, step, logger }) => {
     const { ip, reputation, request_count_24h, auto_blocked } = event.data;
-    
+
     logger.info(`Handling malicious IP detection: ${ip} (${reputation.classification})`);
 
     // Step 1: Log security event
-    await step.run("log-security-event", async () => {
+    await step.run('log-security-event', async () => {
       Sentry.addBreadcrumb({
-        category: "security",
+        category: 'security',
         message: `Malicious IP detected: ${ip}`,
-        level: "warning",
+        level: 'warning',
         data: {
           ip,
           classification: reputation.classification,
@@ -241,9 +243,9 @@ export const handleMaliciousIpDetected = inngest.createFunction(
 
       // Also capture as Sentry event for security monitoring
       Sentry.captureMessage(`Malicious IP detected: ${ip}`, {
-        level: "warning",
+        level: 'warning',
         tags: {
-          component: "ip-reputation",
+          component: 'ip-reputation',
           ip,
           classification: reputation.classification,
           auto_blocked: auto_blocked.toString(),
@@ -257,43 +259,53 @@ export const handleMaliciousIpDetected = inngest.createFunction(
 
     // Step 2: Send notification if high-confidence threat
     if (reputation.confidence_score >= 80) {
-      await step.run("send-high-confidence-alert", async () => {
-        await sendSecurityAlert("high-confidence-malicious-ip", 
-          `High-confidence malicious IP detected: ${ip}`, {
-          ip,
-          confidence: reputation.confidence_score,
-          classification: reputation.classification,
-          tags: reputation.tags,
-          country: reputation.metadata?.country,
-          organization: reputation.metadata?.organization,
-          auto_blocked,
-        });
+      await step.run('send-high-confidence-alert', async () => {
+        await sendSecurityAlert(
+          'high-confidence-malicious-ip',
+          `High-confidence malicious IP detected: ${ip}`,
+          {
+            ip,
+            confidence: reputation.confidence_score,
+            classification: reputation.classification,
+            tags: reputation.tags,
+            country: reputation.metadata?.country,
+            organization: reputation.metadata?.organization,
+            auto_blocked,
+          }
+        );
       });
     }
 
     // Step 3: Additional security measures for critical threats
-    if (reputation.tags?.some((tag: string) => ["botnet", "malware", "ransomware"].includes(tag.toLowerCase()))) {
-      await step.run("escalate-critical-threat", async () => {
-        logger.warn(`Critical threat detected: ${ip} - ${reputation.tags?.join(", ")}`);
-        
+    if (
+      reputation.tags?.some((tag: string) =>
+        ['botnet', 'malware', 'ransomware'].includes(tag.toLowerCase())
+      )
+    ) {
+      await step.run('escalate-critical-threat', async () => {
+        logger.warn(`Critical threat detected: ${ip} - ${reputation.tags?.join(', ')}`);
+
         // Could trigger additional measures like:
         // - Temporary WAF rule escalation
         // - Enhanced monitoring for similar IPs
         // - Notification to security team
-        
-        await sendSecurityAlert("critical-threat-detected",
-          `Critical threat IP detected: ${ip} with tags: ${reputation.tags?.join(", ")}`, {
-          ip,
-          threat_level: "critical",
-          tags: reputation.tags,
-          immediate_action_required: true,
-        });
+
+        await sendSecurityAlert(
+          'critical-threat-detected',
+          `Critical threat IP detected: ${ip} with tags: ${reputation.tags?.join(', ')}`,
+          {
+            ip,
+            threat_level: 'critical',
+            tags: reputation.tags,
+            immediate_action_required: true,
+          }
+        );
       });
     }
 
-    return { 
-      status: "handled",
-      alert_level: reputation.confidence_score >= 80 ? "high" : "standard"
+    return {
+      status: 'handled',
+      alert_level: reputation.confidence_score >= 80 ? 'high' : 'standard',
     };
   }
 );
@@ -305,18 +317,18 @@ async function fetchIpsFromAxiom(config: IPReputationConfig): Promise<string[]> 
   // This would integrate with Axiom API to fetch IPs
   // For now, returning empty array as placeholder
   // You would implement this based on your Axiom setup
-  
+
   try {
     // Example implementation would query Axiom here
     // const axiomResult = await axiomClient.query(config.axiom_dataset, config.axiom_query);
     // return axiomResult.results.map(r => r.ip).filter(ip => r.count > config.min_request_threshold);
-    
-    console.warn("Axiom integration not implemented yet - returning empty IP list");
+
+    console.warn('Axiom integration not implemented yet - returning empty IP list');
     return [];
   } catch (error) {
-    console.error("Failed to fetch IPs from Axiom:", error);
+    console.error('Failed to fetch IPs from Axiom:', error);
     Sentry.captureException(error, {
-      tags: { component: "axiom-integration" },
+      tags: { component: 'axiom-integration' },
     });
     return [];
   }
@@ -330,11 +342,11 @@ async function updateBlockedIpsList(ips: string[], reason: string): Promise<void
     // This would update your Redis-based blocking system
     // Implementation depends on your current blocking mechanism
     console.warn(`Would block ${ips.length} IPs for reason: ${reason}`);
-    console.warn("Blocked IPs:", ips);
+    console.warn('Blocked IPs:', ips);
   } catch (error) {
-    console.error("Failed to update blocked IPs list:", error);
+    console.error('Failed to update blocked IPs list:', error);
     Sentry.captureException(error, {
-      tags: { component: "ip-blocking" },
+      tags: { component: 'ip-blocking' },
     });
   }
 }
@@ -346,11 +358,11 @@ async function updateSuspiciousIpsList(ips: string[]): Promise<void> {
   try {
     // This would update your rate limiting configuration
     console.warn(`Would apply enhanced rate limiting to ${ips.length} IPs`);
-    console.warn("Rate limited IPs:", ips);
+    console.warn('Rate limited IPs:', ips);
   } catch (error) {
-    console.error("Failed to update suspicious IPs list:", error);
+    console.error('Failed to update suspicious IPs list:', error);
     Sentry.captureException(error, {
-      tags: { component: "rate-limiting" },
+      tags: { component: 'rate-limiting' },
     });
   }
 }
@@ -366,31 +378,26 @@ async function sendSecurityAlert(
   try {
     // Log alert to console for now
     console.warn(`SECURITY ALERT [${alertType}]: ${message}`, metadata);
-    
+
     // Could integrate with:
     // - Slack notifications
     // - Email alerts
     // - PagerDuty
     // - Discord webhook
-    
+
     // Capture in Sentry for monitoring
     Sentry.captureMessage(`Security Alert: ${message}`, {
-      level: "warning",
+      level: 'warning',
       tags: {
-        component: "security-alerts",
+        component: 'security-alerts',
         alert_type: alertType,
       },
       extra: metadata,
     });
   } catch (error) {
-    console.error("Failed to send security alert:", error);
+    console.error('Failed to send security alert:', error);
   }
 }
 
 // Export individual functions for testing
-export {
-  fetchIpsFromAxiom,
-  updateBlockedIpsList,
-  updateSuspiciousIpsList,
-  sendSecurityAlert,
-};
+export { fetchIpsFromAxiom, updateBlockedIpsList, updateSuspiciousIpsList, sendSecurityAlert };

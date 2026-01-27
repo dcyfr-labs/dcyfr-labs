@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
-import { createClient } from "redis";
-import { posts } from "@/data/posts";
-import { projects } from "@/data/projects";
-import { changelog } from "@/data/changelog";
+import type { Metadata } from 'next';
+import { redis } from '@/mcp/shared/redis-client';
+import { posts } from '@/data/posts';
+import { projects } from '@/data/projects';
+import { changelog } from '@/data/changelog';
 import {
   transformPosts,
   transformProjects,
   transformChangelog,
   aggregateActivities,
-} from "@/lib/activity";
+} from '@/lib/activity';
 import {
   transformPostsWithViews,
   transformMilestones,
@@ -19,46 +19,16 @@ import {
   transformGitHubTraffic,
   transformGoogleAnalytics,
   transformSearchConsole,
-} from "@/lib/activity/server";
-import type { ActivityItem } from "@/lib/activity";
-import { ActivityEmbedClient } from "./activity-embed-client";
-// ============================================================================
-// REDIS CLIENT HELPER
-// ============================================================================
-
-async function getRedisClient() {
-  const redisUrl = process.env.REDIS_URL;
-  if (!redisUrl) return null;
-
-  try {
-    const client = createClient({
-      url: redisUrl,
-      socket: {
-        connectTimeout: 5000,
-        reconnectStrategy: (retries) => {
-          if (retries > 3) return new Error("Max retries exceeded");
-          return Math.min(retries * 100, 3000);
-        },
-      },
-    });
-
-    if (!client.isOpen) {
-      await client.connect();
-    }
-
-    return client;
-  } catch (error) {
-    console.error("[Activity Embed] Redis connection failed:", error);
-    return null;
-  }
-}
+} from '@/lib/activity/server';
+import type { ActivityItem } from '@/lib/activity';
+import { ActivityEmbedClient } from './activity-embed-client';
 
 // ============================================================================
 // METADATA
 // ============================================================================
 
 export const metadata: Metadata = {
-  title: "Activity Feed Embed",
+  title: 'Activity Feed Embed',
   robots: {
     index: false, // Don't index embed pages
     follow: false,
@@ -150,24 +120,19 @@ export default async function ActivityEmbedPage({
       ]);
 
       // Cache for future requests
-      const redisForWrite = await getRedisClient();
-      if (redisForWrite) {
-        try {
-          await redisForWrite.setEx(
-            "activity:feed:all",
-            300, // 5 minutes TTL
-            JSON.stringify(allActivities)
-          );
-        } catch (writeError) {
-          console.error("[Activity Embed] Cache write failed:", writeError);
-        } finally {
-          await redisForWrite.disconnect();
-        }
+      try {
+        await redis.setex(
+          'activity:feed:all',
+          300, // 5 minutes TTL
+          JSON.stringify(allActivities)
+        );
+      } catch (writeError) {
+        console.error('[Activity Embed] Cache write failed:', writeError);
       }
     }
   } catch (err) {
-    console.error("[Activity Embed] Failed to load activities:", err);
-    error = err instanceof Error ? err.message : "Unknown error";
+    console.error('[Activity Embed] Failed to load activities:', err);
+    error = err instanceof Error ? err.message : 'Unknown error';
     allActivities = [];
   }
 
@@ -175,9 +140,7 @@ export default async function ActivityEmbedPage({
   const serializedActivities = allActivities.map((activity) => ({
     ...activity,
     timestamp:
-      activity.timestamp instanceof Date
-        ? activity.timestamp.toISOString()
-        : activity.timestamp,
+      activity.timestamp instanceof Date ? activity.timestamp.toISOString() : activity.timestamp,
   }));
 
   // Extract URL parameters for filtering

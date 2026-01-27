@@ -3,27 +3,10 @@
  * GET endpoint for fetching aggregated maintenance metrics
  */
 
-import { NextRequest, NextResponse } from "next/server";
-import { blockExternalAccess } from "@/lib/api-security";
-import { createClient } from "redis";
-import type { WeeklyMetrics } from "@/types/maintenance";
-
-const redisUrl = process.env.REDIS_URL;
-
-/**
- * Get Redis client (with connection)
- */
-async function getRedisClient() {
-  if (!redisUrl) return null;
-
-  try {
-    const client = createClient({ url: redisUrl });
-    await client.connect();
-    return client;
-  } catch {
-    return null;
-  }
-}
+import { NextRequest, NextResponse } from 'next/server';
+import { blockExternalAccess } from '@/lib/api-security';
+import { redis } from '@/mcp/shared/redis-client';
+import type { WeeklyMetrics } from '@/types/maintenance';
 
 /**
  * Generate mock 52-week trend data
@@ -41,7 +24,7 @@ function generateMockTrendData(): WeeklyMetrics[] {
     const weekNumber = Math.ceil(
       ((weekDate.getTime() - new Date(year, 0, 1).getTime()) / 86400000 + 1) / 7
     );
-    const week = `${year}-W${weekNumber.toString().padStart(2, "0")}`;
+    const week = `${year}-W${weekNumber.toString().padStart(2, '0')}`;
 
     // Generate realistic-looking data with some variance
     const basePassRate = 95 + Math.random() * 4; // 95-99%
@@ -77,29 +60,22 @@ export async function GET(request: NextRequest) {
 
   try {
     const { searchParams } = new URL(request.url);
-    const period = searchParams.get("period") || "52weeks";
+    const period = searchParams.get('period') || '52weeks';
 
-    if (period === "52weeks") {
+    if (period === '52weeks') {
       // Try to get trend data from Redis
       try {
-        const redis = await getRedisClient();
-        if (redis) {
-          try {
-            const cached = await redis.get("maintenance:trends:52week");
-            if (cached) {
-              const data = JSON.parse(cached);
-              return NextResponse.json({
-                trends: data,
-                cached: true,
-                timestamp: new Date().toISOString(),
-              });
-            }
-          } finally {
-            await redis.disconnect();
-          }
+        const cached = await redis.get('maintenance:trends:52week');
+        if (cached && typeof cached === 'string') {
+          const data = JSON.parse(cached);
+          return NextResponse.json({
+            trends: data,
+            cached: true,
+            timestamp: new Date().toISOString(),
+          });
         }
       } catch (cacheError) {
-        console.warn("Redis unavailable, using mock data:", cacheError);
+        console.warn('Redis unavailable, using mock data:', cacheError);
       }
 
       // Fallback to mock data
@@ -107,20 +83,13 @@ export async function GET(request: NextRequest) {
 
       // Try to cache for next time
       try {
-        const redis = await getRedisClient();
-        if (redis) {
-          try {
-            await redis.setEx(
-              "maintenance:trends:52week",
-              3600, // 1 hour TTL
-              JSON.stringify(trends)
-            );
-          } finally {
-            await redis.disconnect();
-          }
-        }
+        await redis.setex(
+          'maintenance:trends:52week',
+          3600, // 1 hour TTL
+          JSON.stringify(trends)
+        );
       } catch (cacheError) {
-        console.warn("Failed to cache trend data:", cacheError);
+        console.warn('Failed to cache trend data:', cacheError);
       }
 
       return NextResponse.json({
@@ -160,12 +129,12 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error("Failed to fetch metrics:", error);
+    console.error('Failed to fetch metrics:', error);
 
     return NextResponse.json(
       {
-        error: "Failed to fetch metrics",
-        message: error instanceof Error ? error.message : "Unknown error",
+        error: 'Failed to fetch metrics',
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );

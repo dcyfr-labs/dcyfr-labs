@@ -3,30 +3,14 @@
  * GET endpoint for fetching GitHub Actions workflow data
  */
 
-import { NextRequest, NextResponse } from "next/server";
-import { blockExternalAccess } from "@/lib/api-security";
-import { getAllWorkflowSummaries } from "@/lib/github-workflows";
-import { TRACKED_WORKFLOWS } from "@/types/maintenance";
-import { createClient } from "redis";
+import { NextRequest, NextResponse } from 'next/server';
+import { blockExternalAccess } from '@/lib/api-security';
+import { getAllWorkflowSummaries } from '@/lib/github-workflows';
+import { TRACKED_WORKFLOWS } from '@/types/maintenance';
+import { redis } from '@/mcp/shared/redis-client';
 
-const CACHE_KEY = "maintenance:workflow:summaries";
+const CACHE_KEY = 'maintenance:workflow:summaries';
 const CACHE_TTL = 300; // 5 minutes
-const redisUrl = process.env.REDIS_URL;
-
-/**
- * Get Redis client (with connection)
- */
-async function getRedisClient() {
-  if (!redisUrl) return null;
-
-  try {
-    const client = createClient({ url: redisUrl });
-    await client.connect();
-    return client;
-  } catch {
-    return null;
-  }
-}
 
 /**
  * GET /api/maintenance/workflows
@@ -43,32 +27,24 @@ export async function GET(request: NextRequest) {
 
   try {
     const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get("limit") || "10", 10);
-    const skipCache = searchParams.get("skip_cache") === "true";
+    const limit = parseInt(searchParams.get('limit') || '10', 10);
+    const skipCache = searchParams.get('skip_cache') === 'true';
 
     // Try to get from cache first (unless skip_cache is true)
     if (!skipCache) {
       try {
-        const redis = await getRedisClient();
-        if (redis) {
-          try {
-            const cached = await redis.get(CACHE_KEY);
-
-            if (cached) {
-              const data = JSON.parse(cached);
-              return NextResponse.json({
-                workflows: data,
-                cached: true,
-                timestamp: new Date().toISOString(),
-              });
-            }
-          } finally {
-            await redis.disconnect();
-          }
+        const cached = await redis.get(CACHE_KEY);
+        if (cached && typeof cached === 'string') {
+          const data = JSON.parse(cached);
+          return NextResponse.json({
+            workflows: data,
+            cached: true,
+            timestamp: new Date().toISOString(),
+          });
         }
       } catch (cacheError) {
         // Redis unavailable - continue without cache
-        console.warn("Redis cache unavailable, fetching fresh data:", cacheError);
+        console.warn('Redis cache unavailable, fetching fresh data:', cacheError);
       }
     }
 
@@ -77,17 +53,10 @@ export async function GET(request: NextRequest) {
 
     // Cache the results
     try {
-      const redis = await getRedisClient();
-      if (redis) {
-        try {
-          await redis.setEx(CACHE_KEY, CACHE_TTL, JSON.stringify(summaries));
-        } finally {
-          await redis.disconnect();
-        }
-      }
+      await redis.setex(CACHE_KEY, CACHE_TTL, JSON.stringify(summaries));
     } catch (cacheError) {
       // Redis unavailable - continue without caching
-      console.warn("Failed to cache workflow data:", cacheError);
+      console.warn('Failed to cache workflow data:', cacheError);
     }
 
     return NextResponse.json({
@@ -96,12 +65,12 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error("Failed to fetch workflow data:", error);
+    console.error('Failed to fetch workflow data:', error);
 
     return NextResponse.json(
       {
-        error: "Failed to fetch workflow data",
-        message: error instanceof Error ? error.message : "Unknown error",
+        error: 'Failed to fetch workflow data',
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );

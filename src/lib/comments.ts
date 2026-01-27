@@ -9,7 +9,7 @@
  */
 
 import siteConfig from '@/lib/site-config';
-import { createClient } from 'redis';
+import { redis } from '@/mcp/shared/redis-client';
 
 const CACHE_TTL = 900; // 15 minutes
 const CACHE_PREFIX = 'comments:';
@@ -33,44 +33,12 @@ interface DiscussionResponse {
 }
 
 /**
- * Get Redis client with error handling
- */
-async function getRedisClient() {
-  const redisUrl = process.env.REDIS_URL;
-  if (!redisUrl) return null;
-
-  try {
-    const client = createClient({
-      url: redisUrl,
-      socket: {
-        connectTimeout: 5000, // 5s connection timeout
-        reconnectStrategy: (retries) => {
-          if (retries > 3) return new Error('Max retries exceeded');
-          return Math.min(retries * 100, 3000); // Exponential backoff, max 3s
-        },
-      },
-    });
-    if (!client.isOpen) {
-      await client.connect();
-    }
-    return client;
-  } catch (error) {
-    console.error('[Comments] Redis connection failed:', error);
-    return null;
-  }
-}
-
-/**
  * Get cached comment count from Redis
  */
 async function getCachedCommentCount(slug: string): Promise<number | null> {
-  const redis = await getRedisClient();
-  if (!redis) return null;
-
   try {
     const cached = await redis.get(`${CACHE_PREFIX}${slug}`);
-    await redis.quit();
-    return cached ? parseInt(cached, 10) : null;
+    return cached && typeof cached === 'string' ? parseInt(cached, 10) : null;
   } catch (error) {
     console.error(`[Comments] Cache read failed for ${slug}:`, error);
     return null;
@@ -81,12 +49,8 @@ async function getCachedCommentCount(slug: string): Promise<number | null> {
  * Set cached comment count in Redis
  */
 async function setCachedCommentCount(slug: string, count: number): Promise<void> {
-  const redis = await getRedisClient();
-  if (!redis) return;
-
   try {
-    await redis.setEx(`${CACHE_PREFIX}${slug}`, CACHE_TTL, count.toString());
-    await redis.quit();
+    await redis.setex(`${CACHE_PREFIX}${slug}`, CACHE_TTL, count.toString());
   } catch (error) {
     console.error(`[Comments] Cache write failed for ${slug}:`, error);
   }

@@ -258,6 +258,19 @@ jobs:
             --label "gitleaks" \
             --label "automated"
 
+      - name: Parse findings summary
+        id: summary
+        if: always()
+        run: |
+          if [ -f gitleaks-report.json ]; then
+            COUNT=$(jq 'length' gitleaks-report.json)
+            echo "count=$COUNT" >> $GITHUB_OUTPUT
+            echo "has_findings=$([ $COUNT -gt 0 ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          else
+            echo "count=0" >> $GITHUB_OUTPUT
+            echo "has_findings=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Comment on PR with gitleaks results
         if: always() && github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v5
@@ -265,13 +278,19 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ### Gitleaks Secret Detection Results
-
-            Gitleaks scan completed. Report available in artifacts.
+            ### 🔐 Gitleaks Secret Detection Results
 
             **Exit code:** ${{ steps.parse.outputs.exit_code }}
-            - `0`: No secrets detected
-            - `3`: Critical secrets found (issue created)
+            **Findings:** ${{ steps.summary.outputs.count }}
+            **Status:** ${{ steps.parse.outputs.exit_code == '0' && '✅ No secrets detected' || steps.parse.outputs.exit_code == '3' && '🚨 Critical secrets found - issue created' || '⚠️ Review artifacts' }}
+
+            **Legend:**
+            - `0`: No secrets detected ✅
+            - `3`: Critical secrets found (automated issue created) 🚨
+
+            **What to do:**
+            - Review the full report in [workflow artifacts](../actions/runs/${{ github.run_id }})
+            - If secrets found: [Critical issue created](../../issues?q=is%3Aissue+label%3Agitleaks+is%3Aopen) with remediation steps
 
   # Reports artifact scan (focused on test/coverage/playwright reports)
   reports-scan:
@@ -316,6 +335,15 @@ jobs:
           path: reports-scan-output.txt
           retention-days: 30
 
+      - name: Summarize reports scan
+        id: report-summary
+        if: always()
+        run: |
+          if [ -f reports-scan-output.txt ]; then
+            LINES=$(wc -l < reports-scan-output.txt)
+            echo "lines=$LINES" >> $GITHUB_OUTPUT
+          fi
+
       - name: Comment on PR with results
         if: always() && github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v5
@@ -323,14 +351,21 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ### Reports PII Scanner Results
+            ### 📊 Reports Artifact PII Scanner Results
 
             This PR modifies report artifacts (playwright/coverage/test-results).
+
+            **Status:** ${{ steps.reports-scan.outputs.exit_code == '0' && '✅ No PII detected' || '❌ PII detected - blocking merge' }}
+            **Output lines:** ${{ steps.report-summary.outputs.lines }}
 
             **Scan Output:**
             ```
             ${{ steps.reports-scan.outputs.report }}
             ```
+
+            **What to do:**
+            - If PII detected: Clean artifacts and re-run scan
+            - Full logs available in [workflow artifacts](../actions/runs/${{ github.run_id }})
 
       - name: Fail if PII found in reports
         if: steps.reports-scan.outputs.exit_code != '0'
@@ -349,32 +384,56 @@ jobs:
         run: |
           echo "# 🔒 Privacy & Security Scan Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Scan | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Scan | Status | Details |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|---------|" >> $GITHUB_STEP_SUMMARY
 
           if [ "${{ needs.repository-scan.result }}" != "skipped" ]; then
             if [ "${{ needs.repository-scan.result }}" == "success" ]; then
-              echo "| Repository PII/PI Scan | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+              echo "| 🔍 Repository PII/PI Scan | ✅ Passed | No sensitive patterns detected |" >> $GITHUB_STEP_SUMMARY
             else
-              echo "| Repository PII/PI Scan | ⚠️ Check logs |" >> $GITHUB_STEP_SUMMARY
+              echo "| 🔍 Repository PII/PI Scan | ⚠️ Review | [Check artifacts](../actions/runs/${{ github.run_id }}) |" >> $GITHUB_STEP_SUMMARY
             fi
+          else
+            echo "| 🔍 Repository PII/PI Scan | ⏭️ Skipped | Not applicable for this event |" >> $GITHUB_STEP_SUMMARY
           fi
 
           if [ "${{ needs.gitleaks-scan.result }}" != "skipped" ]; then
             if [ "${{ needs.gitleaks-scan.result }}" == "success" ]; then
-              echo "| Gitleaks Secret Detection | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+              echo "| 🔐 Gitleaks Secret Detection | ✅ Passed | No secrets detected in git history |" >> $GITHUB_STEP_SUMMARY
             else
-              echo "| Gitleaks Secret Detection | ⚠️ Check logs |" >> $GITHUB_STEP_SUMMARY
+              echo "| 🔐 Gitleaks Secret Detection | ⚠️ Review | [Check PR comment & artifacts](../actions/runs/${{ github.run_id }}) |" >> $GITHUB_STEP_SUMMARY
             fi
+          else
+            echo "| 🔐 Gitleaks Secret Detection | ⏭️ Skipped | Not applicable for this event |" >> $GITHUB_STEP_SUMMARY
           fi
 
           if [ "${{ needs.reports-scan.result }}" != "skipped" ]; then
             if [ "${{ needs.reports-scan.result }}" == "success" ]; then
-              echo "| Reports Artifact Scan | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+              echo "| 📊 Reports Artifact Scan | ✅ Passed | No PII in test/coverage reports |" >> $GITHUB_STEP_SUMMARY
             elif [ "${{ needs.reports-scan.result }}" == "failure" ]; then
-              echo "| Reports Artifact Scan | ❌ PII Detected |" >> $GITHUB_STEP_SUMMARY
+              echo "| 📊 Reports Artifact Scan | ❌ Blocked | PII detected - merge blocked |" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "| 📊 Reports Artifact Scan | ⚠️ Review | [Check artifacts](../actions/runs/${{ github.run_id }}) |" >> $GITHUB_STEP_SUMMARY
             fi
+          else
+            echo "| 📊 Reports Artifact Scan | ⏭️ Skipped | No report artifacts changed |" >> $GITHUB_STEP_SUMMARY
           fi
 
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "All privacy and security scans completed." >> $GITHUB_STEP_SUMMARY
+          echo "## Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          PASSED=0
+          FAILED=0
+          SKIPPED=0
+
+          [ "${{ needs.repository-scan.result }}" == "success" ] && ((PASSED++)) || [ "${{ needs.repository-scan.result }}" != "skipped" ] && ((FAILED++)) || ((SKIPPED++))
+          [ "${{ needs.gitleaks-scan.result }}" == "success" ] && ((PASSED++)) || [ "${{ needs.gitleaks-scan.result }}" != "skipped" ] && ((FAILED++)) || ((SKIPPED++))
+          [ "${{ needs.reports-scan.result }}" == "success" ] && ((PASSED++)) || [ "${{ needs.reports-scan.result }}" != "skipped" ] && ((FAILED++)) || ((SKIPPED++))
+
+          echo "**Results:** $PASSED passed, $FAILED failed, $SKIPPED skipped" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Next steps:**" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ All green? Safe to merge" >> $GITHUB_STEP_SUMMARY
+          echo "- ⚠️ Any warnings? [Review artifacts](../actions/runs/${{ github.run_id }}) for details" >> $GITHUB_STEP_SUMMARY
+          echo "- ❌ Any failures? Fix before merging" >> $GITHUB_STEP_SUMMARY

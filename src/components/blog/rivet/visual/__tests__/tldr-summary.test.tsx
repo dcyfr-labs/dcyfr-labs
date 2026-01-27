@@ -31,7 +31,7 @@ describe('TLDRSummary', () => {
 
     it('renders default title', () => {
       render(<TLDRSummary sections={mockCommonSection} />);
-      expect(screen.getByText('TL;DR')).toBeInTheDocument();
+      expect(screen.getByText('Blog Post Brief')).toBeInTheDocument();
     });
 
     it('renders all items in mostCommon section', () => {
@@ -101,27 +101,29 @@ describe('TLDRSummary', () => {
 
   describe('Jump Link', () => {
     it('renders default jump link', () => {
-      render(<TLDRSummary sections={mockCommonSection} />);
-      const link = screen.getByText('Read full analysis');
+      render(<TLDRSummary sections={mockCommonSection} jumpLink="#content" />);
+      const link = screen.getByRole('link', { name: /read the details/i });
       expect(link).toBeInTheDocument();
       expect(link).toHaveAttribute('href', '#content');
     });
 
     it('renders custom jump link', () => {
       render(<TLDRSummary sections={mockCommonSection} jumpLink="#custom-section" />);
-      const link = screen.getByText('Read full analysis');
+      const link = screen.getByRole('link', { name: /read the details/i });
       expect(link).toHaveAttribute('href', '#custom-section');
     });
 
     it('renders jump link as anchor tag', () => {
-      render(<TLDRSummary sections={mockCommonSection} />);
-      const link = screen.getByText('Read full analysis');
+      render(<TLDRSummary sections={mockCommonSection} jumpLink="#content" />);
+      const link = screen.getByRole('link', { name: /read the details/i });
       expect(link.tagName).toBe('A');
     });
 
     it('includes chevron icon in jump link', () => {
-      const { container } = render(<TLDRSummary sections={mockCommonSection} />);
-      const link = screen.getByText('Read full analysis');
+      const { container } = render(
+        <TLDRSummary sections={mockCommonSection} jumpLink="#content" />
+      );
+      const link = screen.getByRole('link', { name: /read the details/i });
       const icon = link.querySelector('svg');
       expect(icon).toBeInTheDocument();
     });
@@ -143,7 +145,7 @@ describe('TLDRSummary', () => {
     it('has aria-label with default title', () => {
       render(<TLDRSummary sections={mockCommonSection} />);
       const section = screen.getByRole('region');
-      expect(section).toHaveAttribute('aria-label', 'TL;DR');
+      expect(section).toHaveAttribute('aria-label', 'Blog Post Brief');
     });
 
     it('renders section headings', () => {

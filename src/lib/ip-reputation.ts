@@ -5,7 +5,7 @@
  * Features rate limiting, caching, and error handling
  */
 
-import * as Sentry from "@sentry/nextjs";
+import * as Sentry from '@sentry/nextjs';
 import {
   type GreyNoiseIPContext,
   type GreyNoiseQuickCheck,
@@ -14,58 +14,13 @@ import {
   type IPReputationEntry,
   type IPReputationCheck,
   type IPReputationBulkResult,
-} from "@/types/ip-reputation";
-import { createClient } from "redis";
+} from '@/types/ip-reputation';
+import { redis } from '@/mcp/shared/redis-client';
 
-const GREYNOISE_BASE_URL = "https://api.greynoise.io/v3";
-const CACHE_PREFIX = "ip-reputation:";
+const GREYNOISE_BASE_URL = 'https://api.greynoise.io/v3';
+const CACHE_PREFIX = 'ip-reputation:';
 const CACHE_TTL_SECONDS = 3600; // 1 hour default cache
 const BULK_BATCH_SIZE = 100; // GreyNoise supports up to 500 IPs per request
-
-type RedisClient = ReturnType<typeof createClient>;
-
-declare global {
-  var __ipReputationRedisClient: RedisClient | undefined;
-}
-
-/**
- * Get or create Redis client for IP reputation caching
- */
-async function getIpReputationClient(): Promise<RedisClient | null> {
-  const redisUrl = process.env.REDIS_URL;
-  if (!redisUrl) return null;
-
-  if (!globalThis.__ipReputationRedisClient) {
-    const client = createClient({
-      url: redisUrl,
-      socket: {
-        connectTimeout: 5000,
-        reconnectStrategy: (retries) => {
-          if (retries > 3) return new Error("Max retries exceeded");
-          return Math.min(retries * 100, 3000);
-        },
-      },
-    });
-
-    client.on("error", (error) => {
-      console.error("IP Reputation Redis error:", error);
-      Sentry.captureException(error, {
-        tags: { component: "ip-reputation-cache" },
-      });
-    });
-
-    globalThis.__ipReputationRedisClient = client;
-  }
-
-  const client = globalThis.__ipReputationRedisClient;
-  if (!client) return null;
-
-  if (!client.isOpen) {
-    await client.connect();
-  }
-
-  return client;
-}
 
 /**
  * GreyNoise API client
@@ -75,41 +30,34 @@ export class GreyNoiseClient {
   private baseUrl: string;
 
   constructor(apiKey?: string) {
-    this.apiKey = apiKey || process.env.GREYNOISE_API_KEY || "";
+    this.apiKey = apiKey || process.env.GREYNOISE_API_KEY || '';
     this.baseUrl = GREYNOISE_BASE_URL;
 
     if (!this.apiKey) {
-      console.warn(
-        "GreyNoise API key not configured. Some features may not work."
-      );
+      console.warn('GreyNoise API key not configured. Some features may not work.');
     }
   }
 
   /**
    * Make authenticated request to GreyNoise API
    */
-  private async makeRequest<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<T> {
+  private async makeRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
 
     const response = await fetch(url, {
       ...options,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         ...(this.apiKey && { key: this.apiKey }),
         ...options.headers,
       },
     });
 
     if (!response.ok) {
-      const error = new Error(
-        `GreyNoise API error: ${response.status} ${response.statusText}`
-      );
+      const error = new Error(`GreyNoise API error: ${response.status} ${response.statusText}`);
       Sentry.captureException(error, {
         tags: {
-          component: "greynoise-api",
+          component: 'greynoise-api',
           endpoint,
           status: response.status,
         },
@@ -138,8 +86,8 @@ export class GreyNoiseClient {
    * Bulk lookup for multiple IPs
    */
   async bulkLookup(ips: string[]): Promise<GreyNoiseBulkLookup> {
-    return this.makeRequest<GreyNoiseBulkLookup>("/context", {
-      method: "POST",
+    return this.makeRequest<GreyNoiseBulkLookup>('/context', {
+      method: 'POST',
       body: JSON.stringify({ ips }),
     });
   }
@@ -157,38 +105,27 @@ export class GreyNoiseClient {
  */
 export class IPReputationService {
   private greynoiseClient: GreyNoiseClient;
-  private cacheClient: RedisClient | null = null;
 
   constructor(greynoiseApiKey?: string) {
     this.greynoiseClient = new GreyNoiseClient(greynoiseApiKey);
   }
 
   /**
-   * Initialize Redis cache connection
-   */
-  async initialize(): Promise<void> {
-    this.cacheClient = await getIpReputationClient();
-  }
-
-  /**
    * Get cached IP reputation or fetch from GreyNoise
    */
-  async getIpReputation(
-    ip: string,
-    useCache = true
-  ): Promise<IPReputationCheck> {
+  async getIpReputation(ip: string, useCache = true): Promise<IPReputationCheck> {
     const startTime = Date.now();
 
     // Check cache first
-    if (useCache && this.cacheClient) {
+    if (useCache) {
       try {
-        const cached = await this.cacheClient.get(`${CACHE_PREFIX}${ip}`);
-        if (cached) {
+        const cached = await redis.get(`${CACHE_PREFIX}${ip}`);
+        if (typeof cached === 'string') {
           const reputation = JSON.parse(cached) as IPReputationEntry;
           return this.buildReputationCheck(ip, reputation, true, startTime);
         }
       } catch (error) {
-        console.error("Cache lookup error:", error);
+        console.error('Cache lookup error:', error);
       }
     }
 
@@ -199,43 +136,36 @@ export class IPReputationService {
         this.greynoiseClient.riotCheck(ip),
       ]);
 
-      const greynoiseData =
-        context.status === "fulfilled" ? context.value : null;
-      const riotData = riot.status === "fulfilled" ? riot.value : null;
+      const greynoiseData = context.status === 'fulfilled' ? context.value : null;
+      const riotData = riot.status === 'fulfilled' ? riot.value : null;
 
       // Create reputation entry
       const reputation = this.analyzeReputation(ip, greynoiseData, riotData);
 
       // Cache the result
-      if (this.cacheClient) {
-        try {
-          await this.cacheClient.setEx(
-            `${CACHE_PREFIX}${ip}`,
-            CACHE_TTL_SECONDS,
-            JSON.stringify(reputation)
-          );
-        } catch (error) {
-          console.error("Cache store error:", error);
-        }
+      try {
+        await redis.setex(`${CACHE_PREFIX}${ip}`, CACHE_TTL_SECONDS, JSON.stringify(reputation));
+      } catch (error) {
+        console.error('Cache store error:', error);
       }
 
       return this.buildReputationCheck(ip, reputation, false, startTime);
     } catch (error) {
-      console.error("GreyNoise lookup error:", error);
+      console.error('GreyNoise lookup error:', error);
       Sentry.captureException(error, {
-        tags: { component: "ip-reputation", ip },
+        tags: { component: 'ip-reputation', ip },
       });
 
       // Return unknown classification on error
       const unknownReputation: IPReputationEntry = {
         ip,
-        classification: "unknown",
+        classification: 'unknown',
         first_seen: new Date().toISOString(),
         last_seen: new Date().toISOString(),
         last_updated: new Date().toISOString(),
-        source: "greynoise",
+        source: 'greynoise',
         confidence_score: 0,
-        tags: ["lookup-failed"],
+        tags: ['lookup-failed'],
       };
 
       return this.buildReputationCheck(ip, unknownReputation, false, startTime);
@@ -253,9 +183,7 @@ export class IPReputationService {
     const batches = this.chunkArray(ips, BULK_BATCH_SIZE);
 
     for (const batch of batches) {
-      const batchResults = await Promise.all(
-        batch.map((ip) => this.getIpReputation(ip))
-      );
+      const batchResults = await Promise.all(batch.map((ip) => this.getIpReputation(ip)));
       results.push(...batchResults);
     }
 
@@ -292,15 +220,15 @@ export class IPReputationService {
     if (riotData?.riot) {
       return {
         ip,
-        classification: "benign",
+        classification: 'benign',
         first_seen: greynoiseData?.first_seen || now,
         last_seen: greynoiseData?.last_seen || now,
         last_updated: now,
-        source: "greynoise",
+        source: 'greynoise',
         greynoise_data: greynoiseData || undefined,
         riot_data: riotData,
         confidence_score: 95,
-        tags: ["riot", riotData.category || "business"].filter(Boolean),
+        tags: ['riot', riotData.category || 'business'].filter(Boolean),
         metadata: {
           country: greynoiseData?.metadata?.country,
           asn: greynoiseData?.metadata?.asn,
@@ -313,14 +241,14 @@ export class IPReputationService {
     }
 
     // Malicious classification
-    if (greynoiseData?.classification === "malicious") {
+    if (greynoiseData?.classification === 'malicious') {
       return {
         ip,
-        classification: "malicious",
+        classification: 'malicious',
         first_seen: greynoiseData.first_seen || now,
         last_seen: greynoiseData.last_seen || now,
         last_updated: now,
-        source: "greynoise",
+        source: 'greynoise',
         greynoise_data: greynoiseData,
         confidence_score: 90,
         tags: greynoiseData.tags || [],
@@ -337,27 +265,27 @@ export class IPReputationService {
 
     // Suspicious indicators
     const suspiciousFactors = [];
-    if (greynoiseData?.metadata?.tor) suspiciousFactors.push("tor");
-    if (greynoiseData?.vpn) suspiciousFactors.push("vpn");
-    if (greynoiseData?.bot) suspiciousFactors.push("bot");
+    if (greynoiseData?.metadata?.tor) suspiciousFactors.push('tor');
+    if (greynoiseData?.vpn) suspiciousFactors.push('vpn');
+    if (greynoiseData?.bot) suspiciousFactors.push('bot');
     if (
       greynoiseData?.tags?.some((tag) =>
-        ["scanner", "bruteforce", "exploit", "malware"].some((bad) =>
+        ['scanner', 'bruteforce', 'exploit', 'malware'].some((bad) =>
           tag.toLowerCase().includes(bad)
         )
       )
     ) {
-      suspiciousFactors.push("scanning");
+      suspiciousFactors.push('scanning');
     }
 
     if (suspiciousFactors.length > 0) {
       return {
         ip,
-        classification: "suspicious",
+        classification: 'suspicious',
         first_seen: greynoiseData?.first_seen || now,
         last_seen: greynoiseData?.last_seen || now,
         last_updated: now,
-        source: "greynoise",
+        source: 'greynoise',
         greynoise_data: greynoiseData || undefined,
         confidence_score: 70,
         tags: [...(greynoiseData?.tags || []), ...suspiciousFactors],
@@ -375,11 +303,11 @@ export class IPReputationService {
     // Benign or unknown
     return {
       ip,
-      classification: greynoiseData?.classification || "unknown",
+      classification: greynoiseData?.classification || 'unknown',
       first_seen: greynoiseData?.first_seen || now,
       last_seen: greynoiseData?.last_seen || now,
       last_updated: now,
-      source: "greynoise",
+      source: 'greynoise',
       greynoise_data: greynoiseData || undefined,
       confidence_score: greynoiseData ? 60 : 0,
       tags: greynoiseData?.tags || [],
@@ -405,13 +333,11 @@ export class IPReputationService {
   ): IPReputationCheck {
     return {
       ip,
-      is_malicious: reputation.classification === "malicious",
-      is_suspicious: reputation.classification === "suspicious",
-      is_benign: reputation.classification === "benign",
-      should_block: reputation.classification === "malicious",
-      should_rate_limit: ["malicious", "suspicious"].includes(
-        reputation.classification
-      ),
+      is_malicious: reputation.classification === 'malicious',
+      is_suspicious: reputation.classification === 'suspicious',
+      is_benign: reputation.classification === 'benign',
+      should_block: reputation.classification === 'malicious',
+      should_rate_limit: ['malicious', 'suspicious'].includes(reputation.classification),
       confidence: reputation.confidence_score,
       sources: [reputation.source],
       details: reputation,

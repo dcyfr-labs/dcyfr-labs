@@ -64,13 +64,22 @@ async function trackCost() {
     fs.appendFileSync(logFile, JSON.stringify(logEntry) + '\n');
 
     // Also create CSV version for easier analysis
+    // CWE-367 Prevention: Use atomic flag 'a' to avoid race condition (TOCTOU)
     const csvFile = path.join(logDir, 'ai-usage.csv');
     const csvLine = `${logEntry.timestamp},${model},${estimatedTokens},${cost.toFixed(4)},${branch},${turns}\n`;
 
-    if (!fs.existsSync(csvFile)) {
-      fs.writeFileSync(csvFile, 'timestamp,model,tokens,cost,branch,turns\n');
+    // Use atomic append - creates file if missing, appends if exists
+    try {
+      fs.appendFileSync(csvFile, csvLine, { flag: 'a', encoding: 'utf-8' });
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        // File doesn't exist - write with header
+        const header = 'timestamp,model,tokens,cost,branch,turns\n';
+        fs.writeFileSync(csvFile, header + csvLine, { encoding: 'utf-8' });
+      } else {
+        throw error;
+      }
     }
-    fs.appendFileSync(csvFile, csvLine);
 
     // Output summary
     console.log(

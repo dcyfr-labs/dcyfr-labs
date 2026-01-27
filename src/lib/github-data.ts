@@ -6,16 +6,7 @@
  * of GitHub activity widgets.
  */
 
-// Conditional import to prevent client-side bundling
-let createClientFn: any = null;
-
-async function getCreateClient() {
-  if (typeof window === 'undefined' && !createClientFn) {
-    const { createClient } = await import('redis');
-    createClientFn = createClient;
-  }
-  return createClientFn;
-}
+import { redis } from '@/mcp/shared/redis-client';
 
 // ============================================================================
 // TYPES
@@ -50,42 +41,6 @@ export interface PinnedRepository {
 
 const CACHE_KEY = 'github:contributions:dcyfr';
 const FALLBACK_DATA_KEY = 'github:fallback-data';
-
-// ============================================================================
-// REDIS CLIENT
-// ============================================================================
-
-/**
- * Get Redis client for cache access
- */
-async function getRedisClient() {
-  const redisUrl = process.env.REDIS_URL;
-  if (!redisUrl) {
-    console.warn('[GitHub Data] REDIS_URL not configured');
-    return null;
-  }
-
-  try {
-    const createClient = await getCreateClient();
-    if (!createClient) {
-      console.warn('[GitHub Data] Redis client not available on client-side');
-      return null;
-    }
-
-    const redis = createClient({
-      url: redisUrl,
-      socket: {
-        connectTimeout: 5000,
-      },
-    });
-
-    await redis.connect();
-    return redis;
-  } catch (error) {
-    console.error('[GitHub Data] Redis connection failed:', error);
-    return null;
-  }
-}
 
 // ============================================================================
 // FALLBACK DATA
@@ -171,46 +126,27 @@ export async function getGitHubContributions(
   }
 
   try {
-    // Try to get data from Redis cache
-    const redis = await getRedisClient();
+    // Try the main cache
+    const cached = await redis.get(CACHE_KEY);
 
-    if (!redis) {
-      console.warn('[GitHub Data] Redis not available, using fallback data');
-      return generateFallbackData();
+    if (cached && typeof cached === 'string') {
+      const data = JSON.parse(cached) as ContributionResponse;
+      console.warn('[GitHub Data] ✅ Loaded from cache:', {
+        totalContributions: data.totalContributions,
+        lastUpdated: data.lastUpdated,
+        source: data.source,
+      });
+      return data;
     }
 
-    try {
-      // First try the main cache
-      const cached = await redis.get(CACHE_KEY);
+    // Try fallback cache if main cache is empty
+    const fallbackCached = await redis.get(FALLBACK_DATA_KEY);
 
-      if (cached) {
-        const data = JSON.parse(cached) as ContributionResponse;
-        console.warn('[GitHub Data] ✅ Loaded from cache:', {
-          totalContributions: data.totalContributions,
-          lastUpdated: data.lastUpdated,
-          source: data.source,
-        });
-
-        // No quit() needed - Upstash uses HTTP REST API (stateless)
-        return data;
-      }
-
-      // Try fallback cache if main cache is empty
-      const fallbackCached = await redis.get(FALLBACK_DATA_KEY);
-
-      if (fallbackCached) {
-        const data = JSON.parse(fallbackCached) as ContributionResponse;
-        data.warning = 'Using cached data - GitHub API temporarily unavailable';
-        console.warn('[GitHub Data] ⚠️ Using fallback cache');
-
-        // No quit() needed - Upstash uses HTTP REST API (stateless)
-        return data;
-      }
-
-      // No quit() needed - Upstash uses HTTP REST API (stateless)
-    } catch (redisError) {
-      console.error('[GitHub Data] Redis read error:', redisError);
-      // No quit() needed - Upstash uses HTTP REST API (stateless)
+    if (fallbackCached && typeof fallbackCached === 'string') {
+      const data = JSON.parse(fallbackCached) as ContributionResponse;
+      data.warning = 'Using cached data - GitHub API temporarily unavailable';
+      console.warn('[GitHub Data] ⚠️ Using fallback cache');
+      return data;
     }
   } catch (error) {
     console.error('[GitHub Data] Cache access failed:', error);
@@ -231,36 +167,22 @@ export async function checkGitHubDataHealth(): Promise<{
   totalContributions?: number;
 }> {
   try {
-    const redis = await getRedisClient();
+    const cached = await redis.get(CACHE_KEY);
 
-    if (!redis) {
-      return { cacheAvailable: false, dataFresh: false };
-    }
-
-    try {
-      const cached = await redis.get(CACHE_KEY);
-
-      if (!cached) {
-        // No quit() needed - Upstash uses HTTP REST API (stateless)
-        return { cacheAvailable: true, dataFresh: false };
-      }
-
-      const data = JSON.parse(cached) as ContributionResponse;
-      const lastUpdated = new Date(data.lastUpdated);
-      const isRecent = Date.now() - lastUpdated.getTime() < 2 * 60 * 60 * 1000; // 2 hours
-
-      // No quit() needed - Upstash uses HTTP REST API (stateless)
-
-      return {
-        cacheAvailable: true,
-        dataFresh: isRecent,
-        lastUpdated: data.lastUpdated,
-        totalContributions: data.totalContributions,
-      };
-    } catch (redisError) {
-      // No quit() needed - Upstash uses HTTP REST API (stateless)
+    if (!cached || typeof cached !== 'string') {
       return { cacheAvailable: true, dataFresh: false };
     }
+
+    const data = JSON.parse(cached) as ContributionResponse;
+    const lastUpdated = new Date(data.lastUpdated);
+    const isRecent = Date.now() - lastUpdated.getTime() < 2 * 60 * 60 * 1000; // 2 hours
+
+    return {
+      cacheAvailable: true,
+      dataFresh: isRecent,
+      lastUpdated: data.lastUpdated,
+      totalContributions: data.totalContributions,
+    };
   } catch (error) {
     return { cacheAvailable: false, dataFresh: false };
   }

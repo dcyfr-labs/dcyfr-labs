@@ -17,30 +17,22 @@
  * - bookmarks:project:{slug} - Total bookmark count for a project
  */
 
-import { createClient } from "redis";
+import { redis } from '@/mcp/shared/redis-client';
 
 // ============================================================================
 // CONSTANTS
 // ============================================================================
 
-const LIKE_KEY_PREFIX = "likes:";
-const BOOKMARK_KEY_PREFIX = "bookmarks:";
-const LIKE_HISTORY_PREFIX = "likes:history:";
-const BOOKMARK_HISTORY_PREFIX = "bookmarks:history:";
-
-const redisUrl = process.env.REDIS_URL;
+const LIKE_KEY_PREFIX = 'likes:';
+const BOOKMARK_KEY_PREFIX = 'bookmarks:';
+const LIKE_HISTORY_PREFIX = 'likes:history:';
+const BOOKMARK_HISTORY_PREFIX = 'bookmarks:history:';
 
 // ============================================================================
 // TYPES
 // ============================================================================
 
-type RedisClient = ReturnType<typeof createClient>;
-
-declare global {
-  var __engagementRedisClient: RedisClient | undefined;
-}
-
-export type ContentType = "post" | "project" | "activity";
+export type ContentType = 'post' | 'project' | 'activity';
 
 export interface EngagementStats {
   likes: number;
@@ -82,52 +74,6 @@ const formatBookmarkHistoryKey = (contentType: ContentType, slug: string) =>
   `${BOOKMARK_HISTORY_PREFIX}${contentType}:${slug}`;
 
 // ============================================================================
-// REDIS CLIENT
-// ============================================================================
-
-/**
- * Get or create Redis client with connection pooling
- */
-async function getClient(): Promise<RedisClient | null> {
-  if (!redisUrl) {
-    if (process.env.NODE_ENV === "development") {
-      console.warn("[EngagementAnalytics] Redis URL not configured");
-    }
-    return null;
-  }
-
-  if (!globalThis.__engagementRedisClient) {
-    const client = createClient({
-      url: redisUrl,
-      socket: {
-        connectTimeout: 5000, // 5s connection timeout
-        reconnectStrategy: (retries) => {
-          if (retries > 3) return new Error("Max retries exceeded");
-          return Math.min(retries * 100, 3000); // Exponential backoff, max 3s
-        },
-      },
-    });
-
-    client.on("error", (error) => {
-      if (process.env.NODE_ENV !== "production") {
-        console.error("[EngagementAnalytics] Redis error:", error);
-      }
-    });
-
-    globalThis.__engagementRedisClient = client;
-  }
-
-  const client = globalThis.__engagementRedisClient;
-  if (!client) return null;
-
-  if (!client.isOpen) {
-    await client.connect();
-  }
-
-  return client;
-}
-
-// ============================================================================
 // LIKE OPERATIONS
 // ============================================================================
 
@@ -141,30 +87,23 @@ export async function incrementLikes(
   contentType: ContentType,
   slug: string
 ): Promise<number | null> {
-  const client = await getClient();
-  if (!client) return null;
-
   try {
-    const count = await client.incr(formatLikeKey(contentType, slug));
+    const count = await redis.incr(formatLikeKey(contentType, slug));
 
     // Record in history for trending analysis
     const now = Date.now();
-    await client.zAdd(formatLikeHistoryKey(contentType, slug), {
+    await redis.zadd(formatLikeHistoryKey(contentType, slug), {
       score: now,
-      value: `${now}`,
+      member: `${now}`,
     });
 
     // Clean up history older than 90 days
     const ninetyDaysAgo = now - 90 * 24 * 60 * 60 * 1000;
-    await client.zRemRangeByScore(
-      formatLikeHistoryKey(contentType, slug),
-      "-inf",
-      ninetyDaysAgo
-    );
+    await redis.zremrangebyscore(formatLikeHistoryKey(contentType, slug), '-inf', ninetyDaysAgo);
 
     return count;
   } catch (error) {
-    console.error("[EngagementAnalytics] Failed to increment likes:", error);
+    console.error('[EngagementAnalytics] Failed to increment likes:', error);
     return null;
   }
 }
@@ -179,19 +118,16 @@ export async function decrementLikes(
   contentType: ContentType,
   slug: string
 ): Promise<number | null> {
-  const client = await getClient();
-  if (!client) return null;
-
   try {
-    const count = await client.decr(formatLikeKey(contentType, slug));
+    const count = await redis.decr(formatLikeKey(contentType, slug));
     // Ensure count doesn't go negative
     if (count < 0) {
-      await client.set(formatLikeKey(contentType, slug), 0);
+      await redis.set(formatLikeKey(contentType, slug), 0);
       return 0;
     }
     return count;
   } catch (error) {
-    console.error("[EngagementAnalytics] Failed to decrement likes:", error);
+    console.error('[EngagementAnalytics] Failed to decrement likes:', error);
     return null;
   }
 }
@@ -202,19 +138,13 @@ export async function decrementLikes(
  * @param slug - Content slug/identifier
  * @returns Like count, or null if Redis unavailable
  */
-export async function getLikes(
-  contentType: ContentType,
-  slug: string
-): Promise<number | null> {
-  const client = await getClient();
-  if (!client) return null;
-
+export async function getLikes(contentType: ContentType, slug: string): Promise<number | null> {
   try {
-    const value = await client.get(formatLikeKey(contentType, slug));
+    const value = await redis.get(formatLikeKey(contentType, slug));
     const parsed = value === null ? 0 : Number(value);
     return Number.isFinite(parsed) ? parsed : 0;
   } catch (error) {
-    console.error("[EngagementAnalytics] Failed to get likes:", error);
+    console.error('[EngagementAnalytics] Failed to get likes:', error);
     return null;
   }
 }
@@ -222,24 +152,14 @@ export async function getLikes(
 /**
  * Get like count for last 24 hours
  */
-export async function getLikes24h(
-  contentType: ContentType,
-  slug: string
-): Promise<number | null> {
-  const client = await getClient();
-  if (!client) return null;
-
+export async function getLikes24h(contentType: ContentType, slug: string): Promise<number | null> {
   try {
     const now = Date.now();
     const oneDayAgo = now - 24 * 60 * 60 * 1000;
-    const count = await client.zCount(
-      formatLikeHistoryKey(contentType, slug),
-      oneDayAgo,
-      now
-    );
+    const count = await redis.zcount(formatLikeHistoryKey(contentType, slug), oneDayAgo, now);
     return count;
   } catch (error) {
-    console.error("[EngagementAnalytics] Failed to get 24h likes:", error);
+    console.error('[EngagementAnalytics] Failed to get 24h likes:', error);
     return null;
   }
 }
@@ -258,33 +178,27 @@ export async function incrementBookmarks(
   contentType: ContentType,
   slug: string
 ): Promise<number | null> {
-  const client = await getClient();
-  if (!client) return null;
-
   try {
-    const count = await client.incr(formatBookmarkKey(contentType, slug));
+    const count = await redis.incr(formatBookmarkKey(contentType, slug));
 
     // Record in history for trending analysis
     const now = Date.now();
-    await client.zAdd(formatBookmarkHistoryKey(contentType, slug), {
+    await redis.zadd(formatBookmarkHistoryKey(contentType, slug), {
       score: now,
-      value: `${now}`,
+      member: `${now}`,
     });
 
     // Clean up history older than 90 days
     const ninetyDaysAgo = now - 90 * 24 * 60 * 60 * 1000;
-    await client.zRemRangeByScore(
+    await redis.zremrangebyscore(
       formatBookmarkHistoryKey(contentType, slug),
-      "-inf",
+      '-inf',
       ninetyDaysAgo
     );
 
     return count;
   } catch (error) {
-    console.error(
-      "[EngagementAnalytics] Failed to increment bookmarks:",
-      error
-    );
+    console.error('[EngagementAnalytics] Failed to increment bookmarks:', error);
     return null;
   }
 }
@@ -299,22 +213,16 @@ export async function decrementBookmarks(
   contentType: ContentType,
   slug: string
 ): Promise<number | null> {
-  const client = await getClient();
-  if (!client) return null;
-
   try {
-    const count = await client.decr(formatBookmarkKey(contentType, slug));
+    const count = await redis.decr(formatBookmarkKey(contentType, slug));
     // Ensure count doesn't go negative
     if (count < 0) {
-      await client.set(formatBookmarkKey(contentType, slug), 0);
+      await redis.set(formatBookmarkKey(contentType, slug), 0);
       return 0;
     }
     return count;
   } catch (error) {
-    console.error(
-      "[EngagementAnalytics] Failed to decrement bookmarks:",
-      error
-    );
+    console.error('[EngagementAnalytics] Failed to decrement bookmarks:', error);
     return null;
   }
 }
@@ -325,19 +233,13 @@ export async function decrementBookmarks(
  * @param slug - Content slug/identifier
  * @returns Bookmark count, or null if Redis unavailable
  */
-export async function getBookmarks(
-  contentType: ContentType,
-  slug: string
-): Promise<number | null> {
-  const client = await getClient();
-  if (!client) return null;
-
+export async function getBookmarks(contentType: ContentType, slug: string): Promise<number | null> {
   try {
-    const value = await client.get(formatBookmarkKey(contentType, slug));
+    const value = await redis.get(formatBookmarkKey(contentType, slug));
     const parsed = value === null ? 0 : Number(value);
     return Number.isFinite(parsed) ? parsed : 0;
   } catch (error) {
-    console.error("[EngagementAnalytics] Failed to get bookmarks:", error);
+    console.error('[EngagementAnalytics] Failed to get bookmarks:', error);
     return null;
   }
 }
@@ -349,20 +251,13 @@ export async function getBookmarks24h(
   contentType: ContentType,
   slug: string
 ): Promise<number | null> {
-  const client = await getClient();
-  if (!client) return null;
-
   try {
     const now = Date.now();
     const oneDayAgo = now - 24 * 60 * 60 * 1000;
-    const count = await client.zCount(
-      formatBookmarkHistoryKey(contentType, slug),
-      oneDayAgo,
-      now
-    );
+    const count = await redis.zcount(formatBookmarkHistoryKey(contentType, slug), oneDayAgo, now);
     return count;
   } catch (error) {
-    console.error("[EngagementAnalytics] Failed to get 24h bookmarks:", error);
+    console.error('[EngagementAnalytics] Failed to get 24h bookmarks:', error);
     return null;
   }
 }
@@ -381,9 +276,6 @@ export async function getEngagementStats(
   contentType: ContentType,
   slug: string
 ): Promise<EngagementStats | null> {
-  const client = await getClient();
-  if (!client) return null;
-
   try {
     const [likes, bookmarks, likes24h, bookmarks24h] = await Promise.all([
       getLikes(contentType, slug),
@@ -399,10 +291,7 @@ export async function getEngagementStats(
       bookmarkHistory24h: bookmarks24h ?? 0,
     };
   } catch (error) {
-    console.error(
-      "[EngagementAnalytics] Failed to get engagement stats:",
-      error
-    );
+    console.error('[EngagementAnalytics] Failed to get engagement stats:', error);
     return null;
   }
 }
@@ -443,19 +332,16 @@ export async function getTopLiked(
   contentType: ContentType,
   limit = 10
 ): Promise<Array<{ slug: string; count: number }>> {
-  const client = await getClient();
-  if (!client) return [];
-
   try {
     // Get all keys matching the pattern
     const pattern = `${LIKE_KEY_PREFIX}${contentType}:*`;
-    const keys = await client.keys(pattern);
+    const keys = await redis.keys(pattern);
 
     // Get counts for all keys
     const counts = await Promise.all(
       keys.map(async (key) => {
-        const value = await client.get(key);
-        const slug = key.replace(`${LIKE_KEY_PREFIX}${contentType}:`, "");
+        const value = await redis.get(key);
+        const slug = key.replace(`${LIKE_KEY_PREFIX}${contentType}:`, '');
         return { slug, count: value ? Number(value) : 0 };
       })
     );
@@ -463,7 +349,7 @@ export async function getTopLiked(
     // Sort by count descending and limit
     return counts.sort((a, b) => b.count - a.count).slice(0, limit);
   } catch (error) {
-    console.error("[EngagementAnalytics] Failed to get top liked:", error);
+    console.error('[EngagementAnalytics] Failed to get top liked:', error);
     return [];
   }
 }
@@ -478,19 +364,16 @@ export async function getTopBookmarked(
   contentType: ContentType,
   limit = 10
 ): Promise<Array<{ slug: string; count: number }>> {
-  const client = await getClient();
-  if (!client) return [];
-
   try {
     // Get all keys matching the pattern
     const pattern = `${BOOKMARK_KEY_PREFIX}${contentType}:*`;
-    const keys = await client.keys(pattern);
+    const keys = await redis.keys(pattern);
 
     // Get counts for all keys
     const counts = await Promise.all(
       keys.map(async (key) => {
-        const value = await client.get(key);
-        const slug = key.replace(`${BOOKMARK_KEY_PREFIX}${contentType}:`, "");
+        const value = await redis.get(key);
+        const slug = key.replace(`${BOOKMARK_KEY_PREFIX}${contentType}:`, '');
         return { slug, count: value ? Number(value) : 0 };
       })
     );
@@ -498,7 +381,7 @@ export async function getTopBookmarked(
     // Sort by count descending and limit
     return counts.sort((a, b) => b.count - a.count).slice(0, limit);
   } catch (error) {
-    console.error("[EngagementAnalytics] Failed to get top bookmarked:", error);
+    console.error('[EngagementAnalytics] Failed to get top bookmarked:', error);
     return [];
   }
 }

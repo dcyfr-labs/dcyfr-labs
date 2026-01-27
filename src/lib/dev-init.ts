@@ -13,7 +13,8 @@
  */
 
 import { devLogger, setupHangDetection } from './dev-logger';
-import { setupRedisMonitoring, redisManager } from './redis-debug';
+// TODO: redis-debug is deprecated, remove this import
+// import { setupRedisMonitoring, redisManager } from './redis-debug';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -35,11 +36,12 @@ export function initializeDevTools() {
     devLogger.info('✓ Hang detection enabled (10s interval)');
   }
 
+  // TODO: Redis monitoring deprecated with Upstash migration
   // Setup Redis monitoring (check every 30 seconds)
-  redisMonitorInterval = setupRedisMonitoring(30000);
-  if (redisMonitorInterval) {
-    devLogger.info('✓ Redis connection monitoring enabled (30s interval)');
-  }
+  // redisMonitorInterval = setupRedisMonitoring(30000);
+  // if (redisMonitorInterval) {
+  //   devLogger.info('✓ Redis connection monitoring enabled (30s interval)');
+  // }
 
   // Setup process event handlers
   setupProcessHandlers();
@@ -107,13 +109,14 @@ function setupProcessHandlers() {
     // Log pending operations
     devLogger.logPendingOperations();
 
+    // TODO: Redis disconnection deprecated with Upstash (REST API, no connections)
     // Disconnect Redis clients
-    try {
-      await redisManager.disconnectAll();
-      devLogger.info('✓ All Redis connections closed');
-    } catch (error) {
-      devLogger.error('Error closing Redis connections', { error });
-    }
+    // try {
+    //   await redisManager.disconnectAll();
+    //   devLogger.info('✓ All Redis connections closed');
+    // } catch (error) {
+    //   devLogger.error('Error closing Redis connections', { error });
+    // }
 
     devLogger.info('Cleanup complete');
     process.exit(0);

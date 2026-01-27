@@ -1,22 +1,18 @@
-import { NextRequest, NextResponse } from "next/server";
-import { timingSafeEqual } from "crypto";
-import * as Sentry from "@sentry/nextjs";
-import { blockExternalAccess } from "@/lib/api-security";
+import { NextRequest, NextResponse } from 'next/server';
+import { timingSafeEqual } from 'crypto';
+import * as Sentry from '@sentry/nextjs';
+import { blockExternalAccess } from '@/lib/api-security';
 import {
   getMultiplePostViews,
   getMultiplePostViews24h,
   getMultiplePostViewsInRange,
-} from "@/lib/views.server";
-import { getPostSharesBulk, getPostShares24hBulk } from "@/lib/shares";
-import { getPostCommentsBulk, getPostComments24hBulk } from "@/lib/comments";
-import { posts } from "@/data/posts";
-import { createClient } from "redis";
-import {
-  rateLimit,
-  getClientIp,
-  createRateLimitHeaders,
-} from "@/lib/rate-limit";
-import { handleApiError } from "@/lib/error-handler";
+} from '@/lib/views.server';
+import { getPostSharesBulk, getPostShares24hBulk } from '@/lib/shares';
+import { getPostCommentsBulk, getPostComments24hBulk } from '@/lib/comments';
+import { posts } from '@/data/posts';
+import { redis } from '@/mcp/shared/redis-client';
+import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
+import { handleApiError } from '@/lib/error-handler';
 
 /**
  * Security Configuration for Analytics API
@@ -62,8 +58,7 @@ import { handleApiError } from "@/lib/error-handler";
 // Development/Preview: More generous for testing and development
 // Production: Stricter limits (though production access is blocked entirely)
 const isDevelopment =
-  process.env.NODE_ENV === "development" ||
-  process.env.VERCEL_ENV === "preview";
+  process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === 'preview';
 
 const RATE_LIMIT_CONFIG = {
   limit: isDevelopment ? 60 : 10, // 60/min in dev, 10/min otherwise
@@ -86,27 +81,23 @@ function validateApiKey(request: Request): boolean {
 
   // If no admin key is configured, deny all access
   if (!adminKey) {
-    console.error(
-      "[Analytics API] ADMIN_API_KEY not configured - endpoint disabled"
-    );
+    console.error('[Analytics API] ADMIN_API_KEY not configured - endpoint disabled');
     return false;
   }
 
-  const authHeader = request.headers.get("Authorization");
+  const authHeader = request.headers.get('Authorization');
 
   if (!authHeader) {
     return false;
   }
 
   // Support "Bearer TOKEN" format
-  const token = authHeader.startsWith("Bearer ")
-    ? authHeader.slice(7)
-    : authHeader;
+  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : authHeader;
 
   // Use timing-safe comparison to prevent timing attacks
   try {
-    const tokenBuf = Buffer.from(token, "utf8");
-    const keyBuf = Buffer.from(adminKey, "utf8");
+    const tokenBuf = Buffer.from(token, 'utf8');
+    const keyBuf = Buffer.from(adminKey, 'utf8');
 
     // Ensure buffers are same length to prevent length-based timing
     if (tokenBuf.length !== keyBuf.length) {
@@ -116,7 +107,7 @@ function validateApiKey(request: Request): boolean {
     return timingSafeEqual(tokenBuf, keyBuf);
   } catch (error) {
     // If comparison fails (e.g., buffer creation error), deny access
-    console.error("[Analytics API] Error during key validation:", error);
+    console.error('[Analytics API] Error during key validation:', error);
     return false;
   }
 }
@@ -135,16 +126,12 @@ function isAllowedEnvironment(): boolean {
   const vercelEnv = process.env.VERCEL_ENV;
 
   // Block production entirely - analytics should never be exposed in production
-  if (vercelEnv === "production") {
+  if (vercelEnv === 'production') {
     return false;
   }
 
   // Allow development and preview environments
-  if (
-    nodeEnv === "development" ||
-    vercelEnv === "preview" ||
-    nodeEnv === "test"
-  ) {
+  if (nodeEnv === 'development' || vercelEnv === 'preview' || nodeEnv === 'test') {
     return true;
   }
 
@@ -169,28 +156,24 @@ function isAllowedEnvironment(): boolean {
  * @param status - "success" or "denied"
  * @param reason - Reason for denial (if applicable)
  */
-function logAccess(
-  request: Request,
-  status: "success" | "denied",
-  reason?: string
-) {
+function logAccess(request: Request, status: 'success' | 'denied', reason?: string) {
   const url = new URL(request.url);
   const timestamp = new Date().toISOString();
   const ip = getClientIp(request);
-  const userAgent = request.headers.get("user-agent") || "unknown";
+  const userAgent = request.headers.get('user-agent') || 'unknown';
   const queryParams = url.searchParams.toString();
 
   const logData = {
-    event: "admin_access",
-    endpoint: "/api/analytics",
-    method: "GET",
+    event: 'admin_access',
+    endpoint: '/api/analytics',
+    method: 'GET',
     result: status,
     reason: reason || undefined,
     timestamp,
     ip,
     userAgent,
     queryParams: queryParams || undefined,
-    environment: process.env.NODE_ENV || "unknown",
+    environment: process.env.NODE_ENV || 'unknown',
     vercelEnv: process.env.VERCEL_ENV || undefined,
   };
 
@@ -198,73 +181,54 @@ function logAccess(
   console.warn(JSON.stringify(logData));
 
   // Send security events to Sentry for alerting
-  if (status === "denied") {
+  if (status === 'denied') {
     // Determine severity based on reason
-    const level = reason?.includes("production") ? "error" : "warning";
+    const level = reason?.includes('production') ? 'error' : 'warning';
 
-    Sentry.captureMessage(`Admin access denied: ${reason || "unknown"}`, {
+    Sentry.captureMessage(`Admin access denied: ${reason || 'unknown'}`, {
       level,
       tags: {
-        event_type: "admin_access",
-        endpoint: "/api/analytics",
+        event_type: 'admin_access',
+        endpoint: '/api/analytics',
         result: status,
-        reason: reason || "unknown",
-        environment: process.env.NODE_ENV || "unknown",
-        vercel_env: process.env.VERCEL_ENV || "unknown",
+        reason: reason || 'unknown',
+        environment: process.env.NODE_ENV || 'unknown',
+        vercel_env: process.env.VERCEL_ENV || 'unknown',
       },
       contexts: {
         admin_access: logData,
       },
-      fingerprint: [
-        "admin_access",
-        "/api/analytics",
-        status,
-        reason || "unknown",
-      ],
+      fingerprint: ['admin_access', '/api/analytics', status, reason || 'unknown'],
     });
   }
 
   // CRITICAL: Production access attempts should NEVER happen
   // Admin endpoints are blocked in production via blockExternalAccess()
-  if (process.env.VERCEL_ENV === "production") {
+  if (process.env.VERCEL_ENV === 'production') {
     Sentry.captureMessage(
-      "CRITICAL: Admin endpoint accessed in production - possible security bypass!",
+      'CRITICAL: Admin endpoint accessed in production - possible security bypass!',
       {
-        level: "error",
+        level: 'error',
         tags: {
-          event_type: "admin_access_production",
-          endpoint: "/api/analytics",
+          event_type: 'admin_access_production',
+          endpoint: '/api/analytics',
           result: status,
-          critical: "true",
+          critical: 'true',
         },
         contexts: {
           admin_access: logData,
           security: {
-            alert:
-              "Production admin access should be blocked by blockExternalAccess()",
+            alert: 'Production admin access should be blocked by blockExternalAccess()',
             investigation_required: true,
           },
         },
-        fingerprint: ["admin_access_production", "/api/analytics"],
+        fingerprint: ['admin_access_production', '/api/analytics'],
       }
     );
   }
 }
 
-async function getRedisClient() {
-  const redisUrl = process.env.REDIS_URL;
-  if (!redisUrl) return null;
-
-  try {
-    const client = createClient({ url: redisUrl });
-    if (!client.isOpen) {
-      await client.connect();
-    }
-    return client;
-  } catch {
-    return null;
-  }
-}
+// Redis client removed - now using Upstash REST API singleton from @/mcp/shared/redis-client
 
 export async function GET(request: NextRequest) {
   // Layer 0: Block external access for security
@@ -273,11 +237,11 @@ export async function GET(request: NextRequest) {
 
   // Layer 1: Environment validation
   if (!isAllowedEnvironment()) {
-    logAccess(request, "denied", "production environment blocked");
+    logAccess(request, 'denied', 'production environment blocked');
     return NextResponse.json(
       {
-        error: "Analytics not available in production",
-        message: "This endpoint is disabled in production for security reasons",
+        error: 'Analytics not available in production',
+        message: 'This endpoint is disabled in production for security reasons',
       },
       { status: 403 }
     );
@@ -285,12 +249,11 @@ export async function GET(request: NextRequest) {
 
   // Layer 2: API key authentication
   if (!validateApiKey(request)) {
-    logAccess(request, "denied", "invalid or missing API key");
+    logAccess(request, 'denied', 'invalid or missing API key');
     return NextResponse.json(
       {
-        error: "Unauthorized",
-        message:
-          "Valid API key required. Use Authorization header with Bearer token.",
+        error: 'Unauthorized',
+        message: 'Valid API key required. Use Authorization header with Bearer token.',
       },
       { status: 401 }
     );
@@ -301,43 +264,41 @@ export async function GET(request: NextRequest) {
   const rateLimitResult = await rateLimit(clientIp, RATE_LIMIT_CONFIG);
 
   if (!rateLimitResult.success) {
-    logAccess(request, "denied", "rate limit exceeded");
+    logAccess(request, 'denied', 'rate limit exceeded');
     return NextResponse.json(
       {
-        error: "Rate limit exceeded",
-        message: "Maximum 5 requests per minute. Please try again later.",
+        error: 'Rate limit exceeded',
+        message: 'Maximum 5 requests per minute. Please try again later.',
         retryAfter: Math.ceil((rateLimitResult.reset - Date.now()) / 1000),
       },
       {
         status: 429,
         headers: {
           ...createRateLimitHeaders(rateLimitResult),
-          "Retry-After": Math.ceil(
-            (rateLimitResult.reset - Date.now()) / 1000
-          ).toString(),
+          'Retry-After': Math.ceil((rateLimitResult.reset - Date.now()) / 1000).toString(),
         },
       }
     );
   }
 
   // Layer 4: Log successful access
-  logAccess(request, "success");
+  logAccess(request, 'success');
 
   try {
     // Get date range parameter from URL
     const { searchParams } = new URL(request.url);
-    const daysParam = searchParams.get("days");
+    const daysParam = searchParams.get('days');
 
     // Validate days parameter
     let days: number | null;
-    if (daysParam === "all" || daysParam === null) {
+    if (daysParam === 'all' || daysParam === null) {
       days = null;
     } else {
       const parsedDays = parseInt(daysParam, 10);
       if (isNaN(parsedDays) || parsedDays < 1 || parsedDays > 365) {
         return NextResponse.json(
           {
-            error: "Invalid days parameter",
+            error: 'Invalid days parameter',
             message: "Days must be a number between 1 and 365, or 'all'",
           },
           { status: 400 }
@@ -388,74 +349,38 @@ export async function GET(request: NextRequest) {
       .sort((a, b) => b.views - a.views);
 
     // Calculate statistics
-    const totalViews = postsWithViews.reduce(
-      (sum, post) => sum + post.views,
-      0
-    );
-    const totalViews24h = postsWithViews.reduce(
-      (sum, post) => sum + post.views24h,
-      0
-    );
-    const totalViewsRange = postsWithViews.reduce(
-      (sum, post) => sum + post.viewsRange,
-      0
-    );
-    const totalShares = postsWithViews.reduce(
-      (sum, post) => sum + post.shares,
-      0
-    );
-    const totalShares24h = postsWithViews.reduce(
-      (sum, post) => sum + post.shares24h,
-      0
-    );
-    const totalComments = postsWithViews.reduce(
-      (sum, post) => sum + post.comments,
-      0
-    );
-    const totalComments24h = postsWithViews.reduce(
-      (sum, post) => sum + post.comments24h,
-      0
-    );
+    const totalViews = postsWithViews.reduce((sum, post) => sum + post.views, 0);
+    const totalViews24h = postsWithViews.reduce((sum, post) => sum + post.views24h, 0);
+    const totalViewsRange = postsWithViews.reduce((sum, post) => sum + post.viewsRange, 0);
+    const totalShares = postsWithViews.reduce((sum, post) => sum + post.shares, 0);
+    const totalShares24h = postsWithViews.reduce((sum, post) => sum + post.shares24h, 0);
+    const totalComments = postsWithViews.reduce((sum, post) => sum + post.comments, 0);
+    const totalComments24h = postsWithViews.reduce((sum, post) => sum + post.comments24h, 0);
 
-    const averageViews =
-      postsWithViews.length > 0 ? totalViews / postsWithViews.length : 0;
-    const averageViews24h =
-      postsWithViews.length > 0 ? totalViews24h / postsWithViews.length : 0;
+    const averageViews = postsWithViews.length > 0 ? totalViews / postsWithViews.length : 0;
+    const averageViews24h = postsWithViews.length > 0 ? totalViews24h / postsWithViews.length : 0;
     const averageViewsRange =
       postsWithViews.length > 0 ? totalViewsRange / postsWithViews.length : 0;
-    const averageShares =
-      postsWithViews.length > 0 ? totalShares / postsWithViews.length : 0;
-    const averageShares24h =
-      postsWithViews.length > 0 ? totalShares24h / postsWithViews.length : 0;
-    const averageComments =
-      postsWithViews.length > 0 ? totalComments / postsWithViews.length : 0;
+    const averageShares = postsWithViews.length > 0 ? totalShares / postsWithViews.length : 0;
+    const averageShares24h = postsWithViews.length > 0 ? totalShares24h / postsWithViews.length : 0;
+    const averageComments = postsWithViews.length > 0 ? totalComments / postsWithViews.length : 0;
     const averageComments24h =
       postsWithViews.length > 0 ? totalComments24h / postsWithViews.length : 0;
 
     const topPost = postsWithViews[0];
 
     // Get top posts in last 24 hours
-    const topPost24h = [...postsWithViews].sort(
-      (a, b) => b.views24h - a.views24h
-    )[0];
+    const topPost24h = [...postsWithViews].sort((a, b) => b.views24h - a.views24h)[0];
 
     // Get top posts in selected range
-    const topPostRange = [...postsWithViews].sort(
-      (a, b) => b.viewsRange - a.viewsRange
-    )[0];
+    const topPostRange = [...postsWithViews].sort((a, b) => b.viewsRange - a.viewsRange)[0];
 
     // Get most shared posts
-    const mostSharedPost = [...postsWithViews].sort(
-      (a, b) => b.shares - a.shares
-    )[0];
-    const mostSharedPost24h = [...postsWithViews].sort(
-      (a, b) => b.shares24h - a.shares24h
-    )[0];
+    const mostSharedPost = [...postsWithViews].sort((a, b) => b.shares - a.shares)[0];
+    const mostSharedPost24h = [...postsWithViews].sort((a, b) => b.shares24h - a.shares24h)[0];
 
     // Get most commented posts
-    const mostCommentedPost = [...postsWithViews].sort(
-      (a, b) => b.comments - a.comments
-    )[0];
+    const mostCommentedPost = [...postsWithViews].sort((a, b) => b.comments - a.comments)[0];
     const mostCommentedPost24h = [...postsWithViews].sort(
       (a, b) => b.comments24h - a.comments24h
     )[0];
@@ -464,83 +389,66 @@ export async function GET(request: NextRequest) {
 
     // Get trending data from Redis if available
     let trendingFromRedis = null;
-    const redis = await getRedisClient();
-    if (redis) {
-      try {
-        const trendingData = await redis.get("blog:trending");
-        if (trendingData) {
-          const parsedTrending = JSON.parse(trendingData);
-          // Enrich trending data with full post information
-          // Redis trending contains: postId, totalViews, recentViews, score
-          // We need to merge with posts to get slug and then match with postsWithViews
-          trendingFromRedis = parsedTrending
-            .map(
-              (trending: {
-                postId: string;
-                totalViews: number;
-                recentViews: number;
-                score: number;
-              }) => {
-                // Find the post by its postId, then match by slug with postsWithViews
-                const post = posts.find((p) => p.id === trending.postId);
-                if (post) {
-                  const fullPost = postsWithViews.find(
-                    (p) => p.slug === post.slug
-                  );
-                  if (fullPost) {
-                    return {
-                      ...fullPost,
-                      // Override views24h with recentViews from trending for more accurate recent data
-                      trendingScore: trending.score,
-                    };
-                  }
+    try {
+      const trendingData = await redis.get('blog:trending');
+      if (typeof trendingData === 'string') {
+        const parsedTrending = JSON.parse(trendingData);
+        // Enrich trending data with full post information
+        // Redis trending contains: postId, totalViews, recentViews, score
+        // We need to merge with posts to get slug and then match with postsWithViews
+        trendingFromRedis = parsedTrending
+          .map(
+            (trending: {
+              postId: string;
+              totalViews: number;
+              recentViews: number;
+              score: number;
+            }) => {
+              // Find the post by its postId, then match by slug with postsWithViews
+              const post = posts.find((p) => p.id === trending.postId);
+              if (post) {
+                const fullPost = postsWithViews.find((p) => p.slug === post.slug);
+                if (fullPost) {
+                  return {
+                    ...fullPost,
+                    // Override views24h with recentViews from trending for more accurate recent data
+                    trendingScore: trending.score,
+                  };
                 }
-                return null;
               }
-            )
-            .filter(Boolean);
-        }
-        // keep connection open for additional reads (vercel keys) until the end
-      } catch (error) {
-        console.error("Failed to fetch trending data:", error);
+              return null;
+            }
+          )
+          .filter(Boolean);
       }
+    } catch (error) {
+      console.error('Failed to fetch trending data:', error);
     }
 
     // Attempt to read Vercel analytics sync data from Redis (optional)
     let vercelData = null;
     let vercelLastSynced = null;
-    if (redis) {
-      try {
-        const vPages = await redis.get("vercel:topPages:daily");
-        const vReferrers = await redis.get("vercel:topReferrers:daily");
-        const vDevices = await redis.get("vercel:topDevices:daily");
-        const vSynced = await redis.get("vercel:metrics:lastSynced");
+    try {
+      const vPages = await redis.get('vercel:topPages:daily');
+      const vReferrers = await redis.get('vercel:topReferrers:daily');
+      const vDevices = await redis.get('vercel:topDevices:daily');
+      const vSynced = await redis.get('vercel:metrics:lastSynced');
 
-        vercelLastSynced = vSynced || null;
-        vercelData = {
-          topPages: vPages ? JSON.parse(vPages) : [],
-          topReferrers: vReferrers ? JSON.parse(vReferrers) : [],
-          topDevices: vDevices ? JSON.parse(vDevices) : [],
-        };
-      } catch (error) {
-        console.error("Failed to fetch vercel analytics from redis:", error);
-      }
-    }
-
-    // Close Redis connection (best-effort) after we've read trending & vercel keys
-    if (redis) {
-      try {
-        await redis.quit();
-      } catch (error) {
-        console.warn("Failed to close redis connection:", error);
-      }
+      vercelLastSynced = typeof vSynced === 'string' ? vSynced : null;
+      vercelData = {
+        topPages: vPages && typeof vPages === 'string' ? JSON.parse(vPages) : [],
+        topReferrers: vReferrers && typeof vReferrers === 'string' ? JSON.parse(vReferrers) : [],
+        topDevices: vDevices && typeof vDevices === 'string' ? JSON.parse(vDevices) : [],
+      };
+    } catch (error) {
+      console.error('Failed to fetch vercel analytics from redis:', error);
     }
 
     return NextResponse.json(
       {
         success: true,
         timestamp: new Date().toISOString(),
-        dateRange: days === null ? "all" : `${days}d`,
+        dateRange: days === null ? 'all' : `${days}d`,
         summary: {
           totalPosts: postsWithViews.length,
           totalViews,
@@ -648,15 +556,15 @@ export async function GET(request: NextRequest) {
       },
       {
         headers: {
-          "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
           ...createRateLimitHeaders(rateLimitResult),
         },
       }
     );
   } catch (error) {
     const errorInfo = handleApiError(error, {
-      route: "/api/analytics",
-      method: "GET",
+      route: '/api/analytics',
+      method: 'GET',
     });
 
     // For connection errors, return minimal response
@@ -665,7 +573,7 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { error: "Failed to fetch analytics" },
+      { error: 'Failed to fetch analytics' },
       { status: errorInfo.statusCode }
     );
   }

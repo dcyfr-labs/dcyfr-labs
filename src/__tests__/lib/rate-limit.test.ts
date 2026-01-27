@@ -1,11 +1,11 @@
 /**
  * Test Suite: lib/rate-limit.ts
- * 
+ *
  * Tests distributed rate limiting with Redis and in-memory fallback.
  * Critical for API security and preventing abuse.
- * 
+ *
  * Coverage: rateLimit, getClientIp, createRateLimitHeaders
- * 
+ *
  * Note: Redis integration tests verify the logic flow but use in-memory fallback
  * since Redis client creation is complex to mock in this environment.
  */
@@ -19,31 +19,49 @@ import {
   type RateLimitResult,
 } from '@/lib/rate-limit';
 
-// Mock Redis - note that the actual Redis client creation in rate-limit.ts
-// uses complex async initialization that's difficult to fully mock,
-// so these tests primarily verify in-memory fallback behavior
-const mockRedisClient = {
-  isOpen: false,
-  connect: vi.fn(),
-  incr: vi.fn(),
-  pExpireAt: vi.fn(),
-  pttl: vi.fn(),
-  on: vi.fn(),
-};
+// Mock the Upstash redis singleton with proper rate limiting behavior
+const rateLimitCounters: Record<string, number> = {};
+const rateLimitExpiries: Record<string, number> = {};
 
-vi.mock('redis', () => ({
-  createClient: vi.fn(() => mockRedisClient),
+vi.mock('@/mcp/shared/redis-client', () => ({
+  redis: {
+    incr: vi.fn(async (key: string) => {
+      // Check if key has expired
+      const expiry = rateLimitExpiries[key];
+      if (expiry && expiry <= Date.now()) {
+        // Key expired - reset counter
+        delete rateLimitCounters[key];
+        delete rateLimitExpiries[key];
+      }
+
+      rateLimitCounters[key] = (rateLimitCounters[key] || 0) + 1;
+      return rateLimitCounters[key];
+    }),
+    pexpireat: vi.fn(async (key: string, timestamp: number) => {
+      rateLimitExpiries[key] = timestamp;
+      return 1;
+    }),
+    pttl: vi.fn(async (key: string) => {
+      const expiry = rateLimitExpiries[key];
+      if (!expiry) return -2; // Key doesn't exist
+      const ttl = expiry - Date.now();
+      if (ttl <= 0) {
+        // Key expired - clean up
+        delete rateLimitCounters[key];
+        delete rateLimitExpiries[key];
+        return -2; // Return -2 (key doesn't exist) instead of -1
+      }
+      return ttl;
+    }),
+  },
 }));
 
 describe('rate-limit.ts', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // Reset Redis env for each test
-    delete process.env.REDIS_URL;
-    // Clear the global client
-    globalThis.__rateLimitRedisClient = undefined;
-    // Reset mock state
-    mockRedisClient.isOpen = false;
+    // Clear in-memory counters
+    Object.keys(rateLimitCounters).forEach((key) => delete rateLimitCounters[key]);
+    Object.keys(rateLimitExpiries).forEach((key) => delete rateLimitExpiries[key]);
   });
 
   describe('rateLimit - in-memory fallback', () => {
@@ -137,9 +155,7 @@ describe('rate-limit.ts', () => {
         windowInSeconds: 60,
       };
 
-      const promises = Array.from({ length: 7 }, () =>
-        rateLimit('concurrent-user', config)
-      );
+      const promises = Array.from({ length: 7 }, () => rateLimit('concurrent-user', config));
 
       const results = await Promise.all(promises);
       const successCount = results.filter((r) => r.success).length;
@@ -172,89 +188,6 @@ describe('rate-limit.ts', () => {
 
       // Reset times should be the same for requests in the same window
       expect(result1.reset).toBe(result2.reset);
-    });
-  });
-
-  describe('rateLimit - Redis configuration', () => {
-    beforeEach(() => {
-      // Set Redis URL to enable Redis mode
-      process.env.REDIS_URL = 'redis://localhost:6379';
-      
-      // Reset mock state completely
-      mockRedisClient.isOpen = false;
-      mockRedisClient.connect.mockClear();
-      mockRedisClient.incr.mockClear();
-      mockRedisClient.pExpireAt.mockClear();
-      mockRedisClient.pttl.mockClear();
-      
-      // Setup default mock responses
-      mockRedisClient.connect.mockResolvedValue(undefined);
-      mockRedisClient.incr.mockResolvedValue(1);
-      mockRedisClient.pExpireAt.mockResolvedValue(true);
-      mockRedisClient.pttl.mockResolvedValue(60000);
-      
-      // Clear global client to force new connection
-      globalThis.__rateLimitRedisClient = undefined;
-    });
-
-    it('should gracefully fall back when Redis client creation fails', async () => {
-      const config: RateLimitConfig = {
-        limit: 10,
-        windowInSeconds: 60,
-      };
-
-      // Even with REDIS_URL set, if the client can't connect,
-      // it falls back to in-memory
-      const result = await rateLimit('fallback-user', config);
-
-      expect(result.success).toBe(true);
-      expect(result.limit).toBe(10);
-      expect(result.remaining).toBeGreaterThanOrEqual(0);
-    });
-
-    it('should handle different window configurations', async () => {
-      const shortWindow: RateLimitConfig = {
-        limit: 5,
-        windowInSeconds: 1,
-      };
-
-      const result = await rateLimit('window-test', shortWindow);
-      
-      expect(result.success).toBe(true);
-      expect(result.reset).toBeGreaterThan(Date.now());
-    });
-
-    it('should handle high limits', async () => {
-      const highLimit: RateLimitConfig = {
-        limit: 10000,
-        windowInSeconds: 3600,
-      };
-
-      const result = await rateLimit('high-limit-user', highLimit);
-      
-      expect(result.success).toBe(true);
-      expect(result.remaining).toBe(9999);
-    });
-
-    it('should handle single request limit', async () => {
-      const singleRequest: RateLimitConfig = {
-        limit: 1,
-        windowInSeconds: 60,
-      };
-
-      // Set up incr mock to return incrementing values
-      let callCount = 0;
-      mockRedisClient.incr.mockImplementation(() => {
-        callCount++;
-        return Promise.resolve(callCount);
-      });
-
-      const result1 = await rateLimit('single-req-user', singleRequest);
-      expect(result1.success).toBe(true);
-      expect(result1.remaining).toBe(0);
-
-      const result2 = await rateLimit('single-req-user', singleRequest);
-      expect(result2.success).toBe(false);
     });
   });
 

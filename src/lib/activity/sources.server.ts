@@ -14,7 +14,6 @@ import type { CredlyBadge, CredlyBadgesResponse } from '@/types/credly';
 import { getMultiplePostViews, getMultiplePostViewsInRange } from '@/lib/views.server';
 import { getPostCommentsBulk } from '@/lib/comments';
 import { getActivityReactionsBulk, mapGiscusReactionsToLikes } from '@/lib/giscus-reactions';
-import { createClient } from 'redis';
 import { redis } from '@/mcp/shared/redis-client';
 import { calculateTrendingStatus, type EngagementMetrics } from './trending';
 

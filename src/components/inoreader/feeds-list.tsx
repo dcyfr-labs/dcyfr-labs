@@ -120,23 +120,38 @@ function ArticleCard({ article }: { article: InoreaderArticle }) {
   });
 
   // Extract plain text from HTML summary (first 200 chars)
-  // Use complete HTML sanitization to avoid incomplete multi-character patterns
-  const plainTextSummary = article.summary.content
-    // First pass: remove script/style tags and their content
+  // CWE-116 Prevention: Complete HTML sanitization with proper entity decoding (multi-pass)
+  // Pass 1: Remove dangerous tags (script/style)
+  let plainTextSummary = article.summary.content
     .replace(/<(script|style)[^>]*>.*?<\/\1>/gi, '')
-    // Second pass: remove all HTML tags (complete pattern)
+    // Pass 2: Remove all HTML tags
     .replace(/<[^>]+>/g, '')
-    // Third pass: decode HTML entities
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
+    // Pass 3: Decode named HTML entities (important: &amp; last to avoid double-decode)
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
-    // Normalize whitespace
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    // Pass 4: Decode numeric entities (&#NNN; and &#xHHH;) - complete character references
+    .replace(/&#([0-9]+);/g, (match, code) => {
+      try {
+        return String.fromCharCode(parseInt(code, 10));
+      } catch {
+        return match;
+      }
+    })
+    .replace(/&#x([0-9a-fA-F]+);/g, (match, code) => {
+      try {
+        return String.fromCharCode(parseInt(code, 16));
+      } catch {
+        return match;
+      }
+    })
+    // Pass 5: Normalize whitespace and truncate
     .replace(/\s+/g, ' ')
-    .substring(0, 200)
-    .trim();
+    .trim()
+    .substring(0, 200);
 
   // Get article URL
   const articleUrl =
