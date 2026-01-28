@@ -243,7 +243,7 @@
   },
   "dependencies": {
     "@dcyfr/agents": "file:../dcyfr-ai-agents",
-    "@dcyfr/ai": "^1.0.0",
+    "@dcyfr/ai": "^1.0.1",
     "@giscus/react": "^3.1.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-dialog": "^1.1.15",

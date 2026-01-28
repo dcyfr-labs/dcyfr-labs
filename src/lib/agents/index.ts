@@ -5,20 +5,20 @@
  *
  * MIGRATION NOTE: Now using @dcyfr/ai framework with compatibility adapter
  * for backward compatibility. Gradually migrate to direct @dcyfr/ai usage.
+ *
+ * Browser-safe exports:
+ * - Server actions (getAgentComparison, getHandoffPatterns)
+ * - Type definitions
+ *
+ * For server-only exports (telemetry, compat adapters):
+ * import { telemetry } from '@/lib/agents/index.server';
  */
 
-// NEW: Export compatibility adapter (wraps @dcyfr/ai)
-export {
-  telemetry,
-  trackAgentSession,
-  getCompatibilityTelemetry as TelemetrySessionManager,
-  getCompatibilityTelemetry as AgentTelemetryManager,
-  getCompatibilityProvider as ProviderFallbackManager,
-  getCompatibilityProvider,
-  getCompatibilityTelemetry,
-} from './compat';
+// Server actions for client components (browser-safe)
+export { getAgentComparison, getHandoffPatterns } from "./actions";
 
 // Re-export types from old system (for backward compatibility)
+// Types are erased at runtime, so they're browser-safe
 export type {
   AgentType,
   TaskType,
@@ -40,14 +40,4 @@ export type {
   TaskContext,
   ExecutionResult,
   ProviderHealth,
-} from "./provider-fallback-manager";
-
-// Legacy exports (kept for backward compatibility)
-// These now use the compatibility adapter under the hood
-export {
-  getGlobalFallbackManager,
-  initializeGlobalFallbackManager,
-  destroyGlobalFallbackManager,
-  RateLimitError,
-  ProviderUnavailableError,
 } from "./provider-fallback-manager";

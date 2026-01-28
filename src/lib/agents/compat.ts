@@ -16,18 +16,19 @@ import {
   TelemetrySessionManager,
   ProviderRegistry,
   loadConfig,
-  type FrameworkConfig,
   type TelemetrySession as NewTelemetrySession,
-  type TelemetryMetrics as NewTelemetryMetrics,
+  type ProviderRegistryConfig,
+  type ComparisonStats,
+  type HandoffPatterns,
+  type ProviderHealth as NewProviderHealth,
+  type ExecutionResult as NewExecutionResult,
 } from '@dcyfr/ai';
 
 import type {
   AgentType,
   TaskType,
   TaskOutcome,
-  ValidationStatus,
   TelemetrySession as OldTelemetrySession,
-  TelemetryMetrics as OldTelemetryMetrics,
   ViolationRecord,
   HandoffRecord,
   CostEstimate,
@@ -35,7 +36,6 @@ import type {
 
 import type {
   ProviderType,
-  ProviderConfig as OldProviderConfig,
   TaskContext,
   ExecutionResult,
   ProviderHealth,
@@ -47,16 +47,12 @@ import type {
  */
 export class CompatibilityTelemetryAdapter {
   private engine: TelemetryEngine;
-  private sessionManager: TelemetrySessionManager;
-  private config: FrameworkConfig | null = null;
 
   constructor() {
     // Initialize with memory storage for now
     this.engine = new TelemetryEngine({
       storage: 'memory',
-      enabled: true,
     });
-    this.sessionManager = new TelemetrySessionManager(this.engine);
   }
 
   /**
@@ -64,19 +60,17 @@ export class CompatibilityTelemetryAdapter {
    */
   async initialize(): Promise<void> {
     try {
-      this.config = await loadConfig({
+      const config = await loadConfig({
         projectRoot: process.cwd(),
         validate: true,
       });
 
-      // Update engine with config settings
-      if (this.config.telemetry) {
+      // Update engine with config settings if telemetry storage is configured
+      if (config?.telemetry?.storage) {
         this.engine = new TelemetryEngine({
-          storage: this.config.telemetry.storage,
-          enabled: this.config.telemetry.enabled,
-          storagePath: this.config.telemetry.storagePath,
+          storage: config.telemetry.storage as any,
+          basePath: config.telemetry.storagePath,
         });
-        this.sessionManager = new TelemetrySessionManager(this.engine);
       }
     } catch (error) {
       console.warn('⚠️  Failed to load config, using defaults:', error);
@@ -95,13 +89,12 @@ export class CompatibilityTelemetryAdapter {
       projectName?: string;
     }
   ): CompatibleTelemetrySession {
-    const session = this.sessionManager.startSession(agent as any, {
+    const session = this.engine.startSession(agent as any, {
       taskType: context.taskType as any,
-      taskDescription: context.description,
-      projectName: context.projectName || 'dcyfr-labs',
+      description: context.description,
     });
 
-    return new CompatibleTelemetrySession(session, this.engine);
+    return new CompatibleTelemetrySession(session);
   }
 
   /**
@@ -113,51 +106,17 @@ export class CompatibilityTelemetryAdapter {
   }
 
   /**
-   * Get all sessions
+   * Compare all agents
    */
-  async getAllSessions(): Promise<OldTelemetrySession[]> {
-    const sessions = await this.engine.getAllSessions();
-    return sessions.map(this.adaptNewToOldSession);
+  async compareAgents(period: string = '30d'): Promise<ComparisonStats> {
+    return await this.engine.compareAgents(period);
   }
 
   /**
-   * Adapt new session format to old format
+   * Get handoff patterns
    */
-  private adaptNewToOldSession(newSession: NewTelemetrySession): OldTelemetrySession {
-    return {
-      sessionId: newSession.sessionId,
-      agent: newSession.agent as AgentType,
-      taskType: newSession.taskType as TaskType,
-      taskDescription: newSession.taskDescription,
-      startTime: newSession.startTime,
-      endTime: newSession.endTime,
-      outcome: newSession.outcome as TaskOutcome | undefined,
-      metrics: this.adaptNewToOldMetrics(newSession.metrics),
-      violations: [],
-      handoffs: [],
-      cost: {
-        estimatedCost: 0,
-        tokensUsed: newSession.metrics.tokensUsed,
-        provider: newSession.agent,
-      },
-    };
-  }
-
-  /**
-   * Adapt new metrics to old format
-   */
-  private adaptNewToOldMetrics(newMetrics: NewTelemetryMetrics): OldTelemetryMetrics {
-    return {
-      tokenCompliance: newMetrics.tokenCompliance,
-      testPassRate: newMetrics.testPassRate,
-      lintViolations: newMetrics.lintViolations,
-      typeErrors: newMetrics.typeErrors,
-      executionTime: newMetrics.executionTime,
-      tokensUsed: newMetrics.tokensUsed,
-      filesModified: newMetrics.filesModified,
-      linesChanged: newMetrics.linesChanged,
-      validations: newMetrics.validations as any,
-    };
+  async getHandoffPatterns(period: string = '30d'): Promise<HandoffPatterns> {
+    return await this.engine.getHandoffPatterns(period);
   }
 }
 
@@ -165,17 +124,14 @@ export class CompatibilityTelemetryAdapter {
  * Compatible session wrapper
  */
 export class CompatibleTelemetrySession {
-  constructor(
-    private session: any,
-    private engine: TelemetryEngine
-  ) {}
+  constructor(private session: TelemetrySessionManager) {}
 
   /**
    * Record a metric
    */
   recordMetric(name: string, value: number): void {
     if (this.session && typeof this.session.recordMetric === 'function') {
-      this.session.recordMetric(name, value);
+      this.session.recordMetric(name as any, value);
     }
   }
 
@@ -183,11 +139,15 @@ export class CompatibleTelemetrySession {
    * Record a violation
    */
   recordViolation(violation: ViolationRecord): void {
-    // Store in session metadata for now
-    if (this.session) {
-      const violations = (this.session as any).violations || [];
-      violations.push(violation);
-      (this.session as any).violations = violations;
+    if (this.session && typeof this.session.recordViolation === 'function') {
+      this.session.recordViolation({
+        type: violation.type as any,
+        severity: violation.severity as any,
+        message: violation.message,
+        file: violation.file,
+        line: violation.line,
+        fixed: violation.fixed,
+      });
     }
   }
 
@@ -195,43 +155,93 @@ export class CompatibleTelemetrySession {
    * Record a handoff
    */
   recordHandoff(handoff: HandoffRecord): void {
-    // Store in session metadata
-    if (this.session) {
-      const handoffs = (this.session as any).handoffs || [];
-      handoffs.push(handoff);
-      (this.session as any).handoffs = handoffs;
+    if (this.session && typeof this.session.recordHandoff === 'function') {
+      this.session.recordHandoff({
+        toAgent: handoff.toAgent as any,
+        reason: handoff.reason as any,
+        automatic: handoff.automatic,
+      });
     }
   }
 
   /**
    * End session
    */
-  end(outcome: TaskOutcome): OldTelemetrySession {
-    if (this.session && typeof this.session.complete === 'function') {
-      this.session.complete({
-        success: outcome === 'success',
-        outcome: outcome as any,
-      });
+  async end(outcome: TaskOutcome): Promise<OldTelemetrySession> {
+    let finalSession: NewTelemetrySession | undefined;
+
+    if (this.session && typeof this.session.end === 'function') {
+      finalSession = await this.session.end(outcome as any);
     }
+
+    const sessionData = finalSession || this.session.getSession();
+
+    // Adapt violations to old format (filter out unsupported types)
+    const supportedViolationTypes = ['design-token', 'eslint', 'typescript', 'test', 'security'];
+    const adaptedViolations: ViolationRecord[] = (sessionData.violations || [])
+      .filter((v: any) => supportedViolationTypes.includes(v.type))
+      .map((v: any) => ({
+        timestamp: v.timestamp,
+        type: v.type as ViolationRecord['type'],
+        severity: v.severity as ViolationRecord['severity'],
+        message: v.message,
+        file: v.file,
+        line: v.line,
+        fixed: v.fixed,
+      }));
+
+    // Adapt handoffs to old format (filter out unsupported reasons)
+    const supportedHandoffReasons = ['rate-limit', 'quality', 'manual', 'cost-optimization', 'offline'];
+    const adaptedHandoffs: HandoffRecord[] = (sessionData.handoffs || [])
+      .filter((h: any) => supportedHandoffReasons.includes(h.reason))
+      .map((h: any) => ({
+        timestamp: h.timestamp,
+        fromAgent: h.fromAgent as AgentType,
+        toAgent: h.toAgent as AgentType,
+        reason: h.reason as HandoffRecord['reason'],
+        automatic: h.automatic,
+      }));
+
+    // Create properly typed cost estimate
+    const cost: CostEstimate = {
+      provider: sessionData.agent,
+      inputTokens: sessionData.cost?.inputTokens || 0,
+      outputTokens: sessionData.cost?.outputTokens || 0,
+      estimatedCost: sessionData.cost?.estimatedCost || 0,
+      currency: 'USD',
+    };
 
     // Return adapted session
     return {
-      sessionId: this.session.sessionId,
-      agent: this.session.agent,
-      taskType: this.session.taskType,
-      taskDescription: this.session.taskDescription,
-      startTime: this.session.startTime,
-      endTime: new Date(),
+      sessionId: sessionData.sessionId,
+      agent: sessionData.agent as AgentType,
+      taskType: sessionData.taskType as TaskType,
+      taskDescription: sessionData.taskDescription,
+      startTime: sessionData.startTime,
+      endTime: sessionData.endTime || new Date(),
       outcome,
-      metrics: this.session.metrics,
-      violations: (this.session as any).violations || [],
-      handoffs: (this.session as any).handoffs || [],
-      cost: {
-        estimatedCost: 0,
-        tokensUsed: this.session.metrics.tokensUsed,
-        provider: this.session.agent,
+      metrics: {
+        tokenCompliance: sessionData.metrics.tokenCompliance,
+        testPassRate: sessionData.metrics.testPassRate,
+        lintViolations: sessionData.metrics.lintViolations,
+        typeErrors: sessionData.metrics.typeErrors,
+        executionTime: sessionData.metrics.executionTime,
+        tokensUsed: sessionData.metrics.tokensUsed,
+        filesModified: sessionData.metrics.filesModified,
+        linesChanged: sessionData.metrics.linesChanged,
+        validations: sessionData.metrics.validations as any,
       },
+      violations: adaptedViolations,
+      handoffs: adaptedHandoffs,
+      cost,
     };
+  }
+
+  /**
+   * Get current session data
+   */
+  getSession(): NewTelemetrySession {
+    return this.session.getSession();
   }
 }
 
@@ -241,18 +251,15 @@ export class CompatibleTelemetrySession {
  */
 export class CompatibilityProviderAdapter {
   private registry: ProviderRegistry;
-  private config: FrameworkConfig | null = null;
 
   constructor() {
-    this.registry = new ProviderRegistry({
-      providers: {
-        claude: { enabled: true },
-        groq: { enabled: true },
-        ollama: { enabled: true },
-        copilot: { enabled: true },
-      },
-      fallbackOrder: ['claude', 'groq', 'ollama', 'copilot'],
-    });
+    const defaultConfig: ProviderRegistryConfig = {
+      primaryProvider: 'claude',
+      fallbackChain: ['groq', 'ollama', 'copilot'],
+      autoReturn: true,
+      healthCheckInterval: 60000,
+    };
+    this.registry = new ProviderRegistry(defaultConfig);
   }
 
   /**
@@ -260,20 +267,12 @@ export class CompatibilityProviderAdapter {
    */
   async initialize(): Promise<void> {
     try {
-      this.config = await loadConfig({
+      await loadConfig({
         projectRoot: process.cwd(),
         validate: true,
       });
-
-      if (this.config.providers) {
-        this.registry = new ProviderRegistry({
-          providers: this.config.providers.providers as any,
-          fallbackOrder: [
-            this.config.providers.primary,
-            ...this.config.providers.fallback,
-          ] as any,
-        });
-      }
+      // Config loaded successfully, but FrameworkConfig doesn't include provider settings
+      // Keep using default registry configuration
     } catch (error) {
       console.warn('⚠️  Failed to load provider config, using defaults:', error);
     }
@@ -288,26 +287,31 @@ export class CompatibilityProviderAdapter {
     executor: (provider: ProviderType) => Promise<T>
   ): Promise<ExecutionResult<T>> {
     try {
-      const result = await this.registry.executeWithFallback(
-        provider as any,
+      const result: NewExecutionResult<T> = await this.registry.executeWithFallback(
         context as any,
         executor as any
       );
 
       return {
-        result,
-        provider: provider,
-        attempts: 1,
-        totalTime: 0,
-        errors: [],
+        success: result.success,
+        data: result.data as T,
+        provider: result.provider as ProviderType,
+        fallbackUsed: result.fallbackUsed,
+        executionTime: result.executionTime,
+        error: result.error,
+        validationsPassed: result.validationsPassed || [],
+        validationsFailed: result.validationsFailed || [],
       };
     } catch (error) {
       return {
-        result: null as any,
+        success: false,
+        data: undefined as any,
         provider,
-        attempts: 1,
-        totalTime: 0,
-        errors: [error instanceof Error ? error.message : String(error)],
+        fallbackUsed: false,
+        executionTime: 0,
+        error: error instanceof Error ? error : new Error(String(error)),
+        validationsPassed: [],
+        validationsFailed: [],
       };
     }
   }
@@ -315,20 +319,70 @@ export class CompatibilityProviderAdapter {
   /**
    * Get provider health
    */
-  async getProviderHealth(provider: ProviderType): Promise<ProviderHealth> {
-    const health = this.registry.getProviderHealth(provider as any);
-    return health as any;
+  getProviderHealth(provider: ProviderType): ProviderHealth | undefined {
+    const healthStatus = this.registry.getHealthStatus();
+    const health = healthStatus.get(provider as any) as NewProviderHealth | undefined;
+    if (!health) return undefined;
+
+    return {
+      provider: health.provider as ProviderType,
+      available: health.available,
+      responseTime: health.responseTime,
+      lastChecked: health.lastChecked,
+      rateLimitRemaining: health.rateLimitRemaining,
+      rateLimitReset: health.rateLimitReset,
+      error: health.error,
+    };
   }
 
   /**
-   * Switch provider
+   * Get all provider health statuses
    */
-  async switchProvider(
-    from: ProviderType,
-    to: ProviderType,
-    reason: string
-  ): Promise<void> {
-    await this.registry.switchProvider(from as any, to as any, reason);
+  getAllHealthStatus(): Map<ProviderType, ProviderHealth> {
+    const newStatus = this.registry.getHealthStatus();
+    const result = new Map<ProviderType, ProviderHealth>();
+
+    newStatus.forEach((health, key) => {
+      result.set(key as ProviderType, {
+        provider: health.provider as ProviderType,
+        available: health.available,
+        responseTime: health.responseTime,
+        lastChecked: health.lastChecked,
+        rateLimitRemaining: health.rateLimitRemaining,
+        rateLimitReset: health.rateLimitReset,
+        error: health.error,
+      });
+    });
+
+    return result;
+  }
+
+  /**
+   * Get current provider
+   */
+  getCurrentProvider(): ProviderType {
+    return this.registry.getCurrentProvider() as ProviderType;
+  }
+
+  /**
+   * Fallback to next provider
+   */
+  async fallbackToNext(): Promise<void> {
+    await this.registry.fallbackToNext();
+  }
+
+  /**
+   * Return to primary provider
+   */
+  async returnToPrimary(): Promise<void> {
+    await this.registry.returnToPrimary();
+  }
+
+  /**
+   * Cleanup resources
+   */
+  destroy(): void {
+    this.registry.destroy();
   }
 }
 
@@ -366,6 +420,9 @@ export function getCompatibilityProvider(): CompatibilityProviderAdapter {
  * Reset adapters (for testing)
  */
 export function resetCompatibilityAdapters(): void {
+  if (globalProviderAdapter) {
+    globalProviderAdapter.destroy();
+  }
   globalTelemetryAdapter = null;
   globalProviderAdapter = null;
 }
@@ -381,7 +438,7 @@ export const telemetry = getCompatibilityTelemetry();
 export function trackAgentSession(
   agent: AgentType,
   taskType: TaskType,
-  executor: (session: any) => Promise<void>
+  executor: (session: CompatibleTelemetrySession) => Promise<void>
 ): Promise<OldTelemetrySession> {
   return new Promise(async (resolve, reject) => {
     const session = telemetry.startSession(agent, {
@@ -391,10 +448,10 @@ export function trackAgentSession(
 
     try {
       await executor(session);
-      const result = session.end('success');
+      const result = await session.end('success');
       resolve(result);
     } catch (error) {
-      const result = session.end('failed');
+      await session.end('failed');
       reject(error);
     }
   });

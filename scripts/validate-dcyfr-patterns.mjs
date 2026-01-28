@@ -26,10 +26,12 @@
  * @see .claude/settings.json PreToolUse hooks
  */
 
-import { cli } from '@dcyfr/agents';
+import fs from 'fs';
+import path from 'path';
 
-// Delegate to @dcyfr/agents CLI
-cli(process.argv.slice(2));
+// TEMPORARY: Comment out @dcyfr/agents import until ES module issues resolved
+// import { cli } from '@dcyfr/agents';
+// cli(process.argv.slice(2));
 
 // Parse CLI args
 const args = process.argv.slice(2).reduce((acc, arg) => {

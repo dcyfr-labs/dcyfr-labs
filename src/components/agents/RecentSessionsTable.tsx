@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { telemetry, type TelemetrySession } from "@/lib/agents";
+import type { TelemetrySession } from "@/lib/agents";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, XCircle, ArrowUpCircle } from "lucide-react";
 
