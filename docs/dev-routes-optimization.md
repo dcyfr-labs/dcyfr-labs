@@ -8,8 +8,8 @@ All routes under `/dev/**` are development-only tools (analytics dashboards, age
 
 ## Multi-Layer Protection
 
-### Layer 1: Middleware (Edge, Fastest ⚡)
-**File**: `src/middleware.ts`
+### Layer 1: Proxy (Edge, Fastest ⚡)
+**File**: `src/proxy.ts`
 
 Blocks `/dev/**` requests at the edge **before** any React code runs.
 
@@ -21,14 +21,13 @@ Blocks `/dev/**` requests at the edge **before** any React code runs.
 
 **How it works**:
 ```typescript
-export function middleware(request: NextRequest) {
-  if (pathname.startsWith('/dev/')) {
-    const isDev = process.env.NODE_ENV === 'development';
-    if (!isDev) {
-      return NextResponse.rewrite(new URL('/404', request.url), { status: 404 });
-    }
+// In proxy.ts - runs on every request at the edge
+if (!isDevelopment) {
+  if (pathname.startsWith('/dev/') || pathname.startsWith('/api/dev/')) {
+    return NextResponse.rewrite(new URL('/_not-found', request.url));
   }
 }
+```
 ```
 
 ### Layer 2: Dev Layout (Build-Time)

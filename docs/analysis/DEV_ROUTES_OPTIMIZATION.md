@@ -7,7 +7,7 @@ Implemented a comprehensive 4-layer protection system for `/dev/**` routes to pr
 ## Files Modified
 
 ### New Files
-1. **`src/middleware.ts`** - Edge middleware for blocking dev routes in non-dev environments
+1. **`src/proxy.ts`** - Edge proxy with dev route blocking (merged into existing CSP proxy)
 2. **`src/app/dev/layout.tsx`** - Layout to prevent static generation of dev pages
 3. **`docs/dev-routes-optimization.md`** - Comprehensive documentation
 
