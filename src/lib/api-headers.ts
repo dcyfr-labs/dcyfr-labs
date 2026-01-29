@@ -52,8 +52,8 @@ export function createSameOriginCorsHeaders(origin: string | null): Record<strin
 
   // Only allow same origin
   const allowedOrigins = [
-    'https://dcyfr.com',
-    'https://www.dcyfr.com',
+    'https://www.dcyfr.ai',
+    'https://www.dcyfr.ai',
     ...(process.env.NODE_ENV === 'development' ? ['http://localhost:3000'] : []),
   ];
 
@@ -72,7 +72,9 @@ export function createSameOriginCorsHeaders(origin: string | null): Record<strin
 /**
  * Combine security headers with custom headers
  */
-export function createSecureHeaders(customHeaders: Record<string, string> = {}): Record<string, string> {
+export function createSecureHeaders(
+  customHeaders: Record<string, string> = {}
+): Record<string, string> {
   return {
     ...SECURITY_HEADERS,
     ...customHeaders,
@@ -82,7 +84,9 @@ export function createSecureHeaders(customHeaders: Record<string, string> = {}):
 /**
  * Create headers for public API with CORS
  */
-export function createPublicApiHeaders(customHeaders: Record<string, string> = {}): Record<string, string> {
+export function createPublicApiHeaders(
+  customHeaders: Record<string, string> = {}
+): Record<string, string> {
   return {
     ...SECURITY_HEADERS,
     ...CORS_HEADERS,
@@ -93,7 +97,9 @@ export function createPublicApiHeaders(customHeaders: Record<string, string> = {
 /**
  * Create headers for JSON API responses
  */
-export function createJsonHeaders(customHeaders: Record<string, string> = {}): Record<string, string> {
+export function createJsonHeaders(
+  customHeaders: Record<string, string> = {}
+): Record<string, string> {
   return {
     ...SECURITY_HEADERS,
     'Content-Type': 'application/json; charset=utf-8',
@@ -104,18 +110,15 @@ export function createJsonHeaders(customHeaders: Record<string, string> = {}): R
 /**
  * Create cache headers for API responses
  */
-export function createCacheHeaders(options: {
-  maxAge?: number;
-  sMaxAge?: number;
-  staleWhileRevalidate?: number;
-  public?: boolean;
-} = {}): Record<string, string> {
-  const {
-    maxAge = 0,
-    sMaxAge,
-    staleWhileRevalidate,
-    public: isPublic = false,
-  } = options;
+export function createCacheHeaders(
+  options: {
+    maxAge?: number;
+    sMaxAge?: number;
+    staleWhileRevalidate?: number;
+    public?: boolean;
+  } = {}
+): Record<string, string> {
+  const { maxAge = 0, sMaxAge, staleWhileRevalidate, public: isPublic = false } = options;
 
   const directives: string[] = [];
 
@@ -150,7 +153,7 @@ export function createCacheHeaders(options: {
 export function createNoCacheHeaders(): Record<string, string> {
   return {
     'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-    'Pragma': 'no-cache',
-    'Expires': '0',
+    Pragma: 'no-cache',
+    Expires: '0',
   };
 }

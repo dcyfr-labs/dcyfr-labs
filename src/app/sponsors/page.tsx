@@ -63,11 +63,11 @@ export default async function SponsorsPage() {
     '@type': 'WebPage',
     name: pageTitle,
     description: pageDescription,
-    url: 'https://dcyfr.ai/sponsors',
+    url: 'https://www.dcyfr.ai/sponsors',
     isPartOf: {
       '@type': 'WebSite',
       name: 'dcyfr',
-      url: 'https://dcyfr.ai',
+      url: 'https://www.dcyfr.ai',
     },
   };
 

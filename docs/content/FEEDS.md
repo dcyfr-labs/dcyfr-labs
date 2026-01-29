@@ -2,8 +2,8 @@
 
 # Feed System Documentation
 
-**Status:** Production Ready  
-**Last Updated:** December 25, 2025  
+**Status:** Production Ready
+**Last Updated:** December 25, 2025
 **Formats:** RSS 2.0, Atom 1.0, JSON Feed 1.1
 
 ---
@@ -24,35 +24,35 @@ Each major content section (main site, activity, blog, work) has all three feed 
 
 ### Main Site Feeds
 
-- **RSS 2.0:** [https://dcyfr.ai/feed](https://dcyfr.ai/feed) or [/rss.xml](https://dcyfr.ai/rss.xml)
-- **Atom 1.0:** [https://dcyfr.ai/atom.xml](https://dcyfr.ai/atom.xml)
-- **JSON Feed:** [https://dcyfr.ai/feed.json](https://dcyfr.ai/feed.json)
+- **RSS 2.0:** [https://www.dcyfr.ai/feed](https://www.dcyfr.ai/feed) or [/rss.xml](https://www.dcyfr.ai/rss.xml)
+- **Atom 1.0:** [https://www.dcyfr.ai/atom.xml](https://www.dcyfr.ai/atom.xml)
+- **JSON Feed:** [https://www.dcyfr.ai/feed.json](https://www.dcyfr.ai/feed.json)
 
-**Content:** Latest 20 blog posts and projects combined  
+**Content:** Latest 20 blog posts and projects combined
 **Revalidation:** 60 minutes
 
 ### Activity Feeds
 
-- **RSS 2.0:** [https://dcyfr.ai/activity/feed](https://dcyfr.ai/activity/feed) or [/activity/rss.xml](https://dcyfr.ai/activity/rss.xml)
-- **JSON Feed:** [https://dcyfr.ai/activity/feed.json](https://dcyfr.ai/activity/feed.json)
+- **RSS 2.0:** [https://www.dcyfr.ai/activity/feed](https://www.dcyfr.ai/activity/feed) or [/activity/rss.xml](https://www.dcyfr.ai/activity/rss.xml)
+- **JSON Feed:** [https://www.dcyfr.ai/activity/feed.json](https://www.dcyfr.ai/activity/feed.json)
 
-**Content:** Latest 50 posts, projects, and changelog entries  
+**Content:** Latest 50 posts, projects, and changelog entries
 **Revalidation:** 30 minutes
 
 ### Blog Feeds
 
-- **RSS 2.0:** [https://dcyfr.ai/blog/feed](https://dcyfr.ai/blog/feed) or [/blog/rss.xml](https://dcyfr.ai/blog/rss.xml)
-- **JSON Feed:** [https://dcyfr.ai/blog/feed.json](https://dcyfr.ai/blog/feed.json)
+- **RSS 2.0:** [https://www.dcyfr.ai/blog/feed](https://www.dcyfr.ai/blog/feed) or [/blog/rss.xml](https://www.dcyfr.ai/blog/rss.xml)
+- **JSON Feed:** [https://www.dcyfr.ai/blog/feed.json](https://www.dcyfr.ai/blog/feed.json)
 
-**Content:** Latest blog posts only  
+**Content:** Latest blog posts only
 **Revalidation:** 60 minutes
 
 ### Work/Projects Feeds
 
-- **RSS 2.0:** [https://dcyfr.ai/work/feed](https://dcyfr.ai/work/feed) or [/work/rss.xml](https://dcyfr.ai/work/rss.xml)
-- **JSON Feed:** [https://dcyfr.ai/work/feed.json](https://dcyfr.ai/work/feed.json)
+- **RSS 2.0:** [https://www.dcyfr.ai/work/feed](https://www.dcyfr.ai/work/feed) or [/work/rss.xml](https://www.dcyfr.ai/work/rss.xml)
+- **JSON Feed:** [https://www.dcyfr.ai/work/feed.json](https://www.dcyfr.ai/work/feed.json)
 
-**Content:** Latest projects only  
+**Content:** Latest projects only
 **Revalidation:** 60 minutes
 
 ---
@@ -102,7 +102,7 @@ MDX → unified → remark-parse → remark-gfm → rehype-sanitize → rehypeSt
 ```typescript
 function rehypeStripFeedAttributes() {
   return (tree: any) => {
-    visit(tree, "element", (node: Element) => {
+    visit(tree, 'element', (node: Element) => {
       // Remove footnote attributes
       delete node.properties.dataFootnoteRef;
       delete node.properties.dataFootnoteBackref;
@@ -173,18 +173,18 @@ npm run feeds:validate
 
 ```typescript
 // src/app/new-section/feed/route.ts
-import { buildCustomFeed } from "@/lib/feeds";
-import type { NextRequest } from "next/server";
+import { buildCustomFeed } from '@/lib/feeds';
+import type { NextRequest } from 'next/server';
 
 export const revalidate = 3600; // 1 hour
 
 export async function GET(request: NextRequest) {
-  const feedXml = await buildCustomFeed(yourData, "rss", 20);
+  const feedXml = await buildCustomFeed(yourData, 'rss', 20);
 
   return new Response(feedXml, {
     headers: {
-      "Content-Type": "application/rss+xml; charset=utf-8",
-      "X-Feed-Format": "RSS 2.0",
+      'Content-Type': 'application/rss+xml; charset=utf-8',
+      'X-Feed-Format': 'RSS 2.0',
     },
   });
 }
@@ -214,19 +214,19 @@ const feedEntries = [
   {
     url: `${base}/new-section/feed`,
     lastModified: now,
-    changeFrequency: "daily" as const,
+    changeFrequency: 'daily' as const,
     priority: 0.7,
   },
   {
     url: `${base}/new-section/rss.xml`,
     lastModified: now,
-    changeFrequency: "daily" as const,
+    changeFrequency: 'daily' as const,
     priority: 0.7,
   },
   {
     url: `${base}/new-section/feed.json`,
     lastModified: now,
-    changeFrequency: "daily" as const,
+    changeFrequency: 'daily' as const,
     priority: 0.7,
   },
 ];
@@ -239,19 +239,19 @@ const feedEntries = [
 const FEED_ENDPOINTS = [
   // ... existing endpoints
   {
-    path: "/new-section/feed",
-    type: "RSS 2.0",
-    contentType: "application/rss+xml",
+    path: '/new-section/feed',
+    type: 'RSS 2.0',
+    contentType: 'application/rss+xml',
   },
   {
-    path: "/new-section/rss.xml",
-    type: "RSS 2.0",
-    contentType: "application/rss+xml",
+    path: '/new-section/rss.xml',
+    type: 'RSS 2.0',
+    contentType: 'application/rss+xml',
   },
   {
-    path: "/new-section/feed.json",
-    type: "JSON Feed 1.1",
-    contentType: "application/feed+json",
+    path: '/new-section/feed.json',
+    type: 'JSON Feed 1.1',
+    contentType: 'application/feed+json',
   },
 ];
 ```
@@ -264,12 +264,12 @@ const FEED_ENDPOINTS = [
 
 **Error:** `data-footnote-ref` or `aria-describedby` in content
 
-**Cause:** remark-gfm adds these attributes for footnotes  
+**Cause:** remark-gfm adds these attributes for footnotes
 **Fix:** Ensure `rehypeStripFeedAttributes()` is in the unified pipeline
 
 **Error:** Wrong Content-Type header
 
-**Cause:** Mismatch between format and header  
+**Cause:** Mismatch between format and header
 **Fix:** Check route file headers match format:
 
 - RSS 2.0: `application/rss+xml`
@@ -278,7 +278,7 @@ const FEED_ENDPOINTS = [
 
 **Error:** Feed not updating
 
-**Cause:** Stale revalidation cache  
+**Cause:** Stale revalidation cache
 **Fix:**
 
 1. Check `revalidate` time in route file
@@ -287,7 +287,7 @@ const FEED_ENDPOINTS = [
 
 ### Empty Feed Content
 
-**Cause:** Data source filtering or date issues  
+**Cause:** Data source filtering or date issues
 **Fix:**
 
 1. Check data source filters (published vs draft)
@@ -372,5 +372,5 @@ const FEED_ENDPOINTS = [
 
 ---
 
-**Maintained by:** DCYFR Labs  
+**Maintained by:** DCYFR Labs
 **Questions?** See [SUPPORT.md](../SUPPORT.md) or [open an issue](https://github.com/dcyfr/dcyfr-labs/issues)

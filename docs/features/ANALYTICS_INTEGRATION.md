@@ -7,7 +7,8 @@
 ## Overview
 
 The analytics integration adds milestone tracking across four major platforms:
-- **Vercel Analytics** - Traffic and visitor milestones  
+
+- **Vercel Analytics** - Traffic and visitor milestones
 - **GitHub Traffic** - Repository view/clone/star milestones
 - **Google Analytics** - User engagement achievements
 - **Search Console** - SEO performance milestones
@@ -30,7 +31,7 @@ Analytics milestones are stored in Redis using these keys:
 
 ```redis
 analytics:milestones           # Vercel Analytics milestones
-github:traffic:milestones      # GitHub repository traffic  
+github:traffic:milestones      # GitHub repository traffic
 google:analytics:milestones    # Google Analytics achievements
 search:console:milestones      # Search Console SEO milestones
 ```
@@ -39,11 +40,11 @@ Each key contains a JSON array of milestone objects with this structure:
 
 ```typescript
 interface AnalyticsMilestone {
-  type: string;              // Milestone category
-  threshold: number;         // Target value reached
-  reached_at: string;        // ISO timestamp
-  value: number;             // Actual value achieved
-  [key: string]: any;        // Additional context data
+  type: string; // Milestone category
+  threshold: number; // Target value reached
+  reached_at: string; // ISO timestamp
+  value: number; // Actual value achieved
+  [key: string]: any; // Additional context data
 }
 ```
 
@@ -64,7 +65,7 @@ Traffic and visitor milestones from Vercel Analytics:
   {
     "type": "total_views",
     "threshold": 50000,
-    "reached_at": "2025-11-20T00:00:00.000Z", 
+    "reached_at": "2025-11-20T00:00:00.000Z",
     "value": 54200
   },
   {
@@ -77,7 +78,8 @@ Traffic and visitor milestones from Vercel Analytics:
 ```
 
 **Display Examples:**
-- "🎯 10,000 Monthly Visitors" 
+
+- "🎯 10,000 Monthly Visitors"
 - "📈 50,000 Total Page Views"
 - "👥 5,000 Unique Visitors"
 
@@ -89,7 +91,7 @@ Repository metrics and community growth:
 [
   {
     "repo": "dcyfr-labs",
-    "type": "views", 
+    "type": "views",
     "threshold": 1000,
     "reached_at": "2025-12-10T00:00:00.000Z",
     "value": 1150
@@ -102,7 +104,7 @@ Repository metrics and community growth:
     "value": 127
   },
   {
-    "repo": "dcyfr-labs", 
+    "repo": "dcyfr-labs",
     "type": "clones",
     "threshold": 50,
     "reached_at": "2025-10-28T00:00:00.000Z",
@@ -112,8 +114,9 @@ Repository metrics and community growth:
 ```
 
 **Display Examples:**
+
 - "👀 1,000 Repository Views (dcyfr-labs)"
-- "⭐ 100 GitHub Stars (dcyfr-labs)"  
+- "⭐ 100 GitHub Stars (dcyfr-labs)"
 - "📥 50 Repository Clones (dcyfr-labs)"
 
 ### Google Analytics (`google:analytics:milestones`)
@@ -124,7 +127,7 @@ User engagement and behavior achievements:
 [
   {
     "type": "monthly_users",
-    "threshold": 5000, 
+    "threshold": 5000,
     "reached_at": "2025-12-01T00:00:00.000Z",
     "value": 5200,
     "month": "November 2025"
@@ -136,7 +139,7 @@ User engagement and behavior achievements:
     "value": 267
   },
   {
-    "type": "pages_per_session", 
+    "type": "pages_per_session",
     "threshold": 3.0,
     "reached_at": "2025-10-20T00:00:00.000Z",
     "value": 3.2
@@ -145,8 +148,9 @@ User engagement and behavior achievements:
 ```
 
 **Display Examples:**
+
 - "📊 5,000 Monthly Active Users (November 2025)"
-- "⏱️ 4m 27s Average Session Duration" 
+- "⏱️ 4m 27s Average Session Duration"
 - "📖 3.2 Pages per Session"
 
 ### Search Console (`search:console:milestones`)
@@ -158,7 +162,7 @@ SEO performance and search visibility:
   {
     "type": "impressions",
     "threshold": 10000,
-    "reached_at": "2025-12-08T00:00:00.000Z", 
+    "reached_at": "2025-12-08T00:00:00.000Z",
     "value": 10400
   },
   {
@@ -175,7 +179,7 @@ SEO performance and search visibility:
     "query": "cybersecurity architecture"
   },
   {
-    "type": "top_keyword", 
+    "type": "top_keyword",
     "reached_at": "2025-10-15T00:00:00.000Z",
     "value": "next.js security best practices"
   }
@@ -183,8 +187,9 @@ SEO performance and search visibility:
 ```
 
 **Display Examples:**
+
 - "🔍 10,000 Search Impressions"
-- "👆 1,000 Search Clicks" 
+- "👆 1,000 Search Clicks"
 - "🏆 #2 Ranking: 'cybersecurity architecture'"
 - "🎯 Top Keyword: 'next.js security best practices'"
 
@@ -196,7 +201,7 @@ Add these variables to your `.env` file for external API integration:
 # Required for Redis storage
 REDIS_URL=redis://localhost:6379
 
-# Optional: Analytics API credentials  
+# Optional: Analytics API credentials
 VERCEL_ACCESS_TOKEN=your_vercel_token_here
 GITHUB_ACCESS_TOKEN=your_github_token_here
 GOOGLE_ANALYTICS_CLIENT_EMAIL=your_ga_client_email
@@ -204,7 +209,7 @@ GOOGLE_ANALYTICS_PRIVATE_KEY=your_ga_private_key
 GOOGLE_ANALYTICS_VIEW_ID=your_ga_view_id
 SEARCH_CONSOLE_CLIENT_EMAIL=your_gsc_client_email
 SEARCH_CONSOLE_PRIVATE_KEY=your_gsc_private_key
-SEARCH_CONSOLE_SITE_URL=https://dcyfr.dev
+SEARCH_CONSOLE_SITE_URL=https://www.dcyfr.dev
 ```
 
 > **Note:** API credentials are only needed if implementing automatic data collection. The activity feed works with manually populated Redis data.
@@ -235,7 +240,7 @@ Verify milestones are stored correctly:
 ```bash
 redis-cli
 > GET analytics:milestones
-> GET github:traffic:milestones  
+> GET github:traffic:milestones
 > GET google:analytics:milestones
 > GET search:console:milestones
 ```
@@ -249,8 +254,8 @@ For production deployment, implement background jobs to populate milestone data:
 ```typescript
 // Example: Vercel Analytics Collection (Inngest function)
 export const collectVercelAnalytics = inngest.createFunction(
-  { id: "collect-vercel-analytics" },
-  { cron: "0 6 * * *" }, // Daily at 6 AM
+  { id: 'collect-vercel-analytics' },
+  { cron: '0 6 * * *' }, // Daily at 6 AM
   async () => {
     const analytics = await getVercelAnalytics();
     const milestones = detectMilestones(analytics);
@@ -265,7 +270,7 @@ Each collection script should:
 
 1. **Fetch current metrics** from external APIs
 2. **Compare against thresholds** (stored in config)
-3. **Detect new milestones** not yet recorded  
+3. **Detect new milestones** not yet recorded
 4. **Store achievements** with timestamps
 5. **Update Redis keys** for activity feed consumption
 
@@ -273,28 +278,27 @@ Each collection script should:
 
 ### Core Files
 
-| File | Purpose |
-|------|---------|
-| `/src/lib/activity/types.ts` | Type definitions and constants |
-| `/src/lib/activity/sources.server.ts` | Analytics transformer functions |
-| `/src/app/activity/page.tsx` | Activity feed integration |
-| `/src/inngest/activity-cache-functions.ts` | Cache refresh with analytics |
-| `/src/components/activity/ActivityItem.tsx` | UI component updates |
+| File                                        | Purpose                         |
+| ------------------------------------------- | ------------------------------- |
+| `/src/lib/activity/types.ts`                | Type definitions and constants  |
+| `/src/lib/activity/sources.server.ts`       | Analytics transformer functions |
+| `/src/app/activity/page.tsx`                | Activity feed integration       |
+| `/src/inngest/activity-cache-functions.ts`  | Cache refresh with analytics    |
+| `/src/components/activity/ActivityItem.tsx` | UI component updates            |
 
 ### New Activity Types
 
 ```typescript
 // Added to ActivitySource
-type ActivitySource = 
-  | "analytics"      // Vercel Analytics milestones
-  | "github-traffic" // GitHub repository metrics  
-  | "seo"           // Search Console achievements
-  // ... existing sources
+type ActivitySource =
+  | 'analytics' // Vercel Analytics milestones
+  | 'github-traffic' // GitHub repository metrics
+  | 'seo'; // Search Console achievements
+// ... existing sources
 
-// Added to ActivityVerb  
-type ActivityVerb = 
-  | "reached"       // For milestone achievements
-  // ... existing verbs
+// Added to ActivityVerb
+type ActivityVerb = 'reached'; // For milestone achievements
+// ... existing verbs
 ```
 
 ### UI Configuration
@@ -302,15 +306,15 @@ type ActivityVerb =
 ```typescript
 // Color schemes by source
 const sourceColors = {
-  analytics: "text-blue-600 dark:text-blue-400",
-  "github-traffic": "text-purple-600 dark:text-purple-400", 
-  seo: "text-green-600 dark:text-green-400",
+  analytics: 'text-blue-600 dark:text-blue-400',
+  'github-traffic': 'text-purple-600 dark:text-purple-400',
+  seo: 'text-green-600 dark:text-green-400',
 };
 
 // Icons by source
 const sourceIcons = {
   analytics: BarChart3,
-  "github-traffic": Activity,
+  'github-traffic': Activity,
   seo: Search,
 };
 ```
@@ -331,7 +335,7 @@ The activity cache refreshes hourly via Inngest. To manually refresh:
 ```typescript
 // In development console or API route
 import { redis } from '@/lib/redis';
-await redis.del('activity:cache');  // Force cache refresh
+await redis.del('activity:cache'); // Force cache refresh
 ```
 
 ### Performance Considerations
@@ -346,8 +350,9 @@ await redis.del('activity:cache');  // Force cache refresh
 ### Additional Analytics Sources
 
 Potential integrations for future versions:
+
 - **YouTube Analytics** - Video view milestones
-- **Twitter Analytics** - Engagement milestones  
+- **Twitter Analytics** - Engagement milestones
 - **LinkedIn Analytics** - Professional network growth
 - **Stripe Analytics** - Revenue milestones
 - **Email Analytics** - Newsletter subscriber growth
@@ -364,12 +369,12 @@ Potential integrations for future versions:
 For issues with the analytics integration:
 
 1. Check this documentation first
-2. Verify Redis connectivity and data structure  
+2. Verify Redis connectivity and data structure
 3. Test with sample data using provided scripts
 4. Review transformer error logs for specific issues
 
 ---
 
-**Implementation Status:** ✅ Complete  
-**Last Updated:** December 17, 2025  
+**Implementation Status:** ✅ Complete
+**Last Updated:** December 17, 2025
 **Tested With:** Sample milestone data across all four sources

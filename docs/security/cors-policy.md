@@ -29,8 +29,8 @@ This application uses **Next.js default CORS policy**, which implements a **same
 **Example:**
 
 ```
-Allowed:    https://dcyfr.ai → https://dcyfr.ai/api/*
-Blocked:    https://example.com → https://dcyfr.ai/api/*
+Allowed:    https://www.dcyfr.ai → https://www.dcyfr.ai/api/*
+Blocked:    https://example.com → https://www.dcyfr.ai/api/*
 ```
 
 ---
@@ -81,12 +81,12 @@ Blocked:    https://example.com → https://dcyfr.ai/api/*
 
 ```
 ✓ ALLOWED:
-  Request from: https://dcyfr.ai (same origin)
-  Target: https://dcyfr.ai/api/contact
+  Request from: https://www.dcyfr.ai (same origin)
+  Target: https://www.dcyfr.ai/api/contact
 
 ✗ BLOCKED:
   Request from: https://attacker.com (different origin)
-  Target: https://dcyfr.ai/api/contact
+  Target: https://www.dcyfr.ai/api/contact
 ```
 
 **Additional Protection:**
@@ -202,8 +202,8 @@ Blocked:    https://example.com → https://dcyfr.ai/api/*
 
 ```bash
 # From your domain
-curl https://dcyfr.ai/api/contact \
-  -H "Origin: https://dcyfr.ai" \
+curl https://www.dcyfr.ai/api/contact \
+  -H "Origin: https://www.dcyfr.ai" \
   -H "Content-Type: application/json" \
   -d '{"name":"Test","email":"test@example.com","message":"Test"}'
 
@@ -214,7 +214,7 @@ curl https://dcyfr.ai/api/contact \
 
 ```bash
 # From different domain
-curl https://dcyfr.ai/api/contact \
+curl https://www.dcyfr.ai/api/contact \
   -H "Origin: https://attacker.com" \
   -H "Content-Type: application/json" \
   -d '{"name":"Test","email":"test@example.com","message":"Test"}'
@@ -227,7 +227,7 @@ curl https://dcyfr.ai/api/contact \
 
 ```bash
 # OPTIONS request (browser preflight)
-curl -X OPTIONS https://dcyfr.ai/api/contact \
+curl -X OPTIONS https://www.dcyfr.ai/api/contact \
   -H "Origin: https://attacker.com" \
   -H "Access-Control-Request-Method: POST" \
   -H "Access-Control-Request-Headers: Content-Type"
@@ -243,7 +243,7 @@ curl -X OPTIONS https://dcyfr.ai/api/contact \
 **When CORS is blocked, you'll see:**
 
 ```
-Access to fetch at 'https://dcyfr.ai/api/contact' from origin
+Access to fetch at 'https://www.dcyfr.ai/api/contact' from origin
 'https://attacker.com' has been blocked by CORS policy:
 No 'Access-Control-Allow-Origin' header is present on the requested resource.
 ```

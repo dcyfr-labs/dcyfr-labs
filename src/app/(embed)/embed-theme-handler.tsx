@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 
 // Allowed origins for postMessage communication
 const ALLOWED_ORIGINS = [
-  'https://dcyfr.ai', // Production (redirect)
+  'https://www.dcyfr.ai', // Production (redirect)
   'https://www.dcyfr.ai', // Production (primary)
   'https://dcyfr-preview.vercel.app', // Preview deployments
   ...(process.env.NODE_ENV === 'development'
