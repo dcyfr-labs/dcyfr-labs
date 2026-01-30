@@ -1,15 +1,19 @@
 /**
  * Design Token Compliance Automation
- * 
+ *
  * Automatically validates design token usage when component files are changed.
- * Runs `npm run find:token-violations` and reports violations.
- * 
+ * Uses the new @dcyfr/agents enforcement layer via ai-compat.
+ *
+ * MIGRATION: Now using @dcyfr/ai framework with compatibility adapter.
+ * Falls back to script-based validation if new system unavailable.
+ *
  * @see docs/ai/enforcement/DESIGN_TOKENS.md
  */
 
 import { inngest } from "../client";
 import { exec } from "child_process";
 import { promisify } from "util";
+import { validateDesignTokens as validateTokensCompat } from "@/lib/ai-compat";
 
 const execAsync = promisify(exec);
 
@@ -70,26 +74,37 @@ export const validateDesignTokens = inngest.createFunction(
 
     // Step 1: Run token violation check
     const violations = await step.run("check-violations", async () => {
+      // Try new @dcyfr/ai-based validation first
       try {
-        // Run the violation detection script
-        const { stdout } = await execAsync("npm run find:token-violations");
-        
-        // Parse violations (only for changed files)
-        const allViolations = parseViolations(stdout);
-        const relevantViolations = allViolations.filter((v) =>
-          changedFiles.some((f: string) => v.file.includes(f))
-        );
-        
-        return relevantViolations;
-      } catch (error) {
-        // Script exits with non-zero code if violations found
-        if (error instanceof Error && "stdout" in error) {
-          const allViolations = parseViolations((error as any).stdout);
+        const result = await validateTokensCompat(changedFiles);
+
+        // Convert to legacy format for backward compatibility
+        return result.violations.map((v, idx) => ({
+          file: changedFiles[0] || 'unknown', // TODO: Extract file from violation message
+          line: 0, // TODO: Extract line number from violation message
+          violation: v,
+          pattern: extractPattern(v),
+        }));
+      } catch (compatError) {
+        console.warn('[Design Tokens] New validation unavailable, falling back to script:', compatError);
+
+        // Fallback to script-based validation
+        try {
+          const { stdout } = await execAsync("npm run find:token-violations");
+          const allViolations = parseViolations(stdout);
           return allViolations.filter((v) =>
             changedFiles.some((f: string) => v.file.includes(f))
           );
+        } catch (error) {
+          // Script exits with non-zero code if violations found
+          if (error instanceof Error && "stdout" in error) {
+            const allViolations = parseViolations((error as any).stdout);
+            return allViolations.filter((v) =>
+              changedFiles.some((f: string) => v.file.includes(f))
+            );
+          }
+          throw error;
         }
-        throw error;
       }
     });
 
