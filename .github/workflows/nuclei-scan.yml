@@ -22,7 +22,7 @@ on:
       target_url:
         description: 'Target URL to scan (default: production)'
         required: false
-        default: 'https://dcyfr.ai'
+        default: 'https://www.dcyfr.ai'
         type: string
       severity_threshold:
         description: 'Minimum severity to report'
@@ -53,7 +53,7 @@ permissions:
   actions: read
 
 env:
-  PRODUCTION_URL: 'https://dcyfr.ai'  # Production: dcyfr.ai (main) | Preview: dcyfr.dev
+  PRODUCTION_URL: 'https://www.dcyfr.ai'  # Production: dcyfr.ai (main) | Preview: dcyfr.dev
   SEVERITY_THRESHOLD: 'medium'
 
 jobs:
@@ -106,7 +106,7 @@ jobs:
           NUCLEI_URL="https://github.com/projectdiscovery/nuclei/releases/latest/download/nuclei_3.3.7_linux_amd64.zip"
           MAX_RETRIES=3
           RETRY_DELAY=5
-          
+
           for i in $(seq 1 $MAX_RETRIES); do
             echo "🔄 Attempt $i of $MAX_RETRIES to download Nuclei..."
             if wget -q --timeout=30 --tries=2 "$NUCLEI_URL" -O nuclei.zip; then
@@ -120,7 +120,7 @@ jobs:
               exit 1
             fi
           done
-          
+
           unzip -q nuclei.zip
           sudo mv nuclei /usr/local/bin/
           rm -f nuclei.zip
@@ -133,7 +133,7 @@ jobs:
           echo "🔄 Starting Nuclei template update..."
           MAX_RETRIES=2
           RETRY_DELAY=10
-          
+
           for i in $(seq 1 $MAX_RETRIES); do
             echo "📥 Template update attempt $i of $MAX_RETRIES..."
             if timeout 300 nuclei -update-templates -v; then
@@ -147,7 +147,7 @@ jobs:
               # Don't exit - use existing templates if available
             fi
           done
-          
+
           # Verify templates exist
           TEMPLATE_COUNT=$(find ~/.nuclei/templates -name "*.yaml" 2>/dev/null | wc -l)
           echo "📊 Available templates: $TEMPLATE_COUNT"
@@ -194,7 +194,7 @@ jobs:
             -retries 2 \
             -tags cve,exposure,misconfiguration,network,owasp,tech,vulnerability \
             -exclude-tags intrusive,dos,fuzzing || true
-          
+
           SCAN_END=$(date +%s)
           SCAN_DURATION=$((SCAN_END - SCAN_START))
           echo "⏱️  Scan completed in $SCAN_DURATION seconds at $(date -u '+%H:%M:%S UTC')"

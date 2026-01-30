@@ -1,6 +1,14 @@
 /**
  * Agent Telemetry Tracking System (v1.0)
  *
+ * ⚠️ DEPRECATED: This module is being migrated to @dcyfr/ai framework.
+ *
+ * Migration path:
+ * - Use @dcyfr/ai framework: import { TelemetryEngine, TelemetrySessionManager } from '@dcyfr/ai'
+ * - For backward compatibility: import { telemetry } from '@/lib/agents/compat'
+ *
+ * This file will be removed in a future version. All new code should use @dcyfr/ai.
+ *
  * Tracks agent usage, quality metrics, costs, and performance across all AI providers.
  * Provides data-driven insights for optimizing agent allocation and cost management.
  *
@@ -13,7 +21,14 @@
  *
  * @example
  * ```typescript
- * import { telemetry } from '@/lib/agents/agent-telemetry';
+ * // DEPRECATED - Old import:
+ * // import { telemetry } from '@/lib/agents/agent-telemetry';
+ *
+ * // NEW - Use compat layer:
+ * import { telemetry } from '@/lib/agents/compat';
+ *
+ * // Or use @dcyfr/ai directly:
+ * import { TelemetryEngine, TelemetrySessionManager } from '@dcyfr/ai';
  *
  * // Start tracking a task
  * const session = telemetry.startSession('claude', {

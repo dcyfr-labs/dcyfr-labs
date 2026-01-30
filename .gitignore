@@ -69,11 +69,18 @@ test-output.log
 # Environment & Secrets
 # ========================================
 # Private directories (at any level)
+# Note: Use .private/ for new directories (dot-prefix convention)
+**/.private/
 **/private/
+.private/
 private/
+!/src/app/private/
 
 # Archive directories (at any level)
+# Note: Use .archive/ for new directories (dot-prefix convention)
+**/.archive/
 **/archive/
+.archive/
 archive/
 
 # env files

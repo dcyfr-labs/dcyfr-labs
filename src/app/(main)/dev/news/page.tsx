@@ -12,6 +12,11 @@ import { PageLayout, PageHero } from "@/components/layouts";
 import { FeedsContent, FeedsAuth } from "@/components/inoreader";
 import { createPageMetadata } from "@/lib/metadata";
 import { SPACING, CONTAINER_WIDTHS } from "@/lib/design-tokens";
+import { assertDevOr404 } from "@/lib/dev-only";
+
+// Force dynamic rendering since we check Redis for auth tokens
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs"; // Use Node.js runtime for Redis operations
 
 export const metadata = createPageMetadata({
   title: "Developer News (Beta)",
@@ -51,6 +56,8 @@ export default function DevNewsPage() {
  * Wrapper to check authentication status and render appropriate component
  */
 async function NewsAuthWrapper() {
+  assertDevOr404();
+
   const isAuthenticated = await checkInoreaderAuth();
 
   if (!isAuthenticated) {
@@ -71,7 +78,7 @@ async function checkInoreaderAuth(): Promise<boolean> {
       return false;
     }
 
-    // Check if we're using Redis
+    // Dynamically import Redis to avoid build-time execution
     const { redis } = await import("@/lib/redis");
     if (!redis) {
       return false;

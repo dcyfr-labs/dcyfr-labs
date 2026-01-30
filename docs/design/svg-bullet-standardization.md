@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # SVG Bullet Standardization - Brand Consistency Implementation
 

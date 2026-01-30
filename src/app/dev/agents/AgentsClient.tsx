@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DashboardLayout, DashboardStat } from "@/components/dashboard";
 import {
-  telemetry,
-  getGlobalFallbackManager,
+  getAgentComparison,
   type AgentType,
   type ComparisonStats,
 } from "@/lib/agents";
@@ -38,7 +37,7 @@ export default function AgentsClient() {
   const loadData = async () => {
     setRefreshing(true);
     try {
-      const data = await telemetry.compareAgents(period);
+      const data = await getAgentComparison(period);
       setComparison(data);
     } catch (error) {
       console.error("Failed to load agent data:", error);

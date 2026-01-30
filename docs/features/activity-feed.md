@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # Activity Feed Documentation
 
@@ -274,8 +274,8 @@ src/
 export function transformNewSource(data: RawData[]): ActivityItem[] {
   return data.map((item) => ({
     id: item.id,
-    source: "new-source",
-    verb: "published",
+    source: 'new-source',
+    verb: 'published',
     title: item.title,
     description: item.description,
     timestamp: new Date(item.createdAt),
@@ -292,18 +292,18 @@ export function transformNewSource(data: RawData[]): ActivityItem[] {
 
 ```typescript
 export type ActivitySource =
-  | "blog"
-  | "project"
-  | "github"
-  | "changelog"
-  | "milestone"
-  | "trending"
-  | "engagement"
-  | "certification"
-  | "analytics"
-  | "github-traffic"
-  | "seo"
-  | "new-source"; // Add here
+  | 'blog'
+  | 'project'
+  | 'github'
+  | 'changelog'
+  | 'milestone'
+  | 'trending'
+  | 'engagement'
+  | 'certification'
+  | 'analytics'
+  | 'github-traffic'
+  | 'seo'
+  | 'new-source'; // Add here
 ```
 
 3. **Add source styling** in `lib/activity/index.ts`:
@@ -311,16 +311,16 @@ export type ActivitySource =
 ```typescript
 export const ACTIVITY_SOURCE_COLORS: Record<ActivitySource, ColorPair> = {
   // ... existing sources
-  "new-source": {
-    bg: "bg-purple-100 dark:bg-purple-900/20",
-    text: "text-purple-900 dark:text-purple-100",
-    border: "border-purple-200 dark:border-purple-800",
+  'new-source': {
+    bg: 'bg-purple-100 dark:bg-purple-900/20',
+    text: 'text-purple-900 dark:text-purple-100',
+    border: 'border-purple-200 dark:border-purple-800',
   },
 };
 
 export const ACTIVITY_SOURCE_LABELS: Record<ActivitySource, string> = {
   // ... existing sources
-  "new-source": "New Source",
+  'new-source': 'New Source',
 };
 ```
 
@@ -340,8 +340,8 @@ Edit `src/lib/activity/search.ts`:
 
 ```typescript
 const SEARCH_CONFIG = {
-  fields: ["title", "description", "tags", "category"],
-  storeFields: ["id"],
+  fields: ['title', 'description', 'tags', 'category'],
+  storeFields: ['id'],
   searchOptions: {
     boost: {
       title: 2, // Increase title importance
@@ -351,7 +351,7 @@ const SEARCH_CONFIG = {
     },
     fuzzy: 0.2, // Adjust typo tolerance (0.0-1.0)
     prefix: true, // Match word prefixes
-    combineWith: "AND" as const, // OR for broader results
+    combineWith: 'AND' as const, // OR for broader results
   },
 };
 ```
@@ -464,7 +464,7 @@ npm run test:e2e -- activity-search.spec.ts
 fuzzy: 0.3; // Default: 0.2
 
 // Check browser console for search debug info
-console.log("Parsed query:", parseSearchQuery(query));
+console.log('Parsed query:', parseSearchQuery(query));
 ```
 
 ### Search is slow
@@ -495,12 +495,12 @@ const results = searchActivities(items, query, searchIndex);
 
 ```javascript
 // Check localStorage availability
-if (typeof window !== "undefined" && window.localStorage) {
+if (typeof window !== 'undefined' && window.localStorage) {
   // Safe to use localStorage
 }
 
 // Clear search history manually
-localStorage.removeItem("dcyfr-activity-search-history");
+localStorage.removeItem('dcyfr-activity-search-history');
 ```
 
 ---
@@ -548,7 +548,7 @@ The Activity Heatmap provides a calendar-based visualization of activity intensi
 ### Usage
 
 ```tsx
-import { ActivityHeatmapCalendar } from "@/components/activity";
+import { ActivityHeatmapCalendar } from '@/components/activity';
 
 <ActivityHeatmapCalendar
   activities={activities}
@@ -602,7 +602,7 @@ Both views share the same filters (sources, time range, search), allowing users 
 
 ## Stage 5: Virtual Scrolling for Performance ✅
 
-**Status:** Complete (December 2025)  
+**Status:** Complete (December 2025)
 **Objective:** Optimize rendering performance for feeds with 1000+ items using virtual scrolling.
 
 ### Features Implemented
@@ -724,11 +724,11 @@ The activity feed is available as an RSS 2.0 feed for syndication. All major con
 | **Blog**     | `/blog/rss.xml`     | `/blog/feed`     | `/blog/feed.json`     |
 | **Projects** | `/work/rss.xml`     | `/work/feed`     | `/work/feed.json`     |
 
-**Discovery:** All feeds are listed on the [/feeds](https://dcyfr.ai/feeds) page with format descriptions and subscription buttons.
+**Discovery:** All feeds are listed on the [/feeds](https://www.dcyfr.ai/feeds) page with format descriptions and subscription buttons.
 
 ### Accessing the Feed
 
-**Feed URL:** `https://dcyfr.ai/activity/rss.xml`
+**Feed URL:** `https://www.dcyfr.ai/activity/rss.xml`
 
 The RSS feed includes all activity types with proper metadata formatting:
 
@@ -738,7 +738,7 @@ The RSS feed includes all activity types with proper metadata formatting:
 - GitHub activity
 - Certifications and analytics achievements
 
-**Discovery:** The feed is listed on the [/feeds](https://dcyfr.ai/feeds) page alongside other available feeds (Atom, JSON Feed).
+**Discovery:** The feed is listed on the [/feeds](https://www.dcyfr.ai/feeds) page alongside other available feeds (Atom, JSON Feed).
 
 ### Feed Features
 
@@ -773,17 +773,17 @@ Add this feed to your favorite RSS reader:
 - [NewsBlur](https://newsblur.com/)
 - [The Old Reader](https://theoldreader.com/)
 
-**Manual subscription:** Copy `https://dcyfr.ai/activity/rss.xml` into your feed reader
+**Manual subscription:** Copy `https://www.dcyfr.ai/activity/rss.xml` into your feed reader
 
 ### API Reference
 
 ```typescript
-import { generateRSSFeed, filterActivitiesForRSS } from "@/lib/activity/rss";
+import { generateRSSFeed, filterActivitiesForRSS } from '@/lib/activity/rss';
 
 // Generate RSS feed
 const rssXML = generateRSSFeed(activities, {
-  title: "Custom Feed Title",
-  description: "Custom description",
+  title: 'Custom Feed Title',
+  description: 'Custom description',
   ttl: 60, // Minutes until refresh
   maxItems: 100, // Limit feed size
 });
@@ -792,8 +792,8 @@ const rssXML = generateRSSFeed(activities, {
 const rssActivities = filterActivitiesForRSS(activities);
 ```
 
-**Route:** `/activity/rss.xml`  
-**Revalidation:** 5 minutes (ISR)  
+**Route:** `/activity/rss.xml`
+**Revalidation:** 5 minutes (ISR)
 **Cache:** 1 hour public cache with stale-while-revalidate
 
 ---
@@ -855,6 +855,6 @@ See [todo.md](../operations/todo.md#stage-6-content-extensions--integrations--ne
 
 ---
 
-**Status:** Production Ready  
-**Completed:** December 23, 2025  
+**Status:** Production Ready
+**Completed:** December 23, 2025
 **Maintained By:** DCYFR Labs Team

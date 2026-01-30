@@ -1,8 +1,8 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # DEV.to RSS Feed Setup Guide
 
-**Status:** Active Configuration  
+**Status:** Active Configuration
 **Last Updated:** January 19, 2026
 
 ## Overview
@@ -30,10 +30,10 @@ graph LR
 
 ### Feed URLs
 
-- **Primary:** https://dcyfr.dev/blog/feed?format=rss
-- **Atom:** https://dcyfr.dev/blog/feed?format=atom (default)
-- **JSON:** https://dcyfr.dev/blog/feed?format=json
-- **Legacy:** https://dcyfr.dev/blog/rss.xml (301 redirect)
+- **Primary:** https://www.dcyfr.dev/blog/feed?format=rss
+- **Atom:** https://www.dcyfr.dev/blog/feed?format=atom (default)
+- **JSON:** https://www.dcyfr.dev/blog/feed?format=json
+- **Legacy:** https://www.dcyfr.dev/blog/rss.xml (301 redirect)
 
 ### Feed Configuration
 
@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
 3. **Configure Feed URL**
 
    ```
-   RSS Feed URL: https://dcyfr.dev/blog/feed?format=rss
+   RSS Feed URL: https://www.dcyfr.dev/blog/feed?format=rss
    ```
 
 4. **Set Import Preferences**
@@ -267,7 +267,7 @@ const filteredPosts = posts.filter((post) => !post.noRss);
 ```
 DEV.to post editor → "Basic" tab
 → Check "Canonical URL" field
-→ Should be: https://dcyfr.dev/blog/[slug]
+→ Should be: https://www.dcyfr.dev/blog/[slug]
 ```
 
 ### Auto-Publish Mode
@@ -307,7 +307,7 @@ Settings → Publishing from RSS
 
 2. Update DEV.to settings:
    ```
-   RSS Feed URL: https://dcyfr.dev/api/dev-to-feed
+   RSS Feed URL: https://www.dcyfr.dev/api/dev-to-feed
    ```
 
 ## Related Documentation
@@ -325,9 +325,9 @@ Settings → Publishing from RSS
 
 ---
 
-**Status:** ✅ Active and working  
-**Feed URL:** https://dcyfr.dev/blog/feed?format=rss  
-**Review Schedule:** Weekly (Mondays)  
+**Status:** ✅ Active and working
+**Feed URL:** https://www.dcyfr.dev/blog/feed?format=rss
+**Review Schedule:** Weekly (Mondays)
 **Import Mode:** Drafts (manual publish)
 
 **Last Reviewed:** January 19, 2026

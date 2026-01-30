@@ -282,7 +282,7 @@ claude
 # Tell Claude: "Implement bookmarks feature"
 
 # Terminal 2: Feature B (in separate tab/window)
-cd /Users/drew/DCYFR/code/dcyfr-labs  # Back to main repo
+cd ${WORKSPACE_ROOT}/dcyfr-labs  # Back to main repo
 git worktree add ../dcyfr-feature-b feature-b-branch
 cd ../dcyfr-feature-b
 claude

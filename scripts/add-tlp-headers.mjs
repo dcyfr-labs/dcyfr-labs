@@ -275,9 +275,9 @@ const governanceData = {
 };
 
 writeFileSync(
-  join(projectRoot, 'docs/governance/private/tlp-amber-analysis.json'),
+  join(projectRoot, 'docs/governance/.private/tlp-amber-analysis.json'),
   JSON.stringify(governanceData, null, 2),
   'utf-8'
 );
 
-console.log('\n✅ Analysis saved to docs/governance/private/tlp-amber-analysis.json');
+console.log('\n✅ Analysis saved to docs/governance/.private/tlp-amber-analysis.json');

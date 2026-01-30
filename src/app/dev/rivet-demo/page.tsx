@@ -3,6 +3,7 @@ import { PageLayout } from '@/components/layouts';
 import { createPageMetadata } from '@/lib/metadata';
 import { CONTAINER_WIDTHS, SPACING, TYPOGRAPHY } from '@/lib/design-tokens';
 import { ReadingProgressBar, KeyTakeaway, TLDRSummary } from '@/components/blog';
+import { assertDevOr404 } from '@/lib/dev-only';
 
 export const metadata: Metadata = createPageMetadata({
   title: 'RIVET Components Demo',
@@ -11,6 +12,7 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default function RIVETDemoPage() {
+  assertDevOr404();
   return (
     <PageLayout>
       {/* Reading Progress Bar (top of page) */}

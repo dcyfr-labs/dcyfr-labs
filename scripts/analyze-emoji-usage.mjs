@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
  * Emoji Usage Analyzer
- * 
+ *
  * Scans the codebase for emoji usage and categorizes them by context.
  * Identifies emojis in public-facing content vs. internal documentation.
- * 
+ *
  * Usage: node scripts/analyze-emoji-usage.mjs
  */
 
@@ -69,23 +69,23 @@ function categorizeUsage(filePath, line, lineNumber, emoji) {
   };
 
   // Public MDX content (user-facing)
-  if (filePath.includes('src/content/blog') && !filePath.includes('/private/')) {
+  if (filePath.includes('src/content/blog') && !filePath.includes('/.private/') && !filePath.includes('/private/')) {
     results.publicContent.push(category);
   } else if (filePath.includes('src/content/projects')) {
     results.publicContent.push(category);
   }
   // Internal documentation
-  else if (filePath.includes('/docs/') || filePath.includes('/.github/') || 
+  else if (filePath.includes('/docs/') || filePath.includes('/.github/') ||
            filePath.includes('AGENTS.md') || filePath.includes('CLAUDE.md')) {
     results.internalDocs.push(category);
   }
   // Test files
-  else if (filePath.includes('__tests__') || filePath.includes('.test.') || 
+  else if (filePath.includes('__tests__') || filePath.includes('.test.') ||
            filePath.includes('.spec.')) {
     results.tests.push(category);
   }
   // Code comments and console.logs
-  else if (line.trim().startsWith('//') || line.trim().startsWith('*') || 
+  else if (line.trim().startsWith('//') || line.trim().startsWith('*') ||
            line.includes('console.')) {
     results.codeComments.push(category);
   }
@@ -164,7 +164,7 @@ function printResults() {
     console.log('\n🚨 PUBLIC CONTENT (User-Facing - NEEDS REPLACEMENT)\n');
     console.log('These emojis appear in blog posts, projects, or public MDX content.');
     console.log('Replace with React icons or text alternatives.\n');
-    
+
     const grouped = {};
     results.publicContent.forEach(item => {
       if (!grouped[item.file]) grouped[item.file] = [];
@@ -184,7 +184,7 @@ function printResults() {
   if (results.uiComponents.length > 0) {
     console.log('\n⚠️  UI COMPONENTS (Review Needed)\n');
     console.log('These emojis appear in component code. Review if they are rendered to users.\n');
-    
+
     const grouped = {};
     results.uiComponents.forEach(item => {
       if (!grouped[item.file]) grouped[item.file] = [];

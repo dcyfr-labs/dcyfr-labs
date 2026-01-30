@@ -71,7 +71,7 @@ git worktree list  # Should return empty initially
 
 ```bash
 # From your main dcyfr-labs directory
-cd /Users/drew/DCYFR/code/dcyfr-labs
+cd ${WORKSPACE_ROOT}/dcyfr-labs
 
 # Create worktree for feature-a on its own branch
 git worktree add ../dcyfr-feature-a feature-a
@@ -97,7 +97,7 @@ git status
 
 ```bash
 # From main dcyfr-labs directory
-cd /Users/drew/DCYFR/code/dcyfr-labs
+cd ${WORKSPACE_ROOT}/dcyfr-labs
 
 # Create worktree for feature-b
 git worktree add ../dcyfr-feature-b feature-b
@@ -115,7 +115,7 @@ git status
 **Terminal 1 (Feature A):**
 
 ```bash
-cd /Users/drew/DCYFR/code/dcyfr-labs/../dcyfr-feature-a
+cd ${WORKSPACE_ROOT}/dcyfr-labs/../dcyfr-feature-a
 npm install  # Only needed once per worktree
 claude
 # Describe feature A tasks
@@ -124,7 +124,7 @@ claude
 **Terminal 2 (Feature B):**
 
 ```bash
-cd /Users/drew/DCYFR/code/dcyfr-labs/../dcyfr-feature-b
+cd ${WORKSPACE_ROOT}/dcyfr-labs/../dcyfr-feature-b
 npm install  # Only needed once per worktree
 claude
 # Describe feature B tasks
@@ -148,7 +148,7 @@ claude
 > /plan Create /bookmarks page with category filtering
 
 # Terminal 2: Analytics Dashboard (new terminal)
-cd /Users/drew/DCYFR/code/dcyfr-labs
+cd ${WORKSPACE_ROOT}/dcyfr-labs
 git worktree add ../dcyfr-analytics analytics
 
 cd ../dcyfr-analytics
@@ -201,9 +201,9 @@ Timeline:
 git worktree list
 
 # Output:
-# /Users/drew/DCYFR/code/dcyfr-labs              (bare)
-# /Users/drew/DCYFR/code/dcyfr-labs/../dcyfr-feature-a  feature-a
-# /Users/drew/DCYFR/code/dcyfr-labs/../dcyfr-feature-b  feature-b
+# ${WORKSPACE_ROOT}/dcyfr-labs              (bare)
+# ${WORKSPACE_ROOT}/dcyfr-labs/../dcyfr-feature-a  feature-a
+# ${WORKSPACE_ROOT}/dcyfr-labs/../dcyfr-feature-b  feature-b
 ```
 
 ### Switch Between Worktrees
@@ -213,10 +213,10 @@ git worktree list
 cd ../dcyfr-feature-a
 
 # From feature-a, switch to feature-b worktree
-cd ../../dcyfr-feature-b
+cd ${WORKSPACE_ROOT}/dcyfr-labs/../dcyfr-feature-b
 
 # From any worktree, get back to main
-cd ../dcyfr-labs
+cd ${WORKSPACE_ROOT}/dcyfr-labs
 ```
 
 ### Run Commands in Specific Worktree
@@ -237,7 +237,7 @@ git -C ../dcyfr-feature-b npm run test:run
 **In Terminal 1:**
 
 ```bash
-cd /Users/drew/DCYFR/code/dcyfr-labs/../dcyfr-feature-a
+cd ${WORKSPACE_ROOT}/dcyfr-labs/../dcyfr-feature-a
 
 # Final validation
 npm run check  # All tests, linting passing
@@ -249,10 +249,10 @@ git push origin feature-a
 # After merge is complete...
 
 # Back to main directory
-cd ../dcyfr-labs
+cd ${WORKSPACE_ROOT}/dcyfr-labs
 
 # Remove the worktree
-git worktree remove ../dcyfr-feature-a
+git worktree remove ${WORKSPACE_ROOT}/dcyfr-labs/../dcyfr-feature-a
 # or
 git worktree prune
 
@@ -303,11 +303,11 @@ error: Cannot remove '/Users/.../dcyfr-feature-a': Directory not empty
 ```bash
 # Close terminals using that worktree
 # Then try again
-cd /Users/drew/DCYFR/code/dcyfr-labs  # Exit the worktree
-git worktree remove ../dcyfr-feature-a
+cd ${WORKSPACE_ROOT}/dcyfr-labs  # Exit the worktree
+git worktree remove ${WORKSPACE_ROOT}/dcyfr-labs/../dcyfr-feature-a
 
 # Or force remove
-rm -rf ../dcyfr-feature-a
+rm -rf ${WORKSPACE_ROOT}/dcyfr-labs/../dcyfr-feature-a
 git worktree prune
 ```
 

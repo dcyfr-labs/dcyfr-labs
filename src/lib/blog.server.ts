@@ -19,8 +19,8 @@ const WORDS_PER_MINUTE = 225;
  * 2. Folder with index: src/content/blog/my-post/index.mdx (allows co-located assets)
  *
  * Private drafts (git-ignored, dev-only):
- * 3. Private flat file: src/content/blog/private/my-draft.mdx
- * 4. Private folder: src/content/blog/private/my-draft/index.mdx
+ * 3. Private flat file: src/content/blog/.private/my-draft.mdx
+ * 4. Private folder: src/content/blog/.private/my-draft/index.mdx
  *
  * Folder structure enables co-locating images, videos, and other assets:
  * src/content/blog/my-post/

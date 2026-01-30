@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { unifiedCostAggregator } from "@/lib/unified-cost-aggregator";
 import type { TimeRange } from "@/lib/unified-cost-aggregator";
 
@@ -18,6 +18,12 @@ import type { TimeRange } from "@/lib/unified-cost-aggregator";
  * ```
  */
 export async function GET(request: NextRequest) {
+  // Defense in depth: verify dev environment (middleware already blocks in prod)
+  const isDev = process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === 'development';
+  if (!isDev) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
+
   const searchParams = request.nextUrl.searchParams;
   const period = (searchParams.get("period") || "30d") as TimeRange;
 

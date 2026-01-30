@@ -1,8 +1,8 @@
 # Enhanced Validation for GitHub Copilot Models
 
-**Status**: Production Ready  
-**Last Updated**: January 11, 2026  
-**Version**: 2.0.0 (GitHub Copilot Migration)  
+**Status**: Production Ready
+**Last Updated**: January 11, 2026
+**Version**: 2.0.0 (GitHub Copilot Migration)
 **Purpose**: Comprehensive validation checklists for GitHub Copilot implementations to compensate for lower pattern recognition
 
 ---
@@ -21,7 +21,7 @@ GitHub Copilot models (GPT-5 Mini, Raptor Mini) have **70-85% pattern recognitio
 
 ### Premium Providers (Claude Sonnet)
 
-**Accuracy**: 95%+ pattern adherence  
+**Accuracy**: 95%+ pattern adherence
 **Validation**: Standard automated checks only
 
 ```bash
@@ -37,14 +37,14 @@ npm run check
 
 ### GitHub Copilot (GPT-5 Mini, Raptor Mini, GPT-4o)
 
-**Accuracy**: 70-85% pattern adherence  
+**Accuracy**: 70-85% pattern adherence
 **Validation**: Automated checks + **manual FLEXIBLE rule review**
 
 ```bash
 # Run enhanced validation
 npm run check:opencode
 
-# Expected: 
+# Expected:
 # - STRICT rules: Hard block (exit 1) if violations
 # - FLEXIBLE rules: Manual checklist printed to terminal
 ```
@@ -224,14 +224,14 @@ done
 rg "[\u{1F600}-\u{1F64F}|\u{1F300}-\u{1F5FF}|\u{1F680}-\u{1F6FF}]" \
   --type tsx --type md --type ts \
   --glob '!**/*.test.*' \
-  --glob '!**/private/**'
+  --glob '!**/.private/**'
 
 # Expected: No matches in public-facing content
 ```
 
 **Manual Review**:
 - [ ] Check UI components: `rg "[🎯🚀✨💡🔥]" src/components/`
-- [ ] Check documentation: `rg "[🎯🚀✨💡🔥]" docs/ --glob '!**/private/**'`
+- [ ] Check documentation: `rg "[🎯🚀✨💡🔥]" docs/ --glob '!**/.private/**'`
 - [ ] Check commit messages: `git log --oneline --all | grep -E "[🎯🚀✨💡🔥]"`
 - [ ] Verify React icons used instead: `rg "from ['\"]lucide-react['\"]" --count`
 
@@ -289,12 +289,12 @@ export async function POST(request: Request) {
 // ✅ Preferred (unless simple operation):
 export async function POST(request: Request) {
   const data = await request.json();
-  
+
   await inngest.send({
     name: "data/process.requested",
     data: { ...data }
   });
-  
+
   return Response.json({ success: true });
 }
 ```
@@ -344,7 +344,7 @@ describe("NewFeature", () => {
     render(<NewFeature />);
     expect(screen.getByRole("button")).toBeInTheDocument();
   });
-  
+
   it("handles user interaction", async () => {
     const user = userEvent.setup();
     render(<NewFeature />);
@@ -530,6 +530,6 @@ scripts/validate-after-fallback.sh
 
 ---
 
-**Status**: Production Ready  
-**Maintenance**: Update checklists when new patterns added  
+**Status**: Production Ready
+**Maintenance**: Update checklists when new patterns added
 **Owner**: Quality Assurance Team

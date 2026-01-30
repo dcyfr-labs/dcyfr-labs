@@ -74,16 +74,16 @@ These rules are **NON-NEGOTIABLE** regardless of provider used:
 7. **Operational vs. Reference Documentation** - Place docs correctly based on type
    - **Quick Decision:**
      - Reusable pattern/guide → Public `docs/[category]/`
-     - Point-in-time status/summary → Private `docs/[category]/private/`
-     - Security/audit finding → Private `docs/security/private/`
+     - Point-in-time status/summary → Private `docs/[category]/.private/`
+     - Security/audit finding → Private `docs/security/.private/`
    - **Operational Indicators (→ Private):**
      - Filename contains: `-summary`, `-complete`, `-status`, `-report`, `-validation`, dates (`YYYY-MM-DD`)
      - Content contains: "Status: COMPLETE", task checklists, implementation logs
    - **Examples:**
      ```
-     ✅ CORRECT: docs/ai/private/claude-config-implementation-2026-01-23.md
-     ✅ CORRECT: docs/operations/private/cleanup-summary-2026-01-05.md
-     ❌ WRONG: docs/ai/claude-config-implementation.md (should be private/)
+     ✅ CORRECT: docs/ai/.private/claude-config-implementation-2026-01-23.md
+     ✅ CORRECT: docs/operations/.private/cleanup-summary-2026-01-05.md
+     ❌ WRONG: docs/ai/claude-config-implementation.md (should be .private/)
      ```
    - **See:** `docs/governance/OPERATIONAL_DOCUMENTATION_POLICY.md`
 
@@ -110,7 +110,7 @@ These rules are **strongly recommended** but validated manually:
       - Log injection → Remove control chars: `replace(/[\x00-\x1F\x7F-\x9F]/g, '')`
       - HTML sanitization → Multi-pass: remove `<script>`, strip tags, decode entities
     - **Only suppress if:** Confirmed false positive with technical proof
-    - **See:** `docs/security/private/CODEQL_FINDINGS_RESOLVED.md`
+    - **See:** `docs/security/.private/CODEQL_FINDINGS_RESOLVED.md`
 
 ---
 
@@ -121,9 +121,9 @@ These rules are **strongly recommended** but validated manually:
 ### Correct Placement
 ```
 ✅ docs/analysis/findings.md
-✅ docs/security/private/audit.md
+✅ docs/security/.private/audit.md
 ✅ docs/architecture/ADR-001.md
-✅ docs/[category]/private/sensitive-report.md
+✅ docs/[category]/.private/sensitive-report.md
 ```
 
 ### Incorrect Placement (BLOCKED)
@@ -137,7 +137,7 @@ These rules are **strongly recommended** but validated manually:
 
 1. Determine category (analysis, security, architecture, operations, etc.)
 2. Create in: `docs/[category]/FILENAME.md`
-3. If sensitive/internal: `docs/[category]/private/FILENAME.md`
+3. If sensitive/internal: `docs/[category]/.private/FILENAME.md`
 4. Never create in root directory
 5. Update `docs/README.md` index if new section
 

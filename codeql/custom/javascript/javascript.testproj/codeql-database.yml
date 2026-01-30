@@ -1,5 +1,5 @@
 ---
-sourceLocationPrefix: /Users/drew/DCYFR/code/dcyfr-labs/codeql/custom/javascript
+sourceLocationPrefix: ./codeql/custom/javascript
 baselineLinesOfCode: 0
 unicodeNewlines: true
 columnKind: utf16

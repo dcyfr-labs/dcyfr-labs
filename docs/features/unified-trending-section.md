@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # Unified Trending Section
 
@@ -97,7 +97,7 @@ interface TrendingSectionProps {
   /** Trending projects with GitHub stats */
   projects?: TrendingProject[];
   /** Default active tab */
-  defaultTab?: "posts" | "topics" | "projects";
+  defaultTab?: 'posts' | 'topics' | 'projects';
   /** Optional className */
   className?: string;
 }
@@ -114,7 +114,7 @@ interface TrendingSectionProps {
 **Usage:**
 
 ```tsx
-import { TrendingSection } from "@/components/home/trending-section";
+import { TrendingSection } from '@/components/home/trending-section';
 
 export default async function HomePage() {
   const posts = await getAllPosts();
@@ -296,7 +296,7 @@ The system uses the **Stargazers API with timestamps** for accurate recent star 
 const { data: stargazers } = await octokit.activity.listStargazersForRepo({
   owner: repoOwner,
   repo: repoName,
-  headers: { Accept: "application/vnd.github.star+json" },
+  headers: { Accept: 'application/vnd.github.star+json' },
   per_page: 100,
   page: 1,
 });
@@ -329,7 +329,7 @@ When GitHub API fails (rate limit, network error, invalid token):
 // Fallback scoring based on project metadata
 const baseScore = 50; // Base score
 const featuredBonus = project.featured ? 20 : 0; // +20 if featured
-const statusBonus = project.status === "active" ? 15 : 10; // +15 if active
+const statusBonus = project.status === 'active' ? 15 : 10; // +15 if active
 const techBonus = (project.tech?.length || 0) * 2; // +2 per tech
 
 return baseScore + featuredBonus + statusBonus + techBonus;
@@ -568,7 +568,7 @@ Add fourth tab showing trending tech stack usage:
 const techCounts = {
   React: 15,
   TypeScript: 12,
-  "Next.js": 10,
+  'Next.js': 10,
   // ...
 };
 ```
@@ -586,8 +586,8 @@ Add fifth tab for trending post series:
 ```typescript
 // Series with most recent activity
 const trendingSeries = [
-  { name: "React Deep Dive", posts: 5, views: 1200 },
-  { name: "TypeScript Tips", posts: 8, views: 980 },
+  { name: 'React Deep Dive', posts: 5, views: 1200 },
+  { name: 'TypeScript Tips', posts: 8, views: 980 },
   // ...
 ];
 ```
@@ -1053,11 +1053,7 @@ Add "Export" button to download trending data:
 Add `<iframe>` embed code for external sites:
 
 ```html
-<iframe
-  src="https://dcyfr.ai/embed/trending"
-  width="100%"
-  height="600"
-></iframe>
+<iframe src="https://www.dcyfr.ai/embed/trending" width="100%" height="600"></iframe>
 ```
 
 ---

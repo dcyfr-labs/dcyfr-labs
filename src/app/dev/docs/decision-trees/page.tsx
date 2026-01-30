@@ -5,6 +5,7 @@ import { SPACING, TYPOGRAPHY } from "@/lib/design-tokens";
 import { Breadcrumbs } from "@/components/navigation";
 import { cn } from "@/lib/utils";
 import { DecisionTreeClient } from "./_decision-tree-client";
+import { assertDevOr404 } from "@/lib/dev-only";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Interactive Decision Trees - Dev Docs",
@@ -279,6 +280,8 @@ const containerDecisionTree = {
 };
 
 export default function DecisionTreesPage() {
+  assertDevOr404();
+
   const breadcrumbs = [
     { label: "Dev", href: "/dev" },
     { label: "Docs", href: "/dev/docs" },

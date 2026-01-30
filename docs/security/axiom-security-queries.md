@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # Axiom Security Monitoring Queries
 **Date:** December 11, 2025

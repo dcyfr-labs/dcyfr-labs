@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 # Tag Analytics - Complete Guide
 
 **Status:** ✅ Complete (November 8, 2025)  

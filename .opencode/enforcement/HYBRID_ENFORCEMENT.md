@@ -1,8 +1,8 @@
 # Hybrid Enforcement Strategy
 
-**Status**: Production Ready  
-**Last Updated**: January 11, 2026  
-**Version**: 2.0.0 (GitHub Copilot Migration)  
+**Status**: Production Ready
+**Last Updated**: January 11, 2026
+**Version**: 2.0.0 (GitHub Copilot Migration)
 **Purpose**: Balance strict pattern compliance with flexible development workflows using provider-aware enforcement
 
 ---
@@ -151,7 +151,7 @@ import { Button } from "@/components/ui";  // Barrel export
 if [[ "$VERCEL_ENV" == "production" || "$NODE_ENV" == "production" ]]; then
   # Check for test data patterns
   rg "FABRICATED|TEST_DATA|MOCK_" --type ts --type tsx
-  
+
   # Check Redis for test keys
   redis-cli KEYS "*:test:*" | wc -l  # Expected: 0
 fi
@@ -192,7 +192,7 @@ await redis.set("analytics:views", "1000");  // Safe: only runs in dev
 rg "[\u{1F600}-\u{1F64F}|\u{1F300}-\u{1F5FF}|\u{1F680}-\u{1F6FF}]" \
   --type tsx --type md --type ts \
   --glob '!**/*.test.*' \
-  --glob '!**/private/**'
+  --glob '!**/.private/**'
 ```
 
 **Examples**:
@@ -211,7 +211,7 @@ import { Rocket } from "lucide-react";
 
 **Fix Required**: Replace emojis with React icons (Lucide) or remove entirely.
 
-**Allowed Locations**: Internal docs (`docs/private/`), comments, test files, logs.
+**Allowed Locations**: Internal docs (`docs/.private/`), comments, test files, logs.
 
 **Related Documentation**: See AGENTS.md "Recent Updates" (December 28, 2025)
 
@@ -260,12 +260,12 @@ import { inngest } from "@/lib/inngest";
 
 export async function POST(request: Request) {
   const data = await request.json();
-  
+
   await inngest.send({
     name: "contact/form.submitted",
     data: { ...data }
   });
-  
+
   return Response.json({ success: true });
 }
 ```
@@ -305,7 +305,7 @@ describe("NewFeature", () => {
 ```ts
 describe("NewFeature", () => {
   it("renders correctly", () => { /* unit test */ });
-  
+
   it("integrates with API", async () => { /* integration test */ });
 });
 
@@ -545,23 +545,23 @@ export async function POST(request: Request) {
 
 ## FAQ
 
-**Q: What happens if I commit with STRICT rule violations?**  
+**Q: What happens if I commit with STRICT rule violations?**
 A: CI pipeline will fail. Pre-commit hooks run `scripts/validate-after-fallback.sh` which exits with code 1 on STRICT violations.
 
-**Q: Can I disable STRICT enforcement for prototyping?**  
+**Q: Can I disable STRICT enforcement for prototyping?**
 A: Yes, but only on feature branches. Use `git commit --no-verify` to skip hooks. MUST fix before merging to main.
 
-**Q: Why are API patterns FLEXIBLE instead of STRICT?**  
+**Q: Why are API patterns FLEXIBLE instead of STRICT?**
 A: Context matters. Simple endpoints may not need queuing. STRICT enforcement would create false positives.
 
-**Q: How do I know if free model output needs manual review?**  
+**Q: How do I know if free model output needs manual review?**
 A: Always run `scripts/validate-after-fallback.sh` after using Groq/Ollama. Manual checklist appears if FLEXIBLE rules triggered.
 
-**Q: Can FLEXIBLE rules become STRICT later?**  
+**Q: Can FLEXIBLE rules become STRICT later?**
 A: Yes. As automation improves (better ESLint rules, scripts), we promote patterns from FLEXIBLE to STRICT.
 
 ---
 
-**Status**: Production Ready  
-**Maintenance**: Review quarterly (align with AGENTS.md sync)  
+**Status**: Production Ready
+**Maintenance**: Review quarterly (align with AGENTS.md sync)
 **Owner**: Architecture Team

@@ -82,7 +82,7 @@ async function checkDuplicateConfigs() {
 }
 
 /**
- * Check for nested private/private directories
+ * Check for nested .private/.private or private/private directories
  */
 async function checkNestedPrivate() {
   console.log("\n🔒 Checking for nested private directories...");
@@ -100,8 +100,9 @@ async function checkNestedPrivate() {
         const fullPath = join(dir, entry.name);
         const relativePath = relative(ROOT, fullPath);
 
-        // Check if this is a private/*/private pattern
-        if (relativePath.includes("/private/") && entry.name === "private") {
+        // Check if this is a .private/*/.private or private/*/private pattern
+        if ((relativePath.includes("/.private/") && entry.name === ".private") ||
+            (relativePath.includes("/private/") && entry.name === "private")) {
           issues.critical.push(`Nested private directory: ${relativePath}`);
         }
 
@@ -230,7 +231,7 @@ async function checkGovernance() {
   const unexpected = [
     "docs/DOCS_GOVERNANCE.md",
     "docs/optimization/data-governance-policy.md",
-    "docs/design/private/security/AGENT-SECURITY-GOVERNANCE.md",
+    "docs/design/.private/security/AGENT-SECURITY-GOVERNANCE.md",
   ];
 
   for (const file of expected) {

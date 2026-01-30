@@ -1,8 +1,8 @@
 # Quality Gates for OpenCode Development
 
-**Status**: Production Ready  
-**Last Updated**: January 11, 2026  
-**Version**: 2.0.0 (GitHub Copilot Migration)  
+**Status**: Production Ready
+**Last Updated**: January 11, 2026
+**Version**: 2.0.0 (GitHub Copilot Migration)
 **Purpose**: Pre-completion validation checklists organized by provider tier to ensure consistent quality across all AI models
 
 ---
@@ -71,7 +71,7 @@ git diff  # Review changes before committing
 npm run test:run
 ```
 
-**Expected**: 
+**Expected**:
 - **Pass rate**: ≥99% (100% not required due to strategic `.skip`)
 - **No new failures**: Pre-existing failures documented in `docs/testing/KNOWN_ISSUES.md`
 
@@ -109,7 +109,7 @@ npm run build
 git status
 ```
 
-**Expected**: 
+**Expected**:
 - No untracked files (except intentional additions)
 - No staged changes forgotten in previous commits
 - `.session-state.json` files not committed (excluded in `.gitignore`)
@@ -319,7 +319,7 @@ if (process.env.NODE_ENV === "production" || process.env.VERCEL_ENV === "product
 # Search for emoji unicode
 rg "[\u{1F600}-\u{1F64F}]" --type tsx --type md \
   --glob '!**/*.test.*' \
-  --glob '!**/private/**'
+  --glob '!**/.private/**'
 
 # Expected: 0 matches
 ```
@@ -617,7 +617,7 @@ npm run test:run -- -u
 npm run test:run -- path/to/test.test.ts
 ```
 
-**Fix Strategy**: 
+**Fix Strategy**:
 1. Read failure message
 2. Check if snapshot update needed
 3. Fix test or implementation
@@ -646,7 +646,7 @@ cat .env.example  # Compare with .env.local
 npm run build && npm run start
 ```
 
-**Fix Strategy**: 
+**Fix Strategy**:
 1. Add missing env vars to `.env.local`
 2. Fix import paths
 3. Verify production build works
@@ -697,6 +697,6 @@ npm run build && npm run start
 
 ---
 
-**Status**: Production Ready  
-**Maintenance**: Update metrics quarterly  
+**Status**: Production Ready
+**Maintenance**: Update metrics quarterly
 **Owner**: Quality Assurance Team

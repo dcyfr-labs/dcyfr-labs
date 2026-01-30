@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # Proprietary Information (PI) & Sensitive Content Policy
 

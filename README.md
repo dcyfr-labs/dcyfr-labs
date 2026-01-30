@@ -88,11 +88,13 @@ dcyfr-labs/
 ## 🎯 Key Architecture
 
 ### Page Layouts (Reusable Patterns)
+
 - **`PageLayout`** - Universal page wrapper with consistent spacing
 - **`ArchiveLayout`** - List pages (blog, projects) with filtering/pagination
 - **`ArticleLayout`** - Individual content pages (blog posts)
 
 ### Metadata Generation
+
 - **`createPageMetadata()`** - Standard page metadata
 - **`createArchivePageMetadata()`** - List page metadata
 - **`createArticlePageMetadata()`** - Blog post metadata
@@ -107,10 +109,10 @@ Create MDX files in `src/content/blog/`:
 
 ```markdown
 ---
-title: "Your Post Title"
-description: "Post description"
-date: "2025-11-10"
-tags: ["nextjs", "typescript"]
+title: 'Your Post Title'
+description: 'Post description'
+date: '2025-11-10'
+tags: ['nextjs', 'typescript']
 featured: true
 draft: false
 ---
@@ -121,6 +123,7 @@ Your content here with full MDX support...
 See [`/docs/blog/content-creation.md`](./docs/blog/content-creation.md) for complete guide.
 
 ### Blog Features
+
 - ✅ Search and tag filtering
 - ✅ Draft and archived post states
 - ✅ Auto-generated table of contents
@@ -162,6 +165,7 @@ See [`/docs/security/`](./docs/security/) for implementation details.
 3. Deploy!
 
 **Automatic Features on Vercel:**
+
 - Edge caching and CDN
 - Analytics and Speed Insights (already wired in `layout.tsx`)
 - Automatic HTTPS
@@ -170,6 +174,7 @@ See [`/docs/security/`](./docs/security/) for implementation details.
 ### Environment Variables
 
 Required variables:
+
 ```bash
 # Contact form
 CONTACT_EMAIL=your-email@example.com
@@ -193,17 +198,17 @@ See [`/docs/platform/environment-variables.md`](./docs/platform/environment-vari
 
 Comprehensive docs in `/docs` ([TLP:CLEAR](./docs/security/TLP_CLASSIFICATION_IMPLEMENTATION.md) - publicly accessible):
 
-| Topic | Primary Docs |
-|-------|-------------|
-| **Getting Started** | [`QUICK_START.md`](./docs/QUICK_START.md) |
-| **Architecture** | [`/docs/architecture/`](./docs/architecture/) |
-| **Blog System** | [`/docs/blog/architecture.md`](./docs/blog/architecture.md) |
-| **Components** | [`/docs/components/`](./docs/components/) |
-| **API Routes** | [`/docs/api/routes/overview.md`](./docs/api/routes/overview.md) |
-| **Security** | [`/docs/security/`](./docs/security/) |
-| **Features** | [`/docs/features/`](./docs/features/) |
-| **Operations** | [`/docs/operations/todo.md`](./docs/operations/todo.md) |
-| **Transparency** | [`/docs/TRANSPARENCY_STATEMENT.md`](./docs/TRANSPARENCY_STATEMENT.md) |
+| Topic               | Primary Docs                                                          |
+| ------------------- | --------------------------------------------------------------------- |
+| **Getting Started** | [`QUICK_START.md`](./docs/QUICK_START.md)                             |
+| **Architecture**    | [`/docs/architecture/`](./docs/architecture/)                         |
+| **Blog System**     | [`/docs/blog/architecture.md`](./docs/blog/architecture.md)           |
+| **Components**      | [`/docs/components/`](./docs/components/)                             |
+| **API Routes**      | [`/docs/api/routes/overview.md`](./docs/api/routes/overview.md)       |
+| **Security**        | [`/docs/security/`](./docs/security/)                                 |
+| **Features**        | [`/docs/features/`](./docs/features/)                                 |
+| **Operations**      | [`/docs/operations/todo.md`](./docs/operations/todo.md)               |
+| **Transparency**    | [`/docs/TRANSPARENCY_STATEMENT.md`](./docs/TRANSPARENCY_STATEMENT.md) |
 
 ## 🧪 Testing
 
@@ -238,17 +243,20 @@ npm run test:e2e:ui       # Playwright UI
 ## 🎨 Customization
 
 ### Update Site Content
+
 - **Homepage**: `src/app/page.tsx`
 - **About**: `src/app/about/page.tsx`
 - **Projects**: `src/data/projects.ts`
 - **Resume**: `src/data/resume.ts`
 
 ### Styling
+
 - **Theme colors**: `src/app/globals.css`
 - **Design tokens**: `src/lib/design-tokens.ts`
 - **Tailwind config**: `tailwind.config.ts`
 
 ### Metadata
+
 - **Global metadata**: `src/app/layout.tsx`
 - **SEO routes**: `src/app/sitemap.ts`, `src/app/robots.ts`
 

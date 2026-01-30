@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # Post ID Architecture: Stable Identifiers for Blog Posts
 

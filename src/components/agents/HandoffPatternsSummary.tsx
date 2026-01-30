@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { telemetry } from "@/lib/agents";
+import { getHandoffPatterns } from "@/lib/agents";
 import { ArrowRight, Zap, Hand } from "lucide-react";
 import { TYPOGRAPHY } from "@/lib/design-tokens";
 
@@ -21,7 +21,7 @@ export function HandoffPatternsSummary({
 
   useEffect(() => {
     async function loadPatterns() {
-      const data = await telemetry.getHandoffPatterns(period);
+      const data = await getHandoffPatterns(period);
       setPatterns(data);
     }
     loadPatterns();

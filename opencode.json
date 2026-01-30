@@ -13,7 +13,7 @@
         "npx",
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "/Users/drew/DCYFR/code/dcyfr-labs"
+        "./"
       ],
       "enabled": true,
       "timeout": 5000

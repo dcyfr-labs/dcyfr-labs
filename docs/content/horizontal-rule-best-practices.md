@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # Horizontal Rule (`<hr>`) Best Practices for Blog Content
 

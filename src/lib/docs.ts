@@ -62,8 +62,10 @@ export function getAllDocs(): DocFile[] {
       const relativePath = path.join(basePath, entry.name);
 
       if (entry.isFile() && entry.name.endsWith(".md")) {
-        // Skip private content - files in any private/ subdirectory
+        // Skip private content - files in any .private/ or private/ subdirectory
         if (
+          relativePath.includes("/.private/") ||
+          relativePath.startsWith(".private/") ||
           relativePath.includes("/private/") ||
           relativePath.startsWith("private/")
         ) {

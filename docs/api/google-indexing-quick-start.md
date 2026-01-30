@@ -1,8 +1,8 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # Google Indexing API - Quick Start
 
-**Status:** ✅ Refactored & Ready  
+**Status:** ✅ Refactored & Ready
 **Last Updated:** December 9, 2025
 
 ---
@@ -25,15 +25,15 @@ Your Google Indexing API integration now includes:
 
 ```typescript
 // In your route, cron job, or event handler:
-import { inngest } from "@/inngest/client";
+import { inngest } from '@/inngest/client';
 
 await inngest.send({
-  name: "google/missing-pages.submit",
+  name: 'google/missing-pages.submit',
   data: {
     sitemapUrls: [
-      "https://dcyfr.ai/",
-      "https://dcyfr.ai/about",
-      "https://dcyfr.ai/blog/post-1",
+      'https://www.dcyfr.ai/',
+      'https://www.dcyfr.ai/about',
+      'https://www.dcyfr.ai/blog/post-1',
       // ... all your URLs
     ],
     maxSubmissions: 50, // Optional
@@ -42,6 +42,7 @@ await inngest.send({
 ```
 
 That's it! Inngest will:
+
 1. Validate which URLs are already indexed
 2. Find missing ones
 3. Submit up to 50 missing URLs
@@ -80,6 +81,7 @@ if (result.success) {
 ```
 
 Then add to `package.json`:
+
 ```json
 {
   "scripts": {
@@ -94,22 +96,20 @@ Then add to `package.json`:
 
 ```typescript
 // POST /api/google-indexing
-import { validateAndSubmitMissingPages } from "@/lib/google-indexing-utils";
-import { NextRequest, NextResponse } from "next/server";
+import { validateAndSubmitMissingPages } from '@/lib/google-indexing-utils';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   const { sitemapUrls, maxSubmissions } = await request.json();
 
-  const result = await validateAndSubmitMissingPages(
-    sitemapUrls,
-    maxSubmissions
-  );
+  const result = await validateAndSubmitMissingPages(sitemapUrls, maxSubmissions);
 
   return NextResponse.json(result);
 }
 ```
 
 Call it:
+
 ```bash
 curl -X POST http://localhost:3000/api/google-indexing \
   -H "Content-Type: application/json" \
@@ -148,23 +148,23 @@ await inngest.send({
 
 ```typescript
 // Quick validate + submit
-import { validateAndSubmitMissingPages } from "@/lib/google-indexing-utils";
+import { validateAndSubmitMissingPages } from '@/lib/google-indexing-utils';
 const result = await validateAndSubmitMissingPages(urls, maxSubmissions);
 
 // Validate only
-import { validateSitemapUrls, getAuthClient } from "@/lib/google-indexing-utils";
+import { validateSitemapUrls, getAuthClient } from '@/lib/google-indexing-utils';
 const auth = await getAuthClient();
 const { indexed, missing, pending } = await validateSitemapUrls(urls, auth);
 
 // Submit only
-import { submitMissingPagesToGoogle, getAuthClient } from "@/lib/google-indexing-utils";
+import { submitMissingPagesToGoogle, getAuthClient } from '@/lib/google-indexing-utils';
 const auth = await getAuthClient();
 const { submitted, failed, skipped } = await submitMissingPagesToGoogle(urls, auth, maxSubmissions);
 
 // Single URL
-import { submitUrlToGoogle, getAuthClient } from "@/lib/google-indexing-utils";
+import { submitUrlToGoogle, getAuthClient } from '@/lib/google-indexing-utils';
 const auth = await getAuthClient();
-const result = await submitUrlToGoogle("https://example.com/page", auth);
+const result = await submitUrlToGoogle('https://example.com/page', auth);
 ```
 
 ---
@@ -213,10 +213,10 @@ const result = await submitUrlToGoogle("https://example.com/page", auth);
 
 ### Q: What's the difference between the Inngest events?
 
-| Event | What It Does |
-|-------|------------|
-| `google/url.submit` | Submit 1 URL (legacy, still works) |
-| `google/sitemap.validate` | Check which URLs are indexed |
+| Event                         | What It Does                              |
+| ----------------------------- | ----------------------------------------- |
+| `google/url.submit`           | Submit 1 URL (legacy, still works)        |
+| `google/sitemap.validate`     | Check which URLs are indexed              |
 | `google/missing-pages.submit` | Do everything: validate + submit + verify |
 
 **Use:** `google/missing-pages.submit` for new code.
@@ -224,6 +224,7 @@ const result = await submitUrlToGoogle("https://example.com/page", auth);
 ### Q: My URLs aren't getting indexed. Why?
 
 Check these things:
+
 1. Service account is added as owner in Google Search Console
 2. URL has no redirect loops
 3. `robots.txt` doesn't block it
@@ -244,6 +245,7 @@ The system automatically:
 4. **Respects timing** between requests (200ms minimum)
 
 You'll see in responses:
+
 ```typescript
 {
   success: false,
@@ -257,14 +259,17 @@ You'll see in responses:
 ## Files Changed
 
 **New Files:**
+
 - `src/lib/google-indexing-utils.ts` - Standalone utilities
 - `docs/GOOGLE_INDEXING_REFACTOR.md` - Complete reference
 
 **Updated Files:**
+
 - `src/inngest/google-indexing-functions.ts` - New Inngest functions
 - `src/app/api/inngest/route.ts` - Registered new functions
 
 **Still Works:**
+
 - `scripts/test-google-indexing.mjs`
 - `scripts/backfill-google-indexing.mjs`
 
@@ -278,8 +283,8 @@ Once you've implemented:
 // In a cron job (using a library like next-cron)
 export async function handleGoogleIndexing() {
   await inngest.send({
-    name: "google/missing-pages.submit",
-    data: { sitemapUrls: await getSitemapUrls() }
+    name: 'google/missing-pages.submit',
+    data: { sitemapUrls: await getSitemapUrls() },
   });
 }
 
@@ -287,8 +292,8 @@ export async function handleGoogleIndexing() {
 export async function onBlogPostPublished(slug: string) {
   const url = `${SITE_URL}/blog/${slug}`;
   await inngest.send({
-    name: "google/url.submit",
-    data: { url }
+    name: 'google/url.submit',
+    data: { url },
   });
 }
 
@@ -296,8 +301,8 @@ export async function onBlogPostPublished(slug: string) {
 export async function onBlogPostDeleted(slug: string) {
   const url = `${SITE_URL}/blog/${slug}`;
   await inngest.send({
-    name: "google/url.delete",
-    data: { url }
+    name: 'google/url.delete',
+    data: { url },
   });
 }
 ```

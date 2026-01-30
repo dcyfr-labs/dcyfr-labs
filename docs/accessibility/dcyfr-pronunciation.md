@@ -1,5 +1,5 @@
 # DCYFR Pronunciation Guide
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 **Quick Reference • Implementation • Checklist**
 

@@ -8,6 +8,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { FileText, Folder, Clock, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { assertDevOr404 } from "@/lib/dev-only";
 
 interface PageProps {
   params: Promise<{ slug?: string[] }>;
@@ -65,18 +66,20 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function DevDocsPage({ params, searchParams }: PageProps) {
+  assertDevOr404();
+
   const { slug } = await params;
   const searchParamsResolved = await searchParams;
   const search = searchParamsResolved?.search;
   const slugPath = slug?.join("/") || "";
-  
+
   const allDocs = getAllDocs();
-  
+
   // If no slug, show docs index with README.md as primary content
   if (!slugPath) {
     const folderContents = getFolderContents("");
     const searchResults = search ? searchDocs(search) : null;
-    
+
     // If searching, show search results
     if (search && searchResults) {
       const RESULTS_PER_PAGE = 50;
@@ -139,10 +142,10 @@ export default async function DevDocsPage({ params, searchParams }: PageProps) {
         </DocsLayout>
       );
     }
-    
+
     return renderFolderView("", folderContents, allDocs);
   }
-  
+
   // Check if this is a folder (has INDEX/README or files/subfolders)
   const folderContents = getFolderContents(slugPath);
   const hasIndexOrReadme = folderContents.indexDoc || folderContents.readmeDoc;
@@ -199,8 +202,8 @@ export default async function DevDocsPage({ params, searchParams }: PageProps) {
 
 // Helper function to render folder views
 function renderFolderView(
-  folderPath: string, 
-  folderContents: ReturnType<typeof getFolderContents>, 
+  folderPath: string,
+  folderContents: ReturnType<typeof getFolderContents>,
   allDocs: any[]
 ) {
   const { indexDoc, readmeDoc, files, subfolders } = folderContents;
@@ -208,21 +211,21 @@ function renderFolderView(
   // Determine the primary document to show (INDEX takes priority over README)
   const primaryDoc = indexDoc || readmeDoc || undefined;
   const secondaryDoc = indexDoc && readmeDoc ? readmeDoc : null;
-  
+
   return (
     <DocsLayout doc={primaryDoc} docs={allDocs}>
       <div>
         <div className="mb-8">
           <ClientDocSearch placeholder="Search documentation..." />
         </div>
-        
+
         {/* Primary Document (INDEX.md) */}
         {primaryDoc && (
           <article className="prose max-w-none mb-12">
             <MDX source={primaryDoc.content} />
           </article>
         )}
-        
+
         {/* Secondary Document (README.md if INDEX.md exists) */}
         {secondaryDoc && (
           <section className="mb-12">
@@ -236,7 +239,7 @@ function renderFolderView(
             </div>
           </section>
         )}
-        
+
         {/* Navigation Tree */}
         {(files.length > 0 || subfolders.length > 0) && (
           <section className="mt-12">
@@ -247,7 +250,7 @@ function renderFolderView(
                   'Documentation'
                 }
               </h2>
-              
+
               {/* Subfolders */}
               {subfolders.length > 0 && (
                 <div className="mb-8">
@@ -256,7 +259,7 @@ function renderFolderView(
                     {subfolders.map(subfolder => {
                       const subfolderPath = folderPath ? `${folderPath}/${subfolder}` : subfolder;
                       const subfolderDocs = allDocs.filter(doc => doc.slug.startsWith(`${subfolderPath}/`));
-                      
+
                       return (
                         <Link
                           key={subfolder}
@@ -280,7 +283,7 @@ function renderFolderView(
                   </div>
                 </div>
               )}
-              
+
               {/* Files */}
               {files.length > 0 && (
                 <div>

@@ -2,8 +2,13 @@
 /**
  * DCYFR Pattern Validation Script
  *
- * Validates code against DCYFR patterns before file write.
- * Used by Claude Code agent hooks for proactive enforcement.
+ * DEPRECATED: This script now delegates to @dcyfr/agents package.
+ * The validation logic has been migrated to the @dcyfr/agents package
+ * for reusability and better maintainability.
+ *
+ * Migration path:
+ * - Validation logic: @dcyfr/agents/cli/validate-patterns
+ * - This file: Thin wrapper for backward compatibility
  *
  * Usage:
  *   node scripts/validate-dcyfr-patterns.mjs \
@@ -16,12 +21,17 @@
  *   0 - All validations passed
  *   1 - Validation failed (blocks file write in agent hooks)
  *
+ * @see @dcyfr/agents package for core validation logic
  * @see docs/ai/agent-compliance-remediation-plan.md
  * @see .claude/settings.json PreToolUse hooks
  */
 
 import fs from 'fs';
 import path from 'path';
+
+// TEMPORARY: Comment out @dcyfr/agents import until ES module issues resolved
+// import { cli } from '@dcyfr/agents';
+// cli(process.argv.slice(2));
 
 // Parse CLI args
 const args = process.argv.slice(2).reduce((acc, arg) => {

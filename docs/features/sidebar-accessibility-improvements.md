@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # Sidebar Accessibility Improvements - Implementation Summary
 

@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # COMPONENT_WITH_BARREL.tsx Template
 

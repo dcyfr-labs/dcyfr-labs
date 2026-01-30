@@ -439,10 +439,10 @@ When creating documentation:
 **Place correctly:**
 
 - Reusable guide → `docs/[category]/filename.md`
-- Status/summary → `docs/[category]/private/filename-YYYY-MM-DD.md`
-- Security findings → `docs/security/private/`
+- Status/summary → `docs/[category]/.private/filename-YYYY-MM-DD.md`
+- Security findings → `docs/security/.private/`
 
-**Operational doc indicators (→ private/):**
+**Operational doc indicators (→ .private/):**
 
 - Filenames: `-summary`, `-complete`, `-status`, `-report`, `-validation`
 - Filename contains date: `YYYY-MM-DD`
@@ -555,7 +555,7 @@ When discovering a CodeQL alert or security issue:
 1. Analyze using [SECURITY_VULNERABILITY_TROUBLESHOOTING.md](/.github/agents/patterns/SECURITY_VULNERABILITY_TROUBLESHOOTING.md)
 2. Implement fix with defense-in-depth approach
 3. Add comprehensive security tests (attack vectors + valid patterns)
-4. Document in `/docs/private/SECURITY_FIX_*.md` (private storage)
+4. Document in `/docs/.private/SECURITY_FIX_*.md` (private storage)
 5. Merge **immediately** (security > approval gates)
 
 See: [APPROVAL_GATES.md#security-vulnerability-fixes](/.github/agents/enforcement/APPROVAL_GATES.md)

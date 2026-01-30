@@ -2,6 +2,7 @@
   "name": "dcyfr-labs",
   "version": "2026.01.02",
   "private": true,
+  "packageManager": "npm@11.6.2",
   "engines": {
     "node": ">=24.13.0",
     "npm": ">=11.6.2"
@@ -95,8 +96,15 @@
     "analytics:populate": "node scripts/populate-analytics-milestones.mjs",
     "analytics:clear": "node scripts/clear-test-data.mjs",
     "analytics:update": "curl -X POST http://localhost:3000/api/analytics/update-milestones",
-    "analytics:update:prod": "curl -X POST https://dcyfr.dev/api/analytics/update-milestones -H \"Authorization: Bearer $CRON_SECRET\"",
+    "analytics:update:prod": "curl -X POST https://www.dcyfr.dev/api/analytics/update-milestones -H \"Authorization: Bearer $CRON_SECRET\"",
     "engagement:consolidate": "node scripts/consolidate-event-driven-engagement.mjs",
+    "prose:check": "node scripts/validate-prose.mjs",
+    "prose:check:file": "node scripts/validate-prose.mjs --file",
+    "prose:check:staged": "node scripts/validate-prose.mjs --staged",
+    "prose:check:strict": "node scripts/validate-prose.mjs --strict",
+    "prose:check:picky": "node scripts/validate-prose.mjs --picky",
+    "prose:setup-dictionary": "node scripts/setup-languagetool-dictionary.mjs",
+    "prose:list-dictionary": "node scripts/setup-languagetool-dictionary.mjs --list",
     "engagement:consolidate:dry-run": "node scripts/consolidate-event-driven-engagement.mjs --dry-run",
     "engagement:verify": "node scripts/verify-engagement-fix.mjs",
     "engagement:restore": "node scripts/restore-engagement-data.mjs",
@@ -115,6 +123,7 @@
     "redis:cleanup:all": "node scripts/cleanup-upstash-data.mjs --include-stale",
     "deploy:invalidate": "node scripts/invalidate-cache-on-deploy.mjs",
     "deploy:invalidate:force": "node scripts/invalidate-cache-on-deploy.mjs --force",
+    "deploy:webhook": "bash scripts/deploy-github-webhook.sh",
     "check:emoji": "node scripts/analyze-emoji-usage.mjs",
     "check:emoji:strict": "node scripts/analyze-emoji-usage.mjs --strict",
     "cost:track": "node scripts/track-ai-costs.mjs",
@@ -242,6 +251,8 @@
     ]
   },
   "dependencies": {
+    "@dcyfr/agents": "file:../dcyfr-ai-agents",
+    "@dcyfr/ai": "^1.0.1",
     "@giscus/react": "^3.1.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-dialog": "^1.1.15",

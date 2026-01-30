@@ -1,8 +1,8 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # Real Analytics Integration Guide
 
-**Status:** Production Ready (Real Data)  
+**Status:** Production Ready (Real Data)
 **Last Updated:** December 25, 2025
 
 This document describes how to integrate real analytics data sources for the activity feed milestones.
@@ -13,12 +13,12 @@ This document describes how to integrate real analytics data sources for the act
 
 The application now supports **real analytics data** from multiple sources:
 
-| Source | Status | Configuration Required |
-|--------|--------|------------------------|
-| **Vercel Analytics** | ✅ Implemented | VERCEL_TOKEN + VERCEL_ANALYTICS_ENDPOINT |
-| **GitHub Traffic** | ✅ Implemented | GITHUB_TOKEN (with repo scope) |
-| **Google Analytics** | 📝 Placeholder | OAuth 2.0 service account (future) |
-| **Google Search Console** | 📝 Placeholder | OAuth 2.0 service account (future) |
+| Source                    | Status         | Configuration Required                   |
+| ------------------------- | -------------- | ---------------------------------------- |
+| **Vercel Analytics**      | ✅ Implemented | VERCEL_TOKEN + VERCEL_ANALYTICS_ENDPOINT |
+| **GitHub Traffic**        | ✅ Implemented | GITHUB_TOKEN (with repo scope)           |
+| **Google Analytics**      | 📝 Placeholder | OAuth 2.0 service account (future)       |
+| **Google Search Console** | 📝 Placeholder | OAuth 2.0 service account (future)       |
 
 ---
 
@@ -27,18 +27,21 @@ The application now supports **real analytics data** from multiple sources:
 ### 1. Vercel Analytics Integration
 
 **Prerequisites:**
+
 - Vercel account with analytics enabled
 - Project deployed on Vercel
 
 **Steps:**
 
 1. **Get Vercel Access Token:**
+
    ```bash
    # Visit https://vercel.com/account/tokens
    # Create token with "Read" permission for analytics
    ```
 
 2. **Set Environment Variables:**
+
    ```bash
    # In Vercel dashboard or .env.local:
    VERCEL_TOKEN=your_vercel_token_here
@@ -51,6 +54,7 @@ The application now supports **real analytics data** from multiple sources:
    ```
 
 **What It Tracks:**
+
 - Monthly visitors
 - Total page views
 - Unique visitors
@@ -61,12 +65,14 @@ The application now supports **real analytics data** from multiple sources:
 ### 2. GitHub Traffic Integration
 
 **Prerequisites:**
+
 - Repository exists on GitHub
 - GitHub Personal Access Token with `repo` scope
 
 **Steps:**
 
 1. **Create GitHub Token:**
+
    ```bash
    # Visit https://github.com/settings/tokens/new
    # Select scopes: 'repo' (for traffic data, requires admin)
@@ -74,6 +80,7 @@ The application now supports **real analytics data** from multiple sources:
    ```
 
 2. **Set Environment Variable:**
+
    ```bash
    # In Vercel dashboard or .env.local:
    GITHUB_TOKEN=ghp_your_token_here
@@ -85,6 +92,7 @@ The application now supports **real analytics data** from multiple sources:
    ```
 
 **What It Tracks:**
+
 - Stars count
 - Forks count
 - Watchers count
@@ -99,6 +107,7 @@ The application now supports **real analytics data** from multiple sources:
 **Status:** Not yet implemented (placeholder functions exist)
 
 **Future Setup:**
+
 1. Create Google Cloud project
 2. Enable Google Analytics Data API
 3. Create service account and download JSON key
@@ -114,6 +123,7 @@ The application now supports **real analytics data** from multiple sources:
 **Status:** Not yet implemented (placeholder functions exist)
 
 **Future Setup:**
+
 1. Verify site ownership in Google Search Console
 2. Enable Search Console API in Google Cloud
 3. Create service account and download JSON key
@@ -129,13 +139,17 @@ The application now supports **real analytics data** from multiple sources:
 ### Automatic Updates (Scheduled)
 
 Analytics data is automatically updated:
+
 - **Frequency:** Daily at 2 AM UTC
 - **Method:** Inngest scheduled function
 - **Function:** `src/inngest/update-analytics-milestones.ts`
 
 **Cron Schedule:**
+
 ```typescript
-{ cron: "0 2 * * *" }  // Daily at 2 AM UTC
+{
+  cron: '0 2 * * *';
+} // Daily at 2 AM UTC
 ```
 
 ### Manual Updates
@@ -156,7 +170,7 @@ npm run analytics:update
 npm run analytics:update:prod
 
 # Or manually:
-curl -X POST https://dcyfr.dev/api/analytics/update-milestones \
+curl -X POST https://www.dcyfr.dev/api/analytics/update-milestones \
   -H "Authorization: Bearer $CRON_SECRET"
 ```
 
@@ -165,10 +179,12 @@ curl -X POST https://dcyfr.dev/api/analytics/update-milestones \
 **Endpoint:** `POST /api/analytics/update-milestones`
 
 **Authentication:**
+
 - **Development:** No authentication required
 - **Production:** Requires `Authorization: Bearer $CRON_SECRET` header
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -355,6 +371,7 @@ quit
 ## Migration from Test Data
 
 **Before (Test Data):**
+
 ```bash
 # Populated fake data
 npm run analytics:populate
@@ -363,6 +380,7 @@ npm run analytics:populate
 ```
 
 **After (Real Data):**
+
 ```bash
 # Fetch real data from configured APIs
 npm run analytics:update
@@ -371,6 +389,7 @@ npm run analytics:update
 ```
 
 **Cleanup:**
+
 ```bash
 # Remove old test data
 npm run analytics:clear
@@ -386,6 +405,7 @@ npm run analytics:update
 ### Issue: "Vercel Analytics not configured"
 
 **Solution:**
+
 1. Check `VERCEL_TOKEN` is set
 2. Check `VERCEL_ANALYTICS_ENDPOINT` is set
 3. Verify token has correct permissions (Read for analytics)
@@ -393,6 +413,7 @@ npm run analytics:update
 ### Issue: "GitHub API returned 401"
 
 **Solution:**
+
 1. Check `GITHUB_TOKEN` is set
 2. Verify token has `repo` scope
 3. Ensure token hasn't expired
@@ -400,6 +421,7 @@ npm run analytics:update
 ### Issue: "No milestones showing in activity feed"
 
 **Solution:**
+
 1. Run `npm run analytics:update`
 2. Check Redis for data: `redis-cli GET analytics:milestones`
 3. Verify activity feed is calling `transformVercelAnalytics()` and `transformGitHubTraffic()`
@@ -407,6 +429,7 @@ npm run analytics:update
 ### Issue: "Analytics update returns 401 in production"
 
 **Solution:**
+
 1. Check `CRON_SECRET` is set in Vercel environment variables
 2. Ensure Authorization header includes correct secret
 3. Format: `Authorization: Bearer your_secret_here`
@@ -430,12 +453,14 @@ npm run analytics:update
 ## Future Enhancements
 
 ### Short Term
+
 - [ ] Add retry logic for failed API calls
 - [ ] Implement exponential backoff for rate limits
 - [ ] Add Sentry monitoring for analytics errors
 - [ ] Create dashboard for analytics health status
 
 ### Long Term
+
 - [ ] Implement Google Analytics Data API integration
 - [ ] Implement Google Search Console API integration
 - [ ] Add historical data tracking (trend analysis)
@@ -454,6 +479,6 @@ npm run analytics:update
 
 ---
 
-**Status:** ✅ Ready for Production  
-**Next Steps:** Configure environment variables → Deploy → Monitor  
+**Status:** ✅ Ready for Production
+**Next Steps:** Configure environment variables → Deploy → Monitor
 **Support:** See troubleshooting section or check Inngest dashboard logs

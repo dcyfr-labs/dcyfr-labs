@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # Print-Friendly Blog Styling
 
@@ -112,7 +112,7 @@ The print-friendly styling system automatically optimizes article pages for prin
 The print styles are automatically imported in `ArticleLayout`:
 
 ```typescript
-import "@/styles/print.css";
+import '@/styles/print.css';
 ```
 
 This ensures all article pages have print optimization without additional configuration.
@@ -139,7 +139,7 @@ Print styles use `!important` on critical rules to ensure they override componen
 
 ### For Users: Printing an Article
 
-1. **Open any blog post** (e.g., `https://dcyfr.ai/blog/article-slug`)
+1. **Open any blog post** (e.g., `https://www.dcyfr.ai/blog/article-slug`)
 2. **Press `Ctrl+P` (Windows/Linux) or `Cmd+P` (Mac)**
 3. **Preview in print dialog:**
    - Navigation disappears
@@ -326,7 +326,7 @@ Enhancements will be implemented based on:
 
 ---
 
-**Implementation Date:** December 7, 2025  
-**Status:** Production Ready  
-**Test Coverage:** 100% (ArticleLayout tests)  
+**Implementation Date:** December 7, 2025
+**Status:** Production Ready
+**Test Coverage:** 100% (ArticleLayout tests)
 **Browser Support:** Chrome, Firefox, Safari, Edge

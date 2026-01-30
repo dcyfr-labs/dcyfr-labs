@@ -1,6 +1,14 @@
 /**
  * Provider Fallback Manager (v1.0)
  *
+ * ⚠️ DEPRECATED: This module is being migrated to @dcyfr/ai framework.
+ *
+ * Migration path:
+ * - Use @dcyfr/ai framework: import { ProviderRegistry } from '@dcyfr/ai'
+ * - For backward compatibility: import { getCompatibilityProvider } from '@/lib/agents/compat'
+ *
+ * This file will be removed in a future version. All new code should use @dcyfr/ai.
+ *
  * Automatically detects rate limits and failures in primary providers (Claude Code)
  * and falls back to secondary providers (Groq, Ollama) with session state preservation.
  *
@@ -13,6 +21,15 @@
  *
  * @example
  * ```typescript
+ * // DEPRECATED - Old import:
+ * // import { ProviderFallbackManager } from '@/lib/agents/provider-fallback-manager';
+ *
+ * // NEW - Use compat layer:
+ * import { getCompatibilityProvider } from '@/lib/agents/compat';
+ *
+ * // Or use @dcyfr/ai directly:
+ * import { ProviderRegistry } from '@dcyfr/ai';
+ *
  * const manager = new ProviderFallbackManager({
  *   primaryProvider: 'claude',
  *   fallbackChain: ['groq', 'ollama'],

@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # DCYFR ASI-Aligned Mitigation Patterns
 

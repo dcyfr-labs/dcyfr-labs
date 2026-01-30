@@ -2,10 +2,10 @@
 
 # Operations TODO
 
-**Last Updated:** January 25, 2026 (Radix Tabs Async Test Fix Complete)
+**Last Updated:** January 28, 2026 (Current Status Analysis)
 **Status:** Maintenance Mode - Incremental Feature Development
-**Health:** ✅ Excellent (99%+ test pass rate - 2845/2956 passing, 0 TypeScript/ESLint errors)
-**Recent:** ✅ Radix Tabs Async Tests Fixed (19/19 passing, 20/20 stress test), ✅ Heatmap Date Boundary Tests Enhanced (25/25 passing), ✅ Upstash Redis Migration Complete
+**Health:** ✅ Excellent (96.6% test pass rate - 2840/2939 passing, 0 TypeScript/ESLint errors)
+**Recent:** ✅ @dcyfr/ai Framework Migration Complete (v1.0.1), ✅ /dev/\*\* Route Protection (multi-layer), ✅ Redis Migration to Upstash Complete
 
 This document tracks operational priorities, feature development stages, and maintenance tasks for dcyfr-labs.
 
@@ -40,6 +40,124 @@ This document tracks operational priorities, feature development stages, and mai
 
 ## ✅ Recently Completed
 
+### RIVET Blog Post Draft (January 28, 2026)
+
+**Comprehensive blog post documenting the RIVET framework:**
+
+**Status:** ✅ DRAFT COMPLETE
+**Duration:** 2 hours - Content strategy refactoring + blog post draft
+**Impact:** Next published post ready for review and asset generation
+
+**Post Details:**
+
+- **Title:** "Modernizing Blog Content with RIVET: A Component-Driven Enhancement Framework"
+- **Series:** Developer Portfolio (Part 4)
+- **Length:** 3,500+ words
+- **Components:** 8 production components documented
+- **Data:** Real metrics from 4 blog posts, 168 component instances
+
+**Deliverables:**
+
+1. ✅ Blog post draft (`src/content/blog/modernizing-blog-content-with-rivet/index.mdx`)
+2. ✅ Content strategy updated (moved to `.private/` for security)
+   - `docs/blog/.private/CONTENT_STRATEGY.md` - Editorial calendar and publishing plan
+   - `docs/blog/.private/STRATEGY_INDEX.md` - Strategy overview and metrics
+   - `docs/blog/README.md` - Public-facing documentation index (no strategy exposure)
+3. ✅ Assets directory created with requirements (`assets/README.md`)
+4. ✅ Editorial fixes applied (12/18 actionable items, 67% complete)
+   - Critical: Fixed TLDRSummary punctuation
+   - High-priority: Added performance analysis, improved tone, fixed attribution
+   - Medium: Standardized statistics, varied terminology, added test context
+   - See: `.private/editorial-fixes-summary.md` for details
+5. 📅 Pending: Hero image generation (Perplexity Labs)
+6. 📅 Pending: Final polish (code blocks, link verification, accessibility audit)
+7. 📅 Pending: Optional diagrams (component architecture, engagement charts)
+
+**Next Steps:**
+
+1. Generate hero image with Perplexity Labs
+2. Final verification pass:
+   - Verify code block language specifiers
+   - Check all links (especially `/tools/csp-generator`)
+   - Verify CVE-2025-55182 or replace with real CVE
+   - Run spell-check and grammar tool
+3. Optional: Add `<SectionShare>` demonstrations and `<GlossaryTooltip>` for RIVET
+4. Accessibility audit (ARIA labels, keyboard nav, screen readers)
+5. Performance validation (Lighthouse 90+)
+6. Final review and publish (Target: Early February 2026)
+
+**Related:**
+
+- Content strategy now reflects actual published work (6 posts Q4 2025 - Q1 2026)
+- Calendar updated with realistic Q1-Q2 2026 targets
+- RIVET framework fully documented for future reference
+
+---
+
+### @dcyfr/ai Framework Migration (January 27-28, 2026)
+
+**Successfully migrated to modular AI framework architecture:**
+
+**Status:** ✅ 100% COMPLETE
+**Duration:** 6 hours (actual) - Framework extraction, package creation, compatibility layer
+**Impact:** Clean separation of portable AI framework from project-specific code
+
+**Implementation Summary:**
+
+1. **Framework Packages Created**
+   - ✅ `@dcyfr/ai` (v1.0.1) - Portable AI framework (telemetry, providers, plugins, validation)
+   - ✅ `@dcyfr/agents` (v1.0.0) - DCYFR-specific validation plugins (proprietary)
+   - ✅ Backward compatibility adapter layer in dcyfr-labs
+
+2. **Components Migrated**
+   - Telemetry system (OpenTelemetry integration, metrics, tracing)
+   - Provider abstractions (Claude, OpenAI, Perplexity, custom providers)
+   - Plugin system (hooks, lifecycle management, validation)
+   - Validation framework (design tokens, test coverage, security checks)
+
+3. **Benefits Achieved**
+   - ✅ Reusable framework across DCYFR projects
+   - ✅ Clear separation of concerns (framework vs application)
+   - ✅ Independent versioning and release cycles
+   - ✅ 100% backward compatible (no breaking changes)
+
+**Files Modified:**
+
+- Updated `AGENTS.md` with migration notice
+- Package.json now includes `@dcyfr/ai` dependency
+- All existing code continues to work via compatibility adapter
+
+**Next Steps:**
+
+- [ ] Document framework usage patterns in external projects
+- [ ] Create migration guide for other DCYFR projects
+- [ ] Publish framework packages (when ready for external use)
+
+---
+
+### /dev/\*\* Route Protection (January 27, 2026)
+
+**Multi-layer protection system for development routes:**
+
+**Status:** ✅ 100% COMPLETE
+**Impact:** Prevents accidental exposure of dev tools in production
+
+**Implementation:**
+
+1. ✅ Middleware proxy for centralized route blocking
+2. ✅ Server-side environment checks in dev pages
+3. ✅ Vercel configuration blocking (vercel.json)
+4. ✅ Documentation updates (dev-routes-optimization.md)
+
+**Routes Protected:**
+
+- `/dev/docs/**` - Documentation portal
+- `/dev/commands/**` - Command palette dev tools
+- `/dev/analytics/**` - Analytics debugging
+- `/dev/content/**` - Content management tools
+
+---
+
 ### Radix Tabs Async Behavior Test Fix (January 25, 2026)
 
 **Fixed flaky Radix UI Tabs tests by eliminating race conditions in async state management:**
@@ -60,8 +178,8 @@ This document tracks operational priorities, feature development stages, and mai
    - Combined assertions into single `waitFor()` blocks to eliminate timing windows
    - Pattern: `await userEvent.click() → await flushPromises() → await waitFor(combined assertions)`
 
-3. **Updated Tests** ([src/__tests__/components/home/trending-section.test.tsx](../../src/__tests__/components/home/trending-section.test.tsx))
-   - ✅ "should switch to Topics tab when clicked" (lines 229-249)
+3. **Updated Tests** ([src/**tests**/components/home/trending-section.test.tsx](../../src/__tests__/components/home/trending-section.test.tsx))
+   - ✅ "should switch to Topics tab when0/2939 passing - 96.6%es 229-249)
    - ✅ "should switch to Projects tab when clicked" (lines 251-272)
    - ✅ "should handle multiple tab switches" (lines 274-311)
 
@@ -76,16 +194,17 @@ This document tracks operational priorities, feature development stages, and mai
 
 ```typescript
 // Helper to flush React microtask queue for Radix UI state updates
-const flushPromises = () => act(async () => {
-  await Promise.resolve();
-});
+const flushPromises = () =>
+  act(async () => {
+    await Promise.resolve();
+  });
 
 // Usage in tests
 await userEvent.click(tab);
 await flushPromises();
 await waitFor(() => {
-  expect(screen.getByTestId("panel")).toBeInTheDocument();
-  expect(tab).toHaveAttribute("aria-selected", "true");
+  expect(screen.getByTestId('panel')).toBeInTheDocument();
+  expect(tab).toHaveAttribute('aria-selected', 'true');
 });
 ```
 
@@ -244,68 +363,35 @@ await waitFor(() => {
 
 ---
 
-## ✅ Recently Completed: RIVET Blog Post Integration (January 20, 2026)
+## ❌ Recently Reverted: RIVET Blog Post Integration (January 20-28, 2026)
 
-**Successfully integrated P2 components into flagship OWASP Top 10 Agentic AI blog post:**
+**RIVET P2 components were integrated but subsequently removed from blog posts:**
 
-**Status:** ✅ 100% COMPLETE (4/4 components integrated and rendering)
-**Post:** [OWASP Top 10 Agentic AI Security](http://localhost:3000/blog/owasp-top-10-agentic-ai) (4,911 words)
-**Components Integrated:** RiskMatrix, DownloadableAsset, FAQSchema, NewsletterSignup
+**Status:** ⏸️ PAUSED - Components exist but not currently in production content
+**Reason:** Components were removed from the OWASP Top 10 Agentic AI blog post (no grep matches found)
+**Current State:**
 
-### Components Successfully Added:
+- ✅ RIVET P2 components fully built and tested (357/364 tests passing)
+- ✅ Components registered in MDX system
+- ❌ Not currently used in any blog posts
 
-1. **RiskMatrix (lines ~180-264)**
-   - Interactive 4x4 grid visualizing all 10 OWASP risks
-   - Likelihood/impact scoring with color-coded zones
-   - Click-to-expand risk details with mitigation strategies
+**Components Available:**
 
-2. **DownloadableAsset (lines ~517-532)**
-   - "OWASP Agentic AI Security Checklist" PDF download
-   - Email capture form with lead generation
-   - File size and description for user clarity
+1. **RiskMatrix** - Interactive 4x4 risk assessment matrix (33/33 tests)
+2. **DownloadableAsset** - Lead capture with file delivery (28/28 tests)
+3. **FAQSchema** - SEO-optimized FAQ accordion (26/26 tests)
+4. **NewsletterSignup** - Inline email signup (29/29 tests)
+5. **TabInterface** - Multi-tab content switcher (30/30 tests)
+6. **SeriesNavigation** - Series navigation (21/21 tests)
 
-3. **NewsletterSignup (lines ~608-616)**
-   - Mid-post email subscription form
-   - Strategic placement after Risk Analysis section
-   - Enhances engagement before deep technical content
+**If Re-implementing:**
 
-4. **FAQSchema (lines ~890-930)**
-   - 8 common security questions with structured answers
-   - SEO-optimized with schema.org markup
-   - Covers difference between traditional AI and agentic AI, priority risks, implementation guidance
-
-### Technical Issues Resolved:
-
-1. **MDX Component Registration**
-   - ✅ Added P2 components to `src/components/common/mdx.tsx` imports
-   - ✅ Fixed barrel exports in `src/components/blog/index.ts`
-   - ✅ Resolved import path conflicts (direct rivet import vs blog barrel)
-
-2. **SSR Compatibility**
-   - ✅ Removed `onDownload` function prop from DownloadableAsset in MDX (SSR incompatible)
-   - ✅ Fixed `FAQSchema` prop name (`faqs` → `items`)
-   - ✅ All components now render properly in production build
-
-3. **Component Verification**
-   - ✅ Development server running successfully (http://localhost:3000)
-   - ✅ OWASP blog post loading with all 4 P2 components visible
-   - ✅ No breaking TypeScript/ESLint errors
-   - ✅ All 364 RIVET tests still passing (357 passing, 7 skipped)
-
-### Files Modified:
-
-- `src/components/common/mdx.tsx` - Added P2 component imports and registrations
-- `src/components/blog/index.ts` - Added P2 component barrel exports
-- `src/content/blog/owasp-top-10-agentic-ai/index.mdx` - Integrated 4 P2 components
-- `docs/operations/todo.md` - Updated with completion status
-
-### Next Steps:
-
-- [ ] Apply similar P2 integration to CVE-2025-55182 post (4,211 words)
+- [ ] Decide which flagship posts benefit from enhanced components
+- [ ] Apply to OWASP Top 10 Agentic AI post (4,911 words)
+- [ ] Apply to CVE-2025-55182 post (4,211 words)
 - [ ] Apply to "Hardening a Developer Portfolio" post (1,389 words)
-- [ ] Measure engagement analytics for integrated components
-- [ ] A/B test component placement and effectiveness
-- [ ] Consider P3 enhancements (advanced visualizations, interactive demos)
+- [ ] Measure engagement metrics (time on page, social shares)
+- [ ] A/B test component placement effectiveness
 
 ---
 
@@ -1606,7 +1692,7 @@ All previously failing tests have been fixed:
 
 - [ ] Deploy application to production with stable URL
 - [ ] Configure webhook in dcyfr/dcyfr-labs repository settings
-  - Payload URL: `https://dcyfr.com/api/github/webhook`
+  - Payload URL: `https://www.dcyfr.ai/api/github/webhook`
   - Content type: `application/json`
   - Secret: `GITHUB_WEBHOOK_SECRET` from environment
   - Events: `push` only

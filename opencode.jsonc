@@ -94,7 +94,7 @@
       "command": [
         "npx",
         "@modelcontextprotocol/server-filesystem",
-        "/Users/drew/DCYFR/code/dcyfr-labs",
+        "./",
       ],
       "enabled": true,
       "timeout": 5000,
@@ -165,7 +165,7 @@
     // Sentry - error tracking integration
     "sentry": {
       "type": "remote",
-      "url": "https://mcp.sentry.dev/mcp/dcyfr-labs/dcyfr-labs",
+      "url": "https://mcp.sentry.dev/mcp",
       "enabled": false,
       "timeout": 5000,
       "oauth": {},

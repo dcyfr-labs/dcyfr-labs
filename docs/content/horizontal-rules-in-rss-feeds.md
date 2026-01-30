@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # Horizontal Rules in RSS/Atom Feeds - Best Practices
 

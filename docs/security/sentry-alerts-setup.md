@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # Sentry Security Alerts Setup Guide
 **Date:** December 11, 2025

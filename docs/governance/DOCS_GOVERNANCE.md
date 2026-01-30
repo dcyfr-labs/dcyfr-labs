@@ -639,7 +639,7 @@ Found 347 markdown files to validate
 ❌ Errors: 2
 
 Fix errors by:
-1. Add TLP:CLEAR marker to public docs: {/* TLP:CLEAR */}
+1. Add TLP:CLEAR marker to public docs: <!-- TLP:CLEAR -->
 2. Move operational files to docs/*/private/ directories
 ```
 
@@ -923,8 +923,8 @@ Before committing documentation, verify:
    - If uncertain, ask in PR
 
 3. **Add TLP classification marker**
-   - Public docs: `{/* TLP:CLEAR */}` in first 3 lines
-   - Private docs: `{/* TLP:AMBER - Internal Use Only */}` in first 3 lines
+   - Public docs: `<!-- TLP:CLEAR -->` in first 3 lines
+   - Private docs: `<!-- TLP:AMBER - Internal Use Only -->` in first 3 lines
    - Include audience statement and last updated date
 
 4. **Validate before committing**
@@ -969,10 +969,10 @@ git commit -m "docs: add [description]"
 
 | Error                           | Fix                                               |
 | ------------------------------- | ------------------------------------------------- |
-| Missing TLP marker              | Add `{/* TLP:CLEAR */}` to first 3 lines of file  |
+| Missing TLP marker              | Add `<!-- TLP:CLEAR -->` to first 3 lines of file  |
 | Operational file in public docs | Move to `docs/[category]/private/`                |
 | Documentation outside docs/     | Move to appropriate `docs/[category]/` folder     |
-| Private file marked TLP:CLEAR   | Change to `{/* TLP:AMBER - Internal Use Only */}` |
+| Private file marked TLP:CLEAR   | Change to `<!-- TLP:AMBER - Internal Use Only -->` |
 
 - Public docs can reference private: "See private docs for details"
 - Private docs can reference public: Direct links are ok
@@ -1189,7 +1189,7 @@ A: Always private. If incident lessons can be shared, create public version with
 
 Before committing any documentation changes:
 
-- [ ] All public docs marked with `{/* TLP:CLEAR */}` or equivalent
+- [ ] All public docs marked with `<!-- TLP:CLEAR -->` or equivalent
 - [ ] No operational metrics in public docs (Status: COMPLETE, Implementation Complete, task lists)
 - [ ] No security findings in public docs
 - [ ] No internal performance/compliance metrics in public docs

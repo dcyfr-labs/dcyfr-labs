@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # Inoreader Integration Setup Guide
 
@@ -65,18 +65,19 @@ A List Apart:        https://alistapart.com/main/feed/
 
 2. Fill in the application details:
 
-   | Field | Value |
-   |-------|-------|
-   | **Application Name** | `dcyfr-labs` (or your portfolio name) |
-   | **Description** | `Developer feed aggregator for portfolio` |
-   | **Redirect URI** | `http://localhost:3000/api/inoreader/callback` |
-   | **Scope** | `Read` (or `Read/Write` if you plan to add bookmarking) |
+   | Field                | Value                                                   |
+   | -------------------- | ------------------------------------------------------- |
+   | **Application Name** | `dcyfr-labs` (or your portfolio name)                   |
+   | **Description**      | `Developer feed aggregator for portfolio`               |
+   | **Redirect URI**     | `http://localhost:3000/api/inoreader/callback`          |
+   | **Scope**            | `Read` (or `Read/Write` if you plan to add bookmarking) |
 
 3. **IMPORTANT**: The redirect URI must be **EXACTLY**:
+
    ```
    http://localhost:3000/api/inoreader/callback
    ```
-   
+
    ⚠️ **Common Mistakes:**
    - ❌ Using `https://` instead of `http://` for localhost
    - ❌ Adding a trailing slash: `http://localhost:3000/api/inoreader/callback/`
@@ -151,16 +152,19 @@ redis-cli ping
 ### If Redis is not running:
 
 **macOS (Homebrew):**
+
 ```bash
 brew services start redis
 ```
 
 **Docker:**
+
 ```bash
 docker run -d -p 6379:6379 redis:latest
 ```
 
 **Ubuntu/Debian:**
+
 ```bash
 sudo systemctl start redis
 ```
@@ -181,6 +185,7 @@ npm run dev
 ## Step 7: Test OAuth Flow
 
 1. **Visit the dev news page:**
+
    ```
    http://localhost:3000/dev/news
    ```
@@ -193,6 +198,7 @@ npm run dev
 3. **Click "Connect to Inoreader"**
 
 4. **Check browser console** (F12 → Console tab):
+
    ```
    🔍 OAuth Debug Info:
      Client ID: 1000000123
@@ -233,14 +239,17 @@ redis-cli
 ### Error: "Inoreader integration is not configured"
 
 **Symptoms:**
+
 - Red error banner
 - Button is disabled and grayed out
 
 **Causes:**
+
 - Missing `NEXT_PUBLIC_INOREADER_CLIENT_ID` in `.env.local`
 - Environment variables not loaded
 
 **Fix:**
+
 1. Add `NEXT_PUBLIC_INOREADER_CLIENT_ID` to `.env.local`
 2. Restart development server: `Ctrl+C` then `npm run dev`
 
@@ -249,13 +258,16 @@ redis-cli
 ### Error: "invalid_client: No client id supplied"
 
 **Symptoms:**
+
 - Error when clicking "Connect to Inoreader"
 - Redirected to error page
 
 **Causes:**
+
 - `NEXT_PUBLIC_INOREADER_CLIENT_ID` is empty or undefined
 
 **Fix:**
+
 1. Verify `.env.local` has `NEXT_PUBLIC_INOREADER_CLIENT_ID=<your_client_id>`
 2. Ensure no spaces around the `=` sign
 3. Restart dev server
@@ -265,14 +277,17 @@ redis-cli
 ### Error: "redirect_uri_mismatch"
 
 **Symptoms:**
+
 - Inoreader shows "Redirect URI mismatch" error
 - Can't complete OAuth flow
 
 **Causes:**
+
 - Registered redirect URI doesn't match what the code sends
 - Common: Using `https://` instead of `http://` for localhost
 
 **Fix:**
+
 1. Check browser console for exact redirect URI being sent
 2. Go to https://www.inoreader.com/developers
 3. Edit your application
@@ -280,8 +295,9 @@ redis-cli
 5. Try authenticating again
 
 **Example:**
+
 ```
-❌ Registered: https://localhost:3000/api/inoreader/callback
+❌ Registered: http://localhost:3000/api/inoreader/callback
 ✅ Should be: http://localhost:3000/api/inoreader/callback
 
 ❌ Registered: http://localhost:3000/api/inoreader/callback/
@@ -293,15 +309,18 @@ redis-cli
 ### Error: "No Inoreader tokens found"
 
 **Symptoms:**
+
 - OAuth worked before but now shows auth screen again
 - Feeds disappeared
 
 **Causes:**
+
 - Tokens expired (30-day TTL)
 - Redis was cleared or restarted
 - Redis connection failed
 
 **Fix:**
+
 1. Re-authenticate at `/dev/news`
 2. Check Redis is running: `redis-cli ping`
 3. Verify `REDIS_URL` in `.env.local`
@@ -311,14 +330,17 @@ redis-cli
 ### Empty Feeds After Authentication
 
 **Symptoms:**
+
 - OAuth succeeds but no articles shown
 - "No feeds available" message
 
 **Causes:**
+
 - Haven't subscribed to any feeds in Inoreader yet
 - Background sync hasn't run yet
 
 **Fix:**
+
 1. Subscribe to feeds in Inoreader (see Step 2)
 2. Manually trigger background sync:
    ```bash
@@ -333,14 +355,17 @@ redis-cli
 ### Button Stays Grayed Out
 
 **Symptoms:**
+
 - "Connect to Inoreader" button is disabled
 - Can't click it
 
 **Causes:**
+
 - Configuration check failed
 - `NEXT_PUBLIC_INOREADER_CLIENT_ID` not loaded
 
 **Fix:**
+
 1. Open browser DevTools → Console
 2. Check for any errors
 3. Verify `.env.local` has all required variables
@@ -355,6 +380,7 @@ When deploying to production (Vercel, etc.), update:
 ### 1. Register Production Redirect URI
 
 Go to https://www.inoreader.com/developers and add:
+
 ```
 https://your-domain.com/api/inoreader/callback
 ```
@@ -374,6 +400,7 @@ REDIS_URL=<production_redis_url>
 ### 3. CSRF Protection (TODO)
 
 For production, implement session-based CSRF validation:
+
 - Store OAuth state in encrypted session (not sessionStorage)
 - Verify state matches in callback handler
 - Use `SESSION_ENCRYPTION_KEY` from environment
@@ -412,10 +439,12 @@ redis-cli
 ## Rate Limits
 
 **Inoreader API Limits:**
+
 - Free tier: **60 requests/hour**
 - Pro tier: Higher limits
 
 **Our Mitigation:**
+
 - Redis caching (5-minute TTL for page loads)
 - Background sync every 6 hours (not on every page visit)
 - Pagination limits (max 100 articles per request)
@@ -425,16 +454,19 @@ redis-cli
 ## Security Notes
 
 ### OAuth Tokens:
+
 - ✅ Stored in Redis with 30-day expiration
 - ✅ Encrypted connection to Redis
 - ❌ Not encrypted at rest (future enhancement)
 
 ### CSRF Protection:
+
 - ✅ State parameter generated and logged
 - ❌ Not verified against session yet (basic protection)
 - ⚠️ For production: Implement session-based CSRF validation
 
 ### Token Refresh:
+
 - ❌ Not automatic yet - forces re-auth on expiry
 - ⚠️ TODO: Implement automatic token refresh
 
@@ -487,6 +519,6 @@ curl http://localhost:3000/api/inngest \
 
 ---
 
-**Last Updated**: January 17, 2026  
-**Integration Status**: Beta - Under Development  
+**Last Updated**: January 17, 2026
+**Integration Status**: Beta - Under Development
 **Route**: `/dev/news`

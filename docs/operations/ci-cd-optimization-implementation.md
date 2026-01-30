@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # CI/CD Pipeline Optimization - Implementation Summary
 

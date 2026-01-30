@@ -144,6 +144,19 @@ const nextConfig: NextConfig = {
         },
       ];
     }
+
+    // Performance optimization: Exclude dev-only components from production bundles
+    // This prevents dev dashboards, analytics tools, and debug UIs from being bundled
+    // in preview/production builds, reducing bundle size and build time
+    const isDevelopment = process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === 'development';
+    if (!isDevelopment) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        // Tree-shake dev-only client components in production
+        '@/components/dev': false,
+      };
+    }
+
     return config;
   },
 };

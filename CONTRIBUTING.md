@@ -63,7 +63,7 @@ If you include examples that show private key blocks or service account JSON, fo
 
 - Use placeholders (e.g., `...`) and include `EXAMPLE` or `REDACTED` markers adjacent to the snippet.
 - If a real key must be used for CI, store it securely in a secrets manager and never commit a real key into the repo.
-- When in doubt, use subdirectory-specific private folders (e.g., `docs/security/private/`, `docs/operations/private/`) and external secure storage for sensitive examples.
+- When in doubt, use subdirectory-specific private folders (e.g., `docs/security/.private/`, `docs/operations/.private/`) and external secure storage for sensitive examples.
 
 ## PII/Allowlist Handling
 
@@ -112,23 +112,23 @@ All documentation is organized into **public** and **private** tiers to protect 
 ✅ **Audience:** Community, contributors, open source users
 ✅ **Examples:** `/docs/architecture/`, `/docs/api/`, `/docs/templates/`
 
-### Private Documentation (Subdirectory `private/` folders)
+### Private Documentation (Subdirectory `.private/` folders)
 
 🔒 **Team only:** Security findings, audit reports, operational metrics, performance data, team decisions
 🔒 **NOT committed to public git:** Excluded via `.gitignore`
 🔒 **Audience:** Team members, authorized auditors
-🔒 **Examples:** `/docs/security/private/`, `/docs/operations/private/`, `/docs/design/private/`
+🔒 **Examples:** `/docs/security/.private/`, `/docs/operations/.private/`, `/docs/design/.private/`
 
-**Note:** Private documentation uses subdirectory-specific `private/` folders (e.g., `docs/security/private/`) instead of a centralized `docs/private/*` structure. This prevents duplicate content and keeps related materials together.
+**Note:** Private documentation uses subdirectory-specific `.private/` folders (e.g., `docs/security/.private/`) instead of a centralized `docs/.private/*` structure. This prevents duplicate content and keeps related materials together.
 
 ### Documentation Standards
 
 **Before committing documentation:**
 
 1. **Ask:** "Is this sensitive or internal?"
-   - Security findings → `/docs/security/private/`
-   - Operational metrics → `/docs/operations/private/`
-   - Design decisions → `/docs/design/private/`
+   - Security findings → `/docs/security/.private/`
+   - Operational metrics → `/docs/operations/.private/`
+   - Design decisions → `/docs/design/.private/`
    - Public guidance → `/docs/`
 
 2. **Name clearly:** Use prefixes for sensitivity

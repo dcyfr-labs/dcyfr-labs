@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # Test Coverage Expansion Plan
 **Target: 23% → 50% Coverage**

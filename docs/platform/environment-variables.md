@@ -1,9 +1,9 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # Environment Variables Guide
 
-**Last Updated:** December 7, 2025  
-**Status:** Production Ready (99.5% test pass rate)  
+**Last Updated:** December 7, 2025
+**Status:** Production Ready (99.5% test pass rate)
 **Location:** `docs/platform/` (project configuration)
 
 ---
@@ -115,7 +115,7 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
 - **Example:** `https://www.dcyfr.ai`
 - **Purpose:** Override full site URL for absolute links, sitemap, OpenGraph
 - **Default:** Based on environment:
-  - Development: `https://dcyfr.dev`
+  - Development: `https://www.dcyfr.dev`
   - Vercel Preview: `https://dcyfr-preview.vercel.app`
   - Production: `https://www.dcyfr.ai`
 - **When to use:** Custom domain testing, non-standard deployments
@@ -365,12 +365,12 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
 
 **Architecture:** Separate databases for production and preview/development with automatic key namespacing.
 
-| Environment | Variables | Database | Key Prefix |
-|-------------|-----------|----------|------------|
-| Production | `UPSTASH_REDIS_REST_URL`<br>`UPSTASH_REDIS_REST_TOKEN` | Dedicated paid | None |
-| Preview | `UPSTASH_REDIS_REST_URL_PREVIEW`<br>`UPSTASH_REDIS_REST_TOKEN_PREVIEW` | Shared free | `preview:{PR}:` |
-| Development | `UPSTASH_REDIS_REST_URL_PREVIEW`<br>`UPSTASH_REDIS_REST_TOKEN_PREVIEW` | Shared free | `dev:{username}:` |
-| Test | None (in-memory) | N/A | N/A |
+| Environment | Variables                                                              | Database       | Key Prefix        |
+| ----------- | ---------------------------------------------------------------------- | -------------- | ----------------- |
+| Production  | `UPSTASH_REDIS_REST_URL`<br>`UPSTASH_REDIS_REST_TOKEN`                 | Dedicated paid | None              |
+| Preview     | `UPSTASH_REDIS_REST_URL_PREVIEW`<br>`UPSTASH_REDIS_REST_TOKEN_PREVIEW` | Shared free    | `preview:{PR}:`   |
+| Development | `UPSTASH_REDIS_REST_URL_PREVIEW`<br>`UPSTASH_REDIS_REST_TOKEN_PREVIEW` | Shared free    | `dev:{username}:` |
+| Test        | None (in-memory)                                                       | N/A            | N/A               |
 
 **See:** [Redis Setup Guide](./redis-setup.md) for comprehensive documentation.
 
@@ -453,6 +453,7 @@ Some variables should be set as **GitHub Secrets** instead of Vercel Environment
 **Key Namespacing:**
 
 Production (dedicated database):
+
 ```
 views:post:abc-123
 shares:post:abc-123
@@ -460,6 +461,7 @@ blog:trending
 ```
 
 Preview (PR #42, shared database):
+
 ```
 preview:42:views:post:abc-123
 preview:42:shares:post:abc-123
@@ -467,6 +469,7 @@ preview:42:blog:trending
 ```
 
 Development (user: alice, shared database):
+
 ```
 dev:alice:views:post:abc-123
 dev:alice:shares:post:abc-123

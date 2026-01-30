@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 /**
  * Enhanced Activity Feed with Social Media Integration

@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # Deployment Guide
 
@@ -205,11 +205,11 @@ npm run dev:https
 
 #### `NEXT_PUBLIC_SITE_URL`
 
-**Type:** URL string  
-**Required:** No  
+**Type:** URL string
+**Required:** No
 **Default:** Auto-detected per environment
 
-- Local: `https://dcyfr.dev`
+- Local: `https://www.dcyfr.dev`
 - Preview: `https://dcyfr-preview.vercel.app`
 - Production: `https://www.dcyfr.ai`
 
@@ -223,8 +223,8 @@ NEXT_PUBLIC_SITE_URL=https://mydomain.com
 
 #### `NEXT_PUBLIC_SITE_DOMAIN`
 
-**Type:** Domain string  
-**Required:** No  
+**Type:** Domain string
+**Required:** No
 **Default:** Auto-detected per environment
 
 **When to set:** Domain-only override (easier than full URL)
@@ -239,8 +239,8 @@ NEXT_PUBLIC_SITE_DOMAIN=mydomain.com
 
 #### `RESEND_API_KEY`
 
-**Type:** API key string  
-**Required:** Yes for production (optional for local)  
+**Type:** API key string
+**Required:** Yes for production (optional for local)
 **Service:** [Resend](https://resend.com)
 
 **Setup steps:**
@@ -265,8 +265,8 @@ NEXT_PUBLIC_SITE_DOMAIN=mydomain.com
 
 #### `GITHUB_TOKEN`
 
-**Type:** Personal access token  
-**Required:** No (optional for better rate limits)  
+**Type:** Personal access token
+**Required:** No (optional for better rate limits)
 **Service:** GitHub
 
 **Benefits of setting:**
@@ -293,8 +293,8 @@ NEXT_PUBLIC_SITE_DOMAIN=mydomain.com
 
 #### `REDIS_URL`
 
-**Type:** Connection string  
-**Required:** No (optional for persistence)  
+**Type:** Connection string
+**Required:** No (optional for persistence)
 **Service:** Redis (or Upstash Redis)
 
 **Format:**

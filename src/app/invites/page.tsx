@@ -40,11 +40,11 @@ export default async function InvitesPage() {
     '@type': 'WebPage',
     name: pageTitle,
     description: pageDescription,
-    url: 'https://dcyfr.ai/invites',
+    url: 'https://www.dcyfr.ai/invites',
     isPartOf: {
       '@type': 'WebSite',
       name: 'dcyfr',
-      url: 'https://dcyfr.ai',
+      url: 'https://www.dcyfr.ai',
     },
   };
 
