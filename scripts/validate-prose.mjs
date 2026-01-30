@@ -55,6 +55,9 @@ const DEFAULT_DISABLED_RULES = [
 
   // Technical writing exceptions (Phase 2.1 - Jan 2026)
   'MORFOLOGIK_RULE_EN_US', // Spell check false positives (company names, technical terms)
+
+  // Grammar false positives (Phase 3 - Jan 2026)
+  'USE_TO_VERB', // False positive: "use X to Y" is correct present tense (verb + preposition)
 ].join(',');
 
 // Default disabled categories
