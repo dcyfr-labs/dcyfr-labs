@@ -1,13 +1,13 @@
 ---
-id: "post-20251222-f8c3d4e1"
-title: "UI Elements and Components"
-subtitle: "A comprehensive demonstration of all available visual components and styling options"
-authors: ["dcyfr"]
-summary: "Explore the full range of UI components, MDX elements, code highlighting, alerts, callouts, and visual features available in this blog system. Includes modern engagement components and React 19 patterns."
-publishedAt: "2025-12-22T12:00:00Z"
-updatedAt: "2026-01-11T12:00:00Z"
-category: "Design"
-tags: ["Demo", "UI", "Design System", "Components", "MDX", "React 19"]
+id: 'post-20251222-f8c3d4e1'
+title: 'UI Elements and Components'
+subtitle: 'A comprehensive demonstration of all available visual components and styling options'
+authors: ['dcyfr']
+summary: 'Explore the full range of UI components, MDX elements, code highlighting, alerts, callouts, and visual features available in this blog system. Includes modern engagement components and React 19 patterns.'
+publishedAt: '2025-12-22T12:00:00Z'
+updatedAt: '2026-01-11T12:00:00Z'
+category: 'Design'
+tags: ['Demo', 'UI', 'Design System', 'Components', 'MDX', 'React 19']
 draft: true
 ---
 
@@ -94,39 +94,39 @@ Inline `code snippets` are perfect for mentioning variables, functions, or comma
 ### KeyTakeaway
 
 <KeyTakeaway>
-  The design system ensures visual consistency across all blog posts by using
-  semantic color tokens and standardized component patterns. This makes content
-  creation faster and the user experience more predictable.
+  The design system ensures visual consistency across all blog posts by using semantic color tokens
+  and standardized component patterns. This makes content creation faster and the user experience
+  more predictable.
 </KeyTakeaway>
 
 ### ContextClue
 
 <ContextClue>
-  This blog system is built on Next.js 15 with React 19, using TypeScript for
-  type safety and Tailwind CSS v4 for styling. The component architecture
-  follows server-first principles with selective client-side interactivity.
+  This blog system is built on Next.js 15 with React 19, using TypeScript for type safety and
+  Tailwind CSS v4 for styling. The component architecture follows server-first principles with
+  selective client-side interactivity.
 </ContextClue>
 
 ### Alerts
 
 <Alert type="info">
-  **Information:** This is a standard informational alert. Use it for helpful
-  tips and general information.
+  **Information:** This is a standard informational alert. Use it for helpful tips and general
+  information.
 </Alert>
 
 <Alert type="warning">
-  **Warning:** This is a warning alert. Use it for cautions, deprecations, or
-  important notices that need attention.
+  **Warning:** This is a warning alert. Use it for cautions, deprecations, or important notices that
+  need attention.
 </Alert>
 
 <Alert type="critical">
-  **Critical:** This is a critical alert. Use it for urgent information,
-  breaking changes, or security issues.
+  **Critical:** This is a critical alert. Use it for urgent information, breaking changes, or
+  security issues.
 </Alert>
 
 <Alert type="success">
-  **Success:** This is a success alert. Use it for confirmations, achievements,
-  or positive outcomes.
+  **Success:** This is a success alert. Use it for confirmations, achievements, or positive
+  outcomes.
 </Alert>
 
 ---
@@ -180,8 +180,8 @@ const evens = posts.filter((n) => n % 2 === 0);
 
 ```jsx
 // React component example
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 export function Counter() {
   const [count, setCount] = useState(0);
@@ -296,7 +296,7 @@ LIMIT 10;
 
 ```tsx
 // React 19 with concurrent features
-import { use, Suspense } from "react";
+import { use, Suspense } from 'react';
 
 function UserProfile({ userPromise }: { userPromise: Promise<User> }) {
   const user = use(userPromise); // React 19 use() hook
@@ -310,7 +310,7 @@ function UserProfile({ userPromise }: { userPromise: Promise<User> }) {
 }
 
 function App() {
-  const userPromise = fetchUser("123");
+  const userPromise = fetchUser('123');
 
   return (
     <Suspense fallback={<UserSkeleton />}>
@@ -384,10 +384,10 @@ Tables are fully responsive and styled with the design system:
 | Language   | Type        | Use Case     | Performance | Learning Curve |
 | ---------- | ----------- | ------------ | ----------- | -------------- |
 | TypeScript | Compiled    | Web Apps     | ⭐⭐⭐⭐    | Medium         |
-| Python     | Interpreted | Data Science | ⭐⭐⭐      | Easy           |
+| Python     | interpreted | Data Science | ⭐⭐⭐      | Easy           |
 | Rust       | Compiled    | Systems      | ⭐⭐⭐⭐⭐  | Hard           |
 | Go         | Compiled    | Backend      | ⭐⭐⭐⭐    | Easy           |
-| JavaScript | Interpreted | Web          | ⭐⭐⭐      | Easy           |
+| JavaScript | interpreted | Web          | ⭐⭐⭐      | Easy           |
 
 ---
 
@@ -446,11 +446,11 @@ You can combine multiple elements for rich content:
 
    ```typescript
    // Include code examples
-   const example = "nested content";
+   const example = 'nested content';
    ```
 
 2. **Second**: Continue with more items
-   - Nested unordered list
+   - nested unordered list
    - Another nested item
 
    <KeyTakeaway>Even custom components work inside lists!</KeyTakeaway>
@@ -514,7 +514,7 @@ Subtle animations enhance the user experience:
 
 - Reveal animations on scroll
 - Hover effects on interactive elements
-- Smooth theme transitions
+- smooth theme transitions
 - Loading states with proper feedback
 
 ---
@@ -582,8 +582,8 @@ This showcase demonstrates the full range of visual elements available in the bl
 - Ensure accessibility in all content
 
 <KeyTakeaway>
-  A consistent design system enables faster content creation while maintaining
-  high quality and accessibility standards across all blog posts.
+  A consistent design system enables faster content creation while maintaining high quality and
+  accessibility standards across all blog posts.
 </KeyTakeaway>
 
 ---

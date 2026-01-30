@@ -60,7 +60,7 @@ previousSlugs: ['owasp-top-10-agentic-ai-2026']
   jumpLink="#the-owasp-agentic-top-10-breakdown"
 />
 
-**Agentic AI** refers to autonomous AI systems that go beyond simple chatbots to plan multi-step workflows, invoke tools and APIs independently, and make decisions without human intervention. These AI agents now book travel, manage calendars, approve expenses, deploy code, and handle customer service autonomously--creating an entirely new category of **AI agent security** risks.
+**Agentic AI** refers to autonomous AI systems that go beyond simple chatbots to plan multistep workflows, invoke tools and APIs independently, and make decisions without human intervention. These AI agents now book travel, manage calendars, approve expenses, deploy code, and handle customer service autonomously--creating an entirely new category of **AI agent security** risks.
 
 The Open Web Application Security Project (OWASP), the global authority on application security, just released its first-ever **Top 10 for Agentic Applications for 2026**. Developed by over 100 security experts, this framework identifies the most critical threats facing autonomous AI systems: from goal hijacking and memory poisoning to rogue agents and cascading failures.
 
@@ -78,7 +78,7 @@ Whether you're a security professional implementing AI safeguards, a business le
 
 Traditional AI systems are reactive: you ask a question, they answer. Agentic AI systems are **proactive and autonomous**. They can:
 
-- Plan multi-step workflows to achieve complex goals
+- Plan multistep workflows to achieve complex goals
 - Decide which tools and APIs to invoke without asking permission
 - Persist information across sessions using <GlossaryTooltip term="Long-term Memory" definition="Persistent storage that allows AI agents to remember information across sessions, building context over time and maintaining state between interactions.">long-term memory</GlossaryTooltip>
 - Communicate and coordinate with other AI agents
@@ -164,7 +164,7 @@ The OWASP framework emphasizes foundational principles organizations must implem
 
 ## How This Relates to Broader AI Security Frameworks
 
-The OWASP Agentic Top 10 builds on the organization's existing **OWASP Top 10 for Large Language Models (LLMs)**, recognizing that agentic systems amplify traditional LLM vulnerabilities through autonomy and multi-step execution.
+The OWASP Agentic Top 10 builds on the organization's existing **OWASP Top 10 for Large Language Models (LLMs)**, recognizing that agentic systems amplify traditional LLM vulnerabilities through autonomy and multistep execution.
 
 <CollapsibleSection
   id="framework-comparisons"
@@ -615,7 +615,7 @@ The OWASP Top 10 for Agentic Applications is a 2026 framework from the Open Web 
 
 ### What is agentic AI?
 
-Agentic AI refers to autonomous AI systems that go beyond simple question-answering. These agents plan multi-step workflows, invoke tools and APIs without human approval, maintain long-term memory, coordinate with other agents, and operate continuously on users' behalf. Examples include Microsoft Copilot, Salesforce Agentforce, and coding assistants like Cursor and GitHub Copilot.
+Agentic AI refers to autonomous AI systems that go beyond simple question-answering. These agents plan multistep workflows, invoke tools and APIs without human approval, maintain long-term memory, coordinate with other agents, and operate continuously on users' behalf. Examples include Microsoft Copilot, Salesforce Agentforce, and coding assistants like Cursor and GitHub Copilot.
 
 ### What is agent goal hijacking (ASI01)?
 
@@ -623,7 +623,7 @@ Agent goal hijacking occurs when attackers manipulate an AI agent's objectives t
 
 ### How do I protect against agentic AI security risks?
 
-OWASP recommends four key principles: **Least Agency** (deploy autonomy only where necessary), **Strong Observability** (comprehensive logging of agent actions), **Zero Trust Architecture** (assume components will fail), and **Human-in-the-Loop** controls for high-impact actions like privileged operations or irreversible changes.
+OWASP recommends four key principles: **The Least Agency** (deploy autonomy only where necessary), **Strong Observability** (comprehensive logging of agent actions), **Zero Trust Architecture** (assume components will fail), and **Human-in-the-Loop** controls for high-impact actions like privileged operations or irreversible changes.
 
 ### How does the OWASP Agentic Top 10 relate to the LLM Top 10?
 
@@ -635,7 +635,7 @@ LLM security focuses on protecting language models from risks like prompt inject
 
 ### Are AI agents safe to deploy in enterprise environments?
 
-AI agents can be deployed safely with proper security controls: implementing least privilege access, requiring human approval for high-impact actions, maintaining comprehensive observability and logging, using zero-trust architecture, and following the OWASP Agentic Top 10 mitigation strategies. Organizations should start with low-risk use cases and gradually expand as security maturity increases.
+AI agents can be deployed safely with proper security controls: implementing the least privilege access, requiring human approval for high-impact actions, maintaining comprehensive observability and logging, using zero-trust architecture, and following the OWASP Agentic Top 10 mitigation strategies. Organizations should start with low-risk use cases and gradually expand as security maturity increases.
 
 ### What are the most common AI agent attacks happening today?
 
@@ -701,8 +701,8 @@ For deeper exploration of agentic AI security, see the resources below for compr
 
 ### Amazon Q Supply Chain Compromise (July 2025)
 
-**Affected:** Amazon Q coding assistant for VS Code (v1.84.0)  
-**Downloads compromised:** 950,000+  
+**Affected:** Amazon Q coding assistant for VS Code (v1.84.0)
+**Downloads compromised:** 950,000+
 **Patched:** v1.85.0
 
 **What happened:** An attacker submitted a malicious pull request to Amazon Q that was merged into production. The poisoned prompt instructed the AI to delete user files and AWS cloud resources.
@@ -719,8 +719,8 @@ For deeper exploration of agentic AI security, see the resources below for compr
 
 ### First Malicious MCP Server (September 2025)
 
-**Package:** fake "postmark-mcp" on npm  
-**Downloads:** ~1,500 in first week before removal  
+**Package:** fake "postmark-mcp" on npm
+**Downloads:** ~1,500 in first week before removal
 **Discovered:** Koi Security
 
 **What happened:** Attackers created a malicious Model Context Protocol (MCP) server impersonating the legitimate Postmark email service. The server quietly added attacker-controlled BCC addresses to outgoing emails, harvesting thousands of messages.

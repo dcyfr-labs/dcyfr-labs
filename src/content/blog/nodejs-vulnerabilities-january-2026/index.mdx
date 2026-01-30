@@ -186,12 +186,12 @@ function validateDepth(obj: unknown, depth = 0): boolean {
 
 APM tools use `async_hooks.createHook()` to trace requests across async boundaries. The moment you import an APM package, your application has `async_hooks` enabled, making stack overflow errors uncatchable.
 
-The irony: The tools you install to monitor crashes can make a category of crashes behave differently.
+The irony: The tools you install to monitor crashes can make a category of crashes behaves differently.
 
 **Recommended Action:**
 
 1. Upgrade Node.js to patched versions immediately
-2. Review recursive functions in your codebase
+2. review recursive functions in your codebase
 3. Add depth limits to any user-input-driven recursion
 
 </CollapsibleSection>
@@ -240,7 +240,7 @@ Upgrade immediately. The permissions model's security guarantees are broken unti
 **Recommended Action:**
 
 1. Upgrade Node.js immediately
-2. Add explicit error handlers to TLS sockets
+2. add explicit error handlers to TLS sockets
 3. Monitor memory usage for TLS-heavy workloads
 
 </CollapsibleSection>
@@ -325,7 +325,7 @@ Update your GitHub Actions workflows to use version pinning:
 
 ### CVE-2025-55131: Buffer Memory Leak via Race Condition
 
-**Affected Versions:** 20.x, 22.x, 24.x, 25.x  
+**Affected Versions:** 20.x, 22.x, 24.x, 25.x
 **Reporter:** Nikita Skovoroda
 
 A flaw in Node.js buffer allocation logic can expose uninitialized memory when allocations are interrupted while using the `vm` module with the timeout option. Under specific timing conditions, buffers allocated with `Buffer.alloc()` and <GlossaryTooltip term="TypedArray" definition="JavaScript typed arrays provide a mechanism for accessing raw binary data - includes Uint8Array, Int32Array, Float64Array, and others">TypedArray</GlossaryTooltip> instances like `Uint8Array` may contain leftover data from previous operations.
@@ -360,8 +360,8 @@ const result = runInNewContext('Buffer.alloc(1024)', {}, { timeout: 100 });
 
 ### CVE-2025-55130: File System Permissions Bypass via Symlinks
 
-**Affected Versions:** 20.x, 22.x, 24.x, 25.x (permissions model users)  
-**Reporter:** natann  
+**Affected Versions:** 20.x, 22.x, 24.x, 25.x (permissions model users)
+**Reporter:** natann
 **Fix By:** RafaelGSS
 
 A flaw in Node.js's Permissions model allows attackers to bypass `--allow-fs-read` and `--allow-fs-write` restrictions using crafted relative symlink paths. By chaining directories and symlinks, a script granted access only to the current directory can escape the allowed path and read sensitive files.
@@ -398,8 +398,8 @@ Only users of the Node.js permission model (`--experimental-permission` or `--pe
 
 ### CVE-2025-59465: HTTP/2 Server Crash via Malformed HEADERS
 
-**Affected Versions:** 20.x, 22.x, 24.x, 25.x  
-**Reporter:** dantt  
+**Affected Versions:** 20.x, 22.x, 24.x, 25.x
+**Reporter:** dantt
 **Fix By:** RafaelGSS
 
 A malformed <GlossaryTooltip term="HTTP/2" definition="HTTP/2 - the second major version of the HTTP network protocol, featuring multiplexing, header compression, and server push capabilities">HTTP/2</GlossaryTooltip> HEADERS frame with oversized, invalid <GlossaryTooltip term="HPACK" definition="HPACK - HTTP/2 header compression format that uses Huffman coding and dynamic table to reduce header overhead">HPACK</GlossaryTooltip> data can cause Node.js to crash by triggering an unhandled `TLSSocket` error (`ECONNRESET`). Instead of safely closing the connection, the process crashes, enabling remote denial of service.
@@ -461,8 +461,8 @@ Any Node.js application using HTTP/2 without explicit TLS socket error handlers.
 
 ### CVE-2025-59466: AsyncLocalStorage Stack Overflow Crashes
 
-**Affected Versions:** 20.x, 22.x, 24.x, 25.x  
-**Reporter:** Andrew MacPherson (AndrewMohawk), aaron_vercel  
+**Affected Versions:** 20.x, 22.x, 24.x, 25.x
+**Reporter:** Andrew MacPherson (AndrewMohawk), aaron_vercel
 **Fix By:** mcollina
 
 A bug in Node.js error handling causes "Maximum call stack size exceeded" errors to become uncatchable when `async_hooks.createHook()` is enabled. Instead of reaching `process.on('uncaughtException')`, the process terminates immediately, making the crash unrecoverable.
@@ -532,8 +532,8 @@ The Node.js patch improves recoverability in one edge case, but the documentatio
 
 ### CVE-2025-59464: TLS Certificate Memory Leak
 
-**Affected Versions:** 20.x, 22.x, 24.x  
-**Reporter:** giant_anteater  
+**Affected Versions:** 20.x, 22.x, 24.x
+**Reporter:** giant_anteater
 **Fix By:** RafaelGSS
 
 A memory leak in Node.js's OpenSSL integration occurs when converting X.509 certificate fields to UTF-8 without freeing the allocated buffer. When applications call `socket.getPeerCertificate(true)`, each certificate field leaks memory.
@@ -561,8 +561,8 @@ Applications that process TLS client certificates, particularly <GlossaryTooltip
 
 ### CVE-2026-21636: Unix Domain Socket Permissions Bypass
 
-**Affected Versions:** v25.x only  
-**Reporter:** mufeedvh  
+**Affected Versions:** v25.x only
+**Reporter:** mufeedvh
 **Fix By:** RafaelGSS
 
 A flaw in Node.js's permission model allows Unix Domain Socket (UDS) connections to bypass network restrictions when `--permission` is enabled. Even without `--allow-net`, attacker-controlled inputs (such as URLs or socketPath options) can connect to arbitrary local sockets via `net`, `tls`, or `undici/fetch`.
@@ -581,8 +581,8 @@ Only users of the Node.js permission model on version v25.x. If you're using v20
 
 ### CVE-2026-21637: TLS PSK/ALPN Callback DoS
 
-**Affected Versions:** All versions using PSK or ALPN callbacks  
-**Reporter:** 0xmaxhax  
+**Affected Versions:** All versions using PSK or ALPN callbacks
+**Reporter:** 0xmaxhax
 **Fix By:** mcollina
 
 A flaw in Node.js TLS error handling allows remote attackers to crash or exhaust resources of a TLS server when `pskCallback` or `ALPNCallback` are in use. Synchronous exceptions thrown during these callbacks bypass standard TLS error handling paths (`tlsClientError` and `error`).
@@ -606,8 +606,8 @@ TLS servers using Pre-Shared Key (PSK) authentication or Application-Layer Proto
 
 ### CVE-2025-55132: fs.futimes() Permissions Bypass
 
-**Affected Versions:** 20.x, 22.x, 24.x, 25.x (permissions model users)  
-**Reporter:** oriotie  
+**Affected Versions:** 20.x, 22.x, 24.x, 25.x (permissions model users)
+**Reporter:** oriotie
 **Fix By:** RafaelGSS
 
 A flaw in Node.js's permission model allows a file's access and modification timestamps to be changed via `futimes()` even when the process has only read permissions. Unlike `utimes()`, `futimes()` does not apply the expected write-permission checks.

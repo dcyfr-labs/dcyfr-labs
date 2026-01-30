@@ -560,7 +560,7 @@ Event-driven architecture isn't always the answer:
 
 The rule of thumb: **if users don't need to wait for the result, don't make them wait.** But if they _do_ need to see the result immediately, don't hide it behind a queue.
 
-One more thing: **background jobs are a security surface too.** The security monitor in this portfolio exists because I learned the hard way that CVE detection gaps matter. If you're processing sensitive data in background functions, apply the same security rigor you would to API routes—validate inputs, sanitize outputs, and monitor for anomalies.
+One more thing: **background jobs are a security surface too.** The security monitor in this portfolio exists because I learned the hard way that CVE detection gaps matter. If you're processing sensitive data in background functions, apply the same security rigor you would do to API routes—validate inputs, sanitize outputs, and monitor for anomalies.
 
 The contact form still says "Message sent!"—but now it's actually true (or will be, with retries, within seconds).
 
