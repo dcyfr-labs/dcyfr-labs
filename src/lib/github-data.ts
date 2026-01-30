@@ -6,7 +6,7 @@
  * of GitHub activity widgets.
  */
 
-import { redis } from '@/mcp/shared/redis-client';
+import { redis, getRedisEnvironment } from '@/mcp/shared/redis-client';
 
 // ============================================================================
 // TYPES
@@ -137,17 +137,28 @@ export async function getGitHubContributions(
   }
 
   try {
+    console.log('[GitHub Data] 🔍 Attempting cache read', {
+      key: CACHE_KEY,
+      environment: getRedisEnvironment(),
+      redisAvailable: !!redis,
+    });
+
     // Try the main cache
     const cached = await redis.get(CACHE_KEY);
 
     if (cached && typeof cached === 'string') {
       const data = JSON.parse(cached) as ContributionResponse;
-      console.warn('[GitHub Data] ✅ Loaded from cache:', {
+      console.log('[GitHub Data] ✅ Cache HIT', {
         totalContributions: data.totalContributions,
         lastUpdated: data.lastUpdated,
         source: data.source,
       });
       return data;
+    } else {
+      console.warn('[GitHub Data] ⚠️ Cache MISS - key not found or invalid', {
+        cachedType: typeof cached,
+        cachedValue: cached === null ? 'null' : 'other',
+      });
     }
 
     // Try fallback cache if main cache is empty
@@ -160,7 +171,10 @@ export async function getGitHubContributions(
       return data;
     }
   } catch (error) {
-    console.error('[GitHub Data] Cache access failed:', error);
+    console.error('[GitHub Data] ❌ Cache read failed', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
   }
 
   // If all cache attempts fail, return fallback data

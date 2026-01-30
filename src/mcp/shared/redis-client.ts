@@ -125,11 +125,24 @@ function getRedisClient(): Redis | null {
   const credentials = getRedisCredentials();
 
   if (!credentials) {
-    // Graceful degradation: Return null and let consumers handle gracefully
+    // Enhanced logging for debugging connection issues
+    console.error('[Redis] ❌ No credentials available', {
+      environment: getRedisEnvironment(),
+      nodeEnv: process.env.NODE_ENV,
+      vercelEnv: process.env.VERCEL_ENV,
+      hasProductionUrl: !!process.env.UPSTASH_REDIS_REST_URL,
+      hasPreviewUrl: !!process.env.UPSTASH_REDIS_REST_URL_PREVIEW,
+    });
     return null;
   }
 
   if (!redisClient) {
+    console.log('[Redis] ✅ Client initialized', {
+      environment: getRedisEnvironment(),
+      urlPrefix: credentials.url.substring(0, 30),
+      keyPrefix: getRedisKeyPrefix(),
+    });
+
     redisClient = new Redis({
       url: credentials.url,
       token: credentials.token,

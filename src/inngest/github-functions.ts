@@ -1,5 +1,5 @@
 import { inngest } from './client';
-import { redis } from '@/mcp/shared/redis-client';
+import { redis, getRedisEnvironment, getRedisKeyPrefix } from '@/mcp/shared/redis-client';
 
 // GitHub configuration
 const GITHUB_USERNAME = 'dcyfr';
@@ -131,24 +131,50 @@ export const refreshGitHubData = inngest.createFunction(
 
     // Step 2: Update Redis cache
     const cacheResult = await step.run('update-cache', async () => {
-      // Redis client imported from shared module
-
       if (!redis) {
-        console.warn('Redis not configured, skipping cache update');
+        console.error('[Inngest] ❌ Redis not available for cache update', {
+          environment: getRedisEnvironment(),
+          hasProductionUrl: !!process.env.UPSTASH_REDIS_REST_URL,
+          hasPreviewUrl: !!process.env.UPSTASH_REDIS_REST_URL_PREVIEW,
+        });
         return { success: false, reason: 'redis-not-configured' };
       }
 
       try {
-        await redis.setex(CACHE_KEY, Math.floor(CACHE_DURATION / 1000), JSON.stringify(freshData));
+        console.log('[Inngest] 📝 Writing to cache', {
+          key: CACHE_KEY,
+          keyWithPrefix: getRedisKeyPrefix() + CACHE_KEY,
+          dataSize: JSON.stringify(freshData).length,
+          totalContributions: freshData.totalContributions,
+        });
 
-        console.warn('GitHub data cached successfully:', {
+        await redis.setex(
+          CACHE_KEY,
+          Math.floor(CACHE_DURATION / 1000),
+          JSON.stringify(freshData)
+        );
+
+        // Verify write succeeded
+        const verification = await redis.get(CACHE_KEY);
+        if (!verification) {
+          console.error('[Inngest] ❌ Cache write verification FAILED', {
+            key: CACHE_KEY,
+            writeSucceeded: 'unknown',
+          });
+          return { success: false, reason: 'write-verification-failed' };
+        }
+
+        console.log('[Inngest] ✅ Cache write verified', {
           totalContributions: freshData.totalContributions,
           lastUpdated: freshData.lastUpdated,
         });
 
         return { success: true };
       } catch (error) {
-        console.error('Failed to update Redis cache:', error);
+        console.error('[Inngest] ❌ Cache write error', {
+          error: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined,
+        });
         return { success: false, error: String(error) };
       }
     });
