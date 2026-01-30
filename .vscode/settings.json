@@ -1,4 +1,12 @@
 {
+  // Package Manager - Force npm (disable yarn completely)
+  "npm.packageManager": "npm",
+  "npm.autoDetect": "on",
+  "npm.scriptExplorerAction": "run",
+  "task.autoDetect": "off",
+  "npm.exclude": "",
+  "task.allowAutomaticTasks": "off",
+
   // Testing
   "vitest.enable": true,
   "vitest.commandLine": "npm run test --",

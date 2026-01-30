@@ -108,7 +108,8 @@ Files that may contain strategic information requiring reclassification:
 **Assessment Complete - Reclassified:**
 
 - `docs/blog/metrics.md` - **RECLASSIFIED to TLP:AMBER** (contains ROI analysis, growth targets, business planning)
-- `docs/blog/INDEX.md` - **RECLASSIFIED to TLP:AMBER** (contains comprehensive content strategy and business planning)
+- `docs/blog/README.md` → `docs/blog/.private/CONTENT_STRATEGY.md` - **MOVED to TLP:AMBER** (contains editorial calendar, publishing plan)
+- `docs/blog/INDEX.md` → `docs/blog/.private/STRATEGY_INDEX.md` - **MOVED to TLP:AMBER** (contains comprehensive content strategy and business planning)
 
 **Remains TLP:GREEN:**
 

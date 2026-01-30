@@ -2,6 +2,7 @@
   "name": "dcyfr-labs",
   "version": "2026.01.02",
   "private": true,
+  "packageManager": "npm@11.6.2",
   "engines": {
     "node": ">=24.13.0",
     "npm": ">=11.6.2"
@@ -97,6 +98,13 @@
     "analytics:update": "curl -X POST http://localhost:3000/api/analytics/update-milestones",
     "analytics:update:prod": "curl -X POST https://www.dcyfr.dev/api/analytics/update-milestones -H \"Authorization: Bearer $CRON_SECRET\"",
     "engagement:consolidate": "node scripts/consolidate-event-driven-engagement.mjs",
+    "prose:check": "node scripts/validate-prose.mjs",
+    "prose:check:file": "node scripts/validate-prose.mjs --file",
+    "prose:check:staged": "node scripts/validate-prose.mjs --staged",
+    "prose:check:strict": "node scripts/validate-prose.mjs --strict",
+    "prose:check:picky": "node scripts/validate-prose.mjs --picky",
+    "prose:setup-dictionary": "node scripts/setup-languagetool-dictionary.mjs",
+    "prose:list-dictionary": "node scripts/setup-languagetool-dictionary.mjs --list",
     "engagement:consolidate:dry-run": "node scripts/consolidate-event-driven-engagement.mjs --dry-run",
     "engagement:verify": "node scripts/verify-engagement-fix.mjs",
     "engagement:restore": "node scripts/restore-engagement-data.mjs",
