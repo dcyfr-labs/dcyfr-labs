@@ -330,7 +330,9 @@ export async function validateDesignTokens(
   try {
     // Try to import from @dcyfr/agents if available
     // @ts-expect-error - @dcyfr/agents not yet configured for imports
-    const enforcement = await import('@dcyfr/agents/enforcement/design-tokens');
+    const enforcement = await import(
+      /* webpackIgnore: true */ '@dcyfr/agents/enforcement/design-tokens'
+    );
     const { validateTokenUsage } = enforcement;
 
     const results = await Promise.all(files.map((file) => validateTokenUsage(file)));
