@@ -48,6 +48,13 @@ const DEFAULT_DISABLED_RULES = [
   'QB_NEW_EN_OTHER_ERROR_IDS_32', // Bold definition list items (~40 false positives)
   'QB_NEW_EN_HYPHEN', // Technical compound words (performance-based, multi-part)
   'QB_NEW_EN_ORTHOGRAPHY_ERROR_IDS_1', // Capitalization in lists
+
+  // Component spacing artifacts (Phase 2.1 - Jan 2026)
+  'QB_NEW_EN', // General spacing issues from removed components (~50 false positives)
+  'QB_NEW_EN_MERGED_MATCH', // Sentence structure around quotes (~4 false positives)
+
+  // Technical writing exceptions (Phase 2.1 - Jan 2026)
+  'MORFOLOGIK_RULE_EN_US', // Spell check false positives (company names, technical terms)
 ].join(',');
 
 // Default disabled categories
