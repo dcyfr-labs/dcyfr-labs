@@ -9,7 +9,11 @@
  * Browser-safe exports:
  * - Server actions (getAgentComparison, getHandoffPatterns)
  * - Type definitions
- * - New AI framework helpers (routeTask, getAgent, etc.)
+ *
+ * ⚠️  SERVER-ONLY exports (cannot be used in client components):
+ * - routeTask, getAgent, listDcyfrAgents, listGenericAgents
+ * - validateDesignTokens, requiresApproval
+ * - AgentRegistry, AgentRouter, getAgentRegistry, getAgentRouter
  *
  * For server-only exports (telemetry, compat adapters):
  * import { telemetry } from '@/lib/agents/index.server';
@@ -18,21 +22,16 @@
 // Server actions for client components (browser-safe)
 export { getAgentComparison, getHandoffPatterns } from "./actions";
 
-// New @dcyfr/ai framework helpers (via compatibility adapter)
-export {
-  routeTask,
-  getAgent,
-  listDcyfrAgents,
-  listGenericAgents,
-  validateDesignTokens,
-  requiresApproval,
-  AgentRegistry,
-  AgentRouter,
-  getAgentRegistry,
-  getAgentRouter,
-} from "@/lib/ai-compat";
+// ⚠️  SERVER-ONLY exports moved to index.server.ts
+// Import from '@/lib/agents/index.server' for:
+// - routeTask, getAgent, listDcyfrAgents, listGenericAgents
+// - validateDesignTokens, requiresApproval
+// - AgentRegistry, AgentRouter, getAgentRegistry, getAgentRouter
+//
+// These exports use Node.js APIs and cannot be used in client components
 
-export type { TaskContext, RoutingResult } from "@/lib/ai-compat";
+// Type exports (safe for client)
+export type { TaskContext, RoutingResult } from "@/lib/ai-compat.server";
 
 // Re-export types from old system (for backward compatibility)
 // Types are erased at runtime, so they're browser-safe

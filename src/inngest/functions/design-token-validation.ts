@@ -13,7 +13,7 @@
 import { inngest } from "../client";
 import { exec } from "child_process";
 import { promisify } from "util";
-import { validateDesignTokens as validateTokensCompat } from "@/lib/ai-compat";
+import { validateDesignTokens as validateTokensCompat } from "@/lib/ai-compat.server";
 
 const execAsync = promisify(exec);
 

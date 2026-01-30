@@ -1,29 +1,50 @@
 /**
- * @/lib/agents server-only exports
+ * @/lib/agents/index.server - SERVER-ONLY exports
  *
- * Server-only exports for agent telemetry and provider fallback management.
- * These use Node.js APIs and should only be imported in server components or API routes.
+ * ⚠️  This file contains server-only exports that use Node.js APIs
+ * DO NOT import from this file in client components
  *
- * Import pattern: import { telemetry } from '@/lib/agents/index.server';
+ * For client-safe exports, use '@/lib/agents' instead
  */
 
-// Compatibility adapter (wraps @dcyfr/ai) - Server only
+// Server-only exports from ai-compat
 export {
-  telemetry,
-  trackAgentSession,
-  getCompatibilityTelemetry as TelemetrySessionManager,
-  getCompatibilityTelemetry as AgentTelemetryManager,
-  getCompatibilityProvider as ProviderFallbackManager,
-  getCompatibilityProvider,
-  getCompatibilityTelemetry,
-} from './compat';
+  routeTask,
+  getAgent,
+  listDcyfrAgents,
+  listGenericAgents,
+  validateDesignTokens,
+  requiresApproval,
+  AgentRegistry,
+  AgentRouter,
+  getAgentRegistry,
+  getAgentRouter,
+  type TaskContext,
+  type RoutingResult,
+  type Agent,
+  type AgentManifest,
+} from "@/lib/ai-compat.server";
 
-// Legacy exports (kept for backward compatibility)
-// These now use the compatibility adapter under the hood
-export {
-  getGlobalFallbackManager,
-  initializeGlobalFallbackManager,
-  destroyGlobalFallbackManager,
-  RateLimitError,
-  ProviderUnavailableError,
+// Re-export from main index for convenience (already server-safe)
+export type {
+  AgentType,
+  TaskType,
+  TaskOutcome,
+  ValidationStatus,
+  TelemetrySession,
+  TelemetryMetrics,
+  ViolationRecord,
+  HandoffRecord,
+  CostEstimate,
+  AgentStats,
+  ComparisonStats,
+} from "./agent-telemetry";
+
+export type {
+  ProviderType,
+  ProviderConfig,
+  FallbackManagerConfig,
+  TaskContext as LegacyTaskContext,
+  ExecutionResult,
+  ProviderHealth,
 } from "./provider-fallback-manager";
