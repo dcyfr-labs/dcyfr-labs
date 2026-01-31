@@ -164,25 +164,38 @@ export async function GET(request: NextRequest) {
 
     // Fetch all badges
     const allBadges = await fetchCredlyBadges();
-    if (allBadges) {
+    if (allBadges && Array.isArray(allBadges)) {
       const key = `${keyPrefix}credly:badges:dcyfr:all`;
-      await redis.set(key, JSON.stringify(allBadges), { ex: 24 * 60 * 60 });
+      // Store in format expected by credly-data.ts: { badges, total_count }
+      const cacheData = {
+        badges: allBadges,
+        total_count: allBadges.length,
+      };
+      await redis.set(key, JSON.stringify(cacheData), { ex: 24 * 60 * 60 });
       credlyKeys.push(key);
     }
 
     // Fetch 10 badges
     const badges10 = await fetchCredlyBadges(10);
-    if (badges10) {
+    if (badges10 && Array.isArray(badges10)) {
       const key = `${keyPrefix}credly:badges:dcyfr:10`;
-      await redis.set(key, JSON.stringify(badges10), { ex: 24 * 60 * 60 });
+      const cacheData = {
+        badges: badges10,
+        total_count: badges10.length,
+      };
+      await redis.set(key, JSON.stringify(cacheData), { ex: 24 * 60 * 60 });
       credlyKeys.push(key);
     }
 
     // Fetch 3 badges
     const badges3 = await fetchCredlyBadges(3);
-    if (badges3) {
+    if (badges3 && Array.isArray(badges3)) {
       const key = `${keyPrefix}credly:badges:dcyfr:3`;
-      await redis.set(key, JSON.stringify(badges3), { ex: 24 * 60 * 60 });
+      const cacheData = {
+        badges: badges3,
+        total_count: badges3.length,
+      };
+      await redis.set(key, JSON.stringify(cacheData), { ex: 24 * 60 * 60 });
       credlyKeys.push(key);
     }
 

@@ -47,11 +47,13 @@ npm install
 cp .env.example .env.local
 # Edit .env.local with your values
 
-# Start development server
+# Start development server (auto-populates cache)
 npm run dev
 ```
 
 Visit **http://localhost:3000** to see your site.
+
+**✨ New:** Cache is now automatically populated when running `npm run dev`! GitHub Activity, Badge Wallet, and Skills Wallet will work immediately in local development.
 
 ### HTTPS Development (Safari)
 

@@ -11,8 +11,8 @@ import {
   TeamSpotlights,
   ConnectWithUs,
   AboutDcyfrLabs,
-  BadgeWallet,
-  SkillsWallet,
+  ServerBadgeWallet,
+  ServerSkillsWallet,
 } from '@/components/about';
 
 const ScrollReveal = dynamic(
@@ -77,7 +77,7 @@ export default async function AboutPage() {
         {/* Team Certifications */}
         <Section id="certifications" className={PAGE_LAYOUT.section.container}>
           <ScrollReveal animation="fade-up" delay={3}>
-            <BadgeWallet
+            <ServerBadgeWallet
               username="dcyfr"
               showLatestOnly
               limit={3}
@@ -90,7 +90,7 @@ export default async function AboutPage() {
         {/* Team Skills */}
         <Section id="skills" className={PAGE_LAYOUT.section.container}>
           <ScrollReveal animation="fade-up" delay={4}>
-            <SkillsWallet
+            <ServerSkillsWallet
               username="dcyfr"
               limit={9}
               excludeSkills={['CompTIA']}

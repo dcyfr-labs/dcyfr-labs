@@ -1,12 +1,11 @@
-"use client";
+'use client';
 
-import { Card } from "@/components/ui/card";
-import { TrendingUp, Award, Code, Briefcase } from "lucide-react";
-import { useEffect, useState } from "react";
-import { resume, getYearsOfExperience } from "@/data/resume";
-import { useCredlyBadges } from "@/hooks/use-credly";
-import { TYPOGRAPHY, SPACING, BORDERS } from "@/lib/design-tokens";
-import { cn } from "@/lib/utils";
+import { Card } from '@/components/ui/card';
+import { TrendingUp, Award, Code, Briefcase } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { resume, getYearsOfExperience } from '@/data/resume';
+import { TYPOGRAPHY, SPACING, BORDERS } from '@/lib/design-tokens';
+import { cn } from '@/lib/utils';
 
 /**
  * Resume Stats Component
@@ -23,9 +22,18 @@ import { cn } from "@/lib/utils";
  * @component
  * @example
  * ```tsx
+ * // With server-provided badge count (recommended)
+ * <ResumeStats totalBadges={25} />
+ *
+ * // Legacy: Will show 0 badges (no API call)
  * <ResumeStats />
  * ```
  */
+
+interface ResumeStatsProps {
+  /** Total badge count from server (avoids client-side API calls) */
+  totalBadges?: number;
+}
 
 type Stat = {
   label: string;
@@ -37,13 +45,7 @@ type Stat = {
   ariaLabel?: string;
 };
 
-function AnimatedNumber({
-  target,
-  suffix = "",
-}: {
-  target: number;
-  suffix?: string;
-}) {
+function AnimatedNumber({ target, suffix = '' }: { target: number; suffix?: string }) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -74,50 +76,47 @@ function AnimatedNumber({
   );
 }
 
-export function ResumeStats() {
+export function ResumeStats({ totalBadges = 0 }: ResumeStatsProps) {
   const yearsExp = getYearsOfExperience();
-  const { totalCount: totalCerts } = useCredlyBadges({ username: "dcyfr" });
-  const totalSkills = resume.skills.reduce(
-    (sum, cat) => sum + cat.skills.length,
-    0
-  );
+  const totalCerts = totalBadges;
+  const totalSkills = resume.skills.reduce((sum, cat) => sum + cat.skills.length, 0);
   const totalRoles = resume.experience.length;
 
   const stats: Stat[] = [
     {
-      label: "Years Experience",
+      label: 'Years Experience',
       value: `${yearsExp}+`,
       icon: TrendingUp,
-      description: "AI & Cybersecurity",
+      description: 'AI & Cybersecurity',
       animateNumber: yearsExp,
-      suffix: "+",
+      suffix: '+',
       ariaLabel: `${yearsExp} years of professional experience in AI and cybersecurity`,
     },
     {
-      label: "Badges Earned",
+      label: 'Badges Earned',
       value: `${totalCerts}`,
       icon: Award,
-      description: "Professional recognitions",
+      description: 'Professional recognitions',
       animateNumber: totalCerts,
-      suffix: "",
+      suffix: '',
       ariaLabel: `${totalCerts} professional badges and certifications earned`,
     },
     {
-      label: "Technologies Used",
+      label: 'Technologies Used',
       value: `${totalSkills}+`,
       icon: Code,
-      description: "Tools & platforms",
+      description: 'Tools & platforms',
       animateNumber: totalSkills,
-      suffix: "+",
+      suffix: '+',
       ariaLabel: `${totalSkills} technologies and tools mastered`,
     },
     {
-      label: "Roles Held",
+      label: 'Roles Held',
       value: `${totalRoles}`,
       icon: Briefcase,
-      description: "Career progression",
+      description: 'Career progression',
       animateNumber: totalRoles,
-      suffix: "",
+      suffix: '',
       ariaLabel: `${totalRoles} professional roles held throughout career`,
     },
   ];
@@ -134,14 +133,14 @@ export function ResumeStats() {
           <Card
             key={stat.label}
             className={cn(
-              "p-4 transition-all duration-300",
-              "hover:shadow-lg hover:border-primary/50",
+              'p-4 transition-all duration-300',
+              'hover:shadow-lg hover:border-primary/50',
               BORDERS.card
             )}
             role="article"
             aria-label={stat.ariaLabel}
           >
-            <div className={cn(SPACING.compact, "flex flex-col")}>
+            <div className={cn(SPACING.compact, 'flex flex-col')}>
               {/* Icon */}
               <div className="mb-3">
                 <Icon
@@ -153,23 +152,14 @@ export function ResumeStats() {
               {/* Stat Value */}
               {stat.animateNumber !== undefined ? (
                 <div
-                  className={cn(
-                    TYPOGRAPHY.display.stat,
-                    "tabular-nums mb-1 text-foreground"
-                  )}
+                  className={cn(TYPOGRAPHY.display.stat, 'tabular-nums mb-1 text-foreground')}
                   suppressHydrationWarning
                 >
-                  <AnimatedNumber
-                    target={stat.animateNumber}
-                    suffix={stat.suffix}
-                  />
+                  <AnimatedNumber target={stat.animateNumber} suffix={stat.suffix} />
                 </div>
               ) : (
                 <div
-                  className={cn(
-                    TYPOGRAPHY.display.stat,
-                    "tabular-nums mb-1 text-foreground"
-                  )}
+                  className={cn(TYPOGRAPHY.display.stat, 'tabular-nums mb-1 text-foreground')}
                   suppressHydrationWarning
                 >
                   {stat.value}
@@ -177,17 +167,10 @@ export function ResumeStats() {
               )}
 
               {/* Label */}
-              <p className={cn(TYPOGRAPHY.label.standard, "text-foreground mb-1")}>
-                {stat.label}
-              </p>
+              <p className={cn(TYPOGRAPHY.label.standard, 'text-foreground mb-1')}>{stat.label}</p>
 
               {/* Description */}
-              <p
-                className={cn(
-                  TYPOGRAPHY.body.small,
-                  "text-muted-foreground leading-relaxed"
-                )}
-              >
+              <p className={cn(TYPOGRAPHY.body.small, 'text-muted-foreground leading-relaxed')}>
                 {stat.description}
               </p>
             </div>

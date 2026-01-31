@@ -90,31 +90,25 @@ function getRedisCredentials(): { url: string; token: string } | null {
 
 /**
  * Get environment-specific key prefix for Redis isolation
- * Prevents conflicts when sharing preview database between environments
+ *
+ * SIMPLIFIED ARCHITECTURE (2026-01-30):
+ * - Production: No prefix (dedicated database)
+ * - Everything else (Dev + Preview): 'preview:' prefix (SHARED)
+ *
+ * This allows dev and preview to share the same cached data,
+ * reducing complexity and ensuring consistency across environments.
  */
 export function getRedisKeyPrefix(): string {
   const isProduction =
     process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === 'production';
-  const isPreview = process.env.VERCEL_ENV === 'preview';
-  const isDevelopment = process.env.NODE_ENV === 'development';
 
   if (isProduction) {
     return ''; // No prefix for production (dedicated database)
   }
 
-  if (isPreview) {
-    // Use branch name for isolation (consistent with build-time)
-    const branch = process.env.VERCEL_GIT_COMMIT_REF || 'preview';
-    return `preview:${branch}:`;
-  }
-
-  if (isDevelopment) {
-    // Use username or hostname for local dev isolation
-    const username = process.env.USER || process.env.USERNAME || 'dev';
-    return `dev:${username}:`;
-  }
-
-  return 'unknown:';
+  // ✅ SIMPLIFIED: All non-production environments share 'preview:' prefix
+  // This includes: local development, preview deployments, CI/CD
+  return 'preview:';
 }
 
 /**

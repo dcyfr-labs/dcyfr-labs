@@ -7,10 +7,10 @@ import { createPageMetadata } from '@/lib/metadata';
 import { getResumePageSchema, getJsonLdScriptProps } from '@/lib/json-ld';
 import dynamic from 'next/dynamic';
 import { PageLayout, PageHero } from '@/components/layouts';
-import { ResumeStats, ResumeSectionNav, DownloadResumeButton } from '@/components/resume';
+import { ServerResumeStats, ResumeSectionNav, DownloadResumeButton } from '@/components/resume';
 import { UnifiedTimeline, SmoothScrollToHash } from '@/components/common';
 import { BackToTop } from '@/components/navigation';
-import { MiniBadgeList, MiniSkillsList } from '@/components/about';
+import { ServerMiniBadgeList, ServerMiniSkillsList } from '@/components/about';
 
 const ScrollReveal = dynamic(
   () =>
@@ -57,11 +57,7 @@ export default async function DrewResumePage() {
       <SmoothScrollToHash />
 
       {/* Hero Section */}
-      <PageHero
-        title={pageTitle}
-        description={getSummary()}
-        align="center"
-      />
+      <PageHero title={pageTitle} description={getSummary()} align="center" />
 
       {/* Resume Navigation & Download - DISABLED */}
       {/* <section id="nav" className={cn(PAGE_LAYOUT.section.container, "py-4")}>
@@ -85,7 +81,7 @@ export default async function DrewResumePage() {
               <h2 id="stats-heading" className={cn(TYPOGRAPHY.h2.standard, 'mb-6')}>
                 Career Metrics
               </h2>
-              <ResumeStats />
+              <ServerResumeStats />
             </div>
           </ScrollReveal>
         </section>
@@ -121,7 +117,7 @@ export default async function DrewResumePage() {
               <h2 id="badges-heading" className={cn(TYPOGRAPHY.h2.standard, 'mb-6')}>
                 Professional Badges & Certifications
               </h2>
-              <MiniBadgeList username="dcyfr" />
+              <ServerMiniBadgeList username="dcyfr" />
             </div>
           </ScrollReveal>
         </section>
@@ -137,7 +133,7 @@ export default async function DrewResumePage() {
               <h2 id="skills-heading" className={cn(TYPOGRAPHY.h2.standard, 'mb-6')}>
                 Technical Skills & Expertise
               </h2>
-              <MiniSkillsList username="dcyfr" />
+              <ServerMiniSkillsList username="dcyfr" />
             </div>
           </ScrollReveal>
         </section>

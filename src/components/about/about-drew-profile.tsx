@@ -12,9 +12,7 @@ import {
 import { cn } from '@/lib/utils';
 import { Section, GitHubHeatmapErrorBoundary } from '@/components/common';
 import { ServerGitHubHeatmap } from '@/components/features';
-import { ResumeStats } from '@/components/resume';
-import { BadgeWallet } from './badge-wallet';
-import { SkillsWallet } from './skills-wallet';
+import { ServerResumeStats } from '@/components/resume';
 import { ProfileHero } from './profile-hero';
 import { Coffee, Shield, Code, Github, Briefcase } from 'lucide-react';
 
@@ -114,7 +112,7 @@ export function AboutDrewProfile() {
 
           {/* Resume Stats Summary */}
           <div className="mb-8">
-            <ResumeStats />
+            <ServerResumeStats />
           </div>
 
           <div className={SPACING.content}>

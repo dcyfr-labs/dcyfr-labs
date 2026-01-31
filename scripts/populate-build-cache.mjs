@@ -39,7 +39,6 @@ const CACHE_DURATION = 60 * 60; // 1 hour in seconds
 // Determine which Redis to use
 const isProduction =
   process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === 'production';
-const isPreview = process.env.VERCEL_ENV === 'preview';
 
 let redisUrl, redisToken, keyPrefix;
 
@@ -47,18 +46,12 @@ if (isProduction) {
   redisUrl = process.env.UPSTASH_REDIS_REST_URL;
   redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
   keyPrefix = '';
-} else if (isPreview) {
-  redisUrl = process.env.UPSTASH_REDIS_REST_URL_PREVIEW;
-  redisToken = process.env.UPSTASH_REDIS_REST_TOKEN_PREVIEW;
-  // Use branch name for consistency (available in both build and runtime)
-  const branch = process.env.VERCEL_GIT_COMMIT_REF || 'preview';
-  keyPrefix = `preview:${branch}:`;
 } else {
-  // Development
+  // ✅ SIMPLIFIED: All non-production environments share 'preview:' prefix
+  // This ensures dev, preview, and feature branches all share the same cache
   redisUrl = process.env.UPSTASH_REDIS_REST_URL_PREVIEW;
   redisToken = process.env.UPSTASH_REDIS_REST_TOKEN_PREVIEW;
-  const username = process.env.USER || process.env.USERNAME || 'dev';
-  keyPrefix = `dev:${username}:`;
+  keyPrefix = 'preview:';
 }
 
 if (!redisUrl || !redisToken) {
