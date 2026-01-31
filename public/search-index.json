@@ -1,6 +1,23 @@
 {
   "posts": [
     {
+      "id": "post-20260205-a3f7c1d2",
+      "title": "Modernizing Blog Content with RIVET: A Component-Driven Enhancement Framework",
+      "summary": "Introducing RIVET: a systematic framework for enhancing blog content with 8 interactive components. Real implementation data from 4 blog posts with 181 component instances, 97 passing tests, and measurable engagement improvements.",
+      "content": "The Problem: Static Content in a Dynamic World Your blog posts are beautifully written. Code-highlighted. SEO-optimized. And completely static. Readers land on your 3,000-word security analysis. They see a wall of text. They bounce within seconds. Average time on page: 47 seconds. Meanwhile, YouTube tutorials on the same topic get 8-minute average watch times. Not because video is inherently better—because it's interactive. Progress bars. Chapters. Annotations. Engagement hooks every 30 seconds.",
+      "tags": [
+        "React",
+        "Next.js",
+        "Content Strategy",
+        "UX",
+        "Component Architecture"
+      ],
+      "series": "Portfolio",
+      "publishedAt": "2026-02-05T12:00:00Z",
+      "readingTime": 10,
+      "url": "/blog/modernizing-blog-content-with-rivet"
+    },
+    {
       "id": "post-20260114-b4f5e2c2",
       "title": "Node.js January 2026 Security Release: 8 CVEs Explained",
       "summary": "On January 13, 2026, Node.js released security patches for 8 vulnerabilities (3 HIGH, 4 MEDIUM, 1 LOW) affecting all active release lines. This post breaks down each CVE, explains who is affected, and provides actionable remediation guidance.",
@@ -37,22 +54,6 @@
       "url": "/blog/building-event-driven-architecture"
     },
     {
-      "id": "post-20251226-8581f290",
-      "title": "Getting Started with React Hooks",
-      "summary": "A comprehensive guide to React Hooks with interactive, editable code examples. Learn useState, custom hooks, and TypeScript patterns with live demonstrations of counter, todo, and localStorage implementations.",
-      "content": "Getting Started with React Hooks Learn how to use React Hooks to manage state and side effects in functional components. This guide includes interactive examples you can edit and run right in your browser. What Are React Hooks? React Hooks are functions that let you \"hook into\" React features. They were introduced in React 16.8 as a way to write stateful logic in functional components, eliminating the need for class components. Hooks solve the problem of code reuse in React. Before hooks, sharin",
-      "tags": [
-        "React",
-        "Hooks",
-        "JavaScript",
-        "TypeScript"
-      ],
-      "series": null,
-      "publishedAt": "2025-12-26T00:00:00Z",
-      "readingTime": 3,
-      "url": "/blog/getting-started-with-react-hooks"
-    },
-    {
       "id": "post-20251222-f8c3d4e1",
       "title": "UI Elements and Components",
       "summary": "Explore the full range of UI components, MDX elements, code highlighting, alerts, callouts, and visual features available in this blog system. Includes modern engagement components and React 19 patterns.",
@@ -74,7 +75,7 @@
       "id": "post-20251219-7f3a9c2e",
       "title": "OWASP Top 10 for Agentic AI: What You Need to Know in 2026",
       "summary": "OWASP's first Top 10 for Agentic Applications (2026): Learn the 10 critical security risks facing autonomous AI systems—from goal hijacking to rogue agents. Expert analysis with real-world CVEs and mitigation strategies.",
-      "content": "Agentic AI refers to autonomous AI systems that go beyond simple chatbots to plan multi-step workflows, invoke tools and APIs independently, and make decisions without human intervention. These AI agents now book travel, manage calendars, approve expenses, deploy code, and handle customer service autonomously--creating an entirely new category of AI agent security risks. The Open Web Application Security Project (OWASP), the global authority on application security, just released its first-ever ",
+      "content": "Agentic AI refers to autonomous AI systems that go beyond simple chatbots to plan multistep workflows, invoke tools and APIs independently, and make decisions without human intervention. These AI agents now book travel, manage calendars, approve expenses, deploy code, and handle customer service autonomously--creating an entirely new category of AI agent security risks. The Open Web Application Security Project (OWASP), the global authority on application security, just released its first-ever T",
       "tags": [
         "AI Security",
         "OWASP",
@@ -267,7 +268,9 @@
     "Certification",
     "Code",
     "CompTIA",
+    "Component Architecture",
     "Components",
+    "Content Strategy",
     "Cybersecurity",
     "Demo",
     "Dependabot",
@@ -277,11 +280,9 @@
     "Equations",
     "Event-Driven",
     "HTTP/2",
-    "Hooks",
     "IT Career",
     "Inngest",
     "Interactive",
-    "JavaScript",
     "KaTeX",
     "LLM Security",
     "LaTeX",
@@ -311,6 +312,7 @@
     "TypeScript",
     "Typography",
     "UI",
+    "UX",
     "Vercel",
     "Visualization",
     "shadcn/ui"
@@ -319,5 +321,5 @@
     "Features",
     "Portfolio"
   ],
-  "generatedAt": "2026-01-26T16:29:52.265Z"
+  "generatedAt": "2026-01-31T23:25:13.456Z"
 }

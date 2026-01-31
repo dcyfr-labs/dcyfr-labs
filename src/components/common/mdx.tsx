@@ -398,7 +398,8 @@ const components: NonNullable<MDXRemoteProps['components']> = {
     const children = React.Children.toArray(props.children);
     const hasCheckboxes = children.some((child) => {
       if (React.isValidElement(child) && child.type === 'li') {
-        const liChildren = React.Children.toArray(child.props.children);
+        const li = child as React.ReactElement<{ children?: React.ReactNode }>;
+        const liChildren = React.Children.toArray(li.props.children);
         return liChildren.some(
           (liChild) =>
             React.isValidElement(liChild) &&
