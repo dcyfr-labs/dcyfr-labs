@@ -126,9 +126,24 @@ export async function getGitHubContributions(
     // Try the main cache
     const cached = await redis.get(cacheKey);
 
-    if (cached && typeof cached === 'string') {
-      const data = JSON.parse(cached) as ContributionResponse;
+    // Handle both string (JSON.stringify) and object (auto-deserialized) formats
+    // Upstash REST API may return either depending on how the data was stored
+    let data: ContributionResponse | null = null;
 
+    if (cached) {
+      if (typeof cached === 'string') {
+        try {
+          data = JSON.parse(cached) as ContributionResponse;
+        } catch (parseError) {
+          console.error('[GitHub Data] ❌ Failed to parse cached string:', parseError);
+        }
+      } else if (typeof cached === 'object') {
+        // Upstash auto-deserialized the JSON
+        data = cached as ContributionResponse;
+      }
+    }
+
+    if (data && data.contributions) {
       // ✅ Clean any stale warning field from cached data
       // Production cache should never have warnings (those are for fallback only)
       if (data.source === 'github-api') {
@@ -140,23 +155,38 @@ export async function getGitHubContributions(
         lastUpdated: data.lastUpdated,
         source: data.source,
         hasWarning: !!(data as any).warning,
+        cachedType: typeof cached,
       });
       return data;
     } else {
       console.warn('[GitHub Data] ⚠️ Cache MISS - key not found or invalid', {
         cachedType: typeof cached,
         cachedValue: cached === null ? 'null' : 'other',
+        hasContributions: data ? !!data.contributions : false,
       });
     }
 
     // Try fallback cache if main cache is empty
     const fallbackCached = await redis.get(getFallbackCacheKey());
 
-    if (fallbackCached && typeof fallbackCached === 'string') {
-      const data = JSON.parse(fallbackCached) as ContributionResponse;
-      data.warning = 'Using cached data - GitHub API temporarily unavailable';
-      console.warn('[GitHub Data] ⚠️ Using fallback cache');
-      return data;
+    if (fallbackCached) {
+      let fallbackData: ContributionResponse | null = null;
+
+      if (typeof fallbackCached === 'string') {
+        try {
+          fallbackData = JSON.parse(fallbackCached) as ContributionResponse;
+        } catch {
+          // Ignore parse errors
+        }
+      } else if (typeof fallbackCached === 'object') {
+        fallbackData = fallbackCached as ContributionResponse;
+      }
+
+      if (fallbackData && fallbackData.contributions) {
+        fallbackData.warning = 'Using cached data - GitHub API temporarily unavailable';
+        console.warn('[GitHub Data] ⚠️ Using fallback cache');
+        return fallbackData;
+      }
     }
   } catch (error) {
     const isDevelopment = process.env.NODE_ENV === 'development';
@@ -186,11 +216,22 @@ export async function checkGitHubDataHealth(): Promise<{
   try {
     const cached = await redis.get(getCacheKey());
 
-    if (!cached || typeof cached !== 'string') {
+    if (!cached) {
       return { cacheAvailable: true, dataFresh: false };
     }
 
-    const data = JSON.parse(cached) as ContributionResponse;
+    // Handle both string and object formats from Upstash
+    let data: ContributionResponse | null = null;
+    if (typeof cached === 'string') {
+      data = JSON.parse(cached) as ContributionResponse;
+    } else if (typeof cached === 'object') {
+      data = cached as ContributionResponse;
+    }
+
+    if (!data || !data.lastUpdated) {
+      return { cacheAvailable: true, dataFresh: false };
+    }
+
     const lastUpdated = new Date(data.lastUpdated);
     const isRecent = Date.now() - lastUpdated.getTime() < 2 * 60 * 60 * 1000; // 2 hours
 
