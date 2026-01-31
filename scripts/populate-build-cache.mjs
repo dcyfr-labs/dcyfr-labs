@@ -50,8 +50,9 @@ if (isProduction) {
 } else if (isPreview) {
   redisUrl = process.env.UPSTASH_REDIS_REST_URL_PREVIEW;
   redisToken = process.env.UPSTASH_REDIS_REST_TOKEN_PREVIEW;
-  const prNumber = process.env.VERCEL_GIT_PULL_REQUEST_ID || 'preview';
-  keyPrefix = `preview:${prNumber}:`;
+  // Use branch name for consistency (available in both build and runtime)
+  const branch = process.env.VERCEL_GIT_COMMIT_REF || 'preview';
+  keyPrefix = `preview:${branch}:`;
 } else {
   // Development
   redisUrl = process.env.UPSTASH_REDIS_REST_URL_PREVIEW;
@@ -228,7 +229,9 @@ async function main() {
   console.log('[Build Cache] Environment:', {
     NODE_ENV: process.env.NODE_ENV,
     VERCEL_ENV: process.env.VERCEL_ENV,
+    GIT_COMMIT_REF: process.env.VERCEL_GIT_COMMIT_REF,
     keyPrefix: keyPrefix || '(none)',
+    redisUrl: redisUrl ? `${redisUrl.substring(0, 30)}...` : '(none)',
   });
 
   const results = await Promise.allSettled([fetchGitHubContributions(), fetchCredlyBadges()]);

@@ -103,9 +103,9 @@ export function getRedisKeyPrefix(): string {
   }
 
   if (isPreview) {
-    // Use PR number or deployment ID for isolation
-    const prNumber = process.env.VERCEL_GIT_PULL_REQUEST_ID || 'preview';
-    return `preview:${prNumber}:`;
+    // Use branch name for isolation (consistent with build-time)
+    const branch = process.env.VERCEL_GIT_COMMIT_REF || 'preview';
+    return `preview:${branch}:`;
   }
 
   if (isDevelopment) {

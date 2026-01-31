@@ -115,6 +115,8 @@ export async function getGitHubContributions(
       key: cacheKey,
       environment: getRedisEnvironment(),
       redisAvailable: !!redis,
+      gitCommitRef: process.env.VERCEL_GIT_COMMIT_REF,
+      vercelEnv: process.env.VERCEL_ENV,
     });
 
     // Try the main cache
