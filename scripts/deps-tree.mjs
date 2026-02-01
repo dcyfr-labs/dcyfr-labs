@@ -5,8 +5,19 @@
  * @usage npm run deps:tree [package-name]
  */
 
-import { execaSync } from 'execa';
+import { createRequire } from 'module';
 
+const require = createRequire(import.meta.url);
+
+let execaSync;
+
+try {
+  ({ execaSync } = require('execa'));
+} catch (error) {
+  console.error("❌ The 'execa' package is required to run this script.");
+  console.error('   Please install it with: npm install execa');
+  process.exit(1);
+}
 const packageName = process.argv[2];
 
 try {

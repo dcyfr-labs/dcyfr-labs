@@ -13,7 +13,8 @@
 
 import fs from 'fs';
 import path from 'path';
-import writeFileAtomicSync from 'write-file-atomic';
+import writeFileAtomic from 'write-file-atomic';
+const writeFileAtomicSync = writeFileAtomic.sync;
 
 // Parse CLI args
 const args = process.argv.slice(2).reduce((acc, arg) => {

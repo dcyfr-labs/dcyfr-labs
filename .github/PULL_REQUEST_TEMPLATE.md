@@ -1,163 +1,222 @@
-# Pull Request
+<!--
+Thank you for contributing to dcyfr-labs!
 
-## Description
+This template helps ensure quality and consistency.
+Delete sections that don't apply to your PR.
+-->
 
-<!-- Provide a brief description of the changes in this PR -->
+## 📝 Description
 
-## Type of Change
+<!-- What does this PR do? Why is it needed? -->
 
-<!-- Mark the relevant option with an 'x' -->
+### Type of Change
 
-- [ ] Bug fix (non-breaking change that fixes an issue)
-- [ ] New feature (non-breaking change that adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] Documentation update
-- [ ] Performance improvement
-- [ ] Code refactoring
-- [ ] Dependency update
-- [ ] CI/CD improvement
+<!-- Check all that apply -->
 
-## Related Issue
+- [ ] 🐛 Bug fix (non-breaking change which fixes an issue)
+- [ ] ✨ New feature (non-breaking change which adds functionality)
+- [ ] 💥 Breaking change (fix or feature that would cause existing functionality to change)
+- [ ] 📚 Documentation update
+- [ ] 🎨 Design system / UI update
+- [ ] ⚡ Performance improvement
+- [ ] 🔒 Security fix
+- [ ] 🧪 Test coverage improvement
+- [ ] 🔧 Configuration / tooling update
 
-<!-- Link to the related issue, if applicable -->
+### Related Issues
 
-Closes #(issue number)
+<!-- Link to related issues, features, or bugs -->
 
-## Changes Made
-
-<!-- Provide a detailed list of changes -->
-
--
--
--
-
-## Testing
-
-<!-- Describe the tests you ran to verify your changes -->
-
-### Test Checklist
-
-- [ ] `npm run lint` passes (0 errors)
-- [ ] `npm run typecheck` passes (no type errors)
-- [ ] `npm run test` passes (≥99% pass rate maintained)
-- [ ] `npm run build` succeeds (production build works)
-- [ ] Manual testing completed (if applicable)
-- [ ] E2E tests pass (if applicable)
-
-### Test Coverage
-
-- [ ] New code has test coverage
-- [ ] Existing tests updated (if applicable)
-- [ ] Integration tests added (if needed)
-
-## Screenshots
-
-<!-- If applicable, add screenshots to help explain your changes -->
-
-### Before
-
-<!-- Screenshot or description of behavior before changes -->
-
-### After
-
-<!-- Screenshot or description of behavior after changes -->
-
-## Design System Compliance
-
-<!-- For UI changes only -->
-
-- [ ] Uses design tokens from `@/lib/design-tokens.ts`
-- [ ] No hardcoded spacing, typography, or colors
-- [ ] Follows existing component patterns
-- [ ] Responsive design tested (mobile, tablet, desktop)
-- [ ] Dark mode tested (if applicable)
-
-## Security Considerations
-
-<!-- Mark any security-related items -->
-
-- [ ] No secrets or API keys in code
-- [ ] Input validation added (if handling user input)
-- [ ] XSS/CSRF protection considered
-- [ ] Security headers unchanged or improved
-- [ ] No new security vulnerabilities introduced
-
-## Performance Impact
-
-<!-- Describe any performance implications -->
-
-- [ ] No negative performance impact
-- [ ] Lighthouse scores maintained (≥90% perf, ≥95% a11y)
-- [ ] Bundle size impact assessed
-- [ ] Images optimized (if applicable)
-
-## Accessibility
-
-<!-- For UI changes only -->
-
-- [ ] WCAG 2.1 AA compliance maintained
-- [ ] Keyboard navigation works
-- [ ] Screen reader tested (if significant UI changes)
-- [ ] Color contrast meets standards
-- [ ] ARIA labels added where needed
-
-## Breaking Changes
-
-<!-- List any breaking changes and migration steps -->
-
-- [ ] No breaking changes
-- [ ] Breaking changes documented in CHANGELOG.md
-- [ ] Migration guide provided (if needed)
-
-## Deployment Notes
-
-<!-- Any special deployment considerations -->
-
-- [ ] No special deployment steps required
-- [ ] Environment variables added/updated (document in PR description)
-- [ ] Database migrations needed (describe below)
-- [ ] Cache invalidation needed (describe below)
-
-## Documentation
-
-- [ ] README.md updated (if needed)
-- [ ] `/docs` updated (if needed)
-- [ ] CHANGELOG.md updated (see `npm run changelog:help` for guidelines)
-- [ ] Code comments added for complex logic
-- [ ] API documentation updated (if applicable)
-
-**Changelog Validation:**
-```bash
-# Before marking complete, validate changelog format:
-npm run changelog:validate    # Check format compliance
-npm run changelog:check       # Check if stale (>7 days)
-```
-
-**Guidelines:**
-- ✅ Add entry for: New pages, components, features, breaking changes
-- ✅ May skip for: Minor bug fixes, internal changes, refactoring
-- ✅ Format: Use CalVer `[YYYY.MM.DD]` with sections (Added, Changed, Removed, Fixed)
-- ✅ Breaking changes: Mark with ⚠️ BREAKING prefix
-
-## Checklist
-
-<!-- Final verification before requesting review -->
-
-- [ ] My code follows the project's style guidelines
-- [ ] I have performed a self-review of my code
-- [ ] I have commented my code, particularly in hard-to-understand areas
-- [ ] My changes generate no new warnings
-- [ ] I have updated the documentation accordingly
-- [ ] My changes maintain or improve test coverage
-- [ ] All tests pass locally
-- [ ] I have checked for conflicts with the base branch
-
-## Additional Context
-
-<!-- Add any other context about the PR here -->
+Closes #
+Related to #
 
 ---
 
-**Reviewer Notes:**
+## 🎯 Changes Made
 
-<!-- For reviewers: Add any specific areas that need attention -->
+<!-- List specific changes in this PR -->
+
+-
+-
+-
+
+---
+
+## ✅ Pre-Submission Checklist
+
+<!-- Auto-validation runs on PR open. Check manually if needed. -->
+
+### Code Quality
+
+- [ ] TypeScript compiles without errors (`npx tsc --noEmit`)
+- [ ] ESLint passes with 0 errors (`npm run lint`)
+- [ ] Code follows design token system (no hardcoded spacing/colors)
+- [ ] All imports use barrel exports (`@/components/blog` not file paths)
+
+### Testing
+
+- [ ] Tests added/updated for new functionality
+- [ ] All tests pass (`npm run test:run`)
+- [ ] Test coverage ≥99% pass rate
+- [ ] E2E tests pass if UI changes (`npm run test:e2e`)
+
+### Documentation
+
+- [ ] Code comments added for complex logic
+- [ ] Documentation updated (if applicable)
+- [ ] CHANGELOG.md updated (for user-facing changes)
+- [ ] No emojis in public-facing content (use `lucide-react` icons)
+
+### Security
+
+- [ ] No secrets or sensitive data in code
+- [ ] Environment variables documented (if new ones added)
+- [ ] Security implications reviewed (if applicable)
+- [ ] No console.log in production code paths
+
+### Design System (if applicable)
+
+- [ ] Uses `PageLayout` (or documented exception)
+- [ ] Uses `SPACING` constants for margins/padding
+- [ ] Uses `TYPOGRAPHY` constants for text styles
+- [ ] Uses `SEMANTIC_COLORS` for colors
+- [ ] Responsive design tested (mobile, tablet, desktop)
+
+---
+
+## 🧪 Testing Instructions
+
+<!-- How should reviewers test this PR? -->
+
+### Local Testing
+
+```bash
+# Setup
+npm install
+npm run dev
+
+# Test steps
+1.
+2.
+3.
+
+# Expected behavior
+-
+```
+
+### Preview Environment
+
+<!-- Vercel preview URL will be auto-generated -->
+
+- Test on preview deployment: [Wait for Vercel preview]
+- Test on mobile devices
+- Test with different data scenarios
+
+---
+
+## 📸 Screenshots / Videos
+
+<!-- If UI changes, add before/after screenshots or screen recordings -->
+
+### Before
+
+
+### After
+
+
+---
+
+## 🤖 Automated Analysis
+
+<!-- This section is auto-populated by pr-resolution-plan.yml workflow -->
+
+⏳ **Resolution plan is being generated...**
+
+The `pr-resolution-plan` workflow will automatically:
+- ✅ Scan for security issues (Gitleaks)
+- ✅ Check code quality (ESLint, TypeScript)
+- ✅ Validate design tokens
+- ✅ Run test suite
+- ✅ Check markdown quality
+- ✅ Generate prioritized resolution plan
+
+Results will appear as a comment below when analysis completes (~2-3 minutes).
+
+---
+
+## 💡 Copilot Integration
+
+<!-- How to use GitHub Copilot to help with this PR -->
+
+### For Reviewers
+
+Use `@copilot` in review comments to request automated fixes:
+
+```
+@copilot Fix ESLint warnings by using proper logging utilities
+@copilot Convert hardcoded spacing to design tokens (SPACING constants)
+@copilot Add missing tests for the new handleSubmit function
+```
+
+**Tips:**
+- Click "Start a review" to batch multiple comments
+- Be specific about what needs fixing
+- Reference documentation: `@copilot Follow patterns in docs/ai/component-patterns.md`
+
+### For Authors
+
+If the automated plan identifies issues:
+
+1. Review the resolution plan comment below
+2. Address critical issues first (TypeScript errors, test failures)
+3. Use `@copilot` to request help with fixes
+4. Request re-review when ready
+
+---
+
+## 📋 Reviewer Checklist
+
+<!-- For reviewers - check these before approving -->
+
+- [ ] Code changes align with described functionality
+- [ ] Design tokens used consistently
+- [ ] No breaking changes (or properly documented)
+- [ ] Tests cover new functionality
+- [ ] Documentation is clear and complete
+- [ ] No security concerns
+- [ ] Performance impact acceptable
+- [ ] Ready to merge
+
+---
+
+## 🚀 Deployment Notes
+
+<!-- Any special considerations for deployment? -->
+
+- [ ] No special deployment steps needed
+- [ ] Database migrations required
+- [ ] Environment variables need updating
+- [ ] Cache invalidation required
+- [ ] Feature flags need toggling
+- [ ] External service configuration needed
+
+**Deployment instructions:**
+
+
+---
+
+## 📚 Additional Context
+
+<!-- Any other context, design decisions, or trade-offs made -->
+
+
+---
+
+<!--
+For more information:
+- [Contributing Guide](../CONTRIBUTING.md)
+- [Agent Guide](../AGENTS.md)
+- [Copilot PR Workflow](../docs/ai/copilot-pr-workflow.md)
+- [Component Patterns](../docs/ai/component-patterns.md)
+- [Testing Guide](../docs/testing/README.md)
+-->

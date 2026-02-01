@@ -7,6 +7,7 @@
  */
 
 import { redis, getRedisEnvironment, getRedisKeyPrefix } from '@/mcp/shared/redis-client';
+import { logger } from '@/lib/logger';
 
 // ============================================================================
 // TYPES
@@ -71,11 +72,11 @@ function getEmptyState(): ContributionResponse {
 
   // Different log levels based on environment
   if (isProduction) {
-    console.error('[GitHub Data] ❌ CRITICAL: Cache unavailable in production');
-    console.error('[GitHub Data]    Action required: Check build cache population');
+    logger.error('[GitHub Data] CRITICAL: Cache unavailable in production');
+    logger.error('[GitHub Data] Action required: Check build cache population');
   } else if (isDevelopment) {
-    console.log('[GitHub Data] ℹ️ Cache empty in local dev (expected)');
-    console.log('[GitHub Data]    To populate: curl http://localhost:3000/api/dev/populate-cache');
+    logger.info('github_data_cache_empty', { environment: 'development' });
+    logger.info('github_data_populate_hint', { endpoint: '/api/dev/populate-cache' });
   } else if (isTest) {
     // In test environment we return deterministic demo data for assertions
     // Tests expect a realistic fallback payload named 'fallback-data'
@@ -94,8 +95,7 @@ function getEmptyState(): ContributionResponse {
       warning: 'Using demo data for tests (demo data)',
     };
   } else {
-    console.warn('[GitHub Data] ⚠️ Cache unavailable - returning empty state');
-    console.warn('[GitHub Data]    Run: curl http://localhost:3000/api/dev/populate-cache');
+    logger.warn('Cache unavailable - returning empty state');
   }
 
   return {
@@ -127,18 +127,15 @@ export async function getGitHubContributions(
 ): Promise<ContributionResponse> {
   // Only support the configured username for security
   if (username !== 'dcyfr') {
-    console.warn(`[GitHub Data] Username ${username} not supported, returning empty state`);
+    logger.warn(`Username ${username} not supported, returning empty state`);
     return getEmptyState();
   }
 
   try {
     const cacheKey = getCacheKey();
-    console.log('[GitHub Data] 🔍 Attempting cache read', {
+    logger.debug('Attempting cache read', {
       key: cacheKey,
       environment: getRedisEnvironment(),
-      redisAvailable: !!redis,
-      gitCommitRef: process.env.VERCEL_GIT_COMMIT_REF,
-      vercelEnv: process.env.VERCEL_ENV,
     });
 
     // Try the main cache
@@ -153,7 +150,7 @@ export async function getGitHubContributions(
         try {
           data = JSON.parse(cached) as ContributionResponse;
         } catch (parseError) {
-          console.error('[GitHub Data] ❌ Failed to parse cached string:', parseError);
+          logger.error('Failed to parse cached string', parseError as Error);
         }
       } else if (typeof cached === 'object') {
         // Upstash auto-deserialized the JSON
@@ -168,20 +165,13 @@ export async function getGitHubContributions(
         delete (data as any).warning;
       }
 
-      console.log('[GitHub Data] ✅ Cache HIT', {
+      logger.debug('Cache HIT', {
         totalContributions: data.totalContributions,
-        lastUpdated: data.lastUpdated,
         source: data.source,
-        hasWarning: !!(data as any).warning,
-        cachedType: typeof cached,
       });
       return data;
     } else {
-      console.warn('[GitHub Data] ⚠️ Cache MISS - key not found or invalid', {
-        cachedType: typeof cached,
-        cachedValue: cached === null ? 'null' : 'other',
-        hasContributions: data ? !!data.contributions : false,
-      });
+      logger.warn('Cache MISS - key not found or invalid');
     }
 
     // Try fallback cache if main cache is empty
@@ -202,19 +192,14 @@ export async function getGitHubContributions(
 
       if (fallbackData && fallbackData.contributions) {
         fallbackData.warning = 'Using cached data - GitHub API temporarily unavailable';
-        console.warn('[GitHub Data] ⚠️ Using fallback cache');
+        logger.warn('Using fallback cache');
         return fallbackData;
       }
     }
   } catch (error) {
     const isDevelopment = process.env.NODE_ENV === 'development';
-    if (isDevelopment) {
-      console.log('[GitHub Data] ℹ️ Cache read skipped (Redis not configured in local dev)');
-    } else {
-      console.error('[GitHub Data] ❌ Cache read failed', {
-        error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-      });
+    if (!isDevelopment) {
+      logger.error('Cache read failed', error as Error);
     }
   }
 

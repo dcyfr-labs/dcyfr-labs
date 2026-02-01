@@ -3,6 +3,7 @@ import { handleApiError } from '@/lib/error-handler';
 import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
 import { redis } from '@/lib/redis';
 import { getRedisKeyPrefix } from '@/mcp/shared/redis-client';
+import { dataLogger } from '@/lib/logger';
 import type { CredlyBadgesResponse } from '@/types/credly';
 
 /**
@@ -75,7 +76,7 @@ export async function GET(request: NextRequest) {
 
     if (cached && typeof cached === 'string') {
       const data = JSON.parse(cached);
-      console.log('[Credly API] ✅ Cache HIT', { redisKey, count: data.count });
+      dataLogger.cache(redisKey, true);
 
       return NextResponse.json(data, {
         status: 200,
@@ -87,7 +88,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    console.warn('[Credly API] ⚠️ Cache MISS - falling back to Credly API', { redisKey });
+    dataLogger.cache(redisKey, false);
 
     // ✅ SSRF Protection: Use URL constructor to prevent injection
     // This ensures the username cannot break out of the pathname
@@ -116,9 +117,9 @@ export async function GET(request: NextRequest) {
     // Store in Redis cache for future requests
     try {
       await redis.setex(redisKey, CACHE_TTL, JSON.stringify(responseData));
-      console.log('[Credly API] ✅ Cached response', { redisKey });
+      dataLogger.fetchSuccess('Credly API', badges.length, false);
     } catch (error) {
-      console.warn('[Credly API] ⚠️ Failed to cache response:', error);
+      dataLogger.fetchError('Redis cache', error as Error);
     }
 
     return NextResponse.json(responseData, {

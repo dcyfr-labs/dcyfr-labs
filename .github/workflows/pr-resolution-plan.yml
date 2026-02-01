@@ -1,0 +1,471 @@
+name: Generate PR Resolution Plan
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+      - preview
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to analyze'
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  checks: read
+  statuses: read
+
+jobs:
+  analyze-and-plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better analysis
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run security scans
+        id: security
+        continue-on-error: true
+        run: |
+          # Gitleaks scan
+          echo "::group::Gitleaks Scan"
+          docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:latest detect \
+            --source="/repo" \
+            --report-format=json \
+            --report-path=/repo/gitleaks-report.json \
+            --exit-code=0
+          echo "::endgroup::"
+
+          # ESLint
+          echo "::group::ESLint Analysis"
+          npm run lint -- --format json --output-file eslint-report.json || true
+          echo "::endgroup::"
+
+          # TypeScript
+          echo "::group::TypeScript Check"
+          npx tsc --noEmit --pretty false 2>&1 | tee typescript-report.txt || true
+          echo "::endgroup::"
+
+          # Count issues
+          GITLEAKS_COUNT=$(jq 'length' gitleaks-report.json 2>/dev/null || echo "0")
+          ESLINT_COUNT=$(jq '[.[] | .messages | length] | add // 0' eslint-report.json 2>/dev/null || echo "0")
+          TS_ERRORS=$(grep -c "error TS" typescript-report.txt 2>/dev/null || echo "0")
+
+          echo "gitleaks_count=$GITLEAKS_COUNT" >> $GITHUB_OUTPUT
+          echo "eslint_count=$ESLINT_COUNT" >> $GITHUB_OUTPUT
+          echo "ts_errors=$TS_ERRORS" >> $GITHUB_OUTPUT
+
+      - name: Run tests
+        id: tests
+        continue-on-error: true
+        run: |
+          npm run test:run -- --reporter=json --outputFile=test-report.json || true
+
+          TOTAL_TESTS=$(jq '.numTotalTests // 0' test-report.json 2>/dev/null || echo "0")
+          FAILED_TESTS=$(jq '.numFailedTests // 0' test-report.json 2>/dev/null || echo "0")
+          PASS_RATE=$(jq '(((.numPassedTests // 0) / (.numTotalTests // 1)) * 100) | floor' test-report.json 2>/dev/null || echo "0")
+
+          echo "total_tests=$TOTAL_TESTS" >> $GITHUB_OUTPUT
+          echo "failed_tests=$FAILED_TESTS" >> $GITHUB_OUTPUT
+          echo "pass_rate=$PASS_RATE" >> $GITHUB_OUTPUT
+
+      - name: Analyze design token compliance
+        id: design_tokens
+        continue-on-error: true
+        run: |
+          # Check for hardcoded values in changed files
+          git diff origin/${{ github.base_ref }}...HEAD --name-only -- '*.tsx' '*.ts' | \
+            xargs grep -n "className=\".*\(gap-[0-9]\|mt-[0-9]\|text-[0-9]\).*\"" 2>/dev/null | \
+            wc -l > token-violations.txt || echo "0" > token-violations.txt
+
+          VIOLATIONS=$(cat token-violations.txt)
+          echo "violations=$VIOLATIONS" >> $GITHUB_OUTPUT
+
+      - name: Check markdown quality
+        id: markdown
+        continue-on-error: true
+        run: |
+          # Install markdownlint
+          npm install -g markdownlint-cli
+
+          # Check markdown files
+          markdownlint '**/*.md' --ignore node_modules --json > markdown-report.json 2>/dev/null || true
+
+          MD_ISSUES=$(jq '[.[] | length] | add // 0' markdown-report.json 2>/dev/null || echo "0")
+          echo "issues=$MD_ISSUES" >> $GITHUB_OUTPUT
+
+      - name: Generate severity assessment
+        id: severity
+        run: |
+          # Calculate overall severity
+          GITLEAKS=${{ steps.security.outputs.gitleaks_count }}
+          ESLINT=${{ steps.security.outputs.eslint_count }}
+          TS_ERRORS=${{ steps.security.outputs.ts_errors }}
+          FAILED=${{ steps.tests.outputs.failed_tests }}
+          PASS_RATE=${{ steps.tests.outputs.pass_rate }}
+          TOKEN_VIOLATIONS=${{ steps.design_tokens.outputs.violations }}
+
+          SEVERITY="LOW"
+          PRIORITY="🟢 LOW"
+          TIMELINE="2 weeks"
+
+          # Critical: TypeScript errors, test failures, or secrets
+          if [ "$TS_ERRORS" -gt "0" ] || [ "$FAILED" -gt "10" ] || [ "$PASS_RATE" -lt "95" ]; then
+            SEVERITY="CRITICAL"
+            PRIORITY="🔴 CRITICAL"
+            TIMELINE="24 hours"
+          # High: Many ESLint errors or design token violations
+          elif [ "$ESLINT" -gt "50" ] || [ "$TOKEN_VIOLATIONS" -gt "20" ]; then
+            SEVERITY="HIGH"
+            PRIORITY="🟠 HIGH"
+            TIMELINE="72 hours"
+          # Medium: Some issues but manageable
+          elif [ "$ESLINT" -gt "0" ] || [ "$TOKEN_VIOLATIONS" -gt "0" ] || [ "$GITLEAKS" -gt "10" ]; then
+            SEVERITY="MEDIUM"
+            PRIORITY="🟡 MEDIUM"
+            TIMELINE="1 week"
+          fi
+
+          echo "severity=$SEVERITY" >> $GITHUB_OUTPUT
+          echo "priority=$PRIORITY" >> $GITHUB_OUTPUT
+          echo "timeline=$TIMELINE" >> $GITHUB_OUTPUT
+
+      - name: Generate resolution plan
+        id: plan
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // Read report files
+            const gitleaksCount = ${{ steps.security.outputs.gitleaks_count }};
+            const eslintCount = ${{ steps.security.outputs.eslint_count }};
+            const tsErrors = ${{ steps.security.outputs.ts_errors }};
+            const failedTests = ${{ steps.tests.outputs.failed_tests }};
+            const passRate = ${{ steps.tests.outputs.pass_rate }};
+            const tokenViolations = ${{ steps.design_tokens.outputs.violations }};
+            const mdIssues = ${{ steps.markdown.outputs.issues }};
+            const severity = '${{ steps.severity.outputs.severity }}';
+            const priority = '${{ steps.severity.outputs.priority }}';
+            const timeline = '${{ steps.severity.outputs.timeline }}';
+
+            // Generate plan content
+            const plan = `<!-- TLP:CLEAR -->
+
+            # PR Resolution Plan - #${{ github.event.pull_request.number || github.event.inputs.pr_number }}
+
+            **Date:** ${new Date().toISOString().split('T')[0]}
+            **PR:** ${{ github.event.pull_request.html_url || github.event.repository.html_url + '/pull/' + github.event.inputs.pr_number }}
+            **Status:** ${priority}
+            **Timeline:** ${timeline}
+            **Auto-generated by:** GitHub Actions
+
+            ---
+
+            ## 📊 Executive Summary
+
+            **Total Issues:** ${gitleaksCount + eslintCount + tsErrors + tokenViolations + mdIssues}
+            - **TypeScript Errors:** ${tsErrors}
+            - **ESLint Issues:** ${eslintCount}
+            - **Design Token Violations:** ${tokenViolations}
+            - **Security Findings (Gitleaks):** ${gitleaksCount}
+            - **Markdown Issues:** ${mdIssues}
+            - **Test Failures:** ${failedTests} (Pass rate: ${passRate}%)
+
+            **Overall Severity:** ${severity}
+            **Recommended Action:** ${severity === 'CRITICAL' ? '⛔ BLOCK MERGE - Fix critical issues first' : severity === 'HIGH' ? '⚠️ REVIEW REQUIRED - Address high-priority issues' : '✅ PROCEED WITH CAUTION - Address issues before merge'}
+
+            ---
+
+            ## 🔴 CRITICAL Priority Issues
+
+            ${tsErrors > 0 ? `### TypeScript Compilation Errors (${tsErrors})
+            **Impact:** Code will not compile in production
+            **Timeline:** Must fix before merge
+
+            \`\`\`bash
+            npx tsc --noEmit
+            \`\`\`
+
+            See \`typescript-report.txt\` artifact for details.
+            ` : ''}
+
+            ${failedTests > 0 ? `### Test Failures (${failedTests})
+            **Impact:** Functionality may be broken, pass rate: ${passRate}%
+            **Timeline:** Must fix before merge
+            **Target:** ≥99% pass rate
+
+            \`\`\`bash
+            npm run test:run
+            \`\`\`
+
+            See \`test-report.json\` artifact for details.
+            ` : ''}
+
+            ${tsErrors === 0 && failedTests === 0 ? '✅ No critical issues detected' : ''}
+
+            ---
+
+            ## 🟡 MEDIUM Priority Issues
+
+            ${eslintCount > 0 ? `### ESLint Violations (${eslintCount})
+            **Impact:** Code quality and maintainability
+            **Timeline:** ${timeline}
+
+            \`\`\`bash
+            npm run lint -- --fix
+            \`\`\`
+
+            See \`eslint-report.json\` artifact for details.
+            ` : ''}
+
+            ${tokenViolations > 0 ? `### Design Token Violations (${tokenViolations})
+            **Impact:** Design system consistency
+            **Timeline:** ${timeline}
+            **Rule:** Must use design tokens (SPACING, TYPOGRAPHY, etc.)
+
+            Common violations:
+            - \`gap-8\` → \`gap-\${SPACING.content}\`
+            - \`mt-4\` → \`mt-\${SPACING.compact}\`
+            - \`text-3xl\` → \`\${TYPOGRAPHY.h1.standard}\`
+
+            See design system guide: \`docs/ai/design-system.md\`
+            ` : ''}
+
+            ${gitleaksCount > 0 ? `### Security Findings (${gitleaksCount})
+            **Impact:** Potential secret exposure
+            **Timeline:** Review within 24 hours
+
+            \`\`\`bash
+            # Review findings
+            cat gitleaks-report.json | jq '.[] | {file: .File, line: .StartLine, rule: .RuleID}'
+
+            # Add to baseline if false positive
+            echo "path/to/file:rule:*" >> .gitleaksignore
+            \`\`\`
+
+            See \`gitleaks-report.json\` artifact for details.
+            ` : ''}
+
+            ${eslintCount === 0 && tokenViolations === 0 && gitleaksCount === 0 ? '✅ No medium priority issues detected' : ''}
+
+            ---
+
+            ## 🟢 LOW Priority Issues
+
+            ${mdIssues > 0 ? `### Markdown Quality (${mdIssues})
+            **Impact:** Documentation quality
+            **Timeline:** Before final merge
+
+            \`\`\`bash
+            markdownlint '**/*.md' --fix
+            \`\`\`
+
+            See \`markdown-report.json\` artifact for details.
+            ` : '✅ No low priority issues detected'}
+
+            ---
+
+            ## ✅ Pre-Merge Checklist
+
+            Before merging this PR, ensure:
+
+            - [ ] TypeScript compiles: \`npx tsc --noEmit\` (0 errors)
+            - [ ] ESLint passes: \`npm run lint\` (0 errors, warnings acceptable)
+            - [ ] Tests pass: \`npm run test:run\` (≥99% pass rate)
+            - [ ] Design tokens: No hardcoded spacing/colors
+            - [ ] Security: All findings reviewed and documented
+            - [ ] Documentation: Markdown quality acceptable
+            - [ ] Manual testing: Changes tested in preview environment
+
+            ---
+
+            ## 🤖 Copilot Integration
+
+            To have Copilot fix issues automatically:
+
+            1. **Request fixes in PR comments:**
+               \`\`\`
+               @copilot Fix ESLint warnings by converting console.log to proper logging
+               \`\`\`
+
+            2. **Batch review comments:**
+               - Click "Start a review" (not "Add single comment")
+               - Add multiple comments on different code sections
+               - Click "Submit review" to process all at once
+
+            3. **Use specific guidance:**
+               - Reference design tokens: "@copilot Use SPACING.content instead of gap-8"
+               - Link to patterns: "@copilot Follow pattern in docs/ai/component-patterns.md"
+               - Set priorities: "@copilot Fix critical issues first, then medium"
+
+            ---
+
+            ## 📚 Resources
+
+            - [Quick Reference](docs/ai/quick-reference.md) - Commands and common patterns
+            - [Component Patterns](docs/ai/component-patterns.md) - Layout and import guidelines
+            - [Design System](docs/ai/design-system.md) - Token enforcement rules
+            - [Testing Guide](docs/testing/README.md) - Test coverage requirements
+            - [Security Baseline](docs/security/code-scanning-quick-reference.md) - Security scan info
+
+            ---
+
+            **Auto-generated:** ${new Date().toISOString()}
+            **Workflow:** \`pr-resolution-plan.yml\`
+            **Artifacts:** Check workflow run for detailed reports
+            `;
+
+            // Save plan to file
+            const planPath = path.join(process.env.GITHUB_WORKSPACE, 'pr-resolution-plan.md');
+            fs.writeFileSync(planPath, plan);
+
+            // Return summary for comment
+            return {
+              severity,
+              priority,
+              timeline,
+              totalIssues: gitleaksCount + eslintCount + tsErrors + tokenViolations + mdIssues,
+              shouldBlock: severity === 'CRITICAL'
+            };
+
+      - name: Upload reports as artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-analysis-reports-${{ github.event.pull_request.number || github.event.inputs.pr_number }}
+          path: |
+            pr-resolution-plan.md
+            gitleaks-report.json
+            eslint-report.json
+            typescript-report.txt
+            test-report.json
+            markdown-report.json
+          retention-days: 30
+
+      - name: Post plan as PR comment
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const plan = fs.readFileSync('pr-resolution-plan.md', 'utf8');
+
+            // Check if we already commented
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('PR Resolution Plan')
+            );
+
+            const commentBody = `${plan}
+
+            ---
+
+            <details>
+            <summary>📊 Detailed Reports</summary>
+
+            Download artifacts from the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for detailed analysis:
+            - \`gitleaks-report.json\` - Security findings
+            - \`eslint-report.json\` - Code quality issues
+            - \`typescript-report.txt\` - Type errors
+            - \`test-report.json\` - Test results
+            - \`markdown-report.json\` - Documentation quality
+
+            </details>
+
+            ---
+
+            💡 **Tip:** Use \`@copilot\` in review comments to request automated fixes. See [Copilot PR Workflow](docs/ai/copilot-pr-workflow.md) for best practices.
+            `;
+
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: commentBody
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: commentBody
+              });
+            }
+
+      - name: Set commit status
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const severity = '${{ steps.severity.outputs.severity }}';
+            const state = severity === 'CRITICAL' ? 'failure' : severity === 'HIGH' ? 'pending' : 'success';
+            const description = severity === 'CRITICAL'
+              ? '⛔ Critical issues - must fix before merge'
+              : severity === 'HIGH'
+              ? '⚠️ High priority issues - review required'
+              : '✅ Ready for review';
+
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.payload.pull_request.head.sha,
+              state,
+              target_url: `${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`,
+              description,
+              context: 'PR Resolution Plan'
+            });
+
+      - name: Request changes if critical
+        if: github.event_name == 'pull_request' && steps.severity.outputs.severity == 'CRITICAL'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.pulls.createReview({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              event: 'REQUEST_CHANGES',
+              body: `⛔ **Critical issues detected - merge blocked**
+
+              This PR has critical issues that must be fixed before merging:
+              - TypeScript errors: ${{ steps.security.outputs.ts_errors }}
+              - Test failures: ${{ steps.tests.outputs.failed_tests }}
+              - Test pass rate: ${{ steps.tests.outputs.pass_rate }}%
+
+              Please review the resolution plan above and fix critical issues before requesting re-review.
+
+              **Required:**
+              - [ ] All TypeScript errors fixed
+              - [ ] Test pass rate ≥99%
+              - [ ] All tests passing
+
+              Once fixed, request a new review and this check will run again.`
+            });

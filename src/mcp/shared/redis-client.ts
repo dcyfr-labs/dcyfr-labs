@@ -105,7 +105,8 @@ export function getRedisKeyPrefix(): string {
   // Priority order: VERCEL_ENV (most reliable) > NODE_ENV (fallback)
   const isProduction =
     process.env.VERCEL_ENV === 'production' ||
-    (process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV !== 'preview');
+    (process.env.NODE_ENV === 'production' &&
+      (!process.env.VERCEL_ENV || process.env.VERCEL_ENV !== 'preview'));
 
   if (isProduction) {
     return ''; // No prefix for production (dedicated database)
