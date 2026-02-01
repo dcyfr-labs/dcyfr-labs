@@ -9,4 +9,5 @@
 import javascript
 
 from File f
+where f.getName() in ("codeql-pack.yml", "codeql-pack.lock.yml")
 select f, "Hello, world!"

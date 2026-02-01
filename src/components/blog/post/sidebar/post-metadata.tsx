@@ -79,7 +79,7 @@ export function PostMetadata({
       {/* Status & Category Badges - Monochrome */}
       {(isDraft || isArchived || isLatest || isHot || category) && (
         <div className="flex flex-wrap gap-2">
-          {process.env.NODE_ENV === "development" && isDraft && (
+          {(process.env.NODE_ENV === "development" || process.env.VERCEL_ENV === "preview") && isDraft && (
             <Link href="/blog?sortBy=drafts">
               <Badge
                 variant="default"

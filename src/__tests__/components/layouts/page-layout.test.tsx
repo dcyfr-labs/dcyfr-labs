@@ -123,6 +123,22 @@ describe('PageLayout', () => {
       expect(screen.getByTestId('draft-banner')).toBeInTheDocument()
     })
 
+    it('shows draft banner in preview when isDraft is true', () => {
+      vi.stubEnv('NODE_ENV', 'production')
+      vi.stubEnv('VERCEL_ENV', 'preview')
+
+      render(
+        <PageLayout isDraft>
+          <div>Content</div>
+        </PageLayout>
+      )
+
+      expect(screen.getByTestId('draft-banner')).toBeInTheDocument()
+
+      // Clean up env stubs to avoid leaking into other tests
+      vi.unstubAllEnvs()
+    })
+
     it('does not show draft banner in production even when isDraft is true', () => {
       vi.stubEnv('NODE_ENV', 'production')
 

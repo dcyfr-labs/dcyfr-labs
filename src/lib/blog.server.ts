@@ -86,7 +86,9 @@ export function isScheduledPost(publishedAt: string): boolean {
  */
 export function isPostVisible(
   post: Pick<Post, "draft" | "publishedAt">,
-  isProduction: boolean = process.env.NODE_ENV === "production"
+  // Treat Vercel preview as non-production so drafts appear for testing
+  isProduction: boolean =
+    process.env.NODE_ENV === "production" && process.env.VERCEL_ENV !== "preview"
 ): boolean {
   if (!isProduction) return true;
   if (post.draft) return false;
@@ -247,11 +249,11 @@ export function getAllPosts(): Post[] {
   // Scan main content directory
   const publicPosts = scanContentDirectory(CONTENT_DIR, false);
 
-  // Scan private drafts directory (only in development)
+  // Scan private drafts directory (visible in development and Vercel preview)
   const privatePosts =
-    process.env.NODE_ENV !== "production"
+    process.env.NODE_ENV !== "production" || process.env.VERCEL_ENV === "preview"
       ? scanContentDirectory(PRIVATE_CONTENT_DIR, true)
-      : [];
+      : []; 
 
   const allPosts = [...publicPosts, ...privatePosts];
 
@@ -275,8 +277,11 @@ export function getPostBySlug(slug: string): Post | undefined {
     filePath = path.join(CONTENT_DIR, slug, "index.mdx");
   }
 
-  // Then try private drafts folder (only in development)
-  if (!fs.existsSync(filePath) && process.env.NODE_ENV !== "production") {
+  // Then try private drafts folder (visible in development and Vercel preview)
+  if (
+    !fs.existsSync(filePath) &&
+    (process.env.NODE_ENV !== "production" || process.env.VERCEL_ENV === "preview")
+  ) {
     filePath = path.join(PRIVATE_CONTENT_DIR, `${slug}.mdx`);
     isPrivate = true;
 

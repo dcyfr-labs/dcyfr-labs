@@ -517,6 +517,28 @@ describe('blog utilities', () => {
         expect(isPostVisible(post, true)).toBe(true);
       });
     });
+
+    describe('in Vercel preview (VERCEL_ENV = "preview")', () => {
+      beforeEach(() => {
+        vi.stubEnv('NODE_ENV', 'production')
+        vi.stubEnv('VERCEL_ENV', 'preview')
+      })
+
+      afterEach(() => {
+        vi.unstubAllEnvs()
+      })
+
+      it('should behave like development and show draft posts by default', () => {
+        const post = { draft: true, publishedAt: pastDate };
+        // Call without explicit isProduction to use runtime env defaults
+        expect(isPostVisible(post)).toBe(true);
+      });
+
+      it('should show scheduled posts in preview', () => {
+        const post = { draft: false, publishedAt: futureDate };
+        expect(isPostVisible(post)).toBe(true);
+      });
+    });
   });
 
   describe('Category filtering with archived posts', () => {

@@ -82,6 +82,23 @@ describe('Blog System Integration', () => {
       
       vi.unstubAllEnvs()
     })
+
+    it('includes draft posts in preview environment (length >= production)', () => {
+      // Baseline in production
+      vi.stubEnv('NODE_ENV', 'production')
+      delete process.env.VERCEL_ENV
+      const prodPosts = getAllPosts()
+      vi.unstubAllEnvs()
+
+      // Preview environment should be at least as permissive as production
+      vi.stubEnv('NODE_ENV', 'production')
+      vi.stubEnv('VERCEL_ENV', 'preview')
+      const previewPosts = getAllPosts()
+
+      expect(previewPosts.length).toBeGreaterThanOrEqual(prodPosts.length)
+
+      vi.unstubAllEnvs()
+    })
   })
 
   describe('Post Retrieval', () => {

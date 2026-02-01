@@ -374,8 +374,8 @@ Two mechanisms control post visibility:
 
 2. **`private/` folder** (RECOMMENDED)
    - Post in `src/content/blog/private/`
-   - Completely excluded from git (via `.gitignore`)
-   - Never committed, never public
+   - Intended for drafts and kept out of production builds (via `.gitignore`)
+   - Visible in local development and Vercel preview deployments for testing, but not in production
    - **Use case:** Work-in-progress, sensitive content, unpublished drafts
 
 **Best Practice:** Use `private/` folder for all drafts to prevent accidental publication via direct URLs.
