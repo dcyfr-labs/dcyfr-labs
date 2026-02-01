@@ -29,10 +29,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
+    # FIX: Copilot suggestion - Use GitHub event data instead of commit message parsing
     # Only run on PR merges (not direct pushes or release commits)
     if: |
       github.event_name == 'push' &&
-      contains(github.event.head_commit.message, 'Merge pull request') &&
+      github.event.pull_request.merged == true &&
       !startsWith(github.event.head_commit.message, 'chore(release):')
 
     outputs:

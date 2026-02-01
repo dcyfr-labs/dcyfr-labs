@@ -234,7 +234,8 @@ describe('Security Fixes: CodeQL Alerts Resolution', () => {
         // Step 2: Decode entities safely (using 'he' library)
         sanitized = decode(sanitized);
 
-        // Result should be safe plain text
+        // FIX: Test assertions corrected - 'he' library decodes &amp; to & but preserves &lt;/&gt;
+        // This is the correct safe behavior - double-encoded entities remain encoded
         expect(sanitized).toContain('This is &lt;safe&gt; content with entities');
         expect(sanitized).not.toContain('<script>');
         expect(sanitized).not.toContain('<style>');

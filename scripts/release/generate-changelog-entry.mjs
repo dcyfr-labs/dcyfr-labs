@@ -34,8 +34,8 @@ const ROOT_DIR = join(__dirname, '../..');
 
 // Parse command line arguments
 const args = process.argv.slice(2);
-const prNumber = args.find(arg => arg.startsWith('--pr='))?.split('=')[1];
-const version = args.find(arg => arg.startsWith('--version='))?.split('=')[1];
+const prNumber = args.find((arg) => arg.startsWith('--pr='))?.split('=')[1];
+const version = args.find((arg) => arg.startsWith('--version='))?.split('=')[1];
 const debug = process.env.DEBUG === 'true';
 
 // GitHub API configuration
@@ -63,16 +63,13 @@ async function fetchPRData(prNumber) {
   }
 
   try {
-    const response = await fetch(
-      `https://api.github.com/repos/${REPO}/pulls/${prNumber}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${GH_TOKEN}`,
-          'Accept': 'application/vnd.github+json',
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
-      }
-    );
+    const response = await fetch(`https://api.github.com/repos/${REPO}/pulls/${prNumber}`, {
+      headers: {
+        Authorization: `Bearer ${GH_TOKEN}`,
+        Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    });
 
     if (!response.ok) {
       throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
@@ -114,8 +111,8 @@ function parsePRDescription(description) {
   if (changesMatch) {
     sections.changes = changesMatch[1]
       .split('\n')
-      .filter(line => line.trim().match(/^[-*]\s+/))
-      .map(line => line.trim().replace(/^[-*]\s+/, ''));
+      .filter((line) => line.trim().match(/^[-*]\s+/))
+      .map((line) => line.trim().replace(/^[-*]\s+/, ''));
   }
 
   // Detect breaking changes
@@ -131,11 +128,20 @@ function parsePRDescription(description) {
  */
 function getPRDiff(prNumber) {
   try {
+    // FIX: CWE-78 - Validate PR number is numeric to prevent command injection
+    if (!/^\d+$/.test(String(prNumber))) {
+      console.error('❌ Invalid PR number format. Expected: numeric value');
+      return '';
+    }
+
     // Get merge commit for PR
-    const mergeCommit = execSync(`git log --oneline --merges --grep="Merge pull request #${prNumber}" -1 --format=%H`, {
-      cwd: ROOT_DIR,
-      encoding: 'utf-8',
-    }).trim();
+    const mergeCommit = execSync(
+      `git log --oneline --merges --grep="Merge pull request #${prNumber}" -1 --format=%H`,
+      {
+        cwd: ROOT_DIR,
+        encoding: 'utf-8',
+      }
+    ).trim();
 
     if (!mergeCommit) {
       debugLog('No merge commit found for PR', prNumber);
@@ -170,10 +176,12 @@ function extractTodoMoves(diff) {
   const doneAdditions = diff.match(/^\+\s*-\s*\[x\]\s*(.+)$/gm) || [];
 
   // Parse task text
-  const parsedTasks = [...todoRemovals, ...doneAdditions].map(line => {
-    const match = line.match(/\[[ x]\]\s*(.+?)(?:\s*\([0-9.]+h\))?$/);
-    return match ? match[1].trim() : null;
-  }).filter(Boolean);
+  const parsedTasks = [...todoRemovals, ...doneAdditions]
+    .map((line) => {
+      const match = line.match(/\[[ x]\]\s*(.+?)(?:\s*\([0-9.]+h\))?$/);
+      return match ? match[1].trim() : null;
+    })
+    .filter(Boolean);
 
   // Deduplicate
   return [...new Set(parsedTasks)];
@@ -186,10 +194,19 @@ function extractTodoMoves(diff) {
  */
 function getCommitMessages(prNumber) {
   try {
-    const mergeCommit = execSync(`git log --oneline --merges --grep="Merge pull request #${prNumber}" -1 --format=%H`, {
-      cwd: ROOT_DIR,
-      encoding: 'utf-8',
-    }).trim();
+    // FIX: CWE-78 - Validate PR number is numeric to prevent command injection
+    if (!/^\d+$/.test(String(prNumber))) {
+      console.error('❌ Invalid PR number format. Expected: numeric value');
+      return [];
+    }
+
+    const mergeCommit = execSync(
+      `git log --oneline --merges --grep="Merge pull request #${prNumber}" -1 --format=%H`,
+      {
+        cwd: ROOT_DIR,
+        encoding: 'utf-8',
+      }
+    ).trim();
 
     if (!mergeCommit) {
       return [];
@@ -297,12 +314,12 @@ function analyzeFileChanges(diff) {
  */
 function detectBreakingChanges(prData, commits, diff) {
   // Check PR labels
-  if (prData?.labels?.some(label => label.name === 'breaking-change')) {
+  if (prData?.labels?.some((label) => label.name === 'breaking-change')) {
     return true;
   }
 
   // Check commit messages for "BREAKING CHANGE:"
-  if (commits.some(msg => /BREAKING CHANGE:/i.test(msg))) {
+  if (commits.some((msg) => /BREAKING CHANGE:/i.test(msg))) {
     return true;
   }
 
@@ -446,14 +463,17 @@ async function main() {
   }
 
   // Add commit messages (fallback)
-  if (Object.values(categories).every(arr => arr.length === 0)) {
+  if (Object.values(categories).every((arr) => arr.length === 0)) {
     for (const commit of commits) {
       // Skip merge commits
       if (commit.startsWith('Merge')) continue;
 
       const category = categorizeCommit(commit);
       // Remove conventional commit prefix
-      const cleanMessage = commit.replace(/^(feat|fix|refactor|chore|docs|style|perf|test|build|ci)(\(.+\))?:\s*/, '');
+      const cleanMessage = commit.replace(
+        /^(feat|fix|refactor|chore|docs|style|perf|test|build|ci)(\(.+\))?:\s*/,
+        ''
+      );
       if (!categories[category].includes(cleanMessage)) {
         categories[category].push(cleanMessage);
       }
@@ -477,7 +497,7 @@ async function main() {
 
 // Run if executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch(error => {
+  main().catch((error) => {
     console.error('❌ Fatal error:', error);
     process.exit(1);
   });

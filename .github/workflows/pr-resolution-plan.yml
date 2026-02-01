@@ -19,11 +19,37 @@ permissions:
   pull-requests: write
   checks: read
   statuses: read
+  security-events: write  # For CodeQL
 
 jobs:
+  # FIX: Phase 3 - Run CodeQL BEFORE generating plan to capture all findings
+  # Prevents timing gap where CodeQL completes after plan generation
+  codeql-pre-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript,typescript
+          queries: security-extended
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "pr-pre-check"
+
+      - name: Wait for scan results
+        run: sleep 30  # Ensure findings are uploaded before next job
+
   analyze-and-plan:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    needs: codeql-pre-check  # Wait for security scan completion
 
     steps:
       - name: Checkout code
@@ -44,6 +70,17 @@ jobs:
         id: security
         continue-on-error: true
         run: |
+          # CodeQL findings (from pre-check job)
+          echo "::group::CodeQL Findings"
+          gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${{ github.repository }}/code-scanning/alerts?state=open&pr=${{ github.event.pull_request.number }}" \
+            > codeql-report.json 2>/dev/null || echo '[]' > codeql-report.json
+          CODEQL_COUNT=$(jq 'length' codeql-report.json)
+          echo "Found $CODEQL_COUNT CodeQL alerts"
+          echo "::endgroup::"
+
           # Gitleaks scan
           echo "::group::Gitleaks Scan"
           docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:latest detect \
@@ -64,13 +101,17 @@ jobs:
           echo "::endgroup::"
 
           # Count issues
+          CODEQL_COUNT=$(jq 'length' codeql-report.json 2>/dev/null || echo "0")
           GITLEAKS_COUNT=$(jq 'length' gitleaks-report.json 2>/dev/null || echo "0")
           ESLINT_COUNT=$(jq '[.[] | .messages | length] | add // 0' eslint-report.json 2>/dev/null || echo "0")
           TS_ERRORS=$(grep -c "error TS" typescript-report.txt 2>/dev/null || echo "0")
 
+          echo "codeql_count=$CODEQL_COUNT" >> $GITHUB_OUTPUT
           echo "gitleaks_count=$GITLEAKS_COUNT" >> $GITHUB_OUTPUT
           echo "eslint_count=$ESLINT_COUNT" >> $GITHUB_OUTPUT
           echo "ts_errors=$TS_ERRORS" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run tests
         id: tests
