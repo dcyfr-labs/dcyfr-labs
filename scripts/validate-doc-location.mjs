@@ -34,27 +34,53 @@ const ALLOWED_ROOT_DOCS = [
 
 // Directories to skip
 const SKIP_DIRS = [
+  // Build outputs and dependencies
   'node_modules',
-  '.git',
   '.next',
   'dist',
   'build',
   'coverage',
-  'docs', // We check this separately
+
+  // Git and VCS
+  '.git',
+
+  // Project documentation (checked separately)
+  'docs',
+
+  // Source code and tests (technical READMEs allowed)
   'e2e',
   'src',
-  'public',
-  'scripts',
   'tests',
+  'scripts',
+
+  // Public assets (no documentation)
+  'public',
+
+  // Configuration and tooling
   'certs',
   'codeql',
-  'reports',
-  'skills', // External skills directory
-  '.github',
-  '.vscode',
+  '.vercel', // Vercel deployment config
+  '.github', // GitHub workflows and templates
+  '.vscode', // Editor config
+
+  // AI tooling (private/internal)
   '.claude',
   '.opencode',
   '.agent',
+  'skills', // External skills directory
+];
+
+// Allowed exceptions for specific directories that need READMEs
+const ALLOWED_EXCEPTIONS = [
+  'reports/README.md', // Versioned testing reports
+  'reports/performance/baselines/README.md', // Performance budget configuration guide (technical)
+  '.vercel/README.md', // Vercel config documentation (gitignored)
+  'tests/README.md', // Test setup documentation (technical)
+  'scripts/README.md', // Script documentation (technical)
+  '.github/PULL_REQUEST_TEMPLATE.md', // GitHub template
+  '.github/copilot-instructions.md', // AI instructions
+  '.github/QUICK_REFERENCE_CI_CD.md', // CI/CD reference
+  'certs/README.md', // Certificate documentation (technical)
 ];
 
 // Colors
@@ -184,6 +210,11 @@ function main() {
     for (const file of mdFiles) {
       // Skip if this file is being deleted
       if (deletedFiles.includes(file)) {
+        continue;
+      }
+
+      // Skip if this file is in the allowed exceptions list
+      if (ALLOWED_EXCEPTIONS.includes(file)) {
         continue;
       }
 
