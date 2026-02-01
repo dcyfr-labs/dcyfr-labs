@@ -26,17 +26,24 @@ function getValidCategories() {
   const content = fs.readFileSync(categoriesFile, "utf-8");
 
   // Extract category IDs from CATEGORIES array
+  // Updated regex to handle multiline content more robustly
   const categoriesMatch = content.match(
-    /const CATEGORIES = \[([\s\S]*?)\] as const;/
+    /const CATEGORIES\s*=\s*\[([\s\S]*?)\]\s*as const;/
   );
   if (!categoriesMatch) {
     throw new Error("Could not find CATEGORIES array in post-categories.ts");
   }
 
   const categoriesArray = categoriesMatch[1];
-  const categoryIds = [...categoriesArray.matchAll(/{ id: "([^"]+)"/g)].map(
+  const categoryIds = [...categoriesArray.matchAll(/{\s*id:\s*["']([^"']+)["']/g)].map(
     (m) => m[1]
   );
+
+  if (categoryIds.length === 0) {
+    throw new Error(
+      "No categories found in CATEGORIES array. Check post-categories.ts format."
+    );
+  }
 
   return categoryIds;
 }
