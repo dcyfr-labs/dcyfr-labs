@@ -2,8 +2,13 @@
 
 # OpenCode vs Claude Code Usage Guide
 
-**Version:** 1.0.0  
-**Last Updated:** January 17, 2026
+**Version:** 1.1.0
+**Last Updated:** January 31, 2026
+
+## Status & Review Plan
+
+- **Maintained fallback:** OpenCode is kept as a maintained fallback to address token exhaustion, extended sessions, and cost-sensitive work. Minimal active feature development is planned; the priority is UX (VS Code onboarding) and stability.
+- **Review cadence:** We will review usage and cost metrics in 30–60 days (target: sessions ≥ 10% or cost savings ≥ 10%). If thresholds are not met, we will deprecate and archive configuration and scripts to keep the repo minimal.
 
 This guide helps you choose between OpenCode and Claude Code for different development scenarios in dcyfr-labs.
 
@@ -11,17 +16,17 @@ This guide helps you choose between OpenCode and Claude Code for different devel
 
 ## Quick Decision Matrix
 
-| Scenario | Recommended Tool | Why |
-|----------|------------------|-----|
-| Production feature work | **Claude Code** | Full DCYFR enforcement, ToS-compliant |
-| Quick pattern fixes | **Claude Code** | Haiku agent is fast and cheap |
-| Multi-model comparison | **OpenCode** | 75+ provider support |
-| Token exhaustion | **OpenCode** | GitHub Copilot (free tier) |
-| Extended sessions (6+ hrs) | **OpenCode** | Cost optimization |
-| Security-sensitive work | **Claude Code** | Full audit trail, enforcement |
-| True parallel agents | **OpenCode** | Background agent support |
-| Offline development | **OpenCode** | Local model support (Ollama) |
-| LSP-based refactoring | **OpenCode** | Built-in language server |
+| Scenario                   | Recommended Tool | Why                                   |
+| -------------------------- | ---------------- | ------------------------------------- |
+| Production feature work    | **Claude Code**  | Full DCYFR enforcement, ToS-compliant |
+| Quick pattern fixes        | **Claude Code**  | Haiku agent is fast and cheap         |
+| Multi-model comparison     | **OpenCode**     | 75+ provider support                  |
+| Token exhaustion           | **OpenCode**     | GitHub Copilot (free tier)            |
+| Extended sessions (6+ hrs) | **OpenCode**     | Cost optimization                     |
+| Security-sensitive work    | **Claude Code**  | Full audit trail, enforcement         |
+| True parallel agents       | **OpenCode**     | Background agent support              |
+| Offline development        | **OpenCode**     | Local model support (Ollama)          |
+| LSP-based refactoring      | **OpenCode**     | Built-in language server              |
 
 ---
 
@@ -30,6 +35,7 @@ This guide helps you choose between OpenCode and Claude Code for different devel
 ### Claude Code
 
 **Strengths:**
+
 - Full DCYFR pattern enforcement via hooks
 - 64 specialized agents with auto-delegation
 - ToS-compliant (official Anthropic product)
@@ -38,12 +44,14 @@ This guide helps you choose between OpenCode and Claude Code for different devel
 - Security audit trail (bash command logging)
 
 **Limitations:**
+
 - Single provider (Anthropic only)
 - Rate limits during heavy usage
 - Cost accumulates on long sessions
 - No true background agents (sequential Task tool)
 
 **Best For:**
+
 - Day-to-day production work
 - Features requiring strict pattern compliance
 - Security-sensitive changes
@@ -52,6 +60,7 @@ This guide helps you choose between OpenCode and Claude Code for different devel
 ### OpenCode
 
 **Strengths:**
+
 - 75+ AI providers (OpenAI, Anthropic, Google, Groq, Ollama)
 - Free tier via GitHub Copilot integration
 - True parallel background agents
@@ -60,12 +69,14 @@ This guide helps you choose between OpenCode and Claude Code for different devel
 - Offline support via local models
 
 **Limitations:**
+
 - No native DCYFR enforcement (manual validation required)
 - Simpler agent system
 - Less audit trail by default
 - ToS gray area for some integrations
 
 **Best For:**
+
 - Cost-sensitive extended sessions
 - Multi-model experimentation
 - Offline development
@@ -86,6 +97,7 @@ claude "Create new /dashboard page with analytics charts"
 ```
 
 Why Claude Code:
+
 - Automatic design token enforcement
 - Barrel export validation
 - PageLayout compliance check
@@ -102,6 +114,7 @@ opencode --provider github-copilot
 ```
 
 Configuration (`.opencode/config.json`):
+
 ```json
 {
   "provider": {
@@ -112,6 +125,7 @@ Configuration (`.opencode/config.json`):
 ```
 
 Why OpenCode:
+
 - GitHub Copilot models are free (included with subscription)
 - 16K context window
 - No separate API costs
@@ -137,6 +151,7 @@ Cost comparison:
 **Use: OpenCode (LSP mode)**
 
 OpenCode's built-in LSP tools provide:
+
 - Intelligent rename across files
 - Type-aware refactoring
 - Import reorganization
@@ -148,6 +163,7 @@ opencode "Rename getUserData to fetchUserProfile using LSP"
 ```
 
 Why OpenCode:
+
 - LSP understands code structure, not just text
 - Handles edge cases (string literals, comments) correctly
 - Faster than manual find-replace
@@ -158,11 +174,12 @@ Why OpenCode:
 
 ```bash
 # Launch parallel research agents
-opencode "Research React 19 patterns, Next.js 15 features, and 
+opencode "Research React 19 patterns, Next.js 15 features, and
 Tailwind v4 changes - use background agents in parallel"
 ```
 
 Why OpenCode:
+
 - True parallel execution (not sequential like Claude Code Task tool)
 - Each agent can use different models
 - Results aggregated automatically
@@ -177,6 +194,7 @@ claude "Review authentication flow for vulnerabilities"
 ```
 
 Why Claude Code:
+
 - All bash commands logged (`~/.claude/bash-command-log.txt`)
 - Session checkpoints for recovery
 - Security specialist agent available
@@ -192,6 +210,7 @@ opencode --provider ollama --model codellama:34b
 ```
 
 Setup:
+
 ```bash
 # Install Ollama
 brew install ollama
@@ -283,6 +302,7 @@ node scripts/validate-after-fallback.sh
 ```
 
 **What gets checked:**
+
 - Design token usage (STRICT - hard block)
 - PageLayout compliance (STRICT - hard block)
 - Barrel export usage (STRICT - hard block)
@@ -315,11 +335,11 @@ code --install-extension sst-dev.opencode
 
 ### VS Code Keyboard Shortcuts
 
-| Shortcut | Action |
-|----------|--------|
-| `Cmd+Esc` | Launch OpenCode |
+| Shortcut        | Action               |
+| --------------- | -------------------- |
+| `Cmd+Esc`       | Launch OpenCode      |
 | `Cmd+Shift+Esc` | New OpenCode session |
-| `Cmd+Option+K` | Add file references |
+| `Cmd+Option+K`  | Add file references  |
 
 ---
 
@@ -336,6 +356,7 @@ npm run ai:costs:archive
 ```
 
 Monthly cost targets:
+
 - GitHub Copilot: $0 (included)
 - OpenCode (Groq): < $10/month
 - Claude Code: Variable (monitor usage)

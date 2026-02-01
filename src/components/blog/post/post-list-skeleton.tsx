@@ -90,7 +90,9 @@ export function PostListSkeleton({
               </div>
 
               {/* Post content - matches actual structure */}
-              <div className={cn("relative z-10", `p-${SPACING_VALUES.sm} sm:p-${SPACING_VALUES.md}`)}>
+              <div
+                className={cn('relative z-10', `p-${SPACING_VALUES.sm} sm:p-${SPACING_VALUES.md}`)}
+              >
                 {/* Metadata row - using primitive */}
                 <SkeletonMetadata
                   showDate
@@ -100,7 +102,12 @@ export function PostListSkeleton({
                 />
 
                 {/* Title - using typography-aware primitive */}
-                <SkeletonHeading level="h4" variant="standard" width="w-3/4" className={`mb-${SPACING_VALUES.xs}`} />
+                <SkeletonHeading
+                  level="h4"
+                  variant="standard"
+                  width="w-3/4"
+                  className={`mb-${SPACING_VALUES.xs}`}
+                />
 
                 {/* Summary - using multi-line primitive */}
                 <SkeletonText lines={2} lastLineWidth="w-5/6" gap="tight" />
@@ -138,7 +145,7 @@ export function PostListSkeleton({
           <article
             key={i}
             className={cn(
-              "group rounded-lg border overflow-hidden relative hover:shadow-md hover:-translate-y-0.5 transition-all duration-300",
+              'group rounded-lg border overflow-hidden relative hover:shadow-md hover:-translate-y-0.5 transition-all duration-300',
               `p-${SPACING_VALUES.md}`
             )}
             style={{
@@ -146,7 +153,12 @@ export function PostListSkeleton({
               animation: ANIMATIONS.types.fadeIn,
             }}
           >
-            <SkeletonHeading level="h3" variant="standard" width="w-3/4" className={`mb-${SPACING_VALUES.sm}`} />
+            <SkeletonHeading
+              level="h3"
+              variant="standard"
+              width="w-3/4"
+              className={`mb-${SPACING_VALUES.sm}`}
+            />
             <SkeletonText lines={1} lastLineWidth="w-full" gap="tight" />
           </article>
         ))}
@@ -180,7 +192,7 @@ function renderGridSkeleton(count: number) {
       {Array.from({ length: count }).map((_, i) => (
         <Card
           key={i}
-          className={cn("overflow-hidden", ARCHIVE_CARD_VARIANTS.elevated)}
+          className={cn('overflow-hidden', ARCHIVE_CARD_VARIANTS.elevated)}
           style={{
             animationDelay: `${ANIMATIONS.stagger.normal * i}ms`,
             animation: ANIMATIONS.types.fadeIn,
@@ -214,7 +226,12 @@ function renderGridSkeleton(count: number) {
 
           <CardContent className="pt-0">
             {/* Summary - multi-line primitive */}
-            <SkeletonText lines={2} lastLineWidth="w-5/6" gap="tight" className={`mb-${SPACING_VALUES.sm}`} />
+            <SkeletonText
+              lines={2}
+              lastLineWidth="w-5/6"
+              gap="tight"
+              className={`mb-${SPACING_VALUES.sm}`}
+            />
 
             {/* Metadata - using primitive */}
             <SkeletonMetadata showDate showReadingTime showViews={false} />
@@ -234,7 +251,7 @@ function renderListSkeleton(count: number) {
       {Array.from({ length: count }).map((_, i) => (
         <Card
           key={i}
-          className={cn("overflow-hidden", ARCHIVE_CARD_VARIANTS.elevated)}
+          className={cn('overflow-hidden', ARCHIVE_CARD_VARIANTS.elevated)}
           style={{
             animationDelay: `${ANIMATIONS.stagger.normal * i}ms`,
             animation: ANIMATIONS.types.fadeIn,
@@ -264,13 +281,28 @@ function renderListSkeleton(count: number) {
 
             <div className={`flex-1 p-${SPACING_VALUES.md}`}>
               {/* Metadata - using primitive */}
-              <SkeletonMetadata showDate showReadingTime showViews className={`mb-${SPACING_VALUES.sm}`} />
+              <SkeletonMetadata
+                showDate
+                showReadingTime
+                showViews
+                className={`mb-${SPACING_VALUES.sm}`}
+              />
 
               {/* Title - larger heading for list layout */}
-              <SkeletonHeading level="h2" variant="article" width="w-3/4" className={`mb-${SPACING_VALUES.sm}`} />
+              <SkeletonHeading
+                level="h2"
+                variant="article"
+                width="w-3/4"
+                className={`mb-${SPACING_VALUES.sm}`}
+              />
 
               {/* Summary - 3 lines for expanded layout */}
-              <SkeletonText lines={3} lastLineWidth="w-2/3" gap="tight" className={`mb-${SPACING_VALUES.sm}`} />
+              <SkeletonText
+                lines={3}
+                lastLineWidth="w-2/3"
+                gap="tight"
+                className={`mb-${SPACING_VALUES.sm}`}
+              />
 
               {/* Tags - using badge primitive */}
               <SkeletonBadges count={2} />
@@ -301,7 +333,7 @@ function renderMagazineSkeleton(count: number) {
           <div className={`md:col-span-3 ${i % 2 === 0 ? '' : 'md:order-last'}`}>
             <Card
               className={cn(
-                "h-full overflow-hidden rounded-none md:rounded-lg",
+                'h-full overflow-hidden rounded-none md:rounded-lg',
                 ARCHIVE_CARD_VARIANTS.background
               )}
               style={{ transition: ANIMATIONS.transition.all }}
@@ -326,7 +358,12 @@ function renderMagazineSkeleton(count: number) {
               </div>
 
               <CardContent className={`p-${SPACING_VALUES.md}`}>
-                <SkeletonHeading level="h2" variant="article" width="w-3/4" className={`mb-${SPACING_VALUES.sm}`} />
+                <SkeletonHeading
+                  level="h2"
+                  variant="article"
+                  width="w-3/4"
+                  className={`mb-${SPACING_VALUES.sm}`}
+                />
                 <SkeletonText lines={2} lastLineWidth="w-5/6" gap="tight" />
               </CardContent>
             </Card>
@@ -336,7 +373,7 @@ function renderMagazineSkeleton(count: number) {
           <div className="md:col-span-2">
             <Card
               className={cn(
-                "h-full overflow-hidden rounded-none md:rounded-lg",
+                'h-full overflow-hidden rounded-none md:rounded-lg',
                 ARCHIVE_CARD_VARIANTS.elevated
               )}
               style={{ transition: ANIMATIONS.transition.all }}
@@ -361,7 +398,12 @@ function renderMagazineSkeleton(count: number) {
               </div>
 
               <CardContent className={`p-${SPACING_VALUES.md}`}>
-                <SkeletonHeading level="h3" variant="standard" width="w-3/4" className={`mb-${SPACING_VALUES.sm}`} />
+                <SkeletonHeading
+                  level="h3"
+                  variant="standard"
+                  width="w-3/4"
+                  className={`mb-${SPACING_VALUES.sm}`}
+                />
                 <SkeletonText lines={1} lastLineWidth="w-full" gap="tight" />
               </CardContent>
             </Card>
@@ -381,7 +423,12 @@ function renderGroupedSkeleton() {
       {Array.from({ length: 3 }).map((_, i) => (
         <div key={i} className={`border-b pb-${SPACING_VALUES.md} last:border-b-0`}>
           {/* Category heading - using typography-aware primitive */}
-          <SkeletonHeading level="h3" variant="standard" width="w-48" className={`mb-${SPACING_VALUES.md}`} />
+          <SkeletonHeading
+            level="h3"
+            variant="standard"
+            width="w-48"
+            className={`mb-${SPACING_VALUES.md}`}
+          />
 
           {/* Posts in this category */}
           <div className={SPACING.content}>
@@ -400,12 +447,27 @@ function renderGroupedSkeleton() {
                 </div>
 
                 {/* Compact post content */}
-                <div className={cn("relative z-10", `p-${SPACING_VALUES.sm} sm:p-${SPACING_VALUES.md}`)}>
+                <div
+                  className={cn(
+                    'relative z-10',
+                    `p-${SPACING_VALUES.sm} sm:p-${SPACING_VALUES.md}`
+                  )}
+                >
                   {/* Metadata - using primitive */}
-                  <SkeletonMetadata showDate showReadingTime showViews={false} className={`mb-${SPACING_VALUES.sm}`} />
+                  <SkeletonMetadata
+                    showDate
+                    showReadingTime
+                    showViews={false}
+                    className={`mb-${SPACING_VALUES.sm}`}
+                  />
 
                   {/* Title */}
-                  <SkeletonHeading level="h4" variant="standard" width="w-3/4" className={`mb-${SPACING_VALUES.xs}`} />
+                  <SkeletonHeading
+                    level="h4"
+                    variant="standard"
+                    width="w-3/4"
+                    className={`mb-${SPACING_VALUES.xs}`}
+                  />
 
                   {/* Summary */}
                   <SkeletonText lines={2} lastLineWidth="w-5/6" gap="tight" />

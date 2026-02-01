@@ -21,12 +21,12 @@ Essential commands and patterns for immediate productivity.
 
 ```typescript
 // ✅ CORRECT
-import { PostList } from "@/components/blog";
-import { PageLayout } from "@/components/layouts";
-import { createPageMetadata } from "@/lib/metadata";
+import { PostList } from '@/components/blog';
+import { PageLayout } from '@/components/layouts';
+import { createPageMetadata } from '@/lib/metadata';
 
 // ❌ WRONG
-import PostList from "../../components/blog/post-list";
+import PostList from '../../components/blog/post-list';
 ```
 
 ## Most Common Patterns (80% Usage)

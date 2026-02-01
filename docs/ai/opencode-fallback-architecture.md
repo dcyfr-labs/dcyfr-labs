@@ -13,16 +13,19 @@ OpenCode.ai serves as a fallback AI development tool when Claude Code or GitHub 
 ## AI Tool Hierarchy
 
 ### Primary: Claude Code
+
 - **Context Window**: 200K tokens
 - **Best For**: Complex multi-file refactoring, architectural analysis, critical production work
 - **Limitations**: API rate limits, daily token budgets, cost constraints
 
 ### Secondary: GitHub Copilot (Inline)
+
 - **Context Window**: ~8K tokens
 - **Best For**: Inline suggestions, single-file edits, quick completions
 - **Limitations**: Limited context, no multi-file refactoring, inline-only
 
 ### Fallback: OpenCode.ai (GitHub Copilot Integration)
+
 - **Context Window**: 16K (GPT-5 Mini), 8K (Raptor Mini), up to 200K (Claude Sonnet)
 - **Best For**: Extended sessions, multi-file work when Claude Code rate-limited
 - **Advantages**:
@@ -38,12 +41,14 @@ OpenCode.ai serves as a fallback AI development tool when Claude Code or GitHub 
 ### Trigger Conditions
 
 #### 1. Token Exhaustion
+
 ```
 ❌ Claude Code: "Rate limit exceeded" or "Token budget exhausted"
 ✅ Switch to: OpenCode.ai with GitHub Copilot GPT-5 Mini (free, 16K context)
 ```
 
 #### 2. Extended Development Sessions
+
 ```
 Scenario: Multi-hour refactoring session
 Risk: Exceeding Claude API daily limits
@@ -52,6 +57,7 @@ Benefit: Continue work with no additional cost (included with subscription)
 ```
 
 #### 3. Cost Optimization
+
 ```
 Task: Routine development, refactoring, documentation
 Strategy: Use OpenCode.ai with GitHub Copilot models (0 multiplier)
@@ -59,6 +65,7 @@ Savings: $0 additional cost vs Claude API usage fees
 ```
 
 #### 4. Provider Diversity
+
 ```
 Use Case: Testing multiple AI perspectives on complex problems
 Workflow:
@@ -68,6 +75,7 @@ Workflow:
 ```
 
 #### 5. Multi-File Operations
+
 ```
 Scenario: GitHub Copilot inline limited to single file
 Need: Cross-file refactoring, architecture analysis
@@ -82,27 +90,27 @@ OpenCode.ai connects to these providers (configure via device authentication):
 
 ### GitHub Copilot Models (Included with Subscription)
 
-| Provider | Model | Context | Cost Multiplier | Speed |
-|----------|-------|---------|-----------------|-------|
-| **GitHub Copilot** | GPT-5 Mini | 16K | 0 (free*) | Fast |
-| **GitHub Copilot** | Raptor Mini | 8K | 0 (free*) | Very Fast |
-| **GitHub Copilot** | GPT-4o | 128K | 0 (free*) | Fast |
+| Provider           | Model       | Context | Cost Multiplier | Speed     |
+| ------------------ | ----------- | ------- | --------------- | --------- |
+| **GitHub Copilot** | GPT-5 Mini  | 16K     | 0 (free\*)      | Fast      |
+| **GitHub Copilot** | Raptor Mini | 8K      | 0 (free\*)      | Very Fast |
+| **GitHub Copilot** | GPT-4o      | 128K    | 0 (free\*)      | Fast      |
 
-**Included with GitHub Copilot subscription ($10-20/month flat fee)*
+\*_Included with GitHub Copilot subscription ($10-20/month flat fee)_
 
 ### Premium Cloud Providers (Occasional Use)
 
-| Provider | Model Examples | Context | Cost Multiplier | Speed |
-|----------|---------------|---------|-----------------|-------|
-| **Anthropic** | Claude Sonnet 4, Opus | 200K | 1 | Fast |
-| **Google** | Gemini 1.5 Pro, Flash | 1M | 1 | Fast |
-| **OpenAI** | GPT-4 Turbo | 128K | 1 | Fast |
+| Provider      | Model Examples        | Context | Cost Multiplier | Speed |
+| ------------- | --------------------- | ------- | --------------- | ----- |
+| **Anthropic** | Claude Sonnet 4, Opus | 200K    | 1               | Fast  |
+| **Google**    | Gemini 1.5 Pro, Flash | 1M      | 1               | Fast  |
+| **OpenAI**    | GPT-4 Turbo           | 128K    | 1               | Fast  |
 
 ### Future: Offline Support (Msty.ai)
 
-| Provider | Model Examples | Context | Cost | Speed |
-|----------|---------------|---------|------|-------|
-| **Msty.ai** | Llama 3, CodeLlama, Qwen | 32K | Free | Med |
+| Provider    | Model Examples           | Context | Cost | Speed |
+| ----------- | ------------------------ | ------- | ---- | ----- |
+| **Msty.ai** | Llama 3, CodeLlama, Qwen | 32K     | Free | Med   |
 
 **Note:** Offline support via Ollama removed in v2.0. See `docs/backlog/msty-ai-offline-support.md` for future plans.
 
@@ -117,6 +125,7 @@ OpenCode has a native VS Code extension that provides seamless IDE integration:
 **Extension:** [sst-dev.opencode](https://marketplace.visualstudio.com/items?itemName=sst-dev.opencode)
 
 **Installation:**
+
 1. Open VS Code
 2. Go to Extensions (Cmd/Ctrl+Shift+X)
 3. Search for "OpenCode"
@@ -124,6 +133,7 @@ OpenCode has a native VS Code extension that provides seamless IDE integration:
 5. Reload VS Code
 
 **Features:**
+
 - **Quick Launch:** `Cmd+Esc` (Mac) or `Ctrl+Esc` (Windows/Linux) - Open OpenCode in split terminal
 - **New Session:** `Cmd+Shift+Esc` (Mac) or `Ctrl+Shift+Esc` (Windows/Linux) - Start fresh session
 - **File References:** `Cmd+Option+K` (Mac) or `Alt+Ctrl+K` (Linux/Windows) - Insert file refs (@File#L37-42)
@@ -132,6 +142,7 @@ OpenCode has a native VS Code extension that provides seamless IDE integration:
 - **Independent Sessions:** Each terminal is an isolated OpenCode instance
 
 **Benefits:**
+
 - Faster workflow (keyboard shortcuts vs typing commands)
 - Automatic file context sharing
 - Visual integration with VS Code UI
@@ -223,10 +234,12 @@ opencode --preset dcyfr-feature
 ```
 
 ---
-export ANTHROPIC_API_KEY="sk-ant-..."
+
+export ANTHROPIC*API_KEY="sk-ant-..."
 export OPENAI_API_KEY="sk-..."
-export GROQ_API_KEY="gsk_..."
-```
+export GROQ_API_KEY="gsk*..."
+
+````
 
 ---
 
@@ -250,7 +263,7 @@ opencode
 # 3. Plan reorganization (using cheaper model for planning)
 # 4. Execute changes (using primary model)
 # 5. Run tests and verify
-```
+````
 
 ### Workflow 2: Cost-Optimized Long Sessions
 
@@ -395,19 +408,19 @@ opencode load-session phase-4-1-refactor
 
 ## Comparison with Claude Code
 
-| Feature | Claude Code | OpenCode.ai |
-|---------|-------------|-------------|
-| **Multi-file refactoring** | ✅ Excellent | ✅ Excellent |
-| **Provider options** | 1 (Anthropic) | 75+ providers |
-| **Cost flexibility** | Fixed | Variable (free to premium) |
-| **Offline support** | ❌ No | ✅ Yes (local models) |
-| **VS Code integration** | ✅ Native | ⚠️ Terminal-based |
-| **Context window** | 200K (fixed) | Up to 2M (Gemini) |
-| **Setup complexity** | Low | Medium |
-| **Response speed** | Fast | Varies by provider |
-| **Design system enforcement** | ✅ Built-in | ⚠️ Manual configuration |
-| **Test integration** | ✅ Automatic | ⚠️ Manual |
-| **MCP server access** | ✅ Yes | ⚠️ Limited |
+| Feature                       | Claude Code   | OpenCode.ai                |
+| ----------------------------- | ------------- | -------------------------- |
+| **Multi-file refactoring**    | ✅ Excellent  | ✅ Excellent               |
+| **Provider options**          | 1 (Anthropic) | 75+ providers              |
+| **Cost flexibility**          | Fixed         | Variable (free to premium) |
+| **Offline support**           | ❌ No         | ✅ Yes (local models)      |
+| **VS Code integration**       | ✅ Native     | ⚠️ Terminal-based          |
+| **Context window**            | 200K (fixed)  | Up to 2M (Gemini)          |
+| **Setup complexity**          | Low           | Medium                     |
+| **Response speed**            | Fast          | Varies by provider         |
+| **Design system enforcement** | ✅ Built-in   | ⚠️ Manual configuration    |
+| **Test integration**          | ✅ Automatic  | ⚠️ Manual                  |
+| **MCP server access**         | ✅ Yes        | ⚠️ Limited                 |
 
 ---
 
@@ -460,14 +473,14 @@ Optimization:
 
 ### Cost Comparison per Development Session
 
-| Task | Claude Code | OpenCode (GitHub Copilot) | OpenCode (Claude Sonnet) |
-|------|-------------|---------------------------|--------------------------|
-| **Feature Development** (6 hrs) | $15-20 | $0* | $15-20 |
-| **Bug Fixes** (4 hrs) | $10-15 | $0* | $10-15 |
-| **Refactoring** (5 hrs) | $12-18 | $0* | $12-18 |
-| **Total** | $50-75 | $0* | $50-75 |
+| Task                            | Claude Code | OpenCode (GitHub Copilot) | OpenCode (Claude Sonnet) |
+| ------------------------------- | ----------- | ------------------------- | ------------------------ |
+| **Feature Development** (6 hrs) | $15-20      | $0\*                      | $15-20                   |
+| **Bug Fixes** (4 hrs)           | $10-15      | $0\*                      | $10-15                   |
+| **Refactoring** (5 hrs)         | $12-18      | $0\*                      | $12-18                   |
+| **Total**                       | $50-75      | $0\*                      | $50-75                   |
 
-**GitHub Copilot models included with subscription ($10-20/month flat fee)*
+\*_GitHub Copilot models included with subscription ($10-20/month flat fee)_
 
 **Key Insight**: Use GitHub Copilot models (GPT-5 Mini, Raptor Mini) for 80% of work at $0 additional cost, reserve Claude Sonnet for complex/security tasks (20%).
 
@@ -553,11 +566,13 @@ npm run ai:opencode:groq
 ## Resources
 
 ### Documentation
+
 - **OpenCode.ai Docs**: https://opencode.ai/docs/
 - **Provider Comparison**: https://opencode.ai/docs/models/
 - **GitHub Repository**: https://github.com/opencode-ai/opencode
 
 ### Related Guides
+
 - [Claude Code Integration](claude-code-integration.md)
 - [Best Practices](best-practices.md)
 - [Token Optimization](private/optimization-strategy.md)
