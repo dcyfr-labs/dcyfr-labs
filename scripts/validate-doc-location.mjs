@@ -9,10 +9,11 @@
  * Usage: node scripts/validate-doc-location.mjs
  */
 
-import { readdirSync, statSync } from 'fs';
+import { readdirSync, statSync, existsSync } from 'fs';
 import { join, relative } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -66,6 +67,22 @@ const colors = {
 };
 
 let violations = [];
+
+/**
+ * Get list of deleted files from git staging area
+ */
+function getDeletedFiles() {
+  try {
+    const output = execSync('git diff --cached --name-only --diff-filter=D', {
+      cwd: ROOT_DIR,
+      encoding: 'utf8',
+    });
+    return output.trim().split('\n').filter(Boolean);
+  } catch (error) {
+    // If not in a git repo or no staged changes, return empty array
+    return [];
+  }
+}
 
 /**
  * Check if directory should be skipped
@@ -127,10 +144,24 @@ function findMarkdownInSubdirs(dir, currentDepth = 0, maxDepth = 3, foundFiles =
 function main() {
   console.log(`${colors.cyan}📁 Documentation Location Validation${colors.reset}\n`);
 
+  // Get list of deleted files to exclude from validation
+  const deletedFiles = getDeletedFiles();
+
+  if (deletedFiles.length > 0) {
+    console.log(
+      `${colors.yellow}⏭️  Skipping ${deletedFiles.length} deleted file(s)${colors.reset}\n`
+    );
+  }
+
   // Check root-level markdown files
   const rootMdFiles = findRootMarkdownFiles(ROOT_DIR);
 
   for (const file of rootMdFiles) {
+    // Skip if this file is being deleted
+    if (deletedFiles.includes(file)) {
+      continue;
+    }
+
     if (!ALLOWED_ROOT_DOCS.includes(file)) {
       violations.push({
         file,
@@ -151,6 +182,11 @@ function main() {
     const mdFiles = findMarkdownInSubdirs(subdirPath);
 
     for (const file of mdFiles) {
+      // Skip if this file is being deleted
+      if (deletedFiles.includes(file)) {
+        continue;
+      }
+
       violations.push({
         file,
         message: `Documentation file outside docs/ (found in ${subdir}/)`,
