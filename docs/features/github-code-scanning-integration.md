@@ -6,13 +6,16 @@ This document describes how to check GitHub security code scanning alerts progra
 
 ## Problem
 
-The GitHub MCP server (used by Copilot) provides tools for issues, pull requests, and other GitHub features, but doesn't include tools for accessing the [Code Scanning API](https://docs.github.com/en/rest/code-scanning). When asked to verify security alerts at URLs like:
+The GitHub MCP server (used by Copilot) provides tools for issues, pull requests, and other GitHub features, but doesn't include tools for accessing the [Code Scanning API](https://docs.github.com/en/rest/code-scanning).
 
+**Common Error:**
 ```
-https://github.com/{owner}/{repo}/security/code-scanning/{alert_number}
+failed to list alerts: GET https://api.github.com/repos/dcyfr/dcyfr-labs/code-scanning/alerts?state=open: 403 Resource not accessible by integration []
 ```
 
-The standard `issue_read` tool doesn't work because code scanning alerts are a separate system from issues/PRs.
+**Root Cause:** The GitHub MCP server lacks the `security-events: read` permission required to access Code Scanning alerts. This is a limitation of the hosted MCP service.
+
+**Quick Solution:** Use the GitHub CLI workaround implemented in `npm run security:check-alerts`. See [detailed workaround guide](mcp/github-code-scanning-workaround.md).
 
 ## Solution
 
@@ -200,7 +203,11 @@ gh auth login
 - Alert number might be wrong
 - Repository might not have code scanning enabled
 
-**"HTTP 403: Resource not accessible"**
+**"HTTP 403: Resource not accessible by integration"**
+- **Root Cause:** GitHub MCP server lacks `security-events: read` permission
+- **Solution:** Use GitHub CLI workaround instead of MCP server
+- **Quick Fix:** `npm run security:check-alerts` (uses `gh` CLI)
+- **Full Guide:** See [GitHub Code Scanning Workaround](mcp/github-code-scanning-workaround.md)
 - Check repository access permissions
 - Ensure GitHub Advanced Security is enabled for private repos
 

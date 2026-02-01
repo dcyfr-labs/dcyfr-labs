@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { inngest } from '@/inngest/client';
+import { apiLogger } from '@/lib/logger';
 
 /**
  * Manual GitHub data refresh endpoint
@@ -59,11 +60,7 @@ export async function POST(request: NextRequest) {
       data: { force },
     });
 
-    console.log('[GitHub Refresh] Manual refresh triggered', {
-      force,
-      source: isVercelInternal ? 'vercel-internal' : 'manual',
-      timestamp: new Date().toISOString(),
-    });
+    apiLogger.success('POST', '/api/github/refresh', undefined);
 
     return NextResponse.json({
       success: true,
@@ -72,7 +69,7 @@ export async function POST(request: NextRequest) {
       note: 'Cache will be updated within 1-2 minutes. Check Inngest dashboard for status.',
     });
   } catch (error) {
-    console.error('[GitHub Refresh] Failed to trigger refresh:', error);
+    apiLogger.error('POST', '/api/github/refresh', error as Error);
 
     return NextResponse.json(
       {

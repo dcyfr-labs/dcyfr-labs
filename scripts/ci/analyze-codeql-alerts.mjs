@@ -18,7 +18,7 @@
  *   has_fixable - Boolean indicating if fixable alerts exist
  */
 
-import { execSync } from 'child_process';
+import { execaSync } from 'execa';
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY;
@@ -79,10 +79,11 @@ async function getCodeQLAlerts() {
       query = `${query}/${ALERT_NUMBER}`;
     }
 
-    const cmd = `gh api "${query}?${params.toString()}"`;
-    const output = execSync(cmd, {
+    // FIX: CWE-78 - Use execa with array syntax to prevent command injection
+    const { stdout: output } = execaSync('gh', ['api', `${query}?${params.toString()}`], {
       env: { ...process.env, GITHUB_TOKEN },
       encoding: 'utf-8',
+      shell: false,
     });
 
     const alerts = ALERT_NUMBER ? [JSON.parse(output)] : JSON.parse(output);

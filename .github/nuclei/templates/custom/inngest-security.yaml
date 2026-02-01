@@ -1,0 +1,115 @@
+id: dcyfr-inngest-security
+
+info:
+  name: DCYFR Inngest Webhook Security
+  author: dcyfr-security
+  severity: high
+  description: Security checks for Inngest webhook endpoints and event validation
+  reference:
+    - https://www.inngest.com/docs/platform/webhooks/security
+    - https://www.inngest.com/docs/security/signature-verification
+  tags: inngest,webhook,security,custom,dcyfr,authentication
+  classification:
+    cvss-metrics: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N
+    cvss-score: 8.2
+    cwe-id: CWE-306
+
+http:
+  # Check if Inngest endpoint requires signature verification
+  - method: GET
+    path:
+      - "{{BaseURL}}/api/inngest"
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+          - 401
+          - 405
+
+      # Should NOT expose signature details in headers
+      - type: word
+        part: header
+        words:
+          - "x-inngest-signature"
+          - "x-inngest-signature-key"
+        negative: true
+
+  # Attempt unauthorized POST to Inngest endpoint
+  - method: POST
+    path:
+      - "{{BaseURL}}/api/inngest"
+
+    headers:
+      Content-Type: application/json
+
+    body: |
+      {
+        "event": "test/unauthorized",
+        "data": {
+          "test": true
+        }
+      }
+
+    matchers:
+      - type: status
+        status:
+          - 200
+        negative: true
+
+  # Check for exposed Inngest event schemas
+  - method: GET
+    path:
+      - "{{BaseURL}}/api/inngest/schema"
+      - "{{BaseURL}}/api/inngest/events"
+
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        part: body
+        words:
+          - '"events":'
+          - '"schema":'
+          - '"functions":'
+        condition: or
+
+  # Verify signature validation by sending invalid signature
+  - method: POST
+    path:
+      - "{{BaseURL}}/api/inngest"
+
+    headers:
+      Content-Type: application/json
+      X-Inngest-Signature: t=invalid,s=invalid_signature_hash
+
+    body: |
+      {
+        "name": "test/signature-validation",
+        "data": {},
+        "ts": 1234567890
+      }
+
+    matchers:
+      - type: status
+        status:
+          - 401
+          - 403
+
+  # Check for exposed Inngest signing keys
+  - method: GET
+    path:
+      - "{{BaseURL}}/api/inngest/config"
+      - "{{BaseURL}}/.inngest/config"
+
+    matchers:
+      - type: word
+        part: body
+        words:
+          - "INNGEST_SIGNING_KEY"
+          - "INNGEST_EVENT_KEY"
+          - "signingKey"
+        condition: or

@@ -271,7 +271,7 @@ claude
 | Task              | Workflow               | Time   | Command                |
 | ----------------- | ---------------------- | ------ | ---------------------- |
 | New feature       | Feature Implementation | 1-2h   | `/plan` + `/ultrawork` |
-| High confidence   | TDD                    | 1-3h   | dcyfr-tdd skill        |
+| High confidence   | TDD                    | 1-3h   | Standard TDD cycle     |
 | Bug in production | Bug Fix                | 30-60m | `claude`               |
 | Building UI       | Visual Iteration       | 30-90m | `/visual-iterate`      |
 | Multiple features | Parallel Work          | varies | git worktrees          |

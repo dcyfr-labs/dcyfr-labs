@@ -952,21 +952,22 @@ export async function transformGitHubTraffic(
  * Transform Google Analytics milestones into activity items
  * Tracks monthly visitor achievements and engagement metrics
  */
-export async function transformGoogleAnalytics(limit?: number): Promise<ActivityItem[]> {
-  // Redis client imported from shared module
-  if (!redis) return [];
+// Google Analytics integration removed - not implemented
+// If needed in future, implement OAuth 2.0 service account in analytics-integration.ts
 
+export async function transformGoogleAnalytics(limit?: number): Promise<ActivityItem[]> {
+  // Placeholder - Google Analytics not implemented
+  return [];
+}
+
+// Legacy implementation (pre-February 2026) below - kept for reference
+/*
+async function transformGoogleAnalyticsLegacy(limit?: number): Promise<ActivityItem[]> {
+  if (!redis) return [];
   try {
-    // Fetch GA milestones from Redis
     const milestonesKey = 'google:analytics:milestones';
     const milestonesData = await redis.get(milestonesKey);
-
-    if (!milestonesData) {
-      console.warn('[Activity] No Google Analytics milestones found in Redis');
-      // No quit() needed - Upstash uses HTTP REST API (stateless)
-      return [];
-    }
-
+    if (!milestonesData) return [];
     interface GAMilestone {
       type: 'monthly_users' | 'session_duration' | 'pages_per_session' | 'bounce_rate';
       threshold: number;
@@ -974,61 +975,18 @@ export async function transformGoogleAnalytics(limit?: number): Promise<Activity
       value: number;
       month?: string;
     }
-
     const milestones: GAMilestone[] = JSON.parse(milestonesData as string);
     const sorted = milestones.sort(
       (a, b) => new Date(b.reached_at).getTime() - new Date(a.reached_at).getTime()
     );
-
     const limited = limit ? sorted.slice(0, limit) : sorted;
-
-    // No quit() needed - Upstash uses HTTP REST API (stateless)
-
-    return limited.map((milestone) => {
-      const typeLabels = {
-        monthly_users: 'Monthly Active Users',
-        session_duration: 'Average Session Duration',
-        pages_per_session: 'Pages per Session',
-        bounce_rate: 'Bounce Rate Below',
-      };
-
-      const formatValue = (type: string, value: number) => {
-        switch (type) {
-          case 'session_duration':
-            return `${Math.floor(value / 60)}m ${value % 60}s`;
-          case 'pages_per_session':
-            return value.toFixed(1);
-          case 'bounce_rate':
-            return `${value}%`;
-          default:
-            return value.toLocaleString();
-        }
-      };
-
-      return {
-        id: `google-analytics-${milestone.type}-${milestone.threshold}-${Date.parse(milestone.reached_at)}`,
-        source: 'analytics' as const,
-        verb: 'achieved' as const,
-        title: `${typeLabels[milestone.type]}: ${formatValue(milestone.type, milestone.threshold)}`,
-        description: milestone.month
-          ? `${milestone.month} achieved ${formatValue(milestone.type, milestone.value)} ${typeLabels[milestone.type].toLowerCase()}`
-          : `Achieved ${formatValue(milestone.type, milestone.value)} ${typeLabels[milestone.type].toLowerCase()}`,
-        timestamp: new Date(milestone.reached_at),
-        href: '/activity',
-        meta: {
-          category: 'User Engagement',
-          stats: {
-            views: milestone.value,
-          },
-        },
-      };
-    });
+    return limited.map((milestone) => { ... });
   } catch (error) {
     console.error('[Activity] transformGoogleAnalytics error:', error);
-    // No quit() needed - Upstash uses HTTP REST API (stateless)
     return [];
   }
 }
+*/
 
 // ============================================================================
 // SEARCH CONSOLE TRANSFORMER

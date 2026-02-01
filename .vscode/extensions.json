@@ -5,8 +5,26 @@
     "sst-dev.opencode",
     "vitest.explorer",
     "ms-playwright.playwright",
-    "usernamehw.errorlens",
     "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "streetsidesoftware.code-spell-checker",
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+    "anthropic.claude-code",
+    "github.vscode-github-actions",
+    "usernamehw.errorlens",
+    "editorconfig.editorconfig",
+    "github.vscode-codeql",
+    "ms-windows-ai-studio.windows-ai-studio",
+    "yzhang.markdown-all-in-one",
+    "davidanson.vscode-markdownlint",
+    "unifiedjs.vscode-mdx",
+    "pulkitgangwar.nextjs-snippets",
+    "christian-kohler.npm-intellisense",
+    "rvest.vs-code-prettier-eslint",
+    "willluke.nextjs",
+    "msjsdiag.vscode-react-native",
+    "bradlc.vscode-tailwindcss",
+    "vscode-icons-team.vscode-icons"
   ]
 }

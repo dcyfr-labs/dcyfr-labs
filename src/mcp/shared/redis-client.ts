@@ -97,10 +97,16 @@ function getRedisCredentials(): { url: string; token: string } | null {
  *
  * This allows dev and preview to share the same cached data,
  * reducing complexity and ensuring consistency across environments.
+ *
+ * FIX (2026-02-01): More defensive production check to prevent prefix in production
  */
 export function getRedisKeyPrefix(): string {
+  // ✅ DEFENSIVE: Multiple checks to ensure production is detected correctly
+  // Priority order: VERCEL_ENV (most reliable) > NODE_ENV (fallback)
   const isProduction =
-    process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === 'production';
+    process.env.VERCEL_ENV === 'production' ||
+    (process.env.NODE_ENV === 'production' &&
+      (!process.env.VERCEL_ENV || process.env.VERCEL_ENV !== 'preview'));
 
   if (isProduction) {
     return ''; // No prefix for production (dedicated database)

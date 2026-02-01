@@ -1238,6 +1238,17 @@ git status --ignored | grep -E "\.(claude|opencode|private)"
   - Updated `.vscode/mcp.json` with removal notes and analysis reference
   - Updated `docs/ai/mcp-checks.md` to reflect current MCP inventory
 
+### February 1, 2026
+
+- ✅ **Removed incomplete Superpowers integration**
+  - Removed 3 DCYFR override skills (dcyfr-tdd, dcyfr-brainstorming, dcyfr-code-review)
+  - Removed documentation: `docs/ai/superpowers-integration.md`
+  - Removed command: `.claude/commands/superpowers.md`
+  - Updated all documentation references (AGENTS.md, README.md, todo.md, etc.)
+  - **Reason:** Plugin was never installed; integration was documentation-only (67% complete)
+  - **Impact:** No functional changes - skills were never active in workflows
+  - Skills remain at 19 active (dcyfr-code-reviewer, dcyfr-design-tokens, etc.)
+
 ### January 17, 2026
 
 - ✅ **Integrated OpenSkills universal skill distribution (v1.5.0)**
@@ -1259,25 +1270,12 @@ git status --ignored | grep -E "\.(claude|opencode|private)"
   - Integrates with existing: `e2e/utils/accessibility.ts`, `scripts/validate-color-contrast.mjs`
 
 - ✅ **Agent Consolidation (v1.3.0)**
-  - Created `/superpowers` command - Quick reference for superpowers skills
   - Archived 3 redundant agents to `.claude/agents/_archived/`:
     - `architect-review.md` → Use `architecture-reviewer.md`
     - `performance-engineer.md` → Use `performance-profiler.md`
     - `security-auditor.md` → Use `security-engineer.md`
   - Updated AGENT_TAXONOMY.md to v1.1.0 (61 active agents, 3 archived)
   - Simplified decision trees for Architecture, Security, and Performance families
-
-- ✅ **Integrated Superpowers skills framework (v1.0.0)**
-  - Added obra/superpowers (27.4k stars) as complementary development methodology
-  - Key skills: TDD enforcement, brainstorming workflow, subagent-driven-development
-  - Created 3 DCYFR override skills that extend Superpowers:
-    - `dcyfr-tdd` - Adds design token validation after GREEN phase
-    - `dcyfr-brainstorming` - Adds PageLayout and token decisions to design phase
-    - `dcyfr-code-review` - Adds DCYFR patterns to review checklist
-  - Plugin installation: `/plugin marketplace add obra/superpowers-marketplace` then `/plugin install superpowers@superpowers-marketplace`
-  - Philosophy alignment: TDD strictness, systematic over ad-hoc, verify before declaring success
-  - Supports Claude Code (plugin), OpenCode, and Codex
-  - See `docs/ai/superpowers-integration.md` for full integration details
 
 - ✅ **Added native oh-my-opencode features (Phase 7)**
   - Created `scripts/check-todos-complete.mjs` - Sisyphus pattern todo completion checker
@@ -1635,18 +1633,6 @@ Usage notes:
 </skill>
 
 <skill>
-<name>dcyfr-brainstorming</name>
-<description>Use when designing new features or components in dcyfr-labs. Extends superpowers:brainstorming with DCYFR-specific design decisions including PageLayout selection, design token strategy, and API pattern choices.</description>
-<location>project</location>
-</skill>
-
-<skill>
-<name>dcyfr-code-review</name>
-<description>Use when reviewing code in dcyfr-labs PRs or before commits. Extends superpowers:requesting-code-review with DCYFR-specific checks for design tokens, barrel exports, PageLayout, and API patterns.</description>
-<location>project</location>
-</skill>
-
-<skill>
 <name>dcyfr-design-tokens</name>
 <description>DCYFR design token system for consistent styling using SPACING, TYPOGRAPHY, and SEMANTIC_COLORS tokens. Use when creating/modifying UI components, enforcing design consistency, or fixing hardcoded style violations.</description>
 <location>project</location>
@@ -1661,12 +1647,6 @@ Usage notes:
 <skill>
 <name>dcyfr-mdx-authoring</name>
 <description>DCYFR MDX authoring patterns for blog posts and content with custom components (SectionShare, CollapsibleSection, GlossaryTooltip). Use when creating blog content, adding interactive elements, or optimizing content for engagement.</description>
-<location>project</location>
-</skill>
-
-<skill>
-<name>dcyfr-tdd</name>
-<description>Use when implementing any feature or bugfix in dcyfr-labs. Extends superpowers:test-driven-development with DCYFR-specific design token compliance and barrel export validation after GREEN phase.</description>
 <location>project</location>
 </skill>
 

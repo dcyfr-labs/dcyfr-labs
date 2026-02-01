@@ -14,10 +14,14 @@ The production metrics sync system automatically copies analytics data from the 
 
 **Critical Analytics Keys (always synced):**
 
-- `analytics:milestones` - Achievement milestones (monthly visitors, total views)
-- `github:traffic:milestones` - GitHub traffic achievements
-- `google:analytics:milestones` - Google Analytics milestones
-- `blog:trending` - Trending blog posts data
+- `blog:trending` - Trending blog posts data (active in production)
+
+**Optional Analytics Keys (future features - may not exist in production):**
+
+- `analytics:milestones` - Vercel Analytics achievement milestones (not yet scheduled)
+- `github:traffic:milestones` - GitHub traffic achievements (not yet scheduled)
+
+**Note:** `google:analytics:milestones` removed - Google Analytics not implemented.
 
 **Pattern-Based Keys (full sync only):**
 

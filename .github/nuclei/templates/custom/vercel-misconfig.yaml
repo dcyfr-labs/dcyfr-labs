@@ -1,0 +1,90 @@
+id: dcyfr-vercel-misconfig
+
+info:
+  name: DCYFR Vercel Deployment Misconfiguration
+  author: dcyfr-security
+  severity: medium
+  description: Checks for Vercel deployment misconfigurations and exposed metadata
+  reference:
+    - https://vercel.com/docs/security/deployment-protection
+    - https://vercel.com/docs/deployments/generated-urls
+  tags: vercel,misconfiguration,custom,dcyfr,exposure
+  classification:
+    cvss-metrics: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N
+    cvss-score: 5.3
+    cwe-id: CWE-200
+
+http:
+  # Check for exposed Vercel configuration files
+  - method: GET
+    path:
+      - "{{BaseURL}}/.vercel/output/config.json"
+      - "{{BaseURL}}/.vercel/project.json"
+      - "{{BaseURL}}/vercel.json"
+
+    matchers-condition: or
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        part: body
+        words:
+          - '"version":'
+          - '"routes":'
+          - '"framework":'
+          - '"buildOutput":'
+        condition: or
+
+  # Check for exposed Vercel metadata endpoints
+  - method: GET
+    path:
+      - "{{BaseURL}}/_vercel/insights/vitals"
+      - "{{BaseURL}}/_vercel/insights/script.js"
+
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        part: body
+        words:
+          - "vercel"
+          - "analytics"
+          - "vitals"
+
+  # Verify Vercel Deployment Protection is enabled for preview
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers:
+      - type: word
+        part: header
+        words:
+          - "x-vercel-deployment-url"
+
+    extractors:
+      - type: regex
+        part: header
+        regex:
+          - 'x-vercel-deployment-url: ([a-z0-9-]+\.vercel\.app)'
+
+  # Check for exposed environment variable names (not values)
+  - method: GET
+    path:
+      - "{{BaseURL}}/api/config"
+      - "{{BaseURL}}/.env"
+      - "{{BaseURL}}/.env.local"
+
+    matchers:
+      - type: word
+        part: body
+        words:
+          - "NEXT_PUBLIC_"
+          - "VERCEL_"
+          - "DATABASE_URL"
+          - "API_KEY"
+        condition: or

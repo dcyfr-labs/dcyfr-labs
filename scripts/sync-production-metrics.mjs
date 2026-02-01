@@ -16,10 +16,9 @@
  *   npm run sync:metrics:quick    # Sync only critical keys
  *
  * Synced Metrics:
- * - analytics:milestones          # Achievement milestones
- * - github:traffic:milestones     # GitHub traffic milestones
- * - google:analytics:milestones   # Google Analytics milestones
- * - blog:trending                 # Trending blog posts
+ * - blog:trending                 # Trending blog posts (production data)
+ * - analytics:milestones          # Vercel Analytics (optional, future)
+ * - github:traffic:milestones     # GitHub traffic (optional, future)
  * - pageviews:* (all paths)       # Page view counters
  * - engagement:* (all content)    # Likes/shares/clicks
  *
@@ -39,6 +38,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 dotenv.config({ path: join(__dirname, '..', '.env.local') });
 
+/**
+ * Escapes regex special characters in a pattern string, preserving wildcards.
+ * Prevents regex injection (CWE-94) by escaping metacharacters except `*` (wildcard).
+ */
+function escapeRegExp(pattern) {
+  return pattern
+    .replace(/[.+?^${}()|[\]\\]/g, '\\$&') // Escape special chars
+    .replace(/\*/g, '.*'); // Convert wildcard * to .*
+}
+
 // ============================================================================
 // Configuration
 // ============================================================================
@@ -46,10 +55,12 @@ dotenv.config({ path: join(__dirname, '..', '.env.local') });
 const SYNC_PATTERNS = {
   // Critical analytics keys (always sync)
   critical: [
-    'analytics:milestones',
-    'github:traffic:milestones',
-    'google:analytics:milestones',
-    'blog:trending',
+    'blog:trending', // Only production data
+  ],
+  // Optional analytics (future implementation)
+  optional: [
+    'analytics:milestones', // Vercel Analytics (not yet scheduled)
+    'github:traffic:milestones', // GitHub traffic (not yet scheduled)
   ],
   // Page view counters (pattern-based)
   pageviews: 'pageviews:*',
@@ -122,13 +133,15 @@ function createPreviewClient() {
 
 function isExcluded(key) {
   return EXCLUDED_PATTERNS.some((pattern) => {
-    const regex = new RegExp('^' + pattern.replace('*', '.*') + '$');
+    // FIX: CWE-94 - Use secure regex escaping to prevent injection
+    const regex = new RegExp('^' + escapeRegExp(pattern) + '$');
     return regex.test(key);
   });
 }
 
 function matchesPattern(key, pattern) {
-  const regex = new RegExp('^' + pattern.replace('*', '.*') + '$');
+  // FIX: CWE-94 - Use secure regex escaping to prevent injection
+  const regex = new RegExp('^' + escapeRegExp(pattern) + '$');
   return regex.test(key);
 }
 
@@ -146,6 +159,36 @@ async function syncCriticalKeys(prodRedis, previewRedis, dryRun = false) {
 
       if (value === null) {
         console.log(`   ⊘ ${key} (not found in production)`);
+        continue;
+      }
+
+      if (dryRun) {
+        console.log(`   ✓ ${key} (would sync)`);
+      } else {
+        // Add 'preview:' prefix for preview environment
+        await previewRedis.set(`preview:${key}`, value);
+        console.log(`   ✓ ${key} → preview:${key}`);
+      }
+
+      synced.push(key);
+    } catch (error) {
+      console.error(`   ✗ ${key} (error: ${error.message})`);
+    }
+  }
+
+  return synced;
+}
+
+async function syncOptionalKeys(prodRedis, previewRedis, dryRun = false) {
+  console.log('\n📊 Syncing optional analytics keys (future features)...');
+  const synced = [];
+
+  for (const key of SYNC_PATTERNS.optional) {
+    try {
+      const value = await prodRedis.get(key);
+
+      if (value === null) {
+        console.log(`   ⊘ ${key} (not yet implemented in production)`);
         continue;
       }
 
@@ -244,6 +287,7 @@ async function syncMetrics(options = {}) {
 
   const stats = {
     critical: [],
+    optional: [],
     pageviews: [],
     engagement: [],
     projects: [],
@@ -256,6 +300,9 @@ async function syncMetrics(options = {}) {
   try {
     // Always sync critical keys
     stats.critical = await syncCriticalKeys(prodRedis, previewRedis, dryRun);
+
+    // Sync optional keys (future features)
+    stats.optional = await syncOptionalKeys(prodRedis, previewRedis, dryRun);
 
     // Full sync includes pattern-based keys
     if (!quickMode) {
@@ -321,6 +368,7 @@ async function syncMetrics(options = {}) {
     console.log('📈 Sync Summary');
     console.log('='.repeat(60));
     console.log(`Critical keys:    ${stats.critical.length} synced`);
+    console.log(`Optional keys:    ${stats.optional.length} synced (future features)`);
     console.log(`Page views:       ${stats.pageviews.length} synced`);
     console.log(`Engagement:       ${stats.engagement.length} synced`);
     console.log(`Project views:    ${stats.projects.length} synced`);
@@ -332,6 +380,7 @@ async function syncMetrics(options = {}) {
 
     const total =
       stats.critical.length +
+      stats.optional.length +
       stats.pageviews.length +
       stats.engagement.length +
       stats.projects.length +

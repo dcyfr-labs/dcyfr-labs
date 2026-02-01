@@ -24,10 +24,12 @@ npm run sync:metrics:dry-run      # Preview without syncing
 
 ### ✅ Always Synced (Quick Mode)
 
-- `analytics:milestones` → `preview:analytics:milestones`
-- `github:traffic:milestones` → `preview:github:traffic:milestones`
-- `google:analytics:milestones` → `preview:google:analytics:milestones`
-- `blog:trending` → `preview:blog:trending`
+- `blog:trending` → `preview:blog:trending` (production data)
+
+**Optional (future features - may not exist in production):**
+
+- `analytics:milestones` → `preview:analytics:milestones` (Vercel Analytics)
+- `github:traffic:milestones` → `preview:github:traffic:milestones` (GitHub traffic)
 
 ### ✅ Full Mode Only
 

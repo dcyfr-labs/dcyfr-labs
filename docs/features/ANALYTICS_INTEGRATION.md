@@ -6,12 +6,13 @@
 
 ## Overview
 
-The analytics integration adds milestone tracking across four major platforms:
+The analytics integration adds milestone tracking across three platforms:
 
-- **Vercel Analytics** - Traffic and visitor milestones
-- **GitHub Traffic** - Repository view/clone/star milestones
-- **Google Analytics** - User engagement achievements
-- **Search Console** - SEO performance milestones
+- **Vercel Analytics** - Traffic and visitor milestones (planned)
+- **GitHub Traffic** - Repository view/clone/star milestones (planned)
+- **Search Console** - SEO performance milestones (active)
+
+**Note:** Google Analytics integration was considered but not implemented (removed February 2026).
 
 All analytics achievements appear in the unified activity timeline alongside blog posts, certifications, and other activities.
 
@@ -30,10 +31,10 @@ Analytics APIs → Background Jobs → Milestone Keys → Timeline Display
 Analytics milestones are stored in Redis using these keys:
 
 ```redis
-analytics:milestones           # Vercel Analytics milestones
-github:traffic:milestones      # GitHub repository traffic
-google:analytics:milestones    # Google Analytics achievements
-search:console:milestones      # Search Console SEO milestones
+analytics:milestones           # Vercel Analytics milestones (optional)
+github:traffic:milestones      # GitHub repository traffic (optional)
+# google:analytics:milestones  # REMOVED - not implemented
+search:console:milestones      # Search Console SEO milestones (active)
 ```
 
 Each key contains a JSON array of milestone objects with this structure:

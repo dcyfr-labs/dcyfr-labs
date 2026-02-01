@@ -9,10 +9,11 @@
  * Usage: node scripts/validate-doc-location.mjs
  */
 
-import { readdirSync, statSync } from 'fs';
+import { readdirSync, statSync, existsSync } from 'fs';
 import { join, relative } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -33,28 +34,71 @@ const ALLOWED_ROOT_DOCS = [
 
 // Directories to skip
 const SKIP_DIRS = [
+  // Build outputs and dependencies
   'node_modules',
-  '.git',
   '.next',
   'dist',
   'build',
   'coverage',
-  'docs', // We check this separately
+
+  // Git and VCS
+  '.git',
+
+  // Project documentation (checked separately)
+  'docs',
+
+  // Source code and tests (technical READMEs allowed)
   'e2e',
   'src',
-  'public',
-  'scripts',
   'tests',
+  'scripts',
+
+  // Public assets (no documentation)
+  'public',
+
+  // Configuration and tooling
   'certs',
   'codeql',
-  'reports',
-  'skills', // External skills directory
-  '.github',
-  '.vscode',
+  '.vercel', // Vercel deployment config
+  '.github', // GitHub workflows and templates
+  '.vscode', // Editor config
+
+  // AI tooling (private/internal)
   '.claude',
   '.opencode',
   '.agent',
+  'skills', // External skills directory
 ];
+
+// Allowed exceptions for specific directories that need READMEs
+const ALLOWED_EXCEPTIONS = [
+  'reports/README.md', // Versioned testing reports
+  'reports/performance/baselines/README.md', // Performance budget configuration guide (technical)
+  '.vercel/README.md', // Vercel config documentation (gitignored)
+  'tests/README.md', // Test setup documentation (technical)
+  'scripts/README.md', // Script documentation (technical)
+  '.github/PULL_REQUEST_TEMPLATE.md', // GitHub template
+  '.github/copilot-instructions.md', // AI instructions
+  '.github/QUICK_REFERENCE_CI_CD.md', // CI/CD reference
+  'certs/README.md', // Certificate documentation (technical)
+];
+
+// Pattern-based exceptions for asset and config documentation
+// These READMEs document assets, configurations, or technical setups
+// and belong with the code/assets they describe (not in docs/)
+const ALLOWED_README_PATTERNS = [
+  /^public\/\.archive\/[^/]+\/README\.md$/, // Asset documentation (blog images, portfolio images)
+  /^public\/[^/]+\/README\.md$/, // Public asset documentation
+  /^reports\/[^/]+\/[^/]+\/README\.md$/, // Config documentation (performance budgets, etc.)
+  /^scripts\/[^/]+\/README\.md$/, // Script documentation
+];
+
+/**
+ * Check if file matches any allowed pattern
+ */
+function isAllowedByPattern(filePath) {
+  return ALLOWED_README_PATTERNS.some((pattern) => pattern.test(filePath));
+}
 
 // Colors
 const colors = {
@@ -66,6 +110,22 @@ const colors = {
 };
 
 let violations = [];
+
+/**
+ * Get list of deleted files from git staging area
+ */
+function getDeletedFiles() {
+  try {
+    const output = execSync('git diff --cached --name-only --diff-filter=D', {
+      cwd: ROOT_DIR,
+      encoding: 'utf8',
+    });
+    return output.trim().split('\n').filter(Boolean);
+  } catch (error) {
+    // If not in a git repo or no staged changes, return empty array
+    return [];
+  }
+}
 
 /**
  * Check if directory should be skipped
@@ -127,10 +187,24 @@ function findMarkdownInSubdirs(dir, currentDepth = 0, maxDepth = 3, foundFiles =
 function main() {
   console.log(`${colors.cyan}📁 Documentation Location Validation${colors.reset}\n`);
 
+  // Get list of deleted files to exclude from validation
+  const deletedFiles = getDeletedFiles();
+
+  if (deletedFiles.length > 0) {
+    console.log(
+      `${colors.yellow}⏭️  Skipping ${deletedFiles.length} deleted file(s)${colors.reset}\n`
+    );
+  }
+
   // Check root-level markdown files
   const rootMdFiles = findRootMarkdownFiles(ROOT_DIR);
 
   for (const file of rootMdFiles) {
+    // Skip if this file is being deleted
+    if (deletedFiles.includes(file)) {
+      continue;
+    }
+
     if (!ALLOWED_ROOT_DOCS.includes(file)) {
       violations.push({
         file,
@@ -151,6 +225,21 @@ function main() {
     const mdFiles = findMarkdownInSubdirs(subdirPath);
 
     for (const file of mdFiles) {
+      // Skip if this file is being deleted
+      if (deletedFiles.includes(file)) {
+        continue;
+      }
+
+      // Skip if this file is in the allowed exceptions list
+      if (ALLOWED_EXCEPTIONS.includes(file)) {
+        continue;
+      }
+
+      // Skip if this file matches allowed patterns (asset/config documentation)
+      if (isAllowedByPattern(file)) {
+        continue;
+      }
+
       violations.push({
         file,
         message: `Documentation file outside docs/ (found in ${subdir}/)`,

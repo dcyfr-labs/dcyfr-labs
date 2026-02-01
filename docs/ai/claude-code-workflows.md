@@ -356,7 +356,7 @@ claude
 | **Bug Fix + Root Cause**   | Medium     | 30-60m   | Read + Test + Fix      | Investigation needed |
 | **Quick Fix**              | Low        | 5-15m    | Direct claude          | One-line fixes       |
 | **Visual Iteration**       | Medium     | 30-90m   | `/visual-iterate`      | UI building          |
-| **TDD**                    | High       | 1-3h     | dcyfr-tdd skill        | High confidence      |
+| **TDD**                    | High       | 1-3h     | Standard TDD cycle     | High confidence      |
 | **Parallel Development**   | Varies     | Varies   | git worktrees          | Multiple features    |
 | **Research + Build**       | High       | 30-120m  | `/research`            | Reference impl.      |
 

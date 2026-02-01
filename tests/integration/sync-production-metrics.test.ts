@@ -7,6 +7,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { Redis } from '@upstash/redis';
+import { escapeRegExp } from '@/lib/security/regex-utils';
 
 describe('Production Metrics Sync', () => {
   // Mock Redis client
@@ -14,7 +15,8 @@ describe('Production Metrics Sync', () => {
     get: vi.fn(async (key: string) => data[key] ?? null),
     set: vi.fn(async () => 'OK'),
     keys: vi.fn(async (pattern: string) => {
-      const regex = new RegExp('^' + pattern.replace('*', '.*') + '$');
+      // FIX: CWE-94 - Use secure regex escaping to prevent injection
+      const regex = new RegExp('^' + escapeRegExp(pattern) + '$');
       return Object.keys(data).filter((k) => regex.test(k));
     }),
   });
@@ -51,7 +53,8 @@ describe('Production Metrics Sync', () => {
 
       const isExcluded = (key: string) => {
         return excludedPatterns.some((pattern) => {
-          const regex = new RegExp('^' + pattern.replace('*', '.*') + '$');
+          // FIX: CWE-94 - Use secure regex escaping to prevent injection
+          const regex = new RegExp('^' + escapeRegExp(pattern) + '$');
           return regex.test(key);
         });
       };
@@ -69,7 +72,8 @@ describe('Production Metrics Sync', () => {
 
     it('should match pattern-based keys', () => {
       const matchesPattern = (key: string, pattern: string) => {
-        const regex = new RegExp('^' + pattern.replace('*', '.*') + '$');
+        // FIX: CWE-94 - Use secure regex escaping to prevent injection
+        const regex = new RegExp('^' + escapeRegExp(pattern) + '$');
         return regex.test(key);
       };
 
@@ -101,14 +105,16 @@ describe('Production Metrics Sync', () => {
       const previewRedis = createMockRedis({}) as unknown as Redis;
 
       const criticalKeys = [
-        'analytics:milestones',
-        'github:traffic:milestones',
-        'google:analytics:milestones',
-        'blog:trending',
+        'blog:trending', // Only critical production key
+      ];
+
+      const optionalKeys = [
+        'analytics:milestones', // Optional (future)
+        'github:traffic:milestones', // Optional (future)
       ];
 
       const synced = [];
-      for (const key of criticalKeys) {
+      for (const key of [...criticalKeys, ...optionalKeys]) {
         const value = await prodRedis.get(key);
         if (value !== null) {
           await previewRedis.set(`preview:${key}`, value);
@@ -117,9 +123,9 @@ describe('Production Metrics Sync', () => {
       }
 
       expect(synced).toEqual([
+        'blog:trending',
         'analytics:milestones',
         'github:traffic:milestones',
-        'blog:trending',
       ]);
       expect(previewRedis.set).toHaveBeenCalledTimes(3);
       expect(previewRedis.set).toHaveBeenCalledWith(

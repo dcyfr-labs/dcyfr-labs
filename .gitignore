@@ -1,6 +1,26 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
+# ========================================
+# Build & Output
+# ========================================
+# Next.js
+/.next/
+/out/
+
+# Production
+/build
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Cached build-time data
+/public/data/*.json
+!/public/data/.gitkeep
+
+# ========================================
+# Dependencies
+# ========================================
 /node_modules
 /.pnp
 .pnp.*
@@ -8,7 +28,16 @@
 !.yarn/cache
 !.yarn/sdk
 
-# testing
+# Package manager caches
+.npm/
+.pnpm-store/
+.yarn/cache/
+.yarn/install-state.gz
+
+# ========================================
+# Testing & Quality
+# ========================================
+# Test coverage and results
 /coverage/*
 /test-results/*
 /scripts/reports/*
@@ -19,11 +48,17 @@
 /lighthouse/
 /.lighthouseci/
 
+# Test output logs
+test-output.log
+**/e2e-test-results.log
+**/*-test-results.log
+
 # Security scanning results
 nuclei-results.json
 nuclei-report.md
 nuclei-*.json
 nuclei-*.md
+!nuclei-integration.md
 
 # Playwright visual regression & test artifacts
 # These contain screenshots/videos/diffs generated during CI or local runs
@@ -42,28 +77,6 @@ e2e/**-spec.ts-snapshots/**
 !/coverage/
 !/test-results/
 !/playwright-report/
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# Test output logs
-test-output.log
-**/e2e-test-results.log
-**/*-test-results.log
 
 # ========================================
 # Environment & Secrets
@@ -168,6 +181,13 @@ skills/
 # ========================================
 # Development & Debug
 # ========================================
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log.local
+
 # Local development overrides
 *.local
 *.local.*
@@ -175,9 +195,10 @@ skills/
 *-local.*
 
 # Debug outputs
-debug/
 .debug/
-*.log.local
+debug/
+!debug/.gitignore
+!scripts/debug/check-images.mjs
 dump.rdb
 
 # Performance profiling
@@ -189,26 +210,27 @@ dump.rdb
 # ========================================
 # Platform & Deployment
 # ========================================
-# vercel
+# Vercel
 .vercel
+!.vercel/README.md
 .vercel.json.local
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# cached build-time data
-/public/data/*.json
-!/public/data/.gitkeep
-
-# Sentry Config File
+# Sentry
 .env.sentry-build-plugin
 .sentryclirc
 
 # ========================================
 # Temporary & Cache Files
 # ========================================
+# Cache directories
+.cache/
+.temp/
+.tmp/
+tmp/
+
 # OS-specific
+.DS_Store
+*.pem
 Thumbs.db
 Desktop.ini
 $RECYCLE.BIN/
@@ -220,18 +242,3 @@ $RECYCLE.BIN/
 *.old
 *.orig
 *.save
-
-# Cache directories
-.cache/
-.temp/
-.tmp/
-tmp/
-
-# Package manager caches
-.npm/
-.pnpm-store/
-.yarn/cache/
-.yarn/install-state.gz
-
-# Playwright generated test reports
-playwright-report/

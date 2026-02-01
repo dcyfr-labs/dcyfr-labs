@@ -1,14 +1,16 @@
 #!/usr/bin/env node
 /**
  * Populate Analytics Milestones for Testing (DEV ONLY)
- * 
+ *
  * ⚠️  WARNING: This script creates SAMPLE/TEST milestone data for development.
  * It should ONLY be used in development/staging environments.
- * 
+ *
  * Do NOT run this in production - it will overwrite real analytics data with test data.
- * 
+ *
  * In production, analytics milestones should be created by actual monitoring scripts
- * that track real Vercel Analytics, GitHub traffic, Google Analytics, and Search Console data.
+ * that track real Vercel Analytics, GitHub traffic, and Search Console data.
+ *
+ * Note: Google Analytics integration was considered but not implemented (removed February 2026).
  */
 
 import { createClient } from 'redis';
@@ -17,7 +19,7 @@ async function populateAnalyticsMilestones() {
   // PRODUCTION CHECK: Prevent running in production
   const nodeEnv = process.env.NODE_ENV || 'development';
   const isProduction = nodeEnv === 'production' || process.env.VERCEL_ENV === 'production';
-  
+
   if (isProduction) {
     console.error('❌ BLOCKED: This script is for development/testing only!');
     console.error('   Environment: ' + nodeEnv);
@@ -30,10 +32,10 @@ async function populateAnalyticsMilestones() {
     console.error('   4. Integrate Search Console API');
     process.exit(1);
   }
-  
+
   console.log('✅ Running in DEV mode: ' + nodeEnv);
   console.log('📝 Note: This will populate TEST DATA in Redis.\n');
-  
+
   // Check if Redis URL is configured
   if (!process.env.REDIS_URL) {
     console.log('⚠️  REDIS_URL not configured in environment');
@@ -52,7 +54,7 @@ async function populateAnalyticsMilestones() {
   }
 
   const redis = createClient({ url: process.env.REDIS_URL });
-  
+
   try {
     console.log('🔌 Connecting to Redis...');
     await redis.connect();
@@ -105,28 +107,8 @@ async function populateAnalyticsMilestones() {
       },
     ];
 
-    // Sample Google Analytics Milestones
-    const googleMilestones = [
-      {
-        type: 'monthly_users',
-        threshold: 2000,
-        reached_at: '2025-12-01T00:00:00.000Z',
-        value: 2150,
-        month: 'November 2025',
-      },
-      {
-        type: 'session_duration',
-        threshold: 180, // 3 minutes in seconds
-        reached_at: '2025-11-20T00:00:00.000Z',
-        value: 195,
-      },
-      {
-        type: 'pages_per_session',
-        threshold: 2.5,
-        reached_at: '2025-10-15T00:00:00.000Z',
-        value: 2.8,
-      },
-    ];
+    // Google Analytics removed - not implemented (February 2026)
+    // If needed in future, implement OAuth 2.0 service account integration
 
     // Sample Search Console Milestones
     const searchMilestones = [
@@ -159,23 +141,22 @@ async function populateAnalyticsMilestones() {
     // Store all milestones in Redis
     await redis.set('analytics:milestones', JSON.stringify(vercelMilestones));
     await redis.set('github:traffic:milestones', JSON.stringify(githubMilestones));
-    await redis.set('google:analytics:milestones', JSON.stringify(googleMilestones));
+    // Note: Google Analytics not implemented - removed references
     await redis.set('search:console:milestones', JSON.stringify(searchMilestones));
 
     console.log('✅ Vercel Analytics milestones populated:', vercelMilestones.length);
     console.log('✅ GitHub Traffic milestones populated:', githubMilestones.length);
-    console.log('✅ Google Analytics milestones populated:', googleMilestones.length);
+    console.log('⊘ Google Analytics milestones: REMOVED (not implemented)');
     console.log('✅ Search Console milestones populated:', searchMilestones.length);
-    
-    console.log('\n🎯 Total analytics activities:', 
-      vercelMilestones.length + githubMilestones.length + 
-      googleMilestones.length + searchMilestones.length
+
+    console.log(
+      '\n🎯 Total analytics activities:',
+      vercelMilestones.length + githubMilestones.length + searchMilestones.length
     );
 
     await redis.quit();
     console.log('\n✅ Analytics milestones populated successfully!');
     console.log('💡 The activity cache will pick up these milestones on the next refresh.');
-
   } catch (error) {
     console.error('❌ Error populating analytics milestones:', error.message);
     console.log('');
@@ -191,7 +172,7 @@ async function populateAnalyticsMilestones() {
     } else {
       console.log('💡 Check your Redis configuration and try again');
     }
-    
+
     try {
       await redis.quit();
     } catch (quitError) {

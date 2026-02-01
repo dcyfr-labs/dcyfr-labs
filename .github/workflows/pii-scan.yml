@@ -93,9 +93,11 @@ jobs:
       - name: Run gitleaks
         # Use the GitHub Action release (v2) which maps to the stable action versions.
         # The gitleaks CLI binary used by the action may be a different major version; pin the action (v2) instead of 'v8'.
+        # NOTE: Uses .gitleaksignore baseline to suppress documented false positives
+        # See: docs/security/gitleaks-baseline.md for suppression justifications
         uses: zricethezav/gitleaks-action@v2
         with:
-          args: --verbose --redact --report-format json --report gitleaks-report.json
+          args: --verbose --redact --report-format json --report gitleaks-report.json --baseline-path=.gitleaksignore
         continue-on-error: true
 
       - name: Upload gitleaks report as artifact

@@ -23,7 +23,7 @@
  *   pr_url - GitHub PR URL
  */
 
-import { execSync } from 'child_process';
+import { execaSync } from 'execa';
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY;
@@ -110,32 +110,34 @@ async function createPullRequest() {
   }
 
   try {
-    // Create PR using gh CLI
-    const cmd = [
-      'gh',
-      'pr',
-      'create',
-      '--base',
-      'main',
-      '--head',
-      BRANCH_NAME,
-      '--title',
-      `"${title}"`,
-      '--body',
-      `"${body}"`,
-      '--label',
-      'security,automated,codeql-fix',
-      '--draft=false',
-    ].join(' ');
-
+    // FIX: CWE-78 - Use execa with array syntax to prevent command injection
     console.log(`   Pushing branch to remote...`);
-    execSync(`git push origin ${BRANCH_NAME}`, { stdio: 'pipe' });
+    execaSync('git', ['push', 'origin', BRANCH_NAME], { stdio: 'pipe', shell: false });
 
     console.log(`   Creating PR...`);
-    const output = execSync(cmd, {
-      env: { ...process.env, GITHUB_TOKEN },
-      encoding: 'utf-8',
-    });
+    const { stdout: output } = execaSync(
+      'gh',
+      [
+        'pr',
+        'create',
+        '--base',
+        'main',
+        '--head',
+        BRANCH_NAME,
+        '--title',
+        title, // No quotes needed - array syntax is safe
+        '--body',
+        body, // No quotes needed - array syntax is safe
+        '--label',
+        'security,automated,codeql-fix',
+        '--draft=false',
+      ],
+      {
+        env: { ...process.env, GITHUB_TOKEN },
+        encoding: 'utf-8',
+        shell: false, // Critical: disable shell interpretation
+      },
+    );
 
     // Extract PR number and URL from output
     const prMatch = output.match(/(\d+)/);

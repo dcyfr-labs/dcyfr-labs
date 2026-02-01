@@ -15,6 +15,7 @@
 
 import { redis } from '@/lib/redis';
 import { getRedisKeyPrefix } from '@/mcp/shared/redis-client';
+import { dataLogger } from '@/lib/logger';
 import type { CredlyBadge, CredlySkill } from '@/types/credly';
 
 // ============================================================================
@@ -60,12 +61,14 @@ function createRedisKey(username: string, limit?: number): string {
   const prefix = getRedisKeyPrefix();
   const key = `${prefix}${REDIS_KEY_BASE}${username}:${limit || 'all'}`;
 
-  console.log('[Credly Data] 🔑 Redis key:', {
-    key,
-    prefix,
-    username,
-    limit: limit || 'all',
-  });
+  // Debug logging via dataLogger (development only)
+  if (process.env.NODE_ENV === 'development') {
+    dataLogger.fetch(`Redis key: ${key}`, {
+      prefix,
+      username,
+      limit: limit || 'all',
+    });
+  }
 
   return key;
 }
@@ -106,12 +109,7 @@ export async function getCredlyBadges(
       const badges = Array.isArray(data.badges) ? data.badges : [];
       const totalCount = data.total_count || data.count || badges.length || 0;
 
-      console.log('[Credly Data] ✅ Cache HIT', {
-        key: redisKey,
-        cachedType: typeof cached,
-        badgeCount: badges.length,
-        totalCount,
-      });
+      dataLogger.cache(redisKey, true);
 
       return {
         badges,
@@ -120,7 +118,7 @@ export async function getCredlyBadges(
       };
     }
 
-    console.warn('[Credly Data] ⚠️ Cache MISS', { key: redisKey });
+    dataLogger.cache(redisKey, false);
 
     return {
       badges: [],
@@ -206,11 +204,7 @@ export async function getCredlySkills(
     return a.skill.name.localeCompare(b.skill.name);
   });
 
-  console.log('[Credly Data] ✅ Skills aggregated', {
-    totalSkills: skills.length,
-    fromBadges: badgesData.badges.length,
-    excluded: excludeSkills.length,
-  });
+  dataLogger.fetchSuccess('Credly skills aggregation', skills.length, true);
 
   return {
     skills,

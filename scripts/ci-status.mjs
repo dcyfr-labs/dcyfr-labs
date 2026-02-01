@@ -5,7 +5,7 @@
  * @usage npm run ci:status [workflow-name]
  */
 
-import { execSync } from 'child_process';
+import { execaSync } from 'execa';
 
 const workflow = process.argv[2] || '';
 
@@ -14,7 +14,8 @@ try {
 
   // Check if gh CLI is available
   try {
-    execSync('gh --version', { stdio: 'ignore' });
+    // FIX: CWE-78 - Use execa with array syntax to prevent command injection
+    execaSync('gh', ['--version'], { stdio: 'ignore', shell: false });
   } catch {
     console.log('❌ GitHub CLI (gh) is not installed.');
     console.log('   Install: brew install gh (macOS) or https://cli.github.com/\n');
@@ -22,7 +23,8 @@ try {
   }
 
   // Get recent workflow runs
-  let command;
+  // FIX: CWE-78 - Use execa with array syntax to prevent command injection
+  let args;
 
   if (workflow) {
     // Validate workflow name to prevent command injection
@@ -35,12 +37,15 @@ try {
       process.exit(1);
     }
 
-    command = `gh run list --workflow="${workflow}" --limit 10`;
+    args = ['run', 'list', `--workflow=${workflow}`, '--limit', '10'];
   } else {
-    command = 'gh run list --limit 15';
+    args = ['run', 'list', '--limit', '15'];
   }
 
-  const output = execSync(command, { encoding: 'utf-8' });
+  const { stdout: output } = execaSync('gh', args, {
+    encoding: 'utf-8',
+    shell: false,
+  });
   console.log(output);
 
   console.log('\n💡 Commands:');
