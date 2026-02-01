@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Search, ExternalLink, Clock, Tag } from 'lucide-react';
 import type { InoreaderArticle } from '@/types/inoreader';
+import { decode } from 'he';
 import { SPACING, HOVER_EFFECTS } from '@/lib/design-tokens';
 
 interface FeedsListProps {
@@ -120,38 +121,17 @@ function ArticleCard({ article }: { article: InoreaderArticle }) {
   });
 
   // Extract plain text from HTML summary (first 200 chars)
-  // CWE-116 Prevention: Complete HTML sanitization with proper entity decoding (multi-pass)
-  // Pass 1: Remove dangerous tags (script/style)
+  // FIX: CWE-116 - Use 'he' library for safe HTML entity decoding
+  // This prevents double-decoding attacks by properly handling entity order
   let plainTextSummary = article.summary.content
-    .replace(/<(script|style)[^>]*>.*?<\/\1>/gi, '')
-    // Pass 2: Remove all HTML tags
-    .replace(/<[^>]+>/g, '')
-    // Pass 3: Decode named HTML entities (important: &amp; last to avoid double-decode)
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    // Pass 4: Decode numeric entities (&#NNN; and &#xHHH;) - complete character references
-    .replace(/&#([0-9]+);/g, (match, code) => {
-      try {
-        return String.fromCharCode(parseInt(code, 10));
-      } catch {
-        return match;
-      }
-    })
-    .replace(/&#x([0-9a-fA-F]+);/g, (match, code) => {
-      try {
-        return String.fromCharCode(parseInt(code, 16));
-      } catch {
-        return match;
-      }
-    })
-    // Pass 5: Normalize whitespace and truncate
-    .replace(/\s+/g, ' ')
-    .trim()
-    .substring(0, 200);
+    .replace(/<(script|style)[^>]*>.*?<\/\1>/gi, '') // Pass 1: Remove dangerous tags
+    .replace(/<[^>]+>/g, '') // Pass 2: Remove all HTML tags
+    .replace(/\s+/g, ' ') // Pass 3: Normalize whitespace
+    .trim();
+
+  // Pass 4: Safely decode ALL HTML entities using battle-tested library
+  // The 'he' library handles all edge cases including double-encoding
+  plainTextSummary = decode(plainTextSummary).substring(0, 200);
 
   // Get article URL
   const articleUrl =

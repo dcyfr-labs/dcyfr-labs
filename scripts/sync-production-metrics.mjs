@@ -33,6 +33,7 @@ import dotenv from 'dotenv';
 import { Redis } from '@upstash/redis';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { escapeRegExp } from '../src/lib/security/regex-utils.ts';
 
 // Load environment variables from .env.local
 const __filename = fileURLToPath(import.meta.url);
@@ -122,13 +123,15 @@ function createPreviewClient() {
 
 function isExcluded(key) {
   return EXCLUDED_PATTERNS.some((pattern) => {
-    const regex = new RegExp('^' + pattern.replace('*', '.*') + '$');
+    // FIX: CWE-94 - Use secure regex escaping to prevent injection
+    const regex = new RegExp('^' + escapeRegExp(pattern) + '$');
     return regex.test(key);
   });
 }
 
 function matchesPattern(key, pattern) {
-  const regex = new RegExp('^' + pattern.replace('*', '.*') + '$');
+  // FIX: CWE-94 - Use secure regex escaping to prevent injection
+  const regex = new RegExp('^' + escapeRegExp(pattern) + '$');
   return regex.test(key);
 }
 

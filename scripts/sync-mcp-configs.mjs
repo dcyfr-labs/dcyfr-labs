@@ -13,6 +13,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import writeFileAtomicSync from 'write-file-atomic';
 
 // Parse CLI args
 const args = process.argv.slice(2).reduce((acc, arg) => {
@@ -165,18 +166,28 @@ if (direction === 'opencode-to-vscode' || direction === 'both') {
 }
 
 // Write updated configs
-// CWE-367 Prevention: Use atomic write operation to avoid race condition (TOCTOU)
+// FIX: CWE-367 - Use truly atomic write operations to prevent TOCTOU race conditions
+// write-file-atomic ensures files are written atomically via rename, preventing corruption
 if (!dryRun) {
-  if (direction === 'vscode-to-opencode' || direction === 'both') {
-    // Atomic write with flag 'w' (truncate if exists, create if missing)
-    fs.writeFileSync(opencodeConfigPath, JSON.stringify(opencodeConfig, null, 2), { flag: 'w' });
-    console.log(`✅ Updated ${opencodeConfigPath}`);
-  }
+  try {
+    if (direction === 'vscode-to-opencode' || direction === 'both') {
+      // Atomic write: Creates temp file, writes content, then renames atomically
+      writeFileAtomicSync(opencodeConfigPath, JSON.stringify(opencodeConfig, null, 2), {
+        encoding: 'utf-8',
+      });
+      console.log(`✅ Updated ${opencodeConfigPath}`);
+    }
 
-  if (direction === 'opencode-to-vscode' || direction === 'both') {
-    // Atomic write with flag 'w'
-    fs.writeFileSync(vscodeConfigPath, JSON.stringify(vscodeConfig, null, 2), { flag: 'w' });
-    console.log(`✅ Updated ${vscodeConfigPath}`);
+    if (direction === 'opencode-to-vscode' || direction === 'both') {
+      // Atomic write: Creates temp file, writes content, then renames atomically
+      writeFileAtomicSync(vscodeConfigPath, JSON.stringify(vscodeConfig, null, 2), {
+        encoding: 'utf-8',
+      });
+      console.log(`✅ Updated ${vscodeConfigPath}`);
+    }
+  } catch (error) {
+    console.error('❌ Atomic write failed:', error.message);
+    process.exit(1);
   }
 } else {
   console.log('🏃 Dry run complete - no files modified');

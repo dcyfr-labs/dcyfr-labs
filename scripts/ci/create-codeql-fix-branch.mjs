@@ -17,7 +17,7 @@
  *   branch_name - Created branch name
  */
 
-import { execSync } from 'child_process';
+import { execaSync } from 'execa';
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY;
@@ -72,20 +72,26 @@ async function createBranch() {
 
   try {
     // Fetch main/preview to get latest base
-    execSync('git fetch origin main preview 2>/dev/null || git fetch origin main', {
+    // FIX: CWE-78 - Use execa to prevent command injection
+    execaSync('git', ['fetch', 'origin', 'main', 'preview'], {
       stdio: 'ignore',
+      shell: false,
+      reject: false, // Don't throw if preview doesn't exist
     });
 
     // Create branch from main
-    execSync(`git checkout -b ${branchName} origin/main`, {
+    execaSync('git', ['checkout', '-b', branchName, 'origin/main'], {
       stdio: 'pipe',
+      shell: false,
     });
 
     console.log(`✅ Branch created: ${branchName}`);
 
     // Configure git for commits
-    execSync('git config user.name "github-actions[bot]"');
-    execSync('git config user.email "github-actions[bot]@users.noreply.github.com"');
+    execaSync('git', ['config', 'user.name', 'github-actions[bot]'], { shell: false });
+    execaSync('git', ['config', 'user.email', 'github-actions[bot]@users.noreply.github.com'], {
+      shell: false,
+    });
 
     console.log(`::set-output name=branch_name::${branchName}`);
     return branchName;

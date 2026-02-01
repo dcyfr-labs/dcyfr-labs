@@ -5,7 +5,7 @@
  * @usage npm run deps:tree [package-name]
  */
 
-import { execSync } from 'child_process';
+import { execaSync } from 'execa';
 
 const packageName = process.argv[2];
 
@@ -24,12 +24,21 @@ try {
     }
 
     console.log(`Package: ${packageName}\n`);
-    // Use array syntax to prevent command injection
-    const output = execSync(`npm ls ${packageName} --depth=3`, { encoding: 'utf-8' });
+    // FIX: CWE-78 - Use execa with array syntax to prevent command injection
+    const { stdout: output } = execaSync('npm', ['ls', packageName, '--depth=3'], {
+      encoding: 'utf-8',
+      shell: false,
+      reject: false, // Don't throw on non-zero exit (npm ls returns 1 if peer deps missing)
+    });
     console.log(output);
   } else {
     console.log('Top-level dependencies:\n');
-    const output = execSync('npm ls --depth=0', { encoding: 'utf-8' });
+    // FIX: CWE-78 - Use execa with array syntax to prevent command injection
+    const { stdout: output } = execaSync('npm', ['ls', '--depth=0'], {
+      encoding: 'utf-8',
+      shell: false,
+      reject: false, // Don't throw on non-zero exit
+    });
     console.log(output);
   }
 
