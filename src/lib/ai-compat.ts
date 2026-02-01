@@ -334,6 +334,7 @@ export async function validateDesignTokens(
 ): Promise<{ compliance: number; violations: string[]; suggestions: string[] }> {
   try {
     // Try to import from @dcyfr/agents if available
+    // @ts-ignore - Module may not exist, handled gracefully in catch block
     const enforcement = await import('@dcyfr/agents/enforcement/design-tokens');
     const { validateTokenUsage, ALL_TOKEN_RULES } = enforcement;
     const fs = await import('fs/promises');
