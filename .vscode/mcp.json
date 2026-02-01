@@ -28,7 +28,9 @@
       "type": "http",
       "url": "https://api.githubcopilot.com/mcp/",
       "_tier": "1-essential",
-      "_description": "GitHub API for repos, issues, PRs, code search"
+      "_description": "GitHub API for repos, issues, PRs, code search",
+      "_limitations": "No access to Code Scanning API (403 error) - use GitHub CLI instead",
+      "_workaround": "npm run security:check-alerts (uses gh cli)"
     },
 
     // Preview & production deployments
