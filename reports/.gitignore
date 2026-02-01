@@ -1,9 +1,26 @@
-# Generated reports directory
-# This directory contains temporary and generated reports that should not be committed
+# ========================================
+# Reports Directory
+# ========================================
+# Generated reports that should not be committed
+# Keep only documentation files for directory structure
 
 # Ignore all files by default
 *
 
-# Exceptions: keep these files for directory management
+# ========================================
+# Allowlist: Directory Management
+# ========================================
+# Keep these files for documentation and structure
 !.gitignore
 !README.md
+
+# ========================================
+# Allowlist: Subdirectories
+# ========================================
+# Allow specific subdirectories to manage their own rules
+!design-system/
+!e2e-artifacts/
+!performance/
+
+# Keep .gitignore files in subdirectories
+!**/.gitignore
