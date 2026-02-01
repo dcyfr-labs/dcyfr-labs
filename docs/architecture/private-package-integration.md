@@ -29,6 +29,7 @@ try {
 ```
 
 **Benefits:**
+
 - ✅ Works without the package installed
 - ✅ No build errors when package missing
 - ✅ Conservative defaults (fails safe)
@@ -83,12 +84,14 @@ GITHUB_PACKAGES_TOKEN=ghp_production_token
 ```
 
 **Security:**
+
 - ✅ Token-based authentication (no password in git)
 - ✅ Scoped to organization (@dcyfr)
 - ✅ Works in CI/CD with secrets
 - ✅ Version-controlled releases
 
 **Limitations:**
+
 - Requires GitHub token with `read:packages` scope
 - Token management needed for team members
 
@@ -126,11 +129,13 @@ npm install
 ```
 
 **Security:**
+
 - ✅ Never committed to git
 - ✅ Simple local setup
 - ✅ No token management
 
 **Limitations:**
+
 - ❌ Doesn't work in CI/CD
 - ❌ Requires manual setup for team members
 - ❌ Production builds fail without package
@@ -171,11 +176,13 @@ const hasProprietaryAgents = await checkPackageAvailable();
 ```
 
 **Security:**
+
 - ✅ Explicit opt-in
 - ✅ Production builds succeed without package
 - ✅ Feature detection at runtime
 
 **Limitations:**
+
 - Team members must know to use `--include=optional`
 
 ---
@@ -183,6 +190,7 @@ const hasProprietaryAgents = await checkPackageAvailable();
 ### Strategy 4: Git Submodule (Not Recommended)
 
 **Why Not:**
+
 - ❌ Exposes private repo structure
 - ❌ Complex merge conflicts
 - ❌ Hard to version separately
@@ -192,17 +200,20 @@ const hasProprietaryAgents = await checkPackageAvailable();
 ## Recommended Implementation
 
 ### Phase 1: Current State (Local Development)
+
 - Keep `file:../dcyfr-ai-agents` for local development
 - Compatibility layer handles missing package
 - No changes needed
 
 ### Phase 2: Team Collaboration (Optional)
+
 - Publish to GitHub Packages
 - Update `.npmrc` with scoped registry
 - Add token to `.env.local` (gitignored)
 - Document setup in README
 
 ### Phase 3: Production (When Ready)
+
 - Use GitHub Packages in Vercel
 - Add `GITHUB_PACKAGES_TOKEN` to environment variables
 - Configure build to skip if token not present
@@ -236,6 +247,7 @@ env:
 ```
 
 **Token Scopes:**
+
 - `read:packages` - Read from GitHub Packages
 - `repo` - Access private repositories (if needed)
 
@@ -281,11 +293,13 @@ npm run build
 **Solutions:**
 
 1. **Local development:**
+
    ```bash
    npm install
    ```
 
 2. **Missing sibling directory:**
+
    ```bash
    cd /Users/drew/DCYFR/code
    git clone git@github.com:dcyfr/dcyfr-ai-agents.git
@@ -349,6 +363,7 @@ npm install @dcyfr/agents@1.2.0
 ---
 
 **Next Steps:**
+
 1. ✅ Keep current local setup working
 2. Decide if team collaboration needed → GitHub Packages
 3. Configure production builds based on requirements

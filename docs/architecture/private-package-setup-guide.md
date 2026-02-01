@@ -7,11 +7,13 @@
 **Current setup - already working!**
 
 1. Verify sibling directory exists:
+
    ```bash
    ls -la /Users/drew/DCYFR/code/dcyfr-ai-agents
    ```
 
 2. Install dependencies:
+
    ```bash
    cd /Users/drew/DCYFR/code/dcyfr-labs
    npm install
@@ -45,6 +47,7 @@ npm publish
 #### Step 2: Configure dcyfr-labs
 
 1. Copy `.npmrc` template:
+
    ```bash
    cd /Users/drew/DCYFR/code/dcyfr-labs
    cp .npmrc.example .npmrc
@@ -57,11 +60,13 @@ npm publish
    - Copy the token (starts with `ghp_`)
 
 3. Add token to `.env.local`:
+
    ```bash
    echo "GITHUB_PACKAGES_TOKEN=ghp_your_token_here" >> .env.local
    ```
 
 4. Update `package.json`:
+
    ```json
    {
      "dependencies": {
@@ -102,6 +107,7 @@ npm publish
 **Use when:** Package is truly optional, want builds to succeed without it
 
 1. Update `package.json`:
+
    ```json
    {
      "optionalDependencies": {
@@ -111,6 +117,7 @@ npm publish
    ```
 
 2. Install with optional packages:
+
    ```bash
    npm install --include=optional
    ```
@@ -189,6 +196,7 @@ npm install @dcyfr/agents
 ### "Cannot find module '@dcyfr/agents'"
 
 **During Development:**
+
 ```bash
 # Verify sibling directory exists
 ls -la ../dcyfr-ai-agents
@@ -203,6 +211,7 @@ npm install
 ```
 
 **During Build (Expected):**
+
 - Build should succeed with warning
 - Compatibility layer provides safe defaults
 
@@ -260,11 +269,13 @@ grep "as any" src/lib/ai-compat.ts
 ## Next Steps
 
 **Immediate (No changes needed):**
+
 - ✅ Current setup is secure and working
 - ✅ Build succeeds with graceful degradation
 - ✅ Proprietary code never committed
 
 **Future (When team collaboration needed):**
+
 1. Publish `@dcyfr/agents` to GitHub Packages
 2. Configure team members with tokens
 3. Update CI/CD workflows
