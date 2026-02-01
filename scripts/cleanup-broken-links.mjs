@@ -2,12 +2,12 @@
 
 /**
  * Cleanup Broken Links Script
- * 
+ *
  * Scans documentation files for broken internal links and provides options to:
  * - Report broken links
  * - Remove broken links
  * - Fix common link patterns
- * 
+ *
  * Usage:
  *   npm run cleanup:links              # Report only
  *   npm run cleanup:links -- --fix     # Remove broken links
@@ -45,13 +45,11 @@ class LinkChecker {
     this.fix = options.fix || false;
     this.verbose = options.verbose || false;
     this.dryRun = options.dryRun || false;
-    
+
     // Support configurable project root for testing
-    this.projectRoot = options.projectRoot || 
-                      process.env.DCYFR_PROJECT_ROOT || 
-                      projectRoot;
+    this.projectRoot = options.projectRoot || process.env.DCYFR_PROJECT_ROOT || projectRoot;
     this.docsDir = path.join(this.projectRoot, 'docs');
-    
+
     this.stats = {
       filesScanned: 0,
       linksFound: 0,
@@ -59,23 +57,22 @@ class LinkChecker {
       linksRemoved: 0,
       linksFixed: 0,
     };
-    
+
     this.brokenLinks = [];
     this.fixedLinks = [];
   }
 
   async scan() {
     console.log('🔍 Scanning documentation for broken links...\n');
-    
+
     try {
       const files = await this.getAllMarkdownFiles(this.docsDir);
-      
+
       for (const filePath of files) {
         await this.checkFile(filePath);
       }
-      
+
       await this.generateReport();
-      
     } catch (error) {
       console.error('❌ Error scanning files:', error.message);
       process.exit(1);
@@ -84,49 +81,49 @@ class LinkChecker {
 
   async getAllMarkdownFiles(dir) {
     const files = [];
-    
+
     const items = await fs.readdir(dir);
-    
+
     for (const item of items) {
       const fullPath = path.join(dir, item);
       const stat = await fs.stat(fullPath);
-      
+
       if (stat.isDirectory()) {
         if (!config.excludeDirs.includes(item)) {
-          files.push(...await this.getAllMarkdownFiles(fullPath));
+          files.push(...(await this.getAllMarkdownFiles(fullPath)));
         }
-      } else if (config.extensions.some(ext => item.endsWith(ext))) {
+      } else if (config.extensions.some((ext) => item.endsWith(ext))) {
         files.push(fullPath);
       }
     }
-    
+
     return files;
   }
 
   async checkFile(filePath) {
     this.stats.filesScanned++;
-    
+
     if (this.verbose) {
       console.log(`📄 Checking: ${path.relative(this.projectRoot, filePath)}`);
     }
-    
+
     const content = await fs.readFile(filePath, 'utf-8');
     const links = this.extractLinks(content);
-    
+
     if (links.length === 0) return;
-    
+
     this.stats.linksFound += links.length;
-    
+
     let modifiedContent = content;
     let hasChanges = false;
-    
+
     for (const link of links) {
       if (this.isExternalLink(link.url)) {
         continue; // Skip external links
       }
-      
+
       const isValid = await this.validateLink(filePath, link.url);
-      
+
       if (!isValid) {
         this.stats.brokenLinks++;
         this.brokenLinks.push({
@@ -135,10 +132,10 @@ class LinkChecker {
           text: link.text,
           line: this.getLineNumber(content, link.match.index),
         });
-        
+
         if (this.fix) {
           const fixResult = this.fixBrokenLink(link, filePath);
-          
+
           if (fixResult.action === 'remove') {
             modifiedContent = modifiedContent.replace(link.match[0], fixResult.replacement);
             hasChanges = true;
@@ -156,7 +153,7 @@ class LinkChecker {
         }
       }
     }
-    
+
     if (hasChanges && !this.dryRun) {
       await fs.writeFile(filePath, modifiedContent);
       if (this.verbose) {
@@ -167,11 +164,11 @@ class LinkChecker {
 
   extractLinks(content) {
     const links = [];
-    
+
     for (const pattern of config.linkPatterns) {
       let match;
       const regex = new RegExp(pattern.source, pattern.flags);
-      
+
       while ((match = regex.exec(content)) !== null) {
         if (pattern.source.includes('\\[')) {
           // Markdown link pattern
@@ -190,13 +187,12 @@ class LinkChecker {
         }
       }
     }
-    
+
     return links;
   }
 
   isExternalLink(url) {
-    return config.externalPrefixes.some(prefix => url.startsWith(prefix)) ||
-           url.startsWith('#'); // Hash anchors
+    return config.externalPrefixes.some((prefix) => url.startsWith(prefix)) || url.startsWith('#'); // Hash anchors
   }
 
   async validateLink(filePath, url) {
@@ -205,19 +201,26 @@ class LinkChecker {
       if (url.startsWith('./') || url.startsWith('../')) {
         // Relative links
         const resolvedPath = path.resolve(path.dirname(filePath), url);
-        return existsSync(resolvedPath) || existsSync(resolvedPath + '.md') || existsSync(resolvedPath + '.mdx');
+        return (
+          existsSync(resolvedPath) ||
+          existsSync(resolvedPath + '.md') ||
+          existsSync(resolvedPath + '.mdx')
+        );
       }
-      
+
       if (url.startsWith('/')) {
         // Absolute links from project root
         const absolutePath = path.join(this.projectRoot, url.slice(1));
-        return existsSync(absolutePath) || existsSync(absolutePath + '.md') || existsSync(absolutePath + '.mdx');
+        return (
+          existsSync(absolutePath) ||
+          existsSync(absolutePath + '.md') ||
+          existsSync(absolutePath + '.mdx')
+        );
       }
-      
+
       // Check if it's a docs path that should be prefixed
       const docsPath = path.join(this.docsDir, url);
       return existsSync(docsPath) || existsSync(docsPath + '.md') || existsSync(docsPath + '.mdx');
-      
     } catch (error) {
       if (this.verbose) {
         console.warn(`⚠️  Error validating link "${url}": ${error.message}`);
@@ -228,7 +231,7 @@ class LinkChecker {
 
   fixBrokenLink(link, filePath) {
     // Try to fix common patterns
-    
+
     // 1. Try adding ./ prefix for same-directory links
     if (!link.url.startsWith('./') && !link.url.startsWith('../') && !link.url.startsWith('/')) {
       const withDotSlash = `./${link.url}`;
@@ -240,7 +243,7 @@ class LinkChecker {
         };
       }
     }
-    
+
     // 2. Try adding file extensions
     const variations = [
       `${link.url}.md`,
@@ -249,7 +252,7 @@ class LinkChecker {
       `${link.url}/README`,
       `${link.url}/index.md`,
     ];
-    
+
     for (const variation of variations) {
       if (this.validateLinkSync(filePath, variation)) {
         return {
@@ -259,7 +262,7 @@ class LinkChecker {
         };
       }
     }
-    
+
     // 2. Try converting to docs-relative path
     if (!link.url.startsWith('./') && !link.url.startsWith('/')) {
       const docsRelativePath = `./${link.url}`;
@@ -271,7 +274,7 @@ class LinkChecker {
         };
       }
     }
-    
+
     // 3. If no fix found, remove the link but keep the text
     return {
       action: 'remove',
@@ -283,17 +286,24 @@ class LinkChecker {
     try {
       if (url.startsWith('./') || url.startsWith('../')) {
         const resolvedPath = path.resolve(path.dirname(filePath), url);
-        return existsSync(resolvedPath) || existsSync(resolvedPath + '.md') || existsSync(resolvedPath + '.mdx');
+        return (
+          existsSync(resolvedPath) ||
+          existsSync(resolvedPath + '.md') ||
+          existsSync(resolvedPath + '.mdx')
+        );
       }
-      
+
       if (url.startsWith('/')) {
         const absolutePath = path.join(this.projectRoot, url.slice(1));
-        return existsSync(absolutePath) || existsSync(absolutePath + '.md') || existsSync(absolutePath + '.mdx');
+        return (
+          existsSync(absolutePath) ||
+          existsSync(absolutePath + '.md') ||
+          existsSync(absolutePath + '.mdx')
+        );
       }
-      
+
       const docsPath = path.join(this.docsDir, url);
       return existsSync(docsPath) || existsSync(docsPath + '.md') || existsSync(docsPath + '.mdx');
-      
     } catch {
       return false;
     }
@@ -307,43 +317,43 @@ class LinkChecker {
   async generateReport() {
     console.log('\n📊 Link Check Report');
     console.log('═'.repeat(50));
-    
+
     console.log(`📄 Files scanned: ${this.stats.filesScanned}`);
     console.log(`🔗 Links found: ${this.stats.linksFound}`);
     console.log(`❌ Broken links: ${this.stats.brokenLinks}`);
-    
+
     if (this.fix) {
       console.log(`🔧 Links fixed: ${this.stats.linksFixed}`);
       console.log(`🗑️  Links removed: ${this.stats.linksRemoved}`);
     }
-    
+
     if (this.brokenLinks.length > 0) {
       console.log('\n🚨 Broken Links Found:');
       console.log('─'.repeat(30));
-      
+
       for (const broken of this.brokenLinks) {
         console.log(`📍 ${broken.file}:${broken.line}`);
         console.log(`   Text: "${broken.text}"`);
         console.log(`   Link: ${broken.link}\n`);
       }
     }
-    
+
     if (this.fixedLinks.length > 0) {
       console.log('\n✅ Links Fixed:');
       console.log('─'.repeat(20));
-      
+
       for (const fixed of this.fixedLinks) {
         console.log(`📍 ${fixed.file}`);
         console.log(`   ${fixed.original} → ${fixed.fixed}\n`);
       }
     }
-    
+
     if (this.stats.brokenLinks === 0) {
       console.log('\n🎉 No broken links found! Documentation is healthy.');
     } else if (!this.fix) {
       console.log('\n💡 Run with --fix flag to automatically fix or remove broken links.');
     }
-    
+
     // Save detailed report
     if (this.brokenLinks.length > 0 || this.fixedLinks.length > 0) {
       await this.saveDetailedReport();
@@ -352,14 +362,14 @@ class LinkChecker {
 
   async saveDetailedReport() {
     const reportPath = path.join(this.projectRoot, 'reports', 'broken-links-report.json');
-    
+
     const report = {
       timestamp: new Date().toISOString(),
       stats: this.stats,
       brokenLinks: this.brokenLinks,
       fixedLinks: this.fixedLinks,
     };
-    
+
     try {
       await fs.mkdir(path.dirname(reportPath), { recursive: true });
       await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
@@ -373,13 +383,13 @@ class LinkChecker {
 // CLI interface
 async function main() {
   const args = process.argv.slice(2);
-  
+
   const options = {
     fix: args.includes('--fix'),
     verbose: args.includes('--verbose'),
     dryRun: args.includes('--dry-run'),
   };
-  
+
   if (args.includes('--help')) {
     console.log(`
 🔗 Broken Links Cleanup Tool
@@ -395,16 +405,16 @@ Options:
 
 Examples:
   npm run cleanup:links                    # Report broken links only
-  npm run cleanup:links -- --fix          # Fix broken links automatically  
+  npm run cleanup:links -- --fix          # Fix broken links automatically
   npm run cleanup:links -- --verbose      # Detailed scanning output
   npm run cleanup:links -- --fix --dry-run # Preview fixes without applying
 `);
     process.exit(0);
   }
-  
+
   const checker = new LinkChecker(options);
   await checker.scan();
-  
+
   // Exit codes:
   // - If --fix: always exit 0 (successfully fixed all links)
   // - If report only: exit 1 if broken links found (to fail CI), exit 0 if all good

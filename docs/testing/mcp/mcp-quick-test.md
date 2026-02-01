@@ -35,6 +35,7 @@ Using Vercel MCP, show my recent deployments for dcyfr-labs
 Using Sentry MCP, check for errors in the dcyfr-labs project from the last 7 days
 
 For each test, clearly indicate:
+
 - ✅ Success + what data you retrieved
 - ❌ Failed + error message
 - ⚠️ Partial success + what worked/didn't work
@@ -67,41 +68,49 @@ Summary: 6/8 servers working correctly
 If you want to test just one server:
 
 ### Test Perplexity Only
+
 ```
 Using Perplexity, search for "Tailwind CSS v4 new features"
 ```
 
 ### Test Context7 Only
+
 ```
 Using Context7, find the Next.js metadata API documentation
 ```
 
 ### Test Playwright Only
+
 ```
 Using Playwright, visit https://github.com/dcyfr and extract the bio
 ```
 
 ### Test Axiom Only
+
 ```
 Using Axiom, show me error logs from today
 ```
 
 ### Test Filesystem Only
+
 ```
 Using Filesystem MCP, read the file src/content/blog/red-team-results-2025.mdx
 ```
 
 ### Test GitHub Only
+
 ```
 Using GitHub MCP, list open issues in dcyfr-labs repository
 ```
 
 ### Test Vercel Only
+
 ```
 Using Vercel MCP, show production deployment status
 ```
 
 ### Test Sentry Only
+
 ```
 Using Sentry MCP, show recent error events with stack traces
 ```
