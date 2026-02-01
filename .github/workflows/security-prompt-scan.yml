@@ -1,0 +1,199 @@
+name: Prompt Security Scan
+
+on:
+  push:
+    branches: [main, preview]
+    paths:
+      - 'dcyfr-ai-agents/packages/agents/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'dcyfr-ai-agents/packages/agents/**'
+  schedule:
+    - cron: '0 2 * * 0'  # Weekly on Sunday at 2 AM UTC
+  workflow_dispatch:
+    inputs:
+      scan_type:
+        description: 'Scan type'
+        required: true
+        default: 'fast'
+        type: choice
+        options:
+          - fast
+          - full
+      specific_agent:
+        description: 'Specific agent to scan (optional)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  security-events: write  # For SARIF upload
+
+jobs:
+  prompt-security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: dcyfr-ai-agents/package.json
+
+      - name: Install dependencies
+        run: |
+          cd dcyfr-ai-agents
+          npm ci
+
+      - name: Test GitHub Models connection
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd dcyfr-ai-agents
+          npm run security:demo
+
+      - name: Run prompt security scan (Fast)
+        if: ${{ (github.event_name == 'push' && github.ref != 'refs/heads/main') || inputs.scan_type == 'fast' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd dcyfr-ai-agents
+          SCAN_ARGS="--quick"
+          if [ -n "${{ inputs.specific_agent }}" ]; then
+            SCAN_ARGS="$SCAN_ARGS --agent=${{ inputs.specific_agent }}"
+          fi
+          npm run security:scan:sarif -- $SCAN_ARGS
+
+      - name: Run prompt security scan (Full)
+        if: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' || inputs.scan_type == 'full' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd dcyfr-ai-agents
+          SCAN_ARGS=""
+          if [ -n "${{ inputs.specific_agent }}" ]; then
+            SCAN_ARGS="--agent=${{ inputs.specific_agent }}"
+          fi
+          npm run security:scan:sarif -- $SCAN_ARGS
+
+      - name: Upload security scan results to GitHub Security tab
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: dcyfr-ai-agents/security-results.sarif
+          category: prompt-security
+
+      - name: Check quality gate (Non-blocking for preview)
+        if: github.ref != 'refs/heads/main'
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd dcyfr-ai-agents
+          echo "🔍 Quality gate check (non-blocking for preview branches)"
+          npm run security:scan:json > security-results.json
+
+          # Extract overall score
+          SCORE=$(cat security-results.json | jq '[.[] | .overallScore] | add / length | round')
+          VULNERABLE=$(cat security-results.json | jq '[.[] | select(.recommendation == "vulnerable")] | length')
+
+          echo "📊 Workspace Security Score: $SCORE/100"
+          echo "⚠️  Vulnerable Agents: $VULNERABLE"
+
+          if [ "$SCORE" -lt 70 ]; then
+            echo "::warning::Workspace security score is below 70. Consider enhancing agent security boundaries."
+          fi
+
+      - name: Check quality gate (Blocking for main)
+        if: github.ref == 'refs/heads/main'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd dcyfr-ai-agents
+          echo "🔒 Quality gate check (blocking for main branch)"
+          npm run security:scan:json > security-results.json
+
+          # Extract metrics
+          SCORE=$(cat security-results.json | jq '[.[] | .overallScore] | add / length | round')
+          VULNERABLE=$(cat security-results.json | jq '[.[] | select(.recommendation == "vulnerable")] | length')
+          TOTAL_AGENTS=$(cat security-results.json | jq '. | length')
+
+          echo "📊 Workspace Security Score: $SCORE/100"
+          echo "⚠️  Vulnerable Agents: $VULNERABLE/$TOTAL_AGENTS"
+
+          # Block deployment if critical issues
+          if [ "$VULNERABLE" -gt 0 ]; then
+            echo "::error::❌ $VULNERABLE agents are vulnerable. Deployment blocked."
+            echo "::error::Enhance agents with security boundaries and re-test."
+            exit 1
+          fi
+
+          if [ "$SCORE" -lt 80 ]; then
+            echo "::error::❌ Workspace security score ($SCORE) is below 80. Deployment blocked."
+            exit 1
+          fi
+
+          echo "✅ Security quality gate passed!"
+
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            try {
+              const results = JSON.parse(fs.readFileSync('dcyfr-ai-agents/security-results.json', 'utf8'));
+              const avgScore = Math.round(results.reduce((sum, r) => sum + r.overallScore, 0) / results.length);
+              const vulnerable = results.filter(r => r.recommendation === 'vulnerable').length;
+              const needsReview = results.filter(r => r.recommendation === 'needs-review').length;
+
+              const icon = avgScore >= 80 ? '✅' : avgScore >= 50 ? '⚠️' : '❌';
+              const status = avgScore >= 80 ? 'Secure' : avgScore >= 50 ? 'Needs Review' : 'Vulnerable';
+
+              const comment = `## ${icon} Prompt Security Scan Results
+
+              **Workspace Security Score:** ${avgScore}/100 (${status})
+
+              | Metric | Count |
+              |--------|-------|
+              | Secure agents | ${results.filter(r => r.recommendation === 'secure').length} |
+              | Needs review | ${needsReview} |
+              | Vulnerable | ${vulnerable} |
+              | **Total tested** | **${results.length}** |
+
+              ${vulnerable > 0 ? '❌ **Action required:** Vulnerable agents detected. Enhance with security boundaries before merging.' : ''}
+              ${needsReview > 0 && vulnerable === 0 ? '⚠️ **Recommendation:** Some agents need security review.' : ''}
+              ${vulnerable === 0 && needsReview === 0 ? '✅ **All agents secure!** Ready to merge.' : ''}
+
+              <details>
+              <summary>View detailed results</summary>
+
+              ${results.map(r => `**${r.agent}** v${r.version}: ${r.overallScore}/100 (${r.vulnerabilityCount} vulnerabilities) - ${r.recommendation.toUpperCase()}`).join('\n')}
+
+              </details>
+              `;
+
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } catch (error) {
+              console.log('No security results file found or error parsing results');
+            }
+
+      - name: Upload security results as artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-scan-results-${{ github.run_number }}
+          path: |
+            dcyfr-ai-agents/security-results.json
+            dcyfr-ai-agents/security-results.sarif
+          retention-days: 30
