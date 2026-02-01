@@ -53,7 +53,7 @@ interface PostListSkeletonProps {
 function LayoutToggleSkeleton() {
   return (
     <div className="mb-6 flex justify-end">
-      <Skeleton className="h-9 w-45" />
+      <Skeleton className="h-9 w-[180px]" />
     </div>
   );
 }

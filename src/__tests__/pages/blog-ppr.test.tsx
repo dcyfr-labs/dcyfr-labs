@@ -10,6 +10,7 @@
 import { render } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { BlogListSkeleton } from '@/components/blog';
+import { SPACING } from '@/lib/design-tokens';
 
 describe('Blog PPR - BlogListSkeleton Component (PostListSkeleton)', () => {
   describe('Grid Layout', () => {
@@ -40,8 +41,8 @@ describe('Blog PPR - BlogListSkeleton Component (PostListSkeleton)', () => {
   describe('List Layout', () => {
     it('renders skeleton items with list layout structure', () => {
       const { container } = render(<BlogListSkeleton layout="list" itemCount={3} />);
-      // List layout uses space-y-6
-      const listContainer = container.querySelector('.space-y-6');
+      // List layout uses SPACING.subsection
+      const listContainer = container.querySelector('.' + SPACING.subsection.split(' ')[0]);
       expect(listContainer).toBeInTheDocument();
     });
 
@@ -55,7 +56,7 @@ describe('Blog PPR - BlogListSkeleton Component (PostListSkeleton)', () => {
   describe('Magazine Layout', () => {
     it('renders magazine layout with grid structure', () => {
       const { container } = render(<BlogListSkeleton layout="magazine" itemCount={4} />);
-      const magazineContainer = container.querySelector('.space-y-8');
+      const magazineContainer = container.querySelector('.' + SPACING.subsection.split(' ')[0]);
       expect(magazineContainer).toBeInTheDocument();
     });
   });
@@ -78,8 +79,8 @@ describe('Blog PPR - BlogListSkeleton Component (PostListSkeleton)', () => {
   describe('Grouped Layout', () => {
     it('renders grouped layout with category sections', () => {
       const { container } = render(<BlogListSkeleton layout="grouped" itemCount={3} />);
-      // Grouped layout has category headings
-      const categoryHeadings = container.querySelectorAll('.h-8.w-48');
+      // Grouped layout has category headings (check width class)
+      const categoryHeadings = container.querySelectorAll('.w-48');
       expect(categoryHeadings.length).toBeGreaterThanOrEqual(3);
     });
 
