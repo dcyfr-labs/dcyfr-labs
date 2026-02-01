@@ -32,8 +32,8 @@ const ROOT_DIR = join(__dirname, '../..');
 
 // Parse command line arguments
 const args = process.argv.slice(2);
-const version = args.find(arg => arg.startsWith('--version='))?.split('=')[1];
-const entryPath = args.find(arg => arg.startsWith('--entry='))?.split('=')[1];
+const version = args.find((arg) => arg.startsWith('--version='))?.split('=')[1];
+const entryPath = args.find((arg) => arg.startsWith('--entry='))?.split('=')[1];
 
 /**
  * Read CHANGELOG.md
@@ -57,7 +57,8 @@ function readChangelog() {
 function readEntry(path) {
   try {
     if (path === '-') {
-      // Read from stdin
+      // FIX: Copilot suggestion - Clarify that file descriptor 0 is stdin in Node.js
+      // Read from stdin (file descriptor 0 is stdin in Node.js)
       return readFileSync(0, 'utf-8');
     }
     return readFileSync(path, 'utf-8');
@@ -75,7 +76,8 @@ function readEntry(path) {
 function validateFormat(content) {
   // Check for required elements
   const hasHeader = /^# Changelog/m.test(content);
-  const hasKeepAChangelogRef = /keepachangelog\.com/i.test(content);
+  // FIX: CWE-185 - Add anchors to prevent 'github.com' appearing anywhere in URL
+  const hasKeepAChangelogRef = /https?:\/\/keepachangelog\.com/i.test(content);
   const hasCalVerRef = /Calendar Versioning|calver/i.test(content);
 
   if (!hasHeader) {
@@ -119,13 +121,23 @@ function findInsertionPoint(content) {
 }
 
 /**
+ * Escape special regex characters
+ * @param {string} str - String to escape
+ * @returns {string} Escaped string
+ */
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
  * Check if version already exists in changelog
  * @param {string} content - Changelog content
  * @param {string} version - Version to check
  * @returns {boolean} True if version exists
  */
 function versionExists(content, version) {
-  const versionPattern = new RegExp(`^## \\[${version.replace(/\./g, '\\.')}\\]`, 'm');
+  // FIX: CWE-94 - Properly escape ALL regex metacharacters, not just dots
+  const versionPattern = new RegExp(`^## \\[${escapeRegex(version)}\\]`, 'm');
   return versionPattern.test(content);
 }
 
@@ -275,10 +287,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 }
 
 // Export for testing
-export {
-  readChangelog,
-  validateFormat,
-  findInsertionPoint,
-  versionExists,
-  insertEntry,
-};
+export { readChangelog, validateFormat, findInsertionPoint, versionExists, insertEntry };

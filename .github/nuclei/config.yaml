@@ -58,5 +58,6 @@ max-redirects: 5
 disable-http2: false
 
 # Header Modifications
+# FIX: Copilot suggestion - Use generic User-Agent without hardcoded version
 header:
-  - 'User-Agent: DCYFR-Security-Scanner/1.0 (Nuclei)'
+  - 'User-Agent: DCYFR-Security-Scanner (Nuclei)'

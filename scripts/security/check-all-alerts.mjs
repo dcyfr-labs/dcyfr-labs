@@ -15,35 +15,58 @@
  *   1 - Open alerts exist OR error occurred
  */
 
-import { execSync } from "child_process";
+import { execSync } from 'child_process';
 
-const owner = "dcyfr";
-const repo = "dcyfr-labs";
+// FIX: Copilot suggestion - Extract repo from environment/git remote for portability
+const githubRepositoryEnv = process.env.GITHUB_REPOSITORY;
+let owner, repo;
+
+if (githubRepositoryEnv?.includes('/')) {
+  [owner, repo] = githubRepositoryEnv.split('/', 2);
+} else {
+  try {
+    const remoteUrl = execSync('git config --get remote.origin.url', { encoding: 'utf-8' }).trim();
+    // Supports SSH (git@github.com:owner/repo.git) and HTTPS (https://github.com/owner/repo.git)
+    const sshMatch = remoteUrl.match(/github\.com:(.+)\/(.+?)(\.git)?$/);
+    const httpsMatch = remoteUrl.match(/github\.com\/(.+)\/(.+?)(\.git)?$/);
+    const match = sshMatch || httpsMatch;
+    if (match) {
+      owner = match[1];
+      repo = match[2];
+    }
+  } catch {
+    // Ignore errors and fall back to defaults
+  }
+
+  if (!owner || !repo) {
+    owner = 'dcyfr';
+    repo = 'dcyfr-labs';
+  }
+}
 
 console.log(`\n🔍 Checking security alerts for ${owner}/${repo}...\n`);
 
 try {
   // Query GitHub Code Scanning API
-  const alertsJson = execSync(
-    `gh api repos/${owner}/${repo}/code-scanning/alerts?state=open`,
-    { encoding: "utf-8" }
-  );
+  const alertsJson = execSync(`gh api repos/${owner}/${repo}/code-scanning/alerts?state=open`, {
+    encoding: 'utf-8',
+  });
 
   const alerts = JSON.parse(alertsJson);
 
   console.log(`📊 Open Security Alerts: ${alerts.length}\n`);
 
   if (alerts.length === 0) {
-    console.log("✅ No open security alerts! Repository is clean.\n");
+    console.log('✅ No open security alerts! Repository is clean.\n');
     process.exit(0);
   }
 
   // Display each alert
   alerts.forEach((alert, index) => {
     const location = alert.most_recent_instance?.location;
-    const path = location?.path || "unknown";
-    const startLine = location?.start_line || "?";
-    const endLine = location?.end_line || "?";
+    const path = location?.path || 'unknown';
+    const startLine = location?.start_line || '?';
+    const endLine = location?.end_line || '?';
 
     console.log(`Alert #${alert.number}`);
     console.log(`  Rule:     ${alert.rule.id}`);
@@ -54,21 +77,21 @@ try {
     console.log(`  URL:      ${alert.html_url}`);
 
     if (index < alerts.length - 1) {
-      console.log("");
+      console.log('');
     }
   });
 
   console.log(`\n⚠️  ${alerts.length} open alert(s) require attention\n`);
   process.exit(1);
 } catch (error) {
-  if (error.message.includes("HTTP 403")) {
-    console.error("❌ Error: GitHub CLI lacks permissions");
-    console.error("   Required: Repository access with security_events:read");
-    console.error("   Run: gh auth login");
-  } else if (error.message.includes("HTTP 404")) {
-    console.error("❌ Error: Repository not found or no code scanning enabled");
+  if (error.message.includes('HTTP 403')) {
+    console.error('❌ Error: GitHub CLI lacks permissions');
+    console.error('   Required: Repository access with security_events:read');
+    console.error('   Run: gh auth login');
+  } else if (error.message.includes('HTTP 404')) {
+    console.error('❌ Error: Repository not found or no code scanning enabled');
   } else {
-    console.error("❌ Error checking alerts:", error.message);
+    console.error('❌ Error checking alerts:', error.message);
   }
 
   process.exit(1);

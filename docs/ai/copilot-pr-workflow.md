@@ -197,6 +197,54 @@ The auto-generated plan includes:
 - Severity level
 - Recommended action
 
+---
+
+## 🎓 Lessons Learned
+
+### Timing Gap Issue (February 2026)
+
+**Problem:** CodeQL security scans completed ~3 minutes AFTER PR opened, causing 11 HIGH priority findings to be missed in the initial resolution plan.
+
+**Root Cause:**
+
+```
+Current (BROKEN):
+PR Open → Generate Plan → Run CodeQL → Copilot Review
+            ↑                  ↓           ↓
+            |            Findings missed in plan
+```
+
+**Solution (Implemented):**
+
+```
+Fixed:
+PR Open → Run CodeQL → Generate Plan → Copilot Review
+                ↓              ↑
+          All findings captured in plan
+```
+
+**Changes Made:**
+
+1. ✅ Added `codeql-pre-check` job that runs BEFORE plan generation
+2. ✅ Updated `analyze-and-plan` job to depend on CodeQL completion
+3. ✅ Added 30-second wait to ensure findings are uploaded to GitHub
+4. ✅ Modified security scans step to fetch CodeQL results via API
+
+**Validation:**
+
+- Resolution plans now include ALL security findings from the start
+- No more post-merge surprises from delayed security scans
+- Copilot reviews act as secondary validation (post-merge)
+
+**Key Takeaway:** Automated security scans MUST complete before generating resolution plans. Treat CodeQL as a required status check, not an asynchronous background task.
+
+**Related Documentation:**
+
+- `docs/security/private/copilot-followup-resolution-plan-2026-02-01.md`
+- `docs/security/private/copilot-followup-execution-report-2026-02-01.md`
+
+---
+
 ### Critical Priority Issues
 
 - TypeScript errors → Must fix before merge

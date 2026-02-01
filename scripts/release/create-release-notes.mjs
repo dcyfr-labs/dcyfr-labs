@@ -33,13 +33,39 @@ const ROOT_DIR = join(__dirname, '../..');
 
 // Parse command line arguments
 const args = process.argv.slice(2);
-const prNumber = args.find(arg => arg.startsWith('--pr='))?.split('=')[1];
-const version = args.find(arg => arg.startsWith('--version='))?.split('=')[1];
-const changelogPath = args.find(arg => arg.startsWith('--changelog='))?.split('=')[1];
+const prNumber = args.find((arg) => arg.startsWith('--pr='))?.split('=')[1];
+const version = args.find((arg) => arg.startsWith('--version='))?.split('=')[1];
+const changelogPath = args.find((arg) => arg.startsWith('--changelog='))?.split('=')[1];
 
 // GitHub API configuration
 const GH_TOKEN = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
-const REPO = 'dcyfr/dcyfr-labs'; // TODO: Extract from git remote
+
+// FIX: Copilot suggestion - Extract repo from environment/git remote instead of hardcoding
+const githubRepositoryEnv = process.env.GITHUB_REPOSITORY;
+let REPO;
+
+if (githubRepositoryEnv?.includes('/')) {
+  REPO = githubRepositoryEnv;
+} else {
+  try {
+    const remoteUrl = execSync('git config --get remote.origin.url', {
+      encoding: 'utf-8',
+      cwd: ROOT_DIR,
+    }).trim();
+    const sshMatch = remoteUrl.match(/github\.com:(.+)\/(.+?)(\.git)?$/);
+    const httpsMatch = remoteUrl.match(/github\.com\/(.+)\/(.+?)(\.git)?$/);
+    const match = sshMatch || httpsMatch;
+    if (match) {
+      REPO = `${match[1]}/${match[2]}`;
+    }
+  } catch {
+    // Ignore errors and fall back to default
+  }
+
+  if (!REPO) {
+    REPO = 'dcyfr/dcyfr-labs';
+  }
+}
 
 /**
  * Read changelog entry
@@ -70,16 +96,13 @@ async function fetchPRData(prNumber) {
   }
 
   try {
-    const response = await fetch(
-      `https://api.github.com/repos/${REPO}/pulls/${prNumber}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${GH_TOKEN}`,
-          'Accept': 'application/vnd.github+json',
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
-      }
-    );
+    const response = await fetch(`https://api.github.com/repos/${REPO}/pulls/${prNumber}`, {
+      headers: {
+        Authorization: `Bearer ${GH_TOKEN}`,
+        Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    });
 
     if (!response.ok) {
       throw new Error(`GitHub API error: ${response.status}`);
@@ -117,9 +140,9 @@ function getContributors() {
  */
 function getTestStats() {
   try {
-    // Try to get from package.json test script output (cached)
-    // For now, return placeholder
-    return '1185/1197'; // TODO: Extract from actual test run
+    // FIX: Copilot suggestion - Return N/A instead of stale hardcoded stats
+    // Dynamic test stats require parsing test output which isn't available here
+    return 'N/A';
   } catch (error) {
     return 'N/A';
   }
@@ -196,7 +219,8 @@ function generateReleaseNotes(data) {
     for (const contributor of contributors) {
       // Extract GitHub username if available
       const usernameMatch = contributor.match(/@(.+?)>/);
-      if (usernameMatch && usernameMatch[1].includes('github.com')) {
+      // FIX: CWE-185 - Validate github.com domain more strictly (must be at start)
+      if (usernameMatch && /^[a-zA-Z0-9-]+@github\.com$/.test(usernameMatch[1])) {
         const username = usernameMatch[1].split('@')[0];
         notes += `- @${username}\n`;
       } else {
@@ -292,15 +316,11 @@ async function main() {
 
 // Run if executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch(error => {
+  main().catch((error) => {
     console.error('❌ Fatal error:', error);
     process.exit(1);
   });
 }
 
 // Export for testing
-export {
-  extractSummary,
-  addEmojiBullets,
-  generateReleaseNotes,
-};
+export { extractSummary, addEmojiBullets, generateReleaseNotes };

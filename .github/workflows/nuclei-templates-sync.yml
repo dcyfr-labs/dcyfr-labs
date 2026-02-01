@@ -50,8 +50,9 @@ jobs:
           TARGET_VERSION="${{ github.event.inputs.version || 'latest' }}"
 
           if [ "$TARGET_VERSION" == "latest" ]; then
-            # Get latest stable v9.x tag
-            LATEST_TAG=$(git tag | grep -E '^v9\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
+            # FIX: Copilot suggestion - Support any major version, not just v9.x
+            # Get latest stable vX.Y.Z tag (any major version)
+            LATEST_TAG=$(git tag | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
             echo "🎯 Latest stable version: $LATEST_TAG"
           else
             LATEST_TAG="$TARGET_VERSION"

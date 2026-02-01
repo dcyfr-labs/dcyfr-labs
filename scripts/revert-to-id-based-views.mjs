@@ -49,6 +49,12 @@ const redis = new Redis({
 function getSlugToIdMapping() {
   console.log('\n📖 Reading blog post frontmatter...\n');
 
+  // FIX: CWE-78 - Validate projectRoot contains only safe path characters
+  if (!/^[a-zA-Z0-9_\/-]+$/.test(projectRoot)) {
+    console.error('❌ Invalid project root path contains unsafe characters');
+    process.exit(1);
+  }
+
   const output = execSync(
     `grep -h "^slug:\\|^id:" ${projectRoot}/src/content/blog/*/index.mdx | sed "s/^slug: //; s/^id: //; s/'//g; s/\\"//g"`,
     { encoding: 'utf-8', cwd: projectRoot }

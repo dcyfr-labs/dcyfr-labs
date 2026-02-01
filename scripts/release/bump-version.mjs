@@ -71,7 +71,11 @@ function getMatchingTags(pattern) {
   } catch (error) {
     // If git command fails, return empty array
     if (error.status !== 0) {
-      console.error('⚠️  Warning: Failed to fetch git tags:', error.message);
+      // FIX: Copilot suggestion - Include exit code in error message for debugging
+      console.error(
+        `⚠️  Warning: Failed to fetch git tags (exit code: ${error.status}):`,
+        error.message
+      );
       return [];
     }
     throw error;
@@ -117,7 +121,9 @@ function calculateNewVersion(baseVersion, forceMicro = false) {
   const existingTags = getMatchingTags(`${baseVersion}*`);
 
   console.error(`📅 Base version: ${baseVersion}`);
-  console.error(`🔍 Found ${existingTags.length} existing tag(s): ${existingTags.join(', ') || 'none'}`);
+  console.error(
+    `🔍 Found ${existingTags.length} existing tag(s): ${existingTags.join(', ') || 'none'}`
+  );
 
   if (existingTags.length === 0 && !forceMicro) {
     // No existing tags - use base version
@@ -156,11 +162,7 @@ function updatePackageJson(newVersion) {
       console.error(`🔍 [DRY RUN] Would update package.json: ${oldVersion} → ${newVersion}`);
     } else {
       // Write updated package.json
-      writeFileSync(
-        packageJsonPath,
-        JSON.stringify(packageJson, null, 2) + '\n',
-        'utf-8'
-      );
+      writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n', 'utf-8');
       console.error(`✅ Updated package.json: ${oldVersion} → ${newVersion}`);
 
       // Update package-lock.json if it exists
@@ -173,11 +175,7 @@ function updatePackageJson(newVersion) {
           packageLock.packages[''].version = newVersion;
         }
 
-        writeFileSync(
-          packageLockPath,
-          JSON.stringify(packageLock, null, 2) + '\n',
-          'utf-8'
-        );
+        writeFileSync(packageLockPath, JSON.stringify(packageLock, null, 2) + '\n', 'utf-8');
         console.error(`✅ Updated package-lock.json: ${oldVersion} → ${newVersion}`);
       } catch (lockError) {
         console.error(`⚠️  Warning: Could not update package-lock.json:`, lockError.message);

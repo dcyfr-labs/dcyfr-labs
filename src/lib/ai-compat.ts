@@ -1,3 +1,5 @@
+'use server';
+
 /**
  * AI Agent Compatibility Layer
  *
@@ -36,7 +38,10 @@ export interface TaskContext {
 /**
  * Agent routing result (extends base with convenience properties)
  */
-export interface RoutingResult extends Omit<BaseRoutingResult, 'matchedRule' | 'fallbacks' | 'confidence'> {
+export interface RoutingResult extends Omit<
+  BaseRoutingResult,
+  'matchedRule' | 'fallbacks' | 'confidence'
+> {
   tier: 'public' | 'private' | 'project';
   reasoning: string;
   delegationChain?: string[];
@@ -329,20 +334,32 @@ export async function validateDesignTokens(
 ): Promise<{ compliance: number; violations: string[]; suggestions: string[] }> {
   try {
     // Try to import from @dcyfr/agents if available
-    // @ts-expect-error - @dcyfr/agents not yet configured for imports
     const enforcement = await import('@dcyfr/agents/enforcement/design-tokens');
-    const { validateTokenUsage } = enforcement;
+    const { validateTokenUsage, ALL_TOKEN_RULES } = enforcement;
+    const fs = await import('fs/promises');
 
-    const results = await Promise.all(files.map((file) => validateTokenUsage(file)));
+    // Read file contents and validate
+    const allViolations = [];
+    for (const filePath of files) {
+      try {
+        const content = await fs.readFile(filePath, 'utf-8');
+        const fileViolations = validateTokenUsage(content, filePath, ALL_TOKEN_RULES);
+        allViolations.push(...fileViolations);
+      } catch (err) {
+        // Skip files that can't be read
+        continue;
+      }
+    }
 
-    const totalChecks = results.reduce((sum, r) => sum + r.totalChecks, 0);
-    const allViolations = results.flatMap((r) => r.violations);
-    const compliance = totalChecks > 0 ? ((totalChecks - allViolations.length) / totalChecks) * 100 : 100;
+    // Calculate compliance - use rule count * files as baseline
+    const totalChecks = ALL_TOKEN_RULES.length * files.length;
+    const compliance =
+      totalChecks > 0 ? ((totalChecks - allViolations.length) / totalChecks) * 100 : 100;
 
     return {
-      compliance: Math.round(compliance * 100) / 100,
-      violations: allViolations.map((v) => v.message),
-      suggestions: allViolations.map((v) => v.fix),
+      compliance: Math.max(0, Math.min(100, Math.round(compliance * 100) / 100)),
+      violations: allViolations.map((v) => `${v.file}:${v.line} - ${v.rule.name}: ${v.match}`),
+      suggestions: allViolations.map((v) => v.rule.fix),
     };
   } catch (error) {
     // @dcyfr/agents not yet available - return optimistic result
@@ -374,11 +391,15 @@ export async function requiresApproval(change: {
   files: string[];
 }): Promise<boolean> {
   try {
-    // @ts-expect-error - @dcyfr/agents not yet configured for imports
     const gates = await import('@dcyfr/agents/enforcement/approval-gates');
     const { requiresApproval: checkApproval } = gates;
 
-    return checkApproval(change.type, change.scope, change.files);
+    // Construct a description string from the change type and scope
+    const description = `${change.type} change in ${change.scope}: ${change.files.join(', ')}`;
+    const gate = checkApproval(description);
+
+    // Return true if a gate was matched (requires approval)
+    return gate !== null;
   } catch (error) {
     // @dcyfr/agents not yet available - return conservative default
     // Requiring approval is safer than auto-approving
