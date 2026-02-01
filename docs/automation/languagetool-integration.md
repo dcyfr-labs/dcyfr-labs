@@ -4,7 +4,7 @@
 
 **Status:** ✅ Implemented (Phase 1)
 **Last Updated:** January 29, 2026
-**Related:** [Content Creation](../blog/content-creation.md) · [Automation Guide](./AUTOMATED_UPDATES.md)
+**Related:** [Content Creation](../blog/content-creation.md) · Automation Guide
 
 ---
 
@@ -564,7 +564,7 @@ scripts/
 ## Related Documentation
 
 - [Content Creation Guide](../blog/content-creation.md) - Writing blog posts
-- [Automation Guide](./AUTOMATED_UPDATES.md) - CI/CD automation
+- Automation Guide - CI/CD automation
 - [LanguageTool API Docs](https://languagetool.org/http-api/) - Official API reference
 
 ---

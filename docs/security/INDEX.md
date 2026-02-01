@@ -390,10 +390,10 @@ curl -i https://www.dcyfr.ai | grep -i "strict-transport-security"
 ## 🔗 Quick Links
 
 ### 📄 Documentation
-- [Quick Reference](./quick-reference) - 5 min read
+- Quick Reference - 5 min read
 - Summary - 15 min read
 - Comprehensive Analysis - 60 min read
-- [Action Items](./findings-and-action-items) - 30 min read
+- Action Items - 30 min read
 
 ### 🔒 Security Resources
 - [OWASP](https://owasp.org/) - Security best practices
@@ -408,7 +408,7 @@ curl -i https://www.dcyfr.ai | grep -i "strict-transport-security"
 
 ---
 
-**Start with [QUICK_REFERENCE.md](./quick-reference) for a 5-minute overview!**
+**Start with QUICK_REFERENCE.md for a 5-minute overview!**
 
 ---
 

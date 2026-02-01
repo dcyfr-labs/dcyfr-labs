@@ -778,7 +778,7 @@ and <GlossaryTooltip term="XSS" definition="Cross-Site Scripting">XSS</GlossaryT
 ```
 
 **For Complete Audit Guidance:**
-- See [Content Audit Checklist](./content-audit-checklist.md) for pre-publication validation
+- See Content Audit Checklist for pre-publication validation
 - See [Component Patterns Guide](../ai/component-patterns.md) for detailed usage examples
 
 ---

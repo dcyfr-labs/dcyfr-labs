@@ -52,7 +52,7 @@ title: "My Blog Post"
 
 Here's an image that users can zoom:
 
-![Screenshot of dashboard](screenshot-url.jpg)
+!Screenshot of dashboard
 
 Regular content continues...
 ```
@@ -285,7 +285,7 @@ Works in all modern browsers with:
 ### 1. Screenshots in Technical Posts
 
 ```mdx
-![Application dashboard with metrics](dashboard-before.jpg)
+!Application dashboard with metrics
 ```
 
 **Result:** Readers can click to see details in charts and metrics.
@@ -293,7 +293,7 @@ Works in all modern browsers with:
 ### 2. Architecture Diagrams
 
 ```mdx
-![System architecture diagram](architecture-diagram.jpg)
+!System architecture diagram
 ```
 
 **Result:** Complex diagrams become readable when zoomed.
@@ -301,7 +301,7 @@ Works in all modern browsers with:
 ### 3. Code Screenshots
 
 ```mdx
-![VS Code with error highlights](vs-code-errors.jpg)
+!VS Code with error highlights
 ```
 
 **Result:** Small text in screenshots becomes legible.
@@ -309,8 +309,8 @@ Works in all modern browsers with:
 ### 4. Before/After Comparisons
 
 ```mdx
-![Performance metrics before optimization](perf-before.jpg)
-![Performance metrics after optimization](perf-after.jpg)
+!Performance metrics before optimization
+!Performance metrics after optimization
 ```
 
 **Result:** Readers can examine both images in detail.

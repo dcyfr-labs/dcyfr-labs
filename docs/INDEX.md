@@ -6,7 +6,7 @@
 **Status:** Production-ready documentation ✅
 **Classification:** TLP Implementation - Most content TLP:CLEAR (public)
 
-🔒 **Note:** This documentation is public. Sensitive content (security findings, operational metrics, compliance audits) is in subdirectory `private/` folders (e.g., `/docs/security/private/`, `/docs/operations/private/`). See [DOCS_GOVERNANCE.md](./DOCS_GOVERNANCE.md) for policies.
+🔒 **Note:** This documentation is public. Sensitive content (security findings, operational metrics, compliance audits) is in subdirectory `private/` folders (e.g., `/docs/security/private/`, `/docs/operations/private/`). See DOCS_GOVERNANCE.md for policies.
 
 ---
 
@@ -51,7 +51,7 @@ The documentation is organized into **18 focused directories**:
 ### Architecture & Code
 
 - **[architecture/README.md](./architecture/readme)** - Architecture overview
-- **[architecture/migration-guide.md](./architecture/migration-guide)** - Step-by-step migration
+- **architecture/migration-guide.md** - Step-by-step migration
 - **[components/](./components/)** - Component documentation
 
 ### Blog System
@@ -105,14 +105,14 @@ The documentation is organized into **18 focused directories**:
 - Design analysis and metrics → `docs/design/private/`
 - Infrastructure credentials and procedures → `docs/development/private/`
 
-**[DOCS_GOVERNANCE.md](./DOCS_GOVERNANCE.md)** - Complete policy document
+**DOCS_GOVERNANCE.md** - Complete policy document
 
 - What belongs in public vs. private docs
 - Classification matrix for different document types
 - Enforcement mechanisms and guardrails
 - Contributor guidelines for documentation
 
-**[DOCUMENTATION_CONSOLIDATION_GUIDE.md](./DOCUMENTATION_CONSOLIDATION_GUIDE.md)** - How to find everything
+**DOCUMENTATION_CONSOLIDATION_GUIDE.md** - How to find everything
 
 - Complete index of all documentation locations
 - Migration status of recent reorganization
@@ -126,7 +126,7 @@ The documentation is organized into **18 focused directories**:
 - **[testing/README.md](./testing/readme)** - Testing overview
 - **[testing/coverage-roadmap.md](./testing/coverage-roadmap)** - 3-phase coverage plan
 - **[testing/quick-reference.md](./testing/quick-reference)** - Testing commands & patterns
-- **[development/](./development/)** - Performance optimization guides
+- **development/** - Performance optimization guides
 - **[optimization/](./optimization/)** - SEO + accessibility + analytics
 
 ### Configuration
@@ -139,7 +139,7 @@ The documentation is organized into **18 focused directories**:
 
 - **operations/todo.md** - Active tasks
 - **operations/done.md** - Completed work
-- **[operations/KNOWN_ISSUES.md](./operations/known-issues)** - ✨ **Known issues & acceptable warnings**
+- **operations/KNOWN_ISSUES.md** - ✨ **Known issues & acceptable warnings**
 - **[.github/docs/PREVIEW_BRANCH_WORKFLOW.md](../.github/docs/PREVIEW_BRANCH_WORKFLOW)** - Preview branch management and protection
 
 ---

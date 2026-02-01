@@ -45,7 +45,10 @@ export interface PageLayoutProps {
 export function PageLayout({ children, className, isDraft = false }: PageLayoutProps) {
   return (
     <div className={cn(PAGE_LAYOUT.wrapper, 'pb-16 md:pb-0 pt-16 md:pt-0', className)}>
-      {isDraft && (process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === 'preview') && <DraftBanner />}
+      {isDraft &&
+        (process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === 'preview') && (
+          <DraftBanner />
+        )}
       {children}
     </div>
   );

@@ -426,9 +426,9 @@ await registry.initialize(); // Explicitly initialize if needed
 
 ## Resources
 
-- **Agent Catalog**: [.ai/agents/CATALOG.md](../../.ai/agents/CATALOG.md)
-- **Skills Documentation**: [.ai/skills/README.md](../../.ai/skills/README.md)
-- **MCP Registry**: [.ai/mcp/REGISTRY.md](../../.ai/mcp/REGISTRY.md)
+- **Agent Catalog**: .ai/agents/CATALOG.md
+- **Skills Documentation**: .ai/skills/README.md
+- **MCP Registry**: .ai/mcp/REGISTRY.md
 - **Plan Document**: See original architecture plan for full details
 
 ---

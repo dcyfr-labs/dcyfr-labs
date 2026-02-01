@@ -313,7 +313,7 @@ MCP Ecosystem Status:
 - **First time?** → Read [`docs/mcp/github/setup.md`](./setup)
 - **Need quick help?** → Read [`docs/features/mcp/MCP_QUICK_REFERENCE.md`](../MCP_QUICK_REFERENCE.md)
 - **Want everything?** → Read [`docs/mcp/github/implementation.md`](./implementation)
-- **Need background?** → Read [`docs/mcp/github/implementation-summary.md`](./implementation-summary)
+- **Need background?** → Read `docs/mcp/github/implementation-summary.md`
 
 ---
 

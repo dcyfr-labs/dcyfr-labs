@@ -520,13 +520,13 @@ describe('blog utilities', () => {
 
     describe('in Vercel preview (VERCEL_ENV = "preview")', () => {
       beforeEach(() => {
-        vi.stubEnv('NODE_ENV', 'production')
-        vi.stubEnv('VERCEL_ENV', 'preview')
-      })
+        vi.stubEnv('NODE_ENV', 'production');
+        vi.stubEnv('VERCEL_ENV', 'preview');
+      });
 
       afterEach(() => {
-        vi.unstubAllEnvs()
-      })
+        vi.unstubAllEnvs();
+      });
 
       it('should behave like development and show draft posts by default', () => {
         const post = { draft: true, publishedAt: pastDate };

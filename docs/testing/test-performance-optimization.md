@@ -357,8 +357,8 @@ Cache invalidates on:
 
 ## Related Documentation
 
-- [`docs/testing/coverage-roadmap.md`](coverage-roadmap.md) - Test coverage targets
-- [`docs/testing/testing-strategy.md`](testing-strategy.md) - Testing approach
+- [coverage-roadmap.md](./coverage-roadmap.md) - Test coverage targets
+- `docs/testing/testing-strategy.md` - Testing approach
 - [`vitest.config.ts`](../../vitest.config.ts) - Full Vitest configuration
 - [`tests/vitest.setup.ts`](../../tests/vitest.setup.ts) - Shared setup
 - [`tests/common-mocks.ts`](../../tests/common-mocks.ts) - Centralized mocks

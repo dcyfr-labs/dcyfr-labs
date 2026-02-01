@@ -296,11 +296,11 @@ const FIXABLE_RULES = new Set([
 
 | Document                                                                                 | Purpose                                    |
 | ---------------------------------------------------------------------------------------- | ------------------------------------------ |
-| [github-copilot-autofix.md](docs/features/github-copilot-autofix.md)                     | Complete implementation guide (800+ lines) |
-| [CODEQL_AUTOFIX_SETUP.md](docs/features/CODEQL_AUTOFIX_SETUP.md)                         | Setup checklist and quick reference        |
-| [github-code-scanning-integration.md](docs/features/github-code-scanning-integration.md) | CodeQL API integration patterns            |
-| [CODEQL_SUPPRESSIONS.md](.github/agents/patterns/CODEQL_SUPPRESSIONS.md)                 | DCYFR suppression policies                 |
-| [logging-security.md](docs/ai/logging-security.md)                                       | Logging security best practices            |
+| github-copilot-autofix.md                     | Complete implementation guide (800+ lines) |
+| CODEQL_AUTOFIX_SETUP.md                         | Setup checklist and quick reference        |
+| github-code-scanning-integration.md | CodeQL API integration patterns            |
+| CODEQL_SUPPRESSIONS.md                 | DCYFR suppression policies                 |
+| logging-security.md                                       | Logging security best practices            |
 
 ---
 
@@ -371,8 +371,8 @@ npm run security:autofix  # Shows help menu
 
 **Full Documentation:**
 
-- See [docs/features/github-copilot-autofix.md](docs/features/github-copilot-autofix.md)
-- See [docs/features/CODEQL_AUTOFIX_SETUP.md](docs/features/CODEQL_AUTOFIX_SETUP.md)
+- See docs/features/github-copilot-autofix.md
+- See docs/features/CODEQL_AUTOFIX_SETUP.md
 
 **Issues or Questions:**
 

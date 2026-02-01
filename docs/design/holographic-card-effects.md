@@ -334,7 +334,7 @@ Change rainbow shine colors:
 ## Related Documentation
 
 - UI/UX Quick Wins
-- [Design System Validation](/docs/design/enforcement)
+- Design System Validation
 - Performance Optimization
 - Accessibility Guidelines
 

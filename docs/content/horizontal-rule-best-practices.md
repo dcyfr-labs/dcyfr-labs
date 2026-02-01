@@ -554,8 +554,8 @@ find src/content/blog -name "index.mdx" -exec sh -c \
 ## Related Documentation
 
 - **[Horizontal Rules in RSS/Atom Feeds](./horizontal-rules-in-rss-feeds.md)** - Feed-specific best practices and reader support
-- **[Horizontal Rule Audit (Jan 2026)](./horizontal-rule-audit-2026-01-19.md)** - Analysis of existing blog posts
-- **[Horizontal Rule Analysis Summary](./horizontal-rule-analysis-summary.md)** - Executive summary
+- **Horizontal Rule Audit (Jan 2026)** - Analysis of existing blog posts
+- **Horizontal Rule Analysis Summary** - Executive summary
 
 ---
 

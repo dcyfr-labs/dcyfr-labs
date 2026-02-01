@@ -509,10 +509,10 @@ npm run build
 ## Resources
 
 ### Internal Documentation
-- [Design System Guide](./docs/ai/design-system.md)
-- [Modern UI/UX Standards](./docs/ai/modern-ui-ux-standards.md)
-- [Component Patterns](./docs/ai/component-patterns.md)
-- [Enforcement Rules](./docs/ai/enforcement-rules.md)
+- Design System Guide
+- Modern UI/UX Standards
+- Component Patterns
+- Enforcement Rules
 
 ### External Standards
 - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)

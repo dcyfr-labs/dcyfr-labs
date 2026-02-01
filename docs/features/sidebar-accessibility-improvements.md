@@ -5,7 +5,7 @@
 **Date:** 2025-12-25
 **Author:** Claude Code
 **Status:** ✅ Completed
-**Related:** [Sidebar Architecture Analysis](./sidebar-architecture-analysis.md)
+**Related:** Sidebar Architecture Analysis
 
 ---
 
@@ -402,7 +402,7 @@ git revert <commit-hash>
 - [WCAG 2.4.1: Bypass Blocks](https://www.w3.org/WAI/WCAG21/Understanding/bypass-blocks.html)
 - [MDN: CSS Grid Order](https://developer.mozilla.org/en-US/docs/Web/CSS/order)
 - [WebAIM: Skip Navigation Links](https://webaim.org/techniques/skipnav/)
-- [Sidebar Architecture Analysis](./sidebar-architecture-analysis.md)
+- Sidebar Architecture Analysis
 
 ---
 

@@ -140,7 +140,7 @@ import {
 
 ### Step 2: Replace Hardcoded Values
 
-Refer to the **[Quick Start Guide](./quick-start)** for examples of each pattern.
+Refer to the **Quick Start Guide** for examples of each pattern.
 
 ### Step 3: Verify
 
@@ -205,7 +205,7 @@ To suppress warnings in these cases, use ESLint disable comments:
 
 ## Resources
 
-- **[Quick Start Guide](./quick-start)** - Get started with design tokens
+- **Quick Start Guide** - Get started with design tokens
 - **[Design System Overview](./design-system)** - Complete reference
 - **Component Patterns** - Copy-paste examples
 - **Implementation Roadmap** - Migration phases
@@ -214,4 +214,4 @@ To suppress warnings in these cases, use ESLint disable comments:
 
 ## Questions?
 
-See the [Quick Start Guide](./quick-start) for common patterns, or check the [Design System documentation](./design-system) for detailed information about available tokens.
+See the Quick Start Guide for common patterns, or check the [Design System documentation](./design-system) for detailed information about available tokens.

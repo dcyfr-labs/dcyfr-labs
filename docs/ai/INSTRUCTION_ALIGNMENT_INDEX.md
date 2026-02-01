@@ -117,50 +117,50 @@
 ### By Role
 
 **👤 Project Manager**
-1. Read [SUMMARY](./INSTRUCTION_ALIGNMENT_SUMMARY.md) (10 min)
+1. Read SUMMARY (10 min)
 2. Review alignment scorecard
 3. Check prioritized action list
 4. Plan 1-week sprint
 
 **👨‍💻 Developer**
-1. Start with [SUMMARY](./INSTRUCTION_ALIGNMENT_SUMMARY.md) (overview)
-2. Read [ANALYSIS](./INSTRUCTION_ALIGNMENT_ANALYSIS.md) (deep dive)
-3. Follow [IMPLEMENTATION](./INSTRUCTION_ALIGNMENT_IMPLEMENTATION.md) (step-by-step)
+1. Start with SUMMARY (overview)
+2. Read ANALYSIS (deep dive)
+3. Follow IMPLEMENTATION (step-by-step)
 4. Use provided code examples
 
 **🤖 AI Agent (DCYFR/Claude)**
-1. Reference [ANALYSIS](./INSTRUCTION_ALIGNMENT_ANALYSIS.md) for gaps
-2. Use [IMPLEMENTATION](./INSTRUCTION_ALIGNMENT_IMPLEMENTATION.md) for code
+1. Reference ANALYSIS for gaps
+2. Use IMPLEMENTATION for code
 3. Follow timeline and checklist
 4. Track progress using todo list
 
 **🏗️ Architect/Tech Lead**
-1. Read [SUMMARY](./INSTRUCTION_ALIGNMENT_SUMMARY.md) (overview)
+1. Read SUMMARY (overview)
 2. Review alignment scorecard + findings
-3. Deep dive on critical gaps in [ANALYSIS](./INSTRUCTION_ALIGNMENT_ANALYSIS.md)
-4. Review [IMPLEMENTATION](./INSTRUCTION_ALIGNMENT_IMPLEMENTATION.md) approach
+3. Deep dive on critical gaps in ANALYSIS
+4. Review IMPLEMENTATION approach
 
 ---
 
 ### By Task
 
 **I need to understand the current state...**
-→ [SUMMARY](./INSTRUCTION_ALIGNMENT_SUMMARY.md#-what-needs-fixing-critical)
+→ SUMMARY
 
 **I need detailed evidence of issues...**
-→ [ANALYSIS](./INSTRUCTION_ALIGNMENT_ANALYSIS.md#critical-gaps-must-fix) (Critical Gaps section)
+→ ANALYSIS (Critical Gaps section)
 
 **I need to implement fixes...**
-→ [IMPLEMENTATION](./INSTRUCTION_ALIGNMENT_IMPLEMENTATION.md) (step by step)
+→ IMPLEMENTATION (step by step)
 
 **I need to understand why changes matter...**
-→ [ANALYSIS](./INSTRUCTION_ALIGNMENT_ANALYSIS.md) (Why This Matters sections)
+→ ANALYSIS (Why This Matters sections)
 
 **I need industry standard references...**
-→ [ANALYSIS](./INSTRUCTION_ALIGNMENT_ANALYSIS.md#references) (References section)
+→ ANALYSIS (References section)
 
 **I need exact code to copy/paste...**
-→ [IMPLEMENTATION](./INSTRUCTION_ALIGNMENT_IMPLEMENTATION.md#fix-1-change-warn-to-error-for-design-tokens) (FIX sections)
+→ IMPLEMENTATION (FIX sections)
 
 ---
 
@@ -246,12 +246,12 @@
 ### Extended AI Documentation (January 2026)
 
 **AITMPL Integration:**
-- [aitmpl-enhancement-plan.md](./aitmpl-enhancement-plan.md) - Template integration strategy
-- [aitmpl-integration-summary.md](./aitmpl-integration-summary.md) - Integration completion summary
+- aitmpl-enhancement-plan.md - Template integration strategy
+- aitmpl-integration-summary.md - Integration completion summary
 
 **Testing & Quality:**
 - [testing-strategy.md](./testing-strategy.md) - Comprehensive testing approach
-- [claude-code-validation-report.md](./claude-code-validation-report.md) - Validation results
+- claude-code-validation-report.md - Validation results
 
 **Development Patterns:**
 - [component-lifecycle.md](./component-lifecycle.md) - React component patterns
@@ -264,7 +264,7 @@
 ## ✅ Action Items Checklist
 
 ### For Approval
-- [ ] Review [SUMMARY](./INSTRUCTION_ALIGNMENT_SUMMARY.md)
+- [ ] Review SUMMARY
 - [ ] Approve prioritized action list
 - [ ] Assign implementation owner
 - [ ] Schedule 1-week sprint
@@ -299,7 +299,7 @@ A: System will continue to work, but without automated enforcement. Violations w
 A: 1 week for all critical fixes + enhancements. Can be parallelized across 2-3 developers.
 
 **Q: Can AI agents implement this?**  
-A: Yes! DCYFR can handle code refactoring. Claude can do architectural review. Reference [IMPLEMENTATION](./INSTRUCTION_ALIGNMENT_IMPLEMENTATION.md) guide.
+A: Yes! DCYFR can handle code refactoring. Claude can do architectural review. Reference IMPLEMENTATION guide.
 
 ---
 
@@ -357,7 +357,7 @@ A: Yes! DCYFR can handle code refactoring. Claude can do architectural review. R
 **Status:** ✅ COMPLETE - Ready for Team Review & Implementation
 
 **Next:** 
-1. Share [SUMMARY](./INSTRUCTION_ALIGNMENT_SUMMARY.md) with team
+1. Share SUMMARY with team
 2. Discuss findings in standup
 3. Create implementation tasks
 4. Begin critical fixes

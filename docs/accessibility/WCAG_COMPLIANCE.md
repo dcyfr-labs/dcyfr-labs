@@ -554,11 +554,11 @@ expect(result.passed).toBe(true);
 
 ### Internal Documentation
 
-- [Accessibility Audit Report](private/accessibility-audit-2025-12-28.md)
-- [Accessibility Resolution Summary](private/accessibility-resolution-2025-12-28.md)
-- [Accessibility Completion Status](private/accessibility-completion-2025-12-28.md)
+- Accessibility Audit Report
+- Accessibility Resolution Summary
+- Accessibility Completion Status
 - [DCYFR Pronunciation Guide](./dcyfr-pronunciation.md)
-- [Design System Tokens](../design/design-tokens.md)
+- Design System Tokens
 
 ### Testing Scripts
 

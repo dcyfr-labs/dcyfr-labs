@@ -340,11 +340,11 @@ REQUIRES_MANUAL_REVIEW = Set([
 
 ## 📚 Documentation Links
 
-- **Full Guide:** [github-copilot-autofix.md](docs/features/github-copilot-autofix.md)
-- **Setup Guide:** [CODEQL_AUTOFIX_SETUP.md](docs/features/CODEQL_AUTOFIX_SETUP.md)
+- **Full Guide:** github-copilot-autofix.md
+- **Setup Guide:** CODEQL_AUTOFIX_SETUP.md
 - **Implementation:** [CODEQL_AUTOFIX_IMPLEMENTATION.md](./CODEQL_AUTOFIX_IMPLEMENTATION.md)
-- **CodeQL Integration:** [github-code-scanning-integration.md](docs/features/github-code-scanning-integration.md)
-- **Security Guidelines:** [.github/agents/patterns/CODEQL_SUPPRESSIONS.md](.github/agents/patterns/CODEQL_SUPPRESSIONS.md)
+- **CodeQL Integration:** github-code-scanning-integration.md
+- **Security Guidelines:** .github/agents/patterns/CODEQL_SUPPRESSIONS.md
 
 ---
 
@@ -454,4 +454,4 @@ REQUIRES_MANUAL_REVIEW = Set([
 
 **This deployment checklist confirms that GitHub Copilot Autofix is ready for production use.**
 
-For questions or issues, see [github-copilot-autofix.md](docs/features/github-copilot-autofix.md) or contact the team.
+For questions or issues, see github-copilot-autofix.md or contact the team.

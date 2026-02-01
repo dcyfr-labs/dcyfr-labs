@@ -1,16 +1,13 @@
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
-import yaml from "js-yaml";
-import crypto from "crypto";
-import type { Post } from "@/data/posts";
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
+import yaml from 'js-yaml';
+import crypto from 'crypto';
+import type { Post } from '@/data/posts';
 
-const CONTENT_DIR = path.join(process.cwd(), "src/content/blog");
+const CONTENT_DIR = path.join(process.cwd(), 'src/content/blog');
 // Private drafts folder - git-ignored, only visible in development
-const PRIVATE_CONTENT_DIR = path.join(
-  process.cwd(),
-  "src/content/blog/private"
-);
+const PRIVATE_CONTENT_DIR = path.join(process.cwd(), 'src/content/blog/private');
 const WORDS_PER_MINUTE = 225;
 
 /**
@@ -40,10 +37,7 @@ const WORDS_PER_MINUTE = 225;
  * @returns Stable post ID (e.g., "post-20251005-abc123")
  * @internal Exported for testing purposes only
  */
-export function generatePostId(
-  publishedAt: string | undefined,
-  slug: string
-): string {
+export function generatePostId(publishedAt: string | undefined, slug: string): string {
   // Guard against missing publishedAt
   if (!publishedAt) {
     throw new Error(
@@ -54,16 +48,12 @@ export function generatePostId(
 
   // Create deterministic hash from published date and slug
   const input = `${publishedAt}:${slug}`;
-  const hash = crypto
-    .createHash("sha256")
-    .update(input)
-    .digest("hex")
-    .substring(0, 8); // Take first 8 chars of hex hash
+  const hash = crypto.createHash('sha256').update(input).digest('hex').substring(0, 8); // Take first 8 chars of hex hash
 
   // Format: post-YYYYMMDD-{hash}
   // Extract just the date part (YYYY-MM-DD) from ISO datetime strings
-  const datePart = publishedAt.split("T")[0]; // "2025-12-03T12:00:00Z" → "2025-12-03"
-  const date = datePart.replace(/-/g, ""); // "2025-12-03" → "20251203"
+  const datePart = publishedAt.split('T')[0]; // "2025-12-03T12:00:00Z" → "2025-12-03"
+  const date = datePart.replace(/-/g, ''); // "2025-12-03" → "20251203"
   return `post-${date}-${hash}`;
 }
 
@@ -85,10 +75,10 @@ export function isScheduledPost(publishedAt: string): boolean {
  * @internal Exported for testing purposes only
  */
 export function isPostVisible(
-  post: Pick<Post, "draft" | "publishedAt">,
+  post: Pick<Post, 'draft' | 'publishedAt'>,
   // Treat Vercel preview as non-production so drafts appear for testing
-  isProduction: boolean =
-    process.env.NODE_ENV === "production" && process.env.VERCEL_ENV !== "preview"
+  isProduction: boolean = process.env.NODE_ENV === 'production' &&
+    process.env.VERCEL_ENV !== 'preview'
 ): boolean {
   if (!isProduction) return true;
   if (post.draft) return false;
@@ -100,10 +90,10 @@ export function isPostVisible(
  * Calculate reading time for blog post content
  * @internal Exported for testing purposes only
  */
-export function calculateReadingTime(body: string): Post["readingTime"] {
+export function calculateReadingTime(body: string): Post['readingTime'] {
   const words = body
-    .replace(/```[\s\S]*?```/g, " ")
-    .replace(/<[^>]*>/g, " ")
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/<[^>]*>/g, ' ')
     .split(/\s+/)
     .filter(Boolean).length;
   const minutes = Math.max(1, Math.ceil(words / WORDS_PER_MINUTE));
@@ -126,7 +116,7 @@ function getColocatedHeroImage(
   slug: string,
   title: string,
   isPrivate: boolean = false
-): Post["image"] | undefined {
+): Post['image'] | undefined {
   const baseDir = isPrivate ? PRIVATE_CONTENT_DIR : CONTENT_DIR;
   const postDir = path.join(baseDir, slug);
 
@@ -136,7 +126,7 @@ function getColocatedHeroImage(
   }
 
   // Check for hero images in order of preference
-  const heroExtensions = [".svg", ".jpg", ".jpeg", ".png", ".webp"];
+  const heroExtensions = ['.svg', '.jpg', '.jpeg', '.png', '.webp'];
 
   for (const ext of heroExtensions) {
     const heroPath = path.join(postDir, `hero${ext}`);
@@ -157,10 +147,7 @@ function getColocatedHeroImage(
  * @param isPrivate - Whether this is the private (git-ignored) folder
  * @returns Array of posts found in the directory
  */
-function scanContentDirectory(
-  contentDir: string,
-  isPrivate: boolean = false
-): Post[] {
+function scanContentDirectory(contentDir: string, isPrivate: boolean = false): Post[] {
   if (!fs.existsSync(contentDir)) {
     return [];
   }
@@ -171,20 +158,20 @@ function scanContentDirectory(
   for (const entry of entries) {
     // Skip the 'private' subdirectory when scanning main content dir
     // (it's scanned separately)
-    if (entry.name === "private" && !isPrivate) {
+    if (entry.name === 'private' && !isPrivate) {
       continue;
     }
 
     let slug: string;
     let filePath: string;
 
-    if (entry.isFile() && entry.name.endsWith(".mdx")) {
+    if (entry.isFile() && entry.name.endsWith('.mdx')) {
       // Flat file: my-post.mdx
-      slug = entry.name.replace(/\.mdx$/, "");
+      slug = entry.name.replace(/\.mdx$/, '');
       filePath = path.join(contentDir, entry.name);
     } else if (entry.isDirectory()) {
       // Folder with index: my-post/index.mdx
-      const indexPath = path.join(contentDir, entry.name, "index.mdx");
+      const indexPath = path.join(contentDir, entry.name, 'index.mdx');
       if (fs.existsSync(indexPath)) {
         slug = entry.name;
         filePath = indexPath;
@@ -195,7 +182,7 @@ function scanContentDirectory(
       continue; // Skip non-MDX files and other entries
     }
 
-    const fileContents = fs.readFileSync(filePath, "utf8");
+    const fileContents = fs.readFileSync(filePath, 'utf8');
     const { data, content } = matter(fileContents, {
       engines: {
         yaml: (s) => yaml.load(s, { schema: yaml.JSON_SCHEMA }) as object,
@@ -205,12 +192,11 @@ function scanContentDirectory(
     const publishedAt = data.publishedAt as string;
 
     // Use explicit ID from frontmatter, or auto-generate deterministically
-    const id =
-      (data.id as string | undefined) || generatePostId(publishedAt, slug);
+    const id = (data.id as string | undefined) || generatePostId(publishedAt, slug);
 
     // Check for co-located hero image if not specified in frontmatter
     const image =
-      (data.image as Post["image"] | undefined) ||
+      (data.image as Post['image'] | undefined) ||
       getColocatedHeroImage(slug, data.title as string, isPrivate);
 
     // Posts in private folder are implicitly drafts (hidden in production)
@@ -224,7 +210,7 @@ function scanContentDirectory(
       summary: data.summary as string,
       publishedAt,
       updatedAt: data.updatedAt as string | undefined,
-      category: data.category as Post["category"] | undefined,
+      category: data.category as Post['category'] | undefined,
       tags: (data.tags as string[]) || [],
       featured: data.featured as boolean | undefined,
       archived: data.archived as boolean | undefined,
@@ -233,11 +219,11 @@ function scanContentDirectory(
       previousSlugs: (data.previousSlugs as string[]) || undefined,
       previousIds: (data.previousIds as string[]) || undefined,
       image,
-      series: data.series as Post["series"] | undefined,
+      series: data.series as Post['series'] | undefined,
       authors: (data.authors as string[] | undefined) || [
-        (data.author as string | undefined) || "dcyfr",
+        (data.author as string | undefined) || 'dcyfr',
       ],
-      authorId: (data.author as string | undefined) || "dcyfr", // deprecated, kept for backward compatibility
+      authorId: (data.author as string | undefined) || 'dcyfr', // deprecated, kept for backward compatibility
       readingTime: calculateReadingTime(content),
     } satisfies Post);
   }
@@ -251,9 +237,9 @@ export function getAllPosts(): Post[] {
 
   // Scan private drafts directory (visible in development and Vercel preview)
   const privatePosts =
-    process.env.NODE_ENV !== "production" || process.env.VERCEL_ENV === "preview"
+    process.env.NODE_ENV !== 'production' || process.env.VERCEL_ENV === 'preview'
       ? scanContentDirectory(PRIVATE_CONTENT_DIR, true)
-      : []; 
+      : [];
 
   const allPosts = [...publicPosts, ...privatePosts];
 
@@ -262,8 +248,7 @@ export function getAllPosts(): Post[] {
 
   // Sort by publishedAt date, newest first
   return filteredPosts.sort(
-    (a, b) =>
-      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+    (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
   );
 }
 
@@ -274,19 +259,19 @@ export function getPostBySlug(slug: string): Post | undefined {
 
   // Then try folder with index in public: my-post/index.mdx
   if (!fs.existsSync(filePath)) {
-    filePath = path.join(CONTENT_DIR, slug, "index.mdx");
+    filePath = path.join(CONTENT_DIR, slug, 'index.mdx');
   }
 
   // Then try private drafts folder (visible in development and Vercel preview)
   if (
     !fs.existsSync(filePath) &&
-    (process.env.NODE_ENV !== "production" || process.env.VERCEL_ENV === "preview")
+    (process.env.NODE_ENV !== 'production' || process.env.VERCEL_ENV === 'preview')
   ) {
     filePath = path.join(PRIVATE_CONTENT_DIR, `${slug}.mdx`);
     isPrivate = true;
 
     if (!fs.existsSync(filePath)) {
-      filePath = path.join(PRIVATE_CONTENT_DIR, slug, "index.mdx");
+      filePath = path.join(PRIVATE_CONTENT_DIR, slug, 'index.mdx');
     }
   }
 
@@ -294,7 +279,7 @@ export function getPostBySlug(slug: string): Post | undefined {
     return undefined;
   }
 
-  const fileContents = fs.readFileSync(filePath, "utf8");
+  const fileContents = fs.readFileSync(filePath, 'utf8');
   const { data, content } = matter(fileContents, {
     engines: {
       yaml: (s) => yaml.load(s, { schema: yaml.JSON_SCHEMA }) as object,
@@ -302,12 +287,11 @@ export function getPostBySlug(slug: string): Post | undefined {
   });
 
   const publishedAt = data.publishedAt as string;
-  const id =
-    (data.id as string | undefined) || generatePostId(publishedAt, slug);
+  const id = (data.id as string | undefined) || generatePostId(publishedAt, slug);
 
   // Check for co-located hero image if not specified in frontmatter
   const image =
-    (data.image as Post["image"] | undefined) ||
+    (data.image as Post['image'] | undefined) ||
     getColocatedHeroImage(slug, data.title as string, isPrivate);
 
   // Posts in private folder are implicitly drafts (hidden in production)
@@ -321,7 +305,7 @@ export function getPostBySlug(slug: string): Post | undefined {
     summary: data.summary as string,
     publishedAt,
     updatedAt: data.updatedAt as string | undefined,
-    category: data.category as Post["category"] | undefined,
+    category: data.category as Post['category'] | undefined,
     tags: (data.tags as string[]) || [],
     featured: data.featured as boolean | undefined,
     archived: data.archived as boolean | undefined,
@@ -330,11 +314,11 @@ export function getPostBySlug(slug: string): Post | undefined {
     previousSlugs: (data.previousSlugs as string[]) || undefined,
     previousIds: (data.previousIds as string[]) || undefined,
     image,
-    series: data.series as Post["series"] | undefined,
+    series: data.series as Post['series'] | undefined,
     authors: (data.authors as string[] | undefined) || [
-      (data.author as string | undefined) || "dcyfr",
+      (data.author as string | undefined) || 'dcyfr',
     ],
-    authorId: (data.author as string | undefined) || "dcyfr", // deprecated, kept for backward compatibility
+    authorId: (data.author as string | undefined) || 'dcyfr', // deprecated, kept for backward compatibility
     readingTime: calculateReadingTime(content),
   };
 
@@ -456,12 +440,12 @@ export function calculateActiveFilterCount(filters: {
   dateRange?: string;
 }): number {
   const {
-    query = "",
-    selectedCategory = "",
+    query = '',
+    selectedCategory = '',
     selectedTags = [],
-    readingTime = "",
-    sortBy = "newest",
-    dateRange = "all",
+    readingTime = '',
+    sortBy = 'newest',
+    dateRange = 'all',
   } = filters;
 
   return [
@@ -469,7 +453,7 @@ export function calculateActiveFilterCount(filters: {
     selectedCategory ? 1 : 0,
     selectedTags.length,
     readingTime ? 1 : 0,
-    sortBy !== "newest" ? 1 : 0,
-    dateRange !== "all" ? 1 : 0,
+    sortBy !== 'newest' ? 1 : 0,
+    dateRange !== 'all' ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
 }

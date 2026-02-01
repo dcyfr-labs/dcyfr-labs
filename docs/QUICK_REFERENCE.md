@@ -30,7 +30,7 @@ npm run test:run      # Run tests once (no watch)
 
 | Topic                   | Link                                                                          | Use When                    |
 | ----------------------- | ----------------------------------------------------------------------------- | --------------------------- |
-| **Design Tokens**       | [docs/design/design-tokens.md](design/design-tokens.md)                       | Building UI components      |
+| **Design Tokens**       | docs/design/design-tokens.md                       | Building UI components      |
 | **Component Patterns**  | [docs/ai/component-patterns.md](ai/component-patterns.md)                     | Creating page layouts       |
 | **Best Practices**      | [docs/ai/best-practices.md](ai/best-practices.md)                             | API patterns & workflows    |
 | **Inngest Integration** | [docs/features/inngest/INDEX.md](features/inngest/INDEX.md)                   | Background jobs & workflows |
@@ -51,7 +51,7 @@ npm run test:run      # Run tests once (no watch)
 | ------------------------ | ----------------------------------------------------------------------------- | ------------------------- |
 | **Maintenance Playbook** | [docs/operations/MAINTENANCE_PLAYBOOK.md](operations/MAINTENANCE_PLAYBOOK.md) | Routine maintenance       |
 | **Cleanup Log**          | [docs/operations/CLEANUP_LOG.md](operations/CLEANUP_LOG.md)                   | Recovering deleted files  |
-| **TODO Review**          | [docs/operations/TODO_REVIEW.md](operations/TODO_REVIEW.md)                   | Understanding TODO status |
+| **TODO Review**          | docs/operations/TODO_REVIEW.md                   | Understanding TODO status |
 
 ---
 
@@ -77,7 +77,7 @@ import { SPACING, TYPOGRAPHY, SEMANTIC_COLORS } from '@/lib/design-tokens';
 - **TYPOGRAPHY**: Font sizes, weights, line heights (`TEXT_SM`, `HEADING_2XL`)
 - **SEMANTIC_COLORS**: Text, backgrounds, borders (`TEXT.PRIMARY`, `BG.SECONDARY`)
 
-**Learn more:** [docs/design/design-tokens.md](design/design-tokens.md)
+**Learn more:** docs/design/design-tokens.md
 
 ---
 

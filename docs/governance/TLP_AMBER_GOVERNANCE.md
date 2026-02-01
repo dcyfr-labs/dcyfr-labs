@@ -401,11 +401,11 @@ docs/*/*/private/**
 
 ## 📚 Related Documentation
 
-- [TLP Classification Implementation](../tlp-classification-implementation.md) - TLP protocol overview
-- [Documentation Governance](DOCS_GOVERNANCE.md) - Public vs. private policy
-- [Operational Documentation Policy](OPERATIONAL_DOCUMENTATION_POLICY.md) - When to use private/
+- TLP Classification Implementation - TLP protocol overview
+- [Documentation Governance](./DOCS_GOVERNANCE.md) - Public vs. private policy
+- [Operational Documentation Policy](./OPERATIONAL_DOCUMENTATION_POLICY.md) - When to use private/
 - [AGENTS.md](../../AGENTS.md) - AI agent governance rules
-- [tlp-amber-analysis.json](private/tlp-amber-analysis.json) - Full categorization data
+- tlp-amber-analysis.json - Full categorization data
 
 ---
 

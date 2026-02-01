@@ -314,10 +314,10 @@ AI Assistants (Copilot / DCYFR / Claude)
 
 ## 📚 Documentation
 
-- [Implementation Plan](../architecture/MCP_IMPLEMENTATION_PLAN.md) - Complete 30-day roadmap
-- [Analytics MCP Docs](./ANALYTICS_MCP.md) - Detailed Analytics MCP reference
-- [Design Token MCP Docs](./DESIGN_TOKEN_MCP.md) - Token validation patterns
-- [Content Manager MCP Docs](./CONTENT_MANAGER_MCP.md) - Content querying guide
+- Implementation Plan - Complete 30-day roadmap
+- Analytics MCP Docs - Detailed Analytics MCP reference
+- Design Token MCP Docs - Token validation patterns
+- Content Manager MCP Docs - Content querying guide
 
 ---
 

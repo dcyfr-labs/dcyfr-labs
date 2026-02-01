@@ -301,8 +301,8 @@ opencode
 
 ## 📖 Related Documentation
 
-- [OPENCODE_BEST_PRACTICES_ANALYSIS.md](./OPENCODE_BEST_PRACTICES_ANALYSIS.md) - Full gap analysis
-- [.opencode/DCYFR.opencode.md](../.opencode/DCYFR.opencode.md) - DCYFR enforcement rules
+- OPENCODE_BEST_PRACTICES_ANALYSIS.md - Full gap analysis
+- .opencode/DCYFR.opencode.md - DCYFR enforcement rules
 - [Official OpenCode Docs](https://opencode.ai/docs/config/) - OpenCode.ai reference
 
 ---
@@ -321,4 +321,4 @@ opencode
 
 **Status:** Phase 1 Complete ✅
 **Next Review:** After Phase 2 global config implementation
-**Questions?** See [OPENCODE_BEST_PRACTICES_ANALYSIS.md](./OPENCODE_BEST_PRACTICES_ANALYSIS.md) section "Questions & Next Steps"
+**Questions?** See OPENCODE_BEST_PRACTICES_ANALYSIS.md section "Questions & Next Steps"

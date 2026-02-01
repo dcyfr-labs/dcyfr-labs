@@ -13,7 +13,6 @@ and this project uses [Calendar Versioning](https://calver.org/) with the `YYYY.
 
 - **Preview deployments now include draft blog posts** - Vercel preview builds and local development will display posts from `src/content/blog/private/` and drafts marked `draft: true` for pre-production testing. Drafts remain hidden in production builds and private assets remain gitignored.
 
-
 ## [2026.01.21]
 
 ### Added

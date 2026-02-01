@@ -161,7 +161,7 @@ Current validation targets:
 - Activity Feed (`/activity`)
 - Contact (`/contact`)
 
-**To add pages:** Edit `pagesToTest` array in [`scripts/validate-contrast.mjs`](../../scripts/validate-contrast.mjs)
+**To add pages:** Edit `pagesToTest` array in `scripts/validate-contrast.mjs`
 
 ### Output Example
 
@@ -534,7 +534,7 @@ npm run lhci:analyze
 npm run lighthouse:ci
 ```
 
-**Full Report:** [`docs/core-web-vitals-baseline.md`](../core-web-vitals-baseline.md)
+**Full Report:** `docs/core-web-vitals-baseline.md`
 
 ---
 

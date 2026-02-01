@@ -3,7 +3,7 @@
 # Activity Topic Clustering
 
 **Status:** ✅ Complete (December 2025)
-**Related:** [Activity Feed](./activity-feed.md), [Activity Search](./activity-search.md)
+**Related:** [Activity Feed](./activity-feed.md), Activity Search
 
 ## Overview
 
@@ -351,9 +351,9 @@ npx playwright test activity-topics.spec.ts
 ## See Also
 
 - [Activity Feed Documentation](./activity-feed.md)
-- [Activity Search](./activity-search.md)
-- [Activity Heatmap](./activity-heatmap.md)
-- [Activity Embeds](./activity-embeds.md)
+- Activity Search
+- Activity Heatmap
+- Activity Embeds
 
 ## Success Metrics
 

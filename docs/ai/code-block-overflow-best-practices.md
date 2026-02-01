@@ -315,8 +315,8 @@ def calculate_metrics(data):
 
 - [Design System](./design-system.md) - Token usage guidelines
 - [Component Patterns](./component-patterns.md) - MDX component patterns
-- [Accessibility Guide](../accessibility/README.md) - A11y requirements
-- [Mobile Patterns](../design/mobile-patterns.md) - Touch-friendly UX
+- Accessibility Guide - A11y requirements
+- Mobile Patterns - Touch-friendly UX
 
 ---
 

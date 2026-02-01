@@ -320,7 +320,7 @@ This document archives completed features and improvements across all phases.
 
 **New Documentation:**
 
-- [docs/features/seo-audit-results.md](docs/features/seo-audit-results.md) (comprehensive audit report)
+- docs/features/seo-audit-results.md (comprehensive audit report)
 
 **Completed:** December 26, 2025
 
@@ -420,9 +420,9 @@ This document archives completed features and improvements across all phases.
 
 **Strategy Documents:**
 
-- [docs/private/SOCIAL_MEDIA_INTEGRATION_STRATEGY.md](../private/SOCIAL_MEDIA_INTEGRATION_STRATEGY.md)
-- [docs/private/SOCIAL_MEDIA_ANALYTICS_PLAN.md](../private/SOCIAL_MEDIA_ANALYTICS_PLAN.md)
-- [docs/private/SOCIAL_MEDIA_DASHBOARD_ARCHITECTURE.md](../private/SOCIAL_MEDIA_DASHBOARD_ARCHITECTURE.md)
+- docs/private/SOCIAL_MEDIA_INTEGRATION_STRATEGY.md
+- docs/private/SOCIAL_MEDIA_ANALYTICS_PLAN.md
+- docs/private/SOCIAL_MEDIA_DASHBOARD_ARCHITECTURE.md
 
 **Quality Metrics:**
 

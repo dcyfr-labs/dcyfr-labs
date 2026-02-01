@@ -445,8 +445,8 @@ When updating skipped tests:
 ## Related Documentation
 
 - [`docs/testing/automated-testing-guide.md`](./automated-testing-guide.md) - Test execution
-- [`docs/automation/QA-AUDIT-IMPLEMENTATION-REPORT.md`](../automation/QA-AUDIT-IMPLEMENTATION-REPORT.md) - Phase planning
-- [`.github/agents/TESTING_PATTERNS.md`](../.github/agents/patterns/TESTING_PATTERNS.md) - Testing patterns
+- `docs/automation/QA-AUDIT-IMPLEMENTATION-REPORT.md` - Phase planning
+- `.github/agents/TESTING_PATTERNS.md` - Testing patterns
 - `vitest.config.ts` - Coverage configuration
 
 ---

@@ -156,7 +156,7 @@ See check logs for details.
 3. Update docs/README.md if adding new section
 4. Push fixes and re-run check
 
-**Reference:** [Agent Documentation Enforcement Policy](docs/governance/AGENT_DOCUMENTATION_ENFORCEMENT.md)`
+**Reference:** Agent Documentation Enforcement Policy`
             })
 ```
 
@@ -429,8 +429,8 @@ git reset HEAD TEST_DOC.md
 
 - [DOCS_GOVERNANCE.md](./DOCS_GOVERNANCE.md) - Full documentation policy
 - [AGENTS.md](../../AGENTS.md) - AI agent selection guide
-- [.claude/agents/DCYFR.md](./.claude/agents/DCYFR.md) - Claude Code instructions
-- [.github/copilot-instructions.md](./.github/copilot-instructions.md) - Copilot instructions
+- .claude/agents/DCYFR.md - Claude Code instructions
+- .github/copilot-instructions.md - Copilot instructions
 
 ---
 

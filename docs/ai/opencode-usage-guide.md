@@ -389,5 +389,5 @@ Monthly cost targets:
 
 - [AGENTS.md](../../AGENTS.md) - Multi-tier AI architecture overview
 - [OpenCode Fallback Architecture](./opencode-fallback-architecture.md) - Detailed fallback system
-- [Session Management](./../claude-code-enhancements.md#session-management) - Session state handling
+- Session Management - Session state handling
 - [.opencode/](../../.opencode/) - OpenCode configuration directory

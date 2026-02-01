@@ -211,8 +211,8 @@ For GitHub Actions and automated workflows, always use run mode:
 
 ## Related Documentation
 
-- [Testing Patterns](../ai/TESTING_PATTERNS.md)
-- [CI/CD Documentation](../operations/ci-cd.md)
+- Testing Patterns
+- CI/CD Documentation
 - [Vitest Documentation](https://vitest.dev/)
 
 ---

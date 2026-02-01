@@ -302,5 +302,5 @@ interface ContributionResponse {
 ## See Also
 
 - [Inngest Integration Guide](../features/inngest-integration.md)
-- [Redis Health Monitoring](./redis-health-monitoring.md)
-- [Environment Configuration](../architecture/environment-setup.md)
+- Redis Health Monitoring
+- Environment Configuration

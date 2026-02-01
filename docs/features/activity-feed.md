@@ -698,7 +698,7 @@ return <div ref={scrollRef}>...</div>;
 - [VirtualActivityFeed.tsx](../../src/components/activity/VirtualActivityFeed.tsx) - Virtual scrolling component (384 lines)
 - [useScrollRestoration.ts](../../src/hooks/useScrollRestoration.ts) - Scroll restoration hook
 - [VirtualActivityFeed.test.tsx](../../src/__tests__/components/VirtualActivityFeed.test.tsx) - Unit tests (16 tests ✅)
-- [virtual-scrolling-evaluation.md](../../docs/architecture/virtual-scrolling-evaluation.md) - Library comparison
+- virtual-scrolling-evaluation.md - Library comparison
 
 ### Testing
 
@@ -809,7 +809,7 @@ const rssActivities = filterActivitiesForRSS(activities);
 
 ### Next Priority: Stage 6 (Content Extensions & Integrations)
 
-See [todo.md](../operations/todo.md#stage-6-content-extensions--integrations--next) for detailed planning:
+See todo.md for detailed planning:
 
 - RSS Feed Generation (#51)
 - Bookmarking System (#47)
@@ -838,9 +838,9 @@ See [todo.md](../operations/todo.md#stage-6-content-extensions--integrations--ne
 
 **Related Documentation:**
 
-- [Activity Feed Stages](../operations/todo.md#-active-development-activity-feed-enhancement-5-stage-plan)
-- [Stage 6 RSS Feed](../operations/todo.md#stage-6-content-extensions--integrations--next)
-- [Virtual Scrolling Evaluation](../architecture/virtual-scrolling-evaluation.md)
+- Activity Feed Stages
+- Stage 6 RSS Feed
+- Virtual Scrolling Evaluation
 - [Testing Strategy](../testing/README.md)
 - [Design Tokens](../ai/design-system.md)
 

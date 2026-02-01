@@ -12,7 +12,7 @@ The navigation system consists of five core foundational pieces:
 2. **Dropdown Hook** ([src/hooks/use-dropdown.ts](../../src/hooks/use-dropdown.ts)) - Reusable dropdown state management
 3. **Navigation Hook** ([src/hooks/use-navigation.ts](../../src/hooks/use-navigation.ts)) - Unified active state detection
 4. **Keyboard Shortcuts** ([src/hooks/use-navigation-shortcuts.ts](../../src/hooks/use-navigation-shortcuts.ts)) - GitHub-style two-key navigation sequences
-5. **Command Palette Integration** ([src/components/app/command-palette.tsx](../../src/components/app/command-palette.tsx)) - Auto-generates commands from navigation config
+5. **Command Palette Integration** (src/components/app/command-palette.tsx) - Auto-generates commands from navigation config
 
 ## Quick Start
 
@@ -633,7 +633,7 @@ All navigation items with shortcuts are automatically included in the command pa
 
 ## Related Documentation
 
-- [Design System](../design/eslint-design-system-consolidated.md) - Design token usage
+- Design System - Design token usage
 - [Testing](../testing/TEST_COVERAGE_EXPANSION_PLAN.md) - Test infrastructure
 - [Accessibility](../ai/best-practices.md) - ARIA and keyboard navigation
 
@@ -654,7 +654,7 @@ All navigation items with shortcuts are automatically included in the command pa
 
 ### Command Palette
 
-- [CommandPalette](../../src/components/app/command-palette.tsx) - Auto-generates from config
+- CommandPalette - Auto-generates from config
 
 ### Future
 
@@ -712,7 +712,7 @@ All navigation items with shortcuts are automatically included in the command pa
   - Created detailed analysis document
   - Recommendation: Enable BottomNav (Option A)
   - Currently BottomNav is commented out in layout.tsx
-  - See [mobile-navigation-analysis.md](mobile-navigation-analysis.md)
+  - See mobile-navigation-analysis.md
 
 - ✅ **Command Palette Integration** - Navigation config auto-generation
   - Command palette uses NAVIGATION.primary for commands

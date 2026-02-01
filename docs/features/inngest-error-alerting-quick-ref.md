@@ -139,4 +139,4 @@ docs/features/inngest-error-alerting.md  # Full documentation (NEW)
 
 - [Full Error Alerting Guide](./inngest-error-alerting)
 - [Inngest Integration](./inngest-integration)
-- [Environment Variables](../operations/environment-variables)
+- Environment Variables

@@ -4,7 +4,7 @@
 
 **Status:** ✅ Implemented (Beta)
 **Last Updated:** January 29, 2026
-**Related:** [CodeQL Integration](./github-code-scanning-integration.md) · [Security Policy](../../SECURITY.md) · [DCYFR Security Guidelines](./.github/agents/patterns/CODEQL_SUPPRESSIONS.md)
+**Related:** [CodeQL Integration](./github-code-scanning-integration.md) · [Security Policy](../../SECURITY.md) · DCYFR Security Guidelines
 
 ---
 
@@ -372,7 +372,7 @@ If Copilot-generated fix includes a suppression comment:
 3. **Ensure** it documents technical barriers to fixing
 4. **Approve** only if truly infeasible to fix
 
-See: [CODEQL_SUPPRESSIONS.md](./.github/agents/patterns/CODEQL_SUPPRESSIONS.md)
+See: CODEQL_SUPPRESSIONS.md
 
 ---
 
@@ -599,7 +599,7 @@ gh pr list --label codeql-fix --state closed \
 ## Related Documentation
 
 - [CodeQL Integration](./github-code-scanning-integration.md) - How to check alerts programmatically
-- [DCYFR Security Guidelines](./.github/agents/patterns/CODEQL_SUPPRESSIONS.md) - Suppression policies
+- DCYFR Security Guidelines - Suppression policies
 - [Logging Security Best Practices](../../docs/ai/logging-security.md) - Common security patterns
 - [Security Policy](../../SECURITY.md) - Overall security approach
 

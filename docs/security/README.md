@@ -23,7 +23,7 @@ This directory contains DCYFR's comprehensive security framework aligned with th
 ## Quick Navigation
 
 ### For Security Audits
-→ **Start here:** [ASI-AUDIT.md](ASI-AUDIT.md)
+→ **Start here:** ASI-AUDIT.md
 
 Provides:
 - Current coverage for all 10 ASI vulnerabilities
@@ -38,7 +38,7 @@ Provides:
 ---
 
 ### For Threat Analysis
-→ **Start here:** [THREAT-MAPPING.md](THREAT-MAPPING.md)
+→ **Start here:** [THREAT-MAPPING.md](./THREAT-MAPPING.md)
 
 Provides:
 - Detailed threat scenarios for DCYFR
@@ -51,7 +51,7 @@ Provides:
 ---
 
 ### For Operations & Governance
-→ **Start here:** [AGENT-SECURITY-GOVERNANCE.md](AGENT-SECURITY-GOVERNANCE.md)
+→ **Start here:** AGENT-SECURITY-GOVERNANCE.md
 
 Provides:
 - Security governance model and decision authority
@@ -92,7 +92,7 @@ Provides:
 ---
 
 ### For CI/CD Integration
-→ **Start here:** [../operations/ASI-VALIDATION-WORKFLOW.md](../operations/ASI-VALIDATION-WORKFLOW.md)
+→ **Start here:** ../operations/ASI-VALIDATION-WORKFLOW.md
 
 Provides:
 - 4-stage validation workflow for agent outputs
@@ -267,24 +267,24 @@ AGENT-SECURITY-GOVERNANCE.md
 ## Getting Started
 
 ### For New Team Members
-1. Read: [AGENT-SECURITY-GOVERNANCE.md](AGENT-SECURITY-GOVERNANCE.md) (1 hour)
-2. Review: Key sections of [ASI-AUDIT.md](ASI-AUDIT.md) (1 hour)
-3. Study: [THREAT-MAPPING.md](THREAT-MAPPING.md) - Focus on DCYFR scenarios (2 hours)
+1. Read: AGENT-SECURITY-GOVERNANCE.md (1 hour)
+2. Review: Key sections of ASI-AUDIT.md (1 hour)
+3. Study: [THREAT-MAPPING.md](./THREAT-MAPPING.md) - Focus on DCYFR scenarios (2 hours)
 4. Complete: ASI training certification (2 hours)
 
 **Total Onboarding Time:** 6 hours
 
 ### For Implementation
 1. Reference: [../architecture/ASI-MITIGATION-PATTERNS.md](../architecture/ASI-MITIGATION-PATTERNS.md)
-2. Follow: [../operations/ASI-VALIDATION-WORKFLOW.md](../operations/ASI-VALIDATION-WORKFLOW.md)
+2. Follow: ../operations/ASI-VALIDATION-WORKFLOW.md
 3. Integrate: Patterns into your code
 4. Test: Security controls with provided patterns
 5. Deploy: Following Phase 1-4 roadmap
 
 ### For Security Reviews
-1. Reference: [ASI-AUDIT.md](ASI-AUDIT.md) for coverage baseline
-2. Check: [AGENT-SECURITY-GOVERNANCE.md](AGENT-SECURITY-GOVERNANCE.md) for policy compliance
-3. Verify: [../operations/ASI-VALIDATION-WORKFLOW.md](../operations/ASI-VALIDATION-WORKFLOW.md) validation execution
+1. Reference: ASI-AUDIT.md for coverage baseline
+2. Check: AGENT-SECURITY-GOVERNANCE.md for policy compliance
+3. Verify: ../operations/ASI-VALIDATION-WORKFLOW.md validation execution
 4. Report: Quarterly metrics from dashboard above
 
 ---
@@ -294,7 +294,7 @@ AGENT-SECURITY-GOVERNANCE.md
 - **Security Lead:** [To be designated]
 - **Architecture Questions:** Refer to [../architecture/](../architecture/)
 - **Operational Questions:** Refer to [../operations/](../operations/)
-- **Incident Reporting:** See "Incident Response" in [AGENT-SECURITY-GOVERNANCE.md](AGENT-SECURITY-GOVERNANCE.md)
+- **Incident Reporting:** See "Incident Response" in AGENT-SECURITY-GOVERNANCE.md
 
 ---
 

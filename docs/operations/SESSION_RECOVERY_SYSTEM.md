@@ -458,7 +458,7 @@ Use both: Commit completed work, checkpoints handle interruptions.
 
 ## Related Documentation
 
-- [Session State v2.0](/.opencode/SESSION_STATE_V2.md) - Base schema
+- Session State v2.0 - Base schema
 - [Agent Handoff Workflow](/.opencode/scripts/session-handoff.sh) - Cross-agent transitions
 - [Provider Fallback](/.opencode/workflows/COST_OPTIMIZATION.md) - When to switch agents
 

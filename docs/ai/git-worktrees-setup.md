@@ -458,7 +458,7 @@ SAVINGS: 64 minutes (46% faster)
 
 - **Workflow Patterns:** [Claude Code Workflows](./claude-code-workflows.md)
 - **Commands Reference:** [.claude/COMMANDS_GUIDE.md](../../.claude/COMMANDS_GUIDE.md)
-- **Feature Implementation:** [Claude Code Workflows - Feature Implementation](./claude-code-workflows.md#workflow-1-feature-implementation-complex)
+- **Feature Implementation:** Claude Code Workflows - Feature Implementation
 - **DCYFR Patterns:** [Component Patterns](./component-patterns.md)
 
 ---

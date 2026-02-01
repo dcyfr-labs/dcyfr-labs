@@ -573,9 +573,9 @@ npm run ai:opencode:groq
 
 ### Related Guides
 
-- [Claude Code Integration](claude-code-integration.md)
-- [Best Practices](best-practices.md)
-- [Token Optimization](private/optimization-strategy.md)
+- Claude Code Integration
+- [Best Practices](./best-practices.md)
+- Token Optimization
 
 ---
 

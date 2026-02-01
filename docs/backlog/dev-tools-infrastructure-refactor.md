@@ -651,8 +651,8 @@ After completion:
 
 - [Production Metrics Sync](../operations/PRODUCTION_METRICS_SYNC.md)
 - [Dev Routes Optimization](../dev-routes-optimization.md)
-- [Environment Segmentation](../architecture/environment-segmentation.md)
-- [Redis Architecture](../architecture/redis-architecture.md)
+- Environment Segmentation
+- Redis Architecture
 - [Testing Strategy](../testing/README.md)
 
 ---

@@ -178,9 +178,9 @@ The script uses regex to find exports. If your export syntax is non-standard, it
 
 ## Related Documentation
 
-- [ESLint no-restricted-imports rule](../eslint.config.mjs)
-- [Barrel Export Pattern](../docs/ai/component-patterns.md#barrel-exports)
-- [Design System Enforcement](../docs/ai/enforcement-rules.md)
+- ESLint no-restricted-imports rule
+- Barrel Export Pattern
+- Design System Enforcement
 
 ## Maintenance
 

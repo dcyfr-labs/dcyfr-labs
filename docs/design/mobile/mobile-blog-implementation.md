@@ -4,7 +4,7 @@
 
 **Date:** November 4, 2025  
 **Status:** ✅ Complete (Phase 1 - Critical Fixes)  
-**Related:** [Brainstorm Document](./mobile-blog-improvements-brainstorm) · Component Docs
+**Related:** Brainstorm Document · Component Docs
 
 ---
 
@@ -249,8 +249,8 @@ See `/docs/operations/todo.md` for:
 - `reading-progress.md` - Progress bar (existing)
 
 ### Design Docs
-- [`mobile-blog-improvements-brainstorm.md`](./mobile-blog-improvements-brainstorm) - Full brainstorm and planning
-- [`mobile-first-optimization-analysis.md`](./mobile-first-optimization-analysis) - Site-wide mobile analysis
+- `mobile-blog-improvements-brainstorm.md` - Full brainstorm and planning
+- `mobile-first-optimization-analysis.md` - Site-wide mobile analysis
 
 ---
 

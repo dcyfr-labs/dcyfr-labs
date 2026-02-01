@@ -576,4 +576,4 @@ gh secret set CHROMATIC_PROJECT_TOKEN
 
 **Maintained by**: @dcyfr
 **Last updated**: 2025-12-21
-**Related**: [Phase 3 Implementation Guide](../operations/github-improvements-phase3-guide.md)
+**Related**: Phase 3 Implementation Guide

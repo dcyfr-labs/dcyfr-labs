@@ -506,7 +506,7 @@ npm run check
 
 - [MDX Icons Guide](../components/mdx-icons.md) - Available icon components
 - [Icon System Implementation](../components/icon-system-implementation.md) - Migration history
-- [Character Usage & SEO Analysis](./character-usage-seo-analysis.md) - Detailed impact study
+- Character Usage & SEO Analysis - Detailed impact study
 - [DCYFR.agent.md Rule #7](../../.github/agents/DCYFR.agent.md) - Emoji prohibition mandate
 
 ### External References

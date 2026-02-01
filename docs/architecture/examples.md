@@ -853,7 +853,7 @@ export default async function GalleryPage({ searchParams }: { searchParams: Prom
 
 ## 📚 Next Steps
 
-- **Learn More:** Read the [Migration Guide](./migration-guide) for detailed explanations
+- **Learn More:** Read the Migration Guide for detailed explanations
 - **See Refactoring:** Check Refactoring Complete for the full story
 - **Reference Code:** Browse working examples in `/src/app/blog/` and `/src/app/projects/`
 

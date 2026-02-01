@@ -499,7 +499,7 @@ npm run lint
 | [Setup Guide](./servers) | How to use each server |
 | [Test Guide](./tests/servers-test) | Detailed test documentation |
 | [Implementation](./tests/servers-test-implementation) | Technical details |
-| [Full Reference](./tests/dependency-validation) | Complete reference |
+| Full Reference | Complete reference |
 | [Filesystem/Git Guide](./filesystem-git/integration.md) | Filesystem & Git integration |
 | [GitHub Guide](./github/implementation.md) | GitHub MCP setup (30min) |
 
@@ -510,7 +510,7 @@ npm run lint
 1. **Quick answer**: Run `npm run test:mcp-servers`
 2. **Setup issues**: Read [MCP Servers Guide](./servers)
 3. **Test details**: Review [MCP Servers Test Guide](./tests/servers-test)
-4. **Full reference**: Consult [MCP Dependency Validation](./tests/dependency-validation)
+4. **Full reference**: Consult MCP Dependency Validation
 
 ---
 

@@ -224,7 +224,7 @@ Benefits:
 
 ### No view data showing
 **Cause:** Redis not configured or no traffic yet  
-**Fix:** Set up Redis (see [environment variables](../operations/environment-variables)) or wait for organic traffic
+**Fix:** Set up Redis (see environment variables) or wait for organic traffic
 
 ### Filters not working
 **Cause:** JavaScript not loaded  
@@ -274,4 +274,4 @@ Planned improvements:
 
 - [Blog System Architecture](../blog/architecture)
 - View Tracking Implementation
-- [Redis Configuration](../operations/environment-variables)
+- Redis Configuration

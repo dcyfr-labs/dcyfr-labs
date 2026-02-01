@@ -834,7 +834,7 @@ The following scripts should be created to automate backup testing:
 ## 📚 Related Documentation
 
 - [docs/operations/deployment-guide.md](./deployment-guide) - Deployment procedures
-- [docs/operations/environment-variables.md](./environment-variables) - Environment setup
+- docs/operations/environment-variables.md - Environment setup
 - [docs/operations/security.md](./security) - Security best practices
 - [docs/operations/uptime-monitoring-sentry.md](./uptime-monitoring-sentry) - Sentry setup
 - docs/platform/VERCEL_ARCHITECTURE.md - Vercel architecture (if exists)

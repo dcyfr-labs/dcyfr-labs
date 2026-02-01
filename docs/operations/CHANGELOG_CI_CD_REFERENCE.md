@@ -221,7 +221,7 @@ scripts/
 
 ### Existing Guides
 
-- [CHANGELOG_AUTOMATION_IMPLEMENTATION.md](./CHANGELOG_AUTOMATION_IMPLEMENTATION.md) - System overview
+- CHANGELOG_AUTOMATION_IMPLEMENTATION.md - System overview
 - [docs/ai/](../ai/) - Design token compliance rules
 - [.github/agents/enforcement/VALIDATION_CHECKLIST.md](../../.github/agents/enforcement/VALIDATION_CHECKLIST.md) - Enforcement rules
 

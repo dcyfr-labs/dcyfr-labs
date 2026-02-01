@@ -378,8 +378,8 @@ A: Implement monitoring scripts that fetch from official APIs and populate Redis
 ## Related Documentation
 
 - [Analytics Integration](./ANALYTICS_INTEGRATION.md)
-- [Activity Feed](../architecture/activity-system.md)
-- [Redis Configuration](../platform/environment-variables.md#redis)
+- Activity Feed
+- Redis Configuration
 - [Deployment Guide](../operations/deployment-guide.md)
 
 ---

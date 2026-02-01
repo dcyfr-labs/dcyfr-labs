@@ -40,7 +40,7 @@ Model Context Protocol (MCP) servers enable AI assistants to interact with exter
 - `perplexity_research` - In-depth research with citations
 - `perplexity_search` - Web search
 
-**Documentation:** [perplexity-mcp.md](./perplexity-mcp.md)
+**Documentation:** perplexity-mcp.md
 
 ---
 
@@ -60,7 +60,7 @@ Model Context Protocol (MCP) servers enable AI assistants to interact with exter
 - `context7_resolve-library-id` - Find library IDs
 - `context7_query-docs` - Get documentation and examples
 
-**Documentation:** [context7-mcp.md](./context7-mcp.md)
+**Documentation:** context7-mcp.md
 
 ---
 
@@ -83,7 +83,7 @@ Model Context Protocol (MCP) servers enable AI assistants to interact with exter
 - `axiom_checkMonitors` - Check monitor statuses
 - `axiom_getMonitorHistory` - Get monitor history
 
-**Documentation:** [axiom-mcp.md](./axiom-mcp.md)
+**Documentation:** axiom-mcp.md
 
 ---
 
@@ -106,7 +106,7 @@ Model Context Protocol (MCP) servers enable AI assistants to interact with exter
 - Code search and navigation
 - Copilot review integration
 
-**Documentation:** [github-mcp.md](./github-mcp.md)
+**Documentation:** github-mcp.md
 
 ---
 
@@ -301,7 +301,7 @@ gh auth login  # Re-authenticate with GitHub CLI
 ### Configuration
 
 - **MCP Configuration:** [.vscode/mcp.json](../../../.vscode/mcp.json)
-- **Health Check Script:** [scripts/check-mcp-servers.mjs](../../../scripts/check-mcp-servers.mjs)
+- **Health Check Script:** scripts/check-mcp-servers.mjs
 
 ### Documentation
 

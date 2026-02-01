@@ -8,7 +8,7 @@
 
 ### 1. Documentation Governance
 
-**File:** [DOCS_GOVERNANCE.md](DOCS_GOVERNANCE.md)
+**File:** [DOCS_GOVERNANCE.md](./DOCS_GOVERNANCE.md)
 
 **Scope:** Public vs private documentation classification, TLP standards, organizational structure, maintenance schedules
 
@@ -22,8 +22,8 @@
 
 **Guardrails:**
 
-- [DOCUMENTATION_GUARDRAILS.md](DOCUMENTATION_GUARDRAILS.md) - Automated validation guide
-- [DOCUMENTATION_GUARDRAILS_IMPLEMENTATION.md](DOCUMENTATION_GUARDRAILS_IMPLEMENTATION.md) - Implementation summary
+- DOCUMENTATION_GUARDRAILS.md - Automated validation guide
+- DOCUMENTATION_GUARDRAILS_IMPLEMENTATION.md - Implementation summary
 - `npm run check:docs` - Validate TLP compliance and location
 
 **Last Updated:** January 24, 2026
@@ -32,7 +32,7 @@
 
 ### 2. Data Governance
 
-**File:** [data-governance-policy.md](data-governance-policy.md)
+**File:** [data-governance-policy.md](./data-governance-policy.md)
 
 **Scope:** Analytics data collection, privacy compliance, retention policies
 
@@ -49,7 +49,7 @@
 
 ### 3. AI Agent Security Governance
 
-**File:** [AGENT-SECURITY-GOVERNANCE.md](AGENT-SECURITY-GOVERNANCE.md)
+**File:** [AGENT-SECURITY-GOVERNANCE.md](./AGENT-SECURITY-GOVERNANCE.md)
 
 **Scope:** AI assistant access controls, tool permissions, security protocols
 
@@ -104,7 +104,7 @@ npm run validate:tlp              # TLP compliance only
 npm run validate:doc-location     # Location validation only
 ```
 
-See [DOCUMENTATION_GUARDRAILS.md](DOCUMENTATION_GUARDRAILS.md) for complete validation guide.
+See DOCUMENTATION_GUARDRAILS.md for complete validation guide.
 
 ## Compliance Metrics
 
@@ -124,8 +124,8 @@ Run `npm run check:docs` for latest compliance status.
 
 **Questions about governance?**
 
-- Documentation: Review [DOCS_GOVERNANCE.md](DOCS_GOVERNANCE.md)
-- Data/Analytics: Review [data-governance-policy.md](data-governance-policy.md)
-- AI/Security: Review [AGENT-SECURITY-GOVERNANCE.md](AGENT-SECURITY-GOVERNANCE.md)
+- Documentation: Review [DOCS_GOVERNANCE.md](./DOCS_GOVERNANCE.md)
+- Data/Analytics: Review [data-governance-policy.md](./data-governance-policy.md)
+- AI/Security: Review [AGENT-SECURITY-GOVERNANCE.md](./AGENT-SECURITY-GOVERNANCE.md)
 
 **Need clarification?** Open an issue or create a PR with proposed policy amendment.

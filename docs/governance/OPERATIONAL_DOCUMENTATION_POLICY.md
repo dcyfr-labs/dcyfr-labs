@@ -449,9 +449,9 @@ docs/
 
 ## Related Policies
 
-- [DOCS_GOVERNANCE.md](DOCS_GOVERNANCE.md) - Overall documentation governance
-- [AGENT_DOCUMENTATION_ENFORCEMENT.md](AGENT_DOCUMENTATION_ENFORCEMENT.md) - AI agent documentation rules
-- [DOCUMENTATION_GOVERNANCE_AUDIT_2026-01-24.md](private/DOCUMENTATION_GOVERNANCE_AUDIT_2026-01-24.md) - Governance audit results
+- [DOCS_GOVERNANCE.md](./DOCS_GOVERNANCE.md) - Overall documentation governance
+- [AGENT_DOCUMENTATION_ENFORCEMENT.md](./AGENT_DOCUMENTATION_ENFORCEMENT.md) - AI agent documentation rules
+- DOCUMENTATION_GOVERNANCE_AUDIT_2026-01-24.md - Governance audit results
 
 ---
 

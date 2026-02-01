@@ -176,15 +176,15 @@ exit
 
 ### Learn More
 
-- [Full Team Training Guide](./OPENCODE_TEAM_TRAINING.md) - 30 min comprehensive guide
-- [Configuration Hierarchy](./OPENCODE_CONFIG_HIERARCHY.md) - Understand how config layers work
-- [Optimization Metrics](./OPENCODE_OPTIMIZATION_METRICS.md) - Monitor performance improvements
+- Full Team Training Guide - 30 min comprehensive guide
+- Configuration Hierarchy - Understand how config layers work
+- Optimization Metrics - Monitor performance improvements
 
 ### Team Resources
 
-- **Team Lead?** See [OPENCODE_TEAM_TRAINING.md](./OPENCODE_TEAM_TRAINING.md#for-team-leads-team-setup--monitoring)
-- **DevOps?** See [OPENCODE_TEAM_TRAINING.md](./OPENCODE_TEAM_TRAINING.md#for-devops--cicd)
-- **Support Needed?** See [OPENCODE_TEAM_TRAINING.md](./OPENCODE_TEAM_TRAINING.md#troubleshooting--support)
+- **Team Lead?** See OPENCODE_TEAM_TRAINING.md
+- **DevOps?** See OPENCODE_TEAM_TRAINING.md
+- **Support Needed?** See OPENCODE_TEAM_TRAINING.md
 
 ---
 
@@ -202,4 +202,4 @@ You'll know it's working when:
 
 **Ready?** Start with step 1 above!
 
-Questions? Check the [Full Training Guide](./OPENCODE_TEAM_TRAINING.md) or ask your team lead.
+Questions? Check the Full Training Guide or ask your team lead.

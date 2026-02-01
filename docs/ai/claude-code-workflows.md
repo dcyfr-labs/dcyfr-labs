@@ -443,7 +443,7 @@ claude
 ## 📚 Related Documentation
 
 - **Commands Reference:** [.claude/COMMANDS_GUIDE.md](../../.claude/COMMANDS_GUIDE.md)
-- **Course Correction:** [CLAUDE.md - Course Correction Guide](../../CLAUDE.md#course-correction-guide-mid-execution-redirection)
+- **Course Correction:** CLAUDE.md - Course Correction Guide
 - **Git Worktrees:** [Git Worktrees Setup Guide](./git-worktrees-setup.md)
 - **Component Patterns:** [Component Patterns](./component-patterns.md)
 - **Testing Guide:** [Testing Strategy](../testing/README.md)

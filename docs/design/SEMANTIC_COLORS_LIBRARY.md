@@ -5,7 +5,7 @@
 **Version:** 1.0  
 **Status:** ✅ Greyscale (Validated - Ready for Color)  
 **Last Updated:** December 28, 2025  
-**Validation:** [SEMANTIC_COLORS_VALIDATION.md](./SEMANTIC_COLORS_VALIDATION.md)
+**Validation:** SEMANTIC_COLORS_VALIDATION.md
 
 ## Overview
 
@@ -17,7 +17,7 @@ This document describes the comprehensive semantic color library for dcyfr-labs.
 - **Color Model:** RGB recommended (highest OKLCH compatibility)
 - **Implementation:** Production-ready, no changes required
 
-See [SEMANTIC_COLORS_VALIDATION.md](./SEMANTIC_COLORS_VALIDATION.md) for complete validation report.
+See SEMANTIC_COLORS_VALIDATION.md for complete validation report.
 
 ---
 

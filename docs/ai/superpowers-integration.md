@@ -276,5 +276,5 @@ The DCYFR override skills are designed to **extend** Superpowers, not replace ou
 
 - [Superpowers GitHub](https://github.com/obra/superpowers) - Official repository
 - [AGENTS.md](../../AGENTS.md) - AI architecture overview
-- [claude-code-enhancements.md](./claude-code-enhancements.md) - Claude Code configuration
+- claude-code-enhancements.md - Claude Code configuration
 - [opencode-usage-guide.md](./opencode-usage-guide.md) - OpenCode integration

@@ -310,4 +310,4 @@ npm run dev:check:fast      # Fast validation
 
 - [Next.js Environment Variables](https://nextjs.org/docs/app/building-your-application/configuring/environment-variables)
 - [Vercel Environment Variables](https://vercel.com/docs/environment-variables)
-- [.env.example](.env.example) - Complete variable reference
+- .env.example - Complete variable reference

@@ -242,7 +242,7 @@ const depthClass = getContentDepthClass({
 ## 📚 Documentation
 
 Complete documentation available at:
-- [docs/design/varying-depth-styling.md](docs/design/varying-depth-styling.md)
+- docs/design/varying-depth-styling.md
 
 Includes:
 - Design token reference

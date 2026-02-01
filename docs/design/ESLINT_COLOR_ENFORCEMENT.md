@@ -204,9 +204,9 @@ npm run lint
 
 ## Related Documentation
 
-- [Color Token Migration Plan](color-token-migration-plan.md) - Migration strategy and status
+- Color Token Migration Plan - Migration strategy and status
 - [Design System Guide](/docs/ai/design-system.md) - Full design token system
-- [Quick Start Guide](QUICK_START.md) - Essential design token patterns
+- Quick Start Guide - Essential design token patterns
 - [Semantic Colors Documentation](/src/lib/design-tokens.ts) - TypeScript constants
 
 ---

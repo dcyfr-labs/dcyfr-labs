@@ -331,10 +331,10 @@ import { FileIcon } from "lucide-react";
 
 ## 🔗 Related Documentation
 
-- [Homepage Refactoring Overview](../operations/homepage-refactor-summary.md)
+- Homepage Refactoring Overview
 - [Design Token System](../ai/design-system.md)
 - [Component Patterns](../ai/component-patterns.md)
-- [Navigation Best Practices](../architecture/navigation-patterns.md)
+- Navigation Best Practices
 
 ---
 

@@ -368,9 +368,9 @@ Embed changelog and milestones:
 
 ## 🔗 Related Documentation
 
-- [Activity Feed Source Code](../../src/app/activity/embed/)
-- [Activity Feed API](../api/activity-feed.md)
-- [Component Documentation](../components/activity-components.md)
+- Activity Feed Source Code
+- Activity Feed API
+- Component Documentation
 
 ---
 
@@ -388,4 +388,4 @@ Embed changelog and milestones:
 
 ---
 
-**Questions or Issues?** [Open an issue on GitHub](https://github.com/dcyfr/dcyfr-labs/issues) or [contact us](/contact).
+**Questions or Issues?** [Open an issue on GitHub](https://github.com/dcyfr/dcyfr-labs/issues) or contact us.

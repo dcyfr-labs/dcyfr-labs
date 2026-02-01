@@ -373,4 +373,4 @@ const FEED_ENDPOINTS = [
 ---
 
 **Maintained by:** DCYFR Labs
-**Questions?** See [SUPPORT.md](../SUPPORT.md) or [open an issue](https://github.com/dcyfr/dcyfr-labs/issues)
+**Questions?** See SUPPORT.md or [open an issue](https://github.com/dcyfr/dcyfr-labs/issues)

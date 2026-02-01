@@ -643,9 +643,9 @@ That's it! You're ready to use OpenCode.ai.
 
 For more details, see:
 
-- [Full Training Guide](./OPENCODE_TEAM_TRAINING.md)
-- [Configuration Details](./OPENCODE_CONFIG_HIERARCHY.md)
-- [Optimization Metrics](./OPENCODE_OPTIMIZATION_METRICS.md)
+- Full Training Guide
+- Configuration Details
+- Optimization Metrics
 
 ````
 
@@ -700,14 +700,14 @@ opencode --show-config
 ## Training
 
 - **Quick Start:** 5 minutes ([docs/ai/OPENCODE_QUICK_START.md](./OPENCODE_QUICK_START.md))
-- **Full Training:** 30 minutes ([docs/ai/OPENCODE_TEAM_TRAINING.md](./OPENCODE_TEAM_TRAINING.md))
-- **Configuration:** Advanced ([docs/ai/OPENCODE_CONFIG_HIERARCHY.md](./OPENCODE_CONFIG_HIERARCHY.md))
+- **Full Training:** 30 minutes (docs/ai/OPENCODE_TEAM_TRAINING.md)
+- **Configuration:** Advanced (docs/ai/OPENCODE_CONFIG_HIERARCHY.md)
 
 ## Support
 
 Questions?
 
-1. Check the [troubleshooting section](./OPENCODE_TEAM_TRAINING.md#troubleshooting--support)
+1. Check the troubleshooting section
 2. Run: `opencode --help`
 3. Contact: @architecture-team
 

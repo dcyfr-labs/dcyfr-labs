@@ -388,7 +388,7 @@ Expected: Commit hash, author, date, message, files changed
 ## Documentation References
 
 - **Full MCP Documentation**: [MCP Servers Guide](../servers)
-- **MCP Dependency Validation**: [Validation Reference](../tests/dependency-validation)
+- **MCP Dependency Validation**: Validation Reference
 - **Project Guide**: `agents.md` and `.github/copilot-instructions.md`
 
 ---

@@ -54,7 +54,7 @@ Inngest is a durable execution engine for TypeScript that enables reliable backg
 
 ## Documentation Structure
 
-### 📘 [INTEGRATION.md](./INTEGRATION.md)
+### 📘 INTEGRATION.md
 **Setup, configuration, and function patterns**
 
 - Installation and setup
@@ -67,7 +67,7 @@ Inngest is a durable execution engine for TypeScript that enables reliable backg
 
 ---
 
-### 🚨 [ERROR_HANDLING.md](./ERROR_HANDLING.md)
+### 🚨 ERROR_HANDLING.md
 **Error alerting, retries, and failure recovery**
 
 - Error alerting strategy
@@ -80,7 +80,7 @@ Inngest is a durable execution engine for TypeScript that enables reliable backg
 
 ---
 
-### 🧪 [TESTING.md](./TESTING.md)
+### 🧪 TESTING.md
 **Testing patterns and best practices**
 
 - Unit testing Inngest functions
@@ -93,7 +93,7 @@ Inngest is a durable execution engine for TypeScript that enables reliable backg
 
 ---
 
-### ⚙️ [OPERATIONS.md](./OPERATIONS.md)
+### ⚙️ OPERATIONS.md
 **Monitoring, performance, and troubleshooting**
 
 - Execution tracking and monitoring
@@ -110,22 +110,22 @@ Inngest is a durable execution engine for TypeScript that enables reliable backg
 
 ### Creating a New Background Job
 
-1. Read: [INTEGRATION.md](./INTEGRATION.md) - Function patterns
+1. Read: INTEGRATION.md - Function patterns
 2. Implement: Use function template
-3. Test: [TESTING.md](./TESTING.md) - Unit and integration tests
-4. Deploy: Production checklist in [INTEGRATION.md](./INTEGRATION.md)
+3. Test: TESTING.md - Unit and integration tests
+4. Deploy: Production checklist in INTEGRATION.md
 
 ### Debugging Failed Runs
 
 1. Check: Inngest UI at http://localhost:8288 (dev) or https://app.inngest.com (prod)
-2. Review: [ERROR_HANDLING.md](./ERROR_HANDLING.md) - Common error patterns
-3. Troubleshoot: [OPERATIONS.md](./OPERATIONS.md) - Debugging guide
+2. Review: ERROR_HANDLING.md - Common error patterns
+3. Troubleshoot: OPERATIONS.md - Debugging guide
 
 ### Optimizing Performance
 
-1. Measure: [OPERATIONS.md](./OPERATIONS.md) - Execution tracking
-2. Optimize: [OPERATIONS.md](./OPERATIONS.md) - Performance tuning
-3. Validate: [TESTING.md](./TESTING.md) - Performance tests
+1. Measure: OPERATIONS.md - Execution tracking
+2. Optimize: OPERATIONS.md - Performance tuning
+3. Validate: TESTING.md - Performance tests
 
 ---
 

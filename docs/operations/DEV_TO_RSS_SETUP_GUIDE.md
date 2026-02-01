@@ -312,8 +312,8 @@ Settings → Publishing from RSS
 
 ## Related Documentation
 
-- [DEV.to Integration Verification](../features/DEV_TO_INTEGRATION_VERIFICATION.md)
-- [DEV.to Draft Investigation](./DEV_TO_DRAFT_INVESTIGATION.md)
+- DEV.to Integration Verification
+- DEV.to Draft Investigation
 - [Blog Content Creation Guide](../blog/content-creation.md)
 - [Feed Generation Library](../../src/lib/feeds.ts)
 

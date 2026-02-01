@@ -357,7 +357,7 @@ If required status checks don't show up:
 
 - [GitHub Branch Protection Docs](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)
 - [GitHub Rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets)
-- [CODEOWNERS](.github/CODEOWNERS)
+- CODEOWNERS
 
 ---
 

@@ -138,9 +138,9 @@ This reduces confusion even with multiple files.
 
 ## Related Documentation
 
-- [Inngest README.md](../inngest/README.md) - Navigation to all docs
-- [DOCS_GOVERNANCE.md](../../governance/DOCS_GOVERNANCE.md) - Documentation organization principles
-- [Archive README.md](../../archive/README.md) - Archive retention policy
+- Inngest README.md - Navigation to all docs
+- DOCS_GOVERNANCE.md - Documentation organization principles
+- Archive README.md - Archive retention policy
 
 ---
 

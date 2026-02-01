@@ -475,7 +475,7 @@ export async function mdxToHtml(content: string): Promise<string> {
 ### Related Documentation
 
 - [horizontal-rule-best-practices.md](./horizontal-rule-best-practices.md)
-- [horizontal-rule-audit-2026-01-19.md](./horizontal-rule-audit-2026-01-19.md)
+- horizontal-rule-audit-2026-01-19.md
 - Blog feed docs: `docs/blog/feeds/README.md`
 
 ---

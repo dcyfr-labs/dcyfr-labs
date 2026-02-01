@@ -967,11 +967,11 @@ git commit -m "docs: add [description]"
 
 ### Common Validation Errors & Fixes
 
-| Error                           | Fix                                               |
-| ------------------------------- | ------------------------------------------------- |
+| Error                           | Fix                                                |
+| ------------------------------- | -------------------------------------------------- |
 | Missing TLP marker              | Add `<!-- TLP:CLEAR -->` to first 3 lines of file  |
-| Operational file in public docs | Move to `docs/[category]/private/`                |
-| Documentation outside docs/     | Move to appropriate `docs/[category]/` folder     |
+| Operational file in public docs | Move to `docs/[category]/private/`                 |
+| Documentation outside docs/     | Move to appropriate `docs/[category]/` folder      |
 | Private file marked TLP:CLEAR   | Change to `<!-- TLP:AMBER - Internal Use Only -->` |
 
 - Public docs can reference private: "See private docs for details"
@@ -1024,7 +1024,7 @@ git commit -m "docs: add [description]"
 - **Prefer relative over absolute paths** for portability
 - **Example:**
   ```markdown
-  See [Component Patterns](../ai/component-patterns.md#pagelayout) for details.
+  See Component Patterns for details.
   ```
 
 ### Documentation Structure Example
@@ -1221,11 +1221,11 @@ find docs -type f -name "*-status.md" -o -name "*-summary.md" -o -name "*-report
 
 ## 📖 Related Documentation
 
-- [CONTRIBUTING.md](../CONTRIBUTING.md) - Updated with doc guidelines
-- [.gitignore](../.gitignore) - Includes `docs/*/private/` exclusion
-- [AGENTS.md](../AGENTS.md) - Reference for documentation standards
+- CONTRIBUTING.md - Updated with doc guidelines
+- .gitignore - Includes `docs/*/private/` exclusion
+- AGENTS.md - Reference for documentation standards
 - [docs/README.md](./README.md) - Public docs index
-- [DOCUMENTATION_CONSOLIDATION_GUIDE.md](./DOCUMENTATION_CONSOLIDATION_GUIDE.md) - Complete documentation index
+- DOCUMENTATION_CONSOLIDATION_GUIDE.md - Complete documentation index
 
 ---
 

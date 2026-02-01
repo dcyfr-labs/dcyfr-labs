@@ -17,7 +17,7 @@ This integration adds **Filesystem** and **Git** MCPs to enhance your developmen
 ## Start Here
 
 ### Five-Minute Learner
-**Read:** [Quick Reference](./quick-reference)
+**Read:** Quick Reference
 - Quick command reference
 - Common workflows
 - Pro tips
@@ -91,12 +91,12 @@ This integration adds **Filesystem** and **Git** MCPs to enhance your developmen
 #### ...understand file structure
 1. Use Filesystem MCP: "What's in src/components?"
 2. See: List of files and directories
-3. Read more: [Quick Reference](./quick-reference)
+3. Read more: Quick Reference
 
 #### ...understand recent changes
 1. Use Git MCP: "Show me recent commits"
 2. See: Commit history with messages
-3. Read more: [Quick Reference](./quick-reference)
+3. Read more: Quick Reference
 
 #### ...refactor code
 1. Filesystem MCP: Find all usages
@@ -240,7 +240,7 @@ Files identified + git history shown
 ## Learning Path
 
 ### Level 1: Beginner (15 minutes)
-1. Read: [Quick Reference](./quick-reference)
+1. Read: Quick Reference
 2. Try: Simple Filesystem commands
 3. Try: Simple Git commands
 
@@ -389,7 +389,7 @@ A: Comprehensive security considerations are documented.
 
 ## Documentation Files
 
-1. [Quick Reference](./quick-reference) — 5 minutes
+1. Quick Reference — 5 minutes
 2. [Ready Checklist](./ready) — 10 minutes
 3. [Integration Guide](./integration) — 30 minutes
 4. Complete Summary — 15 minutes

@@ -18,7 +18,7 @@ The `/docs/research/` directory contains comprehensive strategic research and an
 
 **Status:** ✅ Current (December 27, 2025)
 
-#### [AI_INTEGRATION_ROADMAP_2025.md](./AI_INTEGRATION_ROADMAP_2025.md)
+#### AI_INTEGRATION_ROADMAP_2025.md
 - **Type:** Comprehensive strategic roadmap
 - **Size:** 42 KB
 - **Key Content:**
@@ -34,7 +34,7 @@ The `/docs/research/` directory contains comprehensive strategic research and an
 - Technical requirements for AI integration work
 - Timeline planning for AI-related features
 
-#### [AI_PHASE_1_QUICKSTART.md](./AI_PHASE_1_QUICKSTART.md)
+#### AI_PHASE_1_QUICKSTART.md
 - **Type:** Implementation guide
 - **Size:** 18 KB
 - **Key Content:**
@@ -49,7 +49,7 @@ The `/docs/research/` directory contains comprehensive strategic research and an
 - Quick reference during development sprints
 - Progress tracking for Phase 1 work
 
-#### [AI_EXECUTIVE_SUMMARY.md](./AI_EXECUTIVE_SUMMARY.md)
+#### AI_EXECUTIVE_SUMMARY.md
 - **Type:** Executive overview
 - **Size:** 9.7 KB
 - **Key Content:**

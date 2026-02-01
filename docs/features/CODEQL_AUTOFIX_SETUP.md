@@ -488,11 +488,11 @@ Only specific users can approve PRs:
 
 ## Documentation Links
 
-- **Full Guide:** [docs/features/github-copilot-autofix.md](docs/features/github-copilot-autofix.md)
-- **CodeQL Integration:** [docs/features/github-code-scanning-integration.md](docs/features/github-code-scanning-integration.md)
-- **Security Guidelines:** [.github/agents/patterns/CODEQL_SUPPRESSIONS.md](.github/agents/patterns/CODEQL_SUPPRESSIONS.md)
-- **Logging Security:** [docs/ai/logging-security.md](docs/ai/logging-security.md)
-- **Security Policy:** [SECURITY.md](SECURITY.md)
+- **Full Guide:** docs/features/github-copilot-autofix.md
+- **CodeQL Integration:** docs/features/github-code-scanning-integration.md
+- **Security Guidelines:** .github/agents/patterns/CODEQL_SUPPRESSIONS.md
+- **Logging Security:** docs/ai/logging-security.md
+- **Security Policy:** SECURITY.md
 
 ---
 
@@ -501,7 +501,7 @@ Only specific users can approve PRs:
 For issues or questions:
 
 1. Check [Troubleshooting](#troubleshooting) section
-2. Review [docs/features/github-copilot-autofix.md](docs/features/github-copilot-autofix.md)
+2. Review docs/features/github-copilot-autofix.md
 3. Check workflow logs: `gh run view <run-id> --log`
 4. File issue: [GitHub Issues](https://github.com/dcyfr/dcyfr-labs/issues)
 

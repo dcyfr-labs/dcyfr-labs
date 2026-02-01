@@ -169,8 +169,8 @@ uvx arxiv-mcp-server
 
 ## Related Documentation
 
-- [MCP Health Checks](mcp-checks.md)
-- [Sync AI Validation Report](sync-ai-validation-report.md)
+- [MCP Health Checks](./mcp-checks.md)
+- Sync AI Validation Report
 - [GitHub Repository](https://github.com/blazickjp/arxiv-mcp-server)
 
 ---

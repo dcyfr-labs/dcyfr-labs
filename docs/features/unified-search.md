@@ -481,15 +481,15 @@ describe("Unified Search", () => {
 
 ### Blog Posts Search
 
-See [`src/components/blog/blog-search-client.tsx`](../components/blog/blog-search-client.tsx)
+See `src/components/blog/blog-search-client.tsx`
 
 ### Projects Search
 
-See [`src/components/projects/project-search-client.tsx`](../components/projects/project-search-client.tsx)
+See `src/components/projects/project-search-client.tsx`
 
 ### Activity Feed Search
 
-See [`src/lib/activity/search.ts`](../lib/activity/search.ts) (legacy, to be migrated)
+See `src/lib/activity/search.ts` (legacy, to be migrated)
 
 ---
 
@@ -545,7 +545,7 @@ searchItems(items, index, "tags:security", config)
 ## Related Documentation
 
 - [Activity Feed Documentation](./activity-feed.md)
-- [Blog Documentation](./blog.md)
+- Blog Documentation
 - [Component Patterns](../ai/component-patterns.md)
 - [Testing Patterns](../testing/README.md)
 

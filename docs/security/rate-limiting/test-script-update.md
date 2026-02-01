@@ -248,9 +248,9 @@ When making changes to rate limiting:
 
 - [Test Guide](./test-guide) - Complete testing documentation
 - [Rate Limiting Guide](./guide) - Implementation guide
-- [Rate Limiting Quick Reference](./quick-reference) - Quick lookup
+- Rate Limiting Quick Reference - Quick lookup
 - [API Reference](../../api/reference) - API documentation
-- [Environment Variables](../../operations/environment-variables) - Configuration
+- Environment Variables - Configuration
 
 ## Known Limitations
 

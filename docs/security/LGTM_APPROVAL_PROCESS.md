@@ -483,8 +483,8 @@ Include in monthly security review:
 
 ### Documentation
 
-- **Fix Examples:** [`docs/security/private/CODEQL_FINDINGS_RESOLVED.md`](./CODEQL_FINDINGS_RESOLVED.md)
-- **Suppression Analysis:** [`docs/security/private/LGTM_SUPPRESSION_ANALYSIS.md`](./LGTM_SUPPRESSION_ANALYSIS.md)
+- **Fix Examples:** `docs/security/private/CODEQL_FINDINGS_RESOLVED.md`
+- **Suppression Analysis:** `docs/security/private/LGTM_SUPPRESSION_ANALYSIS.md`
 - **Suppression Patterns:** [`.github/agents/patterns/CODEQL_SUPPRESSIONS.md`](../../.github/agents/patterns/CODEQL_SUPPRESSIONS.md)
 
 ### Tools & Scripts

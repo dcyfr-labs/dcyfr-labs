@@ -379,7 +379,7 @@ After implementing `loading` prop, verify skeleton matches real component:
 
 ## Related Documentation
 
-- [Animation System](./ANIMATION_SYSTEM_ANALYSIS.md) - Animation timing and stagger effects
+- Animation System - Animation timing and stagger effects
 - [Design System](./design-system.md) - Design tokens for consistent spacing
 - [Best Practices](./best-practices.md) - General component patterns
 

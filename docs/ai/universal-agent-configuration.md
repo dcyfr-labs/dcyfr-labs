@@ -215,7 +215,7 @@ AI-powered format converter:
 ## Related Documentation
 
 - [AGENTS.md](../../AGENTS.md) - Central AI hub
-- [claude-code-enhancements.md](./claude-code-enhancements.md) - Claude Code config
+- claude-code-enhancements.md - Claude Code config
 - [opencode-fallback-architecture.md](./opencode-fallback-architecture.md) - OpenCode setup
 - [superpowers-integration.md](./superpowers-integration.md) - Superpowers skills
 

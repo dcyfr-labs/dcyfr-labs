@@ -346,7 +346,7 @@ Then **prioritize Phase 3** (headless mode + GitHub Actions) for strategic autom
 
 ### Quick Links
 
-- Full Analysis: [`docs/ai/CLAUDE_CODE_BEST_PRACTICES_ANALYSIS.md`](./CLAUDE_CODE_BEST_PRACTICES_ANALYSIS.md)
+- Full Analysis: `docs/ai/CLAUDE_CODE_BEST_PRACTICES_ANALYSIS.md`
 - Implementation Guide: [`docs/ai/CLAUDE_CODE_IMPLEMENTATION_GUIDE.md`](./CLAUDE_CODE_IMPLEMENTATION_GUIDE.md)
 - Agent Reference: [`AGENTS.md`](../../AGENTS.md)
 - Current Setup: [`CLAUDE.md`](../../CLAUDE.md)

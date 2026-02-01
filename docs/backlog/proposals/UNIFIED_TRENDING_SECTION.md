@@ -510,10 +510,10 @@ await redis.set(cacheKey, JSON.stringify(result), 'EX', 3600)
 
 ## References
 
-- Current implementation: [`/src/app/page.tsx:496-542`](../src/app/page.tsx#L496-L542)
-- Trending calculation: [`/src/lib/activity/trending.ts`](../src/lib/activity/trending.ts)
-- Topic extraction: [`/src/lib/activity/topics.ts`](../src/lib/activity/topics.ts)
-- Design tokens: [`/src/lib/design-tokens.ts`](../src/lib/design-tokens.ts)
+- Current implementation: `/src/app/page.tsx:496-542`
+- Trending calculation: `/src/lib/activity/trending.ts`
+- Topic extraction: `/src/lib/activity/topics.ts`
+- Design tokens: `/src/lib/design-tokens.ts`
 
 ---
 

@@ -342,7 +342,7 @@
 ## Related Documentation
 
 - [Quick Reference Guide](../QUICK_REFERENCE.md) - Common commands and patterns
-- [Automated Updates](../automation/AUTOMATED_UPDATES.md) - Automation system overview
+- Automated Updates - Automation system overview
 - [Cleanup Log](./CLEANUP_LOG.md) - File removal history
 
 ---

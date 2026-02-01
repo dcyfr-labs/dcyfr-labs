@@ -35,7 +35,7 @@ Inngest is a durable workflow engine that enables event-driven background jobs, 
 
 ### Advanced Topics
 
-- [Event Patterns](../inngest-integration.md#event-patterns) - Common event naming and payload patterns
+- Event Patterns - Common event naming and payload patterns
 - [Testing Strategy](../inngest-testing.md) - Testing Inngest functions and workflows
 
 ---
@@ -477,7 +477,7 @@ describe('User Created Function', () => {
 - [Error Alerting Checklist](../inngest-error-alerting-checklist.md) - Implementation checklist
 - [Error Alerting Examples](../inngest-error-alerting-examples.md) - Code examples
 - [Error Alerting Quick Ref](../inngest-error-alerting-quick-ref.md) - Quick reference
-- [Error Alerting Summary](../inngest-error-alerting-summary.md) - Feature summary
+- Error Alerting Summary - Feature summary
 - [Testing Guide](../inngest-testing.md) - Testing patterns
 
 ### Code Examples

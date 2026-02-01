@@ -101,7 +101,7 @@ Total issues: 2
 
 ## Documentation
 
-Full guide: [`docs/automation/languagetool-integration.md`](../docs/automation/languagetool-integration.md)
+Full guide: `docs/automation/languagetool-integration.md`
 
 ## Pro Edition Benefits (Already Included)
 

@@ -95,7 +95,7 @@ The `Figure` component uses React Context to track figure count:
 If you just want to display an image without a caption, simply don't use the `Figure` component:
 
 ```mdx
-![alt text](image-url.jpg)
+!alt text
 ```
 
 ## Existing Images

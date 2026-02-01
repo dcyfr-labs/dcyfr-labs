@@ -124,7 +124,7 @@ Complex components are simplified for RSS compatibility:
 | --------------------- | ------------------------- | ----------------------------------- |
 | `<RiskMatrix>`        | `<p class="rss-removed">` | Placeholder text                    |
 | `<RoleBasedCTA>`      | `<div class="cta">`       | Keep content, lose interactivity    |
-| `<DownloadableAsset>` | `<a href="...">`          | Simple download link                |
+| `<DownloadableAsset>` | `HTML anchor`          | Simple download link                |
 | `<FAQSchema>`         | `<div class="faq">`       | Keep content, lose schema           |
 | `<TabInterface>`      | `<div class="tabs">`      | Keep all tab content (no switching) |
 

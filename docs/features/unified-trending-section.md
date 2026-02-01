@@ -927,14 +927,14 @@ function calculateVelocity(stars: number, recentStars: number) {
 
 ### Testing Coverage
 
-**Component Tests** ([src/**tests**/components/ui/trending-badge.test.tsx](../../../src/__tests__/components/ui/trending-badge.test.tsx)):
+**Component Tests** (src/**tests**/components/ui/trending-badge.test.tsx):
 
 - 16 tests covering rendering, styling, and accessibility
 - All badge variants (hot, rising, top, accelerating)
 - Custom className support
 - ARIA attributes validation
 
-**Unit Tests** ([src/**tests**/lib/trending-projects.test.ts](../../../src/__tests__/lib/trending-projects.test.ts)):
+**Unit Tests** (src/**tests**/lib/trending-projects.test.ts):
 
 - 6 tests for velocity indicator calculations
 - Growth rate calculation accuracy

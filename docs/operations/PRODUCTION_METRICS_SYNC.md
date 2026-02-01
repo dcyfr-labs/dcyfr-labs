@@ -348,10 +348,10 @@ Potential improvements (not yet implemented):
 
 ## Related Documentation
 
-- [Redis Client Configuration](../src/mcp/shared/redis-client.ts)
-- [Analytics Integration](../src/lib/analytics-integration.ts)
-- [Test Data Prevention](./docs/ai/enforcement/TEST_DATA_PREVENTION.md)
-- [Environment Configuration](../docs/deployment/environment-variables.md)
+- Redis Client Configuration
+- Analytics Integration
+- Test Data Prevention
+- Environment Configuration
 
 ---
 

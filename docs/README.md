@@ -66,7 +66,7 @@ API routes, background jobs, and integrations
 Performance, testing, and optimization guides
 
 - [→ Testing Overview](./testing/README)
-- [→ Performance](./performance/private/development/lighthouse-ci)
+- → Performance
 - [→ SEO & Analytics](./optimization/json-ld-implementation)
 
 ## Essential References
@@ -99,7 +99,7 @@ Performance, testing, and optimization guides
 ### Development & Quality
 
 - **[`testing/`](./testing/)** – Test infrastructure, coverage roadmap, quick reference
-- **[`performance/private/development/`](./performance/private/development/)** – Performance optimization, Lighthouse CI, ISR
+- **`performance/private/development/`** – Performance optimization, Lighthouse CI, ISR
 - **[`optimization/`](./optimization/)** – SEO, JSON-LD, alt-text, tag analytics
 - **[`content/`](./content/)** – Content validation, Markdown standards, Mermaid
 
@@ -114,11 +114,11 @@ Performance, testing, and optimization guides
 | Area                  | Key Documentation                                                                                  |
 | --------------------- | -------------------------------------------------------------------------------------------------- |
 | **Getting Started**   | [Quick Start](./quick-start) • [Environment Setup](./platform/environment-variables)               |
-| **Architecture**      | [Architecture Overview](./architecture/README) • [Migration Guide](./architecture/migration-guide) |
+| **Architecture**      | [Architecture Overview](./architecture/README) • Migration Guide |
 | **Design System**     | [Design System](./design/design-system) • Page Templates                                           |
 | **Components**        | [MDX Components](./components/mdx) • [Post Components](./components/post-badges)                   |
 | **API & Features**    | [API Overview](./api/routes/overview) • [Background Jobs](./features/inngest-integration)          |
-| **Testing & Quality** | [Testing Guide](./testing/README) • [Performance](./performance/private/development/lighthouse-ci) |
+| **Testing & Quality** | [Testing Guide](./testing/README) • Performance |
 | **Operations**        | Current Tasks • Completed Work                                                                     |
 
 ---

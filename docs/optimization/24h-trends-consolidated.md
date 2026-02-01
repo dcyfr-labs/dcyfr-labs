@@ -294,7 +294,7 @@ const debug24hTrend = (postSlug: string) => {
 
 **Monitoring & Performance:**
 - `operations/monitoring.md` - System health monitoring
-- [`development/performance-monitoring.md`](../development/performance-monitoring) - Performance optimization
+- `development/performance-monitoring.md` - Performance optimization
 
 ---
 

@@ -115,4 +115,4 @@ Consider adding:
 ## See Also
 
 - [API Reference](./reference)
-- [Rate Limiting](../security/rate-limiting/quick-reference)
+- Rate Limiting

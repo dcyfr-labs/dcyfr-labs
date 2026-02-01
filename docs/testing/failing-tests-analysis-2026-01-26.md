@@ -16,7 +16,7 @@ After completing the Redis production migration, discovered 49 test failures:
 
 **All failures resolved.** Full test suite: 2840/2939 passing (96.6%), 0 failures.
 
-**Complete Documentation:** [Redis Test Infrastructure Migration Complete](../operations/private/redis-test-infrastructure-complete-2026-01-26.md)
+**Complete Documentation:** Redis Test Infrastructure Migration Complete
 
 ---
 

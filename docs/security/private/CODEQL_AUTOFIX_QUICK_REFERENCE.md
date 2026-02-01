@@ -211,11 +211,11 @@ gh pr list --label codeql-fix --state closed --json count
 
 | Resource            | Link                                                                               |
 | ------------------- | ---------------------------------------------------------------------------------- |
-| **Full Guide**      | [github-copilot-autofix.md](docs/features/github-copilot-autofix.md)               |
-| **Setup Checklist** | [CODEQL_AUTOFIX_SETUP.md](docs/features/CODEQL_AUTOFIX_SETUP.md)                   |
+| **Full Guide**      | github-copilot-autofix.md               |
+| **Setup Checklist** | CODEQL_AUTOFIX_SETUP.md                   |
 | **Implementation**  | [CODEQL_AUTOFIX_IMPLEMENTATION.md](./CODEQL_AUTOFIX_IMPLEMENTATION.md)             |
 | **Deployment**      | [CODEQL_AUTOFIX_DEPLOYMENT_CHECKLIST.md](./CODEQL_AUTOFIX_DEPLOYMENT_CHECKLIST.md) |
-| **Security Rules**  | [CODEQL_SUPPRESSIONS.md](.github/agents/patterns/CODEQL_SUPPRESSIONS.md)           |
+| **Security Rules**  | CODEQL_SUPPRESSIONS.md           |
 
 ---
 
@@ -276,4 +276,4 @@ A: No. All PRs require validation checklist completion and human review before m
 
 **Last Updated:** January 29, 2026
 **Status:** ✅ Production Ready
-**Need Help?** See [github-copilot-autofix.md](docs/features/github-copilot-autofix.md)
+**Need Help?** See github-copilot-autofix.md

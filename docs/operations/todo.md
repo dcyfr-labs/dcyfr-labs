@@ -9,7 +9,7 @@
 
 This document tracks operational priorities, feature development stages, and maintenance tasks for dcyfr-labs.
 
-**📋 Full Backlog Analysis:** [`docs/private/COMPREHENSIVE_BACKLOG_2026-01-10.md`](../private/COMPREHENSIVE_BACKLOG_2026-01-10.md)
+**📋 Full Backlog Analysis:** `docs/private/COMPREHENSIVE_BACKLOG_2026-01-10.md`
 
 ---
 
@@ -34,7 +34,7 @@ This document tracks operational priorities, feature development stages, and mai
 2. **GitHub Webhook Deployment** (Pending) - 1 hour, enables real-time commit feed
 3. **Social Media Phase 2** (Q1 2026) - Automated posting, queue management, analytics dashboard
 
-**See Full Analysis:** [`docs/private/COMPREHENSIVE_BACKLOG_2026-01-10.md`](../private/COMPREHENSIVE_BACKLOG_2026-01-10.md)
+**See Full Analysis:** `docs/private/COMPREHENSIVE_BACKLOG_2026-01-10.md`
 
 ---
 
@@ -169,7 +169,7 @@ This document tracks operational priorities, feature development stages, and mai
 **Implementation Summary:**
 
 1. **Root Cause Analysis**
-   - Flaky tests at [`src/__tests__/components/home/trending-section.test.tsx:216-304`](../../src/__tests__/components/home/trending-section.test.tsx#L216-L304)
+   - Flaky tests at `src/__tests__/components/home/trending-section.test.tsx:216-304`
    - Issue: Sequential `waitFor()` calls created race conditions between Radix UI's async state updates and happy-dom's event loop
    - TabsContent visibility updated before `aria-selected` attribute, causing intermittent failures
 
@@ -225,13 +225,13 @@ await waitFor(() => {
    - Issue: `setUTCDate()` mutation caused unpredictable behavior across month boundaries
    - Example: Setting Jan 31 + 1 day in February could jump to unexpected dates
 
-2. **Solution: Millisecond-Based Iteration** ([src/lib/activity/heatmap.ts:140-180](../../../src/lib/activity/heatmap.ts#L140-L180))
+2. **Solution: Millisecond-Based Iteration** (src/lib/activity/heatmap.ts:140-180)
    - Replaced mutable date iteration with millisecond arithmetic
    - Calculate total days using: `(endDate - startDate) / millisecondsPerDay + 1`
    - Create new Date objects for each iteration instead of mutating
    - More predictable behavior across month/year boundaries and DST transitions
 
-3. **Enhanced Test Coverage** ([src/**tests**/lib/activity-heatmap.test.ts:158-233](../../../src/__tests__/lib/activity-heatmap.test.ts#L158-L233))
+3. **Enhanced Test Coverage** (src/**tests**/lib/activity-heatmap.test.ts:158-233)
    - ✅ Month boundary transitions (Jan 31 → Feb 1)
    - ✅ Year boundary transitions (Dec 31 → Jan 1)
    - ✅ Leap year February handling (Feb 28-29 → Mar 1)
@@ -601,7 +601,7 @@ await waitFor(() => {
    - ✅ Build stability: All changes compile successfully
    - ✅ Test validation: Pre-commit checks passing
 
-**Detailed Report:** [BATCH_9_COMPLETION_REPORT.md](BATCH_9_COMPLETION_REPORT.md)
+**Detailed Report:** BATCH_9_COMPLETION_REPORT.md
 
 **Build Status:** ✅ TypeScript clean • ✅ ESLint clean • ✅ 1,399 violations remaining
 
@@ -627,7 +627,7 @@ await waitFor(() => {
    - ✅ Content MCP - MDX management & link validation (src/mcp/content-server.ts)
 
 3. **Documentation Created**
-   - Comprehensive MCP Implementation Guide: [MCP_IMPLEMENTATION_GUIDE.md](../ai/MCP_IMPLEMENTATION_GUIDE.md)
+   - Comprehensive MCP Implementation Guide: MCP_IMPLEMENTATION_GUIDE.md
    - Setup instructions for each MCP
    - Verification procedures and troubleshooting
    - Integration testing guidelines
@@ -1397,13 +1397,13 @@ All previously failing tests have been fixed:
 ## 🎯 RIVET Framework - Blog Modernization (Active)
 
 **Framework:** Reader-centric navigation, Interactive elements, Visual density, Enhanced discoverability, Tiered content depth
-**Documentation:** [`docs/content/blog-modernization-plan.md`](../content/blog-modernization-plan.md) | [`docs/content/rivet-component-library.md`](../content/rivet-component-library.md)
+**Documentation:** `docs/content/blog-modernization-plan.md` | [`docs/content/rivet-component-library.md`](../content/rivet-component-library.md)
 
 ### Week 1: P0 Foundation Components ✅ COMPLETE (Jan 10, 2026)
 
 **Status:** All 3 components built, tested, and production-ready
 **Test Coverage:** 71 tests passing (18 + 25 + 28)
-**Documentation:** [`docs/content/week-1-completion-report.md`](../content/week-1-completion-report.md)
+**Documentation:** `docs/content/week-1-completion-report.md`
 
 **Components Delivered:**
 
@@ -1503,12 +1503,12 @@ All previously failing tests have been fixed:
 
 ### ✅ Complete Session: Bundle Optimization + RIVET P1 Application - COMPLETE (January 16, 2026)
 
-**Session Summary:** [`SESSION-COMPLETE-SUMMARY.md`](../../SESSION-COMPLETE-SUMMARY.md)
+**Session Summary:** `SESSION-COMPLETE-SUMMARY.md`
 **Status:** ✅ All 5 phases complete | **Duration:** ~4 hours | **Test Suite:** 2,644/2,778 passing (95.2%, 0 failing)
 
 ### ✅ Phase 1: Bundle Size Optimization - COMPLETE (45 minutes)
 
-**Documentation:** [`PHASE-1-BUNDLE-OPTIMIZATION-COMPLETE.md`](../../PHASE-1-BUNDLE-OPTIMIZATION-COMPLETE.md)
+**Documentation:** `PHASE-1-BUNDLE-OPTIMIZATION-COMPLETE.md`
 **Impact:** -360KB (72% bundle reduction, 500KB → 140-160KB)
 
 **Completed Tasks:**
@@ -1534,7 +1534,7 @@ All previously failing tests have been fixed:
 
 ### ✅ Phase 2: Test Infrastructure Fixes - COMPLETE (2 hours)
 
-**Documentation:** [`TEST-INFRASTRUCTURE-FIXES-COMPLETE.md`](../../TEST-INFRASTRUCTURE-FIXES-COMPLETE.md)
+**Documentation:** `TEST-INFRASTRUCTURE-FIXES-COMPLETE.md`
 **Impact:** 60 tests fixed, 0 failing tests, 95.2% pass rate
 
 **Completed Tasks:**
@@ -1554,7 +1554,7 @@ All previously failing tests have been fixed:
 
 ### ✅ Phase 3: RIVET P1 - CVE Post Application - COMPLETE (45 minutes)
 
-**Documentation:** [`RIVET-P1-CVE-POST-COMPLETE.md`](../../RIVET-P1-CVE-POST-COMPLETE.md)
+**Documentation:** `RIVET-P1-CVE-POST-COMPLETE.md`
 **Post:** CVE-2025-55182 (React2Shell) - 4,211 words
 **Impact:** 23 RIVET P1 components added (6 KeyTakeaway, 3 RoleBasedCTA, 2 CollapsibleSection)
 
@@ -1573,7 +1573,7 @@ All previously failing tests have been fixed:
 
 ### ✅ Phase 4: RIVET P1 - Hardening Portfolio Post - COMPLETE (30 minutes)
 
-**Documentation:** [`RIVET-P1-HARDENING-POST-COMPLETE.md`](../../RIVET-P1-HARDENING-POST-COMPLETE.md)
+**Documentation:** `RIVET-P1-HARDENING-POST-COMPLETE.md`
 **Post:** Hardening a Developer Portfolio - 1,389 words
 **Impact:** 20 RIVET P1 components added (4 KeyTakeaway, 3 RoleBasedCTA, 5 existing CollapsibleSection)
 
@@ -1658,7 +1658,7 @@ All previously failing tests have been fixed:
 ### Redis Migration to Upstash ✅ COMPLETE
 
 **Completion Date:** January 25, 2026
-**Documentation:** [`docs/architecture/redis-migration-analysis.md`](../architecture/redis-migration-analysis.md)
+**Documentation:** `docs/architecture/redis-migration-analysis.md`
 **Priority:** Medium | **Effort:** 4 hours (actual) | **Target:** Q1 2026 maintenance window
 
 **Benefits Realized:**
@@ -1831,7 +1831,7 @@ All previously flaky tests are now passing consistently with enhanced robustness
   - Enable edge function compatibility (REST API vs TCP)
   - Cost: $0-1/month (vs current unknown provider)
   - Benefits: Edge deployment, global replication, unified client
-  - See: [docs/architecture/redis-migration-analysis.md](../architecture/redis-migration-analysis.md)
+  - See: docs/architecture/redis-migration-analysis.md
   - Target: Q1 2026 maintenance window
 
 ### Activity Feed Enhancements
@@ -1854,7 +1854,7 @@ All previously flaky tests are now passing consistently with enhanced robustness
   - Draft management with auto-save
   - Analytics visualization (referrals, DEV metrics)
   - Preview functionality for each platform
-  - See: [docs/private/SOCIAL_MEDIA_DASHBOARD_ARCHITECTURE.md](../private/SOCIAL_MEDIA_DASHBOARD_ARCHITECTURE.md)
+  - See: docs/private/SOCIAL_MEDIA_DASHBOARD_ARCHITECTURE.md
   - Target: Q2 2026
 
 - **Phase 3: Automation & AI Optimization** (Priority: Low, Effort: 3-4 weeks)
@@ -1864,7 +1864,7 @@ All previously flaky tests are now passing consistently with enhanced robustness
   - Hashtag suggestions
   - Content repurposing (blog → tweets)
   - A/B testing for post variations
-  - See: [docs/private/SOCIAL_MEDIA_INTEGRATION_STRATEGY.md](../private/SOCIAL_MEDIA_INTEGRATION_STRATEGY.md)
+  - See: docs/private/SOCIAL_MEDIA_INTEGRATION_STRATEGY.md
   - Target: Q3 2026
 
 **Phase 1 Completed:** January 9, 2026

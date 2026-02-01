@@ -54,7 +54,7 @@
 
 ### 2. Security Quick Reference (✅ Complete)
 
-**Created:** [`/docs/security/private/SECURITY_QUICK_REFERENCE.md`](../security/private/SECURITY_QUICK_REFERENCE.md)
+**Created:** `/docs/security/private/SECURITY_QUICK_REFERENCE.md`
 
 **Consolidated Files (8 → 1):**
 - ❌ `/docs/security/private/quick-reference.md` (260 lines, overall security analysis)
@@ -195,7 +195,7 @@
    - 4 major sections (design system, typography, mobile, print)
    - Replaces 4 source files
 
-2. **[`/docs/security/private/SECURITY_QUICK_REFERENCE.md`](../security/private/SECURITY_QUICK_REFERENCE.md)**
+2. **`/docs/security/private/SECURITY_QUICK_REFERENCE.md`**
    - 1,100+ lines
    - 8 major sections (overview, CSP, rate limiting, bot detection, anti-spam, monitoring, dev tools, resources)
    - Replaces 8 source files
@@ -206,7 +206,7 @@
    - Replaces 3 source files
 
 ### Summary Documentation (1 file)
-- **[`/docs/operations/QUICK_REFERENCE_CONSOLIDATION_2026-01-05.md`](QUICK_REFERENCE_CONSOLIDATION_2026-01-05.md)** - This document
+- **[QUICK_REFERENCE_CONSOLIDATION_2026-01-05.md](./QUICK_REFERENCE_CONSOLIDATION_2026-01-05.md)** - This document
 
 ---
 
@@ -339,10 +339,10 @@ Based on comprehensive analysis, several other categories have scattered quick-r
 
 ## Related Documentation
 
-- [`DOCS_CLEANUP_SUMMARY_2026-01-05.md`](DOCS_CLEANUP_SUMMARY_2026-01-05.md) - Overall /docs cleanup
-- [`CLEANUP_SUMMARY_2026-01-05.md`](CLEANUP_SUMMARY_2026-01-05.md) - Root/dotfiles cleanup
-- [`PROJECT_HEALTH_AUDIT.md`](PROJECT_HEALTH_AUDIT.md) - Project health overview
-- [`MAINTENANCE_PLAYBOOK.md`](MAINTENANCE_PLAYBOOK.md) - Maintenance procedures
+- `DOCS_CLEANUP_SUMMARY_2026-01-05.md` - Overall /docs cleanup
+- `CLEANUP_SUMMARY_2026-01-05.md` - Root/dotfiles cleanup
+- `PROJECT_HEALTH_AUDIT.md` - Project health overview
+- [MAINTENANCE_PLAYBOOK.md](./MAINTENANCE_PLAYBOOK.md) - Maintenance procedures
 
 ---
 

@@ -218,7 +218,7 @@ Internal link
 ### Images
 
 ```markdown
-![Alt text](image-url.jpg)
+!Alt text
 ```
 
 ### Blockquotes

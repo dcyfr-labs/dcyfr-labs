@@ -613,7 +613,7 @@ it('should auto-return when primary available', async () => {
 
 ## Related Documentation
 
-- [Session State v2.0](/.opencode/SESSION_STATE_V2.md) - Base schema
+- Session State v2.0 - Base schema
 - [Session Recovery System](/docs/operations/SESSION_RECOVERY_SYSTEM.md) - Checkpoint system
 - [Cost Optimization](/.opencode/workflows/COST_OPTIMIZATION.md) - Free tier strategies
 - [Agent Handoff Workflow](/.opencode/scripts/session-handoff.sh) - Cross-agent transitions

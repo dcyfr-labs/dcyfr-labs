@@ -8,7 +8,7 @@
 
 ## Overview
 
-Successfully implemented **optional enhancements** to the semantic color system as recommended in [SEMANTIC_COLORS_VALIDATION.md](./SEMANTIC_COLORS_VALIDATION.md). All enhancements maintain backward compatibility while adding powerful new features for future color implementation.
+Successfully implemented **optional enhancements** to the semantic color system as recommended in SEMANTIC_COLORS_VALIDATION.md. All enhancements maintain backward compatibility while adding powerful new features for future color implementation.
 
 ---
 
@@ -289,7 +289,7 @@ New features are **purely additive** - no breaking changes.
 ## Related Documentation
 
 - [SEMANTIC_COLORS_LIBRARY.md](./SEMANTIC_COLORS_LIBRARY.md) - Complete usage guide
-- [SEMANTIC_COLORS_VALIDATION.md](./SEMANTIC_COLORS_VALIDATION.md) - Industry validation report
+- SEMANTIC_COLORS_VALIDATION.md - Industry validation report
 - [docs/ai/design-system.md](../ai/design-system.md) - Design system overview
 
 ---

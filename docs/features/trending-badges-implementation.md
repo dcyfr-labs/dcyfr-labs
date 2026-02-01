@@ -130,7 +130,7 @@ Added compact trending badges for replies:
 Disabled `transformTrendingPosts` calls in all pages:
 - [src/app/activity/page.tsx](../../src/app/activity/page.tsx) (line 151)
 - [src/app/page.tsx](../../src/app/page.tsx) (line 234)
-- [src/app/(embed)/embed/activity/page.tsx](../../src/app/(embed)/embed/activity/page.tsx) (line 131)
+- src/app/(embed)/embed/activity/page.tsx/embed/activity/page.tsx) (line 131)
 
 **Before:** Duplicate events (published + trending)
 ```
@@ -297,8 +297,8 @@ Future cleanup (non-urgent):
 
 - [Activity Feed Architecture](./activity-feed.md)
 - [Activity Automation](./activity-automation-quick-start.md)
-- [Engagement Tracking](./engagement-tracking.md)
-- [Trending Integration Example](../../src/lib/activity/trending-integration-example.ts)
+- Engagement Tracking
+- Trending Integration Example
 
 ## Credits
 

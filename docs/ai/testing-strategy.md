@@ -86,7 +86,7 @@ describe('Button', () => {
     it('should render as child when asChild is true', () => {
       render(
         <Button asChild>
-          <a href="/link">Link Button</a>
+          HTML anchorLink Button</a>
         </Button>
       );
       expect(screen.getByRole('link')).toBeInTheDocument();

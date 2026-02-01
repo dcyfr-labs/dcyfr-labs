@@ -360,11 +360,11 @@ pre code .token.string {
 
 ## Related Documentation
 
-- [Design System Overview](docs/design/ux-ui-consistency-analysis.md)
-- [Color Token Migration](docs/design/COLOR_MIGRATION_COMPLETION_REPORT.md)
-- [Semantic Color Architecture](docs/ai/design-system.md)
-- [MDX Component System](docs/components/mdx.md)
-- [Accessibility Guidelines](docs/accessibility/README.md)
+- Design System Overview
+- Color Token Migration
+- Semantic Color Architecture
+- MDX Component System
+- Accessibility Guidelines
 
 ---
 

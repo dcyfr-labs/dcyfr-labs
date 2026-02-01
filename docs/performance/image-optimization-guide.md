@@ -258,8 +258,8 @@ npx lighthouse http://localhost:3000 --view
 
 ### Internal
 - [UI/UX Implementation Plan](../ui-ux-implementation-plan.md)
-- [Performance Budgets](./performance-budgets.md) (to be created)
-- [Core Web Vitals Baseline](../core-web-vitals-baseline.md)
+- Performance Budgets (to be created)
+- Core Web Vitals Baseline
 
 ### External
 - [Next.js Image Optimization](https://nextjs.org/docs/app/building-your-application/optimizing/images)

@@ -668,7 +668,7 @@ export function Button({ asChild, ...props }: ButtonProps) {
 // Usage
 <Button>Normal button</Button>
 <Button asChild>
-  <a href="/link">Button as link</a>
+  HTML anchorButton as link</a>
 </Button>
 ```
 

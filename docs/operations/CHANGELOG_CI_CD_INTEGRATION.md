@@ -299,7 +299,7 @@ This PR includes changes to source code but **CHANGELOG.md** was not updated.
 - Bug fix description
 \`\`\`
 
-**Note:** This is a reminder. See [VALIDATION_CHECKLIST.md](.github/agents/enforcement/VALIDATION_CHECKLIST.md) for guidelines.`
+**Note:** This is a reminder. See VALIDATION_CHECKLIST.md for guidelines.`
             })
 
       - name: Require changelog for breaking changes
@@ -633,7 +633,7 @@ Great! This PR updates CHANGELOG.md.
 ### Next Steps:
 
 - Changes will be included in release
-- See [CHANGELOG.md](../CHANGELOG.md) for full history
+- See CHANGELOG.md for full history
 ```
 
 ---

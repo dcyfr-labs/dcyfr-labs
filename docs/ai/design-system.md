@@ -742,7 +742,7 @@ node scripts/validate-design-tokens.mjs --files src/components/my-component.tsx
 - **UI primitives**: [`src/components/ui/`](../../src/components/ui/)
 - **Validation script**: `scripts/validate-design-tokens.mjs`
 - **Best practices**: [`/docs/ai/BEST_PRACTICES.md`](./best-practices)
-- **Animation analysis**: [`/docs/design/ANIMATION_SYSTEM_ANALYSIS.md`](../design/ANIMATION_SYSTEM_ANALYSIS.md)
+- **Animation analysis**: `/docs/design/ANIMATION_SYSTEM_ANALYSIS.md`
 
 ---
 

@@ -78,11 +78,11 @@ This directory contains 40+ guides organized by category to help AI agents and d
 
 | Document                                                               | Purpose                 | Use When                |
 | ---------------------------------------------------------------------- | ----------------------- | ----------------------- |
-| [claude-code-integration.md](./claude-code-integration.md)             | Claude Code setup       | Configuring Claude Code |
-| [claude-code-validation-report.md](./claude-code-validation-report.md) | Validation results      | Reviewing Claude Code   |
-| [claude-code-enhancements.md](./claude-code-enhancements.md)           | Enhancement suggestions | Improving Claude Code   |
-| [aitmpl-integration-summary.md](./aitmpl-integration-summary.md)       | AITMPL.com integration  | Using template agents   |
-| [aitmpl-enhancement-plan.md](./aitmpl-enhancement-plan.md)             | Enhancement roadmap     | Planning improvements   |
+| claude-code-integration.md             | Claude Code setup       | Configuring Claude Code |
+| claude-code-validation-report.md | Validation results      | Reviewing Claude Code   |
+| claude-code-enhancements.md           | Enhancement suggestions | Improving Claude Code   |
+| aitmpl-integration-summary.md       | AITMPL.com integration  | Using template agents   |
+| aitmpl-enhancement-plan.md             | Enhancement roadmap     | Planning improvements   |
 | [superpowers-integration.md](./superpowers-integration.md)             | Superpowers skills      | TDD workflows           |
 | [universal-agent-configuration.md](./universal-agent-configuration.md) | Agent config standards  | Multi-tool setup        |
 
@@ -97,7 +97,7 @@ This directory contains 40+ guides organized by category to help AI agents and d
 | Document                                                   | Purpose                  | Use When        |
 | ---------------------------------------------------------- | ------------------------ | --------------- |
 | [mcp-checks.md](./mcp-checks.md)                           | MCP server health checks | Debugging MCP   |
-| [mcp-sentry-axiom-access.md](./mcp-sentry-axiom-access.md) | Sentry/Axiom MCP access  | Error tracking  |
+| mcp-sentry-axiom-access.md | Sentry/Axiom MCP access  | Error tracking  |
 | [arxiv-mcp-server.md](./arxiv-mcp-server.md)               | arXiv research server    | Research papers |
 
 #### OpenCode & Fallback Systems
@@ -106,15 +106,15 @@ This directory contains 40+ guides organized by category to help AI agents and d
 | -------------------------------------------------------------------------------- | ----------------------- | ---------------------- |
 | [opencode-fallback-architecture.md](./opencode-fallback-architecture.md)         | OpenCode AI fallback    | Token exhaustion       |
 | [opencode-usage-guide.md](./opencode-usage-guide.md)                             | When to use OpenCode    | Tool selection         |
-| [opencode-gap-analysis.md](./opencode-gap-analysis.md)                           | OpenCode vs Claude Code | Comparing capabilities |
-| [opencode-validation-final-report.md](./opencode-validation-final-report.md)     | Validation results      | Reviewing setup        |
-| [opencode-configuration-fix-summary.md](./opencode-configuration-fix-summary.md) | Configuration fixes     | Troubleshooting        |
+| opencode-gap-analysis.md                           | OpenCode vs Claude Code | Comparing capabilities |
+| opencode-validation-final-report.md     | Validation results      | Reviewing setup        |
+| opencode-configuration-fix-summary.md | Configuration fixes     | Troubleshooting        |
 
 #### Cost Tracking & Analytics
 
 | Document                                                                             | Purpose                 | Use When             |
 | ------------------------------------------------------------------------------------ | ----------------------- | -------------------- |
-| [AI_COST_TRACKING_PROGRESS.md](./AI_COST_TRACKING_PROGRESS.md)                       | Cost tracking progress  | Monitoring costs     |
+| AI_COST_TRACKING_PROGRESS.md                       | Cost tracking progress  | Monitoring costs     |
 | [UNIFIED_AI_COST_DASHBOARD.md](./UNIFIED_AI_COST_DASHBOARD.md)                       | Cost dashboard overview | Viewing metrics      |
 | [UNIFIED_AI_COST_DASHBOARD_QUICKSTART.md](./UNIFIED_AI_COST_DASHBOARD_QUICKSTART.md) | Quick start guide       | Setting up dashboard |
 
@@ -127,7 +127,7 @@ This directory contains 40+ guides organized by category to help AI agents and d
 | Document                                                               | Purpose                | Use When           |
 | ---------------------------------------------------------------------- | ---------------------- | ------------------ |
 | [INSTRUCTION_ALIGNMENT_INDEX.md](./INSTRUCTION_ALIGNMENT_INDEX.md)     | Instruction file index | Finding guidance   |
-| [INSTRUCTION_ALIGNMENT_SUMMARY.md](./INSTRUCTION_ALIGNMENT_SUMMARY.md) | Alignment summary      | Understanding sync |
+| INSTRUCTION_ALIGNMENT_SUMMARY.md | Alignment summary      | Understanding sync |
 
 ---
 
@@ -137,7 +137,7 @@ This directory contains 40+ guides organized by category to help AI agents and d
 
 | Document                                                                   | Purpose                 | Use When              |
 | -------------------------------------------------------------------------- | ----------------------- | --------------------- |
-| [session-summary-trending-badges.md](./session-summary-trending-badges.md) | Trending badges session | Reviewing badges work |
+| session-summary-trending-badges.md | Trending badges session | Reviewing badges work |
 
 ---
 
@@ -145,7 +145,7 @@ This directory contains 40+ guides organized by category to help AI agents and d
 
 **Sensitive AI implementation details:**
 
-- **Location:** [private/](./private/)
+- **Location:** private/
 - **Access:** Internal team only
 - **Content:** Performance metrics, operational data, sensitive configurations
 
@@ -181,7 +181,7 @@ This directory contains 40+ guides organized by category to help AI agents and d
 
 **Set up AI tools:**
 
-1. Claude Code: [claude-code-integration.md](./claude-code-integration.md)
+1. Claude Code: claude-code-integration.md
 2. OpenCode: [opencode-usage-guide.md](./opencode-usage-guide.md)
 3. MCP: [mcp-checks.md](./mcp-checks.md)
 
@@ -218,7 +218,7 @@ This directory contains 40+ guides organized by category to help AI agents and d
 **Found an issue or want to improve documentation?**
 
 1. Check existing guides for similar content
-2. Follow [DOCS_GOVERNANCE.md](../DOCS_GOVERNANCE.md) for structure
+2. Follow DOCS_GOVERNANCE.md for structure
 3. Submit PR with clear description
 4. See [CONTRIBUTING.md](../../CONTRIBUTING.md) for guidelines
 

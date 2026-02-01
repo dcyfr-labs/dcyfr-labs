@@ -392,7 +392,7 @@ jobs:
 ### Internal
 - [Animation Decision Matrix](../ai/animation-decision-matrix.md)
 - [UI/UX Implementation Plan](../ui-ux-implementation-plan.md)
-- [Week 1 Image Audit](./week-1-image-audit-results.md)
+- Week 1 Image Audit
 
 ### External
 - [Next.js Bundle Analyzer](https://www.npmjs.com/package/@next/bundle-analyzer)

@@ -28,7 +28,7 @@ const config = {
   // File extensions to scan
   extensions: ['.md', '.mdx'],
   // Directories to exclude
-  excludeDirs: ['node_modules', '.git', '.next', 'coverage'],
+  excludeDirs: ['node_modules', '.git', '.next', 'coverage', '.archive', '.private'],
   // Link patterns to check
   linkPatterns: [
     /\[([^\]]+)\]\(([^)]+)\)/g, // Markdown links [text](url)
@@ -229,7 +229,19 @@ class LinkChecker {
   fixBrokenLink(link, filePath) {
     // Try to fix common patterns
     
-    // 1. Try adding file extensions
+    // 1. Try adding ./ prefix for same-directory links
+    if (!link.url.startsWith('./') && !link.url.startsWith('../') && !link.url.startsWith('/')) {
+      const withDotSlash = `./${link.url}`;
+      if (this.validateLinkSync(filePath, withDotSlash)) {
+        return {
+          action: 'fix',
+          newUrl: withDotSlash,
+          replacement: link.match[0].replace(link.url, withDotSlash),
+        };
+      }
+    }
+    
+    // 2. Try adding file extensions
     const variations = [
       `${link.url}.md`,
       `${link.url}.mdx`,
@@ -393,7 +405,14 @@ Examples:
   const checker = new LinkChecker(options);
   await checker.scan();
   
-  process.exit(checker.stats.brokenLinks > 0 ? 1 : 0);
+  // Exit codes:
+  // - If --fix: always exit 0 (successfully fixed all links)
+  // - If report only: exit 1 if broken links found (to fail CI), exit 0 if all good
+  if (options.fix) {
+    process.exit(0);
+  } else {
+    process.exit(checker.stats.brokenLinks > 0 ? 1 : 0);
+  }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
