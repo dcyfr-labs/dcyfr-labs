@@ -192,6 +192,7 @@ dump.rdb
 # ========================================
 # vercel
 .vercel
+!.vercel/README.md
 .vercel.json.local
 
 # typescript

@@ -1,0 +1,963 @@
+{
+  "metadata": {
+    "timestamp": "2026-02-01T05:36:00.072Z",
+    "generatedBy": "dcyfr-labs-sbom-generator",
+    "project": {
+      "name": "dcyfr-labs",
+      "version": "2026.01.02",
+      "homepage": "https://www.dcyfr.ai",
+      "repository": "https://github.com/dcyfr-labs/dcyfr-labs"
+    },
+    "soc2Compliance": {
+      "purpose": "SOC2 Type 2 third-party risk management",
+      "lastAudit": "2026-02-01",
+      "nextAudit": "2026-05-02"
+    }
+  },
+  "summary": {
+    "totalDependencies": 110,
+    "runtimeDependencies": 72,
+    "devDependencies": 38,
+    "thirdPartyServices": 12
+  },
+  "npmDependencies": {
+    "runtime": [
+      {
+        "name": "@dcyfr/agents",
+        "version": "file:../dcyfr-ai-agents",
+        "type": "runtime",
+        "installedVersion": "file:../dcyfr-ai-agents",
+        "license": "Unknown"
+      },
+      {
+        "name": "@dcyfr/ai",
+        "version": "1.0.1",
+        "type": "runtime",
+        "installedVersion": "^1.0.1",
+        "license": "Unknown"
+      },
+      {
+        "name": "@giscus/react",
+        "version": "3.1.0",
+        "type": "runtime",
+        "installedVersion": "3.1.0",
+        "license": "Unknown"
+      },
+      {
+        "name": "@radix-ui/react-accordion",
+        "version": "1.2.12",
+        "type": "runtime",
+        "installedVersion": "1.2.12",
+        "license": "MIT"
+      },
+      {
+        "name": "@radix-ui/react-dialog",
+        "version": "1.1.15",
+        "type": "runtime",
+        "installedVersion": "1.1.15",
+        "license": "MIT"
+      },
+      {
+        "name": "@radix-ui/react-dropdown-menu",
+        "version": "2.1.16",
+        "type": "runtime",
+        "installedVersion": "2.1.16",
+        "license": "MIT"
+      },
+      {
+        "name": "@radix-ui/react-progress",
+        "version": "1.1.8",
+        "type": "runtime",
+        "installedVersion": "1.1.8",
+        "license": "MIT"
+      },
+      {
+        "name": "@radix-ui/react-scroll-area",
+        "version": "1.2.10",
+        "type": "runtime",
+        "installedVersion": "1.2.10",
+        "license": "MIT"
+      },
+      {
+        "name": "@radix-ui/react-select",
+        "version": "2.2.6",
+        "type": "runtime",
+        "installedVersion": "2.2.6",
+        "license": "MIT"
+      },
+      {
+        "name": "@radix-ui/react-separator",
+        "version": "1.1.8",
+        "type": "runtime",
+        "installedVersion": "1.1.8",
+        "license": "MIT"
+      },
+      {
+        "name": "@radix-ui/react-slot",
+        "version": "1.2.4",
+        "type": "runtime",
+        "installedVersion": "1.2.4",
+        "license": "MIT"
+      },
+      {
+        "name": "@radix-ui/react-tabs",
+        "version": "1.1.13",
+        "type": "runtime",
+        "installedVersion": "1.1.13",
+        "license": "MIT"
+      },
+      {
+        "name": "@radix-ui/react-tooltip",
+        "version": "1.2.8",
+        "type": "runtime",
+        "installedVersion": "1.2.8",
+        "license": "MIT"
+      },
+      {
+        "name": "@react-email/render",
+        "version": "2.0.4",
+        "type": "runtime",
+        "installedVersion": "2.0.4",
+        "license": "MIT"
+      },
+      {
+        "name": "@react-three/drei",
+        "version": "10.7.7",
+        "type": "runtime",
+        "installedVersion": "10.7.7",
+        "license": "MIT"
+      },
+      {
+        "name": "@react-three/fiber",
+        "version": "9.5.0",
+        "type": "runtime",
+        "installedVersion": "9.5.0",
+        "license": "MIT"
+      },
+      {
+        "name": "@tanstack/react-virtual",
+        "version": "3.13.16",
+        "type": "runtime",
+        "installedVersion": "3.13.18",
+        "license": "MIT"
+      },
+      {
+        "name": "@upstash/redis",
+        "version": "1.36.0",
+        "type": "runtime",
+        "installedVersion": "1.36.1",
+        "license": "MIT"
+      },
+      {
+        "name": "@vercel/analytics",
+        "version": "1.6.1",
+        "type": "runtime",
+        "installedVersion": "1.6.1",
+        "license": "MPL-2.0"
+      },
+      {
+        "name": "@vercel/speed-insights",
+        "version": "1.3.1",
+        "type": "runtime",
+        "installedVersion": "1.3.1",
+        "license": "Apache-2.0"
+      },
+      {
+        "name": "@xyflow/react",
+        "version": "12.10.0",
+        "type": "runtime",
+        "installedVersion": "12.10.0",
+        "license": "MIT"
+      },
+      {
+        "name": "botid",
+        "version": "1.5.10",
+        "type": "runtime",
+        "installedVersion": "1.5.10",
+        "license": "Unknown"
+      },
+      {
+        "name": "chalk",
+        "version": "5.6.2",
+        "type": "runtime",
+        "installedVersion": "5.6.2",
+        "license": "MIT"
+      },
+      {
+        "name": "class-variance-authority",
+        "version": "0.7.1",
+        "type": "runtime",
+        "installedVersion": "0.7.1",
+        "license": "Apache-2.0"
+      },
+      {
+        "name": "clsx",
+        "version": "2.1.1",
+        "type": "runtime",
+        "installedVersion": "2.1.1",
+        "license": "MIT"
+      },
+      {
+        "name": "cmdk",
+        "version": "1.1.1",
+        "type": "runtime",
+        "installedVersion": "1.1.1",
+        "license": "MIT"
+      },
+      {
+        "name": "critters",
+        "version": "0.0.25",
+        "type": "runtime",
+        "installedVersion": "0.0.25",
+        "license": "Apache-2.0"
+      },
+      {
+        "name": "date-fns",
+        "version": "4.1.0",
+        "type": "runtime",
+        "installedVersion": "4.1.0",
+        "license": "MIT"
+      },
+      {
+        "name": "dotenv",
+        "version": "17.2.3",
+        "type": "runtime",
+        "installedVersion": "17.2.3",
+        "license": "BSD-2-Clause"
+      },
+      {
+        "name": "fastmcp",
+        "version": "3.30.1",
+        "type": "runtime",
+        "installedVersion": "3.30.1",
+        "license": "MIT"
+      },
+      {
+        "name": "framer-motion",
+        "version": "12.29.2",
+        "type": "runtime",
+        "installedVersion": "12.29.2",
+        "license": "MIT"
+      },
+      {
+        "name": "fuse.js",
+        "version": "7.1.0",
+        "type": "runtime",
+        "installedVersion": "7.1.0",
+        "license": "Apache-2.0"
+      },
+      {
+        "name": "glob",
+        "version": "10.0.0",
+        "type": "runtime",
+        "installedVersion": "10.5.0",
+        "license": "ISC"
+      },
+      {
+        "name": "googleapis",
+        "version": "170.0.0",
+        "type": "runtime",
+        "installedVersion": "170.1.0",
+        "license": "Apache-2.0"
+      },
+      {
+        "name": "gray-matter",
+        "version": "4.0.3",
+        "type": "runtime",
+        "installedVersion": "4.0.3",
+        "license": "MIT"
+      },
+      {
+        "name": "html2canvas",
+        "version": "1.4.1",
+        "type": "runtime",
+        "installedVersion": "1.4.1",
+        "license": "MIT"
+      },
+      {
+        "name": "inngest",
+        "version": "3.48.1",
+        "type": "runtime",
+        "installedVersion": "3.49.3",
+        "license": "Apache-2.0"
+      },
+      {
+        "name": "js-yaml",
+        "version": "4.1.0",
+        "type": "runtime",
+        "installedVersion": "4.1.1",
+        "license": "MIT"
+      },
+      {
+        "name": "katex",
+        "version": "0.16.28",
+        "type": "runtime",
+        "installedVersion": "0.16.28",
+        "license": "MIT"
+      },
+      {
+        "name": "lucide-react",
+        "version": "0.563.0",
+        "type": "runtime",
+        "installedVersion": "0.563.0",
+        "license": "ISC"
+      },
+      {
+        "name": "minisearch",
+        "version": "7.2.0",
+        "type": "runtime",
+        "installedVersion": "7.2.0",
+        "license": "MIT"
+      },
+      {
+        "name": "next",
+        "version": "16.1.5",
+        "type": "runtime",
+        "installedVersion": "16.1.5",
+        "license": "MIT"
+      },
+      {
+        "name": "next-axiom",
+        "version": "1.9.3",
+        "type": "runtime",
+        "installedVersion": "1.10.0",
+        "license": "MIT"
+      },
+      {
+        "name": "next-mdx-remote",
+        "version": "5.0.0",
+        "type": "runtime",
+        "installedVersion": "5.0.0",
+        "license": "MPL-2.0"
+      },
+      {
+        "name": "next-themes",
+        "version": "0.4.6",
+        "type": "runtime",
+        "installedVersion": "0.4.6",
+        "license": "MIT"
+      },
+      {
+        "name": "react",
+        "version": "19.2.4",
+        "type": "runtime",
+        "installedVersion": "19.2.4",
+        "license": "MIT"
+      },
+      {
+        "name": "react-calendar-heatmap",
+        "version": "1.10.0",
+        "type": "runtime",
+        "installedVersion": "1.10.0",
+        "license": "MIT"
+      },
+      {
+        "name": "react-dom",
+        "version": "19.2.4",
+        "type": "runtime",
+        "installedVersion": "19.2.4",
+        "license": "MIT"
+      },
+      {
+        "name": "recharts",
+        "version": "3.7.0",
+        "type": "runtime",
+        "installedVersion": "3.7.0",
+        "license": "MIT"
+      },
+      {
+        "name": "redis",
+        "version": "5.10.0",
+        "type": "runtime",
+        "installedVersion": "5.10.0",
+        "license": "MIT"
+      },
+      {
+        "name": "rehype-autolink-headings",
+        "version": "7.1.0",
+        "type": "runtime",
+        "installedVersion": "7.1.0",
+        "license": "MIT"
+      },
+      {
+        "name": "rehype-katex",
+        "version": "7.0.1",
+        "type": "runtime",
+        "installedVersion": "7.0.1",
+        "license": "MIT"
+      },
+      {
+        "name": "rehype-pretty-code",
+        "version": "0.14.1",
+        "type": "runtime",
+        "installedVersion": "0.14.1",
+        "license": "MIT"
+      },
+      {
+        "name": "rehype-raw",
+        "version": "7.0.0",
+        "type": "runtime",
+        "installedVersion": "7.0.0",
+        "license": "MIT"
+      },
+      {
+        "name": "rehype-sanitize",
+        "version": "6.0.0",
+        "type": "runtime",
+        "installedVersion": "6.0.0",
+        "license": "MIT"
+      },
+      {
+        "name": "rehype-slug",
+        "version": "6.0.0",
+        "type": "runtime",
+        "installedVersion": "6.0.0",
+        "license": "MIT"
+      },
+      {
+        "name": "rehype-stringify",
+        "version": "10.0.1",
+        "type": "runtime",
+        "installedVersion": "10.0.1",
+        "license": "MIT"
+      },
+      {
+        "name": "remark-gfm",
+        "version": "4.0.1",
+        "type": "runtime",
+        "installedVersion": "4.0.1",
+        "license": "MIT"
+      },
+      {
+        "name": "remark-math",
+        "version": "6.0.0",
+        "type": "runtime",
+        "installedVersion": "6.0.0",
+        "license": "MIT"
+      },
+      {
+        "name": "remark-parse",
+        "version": "11.0.0",
+        "type": "runtime",
+        "installedVersion": "11.0.0",
+        "license": "MIT"
+      },
+      {
+        "name": "remark-rehype",
+        "version": "11.1.2",
+        "type": "runtime",
+        "installedVersion": "11.1.2",
+        "license": "MIT"
+      },
+      {
+        "name": "remark-smartypants",
+        "version": "3.0.2",
+        "type": "runtime",
+        "installedVersion": "3.0.2",
+        "license": "MIT"
+      },
+      {
+        "name": "resend",
+        "version": "6.8.0",
+        "type": "runtime",
+        "installedVersion": "6.8.0",
+        "license": "MIT"
+      },
+      {
+        "name": "rough-notation",
+        "version": "0.5.1",
+        "type": "runtime",
+        "installedVersion": "0.5.1",
+        "license": "MIT"
+      },
+      {
+        "name": "shiki",
+        "version": "3.20.0",
+        "type": "runtime",
+        "installedVersion": "3.21.0",
+        "license": "MIT"
+      },
+      {
+        "name": "sonner",
+        "version": "2.0.7",
+        "type": "runtime",
+        "installedVersion": "2.0.7",
+        "license": "MIT"
+      },
+      {
+        "name": "tailwind-merge",
+        "version": "3.4.0",
+        "type": "runtime",
+        "installedVersion": "3.4.0",
+        "license": "MIT"
+      },
+      {
+        "name": "three",
+        "version": "0.182.0",
+        "type": "runtime",
+        "installedVersion": "0.182.0",
+        "license": "MIT"
+      },
+      {
+        "name": "unified",
+        "version": "11.0.5",
+        "type": "runtime",
+        "installedVersion": "11.0.5",
+        "license": "MIT"
+      },
+      {
+        "name": "web-vitals",
+        "version": "5.1.0",
+        "type": "runtime",
+        "installedVersion": "5.1.0",
+        "license": "Apache-2.0"
+      },
+      {
+        "name": "zod",
+        "version": "4.3.6",
+        "type": "runtime",
+        "installedVersion": "4.3.6",
+        "license": "MIT"
+      },
+      {
+        "name": "zustand",
+        "version": "5.0.10",
+        "type": "runtime",
+        "installedVersion": "5.0.10",
+        "license": "MIT"
+      }
+    ],
+    "development": [
+      {
+        "name": "@axe-core/cli",
+        "version": "4.11.0",
+        "type": "development",
+        "installedVersion": "4.11.0",
+        "license": "MPL-2.0"
+      },
+      {
+        "name": "@axe-core/playwright",
+        "version": "4.11.0",
+        "type": "development",
+        "installedVersion": "4.11.0",
+        "license": "MPL-2.0"
+      },
+      {
+        "name": "@eslint/eslintrc",
+        "version": "3",
+        "type": "development",
+        "installedVersion": "3.3.3",
+        "license": "MIT"
+      },
+      {
+        "name": "@lhci/cli",
+        "version": "0.15.0",
+        "type": "development",
+        "installedVersion": "0.15.1",
+        "license": "Apache-2.0"
+      },
+      {
+        "name": "@next/bundle-analyzer",
+        "version": "16.1.5",
+        "type": "development",
+        "installedVersion": "16.1.5",
+        "license": "MIT"
+      },
+      {
+        "name": "@octokit/rest",
+        "version": "22.0.1",
+        "type": "development",
+        "installedVersion": "22.0.1",
+        "license": "MIT"
+      },
+      {
+        "name": "@playwright/test",
+        "version": "1.58.0",
+        "type": "development",
+        "installedVersion": "1.58.0",
+        "license": "Apache-2.0"
+      },
+      {
+        "name": "@sentry/nextjs",
+        "version": "10.36.0",
+        "type": "development",
+        "installedVersion": "10.36.0",
+        "license": "MIT"
+      },
+      {
+        "name": "@tailwindcss/postcss",
+        "version": "4.1.18",
+        "type": "development",
+        "installedVersion": "4.1.18",
+        "license": "MIT"
+      },
+      {
+        "name": "@testing-library/jest-dom",
+        "version": "6.9.1",
+        "type": "development",
+        "installedVersion": "6.9.1",
+        "license": "MIT"
+      },
+      {
+        "name": "@testing-library/react",
+        "version": "16.3.2",
+        "type": "development",
+        "installedVersion": "16.3.2",
+        "license": "MIT"
+      },
+      {
+        "name": "@testing-library/user-event",
+        "version": "14.6.1",
+        "type": "development",
+        "installedVersion": "14.6.1",
+        "license": "MIT"
+      },
+      {
+        "name": "@types/js-yaml",
+        "version": "4.0.9",
+        "type": "development",
+        "installedVersion": "4.0.9",
+        "license": "MIT"
+      },
+      {
+        "name": "@types/node",
+        "version": "25.0.10",
+        "type": "development",
+        "installedVersion": "25.0.10",
+        "license": "MIT"
+      },
+      {
+        "name": "@types/react",
+        "version": "19.2.9",
+        "type": "development",
+        "installedVersion": "19.2.9",
+        "license": "MIT"
+      },
+      {
+        "name": "@types/react-calendar-heatmap",
+        "version": "1.9.0",
+        "type": "development",
+        "installedVersion": "1.9.0",
+        "license": "MIT"
+      },
+      {
+        "name": "@types/react-dom",
+        "version": "19.2.3",
+        "type": "development",
+        "installedVersion": "19.2.3",
+        "license": "MIT"
+      },
+      {
+        "name": "@types/three",
+        "version": "0.182.0",
+        "type": "development",
+        "installedVersion": "0.182.0",
+        "license": "MIT"
+      },
+      {
+        "name": "@vitejs/plugin-react",
+        "version": "5.1.2",
+        "type": "development",
+        "installedVersion": "5.1.2",
+        "license": "MIT"
+      },
+      {
+        "name": "@vitest/coverage-v8",
+        "version": "4.0.18",
+        "type": "development",
+        "installedVersion": "4.0.18",
+        "license": "MIT"
+      },
+      {
+        "name": "@vitest/ui",
+        "version": "4.0.14",
+        "type": "development",
+        "installedVersion": "4.0.18",
+        "license": "MIT"
+      },
+      {
+        "name": "axe-core",
+        "version": "4.11.0",
+        "type": "development",
+        "installedVersion": "4.11.1",
+        "license": "MPL-2.0"
+      },
+      {
+        "name": "baseline-browser-mapping",
+        "version": "2.9.18",
+        "type": "development",
+        "installedVersion": "2.9.18",
+        "license": "Apache-2.0"
+      },
+      {
+        "name": "eslint",
+        "version": "9.39.1",
+        "type": "development",
+        "installedVersion": "9.39.2",
+        "license": "MIT"
+      },
+      {
+        "name": "eslint-config-next",
+        "version": "16.1.5",
+        "type": "development",
+        "installedVersion": "16.1.5",
+        "license": "MIT"
+      },
+      {
+        "name": "happy-dom",
+        "version": "20.3.9",
+        "type": "development",
+        "installedVersion": "20.3.9",
+        "license": "MIT"
+      },
+      {
+        "name": "husky",
+        "version": "9.1.7",
+        "type": "development",
+        "installedVersion": "9.1.7",
+        "license": "MIT"
+      },
+      {
+        "name": "jsdom",
+        "version": "27.4.0",
+        "type": "development",
+        "installedVersion": "27.4.0",
+        "license": "MIT"
+      },
+      {
+        "name": "jsonc-parser",
+        "version": "3.3.1",
+        "type": "development",
+        "installedVersion": "3.3.1",
+        "license": "MIT"
+      },
+      {
+        "name": "lighthouse",
+        "version": "13.0.1",
+        "type": "development",
+        "installedVersion": "13.0.1",
+        "license": "Apache-2.0"
+      },
+      {
+        "name": "lint-staged",
+        "version": "16.2.7",
+        "type": "development",
+        "installedVersion": "16.2.7",
+        "license": "MIT"
+      },
+      {
+        "name": "msw",
+        "version": "2.12.7",
+        "type": "development",
+        "installedVersion": "2.12.7",
+        "license": "MIT"
+      },
+      {
+        "name": "tailwindcss",
+        "version": "4.1.17",
+        "type": "development",
+        "installedVersion": "4.1.18",
+        "license": "MIT"
+      },
+      {
+        "name": "tsx",
+        "version": "4.21.0",
+        "type": "development",
+        "installedVersion": "4.21.0",
+        "license": "MIT"
+      },
+      {
+        "name": "tw-animate-css",
+        "version": "1.4.0",
+        "type": "development",
+        "installedVersion": "1.4.0",
+        "license": "MIT"
+      },
+      {
+        "name": "typescript",
+        "version": "5.9.3",
+        "type": "development",
+        "installedVersion": "5.9.3",
+        "license": "Apache-2.0"
+      },
+      {
+        "name": "vitest",
+        "version": "4.0.14",
+        "type": "development",
+        "installedVersion": "4.0.18",
+        "license": "MIT"
+      },
+      {
+        "name": "wcag-contrast",
+        "version": "3.0.0",
+        "type": "development",
+        "installedVersion": "3.0.0",
+        "license": "BSD-2-Clause"
+      }
+    ]
+  },
+  "thirdPartyServices": [
+    {
+      "name": "GitHub API",
+      "purpose": "Version control, CI/CD, contribution data",
+      "criticality": "Critical",
+      "dataAccess": "Public repository data, commit history",
+      "authentication": "GitHub Personal Access Token",
+      "soc2Report": "https://github.com/security"
+    },
+    {
+      "name": "Upstash Redis",
+      "purpose": "Distributed caching, analytics storage",
+      "criticality": "Critical",
+      "dataAccess": "View counts, analytics, session data",
+      "authentication": "REST API tokens",
+      "soc2Report": "Available on request"
+    },
+    {
+      "name": "Vercel",
+      "purpose": "Hosting, deployment, analytics",
+      "criticality": "Critical",
+      "dataAccess": "Web vitals, deployment logs",
+      "authentication": "API tokens",
+      "soc2Report": "https://vercel.com/security"
+    },
+    {
+      "name": "Sentry",
+      "purpose": "Error tracking, performance monitoring",
+      "criticality": "Standard",
+      "dataAccess": "Error logs, CSP violations, performance traces",
+      "authentication": "DSN tokens",
+      "soc2Report": "https://sentry.io/security"
+    },
+    {
+      "name": "Inngest",
+      "purpose": "Background job orchestration",
+      "criticality": "Critical",
+      "dataAccess": "Event data, job payloads",
+      "authentication": "Event keys, signing keys",
+      "soc2Report": "https://www.inngest.com/security"
+    },
+    {
+      "name": "Resend",
+      "purpose": "Transactional email delivery",
+      "criticality": "Standard",
+      "dataAccess": "Email content, recipient addresses",
+      "authentication": "API keys",
+      "soc2Report": "Available on request"
+    },
+    {
+      "name": "Perplexity AI",
+      "purpose": "AI-powered research and search",
+      "criticality": "Standard",
+      "dataAccess": "Search queries, research requests",
+      "authentication": "API keys",
+      "soc2Report": "Not publicly available"
+    },
+    {
+      "name": "Google Indexing API",
+      "purpose": "Search indexing notification",
+      "criticality": "Low",
+      "dataAccess": "URL submissions",
+      "authentication": "Service account OAuth 2.0",
+      "soc2Report": "https://cloud.google.com/security/compliance"
+    },
+    {
+      "name": "GreyNoise",
+      "purpose": "IP reputation and threat intelligence",
+      "criticality": "Standard",
+      "dataAccess": "IP addresses for reputation lookup",
+      "authentication": "API keys",
+      "soc2Report": "Available on request"
+    },
+    {
+      "name": "Giscus",
+      "purpose": "GitHub Discussions-based comments",
+      "criticality": "Low",
+      "dataAccess": "Comment content via GitHub",
+      "authentication": "GitHub OAuth",
+      "soc2Report": "Relies on GitHub security"
+    },
+    {
+      "name": "Inoreader",
+      "purpose": "RSS feed aggregation",
+      "criticality": "Low",
+      "dataAccess": "Feed subscriptions, read status",
+      "authentication": "OAuth 2.0",
+      "soc2Report": "Not publicly available"
+    },
+    {
+      "name": "Axiom",
+      "purpose": "Log aggregation and analysis",
+      "criticality": "Standard",
+      "dataAccess": "Application logs, performance traces",
+      "authentication": "API tokens",
+      "soc2Report": "https://axiom.co/security"
+    }
+  ],
+  "internalPackages": [
+    {
+      "name": "@dcyfr/ai",
+      "version": "^1.0.1",
+      "purpose": "Internal AI utilities framework",
+      "location": "monorepo"
+    },
+    {
+      "name": "@dcyfr/agents",
+      "version": "file:../dcyfr-ai-agents",
+      "purpose": "Internal AI agents framework",
+      "location": "monorepo"
+    }
+  ],
+  "mcpServers": [
+    {
+      "name": "GitHub",
+      "type": "HTTP",
+      "purpose": "Code repository integration",
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    {
+      "name": "Vercel",
+      "type": "HTTP",
+      "purpose": "Deployment management",
+      "url": "https://mcp.vercel.com"
+    },
+    {
+      "name": "Sentry",
+      "type": "HTTP",
+      "purpose": "Error tracking",
+      "url": "https://mcp.sentry.dev/mcp/dcyfr-labs/dcyfr-labs"
+    },
+    {
+      "name": "DCYFR Analytics",
+      "type": "stdio",
+      "purpose": "Project analytics",
+      "command": "npm run mcp:analytics"
+    },
+    {
+      "name": "DCYFR DesignTokens",
+      "type": "stdio",
+      "purpose": "Design token validation",
+      "command": "npm run mcp:tokens"
+    },
+    {
+      "name": "DCYFR ContentManager",
+      "type": "stdio",
+      "purpose": "Blog and content management",
+      "command": "npm run mcp:content"
+    }
+  ],
+  "vulnerabilities": {
+    "scanDate": "2026-02-01",
+    "critical": 0,
+    "high": 0,
+    "moderate": 0,
+    "low": 0,
+    "note": "Run npm audit for current vulnerability status"
+  },
+  "references": {
+    "cyclonedxSBOM": null,
+    "spdxSBOM": "sbom-spdx-2026-02-01.json",
+    "soc2Plan": "docs/security/.private/soc2-compliance-plan-2026-01-31.md",
+    "securityDocs": "docs/security/"
+  }
+}

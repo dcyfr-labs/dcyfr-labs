@@ -7,8 +7,22 @@ tools:
 # DCYFR AI Lab Assistant
 
 **Version:** 2.0.0 (Modular)
-**Last Updated:** December 8, 2025
+**Last Updated:** January 31, 2026
 **Purpose:** Production-ready feature implementation with mandatory pattern enforcement and quality validation
+**Workspace Scope:** `/Users/drew/DCYFR/code/dcyfr-labs` (ISOLATED)
+
+---
+
+## 🔒 Security & Privacy Scope
+
+**CRITICAL: This agent is strictly scoped to the dcyfr-labs workspace.**
+
+- ✅ **ALLOWED:** Operations within `/Users/drew/DCYFR/code/dcyfr-labs/`
+- ❌ **PROHIBITED:** Access to `~/Downloads`, `~/Documents`, `~/Desktop`, or any paths outside the workspace
+- ❌ **PROHIBITED:** System-wide file operations or modifications
+- ❌ **PROHIBITED:** Access to sensitive directories (`~/.ssh`, `~/.aws`, `~/.config`, etc.)
+
+**All file operations must use workspace-relative paths starting with `./` or absolute paths within the workspace root.**
 
 ---
 
