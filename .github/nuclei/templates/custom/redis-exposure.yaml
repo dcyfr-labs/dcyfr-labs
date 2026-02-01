@@ -1,0 +1,95 @@
+id: dcyfr-redis-exposure
+
+info:
+  name: DCYFR Redis Upstash Exposure Check
+  author: dcyfr-security
+  severity: critical
+  description: Checks for exposed Redis endpoints or credentials in dcyfr infrastructure
+  reference:
+    - https://upstash.com/docs/redis/security/encryption
+    - https://upstash.com/docs/redis/howto/connectwithupstashredis
+  tags: redis,upstash,exposure,custom,dcyfr,credentials
+  classification:
+    cvss-metrics: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H
+    cvss-score: 10.0
+    cwe-id: CWE-200
+
+http:
+  # Check for exposed Redis connection strings
+  - method: GET
+    path:
+      - "{{BaseURL}}/api/redis"
+      - "{{BaseURL}}/api/cache"
+      - "{{BaseURL}}/api/analytics"
+      - "{{BaseURL}}/api/_health"
+
+    matchers-condition: or
+    matchers:
+      - type: word
+        part: body
+        words:
+          - "REDIS_URL"
+          - "UPSTASH_REDIS_REST_URL"
+          - "UPSTASH_REDIS_REST_TOKEN"
+          - "upstash.io"
+        condition: or
+
+      - type: regex
+        part: body
+        regex:
+          - 'redis://[a-zA-Z0-9-]+\.upstash\.io'
+          - 'https://[a-zA-Z0-9-]+\.upstash\.io'
+          - 'rediss://[a-zA-Z0-9-]+\.upstash\.io'
+
+  # Check for Redis keys exposed in API responses
+  - method: GET
+    path:
+      - "{{BaseURL}}/api/analytics/metrics"
+      - "{{BaseURL}}/api/cache/keys"
+
+    matchers:
+      - type: word
+        part: body
+        words:
+          - '"keys":'
+          - '"pattern":'
+          - '"cursor":'
+        condition: and
+
+  # Verify Redis endpoints require authentication
+  - method: POST
+    path:
+      - "{{BaseURL}}/api/redis"
+      - "{{BaseURL}}/api/cache"
+
+    headers:
+      Content-Type: application/json
+
+    body: |
+      {"command": "GET", "key": "test"}
+
+    matchers:
+      - type: status
+        status:
+          - 401
+          - 403
+        negative: true
+
+  # Check for exposed Redis configuration
+  - method: GET
+    path:
+      - "{{BaseURL}}/.redis/config"
+      - "{{BaseURL}}/redis.conf"
+
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        part: body
+        words:
+          - "requirepass"
+          - "bind"
+          - "port"
+        condition: or

@@ -1,0 +1,62 @@
+# Nuclei Scanner Configuration for DCYFR
+# Docs: https://docs.projectdiscovery.io/nuclei/running
+
+# Template Settings
+templates:
+  - .github/nuclei/templates/custom/              # Custom dcyfr templates (priority)
+  - .github/nuclei/templates/community/http/      # HTTP templates
+  - .github/nuclei/templates/community/cve/       # CVE checks
+  - .github/nuclei/templates/community/exposed-panels/ # Admin panels
+  - .github/nuclei/templates/community/exposures/ # Data exposure
+  - .github/nuclei/templates/community/misconfiguration/ # Config issues
+  - .github/nuclei/templates/community/technologies/vercel/ # Vercel-specific
+  - .github/nuclei/templates/community/technologies/nextjs/ # Next.js-specific
+
+# Severity Filters
+severity:
+  - critical
+  - high
+  - medium
+
+exclude-severity:
+  - info
+  - low
+
+# Tags
+tags:
+  - cve
+  - exposure
+  - misconfiguration
+  - network
+  - owasp
+  - tech
+  - vulnerability
+
+exclude-tags:
+  - intrusive  # Avoid destructive tests
+  - dos        # Avoid DoS attacks
+  - fuzzing    # Too resource-intensive
+
+# Performance
+rate-limit: 100         # 100 requests per second
+bulk-size: 25           # Number of targets per template batch
+concurrency: 20         # Parallel template execution
+timeout: 15             # Timeout per template (seconds)
+retries: 2              # Retry failed requests
+max-templates: 400      # Maximum templates to execute
+
+# Reporting
+json-export: nuclei-results.json
+markdown-export: nuclei-report.md
+stats: true
+silent: false
+verbose: true
+
+# Network Settings
+follow-redirects: true
+max-redirects: 5
+disable-http2: false
+
+# Header Modifications
+header:
+  - 'User-Agent: DCYFR-Security-Scanner/1.0 (Nuclei)'

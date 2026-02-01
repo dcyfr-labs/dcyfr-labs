@@ -1,0 +1,3 @@
+[submodule ".github/nuclei/templates/community"]
+	path = .github/nuclei/templates/community
+	url = https://github.com/projectdiscovery/nuclei-templates.git

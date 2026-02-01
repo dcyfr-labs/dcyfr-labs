@@ -1,0 +1,170 @@
+name: Sync Nuclei Templates
+
+# Automatically updates the nuclei-templates submodule to latest stable version
+# Runs weekly to stay current with ProjectDiscovery's security research
+
+on:
+  # Weekly sync on Monday at 2 AM UTC (before security scans)
+  schedule:
+    - cron: '0 2 * * 1'
+
+  # Manual trigger for immediate updates
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Specific version tag to sync (e.g., v9.9.4) or "latest"'
+        required: false
+        default: 'latest'
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync-templates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Update nuclei-templates submodule
+        id: update
+        run: |
+          cd .github/nuclei/templates/community
+          
+          # Fetch latest tags
+          git fetch --tags origin
+          
+          # Determine target version
+          TARGET_VERSION="${{ github.event.inputs.version || 'latest' }}"
+          
+          if [ "$TARGET_VERSION" == "latest" ]; then
+            # Get latest stable v9.x tag
+            LATEST_TAG=$(git tag | grep -E '^v9\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
+            echo "🎯 Latest stable version: $LATEST_TAG"
+          else
+            LATEST_TAG="$TARGET_VERSION"
+            echo "🎯 Manually specified version: $LATEST_TAG"
+          fi
+          
+          # Get current version
+          CURRENT_VERSION=$(git describe --tags --exact-match HEAD 2>/dev/null || echo "unknown")
+          echo "📌 Current version: $CURRENT_VERSION"
+          
+          # Check if update needed
+          if [ "$CURRENT_VERSION" == "$LATEST_TAG" ]; then
+            echo "✅ Already at $LATEST_TAG - no update needed"
+            echo "updated=false" >> $GITHUB_OUTPUT
+            echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+            echo "new_version=$LATEST_TAG" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # Checkout new version
+          echo "🔄 Updating from $CURRENT_VERSION to $LATEST_TAG..."
+          git checkout "$LATEST_TAG"
+          
+          # Verify templates loaded
+          TEMPLATE_COUNT=$(find . -name "*.yaml" 2>/dev/null | wc -l)
+          echo "📊 Templates in $LATEST_TAG: $TEMPLATE_COUNT"
+          
+          cd /home/runner/work/dcyfr-labs/dcyfr-labs
+          git add .github/nuclei/templates/community
+          
+          # Check if there are changes to commit
+          if git diff --cached --quiet; then
+            echo "✅ No changes detected after checkout"
+            echo "updated=false" >> $GITHUB_OUTPUT
+          else
+            echo "updated=true" >> $GITHUB_OUTPUT
+            echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+            echo "new_version=$LATEST_TAG" >> $GITHUB_OUTPUT
+            echo "template_count=$TEMPLATE_COUNT" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create pull request
+        if: steps.update.outputs.updated == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: |
+            chore(security): update nuclei-templates to ${{ steps.update.outputs.new_version }}
+            
+            Auto-update from ${{ steps.update.outputs.current_version }} to ${{ steps.update.outputs.new_version }}
+            
+            - Templates: ${{ steps.update.outputs.template_count }}
+            - Source: projectdiscovery/nuclei-templates
+            - Triggered: ${{ github.event_name }}
+          branch: nuclei-templates-sync-${{ steps.update.outputs.new_version }}
+          delete-branch: true
+          title: "chore(security): update nuclei-templates to ${{ steps.update.outputs.new_version }}"
+          body: |
+            ## 🔐 Nuclei Templates Auto-Update
+            
+            This PR updates the nuclei-templates submodule to the latest stable version.
+            
+            ### Changes
+            - **From:** `${{ steps.update.outputs.current_version }}`
+            - **To:** `${{ steps.update.outputs.new_version }}`
+            - **Templates:** ${{ steps.update.outputs.template_count }}
+            - **Trigger:** ${{ github.event_name }}
+            
+            ### Verification Checklist
+            - [ ] Review [ProjectDiscovery release notes](https://github.com/projectdiscovery/nuclei-templates/releases/tag/${{ steps.update.outputs.new_version }})
+            - [ ] Check for breaking template syntax changes
+            - [ ] Verify custom dcyfr templates remain compatible
+            - [ ] Run manual scan: `npm run security:nuclei`
+            - [ ] Review false positive rate changes
+            
+            ### Auto-Merge Criteria
+            This PR can be auto-merged if:
+            - ✅ CI tests pass (including E2E)
+            - ✅ No breaking syntax changes in release notes
+            - ✅ Custom templates remain compatible
+            - ✅ Template count increase is reasonable (<1000 net change)
+            
+            ### Related Documentation
+            - [Nuclei Integration Guide](../../docs/security/nuclei-templates-integration.md)
+            - [Custom Templates](../../.github/nuclei/templates/custom/README.md)
+            - [Configuration](../../.github/nuclei/config.yaml)
+            
+            ---
+            
+            **Automated by:** `.github/workflows/nuclei-templates-sync.yml`
+            **Review:** Security team should verify before merging
+          labels: |
+            security
+            dependencies
+            automated
+          reviewers: |
+            ${{ github.repository_owner }}
+
+      - name: Generate summary
+        if: always()
+        run: |
+          echo "## 🔐 Nuclei Templates Sync" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ steps.update.outputs.updated == 'true' && 'Updated' || 'Up to date' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.update.outputs.updated }}" == "true" ]; then
+            echo "### Changes" >> $GITHUB_STEP_SUMMARY
+            echo "- From: \`${{ steps.update.outputs.current_version }}\`" >> $GITHUB_STEP_SUMMARY
+            echo "- To: \`${{ steps.update.outputs.new_version }}\`" >> $GITHUB_STEP_SUMMARY
+            echo "- Templates: ${{ steps.update.outputs.template_count }}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Pull request created for review" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ Already at latest version: \`${{ steps.update.outputs.new_version }}\`" >> $GITHUB_STEP_SUMMARY
+          fi

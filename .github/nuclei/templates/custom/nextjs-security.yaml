@@ -1,0 +1,79 @@
+id: dcyfr-nextjs-security
+
+info:
+  name: DCYFR Next.js 16 Security Checks
+  author: dcyfr-security
+  severity: high
+  description: Security checks specific to dcyfr-labs Next.js 16 application
+  reference:
+    - https://nextjs.org/docs/app/building-your-application/configuring/content-security-policy
+    - https://cheatsheetseries.owasp.org/cheatsheets/Nodejs_Security_Cheat_Sheet.html
+  tags: nextjs,custom,dcyfr,headers,security
+  classification:
+    cvss-metrics: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N
+    cvss-score: 5.3
+    cwe-id: CWE-16
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+      - "{{BaseURL}}/_next/static/chunks/"
+
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      # Ensure X-Powered-By header is removed
+      - type: word
+        part: header
+        words:
+          - "x-powered-by: Next.js"
+          - "x-powered-by"
+        negative: true
+
+      # Verify security headers are present
+      - type: word
+        part: header
+        words:
+          - "x-frame-options"
+          - "content-security-policy"
+          - "x-content-type-options"
+
+    extractors:
+      - type: kval
+        part: header
+        kval:
+          - content_security_policy
+          - x_frame_options
+          - strict_transport_security
+          - x_content_type_options
+          - referrer_policy
+
+  # Check for exposed source maps (security risk)
+  - method: GET
+    path:
+      - "{{BaseURL}}/_next/static/chunks/app.js.map"
+      - "{{BaseURL}}/_next/static/chunks/main.js.map"
+      - "{{BaseURL}}/_next/static/chunks/[hash].js.map"
+
+    matchers:
+      - type: status
+        status:
+          - 404
+        negative: true
+
+  # Verify middleware is protecting sensitive routes
+  - method: GET
+    path:
+      - "{{BaseURL}}/api/_internal"
+      - "{{BaseURL}}/api/_health/internal"
+
+    matchers:
+      - type: status
+        status:
+          - 401
+          - 403
+          - 404
