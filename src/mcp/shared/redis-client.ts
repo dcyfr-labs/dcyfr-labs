@@ -170,8 +170,10 @@ export const redis = new Proxy({} as Redis, {
           throw new Error('Redis not configured');
         };
       }
-      // Return no-op async functions for methods
-      return typeof {} === 'function' ? async () => null : null;
+      // Return generic no-op async function for method calls when Redis unavailable
+      // This prevents "redis.get is not a function" errors in tests and allows
+      // code to gracefully handle missing cache (receives null result).
+      return async (..._args: any[]) => null;
     }
 
     const value = client[prop as keyof Redis];
