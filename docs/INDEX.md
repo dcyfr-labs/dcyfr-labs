@@ -52,6 +52,8 @@ The documentation is organized into **18 focused directories**:
 
 - **[architecture/README.md](./architecture/readme)** - Architecture overview
 - **architecture/migration-guide.md** - Step-by-step migration
+- **architecture/private-package-integration.md** - 🔐 **Secure proprietary package integration**
+- **architecture/private-package-setup-guide.md** - 🔐 **Quick setup for @dcyfr/agents**
 - **[components/](./components/)** - Component documentation
 
 ### Blog System
@@ -148,7 +150,7 @@ The documentation is organized into **18 focused directories**:
 
 ### `architecture/`
 
-Architecture patterns, refactoring guides, migration docs, best practices
+Architecture patterns, refactoring guides, migration docs, best practices, and private package integration (GitHub Packages, secure NPM registry configuration)
 
 ### `blog/`
 

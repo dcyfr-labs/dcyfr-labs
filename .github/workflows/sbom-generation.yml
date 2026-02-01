@@ -175,15 +175,15 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "chore(security): generate SBOM ${TIMESTAMP}
-
-- CycloneDX SBOM (industry standard)
-- SPDX SBOM (compliance)
-- Combined enriched SBOM (all dependencies + services)
-
-Part of SOC2 Type 2 third-party risk management.
-
-[skip ci]"
+            git commit -m "chore(security): generate SBOM ${TIMESTAMP}" \
+              -m "" \
+              -m "CycloneDX SBOM (industry standard)" \
+              -m "SPDX SBOM (compliance)" \
+              -m "Combined enriched SBOM (all dependencies + services)" \
+              -m "" \
+              -m "Part of SOC2 Type 2 third-party risk management." \
+              -m "" \
+              -m "[skip ci]"
 
             git push origin ${{ github.ref_name }}
             echo "✅ SBOM files committed and pushed"
@@ -249,11 +249,11 @@ Part of SOC2 Type 2 third-party risk management.
           if ! git diff --cached --quiet; then
             git config --local user.email "github-actions[bot]@users.noreply.github.com"
             git config --local user.name "github-actions[bot]"
-            git commit -m "chore(security): cleanup SBOMs older than 24 months
-
-SOC2 Type 2 retention policy enforcement.
-
-[skip ci]"
+            git commit -m "chore(security): cleanup SBOMs older than 24 months" \
+              -m "" \
+              -m "SOC2 Type 2 retention policy enforcement." \
+              -m "" \
+              -m "[skip ci]"
             git push origin ${{ github.ref_name }}
             echo "✅ Old SBOMs removed"
           else

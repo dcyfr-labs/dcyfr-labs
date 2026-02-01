@@ -392,7 +392,9 @@ export async function requiresApproval(change: {
   files: string[];
 }): Promise<boolean> {
   try {
-    const gates = await import('@dcyfr/agents/enforcement/approval-gates');
+    // Use dynamic import with type assertion to avoid TypeScript resolution errors
+    // when @dcyfr/agents is not yet installed
+    const gates = await import('@dcyfr/agents/enforcement/approval-gates' as any);
     const { requiresApproval: checkApproval } = gates;
 
     // Construct a description string from the change type and scope

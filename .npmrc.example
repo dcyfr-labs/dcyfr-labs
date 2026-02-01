@@ -1,0 +1,42 @@
+# ========================================
+# NPM Configuration (dcyfr-labs)
+# ========================================
+
+# Force npm usage (prevent yarn/pnpm)
+engine-strict=true
+
+# ========================================
+# Private Package Registry
+# ========================================
+# Scoped packages from GitHub Packages
+# Authentication via GITHUB_PACKAGES_TOKEN environment variable
+@dcyfr:registry=https://npm.pkg.github.com
+
+# Authentication token (loaded from environment)
+# NEVER commit actual tokens - use .env.local or CI secrets
+# Example: GITHUB_PACKAGES_TOKEN=ghp_xxxxxxxxxxxxx
+//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_TOKEN}
+
+# ========================================
+# Security Settings
+# ========================================
+# Audit level for security vulnerabilities
+audit-level=moderate
+
+# Always check for security advisories
+fund=false
+
+# ========================================
+# Performance & Caching
+# ========================================
+# Use package-lock.json for reproducible builds
+package-lock=true
+
+# ========================================
+# Development Settings
+# ========================================
+# Show detailed logs for debugging (can be overridden)
+loglevel=warn
+
+# Progress bar (set to false for CI/CD)
+progress=true

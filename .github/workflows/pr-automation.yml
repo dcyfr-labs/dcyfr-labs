@@ -112,28 +112,18 @@ jobs:
           EXISTING_COMMENT=$(gh pr view $PR_NUMBER --json comments -q '.comments[] | select(.author.login == "github-actions[bot]" and (.body | contains("large PR"))) | .id' | head -1)
 
           if [ -z "$EXISTING_COMMENT" ]; then
-            gh pr comment $PR_NUMBER --body "## $EMOJI Large PR Detected
-
-This PR modifies **$CHANGED_FILES files** with **$TOTAL_CHANGES total changes**.
-
-### 💡 Recommendations
-
-Large PRs are harder to review and more likely to introduce bugs. Consider:
-
-1. **Break into smaller PRs**: Split unrelated changes into separate PRs
-2. **Incremental approach**: Submit features in smaller, logical chunks
-3. **Clear description**: Provide detailed context for reviewers
-4. **Self-review**: Walk through all changes before requesting review
-
-### 📋 Review Checklist
-
-- [ ] All changes are necessary for this specific feature/fix
-- [ ] Tests are included for new functionality
-- [ ] Documentation is updated
-- [ ] No unrelated refactoring or cleanup
-- [ ] Breaking changes are clearly documented
-
-**Ideal PR size**: < 400 lines changed, < 15 files modified"
+            echo "## Large PR Detected" > /tmp/pr-comment.md
+            echo "" >> /tmp/pr-comment.md
+            echo "This PR modifies $CHANGED_FILES files with $TOTAL_CHANGES total changes." >> /tmp/pr-comment.md
+            echo "" >> /tmp/pr-comment.md
+            echo "### Recommendations" >> /tmp/pr-comment.md
+            echo "" >> /tmp/pr-comment.md
+            echo "Large PRs are harder to review and more likely to introduce bugs." >> /tmp/pr-comment.md
+            echo "" >> /tmp/pr-comment.md
+            echo "Consider breaking this into smaller PRs for easier review." >> /tmp/pr-comment.md
+            echo "" >> /tmp/pr-comment.md
+            echo "Ideal PR size: Less than 400 lines changed, Less than 15 files modified" >> /tmp/pr-comment.md
+            gh pr comment $PR_NUMBER --body-file /tmp/pr-comment.md
           fi
 
   add-reviewers:
@@ -189,27 +179,17 @@ Large PRs are harder to review and more likely to introduce bugs. Consider:
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
 
-          gh pr comment $PR_NUMBER --body "## 👋 Welcome to dcyfr-labs!
-
-Thank you for your first contribution! 🎉
-
-### What happens next?
-
-1. **Automated checks** will run (tests, linting, security scans)
-2. **Code owners** will be automatically assigned for review
-3. **CI feedback** will appear shortly
-
-### Need help?
-
-- Read our [Contributing Guide](https://github.com/${{ github.repository }}/blob/main/CONTRIBUTING.md)
-- Check [Development Setup](https://github.com/${{ github.repository }}/blob/main/README.md#development)
-- Ask questions in PR comments - we're happy to help!
-
-### Tips for a smooth review
-
-✅ Make sure all CI checks pass
-✅ Respond to review feedback
-✅ Keep the PR focused on a single feature/fix
-✅ Update documentation if needed
-
-Thanks again for contributing! 🚀"
+          echo "## Welcome to dcyfr-labs!" > /tmp/welcome.md
+          echo "" >> /tmp/welcome.md
+          echo "Thank you for your first contribution!" >> /tmp/welcome.md
+          echo "" >> /tmp/welcome.md
+          echo "### What happens next?" >> /tmp/welcome.md
+          echo "" >> /tmp/welcome.md
+          echo "Automated checks will run (tests, linting, security scans) and code owners will be automatically assigned for review." >> /tmp/welcome.md
+          echo "" >> /tmp/welcome.md
+          echo "### Tips for a smooth review" >> /tmp/welcome.md
+          echo "" >> /tmp/welcome.md
+          echo "Make sure all CI checks pass. Respond to review feedback. Keep the PR focused. Update documentation if needed." >> /tmp/welcome.md
+          echo "" >> /tmp/welcome.md
+          echo "Thanks again for contributing!" >> /tmp/welcome.md
+          gh pr comment $PR_NUMBER --body-file /tmp/welcome.md

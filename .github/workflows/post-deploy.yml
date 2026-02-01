@@ -41,7 +41,6 @@ jobs:
 
       - name: Invalidate activity cache
         env:
-          INNGEST_EVENT_KEY: ${{ secrets.INNGEST_EVENT_KEY }}
           VERCEL_ENV: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
           VERCEL_GIT_COMMIT_SHA: ${{ github.sha }}
         run: npm run deploy:invalidate
