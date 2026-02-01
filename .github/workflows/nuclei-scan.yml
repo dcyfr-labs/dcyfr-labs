@@ -132,7 +132,7 @@ jobs:
           # Initialize nuclei-templates submodule (v9.9.4 pinned)
           echo "🔄 Initializing nuclei-templates submodule..."
           git submodule update --init --recursive .github/nuclei/templates/community
-          
+
           # Verify templates loaded
           COMMUNITY_COUNT=$(find .github/nuclei/templates/community -name "*.yaml" 2>/dev/null | wc -l)
           CUSTOM_COUNT=$(find .github/nuclei/templates/custom -name "*.yaml" 2>/dev/null | wc -l)

@@ -86,7 +86,7 @@ echo "3️⃣  Validating custom templates..."
 for template in .github/nuclei/templates/custom/*.yaml; do
   if [ -f "$template" ]; then
     TEMPLATE_NAME=$(basename "$template")
-    
+
     # Check for required fields
     if grep -q "^id:" "$template" && \
        grep -q "^info:" "$template" && \
@@ -97,7 +97,7 @@ for template in .github/nuclei/templates/custom/*.yaml; do
     else
       check_fail "$TEMPLATE_NAME missing required fields (id, info, name, severity, author)"
     fi
-    
+
     # Check syntax with nuclei
     if nuclei -validate -templates "$template" &>/dev/null; then
       check_pass "$TEMPLATE_NAME syntax valid"
@@ -155,7 +155,7 @@ echo "6️⃣  Checking workflow integration..."
 # Check workflow file
 if [ -f ".github/workflows/nuclei-scan.yml" ]; then
   check_pass "Nuclei scan workflow exists"
-  
+
   # Check for config and templates flags
   if grep -q -- "-config .github/nuclei/config.yaml" .github/workflows/nuclei-scan.yml && \
      grep -q -- "-templates .github/nuclei/templates/" .github/workflows/nuclei-scan.yml; then
@@ -183,7 +183,7 @@ if ! lsof -Pi :3000 -sTCP:LISTEN -t >/dev/null 2>&1; then
   check_warn "To test: npm run dev (in another terminal), then re-run this script"
 else
   check_pass "Dev server running on :3000"
-  
+
   # Run quick test scan with custom templates only
   echo "   Running test scan (custom templates only)..."
   if nuclei \

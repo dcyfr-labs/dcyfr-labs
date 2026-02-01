@@ -40,7 +40,7 @@ http:
   - method: POST
     path:
       - "{{BaseURL}}/api/inngest"
-    
+
     headers:
       Content-Type: application/json
 
