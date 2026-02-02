@@ -2,6 +2,20 @@
 
 Welcome — this file contains the minimal steps for a single developer to run and validate the project locally.
 
+## Licensing & Contributions
+
+By contributing to dcyfr-labs, you agree that:
+- **Code contributions** → MIT License (personal/non-commercial use)
+- **Documentation** → CC BY-SA 4.0 (share with attribution)
+- **DCYFR specs** → View only, commercial use restricted
+- You have the right to submit contributions under these licenses
+- You grant DCYFR Labs perpetual rights to use, modify, and distribute your contributions
+
+**Trademark:** "DCYFR" is a trademark of DCYFR Labs. See [TRADEMARK.md](../TRADEMARK.md)
+**Questions?** licensing@dcyfr.ai
+
+---
+
 ## Quick commands
 
 Install dependencies:

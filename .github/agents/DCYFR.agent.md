@@ -1,7 +1,7 @@
 ---
 description: "DCYFR AI Lab Assistant - Production-grade code generation with strict pattern enforcement and quality validation"
 tools:
-  ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'agent', 'github/*', 'vercel/*', 'arxiv/*', 'dcyfr-contentmanager/*', 'dcyfr-designtokens/*', 'dcyfr-analytics/*', 'deepgraph-typescript/*', 'deepgraph-next.js/*', 'context7/*', 'perplexity/*', 'octocode/*', 'playwright/*', 'axiom/*', 'sentry/*', 'memory', 'todo']
+  ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'agent', 'memory', 'todo', 'github/*', 'vercel/*', 'arxiv/*', 'dcyfr-contentmanager/*', 'dcyfr-designtokens/*', 'dcyfr-analytics/*', 'deepgraph-typescript/*', 'deepgraph-next.js/*', 'context7/*', 'perplexity/*', 'octocode/*', 'playwright/*', 'axiom/*', 'sentry/*']
 ---
 
 # DCYFR AI Lab Assistant

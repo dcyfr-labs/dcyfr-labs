@@ -547,4 +547,31 @@ See [docs/operations/todo.md](./docs/operations/todo.md) for current priorities.
 
 ---
 
+## 📄 License & Sponsorship
+
+**License:** MIT (code) + CC BY-SA 4.0 (docs) + Proprietary (DCYFR specs)
+
+**Code:** MIT License for personal/non-commercial use. Commercial use requires paid tier.
+**Documentation:** CC BY-SA 4.0 (docs/ directory) - Share with attribution.
+**DCYFR Specs:** Proprietary - View only, commercial use restricted.
+
+### Sponsorship Tiers
+
+Support DCYFR development and gain exclusive access:
+
+- 🌍 **Community** ($5/mo) - Signal community access (DCYFR.NET, Quantum Flux)
+- 💚 **Sponsors** ($10/mo) - Your bio on dcyfr.ai website + private channels
+- 👨‍💻 **Developer** ($20/mo) - Limited commercial license + pre-release + portfolio support
+- 🚀 **Founder** ($2,400/yr) - Full commercial license + 1hr consultation/mo
+- 💼 **Executive** ($4,800/yr) - Business license + 2hr consultation/mo
+- 🏢 **Enterprise** ($9,600/yr) - Enterprise license + 4hr consultation/mo + SLA
+
+**Learn more:** [LICENSE.md](./LICENSE.md) | [SPONSORSHIP.md](../SPONSORSHIP.md)
+**Join:** [GitHub Sponsors](https://github.com/sponsors/dcyfr)
+**Contact:** licensing@dcyfr.ai
+
+**Trademark:** "DCYFR" is a trademark of DCYFR Labs. See [TRADEMARK.md](../TRADEMARK.md)
+
+---
+
 **Built with:** Next.js 16, TypeScript, Tailwind CSS v4, shadcn/ui, Inngest, Redis, and ❤️
