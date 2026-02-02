@@ -1,7 +1,6 @@
 ---
 name: dcyfr-quick-fix
 description: Fast compliance fixes for design tokens, imports, and common violations
-license: MIT
 compatibility: opencode
 metadata:
   audience: developers

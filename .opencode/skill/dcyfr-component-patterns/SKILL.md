@@ -1,7 +1,6 @@
 ---
 name: dcyfr-component-patterns
 description: Guide DCYFR component structure with PageLayout, barrel exports, and metadata
-license: MIT
 compatibility: opencode
 metadata:
   audience: developers

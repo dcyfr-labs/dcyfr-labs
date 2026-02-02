@@ -1,7 +1,6 @@
 ---
 name: dcyfr-testing
 description: Testing patterns, 99% pass rate target, strategic skips, and E2E workflows
-license: MIT
 compatibility: opencode
 metadata:
   audience: developers
@@ -169,11 +168,11 @@ import { test, expect } from '@playwright/test';
 
 test('navigates to blog and filters by category', async ({ page }) => {
   await page.goto('/blog');
-  
+
   await expect(page.getByRole('heading', { name: 'Blog' })).toBeVisible();
-  
+
   await page.getByRole('button', { name: 'Web Development' }).click();
-  
+
   await expect(page.getByText('Showing posts in: Web Development')).toBeVisible();
 });
 ```
@@ -185,12 +184,12 @@ test.use({ storageState: 'playwright/.auth/user.json' });
 
 test('creates new post as admin', async ({ page }) => {
   await page.goto('/admin/posts/new');
-  
+
   await page.fill('[name="title"]', 'New Post');
   await page.fill('[name="content"]', 'Post content');
-  
+
   await page.click('[type="submit"]');
-  
+
   await expect(page.getByText('Post created')).toBeVisible();
 });
 ```

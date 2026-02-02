@@ -8,7 +8,7 @@
  * - Security metrics aggregation
  */
 
-import { inngest } from '@/lib/inngest/client';
+import { inngest } from '@/inngest/client';
 import { getPromptScanner } from '@/lib/security/prompt-scanner';
 import { PromptIntelClient } from '@/mcp/shared/promptintel-client';
 

@@ -237,12 +237,12 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-Prompt security scanning - detect adversarial patterns
+
+    // Prompt security scanning - detect adversarial patterns
     try {
       const scanner = getPromptScanner();
       const scanResult = await scanner.scanPrompt(sanitizedData.message, {
         maxRiskScore: 70, // Block if risk score > 70
-        blockCritical: true,
         cacheResults: true,
       });
 

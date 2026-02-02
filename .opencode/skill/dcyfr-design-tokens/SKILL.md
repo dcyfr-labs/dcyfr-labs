@@ -1,7 +1,6 @@
 ---
 name: dcyfr-design-tokens
 description: Enforce DCYFR design token patterns and fix hardcoded values
-license: MIT
 compatibility: opencode
 metadata:
   audience: developers

@@ -1,7 +1,6 @@
 ---
 name: dcyfr-api-patterns
 description: Guide API routes with Validate→Queue→Respond pattern and Inngest integration
-license: MIT
 compatibility: opencode
 metadata:
   audience: developers
@@ -44,7 +43,7 @@ import { inngest } from '@/lib/inngest';
 export async function POST(request: NextRequest) {
   // STEP 1: VALIDATE
   const data = await request.json();
-  
+
   if (!data.email || !data.message) {
     return NextResponse.json(
       { error: 'Missing required fields' },
@@ -141,7 +140,7 @@ export async function POST(request: NextRequest) {
 ```typescript
 export async function POST(request: NextRequest) {
   const data = await request.json();
-  
+
   // Validate
   if (!data.email || !data.message) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
@@ -163,7 +162,7 @@ export async function POST(request: NextRequest) {
 ```typescript
 export async function POST(request: NextRequest) {
   const signature = request.headers.get('x-webhook-signature');
-  
+
   // Validate signature
   if (!verifyWebhookSignature(signature)) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });

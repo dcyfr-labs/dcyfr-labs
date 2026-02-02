@@ -1,7 +1,6 @@
 ---
 name: dcyfr-validation
 description: Pre-completion validation checklists and approval gates
-license: MIT
 compatibility: opencode
 metadata:
   audience: developers

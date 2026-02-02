@@ -1,7 +1,6 @@
 ---
 name: dcyfr-security
 description: CodeQL suppressions, security vulnerability troubleshooting, and security best practices
-license: MIT
 compatibility: opencode
 metadata:
   audience: developers
