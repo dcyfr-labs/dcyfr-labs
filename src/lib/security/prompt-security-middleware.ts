@@ -14,7 +14,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getPromptScanner, type ScanResult } from './prompt-scanner';
-import { inngest } from '@/lib/inngest/client';
+import { inngest } from '@/inngest/client';
 
 // ============================================================================
 // Types
@@ -22,13 +22,13 @@ import { inngest } from '@/lib/inngest/client';
 
 export interface PromptSecurityConfig {
   enabled?: boolean;
-  maxRiskScore?: number;        // Maximum acceptable risk score (0-100)
-  blockCritical?: boolean;      // Automatically block critical threats
-  logThreats?: boolean;         // Log threats via Inngest
-  trustedIPs?: string[];        // Whitelist of trusted IP addresses
-  trustedOrigins?: string[];    // Whitelist of trusted origins
-  scanFields?: string[];        // Fields to scan (default: all text fields)
-  bypassHeader?: string;        // Header to bypass scanning (e.g., internal services)
+  maxRiskScore?: number; // Maximum acceptable risk score (0-100)
+  blockCritical?: boolean; // Automatically block critical threats
+  logThreats?: boolean; // Log threats via Inngest
+  trustedIPs?: string[]; // Whitelist of trusted IP addresses
+  trustedOrigins?: string[]; // Whitelist of trusted origins
+  scanFields?: string[]; // Fields to scan (default: all text fields)
+  bypassHeader?: string; // Header to bypass scanning (e.g., internal services)
 }
 
 export interface PromptSecurityContext {
@@ -144,10 +144,7 @@ export function withPromptSecurity(
 /**
  * Extract text content from request for scanning
  */
-async function extractTextContent(
-  request: NextRequest,
-  scanFields: string[]
-): Promise<string[]> {
+async function extractTextContent(request: NextRequest, scanFields: string[]): Promise<string[]> {
   const textContent: string[] = [];
 
   try {
@@ -209,9 +206,9 @@ function extractStringsFromObject(obj: any, results: string[]): void {
   }
 
   if (Array.isArray(obj)) {
-    obj.forEach(item => extractStringsFromObject(item, results));
+    obj.forEach((item) => extractStringsFromObject(item, results));
   } else {
-    Object.values(obj).forEach(value => extractStringsFromObject(value, results));
+    Object.values(obj).forEach((value) => extractStringsFromObject(value, results));
   }
 }
 
@@ -225,14 +222,12 @@ function getNestedValue(obj: any, path: string): any {
 /**
  * Check if request is from trusted source
  */
-function isTrustedSource(
-  request: NextRequest,
-  config: Required<PromptSecurityConfig>
-): boolean {
+function isTrustedSource(request: NextRequest, config: Required<PromptSecurityConfig>): boolean {
   // Check IP address
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-    || request.headers.get('x-real-ip')
-    || 'unknown';
+  const ip =
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    request.headers.get('x-real-ip') ||
+    'unknown';
 
   if (config.trustedIPs.includes(ip)) {
     return true;
@@ -240,7 +235,7 @@ function isTrustedSource(
 
   // Check origin
   const origin = request.headers.get('origin') || '';
-  if (config.trustedOrigins.some(trusted => origin.includes(trusted))) {
+  if (config.trustedOrigins.some((trusted) => origin.includes(trusted))) {
     return true;
   }
 
@@ -282,15 +277,15 @@ function aggregateScanResults(results: ScanResult[]): ScanResult {
   }
 
   // Combine all threats
-  const allThreats = results.flatMap(r => r.threats);
+  const allThreats = results.flatMap((r) => r.threats);
 
   // Find highest risk score
-  const maxRiskScore = Math.max(...results.map(r => r.riskScore));
+  const maxRiskScore = Math.max(...results.map((r) => r.riskScore));
 
   // Determine overall severity
-  const hasCritical = results.some(r => r.severity === 'critical');
-  const hasHigh = results.some(r => r.severity === 'high');
-  const hasMedium = results.some(r => r.severity === 'medium');
+  const hasCritical = results.some((r) => r.severity === 'critical');
+  const hasHigh = results.some((r) => r.severity === 'high');
+  const hasMedium = results.some((r) => r.severity === 'medium');
 
   let severity: ScanResult['severity'] = 'safe';
   if (hasCritical) severity = 'critical';
@@ -299,10 +294,10 @@ function aggregateScanResults(results: ScanResult[]): ScanResult {
   else if (allThreats.length > 0) severity = 'low';
 
   // All must be safe for aggregate to be safe
-  const safe = results.every(r => r.safe);
+  const safe = results.every((r) => r.safe);
 
   // Combine blocked patterns
-  const blockedPatterns = [...new Set(results.flatMap(r => r.blockedPatterns))];
+  const blockedPatterns = [...new Set(results.flatMap((r) => r.blockedPatterns))];
 
   // Sum scan durations
   const totalDuration = results.reduce((sum, r) => sum + r.metadata.scanDuration, 0);
@@ -316,7 +311,7 @@ function aggregateScanResults(results: ScanResult[]): ScanResult {
     metadata: {
       scannedAt: new Date().toISOString(),
       scanDuration: totalDuration,
-      cacheHit: results.some(r => r.metadata.cacheHit),
+      cacheHit: results.some((r) => r.metadata.cacheHit),
       inputHash: 'aggregate',
     },
   };
@@ -325,10 +320,7 @@ function aggregateScanResults(results: ScanResult[]): ScanResult {
 /**
  * Determine if request should be blocked
  */
-function determineBlocking(
-  result: ScanResult,
-  config: Required<PromptSecurityConfig>
-): boolean {
+function determineBlocking(result: ScanResult, config: Required<PromptSecurityConfig>): boolean {
   // Block critical threats if configured
   if (config.blockCritical && result.severity === 'critical') {
     return true;
@@ -352,7 +344,7 @@ function createBlockedResponse(result: ScanResult): NextResponse {
       message: 'Your request contains potentially harmful content and has been blocked.',
       severity: result.severity,
       riskScore: result.riskScore,
-      threats: result.threats.map(t => ({
+      threats: result.threats.map((t) => ({
         category: t.category,
         severity: t.severity,
       })),
@@ -372,10 +364,7 @@ function createBlockedResponse(result: ScanResult): NextResponse {
 /**
  * Log threat detection via Inngest
  */
-async function logThreat(
-  request: NextRequest,
-  result: ScanResult
-): Promise<void> {
+async function logThreat(request: NextRequest, result: ScanResult): Promise<void> {
   try {
     await inngest.send({
       name: 'security/prompt.threat-detected',

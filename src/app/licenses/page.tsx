@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { TYPOGRAPHY, SPACING, SEMANTIC_COLORS } from '@/lib/design-tokens';
+import { TYPOGRAPHY, SPACING } from '@/lib/design-tokens';
 import { PageLayout } from '@/components/layouts';
 import { Button } from '@/components/ui/button';
 
@@ -87,7 +87,7 @@ export default function LicensesPage() {
       <section className={SPACING.section}>
         <div className="max-w-4xl">
           <h1 className={TYPOGRAPHY.h1.standard}>Open Source Licenses</h1>
-          <p className={TYPOGRAPHY.body} style={{ color: SEMANTIC_COLORS.text.secondary }}>
+          <p className={`${TYPOGRAPHY.body} text-muted-foreground`}>
             DCYFR is built on quality open-source software. Below is a complete list of all
             dependencies used in our products and their licenses.
           </p>
@@ -97,38 +97,26 @@ export default function LicensesPage() {
       {/* Compliance Summary */}
       <section className={SPACING.section}>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="p-4 border rounded-lg" style={{ borderColor: SEMANTIC_COLORS.border }}>
-            <div style={{ color: SEMANTIC_COLORS.text.secondary }} className={TYPOGRAPHY.caption}>
-              Total Dependencies
-            </div>
-            <div style={{ fontSize: '28px', fontWeight: 'bold' }} className={SPACING.compact}>
-              {SAMPLE_DEPENDENCIES.length}
-            </div>
+          <div className="p-4 border border-muted-foreground/20 rounded-lg">
+            <div className={`${TYPOGRAPHY.metadata} text-muted-foreground`}>Total Dependencies</div>
+            <div className="text-2xl font-bold mt-2">{SAMPLE_DEPENDENCIES.length}</div>
           </div>
 
-          <div className="p-4 border rounded-lg" style={{ borderColor: SEMANTIC_COLORS.border }}>
-            <div style={{ color: SEMANTIC_COLORS.text.secondary }} className={TYPOGRAPHY.caption}>
+          <div className="p-4 border border-muted-foreground/20 rounded-lg">
+            <div className={`${TYPOGRAPHY.metadata} text-muted-foreground`}>
               ✅ Approved Licenses
             </div>
-            <div style={{ fontSize: '28px', fontWeight: 'bold' }} className={SPACING.compact}>
-              {SAMPLE_DEPENDENCIES.length}
-            </div>
+            <div className="text-2xl font-bold mt-2">{SAMPLE_DEPENDENCIES.length}</div>
           </div>
 
-          <div className="p-4 border rounded-lg" style={{ borderColor: SEMANTIC_COLORS.border }}>
-            <div style={{ color: SEMANTIC_COLORS.text.secondary }} className={TYPOGRAPHY.caption}>
-              License Types
-            </div>
-            <div style={{ fontSize: '28px', fontWeight: 'bold' }} className={SPACING.compact}>
-              {Object.keys(licenseCounts).length}
-            </div>
+          <div className="p-4 border border-muted-foreground/20 rounded-lg">
+            <div className={`${TYPOGRAPHY.metadata} text-muted-foreground`}>License Types</div>
+            <div className="text-2xl font-bold mt-2">{Object.keys(licenseCounts).length}</div>
           </div>
 
-          <div className="p-4 border rounded-lg" style={{ borderColor: SEMANTIC_COLORS.border }}>
-            <div style={{ color: SEMANTIC_COLORS.text.secondary }} className={TYPOGRAPHY.caption}>
-              Last Updated
-            </div>
-            <div className={TYPOGRAPHY.caption}>{new Date().toLocaleDateString()}</div>
+          <div className="p-4 border border-muted-foreground/20 rounded-lg">
+            <div className={`${TYPOGRAPHY.metadata} text-muted-foreground`}>Last Updated</div>
+            <div className={`${TYPOGRAPHY.metadata} mt-2`}>{new Date().toLocaleDateString()}</div>
           </div>
         </div>
       </section>
@@ -156,8 +144,7 @@ export default function LicensesPage() {
             placeholder="Search dependencies or licenses..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-1 px-3 py-2 border rounded-lg"
-            style={{ borderColor: SEMANTIC_COLORS.border }}
+            className="flex-1 px-3 py-2 border border-muted-foreground/20 rounded-lg"
           />
           <Button variant="secondary" onClick={() => setSearchTerm('')}>
             Clear
@@ -170,46 +157,23 @@ export default function LicensesPage() {
         <h2 className={TYPOGRAPHY.h2.standard}>Dependencies</h2>
 
         {filteredDependencies.length === 0 ? (
-          <div className="text-center py-8" style={{ color: SEMANTIC_COLORS.text.secondary }}>
+          <div className="text-center py-8 text-muted-foreground">
             <p>No dependencies found matching &quot;{searchTerm}&quot;</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr style={{ borderBottom: `1px solid ${SEMANTIC_COLORS.border}` }}>
-                  <th
-                    className="text-left px-4 py-3"
-                    style={{ color: SEMANTIC_COLORS.text.secondary }}
-                  >
-                    Package Name
-                  </th>
-                  <th
-                    className="text-left px-4 py-3"
-                    style={{ color: SEMANTIC_COLORS.text.secondary }}
-                  >
-                    Version
-                  </th>
-                  <th
-                    className="text-left px-4 py-3"
-                    style={{ color: SEMANTIC_COLORS.text.secondary }}
-                  >
-                    License
-                  </th>
-                  <th
-                    className="text-left px-4 py-3"
-                    style={{ color: SEMANTIC_COLORS.text.secondary }}
-                  >
-                    Links
-                  </th>
+                <tr className="border-b border-muted-foreground/20">
+                  <th className="text-left px-4 py-3 text-muted-foreground">Package Name</th>
+                  <th className="text-left px-4 py-3 text-muted-foreground">Version</th>
+                  <th className="text-left px-4 py-3 text-muted-foreground">License</th>
+                  <th className="text-left px-4 py-3 text-muted-foreground">Links</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredDependencies.map((dep) => (
-                  <tr
-                    key={dep.name}
-                    style={{ borderBottom: `1px solid ${SEMANTIC_COLORS.border}` }}
-                  >
+                  <tr key={dep.name} className="border-b border-muted-foreground/10">
                     <td className="px-4 py-3 font-medium">{dep.name}</td>
                     <td className="px-4 py-3">
                       <code style={{ fontSize: '0.875em' }}>{dep.version}</code>
@@ -256,9 +220,9 @@ export default function LicensesPage() {
         <h2 className={TYPOGRAPHY.h2.standard}>Technical Information</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-4 border rounded-lg" style={{ borderColor: SEMANTIC_COLORS.border }}>
+          <div className="p-4 border border-muted-foreground/20 rounded-lg">
             <h3 className={TYPOGRAPHY.h3.standard}>SBOM (Software Bill of Materials)</h3>
-            <p className={TYPOGRAPHY.body} style={{ color: SEMANTIC_COLORS.text.secondary }}>
+            <p className={`${TYPOGRAPHY.body} text-muted-foreground`}>
               Enterprise customers can download a complete Software Bill of Materials (SBOM) in
               CycloneDX format from our GitHub releases.
             </p>
@@ -271,9 +235,9 @@ export default function LicensesPage() {
             </Button>
           </div>
 
-          <div className="p-4 border rounded-lg" style={{ borderColor: SEMANTIC_COLORS.border }}>
+          <div className="p-4 border border-muted-foreground/20 rounded-lg">
             <h3 className={TYPOGRAPHY.h3.standard}>Licensing Policy</h3>
-            <p className={TYPOGRAPHY.body} style={{ color: SEMANTIC_COLORS.text.secondary }}>
+            <p className={`${TYPOGRAPHY.body} text-muted-foreground`}>
               Learn about DCYFR&apos;s licensing standards, approved/prohibited licenses, and how we
               maintain compliance.
             </p>
@@ -289,10 +253,10 @@ export default function LicensesPage() {
       </section>
 
       {/* Enterprise Support */}
-      <section className={SPACING.section} style={{ backgroundColor: '#f9fafb', padding: '2rem' }}>
+      <section className={`${SPACING.section} bg-muted/50 p-8 rounded-lg`}>
         <h2 className={TYPOGRAPHY.h2.standard}>Enterprise Support</h2>
 
-        <p className={TYPOGRAPHY.body} style={{ color: SEMANTIC_COLORS.text.secondary }}>
+        <p className={`${TYPOGRAPHY.body} text-muted-foreground`}>
           Need a custom SBOM for compliance, a licensing audit, or have licensing questions?
         </p>
 
@@ -310,11 +274,8 @@ export default function LicensesPage() {
       </section>
 
       {/* Footer Info */}
-      <section
-        className={SPACING.section}
-        style={{ borderTop: `1px solid ${SEMANTIC_COLORS.border}`, paddingTop: '2rem' }}
-      >
-        <div style={{ color: SEMANTIC_COLORS.text.secondary }} className={TYPOGRAPHY.caption}>
+      <section className={`${SPACING.section} border-t border-muted-foreground/20 pt-8`}>
+        <div className={`${TYPOGRAPHY.metadata} text-muted-foreground`}>
           <p>
             This page lists all direct dependencies used by dcyfr-labs. For a complete list
             including transitive dependencies, please download the SBOM from our GitHub releases.
