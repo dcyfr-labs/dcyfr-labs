@@ -82,7 +82,7 @@ export default function LicensesPage() {
   );
 
   return (
-    <PageLayout layout="standard">
+    <PageLayout>
       {/* Header Section */}
       <section className={SPACING.section}>
         <div className="max-w-4xl">
