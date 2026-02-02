@@ -128,9 +128,7 @@ export default function LicensesPage() {
             <div style={{ color: SEMANTIC_COLORS.text.secondary }} className={TYPOGRAPHY.caption}>
               Last Updated
             </div>
-            <div className={TYPOGRAPHY.caption}>
-              {new Date().toLocaleDateString()}
-            </div>
+            <div className={TYPOGRAPHY.caption}>{new Date().toLocaleDateString()}</div>
           </div>
         </div>
       </section>
@@ -173,23 +171,35 @@ export default function LicensesPage() {
 
         {filteredDependencies.length === 0 ? (
           <div className="text-center py-8" style={{ color: SEMANTIC_COLORS.text.secondary }}>
-            <p>No dependencies found matching "{searchTerm}"</p>
+            <p>No dependencies found matching &quot;{searchTerm}&quot;</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
                 <tr style={{ borderBottom: `1px solid ${SEMANTIC_COLORS.border}` }}>
-                  <th className="text-left px-4 py-3" style={{ color: SEMANTIC_COLORS.text.secondary }}>
+                  <th
+                    className="text-left px-4 py-3"
+                    style={{ color: SEMANTIC_COLORS.text.secondary }}
+                  >
                     Package Name
                   </th>
-                  <th className="text-left px-4 py-3" style={{ color: SEMANTIC_COLORS.text.secondary }}>
+                  <th
+                    className="text-left px-4 py-3"
+                    style={{ color: SEMANTIC_COLORS.text.secondary }}
+                  >
                     Version
                   </th>
-                  <th className="text-left px-4 py-3" style={{ color: SEMANTIC_COLORS.text.secondary }}>
+                  <th
+                    className="text-left px-4 py-3"
+                    style={{ color: SEMANTIC_COLORS.text.secondary }}
+                  >
                     License
                   </th>
-                  <th className="text-left px-4 py-3" style={{ color: SEMANTIC_COLORS.text.secondary }}>
+                  <th
+                    className="text-left px-4 py-3"
+                    style={{ color: SEMANTIC_COLORS.text.secondary }}
+                  >
                     Links
                   </th>
                 </tr>
@@ -205,7 +215,9 @@ export default function LicensesPage() {
                       <code style={{ fontSize: '0.875em' }}>{dep.version}</code>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded text-sm font-medium ${getLicenseColor(dep.license)}`}>
+                      <span
+                        className={`px-2 py-1 rounded text-sm font-medium ${getLicenseColor(dep.license)}`}
+                      >
                         {dep.license}
                       </span>
                     </td>
@@ -262,13 +274,13 @@ export default function LicensesPage() {
           <div className="p-4 border rounded-lg" style={{ borderColor: SEMANTIC_COLORS.border }}>
             <h3 className={TYPOGRAPHY.h3.standard}>Licensing Policy</h3>
             <p className={TYPOGRAPHY.body} style={{ color: SEMANTIC_COLORS.text.secondary }}>
-              Learn about DCYFR's licensing standards, approved/prohibited licenses, and how we
+              Learn about DCYFR&apos;s licensing standards, approved/prohibited licenses, and how we
               maintain compliance.
             </p>
             <Button
               variant="secondary"
               className="mt-4"
-              onClick={() => window.location.href = '/docs/licensing-policy'}
+              onClick={() => (window.location.href = '/docs/licensing-policy')}
             >
               View Policy
             </Button>
@@ -285,14 +297,12 @@ export default function LicensesPage() {
         </p>
 
         <div className="mt-4 flex gap-4">
-          <Button
-            onClick={() => window.location.href = 'mailto:hello@dcyfr.ai'}
-          >
+          <Button onClick={() => (window.location.href = 'mailto:hello@dcyfr.ai')}>
             Contact Us
           </Button>
           <Button
             variant="secondary"
-            onClick={() => window.location.href = 'https://www.dcyfr.ai/about'}
+            onClick={() => (window.location.href = 'https://www.dcyfr.ai/about')}
           >
             Learn More
           </Button>
@@ -300,11 +310,14 @@ export default function LicensesPage() {
       </section>
 
       {/* Footer Info */}
-      <section className={SPACING.section} style={{ borderTop: `1px solid ${SEMANTIC_COLORS.border}`, paddingTop: '2rem' }}>
+      <section
+        className={SPACING.section}
+        style={{ borderTop: `1px solid ${SEMANTIC_COLORS.border}`, paddingTop: '2rem' }}
+      >
         <div style={{ color: SEMANTIC_COLORS.text.secondary }} className={TYPOGRAPHY.caption}>
           <p>
-            This page lists all direct dependencies used by dcyfr-labs. For a complete list including
-            transitive dependencies, please download the SBOM from our GitHub releases.
+            This page lists all direct dependencies used by dcyfr-labs. For a complete list
+            including transitive dependencies, please download the SBOM from our GitHub releases.
           </p>
           <p className="mt-2">
             Questions about licensing?{' '}

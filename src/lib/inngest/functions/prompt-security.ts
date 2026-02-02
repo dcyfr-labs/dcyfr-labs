@@ -9,7 +9,7 @@
  */
 
 import { inngest } from '@/inngest/client';
-import { getPromptScanner } from '@/lib/security/prompt-scanner';
+import { getPromptScanner } from '@/lib/security';
 import { PromptIntelClient } from '@/mcp/shared/promptintel-client';
 
 // ============================================================================
@@ -66,7 +66,7 @@ export const handlePromptThreatDetected = inngest.createFunction(
 
     // Step 1: Log threat details
     await step.run('log-threat', async () => {
-      console.log('[PromptSecurity] Threat detected:', {
+      console.warn('[PromptSecurity] Threat detected:', {
         url: data.url,
         severity: data.severity,
         riskScore: data.riskScore,
@@ -79,7 +79,7 @@ export const handlePromptThreatDetected = inngest.createFunction(
     if (data.severity === 'critical' || data.severity === 'high') {
       await step.run('send-alert', async () => {
         // TODO: Implement alert logic (email, Slack, etc.)
-        console.log('[PromptSecurity] ALERT: High severity threat detected', {
+        console.warn('[PromptSecurity] ALERT: High severity threat detected', {
           severity: data.severity,
           url: data.url,
           ip: data.ip,
@@ -95,14 +95,14 @@ export const handlePromptThreatDetected = inngest.createFunction(
         severity: data.severity,
         riskScore: data.riskScore,
         blocked: data.blocked,
-        threatTypes: [...new Set(data.threats.map(t => t.category))],
+        threatTypes: [...new Set(data.threats.map((t) => t.category))],
       };
 
-      console.log('[PromptSecurity] Metrics updated:', metrics);
+      console.warn('[PromptSecurity] Metrics updated:', metrics);
     });
 
     // Step 4: Submit to PromptIntel if high confidence
-    const highConfidenceThreats = data.threats.filter(t => t.confidence > 0.8);
+    const highConfidenceThreats = data.threats.filter((t) => t.confidence > 0.8);
 
     if (highConfidenceThreats.length > 0) {
       await step.run('submit-to-promptintel', async () => {
@@ -112,9 +112,9 @@ export const handlePromptThreatDetected = inngest.createFunction(
           });
 
           // TODO: Implement report submission once API supports it
-          console.log('[PromptSecurity] Would submit to PromptIntel:', {
+          console.warn('[PromptSecurity] Would submit to PromptIntel:', {
             threatCount: highConfidenceThreats.length,
-            categories: highConfidenceThreats.map(t => t.category),
+            categories: highConfidenceThreats.map((t) => t.category),
           });
         } catch (error) {
           console.error('[PromptSecurity] Failed to submit to PromptIntel:', error);
@@ -199,7 +199,7 @@ export const generateDailyThreatReport = inngest.createFunction(
     // Step 4: Send report
     await step.run('send-report', async () => {
       // TODO: Send via email or store in dashboard
-      console.log('[PromptSecurity] Daily report generated:', report.summary);
+      console.warn('[PromptSecurity] Daily report generated:', report.summary);
     });
 
     return {
@@ -229,7 +229,7 @@ export const syncIoPCDatabase = inngest.createFunction(
     await step.run('clear-cache', async () => {
       const scanner = getPromptScanner();
       scanner.clearCache();
-      console.log('[PromptSecurity] Scanner cache cleared');
+      console.warn('[PromptSecurity] Scanner cache cleared');
     });
 
     // Step 2: Fetch latest threats
@@ -260,7 +260,7 @@ export const syncIoPCDatabase = inngest.createFunction(
     // Step 3: Update local database
     await step.run('update-database', async () => {
       // TODO: Store in database for faster querying
-      console.log('[PromptSecurity] IoPC sync complete:', threats);
+      console.warn('[PromptSecurity] IoPC sync complete:', threats);
     });
 
     return {

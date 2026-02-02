@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 // import { checkBotId } from "botid/server"; // TEMPORARILY DISABLED - causing 403 errors
 // blockExternalAccess NOT imported - contact form is public user-facing endpoint
-import { rateLimit, getClientIp, createRateLimitHeaders } from "@/lib/rate-limit";
-import { RATE_LIMITS } from "@/lib/api-guardrails";
-import { inngest } from "@/inngest/client";
-import { trackContactFormSubmission } from "@/lib/analytics";
-import { handleApiError } from "@/lib/error-handler";
-import { getPromptScanner } from "@/lib/security/prompt-scanner";
+import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
+import { RATE_LIMITS } from '@/lib/api-guardrails';
+import { inngest } from '@/inngest/client';
+import { trackContactFormSubmission } from '@/lib/analytics';
+import { handleApiError } from '@/lib/error-handler';
+import { getPromptScanner } from '@/lib/security';
 
 // Rate limit: 3 requests per minute per IP (from centralized guardrails config)
 // Fail closed on Redis errors to protect against abuse during outages
@@ -30,7 +30,8 @@ function validateEmail(email: string): boolean {
   // - Local part: alphanumeric + allowed special chars
   // - @ symbol
   // - Domain: valid format with proper TLD (min 2 chars)
-  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  const emailRegex =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
   if (!emailRegex.test(email)) {
     return false;
@@ -68,14 +69,14 @@ export async function POST(request: NextRequest) {
   // BotID is disabled in non-production environments to prevent false positives.
 
   // Validate request size to prevent DoS attacks via large payloads
-  const contentLength = request.headers.get("content-length");
+  const contentLength = request.headers.get('content-length');
   const maxSize = 50 * 1024; // 50KB limit for contact form
 
   // Primary check: Content-Length header (for production environments)
   if (contentLength && parseInt(contentLength) > maxSize) {
     return NextResponse.json(
       {
-        error: "Request too large",
+        error: 'Request too large',
         message: `Request size must not exceed ${Math.floor(maxSize / 1024)}KB`,
       },
       { status: 413 } // Payload Too Large
@@ -93,7 +94,7 @@ export async function POST(request: NextRequest) {
     if (bodySize > maxSize) {
       return NextResponse.json(
         {
-          error: "Request too large",
+          error: 'Request too large',
           message: `Request size must not exceed ${Math.floor(maxSize / 1024)}KB`,
         },
         { status: 413 } // Payload Too Large
@@ -105,19 +106,16 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       {
-        error: "Invalid JSON in request body",
-        message: error instanceof Error ? error.message : "Unknown error",
+        error: 'Invalid JSON in request body',
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 400 }
     );
   }
 
   // Validate the parsed data
-  if (!body || typeof body !== "object") {
-    return NextResponse.json(
-      { error: "Request body must be a JSON object" },
-      { status: 400 }
-    );
+  if (!body || typeof body !== 'object') {
+    return NextResponse.json({ error: 'Request body must be a JSON object' }, { status: 400 });
   }
 
   const contactData = body as ContactFormData;
@@ -142,7 +140,6 @@ export async function POST(request: NextRequest) {
         // TEMPORARILY DISABLED: checkBotId import is commented out to prevent 403 errors
         // Uncomment the import and this code when BotID is properly configured
         // const verification = await checkBotId();
-
         // // Only block if BotID confidently identifies this as a bot (not a verified bot like search engines)
         // // Verified bots (search engines, monitoring) are allowed through
         // if (verification.isBot && !verification.isVerifiedBot && !verification.bypassed) {
@@ -156,7 +153,8 @@ export async function POST(request: NextRequest) {
         // BotID is optional - if it fails, continue with fallback protection
         // Common reasons: not configured, CSP issues, network errors, timeout
         // Log only the error message (avoid printing full error objects which may contain sensitive data)
-        console.warn("[Contact API] BotID check failed, using fallback protection (rate limit + honeypot):",
+        console.warn(
+          '[Contact API] BotID check failed, using fallback protection (rate limit + honeypot):',
           botIdError instanceof Error ? botIdError.message : String(botIdError)
         );
       }
@@ -169,14 +167,14 @@ export async function POST(request: NextRequest) {
     if (!rateLimitResult.success) {
       return NextResponse.json(
         {
-          error: "Too many requests. Please try again later.",
+          error: 'Too many requests. Please try again later.',
           retryAfter: Math.ceil((rateLimitResult.reset - Date.now()) / 1000),
         },
         {
           status: 429,
           headers: {
             ...createRateLimitHeaders(rateLimitResult),
-            "Retry-After": Math.ceil((rateLimitResult.reset - Date.now()) / 1000).toString(),
+            'Retry-After': Math.ceil((rateLimitResult.reset - Date.now()) / 1000).toString(),
           },
         }
       );
@@ -187,13 +185,13 @@ export async function POST(request: NextRequest) {
     const { name, email, message, role, website } = body || {};
 
     // Honeypot validation - if filled, it's likely a bot
-    if (website && website.trim() !== "") {
-      console.warn("[Contact API] Honeypot triggered - likely bot submission");
+    if (website && website.trim() !== '') {
+      console.warn('[Contact API] Honeypot triggered - likely bot submission');
       // Return success to avoid revealing the honeypot
       return NextResponse.json(
         {
           success: true,
-          message: "Message received. We'll get back to you soon!"
+          message: "Message received. We'll get back to you soon!",
         },
         { status: 200 }
       );
@@ -201,18 +199,12 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!name || !email || !message) {
-      return NextResponse.json(
-        { error: "All fields are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
     }
 
     // Validate email format
     if (!validateEmail(email)) {
-      return NextResponse.json(
-        { error: "Invalid email address" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
     }
 
     // Sanitize inputs
@@ -225,15 +217,12 @@ export async function POST(request: NextRequest) {
 
     // Validate lengths
     if (sanitizedData.name.length < 2) {
-      return NextResponse.json(
-        { error: "Name must be at least 2 characters" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Name must be at least 2 characters' }, { status: 400 });
     }
 
     if (sanitizedData.message.length < 10) {
       return NextResponse.json(
-        { error: "Message must be at least 10 characters" },
+        { error: 'Message must be at least 10 characters' },
         { status: 400 }
       );
     }
@@ -248,7 +237,7 @@ export async function POST(request: NextRequest) {
 
       // Block if threats detected
       if (!scanResult.safe || scanResult.severity === 'critical') {
-        console.warn("[Contact API] Prompt threat detected:", {
+        console.warn('[Contact API] Prompt threat detected:', {
           severity: scanResult.severity,
           riskScore: scanResult.riskScore,
           threatCount: scanResult.threats.length,
@@ -257,15 +246,16 @@ export async function POST(request: NextRequest) {
         // Return generic error to avoid leaking security details
         return NextResponse.json(
           {
-            error: "Message validation failed",
-            message: "Your message could not be processed. Please review your content and try again.",
+            error: 'Message validation failed',
+            message:
+              'Your message could not be processed. Please review your content and try again.',
           },
           { status: 400 }
         );
       }
     } catch (scanError) {
       // Fail open - if scanning fails, allow submission but log error
-      console.error("[Contact API] Prompt scanning failed:", scanError);
+      console.error('[Contact API] Prompt scanning failed:', scanError);
     }
 
     //
@@ -273,7 +263,7 @@ export async function POST(request: NextRequest) {
     // This returns immediately, making the API response much faster
     try {
       await inngest.send({
-        name: "contact/form.submitted",
+        name: 'contact/form.submitted',
         data: {
           name: sanitizedData.name,
           email: sanitizedData.email,
@@ -288,12 +278,12 @@ export async function POST(request: NextRequest) {
       trackContactFormSubmission(
         sanitizedData.message.length,
         false, // We don't track if they have GitHub for privacy
-        false  // We don't track if they have LinkedIn for privacy
-      ).catch(err => console.warn("Analytics tracking failed:", err));
+        false // We don't track if they have LinkedIn for privacy
+      ).catch((err) => console.warn('Analytics tracking failed:', err));
 
       // Log submission (anonymized)
       // Log an anonymized summary to avoid storing user-provided content in logs
-      console.warn("Contact form submission queued:", {
+      console.warn('Contact form submission queued:', {
         nameLength: sanitizedData.name.length,
         emailDomain: sanitizedData.email.split('@')[1] || 'unknown',
         messageLength: sanitizedData.message.length,
@@ -303,7 +293,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: true,
-          message: "Message received successfully. You'll receive a confirmation email shortly."
+          message: "Message received successfully. You'll receive a confirmation email shortly.",
         },
         {
           status: 200,
@@ -312,16 +302,19 @@ export async function POST(request: NextRequest) {
       );
     } catch (inngestError) {
       // Avoid printing full error objects that could include sensitive details
-      console.error("Failed to queue contact form:", inngestError instanceof Error ? inngestError.message : String(inngestError));
+      console.error(
+        'Failed to queue contact form:',
+        inngestError instanceof Error ? inngestError.message : String(inngestError)
+      );
       return NextResponse.json(
-        { error: "Failed to process your message. Please try again later." },
+        { error: 'Failed to process your message. Please try again later.' },
         { status: 500 }
       );
     }
   } catch (error) {
     const errorInfo = handleApiError(error, {
-      route: "/api/contact",
-      method: "POST",
+      route: '/api/contact',
+      method: 'POST',
       additionalData: body ? { emailDomain: body.email?.split('@')[1] } : {},
     });
 
@@ -330,9 +323,6 @@ export async function POST(request: NextRequest) {
       return new Response(null, { status: errorInfo.statusCode });
     }
 
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: errorInfo.statusCode }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: errorInfo.statusCode });
   }
 }

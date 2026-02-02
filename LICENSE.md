@@ -94,11 +94,11 @@ See `.github/DCYFR_STATEMENT.md` for more information about why certain files ar
 
 ## License Summary
 
-| Category          | License      | Location                                                                                                                                                      | Use                                    |
-| ----------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| **Source Code**   | MIT          | `/src/`, `/tests/`, `/scripts/`                                                                                                                               | Free to use, modify, redistribute      |
-| **Documentation** | CC BY-SA 4.0 | `/docs/`                                                                                                                                                      | Learn, adapt, share (with attribution) |
-| **Proprietary**   | Restricted   | `.agent/`, `.claude/agents`, `.github/agents`, `.opencode/agents`, `src/__tests__/agents`, `src/app/dev/agents/`, `src/components/agents/`, `src/lib/agents/` | View only (commercial use restricted)  |
+| Category          | License      | Location                                                | Use                                    |
+| ----------------- | ------------ | ------------------------------------------------------- | -------------------------------------- |
+| **Source Code**   | MIT          | `/src/`, `/tests/`, `/scripts/`                         | Free to use, modify, redistribute      |
+| **Documentation** | CC BY-SA 4.0 | `/docs/`                                                | Learn, adapt, share (with attribution) |
+| **Proprietary**   | Restricted   | `.ai/`, `.agent/`, `.claude/`, `.github/`, `.opencode/` | Commercial use restricted              |
 
 ---
 
