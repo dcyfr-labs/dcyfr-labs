@@ -62,10 +62,10 @@ The following files contain proprietary system specifications for DCYFR (automat
 
 **Proprietary Files:**
 
-- `.github/agents/DCYFR.agent.md` - DCYFR agent specifications
-- `.github/agents/patterns/` - Pattern enforcement specifications (4 files)
-- `.github/agents/enforcement/` - Validation and approval gate specifications (3 files)
-- `.github/agents/learning/` - DCYFR learning system specifications (3 files)
+- `(.ai|.agents|.claude|.github|.opencode)/agents/DCYFR.agent.md` - DCYFR agent specifications
+- `(.ai|.agents|.claude|.github|.opencode)/agents/patterns/` - Pattern enforcement specifications (4 files)
+- `(.ai|.agents|.claude|.github|.opencode)/agents/enforcement/` - Validation and approval gate specifications (3 files)
+- `(.ai|.agents|.claude|.github|.opencode)/agents/learning/` - DCYFR learning system specifications (3 files)
 - `AGENTS.md` - AI agent routing and coordination system
 - `CLAUDE.md` - Project-specific AI constraints and context
 

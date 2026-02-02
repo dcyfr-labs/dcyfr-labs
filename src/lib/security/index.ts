@@ -4,8 +4,4 @@
  */
 
 export { getPromptScanner } from './prompt-scanner';
-export type {
-  ThreatMatch,
-  ScanResult,
-  ScanOptions,
-} from './prompt-scanner';
+export type { ThreatMatch, ScanResult, ScanOptions } from './prompt-scanner';
