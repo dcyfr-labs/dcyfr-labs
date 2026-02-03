@@ -2062,6 +2062,33 @@ All previously flaky tests are now passing consistently with enhanced robustness
   - Target: Q2 2026
   - See: `src/components/navigation/bottom-nav.tsx`
 
+### API Documentation (Swagger/OpenAPI)
+
+- **API Swagger Documentation for Dev Tools** (Priority: Medium, Effort: 2-3 weeks)
+  - Create interactive OpenAPI/Swagger documentation
+  - Document all API routes in `/src/app/api/`
+  - Render documentation on `/dev/api-docs` route (protected)
+  - Generate Swagger UI with Swagger Editor integration
+  - Support for request/response examples
+  - Automatic schema generation from TypeScript types
+  - Authentication documentation for protected endpoints
+  - Rate limiting information per endpoint
+  - Error response documentation (400, 401, 403, 500, etc.)
+  - Integration with Inngest webhook documentation
+  - See: docs/api/swagger-implementation-plan.md (to be created)
+  - Target: Q2 2026
+  - Related Files:
+    - Inngest webhook: `src/app/api/github/webhook/route.ts`
+    - Social metrics: `src/app/api/social-metrics/route.ts`
+    - Analytics: `src/app/api/analytics/route.ts`
+    - Views tracking: `src/app/api/views/route.ts`
+  - Benefits:
+    - Developer onboarding (clear API contracts)
+    - Interactive API testing in dev tools
+    - Documentation auto-sync with code
+    - Reduced support questions
+    - Automated client SDK generation (future)
+
 ### Other Features
 
 - Design system component library
