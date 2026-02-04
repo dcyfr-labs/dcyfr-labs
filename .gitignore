@@ -111,9 +111,10 @@ archive/
 # ========================================
 .github/agents/*
 !.github/agents/*.md
+!.github/agents/enforcement/
+!.github/agents/instructions/
 !.github/agents/learning/
 !.github/agents/patterns/
-!.github/agents/enforcement/
 
 # AI assistant configurations (local overrides)
 .github/copilot-instructions.local.md

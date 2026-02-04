@@ -179,7 +179,8 @@ function runCommand(command, extraArgs = []) {
 
       const runner = info.isTsx ? 'tsx' : 'node';
       const result = spawnSync(runner, [fullPath, ...args], {
-        stdio: 'inherit',
+        stdio: ['inherit', 'pipe', 'pipe'],  // Buffer stdout/stderr - prevents heredoc hangs
+        maxBuffer: 10 * 1024 * 1024,        // 10MB limit for large agent output
         shell: false,
       });
 

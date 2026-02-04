@@ -61,7 +61,8 @@ function saveSession(agent, taskDescription, phase = 'in-progress', timeRemainin
     // Try to use the shell script first for compatibility
     const scriptPath = path.join(__dirname, 'save-session-state.sh');
     const result = spawnSync('bash', [scriptPath, agent, taskDescription, phase, timeRemaining], {
-      stdio: 'inherit',
+      stdio: ['inherit', 'pipe', 'pipe'],  // Buffer stdio - prevents hangs
+      maxBuffer: 5 * 1024 * 1024,         // 5MB for session state
       shell: false,
     });
     if (result.error) throw result.error;
