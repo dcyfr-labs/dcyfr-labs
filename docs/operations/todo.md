@@ -15,7 +15,7 @@
 | # | Task | Priority | Effort | Status |
 |---|------|----------|--------|--------|
 | 1 | RIVET Blog Post Rollout (Tier 1) | High | 8-12h | Backlog |
-| 2 | GitHub Webhook Deployment | High | 1h | Blocked (needs prod URL) |
+| 2 | GitHub Webhook Deployment | High | 1h | ✅ Complete (Feb 5, 2026) |
 | 3 | Stage 7: Trending Technologies tab | Medium | 4-6h | Backlog |
 | 4 | Social Media Phase 2 Dashboard | Medium | 2-3 weeks | Q2 2026 |
 | 5 | SOC2 Commercial Platform | Medium | 2-4 weeks | Q2 2026 |
@@ -41,11 +41,14 @@ Apply P0/P1/P2 RIVET components to existing blog posts. Components are built and
 
 ### GitHub Webhook Deployment
 
-Code complete (23 tests passing). Needs production deployment:
-- [ ] Configure webhook in dcyfr/dcyfr-labs repository settings
+✅ **Complete** (February 5, 2026) - Webhook configured and verified.
+- [x] `GITHUB_WEBHOOK_SECRET` set in Vercel production (Jan 28)
+- [x] Webhook configured in dcyfr/dcyfr-labs repository (hook ID: 587941184)
   - Payload URL: `https://www.dcyfr.ai/api/github/webhook`
-  - Content type: `application/json`, Secret: `GITHUB_WEBHOOK_SECRET`, Events: `push` only
-- [ ] Verify commits appear in activity feed within 30 seconds
+  - Content type: `application/json`, Events: `push` only
+- [x] Ping test: 200 OK
+- [x] Push test: 200 OK (6 commits processed via Inngest)
+- [x] Duplicate webhook removed (hook 594963680)
 
 ### Stage 7: Unified Trending Section (Remaining)
 

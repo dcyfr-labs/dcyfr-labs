@@ -77,5 +77,8 @@
   ],
   "tailwindCSS.validate": true,
   "github-actions.workflows.pinned.workflows": [],
-  "githubPullRequests.pullRequestDescription": "template"
+  "githubPullRequests.pullRequestDescription": "template",
+  "chat.tools.terminal.autoApprove": {
+    "vercel": true
+  }
 }
