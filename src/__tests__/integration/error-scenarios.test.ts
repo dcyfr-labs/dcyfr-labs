@@ -5,7 +5,7 @@ import {
   getMultiplePostViews,
   getMultiplePostViews24h,
   getMultiplePostViewsInRange,
-} from '@/lib/views';
+} from '@/lib/views.server';
 import { getPostSharesBulk, getPostShares24hBulk } from '@/lib/shares';
 import { getPostCommentsBulk, getPostComments24hBulk } from '@/lib/comments';
 import { rateLimit } from '@/lib/rate-limit';
@@ -14,8 +14,15 @@ import { blockExternalAccess } from '@/lib/api-security';
 // Mock Upstash redis singleton
 vi.mock('@/mcp/shared/redis-client', () => ({
   redis: {
-    get: vi.fn(),
+    get: vi.fn().mockResolvedValue(null),
   },
+}));
+
+// Mock Sentry
+vi.mock('@sentry/nextjs', () => ({
+  captureException: vi.fn(),
+  captureMessage: vi.fn(),
+  addBreadcrumb: vi.fn(),
 }));
 
 // Mock posts data import
@@ -36,7 +43,7 @@ vi.mock('@/lib/rate-limit', () => ({
   })),
 }));
 
-vi.mock('@/lib/views', () => ({
+vi.mock('@/lib/views.server', () => ({
   getMultiplePostViews: vi.fn(),
   getMultiplePostViews24h: vi.fn(),
   getMultiplePostViewsInRange: vi.fn(),
@@ -52,8 +59,7 @@ vi.mock('@/lib/comments', () => ({
   getPostComments24hBulk: vi.fn(),
 }));
 
-// TODO: Error handling refactored - update tests for new implementation
-describe.skip('Error Scenario Integration Tests', () => {
+describe('Error Scenario Integration Tests', () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
@@ -65,8 +71,6 @@ describe.skip('Error Scenario Integration Tests', () => {
     delete process.env.ADMIN_API_KEY;
     // Force in-memory fallback for rate limiting
     delete process.env.REDIS_URL;
-    // TODO: Update for Upstash redis singleton
-    // globalThis.__rateLimitRedisClient = undefined
 
     // Default behavior: return zero maps
     vi.mocked(getMultiplePostViews).mockResolvedValue(new Map());
@@ -76,18 +80,6 @@ describe.skip('Error Scenario Integration Tests', () => {
     vi.mocked(getPostShares24hBulk).mockResolvedValue({});
     vi.mocked(getPostCommentsBulk).mockResolvedValue({});
     vi.mocked(getPostComments24hBulk).mockResolvedValue({});
-
-    // TODO: Update for Upstash redis singleton
-    // Mock redis client createClient to return a client with get/quit/on
-    /* vi.mocked(createClient).mockImplementation(() => {
-      return {
-        isOpen: true,
-        on: vi.fn(),
-        connect: vi.fn().mockResolvedValue(undefined),
-        get: vi.fn().mockResolvedValue(null),
-        quit: vi.fn().mockResolvedValue(undefined),
-      } as any
-    }) */
 
     // Default: rate limit allows requests
     vi.mocked(rateLimit).mockResolvedValue({
@@ -130,14 +122,9 @@ describe.skip('Error Scenario Integration Tests', () => {
     // Provide admin key so we bypass auth
     process.env.ADMIN_API_KEY = 'test-key';
 
-    // Make createClient return a client whose get throws
-    /* vi.mocked(createClient).mockImplementation(() => ({
-      isOpen: true,
-      connect: vi.fn().mockResolvedValue(undefined),
-      get: vi.fn().mockRejectedValue(new Error('Redis get failed')),
-      quit: vi.fn().mockResolvedValue(undefined),
-    }) as any)
-    */
+    // Make redis.get throw to simulate Redis failure
+    const { redis } = await import('@/mcp/shared/redis-client');
+    vi.mocked(redis.get).mockRejectedValue(new Error('Redis get failed'));
 
     const request = new NextRequest('http://localhost:3000/api/analytics', {
       headers: { Authorization: 'Bearer test-key' },

@@ -35,6 +35,7 @@ describe('ProviderFallbackManager', () => {
   };
 
   beforeEach(() => {
+    vi.useFakeTimers();
     // Reset fetch mock and make all providers appear healthy
     mockFetch.mockReset();
     mockFetch.mockResolvedValue({
@@ -52,6 +53,7 @@ describe('ProviderFallbackManager', () => {
     manager.destroy();
     // Restore original fetch after each test
     global.fetch = originalFetch;
+    vi.useRealTimers();
   });
 
   describe('Initialization', () => {
@@ -107,7 +109,9 @@ describe('ProviderFallbackManager', () => {
         throw new Error('Provider unavailable');
       });
 
-      const result = await manager.executeWithFallback(mockTask, executor);
+      const resultPromise = manager.executeWithFallback(mockTask, executor);
+      await vi.advanceTimersByTimeAsync(15000);
+      const result = await resultPromise;
 
       expect(result.success).toBe(true);
       expect(result.provider).toBe('ollama');
@@ -119,9 +123,12 @@ describe('ProviderFallbackManager', () => {
     it('should throw error when all providers fail', async () => {
       const executor = vi.fn().mockRejectedValue(new Error('All failed'));
 
-      await expect(
-        manager.executeWithFallback(mockTask, executor),
-      ).rejects.toThrow('All providers exhausted');
+      const resultPromise = manager.executeWithFallback(mockTask, executor).catch((e: Error) => e);
+      await vi.advanceTimersByTimeAsync(15000);
+      const error = await resultPromise;
+
+      expect(error).toBeInstanceOf(Error);
+      expect((error as Error).message).toContain('All providers exhausted');
     });
   });
 

@@ -7,15 +7,22 @@ import {
   getMultiplePostViews,
   getMultiplePostViews24h,
   getMultiplePostViewsInRange,
-} from '@/lib/views';
+} from '@/lib/views.server';
 import { getPostSharesBulk, getPostShares24hBulk } from '@/lib/shares';
 import { getPostCommentsBulk, getPostComments24hBulk } from '@/lib/comments';
 
 // Mock Upstash redis singleton
 vi.mock('@/mcp/shared/redis-client', () => ({
   redis: {
-    get: vi.fn(),
+    get: vi.fn().mockResolvedValue(null),
   },
+}));
+
+// Mock Sentry
+vi.mock('@sentry/nextjs', () => ({
+  captureException: vi.fn(),
+  captureMessage: vi.fn(),
+  addBreadcrumb: vi.fn(),
 }));
 
 // Mock dependencies
@@ -33,7 +40,7 @@ vi.mock('@/lib/rate-limit', () => ({
   })),
 }));
 
-vi.mock('@/lib/views', () => ({
+vi.mock('@/lib/views.server', () => ({
   getMultiplePostViews: vi.fn(),
   getMultiplePostViews24h: vi.fn(),
   getMultiplePostViewsInRange: vi.fn(),
@@ -49,8 +56,7 @@ vi.mock('@/lib/comments', () => ({
   getPostComments24hBulk: vi.fn(),
 }));
 
-// TODO: API refactored - update mocks to match new implementation
-describe.skip('Analytics API Integration', () => {
+describe('Analytics API Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
@@ -59,12 +65,6 @@ describe.skip('Analytics API Integration', () => {
     vi.stubEnv('REDIS_URL', 'redis://localhost:6379');
     vi.stubEnv('NODE_ENV', 'development');
     vi.stubEnv('VERCEL_ENV', 'preview');
-    // Ensure the redis client global cache is reset
-    // to allow createClient mocks to be invoked per-test
-    // and avoid stale client objects across tests
-
-    // @ts-ignore - intentionally set global test var
-    global.__blogAnalyticsRedisClient = undefined;
 
     // Default mocks: successful responses
     vi.mocked(rateLimit).mockResolvedValue({
@@ -292,56 +292,23 @@ describe.skip('Analytics API Integration', () => {
         expect(Array.isArray(data.posts)).toBe(true);
       });
       it('includes vercel analytics data when present in Redis', async () => {
-        // TODO: Update for Upstash redis singleton
-        // Also override createClient directly to ensure the route's getRedisClient
-        // uses the mocked client implementation.
-        /* vi.mocked(createClient).mockImplementation(() => ({
-            isOpen: false,
-            connect: async () => "OK",
-            get: async (key: string) => {
-              if (key === 'vercel:topPages:daily') {
-                return JSON.stringify([{ path: '/blog/test-post', views: 50 }]);
-              }
-              if (key === 'vercel:topReferrers:daily') {
-                return JSON.stringify([{ referrer: 'google.com', views: 25 }]);
-              }
-              if (key === 'vercel:topDevices:daily') {
-                return JSON.stringify([{ device: 'mobile', views: 30 }]);
-              }
-              if (key === 'vercel:metrics:lastSynced') {
-                return new Date().toISOString();
-              }
-              return null;
-            },
-            quit: async () => "OK",
-            set: async () => "OK",
-          }) as any)
-          */
-        // @ts-ignore - cast as any to satisfy Redis client typings for test
-        global.__blogAnalyticsRedisClient = {
-          isOpen: true,
-          connect: async () => 'OK',
-          get: async (key: string) => {
-            if (key === 'vercel:topPages:daily') {
-              return JSON.stringify([{ path: '/blog/test-post', views: 50 }]);
-            }
-            if (key === 'vercel:topReferrers:daily') {
-              return JSON.stringify([{ referrer: 'google.com', views: 25 }]);
-            }
-            if (key === 'vercel:topDevices:daily') {
-              return JSON.stringify([{ device: 'mobile', views: 30 }]);
-            }
-            if (key === 'vercel:metrics:lastSynced') {
-              return new Date().toISOString();
-            }
-            return null;
-          },
-          quit: async () => 'OK',
-          set: async () => 'OK',
-        } as any;
-        // Also set via globalThis to be safe
-        // @ts-ignore
-        globalThis.__blogAnalyticsRedisClient = global.__blogAnalyticsRedisClient;
+        // Mock redis.get to return vercel analytics data
+        const { redis } = await import('@/mcp/shared/redis-client');
+        vi.mocked(redis.get).mockImplementation(async (key: string) => {
+          if (key === 'vercel:topPages:daily') {
+            return JSON.stringify([{ path: '/blog/test-post', views: 50 }]);
+          }
+          if (key === 'vercel:topReferrers:daily') {
+            return JSON.stringify([{ referrer: 'google.com', views: 25 }]);
+          }
+          if (key === 'vercel:topDevices:daily') {
+            return JSON.stringify([{ device: 'mobile', views: 30 }]);
+          }
+          if (key === 'vercel:metrics:lastSynced') {
+            return new Date().toISOString();
+          }
+          return null;
+        });
 
         const request = new NextRequest('http://localhost:3000/api/analytics', {
           headers: { Authorization: 'Bearer test-api-key-123' },

@@ -2,7 +2,7 @@ name: Test
 
 on:
   push:
-    branches: [main, preview]
+    branches: [main]
     paths:
       - 'src/**'
       - 'e2e/**'
@@ -10,7 +10,7 @@ on:
       - 'package*.json'
       - '.github/workflows/test.yml'
   pull_request:
-    branches: [main, preview]
+    branches: [main]
 
 # Cancel in-progress runs for same workflow on same PR/branch
 concurrency:
@@ -36,11 +36,11 @@ jobs:
         id: scope
         run: |
           RUN_E2E="true"
-          
+
           # Skip E2E if only docs/non-code changes (PR only)
           if [ "${{ github.event_name }}" == "pull_request" ]; then
             CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
-            
+
             # Check if ONLY docs/config files changed
             if echo "$CHANGED_FILES" | grep -q -v -E '\.github|docs|\.md$|README'; then
               RUN_E2E="true"
@@ -52,7 +52,7 @@ jobs:
               fi
             fi
           fi
-          
+
           echo "run_e2e=$RUN_E2E" >> $GITHUB_OUTPUT
   # Setup job - install dependencies once and cache for all downstream jobs
   setup:
@@ -105,13 +105,13 @@ jobs:
           path: node_modules
           key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
           fail-on-cache-miss: true
-      
+
       - name: Lint and typecheck in parallel
         run: |
           npm run lint:ci &
           npm run typecheck &
           wait
-  
+
   unit:
     needs: setup
     name: Unit & Integration Tests
@@ -135,10 +135,10 @@ jobs:
           path: node_modules
           key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
           fail-on-cache-miss: true
-      
+
       - name: Run unit tests with coverage
         run: npm run test:coverage
-      
+
       - name: Upload coverage to Codecov
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/preview'
         uses: codecov/codecov-action@v5
@@ -171,7 +171,7 @@ jobs:
           path: node_modules
           key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
           fail-on-cache-miss: true
-      
+
       # Add Next.js build cache for faster builds with cross-branch fallback
       - name: Cache Next.js build
         uses: actions/cache@v4
@@ -269,12 +269,12 @@ jobs:
         run: |
           echo "## Test Results Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           QUALITY_STATUS="${{ needs.quality.result }}"
           UNIT_STATUS="${{ needs.unit.result }}"
           BUNDLE_STATUS="${{ needs.bundle.result }}"
           E2E_STATUS="${{ needs.e2e.result }}"
-          
+
           echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
           echo "| Code Quality | $QUALITY_STATUS |" >> $GITHUB_STEP_SUMMARY

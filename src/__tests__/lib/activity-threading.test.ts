@@ -522,18 +522,18 @@ describe('ActivityThread Interface', () => {
 
   it('should calculate collapsedCount correctly', () => {
     const post = createBlogPost('Post', 'post', 10);
-    // Create 8 milestones ranging from 9 days ago to 2 days ago
-    // Note: MAX_DAYS_APART is 7, so milestone at 2 days ago (8 days from post) won't thread
-    // This leaves 7 milestones, so collapsedCount = 7 - 5 = 2
-    const replies = Array.from({ length: 8 }, (_, i) =>
-      createMilestone('Post', 'post', (i + 1) * 1000, 9 - i)
+    // Create 7 milestones close to the post (within 6 days, safely inside MAX_DAYS_APART=7)
+    // daysAgo: 10, 9, 8, 7, 6, 5, 4 → diff from post: 0, 1, 2, 3, 4, 5, 6
+    const nearReplies = Array.from({ length: 7 }, (_, i) =>
+      createMilestone('Post', 'post', (i + 1) * 1000, 10 - i)
     );
+    // 1 milestone far from the post (9 days apart, safely outside MAX_DAYS_APART=7)
+    const farReply = createMilestone('Post', 'post', 8000, 1);
 
-    // Blog post first, then all replies
-    const threads = groupActivitiesIntoThreads([post, ...replies]);
+    const threads = groupActivitiesIntoThreads([post, ...nearReplies, farReply]);
 
     expect(threads[0].replies).toHaveLength(5); // MAX_VISIBLE_REPLIES
-    // Only 7 milestones thread due to MAX_DAYS_APART limit
+    // 7 milestones thread (within window), 1 doesn't (9 days apart)
     expect(threads[0].collapsedCount).toBe(2); // 7 - MAX_VISIBLE_REPLIES (5)
   });
 });

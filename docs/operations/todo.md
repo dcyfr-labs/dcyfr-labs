@@ -4,7 +4,7 @@
 
 **Last Updated:** February 2, 2026
 **Status:** Maintenance Mode - Incremental Feature Development
-**Health:** Tests 2973/3087 passing (96.3%), 0 TypeScript errors, 0 ESLint errors
+**Health:** Tests 3008/3087 passing (97.4%), 0 TypeScript errors, 0 ESLint errors
 **Versioning:** Calendar Versioning (YYYY.MM.DD)
 **Archive:** Full history at `docs/operations/private/todo-archive-2026-02-02.md`
 
@@ -95,14 +95,16 @@ Phase 1 (Consolidation) and Phase 2 (Projects) complete. Remaining:
 
 ### Tests Needing Updates (Refactored Code)
 
-- [ ] `github-data.test.ts` - Update mocks for refactored caching
-- [ ] `post-badges.test.ts` - Align with new badge logic
-- [ ] `error-handler.test.ts` - Update for new error handling
-- [ ] `error-scenarios.test.ts` - Update for refactored error handling
-- [ ] `api-analytics.test.ts` - Update mocks for new API
-- [ ] `api-views.test.ts` - Update mocks for new API
-- [ ] `feeds.test.tsx` - Update for refactored feeds page
-- [ ] `activity-threading.test.ts` - Fix project threading logic
+All 8 test files updated and passing (February 5, 2026):
+
+- [x] `github-data.test.ts` - Already passing (mocks current)
+- [x] `post-badges.test.ts` - Already passing (mocks current)
+- [x] `error-handler.test.ts` - Already passing (mocks current)
+- [x] `error-scenarios.test.ts` - Fixed: mock path `@/lib/views` → `@/lib/views.server`, removed `describe.skip`
+- [x] `api-analytics.test.ts` - Fixed: mock path `@/lib/views` → `@/lib/views.server`, updated redis mock to Upstash singleton, removed `describe.skip`
+- [x] `api-views.test.ts` - Already passing (mocks current)
+- [x] `feeds.test.tsx` - Already passing (mocks current)
+- [x] `activity-threading.test.ts` - Fixed: deterministic test data to avoid `MAX_DAYS_APART` boundary flakiness
 
 ### Deferred E2E Tests
 
