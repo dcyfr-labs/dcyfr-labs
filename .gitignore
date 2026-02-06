@@ -243,3 +243,10 @@ $RECYCLE.BIN/
 *.old
 *.orig
 *.save
+*.backup
+*.backup.*
+
+# Report artifacts (generated, not source)
+gitleaks-report*.json
+test-results.json
+reports/prose-*

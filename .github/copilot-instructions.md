@@ -1,7 +1,7 @@
 # AI Contributor Guide
 
 Next.js 16 + React 19 + TypeScript + Tailwind v4 + shadcn/ui + MDX portfolio.
-**Status:** Production ready (1659/1717 tests passing, 96.6%)
+**Status:** Production ready (2973/3087 tests passing, 96.3%)
 
 **Note on test count:** 58 tests are intentionally skipped for strategic reasons (component refactors, CI timing issues, environment-specific tests). These are strategic skips, not failures. See `docs/testing/README.md` for details.
 

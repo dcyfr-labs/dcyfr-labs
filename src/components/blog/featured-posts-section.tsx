@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 
 interface FeaturedPostsSectionProps {
   /** Featured posts to display */
-  posts: Post[];
+  posts: readonly Post[];
 }
 
 /**
@@ -78,7 +78,7 @@ export function FeaturedPostsSection({ posts }: FeaturedPostsSectionProps) {
               {/* Post Title */}
               <h3
                 className={cn(
-                  TYPOGRAPHY.h3.small,
+                  TYPOGRAPHY.h3.standard,
                   'group-hover:text-primary transition-colors line-clamp-2'
                 )}
               >
