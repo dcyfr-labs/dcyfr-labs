@@ -1,4 +1,4 @@
-{/* TLP:CLEAR */}
+<!-- TLP:CLEAR -->
 
 # Operations TODO
 
@@ -12,15 +12,15 @@
 
 ## Current Priorities
 
-| # | Task | Priority | Effort | Status |
-|---|------|----------|--------|--------|
-| 1 | RIVET Blog Post Rollout (Tier 1) | High | 8-12h | Backlog |
-| 2 | GitHub Webhook Deployment | High | 1h | ✅ Complete (Feb 5, 2026) |
-| 3 | Stage 7: Trending Technologies tab | Medium | 4-6h | Backlog |
-| 4 | Social Media Phase 2 Dashboard | Medium | 2-3 weeks | Q2 2026 |
-| 5 | SOC2 Commercial Platform | Medium | 2-4 weeks | Q2 2026 |
-| 6 | API Documentation (Swagger) | Medium | 2-3 weeks | Q2 2026 |
-| 7 | Web Link Library | Medium | 2-3 weeks | Q2 2026 |
+| #   | Task                               | Priority | Effort    | Status                    |
+| --- | ---------------------------------- | -------- | --------- | ------------------------- |
+| 1   | RIVET Blog Post Rollout (Tier 1)   | High     | 8-12h     | Backlog                   |
+| 2   | GitHub Webhook Deployment          | High     | 1h        | ✅ Complete (Feb 5, 2026) |
+| 3   | Stage 7: Trending Technologies tab | Medium   | 4-6h      | Backlog                   |
+| 4   | Social Media Phase 2 Dashboard     | Medium   | 2-3 weeks | Q2 2026                   |
+| 5   | SOC2 Commercial Platform           | Medium   | 2-4 weeks | Q2 2026                   |
+| 6   | API Documentation (Swagger)        | Medium   | 2-3 weeks | Q2 2026                   |
+| 7   | Web Link Library                   | Medium   | 2-3 weeks | Q2 2026                   |
 
 ---
 
@@ -31,6 +31,7 @@
 Apply P0/P1/P2 RIVET components to existing blog posts. Components are built and tested (462 tests passing).
 
 **Tier 1 (Full RIVET - 3 posts):**
+
 - [ ] OWASP Top 10 for Agentic AI (4,911 words) - P1 RoleBasedCTA already applied
 - [ ] CVE-2025-55182 React2Shell (4,211 words)
 - [ ] Hardening a Developer Portfolio (1,389 words)
@@ -42,6 +43,7 @@ Apply P0/P1/P2 RIVET components to existing blog posts. Components are built and
 ### GitHub Webhook Deployment
 
 ✅ **Complete** (February 5, 2026) - Webhook configured and verified.
+
 - [x] `GITHUB_WEBHOOK_SECRET` set in Vercel production (Jan 28)
 - [x] Webhook configured in dcyfr/dcyfr-labs repository (hook ID: 587941184)
   - Payload URL: `https://www.dcyfr.ai/api/github/webhook`
@@ -53,6 +55,7 @@ Apply P0/P1/P2 RIVET components to existing blog posts. Components are built and
 ### Stage 7: Unified Trending Section (Remaining)
 
 Phase 1 (Consolidation) and Phase 2 (Projects) complete. Remaining:
+
 - [ ] **Trending Technologies tab** - Aggregate tech stack mentions, calculate scores, new panel
 - [ ] **Trending Series tab** (low priority) - Series engagement scores, completion rates
 - [ ] **Time Period Selector** (low priority) - Week/Month/All Time toggle
@@ -104,6 +107,7 @@ Phase 1 (Consolidation) and Phase 2 (Projects) complete. Remaining:
 ### Deferred E2E Tests
 
 Low priority - unit/integration tests provide sufficient coverage:
+
 - Heatmap export interactions
 - Virtual scrolling performance (5000+ items)
 - Bookmark management flow
@@ -122,15 +126,18 @@ Low priority - unit/integration tests provide sufficient coverage:
 ## Ongoing Maintenance
 
 ### Weekly
+
 - [ ] Review Dependabot PRs (auto-merge enabled)
 - [ ] Monitor Lighthouse CI reports
 - [ ] Check CodeQL security alerts
 
 ### Monthly
+
 - [ ] Review and archive completed features
 - [ ] Analyze activity feed engagement metrics
 
 ### Quarterly
+
 - [ ] Comprehensive performance audit
 - [ ] Update documentation
 - [ ] Review filter presets
@@ -140,25 +147,31 @@ Low priority - unit/integration tests provide sufficient coverage:
 ## Backlog (Q2+ 2026)
 
 ### SOC2 Commercial Platform
+
 - Current: Phase 3 complete (automated audits, 15 controls)
 - Target: Vanta or Secureframe (50+ controls, full audit support)
 
 ### Social Media Phase 2
+
 - Content management dashboard at `/dev/social-media`
 - Multi-platform composer, scheduling, analytics
 
 ### API Documentation (Swagger/OpenAPI)
+
 - Interactive docs at `/dev/api-docs`
 - Auto-generated from TypeScript types
 
 ### Web Link Library
+
 - Curated link collection at `/links`
 - Categories, submission, curation, discovery
 
 ### Mobile Experience
+
 - Consolidate FAB icons into mobile footer menu
 
 ### Other
+
 - Design system component library
 - Blog comment system
 - Project case study templates
