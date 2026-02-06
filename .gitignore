@@ -123,6 +123,7 @@ archive/
 
 # Claude Desktop configs (local)
 .claude/
+.agent/
 claude_desktop_config.json
 
 # MCP (Model Context Protocol) configs
