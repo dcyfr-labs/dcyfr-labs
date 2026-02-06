@@ -375,7 +375,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
 
       {/* Blog layout with sidebar on desktop */}
       <div
-        className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING} ${MOBILE_SAFE_PADDING}`}
+        className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING} ${MOBILE_SAFE_PADDING} ${SPACING.section}`}
       >
         {/* Featured posts section (full width, only when no filters active) */}
         {shouldShowFeaturedSection && !hasActiveFilters && (

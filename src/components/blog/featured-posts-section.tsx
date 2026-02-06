@@ -39,7 +39,7 @@ export function FeaturedPostsSection({ posts }: FeaturedPostsSectionProps) {
   }
 
   return (
-    <section className={cn('border-b border-border/50', SPACING.section)}>
+    <section className={cn('border-b border-border/50 pb-8 md:pb-10 lg:pb-14', SPACING.section)}>
       <div className="space-y-4 mb-6">
         <div>
           <h2 className={TYPOGRAPHY.h2.standard}>Featured Articles</h2>
