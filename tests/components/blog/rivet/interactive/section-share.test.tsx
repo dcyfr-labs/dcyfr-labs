@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { SectionShare } from '@/components/blog/rivet/interactive/section-share';
 
 // Mock Next.js navigation
@@ -158,84 +158,76 @@ describe('SectionShare', () => {
       });
     });
 
-    it.skip('hides success message after 2 seconds', async () => {
+    it('hides success message after 2 seconds', async () => {
       vi.useFakeTimers();
 
       render(<SectionShare sectionId="test-section" sectionTitle="Test Section" />);
 
       const copyButton = screen.getByLabelText(/copy link to "test section"/i);
-      fireEvent.click(copyButton);
 
-      // Wait for success message to appear
-      await waitFor(() => expect(screen.getByText('Copied!')).toBeInTheDocument(), {
-        timeout: 500,
+      await act(async () => {
+        fireEvent.click(copyButton);
       });
 
-      // Advance timers and check message disappears
-      vi.advanceTimersByTime(2000);
+      expect(screen.getByText('Copied!')).toBeInTheDocument();
 
-      await waitFor(() => expect(screen.queryByText('Copied!')).not.toBeInTheDocument(), {
-        timeout: 500,
+      await act(async () => {
+        vi.advanceTimersByTime(2000);
       });
+
+      expect(screen.queryByText('Copied!')).not.toBeInTheDocument();
 
       vi.useRealTimers();
-    }, 15000); // Increase timeout for this test
+    });
 
-    it.skip('handles clipboard errors gracefully', async () => {
+    it('handles clipboard errors gracefully', async () => {
       const consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {});
       mockWriteText.mockRejectedValueOnce(new Error('Clipboard error'));
 
       render(<SectionShare sectionId="test-section" sectionTitle="Test Section" />);
 
       const copyButton = screen.getByLabelText(/copy link to "test section"/i);
-      fireEvent.click(copyButton);
 
-      await waitFor(
-        () => {
-          expect(consoleWarn).toHaveBeenCalled();
-        },
-        { timeout: 500 }
-      );
+      await act(async () => {
+        fireEvent.click(copyButton);
+      });
 
+      expect(consoleWarn).toHaveBeenCalled();
       // Should not show success message
       expect(screen.queryByText('Copied!')).not.toBeInTheDocument();
-    }, 15000); // Increase timeout for this test
+    });
   });
 
   describe('URL Generation', () => {
-    it.skip('generates correct URL with section hash', async () => {
+    it('generates correct URL with section hash', async () => {
       render(<SectionShare sectionId="asi01-goal-hijack" sectionTitle="Agent Goal Hijack" />);
 
       const copyButton = screen.getByLabelText(/copy link/i);
-      fireEvent.click(copyButton);
 
-      await waitFor(
-        () => {
-          expect(mockWriteText).toHaveBeenCalledWith(
-            'https://example.com/blog/test-post#asi01-goal-hijack'
-          );
-        },
-        { timeout: 500 }
+      await act(async () => {
+        fireEvent.click(copyButton);
+      });
+
+      expect(mockWriteText).toHaveBeenCalledWith(
+        'https://example.com/blog/test-post#asi01-goal-hijack'
       );
-    }, 15000); // Increase timeout
+    });
 
-    it.skip('handles special characters in section ID', async () => {
+    it('handles special characters in section ID', async () => {
       render(
         <SectionShare sectionId="section-with-special-chars-123" sectionTitle="Special Section" />
       );
 
       const copyButton = screen.getByLabelText(/copy link/i);
-      fireEvent.click(copyButton);
 
-      await waitFor(
-        () => {
-          expect(mockWriteText).toHaveBeenCalledWith(
-            'https://example.com/blog/test-post#section-with-special-chars-123'
-          );
-        },
-        { timeout: 500 }
+      await act(async () => {
+        fireEvent.click(copyButton);
+      });
+
+      expect(mockWriteText).toHaveBeenCalledWith(
+        'https://example.com/blog/test-post#section-with-special-chars-123'
       );
-    }, 15000); // Increase timeout
+    });
   });
 
   describe('Accessibility', () => {
@@ -256,21 +248,19 @@ describe('SectionShare', () => {
       expect(screen.getByLabelText(/copy link to "test section"/i)).toBeInTheDocument();
     });
 
-    it.skip('has live region for copy success message', async () => {
+    it('has live region for copy success message', async () => {
       render(<SectionShare sectionId="test-section" sectionTitle="Test Section" />);
 
       const copyButton = screen.getByLabelText(/copy link/i);
-      fireEvent.click(copyButton);
 
-      await waitFor(
-        () => {
-          const message = screen.getByRole('status');
-          expect(message).toHaveTextContent('Copied!');
-          expect(message).toHaveAttribute('aria-live', 'polite');
-        },
-        { timeout: 500 }
-      );
-    }, 15000); // Increase timeout
+      await act(async () => {
+        fireEvent.click(copyButton);
+      });
+
+      const message = screen.getByRole('status');
+      expect(message).toHaveTextContent('Copied!');
+      expect(message).toHaveAttribute('aria-live', 'polite');
+    });
 
     it('has focus visible styles on buttons', () => {
       render(<SectionShare sectionId="test-section" sectionTitle="Test Section" />);
@@ -283,7 +273,7 @@ describe('SectionShare', () => {
   });
 
   describe('Visual States', () => {
-    it.skip('shows checkmark icon when copied', async () => {
+    it('shows checkmark icon when copied', async () => {
       render(<SectionShare sectionId="test-section" sectionTitle="Test Section" />);
 
       const copyButton = screen.getByLabelText(/copy link/i);
@@ -292,30 +282,25 @@ describe('SectionShare', () => {
       const linkIcon = copyButton.querySelector("svg path[d*='M10 13']");
       expect(linkIcon).toBeInTheDocument();
 
-      fireEvent.click(copyButton);
+      await act(async () => {
+        fireEvent.click(copyButton);
+      });
 
-      await waitFor(
-        () => {
-          // Should show checkmark icon after copy
-          const checkIcon = copyButton.querySelector("svg polyline[points*='20 6']");
-          expect(checkIcon).toBeInTheDocument();
-        },
-        { timeout: 500 }
-      );
-    }, 15000); // Increase timeout
+      // Should show checkmark icon after copy
+      const checkIcon = copyButton.querySelector("svg polyline[points*='20 6']");
+      expect(checkIcon).toBeInTheDocument();
+    });
 
-    it.skip('applies success styling when copied', async () => {
+    it('applies success styling when copied', async () => {
       render(<SectionShare sectionId="test-section" sectionTitle="Test Section" />);
 
       const copyButton = screen.getByLabelText(/copy link/i);
-      fireEvent.click(copyButton);
 
-      await waitFor(
-        () => {
-          expect(copyButton.className).toContain('text-success');
-        },
-        { timeout: 500 }
-      );
-    }, 15000); // Increase timeout
+      await act(async () => {
+        fireEvent.click(copyButton);
+      });
+
+      expect(copyButton.className).toContain('text-success');
+    });
   });
 });
