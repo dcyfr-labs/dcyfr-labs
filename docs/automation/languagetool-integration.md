@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 {/_ TLP:CLEAR _/}
 
 # LanguageTool Integration Guide

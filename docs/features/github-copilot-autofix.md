@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 {/_ TLP:CLEAR _/}
 
 # GitHub Copilot Autofix: CodeQL Security Automation

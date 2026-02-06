@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 # dotenvx Integration - Environment Variable Encryption
 
 **Status:** Backlog

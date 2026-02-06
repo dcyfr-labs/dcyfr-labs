@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 # Licensing FAQ
 
 **Frequently Asked Questions about DCYFR Licensing**

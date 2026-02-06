@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 # SBOM Generation Report
 
 **Generated:** 2026-02-01T05:36:00.072Z

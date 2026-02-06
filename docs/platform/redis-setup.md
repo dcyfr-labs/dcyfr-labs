@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 # Redis Setup Guide
 
 Multi-environment Redis configuration for dcyfr-labs using Upstash.

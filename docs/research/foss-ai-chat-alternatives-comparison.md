@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 # FOSS AI Chat Interface Alternatives Comparison
 
 **Research Date:** February 1, 2026

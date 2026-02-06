@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 # Support
 
 Thank you for using this project! Here's how to get help.

@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 # Dev Routes Performance Optimization Summary
 
 ## What Was Changed

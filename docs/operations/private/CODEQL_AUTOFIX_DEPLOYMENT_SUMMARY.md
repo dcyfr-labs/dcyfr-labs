@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 # CodeQL Autofix Automation - Deployment Summary
 
 **Status:** ✅ **DEPLOYED TO PRODUCTION**

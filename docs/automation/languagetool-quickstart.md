@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 # LanguageTool Integration - Quick Start
 
 ## Setup (5 minutes)

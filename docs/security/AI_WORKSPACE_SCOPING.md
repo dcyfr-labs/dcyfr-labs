@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 # AI Workspace Scoping - Security & Privacy Enhancement
 
 **Date:** January 31, 2026

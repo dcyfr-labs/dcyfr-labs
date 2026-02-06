@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 # GitHub Copilot Autofix Implementation Summary
 
 ## 📦 Files Created & Modified

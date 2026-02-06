@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 # PromptIntel Threat Intelligence Integration Plan
 
 **Created:** February 2, 2026

@@ -922,20 +922,12 @@
   a[class*="hover:underline"] {
     text-decoration-skip-ink: none !important;
     text-underline-offset: 4px;
-    contain: layout style;
   }
 
   /* Target all underline utilities explicitly */
   .underline,
   [class*="underline"] {
     text-decoration-skip-ink: none !important;
-  }
-
-  /* Hardware acceleration for interactive elements */
-  button,
-  a {
-    transform: translateZ(0);
-    will-change: auto;
   }
 
   /* Optimize hover states */

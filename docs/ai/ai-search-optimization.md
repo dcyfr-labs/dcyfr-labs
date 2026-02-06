@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 # AI Search Optimization (AEO) Implementation Guide
 
 **Version:** 1.0

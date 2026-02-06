@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 # Production Cache Corruption Fix (2026-01-31)
 
 **Status:** ✅ Fixed

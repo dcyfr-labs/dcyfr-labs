@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 # Production Metrics Sync System
 
 **Status:** ✅ Active

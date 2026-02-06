@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 # Automation System Guide
 
 {/_ TLP:CLEAR _/}

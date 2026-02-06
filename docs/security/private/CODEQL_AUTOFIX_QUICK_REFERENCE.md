@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 # GitHub Copilot Autofix - Quick Reference Card
 
 ## 🚀 Quick Commands

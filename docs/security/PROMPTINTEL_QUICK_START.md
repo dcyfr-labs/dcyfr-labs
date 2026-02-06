@@ -1,3 +1,4 @@
+<!-- TLP:CLEAR -->
 # PromptIntel Quick Start Guide
 
 **For Developers:** Quick reference for using PromptIntel threat intelligence in your code
