@@ -14,8 +14,12 @@ export default defineConfig({
     setupFiles: ['./tests/vitest.setup.ts'],
     // Performance optimization: Use thread pool for parallel execution
     pool: 'threads',
-    minThreads: 2,
-    maxThreads: 8,
+    poolOptions: {
+      threads: {
+        minThreads: 2,
+        maxThreads: 8,
+      },
+    },
     // Force NODE_ENV=test regardless of shell environment
     // Vitest only sets this when not already defined; force it here
     // so production code that branches on NODE_ENV works correctly in tests.
