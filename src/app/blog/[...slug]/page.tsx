@@ -1,31 +1,27 @@
-import type { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
-import { Suspense } from "react";
-import { posts, postsBySeries } from "@/data/posts";
-import { getPostByAnySlug } from "@/lib/blog.server";
-import { SITE_URL, AUTHOR_NAME } from "@/lib/site-config";
-import "katex/dist/katex.min.css"; // KaTeX styles for math rendering in blog posts
-import { extractHeadings } from "@/lib/toc";
-import { headers } from "next/headers";
-import { getArticleData } from "@/lib/article";
+import type { Metadata } from 'next';
+import { notFound, redirect } from 'next/navigation';
+import { Suspense } from 'react';
+import { posts, postsBySeries } from '@/data/posts';
+import { getPostByAnySlug } from '@/lib/blog.server';
+import { SITE_URL, AUTHOR_NAME } from '@/lib/site-config';
+import 'katex/dist/katex.min.css'; // KaTeX styles for math rendering in blog posts
+import { extractHeadings } from '@/lib/toc';
+import { headers } from 'next/headers';
+import { getArticleData } from '@/lib/article';
 import {
   CONTAINER_WIDTHS,
   CONTAINER_PADDING,
   CONTAINER_VERTICAL_PADDING,
   SPACING,
   TYPOGRAPHY,
-} from "@/lib/design-tokens";
+} from '@/lib/design-tokens';
 import {
   createArticlePageMetadata,
   createArticleSchema,
   createBreadcrumbSchema,
   getJsonLdScriptProps,
-} from "@/lib/metadata";
-import {
-  ArticleLayout,
-  ArticleHeader,
-  ArticleFooter,
-} from "@/components/layouts";
+} from '@/lib/metadata';
+import { ArticleLayout, ArticleHeader, ArticleFooter } from '@/components/layouts';
 import {
   SeriesNavigation,
   PostHeroImage,
@@ -33,26 +29,22 @@ import {
   SidebarVisibilityProvider,
   HideWhenSidebarVisible,
   AnchorExpansionWrapper,
-} from "@/components/blog";
+} from '@/components/blog';
 import {
   ViewCountDisplay,
   ViewCountSkeleton,
   BlogPostSidebarWrapper,
   getHottestPostSlug,
-} from "@/components/blog/server";
+} from '@/components/blog/server';
 import {
   MDX,
   FigureProvider,
   RelatedPosts,
   SmoothScrollToHash,
   TableOfContents,
-} from "@/components/common";
-import { Breadcrumbs } from "@/components/navigation";
-import {
-  ReadingProgress,
-  LazyGiscusComments,
-  ViewTracker,
-} from "@/components/features";
+} from '@/components/common';
+import { Breadcrumbs } from '@/components/navigation';
+import { ReadingProgress, LazyGiscusComments, ViewTracker } from '@/components/features';
 
 // Enable Incremental Static Regeneration with 1 hour revalidation
 export const revalidate = 3600; // 1 hour in seconds
@@ -88,7 +80,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string[] }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const slugString = slug.join("/");
+  const slugString = slug.join('/');
   const result = getPostByAnySlug(slugString, posts);
 
   if (!result) return {};
@@ -98,7 +90,7 @@ export async function generateMetadata({
   // Use hero image for OG if available
   let heroImageUrl: string | undefined;
   if (post.image?.url) {
-    heroImageUrl = post.image.url.startsWith("/")
+    heroImageUrl = post.image.url.startsWith('/')
       ? `${SITE_URL}${post.image.url}`
       : `${SITE_URL}/${post.image.url}`;
   }
@@ -118,13 +110,9 @@ export async function generateMetadata({
   });
 }
 
-export default async function PostPage({
-  params,
-}: {
-  params: Promise<{ slug: string[] }>;
-}) {
+export default async function PostPage({ params }: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await params;
-  const slugString = slug.join("/");
+  const slugString = slug.join('/');
   const result = getPostByAnySlug(slugString, posts);
 
   if (!result) {
@@ -139,15 +127,15 @@ export default async function PostPage({
   }
 
   // Get nonce from proxy for CSP
-  const nonce = (await headers()).get("x-nonce") || "";
+  const nonce = (await headers()).get('x-nonce') || '';
 
   // Use Article Pattern for navigation and related posts
   const articleData = getArticleData({
     item: post,
     allItems: posts,
-    relatedFields: ["tags"],
-    idField: "slug",
-    dateField: "publishedAt",
+    relatedFields: ['tags'],
+    idField: 'slug',
+    dateField: 'publishedAt',
     maxRelated: 3,
   });
 
@@ -159,9 +147,7 @@ export default async function PostPage({
     .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1))[0];
 
   // Get series posts if this post is part of a series
-  const seriesPosts = post.series
-    ? (postsBySeries[post.series.name] ?? [])
-    : [];
+  const seriesPosts = post.series ? (postsBySeries[post.series.name] ?? []) : [];
 
   // Extract headings for table of contents
   const headings = extractHeadings(post.body);
@@ -179,15 +165,15 @@ export default async function PostPage({
   });
 
   const breadcrumbSchema = createBreadcrumbSchema([
-    { name: "Home", url: SITE_URL },
-    { name: "Blog", url: `${SITE_URL}/blog` },
+    { name: 'Home', url: SITE_URL },
+    { name: 'Blog', url: `${SITE_URL}/blog` },
     { name: post.title, url: `${SITE_URL}/blog/${post.slug}` },
   ]);
 
   // Combine schemas in a graph
   const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [articleSchema, breadcrumbSchema],
+    '@context': 'https://schema.org',
+    '@graph': [articleSchema, breadcrumbSchema],
   };
 
   return (
@@ -226,10 +212,10 @@ export default async function PostPage({
         className={`container ${CONTAINER_WIDTHS.archive} mx-auto ${CONTAINER_PADDING} pt-6 md:pt-8 lg:pt-10 pb-8 md:pb-12`}
       >
         <div
-          className={`grid lg:grid-cols-[280px_1fr] lg:items-start ${SPACING.blogLayout}`}
+          className={`grid min-w-0 lg:grid-cols-[280px_1fr] lg:items-start ${SPACING.blogLayout}`}
         >
           {/* Left Sidebar (desktop only) - Metadata + TOC (TOC sticky) */}
-           <div className="hidden lg:block space-y-4">
+          <div className="hidden lg:block space-y-4">
             <BlogPostSidebarWrapper
               headings={headings}
               slug={post.slug}
@@ -238,9 +224,7 @@ export default async function PostPage({
               postTitle={post.title}
               metadata={{
                 publishedAt: new Date(post.publishedAt),
-                updatedAt: post.updatedAt
-                  ? new Date(post.updatedAt)
-                  : undefined,
+                updatedAt: post.updatedAt ? new Date(post.updatedAt) : undefined,
                 readingTime: post.readingTime.text,
                 tags: post.tags,
                 category: post.category,
@@ -261,14 +245,11 @@ export default async function PostPage({
           {/* Main Content */}
           <SidebarVisibilityProvider>
             <div className="min-w-0">
-              <ArticleLayout
-                useProseWidth={false}
-                className="py-0! max-w-none px-0"
-              >
+              <ArticleLayout useProseWidth={false} className="py-0! max-w-none px-0">
                 <Breadcrumbs
                   items={[
-                    { label: "Home", href: "/" },
-                    { label: "Blog", href: "/blog" },
+                    { label: 'Home', href: '/' },
+                    { label: 'Blog', href: '/blog' },
                     { label: post.title },
                   ]}
                 />
@@ -279,14 +260,14 @@ export default async function PostPage({
                   backgroundImage={
                     post.image
                       ? {
-                          url: post.image.url.startsWith("/")
+                          url: post.image.url.startsWith('/')
                             ? post.image.url
                             : `/${post.image.url}`,
                           alt: post.image.alt || `Hero image for ${post.title}`,
                           position:
-                            (post.image.position === "background"
-                              ? "center"
-                              : post.image.position) || "center",
+                            (post.image.position === 'background'
+                              ? 'center'
+                              : post.image.position) || 'center',
                           caption: post.image.caption,
                           credit: post.image.credit,
                           priority: post.featured || false, // Prioritize hero image loading for featured posts
@@ -299,14 +280,11 @@ export default async function PostPage({
                   <HideWhenSidebarVisible>
                     <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mt-4">
                       <time dateTime={post.publishedAt}>
-                        {new Date(post.publishedAt).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          }
-                        )}
+                        {new Date(post.publishedAt).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
                       </time>
                       <span aria-hidden="true">·</span>
                       <span>{post.readingTime.text}</span>
@@ -319,10 +297,7 @@ export default async function PostPage({
 
                 {/* Series navigation */}
                 {post.series && seriesPosts.length > 0 && (
-                  <SeriesNavigation
-                    currentPost={post}
-                    seriesPosts={seriesPosts}
-                  />
+                  <SeriesNavigation currentPost={post} seriesPosts={seriesPosts} />
                 )}
 
                 <div className="prose my-8">
@@ -333,10 +308,7 @@ export default async function PostPage({
 
                 <ArticleFooter>
                   {/* Related posts section */}
-                  <RelatedPosts
-                    posts={articleData.relatedItems}
-                    currentSlug={post.slug}
-                  />
+                  <RelatedPosts posts={articleData.relatedItems} currentSlug={post.slug} />
                 </ArticleFooter>
 
                 {/* Comments section - hidden for draft posts */}

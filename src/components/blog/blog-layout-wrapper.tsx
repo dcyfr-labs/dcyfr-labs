@@ -1,22 +1,20 @@
-"use client";
+'use client';
 
-import type { ReactNode } from "react";
-import { useState, createContext, useContext } from "react";
-import { BlogKeyboardProvider } from "@/components/blog";
-import { SPACING } from "@/lib/design-tokens";
+import type { ReactNode } from 'react';
+import { useState, createContext, useContext } from 'react';
+import { BlogKeyboardProvider } from '@/components/blog';
+import { SPACING } from '@/lib/design-tokens';
 
 interface BlogLayoutContextType {
   sidebarVisible: boolean;
 }
 
-const BlogLayoutContext = createContext<BlogLayoutContextType | undefined>(
-  undefined
-);
+const BlogLayoutContext = createContext<BlogLayoutContextType | undefined>(undefined);
 
 export function useBlogLayout() {
   const context = useContext(BlogLayoutContext);
   if (!context) {
-    throw new Error("useBlogLayout must be used within BlogLayoutWrapper");
+    throw new Error('useBlogLayout must be used within BlogLayoutWrapper');
   }
   return context;
 }
@@ -50,7 +48,7 @@ export function BlogLayoutWrapper({ children }: BlogLayoutWrapperProps) {
     <BlogLayoutContext.Provider value={{ sidebarVisible }}>
       <BlogKeyboardProvider onToggleSidebar={handleToggleSidebar}>
         <div
-          className={`grid ${SPACING.blogLayout} items-start ${sidebarVisible ? "lg:grid-cols-[280px_1fr]" : "lg:grid-cols-1"}`}
+          className={`grid ${SPACING.blogLayout} items-start min-w-0 ${sidebarVisible ? 'lg:grid-cols-[280px_1fr]' : 'lg:grid-cols-1'}`}
         >
           {children}
         </div>

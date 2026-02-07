@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { cn } from "@/lib/utils";
-import { SPACING } from "@/lib/design-tokens";
+import * as React from 'react';
+import { cn } from '@/lib/utils';
+import { SPACING } from '@/lib/design-tokens';
 
 type BlogPostLayoutWrapperProps = {
   children: React.ReactNode;
@@ -31,17 +31,14 @@ type BlogPostLayoutWrapperProps = {
  * </BlogPostLayoutWrapper>
  * ```
  */
-export function BlogPostLayoutWrapper({
-  children,
-  className,
-}: BlogPostLayoutWrapperProps) {
+export function BlogPostLayoutWrapper({ children, className }: BlogPostLayoutWrapperProps) {
   return (
     <div
       className={cn(
-        "grid",
+        'grid min-w-0',
         SPACING.blogLayout,
         // Two-column grid on medium screens: Sidebar+TOC + Content
-        "lg:grid-cols-[240px_1fr]",
+        'lg:grid-cols-[240px_1fr]',
         // Three-column grid on larger screens: Sidebar+TOC (240px) + Content (1fr) + Right Rail (240px)
         // "xl:grid-cols-[240px_1fr_240px]",
         className

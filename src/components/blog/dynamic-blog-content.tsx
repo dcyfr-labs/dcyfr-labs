@@ -128,7 +128,7 @@ async function DynamicBlogContentImpl({
     process.env.NEXT_PUBLIC_FEATURE_HORIZONTAL_FILTER_CHIPS === 'true';
 
   return (
-    <div id="blog-posts" className="w-full">
+    <div id="blog-posts" className="w-full min-w-0">
       {/* Horizontal filter chips (mobile only) - sticky at top, full width */}
       {showHorizontalFilterChips && (
         <div className="lg:hidden mb-4">
