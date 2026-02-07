@@ -57,12 +57,12 @@ This PR addresses a security vulnerability detected by GitHub CodeQL. The fix:
 
 ✅ Eliminates the security issue without suppressing alerts
 ✅ Maintains all existing functionality
-✅ Follows DCYFR security standards and patterns
+✅ Follows DCYFR Labs security standards and patterns
 ✅ Includes automated testing and validation
 
 ### CodeQL Reference
 - 🔗 [View in Code Scanning Dashboard](https://github.com/${REPO_OWNER}/${REPO_NAME}/security/code-scanning/${ALERT_NUMBER})
-- 📚 [DCYFR Security Guidelines](.github/agents/patterns/CODEQL_SUPPRESSIONS.md)
+- 📚 [DCYFR Labs Security Guidelines](.github/agents/patterns/CODEQL_SUPPRESSIONS.md)
 
 ### Validation Checklist
 - [ ] TypeScript compiles without errors
@@ -74,7 +74,7 @@ This PR addresses a security vulnerability detected by GitHub CodeQL. The fix:
 
 ### Related Issues
 - Fixes security alert from CodeQL analysis
-- Part of DCYFR automated security hardening
+- Part of DCYFR Labs automated security hardening
 
 **Created by:** GitHub Actions + Copilot Autofix
 **Branch:** \`${BRANCH_NAME}\`
@@ -82,10 +82,10 @@ This PR addresses a security vulnerability detected by GitHub CodeQL. The fix:
 ---
 
 ### Security Review Notes
-This fix was generated using GitHub Copilot Autofix and follows the DCYFR "Fix > Suppress" philosophy. All changes prioritize security over convenience, with inline comments explaining the security rationale.
+This fix was generated using GitHub Copilot Autofix and follows the DCYFR Labs "Fix > Suppress" philosophy. All changes prioritize security over convenience, with inline comments explaining the security rationale.
 
 For questions about the fix approach, see:
-- [DCYFR Security Policy](.github/agents/patterns/CODEQL_SUPPRESSIONS.md)
+- [DCYFR Labs Security Policy](.github/agents/patterns/CODEQL_SUPPRESSIONS.md)
 - [Logging Security Best Practices](docs/ai/logging-security.md)
 `;
 }
@@ -136,7 +136,7 @@ async function createPullRequest() {
         env: { ...process.env, GITHUB_TOKEN },
         encoding: 'utf-8',
         shell: false, // Critical: disable shell interpretation
-      },
+      }
     );
 
     // Extract PR number and URL from output

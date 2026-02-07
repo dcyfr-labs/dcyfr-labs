@@ -29,12 +29,7 @@ export default async function PrivacyPage() {
     <PageLayout>
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
 
-      <PageHero
-        title={pageTitle}
-        description={pageDescription}
-        variant="standard"
-        align="center"
-      />
+      <PageHero title={pageTitle} description={pageDescription} variant="standard" align="center" />
 
       <article
         className={`mx-auto ${CONTAINER_WIDTHS.prose} ${CONTAINER_PADDING} ${SPACING.section}`}
