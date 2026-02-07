@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { ChevronDown } from "lucide-react";
-import { NAVIGATION } from "@/lib/navigation-config";
-import { useDropdown } from "@/hooks/use-dropdown";
-import { cn } from "@/lib/utils";
-import { SEMANTIC_COLORS } from "@/lib/design-tokens";
+import Link from 'next/link';
+import { Badge } from '@/components/ui/badge';
+import { ChevronDown } from 'lucide-react';
+import { NAVIGATION } from '@/lib/navigation-config';
+import { useDropdown } from '@/hooks/use-dropdown';
+import { cn } from '@/lib/utils';
+import { SEMANTIC_COLORS, Z_INDEX } from '@/lib/design-tokens';
 
 export default function DevToolsDropdown() {
   const dropdown = useDropdown();
@@ -17,7 +17,7 @@ export default function DevToolsDropdown() {
       <Badge
         variant="outline"
         className={cn(
-          "cursor-pointer transition-colors gap-1 px-2.5 hover:opacity-90 text-[clamp(0.875rem,1vw+0.75rem,1rem)]"
+          'cursor-pointer transition-colors gap-1 px-2.5 hover:opacity-90 text-[clamp(0.875rem,1vw+0.75rem,1rem)]'
         )}
         onClick={dropdown.toggle}
         role="button"
@@ -25,7 +25,7 @@ export default function DevToolsDropdown() {
         aria-expanded={dropdown.isOpen}
         tabIndex={0}
         onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
+          if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             dropdown.toggle();
           }
@@ -33,14 +33,14 @@ export default function DevToolsDropdown() {
       >
         Dev Tools
         <ChevronDown
-          className={`w-[clamp(0.75rem,0.85vw+0.65rem,0.875rem)] h-[clamp(0.75rem,0.85vw+0.65rem,0.875rem)] transition-transform ${dropdown.isOpen ? "rotate-180" : ""}`}
+          className={`w-[clamp(0.75rem,0.85vw+0.65rem,0.875rem)] h-[clamp(0.75rem,0.85vw+0.65rem,0.875rem)] transition-transform ${dropdown.isOpen ? 'rotate-180' : ''}`}
         />
       </Badge>
 
       {dropdown.isOpen && (
         <div
           {...dropdown.contentProps}
-          className="absolute right-0 mt-2 w-48 rounded-md border bg-card p-2 shadow-lg z-50"
+          className={`absolute right-0 mt-2 w-48 rounded-md border bg-card p-2 shadow-lg ${Z_INDEX.dropdown}`}
         >
           <nav className="flex flex-col">
             {NAVIGATION.devTools.map((item) => (

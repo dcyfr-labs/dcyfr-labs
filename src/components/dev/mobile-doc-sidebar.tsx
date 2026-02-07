@@ -1,10 +1,11 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { DocSidebar } from "@/components/dev";
-import { Menu, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import type { DocFile } from "@/lib/docs";
+import React, { useState } from 'react';
+import { DocSidebar } from '@/components/dev';
+import { Menu, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Z_INDEX } from '@/lib/design-tokens';
+import type { DocFile } from '@/lib/docs';
 
 interface MobileDocSidebarProps {
   docs: DocFile[];
@@ -19,7 +20,7 @@ export function MobileDocSidebar({ docs, currentSlug }: MobileDocSidebarProps) {
       {/* Mobile menu button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed top-20 left-4 z-50 p-2 rounded-md bg-background border border-border shadow-md"
+        className={`lg:hidden fixed top-20 left-4 ${Z_INDEX.dropdown} p-2 rounded-md bg-background border border-border shadow-md`}
         aria-label="Toggle documentation menu"
       >
         {isOpen ? <X size={20} /> : <Menu size={20} />}

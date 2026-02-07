@@ -1,22 +1,16 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { List, Link2, Search, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
-import type { TocHeading } from "@/lib/toc";
-import { trackToCClick } from "@/lib/analytics";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { toastSuccess } from "@/lib/toast";
-import { HOVER_EFFECTS, TYPOGRAPHY, BORDERS, SHADOWS } from "@/lib/design-tokens";
+import * as React from 'react';
+import { List, Link2, Search, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import type { TocHeading } from '@/lib/toc';
+import { trackToCClick } from '@/lib/analytics';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { toastSuccess } from '@/lib/toast';
+import { HOVER_EFFECTS, TYPOGRAPHY, BORDERS, SHADOWS, Z_INDEX } from '@/lib/design-tokens';
 
 /**
  * Props for the TableOfContents component
@@ -86,21 +80,27 @@ type TableOfContentsProps = {
  * - Cleanup on unmount prevents memory leaks from observer
  * - Sheet auto-closes on navigation for better mobile UX
  */
-export function TableOfContents({ headings, slug, hideFAB = false, externalOpen, onOpenChange }: TableOfContentsProps) {
-  const [activeId, setActiveId] = React.useState<string>("");
+export function TableOfContents({
+  headings,
+  slug,
+  hideFAB = false,
+  externalOpen,
+  onOpenChange,
+}: TableOfContentsProps) {
+  const [activeId, setActiveId] = React.useState<string>('');
   const [isExpanded, setIsExpanded] = React.useState(() => {
     // Restore from localStorage
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("toc-expanded");
-      return saved !== null ? saved === "true" : true;
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('toc-expanded');
+      return saved !== null ? saved === 'true' : true;
     }
     return true;
   });
   const [internalOpen, setInternalOpen] = React.useState(false);
   const [isVisible, setIsVisible] = React.useState(false);
-  const [searchQuery, setSearchQuery] = React.useState("");
+  const [searchQuery, setSearchQuery] = React.useState('');
   const [focusedIndex, setFocusedIndex] = React.useState<number>(-1);
-  
+
   // Use external control if provided, otherwise use internal state
   const isSheetOpen = externalOpen !== undefined ? externalOpen : internalOpen;
   const setIsSheetOpen = (open: boolean) => {
@@ -113,8 +113,8 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
 
   // Persist expanded state to localStorage
   React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("toc-expanded", String(isExpanded));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('toc-expanded', String(isExpanded));
     }
   }, [isExpanded]);
 
@@ -125,13 +125,13 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
       setIsVisible(window.scrollY > 400);
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   React.useEffect(() => {
     // Only run on client
-    if (typeof window === "undefined" || headings.length === 0) return;
+    if (typeof window === 'undefined' || headings.length === 0) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -144,7 +144,7 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
         }
       },
       {
-        rootMargin: "-80px 0px -80% 0px", // Activate when heading is near top
+        rootMargin: '-80px 0px -80% 0px', // Activate when heading is near top
         threshold: 1.0,
       }
     );
@@ -166,43 +166,41 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
 
   // Filter headings based on search query
   const filteredHeadings = searchQuery
-    ? headings.filter((h) =>
-        h.text.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+    ? headings.filter((h) => h.text.toLowerCase().includes(searchQuery.toLowerCase()))
     : headings;
 
   const handleCopyLink = async (e: React.MouseEvent, id: string, text: string) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     const url = `${window.location.origin}${window.location.pathname}#${id}`;
-    
+
     try {
       await navigator.clipboard.writeText(url);
       toastSuccess(`Link copied: ${text}`);
-      
+
       if (slug) {
         // Track copy action in analytics
         trackToCClick(slug, text, 0); // level 0 indicates copy action
       }
     } catch (err) {
-      console.error("Failed to copy link:", err);
+      console.error('Failed to copy link:', err);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, currentIndex: number) => {
     const maxIndex = filteredHeadings.length - 1;
-    
+
     switch (e.key) {
-      case "ArrowDown":
+      case 'ArrowDown':
         e.preventDefault();
         setFocusedIndex((prev) => Math.min(prev + 1, maxIndex));
         break;
-      case "ArrowUp":
+      case 'ArrowUp':
         e.preventDefault();
         setFocusedIndex((prev) => Math.max(prev - 1, 0));
         break;
-      case "Enter":
+      case 'Enter':
         if (focusedIndex >= 0) {
           e.preventDefault();
           const heading = filteredHeadings[focusedIndex];
@@ -212,7 +210,7 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
           }
         }
         break;
-      case "Escape":
+      case 'Escape':
         setIsSheetOpen(false);
         break;
     }
@@ -220,16 +218,16 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string, heading: TocHeading) => {
     e.preventDefault();
-    
+
     // Track analytics if slug is provided
     if (slug) {
       trackToCClick(slug, heading.text, heading.level);
     }
-    
+
     const element = document.getElementById(id);
     if (element) {
       const top = element.getBoundingClientRect().top + window.scrollY - 80;
-      window.scrollTo({ top, behavior: "smooth" });
+      window.scrollTo({ top, behavior: 'smooth' });
       setActiveId(id);
       // Delay sheet close to allow scroll animation to complete (~1000ms)
       // This ensures the user can see the target section scroll into view
@@ -238,7 +236,11 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
   };
 
   // Shared TOC list component
-  const TocList = ({ scrollContainerRef }: { scrollContainerRef?: React.RefObject<HTMLDivElement | null> }) => {
+  const TocList = ({
+    scrollContainerRef,
+  }: {
+    scrollContainerRef?: React.RefObject<HTMLDivElement | null>;
+  }) => {
     const [activeIndex, setActiveIndex] = React.useState<number | null>(null);
     const listRef = React.useRef<HTMLUListElement>(null);
     const itemRefs = React.useRef<Map<string, HTMLLIElement>>(new Map());
@@ -254,25 +256,26 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
     React.useEffect(() => {
       if (activeId && itemRefs.current.has(activeId)) {
         const activeElement = itemRefs.current.get(activeId);
-        const scrollContainer = scrollContainerRef?.current || activeElement?.closest('.overflow-y-auto');
-        
+        const scrollContainer =
+          scrollContainerRef?.current || activeElement?.closest('.overflow-y-auto');
+
         if (activeElement && scrollContainer instanceof HTMLElement) {
           // Use requestAnimationFrame for smoother rendering
           requestAnimationFrame(() => {
             const containerRect = scrollContainer.getBoundingClientRect();
             const elementRect = activeElement.getBoundingClientRect();
-            
+
             // Check if element is not fully visible
             const isAboveView = elementRect.top < containerRect.top + 20; // 20px buffer
             const isBelowView = elementRect.bottom > containerRect.bottom - 20; // 20px buffer
-            
+
             if (isAboveView || isBelowView) {
               // Calculate smooth scroll position
               const elementTop = activeElement.offsetTop;
               const containerHeight = scrollContainer.clientHeight;
               const elementHeight = activeElement.clientHeight;
-              const scrollTo = elementTop - (containerHeight / 2) + (elementHeight / 2);
-              
+              const scrollTo = elementTop - containerHeight / 2 + elementHeight / 2;
+
               scrollContainer.scrollTo({
                 top: scrollTo,
                 behavior: 'smooth',
@@ -293,17 +296,17 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
             className="absolute left-0 -ml-0.5 w-0.5 bg-primary"
             initial={false}
             animate={{
-              top: `${activeIndex * 44 + (activeIndex * 8)}px`, // item height (44px) + gap (8px)
-              height: "44px",
+              top: `${activeIndex * 44 + activeIndex * 8}px`, // item height (44px) + gap (8px)
+              height: '44px',
             }}
             transition={{
-              type: "spring",
+              type: 'spring',
               stiffness: 300,
               damping: 30,
             }}
           />
         )}
-        
+
         {filteredHeadings.map((heading, index) => {
           const isActive = activeId === heading.id;
           const isH3 = heading.level === 3;
@@ -318,12 +321,12 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
             >
               <div
                 className={cn(
-                  "group flex items-center justify-between py-2 border-l-2 -ml-0.5 transition-colors min-h-11",
-                  isH3 ? "pl-8" : "pl-4",
+                  'group flex items-center justify-between py-2 border-l-2 -ml-0.5 transition-colors min-h-11',
+                  isH3 ? 'pl-8' : 'pl-4',
                   isActive
-                    ? "border-transparent text-primary font-medium"
-                    : "border-transparent text-muted-foreground",
-                  isFocused && "ring-2 ring-primary ring-inset"
+                    ? 'border-transparent text-primary font-medium'
+                    : 'border-transparent text-muted-foreground',
+                  isFocused && 'ring-2 ring-primary ring-inset'
                 )}
                 onKeyDown={(e) => handleKeyDown(e, index)}
                 tabIndex={0}
@@ -332,8 +335,8 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
                   href={`#${heading.id}`}
                   onClick={(e) => handleClick(e, heading.id, heading)}
                   className={cn(
-                    "flex-1 cursor-pointer transition-colors",
-                    !isActive && "hover:text-foreground"
+                    'flex-1 cursor-pointer transition-colors',
+                    !isActive && 'hover:text-foreground'
                   )}
                 >
                   {heading.text}
@@ -341,8 +344,8 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
                 <button
                   onClick={(e) => handleCopyLink(e, heading.id, heading.text)}
                   className={cn(
-                    "opacity-0 group-hover:opacity-100 focus:opacity-100 p-1 mr-2 transition-opacity",
-                    "hover:text-foreground focus:ring-2 focus:ring-primary rounded"
+                    'opacity-0 group-hover:opacity-100 focus:opacity-100 p-1 mr-2 transition-opacity',
+                    'hover:text-foreground focus:ring-2 focus:ring-primary rounded'
                   )}
                   aria-label={`Copy link to ${heading.text}`}
                   title="Copy link"
@@ -358,18 +361,27 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
   };
 
   // Desktop ToC component with ref
-  const DesktopToC = ({ isExpanded, setIsExpanded }: { isExpanded: boolean; setIsExpanded: (v: boolean) => void }) => {
+  const DesktopToC = ({
+    isExpanded,
+    setIsExpanded,
+  }: {
+    isExpanded: boolean;
+    setIsExpanded: (v: boolean) => void;
+  }) => {
     const desktopScrollRef = React.useRef<HTMLDivElement>(null);
-    
+
     return (
       <nav
-        className="fixed top-24 right-4 hidden lg:block w-56 max-h-[calc(100vh-12rem)] z-30 bg-background border rounded-lg p-4 shadow-md"
+        className={`fixed top-24 right-4 hidden lg:block w-56 max-h-[calc(100vh-12rem)] ${Z_INDEX.sticky} bg-background border rounded-lg p-4 shadow-md`}
         aria-label="Table of contents"
       >
         <div className="space-y-2">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className={cn("flex w-full items-center justify-between text-foreground hover:text-primary transition-colors", TYPOGRAPHY.label.small)}
+            className={cn(
+              'flex w-full items-center justify-between text-foreground hover:text-primary transition-colors',
+              TYPOGRAPHY.label.small
+            )}
             aria-expanded={isExpanded}
           >
             <span>On this page</span>
@@ -380,7 +392,7 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
               viewBox="0 0 24 24"
               aria-hidden="true"
               animate={{ rotate: isExpanded ? 180 : 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
             >
               <path
                 strokeLinecap="round"
@@ -390,14 +402,14 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
               />
             </motion.svg>
           </button>
-          
+
           <AnimatePresence initial={false}>
             {isExpanded && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
+                animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
                 className="relative"
               >
                 {/* Search filter for long TOCs (15+ headings) */}
@@ -413,7 +425,7 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
                     />
                     {searchQuery && (
                       <button
-                        onClick={() => setSearchQuery("")}
+                        onClick={() => setSearchQuery('')}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                         aria-label="Clear search"
                       >
@@ -422,7 +434,10 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
                     )}
                   </div>
                 )}
-                <div ref={desktopScrollRef} className="max-h-[calc(100vh-20rem)] overflow-y-auto scrollbar-hide">
+                <div
+                  ref={desktopScrollRef}
+                  className="max-h-[calc(100vh-20rem)] overflow-y-auto scrollbar-hide"
+                >
                   <TocList scrollContainerRef={desktopScrollRef} />
                 </div>
                 {/* Bottom gradient fade */}
@@ -444,19 +459,15 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
             <SheetTrigger asChild>
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
-                animate={
-                  isVisible
-                    ? { opacity: 1, scale: 1 }
-                    : { opacity: 0, scale: 0.8 }
-                }
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="md:hidden fixed bottom-44 right-4 sm:right-6 z-40"
+                animate={isVisible ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                className={`md:hidden fixed bottom-44 right-4 sm:right-6 ${Z_INDEX.header}`}
               >
                 <Button
                   size="icon"
                   className={`h-14 w-14 ${BORDERS.circle} ${SHADOWS.lg} ${HOVER_EFFECTS.button}`}
                   aria-label="Open table of contents"
-                  style={{ pointerEvents: isVisible ? "auto" : "none" }}
+                  style={{ pointerEvents: isVisible ? 'auto' : 'none' }}
                 >
                   <List className="h-6 w-6" />
                 </Button>
@@ -480,7 +491,7 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
                 />
                 {searchQuery && (
                   <button
-                    onClick={() => setSearchQuery("")}
+                    onClick={() => setSearchQuery('')}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                     aria-label="Clear search"
                   >
@@ -491,8 +502,8 @@ export function TableOfContents({ headings, slug, hideFAB = false, externalOpen,
             )}
             <nav
               className={cn(
-                "overflow-y-auto",
-                headings.length >= 15 ? "mt-2 h-[calc(80vh-10rem)]" : "mt-6 h-[calc(80vh-5rem)]"
+                'overflow-y-auto',
+                headings.length >= 15 ? 'mt-2 h-[calc(80vh-10rem)]' : 'mt-6 h-[calc(80vh-5rem)]'
               )}
               aria-label="Table of contents"
             >

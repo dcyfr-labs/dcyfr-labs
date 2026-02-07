@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { useRef, useMemo, useEffect } from "react";
-import { useVirtualizer } from "@tanstack/react-virtual";
-import { ArrowUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { TYPOGRAPHY, ANIMATION } from "@/lib/design-tokens";
-import { useScrollRestoration } from "@/hooks/useScrollRestoration";
-import { ActivityItem } from "./ActivityItem";
-import { ActivitySkeleton } from "./ActivitySkeleton";
+import { useRef, useMemo, useEffect } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { ArrowUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { TYPOGRAPHY, ANIMATION, Z_INDEX } from '@/lib/design-tokens';
+import { useScrollRestoration } from '@/hooks/useScrollRestoration';
+import { ActivityItem } from './ActivityItem';
+import { ActivitySkeleton } from './ActivitySkeleton';
 import {
   type ActivityItem as ActivityItemType,
   type ActivityVariant,
   type TimeGroup,
   groupActivitiesByTime,
   TIME_GROUP_LABELS,
-} from "@/lib/activity";
+} from '@/lib/activity';
 
 // ============================================================================
 // TYPES
@@ -54,7 +54,7 @@ interface VirtualActivityFeedProps {
 }
 
 type VirtualItem = {
-  type: "header" | "activity";
+  type: 'header' | 'activity';
   id: string;
   group?: TimeGroup;
   activity?: ActivityItemType;
@@ -65,12 +65,7 @@ type VirtualItem = {
 // CONSTANTS
 // ============================================================================
 
-const TIME_GROUP_ORDER: TimeGroup[] = [
-  "today",
-  "this-week",
-  "this-month",
-  "older",
-];
+const TIME_GROUP_ORDER: TimeGroup[] = ['today', 'this-week', 'this-month', 'older'];
 
 const SCROLL_TO_TOP_THRESHOLD = 500; // Show button after scrolling 500px
 const INFINITE_SCROLL_THRESHOLD = 0.9; // Load more at 90% scroll
@@ -106,11 +101,11 @@ const INFINITE_SCROLL_THRESHOLD = 0.9; // Load more at 90% scroll
  */
 export function VirtualActivityFeed({
   items,
-  variant = "timeline",
+  variant = 'timeline',
   showGroups = false,
   isLoading = false,
   className,
-  emptyMessage = "No recent activity",
+  emptyMessage = 'No recent activity',
   enableInfiniteScroll = false,
   onLoadMore,
   isLoadingMore = false,
@@ -120,22 +115,24 @@ export function VirtualActivityFeed({
   const scrollingRef = useRef<boolean>(false);
 
   // Scroll position restoration
-  useScrollRestoration("virtual-activity-feed", parentRef);
+  useScrollRestoration('virtual-activity-feed', parentRef);
 
   // Prepare virtual items (flatten groups + activities)
   const virtualItems = useMemo(() => {
     if (items.length === 0) {
       return [];
     }
-    
+
     if (!showGroups) {
       // Simple list without groups
-      return items.map((activity, index): VirtualItem => ({
-        type: "activity",
-        id: activity.id,
-        activity,
-        isLast: index === items.length - 1,
-      }));
+      return items.map(
+        (activity, index): VirtualItem => ({
+          type: 'activity',
+          id: activity.id,
+          activity,
+          isLast: index === items.length - 1,
+        })
+      );
     }
 
     // Grouped list with headers
@@ -148,7 +145,7 @@ export function VirtualActivityFeed({
 
       // Add header
       result.push({
-        type: "header",
+        type: 'header',
         id: `header-${group}`,
         group,
       });
@@ -156,7 +153,7 @@ export function VirtualActivityFeed({
       // Add activities
       groupItems.forEach((activity, index) => {
         result.push({
-          type: "activity",
+          type: 'activity',
           id: `${group}-${activity.id}`,
           group,
           activity,
@@ -171,26 +168,26 @@ export function VirtualActivityFeed({
   // Estimate item size based on type
   const estimateSize = (index: number) => {
     const item = virtualItems[index];
-    
-    if (item.type === "header") {
+
+    if (item.type === 'header') {
       return 60; // Group header height
     }
 
     // Activity item height varies by type and variant
-    if (variant === "compact") {
+    if (variant === 'compact') {
       return 60; // Compact items
     }
 
-    if (variant === "minimal") {
+    if (variant === 'minimal') {
       return 40; // Minimal items
     }
 
     // Standard/timeline variant - estimate by source
     const source = item.activity?.source;
-    if (source === "blog") {
+    if (source === 'blog') {
       return 250; // Blog posts have more content
     }
-    if (source === "project") {
+    if (source === 'project') {
       return 200; // Projects are medium
     }
     return 150; // Default for milestones, etc.
@@ -204,7 +201,7 @@ export function VirtualActivityFeed({
     estimateSize,
     overscan: 5, // Render 5 items above/below viewport
     measureElement:
-      typeof window !== "undefined" && navigator.userAgent.indexOf("Firefox") === -1
+      typeof window !== 'undefined' && navigator.userAgent.indexOf('Firefox') === -1
         ? (element) => element?.getBoundingClientRect().height
         : undefined,
   });
@@ -234,7 +231,7 @@ export function VirtualActivityFeed({
   const scrollToTop = () => {
     parentRef.current?.scrollTo({
       top: 0,
-      behavior: "smooth",
+      behavior: 'smooth',
     });
   };
 
@@ -242,13 +239,13 @@ export function VirtualActivityFeed({
   const showScrollToTop = (virtualizer.scrollOffset ?? 0) > SCROLL_TO_TOP_THRESHOLD;
 
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn('relative', className)}>
       {/* Scrollable container */}
       <div
         ref={parentRef}
         className="overflow-auto max-h-[80vh]"
         style={{
-          contain: "strict",
+          contain: 'strict',
         }}
       >
         {virtualItems.length === 0 && !isLoading ? (
@@ -259,60 +256,60 @@ export function VirtualActivityFeed({
           <div
             style={{
               height: `${virtualizer.getTotalSize()}px`,
-              width: "100%",
-              position: "relative",
+              width: '100%',
+              position: 'relative',
             }}
           >
             {virtualRows.map((virtualRow) => {
-            const item = virtualItems[virtualRow.index];
+              const item = virtualItems[virtualRow.index];
 
-            return (
-              <div
-                key={virtualRow.key}
-                data-index={virtualRow.index}
-                ref={virtualizer.measureElement}
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  transform: `translateY(${virtualRow.start}px)`,
-                }}
-              >
-                {item.type === "header" ? (
-                  <div className="py-2 sticky top-0 bg-background/95 backdrop-blur z-10">
-                    <h3
-                      className={cn(
-                        TYPOGRAPHY.h3.standard,
-                        "text-muted-foreground uppercase tracking-wider"
-                      )}
-                    >
-                      {TIME_GROUP_LABELS[item.group!]}
-                    </h3>
-                  </div>
-                ) : (
-                  <div className={variant === "timeline" ? "relative" : ""}>
-                    <ActivityItem
-                      activity={item.activity!}
-                      variant={variant}
-                      isLast={item.isLast}
-                      showConnector={variant === "timeline"}
-                    />
-                  </div>
-                )}
-              </div>
-            );
-          })}
+              return (
+                <div
+                  key={virtualRow.key}
+                  data-index={virtualRow.index}
+                  ref={virtualizer.measureElement}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    transform: `translateY(${virtualRow.start}px)`,
+                  }}
+                >
+                  {item.type === 'header' ? (
+                    <div className="py-2 sticky top-0 bg-background/95 backdrop-blur z-10">
+                      <h3
+                        className={cn(
+                          TYPOGRAPHY.h3.standard,
+                          'text-muted-foreground uppercase tracking-wider'
+                        )}
+                      >
+                        {TIME_GROUP_LABELS[item.group!]}
+                      </h3>
+                    </div>
+                  ) : (
+                    <div className={variant === 'timeline' ? 'relative' : ''}>
+                      <ActivityItem
+                        activity={item.activity!}
+                        variant={variant}
+                        isLast={item.isLast}
+                        showConnector={variant === 'timeline'}
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
 
-          {/* Loading more indicator */}
-          {isLoadingMore && (
-            <div className="py-8 text-center">
-              <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
-                Loading more...
+            {/* Loading more indicator */}
+            {isLoadingMore && (
+              <div className="py-8 text-center">
+                <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
+                  Loading more...
+                </div>
               </div>
-            </div>
-          )}
+            )}
           </div>
         )}
       </div>
@@ -322,9 +319,7 @@ export function VirtualActivityFeed({
         <Button
           onClick={scrollToTop}
           size="icon"
-          className={cn(
-            "fixed bottom-6 right-6 rounded-full shadow-lg z-50"
-          )}
+          className={cn(`fixed bottom-6 right-6 rounded-full shadow-lg ${Z_INDEX.dropdown}`)}
           aria-label="Scroll to top"
         >
           <ArrowUp className="h-4 w-4" />

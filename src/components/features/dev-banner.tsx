@@ -11,7 +11,7 @@
  */
 import { useState, useLayoutEffect } from 'react';
 import { Alert } from '@/components/common';
-import { CONTAINER_WIDTHS, CONTAINER_PADDING, ANIMATION } from '@/lib/design-tokens';
+import { CONTAINER_WIDTHS, CONTAINER_PADDING, ANIMATION, Z_INDEX } from '@/lib/design-tokens';
 import { cn } from '@/lib/utils';
 
 const STORAGE_KEY = 'dev-banner-dismissed';
@@ -72,7 +72,7 @@ export function DevBanner() {
       role="region"
       aria-label="Dev Banner"
       className={cn(
-        'fixed top-0 left-0 right-0 w-full z-50 bg-background border-b transition-all',
+        `fixed top-0 left-0 right-0 w-full ${Z_INDEX.dropdown} bg-background border-b transition-all`,
         ANIMATION.duration.normal,
         isAnimating
           ? 'opacity-0 -translate-y-full pointer-events-none'

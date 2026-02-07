@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono, Alegreya } from 'next/font/google';
 import './globals.css';
-import '@/styles/print.css';
-import '@/styles/katex.css';
+// print.css and katex.css are imported via globals.css @import
 import {
   ThemeProvider,
   PageTransitionProvider,

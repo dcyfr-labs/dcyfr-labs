@@ -5,23 +5,20 @@
  * for viewing all available shortcuts.
  */
 
-"use client";
+'use client';
 
-import * as React from "react";
-import {
-  useShortcutIndicator,
-  getAvailableShortcuts,
-} from "@/hooks/use-navigation-shortcuts";
-import { useKeyboardShortcut } from "@/hooks/use-keyboard-shortcut";
+import * as React from 'react';
+import { useShortcutIndicator, getAvailableShortcuts } from '@/hooks/use-navigation-shortcuts';
+import { useKeyboardShortcut } from '@/hooks/use-keyboard-shortcut';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
-import { ANIMATION, TYPOGRAPHY } from "@/lib/design-tokens";
+} from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
+import { ANIMATION, TYPOGRAPHY, Z_INDEX } from '@/lib/design-tokens';
 
 /**
  * Small indicator that appears when 'g' is pressed
@@ -35,22 +32,22 @@ export function KeyboardShortcutIndicator() {
   return (
     <div
       className={cn(
-        "fixed bottom-4 right-4 z-50",
-        "bg-card border rounded-lg shadow-lg",
-        "px-4 py-3"
+        `fixed bottom-4 right-4 ${Z_INDEX.dropdown}`,
+        'bg-card border rounded-lg shadow-lg',
+        'px-4 py-3'
       )}
       role="status"
       aria-live="polite"
     >
-      <div className={cn(TYPOGRAPHY.label.small, "mb-2")}>Press a key:</div>
+      <div className={cn(TYPOGRAPHY.label.small, 'mb-2')}>Press a key:</div>
       <div className="flex gap-2 flex-wrap">
         {availableKeys.map((key) => (
           <kbd
             key={key}
             className={cn(
-              "px-2 py-1 text-xs font-mono",
-              "bg-muted rounded border",
-              "min-w-6 text-center"
+              'px-2 py-1 text-xs font-mono',
+              'bg-muted rounded border',
+              'min-w-6 text-center'
             )}
           >
             {key}
@@ -72,10 +69,10 @@ export function KeyboardShortcutsHelp() {
   // Register '?' shortcut to open help
   useKeyboardShortcut([
     {
-      key: "?",
+      key: '?',
       callback: () => setOpen(true),
       preventInInput: true,
-      description: "Show keyboard shortcuts",
+      description: 'Show keyboard shortcuts',
     },
   ]);
 
@@ -84,9 +81,7 @@ export function KeyboardShortcutsHelp() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Keyboard Shortcuts</DialogTitle>
-          <DialogDescription>
-            Navigate quickly using keyboard shortcuts
-          </DialogDescription>
+          <DialogDescription>Navigate quickly using keyboard shortcuts</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 mt-4">
@@ -95,7 +90,7 @@ export function KeyboardShortcutsHelp() {
             <h3
               className={cn(
                 TYPOGRAPHY.label.small,
-                "mb-3 text-muted-foreground uppercase tracking-wide"
+                'mb-3 text-muted-foreground uppercase tracking-wide'
               )}
             >
               Navigation
@@ -111,15 +106,13 @@ export function KeyboardShortcutsHelp() {
                     {shortcut.keys.map((key, index) => (
                       <React.Fragment key={`${key}-${index}`}>
                         {index > 0 && (
-                          <span className="text-muted-foreground text-xs self-center">
-                            then
-                          </span>
+                          <span className="text-muted-foreground text-xs self-center">then</span>
                         )}
                         <kbd
                           className={cn(
-                            "px-2 py-1 text-xs font-mono",
-                            "bg-muted rounded border",
-                            "min-w-7 text-center"
+                            'px-2 py-1 text-xs font-mono',
+                            'bg-muted rounded border',
+                            'min-w-7 text-center'
                           )}
                         >
                           {key.toUpperCase()}
@@ -137,7 +130,7 @@ export function KeyboardShortcutsHelp() {
             <h3
               className={cn(
                 TYPOGRAPHY.label.small,
-                "mb-3 text-muted-foreground uppercase tracking-wide"
+                'mb-3 text-muted-foreground uppercase tracking-wide'
               )}
             >
               General
@@ -147,9 +140,9 @@ export function KeyboardShortcutsHelp() {
                 <span className="text-sm">Show keyboard shortcuts</span>
                 <kbd
                   className={cn(
-                    "px-2 py-1 text-xs font-mono",
-                    "bg-muted rounded border",
-                    "min-w-7 text-center"
+                    'px-2 py-1 text-xs font-mono',
+                    'bg-muted rounded border',
+                    'min-w-7 text-center'
                   )}
                 >
                   ?
@@ -157,12 +150,7 @@ export function KeyboardShortcutsHelp() {
               </div>
               <div className="flex items-center justify-between py-2 border-b">
                 <span className="text-sm">Close dialogs</span>
-                <kbd
-                  className={cn(
-                    "px-2 py-1 text-xs font-mono",
-                    "bg-muted rounded border"
-                  )}
-                >
+                <kbd className={cn('px-2 py-1 text-xs font-mono', 'bg-muted rounded border')}>
                   ESC
                 </kbd>
               </div>
@@ -172,10 +160,8 @@ export function KeyboardShortcutsHelp() {
           {/* Pro Tip */}
           <div className="bg-muted/50 rounded-lg p-4">
             <p className="text-sm text-muted-foreground">
-              <strong className="text-foreground">Pro tip:</strong> Press{" "}
-              <kbd className="px-1.5 py-0.5 text-xs font-mono bg-muted rounded border mx-1">
-                G
-              </kbd>
+              <strong className="text-foreground">Pro tip:</strong> Press{' '}
+              <kbd className="px-1.5 py-0.5 text-xs font-mono bg-muted rounded border mx-1">G</kbd>
               to see all available navigation shortcuts
             </p>
           </div>

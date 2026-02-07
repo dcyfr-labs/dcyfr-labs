@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { useState, useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
-import { LayoutGrid, Rows3, X, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
-import { PhotoCard, type Photo } from "./photo-card";
-import { IMAGE_PLACEHOLDER, TOUCH_TARGET } from "@/lib/design-tokens";
+import { useState, useCallback } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
+import { LayoutGrid, Rows3, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
+import { PhotoCard, type Photo } from './photo-card';
+import { IMAGE_PLACEHOLDER, TOUCH_TARGET, Z_INDEX } from '@/lib/design-tokens';
 
 // Storage key for layout preference
-const STORAGE_KEY = "gallery-layout-preference";
+const STORAGE_KEY = 'gallery-layout-preference';
 
-type GalleryLayout = "masonry" | "uniform";
+type GalleryLayout = 'masonry' | 'uniform';
 
 interface PhotoGridProps {
   /** Array of photos to display */
@@ -45,27 +45,23 @@ interface PhotoGridProps {
  * />
  * ```
  */
-export function PhotoGrid({
-  photos,
-  columns = 3,
-  basePath = "",
-}: PhotoGridProps) {
+export function PhotoGrid({ photos, columns = 3, basePath = '' }: PhotoGridProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   // Get initial layout from URL or localStorage
-  const layoutParam = searchParams.get("layout") as GalleryLayout | null;
+  const layoutParam = searchParams.get('layout') as GalleryLayout | null;
   const getInitialLayout = (): GalleryLayout => {
-    if (layoutParam === "masonry" || layoutParam === "uniform") {
+    if (layoutParam === 'masonry' || layoutParam === 'uniform') {
       return layoutParam;
     }
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved === "masonry" || saved === "uniform") {
+      if (saved === 'masonry' || saved === 'uniform') {
         return saved;
       }
     }
-    return "uniform"; // Default
+    return 'uniform'; // Default
   };
 
   const [layout, setLayout] = useState<GalleryLayout>(getInitialLayout);
@@ -77,13 +73,13 @@ export function PhotoGrid({
     setLayout(newLayout);
 
     // Save to localStorage
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       localStorage.setItem(STORAGE_KEY, newLayout);
     }
 
     // Update URL params
     const params = new URLSearchParams(searchParams.toString());
-    params.set("layout", newLayout);
+    params.set('layout', newLayout);
     router.push(`${basePath}?${params.toString()}`, { scroll: false });
   };
 
@@ -108,13 +104,13 @@ export function PhotoGrid({
   // Keyboard navigation for lightbox
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === "ArrowLeft") {
+      if (e.key === 'ArrowLeft') {
         e.preventDefault();
         goToPrevious();
-      } else if (e.key === "ArrowRight") {
+      } else if (e.key === 'ArrowRight') {
         e.preventDefault();
         goToNext();
-      } else if (e.key === "Escape") {
+      } else if (e.key === 'Escape') {
         closeLightbox();
       }
     },
@@ -125,15 +121,15 @@ export function PhotoGrid({
 
   // Column class mapping
   const columnClasses = {
-    2: "columns-1 sm:columns-2",
-    3: "columns-1 sm:columns-2 lg:columns-3",
-    4: "columns-1 sm:columns-2 lg:columns-3 xl:columns-4",
+    2: 'columns-1 sm:columns-2',
+    3: 'columns-1 sm:columns-2 lg:columns-3',
+    4: 'columns-1 sm:columns-2 lg:columns-3 xl:columns-4',
   };
 
   const uniformGridClasses = {
-    2: "grid-cols-1 sm:grid-cols-2",
-    3: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
-    4: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
+    2: 'grid-cols-1 sm:grid-cols-2',
+    3: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
+    4: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
   };
 
   return (
@@ -146,22 +142,22 @@ export function PhotoGrid({
           aria-label="Gallery layout options"
         >
           <Button
-            variant={layout === "uniform" ? "secondary" : "ghost"}
+            variant={layout === 'uniform' ? 'secondary' : 'ghost'}
             size="sm"
-            onClick={() => handleLayoutChange("uniform")}
+            onClick={() => handleLayoutChange('uniform')}
             className="h-9 w-9 p-0 hover:bg-accent hover:text-accent-foreground transition-colors"
             aria-label="Uniform grid view"
-            aria-pressed={layout === "uniform"}
+            aria-pressed={layout === 'uniform'}
           >
             <LayoutGrid className="h-4 w-4" />
           </Button>
           <Button
-            variant={layout === "masonry" ? "secondary" : "ghost"}
+            variant={layout === 'masonry' ? 'secondary' : 'ghost'}
             size="sm"
-            onClick={() => handleLayoutChange("masonry")}
+            onClick={() => handleLayoutChange('masonry')}
             className="h-9 w-9 p-0 hover:bg-accent hover:text-accent-foreground transition-colors"
             aria-label="Masonry view"
-            aria-pressed={layout === "masonry"}
+            aria-pressed={layout === 'masonry'}
           >
             <Rows3 className="h-4 w-4" />
           </Button>
@@ -169,9 +165,9 @@ export function PhotoGrid({
       </div>
 
       {/* Photo Grid */}
-      {layout === "masonry" ? (
+      {layout === 'masonry' ? (
         // Masonry layout using CSS columns
-        <div className={cn(columnClasses[columns], "gap-4")}>
+        <div className={cn(columnClasses[columns], 'gap-4')}>
           {photos.map((photo, index) => (
             <div key={index} className="mb-4 break-inside-avoid">
               <PhotoCard
@@ -186,7 +182,7 @@ export function PhotoGrid({
         </div>
       ) : (
         // Uniform grid layout
-        <div className={cn("grid gap-4", uniformGridClasses[columns])}>
+        <div className={cn('grid gap-4', uniformGridClasses[columns])}>
           {photos.map((photo, index) => (
             <PhotoCard
               key={index}
@@ -207,9 +203,7 @@ export function PhotoGrid({
           showCloseButton={false}
           onKeyDown={handleKeyDown}
         >
-          <DialogTitle className="sr-only">
-            {currentPhoto?.alt || "Photo viewer"}
-          </DialogTitle>
+          <DialogTitle className="sr-only">{currentPhoto?.alt || 'Photo viewer'}</DialogTitle>
 
           {/* Close button */}
           <Button
@@ -217,7 +211,7 @@ export function PhotoGrid({
             size="icon"
             onClick={closeLightbox}
             className={cn(
-              "absolute top-4 right-4 z-50 text-white hover:bg-white/10",
+              `absolute top-4 right-4 ${Z_INDEX.dropdown} text-white hover:bg-white/10`,
               TOUCH_TARGET.close
             )}
             aria-label="Close lightbox"
@@ -232,7 +226,7 @@ export function PhotoGrid({
                 variant="ghost"
                 size="icon"
                 onClick={goToPrevious}
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-50 text-white hover:bg-white/10 h-12 w-12"
+                className={`absolute left-4 top-1/2 -translate-y-1/2 ${Z_INDEX.dropdown} text-white hover:bg-white/10 h-12 w-12`}
                 aria-label="Previous photo"
               >
                 <ChevronLeft className="h-8 w-8" />
@@ -241,7 +235,7 @@ export function PhotoGrid({
                 variant="ghost"
                 size="icon"
                 onClick={goToNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-50 text-white hover:bg-white/10 h-12 w-12"
+                className={`absolute right-4 top-1/2 -translate-y-1/2 ${Z_INDEX.dropdown} text-white hover:bg-white/10 h-12 w-12`}
                 aria-label="Next photo"
               >
                 <ChevronRight className="h-8 w-8" />

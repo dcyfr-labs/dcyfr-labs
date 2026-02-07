@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { motion, useScroll, useSpring } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { useEffect, useState } from 'react';
+import { motion, useScroll, useSpring } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import { Z_INDEX } from '@/lib/design-tokens';
 
 // ============================================================================
 // TYPES
@@ -50,7 +51,7 @@ export function ScrollProgressIndicator({
 
   // Show indicator only when scrolled down
   useEffect(() => {
-    const unsubscribe = scrollYProgress.on("change", (latest) => {
+    const unsubscribe = scrollYProgress.on('change', (latest) => {
       setIsVisible(latest > 0.01);
     });
 
@@ -60,7 +61,7 @@ export function ScrollProgressIndicator({
   return (
     <motion.div
       className={cn(
-        "fixed top-0 left-0 right-0 h-1 z-50 origin-left bg-primary",
+        `fixed top-0 left-0 right-0 h-1 ${Z_INDEX.dropdown} origin-left bg-primary`,
         className
       )}
       style={{ scaleX }}

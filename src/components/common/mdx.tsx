@@ -79,6 +79,7 @@ import {
   PROGRESSIVE_TEXT,
   FONT_CONTRAST,
   ANIMATION,
+  SCROLL_OFFSET,
 } from '@/lib/design-tokens';
 import { cn } from '@/lib/utils';
 import {
@@ -340,23 +341,38 @@ const components: NonNullable<MDXRemoteProps['components']> = {
   h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h1
       {...props}
-      className={`${TYPOGRAPHY.h1.mdx} mt-8 first:mt-0 scroll-mt-20 group [&_a]:no-underline`}
+      className={`${TYPOGRAPHY.h1.mdx} mt-8 first:mt-0 ${SCROLL_OFFSET.heading} group [&_a]:no-underline`}
     />
   ),
   h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h2 {...props} className={`${TYPOGRAPHY.h2.mdx} mt-8 scroll-mt-20 group [&_a]:no-underline`} />
+    <h2
+      {...props}
+      className={`${TYPOGRAPHY.h2.mdx} mt-8 ${SCROLL_OFFSET.heading} group [&_a]:no-underline`}
+    />
   ),
   h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h3 {...props} className={`${TYPOGRAPHY.h3.mdx} mt-6 scroll-mt-20 group [&_a]:no-underline`} />
+    <h3
+      {...props}
+      className={`${TYPOGRAPHY.h3.mdx} mt-6 ${SCROLL_OFFSET.heading} group [&_a]:no-underline`}
+    />
   ),
   h4: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h4 {...props} className={`${TYPOGRAPHY.h4.mdx} mt-5 scroll-mt-20 group [&_a]:no-underline`} />
+    <h4
+      {...props}
+      className={`${TYPOGRAPHY.h4.mdx} mt-5 ${SCROLL_OFFSET.heading} group [&_a]:no-underline`}
+    />
   ),
   h5: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h5 {...props} className={`${TYPOGRAPHY.h5.mdx} mt-4 scroll-mt-20 group [&_a]:no-underline`} />
+    <h5
+      {...props}
+      className={`${TYPOGRAPHY.h5.mdx} mt-4 ${SCROLL_OFFSET.heading} group [&_a]:no-underline`}
+    />
   ),
   h6: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h6 {...props} className={`${TYPOGRAPHY.h6.mdx} mt-4 scroll-mt-20 group [&_a]:no-underline`} />
+    <h6
+      {...props}
+      className={`${TYPOGRAPHY.h6.mdx} mt-4 ${SCROLL_OFFSET.heading} group [&_a]:no-underline`}
+    />
   ),
   p: MDXParagraphComponent,
   blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => (

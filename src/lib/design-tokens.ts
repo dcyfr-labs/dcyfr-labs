@@ -1955,6 +1955,117 @@ export const BUTTON_SIZES = {
 } as const;
 
 // ============================================================================
+// Z-INDEX HIERARCHY
+// ============================================================================
+
+/**
+ * Centralized z-index tokens for consistent stacking context management.
+ *
+ * Layers are organized from lowest to highest:
+ * - background: Below normal content (decorative elements)
+ * - content: Normal content layer (cards, sections)
+ * - elevated: Slightly raised elements (sticky sidebars, TOC)
+ * - sticky: Sticky headers, progress bars
+ * - header: Fixed site header and navigation
+ * - dropdown: Dropdown menus, popovers, tooltips
+ * - overlay: Modal backdrops, image overlays
+ * - modal: Modal dialogs, command palette
+ * - toast: Toast notifications (highest layer)
+ *
+ * @example
+ * ```tsx
+ * import { Z_INDEX } from '@/lib/design-tokens';
+ *
+ * <header className={`fixed top-0 ${Z_INDEX.header}`}>
+ *   <nav>...</nav>
+ * </header>
+ *
+ * <div className={`fixed inset-0 ${Z_INDEX.overlay}`}>
+ *   <Dialog className={Z_INDEX.modal}>...</Dialog>
+ * </div>
+ * ```
+ */
+export const Z_INDEX = {
+  /** Background decorative elements (z-[-1]) */
+  background: 'z-[-1]',
+  /** Normal content stacking (z-0) */
+  content: 'z-0',
+  /** Slightly elevated elements like sticky sidebars, TOC (z-10) */
+  elevated: 'z-10',
+  /** Sticky elements like reading progress, sub-navigation (z-30) */
+  sticky: 'z-30',
+  /** Fixed site header, bottom nav, FABs (z-40) */
+  header: 'z-40',
+  /** Dropdowns, popovers, tooltips above navigation (z-50) */
+  dropdown: 'z-50',
+  /** Modal backdrops, image lightbox overlays (z-60) */
+  overlay: 'z-60',
+  /** Modal dialogs, command palette, sheets (z-70) */
+  modal: 'z-70',
+  /** Toast notifications - always on top (z-80) */
+  toast: 'z-80',
+} as const;
+
+// ============================================================================
+// FOCUS RING PATTERNS
+// ============================================================================
+
+/**
+ * Standardized focus ring patterns for accessible keyboard navigation.
+ * All interactive elements should use these tokens for consistent focus indication.
+ *
+ * Uses `focus-visible` (not `focus`) to only show rings on keyboard navigation,
+ * avoiding unwanted rings on mouse clicks.
+ *
+ * @example
+ * ```tsx
+ * import { FOCUS_RING } from '@/lib/design-tokens';
+ *
+ * <button className={`px-4 py-2 ${FOCUS_RING.default}`}>Click me</button>
+ * <a className={FOCUS_RING.within}>Link with focus ring</a>
+ * <input className={FOCUS_RING.inset} />
+ * ```
+ */
+export const FOCUS_RING = {
+  /** Standard focus ring - use on buttons, links, interactive cards
+   * Ring: 2px, color: semantic ring color, offset: 2px */
+  default:
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+  /** Inset focus ring (no offset) - use on inputs, textareas, selects */
+  inset: 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+  /** Focus-within ring - use on wrapper elements that contain focusable children */
+  within:
+    'focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
+  /** Subtle focus ring (1px) - use in dense UI like tables, lists */
+  subtle:
+    'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1',
+  /** Inverted focus ring for dark backgrounds - use on overlays, dark cards */
+  inverted:
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/90',
+} as const;
+
+// ============================================================================
+// SCROLL OFFSET
+// ============================================================================
+
+/**
+ * Scroll offset tokens for proper anchor scroll positioning under fixed headers.
+ * Uses a CSS variable `--header-height` for consistency with the actual header height.
+ *
+ * @example
+ * ```tsx
+ * import { SCROLL_OFFSET } from '@/lib/design-tokens';
+ * <h2 id="section" className={SCROLL_OFFSET.heading}>Section Title</h2>
+ * ```
+ */
+export const SCROLL_OFFSET = {
+  /** Scroll margin for headings/anchors under fixed header (80px = h-20) */
+  heading: 'scroll-mt-20',
+  /** Scroll margin for sections with extra breathing room (96px = h-24) */
+  section: 'scroll-mt-24',
+} as const;
+
+// ============================================================================
 // PAGE LAYOUT PATTERNS
 // ============================================================================
 

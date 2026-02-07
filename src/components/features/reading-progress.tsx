@@ -1,6 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
+import { Z_INDEX } from '@/lib/design-tokens';
 
 /**
  * Reading progress indicator that shows how far the user has scrolled through the page.
@@ -22,16 +23,14 @@ export function ReadingProgress() {
 
       // Calculate percentage (0-100)
       const totalScrollable = documentHeight - windowHeight;
-      const scrollPercentage = totalScrollable > 0 
-        ? (scrollTop / totalScrollable) * 100 
-        : 0;
+      const scrollPercentage = totalScrollable > 0 ? (scrollTop / totalScrollable) * 100 : 0;
 
       const clampedProgress = Math.min(100, Math.max(0, scrollPercentage));
 
       // Update transform instead of width for better performance
       // scaleX is GPU-accelerated and doesn't trigger layout recalculation
       progressRef.current.style.transform = `scaleX(${clampedProgress / 100})`;
-      progressRef.current.setAttribute("aria-valuenow", Math.round(clampedProgress).toString());
+      progressRef.current.setAttribute('aria-valuenow', Math.round(clampedProgress).toString());
     };
 
     const scheduleUpdate = () => {
@@ -47,14 +46,14 @@ export function ReadingProgress() {
     updateProgress();
 
     // Update on scroll with passive listener for better performance
-    window.addEventListener("scroll", scheduleUpdate, { passive: true });
-    
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+
     // Update on resize in case content height changes
-    window.addEventListener("resize", scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate, { passive: true });
 
     return () => {
-      window.removeEventListener("scroll", scheduleUpdate);
-      window.removeEventListener("resize", scheduleUpdate);
+      window.removeEventListener('scroll', scheduleUpdate);
+      window.removeEventListener('resize', scheduleUpdate);
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current);
       }
@@ -64,10 +63,10 @@ export function ReadingProgress() {
   return (
     <div
       ref={progressRef}
-      className="fixed top-0 left-0 right-0 z-50 h-1 bg-gradient-to-r from-primary via-primary/80 to-primary pointer-events-none origin-left"
+      className={`fixed top-0 left-0 right-0 ${Z_INDEX.dropdown} h-1 bg-gradient-to-r from-primary via-primary/80 to-primary pointer-events-none origin-left`}
       style={{
-        transform: "scaleX(0)",
-        willChange: "transform",
+        transform: 'scaleX(0)',
+        willChange: 'transform',
       }}
       role="progressbar"
       aria-valuenow={0}

@@ -1,14 +1,15 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
+import React, { useState, useEffect } from 'react';
+import { cn } from '@/lib/utils';
 import {
   SPACING,
   SPACING_VALUES,
   TYPOGRAPHY,
   SEMANTIC_COLORS,
   ANIMATION,
-} from "@/lib/design-tokens";
+  SCROLL_OFFSET,
+} from '@/lib/design-tokens';
 
 /**
  * CollapsibleSection - Expandable content with LocalStorage persistence and anchor links
@@ -54,7 +55,7 @@ interface CollapsibleSectionProps {
   reducedSpacing?: boolean;
 }
 
-const STORAGE_KEY = "dcyfr-collapsible-sections";
+const STORAGE_KEY = 'dcyfr-collapsible-sections';
 
 export function CollapsibleSection({
   id,
@@ -80,12 +81,12 @@ export function CollapsibleSection({
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const savedStates = JSON.parse(saved) as Record<string, boolean>;
-        if (typeof savedStates[id] !== "undefined") {
+        if (typeof savedStates[id] !== 'undefined') {
           setIsExpanded(savedStates[id]);
         }
       }
     } catch (error) {
-      console.warn("Failed to load collapsible section state:", error);
+      console.warn('Failed to load collapsible section state:', error);
     }
     // Only run once after mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -102,7 +103,7 @@ export function CollapsibleSection({
       setTimeout(() => {
         const element = document.getElementById(id);
         if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }, 150);
     }
@@ -114,13 +115,11 @@ export function CollapsibleSection({
 
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      const savedStates = saved
-        ? (JSON.parse(saved) as Record<string, boolean>)
-        : {};
+      const savedStates = saved ? (JSON.parse(saved) as Record<string, boolean>) : {};
       savedStates[id] = isExpanded;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(savedStates));
     } catch (error) {
-      console.warn("Failed to save collapsible section state:", error);
+      console.warn('Failed to save collapsible section state:', error);
     }
   }, [isExpanded, id, isMounted]);
 
@@ -129,7 +128,7 @@ export function CollapsibleSection({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
+    if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       handleToggle();
     }
@@ -139,12 +138,12 @@ export function CollapsibleSection({
     <section
       id={id}
       className={cn(
-        "rounded-lg border border-border",
-        "bg-card shadow-sm hover:shadow-md",
-        "overflow-hidden",
-        "scroll-mt-20", // Offset for fixed header when scrolling to anchor
+        'rounded-lg border border-border',
+        'bg-card shadow-sm hover:shadow-md',
+        'overflow-hidden',
+        SCROLL_OFFSET.heading, // Offset for fixed header when scrolling to anchor
         ANIMATION.transition.base,
-        reducedSpacing ? "mb-2" : `my-${SPACING_VALUES.md}`,
+        reducedSpacing ? 'mb-2' : `my-${SPACING_VALUES.md}`,
         className
       )}
     >
@@ -157,22 +156,16 @@ export function CollapsibleSection({
         aria-controls={`collapsible-content-${id}`}
         id={`collapsible-header-${id}`}
         className={cn(
-          "w-full flex items-center justify-between gap-4",
-          "p-4 sm:p-5",
-          "text-left",
-          "bg-card",
-          "hover:bg-muted/30",
+          'w-full flex items-center justify-between gap-4',
+          'p-4 sm:p-5',
+          'text-left',
+          'bg-card',
+          'hover:bg-muted/30',
           SEMANTIC_COLORS.interactive.focus,
           ANIMATION.transition.colors
         )}
       >
-        <h3
-          className={cn(
-            TYPOGRAPHY.h3.standard,
-            "text-card-foreground",
-            "font-semibold"
-          )}
-        >
+        <h3 className={cn(TYPOGRAPHY.h3.standard, 'text-card-foreground', 'font-semibold')}>
           {title}
         </h3>
 
@@ -186,10 +179,10 @@ export function CollapsibleSection({
           strokeLinecap="round"
           strokeLinejoin="round"
           className={cn(
-            "w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0",
-            "text-muted-foreground",
+            'w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0',
+            'text-muted-foreground',
             ANIMATION.transition.movement,
-            isExpanded && "rotate-180"
+            isExpanded && 'rotate-180'
           )}
           aria-hidden="true"
         >
@@ -203,16 +196,12 @@ export function CollapsibleSection({
         role="region"
         aria-labelledby={`collapsible-header-${id}`}
         className={cn(
-          "overflow-hidden",
+          'overflow-hidden',
           ANIMATION.transition.appearance,
-          isExpanded ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0"
+          isExpanded ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'
         )}
       >
-        <div
-          className={`p-4 sm:p-5 pt-0 ${SPACING.content} text-card-foreground`}
-        >
-          {children}
-        </div>
+        <div className={`p-4 sm:p-5 pt-0 ${SPACING.content} text-card-foreground`}>{children}</div>
       </div>
     </section>
   );

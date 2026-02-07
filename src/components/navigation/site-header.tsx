@@ -9,7 +9,13 @@ import { MobileNav } from '@/components/navigation';
 import { SearchButton } from '@/components/search';
 import { DevToolsDropdown, ThemeAwareLogo } from '@/components/common';
 import { cn } from '@/lib/utils';
-import { CONTAINER_WIDTHS, ANIMATION, TOUCH_TARGET, NAVIGATION_HEIGHT } from '@/lib/design-tokens';
+import {
+  CONTAINER_WIDTHS,
+  ANIMATION,
+  TOUCH_TARGET,
+  NAVIGATION_HEIGHT,
+  Z_INDEX,
+} from '@/lib/design-tokens';
 import { NAVIGATION, BLOG_NAV, WORK_NAV, isNavItemActive, getAriaCurrent } from '@/lib/navigation';
 import { useDropdown } from '@/hooks/use-dropdown';
 import { useLogoClick } from '@/hooks/use-navigation';
@@ -68,7 +74,7 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-40 site-header',
+        `fixed top-0 left-0 right-0 ${Z_INDEX.header} site-header`,
         'backdrop-blur supports-backdrop-filter:bg-background/95 border-b',
         'transition-transform duration-300 ease-in-out',
         isVisible ? 'translate-y-0' : '-translate-y-full'
@@ -154,7 +160,7 @@ export function SiteHeader() {
             {blogDropdown.isOpen && (
               <div
                 {...blogDropdown.contentProps}
-                className="absolute top-full left-0 mt-2 w-52 rounded-lg border bg-card p-1.5 shadow-xl z-50"
+                className={`absolute top-full left-0 mt-2 w-52 rounded-lg border bg-card p-1.5 shadow-xl ${Z_INDEX.dropdown}`}
                 role="menu"
               >
                 {BLOG_NAV.map((item, index) => {
@@ -219,7 +225,7 @@ export function SiteHeader() {
             {workDropdown.isOpen && (
               <div
                 {...workDropdown.contentProps}
-                className="absolute top-full left-0 mt-2 w-52 rounded-lg border bg-card p-1.5 shadow-xl z-50"
+                className={`absolute top-full left-0 mt-2 w-52 rounded-lg border bg-card p-1.5 shadow-xl ${Z_INDEX.dropdown}`}
                 role="menu"
               >
                 {WORK_NAV.map((item, index) => {

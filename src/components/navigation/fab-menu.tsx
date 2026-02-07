@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { List, ChevronUp, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { HOVER_EFFECTS, BORDERS, SHADOWS } from '@/lib/design-tokens';
+import { HOVER_EFFECTS, BORDERS, SHADOWS, Z_INDEX } from '@/lib/design-tokens';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { cn } from '@/lib/utils';
 
@@ -69,7 +69,7 @@ export function FABMenu({ onTOCClick, onScrollTop, showTOC, showScrollTop }: FAB
     return (
       <div
         className={cn(
-          'md:hidden fixed bottom-[76px] right-4 sm:right-6 z-40 pb-[env(safe-area-inset-bottom,0px)]',
+          `md:hidden fixed bottom-[76px] right-4 sm:right-6 ${Z_INDEX.header} pb-[env(safe-area-inset-bottom,0px)]`,
           !prefersReducedMotion && 'animate-in fade-in zoom-in-95 duration-200'
         )}
       >
@@ -94,7 +94,7 @@ export function FABMenu({ onTOCClick, onScrollTop, showTOC, showScrollTop }: FAB
     return (
       <div
         className={cn(
-          'md:hidden fixed bottom-[76px] right-4 sm:right-6 z-40 pb-[env(safe-area-inset-bottom,0px)]',
+          `md:hidden fixed bottom-[76px] right-4 sm:right-6 ${Z_INDEX.header} pb-[env(safe-area-inset-bottom,0px)]`,
           !prefersReducedMotion && 'animate-in fade-in zoom-in-95 duration-200'
         )}
       >
@@ -118,7 +118,7 @@ export function FABMenu({ onTOCClick, onScrollTop, showTOC, showScrollTop }: FAB
   // Both buttons available - show expandable menu
   return (
     <div
-      className="md:hidden fixed bottom-[76px] right-4 sm:right-6 z-40 pb-[env(safe-area-inset-bottom,0px)]"
+      className={`md:hidden fixed bottom-[76px] right-4 sm:right-6 ${Z_INDEX.header} pb-[env(safe-area-inset-bottom,0px)]`}
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
       onTouchStart={() => setIsExpanded(!isExpanded)}

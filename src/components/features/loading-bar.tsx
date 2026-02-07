@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { ANIMATION } from "@/lib/design-tokens";
+import { useEffect, useState } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { ANIMATION, Z_INDEX } from '@/lib/design-tokens';
 
 /**
  * Loading bar component that appears during route transitions.
  * Shows a progress bar at the top of the viewport with smooth CSS animation.
- * 
+ *
  * Uses pure CSS animations instead of framer-motion for better performance
  * and smaller bundle size (~20KB savings).
  */
@@ -22,7 +22,7 @@ export function LoadingBar() {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- Loading state management
     setIsLoading(true);
     setIsExiting(false);
-    
+
     let exitTimeout: NodeJS.Timeout | null = null;
     const loadingTimeout = setTimeout(() => {
       setIsExiting(true);
@@ -32,7 +32,7 @@ export function LoadingBar() {
         setIsExiting(false);
       }, 200);
     }, 500);
-    
+
     return () => {
       clearTimeout(loadingTimeout);
       if (exitTimeout) {
@@ -46,12 +46,12 @@ export function LoadingBar() {
   return (
     <div
       className={cn(
-        "fixed top-0 left-0 right-0 h-1 bg-primary z-50 origin-left transition-movement ease-in-out",
+        `fixed top-0 left-0 right-0 h-1 bg-primary ${Z_INDEX.dropdown} origin-left transition-movement ease-in-out`,
         ANIMATION.duration.slow,
-        isLoading ? "opacity-100" : "opacity-0",
-        isExiting ? "opacity-0 scale-x-100" : "opacity-100 scale-x-100 animate-loading-bar"
+        isLoading ? 'opacity-100' : 'opacity-0',
+        isExiting ? 'opacity-0 scale-x-100' : 'opacity-100 scale-x-100 animate-loading-bar'
       )}
-      style={{ transformOrigin: "0% 50%" }}
+      style={{ transformOrigin: '0% 50%' }}
       role="progressbar"
       aria-label="Page loading"
       aria-valuemin={0}

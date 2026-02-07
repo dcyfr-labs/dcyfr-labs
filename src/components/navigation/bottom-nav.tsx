@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { NAVIGATION, isNavItemActive, getAriaCurrent } from '@/lib/navigation';
-import { ANIMATION, NAVIGATION_HEIGHT } from '@/lib/design-tokens';
+import { ANIMATION, NAVIGATION_HEIGHT, Z_INDEX } from '@/lib/design-tokens';
 
 /**
  * Bottom navigation bar for mobile devices
@@ -63,7 +63,7 @@ export function BottomNav() {
   return (
     <nav
       className={cn(
-        'fixed left-0 right-0 z-40 md:hidden border-t backdrop-blur supports-backdrop-filter:bg-background/95 bg-background',
+        `fixed left-0 right-0 ${Z_INDEX.header} md:hidden border-t backdrop-blur supports-backdrop-filter:bg-background/95 bg-background`,
         'transition-transform duration-300 ease-in-out',
         isVisible ? 'translate-y-0 bottom-0' : 'translate-y-full bottom-0'
       )}

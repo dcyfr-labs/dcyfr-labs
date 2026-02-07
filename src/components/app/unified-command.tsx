@@ -35,7 +35,7 @@ import {
   User,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { TYPOGRAPHY, SPACING } from '@/lib/design-tokens';
+import { TYPOGRAPHY, SPACING, Z_INDEX } from '@/lib/design-tokens';
 import { useKeyboardShortcut } from '@/hooks/use-keyboard-shortcut';
 import { useReadingProgressList } from '@/hooks/use-reading-progress';
 import { useSearch } from '@/components/search';
@@ -291,7 +291,7 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm pointer-events-auto"
+      className={`fixed inset-0 ${Z_INDEX.overlay} bg-background/80 backdrop-blur-sm pointer-events-auto`}
       onClick={() => onOpenChange(false)}
     >
       <div

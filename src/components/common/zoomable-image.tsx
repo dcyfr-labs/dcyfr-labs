@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { createPortal } from "react-dom";
-import { ZoomIn, X } from "lucide-react";
-import { ANIMATION, BORDERS, SHADOWS, TOUCH_TARGET } from "@/lib/design-tokens";
+import * as React from 'react';
+import { createPortal } from 'react-dom';
+import { ZoomIn, X } from 'lucide-react';
+import { ANIMATION, BORDERS, SHADOWS, TOUCH_TARGET, Z_INDEX } from '@/lib/design-tokens';
 
 /**
  * ZoomableImage Component
- * 
+ *
  * Wraps an img element to provide click-to-zoom functionality.
  * Shows a zoom icon on hover and opens a full-screen lightbox on click.
- * 
+ *
  * @component
  * @param {Object} props - Image element props
  * @returns {React.ReactElement} Interactive zoomable image wrapper
- * 
+ *
  * @features
  * - Click to view image in full-screen modal
  * - Hover icon indicates zoom capability
@@ -24,7 +24,7 @@ import { ANIMATION, BORDERS, SHADOWS, TOUCH_TARGET } from "@/lib/design-tokens";
  * - Close button for better UX discoverability
  * - Focus trap within modal
  * - Swipe-to-close on mobile devices
- * 
+ *
  * @example
  * <ZoomableImage src="/image.jpg" alt="Description" />
  */
@@ -39,14 +39,14 @@ export function ZoomableImage(props: React.ImgHTMLAttributes<HTMLImageElement>) 
     if (!isOpen) return;
 
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener("keydown", handleEscape);
+    document.addEventListener('keydown', handleEscape);
     // Prevent body scroll when modal is open
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow = 'hidden';
 
     // Focus management: focus close button when modal opens
     const focusTimer = setTimeout(() => {
@@ -54,8 +54,8 @@ export function ZoomableImage(props: React.ImgHTMLAttributes<HTMLImageElement>) 
     }, 50);
 
     return () => {
-      document.removeEventListener("keydown", handleEscape);
-      document.body.style.overflow = "";
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = '';
       clearTimeout(focusTimer);
     };
   }, [isOpen]);
@@ -77,7 +77,7 @@ export function ZoomableImage(props: React.ImgHTMLAttributes<HTMLImageElement>) 
   const modalElement = isOpen && (
     <div
       ref={modalRef}
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 backdrop-blur-sm"
+      className={`fixed inset-0 ${Z_INDEX.overlay} flex flex-col items-center justify-center bg-black/90 backdrop-blur-sm`}
       onClick={() => setIsOpen(false)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
@@ -89,7 +89,7 @@ export function ZoomableImage(props: React.ImgHTMLAttributes<HTMLImageElement>) 
       <button
         ref={closeButtonRef}
         onClick={() => setIsOpen(false)}
-        className={`absolute top-4 sm:top-6 right-4 sm:right-6 z-50 text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/90 rounded-lg transition-colors ${TOUCH_TARGET.close}`}
+        className={`absolute top-4 sm:top-6 right-4 sm:right-6 ${Z_INDEX.overlay} text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/90 rounded-lg transition-colors ${TOUCH_TARGET.close}`}
         aria-label="Close image viewer"
         type="button"
       >
@@ -97,9 +97,7 @@ export function ZoomableImage(props: React.ImgHTMLAttributes<HTMLImageElement>) 
       </button>
 
       {/* Hint text - minimal padding, responsive sizing */}
-      <div
-        className={`text-xs sm:text-sm text-white text-center mb-3 sm:mb-4`}
-      >
+      <div className={`text-xs sm:text-sm text-white text-center mb-3 sm:mb-4`}>
         Click or press ESC to close
       </div>
 
@@ -132,7 +130,7 @@ export function ZoomableImage(props: React.ImgHTMLAttributes<HTMLImageElement>) 
         {...props}
         onClick={() => setIsOpen(true)}
         onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
+          if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             setIsOpen(true);
           }
@@ -140,7 +138,7 @@ export function ZoomableImage(props: React.ImgHTMLAttributes<HTMLImageElement>) 
         tabIndex={0}
         role="button"
         className={`${props.className || ''} cursor-zoom-in`}
-        aria-label={`Zoom image: ${props.alt || "image"}`}
+        aria-label={`Zoom image: ${props.alt || 'image'}`}
       />
 
       {/* FIX: Zoom icon overlay on hover
@@ -156,4 +154,4 @@ export function ZoomableImage(props: React.ImgHTMLAttributes<HTMLImageElement>) 
   );
 }
 
-ZoomableImage.displayName = "ZoomableImage";
+ZoomableImage.displayName = 'ZoomableImage';
