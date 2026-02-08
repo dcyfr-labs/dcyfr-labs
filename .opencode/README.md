@@ -2,6 +2,28 @@
 
 **Multi-provider AI fallback system with MCP integration, GitHub Copilot, and DCYFR-specific skills.**
 
+## Table of Contents
+
+<details>
+<summary>📑 Table of Contents</summary>
+
+- [What's Configured](#-whats-configured)
+- [Phase 1 Complete: Enhanced Configuration](#-phase-1-complete-enhanced-configuration)
+- [Quick Start](#quick-start)
+- [How It Works](#-how-it-works)
+- [Common Workflows](#common-workflows)
+- [Available Providers](#available-providers)
+- [NPM Scripts](#npm-scripts)
+- [Configuration](#configuration)
+- [Documentation](#documentation)
+- [Keyboard Shortcuts](#keyboard-shortcuts-vs-code)
+- [Cost Optimization](#cost-optimization)
+- [Enforcement Rules](#enforcement-rules)
+- [Troubleshooting](#troubleshooting)
+- [Getting Help](#getting-help)
+
+</details>
+
 ---
 
 ## ⚡ What's Configured
@@ -119,6 +141,44 @@ opencode --preset dcyfr-feature
 
 ---
 
+## 🔄 How It Works
+
+OpenCode.ai integrates seamlessly with VS Code to provide AI-powered code generation with multiple provider support.
+
+```mermaid
+sequenceDiagram
+    participant VSCode as VS Code Editor
+    participant OpenCode as OpenCode Extension
+    participant Provider as GitHub Copilot / Claude
+    participant MCP as MCP Servers (14)
+    participant Project as DCYFR Labs Project
+
+    VSCode->>OpenCode: Cmd+Esc / Ctrl+Esc
+    OpenCode->>OpenCode: Load .opencode/config.json
+    OpenCode->>OpenCode: Load DCYFR skills (3)
+    OpenCode->>Provider: Select model (GPT-5 Mini / Claude Sonnet)
+    OpenCode->>MCP: Initialize MCP servers
+    MCP-->>OpenCode: Memory, Filesystem, GitHub, etc.
+    OpenCode->>Provider: Send prompt + context
+    Provider->>Provider: Generate code using DCYFR patterns
+    Provider-->>OpenCode: Return generated code
+    OpenCode->>Project: Apply changes to files
+    OpenCode->>VSCode: Show diff for approval
+    VSCode->>OpenCode: User accepts/rejects
+    OpenCode->>Project: Write files (if accepted)
+    Project->>Project: Run validation (npm run check:opencode)
+```
+
+**Key Integration Points:**
+
+1. **VS Code Extension** - Keyboard shortcuts, file watching, diff preview
+2. **Provider Selection** - GitHub Copilot (free), Claude Sonnet (premium)
+3. **MCP Servers** - 14 servers provide tools (memory, filesystem, GitHub, etc.)
+4. **DCYFR Skills** - Design tokens, component patterns, quick fixes
+5. **Validation** - Automated quality checks before commit
+
+---
+
 ## Common Workflows
 
 ### Development with GitHub Copilot
@@ -166,15 +226,40 @@ opencode --preset dcyfr-feature
 
 ## Available Providers
 
-| Provider | Cost | Context | Quality | Speed | Best For |
-|----------|------|---------|---------|-------|----------|
-| **GitHub Copilot (GPT-5 Mini)** | $0* | 16K | 95% | Fast | 80% of development |
-| **GitHub Copilot (Raptor Mini)** | $0* | 8K | 90% | Very Fast | Quick fixes, refactoring |
-| **Claude Sonnet 4** | $0* | 200K | 98% | Fast | Complex logic, security |
+### Provider Comparison
 
-**Included with GitHub Copilot subscription (0 cost multiplier)*
+| Provider | Model | Cost (Input/Output per 1M tokens) | Context Window | Quality | Speed | Best For |
+|----------|-------|-----------------------------------|----------------|---------|-------|----------|
+| **GitHub Copilot** | GPT-5 Mini | $0* (Free with subscription) | 16K | 95% | Fast | 80% of development tasks |
+| **GitHub Copilot** | Raptor Mini | $0* (Free with subscription) | 8K | 90% | Very Fast | Quick fixes, refactoring |
+| **Anthropic** | Claude Sonnet 4 | $3/$15 (1x multiplier) | 200K | 98% | Fast | Complex logic, security reviews |
+| **OpenAI** | GPT-4 Turbo | $10/$30 (2x multiplier) | 128K | 96% | Medium | Advanced reasoning (rare use) |
 
-**Recommendation**: Use GPT-5 Mini for routine work, escalate to Claude Sonnet for complex/security tasks.
+**\* Included with GitHub Copilot subscription ($10-20/month flat fee, no usage charges)**
+
+### Cost Analysis
+
+**GitHub Copilot Models (GPT-5 Mini, Raptor Mini):**
+- **Pricing Model:** Fixed subscription fee ($10-20/month)
+- **Usage Charges:** $0 (unlimited usage at 0x multiplier)
+- **Total Monthly Cost:** $10-20 (predictable, no surprises)
+
+**Premium Models (Claude Sonnet 4):**
+- **Input Tokens:** $3 per 1M tokens (1x multiplier)
+- **Output Tokens:** $15 per 1M tokens (1x multiplier)
+- **Example:** Generating a 5,000-line module costs ~$0.75-1.50
+- **Use Case:** Reserve for complex tasks (20% of work)
+
+**Cost Optimization Strategy:**
+```
+Monthly GitHub Copilot: $15/month (fixed)
+Occasional Claude Sonnet: $5-10/month (variable, ~20% of tasks)
+Total: $20-25/month (vs. $100+ with pure premium usage)
+
+Savings: 75-80% cost reduction while maintaining quality
+```
+
+**Recommendation**: Use GPT-5 Mini for routine work (80%), escalate to Claude Sonnet for complex/security tasks (20%).
 
 ---
 

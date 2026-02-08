@@ -4,6 +4,22 @@ This directory contains utility scripts for development, testing, and maintenanc
 
 > **Note:** On November 14, 2025, obsolete ad-hoc test scripts were archived to `archive/legacy-tests/` and replaced with modern testing infrastructure (Vitest, Playwright, Lighthouse CI). See [npm-scripts-cleanup-2025-11-14.md](/docs/operations/npm-scripts-cleanup-2025-11-14.md) for details.
 
+## Quick Reference
+
+| Script | Purpose | Usage | Frequency |
+|--------|---------|-------|-----------|
+| `check-security-alert.mjs` | Check GitHub security alerts status | `node scripts/check-security-alert.mjs <alert-number>` | 🔥 High |
+| `run-with-dev.mjs` | Run tasks with Next.js dev server | `node scripts/run-with-dev.mjs <script-path>` | 🔥 High |
+| `generate-blog-hero.mjs` | Generate SVG hero images for blog posts | `node scripts/generate-blog-hero.mjs --slug <post-slug>` | 🟡 Medium |
+| `generate-project-hero.mjs` | Generate SVG hero images for projects | `node scripts/generate-project-hero.mjs --all` | 🟡 Medium |
+| `test-accessibility.mjs` | Automated accessibility testing | `node scripts/test-accessibility.mjs` | 🟡 Medium |
+| `test-accessibility-manual.mjs` | Manual accessibility checklist | `node scripts/test-accessibility-manual.mjs` | 🔵 Low |
+| `test-skip-link.mjs` | Test skip-to-content implementation | `node scripts/test-skip-link.mjs` | 🔵 Low |
+| `test-skip-link-structure.mjs` | Validate skip link structure | `node scripts/test-skip-link-structure.mjs` | 🔵 Low |
+| `check-headers.mjs` | Validate HTTP security headers | `node scripts/check-headers.mjs` | 🔵 Low |
+
+---
+
 ## Active Scripts
 
 ### Core Utilities
@@ -45,10 +61,6 @@ Validates HTTP security headers (standalone utility, no npm script).
 ```bash
 node scripts/check-headers.mjs
 ```
-
-### Accessibility Testing
-
-#### test-accessibility.mjs
 
 ### Content Generation
 
@@ -170,6 +182,174 @@ See `scripts/archive/legacy-tests/README.md` for complete list and migration gui
 
 One-time debug and migration scripts are in `scripts/archive/`. See `scripts/archive/README.md` for details.
 
+---
+
+## Troubleshooting
+
+### Issue: Script Permission Denied
+
+**Symptoms:** `Permission denied` error when running script
+
+**Solutions:**
+```bash
+# Option 1: Run with node explicitly
+node scripts/check-security-alert.mjs
+
+# Option 2: Make script executable
+chmod +x scripts/check-security-alert.mjs
+./scripts/check-security-alert.mjs
+```
+
+**Prevention:** Always run scripts with `node` command instead of direct execution.
+
+### Issue: Module Not Found Errors
+
+**Symptoms:** `Cannot find module` or `ERR_MODULE_NOT_FOUND` errors
+
+**Common Causes & Solutions:**
+
+1. **Dependencies not installed**
+   ```bash
+   # Install all dependencies
+   npm install
+
+   # Verify node_modules exists
+   ls node_modules/
+   ```
+
+2. **Wrong working directory**
+   ```bash
+   # Scripts must run from project root
+   cd /path/to/dcyfr-labs
+   node scripts/check-security-alert.mjs
+   ```
+
+3. **Missing local module**
+   ```bash
+   # Check if script exists
+   ls scripts/check-security-alert.mjs
+
+   # Verify path is correct
+   pwd  # Should show dcyfr-labs directory
+   ```
+
+### Issue: GitHub API Authentication Errors
+
+**Symptoms:** `401 Unauthorized` or `403 Forbidden` when running `check-security-alert.mjs`
+
+**Solutions:**
+
+1. **Set GITHUB_TOKEN environment variable**
+   ```bash
+   # Create GitHub personal access token (Settings → Developer settings → Personal access tokens)
+   export GITHUB_TOKEN=ghp_your_token_here
+
+   # Run script
+   node scripts/check-security-alert.mjs 2
+   ```
+
+2. **Add token to .env file**
+   ```bash
+   # Create/edit .env file
+   echo "GITHUB_TOKEN=ghp_your_token_here" >> .env
+   ```
+
+**Required token scopes:**
+- `repo` (for private repos) or `public_repo` (for public repos)
+- `security_events` (for code scanning alerts)
+
+### Issue: Dev Server Timeout
+
+**Symptoms:** `run-with-dev.mjs` script hangs or times out
+
+**Solutions:**
+
+1. **Check if dev server is already running**
+   ```bash
+   # Kill existing dev server
+   lsof -i :3000 | grep node | awk '{print $2}' | xargs kill -9
+
+   # Try running script again
+   node scripts/run-with-dev.mjs scripts/test-accessibility.mjs
+   ```
+
+2. **Increase timeout (if needed)**
+   - Edit `run-with-dev.mjs` and increase timeout value
+   - Default timeout is typically 30-60 seconds
+
+3. **Check for port conflicts**
+   ```bash
+   # See what's using port 3000
+   lsof -i :3000
+
+   # Use different port if needed
+   PORT=3001 node scripts/run-with-dev.mjs scripts/test-accessibility.mjs
+   ```
+
+### Issue: Environment Variable Not Set
+
+**Symptoms:** Script fails with "Environment variable X is not defined" or similar
+
+**Solutions:**
+
+1. **Create .env file** (if missing)
+   ```bash
+   # Copy example (if exists)
+   cp .env.example .env
+
+   # Or create from scratch
+   cat > .env << EOF
+   GITHUB_TOKEN=your_token_here
+   NEXT_PUBLIC_BASE_URL=http://localhost:3000
+   EOF
+   ```
+
+2. **Load .env in script**
+   - Most scripts automatically load `.env` via `dotenv` package
+   - Verify `dotenv` is installed: `npm list dotenv`
+
+3. **Set variable temporarily**
+   ```bash
+   # For one-time use
+   GITHUB_TOKEN=ghp_xxx node scripts/check-security-alert.mjs 2
+   ```
+
+### Issue: Generated Images Not Appearing
+
+**Symptoms:** `generate-blog-hero.mjs` or `generate-project-hero.mjs` runs successfully but images don't show
+
+**Solutions:**
+
+1. **Check output path**
+   ```bash
+   # Blog heroes saved to:
+   ls src/content/blog/<slug>/hero.svg
+
+   # Project heroes saved to:
+   ls public/projects/<project-name>.svg
+   ```
+
+2. **Verify SVG syntax**
+   ```bash
+   # Open SVG in browser to test
+   # Should render without errors
+   ```
+
+3. **Check file permissions**
+   ```bash
+   # Ensure files are readable
+   chmod 644 src/content/blog/*/hero.svg
+   chmod 644 public/projects/*.svg
+   ```
+
+4. **Force regeneration**
+   ```bash
+   # Use --force flag to overwrite existing
+   node scripts/generate-blog-hero.mjs --slug my-post --force
+   ```
+
+---
+
 ## Adding New Scripts
 
 When adding new scripts:
@@ -177,7 +357,8 @@ When adding new scripts:
 2. Add shebang line: `#!/usr/bin/env node`
 3. Include descriptive comment header
 4. Update this README with script description and usage
-5. Consider adding an npm script alias in `package.json` if frequently used
+5. Add entry to Quick Reference table (top of README)
+6. Consider adding an npm script alias in `package.json` if frequently used
 
 ### Baseline Browser Mapping
 

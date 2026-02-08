@@ -4,6 +4,7 @@
 [![Lighthouse](https://img.shields.io/badge/Lighthouse-92%2B-28a745?style=flat-square&logo=lighthouse&logoColor=white)](https://github.com/dcyfr/dcyfr-labs/actions/workflows/lighthouse-ci.yml)
 [![CodeQL](https://img.shields.io/github/actions/workflow/status/dcyfr/dcyfr-labs/codeql.yml?branch=main&label=CodeQL&style=flat-square&logo=github)](https://github.com/dcyfr/dcyfr-labs/security/code-scanning)
 [![Coverage](https://img.shields.io/badge/Coverage-96.7%25-28a745?style=flat-square&logo=vitest&logoColor=white)](./docs/testing/)
+[![Vercel](https://img.shields.io/badge/Vercel-Deployed-000000?style=flat-square&logo=vercel&logoColor=white)](https://dcyfr-labs.vercel.app)
 
 A modern, full-featured developer blog and portfolio built with Next.js (App Router), TypeScript, Tailwind CSS v4, and shadcn/ui. Features an MDX-powered blog with advanced analytics, GitHub integration, Redis-backed view counts, background job processing, and comprehensive security features.
 
@@ -12,6 +13,73 @@ A modern, full-featured developer blog and portfolio built with Next.js (App Rou
 - **Claude Code**: See [`CLAUDE.md`](./CLAUDE.md) for comprehensive development guide (detailed patterns, workflows, documentation references)
 - **GitHub Copilot**: See [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) for quick-reference guide (80/20 patterns you'll use most)
 - **Transparency**: See [`docs/TRANSPARENCY_STATEMENT.md`](./docs/TRANSPARENCY_STATEMENT.md) for details on open vs. proprietary components
+
+## 🎯 Why dcyfr-labs?
+
+**Not Just Another Next.js Starter** - This is a production-grade, **real-world application** with battle-tested patterns you can actually use.
+
+### What Makes It Different
+
+- **🏗️ Architecture First:** Design token system + PageLayout components = consistent, maintainable UI
+- **📊 Real Analytics:** Redis-backed view tracking with trending detection (not just Google Analytics)
+- **⚡ Background Jobs:** Inngest integration showing async patterns (contact forms, GitHub sync, analytics)
+- **🔒 Enterprise Security:** CSP with nonces, rate limiting, input validation - production-ready from day one
+- **🧪 Test-Driven:** 1185/1197 tests passing (99%), strict quality gates, comprehensive E2E coverage
+- **📖 Documentation-Rich:** 100+ docs files covering architecture, testing, deployment, troubleshooting
+- **🤖 AI-Assisted:** Built with Claude Code + GitHub Copilot - includes instructions for both
+
+### vs. Next.js Starters
+
+| Feature | Most Starters | dcyfr-labs |
+|---------|---------------|------------|
+| **Architecture Patterns** | Basic structure | Design tokens + PageLayout system |
+| **Analytics** | Google Analytics link | Redis + Inngest + trending detection |
+| **Security** | Basic setup | CSP nonces, rate limiting, PII protection |
+| **Testing** | Minimal | 1185 tests (99% pass rate) |
+| **Background Jobs** | None | Inngest with retry + monitoring |
+| **Documentation** | README only | 100+ docs covering everything |
+| **Production Ready** | Template | Real app, deployed at dcyfr.ai |
+
+### vs. Astro
+
+- **React Ecosystem:** Full access to shadcn/ui, Radix UI, React 19 features
+- **App Router:** Server components, streaming, ISR patterns
+- **Type Safety:** TypeScript strict mode with Zod validation
+- **Background Jobs:** Inngest for async processing (Astro requires external services)
+
+**Perfect for:** Developers who want to learn modern Next.js patterns from a real, production-grade application.
+
+## Table of Contents
+
+<details>
+<summary>📑 Table of Contents</summary>
+
+- [Features](#-features)
+- [Tech Stack](#️-tech-stack)
+- [Quick Start](#-quick-start)
+  - [Installation](#installation)
+  - [HTTPS Development (Safari)](#https-development-safari)
+- [Project Structure](#-project-structure)
+- [Key Architecture](#-key-architecture)
+  - [Page Layouts](#page-layouts-reusable-patterns)
+  - [Metadata Generation](#metadata-generation)
+- [Blog System](#-blog-system)
+  - [Content Creation](#content-creation)
+  - [Blog Features](#blog-features)
+- [Background Jobs (Inngest)](#-background-jobs-inngest)
+- [Security Features](#-security-features)
+- [Deployment](#-deployment)
+  - [Vercel (Recommended)](#vercel-recommended)
+  - [Environment Variables](#environment-variables)
+- [Testing](#-testing)
+- [Troubleshooting](#-troubleshooting)
+- [FAQ](#-faq)
+- [Performance](#-performance)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Support](#-support)
+
+</details>
 
 ## ✨ Features
 
@@ -71,6 +139,10 @@ npm run dev:https
 Visit **https://localhost:3000** (certificates auto-generated via mkcert).
 
 See [`certs/README.md`](./certs/README.md) for certificate details.
+
+[⬆️ Back to top](#nextjs-developer-blog--portfolio)
+
+---
 
 ## 📁 Project Structure
 
@@ -153,6 +225,10 @@ Asynchronous task processing with automatic retries:
 
 See [`/docs/features/inngest-integration.md`](./docs/features/inngest-integration.md) for setup.
 
+[⬆️ Back to top](#nextjs-developer-blog--portfolio)
+
+---
+
 ## 🔒 Security Features
 
 - **Content Security Policy (CSP)** - Nonce-based with zero `unsafe-inline`
@@ -162,6 +238,10 @@ See [`/docs/features/inngest-integration.md`](./docs/features/inngest-integratio
 - **PII Protection** - Logs sanitized, no sensitive data exposure
 
 See [`/docs/security/`](./docs/security/) for implementation details.
+
+[⬆️ Back to top](#next-js-developer-blog--portfolio)
+
+---
 
 ## 🌐 Deployment
 
@@ -246,6 +326,10 @@ npm run test:e2e:ui       # Playwright UI
 - **E2E Tests:** Playwright
 - **Coverage:** 96.7% pass rate across 1944 tests
 - **Test Documentation:** See [`/docs/testing/`](./docs/testing/)
+
+[⬆️ Back to top](#nextjs-developer-blog--portfolio)
+
+---
 
 ## 🎨 Customization
 
@@ -375,6 +459,8 @@ npm run test:e2e:ui       # Playwright UI
 - **Trust cert:** First run may require trusting self-signed certificate
 - **Alternative:** Test in Chrome/Firefox for development, Safari only for final testing
 
+[⬆️ Back to top](#nextjs-developer-blog--portfolio)
+
 ---
 
 ## 📚 FAQ
@@ -450,6 +536,8 @@ A: Common causes:
 3. **Timezones:** Date/time tests may fail due to timezone differences (use UTC in tests)
 4. **File paths:** Windows vs. Unix path separators (use `path.join()` instead of string concatenation)
 
+[⬆️ Back to top](#nextjs-developer-blog--portfolio)
+
 ---
 
 ## 📊 Performance Benchmarks
@@ -475,36 +563,7 @@ A: Common causes:
 - **API response time:** <100ms (avg)
 - **Cache hit rate:** ~85% (Redis)
 
----
-
-## 🆚 Why dcyfr-labs?
-
-### Compared to Other Next.js Starters
-
-**vs. create-next-app (baseline)**
-- ✅ Pre-configured design system (Tailwind v4 + design tokens)
-- ✅ MDX blog with analytics, trending, search
-- ✅ Comprehensive security (CSP with nonces, rate limiting)
-- ✅ Background jobs (Inngest)
-- ✅ 65+ AI agents for development productivity
-
-**vs. next-blog-starter**
-- ✅ Redis-backed view counts and milestones
-- ✅ Real-time GitHub contribution heatmap
-- ✅ Related posts algorithm
-- ✅ RSS/Atom feeds with validation
-
-**vs. vercel/platforms**
-- ✅ Single-tenant (no multi-tenancy complexity)
-- ✅ Security-first (OWASP compliance, Nuclei scanning)
-- ✅ Test-driven (1879 tests, 96.7% pass rate)
-
-### Unique Value Propositions
-1. **AI-Powered Development:** 65+ Claude Code agents + GitHub Copilot integration
-2. **Security by Default:** CSP, rate limiting, security scanning (CodeQL, Nuclei)
-3. **Production-Ready Testing:** 1879 unit/integration/E2E tests with strict quality gates
-4. **Design System Enforcement:** ESLint rules + pre-commit hooks for design token compliance
-5. **Analytics Without Tracking:** Redis-based view counts, no third-party analytics cookies
+[⬆️ Back to top](#next-js-developer-blog--portfolio)
 
 ---
 
@@ -526,6 +585,8 @@ Found a security issue? Report it privately:
 
 See [docs/security/](./docs/security/) for implementation details.
 
+[⬆️ Back to top](#nextjs-developer-blog--portfolio)
+
 ---
 
 ## ⚙️ Known Issues / Limitations
@@ -544,6 +605,8 @@ See [docs/security/](./docs/security/) for implementation details.
 - [ ] Design token migration incomplete (80% complete, 20% hardcoded values remain)
 
 See [docs/operations/todo.md](./docs/operations/todo.md) for current priorities.
+
+[⬆️ Back to top](#nextjs-developer-blog--portfolio)
 
 ---
 
