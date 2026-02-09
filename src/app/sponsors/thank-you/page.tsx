@@ -119,7 +119,7 @@ export default async function SponsorThankYouPage({ searchParams }: PageProps) {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {nextSteps.map((step) => (
                 <Link
                   key={step.title}
@@ -127,7 +127,7 @@ export default async function SponsorThankYouPage({ searchParams }: PageProps) {
                   target={step.external ? '_blank' : undefined}
                   rel={step.external ? 'noopener noreferrer' : undefined}
                   className={cn(
-                    'group bg-card border border-border rounded-lg p-6',
+                    'group bg-card border border-border rounded-lg p-4',
                     HOVER_EFFECTS.cardSubtle
                   )}
                 >

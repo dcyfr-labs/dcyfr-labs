@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { TYPOGRAPHY, SPACING } from '@/lib/design-tokens';
+import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS } from '@/lib/design-tokens';
 import { PageLayout } from '@/components/layouts';
 import { Button } from '@/components/ui/button';
 
@@ -85,7 +85,7 @@ export default function LicensesPage() {
     <PageLayout>
       {/* Header Section */}
       <section className={SPACING.section}>
-        <div className="max-w-4xl">
+        <div className={CONTAINER_WIDTHS.narrow}>
           <h1 className={TYPOGRAPHY.h1.standard}>Open Source Licenses</h1>
           <p className={`${TYPOGRAPHY.body} text-muted-foreground`}>
             DCYFR is built on quality open-source software. Below is a complete list of all
@@ -99,19 +99,19 @@ export default function LicensesPage() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="p-4 border border-muted-foreground/20 rounded-lg">
             <div className={`${TYPOGRAPHY.metadata} text-muted-foreground`}>Total Dependencies</div>
-            <div className="text-2xl font-bold mt-2">{SAMPLE_DEPENDENCIES.length}</div>
+            <div className={`${TYPOGRAPHY.display.stat} mt-2`}>{SAMPLE_DEPENDENCIES.length}</div>
           </div>
 
           <div className="p-4 border border-muted-foreground/20 rounded-lg">
             <div className={`${TYPOGRAPHY.metadata} text-muted-foreground`}>
               ✅ Approved Licenses
             </div>
-            <div className="text-2xl font-bold mt-2">{SAMPLE_DEPENDENCIES.length}</div>
+            <div className={`${TYPOGRAPHY.display.stat} mt-2`}>{SAMPLE_DEPENDENCIES.length}</div>
           </div>
 
           <div className="p-4 border border-muted-foreground/20 rounded-lg">
             <div className={`${TYPOGRAPHY.metadata} text-muted-foreground`}>License Types</div>
-            <div className="text-2xl font-bold mt-2">{Object.keys(licenseCounts).length}</div>
+            <div className={`${TYPOGRAPHY.display.stat} mt-2`}>{Object.keys(licenseCounts).length}</div>
           </div>
 
           <div className="p-4 border border-muted-foreground/20 rounded-lg">
@@ -219,7 +219,7 @@ export default function LicensesPage() {
       <section className={SPACING.section}>
         <h2 className={TYPOGRAPHY.h2.standard}>Technical Information</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="p-4 border border-muted-foreground/20 rounded-lg">
             <h3 className={TYPOGRAPHY.h3.standard}>SBOM (Software Bill of Materials)</h3>
             <p className={`${TYPOGRAPHY.body} text-muted-foreground`}>

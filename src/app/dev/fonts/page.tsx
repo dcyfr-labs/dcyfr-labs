@@ -81,7 +81,7 @@ function fibonacci(n: number): number {
             Geist Pixel — Square
             <span className="text-sm text-muted-foreground ml-2">(Bitmap-inspired)</span>
           </h2>
-          <div className="space-y-6">
+          <div className={SPACING.subsection}>
             <div>
               <p className="text-sm text-muted-foreground mb-2">Extra Large (48px)</p>
               <div className={TYPOGRAPHY.pixel.square.xl}>PIXEL PERFECT</div>
@@ -119,7 +119,7 @@ function fibonacci(n: number): number {
             Geist Pixel — Grid
             <span className="text-sm text-muted-foreground ml-2">(Grid structure visible)</span>
           </h2>
-          <div className="space-y-6">
+          <div className={SPACING.subsection}>
             <div>
               <p className="text-sm text-muted-foreground mb-2">Extra Large (48px)</p>
               <div className={TYPOGRAPHY.pixel.grid.xl}>GRID SYSTEM</div>
@@ -143,7 +143,7 @@ function fibonacci(n: number): number {
         <section className={`space-y-${SPACING.content}`}>
           <h2 className={TYPOGRAPHY.h2.standard}>Use Cases & Best Practices</h2>
           <div className={`space-y-${SPACING.content}`}>
-            <div className="bg-muted p-6 rounded-lg">
+            <div className="bg-muted p-4 rounded-lg">
               <h3 className={`${TYPOGRAPHY.h3.standard} mb-${SPACING.compact}`}>
                 When to Use Geist Pixel
               </h3>
@@ -155,7 +155,7 @@ function fibonacci(n: number): number {
                 <li>✅ Experimental layouts</li>
               </ul>
             </div>
-            <div className="bg-muted p-6 rounded-lg">
+            <div className="bg-muted p-4 rounded-lg">
               <h3 className={`${TYPOGRAPHY.h3.standard} mb-${SPACING.compact}`}>
                 When NOT to Use Geist Pixel
               </h3>
@@ -166,7 +166,7 @@ function fibonacci(n: number): number {
                 <li>❌ Formal documentation</li>
               </ul>
             </div>
-            <div className="bg-muted p-6 rounded-lg">
+            <div className="bg-muted p-4 rounded-lg">
               <h3 className={`${TYPOGRAPHY.h3.standard} mb-${SPACING.compact}`}>
                 Technical Details
               </h3>

@@ -69,7 +69,7 @@ export function FAQSection({ items, defaultOpen = false }: FAQSectionProps) {
         role="region"
         aria-label="Frequently Asked Questions"
       >
-        <div className="bg-muted/50 px-6 py-4 border-b border-border">
+        <div className="bg-muted/50 px-4 py-4 border-b border-border">
           <h2 className={`${TYPOGRAPHY.h3.standard} mb-0`}>Frequently Asked Questions</h2>
         </div>
 
@@ -80,13 +80,13 @@ export function FAQSection({ items, defaultOpen = false }: FAQSectionProps) {
               <div key={index} className="border-b border-border last:border-0">
                 <button
                   onClick={() => toggleItem(index)}
-                  className="w-full px-6 py-4 flex items-start justify-between gap-4 text-left hover:bg-muted/50 transition-colors"
+                  className="w-full px-4 py-4 flex items-start justify-between gap-4 text-left hover:bg-muted/50 transition-colors"
                   aria-expanded={isOpen}
                   aria-controls={`faq-answer-${index}`}
                 >
                   <span className={`${TYPOGRAPHY.body} font-semibold flex-1`}>{item.question}</span>
                   <ChevronDown
-                    className={`w-5 h-5 flex-shrink-0 transition-transform ${
+                    className={`w-5 h-5 shrink-0 transition-transform ${
                       isOpen ? 'rotate-180' : ''
                     }`}
                     aria-hidden="true"
@@ -94,7 +94,7 @@ export function FAQSection({ items, defaultOpen = false }: FAQSectionProps) {
                 </button>
 
                 {isOpen && (
-                  <div id={`faq-answer-${index}`} className="px-6 pb-4" role="region">
+                  <div id={`faq-answer-${index}`} className="px-4 pb-4" role="region">
                     <div
                       className={`${TYPOGRAPHY.body} text-muted-foreground prose prose-sm max-w-none`}
                       dangerouslySetInnerHTML={{ __html: item.answer }}
