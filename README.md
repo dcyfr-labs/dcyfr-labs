@@ -6,6 +6,8 @@
 [![Coverage](https://img.shields.io/badge/Coverage-96.7%25-28a745?style=flat-square&logo=vitest&logoColor=white)](./docs/testing/)
 [![Vercel](https://img.shields.io/badge/Vercel-Deployed-000000?style=flat-square&logo=vercel&logoColor=white)](https://dcyfr-labs.vercel.app)
 
+<a href="https://peerlist.io/dcyfr/project/dcyfr-labs" target="_blank" rel="noreferrer"><img src="https://peerlist.io/api/v1/projects/embed/PRJHJKNGMRMELKAQQ2ANMNEA7QRLNK?showUpvote=true&theme=dark" alt="DCYFR Labs on Peerlist" style="width: auto; height: 72px;" /></a>
+
 A modern, full-featured developer blog and portfolio built with Next.js (App Router), TypeScript, Tailwind CSS v4, and shadcn/ui. Features an MDX-powered blog with advanced analytics, GitHub integration, Redis-backed view counts, background job processing, and comprehensive security features.
 
 **🤖 AI Contributors:**
