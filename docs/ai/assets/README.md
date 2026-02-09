@@ -1,3 +1,5 @@
+{/* TLP:CLEAR */}
+
 # OpenCode VS Code Onboarding Assets
 
 This directory holds small UI assets for the OpenCode VS Code onboarding page.

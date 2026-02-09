@@ -1,5 +1,5 @@
 <!-- TLP:CLEAR -->
-{/_ TLP:CLEAR _/}
+{/_ TLP:AMBER - Internal Use Only _/}
 
 # GitHub Copilot Autofix: Deployment Checklist ✅
 
