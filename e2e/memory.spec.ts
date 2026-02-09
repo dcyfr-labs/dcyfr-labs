@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
+import type { Memory } from './utils/memory';
 
 /**
  * End-to-End Memory Layer Tests
@@ -144,7 +145,7 @@ test.describe('Memory Layer E2E', () => {
     );
 
     expect(generalResults.count).toBeGreaterThanOrEqual(2);
-    expect(generalResults.memories.some(m => m.content.includes('TypeScript'))).toBe(true);
+    expect(generalResults.memories.some((m: Memory) => m.content.includes('TypeScript'))).toBe(true);
   });
 
   test('should maintain user-specific memory isolation', async ({ page }) => {
@@ -226,9 +227,9 @@ test.describe('Memory Layer E2E', () => {
     expect(typeResults.count).toBeGreaterThan(0);
 
     // Verify semantic relevance - TypeScript and type-related memories should rank higher
-    const hasTypeScript = typeResults.memories.some(m => m.content.includes('TypeScript'));
-    const hasTypeSafety = typeResults.memories.some(m => m.content.includes('type safety'));
-    const hasStaticTyping = typeResults.memories.some(m => m.content.includes('Static typing'));
+    const hasTypeScript = typeResults.memories.some((m: Memory) => m.content.includes('TypeScript'));
+    const hasTypeSafety = typeResults.memories.some((m: Memory) => m.content.includes('type safety'));
+    const hasStaticTyping = typeResults.memories.some((m: Memory) => m.content.includes('Static typing'));
 
     expect(hasTypeScript || hasTypeSafety || hasStaticTyping).toBe(true);
 
