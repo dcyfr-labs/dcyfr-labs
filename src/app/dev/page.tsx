@@ -87,7 +87,7 @@ export default function DevToolsPage() {
   assertDevOr404();
 
   return (
-    <div className={CONTAINER_WIDTHS.wide}>
+    <div className={CONTAINER_WIDTHS.dashboard}>
       {/* Header */}
       <section className={SPACING.section}>
         <h1 className={TYPOGRAPHY.h1.standard}>Developer Tools</h1>
