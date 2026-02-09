@@ -11,12 +11,14 @@ import type { Options as RehypePrettyCodeOptions } from 'rehype-pretty-code';
 import {
   CopyCodeButton,
   CodeBlockWithHeader,
+  CodeComparison,
   EnhancedInlineCode,
   getInlineCodeVariant,
   HorizontalRule,
   ZoomableImage,
   Alert,
   KeyTakeaway,
+  MetricsCard,
   ContextClue,
   Figure,
   FigureProvider,
@@ -692,6 +694,10 @@ const components: NonNullable<MDXRemoteProps['components']> = {
   TableCaption,
   // Code Playground component for interactive examples
   CodePlayground,
+  // Code Comparison component for before/after code snippets
+  CodeComparison,
+  // Metrics Card component for displaying key statistics
+  MetricsCard,
   // Risk Accordion components for interactive risk sections
   RiskAccordion,
   RiskAccordionGroup,

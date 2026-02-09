@@ -7,10 +7,12 @@ export {
 } from "./cta";
 export { Alert, type AlertProps } from "./alert";
 export { KeyTakeaway, type KeyTakeawayProps } from "./key-takeaway";
+export { MetricsCard } from "./metrics-card";
 export { ContextClue, type ContextClueProps } from "./context-clue";
 export { ContactForm } from "./contact-form";
 export { CopyCodeButton } from "./copy-code-button";
 export { CodeBlockWithHeader } from "./code-block-with-header";
+export { CodeComparison } from "./code-comparison";
 export {
   EnhancedInlineCode,
   getInlineCodeVariant,
