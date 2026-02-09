@@ -1,0 +1,10 @@
+=== Baseline Metrics ===
+Date: Mon Feb  9 11:01:50 MST 2026
+Top-level lib files:       77
+Archive directories:       10
+Component test dirs:        7
+Centralized tests:       14
+Tests directory:       12
+Quick-ref files:       29
+GitHub workflows:       46
+

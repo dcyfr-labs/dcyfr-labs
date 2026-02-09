@@ -36,8 +36,6 @@ const pageConfig = {
   "/security": { changeFrequency: "yearly" as const, priority: 0.4 },
   "/accessibility": { changeFrequency: "yearly" as const, priority: 0.4 },
   "/legal": { changeFrequency: "yearly" as const, priority: 0.3 },
-  "/licenses": { changeFrequency: "yearly" as const, priority: 0.3 },
-  "/analytics": { changeFrequency: "yearly" as const, priority: 0.3 },
   "/activity": { changeFrequency: "hourly" as const, priority: 0.7 },
   "/bookmarks": { changeFrequency: "daily" as const, priority: 0.6 },
   "/likes": { changeFrequency: "daily" as const, priority: 0.6 },
