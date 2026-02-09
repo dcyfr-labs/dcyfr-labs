@@ -5,6 +5,12 @@
  * Query and analyze MDX blog posts and project content for strategic insights.
  * AI assistants can discover content, analyze topics, and find related articles.
  *
+ * @deprecated Migrated to @dcyfr/ai/mcp/servers/content-manager (Feb 2026)
+ * This implementation maintained for backward compatibility.
+ * New implementations should use createContentManagerServer() with ContentProvider.
+ * See src/mcp/start-content-server.ts for new usage pattern.
+ * Planned removal: March 2027 (1-year transition period)
+ *
  * @see docs/architecture/MCP_IMPLEMENTATION_PLAN.md - Phase 3
  */
 

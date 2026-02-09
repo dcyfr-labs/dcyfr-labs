@@ -5,6 +5,11 @@
  * Provides AI assistants with direct access to PromptIntel threat intelligence database.
  * Enables real-time security scanning, threat detection, and vulnerability reporting.
  *
+ * @deprecated Migrated to @dcyfr/ai/mcp/servers/promptintel (Feb 2026)
+ * This implementation maintained for backward compatibility.
+ * New implementations should import from @dcyfr/ai.
+ * Planned removal: March 2027 (1-year transition period)
+ *
  * Tools:
  * - promptintel:searchThreats - Search IoPC database for adversarial prompt patterns
  * - promptintel:getTaxonomy - Fetch threat attack technique taxonomy

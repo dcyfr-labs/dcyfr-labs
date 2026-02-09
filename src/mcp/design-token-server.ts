@@ -5,6 +5,12 @@
  * Provides real-time design token validation and compliance checking.
  * AI assistants can validate code against design tokens and get suggestions.
  *
+ * @deprecated Migrated to @dcyfr/ai/mcp/servers/design-tokens (Feb 2026)
+ * This implementation maintained for backward compatibility.
+ * New implementations should use createDesignTokenServer() with TokenProvider.
+ * See src/mcp/start-token-server.ts for new usage pattern.
+ * Planned removal: March 2027 (1-year transition period)
+ *
  * @see docs/architecture/MCP_IMPLEMENTATION_PLAN.md - Phase 2
  */
 

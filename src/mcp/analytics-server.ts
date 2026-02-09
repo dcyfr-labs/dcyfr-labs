@@ -2,6 +2,11 @@
  * Analytics MCP Server
  * Provides AI assistants with direct access to Redis analytics data
  *
+ * @deprecated Migrated to @dcyfr/ai/mcp/servers/analytics (Feb 2026)
+ * This implementation maintained for backward compatibility.
+ * New implementations should import from @dcyfr/ai.
+ * Planned removal: March 2027 (1-year transition period)
+ *
  * Tools:
  * - analytics:getPageViews - Query page view data
  * - analytics:getTrending - Find trending content

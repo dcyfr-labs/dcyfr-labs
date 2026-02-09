@@ -1,6 +1,24 @@
 {
   "posts": [
     {
+      "id": "post-20260315-a1b2c3d4",
+      "title": "AI Assistants as Development Partners",
+      "summary": "After 6 months and 12,000+ AI-assisted code changes, discover the 5 daily workflows that deliver 60% time savings, 75% more features shipped, and zero quality regression. Real patterns, measurable results, and pitfalls to avoid.",
+      "content": "After 6 months and 12,000+ AI-assisted code changes across 4 production projects, one thing is clear: the gap between \"AI writes buggy code\" and \"AI 10x'd my productivity\" isn't the model—it's the workflow. This post shares 5 repeatable workflows with real metrics from DCYFR Labs: 60% time savings, 75% more features shipped, zero quality regression. You'll learn how to treat AI assistants as Junior+ teammates with specific strengths and hard limits, not autocomplete on steroids. --- The Partners",
+      "tags": [
+        "AI",
+        "GitHub Copilot",
+        "Developer Productivity",
+        "MCP",
+        "Workflow",
+        "TypeScript"
+      ],
+      "series": "AI Workflows",
+      "publishedAt": "2026-03-15T12:00:00Z",
+      "readingTime": 13,
+      "url": "/blog/ai-assistants-as-development-partners"
+    },
+    {
       "id": "post-20260205-a3f7c1d2",
       "title": "Modernizing Blog Content with RIVET: A Component-Driven Enhancement Framework",
       "summary": "Introducing RIVET: a systematic framework for enhancing blog content with 8 interactive components. Real implementation data from 4 blog posts with 181 component instances, 97 passing tests, and measurable engagement improvements.",
@@ -112,25 +130,6 @@
       "url": "/blog/cve-2025-55182-react2shell"
     },
     {
-      "id": "post-20251112-26db545c",
-      "title": "LaTeX & Mathematical Expressions",
-      "summary": "Complete demonstration of LaTeX and mathematical expression rendering with KaTeX, including inline equations, integrals, matrices, calculus, and accessibility features.",
-      "content": "This post demonstrates mathematical expression rendering using KaTeX , providing beautiful typesetting for mathematical content inline and as block equations. --- What is KaTeX? KaTeX is a fast, easy-to-use JavaScript library for TeX math rendering on the web. The blog uses KaTeX through the remark-math and rehype-katex plugins to render LaTeX expressions at build time. KaTeX renders math at build time with zero client-side JavaScript, while MathJax requires runtime rendering in the browser. Thi",
-      "tags": [
-        "LaTeX",
-        "Math",
-        "KaTeX",
-        "Equations",
-        "Calculus",
-        "Demo",
-        "Accessibility"
-      ],
-      "series": "Features",
-      "publishedAt": "2025-11-12T12:00:00Z",
-      "readingTime": 6,
-      "url": "/blog/demo-latex-math"
-    },
-    {
       "id": "post-20251111-446fbfc7",
       "title": "Building with AI",
       "summary": "Exploring the Model Context Protocol (MCP) and how it's enabling new patterns for AI-assisted development with practical examples from real projects.",
@@ -146,24 +145,6 @@
       "publishedAt": "2025-11-11T12:00:00Z",
       "readingTime": 5,
       "url": "/blog/building-with-ai"
-    },
-    {
-      "id": "post-20251109-7c4f3e2a",
-      "title": "Interactive Diagrams with ReactFlow",
-      "summary": "Explore interactive, accessible diagrams built with ReactFlow for visualizing architecture, workflows, and decision trees. Features modern diagram presets and accessibility patterns.",
-      "content": "After migrating away from Mermaid, we've built a set of interactive diagrams using ReactFlow that provide better performance, accessibility, and customization. These diagrams are fully interactive—you can pan, zoom, and explore them freely. --- Why ReactFlow? ReactFlow offers several advantages over Mermaid: - Performance: Renders efficiently with thousands of nodes - Interactivity: Users can pan, zoom, and manipulate the diagram - Accessibility: Built with semantic HTML and ARIA labels - Custom",
-      "tags": [
-        "Diagrams",
-        "ReactFlow",
-        "Interactive",
-        "Visualization",
-        "Demo",
-        "Accessibility"
-      ],
-      "series": "Features",
-      "publishedAt": "2025-11-09T00:00:00Z",
-      "readingTime": 3,
-      "url": "/blog/demo-diagrams"
     },
     {
       "id": "post-20251005-cadc6db5",
@@ -215,58 +196,19 @@
       "publishedAt": "2020-02-16T12:00:00Z",
       "readingTime": 9,
       "url": "/blog/passing-comptia-security-plus"
-    },
-    {
-      "id": "post-20200108-647bfe00",
-      "title": "Code Examples & Syntax Highlighting",
-      "summary": "Complete showcase of syntax highlighting with code examples in 20+ programming languages supported by Shiki, featuring React 19 and Next.js 16 patterns.",
-      "content": "This page showcases syntax highlighting for code examples across all major programming languages supported by Shiki via rehype-pretty-code . Code blocks automatically receive theme-aware syntax highlighting with support for light and dark modes. --- TypeScript Complete TypeScript examples with types, interfaces, and generics: --- React & TSX React components with TypeScript, React 19 features, and modern hooks: React 19 introduces the hook for consuming promises directly in components, replacing",
-      "tags": [
-        "Code",
-        "Syntax Highlighting",
-        "MDX",
-        "Programming Languages",
-        "Demo",
-        "React 19",
-        "Next.js 16"
-      ],
-      "series": "Features",
-      "publishedAt": "2020-01-08T12:00:00Z",
-      "readingTime": 3,
-      "url": "/blog/demo-code"
-    },
-    {
-      "id": "post-20200107-04d94a8e",
-      "title": "Markdown Elements & Typography",
-      "summary": "Complete demonstration of markdown elements including typography, lists, blockquotes, tables, and HTML components. Features Lora serif font with modern MDX enhancements.",
-      "content": "This page demonstrates all markdown elements and typographic styles used throughout the site. It showcases the Lora serif font for body text paired with Geist Sans for UI elements. --- Typography Styles Heading Level 3 This is how a third-level heading looks with the current typography system. Heading Level 4 Fourth-level headings are slightly smaller but still maintain hierarchy. Heading Level 5 Fifth-level headings for deeply nested content. Heading Level 6 The smallest heading level available",
-      "tags": [
-        "Typography",
-        "Markdown",
-        "MDX",
-        "Demo",
-        "Accessibility"
-      ],
-      "series": "Features",
-      "publishedAt": "2020-01-07T12:00:00Z",
-      "readingTime": 6,
-      "url": "/blog/demo-markdown"
     }
   ],
   "tags": [
     "AI",
     "AI Agent Security",
     "AI Security",
-    "Accessibility",
     "Agentic AI",
     "Architecture",
     "AsyncLocalStorage",
     "Autonomous Systems",
     "Background Jobs",
     "CVE",
-    "Calculus",
     "Certification",
-    "Code",
     "CompTIA",
     "Component Architecture",
     "Components",
@@ -275,51 +217,49 @@
     "Demo",
     "Dependabot",
     "Design System",
+    "Developer Productivity",
     "Developer Tools",
-    "Diagrams",
-    "Equations",
     "Event-Driven",
+    "GitHub Copilot",
     "HTTP/2",
     "IT Career",
     "Inngest",
-    "Interactive",
-    "KaTeX",
     "LLM Security",
-    "LaTeX",
     "MCP",
     "MDX",
-    "Markdown",
-    "Math",
     "Next.js",
-    "Next.js 16",
     "Node.js",
     "OWASP",
     "Performance",
     "Portfolio",
     "Production",
     "Productivity",
-    "Programming Languages",
     "RSC",
     "React",
     "React 19",
     "React2Shell",
-    "ReactFlow",
     "Security",
     "Security+",
-    "Syntax Highlighting",
     "Tailwind CSS",
     "Threat Intelligence",
     "TypeScript",
-    "Typography",
     "UI",
     "UX",
     "Vercel",
-    "Visualization",
+    "Workflow",
     "shadcn/ui"
   ],
   "series": [
-    "Features",
+    "AI Workflows",
     "Portfolio"
   ],
-  "generatedAt": "2026-02-07T08:22:01.338Z"
+<<<<<<< HEAD
+<<<<<<< Updated upstream
+  "generatedAt": "2026-02-09T06:23:14.966Z"
+=======
+  "generatedAt": "2026-02-09T07:20:27.323Z"
+>>>>>>> Stashed changes
+=======
+  "generatedAt": "2026-02-09T06:34:35.138Z"
+>>>>>>> 38cdf95ddc6322e511fa69eb9a4bb2fb967a192f
 }
