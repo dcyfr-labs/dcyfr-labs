@@ -132,7 +132,11 @@ export async function POST(request: NextRequest) {
     //
     // IMPORTANT: Only enable BotID in production AND when explicitly enabled via env var
     // This prevents false positives in development/preview and requires deliberate activation
-    // TEMPORARILY DISABLED: BotID causing 403 errors - investigate configuration
+    // TEMPORARILY DISABLED: BotID causing 403 errors on initial setup.
+    // To re-enable: 1) Go to Vercel Dashboard → Settings → Security → Enable Bot Protection
+    //               2) Set ENABLE_BOTID=1 in Vercel environment variables
+    //               3) Uncomment the import at line 2 and the checkBotId() call below
+    //               4) Change `false` below back to the env var check
     const shouldUseBotId = false; // process.env.NODE_ENV === 'production' && process.env.ENABLE_BOTID === '1';
 
     if (shouldUseBotId) {

@@ -68,6 +68,12 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        // Security note: /activity/embed is a PUBLIC read-only widget designed for third-party embedding.
+        // ALLOWALL and wildcard CORS are intentional — this endpoint displays only public activity data
+        // (commits, blog posts, certifications) with no user PII or authenticated content.
+        // The embed generates static HTML that external sites can iframe; it requires no credentials.
+        // Risk: low — read-only public data, no sensitive information, no state-changing operations.
+        // If the embedded content ever includes user data, restrict to a known domain allowlist instead.
         source: '/activity/embed',
         headers: [
           {
