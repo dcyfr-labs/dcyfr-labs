@@ -205,7 +205,7 @@ export function TLDRSummary({
           {title}
         </h2>
 
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="flex flex-col gap-4">
           {sections.map((section, index) => (
             <TLDRSectionComponent key={index} title={section.title} items={section.items} />
           ))}
@@ -219,7 +219,7 @@ export function TLDRSummary({
               'text-sm font-medium',
               'text-secondary-foreground/90 hover:text-secondary-foreground',
               'dark:text-secondary-foreground/90 dark:hover:text-secondary-foreground',
-              ANIMATION.transition.colors,
+              ANIMATION.transition.theme,
               'underline decoration-secondary-foreground/40 hover:decoration-secondary-foreground',
               'dark:decoration-secondary-foreground/40 dark:hover:decoration-secondary-foreground',
               'underline-offset-4',
