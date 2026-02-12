@@ -206,11 +206,7 @@ export function verifyMCPIntegrity(response: MCPResponse): MCPIntegrityResult {
 
     // Check 3: Signature valid
     if (server?.sharedSecret) {
-      const isValid = verifyHMACSignature(
-        response,
-        response.signature,
-        server.sharedSecret
-      );
+      const isValid = verifyHMACSignature(response, response.signature, server.sharedSecret);
 
       if (isValid) {
         checks.signatureValid = true;
@@ -282,9 +278,7 @@ export function verifyHMACSignature(
       nonce: response.nonce,
     });
 
-    const expectedSignature = createHmac('sha256', sharedSecret)
-      .update(payload)
-      .digest('hex');
+    const expectedSignature = createHmac('sha256', sharedSecret).update(payload).digest('hex');
 
     // Timing-safe comparison
     const sigBuffer = Buffer.from(signature, 'hex');
@@ -322,9 +316,7 @@ export function generateHMACSignature(
  * Generate nonce
  */
 export function generateNonce(): string {
-  return createHash('sha256')
-    .update(`${Date.now()}-${Math.random()}`)
-    .digest('hex');
+  return createHash('sha256').update(`${Date.now()}-${Math.random()}`).digest('hex');
 }
 
 // ============================================================================
@@ -340,9 +332,7 @@ export function verifyAndUnwrap<T>(response: MCPResponse): T {
   const result = verifyMCPIntegrity(response);
 
   if (!result.valid) {
-    throw new Error(
-      `MCP integrity verification failed: ${result.errors.join(', ')}`
-    );
+    throw new Error(`MCP integrity verification failed: ${result.errors.join(', ')}`);
   }
 
   return response.data as T;
@@ -383,9 +373,7 @@ export function registerMCPServer(server: MCPServer): void {
 /**
  * Example: Verify PromptIntel MCP response
  */
-export async function verifyPromptIntelResponse(
-  response: unknown
-): Promise<unknown> {
+export async function verifyPromptIntelResponse(response: unknown): Promise<unknown> {
   // Cast to MCP response format
   const mcpResponse = response as MCPResponse;
 
@@ -428,3 +416,37 @@ export async function withMCPIntegrity<T>(
   // Verify and unwrap
   return verifyAndUnwrap<T>(mcpResponse);
 }
+
+// ============================================================================
+// Pre-registered Default MCP Servers
+// ============================================================================
+
+// Register standard MCP servers that ship with VS Code MCP
+registerMCPServer({
+  name: 'memory',
+  type: 'stdio',
+  trusted: true,
+  registeredAt: new Date().toISOString(),
+});
+
+registerMCPServer({
+  name: 'filesystem',
+  type: 'stdio',
+  trusted: true,
+  registeredAt: new Date().toISOString(),
+});
+
+registerMCPServer({
+  name: 'github',
+  type: 'stdio',
+  trusted: true,
+  registeredAt: new Date().toISOString(),
+});
+
+// Register custom DCYFR MCP servers
+registerMCPServer({
+  name: 'dcyfr-promptintel',
+  type: 'stdio',
+  trusted: true,
+  registeredAt: new Date().toISOString(),
+});

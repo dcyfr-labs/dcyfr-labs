@@ -6,7 +6,6 @@
  * This script is the entry point for the dcyfr-contentmanager MCP server.
  */
 
-/* TODO: Re-enable when @dcyfr/ai@1.0.4+ is published with MCP module
 import { createContentManagerServer } from '@dcyfr/ai/mcp';
 import { FilesystemContentProvider } from './content-provider-impl.js';
 import path from 'path';
@@ -31,9 +30,3 @@ server
     console.error('❌ Failed to start Content Manager MCP server:', error);
     process.exit(1);
   });
-*/
-
-// Temporary stub - MCP servers require @dcyfr/ai@1.0.4+ with MCP module
-console.error('❌ MCP Server temporarily unavailable');
-console.error('   Waiting for @dcyfr/ai@1.0.4+ to be published with MCP module');
-process.exit(0);

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-// import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
-// import { handleApiError } from '@/lib/error-handler';
-// import { getMemory } from '@dcyfr/ai'; // Memory module not yet available in published @dcyfr/ai
+import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
+import { handleApiError } from '@/lib/error-handler';
+import { getMemory } from '@dcyfr/ai';
 
 /**
  * POST /api/memory/add
@@ -28,13 +28,6 @@ type AddMemoryRequest = {
 };
 
 export async function POST(request: NextRequest) {
-  // Temporarily disabled - memory module not yet in published @dcyfr/ai package
-  return NextResponse.json(
-    { error: 'Memory API temporarily unavailable. Coming soon in @dcyfr/ai@1.0.4+' },
-    { status: 503 }
-  );
-
-  /* TODO: Re-enable when @dcyfr/ai@1.0.4+ is published
   let body: AddMemoryRequest | null = null;
 
   try {
@@ -73,10 +66,7 @@ export async function POST(request: NextRequest) {
 
     // Validate the parsed data
     if (!body || typeof body !== 'object') {
-      return NextResponse.json(
-        { error: 'Request body must be a JSON object' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Request body must be a JSON object' }, { status: 400 });
     }
 
     const { userId, message, context } = body;
@@ -98,10 +88,7 @@ export async function POST(request: NextRequest) {
 
     // Validate message length
     if (message.trim().length < 1) {
-      return NextResponse.json(
-        { error: 'message cannot be empty' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'message cannot be empty' }, { status: 400 });
     }
 
     if (message.length > 10000) {
@@ -113,10 +100,7 @@ export async function POST(request: NextRequest) {
 
     // Validate context if provided
     if (context !== undefined && (typeof context !== 'object' || context === null)) {
-      return NextResponse.json(
-        { error: 'context must be an object if provided' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'context must be an object if provided' }, { status: 400 });
     }
 
     // Add memory
@@ -166,10 +150,6 @@ export async function POST(request: NextRequest) {
       return new Response(null, { status: errorInfo.statusCode });
     }
 
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: errorInfo.statusCode }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: errorInfo.statusCode });
   }
-  */
 }

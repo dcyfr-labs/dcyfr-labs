@@ -145,11 +145,7 @@ describe('MCP Integrity Verification', () => {
       // Tamper with signature
       const tamperedSignature = signature.slice(0, -1) + 'x';
 
-      const isValid = verifyHMACSignature(
-        mcpResponse,
-        tamperedSignature,
-        sharedSecret
-      );
+      const isValid = verifyHMACSignature(mcpResponse, tamperedSignature, sharedSecret);
       expect(isValid).toBe(false);
     });
 
@@ -165,11 +161,7 @@ describe('MCP Integrity Verification', () => {
       const signature = generateHMACSignature(response, sharedSecret);
       const mcpResponse = { ...response, signature };
 
-      const isValid = verifyHMACSignature(
-        mcpResponse,
-        signature,
-        'wrong-secret'
-      );
+      const isValid = verifyHMACSignature(mcpResponse, signature, 'wrong-secret');
       expect(isValid).toBe(false);
     });
 
@@ -191,11 +183,7 @@ describe('MCP Integrity Verification', () => {
         signature,
       };
 
-      const isValid = verifyHMACSignature(
-        tamperedResponse,
-        signature,
-        sharedSecret
-      );
+      const isValid = verifyHMACSignature(tamperedResponse, signature, sharedSecret);
       expect(isValid).toBe(false);
     });
   });
@@ -410,9 +398,7 @@ describe('MCP Integrity Verification', () => {
         timestamp: new Date().toISOString(),
       };
 
-      expect(() => verifyAndUnwrap(response)).toThrow(
-        'MCP integrity verification failed'
-      );
+      expect(() => verifyAndUnwrap(response)).toThrow('MCP integrity verification failed');
     });
   });
 
@@ -427,11 +413,7 @@ describe('MCP Integrity Verification', () => {
 
       const mockCall = vi.fn().mockResolvedValue({ result: 'success' });
 
-      const result = await withMCPIntegrity<{ result: string }>(
-        'memory',
-        'read',
-        mockCall
-      );
+      const result = await withMCPIntegrity<{ result: string }>('memory', 'read', mockCall);
 
       expect(result).toEqual({ result: 'success' });
       expect(mockCall).toHaveBeenCalledOnce();
@@ -440,17 +422,43 @@ describe('MCP Integrity Verification', () => {
     it('should reject untrusted MCP server', async () => {
       const mockCall = vi.fn().mockResolvedValue({ result: 'success' });
 
-      await expect(
-        withMCPIntegrity('untrusted', 'test', mockCall)
-      ).rejects.toThrow('MCP server "untrusted" is not trusted');
+      await expect(withMCPIntegrity('untrusted', 'test', mockCall)).rejects.toThrow(
+        'MCP server "untrusted" is not trusted'
+      );
 
       expect(mockCall).not.toHaveBeenCalled();
     });
   });
 
-  // TODO: Re-enable when MCP servers are pre-registered globally
-  // Currently failing because beforeEach() clears the registry and there's no global initialization
-  describe.skip('Pre-registered MCP Servers', () => {
+  describe('Pre-registered MCP Servers', () => {
+    beforeEach(() => {
+      // Re-register default servers after parent beforeEach clears registry
+      registerMCPServer({
+        name: 'memory',
+        type: 'stdio',
+        trusted: true,
+        registeredAt: new Date().toISOString(),
+      });
+      registerMCPServer({
+        name: 'filesystem',
+        type: 'stdio',
+        trusted: true,
+        registeredAt: new Date().toISOString(),
+      });
+      registerMCPServer({
+        name: 'github',
+        type: 'stdio',
+        trusted: true,
+        registeredAt: new Date().toISOString(),
+      });
+      registerMCPServer({
+        name: 'dcyfr-promptintel',
+        type: 'stdio',
+        trusted: true,
+        registeredAt: new Date().toISOString(),
+      });
+    });
+
     it('should have standard MCP servers registered', () => {
       // Note: These are registered globally, so we check without clearing
       const memory = getMCPServerInfo('memory');

@@ -6,7 +6,6 @@
  * This script is the entry point for the dcyfr-designtokens MCP server.
  */
 
-/* TODO: Re-enable when @dcyfr/ai@1.0.4+ is published with MCP module
 import { createDesignTokenServer } from '@dcyfr/ai/mcp';
 import { DcyfrLabsTokenProvider } from './token-provider-impl.js';
 
@@ -25,9 +24,3 @@ server
     console.error('❌ Failed to start Design Tokens MCP server:', error);
     process.exit(1);
   });
-*/
-
-// Temporary stub - MCP servers require @dcyfr/ai@1.0.4+ with MCP module
-console.error('❌ MCP Server temporarily unavailable');
-console.error('   Waiting for @dcyfr/ai@1.0.4+ to be published with MCP module');
-process.exit(0);

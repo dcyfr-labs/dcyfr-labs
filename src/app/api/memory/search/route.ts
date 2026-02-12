@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-// import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
-// import { handleApiError } from '@/lib/error-handler';
-// import { getMemory, type MemorySearchResult } from '@dcyfr/ai'; // Memory module not yet available in published @dcyfr/ai
+import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
+import { handleApiError } from '@/lib/error-handler';
+import { getMemory, type MemorySearchResult } from '@dcyfr/ai';
 
 /**
  * POST /api/memory/search
@@ -39,13 +39,6 @@ type MemoryResult = {
 };
 
 export async function POST(request: NextRequest) {
-  // Temporarily disabled - memory module not yet in published @dcyfr/ai package
-  return NextResponse.json(
-    { error: 'Memory search API temporarily unavailable. Coming soon in @dcyfr/ai@1.0.4+' },
-    { status: 503 }
-  );
-
-  /* TODO: Re-enable when @dcyfr/ai@1.0.4+ is published
   let body: SearchMemoryRequest | null = null;
 
   try {
@@ -84,10 +77,7 @@ export async function POST(request: NextRequest) {
 
     // Validate the parsed data
     if (!body || typeof body !== 'object') {
-      return NextResponse.json(
-        { error: 'Request body must be a JSON object' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Request body must be a JSON object' }, { status: 400 });
     }
 
     const { userId, query, limit = DEFAULT_LIMIT } = body;
@@ -113,25 +103,16 @@ export async function POST(request: NextRequest) {
     }
 
     if (query.length > 1000) {
-      return NextResponse.json(
-        { error: 'query cannot exceed 1,000 characters' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'query cannot exceed 1,000 characters' }, { status: 400 });
     }
 
     // Validate limit
     if (typeof limit !== 'number' || limit < 1) {
-      return NextResponse.json(
-        { error: 'limit must be a positive number' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'limit must be a positive number' }, { status: 400 });
     }
 
     if (limit > MAX_LIMIT) {
-      return NextResponse.json(
-        { error: `limit cannot exceed ${MAX_LIMIT}` },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: `limit cannot exceed ${MAX_LIMIT}` }, { status: 400 });
     }
 
     // Search memories
@@ -192,10 +173,6 @@ export async function POST(request: NextRequest) {
       return new Response(null, { status: errorInfo.statusCode });
     }
 
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: errorInfo.statusCode }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: errorInfo.statusCode });
   }
-  */
 }
