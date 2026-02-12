@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
 import { handleApiError } from '@/lib/error-handler';
-import { getMemory } from '@dcyfr/ai';
+import { getMemory } from '@dcyfr/ai/memory';
 
 /**
  * POST /api/memory/add
