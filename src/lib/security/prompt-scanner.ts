@@ -100,6 +100,20 @@ const LOCAL_PATTERNS = [
     severity: 'high' as const,
     confidence: 0.9,
   },
+  {
+    // Event handler attributes on any HTML element (e.g. onerror=, onclick=, onload=)
+    pattern: /\bon\w+\s*=/i,
+    category: 'xss-attempt',
+    severity: 'high' as const,
+    confidence: 0.85,
+  },
+  {
+    // Dangerous URI schemes: javascript:, data:text/html, vbscript:
+    pattern: /(javascript:|data:text\/html|vbscript:)/i,
+    category: 'xss-attempt',
+    severity: 'high' as const,
+    confidence: 0.9,
+  },
 ];
 
 // ============================================================================

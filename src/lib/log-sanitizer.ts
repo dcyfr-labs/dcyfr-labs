@@ -25,8 +25,8 @@ export function sanitizeForLog(input: string | null | undefined): string {
   return input
     // Remove all ANSI escape sequences (must be first to catch all variations)
     .replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '')
-    // Remove control chars (newlines, null bytes, tabs, etc.)
-    .replace(/[\r\n\x00-\x1F\x7F]/g, '')
+    // Remove control chars (newlines, null bytes, C0/C1 controls, Unicode line/paragraph separators)
+    .replace(/[\r\n\x00-\x1F\x7F\u0080-\u009F\u2028\u2029]/g, '')
     // Limit length to prevent log spam
     .slice(0, 200);
 }

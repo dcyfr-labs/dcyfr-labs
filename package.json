@@ -98,6 +98,11 @@
     "changelog:check": "node scripts/validate-changelog-sync.mjs",
     "changelog:check:strict": "node scripts/validate-changelog-sync.mjs --strict",
     "changelog:validate": "node scripts/validate-changelog-format.mjs",
+    "changelog:generate": "node scripts/generate-changelog-entry.mjs",
+    "version:check": "node scripts/validate-version.mjs",
+    "version:check:strict": "node scripts/validate-version.mjs --strict",
+    "version:bump": "node scripts/bump-version-manual.mjs",
+    "version:bump:dry-run": "node scripts/bump-version-manual.mjs --dry-run",
     "release:bump": "node scripts/release/bump-version.mjs",
     "release:bump:dry-run": "node scripts/release/bump-version.mjs --dry-run",
     "release:changelog": "node scripts/release/generate-changelog-entry.mjs",
@@ -449,6 +454,11 @@
     "require-in-the-middle": "8.0.1",
     "inflight": "npm:@npmcli/inflight@^1.0.2",
     "rimraf": "^5.0.0",
-    "glob": "^10.0.0"
+    "glob": "^10.0.0",
+    "tar": ">=7.5.7",
+    "axios": ">=1.13.5",
+    "hono": ">=4.11.7",
+    "langsmith": ">=0.4.6",
+    "undici": ">=6.23.0"
   }
 }

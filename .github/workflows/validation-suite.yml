@@ -252,9 +252,74 @@ jobs:
           echo "- Sync: Checked for staleness (>7 days)" >> $GITHUB_STEP_SUMMARY
           echo "- Status: Soft warnings (non-blocking)" >> $GITHUB_STEP_SUMMARY
 
+  version-validation:
+    needs: setup
+    name: Version Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Check version matches CalVer
+        id: calver
+        run: |
+          EXPECTED=$(date -u +%Y.%m.%d)
+          ACTUAL=$(node -p "require('./package.json').version")
+
+          echo "Current version: $ACTUAL"
+          echo "Expected (today): $EXPECTED"
+
+          # Compare dates (version should not be in the future)
+          ACTUAL_DATE=$(echo $ACTUAL | tr '.' '-')
+          EXPECTED_DATE=$(echo $EXPECTED | tr '.' '-')
+
+          if [[ "$ACTUAL_DATE" > "$EXPECTED_DATE" ]]; then
+            echo "::error::Version $ACTUAL is in the future (expected max: $EXPECTED)"
+            exit 1
+          fi
+
+          # Warn if version is more than 7 days old
+          ACTUAL_TIMESTAMP=$(date -j -f "%Y-%m-%d" "$ACTUAL_DATE" +%s 2>/dev/null || echo 0)
+          EXPECTED_TIMESTAMP=$(date -j -f "%Y-%m-%d" "$EXPECTED_DATE" +%s 2>/dev/null || date +%s)
+          DIFF_DAYS=$(( ($EXPECTED_TIMESTAMP - $ACTUAL_TIMESTAMP) / 86400 ))
+
+          if [ $DIFF_DAYS -gt 7 ]; then
+            echo "::warning::Version $ACTUAL is $DIFF_DAYS days old (expected <7 days for CalVer)"
+          fi
+
+          echo "✅ Version $ACTUAL is valid"
+
+      - name: Validate CalVer format
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+
+          # Check format: YYYY.MM.DD or YYYY.MM.DD.N
+          if [[ ! "$VERSION" =~ ^[0-9]{4}\.[0-9]{2}\.[0-9]{2}(\.[0-9]+)?$ ]]; then
+            echo "::error::Version $VERSION does not match CalVer format (YYYY.MM.DD or YYYY.MM.DD.N)"
+            exit 1
+          fi
+
+          echo "✅ Version $VERSION matches CalVer format"
+
+      - name: Summary
+        if: always()
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "### 📅 Version Validation" >> $GITHUB_STEP_SUMMARY
+          echo "- Current version: **$VERSION**" >> $GITHUB_STEP_SUMMARY
+          echo "- Format: CalVer (YYYY.MM.DD) ✅" >> $GITHUB_STEP_SUMMARY
+          echo "- Auto-update: Configured (.github/workflows/auto-calver.yml)" >> $GITHUB_STEP_SUMMARY
+
   # Unified summary
   summary:
-    needs: [content-validation, botid-validation, dependabot-validation, allowlist-validation, changelog-validation]
+    needs: [content-validation, botid-validation, dependabot-validation, allowlist-validation, changelog-validation, version-validation]
     if: always()
     runs-on: ubuntu-latest
 
@@ -296,6 +361,12 @@ jobs:
             echo "| Changelog Validation | ⚠️ Warning |" >> $GITHUB_STEP_SUMMARY
           fi
 
+          if [ "${{ needs.version-validation.result }}" == "success" ]; then
+            echo "| Version Validation | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Version Validation | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "All validation checks completed." >> $GITHUB_STEP_SUMMARY
 
@@ -304,7 +375,8 @@ jobs:
           needs.content-validation.result == 'failure' ||
           needs.botid-validation.result == 'failure' ||
           needs.dependabot-validation.result == 'failure' ||
-          needs.allowlist-validation.result == 'failure'
+          needs.allowlist-validation.result == 'failure' ||
+          needs.version-validation.result == 'failure'
         run: |
           echo "❌ One or more validations failed"
           exit 1

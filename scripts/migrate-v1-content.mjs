@@ -23,7 +23,7 @@
  */
 
 import Anthropic from '@anthropic-ai/sdk';
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'fs';
+import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync, readdirSync } from 'fs';
 import { join, dirname, basename } from 'path';
 import { fileURLToPath } from 'url';
 import chalk from 'chalk';
@@ -286,7 +286,11 @@ function addRedirect(v1Url, v2Url) {
     return;
   }
 
-  writeFileSync(CONFIG.redirectsPath, JSON.stringify(redirects, null, 2));
+  // Write atomically: write to temp file first, then rename (atomic on POSIX)
+  // Prevents TOCTOU race condition between read (line above) and write (CWE-367)
+  const tmpPath = `${CONFIG.redirectsPath}.${process.pid}.tmp`;
+  writeFileSync(tmpPath, JSON.stringify(redirects, null, 2));
+  renameSync(tmpPath, CONFIG.redirectsPath);
 }
 
 /**

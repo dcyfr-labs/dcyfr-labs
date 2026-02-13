@@ -76,8 +76,8 @@ function readEntry(path) {
 function validateFormat(content) {
   // Check for required elements
   const hasHeader = /^# Changelog/m.test(content);
-  // FIX: CWE-185 - Add anchors to prevent 'github.com' appearing anywhere in URL
-  const hasKeepAChangelogRef = /https?:\/\/keepachangelog\.com/i.test(content);
+  // CWE-185: Anchored pattern so only standalone URLs match (not URLs embedded in other hostnames)
+  const hasKeepAChangelogRef = /(?:^|[\s"'([])https?:\/\/keepachangelog\.com/im.test(content);
   const hasCalVerRef = /Calendar Versioning|calver/i.test(content);
 
   if (!hasHeader) {

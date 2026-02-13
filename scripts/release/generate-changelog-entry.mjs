@@ -23,7 +23,7 @@
  * @see https://keepachangelog.com/ for format specification
  */
 
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -134,13 +134,11 @@ function getPRDiff(prNumber) {
       return '';
     }
 
-    // Get merge commit for PR
-    const mergeCommit = execSync(
-      `git log --oneline --merges --grep="Merge pull request #${prNumber}" -1 --format=%H`,
-      {
-        cwd: ROOT_DIR,
-        encoding: 'utf-8',
-      }
+    // Get merge commit for PR (use execFileSync with array args to avoid shell injection)
+    const mergeCommit = execFileSync(
+      'git',
+      ['log', '--oneline', '--merges', `--grep=Merge pull request #${prNumber}`, '-1', '--format=%H'],
+      { cwd: ROOT_DIR, encoding: 'utf-8' }
     ).trim();
 
     if (!mergeCommit) {
@@ -149,7 +147,7 @@ function getPRDiff(prNumber) {
     }
 
     // Get diff from merge commit
-    const diff = execSync(`git diff ${mergeCommit}^..${mergeCommit}`, {
+    const diff = execFileSync('git', ['diff', `${mergeCommit}^..${mergeCommit}`], {
       cwd: ROOT_DIR,
       encoding: 'utf-8',
     });
@@ -200,19 +198,17 @@ function getCommitMessages(prNumber) {
       return [];
     }
 
-    const mergeCommit = execSync(
-      `git log --oneline --merges --grep="Merge pull request #${prNumber}" -1 --format=%H`,
-      {
-        cwd: ROOT_DIR,
-        encoding: 'utf-8',
-      }
+    const mergeCommit = execFileSync(
+      'git',
+      ['log', '--oneline', '--merges', `--grep=Merge pull request #${prNumber}`, '-1', '--format=%H'],
+      { cwd: ROOT_DIR, encoding: 'utf-8' }
     ).trim();
 
     if (!mergeCommit) {
       return [];
     }
 
-    const commits = execSync(`git log ${mergeCommit}^..${mergeCommit} --format=%s`, {
+    const commits = execFileSync('git', ['log', `${mergeCommit}^..${mergeCommit}`, '--format=%s'], {
       cwd: ROOT_DIR,
       encoding: 'utf-8',
     }).trim();
