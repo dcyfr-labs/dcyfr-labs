@@ -7,6 +7,79 @@ and this project uses [Calendar Versioning](https://calver.org/) with the `YYYY.
 
 **Breaking changes** are marked with ⚠️ BREAKING in the version header.
 
+## [2026.02.12]
+
+### Changed
+
+- **Design Token Standardization - Production Deployment** - Merged 21 commits from preview branch delivering critical quality improvements
+  - Achieved zero design token violations (155 violations → 0)
+  - Fixed all test failures (77 failures → 0)
+  - 95%+ design token compliance across all components (exceeds quality gate threshold)
+  - All components now use SPACING, TYPOGRAPHY, and SEMANTIC_COLORS tokens
+  - Eliminated hardcoded spacing (`space-y-*`, `mb-*`, `mt-*`)
+  - Eliminated hardcoded typography (`text-*`, `font-*`)
+  - Production-ready design system compliance achieved
+
+### Added
+
+- **Comprehensive API Utilities** - Enhanced security, monitoring, and usage tracking capabilities
+  - API security layer improvements
+  - Monitoring and observability utilities
+  - Usage tracking and analytics infrastructure
+  - Enhanced error handling and logging
+
+- **MCP Server Integration** - Model Context Protocol functionality enabled in production
+  - MCP server functionality activated
+  - Tests updated and passing
+  - Integration verified and production-ready
+
+- **Developer Tools** - Improved internal tooling and security
+  - Dev tools index page and navigation
+  - `/licenses` and `/analytics` moved to dev-only pages
+  - Security isolation for internal tools
+  - Enhanced developer experience
+
+### Fixed
+
+- **Agent Type Refactoring** - Resolved naming conflicts and improved type safety
+  - Renamed agent types to avoid conflicts
+  - Updated AgentRouter initialization to use `getGlobalAgentRouter` from `@dcyfr/ai`
+  - Improved import paths for `getMemory` in API routes
+
+- **Documentation Organization** - Improved compliance and discoverability
+  - Reorganized documentation to proper `docs/` subdirectories
+  - TLP classification compliance
+  - Dev tools comprehensive audit report added
+
+### Technical
+
+- **Merge Details** - preview → main (commit 04990c84)
+  - 21 preview commits merged
+  - 5 main commits reconciled
+  - Zero conflicts (clean automatic merge)
+  - Nuclei templates submodule updated to latest version
+  - next-mdx-remote dependency updated to 6.0.0
+
+- **Dependency Updates** - Post-merge Dependabot updates (commits 04990c84..30b6ed39)
+  - jsdom 27.4.0 → 28.0.0
+  - eslint (linting-formatting group)
+  - framer-motion (ui-framework group)
+  - inngest (background-jobs group)
+  - googleapis 170.1.0 → 171.4.0
+  - typescript-stack group (2 updates)
+  - dev-tools group (3 updates)
+  - qs 6.14.1 → 6.14.2
+
+- **Quality Gates** - All validation passed before production deployment
+  - Linting: ✅ (eslint clean)
+  - Tests: ✅ (128 passed, 13 skipped)
+  - Build validations: ✅ (categories, frontmatter, search index, cache)
+  - Merge test: ✅ (no conflicts detected)
+
+### Rationale
+
+This release represents a major quality milestone for DCYFR Labs, delivering the design token standardization work that establishes production-ready design system compliance. The merge also brings critical infrastructure improvements (MCP integration, API utilities, dev tools) that enhance both security and developer experience. All changes were validated through comprehensive testing and merge analysis before deployment.
+
 ## [2026.01.31]
 
 ### Changed
