@@ -346,7 +346,7 @@
     "fuse.js": "^7.1.0",
     "geist": "^1.7.0",
     "glob": "^10.0.0",
-    "googleapis": "^170.0.0",
+    "googleapis": "^171.4.0",
     "gray-matter": "^4.0.3",
     "he": "^1.2.0",
     "html2canvas": "^1.4.1",
