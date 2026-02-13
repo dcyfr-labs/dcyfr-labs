@@ -167,16 +167,6 @@ const nextConfig: NextConfig = {
       };
     }
 
-    // Improve middleware compilation for Vercel deployments
-    if (config.name === 'middleware') {
-      // Ensure middleware artifacts are generated correctly
-      config.optimization = {
-        ...config.optimization,
-        // Disable mangling for middleware to prevent nft.json generation issues
-        minimize: false,
-      };
-    }
-
     return config;
   },
 };

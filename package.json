@@ -23,7 +23,7 @@
     "dev:check": "node scripts/dev-utils.mjs check",
     "dev:check:fast": "node scripts/dev-utils.mjs check -- --fast",
     "dev:check:fix": "node scripts/dev-utils.mjs check -- --fix",
-    "build": "npm run validate:categories && npm run validate:frontmatter && npm run build:search && npm run build:populate-cache && npm run sync:metrics:quick && next build",
+    "build": "npm run validate:categories && npm run validate:frontmatter && npm run build:search && npm run build:populate-cache && npm run sync:metrics:quick && next build --webpack",
     "build:search": "tsx src/lib/search/build-index.ts",
     "build:populate-cache": "node scripts/populate-build-cache.mjs",
     "populate:cache": "node scripts/populate-local-cache.mjs",
