@@ -126,13 +126,6 @@
         "alignments": [],
         "badge_template_activities": [
           {
-            "id": "8513a728-1df3-46ab-9025-107f9850b959",
-            "activity_type": "Application",
-            "required_badge_template_id": null,
-            "title": "Candidate submits application for certification attempt",
-            "url": "https://www.giac.org/registration/cert-attempt"
-          },
-          {
             "id": "c5c22518-5199-4f3c-bc7b-811e5f748ef9",
             "activity_type": "Other",
             "required_badge_template_id": null,
@@ -152,10 +145,24 @@
             "required_badge_template_id": null,
             "title": "Proctored high stakes exam",
             "url": "https://www.giac.org/certification/defensible-security-architecture-gdsa#objectives"
+          },
+          {
+            "id": "8513a728-1df3-46ab-9025-107f9850b959",
+            "activity_type": "Application",
+            "required_badge_template_id": null,
+            "title": "Candidate submits application for certification attempt",
+            "url": "https://www.giac.org/registration/cert-attempt"
           }
         ],
         "endorsements": [],
         "skills": [
+          {
+            "id": "46911cfd-130c-4826-b776-9c293ff36e42",
+            "name": "Attack Surface Analysis",
+            "vanity_slug": "attack-surface-analysis",
+            "canonical": false,
+            "faethm_id": "FS006613"
+          },
           {
             "id": "eb50ffec-11d8-470c-8c9a-4310192d9d75",
             "name": "Information Security",
@@ -264,13 +271,6 @@
             "vanity_slug": "cloud-security",
             "canonical": true,
             "faethm_id": "FS001341"
-          },
-          {
-            "id": "46911cfd-130c-4826-b776-9c293ff36e42",
-            "name": "Attack Surface Analysis",
-            "vanity_slug": "attack-surface-analysis",
-            "canonical": false,
-            "faethm_id": "FS006613"
           }
         ]
       },
@@ -421,18 +421,18 @@
         "alignments": [],
         "badge_template_activities": [
           {
+            "id": "31bff50b-3e47-436f-9817-945fed6d7004",
+            "activity_type": "Application",
+            "required_badge_template_id": null,
+            "title": "Candidate submits application for certification attempt",
+            "url": "https://www.giac.org/registration/cert-attempt"
+          },
+          {
             "id": "b6910b61-2546-4b0b-bf23-c5c984fe57bd",
             "activity_type": "Education Experience",
             "required_badge_template_id": null,
             "title": "Acquire skills via industry experience or from a training course",
             "url": "https://www.sans.org/cyber-security-courses/strategic-security-planning-policy-leadership/"
-          },
-          {
-            "id": "e7e578e5-23a5-406a-973b-de8df09bc19f",
-            "activity_type": "Assessment",
-            "required_badge_template_id": null,
-            "title": "Proctored high stakes exam",
-            "url": "http://www.giac.org/gstrt"
           },
           {
             "id": "1e43a555-5d4f-4667-91d8-4944926b9013",
@@ -442,15 +442,22 @@
             "url": "https://www.giac.org/about/ethics"
           },
           {
-            "id": "31bff50b-3e47-436f-9817-945fed6d7004",
-            "activity_type": "Application",
+            "id": "e7e578e5-23a5-406a-973b-de8df09bc19f",
+            "activity_type": "Assessment",
             "required_badge_template_id": null,
-            "title": "Candidate submits application for certification attempt",
-            "url": "https://www.giac.org/registration/cert-attempt"
+            "title": "Proctored high stakes exam",
+            "url": "http://www.giac.org/gstrt"
           }
         ],
         "endorsements": [],
         "skills": [
+          {
+            "id": "8bebc893-3c93-4d22-ba1f-243a0ae9c5c4",
+            "name": "Stakeholder Management",
+            "vanity_slug": "stakeholder-management",
+            "canonical": true,
+            "faethm_id": "FS007014"
+          },
           {
             "id": "3548013a-e914-4b23-b4fc-3fd5a416fa30",
             "name": "Artificial Intelligence (AI)",
@@ -459,53 +466,11 @@
             "faethm_id": "FS000456"
           },
           {
-            "id": "b6c106d8-b7b1-4a42-8228-a9e1e22c3471",
-            "name": "Business Analysis",
-            "vanity_slug": "business-analysis",
+            "id": "dfe1c26e-a8e2-4d07-97bc-4c6cb6c865a3",
+            "name": "Team Management",
+            "vanity_slug": "team-management",
             "canonical": true,
-            "faethm_id": "FS000887"
-          },
-          {
-            "id": "cd7220ad-00cb-47f9-8e07-03c6c7572ebd",
-            "name": "Business Strategy",
-            "vanity_slug": "business-strategy",
-            "canonical": false,
-            "faethm_id": "FS000917"
-          },
-          {
-            "id": "eb50ffec-11d8-470c-8c9a-4310192d9d75",
-            "name": "Information Security",
-            "vanity_slug": "information-security",
-            "canonical": true,
-            "faethm_id": "FS009775"
-          },
-          {
-            "id": "e3b797ca-6bf5-4b6d-8447-7ed78c3d1a52",
-            "name": "Leadership",
-            "vanity_slug": "leadership",
-            "canonical": true,
-            "faethm_id": "FS004232"
-          },
-          {
-            "id": "63800fe8-9d92-4765-84a7-9abf9a8286d5",
-            "name": "Risk And Threat Management",
-            "vanity_slug": "risk-and-threat-management",
-            "canonical": false,
-            "faethm_id": "FS007477"
-          },
-          {
-            "id": "cff3074e-a17e-45d4-ba3b-815c193458a6",
-            "name": "Security Policy Development",
-            "vanity_slug": "security-policy-development",
-            "canonical": false,
-            "faethm_id": "FS006625"
-          },
-          {
-            "id": "82894fac-675f-4d66-ab57-c6b9209198f4",
-            "name": "Security Policy Management",
-            "vanity_slug": "security-policy-management",
-            "canonical": false,
-            "faethm_id": "FS006625"
+            "faethm_id": "FS007341"
           },
           {
             "id": "2ec07aff-8b09-44ca-8ddf-1547cf00a234",
@@ -515,18 +480,53 @@
             "faethm_id": "FS006611"
           },
           {
-            "id": "8bebc893-3c93-4d22-ba1f-243a0ae9c5c4",
-            "name": "Stakeholder Management",
-            "vanity_slug": "stakeholder-management",
-            "canonical": true,
-            "faethm_id": "FS007014"
+            "id": "82894fac-675f-4d66-ab57-c6b9209198f4",
+            "name": "Security Policy Management",
+            "vanity_slug": "security-policy-management",
+            "canonical": false,
+            "faethm_id": "FS006625"
           },
           {
-            "id": "dfe1c26e-a8e2-4d07-97bc-4c6cb6c865a3",
-            "name": "Team Management",
-            "vanity_slug": "team-management",
+            "id": "cff3074e-a17e-45d4-ba3b-815c193458a6",
+            "name": "Security Policy Development",
+            "vanity_slug": "security-policy-development",
+            "canonical": false,
+            "faethm_id": "FS006625"
+          },
+          {
+            "id": "63800fe8-9d92-4765-84a7-9abf9a8286d5",
+            "name": "Risk And Threat Management",
+            "vanity_slug": "risk-and-threat-management",
+            "canonical": false,
+            "faethm_id": "FS007477"
+          },
+          {
+            "id": "e3b797ca-6bf5-4b6d-8447-7ed78c3d1a52",
+            "name": "Leadership",
+            "vanity_slug": "leadership",
             "canonical": true,
-            "faethm_id": "FS007341"
+            "faethm_id": "FS004232"
+          },
+          {
+            "id": "eb50ffec-11d8-470c-8c9a-4310192d9d75",
+            "name": "Information Security",
+            "vanity_slug": "information-security",
+            "canonical": true,
+            "faethm_id": "FS009775"
+          },
+          {
+            "id": "cd7220ad-00cb-47f9-8e07-03c6c7572ebd",
+            "name": "Business Strategy",
+            "vanity_slug": "business-strategy",
+            "canonical": false,
+            "faethm_id": "FS000917"
+          },
+          {
+            "id": "b6c106d8-b7b1-4a42-8228-a9e1e22c3471",
+            "name": "Business Analysis",
+            "vanity_slug": "business-analysis",
+            "canonical": true,
+            "faethm_id": "FS000887"
           }
         ]
       },
@@ -676,26 +676,19 @@
         ],
         "alignments": [
           {
-            "id": "07b162cf-e00c-4c9f-9023-e01eea06fa5e",
-            "name": "GCIH received ANAB accreditation December 2009",
-            "url": "https://anabpd.ansi.org/Accreditation/credentialing/personnel-certification/AllDirectoryDetails?&prgID=201&OrgId=98&statusID=4",
-            "description": null
-          },
-          {
             "id": "cdc4321a-3d0c-4cbd-8fba-49313eae48cd",
             "name": "ANAB Accredited ISO/IEC 17024 Personnel Certification Body",
             "url": "https://anab.ansi.org/about-anab",
             "description": "ANAB accreditation is generally recognized as the highest standard in personnel certification accreditation."
+          },
+          {
+            "id": "07b162cf-e00c-4c9f-9023-e01eea06fa5e",
+            "name": "GCIH received ANAB accreditation December 2009",
+            "url": "https://anabpd.ansi.org/Accreditation/credentialing/personnel-certification/AllDirectoryDetails?&prgID=201&OrgId=98&statusID=4",
+            "description": null
           }
         ],
         "badge_template_activities": [
-          {
-            "id": "6a3f8271-63bd-4a86-ac59-3ce37c79f3f6",
-            "activity_type": "Education Experience",
-            "required_badge_template_id": null,
-            "title": "Acquire skills via industry experience or from a training course",
-            "url": "http://www.sans.org/sec504"
-          },
           {
             "id": "9be57c32-1d42-4f22-a31f-64f1a02c2798",
             "activity_type": "Application",
@@ -704,36 +697,29 @@
             "url": "http://www.giac.org/registration/cert-attempt"
           },
           {
-            "id": "8ed335cd-acde-4306-a752-b99b74784108",
-            "activity_type": "Assessment",
-            "required_badge_template_id": null,
-            "title": "Proctored high stakes exam",
-            "url": "http://www.giac.org/certification/certified-incident-handler-gcih"
-          },
-          {
             "id": "274184d5-bb4e-4cba-bb35-b9341cd34c9e",
             "activity_type": "Other",
             "required_badge_template_id": null,
             "title": "Accept GIAC's Code of Ethics",
             "url": "http://www.giac.org/about/ethics/code"
+          },
+          {
+            "id": "6a3f8271-63bd-4a86-ac59-3ce37c79f3f6",
+            "activity_type": "Education Experience",
+            "required_badge_template_id": null,
+            "title": "Acquire skills via industry experience or from a training course",
+            "url": "http://www.sans.org/sec504"
+          },
+          {
+            "id": "8ed335cd-acde-4306-a752-b99b74784108",
+            "activity_type": "Assessment",
+            "required_badge_template_id": null,
+            "title": "Proctored high stakes exam",
+            "url": "http://www.giac.org/certification/certified-incident-handler-gcih"
           }
         ],
         "endorsements": [],
         "skills": [
-          {
-            "id": "12285bce-5bc4-4d6d-9a5b-9e724c71d5f8",
-            "name": "Reconnaissance",
-            "vanity_slug": "reconnaissance",
-            "canonical": false,
-            "faethm_id": "FS006179"
-          },
-          {
-            "id": "3d590b01-99c4-4ca8-82cf-29d2f34f1ee6",
-            "name": "Web Application Security",
-            "vanity_slug": "web-application-security",
-            "canonical": true,
-            "faethm_id": "FS007948"
-          },
           {
             "id": "3f8906ee-3c3f-411b-8fe5-0a4405f38dbc",
             "name": "Vulnerability Assessment",
@@ -749,11 +735,11 @@
             "faethm_id": "FS006625"
           },
           {
-            "id": "c25121f1-b16f-43f6-9d4b-4d344d12d2a3",
-            "name": "Incident Handling",
-            "vanity_slug": "incident-handling",
+            "id": "12285bce-5bc4-4d6d-9a5b-9e724c71d5f8",
+            "name": "Reconnaissance",
+            "vanity_slug": "reconnaissance",
             "canonical": false,
-            "faethm_id": "FS003688"
+            "faethm_id": "FS006179"
           },
           {
             "id": "81fbc7bf-4592-4a48-839f-44337ff68981",
@@ -789,6 +775,20 @@
             "vanity_slug": "incident-response",
             "canonical": true,
             "faethm_id": "FS003690"
+          },
+          {
+            "id": "c25121f1-b16f-43f6-9d4b-4d344d12d2a3",
+            "name": "Incident Handling",
+            "vanity_slug": "incident-handling",
+            "canonical": false,
+            "faethm_id": "FS003688"
+          },
+          {
+            "id": "3d590b01-99c4-4ca8-82cf-29d2f34f1ee6",
+            "name": "Web Application Security",
+            "vanity_slug": "web-application-security",
+            "canonical": true,
+            "faethm_id": "FS007948"
           }
         ]
       },
@@ -938,25 +938,25 @@
         ],
         "alignments": [
           {
-            "id": "e7949989-3734-44d1-ad59-dfd8a5f046f3",
-            "name": "ANAB Accredited ISO/IEC 17024 Personnel Certification Body",
-            "url": "https://anab.ansi.org/about-anab",
-            "description": "ANAB accreditation is generally recognized as the highest standard in personnel certification accreditation."
-          },
-          {
             "id": "8a2d5aa9-4871-4c0b-92c3-20d62eda8f12",
             "name": "GSEC received ANAB accreditation December 2007",
             "url": "https://anabpd.ansi.org/Accreditation/credentialing/personnel-certification/AllDirectoryDetails?&prgID=201&OrgId=98&statusID=4",
             "description": null
+          },
+          {
+            "id": "e7949989-3734-44d1-ad59-dfd8a5f046f3",
+            "name": "ANAB Accredited ISO/IEC 17024 Personnel Certification Body",
+            "url": "https://anab.ansi.org/about-anab",
+            "description": "ANAB accreditation is generally recognized as the highest standard in personnel certification accreditation."
           }
         ],
         "badge_template_activities": [
           {
-            "id": "776f5d09-2228-47d5-a4c9-2e244885a16e",
-            "activity_type": "Education Experience",
+            "id": "129c8b0d-eb1e-41d3-8b98-775a88d0deb1",
+            "activity_type": "Application",
             "required_badge_template_id": null,
-            "title": "Acquire skills via industry experience or from a training course ",
-            "url": "http://www.sans.org/sec401"
+            "title": "Candidate submits application for certification attempt",
+            "url": "http://www.giac.org/registration/cert-attempt"
           },
           {
             "id": "2a7555b1-6c21-4293-b9c8-e9ac79d74d38",
@@ -966,11 +966,11 @@
             "url": "http://www.giac.org/gsec"
           },
           {
-            "id": "129c8b0d-eb1e-41d3-8b98-775a88d0deb1",
-            "activity_type": "Application",
+            "id": "776f5d09-2228-47d5-a4c9-2e244885a16e",
+            "activity_type": "Education Experience",
             "required_badge_template_id": null,
-            "title": "Candidate submits application for certification attempt",
-            "url": "http://www.giac.org/registration/cert-attempt"
+            "title": "Acquire skills via industry experience or from a training course ",
+            "url": "http://www.sans.org/sec401"
           },
           {
             "id": "13669799-853c-486a-984b-a4ca7d2d4f4c",
@@ -997,67 +997,11 @@
             "faethm_id": "FS000036"
           },
           {
-            "id": "3aafbdc2-bc0a-436b-a539-0f4184022a24",
-            "name": "Wireless Security",
-            "vanity_slug": "wireless-security",
+            "id": "45de3f92-322c-417e-86ba-813f482a4c23",
+            "name": "Disaster Recovery",
+            "vanity_slug": "disaster-recovery",
             "canonical": true,
-            "faethm_id": "FS008052"
-          },
-          {
-            "id": "f1bc517a-5881-4904-a30a-77dd52327401",
-            "name": "Windows Security",
-            "vanity_slug": "windows-security",
-            "canonical": false,
-            "faethm_id": "FS008034"
-          },
-          {
-            "id": "2f2fb486-be7c-4b0d-a89b-412f8f1a544a",
-            "name": "Vulnerability Management",
-            "vanity_slug": "vulnerability-management",
-            "canonical": true,
-            "faethm_id": "FS007882"
-          },
-          {
-            "id": "f78c25b2-160b-4fc2-bbf2-588e4fd5387e",
-            "name": "TCP-IP",
-            "vanity_slug": "tcp-ip",
-            "canonical": false,
-            "faethm_id": "FS007330"
-          },
-          {
-            "id": "156f6c5c-6a80-4f06-8661-93371451dee3",
-            "name": "Security Policy",
-            "vanity_slug": "security-policy",
-            "canonical": false,
-            "faethm_id": "FS006625"
-          },
-          {
-            "id": "5fb824f3-071b-4242-ad9a-c95d1110c63b",
-            "name": "Network Security",
-            "vanity_slug": "network-security",
-            "canonical": true,
-            "faethm_id": "FS005082"
-          },
-          {
-            "id": "45d8ce88-5201-4329-a1a5-52166e804fd3",
-            "name": "Malware",
-            "vanity_slug": "malware",
-            "canonical": false,
-            "faethm_id": "FS004442"
-          },
-          {
-            "id": "eb50ffec-11d8-470c-8c9a-4310192d9d75",
-            "name": "Information Security",
-            "vanity_slug": "information-security",
-            "canonical": true,
-            "faethm_id": "FS009775"
-          },
-          {
-            "id": "d52d6bb8-1ef8-4d0f-baf6-893d5d9ed6e7",
-            "name": "Incident Response",
-            "vanity_slug": "incident-response",
-            "canonical": true,
-            "faethm_id": "FS003690"
+            "faethm_id": "FS002222"
           },
           {
             "id": "360fc39a-1df5-497c-9bd8-fd32cb078856",
@@ -1067,11 +1011,67 @@
             "faethm_id": "FS002288"
           },
           {
-            "id": "45de3f92-322c-417e-86ba-813f482a4c23",
-            "name": "Disaster Recovery",
-            "vanity_slug": "disaster-recovery",
+            "id": "d52d6bb8-1ef8-4d0f-baf6-893d5d9ed6e7",
+            "name": "Incident Response",
+            "vanity_slug": "incident-response",
             "canonical": true,
-            "faethm_id": "FS002222"
+            "faethm_id": "FS003690"
+          },
+          {
+            "id": "eb50ffec-11d8-470c-8c9a-4310192d9d75",
+            "name": "Information Security",
+            "vanity_slug": "information-security",
+            "canonical": true,
+            "faethm_id": "FS009775"
+          },
+          {
+            "id": "45d8ce88-5201-4329-a1a5-52166e804fd3",
+            "name": "Malware",
+            "vanity_slug": "malware",
+            "canonical": false,
+            "faethm_id": "FS004442"
+          },
+          {
+            "id": "5fb824f3-071b-4242-ad9a-c95d1110c63b",
+            "name": "Network Security",
+            "vanity_slug": "network-security",
+            "canonical": true,
+            "faethm_id": "FS005082"
+          },
+          {
+            "id": "156f6c5c-6a80-4f06-8661-93371451dee3",
+            "name": "Security Policy",
+            "vanity_slug": "security-policy",
+            "canonical": false,
+            "faethm_id": "FS006625"
+          },
+          {
+            "id": "f78c25b2-160b-4fc2-bbf2-588e4fd5387e",
+            "name": "TCP-IP",
+            "vanity_slug": "tcp-ip",
+            "canonical": false,
+            "faethm_id": "FS007330"
+          },
+          {
+            "id": "2f2fb486-be7c-4b0d-a89b-412f8f1a544a",
+            "name": "Vulnerability Management",
+            "vanity_slug": "vulnerability-management",
+            "canonical": true,
+            "faethm_id": "FS007882"
+          },
+          {
+            "id": "f1bc517a-5881-4904-a30a-77dd52327401",
+            "name": "Windows Security",
+            "vanity_slug": "windows-security",
+            "canonical": false,
+            "faethm_id": "FS008034"
+          },
+          {
+            "id": "3aafbdc2-bc0a-436b-a539-0f4184022a24",
+            "name": "Wireless Security",
+            "vanity_slug": "wireless-security",
+            "canonical": true,
+            "faethm_id": "FS008052"
           }
         ]
       },
@@ -1222,13 +1222,6 @@
         "alignments": [],
         "badge_template_activities": [
           {
-            "id": "d9a2ab78-086e-41ba-9a6e-960c0465580d",
-            "activity_type": "Badge",
-            "required_badge_template_id": "3cffc617-38a0-4d48-a1d5-9d2f5ff6f169",
-            "title": "CompTIA Security+ ce Certification",
-            "url": "/badges/ac317943-7cd3-4e38-93e8-8e16e2ba7857"
-          },
-          {
             "id": "9f9c0203-d91e-4af4-9f6b-448b489ffcdd",
             "activity_type": "Badge",
             "required_badge_template_id": "c3c70742-cf5f-4bec-baed-3a835c921860",
@@ -1248,85 +1241,23 @@
             "required_badge_template_id": "4d29f7c3-8cd3-4c6a-88ff-b9608eb30745",
             "title": "CompTIA SecurityX ce Certification",
             "url": "/badges/ec140ab9-fc4d-4409-8fc1-6b06f1e65937"
+          },
+          {
+            "id": "d9a2ab78-086e-41ba-9a6e-960c0465580d",
+            "activity_type": "Badge",
+            "required_badge_template_id": "3cffc617-38a0-4d48-a1d5-9d2f5ff6f169",
+            "title": "CompTIA Security+ ce Certification",
+            "url": "/badges/ac317943-7cd3-4e38-93e8-8e16e2ba7857"
           }
         ],
         "endorsements": [],
         "skills": [
-          {
-            "id": "31cb34f1-d838-4928-94b7-19bd827d6051",
-            "name": "Cybersecurity Analytics",
-            "vanity_slug": "cybersecurity-analytics",
-            "canonical": false,
-            "faethm_id": "FS001871"
-          },
-          {
-            "id": "c0983c81-eb98-4877-abc1-c3c84815920f",
-            "name": "Access Control",
-            "vanity_slug": "access-control",
-            "canonical": true,
-            "faethm_id": "FS000036"
-          },
-          {
-            "id": "1b5bb5ee-0a22-4020-aac5-f3963ab87309",
-            "name": "Application Security",
-            "vanity_slug": "application-security",
-            "canonical": true,
-            "faethm_id": "FS000385"
-          },
-          {
-            "id": "6a6e4882-a910-4614-b0f5-1160fbb0f2d4",
-            "name": "Behavioral Analytics",
-            "vanity_slug": "behavioral-analytics",
-            "canonical": true,
-            "faethm_id": "FS000691"
-          },
-          {
-            "id": "22bd008b-70f0-4505-9161-d86f0f2b6e5b",
-            "name": "CompTIA",
-            "vanity_slug": "comptia",
-            "canonical": false
-          },
-          {
-            "id": "9b70932d-c964-45a5-9607-bf71756bb379",
-            "name": "Cryptography",
-            "vanity_slug": "cryptography",
-            "canonical": true,
-            "faethm_id": "FS001813"
-          },
-          {
-            "id": "ff9ffc58-12ad-465f-8ea8-09393f5b3dcb",
-            "name": "Cybersecurity",
-            "vanity_slug": "cybersecurity",
-            "canonical": true,
-            "faethm_id": "FS001871"
-          },
-          {
-            "id": "d9b5c4dd-617e-4357-bd4d-e84494c4d943",
-            "name": "Data Security",
-            "vanity_slug": "data-security",
-            "canonical": true,
-            "faethm_id": "FS001962"
-          },
-          {
-            "id": "45de3f92-322c-417e-86ba-813f482a4c23",
-            "name": "Disaster Recovery",
-            "vanity_slug": "disaster-recovery",
-            "canonical": true,
-            "faethm_id": "FS002222"
-          },
           {
             "id": "77ad36bf-8c2c-4f74-b9ff-0934bfe5480e",
             "name": "Firewall Configuration",
             "vanity_slug": "firewall-configuration",
             "canonical": false,
             "faethm_id": "FS002956"
-          },
-          {
-            "id": "d52d6bb8-1ef8-4d0f-baf6-893d5d9ed6e7",
-            "name": "Incident Response",
-            "vanity_slug": "incident-response",
-            "canonical": true,
-            "faethm_id": "FS003690"
           },
           {
             "id": "5a08fd8e-675b-432b-b61d-4f3e40049d8f",
@@ -1389,6 +1320,75 @@
             "vanity_slug": "vulnerability-assessment",
             "canonical": true,
             "faethm_id": "FS007880"
+          },
+          {
+            "id": "c0983c81-eb98-4877-abc1-c3c84815920f",
+            "name": "Access Control",
+            "vanity_slug": "access-control",
+            "canonical": true,
+            "faethm_id": "FS000036"
+          },
+          {
+            "id": "1b5bb5ee-0a22-4020-aac5-f3963ab87309",
+            "name": "Application Security",
+            "vanity_slug": "application-security",
+            "canonical": true,
+            "faethm_id": "FS000385"
+          },
+          {
+            "id": "6a6e4882-a910-4614-b0f5-1160fbb0f2d4",
+            "name": "Behavioral Analytics",
+            "vanity_slug": "behavioral-analytics",
+            "canonical": true,
+            "faethm_id": "FS000691"
+          },
+          {
+            "id": "22bd008b-70f0-4505-9161-d86f0f2b6e5b",
+            "name": "CompTIA",
+            "vanity_slug": "comptia",
+            "canonical": false
+          },
+          {
+            "id": "9b70932d-c964-45a5-9607-bf71756bb379",
+            "name": "Cryptography",
+            "vanity_slug": "cryptography",
+            "canonical": true,
+            "faethm_id": "FS001813"
+          },
+          {
+            "id": "ff9ffc58-12ad-465f-8ea8-09393f5b3dcb",
+            "name": "Cybersecurity",
+            "vanity_slug": "cybersecurity",
+            "canonical": true,
+            "faethm_id": "FS001871"
+          },
+          {
+            "id": "31cb34f1-d838-4928-94b7-19bd827d6051",
+            "name": "Cybersecurity Analytics",
+            "vanity_slug": "cybersecurity-analytics",
+            "canonical": false,
+            "faethm_id": "FS001871"
+          },
+          {
+            "id": "d9b5c4dd-617e-4357-bd4d-e84494c4d943",
+            "name": "Data Security",
+            "vanity_slug": "data-security",
+            "canonical": true,
+            "faethm_id": "FS001962"
+          },
+          {
+            "id": "45de3f92-322c-417e-86ba-813f482a4c23",
+            "name": "Disaster Recovery",
+            "vanity_slug": "disaster-recovery",
+            "canonical": true,
+            "faethm_id": "FS002222"
+          },
+          {
+            "id": "d52d6bb8-1ef8-4d0f-baf6-893d5d9ed6e7",
+            "name": "Incident Response",
+            "vanity_slug": "incident-response",
+            "canonical": true,
+            "faethm_id": "FS003690"
           }
         ]
       },
@@ -1550,18 +1550,11 @@
         "endorsements": [],
         "skills": [
           {
-            "id": "1b5bb5ee-0a22-4020-aac5-f3963ab87309",
-            "name": "Application Security",
-            "vanity_slug": "application-security",
+            "id": "6a6e4882-a910-4614-b0f5-1160fbb0f2d4",
+            "name": "Behavioral Analytics",
+            "vanity_slug": "behavioral-analytics",
             "canonical": true,
-            "faethm_id": "FS000385"
-          },
-          {
-            "id": "c713b4f2-5458-462d-b9cf-1814ff8c63b0",
-            "name": "Cybersecurity Architecture",
-            "vanity_slug": "cybersecurity-architecture",
-            "canonical": false,
-            "faethm_id": "FS001874"
+            "faethm_id": "FS000691"
           },
           {
             "id": "3e9815eb-ee87-42b5-8d85-8f18918e486e",
@@ -1571,18 +1564,18 @@
             "faethm_id": "FS008477"
           },
           {
-            "id": "6a6e4882-a910-4614-b0f5-1160fbb0f2d4",
-            "name": "Behavioral Analytics",
-            "vanity_slug": "behavioral-analytics",
-            "canonical": true,
-            "faethm_id": "FS000691"
+            "id": "c713b4f2-5458-462d-b9cf-1814ff8c63b0",
+            "name": "Cybersecurity Architecture",
+            "vanity_slug": "cybersecurity-architecture",
+            "canonical": false,
+            "faethm_id": "FS001874"
           },
           {
-            "id": "5fb824f3-071b-4242-ad9a-c95d1110c63b",
-            "name": "Network Security",
-            "vanity_slug": "network-security",
-            "canonical": true,
-            "faethm_id": "FS005082"
+            "id": "942f8194-6ff4-41f2-acc5-42303129e418",
+            "name": "Secure Enterprise Architecture",
+            "vanity_slug": "secure-enterprise-architecture",
+            "canonical": false,
+            "faethm_id": "FS002619"
           },
           {
             "id": "97ddde6a-bb81-4e0a-b0fd-d28bf0e68460",
@@ -1592,11 +1585,18 @@
             "faethm_id": "FS008167"
           },
           {
-            "id": "942f8194-6ff4-41f2-acc5-42303129e418",
-            "name": "Secure Enterprise Architecture",
-            "vanity_slug": "secure-enterprise-architecture",
-            "canonical": false,
-            "faethm_id": "FS002619"
+            "id": "1b5bb5ee-0a22-4020-aac5-f3963ab87309",
+            "name": "Application Security",
+            "vanity_slug": "application-security",
+            "canonical": true,
+            "faethm_id": "FS000385"
+          },
+          {
+            "id": "5fb824f3-071b-4242-ad9a-c95d1110c63b",
+            "name": "Network Security",
+            "vanity_slug": "network-security",
+            "canonical": true,
+            "faethm_id": "FS005082"
           },
           {
             "id": "c0983c81-eb98-4877-abc1-c3c84815920f",
@@ -1758,13 +1758,6 @@
         "endorsements": [],
         "skills": [
           {
-            "id": "a577fcfc-b3a9-4abd-8730-3e8fb1fab687",
-            "name": "Risk Management",
-            "vanity_slug": "risk-management",
-            "canonical": true,
-            "faethm_id": "FS009694"
-          },
-          {
             "id": "5fb824f3-071b-4242-ad9a-c95d1110c63b",
             "name": "Network Security",
             "vanity_slug": "network-security",
@@ -1811,6 +1804,13 @@
             "vanity_slug": "penetration-testing",
             "canonical": true,
             "faethm_id": "FS005478"
+          },
+          {
+            "id": "a577fcfc-b3a9-4abd-8730-3e8fb1fab687",
+            "name": "Risk Management",
+            "vanity_slug": "risk-management",
+            "canonical": true,
+            "faethm_id": "FS009694"
           },
           {
             "id": "1b5bb5ee-0a22-4020-aac5-f3963ab87309",
@@ -1955,18 +1955,18 @@
         "alignments": [],
         "badge_template_activities": [
           {
-            "id": "27948e3e-afa8-4d38-ae97-ba49174eb668",
-            "activity_type": "Badge",
-            "required_badge_template_id": "3cffc617-38a0-4d48-a1d5-9d2f5ff6f169",
-            "title": "CompTIA Security+ ce Certification",
-            "url": "/badges/ac317943-7cd3-4e38-93e8-8e16e2ba7857"
-          },
-          {
             "id": "76b30746-0d5e-4e35-8900-e6f3cb257339",
             "activity_type": "Badge",
             "required_badge_template_id": "91a997b8-46fa-4aa1-a2f7-b9150121d913",
             "title": "CompTIA CySA+ ce Certification",
             "url": "/badges/174387d1-a3b6-4c24-ba59-dbcf9aba261b"
+          },
+          {
+            "id": "27948e3e-afa8-4d38-ae97-ba49174eb668",
+            "activity_type": "Badge",
+            "required_badge_template_id": "3cffc617-38a0-4d48-a1d5-9d2f5ff6f169",
+            "title": "CompTIA Security+ ce Certification",
+            "url": "/badges/ac317943-7cd3-4e38-93e8-8e16e2ba7857"
           },
           {
             "id": "414873a5-a95d-463d-8300-2a6b25d4647e",
@@ -1979,27 +1979,6 @@
         "endorsements": [],
         "skills": [
           {
-            "id": "5fb824f3-071b-4242-ad9a-c95d1110c63b",
-            "name": "Network Security",
-            "vanity_slug": "network-security",
-            "canonical": true,
-            "faethm_id": "FS005082"
-          },
-          {
-            "id": "1b5bb5ee-0a22-4020-aac5-f3963ab87309",
-            "name": "Application Security",
-            "vanity_slug": "application-security",
-            "canonical": true,
-            "faethm_id": "FS000385"
-          },
-          {
-            "id": "81fbc7bf-4592-4a48-839f-44337ff68981",
-            "name": "Penetration Testing",
-            "vanity_slug": "penetration-testing",
-            "canonical": true,
-            "faethm_id": "FS005478"
-          },
-          {
             "id": "6a6e4882-a910-4614-b0f5-1160fbb0f2d4",
             "name": "Behavioral Analytics",
             "vanity_slug": "behavioral-analytics",
@@ -2007,11 +1986,11 @@
             "faethm_id": "FS000691"
           },
           {
-            "id": "a577fcfc-b3a9-4abd-8730-3e8fb1fab687",
-            "name": "Risk Management",
-            "vanity_slug": "risk-management",
-            "canonical": true,
-            "faethm_id": "FS009694"
+            "id": "3e9815eb-ee87-42b5-8d85-8f18918e486e",
+            "name": "Cybersecurity Analysis",
+            "vanity_slug": "cybersecurity-analysis",
+            "canonical": false,
+            "faethm_id": "FS008477"
           },
           {
             "id": "3f8906ee-3c3f-411b-8fe5-0a4405f38dbc",
@@ -2021,11 +2000,32 @@
             "faethm_id": "FS007880"
           },
           {
-            "id": "3e9815eb-ee87-42b5-8d85-8f18918e486e",
-            "name": "Cybersecurity Analysis",
-            "vanity_slug": "cybersecurity-analysis",
-            "canonical": false,
-            "faethm_id": "FS008477"
+            "id": "a577fcfc-b3a9-4abd-8730-3e8fb1fab687",
+            "name": "Risk Management",
+            "vanity_slug": "risk-management",
+            "canonical": true,
+            "faethm_id": "FS009694"
+          },
+          {
+            "id": "81fbc7bf-4592-4a48-839f-44337ff68981",
+            "name": "Penetration Testing",
+            "vanity_slug": "penetration-testing",
+            "canonical": true,
+            "faethm_id": "FS005478"
+          },
+          {
+            "id": "1b5bb5ee-0a22-4020-aac5-f3963ab87309",
+            "name": "Application Security",
+            "vanity_slug": "application-security",
+            "canonical": true,
+            "faethm_id": "FS000385"
+          },
+          {
+            "id": "5fb824f3-071b-4242-ad9a-c95d1110c63b",
+            "name": "Network Security",
+            "vanity_slug": "network-security",
+            "canonical": true,
+            "faethm_id": "FS005082"
           },
           {
             "id": "c0983c81-eb98-4877-abc1-c3c84815920f",
@@ -2187,13 +2187,6 @@
         "endorsements": [],
         "skills": [
           {
-            "id": "5fb824f3-071b-4242-ad9a-c95d1110c63b",
-            "name": "Network Security",
-            "vanity_slug": "network-security",
-            "canonical": true,
-            "faethm_id": "FS005082"
-          },
-          {
             "id": "a577fcfc-b3a9-4abd-8730-3e8fb1fab687",
             "name": "Risk Management",
             "vanity_slug": "risk-management",
@@ -2201,17 +2194,18 @@
             "faethm_id": "FS009694"
           },
           {
-            "id": "956ab5c5-4a2f-4734-92c1-4c67d59a3022",
-            "name": "Access Management",
-            "vanity_slug": "access-management",
-            "canonical": false
+            "id": "5fb824f3-071b-4242-ad9a-c95d1110c63b",
+            "name": "Network Security",
+            "vanity_slug": "network-security",
+            "canonical": true,
+            "faethm_id": "FS005082"
           },
           {
-            "id": "1b5bb5ee-0a22-4020-aac5-f3963ab87309",
-            "name": "Application Security",
-            "vanity_slug": "application-security",
-            "canonical": true,
-            "faethm_id": "FS000385"
+            "id": "3e9815eb-ee87-42b5-8d85-8f18918e486e",
+            "name": "Cybersecurity Analysis",
+            "vanity_slug": "cybersecurity-analysis",
+            "canonical": false,
+            "faethm_id": "FS008477"
           },
           {
             "id": "6a6e4882-a910-4614-b0f5-1160fbb0f2d4",
@@ -2221,11 +2215,17 @@
             "faethm_id": "FS000691"
           },
           {
-            "id": "3e9815eb-ee87-42b5-8d85-8f18918e486e",
-            "name": "Cybersecurity Analysis",
-            "vanity_slug": "cybersecurity-analysis",
-            "canonical": false,
-            "faethm_id": "FS008477"
+            "id": "1b5bb5ee-0a22-4020-aac5-f3963ab87309",
+            "name": "Application Security",
+            "vanity_slug": "application-security",
+            "canonical": true,
+            "faethm_id": "FS000385"
+          },
+          {
+            "id": "956ab5c5-4a2f-4734-92c1-4c67d59a3022",
+            "name": "Access Management",
+            "vanity_slug": "access-management",
+            "canonical": false
           }
         ]
       },
@@ -2370,35 +2370,28 @@
             "url": "/badges/9bfaf68e-5fec-4486-bbe8-2429e220a122"
           },
           {
-            "id": "f8b40da0-82da-411d-9176-137965d3d0f3",
-            "activity_type": "Badge",
-            "required_badge_template_id": "41a8e2db-ae33-4533-ab6f-c98e252d6368",
-            "title": "CompTIA Network+ ce Certification",
-            "url": "/badges/bb9288a6-5f79-48de-9bcc-490585aa9ae6"
-          },
-          {
             "id": "a31a0701-24c0-4926-8fd9-a8b80638caa3",
             "activity_type": "Badge",
             "required_badge_template_id": "3cffc617-38a0-4d48-a1d5-9d2f5ff6f169",
             "title": "CompTIA Security+ ce Certification",
             "url": "/badges/ac317943-7cd3-4e38-93e8-8e16e2ba7857"
+          },
+          {
+            "id": "f8b40da0-82da-411d-9176-137965d3d0f3",
+            "activity_type": "Badge",
+            "required_badge_template_id": "41a8e2db-ae33-4533-ab6f-c98e252d6368",
+            "title": "CompTIA Network+ ce Certification",
+            "url": "/badges/bb9288a6-5f79-48de-9bcc-490585aa9ae6"
           }
         ],
         "endorsements": [],
         "skills": [
           {
-            "id": "7f45cf54-7731-4191-8494-9e2af3f56105",
-            "name": "System Backup And Recovery",
-            "vanity_slug": "system-backup-and-recovery",
+            "id": "d54fb493-13ed-47f7-b52c-76df595a37c8",
+            "name": "Network Management",
+            "vanity_slug": "network-management",
             "canonical": false,
-            "faethm_id": "FS007257"
-          },
-          {
-            "id": "6b586fc3-7d60-48ec-8b7a-e9b9b918c156",
-            "name": "Technical Support",
-            "vanity_slug": "technical-support",
-            "canonical": true,
-            "faethm_id": "FS007362"
+            "faethm_id": "FS005072"
           },
           {
             "id": "35abc0ba-fd68-400c-a55f-e3fce62267b6",
@@ -2408,80 +2401,25 @@
             "faethm_id": "FS007832"
           },
           {
-            "id": "c0983c81-eb98-4877-abc1-c3c84815920f",
-            "name": "Access Control",
-            "vanity_slug": "access-control",
+            "id": "6b586fc3-7d60-48ec-8b7a-e9b9b918c156",
+            "name": "Technical Support",
+            "vanity_slug": "technical-support",
             "canonical": true,
-            "faethm_id": "FS000036"
+            "faethm_id": "FS007362"
           },
           {
-            "id": "069c9097-511a-4671-b167-36824826bc7d",
-            "name": "Cloud Networking",
-            "vanity_slug": "cloud-networking",
+            "id": "7f45cf54-7731-4191-8494-9e2af3f56105",
+            "name": "System Backup And Recovery",
+            "vanity_slug": "system-backup-and-recovery",
             "canonical": false,
-            "faethm_id": "FS001339"
+            "faethm_id": "FS007257"
           },
           {
-            "id": "9b70932d-c964-45a5-9607-bf71756bb379",
-            "name": "Cryptography",
-            "vanity_slug": "cryptography",
-            "canonical": true,
-            "faethm_id": "FS001813"
-          },
-          {
-            "id": "f1acafe8-1392-4c4b-8477-97b4d694bf66",
-            "name": "Hardware Configuration",
-            "vanity_slug": "hardware-configuration",
-            "canonical": false
-          },
-          {
-            "id": "ac2aa6cb-2d5c-4427-a55f-93cc6d69857e",
-            "name": "Help Desk",
-            "vanity_slug": "help-desk",
+            "id": "27b975a0-626c-4665-a0c0-501bac33aadd",
+            "name": "Software Troubleshooting",
+            "vanity_slug": "software-troubleshooting",
             "canonical": false,
-            "faethm_id": "FS003495"
-          },
-          {
-            "id": "f6681515-8e58-4d21-8e3f-c8da2c6edfd4",
-            "name": "Linux",
-            "vanity_slug": "linux",
-            "canonical": true,
-            "faethm_id": "FS004327"
-          },
-          {
-            "id": "a85e600c-a6e6-41b1-8086-00ea3c691d24",
-            "name": "Mac Support",
-            "vanity_slug": "mac-support",
-            "canonical": false,
-            "faethm_id": "FS000366"
-          },
-          {
-            "id": "5e79c0e3-58d5-441e-b9d7-abacc2b10c24",
-            "name": "Mobile Device Support",
-            "vanity_slug": "mobile-device-support",
-            "canonical": false,
-            "faethm_id": "FS004877"
-          },
-          {
-            "id": "d54fb493-13ed-47f7-b52c-76df595a37c8",
-            "name": "Network Management",
-            "vanity_slug": "network-management",
-            "canonical": false,
-            "faethm_id": "FS005072"
-          },
-          {
-            "id": "5fb824f3-071b-4242-ad9a-c95d1110c63b",
-            "name": "Network Security",
-            "vanity_slug": "network-security",
-            "canonical": true,
-            "faethm_id": "FS005082"
-          },
-          {
-            "id": "a4c1cb35-8601-4e02-9445-16187d064682",
-            "name": "Operating Systems",
-            "vanity_slug": "operating-systems",
-            "canonical": false,
-            "faethm_id": "FS005252"
+            "faethm_id": "FS008307"
           },
           {
             "id": "d24cdc49-973f-4498-9bc5-48ff3950342e",
@@ -2491,11 +2429,73 @@
             "faethm_id": "FS006440"
           },
           {
-            "id": "27b975a0-626c-4665-a0c0-501bac33aadd",
-            "name": "Software Troubleshooting",
-            "vanity_slug": "software-troubleshooting",
+            "id": "a4c1cb35-8601-4e02-9445-16187d064682",
+            "name": "Operating Systems",
+            "vanity_slug": "operating-systems",
             "canonical": false,
-            "faethm_id": "FS008307"
+            "faethm_id": "FS005252"
+          },
+          {
+            "id": "5fb824f3-071b-4242-ad9a-c95d1110c63b",
+            "name": "Network Security",
+            "vanity_slug": "network-security",
+            "canonical": true,
+            "faethm_id": "FS005082"
+          },
+          {
+            "id": "5e79c0e3-58d5-441e-b9d7-abacc2b10c24",
+            "name": "Mobile Device Support",
+            "vanity_slug": "mobile-device-support",
+            "canonical": false,
+            "faethm_id": "FS004877"
+          },
+          {
+            "id": "a85e600c-a6e6-41b1-8086-00ea3c691d24",
+            "name": "Mac Support",
+            "vanity_slug": "mac-support",
+            "canonical": false,
+            "faethm_id": "FS000366"
+          },
+          {
+            "id": "f6681515-8e58-4d21-8e3f-c8da2c6edfd4",
+            "name": "Linux",
+            "vanity_slug": "linux",
+            "canonical": true,
+            "faethm_id": "FS004327"
+          },
+          {
+            "id": "ac2aa6cb-2d5c-4427-a55f-93cc6d69857e",
+            "name": "Help Desk",
+            "vanity_slug": "help-desk",
+            "canonical": false,
+            "faethm_id": "FS003495"
+          },
+          {
+            "id": "f1acafe8-1392-4c4b-8477-97b4d694bf66",
+            "name": "Hardware Configuration",
+            "vanity_slug": "hardware-configuration",
+            "canonical": false
+          },
+          {
+            "id": "9b70932d-c964-45a5-9607-bf71756bb379",
+            "name": "Cryptography",
+            "vanity_slug": "cryptography",
+            "canonical": true,
+            "faethm_id": "FS001813"
+          },
+          {
+            "id": "069c9097-511a-4671-b167-36824826bc7d",
+            "name": "Cloud Networking",
+            "vanity_slug": "cloud-networking",
+            "canonical": false,
+            "faethm_id": "FS001339"
+          },
+          {
+            "id": "c0983c81-eb98-4877-abc1-c3c84815920f",
+            "name": "Access Control",
+            "vanity_slug": "access-control",
+            "canonical": true,
+            "faethm_id": "FS000036"
           }
         ]
       },
@@ -2633,50 +2633,22 @@
         "alignments": [],
         "badge_template_activities": [
           {
-            "id": "e1b5904c-68b9-49d9-bf2c-05fe3df8c198",
-            "activity_type": "Badge",
-            "required_badge_template_id": "e8dbe3e8-ca1f-453d-b669-c1265244655b",
-            "title": "CompTIA A+ ce Certification",
-            "url": "/badges/9bfaf68e-5fec-4486-bbe8-2429e220a122"
-          },
-          {
             "id": "5b7b303c-fd44-4e33-800b-dd2213c94b92",
             "activity_type": "Badge",
             "required_badge_template_id": "41a8e2db-ae33-4533-ab6f-c98e252d6368",
             "title": "CompTIA Network+ ce Certification",
             "url": "/badges/bb9288a6-5f79-48de-9bcc-490585aa9ae6"
+          },
+          {
+            "id": "e1b5904c-68b9-49d9-bf2c-05fe3df8c198",
+            "activity_type": "Badge",
+            "required_badge_template_id": "e8dbe3e8-ca1f-453d-b669-c1265244655b",
+            "title": "CompTIA A+ ce Certification",
+            "url": "/badges/9bfaf68e-5fec-4486-bbe8-2429e220a122"
           }
         ],
         "endorsements": [],
         "skills": [
-          {
-            "id": "f6681515-8e58-4d21-8e3f-c8da2c6edfd4",
-            "name": "Linux",
-            "vanity_slug": "linux",
-            "canonical": true,
-            "faethm_id": "FS004327"
-          },
-          {
-            "id": "a4c1cb35-8601-4e02-9445-16187d064682",
-            "name": "Operating Systems",
-            "vanity_slug": "operating-systems",
-            "canonical": false,
-            "faethm_id": "FS005252"
-          },
-          {
-            "id": "d24cdc49-973f-4498-9bc5-48ff3950342e",
-            "name": "Routing And Switching",
-            "vanity_slug": "routing-and-switching",
-            "canonical": false,
-            "faethm_id": "FS006440"
-          },
-          {
-            "id": "069c9097-511a-4671-b167-36824826bc7d",
-            "name": "Cloud Networking",
-            "vanity_slug": "cloud-networking",
-            "canonical": false,
-            "faethm_id": "FS001339"
-          },
           {
             "id": "a6303ed3-ea80-4554-8072-7a740bc16f04",
             "name": "Software Defined Networking",
@@ -2766,6 +2738,34 @@
             "vanity_slug": "technical-support",
             "canonical": true,
             "faethm_id": "FS007362"
+          },
+          {
+            "id": "a4c1cb35-8601-4e02-9445-16187d064682",
+            "name": "Operating Systems",
+            "vanity_slug": "operating-systems",
+            "canonical": false,
+            "faethm_id": "FS005252"
+          },
+          {
+            "id": "f6681515-8e58-4d21-8e3f-c8da2c6edfd4",
+            "name": "Linux",
+            "vanity_slug": "linux",
+            "canonical": true,
+            "faethm_id": "FS004327"
+          },
+          {
+            "id": "d24cdc49-973f-4498-9bc5-48ff3950342e",
+            "name": "Routing And Switching",
+            "vanity_slug": "routing-and-switching",
+            "canonical": false,
+            "faethm_id": "FS006440"
+          },
+          {
+            "id": "069c9097-511a-4671-b167-36824826bc7d",
+            "name": "Cloud Networking",
+            "vanity_slug": "cloud-networking",
+            "canonical": false,
+            "faethm_id": "FS001339"
           }
         ]
       },
@@ -2910,13 +2910,6 @@
         ],
         "badge_template_activities": [
           {
-            "id": "27464a30-157c-471f-bcf5-6e40becfff1e",
-            "activity_type": "Professional Experience",
-            "required_badge_template_id": null,
-            "title": "Minimum 10 years general hands on IT experience, 5 years being hands-on security, with Network+, Security+, CySA+, Cloud+ and PenTest+ or equivalent knowledge.",
-            "url": "https://www.comptia.org/certifications/securityx#examdetails"
-          },
-          {
             "id": "d7725047-4b38-4a4c-bd69-c4ee6cb93fb0",
             "activity_type": "Assessment",
             "required_badge_template_id": null,
@@ -2929,82 +2922,69 @@
             "required_badge_template_id": null,
             "title": "Complete continuing education requirements for renewal.",
             "url": "https://www.comptia.org/certifications/securityx#renewal"
+          },
+          {
+            "id": "27464a30-157c-471f-bcf5-6e40becfff1e",
+            "activity_type": "Professional Experience",
+            "required_badge_template_id": null,
+            "title": "Minimum 10 years general hands on IT experience, 5 years being hands-on security, with Network+, Security+, CySA+, Cloud+ and PenTest+ or equivalent knowledge.",
+            "url": "https://www.comptia.org/certifications/securityx#examdetails"
           }
         ],
         "endorsements": [],
         "skills": [
           {
-            "id": "b787d8fa-6212-4142-96f0-6a56a66b6f73",
-            "name": "Application Security Engineering",
-            "vanity_slug": "application-security-engineering",
-            "canonical": false,
-            "faethm_id": "FS000385"
-          },
-          {
-            "id": "3548013a-e914-4b23-b4fc-3fd5a416fa30",
-            "name": "Artificial Intelligence (AI)",
-            "vanity_slug": "artificial-intelligence-ai",
-            "canonical": true,
-            "faethm_id": "FS000456"
-          },
-          {
-            "id": "5b82d5ea-2ee4-42cb-a7f5-4e466f4e9e98",
-            "name": "Compliance",
-            "vanity_slug": "compliance",
-            "canonical": false,
-            "faethm_id": "FS006246"
-          },
-          {
-            "id": "22bd008b-70f0-4505-9161-d86f0f2b6e5b",
-            "name": "CompTIA",
-            "vanity_slug": "comptia",
-            "canonical": false
-          },
-          {
-            "id": "c713b4f2-5458-462d-b9cf-1814ff8c63b0",
-            "name": "Cybersecurity Architecture",
-            "vanity_slug": "cybersecurity-architecture",
+            "id": "8ce0c049-c2a8-4570-b573-d4c2d99aae6e",
+            "name": "Risk Management Cybersecurity Architecture",
+            "vanity_slug": "risk-management-cybersecurity-architecture",
             "canonical": false,
             "faethm_id": "FS001874"
           },
           {
-            "id": "03c7c490-3838-400a-bd35-d815b60f0fc2",
-            "name": "Cybersecurity Engineering",
-            "vanity_slug": "cybersecurity-engineering",
+            "id": "97ddde6a-bb81-4e0a-b0fd-d28bf0e68460",
+            "name": "Technical Leadership",
+            "vanity_slug": "technical-leadership",
             "canonical": false,
-            "faethm_id": "FS001871"
+            "faethm_id": "FS008167"
           },
           {
-            "id": "09d9bd22-9b66-44ae-899b-66c1dd1bac39",
-            "name": "Enterprise Cybersecurity",
-            "vanity_slug": "enterprise-cybersecurity",
+            "id": "85f0a1e0-0d97-4c06-b7e1-ec339a0887ee",
+            "name": "Technical Auditor",
+            "vanity_slug": "technical-auditor",
             "canonical": false,
-            "faethm_id": "FS001871"
+            "faethm_id": "FS007349"
           },
           {
-            "id": "7f2523f6-71ac-4df3-9ac3-6ad76cb74429",
-            "name": "Enterprise Security Operations",
-            "vanity_slug": "enterprise-security-operations",
+            "id": "a3f758a3-7282-4705-91d4-d381bd85e282",
+            "name": "Security Operations Center (SOC) Operations",
+            "vanity_slug": "security-operations-center-soc-operations",
             "canonical": false
           },
           {
-            "id": "bcf1f1de-fa8a-4bff-b698-8fc4985c2e82",
-            "name": "Governance",
-            "vanity_slug": "governance",
-            "canonical": true,
-            "faethm_id": "FS003319"
-          },
-          {
-            "id": "48881d40-b5c3-443a-82fa-f7dca5d72179",
-            "name": "GRC",
-            "vanity_slug": "grc",
+            "id": "eb250948-4e36-49c5-820d-2f29f4f1e829",
+            "name": "Secure Virtualization",
+            "vanity_slug": "secure-virtualization",
             "canonical": false,
-            "faethm_id": "FS003320"
+            "faethm_id": "FS007832"
           },
           {
-            "id": "c4a6bf8f-5f2f-432c-874b-2d91301e85e8",
-            "name": "Hybrid Cloud And Multi-cloud Cybersecurity",
-            "vanity_slug": "hybrid-cloud-and-multi-cloud-cybersecurity",
+            "id": "942f8194-6ff4-41f2-acc5-42303129e418",
+            "name": "Secure Enterprise Architecture",
+            "vanity_slug": "secure-enterprise-architecture",
+            "canonical": false,
+            "faethm_id": "FS002619"
+          },
+          {
+            "id": "a577fcfc-b3a9-4abd-8730-3e8fb1fab687",
+            "name": "Risk Management",
+            "vanity_slug": "risk-management",
+            "canonical": true,
+            "faethm_id": "FS009694"
+          },
+          {
+            "id": "3258bf06-d0ca-4f0d-a921-477551ccf486",
+            "name": "Resilient Enterprise Solutions",
+            "vanity_slug": "resilient-enterprise-solutions",
             "canonical": false
           },
           {
@@ -3015,58 +2995,78 @@
             "faethm_id": "FS006311"
           },
           {
-            "id": "3258bf06-d0ca-4f0d-a921-477551ccf486",
-            "name": "Resilient Enterprise Solutions",
-            "vanity_slug": "resilient-enterprise-solutions",
+            "id": "c4a6bf8f-5f2f-432c-874b-2d91301e85e8",
+            "name": "Hybrid Cloud And Multi-cloud Cybersecurity",
+            "vanity_slug": "hybrid-cloud-and-multi-cloud-cybersecurity",
             "canonical": false
           },
           {
-            "id": "a577fcfc-b3a9-4abd-8730-3e8fb1fab687",
-            "name": "Risk Management",
-            "vanity_slug": "risk-management",
-            "canonical": true,
-            "faethm_id": "FS009694"
+            "id": "48881d40-b5c3-443a-82fa-f7dca5d72179",
+            "name": "GRC",
+            "vanity_slug": "grc",
+            "canonical": false,
+            "faethm_id": "FS003320"
           },
           {
-            "id": "8ce0c049-c2a8-4570-b573-d4c2d99aae6e",
-            "name": "Risk Management Cybersecurity Architecture",
-            "vanity_slug": "risk-management-cybersecurity-architecture",
+            "id": "bcf1f1de-fa8a-4bff-b698-8fc4985c2e82",
+            "name": "Governance",
+            "vanity_slug": "governance",
+            "canonical": true,
+            "faethm_id": "FS003319"
+          },
+          {
+            "id": "7f2523f6-71ac-4df3-9ac3-6ad76cb74429",
+            "name": "Enterprise Security Operations",
+            "vanity_slug": "enterprise-security-operations",
+            "canonical": false
+          },
+          {
+            "id": "09d9bd22-9b66-44ae-899b-66c1dd1bac39",
+            "name": "Enterprise Cybersecurity",
+            "vanity_slug": "enterprise-cybersecurity",
+            "canonical": false,
+            "faethm_id": "FS001871"
+          },
+          {
+            "id": "03c7c490-3838-400a-bd35-d815b60f0fc2",
+            "name": "Cybersecurity Engineering",
+            "vanity_slug": "cybersecurity-engineering",
+            "canonical": false,
+            "faethm_id": "FS001871"
+          },
+          {
+            "id": "c713b4f2-5458-462d-b9cf-1814ff8c63b0",
+            "name": "Cybersecurity Architecture",
+            "vanity_slug": "cybersecurity-architecture",
             "canonical": false,
             "faethm_id": "FS001874"
           },
           {
-            "id": "942f8194-6ff4-41f2-acc5-42303129e418",
-            "name": "Secure Enterprise Architecture",
-            "vanity_slug": "secure-enterprise-architecture",
-            "canonical": false,
-            "faethm_id": "FS002619"
-          },
-          {
-            "id": "eb250948-4e36-49c5-820d-2f29f4f1e829",
-            "name": "Secure Virtualization",
-            "vanity_slug": "secure-virtualization",
-            "canonical": false,
-            "faethm_id": "FS007832"
-          },
-          {
-            "id": "a3f758a3-7282-4705-91d4-d381bd85e282",
-            "name": "Security Operations Center (SOC) Operations",
-            "vanity_slug": "security-operations-center-soc-operations",
+            "id": "22bd008b-70f0-4505-9161-d86f0f2b6e5b",
+            "name": "CompTIA",
+            "vanity_slug": "comptia",
             "canonical": false
           },
           {
-            "id": "85f0a1e0-0d97-4c06-b7e1-ec339a0887ee",
-            "name": "Technical Auditor",
-            "vanity_slug": "technical-auditor",
+            "id": "5b82d5ea-2ee4-42cb-a7f5-4e466f4e9e98",
+            "name": "Compliance",
+            "vanity_slug": "compliance",
             "canonical": false,
-            "faethm_id": "FS007349"
+            "faethm_id": "FS006246"
           },
           {
-            "id": "97ddde6a-bb81-4e0a-b0fd-d28bf0e68460",
-            "name": "Technical Leadership",
-            "vanity_slug": "technical-leadership",
+            "id": "3548013a-e914-4b23-b4fc-3fd5a416fa30",
+            "name": "Artificial Intelligence (AI)",
+            "vanity_slug": "artificial-intelligence-ai",
+            "canonical": true,
+            "faethm_id": "FS000456"
+          },
+          {
+            "id": "b787d8fa-6212-4142-96f0-6a56a66b6f73",
+            "name": "Application Security Engineering",
+            "vanity_slug": "application-security-engineering",
             "canonical": false,
-            "faethm_id": "FS008167"
+            "faethm_id": "FS000385"
           },
           {
             "id": "faa3ac19-f7b2-4dc7-8def-f1a6f7b6507a",
@@ -3225,11 +3225,11 @@
         ],
         "badge_template_activities": [
           {
-            "id": "b9469783-d584-4073-a079-af24fe5b57d5",
-            "activity_type": "Professional Experience",
+            "id": "99f0d074-a4fd-47d0-a5bf-7c0880dd0dcf",
+            "activity_type": "Education Experience",
             "required_badge_template_id": null,
-            "title": "Obtain the recommended experience -- Network+ and Security+ as well as a minimum of 3-4 years of hands-on, technical information security experience.",
-            "url": "https://www.comptia.org/certifications/pentest#examdetails"
+            "title": "Complete continuing education requirements for renewal",
+            "url": "https://www.comptia.org/certifications/pentest#renewal"
           },
           {
             "id": "e7fe29b4-cf40-4a2a-9bc4-de11e8ced7c5",
@@ -3239,15 +3239,60 @@
             "url": "https://www.comptia.org/certifications/pentest#examdetails"
           },
           {
-            "id": "99f0d074-a4fd-47d0-a5bf-7c0880dd0dcf",
-            "activity_type": "Education Experience",
+            "id": "b9469783-d584-4073-a079-af24fe5b57d5",
+            "activity_type": "Professional Experience",
             "required_badge_template_id": null,
-            "title": "Complete continuing education requirements for renewal",
-            "url": "https://www.comptia.org/certifications/pentest#renewal"
+            "title": "Obtain the recommended experience -- Network+ and Security+ as well as a minimum of 3-4 years of hands-on, technical information security experience.",
+            "url": "https://www.comptia.org/certifications/pentest#examdetails"
           }
         ],
         "endorsements": [],
         "skills": [
+          {
+            "id": "8115b188-eda5-4828-b076-d889f0dcb04c",
+            "name": "Web Application Testing",
+            "vanity_slug": "web-application-testing",
+            "canonical": false,
+            "faethm_id": "FS008550"
+          },
+          {
+            "id": "19eedeef-7c0e-4c2b-baf5-ed8d9775f9d7",
+            "name": "HITRUST Compliance",
+            "vanity_slug": "hitrust-compliance",
+            "canonical": false
+          },
+          {
+            "id": "0375d1c0-3226-4a10-889b-b96e2c47bf5c",
+            "name": "GDPR Compliance",
+            "vanity_slug": "gdpr-compliance",
+            "canonical": false
+          },
+          {
+            "id": "e9a8e8ba-5265-4111-a527-ffe3c63b4af1",
+            "name": "Framework NIST",
+            "vanity_slug": "framework-nist",
+            "canonical": false
+          },
+          {
+            "id": "fbc6443a-2b21-45bf-9f70-c1c64e8e0b15",
+            "name": "Exfiltration",
+            "vanity_slug": "exfiltration",
+            "canonical": false
+          },
+          {
+            "id": "71f82a10-6023-43d7-b3f4-bf2d3ec2dc43",
+            "name": "Embedded Device Testing",
+            "vanity_slug": "embedded-device-testing",
+            "canonical": false,
+            "faethm_id": "FS002512"
+          },
+          {
+            "id": "09d98c2e-f836-4b7d-b8d9-014cc14973a7",
+            "name": "Cybersecurity Compliance",
+            "vanity_slug": "cybersecurity-compliance",
+            "canonical": true,
+            "faethm_id": "FS001872"
+          },
           {
             "id": "22bd008b-70f0-4505-9161-d86f0f2b6e5b",
             "name": "CompTIA",
@@ -3262,11 +3307,51 @@
             "faethm_id": "FS002712"
           },
           {
-            "id": "81fbc7bf-4592-4a48-839f-44337ff68981",
-            "name": "Penetration Testing",
-            "vanity_slug": "penetration-testing",
+            "id": "2f2fb486-be7c-4b0d-a89b-412f8f1a544a",
+            "name": "Vulnerability Management",
+            "vanity_slug": "vulnerability-management",
             "canonical": true,
-            "faethm_id": "FS005478"
+            "faethm_id": "FS007882"
+          },
+          {
+            "id": "b67742bb-e8d9-44ef-8f9e-daee72d8f5ea",
+            "name": "Vulnerability Identification",
+            "vanity_slug": "vulnerability-identification",
+            "canonical": false,
+            "faethm_id": "FS007880"
+          },
+          {
+            "id": "3f8906ee-3c3f-411b-8fe5-0a4405f38dbc",
+            "name": "Vulnerability Assessment",
+            "vanity_slug": "vulnerability-assessment",
+            "canonical": true,
+            "faethm_id": "FS007880"
+          },
+          {
+            "id": "cc6b3954-3ba8-4db7-9f6a-815b6c775979",
+            "name": "SOC 2 Compliance",
+            "vanity_slug": "soc-2-compliance",
+            "canonical": false
+          },
+          {
+            "id": "fe7e309f-4cde-4862-a14e-ceefd179be90",
+            "name": "Secure Code Analysis",
+            "vanity_slug": "secure-code-analysis",
+            "canonical": false,
+            "faethm_id": "FS006601"
+          },
+          {
+            "id": "f993512c-5d2f-4122-95d0-bc370a834230",
+            "name": "Reporting And Communication",
+            "vanity_slug": "reporting-and-communication",
+            "canonical": false,
+            "faethm_id": "FS001451"
+          },
+          {
+            "id": "8801fdda-b7ae-4bca-9170-c0bae4a38491",
+            "name": "Red Teamer",
+            "vanity_slug": "red-teamer",
+            "canonical": false
           },
           {
             "id": "12285bce-5bc4-4d6d-9a5b-9e724c71d5f8",
@@ -3283,103 +3368,17 @@
             "faethm_id": "FS005632"
           },
           {
-            "id": "8801fdda-b7ae-4bca-9170-c0bae4a38491",
-            "name": "Red Teamer",
-            "vanity_slug": "red-teamer",
-            "canonical": false
-          },
-          {
-            "id": "f993512c-5d2f-4122-95d0-bc370a834230",
-            "name": "Reporting And Communication",
-            "vanity_slug": "reporting-and-communication",
-            "canonical": false,
-            "faethm_id": "FS001451"
-          },
-          {
-            "id": "fe7e309f-4cde-4862-a14e-ceefd179be90",
-            "name": "Secure Code Analysis",
-            "vanity_slug": "secure-code-analysis",
-            "canonical": false,
-            "faethm_id": "FS006601"
-          },
-          {
-            "id": "cc6b3954-3ba8-4db7-9f6a-815b6c775979",
-            "name": "SOC 2 Compliance",
-            "vanity_slug": "soc-2-compliance",
-            "canonical": false
-          },
-          {
-            "id": "3f8906ee-3c3f-411b-8fe5-0a4405f38dbc",
-            "name": "Vulnerability Assessment",
-            "vanity_slug": "vulnerability-assessment",
+            "id": "81fbc7bf-4592-4a48-839f-44337ff68981",
+            "name": "Penetration Testing",
+            "vanity_slug": "penetration-testing",
             "canonical": true,
-            "faethm_id": "FS007880"
+            "faethm_id": "FS005478"
           },
           {
-            "id": "b67742bb-e8d9-44ef-8f9e-daee72d8f5ea",
-            "name": "Vulnerability Identification",
-            "vanity_slug": "vulnerability-identification",
-            "canonical": false,
-            "faethm_id": "FS007880"
-          },
-          {
-            "id": "2f2fb486-be7c-4b0d-a89b-412f8f1a544a",
-            "name": "Vulnerability Management",
-            "vanity_slug": "vulnerability-management",
-            "canonical": true,
-            "faethm_id": "FS007882"
-          },
-          {
-            "id": "8115b188-eda5-4828-b076-d889f0dcb04c",
-            "name": "Web Application Testing",
-            "vanity_slug": "web-application-testing",
-            "canonical": false,
-            "faethm_id": "FS008550"
-          },
-          {
-            "id": "09d98c2e-f836-4b7d-b8d9-014cc14973a7",
-            "name": "Cybersecurity Compliance",
-            "vanity_slug": "cybersecurity-compliance",
-            "canonical": true,
-            "faethm_id": "FS001872"
-          },
-          {
-            "id": "71f82a10-6023-43d7-b3f4-bf2d3ec2dc43",
-            "name": "Embedded Device Testing",
-            "vanity_slug": "embedded-device-testing",
-            "canonical": false,
-            "faethm_id": "FS002512"
-          },
-          {
-            "id": "fbc6443a-2b21-45bf-9f70-c1c64e8e0b15",
-            "name": "Exfiltration",
-            "vanity_slug": "exfiltration",
+            "id": "93a309eb-359c-4508-9814-21a2dbfdf6d1",
+            "name": "PCI-DSS Compliance",
+            "vanity_slug": "pci-dss-compliance",
             "canonical": false
-          },
-          {
-            "id": "e9a8e8ba-5265-4111-a527-ffe3c63b4af1",
-            "name": "Framework NIST",
-            "vanity_slug": "framework-nist",
-            "canonical": false
-          },
-          {
-            "id": "0375d1c0-3226-4a10-889b-b96e2c47bf5c",
-            "name": "GDPR Compliance",
-            "vanity_slug": "gdpr-compliance",
-            "canonical": false
-          },
-          {
-            "id": "19eedeef-7c0e-4c2b-baf5-ed8d9775f9d7",
-            "name": "HITRUST Compliance",
-            "vanity_slug": "hitrust-compliance",
-            "canonical": false
-          },
-          {
-            "id": "1125f354-40ec-46ec-af89-62028e6dca97",
-            "name": "Information Gathering",
-            "vanity_slug": "information-gathering",
-            "canonical": true,
-            "faethm_id": "FS003747"
           },
           {
             "id": "e457187a-cd60-4395-8789-b7aaff0061c5",
@@ -3389,10 +3388,11 @@
             "faethm_id": "FS009976"
           },
           {
-            "id": "93a309eb-359c-4508-9814-21a2dbfdf6d1",
-            "name": "PCI-DSS Compliance",
-            "vanity_slug": "pci-dss-compliance",
-            "canonical": false
+            "id": "1125f354-40ec-46ec-af89-62028e6dca97",
+            "name": "Information Gathering",
+            "vanity_slug": "information-gathering",
+            "canonical": true,
+            "faethm_id": "FS003747"
           }
         ]
       },
@@ -3551,61 +3551,28 @@
             "url": "https://www.comptia.org/certifications/cybersecurity-analyst#examdetails"
           },
           {
-            "id": "8d38f80f-e4e1-4f7b-bc69-a308c42fe117",
-            "activity_type": "Education Experience",
-            "required_badge_template_id": null,
-            "title": "Complete continuing education requirements for renewal",
-            "url": "https://www.comptia.org/certifications/cybersecurity-analyst#renewal"
-          },
-          {
             "id": "a6f7db8d-a301-48e8-9ceb-facac1a8b90a",
             "activity_type": "Assessment",
             "required_badge_template_id": null,
             "title": "Achieve a passing score on the CompTIA CySA+ performance-based exam",
             "url": "https://www.comptia.org/certifications/cybersecurity-analyst#examdetails"
+          },
+          {
+            "id": "8d38f80f-e4e1-4f7b-bc69-a308c42fe117",
+            "activity_type": "Education Experience",
+            "required_badge_template_id": null,
+            "title": "Complete continuing education requirements for renewal",
+            "url": "https://www.comptia.org/certifications/cybersecurity-analyst#renewal"
           }
         ],
         "endorsements": [],
         "skills": [
-          {
-            "id": "2f2fb486-be7c-4b0d-a89b-412f8f1a544a",
-            "name": "Vulnerability Management",
-            "vanity_slug": "vulnerability-management",
-            "canonical": true,
-            "faethm_id": "FS007882"
-          },
-          {
-            "id": "c713b4f2-5458-462d-b9cf-1814ff8c63b0",
-            "name": "Cybersecurity Architecture",
-            "vanity_slug": "cybersecurity-architecture",
-            "canonical": false,
-            "faethm_id": "FS001874"
-          },
           {
             "id": "31cb34f1-d838-4928-94b7-19bd827d6051",
             "name": "Cybersecurity Analytics",
             "vanity_slug": "cybersecurity-analytics",
             "canonical": false,
             "faethm_id": "FS001871"
-          },
-          {
-            "id": "981020b1-6e25-44da-97db-8696cbaa3fe0",
-            "name": "Cyber-incident Response",
-            "vanity_slug": "cyber-incident-response",
-            "canonical": false,
-            "faethm_id": "FS003690"
-          },
-          {
-            "id": "22bd008b-70f0-4505-9161-d86f0f2b6e5b",
-            "name": "CompTIA",
-            "vanity_slug": "comptia",
-            "canonical": false
-          },
-          {
-            "id": "c9f9bb66-679d-4ad2-8ac5-fb23d032a286",
-            "name": "Blue Teamer",
-            "vanity_slug": "blue-teamer",
-            "canonical": false
           },
           {
             "id": "6a6e4882-a910-4614-b0f5-1160fbb0f2d4",
@@ -3615,32 +3582,37 @@
             "faethm_id": "FS000691"
           },
           {
-            "id": "ebb6ec28-7ad0-4ca3-8d68-d29011856689",
-            "name": "Vulnerability Analysis",
-            "vanity_slug": "vulnerability-analysis",
+            "id": "c9f9bb66-679d-4ad2-8ac5-fb23d032a286",
+            "name": "Blue Teamer",
+            "vanity_slug": "blue-teamer",
+            "canonical": false
+          },
+          {
+            "id": "22bd008b-70f0-4505-9161-d86f0f2b6e5b",
+            "name": "CompTIA",
+            "vanity_slug": "comptia",
+            "canonical": false
+          },
+          {
+            "id": "981020b1-6e25-44da-97db-8696cbaa3fe0",
+            "name": "Cyber-incident Response",
+            "vanity_slug": "cyber-incident-response",
             "canonical": false,
-            "faethm_id": "FS007880"
+            "faethm_id": "FS003690"
           },
           {
-            "id": "1677609c-ac95-434c-8ba1-29832dddb8cb",
-            "name": "Threat Management",
-            "vanity_slug": "threat-management.28cfa4f9",
-            "canonical": true,
-            "faethm_id": "FS007477"
+            "id": "c713b4f2-5458-462d-b9cf-1814ff8c63b0",
+            "name": "Cybersecurity Architecture",
+            "vanity_slug": "cybersecurity-architecture",
+            "canonical": false,
+            "faethm_id": "FS001874"
           },
           {
-            "id": "5bbb6176-dcfe-4ebf-854e-d887ff3c19e4",
-            "name": "Threat Intelligence",
-            "vanity_slug": "threat-intelligence",
-            "canonical": true,
-            "faethm_id": "FS009803"
-          },
-          {
-            "id": "a577fcfc-b3a9-4abd-8730-3e8fb1fab687",
-            "name": "Risk Management",
-            "vanity_slug": "risk-management",
-            "canonical": true,
-            "faethm_id": "FS009694"
+            "id": "03c7c490-3838-400a-bd35-d815b60f0fc2",
+            "name": "Cybersecurity Engineering",
+            "vanity_slug": "cybersecurity-engineering",
+            "canonical": false,
+            "faethm_id": "FS001871"
           },
           {
             "id": "f993512c-5d2f-4122-95d0-bc370a834230",
@@ -3650,11 +3622,39 @@
             "faethm_id": "FS001451"
           },
           {
-            "id": "03c7c490-3838-400a-bd35-d815b60f0fc2",
-            "name": "Cybersecurity Engineering",
-            "vanity_slug": "cybersecurity-engineering",
+            "id": "a577fcfc-b3a9-4abd-8730-3e8fb1fab687",
+            "name": "Risk Management",
+            "vanity_slug": "risk-management",
+            "canonical": true,
+            "faethm_id": "FS009694"
+          },
+          {
+            "id": "5bbb6176-dcfe-4ebf-854e-d887ff3c19e4",
+            "name": "Threat Intelligence",
+            "vanity_slug": "threat-intelligence",
+            "canonical": true,
+            "faethm_id": "FS009803"
+          },
+          {
+            "id": "1677609c-ac95-434c-8ba1-29832dddb8cb",
+            "name": "Threat Management",
+            "vanity_slug": "threat-management.28cfa4f9",
+            "canonical": true,
+            "faethm_id": "FS007477"
+          },
+          {
+            "id": "ebb6ec28-7ad0-4ca3-8d68-d29011856689",
+            "name": "Vulnerability Analysis",
+            "vanity_slug": "vulnerability-analysis",
             "canonical": false,
-            "faethm_id": "FS001871"
+            "faethm_id": "FS007880"
+          },
+          {
+            "id": "2f2fb486-be7c-4b0d-a89b-412f8f1a544a",
+            "name": "Vulnerability Management",
+            "vanity_slug": "vulnerability-management",
+            "canonical": true,
+            "faethm_id": "FS007882"
           }
         ]
       },
@@ -3830,11 +3830,11 @@
         "endorsements": [],
         "skills": [
           {
-            "id": "d9b5c4dd-617e-4357-bd4d-e84494c4d943",
-            "name": "Data Security",
-            "vanity_slug": "data-security",
+            "id": "b5f9a9d4-c6af-49b5-9351-921370db7df8",
+            "name": "Threat Detection",
+            "vanity_slug": "threat-detection",
             "canonical": true,
-            "faethm_id": "FS001962"
+            "faethm_id": "FS007476"
           },
           {
             "id": "c0983c81-eb98-4877-abc1-c3c84815920f",
@@ -3862,6 +3862,13 @@
             "vanity_slug": "cyber-forensics",
             "canonical": false,
             "faethm_id": "FS001522"
+          },
+          {
+            "id": "d9b5c4dd-617e-4357-bd4d-e84494c4d943",
+            "name": "Data Security",
+            "vanity_slug": "data-security",
+            "canonical": true,
+            "faethm_id": "FS001962"
           },
           {
             "id": "2611f194-399c-480a-b1e5-98a2a8d310bc",
@@ -3932,13 +3939,6 @@
             "vanity_slug": "security-policies",
             "canonical": true,
             "faethm_id": "FS006625"
-          },
-          {
-            "id": "b5f9a9d4-c6af-49b5-9351-921370db7df8",
-            "name": "Threat Detection",
-            "vanity_slug": "threat-detection",
-            "canonical": true,
-            "faethm_id": "FS007476"
           },
           {
             "id": "1677609c-ac95-434c-8ba1-29832dddb8cb",
@@ -4097,18 +4097,18 @@
         ],
         "badge_template_activities": [
           {
-            "id": "4850574a-c21a-49ff-916e-917ffc300d2e",
-            "activity_type": "Assessment",
-            "required_badge_template_id": null,
-            "title": "Achieve a passing score on the CompTIA Network+ performance-based exam",
-            "url": "https://certification.comptia.org/certifications/network#examdetails"
-          },
-          {
             "id": "5e7290d4-91e9-4ac2-aba3-563cf312a5b3",
             "activity_type": "Education Experience",
             "required_badge_template_id": null,
             "title": "Complete continuing education requirements for renewal",
             "url": "https://certification.comptia.org/certifications/network#renewal"
+          },
+          {
+            "id": "4850574a-c21a-49ff-916e-917ffc300d2e",
+            "activity_type": "Assessment",
+            "required_badge_template_id": null,
+            "title": "Achieve a passing score on the CompTIA Network+ performance-based exam",
+            "url": "https://certification.comptia.org/certifications/network#examdetails"
           },
           {
             "id": "c580a9e5-67c1-4898-85c7-ef0bd8bd182f",
@@ -4121,10 +4121,11 @@
         "endorsements": [],
         "skills": [
           {
-            "id": "22bd008b-70f0-4505-9161-d86f0f2b6e5b",
-            "name": "CompTIA",
-            "vanity_slug": "comptia",
-            "canonical": false
+            "id": "08bed923-2d1f-4f66-9d61-b206162e0fd5",
+            "name": "Wireless Technologies",
+            "vanity_slug": "wireless-technologies",
+            "canonical": false,
+            "faethm_id": "FS008049"
           },
           {
             "id": "f0db3624-2541-486d-8219-81b3e961d996",
@@ -4138,6 +4139,12 @@
             "vanity_slug": "cloud-networking",
             "canonical": false,
             "faethm_id": "FS001339"
+          },
+          {
+            "id": "22bd008b-70f0-4505-9161-d86f0f2b6e5b",
+            "name": "CompTIA",
+            "vanity_slug": "comptia",
+            "canonical": false
           },
           {
             "id": "4582e99b-80bd-4653-a9c2-ba1792d21d04",
@@ -4242,13 +4249,6 @@
             "vanity_slug": "wireless-networks",
             "canonical": true,
             "faethm_id": "FS010146"
-          },
-          {
-            "id": "08bed923-2d1f-4f66-9d61-b206162e0fd5",
-            "name": "Wireless Technologies",
-            "vanity_slug": "wireless-technologies",
-            "canonical": false,
-            "faethm_id": "FS008049"
           }
         ]
       },
@@ -4400,56 +4400,28 @@
         ],
         "badge_template_activities": [
           {
-            "id": "e063b84b-9cac-477a-89a5-915cac2f9574",
-            "activity_type": "Professional Experience",
-            "required_badge_template_id": null,
-            "title": "Obtain the recommended experience -- 9-12 months of hands-on tech support experience in the lab or field",
-            "url": "https://certification.comptia.org/certifications/a#examdetails"
-          },
-          {
             "id": "b8e83e50-240f-438f-a7ca-c034040b6276",
             "activity_type": "Assessment",
             "required_badge_template_id": null,
             "title": "Achieve a passing score on both CompTIA A+ performance-based exams",
+            "url": "https://certification.comptia.org/certifications/a#examdetails"
+          },
+          {
+            "id": "e063b84b-9cac-477a-89a5-915cac2f9574",
+            "activity_type": "Professional Experience",
+            "required_badge_template_id": null,
+            "title": "Obtain the recommended experience -- 9-12 months of hands-on tech support experience in the lab or field",
             "url": "https://certification.comptia.org/certifications/a#examdetails"
           }
         ],
         "endorsements": [],
         "skills": [
           {
-            "id": "35abc0ba-fd68-400c-a55f-e3fce62267b6",
-            "name": "Virtualization",
-            "vanity_slug": "virtualization",
-            "canonical": true,
-            "faethm_id": "FS007832"
-          },
-          {
-            "id": "e9b675a7-1f0f-4f90-b385-9b52bf0fa0ec",
-            "name": "System Configuration (SC)",
-            "vanity_slug": "system-configuration-sc",
-            "canonical": true,
-            "faethm_id": "FS007248"
-          },
-          {
-            "id": "22c819de-166d-4364-8f8c-59f667401856",
-            "name": "Systems Administration",
-            "vanity_slug": "systems-administration",
-            "canonical": false,
-            "faethm_id": "FS007247"
-          },
-          {
             "id": "6b586fc3-7d60-48ec-8b7a-e9b9b918c156",
             "name": "Technical Support",
             "vanity_slug": "technical-support",
             "canonical": true,
             "faethm_id": "FS007362"
-          },
-          {
-            "id": "59483e40-1d5e-46ec-b64c-613254766422",
-            "name": "Troubleshooting",
-            "vanity_slug": "troubleshooting",
-            "canonical": true,
-            "faethm_id": "FS008307"
           },
           {
             "id": "f22f3e66-d30a-4d4c-9880-5b513ae11997",
@@ -4526,6 +4498,34 @@
             "vanity_slug": "operating-systems-os",
             "canonical": true,
             "faethm_id": "FS005252"
+          },
+          {
+            "id": "e9b675a7-1f0f-4f90-b385-9b52bf0fa0ec",
+            "name": "System Configuration (SC)",
+            "vanity_slug": "system-configuration-sc",
+            "canonical": true,
+            "faethm_id": "FS007248"
+          },
+          {
+            "id": "22c819de-166d-4364-8f8c-59f667401856",
+            "name": "Systems Administration",
+            "vanity_slug": "systems-administration",
+            "canonical": false,
+            "faethm_id": "FS007247"
+          },
+          {
+            "id": "59483e40-1d5e-46ec-b64c-613254766422",
+            "name": "Troubleshooting",
+            "vanity_slug": "troubleshooting",
+            "canonical": true,
+            "faethm_id": "FS008307"
+          },
+          {
+            "id": "35abc0ba-fd68-400c-a55f-e3fce62267b6",
+            "name": "Virtualization",
+            "vanity_slug": "virtualization",
+            "canonical": true,
+            "faethm_id": "FS007832"
           }
         ]
       },
@@ -4680,18 +4680,18 @@
         "endorsements": [],
         "skills": [
           {
-            "id": "d7c79d40-c665-4ec4-8a32-2a4fb24522e7",
-            "name": "Programming Concepts",
-            "vanity_slug": "programming-concepts",
+            "id": "f68a52ba-8508-49d0-a70d-a647e1cabfcb",
+            "name": "Software Development",
+            "vanity_slug": "software-development",
             "canonical": true,
-            "faethm_id": "FS005912"
+            "faethm_id": "FS006859"
           },
           {
-            "id": "8186b588-e788-45f5-a68f-58ce357f6fea",
-            "name": "Applications & Software",
-            "vanity_slug": "applications-software",
-            "canonical": false,
-            "faethm_id": "FS000377"
+            "id": "b9db582b-34de-4de8-9335-18acb9be0319",
+            "name": "Wireless Networks",
+            "vanity_slug": "wireless-networks",
+            "canonical": true,
+            "faethm_id": "FS010146"
           },
           {
             "id": "882b1610-c418-4633-a799-ff6539ed88e3",
@@ -4735,6 +4735,13 @@
             "faethm_id": "FS005072"
           },
           {
+            "id": "d7c79d40-c665-4ec4-8a32-2a4fb24522e7",
+            "name": "Programming Concepts",
+            "vanity_slug": "programming-concepts",
+            "canonical": true,
+            "faethm_id": "FS005912"
+          },
+          {
             "id": "52855bbd-b96f-49a9-842d-326ed5406578",
             "name": "Security Awareness",
             "vanity_slug": "security-awareness",
@@ -4742,18 +4749,11 @@
             "faethm_id": "FS006615"
           },
           {
-            "id": "f68a52ba-8508-49d0-a70d-a647e1cabfcb",
-            "name": "Software Development",
-            "vanity_slug": "software-development",
-            "canonical": true,
-            "faethm_id": "FS006859"
-          },
-          {
-            "id": "b9db582b-34de-4de8-9335-18acb9be0319",
-            "name": "Wireless Networks",
-            "vanity_slug": "wireless-networks",
-            "canonical": true,
-            "faethm_id": "FS010146"
+            "id": "8186b588-e788-45f5-a68f-58ce357f6fea",
+            "name": "Applications & Software",
+            "vanity_slug": "applications-software",
+            "canonical": false,
+            "faethm_id": "FS000377"
           }
         ]
       },
@@ -4857,6 +4857,13 @@
         "alignments": [],
         "badge_template_activities": [
           {
+            "id": "b1b46c80-9f34-4765-b82b-59ae512529c7",
+            "activity_type": "Payment",
+            "required_badge_template_id": null,
+            "title": "After their first year, ISC2 Candidates are required to pay annual dues to maintain status",
+            "url": null
+          },
+          {
             "id": "2c1bd934-1001-4986-9969-c780307d921c",
             "activity_type": "Application",
             "required_badge_template_id": null,
@@ -4869,27 +4876,20 @@
             "required_badge_template_id": null,
             "title": "ISC2 Candidates will create an account with ISC2 and agree to abide by the Code of Ethics",
             "url": null
-          },
-          {
-            "id": "b1b46c80-9f34-4765-b82b-59ae512529c7",
-            "activity_type": "Payment",
-            "required_badge_template_id": null,
-            "title": "After their first year, ISC2 Candidates are required to pay annual dues to maintain status",
-            "url": null
           }
         ],
         "endorsements": [],
         "skills": [
           {
-            "id": "bf62a6a8-dd08-47c9-8bdd-8c27d659d974",
-            "name": "ISC2 Candidates are part of the ISC2 pledge to certify one million individuals and as such, have access to foundational education materials to pursue the entry-level Certified in Cybersecurity certification.",
-            "vanity_slug": "isc2-candidates-are-part-of-the-isc2-pledge-to-cert",
-            "canonical": false
-          },
-          {
             "id": "c4e064a2-c8ea-43e4-8e7c-40e95153ea6e",
             "name": "ISC2 Candidates are pursuing their first ISC2 certification, or gaining the foundational knowledge necessary to join the cybersecurity workforce.",
             "vanity_slug": "isc2-candidates-are-pursuing-their-first-isc2-certi",
+            "canonical": false
+          },
+          {
+            "id": "bf62a6a8-dd08-47c9-8bdd-8c27d659d974",
+            "name": "ISC2 Candidates are part of the ISC2 pledge to certify one million individuals and as such, have access to foundational education materials to pursue the entry-level Certified in Cybersecurity certification.",
+            "vanity_slug": "isc2-candidates-are-part-of-the-isc2-pledge-to-cert",
             "canonical": false
           },
           {
@@ -5059,18 +5059,18 @@
         "endorsements": [],
         "skills": [
           {
-            "id": "ff9ffc58-12ad-465f-8ea8-09393f5b3dcb",
-            "name": "Cybersecurity",
-            "vanity_slug": "cybersecurity",
-            "canonical": true,
-            "faethm_id": "FS001871"
-          },
-          {
             "id": "134a0e25-b333-47fc-a6a6-89aba5e68ac5",
             "name": "Cyber Security Controls",
             "vanity_slug": "cyber-security-controls",
             "canonical": false,
             "faethm_id": "FS001869"
+          },
+          {
+            "id": "ff9ffc58-12ad-465f-8ea8-09393f5b3dcb",
+            "name": "Cybersecurity",
+            "vanity_slug": "cybersecurity",
+            "canonical": true,
+            "faethm_id": "FS001871"
           },
           {
             "id": "e457187a-cd60-4395-8789-b7aaff0061c5",
@@ -5222,18 +5222,11 @@
         "alignments": [],
         "badge_template_activities": [
           {
-            "id": "665a777f-c5d4-43ed-b258-22100d9a7c4c",
+            "id": "5ff10561-17ad-415c-8c45-df97780d13f7",
             "activity_type": "Course",
             "required_badge_template_id": null,
-            "title": "This course delves deeper into concepts from Foundations of Purple Teaming, providing background and instruction on the key processes enabling sound threat intelligence integration and organizational threat alignment in support of Purple team exercises. Students will create emulation plans based on the business requirements and IT architecture of a fictional organization and, in doing so, derive the skills required to understand their own threat environment and prepare actionable plans.",
-            "url": "https://academy.attackiq.com/courses/emulation-planning-for-purple-teams"
-          },
-          {
-            "id": "0581f0ab-e65c-406b-bb73-53dd9f866322",
-            "activity_type": "Badge",
-            "required_badge_template_id": "f5fb804e-df9f-4fea-a936-563ba168a2c1",
-            "title": "Foundations of Purple Teaming",
-            "url": "/badges/cc0d14ef-a40c-4f0e-a35f-0d054ef56907"
+            "title": "This course delves deeper into concepts from Foundations of Purple Teaming, providing background and instruction on the key processes enabling sound threat intelligence integration and organizational threat alignment in support of Purple team exercises. Students will create threat models based on the business requirements and IT architecture of a fictional organization and, in doing so, derive the skills required to understand their own threat environment and prepare actionable plans.",
+            "url": "https://academy.attackiq.com/courses/threat-alignment-for-purple-teams"
           },
           {
             "id": "5deb5d76-65df-499c-b686-834f84ba67cc",
@@ -5250,11 +5243,18 @@
             "url": "/badges/1b3a64de-e4f8-45e9-b0f3-5d8fff5099c6"
           },
           {
-            "id": "5ff10561-17ad-415c-8c45-df97780d13f7",
+            "id": "0581f0ab-e65c-406b-bb73-53dd9f866322",
+            "activity_type": "Badge",
+            "required_badge_template_id": "f5fb804e-df9f-4fea-a936-563ba168a2c1",
+            "title": "Foundations of Purple Teaming",
+            "url": "/badges/cc0d14ef-a40c-4f0e-a35f-0d054ef56907"
+          },
+          {
+            "id": "665a777f-c5d4-43ed-b258-22100d9a7c4c",
             "activity_type": "Course",
             "required_badge_template_id": null,
-            "title": "This course delves deeper into concepts from Foundations of Purple Teaming, providing background and instruction on the key processes enabling sound threat intelligence integration and organizational threat alignment in support of Purple team exercises. Students will create threat models based on the business requirements and IT architecture of a fictional organization and, in doing so, derive the skills required to understand their own threat environment and prepare actionable plans.",
-            "url": "https://academy.attackiq.com/courses/threat-alignment-for-purple-teams"
+            "title": "This course delves deeper into concepts from Foundations of Purple Teaming, providing background and instruction on the key processes enabling sound threat intelligence integration and organizational threat alignment in support of Purple team exercises. Students will create emulation plans based on the business requirements and IT architecture of a fictional organization and, in doing so, derive the skills required to understand their own threat environment and prepare actionable plans.",
+            "url": "https://academy.attackiq.com/courses/emulation-planning-for-purple-teams"
           }
         ],
         "endorsements": [],
@@ -5266,6 +5266,12 @@
             "canonical": false
           },
           {
+            "id": "aa1a1f30-00b3-413d-88df-ad6b5202662f",
+            "name": "Threat Emulation",
+            "vanity_slug": "threat-emulation",
+            "canonical": false
+          },
+          {
             "id": "75c8179e-1c7e-408f-9087-40d256b54fa7",
             "name": "Threat Alignment",
             "vanity_slug": "threat-alignment",
@@ -5273,17 +5279,11 @@
             "faethm_id": "FS007477"
           },
           {
-            "id": "aa1a1f30-00b3-413d-88df-ad6b5202662f",
-            "name": "Threat Emulation",
-            "vanity_slug": "threat-emulation",
-            "canonical": false
-          },
-          {
-            "id": "dc0a2ddd-948c-4f7d-824b-99aba17bbc50",
-            "name": "Threat Informed Defense",
-            "vanity_slug": "threat-informed-defense",
-            "canonical": false,
-            "faethm_id": "FS007477"
+            "id": "ff9ffc58-12ad-465f-8ea8-09393f5b3dcb",
+            "name": "Cybersecurity",
+            "vanity_slug": "cybersecurity",
+            "canonical": true,
+            "faethm_id": "FS001871"
           },
           {
             "id": "6cef36b0-c6a4-45d7-82e3-dfd2af8fa65c",
@@ -5292,11 +5292,11 @@
             "canonical": false
           },
           {
-            "id": "ff9ffc58-12ad-465f-8ea8-09393f5b3dcb",
-            "name": "Cybersecurity",
-            "vanity_slug": "cybersecurity",
-            "canonical": true,
-            "faethm_id": "FS001871"
+            "id": "dc0a2ddd-948c-4f7d-824b-99aba17bbc50",
+            "name": "Threat Informed Defense",
+            "vanity_slug": "threat-informed-defense",
+            "canonical": false,
+            "faethm_id": "FS007477"
           }
         ]
       },
@@ -5451,6 +5451,12 @@
         "endorsements": [],
         "skills": [
           {
+            "id": "6786997a-046e-49fa-a4a3-9619e528849c",
+            "name": "Purple Team",
+            "vanity_slug": "purple-team",
+            "canonical": false
+          },
+          {
             "id": "995dc79a-0f87-41c5-85a5-8ff87a0ee252",
             "name": "Cybersecurity Operations",
             "vanity_slug": "cybersecurity-operations",
@@ -5458,24 +5464,11 @@
             "faethm_id": "FS001871"
           },
           {
-            "id": "ff9ffc58-12ad-465f-8ea8-09393f5b3dcb",
-            "name": "Cybersecurity",
-            "vanity_slug": "cybersecurity",
-            "canonical": true,
-            "faethm_id": "FS001871"
-          },
-          {
-            "id": "6786997a-046e-49fa-a4a3-9619e528849c",
-            "name": "Purple Team",
-            "vanity_slug": "purple-team",
-            "canonical": false
-          },
-          {
-            "id": "99fdd6e8-1bf2-4229-bf5b-6501b325a4f9",
-            "name": "Red Team Management",
-            "vanity_slug": "red-team-management",
+            "id": "ef7aa29d-a82f-4dbc-acba-419c99b0b60b",
+            "name": "Cybersecurity Management",
+            "vanity_slug": "cybersecurity-management",
             "canonical": false,
-            "faethm_id": "FS007341"
+            "faethm_id": "FS001871"
           },
           {
             "id": "f8f83d32-ebd1-4e27-b78a-fd130c8edf82",
@@ -5485,10 +5478,17 @@
             "faethm_id": "FS007341"
           },
           {
-            "id": "ef7aa29d-a82f-4dbc-acba-419c99b0b60b",
-            "name": "Cybersecurity Management",
-            "vanity_slug": "cybersecurity-management",
+            "id": "99fdd6e8-1bf2-4229-bf5b-6501b325a4f9",
+            "name": "Red Team Management",
+            "vanity_slug": "red-team-management",
             "canonical": false,
+            "faethm_id": "FS007341"
+          },
+          {
+            "id": "ff9ffc58-12ad-465f-8ea8-09393f5b3dcb",
+            "name": "Cybersecurity",
+            "vanity_slug": "cybersecurity",
+            "canonical": true,
             "faethm_id": "FS001871"
           }
         ]
@@ -5644,11 +5644,11 @@
         "endorsements": [],
         "skills": [
           {
-            "id": "2b53d91b-f426-4011-bd4e-c6cb26fc1476",
-            "name": "Breach & Attack Simulation",
-            "vanity_slug": "breach-attack-simulation",
+            "id": "cd37934b-495b-46d0-8678-e46c430d1e45",
+            "name": "BAS",
+            "vanity_slug": "bas",
             "canonical": false,
-            "faethm_id": "FS006754"
+            "faethm_id": "FS000863"
           },
           {
             "id": "7e1785d1-b7ba-4da2-ae73-5499070138a8",
@@ -5658,18 +5658,11 @@
             "faethm_id": "FS006616"
           },
           {
-            "id": "ff9ffc58-12ad-465f-8ea8-09393f5b3dcb",
-            "name": "Cybersecurity",
-            "vanity_slug": "cybersecurity",
-            "canonical": true,
-            "faethm_id": "FS001871"
-          },
-          {
-            "id": "995dc79a-0f87-41c5-85a5-8ff87a0ee252",
-            "name": "Cybersecurity Operations",
-            "vanity_slug": "cybersecurity-operations",
+            "id": "2b53d91b-f426-4011-bd4e-c6cb26fc1476",
+            "name": "Breach & Attack Simulation",
+            "vanity_slug": "breach-attack-simulation",
             "canonical": false,
-            "faethm_id": "FS001871"
+            "faethm_id": "FS006754"
           },
           {
             "id": "6786997a-046e-49fa-a4a3-9619e528849c",
@@ -5685,11 +5678,18 @@
             "faethm_id": "FS005051"
           },
           {
-            "id": "cd37934b-495b-46d0-8678-e46c430d1e45",
-            "name": "BAS",
-            "vanity_slug": "bas",
+            "id": "995dc79a-0f87-41c5-85a5-8ff87a0ee252",
+            "name": "Cybersecurity Operations",
+            "vanity_slug": "cybersecurity-operations",
             "canonical": false,
-            "faethm_id": "FS000863"
+            "faethm_id": "FS001871"
+          },
+          {
+            "id": "ff9ffc58-12ad-465f-8ea8-09393f5b3dcb",
+            "name": "Cybersecurity",
+            "vanity_slug": "cybersecurity",
+            "canonical": true,
+            "faethm_id": "FS001871"
           }
         ]
       },
@@ -5844,6 +5844,26 @@
         "endorsements": [],
         "skills": [
           {
+            "id": "e457187a-cd60-4395-8789-b7aaff0061c5",
+            "name": "MITRE ATT&CK",
+            "vanity_slug": "mitre-att-ck",
+            "canonical": true,
+            "faethm_id": "FS009976"
+          },
+          {
+            "id": "1a48c18d-788f-4460-989c-2cd888502d11",
+            "name": "MITRE ATT&CK Navigator",
+            "vanity_slug": "mitre-att-ck-navigator",
+            "canonical": false
+          },
+          {
+            "id": "dc0a2ddd-948c-4f7d-824b-99aba17bbc50",
+            "name": "Threat Informed Defense",
+            "vanity_slug": "threat-informed-defense",
+            "canonical": false,
+            "faethm_id": "FS007477"
+          },
+          {
             "id": "5f24ef2e-eee9-4938-b766-7fc863cf37da",
             "name": "Cyber Security Analyst",
             "vanity_slug": "cyber-security-analyst",
@@ -5856,26 +5876,6 @@
             "vanity_slug": "cyber-threat-intelligence",
             "canonical": false,
             "faethm_id": "FS001869"
-          },
-          {
-            "id": "dc0a2ddd-948c-4f7d-824b-99aba17bbc50",
-            "name": "Threat Informed Defense",
-            "vanity_slug": "threat-informed-defense",
-            "canonical": false,
-            "faethm_id": "FS007477"
-          },
-          {
-            "id": "1a48c18d-788f-4460-989c-2cd888502d11",
-            "name": "MITRE ATT&CK Navigator",
-            "vanity_slug": "mitre-att-ck-navigator",
-            "canonical": false
-          },
-          {
-            "id": "e457187a-cd60-4395-8789-b7aaff0061c5",
-            "name": "MITRE ATT&CK",
-            "vanity_slug": "mitre-att-ck",
-            "canonical": true,
-            "faethm_id": "FS009976"
           }
         ]
       },
@@ -6013,28 +6013,22 @@
         "alignments": [],
         "badge_template_activities": [
           {
-            "id": "dbb01f46-0156-43fb-bf5a-d634b77e3bf8",
-            "activity_type": "Assessment",
-            "required_badge_template_id": null,
-            "title": "Passed Foundations of Operationalizing MITRE ATT&CK assessment with an 80% or higher.",
-            "url": null
-          },
-          {
             "id": "3553315b-cb6e-494f-8eb1-9395ec835363",
             "activity_type": "Course",
             "required_badge_template_id": null,
             "title": "Completed Foundations of Operationalizing MITRE ATT&CK Training",
             "url": null
+          },
+          {
+            "id": "dbb01f46-0156-43fb-bf5a-d634b77e3bf8",
+            "activity_type": "Assessment",
+            "required_badge_template_id": null,
+            "title": "Passed Foundations of Operationalizing MITRE ATT&CK assessment with an 80% or higher.",
+            "url": null
           }
         ],
         "endorsements": [],
         "skills": [
-          {
-            "id": "6786997a-046e-49fa-a4a3-9619e528849c",
-            "name": "Purple Team",
-            "vanity_slug": "purple-team",
-            "canonical": false
-          },
           {
             "id": "e457187a-cd60-4395-8789-b7aaff0061c5",
             "name": "MITRE ATT&CK",
@@ -6055,17 +6049,23 @@
             "canonical": false
           },
           {
-            "id": "ff9ffc58-12ad-465f-8ea8-09393f5b3dcb",
-            "name": "Cybersecurity",
-            "vanity_slug": "cybersecurity",
-            "canonical": true,
-            "faethm_id": "FS001871"
+            "id": "6786997a-046e-49fa-a4a3-9619e528849c",
+            "name": "Purple Team",
+            "vanity_slug": "purple-team",
+            "canonical": false
           },
           {
             "id": "995dc79a-0f87-41c5-85a5-8ff87a0ee252",
             "name": "Cybersecurity Operations",
             "vanity_slug": "cybersecurity-operations",
             "canonical": false,
+            "faethm_id": "FS001871"
+          },
+          {
+            "id": "ff9ffc58-12ad-465f-8ea8-09393f5b3dcb",
+            "name": "Cybersecurity",
+            "vanity_slug": "cybersecurity",
+            "canonical": true,
             "faethm_id": "FS001871"
           }
         ]
@@ -6081,5 +6081,5 @@
   ],
   "total_count": 25,
   "count": 25,
-  "generatedAt": "2026-02-13T19:55:24.630Z"
+  "generatedAt": "2026-02-13T19:59:27.331Z"
 }
