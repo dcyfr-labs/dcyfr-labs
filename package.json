@@ -350,7 +350,7 @@
     "gray-matter": "^4.0.3",
     "he": "^1.2.0",
     "html2canvas": "^1.4.1",
-    "inngest": "^3.48.1",
+    "inngest": "^3.52.0",
     "js-yaml": "^4.1.0",
     "katex": "^0.16.28",
     "lucide-react": "^0.563.0",
