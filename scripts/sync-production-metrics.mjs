@@ -139,12 +139,6 @@ function isExcluded(key) {
   });
 }
 
-function matchesPattern(key, pattern) {
-  // FIX: CWE-94 - Use secure regex escaping to prevent injection
-  const regex = new RegExp('^' + escapeRegExp(pattern) + '$');
-  return regex.test(key);
-}
-
 // ============================================================================
 // Sync Operations
 // ============================================================================
@@ -408,6 +402,23 @@ async function syncMetrics(options = {}) {
 // ============================================================================
 
 async function main() {
+  // SECURITY: Prevent production-to-preview data sync during production builds
+  // This script should ONLY run in preview/development environments
+  const isProductionBuild =
+    process.env.VERCEL_ENV === 'production' ||
+    process.env.GIT_COMMIT_REF === 'main' ||
+    process.env.NODE_ENV === 'production';
+
+  if (isProductionBuild) {
+    console.log('🔒 Production environment detected - skipping metrics sync');
+    console.log('   VERCEL_ENV:', process.env.VERCEL_ENV || 'not set');
+    console.log('   GIT_COMMIT_REF:', process.env.GIT_COMMIT_REF || 'not set');
+    console.log('   NODE_ENV:', process.env.NODE_ENV || 'not set');
+    console.log('');
+    console.log('✅ This script only runs in preview/development environments');
+    process.exit(0);
+  }
+
   const args = process.argv.slice(2);
   const dryRun = args.includes('--dry-run') || args.includes('-d');
   const quickMode = args.includes('--quick') || args.includes('-q');
