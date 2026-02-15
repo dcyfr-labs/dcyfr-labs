@@ -62,6 +62,7 @@
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:memory": "playwright test e2e/memory.spec.ts",
     "test:ci": "vitest run --coverage && playwright test",
+    "test:delegation-events": "node scripts/test-delegation-events.mjs",
     "memory:load-test": "node scripts/memory-load-test.mjs",
     "memory:load-test:quick": "node scripts/memory-load-test.mjs --concurrent=5 --memories=10 --searches=5",
     "memory:load-test:heavy": "node scripts/memory-load-test.mjs --concurrent=20 --memories=50 --searches=25",
