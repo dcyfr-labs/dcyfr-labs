@@ -36,7 +36,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24.13.0'
           cache: 'npm'
 
       - name: Install dependencies
@@ -92,7 +92,7 @@ jobs:
 
       - name: Comment on PR with results
         if: github.event_name == 'pull_request' && (steps.token-validation.outcome != 'success' || steps.type-check.outcome != 'success')
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const tokenStatus = '${{ steps.token-validation.outcome }}';
@@ -160,7 +160,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24.13.0'
           cache: 'npm'
 
       - name: Install dependencies
@@ -188,7 +188,7 @@ jobs:
 
       - name: Comment violation count on PR
         if: github.event_name == 'pull_request' && steps.count-violations.outputs.violations != '0'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const violations = '${{ steps.count-violations.outputs.violations }}';

@@ -175,6 +175,8 @@
     "deploy:invalidate": "node scripts/invalidate-cache-on-deploy.mjs",
     "deploy:invalidate:force": "node scripts/invalidate-cache-on-deploy.mjs --force",
     "deploy:webhook": "bash scripts/deploy-github-webhook.sh",
+    "vercel:prune:preview": "node scripts/prune-vercel-preview-deployments.mjs",
+    "vercel:prune:preview:dry-run": "DRY_RUN=true node scripts/prune-vercel-preview-deployments.mjs",
     "security:autofix": "node scripts/ci/security-autofix-cli.mjs",
     "security:autofix:trigger": "gh workflow run codeql-autofix.yml -f severity=high",
     "security:autofix:trigger:dry-run": "gh workflow run codeql-autofix.yml -f severity=high -f dry_run=true",

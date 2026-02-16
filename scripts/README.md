@@ -6,17 +6,18 @@ This directory contains utility scripts for development, testing, and maintenanc
 
 ## Quick Reference
 
-| Script | Purpose | Usage | Frequency |
-|--------|---------|-------|-----------|
-| `check-security-alert.mjs` | Check GitHub security alerts status | `node scripts/check-security-alert.mjs <alert-number>` | 🔥 High |
-| `run-with-dev.mjs` | Run tasks with Next.js dev server | `node scripts/run-with-dev.mjs <script-path>` | 🔥 High |
-| `generate-blog-hero.mjs` | Generate SVG hero images for blog posts | `node scripts/generate-blog-hero.mjs --slug <post-slug>` | 🟡 Medium |
-| `generate-project-hero.mjs` | Generate SVG hero images for projects | `node scripts/generate-project-hero.mjs --all` | 🟡 Medium |
-| `test-accessibility.mjs` | Automated accessibility testing | `node scripts/test-accessibility.mjs` | 🟡 Medium |
-| `test-accessibility-manual.mjs` | Manual accessibility checklist | `node scripts/test-accessibility-manual.mjs` | 🔵 Low |
-| `test-skip-link.mjs` | Test skip-to-content implementation | `node scripts/test-skip-link.mjs` | 🔵 Low |
-| `test-skip-link-structure.mjs` | Validate skip link structure | `node scripts/test-skip-link-structure.mjs` | 🔵 Low |
-| `check-headers.mjs` | Validate HTTP security headers | `node scripts/check-headers.mjs` | 🔵 Low |
+| Script                                 | Purpose                                 | Usage                                                    | Frequency |
+| -------------------------------------- | --------------------------------------- | -------------------------------------------------------- | --------- |
+| `check-security-alert.mjs`             | Check GitHub security alerts status     | `node scripts/check-security-alert.mjs <alert-number>`   | 🔥 High   |
+| `run-with-dev.mjs`                     | Run tasks with Next.js dev server       | `node scripts/run-with-dev.mjs <script-path>`            | 🔥 High   |
+| `generate-blog-hero.mjs`               | Generate SVG hero images for blog posts | `node scripts/generate-blog-hero.mjs --slug <post-slug>` | 🟡 Medium |
+| `generate-project-hero.mjs`            | Generate SVG hero images for projects   | `node scripts/generate-project-hero.mjs --all`           | 🟡 Medium |
+| `prune-vercel-preview-deployments.mjs` | Delete old Vercel preview deployments   | `node scripts/prune-vercel-preview-deployments.mjs`      | 🟡 Medium |
+| `test-accessibility.mjs`               | Automated accessibility testing         | `node scripts/test-accessibility.mjs`                    | 🟡 Medium |
+| `test-accessibility-manual.mjs`        | Manual accessibility checklist          | `node scripts/test-accessibility-manual.mjs`             | 🔵 Low    |
+| `test-skip-link.mjs`                   | Test skip-to-content implementation     | `node scripts/test-skip-link.mjs`                        | 🔵 Low    |
+| `test-skip-link-structure.mjs`         | Validate skip link structure            | `node scripts/test-skip-link-structure.mjs`              | 🔵 Low    |
+| `check-headers.mjs`                    | Validate HTTP security headers          | `node scripts/check-headers.mjs`                         | 🔵 Low    |
 
 ---
 
@@ -49,6 +50,7 @@ node scripts/check-security-alert.mjs https://github.com/dcyfr/dcyfr-labs/securi
 - `1` - Alert is still open or error occurred
 
 #### run-with-dev.mjs
+
 Helper script for running tasks with Next.js dev server. Used by accessibility test scripts.
 
 ```bash
@@ -56,6 +58,7 @@ node scripts/run-with-dev.mjs <script-path>
 ```
 
 #### check-headers.mjs
+
 Validates HTTP security headers (standalone utility, no npm script).
 
 ```bash
@@ -83,6 +86,7 @@ node scripts/generate-blog-hero.mjs --slug my-post --variant ocean --force
 ```
 
 **Features:**
+
 - 22 gradient variants across 5 themes (brand, warm, cool, neutral, vibrant)
 - Tag-based thematic gradient selection (security → red, performance → blue, etc.)
 - Deterministic gradient selection (same slug = same gradient)
@@ -110,6 +114,7 @@ npm run generate:project-hero
 ```
 
 **Features:**
+
 - 6 unique color schemes with no repeating colors:
   - `code.svg` → Red gradient with dot pattern
   - `tech.svg` → Blue gradient with circuit pattern
@@ -138,6 +143,7 @@ Images automatically adapt to theme via CSS media queries and `data-theme` attri
 ### Accessibility Testing
 
 #### test-accessibility.mjs
+
 Automated accessibility testing suite for HTML structure validation.
 
 ```bash
@@ -145,6 +151,7 @@ node scripts/test-accessibility.mjs
 ```
 
 #### test-accessibility-manual.mjs
+
 Manual accessibility testing checklist for keyboard and screen reader verification.
 
 ```bash
@@ -152,6 +159,7 @@ node scripts/test-accessibility-manual.mjs
 ```
 
 #### test-skip-link.mjs
+
 Tests skip-to-content link implementation across pages.
 
 ```bash
@@ -159,11 +167,44 @@ node scripts/test-skip-link.mjs
 ```
 
 #### test-skip-link-structure.mjs
+
 Validates skip link HTML structure and focus behavior.
 
 ```bash
 node scripts/test-skip-link-structure.mjs
 ```
+
+### Vercel Operations
+
+#### prune-vercel-preview-deployments.mjs
+
+Prunes old preview deployments from Vercel using the Vercel API.
+
+```bash
+# Default retention: 90 days
+node scripts/prune-vercel-preview-deployments.mjs
+
+# Dry run
+DRY_RUN=true node scripts/prune-vercel-preview-deployments.mjs
+
+# Custom retention
+RETENTION_DAYS=120 node scripts/prune-vercel-preview-deployments.mjs
+
+# Via npm scripts
+npm run vercel:prune:preview
+npm run vercel:prune:preview:dry-run
+```
+
+Required environment variables:
+
+- `VERCEL_TOKEN`
+- `VERCEL_PROJECT_ID`
+
+Optional:
+
+- `VERCEL_TEAM_ID` (for team-scoped projects)
+- `RETENTION_DAYS` (defaults to `90`)
+- `DRY_RUN` (`true`/`false`, defaults to `false`)
 
 ## Archived Scripts
 
@@ -173,7 +214,7 @@ One-off development test scripts moved to `scripts/archive/legacy-tests/`. These
 
 - **Vitest** (`npm run test`) for unit and integration tests
 - **Playwright** (`npm run test:e2e`) for E2E tests (runs production build by default).
-	Use `npm run test:e2e:dev` to run E2E against the local dev server.
+  Use `npm run test:e2e:dev` to run E2E against the local dev server.
 - **Lighthouse CI** (`npm run lighthouse:ci`) for performance and accessibility validation
 
 See `scripts/archive/legacy-tests/README.md` for complete list and migration guidance.
@@ -191,6 +232,7 @@ One-time debug and migration scripts are in `scripts/archive/`. See `scripts/arc
 **Symptoms:** `Permission denied` error when running script
 
 **Solutions:**
+
 ```bash
 # Option 1: Run with node explicitly
 node scripts/check-security-alert.mjs
@@ -209,6 +251,7 @@ chmod +x scripts/check-security-alert.mjs
 **Common Causes & Solutions:**
 
 1. **Dependencies not installed**
+
    ```bash
    # Install all dependencies
    npm install
@@ -218,6 +261,7 @@ chmod +x scripts/check-security-alert.mjs
    ```
 
 2. **Wrong working directory**
+
    ```bash
    # Scripts must run from project root
    cd /path/to/dcyfr-labs
@@ -225,6 +269,7 @@ chmod +x scripts/check-security-alert.mjs
    ```
 
 3. **Missing local module**
+
    ```bash
    # Check if script exists
    ls scripts/check-security-alert.mjs
@@ -240,6 +285,7 @@ chmod +x scripts/check-security-alert.mjs
 **Solutions:**
 
 1. **Set GITHUB_TOKEN environment variable**
+
    ```bash
    # Create GitHub personal access token (Settings → Developer settings → Personal access tokens)
    export GITHUB_TOKEN=ghp_your_token_here
@@ -255,6 +301,7 @@ chmod +x scripts/check-security-alert.mjs
    ```
 
 **Required token scopes:**
+
 - `repo` (for private repos) or `public_repo` (for public repos)
 - `security_events` (for code scanning alerts)
 
@@ -265,6 +312,7 @@ chmod +x scripts/check-security-alert.mjs
 **Solutions:**
 
 1. **Check if dev server is already running**
+
    ```bash
    # Kill existing dev server
    lsof -i :3000 | grep node | awk '{print $2}' | xargs kill -9
@@ -278,6 +326,7 @@ chmod +x scripts/check-security-alert.mjs
    - Default timeout is typically 30-60 seconds
 
 3. **Check for port conflicts**
+
    ```bash
    # See what's using port 3000
    lsof -i :3000
@@ -293,6 +342,7 @@ chmod +x scripts/check-security-alert.mjs
 **Solutions:**
 
 1. **Create .env file** (if missing)
+
    ```bash
    # Copy example (if exists)
    cp .env.example .env
@@ -321,6 +371,7 @@ chmod +x scripts/check-security-alert.mjs
 **Solutions:**
 
 1. **Check output path**
+
    ```bash
    # Blog heroes saved to:
    ls src/content/blog/<slug>/hero.svg
@@ -330,12 +381,14 @@ chmod +x scripts/check-security-alert.mjs
    ```
 
 2. **Verify SVG syntax**
+
    ```bash
    # Open SVG in browser to test
    # Should render without errors
    ```
 
 3. **Check file permissions**
+
    ```bash
    # Ensure files are readable
    chmod 644 src/content/blog/*/hero.svg
@@ -353,6 +406,7 @@ chmod +x scripts/check-security-alert.mjs
 ## Adding New Scripts
 
 When adding new scripts:
+
 1. Use `.mjs` extension for ES modules
 2. Add shebang line: `#!/usr/bin/env node`
 3. Include descriptive comment header
@@ -372,8 +426,7 @@ npm run update:baseline
 
 This repository includes a scheduled GitHub Action (`.github/workflows/update-baseline-mapping.yml`) to refresh the data weekly. The script can also be run locally if you want to regenerate the file manually.
 
-CI integration
---------------
+## CI integration
 
 This repository now runs the `update:baseline` script before Lighthouse CI in both local and CI environments. The script is invoked automatically via NPM pre-scripts and as part of the Lighthouse CI workflow.
 

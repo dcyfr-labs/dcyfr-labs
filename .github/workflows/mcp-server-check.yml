@@ -53,7 +53,7 @@ jobs:
 
       - name: Upload health report artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: mcp-health-report-${{ github.run_id }}
           path: mcp-health-report.json
