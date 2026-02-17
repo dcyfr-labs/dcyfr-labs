@@ -1,2 +1,0 @@
-{"timestamp":"2026-02-16T17:15:27.925693-07:00","source":{"id":"cli/platform","name":"Platform"},"visibility":{"cliSummaryTable":false,"statusPage":false,"telemetry":true},"attributes":{"arch":"aarch64","name":"Mac OS X","version":"26.3"}}
-{"timestamp":"2026-02-16T17:15:28.591053-07:00","source":{"id":"cli/sip-enablement","name":"macOS SIP enablement status"},"visibility":{"cliSummaryTable":false,"statusPage":false,"telemetry":true},"attributes":{"isEnabled":true}}
