@@ -141,3 +141,6 @@ npm-shrinkwrap.json
 .context/
 .opencode/
 docs/private/
+
+# CodeQL diagnostic fixtures are NDJSON, not single JSON documents
+codeql/custom/javascript/javascript.testproj/diagnostic/*.json

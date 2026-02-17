@@ -1,12 +1,12 @@
 ---
-sourceLocationPrefix: /Users/drew/DCYFR/workspace/dcyfr-labs/codeql/custom/javascript
+sourceLocationPrefix: /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/codeql/custom/javascript
 baselineLinesOfCode: 0
 unicodeNewlines: true
 columnKind: utf16
 primaryLanguage: javascript
 creationMetadata:
   cliVersion: 2.24.1
-  creationTime: 2026-02-08T04:34:34.517031Z
-finalised: true
+  creationTime: 2026-02-17T00:15:28.595722Z
 overlayBaseDatabase: false
 overlayDatabase: false
+finalised: true
