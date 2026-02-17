@@ -251,4 +251,4 @@ $RECYCLE.BIN/
 gitleaks-report*.json
 test-results.json
 reports/prose-*
-.github/nuclei/templates/community
+
