@@ -106,7 +106,7 @@ export function RoleBasedCTA({
       data-testid={`role-based-cta-${role}`}
     >
       {/* Icon */}
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <Icon className={cn('h-8 w-8', theme.color)} aria-hidden="true" />
       </div>
 
@@ -117,7 +117,7 @@ export function RoleBasedCTA({
       </div>
 
       {/* Button */}
-      <div className="flex-shrink-0 w-full md:w-auto">
+      <div className="shrink-0 w-full md:w-auto">
         <a
           href={buttonHref}
           onClick={handleClick}

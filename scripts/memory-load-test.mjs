@@ -417,17 +417,28 @@ function generateReport(results) {
   console.log(`   Success Rate: ${results.summary.successRate} ${overallSuccess < 95 ? '❌ (Target: >95%)' : '✅'}`);
 }
 
-// Main execution
-async function main() {
-  // Parse command line arguments
+function parseArgs() {
   const args = process.argv.slice(2);
-  args.forEach(arg => {
+  for (const arg of args) {
     const [key, value] = arg.replace('--', '').split('=');
     if (key === 'concurrent') CONFIG.concurrentUsers = parseInt(value);
     if (key === 'memories') CONFIG.memoriesPerUser = parseInt(value);
     if (key === 'searches') CONFIG.searchesPerUser = parseInt(value);
     if (key === 'duration') CONFIG.testDurationMs = parseInt(value);
-  });
+  }
+}
+
+function checkPerformanceTargets(results) {
+  const successRate = parseFloat(results.summary.successRate.replace('%', ''));
+  const addP95 = results.addMemory.responseTime.p95;
+  const searchP95 = results.searchMemory.responseTime.p95;
+  const failed = successRate < 95 || addP95 > 500 || searchP95 > 200;
+  return { failed, successRate, addP95, searchP95 };
+}
+
+// Main execution
+async function main() {
+  parseArgs();
 
   const metrics = new MetricsCollector();
   const runner = new LoadTestRunner(CONFIG, metrics);
@@ -436,18 +447,13 @@ async function main() {
     const results = await runner.runLoadTest();
     generateReport(results);
 
-    // Exit with error code if performance targets not met
-    const successRate = parseFloat(results.summary.successRate.replace('%', ''));
-    const addP95 = results.addMemory.responseTime.p95;
-    const searchP95 = results.searchMemory.responseTime.p95;
-
-    if (successRate < 95 || addP95 > 500 || searchP95 > 200) {
+    const { failed } = checkPerformanceTargets(results);
+    if (failed) {
       console.log('❌ Performance targets not met');
       process.exit(1);
     }
 
     console.log('✅ All performance targets met');
-
   } catch (error) {
     console.error('❌ Load test failed:', error.message);
     process.exit(1);

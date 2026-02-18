@@ -132,6 +132,39 @@ function isBDDContext(line, lines, lineIndex) {
   return false;
 }
 
+function processCommentLine(line, i, lines, result, isFirstCommentBlock, firstNonCommentSeen, isTestFile) {
+  const trimmedLine = line.trim();
+  result.commentLines++;
+  const isValid = isValidComment(line, i, lines, isFirstCommentBlock && !firstNonCommentSeen);
+  const isBDD = isTestFile && isBDDContext(line, lines, i);
+  if (isValid || isBDD) {
+    result.validCommentLines++;
+  } else {
+    result.excessiveCommentLines++;
+    result.excessiveComments.push({
+      line: i + 1,
+      content: trimmedLine.substring(0, 80) + (trimmedLine.length > 80 ? '...' : ''),
+    });
+  }
+}
+
+function setAnalysisStatus(result, threshold) {
+  if (result.excessiveRatio > threshold) {
+    result.status = 'excessive';
+    result.suggestions.push(
+      `Consider removing ${result.excessiveCommentLines} excessive comment(s)`,
+      'AI-generated code often has too many explanatory comments',
+      'Good code should be self-documenting where possible'
+    );
+  } else if (result.commentRatio > 50) {
+    result.status = 'warning';
+    result.suggestions.push(
+      'High overall comment ratio detected',
+      'Review if all comments add value'
+    );
+  }
+}
+
 /**
  * Analyze a file's comment density
  */
@@ -197,23 +230,7 @@ function analyzeFile(filePath, threshold = DEFAULT_THRESHOLD) {
     }
 
     if (isCommentLine) {
-      result.commentLines++;
-
-      // Determine if it's a valid comment
-      const isValid = isValidComment(line, i, lines, isFirstCommentBlock && !firstNonCommentSeen);
-
-      // For test files, also check BDD context
-      const isBDD = isTestFile && isBDDContext(line, lines, i);
-
-      if (isValid || isBDD) {
-        result.validCommentLines++;
-      } else {
-        result.excessiveCommentLines++;
-        result.excessiveComments.push({
-          line: i + 1,
-          content: trimmedLine.substring(0, 80) + (trimmedLine.length > 80 ? '...' : ''),
-        });
-      }
+      processCommentLine(line, i, lines, result, isFirstCommentBlock, firstNonCommentSeen, isTestFile);
     } else {
       result.codeLines++;
       firstNonCommentSeen = true;
@@ -231,20 +248,7 @@ function analyzeFile(filePath, threshold = DEFAULT_THRESHOLD) {
   }
 
   // Determine status
-  if (result.excessiveRatio > threshold) {
-    result.status = 'excessive';
-    result.suggestions.push(
-      `Consider removing ${result.excessiveCommentLines} excessive comment(s)`,
-      'AI-generated code often has too many explanatory comments',
-      'Good code should be self-documenting where possible'
-    );
-  } else if (result.commentRatio > 50) {
-    result.status = 'warning';
-    result.suggestions.push(
-      'High overall comment ratio detected',
-      'Review if all comments add value'
-    );
-  }
+  setAnalysisStatus(result, threshold);
 
   return result;
 }
@@ -274,6 +278,19 @@ function removeExcessiveComments(filePath, result) {
 // =============================================================================
 // Output Formatters
 // =============================================================================
+
+function appendVerboseDetails(lines, result) {
+  if (result.excessiveComments.length === 0) return;
+  lines.push(`\n   ${COLORS.dim}Excessive comments:${COLORS.reset}`);
+  for (const comment of result.excessiveComments.slice(0, 10)) {
+    lines.push(`   ${COLORS.dim}L${comment.line}: ${comment.content}${COLORS.reset}`);
+  }
+  if (result.excessiveComments.length > 10) {
+    lines.push(
+      `   ${COLORS.dim}... and ${result.excessiveComments.length - 10} more${COLORS.reset}`
+    );
+  }
+}
 
 function formatResult(result, verbose = false) {
   if (result.error) {
@@ -309,17 +326,7 @@ function formatResult(result, verbose = false) {
     }
   }
 
-  if (verbose && result.excessiveComments.length > 0) {
-    lines.push(`\n   ${COLORS.dim}Excessive comments:${COLORS.reset}`);
-    for (const comment of result.excessiveComments.slice(0, 10)) {
-      lines.push(`   ${COLORS.dim}L${comment.line}: ${comment.content}${COLORS.reset}`);
-    }
-    if (result.excessiveComments.length > 10) {
-      lines.push(
-        `   ${COLORS.dim}... and ${result.excessiveComments.length - 10} more${COLORS.reset}`
-      );
-    }
-  }
+  if (verbose) appendVerboseDetails(lines, result);
 
   if (result.suggestions.length > 0) {
     lines.push(`\n   ${COLORS.cyan}Suggestions:${COLORS.reset}`);

@@ -80,65 +80,44 @@ function info(message) {
  * Check 1: Validate documentation structure
  * Ensures sensitive files are in private/ subdirectories
  */
-async function validateDocStructure() {
-  info('Checking documentation structure...');
+const SENSITIVE_KEYWORDS = ['FINDINGS', 'REPORT', 'AUDIT', 'ANALYSIS', 'METRICS', 'STATUS', 'SUMMARY'];
+const ALLOWED_DOC_FILES = [
+  'AGENTS.md',
+  'DOCS_GOVERNANCE.md',
+  'DOCUMENTATION_CONSOLIDATION_GUIDE.md',
+  'INDEX.md',
+  'README.md',
+];
 
-  const sensitiveKeywords = [
-    'FINDINGS',
-    'REPORT',
-    'AUDIT',
-    'ANALYSIS',
-    'METRICS',
-    'STATUS',
-    'SUMMARY',
-  ];
+function isSensitiveDocFile(entryName) {
+  return SENSITIVE_KEYWORDS.some(keyword => entryName.toUpperCase().includes(keyword))
+    && !ALLOWED_DOC_FILES.includes(entryName);
+}
 
-  const allowedFiles = [
-    'AGENTS.md',
-    'DOCS_GOVERNANCE.md',
-    'DOCUMENTATION_CONSOLIDATION_GUIDE.md',
-    'INDEX.md',
-    'README.md',
-  ];
-
-  const sensitiveFiles = [];
-
-  async function scanDirectory(dir) {
-    try {
-      const entries = await readdir(dir, { withFileTypes: true });
-
-      for (const entry of entries) {
-        const fullPath = join(dir, entry.name);
-        const relativePath = relative(PROJECT_ROOT, fullPath);
-
-        // Skip private directories
-        if (relativePath.includes('/private/')) {
-          continue;
-        }
-
-        if (entry.isDirectory()) {
-          await scanDirectory(fullPath);
-        } else if (entry.isFile()) {
-          // Check if filename contains sensitive keywords
-          const hasSensitiveKeyword = sensitiveKeywords.some((keyword) =>
-            entry.name.toUpperCase().includes(keyword)
-          );
-
-          if (hasSensitiveKeyword && !allowedFiles.includes(entry.name)) {
-            sensitiveFiles.push(relativePath);
-          }
-        }
-      }
-    } catch (err) {
-      // Directory doesn't exist or can't be read
-      if (err.code !== 'ENOENT') {
-        warn(`Could not scan directory: ${dir}`);
+async function scanSensitiveDocFiles(dir, sensitiveFiles) {
+  try {
+    const entries = await readdir(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = join(dir, entry.name);
+      const relativePath = relative(PROJECT_ROOT, fullPath);
+      if (relativePath.includes('/private/')) continue;
+      if (entry.isDirectory()) {
+        await scanSensitiveDocFiles(fullPath, sensitiveFiles);
+      } else if (entry.isFile() && isSensitiveDocFile(entry.name)) {
+        sensitiveFiles.push(relativePath);
       }
     }
+  } catch (err) {
+    if (err.code !== 'ENOENT') {
+      warn(`Could not scan directory: ${dir}`);
+    }
   }
+}
 
-  await scanDirectory(join(PROJECT_ROOT, 'docs'));
-
+async function validateDocStructure() {
+  info('Checking documentation structure...');
+  const sensitiveFiles = [];
+  await scanSensitiveDocFiles(join(PROJECT_ROOT, 'docs'), sensitiveFiles);
   if (sensitiveFiles.length > 0) {
     error('Sensitive files found in public docs/', sensitiveFiles.join('\n   '));
     info('Move to appropriate docs/[category]/private/ folder');

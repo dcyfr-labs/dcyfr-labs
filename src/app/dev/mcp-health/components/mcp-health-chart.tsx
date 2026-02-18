@@ -90,7 +90,7 @@ export function McpHealthChart({ historyData, loading }: McpHealthChartProps) {
           <Skeleton className="h-3 w-64 mt-2" />
         </CardHeader>
         <CardContent>
-          <Skeleton className="h-[300px] w-full" />
+          <Skeleton className="h-75 w-full" />
         </CardContent>
       </Card>
     );
@@ -113,7 +113,7 @@ export function McpHealthChart({ historyData, loading }: McpHealthChartProps) {
           <CardDescription className="text-xs">No historical data available yet</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex h-[300px] items-center justify-center text-muted-foreground">
+          <div className="flex h-75 items-center justify-center text-muted-foreground">
             Health check data will appear after the first CI run
           </div>
         </CardContent>

@@ -239,6 +239,90 @@ function generateWorkspaceChecklist() {
 /**
  * Format results as GitHub Issue markdown
  */
+function formatUnusedExportsSection(unusedExports, sections) {
+  if (unusedExports.count > 0) {
+    sections.push('### 🗑️ Unused Exports\n');
+    sections.push('These exports are not used anywhere in the codebase:\n');
+    unusedExports.items.forEach(item => {
+      if (item.raw) {
+        sections.push(`- \`${item.raw}\``);
+      } else {
+        sections.push(`- [\`${item.exportName}\`](${item.file}#L${item.lineNum})`);
+      }
+    });
+    if (unusedExports.count > unusedExports.items.length) {
+      sections.push(`\n*...and ${unusedExports.count - unusedExports.items.length} more*`);
+    }
+    sections.push('');
+  }
+}
+
+function formatUnusedDepsSection(unusedDeps, sections) {
+  if (unusedDeps.unusedCount > 0) {
+    sections.push('### 📦 Unused Dependencies\n');
+    sections.push('Consider removing these from `package.json`:\n');
+    unusedDeps.unused.forEach(dep => {
+      sections.push(`- \`${dep}\``);
+    });
+    if (unusedDeps.unusedCount > unusedDeps.unused.length) {
+      sections.push(`\n*...and ${unusedDeps.unusedCount - unusedDeps.unused.length} more*`);
+    }
+    sections.push('');
+  }
+}
+
+function formatMissingDepsSection(unusedDeps, sections) {
+  if (unusedDeps.missingCount > 0) {
+    sections.push('### ⚠️ Missing Dependencies\n');
+    sections.push('These are used but not in `package.json`:\n');
+    unusedDeps.missing.forEach(dep => {
+      sections.push(`- \`${dep}\``);
+    });
+    sections.push('');
+  }
+}
+
+function formatLargeFilesSection(largeFiles, sections) {
+  if (largeFiles.count > 0) {
+    sections.push('### 📏 Large Files\n');
+    sections.push('Consider refactoring these files:\n');
+    sections.push('| File | Lines | Size |');
+    sections.push('|------|-------|------|');
+    largeFiles.files.forEach(file => {
+      sections.push(`| [\`${file.file}\`](${file.file}) | ${file.lines} | ${file.size}KB |`);
+    });
+    if (largeFiles.count > largeFiles.files.length) {
+      sections.push(`\n*...and ${largeFiles.count - largeFiles.files.length} more*`);
+    }
+    sections.push('');
+  }
+}
+
+function formatTodosSection(todos, sections) {
+  if (todos.count > 0) {
+    sections.push('### 📝 TODO/FIXME Comments\n');
+    sections.push('Technical debt to address:\n');
+    todos.items.forEach(todo => {
+      sections.push(`- **${todo.type}** [\`${todo.file}:${todo.line}\`](${todo.file}#L${todo.line}): ${todo.comment}`);
+    });
+    if (todos.count > todos.items.length) {
+      sections.push(`\n*...and ${todos.count - todos.items.length} more*`);
+    }
+    sections.push('');
+  }
+}
+
+function formatDuplicatesSection(duplicates, sections) {
+  if (duplicates.count > 0) {
+    sections.push('### 🔄 Duplicate Package Versions\n');
+    sections.push('Multiple versions detected (may increase bundle size):\n');
+    duplicates.items.forEach(dup => {
+      sections.push(`- **${dup.package}**: ${dup.versions.join(', ')}`);
+    });
+    sections.push('');
+  }
+}
+
 function formatIssueBody(data) {
   const sections = [];
 
@@ -257,83 +341,12 @@ function formatIssueBody(data) {
   sections.push(`| Duplicate Packages | ${data.duplicates.count} |`);
   sections.push('');
 
-  // Unused Exports
-  if (data.unusedExports.count > 0) {
-    sections.push('### 🗑️ Unused Exports\n');
-    sections.push('These exports are not used anywhere in the codebase:\n');
-    data.unusedExports.items.forEach(item => {
-      if (item.raw) {
-        sections.push(`- \`${item.raw}\``);
-      } else {
-        sections.push(`- [\`${item.exportName}\`](${item.file}#L${item.lineNum})`);
-      }
-    });
-    if (data.unusedExports.count > data.unusedExports.items.length) {
-      sections.push(`\n*...and ${data.unusedExports.count - data.unusedExports.items.length} more*`);
-    }
-    sections.push('');
-  }
-
-  // Unused Dependencies
-  if (data.unusedDeps.unusedCount > 0) {
-    sections.push('### 📦 Unused Dependencies\n');
-    sections.push('Consider removing these from `package.json`:\n');
-    data.unusedDeps.unused.forEach(dep => {
-      sections.push(`- \`${dep}\``);
-    });
-    if (data.unusedDeps.unusedCount > data.unusedDeps.unused.length) {
-      sections.push(`\n*...and ${data.unusedDeps.unusedCount - data.unusedDeps.unused.length} more*`);
-    }
-    sections.push('');
-  }
-
-  // Missing Dependencies
-  if (data.unusedDeps.missingCount > 0) {
-    sections.push('### ⚠️ Missing Dependencies\n');
-    sections.push('These are used but not in `package.json`:\n');
-    data.unusedDeps.missing.forEach(dep => {
-      sections.push(`- \`${dep}\``);
-    });
-    sections.push('');
-  }
-
-  // Large Files
-  if (data.largeFiles.count > 0) {
-    sections.push('### 📏 Large Files\n');
-    sections.push('Consider refactoring these files:\n');
-    sections.push('| File | Lines | Size |');
-    sections.push('|------|-------|------|');
-    data.largeFiles.files.forEach(file => {
-      sections.push(`| [\`${file.file}\`](${file.file}) | ${file.lines} | ${file.size}KB |`);
-    });
-    if (data.largeFiles.count > data.largeFiles.files.length) {
-      sections.push(`\n*...and ${data.largeFiles.count - data.largeFiles.files.length} more*`);
-    }
-    sections.push('');
-  }
-
-  // TODO Comments
-  if (data.todos.count > 0) {
-    sections.push('### 📝 TODO/FIXME Comments\n');
-    sections.push('Technical debt to address:\n');
-    data.todos.items.forEach(todo => {
-      sections.push(`- **${todo.type}** [\`${todo.file}:${todo.line}\`](${todo.file}#L${todo.line}): ${todo.comment}`);
-    });
-    if (data.todos.count > data.todos.items.length) {
-      sections.push(`\n*...and ${data.todos.count - data.todos.items.length} more*`);
-    }
-    sections.push('');
-  }
-
-  // Duplicate Packages
-  if (data.duplicates.count > 0) {
-    sections.push('### 🔄 Duplicate Package Versions\n');
-    sections.push('Multiple versions detected (may increase bundle size):\n');
-    data.duplicates.items.forEach(dup => {
-      sections.push(`- **${dup.package}**: ${dup.versions.join(', ')}`);
-    });
-    sections.push('');
-  }
+  formatUnusedExportsSection(data.unusedExports, sections);
+  formatUnusedDepsSection(data.unusedDeps, sections);
+  formatMissingDepsSection(data.unusedDeps, sections);
+  formatLargeFilesSection(data.largeFiles, sections);
+  formatTodosSection(data.todos, sections);
+  formatDuplicatesSection(data.duplicates, sections);
 
   // Workspace Cleanup Checklist
   sections.push('### 🧹 Workspace Cleanup Checklist\n');

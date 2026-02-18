@@ -176,6 +176,37 @@ export function getStartupInfo(port) {
   ].join('\n');
 }
 
+async function handleCheckCommand(port) {
+  const inUse = await isPortInUse(port);
+  if (inUse) {
+    const pids = await getPortPIDs(port);
+    const pidStr = pids.length > 0 ? ` (PID: ${pids.join(', ')})` : '';
+    console.log(chalk.red(`PORT ${port} IN USE${pidStr}`));
+  } else {
+    console.log(chalk.green(`PORT ${port} FREE`));
+  }
+  process.exit(0);
+}
+
+async function handleKillCommand(port) {
+  const inUse = await isPortInUse(port);
+  if (!inUse) {
+    console.log(chalk.dim(`Port ${port} is not in use.`));
+    process.exit(0);
+  }
+  const pids = await getPortPIDs(port);
+  console.log(chalk.yellow(`Killing process(es) on port ${port} (PID: ${pids.join(', ')})...`));
+  const result = await killPort(port);
+  if (result.killed.length > 0) {
+    console.log(chalk.green(`Killed PID(s): ${result.killed.join(', ')}`));
+  }
+  if (result.errors.length > 0) {
+    console.error(chalk.red('Errors:\n' + result.errors.join('\n')));
+    process.exit(1);
+  }
+  process.exit(0);
+}
+
 // --- CLI interface (used by port:check and port:kill npm scripts) ---
 
 async function cli() {
@@ -183,32 +214,9 @@ async function cli() {
   const port = parseInt(process.argv[3] ?? process.env.PORT ?? '3000', 10);
 
   if (command === 'check') {
-    const inUse = await isPortInUse(port);
-    if (inUse) {
-      const pids = await getPortPIDs(port);
-      const pidStr = pids.length > 0 ? ` (PID: ${pids.join(', ')})` : '';
-      console.log(chalk.red(`PORT ${port} IN USE${pidStr}`));
-    } else {
-      console.log(chalk.green(`PORT ${port} FREE`));
-    }
-    process.exit(0); // check itself succeeded — status is in the output
+    await handleCheckCommand(port);
   } else if (command === 'kill') {
-    const inUse = await isPortInUse(port);
-    if (!inUse) {
-      console.log(chalk.dim(`Port ${port} is not in use.`));
-      process.exit(0);
-    }
-    const pids = await getPortPIDs(port);
-    console.log(chalk.yellow(`Killing process(es) on port ${port} (PID: ${pids.join(', ')})...`));
-    const result = await killPort(port);
-    if (result.killed.length > 0) {
-      console.log(chalk.green(`Killed PID(s): ${result.killed.join(', ')}`));
-    }
-    if (result.errors.length > 0) {
-      console.error(chalk.red('Errors:\n' + result.errors.join('\n')));
-      process.exit(1);
-    }
-    process.exit(0);
+    await handleKillCommand(port);
   } else {
     console.log(chalk.cyan('Usage:'));
     console.log('  node scripts/port-utils.mjs check [port]  — check if port is in use');

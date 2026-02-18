@@ -179,6 +179,24 @@ function findMarkdownFiles(dir, fileList = []) {
 /**
  * Validate a single markdown file
  */
+function isOutsideDocsDir(relativePath, filename) {
+  return !relativePath.startsWith('docs/')
+    && !relativePath.startsWith('.github/')
+    && !SKIP_FILES.includes(filename);
+}
+
+function isMissingTLPMarker(isInDocs, isPrivate, tlpMarker) {
+  return isInDocs && !isPrivate && !tlpMarker;
+}
+
+function isOperationalInPublicDocs(isInDocs, isPrivate, isOperational, hasOperationalIndicators) {
+  return isInDocs && !isPrivate && (isOperational || hasOperationalIndicators);
+}
+
+function isPublicDocMarkedAmber(isInDocs, isPrivate, tlpMarker) {
+  return isInDocs && !isPrivate && tlpMarker === 'AMBER';
+}
+
 function validateFile(filePath) {
   const relativePath = relative(ROOT_DIR, filePath);
   const filename = filePath.split('/').pop();
@@ -195,7 +213,7 @@ function validateFile(filePath) {
   }
 
   // Rule 1: All markdown docs should be in docs/
-  if (!isInDocs && !relativePath.startsWith('.github/') && !SKIP_FILES.includes(filename)) {
+  if (isOutsideDocsDir(relativePath, filename)) {
     errors.push(
       `${colors.red}❌ ${relativePath}${colors.reset} - Documentation file outside docs/ directory`
     );
@@ -204,20 +222,18 @@ function validateFile(filePath) {
 
   // Skip private files (they should have TLP:AMBER but we don't enforce)
   if (isPrivate) {
-    if (tlpMarker === 'AMBER' || tlpMarker === null) {
-      passed++;
-      return;
-    }
     if (tlpMarker === 'CLEAR') {
       warnings.push(
         `${colors.yellow}⚠️  ${relativePath}${colors.reset} - Private file marked as TLP:CLEAR (should be TLP:AMBER)`
       );
-      return;
+    } else {
+      passed++;
     }
+    return;
   }
 
   // Rule 2: Public docs must have TLP:CLEAR marker
-  if (isInDocs && !isPrivate && !tlpMarker) {
+  if (isMissingTLPMarker(isInDocs, isPrivate, tlpMarker)) {
     errors.push(
       `${colors.red}❌ ${relativePath}${colors.reset} - Missing TLP classification marker`
     );
@@ -225,7 +241,7 @@ function validateFile(filePath) {
   }
 
   // Rule 3: Operational files should be in private/
-  if (isInDocs && !isPrivate && (isOperational || hasOperationalIndicators)) {
+  if (isOperationalInPublicDocs(isInDocs, isPrivate, isOperational, hasOperationalIndicators)) {
     errors.push(
       `${colors.red}❌ ${relativePath}${colors.reset} - Operational file in public docs (should be in private/)`
     );
@@ -233,7 +249,7 @@ function validateFile(filePath) {
   }
 
   // Rule 4: Public docs should be TLP:CLEAR
-  if (isInDocs && !isPrivate && tlpMarker === 'AMBER') {
+  if (isPublicDocMarkedAmber(isInDocs, isPrivate, tlpMarker)) {
     errors.push(
       `${colors.red}❌ ${relativePath}${colors.reset} - Public doc marked as TLP:AMBER (should be in private/ or marked TLP:CLEAR)`
     );
