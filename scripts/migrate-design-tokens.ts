@@ -98,6 +98,17 @@ class DesignTokenMigrator {
     }
   }
 
+  private collectElementChanges(element: any): Change[] {
+    const changes: Change[] = [];
+    for (const attr of element.getAttributes()) {
+      if (Node.isJsxAttribute(attr) && attr.getNameNode().getText() === 'className') {
+        const result = this.processClassNameAttribute(attr);
+        if (result) changes.push(result);
+      }
+    }
+    return changes;
+  }
+
   private async migrateFile(file: any): Promise<void> {
     const changes: Change[] = [];
     const filePath = file.getFilePath();
@@ -109,21 +120,7 @@ class DesignTokenMigrator {
     const allElements = [...jsxOpenings, ...jsxSelfClosing];
 
     for (const element of allElements) {
-      // Get attributes
-      const attributes = element.getAttributes();
-
-      // Find className attribute
-      for (const attr of attributes) {
-        if (Node.isJsxAttribute(attr)) {
-          const name = attr.getNameNode().getText();
-          if (name === 'className') {
-            const result = this.processClassNameAttribute(attr);
-            if (result) {
-              changes.push(result);
-            }
-          }
-        }
-      }
+      changes.push(...this.collectElementChanges(element));
     }
 
     if (changes.length > 0) {
@@ -173,68 +170,45 @@ class DesignTokenMigrator {
     return null;
   }
 
-  private migrateClassName(className: string): string {
-    const migrated = className;
-    let hasTokens = false;
+  private migrateClass(cls: string): { migr: string; hasToken: boolean } {
+    if (this.spacingMappings[cls]) return { migr: this.spacingMappings[cls], hasToken: true };
+    if (this.colorMappings[cls]) return { migr: this.colorMappings[cls], hasToken: true };
+    for (const pattern of this.typographyPatterns) {
+      if (pattern.token && pattern.match.test(cls)) return { migr: pattern.token, hasToken: true };
+    }
+    return { migr: cls, hasToken: false };
+  }
 
-    // Split className into individual classes
+  private formatTokenClasses(migratedClasses: string[]): string {
+    const isDesignToken = (cls: string) => /^[A-Z_]+\./.test(cls);
+    const tokens = migratedClasses.filter(isDesignToken);
+    const regular = migratedClasses.filter(cls => !isDesignToken(cls));
+
+    if (tokens.length > 0 && regular.length === 0) {
+      return tokens.join(' ');
+    }
+    if (tokens.length > 0 && regular.length > 0) {
+      return `\`${migratedClasses.map(cls => isDesignToken(cls) ? `\${${cls}}` : cls).join(' ')}\``;
+    }
+    return migratedClasses.join(' ');
+  }
+
+  private migrateClassName(className: string): string {
     const classes = className.split(/\s+/).filter(Boolean);
+    let hasTokens = false;
     const migratedClasses: string[] = [];
 
     for (const cls of classes) {
-      let migr = cls;
-
-      // Check spacing mappings
-      if (this.spacingMappings[cls]) {
-        migr = this.spacingMappings[cls];
-        hasTokens = true;
-      }
-
-      // Check color mappings
-      if (this.colorMappings[cls]) {
-        migr = this.colorMappings[cls];
-        hasTokens = true;
-      }
-
-      // Check typography patterns
-      for (const pattern of this.typographyPatterns) {
-        if (pattern.token && pattern.match.test(cls)) {
-          migr = pattern.token;
-          hasTokens = true;
-          break;
-        }
-      }
-
+      const { migr, hasToken } = this.migrateClass(cls);
       migratedClasses.push(migr);
+      if (hasToken) hasTokens = true;
     }
 
-    // If we have tokens, format appropriately
     if (hasTokens) {
-      // Separate tokens from regular classes
-      // Design tokens start with uppercase (SPACING, SEMANTIC_COLORS, TYPOGRAPHY)
-      const isDesignToken = (cls: string) => /^[A-Z_]+\./.test(cls);
-      const tokens = migratedClasses.filter(isDesignToken);
-      const regular = migratedClasses.filter(cls => !isDesignToken(cls));
-
-      if (tokens.length > 0 && regular.length === 0) {
-        // All tokens - join with spaces (will be wrapped in {} by caller)
-        return tokens.join(' ');
-      } else if (tokens.length > 0 && regular.length > 0) {
-        // Mixed - build template literal with proper interpolation
-        // Example: SPACING.content + mt-4 → `${SPACING.content} mt-4`
-        const parts: string[] = [];
-        for (const cls of migratedClasses) {
-          if (isDesignToken(cls)) {
-            parts.push(`\${${cls}}`);
-          } else {
-            parts.push(cls);
-          }
-        }
-        return `\`${parts.join(' ')}\``;
-      }
+      return this.formatTokenClasses(migratedClasses);
     }
 
-    return migrated;
+    return className;
   }
 
   private detectChangeType(className: string): Change['type'] {

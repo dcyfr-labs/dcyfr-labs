@@ -178,6 +178,35 @@ function getFilesToValidate() {
 /**
  * Validate a single file
  */
+function isCommentLine(line) {
+  const trimmed = line.trim();
+  return trimmed.startsWith('//') ||
+    trimmed.startsWith('/*') ||
+    trimmed.startsWith('*') ||
+    trimmed.includes('{ }');
+}
+
+function collectPatternViolations(filePath, patternName, pattern, lines) {
+  const patternViolations = [];
+  lines.forEach((line, lineNumber) => {
+    if (isCommentLine(line)) return;
+    for (const match of line.matchAll(pattern.regex)) {
+      const matchedText = match[0];
+      const suggestion = pattern.suggestions[matchedText] || pattern.suggestions[match[1]];
+      patternViolations.push({
+        file: filePath,
+        line: lineNumber + 1,
+        column: match.index + 1,
+        type: patternName,
+        violation: matchedText,
+        suggestion: suggestion || 'See design tokens',
+        description: pattern.description,
+      });
+    }
+  });
+  return patternViolations;
+}
+
 function validateFile(filePath) {
   // Handle both absolute and relative paths
   const fullPath = path.isAbsolute(filePath) ? filePath : path.join(projectRoot, filePath);
@@ -185,40 +214,12 @@ function validateFile(filePath) {
   const lines = content.split('\n');
   const violations = [];
 
-  // Check each pattern
   for (const [patternName, pattern] of Object.entries(PATTERNS)) {
     // Skip containerWidth validation for design-tokens.ts (those are the definitions)
     if (patternName === 'containerWidth' && filePath.includes('design-tokens.ts')) {
       continue;
     }
-
-    lines.forEach((line, lineNumber) => {
-      // Skip comment lines (both // and /* */ style comments)
-      const trimmedLine = line.trim();
-      if (trimmedLine.startsWith('//') ||
-          trimmedLine.startsWith('/*') ||
-          trimmedLine.startsWith('*') ||
-          trimmedLine.includes('{ }')) { // Skip commented JSX
-        return;
-      }
-
-      const matches = line.matchAll(pattern.regex);
-
-      for (const match of matches) {
-        const matchedText = match[0];
-        const suggestion = pattern.suggestions[matchedText] || pattern.suggestions[match[1]];
-
-        violations.push({
-          file: filePath,
-          line: lineNumber + 1,
-          column: match.index + 1,
-          type: patternName,
-          violation: matchedText,
-          suggestion: suggestion || 'See design tokens',
-          description: pattern.description,
-        });
-      }
-    });
+    violations.push(...collectPatternViolations(filePath, patternName, pattern, lines));
   }
 
   return violations;

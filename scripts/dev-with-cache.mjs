@@ -87,6 +87,42 @@ async function populateCacheWithRetry(port, { verbose = false, maxAttempts = 3, 
   }
 }
 
+async function handlePortConflict(port, flags, pids) {
+  if (flags['kill-port']) {
+    const pidDesc = pids.length > 0 ? `PID(s): ${pids.join(', ')}` : 'unknown PID';
+    console.log(chalk.yellow(`Port ${port} is in use (${pidDesc}). Killing automatically...`));
+    const result = await killPort(port);
+    if (result.killed.length > 0) {
+      console.log(chalk.green(`Killed PID(s): ${result.killed.join(', ')}`));
+      await new Promise((r) => setTimeout(r, 300));
+    } else if (pids.length > 0) {
+      console.error(chalk.red(`Could not kill process(es) on port ${port}.`));
+      if (result.errors.length > 0) console.error(result.errors.join('\n'));
+      process.exit(1);
+    }
+  } else {
+    const shouldKill = await promptKillPort(port, pids);
+    if (!shouldKill) {
+      if (!process.stdin.isTTY) {
+        console.error(chalk.red(`\n❌ Port ${port} is in use and running non-interactively.`));
+        console.error(chalk.yellow(`   Use: npm run dev:fresh  (auto-kills port first)`));
+        console.error(chalk.yellow(`   Or:  PORT=3001 npm run dev  (use a different port)`));
+      } else {
+        console.log(chalk.yellow('\nExiting. Options:'));
+        console.log(chalk.dim('  npm run dev:fresh       — auto-kill port then start'));
+        console.log(chalk.dim('  PORT=3001 npm run dev   — use a different port'));
+      }
+      process.exit(0);
+    }
+    const result = await killPort(port);
+    if (result.killed.length === 0 && pids.length > 0) {
+      console.error(chalk.red('Failed to kill processes. Try running: npm run dev:fresh'));
+      process.exit(1);
+    }
+    await new Promise((r) => setTimeout(r, 300));
+  }
+}
+
 async function main() {
   console.log(chalk.blue('🚀 Starting Next.js dev server with auto cache population...\n'));
 
@@ -94,40 +130,7 @@ async function main() {
   const portInUse = await isPortInUse(PORT);
   if (portInUse) {
     const pids = await getPortPIDs(PORT);
-
-    if (flags['kill-port']) {
-      const pidDesc = pids.length > 0 ? `PID(s): ${pids.join(', ')}` : 'unknown PID';
-      console.log(chalk.yellow(`Port ${PORT} is in use (${pidDesc}). Killing automatically...`));
-      const result = await killPort(PORT);
-      if (result.killed.length > 0) {
-        console.log(chalk.green(`Killed PID(s): ${result.killed.join(', ')}`));
-        await new Promise((r) => setTimeout(r, 300)); // allow OS to release the port
-      } else if (pids.length > 0) {
-        console.error(chalk.red(`Could not kill process(es) on port ${PORT}.`));
-        if (result.errors.length > 0) console.error(result.errors.join('\n'));
-        process.exit(1);
-      }
-    } else {
-      const shouldKill = await promptKillPort(PORT, pids);
-      if (!shouldKill) {
-        if (!process.stdin.isTTY) {
-          console.error(chalk.red(`\n❌ Port ${PORT} is in use and running non-interactively.`));
-          console.error(chalk.yellow(`   Use: npm run dev:fresh  (auto-kills port first)`));
-          console.error(chalk.yellow(`   Or:  PORT=3001 npm run dev  (use a different port)`));
-        } else {
-          console.log(chalk.yellow('\nExiting. Options:'));
-          console.log(chalk.dim('  npm run dev:fresh       — auto-kill port then start'));
-          console.log(chalk.dim('  PORT=3001 npm run dev   — use a different port'));
-        }
-        process.exit(0);
-      }
-      const result = await killPort(PORT);
-      if (result.killed.length === 0 && pids.length > 0) {
-        console.error(chalk.red('Failed to kill processes. Try running: npm run dev:fresh'));
-        process.exit(1);
-      }
-      await new Promise((r) => setTimeout(r, 300));
-    }
+    await handlePortConflict(PORT, flags, pids);
     console.log();
   }
 

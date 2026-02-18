@@ -301,6 +301,55 @@ function extractTokenUsage(content, filePath) {
 }
 
 /**
+ * Validate an array node in the token path
+ */
+function validateArrayNode(current, part, tokenGroup, tokenPath, filePath) {
+  // Check if path is an object within the array
+  const objectEntry = current.find(item => typeof item === 'object' && item[part]);
+  if (objectEntry && objectEntry[part]) {
+    return { ok: true, next: objectEntry[part] };
+  }
+  // Check if the part is directly in the array
+  if (!current.includes(part)) {
+    const fullToken = `${tokenGroup}.${tokenPath}`;
+    const suggestion = COMMON_MISTAKES[fullToken] || `Check design-tokens.ts for valid ${tokenGroup} values`;
+    errors.push({ file: filePath, token: fullToken, message: `Invalid token path. Did you mean: ${suggestion}?` });
+    return { ok: false, next: null };
+  }
+  // Arrays are terminal — valid but can't navigate further
+  return { ok: true, next: null, terminal: true };
+}
+
+/**
+ * Validate an object node in the token path
+ */
+function validateObjectNode(current, part, pathParts, i, tokenGroup, tokenPath, filePath) {
+  // Special handling for SEMANTIC_COLORS.accent.{colorName}.{property}
+  if (tokenGroup === 'SEMANTIC_COLORS' && pathParts[0] === 'accent' && i === 1) {
+    if (pathParts.length >= 3) {
+      const property = pathParts[2];
+      const validProperties = current._properties || ['badge', 'text', 'bg', 'light', 'dark'];
+      if (!validProperties.includes(property)) {
+        errors.push({
+          file: filePath,
+          token: `${tokenGroup}.${tokenPath}`,
+          message: `Invalid accent color property. Valid properties: ${validProperties.join(', ')}`,
+        });
+      }
+    }
+    return { ok: true, next: null, terminal: true };
+  }
+  const next = current[part];
+  if (!next) {
+    const fullToken = `${tokenGroup}.${tokenPath}`;
+    const suggestion = COMMON_MISTAKES[fullToken] || `Check design-tokens.ts for valid ${tokenGroup} paths`;
+    errors.push({ file: filePath, token: fullToken, message: `Invalid token path. Did you mean: ${suggestion}?` });
+    return { ok: false, next: null };
+  }
+  return { ok: true, next, terminal: i === pathParts.length - 1 && next === true };
+}
+
+/**
  * Validate that a token path exists in VALID_TOKENS
  */
 function validateToken(tokenGroup, tokenPath, filePath) {
@@ -308,83 +357,22 @@ function validateToken(tokenGroup, tokenPath, filePath) {
   let current = VALID_TOKENS[tokenGroup];
 
   if (!current) {
-    errors.push({
-      file: filePath,
-      token: `${tokenGroup}.${tokenPath}`,
-      message: `Unknown token group: ${tokenGroup}`,
-    });
+    errors.push({ file: filePath, token: `${tokenGroup}.${tokenPath}`, message: `Unknown token group: ${tokenGroup}` });
     return;
   }
 
-  // If it's a scalar (true), it's valid
-  if (current === true) {
-    return;
-  }
+  if (current === true) return;
 
-  // Navigate the path
   for (let i = 0; i < pathParts.length; i++) {
     const part = pathParts[i];
-
     if (Array.isArray(current)) {
-      // Check if path is an object within the array
-      const objectEntry = current.find(item => typeof item === 'object' && item[part]);
-      if (objectEntry && objectEntry[part]) {
-        current = objectEntry[part];
-        continue;
-      }
-
-      // Check if the part is directly in the array
-      if (!current.includes(part)) {
-        const fullToken = `${tokenGroup}.${tokenPath}`;
-        const suggestion = COMMON_MISTAKES[fullToken] || `Check design-tokens.ts for valid ${tokenGroup} values`;
-
-        errors.push({
-          file: filePath,
-          token: fullToken,
-          message: `Invalid token path. Did you mean: ${suggestion}?`,
-        });
-        return;
-      }
-      // Arrays are terminal - can't navigate further
-      return;
+      const result = validateArrayNode(current, part, tokenGroup, tokenPath, filePath);
+      if (!result.ok || result.terminal) return;
+      current = result.next;
     } else if (typeof current === 'object') {
-      // Special handling for SEMANTIC_COLORS.accent.{colorName}.{property}
-      if (tokenGroup === 'SEMANTIC_COLORS' && pathParts[0] === 'accent' && i === 1) {
-        // This is the color name (cyan, blue, purple, etc.)
-        // Check if there's a property after it
-        if (pathParts.length >= 3) {
-          const property = pathParts[2];
-          const validProperties = current._properties || ['badge', 'text', 'bg', 'light', 'dark'];
-          if (!validProperties.includes(property)) {
-            errors.push({
-              file: filePath,
-              token: `${tokenGroup}.${tokenPath}`,
-              message: `Invalid accent color property. Valid properties: ${validProperties.join(', ')}`,
-            });
-          }
-        }
-        return; // Valid accent color path
-      }
-
-      // Navigate into the object
-      current = current[part];
-      if (!current) {
-        const fullToken = `${tokenGroup}.${tokenPath}`;
-        const suggestion = COMMON_MISTAKES[fullToken] || `Check design-tokens.ts for valid ${tokenGroup} paths`;
-
-        errors.push({
-          file: filePath,
-          token: fullToken,
-          message: `Invalid token path. Did you mean: ${suggestion}?`,
-        });
-        return;
-      }
-
-      // If we've reached the end and current is true, it's valid
-      if (i === pathParts.length - 1 && current === true) {
-        return;
-      }
-    }
+      const result = validateObjectNode(current, part, pathParts, i, tokenGroup, tokenPath, filePath);
+      if (!result.ok || result.terminal) return;
+      current = result.next;
   }
 }
 
