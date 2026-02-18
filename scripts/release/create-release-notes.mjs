@@ -136,16 +136,13 @@ function getContributors() {
 
 /**
  * Get test statistics
- * @returns {string} Test stats (e.g., "1185/1197")
+ * @returns {string} Test stats — dynamic stats require running the test suite,
+ *   so N/A is returned here and the caller fills in real data when available.
  */
 function getTestStats() {
-  try {
-    // FIX: Copilot suggestion - Return N/A instead of stale hardcoded stats
-    // Dynamic test stats require parsing test output which isn't available here
-    return 'N/A';
-  } catch (error) {
-    return 'N/A';
-  }
+  // Dynamic test stats require parsing test output which isn't available at
+  // release-notes generation time.
+  return 'N/A';
 }
 
 /**
