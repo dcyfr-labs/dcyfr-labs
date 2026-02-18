@@ -142,15 +142,15 @@ function generateCycloneDX() {
   try {
     // Install @cyclonedx/cyclonedx-npm if not present
     try {
-      execSync('npx --yes @cyclonedx/cyclonedx-npm --version', { stdio: 'ignore' });
+      execSync('npx --yes @cyclonedx/cyclonedx-npm --version', { stdio: 'ignore' }); // NOSONAR - Administrative script, inputs from controlled sources
     } catch {
       console.log('   Installing @cyclonedx/cyclonedx-npm...');
-      execSync('npm install -g @cyclonedx/cyclonedx-npm', { stdio: 'inherit' });
+      execSync('npm install -g @cyclonedx/cyclonedx-npm', { stdio: 'inherit' }); // NOSONAR - Administrative script, inputs from controlled sources
     }
 
     const outputFile = join(outputDir, `sbom-cyclonedx-${timestamp}.json`);
 
-    execSync(
+    execSync( // NOSONAR - Administrative script, inputs from controlled sources
       `npx @cyclonedx/cyclonedx-npm --output-file "${outputFile}" --output-format JSON --spec-version 1.5`,
       { cwd: projectRoot, stdio: 'inherit' }
     );

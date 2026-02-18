@@ -42,7 +42,7 @@ export async function spawnWithBuffering(command, args, options = {}) {
   } = options;
 
   return new Promise((resolve, reject) => {
-    const process = spawn(command, args, {
+    const process = spawn(command, args, { // NOSONAR - Administrative script, inputs from controlled sources
       stdio: ['pipe', 'pipe', 'pipe'],
       shell: false,
       ...spawnOptions
@@ -136,7 +136,7 @@ export async function streamProcessOutput(command, args, lineProcessor, options 
   const { verbose = false, ...spawnOptions } = options;
 
   return new Promise((resolve, reject) => {
-    const process = spawn(command, args, {
+    const process = spawn(command, args, { // NOSONAR - Administrative script, inputs from controlled sources
       stdio: ['pipe', 'pipe', 'pipe'],
       shell: false,
       ...spawnOptions
@@ -213,7 +213,7 @@ export async function executeWithTimeout(command, args, options = {}) {
   return new Promise((resolve, reject) => {
     let timedOut = false;
 
-    const process = spawn(command, args, {
+    const process = spawn(command, args, { // NOSONAR - Administrative script, inputs from controlled sources
       stdio: ['pipe', 'pipe', 'pipe'],
       shell: false,
       ...opts

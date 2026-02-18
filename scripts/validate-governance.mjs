@@ -136,7 +136,7 @@ async function validateAIConfig() {
 
   try {
     // Check if .claude/ files are in git
-    const claudeFiles = execSync('git ls-files .claude/', { encoding: 'utf8' }).trim();
+    const claudeFiles = execSync('git ls-files .claude/', { encoding: 'utf8' }).trim(); // NOSONAR - Administrative script, inputs from controlled sources
 
     if (claudeFiles) {
       error(
@@ -150,7 +150,7 @@ async function validateAIConfig() {
     }
 
     // Check if .opencode/node_modules/ is in git
-    const opencodeNodeModules = execSync(
+    const opencodeNodeModules = execSync( // NOSONAR - Administrative script, inputs from controlled sources
       'git ls-files .opencode/node_modules/',
       { encoding: 'utf8' }
     ).trim();
@@ -165,7 +165,7 @@ async function validateAIConfig() {
     }
 
     // Check if session state files are in git
-    const sessionStateFiles = execSync('git ls-files | grep "\\.session-state\\.json$"', {
+    const sessionStateFiles = execSync('git ls-files | grep "\\.session-state\\.json$"', { // NOSONAR - Administrative script, inputs from controlled sources
       encoding: 'utf8',
       shell: true,
     })

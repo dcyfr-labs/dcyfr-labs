@@ -33,7 +33,7 @@ function getWorkflowRuns() {
   const sinceISO = since.toISOString()
 
   try {
-    const output = execSync(
+    const output = execSync( // NOSONAR - Administrative script, inputs from controlled sources
       `gh run list --limit 500 --json workflowName,status,conclusion,createdAt,displayTitle,workflowDatabaseId --created ">=${sinceISO}"`,
       { encoding: 'utf-8' }
     )

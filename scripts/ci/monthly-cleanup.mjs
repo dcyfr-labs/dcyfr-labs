@@ -35,7 +35,7 @@ async function detectUnusedExports() {
   console.log('🔍 Detecting unused exports...');
 
   try {
-    const output = execSync('npx ts-prune --error', { encoding: 'utf8' });
+    const output = execSync('npx ts-prune --error', { encoding: 'utf8' }); // NOSONAR - Administrative script, inputs from controlled sources
 
     // Parse output - ts-prune lists unused exports as:
     // path/to/file.ts:lineNumber - ExportName
@@ -80,7 +80,7 @@ async function detectUnusedDependencies() {
   console.log('📦 Detecting unused dependencies...');
 
   try {
-    const output = execSync('npx depcheck --json', { encoding: 'utf8' });
+    const output = execSync('npx depcheck --json', { encoding: 'utf8' }); // NOSONAR - Administrative script, inputs from controlled sources
     const results = JSON.parse(output);
 
     const unused = results.dependencies || [];
@@ -184,7 +184,7 @@ async function checkDuplicatePackages() {
   console.log('🔄 Checking for duplicate packages...');
 
   try {
-    const output = execSync('npm ls --all --json', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
+    const output = execSync('npm ls --all --json', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }); // NOSONAR - Administrative script, inputs from controlled sources
     const tree = JSON.parse(output);
 
     const versions = new Map();

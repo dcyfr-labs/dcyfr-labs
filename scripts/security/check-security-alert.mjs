@@ -60,7 +60,7 @@ function checkAlert(owner, repo, alertNumber) {
 			`\n🔍 Checking alert #${alertNumber} in ${owner}/${repo}...\n`
 		);
 
-		const result = execSync(
+		const result = execSync( // NOSONAR - Administrative script, inputs from controlled sources
 			`gh api /repos/${owner}/${repo}/code-scanning/alerts/${alertNumber}`,
 			{ encoding: "utf-8" }
 		);

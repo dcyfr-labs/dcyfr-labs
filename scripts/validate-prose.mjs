@@ -106,7 +106,7 @@ async function getFilesToCheck(options) {
 
   if (options.staged) {
     try {
-      const output = execSync('git diff --cached --name-only --diff-filter=ACM', {
+      const output = execSync('git diff --cached --name-only --diff-filter=ACM', { // NOSONAR - Administrative script, inputs from controlled sources
         encoding: 'utf-8',
         cwd: PROJECT_ROOT,
       });

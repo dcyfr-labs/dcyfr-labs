@@ -57,7 +57,7 @@ async function runLighthouse(url, name) {
       args.push(`--extra-headers={"x-vercel-protection-bypass":"${process.env.VERCEL_AUTOMATION_BYPASS_SECRET}","x-vercel-set-bypass-cookie":"samesitenone"}`);
     }
 
-    const lighthouse = spawn('npx', args, {
+    const lighthouse = spawn('npx', args, { // NOSONAR - Administrative script, inputs from controlled sources
       stdio: ['ignore', 'pipe', 'pipe']
     });
 

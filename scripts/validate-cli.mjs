@@ -129,7 +129,7 @@ function runValidator(command) {
   for (const script of info.scripts) {
     try {
       const fullPath = path.join(__dirname, script);
-      execSync(`node "${fullPath}"`, { stdio: 'inherit' });
+      execSync(`node "${fullPath}"`, { stdio: 'inherit' }); // NOSONAR - Administrative script, inputs from controlled sources
     } catch (error) {
       hasErrors = true;
       // Continue to next validator even if one fails

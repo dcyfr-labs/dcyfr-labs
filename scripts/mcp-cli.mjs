@@ -67,7 +67,7 @@ function runCommand(command) {
 
   try {
     const fullPath = path.join(__dirname, info.script);
-    execSync(`node "${fullPath}"`, { stdio: 'inherit' });
+    execSync(`node "${fullPath}"`, { stdio: 'inherit' }); // NOSONAR - Administrative script, inputs from controlled sources
   } catch (error) {
     console.error(`\n❌ Command failed: ${command}`);
     process.exit(1);

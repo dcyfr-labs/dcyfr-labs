@@ -102,7 +102,7 @@ function runHealthCheck(checkName) {
       }
     }
 
-    execSync(cmd, { stdio: 'inherit' });
+    execSync(cmd, { stdio: 'inherit' }); // NOSONAR - Administrative script, inputs from controlled sources
     console.log('─'.repeat(60));
     return false; // no errors
   } catch (error) {

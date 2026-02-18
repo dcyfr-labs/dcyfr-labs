@@ -165,7 +165,7 @@ async function main() {
   }
 
   // --- Start the Next.js dev server ---
-  const devServer = spawn('next', ['dev', '--turbopack'], {
+  const devServer = spawn('next', ['dev', '--turbopack'], { // NOSONAR - Administrative script, inputs from controlled sources
     stdio: 'inherit',
     env: { ...process.env, PORT: String(PORT) },
   });

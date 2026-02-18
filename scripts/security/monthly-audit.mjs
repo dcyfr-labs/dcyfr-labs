@@ -103,7 +103,7 @@ function runCheck(name, checkFn) {
  */
 function checkDependencyVulnerabilities() {
   try {
-    execSync('npm audit --json', { cwd: projectRoot, stdio: 'pipe' });
+    execSync('npm audit --json', { cwd: projectRoot, stdio: 'pipe' }); // NOSONAR - Administrative script, inputs from controlled sources
     return {
       passed: true,
       details: 'No vulnerabilities found (npm audit clean)',
@@ -145,7 +145,7 @@ function checkDependencyVulnerabilities() {
 function checkSBOMGeneration() {
   try {
     // Generate fresh SBOM
-    execSync('npm run sbom:generate', { cwd: projectRoot, stdio: 'pipe' });
+    execSync('npm run sbom:generate', { cwd: projectRoot, stdio: 'pipe' }); // NOSONAR - Administrative script, inputs from controlled sources
 
     // Check if SBOM files exist
     const sbomDir = join(projectRoot, 'docs/security/sbom');
@@ -191,7 +191,7 @@ function checkSBOMGeneration() {
 function checkSecurityAdvisories() {
   try {
     // Check GitHub security advisories for dependencies
-    const advisoryCount = execSync(
+    const advisoryCount = execSync( // NOSONAR - Administrative script, inputs from controlled sources
       'gh api repos/dcyfr-labs/dcyfr-labs/dependabot/alerts --jq "length"',
       { cwd: projectRoot, stdio: 'pipe' }
     ).toString().trim();
@@ -226,7 +226,7 @@ function checkAccessControls() {
 
   // Check for .env files in repo
   try {
-    const envFiles = execSync('git ls-files "*.env*"', { cwd: projectRoot, stdio: 'pipe' })
+    const envFiles = execSync('git ls-files "*.env*"', { cwd: projectRoot, stdio: 'pipe' }) // NOSONAR - Administrative script, inputs from controlled sources
       .toString()
       .split('\n')
       .filter(f => f && !f.includes('.env.example') && !f.includes('.env.local'));
@@ -240,7 +240,7 @@ function checkAccessControls() {
 
   // Check Vercel team members (if configured)
   try {
-    const teamOutput = execSync('vercel teams list --json 2>/dev/null || echo "[]"', {
+    const teamOutput = execSync('vercel teams list --json 2>/dev/null || echo "[]"', { // NOSONAR - Administrative script, inputs from controlled sources
       cwd: projectRoot,
       stdio: 'pipe',
     }).toString();
@@ -290,7 +290,7 @@ function checkThirdPartyServices() {
   // Vercel check (if VERCEL_TOKEN is set)
   if (process.env.VERCEL_TOKEN) {
     try {
-      execSync('vercel whoami', { stdio: 'pipe' });
+      execSync('vercel whoami', { stdio: 'pipe' }); // NOSONAR - Administrative script, inputs from controlled sources
       services.vercel = true;
     } catch (error) {
       services.vercel = false;
@@ -322,7 +322,7 @@ function checkSecurityScans() {
 
     // Try to get latest CodeQL run status
     try {
-      const codeqlStatus = execSync(
+      const codeqlStatus = execSync( // NOSONAR - Administrative script, inputs from controlled sources
         'gh run list --workflow=codeql.yml --limit=1 --json conclusion --jq ".[0].conclusion"',
         { cwd: projectRoot, stdio: 'pipe' }
       ).toString().trim();
@@ -337,7 +337,7 @@ function checkSecurityScans() {
 
   // Check ESLint results
   try {
-    execSync('npm run lint', { cwd: projectRoot, stdio: 'pipe' });
+    execSync('npm run lint', { cwd: projectRoot, stdio: 'pipe' }); // NOSONAR - Administrative script, inputs from controlled sources
     findings.push('ESLint: 0 errors');
   } catch (error) {
     findings.push('ESLint: Has errors (run npm run lint for details)');
@@ -358,7 +358,7 @@ function checkSecurityScans() {
 function checkIncidentLogs() {
   // Check if there are any security-related git commits
   try {
-    const securityCommits = execSync(
+    const securityCommits = execSync( // NOSONAR - Administrative script, inputs from controlled sources
       `git log --since="30 days ago" --grep="security\\|vulnerability\\|CVE\\|exploit" --oneline`,
       { cwd: projectRoot, stdio: 'pipe' }
     ).toString();

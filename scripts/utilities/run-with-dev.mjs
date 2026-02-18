@@ -56,7 +56,7 @@ let devProc = null
     const up = await isPortOpen(port)
     if (!up) {
       console.log(`Dev server not detected on http://localhost:${port} — starting 'npm run dev'...`)
-      devProc = spawn('npm', ['run', 'dev'], {
+      devProc = spawn('npm', ['run', 'dev'], { // NOSONAR - Administrative script, inputs from controlled sources
         stdio: 'inherit',
         env: process.env,
         shell: false,
@@ -75,7 +75,7 @@ let devProc = null
 
     // Run the requested script
     const nodeExe = process.execPath
-    const testProc = spawn(nodeExe, [script, ...scriptArgs], { stdio: 'inherit', env: process.env })
+    const testProc = spawn(nodeExe, [script, ...scriptArgs], { stdio: 'inherit', env: process.env }) // NOSONAR - Administrative script, inputs from controlled sources
 
     const cleanupAndExit = async (code = 0) => {
       if (startedDev && devProc) {

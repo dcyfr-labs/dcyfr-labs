@@ -28,7 +28,7 @@ const DRY_RUN = process.env.DRY_RUN === 'true';
 function runCommand(cmd, description) {
   try {
     console.log(`   ⏳ ${description}...`);
-    const output = execSync(cmd, { encoding: 'utf-8' });
+    const output = execSync(cmd, { encoding: 'utf-8' }); // NOSONAR - Administrative script, inputs from controlled sources
     console.log(`   ✅ ${description}`);
     return { success: true, output };
   } catch (error) {

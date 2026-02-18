@@ -60,7 +60,7 @@ function saveSession(agent, taskDescription, phase = 'in-progress', timeRemainin
   try {
     // Try to use the shell script first for compatibility
     const scriptPath = path.join(__dirname, 'save-session-state.sh');
-    const result = spawnSync('bash', [scriptPath, agent, taskDescription, phase, timeRemaining], {
+    const result = spawnSync('bash', [scriptPath, agent, taskDescription, phase, timeRemaining], { // NOSONAR - Administrative script, inputs from controlled sources
       stdio: ['inherit', 'pipe', 'pipe'],  // Buffer stdio - prevents hangs
       maxBuffer: 5 * 1024 * 1024,         // 5MB for session state
       shell: false,
@@ -85,7 +85,7 @@ function restoreSession(agent) {
 
   try {
     const scriptPath = path.join(__dirname, 'restore-session-state.sh');
-    const result = spawnSync('bash', [scriptPath, agent], {
+    const result = spawnSync('bash', [scriptPath, agent], { // NOSONAR - Administrative script, inputs from controlled sources
       stdio: 'inherit',
       shell: false,
     });
@@ -104,7 +104,7 @@ function recoverSession() {
 
   try {
     const scriptPath = path.join(__dirname, 'session-recovery.sh');
-    const result = spawnSync('bash', [scriptPath], {
+    const result = spawnSync('bash', [scriptPath], { // NOSONAR - Administrative script, inputs from controlled sources
       stdio: 'inherit',
       shell: false,
     });
@@ -125,7 +125,7 @@ function handoffSession(fromAgent = 'claude', toAgent = 'opencode') {
     // Try the OpenCode-specific handoff script
     const scriptPath = path.join(__dirname, '../.opencode/scripts/session-handoff.sh');
     if (fs.existsSync(scriptPath)) {
-      const result = spawnSync('bash', [scriptPath], {
+      const result = spawnSync('bash', [scriptPath], { // NOSONAR - Administrative script, inputs from controlled sources
         stdio: 'inherit',
         shell: false,
         env: { ...process.env, FROM_AGENT: fromAgent, TO_AGENT: toAgent },
@@ -151,7 +151,7 @@ function trackSession(subcommand = 'report') {
   try {
     const scriptPath = path.join(__dirname, '../.opencode/scripts/track-session.mjs');
     if (fs.existsSync(scriptPath)) {
-      const result = spawnSync('node', [scriptPath, subcommand], {
+      const result = spawnSync('node', [scriptPath, subcommand], { // NOSONAR - Administrative script, inputs from controlled sources
         stdio: 'inherit',
         shell: false,
       });

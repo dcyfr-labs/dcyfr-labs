@@ -139,7 +139,7 @@ function getFilesToValidate() {
   if (flags.staged) {
     // Only staged files
     try {
-      const staged = execSync('git diff --cached --name-only --diff-filter=ACM', { encoding: 'utf-8' });
+      const staged = execSync('git diff --cached --name-only --diff-filter=ACM', { encoding: 'utf-8' }); // NOSONAR - Administrative script, inputs from controlled sources
       return staged
         .split('\n')
         .filter(f => f && (f.endsWith('.tsx') || f.endsWith('.ts')))

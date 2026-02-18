@@ -48,7 +48,7 @@ if (githubRepositoryEnv?.includes('/')) {
   REPO = githubRepositoryEnv;
 } else {
   try {
-    const remoteUrl = execSync('git config --get remote.origin.url', {
+    const remoteUrl = execSync('git config --get remote.origin.url', { // NOSONAR - Administrative script, inputs from controlled sources
       encoding: 'utf-8',
       cwd: ROOT_DIR,
     }).trim();
@@ -121,7 +121,7 @@ async function fetchPRData(prNumber) {
  */
 function getContributors() {
   try {
-    const output = execSync('git log --format="%an <%ae>" -10', {
+    const output = execSync('git log --format="%an <%ae>" -10', { // NOSONAR - Administrative script, inputs from controlled sources
       cwd: ROOT_DIR,
       encoding: 'utf-8',
     }).trim();

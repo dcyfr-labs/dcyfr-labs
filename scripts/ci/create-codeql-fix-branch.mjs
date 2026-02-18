@@ -41,7 +41,7 @@ function generateBranchName() {
 
 function branchExists(branchName) {
   try {
-    execSync(`git rev-parse --verify refs/heads/${branchName}`, {
+    execSync(`git rev-parse --verify refs/heads/${branchName}`, { // NOSONAR - Administrative script, inputs from controlled sources
       stdio: 'ignore',
     });
     return true;

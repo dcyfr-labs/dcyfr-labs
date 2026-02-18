@@ -112,7 +112,7 @@ function runCheck(name, checkFn) {
  */
 function runQuarterlyChecks() {
   try {
-    const output = execSync('node scripts/security/quarterly-audit.mjs', {
+    const output = execSync('node scripts/security/quarterly-audit.mjs', { // NOSONAR - Administrative script, inputs from controlled sources
       cwd: projectRoot,
       stdio: 'pipe',
     }).toString();

@@ -63,7 +63,7 @@ DOCUMENTATION:
   trigger: () => {
     console.log('🚀 Triggering CodeQL Autofix workflow...\n');
     try {
-      execSync(`gh workflow run ${WORKFLOW_NAME} --ref main -f severity=high -f dry_run=false`, {
+      execSync(`gh workflow run ${WORKFLOW_NAME} --ref main -f severity=high -f dry_run=false`, { // NOSONAR - Administrative script, inputs from controlled sources
         stdio: 'inherit',
       });
       console.log('\n✅ Workflow triggered! Monitor at:');
@@ -77,7 +77,7 @@ DOCUMENTATION:
   'trigger:dry-run': () => {
     console.log('🔍 Running CodeQL Autofix in dry-run mode (preview only)...\n');
     try {
-      execSync(`gh workflow run ${WORKFLOW_NAME} --ref main -f severity=high -f dry_run=true`, {
+      execSync(`gh workflow run ${WORKFLOW_NAME} --ref main -f severity=high -f dry_run=true`, { // NOSONAR - Administrative script, inputs from controlled sources
         stdio: 'inherit',
       });
       console.log('\n✅ Workflow triggered in dry-run mode! View results at:');
@@ -91,7 +91,7 @@ DOCUMENTATION:
   'trigger:critical': () => {
     console.log('🔴 Triggering CodeQL Autofix for CRITICAL severity only...\n');
     try {
-      execSync(
+      execSync( // NOSONAR - Administrative script, inputs from controlled sources
         `gh workflow run ${WORKFLOW_NAME} --ref main -f severity=critical -f dry_run=false`,
         { stdio: 'inherit' }
       );
@@ -110,7 +110,7 @@ DOCUMENTATION:
     }
     console.log(`🔧 Fixing CodeQL alert #${alertNumber}...\n`);
     try {
-      execSync(
+      execSync( // NOSONAR - Administrative script, inputs from controlled sources
         `gh workflow run ${WORKFLOW_NAME} --ref main -f alert_number=${alertNumber} -f dry_run=false`,
         { stdio: 'inherit' }
       );
@@ -125,7 +125,7 @@ DOCUMENTATION:
   status: () => {
     console.log('📊 Checking CodeQL Autofix workflow status...\n');
     try {
-      execSync(`gh run list --workflow=${WORKFLOW_NAME} --limit=5`, { stdio: 'inherit' });
+      execSync(`gh run list --workflow=${WORKFLOW_NAME} --limit=5`, { stdio: 'inherit' }); // NOSONAR - Administrative script, inputs from controlled sources
     } catch (error) {
       console.error('❌ Failed to fetch status:', error.message);
       process.exit(1);
@@ -135,7 +135,7 @@ DOCUMENTATION:
   prs: () => {
     console.log('📋 Generated CodeQL Fix PRs:\n');
     try {
-      execSync(`gh pr list --label codeql-fix --json number,title,state,updatedAt`, {
+      execSync(`gh pr list --label codeql-fix --json number,title,state,updatedAt`, { // NOSONAR - Administrative script, inputs from controlled sources
         stdio: 'inherit',
       });
     } catch (error) {

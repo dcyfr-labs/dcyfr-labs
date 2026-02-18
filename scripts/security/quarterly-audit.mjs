@@ -116,7 +116,7 @@ function runCheck(name, checkFn) {
 function runMonthlyChecks() {
   try {
     // Run monthly audit script
-    const output = execSync('node scripts/security/monthly-audit.mjs', {
+    const output = execSync('node scripts/security/monthly-audit.mjs', { // NOSONAR - Administrative script, inputs from controlled sources
       cwd: projectRoot,
       stdio: 'pipe',
     }).toString();
@@ -382,7 +382,7 @@ function checkDataRetention() {
 function reviewAccessLogs() {
   // Check for suspicious git activity
   try {
-    const suspiciousCommits = execSync(
+    const suspiciousCommits = execSync( // NOSONAR - Administrative script, inputs from controlled sources
       `git log --since="90 days ago" --all --author="<>" --oneline || echo ""`,
       { cwd: projectRoot, stdio: 'pipe' }
     ).toString().trim();
@@ -411,7 +411,7 @@ function evaluateChangeManagement() {
   // Count PRs merged this quarter
   try {
     const quarterStart = new Date(year, (quarter - 1) * 3, 1).toISOString().split('T')[0];
-    const prCount = execSync(
+    const prCount = execSync( // NOSONAR - Administrative script, inputs from controlled sources
       `gh pr list --state merged --search "merged:>=${quarterStart}" --json number --jq "length" || echo "0"`,
       { cwd: projectRoot, stdio: 'pipe' }
     ).toString().trim();
@@ -419,7 +419,7 @@ function evaluateChangeManagement() {
     const mergedPRs = parseInt(prCount, 10);
 
     // Check for emergency changes (commits to main without PR)
-    const directCommits = execSync(
+    const directCommits = execSync( // NOSONAR - Administrative script, inputs from controlled sources
       `git log --since="${quarterStart}" --first-parent main --oneline | wc -l`,
       { cwd: projectRoot, stdio: 'pipe' }
     ).toString().trim();

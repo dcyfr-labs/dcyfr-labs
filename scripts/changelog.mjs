@@ -39,7 +39,7 @@ const gitFormat = formats[formatArg] || formats.oneline;
 try {
   const command = `git log ${gitFormat} -${count}`;
   // Safe: count validated with allowlist pattern (/^\d+$/), format validated against allowlist
-  const output = execSync(command, { encoding: 'utf-8' });
+  const output = execSync(command, { encoding: 'utf-8' }); // NOSONAR - Administrative script, inputs from controlled sources
 
   console.log('\nRecent Changes\n');
   console.log(output);

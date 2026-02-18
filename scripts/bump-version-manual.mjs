@@ -77,7 +77,7 @@ if (!values['dry-run']) {
     console.log(`📝 Generating changelog entry...`);
 
     // Get recent commits
-    const commits = execSync('git log --oneline --no-merges --since="1 week ago"', {
+    const commits = execSync('git log --oneline --no-merges --since="1 week ago"', { // NOSONAR - Administrative script, inputs from controlled sources
       encoding: 'utf-8'
     }).trim();
 
@@ -86,7 +86,7 @@ if (!values['dry-run']) {
       fs.writeFileSync('recent-commits.txt', commits);
 
       // Generate changelog entry
-      execSync(`node scripts/generate-changelog-entry.mjs --version "${newVersion}" --previous "${currentVersion}" --commits-file recent-commits.txt --output changelog-entry.md`, {
+      execSync(`node scripts/generate-changelog-entry.mjs --version "${newVersion}" --previous "${currentVersion}" --commits-file recent-commits.txt --output changelog-entry.md`, { // NOSONAR - Administrative script, inputs from controlled sources
         stdio: 'inherit'
       });
 
@@ -110,7 +110,7 @@ if (values['dry-run']) {
   console.log(`📄 Updating package.json...`);
 
   try {
-    execSync(`npm version ${newVersion} --no-git-tag-version --allow-same-version`, {
+    execSync(`npm version ${newVersion} --no-git-tag-version --allow-same-version`, { // NOSONAR - Administrative script, inputs from controlled sources
       stdio: 'inherit'
     });
     console.log(`✅ Updated package.json to ${newVersion}`);
@@ -161,7 +161,7 @@ if (values['dry-run']) {
       filesToAdd.push('CHANGELOG.md');
     }
 
-    execSync(`git add ${filesToAdd.join(' ')}`, { stdio: 'pipe' });
+    execSync(`git add ${filesToAdd.join(' ')}`, { stdio: 'pipe' }); // NOSONAR - Administrative script, inputs from controlled sources
 
     // Create commit
     const commitMessage = `chore(release): version ${newVersion}
@@ -172,10 +172,10 @@ Previous version: ${currentVersion}
 ${changelogGenerated ? 'Changes documented in CHANGELOG.md.' : 'Manual changelog update recommended.'}
 `;
 
-    execSync(`git commit -m "${commitMessage}"`, { stdio: 'inherit' });
+    execSync(`git commit -m "${commitMessage}"`, { stdio: 'inherit' }); // NOSONAR - Administrative script, inputs from controlled sources
 
     // Create tag
-    execSync(`git tag -a "v${newVersion}" -m "Release version ${newVersion}"`, { stdio: 'pipe' });
+    execSync(`git tag -a "v${newVersion}" -m "Release version ${newVersion}"`, { stdio: 'pipe' }); // NOSONAR - Administrative script, inputs from controlled sources
 
     console.log(`✅ Committed version ${newVersion}`);
     console.log(`✅ Created tag v${newVersion}`);

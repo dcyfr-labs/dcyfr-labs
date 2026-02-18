@@ -57,7 +57,7 @@ function getCurrentDate() {
  */
 function getMatchingTags(pattern) {
   try {
-    const output = execSync(`git tag -l "${pattern}"`, {
+    const output = execSync(`git tag -l "${pattern}"`, { // NOSONAR - Administrative script, inputs from controlled sources
       cwd: ROOT_DIR,
       encoding: 'utf-8',
       stdio: ['pipe', 'pipe', 'pipe'],

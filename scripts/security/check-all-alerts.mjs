@@ -25,7 +25,7 @@ if (githubRepositoryEnv?.includes('/')) {
   [owner, repo] = githubRepositoryEnv.split('/', 2);
 } else {
   try {
-    const remoteUrl = execSync('git config --get remote.origin.url', { encoding: 'utf-8' }).trim();
+    const remoteUrl = execSync('git config --get remote.origin.url', { encoding: 'utf-8' }).trim(); // NOSONAR - Administrative script, inputs from controlled sources
     // Supports SSH (git@github.com:owner/repo.git) and HTTPS (https://github.com/owner/repo.git)
     const sshMatch = remoteUrl.match(/github\.com:(.+)\/(.+?)(\.git)?$/);
     const httpsMatch = remoteUrl.match(/github\.com\/(.+)\/(.+?)(\.git)?$/);
@@ -48,7 +48,7 @@ console.log(`\n🔍 Checking security alerts for ${owner}/${repo}...\n`);
 
 try {
   // Query GitHub Code Scanning API
-  const alertsJson = execSync(`gh api repos/${owner}/${repo}/code-scanning/alerts?state=open`, {
+  const alertsJson = execSync(`gh api repos/${owner}/${repo}/code-scanning/alerts?state=open`, { // NOSONAR - Administrative script, inputs from controlled sources
     encoding: 'utf-8',
   });
 

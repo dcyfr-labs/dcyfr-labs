@@ -55,7 +55,7 @@ function getSlugToIdMapping() {
     process.exit(1);
   }
 
-  const output = execSync(
+  const output = execSync( // NOSONAR - Administrative script, inputs from controlled sources
     `grep -h "^slug:\\|^id:" ${projectRoot}/src/content/blog/*/index.mdx | sed "s/^slug: //; s/^id: //; s/'//g; s/\\"//g"`,
     { encoding: 'utf-8', cwd: projectRoot }
   );

@@ -15,7 +15,7 @@ const scanAll = args.includes("--all");
 
 function getStagedFiles() {
   try {
-    const out = execSync("git diff --name-only --cached --diff-filter=ACM", {
+    const out = execSync("git diff --name-only --cached --diff-filter=ACM", { // NOSONAR - Administrative script, inputs from controlled sources
       encoding: "utf8",
     });
     return out.split("\n").filter(Boolean);
@@ -26,7 +26,7 @@ function getStagedFiles() {
 
 function getRepoFiles() {
   try {
-    const out = execSync("git ls-files", { encoding: "utf8" });
+    const out = execSync("git ls-files", { encoding: "utf8" }); // NOSONAR - Administrative script, inputs from controlled sources
     return out.split("\n").filter(Boolean);
   } catch (err) {
     return [];

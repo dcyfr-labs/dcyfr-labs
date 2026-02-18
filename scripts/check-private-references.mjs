@@ -41,7 +41,7 @@ let referencesFound = 0;
  */
 function findPublicDocs() {
   try {
-    const output = execSync(
+    const output = execSync( // NOSONAR - Administrative script, inputs from controlled sources
       'find docs -type f -name "*.md" ! -path "*/private/*" ! -path "*/node_modules/*" ! -path "*/.git/*"',
       { cwd: rootDir, encoding: 'utf-8' }
     );

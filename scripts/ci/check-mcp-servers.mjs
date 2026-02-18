@@ -244,7 +244,7 @@ function checkCommandServer(name, server) {
   const cmdArgs = Array.from(args);
   // Try a bare `command --version` first (safe for npx and many binaries)
   try {
-    const resBare = spawnSync(command, ['--version'], {
+    const resBare = spawnSync(command, ['--version'], { // NOSONAR - Administrative script, inputs from controlled sources
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'pipe'],
       timeout: 10_000,
@@ -257,7 +257,7 @@ function checkCommandServer(name, server) {
   // Some packages want --version, some -v; try both
   cmdArgs.push('--version');
   try {
-    const res = spawnSync(command, cmdArgs, {
+    const res = spawnSync(command, cmdArgs, { // NOSONAR - Administrative script, inputs from controlled sources
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'pipe'],
       timeout: 10_000,
@@ -265,7 +265,7 @@ function checkCommandServer(name, server) {
     if (res.error) return { name, ok: false, error: String(res.error) };
     if (res.status === 0) return { name, ok: true, stdout: res.stdout.trim() };
     // Try running with --help if version failed
-    const res2 = spawnSync(command, [...args, '--help'], {
+    const res2 = spawnSync(command, [...args, '--help'], { // NOSONAR - Administrative script, inputs from controlled sources
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'pipe'],
       timeout: 10_000,

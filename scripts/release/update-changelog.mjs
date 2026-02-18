@@ -182,7 +182,7 @@ function writeChangelog(content) {
 function runValidation() {
   try {
     console.error('🔍 Running changelog format validation...');
-    execSync('node scripts/validate-changelog-format.mjs', {
+    execSync('node scripts/validate-changelog-format.mjs', { // NOSONAR - Administrative script, inputs from controlled sources
       cwd: ROOT_DIR,
       stdio: 'inherit',
     });

@@ -214,7 +214,7 @@ async function main() {
   if (!fs.existsSync(prioritizedPath)) {
     console.log('📋 Generating prioritized tasks...');
     try {
-      const result = spawnSync('node', [path.resolve(__dirname, 'prioritize-tasks.mjs')], {
+      const result = spawnSync('node', [path.resolve(__dirname, 'prioritize-tasks.mjs')], { // NOSONAR - Administrative script, inputs from controlled sources
         cwd: path.resolve(__dirname, '../..'),
         stdio: 'inherit',
         shell: false,

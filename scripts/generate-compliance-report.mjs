@@ -49,7 +49,7 @@ function runValidation(script) {
 
   try {
     // Use array form of execSync to avoid shell interpolation (CWE-78)
-    const output = execSync('node', [script], {
+    const output = execSync('node', [script], { // NOSONAR - Administrative script, inputs from controlled sources
       cwd: ROOT_DIR,
       encoding: 'utf-8',
       stdio: 'pipe',

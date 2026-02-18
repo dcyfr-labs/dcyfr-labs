@@ -133,7 +133,7 @@ function scanCodeTodos() {
     // Use grep if available (faster), fall back to Node fs
     let grepOutput = "";
     try {
-      grepOutput = execSync(
+      grepOutput = execSync( // NOSONAR - Administrative script, inputs from controlled sources
         `grep -r "TODO:\\|FIXME:\\|XXX:" src/ --include="*.ts" --include="*.tsx" 2>/dev/null || true`,
         {
           cwd: rootDir,
@@ -244,7 +244,7 @@ function scanTestStatus() {
  */
 function getGitContext() {
   try {
-    const log = execSync("git log --oneline --since='1 week ago' | head -10", {
+    const log = execSync("git log --oneline --since='1 week ago' | head -10", { // NOSONAR - Administrative script, inputs from controlled sources
       cwd: rootDir,
       encoding: "utf-8",
     });

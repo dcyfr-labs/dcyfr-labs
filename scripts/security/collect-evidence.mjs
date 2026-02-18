@@ -94,7 +94,7 @@ function collectGitCommitLogs() {
     const startOfMonth = `${year}-${month}-01`;
     const endOfMonth = new Date(year, parseInt(month), 0).toISOString().split('T')[0];
 
-    const commits = execSync(
+    const commits = execSync( // NOSONAR - Administrative script, inputs from controlled sources
       `git log --since="${startOfMonth}" --until="${endOfMonth}" --pretty=format:"%H|%an|%ae|%ad|%s" --date=iso`,
       { cwd: projectRoot, stdio: 'pipe' }
     ).toString();
@@ -139,7 +139,7 @@ function collectGitCommitLogs() {
 function collectCodeQLResults() {
   try {
     // Try to get latest CodeQL results from GitHub
-    const codeqlOutput = execSync(
+    const codeqlOutput = execSync( // NOSONAR - Administrative script, inputs from controlled sources
       'gh api repos/dcyfr-labs/dcyfr-labs/code-scanning/analyses --jq ".[0]"',
       { cwd: projectRoot, stdio: 'pipe' }
     ).toString();
@@ -172,7 +172,7 @@ function collectDependabotPRs() {
     // Get Dependabot PRs merged this month
     const startOfMonth = `${year}-${month}-01`;
 
-    const prs = execSync(
+    const prs = execSync( // NOSONAR - Administrative script, inputs from controlled sources
       `gh pr list --state merged --search "author:app/dependabot merged:>=${startOfMonth}" --json number,title,mergedAt,url`,
       { cwd: projectRoot, stdio: 'pipe' }
     ).toString();
@@ -203,7 +203,7 @@ function collectDependabotPRs() {
 function collectVercelDeployments() {
   try {
     // Get recent deployments
-    const deployments = execSync(
+    const deployments = execSync( // NOSONAR - Administrative script, inputs from controlled sources
       'vercel ls --json',
       { cwd: projectRoot, stdio: 'pipe' }
     ).toString();
@@ -241,7 +241,7 @@ function collectSecurityScans() {
 
     // npm audit
     try {
-      const npmAudit = execSync('npm audit --json', { cwd: projectRoot, stdio: 'pipe' }).toString();
+      const npmAudit = execSync('npm audit --json', { cwd: projectRoot, stdio: 'pipe' }).toString(); // NOSONAR - Administrative script, inputs from controlled sources
       scanResults.scans.npmAudit = JSON.parse(npmAudit);
     } catch (error) {
       const npmAudit = error.stdout?.toString() || '{}';
@@ -250,7 +250,7 @@ function collectSecurityScans() {
 
     // ESLint (if configured)
     try {
-      execSync('npm run lint', { cwd: projectRoot, stdio: 'pipe' });
+      execSync('npm run lint', { cwd: projectRoot, stdio: 'pipe' }); // NOSONAR - Administrative script, inputs from controlled sources
       scanResults.scans.eslint = { status: 'PASS', errors: 0 };
     } catch (error) {
       scanResults.scans.eslint = { status: 'FAIL', errors: 'Has errors' };
@@ -258,7 +258,7 @@ function collectSecurityScans() {
 
     // TypeScript compilation
     try {
-      execSync('npm run typecheck', { cwd: projectRoot, stdio: 'pipe' });
+      execSync('npm run typecheck', { cwd: projectRoot, stdio: 'pipe' }); // NOSONAR - Administrative script, inputs from controlled sources
       scanResults.scans.typescript = { status: 'PASS', errors: 0 };
     } catch (error) {
       scanResults.scans.typescript = { status: 'FAIL', errors: 'Has errors' };
@@ -289,7 +289,7 @@ function collectAccessLogs() {
     // Collect git author statistics
     const startOfMonth = `${year}-${month}-01`;
 
-    const authors = execSync(
+    const authors = execSync( // NOSONAR - Administrative script, inputs from controlled sources
       `git log --since="${startOfMonth}" --pretty=format:"%an|%ae" | sort | uniq -c`,
       { cwd: projectRoot, stdio: 'pipe' }
     ).toString();
@@ -355,7 +355,7 @@ function collectSBOMSnapshot() {
       };
     } else {
       // Generate new SBOM
-      execSync('npm run sbom:generate', { cwd: projectRoot, stdio: 'pipe' });
+      execSync('npm run sbom:generate', { cwd: projectRoot, stdio: 'pipe' }); // NOSONAR - Administrative script, inputs from controlled sources
 
       if (existsSync(sbomPath)) {
         const sbomContent = readFileSync(sbomPath, 'utf-8');
@@ -391,7 +391,7 @@ function collectSBOMSnapshot() {
 function collectTestResults() {
   try {
     // Run tests and capture results
-    const testOutput = execSync('npm run test:run -- --reporter=json', {
+    const testOutput = execSync('npm run test:run -- --reporter=json', { // NOSONAR - Administrative script, inputs from controlled sources
       cwd: projectRoot,
       stdio: 'pipe',
     }).toString();

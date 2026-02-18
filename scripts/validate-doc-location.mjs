@@ -116,7 +116,7 @@ let violations = [];
  */
 function getDeletedFiles() {
   try {
-    const output = execSync('git diff --cached --name-only --diff-filter=D', {
+    const output = execSync('git diff --cached --name-only --diff-filter=D', { // NOSONAR - Administrative script, inputs from controlled sources
       cwd: ROOT_DIR,
       encoding: 'utf8',
     });

@@ -159,7 +159,7 @@ async function runPreflight() {
     const startTime = Date.now();
 
     return new Promise((resolve) => {
-      const child = spawn(command, cmdArgs, {
+      const child = spawn(command, cmdArgs, { // NOSONAR - Administrative script, inputs from controlled sources
         stdio: args.values.verbose ? 'inherit' : 'pipe',
         shell: true,
         ...options,

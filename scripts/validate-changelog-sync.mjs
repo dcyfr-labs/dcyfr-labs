@@ -34,7 +34,7 @@ function getLatestChangelogDate() {
 // Get the date of the most recent git commit
 function getLatestCommitDate() {
   try {
-    const output = execSync('git log -1 --format=%aI', { encoding: 'utf-8' });
+    const output = execSync('git log -1 --format=%aI', { encoding: 'utf-8' }); // NOSONAR - Administrative script, inputs from controlled sources
     return new Date(output.trim());
   } catch (error) {
     console.error('Error: Could not retrieve latest commit date');
