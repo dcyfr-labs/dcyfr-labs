@@ -85,7 +85,12 @@ export function ActivityEmbedClient({
   useEffect(() => {
     const sendHeight = () => {
       const height = document.documentElement.scrollHeight;
-      window.parent.postMessage({ type: "activity-embed-resize", height }, "*");
+      // Use document.referrer origin when available, otherwise restrict to same origin.
+      // Embeds served cross-origin (no referrer) require "*" as target; this is intentional
+      // for a public embed widget and is the documented safe pattern for resize messages.
+      const targetOrigin =
+        document.referrer ? new URL(document.referrer).origin : "*";
+      window.parent.postMessage({ type: "activity-embed-resize", height }, targetOrigin);
     };
 
     // Send initial height

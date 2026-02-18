@@ -58,16 +58,14 @@ concurrency:
   group: security-suite-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
-  security-events: write
-  pull-requests: write
-  issues: write
+permissions: {}
 
 jobs:
   # Determine which jobs to run based on trigger and inputs
   determine-jobs:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       run_audit: ${{ steps.determine.outputs.run_audit }}
       run_advisories: ${{ steps.determine.outputs.run_advisories }}
@@ -107,6 +105,11 @@ jobs:
     name: NPM Security Audit
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+      security-events: write
+      pull-requests: write
+      issues: write
 
     outputs:
       has_vulnerabilities: ${{ steps.audit.outputs.has_critical }}
@@ -234,6 +237,11 @@ jobs:
     name: GitHub Advisory Monitoring
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+      security-events: write
+      pull-requests: write
+      issues: write
 
     env:
       CORE_PACKAGES: 'next,react,react-dom'

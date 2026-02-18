@@ -5,16 +5,17 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
-permissions:
-  contents: read
-  pull-requests: write
-  issues: write
+permissions: {}
 
 jobs:
   auto-label:
     name: Auto-label PR
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
 
     steps:
       - name: Checkout code
@@ -30,6 +31,9 @@ jobs:
     name: Check PR Size
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
 
     steps:
       - name: Checkout code
@@ -130,6 +134,9 @@ jobs:
     name: Auto-assign Reviewers
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
     # Only run if PR is not from dependabot
     if: github.event.pull_request.user.login != 'dependabot[bot]'
 
@@ -149,6 +156,9 @@ jobs:
     name: Welcome First-Time Contributors
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
 
     steps:
       - name: Check if first-time contributor

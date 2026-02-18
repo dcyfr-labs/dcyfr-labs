@@ -53,6 +53,10 @@ test.describe("Activity Feed Embed", () => {
     
     await page.addInitScript(() => {
       window.addEventListener("message", (e) => {
+        // Only process messages from same origin or trusted embed origins
+        if (e.origin !== window.location.origin && e.origin !== "null") {
+          return;
+        }
         (window as any).captureMessage(e.data);
       });
     });

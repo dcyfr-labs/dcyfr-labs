@@ -27,15 +27,15 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
-  pull-requests: write
+permissions: {}
 
 jobs:
   # Check if Storybook is configured
   check-storybook:
     name: Check Storybook Setup
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       has_storybook: ${{ steps.check.outputs.has_storybook }}
 
@@ -61,6 +61,9 @@ jobs:
     name: Run Chromatic
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
 
     steps:
       - name: Checkout code

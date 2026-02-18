@@ -59,8 +59,10 @@ jobs:
       # STEP 1: Extract PR number from merge commit
       - name: Extract PR number
         id: pr
+        env:
+          HEAD_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          PR_NUMBER=$(echo "${{ github.event.head_commit.message }}" | grep -oP 'Merge pull request #\K\d+' || echo "")
+          PR_NUMBER=$(echo "$HEAD_COMMIT_MESSAGE" | grep -oP 'Merge pull request #\K\d+' || echo "")
 
           if [ -z "$PR_NUMBER" ]; then
             echo "⚠️  Not a PR merge commit, skipping release"

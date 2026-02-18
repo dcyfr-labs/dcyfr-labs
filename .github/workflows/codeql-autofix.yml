@@ -23,17 +23,17 @@ concurrency:
   group: codeql-autofix-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: write
-  pull-requests: write
-  security-events: read
-  issues: read
+permissions: {}
 
 jobs:
   analyze-alerts:
     name: Analyze CodeQL Alerts
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+      security-events: read
+      issues: read
     outputs:
       alerts_json: ${{ steps.get-alerts.outputs.alerts_json }}
       alerts_count: ${{ steps.get-alerts.outputs.alerts_count }}
@@ -68,6 +68,11 @@ jobs:
     name: Generate CodeQL Fixes with Copilot
     runs-on: ubuntu-latest
     needs: analyze-alerts
+    permissions:
+      contents: write
+      pull-requests: write
+      security-events: read
+      issues: read
     if: needs.analyze-alerts.outputs.has_fixable == 'true'
     timeout-minutes: 30
     strategy:

@@ -33,16 +33,17 @@ concurrency:
   group: sbom-generation-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: write # For creating release assets
-  security-events: write # For uploading SBOM to dependency graph
-  pull-requests: write # For PR comments
+permissions: {}
 
 jobs:
   generate-sbom:
     name: Generate SBOM
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: write
+      security-events: write
+      pull-requests: write
 
     steps:
       - name: Checkout code

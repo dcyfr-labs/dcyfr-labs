@@ -46,11 +46,7 @@ concurrency:
   group: nuclei-scan-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
-  security-events: write
-  issues: write
-  actions: read
+permissions: {}
 
 env:
   PRODUCTION_URL: 'https://www.dcyfr.ai'  # Production: dcyfr.ai (main) | Preview: dcyfr.dev
@@ -60,6 +56,8 @@ jobs:
   # Only run on successful deployments or scheduled/manual triggers
   check-deployment:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       should_run: ${{ steps.check.outputs.should_run }}
       target_url: ${{ steps.check.outputs.target_url }}
@@ -89,6 +87,10 @@ jobs:
     if: needs.check-deployment.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
 
     outputs:
       vulnerabilities_found: ${{ steps.scan.outputs.vulnerabilities_found }}
@@ -299,6 +301,9 @@ jobs:
     if: needs.nuclei-scan.outputs.vulnerabilities_found == 'true' && (github.event.inputs.create_issues != 'false')
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
 
     steps:
       - name: Checkout repository

@@ -29,17 +29,21 @@ jobs:
       
       - name: Handle Node.js version updates
         id: node-version
+        env:
+          DEPENDENCY_NAMES: ${{ steps.metadata.outputs.dependency-names }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          UPDATE_TYPE: ${{ steps.metadata.outputs.update-type }}
         run: |
-          DEPENDENCY="${{ steps.metadata.outputs.dependency-names }}"
+          DEPENDENCY="$DEPENDENCY_NAMES"
           if [[ "$DEPENDENCY" == "node" ]]; then
             echo "is-node-update=true" >> $GITHUB_OUTPUT
             
             # Extract version from PR title (e.g., "bump node from 24.13.0 to 24.13.1")
-            VERSION=$(echo "${{ github.event.pull_request.title }}" | grep -oP 'v?\d+\.\d+\.\d+' | tail -1)
+            VERSION=$(echo "$PR_TITLE" | grep -oP 'v?\d+\.\d+\.\d+' | tail -1)
             echo "node-version=$VERSION" >> $GITHUB_OUTPUT
             
             # Auto-merge patches only (minor/major require manual review)
-            if [[ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-patch" ]]; then
+            if [[ "$UPDATE_TYPE" == "version-update:semver-patch" ]]; then
               echo "safe=true" >> $GITHUB_OUTPUT
               echo "reason=Node.js patch update (security patches included)" >> $GITHUB_OUTPUT
             else
@@ -529,18 +533,26 @@ jobs:
       
       - name: Determine if safe to auto-merge
         id: check
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          UPDATE_TYPE: ${{ steps.metadata.outputs.update-type }}
+          DEPENDENCY_TYPE: ${{ steps.metadata.outputs.dependency-type }}
+          DEPENDENCY_NAMES: ${{ steps.metadata.outputs.dependency-names }}
+          IS_NODE_UPDATE: ${{ steps.node-version.outputs.is-node-update }}
+          NODE_SAFE: ${{ steps.node-version.outputs.safe }}
         run: |
-          echo "PR: ${{ github.event.pull_request.title }}"
-          echo "Update type: ${{ steps.metadata.outputs.update-type }}"
-          echo "Dependency type: ${{ steps.metadata.outputs.dependency-type }}"
-          echo "Dependency names: ${{ steps.metadata.outputs.dependency-names }}"
+          echo "PR: $PR_TITLE"
+          echo "Update type: $UPDATE_TYPE"
+          echo "Dependency type: $DEPENDENCY_TYPE"
+          echo "Dependency names: $DEPENDENCY_NAMES"
           
           SAFE="false"
           REASON=""
           
           # Handle Node.js version updates first
-          if [[ "${{ steps.node-version.outputs.is-node-update }}" == "true" ]]; then
-            if [[ "${{ steps.node-version.outputs.safe }}" == "true" ]]; then
+          if [[ "$IS_NODE_UPDATE" == "true" ]]; then
+            if [[ "$NODE_SAFE" == "true" ]]; then
               SAFE="true"
               REASON="Node.js patch update (security patches included)"
             else
@@ -550,27 +562,27 @@ jobs:
             # Check if dependency is in safe packages list
             IS_SAFE_PACKAGE="false"
             while IFS= read -r pkg; do
-              if [[ "${{ steps.metadata.outputs.dependency-names }}" == *"$pkg"* ]]; then
+              if [[ "$DEPENDENCY_NAMES" == *"$pkg"* ]]; then
                 IS_SAFE_PACKAGE="true"
                 break
               fi
             done < /tmp/safe_packages.txt
             
             # Auto-merge dev dependencies (patch and minor updates)
-            if [[ "${{ steps.metadata.outputs.dependency-type }}" == "direct:development" ]] || \
-               [[ "${{ steps.metadata.outputs.dependency-type }}" == "indirect:development" ]]; then
-              if [[ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-patch" ]] || \
-                 [[ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-minor" ]]; then
+            if [[ "$DEPENDENCY_TYPE" == "direct:development" ]] || \
+               [[ "$DEPENDENCY_TYPE" == "indirect:development" ]]; then
+              if [[ "$UPDATE_TYPE" == "version-update:semver-patch" ]] || \
+                 [[ "$UPDATE_TYPE" == "version-update:semver-minor" ]]; then
                 SAFE="true"
                 REASON="Dev dependency patch/minor update"
               fi
             fi
             
             # Auto-merge production patch updates for safe packages (with breaking change check)
-            if [[ "${{ steps.metadata.outputs.dependency-type }}" == "direct:production" ]]; then
-              if [[ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-patch" ]]; then
+            if [[ "$DEPENDENCY_TYPE" == "direct:production" ]]; then
+              if [[ "$UPDATE_TYPE" == "version-update:semver-patch" ]]; then
                 if [[ "$IS_SAFE_PACKAGE" == "true" ]]; then
-                  if ! echo "${{ github.event.pull_request.body }}" | grep -iq "breaking"; then
+                  if ! echo "$PR_BODY" | grep -iq "breaking"; then
                     SAFE="true"
                     REASON="Production patch update (safe package) without breaking changes"
                   else
@@ -583,9 +595,9 @@ jobs:
             fi
             
             # Framework updates always require review (except patches for safe packages)
-            if [[ "${{ steps.metadata.outputs.dependency-names }}" =~ ^(next|react|react-dom|@vercel|tailwindcss)$ ]]; then
-              if [[ "${{ steps.metadata.outputs.update-type }}" == "version-update:semver-patch" ]]; then
-                if ! echo "${{ github.event.pull_request.body }}" | grep -iq "breaking"; then
+            if [[ "$DEPENDENCY_NAMES" =~ ^(next|react|react-dom|@vercel|tailwindcss)$ ]]; then
+              if [[ "$UPDATE_TYPE" == "version-update:semver-patch" ]]; then
+                if ! echo "$PR_BODY" | grep -iq "breaking"; then
                   SAFE="true"
                   REASON="Framework patch without breaking changes"
                 else
@@ -618,39 +630,45 @@ jobs:
       - name: Auto-approve safe updates
         if: steps.check.outputs.safe == 'true'
         run: |
-          gh pr review --approve "$PR_URL" --body "✅ Auto-approved: ${{ steps.check.outputs.reason }}"
+          gh pr review --approve "$PR_URL" --body "✅ Auto-approved: $APPROVE_REASON"
           echo "✅ PR auto-approved" >> $GITHUB_STEP_SUMMARY
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APPROVE_REASON: ${{ steps.check.outputs.reason }}
       
       - name: Enable auto-merge
         if: steps.check.outputs.safe == 'true'
         run: |
           gh pr merge --auto --squash "$PR_URL" 2>/dev/null || echo "Auto-merge already enabled or unavailable"
-          echo "✅ Auto-merge enabled for PR #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Auto-merge enabled for PR #$PR_NUMBER" >> $GITHUB_STEP_SUMMARY
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Add review required label
         if: steps.check.outputs.safe == 'false'
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REVIEW_REASON: ${{ steps.check.outputs.reason }}
+          DEP_NAMES: ${{ steps.metadata.outputs.dependency-names }}
+          DEP_UPDATE_TYPE: ${{ steps.metadata.outputs.update-type }}
         run: |
           gh pr edit "$PR_URL" --add-label "review-required" --add-label "dependencies"
           gh pr comment "$PR_URL" --body "⚠️ **Manual review required**
           
           This PR requires manual review because:
-          **${{ steps.check.outputs.reason }}**
+          **$REVIEW_REASON**
           
           Please review the changes before merging:
           - Check CHANGELOG for breaking changes
           - Verify compatibility with current codebase
           - Test critical functionality locally
           
-          **Dependencies:** ${{ steps.metadata.outputs.dependency-names }}
-          **Update type:** ${{ steps.metadata.outputs.update-type }}"
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
+          **Dependencies:** $DEP_NAMES
+          **Update type:** $DEP_UPDATE_TYPE"
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Comment on major version updates

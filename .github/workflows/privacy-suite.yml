@@ -26,15 +26,14 @@ concurrency:
   group: privacy-scan-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
-  pull-requests: write
-  issues: write
+permissions: {}
 
 jobs:
   # Determine scan scope based on changed files
   determine-scope:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       scan_all: ${{ steps.scope.outputs.scan_all }}
       scan_reports: ${{ steps.scope.outputs.scan_reports }}
@@ -81,6 +80,8 @@ jobs:
   setup:
     needs: determine-scope
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -106,6 +107,10 @@ jobs:
     if: needs.determine-scope.outputs.scan_all == 'true'
     runs-on: ubuntu-latest
     name: Repository PII/PI Scan
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
 
     steps:
       - name: Checkout code
@@ -165,6 +170,10 @@ jobs:
     if: needs.determine-scope.outputs.scan_all == 'true'
     runs-on: ubuntu-latest
     name: Secret Detection (Gitleaks)
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
 
     steps:
       - name: Checkout code
@@ -298,6 +307,9 @@ jobs:
     if: needs.determine-scope.outputs.scan_reports == 'true'
     runs-on: ubuntu-latest
     name: Reports Artifact Scan
+    permissions:
+      contents: read
+      pull-requests: write
 
     steps:
       - name: Checkout code
@@ -378,6 +390,8 @@ jobs:
     needs: [repository-scan, gitleaks-scan, reports-scan]
     if: always()
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Generate unified summary

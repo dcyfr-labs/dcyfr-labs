@@ -13,13 +13,7 @@ on:
         required: true
         type: number
 
-permissions:
-  contents: read
-  issues: write
-  pull-requests: write
-  checks: read
-  statuses: read
-  security-events: write  # For CodeQL
+permissions: {}
 
 jobs:
   # FIX: Phase 3 - Run CodeQL BEFORE generating plan to capture all findings
@@ -27,6 +21,9 @@ jobs:
   codeql-pre-check:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+      security-events: write
 
     steps:
       - name: Checkout code
@@ -50,6 +47,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: codeql-pre-check  # Wait for security scan completion
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+      checks: read
+      statuses: read
+      security-events: write
 
     steps:
       - name: Checkout code

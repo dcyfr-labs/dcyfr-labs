@@ -60,11 +60,12 @@ jobs:
         if: ${{ (github.event_name == 'push' && github.ref != 'refs/heads/main') || inputs.scan_type == 'fast' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SPECIFIC_AGENT: ${{ inputs.specific_agent }}
         run: |
           cd dcyfr-ai-agents
           SCAN_ARGS="--quick"
-          if [ -n "${{ inputs.specific_agent }}" ]; then
-            SCAN_ARGS="$SCAN_ARGS --agent=${{ inputs.specific_agent }}"
+          if [ -n "$SPECIFIC_AGENT" ]; then
+            SCAN_ARGS="$SCAN_ARGS --agent=$SPECIFIC_AGENT"
           fi
           npm run security:scan:sarif -- $SCAN_ARGS
 
@@ -72,11 +73,12 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' || inputs.scan_type == 'full' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SPECIFIC_AGENT: ${{ inputs.specific_agent }}
         run: |
           cd dcyfr-ai-agents
           SCAN_ARGS=""
-          if [ -n "${{ inputs.specific_agent }}" ]; then
-            SCAN_ARGS="--agent=${{ inputs.specific_agent }}"
+          if [ -n "$SPECIFIC_AGENT" ]; then
+            SCAN_ARGS="--agent=$SPECIFIC_AGENT"
           fi
           npm run security:scan:sarif -- $SCAN_ARGS
 
