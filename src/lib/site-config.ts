@@ -34,6 +34,7 @@ export const FEATURES = {
   enableRSS: true,
   enableSearchParams: true, // URL-based search/filters
   enablePrintStyles: true,
+  enableIndexNow: !!process.env.INDEXNOW_API_KEY,
 } as const;
 
 /**

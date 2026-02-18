@@ -52,6 +52,9 @@ export default function DevLayout({
               <Link href="/dev/mcp-health" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap px-2 py-1">
                 MCP
               </Link>
+              <Link href="/dev/seo" className="text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap px-2 py-1">
+                SEO
+              </Link>
             </div>
           </div>
         </div>

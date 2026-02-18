@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 
 /** Map of platform names to their icon components */
-const PLATFORM_ICONS: Record<string, React.ElementType> = {
+const PLATFORM_ICONS: Record<string, React.ComponentType<{ className?: string; 'aria-hidden'?: boolean | 'true' | 'false' }>> = {
   calendar: Calendar,
   twitter: Twitter,
   dev: Code2,

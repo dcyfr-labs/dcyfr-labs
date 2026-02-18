@@ -51,6 +51,12 @@ const devTools: DevTool[] = [
     description: 'Toggle site maintenance mode',
     category: 'Infrastructure',
   },
+  {
+    name: 'SEO & IndexNow',
+    path: '/dev/seo',
+    description: 'IndexNow configuration checks and manual submission testing',
+    category: 'Infrastructure',
+  },
 
   // Content & Development
   {

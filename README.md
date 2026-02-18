@@ -93,6 +93,7 @@ A modern, full-featured developer blog and portfolio built with Next.js (App Rou
 - **🚀 Performance** - Server components, image optimization, edge caching, ISR
 - **📈 GitHub Integration** - Contribution heatmap with real-time data
 - **🔍 SEO Optimized** - Dynamic metadata, sitemap, RSS/Atom feeds, structured data
+- **📡 Real-time Indexing (IndexNow)** - Instant URL submission pipeline with API + background processing
 
 ## 🛠️ Tech Stack
 
@@ -279,6 +280,12 @@ GITHUB_USERNAME=your-username
 # Inngest (optional for local dev)
 INNGEST_EVENT_KEY=...
 INNGEST_SIGNING_KEY=...
+
+# IndexNow (real-time indexing)
+INDEXNOW_API_KEY=<uuid-v4-key>
+
+# Admin APIs (bulk re-submission endpoints)
+ADMIN_API_KEY=<strong-random-token>
 ```
 
 See [`/docs/platform/environment-variables.md`](./docs/platform/environment-variables.md) for complete reference.
