@@ -52,6 +52,16 @@ export interface UseGlobalEngagementCountsReturn {
 const countCache = new Map<string, { likes: number; bookmarks: number; timestamp: number }>();
 const CACHE_TTL = 60 * 1000; // 1 minute
 
+/** Safely parse JSON from a Response, returning a default value on error */
+async function safeParseJson<T>(res: Response, fallback: T, tag: string): Promise<T> {
+  try {
+    return (await res.json()) as T;
+  } catch (parseErr) {
+    console.warn(`[useGlobalEngagementCounts] Failed to parse ${tag} response:`, parseErr);
+    return fallback;
+  }
+}
+
 /**
  * Hook for fetching global engagement counts
  */
@@ -120,22 +130,8 @@ export function useGlobalEngagementCounts({
       }
 
       // Safer JSON parsing with error handling
-      let likesData: { count: number };
-      let bookmarksData: { count: number };
-
-      try {
-        likesData = (await likesRes.json()) as { count: number };
-      } catch (parseErr) {
-        console.warn('[useGlobalEngagementCounts] Failed to parse likes response:', parseErr);
-        likesData = { count: 0 };
-      }
-
-      try {
-        bookmarksData = (await bookmarksRes.json()) as { count: number };
-      } catch (parseErr) {
-        console.warn('[useGlobalEngagementCounts] Failed to parse bookmarks response:', parseErr);
-        bookmarksData = { count: 0 };
-      }
+      const likesData = await safeParseJson<{ count: number }>(likesRes, { count: 0 }, 'likes');
+      const bookmarksData = await safeParseJson<{ count: number }>(bookmarksRes, { count: 0 }, 'bookmarks');
 
       const likes = likesData.count || 0;
       const bookmarks = bookmarksData.count || 0;

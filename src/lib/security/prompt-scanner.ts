@@ -260,80 +260,79 @@ export class PromptSecurityScanner {
   }
 
   /**
-   * Check input against PromptIntel IoPC database
+   * Refresh IoPC cache from PromptIntel API if stale (every 5 minutes)
    */
-  private async checkAgainstIoPC(input: string): Promise<ThreatMatch[]> {
-    const matches: ThreatMatch[] = [];
-
-    // Update cache if needed (every 5 minutes)
+  private async refreshIoPCCacheIfNeeded(): Promise<void> {
     const now = Date.now();
-    if (!this.ioPCCache || now - this.lastIoPCUpdate > CACHE_TTL) {
-      try {
-        // Fetch critical and high severity threats
-        const [critical, high] = await Promise.all([
-          this.client.getPrompts({ severity: 'critical', limit: 50 }),
-          this.client.getPrompts({ severity: 'high', limit: 50 }),
-        ]);
-
-        this.ioPCCache = [...critical, ...high];
-        this.lastIoPCUpdate = now;
-      } catch (error) {
-        console.error('[PromptScanner] Failed to update IoPC cache:', error);
-        // Use stale cache if available
-        if (!this.ioPCCache) throw error;
-      }
+    if (this.ioPCCache && now - this.lastIoPCUpdate <= CACHE_TTL) return;
+    try {
+      const [critical, high] = await Promise.all([
+        this.client.getPrompts({ severity: 'critical', limit: 50 }),
+        this.client.getPrompts({ severity: 'high', limit: 50 }),
+      ]);
+      this.ioPCCache = [...critical, ...high];
+      this.lastIoPCUpdate = now;
+    } catch (error) {
+      console.error('[PromptScanner] Failed to update IoPC cache:', error);
+      if (!this.ioPCCache) throw error;
     }
+  }
 
-    // Check input against cached threats
-    const inputLower = input.toLowerCase();
+  /**
+   * Refresh taxonomy cache from PromptIntel API if stale (every 24 hours)
+   */
+  private async refreshTaxonomyCacheIfNeeded(): Promise<void> {
+    const now = Date.now();
+    const ONE_DAY = 24 * 60 * 60 * 1000;
+    if (this.taxonomyCache && now - this.lastTaxonomyUpdate <= ONE_DAY) return;
+    try {
+      const taxonomy = await this.client.getTaxonomy({ limit: 50 });
+      this.taxonomyCache = taxonomy;
+      this.lastTaxonomyUpdate = now;
+    } catch (error) {
+      console.error('[PromptScanner] Failed to update taxonomy cache:', error);
+      if (!this.taxonomyCache) throw error;
+    }
+  }
 
-    if (this.ioPCCache) {
-      for (const threat of this.ioPCCache) {
-        // Check if response contains data array (pagination wrapper)
-        const threatData = Array.isArray(threat) ? threat : [threat];
+  /**
+   * Match input against cached IoPC threats and collect matching entries
+   */
+  private matchInputAgainstIoPCCache(inputLower: string): ThreatMatch[] {
+    const matches: ThreatMatch[] = [];
+    if (!this.ioPCCache) return matches;
 
-        // The API returns pagination wrapper, skip if empty
-        if (threatData.length === 0) continue;
+    for (const threat of this.ioPCCache) {
+      const threatData = Array.isArray(threat) ? threat : [threat];
+      if (threatData.length === 0) continue;
 
-        // For now, we'll implement basic pattern matching
-        // In production, you'd want more sophisticated matching
-        const firstItem = threatData[0];
-        if (firstItem?.data && Array.isArray(firstItem.data)) {
-          // Empty data array, skip
-          continue;
-        }
+      const firstItem = threatData[0];
+      if (firstItem?.data && Array.isArray(firstItem.data)) {
+        // Empty data array, skip
+        continue;
       }
+
+      void inputLower; // matching logic placeholder
     }
 
     return matches;
   }
 
   /**
+   * Check input against PromptIntel IoPC database
+   */
+  private async checkAgainstIoPC(input: string): Promise<ThreatMatch[]> {
+    await this.refreshIoPCCacheIfNeeded();
+    return this.matchInputAgainstIoPCCache(input.toLowerCase());
+  }
+
+  /**
    * Check input against threat taxonomy
    */
   private async checkAgainstTaxonomy(input: string): Promise<ThreatMatch[]> {
-    const matches: ThreatMatch[] = [];
-
-    // Update taxonomy cache if needed (daily)
-    const now = Date.now();
-    const ONE_DAY = 24 * 60 * 60 * 1000;
-
-    if (!this.taxonomyCache || now - this.lastTaxonomyUpdate > ONE_DAY) {
-      try {
-        const taxonomy = await this.client.getTaxonomy({ limit: 50 });
-        this.taxonomyCache = taxonomy;
-        this.lastTaxonomyUpdate = now;
-      } catch (error) {
-        console.error('[PromptScanner] Failed to update taxonomy cache:', error);
-        // Use stale cache if available
-        if (!this.taxonomyCache) throw error;
-      }
-    }
-
-    // Taxonomy matching would go here
-    // Implementation depends on taxonomy structure
-
-    return matches;
+    await this.refreshTaxonomyCacheIfNeeded();
+    void input; // Taxonomy matching implementation placeholder
+    return [];
   }
 
   /**

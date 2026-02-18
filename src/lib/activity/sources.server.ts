@@ -148,6 +148,81 @@ interface TrendingPost {
 }
 
 /**
+ * Fetch trending posts from Redis, returning null if unavailable
+ */
+async function fetchTrendingFromRedis(): Promise<TrendingPost[] | null> {
+  if (!redis) {
+    console.warn('[Activity] Redis client unavailable (REDIS_URL not configured), using fallback');
+    return null;
+  }
+
+  try {
+    const trendingData = await redis.get('blog:trending');
+
+    if (!trendingData) {
+      console.warn('[Activity] No trending data in Redis yet (key: blog:trending), using fallback');
+      return null;
+    }
+
+    const parsed = typeof trendingData === 'string' ? JSON.parse(trendingData) : trendingData;
+
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      console.warn(`[Activity] Successfully fetched ${parsed.length} trending posts from Redis`);
+      return parsed as TrendingPost[];
+    }
+
+    console.warn('[Activity] Redis trending data not yet populated, using fallback');
+    return null;
+  } catch (error) {
+    console.error('[Activity] Failed to fetch trending posts from Redis:', error);
+    if (error instanceof Error && error.message.includes('ECONNREFUSED')) {
+      console.warn('[Activity] Redis connection refused - likely offline');
+    }
+    return null;
+  }
+}
+
+/**
+ * Build fallback trending array from most recent posts
+ */
+function buildFallbackTrending(posts: Post[], limit?: number): TrendingPost[] {
+  const validPosts = posts.filter((p) => !p.archived && !p.draft);
+  const sorted = validPosts.sort(
+    (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+  );
+  const limited = limit ? sorted.slice(0, limit) : sorted;
+  const fallback = limited.map((post) => ({
+    postId: post.id,
+    totalViews: 0,
+    recentViews: 0,
+    score: 0,
+  }));
+  console.warn(`[Activity] Using fallback: ${fallback.length} most recent posts (Redis unavailable)`);
+  return fallback;
+}
+
+/**
+ * Build description string for a trending activity item
+ */
+function buildTrendingDescription(
+  item: TrendingPost,
+  timestamp: Date,
+  options?: { after?: Date; before?: Date; description?: string }
+): string {
+  const trendingMonth = timestamp.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+
+  if (options?.description) {
+    return item.recentViews > 0
+      ? `${options.description} with ${item.recentViews.toLocaleString()} views in the last 7 days`
+      : options.description;
+  }
+
+  return item.recentViews > 0
+    ? `Trending in ${trendingMonth} with ${item.recentViews.toLocaleString()} views in the last 7 days`
+    : `Recently published in ${trendingMonth}`;
+}
+
+/**
  * Validate trending post data for consistency and quality
  * Returns validation result with warnings/errors for missing data
  *
@@ -230,75 +305,9 @@ export async function transformTrendingPosts(
   limit?: number,
   options?: { after?: Date; before?: Date; description?: string }
 ): Promise<ActivityItem[]> {
-  // Redis client imported from shared module
-  let trending: TrendingPost[] | null = null;
-  let trendingSource: 'redis' | 'fallback' = 'fallback';
-
-  // Try to fetch from Redis first
-  if (redis) {
-    try {
-      const trendingData = await redis.get('blog:trending');
-
-      if (trendingData) {
-        try {
-          // Upstash auto-parses JSON, so trendingData may already be an array
-          // Only parse if it's a string (backwards compatibility)
-          const parsed = typeof trendingData === 'string' ? JSON.parse(trendingData) : trendingData;
-
-          // Double validation: check if data is valid
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            trending = parsed;
-            trendingSource = 'redis';
-            console.warn(
-              `[Activity] Successfully fetched ${trending.length} trending posts from Redis`
-            );
-          } else {
-            // This is expected when trending data hasn't been populated yet
-            // (e.g., first deployment, or after Redis reset)
-            console.warn('[Activity] Redis trending data not yet populated, using fallback');
-          }
-        } catch (parseError) {
-          console.error('[Activity] Failed to parse trending data from Redis:', parseError);
-        }
-      } else {
-        // This is expected when trending data hasn't been populated yet
-        console.warn(
-          '[Activity] No trending data in Redis yet (key: blog:trending), using fallback'
-        );
-      }
-
-      // No quit() needed - Upstash uses HTTP REST API (stateless)
-    } catch (error) {
-      console.error('[Activity] Failed to fetch trending posts from Redis:', error);
-      if (error instanceof Error && error.message.includes('ECONNREFUSED')) {
-        console.warn('[Activity] Redis connection refused - likely offline');
-      }
-    }
-  } else {
-    console.warn('[Activity] Redis client unavailable (REDIS_URL not configured), using fallback');
-  }
-
-  // Fallback: use most recent published posts if Redis is unavailable or invalid
-  if (!trending) {
-    const validPosts = posts.filter((p) => !p.archived && !p.draft);
-    const sorted = validPosts.sort(
-      (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-    );
-
-    const limited = limit ? sorted.slice(0, limit) : sorted;
-
-    trending = limited.map((post) => ({
-      postId: post.id,
-      totalViews: 0,
-      recentViews: 0,
-      score: 0,
-    }));
-
-    trendingSource = 'fallback';
-    console.warn(
-      `[Activity] Using fallback: ${trending.length} most recent posts (Redis unavailable)`
-    );
-  }
+  const redisTrending = await fetchTrendingFromRedis();
+  const trendingSource: 'redis' | 'fallback' = redisTrending ? 'redis' : 'fallback';
+  const trending: TrendingPost[] = redisTrending ?? buildFallbackTrending(posts, limit);
 
   // Double validation: validate the trending data
   const validation = validateTrendingData(trending, posts);
@@ -327,27 +336,8 @@ export async function transformTrendingPosts(
     if (options?.before && postDate > options.before) continue;
 
     // Build description with view stats and time period
-    let description: string;
     const timestamp = new Date(post.updatedAt || post.publishedAt);
-    const trendingMonth = timestamp.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-    });
-
-    if (options?.description) {
-      // Custom description base - add view stats if available
-      if (item.recentViews > 0) {
-        description = `${options.description} with ${item.recentViews.toLocaleString()} views in the last 7 days`;
-      } else {
-        description = options.description;
-      }
-    } else {
-      // Default description - always show the month for clarity
-      description =
-        item.recentViews > 0
-          ? `Trending in ${trendingMonth} with ${item.recentViews.toLocaleString()} views in the last 7 days`
-          : `Recently published in ${trendingMonth}`;
-    }
+    const description = buildTrendingDescription(item, timestamp, options);
 
     trendingActivities.push({
       id: `trending-${post.id}`,

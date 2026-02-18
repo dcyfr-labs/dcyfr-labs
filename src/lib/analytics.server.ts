@@ -20,7 +20,68 @@ import {
 import { getPostSharesBulk, getPostShares24hBulk } from '@/lib/shares';
 import { getPostCommentsBulk, getPostComments24hBulk } from '@/lib/comments';
 import { redis } from '@/mcp/shared/redis-client';
-import type { AnalyticsData, DailyData } from '@/types/analytics';
+import type { AnalyticsData, DailyData, PostAnalytics, VercelAnalytics } from '@/types/analytics';
+
+// ---------------------------------------------------------------------------
+// Private helpers (reduce cognitive complexity of getAnalyticsData)
+// ---------------------------------------------------------------------------
+
+/**
+ * Attempt to fetch and enrich trending posts from Redis.
+ * Returns null if Redis is unavailable or data is invalid.
+ */
+async function fetchRedisTrendingEnriched(
+  allPosts: Array<{ id: string; slug: string; [key: string]: unknown }>,
+  postsWithViews: PostAnalytics[]
+): Promise<PostAnalytics[] | null> {
+  try {
+    const trendingData = await redis.get('blog:trending');
+    if (typeof trendingData !== 'string') return null;
+    const parsedTrending = JSON.parse(trendingData) as Array<{ postId: string; totalViews: number; recentViews: number; score: number }>;
+    return parsedTrending
+      .map((trending) => {
+        const post = allPosts.find((p) => p.id === trending.postId);
+        if (!post) return null;
+        const fullPost = postsWithViews.find((p) => p.slug === post.slug);
+        if (!fullPost) return null;
+        return { ...fullPost, trendingScore: trending.score } as unknown as PostAnalytics;
+      })
+      .filter((item): item is PostAnalytics => item !== null);
+  } catch {
+    return null;
+  }
+}
+
+type VercelAnalyticsResult = {
+  data: VercelAnalytics | null;
+  lastSynced: string | null;
+};
+
+/**
+ * Fetch Vercel analytics sync data from Redis.
+ * Returns null values if Redis is unavailable.
+ */
+async function fetchVercelAnalyticsFromRedis(): Promise<VercelAnalyticsResult> {
+  try {
+    const [vPages, vReferrers, vDevices, vSynced] = await Promise.all([
+      redis.get('vercel:topPages:daily'),
+      redis.get('vercel:topReferrers:daily'),
+      redis.get('vercel:topDevices:daily'),
+      redis.get('vercel:metrics:lastSynced'),
+    ]);
+    return {
+      data: {
+        topPages: vPages && typeof vPages === 'string' ? (JSON.parse(vPages) as VercelAnalytics['topPages']) : [],
+        topReferrers: vReferrers && typeof vReferrers === 'string' ? (JSON.parse(vReferrers) as VercelAnalytics['topReferrers']) : [],
+        topDevices: vDevices && typeof vDevices === 'string' ? (JSON.parse(vDevices) as VercelAnalytics['topDevices']) : [],
+      },
+      lastSynced: typeof vSynced === 'string' ? vSynced : null,
+    };
+  } catch (error) {
+    console.error('[Analytics Server] Failed to fetch Vercel analytics from Redis:', error);
+    return { data: null, lastSynced: null };
+  }
+}
 
 /**
  * Server-only analytics data fetcher
@@ -121,57 +182,10 @@ export const getAnalyticsData = cache(async (days: number | null = null): Promis
     const trendingPosts = postsWithViews.slice(0, 5);
 
     // Get trending data from Redis if available
-    let trendingFromRedis = null;
-    try {
-      const trendingData = await redis.get('blog:trending');
-      if (typeof trendingData === 'string') {
-        const parsedTrending = JSON.parse(trendingData);
-        // Enrich trending data with full post information
-        trendingFromRedis = parsedTrending
-          .map(
-            (trending: {
-              postId: string;
-              totalViews: number;
-              recentViews: number;
-              score: number;
-            }) => {
-              const post = posts.find((p) => p.id === trending.postId);
-              if (post) {
-                const fullPost = postsWithViews.find((p) => p.slug === post.slug);
-                if (fullPost) {
-                  return {
-                    ...fullPost,
-                    trendingScore: trending.score,
-                  };
-                }
-              }
-              return null;
-            }
-          )
-          .filter(Boolean);
-      }
-    } catch (error) {
-      console.error('[Analytics Server] Failed to fetch trending data:', error);
-    }
+    const trendingFromRedis = await fetchRedisTrendingEnriched(posts, postsWithViews);
 
     // Attempt to read Vercel analytics sync data from Redis (optional)
-    let vercelData = null;
-    let vercelLastSynced = null;
-    try {
-      const vPages = await redis.get('vercel:topPages:daily');
-      const vReferrers = await redis.get('vercel:topReferrers:daily');
-      const vDevices = await redis.get('vercel:topDevices:daily');
-      const vSynced = await redis.get('vercel:metrics:lastSynced');
-
-      vercelLastSynced = typeof vSynced === 'string' ? vSynced : null;
-      vercelData = {
-        topPages: vPages && typeof vPages === 'string' ? JSON.parse(vPages) : [],
-        topReferrers: vReferrers && typeof vReferrers === 'string' ? JSON.parse(vReferrers) : [],
-        topDevices: vDevices && typeof vDevices === 'string' ? JSON.parse(vDevices) : [],
-      };
-    } catch (error) {
-      console.error('[Analytics Server] Failed to fetch Vercel analytics from Redis:', error);
-    }
+    const { data: vercelData, lastSynced: vercelLastSynced } = await fetchVercelAnalyticsFromRedis();
 
     return {
       success: true,

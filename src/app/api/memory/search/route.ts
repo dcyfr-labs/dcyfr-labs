@@ -71,6 +71,40 @@ function validateSearchMemoryBody(
   return { data: { userId, query, limit } };
 }
 
+async function parseJsonBody(request: NextRequest): Promise<{ ok: true; body: unknown } | { ok: false; response: NextResponse }> {
+  try {
+    const body = await request.json();
+    return { ok: true, body };
+  } catch (error) {
+    return {
+      ok: false,
+      response: NextResponse.json(
+        { error: 'Invalid JSON in request body', message: error instanceof Error ? error.message : 'Unknown error' },
+        { status: 400 }
+      ),
+    };
+  }
+}
+
+async function executeMemorySearch(userId: string, query: string, limit: number, rateLimitHeaders: Record<string, string>): Promise<NextResponse> {
+  try {
+    const memory = getMemory();
+    const results = await memory.searchUserMemories(userId, query, limit);
+    const memories: MemoryResult[] = results.map((result: MemorySearchResult) => ({
+      id: result.id,
+      content: result.content,
+      importance: result.importance,
+      topic: result.topic,
+      createdAt: result.createdAt.toISOString(),
+    }));
+    console.log('Memory search completed:', { userId: userId.substring(0, 8) + '...', queryLength: query.length, resultCount: memories.length, limit, timestamp: new Date().toISOString() });
+    return NextResponse.json({ memories, count: memories.length, limit }, { status: 200, headers: rateLimitHeaders });
+  } catch (memoryError) {
+    console.error('Failed to search memories:', memoryError instanceof Error ? memoryError.message : String(memoryError));
+    return NextResponse.json({ error: 'Failed to search memories. Please try again later.' }, { status: 500 });
+  }
+}
+
 export async function POST(request: NextRequest) {
   let rawBody: unknown = null;
 
@@ -103,17 +137,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    try {
-      rawBody = await request.json();
-    } catch (error) {
-      return NextResponse.json(
-        {
-          error: 'Invalid JSON in request body',
-          message: error instanceof Error ? error.message : 'Unknown error',
-        },
-        { status: 400 }
-      );
-    }
+    const parsed = await parseJsonBody(request);
+    if (!parsed.ok) return parsed.response;
+    rawBody = parsed.body;
 
     const validation = validateSearchMemoryBody(rawBody, user.id);
     if ('error' in validation) {
@@ -121,40 +147,7 @@ export async function POST(request: NextRequest) {
     }
     const { userId, query, limit } = validation.data;
 
-    try {
-      const memory = getMemory();
-      const results = await memory.searchUserMemories(userId, query, limit);
-
-      const memories: MemoryResult[] = results.map((result: MemorySearchResult) => ({
-        id: result.id,
-        content: result.content,
-        importance: result.importance,
-        topic: result.topic,
-        createdAt: result.createdAt.toISOString(),
-      }));
-
-      console.log('Memory search completed:', {
-        userId: userId.substring(0, 8) + '...',
-        queryLength: query.length,
-        resultCount: memories.length,
-        limit,
-        timestamp: new Date().toISOString(),
-      });
-
-      return NextResponse.json(
-        { memories, count: memories.length, limit },
-        { status: 200, headers: createRateLimitHeaders(rateLimitResult) }
-      );
-    } catch (memoryError) {
-      console.error(
-        'Failed to search memories:',
-        memoryError instanceof Error ? memoryError.message : String(memoryError)
-      );
-      return NextResponse.json(
-        { error: 'Failed to search memories. Please try again later.' },
-        { status: 500 }
-      );
-    }
+    return await executeMemorySearch(userId, query, limit, createRateLimitHeaders(rateLimitResult));
   } catch (error) {
     const body =
       rawBody && typeof rawBody === 'object' ? (rawBody as SearchMemoryRequest) : null;

@@ -61,6 +61,89 @@ function sanitizeInput(input: string): string {
   return input.trim().slice(0, 1000); // Basic sanitization and length limit
 }
 
+type ValidationResult =
+  | { ok: true; data: { name: string; email: string; message: string; role?: string } }
+  | { ok: false; response: ReturnType<typeof NextResponse.json> };
+
+/**
+ * Validate and sanitize contact form data.
+ * Returns either validated data or a ready-made error response.
+ */
+function validateContactData(body: ContactFormData): ValidationResult {
+  const { name, email, message, role } = body;
+
+  if (!name || !email || !message) {
+    return { ok: false, response: NextResponse.json({ error: 'All fields are required' }, { status: 400 }) };
+  }
+  if (!validateEmail(email)) {
+    return { ok: false, response: NextResponse.json({ error: 'Invalid email address' }, { status: 400 }) };
+  }
+
+  const data = {
+    name: sanitizeInput(name),
+    email: sanitizeInput(email),
+    message: sanitizeInput(message),
+    role: role ? sanitizeInput(role) : undefined,
+  };
+
+  if (data.name.length < 2) {
+    return { ok: false, response: NextResponse.json({ error: 'Name must be at least 2 characters' }, { status: 400 }) };
+  }
+  if (data.message.length < 10) {
+    return {
+      ok: false,
+      response: NextResponse.json({ error: 'Message must be at least 10 characters' }, { status: 400 }),
+    };
+  }
+
+  return { ok: true, data };
+}
+
+type ParseResult = { ok: true; body: ContactFormData } | { ok: false; response: ReturnType<typeof NextResponse.json> };
+
+/**
+ * Parse, size-check, and JSON-decode the request body.
+ */
+async function parseRequestBody(request: NextRequest): Promise<ParseResult> {
+  const maxSize = 50 * 1024;
+  const contentLength = request.headers.get('content-length');
+  if (contentLength && parseInt(contentLength) > maxSize) {
+    return {
+      ok: false,
+      response: NextResponse.json(
+        { error: 'Request too large', message: `Request size must not exceed ${Math.floor(maxSize / 1024)}KB` },
+        { status: 413 }
+      ),
+    };
+  }
+
+  try {
+    const rawBody = await request.text();
+    if (Buffer.byteLength(rawBody, 'utf8') > maxSize) {
+      return {
+        ok: false,
+        response: NextResponse.json(
+          { error: 'Request too large', message: `Request size must not exceed ${Math.floor(maxSize / 1024)}KB` },
+          { status: 413 }
+        ),
+      };
+    }
+    const body = JSON.parse(rawBody);
+    if (!body || typeof body !== 'object') {
+      return { ok: false, response: NextResponse.json({ error: 'Request body must be a JSON object' }, { status: 400 }) };
+    }
+    return { ok: true, body: body as ContactFormData };
+  } catch (error) {
+    return {
+      ok: false,
+      response: NextResponse.json(
+        { error: 'Invalid JSON in request body', message: error instanceof Error ? error.message : 'Unknown error' },
+        { status: 400 }
+      ),
+    };
+  }
+}
+
 export async function POST(request: NextRequest) {
   // NOTE: blockExternalAccess() is NOT used here because this is a PUBLIC
   // user-facing endpoint that must accept requests from users' browsers.
@@ -68,95 +151,28 @@ export async function POST(request: NextRequest) {
   // and optionally BotID in production environments (requires ENABLE_BOTID=1).
   // BotID is disabled in non-production environments to prevent false positives.
 
-  // Validate request size to prevent DoS attacks via large payloads
-  const contentLength = request.headers.get('content-length');
-  const maxSize = 50 * 1024; // 50KB limit for contact form
-
-  // Primary check: Content-Length header (for production environments)
-  if (contentLength && parseInt(contentLength) > maxSize) {
-    return NextResponse.json(
-      {
-        error: 'Request too large',
-        message: `Request size must not exceed ${Math.floor(maxSize / 1024)}KB`,
-      },
-      { status: 413 } // Payload Too Large
-    );
-  }
-
-  // Secondary check: Body size validation (for testing/environments without Content-Length)
-  let rawBody: string;
-  let body: any;
-  try {
-    rawBody = await request.text();
-
-    // Check actual body size
-    const bodySize = Buffer.byteLength(rawBody, 'utf8');
-    if (bodySize > maxSize) {
-      return NextResponse.json(
-        {
-          error: 'Request too large',
-          message: `Request size must not exceed ${Math.floor(maxSize / 1024)}KB`,
-        },
-        { status: 413 } // Payload Too Large
-      );
-    }
-
-    // Re-parse JSON from the text
-    body = JSON.parse(rawBody);
-  } catch (error) {
-    return NextResponse.json(
-      {
-        error: 'Invalid JSON in request body',
-        message: error instanceof Error ? error.message : 'Unknown error',
-      },
-      { status: 400 }
-    );
-  }
-
-  // Validate the parsed data
-  if (!body || typeof body !== 'object') {
-    return NextResponse.json({ error: 'Request body must be a JSON object' }, { status: 400 });
-  }
-
-  const contactData = body as ContactFormData;
+  // Parse and size-check the request body
+  const parseResult = await parseRequestBody(request);
+  if (!parseResult.ok) return parseResult.response;
+  const body = parseResult.body;
 
   try {
-    // Optional bot detection using Vercel BotID
-    // If BotID is unavailable or misconfigured, we gracefully fall back to
-    // rate limiting + honeypot + input validation for protection
-    // See: https://vercel.com/docs/botid/get-started
-    //
-    // Toggle BotID via ENABLE_BOTID env var (set to '1' to enable). Default is disabled.
-    // This approach allows us to re-enable BotID quickly after verifying configuration
-    // in the Vercel dashboard without code changes.
-    //
-    // IMPORTANT: Only enable BotID in production AND when explicitly enabled via env var
-    // This prevents false positives in development/preview and requires deliberate activation
-    // TEMPORARILY DISABLED: BotID causing 403 errors on initial setup.
+    // BotID check — TEMPORARILY DISABLED (causing 403 errors on initial setup).
     // To re-enable: 1) Go to Vercel Dashboard → Settings → Security → Enable Bot Protection
     //               2) Set ENABLE_BOTID=1 in Vercel environment variables
-    //               3) Uncomment the import at line 2 and the checkBotId() call below
+    //               3) Uncomment the import at top and the checkBotId() call below
     //               4) Change `false` below back to the env var check
     const shouldUseBotId = false; // process.env.NODE_ENV === 'production' && process.env.ENABLE_BOTID === '1';
 
     if (shouldUseBotId) {
       try {
         // TEMPORARILY DISABLED: checkBotId import is commented out to prevent 403 errors
-        // Uncomment the import and this code when BotID is properly configured
         // const verification = await checkBotId();
-        // // Only block if BotID confidently identifies this as a bot (not a verified bot like search engines)
-        // // Verified bots (search engines, monitoring) are allowed through
         // if (verification.isBot && !verification.isVerifiedBot && !verification.bypassed) {
         //   console.warn("[Contact API] Bot detected by BotID - blocking request");
-        //   return NextResponse.json(
-        //     { error: "Access denied" },
-        //     { status: 403 }
-        //   );
+        //   return NextResponse.json({ error: "Access denied" }, { status: 403 });
         // }
       } catch (botIdError) {
-        // BotID is optional - if it fails, continue with fallback protection
-        // Common reasons: not configured, CSP issues, network errors, timeout
-        // Log only the error message (avoid printing full error objects which may contain sensitive data)
         console.warn(
           '[Contact API] BotID check failed, using fallback protection (rate limit + honeypot):',
           botIdError instanceof Error ? botIdError.message : String(botIdError)
@@ -184,52 +200,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Extract form data (body was already parsed from request.text() above)
-    // Extract form data (body was already parsed from request.text() above)
-    const { name, email, message, role, website } = body || {};
-
     // Honeypot validation - if filled, it's likely a bot
-    if (website && website.trim() !== '') {
+    if (body.website && body.website.trim() !== '') {
       console.warn('[Contact API] Honeypot triggered - likely bot submission');
-      // Return success to avoid revealing the honeypot
       return NextResponse.json(
-        {
-          success: true,
-          message: "Message received. We'll get back to you soon!",
-        },
+        { success: true, message: "Message received. We'll get back to you soon!" },
         { status: 200 }
       );
     }
 
-    // Validate required fields
-    if (!name || !email || !message) {
-      return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
-    }
-
-    // Validate email format
-    if (!validateEmail(email)) {
-      return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
-    }
-
-    // Sanitize inputs
-    const sanitizedData = {
-      name: sanitizeInput(name),
-      email: sanitizeInput(email),
-      message: sanitizeInput(message),
-      role: role ? sanitizeInput(role) : undefined,
-    };
-
-    // Validate lengths
-    if (sanitizedData.name.length < 2) {
-      return NextResponse.json({ error: 'Name must be at least 2 characters' }, { status: 400 });
-    }
-
-    if (sanitizedData.message.length < 10) {
-      return NextResponse.json(
-        { error: 'Message must be at least 10 characters' },
-        { status: 400 }
-      );
-    }
+    // Validate and sanitize contact fields
+    const validation = validateContactData(body);
+    if (!validation.ok) return validation.response;
+    const sanitizedData = validation.data;
 
     // Prompt security scanning - detect adversarial patterns
     try {
@@ -239,20 +222,16 @@ export async function POST(request: NextRequest) {
         cacheResults: true,
       });
 
-      // Block if threats detected
       if (!scanResult.safe || scanResult.severity === 'critical') {
         console.warn('[Contact API] Prompt threat detected:', {
           severity: scanResult.severity,
           riskScore: scanResult.riskScore,
           threatCount: scanResult.threats.length,
         });
-
-        // Return generic error to avoid leaking security details
         return NextResponse.json(
           {
             error: 'Message validation failed',
-            message:
-              'Your message could not be processed. Please review your content and try again.',
+            message: 'Your message could not be processed. Please review your content and try again.',
           },
           { status: 400 }
         );
@@ -262,9 +241,7 @@ export async function POST(request: NextRequest) {
       console.error('[Contact API] Prompt scanning failed:', scanError);
     }
 
-    //
     // Send event to Inngest for background processing
-    // This returns immediately, making the API response much faster
     try {
       await inngest.send({
         name: 'contact/form.submitted',
@@ -285,8 +262,6 @@ export async function POST(request: NextRequest) {
         false // We don't track if they have LinkedIn for privacy
       ).catch((err) => console.warn('Analytics tracking failed:', err));
 
-      // Log submission (anonymized)
-      // Log an anonymized summary to avoid storing user-provided content in logs
       console.warn('Contact form submission queued:', {
         nameLength: sanitizedData.name.length,
         emailDomain: sanitizedData.email.split('@')[1] || 'unknown',
@@ -299,13 +274,9 @@ export async function POST(request: NextRequest) {
           success: true,
           message: "Message received successfully. You'll receive a confirmation email shortly.",
         },
-        {
-          status: 200,
-          headers: createRateLimitHeaders(rateLimitResult),
-        }
+        { status: 200, headers: createRateLimitHeaders(rateLimitResult) }
       );
     } catch (inngestError) {
-      // Avoid printing full error objects that could include sensitive details
       console.error(
         'Failed to queue contact form:',
         inngestError instanceof Error ? inngestError.message : String(inngestError)
@@ -322,7 +293,6 @@ export async function POST(request: NextRequest) {
       additionalData: body ? { emailDomain: body.email?.split('@')[1] } : {},
     });
 
-    // For connection errors, return minimal response
     if (errorInfo.isConnectionError) {
       return new Response(null, { status: errorInfo.statusCode });
     }

@@ -110,6 +110,39 @@ function getEmptyState(): ContributionResponse {
 }
 
 // ============================================================================
+// PRIVATE HELPERS
+// ============================================================================
+
+/**
+ * Deserialize a Redis cache value (string or auto-deserialized object) into
+ * a ContributionResponse, returning null if the value is invalid.
+ */
+function deserializeCacheValue(cached: unknown): ContributionResponse | null {
+  if (!cached) return null;
+  if (typeof cached === 'string') {
+    try {
+      return JSON.parse(cached) as ContributionResponse;
+    } catch {
+      return null;
+    }
+  }
+  if (typeof cached === 'object') {
+    return cached as ContributionResponse;
+  }
+  return null;
+}
+
+/**
+ * Attempt to read contribution data from a single Redis key.
+ * Returns null if the key is missing or the data is invalid.
+ */
+async function readContributionCache(key: string): Promise<ContributionResponse | null> {
+  const cached = await redis.get(key);
+  const data = deserializeCacheValue(cached);
+  return data && data.contributions ? data : null;
+}
+
+// ============================================================================
 // PUBLIC API
 // ============================================================================
 
@@ -138,63 +171,27 @@ export async function getGitHubContributions(
       environment: getRedisEnvironment(),
     });
 
-    // Try the main cache
-    const cached = await redis.get(cacheKey);
-
-    // Handle both string (JSON.stringify) and object (auto-deserialized) formats
-    // Upstash REST API may return either depending on how the data was stored
-    let data: ContributionResponse | null = null;
-
-    if (cached) {
-      if (typeof cached === 'string') {
-        try {
-          data = JSON.parse(cached) as ContributionResponse;
-        } catch (parseError) {
-          logger.error('Failed to parse cached string', parseError as Error);
-        }
-      } else if (typeof cached === 'object') {
-        // Upstash auto-deserialized the JSON
-        data = cached as ContributionResponse;
-      }
-    }
-
-    if (data && data.contributions) {
-      // ✅ Clean any stale warning field from cached data
-      // Production cache should never have warnings (those are for fallback only)
+    // Try the main cache first
+    const data = await readContributionCache(cacheKey);
+    if (data) {
+      // Remove stale warning field from live API cache results
       if (data.source === 'github-api') {
-        delete (data as any).warning;
+        delete (data as { warning?: string }).warning;
       }
-
       logger.debug('Cache HIT', {
         totalContributions: data.totalContributions,
         source: data.source,
       });
       return data;
-    } else {
-      logger.warn('Cache MISS - key not found or invalid');
     }
+    logger.warn('Cache MISS - key not found or invalid');
 
-    // Try fallback cache if main cache is empty
-    const fallbackCached = await redis.get(getFallbackCacheKey());
-
-    if (fallbackCached) {
-      let fallbackData: ContributionResponse | null = null;
-
-      if (typeof fallbackCached === 'string') {
-        try {
-          fallbackData = JSON.parse(fallbackCached) as ContributionResponse;
-        } catch {
-          // Ignore parse errors
-        }
-      } else if (typeof fallbackCached === 'object') {
-        fallbackData = fallbackCached as ContributionResponse;
-      }
-
-      if (fallbackData && fallbackData.contributions) {
-        fallbackData.warning = 'Using cached data - GitHub API temporarily unavailable';
-        logger.warn('Using fallback cache');
-        return fallbackData;
-      }
+    // Try fallback cache
+    const fallbackData = await readContributionCache(getFallbackCacheKey());
+    if (fallbackData) {
+      fallbackData.warning = 'Using cached data - GitHub API temporarily unavailable';
+      logger.warn('Using fallback cache');
+      return fallbackData;
     }
   } catch (error) {
     const isDevelopment = process.env.NODE_ENV === 'development';

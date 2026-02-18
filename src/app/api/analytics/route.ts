@@ -230,6 +230,90 @@ function logAccess(request: Request, status: 'success' | 'denied', reason?: stri
 
 // Redis client removed - now using Upstash REST API singleton from @/mcp/shared/redis-client
 
+// ---------------------------------------------------------------------------
+// Private helpers to reduce cognitive complexity of GET handler
+// ---------------------------------------------------------------------------
+
+type PostWithViews = ReturnType<typeof buildPostsWithViews>[number];
+
+function buildPostsWithViews(
+  viewMap: Map<string, number>,
+  views24hMap: Map<string, number>,
+  viewsRangeMap: Map<string, number>,
+  shareMap: Record<string, number>,
+  shares24hMap: Record<string, number>,
+  commentMap: Record<string, number>,
+  comments24hMap: Record<string, number>
+) {
+  return posts
+    .map((post) => ({
+      slug: post.slug,
+      title: post.title,
+      summary: post.summary,
+      publishedAt: post.publishedAt,
+      tags: post.tags,
+      archived: post.archived ?? false,
+      draft: post.draft ?? false,
+      views: viewMap.get(post.id) || 0,
+      views24h: views24hMap.get(post.id) || 0,
+      viewsRange: viewsRangeMap.get(post.id) || 0,
+      shares: shareMap[post.id] || 0,
+      shares24h: shares24hMap[post.id] || 0,
+      comments: commentMap[post.slug] || 0,
+      comments24h: comments24hMap[post.slug] || 0,
+      readingTime: post.readingTime,
+    }))
+    .sort((a, b) => b.views - a.views);
+}
+
+async function fetchTrendingFromRedis(postsWithViews: PostWithViews[]): Promise<PostWithViews[] | null> {
+  try {
+    const trendingData = await redis.get('blog:trending');
+    if (typeof trendingData !== 'string') return null;
+    const parsedTrending = JSON.parse(trendingData) as Array<{
+      postId: string;
+      totalViews: number;
+      recentViews: number;
+      score: number;
+    }>;
+    const enriched = parsedTrending
+      .map((trending) => {
+        const post = posts.find((p) => p.id === trending.postId);
+        if (!post) return null;
+        const fullPost = postsWithViews.find((p) => p.slug === post.slug);
+        if (!fullPost) return null;
+        return { ...fullPost, trendingScore: trending.score };
+      })
+      .filter((item): item is PostWithViews & { trendingScore: number } => item !== null);
+    return enriched.length > 0 ? enriched : null;
+  } catch (error) {
+    console.error('Failed to fetch trending data:', error);
+    return null;
+  }
+}
+
+async function fetchVercelDataFromRedis() {
+  try {
+    const [vPages, vReferrers, vDevices, vSynced] = await Promise.all([
+      redis.get('vercel:topPages:daily'),
+      redis.get('vercel:topReferrers:daily'),
+      redis.get('vercel:topDevices:daily'),
+      redis.get('vercel:metrics:lastSynced'),
+    ]);
+    return {
+      vercelData: {
+        topPages: vPages && typeof vPages === 'string' ? JSON.parse(vPages) : [],
+        topReferrers: vReferrers && typeof vReferrers === 'string' ? JSON.parse(vReferrers) : [],
+        topDevices: vDevices && typeof vDevices === 'string' ? JSON.parse(vDevices) : [],
+      },
+      vercelLastSynced: typeof vSynced === 'string' ? vSynced : null,
+    };
+  } catch (error) {
+    console.error('Failed to fetch vercel analytics from redis:', error);
+    return { vercelData: null, vercelLastSynced: null };
+  }
+}
+
 export async function GET(request: NextRequest) {
   // Layer 0: Block external access for security
   const blockResponse = blockExternalAccess(request);
@@ -328,25 +412,10 @@ export async function GET(request: NextRequest) {
     const comments24hMap = await getPostComments24hBulk(postSlugs);
 
     // Combine with post data
-    const postsWithViews = posts
-      .map((post) => ({
-        slug: post.slug,
-        title: post.title,
-        summary: post.summary,
-        publishedAt: post.publishedAt,
-        tags: post.tags,
-        archived: post.archived ?? false,
-        draft: post.draft ?? false,
-        views: viewMap.get(post.id) || 0,
-        views24h: views24hMap.get(post.id) || 0,
-        viewsRange: viewsRangeMap.get(post.id) || 0,
-        shares: shareMap[post.id] || 0,
-        shares24h: shares24hMap[post.id] || 0,
-        comments: commentMap[post.slug] || 0,
-        comments24h: comments24hMap[post.slug] || 0,
-        readingTime: post.readingTime,
-      }))
-      .sort((a, b) => b.views - a.views);
+    const postsWithViews = buildPostsWithViews(
+      viewMap, views24hMap, viewsRangeMap,
+      shareMap, shares24hMap, commentMap, comments24hMap
+    );
 
     // Calculate statistics
     const totalViews = postsWithViews.reduce((sum, post) => sum + post.views, 0);
@@ -368,18 +437,10 @@ export async function GET(request: NextRequest) {
       postsWithViews.length > 0 ? totalComments24h / postsWithViews.length : 0;
 
     const topPost = postsWithViews[0];
-
-    // Get top posts in last 24 hours
     const topPost24h = [...postsWithViews].sort((a, b) => b.views24h - a.views24h)[0];
-
-    // Get top posts in selected range
     const topPostRange = [...postsWithViews].sort((a, b) => b.viewsRange - a.viewsRange)[0];
-
-    // Get most shared posts
     const mostSharedPost = [...postsWithViews].sort((a, b) => b.shares - a.shares)[0];
     const mostSharedPost24h = [...postsWithViews].sort((a, b) => b.shares24h - a.shares24h)[0];
-
-    // Get most commented posts
     const mostCommentedPost = [...postsWithViews].sort((a, b) => b.comments - a.comments)[0];
     const mostCommentedPost24h = [...postsWithViews].sort(
       (a, b) => b.comments24h - a.comments24h
@@ -387,62 +448,11 @@ export async function GET(request: NextRequest) {
 
     const trendingPosts = postsWithViews.slice(0, 5);
 
-    // Get trending data from Redis if available
-    let trendingFromRedis = null;
-    try {
-      const trendingData = await redis.get('blog:trending');
-      if (typeof trendingData === 'string') {
-        const parsedTrending = JSON.parse(trendingData);
-        // Enrich trending data with full post information
-        // Redis trending contains: postId, totalViews, recentViews, score
-        // We need to merge with posts to get slug and then match with postsWithViews
-        trendingFromRedis = parsedTrending
-          .map(
-            (trending: {
-              postId: string;
-              totalViews: number;
-              recentViews: number;
-              score: number;
-            }) => {
-              // Find the post by its postId, then match by slug with postsWithViews
-              const post = posts.find((p) => p.id === trending.postId);
-              if (post) {
-                const fullPost = postsWithViews.find((p) => p.slug === post.slug);
-                if (fullPost) {
-                  return {
-                    ...fullPost,
-                    // Override views24h with recentViews from trending for more accurate recent data
-                    trendingScore: trending.score,
-                  };
-                }
-              }
-              return null;
-            }
-          )
-          .filter(Boolean);
-      }
-    } catch (error) {
-      console.error('Failed to fetch trending data:', error);
-    }
+    // Enrich trending data from Redis (falls back to top 5 by views)
+    const trendingFromRedis = await fetchTrendingFromRedis(postsWithViews);
 
-    // Attempt to read Vercel analytics sync data from Redis (optional)
-    let vercelData = null;
-    let vercelLastSynced = null;
-    try {
-      const vPages = await redis.get('vercel:topPages:daily');
-      const vReferrers = await redis.get('vercel:topReferrers:daily');
-      const vDevices = await redis.get('vercel:topDevices:daily');
-      const vSynced = await redis.get('vercel:metrics:lastSynced');
-
-      vercelLastSynced = typeof vSynced === 'string' ? vSynced : null;
-      vercelData = {
-        topPages: vPages && typeof vPages === 'string' ? JSON.parse(vPages) : [],
-        topReferrers: vReferrers && typeof vReferrers === 'string' ? JSON.parse(vReferrers) : [],
-        topDevices: vDevices && typeof vDevices === 'string' ? JSON.parse(vDevices) : [],
-      };
-    } catch (error) {
-      console.error('Failed to fetch vercel analytics from redis:', error);
-    }
+    // Fetch Vercel analytics sync data from Redis (optional)
+    const { vercelData, vercelLastSynced } = await fetchVercelDataFromRedis();
 
     return NextResponse.json(
       {

@@ -91,6 +91,79 @@ async function ModernBlogGridWrapper({
   );
 }
 
+type BlogFilterParams = {
+  selectedCategory: string;
+  selectedTags: string[];
+  selectedAuthor: string;
+  readingTime: string;
+  dateRange: string;
+  showArchived: boolean;
+  showDrafts: boolean;
+};
+
+/**
+ * Apply all blog post filters in sequence. Returns the final filtered list.
+ */
+function applyBlogFilters(allPosts: Post[], params: BlogFilterParams): Post[] {
+  const { selectedCategory, selectedTags, selectedAuthor, readingTime, dateRange, showArchived, showDrafts } = params;
+  const now = new Date();
+
+  // Archived / draft guards
+  const withArchived = showArchived
+    ? allPosts.filter((p) => p.archived)
+    : allPosts.filter((p) => !p.archived);
+
+  const withCategory = selectedCategory
+    ? withArchived.filter((p) => p.category && p.category.toLowerCase() === selectedCategory)
+    : withArchived;
+
+  const withDrafts = showDrafts
+    ? withCategory.filter((p) => p.draft)
+    : withCategory;
+
+  // Date range filter
+  const withDate =
+    dateRange !== 'all'
+      ? withDrafts.filter((p) => {
+          const postDate = new Date(p.publishedAt);
+          const daysDiff = Math.floor((now.getTime() - postDate.getTime()) / (1000 * 60 * 60 * 24));
+          if (dateRange === '30d') return daysDiff <= 30;
+          if (dateRange === '90d') return daysDiff <= 90;
+          if (dateRange === 'year') return postDate.getFullYear() === now.getFullYear();
+          return true;
+        })
+      : withDrafts;
+
+  // Reading time filter
+  const withReadingTime = readingTime
+    ? withDate.filter((p) => {
+        const minutes = p.readingTime.minutes;
+        if (readingTime === 'quick') return minutes <= 5;
+        if (readingTime === 'medium') return minutes > 5 && minutes <= 15;
+        if (readingTime === 'deep') return minutes > 15;
+        return true;
+      })
+    : withDate;
+
+  // Tag filter (multi-tag AND logic)
+  const withTags =
+    selectedTags.length > 0
+      ? withReadingTime.filter((p) =>
+          selectedTags.every((tag) => p.tags.some((t) => t.toLowerCase() === tag))
+        )
+      : withReadingTime;
+
+  // Author filter
+  const withAuthor = selectedAuthor
+    ? withTags.filter((p) => {
+        const postAuthors = p.authors || ['dcyfr'];
+        return postAuthors.includes(selectedAuthor);
+      })
+    : withTags;
+
+  return withAuthor;
+}
+
 export const metadata: Metadata = {
   ...createArchivePageMetadata({
     title: pageTitle,
@@ -170,71 +243,21 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     ? (layoutParam as 'grid' | 'list' | 'magazine' | 'compact' | 'grouped')
     : 'magazine';
 
-  // Filter archived posts based on showArchived toggle
-  const postsWithArchivedFilter = showArchived
-    ? posts.filter((post) => post.archived) // Show only archived when toggled on
-    : posts.filter((post) => !post.archived); // Hide archived by default
-
-  // Apply category filter (case-insensitive)
-  const postsWithCategoryFilter = selectedCategory
-    ? postsWithArchivedFilter.filter(
-        (post) => post.category && post.category.toLowerCase() === selectedCategory
-      )
-    : postsWithArchivedFilter;
-
-  // Apply drafts filter based on showDrafts toggle (development only)
-  const postsWithDraftsFilter = showDrafts
-    ? postsWithCategoryFilter.filter((post) => post.draft)
-    : postsWithCategoryFilter;
-
-  // Apply date range filter
-  const now = new Date();
-  const postsWithDateFilter =
-    dateRange !== 'all'
-      ? postsWithDraftsFilter.filter((post) => {
-          const postDate = new Date(post.publishedAt);
-          const daysDiff = Math.floor((now.getTime() - postDate.getTime()) / (1000 * 60 * 60 * 24));
-
-          if (dateRange === '30d') return daysDiff <= 30;
-          if (dateRange === '90d') return daysDiff <= 90;
-          if (dateRange === 'year') {
-            return postDate.getFullYear() === now.getFullYear();
-          }
-          return true;
-        })
-      : postsWithDraftsFilter;
-
-  // Apply reading time filter (custom filter not in Archive pattern)
-  const postsWithReadingTimeFilter = readingTime
-    ? postsWithDateFilter.filter((post) => {
-        const minutes = post.readingTime.minutes;
-        if (readingTime === 'quick') return minutes <= 5;
-        if (readingTime === 'medium') return minutes > 5 && minutes <= 15;
-        if (readingTime === 'deep') return minutes > 15;
-        return true;
-      })
-    : postsWithDateFilter;
-
-  // Apply multiple tag filter manually before Archive pattern (case-insensitive)
-  const postsWithTagFilter =
-    selectedTags.length > 0
-      ? postsWithReadingTimeFilter.filter((post) =>
-          selectedTags.every((tag) => post.tags.some((t) => t.toLowerCase() === tag))
-        )
-      : postsWithReadingTimeFilter;
-
-  // Apply author filter
-  const postsWithAuthorFilter = selectedAuthor
-    ? postsWithTagFilter.filter((post) => {
-        const postAuthors = post.authors || ['dcyfr'];
-        return postAuthors.includes(selectedAuthor);
-      })
-    : postsWithTagFilter;
+  // Apply all filters
+  const filteredPosts = applyBlogFilters(posts, {
+    selectedCategory,
+    selectedTags,
+    selectedAuthor,
+    readingTime,
+    dateRange,
+    showArchived,
+    showDrafts,
+  });
 
   // Use Archive Pattern for filtering, sorting, pagination (without tag filter)
   const archiveData = getArchiveData<Post>(
     {
-      items: postsWithAuthorFilter,
+      items: filteredPosts,
       searchFields: ['title', 'summary', 'body'],
       tagField: 'tags',
       dateField: 'publishedAt',

@@ -1,6 +1,65 @@
 import { NextResponse } from 'next/server';
 import { redis, getRedisEnvironment, getRedisKeyPrefix } from '@/mcp/shared/redis-client';
 
+// ---------------------------------------------------------------------------
+// Private helpers
+// ---------------------------------------------------------------------------
+
+function resolveUsingRedis(
+  environment: string,
+  hasProductionUrl: boolean,
+  hasProductionToken: boolean,
+  hasPreviewUrl: boolean,
+  hasPreviewToken: boolean
+): string {
+  if (environment === 'production') {
+    return hasProductionUrl && hasProductionToken ? 'production' : 'none';
+  }
+  if (hasPreviewUrl && hasPreviewToken) return 'preview';
+  if (hasProductionUrl && hasProductionToken) return 'production (fallback)';
+  return 'none';
+}
+
+async function checkRedisConnection(): Promise<{ connected: boolean; error: string | null }> {
+  try {
+    await redis.ping();
+    return { connected: true, error: null };
+  } catch (error) {
+    return { connected: false, error: error instanceof Error ? error.message : String(error) };
+  }
+}
+
+async function readGithubCache(cacheKey: string): Promise<{ status: string; data: object | null }> {
+  try {
+    const cached = await redis.get(cacheKey);
+    if (cached && typeof cached === 'string') {
+      const data = JSON.parse(cached) as {
+        totalContributions?: number;
+        lastUpdated?: string;
+        source?: string;
+      };
+      return {
+        status: 'found',
+        data: {
+          totalContributions: data.totalContributions,
+          lastUpdated: data.lastUpdated,
+          source: data.source,
+        },
+      };
+    }
+    return { status: `not-found (type: ${typeof cached})`, data: null };
+  } catch (error) {
+    return {
+      status: `error: ${error instanceof Error ? error.message : String(error)}`,
+      data: null,
+    };
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Route handler
+// ---------------------------------------------------------------------------
+
 /**
  * Verify Redis environment configuration
  *
@@ -16,60 +75,21 @@ export async function GET() {
   const hasPreviewUrl = !!process.env.UPSTASH_REDIS_REST_URL_PREVIEW;
   const hasPreviewToken = !!process.env.UPSTASH_REDIS_REST_TOKEN_PREVIEW;
 
-  // Determine which Redis is being used
-  let usingRedis = 'unknown';
-  if (environment === 'production') {
-    usingRedis = hasProductionUrl && hasProductionToken ? 'production' : 'none';
-  } else {
-    if (hasPreviewUrl && hasPreviewToken) {
-      usingRedis = 'preview';
-    } else if (hasProductionUrl && hasProductionToken) {
-      usingRedis = 'production (fallback)';
-    } else {
-      usingRedis = 'none';
-    }
-  }
+  const usingRedis = resolveUsingRedis(
+    environment, hasProductionUrl, hasProductionToken, hasPreviewUrl, hasPreviewToken
+  );
 
-  // Test Redis connection
-  let redisConnected = false;
-  let redisError = null;
+  const { connected: redisConnected, error: redisError } = await checkRedisConnection();
 
-  try {
-    await redis.ping();
-    redisConnected = true;
-  } catch (error) {
-    redisError = error instanceof Error ? error.message : String(error);
-  }
-
-  // Try to read GitHub cache
   const cacheKey = 'github:contributions:dcyfr';
-  let cacheStatus = 'not-checked';
-  let cacheData = null;
+  const { status: cacheStatus, data: cacheData } = redisConnected
+    ? await readGithubCache(cacheKey)
+    : { status: 'not-checked', data: null };
 
-  if (redisConnected) {
-    try {
-      const cached = await redis.get(cacheKey);
-      if (cached && typeof cached === 'string') {
-        const data = JSON.parse(cached);
-        cacheStatus = 'found';
-        cacheData = {
-          totalContributions: data.totalContributions,
-          lastUpdated: data.lastUpdated,
-          source: data.source,
-        };
-      } else {
-        cacheStatus = `not-found (type: ${typeof cached})`;
-      }
-    } catch (error) {
-      cacheStatus = `error: ${error instanceof Error ? error.message : String(error)}`;
-    }
-  }
-
-  // Determine if we need to show cache population help
   const isDevelopment = process.env.NODE_ENV === 'development';
   const needsCachePopulation = redisConnected && cacheStatus.includes('not-found');
 
-  const response: any = {
+  const response: Record<string, unknown> = {
     environment: {
       nodeEnv: process.env.NODE_ENV,
       vercelEnv: process.env.VERCEL_ENV,
@@ -103,7 +123,6 @@ export async function GET() {
     },
   };
 
-  // Add helpful actions if cache is empty in development
   if (isDevelopment && needsCachePopulation) {
     response.actions = {
       populateCache: {

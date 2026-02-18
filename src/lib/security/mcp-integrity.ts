@@ -179,76 +179,72 @@ mcpServerRegistry.register({
 // Integrity Verification
 // ============================================================================
 
+/** Check 1: Verify the responding server is registered and trusted */
+function checkServerTrusted(
+  response: MCPResponse,
+  errors: string[]
+): { server: ReturnType<typeof mcpServerRegistry.get>; trusted: boolean } {
+  const server = mcpServerRegistry.get(response.server);
+  if (!server || !server.trusted) {
+    errors.push(`Server "${response.server}" is not trusted`);
+    return { server, trusted: false };
+  }
+  return { server, trusted: true };
+}
+
+/** Check 2 + 3: Verify signature presence and validity */
+function checkSignature(
+  response: MCPResponse,
+  server: ReturnType<typeof mcpServerRegistry.get>,
+  errors: string[]
+): { signaturePresent: boolean; signatureValid: boolean } {
+  if (!response.signature) {
+    return { signaturePresent: false, signatureValid: true }; // optional, not enforced yet
+  }
+
+  if (!server?.sharedSecret) {
+    return { signaturePresent: true, signatureValid: true }; // no secret configured
+  }
+
+  const isValid = verifyHMACSignature(response, response.signature, server.sharedSecret);
+  if (isValid) {
+    mcpServerRegistry.updateLastVerified(response.server);
+  } else {
+    errors.push('Signature verification failed');
+  }
+  return { signaturePresent: true, signatureValid: isValid };
+}
+
+/** Check 4: Verify timestamp is within the acceptable 5-minute window */
+function checkTimestamp(response: MCPResponse, errors: string[]): boolean {
+  const responseTime = new Date(response.timestamp).getTime();
+  const timeDiff = Math.abs(Date.now() - responseTime);
+  if (timeDiff < 5 * 60 * 1000) return true;
+  errors.push(`Timestamp too old: ${timeDiff}ms`);
+  return false;
+}
+
+/** Check 5: Verify nonce has not been seen before (anti-replay) */
+function checkNonce(response: MCPResponse, errors: string[]): boolean {
+  if (!response.nonce) return true; // optional, not enforced yet
+  const nonceValid = mcpServerRegistry.recordNonce(response.nonce);
+  if (!nonceValid) errors.push('Duplicate nonce detected (replay attack)');
+  return nonceValid;
+}
+
 /**
  * Verify MCP response integrity
  */
 export function verifyMCPIntegrity(response: MCPResponse): MCPIntegrityResult {
   const errors: string[] = [];
-  const checks = {
-    serverTrusted: false,
-    signaturePresent: false,
-    signatureValid: false,
-    timestampValid: false,
-    nonceValid: false,
-  };
 
-  // Check 1: Server is trusted
-  const server = mcpServerRegistry.get(response.server);
-  if (!server || !server.trusted) {
-    errors.push(`Server "${response.server}" is not trusted`);
-  } else {
-    checks.serverTrusted = true;
-  }
+  const { server, trusted: serverTrusted } = checkServerTrusted(response, errors);
+  const { signaturePresent, signatureValid } = checkSignature(response, server, errors);
+  const timestampValid = checkTimestamp(response, errors);
+  const nonceValid = checkNonce(response, errors);
 
-  // Check 2: Signature present (optional for now)
-  if (response.signature) {
-    checks.signaturePresent = true;
-
-    // Check 3: Signature valid
-    if (server?.sharedSecret) {
-      const isValid = verifyHMACSignature(response, response.signature, server.sharedSecret);
-
-      if (isValid) {
-        checks.signatureValid = true;
-        mcpServerRegistry.updateLastVerified(response.server);
-      } else {
-        errors.push('Signature verification failed');
-      }
-    } else {
-      // No shared secret configured - skip signature verification
-      checks.signatureValid = true; // Pass (not enforced yet)
-    }
-  } else {
-    // Signature not present - currently optional
-    checks.signaturePresent = false;
-    checks.signatureValid = true; // Pass (not enforced yet)
-  }
-
-  // Check 4: Timestamp valid (within 5 minutes)
-  const responseTime = new Date(response.timestamp).getTime();
-  const now = Date.now();
-  const timeDiff = Math.abs(now - responseTime);
-
-  if (timeDiff < 5 * 60 * 1000) {
-    checks.timestampValid = true;
-  } else {
-    errors.push(`Timestamp too old: ${timeDiff}ms`);
-  }
-
-  // Check 5: Nonce valid (anti-replay)
-  if (response.nonce) {
-    const nonceValid = mcpServerRegistry.recordNonce(response.nonce);
-    if (nonceValid) {
-      checks.nonceValid = true;
-    } else {
-      errors.push('Duplicate nonce detected (replay attack)');
-    }
-  } else {
-    // Nonce not present - currently optional
-    checks.nonceValid = true;
-  }
-
-  const valid = errors.length === 0 && checks.serverTrusted;
+  const checks = { serverTrusted, signaturePresent, signatureValid, timestampValid, nonceValid };
+  const valid = errors.length === 0 && serverTrusted;
 
   return {
     valid,

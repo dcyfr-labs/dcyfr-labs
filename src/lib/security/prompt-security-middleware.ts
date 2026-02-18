@@ -71,70 +71,51 @@ export function withPromptSecurity(
   const cfg = { ...DEFAULT_CONFIG, ...config };
 
   return async (request: NextRequest): Promise<NextResponse> => {
-    // Skip if disabled
-    if (!cfg.enabled) {
-      return handler(request);
-    }
+    if (!cfg.enabled) return handler(request);
 
-    // Check bypass header (for internal services)
     const bypassToken = request.headers.get(cfg.bypassHeader);
-    if (bypassToken && isValidBypassToken(bypassToken)) {
-      return handler(request);
-    }
+    if (bypassToken && isValidBypassToken(bypassToken)) return handler(request);
+    if (isTrustedSource(request, cfg)) return handler(request);
 
-    // Check trusted sources
-    if (isTrustedSource(request, cfg)) {
-      return handler(request);
-    }
-
-    try {
-      // Extract text content from request
-      const textContent = await extractTextContent(request, cfg.scanFields);
-
-      if (!textContent || textContent.length === 0) {
-        // No text to scan, proceed
-        return handler(request);
-      }
-
-      // Scan for threats
-      const scanner = getPromptScanner();
-      const scanResults = await scanner.scanBatch(textContent, {
-        maxRiskScore: cfg.maxRiskScore,
-        cacheResults: true,
-      });
-
-      // Aggregate results
-      const aggregateResult = aggregateScanResults(scanResults);
-
-      // Determine if request should be blocked
-      const shouldBlock = determineBlocking(aggregateResult, cfg);
-
-      // Log threats if enabled
-      if (cfg.logThreats && aggregateResult.threats.length > 0) {
-        await logThreat(request, aggregateResult);
-      }
-
-      // Block if necessary
-      if (shouldBlock) {
-        return createBlockedResponse(aggregateResult);
-      }
-
-      // Attach scan context and proceed
-      const context: PromptSecurityContext = {
-        scanResult: aggregateResult,
-        blocked: false,
-      };
-
-      return handler(request, context);
-    } catch (error) {
-      console.error('[PromptSecurity] Middleware error:', error);
-
-      // Fail open (allow request) but log the error
-      await logError(request, error);
-
-      return handler(request);
-    }
+    return performPromptScan(request, cfg, handler);
   };
+}
+
+/**
+ * Perform the actual prompt scan and invoke handler with context.
+ * Extracted to reduce cognitive complexity of the middleware closure.
+ */
+async function performPromptScan(
+  request: NextRequest,
+  cfg: Required<PromptSecurityConfig>,
+  handler: NextHandler
+): Promise<NextResponse> {
+  try {
+    const textContent = await extractTextContent(request, cfg.scanFields);
+    if (!textContent || textContent.length === 0) return handler(request);
+
+    const scanner = getPromptScanner();
+    const scanResults = await scanner.scanBatch(textContent, {
+      maxRiskScore: cfg.maxRiskScore,
+      cacheResults: true,
+    });
+
+    const aggregateResult = aggregateScanResults(scanResults);
+    const shouldBlock = determineBlocking(aggregateResult, cfg);
+
+    if (cfg.logThreats && aggregateResult.threats.length > 0) {
+      await logThreat(request, aggregateResult);
+    }
+
+    if (shouldBlock) return createBlockedResponse(aggregateResult);
+
+    const context: PromptSecurityContext = { scanResult: aggregateResult, blocked: false };
+    return handler(request, context);
+  } catch (error) {
+    console.error('[PromptSecurity] Middleware error:', error);
+    await logError(request, error);
+    return handler(request);
+  }
 }
 
 // ============================================================================

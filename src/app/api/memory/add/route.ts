@@ -57,6 +57,33 @@ function validateAddMemoryBody(
   return { data: { userId, message, context } };
 }
 
+async function parseJsonBody(request: NextRequest): Promise<{ ok: true; body: unknown } | { ok: false; response: NextResponse }> {
+  try {
+    const body = await request.json();
+    return { ok: true, body };
+  } catch (error) {
+    return {
+      ok: false,
+      response: NextResponse.json(
+        { error: 'Invalid JSON in request body', message: error instanceof Error ? error.message : 'Unknown error' },
+        { status: 400 }
+      ),
+    };
+  }
+}
+
+async function storeMemory(userId: string, message: string, context: Record<string, unknown> | undefined, rateLimitHeaders: Record<string, string>): Promise<NextResponse> {
+  try {
+    const memory = getMemory();
+    const result = await memory.addUserMemory(userId, message, context);
+    console.log('Memory added:', { userId: userId.substring(0, 8) + '...', messageLength: message.length, hasContext: !!context, timestamp: new Date().toISOString() });
+    return NextResponse.json({ memoryId: result, stored: true }, { status: 200, headers: rateLimitHeaders });
+  } catch (memoryError) {
+    console.error('Failed to add memory:', memoryError instanceof Error ? memoryError.message : String(memoryError));
+    return NextResponse.json({ error: 'Failed to store memory. Please try again later.' }, { status: 500 });
+  }
+}
+
 export async function POST(request: NextRequest) {
   let rawBody: unknown = null;
 
@@ -89,17 +116,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    try {
-      rawBody = await request.json();
-    } catch (error) {
-      return NextResponse.json(
-        {
-          error: 'Invalid JSON in request body',
-          message: error instanceof Error ? error.message : 'Unknown error',
-        },
-        { status: 400 }
-      );
-    }
+    const parsed = await parseJsonBody(request);
+    if (!parsed.ok) return parsed.response;
+    rawBody = parsed.body;
 
     const validation = validateAddMemoryBody(rawBody, user.id);
     if ('error' in validation) {
@@ -107,31 +126,7 @@ export async function POST(request: NextRequest) {
     }
     const { userId, message, context } = validation.data;
 
-    try {
-      const memory = getMemory();
-      const result = await memory.addUserMemory(userId, message, context);
-
-      console.log('Memory added:', {
-        userId: userId.substring(0, 8) + '...',
-        messageLength: message.length,
-        hasContext: !!context,
-        timestamp: new Date().toISOString(),
-      });
-
-      return NextResponse.json(
-        { memoryId: result, stored: true },
-        { status: 200, headers: createRateLimitHeaders(rateLimitResult) }
-      );
-    } catch (memoryError) {
-      console.error(
-        'Failed to add memory:',
-        memoryError instanceof Error ? memoryError.message : String(memoryError)
-      );
-      return NextResponse.json(
-        { error: 'Failed to store memory. Please try again later.' },
-        { status: 500 }
-      );
-    }
+    return await storeMemory(userId, message, context, createRateLimitHeaders(rateLimitResult));
   } catch (error) {
     const body = rawBody && typeof rawBody === 'object' ? (rawBody as AddMemoryRequest) : null;
     const errorInfo = handleApiError(error, {

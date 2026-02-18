@@ -201,10 +201,6 @@ async function fetchCredlyBadges(): Promise<any[] | null> {
 
 /**
  * GET handler for Vercel Cron Jobs
- *
- * Vercel crons send GET requests. This handler authenticates via the
- * Authorization header (Vercel auto-injects CRON_SECRET) and delegates
- * to the shared population logic.
  */
 export async function GET(request: NextRequest) {
   return handlePopulateCache(request);
@@ -212,6 +208,51 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   return handlePopulateCache(request);
+}
+
+/** Populate the GitHub contributions Redis cache entry */
+async function populateGitHubCache(): Promise<PopulateResult> {
+  try {
+    const githubData = await fetchGitHubContributions();
+    if (!githubData) {
+      console.error('[Admin Cache] ❌ GitHub cache population failed');
+      return { success: false, message: 'Failed to fetch GitHub data', error: 'API request failed' };
+    }
+    const key = 'github:contributions:dcyfr';
+    await redis.set(key, JSON.stringify(githubData), { ex: CACHE_TTL });
+    console.warn(`[Admin Cache] GitHub data cached: ${key}`);
+    return { success: true, message: `Cached ${githubData.totalContributions} contributions`, key, count: githubData.totalContributions };
+  } catch (error) {
+    console.error('[Admin Cache] ❌ GitHub cache error:', error);
+    return { success: false, message: 'Exception during GitHub cache population', error: error instanceof Error ? error.message : 'Unknown error' };
+  }
+}
+
+/** Populate the Credly badge Redis cache entries (3 variants) */
+async function populateCredlyCache(): Promise<PopulateResult> {
+  try {
+    const allBadges = await fetchCredlyBadges();
+    if (!allBadges || !Array.isArray(allBadges)) {
+      console.error('[Admin Cache] ❌ Credly cache population failed');
+      return { success: false, message: 'Failed to fetch Credly data', error: 'API request failed' };
+    }
+    const credlyKeys: string[] = [];
+    const variants = [
+      { limit: null, key: 'all', badges: allBadges },
+      { limit: 10, key: '10', badges: allBadges.slice(0, 10) },
+      { limit: 3, key: '3', badges: allBadges.slice(0, 3) },
+    ];
+    for (const variant of variants) {
+      const redisKey = `credly:badges:dcyfr:${variant.key}`;
+      await redis.set(redisKey, JSON.stringify({ badges: variant.badges, total_count: variant.badges.length, count: variant.badges.length }), { ex: CACHE_TTL });
+      credlyKeys.push(redisKey);
+      console.warn(`[Admin Cache] Cached ${variant.key}: ${variant.badges.length} badges`);
+    }
+    return { success: true, message: `Cached ${credlyKeys.length}/3 badge variants (${allBadges.length} total badges)`, keys: credlyKeys, count: allBadges.length };
+  } catch (error) {
+    console.error('[Admin Cache] ❌ Credly cache error:', error);
+    return { success: false, message: 'Exception during Credly cache population', error: error instanceof Error ? error.message : 'Unknown error' };
+  }
 }
 
 async function handlePopulateCache(request: NextRequest) {
@@ -234,97 +275,12 @@ async function handlePopulateCache(request: NextRequest) {
     note: 'Keys auto-prefixed by Redis Proxy',
   });
 
-  const results: {
-    github?: PopulateResult;
-    credly?: PopulateResult;
-  } = {};
+  const [githubResult, credlyResult] = await Promise.all([
+    populateGitHubCache(),
+    populateCredlyCache(),
+  ]);
 
-  // 1. Populate GitHub data
-  try {
-    const githubData = await fetchGitHubContributions();
-
-    if (githubData) {
-      const key = 'github:contributions:dcyfr';
-      await redis.set(key, JSON.stringify(githubData), { ex: CACHE_TTL });
-
-      results.github = {
-        success: true,
-        message: `Cached ${githubData.totalContributions} contributions`,
-        key,
-        count: githubData.totalContributions,
-      };
-
-      console.warn(`[Admin Cache] GitHub data cached: ${key}`);
-    } else {
-      results.github = {
-        success: false,
-        message: 'Failed to fetch GitHub data',
-        error: 'API request failed',
-      };
-
-      console.error('[Admin Cache] ❌ GitHub cache population failed');
-    }
-  } catch (error) {
-    results.github = {
-      success: false,
-      message: 'Exception during GitHub cache population',
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-
-    console.error('[Admin Cache] ❌ GitHub cache error:', error);
-  }
-
-  // 2. Populate Credly data (all three variants)
-  try {
-    const allBadges = await fetchCredlyBadges();
-
-    if (allBadges && Array.isArray(allBadges)) {
-      const credlyKeys: string[] = [];
-      const variants = [
-        { limit: null, key: 'all', badges: allBadges },
-        { limit: 10, key: '10', badges: allBadges.slice(0, 10) },
-        { limit: 3, key: '3', badges: allBadges.slice(0, 3) },
-      ];
-
-      for (const variant of variants) {
-        const redisKey = `credly:badges:dcyfr:${variant.key}`;
-        const cacheData = {
-          badges: variant.badges,
-          total_count: variant.badges.length,
-          count: variant.badges.length,
-        };
-
-        await redis.set(redisKey, JSON.stringify(cacheData), { ex: CACHE_TTL });
-        credlyKeys.push(redisKey);
-
-        console.warn(`[Admin Cache] Cached ${variant.key}: ${variant.badges.length} badges`);
-      }
-
-      results.credly = {
-        success: true,
-        message: `Cached ${credlyKeys.length}/3 badge variants (${allBadges.length} total badges)`,
-        keys: credlyKeys,
-        count: allBadges.length,
-      };
-    } else {
-      results.credly = {
-        success: false,
-        message: 'Failed to fetch Credly data',
-        error: 'API request failed',
-      };
-
-      console.error('[Admin Cache] ❌ Credly cache population failed');
-    }
-  } catch (error) {
-    results.credly = {
-      success: false,
-      message: 'Exception during Credly cache population',
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-
-    console.error('[Admin Cache] ❌ Credly cache error:', error);
-  }
-
+  const results = { github: githubResult, credly: credlyResult };
   const overallSuccess = results.github?.success && results.credly?.success;
 
   console.warn('[Admin Cache] Summary:', {
