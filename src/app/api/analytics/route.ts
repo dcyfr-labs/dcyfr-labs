@@ -354,6 +354,14 @@ function buildAnalyticsSummary(postsWithViews: PostWithViews[]) {
 }
 
 
+async function fetchVercelDataFromRedis(): Promise<{
+  vercelData: {
+    topPages: unknown[];
+    topReferrers: unknown[];
+    topDevices: unknown[];
+  } | null;
+  vercelLastSynced: string | null;
+}> {
   try {
     const [vPages, vReferrers, vDevices, vSynced] = await Promise.all([
       redis.get('vercel:topPages:daily'),
