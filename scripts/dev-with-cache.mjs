@@ -41,6 +41,47 @@ const { values: flags } = parseArgs({
 const VERBOSE = flags.verbose || process.env.DEBUG_DEV === '1';
 const PORT = parseInt(process.env.PORT ?? '3000', 10);
 
+function logCacheSuccess(data, verbose) {
+  console.log(chalk.green('✅ Cache populated successfully!'));
+  console.log(chalk.dim('   - GitHub contributions: ') + (data.github ? chalk.green('✓') : chalk.red('✗')));
+  console.log(chalk.dim('   - Credly badges: ') + (data.credly ? chalk.green('✓') : chalk.red('✗')));
+  if (data.warning) console.warn(chalk.yellow(`   ⚠️  ${data.warning}`));
+  if (verbose && data.details) {
+    console.log(chalk.dim('   Details: ' + JSON.stringify(data.details, null, 2)));
+  }
+}
+
+async function handleBadCacheStatus(response, attempt, maxAttempts, retryDelayMs, verbose) {
+  if (attempt < maxAttempts) {
+    const text = await response.text();
+    console.warn(chalk.yellow(`⚠️  Cache population failed (${response.status}), retrying...`));
+    if (verbose) console.warn(chalk.dim(`   Response: ${text.slice(0, 200)}`));
+    await new Promise((r) => setTimeout(r, retryDelayMs));
+    return 'retry';
+  }
+  console.warn(chalk.yellow(`⚠️  Cache population failed after ${maxAttempts} attempts: ${response.status}`));
+  console.warn(chalk.yellow(`   Run manually: npm run populate:cache`));
+  return 'done';
+}
+
+async function fetchCacheEndpoint(port, attempt, maxAttempts, retryDelayMs, verbose) {
+  const response = await fetch(`http://localhost:${port}/api/dev/populate-cache`);
+  if (!response.ok) {
+    return handleBadCacheStatus(response, attempt, maxAttempts, retryDelayMs, verbose);
+  }
+  const data = await response.json();
+  logCacheSuccess(data, verbose);
+  return 'done';
+}
+
+function logCacheError(error, attempt, maxAttempts, verbose) {
+  if (attempt < maxAttempts) return 'retry';
+  console.warn(chalk.yellow('\n⚠️  Could not populate cache after all attempts.'));
+  if (verbose) console.warn(chalk.yellow(`   Error: ${error.message}`));
+  console.warn(chalk.yellow('   Run manually once server is ready: npm run populate:cache'));
+  return 'done';
+}
+
 async function populateCacheWithRetry(port, { verbose = false, maxAttempts = 3, retryDelayMs = 2000 } = {}) {
   console.log(chalk.blue('\n📦 Populating local cache...'));
 
@@ -50,69 +91,51 @@ async function populateCacheWithRetry(port, { verbose = false, maxAttempts = 3, 
     }
 
     try {
-      const response = await fetch(`http://localhost:${port}/api/dev/populate-cache`);
-
-      if (!response.ok) {
-        const text = await response.text();
-        if (attempt < maxAttempts) {
-          console.warn(chalk.yellow(`⚠️  Cache population failed (${response.status}), retrying...`));
-          if (verbose) console.warn(chalk.dim(`   Response: ${text.slice(0, 200)}`));
-          await new Promise((r) => setTimeout(r, retryDelayMs));
-          continue;
-        }
-        console.warn(chalk.yellow(`⚠️  Cache population failed after ${maxAttempts} attempts: ${response.status}`));
-        console.warn(chalk.yellow(`   Run manually: npm run populate:cache`));
-        return;
-      }
-
-      const data = await response.json();
-      console.log(chalk.green('✅ Cache populated successfully!'));
-      console.log(chalk.dim('   - GitHub contributions: ') + (data.github ? chalk.green('✓') : chalk.red('✗')));
-      console.log(chalk.dim('   - Credly badges: ') + (data.credly ? chalk.green('✓') : chalk.red('✗')));
-      if (data.warning) console.warn(chalk.yellow(`   ⚠️  ${data.warning}`));
-      if (verbose && data.details) {
-        console.log(chalk.dim('   Details: ' + JSON.stringify(data.details, null, 2)));
-      }
-      return;
+      const state = await fetchCacheEndpoint(port, attempt, maxAttempts, retryDelayMs, verbose);
+      if (state === 'done') return;
+      // state === 'retry' → loop continues
     } catch (error) {
-      if (attempt < maxAttempts) {
-        if (verbose) console.warn(chalk.dim(`  Cache fetch error (attempt ${attempt}): ${error.message}`));
-        await new Promise((r) => setTimeout(r, retryDelayMs));
-        continue;
-      }
-      console.warn(chalk.yellow('\n⚠️  Could not populate cache after all attempts.'));
-      if (verbose) console.warn(chalk.yellow(`   Error: ${error.message}`));
-      console.warn(chalk.yellow('   Run manually once server is ready: npm run populate:cache'));
+      const state = logCacheError(error, attempt, maxAttempts, verbose);
+      if (state === 'done') return;
+      await new Promise((r) => setTimeout(r, retryDelayMs));
     }
   }
+}
+
+async function autoKillPort(port, pids) {
+  const result = await killPort(port);
+  if (result.killed.length > 0) {
+    console.log(chalk.green(`Killed PID(s): ${result.killed.join(', ')}`));
+    await new Promise((r) => setTimeout(r, 300));
+  } else if (pids.length > 0) {
+    console.error(chalk.red(`Could not kill process(es) on port ${port}.`));
+    if (result.errors.length > 0) console.error(result.errors.join('\n'));
+    process.exit(1);
+  }
+}
+
+function showManualExitOptions(port) {
+  if (!process.stdin.isTTY) {
+    console.error(chalk.red(`\n❌ Port ${port} is in use and running non-interactively.`));
+    console.error(chalk.yellow(`   Use: npm run dev:fresh  (auto-kills port first)`));
+    console.error(chalk.yellow(`   Or:  PORT=3001 npm run dev  (use a different port)`));
+  } else {
+    console.log(chalk.yellow('\nExiting. Options:'));
+    console.log(chalk.dim('  npm run dev:fresh       — auto-kill port then start'));
+    console.log(chalk.dim('  PORT=3001 npm run dev   — use a different port'));
+  }
+  process.exit(0);
 }
 
 async function handlePortConflict(port, flags, pids) {
   if (flags['kill-port']) {
     const pidDesc = pids.length > 0 ? `PID(s): ${pids.join(', ')}` : 'unknown PID';
     console.log(chalk.yellow(`Port ${port} is in use (${pidDesc}). Killing automatically...`));
-    const result = await killPort(port);
-    if (result.killed.length > 0) {
-      console.log(chalk.green(`Killed PID(s): ${result.killed.join(', ')}`));
-      await new Promise((r) => setTimeout(r, 300));
-    } else if (pids.length > 0) {
-      console.error(chalk.red(`Could not kill process(es) on port ${port}.`));
-      if (result.errors.length > 0) console.error(result.errors.join('\n'));
-      process.exit(1);
-    }
+    await autoKillPort(port, pids);
   } else {
     const shouldKill = await promptKillPort(port, pids);
     if (!shouldKill) {
-      if (!process.stdin.isTTY) {
-        console.error(chalk.red(`\n❌ Port ${port} is in use and running non-interactively.`));
-        console.error(chalk.yellow(`   Use: npm run dev:fresh  (auto-kills port first)`));
-        console.error(chalk.yellow(`   Or:  PORT=3001 npm run dev  (use a different port)`));
-      } else {
-        console.log(chalk.yellow('\nExiting. Options:'));
-        console.log(chalk.dim('  npm run dev:fresh       — auto-kill port then start'));
-        console.log(chalk.dim('  PORT=3001 npm run dev   — use a different port'));
-      }
-      process.exit(0);
+      showManualExitOptions(port);
     }
     const result = await killPort(port);
     if (result.killed.length === 0 && pids.length > 0) {

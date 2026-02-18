@@ -76,58 +76,18 @@ function getSlugToIdMapping() {
   return mapping;
 }
 
-async function main() {
-  console.log('🔄 Reverting view consolidation - moving back to ID-based keys\n');
-  console.log('━'.repeat(80));
-
-  const slugToId = getSlugToIdMapping();
-
-  // Step 1: Find all slug-based view counters
-  console.log('\n📊 Step 1: Finding slug-based view counters...\n');
-  const counterPattern = 'views:post:*';
-  const allCounterKeys = [];
+async function scanKeyPattern(redisClient, pattern) {
+  const keys = [];
   let cursor = 0;
-
   do {
-    const result = await redis.scan(cursor, { match: counterPattern, count: 100 });
+    const result = await redisClient.scan(cursor, { match: pattern, count: 100 });
     cursor = result[0];
-    allCounterKeys.push(...result[1]);
+    keys.push(...result[1]);
   } while (cursor !== 0);
+  return keys;
+}
 
-  console.log(`Found ${allCounterKeys.length} view counter keys`);
-
-  // Filter to slug-based keys (not already ID-based)
-  const slugBasedCounters = allCounterKeys.filter((key) => {
-    const identifier = key.replace('views:post:', '');
-    return !identifier.startsWith('post-'); // Not an ID
-  });
-
-  console.log(`  └─ ${slugBasedCounters.length} are slug-based (need migration)`);
-  console.log(`  └─ ${allCounterKeys.length - slugBasedCounters.length} are already ID-based ✓`);
-
-  // Step 2: Find all slug-based view history
-  console.log('\n📚 Step 2: Finding slug-based view history...\n');
-  const historyPattern = 'views:history:post:*';
-  const allHistoryKeys = [];
-  cursor = 0;
-
-  do {
-    const result = await redis.scan(cursor, { match: historyPattern, count: 100 });
-    cursor = result[0];
-    allHistoryKeys.push(...result[1]);
-  } while (cursor !== 0);
-
-  console.log(`Found ${allHistoryKeys.length} view history keys`);
-
-  const slugBasedHistory = allHistoryKeys.filter((key) => {
-    const identifier = key.replace('views:history:post:', '');
-    return !identifier.startsWith('post-');
-  });
-
-  console.log(`  └─ ${slugBasedHistory.length} are slug-based (need migration)`);
-  console.log(`  └─ ${allHistoryKeys.length - slugBasedHistory.length} are already ID-based ✓`);
-
-  // Step 3: Migrate counters
+async function migrateCounters(redisClient, slugBasedCounters, slugToId) {
   console.log('\n🔄 Step 3: Migrating view counters...\n');
   const counterMigrations = [];
 
@@ -140,7 +100,7 @@ async function main() {
       continue;
     }
 
-    const views = await redis.get(slugKey);
+    const views = await redisClient.get(slugKey);
     const viewCount = parseInt(views || '0');
 
     if (viewCount === 0) {
@@ -149,28 +109,25 @@ async function main() {
     }
 
     const idKey = `views:post:${postId}`;
-
-    // Check if ID-based key already exists
-    const existingViews = await redis.get(idKey);
+    const existingViews = await redisClient.get(idKey);
     const existingCount = parseInt(existingViews || '0');
 
     if (existingCount > 0) {
-      // Merge: add slug-based views to existing ID-based views
       const totalViews = existingCount + viewCount;
-      await redis.set(idKey, totalViews);
-      console.log(
-        `  ✅ Merged ${slug} (${viewCount}) + ${postId} (${existingCount}) = ${totalViews} views`
-      );
+      await redisClient.set(idKey, totalViews);
+      console.log(`  ✅ Merged ${slug} (${viewCount}) + ${postId} (${existingCount}) = ${totalViews} views`);
       counterMigrations.push({ slug, postId, action: 'merged', views: totalViews });
     } else {
-      // Move: create new ID-based key with slug views
-      await redis.set(idKey, viewCount);
+      await redisClient.set(idKey, viewCount);
       console.log(`  ✅ Moved ${slug} → ${postId} (${viewCount} views)`);
       counterMigrations.push({ slug, postId, action: 'moved', views: viewCount });
     }
   }
 
-  // Step 4: Migrate history
+  return counterMigrations;
+}
+
+async function migrateHistory(redisClient, slugBasedHistory, slugToId) {
   console.log('\n📚 Step 4: Migrating view history...\n');
   const historyMigrations = [];
 
@@ -183,7 +140,7 @@ async function main() {
       continue;
     }
 
-    const history = await redis.zrange(slugKey, 0, -1, { withScores: true });
+    const history = await redisClient.zrange(slugKey, 0, -1, { withScores: true });
 
     if (!history || history.length === 0) {
       console.log(`  ⏩ Skipping ${slug} (no history)`);
@@ -192,16 +149,11 @@ async function main() {
 
     const idKey = `views:history:post:${postId}`;
     const eventCount = history.length / 2;
-
-    // Check if ID-based history already exists
-    const existingHistory = await redis.zrange(idKey, 0, -1);
+    const existingHistory = await redisClient.zrange(idKey, 0, -1);
 
     if (existingHistory && existingHistory.length > 0) {
-      // Merge: add slug-based history to existing ID-based history
       for (let i = 0; i < history.length; i += 2) {
-        const member = history[i];
-        const score = history[i + 1];
-        await redis.zadd(idKey, { score, member });
+        await redisClient.zadd(idKey, { score: history[i + 1], member: history[i] });
       }
       const totalEvents = existingHistory.length + eventCount;
       console.log(
@@ -209,31 +161,30 @@ async function main() {
       );
       historyMigrations.push({ slug, postId, action: 'merged', events: totalEvents });
     } else {
-      // Move: create new ID-based history with slug events
       for (let i = 0; i < history.length; i += 2) {
-        const member = history[i];
-        const score = history[i + 1];
-        await redis.zadd(idKey, { score, member });
+        await redisClient.zadd(idKey, { score: history[i + 1], member: history[i] });
       }
       console.log(`  ✅ Moved ${slug} → ${postId} (${eventCount} events)`);
       historyMigrations.push({ slug, postId, action: 'moved', events: eventCount });
     }
   }
 
-  // Step 5: Validate migration
+  return historyMigrations;
+}
+
+async function validateAndGetTotals(redisClient, counterMigrations, historyMigrations) {
   console.log('\n✅ Step 5: Validating migration...\n');
 
   let totalViews = 0;
   let totalEvents = 0;
 
   for (const { postId } of counterMigrations) {
-    const views = await redis.get(`views:post:${postId}`);
-    const viewCount = parseInt(views || '0');
-    totalViews += viewCount;
+    const views = await redisClient.get(`views:post:${postId}`);
+    totalViews += parseInt(views || '0');
   }
 
   for (const { postId } of historyMigrations) {
-    const history = await redis.zrange(`views:history:post:${postId}`, 0, -1);
+    const history = await redisClient.zrange(`views:history:post:${postId}`, 0, -1);
     totalEvents += history.length;
   }
 
@@ -242,9 +193,44 @@ async function main() {
   console.log(`  Total views in ID-based counters: ${totalViews}`);
   console.log(`  Total events in ID-based history: ${totalEvents}`);
 
+  return { totalViews, totalEvents };
+}
+
+async function main() {
+  console.log('🔄 Reverting view consolidation - moving back to ID-based keys\n');
+  console.log('━'.repeat(80));
+
+  const slugToId = getSlugToIdMapping();
+
+  // Step 1: Find all slug-based view counters
+  console.log('\n📊 Step 1: Finding slug-based view counters...\n');
+  const allCounterKeys = await scanKeyPattern(redis, 'views:post:*');
+  const slugBasedCounters = allCounterKeys.filter(
+    (key) => !key.replace('views:post:', '').startsWith('post-')
+  );
+  console.log(`Found ${allCounterKeys.length} view counter keys`);
+  console.log(`  └─ ${slugBasedCounters.length} are slug-based (need migration)`);
+  console.log(`  └─ ${allCounterKeys.length - slugBasedCounters.length} are already ID-based ✓`);
+
+  // Step 2: Find all slug-based view history
+  console.log('\n📚 Step 2: Finding slug-based view history...\n');
+  const allHistoryKeys = await scanKeyPattern(redis, 'views:history:post:*');
+  const slugBasedHistory = allHistoryKeys.filter(
+    (key) => !key.replace('views:history:post:', '').startsWith('post-')
+  );
+  console.log(`Found ${allHistoryKeys.length} view history keys`);
+  console.log(`  └─ ${slugBasedHistory.length} are slug-based (need migration)`);
+  console.log(`  └─ ${allHistoryKeys.length - slugBasedHistory.length} are already ID-based ✓`);
+
+  // Steps 3 & 4: Migrate
+  const counterMigrations = await migrateCounters(redis, slugBasedCounters, slugToId);
+  const historyMigrations = await migrateHistory(redis, slugBasedHistory, slugToId);
+
+  // Step 5: Validate
+  const { totalViews, totalEvents } = await validateAndGetTotals(redis, counterMigrations, historyMigrations);
+
   // Step 6: Cleanup slug-based keys
   console.log('\n🧹 Step 6: Cleaning up slug-based keys...\n');
-
   const keysToDelete = [...slugBasedCounters, ...slugBasedHistory];
 
   if (keysToDelete.length > 0) {

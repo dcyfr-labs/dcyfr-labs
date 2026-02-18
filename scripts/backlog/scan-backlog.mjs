@@ -29,6 +29,27 @@ if (!fs.existsSync(backlogDir)) {
 }
 
 /**
+ * Parse effort string into hours
+ */
+function parseEffortHours(effortStr) {
+  if (!effortStr) return 0;
+  const num = parseFloat(effortStr) || 0;
+  if (effortStr.match(/w|weeks?/i)) return num * 40;
+  return num;
+}
+
+/**
+ * Estimate priority and impact from task title
+ */
+function estimatePriorityAndImpact(title) {
+  if (title.match(/quick|easy|simple/i)) return { priority: 'high', impact: 6 };
+  if (title.match(/infrastructure|deployment|critical|high|urgent/i)) return { priority: 'high', impact: 8 };
+  if (title.match(/future|enhancement|backlog|defer/i)) return { priority: 'low', impact: 3 };
+  if (title.match(/test|fix|debt|refactor/i)) return { priority: 'medium', impact: 5 };
+  return { priority: 'medium', impact: 5 };
+}
+
+/**
  * Parse todo.md and extract structured tasks
  */
 function scanTodoMarkdown() {
@@ -66,38 +87,10 @@ function scanTodoMarkdown() {
       }
 
       const completed = checkboxMatch[1].toLowerCase() === "x";
-      let title = checkboxMatch[2].trim();
-      let effortStr = checkboxMatch[4] || "0h";
-
-      // Parse effort - handle "h", "hours", "w", "weeks" (supports decimals like 1.5h)
-      let effortHours = 0;
-      if (effortStr) {
-        const num = parseFloat(effortStr) || 0;
-        if (effortStr.match(/w|weeks?/i)) {
-          effortHours = num * 40; // 1 week = 40 hours
-        } else {
-          effortHours = num;
-        }
-      }
-
-      // Estimate priority and impact from title
-      let priority = "medium";
-      let impact = 5;
-      if (title.match(/quick|easy|simple/i)) {
-        priority = "high";
-        impact = 6;
-      } else if (
-        title.match(/infrastructure|deployment|critical|high|urgent/i)
-      ) {
-        priority = "high";
-        impact = 8;
-      } else if (title.match(/future|enhancement|backlog|defer/i)) {
-        priority = "low";
-        impact = 3;
-      } else if (title.match(/test|fix|debt|refactor/i)) {
-        priority = "medium";
-        impact = 5;
-      }
+      const title = checkboxMatch[2].trim();
+      const effortStr = checkboxMatch[4] || "0h";
+      const effortHours = parseEffortHours(effortStr);
+      const { priority, impact } = estimatePriorityAndImpact(title);
 
       currentTask = {
         id: `todo-${Math.random().toString(36).substr(2, 9)}`,

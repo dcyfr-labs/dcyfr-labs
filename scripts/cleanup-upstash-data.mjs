@@ -19,6 +19,84 @@ config({ path: resolve(__dirname, '../.env.local') });
 
 import { redis } from '../src/mcp/shared/redis-client.ts';
 
+function printSampleKeys(malformed, hanging) {
+  if (malformed.length > 0) {
+    console.log('Malformed:');
+    for (const key of malformed.slice(0, 5)) {
+      console.log(`  ❌ ${key}`);
+    }
+    if (malformed.length > 5) console.log(`  ... and ${malformed.length - 5} more`);
+    console.log('');
+  }
+
+  if (hanging.length > 0) {
+    console.log('Hanging references:');
+    for (const key of hanging.slice(0, 5)) {
+      console.log(`  ❌ ${key}`);
+    }
+    if (hanging.length > 5) console.log(`  ... and ${hanging.length - 5} more`);
+    console.log('');
+  }
+}
+
+function abortIfProtectedKeysDetected(keysToDelete) {
+  const finalProtectedCheck = keysToDelete.filter(
+    (key) => key.startsWith('likes:') || key.startsWith('bookmarks:')
+  );
+
+  if (finalProtectedCheck.length > 0) {
+    console.error('❌ SAFETY ERROR: Protected keys detected in deletion list!');
+    console.error('   Keys:', finalProtectedCheck);
+    console.error('   ABORTING cleanup to prevent data loss.\n');
+    process.exit(1);
+  }
+}
+
+async function performKeyDeletion(redisClient, keysToDelete) {
+  let deleted = 0;
+  let failed = 0;
+  const errors = [];
+
+  for (let i = 0; i < keysToDelete.length; i++) {
+    const key = keysToDelete[i];
+
+    try {
+      await redisClient.del(key);
+      deleted++;
+
+      if ((i + 1) % 10 === 0) {
+        console.log(`  Progress: ${i + 1}/${keysToDelete.length} keys processed...`);
+      }
+    } catch (error) {
+      failed++;
+      errors.push({ key, error: error.message });
+      console.error(`  ❌ Failed to delete: ${key}`);
+    }
+  }
+
+  return { deleted, failed, errors };
+}
+
+async function verifyProtectedCounts(redisClient, currentLikes, currentBookmarks) {
+  const likesCountAfter = await redisClient.scan('0', { match: 'likes:*', count: 200 });
+  const bookmarksCountAfter = await redisClient.scan('0', { match: 'bookmarks:*', count: 200 });
+  const afterLikes = likesCountAfter[1].length;
+  const afterBookmarks = bookmarksCountAfter[1].length;
+
+  console.log(`\n🛡️  PROTECTED DATA VERIFICATION:`);
+  console.log(
+    `  Likes before: ${currentLikes} → after: ${afterLikes} ${currentLikes === afterLikes ? '✅ UNCHANGED' : '❌ CHANGED'}`
+  );
+  console.log(
+    `  Bookmarks before: ${currentBookmarks} → after: ${afterBookmarks} ${currentBookmarks === afterBookmarks ? '✅ UNCHANGED' : '❌ CHANGED'}`
+  );
+
+  if (currentLikes !== afterLikes || currentBookmarks !== afterBookmarks) {
+    console.error('\n⚠️  WARNING: Likes or bookmarks count changed!');
+    console.error('   This should not happen. Please investigate.\n');
+  }
+}
+
 async function main() {
   console.log('🧹 Upstash Cleanup Execution\n');
 
@@ -87,40 +165,14 @@ async function main() {
   // Show sample keys
   console.log('🔍 SAMPLE KEYS TO BE DELETED:');
   console.log('-'.repeat(80));
-
-  if (malformed.length > 0) {
-    console.log('Malformed:');
-    for (const key of malformed.slice(0, 5)) {
-      console.log(`  ❌ ${key}`);
-    }
-    if (malformed.length > 5) console.log(`  ... and ${malformed.length - 5} more`);
-    console.log('');
-  }
-
-  if (hanging.length > 0) {
-    console.log('Hanging references:');
-    for (const key of hanging.slice(0, 5)) {
-      console.log(`  ❌ ${key}`);
-    }
-    if (hanging.length > 5) console.log(`  ... and ${hanging.length - 5} more`);
-    console.log('');
-  }
+  printSampleKeys(malformed, hanging);
 
   // Confirmation
   const includeStale = process.argv.includes('--include-stale');
   const keysToDelete = includeStale ? [...immediateCleanup, ...safeStale] : immediateCleanup;
 
   // FINAL SAFETY CHECK: Double-check no protected keys made it through
-  const finalProtectedCheck = keysToDelete.filter(
-    (key) => key.startsWith('likes:') || key.startsWith('bookmarks:')
-  );
-
-  if (finalProtectedCheck.length > 0) {
-    console.error('❌ SAFETY ERROR: Protected keys detected in deletion list!');
-    console.error('   Keys:', finalProtectedCheck);
-    console.error('   ABORTING cleanup to prevent data loss.\n');
-    process.exit(1);
-  }
+  abortIfProtectedKeysDetected(keysToDelete);
 
   if (includeStale) {
     console.log('⚠️  INCLUDING STALE KEYS in cleanup (--include-stale flag detected)');
@@ -145,27 +197,7 @@ async function main() {
 
   // Execute deletion
   console.log('🗑️  Deleting keys...\n');
-
-  let deleted = 0;
-  let failed = 0;
-  const errors = [];
-
-  for (let i = 0; i < keysToDelete.length; i++) {
-    const key = keysToDelete[i];
-
-    try {
-      await redis.del(key);
-      deleted++;
-
-      if ((i + 1) % 10 === 0) {
-        console.log(`  Progress: ${i + 1}/${keysToDelete.length} keys processed...`);
-      }
-    } catch (error) {
-      failed++;
-      errors.push({ key, error: error.message });
-      console.error(`  ❌ Failed to delete: ${key}`);
-    }
-  }
+  const { deleted, failed, errors } = await performKeyDeletion(redis, keysToDelete);
 
   // Summary
   console.log('\n' + '='.repeat(80));
@@ -190,23 +222,7 @@ async function main() {
   console.log(`  Remaining keys in database: ${remainingKeys}`);
 
   // Post-cleanup verification: Verify likes and bookmarks unchanged
-  const likesCountAfter = await redis.scan('0', { match: 'likes:*', count: 200 });
-  const bookmarksCountAfter = await redis.scan('0', { match: 'bookmarks:*', count: 200 });
-  const afterLikes = likesCountAfter[1].length;
-  const afterBookmarks = bookmarksCountAfter[1].length;
-
-  console.log(`\n🛡️  PROTECTED DATA VERIFICATION:`);
-  console.log(
-    `  Likes before: ${currentLikes} → after: ${afterLikes} ${currentLikes === afterLikes ? '✅ UNCHANGED' : '❌ CHANGED'}`
-  );
-  console.log(
-    `  Bookmarks before: ${currentBookmarks} → after: ${afterBookmarks} ${currentBookmarks === afterBookmarks ? '✅ UNCHANGED' : '❌ CHANGED'}`
-  );
-
-  if (currentLikes !== afterLikes || currentBookmarks !== afterBookmarks) {
-    console.error('\n⚠️  WARNING: Likes or bookmarks count changed!');
-    console.error('   This should not happen. Please investigate.\n');
-  }
+  await verifyProtectedCounts(redis, currentLikes, currentBookmarks);
 
   console.log('💡 NEXT STEPS:');
   console.log('-'.repeat(80));
