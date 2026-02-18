@@ -459,6 +459,42 @@ function calculateVariance(values: number[]): number {
 // RECOMMENDATIONS
 // ============================================================================
 
+/** Return an overall budget recommendation message or null */
+function getBudgetRecommendation(percentUsed: number, totalCost: number, totalBudget: number): string | null {
+  if (percentUsed > 90) {
+    return `🚨 CRITICAL: Total cost at ${percentUsed.toFixed(1)}% of budget ($${totalCost.toFixed(2)}/$${totalBudget})`;
+  }
+  if (percentUsed > 70) {
+    return `⚠️  WARNING: Total cost at ${percentUsed.toFixed(1)}% of budget ($${totalCost.toFixed(2)}/$${totalBudget})`;
+  }
+  return null;
+}
+
+/** Return service-specific recommendation messages */
+function getServiceRecommendations(
+  service: string,
+  usage: { totalRequests: number; daysActive: number },
+  cost: { withinBudget: boolean; estimatedCost: number }
+): string[] {
+  const msgs: string[] = [];
+  if (!cost.withinBudget) {
+    msgs.push(`❌ ${PRICING[service as keyof typeof PRICING].name}: Over budget ($${cost.estimatedCost.toFixed(2)} vs $${BUDGET[service as keyof typeof BUDGET]})`);
+  }
+  if (service === 'perplexity' && cost.estimatedCost > 30) {
+    msgs.push(`💡 Consider implementing more aggressive caching for Perplexity API calls (current: $${cost.estimatedCost.toFixed(2)}/month)`);
+  }
+  if (service === 'resend' && usage.totalRequests > 2500) {
+    msgs.push(`📧 Approaching Resend free tier limit (${usage.totalRequests}/3000) - consider email consolidation or upgrade`);
+  }
+  if (service === 'redis' && usage.totalRequests > 8000 * usage.daysActive) {
+    msgs.push(`💾 High Redis usage detected - review caching strategies and TTL settings`);
+  }
+  if (service === 'sentry' && usage.totalRequests > 4000) {
+    msgs.push(`🔍 Consider filtering Sentry events or adjusting sample rates (current: ${usage.totalRequests} events)`);
+  }
+  return msgs;
+}
+
 /**
  * Generate cost optimization recommendations
  */
@@ -466,52 +502,11 @@ export async function generateCostRecommendations(month?: string): Promise<strin
   const monthlyCost = await calculateMonthlyCost(month);
   const recommendations: string[] = [];
 
-  // Check overall budget
-  if (monthlyCost.percentUsed > 90) {
-    recommendations.push(
-      `🚨 CRITICAL: Total cost at ${monthlyCost.percentUsed.toFixed(1)}% of budget ($${monthlyCost.totalCost.toFixed(2)}/$${monthlyCost.totalBudget})`
-    );
-  } else if (monthlyCost.percentUsed > 70) {
-    recommendations.push(
-      `⚠️  WARNING: Total cost at ${monthlyCost.percentUsed.toFixed(1)}% of budget ($${monthlyCost.totalCost.toFixed(2)}/$${monthlyCost.totalBudget})`
-    );
-  }
+  const budgetRec = getBudgetRecommendation(monthlyCost.percentUsed, monthlyCost.totalCost, monthlyCost.totalBudget);
+  if (budgetRec) recommendations.push(budgetRec);
 
-  // Service-specific recommendations
   for (const { service, usage, cost } of monthlyCost.services) {
-    if (!cost.withinBudget) {
-      recommendations.push(
-        `❌ ${PRICING[service as keyof typeof PRICING].name}: Over budget ($${cost.estimatedCost.toFixed(2)} vs $${BUDGET[service as keyof typeof BUDGET]})`
-      );
-    }
-
-    // Perplexity-specific
-    if (service === 'perplexity' && cost.estimatedCost > 30) {
-      recommendations.push(
-        `💡 Consider implementing more aggressive caching for Perplexity API calls (current: $${cost.estimatedCost.toFixed(2)}/month)`
-      );
-    }
-
-    // Resend-specific
-    if (service === 'resend' && usage.totalRequests > 2500) {
-      recommendations.push(
-        `📧 Approaching Resend free tier limit (${usage.totalRequests}/3000) - consider email consolidation or upgrade`
-      );
-    }
-
-    // Redis-specific
-    if (service === 'redis' && usage.totalRequests > 8000 * usage.daysActive) {
-      recommendations.push(
-        `💾 High Redis usage detected - review caching strategies and TTL settings`
-      );
-    }
-
-    // Sentry-specific
-    if (service === 'sentry' && usage.totalRequests > 4000) {
-      recommendations.push(
-        `🔍 Consider filtering Sentry events or adjusting sample rates (current: ${usage.totalRequests} events)`
-      );
-    }
+    recommendations.push(...getServiceRecommendations(service, usage, cost));
   }
 
   if (recommendations.length === 0) {

@@ -43,6 +43,16 @@ const getReadingTimeLabel = (value: string) => {
   }
 };
 
+/** Build tag param value when removing a specific tag */
+function buildTagParam(selectedTags: string[], removeType: string, tagToRemove?: string): string {
+  if (removeType !== "tag" && selectedTags.length > 0) return selectedTags.join(",");
+  if (removeType === "tag" && tagToRemove) {
+    const remaining = selectedTags.filter((t) => t !== tagToRemove);
+    return remaining.join(",");
+  }
+  return "";
+}
+
 export function ActiveFilters({ selectedTags = [], query, readingTime }: ActiveFiltersProps) {
   const hasFilters = Boolean(selectedTags.length > 0 || query || readingTime);
   
@@ -52,16 +62,8 @@ export function ActiveFilters({ selectedTags = [], query, readingTime }: ActiveF
     const params = new URLSearchParams();
     
     if (removeType !== "all") {
-      // Keep other filters when removing one
-      if (selectedTags.length > 0 && removeType !== "tag") {
-        params.set("tag", selectedTags.join(","));
-      } else if (removeType === "tag" && tagToRemove) {
-        // Remove specific tag
-        const remainingTags = selectedTags.filter((t) => t !== tagToRemove);
-        if (remainingTags.length > 0) {
-          params.set("tag", remainingTags.join(","));
-        }
-      }
+      const tagParam = buildTagParam(selectedTags, removeType, tagToRemove);
+      if (tagParam) params.set("tag", tagParam);
       if (query && removeType !== "query") params.set("q", query);
       if (readingTime && removeType !== "readingTime") params.set("readingTime", readingTime);
     }

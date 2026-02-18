@@ -59,6 +59,33 @@ function stripMarkdown(text: string): string {
     .trim();
 }
 
+/** Update collapsible component tracking depth based on line content */
+function updateCollapsibleDepth(trimmedLine: string, depth: number): number {
+  const openingTags = (trimmedLine.match(/^<\w+[^>]*(?<!\/)/g) ?? []).length;
+  const closingTags = (trimmedLine.match(/^<\/\w+>/g) ?? []).length;
+  const selfClosingTags = (trimmedLine.match(/\/>/g) ?? []).length;
+  return depth + openingTags - closingTags - selfClosingTags;
+}
+
+/** Check if a line opens a collapsible component */
+const COLLAPSIBLE_PATTERNS = [
+  /^<RiskAccordion/,
+  /^<RiskAccordionGroup/,
+  /^<CollapsibleSection/,
+  /^<Footnotes/,
+];
+
+function isCollapsibleOpening(trimmedLine: string): boolean {
+  return COLLAPSIBLE_PATTERNS.some((p) => p.test(trimmedLine));
+}
+
+/** Build a unique heading ID, appending counter for duplicates */
+function buildUniqueId(rawId: string, idCounts: Map<string, number>): string {
+  const count = (idCounts.get(rawId) ?? 0) + 1;
+  idCounts.set(rawId, count);
+  return count > 1 ? `${rawId}-${count - 1}` : rawId;
+}
+
 /**
  * Extract headings from MDX content for table of contents
  * Matches h2 and h3 headings (## and ###)
@@ -72,49 +99,24 @@ export function extractHeadings(content: string): TocHeading[] {
   let inCodeBlock = false;
   let inCollapsibleComponent = false;
   let collapsibleComponentDepth = 0;
-  const idCounts = new Map<string, number>(); // Track duplicate IDs
-
-  // Regex patterns for collapsed components
-  const collapsibleComponentPatterns = [
-    /^<RiskAccordion/,
-    /^<RiskAccordionGroup/,
-    /^<CollapsibleSection/,
-    /^<Footnotes/,
-  ];
+  const idCounts = new Map<string, number>();
 
   for (const line of lines) {
     const trimmedLine = line.trim();
 
-    // Toggle code block state when encountering triple backticks
     if (trimmedLine.startsWith('```')) {
       inCodeBlock = !inCodeBlock;
       continue;
     }
+    if (inCodeBlock) continue;
 
-    // Skip headings inside code blocks
-    if (inCodeBlock) {
-      continue;
-    }
-
-    // Track when we enter/exit collapsed components
-    // Check for opening tags
     if (!inCollapsibleComponent) {
-      for (const pattern of collapsibleComponentPatterns) {
-        if (pattern.test(trimmedLine)) {
-          inCollapsibleComponent = true;
-          collapsibleComponentDepth = 1;
-          break;
-        }
+      if (isCollapsibleOpening(trimmedLine)) {
+        inCollapsibleComponent = true;
+        collapsibleComponentDepth = 1;
       }
     } else {
-      // Count JSX tags to handle nesting
-      const openingTags = (trimmedLine.match(/^<\w+[^>]*(?<!\/)/g) || []).length;
-      const closingTags = (trimmedLine.match(/^<\/\w+>/g) || []).length;
-      const selfClosingTags = (trimmedLine.match(/\/>/g) || []).length;
-
-      collapsibleComponentDepth += openingTags - closingTags - selfClosingTags;
-
-      // Exit collapsed component when depth reaches 0
+      collapsibleComponentDepth = updateCollapsibleDepth(trimmedLine, collapsibleComponentDepth);
       if (collapsibleComponentDepth <= 0) {
         inCollapsibleComponent = false;
         collapsibleComponentDepth = 0;
@@ -122,26 +124,14 @@ export function extractHeadings(content: string): TocHeading[] {
       }
     }
 
-    // Skip headings inside collapsible components
-    if (inCollapsibleComponent) {
-      continue;
-    }
+    if (inCollapsibleComponent) continue;
 
-    // Match h2 and h3 headings (use original line for regex to preserve behavior)
     const headingMatch = line.match(/^(#{2,3})\s+(.*)$/);
     if (headingMatch) {
-      const level = headingMatch[1].length; // 2 for ##, 3 for ###
+      const level = headingMatch[1].length;
       const rawText = headingMatch[2].trim();
-      const text = stripMarkdown(rawText); // Strip markdown formatting for display
-      let id = generateSlug(rawText); // Use raw text for ID to match rehype-slug
-
-      // Ensure unique IDs by appending counter to duplicates
-      const count = (idCounts.get(id) ?? 0) + 1;
-      idCounts.set(id, count);
-      if (count > 1) {
-        id = `${id}-${count - 1}`;
-      }
-
+      const text = stripMarkdown(rawText);
+      const id = buildUniqueId(generateSlug(rawText), idCounts);
       headings.push({ id, text, level });
     }
   }

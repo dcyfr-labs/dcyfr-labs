@@ -250,6 +250,24 @@ function categorizeCommit(message) {
 }
 
 /**
+ * Classify a filepath that was added (new file mode) into a changelog entry.
+ * Returns {category, entry} or null if not recognized.
+ */
+function classifyNewFile(filePath) {
+  if (filePath.match(/^src\/components\//)) {
+    const componentName = filePath.match(/\/([^/]+)\/index\.tsx?$/)?.[1];
+    if (componentName) return { category: 'Added', entry: `New component: ${componentName}` };
+  } else if (filePath.match(/^src\/app\//)) {
+    const pageName = filePath.match(/\/([^/]+)\/page\.tsx?$/)?.[1];
+    if (pageName) return { category: 'Added', entry: `New page: /${pageName}` };
+  } else if (filePath.match(/^src\/lib\//)) {
+    const libName = filePath.match(/\/([^/]+)\.(ts|tsx|js|jsx)$/)?.[1];
+    if (libName) return { category: 'Added', entry: `New utility: ${libName}` };
+  }
+  return null;
+}
+
+/**
  * Analyze file changes to infer changelog entries
  * @param {string} diff - Git diff output
  * @returns {Object} Categorized file changes
@@ -274,21 +292,9 @@ function analyzeFileChanges(diff) {
 
     // Detect new files
     if (diff.includes(`new file mode`) && diff.includes(filePath)) {
-      if (filePath.match(/^src\/components\//)) {
-        const componentName = filePath.match(/\/([^/]+)\/index\.tsx?$/)?.[1];
-        if (componentName) {
-          changes.Added.push(`New component: ${componentName}`);
-        }
-      } else if (filePath.match(/^src\/app\//)) {
-        const pageName = filePath.match(/\/([^/]+)\/page\.tsx?$/)?.[1];
-        if (pageName) {
-          changes.Added.push(`New page: /${pageName}`);
-        }
-      } else if (filePath.match(/^src\/lib\//)) {
-        const libName = filePath.match(/\/([^/]+)\.(ts|tsx|js|jsx)$/)?.[1];
-        if (libName) {
-          changes.Added.push(`New utility: ${libName}`);
-        }
+      const classified = classifyNewFile(filePath);
+      if (classified) {
+        changes[classified.category].push(classified.entry);
       }
     }
 
@@ -374,6 +380,63 @@ function generateChangelogEntry(data) {
 /**
  * Main execution
  */
+/**
+ * Add an item to categories if not already present, using categorizeCommit to infer category.
+ */
+function addToCategory(categories, item) {
+  const category = categorizeCommit(item);
+  if (!categories[category].includes(item)) {
+    categories[category].push(item);
+  }
+}
+
+/**
+ * Build categorized changes from all sources.
+ */
+function buildCategories(todoMoves, prInfo, fileChanges, commits) {
+  const categories = {
+    Added: [],
+    Changed: [],
+    Deprecated: [],
+    Removed: [],
+    Fixed: [],
+    Security: [],
+  };
+
+  // Add todo moves (highest priority)
+  for (const task of todoMoves) {
+    addToCategory(categories, task);
+  }
+
+  // Add PR description changes
+  for (const change of prInfo.changes) {
+    addToCategory(categories, change);
+  }
+
+  // Add file changes
+  for (const [category, items] of Object.entries(fileChanges)) {
+    for (const item of items) {
+      if (!categories[category].includes(item)) {
+        categories[category].push(item);
+      }
+    }
+  }
+
+  // Add commit messages (fallback when nothing else found)
+  if (Object.values(categories).every((arr) => arr.length === 0)) {
+    for (const commit of commits) {
+      if (commit.startsWith('Merge')) continue;
+      const cleanMessage = commit.replace(
+        /^(feat|fix|refactor|chore|docs|style|perf|test|build|ci)(\(.+\))?:\s*/,
+        ''
+      );
+      addToCategory(categories, cleanMessage);
+    }
+  }
+
+  return categories;
+}
+
 async function main() {
   console.error('📝 Changelog Entry Generator');
   console.error('============================\n');
@@ -423,58 +486,7 @@ async function main() {
   debugLog('Breaking changes:', breaking);
 
   // Aggregate changes by category
-  const categories = {
-    Added: [],
-    Changed: [],
-    Deprecated: [],
-    Removed: [],
-    Fixed: [],
-    Security: [],
-  };
-
-  // Add todo moves (highest priority)
-  for (const task of todoMoves) {
-    // Infer category from task text
-    const category = categorizeCommit(task);
-    if (!categories[category].includes(task)) {
-      categories[category].push(task);
-    }
-  }
-
-  // Add PR description changes
-  for (const change of prInfo.changes) {
-    const category = categorizeCommit(change);
-    if (!categories[category].includes(change)) {
-      categories[category].push(change);
-    }
-  }
-
-  // Add file changes
-  for (const [category, items] of Object.entries(fileChanges)) {
-    for (const item of items) {
-      if (!categories[category].includes(item)) {
-        categories[category].push(item);
-      }
-    }
-  }
-
-  // Add commit messages (fallback)
-  if (Object.values(categories).every((arr) => arr.length === 0)) {
-    for (const commit of commits) {
-      // Skip merge commits
-      if (commit.startsWith('Merge')) continue;
-
-      const category = categorizeCommit(commit);
-      // Remove conventional commit prefix
-      const cleanMessage = commit.replace(
-        /^(feat|fix|refactor|chore|docs|style|perf|test|build|ci)(\(.+\))?:\s*/,
-        ''
-      );
-      if (!categories[category].includes(cleanMessage)) {
-        categories[category].push(cleanMessage);
-      }
-    }
-  }
+  const categories = buildCategories(todoMoves, prInfo, fileChanges, commits);
 
   // Generate changelog entry
   console.error('✍️  Generating changelog entry...\n');

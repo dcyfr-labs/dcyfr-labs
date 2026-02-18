@@ -18,6 +18,43 @@ import { generateSessionId } from "@/lib/anti-spam-client";
  * @param enabled - Whether tracking is enabled (default: true)
  * @returns Object with tracking status and manual trigger function
  */
+/** Parse the API response and return whether the view was recorded. Returns null on non-JSON responses. */
+async function parseViewResponse(
+  response: Response,
+  setError: (msg: string) => void,
+  recordAs: (tracked: boolean) => void
+): Promise<boolean> {
+  if (response.status === 404 && process.env.NODE_ENV === "development") {
+    return false;
+  }
+
+  const contentType = response.headers.get("content-type");
+  if (!contentType?.includes("application/json")) {
+    if (response.status !== 404) {
+      console.error("API returned non-JSON response:", response.status);
+      setError("API error");
+    }
+    return false;
+  }
+
+  const data = await response.json();
+  const isRateLimit = response.status === 429;
+  const isDuplicate = data.message?.includes("already recorded");
+
+  if (response.ok) {
+    if (data.recorded) { recordAs(true); return true; }
+    return false;
+  }
+
+  if (!isRateLimit && !isDuplicate) {
+    setError(data.error || "Failed to track view");
+  }
+  if (isRateLimit || isDuplicate) {
+    recordAs(false); // mark as tracked without setState(true)
+  }
+  return false;
+}
+
 export function useViewTracking(postId: string, enabled = true) {
   const [tracked, setTracked] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -70,62 +107,18 @@ export function useViewTracking(postId: string, enabled = true) {
       try {
         const response = await fetch("/api/views", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            postId,
-            sessionId,
-            timeOnPage,
-            isVisible,
-          }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ postId, sessionId, timeOnPage, isVisible }),
         });
 
-        // Handle blocked API endpoints gracefully (404 from security lockdown)
-        if (response.status === 404) {
-          // API endpoint is blocked - fail silently in development
-          if (process.env.NODE_ENV === "development") {
-            // console.warn("View tracking API is blocked in development");
-            isSubmittingRef.current = false;
-            return;
+        await parseViewResponse(
+          response,
+          (msg) => setError(msg),
+          (tracked) => {
+            if (tracked) { setTracked(true); hasTrackedRef.current = true; }
+            else { hasTrackedRef.current = true; }
           }
-        }
-
-        // Check if response is JSON before parsing
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-          // Only log errors if it's not a blocked API (404)
-          if (response.status !== 404) {
-            console.error("API returned non-JSON response:", response.status);
-            setError("API error");
-          }
-          isSubmittingRef.current = false;
-          return;
-        }
-
-        const data = await response.json();
-
-        if (response.ok) {
-          if (data.recorded) {
-            setTracked(true);
-            hasTrackedRef.current = true;
-          }
-        } else {
-          // Don't show errors to user for rate limiting or duplicates
-          if (
-            response.status !== 429 &&
-            !data.message?.includes("already recorded")
-          ) {
-            setError(data.error || "Failed to track view");
-          }
-          // Still mark as tracked if it's a duplicate or rate limit
-          if (
-            response.status === 429 ||
-            data.message?.includes("already recorded")
-          ) {
-            hasTrackedRef.current = true;
-          }
-        }
+        );
       } catch (err) {
         console.error("View tracking error:", err);
         setError("Network error");

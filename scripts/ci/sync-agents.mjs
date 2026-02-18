@@ -225,20 +225,61 @@ ${issues.length > 0 ?
 /**
  * Main sync function
  */
+/**
+ * Collect changes for each sync target based on the `target` flag.
+ */
+function collectTargetChanges(target, results) {
+  if (target === 'all' || target === 'copilot') {
+    console.log('📝 Syncing Copilot instructions...');
+    results.copilot.changes.push('Extracted essential patterns (80/20 rule)');
+    results.copilot.changes.push('Updated quick reference format');
+    results.copilot.changes.push('Auto-synced from Claude Code patterns');
+  }
+  if (target === 'all' || target === 'claude') {
+    console.log('🤖 Syncing Claude Code agents...');
+    results.claude.changes.push('Updated production agent patterns');
+    results.claude.changes.push('Optimized quick-fix agent rules');
+    results.claude.changes.push('Enhanced test specialist capabilities');
+  }
+  if (target === 'all' || target === 'vscode') {
+    console.log('🔧 Syncing VS Code DCYFR agent...');
+    results.vscode.changes.push('Updated modular hub references');
+    results.vscode.changes.push('Synchronized enforcement rules');
+  }
+}
+
+/**
+ * Generate and write (or dry-run) sync reports for each target.
+ */
+async function writeReports(results, learningData, dryRun) {
+  for (const [targetKey, result] of Object.entries(results)) {
+    if (result.changes.length === 0) continue;
+    const report = generateSyncReport(
+      targetKey,
+      result.changes,
+      result.issues,
+      Object.keys(learningData).length > 0 ? learningData : null
+    );
+    const reportPath = path.join(ROOT, `sync-report-${targetKey}-${Date.now()}.md`);
+    if (dryRun) {
+      console.log(`📋 Would generate ${targetKey} sync report`);
+    } else {
+      await fs.writeFile(reportPath, report);
+      console.log(`📋 Generated ${targetKey} sync report: ${reportPath}`);
+    }
+  }
+}
+
 async function syncAgents(options = {}) {
   const { target = 'all', dryRun = false, status = false } = options;
 
-  // Handle status check
   if (status) {
     await checkSyncStatus();
     return true;
   }
 
   console.log(`🔄 Starting DCYFR agent sync (${target})...`);
-
-  if (dryRun) {
-    console.log('🔍 Dry run mode - no files will be modified\n');
-  }
+  if (dryRun) console.log('🔍 Dry run mode - no files will be modified\n');
 
   const results = {
     copilot: { changes: [], issues: [] },
@@ -246,7 +287,6 @@ async function syncAgents(options = {}) {
     vscode: { changes: [], issues: [] }
   };
 
-  // Validate source files exist
   try {
     for (const sourcePath of Object.values(SOURCES)) {
       await fs.access(sourcePath);
@@ -257,7 +297,6 @@ async function syncAgents(options = {}) {
     return false;
   }
 
-  // Run validation
   const validationIssues = await validateConsistency();
   if (validationIssues.length > 0) {
     console.log('⚠️ Validation issues found:');
@@ -265,54 +304,15 @@ async function syncAgents(options = {}) {
     console.log('');
   }
 
-  // Sync each target
-  if (target === 'all' || target === 'copilot') {
-    console.log('📝 Syncing Copilot instructions...');
-    results.copilot.changes.push('Extracted essential patterns (80/20 rule)');
-    results.copilot.changes.push('Updated quick reference format');
-    results.copilot.changes.push('Auto-synced from Claude Code patterns');
-  }
-
-  if (target === 'all' || target === 'claude') {
-    console.log('🤖 Syncing Claude Code agents...');
-    results.claude.changes.push('Updated production agent patterns');
-    results.claude.changes.push('Optimized quick-fix agent rules');
-    results.claude.changes.push('Enhanced test specialist capabilities');
-  }
-
-  if (target === 'all' || target === 'vscode') {
-    console.log('🔧 Syncing VS Code DCYFR agent...');
-    results.vscode.changes.push('Updated modular hub references');
-    results.vscode.changes.push('Synchronized enforcement rules');
-  }
-
+  collectTargetChanges(target, results);
   console.log('');
 
-  // Load learning data
   const learningData = await loadLearningData();
   if (Object.keys(learningData).length > 0) {
     console.log('📚 Loaded learning data from knowledge base');
   }
 
-  // Generate reports
-  for (const [targetKey, result] of Object.entries(results)) {
-    if (result.changes.length > 0) {
-      const report = generateSyncReport(
-        targetKey,
-        result.changes,
-        result.issues,
-        Object.keys(learningData).length > 0 ? learningData : null
-      );
-      const reportPath = path.join(ROOT, `sync-report-${targetKey}-${Date.now()}.md`);
-
-      if (!dryRun) {
-        await fs.writeFile(reportPath, report);
-        console.log(`📋 Generated ${targetKey} sync report: ${reportPath}`);
-      } else {
-        console.log(`📋 Would generate ${targetKey} sync report`);
-      }
-    }
-  }
+  await writeReports(results, learningData, dryRun);
 
   console.log('');
   console.log('✅ Agent sync completed');

@@ -559,38 +559,79 @@ function planSecurityRoadmap() {
  */
 function assessSOC2Readiness() {
   const readinessScore = auditResults.soc2Readiness;
-  const readinessLevel =
-    readinessScore >= 90
-      ? 'READY'
-      : readinessScore >= 70
-        ? 'NEAR READY'
-        : readinessScore >= 50
-          ? 'IN PROGRESS'
-          : 'NOT READY';
-
-  const timeline =
-    readinessScore >= 90
-      ? '2-3 months'
-      : readinessScore >= 70
-        ? '4-6 months'
-        : readinessScore >= 50
-          ? '6-8 months'
-          : '10-12 months';
+  const labelText = soc2ReadinessLabel(readinessScore);
+  const timeline = soc2Timeline(readinessScore);
 
   return {
     passed: readinessScore >= 70,
-    details: `SOC2 Type 2 readiness: ${readinessScore}% (${readinessLevel}) - Estimated timeline: ${timeline}`,
-    finding:
-      readinessScore < 70
-        ? 'Additional work required before SOC2 Type 2 audit'
-        : null,
-    recommendation:
-      readinessScore >= 90
-        ? 'Ready to engage SOC2 auditor'
-        : readinessScore >= 70
-          ? 'Address remaining gaps and schedule pre-audit readiness review'
-          : 'Continue implementing SOC2 controls per compliance plan',
+    details: `SOC2 Type 2 readiness: ${readinessScore}% (${labelText}) - Estimated timeline: ${timeline}`,
+    finding: readinessScore < 70 ? 'Additional work required before SOC2 Type 2 audit' : null,
+    recommendation: soc2Recommendation(readinessScore),
   };
+}
+
+/**
+ * Return the recommendation string for a given SOC2 readiness score.
+ */
+function soc2Recommendation(score) {
+  if (score >= 90) return 'Ready to engage SOC2 auditor';
+  if (score >= 70) return 'Address remaining gaps and schedule pre-audit readiness review';
+  return 'Continue implementing SOC2 controls per compliance plan';
+}
+
+/**
+ * Render a SOC2 control section (filter by prefix, map to markdown lines).
+ */
+function renderSOC2Section(prefix, controlTesting) {
+  return controlTesting
+    .filter(c => c.control.startsWith(prefix))
+    .map(c => `- ${c.control}: ${c.name} - ${c.result ? '✅' : '❌'}`)
+    .join('\n');
+}
+
+/**
+ * Render roadmap items for a given priority level.
+ */
+function renderRoadmapItems(priority, roadmap) {
+  const filtered = roadmap.filter(r => r.priority === priority);
+  if (filtered.length === 0) return '_None_';
+  return filtered.map((r, idx) => `${idx + 1}. ${r.item}`).join('\n');
+}
+
+/**
+ * Return a human-readable SOC2 readiness label from a score.
+ */
+function soc2ReadinessLabel(score) {
+  if (score >= 90) return '✅ READY';
+  if (score >= 70) return '⚠️ NEAR READY';
+  if (score >= 50) return '🔄 IN PROGRESS';
+  return '❌ NOT READY';
+}
+
+/**
+ * Return an estimated timeline to SOC2 audit from a score.
+ */
+function soc2Timeline(score) {
+  if (score >= 90) return '2-3 months';
+  if (score >= 70) return '4-6 months';
+  if (score >= 50) return '6-8 months';
+  return '10-12 months';
+}
+
+/**
+ * Render findings list section.
+ */
+function renderFindingsList(findings) {
+  if (findings.length === 0) return '_No findings - all checks passed._';
+  return findings.map((f, idx) => `${idx + 1}. ${f}`).join('\n');
+}
+
+/**
+ * Render recommendations list section.
+ */
+function renderRecommendationsList(recs) {
+  if (recs.length === 0) return '_No recommendations._';
+  return recs.map((r, idx) => `${idx + 1}. ${r}`).join('\n');
 }
 
 /**
@@ -630,34 +671,19 @@ function generateReport() {
 ## SOC2 Control Testing Results
 
 ### Security Controls (SC)
-${auditResults.controlTesting
-  .filter(c => c.control.startsWith('SC'))
-  .map(c => `- ${c.control}: ${c.name} - ${c.result ? '✅' : '❌'}`)
-  .join('\n')}
+${renderSOC2Section('SC', auditResults.controlTesting)}
 
 ### Availability Controls (A)
-${auditResults.controlTesting
-  .filter(c => c.control.startsWith('A'))
-  .map(c => `- ${c.control}: ${c.name} - ${c.result ? '✅' : '❌'}`)
-  .join('\n')}
+${renderSOC2Section('A', auditResults.controlTesting)}
 
 ### Processing Integrity Controls (PI)
-${auditResults.controlTesting
-  .filter(c => c.control.startsWith('PI'))
-  .map(c => `- ${c.control}: ${c.name} - ${c.result ? '✅' : '❌'}`)
-  .join('\n')}
+${renderSOC2Section('PI', auditResults.controlTesting)}
 
 ### Confidentiality Controls (C)
-${auditResults.controlTesting
-  .filter(c => c.control.startsWith('C'))
-  .map(c => `- ${c.control}: ${c.name} - ${c.result ? '✅' : '❌'}`)
-  .join('\n')}
+${renderSOC2Section('C', auditResults.controlTesting)}
 
 ### Privacy Controls (P)
-${auditResults.controlTesting
-  .filter(c => c.control.startsWith('P'))
-  .map(c => `- ${c.control}: ${c.name} - ${c.result ? '✅' : '❌'}`)
-  .join('\n')}
+${renderSOC2Section('P', auditResults.controlTesting)}
 
 **Control Pass Rate:** ${auditResults.controlTesting.filter(c => c.result).length}/${auditResults.controlTesting.length} (${((auditResults.controlTesting.filter(c => c.result).length / auditResults.controlTesting.length) * 100).toFixed(1)}%)
 
@@ -681,26 +707,26 @@ ${auditResults.checks
 
 ## Findings & Remediation
 
-${auditResults.findings.length === 0 ? '_No findings - all checks passed._' : auditResults.findings.map((f, idx) => `${idx + 1}. ${f}`).join('\n')}
+${renderFindingsList(auditResults.findings)}
 
 ---
 
 ## Recommendations
 
-${auditResults.recommendations.length === 0 ? '_No recommendations._' : auditResults.recommendations.map((r, idx) => `${idx + 1}. ${r}`).join('\n')}
+${renderRecommendationsList(auditResults.recommendations)}
 
 ---
 
 ## ${year + 1} Security Roadmap
 
 ### High Priority
-${auditResults.roadmap.filter(r => r.priority === 'HIGH').length === 0 ? '_None_' : auditResults.roadmap.filter(r => r.priority === 'HIGH').map((r, idx) => `${idx + 1}. ${r.item}`).join('\n')}
+${renderRoadmapItems('HIGH', auditResults.roadmap)}
 
 ### Medium Priority
-${auditResults.roadmap.filter(r => r.priority === 'MEDIUM').length === 0 ? '_None_' : auditResults.roadmap.filter(r => r.priority === 'MEDIUM').map((r, idx) => `${idx + 1}. ${r.item}`).join('\n')}
+${renderRoadmapItems('MEDIUM', auditResults.roadmap)}
 
 ### Low Priority
-${auditResults.roadmap.filter(r => r.priority === 'LOW').length === 0 ? '_None_' : auditResults.roadmap.filter(r => r.priority === 'LOW').map((r, idx) => `${idx + 1}. ${r.item}`).join('\n')}
+${renderRoadmapItems('LOW', auditResults.roadmap)}
 
 ---
 
@@ -708,9 +734,9 @@ ${auditResults.roadmap.filter(r => r.priority === 'LOW').length === 0 ? '_None_'
 
 **Current Readiness:** ${auditResults.soc2Readiness}%
 
-**Readiness Level:** ${auditResults.soc2Readiness >= 90 ? '✅ READY' : auditResults.soc2Readiness >= 70 ? '⚠️ NEAR READY' : auditResults.soc2Readiness >= 50 ? '🔄 IN PROGRESS' : '❌ NOT READY'}
+**Readiness Level:** ${soc2ReadinessLabel(auditResults.soc2Readiness)}
 
-**Estimated Timeline to Audit:** ${auditResults.soc2Readiness >= 90 ? '2-3 months' : auditResults.soc2Readiness >= 70 ? '4-6 months' : auditResults.soc2Readiness >= 50 ? '6-8 months' : '10-12 months'}
+**Estimated Timeline to Audit:** ${soc2Timeline(auditResults.soc2Readiness)}
 
 **Next Steps:**
 1. ${auditResults.soc2Readiness >= 90 ? 'Engage SOC2 auditor and begin Type 2 observation period' : 'Address critical gaps identified in this review'}

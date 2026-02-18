@@ -137,6 +137,46 @@ function log(message, color = 'reset') {
   console.log(`${colors[color]}${message}${colors.reset}`);
 }
 
+/**
+ * Check required sections are present in content.
+ * Returns false if any section is missing.
+ */
+function checkRequiredSections(content, sections) {
+  let valid = true;
+  for (const section of sections) {
+    if (!content.includes(section)) {
+      log(`  ❌ Missing section: "${section}"`, 'red');
+      valid = false;
+    }
+  }
+  return valid;
+}
+
+/**
+ * Check required keywords are present in content (case-insensitive).
+ */
+function checkRequiredKeywords(content, keywords) {
+  for (const keyword of keywords) {
+    if (!content.toLowerCase().includes(keyword.toLowerCase())) {
+      log(`  ⚠️  Missing keyword: "${keyword}"`, 'yellow');
+    }
+  }
+}
+
+/**
+ * Check required links are present in content.
+ */
+function checkRequiredLinks(content, links) {
+  for (const link of links) {
+    const linkConfig = Object.values(INSTRUCTION_FILES).find((c) => c.path === link);
+    const isIgnored = IGNORED_INSTRUCTION_FILES.includes(link);
+    if (linkConfig && (linkConfig.optional || isIgnored)) continue;
+    if (!content.includes(link)) {
+      log(`  ⚠️  Missing link to: "${link}"`, 'yellow');
+    }
+  }
+}
+
 function checkFile(filename, config) {
   const filepath = path.join(rootDir, config.path);
 
@@ -154,40 +194,14 @@ function checkFile(filename, config) {
   const content = fs.readFileSync(filepath, 'utf-8');
   let fileValid = true;
 
-  // Check required sections
-  if (config.requiredSections) {
-    for (const section of config.requiredSections) {
-      if (!content.includes(section)) {
-        log(`  ❌ Missing section: "${section}"`, 'red');
-        fileValid = false;
-      }
-    }
+  if (config.requiredSections && !checkRequiredSections(content, config.requiredSections)) {
+    fileValid = false;
   }
-
-  // Check required keywords
   if (config.requiredKeywords) {
-    for (const keyword of config.requiredKeywords) {
-      if (!content.toLowerCase().includes(keyword.toLowerCase())) {
-        log(`  ⚠️  Missing keyword: "${keyword}"`, 'yellow');
-      }
-    }
+    checkRequiredKeywords(content, config.requiredKeywords);
   }
-
-  // Check required links
   if (config.requiredLinks) {
-    for (const link of config.requiredLinks) {
-      // Skip checking links that are optional or explicitly ignored
-      const linkConfig = Object.values(INSTRUCTION_FILES).find((c) => c.path === link);
-      const isIgnored = IGNORED_INSTRUCTION_FILES.includes(link);
-      if (linkConfig && (linkConfig.optional || isIgnored)) {
-        // intentionally ignored link - skip
-        continue;
-      }
-      // Check for markdown link format with this path
-      if (!content.includes(link)) {
-        log(`  ⚠️  Missing link to: "${link}"`, 'yellow');
-      }
-    }
+    checkRequiredLinks(content, config.requiredLinks);
   }
 
   if (fileValid) {

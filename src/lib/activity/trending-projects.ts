@@ -71,6 +71,25 @@ const USE_ACCURATE_RECENT_STARS = process.env.USE_ACCURATE_RECENT_STARS !== "fal
 const MAX_STARGAZER_PAGES = 10; // Max 1000 stars checked
 
 /**
+ * Count how many entries in a stargazers page are newer than a cutoff date.
+ * Returns { count, done } where done=true means we passed the cutoff and can stop paging.
+ */
+function countRecentStarsInPage(
+  stargazers: Array<{ starred_at: string }>,
+  cutoff: Date
+): { count: number; done: boolean } {
+  let count = 0;
+  for (const stargazer of stargazers) {
+    if (new Date(stargazer.starred_at) > cutoff) {
+      count++;
+    } else {
+      return { count, done: true };
+    }
+  }
+  return { count, done: false };
+}
+
+/**
  * Fetch accurate recent stars using Stargazers API with timestamps
  *
  * @param octokit - Octokit instance with auth
@@ -100,10 +119,9 @@ async function fetchAccurateRecentStars(
 
     let recentStarCount = 0;
     let page = 1;
-    let hasMorePages = true;
 
     // Fetch stargazers with timestamps (newest first)
-    while (hasMorePages && page <= MAX_STARGAZER_PAGES) {
+    while (page <= MAX_STARGAZER_PAGES) {
       const { data: stargazers } = await octokit.activity.listStargazersForRepo({
         owner: repoOwner,
         repo: repoName,
@@ -114,27 +132,11 @@ async function fetchAccurateRecentStars(
         page,
       });
 
-      if (stargazers.length === 0) {
-        hasMorePages = false;
-        break;
-      }
+      if (stargazers.length === 0) break;
 
-      // Count stars from last 7 days
-      for (const stargazer of stargazers) {
-        const starredAt = new Date(stargazer.starred_at);
-        if (starredAt > sevenDaysAgo) {
-          recentStarCount++;
-        } else {
-          // Stars are ordered by date (newest first), so we can stop here
-          hasMorePages = false;
-          break;
-        }
-      }
-
-      // If we got fewer results than requested, we've reached the end
-      if (stargazers.length < 100) {
-        hasMorePages = false;
-      }
+      const { count, done } = countRecentStarsInPage(stargazers, sevenDaysAgo);
+      recentStarCount += count;
+      if (done || stargazers.length < 100) break;
 
       page++;
     }

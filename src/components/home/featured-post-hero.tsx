@@ -76,10 +76,18 @@ interface FeaturedPostHeroProps {
  * - 3D perspective tilt (rotateX + rotateY) for interactivity
  * - Responsive padding and spacing
  */
+/** True when the post has a background card image visible */
+function hasVisibleImage(post: Post): boolean {
+  return !!(post.image?.url && !post.image.hideCard);
+}
+
 export function FeaturedPostHero({ post, loading = false }: FeaturedPostHeroProps) {
   const router = useRouter();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
+
+  // Derived flag used for image-overlay styling
+  const withImage = post ? hasVisibleImage(post) : false;
 
   // Loading state - skeleton version matching real component structure
   if (loading) {
@@ -217,7 +225,7 @@ export function FeaturedPostHero({ post, loading = false }: FeaturedPostHeroProp
               className={cn(
                 TYPOGRAPHY.label.xs,
                 "backdrop-blur-sm",
-                post.image && post.image.url && !post.image.hideCard
+                withImage
                   ? "bg-zinc-500/30 text-white border border-zinc-400/30"
                   : "bg-zinc-700 text-white border-none"
               )}
@@ -237,7 +245,7 @@ export function FeaturedPostHero({ post, loading = false }: FeaturedPostHeroProp
                   variant="outline"
                   className={cn(
                     "text-xs backdrop-blur-sm transition-colors cursor-pointer",
-                    post.image && post.image.url && !post.image.hideCard
+                    withImage
                       ? "bg-white/20 text-white border-white/30 hover:bg-white/30"
                       : "text-foreground hover:bg-accent"
                   )}
@@ -254,9 +262,7 @@ export function FeaturedPostHero({ post, loading = false }: FeaturedPostHeroProp
               className={cn(
                 TYPOGRAPHY.h2.featured,
                 "md:text-4xl",
-                post.image && post.image.url && !post.image.hideCard
-                  ? "text-white"
-                  : "text-foreground"
+                withImage ? "text-white" : "text-foreground"
               )}
             >
               {post.title}
@@ -265,9 +271,7 @@ export function FeaturedPostHero({ post, loading = false }: FeaturedPostHeroProp
               <p
                 className={cn(
                   TYPOGRAPHY.h3.standard,
-                  post.image && post.image.url && !post.image.hideCard
-                    ? "text-white/80"
-                    : "text-foreground/80"
+                  withImage ? "text-white/80" : "text-foreground/80"
                 )}
               >
                 {post.subtitle}
@@ -276,9 +280,7 @@ export function FeaturedPostHero({ post, loading = false }: FeaturedPostHeroProp
             <p
               className={cn(
                 TYPOGRAPHY.description,
-                post.image && post.image.url && !post.image.hideCard
-                  ? "text-white/80"
-                  : "text-foreground/70"
+                withImage ? "text-white/80" : "text-foreground/70"
               )}
             >
               {post.summary}
@@ -290,9 +292,7 @@ export function FeaturedPostHero({ post, loading = false }: FeaturedPostHeroProp
             <div
               className={cn(
                 "flex items-center gap-4 text-sm",
-                post.image && post.image.url && !post.image.hideCard
-                  ? "text-white/70"
-                  : "text-foreground/60"
+                withImage ? "text-white/70" : "text-foreground/60"
               )}
             >
               <time dateTime={post.publishedAt}>{publishedDate}</time>
@@ -306,9 +306,7 @@ export function FeaturedPostHero({ post, loading = false }: FeaturedPostHeroProp
               className={cn(
                 "inline-flex items-center gap-1 font-medium hover:underline group-hover:gap-2",
                 ANIMATION.transition.base,
-                post.image && post.image.url && !post.image.hideCard
-                  ? "text-white"
-                  : "text-primary"
+                withImage ? "text-white" : "text-primary"
               )}
             >
               Read post

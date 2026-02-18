@@ -63,12 +63,8 @@ class DevLogger {
   private startTimes: Map<string, number> = new Map();
   private operationCounts: Map<string, number> = new Map();
 
-  /**
-   * Log a message with specified level
-   */
-  log(level: LogLevel, message: string, context?: LogContext): void {
-    if (!isDev) return;
-
+  /** Build the log output string from parts (no side effects) */
+  private buildLogOutput(level: LogLevel, message: string, context?: LogContext): string {
     const timestamp = new Date().toISOString();
     const color = levelColors[level];
     const memUsage = this.getMemoryUsage();
@@ -88,24 +84,35 @@ class DevLogger {
       output += `\n${colors.gray}  Metadata: ${JSON.stringify(context.metadata, null, 2)}${colors.reset}`;
     }
 
-    // Add memory usage for timing logs
     if (level === LogLevel.TIMING) {
       output += ` ${colors.gray}[${memUsage}]${colors.reset}`;
     }
 
-    console.warn(output);
+    return output;
+  }
 
-    // Log error stack trace if present
-    if (context?.error) {
-      const error = context.error;
-      if (error instanceof Error) {
-        console.warn(`${colors.red}  Error: ${error.message}${colors.reset}`);
-        if (error.stack) {
-          console.warn(`${colors.dim}  ${error.stack.split('\n').slice(1).join('\n  ')}${colors.reset}`);
-        }
-      } else {
-        console.warn(`${colors.red}  Error: ${JSON.stringify(error)}${colors.reset}`);
+  /** Emit error details to console (no side effects on state) */
+  private emitErrorDetails(error: unknown): void {
+    if (error instanceof Error) {
+      console.warn(`${colors.red}  Error: ${error.message}${colors.reset}`);
+      if (error.stack) {
+        console.warn(`${colors.dim}  ${error.stack.split('\n').slice(1).join('\n  ')}${colors.reset}`);
       }
+    } else {
+      console.warn(`${colors.red}  Error: ${JSON.stringify(error)}${colors.reset}`);
+    }
+  }
+
+  /**
+   * Log a message with specified level
+   */
+  log(level: LogLevel, message: string, context?: LogContext): void {
+    if (!isDev) return;
+
+    console.warn(this.buildLogOutput(level, message, context));
+
+    if (context?.error) {
+      this.emitErrorDetails(context.error);
     }
   }
 

@@ -375,6 +375,32 @@ export class ProviderFallbackManager {
   }
 
   /**
+   * Attempt execution on a single provider and return the result or null on skippable errors.
+   * Throws for unexpected errors that should propagate.
+   */
+  private async tryOneProvider<T>(
+    provider: ProviderType,
+    task: TaskContext,
+    executor: (provider: ProviderType) => Promise<T>
+  ): Promise<ExecutionResult<T> | null> {
+    const health = await this.checkProviderHealth(provider);
+    this.healthStatus.set(provider, health);
+
+    if (!health.available) {
+      console.warn(`⚠️  Provider ${provider} not available, skipping...`);
+      return null;
+    }
+
+    const result = await this.executeWithProvider(provider, task, executor);
+
+    if (result.fallbackUsed && provider !== this.currentProvider) {
+      await this.switchProvider(provider);
+    }
+
+    return result;
+  }
+
+  /**
    * Execute a task with automatic fallback on failure
    */
   public async executeWithFallback<T>(
@@ -386,52 +412,26 @@ export class ProviderFallbackManager {
 
     for (const provider of providers) {
       try {
-        // Check provider health first
-        const health = await this.checkProviderHealth(provider);
-        this.healthStatus.set(provider, health);
-
-        if (!health.available) {
-          console.warn(`⚠️  Provider ${provider} not available, skipping...`);
-          continue;
-        }
-
-        // Attempt execution
-        const result = await this.executeWithProvider(provider, task, executor);
-
-        // Update current provider if fallback was used
-        if (result.fallbackUsed && provider !== this.currentProvider) {
-          await this.switchProvider(provider);
-        }
-
-        return result;
+        const result = await this.tryOneProvider(provider, task, executor);
+        if (result !== null) return result;
       } catch (error) {
         lastError = error as Error;
 
         if (error instanceof RateLimitError) {
-          console.warn(
-            `⏱️  Rate limit hit on ${provider}, trying next provider...`
-          );
+          console.warn(`⏱️  Rate limit hit on ${provider}, trying next provider...`);
           continue;
         }
 
         if (error instanceof ProviderUnavailableError) {
-          console.warn(
-            `❌ Provider ${provider} unavailable, trying next provider...`
-          );
+          console.warn(`❌ Provider ${provider} unavailable, trying next provider...`);
           continue;
         }
 
-        // Unknown error, try next provider
-        const errorMessage =
-          error instanceof Error ? error.message : String(error);
-        console.warn(
-          `⚠️  Error with ${provider}: ${errorMessage}, trying next provider...`
-        );
-        continue;
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.warn(`⚠️  Error with ${provider}: ${errorMessage}, trying next provider...`);
       }
     }
 
-    // All providers failed
     throw new Error(
       `All providers exhausted. Last error: ${lastError?.message || "Unknown"}`
     );

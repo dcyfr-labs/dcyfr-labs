@@ -123,48 +123,50 @@ async function performPromptScan(
 // ============================================================================
 
 /**
+ * Extract text content from request body (JSON or plain text)
+ */
+async function extractBodyContent(
+  clonedRequest: ReturnType<NextRequest['clone']>,
+  contentType: string,
+  scanFields: string[],
+  textContent: string[]
+): Promise<void> {
+  if (contentType.includes('application/json')) {
+    const body = await clonedRequest.json();
+    if (scanFields.length > 0) {
+      for (const field of scanFields) {
+        const value = getNestedValue(body, field);
+        if (typeof value === 'string' && value.trim()) {
+          textContent.push(value);
+        }
+      }
+    } else {
+      extractStringsFromObject(body, textContent);
+    }
+  } else if (contentType.includes('text/')) {
+    const text = await clonedRequest.text();
+    if (text.trim()) textContent.push(text);
+  }
+}
+
+/**
  * Extract text content from request for scanning
  */
 async function extractTextContent(request: NextRequest, scanFields: string[]): Promise<string[]> {
   const textContent: string[] = [];
 
   try {
-    // Clone request to avoid consuming the body
     const clonedRequest = request.clone();
+    const isMutableMethod = request.method === 'POST' || request.method === 'PUT' || request.method === 'PATCH';
 
-    // Check if request has body
-    if (request.method === 'POST' || request.method === 'PUT' || request.method === 'PATCH') {
-      const contentType = request.headers.get('content-type') || '';
-
-      if (contentType.includes('application/json')) {
-        const body = await clonedRequest.json();
-
-        if (scanFields.length > 0) {
-          // Scan specific fields
-          for (const field of scanFields) {
-            const value = getNestedValue(body, field);
-            if (typeof value === 'string' && value.trim()) {
-              textContent.push(value);
-            }
-          }
-        } else {
-          // Scan all string fields
-          extractStringsFromObject(body, textContent);
-        }
-      } else if (contentType.includes('text/')) {
-        const text = await clonedRequest.text();
-        if (text.trim()) {
-          textContent.push(text);
-        }
-      }
+    if (isMutableMethod) {
+      const contentType = request.headers.get('content-type') ?? '';
+      await extractBodyContent(clonedRequest, contentType, scanFields, textContent);
     }
 
-    // Also check query parameters
     const { searchParams } = new URL(request.url);
     searchParams.forEach((value) => {
-      if (value.trim()) {
-        textContent.push(value);
-      }
+      if (value.trim()) textContent.push(value);
     });
   } catch (error) {
     console.error('[PromptSecurity] Failed to extract text content:', error);

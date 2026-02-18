@@ -121,6 +121,14 @@ async function fetchCredlyBadges(limit?: number) {
   }
 }
 
+/** Cache one Credly badge variant and return the key, or null if skipped */
+async function cacheCredlyVariant(badges: unknown, key: string): Promise<string | null> {
+  if (!badges || !Array.isArray(badges)) return null;
+  const cacheData = { badges, total_count: badges.length };
+  await redis.set(key, JSON.stringify(cacheData), { ex: 24 * 60 * 60 });
+  return key;
+}
+
 export async function GET(request: NextRequest) {
   // Only allow in development
   if (process.env.NODE_ENV !== 'development') {
@@ -160,42 +168,17 @@ export async function GET(request: NextRequest) {
   try {
     const credlyKeys: string[] = [];
 
-    // Fetch all badges
     const allBadges = await fetchCredlyBadges();
-    if (allBadges && Array.isArray(allBadges)) {
-      const key = 'credly:badges:dcyfr:all';
-      // Store in format expected by credly-data.ts: { badges, total_count }
-      const cacheData = {
-        badges: allBadges,
-        total_count: allBadges.length,
-      };
-      await redis.set(key, JSON.stringify(cacheData), { ex: 24 * 60 * 60 });
-      credlyKeys.push(key);
-    }
+    const k1 = await cacheCredlyVariant(allBadges, 'credly:badges:dcyfr:all');
+    if (k1) credlyKeys.push(k1);
 
-    // Fetch 10 badges
     const badges10 = await fetchCredlyBadges(10);
-    if (badges10 && Array.isArray(badges10)) {
-      const key = 'credly:badges:dcyfr:10';
-      const cacheData = {
-        badges: badges10,
-        total_count: badges10.length,
-      };
-      await redis.set(key, JSON.stringify(cacheData), { ex: 24 * 60 * 60 });
-      credlyKeys.push(key);
-    }
+    const k2 = await cacheCredlyVariant(badges10, 'credly:badges:dcyfr:10');
+    if (k2) credlyKeys.push(k2);
 
-    // Fetch 3 badges
     const badges3 = await fetchCredlyBadges(3);
-    if (badges3 && Array.isArray(badges3)) {
-      const key = 'credly:badges:dcyfr:3';
-      const cacheData = {
-        badges: badges3,
-        total_count: badges3.length,
-      };
-      await redis.set(key, JSON.stringify(cacheData), { ex: 24 * 60 * 60 });
-      credlyKeys.push(key);
-    }
+    const k3 = await cacheCredlyVariant(badges3, 'credly:badges:dcyfr:3');
+    if (k3) credlyKeys.push(k3);
 
     results.credly = {
       success: credlyKeys.length > 0,

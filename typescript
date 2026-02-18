@@ -1,0 +1,2289 @@
+Script started on Tue Feb 17 23:37:19 2026
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [23:37:22] 
+[1m[31m$ [00m[K[?1h=[?2004h[A[A[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:37:22] 
+[1m[31m$ [00m[K[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:37:27] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  echo TERMINAL_READY[?1l>[?2004l
+]2;echo TERMINAL_READY]1;echoTERMINAL_READY
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:37:27] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:03] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  python3 /tmp/fix_s7688.py[?1l>[?2004l
+]2;python3 /tmp/fix_s7688.py]1;python3Fixed (8 lines): .opencode/scripts/validate-opencode-config.sh
+Fixed (1 lines): fix-api-imports.sh
+Fixed (3 lines): scripts/audit-suppressions.sh
+Fixed (2 lines): scripts/auto-checkpoint.sh
+Fixed (2 lines): scripts/checkpoint-stop.sh
+Fixed (5 lines): scripts/performance/find-large-images.sh
+Fixed (14 lines): scripts/restore-session-state.sh
+Fixed (4 lines): scripts/save-session-state.sh
+Fixed (4 lines): scripts/security/audit-suppressions.sh
+Fixed (7 lines): scripts/session-recovery.sh
+Fixed (6 lines): scripts/setup/cleanup-maintenance.sh
+Fixed (1 lines): scripts/setup/sentry/create-sentry-metric-alerts.sh
+Fixed (2 lines): scripts/setup/sentry/fix-sentry-alerts.sh
+Fixed (1 lines): scripts/setup/sentry/list-sentry-alerts.sh
+Fixed (3 lines): scripts/setup/sentry/setup-sentry-alerts.sh
+Fixed (2 lines): scripts/setup/sentry/verify-sentry-events.sh
+Fixed (13 lines): scripts/setup/setup-opencode.sh
+Fixed (2 lines): scripts/setup/utilities/refactor-globals-css.sh
+Fixed (10 lines): scripts/validate-nuclei-integration.sh
+
+Total lines modified: 90
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:04] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:12] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  grep -n '^\s*if \[ \|^\s*elif \[ \|^\s*while \[ ' /Users/drew/DCYFR/code/dcyf [Krr-workspace/dcyfr-labs/scripts/validate-nuclei-integration.sh /Users/drew/DCYFR/ [Kccode/dcyfr-workspace/dcyfr-labs/scripts/restore-session-state.sh 2>/dev/null | h [Keead -20 && echo "---SAMPLE FIXED LINES---" && grep -n '\[\[ ' /Users/drew/DCYFR/ [Kccode/dcyfr-workspace/dcyfr-labs/scripts/validate-nuclei-integration.sh | head -1 [K0[?1l>[?2004l
+]2;grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox,.venv,venv]1;grep---SAMPLE FIXED LINES---
+52:if [[ -f ".github/nuclei/config.yaml" ]]; then
+59:if [[ -d ".github/nuclei/templates/community" ]]; then
+61:  if [[ "$COMMUNITY_COUNT" -gt 0 ]]; then
+71:if [[ -d ".github/nuclei/templates/custom" ]]; then
+73:  if [[ "$CUSTOM_COUNT" -gt 0 ]]; then
+87:  if [[ -f "$template" ]]; then
+114:if [[ -f ".gitmodules" ]]; then
+127:if [[ "$CURRENT_VERSION" =~ ^v9\.[0-9]+\.[0-9]+$ ]]; then
+156:if [[ -f ".github/workflows/nuclei-scan.yml" ]]; then
+171:if [[ -f ".github/workflows/nuclei-templates-sync.yml" ]]; then
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:12] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:21] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  grep -rn ' \[ [^[]' /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts [K// /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/.opencode/ /Users/drew/DCYFR [K//code/dcyfr-workspace/dcyfr-labs/fix-api-imports.sh 2>/dev/null | grep -v '^\s*# [K'' | grep -v '\.json' | grep -v 'package' | grep -v 'node_modules' | head -20[?1l>[?2004l
+]2;grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox,.venv,venv]1;grep/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/create-codeql-fix-pr.mjs:68:- [ ] TypeScript compiles without errors
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/create-codeql-fix-pr.mjs:69:- [ ] ESLint passes (0 errors)
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/create-codeql-fix-pr.mjs:70:- [ ] Tests pass (≥99%)
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/create-codeql-fix-pr.mjs:71:- [ ] Design tokens used (if UI changes)
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/create-codeql-fix-pr.mjs:72:- [ ] Security fix verified
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/create-codeql-fix-pr.mjs:73:- [ ] No new vulnerabilities introduced
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/analyze-test-health.mjs:297:    body += `- [ ] Fix ${failedTests} failing test(s)\n`;
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/analyze-test-health.mjs:300:    body += `- [ ] Investigate ${flakyTests.length} flaky test(s)\n`;
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/analyze-test-health.mjs:303:    body += `- [ ] Review coverage regression (${coverageDelta.toFixed(1)}%)\n`;
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/analyze-test-health.mjs:306:    body += `- [ ] Optimize slow tests (${slowTests.length} tests >${SLOW_TEST_THRESHOLD}ms)\n`;
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/monthly-cleanup.mjs:341:    sections.push(`- [ ] ${item}`);
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/monthly-cleanup.mjs:347:  sections.push('- [ ] Review and remove unused exports');
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/monthly-cleanup.mjs:348:  sections.push('- [ ] Clean up unused dependencies');
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/monthly-cleanup.mjs:349:  sections.push('- [ ] Consider refactoring large files');
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/monthly-cleanup.mjs:350:  sections.push('- [ ] Address high-priority TODO comments');
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/monthly-cleanup.mjs:352:  sections.push('- [ ] Complete workspace cleanup checklist');
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/backlog/scan-backlog.mjs:60:    // Detect task lines (- [ ] or - [x])
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/claude-code-automation.sh:62:    if [ -z "$MODIFIED_FILES" ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/claude-code-automation.sh:90:    if [ -n "$REPORT" ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/claude-code-automation.sh:113:        if [ "$count" -gt 0 ]; then
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:21] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:34] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  grep -rn 'if \[ \|elif \[ \|while \[ \|until \[ ' /Users/drew/DCYFR/code/dcyf [Krr-workspace/dcyfr-labs/ --include="*.sh" 2>/dev/null | grep -v node_modules | he [Kaad -30[?1l>[?2004l
+]2;grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox,.venv,venv]1;grep/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/claude-code-automation.sh:62:    if [ -z "$MODIFIED_FILES" ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/claude-code-automation.sh:90:    if [ -n "$REPORT" ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/claude-code-automation.sh:113:        if [ "$count" -gt 0 ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/claude-code-automation.sh:124:        if [ "$count" -gt 0 ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/claude-code-automation.sh:135:        if [ "$count" -gt 0 ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/claude-code-automation.sh:142:    if [ $violations_found -eq 0 ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/claude-code-automation.sh:157:    if [ -z "$error_file" ] || [ ! -f "$error_file" ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/setup/sentry/configure-sentry.sh:17:if [ -z "$SENTRY_DSN" ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/setup/sentry/configure-sentry.sh:29:  if [ "$CONTINUE" != "y" ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/setup/sentry/test-security-alerts.sh:36:    if [ -z "$auth_header" ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/setup/sentry/test-security-alerts.sh:86:if [ "$BASE_URL" == "http://localhost:3000" ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/setup/sentry/test-security-alerts.sh:90:        if [ $i -eq 61 ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/setup/sentry/test-security-alerts.sh:103:        if [ $i -eq 6 ]; then
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:36] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:52] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  python3 -c "[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004hiimport re, os[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004h[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004hBBASE = '/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs'[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004hEEXTRA = [[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004h     'scripts/claude-code-automation.sh',[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004h     'scripts/setup/sentry/configure-sentry.sh',[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004h     'scripts/setup/sentry/test-security-alerts.sh',[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004h][?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004h[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004hddef fix_line(line):[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004h     new = line[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004h     if ' [ ' in new and '[[' not in new.replace(' [ ', ''):[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004h         new = re.sub(r'(?<!\[)\[ ', '[[ ', new)[?1l>[?2004l
+zsh: event not found: \[)\[
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:52] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h         new = re.sub(r' \](?= (?:then|do|&&|\|\||;|\|))', ' ]]', new)[?1l>[?2004l
+]2;new = re.sub(r' \](?= (?:then|do|&&|\|\||;|\|))', ' ]]', new)]1;newzsh: unknown file attribute:  
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:52] C:[31m1[00m
+[1m[31m$ [00m[K[?1h=[?2004h         new = re.sub(r' \](;)', r' ]]\1', new)[?1l>[?2004l
+]2;new = re.sub(r' \](;)', r' ]]\1', new)]1;newzsh: unknown file attribute:  
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:52] C:[31m1[00m
+[1m[31m$ [00m[K[?1h=[?2004h         new = re.sub(r' \]\$', ' ]]', new)[?1l>[?2004l
+]2;new = re.sub(r' \]\$', ' ]]', new)]1;newzsh: unknown file attribute:  
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:52] C:[31m1[00m
+[1m[31m$ [00m[K[?1h=[?2004h         new = re.sub(r' \]$', ' ]]', new)[?1l>[?2004l
+]2;new = re.sub(r' \]$', ' ]]', new)]1;newzsh: unknown file attribute:  
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:52] C:[31m1[00m
+[1m[31m$ [00m[K[?1h=[?2004h     elif new.strip().startswith('[ ') and '[[' not in new:[?1l>[?2004l
+zsh: parse error near `elif'
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:52] C:[31m1[00m
+[1m[31m$ [00m[K[?1h=[?2004h         new = re.sub(r'^(\s*)\[ ', r'\1[[ ', new)[?1l>[?2004l
+]2;new = re.sub(r'^(\s*)\[ ', r'\1[[ ', new)]1;newzsh: unknown file attribute: (
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:52] C:[31m1[00m
+[1m[31m$ [00m[K[?1h=[?2004h         new = re.sub(r' \](?= (?:&&|\|\||;|\|))', ' ]]', new)[?1l>[?2004l
+]2;new = re.sub(r' \](?= (?:&&|\|\||;|\|))', ' ]]', new)]1;newzsh: unknown file attribute:  
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:52] C:[31m1[00m
+[1m[31m$ [00m[K[?1h=[?2004h         new = re.sub(r' \]$', ' ]]', new)[?1l>[?2004l
+]2;new = re.sub(r' \]$', ' ]]', new)]1;newzsh: unknown file attribute:  
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:52] C:[31m1[00m
+[1m[31m$ [00m[K[?1h=[?2004h     return new[?1l>[?2004l
+]2;return new]1;return[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:52] 
+[1m[31m$ [00m[K[?1h=[?2004h[?1l>[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:52] 
+[1m[31m$ [00m[K[?1h=[?2004hffor rel in EXTRA:[?1l>[?2004l
+[0m[27m[24m[Jfor> [K[?1h=[?2004h     path = os.path.join(BASE, rel)[?1l>[?2004l
+]2;for rel in EXTRA:; do; path = os.path.join(BASE, rel); done]1;forzsh: unknown file attribute: B
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:38:52] C:[31m1[00m
+[1m[31m$ [00m[K[?1h=[?2004h     if not os.path.exists(path):[?1l>[?2004l
+[0m[27m[24m[Jif> [K[?1h=[?2004h         print(f'SKIP: {rel}')[?1l>[?2004l
+[0m[27m[24m[Jif> [K[?1h=[?2004h         continue[?1l>[?2004l
+[0m[27m[24m[Jif> [K[?1h=[?2004h     with open(path) as f:[?1l>[?2004l
+[0m[27m[24m[Jif> [K[?1h=[?2004h         lines = f.read().split('\n')[?1l>[?2004l
+[0m[27m[24m[Jif> [K[?1h=[?2004h     new_lineimport re, oe([?1l>[?2004l
+[0m[27m[24m[Jif> [K[?1h=[?2004hBBASE = '/UslinEXTRA = [[?1l>[?2004l
+[0m[27m[24m[Jif quote> [K[?1h=[?2004h     'scripts/claude-code-automation.sh',[?1l>[?2004l
+[0m[27m[24m[Jif quote> [K[?1h=[?2004h     's i    'scr)[?1l>[?2004l
+[0m[27m[24m[Jif quote> [K[?1h=[?2004h     'scripts/setup/sentry/configure-sen '    'scripts/setup/sentry/tes [Ktt-security-alertsne][?1l>[?2004l
+[0m[27m[24m[Jif> [K[?1h=[?2004h[?1l>[?2004l
+[0m[27m[24m[Jif> [K[?1h=[?2004hddef fix_line(line):[?1l>[?2004l
+[0m[27m[24m[Jif> [K[?1h=[?2004h     new = line[?1l>[?2004l
+[0m[27m[24m[Jif> [K[?1h=[?2004h     if ' [ ' else    new = line[?1l>[?2004l
+[0m[27m[24m[Jif> [K[?1h=[?2004h    No    if ' [ ' }'    [?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:39:14] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  python3 /tmp/fix_s7688_extra.py && grep -rn 'if \[ \|elif \[ \|while \[ ' /Us [Keers/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/ --include="*.sh" 2>/dev/null | g [Krrep -v node_modules | wc -l[?1l>[?2004l
+]2;python3 /tmp/fix_s7688_extra.py && grep --color=auto  -rn   --include="*.sh" ]1;python3Fixed (7): scripts/claude-code-automation.sh
+Fixed (2): scripts/setup/sentry/configure-sentry.sh
+Fixed (4): scripts/setup/sentry/test-security-alerts.sh
+       0
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:39:16] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\ cd /Users/drew/DCYFR/code/dcyfr-workspace && set -a && source .env.local && set +a && curl -sS -u "$SONAR_TOKEN:" "https://sonarcloud.io/api/issues/search?organization=$SONAR_ORGANIZATION&componentKeys=dcyfr_dcyfr-ai&resolved=false&rules=shelldre:S7688&ps=50" > /tmp/s7688_dcyfr_ai.json && echo "TOTAL:" && jq '.total' /tmp/s7688_dcyfr_ai.json && echo "FILES:" && jq -r '.issues[] | .component | split(":")[1]' /tmp/s7688_dcyfr_ai.json | sort -u
+[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:41:52] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  cd /Users/drew/DCYFR/code/dcyfr-workspace && set -a && source .env.local && s [Keet +a && curl -sS -u "$SONAR_TOKEN:" "https://sonarcloud.io/api/issues/search?or [Kgganization=$SONAR_ORGANIZATION&componentKeys=dcyfr_dcyfr-ai&resolved=false&rules [K==shelldre:S7688&ps=50" > /tmp/s7688_dcyfr_ai.json && echo "TOTAL:" && jq '.total [K'' /tmp/s7688_dcyfr_ai.json && echo "FILES:" && jq -r '.issues[] | .component | s [Kpplit(":")[1]' /tmp/s7688_dcyfr_ai.json | sort -u[?1l>[?2004l
+]2;cd /Users/drew/DCYFR/code/dcyfr-workspace && set -a && source .env.local &&  ]1;cdTOTAL:
+[0;39m14[0m
+FILES:
+scripts/first-release.sh
+scripts/prepublish.sh
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [31mx[00m [23:41:55] 
+[1m[31m$ [00m[K[?1h=[?2004h[A[A[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:41:55] 
+[1m[31m$ [00m[K[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:42:08] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  grep -n 'if \[ \|elif \[ \|while \[ ' /Users/drew/DCYFR/code/dcyfr-workspace/ [Kddcyfr-ai/scripts/first-release.sh /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-a [Kii/scripts/prepublish.sh 2>/dev/null | head -40[?1l>[?2004l
+]2;grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox,.venv,venv]1;grep/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-ai/scripts/first-release.sh:13:if [ ! -f "package.json" ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-ai/scripts/first-release.sh:117:  if [ -n "$(ls -A .changeset/*.md 2>/dev/null | grep -v README.md)" ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-ai/scripts/prepublish.sh:20:if [ $? -eq 0 ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-ai/scripts/prepublish.sh:31:if [ $? -eq 0 ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-ai/scripts/prepublish.sh:42:if [ $? -eq 0 ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-ai/scripts/prepublish.sh:70:  if [ -f "$file" ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-ai/scripts/prepublish.sh:81:if [ -f "dist/ai/config/loader.js" ] && \
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-ai/scripts/prepublish.sh:97:if [ $? -eq 0 ]; then
+/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-ai/scripts/prepublish.sh:115:if [ $? -eq 0 ]; then
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:42:08] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:42:41] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  python3 /tmp/fix_s7688_dcyfr_ai.py[?1l>[?2004l
+]2;python3 /tmp/fix_s7688_dcyfr_ai.py]1;python3Fixed scripts/first-release.sh (2 lines changed)
+Fixed scripts/prepublish.sh (7 lines changed)
+
+Total lines changed: 9
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:42:41] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:42:49] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  grep -n 'if \[ \|elif \[ \|while \[ ' /Users/drew/DCYFR/code/dcyfr-workspace/ [Kddcyfr-ai/scripts/first-release.sh /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-a [Kii/scripts/prepublish.sh 2>/dev/null | wc -l && echo "---remaining---" && grep -r [Knn 'if \[ \|elif \[ \|while \[ ' /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-ai/ [K  --include="*.sh" 2>/dev/null | grep -v node_modules[?1l>[?2004l
+]2;grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox,.venv,venv]1;grep       0
+---remaining---
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:42:49] C:[31m1[00m
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:42:57] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  grep -n '\[ ' /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-ai/scripts/prepubl [Kiish.sh | grep -v '\[\[' | head -20[?1l>[?2004l
+]2;grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox,.venv,venv]1;grep82:   [ -f "dist/ai/config/schema.js" ] && \
+83:   [ -f "dist/ai/telemetry/engine.js" ] && \
+84:   [ -f "dist/ai/providers/registry.js" ] && \
+85:   [ -f "dist/ai/plugins/plugin-loader.js" ] && \
+86:   [ -f "dist/ai/validation/validation-framework.js" ]; then
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:42:57] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:43:16] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  grep -n '\[ ' /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-ai/scripts/prepubl [Kiish.sh | grep -v '\[\[' | wc -l && echo "---dcyfr-ai total remaining---" && grep [K  -rn '\bif \[ \|\belif \[ \|\bwhile \[ \|^\s*\[ ' /Users/drew/DCYFR/code/dcyfr-w [Koorkspace/dcyfr-ai/ --include="*.sh" 2>/dev/null | grep -v node_modules | grep -v [K  '\[\['[?1l>[?2004l
+]2;grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox,.venv,venv]1;grep       0
+---dcyfr-ai total remaining---
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:43:17] C:[31m1[00m
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:43:30] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  git -C /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs add -A && git -C /Us [Keers/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs status --short | head -30[?1l>[?2004l
+]2;git -C /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs add -A && git -C    ]1;gitM  .opencode/scripts/validate-opencode-config.sh
+M  fix-api-imports.sh
+M  scripts/audit-suppressions.sh
+M  scripts/auto-checkpoint.sh
+M  scripts/checkpoint-stop.sh
+M  scripts/claude-code-automation.sh
+M  scripts/performance/find-large-images.sh
+M  scripts/restore-session-state.sh
+M  scripts/save-session-state.sh
+M  scripts/security/audit-suppressions.sh
+M  scripts/session-recovery.sh
+M  scripts/setup/cleanup-maintenance.sh
+M  scripts/setup/sentry/configure-sentry.sh
+M  scripts/setup/sentry/create-sentry-metric-alerts.sh
+M  scripts/setup/sentry/fix-sentry-alerts.sh
+M  scripts/setup/sentry/list-sentry-alerts.sh
+M  scripts/setup/sentry/setup-sentry-alerts.sh
+M  scripts/setup/sentry/test-security-alerts.sh
+M  scripts/setup/sentry/verify-sentry-events.sh
+M  scripts/setup/setup-opencode.sh
+M  scripts/setup/utilities/refactor-globals-css.sh
+M  scripts/validate-nuclei-integration.sh
+A  typescript
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:43:30] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:43:43] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  git -C /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs restore --staged typ [Keescript && git -C /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs commit --no- [Kvverify -m "fix(security): S7688 use [[ instead of [ for bash conditionals in she [Klll scripts[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004hRReplace single-bracket [ ] with double-bracket [[ ]] in all bash  [Kcconditionals[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004haacross 22 shell scripts. The [[ construct prevents word splitting [K  and pathname[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004heexpansion, is safer, and more feature-rich than [ ].[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004hFFiles changed:[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h-- .opencode/scripts/validate-opencode-config.sh (8 lines)[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h-- fix-api-imports.sh (1 line)[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h-- scripts/audit-suppressions.sh (3 lines)[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h-- scripts/auto-checkpoint.sh (2 lines)[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h-- scripts/checkpoint-stop.sh (2 lines)[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h-- scripts/claude-code-automation.sh (7 lines)[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h-- scripts/performance/find-large-images.sh (5 lines)[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h-- scripts/restore-session-state.sh (14 lines)[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h-- scripts/save-session-state.sh (4 lines)[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h-- scripts/security/audit-suppressions.sh (4 lines)[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h-- scripts/session-recovery.sh (7 lines)[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h-- scripts/setup/cleanup-maintenance.sh (6 lines)[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h-- scripts/set[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004hRReplace single-bracket [ ] with double-bracket [[ ]] in all bash  [Kcconditionals[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004haacross 22 shell scripts. The [[ construct prevents word splitting [K  and pathname[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004heexpansion, is safer, and more feature-rich than [ ].[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004hFFiles changed:[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h-- .opencode/scripts/"[?1l>[?2004l
+]2;git -C /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs restore --staged  &&]1;git[main 57a2f48e] fix(security): S7688 use [[ instead of [ for bash conditionals in shell scripts
+ 22 files changed, 103 insertions(+), 103 deletions(-)
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:43:45] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:43:51] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  git -C /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-ai add scripts/first-rele [Kaase.sh scripts/prepublish.sh && git -C /Users/drew/DCYFR/code/dcyfr-workspace/dc [Kyyfr-ai commit --no-verify -m "fix(security): S7688 use [[ instead of [ for bash  [Kcconditionals in shell scripts[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004hRReplace single-bracket [ ] with double-bracket [[ ]] in all bash  [Kcconditionals[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004hiin scripts/first-release.sh and scripts/prepublish.sh. The [[ con [Ksstruct is[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004hssafer and prevents word splitting and pathname expansion.[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004h[?1l>[?2004l
+[0m[27m[24m[Jcmdand dquote> [K[?1h=[?2004hSSonarCloud: eliminates 14 shelldre:S7688 HIGH violations"[?1l>[?2004l
+]2;git -C /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-ai add   && git -C  commi]1;git[main a8c45dd] fix(security): S7688 use [[ instead of [ for bash conditionals in shell scripts
+ 2 files changed, 14 insertions(+), 14 deletions(-)
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:43:51] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:43:57] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  git -C /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs push origin main &&  [Keecho "dcyfr-labs pushed" && git -C /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr- [Kaai push origin main && echo "dcyfr-ai pushed"[?1l>[?2004l
+]2;git -C /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs push origin main && ]1;gitEnumerating objects: 59, done.
+Counting objects:   1% (1/59)Counting objects:   3% (2/59)Counting objects:   5% (3/59)Counting objects:   6% (4/59)Counting objects:   8% (5/59)Counting objects:  10% (6/59)Counting objects:  11% (7/59)Counting objects:  13% (8/59)Counting objects:  15% (9/59)Counting objects:  16% (10/59)Counting objects:  18% (11/59)Counting objects:  20% (12/59)Counting objects:  22% (13/59)Counting objects:  23% (14/59)Counting objects:  25% (15/59)Counting objects:  27% (16/59)Counting objects:  28% (17/59)Counting objects:  30% (18/59)Counting objects:  32% (19/59)Counting objects:  33% (20/59)Counting objects:  35% (21/59)Counting objects:  37% (22/59)Counting objects:  38% (23/59)Counting objects:  40% (24/59)Counting objects:  42% (25/59)Counting objects:  44% (26/59)Counting objects:  45% (27/59)Counting objects:  47% (28/59)Counting objects:  49% (29/59)Counting objects:  50% (30/59)Counting objects:  52% (31/59)Counting objects:  54% (32/59)Counting objects:  55% (33/59)Counting objects:  57% (34/59)Counting objects:  59% (35/59)Counting objects:  61% (36/59)Counting objects:  62% (37/59)Counting objects:  64% (38/59)Counting objects:  66% (39/59)Counting objects:  67% (40/59)Counting objects:  69% (41/59)Counting objects:  71% (42/59)Counting objects:  72% (43/59)Counting objects:  74% (44/59)Counting objects:  76% (45/59)Counting objects:  77% (46/59)Counting objects:  79% (47/59)Counting objects:  81% (48/59)Counting objects:  83% (49/59)Counting objects:  84% (50/59)Counting objects:  86% (51/59)Counting objects:  88% (52/59)Counting objects:  89% (53/59)Counting objects:  91% (54/59)Counting objects:  93% (55/59)Counting objects:  94% (56/59)Counting objects:  96% (57/59)Counting objects:  98% (58/59)Counting objects: 100% (59/59)Counting objects: 100% (59/59), done.
+Delta compression using up to 8 threads
+Compressing objects:   3% (1/32)Compressing objects:   6% (2/32)Compressing objects:   9% (3/32)Compressing objects:  12% (4/32)Compressing objects:  15% (5/32)Compressing objects:  18% (6/32)Compressing objects:  21% (7/32)Compressing objects:  25% (8/32)Compressing objects:  28% (9/32)Compressing objects:  31% (10/32)Compressing objects:  34% (11/32)Compressing objects:  37% (12/32)Compressing objects:  40% (13/32)Compressing objects:  43% (14/32)Compressing objects:  46% (15/32)Compressing objects:  50% (16/32)Compressing objects:  53% (17/32)Compressing objects:  56% (18/32)Compressing objects:  59% (19/32)Compressing objects:  62% (20/32)Compressing objects:  65% (21/32)Compressing objects:  68% (22/32)Compressing objects:  71% (23/32)Compressing objects:  75% (24/32)Compressing objects:  78% (25/32)Compressing objects:  81% (26/32)Compressing objects:  84% (27/32)Compressing objects:  87% (28/32)Compressing objects:  90% (29/32)Compressing objects:  93% (30/32)Compressing objects:  96% (31/32)Compressing objects: 100% (32/32)Compressing objects: 100% (32/32), done.
+Writing objects:   3% (1/32)Writing objects:   6% (2/32)Writing objects:   9% (3/32)Writing objects:  12% (4/32)Writing objects:  15% (5/32)Writing objects:  18% (6/32)Writing objects:  21% (7/32)Writing objects:  25% (8/32)Writing objects:  28% (9/32)Writing objects:  31% (10/32)Writing objects:  34% (11/32)Writing objects:  37% (12/32)Writing objects:  40% (13/32)Writing objects:  43% (14/32)Writing objects:  46% (15/32)Writing objects:  50% (16/32)Writing objects:  53% (17/32)Writing objects:  56% (18/32)Writing objects:  59% (19/32)Writing objects:  62% (20/32)Writing objects:  65% (21/32)Writing objects:  68% (22/32)Writing objects:  71% (23/32)Writing objects:  75% (24/32)Writing objects:  81% (26/32)Writing objects:  84% (27/32)Writing objects:  87% (28/32)Writing objects:  90% (29/32)Writing objects:  93% (30/32)Writing objects:  96% (31/32)Writing objects: 100% (32/32)Writing objects: 100% (32/32), 8.85 KiB | 4.42 MiB/s, done.
+Total 32 (delta 26), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas:   0% (0/26)[Kremote: Resolving deltas:   3% (1/26)[Kremote: Resolving deltas:   7% (2/26)[Kremote: Resolving deltas:  11% (3/26)[Kremote: Resolving deltas:  15% (4/26)[Kremote: Resolving deltas:  19% (5/26)[Kremote: Resolving deltas:  23% (6/26)[Kremote: Resolving deltas:  26% (7/26)[Kremote: Resolving deltas:  30% (8/26)[Kremote: Resolving deltas:  34% (9/26)[Kremote: Resolving deltas:  38% (10/26)[Kremote: Resolving deltas:  42% (11/26)[Kremote: Resolving deltas:  46% (12/26)[Kremote: Resolving deltas:  50% (13/26)[Kremote: Resolving deltas:  53% (14/26)[Kremote: Resolving deltas:  57% (15/26)[Kremote: Resolving deltas:  61% (16/26)[Kremote: Resolving deltas:  65% (17/26)[Kremote: Resolving deltas:  69% (18/26)[Kremote: Resolving deltas:  73% (19/26)[Kremote: Resolving deltas:  76% (20/26)[Kremote: Resolving deltas:  80% (21/26)[Kremote: Resolving deltas:  84% (22/26)[Kremote: Resolving deltas:  88% (23/26)[Kremote: Resolving deltas:  92% (24/26)[Kremote: Resolving deltas:  96% (25/26)[Kremote: Resolving deltas: 100% (26/26)[Kremote: Resolving deltas: 100% (26/26), completed with 24 local objects.[K
+remote: 
+remote: GitHub found 2 vulnerabilities on dcyfr/dcyfr-labs's default branch (2 high). To find out more, visit:[K
+remote:      https://github.com/dcyfr/dcyfr-labs/security/dependabot[K
+remote: 
+To https://github.com/dcyfr/dcyfr-labs.git
+   637f0ced..57a2f48e  main -> main
+dcyfr-labs pushed
+Enumerating objects: 9, done.
+Counting objects:  11% (1/9)Counting objects:  22% (2/9)Counting objects:  33% (3/9)Counting objects:  44% (4/9)Counting objects:  55% (5/9)Counting objects:  66% (6/9)Counting objects:  77% (7/9)Counting objects:  88% (8/9)Counting objects: 100% (9/9)Counting objects: 100% (9/9), done.
+Delta compression using up to 8 threads
+Compressing objects:  20% (1/5)Compressing objects:  40% (2/5)Compressing objects:  60% (3/5)Compressing objects:  80% (4/5)Compressing objects: 100% (5/5)Compressing objects: 100% (5/5), done.
+Writing objects:  20% (1/5)Writing objects:  40% (2/5)Writing objects:  60% (3/5)Writing objects:  80% (4/5)Writing objects: 100% (5/5)Writing objects: 100% (5/5), 762 bytes | 762.00 KiB/s, done.
+Total 5 (delta 4), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas:   0% (0/4)[Kremote: Resolving deltas:  25% (1/4)[Kremote: Resolving deltas:  50% (2/4)[Kremote: Resolving deltas:  75% (3/4)[Kremote: Resolving deltas: 100% (4/4)[Kremote: Resolving deltas: 100% (4/4), completed with 4 local objects.[K
+remote: 
+remote: GitHub found 2 vulnerabilities on dcyfr/dcyfr-ai's default branch (2 high). To find out more, visit:[K
+remote:      https://github.com/dcyfr/dcyfr-ai/security/dependabot[K
+remote: 
+To https://github.com/dcyfr/dcyfr-ai.git
+   0c47679..a8c45dd  main -> main
+dcyfr-ai pushed
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:44:01] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                 set -a && source /Users/drew/DCYFR/code/dcyfr-workspace/.env.local && set +a && curl -sS -u "$SONAR_TOKEN:" "https://sonarcloud.io/api/issues/search?organization=$SONAR_ORGANIZATION&componentKeys=dcyfr_dcyfr-labs&resolved=false&rules=javascript:S3776,typescript:S3776&ps=100" > /tmp/s3776_dcyfr_labs.json && echo "TOTAL:" && jq '.total' /tmp/s3776_dcyfr_labs.json && echo "FILES (sorted by count):" && jq -r '.issues[] | .component | split(":")[1]' /tmp/s3776_dcyfr_labs.json | sort | uniq -c | sort -rn | head -30
+]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:48:04] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  set -a && source /Users/drew/DCYFR/code/dcyfr-workspace/.env.local && set +a  [K&&& curl -sS -u "$SONAR_TOKEN:" "https://sonarcloud.io/api/issues/search?organiza [Kttion=$SONAR_ORGANIZATION&componentKeys=dcyfr_dcyfr-labs&resolved=false&rules=jav [Kaascript:S3776,typescript:S3776&ps=100" > /tmp/s3776_dcyfr_labs.json && echo "TOT [KAAL:" && jq '.total' /tmp/s3776_dcyfr_labs.json && echo "FILES (sorted by count): [K"" && jq -r '.issues[] | .component | split(":")[1]' /tmp/s3776_dcyfr_labs.json | [K  sort | uniq -c | sort -rn | head -30[?1l>[?2004l
+]2;set -a && source /Users/drew/DCYFR/code/dcyfr-workspace/.env.local && set +a ]1;setTOTAL:
+[0;39m99[0m
+FILES (sorted by count):
+   4 scripts/security/monitor-upstream-advisories.mjs
+   3 scripts/check-todos-complete.mjs
+   2 src/lib/activity/topics.ts
+   2 scripts/validation/validate-frontmatter.mjs
+   2 scripts/security/branch-cleanup.mjs
+   2 scripts/security/annual-audit.mjs
+   2 scripts/release/generate-changelog-entry.mjs
+   2 scripts/populate-build-cache.mjs
+   2 scripts/dev-with-cache.mjs
+   2 scripts/ci/check-mcp-servers.mjs
+   2 scripts/ci/check-for-pii.mjs
+   2 scripts/check-comment-density.mjs
+   2 scripts/analyze-upstash-data-fast.mjs
+   1 src/proxy.ts
+   1 src/mcp/design-token-server.ts
+   1 src/lib/toc.ts
+   1 src/lib/security/prompt-security-middleware.ts
+   1 src/lib/security-version-checker.ts
+   1 src/lib/search/query-parser.ts
+   1 src/lib/remark/remark-mdx-component-linter.ts
+   1 src/lib/docs.ts
+   1 src/lib/dev-logger.ts
+   1 src/lib/dashboard/table-utils.ts
+   1 src/lib/api/api-monitor.ts
+   1 src/lib/api/api-cost-calculator.ts
+   1 src/lib/agents/provider-fallback-manager.ts
+   1 src/lib/activity/trending-projects.ts
+   1 src/inngest/security-functions.ts
+   1 src/hooks/use-view-tracking.ts
+   1 src/hooks/use-keyboard-shortcut.ts
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:48:05] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:48:13] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  jq -r '.issues[] | .component | split(":")[1]' /tmp/s3776_dcyfr_labs.json | s [Koort | uniq -c | sort -rn | tail -40[?1l>[?2004l
+]2;jq -r '.issues[] | .component | split(":")[1]' /tmp/s3776_dcyfr_labs.json |  ]1;jq   1 src/components/activity/ThreadActions.tsx
+   1 src/app/blog/[slug]/page.tsx
+   1 src/app/api/research/route.ts
+   1 src/app/api/dev/populate-cache/route.ts
+   1 src/app/api/contact/route.ts
+   1 src/app/api/analytics/route.ts
+   1 scripts/verify-views-shares-safety.mjs
+   1 scripts/verify-cleanup-safety.mjs
+   1 scripts/validation/validate-structured-data.mjs
+   1 scripts/validation/validate-post-ids.mjs
+   1 scripts/validation/validate-markdown-content.mjs
+   1 scripts/validation/validate-instructions.mjs
+   1 scripts/validate-skeleton-sync.mjs
+   1 scripts/validate-sitemap.mjs
+   1 scripts/validate-feeds.mjs
+   1 scripts/validate-doc-location.mjs
+   1 scripts/utilities/migrate-blog-analytics.mjs
+   1 scripts/sync-production-metrics.mjs
+   1 scripts/security/security-audit.mjs
+   1 scripts/security/quarterly-audit.mjs
+   1 scripts/revert-to-id-based-views.mjs
+   1 scripts/populate-local-cache.mjs
+   1 scripts/performance/check-bundle-size.mjs
+   1 scripts/migrate-redis-to-upstash.mjs
+   1 scripts/migrate-redis-data.mjs
+   1 scripts/lib/mdx-prose-extractor.mjs
+   1 scripts/learning/query-knowledge.mjs
+   1 scripts/generate-compliance-report.mjs
+   1 scripts/fix-barrel-exports.mjs
+   1 scripts/diagnose-github-cache.mjs
+   1 scripts/content/generate-blog-hero.mjs
+   1 scripts/consolidate-event-driven-engagement.mjs
+   1 scripts/cleanup-upstash-data.mjs
+   1 scripts/cleanup-broken-links.mjs
+   1 scripts/ci/validate-critical-mcps.mjs
+   1 scripts/ci/sync-agents.mjs
+   1 scripts/check-old-redis.mjs
+   1 scripts/backlog/scan-backlog.mjs
+   1 scripts/add-tlp-markers.mjs
+   1 eslint-local-rules/no-hardcoded-spacing.js
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:48:14] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:48:22] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  jq -r '.issues[] | "\(.component | split(":")[1]):\(.line) \(.message)"' /tmp [K//s3776_dcyfr_labs.json | sort | head -50[?1l>[?2004l
+]2;jq -r '.issues[] | "\(.component | split(":")[1]):\(.line) \(.message)"'  |  ]1;jqeslint-local-rules/no-hardcoded-spacing.js:89 Refactor this function to reduce its Cognitive Complexity from 22 to the 15 allowed.
+scripts/add-tlp-markers.mjs:132 Refactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.
+scripts/analyze-upstash-data-fast.mjs:34 Refactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.
+scripts/analyze-upstash-data-fast.mjs:73 Refactor this function to reduce its Cognitive Complexity from 43 to the 15 allowed.
+scripts/backlog/scan-backlog.mjs:34 Refactor this function to reduce its Cognitive Complexity from 30 to the 15 allowed.
+scripts/check-comment-density.mjs:138 Refactor this function to reduce its Cognitive Complexity from 25 to the 15 allowed.
+scripts/check-comment-density.mjs:278 Refactor this function to reduce its Cognitive Complexity from 18 to the 15 allowed.
+scripts/check-old-redis.mjs:22 Refactor this function to reduce its Cognitive Complexity from 39 to the 15 allowed.
+scripts/check-todos-complete.mjs:123 Refactor this function to reduce its Cognitive Complexity from 19 to the 15 allowed.
+scripts/check-todos-complete.mjs:165 Refactor this function to reduce its Cognitive Complexity from 21 to the 15 allowed.
+scripts/check-todos-complete.mjs:73 Refactor this function to reduce its Cognitive Complexity from 21 to the 15 allowed.
+scripts/ci/check-for-pii.mjs:114 Refactor this function to reduce its Cognitive Complexity from 83 to the 15 allowed.
+scripts/ci/check-for-pii.mjs:449 Refactor this function to reduce its Cognitive Complexity from 17 to the 15 allowed.
+scripts/ci/check-mcp-servers.mjs:129 Refactor this function to reduce its Cognitive Complexity from 24 to the 15 allowed.
+scripts/ci/check-mcp-servers.mjs:321 Refactor this function to reduce its Cognitive Complexity from 30 to the 15 allowed.
+scripts/ci/sync-agents.mjs:228 Refactor this function to reduce its Cognitive Complexity from 20 to the 15 allowed.
+scripts/ci/validate-critical-mcps.mjs:186 Refactor this function to reduce its Cognitive Complexity from 22 to the 15 allowed.
+scripts/cleanup-broken-links.mjs:103 Refactor this function to reduce its Cognitive Complexity from 19 to the 15 allowed.
+scripts/cleanup-upstash-data.mjs:22 Refactor this function to reduce its Cognitive Complexity from 28 to the 15 allowed.
+scripts/consolidate-event-driven-engagement.mjs:41 Refactor this function to reduce its Cognitive Complexity from 17 to the 15 allowed.
+scripts/content/generate-blog-hero.mjs:224 Refactor this function to reduce its Cognitive Complexity from 20 to the 15 allowed.
+scripts/dev-with-cache.mjs:44 Refactor this function to reduce its Cognitive Complexity from 34 to the 15 allowed.
+scripts/dev-with-cache.mjs:90 Refactor this function to reduce its Cognitive Complexity from 19 to the 15 allowed.
+scripts/diagnose-github-cache.mjs:52 Refactor this function to reduce its Cognitive Complexity from 31 to the 15 allowed.
+scripts/fix-barrel-exports.mjs:215 Refactor this function to reduce its Cognitive Complexity from 53 to the 15 allowed.
+scripts/generate-compliance-report.mjs:81 Refactor this function to reduce its Cognitive Complexity from 18 to the 15 allowed.
+scripts/learning/query-knowledge.mjs:149 Refactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.
+scripts/lib/mdx-prose-extractor.mjs:81 Refactor this function to reduce its Cognitive Complexity from 22 to the 15 allowed.
+scripts/migrate-redis-data.mjs:81 Refactor this function to reduce its Cognitive Complexity from 85 to the 15 allowed.
+scripts/migrate-redis-to-upstash.mjs:23 Refactor this function to reduce its Cognitive Complexity from 59 to the 15 allowed.
+scripts/performance/check-bundle-size.mjs:159 Refactor this function to reduce its Cognitive Complexity from 24 to the 15 allowed.
+scripts/populate-build-cache.mjs:114 Refactor this function to reduce its Cognitive Complexity from 17 to the 15 allowed.
+scripts/populate-build-cache.mjs:241 Refactor this function to reduce its Cognitive Complexity from 23 to the 15 allowed.
+scripts/populate-local-cache.mjs:15 Refactor this function to reduce its Cognitive Complexity from 17 to the 15 allowed.
+scripts/release/generate-changelog-entry.mjs:257 Refactor this function to reduce its Cognitive Complexity from 28 to the 15 allowed.
+scripts/release/generate-changelog-entry.mjs:377 Refactor this function to reduce its Cognitive Complexity from 23 to the 15 allowed.
+scripts/revert-to-id-based-views.mjs:79 Refactor this function to reduce its Cognitive Complexity from 31 to the 15 allowed.
+scripts/security/annual-audit.mjs:560 Refactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.
+scripts/security/annual-audit.mjs:599 Refactor this function to reduce its Cognitive Complexity from 25 to the 15 allowed.
+scripts/security/branch-cleanup.mjs:180 Refactor this function to reduce its Cognitive Complexity from 17 to the 15 allowed.
+scripts/security/branch-cleanup.mjs:42 Refactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.
+scripts/security/monitor-upstream-advisories.mjs:228 Refactor this function to reduce its Cognitive Complexity from 22 to the 15 allowed.
+scripts/security/monitor-upstream-advisories.mjs:294 Refactor this function to reduce its Cognitive Complexity from 31 to the 15 allowed.
+scripts/security/monitor-upstream-advisories.mjs:446 Refactor this function to reduce its Cognitive Complexity from 33 to the 15 allowed.
+scripts/security/monitor-upstream-advisories.mjs:86 Refactor this function to reduce its Cognitive Complexity from 24 to the 15 allowed.
+scripts/security/quarterly-audit.mjs:469 Refactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.
+scripts/security/security-audit.mjs:235 Refactor this function to reduce its Cognitive Complexity from 21 to the 15 allowed.
+scripts/sync-production-metrics.mjs:206 Refactor this function to reduce its Cognitive Complexity from 19 to the 15 allowed.
+scripts/utilities/migrate-blog-analytics.mjs:103 Refactor this function to reduce its Cognitive Complexity from 68 to the 15 allowed.
+scripts/validate-doc-location.mjs:187 Refactor this function to reduce its Cognitive Complexity from 20 to the 15 allowed.
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:48:22] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:48:32] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  jq -r '.issues[] | "\(.component | split(":")[1]):\(.line) \(.message)"' /tmp [K//s3776_dcyfr_labs.json | sort | tail -55[?1l>[?2004l
+]2;jq -r '.issues[] | "\(.component | split(":")[1]):\(.line) \(.message)"'  |  ]1;jqscripts/security/monitor-upstream-advisories.mjs:86 Refactor this function to reduce its Cognitive Complexity from 24 to the 15 allowed.
+scripts/security/quarterly-audit.mjs:469 Refactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.
+scripts/security/security-audit.mjs:235 Refactor this function to reduce its Cognitive Complexity from 21 to the 15 allowed.
+scripts/sync-production-metrics.mjs:206 Refactor this function to reduce its Cognitive Complexity from 19 to the 15 allowed.
+scripts/utilities/migrate-blog-analytics.mjs:103 Refactor this function to reduce its Cognitive Complexity from 68 to the 15 allowed.
+scripts/validate-doc-location.mjs:187 Refactor this function to reduce its Cognitive Complexity from 20 to the 15 allowed.
+scripts/validate-feeds.mjs:137 Refactor this function to reduce its Cognitive Complexity from 18 to the 15 allowed.
+scripts/validate-sitemap.mjs:43 Refactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.
+scripts/validate-skeleton-sync.mjs:150 Refactor this function to reduce its Cognitive Complexity from 30 to the 15 allowed.
+scripts/validation/validate-frontmatter.mjs:239 Refactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.
+scripts/validation/validate-frontmatter.mjs:35 Refactor this function to reduce its Cognitive Complexity from 42 to the 15 allowed.
+scripts/validation/validate-instructions.mjs:140 Refactor this function to reduce its Cognitive Complexity from 26 to the 15 allowed.
+scripts/validation/validate-markdown-content.mjs:238 Refactor this function to reduce its Cognitive Complexity from 27 to the 15 allowed.
+scripts/validation/validate-post-ids.mjs:68 Refactor this function to reduce its Cognitive Complexity from 18 to the 15 allowed.
+scripts/validation/validate-structured-data.mjs:132 Refactor this function to reduce its Cognitive Complexity from 51 to the 15 allowed.
+scripts/verify-cleanup-safety.mjs:20 Refactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.
+scripts/verify-views-shares-safety.mjs:68 Refactor this function to reduce its Cognitive Complexity from 38 to the 15 allowed.
+src/app/api/analytics/route.ts:317 Refactor this function to reduce its Cognitive Complexity from 28 to the 15 allowed.
+src/app/api/contact/route.ts:147 Refactor this function to reduce its Cognitive Complexity from 21 to the 15 allowed.
+src/app/api/dev/populate-cache/route.ts:124 Refactor this function to reduce its Cognitive Complexity from 18 to the 15 allowed.
+src/app/api/research/route.ts:208 Refactor this function to reduce its Cognitive Complexity from 35 to the 15 allowed.
+src/app/blog/[slug]/page.tsx:69 Refactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.
+src/components/activity/ThreadActions.tsx:68 Refactor this function to reduce its Cognitive Complexity from 17 to the 15 allowed.
+src/components/analytics/analytics-filters.tsx:150 Refactor this function to reduce its Cognitive Complexity from 23 to the 15 allowed.
+src/components/blog/post/post-badges.tsx:21 Refactor this function to reduce its Cognitive Complexity from 31 to the 15 allowed.
+src/components/blog/post/post-list.tsx:218 Refactor this function to reduce its Cognitive Complexity from 29 to the 15 allowed.
+src/components/blog/rivet/interactive/glossary-tooltip.tsx:79 Refactor this function to reduce its Cognitive Complexity from 27 to the 15 allowed.
+src/components/common/PostInteractions.tsx:72 Refactor this function to reduce its Cognitive Complexity from 18 to the 15 allowed.
+src/components/common/filters/active-filters.tsx:51 Refactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.
+src/components/common/mdx.tsx:255 Refactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.
+src/components/common/table-of-contents-sidebar.tsx:82 Refactor this function to reduce its Cognitive Complexity from 19 to the 15 allowed.
+src/components/features/github/github-heatmap.tsx:92 Refactor this function to reduce its Cognitive Complexity from 21 to the 15 allowed.
+src/components/home/featured-post-hero.tsx:79 Refactor this function to reduce its Cognitive Complexity from 20 to the 15 allowed.
+src/components/layouts/archive-hero.tsx:103 Refactor this function to reduce its Cognitive Complexity from 20 to the 15 allowed.
+src/components/layouts/page-hero.tsx:103 Refactor this function to reduce its Cognitive Complexity from 41 to the 15 allowed.
+src/components/sections/social-links-grid.tsx:41 Refactor this function to reduce its Cognitive Complexity from 66 to the 15 allowed.
+src/hooks/use-keyboard-shortcut.ts:55 Refactor this function to reduce its Cognitive Complexity from 18 to the 15 allowed.
+src/hooks/use-view-tracking.ts:60 Refactor this function to reduce its Cognitive Complexity from 17 to the 15 allowed.
+src/inngest/security-functions.ts:330 Refactor this function to reduce its Cognitive Complexity from 29 to the 15 allowed.
+src/lib/activity/topics.ts:267 Refactor this function to reduce its Cognitive Complexity from 22 to the 15 allowed.
+src/lib/activity/topics.ts:351 Refactor this function to reduce its Cognitive Complexity from 20 to the 15 allowed.
+src/lib/activity/trending-projects.ts:82 Refactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.
+src/lib/agents/provider-fallback-manager.ts:380 Refactor this function to reduce its Cognitive Complexity from 17 to the 15 allowed.
+src/lib/api/api-cost-calculator.ts:465 Refactor this function to reduce its Cognitive Complexity from 18 to the 15 allowed.
+src/lib/api/api-monitor.ts:114 Refactor this function to reduce its Cognitive Complexity from 17 to the 15 allowed.
+src/lib/dashboard/table-utils.ts:47 Refactor this function to reduce its Cognitive Complexity from 21 to the 15 allowed.
+src/lib/dev-logger.ts:69 Refactor this function to reduce its Cognitive Complexity from 17 to the 15 allowed.
+src/lib/docs.ts:55 Refactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.
+src/lib/remark/remark-mdx-component-linter.ts:93 Refactor this function to reduce its Cognitive Complexity from 21 to the 15 allowed.
+src/lib/search/query-parser.ts:35 Refactor this function to reduce its Cognitive Complexity from 18 to the 15 allowed.
+src/lib/security-version-checker.ts:133 Refactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.
+src/lib/security/prompt-security-middleware.ts:128 Refactor this function to reduce its Cognitive Complexity from 22 to the 15 allowed.
+src/lib/toc.ts:69 Refactor this function to reduce its Cognitive Complexity from 25 to the 15 allowed.
+src/mcp/design-token-server.ts:110 Refactor this function to reduce its Cognitive Complexity from 18 to the 15 allowed.
+src/proxy.ts:73 Refactor this function to reduce its Cognitive Complexity from 23 to the 15 allowed.
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:48:32] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace]1;..yfr-workspace]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace[00m [00mon[34m git:[36mmain [32mo[00m [23:50:54] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  cd /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs && npx tsc --noEmit --sk [KiipLibCheck 2>&1 | grep -E "page-hero|social-links-grid|post-badges" | head -20[?1l>[?2004l
+]2;cd /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs && npx tsc --noEmit  2>&]1;cd^C
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [32mo[00m [23:51:00] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  npx tsc --noEmit --skipLibCheck 2>&1 | tail -10[?1l>[?2004l
+]2;npx tsc --noEmit --skipLibCheck 2>&1 | tail -10]1;npx  Overload 1 of 3, '(that: string, locales?: LocalesArgument, options?: CollatorOptions | undefined): number', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+  Overload 2 of 3, '(that: string, locales?: string | string[] | undefined, options?: CollatorOptions | undefined): number', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+  Overload 3 of 3, '(that: string): number', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/components/sections/social-links-grid.tsx(73,21): error TS2322: Type 'string' is not assignable to type 'never'.
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [32mo[00m [23:51:12] 
+[1m[31m$ [00m[K[?1h=[?2004h[3A[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [23:51:12] 
+[1m[31m$ [00m[K[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:02:33] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  sed -n '222,235p' /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/src/compo [Knnents/blog/post/post-list.tsx | cat -A | head -20[?1l>[?2004l
+]2;sed -n '222,235p'  | cat -A | head -20]1;sedcat: illegal option -- A
+usage: cat [-belnstuv] [file ...]
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:02:33] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:02:41] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  sed -n '226,232p' /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/src/compo [Knnents/blog/post/post-list.tsx[?1l>[?2004l
+]2;sed -n '226,232p' ]1;sed    );
+  }
+
+          // Hero layout for first post - featured prominent card
+          if (isFirstPost) {
+            return (
+              <ScrollReveal key={p.slug}>
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:02:42] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:02:47] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  sed -n '765,775p' /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/src/compo [Knnents/blog/post/post-list.tsx[?1l>[?2004l
+]2;sed -n '765,775p' ]1;sed            );
+          })}
+        </div>
+      );
+    }
+
+    // Grid layout implementation: Hero first post + 2-column grid for rest
+    return (
+      <div data-testid="post-list">
+        {/* Hero section - First post */}
+        <ScrollReveal className="mb-6">
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:02:47] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:02:57] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  python3 -c "[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004hwwith open('/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/src/compone [Knnts/blog/post/post-list.tsx', 'r') as f:[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004h     lines = f.readlines()[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004h## Remove lines 229-769 (0-indexed: 228-768)[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004hnnew_lines = lines[:228] + lines[769:][?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004hwwith open('/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/src/compone [Knnts/blog/post/post-list.tsx', 'w') as f:[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004h     f.writelines(new_lines)[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004hpprint('Done. Total lines:', len(new_lines))[?1l>[?2004l
+[0m[27m[24m[Jdquote> [K[?1h=[?2004h"[?1l>[?2004l
+]2;python3 -c ]1;python3Done. Total lines: 781
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:02:58] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:03:19] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  grep -n "if (layout\|// Grid\|// Magazine\|// List\|// Compact\|return (" /Us [Keers/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/src/components/blog/post/post-lis [Ktt.tsx | head -30[?1l>[?2004l
+]2;grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox,.venv,venv]1;grep197:    return (
+214:  // Magazine layout: first post as hero, then alternating side-by-side layouts with modern styling
+215:  if (layout === "magazine") {
+216:    return (
+230:    // Grid layout implementation: Hero first post + 2-column grid for rest
+231:    return (
+466:  // List layout: single column with full details
+467:  if (layout === "list") {
+468:    return (
+471:          return (
+589:  // Compact layout: minimal cards with modern styling
+590:  if (layout === "compact") {
+591:    return (
+594:          return (
+682:  return (
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:03:19] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:09:35] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  sed -n '250,420p' /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/src/lib/a [Kcctivity/topics.ts[?1l>[?2004l
+]2;sed -n '250,420p' ]1;sed  // Return unique keywords
+  return Array.from(new Set(tokens));
+}
+
+// ============================================================================
+// TOPIC EXTRACTION
+// ============================================================================
+
+/**
+ * Extract all topics from activity items
+ *
+ * Topics are extracted from:
+ * 1. Activity metadata tags (most reliable)
+ * 2. Activity categories
+ * 3. Keywords from titles (if includeKeywords enabled)
+ * 4. Keywords from descriptions (if includeKeywords enabled)
+ */
+export function extractTopics(
+  activities: ActivityItem[],
+  options: TopicExtractionOptions = {}
+): Topic[] {
+  const {
+    minCount = 1,
+    maxTopics,
+    includeKeywords = true,
+    minKeywordLength = 3,
+  } = options;
+
+  // Topic frequency map (normalized topic → count)
+  const topicCounts = new Map<string, number>();
+
+  // Extract topics from each activity
+  for (const activity of activities) {
+    const activityTopics = new Set<string>();
+
+    // 1. Extract from tags (highest priority)
+    if (activity.meta?.tags) {
+      for (const tag of activity.meta.tags) {
+        const normalized = normalizeTopic(tag);
+        activityTopics.add(normalized);
+      }
+    }
+
+    // 2. Extract from category
+    if (activity.meta?.category) {
+      const normalized = normalizeTopic(activity.meta.category);
+      activityTopics.add(normalized);
+    }
+
+    // 3. Extract keywords from title (if enabled)
+    if (includeKeywords) {
+      const titleKeywords = extractKeywords(activity.title, minKeywordLength);
+      for (const keyword of titleKeywords) {
+        const normalized = normalizeTopic(keyword);
+        activityTopics.add(normalized);
+      }
+    }
+
+    // 4. Extract keywords from description (if enabled)
+    if (includeKeywords && activity.description) {
+      const descKeywords = extractKeywords(
+        activity.description,
+        minKeywordLength
+      );
+      for (const keyword of descKeywords) {
+        const normalized = normalizeTopic(keyword);
+        activityTopics.add(normalized);
+      }
+    }
+
+    // Increment counts for all topics in this activity
+    for (const topic of activityTopics) {
+      topicCounts.set(topic, (topicCounts.get(topic) || 0) + 1);
+    }
+  }
+
+  // Convert to Topic objects
+  const totalActivities = activities.length;
+  const topics: Topic[] = Array.from(topicCounts.entries())
+    .filter(([_, count]) => count >= minCount)
+    .map(([name, count]) => ({
+      name,
+      count,
+      percentage: (count / totalActivities) * 100,
+    }))
+    .sort((a, b) => b.count - a.count); // Sort by frequency (descending)
+
+  // Limit to maxTopics if specified
+  return maxTopics ? topics.slice(0, maxTopics) : topics;
+}
+
+// ============================================================================
+// TOPIC CO-OCCURRENCE
+// ============================================================================
+
+/**
+ * Build a topic co-occurrence matrix
+ *
+ * For each topic, tracks how often it appears with other topics.
+ * Used for "Related topics" recommendations.
+ */
+export function buildCooccurrenceMatrix(
+  activities: ActivityItem[]
+): TopicCooccurrence {
+  const matrix: TopicCooccurrence = new Map();
+
+  for (const activity of activities) {
+    // Extract all topics for this activity
+    const activityTopics = new Set<string>();
+
+    if (activity.meta?.tags) {
+      for (const tag of activity.meta.tags) {
+        activityTopics.add(normalizeTopic(tag));
+      }
+    }
+
+    if (activity.meta?.category) {
+      activityTopics.add(normalizeTopic(activity.meta.category));
+    }
+
+    // For each pair of topics, increment co-occurrence count
+    const topicsArray = Array.from(activityTopics);
+    for (let i = 0; i < topicsArray.length; i++) {
+      const topicA = topicsArray[i];
+
+      if (!matrix.has(topicA)) {
+        matrix.set(topicA, new Map());
+      }
+
+      for (let j = 0; j < topicsArray.length; j++) {
+        if (i === j) continue; // Skip self-pairs
+
+        const topicB = topicsArray[j];
+        const cooccurrences = matrix.get(topicA)!;
+        cooccurrences.set(topicB, (cooccurrences.get(topicB) || 0) + 1);
+      }
+    }
+  }
+
+  return matrix;
+}
+
+/**
+ * Get related topics for a given topic (most frequently co-occurring)
+ */
+export function getRelatedTopics(
+  topic: string,
+  matrix: TopicCooccurrence,
+  limit = 5
+): string[] {
+  const normalizedTopic = normalizeTopic(topic);
+  const cooccurrences = matrix.get(normalizedTopic);
+
+  if (!cooccurrences) return [];
+
+  // Sort by co-occurrence count (descending)
+  return Array.from(cooccurrences.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([topic]) => topic);
+}
+
+// ============================================================================
+// TOPIC FILTERING
+// ============================================================================
+
+/**
+ * Filter activities by selected topics
+ *
+ * An activity matches if it has ANY of the selected topics
+ */
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:09:36] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:09:44] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  sed -n '420,520p' /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/src/lib/a [Kcctivity/topics.ts[?1l>[?2004l
+]2;sed -n '420,520p' ]1;sed */
+export function filterByTopics(
+  activities: ActivityItem[],
+  selectedTopics: string[]
+): ActivityItem[] {
+  if (selectedTopics.length === 0) return activities;
+
+  const normalizedSelected = new Set(selectedTopics.map(normalizeTopic));
+
+  return activities.filter((activity) => {
+    // Extract all topics for this activity
+    const activityTopics = new Set<string>();
+
+    if (activity.meta?.tags) {
+      for (const tag of activity.meta.tags) {
+        activityTopics.add(normalizeTopic(tag));
+      }
+    }
+
+    if (activity.meta?.category) {
+      activityTopics.add(normalizeTopic(activity.meta.category));
+    }
+
+    // Check if any selected topic matches
+    for (const topic of activityTopics) {
+      if (normalizedSelected.has(topic)) {
+        return true;
+      }
+    }
+
+    return false;
+  });
+}
+
+/**
+ * Get topics for a specific activity item
+ */
+export function getActivityTopics(activity: ActivityItem): string[] {
+  const topics = new Set<string>();
+
+  if (activity.meta?.tags) {
+    for (const tag of activity.meta.tags) {
+      topics.add(normalizeTopic(tag));
+    }
+  }
+
+  if (activity.meta?.category) {
+    topics.add(normalizeTopic(activity.meta.category));
+  }
+
+  return Array.from(topics);
+}
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:09:44] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:10:58] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  sed -n '80,160p' /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/src/lib/re [Kmmark/remark-mdx-component-linter.ts && echo "---SPLIT---" && sed -n '55,130p' /U [Kssers/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/src/hooks/use-keyboard-shortcut. [Ktts[?1l>[?2004l
+]2;sed -n '80,160p'  && echo "---SPLIT---" && sed -n '55,130p' ]1;sed      counts[componentName] = (counts[componentName] || 0) + 1;
+    }
+  });
+
+  return counts;
+}
+
+/**
+ * Remark plugin that validates MDX component usage
+ */
+export default function remarkMdxComponentLinter(options: any = {}) {
+  const { filepath = "unknown file", strict = false } = options;
+
+  return (tree: any, file: any) => {
+    const wordCount = countWords(tree);
+    const componentCounts = countComponents(tree);
+
+    // Skip validation for short posts or drafts
+    if (wordCount < MIN_WORD_COUNT_FOR_COMPONENTS) {
+      return;
+    }
+
+    // Check each component rule
+    for (const [componentName, rule] of Object.entries(COMPONENT_RULES)) {
+      const count = componentCounts[componentName] || 0;
+
+      if (count < rule.min) {
+        const message = `${componentName}: Found ${count}, expected at least ${rule.min}. ${rule.message}`;
+        if (strict) {
+          file.fail(message);
+        } else {
+          file.message(message);
+        }
+      }
+
+      if (count > rule.max) {
+        const message = `${componentName}: Found ${count}, expected maximum ${rule.max}. ${rule.message}`;
+        if (strict) {
+          file.fail(message);
+        } else {
+          file.message(message);
+        }
+      }
+    }
+
+    // Special check: Posts over 300 words should have at least one SectionShare
+    if (wordCount >= MIN_WORD_COUNT_FOR_COMPONENTS) {
+      const sectionShareCount = componentCounts.SectionShare || 0;
+      if (sectionShareCount === 0) {
+        const message = `Post is ${wordCount} words but has no SectionShare components. Add 1-3 after major sections for better engagement.`;
+        if (strict) {
+          file.fail(message);
+        } else {
+          file.message(message);
+        }
+      }
+    }
+
+    // Add metadata to file for reporting
+    file.data.componentCounts = componentCounts;
+    file.data.wordCount = wordCount;
+  };
+}
+
+/**
+ * Standalone validation function for use in scripts
+ */
+export function validateMdxComponents(content: string, options: any = {}) {
+  // This function is not implemented yet - use the standalone script instead
+  throw new Error("Use scripts/validate-mdx-components.mjs instead");
+}
+---SPLIT---
+    (event: KeyboardEvent) => {
+      // Check if we're in an input field
+      const target = event.target as HTMLElement;
+      const isInput = 
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable;
+
+      for (const shortcut of shortcuts) {
+        // Skip if in input and shortcut doesn't allow it
+        if (isInput && shortcut.preventInInput !== false) {
+          continue;
+        }
+
+        // Match key (case-insensitive)
+        const keyMatch = event.key.toLowerCase() === shortcut.key.toLowerCase();
+        if (!keyMatch) continue;
+
+        // For metaKey, allow either Meta (Mac) or Ctrl (Windows/Linux)
+        const hasRequiredMeta = shortcut.metaKey ? (event.metaKey || event.ctrlKey) : !event.metaKey && !event.ctrlKey;
+        const hasRequiredCtrl = shortcut.ctrlKey ? event.ctrlKey : !event.ctrlKey;
+        const hasRequiredShift = shortcut.shiftKey ? event.shiftKey : !event.shiftKey;
+        const hasRequiredAlt = shortcut.altKey ? event.altKey : !event.altKey;
+
+        if (hasRequiredMeta && hasRequiredCtrl && hasRequiredShift && hasRequiredAlt) {
+          event.preventDefault();
+          shortcut.callback(event);
+          break; // Only trigger first matching shortcut
+        }
+      }
+    },
+    [shortcuts]
+  );
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
+}
+
+/**
+ * Get platform-specific modifier key display name
+ * 
+ * @returns "⌘" on Mac, "Ctrl" on Windows/Linux
+ * 
+ * @example
+ * ```tsx
+ * <kbd>{getModifierKey()} K</kbd>
+ * ```
+ */
+export function getModifierKey(): string {
+  if (typeof window === "undefined") return "Ctrl";
+  
+  const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+  return isMac ? "⌘" : "Ctrl";
+}
+
+/**
+ * Format keyboard shortcut for display
+ * 
+ * @param shortcut - Keyboard shortcut configuration
+ * @returns Human-readable shortcut string (e.g., "⌘K", "Ctrl+Shift+P")
+ * 
+ * @example
+ * ```tsx
+ * <span>{formatShortcut({ key: 'k', metaKey: true })}</span>
+ * // Renders: ⌘K (on Mac) or Ctrl+K (on Windows)
+ * ```
+ */
+export function formatShortcut(shortcut: KeyboardShortcut): string {
+  const parts: string[] = [];
+  
+  if (shortcut.metaKey) parts.push(getModifierKey());
+  if (shortcut.ctrlKey && !shortcut.metaKey) parts.push("Ctrl");
+  if (shortcut.shiftKey) parts.push("Shift");
+  if (shortcut.altKey) parts.push(shortcut.altKey ? "⌥" : "Alt");
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:10:59] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:11:09] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  sed -n '60,130p' /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/src/compon [Keents/features/github/github-heatmap.tsx && echo "---SPLIT---" && sed -n '65,140p [K'' /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/src/components/home/featured [K--post-hero.tsx && echo "---SPLIT---" && sed -n '95,160p' /Users/drew/DCYFR/code/ [Kddcyfr-workspace/dcyfr-labs/src/components/layouts/archive-hero.tsx[?1l>[?2004l
+]2;sed -n '60,130p'  && echo "---SPLIT---" && sed -n '65,140p'  && echo  && sed ]1;sed * API response structure for GitHub contributions data
+ * @typedef {Object} ContributionResponse
+ * @property {ContributionDay[]} contributions - Array of contribution data for the past year
+ * @property {number} [totalContributions] - Total contributions in the time period
+ * @property {number} [totalRepositories] - Total public repositories
+ * @property {PinnedRepository[]} [pinnedRepositories] - Pinned repositories
+ * @property {string} [warning] - Optional warning message (e.g., "Using cached data")
+ * @property {string} [source] - Data source indicator ("server-cache", "api", "fallback")
+ */
+interface ContributionResponse {
+  contributions: ContributionDay[];
+  totalContributions?: number;
+  totalRepositories?: number;
+  pinnedRepositories?: PinnedRepository[];
+  warning?: string;
+  source?: string;
+}
+
+/**
+ * Props for the GitHubHeatmap component
+ * @typedef {Object} GitHubHeatmapProps
+ * @property {string} [username="dcyfr"] - GitHub username to fetch contributions for
+ */
+interface GitHubHeatmapProps {
+  username?: string;
+}
+
+const DEFAULT_GITHUB_USERNAME = "dcyfr";
+
+/**
+ * Calculate streak statistics from contribution data
+ */
+function calculateStreaks(contributions: ContributionDay[]): {
+  currentStreak: number;
+  longestStreak: number;
+} {
+  if (contributions.length === 0) {
+    return { currentStreak: 0, longestStreak: 0 };
+  }
+
+  // Sort by date descending (most recent first)
+  const sorted = [...contributions].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+
+  let currentStreak = 0;
+  let longestStreak = 0;
+  let tempStreak = 0;
+  let lastStreakDate: Date | null = null; // Track the last date counted in current streak
+  let currentStreakEnded = false; // Flag to track when current streak calculation is done
+
+  // Calculate current streak (from most recent date backwards)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  for (let i = 0; i < sorted.length; i++) {
+    const contribDate = new Date(sorted[i].date);
+    contribDate.setHours(0, 0, 0, 0);
+
+    if (sorted[i].count > 0) {
+      // Calculate current streak (only if not yet ended)
+      if (!currentStreakEnded) {
+        if (
+          i === 0 &&
+          (contribDate.getTime() === today.getTime() ||
+            contribDate.getTime() === yesterday.getTime())
+        ) {
+          currentStreak++;
+          lastStreakDate = contribDate;
+---SPLIT---
+ * <FeaturedPostHero loading />
+ *
+ * @accessibility
+ * - Semantic HTML with proper heading levels
+ * - ARIA labels on interactive elements
+ * - Keyboard navigable
+ * - Screen reader friendly dates
+ *
+ * @styling
+ * - Uses Card component for consistent design
+ * - Gradient border for visual emphasis
+ * - 3D perspective tilt (rotateX + rotateY) for interactivity
+ * - Responsive padding and spacing
+ */
+export function FeaturedPostHero({ post, loading = false }: FeaturedPostHeroProps) {
+  const router = useRouter();
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Loading state - skeleton version matching real component structure
+  if (loading) {
+    return (
+      <div className={cn("group relative overflow-hidden rounded-xl border shadow-lg", ANIMATION.transition.base)}>
+        {/* Background skeleton */}
+        <div className="absolute inset-0 z-0">
+          <Skeleton className="h-full w-full" />
+        </div>
+
+        <div className={cn("relative z-10 p-4 md:p-8", SPACING.content)}>
+          {/* Featured Badge skeleton */}
+          <div className="flex items-center gap-4">
+            <Skeleton className="h-5 w-20 rounded-md" />
+            <Skeleton className="h-5 w-24 rounded-md" />
+            <Skeleton className="h-5 w-28 rounded-md" />
+          </div>
+
+          {/* Title & Summary skeleton */}
+          <div className={cn(SPACING.subsection)}>
+            <Skeleton className="h-10 md:h-12 w-3/4 mb-4" />
+            <div className={SPACING.compact}>
+              <SkeletonText lines={3} />
+            </div>
+          </div>
+
+          {/* Metadata & CTA skeleton */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4">
+            <div className="flex items-center gap-4">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-4 w-20" />
+            </div>
+            <Skeleton className="h-5 w-24" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!post) {
+    return null;
+  }
+
+  const publishedDate = new Date(post.publishedAt).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  // Handle mouse move for tilt effect
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    setMousePosition({ x, y });
+  };
+
+  const handleMouseLeave = () => {
+---SPLIT---
+    case 'minimal':
+      return {
+        hasBackground: false,
+        overlayIntensity: '',
+      };
+  }
+}
+
+export function ArchiveHero({
+  title,
+  description,
+  variant = 'full',
+  align = 'left',
+  backgroundImage,
+  stats,
+  actions,
+  itemCount,
+  loading = false,
+  className,
+  contentClassName,
+}: ArchiveHeroProps) {
+  const variantStyles = getVariantStyles(variant);
+  const heroStyles = HERO_VARIANTS.standard;
+  const alignmentClasses = align === 'center' ? 'text-center' : '';
+
+  // Loading state
+  if (loading) {
+    return (
+      <section className={cn(PAGE_LAYOUT.hero.archiveContainer, PAGE_LAYOUT.hero.padding, className)}>
+        <div className={cn(PAGE_LAYOUT.hero.content, alignmentClasses, contentClassName)}>
+          <Skeleton className={cn('h-10 md:h-12 w-48', align === 'center' && 'mx-auto')} />
+          <div className={SPACING.compact}>
+            <Skeleton className={cn('h-6 w-full max-w-2xl', align === 'center' && 'mx-auto')} />
+            <Skeleton className={cn('h-6 w-3/4 max-w-2xl', align === 'center' && 'mx-auto')} />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section
+      className={cn(
+        'w-full relative overflow-hidden',
+        PAGE_LAYOUT.hero.padding,
+        align === 'center' && 'flex flex-col items-center',
+        className
+      )}
+    >
+      {/* Background image with gradient overlay (full and medium variants only) */}
+      {variantStyles.hasBackground && backgroundImage && (
+        <div className="absolute inset-0 z-0">
+          <Image
+            src={backgroundImage}
+            alt=""
+            fill
+            className={cn('object-cover', ANIMATION.transition.slow)}
+            sizes="100vw"
+            priority
+          />
+          {/* Gradient overlay for text contrast */}
+          <div
+            className={cn(
+              'absolute inset-0 bg-linear-to-b',
+              variantStyles.overlayIntensity,
+              ANIMATION.transition.appearance
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:11:10] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:12:39] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  sed -n '115,220p' /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/src/compo [Knnents/features/github/github-heatmap.tsx[?1l>[?2004l
+]2;sed -n '115,220p' ]1;sed  yesterday.setDate(yesterday.getDate() - 1);
+
+  for (let i = 0; i < sorted.length; i++) {
+    const contribDate = new Date(sorted[i].date);
+    contribDate.setHours(0, 0, 0, 0);
+
+    if (sorted[i].count > 0) {
+      // Calculate current streak (only if not yet ended)
+      if (!currentStreakEnded) {
+        if (
+          i === 0 &&
+          (contribDate.getTime() === today.getTime() ||
+            contribDate.getTime() === yesterday.getTime())
+        ) {
+          currentStreak++;
+          lastStreakDate = contribDate;
+        } else if (currentStreak > 0 && lastStreakDate) {
+          const dayDiff = Math.floor(
+            (lastStreakDate.getTime() - contribDate.getTime()) /
+              (1000 * 60 * 60 * 24)
+          );
+          if (dayDiff === 1) {
+            currentStreak++;
+            lastStreakDate = contribDate;
+          } else {
+            currentStreakEnded = true; // Mark as ended but continue loop
+          }
+        }
+      }
+
+      // Calculate longest streak (always continue through all contributions)
+      tempStreak++;
+      longestStreak = Math.max(longestStreak, tempStreak);
+    } else {
+      tempStreak = 0;
+    }
+  }
+
+  // Ensure current streak is considered as a potential longest streak
+  longestStreak = Math.max(longestStreak, currentStreak);
+
+  return { currentStreak, longestStreak };
+}
+
+/**
+ * Calculate activity statistics
+ */
+function calculateActivityStats(contributions: ContributionDay[]): {
+  busiestDay: { date: string; count: number } | null;
+  averagePerDay: number;
+  totalDaysActive: number;
+} {
+  if (contributions.length === 0) {
+    return { busiestDay: null, averagePerDay: 0, totalDaysActive: 0 };
+  }
+
+  const busiestDay = contributions.reduce(
+    (max, day) => (day.count > (max?.count || 0) ? day : max),
+    contributions[0]
+  );
+
+  const totalContributions = contributions.reduce(
+    (sum, day) => sum + day.count,
+    0
+  );
+  const averagePerDay = totalContributions / contributions.length;
+  const totalDaysActive = contributions.filter((day) => day.count > 0).length;
+
+  return {
+    busiestDay: busiestDay.count > 0 ? busiestDay : null,
+    averagePerDay: Math.round(averagePerDay * 10) / 10,
+    totalDaysActive,
+  };
+}
+
+/**
+ * Format date for tooltip display
+ */
+function formatTooltipDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+/**
+ * GitHubHeatmap Component
+ *
+ * Displays a GitHub contribution activity heatmap for the past year.
+ * Fetches data from the `/api/github-contributions` endpoint which handles:
+ * - Server-side caching (1-hour cache with 1-minute fallback)
+ * - Rate limiting (10 requests/minute per IP)
+ * - Graceful fallback with sample data if GitHub API is unavailable
+ *
+ * ⚠️ SKELETON SYNC REQUIRED
+ * When updating this component's structure, also update:
+ * - src/components/github-heatmap-skeleton.tsx
+ *
+ * Key structural elements that must match:
+ * - Card: p-6 padding
+ * - Header section: flex justify-between with title + username link
+ * - Statistics Grid: grid-cols-2 md:grid-cols-4, gap-3
+ *   - 4 stat cards: bg-muted/50, rounded-lg, p-3, border
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:12:40] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:13:12] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  sed -n '1,100p' /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/src/compone [Knnts/layouts/archive-hero.tsx && echo "---SPLIT---" && sed -n '140,260p' /Users/d [Krrew/DCYFR/code/dcyfr-workspace/dcyfr-labs/src/components/layouts/archive-hero.ts [Kx[?1l>[?2004l
+]2;sed -n '1,100p'  && echo "---SPLIT---" && sed -n '140,260p' ]1;sed/**
+ * ArchiveHero - Hero section for archive pages (blog, work, certifications)
+ *
+ * Enhanced hero with background gradient, search/filters, and stats.
+ * Provides three variants: full (with background), medium (minimal background), minimal (no background).
+ *
+ * @example Full variant (Blog archive)
+ * ```tsx
+ * <ArchiveHero
+ *   variant="full"
+ *   title="Blog"
+ *   description="Articles on security, development, and technology"
+ *   stats="142 articles across 12 topics"
+ *   actions={<SearchBar />}
+ * />
+ * ```
+ *
+ * @example Medium variant (Series/Tag archives)
+ * ```tsx
+ * <ArchiveHero
+ *   variant="medium"
+ *   title="React Series"
+ *   description="In-depth articles about React development"
+ *   itemCount={8}
+ * />
+ * ```
+ *
+ * @example Minimal variant (Individual content)
+ * ```tsx
+ * <ArchiveHero
+ *   variant="minimal"
+ *   title="Project Details"
+ *   description="Full-stack application built with Next.js"
+ * />
+ * ```
+ */
+
+import { ReactNode } from 'react';
+import Image from 'next/image';
+import {
+  PAGE_LAYOUT,
+  HERO_VARIANTS,
+  CONTAINER_WIDTHS,
+  ANIMATION,
+  CONTAINER_PADDING,
+  SPACING,
+  TYPOGRAPHY,
+} from '@/lib/design-tokens';
+import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
+
+type ArchiveVariant = 'full' | 'medium' | 'minimal';
+type ArchiveAlign = 'left' | 'center';
+
+interface ArchiveHeroProps {
+  /** Hero title (H1) */
+  title: string | ReactNode;
+  /** Hero description/tagline */
+  description?: string | ReactNode;
+  /** Archive variant (determines background and layout) */
+  variant?: ArchiveVariant;
+  /** Text alignment */
+  align?: ArchiveAlign;
+  /** Optional background image URL */
+  backgroundImage?: string;
+  /** Optional stats text (e.g., "142 articles across 12 topics") */
+  stats?: string | ReactNode;
+  /** Optional action elements (search bar, filters, CTAs) */
+  actions?: ReactNode;
+  /** Item count for archive pages (e.g., "5 items") */
+  itemCount?: number;
+  /** Loading state - renders skeleton version */
+  loading?: boolean;
+  /** Additional CSS classes for the container */
+  className?: string;
+  /** Additional CSS classes for the content wrapper */
+  contentClassName?: string;
+}
+
+/**
+ * Get hero variant styles based on archive variant
+ */
+function getVariantStyles(variant: ArchiveVariant) {
+  switch (variant) {
+    case 'full':
+      return {
+        hasBackground: true,
+        overlayIntensity: 'from-background/45 via-background/70 to-background/95',
+      };
+    case 'medium':
+      return {
+        hasBackground: true,
+        overlayIntensity: 'from-background/70 via-background/85 to-background/95',
+      };
+    case 'minimal':
+      return {
+        hasBackground: false,
+        overlayIntensity: '',
+      };
+  }
+---SPLIT---
+        align === 'center' && 'flex flex-col items-center',
+        className
+      )}
+    >
+      {/* Background image with gradient overlay (full and medium variants only) */}
+      {variantStyles.hasBackground && backgroundImage && (
+        <div className="absolute inset-0 z-0">
+          <Image
+            src={backgroundImage}
+            alt=""
+            fill
+            className={cn('object-cover', ANIMATION.transition.slow)}
+            sizes="100vw"
+            priority
+          />
+          {/* Gradient overlay for text contrast */}
+          <div
+            className={cn(
+              'absolute inset-0 bg-linear-to-b',
+              variantStyles.overlayIntensity,
+              ANIMATION.transition.appearance
+            )}
+          />
+        </div>
+      )}
+
+      {/* Content */}
+      <div
+        className={cn(
+          PAGE_LAYOUT.hero.archiveContainer,
+          PAGE_LAYOUT.hero.content,
+          'relative z-10',
+          alignmentClasses,
+          align === 'center' && 'flex flex-col items-center w-full',
+          contentClassName
+        )}
+      >
+        {/* Title */}
+        <h1 className={TYPOGRAPHY.h1.hero}>{title}</h1>
+
+        {/* Description */}
+        {description &&
+          (typeof description === 'string' ? (
+            <p
+              className={cn(heroStyles.description, 'max-w-3xl', align === 'center' && 'mx-auto')}
+              style={align === 'center' ? { textAlign: 'center' } : undefined}
+            >
+              {description}
+              {itemCount !== undefined && (
+                <span className="text-muted-foreground block md:inline">
+                  {' '}
+                  ({itemCount} {itemCount === 1 ? 'item' : 'items'})
+                </span>
+              )}
+            </p>
+          ) : (
+            <div
+              className={cn(heroStyles.description, 'max-w-3xl', align === 'center' && 'mx-auto')}
+            >
+              {description}
+            </div>
+          ))}
+
+        {/* Stats (e.g., "142 articles across 12 topics") */}
+        {stats &&
+          (typeof stats === 'string' ? (
+            <p className={cn('text-sm text-muted-foreground', align === 'center' && 'mx-auto')}>
+              {stats}
+            </p>
+          ) : (
+            <div className={cn('text-sm', align === 'center' && 'mx-auto')}>{stats}</div>
+          ))}
+
+        {/* Actions (search bar, filters, CTAs) */}
+        {actions && (
+          <div
+            className={cn(
+              'pt-2 w-full max-w-2xl',
+              align === 'center' ? 'mx-auto flex justify-center' : ''
+            )}
+          >
+            {actions}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:13:12] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:13:56] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  sed -n '450,530p' /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/src/lib/a [Kppi/api-cost-calculator.ts && echo "---SPLIT---" && sed -n '105,175p' /Users/drew [K//DCYFR/code/dcyfr-workspace/dcyfr-labs/src/lib/api/api-monitor.ts && echo "---SP [KLLIT---" && sed -n '65,130p' /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/sr [Kcc/components/common/table-of-contents-sidebar.tsx[?1l>[?2004l
+]2;sed -n '450,530p'  && echo "---SPLIT---" && sed -n '105,175p'  && echo  && se]1;sed  
+  const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
+  const squaredDiffs = values.map(val => Math.pow(val - mean, 2));
+  const variance = squaredDiffs.reduce((sum, val) => sum + val, 0) / values.length;
+  
+  return Math.sqrt(variance);
+}
+
+// ============================================================================
+// RECOMMENDATIONS
+// ============================================================================
+
+/**
+ * Generate cost optimization recommendations
+ */
+export async function generateCostRecommendations(month?: string): Promise<string[]> {
+  const monthlyCost = await calculateMonthlyCost(month);
+  const recommendations: string[] = [];
+
+  // Check overall budget
+  if (monthlyCost.percentUsed > 90) {
+    recommendations.push(
+      `🚨 CRITICAL: Total cost at ${monthlyCost.percentUsed.toFixed(1)}% of budget ($${monthlyCost.totalCost.toFixed(2)}/$${monthlyCost.totalBudget})`
+    );
+  } else if (monthlyCost.percentUsed > 70) {
+    recommendations.push(
+      `⚠️  WARNING: Total cost at ${monthlyCost.percentUsed.toFixed(1)}% of budget ($${monthlyCost.totalCost.toFixed(2)}/$${monthlyCost.totalBudget})`
+    );
+  }
+
+  // Service-specific recommendations
+  for (const { service, usage, cost } of monthlyCost.services) {
+    if (!cost.withinBudget) {
+      recommendations.push(
+        `❌ ${PRICING[service as keyof typeof PRICING].name}: Over budget ($${cost.estimatedCost.toFixed(2)} vs $${BUDGET[service as keyof typeof BUDGET]})`
+      );
+    }
+
+    // Perplexity-specific
+    if (service === 'perplexity' && cost.estimatedCost > 30) {
+      recommendations.push(
+        `💡 Consider implementing more aggressive caching for Perplexity API calls (current: $${cost.estimatedCost.toFixed(2)}/month)`
+      );
+    }
+
+    // Resend-specific
+    if (service === 'resend' && usage.totalRequests > 2500) {
+      recommendations.push(
+        `📧 Approaching Resend free tier limit (${usage.totalRequests}/3000) - consider email consolidation or upgrade`
+      );
+    }
+
+    // Redis-specific
+    if (service === 'redis' && usage.totalRequests > 8000 * usage.daysActive) {
+      recommendations.push(
+        `💾 High Redis usage detected - review caching strategies and TTL settings`
+      );
+    }
+
+    // Sentry-specific
+    if (service === 'sentry' && usage.totalRequests > 4000) {
+      recommendations.push(
+        `🔍 Consider filtering Sentry events or adjusting sample rates (current: ${usage.totalRequests} events)`
+      );
+    }
+  }
+
+  if (recommendations.length === 0) {
+    recommendations.push('✅ All services operating within budget and healthy limits');
+  }
+
+  return recommendations;
+}
+
+// ============================================================================
+// EXPORTS
+// ============================================================================
+
+export type { MonthlyUsageAggregate, DailyUsageData };
+---SPLIT---
+export function withApiMonitoring<T = unknown>(
+  handler: (request: Request) => Promise<Response>,
+  routeName: string,
+  options: ApiMonitorOptions = {}
+): (request: Request) => Promise<Response> {
+  if (!isDev) {
+    return handler;
+  }
+
+  return async (request: Request): Promise<Response> => {
+    const operationId = `api:${routeName}:${Date.now()}`;
+    const startTime = Date.now();
+
+    // Log request
+    const requestMetadata = extractRequestMetadata(request);
+    devLogger.api(`→ Request: ${requestMetadata.method} ${requestMetadata.pathname}`, {
+      operation: operationId,
+      metadata: {
+        ...requestMetadata,
+        timestamp: new Date().toISOString(),
+      },
+    });
+
+    // Log request body if enabled
+    if (options.logRequestBody && request.body) {
+      try {
+        const clonedRequest = request.clone();
+        const body = await clonedRequest.text();
+        if (body) {
+          devLogger.debug(`Request body: ${routeName}`, {
+            operation: operationId,
+            metadata: { body: body.substring(0, 500) }, // Limit body size
+          });
+        }
+      } catch (error) {
+        devLogger.warn('Failed to read request body for logging', { error });
+      }
+    }
+
+    let response: Response;
+    try {
+      // Execute handler
+      response = await handler(request);
+    } catch (error) {
+      const duration = Date.now() - startTime;
+
+      devLogger.error(`✗ Request failed: ${requestMetadata.method} ${requestMetadata.pathname}`, {
+        operation: operationId,
+        duration,
+        error,
+        metadata: requestMetadata as unknown as Record<string, unknown>,
+      });
+
+      throw error;
+    }
+
+    const duration = Date.now() - startTime;
+    const responseMetadata = extractResponseMetadata(response);
+
+    // Determine log level based on response and duration
+    const isError = response.status >= 400;
+    const isSlow = duration > (options.slowThreshold || SLOW_REQUEST_THRESHOLD);
+    const isVerySlow = duration > VERY_SLOW_REQUEST_THRESHOLD;
+
+    const logMessage = `← Response: ${requestMetadata.method} ${requestMetadata.pathname} - ${response.status}`;
+
+    if (isError) {
+      devLogger.error(logMessage, {
+        operation: operationId,
+        duration,
+        metadata: {
+---SPLIT---
+        if (!isFaqSection) {
+          currentGroup.h3s.push(heading);
+        }
+      }
+    });
+
+    if (currentGroup) {
+      groups.push(currentGroup);
+    }
+
+    return groups;
+  }, [headings]);
+
+  // Single effect: scroll position → active heading → auto-expand
+  React.useEffect(() => {
+    if (typeof window === "undefined" || headings.length === 0) return;
+
+    const updateActiveHeading = () => {
+      const scrollY = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+
+      let currentId = "";
+
+      // Bottom of page
+      if (scrollY + viewportHeight >= documentHeight - BOTTOM_THRESHOLD) {
+        const lastHeading = headings[headings.length - 1];
+        if (lastHeading) {
+          currentId = lastHeading.id;
+        }
+      } else {
+        // Find closest heading above threshold
+        for (let i = headings.length - 1; i >= 0; i--) {
+          const heading = headings[i];
+          const element = document.getElementById(heading.id);
+
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            if (rect.top <= ACTIVE_THRESHOLD) {
+              currentId = heading.id;
+              break;
+            }
+          }
+        }
+
+        // Fallback to first heading near top
+        if (!currentId && scrollY < ACTIVE_THRESHOLD && headings[0]) {
+          currentId = headings[0].id;
+        }
+      }
+
+      // Debounced state update
+      if (currentId !== activeId) {
+        if (updateTimeoutRef.current) {
+          clearTimeout(updateTimeoutRef.current);
+        }
+
+        updateTimeoutRef.current = setTimeout(() => {
+          setActiveId(currentId);
+        }, 50); // Small debounce to prevent rapid updates
+      }
+    };
+
+    const handleScroll = () => {
+      updateActiveHeading();
+    };
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:13:56] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:14:30] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  sed -n '105,185p' /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/src/lib/a [Kppi/api-monitor.ts[?1l>[?2004l
+]2;sed -n '105,185p' ]1;sedexport function withApiMonitoring<T = unknown>(
+  handler: (request: Request) => Promise<Response>,
+  routeName: string,
+  options: ApiMonitorOptions = {}
+): (request: Request) => Promise<Response> {
+  if (!isDev) {
+    return handler;
+  }
+
+  return async (request: Request): Promise<Response> => {
+    const operationId = `api:${routeName}:${Date.now()}`;
+    const startTime = Date.now();
+
+    // Log request
+    const requestMetadata = extractRequestMetadata(request);
+    devLogger.api(`→ Request: ${requestMetadata.method} ${requestMetadata.pathname}`, {
+      operation: operationId,
+      metadata: {
+        ...requestMetadata,
+        timestamp: new Date().toISOString(),
+      },
+    });
+
+    // Log request body if enabled
+    if (options.logRequestBody && request.body) {
+      try {
+        const clonedRequest = request.clone();
+        const body = await clonedRequest.text();
+        if (body) {
+          devLogger.debug(`Request body: ${routeName}`, {
+            operation: operationId,
+            metadata: { body: body.substring(0, 500) }, // Limit body size
+          });
+        }
+      } catch (error) {
+        devLogger.warn('Failed to read request body for logging', { error });
+      }
+    }
+
+    let response: Response;
+    try {
+      // Execute handler
+      response = await handler(request);
+    } catch (error) {
+      const duration = Date.now() - startTime;
+
+      devLogger.error(`✗ Request failed: ${requestMetadata.method} ${requestMetadata.pathname}`, {
+        operation: operationId,
+        duration,
+        error,
+        metadata: requestMetadata as unknown as Record<string, unknown>,
+      });
+
+      throw error;
+    }
+
+    const duration = Date.now() - startTime;
+    const responseMetadata = extractResponseMetadata(response);
+
+    // Determine log level based on response and duration
+    const isError = response.status >= 400;
+    const isSlow = duration > (options.slowThreshold || SLOW_REQUEST_THRESHOLD);
+    const isVerySlow = duration > VERY_SLOW_REQUEST_THRESHOLD;
+
+    const logMessage = `← Response: ${requestMetadata.method} ${requestMetadata.pathname} - ${response.status}`;
+
+    if (isError) {
+      devLogger.error(logMessage, {
+        operation: operationId,
+        duration,
+        metadata: {
+          request: requestMetadata as unknown as Record<string, unknown>,
+          response: responseMetadata as unknown as Record<string, unknown>,
+        },
+      });
+    } else if (isVerySlow) {
+      devLogger.warn(`${logMessage} (VERY SLOW!)`, {
+        operation: operationId,
+        duration,
+        metadata: {
+          request: requestMetadata as unknown as Record<string, unknown>,
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:14:30] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:14:39] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  sed -n '185,260p' /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/src/lib/a [Kppi/api-monitor.ts[?1l>[?2004l
+]2;sed -n '185,260p' ]1;sed          request: requestMetadata as unknown as Record<string, unknown>,
+          response: responseMetadata as unknown as Record<string, unknown>,
+        },
+      });
+    } else if (isSlow) {
+      devLogger.warn(`${logMessage} (slow)`, {
+        operation: operationId,
+        duration,
+        metadata: {
+          request: requestMetadata as unknown as Record<string, unknown>,
+          response: responseMetadata as unknown as Record<string, unknown>,
+        },
+      });
+    } else {
+      devLogger.api(logMessage, {
+        operation: operationId,
+        duration,
+        metadata: {
+          request: { method: requestMetadata.method, pathname: requestMetadata.pathname },
+          response: { status: responseMetadata.status, size: responseMetadata.size },
+        },
+      });
+    }
+
+    // Log response body if enabled (only for errors or very slow requests)
+    if (options.logResponseBody && (isError || isVerySlow)) {
+      try {
+        const clonedResponse = response.clone();
+        const body = await clonedResponse.text();
+        if (body) {
+          devLogger.debug(`Response body: ${routeName}`, {
+            operation: operationId,
+            metadata: { body: body.substring(0, 500) }, // Limit body size
+          });
+        }
+      } catch (error) {
+        devLogger.warn('Failed to read response body for logging', { error });
+      }
+    }
+
+    return response;
+  };
+}
+
+/**
+ * Simple timing wrapper for any async operation
+ */
+export async function monitorAsync<T>(
+  operation: () => Promise<T>,
+  operationName: string,
+  metadata?: Record<string, unknown>
+): Promise<T> {
+  if (!isDev) {
+    return operation();
+  }
+
+  return devLogger.trackAsync(`monitor:${operationName}`, operation, operationName);
+}
+
+/**
+ * Class to track API metrics
+ */
+class ApiMetrics {
+  private requests: Map<
+    string,
+    {
+      count: number;
+      totalDuration: number;
+      errors: number;
+      slowRequests: number;
+    }
+  > = new Map();
+
+  recordRequest(
+    route: string,
+    duration: number,
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:14:39] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:27:26] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  npx sonar-scanner --version 2>/dev/null; echo "---" ; find scripts -name "*.m [Kjjs" -o -name "*.js" -o -name "*.ts" | head -5[?1l>[?2004l
+]2;npx sonar-scanner --version 2> /dev/null; echo "---"; find scripts -name  -o ]1;npx[1G[0JNeed to install the following packages:
+sonar-scanner@3.1.0
+Ok to proceed? (y) [20G
+---
+scripts/setup-languagetool-dictionary.mjs
+scripts/validate-governance.mjs
+scripts/verify-production-views.mjs
+scripts/session-cli.mjs
+scripts/validate-emojis.mjs
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:27:34] 
+[1m[31m$ [00m[K[?1h=[?2004h  find scripts -name "*.mjs" | sort | head -20[?1l>[?2004l
+]2;find scripts -name "*.mjs" | sort | head -20]1;findscripts/add-tlp-markers.mjs
+scripts/agent-delegation-middleware.mjs
+scripts/ai-cli.mjs
+scripts/analyze-core-web-vitals.mjs
+scripts/analyze-emoji-usage.mjs
+scripts/analyze-perf-metrics.mjs
+scripts/analyze-upstash-data-fast.mjs
+scripts/analyze-view-mismatch.mjs
+scripts/archive-ai-costs.mjs
+scripts/backlog/prioritize-tasks.mjs
+scripts/backlog/scan-backlog.mjs
+scripts/backlog/whats-next.mjs
+scripts/bump-version-manual.mjs
+scripts/changelog.mjs
+scripts/check-comment-density.mjs
+scripts/check-historical-views.mjs
+scripts/check-old-redis.mjs
+scripts/check-private-references.mjs
+scripts/check-redis-keys.mjs
+scripts/check-test-data.mjs
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:27:34] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:36:03] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  find scripts -name "*.mjs" -o -name "*.js" -o -name "*.ts" | sort | head -60[?1l>[?2004l
+]2;find scripts -name "*.mjs" -o -name "*.js" -o -name "*.ts" | sort | head -60]1;findscripts/__tests__/check-mcp-servers.test.ts
+scripts/__tests__/cleanup-broken-links.test.ts
+scripts/__tests__/parse-gitleaks-report.test.ts
+scripts/__tests__/validate-instructions.test.ts
+scripts/add-tlp-markers.mjs
+scripts/agent-delegation-middleware.mjs
+scripts/ai-cli.mjs
+scripts/analyze-core-web-vitals.mjs
+scripts/analyze-emoji-usage.mjs
+scripts/analyze-perf-metrics.mjs
+scripts/analyze-upstash-data-fast.mjs
+scripts/analyze-view-mismatch.mjs
+scripts/archive-ai-costs.mjs
+scripts/backlog/prioritize-tasks.mjs
+scripts/backlog/scan-backlog.mjs
+scripts/backlog/whats-next.mjs
+scripts/bump-version-manual.mjs
+scripts/changelog.mjs
+scripts/check-comment-density.mjs
+scripts/check-historical-views.mjs
+scripts/check-old-redis.mjs
+scripts/check-private-references.mjs
+scripts/check-redis-keys.mjs
+scripts/check-test-data.mjs
+scripts/check-todos-complete.mjs
+scripts/ci-status.mjs
+scripts/ci/analyze-codeql-alerts.mjs
+scripts/ci/analyze-test-health.mjs
+scripts/ci/check-docs-secrets.mjs
+scripts/ci/check-for-pii.mjs
+scripts/ci/check-mcp-servers.mjs
+scripts/ci/create-codeql-fix-branch.mjs
+scripts/ci/create-codeql-fix-pr.mjs
+scripts/ci/generate-mcp-health-report.mjs
+scripts/ci/monthly-cleanup.mjs
+scripts/ci/parse-gitleaks-report.mjs
+scripts/ci/request-copilot-fix.mjs
+scripts/ci/security-autofix-cli.mjs
+scripts/ci/sync-agents.mjs
+scripts/ci/update-baseline-browser-mapping.mjs
+scripts/ci/validate-critical-mcps.mjs
+scripts/ci/validate-docs-structure.mjs
+scripts/ci/validate-security-fix.mjs
+scripts/ci/workflow-health-monitor.mjs
+scripts/classify-docs.mjs
+scripts/cleanup-broken-links.mjs
+scripts/cleanup-check.mjs
+scripts/cleanup-orphaned-views.mjs
+scripts/cleanup-upstash-data.mjs
+scripts/clear-activity-cache.mjs
+scripts/clear-github-cache-warnings.mjs
+scripts/clear-test-data.mjs
+scripts/collect-perf-metrics.mjs
+scripts/consolidate-event-driven-engagement.mjs
+scripts/consolidate-id-to-slug-views.mjs
+scripts/content/generate-blog-hero.mjs
+scripts/content/generate-project-hero.mjs
+scripts/convert-tokens.mjs
+scripts/debug/check-images.mjs
+scripts/deps-tree.mjs
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:36:03] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:36:11] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  find scripts -name "*.mjs" | sort | wc -l[?1l>[?2004l
+]2;find scripts -name "*.mjs" | sort | wc -l]1;find     174
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:36:12] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:36:20] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  find /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs -name "*.json" -path " [K**/sonar*" 2>/dev/null | head -5; find /Users/drew/DCYFR/code/dcyfr-workspace/val [Kiidation-reports -name "*.json" 2>/dev/null | head -5[?1l>[?2004l
+]2;find /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs -name "*.json" -path  ]1;find/Users/drew/DCYFR/code/dcyfr-workspace/validation-reports/validation-report-2026-02-17T01-47-42-265Z.json
+/Users/drew/DCYFR/code/dcyfr-workspace/validation-reports/validation-report-2026-02-17T01-47-42-243Z.json
+/Users/drew/DCYFR/code/dcyfr-workspace/validation-reports/validation-report-2026-02-17T01-47-42-267Z.json
+/Users/drew/DCYFR/code/dcyfr-workspace/validation-reports/validation-report-2026-02-17T01-47-42-263Z.json
+/Users/drew/DCYFR/code/dcyfr-workspace/validation-reports/validation-report-2026-02-17T01-47-42-247Z.json
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:36:22] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:36:32] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  cd /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs && python3 - <<'EOF'[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004hiimport re, os, sys[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004hddef estimate_complexity(content):[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h     """Very rough cognitive complexity estimate"""[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h     count = 0[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h     # Count nesting-increasing tokens[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h     for pat in [r'\bif\b', r'\belse\b', r'\bfor\b', r'\bwhile\b' [K,, r'\bdo\b', [?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h                 r'\bswitch\b', r'\bcase\b', r'\bcatch\b', r'\?\s [K'', r'\&\&', r'\|\|',[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h                 r'\?\?']:[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h         count += len(re.findall(pat, content))[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h     return count[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004hrresults = [][?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004hffor root, dirs, files in os.walk('scripts'):[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h     dirs[:] = [d for d in dirs if d not in ['node_modules', '__t [Keests__']][?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h     for f in files:[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h         if not (f.endswith('.mjs') or f.endswith('.js') or f.end [Ksswith('.ts')):[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h             continue[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h         path = os.path.join(root, f)[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h         try:[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h             content = open(path).read()[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h             score = estimate_complexity(content)[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h             if score > 40:[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h                 results.append((score, path))[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h         except:[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h             pass[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004hrresults.sort(reverse=True)[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004hffor score, paimport re, os, sys[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004hddef estimate_complexity(content):[?1l>[?2004l
+[0m[27m[24m[Jcmdand heredoc> [K[?1h=[?2004h    [?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:37:07] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  cd /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs && python3 complexity_ch [Keeck.py 2>/dev/null || { cat > /tmp/cc.py << 'PYEOF'[?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004hiimport re, os[?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004hddef score(content):[?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004h     count = 0[?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004h     for pat in [r'\bif\b', r'\belse\b', r'\bfor\b',  [Krr'\bwhile\b', r'\bswitch\b', r'\bcase\b', r'\bcatch\b', r'\?\s', r'\&\&', r'\|\| [K'']:[?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004h         count += len(re.findall(pat, content))[?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004h     return count[?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004hrresults = [][?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004hffor root, dirs, files in os.walk('scripts'):[?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004h     dirs[:] = [d for d in dirs if d not in ['node_mo [Kddules', '__tests__']][?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004h     for f in files:[?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004h         if not any(f.endswith(x) for x in ['.mjs', ' [K..js', '.ts']): continue[?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004h         path = os.path.join(root, f)[?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004h         try:[?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004h             c = open(path).read()[?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004h             s = score(c)[?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004h             if s > 35: results.append((s, path))[?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004h         except: pass[?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004hrresults.sort(reverse=True)[?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004h[[print(f"{s:4d}  {p}") for s, p in results[:50]][?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh heredoc> [K[?1h=[?2004hPPYEOF[?1l>[?2004l
+[0m[27m[24m[Jcmdand cmdor cursh> [K[?1h=[?2004hppython3 /tmp/cc.py; }[?1l>[?2004l
+]2;cd /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs && python3  2> /dev/null}]1;cd 136  scripts/security/monitor-upstream-advisories.mjs
+ 113  scripts/security/annual-audit.mjs
+ 112  scripts/ci/check-mcp-servers.mjs
+ 111  scripts/ci/check-for-pii.mjs
+  92  scripts/release/generate-changelog-entry.mjs
+  84  scripts/cleanup-broken-links.mjs
+  79  scripts/security/monthly-audit.mjs
+  78  scripts/check-todos-complete.mjs
+  74  scripts/security/quarterly-audit.mjs
+  74  scripts/content/generate-blog-hero.mjs
+  70  scripts/ci/analyze-test-health.mjs
+  68  scripts/validate-dcyfr-patterns.mjs
+  65  scripts/check-comment-density.mjs
+  61  scripts/utilities/migrate-blog-analytics.mjs
+  61  scripts/security/security-audit.mjs
+  60  scripts/validation/validate-instructions.mjs
+  59  scripts/validation/validate-frontmatter.mjs
+  58  scripts/populate-build-cache.mjs
+  58  scripts/performance/check-bundle-size.mjs
+  56  scripts/migrate-design-tokens.ts
+  56  scripts/cleanup-check.mjs
+  52  scripts/diagnose-github-cache.mjs
+  52  scripts/ci/sync-agents.mjs
+  51  scripts/security/branch-cleanup.mjs
+  51  scripts/memory-load-test.mjs
+  50  scripts/validate-governance.mjs
+  50  scripts/port-utils.mjs
+  50  scripts/ci/validate-critical-mcps.mjs
+  49  scripts/sync-production-metrics.mjs
+  49  scripts/learning/query-knowledge.mjs
+  49  scripts/analyze-core-web-vitals.mjs
+  48  scripts/validation/validate-structured-data.mjs
+  47  scripts/validation/validate-design-tokens.mjs
+  47  scripts/validate-emojis.mjs
+  47  scripts/session-cli.mjs
+  47  scripts/migrate-redis-data.mjs
+  47  scripts/fix-barrel-exports.mjs
+  45  scripts/verify-view-tracking.mjs
+  45  scripts/validate-tlp-compliance.mjs
+  45  scripts/classify-docs.mjs
+  45  scripts/ci/monthly-cleanup.mjs
+  45  scripts/analyze-upstash-data-fast.mjs
+  45  scripts/analyze-emoji-usage.mjs
+  44  scripts/validation/validate-markdown-content.mjs
+  43  scripts/ci/analyze-codeql-alerts.mjs
+  42  scripts/verify-views-shares-safety.mjs
+  42  scripts/validate-skeleton-sync.mjs
+  42  scripts/validate-prose.mjs
+  42  scripts/security/generate-sbom.mjs
+  42  scripts/dev-with-cache.mjs
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:37:08] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:37:43] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  wc -l \[?1l>[?2004l
+[0m[27m[24m[J> [K[?1h=[?2004h   /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/security/monitor-u [Kppstream-advisories.mjs \[?1l>[?2004l
+[0m[27m[24m[J> [K[?1h=[?2004h   /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/security/annual-au [Kddit.mjs \[?1l>[?2004l
+[0m[27m[24m[J> [K[?1h=[?2004h   /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/check-mcp-serve [Krrs.mjs \[?1l>[?2004l
+[0m[27m[24m[J> [K[?1h=[?2004h   /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/release/generate-c [Khhangelog-entry.mjs \[?1l>[?2004l
+[0m[27m[24m[J> [K[?1h=[?2004h   /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/cleanup-broken-lin [Kkks.mjs \[?1l>[?2004l
+[0m[27m[24m[J> [K[?1h=[?2004h   /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/security/monthly-a [Kuudit.mjs \[?1l>[?2004l
+[0m[27m[24m[J> [K[?1h=[?2004h   /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/check-todos-comple [Ktte.mjs \[?1l>[?2004l
+[0m[27m[24m[J> [K[?1h=[?2004h   /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/security/quarterly [K--audit.mjs \[?1l>[?2004l
+[0m[27m[24m[J> [K[?1h=[?2004h   /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/content/generate-b [Kllog-hero.mjs \[?1l>[?2004l
+[0m[27m[24m[J> [K[?1h=[?2004h   /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/analyze-test-he [Kaalth.mjs \[?1l>[?2004l
+[0m[27m[24m[J> [K[?1h=[?2004h   /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/validate-dcyfr-pat [Ktterns.mjs \[?1l>[?2004l
+[0m[27m[24m[J> [K[?1h=[?2004h   /Users/dre  /User/c  /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scrip [Ktts/security/annual-audit.mjs \[?1l>[?2004l
+[0m[27m[24m[J> [K[?1h=[?2004h   /Users/drewks  /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scripts/ci/ [Kccheck-mcp-servers.mjs \e/  /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs/scr [Kiipts/release/generate-changeloco  /Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-l [Kaabs/scripts/cleanup-broken-links.mjs \[?1l>[?2004l
+[0m[27m[24m[J> [K[?1h=[?2004h   /Users/dom  /Users/drew/DCY[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:37:50] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  ls scripts/security/*.mjs scripts/ci/*.mjs scripts/release/*.mjs scripts/clea [Knnup-broken-links.mjs scripts/check-todos-complete.mjs scripts/content/generate-b [Kllog-hero.mjs scripts/validate-dcyfr-patterns.mjs scripts/check-comment-density.m [Kjjs scripts/utilities/migrate-blog-analytics.mjs scripts/validation/validate-inst [Krructions.mjs 2>&1 | head -30 && echo "---" && wc -l scripts/security/monitor-ups [Kttream-advisories.mjs scripts/security/annual-audit.mjs scripts/ci/check-mcp-serv [Keers.mjs scripts/release/generate-changelog-entry.mjs scripts/cleanup-broken-link [Kss.mjs scripts/security/monthly-audit.mjs scripts/check-todos-complete.mjs script [Kss/security/quarterly-audit.mjs scripts/content/generate-blog-hero.mjs scripts/ci [K//analyze-test-health.mjs scripts/validate-dcyfr-patterns.mjs scripts/check-comme [Knnt-density.mjs scripts/utilities/migrate-blog-analytics.mjs scripts/security/sec [Kuurity-audit.mjs scripts/validation/validate-instructions.mjs 2>&1[?1l>[?2004l
+]2;ls -ls scripts/security/*.mjs scripts/ci/*.mjs scripts/release/*.mjs        2]1;ls24 -rw-r--r--@ 1 drew  staff  11607 Jan 27 01:16 scripts/check-comment-density.mjs
+24 -rw-r--r--@ 1 drew  staff  11622 Jan 27 01:16 scripts/check-todos-complete.mjs
+16 -rwxr-xr-x@ 1 drew  staff   6506 Feb  1 10:36 scripts/ci/analyze-codeql-alerts.mjs
+32 -rwxr-xr-x@ 1 drew  staff  13266 Jan 29 23:45 scripts/ci/analyze-test-health.mjs
+ 8 -rwxr-xr-x@ 1 drew  staff   3909 Jan 29 23:45 scripts/ci/check-docs-secrets.mjs
+40 -rwxr-xr-x@ 1 drew  staff  18117 Feb 18 00:30 scripts/ci/check-for-pii.mjs
+32 -rwxr-xr-x@ 1 drew  staff  12516 Jan 29 23:45 scripts/ci/check-mcp-servers.mjs
+ 8 -rwxr-xr-x@ 1 drew  staff   3188 Feb  1 10:36 scripts/ci/create-codeql-fix-branch.mjs
+16 -rwxr-xr-x@ 1 drew  staff   5428 Feb  8 19:41 scripts/ci/create-codeql-fix-pr.mjs
+16 -rwxr-xr-x@ 1 drew  staff   4397 Jan 27 01:16 scripts/ci/generate-mcp-health-report.mjs
+24 -rwxr-xr-x@ 1 drew  staff  11386 Jan 29 23:45 scripts/ci/monthly-cleanup.mjs
+ 8 -rwxr-xr-x@ 1 drew  staff   2453 Jan 29 23:45 scripts/ci/parse-gitleaks-report.mjs
+ 8 -rwxr-xr-x@ 1 drew  staff   3945 Jan 29 23:45 scripts/ci/request-copilot-fix.mjs
+16 -rwxr-xr-x@ 1 drew  staff   4941 Jan 29 23:45 scripts/ci/security-autofix-cli.mjs
+24 -rwxr-xr-x@ 1 drew  staff  11440 Jan 29 23:45 scripts/ci/sync-agents.mjs
+ 8 -rwxr-xr-x@ 1 drew  staff   2324 Jan 29 23:45 scripts/ci/update-baseline-browser-mapping.mjs
+24 -rwxr-xr-x@ 1 drew  staff  11133 Jan 27 01:16 scripts/ci/validate-critical-mcps.mjs
+16 -rwxr-xr-x@ 1 drew  staff   4566 Jan 29 23:45 scripts/ci/validate-docs-structure.mjs
+ 8 -rwxr-xr-x@ 1 drew  staff   2784 Jan 29 23:45 scripts/ci/validate-security-fix.mjs
+16 -rwxr-xr-x@ 1 drew  staff   6972 Jan 27 01:16 scripts/ci/workflow-health-monitor.mjs
+32 -rw-r--r--@ 1 drew  staff  12537 Jan 31 20:29 scripts/cleanup-broken-links.mjs
+32 -rw-r--r--@ 1 drew  staff  14418 Jan 27 01:16 scripts/content/generate-blog-hero.mjs
+16 -rw-r--r--@ 1 drew  staff   7336 Feb  1 10:36 scripts/release/bump-version.mjs
+24 -rw-r--r--@ 1 drew  staff   9342 Feb 17 21:03 scripts/release/create-release-notes.mjs
+32 -rw-r--r--@ 1 drew  staff  14527 Feb 13 15:26 scripts/release/generate-changelog-entry.mjs
+24 -rw-r--r--@ 1 drew  staff   8595 Feb 13 15:26 scripts/release/update-changelog.mjs
+56 -rwxr-xr-x@ 1 drew  staff  25384 Feb  1 10:36 scripts/security/annual-audit.mjs
+16 -rw-r--r--@ 1 drew  staff   4645 Jan 27 01:16 scripts/security/api-security-audit.mjs
+24 -rw-r--r--@ 1 drew  staff   8690 Jan 27 01:16 scripts/security/branch-cleanup.mjs
+ 8 -rwxr-xr-x@ 1 drew  staff   3067 Feb  1 10:36 scripts/security/check-all-alerts.mjs
+---
+     585 scripts/security/monitor-upstream-advisories.mjs
+     782 scripts/security/annual-audit.mjs
+     399 scripts/ci/check-mcp-servers.mjs
+     511 scripts/release/generate-changelog-entry.mjs
+     432 scripts/cleanup-broken-links.mjs
+     534 scripts/security/monthly-audit.mjs
+     394 scripts/check-todos-complete.mjs
+     611 scripts/security/quarterly-audit.mjs
+     429 scripts/content/generate-blog-hero.mjs
+     426 scripts/ci/analyze-test-health.mjs
+     347 scripts/validate-dcyfr-patterns.mjs
+     399 scripts/check-comment-density.mjs
+     303 scripts/utilities/migrate-blog-analytics.mjs
+     415 scripts/security/security-audit.mjs
+     340 scripts/validation/validate-instructions.mjs
+    6907 total
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:37:50] 
+[1m[31m$ [00m[K[?1h=[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:45:53] C:[31m130[00m
+[1m[31m$ [00m[K[?1h=[?2004h  wc -l scripts/release/generate-changelog-entry.mjs scripts/cleanup-broken-lin [Kkks.mjs scripts/security/annual-audit.mjs scripts/ci/check-mcp-servers.mjs[?1l>[?2004l
+]2;wc -l scripts/release/generate-changelog-entry.mjs   ]1;wc     517 scripts/release/generate-changelog-entry.mjs
+     453 scripts/cleanup-broken-links.mjs
+     822 scripts/security/annual-audit.mjs
+     358 scripts/ci/check-mcp-servers.mjs
+    2150 total
+[1m[7m%[27m[1m[0m                                                                                ]2;drew@rei:~/DCYFR/code/dcyfr-workspace/dcyfr-labs]1;..ce/dcyfr-labs]7;file://rei.local/Users/drew/DCYFR/code/dcyfr-workspace/dcyfr-labs\[0m[27m[24m[J
+[1m[34m#[00m [36mdrew [00m@ [32mrei [00min [1m[33m~/DCYFR/code/dcyfr-workspace/dcyfr-labs[00m [00mon[34m git:[36mmain [31mx[00m [0:45:53] 
+[1m[31m$ [00m[K[?1h=[?2004h

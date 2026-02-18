@@ -65,41 +65,21 @@ export const revalidate = 3600; // 1 hour in seconds
 // ISR keeps content fresh, PPR streams dynamic view counts and related posts
 export const experimental_ppr = true;
 
+/** Collect all URL params for blog post pages (current slug + all redirect slugs). */
+function collectPostParams(allPosts: typeof posts): { slug: string }[] {
+  const params: { slug: string }[] = [];
+  for (const post of allPosts) {
+    params.push({ slug: post.slug });
+    if (post.id !== post.slug) params.push({ slug: post.id });
+    for (const oldSlug of post.previousSlugs ?? []) params.push({ slug: oldSlug });
+    for (const oldId of post.previousIds ?? []) params.push({ slug: oldId });
+  }
+  return params;
+}
+
 // Pre-generate all blog post pages at build time
 export async function generateStaticParams() {
-  const allParams = [];
-
-  // Add current slugs
-  for (const post of posts) {
-    allParams.push({ slug: post.slug });
-  }
-
-  // Add post IDs for redirect pages (e.g., /blog/post-20200107-04d94a8e → /blog/demo-markdown)
-  for (const post of posts) {
-    if (post.id !== post.slug) {
-      allParams.push({ slug: post.id });
-    }
-  }
-
-  // Add previous slugs for redirect pages
-  for (const post of posts) {
-    if (post.previousSlugs) {
-      for (const oldSlug of post.previousSlugs) {
-        allParams.push({ slug: oldSlug });
-      }
-    }
-  }
-
-  // Add previous IDs for redirect pages (analytics migration)
-  for (const post of posts) {
-    if (post.previousIds) {
-      for (const oldId of post.previousIds) {
-        allParams.push({ slug: oldId });
-      }
-    }
-  }
-
-  return allParams;
+  return collectPostParams(posts);
 }
 
 export async function generateMetadata({

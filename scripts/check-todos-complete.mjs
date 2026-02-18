@@ -68,6 +68,20 @@ const COLORS = {
 // =============================================================================
 
 /**
+ * Classify a todo into pending/inProgress/completed arrays.
+ */
+function classifyTodoStatus(todo, results) {
+  const status = todo.status?.toLowerCase() || 'unknown';
+  if (status === 'pending') {
+    results.pending.push(todo);
+  } else if (status === 'in_progress' || status === 'in-progress') {
+    results.inProgress.push(todo);
+  } else if (status === 'completed' || status === 'done') {
+    results.completed.push(todo);
+  }
+}
+
+/**
  * Check session state files for incomplete todos
  */
 function checkSessionTodos() {
@@ -93,14 +107,7 @@ function checkSessionTodos() {
           results.todos = state.todos;
 
           for (const todo of state.todos) {
-            const status = todo.status?.toLowerCase() || 'unknown';
-            if (status === 'pending') {
-              results.pending.push(todo);
-            } else if (status === 'in_progress' || status === 'in-progress') {
-              results.inProgress.push(todo);
-            } else if (status === 'completed' || status === 'done') {
-              results.completed.push(todo);
-            }
+            classifyTodoStatus(todo, results);
           }
           break; // Use first found session file
         }
@@ -118,6 +125,28 @@ function checkSessionTodos() {
 // =============================================================================
 
 /**
+ * Process one directory entry when scanning for recently modified files.
+ */
+function processDirectoryEntry(entry, dir, files, maxDepth, depth, oneHourAgo) {
+  const fullPath = join(dir, entry.name);
+  if (CONFIG.ignorePatterns.some((p) => entry.name.includes(p))) return;
+
+  if (entry.isDirectory()) {
+    getRecentlyModifiedFiles(fullPath, files, maxDepth, depth + 1);
+  } else if (entry.isFile()) {
+    const ext = entry.name.substring(entry.name.lastIndexOf('.'));
+    if (CONFIG.scanExtensions.includes(ext)) {
+      try {
+        const stats = statSync(fullPath);
+        if (stats.mtimeMs > oneHourAgo) files.push(fullPath);
+      } catch {
+        // Skip files we can't stat
+      }
+    }
+  }
+}
+
+/**
  * Get recently modified files (within last hour)
  */
 function getRecentlyModifiedFiles(dir, files = [], maxDepth = 5, depth = 0) {
@@ -127,36 +156,52 @@ function getRecentlyModifiedFiles(dir, files = [], maxDepth = 5, depth = 0) {
 
   try {
     const entries = readdirSync(dir, { withFileTypes: true });
-
     for (const entry of entries) {
-      const fullPath = join(dir, entry.name);
-
-      // Skip ignored patterns
-      if (CONFIG.ignorePatterns.some((p) => entry.name.includes(p))) {
-        continue;
-      }
-
-      if (entry.isDirectory()) {
-        getRecentlyModifiedFiles(fullPath, files, maxDepth, depth + 1);
-      } else if (entry.isFile()) {
-        const ext = entry.name.substring(entry.name.lastIndexOf('.'));
-        if (CONFIG.scanExtensions.includes(ext)) {
-          try {
-            const stats = statSync(fullPath);
-            if (stats.mtimeMs > oneHourAgo) {
-              files.push(fullPath);
-            }
-          } catch {
-            // Skip files we can't stat
-          }
-        }
-      }
+      processDirectoryEntry(entry, dir, files, maxDepth, depth, oneHourAgo);
     }
   } catch {
     // Skip directories we can't read
   }
 
   return files;
+}
+
+/**
+ * Get the comment type (FIXME, HACK, or TODO) from a regex match.
+ */
+function getCommentType(match) {
+  if (match[0].includes('FIXME')) return 'FIXME';
+  if (match[0].includes('HACK')) return 'HACK';
+  return 'TODO';
+}
+
+/**
+ * Scan a single code file for TODO comments and add matches to results.
+ */
+function scanFileForTodos(file, results) {
+  try {
+    const content = readFileSync(file, 'utf-8');
+    const relativePath = file.replace(projectRoot + '/', '');
+
+    for (const pattern of CONFIG.codePatterns) {
+      let match;
+      pattern.lastIndex = 0;
+      while ((match = pattern.exec(content)) !== null) {
+        const lineNumber = content.substring(0, match.index).split('\n').length;
+        results.todos.push({
+          file: relativePath,
+          line: lineNumber,
+          type: getCommentType(match),
+          message: match[1]?.trim() || 'No description',
+        });
+        if (!results.files.includes(relativePath)) {
+          results.files.push(relativePath);
+        }
+      }
+    }
+  } catch {
+    // Skip files we can't read
+  }
 }
 
 /**
@@ -169,38 +214,8 @@ function scanCodeTodos() {
   };
 
   const recentFiles = getRecentlyModifiedFiles(join(projectRoot, 'src'));
-
   for (const file of recentFiles) {
-    try {
-      const content = readFileSync(file, 'utf-8');
-      const relativePath = file.replace(projectRoot + '/', '');
-
-      for (const pattern of CONFIG.codePatterns) {
-        let match;
-        // Reset lastIndex for global patterns
-        pattern.lastIndex = 0;
-
-        while ((match = pattern.exec(content)) !== null) {
-          const lineNumber = content.substring(0, match.index).split('\n').length;
-          results.todos.push({
-            file: relativePath,
-            line: lineNumber,
-            type: match[0].includes('FIXME')
-              ? 'FIXME'
-              : match[0].includes('HACK')
-                ? 'HACK'
-                : 'TODO',
-            message: match[1]?.trim() || 'No description',
-          });
-
-          if (!results.files.includes(relativePath)) {
-            results.files.push(relativePath);
-          }
-        }
-      }
-    } catch {
-      // Skip files we can't read
-    }
+    scanFileForTodos(file, results);
   }
 
   return results;

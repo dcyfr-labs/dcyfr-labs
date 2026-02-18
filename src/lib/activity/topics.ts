@@ -255,6 +255,38 @@ function extractKeywords(text: string, minLength = 3): string[] {
 // TOPIC EXTRACTION
 // ============================================================================
 
+/** Collect the normalized topics for a single activity item */
+function collectActivityTopics(
+  activity: ActivityItem,
+  includeKeywords: boolean,
+  minKeywordLength: number
+): Set<string> {
+  const topics = new Set<string>();
+
+  if (activity.meta?.tags) {
+    for (const tag of activity.meta.tags) {
+      topics.add(normalizeTopic(tag));
+    }
+  }
+
+  if (activity.meta?.category) {
+    topics.add(normalizeTopic(activity.meta.category));
+  }
+
+  if (includeKeywords) {
+    for (const kw of extractKeywords(activity.title, minKeywordLength)) {
+      topics.add(normalizeTopic(kw));
+    }
+    if (activity.description) {
+      for (const kw of extractKeywords(activity.description, minKeywordLength)) {
+        topics.add(normalizeTopic(kw));
+      }
+    }
+  }
+
+  return topics;
+}
+
 /**
  * Extract all topics from activity items
  *
@@ -280,42 +312,7 @@ export function extractTopics(
 
   // Extract topics from each activity
   for (const activity of activities) {
-    const activityTopics = new Set<string>();
-
-    // 1. Extract from tags (highest priority)
-    if (activity.meta?.tags) {
-      for (const tag of activity.meta.tags) {
-        const normalized = normalizeTopic(tag);
-        activityTopics.add(normalized);
-      }
-    }
-
-    // 2. Extract from category
-    if (activity.meta?.category) {
-      const normalized = normalizeTopic(activity.meta.category);
-      activityTopics.add(normalized);
-    }
-
-    // 3. Extract keywords from title (if enabled)
-    if (includeKeywords) {
-      const titleKeywords = extractKeywords(activity.title, minKeywordLength);
-      for (const keyword of titleKeywords) {
-        const normalized = normalizeTopic(keyword);
-        activityTopics.add(normalized);
-      }
-    }
-
-    // 4. Extract keywords from description (if enabled)
-    if (includeKeywords && activity.description) {
-      const descKeywords = extractKeywords(
-        activity.description,
-        minKeywordLength
-      );
-      for (const keyword of descKeywords) {
-        const normalized = normalizeTopic(keyword);
-        activityTopics.add(normalized);
-      }
-    }
+    const activityTopics = collectActivityTopics(activity, includeKeywords, minKeywordLength);
 
     // Increment counts for all topics in this activity
     for (const topic of activityTopics) {
@@ -342,6 +339,20 @@ export function extractTopics(
 // TOPIC CO-OCCURRENCE
 // ============================================================================
 
+/** Update co-occurrence matrix for all pairs in a topic set */
+function updateCooccurrences(matrix: TopicCooccurrence, topics: string[]): void {
+  for (let i = 0; i < topics.length; i++) {
+    const topicA = topics[i];
+    if (!matrix.has(topicA)) matrix.set(topicA, new Map());
+    const comap = matrix.get(topicA)!;
+    for (let j = 0; j < topics.length; j++) {
+      if (i === j) continue;
+      const topicB = topics[j];
+      comap.set(topicB, (comap.get(topicB) || 0) + 1);
+    }
+  }
+}
+
 /**
  * Build a topic co-occurrence matrix
  *
@@ -354,7 +365,6 @@ export function buildCooccurrenceMatrix(
   const matrix: TopicCooccurrence = new Map();
 
   for (const activity of activities) {
-    // Extract all topics for this activity
     const activityTopics = new Set<string>();
 
     if (activity.meta?.tags) {
@@ -367,23 +377,7 @@ export function buildCooccurrenceMatrix(
       activityTopics.add(normalizeTopic(activity.meta.category));
     }
 
-    // For each pair of topics, increment co-occurrence count
-    const topicsArray = Array.from(activityTopics);
-    for (let i = 0; i < topicsArray.length; i++) {
-      const topicA = topicsArray[i];
-
-      if (!matrix.has(topicA)) {
-        matrix.set(topicA, new Map());
-      }
-
-      for (let j = 0; j < topicsArray.length; j++) {
-        if (i === j) continue; // Skip self-pairs
-
-        const topicB = topicsArray[j];
-        const cooccurrences = matrix.get(topicA)!;
-        cooccurrences.set(topicB, (cooccurrences.get(topicB) || 0) + 1);
-      }
-    }
+    updateCooccurrences(matrix, Array.from(activityTopics));
   }
 
   return matrix;

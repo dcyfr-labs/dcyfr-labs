@@ -39,6 +39,23 @@ export interface SortConfig<T> {
  * const sortedPosts = sortData(posts, 'views', 'desc');
  * ```
  */
+/** Compare two values of the same type, return negative/zero/positive */
+function compareValues(aVal: unknown, bVal: unknown): number {
+  if (typeof aVal === 'string' && typeof bVal === 'string') {
+    return aVal.localeCompare(bVal);
+  }
+  if (typeof aVal === 'number' && typeof bVal === 'number') {
+    return aVal - bVal;
+  }
+  if (
+    Object.prototype.toString.call(aVal) === '[object Date]' &&
+    Object.prototype.toString.call(bVal) === '[object Date]'
+  ) {
+    return (aVal as Date).getTime() - (bVal as Date).getTime();
+  }
+  return String(aVal).localeCompare(String(bVal));
+}
+
 export function sortData<T extends Record<string, any>>(
   data: T[],
   field: keyof T,
@@ -48,36 +65,12 @@ export function sortData<T extends Record<string, any>>(
     const aVal = a[field];
     const bVal = b[field];
 
-    // Handle null/undefined values
     if (aVal == null && bVal == null) return 0;
-    if (aVal == null) return direction === "asc" ? -1 : 1;
-    if (bVal == null) return direction === "asc" ? 1 : -1;
+    if (aVal == null) return direction === 'asc' ? -1 : 1;
+    if (bVal == null) return direction === 'asc' ? 1 : -1;
 
-    // Handle different value types
-    if (typeof aVal === "string" && typeof bVal === "string") {
-      const comparison = aVal.localeCompare(bVal);
-      return direction === "asc" ? comparison : -comparison;
-    }
-
-    if (typeof aVal === "number" && typeof bVal === "number") {
-      return direction === "asc" ? aVal - bVal : bVal - aVal;
-    }
-
-    // Check for Date objects (type guard)
-    if (
-      Object.prototype.toString.call(aVal) === "[object Date]" &&
-      Object.prototype.toString.call(bVal) === "[object Date]"
-    ) {
-      const aTime = (aVal as Date).getTime();
-      const bTime = (bVal as Date).getTime();
-      return direction === "asc" ? aTime - bTime : bTime - aTime;
-    }
-
-    // Fallback: convert to string and compare
-    const aStr = String(aVal);
-    const bStr = String(bVal);
-    const comparison = aStr.localeCompare(bStr);
-    return direction === "asc" ? comparison : -comparison;
+    const comparison = compareValues(aVal, bVal);
+    return direction === 'asc' ? comparison : -comparison;
   });
 }
 

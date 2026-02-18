@@ -228,83 +228,75 @@ async function checkLicenseCompliance() {
 }
 
 /**
- * Format Issue body
- * @param {Object} data - All audit data
- * @returns {string} Markdown formatted Issue body
+ * Build the CodeQL section of the issue body.
  */
-function formatIssueBody(data) {
-  const { npm, codeql, dependabot, license, branchSummary, month, year } = data;
-
-  let body = `## Security Review - ${month} ${year}\n\n`;
-
-  // CodeQL Findings
-  body += `### CodeQL Findings\n\n`;
+function buildCodeQLSection(codeql) {
+  let section = `### CodeQL Findings\n\n`;
   if (codeql.total === 0) {
-    body += `✅ **No CodeQL findings in the last 30 days**\n\n`;
-  } else {
-    body += `⚠️  **${codeql.total} findings** in the last 30 days:\n\n`;
-    body += `- Critical: ${codeql.bySeverity.critical}\n`;
-    body += `- High: ${codeql.bySeverity.high}\n`;
-    body += `- Medium: ${codeql.bySeverity.medium}\n`;
-    body += `- Low: ${codeql.bySeverity.low}\n\n`;
-
-    if (codeql.alerts.length > 0) {
-      body += `**Top Findings:**\n\n`;
-      for (const alert of codeql.alerts.slice(0, 5)) {
-        body += `- [${alert.rule?.id || "Unknown"}](${alert.html_url}): ${alert.rule?.description || "No description"}\n`;
-      }
-      body += `\n`;
-    }
+    section += `✅ **No CodeQL findings in the last 30 days**\n\n`;
+    return section;
   }
+  section += `⚠️  **${codeql.total} findings** in the last 30 days:\n\n`;
+  section += `- Critical: ${codeql.bySeverity.critical}\n`;
+  section += `- High: ${codeql.bySeverity.high}\n`;
+  section += `- Medium: ${codeql.bySeverity.medium}\n`;
+  section += `- Low: ${codeql.bySeverity.low}\n\n`;
+  if (codeql.alerts.length > 0) {
+    section += `**Top Findings:**\n\n`;
+    for (const alert of codeql.alerts.slice(0, 5)) {
+      section += `- [${alert.rule?.id || "Unknown"}](${alert.html_url}): ${alert.rule?.description || "No description"}\n`;
+    }
+    section += `\n`;
+  }
+  return section;
+}
 
-  // Dependency Vulnerabilities
-  body += `### Dependency Vulnerabilities\n\n`;
+/**
+ * Build the NPM vulnerabilities section.
+ */
+function buildVulnSection(npm) {
+  let section = `### Dependency Vulnerabilities\n\n`;
   if (npm.vulnerabilities.total === 0) {
-    body += `✅ **No vulnerabilities found in dependencies**\n\n`;
-  } else {
-    body += `⚠️  **${npm.vulnerabilities.total} vulnerabilities** found:\n\n`;
-    body += `| Severity | Count |\n`;
-    body += `|----------|-------|\n`;
-    body += `| Critical | ${npm.vulnerabilities.critical} |\n`;
-    body += `| High | ${npm.vulnerabilities.high} |\n`;
-    body += `| Moderate | ${npm.vulnerabilities.moderate} |\n`;
-    body += `| Low | ${npm.vulnerabilities.low} |\n`;
-    body += `| Info | ${npm.vulnerabilities.info} |\n\n`;
-
-    if (npm.vulnerabilities.critical > 0 || npm.vulnerabilities.high > 0) {
-      body += `**⚠️  Action Required:** Address critical and high severity vulnerabilities immediately.\n\n`;
-    }
+    section += `✅ **No vulnerabilities found in dependencies**\n\n`;
+    return section;
   }
+  section += `⚠️  **${npm.vulnerabilities.total} vulnerabilities** found:\n\n`;
+  section += `| Severity | Count |\n`;
+  section += `|----------|-------|\n`;
+  section += `| Critical | ${npm.vulnerabilities.critical} |\n`;
+  section += `| High | ${npm.vulnerabilities.high} |\n`;
+  section += `| Moderate | ${npm.vulnerabilities.moderate} |\n`;
+  section += `| Low | ${npm.vulnerabilities.low} |\n`;
+  section += `| Info | ${npm.vulnerabilities.info} |\n\n`;
+  if (npm.vulnerabilities.critical > 0 || npm.vulnerabilities.high > 0) {
+    section += `**⚠️  Action Required:** Address critical and high severity vulnerabilities immediately.\n\n`;
+  }
+  return section;
+}
 
-  // Dependabot PRs
-  body += `### Dependabot PRs\n\n`;
-  body += `- **Open PRs:** ${dependabot.total}\n`;
-  body += `- **Auto-mergeable:** ${dependabot.autoMergeable}\n`;
-  body += `- **Requires Review:** ${dependabot.requiresReview}\n\n`;
-
+/**
+ * Build the Dependabot PRs section.
+ */
+function buildDependabotSection(dependabot) {
+  let section = `### Dependabot PRs\n\n`;
+  section += `- **Open PRs:** ${dependabot.total}\n`;
+  section += `- **Auto-mergeable:** ${dependabot.autoMergeable}\n`;
+  section += `- **Requires Review:** ${dependabot.requiresReview}\n\n`;
   if (dependabot.prs.length > 0) {
-    body += `**Recent PRs:**\n\n`;
+    section += `**Recent PRs:**\n\n`;
     for (const pr of dependabot.prs) {
-      body += `- [#${pr.number}](${pr.url}): ${pr.title}\n`;
+      section += `- [#${pr.number}](${pr.url}): ${pr.title}\n`;
     }
-    body += `\n`;
+    section += `\n`;
   }
+  return section;
+}
 
-  // Branch Cleanup
-  if (branchSummary) {
-    body += `### Branch Cleanup\n\n`;
-    body += branchSummary;
-    body += `\n`;
-  }
-
-  // License Compliance
-  body += `### License Compliance\n\n`;
-  body += `${license.message}\n\n`;
-
-  // Action Items
-  body += `### Action Items\n\n`;
+/**
+ * Build the action items list.
+ */
+function buildActionItems(codeql, npm, dependabot) {
   const items = [];
-
   if (codeql.bySeverity.critical > 0 || codeql.bySeverity.high > 0) {
     items.push("[ ] Review and fix high/critical CodeQL findings");
   }
@@ -319,11 +311,37 @@ function formatIssueBody(data) {
   }
   items.push("[ ] Review branch cleanup recommendations");
   items.push("[ ] Verify security headers configuration");
+  return items;
+}
 
+/**
+ * Format Issue body
+ * @param {Object} data - All audit data
+ * @returns {string} Markdown formatted Issue body
+ */
+function formatIssueBody(data) {
+  const { npm, codeql, dependabot, license, branchSummary, month, year } = data;
+
+  let body = `## Security Review - ${month} ${year}\n\n`;
+
+  body += buildCodeQLSection(codeql);
+  body += buildVulnSection(npm);
+  body += buildDependabotSection(dependabot);
+
+  if (branchSummary) {
+    body += `### Branch Cleanup\n\n`;
+    body += branchSummary;
+    body += `\n`;
+  }
+
+  body += `### License Compliance\n\n`;
+  body += `${license.message}\n\n`;
+
+  body += `### Action Items\n\n`;
+  const items = buildActionItems(codeql, npm, dependabot);
   for (const item of items) {
     body += `- ${item}\n`;
   }
-
   if (items.length === 0) {
     body += `- [x] All security checks passed! 🎉\n`;
   }

@@ -466,6 +466,40 @@ function checkTrainingRecords() {
 /**
  * Generate Quarterly Audit Report
  */
+/**
+ * Return audit pass/fail/warning label for a numeric pass rate.
+ */
+function auditStatusLabel(passRate) {
+  if (passRate >= 80) return '✅ PASS';
+  if (passRate >= 60) return '⚠️ WARNING';
+  return '❌ FAIL';
+}
+
+/**
+ * Return SOC2 readiness range label for a numeric pass rate.
+ */
+function soc2ReadinessRange(passRate) {
+  if (passRate >= 80) return '80-90%';
+  if (passRate >= 60) return '60-80%';
+  return '40-60%';
+}
+
+/**
+ * Return check status label.
+ */
+function checkStatusLabel(status) {
+  if (status === 'PASS') return '✅ PASS';
+  if (status === 'FAIL') return '❌ FAIL';
+  return '⚠️ ERROR';
+}
+
+/**
+ * Return SOC2 category status icon (✅ or ⚠️) based on control prefix.
+ */
+function soc2CategoryStatus(controls, prefix) {
+  return controls.filter(c => c.control.startsWith(prefix)).every(c => c.result) ? '✅' : '⚠️';
+}
+
 function generateReport() {
   console.log('\n📋 Generating Quarterly Audit Report...');
 
@@ -478,7 +512,7 @@ function generateReport() {
 **Period:** ${year} ${quarterLabel}
 **Date:** ${timestamp}
 **Auditor:** Automated Compliance Audit Script
-**Status:** ${passRate >= 80 ? '✅ PASS' : passRate >= 60 ? '⚠️ WARNING' : '❌ FAIL'}
+**Status:** ${auditStatusLabel(passRate)}
 
 ---
 
@@ -514,7 +548,7 @@ ${auditResults.controlTesting.map((control, idx) => `
 ${auditResults.checks.map((check, idx) => `
 ### ${idx + 1}. ${check.name}
 
-**Status:** ${check.status === 'PASS' ? '✅ PASS' : check.status === 'FAIL' ? '❌ FAIL' : '⚠️ ERROR'}
+**Status:** ${checkStatusLabel(check.status)}
 **Details:** ${check.details}
 **Timestamp:** ${check.timestamp}
 `).join('\n')}
@@ -546,13 +580,13 @@ ${existsSync(evidenceQuarterDir) ? readdirSync(evidenceQuarterDir).map(f => `- $
 
 **Trust Service Criteria Coverage:**
 
-- **Security (SC):** ${auditResults.controlTesting.filter(c => c.control.startsWith('SC')).every(c => c.result) ? '✅' : '⚠️'} Security controls tested and operational
-- **Availability (A):** ${auditResults.controlTesting.filter(c => c.control.startsWith('A')).every(c => c.result) ? '✅' : '⚠️'} Availability monitoring in place
-- **Processing Integrity (PI):** ${auditResults.controlTesting.filter(c => c.control.startsWith('PI')).every(c => c.result) ? '✅' : '⚠️'} Data validation controls active
-- **Confidentiality (C):** ${auditResults.controlTesting.filter(c => c.control.startsWith('C')).every(c => c.result) ? '✅' : '⚠️'} Third-party inventory maintained
-- **Privacy (P):** ${auditResults.controlTesting.filter(c => c.control.startsWith('P')).every(c => c.result) ? '✅' : '⚠️'} Vendor management process documented
+- **Security (SC):** ${soc2CategoryStatus(auditResults.controlTesting, 'SC')} Security controls tested and operational
+- **Availability (A):** ${soc2CategoryStatus(auditResults.controlTesting, 'A')} Availability monitoring in place
+- **Processing Integrity (PI):** ${soc2CategoryStatus(auditResults.controlTesting, 'PI')} Data validation controls active
+- **Confidentiality (C):** ${soc2CategoryStatus(auditResults.controlTesting, 'C')} Third-party inventory maintained
+- **Privacy (P):** ${soc2CategoryStatus(auditResults.controlTesting, 'P')} Vendor management process documented
 
-**Estimated SOC2 Readiness:** ${passRate >= 80 ? '80-90%' : passRate >= 60 ? '60-80%' : '40-60%'}
+**Estimated SOC2 Readiness:** ${soc2ReadinessRange(passRate)}
 
 **Next Steps:**
 1. Remediate identified findings

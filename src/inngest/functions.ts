@@ -35,6 +35,12 @@ export {
   handlePromptScanError,
 } from '../lib/inngest/functions/prompt-security';
 
+// Import IndexNow functions
+export {
+  processIndexNowSubmission,
+  verifyIndexNowKeyFile,
+} from './indexnow-functions';
+
 /**
  * Hello World function - demonstrates basic Inngest function pattern
  *

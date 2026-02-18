@@ -36,6 +36,37 @@ async function getLastCommitDate(branchName) {
 }
 
 /**
+ * Categorize a single non-protected branch
+ * @param {string} branchName - Branch name
+ * @param {boolean} merged - Whether branch is merged
+ * @param {Date|null} lastCommit - Last commit date
+ * @param {Date} now - Current date
+ * @returns {Object} Category info: { category, entry }
+ */
+function categorizeBranch(branchName, merged, lastCommit, now) {
+  if (merged) {
+    const daysSinceMerge = lastCommit
+      ? Math.floor((now - lastCommit) / (1000 * 60 * 60 * 24))
+      : null;
+    return {
+      category: "merged",
+      entry: {
+        name: branchName,
+        lastCommit: lastCommit?.toISOString() || "Unknown",
+        daysSinceMerge,
+        autoDeleteEligible: daysSinceMerge && daysSinceMerge > MERGED_BRANCH_AGE_DAYS,
+      },
+    };
+  }
+  if (lastCommit) {
+    const daysSinceCommit = Math.floor((now - lastCommit) / (1000 * 60 * 60 * 24));
+    const category = daysSinceCommit > STALE_BRANCH_AGE_DAYS ? "stale" : "active";
+    return { category, entry: { name: branchName, lastCommit: lastCommit.toISOString(), daysSinceCommit } };
+  }
+  return { category: "active", entry: { name: branchName, lastCommit: "Unknown", daysSinceCommit: null } };
+}
+
+/**
  * Analyze all branches and categorize them
  * @returns {Promise<Object>} Categorized branches
  */
@@ -77,42 +108,8 @@ async function analyzeBranches() {
     // Check if merged
     const merged = await isBranchMerged(branchName);
     const lastCommit = await getLastCommitDate(branchName);
-
-    if (merged) {
-      const daysSinceMerge = lastCommit
-        ? Math.floor((now - lastCommit) / (1000 * 60 * 60 * 24))
-        : null;
-
-      categorized.merged.push({
-        name: branchName,
-        lastCommit: lastCommit?.toISOString() || "Unknown",
-        daysSinceMerge,
-        autoDeleteEligible: daysSinceMerge && daysSinceMerge > MERGED_BRANCH_AGE_DAYS,
-      });
-    } else if (lastCommit) {
-      const daysSinceCommit = Math.floor((now - lastCommit) / (1000 * 60 * 60 * 24));
-
-      if (daysSinceCommit > STALE_BRANCH_AGE_DAYS) {
-        categorized.stale.push({
-          name: branchName,
-          lastCommit: lastCommit.toISOString(),
-          daysSinceCommit,
-        });
-      } else {
-        categorized.active.push({
-          name: branchName,
-          lastCommit: lastCommit.toISOString(),
-          daysSinceCommit,
-        });
-      }
-    } else {
-      // Unknown last commit date - consider active for safety
-      categorized.active.push({
-        name: branchName,
-        lastCommit: "Unknown",
-        daysSinceCommit: null,
-      });
-    }
+    const { category, entry } = categorizeBranch(branchName, merged, lastCommit, now);
+    categorized[category].push(entry);
   }
 
   return categorized;
@@ -172,70 +169,80 @@ async function cleanupMergedBranches(mergedBranches) {
 }
 
 /**
+ * Build the deleted-branches section of the markdown summary
+ * @param {string[]} deleted - Deleted branch names
+ * @returns {string} Markdown section
+ */
+function buildDeletedSection(deleted) {
+  if (deleted.length === 0) return "";
+  let md = `### Auto-Deleted Branches\n\n${deleted.length} merged branches deleted automatically:\n\n`;
+  for (const branchName of deleted) {
+    md += `- ✅ \`${branchName}\`\n`;
+  }
+  return md + "\n";
+}
+
+/**
+ * Build the merged-branches table section
+ * @param {Array} merged - Merged branch entries
+ * @returns {string} Markdown section
+ */
+function buildMergedSection(merged) {
+  if (merged.length === 0) return "";
+  let md = `### Merged Branches\n\n| Branch | Last Commit | Days Since Merge | Auto-Delete |\n|--------|-------------|------------------|-------------|\n`;
+  for (const branch of merged) {
+    const autoDelete = branch.autoDeleteEligible ? "✅ Eligible" : `Wait ${MERGED_BRANCH_AGE_DAYS - (branch.daysSinceMerge || 0)} days`;
+    md += `| \`${branch.name}\` | ${branch.lastCommit} | ${branch.daysSinceMerge || "?"} | ${autoDelete} |\n`;
+  }
+  return md + "\n";
+}
+
+/**
+ * Build the stale-branches section
+ * @param {Array} stale - Stale branch entries
+ * @returns {string} Markdown section
+ */
+function buildStaleSection(stale) {
+  if (stale.length === 0) return "";
+  let md = `### Stale Branches (Manual Review Required)\n\nThese branches have no commits in ${STALE_BRANCH_AGE_DAYS}+ days and are not merged:\n\n`;
+  md += `| Branch | Last Commit | Days Inactive |\n|--------|-------------|---------------|\n`;
+  for (const branch of stale) {
+    md += `| \`${branch.name}\` | ${branch.lastCommit} | ${branch.daysSinceCommit} |\n`;
+  }
+  md += `\n**Action Required:** Review these branches and either:\n- Merge them if work is complete\n- Delete them if no longer needed\n- Close associated PRs if abandoned\n\n`;
+  return md;
+}
+
+/**
+ * Build the active-branches section
+ * @param {Array} active - Active branch entries
+ * @returns {string} Markdown section
+ */
+function buildActiveSection(active) {
+  if (active.length === 0) return "";
+  let md = `### Active Branches\n\n${active.length} branches with recent activity (last ${STALE_BRANCH_AGE_DAYS} days):\n\n`;
+  const recentBranches = active.slice(0, 10);
+  for (const branch of recentBranches) {
+    md += `- \`${branch.name}\` (${branch.daysSinceCommit || "?"} days ago)\n`;
+  }
+  if (active.length > 10) {
+    md += `\n_...and ${active.length - 10} more_\n`;
+  }
+  return md + "\n";
+}
+
+/**
  * Format branch analysis as markdown
  * @param {Object} analysis - Branch analysis results
  * @param {Object} deletionResults - Deletion results
  * @returns {string} Markdown formatted summary
  */
 function formatMarkdownSummary(analysis, deletionResults) {
-  let markdown = "";
-
-  // Summary stats
-  markdown += `### Summary\n\n`;
-  markdown += `- **Total Branches:** ${analysis.total}\n`;
-  markdown += `- **Protected:** ${analysis.protected.length}\n`;
-  markdown += `- **Merged:** ${analysis.merged.length}\n`;
-  markdown += `- **Stale (${STALE_BRANCH_AGE_DAYS}+ days):** ${analysis.stale.length}\n`;
-  markdown += `- **Active:** ${analysis.active.length}\n\n`;
-
-  if (deletionResults.deleted.length > 0) {
-    markdown += `### Auto-Deleted Branches\n\n`;
-    markdown += `${deletionResults.deleted.length} merged branches deleted automatically:\n\n`;
-    for (const branchName of deletionResults.deleted) {
-      markdown += `- ✅ \`${branchName}\`\n`;
-    }
-    markdown += `\n`;
-  }
-
-  if (analysis.merged.length > 0) {
-    markdown += `### Merged Branches\n\n`;
-    markdown += `| Branch | Last Commit | Days Since Merge | Auto-Delete |\n`;
-    markdown += `|--------|-------------|------------------|-------------|\n`;
-    for (const branch of analysis.merged) {
-      const autoDelete = branch.autoDeleteEligible ? "✅ Eligible" : `Wait ${MERGED_BRANCH_AGE_DAYS - (branch.daysSinceMerge || 0)} days`;
-      markdown += `| \`${branch.name}\` | ${branch.lastCommit} | ${branch.daysSinceMerge || "?"} | ${autoDelete} |\n`;
-    }
-    markdown += `\n`;
-  }
-
-  if (analysis.stale.length > 0) {
-    markdown += `### Stale Branches (Manual Review Required)\n\n`;
-    markdown += `These branches have no commits in ${STALE_BRANCH_AGE_DAYS}+ days and are not merged:\n\n`;
-    markdown += `| Branch | Last Commit | Days Inactive |\n`;
-    markdown += `|--------|-------------|---------------|\n`;
-    for (const branch of analysis.stale) {
-      markdown += `| \`${branch.name}\` | ${branch.lastCommit} | ${branch.daysSinceCommit} |\n`;
-    }
-    markdown += `\n`;
-    markdown += `**Action Required:** Review these branches and either:\n`;
-    markdown += `- Merge them if work is complete\n`;
-    markdown += `- Delete them if no longer needed\n`;
-    markdown += `- Close associated PRs if abandoned\n\n`;
-  }
-
-  if (analysis.active.length > 0) {
-    markdown += `### Active Branches\n\n`;
-    markdown += `${analysis.active.length} branches with recent activity (last ${STALE_BRANCH_AGE_DAYS} days):\n\n`;
-    const recentBranches = analysis.active.slice(0, 10); // Show top 10
-    for (const branch of recentBranches) {
-      markdown += `- \`${branch.name}\` (${branch.daysSinceCommit || "?"} days ago)\n`;
-    }
-    if (analysis.active.length > 10) {
-      markdown += `\n_...and ${analysis.active.length - 10} more_\n`;
-    }
-    markdown += `\n`;
-  }
-
+  let markdown = `### Summary\n\n- **Total Branches:** ${analysis.total}\n- **Protected:** ${analysis.protected.length}\n- **Merged:** ${analysis.merged.length}\n- **Stale (${STALE_BRANCH_AGE_DAYS}+ days):** ${analysis.stale.length}\n- **Active:** ${analysis.active.length}\n\n`;
+  markdown += buildDeletedSection(deletionResults.deleted);
+  markdown += buildMergedSection(analysis.merged);
+  markdown += buildStaleSection(analysis.stale);
+  markdown += buildActiveSection(analysis.active);
   return markdown;
 }
 

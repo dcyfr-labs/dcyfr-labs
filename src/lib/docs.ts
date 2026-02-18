@@ -39,6 +39,58 @@ let docsCacheTime: number = 0;
 // In development, cache for 1 minute; in production, cache for 1 hour
 const CACHE_TTL = process.env.NODE_ENV === "production" ? 3600_000 : 60_000;
 
+/** Return true if a relative path points to private content that should be skipped */
+function isPrivatePath(relativePath: string): boolean {
+  return (
+    relativePath.includes("/.private/") ||
+    relativePath.startsWith(".private/") ||
+    relativePath.includes("/private/") ||
+    relativePath.startsWith("private/")
+  );
+}
+
+/** Parse one .md file entry and push a DocFile onto docs, or return null on failure */
+function parseDocFile(fullPath: string, relativePath: string, entryName: string): DocFile | null {
+  try {
+    const fileContent = fs.readFileSync(fullPath, "utf8");
+    const { data: frontmatter, content } = matter(fileContent, {
+      engines: {
+        yaml: (s: string) => yaml.load(s, { schema: yaml.DEFAULT_SCHEMA }) as object,
+      },
+    });
+    const stats = fs.statSync(fullPath);
+    const pathParts = relativePath.split(path.sep);
+    const category = pathParts[0] || "general";
+    const subcategory = pathParts.length > 2 ? pathParts[1] : undefined;
+    const slug = relativePath
+      .replace(/\.md$/, "")
+      .replace(/\\/g, "/")
+      .replace(/^\/+|\/+$/g, "");
+
+    return {
+      id: slug,
+      slug,
+      filePath: fullPath,
+      relativePath,
+      meta: {
+        title: frontmatter.title || entryName.replace(/\.md$/, ""),
+        description: frontmatter.description,
+        category: frontmatter.category || category,
+        tags: frontmatter.tags || [],
+        order: frontmatter.order || 999,
+        ...frontmatter,
+      },
+      content,
+      category,
+      subcategory,
+      lastModified: stats.mtime,
+    };
+  } catch (error) {
+    console.warn(`Failed to process doc file ${fullPath}:`, error);
+    return null;
+  }
+}
+
 /**
  * Get all documentation files from the docs directory
  * Results are cached to improve performance
@@ -62,66 +114,14 @@ export function getAllDocs(): DocFile[] {
       const relativePath = path.join(basePath, entry.name);
 
       if (entry.isFile() && entry.name.endsWith(".md")) {
-        // Skip private content - files in any .private/ or private/ subdirectory
-        if (
-          relativePath.includes("/.private/") ||
-          relativePath.startsWith(".private/") ||
-          relativePath.includes("/private/") ||
-          relativePath.startsWith("private/")
-        ) {
-          return;
-        }
-
-        try {
-          const fileContent = fs.readFileSync(fullPath, "utf8");
-          const { data: frontmatter, content } = matter(fileContent, {
-            engines: {
-              yaml: (s: string) =>
-                yaml.load(s, { schema: yaml.DEFAULT_SCHEMA }) as object,
-            },
-          });
-          const stats = fs.statSync(fullPath);
-
-          // Extract category from path
-          const pathParts = relativePath.split(path.sep);
-          const category = pathParts[0] || "general";
-          const subcategory = pathParts.length > 2 ? pathParts[1] : undefined;
-
-          // Create slug from file path
-          const slug = relativePath
-            .replace(/\.md$/, "")
-            .replace(/\\/g, "/") // Normalize path separators
-            .replace(/^\/+|\/+$/g, ""); // Remove leading/trailing slashes
-
-          const doc: DocFile = {
-            id: slug,
-            slug,
-            filePath: fullPath,
-            relativePath,
-            meta: {
-              title: frontmatter.title || entry.name.replace(/\.md$/, ""),
-              description: frontmatter.description,
-              category: frontmatter.category || category,
-              tags: frontmatter.tags || [],
-              order: frontmatter.order || 999,
-              ...frontmatter,
-            },
-            content,
-            category,
-            subcategory,
-            lastModified: stats.mtime,
-          };
-
-          docs.push(doc);
-        } catch (error) {
-          console.warn(`Failed to process doc file ${fullPath}:`, error);
-        }
+        if (isPrivatePath(relativePath)) return;
+        const doc = parseDocFile(fullPath, relativePath, entry.name);
+        if (doc) docs.push(doc);
       } else if (
         entry.isDirectory() &&
         !entry.name.startsWith(".") &&
         entry.name !== "private"
       ) {
-        // Skip private directories entirely
         readDocsRecursive(fullPath, relativePath);
       }
     }

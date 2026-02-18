@@ -100,6 +100,50 @@ function getVariantStyles(variant: ArchiveVariant) {
   }
 }
 
+/** Render the description block, handling both string and ReactNode values */
+function renderArchiveDescription(
+  description: string | ReactNode | undefined,
+  itemCount: number | undefined,
+  align: ArchiveAlign,
+  descriptionClass: string
+): ReactNode {
+  if (!description) return null;
+  if (typeof description === 'string') {
+    return (
+      <p
+        className={cn(descriptionClass, 'max-w-3xl', align === 'center' && 'mx-auto')}
+        style={align === 'center' ? { textAlign: 'center' } : undefined}
+      >
+        {description}
+        {itemCount !== undefined && (
+          <span className="text-muted-foreground block md:inline">
+            {' '}
+            ({itemCount} {itemCount === 1 ? 'item' : 'items'})
+          </span>
+        )}
+      </p>
+    );
+  }
+  return (
+    <div className={cn(descriptionClass, 'max-w-3xl', align === 'center' && 'mx-auto')}>
+      {description}
+    </div>
+  );
+}
+
+/** Render the stats block, handling both string and ReactNode values */
+function renderArchiveStats(stats: string | ReactNode | undefined, align: ArchiveAlign): ReactNode {
+  if (!stats) return null;
+  if (typeof stats === 'string') {
+    return (
+      <p className={cn('text-sm text-muted-foreground', align === 'center' && 'mx-auto')}>
+        {stats}
+      </p>
+    );
+  }
+  return <div className={cn('text-sm', align === 'center' && 'mx-auto')}>{stats}</div>;
+}
+
 export function ArchiveHero({
   title,
   description,
@@ -178,37 +222,10 @@ export function ArchiveHero({
         <h1 className={TYPOGRAPHY.h1.hero}>{title}</h1>
 
         {/* Description */}
-        {description &&
-          (typeof description === 'string' ? (
-            <p
-              className={cn(heroStyles.description, 'max-w-3xl', align === 'center' && 'mx-auto')}
-              style={align === 'center' ? { textAlign: 'center' } : undefined}
-            >
-              {description}
-              {itemCount !== undefined && (
-                <span className="text-muted-foreground block md:inline">
-                  {' '}
-                  ({itemCount} {itemCount === 1 ? 'item' : 'items'})
-                </span>
-              )}
-            </p>
-          ) : (
-            <div
-              className={cn(heroStyles.description, 'max-w-3xl', align === 'center' && 'mx-auto')}
-            >
-              {description}
-            </div>
-          ))}
+        {renderArchiveDescription(description, itemCount, align, heroStyles.description)}
 
         {/* Stats (e.g., "142 articles across 12 topics") */}
-        {stats &&
-          (typeof stats === 'string' ? (
-            <p className={cn('text-sm text-muted-foreground', align === 'center' && 'mx-auto')}>
-              {stats}
-            </p>
-          ) : (
-            <div className={cn('text-sm', align === 'center' && 'mx-auto')}>{stats}</div>
-          ))}
+        {renderArchiveStats(stats, align)}
 
         {/* Actions (search bar, filters, CTAs) */}
         {actions && (

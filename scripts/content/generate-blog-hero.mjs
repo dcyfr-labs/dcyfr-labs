@@ -221,6 +221,40 @@ ${stopElements}
 }
 
 // Parse frontmatter from MDX file
+/**
+ * Process a YAML array item line and update parser state.
+ */
+function processArrayLine(trimmedLine, state) {
+  if (!state.inArray) {
+    state.inArray = true;
+    state.arrayItems = [];
+  }
+  const item = trimmedLine.substring(1).trim().replace(/^['"]|['"]$/g, '');
+  state.arrayItems.push(item);
+}
+
+/**
+ * Process a YAML key-value line and update frontmatter/parser state.
+ */
+function processKeyValueLine(trimmedLine, state, frontmatter) {
+  // Flush pending array
+  if (state.inArray && state.currentKey) {
+    frontmatter[state.currentKey] = state.arrayItems;
+    state.arrayItems = [];
+    state.inArray = false;
+  }
+
+  const colonIndex = trimmedLine.indexOf(':');
+  const key = trimmedLine.substring(0, colonIndex).trim();
+  const value = trimmedLine.substring(colonIndex + 1).trim().replace(/^['"]|['"]$/g, '');
+
+  state.currentKey = key;
+  if (value) {
+    frontmatter[key] = value;
+    state.currentKey = null;
+  }
+}
+
 function parseFrontmatter(filePath) {
   const content = readFileSync(filePath, 'utf-8');
   const match = content.match(/^---\n([\s\S]*?)\n---/);
@@ -231,56 +265,22 @@ function parseFrontmatter(filePath) {
 
   const frontmatter = {};
   const lines = match[1].split('\n');
-  let currentKey = null;
-  let arrayItems = [];
-  let inArray = false;
+  const state = { currentKey: null, arrayItems: [], inArray: false };
 
   for (const line of lines) {
     const trimmedLine = line.trim();
-
-    // Skip empty lines
     if (!trimmedLine) continue;
 
-    // Array item
     if (trimmedLine.startsWith('-')) {
-      if (!inArray) {
-        inArray = true;
-        arrayItems = [];
-      }
-      const item = trimmedLine
-        .substring(1)
-        .trim()
-        .replace(/^['"]|['"]$/g, '');
-      arrayItems.push(item);
-    }
-    // Key-value pair
-    else if (trimmedLine.includes(':') && !trimmedLine.startsWith(' ')) {
-      // Save previous array if any
-      if (inArray && currentKey) {
-        frontmatter[currentKey] = arrayItems;
-        arrayItems = [];
-        inArray = false;
-      }
-
-      const colonIndex = trimmedLine.indexOf(':');
-      const key = trimmedLine.substring(0, colonIndex).trim();
-      const value = trimmedLine
-        .substring(colonIndex + 1)
-        .trim()
-        .replace(/^['"]|['"]$/g, '');
-
-      currentKey = key;
-
-      if (value) {
-        frontmatter[key] = value;
-        currentKey = null;
-      }
+      processArrayLine(trimmedLine, state);
+    } else if (trimmedLine.includes(':') && !trimmedLine.startsWith(' ')) {
+      processKeyValueLine(trimmedLine, state, frontmatter);
     }
   }
 
   // Save final array if any
-  if (inArray && currentKey) {
-    frontmatter[currentKey] = arrayItems;
+  if (state.inArray && state.currentKey) {
+    frontmatter[state.currentKey] = state.arrayItems;
   }
 
   return frontmatter;

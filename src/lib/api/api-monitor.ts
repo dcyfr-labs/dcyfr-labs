@@ -102,6 +102,76 @@ function extractResponseMetadata(response: Response): ResponseMetadata {
 /**
  * Wrapper for API route handlers with monitoring
  */
+
+/** Log the request body if enabled and present */
+async function logOptionalRequestBody(request: Request, routeName: string, operationId: string, enabled: boolean): Promise<void> {
+  if (!enabled || !request.body) return;
+  try {
+    const body = await request.clone().text();
+    if (body) {
+      devLogger.debug(`Request body: ${routeName}`, {
+        operation: operationId,
+        metadata: { body: body.substring(0, 500) },
+      });
+    }
+  } catch (error) {
+    devLogger.warn('Failed to read request body for logging', { error });
+  }
+}
+
+/** Log the response body if enabled and the response meets severity filter */
+async function logOptionalResponseBody(response: Response, routeName: string, operationId: string, enabled: boolean): Promise<void> {
+  if (!enabled) return;
+  try {
+    const body = await response.clone().text();
+    if (body) {
+      devLogger.debug(`Response body: ${routeName}`, {
+        operation: operationId,
+        metadata: { body: body.substring(0, 500) },
+      });
+    }
+  } catch (error) {
+    devLogger.warn('Failed to read response body for logging', { error });
+  }
+}
+
+/** Log the API response at the appropriate level based on status and duration */
+function logApiResponse(
+  logMessage: string,
+  operationId: string,
+  duration: number,
+  requestMetadata: RequestMetadata,
+  responseMetadata: ResponseMetadata,
+  isError: boolean,
+  isSlow: boolean,
+  isVerySlow: boolean,
+): void {
+  if (isError) {
+    devLogger.error(logMessage, {
+      operation: operationId, duration,
+      metadata: { request: requestMetadata as unknown as Record<string, unknown>, response: responseMetadata as unknown as Record<string, unknown> },
+    });
+  } else if (isVerySlow) {
+    devLogger.warn(`${logMessage} (VERY SLOW!)`, {
+      operation: operationId, duration,
+      metadata: { request: requestMetadata as unknown as Record<string, unknown>, response: responseMetadata as unknown as Record<string, unknown> },
+    });
+  } else if (isSlow) {
+    devLogger.warn(`${logMessage} (slow)`, {
+      operation: operationId, duration,
+      metadata: { request: requestMetadata as unknown as Record<string, unknown>, response: responseMetadata as unknown as Record<string, unknown> },
+    });
+  } else {
+    devLogger.api(logMessage, {
+      operation: operationId, duration,
+      metadata: {
+        request: { method: requestMetadata.method, pathname: requestMetadata.pathname },
+        response: { status: responseMetadata.status, size: responseMetadata.size },
+      },
+    });
+  }
+}
+
 export function withApiMonitoring<T = unknown>(
   handler: (request: Request) => Promise<Response>,
   routeName: string,
@@ -115,111 +185,37 @@ export function withApiMonitoring<T = unknown>(
     const operationId = `api:${routeName}:${Date.now()}`;
     const startTime = Date.now();
 
-    // Log request
     const requestMetadata = extractRequestMetadata(request);
     devLogger.api(`→ Request: ${requestMetadata.method} ${requestMetadata.pathname}`, {
       operation: operationId,
-      metadata: {
-        ...requestMetadata,
-        timestamp: new Date().toISOString(),
-      },
+      metadata: { ...requestMetadata, timestamp: new Date().toISOString() },
     });
 
-    // Log request body if enabled
-    if (options.logRequestBody && request.body) {
-      try {
-        const clonedRequest = request.clone();
-        const body = await clonedRequest.text();
-        if (body) {
-          devLogger.debug(`Request body: ${routeName}`, {
-            operation: operationId,
-            metadata: { body: body.substring(0, 500) }, // Limit body size
-          });
-        }
-      } catch (error) {
-        devLogger.warn('Failed to read request body for logging', { error });
-      }
-    }
+    await logOptionalRequestBody(request, routeName, operationId, !!options.logRequestBody);
 
     let response: Response;
     try {
-      // Execute handler
       response = await handler(request);
     } catch (error) {
       const duration = Date.now() - startTime;
-
       devLogger.error(`✗ Request failed: ${requestMetadata.method} ${requestMetadata.pathname}`, {
-        operation: operationId,
-        duration,
-        error,
+        operation: operationId, duration, error,
         metadata: requestMetadata as unknown as Record<string, unknown>,
       });
-
       throw error;
     }
 
     const duration = Date.now() - startTime;
     const responseMetadata = extractResponseMetadata(response);
-
-    // Determine log level based on response and duration
     const isError = response.status >= 400;
     const isSlow = duration > (options.slowThreshold || SLOW_REQUEST_THRESHOLD);
     const isVerySlow = duration > VERY_SLOW_REQUEST_THRESHOLD;
 
     const logMessage = `← Response: ${requestMetadata.method} ${requestMetadata.pathname} - ${response.status}`;
+    logApiResponse(logMessage, operationId, duration, requestMetadata, responseMetadata, isError, isSlow, isVerySlow);
 
-    if (isError) {
-      devLogger.error(logMessage, {
-        operation: operationId,
-        duration,
-        metadata: {
-          request: requestMetadata as unknown as Record<string, unknown>,
-          response: responseMetadata as unknown as Record<string, unknown>,
-        },
-      });
-    } else if (isVerySlow) {
-      devLogger.warn(`${logMessage} (VERY SLOW!)`, {
-        operation: operationId,
-        duration,
-        metadata: {
-          request: requestMetadata as unknown as Record<string, unknown>,
-          response: responseMetadata as unknown as Record<string, unknown>,
-        },
-      });
-    } else if (isSlow) {
-      devLogger.warn(`${logMessage} (slow)`, {
-        operation: operationId,
-        duration,
-        metadata: {
-          request: requestMetadata as unknown as Record<string, unknown>,
-          response: responseMetadata as unknown as Record<string, unknown>,
-        },
-      });
-    } else {
-      devLogger.api(logMessage, {
-        operation: operationId,
-        duration,
-        metadata: {
-          request: { method: requestMetadata.method, pathname: requestMetadata.pathname },
-          response: { status: responseMetadata.status, size: responseMetadata.size },
-        },
-      });
-    }
-
-    // Log response body if enabled (only for errors or very slow requests)
     if (options.logResponseBody && (isError || isVerySlow)) {
-      try {
-        const clonedResponse = response.clone();
-        const body = await clonedResponse.text();
-        if (body) {
-          devLogger.debug(`Response body: ${routeName}`, {
-            operation: operationId,
-            metadata: { body: body.substring(0, 500) }, // Limit body size
-          });
-        }
-      } catch (error) {
-        devLogger.warn('Failed to read response body for logging', { error });
-      }
+      await logOptionalResponseBody(response, routeName, operationId, true);
     }
 
     return response;

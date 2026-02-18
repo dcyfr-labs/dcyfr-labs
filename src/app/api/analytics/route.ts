@@ -292,7 +292,68 @@ async function fetchTrendingFromRedis(postsWithViews: PostWithViews[]): Promise<
   }
 }
 
-async function fetchVercelDataFromRedis() {
+/** Parse the `?days=` query param; returns null for "all" and a validated number otherwise */
+function parseDaysParam(daysParam: string | null): { days: number | null; error?: NextResponse } {
+  if (daysParam === 'all' || daysParam === null) {
+    return { days: daysParam === null ? 1 : null };
+  }
+  const parsedDays = parseInt(daysParam, 10);
+  if (isNaN(parsedDays) || parsedDays < 1 || parsedDays > 365) {
+    return {
+      days: null,
+      error: NextResponse.json(
+        { error: 'Invalid days parameter', message: "Days must be a number between 1 and 365, or 'all'" },
+        { status: 400 }
+      ),
+    };
+  }
+  return { days: parsedDays };
+}
+
+type PostSummaryEntry = {
+  slug: string; title: string; views: number; views24h: number; viewsRange: number;
+  shares: number; shares24h: number; comments: number; comments24h: number;
+};
+
+function toSummaryEntry(p: PostWithViews): PostSummaryEntry {
+  return { slug: p.slug, title: p.title, views: p.views, views24h: p.views24h, viewsRange: p.viewsRange, shares: p.shares, shares24h: p.shares24h, comments: p.comments, comments24h: p.comments24h };
+}
+
+function buildAnalyticsSummary(postsWithViews: PostWithViews[]) {
+  const total = (key: keyof PostWithViews) =>
+    postsWithViews.reduce((sum, p) => sum + (p[key] as number), 0);
+
+  const totalViews = total('views');
+  const totalViews24h = total('views24h');
+  const totalViewsRange = total('viewsRange');
+  const totalShares = total('shares');
+  const totalShares24h = total('shares24h');
+  const totalComments = total('comments');
+  const totalComments24h = total('comments24h');
+  const n = postsWithViews.length;
+
+  const avg = (v: number) => Math.round(n > 0 ? v / n : 0);
+
+  const topPost = postsWithViews[0];
+  const sorted = (key: keyof PostWithViews) => [...postsWithViews].sort((a, b) => (b[key] as number) - (a[key] as number))[0];
+
+  return {
+    totalPosts: n, totalViews, totalViews24h, totalViewsRange, totalShares, totalShares24h, totalComments, totalComments24h,
+    averageViews: avg(totalViews), averageViews24h: avg(totalViews24h),
+    averageViewsRange: avg(totalViewsRange), averageShares: avg(totalShares),
+    averageShares24h: avg(totalShares24h), averageComments: avg(totalComments),
+    averageComments24h: avg(totalComments24h),
+    topPost: topPost ? toSummaryEntry(topPost) : null,
+    topPost24h: toSummaryEntry(sorted('views24h')),
+    topPostRange: toSummaryEntry(sorted('viewsRange')),
+    mostSharedPost: toSummaryEntry(sorted('shares')),
+    mostSharedPost24h: toSummaryEntry(sorted('shares24h')),
+    mostCommentedPost: toSummaryEntry(sorted('comments')),
+    mostCommentedPost24h: toSummaryEntry(sorted('comments24h')),
+  };
+}
+
+
   try {
     const [vPages, vReferrers, vDevices, vSynced] = await Promise.all([
       redis.get('vercel:topPages:daily'),
@@ -374,27 +435,8 @@ export async function GET(request: NextRequest) {
     const daysParam = searchParams.get('days');
 
     // Validate days parameter
-    let days: number | null;
-    if (daysParam === 'all' || daysParam === null) {
-      days = null;
-    } else {
-      const parsedDays = parseInt(daysParam, 10);
-      if (isNaN(parsedDays) || parsedDays < 1 || parsedDays > 365) {
-        return NextResponse.json(
-          {
-            error: 'Invalid days parameter',
-            message: "Days must be a number between 1 and 365, or 'all'",
-          },
-          { status: 400 }
-        );
-      }
-      days = parsedDays;
-    }
-
-    // Default to 1 day if no parameter provided
-    if (days === null && daysParam === null) {
-      days = 1;
-    }
+    const { days, error: daysError } = parseDaysParam(daysParam);
+    if (daysError) return daysError;
 
     // Get view counts for all posts using their stable post IDs
     const postIds = posts.map((p) => p.id);
@@ -417,35 +459,7 @@ export async function GET(request: NextRequest) {
       shareMap, shares24hMap, commentMap, comments24hMap
     );
 
-    // Calculate statistics
-    const totalViews = postsWithViews.reduce((sum, post) => sum + post.views, 0);
-    const totalViews24h = postsWithViews.reduce((sum, post) => sum + post.views24h, 0);
-    const totalViewsRange = postsWithViews.reduce((sum, post) => sum + post.viewsRange, 0);
-    const totalShares = postsWithViews.reduce((sum, post) => sum + post.shares, 0);
-    const totalShares24h = postsWithViews.reduce((sum, post) => sum + post.shares24h, 0);
-    const totalComments = postsWithViews.reduce((sum, post) => sum + post.comments, 0);
-    const totalComments24h = postsWithViews.reduce((sum, post) => sum + post.comments24h, 0);
-
-    const averageViews = postsWithViews.length > 0 ? totalViews / postsWithViews.length : 0;
-    const averageViews24h = postsWithViews.length > 0 ? totalViews24h / postsWithViews.length : 0;
-    const averageViewsRange =
-      postsWithViews.length > 0 ? totalViewsRange / postsWithViews.length : 0;
-    const averageShares = postsWithViews.length > 0 ? totalShares / postsWithViews.length : 0;
-    const averageShares24h = postsWithViews.length > 0 ? totalShares24h / postsWithViews.length : 0;
-    const averageComments = postsWithViews.length > 0 ? totalComments / postsWithViews.length : 0;
-    const averageComments24h =
-      postsWithViews.length > 0 ? totalComments24h / postsWithViews.length : 0;
-
-    const topPost = postsWithViews[0];
-    const topPost24h = [...postsWithViews].sort((a, b) => b.views24h - a.views24h)[0];
-    const topPostRange = [...postsWithViews].sort((a, b) => b.viewsRange - a.viewsRange)[0];
-    const mostSharedPost = [...postsWithViews].sort((a, b) => b.shares - a.shares)[0];
-    const mostSharedPost24h = [...postsWithViews].sort((a, b) => b.shares24h - a.shares24h)[0];
-    const mostCommentedPost = [...postsWithViews].sort((a, b) => b.comments - a.comments)[0];
-    const mostCommentedPost24h = [...postsWithViews].sort(
-      (a, b) => b.comments24h - a.comments24h
-    )[0];
-
+    const summary = buildAnalyticsSummary(postsWithViews);
     const trendingPosts = postsWithViews.slice(0, 5);
 
     // Enrich trending data from Redis (falls back to top 5 by views)
@@ -459,106 +473,7 @@ export async function GET(request: NextRequest) {
         success: true,
         timestamp: new Date().toISOString(),
         dateRange: days === null ? 'all' : `${days}d`,
-        summary: {
-          totalPosts: postsWithViews.length,
-          totalViews,
-          totalViews24h,
-          totalViewsRange,
-          totalShares,
-          totalShares24h,
-          totalComments,
-          totalComments24h,
-          averageViews: Math.round(averageViews),
-          averageViews24h: Math.round(averageViews24h),
-          averageViewsRange: Math.round(averageViewsRange),
-          averageShares: Math.round(averageShares),
-          averageShares24h: Math.round(averageShares24h),
-          averageComments: Math.round(averageComments),
-          averageComments24h: Math.round(averageComments24h),
-          topPost: topPost
-            ? {
-                slug: topPost.slug,
-                title: topPost.title,
-                views: topPost.views,
-                views24h: topPost.views24h,
-                viewsRange: topPost.viewsRange,
-                shares: topPost.shares,
-                shares24h: topPost.shares24h,
-                comments: topPost.comments,
-                comments24h: topPost.comments24h,
-              }
-            : null,
-          topPost24h: topPost24h
-            ? {
-                slug: topPost24h.slug,
-                title: topPost24h.title,
-                views: topPost24h.views,
-                views24h: topPost24h.views24h,
-                viewsRange: topPost24h.viewsRange,
-                shares: topPost24h.shares,
-                shares24h: topPost24h.shares24h,
-                comments: topPost24h.comments,
-                comments24h: topPost24h.comments24h,
-              }
-            : null,
-          topPostRange: topPostRange
-            ? {
-                slug: topPostRange.slug,
-                title: topPostRange.title,
-                views: topPostRange.views,
-                views24h: topPostRange.views24h,
-                viewsRange: topPostRange.viewsRange,
-                shares: topPostRange.shares,
-                shares24h: topPostRange.shares24h,
-                comments: topPostRange.comments,
-                comments24h: topPostRange.comments24h,
-              }
-            : null,
-          mostSharedPost: mostSharedPost
-            ? {
-                slug: mostSharedPost.slug,
-                title: mostSharedPost.title,
-                views: mostSharedPost.views,
-                shares: mostSharedPost.shares,
-                shares24h: mostSharedPost.shares24h,
-                comments: mostSharedPost.comments,
-                comments24h: mostSharedPost.comments24h,
-              }
-            : null,
-          mostSharedPost24h: mostSharedPost24h
-            ? {
-                slug: mostSharedPost24h.slug,
-                title: mostSharedPost24h.title,
-                views: mostSharedPost24h.views,
-                shares: mostSharedPost24h.shares,
-                shares24h: mostSharedPost24h.shares24h,
-                comments: mostSharedPost24h.comments,
-                comments24h: mostSharedPost24h.comments24h,
-              }
-            : null,
-          mostCommentedPost: mostCommentedPost
-            ? {
-                slug: mostCommentedPost.slug,
-                title: mostCommentedPost.title,
-                views: mostCommentedPost.views,
-                shares: mostCommentedPost.shares,
-                shares24h: mostCommentedPost.shares24h,
-                comments: mostCommentedPost.comments,
-                comments24h: mostCommentedPost.comments24h,
-              }
-            : null,
-          mostCommentedPost24h: mostCommentedPost24h
-            ? {
-                slug: mostCommentedPost24h.slug,
-                title: mostCommentedPost24h.title,
-                views: mostCommentedPost24h.views,
-                shares: mostCommentedPost24h.shares,
-                shares24h: mostCommentedPost24h.shares24h,
-                comments: mostCommentedPost24h.comments,
-                comments24h: mostCommentedPost24h.comments24h,
-              }
-            : null,
-        },
+        summary,
         posts: postsWithViews,
         trending: trendingFromRedis || trendingPosts,
         vercel: vercelData,

@@ -235,6 +235,46 @@ function validatePost(filePath) {
 /**
  * Main validation runner
  */
+/**
+ * Print issues for a single file, increment totals
+ */
+function printFileIssues(result, totals) {
+  if (!result.issues || result.issues.length === 0) return;
+  console.log(`${colors.yellow}${result.fileName}${colors.reset} (${result.title})`);
+  for (const issue of result.issues) {
+    const prefix =
+      issue.level === "error"
+        ? `${colors.red}✖ ERROR${colors.reset}`
+        : `${colors.yellow}⚠ WARN${colors.reset}`;
+    const lineInfo = issue.line ? ` [line ${issue.line}]` : "";
+    console.log(`  ${prefix}: ${issue.message}${lineInfo}`);
+    if (issue.level === "error") totals.errors++;
+    if (issue.level === "warn") totals.warnings++;
+  }
+  console.log();
+}
+
+/**
+ * Print summary and exit with appropriate code
+ */
+function printSummaryAndExit(results, totals) {
+  console.log(`${colors.dim}─────────────────────────────────────${colors.reset}`);
+  const passCount = results.filter((r) => !r.issues || r.issues.length === 0).length;
+  const totalCount = results.length;
+  if (totals.errors === 0 && totals.warnings === 0) {
+    console.log(`${colors.green}✓ All ${totalCount} posts pass validation${colors.reset}`);
+    process.exit(0);
+  }
+  console.log(
+    `${colors.green}${passCount}/${totalCount}${colors.reset} posts pass | ${colors.red}${totals.errors} errors${colors.reset}, ${colors.yellow}${totals.warnings} warnings${colors.reset}`
+  );
+  if (totals.errors > 0) {
+    console.log(`\n${colors.red}Fix errors before committing.${colors.reset}`);
+    process.exit(1);
+  }
+  process.exit(0);
+}
+
 function main() {
   console.log(`${colors.blue}Validating markdown content...${colors.reset}\n`);
 
@@ -243,67 +283,23 @@ function main() {
     process.exit(1);
   }
 
-  let files = fs
+  const files = fs
     .readdirSync(blogDir)
     .filter((f) => f.endsWith(".mdx"))
     // Skip demo files - they intentionally showcase all markdown features
     .filter((f) => !f.startsWith("demo-"))
     .map((f) => path.join(blogDir, f));
 
-  let totalErrors = 0;
-  let totalWarnings = 0;
-
   const results = files
     .map((filePath) => validatePost(filePath))
     .sort((a, b) => a.fileName.localeCompare(b.fileName));
 
+  const totals = { errors: 0, warnings: 0 };
   for (const result of results) {
-    if (result.issues && result.issues.length > 0) {
-      console.log(
-        `${colors.yellow}${result.fileName}${colors.reset} (${result.title})`
-      );
-
-      for (const issue of result.issues) {
-        const prefix =
-          issue.level === "error"
-            ? `${colors.red}✖ ERROR${colors.reset}`
-            : `${colors.yellow}⚠ WARN${colors.reset}`;
-
-        const lineInfo = issue.line ? ` [line ${issue.line}]` : "";
-        console.log(`  ${prefix}: ${issue.message}${lineInfo}`);
-
-        if (issue.level === "error") totalErrors++;
-        if (issue.level === "warn") totalWarnings++;
-      }
-
-      console.log();
-    }
+    printFileIssues(result, totals);
   }
 
-  // Summary
-  console.log(`${colors.dim}─────────────────────────────────────${colors.reset}`);
-
-  const passCount = results.filter((r) => !r.issues || r.issues.length === 0)
-    .length;
-  const totalCount = results.length;
-
-  if (totalErrors === 0 && totalWarnings === 0) {
-    console.log(
-      `${colors.green}✓ All ${totalCount} posts pass validation${colors.reset}`
-    );
-    process.exit(0);
-  }
-
-  console.log(
-    `${colors.green}${passCount}/${totalCount}${colors.reset} posts pass | ${colors.red}${totalErrors} errors${colors.reset}, ${colors.yellow}${totalWarnings} warnings${colors.reset}`
-  );
-
-  if (totalErrors > 0) {
-    console.log(`\n${colors.red}Fix errors before committing.${colors.reset}`);
-    process.exit(1);
-  }
-
-  process.exit(0);
+  printSummaryAndExit(results, totals);
 }
 
 main();

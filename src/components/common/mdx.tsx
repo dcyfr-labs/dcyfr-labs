@@ -240,6 +240,14 @@ function rehypeReplaceFootnoteEmoji() {
   };
 }
 
+/** Resolve the display language from a pre/code node pair from rehypePrettyCode */
+function resolveCodeLanguage(preProps: Record<string, unknown>, codeProps: Record<string, unknown>): string {
+  return (preProps?.['data-language'] as string) ||
+    (codeProps['data-language'] as string) ||
+    (Array.isArray(preProps?.['data-meta']) ? preProps['data-meta'][0] : undefined) ||
+    'plaintext';
+}
+
 /**
  * Custom rehype plugin to capture code block language from rehype-pretty-code
  *
@@ -260,37 +268,15 @@ function rehypeCaptureCodeLanguage() {
         );
 
         if (codeChild && codeChild.properties) {
-          // The pre element itself should have language info from rehypePrettyCode
-          // Check various possible attributes where language might be stored
-          const language =
-            node.properties?.['data-language'] || // pre element might have it
-            codeChild.properties['data-language'] || // code element might have it
-            node.properties?.['data-meta']?.[0] || // meta might contain language
-            undefined;
+          const language = resolveCodeLanguage(node.properties ?? {}, codeChild.properties);
 
-          // If we still don't have a language but the code was highlighted,
-          // we can infer it was processed by rehypePrettyCode
-          // Check if code child has any span children with style attributes (syntax highlighting)
-          const hasHighlight =
-            codeChild.children?.some(
-              (child: any) =>
-                child.type === 'element' && child.tagName === 'span' && child.properties?.style
-            ) || codeChild.properties?.style;
-
-          // Ensure data-language is set
-          if (
-            !codeChild.properties['data-language'] ||
-            codeChild.properties['data-language'] === ''
-          ) {
-            codeChild.properties['data-language'] = language || 'plaintext';
+          if (!codeChild.properties['data-language'] || codeChild.properties['data-language'] === '') {
+            codeChild.properties['data-language'] = language;
           }
 
-          // Also ensure the pre element has it for reference
-          if (!node.properties) {
-            node.properties = {};
-          }
+          if (!node.properties) node.properties = {};
           if (!node.properties['data-language']) {
-            node.properties['data-language'] = language || 'plaintext';
+            node.properties['data-language'] = language;
           }
         }
       }

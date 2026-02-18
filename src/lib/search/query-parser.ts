@@ -32,6 +32,27 @@ import type { SearchQuery } from "./types";
  * //   isFilterOnly: false
  * // }
  */
+/** Process a single token and add it to the appropriate query bucket */
+function processToken(token: string, query: SearchQuery): void {
+  if (token.startsWith('-') && token.length > 1) {
+    query.excludeTerms.push(token.slice(1).toLowerCase());
+    return;
+  }
+  if (token.includes(':')) {
+    const [field, ...valueParts] = token.split(':');
+    const value = valueParts.join(':');
+    if (field && value) {
+      const fieldLower = field.toLowerCase();
+      if (!query.filters[fieldLower]) query.filters[fieldLower] = [];
+      query.filters[fieldLower].push(value.toLowerCase());
+    }
+    return;
+  }
+  if (token.trim()) {
+    query.terms.push(token.toLowerCase());
+  }
+}
+
 export function parseSearchQuery(queryString: string): SearchQuery {
   const query: SearchQuery = {
     terms: [],
@@ -56,35 +77,9 @@ export function parseSearchQuery(queryString: string): SearchQuery {
     remainingQuery = remainingQuery.replace(phrase, "");
   });
 
-  // Split into tokens and process
   const tokens = remainingQuery.split(/\s+/).filter(Boolean);
-
   for (const token of tokens) {
-    // Exclusion (starts with -)
-    if (token.startsWith("-") && token.length > 1) {
-      query.excludeTerms.push(token.slice(1).toLowerCase());
-      continue;
-    }
-
-    // Field filter (contains :)
-    if (token.includes(":")) {
-      const [field, ...valueParts] = token.split(":");
-      const value = valueParts.join(":"); // Handle values with colons
-      
-      if (field && value) {
-        const fieldLower = field.toLowerCase();
-        if (!query.filters[fieldLower]) {
-          query.filters[fieldLower] = [];
-        }
-        query.filters[fieldLower].push(value.toLowerCase());
-      }
-      continue;
-    }
-
-    // Regular search term
-    if (token.trim()) {
-      query.terms.push(token.toLowerCase());
-    }
+    processToken(token, query);
   }
 
   // Determine if this is a filter-only query

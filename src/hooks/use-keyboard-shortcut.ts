@@ -24,6 +24,15 @@ export interface KeyboardShortcut {
   description?: string;
 }
 
+/** Returns true when the event's modifier keys match the shortcut's requirements */
+function matchesModifiers(event: KeyboardEvent, shortcut: KeyboardShortcut): boolean {
+  const hasRequiredMeta = shortcut.metaKey ? (event.metaKey || event.ctrlKey) : !event.metaKey && !event.ctrlKey;
+  const hasRequiredCtrl = shortcut.ctrlKey ? event.ctrlKey : !event.ctrlKey;
+  const hasRequiredShift = shortcut.shiftKey ? event.shiftKey : !event.shiftKey;
+  const hasRequiredAlt = shortcut.altKey ? event.altKey : !event.altKey;
+  return hasRequiredMeta && hasRequiredCtrl && hasRequiredShift && hasRequiredAlt;
+}
+
 /**
  * Hook to register global keyboard shortcuts
  * 
@@ -62,21 +71,12 @@ export function useKeyboardShortcut(shortcuts: KeyboardShortcut[]) {
 
       for (const shortcut of shortcuts) {
         // Skip if in input and shortcut doesn't allow it
-        if (isInput && shortcut.preventInInput !== false) {
-          continue;
-        }
+        if (isInput && shortcut.preventInInput !== false) continue;
 
         // Match key (case-insensitive)
-        const keyMatch = event.key.toLowerCase() === shortcut.key.toLowerCase();
-        if (!keyMatch) continue;
+        if (event.key.toLowerCase() !== shortcut.key.toLowerCase()) continue;
 
-        // For metaKey, allow either Meta (Mac) or Ctrl (Windows/Linux)
-        const hasRequiredMeta = shortcut.metaKey ? (event.metaKey || event.ctrlKey) : !event.metaKey && !event.ctrlKey;
-        const hasRequiredCtrl = shortcut.ctrlKey ? event.ctrlKey : !event.ctrlKey;
-        const hasRequiredShift = shortcut.shiftKey ? event.shiftKey : !event.shiftKey;
-        const hasRequiredAlt = shortcut.altKey ? event.altKey : !event.altKey;
-
-        if (hasRequiredMeta && hasRequiredCtrl && hasRequiredShift && hasRequiredAlt) {
+        if (matchesModifiers(event, shortcut)) {
           event.preventDefault();
           shortcut.callback(event);
           break; // Only trigger first matching shortcut

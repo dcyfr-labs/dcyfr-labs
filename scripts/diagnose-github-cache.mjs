@@ -49,36 +49,23 @@ function getKeyPrefix() {
   return 'unknown:';
 }
 
-async function diagnose() {
-  console.log('🔍 GitHub Cache Diagnostics\n');
-
-  // 1. Check environment
-  const environment = getEnvironment();
-  const keyPrefix = getKeyPrefix();
-
-  console.log('📍 Environment Information:');
-  console.log(`   Environment: ${environment}`);
-  console.log(`   Key Prefix: ${keyPrefix || '(none - production)'}`);
-  console.log(`   NODE_ENV: ${process.env.NODE_ENV}`);
-  console.log(`   VERCEL_ENV: ${process.env.VERCEL_ENV || '(not set)'}`);
-  console.log('');
-
-  // 2. Check Redis credentials
-  console.log('🔑 Redis Configuration:');
+/**
+ * Check Redis credentials and return redisUrl + redisToken for the environment.
+ * Exits if credentials are missing.
+ */
+function resolveRedisCredentials(environment) {
   const hasProductionCreds = !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
   const hasPreviewCreds = !!(process.env.UPSTASH_REDIS_REST_URL_PREVIEW && process.env.UPSTASH_REDIS_REST_TOKEN_PREVIEW);
 
+  console.log('🔑 Redis Configuration:');
   console.log(`   Production credentials: ${hasProductionCreds ? '✅' : '❌'}`);
   console.log(`   Preview credentials: ${hasPreviewCreds ? '✅' : '❌'}`);
 
-  // Determine which Redis to use
   let redisUrl, redisToken;
-
   if (environment === 'production') {
     redisUrl = process.env.UPSTASH_REDIS_REST_URL;
     redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
   } else {
-    // Preview or development
     redisUrl = process.env.UPSTASH_REDIS_REST_URL_PREVIEW || process.env.UPSTASH_REDIS_REST_URL;
     redisToken = process.env.UPSTASH_REDIS_REST_TOKEN_PREVIEW || process.env.UPSTASH_REDIS_REST_TOKEN;
   }
@@ -99,29 +86,14 @@ async function diagnose() {
   console.log(`   Using: ${environment === 'production' ? 'Production' : 'Preview'} Redis`);
   console.log(`   URL: ${redisUrl.substring(0, 30)}...`);
   console.log('');
+  return { redisUrl, redisToken };
+}
 
-  // 3. Connect to Redis
-  console.log('📡 Connecting to Redis...');
-  const redis = new Redis({
-    url: redisUrl,
-    token: redisToken,
-  });
-
-  try {
-    await redis.ping();
-    console.log('   ✅ Connected successfully\n');
-  } catch (error) {
-    console.error('   ❌ Connection failed:', error.message);
-    process.exit(1);
-  }
-
-  // 4. Check cache keys (with and without prefix)
-  const cacheKey = 'github:contributions:dcyfr';
-  const fallbackKey = 'github:fallback-data';
-
-  console.log('🔎 Checking Cache Keys:\n');
-
-  // Check with prefix
+/**
+ * Check the prefixed and un-prefixed cache keys for a given cacheKey.
+ * Returns `{ mainCacheWithPrefix, mainCacheNoPrefix }`.
+ */
+async function checkCacheKeys(redis, keyPrefix, cacheKey) {
   console.log(`   Key: ${keyPrefix}${cacheKey}`);
   const mainCacheWithPrefix = await redis.get(keyPrefix + cacheKey);
   console.log(`   Status: ${mainCacheWithPrefix ? '✅ EXISTS' : '❌ NOT FOUND'}`);
@@ -131,13 +103,12 @@ async function diagnose() {
       console.log(`   Total Contributions: ${data.totalContributions}`);
       console.log(`   Last Updated: ${data.lastUpdated}`);
       console.log(`   Source: ${data.source}`);
-    } catch (e) {
+    } catch (_e) {
       console.log(`   ⚠️  Data is not valid JSON`);
     }
   }
   console.log('');
 
-  // Check without prefix (in case of mismatch)
   console.log(`   Key (no prefix): ${cacheKey}`);
   const mainCacheNoPrefix = await redis.get(cacheKey);
   console.log(`   Status: ${mainCacheNoPrefix ? '✅ EXISTS' : '❌ NOT FOUND'}`);
@@ -147,41 +118,19 @@ async function diagnose() {
       const data = JSON.parse(mainCacheNoPrefix);
       console.log(`   Total Contributions: ${data.totalContributions}`);
       console.log(`   Last Updated: ${data.lastUpdated}`);
-    } catch (e) {
+    } catch (_e) {
       console.log(`   Data is not valid JSON`);
     }
   }
   console.log('');
+  return { mainCacheWithPrefix, mainCacheNoPrefix };
+}
 
-  // Check fallback key
-  console.log(`   Fallback Key: ${keyPrefix}${fallbackKey}`);
-  const fallbackCache = await redis.get(keyPrefix + fallbackKey);
-  console.log(`   Status: ${fallbackCache ? '✅ EXISTS' : '❌ NOT FOUND'}`);
-  console.log('');
-
-  // 5. List all GitHub-related keys
-  console.log('📋 All GitHub-related keys:\n');
-
-  // Note: KEYS command is slow, but okay for diagnostics
-  // In production, you'd use SCAN
-  try {
-    const pattern = keyPrefix ? `${keyPrefix}github:*` : 'github:*';
-    console.log(`   Scanning for pattern: ${pattern}`);
-
-    // Upstash doesn't support KEYS command via REST API
-    // So we'll just check the specific keys we know about
-    console.log('   (Note: Full key scan not available via Upstash REST API)');
-    console.log('   Checked keys:');
-    console.log(`   - ${keyPrefix}${cacheKey}: ${mainCacheWithPrefix ? 'EXISTS' : 'MISSING'}`);
-    console.log(`   - ${keyPrefix}${fallbackKey}: ${fallbackCache ? 'EXISTS' : 'MISSING'}`);
-  } catch (error) {
-    console.log(`   ⚠️  Could not scan keys: ${error.message}`);
-  }
-  console.log('');
-
-  // 6. Recommendations
+/**
+ * Print recommendations based on cache state.
+ */
+function printRecommendations(mainCacheWithPrefix, mainCacheNoPrefix) {
   console.log('💡 Recommendations:\n');
-
   if (!mainCacheWithPrefix && !mainCacheNoPrefix) {
     console.log('   ❌ Cache is empty. Possible causes:');
     console.log('      1. Inngest function has not run yet');
@@ -210,7 +159,58 @@ async function diagnose() {
     console.log('      - Verify Redis client import paths');
     console.log('      - Check for connection errors in app logs');
   }
+}
 
+async function diagnose() {
+  console.log('🔍 GitHub Cache Diagnostics\n');
+
+  const environment = getEnvironment();
+  const keyPrefix = getKeyPrefix();
+
+  console.log('📍 Environment Information:');
+  console.log(`   Environment: ${environment}`);
+  console.log(`   Key Prefix: ${keyPrefix || '(none - production)'}`);
+  console.log(`   NODE_ENV: ${process.env.NODE_ENV}`);
+  console.log(`   VERCEL_ENV: ${process.env.VERCEL_ENV || '(not set)'}`);
+  console.log('');
+
+  const { redisUrl, redisToken } = resolveRedisCredentials(environment);
+
+  console.log('📡 Connecting to Redis...');
+  const redis = new Redis({ url: redisUrl, token: redisToken });
+  try {
+    await redis.ping();
+    console.log('   ✅ Connected successfully\n');
+  } catch (error) {
+    console.error('   ❌ Connection failed:', error.message);
+    process.exit(1);
+  }
+
+  const cacheKey = 'github:contributions:dcyfr';
+  const fallbackKey = 'github:fallback-data';
+
+  console.log('🔎 Checking Cache Keys:\n');
+  const { mainCacheWithPrefix, mainCacheNoPrefix } = await checkCacheKeys(redis, keyPrefix, cacheKey);
+
+  console.log(`   Fallback Key: ${keyPrefix}${fallbackKey}`);
+  const fallbackCache = await redis.get(keyPrefix + fallbackKey);
+  console.log(`   Status: ${fallbackCache ? '✅ EXISTS' : '❌ NOT FOUND'}`);
+  console.log('');
+
+  console.log('📋 All GitHub-related keys:\n');
+  try {
+    const pattern = keyPrefix ? `${keyPrefix}github:*` : 'github:*';
+    console.log(`   Scanning for pattern: ${pattern}`);
+    console.log('   (Note: Full key scan not available via Upstash REST API)');
+    console.log('   Checked keys:');
+    console.log(`   - ${keyPrefix}${cacheKey}: ${mainCacheWithPrefix ? 'EXISTS' : 'MISSING'}`);
+    console.log(`   - ${keyPrefix}${fallbackKey}: ${fallbackCache ? 'EXISTS' : 'MISSING'}`);
+  } catch (error) {
+    console.log(`   ⚠️  Could not scan keys: ${error.message}`);
+  }
+  console.log('');
+
+  printRecommendations(mainCacheWithPrefix, mainCacheNoPrefix);
   console.log('\n✅ Diagnosis complete\n');
 }
 

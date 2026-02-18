@@ -175,6 +175,57 @@ function validateOptions(
 }
 
 // ============================================================================
+// ERROR HANDLING
+// ============================================================================
+
+/** Map a thrown research error to an appropriate NextResponse */
+function handleResearchError(error: unknown): NextResponse {
+  const errorMessage = error instanceof Error ? error.message : String(error);
+
+  if (process.env.NODE_ENV === "development") {
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    console.error("[Research API] Error:", errorMessage);
+    if (errorStack) console.error("Stack trace:", errorStack);
+  } else {
+    console.error("[Research API] Error:", {
+      type: error instanceof Error ? error.constructor.name : typeof error,
+      message: errorMessage,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  if (errorMessage.includes("API key not configured")) {
+    return NextResponse.json(
+      { error: "Service not configured", message: "Perplexity API key is not configured on the server." },
+      { status: 503 }
+    );
+  }
+
+  if (errorMessage.includes("401") || errorMessage.includes("Unauthorized")) {
+    return NextResponse.json(
+      { error: "Authentication failed", message: "Invalid or expired Perplexity API key." },
+      { status: 503 }
+    );
+  }
+
+  if (errorMessage.includes("429") || errorMessage.toLowerCase().includes("rate limit")) {
+    return NextResponse.json(
+      { error: "Upstream rate limit exceeded", message: "Perplexity API rate limit reached. Please try again later." },
+      { status: 503 }
+    );
+  }
+
+  return NextResponse.json(
+    {
+      error: "Research request failed",
+      message: "An error occurred while processing your research request.",
+      details: process.env.NODE_ENV === "development" ? errorMessage : undefined,
+    },
+    { status: 500 }
+  );
+}
+
+// ============================================================================
 // API ROUTE
 // ============================================================================
 
@@ -363,66 +414,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-
-    // Log with full stack only in development
-    if (process.env.NODE_ENV === "development") {
-      const errorStack = error instanceof Error ? error.stack : undefined;
-      console.error("[Research API] Error:", errorMessage);
-      if (errorStack) console.error("Stack trace:", errorStack);
-    } else {
-      // Production: minimal error logging without stack traces
-      console.error("[Research API] Error:", {
-        type: error instanceof Error ? error.constructor.name : typeof error,
-        message: errorMessage,
-        timestamp: new Date().toISOString(),
-      });
-    }
-
-    // Check for specific error types
-    if (errorMessage.includes("API key not configured")) {
-      return NextResponse.json(
-        {
-          error: "Service not configured",
-          message: "Perplexity API key is not configured on the server.",
-        },
-        { status: 503 }
-      );
-    }
-
-    if (errorMessage.includes("401") || errorMessage.includes("Unauthorized")) {
-      return NextResponse.json(
-        {
-          error: "Authentication failed",
-          message: "Invalid or expired Perplexity API key.",
-        },
-        { status: 503 }
-      );
-    }
-
-    if (
-      errorMessage.includes("429") ||
-      errorMessage.toLowerCase().includes("rate limit")
-    ) {
-      return NextResponse.json(
-        {
-          error: "Upstream rate limit exceeded",
-          message: "Perplexity API rate limit reached. Please try again later.",
-        },
-        { status: 503 }
-      );
-    }
-
-    // Generic error response
-    return NextResponse.json(
-      {
-        error: "Research request failed",
-        message: "An error occurred while processing your research request.",
-        details:
-          process.env.NODE_ENV === "development" ? errorMessage : undefined,
-      },
-      { status: 500 }
-    );
+    return handleResearchError(error);
   }
 }
 

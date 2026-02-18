@@ -287,6 +287,50 @@ function meetsSeverityThreshold(severity, packageName) {
 }
 
 /**
+ * Validate whether an advisory actually affects the given package.
+ * Returns {found, vulnerabilityInfo, packageSlugMatches} for the three strategies.
+ */
+function validateAdvisoryForPackage(adv, packageName) {
+  // Strategy 1: Check vulnerabilities array (most reliable)
+  let foundInVulnerabilities = false;
+  let vulnerabilityInfo = null;
+  if (Array.isArray(adv.vulnerabilities)) {
+    const vulnInfo = adv.vulnerabilities.find(v => v.package?.name === packageName);
+    if (vulnInfo) {
+      foundInVulnerabilities = true;
+      vulnerabilityInfo = vulnInfo;
+    }
+  }
+  // Strategy 2: Check affected_packages array (fallback)
+  let foundInAffectedPackages = false;
+  if (!foundInVulnerabilities && Array.isArray(adv.affected_packages)) {
+    const affectedInfo = adv.affected_packages.find(pkg => pkg.package?.name === packageName);
+    if (affectedInfo) {
+      foundInAffectedPackages = true;
+      vulnerabilityInfo = affectedInfo;
+    }
+  }
+  // Strategy 3: Cross-check with package_slug if present
+  let packageSlugMatches = true;
+  if (adv.package_slug) {
+    const slugParts = adv.package_slug.split('/');
+    const actualPackage = slugParts[slugParts.length - 1] || '';
+    packageSlugMatches = actualPackage === packageName || actualPackage.includes(packageName);
+  }
+  return { foundInVulnerabilities, foundInAffectedPackages, vulnerabilityInfo, packageSlugMatches };
+}
+
+/**
+ * Check if advisory is within the recent 30-day window.
+ */
+function isAdvisoryRecent(publishedAt) {
+  const published = new Date(publishedAt);
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  return published >= thirtyDaysAgo;
+}
+
+/**
  * Fetch security advisories from the global GHSA database
  * IMPORTANT: Validates that advisories actually affect the requested package
  * Uses multiple validation strategies to prevent false positives
@@ -320,52 +364,15 @@ async function fetchAdvisoriesForPackage(packageName) {
     
     for (const adv of data) {
       // CRITICAL: Validate that the advisory actually affects this package
-      // The GitHub API sometimes returns unrelated advisories, so we validate multiple ways:
-      
-      // Strategy 1: Check vulnerabilities array (most reliable)
-      let foundInVulnerabilities = false;
-      let vulnerabilityInfo = null;
-      
-      if (Array.isArray(adv.vulnerabilities)) {
-        const vulnInfo = adv.vulnerabilities.find(v => 
-          v.package?.name === packageName
-        );
-        if (vulnInfo) {
-          foundInVulnerabilities = true;
-          vulnerabilityInfo = vulnInfo;
-        }
-      }
-      
-      // Strategy 2: Check affected_packages array (fallback)
-      let foundInAffectedPackages = false;
-      if (!foundInVulnerabilities && Array.isArray(adv.affected_packages)) {
-        const affectedInfo = adv.affected_packages.find(pkg => 
-          pkg.package?.name === packageName
-        );
-        if (affectedInfo) {
-          foundInAffectedPackages = true;
-          vulnerabilityInfo = affectedInfo;
-        }
-      }
-      
-      // Strategy 3: Cross-check with package_slug if present
-      let packageSlugMatches = true;
-      if (adv.package_slug) {
-        // GitHub sometimes uses different package naming
-        // Only filter out if package_slug clearly doesn't match
-        const slugParts = adv.package_slug.split('/');
-        const actualPackage = slugParts[slugParts.length - 1] || '';
-        packageSlugMatches = actualPackage === packageName || 
-                            actualPackage.includes(packageName);
-      }
-      
+      const { foundInVulnerabilities, foundInAffectedPackages, vulnerabilityInfo, packageSlugMatches } =
+        validateAdvisoryForPackage(adv, packageName);
+
       // If not found in vulnerabilities/affected_packages, skip
       if (!foundInVulnerabilities && !foundInAffectedPackages) {
-        // Advisory does not affect the requested package - skip it
-        const affectedPackage = adv.vulnerabilities?.[0]?.package?.name || 
-                                adv.affected_packages?.[0]?.package?.name || 
-                                adv.package_slug || 
-                                "unknown";
+        const affectedPackage = adv.vulnerabilities?.[0]?.package?.name ||
+          adv.affected_packages?.[0]?.package?.name ||
+          adv.package_slug ||
+          "unknown";
         skippedAdvisories.push({
           id: adv.ghsa_id,
           cveId: adv.cve_id,
@@ -378,7 +385,7 @@ async function fetchAdvisoriesForPackage(packageName) {
         }
         continue;
       }
-      
+
       // Additional package name validation
       if (!packageSlugMatches && !foundInVulnerabilities) {
         skippedAdvisories.push({
@@ -393,13 +400,9 @@ async function fetchAdvisoriesForPackage(packageName) {
         }
         continue;
       }
-      
-      // Only include recent advisories (last 30 days)
-      const publishedAt = new Date(adv.published_at);
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-      if (publishedAt >= thirtyDaysAgo) {
+      // Only include recent advisories (last 30 days)
+      if (isAdvisoryRecent(adv.published_at)) {
         advisories.push({
           id: adv.ghsa_id,
           package: packageName,
@@ -441,6 +444,45 @@ function formatAdvisory(adv) {
 }
 
 /**
+ * Evaluate a single advisory against installed state and add to newAdvisories if relevant.
+ * Returns an object describing the advisory if it should alert, or null otherwise.
+ */
+function assessAdvisory(advisory, installedVersion, packageName, seenIds, allSkipped) {
+  const id = advisory.id;
+  if (seenIds.has(id) && !FORCE_ALERT) {
+    console.log(`   ⏭️  Already seen: ${id}`);
+    return null;
+  }
+  if (!meetsSeverityThreshold(advisory.severity, packageName)) {
+    console.log(`   ⏭️  Below threshold: ${id} (${advisory.severity})`);
+    return null;
+  }
+  const vulnerable = isVersionVulnerable(installedVersion, advisory.vulnerableRange);
+  if (!vulnerable) {
+    console.log(`   ✅ Not vulnerable: ${id} - ${packageName}@${installedVersion} not in range "${advisory.vulnerableRange}"`);
+    allSkipped.push({ id: advisory.id, cveId: advisory.cveId, actualPackage: packageName, queriedPackage: packageName, reason: `version_not_vulnerable: ${installedVersion} not in ${advisory.vulnerableRange}` });
+    return null;
+  }
+  console.log(`   🚨 NEW: ${id} - ${packageName}@${installedVersion} (${advisory.severity}) - vulnerable to ${advisory.vulnerableRange}`);
+  seenIds.add(id);
+  return formatAdvisory(advisory);
+}
+
+/**
+ * Process all advisories for one package. Returns new alert objects.
+ */
+async function processPackageAdvisories(packageName, installedVersion, seenIds, allSkipped) {
+  const { advisories, skipped } = await fetchAdvisoriesForPackage(packageName);
+  allSkipped.push(...skipped);
+  const newOnes = [];
+  for (const advisory of advisories) {
+    const result = assessAdvisory(advisory, installedVersion, packageName, seenIds, allSkipped);
+    if (result) newOnes.push(result);
+  }
+  return newOnes;
+}
+
+/**
  * Main monitoring function
  */
 async function main() {
@@ -473,61 +515,15 @@ async function main() {
   const state = loadState();
   const seenIds = new Set(state.seenAdvisories);
   const newAdvisories = [];
-
-  // Fetch advisories for all monitored packages
   const allSkipped = [];
-  
+
   for (const packageName of MONITORED_PACKAGES) {
-    // Skip packages that aren't installed or aren't production dependencies
     const installedVersion = installedPackages.get(packageName);
     const isProductionDep = productionDependencies.has(packageName);
-    
-    if (!installedVersion) {
-      console.log(`   ⏭️  Skipping ${packageName}: not installed in project`);
-      continue;
-    }
-    
-    if (!isProductionDep) {
-      console.log(`   ⏭️  Skipping ${packageName}: transitive dependency only (not in package.json)`);
-      continue;
-    }
-    
-    const { advisories, skipped } = await fetchAdvisoriesForPackage(packageName);
-    allSkipped.push(...skipped);
-
-    for (const advisory of advisories) {
-      const id = advisory.id;
-
-      // Skip if already seen (unless force alert)
-      if (seenIds.has(id) && !FORCE_ALERT) {
-        console.log(`   ⏭️  Already seen: ${id}`);
-        continue;
-      }
-
-      // Check severity threshold
-      if (!meetsSeverityThreshold(advisory.severity, packageName)) {
-        console.log(`   ⏭️  Below threshold: ${id} (${advisory.severity})`);
-        continue;
-      }
-      
-      // Check if installed version is actually vulnerable
-      const vulnerable = isVersionVulnerable(installedVersion, advisory.vulnerableRange);
-      if (!vulnerable) {
-        console.log(`   ✅ Not vulnerable: ${id} - ${packageName}@${installedVersion} not in range "${advisory.vulnerableRange}"`);
-        allSkipped.push({
-          id: advisory.id,
-          cveId: advisory.cveId,
-          actualPackage: packageName,
-          queriedPackage: packageName,
-          reason: `version_not_vulnerable: ${installedVersion} not in ${advisory.vulnerableRange}`
-        });
-        continue;
-      }
-
-      console.log(`   🚨 NEW: ${id} - ${packageName}@${installedVersion} (${advisory.severity}) - vulnerable to ${advisory.vulnerableRange}`);
-      newAdvisories.push(formatAdvisory(advisory));
-      seenIds.add(id);
-    }
+    if (!installedVersion) { console.log(`   ⏭️  Skipping ${packageName}: not installed in project`); continue; }
+    if (!isProductionDep) { console.log(`   ⏭️  Skipping ${packageName}: transitive dependency only (not in package.json)`); continue; }
+    const alerts = await processPackageAdvisories(packageName, installedVersion, seenIds, allSkipped);
+    newAdvisories.push(...alerts);
   }
 
   // Log diagnostic info about skipped advisories (misattributions prevented)

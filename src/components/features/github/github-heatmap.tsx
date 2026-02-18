@@ -89,6 +89,41 @@ const DEFAULT_GITHUB_USERNAME = "dcyfr";
 /**
  * Calculate streak statistics from contribution data
  */
+interface CurrentStreakState {
+  count: number;
+  lastDate: Date | null;
+  ended: boolean;
+}
+
+/** Advance the current-streak counter for one contribution day */
+function advanceCurrentStreak(
+  state: CurrentStreakState,
+  contribDate: Date,
+  isFirst: boolean,
+  today: Date,
+  yesterday: Date
+): void {
+  if (state.ended) return;
+
+  if (isFirst && (contribDate.getTime() === today.getTime() || contribDate.getTime() === yesterday.getTime())) {
+    state.count++;
+    state.lastDate = contribDate;
+    return;
+  }
+
+  if (state.count > 0 && state.lastDate) {
+    const dayDiff = Math.floor(
+      (state.lastDate.getTime() - contribDate.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    if (dayDiff === 1) {
+      state.count++;
+      state.lastDate = contribDate;
+    } else {
+      state.ended = true;
+    }
+  }
+}
+
 function calculateStreaks(contributions: ContributionDay[]): {
   currentStreak: number;
   longestStreak: number;
@@ -102,13 +137,10 @@ function calculateStreaks(contributions: ContributionDay[]): {
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 
-  let currentStreak = 0;
+  const streak: CurrentStreakState = { count: 0, lastDate: null, ended: false };
   let longestStreak = 0;
   let tempStreak = 0;
-  let lastStreakDate: Date | null = null; // Track the last date counted in current streak
-  let currentStreakEnded = false; // Flag to track when current streak calculation is done
 
-  // Calculate current streak (from most recent date backwards)
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const yesterday = new Date(today);
@@ -119,30 +151,7 @@ function calculateStreaks(contributions: ContributionDay[]): {
     contribDate.setHours(0, 0, 0, 0);
 
     if (sorted[i].count > 0) {
-      // Calculate current streak (only if not yet ended)
-      if (!currentStreakEnded) {
-        if (
-          i === 0 &&
-          (contribDate.getTime() === today.getTime() ||
-            contribDate.getTime() === yesterday.getTime())
-        ) {
-          currentStreak++;
-          lastStreakDate = contribDate;
-        } else if (currentStreak > 0 && lastStreakDate) {
-          const dayDiff = Math.floor(
-            (lastStreakDate.getTime() - contribDate.getTime()) /
-              (1000 * 60 * 60 * 24)
-          );
-          if (dayDiff === 1) {
-            currentStreak++;
-            lastStreakDate = contribDate;
-          } else {
-            currentStreakEnded = true; // Mark as ended but continue loop
-          }
-        }
-      }
-
-      // Calculate longest streak (always continue through all contributions)
+      advanceCurrentStreak(streak, contribDate, i === 0, today, yesterday);
       tempStreak++;
       longestStreak = Math.max(longestStreak, tempStreak);
     } else {
@@ -150,10 +159,7 @@ function calculateStreaks(contributions: ContributionDay[]): {
     }
   }
 
-  // Ensure current streak is considered as a potential longest streak
-  longestStreak = Math.max(longestStreak, currentStreak);
-
-  return { currentStreak, longestStreak };
+  return { currentStreak: streak.count, longestStreak: Math.max(longestStreak, streak.count) };
 }
 
 /**

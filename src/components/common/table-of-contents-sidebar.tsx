@@ -34,6 +34,31 @@ type TableOfContentsSidebarProps = {
  * - Click handling: just scrolls to element, scroll detection handles the rest
  * - No manual state management - everything driven by scroll position
  */
+/** Determine the active heading id from scroll position */
+function resolveActiveHeadingId(headings: TocHeading[]): string {
+  const scrollY = window.scrollY;
+  const viewportHeight = window.innerHeight;
+  const documentHeight = document.documentElement.scrollHeight;
+
+  if (scrollY + viewportHeight >= documentHeight - BOTTOM_THRESHOLD) {
+    return headings[headings.length - 1]?.id ?? "";
+  }
+
+  for (let i = headings.length - 1; i >= 0; i--) {
+    const heading = headings[i];
+    const element = document.getElementById(heading.id);
+    if (element && element.getBoundingClientRect().top <= ACTIVE_THRESHOLD) {
+      return heading.id;
+    }
+  }
+
+  if (scrollY < ACTIVE_THRESHOLD && headings[0]) {
+    return headings[0].id;
+  }
+
+  return "";
+}
+
 export function TableOfContentsSidebar({
   headings,
   slug,
@@ -80,38 +105,7 @@ export function TableOfContentsSidebar({
     if (typeof window === "undefined" || headings.length === 0) return;
 
     const updateActiveHeading = () => {
-      const scrollY = window.scrollY;
-      const viewportHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-
-      let currentId = "";
-
-      // Bottom of page
-      if (scrollY + viewportHeight >= documentHeight - BOTTOM_THRESHOLD) {
-        const lastHeading = headings[headings.length - 1];
-        if (lastHeading) {
-          currentId = lastHeading.id;
-        }
-      } else {
-        // Find closest heading above threshold
-        for (let i = headings.length - 1; i >= 0; i--) {
-          const heading = headings[i];
-          const element = document.getElementById(heading.id);
-
-          if (element) {
-            const rect = element.getBoundingClientRect();
-            if (rect.top <= ACTIVE_THRESHOLD) {
-              currentId = heading.id;
-              break;
-            }
-          }
-        }
-
-        // Fallback to first heading near top
-        if (!currentId && scrollY < ACTIVE_THRESHOLD && headings[0]) {
-          currentId = headings[0].id;
-        }
-      }
+      const currentId = resolveActiveHeadingId(headings);
 
       // Debounced state update
       if (currentId !== activeId) {

@@ -147,6 +147,44 @@ interface AnalyticsFiltersProps {
   resultCount?: { shown: number; total: number };
 }
 
+/** Returns true if any filter differs from its default (unfiltered) value */
+function computeHasActiveFilters(
+  publicationCohort: PublicationCohort,
+  performanceTier: PerformanceTierFilter,
+  selectedTags: string[],
+  searchQuery: string,
+  hideDrafts: boolean,
+  hideArchived: boolean,
+): boolean {
+  return (
+    publicationCohort !== "all" ||
+    performanceTier !== "all" ||
+    selectedTags.length > 0 ||
+    searchQuery.trim() !== "" ||
+    hideDrafts ||
+    hideArchived
+  );
+}
+
+/** Returns number of active (non-default) filters */
+function countActiveFilters(
+  publicationCohort: PublicationCohort,
+  performanceTier: PerformanceTierFilter,
+  selectedTags: string[],
+  searchQuery: string,
+  hideDrafts: boolean,
+  hideArchived: boolean,
+): number {
+  return (
+    (publicationCohort !== "all" ? 1 : 0) +
+    (performanceTier !== "all" ? 1 : 0) +
+    (selectedTags.length > 0 ? 1 : 0) +
+    (searchQuery.trim() !== "" ? 1 : 0) +
+    (hideDrafts ? 1 : 0) +
+    (hideArchived ? 1 : 0)
+  );
+}
+
 export function AnalyticsFilters({
   dateRange,
   onDateRangeChange,
@@ -177,36 +215,19 @@ export function AnalyticsFilters({
   onClearAll,
   resultCount,
 }: AnalyticsFiltersProps) {
-  const hasActiveFilters =
-    publicationCohort !== "all" ||
-    performanceTier !== "all" ||
-    selectedTags.length > 0 ||
-    searchQuery.trim() !== "" ||
-    hideDrafts ||
-    hideArchived;
+  const hasActiveFilters = computeHasActiveFilters(
+    publicationCohort, performanceTier, selectedTags, searchQuery, hideDrafts, hideArchived
+  );
 
-  const activeFilterCount =
-    (publicationCohort !== "all" ? 1 : 0) +
-    (performanceTier !== "all" ? 1 : 0) +
-    (selectedTags.length > 0 ? 1 : 0) +
-    (searchQuery.trim() !== "" ? 1 : 0) +
-    (hideDrafts ? 1 : 0) +
-    (hideArchived ? 1 : 0);
+  const activeFilterCount = countActiveFilters(
+    publicationCohort, performanceTier, selectedTags, searchQuery, hideDrafts, hideArchived
+  );
 
   const handlePresetClick = (preset: FilterPreset) => {
-    if (preset.filters.publicationCohort) {
-      onPublicationCohortChange(preset.filters.publicationCohort);
-    }
-    if (preset.filters.performanceTier) {
-      onPerformanceTierChange(preset.filters.performanceTier);
-    }
-    if (preset.filters.tags) {
-      onTagsChange(preset.filters.tags);
-    }
-    if (preset.filters.tagMode) {
-      onTagFilterModeChange(preset.filters.tagMode);
-    }
-
+    if (preset.filters.publicationCohort) onPublicationCohortChange(preset.filters.publicationCohort);
+    if (preset.filters.performanceTier) onPerformanceTierChange(preset.filters.performanceTier);
+    if (preset.filters.tags) onTagsChange(preset.filters.tags);
+    if (preset.filters.tagMode) onTagFilterModeChange(preset.filters.tagMode);
     onPresetApply?.(preset);
   };
 

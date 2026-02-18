@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Post } from "@/data/posts";
@@ -13,6 +14,81 @@ interface PostBadgesProps {
   showFeatured?: boolean;
 }
 
+/** Returns 'text-xs' when size is 'sm', otherwise empty string */
+function sizeClass(size: "default" | "sm"): string {
+  return size === "sm" ? "text-xs" : "";
+}
+
+function buildFeaturedBadge(post: Post, size: "default" | "sm", showFeatured: boolean): ReactNode {
+  if (!showFeatured || !post.featured) return null;
+  return (
+    <Badge key="featured" className={cn(sizeClass(size), "pointer-events-none", SEMANTIC_COLORS.status.success)}>
+      Featured
+    </Badge>
+  );
+}
+
+function buildDraftBadge(post: Post, size: "default" | "sm"): ReactNode {
+  if (process.env.NODE_ENV !== "development" || !post.draft) return null;
+  return (
+    <Badge key="draft" className={`${sizeClass(size)} pointer-events-none`} variant="outline">
+      Draft
+    </Badge>
+  );
+}
+
+function buildArchivedBadge(post: Post, size: "default" | "sm"): ReactNode {
+  if (!post.archived) return null;
+  return (
+    <Badge key="archived" variant="outline" className={`${sizeClass(size)} pointer-events-none bg-muted/70 text-muted-foreground border-border/70`}>
+      Archived
+    </Badge>
+  );
+}
+
+function buildNewBadge(post: Post, size: "default" | "sm", isLatestPost: boolean | undefined): ReactNode {
+  if (!isLatestPost || post.archived || post.draft) return null;
+  return (
+    <Badge key="new" className={cn(sizeClass(size), "pointer-events-none", SEMANTIC_COLORS.status.success)}>
+      New
+    </Badge>
+  );
+}
+
+function buildHotBadge(post: Post, size: "default" | "sm", isHotPost: boolean | undefined): ReactNode {
+  if (!isHotPost || post.archived || post.draft) return null;
+  return (
+    <Badge key="hot" className={cn(sizeClass(size), "pointer-events-none", SEMANTIC_COLORS.status.error)}>
+      Hot
+    </Badge>
+  );
+}
+
+function buildCategoryBadge(post: Post, size: "default" | "sm", showCategory: boolean): ReactNode {
+  if (!showCategory || !post.category) return null;
+  const categoryLabel = POST_CATEGORY_LABEL[post.category];
+  if (categoryLabel) {
+    return (
+      <Badge key="category" variant="outline" className={`${sizeClass(size)} pointer-events-none`}>
+        {categoryLabel}
+      </Badge>
+    );
+  }
+  if (process.env.NODE_ENV === "development") {
+    console.warn(
+      `[PostBadges] Category "${post.category}" not found in POST_CATEGORY_LABEL mapping.`,
+      `Add it to src/lib/post-categories.ts`,
+      `Post: ${post.title || post.id || "unknown"}`
+    );
+    return (
+      <Badge key="category-error" variant="outline" className={`${sizeClass(size)} pointer-events-none bg-destructive/10 text-destructive border-destructive/50`}>
+        Invalid Category: {post.category}
+      </Badge>
+    );
+  }
+  return null;
+}
+
 /**
  * Display status badges for a blog post (Featured, Draft, Archived, Hot, New, etc.)
  * Badges are displayed inline to the right of the title text
@@ -26,115 +102,14 @@ export function PostBadges({
   showCategory = false,
   showFeatured = true,
 }: PostBadgesProps) {
-  const badges = [];
-
-  // Featured badge - displayed first for prominence
-  if (showFeatured && post.featured) {
-    badges.push(
-      <Badge
-        key="featured"
-        className={cn(
-          size === "sm" ? "text-xs" : "",
-          "pointer-events-none",
-          SEMANTIC_COLORS.status.success
-        )}
-      >
-        Featured
-      </Badge>
-    );
-  }
-
-  // Draft badge (development only)
-  if (process.env.NODE_ENV === "development" && post.draft) {
-    badges.push(
-      <Badge
-        key="draft"
-        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
-        variant="outline"
-      >
-        Draft
-      </Badge>
-    );
-  }
-
-  // Archived badge - dimmed
-  if (post.archived) {
-    badges.push(
-      <Badge
-        key="archived"
-        variant="outline"
-        className={`${size === "sm" ? "text-xs" : ""} pointer-events-none bg-muted/70 text-muted-foreground border-border/70`}
-      >
-        Archived
-      </Badge>
-    );
-  }
-
-  // New badge - for the latest published post (not archived or draft)
-  if (isLatestPost && !post.archived && !post.draft) {
-    badges.push(
-      <Badge
-        key="new"
-        className={cn(
-          size === "sm" ? "text-xs" : "",
-          "pointer-events-none",
-          SEMANTIC_COLORS.status.success
-        )}
-      >
-        New
-      </Badge>
-    );
-  }
-
-  // Hot badge - for the post with the most views (not draft or archived)
-  if (isHotPost && !post.archived && !post.draft) {
-    badges.push(
-      <Badge
-        key="hot"
-        className={cn(
-          size === "sm" ? "text-xs" : "",
-          "pointer-events-none",
-          SEMANTIC_COLORS.status.error
-        )}
-      >
-        Hot
-      </Badge>
-    );
-  }
-
-  // Category badge
-  if (showCategory && post.category) {
-    const categoryLabel = POST_CATEGORY_LABEL[post.category];
-
-    // Only render if category label exists (prevents empty badges)
-    if (categoryLabel) {
-      badges.push(
-        <Badge
-          key="category"
-          variant="outline"
-          className={`${size === "sm" ? "text-xs" : ""} pointer-events-none`}
-        >
-          {categoryLabel}
-        </Badge>
-      );
-    } else if (process.env.NODE_ENV === "development") {
-      // Show warning badge in development for undefined categories
-      badges.push(
-        <Badge
-          key="category-error"
-          variant="outline"
-          className={`${size === "sm" ? "text-xs" : ""} pointer-events-none bg-destructive/10 text-destructive border-destructive/50`}
-        >
-          Invalid Category: {post.category}
-        </Badge>
-      );
-      console.warn(
-        `[PostBadges] Category "${post.category}" not found in POST_CATEGORY_LABEL mapping.`,
-        `Add it to src/lib/post-categories.ts`,
-        `Post: ${post.title || post.id || "unknown"}`
-      );
-    }
-  }
+  const badges = [
+    buildFeaturedBadge(post, size, showFeatured),
+    buildDraftBadge(post, size),
+    buildArchivedBadge(post, size),
+    buildNewBadge(post, size, isLatestPost),
+    buildHotBadge(post, size, isHotPost),
+    buildCategoryBadge(post, size, showCategory),
+  ].filter(Boolean);
 
   if (badges.length === 0) {
     return null;

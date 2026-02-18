@@ -156,95 +156,92 @@ function formatChange(change) {
 /**
  * Main monitoring function
  */
-function main() {
-  console.log("\n📦 Bundle Size Monitor (Next.js 16 / Turbopack)\n");
-  console.log("=" .repeat(70));
+/**
+ * Accumulate error/warning flags from a budget check result.
+ */
+function applyCheck(check, flags) {
+  if (check.status === "error" || check.status === "critical") {
+    flags.hasErrors = true;
+  } else if (check.status === "warning") {
+    flags.hasWarnings = true;
+  }
+}
 
-  const result = calculateBundleSize();
-  let hasErrors = false;
-  let hasWarnings = false;
-
-  // Get regression thresholds (if baselines exist)
-  const regressionThresholds = baselines?.regressionThresholds?.bundles;
-  const baselineBundles = baselines?.baselines?.bundles;
-
-  // Check total first load JS
+/**
+ * Check first load JS against budget and optional baseline regression.
+ */
+function checkFirstLoadJS(result, flags, options) {
+  const { budgets, baselineBundles, regressionThresholds } = options;
   const firstLoadBudget = budgets.budgets.bundles.firstLoadJS;
   const firstLoadCheck = checkBudget(result.total, firstLoadBudget);
-  const firstLoadRegression = regressionThresholds 
+  const firstLoadRegression = regressionThresholds
     ? checkRegression(result.total, baselineBundles?.firstLoadJS?.value, regressionThresholds)
     : null;
 
   console.log("\n📊 Total First Load JS");
   console.log(`${firstLoadCheck.emoji} Budget: ${result.total} kB / ${firstLoadBudget.target} kB (${firstLoadCheck.level})`);
   console.log(`   Target: ${firstLoadBudget.target} kB | Warning: ${firstLoadBudget.warning} kB | Error: ${firstLoadBudget.error} kB`);
-  
+
   if (firstLoadRegression && firstLoadRegression.status !== "no-baseline") {
     console.log(`${firstLoadRegression.emoji} Baseline: ${baselineBundles?.firstLoadJS?.value} kB → ${result.total} kB (${formatChange(firstLoadRegression.change)})`);
-    
-    if (firstLoadRegression.level === "error") {
-      hasErrors = true;
-    } else if (firstLoadRegression.level === "warning") {
-      hasWarnings = true;
-    }
+    applyCheck(firstLoadRegression, flags);
   } else if (firstLoadRegression?.status === "no-baseline") {
     console.log(`ℹ️  No baseline established yet - run after first production deployment`);
   }
+  applyCheck(firstLoadCheck, flags);
+}
 
-  if (firstLoadCheck.status === "error" || firstLoadCheck.status === "critical") {
-    hasErrors = true;
-  } else if (firstLoadCheck.status === "warning") {
-    hasWarnings = true;
-  }
-
-  // Check individual page bundles
+/**
+ * Check individual page bundles (top 10).
+ */
+function checkPageBundles(result, flags, budgets) {
   console.log("\n📄 Page Bundles (Top 10)");
   console.log("-".repeat(70));
-
   const pageBudget = budgets.budgets.bundles.pageBundle;
-  const top10 = result.bundles.slice(0, 10);
-
-  for (const bundle of top10) {
+  for (const bundle of result.bundles.slice(0, 10)) {
     const check = checkBudget(bundle.size, pageBudget);
     const sizeStr = `${bundle.size.toString().padStart(8)} kB`;
     console.log(`${check.emoji} ${bundle.page.padEnd(35)} ${sizeStr}`);
-
-    if (check.status === "error" || check.status === "critical") {
-      hasErrors = true;
-    } else if (check.status === "warning") {
-      hasWarnings = true;
-    }
+    applyCheck(check, flags);
   }
+}
 
-  // Baseline comparison summary
+/**
+ * Print baseline comparison section.
+ */
+function checkBaselineComparison(result, flags, baselineBundles, regressionThresholds) {
+  console.log("\n📈 Baseline Comparison");
+  console.log("-".repeat(70));
+  const largestPageSize = result.bundles[0]?.size || 0;
+  const largestPageRegression = checkRegression(largestPageSize, baselineBundles.largestPage?.value, regressionThresholds);
+  if (largestPageRegression.status !== "no-baseline") {
+    console.log(`${largestPageRegression.emoji} Largest Page: ${baselineBundles.largestPage?.value} kB → ${largestPageSize} kB (${formatChange(largestPageRegression.change)})`);
+    applyCheck(largestPageRegression, flags);
+  }
+  console.log(`\nRegression Thresholds: <${regressionThresholds.warning}% = pass, ${regressionThresholds.warning}-${regressionThresholds.error}% = warning, >${regressionThresholds.error}% = error`);
+}
+
+function main() {
+  console.log("\n📦 Bundle Size Monitor (Next.js 16 / Turbopack)\n");
+  console.log("=" .repeat(70));
+
+  const result = calculateBundleSize();
+  const flags = { hasErrors: false, hasWarnings: false };
+
+  const regressionThresholds = baselines?.regressionThresholds?.bundles;
+  const baselineBundles = baselines?.baselines?.bundles;
+
+  checkFirstLoadJS(result, flags, { budgets, baselines, baselineBundles, regressionThresholds });
+  checkPageBundles(result, flags, budgets);
+
   if (baselines && baselineBundles) {
-    console.log("\n📈 Baseline Comparison");
-    console.log("-".repeat(70));
-    
-    const largestPageSize = result.bundles[0]?.size || 0;
-    const largestPageRegression = checkRegression(
-      largestPageSize, 
-      baselineBundles.largestPage?.value, 
-      regressionThresholds
-    );
-    
-    if (largestPageRegression.status !== "no-baseline") {
-      console.log(`${largestPageRegression.emoji} Largest Page: ${baselineBundles.largestPage?.value} kB → ${largestPageSize} kB (${formatChange(largestPageRegression.change)})`);
-      
-      if (largestPageRegression.level === "error") {
-        hasErrors = true;
-      } else if (largestPageRegression.level === "warning") {
-        hasWarnings = true;
-      }
-    }
-    
-    console.log(`\nRegression Thresholds: <${regressionThresholds.warning}% = pass, ${regressionThresholds.warning}-${regressionThresholds.error}% = warning, >${regressionThresholds.error}% = error`);
+    checkBaselineComparison(result, flags, baselineBundles, regressionThresholds);
   }
 
   // Summary
   console.log("\n" + "=".repeat(70));
-  
-  if (hasErrors) {
+
+  if (flags.hasErrors) {
     console.log("\n❌ Bundle size check FAILED");
     console.log("   Some bundles exceed error thresholds or show critical regressions");
     console.log("   Review bundle sizes and optimize large bundles");
@@ -253,7 +250,7 @@ function main() {
     console.log("   2. Check for unexpected dependencies or large imports");
     console.log("   3. Consider code splitting or lazy loading for large routes");
     process.exit(1);
-  } else if (hasWarnings) {
+  } else if (flags.hasWarnings) {
     console.log("\n⚠️  Bundle size check PASSED with warnings");
     console.log("   Some bundles exceed target thresholds or show moderate regressions");
     console.log("   Consider optimization to stay within targets");

@@ -62,6 +62,26 @@ export interface ThreadActionsProps {
 // COMPONENT
 // ============================================================================
 
+/** Normalize activity ID to canonical slug form for consistent likes/bookmarks lookup */
+function normalizeActivityId(activityId: string, href?: string): string {
+  if (href?.startsWith("/blog/")) {
+    const extracted = href.replace("/blog/", "");
+    console.warn("[ThreadActions] ID normalization:", {
+      originalId: activityId,
+      href,
+      normalizedId: extracted,
+      isBlogPost: true,
+    });
+    return extracted;
+  }
+  console.warn("[ThreadActions] ID normalization:", {
+    originalId: activityId,
+    normalizedId: activityId,
+    isBlogPost: false,
+  });
+  return activityId;
+}
+
 /**
  * Thread action buttons (like, bookmark, share) + timestamp
  */
@@ -84,26 +104,7 @@ export function ThreadActions({
   const { getShareCount } = useShare();
 
   // Normalize activity ID for blog posts to match /likes and /bookmarks pages
-  // Blog posts in activity feed have id="blog-slug" but we check them by slug only
-  // This ensures likes/bookmarks sync across homepage and dedicated pages
-  const normalizedId = (() => {
-    if (activity?.href.startsWith("/blog/")) {
-      const extracted = activity.href.replace("/blog/", "");
-      console.warn("[ThreadActions] ID normalization:", {
-        originalId: activityId,
-        href: activity.href,
-        normalizedId: extracted,
-        isBlogPost: true,
-      });
-      return extracted;
-    }
-    console.warn("[ThreadActions] ID normalization:", {
-      originalId: activityId,
-      normalizedId: activityId,
-      isBlogPost: false,
-    });
-    return activityId;
-  })();
+  const normalizedId = normalizeActivityId(activityId, activity?.href);
 
   // Fetch global engagement counts (lazy load to reduce initial API waterfall)
   const { globalLikes, globalBookmarks, ref: engagementRef } = useGlobalEngagementCounts({

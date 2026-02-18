@@ -146,6 +146,40 @@ function searchOptimizations(kb, options) {
 }
 
 // Format and display results
+/**
+ * Print a single result entry
+ */
+function displayResultEntry(result) {
+  if (result.type === 'pattern') {
+    console.log(`✅ Pattern: ${result.rule}`);
+    console.log(`   Confidence: ${(result.confidence * 100).toFixed(0)}%`);
+    console.log(`   Description: ${result.description}`);
+    if (result.examples) {
+      console.log(`   Example: ${result.examples.correct || result.examples[0]}`);
+    }
+    if (result.enforcedBy) {
+      console.log(`   Enforced By: ${result.enforcedBy.join(', ')}`);
+    }
+    console.log('');
+  } else if (result.type === 'mistake') {
+    console.log(`❌ Mistake: ${result.title} (${result.severity})`);
+    console.log(`   Description: ${result.description}`);
+    console.log(`   Wrong: ${result.wrongWay}`);
+    console.log(`   Right: ${result.rightWay}`);
+    if (result.autoFixable) {
+      console.log(`   Auto-fixable: Yes (${result.fixScript})`);
+    }
+    console.log('');
+  } else if (result.type === 'optimization') {
+    console.log(`⚡ Optimization: ${result.title}`);
+    console.log(`   Speedup: ${result.speedup}`);
+    console.log(`   Adoption Rate: ${(result.adoptionRate * 100).toFixed(0)}%`);
+    console.log(`   Description: ${result.description}`);
+    console.log(`   When to Use: ${result.applicableWhen}`);
+    console.log('');
+  }
+}
+
 function displayResults(results, options) {
   if (results.length === 0) {
     console.log('📭 No results found');
@@ -155,36 +189,8 @@ function displayResults(results, options) {
   console.log(`\n🔍 Found ${results.length} result(s):\n`);
 
   const limited = results.slice(0, options.limit);
-
   for (const result of limited) {
-    if (result.type === 'pattern') {
-      console.log(`✅ Pattern: ${result.rule}`);
-      console.log(`   Confidence: ${(result.confidence * 100).toFixed(0)}%`);
-      console.log(`   Description: ${result.description}`);
-      if (result.examples) {
-        console.log(`   Example: ${result.examples.correct || result.examples[0]}`);
-      }
-      if (result.enforcedBy) {
-        console.log(`   Enforced By: ${result.enforcedBy.join(', ')}`);
-      }
-      console.log('');
-    } else if (result.type === 'mistake') {
-      console.log(`❌ Mistake: ${result.title} (${result.severity})`);
-      console.log(`   Description: ${result.description}`);
-      console.log(`   Wrong: ${result.wrongWay}`);
-      console.log(`   Right: ${result.rightWay}`);
-      if (result.autoFixable) {
-        console.log(`   Auto-fixable: Yes (${result.fixScript})`);
-      }
-      console.log('');
-    } else if (result.type === 'optimization') {
-      console.log(`⚡ Optimization: ${result.title}`);
-      console.log(`   Speedup: ${result.speedup}`);
-      console.log(`   Adoption Rate: ${(result.adoptionRate * 100).toFixed(0)}%`);
-      console.log(`   Description: ${result.description}`);
-      console.log(`   When to Use: ${result.applicableWhen}`);
-      console.log('');
-    }
+    displayResultEntry(result);
   }
 
   if (results.length > options.limit) {

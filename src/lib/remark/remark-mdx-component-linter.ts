@@ -85,6 +85,43 @@ function countComponents(tree: any): Record<string, number> {
 }
 
 /**
+/** Report a message or failure to the file depending on strict mode */
+function reportLint(file: any, message: string, strict: boolean): void {
+  if (strict) {
+    file.fail(message);
+  } else {
+    file.message(message);
+  }
+}
+
+/** Check one component rule and report any violations */
+function checkComponentRule(
+  file: any,
+  componentName: string,
+  rule: { min: number; max: number; message: string },
+  count: number,
+  strict: boolean
+): void {
+  if (count < rule.min) {
+    reportLint(file, `${componentName}: Found ${count}, expected at least ${rule.min}. ${rule.message}`, strict);
+  }
+  if (count > rule.max) {
+    reportLint(file, `${componentName}: Found ${count}, expected maximum ${rule.max}. ${rule.message}`, strict);
+  }
+}
+
+/** Check the SectionShare coverage requirement */
+function checkSectionShareCoverage(file: any, wordCount: number, sectionShareCount: number, strict: boolean): void {
+  if (sectionShareCount === 0) {
+    reportLint(
+      file,
+      `Post is ${wordCount} words but has no SectionShare components. Add 1-3 after major sections for better engagement.`,
+      strict
+    );
+  }
+}
+
+/**
  * Remark plugin that validates MDX component usage
  */
 export default function remarkMdxComponentLinter(options: any = {}) {
@@ -102,38 +139,11 @@ export default function remarkMdxComponentLinter(options: any = {}) {
     // Check each component rule
     for (const [componentName, rule] of Object.entries(COMPONENT_RULES)) {
       const count = componentCounts[componentName] || 0;
-
-      if (count < rule.min) {
-        const message = `${componentName}: Found ${count}, expected at least ${rule.min}. ${rule.message}`;
-        if (strict) {
-          file.fail(message);
-        } else {
-          file.message(message);
-        }
-      }
-
-      if (count > rule.max) {
-        const message = `${componentName}: Found ${count}, expected maximum ${rule.max}. ${rule.message}`;
-        if (strict) {
-          file.fail(message);
-        } else {
-          file.message(message);
-        }
-      }
+      checkComponentRule(file, componentName, rule, count, strict);
     }
 
     // Special check: Posts over 300 words should have at least one SectionShare
-    if (wordCount >= MIN_WORD_COUNT_FOR_COMPONENTS) {
-      const sectionShareCount = componentCounts.SectionShare || 0;
-      if (sectionShareCount === 0) {
-        const message = `Post is ${wordCount} words but has no SectionShare components. Add 1-3 after major sections for better engagement.`;
-        if (strict) {
-          file.fail(message);
-        } else {
-          file.message(message);
-        }
-      }
-    }
+    checkSectionShareCoverage(file, wordCount, componentCounts.SectionShare || 0, strict);
 
     // Add metadata to file for reporting
     file.data.componentCounts = componentCounts;

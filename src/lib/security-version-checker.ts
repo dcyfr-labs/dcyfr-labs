@@ -119,6 +119,28 @@ export function compareVersions(v1: string, v2: string): number {
 }
 
 /**
+ * Parse a single vulnerability condition into a range update.
+ * Returns partial range for the given condition string.
+ */
+function parseRangeCondition(condition: string): Partial<VulnerabilityRange> {
+  if (condition.startsWith("=")) {
+    const version = condition.slice(1).trim();
+    return { min: { version, inclusive: true }, max: { version, inclusive: true } };
+  }
+  if (condition.startsWith("<")) {
+    const isInclusive = condition.startsWith("<=");
+    const version = condition.slice(isInclusive ? 2 : 1).trim();
+    return { max: { version, inclusive: isInclusive } };
+  }
+  if (condition.startsWith(">")) {
+    const isInclusive = condition.startsWith(">=");
+    const version = condition.slice(isInclusive ? 2 : 1).trim();
+    return { min: { version, inclusive: isInclusive } };
+  }
+  return {};
+}
+
+/**
  * Parse vulnerability range from GHSA format
  * Examples: "< 16.0.7", ">= 16.0.0, < 16.0.7", "= 16.0.6"
  *
@@ -144,29 +166,7 @@ export function parseVulnerabilityRange(
     const conditions = vulnerableRange.split(",").map((c) => c.trim());
 
     for (const condition of conditions) {
-      // Handle exact version match (= X.Y.Z)
-      if (condition.startsWith("=")) {
-        const version = condition.slice(1).trim();
-        range.min = { version, inclusive: true };
-        range.max = { version, inclusive: true };
-        continue;
-      }
-
-      // Handle < or <=
-      if (condition.startsWith("<")) {
-        const isInclusive = condition.startsWith("<=");
-        const version = condition.slice(isInclusive ? 2 : 1).trim();
-        range.max = { version, inclusive: isInclusive };
-        continue;
-      }
-
-      // Handle > or >=
-      if (condition.startsWith(">")) {
-        const isInclusive = condition.startsWith(">=");
-        const version = condition.slice(isInclusive ? 2 : 1).trim();
-        range.min = { version, inclusive: isInclusive };
-        continue;
-      }
+      Object.assign(range, parseRangeCondition(condition));
     }
 
     return Object.keys(range).length > 0 ? range : null;

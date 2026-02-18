@@ -29,6 +29,10 @@ import {
   submitMissingPagesToGoogle,
 } from "@/inngest/google-indexing-functions";
 import {
+  processIndexNowSubmission,
+  verifyIndexNowKeyFile,
+} from "@/inngest/indexnow-functions";
+import {
   refreshActivityFeed,
   invalidateActivityFeed,
 } from "@/inngest/activity-cache-functions";
@@ -138,6 +142,10 @@ const { GET: inngestGET, POST: inngestPOST, PUT: inngestPUT } = serve({
     batchSubmitBlogPosts,            // Event-driven: batch process multiple URLs (legacy)
     validateSitemapAndGetMissing,    // Event-driven: validate sitemap against GSC
     submitMissingPagesToGoogle,      // Event-driven: end-to-end: validate→submit→verify
+
+    // IndexNow Protocol (real-time search engine indexing)
+    processIndexNowSubmission,       // Event-driven: submit URLs to IndexNow API
+    verifyIndexNowKeyFile,           // Scheduled: verify key file accessibility (every 12h)
 
     // Activity feed caching
     refreshActivityFeed,             // Scheduled: every 5 minutes

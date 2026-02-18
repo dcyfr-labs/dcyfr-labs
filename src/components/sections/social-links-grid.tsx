@@ -1,3 +1,4 @@
+import React from "react";
 import { Card } from "@/components/ui/card";
 import { sanitizeUrl } from "@/lib/utils";
 import { socialLinks } from "@/data/socials";
@@ -16,6 +17,21 @@ import {
   Code2,
   Briefcase,
 } from "lucide-react";
+
+/** Map of platform names to their icon components */
+const PLATFORM_ICONS: Record<string, React.ElementType> = {
+  calendar: Calendar,
+  twitter: Twitter,
+  dev: Code2,
+  linkedin: Linkedin,
+  peerlist: Users,
+  wellfound: Briefcase,
+  github: Github,
+  sponsors: Heart,
+  credly: Award,
+  goodreads: BookOpen,
+  orcid: GraduationCap,
+};
 
 /**
  * Social Links Grid Component
@@ -39,31 +55,7 @@ export function SocialLinksGrid() {
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       {socialLinks.map((social) => {
-        // Map platform to icon component
-        const IconComponent =
-          social.platform === "calendar"
-            ? Calendar
-            : social.platform === "twitter"
-              ? Twitter
-              : social.platform === "dev"
-                ? Code2
-                : social.platform === "linkedin"
-                  ? Linkedin
-                  : social.platform === "peerlist"
-                    ? Users
-                    : social.platform === "wellfound"
-                      ? Briefcase
-                      : social.platform === "github"
-                        ? Github
-                        : social.platform === "sponsors"
-                          ? Heart
-                          : social.platform === "credly"
-                            ? Award
-                            : social.platform === "goodreads"
-                              ? BookOpen
-                              : social.platform === "orcid"
-                                ? GraduationCap
-                                : ExternalLink;
+        const IconComponent = PLATFORM_ICONS[social.platform] ?? ExternalLink;
 
         // All social links are external, render with <a> tag
         return (

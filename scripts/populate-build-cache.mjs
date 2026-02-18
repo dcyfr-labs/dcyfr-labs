@@ -111,6 +111,31 @@ function validateCredlyData(data) {
 // GITHUB CONTRIBUTIONS
 // ============================================================================
 
+/**
+ * Run an async action with retry-backoff logic.
+ * @param {() => Promise<boolean>} action
+ * @param {number} retries
+ * @param {string} name - Human-readable label for log messages
+ */
+async function retryWithBackoff(action, retries, name) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    console.log(`[Build Cache] Attempt ${attempt}/${retries}...`);
+    try {
+      return await action(attempt);
+    } catch (error) {
+      console.error(`[Build Cache] ❌ Attempt ${attempt} failed:`, error.message);
+      if (attempt < retries) {
+        const delay = attempt * 1000;
+        console.log(`[Build Cache] ⏳ Retrying in ${delay}ms...`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      } else {
+        console.error(`[Build Cache] ❌ All retries exhausted for ${name}`);
+      }
+    }
+  }
+  return false;
+}
+
 async function fetchGitHubContributions(retries = 3) {
   console.log('[Build Cache] 📊 Fetching GitHub contributions...');
 
@@ -147,202 +172,147 @@ async function fetchGitHubContributions(retries = 3) {
     console.warn('[Build Cache] ⚠️  No GITHUB_TOKEN - API rate limits may apply');
   }
 
-  for (let attempt = 1; attempt <= retries; attempt++) {
-    try {
-      console.log(`[Build Cache] Attempt ${attempt}/${retries}...`);
+  const result = await retryWithBackoff(async () => {
+    const response = await fetch('https://api.github.com/graphql', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        query,
+        variables: {
+          username: GITHUB_USERNAME,
+          from: from.toISOString(),
+          to: to.toISOString(),
+        },
+      }),
+    });
 
-      const response = await fetch('https://api.github.com/graphql', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          query,
-          variables: {
-            username: GITHUB_USERNAME,
-            from: from.toISOString(),
-            to: to.toISOString(),
-          },
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
-
-      if (data.errors) {
-        throw new Error(`GraphQL error: ${JSON.stringify(data.errors)}`);
-      }
-
-      const calendar = data.data?.user?.contributionsCollection?.contributionCalendar;
-
-      if (!calendar) {
-        throw new Error('Invalid response structure from GitHub API');
-      }
-
-      const contributions = calendar.weeks.flatMap((week) =>
-        week.contributionDays.map((day) => ({
-          date: day.date,
-          count: day.contributionCount,
-        }))
-      );
-
-      const cacheData = {
-        contributions,
-        source: 'github-api',
-        totalContributions: calendar.totalContributions,
-        lastUpdated: new Date().toISOString(),
-      };
-
-      // Validate before writing
-      try {
-        validateGitHubData(cacheData);
-      } catch (validationError) {
-        throw new Error(`Validation failed: ${validationError.message}`);
-      }
-
-      // Write to Redis
-      const cacheKey = `${keyPrefix}github:contributions:dcyfr`;
-      const jsonString = JSON.stringify(cacheData);
-
-      // Verify JSON is valid before writing
-      JSON.parse(jsonString); // Will throw if invalid
-
-      await redis.setex(cacheKey, CACHE_DURATION, jsonString);
-
-      console.log('[Build Cache] ✅ GitHub data cached', {
-        totalContributions: cacheData.totalContributions,
-        contributionsCount: contributions.length,
-        cacheKey,
-      });
-
-      return true;
-    } catch (error) {
-      console.error(`[Build Cache] ❌ Attempt ${attempt} failed:`, error.message);
-
-      if (attempt < retries) {
-        const delay = attempt * 1000; // Exponential backoff: 1s, 2s, 3s
-        console.log(`[Build Cache] ⏳ Retrying in ${delay}ms...`);
-        await new Promise((resolve) => setTimeout(resolve, delay));
-      } else {
-        console.error('[Build Cache] ❌ All retries exhausted for GitHub data');
-        return false;
-      }
+    if (!response.ok) {
+      throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
     }
-  }
 
-  return false;
+    const data = await response.json();
+
+    if (data.errors) {
+      throw new Error(`GraphQL error: ${JSON.stringify(data.errors)}`);
+    }
+
+    const calendar = data.data?.user?.contributionsCollection?.contributionCalendar;
+    if (!calendar) throw new Error('Invalid response structure from GitHub API');
+
+    const contributions = calendar.weeks.flatMap((week) =>
+      week.contributionDays.map((day) => ({
+        date: day.date,
+        count: day.contributionCount,
+      }))
+    );
+
+    const cacheData = {
+      contributions,
+      source: 'github-api',
+      totalContributions: calendar.totalContributions,
+      lastUpdated: new Date().toISOString(),
+    };
+
+    try {
+      validateGitHubData(cacheData);
+    } catch (validationError) {
+      throw new Error(`Validation failed: ${validationError.message}`);
+    }
+
+    const cacheKey = `${keyPrefix}github:contributions:dcyfr`;
+    const jsonString = JSON.stringify(cacheData);
+    JSON.parse(jsonString);
+    await redis.setex(cacheKey, CACHE_DURATION, jsonString);
+
+    console.log('[Build Cache] ✅ GitHub data cached', {
+      totalContributions: cacheData.totalContributions,
+      contributionsCount: contributions.length,
+      cacheKey,
+    });
+    return true;
+  }, retries, 'GitHub data');
+
+  return result === true;
 }
 
-// ============================================================================
-// CREDLY BADGES
-// ============================================================================
+/**
+ * Write a persistent Credly snapshot to disk.
+ */
+function writeCredlySnapshot(cacheData) {
+  try {
+    const snapshotPath = resolve(__dirname, '../src/data/credly-badges-snapshot.json');
+    const snapshotDir = dirname(snapshotPath);
+    mkdirSync(snapshotDir, { recursive: true });
+    const snapshot = { ...cacheData, generatedAt: new Date().toISOString() };
+    writeFileSync(snapshotPath, JSON.stringify(snapshot, null, 2));
+    console.log('[Build Cache] ✅ Snapshot written to src/data/credly-badges-snapshot.json', {
+      badges: snapshot.badges.length,
+      generatedAt: snapshot.generatedAt,
+    });
+  } catch (snapshotError) {
+    console.warn('[Build Cache] ⚠️  Failed to write snapshot:', snapshotError.message);
+  }
+}
+
+/**
+ * Cache multiple badge count configurations (all, top-10, top-3).
+ */
+async function cacheCredlyConfigs(badges, cacheData) {
+  const configs = [
+    { limit: null, key: 'all' },
+    { limit: 10, key: '10' },
+    { limit: 3, key: '3' },
+  ];
+  for (const config of configs) {
+    const limitedData = {
+      ...cacheData,
+      badges: config.limit ? badges.slice(0, config.limit) : badges,
+      count: config.limit ? Math.min(config.limit, badges.length) : badges.length,
+    };
+    validateCredlyData(limitedData);
+    const cacheKey = `${keyPrefix}credly:badges:${GITHUB_USERNAME}:${config.key}`;
+    const jsonString = JSON.stringify(limitedData);
+    JSON.parse(jsonString);
+    await redis.setex(cacheKey, CACHE_DURATION, jsonString);
+    console.log(`[Build Cache] ✅ Cached ${config.key}: ${limitedData.count} badges`);
+  }
+}
 
 async function fetchCredlyBadges(retries = 3) {
   console.log('[Build Cache] 🎓 Fetching Credly badges...');
 
-  for (let attempt = 1; attempt <= retries; attempt++) {
-    try {
-      console.log(`[Build Cache] Attempt ${attempt}/${retries}...`);
+  const result = await retryWithBackoff(async () => {
+    const response = await fetch(`https://www.credly.com/users/${GITHUB_USERNAME}/badges.json`);
 
-      const response = await fetch(`https://www.credly.com/users/${GITHUB_USERNAME}/badges.json`);
-
-      if (!response.ok) {
-        throw new Error(`Credly API error: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
-
-      if (!data.data || !Array.isArray(data.data)) {
-        throw new Error('Invalid Credly response structure');
-      }
-
-      const badges = data.data;
-      const cacheData = {
-        badges,
-        total_count: badges.length,
-        count: badges.length,
-      };
-
-      // Validate base data
-      try {
-        validateCredlyData(cacheData);
-      } catch (validationError) {
-        throw new Error(`Validation failed: ${validationError.message}`);
-      }
-
-      // ✅ STEP 2: Write persistent snapshot to disk (committed to git)
-      try {
-        const snapshotPath = resolve(__dirname, '../src/data/credly-badges-snapshot.json');
-        const snapshotDir = dirname(snapshotPath);
-
-        // Ensure directory exists
-        mkdirSync(snapshotDir, { recursive: true });
-
-        // Add generatedAt timestamp to snapshot
-        const snapshot = {
-          ...cacheData,
-          generatedAt: new Date().toISOString(),
-        };
-
-        writeFileSync(snapshotPath, JSON.stringify(snapshot, null, 2));
-        console.log('[Build Cache] ✅ Snapshot written to src/data/credly-badges-snapshot.json', {
-          badges: snapshot.badges.length,
-          generatedAt: snapshot.generatedAt,
-        });
-      } catch (snapshotError) {
-        // Don't fail the build if snapshot write fails - log warning
-        console.warn('[Build Cache] ⚠️  Failed to write snapshot:', snapshotError.message);
-      }
-
-      // Cache multiple configurations (all, top 10, top 3)
-      const configs = [
-        { limit: null, key: 'all' },
-        { limit: 10, key: '10' },
-        { limit: 3, key: '3' },
-      ];
-
-      for (const config of configs) {
-        const limitedData = {
-          ...cacheData,
-          badges: config.limit ? badges.slice(0, config.limit) : badges,
-          count: config.limit ? Math.min(config.limit, badges.length) : badges.length,
-        };
-
-        // Validate limited data
-        validateCredlyData(limitedData);
-
-        const cacheKey = `${keyPrefix}credly:badges:${GITHUB_USERNAME}:${config.key}`;
-        const jsonString = JSON.stringify(limitedData);
-
-        // Verify JSON is valid before writing
-        JSON.parse(jsonString); // Will throw if invalid
-
-        await redis.setex(cacheKey, CACHE_DURATION, jsonString);
-        console.log(`[Build Cache] ✅ Cached ${config.key}: ${limitedData.count} badges`);
-      }
-
-      console.log('[Build Cache] ✅ Credly badges cached', {
-        totalBadges: badges.length,
-        configurations: configs.length,
-      });
-
-      return true;
-    } catch (error) {
-      console.error(`[Build Cache] ❌ Attempt ${attempt} failed:`, error.message);
-
-      if (attempt < retries) {
-        const delay = attempt * 1000; // Exponential backoff: 1s, 2s, 3s
-        console.log(`[Build Cache] ⏳ Retrying in ${delay}ms...`);
-        await new Promise((resolve) => setTimeout(resolve, delay));
-      } else {
-        console.error('[Build Cache] ❌ All retries exhausted for Credly badges');
-        return false;
-      }
+    if (!response.ok) {
+      throw new Error(`Credly API error: ${response.status} ${response.statusText}`);
     }
-  }
 
-  return false;
+    const data = await response.json();
+    if (!data.data || !Array.isArray(data.data)) {
+      throw new Error('Invalid Credly response structure');
+    }
+
+    const badges = data.data;
+    const cacheData = { badges, total_count: badges.length, count: badges.length };
+
+    try {
+      validateCredlyData(cacheData);
+    } catch (validationError) {
+      throw new Error(`Validation failed: ${validationError.message}`);
+    }
+
+    writeCredlySnapshot(cacheData);
+    await cacheCredlyConfigs(badges, cacheData);
+
+    console.log('[Build Cache] ✅ Credly badges cached', {
+      totalBadges: badges.length,
+      configurations: 3,
+    });
+    return true;
+  }, retries, 'Credly badges');
+
+  return result === true;
 }
 
 // ============================================================================

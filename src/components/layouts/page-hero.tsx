@@ -117,129 +117,153 @@ export function PageHero({
   const styles = HERO_VARIANTS[variant];
   const alignmentClasses = align === 'center' ? 'text-center' : '';
   const imageJustify = align === 'center' ? 'justify-center' : 'justify-center md:justify-start';
+  const isCentered = align === 'center';
 
   // Loading state - render skeleton version
   if (loading) {
-    const titleWidth = variant === 'homepage' ? 'w-64' : 'w-48';
-    const imageSize =
-      variant === 'homepage' ? 'h-32 w-32 md:h-40 md:w-40' : 'h-20 w-20 md:h-24 md:w-24';
-
-    return (
-      <section
-        id={id}
-        className={cn(
-          'relative overflow-visible',
-          PAGE_LAYOUT.hero.padding,
-          align === 'center' && 'flex flex-col items-center',
-          className
-        )}
-      >
-        <div
-          className={cn(
-            PAGE_LAYOUT.hero.container,
-            PAGE_LAYOUT.hero.content,
-            alignmentClasses,
-            align === 'center' && 'flex flex-col items-center w-full',
-            contentClassName
-          )}
-        >
-          {/* Image skeleton */}
-          {(variant === 'homepage' || image !== undefined) && (
-            <div className={cn('flex', imageJustify)}>
-              <Skeleton className={cn(imageSize, 'rounded-full')} />
-            </div>
-          )}
-
-          {/* Title skeleton */}
-          <Skeleton className={cn('h-10 md:h-12', titleWidth, align === 'center' && 'mx-auto')} />
-
-          {/* Description skeleton */}
-          <div className={SPACING.compact}>
-            <Skeleton className={cn('h-6 w-full max-w-2xl', align === 'center' && 'mx-auto')} />
-            <Skeleton className={cn('h-6 w-3/4 max-w-2xl', align === 'center' && 'mx-auto')} />
-          </div>
-
-          {/* Actions skeleton */}
-          {(variant === 'homepage' || actions !== undefined) && (
-            <div className={cn('pt-2 flex gap-3', align === 'center' && 'justify-center')}>
-              <Skeleton className="h-10 w-28" />
-              <Skeleton className="h-10 w-32" />
-              {variant === 'homepage' && <Skeleton className="h-10 w-36 hidden sm:inline-flex" />}
-            </div>
-          )}
-        </div>
-      </section>
-    );
+    return renderHeroSkeleton({ variant, isCentered, imageJustify, image, actions, id, className, contentClassName });
   }
 
-  // Normal render
-  if (fullWidth) {
-    // Full-width variant: background extends to edges, content is constrained to archive width
+  const content = (
+    <HeroContent
+      title={title}
+      description={description}
+      image={image}
+      actions={actions}
+      styles={styles}
+      imageJustify={imageJustify}
+      isCentered={isCentered}
+      itemCount={itemCount}
+      contentClassName={contentClassName}
+      containerClass={fullWidth
+        ? `mx-auto ${CONTAINER_WIDTHS.prose} ${CONTAINER_PADDING}`
+        : cn(PAGE_LAYOUT.hero.container)}
+    />
+  );
+
+  return (
+    <section
+      id={id}
+      className={cn(
+        fullWidth ? 'w-full relative overflow-visible' : 'relative overflow-visible',
+        PAGE_LAYOUT.hero.padding,
+        isCentered && 'flex flex-col items-center',
+        className
+      )}
+    >
+      {content}
+    </section>
+  );
+}
+
+/** Props for internal HeroContent component */
+interface HeroContentProps {
+  title?: string | ReactNode;
+  description?: string | ReactNode;
+  image?: ReactNode;
+  actions?: ReactNode;
+  styles: { title: string; description: string };
+  imageJustify: string;
+  isCentered: boolean;
+  itemCount?: number;
+  contentClassName?: string;
+  containerClass: string;
+}
+
+/** Renders the description element (p for strings, div for ReactNode) */
+function renderDescription({
+  description,
+  styles,
+  isCentered,
+  itemCount,
+}: Pick<HeroContentProps, 'description' | 'styles' | 'isCentered' | 'itemCount'>) {
+  if (!description) return null;
+  const centeredClass = cn('max-w-3xl', isCentered && 'mx-auto');
+  if (typeof description === 'string') {
     return (
-      <section
-        id={id}
-        className={cn(
-          'w-full relative overflow-visible',
-          PAGE_LAYOUT.hero.padding,
-          align === 'center' && 'flex flex-col items-center',
-          className
-        )}
+      <p
+        className={cn(styles.description, centeredClass)}
+        style={isCentered ? { textAlign: 'center' } : undefined}
       >
-        {/* Content */}
-        <div
-          className={cn(
-            `mx-auto ${CONTAINER_WIDTHS.prose} ${CONTAINER_PADDING}`,
-            PAGE_LAYOUT.hero.content,
-            'relative z-10',
-            alignmentClasses,
-            align === 'center' && 'flex flex-col items-center w-full',
-            contentClassName
-          )}
-        >
-          {/* Optional image/avatar */}
-          {image && <div className={cn('flex', imageJustify)}>{image}</div>}
-
-          {/* Title */}
-          {title && <h1 className={styles.title}>{title}</h1>}
-
-          {/* Description */}
-          {description &&
-            (typeof description === 'string' ? (
-              <p
-                className={cn(styles.description, 'max-w-3xl', align === 'center' && 'mx-auto')}
-                style={align === 'center' ? { textAlign: 'center' } : undefined}
-              >
-                {description}
-                {itemCount !== undefined && (
-                  <span className="text-muted-foreground block md:inline">
-                    {' '}
-                    ({itemCount} {itemCount === 1 ? 'item' : 'items'})
-                  </span>
-                )}
-              </p>
-            ) : (
-              <div className={cn(styles.description, 'max-w-3xl', align === 'center' && 'mx-auto')}>
-                {description}
-              </div>
-            ))}
-
-          {/* Actions */}
-          {actions && (
-            <div className={cn('pt-2', align === 'center' && 'flex justify-center')}>{actions}</div>
-          )}
-        </div>
-      </section>
+        {description}
+        {itemCount !== undefined && (
+          <span className="text-muted-foreground block md:inline">
+            {' '}
+            ({itemCount} {itemCount === 1 ? 'item' : 'items'})
+          </span>
+        )}
+      </p>
     );
   }
+  return (
+    <div className={cn(styles.description, centeredClass)}>{description}</div>
+  );
+}
 
-  // Standard variant: both background and content constrained
+/** Shared hero content layout (image, title, description, actions) */
+function HeroContent({
+  title,
+  description,
+  image,
+  actions,
+  styles,
+  imageJustify,
+  isCentered,
+  itemCount,
+  contentClassName,
+  containerClass,
+}: HeroContentProps) {
+  return (
+    <div
+      className={cn(
+        containerClass,
+        PAGE_LAYOUT.hero.content,
+        'relative z-10',
+        isCentered ? 'text-center' : '',
+        isCentered && 'flex flex-col items-center w-full',
+        contentClassName
+      )}
+    >
+      {image && <div className={cn('flex', imageJustify)}>{image}</div>}
+      {title && <h1 className={styles.title}>{title}</h1>}
+      {renderDescription({ description, styles, isCentered, itemCount })}
+      {actions && (
+        <div className={cn('pt-2', isCentered && 'flex justify-center')}>{actions}</div>
+      )}
+    </div>
+  );
+}
+
+/** Renders the skeleton loading state for PageHero */
+function renderHeroSkeleton({
+  variant,
+  isCentered,
+  imageJustify,
+  image,
+  actions,
+  id,
+  className,
+  contentClassName,
+}: {
+  variant: HeroVariant;
+  isCentered: boolean;
+  imageJustify: string;
+  image?: ReactNode;
+  actions?: ReactNode;
+  id: string;
+  className?: string;
+  contentClassName?: string;
+}) {
+  const titleWidth = variant === 'homepage' ? 'w-64' : 'w-48';
+  const imageSize =
+    variant === 'homepage' ? 'h-32 w-32 md:h-40 md:w-40' : 'h-20 w-20 md:h-24 md:w-24';
   return (
     <section
       id={id}
       className={cn(
         'relative overflow-visible',
         PAGE_LAYOUT.hero.padding,
-        align === 'center' && 'flex flex-col items-center',
+        isCentered && 'flex flex-col items-center',
         className
       )}
     >
@@ -247,41 +271,27 @@ export function PageHero({
         className={cn(
           PAGE_LAYOUT.hero.container,
           PAGE_LAYOUT.hero.content,
-          alignmentClasses,
-          align === 'center' && 'flex flex-col items-center w-full',
+          isCentered ? 'text-center' : '',
+          isCentered && 'flex flex-col items-center w-full',
           contentClassName
         )}
       >
-        {/* Optional image/avatar */}
-        {image && <div className={cn('flex', imageJustify)}>{image}</div>}
-
-        {/* Title */}
-        {title && <h1 className={styles.title}>{title}</h1>}
-
-        {/* Description - use div for ReactNode, p for string to avoid hydration errors */}
-        {description &&
-          (typeof description === 'string' ? (
-            <p
-              className={cn(styles.description, 'max-w-3xl', align === 'center' && 'mx-auto')}
-              style={align === 'center' ? { textAlign: 'center' } : undefined}
-            >
-              {description}
-              {itemCount !== undefined && (
-                <span className="text-muted-foreground block md:inline">
-                  {' '}
-                  ({itemCount} {itemCount === 1 ? 'item' : 'items'})
-                </span>
-              )}
-            </p>
-          ) : (
-            <div className={cn(styles.description, 'max-w-3xl', align === 'center' && 'mx-auto')}>
-              {description}
-            </div>
-          ))}
-
-        {/* Actions */}
-        {actions && (
-          <div className={cn('pt-2', align === 'center' && 'flex justify-center')}>{actions}</div>
+        {(variant === 'homepage' || image !== undefined) && (
+          <div className={cn('flex', imageJustify)}>
+            <Skeleton className={cn(imageSize, 'rounded-full')} />
+          </div>
+        )}
+        <Skeleton className={cn('h-10 md:h-12', titleWidth, isCentered && 'mx-auto')} />
+        <div className={SPACING.compact}>
+          <Skeleton className={cn('h-6 w-full max-w-2xl', isCentered && 'mx-auto')} />
+          <Skeleton className={cn('h-6 w-3/4 max-w-2xl', isCentered && 'mx-auto')} />
+        </div>
+        {(variant === 'homepage' || actions !== undefined) && (
+          <div className={cn('pt-2 flex gap-3', isCentered && 'justify-center')}>
+            <Skeleton className="h-10 w-28" />
+            <Skeleton className="h-10 w-32" />
+            {variant === 'homepage' && <Skeleton className="h-10 w-36 hidden sm:inline-flex" />}
+          </div>
         )}
       </div>
     </section>

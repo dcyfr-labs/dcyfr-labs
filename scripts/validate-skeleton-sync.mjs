@@ -147,6 +147,74 @@ const VIOLATIONS = {
 /**
  * Analyze skeleton component for compliance
  */
+/**
+ * Format a violation list snippet for messages
+ */
+function violationSnippet(matches) {
+  const preview = matches.slice(0, 3).join(', ');
+  const extra = matches.length > 3 ? ` (+${matches.length - 3} more)` : '';
+  return `${preview}${extra}`;
+}
+
+/**
+ * Check spacing violations and update results
+ */
+function checkSpacingViolations(content, results) {
+  let count = 0;
+  for (const pattern of VIOLATIONS.hardcodedSpacing) {
+    const matches = content.match(pattern);
+    if (!matches) continue;
+    const actual = matches.filter(m => !m.includes('SPACING_VALUES'));
+    count += actual.length;
+    if (actual.length > 0) {
+      results.violations.push(`Hardcoded spacing: ${violationSnippet(actual)}`);
+    }
+  }
+  if (count > 0) results.compliance -= Math.min(30, count * 3);
+}
+
+/**
+ * Check typography violations and update results
+ */
+function checkTypographyViolations(content, results) {
+  let count = 0;
+  for (const pattern of VIOLATIONS.hardcodedTypography) {
+    const matches = content.match(pattern);
+    if (!matches) continue;
+    count += matches.length;
+    results.violations.push(`Hardcoded typography: ${violationSnippet(matches)}`);
+  }
+  if (count > 0) results.compliance -= Math.min(25, count * 3);
+}
+
+/**
+ * Check required primitives and update results
+ */
+function checkPrimitives(content, config, results) {
+  for (const primitive of config.requiredPrimitives) {
+    if (content.includes(primitive)) {
+      results.primitives.push(primitive);
+    } else {
+      results.warnings.push(`Missing recommended primitive: ${primitive}`);
+      results.compliance -= 5;
+    }
+  }
+}
+
+/**
+ * Check required animations and update results
+ */
+function checkAnimations(content, config, results) {
+  for (const animation of config.requiredAnimations) {
+    if (content.includes(animation)) {
+      results.animations.push(animation);
+    } else {
+      results.violations.push(`Missing animation: ${animation}`);
+      results.compliance -= 10;
+    }
+  }
+}
+
 async function analyzeSkeletonCompliance(config) {
   const skeletonPath = join(rootDir, config.skeleton);
   const skeletonContent = await readFile(skeletonPath, 'utf-8');
@@ -162,88 +230,33 @@ async function analyzeSkeletonCompliance(config) {
   };
 
   // Check for JSDoc sync warning
-  const hasJSDocSync = skeletonContent.includes('⚠️ SYNC REQUIRED WITH:');
-  if (!hasJSDocSync) {
+  if (!skeletonContent.includes('⚠️ SYNC REQUIRED WITH:')) {
     results.violations.push('Missing JSDoc sync warning (⚠️ SYNC REQUIRED WITH:)');
     results.compliance -= 15;
   }
 
   // Check for "Last sync" date
-  const hasLastSync = /Last sync:\s*\d{4}-\d{2}-\d{2}/.test(skeletonContent);
-  if (!hasLastSync) {
+  if (!/Last sync:\s*\d{4}-\d{2}-\d{2}/.test(skeletonContent)) {
     results.warnings.push('Missing "Last sync" date in JSDoc');
     results.compliance -= 5;
   }
 
-  // Check for hardcoded spacing violations
-  let spacingViolations = 0;
-  for (const pattern of VIOLATIONS.hardcodedSpacing) {
-    const matches = skeletonContent.match(pattern);
-    if (matches) {
-      // Filter out SPACING_VALUES usage (which is acceptable)
-      const actualViolations = matches.filter(m => !m.includes('SPACING_VALUES'));
-      spacingViolations += actualViolations.length;
-
-      if (actualViolations.length > 0) {
-        results.violations.push(`Hardcoded spacing: ${actualViolations.slice(0, 3).join(', ')}${actualViolations.length > 3 ? ` (+${actualViolations.length - 3} more)` : ''}`);
-      }
-    }
-  }
-  if (spacingViolations > 0) {
-    results.compliance -= Math.min(30, spacingViolations * 3);
-  }
-
-  // Check for hardcoded typography violations
-  let typographyViolations = 0;
-  for (const pattern of VIOLATIONS.hardcodedTypography) {
-    const matches = skeletonContent.match(pattern);
-    if (matches) {
-      typographyViolations += matches.length;
-      results.violations.push(`Hardcoded typography: ${matches.slice(0, 3).join(', ')}${matches.length > 3 ? ` (+${matches.length - 3} more)` : ''}`);
-    }
-  }
-  if (typographyViolations > 0) {
-    results.compliance -= Math.min(25, typographyViolations * 3);
-  }
-
-  // Check for required primitives usage
-  for (const primitive of config.requiredPrimitives) {
-    const hasPrimitive = skeletonContent.includes(primitive);
-    if (hasPrimitive) {
-      results.primitives.push(primitive);
-    } else {
-      results.warnings.push(`Missing recommended primitive: ${primitive}`);
-      results.compliance -= 5;
-    }
-  }
-
-  // Check for animation implementation
-  for (const animation of config.requiredAnimations) {
-    const hasAnimation = skeletonContent.includes(animation);
-    if (hasAnimation) {
-      results.animations.push(animation);
-    } else {
-      results.violations.push(`Missing animation: ${animation}`);
-      results.compliance -= 10;
-    }
-  }
+  checkSpacingViolations(skeletonContent, results);
+  checkTypographyViolations(skeletonContent, results);
+  checkPrimitives(skeletonContent, config, results);
+  checkAnimations(skeletonContent, config, results);
 
   // Check for design token imports
-  const hasSpacingImport = skeletonContent.includes('SPACING');
-  const hasAnimationsImport = skeletonContent.includes('ANIMATIONS');
-
-  if (!hasSpacingImport) {
+  if (!skeletonContent.includes('SPACING')) {
     results.violations.push('Missing SPACING design token import');
     results.compliance -= 10;
   }
-  if (!hasAnimationsImport) {
+  if (!skeletonContent.includes('ANIMATIONS')) {
     results.violations.push('Missing ANIMATIONS design token import');
     results.compliance -= 10;
   }
 
-  // Ensure compliance doesn't go below 0
   results.compliance = Math.max(0, results.compliance);
-
   return results;
 }
 

@@ -126,12 +126,13 @@ function readMcpConfig(configPath = path.join(ROOT, '.vscode', 'mcp.json')) {
   }
 }
 
-async function checkUrlServer(name, server, env = {}, timeoutMs = 5000, opts = {}) {
-  const url = server.url;
-  if (!url) return { name, ok: false, error: 'no-url' };
+/**
+ * Build auth headers by guessing token env var names for a server.
+ * Returns {headers, tokenNameUsed}.
+ */
+function buildAuthHeaders(name, server, env) {
   const headers = {};
   let tokenNameUsed = undefined;
-  // Check for explicit per-server auth variable (server.auth.envVar)
   if (server && server.auth && server.auth.envVar) {
     const varName = server.auth.envVar;
     if (env[varName]) {
@@ -139,16 +140,15 @@ async function checkUrlServer(name, server, env = {}, timeoutMs = 5000, opts = {
       tokenNameUsed = varName;
     }
   }
-  // Try to guess an auth token from env if explicit var not set
-  const tokensToTry = [
-    `${name.toUpperCase()}_API_KEY`,
-    `${name.toUpperCase()}_API_TOKEN`,
-    `${name.toUpperCase()}_ACCESS_TOKEN`,
-    `${name.toUpperCase()}_TOKEN`,
-    `${name.toUpperCase()}_KEY`,
-    `${name.toUpperCase()}_AUTH_TOKEN`,
-  ];
   if (!tokenNameUsed) {
+    const tokensToTry = [
+      `${name.toUpperCase()}_API_KEY`,
+      `${name.toUpperCase()}_API_TOKEN`,
+      `${name.toUpperCase()}_ACCESS_TOKEN`,
+      `${name.toUpperCase()}_TOKEN`,
+      `${name.toUpperCase()}_KEY`,
+      `${name.toUpperCase()}_AUTH_TOKEN`,
+    ];
     for (const t of tokensToTry) {
       if (env[t]) {
         headers['Authorization'] = `Bearer ${env[t]}`;
@@ -157,6 +157,28 @@ async function checkUrlServer(name, server, env = {}, timeoutMs = 5000, opts = {
       }
     }
   }
+  return { headers, tokenNameUsed };
+}
+
+/**
+ * Build a check result object from a fetch response.
+ */
+function buildFetchResult(name, res, method, tokenNameUsed, startTime) {
+  return {
+    name,
+    ok: res.ok || [401, 403, 405].includes(res.status),
+    status: res.status,
+    statusText: res.statusText,
+    method,
+    tokenNameUsed,
+    elapsedMs: Date.now() - startTime,
+  };
+}
+
+async function checkUrlServer(name, server, env = {}, timeoutMs = 5000, opts = {}) {
+  const url = server.url;
+  if (!url) return { name, ok: false, error: 'no-url' };
+  const { headers, tokenNameUsed } = buildAuthHeaders(name, server, env);
 
   // SECURITY: Validate URL before making request (defense in depth)
   if (!isValidMCPServerURL(url)) {
@@ -177,92 +199,29 @@ async function checkUrlServer(name, server, env = {}, timeoutMs = 5000, opts = {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     // Safe: URL validated by isValidMCPServerURL() above (HTTPS or localhost only)
-    const res = await fetch(url, {
-      method: 'HEAD',
-      headers,
-      signal: controller.signal,
-    });
+    const res = await fetch(url, { method: 'HEAD', headers, signal: controller.signal });
     clearTimeout(timer);
     // If we get a 405 (Method Not Allowed), try GET instead with longer timeout
     if (res.status === 405) {
-      // Try GET fallback
       const controller2 = new AbortController();
       const timer2 = setTimeout(() => controller2.abort(), timeoutMs * 2);
       // Safe: URL validated by isValidMCPServerURL() above (HTTPS or localhost only)
-      // Fallback for servers that don't support HEAD method.
-      const res2 = await fetch(url, {
-        method: 'GET',
-        headers,
-        signal: controller2.signal,
-      });
+      const res2 = await fetch(url, { method: 'GET', headers, signal: controller2.signal });
       clearTimeout(timer2);
-      if (opts.debug)
-        console.log({
-          url,
-          name,
-          method: 'GET (fallback from HEAD 405)',
-          tokenNameUsed,
-          status: res2.status,
-          statusText: res2.statusText,
-        });
-      return {
-        name,
-        ok: res2.ok || [401, 403, 405].includes(res2.status),
-        status: res2.status,
-        statusText: res2.statusText,
-        method: 'GET',
-        tokenNameUsed,
-        elapsedMs: Date.now() - startTime,
-      };
+      if (opts.debug) console.log({ url, name, method: 'GET (fallback from HEAD 405)', tokenNameUsed, status: res2.status, statusText: res2.statusText });
+      return buildFetchResult(name, res2, 'GET', tokenNameUsed, startTime);
     }
-    if (opts.debug)
-      console.log({
-        url,
-        name,
-        method: 'HEAD',
-        tokenNameUsed,
-        status: res.status,
-        statusText: res.statusText,
-      });
-    return {
-      name,
-      ok: res.ok || [401, 403, 405].includes(res.status),
-      status: res.status,
-      statusText: res.statusText,
-      method: 'HEAD',
-      tokenNameUsed,
-      elapsedMs: Date.now() - startTime,
-    };
+    if (opts.debug) console.log({ url, name, method: 'HEAD', tokenNameUsed, status: res.status, statusText: res.statusText });
+    return buildFetchResult(name, res, 'HEAD', tokenNameUsed, startTime);
   } catch (err) {
     try {
       const controller3 = new AbortController();
       const timer3 = setTimeout(() => controller3.abort(), timeoutMs * 2);
       // Safe: URL validated by isValidMCPServerURL() above (HTTPS or localhost only)
-      // Second-level fallback when HEAD/GET timeout.
-      const res3 = await fetch(url, {
-        method: 'GET',
-        headers,
-        signal: controller3.signal,
-      });
+      const res3 = await fetch(url, { method: 'GET', headers, signal: controller3.signal });
       clearTimeout(timer3);
-      if (opts.debug)
-        console.log({
-          url,
-          name,
-          method: 'GET (fallback from HEAD error)',
-          tokenNameUsed,
-          status: res3.status,
-          statusText: res3.statusText,
-        });
-      return {
-        name,
-        ok: res3.ok || [401, 403, 405].includes(res3.status),
-        status: res3.status,
-        statusText: res3.statusText,
-        method: 'GET',
-        tokenNameUsed,
-        elapsedMs: Date.now() - startTime,
-      };
+      if (opts.debug) console.log({ url, name, method: 'GET (fallback from HEAD error)', tokenNameUsed, status: res3.status, statusText: res3.statusText });
+      return buildFetchResult(name, res3, 'GET', tokenNameUsed, startTime);
     } catch (err2) {
       if (opts.debug) console.error(`MCP check failed ${name} ${url}:`, err2 || err);
       return {
@@ -318,6 +277,42 @@ function checkCommandServer(name, server) {
   }
 }
 
+/**
+ * Check a single server by dispatching to url or command checker.
+ */
+async function checkOneServer(name, server, env, opts) {
+  if (server.url) {
+    const r = await checkUrlServer(name, server, env, opts.timeoutMs, opts);
+    return { name, type: 'url', ...r };
+  }
+  if (server.command) {
+    const r = checkCommandServer(name, server);
+    return { name, type: 'command', ...r };
+  }
+  return { name, ok: false, error: 'unknown-server-type' };
+}
+
+/**
+ * Print check results to stdout/stderr.
+ */
+function reportResults(results, opts) {
+  const failures = results.filter((r) => !r.ok);
+  if (opts.json) {
+    console.log(JSON.stringify({ results, failures }, null, 2));
+  } else {
+    for (const r of results) {
+      if (r.ok) {
+        const statusStr = r.status ? ` [${r.status}]` : '';
+        console.log(`✓ ${r.name} (${r.type}) - OK${statusStr}`);
+      } else {
+        const detail = r.error ? `(${r.error})` : r.status ? `[${r.status}]` : '';
+        console.error(`✖ ${r.name} (${r.type}) - FAILED ${detail}`);
+      }
+    }
+  }
+  return failures;
+}
+
 async function run(opts = {}) {
   const servers = readMcpConfig(opts.configPath);
   // If an envFile is set at root mcp.json use it; fallback to .env.local
@@ -330,30 +325,9 @@ async function run(opts = {}) {
   }
   const results = [];
   for (const [name, server] of Object.entries(servers)) {
-    if (server.url) {
-      const r = await checkUrlServer(name, server, env, opts.timeoutMs, opts);
-      results.push({ name, type: 'url', ...r });
-    } else if (server.command) {
-      const r = checkCommandServer(name, server);
-      results.push({ name, type: 'command', ...r });
-    } else {
-      results.push({ name, ok: false, error: 'unknown-server-type' });
-    }
+    results.push(await checkOneServer(name, server, env, opts));
   }
-  const failures = results.filter((r) => !r.ok);
-  if (opts.json) {
-    console.log(JSON.stringify({ results, failures }, null, 2));
-  } else {
-    for (const r of results) {
-      if (r.ok) {
-        console.log(`✓ ${r.name} (${r.type}) - OK${r.status ? ` [${r.status}]` : ''}`);
-      } else {
-        console.error(
-          `✖ ${r.name} (${r.type}) - FAILED ${r.error ? `(${r.error})` : r.status ? `[${r.status}]` : ''}`
-        );
-      }
-    }
-  }
+  const failures = reportResults(results, opts);
   if (failures.length > 0 && opts.fail) {
     process.exit(1);
   }

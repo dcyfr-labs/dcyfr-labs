@@ -59,22 +59,23 @@ module.exports = {
     // Pattern for dynamic template literals (e.g., `gap-${size}`)
     const dynamicPattern = /(space-y-|gap-|p-|m-|mb-|mt-|mx-|my-|px-|py-)\$\{/;
 
+    function matchHardcodedPattern(value, patterns) {
+      for (const pattern of patterns) {
+        const m = value.match(pattern);
+        if (m) return m[0];
+      }
+      return null;
+    }
+
     function checkValue(node, value) {
       if (!value || typeof value !== 'string') return;
 
-      // Check for hardcoded spacing
-      for (const pattern of hardcodedPatterns) {
-        if (pattern.test(value)) {
-          context.report({
-            node,
-            messageId: 'hardcodedSpacing',
-            data: { value: value.match(pattern)[0] },
-          });
-          return;
-        }
+      const matched = matchHardcodedPattern(value, hardcodedPatterns);
+      if (matched) {
+        context.report({ node, messageId: 'hardcodedSpacing', data: { value: matched } });
+        return;
       }
 
-      // Check for dynamic spacing without spacing() helper
       if (dynamicPattern.test(value)) {
         context.report({
           node,
@@ -84,36 +85,25 @@ module.exports = {
       }
     }
 
+    function checkExpression(node, expression) {
+      if (expression.type === 'TemplateLiteral') {
+        checkValue(node, expression.quasis.map(q => q.value.raw).join('${...}'));
+        return;
+      }
+      if (expression.type === 'BinaryExpression' && expression.operator === '+') {
+        if (expression.left.type === 'Literal') checkValue(node, expression.left.value);
+        if (expression.right.type === 'Literal') checkValue(node, expression.right.value);
+      }
+    }
+
     return {
       // JSX className attribute
       JSXAttribute(node) {
-        if (node.name.name === 'className') {
-          // String literal: className="space-y-8"
-          if (node.value && node.value.type === 'Literal') {
-            checkValue(node, node.value.value);
-          }
-
-          // JSX expression: className={`gap-${size}`}
-          if (node.value && node.value.type === 'JSXExpressionContainer') {
-            const expression = node.value.expression;
-
-            // Template literal
-            if (expression.type === 'TemplateLiteral') {
-              const quasi = expression.quasis.map(q => q.value.raw).join('${...}');
-              checkValue(node, quasi);
-            }
-
-            // String concatenation
-            if (expression.type === 'BinaryExpression' && expression.operator === '+') {
-              // Simplistic check for string concatenation
-              if (expression.left.type === 'Literal') {
-                checkValue(node, expression.left.value);
-              }
-              if (expression.right.type === 'Literal') {
-                checkValue(node, expression.right.value);
-              }
-            }
-          }
+        if (node.name.name !== 'className') return;
+        if (node.value?.type === 'Literal') {
+          checkValue(node, node.value.value);
+        } else if (node.value?.type === 'JSXExpressionContainer') {
+          checkExpression(node, node.value.expression);
         }
       },
     };

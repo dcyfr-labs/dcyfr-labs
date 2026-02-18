@@ -40,6 +40,27 @@ const config = {
   externalPrefixes: ['http://', 'https://', 'mailto:', 'tel:'],
 };
 
+/**
+ * Check whether a link URL resolves to an existing file (with optional .md/.mdx suffix).
+ */
+function checkLinkExists(resolvedPath) {
+  return existsSync(resolvedPath) || existsSync(resolvedPath + '.md') || existsSync(resolvedPath + '.mdx');
+}
+
+/**
+ * Resolve and check a link URL against the file system.
+ * Returns true if the link target exists.
+ */
+function resolveLinkExists(filePath, url, projectRootDir, docsDir) {
+  if (url.startsWith('./') || url.startsWith('../')) {
+    return checkLinkExists(path.resolve(path.dirname(filePath), url));
+  }
+  if (url.startsWith('/')) {
+    return checkLinkExists(path.join(projectRootDir, url.slice(1)));
+  }
+  return checkLinkExists(path.join(docsDir, url));
+}
+
 class LinkChecker {
   constructor(options = {}) {
     this.fix = options.fix || false;
@@ -197,113 +218,45 @@ class LinkChecker {
 
   async validateLink(filePath, url) {
     try {
-      // Handle different types of internal links
-      if (url.startsWith('./') || url.startsWith('../')) {
-        // Relative links
-        const resolvedPath = path.resolve(path.dirname(filePath), url);
-        return (
-          existsSync(resolvedPath) ||
-          existsSync(resolvedPath + '.md') ||
-          existsSync(resolvedPath + '.mdx')
-        );
-      }
-
-      if (url.startsWith('/')) {
-        // Absolute links from project root
-        const absolutePath = path.join(this.projectRoot, url.slice(1));
-        return (
-          existsSync(absolutePath) ||
-          existsSync(absolutePath + '.md') ||
-          existsSync(absolutePath + '.mdx')
-        );
-      }
-
-      // Check if it's a docs path that should be prefixed
-      const docsPath = path.join(this.docsDir, url);
-      return existsSync(docsPath) || existsSync(docsPath + '.md') || existsSync(docsPath + '.mdx');
+      return resolveLinkExists(filePath, url, this.projectRoot, this.docsDir);
     } catch (error) {
-      if (this.verbose) {
-        console.warn(`⚠️  Error validating link "${url}": ${error.message}`);
-      }
+      if (this.verbose) console.warn(`⚠️  Error validating link "${url}": ${error.message}`);
       return false;
     }
   }
 
   fixBrokenLink(link, filePath) {
-    // Try to fix common patterns
-
     // 1. Try adding ./ prefix for same-directory links
     if (!link.url.startsWith('./') && !link.url.startsWith('../') && !link.url.startsWith('/')) {
       const withDotSlash = `./${link.url}`;
       if (this.validateLinkSync(filePath, withDotSlash)) {
-        return {
-          action: 'fix',
-          newUrl: withDotSlash,
-          replacement: link.match[0].replace(link.url, withDotSlash),
-        };
+        return { action: 'fix', newUrl: withDotSlash, replacement: link.match[0].replace(link.url, withDotSlash) };
       }
     }
 
-    // 2. Try adding file extensions
-    const variations = [
-      `${link.url}.md`,
-      `${link.url}.mdx`,
-      `${link.url}/README.md`,
-      `${link.url}/README`,
-      `${link.url}/index.md`,
-    ];
-
+    // 2. Try adding file extensions and common suffixes
+    const variations = [`${link.url}.md`, `${link.url}.mdx`, `${link.url}/README.md`, `${link.url}/README`, `${link.url}/index.md`];
     for (const variation of variations) {
       if (this.validateLinkSync(filePath, variation)) {
-        return {
-          action: 'fix',
-          newUrl: variation,
-          replacement: link.match[0].replace(link.url, variation),
-        };
+        return { action: 'fix', newUrl: variation, replacement: link.match[0].replace(link.url, variation) };
       }
     }
 
-    // 2. Try converting to docs-relative path
+    // 3. Try converting to docs-relative path
     if (!link.url.startsWith('./') && !link.url.startsWith('/')) {
       const docsRelativePath = `./${link.url}`;
       if (this.validateLinkSync(filePath, docsRelativePath)) {
-        return {
-          action: 'fix',
-          newUrl: docsRelativePath,
-          replacement: link.match[0].replace(link.url, docsRelativePath),
-        };
+        return { action: 'fix', newUrl: docsRelativePath, replacement: link.match[0].replace(link.url, docsRelativePath) };
       }
     }
 
-    // 3. If no fix found, remove the link but keep the text
-    return {
-      action: 'remove',
-      replacement: link.text || link.url,
-    };
+    // 4. If no fix found, remove the link but keep the text
+    return { action: 'remove', replacement: link.text || link.url };
   }
 
   validateLinkSync(filePath, url) {
     try {
-      if (url.startsWith('./') || url.startsWith('../')) {
-        const resolvedPath = path.resolve(path.dirname(filePath), url);
-        return (
-          existsSync(resolvedPath) ||
-          existsSync(resolvedPath + '.md') ||
-          existsSync(resolvedPath + '.mdx')
-        );
-      }
-
-      if (url.startsWith('/')) {
-        const absolutePath = path.join(this.projectRoot, url.slice(1));
-        return (
-          existsSync(absolutePath) ||
-          existsSync(absolutePath + '.md') ||
-          existsSync(absolutePath + '.mdx')
-        );
-      }
-
-      const docsPath = path.join(this.docsDir, url);
-      return existsSync(docsPath) || existsSync(docsPath + '.md') || existsSync(docsPath + '.mdx');
+      return resolveLinkExists(filePath, url, this.projectRoot, this.docsDir);
     } catch {
       return false;
     }

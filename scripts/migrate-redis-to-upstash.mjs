@@ -20,6 +20,48 @@ config({ path: resolve(__dirname, '../.env.local') });
 import { createClient } from 'redis';
 import { redis as upstashClient } from '../src/mcp/shared/redis-client.ts';
 
+async function migrateKeyToUpstash(key, type, ttl, oldClient) {
+  if (type === 'string') {
+    const value = await oldClient.get(key);
+    if (ttl > 0) await upstashClient.setex(key, ttl, value);
+    else await upstashClient.set(key, value);
+    return true;
+  }
+  if (type === 'list') {
+    const values = await oldClient.lRange(key, 0, -1);
+    if (!values.length) return false;
+    await upstashClient.del(key);
+    await upstashClient.lpush(key, ...values.reverse());
+    if (ttl > 0) await upstashClient.expire(key, ttl);
+    return true;
+  }
+  if (type === 'set') {
+    const members = await oldClient.sMembers(key);
+    if (!members.length) return false;
+    await upstashClient.del(key);
+    await upstashClient.sadd(key, ...members);
+    if (ttl > 0) await upstashClient.expire(key, ttl);
+    return true;
+  }
+  if (type === 'zset') {
+    const items = await oldClient.zRangeWithScores(key, 0, -1);
+    if (!items.length) return false;
+    await upstashClient.del(key);
+    await upstashClient.zadd(key, ...items.map(item => ({ score: item.score, member: item.value })));
+    if (ttl > 0) await upstashClient.expire(key, ttl);
+    return true;
+  }
+  if (type === 'hash') {
+    const hash = await oldClient.hGetAll(key);
+    if (!Object.keys(hash).length) return false;
+    await upstashClient.del(key);
+    await upstashClient.hset(key, hash);
+    if (ttl > 0) await upstashClient.expire(key, ttl);
+    return true;
+  }
+  return null; // unsupported type
+}
+
 async function migrateRedisData() {
   console.log('🚀 Starting Redis to Upstash Migration...\n');
 
@@ -85,67 +127,13 @@ async function migrateRedisData() {
         const type = await oldClient.type(key);
         const ttl = await oldClient.ttl(key);
 
-        // Get data based on type
-        let success = false;
-
-        if (type === 'string') {
-          const value = await oldClient.get(key);
-          if (ttl > 0) {
-            await upstashClient.setex(key, ttl, value);
-          } else {
-            await upstashClient.set(key, value);
-          }
-          success = true;
-        } else if (type === 'list') {
-          const values = await oldClient.lRange(key, 0, -1);
-          if (values.length > 0) {
-            await upstashClient.del(key); // Clear if exists
-            await upstashClient.lpush(key, ...values.reverse()); // Preserve order
-            if (ttl > 0) {
-              await upstashClient.expire(key, ttl);
-            }
-            success = true;
-          }
-        } else if (type === 'set') {
-          const members = await oldClient.sMembers(key);
-          if (members.length > 0) {
-            await upstashClient.del(key);
-            await upstashClient.sadd(key, ...members);
-            if (ttl > 0) {
-              await upstashClient.expire(key, ttl);
-            }
-            success = true;
-          }
-        } else if (type === 'zset') {
-          const items = await oldClient.zRangeWithScores(key, 0, -1);
-          if (items.length > 0) {
-            await upstashClient.del(key);
-            const zadd = [];
-            for (const item of items) {
-              zadd.push({ score: item.score, member: item.value });
-            }
-            await upstashClient.zadd(key, ...zadd);
-            if (ttl > 0) {
-              await upstashClient.expire(key, ttl);
-            }
-            success = true;
-          }
-        } else if (type === 'hash') {
-          const hash = await oldClient.hGetAll(key);
-          if (Object.keys(hash).length > 0) {
-            await upstashClient.del(key);
-            await upstashClient.hset(key, hash);
-            if (ttl > 0) {
-              await upstashClient.expire(key, ttl);
-            }
-            success = true;
-          }
-        } else {
+        const result = await migrateKeyToUpstash(key, type, ttl, oldClient);
+        if (result === null) {
           console.log(`${progress} ⚠️  Skipping ${key} (unsupported type: ${type})`);
           continue;
         }
 
-        if (success) {
+        if (result) {
           migrated++;
           if (migrated % 10 === 0) {
             console.log(`${progress} ✅ Migrated ${migrated} keys...`);

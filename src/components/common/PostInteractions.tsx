@@ -180,6 +180,13 @@ interface ActionButtonProps {
   activeColor?: string;
 }
 
+const ICON_SIZE_MAP = { compact: "h-4 w-4", detailed: "h-6 w-6", default: "h-5 w-5" } as const;
+const TEXT_SIZE_MAP = {
+  compact: TYPOGRAPHY.label.xs,
+  detailed: TYPOGRAPHY.label.standard,
+  default: TYPOGRAPHY.label.small,
+} as const;
+
 function ActionButton({
   icon: Icon,
   label,
@@ -189,18 +196,8 @@ function ActionButton({
   variant,
   activeColor = "text-primary",
 }: ActionButtonProps) {
-  const iconSize =
-    variant === "compact"
-      ? "h-4 w-4"
-      : variant === "detailed"
-        ? "h-6 w-6"
-        : "h-5 w-5";
-  const textSize =
-    variant === "compact"
-      ? TYPOGRAPHY.label.xs
-      : variant === "detailed"
-        ? TYPOGRAPHY.label.standard
-        : TYPOGRAPHY.label.small;
+  const iconSize = ICON_SIZE_MAP[variant];
+  const textSize = TEXT_SIZE_MAP[variant];
 
   return (
     <Button

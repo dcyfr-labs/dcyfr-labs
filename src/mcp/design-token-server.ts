@@ -104,6 +104,35 @@ interface ValidationResult {
   suggestions: string[];
 }
 
+/** Check a single CSS class name for design token violations. Returns a violation or null. */
+function checkClassViolation(className: string): ValidationViolation | null {
+  if (/^(gap|space-[xy]|p[trblxy]?|m[trblxy]?|w|h)-\d+$/.test(className)) {
+    return {
+      type: "hardcoded-value",
+      className,
+      suggestion: `Use SPACING constant instead: gap-\${SPACING.content}`,
+      category: "spacing",
+    };
+  }
+  if (/^text-\d+xl$/.test(className) || /^font-(normal|medium|semibold|bold)$/.test(className)) {
+    return {
+      type: "hardcoded-value",
+      className,
+      suggestion: "Use TYPOGRAPHY constant instead: TYPOGRAPHY.h1.standard",
+      category: "typography",
+    };
+  }
+  if (/^(text|bg|border)-(gray|zinc|slate|red|green|blue|yellow)-\d+$/.test(className)) {
+    return {
+      type: "hardcoded-value",
+      className,
+      suggestion: "Use COLORS constant instead",
+      category: "colors",
+    };
+  }
+  return null;
+}
+
 /**
  * Validate code against design tokens
  */
@@ -117,66 +146,20 @@ function validateCode(code: string): ValidationResult {
   );
 
   let totalClasses = 0;
-  let violationCount = 0;
 
   for (const match of classNameMatches) {
-    const classNames = (match[1] || match[2] || "")
-      .split(/\s+/)
-      .filter(Boolean);
+    const classNames = (match[1] || match[2] || "").split(/\s+/).filter(Boolean);
 
     for (const className of classNames) {
       totalClasses++;
-
-      // Check spacing violations
-      if (/^(gap|space-[xy]|p[trblxy]?|m[trblxy]?|w|h)-\d+$/.test(className)) {
-        const matched =
-          /^(gap|space-[xy]|p[trblxy]?|m[trblxy]?|w|h)-(\d+)$/.exec(className);
-        if (matched) {
-          const [, prefix, value] = matched;
-          violations.push({
-            type: "hardcoded-value",
-            className,
-            suggestion: `Use SPACING constant instead: gap-\${SPACING.content}`,
-            category: "spacing",
-          });
-          violationCount++;
-        }
-      }
-
-      // Check typography violations
-      if (
-        /^text-\d+xl$/.test(className) ||
-        /^font-(normal|medium|semibold|bold)$/.test(className)
-      ) {
-        violations.push({
-          type: "hardcoded-value",
-          className,
-          suggestion: "Use TYPOGRAPHY constant instead: TYPOGRAPHY.h1.standard",
-          category: "typography",
-        });
-        violationCount++;
-      }
-
-      // Check color violations
-      if (
-        /^(text|bg|border)-(gray|zinc|slate|red|green|blue|yellow)-\d+$/.test(
-          className
-        )
-      ) {
-        violations.push({
-          type: "hardcoded-value",
-          className,
-          suggestion: "Use COLORS constant instead",
-          category: "colors",
-        });
-        violationCount++;
-      }
+      const violation = checkClassViolation(className);
+      if (violation) violations.push(violation);
     }
   }
 
   const compliance =
     totalClasses > 0
-      ? Math.round(((totalClasses - violationCount) / totalClasses) * 100)
+      ? Math.round(((totalClasses - violations.length) / totalClasses) * 100)
       : 100;
 
   if (violations.length > 0) {
@@ -184,17 +167,10 @@ function validateCode(code: string): ValidationResult {
       "Import design tokens: import { SPACING, TYPOGRAPHY, COLORS } from '@/lib/design-tokens'"
     );
     suggestions.push("Use token constants in className template literals");
-    suggestions.push(
-      "See docs/ai/design-system.md for complete token reference"
-    );
+    suggestions.push("See docs/ai/design-system.md for complete token reference");
   }
 
-  return {
-    isValid: violations.length === 0,
-    violations,
-    compliance,
-    suggestions,
-  };
+  return { isValid: violations.length === 0, violations, compliance, suggestions };
 }
 
 /**

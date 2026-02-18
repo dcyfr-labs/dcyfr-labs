@@ -27,45 +27,27 @@ const MIN_TAGS = 1;
 const MAX_TAGS = 5;
 
 /**
- * Validate a single frontmatter object
- * @param {Object} frontmatter - Parsed frontmatter
- * @param {string} filePath - File path for error messages
- * @returns {Object} Validation result
+ * Validate the title field.
  */
-function validateFrontmatter(frontmatter, filePath) {
-  const errors = [];
-  const warnings = [];
+function validateTitle(title, errors, warnings) {
+  const len = title.length;
+  if (len < MIN_TITLE_LENGTH) errors.push(`Title too short: ${len} chars (min: ${MIN_TITLE_LENGTH})`);
+  if (len > MAX_TITLE_LENGTH) warnings.push(`Title too long: ${len} chars (recommended max: ${MAX_TITLE_LENGTH})`);
+}
 
-  // Check required fields
-  for (const field of REQUIRED_FIELDS) {
-    if (!frontmatter[field]) {
-      errors.push(`Missing required field: ${field}`);
-    }
-  }
+/**
+ * Validate the summary field.
+ */
+function validateSummary(summary, errors, warnings) {
+  const len = summary.length;
+  if (len < MIN_SUMMARY_LENGTH) errors.push(`Summary too short: ${len} chars (min: ${MIN_SUMMARY_LENGTH})`);
+  if (len > MAX_SUMMARY_LENGTH) warnings.push(`Summary too long: ${len} chars (recommended max: ${MAX_SUMMARY_LENGTH})`);
+}
 
-  // Validate title
-  if (frontmatter.title) {
-    const titleLength = frontmatter.title.length;
-    if (titleLength < MIN_TITLE_LENGTH) {
-      errors.push(`Title too short: ${titleLength} chars (min: ${MIN_TITLE_LENGTH})`);
-    }
-    if (titleLength > MAX_TITLE_LENGTH) {
-      warnings.push(`Title too long: ${titleLength} chars (recommended max: ${MAX_TITLE_LENGTH})`);
-    }
-  }
-
-  // Validate summary
-  if (frontmatter.summary) {
-    const summaryLength = frontmatter.summary.length;
-    if (summaryLength < MIN_SUMMARY_LENGTH) {
-      errors.push(`Summary too short: ${summaryLength} chars (min: ${MIN_SUMMARY_LENGTH})`);
-    }
-    if (summaryLength > MAX_SUMMARY_LENGTH) {
-      warnings.push(`Summary too long: ${summaryLength} chars (recommended max: ${MAX_SUMMARY_LENGTH})`);
-    }
-  }
-
-  // Validate publishedAt date
+/**
+ * Validate publishedAt and optionally updatedAt date fields.
+ */
+function validateDates(frontmatter, errors, warnings) {
   if (frontmatter.publishedAt) {
     const publishDate = new Date(frontmatter.publishedAt);
     if (isNaN(publishDate.getTime())) {
@@ -75,63 +57,69 @@ function validateFrontmatter(frontmatter, filePath) {
     }
   }
 
-  // Validate updatedAt date
   if (frontmatter.updatedAt) {
     const updateDate = new Date(frontmatter.updatedAt);
     if (isNaN(updateDate.getTime())) {
       errors.push(`Invalid updatedAt date: ${frontmatter.updatedAt}`);
-    }
-
-    if (frontmatter.publishedAt) {
+    } else if (frontmatter.publishedAt) {
       const publishDate = new Date(frontmatter.publishedAt);
       if (updateDate < publishDate) {
         errors.push(`updatedAt (${frontmatter.updatedAt}) is before publishedAt (${frontmatter.publishedAt})`);
       }
     }
   }
+}
 
-  // Validate tags
-  if (frontmatter.tags) {
-    if (!Array.isArray(frontmatter.tags)) {
-      errors.push(`Tags must be an array, got: ${typeof frontmatter.tags}`);
-    } else {
-      if (frontmatter.tags.length < MIN_TAGS) {
-        errors.push(`Too few tags: ${frontmatter.tags.length} (min: ${MIN_TAGS})`);
-      }
-      if (frontmatter.tags.length > MAX_TAGS) {
-        warnings.push(`Too many tags: ${frontmatter.tags.length} (recommended max: ${MAX_TAGS})`);
-      }
-
-      // Check for empty tags
-      const emptyTags = frontmatter.tags.filter(tag => !tag || tag.trim() === "");
-      if (emptyTags.length > 0) {
-        errors.push(`Tags contain empty values: ${emptyTags.length} empty tag(s)`);
-      }
-    }
+/**
+ * Validate the tags array.
+ */
+function validateTags(tags, errors, warnings) {
+  if (!Array.isArray(tags)) {
+    errors.push(`Tags must be an array, got: ${typeof tags}`);
+    return;
   }
+  if (tags.length < MIN_TAGS) errors.push(`Too few tags: ${tags.length} (min: ${MIN_TAGS})`);
+  if (tags.length > MAX_TAGS) warnings.push(`Too many tags: ${tags.length} (recommended max: ${MAX_TAGS})`);
+  const emptyTags = tags.filter(tag => !tag || tag.trim() === "");
+  if (emptyTags.length > 0) errors.push(`Tags contain empty values: ${emptyTags.length} empty tag(s)`);
+}
 
-  // Validate image accessibility
-  // Support both top-level imageAlt and structured image.alt
+/**
+ * Validate image accessibility (alt text presence).
+ */
+function validateImageAlt(frontmatter, errors) {
   const hasImage = frontmatter.image || frontmatter.imageAlt;
   const hasAlt = frontmatter.imageAlt ||
                  (typeof frontmatter.image === 'object' && frontmatter.image?.alt) ||
-                 (typeof frontmatter.image === 'string'); // String images don't need alt
-
+                 (typeof frontmatter.image === 'string');
   if (hasImage && !hasAlt) {
     errors.push(`Image present but missing alt text (accessibility requirement)`);
   }
+}
 
-  // Validate draft status
-  if (frontmatter.draft === true) {
-    warnings.push(`Post is marked as draft`);
+/**
+ * Validate a single frontmatter object
+ * @param {Object} frontmatter - Parsed frontmatter
+ * @param {string} filePath - File path for error messages
+ * @returns {Object} Validation result
+ */
+function validateFrontmatter(frontmatter, filePath) {
+  const errors = [];
+  const warnings = [];
+
+  for (const field of REQUIRED_FIELDS) {
+    if (!frontmatter[field]) errors.push(`Missing required field: ${field}`);
   }
 
-  return {
-    filePath,
-    valid: errors.length === 0,
-    errors,
-    warnings,
-  };
+  if (frontmatter.title) validateTitle(frontmatter.title, errors, warnings);
+  if (frontmatter.summary) validateSummary(frontmatter.summary, errors, warnings);
+  validateDates(frontmatter, errors, warnings);
+  if (frontmatter.tags) validateTags(frontmatter.tags, errors, warnings);
+  validateImageAlt(frontmatter, errors);
+
+  if (frontmatter.draft === true) warnings.push(`Post is marked as draft`);
+
+  return { filePath, valid: errors.length === 0, errors, warnings };
 }
 
 /**
@@ -234,12 +222,41 @@ function formatResults(results) {
 }
 
 /**
+ * Print validation errors to console.
+ */
+function printErrors(results, repoRoot) {
+  console.log("❌ Errors:\n");
+  for (const result of results.filter(r => !r.valid)) {
+    const fileName = path.relative(repoRoot, result.filePath);
+    console.log(`   ${fileName}:`);
+    for (const error of result.errors) {
+      console.log(`   - ${error}`);
+    }
+    console.log("");
+  }
+}
+
+/**
+ * Print validation warnings to console.
+ */
+function printWarnings(results, repoRoot) {
+  console.log("⚠️  Warnings:\n");
+  for (const result of results.filter(r => r.warnings.length > 0)) {
+    const fileName = path.relative(repoRoot, result.filePath);
+    console.log(`   ${fileName}:`);
+    for (const warning of result.warnings) {
+      console.log(`   - ${warning}`);
+    }
+    console.log("");
+  }
+}
+
+/**
  * Main validation function
  */
 async function main() {
   console.log("📝 Validating blog post frontmatter...\n");
 
-  // Find all MDX files
   const files = await findMDXFiles();
 
   if (files.length === 0) {
@@ -250,53 +267,25 @@ async function main() {
 
   console.log(`Found ${files.length} MDX file(s)\n`);
 
-  // Validate all files
   const results = await Promise.all(files.map(validateFile));
 
-  // Count results
   const validFiles = results.filter(r => r.valid).length;
   const invalidFiles = results.filter(r => !r.valid).length;
   const filesWithWarnings = results.filter(r => r.warnings.length > 0).length;
 
-  // Display results
   console.log("📊 Validation Summary:\n");
   console.log(`   Valid: ${validFiles} ✅`);
   console.log(`   Invalid: ${invalidFiles} ❌`);
   console.log(`   Warnings: ${filesWithWarnings} ⚠️\n`);
 
-  // Show errors
-  if (invalidFiles > 0) {
-    console.log("❌ Errors:\n");
-    for (const result of results.filter(r => !r.valid)) {
-      const fileName = path.relative(REPO_ROOT, result.filePath);
-      console.log(`   ${fileName}:`);
-      for (const error of result.errors) {
-        console.log(`   - ${error}`);
-      }
-      console.log("");
-    }
-  }
+  if (invalidFiles > 0) printErrors(results, REPO_ROOT);
+  if (filesWithWarnings > 0) printWarnings(results, REPO_ROOT);
 
-  // Show warnings
-  if (filesWithWarnings > 0) {
-    console.log("⚠️  Warnings:\n");
-    for (const result of results.filter(r => r.warnings.length > 0)) {
-      const fileName = path.relative(REPO_ROOT, result.filePath);
-      console.log(`   ${fileName}:`);
-      for (const warning of result.warnings) {
-        console.log(`   - ${warning}`);
-      }
-      console.log("");
-    }
-  }
-
-  // Output markdown summary for GitHub Actions
   if (process.env.GITHUB_STEP_SUMMARY) {
     const summary = formatResults(results);
     await fs.appendFile(process.env.GITHUB_STEP_SUMMARY, summary);
   }
 
-  // Exit with error code if validation failed
   if (invalidFiles > 0) {
     console.log("❌ Frontmatter validation failed\n");
     process.exit(1);

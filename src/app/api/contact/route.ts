@@ -144,6 +144,32 @@ async function parseRequestBody(request: NextRequest): Promise<ParseResult> {
   }
 }
 
+/** Run prompt security scan; returns a rejection response or null if scan passes/soft-fails */
+async function scanMessageSecurity(message: string): Promise<ReturnType<typeof NextResponse.json> | null> {
+  try {
+    const scanner = getPromptScanner();
+    const scanResult = await scanner.scanPrompt(message, {
+      maxRiskScore: 70,
+      cacheResults: true,
+    });
+    if (!scanResult.safe || scanResult.severity === 'critical') {
+      console.warn('[Contact API] Prompt threat detected:', {
+        severity: scanResult.severity,
+        riskScore: scanResult.riskScore,
+        threatCount: scanResult.threats.length,
+      });
+      return NextResponse.json(
+        { error: 'Message validation failed', message: 'Your message could not be processed. Please review your content and try again.' },
+        { status: 400 }
+      );
+    }
+    return null;
+  } catch (scanError) {
+    console.error('[Contact API] Prompt scanning failed:', scanError);
+    return null; // fail open
+  }
+}
+
 export async function POST(request: NextRequest) {
   // NOTE: blockExternalAccess() is NOT used here because this is a PUBLIC
   // user-facing endpoint that must accept requests from users' browsers.
@@ -215,31 +241,8 @@ export async function POST(request: NextRequest) {
     const sanitizedData = validation.data;
 
     // Prompt security scanning - detect adversarial patterns
-    try {
-      const scanner = getPromptScanner();
-      const scanResult = await scanner.scanPrompt(sanitizedData.message, {
-        maxRiskScore: 70, // Block if risk score > 70
-        cacheResults: true,
-      });
-
-      if (!scanResult.safe || scanResult.severity === 'critical') {
-        console.warn('[Contact API] Prompt threat detected:', {
-          severity: scanResult.severity,
-          riskScore: scanResult.riskScore,
-          threatCount: scanResult.threats.length,
-        });
-        return NextResponse.json(
-          {
-            error: 'Message validation failed',
-            message: 'Your message could not be processed. Please review your content and try again.',
-          },
-          { status: 400 }
-        );
-      }
-    } catch (scanError) {
-      // Fail open - if scanning fails, allow submission but log error
-      console.error('[Contact API] Prompt scanning failed:', scanError);
-    }
+    const scanRejection = await scanMessageSecurity(sanitizedData.message);
+    if (scanRejection) return scanRejection;
 
     // Send event to Inngest for background processing
     try {

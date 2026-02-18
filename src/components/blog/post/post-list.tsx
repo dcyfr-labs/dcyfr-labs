@@ -162,6 +162,152 @@ interface PostListProps {
  * @see src/data/posts.ts for Post type definition
  * @see /docs/components/skeleton-sync-strategy.md for skeleton sync guidelines
  */
+
+// ─── MagazinePostList ──────────────────────────────────────────────────────────
+
+interface MagazinePostListProps {
+  posts: Post[];
+  latestSlug?: string;
+  hottestSlug?: string;
+  titleLevel: "h2" | "h3";
+  viewCounts?: Map<string, number>;
+  searchQuery?: string;
+  formatViews: (count: number) => string;
+}
+
+function MagazinePostList({
+  posts,
+  latestSlug,
+  hottestSlug,
+  titleLevel,
+  viewCounts,
+  searchQuery,
+  formatViews,
+}: MagazinePostListProps) {
+  const TitleTag = titleLevel;
+  return (
+    <div className={SPACING.subsection} data-testid="post-list">
+      {posts.map((p, index) => {
+        const isFirstPost = index === 0;
+
+        if (isFirstPost) {
+          return (
+            <ScrollReveal key={p.slug}>
+              <article
+                className={`group rounded-xl border border-border/40 overflow-hidden relative bg-card shadow-md hover:shadow-lg transition-all ${ANIMATION.duration.normal} ${HOVER_EFFECTS.card}`}
+              >
+                <div className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <BookmarkButton slug={p.slug} size="icon" variant="ghost" className="bg-background/80 backdrop-blur-sm hover:bg-background" />
+                </div>
+                {p.image && p.image.url && !p.image.hideCard && (
+                  <div className="absolute inset-0 z-0">
+                    <Image src={p.image.url} alt={p.image.alt || p.title} fill className={`object-cover group-hover:scale-105 transition-transform ${ANIMATION.duration.slow}`} sizes="(max-width: 768px) 100vw, 100vw" priority />
+                    <div className="absolute inset-0 bg-linear-to-b from-black/30 via-black/50 to-black/70" />
+                  </div>
+                )}
+                <Link href={`/blog/${p.slug}`} className="block">
+                  <div className="p-4 md:p-10 lg:p-12 relative z-10 flex flex-col justify-end min-h-96 md:min-h-128">
+                    <div className={`flex flex-nowrap items-center gap-x-3 text-sm mb-4 overflow-x-auto ${p.image && p.image.url && !p.image.hideCard ? "text-white/70" : "text-muted-foreground"}`}>
+                      <PostBadges post={p} isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
+                      <SeriesBadge post={p} />
+                    </div>
+                    <div className={`hidden md:flex flex-nowrap items-center gap-x-3 text-sm mb-5 overflow-x-auto ${p.image && p.image.url && !p.image.hideCard ? "text-white/70" : "text-muted-foreground"}`}>
+                      <time dateTime={p.publishedAt} className="whitespace-nowrap">{new Date(p.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</time>
+                      <span aria-hidden="true" className={p.image && p.image.url && !p.image.hideCard ? "text-white/50" : "text-muted-foreground"}>•</span>
+                      <span className="whitespace-nowrap">{p.readingTime.text}</span>
+                      {viewCounts && viewCounts.has(p.id) && viewCounts.get(p.id)! > 0 && (
+                        <>
+                          <span aria-hidden="true" className={p.image && p.image.url && !p.image.hideCard ? "text-white/50" : "text-muted-foreground"}>•</span>
+                          <span className="whitespace-nowrap">{formatViews(viewCounts.get(p.id)!)} views</span>
+                        </>
+                      )}
+                    </div>
+                    <TitleTag className={`font-bold text-4xl md:text-5xl lg:text-6xl leading-tight line-clamp-3 mb-4 ${p.image && p.image.url && !p.image.hideCard ? "text-white" : "text-foreground"}`}>
+                      <HighlightText text={p.title} searchQuery={searchQuery} />
+                    </TitleTag>
+                    {p.subtitle && (
+                      <p className={`font-medium text-lg md:text-xl mb-4 line-clamp-2 ${p.image && p.image.url && !p.image.hideCard ? "text-white/80" : "text-muted-foreground"}`}>
+                        <HighlightText text={p.subtitle} searchQuery={searchQuery} />
+                      </p>
+                    )}
+                    <p className={`text-base md:text-lg leading-relaxed line-clamp-2 md:line-clamp-3 mb-6 ${p.image && p.image.url && !p.image.hideCard ? "text-white/80" : "text-muted-foreground"}`}>
+                      <HighlightText text={p.summary} searchQuery={searchQuery} />
+                    </p>
+                    {p.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {p.tags.slice(0, 5).map((tag) => (
+                          <Badge key={tag} variant="secondary" className="bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm border border-white/20">{tag}</Badge>
+                        ))}
+                        {p.tags.length > 5 && <Badge variant="secondary" className="bg-white/10 text-white/70 backdrop-blur-sm border border-white/20">+{p.tags.length - 5}</Badge>}
+                      </div>
+                    )}
+                  </div>
+                </Link>
+              </article>
+            </ScrollReveal>
+          );
+        }
+
+        // Alternating horizontal layout for remaining posts
+        const isSecondRow = index === 1 || index === 2;
+        const isEven = index % 2 === 0;
+        return (
+          <ScrollReveal key={p.slug}>
+            <article className={`group rounded-lg border border-border/40 overflow-hidden relative bg-card shadow-sm hover:shadow-md transition-all ${ANIMATION.duration.normal} ${HOVER_EFFECTS.card}`}>
+              <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+                <BookmarkButton slug={p.slug} size="icon" variant="ghost" className="bg-background/80 backdrop-blur-sm hover:bg-background" />
+              </div>
+              <Link href={`/blog/${p.slug}`} className="block h-full">
+                <div className={cn("h-full flex flex-col md:items-stretch", isEven ? "md:flex-row" : "md:flex-row-reverse")}>
+                  {p.image && p.image.url && !p.image.hideCard && (
+                    <div className={`relative overflow-hidden bg-muted shrink-0 ${index === 1 ? "md:w-2/5" : "md:w-3/5"}`}>
+                      <Image src={p.image.url} alt={p.image.alt || p.title} fill className={`object-cover group-hover:scale-110 transition-transform ${ANIMATION.duration.slow}`} sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 40vw" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
+                    </div>
+                  )}
+                  <div className={`p-4 md:p-8 flex flex-col justify-between ${p.image && p.image.url && !p.image.hideCard ? (index === 1 ? "md:w-3/5" : "md:w-2/5") : "w-full"}`}>
+                    <div className="flex flex-nowrap items-center gap-x-2.5 text-sm text-muted-foreground mb-2.5 overflow-x-auto">
+                      <PostBadges post={p} size="sm" isLatestPost={latestSlug === p.slug} isHotPost={hottestSlug === p.slug} showCategory={true} />
+                      <SeriesBadge post={p} size="sm" />
+                    </div>
+                    <div className="hidden md:flex flex-nowrap items-center gap-x-2.5 text-sm text-muted-foreground mb-2.5 overflow-x-auto">
+                      <time dateTime={p.publishedAt} className="whitespace-nowrap">{new Date(p.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}</time>
+                      <span aria-hidden="true" className="text-muted-foreground">•</span>
+                      <span className="whitespace-nowrap">{p.readingTime.text}</span>
+                      {viewCounts && viewCounts.has(p.id) && viewCounts.get(p.id)! > 0 && (
+                        <>
+                          <span aria-hidden="true" className="text-muted-foreground">•</span>
+                          <span className="whitespace-nowrap">{formatViews(viewCounts.get(p.id)!)} views</span>
+                        </>
+                      )}
+                    </div>
+                    <TitleTag className={`font-bold leading-tight line-clamp-2 mb-3 text-foreground ${isSecondRow ? "text-lg md:text-2xl" : "text-xl md:text-3xl"}`}>
+                      <HighlightText text={p.title} searchQuery={searchQuery} />
+                    </TitleTag>
+                    <p className="text-sm md:text-base leading-relaxed text-muted-foreground line-clamp-2 md:line-clamp-3 mb-3">
+                      <HighlightText text={p.summary} searchQuery={searchQuery} />
+                    </p>
+                    {p.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {p.tags.slice(0, 3).map((tag) => (
+                          <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+                        ))}
+                        {p.tags.length > 3 && <Badge variant="outline" className="text-xs">+{p.tags.length - 3}</Badge>}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </Link>
+            </article>
+          </ScrollReveal>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── PostList ─────────────────────────────────────────────────────────────────
+
 export function PostList({
   posts,
   latestSlug,
@@ -214,552 +360,21 @@ export function PostList({
   // Magazine layout: first post as hero, then alternating side-by-side layouts with modern styling
   if (layout === "magazine") {
     return (
-      <div className={SPACING.subsection} data-testid="post-list">
-        {posts.map((p, index) => {
-          const isFirstPost = index === 0;
-
-          // Hero layout for first post - featured prominent card
-          if (isFirstPost) {
-            return (
-              <ScrollReveal key={p.slug}>
-                <article
-                  className={`group rounded-xl border border-border/40 overflow-hidden relative bg-card shadow-md hover:shadow-lg transition-all ${ANIMATION.duration.normal} ${HOVER_EFFECTS.card}`}
-                >
-                  {/* Bookmark Button - Top Right Corner */}
-                  <div className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <BookmarkButton
-                      slug={p.slug}
-                      size="icon"
-                      variant="ghost"
-                      className="bg-background/80 backdrop-blur-sm hover:bg-background"
-                    />
-                  </div>
-
-                  {/* Background image with modern overlay */}
-                  {p.image && p.image.url && !p.image.hideCard && (
-                    <div className="absolute inset-0 z-0">
-                      <Image
-                        src={p.image.url}
-                        alt={p.image.alt || p.title}
-                        fill
-                        className={`object-cover group-hover:scale-105 transition-transform ${ANIMATION.duration.slow}`}
-                        sizes="(max-width: 768px) 100vw, 100vw"
-                        priority
-                      />
-                      {/* Dark gradient overlay for text contrast */}
-                      <div className="absolute inset-0 bg-linear-to-b from-black/30 via-black/50 to-black/70" />
-                    </div>
-                  )}
-
-                  <Link href={`/blog/${p.slug}`} className="block">
-                    {/* Content */}
-                    <div className="p-4 md:p-10 lg:p-12 relative z-10 flex flex-col justify-end min-h-96 md:min-h-128">
-                      {/* Badges - modern layout */}
-                      <div
-                        className={`flex flex-nowrap items-center gap-x-3 text-sm mb-4 overflow-x-auto ${
-                          p.image && p.image.url && !p.image.hideCard
-                            ? "text-white/70"
-                            : "text-muted-foreground"
-                        }`}
-                      >
-                        <PostBadges
-                          post={p}
-                          isLatestPost={latestSlug === p.slug}
-                          isHotPost={hottestSlug === p.slug}
-                          showCategory={true}
-                        />
-                        <SeriesBadge post={p} />
-                      </div>
-
-                      {/* Meta info - desktop only */}
-                      <div
-                        className={`hidden md:flex flex-nowrap items-center gap-x-3 text-sm mb-5 overflow-x-auto ${
-                          p.image && p.image.url && !p.image.hideCard
-                            ? "text-white/70"
-                            : "text-muted-foreground"
-                        }`}
-                      >
-                        <time
-                          dateTime={p.publishedAt}
-                          className="whitespace-nowrap"
-                        >
-                          {new Date(p.publishedAt).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
-                        </time>
-                        <span
-                          aria-hidden="true"
-                          className={
-                            p.image && p.image.url && !p.image.hideCard
-                              ? "text-white/50"
-                              : "text-muted-foreground"
-                          }
-                        >
-                          •
-                        </span>
-                        <span className="whitespace-nowrap">
-                          {p.readingTime.text}
-                        </span>
-                        {viewCounts &&
-                          viewCounts.has(p.id) &&
-                          viewCounts.get(p.id)! > 0 && (
-                            <>
-                              <span
-                                aria-hidden="true"
-                                className={
-                                  p.image && p.image.url && !p.image.hideCard
-                                    ? "text-white/50"
-                                    : "text-muted-foreground"
-                                }
-                              >
-                                •
-                              </span>
-                              <span className="whitespace-nowrap">
-                                {formatViews(viewCounts.get(p.id)!)} views
-                              </span>
-                            </>
-                          )}
-                      </div>
-
-                      {/* Title - large and bold */}
-                      <TitleTag
-                        className={`font-bold text-4xl md:text-5xl lg:text-6xl leading-tight line-clamp-3 mb-4 ${
-                          p.image && p.image.url && !p.image.hideCard
-                            ? "text-white"
-                            : "text-foreground"
-                        }`}
-                      >
-                        <HighlightText
-                          text={p.title}
-                          searchQuery={searchQuery}
-                        />
-                      </TitleTag>
-
-                      {/* Subtitle if available */}
-                      {p.subtitle && (
-                        <p
-                          className={`font-medium text-lg md:text-xl mb-4 line-clamp-2 ${
-                            p.image && p.image.url && !p.image.hideCard
-                              ? "text-white/80"
-                              : "text-muted-foreground"
-                          }`}
-                        >
-                          <HighlightText
-                            text={p.subtitle}
-                            searchQuery={searchQuery}
-                          />
-                        </p>
-                      )}
-
-                      {/* Summary */}
-                      <p
-                        className={`text-base md:text-lg leading-relaxed line-clamp-2 md:line-clamp-3 mb-6 ${
-                          p.image && p.image.url && !p.image.hideCard
-                            ? "text-white/80"
-                            : "text-muted-foreground"
-                        }`}
-                      >
-                        <HighlightText
-                          text={p.summary}
-                          searchQuery={searchQuery}
-                        />
-                      </p>
-
-                      {/* Tags with modern styling */}
-                      {p.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
-                          {p.tags.slice(0, 5).map((tag) => (
-                            <Badge
-                              key={tag}
-                              variant="secondary"
-                              className="bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm border border-white/20"
-                            >
-                              {tag}
-                            </Badge>
-                          ))}
-                          {p.tags.length > 5 && (
-                            <Badge
-                              variant="secondary"
-                              className="bg-white/10 text-white/70 backdrop-blur-sm border border-white/20"
-                            >
-                              +{p.tags.length - 5}
-                            </Badge>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </Link>
-                </article>
-              </ScrollReveal>
-            );
-          }
-
-          // Alternating horizontal layout for remaining posts - modern card design
-          const isSecondRow = index === 1 || index === 2;
-          const isEven = index % 2 === 0; // Alternate left/right image position
-          return (
-            <ScrollReveal key={p.slug}>
-              <article
-                className={`group rounded-lg border border-border/40 overflow-hidden relative bg-card shadow-sm hover:shadow-md transition-all ${ANIMATION.duration.normal} ${HOVER_EFFECTS.card}`}
-              >
-                {/* Bookmark Button */}
-                <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <BookmarkButton
-                    slug={p.slug}
-                    size="icon"
-                    variant="ghost"
-                    className="bg-background/80 backdrop-blur-sm hover:bg-background"
-                  />
-                </div>
-
-                <Link href={`/blog/${p.slug}`} className="block h-full">
-                  <div
-                    className={cn(
-                      "h-full flex flex-col md:items-stretch",
-                      isEven ? "md:flex-row" : "md:flex-row-reverse"
-                    )}
-                  >
-                    {/* Image section - dynamic sizing based on position */}
-                    {p.image && p.image.url && !p.image.hideCard && (
-                      <div
-                        className={`relative overflow-hidden bg-muted shrink-0 ${index === 1 ? "md:w-2/5" : "md:w-3/5"}`}
-                      >
-                        <Image
-                          src={p.image.url}
-                          alt={p.image.alt || p.title}
-                          fill
-                          className={`object-cover group-hover:scale-110 transition-transform ${ANIMATION.duration.slow}`}
-                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 40vw"
-                        />
-                        {/* Subtle overlay */}
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
-                      </div>
-                    )}
-
-                    {/* Content section */}
-                    <div
-                      className={`p-4 md:p-8 flex flex-col justify-between ${p.image && p.image.url && !p.image.hideCard ? (index === 1 ? "md:w-3/5" : "md:w-2/5") : "w-full"}`}
-                    >
-                      {/* Badges */}
-                      <div className="flex flex-nowrap items-center gap-x-2.5 text-sm text-muted-foreground mb-2.5 overflow-x-auto">
-                        <PostBadges
-                          post={p}
-                          size="sm"
-                          isLatestPost={latestSlug === p.slug}
-                          isHotPost={hottestSlug === p.slug}
-                          showCategory={true}
-                        />
-                        <SeriesBadge post={p} size="sm" />
-                      </div>
-
-                      {/* Meta info - desktop only */}
-                      <div className="hidden md:flex flex-nowrap items-center gap-x-2.5 text-sm text-muted-foreground mb-2.5 overflow-x-auto">
-                        <time
-                          dateTime={p.publishedAt}
-                          className="whitespace-nowrap"
-                        >
-                          {new Date(p.publishedAt).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </time>
-                        <span
-                          aria-hidden="true"
-                          className="text-muted-foreground"
-                        >
-                          •
-                        </span>
-                        <span className="whitespace-nowrap">
-                          {p.readingTime.text}
-                        </span>
-                        {viewCounts &&
-                          viewCounts.has(p.id) &&
-                          viewCounts.get(p.id)! > 0 && (
-                            <>
-                              <span
-                                aria-hidden="true"
-                                className="text-muted-foreground"
-                              >
-                                •
-                              </span>
-                              <span className="whitespace-nowrap">
-                                {formatViews(viewCounts.get(p.id)!)} views
-                              </span>
-                            </>
-                          )}
-                      </div>
-
-                      {/* Title */}
-                      <TitleTag
-                        className={`font-bold leading-tight line-clamp-2 mb-3 text-foreground ${isSecondRow ? "text-lg md:text-2xl" : "text-xl md:text-3xl"}`}
-                      >
-                        <HighlightText
-                          text={p.title}
-                          searchQuery={searchQuery}
-                        />
-                      </TitleTag>
-
-                      {/* Summary */}
-                      <p className="text-sm md:text-base leading-relaxed text-muted-foreground line-clamp-2 md:line-clamp-3 mb-3">
-                        <HighlightText
-                          text={p.summary}
-                          searchQuery={searchQuery}
-                        />
-                      </p>
-
-                      {/* Tags */}
-                      {p.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
-                          {p.tags.slice(0, 3).map((tag) => (
-                            <Badge
-                              key={tag}
-                              variant="outline"
-                              className="text-xs"
-                            >
-                              {tag}
-                            </Badge>
-                          ))}
-                          {p.tags.length > 3 && (
-                            <Badge variant="outline" className="text-xs">
-                              +{p.tags.length - 3}
-                            </Badge>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              </article>
-            </ScrollReveal>
-          );
-        })}
-      </div>
+      <MagazinePostList
+        posts={posts}
+        latestSlug={latestSlug}
+        hottestSlug={hottestSlug}
+        titleLevel={titleLevel}
+        viewCounts={viewCounts}
+        searchQuery={searchQuery}
+        formatViews={formatViews}
+      />
     );
   }
 
-  // Grid layout: First post as large hero card, remaining posts in 2-column grid
+
+  // Grid layout: Hero first post + 2-column grid for rest
   if (layout === "grid") {
-    // If less than 3 posts, fallback to magazine layout
-    if (posts.length < 3) {
-      return (
-        <div className={SPACING.subsection} data-testid="post-list">
-          {posts.map((p, index) => {
-            const isFirstPost = index === 0;
-
-            if (isFirstPost) {
-              return (
-                <ScrollReveal key={p.slug}>
-                  <article
-                    className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}
-                  >
-                    {/* Bookmark Button - Top Right Corner */}
-                    <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <BookmarkButton
-                        slug={p.slug}
-                        size="icon"
-                        variant="ghost"
-                        className="bg-background/80 backdrop-blur-sm hover:bg-background"
-                      />
-                    </div>
-
-                    {/* Background image */}
-                    {p.image && p.image.url && !p.image.hideCard && (
-                      <div className="absolute inset-0 z-0">
-                        <Image
-                          src={p.image.url}
-                          alt={p.image.alt || p.title}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 768px) 100vw, 100vw"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80" />
-                      </div>
-                    )}
-
-                    <Link href={`/blog/${p.slug}`} className="block">
-                      <div className="p-4 md:p-10 lg:p-12 relative z-10">
-                        <div className="flex flex-nowrap items-center gap-x-3 text-sm mb-4 text-muted overflow-x-auto">
-                          <PostBadges
-                            post={p}
-                            isLatestPost={latestSlug === p.slug}
-                            isHotPost={hottestSlug === p.slug}
-                            showCategory={true}
-                          />
-                          <SeriesBadge post={p} />
-                        </div>
-
-                        <div className="hidden md:flex flex-nowrap items-center gap-x-3 text-sm mb-4 text-foreground overflow-x-auto">
-                          <time dateTime={p.publishedAt}>
-                            {new Date(p.publishedAt).toLocaleDateString(
-                              "en-US",
-                              {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              }
-                            )}
-                          </time>
-                          <span
-                            aria-hidden="true"
-                            className="text-muted-foreground"
-                          >
-                            •
-                          </span>
-                          <span className="text-foreground">
-                            {p.readingTime.text}
-                          </span>
-                          {viewCounts &&
-                            viewCounts.has(p.id) &&
-                            viewCounts.get(p.id)! > 0 && (
-                              <>
-                                <span
-                                  aria-hidden="true"
-                                  className="text-muted-foreground"
-                                >
-                                  •
-                                </span>
-                                <span className="text-foreground">
-                                  {formatViews(viewCounts.get(p.id)!)} views
-                                </span>
-                              </>
-                            )}
-                        </div>
-
-                        <TitleTag className="font-bold text-3xl md:text-4xl lg:text-5xl leading-tight line-clamp-3 mb-4 text-foreground">
-                          <HighlightText
-                            text={p.title}
-                            searchQuery={searchQuery}
-                          />
-                        </TitleTag>
-
-                        {p.subtitle && (
-                          <p className="font-medium text-lg md:text-xl text-muted-foreground mb-4">
-                            <HighlightText
-                              text={p.subtitle}
-                              searchQuery={searchQuery}
-                            />
-                          </p>
-                        )}
-
-                        <p className="text-base md:text-xl leading-relaxed text-foreground line-clamp-2 md:line-clamp-3 mb-5">
-                          <HighlightText
-                            text={p.summary}
-                            searchQuery={searchQuery}
-                          />
-                        </p>
-
-                        {p.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-2">
-                            {p.tags.slice(0, 5).map((tag) => (
-                              <Badge
-                                key={tag}
-                                variant="secondary"
-                                className="text-xs md:text-sm bg-muted/80 text-foreground"
-                              >
-                                {tag}
-                              </Badge>
-                            ))}
-                            {p.tags.length > 5 && (
-                              <Badge
-                                variant="secondary"
-                                className="text-xs md:text-sm bg-muted/80 text-foreground"
-                              >
-                                +{p.tags.length - 5} more
-                              </Badge>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </Link>
-                  </article>
-                </ScrollReveal>
-              );
-            }
-
-            // Remaining posts in compact cards
-            return (
-              <ScrollReveal key={p.slug}>
-                <article
-                  className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}
-                >
-                  <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <BookmarkButton
-                      slug={p.slug}
-                      size="icon"
-                      variant="ghost"
-                      className="bg-background/80 backdrop-blur-sm hover:bg-background"
-                    />
-                  </div>
-                  {p.image && p.image.url && !p.image.hideCard && (
-                    <div className="absolute inset-0 z-0">
-                      <Image
-                        src={p.image.url}
-                        alt={p.image.alt || p.title}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, 100vw"
-                      />
-                      <div className="absolute inset-0 bg-linear-to-b from-background/45 via-background/70 to-background/95" />
-                    </div>
-                  )}
-                  <Link href={`/blog/${p.slug}`} className="block">
-                    <div className="p-4 md:p-8 relative z-10">
-                      <div className="flex flex-nowrap items-center gap-x-2.5 text-sm text-muted-foreground mb-3 overflow-x-auto">
-                        <PostBadges
-                          post={p}
-                          size="sm"
-                          isLatestPost={latestSlug === p.slug}
-                          isHotPost={hottestSlug === p.slug}
-                          showCategory={true}
-                        />
-                        <SeriesBadge post={p} size="sm" />
-                      </div>
-                      <TitleTag className="font-bold text-xl md:text-2xl lg:text-3xl leading-tight line-clamp-2 mb-3 text-foreground">
-                        <HighlightText
-                          text={p.title}
-                          searchQuery={searchQuery}
-                        />
-                      </TitleTag>
-                      <p className="text-sm md:text-base leading-relaxed text-muted-foreground line-clamp-2 lg:line-clamp-3 mb-4">
-                        <HighlightText
-                          text={p.summary}
-                          searchQuery={searchQuery}
-                        />
-                      </p>
-                      {p.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
-                          {p.tags.slice(0, 3).map((tag) => (
-                            <Badge
-                              key={tag}
-                              variant="outline"
-                              className="text-xs border-border text-foreground"
-                            >
-                              {tag}
-                            </Badge>
-                          ))}
-                          {p.tags.length > 3 && (
-                            <Badge
-                              variant="outline"
-                              className="text-xs border-border text-muted-foreground"
-                            >
-                              +{p.tags.length - 3}
-                            </Badge>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </Link>
-                </article>
-              </ScrollReveal>
-            );
-          })}
-        </div>
-      );
-    }
-
     // Grid layout implementation: Hero first post + 2-column grid for rest
     return (
       <div data-testid="post-list">

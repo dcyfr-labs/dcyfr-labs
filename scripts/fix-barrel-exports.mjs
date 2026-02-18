@@ -210,14 +210,40 @@ function scanFiles(dir) {
 }
 
 /**
- * Main execution
+ * Accumulate missing export entries into the map.
  */
-function main() {
-  console.log("🔍 Scanning for missing barrel exports...\n");
-  
-  const missingExports = new Map(); // barrelPath -> [{ name, source, files }]
-  
-  // Scan source files
+function recordMissingExport(missingExports, barrelPath, name, sourceFile, filePath) {
+  if (!missingExports.has(barrelPath)) missingExports.set(barrelPath, []);
+  const existing = missingExports.get(barrelPath).find((e) => e.name === name);
+  if (existing) {
+    existing.files.push(filePath.replace(ROOT + "/", ""));
+  } else {
+    missingExports.get(barrelPath).push({
+      name, source: sourceFile, files: [filePath.replace(ROOT + "/", "")],
+    });
+  }
+}
+
+/**
+ * Check a single import and record it if it's missing from its barrel.
+ */
+function checkImport(name, source, filePath, missingExports) {
+  const barrelPath = source.replace("@/", "src/");
+  if (!BARREL_DIRS.includes(barrelPath)) return;
+  const barrelExports = getBarrelExports(barrelPath);
+  if (barrelExports.has(name)) return;
+  const hasWildcard = Array.from(barrelExports).some((exp) => exp.startsWith("*:"));
+  if (hasWildcard) return;
+  const dirExports = findExportsInDir(barrelPath);
+  const sourceFile = findExportSource(name, dirExports);
+  if (sourceFile) recordMissingExport(missingExports, barrelPath, name, sourceFile, filePath);
+}
+
+/**
+ * Build the missing-exports map by scanning all source files.
+ */
+function buildMissingExportsMap() {
+  const missingExports = new Map();
   const filesToScan = [
     ...scanFiles("src/components"),
     ...scanFiles("src/hooks"),
@@ -226,103 +252,67 @@ function main() {
     ...scanFiles("src/inngest"),
     ...scanFiles("src/__tests__"),
   ];
-  
   for (const filePath of filesToScan) {
     const content = readFileSync(filePath, "utf-8");
-    const imports = extractImports(content, filePath);
-    
-    for (const { name, source } of imports) {
-      // Convert @/lib/activity -> src/lib/activity
-      const barrelPath = source.replace("@/", "src/");
-      
-      // Only check barrel directories we're managing
-      if (!BARREL_DIRS.includes(barrelPath)) continue;
-      
-      // Check if export exists in barrel
-      const barrelExports = getBarrelExports(barrelPath);
-      
-      if (!barrelExports.has(name)) {
-        // Check for wildcard exports
-        const hasWildcard = Array.from(barrelExports).some((exp) =>
-          exp.startsWith("*:")
-        );
-        
-        if (hasWildcard) {
-          // Can't determine if it's missing with wildcard exports
-          continue;
-        }
-        
-        // Find which file has this export
-        const dirExports = findExportsInDir(barrelPath);
-        const sourceFile = findExportSource(name, dirExports);
-        
-        if (sourceFile) {
-          if (!missingExports.has(barrelPath)) {
-            missingExports.set(barrelPath, []);
-          }
-          
-          const existing = missingExports
-            .get(barrelPath)
-            .find((e) => e.name === name);
-          
-          if (existing) {
-            existing.files.push(filePath.replace(ROOT + "/", ""));
-          } else {
-            missingExports.get(barrelPath).push({
-              name,
-              source: sourceFile,
-              files: [filePath.replace(ROOT + "/", "")],
-            });
-          }
-        }
-      }
+    for (const { name, source } of extractImports(content, filePath)) {
+      checkImport(name, source, filePath, missingExports);
     }
   }
-  
-  // Report results
+  return missingExports;
+}
+
+/**
+ * Report (and optionally fix) a group of exports from one source file.
+ */
+function reportSourceGroup(barrelPath, sourceFile, exps) {
+  console.log(`\n  From ${sourceFile}.ts:`);
+  let count = 0;
+  for (const exp of exps) {
+    console.log(`    - ${exp.name}`);
+    console.log(`      Used in: ${exp.files[0]}${exp.files.length > 1 ? ` (+${exp.files.length - 1} more)` : ""}`);
+    count++;
+  }
+  if (AUTO_FIX) {
+    for (const exp of exps) addExportToBarrel(barrelPath, exp.name, sourceFile);
+    console.log(`      ✅ Added to barrel`);
+  }
+  return count;
+}
+
+/**
+ * Main execution
+ */
+function main() {
+  console.log("🔍 Scanning for missing barrel exports...\n");
+
+  const missingExports = buildMissingExportsMap();
+
   if (missingExports.size === 0) {
     console.log("✅ No missing barrel exports found!\n");
     return;
   }
-  
+
   console.log(`❌ Found missing exports in ${missingExports.size} barrel(s):\n`);
-  
   let totalMissing = 0;
-  
+
   for (const [barrelPath, exports] of missingExports.entries()) {
     console.log(`\n📦 ${barrelPath}/index.ts`);
     console.log("─".repeat(60));
-    
-    // Group by source file
+
     const bySource = new Map();
     for (const exp of exports) {
-      if (!bySource.has(exp.source)) {
-        bySource.set(exp.source, []);
-      }
+      if (!bySource.has(exp.source)) bySource.set(exp.source, []);
       bySource.get(exp.source).push(exp);
     }
-    
+
     for (const [sourceFile, exps] of bySource.entries()) {
-      console.log(`\n  From ${sourceFile}.ts:`);
-      for (const exp of exps) {
-        console.log(`    - ${exp.name}`);
-        console.log(`      Used in: ${exp.files[0]}${exp.files.length > 1 ? ` (+${exp.files.length - 1} more)` : ""}`);
-        totalMissing++;
-      }
-      
-      if (AUTO_FIX) {
-        // Add exports
-        for (const exp of exps) {
-          addExportToBarrel(barrelPath, exp.name, sourceFile);
-        }
-        console.log(`      ✅ Added to barrel`);
-      }
+      totalMissing += reportSourceGroup(barrelPath, sourceFile, exps);
     }
   }
-  
+
   console.log("\n" + "─".repeat(60));
   console.log(`\nTotal missing exports: ${totalMissing}`);
-  
+
   if (AUTO_FIX) {
     console.log("\n✅ All missing exports have been added to barrel files!");
     console.log("   Run the build again to verify.\n");

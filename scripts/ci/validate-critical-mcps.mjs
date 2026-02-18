@@ -183,67 +183,35 @@ function checkCriticalServers(criticalServers) {
 /**
  * Print validation results
  */
-function printResults(report, criticalServers, results) {
-  printHeader('MCP Critical Server Validation Report');
-
-  // Overall summary
-  console.log(`Report Timestamp: ${colorize(report.timestamp, 'cyan')}`);
-  console.log(`Total Servers: ${report.summary.total}`);
-  console.log(`Critical Servers: ${criticalServers.length}\n`);
-
-  // Critical servers status
-  printSection('Critical MCP Servers');
-
-  for (const criticalName of CRITICAL_MCPS) {
-    const server = criticalServers.find((s) =>
-      s.name.toLowerCase().includes(criticalName.toLowerCase())
-    );
-
-    if (!server) {
-      console.log(`  ${colorize('⚠', 'yellow')} ${criticalName}: ${colorize('NOT FOUND', 'yellow')}`);
-      continue;
-    }
-
-    let statusText, statusColor;
-    if (server.status === 'ok') {
-      statusText = 'OK';
-      statusColor = 'green';
-    } else if (server.status === 'degraded') {
-      statusText = 'DEGRADED';
-      statusColor = 'yellow';
-    } else {
-      statusText = 'DOWN';
-      statusColor = 'red';
-    }
-
-    const icon = server.status === 'ok' ? '✓' : server.status === 'degraded' ? '⚠' : '✖';
-    console.log(
-      `  ${colorize(icon, statusColor)} ${server.name}: ${colorize(statusText, statusColor)} (${server.responseTimeMs}ms)`
-    );
-
-    if (server.error) {
-      console.log(`     ${colorize(`Error: ${server.error}`, 'red')}`);
-    }
+/**
+ * Print status for a single critical server entry
+ */
+function printCriticalServerEntry(criticalName, criticalServers) {
+  const server = criticalServers.find((s) =>
+    s.name.toLowerCase().includes(criticalName.toLowerCase())
+  );
+  if (!server) {
+    console.log(`  ${colorize('⚠', 'yellow')} ${criticalName}: ${colorize('NOT FOUND', 'yellow')}`);
+    return;
   }
-
-  // Summary
-  printSection('Validation Summary');
-
-  if (results.okServers.length > 0) {
-    console.log(`  ${colorize('✓', 'green')} Operational: ${colorize(results.okServers.length, 'green')} server(s)`);
+  let statusText, statusColor, icon;
+  if (server.status === 'ok') {
+    statusText = 'OK'; statusColor = 'green'; icon = '✓';
+  } else if (server.status === 'degraded') {
+    statusText = 'DEGRADED'; statusColor = 'yellow'; icon = '⚠';
+  } else {
+    statusText = 'DOWN'; statusColor = 'red'; icon = '✖';
   }
-
-  if (results.degradedServers.length > 0) {
-    console.log(`  ${colorize('⚠', 'yellow')} Degraded: ${colorize(results.degradedServers.length, 'yellow')} server(s)`);
+  console.log(`  ${colorize(icon, statusColor)} ${server.name}: ${colorize(statusText, statusColor)} (${server.responseTimeMs}ms)`);
+  if (server.error) {
+    console.log(`     ${colorize('Error: ' + server.error, 'red')}`);
   }
+}
 
-  if (results.downServers.length > 0) {
-    console.log(`  ${colorize('✖', 'red')} Down: ${colorize(results.downServers.length, 'red')} server(s)`);
-  }
-
-  console.log();
-
-  // Final verdict
+/**
+ * Print the final verdict section
+ */
+function printVerdictSection(results) {
   if (results.allOk && results.degradedServers.length === 0) {
     console.log(colorize('🎉 SUCCESS: All critical MCP servers are operational!', 'green'));
   } else if (results.allOk && results.degradedServers.length > 0) {
@@ -253,7 +221,31 @@ function printResults(report, criticalServers, results) {
     console.log(colorize('❌ FAILURE: Critical MCP servers are down!', 'red'));
     console.log(colorize('   Cannot proceed with build - infrastructure issues detected', 'red'));
   }
+}
 
+function printResults(report, criticalServers, results) {
+  printHeader('MCP Critical Server Validation Report');
+  console.log(`Report Timestamp: ${colorize(report.timestamp, 'cyan')}`);
+  console.log(`Total Servers: ${report.summary.total}`);
+  console.log(`Critical Servers: ${criticalServers.length}\n`);
+
+  printSection('Critical MCP Servers');
+  for (const criticalName of CRITICAL_MCPS) {
+    printCriticalServerEntry(criticalName, criticalServers);
+  }
+
+  printSection('Validation Summary');
+  if (results.okServers.length > 0) {
+    console.log(`  ${colorize('✓', 'green')} Operational: ${colorize(results.okServers.length, 'green')} server(s)`);
+  }
+  if (results.degradedServers.length > 0) {
+    console.log(`  ${colorize('⚠', 'yellow')} Degraded: ${colorize(results.degradedServers.length, 'yellow')} server(s)`);
+  }
+  if (results.downServers.length > 0) {
+    console.log(`  ${colorize('✖', 'red')} Down: ${colorize(results.downServers.length, 'red')} server(s)`);
+  }
+  console.log();
+  printVerdictSection(results);
   console.log();
 }
 

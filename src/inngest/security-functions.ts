@@ -322,18 +322,63 @@ export function sleep(ms: number) {
   return new Promise((res) => setTimeout(res, ms));
 }
 
+/** Handle a non-ok HTTP response from GHSA API — returns empty array for 4xx, throws for 5xx after logging */
+async function handleGhsaErrorResponse(
+  response: Response,
+  packageName: string,
+  attempt: number
+): Promise<{ retry: boolean; backoffMs: number }> {
+  await response.text().catch(() => '<no-body>');
+  const remaining = response.headers?.get?.('x-ratelimit-remaining') ?? 'unknown';
+  console.error(`[fetchGhsaAdvisories] GHSA API error for ${packageName}: ${response.status}`, {
+    statusCode: response.status,
+    remaining,
+  });
+  if (response.status >= 400 && response.status < 500) {
+    return { retry: false, backoffMs: 0 };
+  }
+  const backoffMs = Math.min(100 * 2 ** (attempt + 1), 3000);
+  console.warn(
+    `[fetchGhsaAdvisories] Server error (${response.status}) for ${packageName} - retrying in ${backoffMs}ms`
+  );
+  return { retry: true, backoffMs };
+}
+
+/** Handle a fetch network error — logs and returns whether to retry */
+function handleGhsaNetworkError(
+  error: unknown,
+  packageName: string,
+  attempt: number,
+  maxRetries: number
+): { shouldThrow: boolean; backoffMs: number } {
+  if (attempt >= maxRetries) {
+    console.error(`Max retries reached for ${packageName} after ${attempt} attempts`, {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+    return { shouldThrow: true, backoffMs: 0 };
+  }
+  const backoffMs = Math.min(100 * 2 ** attempt, 3000);
+  console.warn(
+    `Network error fetching GHSA for ${packageName} (attempt ${attempt}/${maxRetries}), retrying in ${backoffMs}ms:`,
+    {
+      error: error instanceof Error ? error.message : String(error),
+      type: error instanceof Error ? error.constructor.name : typeof error,
+    }
+  );
+  return { shouldThrow: false, backoffMs };
+}
+
 /**
  * Fetch GHSA advisories for a package with retry/backoff for transient errors.
  * - For 4xx (including 422) do not retry (these are treated as validation/spam responses)
  * - For 5xx and network errors retry with exponential backoff
  */
 export async function fetchGhsaAdvisories(packageName: string) {
-  // GitHub API requires multiple severity parameters, not comma-separated
-  // Must be: severity=medium&severity=high&severity=critical
   const url = `https://api.github.com/advisories?ecosystem=npm&package=${packageName}&severity=medium&severity=high&severity=critical&per_page=10`;
   const headers: Record<string, string> = {
-    Accept: "application/vnd.github+json",
-    "X-GitHub-Api-Version": "2022-11-28",
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
   };
 
   if (process.env.GITHUB_TOKEN) {
@@ -345,77 +390,28 @@ export async function fetchGhsaAdvisories(packageName: string) {
 
   while (attempt < maxRetries) {
     try {
-      console.warn(
-        `[fetchGhsaAdvisories] Attempting to fetch ${packageName} (attempt ${attempt + 1}/${maxRetries})`
-      );
+      console.warn(`[fetchGhsaAdvisories] Attempting to fetch ${packageName} (attempt ${attempt + 1}/${maxRetries})`);
       const response = await fetch(url, { headers });
 
       if (response.ok) {
         const data = await response.json();
-        console.warn(
-          `[fetchGhsaAdvisories] Successfully fetched ${packageName}: ${Array.isArray(data) ? data.length : (data?.length ?? "?")} advisories`
-        );
+        console.warn(`[fetchGhsaAdvisories] Successfully fetched ${packageName}: ${Array.isArray(data) ? data.length : (data?.length ?? '?')} advisories`);
         return data;
       }
 
-      // Read body for diagnostics
-      const body = await response.text().catch(() => "<no-body>");
-      const remaining =
-        response.headers?.get?.("x-ratelimit-remaining") ?? "unknown";
-
-      // Don't log raw response body to avoid PII scanner issues
-      // Just log the status and rate limit info
-      console.error(
-        `[fetchGhsaAdvisories] GHSA API error for ${packageName}: ${response.status}`,
-        {
-          statusCode: response.status,
-          remaining,
-        }
-      );
-
-      // For client errors (including 422), don't retry - return empty result
-      if (response.status >= 400 && response.status < 500) {
-        console.warn(
-          `[fetchGhsaAdvisories] Client error (${response.status}) for ${packageName} - not retrying, returning empty`
-        );
-        return [];
-      }
-
-      // Server errors: retry with backoff
+      const { retry, backoffMs } = await handleGhsaErrorResponse(response, packageName, attempt);
+      if (!retry) return [];
       attempt++;
-      const backoffMs = Math.min(100 * 2 ** attempt, 3000);
-      console.warn(
-        `[fetchGhsaAdvisories] Server error (${response.status}) for ${packageName} - retrying in ${backoffMs}ms`
-      );
       await sleep(backoffMs);
     } catch (error) {
       attempt++;
-      if (attempt >= maxRetries) {
-        // Re-throw the last error so caller can decide (Inngest step will catch)
-        console.error(
-          `Max retries reached for ${packageName} after ${attempt} attempts`,
-          {
-            error: error instanceof Error ? error.message : String(error),
-            stack: error instanceof Error ? error.stack : undefined,
-          }
-        );
-        throw error;
-      }
-      const backoffMs = Math.min(100 * 2 ** attempt, 3000);
-      console.warn(
-        `Network error fetching GHSA for ${packageName} (attempt ${attempt}/${maxRetries}), retrying in ${backoffMs}ms:`,
-        {
-          error: error instanceof Error ? error.message : String(error),
-          type: error instanceof Error ? error.constructor.name : typeof error,
-        }
-      );
+      const { shouldThrow, backoffMs } = handleGhsaNetworkError(error, packageName, attempt, maxRetries);
+      if (shouldThrow) throw error;
       await sleep(backoffMs);
     }
   }
 
-  console.warn(
-    `fetchGhsaAdvisories(${packageName}): Max retries exhausted, returning empty result`
-  );
+  console.warn(`fetchGhsaAdvisories(${packageName}): Max retries exhausted, returning empty result`);
   return [];
 }
 

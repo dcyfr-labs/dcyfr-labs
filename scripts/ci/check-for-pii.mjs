@@ -111,6 +111,138 @@ function getAllowlistReason(file) {
   return null;
 }
 
+function filterEmailMatches(matches, allowlist) {
+  return matches.filter(m => {
+    const lower = m.toLowerCase();
+    if (allowlist.emails && allowlist.emails.some(e => {
+      const le = e.toLowerCase();
+      return le.includes('@') ? le === lower : lower.includes(le);
+    })) return false;
+    const parts = m.split('@');
+    if (parts.length === 2) {
+      const domain = parts[1].toLowerCase();
+      if ((allowlist.emailDomains || []).some(d => domain.includes(d))) return false;
+    }
+    return true;
+  });
+}
+
+function filterPhoneMatches(matches) {
+  return matches.filter(m => {
+    const digits = m.replace(/[^0-9]/g, '');
+    if (digits.length < 7) return false;
+    const hasSeparators = /[-.\s()]/.test(m);
+    if (digits.length > 10 && !hasSeparators) return false;
+    if (digits.length === 10) {
+      const value = Number(digits);
+      if (value >= 1600000000 && value <= 2000000000) return false;
+    }
+    if (/^(1234567890|0123456789|0000000000|1111111111|2222222222|9999999999)$/.test(digits)) return false;
+    return true;
+  });
+}
+
+function filterPrivateKeyMatches(matches, file, content, allowlist) {
+  return matches.filter(m => {
+    const surrounding = content.slice(Math.max(0, content.indexOf(m) - 100), content.indexOf(m) + m.length + 100);
+    const isPlaceholder = /EXAMPLE|REDACTED|REPLACE|REPLACE_ME|DUMMY|YOUR_PRIVATE_KEY|PLACEHOLDER|\[REDACTED\]|YOUR_PRIVATE_KEY_EMAIL|YOUR KEY HERE|INSERT.*KEY/gi.test(surrounding);
+    if (isInAllowlist(file, allowlist.privateKeyPaths)) {
+      if (!isPlaceholder) console.warn(`⚠️  Warning: Private key found in allowlisted doc ${file} without clear redaction markers`);
+      return !isPlaceholder;
+    }
+    return !isPlaceholder;
+  });
+}
+
+function filterJwtMatches(matches, content) {
+  return matches.filter(m => {
+    const surrounding = content.slice(Math.max(0, content.indexOf(m) - 50), content.indexOf(m) + m.length + 50);
+    if (/EXAMPLE|PLACEHOLDER|REDACTED|FAKE|MOCK|TEST|DUMMY/i.test(surrounding)) return false;
+    if (/\/\/|--|\s*#/.test(surrounding.substring(0, surrounding.indexOf(m)))) return false;
+    return true;
+  });
+}
+
+function filterOauthMatches(matches, isContentFile, content) {
+  return matches.filter(m => {
+    const surrounding = content.slice(Math.max(0, content.indexOf(m) - 50), content.indexOf(m) + m.length + 50);
+    if (/EXAMPLE|PLACEHOLDER|REDACTED|FAKE|MOCK|TEST|DUMMY|example\.com|localhost|placeholder/i.test(surrounding)) return false;
+    if (isContentFile && m.length < 30) return false;
+    return true;
+  });
+}
+
+function filterDatabaseMatches(matches, content) {
+  return matches.filter(m => {
+    const surrounding = content.slice(Math.max(0, content.indexOf(m) - 50), content.indexOf(m) + m.length + 50);
+    if (/example|placeholder|localhost|test|127\.0\.0\.1|docker|EXAMPLE|PLACEHOLDER|TEST|DUMMY/i.test(m)) return false;
+    if (/EXAMPLE|PLACEHOLDER|REDACTED|FAKE|MOCK|TEST/i.test(surrounding)) return false;
+    if (/\$|{|}|<|>|YOUR|REPLACE/i.test(m)) return false;
+    return true;
+  });
+}
+
+function filterApiKeyMatches(matches, content) {
+  return matches.filter(m => {
+    const surrounding = content.slice(Math.max(0, content.indexOf(m) - 50), content.indexOf(m) + m.length + 50);
+    if (/EXAMPLE|PLACEHOLDER|REDACTED|FAKE|MOCK|TEST|DUMMY/i.test(surrounding)) return false;
+    if (/test|dev|example|placeholder|sk_test/i.test(m)) return false;
+    return /[a-f0-9]{32,}|[a-zA-Z0-9._\-]{40,}/.test(m);
+  });
+}
+
+function filterBusinessIdMatches(matches, file, isContentFile, content, allowlist) {
+  return matches.filter(m => {
+    if (/EXAMPLE|PLACEHOLDER|REDACTED|FAKE|MOCK|TEST|DUMMY|example\.com|placeholder/i.test(m)) return false;
+    if (isInAllowlist(file, allowlist.piPaths)) return false;
+    if (isContentFile && !file.includes('test')) return false;
+    return true;
+  });
+}
+
+function applyMatchFilters(t, matches, file, content, isContentFile, allowlist) {
+  if (t.name === 'email') return filterEmailMatches(matches, allowlist);
+  if (t.name === 'phone') return filterPhoneMatches(matches);
+  if (t.name === 'aws_key') return matches.filter(m => m.length > 10);
+  if (t.name === 'private_key') return filterPrivateKeyMatches(matches, file, content, allowlist);
+  if (t.name === 'jwt_token') return filterJwtMatches(matches, content);
+  if (t.name === 'oauth_token') return filterOauthMatches(matches, isContentFile, content);
+  if (t.name === 'database_connection') return filterDatabaseMatches(matches, content);
+  if (t.name === 'generic_api_key') return filterApiKeyMatches(matches, content);
+  if (['customer_id', 'order_number', 'transaction_id', 'account_number'].includes(t.name)) {
+    return filterBusinessIdMatches(matches, file, isContentFile, content, allowlist);
+  }
+  return matches;
+}
+
+function scanIpLogging(t, file, content, results) {
+  const matches = content.match(t.regex);
+  if (!matches || matches.length === 0) return;
+  const filteredMatches = matches.filter(m => {
+    const ctx = content.slice(Math.max(0, content.indexOf(m) - 50), content.indexOf(m));
+    return !/\/\/\s*❌\s*WRONG/.test(ctx);
+  });
+  if (filteredMatches.length > 0) {
+    results.push({
+      file, type: t.name, classification: t.classification || 'PII', message: t.message,
+      matches: [...new Set(filteredMatches)].slice(0, 3),
+    });
+  }
+}
+
+function buildResultEntry(t, file, matches, allowlist) {
+  const entry = {
+    file, type: t.name, classification: t.classification || 'PII', message: t.message,
+    matches: [...new Set(matches)].slice(0, 5),
+  };
+  if (t.name === 'private_key' && isInAllowlist(file, allowlist.privateKeyPaths)) {
+    const reason = getAllowlistReason(file);
+    entry.message = `${entry.message} (allowlisted path${reason ? `: ${reason}` : ''})`;
+    entry.severity = 'critical';
+  }
+  return entry;
+}
+
 function scanContent(file, content, results, isPrScan, isContentFile) {
   // Remove code fences and inline code to avoid false positives from chunk names, code snippets, and example outputs
   let cleanedContent = content.replace(/```[\s\S]*?```/g, '');
@@ -259,191 +391,34 @@ function scanContent(file, content, results, isPrScan, isContentFile) {
     // For IP logging detection, only scan code files (not docs/markdown)
     if (t.name === 'ip_logging') {
       const isCodeFile = /\.(ts|tsx|js|jsx)$/.test(file);
-      if (!isCodeFile) continue;
-
-      // Don't scan the original content for IP logging - use unprocessed content
-      // to preserve template literals and console.log statements
-      const matches = content.match(t.regex);
-      if (matches && matches.length > 0) {
-        // Filter out false positives from comments or documentation examples
-        const filteredMatches = matches.filter(m => {
-          // Allow if it's in a comment showing the WRONG way (educational)
-          if (/\/\/\s*❌\s*WRONG/.test(content.slice(Math.max(0, content.indexOf(m) - 50), content.indexOf(m)))) {
-            return false;
-          }
-          return true;
-        });
-
-        if (filteredMatches.length > 0) {
-          const entry = {
-            file,
-            type: t.name,
-            classification: t.classification || 'PII',
-            message: t.message,
-            matches: [...new Set(filteredMatches)].slice(0, 3) // Show up to 3 examples
-          };
-          results.push(entry);
-        }
-      }
-      continue; // Skip normal processing for IP logging
+      if (isCodeFile) scanIpLogging(t, file, content, results);
+      continue;
     }
 
     let matches = cleanedContent.match(t.regex);
     // If this is the proprietary marker, only flag in sensitive areas (agents, AI docs, inngest)
     if (t.name === 'proprietary') {
       const sensitivePaths = ['.github/agents', 'docs/ai', 'src/inngest'];
-      if (!sensitivePaths.some(p => file.startsWith(p))) {
-        continue;
-      }
-      // If this file is explicitly allowlisted for proprietary markers, skip reporting
+      if (!sensitivePaths.some(p => file.startsWith(p))) continue;
       if (isInAllowlist(file, allowlist.proprietaryPaths) || isInAllowlist(file, allowlist.piPaths)) {
         const reason = getAllowlistReason(file);
         if (reason) console.log(`Skipping proprietary check for ${file}: ${reason}`);
         continue;
       }
     }
-    if (matches && matches.length > 0) {
-      // Post-filter emails for allowlist domains and specific addresses to reduce noise
-      if (t.name === 'email') {
-        matches = matches.filter(m => {
-          const lower = m.toLowerCase();
-          // full email allowlist: exact email or substring match
-          if (allowlist.emails && allowlist.emails.some(e => {
-            const le = e.toLowerCase();
-            if (le.includes('@')) return le === lower;
-            return lower.includes(le);
-          })) return false;
-          // domain allowlist
-          const parts = m.split('@');
-          if (parts.length === 2) {
-            const domain = parts[1].toLowerCase();
-            if ((allowlist.emailDomains || []).some(d => domain.includes(d))) return false;
-          }
-          return true;
-        });
-      }
-      if (t.name === 'phone') {
-        // Filter out matches that are short or look like year numbers or epoch timestamps
-        matches = matches.filter(m => {
-          const digits = m.replace(/[^0-9]/g, '');
-          // Require at least 7 digits
-          if (digits.length < 7) return false;
-          // If digits length is greater than 10 (likely epoch or long numeric), only keep if separators or parentheses present
-          const hasSeparators = /[-.\s()]/.test(m);
-          if (digits.length > 10 && !hasSeparators) return false;
-          // If digits length == 10, check if this looks like a unix epoch in seconds (e.g., 169xxxxxxx)
-          if (digits.length === 10) {
-            const value = Number(digits);
-            if (value >= 1600000000 && value <= 2000000000) return false; // skip epoch timestamps
-          }
-          // Common placeholder sequences like 1234567890 or repeating digits are not valid phones
-          if (/^(1234567890|0123456789|0000000000|1111111111|2222222222|9999999999)$/.test(digits)) return false;
-          return true;
-        });
-      }
-      if (t.name === 'aws_key') {
-        matches = matches.filter(m => m.length > 10);
-      }
-      if (t.name === 'private_key') {
-        // If the private key example is explicitly labeled as an example or redacted, skip flagging
-        // Look for nearby markers indicating placeholder/demo keys
-        matches = matches.filter(m => {
-          const surrounding = content.slice(Math.max(0, content.indexOf(m) - 100), content.indexOf(m) + m.length + 100);
-          const isPlaceholder = /EXAMPLE|REDACTED|REPLACE|REPLACE_ME|DUMMY|YOUR_PRIVATE_KEY|PLACEHOLDER|\[REDACTED\]|YOUR_PRIVATE_KEY_EMAIL|YOUR KEY HERE|INSERT.*KEY/gi.test(surrounding);
 
-          // If this file is in the privateKeyPaths allowlist, REQUIRE explicit markers
-          // Documentation files should clearly mark examples as placeholders
-          if (isInAllowlist(file, allowlist.privateKeyPaths)) {
-            // For allowlisted docs, require explicit markers - no silent pass
-            if (!isPlaceholder) {
-              console.warn(`⚠️  Warning: Private key found in allowlisted doc ${file} without clear redaction markers`);
-            }
-            return !isPlaceholder; // Still filter if markers present, but warn if missing
-          }
+    if (!matches || matches.length === 0) continue;
 
-          return !isPlaceholder;
-        });
-        // If this path is an allowlisted place for examples, but a real private key exists without placeholder markers,
-        // mark this as critical.
-      }
-      if (t.name === 'jwt_token') {
-        // Filter JWT tokens: only flag if they look like real tokens (not examples)
-        matches = matches.filter(m => {
-          const surrounding = content.slice(Math.max(0, content.indexOf(m) - 50), content.indexOf(m) + m.length + 50);
-          // Skip if marked as EXAMPLE or PLACEHOLDER
-          if (/EXAMPLE|PLACEHOLDER|REDACTED|FAKE|MOCK|TEST|DUMMY/i.test(surrounding)) return false;
-          // Skip if it's in a comment explaining what JWT looks like
-          if (/\/\/|--|\s*#/.test(surrounding.substring(0, surrounding.indexOf(m)))) return false;
-          return true;
-        });
-      }
-      if (t.name === 'oauth_token') {
-        // Filter OAuth tokens: reduce false positives from docs/examples
-        matches = matches.filter(m => {
-          const surrounding = content.slice(Math.max(0, content.indexOf(m) - 50), content.indexOf(m) + m.length + 50);
-          // Skip if marked as example or placeholder
-          if (/EXAMPLE|PLACEHOLDER|REDACTED|FAKE|MOCK|TEST|DUMMY|example\.com|localhost|placeholder/i.test(surrounding)) return false;
-          // Skip if it's a short example (< 25 chars total) in documentation context
-          if (isContentFile && m.length < 30) return false;
-          return true;
-        });
-      }
-      if (t.name === 'database_connection') {
-        // Filter DB connection strings: only flag if they contain real credentials
-        matches = matches.filter(m => {
-          const surrounding = content.slice(Math.max(0, content.indexOf(m) - 50), content.indexOf(m) + m.length + 50);
-          // Skip if it's an example connection string
-          if (/example|placeholder|localhost|test|127\.0\.0\.1|docker|EXAMPLE|PLACEHOLDER|TEST|DUMMY/i.test(m)) return false;
-          // Skip if marked as example in surrounding text
-          if (/EXAMPLE|PLACEHOLDER|REDACTED|FAKE|MOCK|TEST/i.test(surrounding)) return false;
-          // Require actual hostname/port, not placeholders
-          if (/\$|{|}|<|>|YOUR|REPLACE/i.test(m)) return false;
-          return true;
-        });
-      }
-      if (t.name === 'generic_api_key') {
-        // Filter generic API keys: very strict to avoid false positives
-        matches = matches.filter(m => {
-          const surrounding = content.slice(Math.max(0, content.indexOf(m) - 50), content.indexOf(m) + m.length + 50);
-          // Skip if marked as example or placeholder
-          if (/EXAMPLE|PLACEHOLDER|REDACTED|FAKE|MOCK|TEST|DUMMY/i.test(surrounding)) return false;
-          // Skip test/development patterns
-          if (/test|dev|example|placeholder|sk_test/i.test(m)) return false;
-          // Require actual key-like content (32+ hex chars)
-          const keyContent = m.match(/[a-f0-9]{32,}|[a-zA-Z0-9._\-]{40,}/);
-          return keyContent !== null;
-        });
-      }
-      // Business identifiers: filter based on context
-      if (['customer_id', 'order_number', 'transaction_id', 'account_number'].includes(t.name)) {
-        matches = matches.filter(m => {
-          const surrounding = content.slice(Math.max(0, content.indexOf(m) - 50), content.indexOf(m) + m.length + 50);
-          // Skip if marked as example or in allowlisted paths
-          if (/EXAMPLE|PLACEHOLDER|REDACTED|FAKE|MOCK|TEST|DUMMY|example\.com|placeholder/i.test(m)) return false;
-          if (isInAllowlist(file, allowlist.piPaths)) return false; // Already allowlisted
-          // Only flag if in code, not in documentation
-          if (isContentFile && !file.includes('test')) return false;
-          return true;
-        });
-      }
-      if (matches.length === 0) continue;
-      const classification = t.classification || 'PII';
-      // Determine path allowlist check: PII vs PI
-      const isPiiAllowed = isInAllowlist(file, allowlist.piiPaths) || isPathAllowed(file);
-      const isPiAllowed = isInAllowlist(file, allowlist.piPaths) || isInAllowlist(file, allowlist.proprietaryPaths);
-      // If file is in allowed path and this is a non-critical match, skip reporting
-      if (classification === 'PII' && isPiiAllowed && !['private_key', 'aws_key', 'proprietary'].includes(t.name)) continue;
-      if (classification === 'PI' && isPiAllowed && !(['private_key', 'aws_key'].includes(t.name))) continue;
-      const entry = { file, type: t.name, classification: classification, message: t.message, matches: [...new Set(matches)].slice(0, 5) };
-      // Enhance message for private key in allowlisted 'privateKeyPaths'
-      if (t.name === 'private_key' && isInAllowlist(file, allowlist.privateKeyPaths)) {
-        const reason = getAllowlistReason(file);
-        if (reason) entry.message = `${entry.message} (allowlisted path: ${reason})`; else entry.message = `${entry.message} (allowlisted path)`;
-        entry.severity = 'critical';
-      }
-      results.push(entry);
-    }
-  }
+    matches = applyMatchFilters(t, matches, file, content, isContentFile, allowlist);
+    if (matches.length === 0) continue;
+
+    const classification = t.classification || 'PII';
+    const isPiiAllowed = isInAllowlist(file, allowlist.piiPaths) || isPathAllowed(file);
+    const isPiAllowed = isInAllowlist(file, allowlist.piPaths) || isInAllowlist(file, allowlist.proprietaryPaths);
+    if (classification === 'PII' && isPiiAllowed && !['private_key', 'aws_key', 'proprietary'].includes(t.name)) continue;
+    if (classification === 'PI' && isPiAllowed && !['private_key', 'aws_key'].includes(t.name)) continue;
+
+    results.push(buildResultEntry(t, file, matches, allowlist));
 }
 
 async function main() {

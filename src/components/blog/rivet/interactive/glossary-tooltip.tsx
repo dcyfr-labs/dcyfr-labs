@@ -36,6 +36,66 @@ interface GlossaryTooltipProps {
 
 const STORAGE_KEY = 'dcyfr-glossary-visited';
 
+/** Calculate tooltip position and style for mobile viewports */
+function calculateMobilePosition(rect: DOMRect): {
+  style: React.CSSProperties;
+  position: 'top' | 'bottom';
+  arrowOffset: string;
+} {
+  const spaceBelow = window.innerHeight - rect.bottom;
+  const spaceAbove = rect.top;
+  const tooltipLeft = 16;
+  const tooltipWidth = window.innerWidth - 32;
+  const triggerCenter = rect.left + rect.width / 2;
+  const arrowPosition = ((triggerCenter - tooltipLeft) / tooltipWidth) * 100;
+  const constrainedArrowPosition = Math.max(8, Math.min(92, arrowPosition));
+  const position: 'top' | 'bottom' = spaceBelow < 200 && spaceAbove > 200 ? 'top' : 'bottom';
+
+  const style: React.CSSProperties = {
+    position: 'fixed',
+    left: '1rem',
+    right: '1rem',
+    zIndex: 50,
+    width: 'auto',
+    ...(position === 'top'
+      ? { bottom: `${window.innerHeight - rect.top + 8}px` }
+      : { top: `${rect.bottom + 8}px` }),
+  };
+  return { style, position, arrowOffset: `${constrainedArrowPosition}%` };
+}
+
+/** Calculate tooltip position and style for desktop viewports */
+function calculateDesktopPosition(rect: DOMRect): {
+  style: React.CSSProperties;
+  position: 'top' | 'bottom';
+  arrowOffset: string;
+} {
+  const spaceBelow = window.innerHeight - rect.bottom;
+  const spaceAbove = rect.top;
+  const tooltipWidth = 320;
+  const position: 'top' | 'bottom' = spaceBelow < 300 && spaceAbove > 300 ? 'top' : 'bottom';
+  const halfTooltipWidth = tooltipWidth / 2;
+  let left = rect.left + rect.width / 2;
+
+  if (left + halfTooltipWidth > window.innerWidth - 16) {
+    left = window.innerWidth - halfTooltipWidth - 16;
+  }
+  if (left - halfTooltipWidth < 16) {
+    left = halfTooltipWidth + 16;
+  }
+
+  const style: React.CSSProperties = {
+    position: 'fixed',
+    left: `${left}px`,
+    transform: 'translateX(-50%)',
+    zIndex: 50,
+    ...(position === 'top'
+      ? { bottom: `${window.innerHeight - rect.top + 8}px` }
+      : { top: `${rect.bottom + 8}px` }),
+  };
+  return { style, position, arrowOffset: '50%' };
+}
+
 export function GlossaryTooltip({ term, definition, children, className }: GlossaryTooltipProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -79,79 +139,16 @@ export function GlossaryTooltip({ term, definition, children, className }: Gloss
   useLayoutEffect(() => {
     if (isOpen && triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
-      const spaceBelow = window.innerHeight - rect.bottom;
-      const spaceAbove = rect.top;
-      const isMobile = window.innerWidth < 768; // md breakpoint
+      const isMobile = window.innerWidth < 768;
 
-      // Mobile-specific positioning
-      if (isMobile) {
-        // On mobile, position tooltip to fill most of screen width with padding
-        const style: React.CSSProperties = {
-          position: 'fixed',
-          left: '1rem',
-          right: '1rem',
-          zIndex: 50,
-          width: 'auto', // Let it fill the available space
-        };
+      const { style, position: newPosition, arrowOffset: newArrowOffset } = isMobile
+        ? calculateMobilePosition(rect)
+        : calculateDesktopPosition(rect);
 
-        // Calculate arrow position relative to the trigger button
-        const triggerCenter = rect.left + rect.width / 2;
-        const tooltipLeft = 16; // 1rem
-        const tooltipWidth = window.innerWidth - 32; // Full width minus 2rem padding
-        const arrowPosition = ((triggerCenter - tooltipLeft) / tooltipWidth) * 100;
-
-        // Constrain arrow position to stay within tooltip bounds (with some padding)
-        const constrainedArrowPosition = Math.max(8, Math.min(92, arrowPosition));
-
-        // Determine if tooltip should appear above or below
-        const newPosition = spaceBelow < 200 && spaceAbove > 200 ? 'top' : 'bottom';
-
-        if (newPosition === 'top') {
-          style.bottom = `${window.innerHeight - rect.top + 8}px`;
-        } else {
-          style.top = `${rect.bottom + 8}px`;
-        }
-
-        // eslint-disable-next-line react-hooks/set-state-in-effect -- useLayoutEffect with setState is appropriate for layout measurements per React docs
-        setPosition(newPosition);
-        setTooltipStyle(style);
-        setArrowOffset(`${constrainedArrowPosition}%`);
-      } else {
-        // Desktop positioning (existing logic)
-        const tooltipWidth = 320; // w-80 equivalent
-        const newPosition = spaceBelow < 300 && spaceAbove > 300 ? 'top' : 'bottom';
-
-        // Calculate horizontal position, ensuring it doesn't overflow viewport
-        let left = rect.left + rect.width / 2;
-        const halfTooltipWidth = tooltipWidth / 2;
-
-        // Adjust if tooltip would overflow right edge
-        if (left + halfTooltipWidth > window.innerWidth - 16) {
-          left = window.innerWidth - halfTooltipWidth - 16;
-        }
-
-        // Adjust if tooltip would overflow left edge
-        if (left - halfTooltipWidth < 16) {
-          left = halfTooltipWidth + 16;
-        }
-
-        const style: React.CSSProperties = {
-          position: 'fixed',
-          left: `${left}px`,
-          transform: 'translateX(-50%)',
-          zIndex: 50,
-        };
-
-        if (newPosition === 'top') {
-          style.bottom = `${window.innerHeight - rect.top + 8}px`;
-        } else {
-          style.top = `${rect.bottom + 8}px`;
-        }
-
-        setPosition(newPosition);
-        setTooltipStyle(style);
-        setArrowOffset('50%'); // Center arrow for desktop
-      }
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- useLayoutEffect with setState is appropriate for layout measurements per React docs
+      setPosition(newPosition);
+      setTooltipStyle(style);
+      setArrowOffset(newArrowOffset);
     }
   }, [isOpen, forceRecalc]);
 
