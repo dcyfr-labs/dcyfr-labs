@@ -185,6 +185,327 @@ function countActiveFilters(
   );
 }
 
+interface CompactFiltersInternalProps extends Omit<AnalyticsFiltersProps, "compact"> {
+  hasActiveFilters: boolean;
+  activeFilterCount: number;
+  handlePresetClick: (preset: FilterPreset) => void;
+  handleClearAll: () => void;
+}
+
+function CompactAnalyticsFilters({
+  dateRange,
+  onDateRangeChange,
+  performanceTier,
+  onPerformanceTierChange,
+  tagFilterMode,
+  onTagFilterModeChange,
+  selectedTags,
+  onTagsChange,
+  availableTags,
+  searchQuery,
+  onSearchQueryChange,
+  hideDrafts,
+  onHideDraftsChange,
+  hideArchived,
+  onHideArchivedChange,
+  onExportCSV,
+  onExportJSON,
+  onRefresh,
+  isRefreshing = false,
+  autoRefresh,
+  onAutoRefreshChange,
+  lastUpdated,
+  resultCount,
+  hasActiveFilters,
+  activeFilterCount,
+  handlePresetClick,
+  handleClearAll,
+}: CompactFiltersInternalProps) {
+  return (
+    <Card className="border-dashed">
+      <CardContent className="p-4">
+        <div className={SPACING.content}>
+          {/* Row 1: Main controls */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Presets */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="h-8">
+                  <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                  Presets
+                  <ChevronDown className="h-3.5 w-3.5 ml-1.5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-64">
+                <DropdownMenuLabel>Filter Presets</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {DEFAULT_FILTER_PRESETS.map((preset) => (
+                  <DropdownMenuItem
+                    key={preset.id}
+                    onClick={() => handlePresetClick(preset)}
+                  >
+                    <div className="space-y-0.5">
+                      <div className="font-medium text-sm">{preset.name}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {preset.description}
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Date Range */}
+            <Select
+              value={dateRange}
+              onValueChange={(value) => onDateRangeChange(value as DateRange)}
+            >
+              <SelectTrigger className="w-32.5 h-8 text-xs">
+                <Calendar className="h-3.5 w-3.5 mr-1.5" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {(
+                  Object.entries(DATE_RANGE_LABELS) as [DateRange, string][]
+                ).map(([value, label]) => (
+                  <SelectItem key={value} value={value} className="text-xs">
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Performance Tier */}
+            <Select
+              value={performanceTier}
+              onValueChange={(value) =>
+                onPerformanceTierChange(value as PerformanceTierFilter)
+              }
+            >
+              <SelectTrigger className="w-32.5 h-8 text-xs">
+                <TrendingUp className="h-3.5 w-3.5 mr-1.5" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {(
+                  Object.entries(PERFORMANCE_TIER_LABELS) as [
+                    PerformanceTierFilter,
+                    string,
+                  ][]
+                ).map(([value, label]) => (
+                  <SelectItem key={value} value={value} className="text-xs">
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Tags */}
+            {availableTags.length > 0 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-8">
+                    <TagIcon className="h-3.5 w-3.5 mr-1.5" />
+                    Tags{" "}
+                    {selectedTags.length > 0 && `(${selectedTags.length})`}
+                    <ChevronDown className="h-3.5 w-3.5 ml-1.5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="start"
+                  className="w-56 max-h-75 overflow-y-auto"
+                >
+                  <DropdownMenuLabel className="text-xs">
+                    Filter by tags
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {availableTags.map((tag) => (
+                    <DropdownMenuCheckboxItem
+                      key={tag}
+                      checked={selectedTags.includes(tag)}
+                      onCheckedChange={(checked) => {
+                        onTagsChange(
+                          checked
+                            ? [...selectedTags, tag]
+                            : selectedTags.filter((t) => t !== tag)
+                        );
+                      }}
+                      className="text-xs"
+                    >
+                      {tag}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+
+            {/* Tag Mode */}
+            {selectedTags.length > 1 && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8"
+                onClick={() =>
+                  onTagFilterModeChange(
+                    tagFilterMode === "AND" ? "OR" : "AND"
+                  )
+                }
+              >
+                <TagIcon className="h-3.5 w-3.5 mr-1.5" />
+                {tagFilterMode}
+              </Button>
+            )}
+
+            <div className="h-4 w-px bg-border" />
+
+            {/* Export */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="h-8">
+                  <Download className="h-3.5 w-3.5 mr-1.5" />
+                  Export
+                  <ChevronDown className="h-3.5 w-3.5 ml-1.5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuLabel className="text-xs">
+                  Export format
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={onExportCSV}
+                  className="text-xs cursor-pointer"
+                >
+                  <Download className="h-3 w-3 mr-2" />
+                  Download CSV
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={onExportJSON}
+                  className="text-xs cursor-pointer"
+                >
+                  <Download className="h-3 w-3 mr-2" />
+                  Download JSON
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Refresh */}
+            <button
+              onClick={onRefresh}
+              disabled={isRefreshing}
+              className="inline-flex items-center gap-1.5 px-2 py-1.5 text-xs rounded border border-border hover:bg-muted transition-theme disabled:opacity-50 h-8"
+              title="Refresh data"
+            >
+              <RefreshCw
+                className={cn("h-3 w-3", isRefreshing && "animate-spin")}
+              />
+              <span className="hidden sm:inline">Refresh</span>
+            </button>
+
+            {/* Auto-refresh */}
+            <label
+              className="inline-flex items-center text-xs gap-1.5 cursor-pointer"
+              title="Auto-refresh every 30 seconds"
+            >
+              <input
+                type="checkbox"
+                checked={autoRefresh}
+                onChange={(e) => onAutoRefreshChange(e.target.checked)}
+                className="h-3 w-3 rounded border-muted bg-background cursor-pointer"
+              />
+              <span className="font-medium">Auto (30s)</span>
+            </label>
+
+            {lastUpdated && (
+              <span className="text-xs text-muted-foreground">
+                Updated {lastUpdated.toLocaleTimeString()}
+              </span>
+            )}
+          </div>
+
+          {/* Row 2: Search and visibility toggles */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="relative flex-1 min-w-50">
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Input
+                placeholder="Search posts..."
+                value={searchQuery}
+                onChange={(e) => onSearchQueryChange(e.target.value)}
+                className="h-8 text-xs pl-8"
+              />
+            </div>
+
+            {/* Post Selection Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="h-8">
+                  <Filter className="h-3.5 w-3.5 mr-1.5" />
+                  {!hideDrafts && !hideArchived
+                    ? "All Posts"
+                    : hideDrafts && hideArchived
+                      ? "Published Only"
+                      : hideDrafts
+                        ? "Hide Drafts"
+                        : "Hide Archived"}
+                  <ChevronDown className="h-3.5 w-3.5 ml-1.5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-48">
+                <DropdownMenuLabel className="text-xs">
+                  Post Selection
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuCheckboxItem
+                  checked={hideDrafts}
+                  onCheckedChange={onHideDraftsChange}
+                  className="text-xs"
+                >
+                  <FileText className="h-3 w-3 mr-2" />
+                  Hide Drafts
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={hideArchived}
+                  onCheckedChange={onHideArchivedChange}
+                  className="text-xs"
+                >
+                  <ArchiveIcon className="h-3 w-3 mr-2" />
+                  Hide Archived
+                </DropdownMenuCheckboxItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Active Filter Indicator */}
+            {hasActiveFilters && (
+              <>
+                <Badge variant="secondary" className="h-8 px-2">
+                  <Filter className="h-3 w-3 mr-1" />
+                  {activeFilterCount} active
+                </Badge>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleClearAll}
+                  className="h-8 text-xs"
+                >
+                  <X className="h-3.5 w-3.5 mr-1" />
+                  Clear All
+                </Button>
+              </>
+            )}
+          </div>
+
+          {/* Row 3: Result count */}
+          {resultCount && (
+            <div className="text-xs text-muted-foreground">
+              Showing {resultCount.shown} of {resultCount.total} posts
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export function AnalyticsFilters({
   dateRange,
   onDateRangeChange,
@@ -240,287 +561,39 @@ export function AnalyticsFilters({
 
   if (compact) {
     return (
-      <Card className="border-dashed">
-        <CardContent className="p-4">
-          <div className={SPACING.content}>
-            {/* Row 1: Main controls */}
-            <div className="flex items-center gap-2 flex-wrap">
-              {/* Presets */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-8">
-                    <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                    Presets
-                    <ChevronDown className="h-3.5 w-3.5 ml-1.5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-64">
-                  <DropdownMenuLabel>Filter Presets</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {DEFAULT_FILTER_PRESETS.map((preset) => (
-                    <DropdownMenuItem
-                      key={preset.id}
-                      onClick={() => handlePresetClick(preset)}
-                    >
-                      <div className="space-y-0.5">
-                        <div className="font-medium text-sm">{preset.name}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {preset.description}
-                        </div>
-                      </div>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              {/* Date Range */}
-              <Select
-                value={dateRange}
-                onValueChange={(value) => onDateRangeChange(value as DateRange)}
-              >
-                <SelectTrigger className="w-[130px] h-8 text-xs">
-                  <Calendar className="h-3.5 w-3.5 mr-1.5" />
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {(
-                    Object.entries(DATE_RANGE_LABELS) as [DateRange, string][]
-                  ).map(([value, label]) => (
-                    <SelectItem key={value} value={value} className="text-xs">
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              {/* Performance Tier */}
-              <Select
-                value={performanceTier}
-                onValueChange={(value) =>
-                  onPerformanceTierChange(value as PerformanceTierFilter)
-                }
-              >
-                <SelectTrigger className="w-[130px] h-8 text-xs">
-                  <TrendingUp className="h-3.5 w-3.5 mr-1.5" />
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {(
-                    Object.entries(PERFORMANCE_TIER_LABELS) as [
-                      PerformanceTierFilter,
-                      string,
-                    ][]
-                  ).map(([value, label]) => (
-                    <SelectItem key={value} value={value} className="text-xs">
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              {/* Tags */}
-              {availableTags.length > 0 && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-8">
-                      <TagIcon className="h-3.5 w-3.5 mr-1.5" />
-                      Tags{" "}
-                      {selectedTags.length > 0 && `(${selectedTags.length})`}
-                      <ChevronDown className="h-3.5 w-3.5 ml-1.5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="start"
-                    className="w-56 max-h-[300px] overflow-y-auto"
-                  >
-                    <DropdownMenuLabel className="text-xs">
-                      Filter by tags
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {availableTags.map((tag) => (
-                      <DropdownMenuCheckboxItem
-                        key={tag}
-                        checked={selectedTags.includes(tag)}
-                        onCheckedChange={(checked) => {
-                          onTagsChange(
-                            checked
-                              ? [...selectedTags, tag]
-                              : selectedTags.filter((t) => t !== tag)
-                          );
-                        }}
-                        className="text-xs"
-                      >
-                        {tag}
-                      </DropdownMenuCheckboxItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
-
-              {/* Tag Mode */}
-              {selectedTags.length > 1 && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8"
-                  onClick={() =>
-                    onTagFilterModeChange(
-                      tagFilterMode === "AND" ? "OR" : "AND"
-                    )
-                  }
-                >
-                  <TagIcon className="h-3.5 w-3.5 mr-1.5" />
-                  {tagFilterMode}
-                </Button>
-              )}
-
-              <div className="h-4 w-px bg-border" />
-
-              {/* Export */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-8">
-                    <Download className="h-3.5 w-3.5 mr-1.5" />
-                    Export
-                    <ChevronDown className="h-3.5 w-3.5 ml-1.5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start">
-                  <DropdownMenuLabel className="text-xs">
-                    Export format
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={onExportCSV}
-                    className="text-xs cursor-pointer"
-                  >
-                    <Download className="h-3 w-3 mr-2" />
-                    Download CSV
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={onExportJSON}
-                    className="text-xs cursor-pointer"
-                  >
-                    <Download className="h-3 w-3 mr-2" />
-                    Download JSON
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              {/* Refresh */}
-              <button
-                onClick={onRefresh}
-                disabled={isRefreshing}
-                className="inline-flex items-center gap-1.5 px-2 py-1.5 text-xs rounded border border-border hover:bg-muted transition-theme disabled:opacity-50 h-8"
-                title="Refresh data"
-              >
-                <RefreshCw
-                  className={cn("h-3 w-3", isRefreshing && "animate-spin")}
-                />
-                <span className="hidden sm:inline">Refresh</span>
-              </button>
-
-              {/* Auto-refresh */}
-              <label
-                className="inline-flex items-center text-xs gap-1.5 cursor-pointer"
-                title="Auto-refresh every 30 seconds"
-              >
-                <input
-                  type="checkbox"
-                  checked={autoRefresh}
-                  onChange={(e) => onAutoRefreshChange(e.target.checked)}
-                  className="h-3 w-3 rounded border-muted bg-background cursor-pointer"
-                />
-                <span className="font-medium">Auto (30s)</span>
-              </label>
-
-              {lastUpdated && (
-                <span className="text-xs text-muted-foreground">
-                  Updated {lastUpdated.toLocaleTimeString()}
-                </span>
-              )}
-            </div>
-
-            {/* Row 2: Search and visibility toggles */}
-            <div className="flex items-center gap-2 flex-wrap">
-              <div className="relative flex-1 min-w-[200px]">
-                <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-                <Input
-                  placeholder="Search posts..."
-                  value={searchQuery}
-                  onChange={(e) => onSearchQueryChange(e.target.value)}
-                  className="h-8 text-xs pl-8"
-                />
-              </div>
-
-              {/* Post Selection Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-8">
-                    <Filter className="h-3.5 w-3.5 mr-1.5" />
-                    {!hideDrafts && !hideArchived
-                      ? "All Posts"
-                      : hideDrafts && hideArchived
-                        ? "Published Only"
-                        : hideDrafts
-                          ? "Hide Drafts"
-                          : "Hide Archived"}
-                    <ChevronDown className="h-3.5 w-3.5 ml-1.5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48">
-                  <DropdownMenuLabel className="text-xs">
-                    Post Selection
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuCheckboxItem
-                    checked={hideDrafts}
-                    onCheckedChange={onHideDraftsChange}
-                    className="text-xs"
-                  >
-                    <FileText className="h-3 w-3 mr-2" />
-                    Hide Drafts
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={hideArchived}
-                    onCheckedChange={onHideArchivedChange}
-                    className="text-xs"
-                  >
-                    <ArchiveIcon className="h-3 w-3 mr-2" />
-                    Hide Archived
-                  </DropdownMenuCheckboxItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              {/* Active Filter Indicator */}
-              {hasActiveFilters && (
-                <>
-                  <Badge variant="secondary" className="h-8 px-2">
-                    <Filter className="h-3 w-3 mr-1" />
-                    {activeFilterCount} active
-                  </Badge>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleClearAll}
-                    className="h-8 text-xs"
-                  >
-                    <X className="h-3.5 w-3.5 mr-1" />
-                    Clear All
-                  </Button>
-                </>
-              )}
-            </div>
-
-            {/* Row 3: Result count */}
-            {resultCount && (
-              <div className="text-xs text-muted-foreground">
-                Showing {resultCount.shown} of {resultCount.total} posts
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+      <CompactAnalyticsFilters
+        dateRange={dateRange}
+        onDateRangeChange={onDateRangeChange}
+        publicationCohort={publicationCohort}
+        onPublicationCohortChange={onPublicationCohortChange}
+        performanceTier={performanceTier}
+        onPerformanceTierChange={onPerformanceTierChange}
+        tagFilterMode={tagFilterMode}
+        onTagFilterModeChange={onTagFilterModeChange}
+        selectedTags={selectedTags}
+        onTagsChange={onTagsChange}
+        availableTags={availableTags}
+        searchQuery={searchQuery}
+        onSearchQueryChange={onSearchQueryChange}
+        hideDrafts={hideDrafts}
+        onHideDraftsChange={onHideDraftsChange}
+        hideArchived={hideArchived}
+        onHideArchivedChange={onHideArchivedChange}
+        onExportCSV={onExportCSV}
+        onExportJSON={onExportJSON}
+        onRefresh={onRefresh}
+        isRefreshing={isRefreshing}
+        autoRefresh={autoRefresh}
+        onAutoRefreshChange={onAutoRefreshChange}
+        lastUpdated={lastUpdated}
+        onPresetApply={onPresetApply}
+        onClearAll={onClearAll}
+        resultCount={resultCount}
+        hasActiveFilters={hasActiveFilters}
+        activeFilterCount={activeFilterCount}
+        handlePresetClick={handlePresetClick}
+        handleClearAll={handleClearAll}
+      />
     );
   }
 

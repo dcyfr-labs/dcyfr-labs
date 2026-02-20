@@ -170,6 +170,130 @@ async function scanMessageSecurity(message: string): Promise<ReturnType<typeof N
   }
 }
 
+/** Send sanitized contact data to Inngest and return a success/error response. */
+async function sendContactToInngest(
+  sanitizedData: { name: string; email: string; message: string; role?: string },
+  clientIp: string,
+  rateLimitResult: Awaited<ReturnType<typeof rateLimit>>
+): Promise<ReturnType<typeof NextResponse.json>> {
+  try {
+    await inngest.send({
+      name: 'contact/form.submitted',
+      data: {
+        name: sanitizedData.name,
+        email: sanitizedData.email,
+        message: sanitizedData.message,
+        role: sanitizedData.role,
+        submittedAt: new Date().toISOString(),
+        ip: clientIp,
+      },
+    });
+
+    // Track analytics (async, don't wait)
+    trackContactFormSubmission(
+      sanitizedData.message.length,
+      false, // We don't track if they have GitHub for privacy
+      false // We don't track if they have LinkedIn for privacy
+    ).catch((err) => console.warn('Analytics tracking failed:', err));
+
+    console.warn('Contact form submission queued:', {
+      nameLength: sanitizedData.name.length,
+      emailDomain: sanitizedData.email.split('@')[1] || 'unknown',
+      messageLength: sanitizedData.message.length,
+      timestamp: new Date().toISOString(),
+    });
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Message received successfully. You'll receive a confirmation email shortly.",
+      },
+      { status: 200, headers: createRateLimitHeaders(rateLimitResult) }
+    );
+  } catch (inngestError) {
+    console.error(
+      'Failed to queue contact form:',
+      inngestError instanceof Error ? inngestError.message : String(inngestError)
+    );
+    return NextResponse.json(
+      { error: 'Failed to process your message. Please try again later.' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * Handle validated contact submission: BotID check, rate limiting, honeypot,
+ * data validation, security scan, and Inngest queue dispatch.
+ */
+async function handleContactSubmission(
+  request: NextRequest,
+  body: ContactFormData
+): Promise<ReturnType<typeof NextResponse.json> | Response> {
+  // BotID check — TEMPORARILY DISABLED (causing 403 errors on initial setup).
+  // To re-enable: 1) Go to Vercel Dashboard → Settings → Security → Enable Bot Protection
+  //               2) Set ENABLE_BOTID=1 in Vercel environment variables
+  //               3) Uncomment the import at top and the checkBotId() call below
+  //               4) Change `false` below back to the env var check
+  const shouldUseBotId = false; // process.env.NODE_ENV === 'production' && process.env.ENABLE_BOTID === '1';
+
+  if (shouldUseBotId) {
+    try {
+      // TEMPORARILY DISABLED: checkBotId import is commented out to prevent 403 errors
+      // const verification = await checkBotId();
+      // if (verification.isBot && !verification.isVerifiedBot && !verification.bypassed) {
+      //   console.warn("[Contact API] Bot detected by BotID - blocking request");
+      //   return NextResponse.json({ error: "Access denied" }, { status: 403 });
+      // }
+    } catch (botIdError) {
+      console.warn(
+        '[Contact API] BotID check failed, using fallback protection (rate limit + honeypot):',
+        botIdError instanceof Error ? botIdError.message : String(botIdError)
+      );
+    }
+  }
+
+  // Apply rate limiting
+  const clientIp = getClientIp(request);
+  const rateLimitResult = await rateLimit(clientIp, RATE_LIMIT_CONFIG);
+
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      {
+        error: 'Too many requests. Please try again later.',
+        retryAfter: Math.ceil((rateLimitResult.reset - Date.now()) / 1000),
+      },
+      {
+        status: 429,
+        headers: {
+          ...createRateLimitHeaders(rateLimitResult),
+          'Retry-After': Math.ceil((rateLimitResult.reset - Date.now()) / 1000).toString(),
+        },
+      }
+    );
+  }
+
+  // Honeypot validation - if filled, it's likely a bot
+  if (body.website && body.website.trim() !== '') {
+    console.warn('[Contact API] Honeypot triggered - likely bot submission');
+    return NextResponse.json(
+      { success: true, message: "Message received. We'll get back to you soon!" },
+      { status: 200 }
+    );
+  }
+
+  // Validate and sanitize contact fields
+  const validation = validateContactData(body);
+  if (!validation.ok) return validation.response;
+  const sanitizedData = validation.data;
+
+  // Prompt security scanning - detect adversarial patterns
+  const scanRejection = await scanMessageSecurity(sanitizedData.message);
+  if (scanRejection) return scanRejection;
+
+  return sendContactToInngest(sanitizedData, clientIp, rateLimitResult);
+}
+
 export async function POST(request: NextRequest) {
   // NOTE: blockExternalAccess() is NOT used here because this is a PUBLIC
   // user-facing endpoint that must accept requests from users' browsers.
@@ -183,112 +307,7 @@ export async function POST(request: NextRequest) {
   const body = parseResult.body;
 
   try {
-    // BotID check — TEMPORARILY DISABLED (causing 403 errors on initial setup).
-    // To re-enable: 1) Go to Vercel Dashboard → Settings → Security → Enable Bot Protection
-    //               2) Set ENABLE_BOTID=1 in Vercel environment variables
-    //               3) Uncomment the import at top and the checkBotId() call below
-    //               4) Change `false` below back to the env var check
-    const shouldUseBotId = false; // process.env.NODE_ENV === 'production' && process.env.ENABLE_BOTID === '1';
-
-    if (shouldUseBotId) {
-      try {
-        // TEMPORARILY DISABLED: checkBotId import is commented out to prevent 403 errors
-        // const verification = await checkBotId();
-        // if (verification.isBot && !verification.isVerifiedBot && !verification.bypassed) {
-        //   console.warn("[Contact API] Bot detected by BotID - blocking request");
-        //   return NextResponse.json({ error: "Access denied" }, { status: 403 });
-        // }
-      } catch (botIdError) {
-        console.warn(
-          '[Contact API] BotID check failed, using fallback protection (rate limit + honeypot):',
-          botIdError instanceof Error ? botIdError.message : String(botIdError)
-        );
-      }
-    }
-
-    // Apply rate limiting
-    const clientIp = getClientIp(request);
-    const rateLimitResult = await rateLimit(clientIp, RATE_LIMIT_CONFIG);
-
-    if (!rateLimitResult.success) {
-      return NextResponse.json(
-        {
-          error: 'Too many requests. Please try again later.',
-          retryAfter: Math.ceil((rateLimitResult.reset - Date.now()) / 1000),
-        },
-        {
-          status: 429,
-          headers: {
-            ...createRateLimitHeaders(rateLimitResult),
-            'Retry-After': Math.ceil((rateLimitResult.reset - Date.now()) / 1000).toString(),
-          },
-        }
-      );
-    }
-
-    // Honeypot validation - if filled, it's likely a bot
-    if (body.website && body.website.trim() !== '') {
-      console.warn('[Contact API] Honeypot triggered - likely bot submission');
-      return NextResponse.json(
-        { success: true, message: "Message received. We'll get back to you soon!" },
-        { status: 200 }
-      );
-    }
-
-    // Validate and sanitize contact fields
-    const validation = validateContactData(body);
-    if (!validation.ok) return validation.response;
-    const sanitizedData = validation.data;
-
-    // Prompt security scanning - detect adversarial patterns
-    const scanRejection = await scanMessageSecurity(sanitizedData.message);
-    if (scanRejection) return scanRejection;
-
-    // Send event to Inngest for background processing
-    try {
-      await inngest.send({
-        name: 'contact/form.submitted',
-        data: {
-          name: sanitizedData.name,
-          email: sanitizedData.email,
-          message: sanitizedData.message,
-          role: sanitizedData.role,
-          submittedAt: new Date().toISOString(),
-          ip: clientIp,
-        },
-      });
-
-      // Track analytics (async, don't wait)
-      trackContactFormSubmission(
-        sanitizedData.message.length,
-        false, // We don't track if they have GitHub for privacy
-        false // We don't track if they have LinkedIn for privacy
-      ).catch((err) => console.warn('Analytics tracking failed:', err));
-
-      console.warn('Contact form submission queued:', {
-        nameLength: sanitizedData.name.length,
-        emailDomain: sanitizedData.email.split('@')[1] || 'unknown',
-        messageLength: sanitizedData.message.length,
-        timestamp: new Date().toISOString(),
-      });
-
-      return NextResponse.json(
-        {
-          success: true,
-          message: "Message received successfully. You'll receive a confirmation email shortly.",
-        },
-        { status: 200, headers: createRateLimitHeaders(rateLimitResult) }
-      );
-    } catch (inngestError) {
-      console.error(
-        'Failed to queue contact form:',
-        inngestError instanceof Error ? inngestError.message : String(inngestError)
-      );
-      return NextResponse.json(
-        { error: 'Failed to process your message. Please try again later.' },
-        { status: 500 }
-      );
-    }
+    return await handleContactSubmission(request, body);
   } catch (error) {
     const errorInfo = handleApiError(error, {
       route: '/api/contact',
