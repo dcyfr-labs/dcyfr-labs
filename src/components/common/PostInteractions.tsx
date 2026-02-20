@@ -26,17 +26,17 @@
  * ```
  */
 
-"use client";
+'use client';
 
-import { useSyncExternalStore } from "react";
-import { Heart, Bookmark } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { useActivityReactions } from "@/hooks/use-activity-reactions";
-import { useBookmarks } from "@/hooks/use-bookmarks";
-import { useGlobalEngagementCounts } from "@/hooks/use-global-engagement-counts";
-import { ThreadShareButton } from "@/components/activity";
-import { ANIMATION, TYPOGRAPHY, SEMANTIC_COLORS } from "@/lib/design-tokens";
+import { useSyncExternalStore } from 'react';
+import { Heart, Bookmark } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { useActivityReactions } from '@/hooks/use-activity-reactions';
+import { useBookmarks } from '@/hooks/use-bookmarks';
+import { useGlobalEngagementCounts } from '@/hooks/use-global-engagement-counts';
+import { ThreadShareButton } from '@/components/activity';
+import { ANIMATION, TYPOGRAPHY, SEMANTIC_COLORS } from '@/lib/design-tokens';
 
 // ============================================================================
 // TYPES
@@ -46,7 +46,7 @@ export interface PostInteractionsProps {
   /** Content identifier (post slug or project slug) */
   contentId: string;
   /** Content type for activity mapping */
-  contentType: "post" | "project";
+  contentType: 'post' | 'project';
   /** Content title for sharing */
   title: string;
   /** Content description for sharing */
@@ -56,7 +56,7 @@ export interface PostInteractionsProps {
   /** Optional CSS class */
   className?: string;
   /** Size variant */
-  variant?: "default" | "compact" | "detailed";
+  variant?: 'default' | 'compact' | 'detailed';
   /** Show counts */
   showCounts?: boolean;
 }
@@ -83,7 +83,7 @@ function renderInteractionButtons({
   isCompact,
 }: {
   activityId: string;
-  contentType: "blog" | "project";
+  contentType: 'post' | 'project';
   liked: boolean;
   bookmarked: boolean;
   toggleLike: (id: string, action: string, contentType?: string) => void;
@@ -91,7 +91,7 @@ function renderInteractionButtons({
   globalLikes: number;
   globalBookmarks: number;
   showCounts: boolean;
-  variant: "default" | "compact" | "detailed";
+  variant: 'default' | 'compact' | 'detailed';
   title: string;
   description: string;
   href: string;
@@ -102,13 +102,11 @@ function renderInteractionButtons({
       <ActionButton
         icon={Heart}
         label={
-          showCounts && globalLikes > 0
-            ? `${globalLikes}${globalLikes > 1 ? "+" : ""}`
-            : undefined
+          showCounts && globalLikes > 0 ? `${globalLikes}${globalLikes > 1 ? '+' : ''}` : undefined
         }
         active={liked}
-        onClick={() => toggleLike(activityId, "like", contentType)}
-        ariaLabel={liked ? "Unlike" : "Like"}
+        onClick={() => toggleLike(activityId, 'like', contentType)}
+        ariaLabel={liked ? 'Unlike' : 'Like'}
         variant={variant}
         activeColor={SEMANTIC_COLORS.activity.action.liked}
       />
@@ -116,12 +114,12 @@ function renderInteractionButtons({
         icon={Bookmark}
         label={
           showCounts && globalBookmarks > 0
-            ? `${globalBookmarks}${globalBookmarks > 1 ? "+" : ""}`
+            ? `${globalBookmarks}${globalBookmarks > 1 ? '+' : ''}`
             : undefined
         }
         active={bookmarked}
         onClick={() => toggleBookmark(activityId, { contentType })}
-        ariaLabel={bookmarked ? "Remove bookmark" : "Bookmark"}
+        ariaLabel={bookmarked ? 'Remove bookmark' : 'Bookmark'}
         variant={variant}
         activeColor={SEMANTIC_COLORS.activity.action.bookmarked}
       />
@@ -133,7 +131,7 @@ function renderInteractionButtons({
           href,
         }}
         variant="ghost"
-        size={isCompact ? "sm" : "default"}
+        size={isCompact ? 'sm' : 'default'}
       />
     </>
   );
@@ -154,7 +152,7 @@ export function PostInteractions({
   description,
   href,
   className,
-  variant = "default",
+  variant = 'default',
   showCounts = true,
 }: PostInteractionsProps) {
   // Use contentId directly (slug) for consistency with ActivityItem
@@ -162,11 +160,7 @@ export function PostInteractions({
   const activityId = contentId;
 
   const { isLiked, toggleLike, getCount } = useActivityReactions();
-  const {
-    isBookmarked,
-    toggle: toggleBookmark,
-    getBookmarkCount,
-  } = useBookmarks();
+  const { isBookmarked, toggle: toggleBookmark, getBookmarkCount } = useBookmarks();
 
   // Fetch global engagement counts
   const { globalLikes, globalBookmarks } = useGlobalEngagementCounts({
@@ -185,20 +179,13 @@ export function PostInteractions({
   const liked = isHydrated ? isLiked(activityId) : false;
   const bookmarked = isHydrated ? isBookmarked(activityId) : false;
   const likeCount = isHydrated && showCounts ? getCount(activityId) : 0;
-  const bookmarkCount =
-    isHydrated && showCounts ? getBookmarkCount(activityId) : 0;
+  const bookmarkCount = isHydrated && showCounts ? getBookmarkCount(activityId) : 0;
 
-  const isCompact = variant === "compact";
-  const isDetailed = variant === "detailed";
+  const isCompact = variant === 'compact';
+  const isDetailed = variant === 'detailed';
 
   return (
-    <div
-      className={cn(
-        "flex items-center",
-        isCompact ? "gap-3" : "gap-4",
-        className
-      )}
-    >
+    <div className={cn('flex items-center', isCompact ? 'gap-3' : 'gap-4', className)}>
       {renderInteractionButtons({
         activityId,
         contentType,
@@ -229,11 +216,11 @@ interface ActionButtonProps {
   active?: boolean;
   onClick?: () => void;
   ariaLabel: string;
-  variant: "default" | "compact" | "detailed";
+  variant: 'default' | 'compact' | 'detailed';
   activeColor?: string;
 }
 
-const ICON_SIZE_MAP = { compact: "h-4 w-4", detailed: "h-6 w-6", default: "h-5 w-5" } as const;
+const ICON_SIZE_MAP = { compact: 'h-4 w-4', detailed: 'h-6 w-6', default: 'h-5 w-5' } as const;
 const TEXT_SIZE_MAP = {
   compact: TYPOGRAPHY.label.xs,
   detailed: TYPOGRAPHY.label.standard,
@@ -247,7 +234,7 @@ function ActionButton({
   onClick,
   ariaLabel,
   variant,
-  activeColor = "text-primary",
+  activeColor = 'text-primary',
 }: ActionButtonProps) {
   const iconSize = ICON_SIZE_MAP[variant];
   const textSize = TEXT_SIZE_MAP[variant];
@@ -255,14 +242,14 @@ function ActionButton({
   return (
     <Button
       variant="ghost"
-      size={variant === "compact" ? "sm" : "default"}
+      size={variant === 'compact' ? 'sm' : 'default'}
       onClick={onClick}
       aria-label={ariaLabel}
       className={cn(
-        "group/action h-auto gap-1.5 px-2 py-1",
+        'group/action h-auto gap-1.5 px-2 py-1',
         ANIMATION.transition.base,
         ANIMATION.activity.like,
-        "hover:bg-accent/50"
+        'hover:bg-accent/50'
       )}
       suppressHydrationWarning
     >
@@ -271,19 +258,16 @@ function ActionButton({
           iconSize,
           ANIMATION.transition.base,
           active && activeColor,
-          active && "fill-current",
+          active && 'fill-current',
           !active && SEMANTIC_COLORS.activity.action.default,
-          active && "group-hover/action:scale-110"
+          active && 'group-hover/action:scale-110'
         )}
       >
         <Icon />
       </span>
       {label && (
         <span
-          className={cn(
-            textSize,
-            active ? activeColor : SEMANTIC_COLORS.activity.action.default
-          )}
+          className={cn(textSize, active ? activeColor : SEMANTIC_COLORS.activity.action.default)}
           suppressHydrationWarning
         >
           {label}
