@@ -17,19 +17,19 @@
  * ```
  */
 
-"use client";
+'use client';
 
-import { useSyncExternalStore } from "react";
-import { Heart, Bookmark, Share2 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { useActivityReactions } from "@/hooks/use-activity-reactions";
-import { useBookmarks } from "@/hooks/use-bookmarks";
-import { useShare } from "@/hooks/use-share";
-import { useGlobalEngagementCounts } from "@/hooks/use-global-engagement-counts";
-import { ThreadShareButton } from "./ThreadShareButton";
-import { ANIMATION, TYPOGRAPHY, SEMANTIC_COLORS } from "@/lib/design-tokens";
+import { useSyncExternalStore } from 'react';
+import { Heart, Bookmark, Share2 } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { useActivityReactions } from '@/hooks/use-activity-reactions';
+import { useBookmarks } from '@/hooks/use-bookmarks';
+import { useShare } from '@/hooks/use-share';
+import { useGlobalEngagementCounts } from '@/hooks/use-global-engagement-counts';
+import { ThreadShareButton } from './ThreadShareButton';
+import { ANIMATION, TYPOGRAPHY, SEMANTIC_COLORS } from '@/lib/design-tokens';
 
 // ============================================================================
 // TYPES
@@ -49,7 +49,7 @@ export interface ThreadActionsProps {
   /** Optional CSS class */
   className?: string;
   /** Size variant */
-  size?: "default" | "compact";
+  size?: 'default' | 'compact';
   /** Hide timestamp display */
   hideTimestamp?: boolean;
   /** Show bookmark count */
@@ -64,9 +64,9 @@ export interface ThreadActionsProps {
 
 /** Normalize activity ID to canonical slug form for consistent likes/bookmarks lookup */
 function normalizeActivityId(activityId: string, href?: string): string {
-  if (href?.startsWith("/blog/")) {
-    const extracted = href.replace("/blog/", "");
-    console.warn("[ThreadActions] ID normalization:", {
+  if (href?.startsWith('/blog/')) {
+    const extracted = href.replace('/blog/', '');
+    console.warn('[ThreadActions] ID normalization:', {
       originalId: activityId,
       href,
       normalizedId: extracted,
@@ -74,7 +74,7 @@ function normalizeActivityId(activityId: string, href?: string): string {
     });
     return extracted;
   }
-  console.warn("[ThreadActions] ID normalization:", {
+  console.warn('[ThreadActions] ID normalization:', {
     originalId: activityId,
     normalizedId: activityId,
     isBlogPost: false,
@@ -104,54 +104,40 @@ function renderActionButtons({
   globalLikes: number;
   globalBookmarks: number;
   shareCount: number;
-  activity?: ThreadActivity;
+  activity?: ThreadActionsProps['activity'];
   activityId: string;
-  size: "default" | "compact";
+  size: 'default' | 'compact';
 }) {
   return (
     <>
       <ActionButton
         icon={Heart}
-        label={
-          globalLikes > 0
-            ? `${globalLikes}${globalLikes > 1 ? "+" : ""}`
-            : undefined
-        }
+        label={globalLikes > 0 ? `${globalLikes}${globalLikes > 1 ? '+' : ''}` : undefined}
         globalCount={globalLikes}
         active={liked}
         onClick={() => toggleLike(normalizedId)}
-        ariaLabel={liked ? "Unlike" : "Like"}
+        ariaLabel={liked ? 'Unlike' : 'Like'}
         size={size}
         activeColor={SEMANTIC_COLORS.activity.action.liked}
       />
       <ActionButton
         icon={Bookmark}
         label={
-          globalBookmarks > 0
-            ? `${globalBookmarks}${globalBookmarks > 1 ? "+" : ""}`
-            : undefined
+          globalBookmarks > 0 ? `${globalBookmarks}${globalBookmarks > 1 ? '+' : ''}` : undefined
         }
         globalCount={globalBookmarks}
         active={bookmarked}
         onClick={() => toggleBookmark(normalizedId)}
-        ariaLabel={bookmarked ? "Remove bookmark" : "Bookmark"}
+        ariaLabel={bookmarked ? 'Remove bookmark' : 'Bookmark'}
         size={size}
         activeColor={SEMANTIC_COLORS.activity.action.bookmarked}
       />
       {activity && (
         <div className="relative">
-          <ThreadShareButton
-            activity={{ id: activityId, ...activity }}
-            variant="ghost"
-            size="sm"
-          />
+          <ThreadShareButton activity={{ id: activityId, ...activity }} variant="ghost" size="sm" />
           {shareCount > 0 && (
             <span
-              className={cn(
-                TYPOGRAPHY.label.xs,
-                SEMANTIC_COLORS.activity.action.default,
-                "ml-1"
-              )}
+              className={cn(TYPOGRAPHY.label.xs, SEMANTIC_COLORS.activity.action.default, 'ml-1')}
               suppressHydrationWarning
             >
               {shareCount}
@@ -171,26 +157,26 @@ export function ThreadActions({
   timestamp,
   activity,
   className,
-  size = "default",
+  size = 'default',
   hideTimestamp = false,
   showBookmarkCount = false,
   showShareCount = false,
 }: ThreadActionsProps) {
   const { isLiked, toggleLike, getCount } = useActivityReactions();
-  const {
-    isBookmarked,
-    toggle: toggleBookmark,
-    getBookmarkCount,
-  } = useBookmarks();
+  const { isBookmarked, toggle: toggleBookmark, getBookmarkCount } = useBookmarks();
   const { getShareCount } = useShare();
 
   // Normalize activity ID for blog posts to match /likes and /bookmarks pages
   const normalizedId = normalizeActivityId(activityId, activity?.href);
 
   // Fetch global engagement counts (lazy load to reduce initial API waterfall)
-  const { globalLikes, globalBookmarks, ref: engagementRef } = useGlobalEngagementCounts({
+  const {
+    globalLikes,
+    globalBookmarks,
+    ref: engagementRef,
+  } = useGlobalEngagementCounts({
     slug: normalizedId,
-    contentType: "activity",
+    contentType: 'activity',
     lazy: true, // Only fetch when component is visible
   });
 
@@ -205,14 +191,12 @@ export function ThreadActions({
   const liked = isHydrated ? isLiked(normalizedId) : false;
   const bookmarked = isHydrated ? isBookmarked(normalizedId) : false;
   const likeCount = isHydrated ? getCount(normalizedId) : 0;
-  const bookmarkCount =
-    isHydrated && showBookmarkCount ? getBookmarkCount(normalizedId) : 0;
-  const shareCount =
-    isHydrated && showShareCount ? getShareCount(normalizedId) : 0;
+  const bookmarkCount = isHydrated && showBookmarkCount ? getBookmarkCount(normalizedId) : 0;
+  const shareCount = isHydrated && showShareCount ? getShareCount(normalizedId) : 0;
 
   // Log engagement state after checks
   if (isHydrated) {
-    console.warn("[ThreadActions] Engagement state after checks:", {
+    console.warn('[ThreadActions] Engagement state after checks:', {
       normalizedId,
       liked,
       bookmarked,
@@ -221,16 +205,12 @@ export function ThreadActions({
     });
   }
 
-  const isCompact = size === "compact";
+  const isCompact = size === 'compact';
 
   return (
     <div
       ref={engagementRef}
-      className={cn(
-        "flex items-center gap-4",
-        isCompact ? "gap-3" : "gap-4",
-        className
-      )}
+      className={cn('flex items-center gap-4', isCompact ? 'gap-3' : 'gap-4', className)}
     >
       {renderActionButtons({
         normalizedId,
@@ -250,7 +230,7 @@ export function ThreadActions({
       {!hideTimestamp && (
         <time
           dateTime={timestamp.toISOString()}
-          className={cn(TYPOGRAPHY.metadata, "text-muted-foreground ml-auto")}
+          className={cn(TYPOGRAPHY.metadata, 'text-muted-foreground ml-auto')}
           title={timestamp.toLocaleString()}
         >
           {formatDistanceToNow(timestamp, { addSuffix: true })}
@@ -271,7 +251,7 @@ interface ActionButtonProps {
   active?: boolean;
   onClick?: () => void;
   ariaLabel: string;
-  size: "default" | "compact";
+  size: 'default' | 'compact';
   activeColor?: string;
 }
 
@@ -283,11 +263,10 @@ function ActionButton({
   onClick,
   ariaLabel,
   size,
-  activeColor = "text-primary",
+  activeColor = 'text-primary',
 }: ActionButtonProps) {
-  const iconSize = size === "compact" ? "h-4 w-4" : "h-5 w-5";
-  const textSize =
-    size === "compact" ? TYPOGRAPHY.label.xs : TYPOGRAPHY.label.small;
+  const iconSize = size === 'compact' ? 'h-4 w-4' : 'h-5 w-5';
+  const textSize = size === 'compact' ? TYPOGRAPHY.label.xs : TYPOGRAPHY.label.small;
 
   return (
     <Button
@@ -296,11 +275,11 @@ function ActionButton({
       onClick={onClick}
       aria-label={ariaLabel}
       className={cn(
-        "group/action h-auto px-2 py-2 flex justify-center items-center",
-        "gap-1.5",
+        'group/action h-auto px-2 py-2 flex justify-center items-center',
+        'gap-1.5',
         ANIMATION.transition.base,
         ANIMATION.activity.like,
-        "hover:bg-accent/50"
+        'hover:bg-accent/50'
       )}
       suppressHydrationWarning
     >
@@ -309,17 +288,14 @@ function ActionButton({
           iconSize,
           ANIMATION.transition.base,
           active && activeColor,
-          active && "fill-current",
+          active && 'fill-current',
           !active && SEMANTIC_COLORS.activity.action.default,
-          active && "group-hover/action:scale-110"
+          active && 'group-hover/action:scale-110'
         )}
       />
       {label && (
         <span
-          className={cn(
-            textSize,
-            active ? activeColor : SEMANTIC_COLORS.activity.action.default
-          )}
+          className={cn(textSize, active ? activeColor : SEMANTIC_COLORS.activity.action.default)}
           suppressHydrationWarning
         >
           {label}
