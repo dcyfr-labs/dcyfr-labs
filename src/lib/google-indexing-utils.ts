@@ -8,7 +8,10 @@
  */
 
 import { google } from "googleapis";
-import type { AuthClient } from "google-auth-library";
+import type { AuthClient, OAuth2Client } from "google-auth-library";
+
+/** Google API error shape from googleapis HTTP errors */
+type GoogleApiError = { response?: { status?: number; data?: unknown }; message?: string };
 
 // Rate limit constants (same as inngest module)
 export const GOOGLE_DAILY_QUOTA = 200;
@@ -18,7 +21,7 @@ export const SUBMISSION_RATE_LIMIT_MS = 200;
 /**
  * Get Google service account credentials from environment
  */
-export function getServiceAccountCredentials(): Record<string, any> | null {
+export function getServiceAccountCredentials(): Record<string, unknown> | null {
   const credentialsJson = process.env.GOOGLE_INDEXING_API_KEY;
   
   if (!credentialsJson) {
@@ -58,7 +61,7 @@ export async function getAuthClient(): Promise<AuthClient | null> {
 export interface IndexingStatusResult {
   indexed: boolean;
   status: string;
-  metadata: any;
+  metadata: Record<string, unknown>;
 }
 
 /**
@@ -73,14 +76,14 @@ export async function checkIndexingStatus(
   authClient: AuthClient
 ): Promise<IndexingStatusResult> {
   try {
-    const indexing = google.indexing({ version: "v3", auth: authClient as any });
+    const indexing = google.indexing({ version: "v3", auth: authClient as OAuth2Client });
     
     const response = await indexing.urlNotifications.getMetadata({
       url,
     });
 
-    const data = response.data as any;
-    const mobileFriendlyStatus = data.mobileFriendlyStatus || "UNKNOWN";
+    const data = response.data as Record<string, unknown>;
+    const mobileFriendlyStatus = (data.mobileFriendlyStatus as string | undefined) || "UNKNOWN";
     const indexed = mobileFriendlyStatus !== "NOT_FOUND";
 
     return {
@@ -88,8 +91,8 @@ export async function checkIndexingStatus(
       status: mobileFriendlyStatus,
       metadata: data,
     };
-  } catch (error: any) {
-    const statusCode = error.response?.status;
+  } catch (error) {
+    const statusCode = (error as GoogleApiError).response?.status;
     
     // 404 means URL is not indexed
     if (statusCode === 404) {
@@ -118,7 +121,7 @@ export async function submitUrlToGoogle(
   type: "URL_UPDATED" | "URL_DELETED" = "URL_UPDATED"
 ): Promise<{ success: boolean; metadata?: any; error?: string }> {
   try {
-    const indexing = google.indexing({ version: "v3", auth: authClient as any });
+    const indexing = google.indexing({ version: "v3", auth: authClient as OAuth2Client });
 
     const response = await indexing.urlNotifications.publish({
       requestBody: {
@@ -133,9 +136,10 @@ export async function submitUrlToGoogle(
       success: true,
       metadata: response.data,
     };
-  } catch (error: any) {
-    const statusCode = error.response?.status;
-    const errorMessage = error.response?.data?.message || error.message;
+  } catch (error) {
+    const statusCode = (error as GoogleApiError).response?.status;
+    const errorData = (error as GoogleApiError).response?.data;
+    const errorMessage = typeof errorData === 'string' ? errorData : (error as Error).message ?? 'Unknown error';
 
     console.error(`✗ Failed to submit ${url}:`, {
       status: statusCode,
@@ -190,11 +194,11 @@ export async function validateSitemapUrls(
       if (i < sitemapUrls.length - 1) {
         await new Promise(resolve => setTimeout(resolve, 100));
       }
-    } catch (error: any) {
-      console.warn(`Could not check ${url}:`, error.message);
+    } catch (error) {
+      console.warn(`Could not check ${url}:`, (error as Error).message);
       errors.push({
         url,
-        error: error.message,
+        error: (error as Error).message,
       });
     }
   }
@@ -268,10 +272,10 @@ export async function submitMissingPagesToGoogle(
           setTimeout(resolve, SUBMISSION_RATE_LIMIT_MS)
         );
       }
-    } catch (error: any) {
+    } catch (error) {
       failed.push({
         url,
-        error: error.message,
+        error: (error as Error).message,
       });
     }
   }
@@ -393,11 +397,11 @@ export async function validateAndSubmitMissingPages(
         skipped: submission.skipped.length,
       },
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error during validation/submission:", error);
     return {
       success: false,
-      error: error.message,
+      error: (error as Error).message,
       validation: { indexed: [], missing: [], pending: [] },
       submission: { submitted: [], failed: [], skipped: [] },
       summary: {

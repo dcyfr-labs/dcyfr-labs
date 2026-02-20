@@ -200,58 +200,46 @@ function buildCspDirectives(nonce: string, isDevelopment: boolean): string[] {
   ];
 }
 
-export default function proxy(request: NextRequest) {
-  // Generate unique nonce for this request
-  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
-
-  // Detect development environment
-  const isDevelopment = process.env.NODE_ENV === "development";
-
-  const pathname = request.nextUrl.pathname;
-  const pathnameLC = pathname.toLowerCase();
-
-  // ===================================================================
-  // IndexNow API Key File Handler
-  // ===================================================================
-  // Serve IndexNow API key at /<key>.txt for search engine verification
-  // See: https://www.bing.com/indexnow/getstarted#keyfiledocs
+/** Handle IndexNow API key file requests */
+function handleIndexNowKeyFile(pathname: string): NextResponse | null {
   const txtFileMatch = pathname.match(/^\/([^/]+)\.txt$/);
-  if (txtFileMatch) {
-    const requestedKey = txtFileMatch[1];
-    const apiKey = process.env.INDEXNOW_API_KEY;
+  if (!txtFileMatch) return null;
 
-    // Validate UUID v4 format (lowercase with hyphens)
-    const uuidV4Regex =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  const requestedKey = txtFileMatch[1];
+  const apiKey = process.env.INDEXNOW_API_KEY;
 
-    if (apiKey && uuidV4Regex.test(requestedKey)) {
-      if (requestedKey.toLowerCase() === apiKey.toLowerCase()) {
-        // Matched! Serve the key file
-        return new NextResponse(apiKey, {
-          status: 200,
-          headers: {
-            "Content-Type": "text/plain; charset=utf-8",
-            "Cache-Control": "public, max-age=86400", // 24 hours
-          },
-        });
-      }
+  // Validate UUID v4 format (lowercase with hyphens)
+  const uuidV4Regex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+  if (apiKey && uuidV4Regex.test(requestedKey)) {
+    if (requestedKey.toLowerCase() === apiKey.toLowerCase()) {
+      return new NextResponse(apiKey, {
+        status: 200,
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          "Cache-Control": "public, max-age=86400",
+        },
+      });
     }
-    // No match or invalid format - let Next.js handle 404 for *.txt files
-    // (fall through to normal routing for ai.txt, security.txt, etc.)
   }
-  // ===================================================================
+  return null;
+}
 
-  // Security monitoring: detect and report suspicious path access attempts
+/** Run security checks and return response if blocked */
+function performSecurityChecks(
+  request: NextRequest,
+  pathname: string,
+  pathnameLC: string,
+  isDevelopment: boolean
+): NextResponse | null {
   if (!isDevelopment) {
     const suspiciousResponse = checkSuspiciousPath(request, pathnameLC, pathname);
     if (suspiciousResponse) return suspiciousResponse;
   }
 
-  // Honeypot routes - always active
   const honeypotResponse = checkHoneypotPath(request, pathname, ["/private"]);
   if (honeypotResponse) return honeypotResponse;
 
-  // Dev-only honeypot paths + dev API blocking
   if (!isDevelopment) {
     const devHoneypotResponse = checkHoneypotPath(request, pathname, ["/dev"]);
     if (devHoneypotResponse) return devHoneypotResponse;
@@ -262,6 +250,27 @@ export default function proxy(request: NextRequest) {
     const internalApiResponse = checkInternalApiAccess(request, pathname);
     if (internalApiResponse) return internalApiResponse;
   }
+
+  return null;
+}
+
+export default function proxy(request: NextRequest) {
+  // Generate unique nonce for this request
+  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+
+  // Detect development environment
+  const isDevelopment = process.env.NODE_ENV === "development";
+
+  const pathname = request.nextUrl.pathname;
+  const pathnameLC = pathname.toLowerCase();
+
+  // Handle IndexNow API key file requests
+  const keyFileResponse = handleIndexNowKeyFile(pathname);
+  if (keyFileResponse) return keyFileResponse;
+
+  // Run security checks
+  const securityResponse = performSecurityChecks(request, pathname, pathnameLC, isDevelopment);
+  if (securityResponse) return securityResponse;
 
   // Build CSP directives with nonce
   const cspDirectives = buildCspDirectives(nonce, isDevelopment);
