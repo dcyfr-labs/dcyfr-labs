@@ -1,5 +1,5 @@
 # DCYFR Labs - LLM Context Guide
-# Last Updated: February 5, 2026
+# Last Updated: February 20, 2026
 #
 # This file provides large language models with structured context about
 # DCYFR Labs content, architecture, and expertise areas. Research shows
