@@ -456,6 +456,9 @@
     "url": "https://github.com/dcyfr/dcyfr-labs.git"
   },
   "overrides": {
+    "eslint-config-next": {
+      "eslint": "$eslint"
+    },
     "serialize-error-cjs": "0.2.0",
     "js-yaml": "^4.1.0",
     "tmp": "^0.2.3",
