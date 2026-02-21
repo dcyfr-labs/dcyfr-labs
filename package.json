@@ -463,7 +463,7 @@
     "require-in-the-middle": "8.0.1",
     "inflight": "npm:@npmcli/inflight@^1.0.2",
     "rimraf": "^5.0.0",
-    "glob": "^10.0.0",
+    "glob": "^13.0.4",
     "tar": ">=7.5.7",
     "axios": "^1.8.2",
     "hono": ">=4.11.7",
