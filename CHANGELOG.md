@@ -7,6 +7,20 @@ and this project uses [Calendar Versioning](https://calver.org/) with the `YYYY.
 
 **Breaking changes** are marked with ⚠️ BREAKING in the version header.
 
+## [2026.02.21]
+
+### Added
+
+- **IndexNow Real-Time Indexing Integration** - Complete IndexNow protocol implementation for instant search engine indexing
+  - Key file verification route (`/<uuid>.txt`) for domain ownership proof — edge runtime
+  - URL submission API (`/api/indexnow/submit`) with Zod validation and Inngest queuing
+  - Admin bulk submission endpoint (`/api/admin/indexnow/bulk`) with Bearer auth
+  - Inngest background functions: `process-indexnow-submission`, `verify-indexnow-key-file`
+  - IndexNow helper library (`src/lib/indexnow/`) — client, events, rate limiting, utils
+  - Dev dashboard at `/dev/seo` for local testing and diagnostics
+  - Feature flag `FEATURES.enableIndexNow` in `site-config.ts`
+  - 54 unit and integration tests covering all routes, Inngest functions, and helpers
+
 ## [2026.02.12]
 
 ### Changed
