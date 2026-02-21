@@ -59,6 +59,7 @@ nuclei-report.md
 nuclei-*.json
 nuclei-*.md
 !nuclei-integration.md
+.github/nuclei/templates/community/
 
 # Playwright visual regression & test artifacts
 # These contain screenshots/videos/diffs generated during CI or local runs
