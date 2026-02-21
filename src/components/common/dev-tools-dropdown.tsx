@@ -11,7 +11,6 @@ import { SEMANTIC_COLORS, Z_INDEX } from '@/lib/design-tokens';
 export default function DevToolsDropdown() {
   const dropdown = useDropdown();
 
-  /* eslint-disable react-hooks/refs -- dropdown.ref/isOpen/toggle are hook return values, not ref.current access */
   return (
     <div ref={dropdown.ref} className="relative">
       <Badge
@@ -59,5 +58,4 @@ export default function DevToolsDropdown() {
       )}
     </div>
   );
-  /* eslint-enable react-hooks/refs */
 }

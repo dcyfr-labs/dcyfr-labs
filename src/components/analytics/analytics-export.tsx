@@ -179,7 +179,6 @@ export function AnalyticsExport({
       }
     }
 
-    // eslint-disable-next-line react-hooks/purity
     const timestamp = Date.now();
     downloadFile(csv, `analytics-${dateRange}-${timestamp}.csv`, "text/csv");
     toast.success("CSV exported successfully");
@@ -231,7 +230,6 @@ export function AnalyticsExport({
     }
 
     const json = JSON.stringify(data, null, 2);
-    // eslint-disable-next-line react-hooks/purity
     const timestamp = Date.now();
     downloadFile(
       json,
@@ -293,7 +291,6 @@ export function AnalyticsExport({
       md += `| ${row.join(" | ")} |\n`;
     });
 
-    // eslint-disable-next-line react-hooks/purity
     const timestamp = Date.now();
     downloadFile(md, `analytics-${dateRange}-${timestamp}.md`, "text/markdown");
     toast.success("Markdown exported successfully");

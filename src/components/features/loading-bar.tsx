@@ -19,7 +19,6 @@ export function LoadingBar() {
   const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- Loading state management
     setIsLoading(true);
     setIsExiting(false);
 

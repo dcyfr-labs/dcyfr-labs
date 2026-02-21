@@ -58,7 +58,6 @@ export function DevBanner() {
       // It's safe to synchronously set the state here on mount to reflect the
       // persisted dismissal preference. This avoids a flash of content during
       // hydration and ensures client state reflects persisted storage.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (dismissed && isOpen) setIsOpen(false);
     } catch (err) {
       // ignore storage access errors and keep banner visible

@@ -17,7 +17,7 @@ export default [
   },
   ...tseslint.configs.recommended,
   {
-    files: ['**/*.{js,jsx,ts,tsx}'],
+    files: ['**/*.{js,jsx,mjs,ts,tsx}'],
     plugins: {
       'dcyfr-local': {
         rules: localRules.default,

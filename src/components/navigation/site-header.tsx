@@ -70,7 +70,6 @@ export function SiteHeader() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
-  /* eslint-disable react-hooks/refs -- dropdown.ref/isOpen/toggle are hook return values, not ref.current access */
   return (
     <header
       className={cn(
@@ -283,5 +282,4 @@ export function SiteHeader() {
       </div>
     </header>
   );
-  /* eslint-enable react-hooks/refs */
 }

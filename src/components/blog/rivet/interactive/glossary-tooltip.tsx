@@ -145,7 +145,6 @@ export function GlossaryTooltip({ term, definition, children, className }: Gloss
         ? calculateMobilePosition(rect)
         : calculateDesktopPosition(rect);
 
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- useLayoutEffect with setState is appropriate for layout measurements per React docs
       setPosition(newPosition);
       setTooltipStyle(style);
       setArrowOffset(newArrowOffset);

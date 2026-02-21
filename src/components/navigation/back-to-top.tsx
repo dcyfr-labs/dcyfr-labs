@@ -50,7 +50,6 @@ export function BackToTop() {
 
   useEffect(() => {
     if (isOnBlogPost) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- Early return for feature toggle
       setShow(false);
       return;
     }

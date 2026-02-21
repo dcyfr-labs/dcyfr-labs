@@ -41,7 +41,6 @@ export function GiscusComments() {
 
   // Wait for component to mount to avoid hydration issues
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- Hydration-safe pattern
     setMounted(true);
   }, []);
 

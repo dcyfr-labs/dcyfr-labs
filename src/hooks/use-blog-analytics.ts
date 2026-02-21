@@ -54,7 +54,6 @@ export function useBlogAnalytics({ slug, enabled = true }: UseBlogAnalyticsProps
     lastVisibilityChangeRef.current = Date.now();
     hasTrackedCompletionRef.current = false;
     trackedMilestonesRef.current = new Set();
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- Reset state on slug change
     setHasTrackedCompletion(false);
     setTrackedMilestones(new Set());
 

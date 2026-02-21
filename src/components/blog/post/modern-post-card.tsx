@@ -85,7 +85,6 @@ export function ModernPostCard({
   // Update share count when API returns
   useEffect(() => {
     if (apiShareCount !== null) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShareCount(apiShareCount);
     }
   }, [apiShareCount]);

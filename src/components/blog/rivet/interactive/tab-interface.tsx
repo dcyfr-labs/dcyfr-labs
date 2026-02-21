@@ -60,7 +60,6 @@ export function TabInterface({
       const hash = window.location.hash.slice(1);
       const tabExists = tabs.find((tab) => tab.id === hash);
       if (hash && tabExists) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect -- Legitimate use case: syncing state with URL hash on mount
         setActiveTab(hash);
       }
     }

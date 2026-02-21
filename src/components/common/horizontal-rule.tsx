@@ -33,7 +33,6 @@ export function HorizontalRule() {
     // Hide this rule if the previous sibling is also a horizontal rule
     // This ensures only the first in a sequence is shown
     if (previousSibling?.getAttribute("role") === "separator") {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- DOM inspection on mount
       setIsVisible(false);
     }
   }, []);
