@@ -5,7 +5,7 @@
 # Check for new LGTM suppressions in staged files
 NEW_LGTM=$(git diff --cached | grep -i "^\+.*lgtm \[" | grep -v ".github/agents/patterns/CODEQL_SUPPRESSIONS.md")
 
-if [ -n "$NEW_LGTM" ]; then
+if [[ -n "$NEW_LGTM" ]]; then
   echo ""
   echo "⚠️  ═══════════════════════════════════════════════════════════"
   echo "⚠️  WARNING: New LGTM suppression comment detected!"
