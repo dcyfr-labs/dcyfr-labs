@@ -254,7 +254,7 @@ async function rateLimitWithReputation(
     result = await rateLimitRedis(ip, reputationConfig);
   } catch (error) {
     console.error('Redis rate limit error, falling back to memory:', error);
-    result = await rateLimitMemory(ip, reputationConfig);
+    result = rateLimitMemory(ip, reputationConfig);
   }
 
   // Track local abuse attempts to escalate reputation

@@ -63,8 +63,8 @@ describe("CopyCodeButton Component", () => {
     it("should have ghost variant and icon size", () => {
       render(<CopyCodeButton code={mockCode} />);
       const button = screen.getByRole("button");
-      expect(button.getAttribute("data-variant")).toBe("ghost");
-      expect(button.getAttribute("data-size")).toBe("icon");
+      expect(button.dataset.variant).toBe("ghost");
+      expect(button.dataset.size).toBe("icon");
     });
 
     it("should have positioning and hover classes", () => {

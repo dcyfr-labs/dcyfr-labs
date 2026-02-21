@@ -56,7 +56,7 @@ function getTechColor(name: string): AccentColor {
   let hash = 0;
   for (let i = 0; i < name.length; i++) {
     hash = (hash << 5) - hash + name.charCodeAt(i);
-    hash |= 0; // Convert to 32bit integer
+    hash = Math.trunc(hash); // Convert to 32bit integer
   }
   return ACCENT_COLORS[Math.abs(hash) % ACCENT_COLORS.length];
 }

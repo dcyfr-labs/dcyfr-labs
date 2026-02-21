@@ -176,8 +176,7 @@ async function main() {
   testEnvironmentDetection();
 
   const activePosts = loadActivePosts();
-  const { withCounters, withHistory, missingCounters } = await checkPostCoverage(activePosts);
-  void withHistory; void missingCounters;
+  const { withCounters, withHistory: _withHistory, missingCounters: _missingCounters } = await checkPostCoverage(activePosts);
 
   const allCounterKeys = await redis.keys('views:post:*');
   const counterKeys = allCounterKeys.filter(

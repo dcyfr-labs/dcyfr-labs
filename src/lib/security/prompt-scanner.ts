@@ -298,21 +298,39 @@ export class PromptSecurityScanner {
   /**
    * Match input against cached IoPC threats and collect matching entries
    */
-  private matchInputAgainstIoPCCache(_inputLower: string): ThreatMatch[] {
+  private matchInputAgainstIoPCCache(inputLower: string): ThreatMatch[] {
     const matches: ThreatMatch[] = [];
     if (!this.ioPCCache) return matches;
 
     for (const threat of this.ioPCCache) {
-      const threatData = Array.isArray(threat) ? threat : [threat];
-      if (threatData.length === 0) continue;
+      const patternSource = threat.detection_pattern ?? threat.prompt_pattern;
+      if (!patternSource) continue;
 
-      const firstItem = threatData[0];
-      if (firstItem?.data && Array.isArray(firstItem.data)) {
-        // Empty data array, skip
-        continue;
+      try {
+        const pattern = new RegExp(patternSource, 'i');
+        if (pattern.test(inputLower)) {
+          matches.push({
+            pattern: patternSource,
+            category: threat.category,
+            severity: threat.severity === 'info' ? 'low' : threat.severity,
+            confidence: threat.severity === 'critical' ? 0.9 : 0.7,
+            source: 'iopc',
+            details: `IoPC match: ${threat.title}`,
+          });
+        }
+      } catch {
+        // Pattern is not a valid regex; fall back to substring match
+        if (inputLower.includes(patternSource.toLowerCase())) {
+          matches.push({
+            pattern: patternSource,
+            category: threat.category,
+            severity: threat.severity === 'info' ? 'low' : threat.severity,
+            confidence: 0.5,
+            source: 'iopc',
+            details: `IoPC substring match: ${threat.title}`,
+          });
+        }
       }
-
-      // TODO: implement IoPC pattern matching against _inputLower
     }
 
     return matches;

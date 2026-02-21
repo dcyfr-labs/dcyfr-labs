@@ -14,7 +14,7 @@ describe("useSectionNavigation", () => {
     ];
 
     sections.forEach((section, i) => {
-      section.setAttribute("data-section", "");
+      section.dataset.section = "";
       section.setAttribute("id", `section-${i}`);
       Object.defineProperty(section, "offsetTop", {
         value: i * 1000,

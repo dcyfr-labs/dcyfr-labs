@@ -146,8 +146,7 @@ const TEST_SCHEMAS = {
 /**
  * Validate a schema object for common issues
  */
-function validateSchema(schema: JsonLdNode, name: string): string[] {
-  void name;
+function validateSchema(schema: JsonLdNode, _name: string): string[] {
   const issues: string[] = [];
 
   if (!schema['@context']) issues.push('Missing @context property');

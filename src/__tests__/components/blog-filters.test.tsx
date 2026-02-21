@@ -277,13 +277,13 @@ describe("BlogFilters Component", () => {
     it("should show reading time badges as outline by default", () => {
       render(<BlogFilters {...defaultProps} />);
       const badge = screen.getByTestId("badge-<5 min");
-      expect(badge.getAttribute("data-variant")).toBe("outline");
+      expect(badge.dataset.variant).toBe("outline");
     });
 
     it("should show selected reading time badge as default variant", () => {
       render(<BlogFilters {...defaultProps} readingTime="quick" />);
       const badge = screen.getByTestId("badge-<5 min");
-      expect(badge.getAttribute("data-variant")).toBe("default");
+      expect(badge.dataset.variant).toBe("default");
     });
 
     it("should update URL when reading time badge is clicked", () => {
@@ -330,13 +330,13 @@ describe("BlogFilters Component", () => {
     it("should display unselected tags with outline variant", () => {
       render(<BlogFilters {...defaultProps} />);
       const badge = screen.getByTestId("badge-React");
-      expect(badge.getAttribute("data-variant")).toBe("outline");
+      expect(badge.dataset.variant).toBe("outline");
     });
 
     it("should display selected tags with default variant", () => {
       render(<BlogFilters {...defaultProps} selectedTags={["React"]} />);
       const badge = screen.getByTestId("badge-React");
-      expect(badge.getAttribute("data-variant")).toBe("default");
+      expect(badge.dataset.variant).toBe("default");
     });
 
     it("should add tag when clicked", () => {

@@ -162,7 +162,7 @@ describe('PageLayout', () => {
 
       const wrapper = container.firstChild as HTMLElement;
       const firstChild = wrapper.firstChild as HTMLElement;
-      expect(firstChild.getAttribute('data-testid')).toBe('draft-banner');
+      expect(firstChild.dataset.testid).toBe('draft-banner');
     });
   });
 
