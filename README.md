@@ -8,6 +8,20 @@
 
 <a href="https://peerlist.io/dcyfr/project/dcyfr-labs" target="_blank" rel="noreferrer"><img src="https://peerlist.io/api/v1/projects/embed/PRJHJKNGMRMELKAQQ2ANMNEA7QRLNK?showUpvote=true&theme=dark" alt="DCYFR Labs on Peerlist" style="width: auto; height: 72px;" /></a>
 
+---
+
+> 🔍 **REFERENCE IMPLEMENTATION - NOT A TEMPLATE**
+>
+> This is **DCYFR's production website** with highly customized features, design tokens, and integrations.
+>
+> - ✅ **Study this** - Learn from real-world Next.js patterns and architecture
+> - ✅ **Explore the code** - See how production features are built
+> - ❌ **Don't clone this** - Too many DCYFR-specific customizations
+>
+> **Want to build your own portfolio/blog?** Use **[dcyfr-ai-web](https://github.com/dcyfr/dcyfr-ai-web)** template instead - a general-purpose Next.js starter designed for easy customization.
+
+---
+
 ## 🌐 Live Demo
 
 **Production:** [www.dcyfr.ai](https://www.dcyfr.ai)
