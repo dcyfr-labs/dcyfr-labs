@@ -13,7 +13,13 @@ Analytics dashboard documentation for tracking and analyzing blog post performan
 - **[Tag Analytics (Complete)](./tag-analytics-consolidated)** - **Tag performance guide** (features + implementation + setup)
 - **[24h Trends (Complete)](./24h-trends-consolidated)** - **Real-time analytics guide** (metrics + dashboard + setup)
 - **[Search Channel Priority and Automation](./search-channel-priority-automation.md)** -
-   Priority framework for Google/Bing/YouTube/Reddit automation
+  Priority framework for Google/Bing/YouTube/Reddit automation
+- **[YouTube SEO Automation Guide](./youtube-seo-automation-guide.md)** -
+  Metadata-pack contract, quality checks, cross-linking, VideoObject JSON-LD
+- **[Reddit Policy-Safe Workflow](./reddit-policy-safe-workflow.md)** -
+  Human-in-the-loop Reddit lane with mandatory approval gates and rate limits
+- **[Channel Automation Monitoring](./channel-automation-monitoring.md)** -
+  Audit log schema, per-channel metrics, violation tracking, monthly review
 
 ## Other Optimization Guides
 
@@ -59,6 +65,7 @@ The analytics dashboard (`/analytics`) provides comprehensive insights into blog
 ## Access
 
 The analytics dashboard is **development-only**:
+
 - ✅ Available: `NODE_ENV=development`
 - ❌ Returns 404: Production and preview environments
 
@@ -76,6 +83,7 @@ This ensures analytics data remains private and not exposed to the public.
 ### Trending Algorithm
 
 Posts are marked as "trending" based on:
+
 1. Significant 24h activity (views > 0)
 2. Recent engagement patterns
 3. Velocity compared to historical performance
@@ -83,6 +91,7 @@ Posts are marked as "trending" based on:
 ### Tag Performance
 
 Tag metrics aggregate data from all posts with that tag:
+
 - **Post Count**: Number of posts tagged
 - **Total/Average Views**: Accumulated and mean performance
 - **24h Trend**: Recent engagement with percentage change
@@ -92,6 +101,7 @@ Tag metrics aggregate data from all posts with that tag:
 ### 1. Basic Navigation
 
 Access the dashboard in development mode:
+
 ```bash
 npm run dev
 # Navigate to http://localhost:3000/analytics
@@ -100,25 +110,30 @@ npm run dev
 ### 2. Filtering Posts
 
 **By Tags:**
+
 - Click "Tags" dropdown in the control bar
 - Check one or more tags to filter
 - Or click tag rows in the Tag Analytics table
 - Selected tags appear highlighted
 
 **By Status:**
+
 - ✓ Hide archived - Excludes archived posts
 - ✓ Hide drafts - Excludes draft posts
 
 **By Search:**
+
 - Type in the search box to filter by title
 - Filters apply in real-time
 
 **Clear All:**
+
 - Click "Clear All" to reset all filters
 
 ### 3. Date Range Selection
 
 Change the time window for metrics:
+
 - **24 Hours** - Today's performance (default)
 - **7 Days** - Weekly trends
 - **30 Days** - Monthly overview
@@ -126,6 +141,7 @@ Change the time window for metrics:
 - **All Time** - Complete history
 
 Range selection affects:
+
 - Summary cards
 - "Range Views" column in tables
 - Tag analytics calculations
@@ -133,6 +149,7 @@ Range selection affects:
 ### 4. Sorting
 
 Click any column header to sort:
+
 - **Title** - Alphabetically
 - **Views (All)** - Total views
 - **Range Views** - Views in selected period
@@ -144,12 +161,14 @@ Click again to toggle ascending/descending order.
 ### 5. Exporting Data
 
 **CSV Export:**
+
 ```
 Title,Slug,Views (All),Views (Range),Views (24h),Published,Tags,Archived,Draft
 "Post Title",post-slug,1234,56,12,2025-01-01,"tag1, tag2",No,No
 ```
 
 **JSON Export:**
+
 ```json
 {
   "metadata": {
@@ -166,9 +185,11 @@ Title,Slug,Views (All),Views (Range),Views (24h),Published,Tags,Archived,Draft
 ## Tag Analytics
 
 ### Overview
+
 The Tag Analytics section shows performance metrics for each content tag, helping you understand which topics drive the most engagement.
 
 ### Key Metrics
+
 - **Post Count** - Number of posts with this tag
 - **Total Views** - All-time views for posts with this tag
 - **24h Views** - Recent engagement
@@ -176,11 +197,13 @@ The Tag Analytics section shows performance metrics for each content tag, helpin
 - **Trend %** - 24-hour growth/decline
 
 ### Interactive Features
+
 - **Click to Filter** - Click any tag row to filter posts
 - **Top Rankings** - Top 3 tags by total views are highlighted
 - **Visual Indicators** - Flame icons and trend percentages
 
 ### Use Cases
+
 1. **Content Strategy** - Identify high-performing topics
 2. **Audience Insights** - Understand reader interests
 3. **SEO Optimization** - Prioritize tags with strong reach
@@ -191,16 +214,19 @@ See **Tag Analytics Guide** for detailed documentation.
 ## Performance
 
 ### Data Source
+
 - View counts: Redis database (with in-memory fallback)
 - Post metadata: Static generation at build time
 - Real-time updates: API polling at 30-second intervals (optional)
 
 ### Caching Strategy
+
 - API responses cached for 1 minute (server-side)
 - Client-side state management prevents unnecessary re-renders
 - Tag calculations memoized based on filter state
 
 ### Optimization
+
 - All filtering happens client-side (no API calls)
 - Sorting is instant (in-memory)
 - Table virtualization for large post lists (future enhancement)
@@ -208,11 +234,13 @@ See **Tag Analytics Guide** for detailed documentation.
 ## URL State Management
 
 All dashboard settings persist in the URL:
+
 ```
 /analytics?dateRange=7&sortField=views24h&sortDirection=desc&tags=nextjs,react&hideDrafts=true
 ```
 
 Benefits:
+
 - ✅ Shareable analytics views
 - ✅ Bookmarkable configurations
 - ✅ Browser back/forward navigation
@@ -221,18 +249,22 @@ Benefits:
 ## Troubleshooting
 
 ### Dashboard returns 404
+
 **Cause:** Not in development mode  
 **Fix:** Run `npm run dev` and access via localhost
 
 ### No view data showing
+
 **Cause:** Redis not configured or no traffic yet  
 **Fix:** Set up Redis (see environment variables) or wait for organic traffic
 
 ### Filters not working
+
 **Cause:** JavaScript not loaded  
 **Fix:** Check browser console for errors, ensure Next.js dev server is running
 
 ### Export downloads empty file
+
 **Cause:** No posts match current filters  
 **Fix:** Clear filters and try again
 
@@ -241,9 +273,11 @@ Benefits:
 ### GET `/api/analytics`
 
 Query parameters:
+
 - `days` - Date range (1, 7, 30, 90, or "all")
 
 Response:
+
 ```typescript
 {
   success: boolean;
@@ -265,6 +299,7 @@ Response:
 ## Future Enhancements
 
 Planned improvements:
+
 - [ ] Tag performance charts (sparklines)
 - [ ] Related tags analysis
 - [ ] Custom date range picker

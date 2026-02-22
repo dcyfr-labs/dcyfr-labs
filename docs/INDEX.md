@@ -1,4 +1,5 @@
 <!-- TLP:CLEAR -->
+
 {/_ TLP:CLEAR _/}
 
 # Documentation Index
@@ -133,6 +134,14 @@ The documentation is organized into **18 focused directories**:
 - **[optimization/](./optimization/)** - SEO + accessibility + analytics
 - **[optimization/search-channel-priority-automation.md](./optimization/search-channel-priority-automation.md)** -
   SEO channel priority and automation policy
+- **[optimization/youtube-seo-automation-guide.md](./optimization/youtube-seo-automation-guide.md)** -
+  YouTube metadata-pack contract, quality checks, cross-linking, VideoObject JSON-LD
+- **[optimization/reddit-policy-safe-workflow.md](./optimization/reddit-policy-safe-workflow.md)** -
+  Reddit policy-safe lane with mandatory human approval and rate limits
+- **[optimization/channel-automation-monitoring.md](./optimization/channel-automation-monitoring.md)** -
+  Channel audit log schema, per-channel metrics, violation tracking, monthly review
+- **[features/SEO_CHANNEL_PRIORITY.md](./features/SEO_CHANNEL_PRIORITY.md)** -
+  SEO channel priority matrix (Google, Bing, YouTube, Reddit status overview)
 - **[runbooks/](./runbooks/)** - Operational troubleshooting playbooks
 - **[runbooks/INDEXNOW_TROUBLESHOOTING.md](./runbooks/INDEXNOW_TROUBLESHOOTING.md)** -
   IndexNow API troubleshooting and bulk resubmission procedures
