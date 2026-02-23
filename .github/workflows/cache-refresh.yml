@@ -13,13 +13,21 @@ jobs:
     timeout-minutes: 5
 
     steps:
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          CRON_SECRET: op://Development/dcyfr-labs-cron-secret/password
+
       - name: Trigger Cache Population
         id: populate
         run: |
           echo "🔄 Triggering cache refresh for production..."
 
           response=$(curl -X POST https://www.dcyfr.ai/api/admin/populate-cache \
-            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Authorization: Bearer $CRON_SECRET" \
             -H "Content-Type: application/json" \
             --silent --show-error --max-time 60 --write-out "\nHTTP_CODE:%{http_code}")
 

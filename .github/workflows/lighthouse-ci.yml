@@ -36,6 +36,15 @@ jobs:
 
       - name: Install dependencies
         run: npm ci --prefer-offline
+
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: op://Development/dcyfr-labs-vercel-automation-bypass-secret/password
+
       - name: Update baseline browser mapping
         run: npm run update:baseline
         env:
@@ -68,8 +77,7 @@ jobs:
 
       - name: Run Lighthouse CI
         run: npm run lhci:autorun
-        env:
-          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        # VERCEL_AUTOMATION_BYPASS_SECRET loaded from 1Password
         continue-on-error: true
 
       - name: Upload Lighthouse results
