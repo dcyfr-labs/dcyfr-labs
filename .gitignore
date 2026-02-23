@@ -98,7 +98,10 @@ private/
 archive/
 
 # env files
-.env*
+# .env contains op:// references (1Password) — safe to commit
+# .env.local contains plaintext secrets — NEVER commit
+.env.local
+.env*.local
 !.env.example
 !.env.template
 
