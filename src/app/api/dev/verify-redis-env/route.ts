@@ -64,8 +64,16 @@ async function readGithubCache(cacheKey: string): Promise<{ status: string; data
  * Verify Redis environment configuration
  *
  * Shows what Redis the app is connecting to and what key prefixes it's using
+ *
+ * Development-only endpoint. Blocked in preview/production by middleware and
+ * by this explicit handler guard (defense-in-depth).
  */
 export async function GET() {
+  // Only available in local development — exposes Redis credentials metadata
+  if (process.env.NODE_ENV !== 'development') {
+    return NextResponse.json({ error: 'Only available in development' }, { status: 403 });
+  }
+
   const environment = getRedisEnvironment();
   const keyPrefix = getRedisKeyPrefix();
 
@@ -76,7 +84,11 @@ export async function GET() {
   const hasPreviewToken = !!process.env.UPSTASH_REDIS_REST_TOKEN_PREVIEW;
 
   const usingRedis = resolveUsingRedis(
-    environment, hasProductionUrl, hasProductionToken, hasPreviewUrl, hasPreviewToken
+    environment,
+    hasProductionUrl,
+    hasProductionToken,
+    hasPreviewUrl,
+    hasPreviewToken
   );
 
   const { connected: redisConnected, error: redisError } = await checkRedisConnection();
