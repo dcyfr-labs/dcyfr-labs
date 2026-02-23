@@ -42,6 +42,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          CHROMATIC_PROJECT_TOKEN: op://CI-CD/dcyfr-labs-chromatic-project-token/credential
+
 
       - name: Check for Storybook configuration
         id: check
@@ -89,7 +97,7 @@ jobs:
         id: chromatic
         uses: chromaui/action@latest
         with:
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          projectToken: $CHROMATIC_PROJECT_TOKEN
           buildScriptName: build-storybook
           autoAcceptChanges: ${{ github.event.inputs.auto_accept || 'false' }}
           exitOnceUploaded: true

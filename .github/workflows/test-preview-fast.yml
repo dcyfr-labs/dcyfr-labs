@@ -38,6 +38,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: op://Development/dcyfr-labs-vercel-automation-bypass-secret/password
+
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -190,7 +198,7 @@ jobs:
         run: npm run test:e2e
         env:
           CI: true
-          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: $VERCEL_AUTOMATION_BYPASS_SECRET
 
       - name: Upload Playwright report
         if: always()

@@ -32,6 +32,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          UPSTASH_REDIS_REST_URL: op://CI-CD/dcyfr-labs-upstash-redis-rest-url/credential
+          UPSTASH_REDIS_REST_TOKEN: op://Development/dcyfr-labs-upstash-redis-rest-token/credential
+          UPSTASH_REDIS_REST_URL_PREVIEW: op://CI-CD/dcyfr-labs-upstash-redis-rest-url-preview/credential
+          UPSTASH_REDIS_REST_TOKEN_PREVIEW: op://CI-CD/dcyfr-labs-upstash-redis-rest-token-preview/credential
+
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -45,19 +56,19 @@ jobs:
       - name: Run sync (quick mode)
         if: github.event.inputs.mode == 'quick' || github.event_name == 'schedule'
         env:
-          UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
-          UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
-          UPSTASH_REDIS_REST_URL_PREVIEW: ${{ secrets.UPSTASH_REDIS_REST_URL_PREVIEW }}
-          UPSTASH_REDIS_REST_TOKEN_PREVIEW: ${{ secrets.UPSTASH_REDIS_REST_TOKEN_PREVIEW }}
+          UPSTASH_REDIS_REST_URL: $UPSTASH_REDIS_REST_URL
+          UPSTASH_REDIS_REST_TOKEN: $UPSTASH_REDIS_REST_TOKEN
+          UPSTASH_REDIS_REST_URL_PREVIEW: $UPSTASH_REDIS_REST_URL_PREVIEW
+          UPSTASH_REDIS_REST_TOKEN_PREVIEW: $UPSTASH_REDIS_REST_TOKEN_PREVIEW
         run: npm run sync:metrics:quick
 
       - name: Run sync (full mode)
         if: github.event.inputs.mode == 'full' && github.event_name == 'workflow_dispatch'
         env:
-          UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
-          UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
-          UPSTASH_REDIS_REST_URL_PREVIEW: ${{ secrets.UPSTASH_REDIS_REST_URL_PREVIEW }}
-          UPSTASH_REDIS_REST_TOKEN_PREVIEW: ${{ secrets.UPSTASH_REDIS_REST_TOKEN_PREVIEW }}
+          UPSTASH_REDIS_REST_URL: $UPSTASH_REDIS_REST_URL
+          UPSTASH_REDIS_REST_TOKEN: $UPSTASH_REDIS_REST_TOKEN
+          UPSTASH_REDIS_REST_URL_PREVIEW: $UPSTASH_REDIS_REST_URL_PREVIEW
+          UPSTASH_REDIS_REST_TOKEN_PREVIEW: $UPSTASH_REDIS_REST_TOKEN_PREVIEW
         run: npm run sync:metrics
 
       - name: Report sync status

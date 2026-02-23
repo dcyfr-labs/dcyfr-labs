@@ -101,6 +101,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: op://Development/dcyfr-labs-vercel-automation-bypass-secret/password
+
 
       - name: Install Nuclei
         run: |
@@ -153,7 +161,7 @@ jobs:
         env:
           TARGET_URL: ${{ needs.check-deployment.outputs.target_url }}
           SEVERITY: ${{ github.event.inputs.severity_threshold || env.SEVERITY_THRESHOLD }}
-          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: $VERCEL_AUTOMATION_BYPASS_SECRET
         run: |
           # Build target URL with Vercel authentication bypass ONLY for protected preview (.dev)
           # Production (.ai) is public and doesn't require bypass

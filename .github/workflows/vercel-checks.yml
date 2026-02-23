@@ -39,6 +39,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          VERCEL_TOKEN: op://CI-CD/dcyfr-labs-vercel-token/credential
+          LHCI_GITHUB_APP_TOKEN: op://CI-CD/dcyfr-labs-lhci-github-app-token/credential
+          VERCEL_AUTOMATION_BYPASS_SECRET: op://Development/dcyfr-labs-vercel-automation-bypass-secret/password
+
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -58,7 +68,7 @@ jobs:
         run: |
           RESPONSE=$(curl -s -X POST \
             "https://api.vercel.com/v1/deployments/${{ env.DEPLOYMENT_ID }}/checks" \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{
               "name": "Bundle Size Validation",
@@ -76,7 +86,7 @@ jobs:
         run: |
           curl -s -X PATCH \
             "https://api.vercel.com/v1/deployments/${{ env.DEPLOYMENT_ID }}/checks/${{ steps.create-bundle-check.outputs.check_id }}" \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{
               "status": "running",
@@ -126,7 +136,7 @@ jobs:
           
           curl -s -X PATCH \
             "https://api.vercel.com/v1/deployments/${{ env.DEPLOYMENT_ID }}/checks/${{ steps.create-bundle-check.outputs.check_id }}" \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
             -H "Content-Type: application/json" \
             -d "{
               \"status\": \"completed\",
@@ -146,7 +156,7 @@ jobs:
         run: |
           RESPONSE=$(curl -s -X POST \
             "https://api.vercel.com/v1/deployments/${{ env.DEPLOYMENT_ID }}/checks" \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{
               "name": "Lighthouse Performance",
@@ -164,7 +174,7 @@ jobs:
         run: |
           curl -s -X PATCH \
             "https://api.vercel.com/v1/deployments/${{ env.DEPLOYMENT_ID }}/checks/${{ steps.create-lighthouse-check.outputs.check_id }}" \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{
               "status": "running",
@@ -181,9 +191,9 @@ jobs:
         id: lighthouse
         continue-on-error: true
         env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          LHCI_GITHUB_APP_TOKEN: $LHCI_GITHUB_APP_TOKEN
           DEPLOYMENT_URL: ${{ env.DEPLOYMENT_URL }}
-          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: $VERCEL_AUTOMATION_BYPASS_SECRET
         run: |
           echo "🔦 Running Lighthouse audits..."
           
@@ -248,7 +258,7 @@ jobs:
           
           curl -s -X PATCH \
             "https://api.vercel.com/v1/deployments/${{ env.DEPLOYMENT_ID }}/checks/${{ steps.create-lighthouse-check.outputs.check_id }}" \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
             -H "Content-Type: application/json" \
             -d "{
               \"status\": \"completed\",
@@ -268,7 +278,7 @@ jobs:
         run: |
           RESPONSE=$(curl -s -X POST \
             "https://api.vercel.com/v1/deployments/${{ env.DEPLOYMENT_ID }}/checks" \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{
               "name": "Performance Baseline Validation",
@@ -340,7 +350,7 @@ jobs:
           
           curl -s -X PATCH \
             "https://api.vercel.com/v1/deployments/${{ env.DEPLOYMENT_ID }}/checks/${{ steps.create-baseline-check.outputs.check_id }}" \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
             -H "Content-Type: application/json" \
             -d "{
               \"status\": \"completed\",

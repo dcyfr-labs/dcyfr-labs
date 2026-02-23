@@ -51,7 +51,7 @@ jobs:
       - name: Run Semgrep scan
         id: semgrep
         env:
-          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+          SEMGREP_APP_TOKEN: $SEMGREP_APP_TOKEN
         run: |
           SEVERITY="${{ github.event.inputs.severity || 'WARNING' }}"
 
@@ -218,3 +218,11 @@ jobs:
           echo "❌ Semgrep detected ${{ steps.semgrep.outputs.error_count }} critical security issue(s)"
           echo "Review Security > Code scanning alerts for details"
           exit 1
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          SEMGREP_APP_TOKEN: op://CI-CD/dcyfr-labs-semgrep-app-token/credential
+

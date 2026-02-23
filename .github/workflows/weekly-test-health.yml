@@ -29,6 +29,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          SENTRY_AUTH_TOKEN: op://Development/dcyfr-labs-sentry-auth-token/credential
+
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -67,7 +75,7 @@ jobs:
       - name: Analyze test health
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_AUTH_TOKEN: $SENTRY_AUTH_TOKEN
           SENTRY_ORG: dcyfr-labs
           SENTRY_PROJECT: dcyfr-labs
           GITHUB_REPOSITORY: ${{ github.repository }}
