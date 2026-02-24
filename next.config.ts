@@ -2,7 +2,6 @@ import { withSentryConfig } from '@sentry/nextjs';
 import type { NextConfig } from 'next';
 import bundleAnalyzer from '@next/bundle-analyzer';
 // import { withBotId } from "botid/next/config"; // Temporarily disabled
-import { withAxiom } from 'next-axiom';
 import { cpus } from 'os';
 
 const withBundleAnalyzer = bundleAnalyzer({
@@ -171,7 +170,7 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withSentryConfig(withBundleAnalyzer(withAxiom(nextConfig)), {
+export default withSentryConfig(withBundleAnalyzer(nextConfig), {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 

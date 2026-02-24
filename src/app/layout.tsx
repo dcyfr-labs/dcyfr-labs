@@ -27,7 +27,7 @@ import { NavigationShortcutsProvider } from '@/components/common';
 import { SearchProvider } from '@/components/search';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { AxiomWebVitals } from 'next-axiom';
+import { AxiomWebVitals } from '@/lib/axiom/web-vitals';
 import { headers } from 'next/headers';
 
 // Official Vercel Geist fonts from npm package
@@ -200,7 +200,7 @@ export default async function RootLayout({
                 <NavigationShortcutsProvider />
                 <SiteHeader />
                 {/* Root layout - provides main element for all pages */}
-                { }
+                {}
                 <main
                   id="main-content"
                   className={`min-h-[calc(100dvh-128px)] overflow-x-clip overflow-y-visible ${MOBILE_SAFE_PADDING}`}

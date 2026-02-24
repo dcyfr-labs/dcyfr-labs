@@ -20,7 +20,7 @@ vi.mock('@/components/features/layout-utilities', () => ({ LayoutUtilities: () =
 vi.mock('@/components/features/scroll-to-anchor', () => ({ ScrollToAnchor: () => <div /> }));
 vi.mock('@vercel/analytics/react', () => ({ Analytics: () => <></> }));
 vi.mock('@vercel/speed-insights/next', () => ({ SpeedInsights: () => <></> }));
-vi.mock('next-axiom', () => ({ AxiomWebVitals: () => <></> }));
+vi.mock('@/lib/axiom/web-vitals', () => ({ AxiomWebVitals: () => <></> }));
 vi.mock('next/headers', () => ({ headers: () => ({ get: (_k: string) => null }) }));
 
 describe('RootLayout (simulated integration)', () => {

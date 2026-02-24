@@ -323,6 +323,9 @@
     ]
   },
   "dependencies": {
+    "@axiomhq/logging": "^0.2.0",
+    "@axiomhq/nextjs": "^0.2.0",
+    "@axiomhq/react": "^0.2.0",
     "@dcyfr/ai": "^1.0.4",
     "@giscus/react": "^3.1.0",
     "@google/genai": "^1.41.0",
@@ -370,7 +373,6 @@
     "lucide-react": "^0.564.0",
     "minisearch": "^7.2.0",
     "next": "^16.1.5",
-    "next-axiom": "^1.9.3",
     "next-mdx-remote": "^6.0.0",
     "next-themes": "^0.4.6",
     "react": "^19.2.4",

@@ -8,7 +8,7 @@
  * to the existing dcyfr-labs observability infrastructure.
  */
 
-import { Logger } from 'next-axiom';
+import { createServerLogger } from '@/lib/axiom/server-logger';
 import * as Sentry from '@sentry/nextjs';
 
 // Delegation event types that we'll track
@@ -24,10 +24,9 @@ export interface DelegationEvent {
   timestamp: number;
 }
 
-// Axiom logger instance for delegation events
-const delegationLogger = new Logger({
-  source: 'delegation-framework',
-});
+// Axiom logger instance for delegation events (gracefully degrades to console
+// when AXIOM_TOKEN is not configured)
+const delegationLogger = createServerLogger(process.env.AXIOM_DATASET_AGENTS ?? 'dcyfr-agents');
 
 /**
  * Stream delegation event to Axiom for real-time analytics
@@ -35,6 +34,7 @@ const delegationLogger = new Logger({
 export function streamToAxiom(event: DelegationEvent): void {
   try {
     delegationLogger.info('delegation_event', {
+      source: 'delegation-framework',
       event_type: event.type,
       contract_id: event.contractId,
       delegator_agent_id: event.delegatorAgentId,
@@ -46,9 +46,9 @@ export function streamToAxiom(event: DelegationEvent): void {
       metadata: event.metadata,
     });
 
-    // Flush immediately for important events
+    // Flush immediately for important events (Promise — fire-and-forget is fine)
     if (event.type === 'delegation_failed' || event.error) {
-      delegationLogger.flush();
+      void delegationLogger.flush();
     }
   } catch (error) {
     console.error('Failed to stream delegation event to Axiom:', error);
