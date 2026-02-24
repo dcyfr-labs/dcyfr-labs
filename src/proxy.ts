@@ -2,6 +2,31 @@ import { NextResponse } from 'next/server';
 import { SITE_DOMAIN } from '@/lib/site-config';
 import type { NextRequest } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
+import { transformMiddlewareRequest } from '@axiomhq/nextjs';
+import { Logger, SimpleFetchTransport, ConsoleTransport } from '@axiomhq/logging';
+import type { Transport } from '@axiomhq/logging';
+
+// ─── Axiom request logging (edge-compatible, graceful no-op when token absent) ─
+function buildEdgeLogger(): Logger {
+  const dataset = process.env.AXIOM_DATASET_LABS ?? 'dcyfr-labs';
+  const transports: [Transport, ...Transport[]] = [new ConsoleTransport({ prettyPrint: false })];
+  if (process.env.AXIOM_TOKEN) {
+    transports.push(
+      new SimpleFetchTransport({
+        input: `https://api.axiom.co/v1/datasets/${dataset}/ingest`,
+        init: {
+          headers: {
+            Authorization: `Bearer ${process.env.AXIOM_TOKEN}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      })
+    );
+  }
+  return new Logger({ transports });
+}
+
+const axiomLogger = buildEdgeLogger();
 
 /**
  * Suspicious paths that indicate reconnaissance or attack attempts.
@@ -365,6 +390,10 @@ export default function proxy(request: NextRequest) {
 
   // Set CSP header with nonce
   response.headers.set('Content-Security-Policy', cspHeader);
+
+  // Log request to Axiom (fire-and-forget; no-ops when AXIOM_TOKEN is absent)
+  const [axiomMessage, axiomReport] = transformMiddlewareRequest(request);
+  void axiomLogger.info(axiomMessage, axiomReport);
 
   // Set nonce as a cookie for additional reliability
   // This ensures it's available through multiple mechanisms
