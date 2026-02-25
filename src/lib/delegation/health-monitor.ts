@@ -7,17 +7,97 @@
  *
  * @module lib/delegation/health-monitor
  * @see packages/ai/delegation/monitoring.ts
+ * 
+ * TODO: RE-ENABLE after @dcyfr/ai@1.0.5 is published
+ * This file is temporarily disabled because the delegation health monitoring
+ * exports were added to @dcyfr/ai source after v1.0.4 was published.
+ * 
+ * Action required:
+ * 1. Build and publish @dcyfr/ai@1.0.5 with delegation health monitoring exports
+ * 2. Update dcyfr-labs package.json to use @dcyfr/ai@^1.0.5
+ * 3. Uncomment all code below
+ * 4. Remove these TODO comments
  */
 
-import {
-  DelegationHealthMonitor,
-  getHealthMonitor,
-  type SystemHealthMetrics,
-  type Alert,
-  type AlertRule,
-} from '@dcyfr/ai';
-import { createServerLogger } from '@/lib/axiom/server-logger';
-import * as Sentry from '@sentry/nextjs';
+// TEMPORARILY DISABLED - See TODO above
+// import {
+//   DelegationHealthMonitor,
+//   getHealthMonitor,
+//   type SystemHealthMetrics,
+//   type Alert,
+//   type AlertRule,
+// } from '@dcyfr/ai';
+// import { createServerLogger } from '@/lib/axiom/server-logger';
+// import * as Sentry from '@sentry/nextjs';
+
+// ---------------------------------------------------------------------------
+// STUB TYPES AND EXPORTS - TO BE REPLACED WHEN RE-ENABLED
+// ---------------------------------------------------------------------------
+
+export interface SlaStatus {
+  verificationTurnaroundOk: boolean;
+  successRateOk: boolean;
+  latencyOk: boolean;
+  reputationOk: boolean;
+  overall: 'passing' | 'degraded' | 'failing';
+}
+
+export interface DelegationHealthSnapshot {
+  timestamp: string;
+  healthScore: number;
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  sla: SlaStatus;
+  metrics: Record<string, unknown>;
+  activeAlerts: Array<unknown>;
+  recentAlerts: Array<unknown>;
+}
+
+/**
+ * STUB: Placeholder until @dcyfr/ai@1.0.5 is published
+ */
+export function initDelegationHealthMonitor(_intervalMs = 30_000): null {
+  console.warn('[delegation-health-monitor] DISABLED - waiting for @dcyfr/ai@1.0.5');
+  return null;
+}
+
+/**
+ * STUB: Placeholder until @dcyfr/ai@1.0.5 is published
+ */
+export function getDelegationHealthSnapshot(): DelegationHealthSnapshot {
+  console.warn('[delegation-health-monitor] DISABLED - waiting for @dcyfr/ai@1.0.5');
+  return {
+    timestamp: new Date().toISOString(),
+    healthScore: 100,
+    status: 'healthy',
+    sla: {
+      verificationTurnaroundOk: true,
+      successRateOk: true,
+      latencyOk: true,
+      reputationOk: true,
+      overall: 'passing',
+    },
+    metrics: {},
+    activeAlerts: [],
+    recentAlerts: [],
+  };
+}
+
+/**
+ * STUB: Placeholder until @dcyfr/ai@1.0.5 is published
+ */
+export function reportAlertToSentry(_alert: unknown): void {
+  console.warn('[delegation-health-monitor] DISABLED - waiting for @dcyfr/ai@1.0.5');
+}
+
+/*
+// ---------------------------------------------------------------------------
+// ORIGINAL CODE - COMMENTED OUT UNTIL @dcyfr/ai@1.0.5 IS PUBLISHED
+// ---------------------------------------------------------------------------
+
+/*
+// ---------------------------------------------------------------------------
+// ORIGINAL CODE - COMMENTED OUT UNTIL @dcyfr/ai@1.0.5 IS PUBLISHED
+// ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
 // SLA constants
@@ -249,3 +329,8 @@ export function reportAlertToSentry(alert: Alert): void {
     },
   });
 }
+
+// ---------------------------------------------------------------------------
+// END OF COMMENTED CODE
+// ---------------------------------------------------------------------------
+*/
