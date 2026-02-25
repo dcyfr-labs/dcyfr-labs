@@ -1,0 +1,254 @@
+name: Issue Triage Automation
+
+##
+# Cross-repo wrapper: runs dcyfr-workspace issue triage automation on dcyfr-labs issues.
+#
+# The automation scripts live in dcyfr/dcyfr-workspace. This workflow checks
+# out dcyfr-workspace to access the scripts, then runs them targeting the
+# dcyfr-labs repo via the --owner / --repo flags and GitHub API calls within
+# the triage script.
+#
+# Features:
+#   1. AI-powered issue classification (type:bug, type:feature, …)
+#   2. Automated label application
+#   3. Project board assignment
+#   4. Stale issue detection
+#
+# Dry-run mode is ENABLED by default. Set DEFAULT_DRY_RUN to 'false' after
+# validating label accuracy (see github-automation-platform tasks 4.6.x).
+##
+
+on:
+  issues:
+    types: [opened, edited, labeled, unlabeled]
+
+  schedule:
+    # Run stale detection daily at 08:00 UTC (batch mode)
+    - cron: '0 8 * * *'
+
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Issue number to triage (omit for batch mode)'
+        required: false
+        type: string
+      dry_run:
+        description: 'Log results only — do not apply labels or post comments'
+        required: false
+        default: 'true'
+        type: boolean
+      batch:
+        description: 'Triage all open issues (overrides issue_number)'
+        required: false
+        default: 'false'
+        type: boolean
+      limit:
+        description: 'Max issues to process in batch mode'
+        required: false
+        default: '20'
+        type: string
+      no_comment:
+        description: 'Skip posting triage comments on issues'
+        required: false
+        default: 'false'
+        type: boolean
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+  repository-projects: write
+
+concurrency:
+  group: issue-triage-${{ github.event.issue.number || inputs.issue_number || 'batch' }}
+  cancel-in-progress: true
+
+env:
+  # Dry-run enabled for initial validation week (tasks 4.6.1–4.6.6).
+  # Flip to 'false' once label accuracy is confirmed ≥90%.
+  DEFAULT_DRY_RUN: 'true'
+  NODE_VERSION: '24'
+
+jobs:
+  issue-triage:
+    name: Automated Issue Triage (dcyfr-labs)
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Resolve run parameters ────────────────────────────────────────
+      - name: Resolve issue number, batch mode, and dry-run
+        id: params
+        env:
+          INPUT_ISSUE_NUMBER: ${{ inputs.issue_number }}
+          INPUT_DRY_RUN: ${{ inputs.dry_run }}
+          INPUT_BATCH: ${{ inputs.batch }}
+          INPUT_LIMIT: ${{ inputs.limit }}
+          INPUT_NO_COMMENT: ${{ inputs.no_comment }}
+          ISSUE_FROM_EVENT: ${{ github.event.issue.number }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          case "${EVENT_NAME}" in
+            issues)
+              ISSUE_NUMBER="${ISSUE_FROM_EVENT}"
+              DRY_RUN="${DEFAULT_DRY_RUN}"
+              BATCH_MODE="false"
+              LIMIT="50"
+              NO_COMMENT="false"
+              ;;
+            schedule)
+              ISSUE_NUMBER=""
+              DRY_RUN="${DEFAULT_DRY_RUN}"
+              BATCH_MODE="true"
+              LIMIT="50"
+              NO_COMMENT="false"
+              ;;
+            workflow_dispatch)
+              ISSUE_NUMBER="${INPUT_ISSUE_NUMBER}"
+              DRY_RUN="${INPUT_DRY_RUN:-true}"
+              BATCH_MODE="${INPUT_BATCH:-false}"
+              LIMIT="${INPUT_LIMIT:-20}"
+              NO_COMMENT="${INPUT_NO_COMMENT:-false}"
+              # Batch mode when no issue number specified
+              if [[ -z "${ISSUE_NUMBER}" ]]; then
+                BATCH_MODE="true"
+              fi
+              ;;
+            *)
+              echo "::warning::Unexpected event: ${EVENT_NAME}"
+              exit 1
+              ;;
+          esac
+
+          echo "issue-number=${ISSUE_NUMBER}"   >> "$GITHUB_OUTPUT"
+          echo "dry-run=${DRY_RUN}"             >> "$GITHUB_OUTPUT"
+          echo "batch-mode=${BATCH_MODE}"        >> "$GITHUB_OUTPUT"
+          echo "limit=${LIMIT}"                  >> "$GITHUB_OUTPUT"
+          echo "no-comment=${NO_COMMENT}"        >> "$GITHUB_OUTPUT"
+
+          if [[ "${BATCH_MODE}" == "true" ]]; then
+            echo "🔍 Batch triage | limit=${LIMIT} | dry-run=${DRY_RUN} | repo=dcyfr/dcyfr-labs"
+          else
+            echo "🔍 Issue #${ISSUE_NUMBER} | dry-run=${DRY_RUN} | repo=dcyfr/dcyfr-labs"
+          fi
+
+      # ── 2. Checkout dcyfr-workspace for automation scripts ───────────────
+      # The triage scripts live in dcyfr-workspace, not dcyfr-labs.
+      # Issue data is fetched via GitHub API using --owner / --repo flags.
+      - name: Checkout dcyfr-workspace (automation scripts)
+        uses: actions/checkout@v4
+        with:
+          repository: dcyfr/dcyfr-workspace
+          # Public repo: no token required.
+          # If repo is private, add: token: ${{ secrets.DCYFR_AUTOMATION_TOKEN }}
+          fetch-depth: 1
+
+      # ── 3. Set up Node.js ────────────────────────────────────────────────
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      # ── 4. Install dependencies ──────────────────────────────────────────
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      # ── 5. Run issue triage script ───────────────────────────────────────
+      - name: Run issue triage automation
+        id: triage
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_NUMBER="${{ steps.params.outputs.issue-number }}"
+          DRY_RUN="${{ steps.params.outputs.dry-run }}"
+          BATCH_MODE="${{ steps.params.outputs.batch-mode }}"
+          LIMIT="${{ steps.params.outputs.limit }}"
+          NO_COMMENT="${{ steps.params.outputs.no-comment }}"
+
+          ARGS=(
+            "--owner" "dcyfr"
+            "--repo"  "dcyfr-labs"
+            "--verbose"
+          )
+
+          if [[ "${BATCH_MODE}" == "true" ]]; then
+            ARGS+=("--batch" "--limit" "${LIMIT}")
+            echo "▶ Running batch issue triage on dcyfr-labs (limit=${LIMIT}, dry-run=${DRY_RUN})"
+          else
+            ARGS+=("--issue" "${ISSUE_NUMBER}")
+            echo "▶ Running issue triage on dcyfr-labs #${ISSUE_NUMBER} (dry-run=${DRY_RUN})"
+          fi
+
+          if [[ "${DRY_RUN}" == "true" ]]; then
+            ARGS+=("--dry-run")
+          fi
+
+          if [[ "${NO_COMMENT}" == "true" ]]; then
+            ARGS+=("--no-comment")
+          fi
+
+          set +e
+          npx tsx scripts/issue-triage-automation.ts "${ARGS[@]}" 2>&1
+          EXIT_CODE=$?
+          set -e
+
+          echo "exit-code=${EXIT_CODE}" >> "$GITHUB_OUTPUT"
+
+          if [[ "${EXIT_CODE}" -eq 0 ]]; then
+            echo "triage-status=passed"  >> "$GITHUB_OUTPUT"
+            echo "✅ Triage completed successfully"
+          elif [[ "${EXIT_CODE}" -eq 1 ]]; then
+            echo "triage-status=warning" >> "$GITHUB_OUTPUT"
+            echo "⚠️  Triage completed with warnings"
+          else
+            echo "triage-status=error"   >> "$GITHUB_OUTPUT"
+            echo "❌ Triage script error (exit ${EXIT_CODE})"
+            exit "${EXIT_CODE}"
+          fi
+
+      # ── 6. Write GitHub Step Summary ─────────────────────────────────────
+      - name: Write step summary
+        if: always()
+        run: |
+          ISSUE_NUMBER="${{ steps.params.outputs.issue-number }}"
+          DRY_RUN="${{ steps.params.outputs.dry-run }}"
+          BATCH_MODE="${{ steps.params.outputs.batch-mode }}"
+          LIMIT="${{ steps.params.outputs.limit }}"
+          EXIT_CODE="${{ steps.triage.outputs.exit-code }}"
+          STATUS="${{ steps.triage.outputs.triage-status }}"
+          EVENT_NAME="${{ github.event_name }}"
+
+          {
+            if [[ "${BATCH_MODE}" == "true" ]]; then
+              echo "## Issue Triage Automation — dcyfr-labs (batch, limit=${LIMIT})"
+            else
+              echo "## Issue Triage Automation — dcyfr-labs Issue #${ISSUE_NUMBER}"
+            fi
+            echo ""
+            echo "| Parameter | Value |"
+            echo "|-----------|-------|"
+            echo "| Trigger | \`${EVENT_NAME}\` |"
+            if [[ "${BATCH_MODE}" == "true" ]]; then
+              echo "| Mode | batch (limit=${LIMIT}) |"
+            else
+              echo "| Issue | #${ISSUE_NUMBER} |"
+            fi
+            echo "| Repository | \`dcyfr/dcyfr-labs\` |"
+            echo "| Scripts | \`dcyfr/dcyfr-workspace\` |"
+            echo "| Dry-run | \`${DRY_RUN}\` |"
+            echo "| Exit code | \`${EXIT_CODE:-N/A}\` |"
+            echo "| Status | ${STATUS:-unknown} |"
+            echo ""
+            if [[ "${DRY_RUN}" == "true" ]]; then
+              echo "> **Dry-run mode active** — triage results logged, no labels or comments applied."
+              echo "> Flip \`DEFAULT_DRY_RUN: 'false'\` after label accuracy is confirmed ≥90%."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # ── 7. Fail on script error ───────────────────────────────────────────
+      - name: Check for script errors
+        if: steps.triage.outputs.exit-code == '2'
+        run: |
+          echo "::error title=Issue Triage Script Error::The triage script exited with an error. Check logs above."
+          exit 1

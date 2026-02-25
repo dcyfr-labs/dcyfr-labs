@@ -1,0 +1,183 @@
+name: PR Review Automation
+
+##
+# Cross-repo wrapper: runs dcyfr-workspace PR review checks on dcyfr-labs PRs.
+#
+# The automation scripts live in dcyfr/dcyfr-workspace. This workflow checks
+# out dcyfr-workspace to access the scripts, then runs them targeting the
+# dcyfr-labs repo. File contents are fetched via the GitHub API when not
+# present locally (the scripts' built-in fallback).
+#
+# Checks performed:
+#   1. Design token compliance  — detects hardcoded Tailwind values
+#   2. Security pattern scanning — SQL injection, XSS, hardcoded secrets, …
+#   3. Test coverage verification — new source files must have test files
+#
+# Dry-run mode is ENABLED by default. Set DEFAULT_DRY_RUN to 'false' after
+# validating the false-positive rate (see github-automation-platform tasks 3.6.x).
+##
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to review (required for workflow_dispatch)'
+        required: true
+        type: string
+      dry_run:
+        description: 'Log results only — do not post a review comment'
+        required: false
+        default: 'true'
+        type: boolean
+      post_comment:
+        description: 'Force comment posting (overrides dry_run)'
+        required: false
+        default: 'false'
+        type: boolean
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: pr-review-${{ github.event.pull_request.number || inputs.pr_number }}
+  cancel-in-progress: true
+
+env:
+  # Dry-run enabled for initial validation week (tasks 3.6.1–3.6.6).
+  # Flip to 'false' once false-positive rate is confirmed <10%.
+  DEFAULT_DRY_RUN: 'true'
+  NODE_VERSION: '24'
+
+jobs:
+  pr-review:
+    name: Automated PR Review (dcyfr-labs)
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Resolve run parameters ────────────────────────────────────────
+      - name: Resolve PR number and dry-run mode
+        id: params
+        env:
+          INPUT_PR_NUMBER: ${{ inputs.pr_number }}
+          INPUT_DRY_RUN: ${{ inputs.dry_run }}
+          INPUT_POST_COMMENT: ${{ inputs.post_comment }}
+          PR_NUMBER_FROM_EVENT: ${{ github.event.pull_request.number }}
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            PR_NUMBER="${INPUT_PR_NUMBER}"
+            if [[ "${INPUT_POST_COMMENT}" == "true" ]]; then
+              DRY_RUN="false"
+            else
+              DRY_RUN="${INPUT_DRY_RUN:-true}"
+            fi
+          else
+            PR_NUMBER="${PR_NUMBER_FROM_EVENT}"
+            DRY_RUN="${DEFAULT_DRY_RUN}"
+          fi
+
+          echo "pr-number=${PR_NUMBER}"   >> "$GITHUB_OUTPUT"
+          echo "dry-run=${DRY_RUN}"       >> "$GITHUB_OUTPUT"
+          echo "🔍 PR #${PR_NUMBER} | dry-run=${DRY_RUN} | repo=dcyfr/dcyfr-labs"
+
+      # ── 2. Checkout dcyfr-workspace for automation scripts ───────────────
+      # The review scripts live in dcyfr-workspace, not dcyfr-labs.
+      # File contents for dcyfr-labs PRs are fetched via GitHub API by the
+      # script's built-in fallback when files are not present locally.
+      - name: Checkout dcyfr-workspace (automation scripts)
+        uses: actions/checkout@v4
+        with:
+          repository: dcyfr/dcyfr-workspace
+          # Public repo: no token required.
+          # If repo is private, add: token: ${{ secrets.DCYFR_AUTOMATION_TOKEN }}
+          fetch-depth: 1
+
+      # ── 3. Set up Node.js ────────────────────────────────────────────────
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      # ── 4. Install dependencies ──────────────────────────────────────────
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      # ── 5. Run PR review script ──────────────────────────────────────────
+      - name: Run PR review automation
+        id: review
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER="${{ steps.params.outputs.pr-number }}"
+          DRY_RUN="${{ steps.params.outputs.dry-run }}"
+
+          ARGS=(
+            "--pr"    "${PR_NUMBER}"
+            "--owner" "dcyfr"
+            "--repo"  "dcyfr-labs"
+          )
+          if [[ "${DRY_RUN}" == "true" ]]; then
+            ARGS+=("--dry-run")
+          fi
+
+          echo "▶ Running PR review on dcyfr-labs PR #${PR_NUMBER} (dry-run=${DRY_RUN})"
+
+          set +e
+          npx tsx scripts/pr-review-automation.ts "${ARGS[@]}" 2>&1
+          EXIT_CODE=$?
+          set -e
+
+          echo "exit-code=${EXIT_CODE}" >> "$GITHUB_OUTPUT"
+
+          if [[ "${EXIT_CODE}" -eq 0 ]]; then
+            echo "review-status=passed"  >> "$GITHUB_OUTPUT"
+            echo "✅ All checks passed"
+          elif [[ "${EXIT_CODE}" -eq 1 ]]; then
+            echo "review-status=warning" >> "$GITHUB_OUTPUT"
+            echo "⚠️  Issues detected"
+          else
+            echo "review-status=error"   >> "$GITHUB_OUTPUT"
+            echo "❌ Review script error (exit ${EXIT_CODE})"
+            exit "${EXIT_CODE}"
+          fi
+
+      # ── 6. Write GitHub Step Summary ─────────────────────────────────────
+      - name: Write step summary
+        if: always()
+        run: |
+          PR_NUMBER="${{ steps.params.outputs.pr-number }}"
+          DRY_RUN="${{ steps.params.outputs.dry-run }}"
+          EXIT_CODE="${{ steps.review.outputs.exit-code }}"
+          STATUS="${{ steps.review.outputs.review-status }}"
+
+          {
+            echo "## PR Review Automation — dcyfr-labs PR #${PR_NUMBER}"
+            echo ""
+            echo "| Parameter | Value |"
+            echo "|-----------|-------|"
+            echo "| PR | #${PR_NUMBER} |"
+            echo "| Repository | \`dcyfr/dcyfr-labs\` |"
+            echo "| Scripts | \`dcyfr/dcyfr-workspace\` |"
+            echo "| Dry-run | \`${DRY_RUN}\` |"
+            echo "| Exit code | \`${EXIT_CODE:-N/A}\` |"
+            echo "| Status | ${STATUS:-unknown} |"
+            echo ""
+            if [[ "${DRY_RUN}" == "true" ]]; then
+              echo "> **Dry-run mode active** — review results logged, no comment posted."
+              echo "> Flip \`DEFAULT_DRY_RUN: 'false'\` after false-positive rate is confirmed <10%."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # ── 7. Fail on script error ───────────────────────────────────────────
+      - name: Check for script errors
+        if: steps.review.outputs.exit-code == '2'
+        run: |
+          echo "::error title=PR Review Script Error::The PR review script exited with an error. Check logs above."
+          exit 1
