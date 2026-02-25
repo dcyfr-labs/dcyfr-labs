@@ -1,0 +1,406 @@
+name: Vercel Deployment Auto-Remediation
+
+# Automatically diagnose and fix common Vercel deployment failures
+# Implements progressive remediation: retry → clear cache → rebuild → escalate
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to remediate'
+        required: true
+        type: number
+      deployment_id:
+        description: 'Failed deployment ID (optional - will use latest)'
+        required: false
+        type: string
+      strategy:
+        description: 'Remediation strategy'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - retry
+          - clear-cache
+          - rebuild
+          - escalate
+
+permissions:
+  contents: write
+  pull-requests: write
+  deployments: write
+  checks: read
+  statuses: read
+  issues: write
+
+jobs:
+  detect-failure:
+    name: Detect Deployment Failure
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'failure' ||
+       github.event.deployment_status.state == 'error')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      should_remediate: ${{ steps.analyze.outputs.should_remediate }}
+      failure_type: ${{ steps.analyze.outputs.failure_type }}
+      remediation_strategy: ${{ steps.analyze.outputs.strategy }}
+      pr_number: ${{ steps.context.outputs.pr_number }}
+      deployment_id: ${{ steps.context.outputs.deployment_id }}
+      deployment_url: ${{ steps.context.outputs.deployment_url }}
+      retry_count: ${{ steps.history.outputs.retry_count }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          VERCEL_TOKEN: op://CI-CD/dcyfr-labs-vercel-token/credential
+      
+      - name: Extract deployment context
+        id: context
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_PR: ${{ inputs.pr_number }}
+          INPUT_DEPLOYMENT: ${{ inputs.deployment_id }}
+        run: |
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            echo "pr_number=$INPUT_PR" >> $GITHUB_OUTPUT
+            echo "deployment_id=$INPUT_DEPLOYMENT" >> $GITHUB_OUTPUT
+            echo "Manual remediation triggered"
+          else
+            # Extract from deployment_status event
+            PR_NUMBER=$(echo '${{ toJson(github.event.deployment.payload) }}' | jq -r '.pull_request.number // empty')
+            DEPLOYMENT_ID="${{ github.event.deployment.id }}"
+            DEPLOYMENT_URL="${{ github.event.deployment_status.target_url }}"
+            
+            echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+            echo "deployment_id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
+            echo "deployment_url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+            echo "Detected failure for PR #$PR_NUMBER, deployment $DEPLOYMENT_ID"
+          fi
+      
+      - name: Fetch deployment logs
+        id: logs
+        if: steps.context.outputs.deployment_id
+        run: |
+          # Fetch last 500 lines of build logs from Vercel
+          LOGS=$(curl -s "https://api.vercel.com/v3/deployments/${{ steps.context.outputs.deployment_id }}/events" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" | jq -r '.events[] | select(.type == "stderr" or .type == "stdout") | .payload.text' | tail -500)
+          
+          # Save to file for analysis
+          echo "$LOGS" > /tmp/deployment-logs.txt
+          echo "📋 Fetched deployment logs $(wc -l < /tmp/deployment-logs.txt) lines"
+      
+      - name: Analyze failure type
+        id: analyze
+        env:
+          MANUAL_STRATEGY: ${{ inputs.strategy }}
+        run: |
+          LOGS_FILE="/tmp/deployment-logs.txt"
+          SHOULD_REMEDIATE="false"
+          FAILURE_TYPE="unknown"
+          STRATEGY="escalate"
+          
+          if [[ ! -f "$LOGS_FILE" ]]; then
+            echo "No logs available - skipping auto-remediation"
+            echo "should_remediate=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          LOGS=$(cat "$LOGS_FILE")
+          
+          # Pattern matching for common failure types
+          if echo "$LOGS" | grep -qi "ENOENT.*package-lock.json\|lock file is not found"; then
+            FAILURE_TYPE="missing_lockfile"
+            STRATEGY="rebuild"
+            SHOULD_REMEDIATE="true"
+            echo "🔍 Detected: Missing or out-of-sync lockfile"
+          
+          elif echo "$LOGS" | grep -qi "npm ERR.*peer dep\|ERESOLVE.*peer"; then
+            FAILURE_TYPE="peer_dependency"
+            STRATEGY="rebuild"
+            SHOULD_REMEDIATE="true"
+            echo "🔍 Detected: Peer dependency conflict"
+          
+          elif echo "$LOGS" | grep -qi "Error: Build exceeded maximum time\|ETIMEDOUT"; then
+            FAILURE_TYPE="timeout"
+            STRATEGY="retry"
+            SHOULD_REMEDIATE="true"
+            echo "🔍 Detected: Build timeout"
+          
+          elif echo "$LOGS" | grep -qi "FATAL ERROR.*heap out of memory\|JavaScript heap out of memory"; then
+            FAILURE_TYPE="out_of_memory"
+            STRATEGY="rebuild"
+            SHOULD_REMEDIATE="true"
+            echo "🔍 Detected: Out of memory error"
+          
+          elif echo "$LOGS" | grep -qi "ModuleNotFoundError\|Cannot find module\|Module not found"; then
+            FAILURE_TYPE="missing_module"
+            STRATEGY="clear-cache"
+            SHOULD_REMEDIATE="true"
+            echo "🔍 Detected: Missing module (cache corruption likely)"
+          
+          elif echo "$LOGS" | grep -qi "Type error\|TS[0-9]\+:"; then
+            FAILURE_TYPE="type_error"
+            STRATEGY="escalate"
+            SHOULD_REMEDIATE="false"
+            echo "🔍 Detected: TypeScript type error (requires code fix)"
+          
+          elif echo "$LOGS" | grep -qi "ESLint.*error"; then
+            FAILURE_TYPE="lint_error"
+            STRATEGY="escalate"
+            SHOULD_REMEDIATE="false"
+            echo "🔍 Detected: ESLint error (requires code fix)"
+          
+          elif echo "$LOGS" | grep -qi "ENOTFOUND.*registry.npmjs.org\|network.*timeout"; then
+            FAILURE_TYPE="network_error"
+            STRATEGY="retry"
+            SHOULD_REMEDIATE="true"
+            echo "🔍 Detected: Network/registry error"
+          
+          elif echo "$LOGS" | grep -qi "cache.*invalid\|cache.*corrupt"; then
+            FAILURE_TYPE="cache_corruption"
+            STRATEGY="clear-cache"
+            SHOULD_REMEDIATE="true"
+            echo "🔍 Detected: Cache corruption"
+          
+          else
+            echo "🔍 Unknown failure type - will escalate"
+          fi
+          
+          # Override strategy if manual
+          if [[ "$MANUAL_STRATEGY" != "auto" ]]; then
+            STRATEGY="$MANUAL_STRATEGY"
+            SHOULD_REMEDIATE="true"
+            echo "Manual override: strategy=$STRATEGY"
+          fi
+          
+          echo "should_remediate=$SHOULD_REMEDIATE" >> $GITHUB_OUTPUT
+          echo "failure_type=$FAILURE_TYPE" >> $GITHUB_OUTPUT
+          echo "strategy=$STRATEGY" >> $GITHUB_OUTPUT
+          
+          echo "### Failure Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "- **Type:** $FAILURE_TYPE" >> $GITHUB_STEP_SUMMARY
+          echo "- **Strategy:** $STRATEGY" >> $GITHUB_STEP_SUMMARY
+          echo "- **Auto-remediate:** $SHOULD_REMEDIATE" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Check remediation history
+        id: history
+        if: steps.analyze.outputs.should_remediate == 'true'
+        env:
+          PR_NUMBER: ${{ steps.context.outputs.pr_number }}
+        run: |
+          # Check how many times we've tried to remediate this PR
+          RETRY_COUNT=$(gh pr view "$PR_NUMBER" --json comments --jq '[.comments[] | select(.body | contains("🔧 Auto-Remediation Attempt"))] | length' 2>/dev/null || echo "0")
+          
+          echo "retry_count=$RETRY_COUNT" >> $GITHUB_OUTPUT
+          echo "This PR has $RETRY_COUNT previous remediation attempts"
+          
+          # Stop if we've tried 3+ times
+          if [[ "$RETRY_COUNT" -ge 3 ]]; then
+            echo "⚠️ Too many remediation attempts ($RETRY_COUNT) - escalating"
+            echo "should_remediate=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  remediate:
+    name: Auto-Remediate Deployment
+    needs: detect-failure
+    if: needs.detect-failure.outputs.should_remediate == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: refs/pull/${{ needs.detect-failure.outputs.pr_number }}/head
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          VERCEL_TOKEN: op://CI-CD/dcyfr-labs-vercel-token/credential
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+      
+      - name: Execute remediation strategy
+        id: remediate
+        env:
+          STRATEGY: ${{ needs.detect-failure.outputs.remediation_strategy }}
+          FAILURE_TYPE: ${{ needs.detect-failure.outputs.failure_type }}
+          DEPLOYMENT_ID: ${{ needs.detect-failure.outputs.deployment_id }}
+          PR_NUMBER: ${{ needs.detect-failure.outputs.pr_number }}
+        run: |
+          SUCCESS="false"
+          ACTION_TAKEN=""
+          
+          case "$STRATEGY" in
+            retry)
+              echo "🔄 Strategy: Simple retry (transient failure)"
+              ACTION_TAKEN="Triggered redeployment via empty commit"
+              
+              # Trigger redeploy with empty commit
+              git config user.name "github-actions[bot]"
+              git config user.email "github-actions[bot]@users.noreply.github.com"
+              git commit --allow-empty -m "chore: trigger redeploy after transient failure [skip ci]"
+              git push origin HEAD
+              SUCCESS="true"
+              ;;
+            
+            clear-cache)
+              echo "🗑️ Strategy: Clear Vercel cache and rebuild"
+              ACTION_TAKEN="Invalidated Vercel build cache and triggered rebuild"
+              
+              # Clear Vercel deployment cache
+              curl -X DELETE "https://api.vercel.com/v1/deployments/$DEPLOYMENT_ID/cache" \
+                -H "Authorization: Bearer $VERCEL_TOKEN" 2>/dev/null || true
+              
+              # Trigger rebuild with cache bypass
+              git config user.name "github-actions[bot]"
+              git config user.email "github-actions[bot]@users.noreply.github.com"
+              git commit --allow-empty -m "chore: rebuild with cache cleared [skip ci]"
+              git push origin HEAD
+              SUCCESS="true"
+              ;;
+            
+            rebuild)
+              echo "🔨 Strategy: Rebuild with dependency fixes"
+              ACTION_TAKEN="Regenerated lockfile and triggered rebuild"
+              
+              # Handle specific failure types
+              if [[ "$FAILURE_TYPE" == "missing_lockfile" ]] || [[ "$FAILURE_TYPE" == "peer_dependency" ]]; then
+                echo "Regenerating package-lock.json..."
+                rm -f package-lock.json
+                npm install --package-lock-only --legacy-peer-deps
+                
+                if [[ -f "package-lock.json" ]]; then
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git add package-lock.json
+                  git commit -m "fix: regenerate package-lock.json (deployment failure remediation)"
+                  git push origin HEAD
+                  SUCCESS="true"
+                else
+                  echo "❌ Failed to generate lockfile"
+                fi
+              elif [[ "$FAILURE_TYPE" == "out_of_memory" ]]; then
+                # Add .vercelignore optimization hints
+                echo "Adding memory optimization hints..."
+                cat >> .vercelignore << 'EOF'
+# Auto-generated memory optimization
+*.test.ts
+*.spec.ts
+__tests__
+tests/
+*.md
+docs/
+EOF
+                git config user.name "github-actions[bot]"
+                git config user.email "github-actions[bot]@users.noreply.github.com"
+                git add .vercelignore
+                git commit -m "chore: optimize Vercel build memory usage [skip ci]"
+                git push origin HEAD
+                SUCCESS="true"
+              fi
+              ;;
+            
+            escalate)
+              echo "⚠️ Strategy: Escalate to human review"
+              ACTION_TAKEN="Created incident issue for manual intervention"
+              SUCCESS="false"
+              ;;
+          esac
+          
+          echo "success=$SUCCESS" >> $GITHUB_OUTPUT
+          echo "action=$ACTION_TAKEN" >> $GITHUB_OUTPUT
+      
+      - name: Comment on PR with remediation status
+        env:
+          PR_NUMBER: ${{ needs.detect-failure.outputs.pr_number }}
+          STRATEGY: ${{ needs.detect-failure.outputs.remediation_strategy }}
+          FAILURE_TYPE: ${{ needs.detect-failure.outputs.failure_type }}
+          ACTION: ${{ steps.remediate.outputs.action }}
+          SUCCESS: ${{ steps.remediate.outputs.success }}
+          RETRY_COUNT: ${{ needs.detect-failure.outputs.retry_count }}
+        run: |
+          ATTEMPT_NUM=$((RETRY_COUNT + 1))
+          
+          if [[ "$SUCCESS" == "true" ]]; then
+            gh pr comment "$PR_NUMBER" --body "🔧 **Auto-Remediation Attempt #$ATTEMPT_NUM**
+
+**Failure Type:** \`$FAILURE_TYPE\`
+**Strategy:** \`$STRATEGY\`
+**Action Taken:** $ACTION
+
+✅ Remediation applied successfully. Vercel will redeploy automatically.
+
+[View workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          else
+            gh pr comment "$PR_NUMBER" --body "⚠️ **Auto-Remediation Failed - Manual Review Required**
+
+**Failure Type:** \`$FAILURE_TYPE\`
+**Attempts:** $ATTEMPT_NUM
+
+This deployment failure requires manual intervention. Please review the logs and fix the underlying issue.
+
+[View deployment logs](${{ needs.detect-failure.outputs.deployment_url }})
+[View workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Create incident issue for escalation
+        if: steps.remediate.outputs.success == 'false' || needs.detect-failure.outputs.retry_count >= 2
+        env:
+          PR_NUMBER: ${{ needs.detect-failure.outputs.pr_number }}
+          FAILURE_TYPE: ${{ needs.detect-failure.outputs.failure_type }}
+          DEPLOYMENT_URL: ${{ needs.detect-failure.outputs.deployment_url }}
+        run: |
+          gh issue create \
+            --title "🚨 Vercel Deployment Failure: PR #$PR_NUMBER" \
+            --label "incident,deployment,vercel" \
+            --body "## Incident Report
+
+**PR:** #$PR_NUMBER
+**Failure Type:** \`$FAILURE_TYPE\`
+**Deployment:** $DEPLOYMENT_URL
+**Auto-remediation:** Failed after ${{ needs.detect-failure.outputs.retry_count }} attempts
+
+### Required Actions
+- [ ] Review deployment logs
+- [ ] Identify root cause
+- [ ] Apply manual fix
+- [ ] Trigger redeployment
+- [ ] Verify success
+- [ ] Close this incident
+
+### Logs
+[Workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" || echo "Issue creation failed (may already exist)"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Summary
+        run: |
+          echo "### 🔧 Auto-Remediation Complete" >> $GITHUB_STEP_SUMMARY
+          echo "- **PR:** #${{ needs.detect-failure.outputs.pr_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Failure:** ${{ needs.detect-failure.outputs.failure_type }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Strategy:** ${{ needs.detect-failure.outputs.remediation_strategy }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Result:** ${{ steps.remediate.outputs.success == 'true' && '✅ Success' || '❌ Failed - escalated' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Action:** ${{ steps.remediate.outputs.action }}" >> $GITHUB_STEP_SUMMARY

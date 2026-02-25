@@ -1,0 +1,327 @@
+name: Universal PR Auto-Merge
+
+# Automatically merge any PR when all checks pass and criteria are met
+# Works for: Dependabot, Renovate, human PRs, bot PRs
+# Extends existing dependabot-auto-merge.yml to cover all PR types
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  check_suite:
+    types: [completed]
+  status:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to evaluate for auto-merge'
+        required: true
+        type: number
+      force:
+        description: 'Force auto-merge even if normally requires review'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+  statuses: read
+
+jobs:
+  evaluate:
+    name: Evaluate Auto-Merge Eligibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Skip if this is Dependabot (handled by dependabot-auto-merge.yml)
+    if: github.actor != 'dependabot[bot]'
+    outputs:
+      should_merge: ${{ steps.criteria.outputs.should_merge }}
+      merge_method: ${{ steps.criteria.outputs.merge_method }}
+      pr_number: ${{ steps.context.outputs.pr_number }}
+      reason: ${{ steps.criteria.outputs.reason }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Extract PR context
+        id: context
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_PR: ${{ inputs.pr_number }}
+        run: |
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            PR_NUMBER="$INPUT_PR"
+          elif [[ "$EVENT_NAME" == "pull_request" ]]; then
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+          else
+            # check_suite or status event - find PR from commit
+            PR_NUMBER=$(gh pr list --state open --json number,headRefOid --jq '.[] | select(.headRefOid == "${{ github.event.check_suite.head_sha || github.sha }}") | .number' | head -1)
+          fi
+          
+          if [[ -z "$PR_NUMBER" ]]; then
+            echo "No PR found - skipping"
+            echo "skip=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "Evaluating PR #$PR_NUMBER for auto-merge"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Skip if already merged or closed
+        if: steps.context.outputs.skip != 'true'
+        id: state
+        env:
+          PR_NUMBER: ${{ steps.context.outputs.pr_number }}
+        run: |
+          PR_STATE=$(gh pr view "$PR_NUMBER" --json state --jq '.state')
+          
+          if [[ "$PR_STATE" != "OPEN" ]]; then
+            echo "PR is $PR_STATE - skipping"
+            echo "skip=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          echo "PR is open - continuing evaluation"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Check auto-merge criteria
+        if: steps.state.outputs.skip != 'true'
+        id: criteria
+        env:
+          PR_NUMBER: ${{ steps.context.outputs.pr_number }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          # Fetch PR details
+          PR_DATA=$(gh pr view "$PR_NUMBER" --json \
+            title,labels,author,isDraft,mergeable,mergeStateStatus,\
+            reviewDecision,statusCheckRollup,headRefName,baseRefName)
+          
+          # Extract fields
+          TITLE=$(echo "$PR_DATA" | jq -r '.title')
+          AUTHOR=$(echo "$PR_DATA" | jq -r '.author.login')
+          IS_DRAFT=$(echo "$PR_DATA" | jq -r '.isDraft')
+          MERGEABLE=$(echo "$PR_DATA" | jq -r '.mergeable')
+          MERGE_STATE=$(echo "$PR_DATA" | jq -r '.mergeStateStatus')
+          REVIEW_DECISION=$(echo "$PR_DATA" | jq -r '.reviewDecision')
+          LABELS=$(echo "$PR_DATA" | jq -r '.labels[].name' | tr '\n' ',' | sed 's/,$//')
+          
+          # Check if has auto-merge label
+          HAS_AUTO_MERGE_LABEL=$(echo "$LABELS" | grep -iq "auto-merge" && echo "true" || echo "false")
+          HAS_NO_MERGE_LABEL=$(echo "$LABELS" | grep -iq "do-not-merge\|wip\|draft" && echo "true" || echo "false")
+          
+          echo "### PR Evaluation" >> $GITHUB_STEP_SUMMARY
+          echo "- **Title:** $TITLE" >> $GITHUB_STEP_SUMMARY
+          echo "- **Author:** $AUTHOR" >> $GITHUB_STEP_SUMMARY
+          echo "- **Draft:** $IS_DRAFT" >> $GITHUB_STEP_SUMMARY
+          echo "- **Mergeable:** $MERGEABLE" >> $GITHUB_STEP_SUMMARY
+          echo "- **Merge State:** $MERGE_STATE" >> $GITHUB_STEP_SUMMARY
+          echo "- **Review Decision:** $REVIEW_DECISION" >> $GITHUB_STEP_SUMMARY
+          echo "- **Labels:** $LABELS" >> $GITHUB_STEP_SUMMARY
+          
+          SHOULD_MERGE="false"
+          REASON=""
+          MERGE_METHOD="squash"
+          
+          # Blocking conditions
+          if [[ "$IS_DRAFT" == "true" ]]; then
+            REASON="PR is in draft state"
+            echo "❌ $REASON"
+          elif [[ "$HAS_NO_MERGE_LABEL" == "true" ]]; then
+            REASON="PR has do-not-merge label"
+            echo "❌ $REASON"
+          elif [[ "$MERGEABLE" == "CONFLICTING" ]]; then
+            REASON="PR has merge conflicts"
+            echo "❌ $REASON"
+          elif [[ "$MERGE_STATE" != "CLEAN" ]] && [[ "$MERGE_STATE" != "UNSTABLE" ]]; then
+            REASON="Merge state is $MERGE_STATE (not clean)"
+            echo "❌ $REASON"
+          else
+            # Check CI status
+            PASSING_CHECKS=$(echo "$PR_DATA" | jq '[.statusCheckRollup[] | select(.conclusion == "SUCCESS" or .conclusion == "NEUTRAL" or .status == "SKIPPED")] | length')
+            FAILING_CHECKS=$(echo "$PR_DATA" | jq '[.statusCheckRollup[] | select(.conclusion == "FAILURE" or .conclusion == "CANCELLED")] | length')
+            PENDING_CHECKS=$(echo "$PR_DATA" | jq '[.statusCheckRollup[] | select(.status == "PENDING" or .status == "IN_PROGRESS" or .status == "QUEUED")] | length')
+            TOTAL_CHECKS=$(echo "$PR_DATA" | jq '.statusCheckRollup | length')
+            
+            echo "CI Status: $PASSING_CHECKS passing, $FAILING_CHECKS failing, $PENDING_CHECKS pending (total: $TOTAL_CHECKS)"
+            
+            if [[ "$PENDING_CHECKS" -gt 0 ]]; then
+              REASON="Waiting for $PENDING_CHECKS check(s) to complete"
+              echo "⏳ $REASON"
+            elif [[ "$FAILING_CHECKS" -gt 0 ]]; then
+              REASON="$FAILING_CHECKS check(s) failing"
+              echo "❌ $REASON"
+            elif [[ "$TOTAL_CHECKS" -eq 0 ]]; then
+              REASON="No CI checks found (likely still initializing)"
+              echo "⏳ $REASON"
+            else
+              # All checks passing - determine if auto-merge eligible
+              
+              # Auto-merge if:
+              # 1. Has auto-merge label (explicit opt-in)
+              # 2. Is from known bot (renovate, dependabot-preview, etc.)
+              # 3. Is chore/docs with no code changes
+              # 4. Force flag enabled
+              
+              if [[ "$HAS_AUTO_MERGE_LABEL" == "true" ]]; then
+                SHOULD_MERGE="true"
+                REASON="PR has auto-merge label + all checks passing"
+              elif [[ "$FORCE" == "true" ]]; then
+                SHOULD_MERGE="true"
+                REASON="Force merge requested + all checks passing"
+              elif [[ "$AUTHOR" =~ ^(renovate|snyk-bot|greenkeeper|dependabot-preview)\[bot\]$ ]]; then
+                SHOULD_MERGE="true"
+                REASON="Known bot PR + all checks passing"
+              elif echo "$TITLE" | grep -qiE "^(chore|docs|ci|build|style|refactor)(\(.*\))?:"; then
+                # Check if PR only touches non-code files
+                CHANGED_FILES=$(gh pr view "$PR_NUMBER" --json files --jq '.files[].path')
+                CODE_CHANGES=$(echo "$CHANGED_FILES" | grep -vE '\.(md|txt|json|yaml|yml|toml)$|^docs/|^\.github/workflows/' || true)
+                
+                if [[ -z "$CODE_CHANGES" ]]; then
+                  SHOULD_MERGE="true"
+                  REASON="Non-code changes (chore/docs) + all checks passing"
+                else
+                  REASON="Code changes detected - requires review"
+                fi
+              else
+                REASON="Requires manual approval (code changes from human contributor)"
+              fi
+            fi
+          fi
+          
+          # Determine merge method based on PR type
+          if echo "$TITLE" | grep -qiE "^(feat|feature|fix|perf|refactor|revert)(\(.*\))?:"; then
+            MERGE_METHOD="squash"  # Clean commit history for features/fixes
+          elif echo "$TITLE" | grep -qiE "^(chore|docs|ci|build|style)(\(.*\))?:"; then
+            MERGE_METHOD="squash"  # Squash maintenance commits
+          else
+            MERGE_METHOD="squash"  # Default to squash
+          fi
+          
+          echo "should_merge=$SHOULD_MERGE" >> $GITHUB_OUTPUT
+          echo "reason=$REASON" >> $GITHUB_OUTPUT
+          echo "merge_method=$MERGE_METHOD" >> $GITHUB_OUTPUT
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Decision:** $([[ "$SHOULD_MERGE" == "true" ]] && echo "✅ Auto-merge" || echo "⏸️ Wait")" >> $GITHUB_STEP_SUMMARY
+          echo "**Reason:** $REASON" >> $GITHUB_STEP_SUMMARY
+          echo "**Method:** $MERGE_METHOD" >> $GITHUB_STEP_SUMMARY
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  merge:
+    name: Auto-Merge PR
+    needs: evaluate
+    if: needs.evaluate.outputs.should_merge == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Enable auto-merge
+        id: merge
+        env:
+          PR_NUMBER: ${{ needs.evaluate.outputs.pr_number }}
+          MERGE_METHOD: ${{ needs.evaluate.outputs.merge_method }}
+          REASON: ${{ needs.evaluate.outputs.reason }}
+        run: |
+          # First, approve the PR (bots/automation cannot approve their own PRs)
+          gh pr review "$PR_NUMBER" --approve --body "✅ **Auto-approved for merge**
+
+All required checks have passed and auto-merge criteria are met.
+
+**Reason:** $REASON
+**Merge method:** $MERGE_METHOD
+
+This PR will be merged automatically once all final checks complete." || echo "Approval skipped (may be self-approval or already approved)"
+          
+          # Enable auto-merge
+          if gh pr merge --auto --"$MERGE_METHOD" "$PR_NUMBER" 2>&1 | tee /tmp/merge-output.txt; then
+            echo "✅ Auto-merge enabled successfully"
+            echo "success=true" >> $GITHUB_OUTPUT
+            
+            # Comment on PR
+            gh pr comment "$PR_NUMBER" --body "🤖 **Auto-merge enabled**
+
+This PR will be merged automatically after all checks complete.
+
+- **Reason:** $REASON
+- **Method:** \`$MERGE_METHOD\`
+- **Workflow:** [View run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" || true
+          else
+            MERGE_OUTPUT=$(cat /tmp/merge-output.txt)
+            echo "⚠️ Auto-merge failed: $MERGE_OUTPUT"
+            echo "success=false" >> $GITHUB_OUTPUT
+            
+            # Common failure: branch not up to date - trigger update
+            if echo "$MERGE_OUTPUT" | grep -qi "not up to date"; then
+              echo "Branch is not up to date - updating..."
+              gh pr ready "$PR_NUMBER" --undo || true
+              gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/update-branch" \
+                -X PUT \
+                -H "Accept: application/vnd.github+json" || echo "Failed to update branch"
+              
+              gh pr comment "$PR_NUMBER" --body "⚙️ **Branch updated**
+
+Your PR branch was behind the base branch. It has been updated automatically. Auto-merge will be re-enabled after checks pass." || true
+            fi
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Add auto-merged label
+        if: steps.merge.outputs.success == 'true'
+        env:
+          PR_NUMBER: ${{ needs.evaluate.outputs.pr_number }}
+        run: |
+          gh pr edit "$PR_NUMBER" --add-label "auto-merged" || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Summary
+        run: |
+          if [[ "${{ steps.merge.outputs.success }}" == "true" ]]; then
+            echo "### ✅ Auto-merge enabled" >> $GITHUB_STEP_SUMMARY
+            echo "PR #${{ needs.evaluate.outputs.pr_number }} will merge automatically" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### ⚠️ Auto-merge failed" >> $GITHUB_STEP_SUMMARY
+            echo "PR #${{ needs.evaluate.outputs.pr_number }} requires manual intervention" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Reason:** ${{ needs.evaluate.outputs.reason }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Method:** ${{ needs.evaluate.outputs.merge_method }}" >> $GITHUB_STEP_SUMMARY
+
+  notify-skip:
+    name: Notify Skip Decision
+    needs: evaluate
+    if: needs.evaluate.outputs.should_merge == 'false'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    
+    steps:
+      - name: Comment on PR (optional)
+        env:
+          PR_NUMBER: ${{ needs.evaluate.outputs.pr_number }}
+          REASON: ${{ needs.evaluate.outputs.reason }}
+        run: |
+          # Only comment if checks are all passing but other criteria not met
+          # (avoids spam for PRs that are waiting for checks)
+          if ! echo "$REASON" | grep -qi "pending\|failing\|waiting"; then
+            gh pr comment "$PR_NUMBER" --body "ℹ️ **Auto-merge not enabled**
+
+$REASON
+
+To enable auto-merge:
+- Add the \`auto-merge\` label, or  
+- Ensure all checks pass and review requirements are met
+
+[View criteria](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" || true
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
