@@ -5,7 +5,7 @@
  * Integrates with existing rate limiting and security systems
  */
 
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 import * as Sentry from '@sentry/nextjs';
 import { type IPReputationEntry } from '@/types/ip-reputation';
 
@@ -73,7 +73,7 @@ export class BlockedIPsManager {
   }> {
     try {
       // Check permanent blocks
-      const blockedEntry = await redis.hget(BLOCKED_IPS_KEY, ip);
+      const blockedEntry = await redis.hGet(BLOCKED_IPS_KEY, ip);
       if (blockedEntry && typeof blockedEntry === 'string') {
         const entry: BlockedIPEntry = JSON.parse(blockedEntry);
 
@@ -139,11 +139,11 @@ export class BlockedIPsManager {
 
     try {
       // Add to blocked IPs set
-      await redis.hset(BLOCKED_IPS_KEY, { [ip]: JSON.stringify(entry) });
+      await redis.hSet(BLOCKED_IPS_KEY, { [ip]: JSON.stringify(entry) });
 
       // Add to block history for analytics
       const historyKey = `${IP_BLOCK_HISTORY_KEY}:${new Date().toISOString().split('T')[0]}`;
-      await redis.lpush(
+      await redis.lPush(
         historyKey,
         JSON.stringify({
           ...entry,
@@ -190,12 +190,12 @@ export class BlockedIPsManager {
    */
   async unblockIP(ip: string, reason: string): Promise<void> {
     try {
-      const removed = await redis.hdel(BLOCKED_IPS_KEY, ip);
+      const removed = await redis.hDel(BLOCKED_IPS_KEY, ip);
 
       if (removed) {
         // Add to unblock history
         const historyKey = `${IP_BLOCK_HISTORY_KEY}:${new Date().toISOString().split('T')[0]}`;
-        await redis.lpush(
+        await redis.lPush(
           historyKey,
           JSON.stringify({
             ip,
@@ -241,7 +241,7 @@ export class BlockedIPsManager {
         metadata,
       };
 
-      await redis.hset(SUSPICIOUS_IPS_KEY, { [ip]: JSON.stringify(entry) });
+      await redis.hSet(SUSPICIOUS_IPS_KEY, { [ip]: JSON.stringify(entry) });
 
       // Set TTL for suspicious marking (24 hours)
       await redis.expire(`${SUSPICIOUS_IPS_KEY}:${ip}`, 86400);
@@ -258,7 +258,7 @@ export class BlockedIPsManager {
    */
   async isSuspicious(ip: string): Promise<boolean> {
     try {
-      const entry = await redis.hexists(SUSPICIOUS_IPS_KEY, ip);
+      const entry = await redis.hExists(SUSPICIOUS_IPS_KEY, ip);
       return entry === 1;
     } catch (error) {
       const maskedIp = maskIp(ip);
@@ -272,7 +272,7 @@ export class BlockedIPsManager {
    */
   async getAllBlockedIPs(): Promise<BlockedIPEntry[]> {
     try {
-      const entries = await redis.hgetall(BLOCKED_IPS_KEY);
+      const entries = await redis.hGetAll(BLOCKED_IPS_KEY);
       if (!entries) return [];
       return Object.values(entries as Record<string, string>).map((entry) => JSON.parse(entry));
     } catch (error) {

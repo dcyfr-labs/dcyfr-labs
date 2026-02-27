@@ -13,7 +13,7 @@ import { rateLimitWithProtection, getClientIp } from '@/lib/rate-limit';
 const hashes: Record<string, Record<string, string>> = {};
 const lists: Record<string, string[]> = {};
 
-vi.mock('@/mcp/shared/redis-client', () => ({
+vi.mock('@/lib/redis-client', () => ({
   redis: {
     get: vi.fn(async (k: string) => null),
     set: vi.fn(async () => null),

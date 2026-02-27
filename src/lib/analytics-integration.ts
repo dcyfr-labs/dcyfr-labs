@@ -18,7 +18,7 @@
  * - SEARCH_CONSOLE_CLIENT_EMAIL / SEARCH_CONSOLE_PRIVATE_KEY: Service account (optional)
  */
 
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 import { fetchVercelAnalytics } from './vercel-analytics-api';
 
 // ============================================================================

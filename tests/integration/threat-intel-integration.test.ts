@@ -8,7 +8,7 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { PromptIntelClient } from '../../src/mcp/shared/promptintel-client';
+import { PromptIntelClient } from '../../src/lib/promptintel-client';
 
 // ============================================================================
 // Test Configuration

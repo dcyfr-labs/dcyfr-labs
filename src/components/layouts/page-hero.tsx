@@ -121,7 +121,16 @@ export function PageHero({
 
   // Loading state - render skeleton version
   if (loading) {
-    return renderHeroSkeleton({ variant, isCentered, imageJustify, image, actions, id, className, contentClassName });
+    return renderHeroSkeleton({
+      variant,
+      isCentered,
+      imageJustify,
+      image,
+      actions,
+      id,
+      className,
+      contentClassName,
+    });
   }
 
   const content = (
@@ -135,9 +144,11 @@ export function PageHero({
       isCentered={isCentered}
       itemCount={itemCount}
       contentClassName={contentClassName}
-      containerClass={fullWidth
-        ? `mx-auto ${CONTAINER_WIDTHS.prose} ${CONTAINER_PADDING}`
-        : cn(PAGE_LAYOUT.hero.container)}
+      containerClass={
+        fullWidth
+          ? `mx-auto ${CONTAINER_WIDTHS.prose} ${CONTAINER_PADDING}`
+          : cn(PAGE_LAYOUT.hero.container)
+      }
     />
   );
 
@@ -195,9 +206,7 @@ function renderDescription({
       </p>
     );
   }
-  return (
-    <div className={cn(styles.description, centeredClass)}>{description}</div>
-  );
+  return <div className={cn(styles.description, centeredClass)}>{description}</div>;
 }
 
 /** Shared hero content layout (image, title, description, actions) */
@@ -227,9 +236,7 @@ function HeroContent({
       {image && <div className={cn('flex', imageJustify)}>{image}</div>}
       {title && <h1 className={styles.title}>{title}</h1>}
       {renderDescription({ description, styles, isCentered, itemCount })}
-      {actions && (
-        <div className={cn('pt-2', isCentered && 'flex justify-center')}>{actions}</div>
-      )}
+      {actions && <div className={cn('pt-2', isCentered && 'flex justify-center')}>{actions}</div>}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 
 /**
  * Development-only endpoint to populate local cache
@@ -125,7 +125,7 @@ async function fetchCredlyBadges(limit?: number) {
 async function cacheCredlyVariant(badges: unknown, key: string): Promise<string | null> {
   if (!badges || !Array.isArray(badges)) return null;
   const cacheData = { badges, total_count: badges.length };
-  await redis.set(key, JSON.stringify(cacheData), { ex: 24 * 60 * 60 });
+  await redis.set(key, JSON.stringify(cacheData), { EX: 24 * 60 * 60 });
   return key;
 }
 
@@ -145,7 +145,7 @@ export async function GET(request: NextRequest) {
     const githubData = await fetchGitHubContributions();
     if (githubData) {
       const key = 'github:contributions:dcyfr';
-      await redis.set(key, JSON.stringify(githubData), { ex: 24 * 60 * 60 });
+      await redis.set(key, JSON.stringify(githubData), { EX: 24 * 60 * 60 });
       results.github = {
         success: true,
         message: `Cached ${githubData.totalContributions} contributions`,

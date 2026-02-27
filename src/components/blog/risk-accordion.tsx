@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import * as React from "react";
+import * as React from 'react';
 import {
   ChevronDown,
   AlertTriangle,
@@ -13,10 +13,10 @@ import {
   Layers,
   Users,
   Skull,
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { BORDERS, SPACING, ANIMATION, TYPOGRAPHY } from "@/lib/design-tokens";
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import { BORDERS, SPACING, ANIMATION, TYPOGRAPHY } from '@/lib/design-tokens';
 
 /**
  * Risk Accordion Component
@@ -51,8 +51,7 @@ interface AccordionGroupContextValue {
   collapseAll: () => void;
 }
 
-const AccordionGroupContext =
-  React.createContext<AccordionGroupContextValue | null>(null);
+const AccordionGroupContext = React.createContext<AccordionGroupContextValue | null>(null);
 
 function useAccordionGroup() {
   const context = React.useContext(AccordionGroupContext);
@@ -74,27 +73,26 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 const severityColors = {
   critical: {
-    badge: "bg-error-subtle text-error border-error-light",
-    icon: "text-error",
-    border: "border-l-error",
+    badge: 'bg-error-subtle text-error border-error-light',
+    icon: 'text-error',
+    border: 'border-l-error',
   },
   high: {
-    badge:
-      "bg-semantic-orange/10 text-semantic-orange border-semantic-orange/20",
-    icon: "text-semantic-orange",
-    border: "border-l-semantic-orange",
+    badge: 'bg-semantic-orange/10 text-semantic-orange border-semantic-orange/20',
+    icon: 'text-semantic-orange',
+    border: 'border-l-semantic-orange',
   },
   medium: {
-    badge: "bg-warning-subtle text-warning border-warning-light",
-    icon: "text-warning",
-    border: "border-l-warning",
+    badge: 'bg-warning-subtle text-warning border-warning-light',
+    icon: 'text-warning',
+    border: 'border-l-warning',
   },
 };
 
 interface RiskAccordionProps {
   id: string;
   title: string;
-  severity: "critical" | "high" | "medium";
+  severity: 'critical' | 'high' | 'medium';
   summary: string;
   children: React.ReactNode;
   defaultExpanded?: boolean;
@@ -135,11 +133,11 @@ export function RiskAccordion({
     onToggle?.(newState);
 
     // Analytics tracking
-    if (typeof window !== "undefined" && (window as any).gtag) {
-      (window as any).gtag("event", "risk_accordion_toggle", {
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'risk_accordion_toggle', {
         risk_id: id,
         risk_title: title,
-        action: newState ? "expand" : "collapse",
+        action: newState ? 'expand' : 'collapse',
       });
     }
   };
@@ -148,52 +146,44 @@ export function RiskAccordion({
     <div
       className={cn(
         BORDERS.card,
-        "border-l-4",
+        'border-l-4',
         colors.border,
-        "bg-card shadow-sm hover:shadow-md",
+        'bg-card shadow-sm hover:shadow-md',
         ANIMATION.transition.base,
-        "my-4"
+        'my-4'
       )}
     >
       {/* Header - Always Visible */}
       <button
         onClick={handleToggle}
         className={cn(
-          "w-full text-left p-4 sm:p-5",
-          "flex items-start gap-4",
-          "hover:bg-muted/30",
-          ANIMATION.transition.colors,
-          "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          'w-full text-left p-4 sm:p-5',
+          'flex items-start gap-4',
+          'hover:bg-muted/30 transition-colors',
+          'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
         )}
         aria-expanded={isExpanded}
         aria-controls={`risk-${id}-content`}
       >
         {/* Icon */}
-        <Icon
-          className={cn("h-5 w-5 sm:h-6 sm:w-6 mt-0.5 shrink-0", colors.icon)}
-        />
+        <Icon className={cn('h-5 w-5 sm:h-6 sm:w-6 mt-0.5 shrink-0', colors.icon)} />
 
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-3 mb-2">
-            <h3 className={cn(TYPOGRAPHY.h3.standard, "m-0")}>
-              <span className="text-muted-foreground font-mono text-sm">
-                {id}:
-              </span>{" "}
-              {title}
+            <h3 className={cn(TYPOGRAPHY.h3.standard, 'm-0')}>
+              <span className="text-muted-foreground font-mono text-sm">{id}:</span> {title}
             </h3>
             <span
               className={cn(
-                "text-xs font-semibold px-2 py-1 rounded border shrink-0",
+                'text-xs font-semibold px-2 py-1 rounded border shrink-0',
                 colors.badge
               )}
             >
               {severity.toUpperCase()}
             </span>
           </div>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            {summary}
-          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">{summary}</p>
         </div>
 
         {/* Expand/Collapse Icon */}
@@ -212,18 +202,18 @@ export function RiskAccordion({
           <motion.div
             id={`risk-${id}-content`}
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
+            animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
             <div
               className={cn(
-                "px-4 sm:px-5 pb-4 sm:pb-5 pt-2",
-                "border-t border-border",
-                "prose prose-sm dark:prose-invert max-w-none",
-                "[&>*:first-child]:mt-0",
-                "[&>*:last-child]:mb-0"
+                'px-4 sm:px-5 pb-4 sm:pb-5 pt-2',
+                'border-t border-border',
+                'prose prose-sm dark:prose-invert max-w-none',
+                '[&>*:first-child]:mt-0',
+                '[&>*:last-child]:mb-0'
               )}
             >
               {children}
@@ -257,16 +247,17 @@ export function RiskAccordionGroup({
   const [expandedIds, setExpandedIds] = React.useState<Set<string>>(new Set());
 
   // Type guard for RiskAccordion children
-  const isRiskAccordion = React.useCallback((
-    child: React.ReactNode
-  ): child is React.ReactElement<RiskAccordionProps> => {
-    return (
-      React.isValidElement(child) &&
-      typeof child.props === "object" &&
-      child.props !== null &&
-      "id" in child.props
-    );
-  }, []);
+  const isRiskAccordion = React.useCallback(
+    (child: React.ReactNode): child is React.ReactElement<RiskAccordionProps> => {
+      return (
+        React.isValidElement(child) &&
+        typeof child.props === 'object' &&
+        child.props !== null &&
+        'id' in child.props
+      );
+    },
+    []
+  );
 
   // Extract IDs from children to get total count
   const childrenArray = React.Children.toArray(children);
@@ -288,9 +279,7 @@ export function RiskAccordionGroup({
 
   const expandAll = React.useCallback(() => {
     // Extract all risk IDs from children
-    const allIds = childrenArray
-      .filter(isRiskAccordion)
-      .map((child) => child.props.id);
+    const allIds = childrenArray.filter(isRiskAccordion).map((child) => child.props.id);
     setExpandedIds(new Set(allIds));
   }, [childrenArray, isRiskAccordion]);
 
@@ -322,12 +311,8 @@ export function RiskAccordionGroup({
         {/* Group Controls */}
         <div className="flex items-center justify-between mb-4 p-3 bg-muted/30 rounded-lg border border-border">
           <div className="text-sm text-muted-foreground">
-            <span className="font-semibold text-foreground">
-              {expandedCount}
-            </span>{" "}
-            of{" "}
-            <span className="font-semibold text-foreground">{totalCount}</span>{" "}
-            risks reviewed
+            <span className="font-semibold text-foreground">{expandedCount}</span> of{' '}
+            <span className="font-semibold text-foreground">{totalCount}</span> risks reviewed
           </div>
           <div className="flex gap-2">
             <button

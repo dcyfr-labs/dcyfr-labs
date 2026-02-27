@@ -716,25 +716,10 @@ console.log(`Service Account: ${maskEmail(credentials.client_email)}`);
 
 ### Agent Operational Systems
 
-**Three systems ensure continuous, data-driven development:**
+**Session Checkpoint System** ensures continuous development:
 
-1. **Session Recovery System** - Auto-checkpoint every 30 minutes
-   - `npm run checkpoint:start <agent>` - Start background checkpointing
-   - `npm run session:recover <agent> latest` - Recover from interruption
-   - Prevents data loss from crashes, rate limits, network failures
-   - See: [SESSION_RECOVERY_SYSTEM.md](docs/operations/SESSION_RECOVERY_SYSTEM.md)
-
-2. **Provider Fallback Manager** - Automatic failover on rate limits
-   - `npm run fallback:status` - Check provider health
-   - `npm run fallback:health` - Monitor all providers
-   - Seamless switch: Claude → Groq → Ollama
-   - See: [PROVIDER_FALLBACK_SYSTEM.md](docs/operations/PROVIDER_FALLBACK_SYSTEM.md)
-
-3. **Agent Telemetry System** - Track usage, quality, costs
-   - `npm run telemetry:stats <agent> 7d` - Agent-specific metrics
-   - `npm run telemetry:compare` - Compare all agents
-   - `npm run telemetry:handoffs` - Handoff analytics
-   - See: [agent-telemetry.ts](src/lib/agents/agent-telemetry.ts)
+- **Auto-checkpoint every 30 minutes** - Prevents data loss from crashes, rate limits, network failures
+- `npm run checkpoint:start <agent>` - Start background checkpointing
 
 **Quick Start Workflow:**
 
@@ -743,14 +728,8 @@ console.log(`Service Account: ${maskEmail(credentials.client_email)}`);
 npm run dev &
 npm run checkpoint:start claude &
 
-# 2. Work normally - failover is automatic
+# 2. Work normally - auto-checkpoint is running
 # ... develop features ...
-
-# 3. If interrupted, recover instantly
-npm run session:recover claude latest
-
-# 4. View analytics
-npm run telemetry:compare
 ```
 
 ### When to Use OpenCode.ai

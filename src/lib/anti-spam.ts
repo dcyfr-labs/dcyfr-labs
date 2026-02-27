@@ -8,7 +8,7 @@
  * 4. Abuse pattern detection
  */
 
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 import { NextRequest } from 'next/server';
 
 /**
@@ -87,7 +87,7 @@ export async function checkSessionDuplication(
     }
 
     // Set the key with expiration
-    await redis.setex(key, windowSeconds, '1');
+    await redis.setEx(key, windowSeconds, '1');
     return false;
   } catch (error) {
     console.error('Session deduplication error:', error);
@@ -109,14 +109,14 @@ export async function recordAbuseAttempt(
 
   try {
     // Add to sorted set with timestamp
-    await redis.zadd(key, {
+    await redis.zAdd(key, {
       score: now,
-      member: `${now}:${reason}`,
+      value: `${now}:${reason}`,
     });
 
     // Keep only last 24 hours of abuse records
     const oneDayAgo = now - 24 * 60 * 60 * 1000;
-    await redis.zremrangebyscore(key, '-inf', oneDayAgo);
+    await redis.zRemRangeByScore(key, '-inf', oneDayAgo);
 
     // Set expiration to auto-cleanup
     await redis.expire(key, 86400); // 24 hours
@@ -139,7 +139,7 @@ export async function detectAbusePattern(
 
   try {
     // Count abuse attempts in the last hour
-    const count = await redis.zcount(key, oneHourAgo, now);
+    const count = await redis.zCount(key, oneHourAgo, now);
 
     // More than 10 abuse attempts in an hour = suspicious
     return count > 10;

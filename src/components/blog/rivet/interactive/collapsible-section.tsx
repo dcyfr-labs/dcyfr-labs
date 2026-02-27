@@ -89,7 +89,6 @@ export function CollapsibleSection({
       console.warn('Failed to load collapsible section state:', error);
     }
     // Only run once after mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted]);
 
   // Check if this section should be expanded based on URL hash
@@ -162,7 +161,7 @@ export function CollapsibleSection({
           'bg-card',
           'hover:bg-muted/30',
           SEMANTIC_COLORS.interactive.focus,
-          ANIMATION.transition.colors
+          'transition-colors'
         )}
       >
         <h3 className={cn(TYPOGRAPHY.h3.standard, 'text-card-foreground', 'font-semibold')}>

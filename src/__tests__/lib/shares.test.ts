@@ -1,12 +1,12 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 
 // Mock the Upstash redis singleton
-vi.mock('@/mcp/shared/redis-client', () => ({
+vi.mock('@/lib/redis-client', () => ({
   redis: {
     get: vi.fn(),
     incr: vi.fn(),
-    zadd: vi.fn(),
-    zcount: vi.fn(),
+    zAdd: vi.fn(),
+    zCount: vi.fn(),
   },
 }));
 
@@ -17,14 +17,14 @@ describe('Shares Utilities', () => {
     vi.resetModules();
 
     // Get mock redis singleton
-    const { redis } = await import('@/mcp/shared/redis-client');
+    const { redis } = await import('@/lib/redis-client');
     mockRedis = redis;
 
     // Reset all mock functions
     vi.mocked(mockRedis.get).mockReset();
     vi.mocked(mockRedis.incr).mockReset();
-    vi.mocked(mockRedis.zadd).mockReset();
-    vi.mocked(mockRedis.zcount).mockReset();
+    vi.mocked(mockRedis.zAdd).mockReset();
+    vi.mocked(mockRedis.zCount).mockReset();
   });
 
   afterEach(() => {
@@ -34,7 +34,7 @@ describe('Shares Utilities', () => {
   describe('incrementPostShares', () => {
     it('increments share count and returns new value', async () => {
       mockRedis.incr.mockResolvedValue(5);
-      mockRedis.zadd.mockResolvedValue(1);
+      mockRedis.zAdd.mockResolvedValue(1);
 
       const { incrementPostShares } = await import('@/lib/shares');
       const result = await incrementPostShares('test-post-id');
@@ -45,16 +45,16 @@ describe('Shares Utilities', () => {
 
     it('records share in history with timestamp', async () => {
       mockRedis.incr.mockResolvedValue(1);
-      mockRedis.zadd.mockResolvedValue(1);
+      mockRedis.zAdd.mockResolvedValue(1);
 
       const { incrementPostShares } = await import('@/lib/shares');
       await incrementPostShares('test-post-id');
 
-      expect(mockRedis.zadd).toHaveBeenCalledWith(
+      expect(mockRedis.zAdd).toHaveBeenCalledWith(
         'shares:history:post:test-post-id',
         expect.objectContaining({
           score: expect.any(Number),
-          member: expect.any(String),
+          value: expect.any(String),
         })
       );
     });
@@ -70,7 +70,7 @@ describe('Shares Utilities', () => {
 
     it('handles different post IDs', async () => {
       mockRedis.incr.mockResolvedValue(1);
-      mockRedis.zadd.mockResolvedValue(1);
+      mockRedis.zAdd.mockResolvedValue(1);
 
       const { incrementPostShares } = await import('@/lib/shares');
 
@@ -132,7 +132,7 @@ describe('Shares Utilities', () => {
 
   describe('getPostShares24h', () => {
     it('returns share count for last 24 hours', async () => {
-      mockRedis.zcount.mockResolvedValue(15);
+      mockRedis.zCount.mockResolvedValue(15);
 
       const { getPostShares24h } = await import('@/lib/shares');
       const result = await getPostShares24h('test-post-id');
@@ -141,7 +141,7 @@ describe('Shares Utilities', () => {
     });
 
     it('queries correct time range', async () => {
-      mockRedis.zcount.mockResolvedValue(10);
+      mockRedis.zCount.mockResolvedValue(10);
 
       const now = Date.now();
       vi.spyOn(Date, 'now').mockReturnValue(now);
@@ -151,7 +151,7 @@ describe('Shares Utilities', () => {
 
       const twentyFourHoursAgo = now - 24 * 60 * 60 * 1000;
 
-      expect(mockRedis.zcount).toHaveBeenCalledWith(
+      expect(mockRedis.zCount).toHaveBeenCalledWith(
         'shares:history:post:test-post-id',
         twentyFourHoursAgo,
         now
@@ -159,7 +159,7 @@ describe('Shares Utilities', () => {
     });
 
     it('returns 0 for posts with no recent shares', async () => {
-      mockRedis.zcount.mockResolvedValue(0);
+      mockRedis.zCount.mockResolvedValue(0);
 
       const { getPostShares24h } = await import('@/lib/shares');
       const result = await getPostShares24h('test-post-id');
@@ -168,7 +168,7 @@ describe('Shares Utilities', () => {
     });
 
     it('returns null on Redis error', async () => {
-      mockRedis.zcount.mockRejectedValue(new Error('Redis error'));
+      mockRedis.zCount.mockRejectedValue(new Error('Redis error'));
 
       const { getPostShares24h } = await import('@/lib/shares');
       const result = await getPostShares24h('test-post-id');
@@ -188,12 +188,12 @@ describe('Shares Utilities', () => {
     });
 
     it('uses correct key prefix for share history', async () => {
-      mockRedis.zcount.mockResolvedValue(1);
+      mockRedis.zCount.mockResolvedValue(1);
 
       const { getPostShares24h } = await import('@/lib/shares');
       await getPostShares24h('my-post-id');
 
-      expect(mockRedis.zcount).toHaveBeenCalledWith(
+      expect(mockRedis.zCount).toHaveBeenCalledWith(
         'shares:history:post:my-post-id',
         expect.any(Number),
         expect.any(Number)

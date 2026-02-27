@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthenticatedUser } from '@/lib/auth-utils';
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 
 /**
  * User Engagement Collection API

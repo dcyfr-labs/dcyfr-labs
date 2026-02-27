@@ -15,7 +15,7 @@ import {
   type IPReputationCheck,
   type IPReputationBulkResult,
 } from '@/types/ip-reputation';
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 
 const GREYNOISE_BASE_URL = 'https://api.greynoise.io/v3';
 const CACHE_PREFIX = 'ip-reputation:';
@@ -144,7 +144,7 @@ export class IPReputationService {
 
       // Cache the result
       try {
-        await redis.setex(`${CACHE_PREFIX}${ip}`, CACHE_TTL_SECONDS, JSON.stringify(reputation));
+        await redis.setEx(`${CACHE_PREFIX}${ip}`, CACHE_TTL_SECONDS, JSON.stringify(reputation));
       } catch (error) {
         console.error('Cache store error:', error);
       }

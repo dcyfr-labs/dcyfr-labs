@@ -10,7 +10,7 @@ import {
 import { getPostSharesBulk, getPostShares24hBulk } from '@/lib/shares';
 import { getPostCommentsBulk, getPostComments24hBulk } from '@/lib/comments';
 import { posts } from '@/data/posts';
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
 import { handleApiError } from '@/lib/error-handler';
 
@@ -228,7 +228,7 @@ function logAccess(request: Request, status: 'success' | 'denied', reason?: stri
   }
 }
 
-// Redis client removed - now using Upstash REST API singleton from @/mcp/shared/redis-client
+// Redis client removed - now using Upstash REST API singleton from @/lib/redis-client
 
 // ---------------------------------------------------------------------------
 // Private helpers to reduce cognitive complexity of GET handler
@@ -266,7 +266,9 @@ function buildPostsWithViews(
     .sort((a, b) => b.views - a.views);
 }
 
-async function fetchTrendingFromRedis(postsWithViews: PostWithViews[]): Promise<PostWithViews[] | null> {
+async function fetchTrendingFromRedis(
+  postsWithViews: PostWithViews[]
+): Promise<PostWithViews[] | null> {
   try {
     const trendingData = await redis.get('blog:trending');
     if (typeof trendingData !== 'string') return null;
@@ -302,7 +304,10 @@ function parseDaysParam(daysParam: string | null): { days: number | null; error?
     return {
       days: null,
       error: NextResponse.json(
-        { error: 'Invalid days parameter', message: "Days must be a number between 1 and 365, or 'all'" },
+        {
+          error: 'Invalid days parameter',
+          message: "Days must be a number between 1 and 365, or 'all'",
+        },
         { status: 400 }
       ),
     };
@@ -311,12 +316,29 @@ function parseDaysParam(daysParam: string | null): { days: number | null; error?
 }
 
 type PostSummaryEntry = {
-  slug: string; title: string; views: number; views24h: number; viewsRange: number;
-  shares: number; shares24h: number; comments: number; comments24h: number;
+  slug: string;
+  title: string;
+  views: number;
+  views24h: number;
+  viewsRange: number;
+  shares: number;
+  shares24h: number;
+  comments: number;
+  comments24h: number;
 };
 
 function toSummaryEntry(p: PostWithViews): PostSummaryEntry {
-  return { slug: p.slug, title: p.title, views: p.views, views24h: p.views24h, viewsRange: p.viewsRange, shares: p.shares, shares24h: p.shares24h, comments: p.comments, comments24h: p.comments24h };
+  return {
+    slug: p.slug,
+    title: p.title,
+    views: p.views,
+    views24h: p.views24h,
+    viewsRange: p.viewsRange,
+    shares: p.shares,
+    shares24h: p.shares24h,
+    comments: p.comments,
+    comments24h: p.comments24h,
+  };
 }
 
 function buildAnalyticsSummary(postsWithViews: PostWithViews[]) {
@@ -335,13 +357,24 @@ function buildAnalyticsSummary(postsWithViews: PostWithViews[]) {
   const avg = (v: number) => Math.round(n > 0 ? v / n : 0);
 
   const topPost = postsWithViews[0];
-  const sorted = (key: keyof PostWithViews) => [...postsWithViews].sort((a, b) => (b[key] as number) - (a[key] as number))[0];
+  const sorted = (key: keyof PostWithViews) =>
+    [...postsWithViews].sort((a, b) => (b[key] as number) - (a[key] as number))[0];
 
   return {
-    totalPosts: n, totalViews, totalViews24h, totalViewsRange, totalShares, totalShares24h, totalComments, totalComments24h,
-    averageViews: avg(totalViews), averageViews24h: avg(totalViews24h),
-    averageViewsRange: avg(totalViewsRange), averageShares: avg(totalShares),
-    averageShares24h: avg(totalShares24h), averageComments: avg(totalComments),
+    totalPosts: n,
+    totalViews,
+    totalViews24h,
+    totalViewsRange,
+    totalShares,
+    totalShares24h,
+    totalComments,
+    totalComments24h,
+    averageViews: avg(totalViews),
+    averageViews24h: avg(totalViews24h),
+    averageViewsRange: avg(totalViewsRange),
+    averageShares: avg(totalShares),
+    averageShares24h: avg(totalShares24h),
+    averageComments: avg(totalComments),
     averageComments24h: avg(totalComments24h),
     topPost: topPost ? toSummaryEntry(topPost) : null,
     topPost24h: toSummaryEntry(sorted('views24h')),
@@ -352,7 +385,6 @@ function buildAnalyticsSummary(postsWithViews: PostWithViews[]) {
     mostCommentedPost24h: toSummaryEntry(sorted('comments24h')),
   };
 }
-
 
 async function fetchVercelDataFromRedis(): Promise<{
   vercelData: {
@@ -463,8 +495,13 @@ export async function GET(request: NextRequest) {
 
     // Combine with post data
     const postsWithViews = buildPostsWithViews(
-      viewMap, views24hMap, viewsRangeMap,
-      shareMap, shares24hMap, commentMap, comments24hMap
+      viewMap,
+      views24hMap,
+      viewsRangeMap,
+      shareMap,
+      shares24hMap,
+      commentMap,
+      comments24hMap
     );
 
     const summary = buildAnalyticsSummary(postsWithViews);

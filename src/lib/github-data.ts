@@ -6,7 +6,8 @@
  * of GitHub activity widgets.
  */
 
-import { redis, getRedisEnvironment } from '@/mcp/shared/redis-client';
+import 'server-only';
+import { redis, getRedisEnvironment } from '@/lib/redis-client';
 import { logger } from '@/lib/logger';
 
 // ============================================================================

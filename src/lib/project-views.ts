@@ -1,4 +1,4 @@
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 
 const PROJECT_VIEW_KEY_PREFIX = 'views:project:';
 const PROJECT_VIEW_HISTORY_KEY_PREFIX = 'views:history:project:';
@@ -20,14 +20,14 @@ export async function incrementProjectViews(projectSlug: string): Promise<number
 
     // Record view in sorted set with timestamp for 24-hour tracking
     const now = Date.now();
-    await redis.zadd(formatProjectHistoryKey(projectSlug), {
+    await redis.zAdd(formatProjectHistoryKey(projectSlug), {
       score: now,
-      member: `${now}`,
+      value: `${now}`,
     });
 
     // Clean up views older than 24 hours
     const twentyFourHoursAgo = now - 24 * 60 * 60 * 1000;
-    await redis.zremrangebyscore(formatProjectHistoryKey(projectSlug), '-inf', twentyFourHoursAgo);
+    await redis.zRemRangeByScore(formatProjectHistoryKey(projectSlug), '-inf', twentyFourHoursAgo);
 
     return count;
   } catch {
@@ -62,7 +62,7 @@ export async function getMultipleProjectViews(
 
   try {
     const keys = projectSlugs.map(formatProjectKey);
-    const values = await redis.mget(...keys);
+    const values = await redis.mGet(keys);
 
     projectSlugs.forEach((slug, index) => {
       const value = values[index];
@@ -93,9 +93,9 @@ export async function getMultipleProjectViews24h(
     const twentyFourHoursAgo = now - 24 * 60 * 60 * 1000;
 
     // Use Redis pipeline to batch all zCount operations
-    const pipeline = redis.pipeline();
+    const pipeline = redis.multi();
     projectSlugs.forEach((slug) => {
-      pipeline.zcount(formatProjectHistoryKey(slug), twentyFourHoursAgo, now);
+      pipeline.zCount(formatProjectHistoryKey(slug), twentyFourHoursAgo, now);
     });
 
     const results = await pipeline.exec();

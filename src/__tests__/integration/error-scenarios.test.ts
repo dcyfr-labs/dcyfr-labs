@@ -25,7 +25,7 @@ const mocks = vi.hoisted(() => ({
 }));
 
 // Mock Upstash redis singleton
-vi.mock('@/mcp/shared/redis-client', () => ({
+vi.mock('@/lib/redis-client', () => ({
   redis: {
     get: mocks.redisGet,
   },
@@ -142,7 +142,7 @@ describe('Error Scenario Integration Tests', () => {
     process.env.ADMIN_API_KEY = 'test-key';
 
     // Make redis.get throw to simulate Redis failure
-    const { redis } = await import('@/mcp/shared/redis-client');
+    const { redis } = await import('@/lib/redis-client');
     vi.mocked(redis.get).mockRejectedValue(new Error('Redis get failed'));
 
     const request = new NextRequest('http://localhost:3000/api/analytics', {

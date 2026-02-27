@@ -115,7 +115,7 @@ export async function GET(request: NextRequest) {
 
     // Store in Redis cache for future requests
     try {
-      await redis.setex(redisKey, CACHE_TTL, JSON.stringify(responseData));
+      await redis.setEx(redisKey, CACHE_TTL, JSON.stringify(responseData));
       dataLogger.fetchSuccess('Credly API', badges.length, false);
     } catch (error) {
       dataLogger.fetchError('Redis cache', error as Error);

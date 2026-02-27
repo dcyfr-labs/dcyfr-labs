@@ -17,7 +17,7 @@
  * - bookmarks:project:{slug} - Total bookmark count for a project
  */
 
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 
 // ============================================================================
 // CONSTANTS
@@ -92,14 +92,14 @@ export async function incrementLikes(
 
     // Record in history for trending analysis
     const now = Date.now();
-    await redis.zadd(formatLikeHistoryKey(contentType, slug), {
+    await redis.zAdd(formatLikeHistoryKey(contentType, slug), {
       score: now,
-      member: `${now}`,
+      value: `${now}`,
     });
 
     // Clean up history older than 90 days
     const ninetyDaysAgo = now - 90 * 24 * 60 * 60 * 1000;
-    await redis.zremrangebyscore(formatLikeHistoryKey(contentType, slug), '-inf', ninetyDaysAgo);
+    await redis.zRemRangeByScore(formatLikeHistoryKey(contentType, slug), '-inf', ninetyDaysAgo);
 
     return count;
   } catch (error) {
@@ -156,7 +156,7 @@ export async function getLikes24h(contentType: ContentType, slug: string): Promi
   try {
     const now = Date.now();
     const oneDayAgo = now - 24 * 60 * 60 * 1000;
-    const count = await redis.zcount(formatLikeHistoryKey(contentType, slug), oneDayAgo, now);
+    const count = await redis.zCount(formatLikeHistoryKey(contentType, slug), oneDayAgo, now);
     return count;
   } catch (error) {
     console.error('[EngagementAnalytics] Failed to get 24h likes:', error);
@@ -183,14 +183,14 @@ export async function incrementBookmarks(
 
     // Record in history for trending analysis
     const now = Date.now();
-    await redis.zadd(formatBookmarkHistoryKey(contentType, slug), {
+    await redis.zAdd(formatBookmarkHistoryKey(contentType, slug), {
       score: now,
-      member: `${now}`,
+      value: `${now}`,
     });
 
     // Clean up history older than 90 days
     const ninetyDaysAgo = now - 90 * 24 * 60 * 60 * 1000;
-    await redis.zremrangebyscore(
+    await redis.zRemRangeByScore(
       formatBookmarkHistoryKey(contentType, slug),
       '-inf',
       ninetyDaysAgo
@@ -254,7 +254,7 @@ export async function getBookmarks24h(
   try {
     const now = Date.now();
     const oneDayAgo = now - 24 * 60 * 60 * 1000;
-    const count = await redis.zcount(formatBookmarkHistoryKey(contentType, slug), oneDayAgo, now);
+    const count = await redis.zCount(formatBookmarkHistoryKey(contentType, slug), oneDayAgo, now);
     return count;
   } catch (error) {
     console.error('[EngagementAnalytics] Failed to get 24h bookmarks:', error);

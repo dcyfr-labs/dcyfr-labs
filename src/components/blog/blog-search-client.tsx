@@ -1,16 +1,15 @@
 /**
  * Blog Search Client Component
- * 
+ *
  * Client-side search integration for blog posts using unified search system
  */
 
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
-import type { Post } from "@/data/posts";
-import { createSearchIndex, searchItems } from "@/lib/search";
-import { BLOG_SEARCH_CONFIG } from "@/lib/blog/search-config";
-import { SearchInput } from "@/components/common";
+import { useMemo, useState } from 'react';
+import type { Post } from '@/data/posts';
+import { createSearchIndex, searchItems, BLOG_SEARCH_CONFIG } from '@/lib/search';
+import { SearchInput } from '@/components/common';
 
 interface BlogSearchProps {
   /** All blog posts */
@@ -25,13 +24,13 @@ interface BlogSearchProps {
 
 /**
  * Blog search component with unified search system
- * 
+ *
  * Features:
  * - Full-text search with fuzzy matching
  * - Advanced query syntax (tag:, category:, -, "exact")
  * - Search history
  * - Keyboard shortcuts (Cmd/Ctrl + K)
- * 
+ *
  * @example
  * <BlogSearchClient
  *   posts={posts}
@@ -55,7 +54,7 @@ export function BlogSearchClient({
     <SearchInput
       value={searchQuery}
       onChange={onSearchChange}
-      placeholder="Search blog posts... (try: tag:security, -test, &quot;exact phrase&quot;)"
+      placeholder='Search blog posts... (try: tag:security, -test, "exact phrase")'
       historyStorageKey={BLOG_SEARCH_CONFIG.historyStorageKey}
       resultCount={resultCount}
       keyboardShortcut={true}
@@ -79,7 +78,7 @@ export function useBlogSearch(posts: Post[], searchQuery: string) {
     }
 
     const results = searchItems(posts, searchIndex, searchQuery, BLOG_SEARCH_CONFIG);
-    return results.map(r => r.item);
+    return results.map((r) => r.item);
   }, [posts, searchIndex, searchQuery]);
 
   return searchResults;

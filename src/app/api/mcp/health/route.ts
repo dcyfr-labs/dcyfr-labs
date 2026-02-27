@@ -18,7 +18,7 @@ import { timingSafeEqual } from 'crypto';
 import * as Sentry from '@sentry/nextjs';
 import { blockExternalAccess } from '@/lib/api/api-security';
 import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
-import { sanitizeForLog } from '@/lib/log-sanitizer';
+import { sanitizeForLog } from '@/lib/utils/log-sanitizer';
 import {
   storeHealthReport,
   getLatestHealthReport,
@@ -118,7 +118,7 @@ function validateHealthReport(data: unknown): data is PostRequestBody {
   }
 
   // Validate servers array
-  for (const server of (d.servers as Record<string, unknown>[]) ) {
+  for (const server of d.servers as Record<string, unknown>[]) {
     if (!server.name || !server.status || typeof server.responseTimeMs !== 'number') {
       return false;
     }

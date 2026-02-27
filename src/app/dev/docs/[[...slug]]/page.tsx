@@ -1,14 +1,20 @@
-import { createPageMetadata } from "@/lib/metadata";
-import { DocsLayout } from "@/components/layouts";
-import { DocHeader, ClientDocSearch } from "@/components/dev";
-import { MDX } from "@/components/common";
-import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
-import { getAllDocs, getDocBySlug, getFolderContents, searchDocs, extractTableOfContents } from "@/lib/docs";
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import { FileText, Folder, Clock, Tag } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { assertDevOr404 } from "@/lib/dev-only";
+import { createPageMetadata } from '@/lib/metadata';
+import { DocsLayout } from '@/components/layouts';
+import { DocHeader, ClientDocSearch } from '@/components/dev';
+import { MDX } from '@/components/common';
+import { TYPOGRAPHY, SPACING } from '@/lib/design-tokens';
+import {
+  getAllDocs,
+  getDocBySlug,
+  getFolderContents,
+  searchDocs,
+  extractTableOfContents,
+} from '@/lib/docs';
+import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { FileText, Folder, Clock, Tag } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { assertDevOr404 } from '@/lib/utils/dev-only';
 
 interface PageProps {
   params: Promise<{ slug?: string[] }>;
@@ -21,13 +27,13 @@ export const revalidate = 3600; // Revalidate every hour
 
 export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params;
-  const slugPath = slug?.join("/") || "";
+  const slugPath = slug?.join('/') || '';
 
   if (!slugPath) {
     return createPageMetadata({
-      title: "Developer Documentation",
-      description: "Browse all documentation for the DCYFR Labs project",
-      path: "/dev/docs",
+      title: 'Developer Documentation',
+      description: 'Browse all documentation for the DCYFR Labs project',
+      path: '/dev/docs',
     });
   }
 
@@ -59,8 +65,8 @@ export async function generateMetadata({ params }: PageProps) {
   }
 
   return createPageMetadata({
-    title: "Documentation Not Found",
-    description: "The requested documentation page could not be found",
+    title: 'Documentation Not Found',
+    description: 'The requested documentation page could not be found',
     path: `/dev/docs/${slugPath}`,
   });
 }
@@ -71,13 +77,13 @@ export default async function DevDocsPage({ params, searchParams }: PageProps) {
   const { slug } = await params;
   const searchParamsResolved = await searchParams;
   const search = searchParamsResolved?.search;
-  const slugPath = slug?.join("/") || "";
+  const slugPath = slug?.join('/') || '';
 
   const allDocs = getAllDocs();
 
   // If no slug, show docs index with README.md as primary content
   if (!slugPath) {
-    const folderContents = getFolderContents("");
+    const folderContents = getFolderContents('');
     const searchResults = search ? searchDocs(search) : null;
 
     // If searching, show search results
@@ -91,16 +97,24 @@ export default async function DevDocsPage({ params, searchParams }: PageProps) {
           <div>
             <header className={SPACING.content}>
               <h1 className={TYPOGRAPHY.h1.standard}>Search Results</h1>
-              <p className={cn(TYPOGRAPHY.description, "mt-2")}>
+              <p className={cn(TYPOGRAPHY.description, 'mt-2')}>
                 {hasMoreResults ? (
-                  <>Showing {displayedResults.length} of {searchResults.length} results for &quot;{search}&quot;</>
+                  <>
+                    Showing {displayedResults.length} of {searchResults.length} results for &quot;
+                    {search}&quot;
+                  </>
                 ) : (
-                  <>Found {searchResults.length} {searchResults.length === 1 ? 'result' : 'results'} for &quot;{search}&quot;</>
+                  <>
+                    Found {searchResults.length} {searchResults.length === 1 ? 'result' : 'results'}{' '}
+                    for &quot;{search}&quot;
+                  </>
                 )}
               </p>
               {hasMoreResults && (
                 <div className="mt-3 p-3 bg-muted rounded-lg text-sm text-muted-foreground">
-                  <p>Too many results to display. Try refining your search query for better results.</p>
+                  <p>
+                    Too many results to display. Try refining your search query for better results.
+                  </p>
                 </div>
               )}
             </header>
@@ -110,7 +124,7 @@ export default async function DevDocsPage({ params, searchParams }: PageProps) {
             </div>
 
             <div className="space-y-4">
-              {displayedResults.map(doc => (
+              {displayedResults.map((doc) => (
                 <Link
                   key={doc.slug}
                   href={`/dev/docs/${doc.slug}`}
@@ -143,7 +157,7 @@ export default async function DevDocsPage({ params, searchParams }: PageProps) {
       );
     }
 
-    return renderFolderView("", folderContents, allDocs);
+    return renderFolderView('', folderContents, allDocs);
   }
 
   // Check if this is a folder (has INDEX/README or files/subfolders)
@@ -180,10 +194,7 @@ export default async function DevDocsPage({ params, searchParams }: PageProps) {
                 <span className="text-sm text-muted-foreground">Tags:</span>
                 <div className="flex flex-wrap gap-2">
                   {doc.meta.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-2 py-1 bg-muted rounded text-xs"
-                    >
+                    <span key={tag} className="px-2 py-1 bg-muted rounded text-xs">
                       {tag}
                     </span>
                   ))}
@@ -230,9 +241,7 @@ function renderFolderView(
         {secondaryDoc && (
           <section className="mb-12">
             <div className="border-t pt-8">
-              <h2 className={cn(TYPOGRAPHY.h2.standard, 'mb-6')}>
-                Additional Information
-              </h2>
+              <h2 className={cn(TYPOGRAPHY.h2.standard, 'mb-6')}>Additional Information</h2>
               <article className="prose max-w-none">
                 <MDX source={secondaryDoc.content} />
               </article>
@@ -245,10 +254,10 @@ function renderFolderView(
           <section className="mt-12">
             <div className="border-t pt-8">
               <h2 className={cn(TYPOGRAPHY.h2.standard, 'mb-6')}>
-                Browse {folderPath ?
-                  `${folderPath.split('/').pop()?.charAt(0).toUpperCase()}${folderPath.split('/').pop()?.slice(1)} Documentation` :
-                  'Documentation'
-                }
+                Browse{' '}
+                {folderPath
+                  ? `${folderPath.split('/').pop()?.charAt(0).toUpperCase()}${folderPath.split('/').pop()?.slice(1)} Documentation`
+                  : 'Documentation'}
               </h2>
 
               {/* Subfolders */}
@@ -256,9 +265,11 @@ function renderFolderView(
                 <div className="mb-8">
                   <h3 className={cn(TYPOGRAPHY.h3.standard, 'mb-4')}>Folders</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {subfolders.map(subfolder => {
+                    {subfolders.map((subfolder) => {
                       const subfolderPath = folderPath ? `${folderPath}/${subfolder}` : subfolder;
-                      const subfolderDocs = allDocs.filter(doc => doc.slug.startsWith(`${subfolderPath}/`));
+                      const subfolderDocs = allDocs.filter((doc) =>
+                        doc.slug.startsWith(`${subfolderPath}/`)
+                      );
 
                       return (
                         <Link
@@ -267,7 +278,10 @@ function renderFolderView(
                           className="group block p-4 border border-border rounded-lg hover:border-border-hover hover:shadow-sm transition-movement"
                         >
                           <div className="flex items-center gap-3">
-                            <Folder className="text-muted-foreground group-hover:text-primary transition-colors" size={20} />
+                            <Folder
+                              className="text-muted-foreground group-hover:text-primary transition-colors"
+                              size={20}
+                            />
                             <div className="flex-1">
                               <h4 className="font-medium group-hover:text-primary transition-colors">
                                 {subfolder}
@@ -289,14 +303,17 @@ function renderFolderView(
                 <div>
                   <h3 className={cn(TYPOGRAPHY.h3.standard, 'mb-4')}>Documents</h3>
                   <div className="space-y-2">
-                    {files.map(file => (
+                    {files.map((file) => (
                       <Link
                         key={file.slug}
                         href={`/dev/docs/${file.slug}`}
                         className="group block p-3 border border-border rounded-lg hover:border-border-hover transition-colors"
                       >
                         <div className="flex items-center gap-3">
-                          <FileText className="text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" size={16} />
+                          <FileText
+                            className="text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0"
+                            size={16}
+                          />
                           <div className="flex-1">
                             <h4 className="font-medium group-hover:text-primary transition-colors">
                               {file.meta.title}

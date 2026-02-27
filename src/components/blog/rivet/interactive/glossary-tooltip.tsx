@@ -141,9 +141,11 @@ export function GlossaryTooltip({ term, definition, children, className }: Gloss
       const rect = triggerRef.current.getBoundingClientRect();
       const isMobile = window.innerWidth < 768;
 
-      const { style, position: newPosition, arrowOffset: newArrowOffset } = isMobile
-        ? calculateMobilePosition(rect)
-        : calculateDesktopPosition(rect);
+      const {
+        style,
+        position: newPosition,
+        arrowOffset: newArrowOffset,
+      } = isMobile ? calculateMobilePosition(rect) : calculateDesktopPosition(rect);
 
       setPosition(newPosition);
       setTooltipStyle(style);
@@ -258,7 +260,7 @@ export function GlossaryTooltip({ term, definition, children, className }: Gloss
           'underline decoration-primary/40 decoration-dotted underline-offset-4',
           'hover:decoration-primary/70 hover:decoration-2',
           SEMANTIC_COLORS.interactive.focus,
-          ANIMATION.transition.colors,
+          'transition-colors',
           'cursor-help'
         )}
       >
@@ -346,7 +348,7 @@ export function GlossaryTooltip({ term, definition, children, className }: Gloss
                 'text-popover-foreground/60 hover:text-popover-foreground',
                 'hover:bg-popover-foreground/10',
                 SEMANTIC_COLORS.interactive.focus,
-                ANIMATION.transition.colors,
+                'transition-colors',
                 'md:hidden'
               )}
               aria-label="Close tooltip"

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { assertDevOr404 } from '@/lib/dev-only';
+import { assertDevOr404 } from '@/lib/utils/dev-only';
 import { createPageMetadata } from '@/lib/metadata';
 import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS } from '@/lib/design-tokens';
 
@@ -98,8 +98,8 @@ export default function DevToolsPage() {
       <section className={SPACING.section}>
         <h1 className={TYPOGRAPHY.h1.standard}>Developer Tools</h1>
         <p className={`${TYPOGRAPHY.body} text-muted-foreground max-w-3xl`}>
-          Internal dashboards and utilities for development, monitoring, and operations.
-          All pages under /dev/* are only accessible in development mode.
+          Internal dashboards and utilities for development, monitoring, and operations. All pages
+          under /dev/* are only accessible in development mode.
         </p>
       </section>
 
@@ -116,7 +116,9 @@ export default function DevToolsPage() {
                   href={tool.path}
                   className="group p-6 border border-muted-foreground/20 rounded-lg hover:border-muted-foreground/40 hover:bg-muted/50 transition-colors"
                 >
-                  <h3 className={`${TYPOGRAPHY.h3.standard} mb-2 group-hover:text-primary transition-colors`}>
+                  <h3
+                    className={`${TYPOGRAPHY.h3.standard} mb-2 group-hover:text-primary transition-colors`}
+                  >
                     {tool.name}
                   </h3>
                   <p className={`${TYPOGRAPHY.body} text-muted-foreground text-sm`}>
@@ -132,13 +134,16 @@ export default function DevToolsPage() {
       ))}
 
       {/* Security Notice */}
-      <section className={`${SPACING.section} p-6 border border-amber-500/20 bg-amber-500/5 rounded-lg`}>
+      <section
+        className={`${SPACING.section} p-6 border border-amber-500/20 bg-amber-500/5 rounded-lg`}
+      >
         <h3 className={`${TYPOGRAPHY.h3.standard} text-amber-700 dark:text-amber-300`}>
           🔒 Security Notice
         </h3>
         <p className={`${TYPOGRAPHY.body} text-muted-foreground mt-2`}>
-          All developer tools use <code className="px-1.5 py-0.5 bg-muted rounded text-sm">assertDevOr404()</code>
-          {' '}and return 404 in preview/production environments. Access is restricted to{' '}
+          All developer tools use{' '}
+          <code className="px-1.5 py-0.5 bg-muted rounded text-sm">assertDevOr404()</code> and
+          return 404 in preview/production environments. Access is restricted to{' '}
           <code className="px-1.5 py-0.5 bg-muted rounded text-sm">NODE_ENV=development</code> only.
         </p>
       </section>

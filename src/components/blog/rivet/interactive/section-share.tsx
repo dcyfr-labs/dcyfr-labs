@@ -82,7 +82,7 @@ export function SectionShare({ sectionId, sectionTitle, className }: SectionShar
         TYPOGRAPHY.label.small,
         'bg-muted/50',
         'border border-border/50',
-        ANIMATION.transition.colors,
+        'transition-colors',
         className
       )}
       role="group"
@@ -99,7 +99,7 @@ export function SectionShare({ sectionId, sectionTitle, className }: SectionShar
           'text-muted-foreground hover:text-foreground',
           'hover:bg-muted',
           SEMANTIC_COLORS.interactive.focus,
-          ANIMATION.transition.colors
+          'transition-colors'
         )}
         aria-label={`Share "${sectionTitle}" on Twitter`}
       >
@@ -123,7 +123,7 @@ export function SectionShare({ sectionId, sectionTitle, className }: SectionShar
           'text-muted-foreground hover:text-foreground',
           'hover:bg-muted',
           SEMANTIC_COLORS.interactive.focus,
-          ANIMATION.transition.colors
+          'transition-colors'
         )}
         aria-label={`Share "${sectionTitle}" on LinkedIn`}
       >
@@ -147,7 +147,7 @@ export function SectionShare({ sectionId, sectionTitle, className }: SectionShar
           'text-muted-foreground hover:text-foreground',
           'hover:bg-muted',
           SEMANTIC_COLORS.interactive.focus,
-          ANIMATION.transition.colors,
+          'transition-colors',
           copied && 'text-success bg-success/10'
         )}
         aria-label={copied ? 'Link copied!' : `Copy link to "${sectionTitle}"`}

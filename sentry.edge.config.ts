@@ -8,7 +8,7 @@ import {
   edgeTracesSampler,
   beforeSendTransaction,
   SHARED_SENTRY_CONFIG,
-} from '@/lib/sentry/sampling';
+} from './sentry.sampling.config';
 
 const isDev = process.env.NODE_ENV === 'development';
 

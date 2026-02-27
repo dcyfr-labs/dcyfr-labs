@@ -9,7 +9,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { PromptSecurityScanner } from '@/lib/security/prompt-scanner';
 
 // Mock the PromptIntelClient
-vi.mock('@/mcp/shared/promptintel-client', () => ({
+vi.mock('@/lib/promptintel-client', () => ({
   PromptIntelClient: class {
     getPrompts = vi.fn().mockResolvedValue([]);
     getTaxonomy = vi.fn().mockResolvedValue([]);

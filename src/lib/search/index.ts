@@ -34,9 +34,10 @@
  * ```
  */
 
-export * from "./types";
-export * from "./query-parser";
-export * from "./search-engine";
-export * from "./search-history";
-export * from "./highlight";
-export * from "./fuse-config";
+export * from './types';
+export * from './query-parser';
+export * from './search-engine';
+export * from './search-history';
+export * from './highlight';
+export * from './fuse-config';
+export * from './blog-config';

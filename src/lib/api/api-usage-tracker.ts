@@ -11,7 +11,7 @@
  * - TTL: 90 days (daily), 12 months (monthly)
  */
 
-import { redis } from '../redis';
+import { redis } from '../redis-client';
 import * as Sentry from '@sentry/nextjs';
 import { API_LIMITS, ALERT_THRESHOLDS } from './api-guardrails';
 import type { ApiUsageStats } from './api-guardrails';
@@ -190,7 +190,7 @@ export async function trackApiUsage(
       };
     }
 
-    await redis.set(dailyKey, JSON.stringify(usage), { ex: TTL.daily });
+    await redis.set(dailyKey, JSON.stringify(usage), { EX: TTL.daily });
 
     // Update monthly aggregate
     await updateMonthlyAggregate(service, month, {
@@ -257,7 +257,7 @@ async function updateMonthlyAggregate(
       };
     }
 
-    await redis.set(monthlyKey, JSON.stringify(aggregate), { ex: TTL.monthly });
+    await redis.set(monthlyKey, JSON.stringify(aggregate), { EX: TTL.monthly });
   } catch (error) {
     console.error('[API Usage] Failed to update monthly aggregate:', error);
   }

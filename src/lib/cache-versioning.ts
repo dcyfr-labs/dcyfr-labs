@@ -29,7 +29,7 @@
  * ```
  */
 
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 import type { Redis } from '@upstash/redis';
 
 // ============================================================================
@@ -177,7 +177,7 @@ export class VersionedCache<T = any> {
         data,
       };
 
-      await redis.setex(versionedKey, ttl, JSON.stringify(cached));
+      await redis.setEx(versionedKey, ttl, JSON.stringify(cached));
 
       console.warn(
         `[Cache] Set: ${versionedKey} (${this.config.description || this.config.namespace}, TTL: ${ttl}s)`
@@ -227,7 +227,7 @@ export class VersionedCache<T = any> {
         return 0;
       }
 
-      const deleted = await redis.del(...keys);
+      const deleted = await redis.del(keys);
       console.warn(`[Cache] Deleted ${deleted} versions of ${this.config.namespace}:${key}`);
 
       return deleted;

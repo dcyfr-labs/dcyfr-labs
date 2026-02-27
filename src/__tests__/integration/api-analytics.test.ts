@@ -25,7 +25,7 @@ const mocks = vi.hoisted(() => ({
 }));
 
 // Mock Upstash redis singleton
-vi.mock('@/mcp/shared/redis-client', () => ({
+vi.mock('@/lib/redis-client', () => ({
   redis: {
     get: mocks.redisGet,
   },
@@ -314,7 +314,7 @@ describe('Analytics API Integration', () => {
       });
       it('includes vercel analytics data when present in Redis', async () => {
         // Mock redis.get to return vercel analytics data
-        const { redis } = await import('@/mcp/shared/redis-client');
+        const { redis } = await import('@/lib/redis-client');
         mocks.redisGet.mockImplementation(async (key: string) => {
           if (key === 'vercel:topPages:daily') {
             return JSON.stringify([{ path: '/blog/test-post', views: 50 }]);

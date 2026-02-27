@@ -23,7 +23,7 @@ import {
 const rateLimitCounters: Record<string, number> = {};
 const rateLimitExpiries: Record<string, number> = {};
 
-vi.mock('@/mcp/shared/redis-client', () => ({
+vi.mock('@/lib/redis-client', () => ({
   redis: {
     incr: vi.fn(async (key: string) => {
       // Check if key has expired

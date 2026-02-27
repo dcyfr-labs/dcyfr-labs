@@ -6,7 +6,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { assertDevOr404 } from '@/lib/dev-only';
+import { assertDevOr404 } from '@/lib/utils/dev-only';
 import { redis } from '@/lib/redis';
 
 export async function GET() {
@@ -17,7 +17,7 @@ export async function GET() {
     const testKey = `health-check:${Date.now()}`;
 
     // Test Upstash REST API with set/get/del
-    await redis.set(testKey, 'test', { ex: 10 });
+    await redis.set(testKey, 'test', { EX: 10 });
     const value = await redis.get(testKey);
     await redis.del(testKey);
     const latency = Date.now() - start;

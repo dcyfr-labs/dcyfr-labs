@@ -8,7 +8,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { sanitizeForLog, safeLog } from '@/lib/log-sanitizer';
+import { sanitizeForLog, safeLog } from '@/lib/utils/log-sanitizer';
 
 describe('Log Injection Prevention', () => {
   describe('sanitizeForLog', () => {
@@ -228,7 +228,8 @@ describe('Log Injection Prevention', () => {
 
   describe('Real-world attack scenarios', () => {
     it('should prevent OAuth state parameter injection', () => {
-      const maliciousState = 'valid_state\n[SUCCESS] Admin authentication successful\nip: 127.0.0.1';
+      const maliciousState =
+        'valid_state\n[SUCCESS] Admin authentication successful\nip: 127.0.0.1';
       const sanitized = sanitizeForLog(maliciousState);
 
       expect(sanitized).not.toContain('\n');
@@ -236,7 +237,8 @@ describe('Log Injection Prevention', () => {
     });
 
     it('should prevent error description injection', () => {
-      const maliciousError = 'access_denied\n[INFO] Bypassing rate limit\n[INFO] Removing IP from blocklist';
+      const maliciousError =
+        'access_denied\n[INFO] Bypassing rate limit\n[INFO] Removing IP from blocklist';
       const sanitized = sanitizeForLog(maliciousError);
 
       expect(sanitized).not.toContain('\n');

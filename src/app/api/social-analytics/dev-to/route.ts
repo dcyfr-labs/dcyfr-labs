@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
         ...metrics,
         lastFetchedAt: new Date().toISOString(),
       }),
-      { ex: CACHE_TTL }
+      { EX: CACHE_TTL }
     );
 
     return NextResponse.json({
@@ -210,4 +210,3 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
-

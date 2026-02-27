@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { assertDevOr404 } from '@/lib/dev-only';
+import { assertDevOr404 } from '@/lib/utils/dev-only';
 import { createPageMetadata } from '@/lib/metadata';
 import SeoDashboardClient from './seo-dashboard-client';
 

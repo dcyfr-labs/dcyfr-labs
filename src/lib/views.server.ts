@@ -1,4 +1,4 @@
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 
 const VIEW_KEY_PREFIX = 'views:post:';
 const VIEW_HISTORY_KEY_PREFIX = 'views:history:post:';
@@ -24,14 +24,14 @@ export async function incrementPostViews(postId: string): Promise<number | null>
 
     // Record view in sorted set with timestamp for 24-hour tracking
     const now = Date.now();
-    await redis.zadd(formatHistoryKey(postId), {
+    await redis.zAdd(formatHistoryKey(postId), {
       score: now,
-      member: `${now}`,
+      value: `${now}`,
     });
 
     // Clean up views older than 90 days (keep data for trending analysis and long-term analytics)
     const ninetyDaysAgo = now - 90 * 24 * 60 * 60 * 1000;
-    await redis.zremrangebyscore(formatHistoryKey(postId), '-inf', ninetyDaysAgo);
+    await redis.zRemRangeByScore(formatHistoryKey(postId), '-inf', ninetyDaysAgo);
 
     return count;
   } catch {
@@ -63,7 +63,7 @@ export async function getPostViews24h(postId: string): Promise<number | null> {
   try {
     const now = Date.now();
     const twentyFourHoursAgo = now - 24 * 60 * 60 * 1000;
-    const count = await redis.zcount(formatHistoryKey(postId), twentyFourHoursAgo, now);
+    const count = await redis.zCount(formatHistoryKey(postId), twentyFourHoursAgo, now);
     return count;
   } catch {
     return null;
@@ -88,7 +88,7 @@ export async function getPostViewsInRange(
   try {
     const now = Date.now();
     const rangeStart = now - days * 24 * 60 * 60 * 1000;
-    const count = await redis.zcount(formatHistoryKey(postId), rangeStart, now);
+    const count = await redis.zCount(formatHistoryKey(postId), rangeStart, now);
     return count;
   } catch {
     return null;
@@ -106,7 +106,7 @@ export async function getMultiplePostViews(postIds: string[]): Promise<Map<strin
 
   try {
     const keys = postIds.map(formatKey);
-    const values = await redis.mget(...keys);
+    const values = await redis.mGet(keys);
 
     postIds.forEach((postId, index) => {
       const value = values[index];
@@ -135,9 +135,9 @@ export async function getMultiplePostViews24h(postIds: string[]): Promise<Map<st
     const twentyFourHoursAgo = now - 24 * 60 * 60 * 1000;
 
     // Use Redis pipeline to batch all zCount operations into a single round-trip
-    const pipeline = redis.pipeline();
+    const pipeline = redis.multi();
     postIds.forEach((postId) => {
-      pipeline.zcount(formatHistoryKey(postId), twentyFourHoursAgo, now);
+      pipeline.zCount(formatHistoryKey(postId), twentyFourHoursAgo, now);
     });
 
     const results = await pipeline.exec();
@@ -179,9 +179,9 @@ export async function getMultiplePostViewsInRange(
     const rangeStart = now - days * 24 * 60 * 60 * 1000;
 
     // Use Redis pipeline to batch all zCount operations into a single round-trip
-    const pipeline = redis.pipeline();
+    const pipeline = redis.multi();
     postIds.forEach((postId) => {
-      pipeline.zcount(formatHistoryKey(postId), rangeStart, now);
+      pipeline.zCount(formatHistoryKey(postId), rangeStart, now);
     });
 
     const results = await pipeline.exec();

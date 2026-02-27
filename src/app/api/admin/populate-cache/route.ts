@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 import { withCronAuth } from '@/lib/api/api-security';
 
 /**
@@ -217,15 +217,28 @@ async function populateGitHubCache(): Promise<PopulateResult> {
     const githubData = await fetchGitHubContributions();
     if (!githubData) {
       console.error('[Admin Cache] ❌ GitHub cache population failed');
-      return { success: false, message: 'Failed to fetch GitHub data', error: 'API request failed' };
+      return {
+        success: false,
+        message: 'Failed to fetch GitHub data',
+        error: 'API request failed',
+      };
     }
     const key = 'github:contributions:dcyfr';
-    await redis.set(key, JSON.stringify(githubData), { ex: CACHE_TTL });
+    await redis.set(key, JSON.stringify(githubData), { EX: CACHE_TTL });
     console.warn(`[Admin Cache] GitHub data cached: ${key}`);
-    return { success: true, message: `Cached ${githubData.totalContributions} contributions`, key, count: githubData.totalContributions };
+    return {
+      success: true,
+      message: `Cached ${githubData.totalContributions} contributions`,
+      key,
+      count: githubData.totalContributions,
+    };
   } catch (error) {
     console.error('[Admin Cache] ❌ GitHub cache error:', error);
-    return { success: false, message: 'Exception during GitHub cache population', error: error instanceof Error ? error.message : 'Unknown error' };
+    return {
+      success: false,
+      message: 'Exception during GitHub cache population',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }
 
@@ -235,7 +248,11 @@ async function populateCredlyCache(): Promise<PopulateResult> {
     const allBadges = await fetchCredlyBadges();
     if (!allBadges || !Array.isArray(allBadges)) {
       console.error('[Admin Cache] ❌ Credly cache population failed');
-      return { success: false, message: 'Failed to fetch Credly data', error: 'API request failed' };
+      return {
+        success: false,
+        message: 'Failed to fetch Credly data',
+        error: 'API request failed',
+      };
     }
     const credlyKeys: string[] = [];
     const variants = [
@@ -245,14 +262,31 @@ async function populateCredlyCache(): Promise<PopulateResult> {
     ];
     for (const variant of variants) {
       const redisKey = `credly:badges:dcyfr:${variant.key}`;
-      await redis.set(redisKey, JSON.stringify({ badges: variant.badges, total_count: variant.badges.length, count: variant.badges.length }), { ex: CACHE_TTL });
+      await redis.set(
+        redisKey,
+        JSON.stringify({
+          badges: variant.badges,
+          total_count: variant.badges.length,
+          count: variant.badges.length,
+        }),
+        { EX: CACHE_TTL }
+      );
       credlyKeys.push(redisKey);
       console.warn(`[Admin Cache] Cached ${variant.key}: ${variant.badges.length} badges`);
     }
-    return { success: true, message: `Cached ${credlyKeys.length}/3 badge variants (${allBadges.length} total badges)`, keys: credlyKeys, count: allBadges.length };
+    return {
+      success: true,
+      message: `Cached ${credlyKeys.length}/3 badge variants (${allBadges.length} total badges)`,
+      keys: credlyKeys,
+      count: allBadges.length,
+    };
   } catch (error) {
     console.error('[Admin Cache] ❌ Credly cache error:', error);
-    return { success: false, message: 'Exception during Credly cache population', error: error instanceof Error ? error.message : 'Unknown error' };
+    return {
+      success: false,
+      message: 'Exception during Credly cache population',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }
 

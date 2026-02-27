@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 import { posts } from '@/data/posts';
 import { projects } from '@/data/projects';
 import { changelog } from '@/data/changelog';
@@ -121,7 +121,7 @@ export default async function ActivityEmbedPage({
 
       // Cache for future requests
       try {
-        await redis.setex(
+        await redis.setEx(
           'activity:feed:all',
           300, // 5 minutes TTL
           JSON.stringify(allActivities)

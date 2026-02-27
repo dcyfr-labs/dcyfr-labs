@@ -7,22 +7,22 @@
  * Route: /dev/news
  */
 
-import { Suspense } from "react";
-import { PageLayout, PageHero } from "@/components/layouts";
-import { FeedsContent, FeedsAuth } from "@/components/inoreader";
-import { createPageMetadata } from "@/lib/metadata";
-import { SPACING, CONTAINER_WIDTHS } from "@/lib/design-tokens";
-import { assertDevOr404 } from "@/lib/dev-only";
+import { Suspense } from 'react';
+import { PageLayout, PageHero } from '@/components/layouts';
+import { FeedsContent, FeedsAuth } from '@/components/inoreader';
+import { createPageMetadata } from '@/lib/metadata';
+import { SPACING, CONTAINER_WIDTHS } from '@/lib/design-tokens';
+import { assertDevOr404 } from '@/lib/utils/dev-only';
 
 // Force dynamic rendering since we check Redis for auth tokens
-export const dynamic = "force-dynamic";
-export const runtime = "nodejs"; // Use Node.js runtime for Redis operations
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs'; // Use Node.js runtime for Redis operations
 
 export const metadata = createPageMetadata({
-  title: "Developer News (Beta)",
+  title: 'Developer News (Beta)',
   description:
-    "Curated RSS feeds from tech blogs, GitHub, npm, and security advisories. Stay up-to-date with industry trends and news.",
-  path: "/dev/news",
+    'Curated RSS feeds from tech blogs, GitHub, npm, and security advisories. Stay up-to-date with industry trends and news.',
+  path: '/dev/news',
 });
 
 export default function DevNewsPage() {
@@ -33,9 +33,7 @@ export default function DevNewsPage() {
         description="Curated RSS feeds from tech blogs, GitHub, npm, and security advisories. Stay up-to-date with industry trends and news."
       />
 
-      <section
-        className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 md:px-8 pb-8 md:pb-12`}
-      >
+      <section className={`mx-auto ${CONTAINER_WIDTHS.standard} px-4 md:px-8 pb-8 md:pb-12`}>
         <div className={SPACING.section}>
           <Suspense
             fallback={
@@ -79,13 +77,13 @@ async function checkInoreaderAuth(): Promise<boolean> {
     }
 
     // Dynamically import Redis to avoid build-time execution
-    const { redis } = await import("@/lib/redis");
+    const { redis } = await import('@/lib/redis');
     if (!redis) {
       return false;
     }
 
     // Check for stored tokens
-    const tokensJson = await redis.get("inoreader:tokens");
+    const tokensJson = await redis.get('inoreader:tokens');
     if (!tokensJson) {
       return false;
     }
@@ -108,7 +106,7 @@ async function checkInoreaderAuth(): Promise<boolean> {
 
     return true;
   } catch (error) {
-    console.error("Error checking Inoreader auth:", error);
+    console.error('Error checking Inoreader auth:', error);
     return false;
   }
 }

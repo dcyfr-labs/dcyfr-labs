@@ -5,7 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { blockExternalAccess } from '@/lib/api/api-security';
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 import type { WeeklyMetrics } from '@/types/maintenance';
 
 /**
@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
 
       // Try to cache for next time
       try {
-        await redis.setex(
+        await redis.setEx(
           'maintenance:trends:52week',
           3600, // 1 hour TTL
           JSON.stringify(trends)

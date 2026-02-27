@@ -7,16 +7,14 @@ import {
   serverTracesSampler,
   beforeSendTransaction,
   SHARED_SENTRY_CONFIG,
-} from '@/lib/sentry/sampling';
+} from './sentry.sampling.config';
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
 
   // Only enable Sentry in production environments
   // Development errors should not be sent to production monitoring
-  enabled:
-    process.env.NODE_ENV === 'production' &&
-    process.env.VERCEL_ENV === 'production',
+  enabled: process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === 'production',
 
   // Use shared server-side sampling strategy
   tracesSampler: serverTracesSampler,

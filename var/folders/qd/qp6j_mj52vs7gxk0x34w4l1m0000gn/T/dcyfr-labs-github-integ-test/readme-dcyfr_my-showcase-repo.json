@@ -1,0 +1,4 @@
+{
+  "fetchedAt": "2026-02-27T00:44:42.537Z",
+  "content": "---\nworkShowcase: true\ntitle: \"My Showcase Repo\"\ndescription: \"A great project.\"\ncategory: ai\nstatus: active\nfeatured: true\ntech:\n  - TypeScript\n  - Node.js\ntags:\n  - ai\n  - open-source\nhighlights:\n  - \"Does cool things\"\n  - \"Very fast\"\ndemo: https://demo.example.com\ndocs: https://docs.example.com\n---\n\n# My Showcase Repo\n\nA great project.\n\n## Features\n\n- Does cool things\n- Very fast\n"
+}

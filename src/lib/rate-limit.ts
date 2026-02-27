@@ -13,7 +13,7 @@
  * - Automatic blocking of malicious IPs
  */
 
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 import { isIPBlocked, isIPSuspicious } from './blocked-ips';
 
 const RATE_LIMIT_KEY_PREFIX = 'ratelimit:';
@@ -307,13 +307,13 @@ async function rateLimitRedis(
 
     // Set expiration on first request
     if (count === 1) {
-      await redis.pexpireat(key, resetTime);
+      await redis.pExpireAt(key, resetTime);
     }
 
     // Get the TTL - use pttl which is the millisecond version
     let ttlMs = windowMs;
     try {
-      const pttlResult = await redis.pttl(key);
+      const pttlResult = await redis.pTTL(key);
       if (typeof pttlResult === 'number' && pttlResult > 0) {
         ttlMs = pttlResult;
       }

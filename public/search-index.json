@@ -198,6 +198,45 @@
       "url": "/blog/passing-comptia-security-plus"
     }
   ],
+  "projects": [
+    {
+      "slug": "x64",
+      "title": "X64: Indie Cyber Publication",
+      "description": "An independent online publication focused on cybersecurity topics, trends, and research, providing in-depth articles and analysis for professionals and enthusiasts.",
+      "category": "startup",
+      "tech": [
+        "Ghost",
+        "JavaScript",
+        "CSS",
+        "HTML"
+      ],
+      "tags": [
+        "Cybersecurity",
+        "Publication"
+      ],
+      "status": "active",
+      "url": "/work/x64"
+    },
+    {
+      "slug": "isn",
+      "title": "Information Security Network, Inc.",
+      "description": "A local nonprofit dedicated to promoting public security awareness through community outreach and education.",
+      "category": "nonprofit",
+      "tech": [
+        "WordPress",
+        "PHP",
+        "MySQL",
+        "HTML",
+        "CSS"
+      ],
+      "tags": [
+        "Cybersecurity",
+        "Awareness"
+      ],
+      "status": "archived",
+      "url": "/work/isn"
+    }
+  ],
   "tags": [
     "Agentic AI",
     "AI",
@@ -253,5 +292,5 @@
     "AI Workflows",
     "Portfolio"
   ],
-  "generatedAt": "2026-02-27T00:31:49.356Z"
+  "generatedAt": "2026-02-27T17:00:21.404Z"
 }

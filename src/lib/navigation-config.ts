@@ -50,14 +50,8 @@ export const PRIMARY_NAV: NavItem[] = [
     href: '/',
     label: 'Home',
     icon: Home,
-    shortcut: 'g h',
     exactMatch: true,
-  },
-  {
-    href: '/about',
-    label: 'About',
-    icon: User,
-    shortcut: 'g a',
+    shortcut: 'g h',
   },
   {
     href: '/blog',
@@ -72,10 +66,22 @@ export const PRIMARY_NAV: NavItem[] = [
     shortcut: 'g w',
   },
   {
+    href: '/about',
+    label: 'About',
+    icon: User,
+    shortcut: 'g a',
+  },
+  {
     href: '/contact',
     label: 'Contact',
     icon: Mail,
     shortcut: 'g c',
+  },
+  {
+    href: '/likes',
+    label: 'Likes',
+    icon: Heart,
+    shortcut: 'g l',
   },
 ] as const;
 
@@ -126,16 +132,16 @@ export const WORK_CATEGORIES: NavItem[] = [
     exactMatch: true,
   },
   {
-    href: '/work?category=community',
-    label: 'Community',
+    href: '/work?category=code',
+    label: 'Code',
   },
   {
     href: '/work?category=nonprofit',
-    label: 'Nonprofit',
+    label: 'Nonprofits',
   },
   {
     href: '/work?category=startup',
-    label: 'Startup',
+    label: 'Startups',
   },
 ] as const;
 
@@ -194,29 +200,12 @@ export const FOOTER_NAV: NavItem[] = [
     label: 'Sponsors',
   },
   {
-    href: '/activity',
-    label: 'Activity',
+    href: '/privacy',
+    label: 'Privacy Policy',
   },
   {
-    href: '/likes',
-    label: 'Likes',
-  },
-  {
-    href: '/bookmarks',
-    label: 'Bookmarks',
-  },
-  {
-    href: '/feeds',
-    label: 'Feeds',
-    icon: Rss,
-  },
-  {
-    href: '/legal',
-    label: 'Legal',
-  },
-  {
-    href: '/sitemap.xml',
-    label: 'Sitemap',
+    href: '/terms',
+    label: 'Terms of Service',
   },
 ] as const;
 
@@ -224,30 +213,18 @@ export const FOOTER_NAV: NavItem[] = [
  * Mobile navigation items (extended list with all pages)
  */
 export const MOBILE_NAV: NavItem[] = [
-  {
-    href: '/',
-    label: 'Home',
-    exactMatch: true,
-  },
-  {
-    href: '/about',
-    label: 'About',
-  },
-  {
-    href: '/work',
-    label: 'Work',
-  },
-  {
-    href: '/blog',
-    label: 'Blog',
-  },
+  ...PRIMARY_NAV,
   {
     href: '/sponsors',
     label: 'Sponsors',
   },
   {
-    href: '/contact',
-    label: 'Contact',
+    href: '/privacy',
+    label: 'Privacy Policy',
+  },
+  {
+    href: '/terms',
+    label: 'Terms of Service',
   },
 ] as const;
 
@@ -288,9 +265,9 @@ export function getKeyboardShortcuts(): Array<{
 export function findNavItem(href: string): NavItem | undefined {
   const allItems = [
     ...PRIMARY_NAV,
-    ...MOBILE_NAV,
     ...BLOG_CATEGORIES,
     ...WORK_CATEGORIES,
+    ...DEV_TOOLS_NAV,
     ...FOOTER_NAV,
   ];
 

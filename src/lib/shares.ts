@@ -1,4 +1,4 @@
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 
 const SHARE_KEY_PREFIX = 'shares:post:';
 const SHARE_HISTORY_KEY_PREFIX = 'shares:history:post:';
@@ -20,9 +20,9 @@ export async function incrementPostShares(postId: string): Promise<number | null
 
     // Record share in sorted set with timestamp
     const now = Date.now();
-    await redis.zadd(formatHistoryKey(postId), {
+    await redis.zAdd(formatHistoryKey(postId), {
       score: now,
-      member: `${now}`,
+      value: `${now}`,
     });
 
     return count;
@@ -57,7 +57,7 @@ export async function getPostShares24h(postId: string): Promise<number | null> {
   try {
     const now = Date.now();
     const twentyFourHoursAgo = now - 24 * 60 * 60 * 1000;
-    const count = await redis.zcount(formatHistoryKey(postId), twentyFourHoursAgo, now);
+    const count = await redis.zCount(formatHistoryKey(postId), twentyFourHoursAgo, now);
     return count;
   } catch {
     return null;
@@ -76,7 +76,7 @@ export async function getPostSharesBulk(postIds: string[]): Promise<Record<strin
 
   try {
     const keys = postIds.map(formatKey);
-    const values = await redis.mget(...keys);
+    const values = await redis.mGet(keys);
 
     const result: Record<string, number> = {};
     postIds.forEach((postId, index) => {
@@ -105,9 +105,9 @@ export async function getPostShares24hBulk(postIds: string[]): Promise<Record<st
     const twentyFourHoursAgo = now - 24 * 60 * 60 * 1000;
 
     // Use Redis pipeline to batch all zCount operations into a single round-trip
-    const pipeline = redis.pipeline();
+    const pipeline = redis.multi();
     postIds.forEach((postId) => {
-      pipeline.zcount(formatHistoryKey(postId), twentyFourHoursAgo, now);
+      pipeline.zCount(formatHistoryKey(postId), twentyFourHoursAgo, now);
     });
 
     const results = await pipeline.exec();

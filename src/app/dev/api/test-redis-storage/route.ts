@@ -2,8 +2,8 @@
  * Test Redis storage functionality
  */
 import { NextResponse } from 'next/server';
-import { assertDevOr404 } from '@/lib/dev-only';
-import { redis } from '@/mcp/shared/redis-client';
+import { assertDevOr404 } from '@/lib/utils/dev-only';
+import { redis } from '@/lib/redis-client';
 
 export async function GET() {
   // Defense-in-depth: explicit environment check for Vercel Fluid Compute optimization

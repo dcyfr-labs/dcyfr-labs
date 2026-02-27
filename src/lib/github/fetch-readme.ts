@@ -5,9 +5,9 @@
  * repo has no README or the fetch fails.  Results are file-cached.
  */
 
-import { GITHUB_API_CONFIG, ENV_VARS } from "@/config/repos-config";
-import { writeReadmeCache, readReadmeCache } from "./cache";
-import type { GitHubReadmeResponse } from "./types";
+import { GITHUB_API_CONFIG, ENV_VARS } from '@/config/repos-config';
+import { writeReadmeCache, readReadmeCache, readReadmeCacheStale } from './cache';
+import type { GitHubReadmeResponse } from './types';
 
 // ---------------------------------------------------------------------------
 // Helpers (kept local to avoid circular imports with fetch-repos)
@@ -15,13 +15,13 @@ import type { GitHubReadmeResponse } from "./types";
 
 function buildHeaders(): Record<string, string> {
   const headers: Record<string, string> = {
-    Accept: "application/vnd.github+json",
-    "X-GitHub-Api-Version": "2022-11-28",
-    "User-Agent": "dcyfr-labs-repo-showcase/1.0",
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    'User-Agent': 'dcyfr-labs-repo-showcase/1.0',
   };
   const token = process.env[ENV_VARS.token];
   if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
+    headers['Authorization'] = `Bearer ${token}`;
   }
   return headers;
 }
@@ -59,36 +59,47 @@ export async function fetchRepoReadme(repoFullName: string): Promise<string> {
   try {
     res = await fetchWithTimeout(url, headers);
   } catch {
-    return "";
+    // Network error — fall back to stale README cache (ignores TTL)
+    const stale = readReadmeCacheStale(repoFullName);
+    return stale ? stale.content : '';
   }
 
   if (res.status === 404) {
     // Repo has no README — cache empty result so we don't re-fetch
-    writeReadmeCache(repoFullName, { fetchedAt: new Date().toISOString(), content: "" });
-    return "";
+    try {
+      writeReadmeCache(repoFullName, { fetchedAt: new Date().toISOString(), content: '' });
+    } catch {
+      /* non-fatal: read-only filesystem (e.g. Vercel) */
+    }
+    return '';
   }
 
   if (!res.ok) {
-    // Rate limit or server error — return empty without caching
-    return "";
+    // Rate limit or server error — try stale cache before returning empty
+    const stale = readReadmeCacheStale(repoFullName);
+    return stale ? stale.content : '';
   }
 
   let data: GitHubReadmeResponse;
   try {
     data = (await res.json()) as GitHubReadmeResponse;
   } catch {
-    return "";
+    return '';
   }
 
   // GitHub returns base64-encoded content (may include newlines)
-  let content = "";
+  let content = '';
   try {
-    const cleaned = data.content.replace(/\n/g, "");
-    content = Buffer.from(cleaned, "base64").toString("utf-8");
+    const cleaned = data.content.replace(/\n/g, '');
+    content = Buffer.from(cleaned, 'base64').toString('utf-8');
   } catch {
-    content = "";
+    content = '';
   }
 
-  writeReadmeCache(repoFullName, { fetchedAt: new Date().toISOString(), content });
+  try {
+    writeReadmeCache(repoFullName, { fetchedAt: new Date().toISOString(), content });
+  } catch {
+    /* non-fatal: read-only filesystem (e.g. Vercel) */
+  }
   return content;
 }

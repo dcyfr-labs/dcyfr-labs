@@ -19,10 +19,7 @@ vi.mock('next/link', () => ({
 
 // Mock next/image
 vi.mock('next/image', () => ({
-  default: ({ alt, src, ...props }: any) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img alt={alt} src={src} {...props} />
-  ),
+  default: ({ alt, src, ...props }: any) => <img alt={alt} src={src} {...props} />,
 }));
 
 import { SiteHeader } from '@/components/navigation';
@@ -269,17 +266,20 @@ describe('SiteHeader', () => {
 
       fireEvent.click(workButton);
 
-      const communityLink = await screen.findByRole('menuitem', {
-        name: /Open source and community work/i,
+      // Check for "Code" category link
+      const codeLink = await screen.findByRole('menuitem', {
+        name: /Open-source code and development projects/i,
       });
+      // Check for "Nonprofit" category link
       const nonprofitLink = screen.getByRole('menuitem', {
         name: /Mission-driven partnerships/i,
       });
+      // Check for "Startup" category link
       const startupLink = screen.getByRole('menuitem', {
         name: /Early-stage product development/i,
       });
 
-      expect(communityLink).toHaveAttribute('href', '/work?category=community');
+      expect(codeLink).toHaveAttribute('href', '/work?category=code');
       expect(nonprofitLink).toHaveAttribute('href', '/work?category=nonprofit');
       expect(startupLink).toHaveAttribute('href', '/work?category=startup');
     });

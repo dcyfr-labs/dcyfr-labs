@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { assertDevOr404 } from '@/lib/dev-only';
+import { assertDevOr404 } from '@/lib/utils/dev-only';
 import fs from 'fs';
 import path from 'path';
 
@@ -15,15 +15,9 @@ import path from 'path';
  */
 
 // Only allow specific report names for security
-const ALLOWED_REPORTS = [
-  'design-system-report.json',
-  'design-system-report.txt',
-];
+const ALLOWED_REPORTS = ['design-system-report.json', 'design-system-report.txt'];
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ name: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ name: string }> }) {
   // Defense-in-depth: explicit environment check for Vercel Fluid Compute optimization
   assertDevOr404();
 
@@ -31,10 +25,7 @@ export async function GET(
 
   // Validate report name
   if (!ALLOWED_REPORTS.includes(name)) {
-    return NextResponse.json(
-      { error: 'Report not found' },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: 'Report not found' }, { status: 404 });
   }
 
   // Build path to report file
@@ -46,7 +37,7 @@ export async function GET(
     return NextResponse.json(
       {
         error: 'Report not generated yet',
-        hint: 'Run: node scripts/validate-design-tokens.mjs'
+        hint: 'Run: node scripts/validate-design-tokens.mjs',
       },
       { status: 404 }
     );

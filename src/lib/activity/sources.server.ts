@@ -14,7 +14,7 @@ import type { CredlyBadge, CredlyBadgesResponse } from '@/types/credly';
 import { getMultiplePostViews, getMultiplePostViewsInRange } from '@/lib/views.server';
 import { getPostCommentsBulk } from '@/lib/comments';
 import { getActivityReactionsBulk, mapGiscusReactionsToLikes } from '@/lib/giscus-reactions';
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 import { calculateTrendingStatus, type EngagementMetrics } from './trending';
 
 // ============================================================================
@@ -197,7 +197,9 @@ function buildFallbackTrending(posts: Post[], limit?: number): TrendingPost[] {
     recentViews: 0,
     score: 0,
   }));
-  console.warn(`[Activity] Using fallback: ${fallback.length} most recent posts (Redis unavailable)`);
+  console.warn(
+    `[Activity] Using fallback: ${fallback.length} most recent posts (Redis unavailable)`
+  );
   return fallback;
 }
 
@@ -383,16 +385,18 @@ export async function transformMilestones(posts: Post[], limit?: number): Promis
   try {
     // Scan for all milestone keys
     const keys: string[] = [];
-    let cursor = '0';
+    let cursor = 0;
 
     do {
-      const [nextCursor, resultKeys] = await redis.scan(cursor, {
-        match: 'blog:milestone:*',
-        count: 100,
+      // Redis v4 scan - cursor must be passed as string but is returned as number
+      const scanResult = await redis.scan(String(cursor), {
+        MATCH: 'blog:milestone:*',
+        COUNT: 100,
       });
-      cursor = nextCursor;
-      keys.push(...resultKeys);
-    } while (cursor !== '0');
+      cursor =
+        typeof scanResult.cursor === 'string' ? parseInt(scanResult.cursor) : scanResult.cursor;
+      keys.push(...scanResult.keys);
+    } while (cursor !== 0);
 
     // Fetch timestamps for all milestone keys
     const milestoneActivities: ActivityItem[] = [];
@@ -637,7 +641,7 @@ export async function transformWebhookGitHubCommits(limit?: number): Promise<Act
 
   try {
     // Get the list of recent commit keys
-    const commitKeys = await redis.lrange('github:commits:recent', 0, limit ? limit - 1 : 999);
+    const commitKeys = await redis.lRange('github:commits:recent', 0, limit ? limit - 1 : 999);
 
     if (commitKeys.length === 0) {
       return [];

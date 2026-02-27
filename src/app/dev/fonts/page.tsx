@@ -1,6 +1,6 @@
 import { PageLayout } from '@/components/layouts';
 import { createPageMetadata } from '@/lib/metadata';
-import { assertDevOr404 } from '@/lib/dev-only';
+import { assertDevOr404 } from '@/lib/utils/dev-only';
 import { CONTAINER_WIDTHS, SPACING, TYPOGRAPHY } from '@/lib/design-tokens';
 
 export const metadata = createPageMetadata({

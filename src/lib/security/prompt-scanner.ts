@@ -12,11 +12,8 @@
  * - Pattern matching with taxonomy
  */
 
-import { PromptIntelClient } from '@/mcp/shared/promptintel-client';
-import type {
-  PromptIntelIoPC,
-  PromptIntelTaxonomy
-} from '@/mcp/shared/promptintel-types';
+import { PromptIntelClient } from '@/lib/promptintel-client';
+import type { PromptIntelIoPC, PromptIntelTaxonomy } from '@/lib/promptintel-types';
 
 // ============================================================================
 // Types
@@ -46,11 +43,11 @@ export interface ScanResult {
 }
 
 export interface ScanOptions {
-  checkIoPC?: boolean;           // Check against IoPC database
-  checkTaxonomy?: boolean;       // Check against threat taxonomy
-  checkPatterns?: boolean;       // Check against local patterns
-  maxRiskScore?: number;         // Maximum acceptable risk score
-  cacheResults?: boolean;        // Cache scan results
+  checkIoPC?: boolean; // Check against IoPC database
+  checkTaxonomy?: boolean; // Check against threat taxonomy
+  checkPatterns?: boolean; // Check against local patterns
+  maxRiskScore?: number; // Maximum acceptable risk score
+  cacheResults?: boolean; // Cache scan results
 }
 
 // ============================================================================
@@ -77,13 +74,15 @@ const LOCAL_PATTERNS = [
     confidence: 0.9,
   },
   {
-    pattern: /(system\s+prompt|you\s+are\s+now|forget\s+everything|new\s+instructions?|disregard|override)/i,
+    pattern:
+      /(system\s+prompt|you\s+are\s+now|forget\s+everything|new\s+instructions?|disregard|override)/i,
     category: 'prompt-override',
     severity: 'high' as const,
     confidence: 0.85,
   },
   {
-    pattern: /(tell\s+me|what\s+(is|are))\s+(the|your)\s+(system|initial|original)\s+(prompt|instructions?)/i,
+    pattern:
+      /(tell\s+me|what\s+(is|are))\s+(the|your)\s+(system|initial|original)\s+(prompt|instructions?)/i,
     category: 'prompt-leakage',
     severity: 'medium' as const,
     confidence: 0.8,
@@ -129,20 +128,15 @@ export class PromptSecurityScanner {
   private lastTaxonomyUpdate = 0;
 
   constructor(apiKey?: string) {
-    this.client = new PromptIntelClient({
-      apiKey: apiKey || process.env.PROMPTINTEL_API_KEY || '',
-      timeout: 15000,
-    });
+    // PromptIntelClient is deprecated - this will throw
+    this.client = new PromptIntelClient();
     this.cache = new Map();
   }
 
   /**
    * Scan a single prompt for security threats
    */
-  async scanPrompt(
-    input: string,
-    options: ScanOptions = {}
-  ): Promise<ScanResult> {
+  async scanPrompt(input: string, options: ScanOptions = {}): Promise<ScanResult> {
     const opts = { ...DEFAULT_OPTIONS, ...options };
     const startTime = Date.now();
     const inputHash = this.hashInput(input);
@@ -206,7 +200,7 @@ export class PromptSecurityScanner {
       threats,
       severity,
       riskScore,
-      blockedPatterns: threats.map(t => t.pattern),
+      blockedPatterns: threats.map((t) => t.pattern),
       metadata: {
         scannedAt: new Date().toISOString(),
         scanDuration: Date.now() - startTime,
@@ -226,14 +220,9 @@ export class PromptSecurityScanner {
   /**
    * Scan multiple prompts in batch
    */
-  async scanBatch(
-    inputs: string[],
-    options: ScanOptions = {}
-  ): Promise<ScanResult[]> {
+  async scanBatch(inputs: string[], options: ScanOptions = {}): Promise<ScanResult[]> {
     // Scan all prompts in parallel
-    const results = await Promise.all(
-      inputs.map(input => this.scanPrompt(input, options))
-    );
+    const results = await Promise.all(inputs.map((input) => this.scanPrompt(input, options)));
     return results;
   }
 
@@ -303,7 +292,7 @@ export class PromptSecurityScanner {
     if (!this.ioPCCache) return matches;
 
     for (const threat of this.ioPCCache) {
-      const patternSource = threat.detection_pattern ?? threat.prompt_pattern;
+      const patternSource = threat.pattern;
       if (!patternSource) continue;
 
       try {
@@ -312,10 +301,10 @@ export class PromptSecurityScanner {
           matches.push({
             pattern: patternSource,
             category: threat.category,
-            severity: threat.severity === 'info' ? 'low' : threat.severity,
+            severity: threat.severity,
             confidence: threat.severity === 'critical' ? 0.9 : 0.7,
             source: 'iopc',
-            details: `IoPC match: ${threat.title}`,
+            details: `IoPC match: ${threat.description || threat.id}`,
           });
         }
       } catch {
@@ -324,10 +313,10 @@ export class PromptSecurityScanner {
           matches.push({
             pattern: patternSource,
             category: threat.category,
-            severity: threat.severity === 'info' ? 'low' : threat.severity,
+            severity: threat.severity,
             confidence: 0.5,
             source: 'iopc',
-            details: `IoPC substring match: ${threat.title}`,
+            details: `IoPC substring match: ${threat.description || threat.id}`,
           });
         }
       }
@@ -388,16 +377,13 @@ export class PromptSecurityScanner {
   /**
    * Determine overall severity level
    */
-  private determineSeverity(
-    threats: ThreatMatch[],
-    riskScore: number
-  ): ScanResult['severity'] {
+  private determineSeverity(threats: ThreatMatch[], riskScore: number): ScanResult['severity'] {
     if (threats.length === 0) return 'safe';
 
     // Find highest severity
-    const hasCritical = threats.some(t => t.severity === 'critical');
-    const hasHigh = threats.some(t => t.severity === 'high');
-    const hasMedium = threats.some(t => t.severity === 'medium');
+    const hasCritical = threats.some((t) => t.severity === 'critical');
+    const hasHigh = threats.some((t) => t.severity === 'high');
+    const hasMedium = threats.some((t) => t.severity === 'medium');
 
     if (hasCritical || riskScore >= 90) return 'critical';
     if (hasHigh || riskScore >= 70) return 'high';
@@ -413,7 +399,7 @@ export class PromptSecurityScanner {
     let hash = 0;
     for (let i = 0; i < input.length; i++) {
       const char = input.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return hash.toString(36);

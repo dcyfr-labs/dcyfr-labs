@@ -15,7 +15,7 @@
  */
 
 import siteConfig from '@/lib/site-config';
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 
 // ============================================================================
 // CONSTANTS
@@ -102,7 +102,7 @@ async function getCachedReactions(activityId: string): Promise<GiscusReactions |
  */
 async function setCachedReactions(activityId: string, reactions: GiscusReactions): Promise<void> {
   try {
-    await redis.setex(`${CACHE_PREFIX}${activityId}`, CACHE_TTL, JSON.stringify(reactions));
+    await redis.setEx(`${CACHE_PREFIX}${activityId}`, CACHE_TTL, JSON.stringify(reactions));
   } catch (error) {
     console.error(`[GiscusReactions] Cache write failed for ${activityId}:`, error);
   }

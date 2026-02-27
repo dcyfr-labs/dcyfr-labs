@@ -9,7 +9,7 @@
  */
 
 import siteConfig from '@/lib/site-config';
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 
 const CACHE_TTL = 900; // 15 minutes
 const CACHE_PREFIX = 'comments:';
@@ -50,7 +50,7 @@ async function getCachedCommentCount(slug: string): Promise<number | null> {
  */
 async function setCachedCommentCount(slug: string, count: number): Promise<void> {
   try {
-    await redis.setex(`${CACHE_PREFIX}${slug}`, CACHE_TTL, count.toString());
+    await redis.setEx(`${CACHE_PREFIX}${slug}`, CACHE_TTL, count.toString());
   } catch (error) {
     console.error(`[Comments] Cache write failed for ${slug}:`, error);
   }

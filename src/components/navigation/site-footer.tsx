@@ -1,7 +1,6 @@
-import { SiteLogo } from "@/components/common";
-import { cn } from "@/lib/utils";
-import { CONTAINER_WIDTHS, NAVIGATION_HEIGHT } from "@/lib/design-tokens";
-import { NAVIGATION } from "@/lib/navigation-config";
+import { cn } from '@/lib/utils';
+import { CONTAINER_WIDTHS, NAVIGATION_HEIGHT } from '@/lib/design-tokens';
+import { NAVIGATION } from '@/lib/navigation-config';
 
 export function SiteFooter() {
   return (
@@ -10,12 +9,12 @@ export function SiteFooter() {
       <footer className="hidden md:hidden mt-8 site-footer border-t pb-2">
         <div
           className={cn(
-            "mx-auto px-4 sm:px-8",
+            'mx-auto px-4 sm:px-8',
             NAVIGATION_HEIGHT,
-            "flex items-center justify-center text-[clamp(0.875rem,1vw+0.75rem,1rem)] text-muted-foreground gap-2"
+            'flex items-center justify-center text-[clamp(0.875rem,1vw+0.75rem,1rem)] text-muted-foreground gap-2'
           )}
         >
-          <SiteLogo size="md" />
+          &copy; {new Date().getFullYear()} DCYFR Labs
         </div>
       </footer>
 
@@ -23,27 +22,26 @@ export function SiteFooter() {
       <footer className="hidden md:block border-t mt-16 site-footer">
         <div
           className={cn(
-            "mx-auto",
+            'mx-auto',
             CONTAINER_WIDTHS.dashboard,
-            "px-4",
-            "md:px-8",
-            "lg:px-8",
+            'px-4',
+            'md:px-8',
+            'lg:px-8',
             NAVIGATION_HEIGHT,
-            "flex",
-            "flex-col",
-            "lg:flex-row",
-            "items-center",
-            "justify-between",
-            "gap-4",
-            "lg:gap-0",
-            "text-[clamp(0.875rem,1vw+0.75rem,1rem)]",
-            "py-4",
-            "lg:py-0"
+            'flex',
+            'flex-col',
+            'lg:flex-row',
+            'items-center',
+            'justify-between',
+            'gap-4',
+            'lg:gap-0',
+            'text-[clamp(0.875rem,1vw+0.75rem,1rem)]',
+            'py-4',
+            'lg:py-0'
           )}
         >
           <div className="flex items-center justify-center text-[clamp(0.875rem,1vw+0.75rem,1rem)] text-muted-foreground gap-2">
-            &copy; {new Date().getFullYear()} DCYFR Labs{" "}
-            <SiteLogo size="sm" iconClassName="opacity-80" showText={false} />
+            &copy; {new Date().getFullYear()} DCYFR Labs
           </div>
           <div className="flex flex-wrap items-center justify-center gap-2 lg:gap-4 pb-4 lg:pb-0">
             {NAVIGATION.footer.map((item) => (

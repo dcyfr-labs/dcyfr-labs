@@ -7,7 +7,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { blockExternalAccess } from '@/lib/api/api-security';
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 import type { Observation } from '@/types/maintenance';
 
 const OBSERVATIONS_KEY = 'maintenance:observations';
@@ -29,15 +29,19 @@ function parseObservation(item: unknown): Observation | null {
 /** Fetch observations from Redis; returns empty array on error */
 async function fetchFromRedis(): Promise<{ observations: Observation[]; fromRedis: boolean }> {
   try {
-    const cached = await redis.lrange(OBSERVATIONS_KEY, 0, -1);
+    const cached = await redis.lRange(OBSERVATIONS_KEY, 0, -1);
     const cachedLength = Array.isArray(cached) ? cached.length : 0;
     console.warn(`[Redis LRANGE] Retrieved ${cachedLength} items from ${OBSERVATIONS_KEY}`);
-    if (!Array.isArray(cached) || cached.length === 0) return { observations: [], fromRedis: false };
+    if (!Array.isArray(cached) || cached.length === 0)
+      return { observations: [], fromRedis: false };
     const observations = cached.map(parseObservation).filter((o): o is Observation => o !== null);
     console.warn(`[Redis] Successfully parsed ${observations.length} observations`);
     return { observations, fromRedis: true };
   } catch (redisError) {
-    console.error('Failed to fetch from Redis:', { error: redisError instanceof Error ? redisError.message : String(redisError), stack: redisError instanceof Error ? redisError.stack : undefined });
+    console.error('Failed to fetch from Redis:', {
+      error: redisError instanceof Error ? redisError.message : String(redisError),
+      stack: redisError instanceof Error ? redisError.stack : undefined,
+    });
     return { observations: [], fromRedis: false };
   }
 }
@@ -46,13 +50,18 @@ async function fetchFromRedis(): Promise<{ observations: Observation[]; fromRedi
 async function storeInRedis(observation: Observation): Promise<boolean> {
   try {
     console.warn(`[Redis] Attempting to store observation: ${observation.id}`);
-    const pushResult = await redis.lpush(OBSERVATIONS_KEY, JSON.stringify(observation));
+    const pushResult = await redis.lPush(OBSERVATIONS_KEY, JSON.stringify(observation));
     console.warn(`[Redis LPUSH] Success. New list length: ${pushResult}`);
-    await redis.ltrim(OBSERVATIONS_KEY, 0, MAX_OBSERVATIONS - 1);
+    await redis.lTrim(OBSERVATIONS_KEY, 0, MAX_OBSERVATIONS - 1);
     console.warn(`[Redis LTRIM] Success. Trimmed to max ${MAX_OBSERVATIONS}`);
     return true;
   } catch (err) {
-    console.error('[Redis ERROR] Failed to store observation:', { message: err instanceof Error ? err.message : String(err), stack: err instanceof Error ? err.stack : '', obsId: observation.id, obsTitle: observation.title });
+    console.error('[Redis ERROR] Failed to store observation:', {
+      message: err instanceof Error ? err.message : String(err),
+      stack: err instanceof Error ? err.stack : '',
+      obsId: observation.id,
+      obsTitle: observation.title,
+    });
     return false;
   }
 }
@@ -82,7 +91,9 @@ export async function GET(request: NextRequest) {
 
     // Fall back to in-memory storage if Redis not available or empty
     if (observations.length === 0) {
-      console.warn(`[Fallback] Using in-memory storage with ${inMemoryObservations.length} observations`);
+      console.warn(
+        `[Fallback] Using in-memory storage with ${inMemoryObservations.length} observations`
+      );
       observations = [...inMemoryObservations];
     }
 

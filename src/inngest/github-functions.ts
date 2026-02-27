@@ -1,5 +1,5 @@
 import { inngest } from './client';
-import { redis, getRedisEnvironment, getRedisKeyPrefix } from '@/mcp/shared/redis-client';
+import { redis, getRedisEnvironment, getRedisKeyPrefix } from '@/lib/redis-client';
 
 // GitHub configuration
 const GITHUB_USERNAME = 'dcyfr';
@@ -161,7 +161,7 @@ export const refreshGitHubData = inngest.createFunction(
           totalContributions: cleanData.totalContributions,
         });
 
-        await redis.setex(CACHE_KEY, Math.floor(CACHE_DURATION / 1000), JSON.stringify(cleanData));
+        await redis.setEx(CACHE_KEY, Math.floor(CACHE_DURATION / 1000), JSON.stringify(cleanData));
 
         // Verify write succeeded
         const verification = await redis.get(CACHE_KEY);
@@ -258,7 +258,7 @@ export const manualRefreshGitHubData = inngest.createFunction(
 
     await step.run('update-cache', async () => {
       if (redis) {
-        await redis.setex(CACHE_KEY, Math.floor(CACHE_DURATION / 1000), JSON.stringify(freshData));
+        await redis.setEx(CACHE_KEY, Math.floor(CACHE_DURATION / 1000), JSON.stringify(freshData));
       }
     });
 
@@ -312,7 +312,7 @@ export const processGitHubCommit = inngest.createFunction(
         };
 
         // Store with 7-day expiration
-        await redis.setex(
+        await redis.setEx(
           commitKey,
           7 * 24 * 60 * 60, // 7 days in seconds
           JSON.stringify(commitData)
@@ -320,8 +320,8 @@ export const processGitHubCommit = inngest.createFunction(
 
         // Add to activity feed index
         const indexKey = 'github:commits:recent';
-        await redis.lpush(indexKey, commitKey);
-        await redis.ltrim(indexKey, 0, 999); // Keep last 1000 commits
+        await redis.lPush(indexKey, commitKey);
+        await redis.lTrim(indexKey, 0, 999); // Keep last 1000 commits
         await redis.expire(indexKey, 7 * 24 * 60 * 60); // Expire the list after 7 days
 
         logger.info('Stored GitHub commit in cache', { hash, commitKey });

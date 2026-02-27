@@ -25,6 +25,7 @@ export default defineConfig({
     // so production code that branches on NODE_ENV works correctly in tests.
     env: {
       NODE_ENV: 'test',
+      REDIS_URL: 'redis://localhost:6379/test',
     },
     // Route pure-logic tests to lighter node environment (no DOM overhead)
     environmentMatchGlobs: [
@@ -69,6 +70,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      // Mock Next.js server-only marker in test environment
+      'server-only': path.resolve(__dirname, './tests/__mocks__/server-only.ts'),
     },
   },
 });

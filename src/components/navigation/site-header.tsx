@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { ThemeToggle } from '@/components/features';
+import { ThemeToggle } from '@/components/features/theme/theme-toggle';
 import { MobileNav } from '@/components/navigation';
 import { SearchButton } from '@/components/search';
 import { DevToolsDropdown, ThemeAwareLogo } from '@/components/common';

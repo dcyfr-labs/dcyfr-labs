@@ -1,10 +1,10 @@
-import Link from "next/link";
-import Image from "next/image";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { HOVER_EFFECTS, IMAGE_PLACEHOLDER } from "@/lib/design-tokens";
-import { Sparkles } from "lucide-react";
-import type { TeamMember } from "@/types/team";
+import Link from 'next/link';
+import Image from 'next/image';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { HOVER_EFFECTS, IMAGE_PLACEHOLDER } from '@/lib/design-tokens';
+import { Sparkles } from 'lucide-react';
+import type { TeamMember } from '@/types/team';
 
 /**
  * TeamMemberCard Component
@@ -35,7 +35,7 @@ import type { TeamMember } from "@/types/team";
  * ```
  */
 
-export type TeamMemberCardLayout = "detailed" | "compact";
+export type TeamMemberCardLayout = 'detailed' | 'compact';
 
 interface TeamMemberCardProps {
   /** Team member data from @/data/team */
@@ -61,13 +61,13 @@ function MemberAvatar({
   avatarUrl,
 }: {
   member: TeamMember;
-  size: "sm" | "md";
+  size: 'sm' | 'md';
   avatarUrl?: string;
 }) {
-  const isAI = member.avatarType === "icon";
-  const sizeClasses = size === "sm" ? "w-12 h-12" : "w-16 h-16";
-  const iconSize = size === "sm" ? "w-6 h-6" : "w-8 h-8";
-  const sparkleSize = size === "sm" ? "w-4 h-4" : "w-5 h-5";
+  const isAI = member.avatarType === 'icon';
+  const sizeClasses = size === 'sm' ? 'w-12 h-12' : 'w-16 h-16';
+  const iconSize = size === 'sm' ? 'w-6 h-6' : 'w-8 h-8';
+  const sparkleSize = size === 'sm' ? 'w-4 h-4' : 'w-5 h-5';
 
   if (isAI) {
     return (
@@ -75,9 +75,7 @@ function MemberAvatar({
         <div
           className={`${sizeClasses} rounded-full bg-linear-to-br from-primary/20 to-primary/5 flex items-center justify-center ring-2 ring-border group-hover:ring-primary/50 transition-theme`}
         >
-          {member.avatarIcon && (
-            <member.avatarIcon className={`${iconSize} text-primary`} />
-          )}
+          {member.avatarIcon && <member.avatarIcon className={`${iconSize} text-primary`} />}
         </div>
         <div className="absolute -bottom-1 -right-1">
           <Sparkles className={`${sparkleSize} text-primary`} />
@@ -86,7 +84,7 @@ function MemberAvatar({
     );
   }
 
-  const imageSrc = avatarUrl || member.avatarImagePath || "/images/avatar.jpg";
+  const imageSrc = avatarUrl || member.avatarImagePath || '/images/avatar.jpg';
 
   return (
     <div
@@ -97,7 +95,7 @@ function MemberAvatar({
         alt={`${member.name}'s avatar`}
         fill
         className="object-cover"
-        sizes={size === "sm" ? "48px" : "64px"}
+        sizes={size === 'sm' ? '48px' : '64px'}
         placeholder="blur"
         blurDataURL={IMAGE_PLACEHOLDER.blur}
       />
@@ -120,11 +118,11 @@ function DetailedLayout({
   linkTo?: string;
   className?: string;
 }) {
-  const isAI = member.avatarType === "icon";
+  const isAI = member.avatarType === 'icon';
 
   const cardContent = (
     <Card
-      className={`p-5 space-y-4 ${isAI ? "border-primary/20" : ""} ${linkTo ? HOVER_EFFECTS.card : HOVER_EFFECTS.cardSubtle} ${className || ""}`}
+      className={`p-5 space-y-4 ${isAI ? 'border-primary/20' : ''} ${linkTo ? HOVER_EFFECTS.card : HOVER_EFFECTS.cardSubtle} ${className || ''}`}
     >
       <div className="flex flex-col items-start gap-3">
         <div className="flex flex-row items-center gap-4">
@@ -140,12 +138,12 @@ function DetailedLayout({
   );
 
   if (linkTo) {
-    const isExternal = linkTo.startsWith("http");
+    const isExternal = linkTo.startsWith('http');
     return (
       <Link
         href={linkTo}
-        target={isExternal ? "_blank" : undefined}
-        rel={isExternal ? "noopener noreferrer" : undefined}
+        target={isExternal ? '_blank' : undefined}
+        rel={isExternal ? 'noopener noreferrer' : undefined}
       >
         {cardContent}
       </Link>
@@ -173,28 +171,28 @@ function CompactLayout({
   avatarUrl?: string;
   className?: string;
 }) {
-    const cardContent = (
-      <div className="flex flex-col items-start gap-3">
-        <div className="flex flex-row items-center gap-4">
-          <MemberAvatar member={member} size="sm" avatarUrl={avatarUrl} />
-          <div className="flex-1">
-            <h3 className="font-medium text-lg">{member.name}</h3>
-            <p className="text-sm text-muted-foreground mb-2">{member.title}</p>
-          </div>
+  const cardContent = (
+    <div className="flex flex-col items-start gap-3">
+      <div className="flex flex-row items-center gap-4">
+        <MemberAvatar member={member} size="sm" avatarUrl={avatarUrl} />
+        <div className="flex-1">
+          <h3 className="font-medium text-lg">{member.name}</h3>
+          <p className="text-sm text-muted-foreground mb-2">{member.title}</p>
         </div>
-        <p className="text-sm text-muted-foreground">{member.description}</p>
       </div>
-    );
+      <p className="text-sm text-muted-foreground">{member.description}</p>
+    </div>
+  );
 
-  const cardClassName = `group bg-card border border-border rounded-lg p-4 ${HOVER_EFFECTS.cardSubtle} ${className || ""}`;
+  const cardClassName = `group bg-card border border-border rounded-lg p-4 ${HOVER_EFFECTS.cardSubtle} ${className || ''}`;
 
   if (linkTo) {
-    const isExternal = linkTo.startsWith("http");
+    const isExternal = linkTo.startsWith('http');
     return (
       <Link
         href={linkTo}
-        target={isExternal ? "_blank" : undefined}
-        rel={isExternal ? "noopener noreferrer" : undefined}
+        target={isExternal ? '_blank' : undefined}
+        rel={isExternal ? 'noopener noreferrer' : undefined}
         className={cardClassName}
       >
         {cardContent}
@@ -210,13 +208,13 @@ function CompactLayout({
  */
 export function TeamMemberCard({
   member,
-  layout = "detailed",
+  layout = 'detailed',
   contribution,
   linkTo,
   avatarUrl,
   className,
 }: TeamMemberCardProps) {
-  if (layout === "compact") {
+  if (layout === 'compact') {
     return (
       <CompactLayout
         member={member}
@@ -229,11 +227,6 @@ export function TeamMemberCard({
   }
 
   return (
-    <DetailedLayout 
-      member={member} 
-      avatarUrl={avatarUrl} 
-      linkTo={linkTo}
-      className={className} 
-    />
+    <DetailedLayout member={member} avatarUrl={avatarUrl} linkTo={linkTo} className={className} />
   );
 }

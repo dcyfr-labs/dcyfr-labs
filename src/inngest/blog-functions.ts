@@ -1,5 +1,5 @@
 import { inngest } from './client';
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 import { track } from '@vercel/analytics/server';
 
 // Redis keys
@@ -291,19 +291,19 @@ export const calculateTrending = inngest.createFunction(
 
                 try {
                   // Use Redis pipeline to batch all queries for this batch
-                  const pipeline = redis.pipeline();
+                  const multi = redis.multi();
 
                   // For each post, queue all queries (1 total + 7 daily)
                   batch.forEach((key) => {
-                    pipeline.get(key); // Total views
+                    multi.get(key); // Total views
                     dateStrings.forEach((dateStr) => {
-                      pipeline.get(`${key}:day:${dateStr}`); // Daily views
+                      multi.get(`${key}:day:${dateStr}`); // Daily views
                     });
                   });
 
                   // Execute all queries in parallel
                   const results = await withTimeout(
-                    pipeline.exec(),
+                    multi.exec(),
                     15000,
                     'Pipeline execution timeout'
                   );
@@ -319,21 +319,17 @@ export const calculateTrending = inngest.createFunction(
                       const postId = key.replace(VIEW_KEY_PREFIX, '');
                       const resultOffset = batchIdx * 8;
 
-                      // First result is total views
-                      const totalViewsResult = results[resultOffset] as [
-                        Error | null,
-                        string | null,
-                      ];
-                      const totalViews = parseInt((totalViewsResult[1] as string) || '0');
+                      // First result is total views (redis v4 multi returns just values, not [error, value] tuples)
+                      const totalViews = parseInt(
+                        (results[resultOffset] as unknown as string) || '0'
+                      );
 
                       // Next 7 results are daily views
                       let recentViews = 0;
                       for (let j = 0; j < 7; j++) {
-                        const dayViewsResult = results[resultOffset + 1 + j] as [
-                          Error | null,
-                          string | null,
-                        ];
-                        recentViews += parseInt((dayViewsResult[1] as string) || '0');
+                        recentViews += parseInt(
+                          (results[resultOffset + 1 + j] as unknown as string) || '0'
+                        );
                       }
 
                       postsData.push({
@@ -383,7 +379,7 @@ export const calculateTrending = inngest.createFunction(
           await step.run('store-trending', async () => {
             try {
               await withTimeout(
-                redis.set(TRENDING_KEY, JSON.stringify(trending), { ex: 60 * 60 }),
+                redis.set(TRENDING_KEY, JSON.stringify(trending), { EX: 60 * 60 }),
                 10000,
                 'Redis set timeout'
               );
@@ -518,7 +514,7 @@ export const generateAnalyticsSummary = inngest.createFunction(
         await redis.set(
           summaryKey,
           JSON.stringify(summary),
-          { ex: 90 * 24 * 60 * 60 } // Keep for 90 days
+          { EX: 90 * 24 * 60 * 60 } // Keep for 90 days
         );
 
         console.warn(`Analytics summary generated for ${period}:`, {
@@ -607,14 +603,14 @@ export const syncVercelAnalytics = inngest.createFunction(
         const { topPages, topReferrers, topDevices, fetchedAt } = result;
 
         // Store standardized data in Redis with 24h TTL
-        await redis.set('vercel:topPages:daily', JSON.stringify(topPages), { ex: 24 * 60 * 60 });
+        await redis.set('vercel:topPages:daily', JSON.stringify(topPages), { EX: 24 * 60 * 60 });
         await redis.set('vercel:topReferrers:daily', JSON.stringify(topReferrers), {
-          ex: 24 * 60 * 60,
+          EX: 24 * 60 * 60,
         });
         await redis.set('vercel:topDevices:daily', JSON.stringify(topDevices), {
-          ex: 24 * 60 * 60,
+          EX: 24 * 60 * 60,
         });
-        await redis.set('vercel:metrics:lastSynced', fetchedAt, { ex: 24 * 60 * 60 });
+        await redis.set('vercel:metrics:lastSynced', fetchedAt, { EX: 24 * 60 * 60 });
 
         // Track that we fetched Vercel analytics - helpful for audit
         await track('vercel_analytics_synced', { fetchedAt, topPagesCount: topPages.length });

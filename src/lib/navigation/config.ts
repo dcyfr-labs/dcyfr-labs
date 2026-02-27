@@ -142,9 +142,9 @@ export const WORK_NAV: NavItem[] = [
     exactMatch: true,
   },
   {
-    href: '/work?category=community',
-    label: 'Community',
-    description: 'Open source and community work',
+    href: '/work?category=code',
+    label: 'Code',
+    description: 'Open-source code and development projects',
   },
   {
     href: '/work?category=nonprofit',
@@ -183,7 +183,7 @@ export const MOBILE_NAV_SECTIONS: NavSection[] = [
         href: '/about',
         label: 'About',
         icon: User,
-        description: 'Learn about DCYFR Labs',
+        description: 'Learn about us',
       },
       {
         href: '/sponsors',

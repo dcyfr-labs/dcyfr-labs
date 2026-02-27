@@ -33,6 +33,9 @@ import {
   Sun,
   Monitor,
   User,
+  Briefcase,
+  Globe,
+  ChevronDown,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { TYPOGRAPHY, SPACING, Z_INDEX, CONTENT_HIERARCHY } from '@/lib/design-tokens';
@@ -40,8 +43,9 @@ import { useKeyboardShortcut } from '@/hooks/use-keyboard-shortcut';
 import { useReadingProgressList } from '@/hooks/use-reading-progress';
 import { useSearch } from '@/components/search';
 import { NAVIGATION } from '@/lib/navigation-config';
-import type { SearchIndex, SearchablePost } from '@/lib/search';
-import { fuseOptions } from '@/lib/search';
+import { CATEGORIES } from '@/lib/post-categories';
+import type { SearchIndex, SearchablePost, SearchableProject } from '@/lib/search';
+import { fuseOptions, projectFuseOptions } from '@/lib/search';
 
 export interface UnifiedCommandProps {
   open?: boolean;
@@ -56,6 +60,7 @@ interface ActionCommand {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   keywords?: string[];
+  group?: 'main' | 'work' | 'blog' | 'site';
   onSelect: () => void;
 }
 
@@ -95,6 +100,7 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
   const [search, setSearch] = useState('');
   const [searchIndex, setSearchIndex] = useState<SearchIndex | null>(null);
   const [fuse, setFuse] = useState<Fuse<SearchablePost> | null>(null);
+  const [projectFuse, setProjectFuse] = useState<Fuse<SearchableProject> | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [recentSearches, setRecentSearches] = useState<string[]>(() => {
     if (typeof window === 'undefined') return [];
@@ -135,6 +141,9 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
         .then((data: SearchIndex) => {
           setSearchIndex(data);
           setFuse(new Fuse(data.posts, fuseOptions));
+          if (data.projects?.length) {
+            setProjectFuse(new Fuse(data.projects, projectFuseOptions));
+          }
         })
         .catch((err) => console.error('[Command] Failed to load search index:', err));
     }
@@ -206,17 +215,91 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
     return filtered.slice(0, 8);
   }, [fuse, search, selectedTags]);
 
-  // Navigation commands
-  const navCommands: ActionCommand[] = NAVIGATION.primary.map((item) => ({
-    id: `nav-${item.href}`,
-    label: item.label,
-    icon: item.icon || Home,
-    keywords: [item.label.toLowerCase(), item.href.slice(1)],
-    onSelect: () => {
-      router.push(item.href);
-      onOpenChange(false);
-    },
-  }));
+  // Search projects
+  const projectResults = useMemo(() => {
+    if (!projectFuse || !search.trim()) return [];
+    return projectFuse
+      .search(search)
+      .map((r) => r.item)
+      .slice(0, 5);
+  }, [projectFuse, search]);
+
+  // Comprehensive navigation commands — all sections auto-derived from config
+  const navCommands: ActionCommand[] = [
+    // Primary nav (main pages)
+    ...NAVIGATION.primary.map((item) => ({
+      id: `nav-${item.href}`,
+      label: item.label,
+      icon: item.icon || Home,
+      group: 'main' as const,
+      keywords: [item.label.toLowerCase(), item.href.slice(1)],
+      onSelect: () => {
+        router.push(item.href);
+        onOpenChange(false);
+      },
+    })),
+    // Work category pages (auto from NAVIGATION.work)
+    ...NAVIGATION.work.map((item) => ({
+      id: `work-${item.href}`,
+      label: item.label,
+      icon: Briefcase,
+      group: 'work' as const,
+      keywords: ['work', 'portfolio', item.label.toLowerCase()],
+      onSelect: () => {
+        router.push(item.href);
+        onOpenChange(false);
+      },
+    })),
+    // Blog section pages (auto from NAVIGATION.blog)
+    ...NAVIGATION.blog.map((item) => ({
+      id: `blog-${item.href}`,
+      label: item.label,
+      icon: BookOpen,
+      group: 'blog' as const,
+      keywords: ['blog', item.label.toLowerCase()],
+      onSelect: () => {
+        router.push(item.href);
+        onOpenChange(false);
+      },
+    })),
+    // Blog category filter pages (auto from CATEGORIES — deduped by label)
+    ...(() => {
+      const seen = new Set<string>();
+      const result: ActionCommand[] = [];
+      for (const cat of CATEGORIES) {
+        if (seen.has(cat.label)) continue;
+        seen.add(cat.label);
+        result.push({
+          id: `blog-cat-${cat.id}`,
+          label: cat.label,
+          icon: Tag,
+          group: 'blog' as const,
+          keywords: ['blog', 'category', cat.label.toLowerCase(), cat.id.toLowerCase()],
+          onSelect: () => {
+            router.push(`/blog?category=${cat.id}`);
+            onOpenChange(false);
+          },
+        });
+      }
+      return result;
+    })(),
+    // Footer / site pages
+    ...NAVIGATION.footer.map((item) => ({
+      id: `site-${item.href}`,
+      label: item.label,
+      icon: Globe,
+      group: 'site' as const,
+      keywords: [item.label.toLowerCase(), item.href.replace(/^\//, '')],
+      onSelect: () => {
+        if (item.href === '/sitemap.xml' || item.href.startsWith('http')) {
+          window.open(item.href, '_blank');
+        } else {
+          router.push(item.href);
+        }
+        onOpenChange(false);
+      },
+    })),
+  ];
 
   // Action commands (theme switching)
   const actionCommands: ActionCommand[] = [
@@ -283,9 +366,35 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
   const hasSearchQuery = search.trim().length > 0;
   const hasResults =
     searchResults.length > 0 ||
+    projectResults.length > 0 ||
     filteredNavCommands.length > 0 ||
     filteredActionCommands.length > 0 ||
     filteredContinueReading.length > 0;
+
+  // Group nav commands by section for browse mode (no search query)
+  const mainNavCmds = navCommands.filter((c) => c.group === 'main');
+  const workNavCmds = navCommands.filter((c) => c.group === 'work');
+  const blogNavCmds = navCommands.filter((c) => c.group === 'blog');
+  const siteNavCmds = navCommands.filter((c) => c.group === 'site');
+
+  // Collapsible browse sections — all collapsed by default
+  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(
+    () => new Set(['main', 'work', 'blog', 'site'])
+  );
+
+  const toggleSection = useCallback((section: string) => {
+    setCollapsedSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(section)) next.delete(section);
+      else next.add(section);
+      return next;
+    });
+  }, []);
+
+  // Reset collapsed state each time the palette opens
+  useEffect(() => {
+    if (open) setCollapsedSections(new Set(['main', 'work', 'blog', 'site']));
+  }, [open]);
 
   if (!open) return null;
 
@@ -299,6 +408,7 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
           'fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',
           'w-[calc(100%-3rem)] sm:w-[calc(100%-6rem)] max-w-2xl',
           'max-h-[calc(100vh-6rem)] sm:max-h-[calc(100vh-8rem)]',
+          'flex flex-col overflow-hidden',
           'pointer-events-auto'
         )}
         onClick={(e) => e.stopPropagation()}
@@ -307,7 +417,7 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
           className={cn(
             'rounded-xl border border-border shadow-2xl',
             'bg-muted/80 dark:bg-muted/40',
-            'overflow-hidden h-full flex flex-col'
+            'overflow-hidden flex-1 min-h-0 flex flex-col'
           )}
           value=""
           shouldFilter={false}
@@ -436,6 +546,56 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
               </Command.Group>
             )}
 
+            {/* No-query navigation browse — collapsible sections */}
+            {!hasSearchQuery &&
+              (
+                [
+                  { key: 'main', label: 'Navigation', cmds: mainNavCmds },
+                  { key: 'work', label: 'Work', cmds: workNavCmds },
+                  { key: 'blog', label: 'Blog', cmds: blogNavCmds },
+                  { key: 'site', label: 'Site', cmds: siteNavCmds },
+                ] as const
+              ).map(({ key, label, cmds }) =>
+                cmds.length > 0 ? (
+                  <div key={key} role="group">
+                    <button
+                      onClick={() => toggleSection(key)}
+                      className={cn(
+                        'flex w-full items-center justify-between px-3 py-1.5 rounded-md',
+                        'text-xs font-semibold text-muted-foreground uppercase tracking-wide',
+                        'hover:text-foreground hover:bg-accent/30 transition-colors cursor-pointer'
+                      )}
+                    >
+                      <span>{label}</span>
+                      <ChevronDown
+                        className={cn(
+                          'h-3 w-3 transition-transform duration-150',
+                          collapsedSections.has(key) ? '-rotate-90' : 'rotate-0'
+                        )}
+                      />
+                    </button>
+                    {!collapsedSections.has(key) &&
+                      cmds.map((cmd) => {
+                        const Icon = cmd.icon;
+                        return (
+                          <Command.Item
+                            key={cmd.id}
+                            onSelect={cmd.onSelect}
+                            className={cn(
+                              'relative flex cursor-pointer items-center gap-2 rounded-md px-3 py-2',
+                              'aria-selected:bg-accent aria-selected:text-accent-foreground',
+                              'hover:bg-accent/50 transition-colors'
+                            )}
+                          >
+                            <Icon className="h-4 w-4 text-muted-foreground" />
+                            <span>{cmd.label}</span>
+                          </Command.Item>
+                        );
+                      })}
+                  </div>
+                ) : null
+              )}
+
             {/* Search Results - Blog Posts */}
             {hasSearchQuery && searchResults.length > 0 && (
               <Command.Group heading={`Posts (${searchResults.length})`}>
@@ -484,8 +644,57 @@ export function UnifiedCommand(props?: UnifiedCommandProps) {
               </Command.Group>
             )}
 
-            {/* Navigation Commands */}
-            {filteredNavCommands.length > 0 && (
+            {/* Search Results - Projects */}
+            {hasSearchQuery && projectResults.length > 0 && (
+              <Command.Group heading={`Projects (${projectResults.length})`}>
+                {projectResults.map((project) => (
+                  <Command.Item
+                    key={project.slug}
+                    onSelect={() => {
+                      saveSearch(search);
+                      router.push(project.url);
+                      onOpenChange(false);
+                    }}
+                    className={cn(
+                      'relative flex cursor-pointer flex-col gap-1 rounded-md px-3 py-3',
+                      'aria-selected:bg-accent aria-selected:text-accent-foreground',
+                      'hover:bg-accent/50 transition-colors'
+                    )}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <h4 className="font-medium text-sm">{project.title}</h4>
+                      <span className="text-xs text-primary/60 dark:text-muted-foreground whitespace-nowrap capitalize">
+                        {project.status}
+                      </span>
+                    </div>
+                    {project.description && (
+                      <p className="text-sm text-primary/70 dark:text-muted-foreground line-clamp-1">
+                        {project.description}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-3 mt-1">
+                      <div className="flex items-center gap-1">
+                        <Briefcase className="h-3 w-3 text-primary/60 dark:text-muted-foreground" />
+                        <span className="text-xs text-primary/60 dark:text-muted-foreground capitalize">
+                          {project.category}
+                        </span>
+                      </div>
+                      {project.tags.length > 0 && (
+                        <div className="flex items-center gap-1">
+                          <Tag className="h-3 w-3 text-primary/60 dark:text-muted-foreground" />
+                          <span className="text-xs text-primary/60 dark:text-muted-foreground">
+                            {project.tags.slice(0, 2).join(', ')}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </Command.Item>
+                ))}
+              </Command.Group>
+            )}
+
+            {/* Navigation search results (query mode — flat, all sections combined) */}
+            {hasSearchQuery && filteredNavCommands.length > 0 && (
               <Command.Group heading="Navigate">
                 {filteredNavCommands.map((cmd) => {
                   const Icon = cmd.icon;

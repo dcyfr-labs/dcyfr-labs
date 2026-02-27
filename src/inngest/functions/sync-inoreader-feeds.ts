@@ -73,7 +73,7 @@ export const syncInoreaderFeeds = inngest.createFunction(
       const cacheKey = 'inoreader:feeds:latest';
 
       await redis!.set(cacheKey, JSON.stringify(articles), {
-        ex: 60 * 60 * 6, // 6 hours TTL (matches cron schedule)
+        EX: 60 * 60 * 6, // 6 hours TTL (matches cron schedule)
       });
 
       logger.info(`Cached ${articles.length} articles in Redis`);
@@ -97,7 +97,7 @@ export const syncInoreaderFeeds = inngest.createFunction(
 
       // Store statistics
       await redis!.set('inoreader:stats', JSON.stringify(stats), {
-        ex: 60 * 60 * 24, // 24 hours TTL
+        EX: 60 * 60 * 24, // 24 hours TTL
       });
 
       logger.info('Updated feed statistics', stats);
@@ -129,7 +129,7 @@ export const syncInoreaderFeeds = inngest.createFunction(
 
       // Store trending topics for blog content ideas
       await redis!.set('inoreader:trending_topics', JSON.stringify(trendingTopics), {
-        ex: 60 * 60 * 24, // 24 hours TTL
+        EX: 60 * 60 * 24, // 24 hours TTL
       });
 
       logger.info('Analyzed content opportunities', {

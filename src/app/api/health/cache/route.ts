@@ -15,7 +15,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 import { blockExternalAccess } from '@/lib/api/api-security';
 
 export async function GET(request: NextRequest) {

@@ -33,13 +33,10 @@ export {
   generateDailyThreatReport,
   syncIoPCDatabase,
   handlePromptScanError,
-} from '../lib/inngest/functions/prompt-security';
+} from '../lib/inngest/prompt-security';
 
 // Import IndexNow functions
-export {
-  processIndexNowSubmission,
-  verifyIndexNowKeyFile,
-} from './indexnow-functions';
+export { processIndexNowSubmission, verifyIndexNowKeyFile } from './indexnow-functions';
 
 /**
  * Hello World function - demonstrates basic Inngest function pattern

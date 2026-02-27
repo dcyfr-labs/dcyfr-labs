@@ -1,13 +1,13 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 
 // Mock the Upstash redis singleton
-vi.mock('@/mcp/shared/redis-client', () => ({
+vi.mock('@/lib/redis-client', () => ({
   redis: {
     get: vi.fn(),
     incr: vi.fn(),
-    zadd: vi.fn(),
-    zcount: vi.fn(),
-    zremrangebyscore: vi.fn(),
+    zAdd: vi.fn(),
+    zCount: vi.fn(),
+    zRemRangeByScore: vi.fn(),
   },
 }));
 
@@ -18,15 +18,15 @@ describe('Views Utilities', () => {
     vi.resetModules();
 
     // Get mock redis singleton
-    const { redis } = await import('@/mcp/shared/redis-client');
+    const { redis } = await import('@/lib/redis-client');
     mockRedis = redis;
 
     // Reset all mock functions
     vi.mocked(mockRedis.get).mockReset();
     vi.mocked(mockRedis.incr).mockReset();
-    vi.mocked(mockRedis.zadd).mockReset();
-    vi.mocked(mockRedis.zcount).mockReset();
-    vi.mocked(mockRedis.zremrangebyscore).mockReset();
+    vi.mocked(mockRedis.zAdd).mockReset();
+    vi.mocked(mockRedis.zCount).mockReset();
+    vi.mocked(mockRedis.zRemRangeByScore).mockReset();
   });
 
   afterEach(() => {
@@ -36,8 +36,8 @@ describe('Views Utilities', () => {
   describe('incrementPostViews', () => {
     it('increments view count and returns new value', async () => {
       mockRedis.incr.mockResolvedValue(10);
-      mockRedis.zadd.mockResolvedValue(1);
-      mockRedis.zremrangebyscore.mockResolvedValue(0);
+      mockRedis.zAdd.mockResolvedValue(1);
+      mockRedis.zRemRangeByScore.mockResolvedValue(0);
 
       const { incrementPostViews } = await import('@/lib/views');
       const result = await incrementPostViews('test-post-id');
@@ -48,25 +48,25 @@ describe('Views Utilities', () => {
 
     it('records view in history with timestamp', async () => {
       mockRedis.incr.mockResolvedValue(1);
-      mockRedis.zadd.mockResolvedValue(1);
-      mockRedis.zremrangebyscore.mockResolvedValue(0);
+      mockRedis.zAdd.mockResolvedValue(1);
+      mockRedis.zRemRangeByScore.mockResolvedValue(0);
 
       const { incrementPostViews } = await import('@/lib/views');
       await incrementPostViews('test-post-id');
 
-      expect(mockRedis.zadd).toHaveBeenCalledWith(
+      expect(mockRedis.zAdd).toHaveBeenCalledWith(
         'views:history:post:test-post-id',
         expect.objectContaining({
           score: expect.any(Number),
-          member: expect.any(String),
+          value: expect.any(String),
         })
       );
     });
 
     it('cleans up old views beyond 90 days', async () => {
       mockRedis.incr.mockResolvedValue(1);
-      mockRedis.zadd.mockResolvedValue(1);
-      mockRedis.zremrangebyscore.mockResolvedValue(5);
+      mockRedis.zAdd.mockResolvedValue(1);
+      mockRedis.zRemRangeByScore.mockResolvedValue(5);
 
       const now = Date.now();
       vi.spyOn(Date, 'now').mockReturnValue(now);
@@ -76,7 +76,7 @@ describe('Views Utilities', () => {
 
       const ninetyDaysAgo = now - 90 * 24 * 60 * 60 * 1000;
 
-      expect(mockRedis.zremrangebyscore).toHaveBeenCalledWith(
+      expect(mockRedis.zRemRangeByScore).toHaveBeenCalledWith(
         'views:history:post:test-post-id',
         '-inf',
         ninetyDaysAgo
@@ -94,8 +94,8 @@ describe('Views Utilities', () => {
 
     it('handles different post IDs', async () => {
       mockRedis.incr.mockResolvedValue(1);
-      mockRedis.zadd.mockResolvedValue(1);
-      mockRedis.zremrangebyscore.mockResolvedValue(0);
+      mockRedis.zAdd.mockResolvedValue(1);
+      mockRedis.zRemRangeByScore.mockResolvedValue(0);
 
       const { incrementPostViews } = await import('@/lib/views');
 
@@ -166,7 +166,7 @@ describe('Views Utilities', () => {
 
   describe('getPostViews24h', () => {
     it('returns view count for last 24 hours', async () => {
-      mockRedis.zcount.mockResolvedValue(42);
+      mockRedis.zCount.mockResolvedValue(42);
 
       const { getPostViews24h } = await import('@/lib/views');
       const result = await getPostViews24h('test-post-id');
@@ -175,7 +175,7 @@ describe('Views Utilities', () => {
     });
 
     it('queries correct time range', async () => {
-      mockRedis.zcount.mockResolvedValue(10);
+      mockRedis.zCount.mockResolvedValue(10);
 
       const now = Date.now();
       vi.spyOn(Date, 'now').mockReturnValue(now);
@@ -185,7 +185,7 @@ describe('Views Utilities', () => {
 
       const twentyFourHoursAgo = now - 24 * 60 * 60 * 1000;
 
-      expect(mockRedis.zcount).toHaveBeenCalledWith(
+      expect(mockRedis.zCount).toHaveBeenCalledWith(
         'views:history:post:test-post-id',
         twentyFourHoursAgo,
         now
@@ -193,7 +193,7 @@ describe('Views Utilities', () => {
     });
 
     it('returns 0 for posts with no recent views', async () => {
-      mockRedis.zcount.mockResolvedValue(0);
+      mockRedis.zCount.mockResolvedValue(0);
 
       const { getPostViews24h } = await import('@/lib/views');
       const result = await getPostViews24h('test-post-id');
@@ -202,7 +202,7 @@ describe('Views Utilities', () => {
     });
 
     it('returns null on Redis error', async () => {
-      mockRedis.zcount.mockRejectedValue(new Error('Redis error'));
+      mockRedis.zCount.mockRejectedValue(new Error('Redis error'));
 
       const { getPostViews24h } = await import('@/lib/views');
       const result = await getPostViews24h('test-post-id');
@@ -222,12 +222,12 @@ describe('Views Utilities', () => {
     });
 
     it('uses correct key prefix for view history', async () => {
-      mockRedis.zcount.mockResolvedValue(1);
+      mockRedis.zCount.mockResolvedValue(1);
 
       const { getPostViews24h } = await import('@/lib/views');
       await getPostViews24h('my-post-id');
 
-      expect(mockRedis.zcount).toHaveBeenCalledWith(
+      expect(mockRedis.zCount).toHaveBeenCalledWith(
         'views:history:post:my-post-id',
         expect.any(Number),
         expect.any(Number)
@@ -237,7 +237,7 @@ describe('Views Utilities', () => {
 
   describe('Time Calculations', () => {
     it('correctly calculates 24-hour window', async () => {
-      mockRedis.zcount.mockResolvedValue(5);
+      mockRedis.zCount.mockResolvedValue(5);
 
       const fixedTime = 1700000000000; // Fixed timestamp
       vi.spyOn(Date, 'now').mockReturnValue(fixedTime);
@@ -247,7 +247,7 @@ describe('Views Utilities', () => {
 
       const expectedStart = fixedTime - 24 * 60 * 60 * 1000;
 
-      expect(mockRedis.zcount).toHaveBeenCalledWith(
+      expect(mockRedis.zCount).toHaveBeenCalledWith(
         'views:history:post:test-post-id',
         expectedStart,
         fixedTime
@@ -256,8 +256,8 @@ describe('Views Utilities', () => {
 
     it('cleanup removes views older than 90 days', async () => {
       mockRedis.incr.mockResolvedValue(1);
-      mockRedis.zadd.mockResolvedValue(1);
-      mockRedis.zremrangebyscore.mockResolvedValue(3);
+      mockRedis.zAdd.mockResolvedValue(1);
+      mockRedis.zRemRangeByScore.mockResolvedValue(3);
 
       const fixedTime = 1700000000000;
       vi.spyOn(Date, 'now').mockReturnValue(fixedTime);
@@ -267,7 +267,7 @@ describe('Views Utilities', () => {
 
       const expectedCutoff = fixedTime - 90 * 24 * 60 * 60 * 1000;
 
-      expect(mockRedis.zremrangebyscore).toHaveBeenCalledWith(
+      expect(mockRedis.zRemRangeByScore).toHaveBeenCalledWith(
         'views:history:post:test-post-id',
         '-inf',
         expectedCutoff

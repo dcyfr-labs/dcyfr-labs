@@ -8,9 +8,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Mock the Upstash redis singleton
-vi.mock('@/mcp/shared/redis-client', () => ({
+vi.mock('@/lib/redis-client', () => ({
   redis: {
-    lrange: vi.fn(),
+    lRange: vi.fn(),
     get: vi.fn(),
   },
 }));
@@ -23,11 +23,11 @@ describe('transformWebhookGitHubCommits', () => {
     vi.resetModules();
 
     // Get mock redis singleton
-    const { redis } = await import('@/mcp/shared/redis-client');
+    const { redis } = await import('@/lib/redis-client');
     mockRedis = redis;
 
     // Reset all mock functions
-    vi.mocked(mockRedis.lrange).mockReset();
+    vi.mocked(mockRedis.lRange).mockReset();
     vi.mocked(mockRedis.get).mockReset();
   });
 
@@ -36,13 +36,13 @@ describe('transformWebhookGitHubCommits', () => {
   });
 
   it('should return empty array when no commits in Redis', async () => {
-    vi.mocked(mockRedis.lrange).mockResolvedValue([]);
+    vi.mocked(mockRedis.lRange).mockResolvedValue([]);
     const { transformWebhookGitHubCommits } = await import('@/lib/activity/sources.server');
 
     const result = await transformWebhookGitHubCommits();
 
     expect(result).toEqual([]);
-    expect(mockRedis.lrange).toHaveBeenCalledWith('github:commits:recent', 0, 999);
+    expect(mockRedis.lRange).toHaveBeenCalledWith('github:commits:recent', 0, 999);
   });
 
   it('should fetch and transform commits from Redis', async () => {
@@ -84,7 +84,7 @@ describe('transformWebhookGitHubCommits', () => {
       },
     ];
 
-    mockRedis.lrange.mockResolvedValue(commitKeys);
+    mockRedis.lRange.mockResolvedValue(commitKeys);
     mockRedis.get.mockImplementation((key: string) => {
       const index = commitKeys.indexOf(key);
       return Promise.resolve(JSON.stringify(commitData[index]));
@@ -135,7 +135,7 @@ describe('transformWebhookGitHubCommits', () => {
       },
     ];
 
-    mockRedis.lrange.mockResolvedValue(commitKeys);
+    mockRedis.lRange.mockResolvedValue(commitKeys);
     mockRedis.get.mockImplementation((key: string) => {
       const index = commitKeys.indexOf(key);
       return Promise.resolve(JSON.stringify(commitData[index]));
@@ -151,7 +151,7 @@ describe('transformWebhookGitHubCommits', () => {
 
   it('should respect limit parameter', async () => {
     const commitKeys = ['github:commit:1', 'github:commit:2', 'github:commit:3'];
-    mockRedis.lrange.mockResolvedValue(commitKeys);
+    mockRedis.lRange.mockResolvedValue(commitKeys);
     mockRedis.get.mockResolvedValue(
       JSON.stringify({
         id: 'test',
@@ -168,12 +168,12 @@ describe('transformWebhookGitHubCommits', () => {
 
     await transformWebhookGitHubCommits(2);
 
-    expect(mockRedis.lrange).toHaveBeenCalledWith('github:commits:recent', 0, 1);
+    expect(mockRedis.lRange).toHaveBeenCalledWith('github:commits:recent', 0, 1);
   });
 
   it('should handle corrupted commit data gracefully', async () => {
     const commitKeys = ['github:commit:good', 'github:commit:bad'];
-    mockRedis.lrange.mockResolvedValue(commitKeys);
+    mockRedis.lRange.mockResolvedValue(commitKeys);
     mockRedis.get.mockImplementation((key: string) => {
       if (key === 'github:commit:good') {
         return Promise.resolve(
@@ -201,7 +201,7 @@ describe('transformWebhookGitHubCommits', () => {
 
   it('should handle null Redis responses', async () => {
     const commitKeys = ['github:commit:1'];
-    mockRedis.lrange.mockResolvedValue(commitKeys);
+    mockRedis.lRange.mockResolvedValue(commitKeys);
     mockRedis.get.mockResolvedValue(null);
 
     const { transformWebhookGitHubCommits } = await import('@/lib/activity/sources.server');
@@ -212,7 +212,7 @@ describe('transformWebhookGitHubCommits', () => {
   });
 
   it('should close Redis connection after fetching', async () => {
-    mockRedis.lrange.mockResolvedValue(['github:commit:test']);
+    mockRedis.lRange.mockResolvedValue(['github:commit:test']);
     mockRedis.get.mockResolvedValue(
       JSON.stringify({
         id: 'test',
@@ -232,7 +232,7 @@ describe('transformWebhookGitHubCommits', () => {
   });
 
   it('should handle Redis errors gracefully', async () => {
-    mockRedis.lrange.mockRejectedValue(new Error('Redis connection failed'));
+    mockRedis.lRange.mockRejectedValue(new Error('Redis connection failed'));
     const { transformWebhookGitHubCommits } = await import('@/lib/activity/sources.server');
 
     const result = await transformWebhookGitHubCommits();

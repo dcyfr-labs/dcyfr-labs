@@ -1,21 +1,15 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { MenuIcon } from "lucide-react";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/features";
-import { cn } from "@/lib/utils";
-import { NAVIGATION, isNavItemActive, getAriaCurrent } from "@/lib/navigation";
-import { TYPOGRAPHY, SPACING, ANIMATION } from "@/lib/design-tokens";
+import * as React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { MenuIcon } from 'lucide-react';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/features/theme/theme-toggle';
+import { cn } from '@/lib/utils';
+import { NAVIGATION, isNavItemActive, getAriaCurrent } from '@/lib/navigation';
+import { TYPOGRAPHY, SPACING, ANIMATION } from '@/lib/design-tokens';
 
 /**
  * Mobile navigation component with hamburger menu
@@ -76,23 +70,20 @@ export function MobileNav() {
           <MenuIcon className="h-4 w-4" />
         </Button>
       </SheetTrigger>
-      <SheetContent
-        side="left"
-        className="w-70 sm:w-[320px] p-4 overflow-y-auto"
-      >
+      <SheetContent side="left" className="w-70 sm:w-[320px] p-4 overflow-y-auto">
         <SheetHeader>
           <SheetTitle className="text-left">Navigation</SheetTitle>
         </SheetHeader>
 
         {/* Sectioned Navigation */}
-        <div className={cn("mt-6", SPACING.subsection)}>
+        <div className={cn('mt-6', SPACING.subsection)}>
           {NAVIGATION.mobile.map((section) => (
             <section key={section.id} className="mb-8 last:mb-0">
               {/* Section Heading */}
               <h3
                 className={cn(
                   TYPOGRAPHY.label.small,
-                  "text-muted-foreground uppercase tracking-wide px-4 mb-2"
+                  'text-muted-foreground uppercase tracking-wide px-4 mb-2'
                 )}
               >
                 {section.label}
@@ -112,27 +103,19 @@ export function MobileNav() {
                       key={item.href}
                       href={item.href}
                       className={cn(
-                        "flex items-center gap-3 h-14 px-4 rounded-lg text-base",
+                        'flex items-center gap-3 h-14 px-4 rounded-lg text-base',
                         ANIMATION.transition.base,
-                        "hover:bg-accent hover:text-accent-foreground",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                        isActive &&
-                          "bg-accent text-accent-foreground font-medium"
+                        'hover:bg-accent hover:text-accent-foreground',
+                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                        isActive && 'bg-accent text-accent-foreground font-medium'
                       )}
-                      aria-current={getAriaCurrent(
-                        item.href,
-                        pathname,
-                        item.exactMatch
-                      )}
+                      aria-current={getAriaCurrent(item.href, pathname, item.exactMatch)}
                       aria-label={item.description}
                       prefetch={item.prefetch ?? false}
                     >
                       {Icon && (
                         <Icon
-                          className={cn(
-                            "h-5 w-5 shrink-0",
-                            isActive && "stroke-[2.5]"
-                          )}
+                          className={cn('h-5 w-5 shrink-0', isActive && 'stroke-[2.5]')}
                           aria-hidden="true"
                         />
                       )}
@@ -140,10 +123,7 @@ export function MobileNav() {
                         <div className="truncate">{item.label}</div>
                         {item.description && (
                           <div
-                            className={cn(
-                              TYPOGRAPHY.metadata,
-                              "text-muted-foreground truncate"
-                            )}
+                            className={cn(TYPOGRAPHY.metadata, 'text-muted-foreground truncate')}
                           >
                             {item.description}
                           </div>

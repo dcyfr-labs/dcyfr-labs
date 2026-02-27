@@ -1,25 +1,25 @@
-import { SITE_TITLE } from "@/lib/site-config";
+import { SITE_TITLE } from '@/lib/site-config';
 
 export type ProjectLink = {
   label: string;
   href: string;
-  type?: "demo" | "github" | "article" | "docs";
+  type?: 'demo' | 'github' | 'article' | 'docs';
 };
 
-export type ProjectStatus = "active" | "in-progress" | "archived";
+export type ProjectStatus = 'active' | 'in-progress' | 'archived';
 
 export type ProjectImage = {
   url: string; // local path or external URL
   alt: string; // required for accessibility
   width?: number; // optional, for optimization
   height?: number; // optional, for aspect ratio
-  position?: "center" | "top" | "bottom" | "left" | "right"; // background position
+  position?: 'center' | 'top' | 'bottom' | 'left' | 'right'; // background position
   hideHero?: boolean; // hide image in hero section on detail pages
   caption?: string; // optional caption for featured images
   credit?: string; // optional credit/attribution
 };
 
-export type ProjectCategory = "community" | "nonprofit" | "code" | "photography" | "startup";
+export type ProjectCategory = 'community' | 'nonprofit' | 'code' | 'photography' | 'startup';
 
 /**
  * Code Project Content
@@ -43,10 +43,10 @@ export type CodeProjectContent = {
   /** Reference links to docs, articles, related projects */
   references?: { label: string; href: string }[];
   /** Multiple code blocks with titles */
-  codeblocks?: { 
-    title: string; 
-    language: string; 
-    code: string; 
+  codeblocks?: {
+    title: string;
+    language: string;
+    code: string;
   }[];
 };
 
@@ -92,7 +92,7 @@ export type Project = {
   previousSlugs?: string[]; // for handling slug changes
   readingTime?: { words: number; minutes: number; text: string };
   publishedAt: string; // ISO date string
-  
+
   // Category-specific content (only one should be present based on category)
   /** Code project content - for category: "code" */
   codeContent?: CodeProjectContent;
@@ -102,69 +102,46 @@ export type Project = {
 
 const projectDrafts: Project[] = [
   {
-    id: "project-dcyfr-labs-de1e4e89",
-    slug: "dcyfr-labs",
-    title: "DCYFR Labs",
-    description: "Cyber architecture and design services for modern businesses, focusing on secure and scalable solutions.",
-    timeline: "2025 → Present",
-    status: "active",
-    category: "startup",
-    tech: ["Next.js", "TypeScript", "Tailwind CSS", "Node.js"],
-    tags: ["Cybersecurity", "Architecture", "Design", "Next.js", "TypeScript", "Tailwind CSS", "Node.js"],
-    links: [
-      { label: "Website", href: `https://dcyfrlabs.com/`, type: "demo" },
-      { label: "Code", href: `https://github.com/dcyfr/dcyfr-labs`, type: "github" }
-    ],
+    id: 'project-x64-8ab9c3d2',
+    slug: 'x64',
+    title: 'X64: Indie Cyber Publication',
+    description:
+      'An independent online publication focused on cybersecurity topics, trends, and research, providing in-depth articles and analysis for professionals and enthusiasts.',
+    timeline: '2024 → Present',
+    status: 'active',
+    category: 'startup',
+    tech: ['Ghost', 'JavaScript', 'CSS', 'HTML'],
+    tags: ['Cybersecurity', 'Publication'],
+    links: [{ label: 'Website', href: `https://x64.onl`, type: 'demo' }],
     highlights: [
-      "Designed and developed a modern web presence, showcasing cyber architecture and design services.",
-      "Implemented responsive design principles to ensure optimal viewing across devices.",
-      "Integrated SEO best practices to enhance online visibility and search engine rankings."
-    ],
-    featured: true,
-    body: "",
-    publishedAt: "2025-01-01",
-  },
-  {
-    id: "project-x64-8ab9c3d2",
-    slug: "x64",
-    title: "X64: Indie Cyber Publication",
-    description: "An independent online publication focused on cybersecurity topics, trends, and research, providing in-depth articles and analysis for professionals and enthusiasts.",
-    timeline: "2024 → Present",
-    status: "active",
-    category: "community",
-    tech: ["Ghost", "JavaScript", "CSS", "HTML"],
-    tags: ["Cybersecurity", "Publication"],
-    links: [
-      { label: "Website", href: `https://x64.onl`, type: "demo" }
-    ],
-    highlights: [
-      "Launched an independent online publication dedicated to cybersecurity topics, trends, and research.",
-      "Curated and published in-depth articles and analysis for cybersecurity professionals and enthusiasts.",
-      "Built a community of readers and contributors passionate about cybersecurity awareness and education."
+      'Launched an independent online publication dedicated to cybersecurity topics, trends, and research.',
+      'Curated and published in-depth articles and analysis for cybersecurity professionals and enthusiasts.',
+      'Built a community of readers and contributors passionate about cybersecurity awareness and education.',
     ],
     featured: false,
-    body: "",
-    publishedAt: "2024-01-01",
+    body: '',
+    publishedAt: '2024-01-01',
   },
   {
-    id: "project-isn-7c5f6e4a",
-    slug: "isn",
-    title: "Information Security Network, Inc.",
-    description: "A local nonprofit dedicated to promoting public security awareness through community outreach and education.",
-    timeline: "2019 → 2021",
-    status: "archived",
-    category: "nonprofit",
-    tech: ["WordPress", "PHP", "MySQL", "HTML", "CSS"],
-    tags: ["Cybersecurity", "Awareness"],
+    id: 'project-isn-7c5f6e4a',
+    slug: 'isn',
+    title: 'Information Security Network, Inc.',
+    description:
+      'A local nonprofit dedicated to promoting public security awareness through community outreach and education.',
+    timeline: '2019 → 2021',
+    status: 'archived',
+    category: 'nonprofit',
+    tech: ['WordPress', 'PHP', 'MySQL', 'HTML', 'CSS'],
+    tags: ['Cybersecurity', 'Awareness'],
     links: [],
     highlights: [
       "Developed and maintained the organization's website to enhance online presence and outreach.",
-      "Created educational content and resources to promote cybersecurity awareness within the community.",
-      "Organized events and workshops to engage the public and foster a culture of security awareness."
+      'Created educational content and resources to promote cybersecurity awareness within the community.',
+      'Organized events and workshops to engage the public and foster a culture of security awareness.',
     ],
     featured: false,
-    body: "",
-    publishedAt: "2021-01-01",
+    body: '',
+    publishedAt: '2021-01-01',
   },
 ];
 
@@ -172,9 +149,13 @@ export const projects = Object.freeze(projectDrafts);
 
 export const visibleProjects = Object.freeze(projects.filter((project) => !project.hidden));
 
-export const featuredProjects = Object.freeze(visibleProjects.filter((project) => project.featured));
+export const featuredProjects = Object.freeze(
+  visibleProjects.filter((project) => project.featured)
+);
 
-export const activeProjects = Object.freeze(visibleProjects.filter((project) => project.status === "active"));
+export const activeProjects = Object.freeze(
+  visibleProjects.filter((project) => project.status === 'active')
+);
 
 // ---------------------------------------------------------------------------
 // Automated repository showcase (server-side, async)
@@ -190,31 +171,45 @@ export const activeProjects = Object.freeze(visibleProjects.filter((project) => 
  *  - Any error occurs (graceful degradation — static projects still render)
  */
 export async function getAutomatedProjects(): Promise<Project[]> {
-  const enabled = process.env["ENABLE_AUTOMATED_REPOS"];
-  if (enabled === "false") return [];
+  const enabled = process.env['ENABLE_AUTOMATED_REPOS'];
+  if (enabled === 'false') return [];
 
   try {
-    const { fetchOrgRepos } = await import("@/lib/github/fetch-repos");
-    const { fetchRepoReadme } = await import("@/lib/github/fetch-readme");
-    const { parseReadmeMetadata } = await import("@/lib/markdown/parse-readme-metadata");
-    const { isShowcaseRepo } = await import("@/lib/markdown/parse-frontmatter");
-    const { repoToProject } = await import("@/lib/projects/repo-to-project");
-    const { REPO_EXCLUDE_LIST, REPO_INCLUDE_LIST } = await import("@/config/repos-config");
+    const { fetchOrgRepos } = await import('@/lib/github/fetch-repos');
+    const { fetchRepoReadme } = await import('@/lib/github/fetch-readme');
+    const { parseReadmeMetadata } = await import('@/lib/markdown/parse-readme-metadata');
+    const { isShowcaseRepo } = await import('@/lib/markdown/parse-frontmatter');
+    const { repoToProject } = await import('@/lib/projects/repo-to-project');
+    const { REPO_EXCLUDE_LIST, REPO_INCLUDE_LIST } = await import('@/config/repos-config');
 
     const repos = await fetchOrgRepos();
+
+    // Pre-filter repos before any README fetching to minimise HTTP round-trips
+    const candidateRepos = repos.filter((repo) => {
+      if (REPO_EXCLUDE_LIST.includes(repo.name)) return false;
+      if ((repo.fork || repo.private) && !REPO_INCLUDE_LIST.includes(repo.name)) return false;
+      return true;
+    });
+
+    // Fetch READMEs in parallel (capped at 5 concurrent requests to avoid rate
+    // limits while still being dramatically faster than sequential fetching).
+    const CONCURRENCY = 5;
+    const results: Array<{ repo: (typeof candidateRepos)[0]; readme: string }> = [];
+
+    for (let i = 0; i < candidateRepos.length; i += CONCURRENCY) {
+      const batch = candidateRepos.slice(i, i + CONCURRENCY);
+      const batchReadmes = await Promise.all(batch.map((repo) => fetchRepoReadme(repo.full_name)));
+      for (let j = 0; j < batch.length; j++) {
+        results.push({ repo: batch[j]!, readme: batchReadmes[j]! });
+      }
+    }
 
     // The slug set from static projects is used for collision detection
     const usedSlugs = new Set(visibleProjects.map((p) => p.slug));
 
     const automated: Project[] = [];
 
-    for (const repo of repos) {
-      // Apply exclusion list
-      if (REPO_EXCLUDE_LIST.includes(repo.name)) continue;
-      // Skip forks and private repos unless explicitly included
-      if ((repo.fork || repo.private) && !REPO_INCLUDE_LIST.includes(repo.name)) continue;
-
-      const readme = await fetchRepoReadme(repo.full_name);
+    for (const { repo, readme } of results) {
       const metadata = parseReadmeMetadata(readme);
 
       // Only include repos that opt-in OR are in the explicit include list
@@ -232,4 +227,3 @@ export async function getAutomatedProjects(): Promise<Project[]> {
     return [];
   }
 }
-

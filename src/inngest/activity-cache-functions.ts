@@ -34,7 +34,7 @@ import {
 } from '@/lib/activity/server';
 
 import { activityFeedCache } from '@/lib/cache-versioning';
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 
 // ============================================================================
 // REFRESH ACTIVITY FEED CACHE
@@ -75,8 +75,8 @@ export const refreshActivityFeed = inngest.createFunction(
 
       const results = await Promise.allSettled([
         transformPostsWithViews(posts),
-          Promise.resolve(transformProjects([...projects])),
-          Promise.resolve(transformChangelog(changelog)),
+        Promise.resolve(transformProjects([...projects])),
+        Promise.resolve(transformChangelog(changelog)),
         transformTrendingPosts(posts), // All trending posts (no limit)
         transformMilestones(posts), // All milestones
         transformHighEngagementPosts(posts), // All high engagement posts

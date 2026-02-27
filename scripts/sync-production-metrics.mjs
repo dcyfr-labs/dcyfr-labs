@@ -411,6 +411,26 @@ async function main() {
     process.exit(0);
   }
 
+  // Check for credentials - gracefully skip if missing (local dev builds)
+  const hasProductionCreds =
+    process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN;
+  const hasPreviewCreds =
+    process.env.UPSTASH_REDIS_REST_URL_PREVIEW && process.env.UPSTASH_REDIS_REST_TOKEN_PREVIEW;
+
+  if (!hasProductionCreds || !hasPreviewCreds) {
+    console.log('ℹ️  Redis credentials not configured - skipping metrics sync');
+    console.log('   This is expected in local builds without Redis credentials');
+    console.log('');
+    console.log('   To enable metrics sync in development, add to .env.local:');
+    console.log('   - UPSTASH_REDIS_REST_URL (production)');
+    console.log('   - UPSTASH_REDIS_REST_TOKEN (production)');
+    console.log('   - UPSTASH_REDIS_REST_URL_PREVIEW (preview/dev)');
+    console.log('   - UPSTASH_REDIS_REST_TOKEN_PREVIEW (preview/dev)');
+    console.log('');
+    console.log('✅ Build will continue without metrics sync');
+    process.exit(0);
+  }
+
   const args = process.argv.slice(2);
   const dryRun = args.includes('--dry-run') || args.includes('-d');
   const quickMode = args.includes('--quick') || args.includes('-q');

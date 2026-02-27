@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { blockExternalAccess } from '@/lib/api/api-security';
 import { getAllWorkflowSummaries } from '@/lib/github-workflows';
 import { TRACKED_WORKFLOWS } from '@/types/maintenance';
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 
 const CACHE_KEY = 'maintenance:workflow:summaries';
 const CACHE_TTL = 300; // 5 minutes
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
 
     // Cache the results
     try {
-      await redis.setex(CACHE_KEY, CACHE_TTL, JSON.stringify(summaries));
+      await redis.setEx(CACHE_KEY, CACHE_TTL, JSON.stringify(summaries));
     } catch (cacheError) {
       // Redis unavailable - continue without caching
       console.warn('Failed to cache workflow data:', cacheError);

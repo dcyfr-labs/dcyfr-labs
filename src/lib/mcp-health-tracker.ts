@@ -6,7 +6,7 @@
  * triggers alerts on failures.
  */
 
-import { redis } from '@/mcp/shared/redis-client';
+import { redis } from '@/lib/redis-client';
 import * as Sentry from '@sentry/nextjs';
 
 // ============================================================================
@@ -75,7 +75,7 @@ export async function storeHealthReport(report: McpHealthReport): Promise<void> 
     await redis.set(
       `${REDIS_KEY_PREFIX}latest`,
       JSON.stringify(report),
-      { ex: 24 * 60 * 60 } // 24 hours
+      { EX: 24 * 60 * 60 } // 24 hours
     );
 
     // Store per-server history
@@ -83,14 +83,14 @@ export async function storeHealthReport(report: McpHealthReport): Promise<void> 
       const serverKey = `${REDIS_KEY_PREFIX}history:${server.name}`;
 
       // Add to sorted set with timestamp as score
-      await redis.zadd(serverKey, {
+      await redis.zAdd(serverKey, {
         score: Date.parse(report.timestamp),
-        member: JSON.stringify(server),
+        value: JSON.stringify(server),
       });
 
       // Keep only last 7 days
       const cutoffTime = Date.now() - HISTORY_RETENTION_DAYS * 24 * 60 * 60 * 1000;
-      await redis.zremrangebyscore(serverKey, 0, cutoffTime);
+      await redis.zRemRangeByScore(serverKey, 0, cutoffTime);
     }
 
     // Check for critical failures and alert
@@ -125,7 +125,7 @@ export async function getServerHistory(
     const serverKey = `${REDIS_KEY_PREFIX}history:${serverName}`;
     const cutoffTime = Date.now() - days * 24 * 60 * 60 * 1000;
 
-    const results = await redis.zrange(serverKey, cutoffTime, Date.now(), { byScore: true });
+    const results = await redis.zRangeByScore(serverKey, cutoffTime, Date.now());
 
     if (!results || !Array.isArray(results)) {
       return [];
@@ -264,9 +264,9 @@ async function checkAndAlert(report: McpHealthReport): Promise<void> {
     });
 
     // Store alert in Redis
-    await redis.zadd(`${REDIS_KEY_PREFIX}alerts`, {
+    await redis.zAdd(`${REDIS_KEY_PREFIX}alerts`, {
       score: Date.parse(report.timestamp),
-      member: JSON.stringify({
+      value: JSON.stringify({
         timestamp: report.timestamp,
         level: 'critical',
         servers: downCritical.map((s) => s.name),
@@ -301,9 +301,7 @@ async function checkAndAlert(report: McpHealthReport): Promise<void> {
 export async function getAlertHistory(days: number = 7): Promise<any[]> {
   try {
     const cutoffTime = Date.now() - days * 24 * 60 * 60 * 1000;
-    const alerts = await redis.zrange(`${REDIS_KEY_PREFIX}alerts`, cutoffTime, Date.now(), {
-      byScore: true,
-    });
+    const alerts = await redis.zRangeByScore(`${REDIS_KEY_PREFIX}alerts`, cutoffTime, Date.now());
 
     if (!alerts || !Array.isArray(alerts)) {
       return [];

@@ -904,10 +904,8 @@ export const SPACING = {
 // ============================================================================
 
 /**
- * Numeric spacing values for use with padding (p-*), gaps (gap-*), margins (m-*)
- * These complement SPACING which is only for vertical spacing (space-y-*)
- *
- * @deprecated Use SPACING_SCALE instead for numeric values
+ * @deprecated Use SPACING_SCALE instead
+ * Legacy spacing values for backwards compatibility
  */
 export const SPACING_VALUES = {
   xs: '2', // 0.5rem
@@ -1700,8 +1698,6 @@ export const ANIMATION = {
     appearance: 'transition-appearance',
     /** Theme (colors, 150ms) - Best for theme changes/hover states */
     theme: 'transition-theme',
-    /** @deprecated Use .transition-theme instead */
-    colors: 'transition-colors',
   },
 
   /** Scroll-reveal animation classes */

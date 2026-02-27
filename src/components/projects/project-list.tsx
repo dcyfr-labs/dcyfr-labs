@@ -1,32 +1,47 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import type { Project, ProjectCategory } from "@/data/projects";
-import { Badge } from "@/components/ui/badge";
-import { Eye } from "lucide-react";
-import dynamic from "next/dynamic";
-import { HOVER_EFFECTS, SPACING } from "@/lib/design-tokens";
-import { formatNumber } from "@/lib/utils";
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import type { Project, ProjectCategory } from '@/data/projects';
+import { Badge } from '@/components/ui/badge';
+import { Eye, Github } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { HOVER_EFFECTS, SPACING } from '@/lib/design-tokens';
+import { formatNumber } from '@/lib/utils';
 
-const ScrollReveal = dynamic(() => import("@/components/features/scroll-reveal").then(mod => ({ default: mod.ScrollReveal })), {
-  loading: () => <div className="contents" />,
-  ssr: true,
-});
+const ScrollReveal = dynamic(
+  () =>
+    import('@/components/features/scroll-reveal').then((mod) => ({ default: mod.ScrollReveal })),
+  {
+    loading: () => <div className="contents" />,
+    ssr: true,
+  }
+);
 
 const STATUS_LABEL = {
-  "active": "Active",
-  "in-progress": "In progress",
-  "archived": "Archived",
+  active: 'Active',
+  'in-progress': 'In progress',
+  archived: 'Archived',
 } as const;
+
+/**
+ * Resolve the href for a project card.
+ * Projects with a github-type link (automated repos) open directly on GitHub.
+ * Projects without one fall through to the internal detail page.
+ */
+function getCardHref(project: Project, basePath: string): { href: string; isExternal: boolean } {
+  const githubLink = project.links.find((l) => l.type === 'github');
+  if (githubLink) return { href: githubLink.href, isExternal: true };
+  return { href: `${basePath}/${project.slug}`, isExternal: false };
+}
 
 // Category labels
 const CATEGORY_LABEL: Record<ProjectCategory, string> = {
-  "community": "Community",
-  "nonprofit": "Nonprofit",
-  "code": "Code",
-  "photography": "Photography",
-  "startup": "Startup",
+  community: 'Community',
+  nonprofit: 'Nonprofit',
+  code: 'Code',
+  photography: 'Photography',
+  startup: 'Startup',
 };
 
 /**
@@ -34,7 +49,7 @@ const CATEGORY_LABEL: Record<ProjectCategory, string> = {
  */
 interface ProjectListProps {
   projects: Project[];
-  layout?: "grid" | "list" | "compact";
+  layout?: 'grid' | 'list' | 'compact';
   viewCounts?: Map<string, number>;
   hasActiveFilters?: boolean;
   emptyMessage?: string;
@@ -59,11 +74,11 @@ interface ProjectListProps {
  */
 export function ProjectList({
   projects,
-  layout = "grid",
+  layout = 'grid',
   viewCounts,
   hasActiveFilters = false,
-  emptyMessage = "No projects found.",
-  basePath = "/work",
+  emptyMessage = 'No projects found.',
+  basePath = '/work',
 }: ProjectListProps) {
   const router = useRouter();
 
@@ -89,61 +104,86 @@ export function ProjectList({
   }
 
   // Grid layout: 3-column grid with images
-  if (layout === "grid") {
+  if (layout === 'grid') {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" data-testid="project-list">
+      <div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        data-testid="project-list"
+      >
         {projects.map((project, index) => {
           return (
-            <ScrollReveal
-              key={project.slug}
-            >
-              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card} flex flex-col h-full`}>
-                <Link href={`${basePath}/${project.slug}`} className="flex flex-col h-full">
-                  {/* Project content */}
-                  <div className="flex-1 p-4 sm:p-5 flex flex-col">
-                    {/* Status, category, and timeline */}
-                    {project.timeline && (
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                        {project.status !== "active" && <Badge variant="default">{STATUS_LABEL[project.status]}</Badge>}
-                        {project.category && <Badge variant="outline">{CATEGORY_LABEL[project.category]}</Badge>}
-                        <span>{project.timeline}</span>
-                        {viewCounts && viewCounts.has(project.slug) && viewCounts.get(project.slug)! > 0 && (
-                          <span className="ml-auto flex items-center gap-1">
-                            <Eye className="h-3 w-3" />
-                            <span>{formatNumber(viewCounts.get(project.slug)!)}</span>
-                          </span>
+            <ScrollReveal key={project.slug}>
+              {(() => {
+                const { href, isExternal } = getCardHref(project, basePath);
+                return (
+                  <article
+                    className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card} flex flex-col h-full`}
+                  >
+                    <Link
+                      href={href}
+                      className="flex flex-col h-full"
+                      {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    >
+                      {/* GitHub indicator for external repo links */}
+                      {isExternal && (
+                        <Github
+                          className="absolute top-3 right-3 h-3.5 w-3.5 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors"
+                          aria-hidden
+                        />
+                      )}
+                      {/* Project content */}
+                      <div className="flex-1 p-4 sm:p-5 flex flex-col">
+                        {/* Status, category, and timeline */}
+                        {project.timeline && (
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                            {project.status !== 'active' && (
+                              <Badge variant="default">{STATUS_LABEL[project.status]}</Badge>
+                            )}
+                            {project.category && (
+                              <Badge variant="outline">{CATEGORY_LABEL[project.category]}</Badge>
+                            )}
+                            <span>{project.timeline}</span>
+                            {viewCounts &&
+                              viewCounts.has(project.slug) &&
+                              viewCounts.get(project.slug)! > 0 && (
+                                <span className="ml-auto flex items-center gap-1">
+                                  <Eye className="h-3 w-3" />
+                                  <span>{formatNumber(viewCounts.get(project.slug)!)}</span>
+                                </span>
+                              )}
+                          </div>
+                        )}
+
+                        {/* Title */}
+                        <h2 className="font-semibold text-base sm:text-lg md:text-xl line-clamp-2 mb-2">
+                          {project.title}
+                        </h2>
+
+                        {/* Description */}
+                        <p className="text-sm text-muted-foreground line-clamp-3 flex-1">
+                          {project.description}
+                        </p>
+
+                        {/* Tech Stack */}
+                        {project.tech && project.tech.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 mt-3">
+                            {project.tech.slice(0, 3).map((tech) => (
+                              <Badge key={tech} variant="outline" className="text-xs">
+                                {tech}
+                              </Badge>
+                            ))}
+                            {project.tech.length > 3 && (
+                              <Badge variant="outline" className="text-xs">
+                                +{project.tech.length - 3}
+                              </Badge>
+                            )}
+                          </div>
                         )}
                       </div>
-                    )}
-
-                    {/* Title */}
-                    <h2 className="font-semibold text-base sm:text-lg md:text-xl line-clamp-2 mb-2">
-                      {project.title}
-                    </h2>
-
-                    {/* Description */}
-                    <p className="text-sm text-muted-foreground line-clamp-3 flex-1">
-                      {project.description}
-                    </p>
-
-                    {/* Tech Stack */}
-                    {project.tech && project.tech.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 mt-3">
-                        {project.tech.slice(0, 3).map(tech => (
-                          <Badge key={tech} variant="outline" className="text-xs">
-                            {tech}
-                          </Badge>
-                        ))}
-                        {project.tech.length > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{project.tech.length - 3}
-                          </Badge>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </Link>
-              </article>
+                    </Link>
+                  </article>
+                );
+              })()}
             </ScrollReveal>
           );
         })}
@@ -152,55 +192,76 @@ export function ProjectList({
   }
 
   // List layout: single column with full details
-  if (layout === "list") {
+  if (layout === 'list') {
     return (
       <div className={SPACING.subsection} data-testid="project-list">
         {projects.map((project, index) => {
           return (
-            <ScrollReveal
-              key={project.slug}
-            >
-              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}>
-                <Link href={`${basePath}/${project.slug}`} className="block">
-                  <div className="p-4 md:p-8">
-                    {/* Status, category, and timeline */}
-                    {project.timeline && (
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-                        {project.status !== "active" && <Badge variant="default">{STATUS_LABEL[project.status]}</Badge>}
-                        {project.category && <Badge variant="outline">{CATEGORY_LABEL[project.category]}</Badge>}
-                        <span>{project.timeline}</span>
-                        {viewCounts && viewCounts.has(project.slug) && viewCounts.get(project.slug)! > 0 && (
-                          <span className="ml-auto flex items-center gap-1">
-                            <Eye className="h-3 w-3" />
-                            <span>{formatNumber(viewCounts.get(project.slug)!)}</span>
-                          </span>
+            <ScrollReveal key={project.slug}>
+              {(() => {
+                const { href, isExternal } = getCardHref(project, basePath);
+                return (
+                  <article
+                    className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}
+                  >
+                    <Link
+                      href={href}
+                      className="block"
+                      {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    >
+                      <div className="p-4 md:p-8">
+                        {/* Status, category, and timeline */}
+                        {project.timeline && (
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                            {project.status !== 'active' && (
+                              <Badge variant="default">{STATUS_LABEL[project.status]}</Badge>
+                            )}
+                            {project.category && (
+                              <Badge variant="outline">{CATEGORY_LABEL[project.category]}</Badge>
+                            )}
+                            <span>{project.timeline}</span>
+                            {viewCounts &&
+                              viewCounts.has(project.slug) &&
+                              viewCounts.get(project.slug)! > 0 && (
+                                <span className="ml-auto flex items-center gap-1">
+                                  <Eye className="h-3 w-3" />
+                                  <span>{formatNumber(viewCounts.get(project.slug)!)}</span>
+                                </span>
+                              )}
+                          </div>
+                        )}
+
+                        {/* Title */}
+                        <h2 className="font-semibold text-xl md:text-2xl line-clamp-2 mb-3">
+                          {isExternal && (
+                            <Github
+                              className="inline-block mr-2 h-4 w-4 text-muted-foreground/60"
+                              aria-hidden
+                            />
+                          )}
+                          {project.title}
+                        </h2>
+
+                        {/* Description - more lines visible */}
+                        <p className="text-sm md:text-base text-muted-foreground line-clamp-4 mb-4">
+                          {project.description}
+                        </p>
+
+                        {/* Tech Stack */}
+                        {project.tech && project.tech.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {project.tech.map((tech) => (
+                              <Badge key={tech} variant="outline" className="text-xs">
+                                {tech}
+                              </Badge>
+                            ))}
+                          </div>
                         )}
                       </div>
-                    )}
-
-                    {/* Title */}
-                    <h2 className="font-semibold text-xl md:text-2xl line-clamp-2 mb-3">
-                      {project.title}
-                    </h2>
-
-                    {/* Description - more lines visible */}
-                    <p className="text-sm md:text-base text-muted-foreground line-clamp-4 mb-4">
-                      {project.description}
-                    </p>
-
-                    {/* Tech Stack */}
-                    {project.tech && project.tech.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {project.tech.map(tech => (
-                          <Badge key={tech} variant="outline" className="text-xs">
-                            {tech}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </Link>
-              </article>
+                    </Link>
+                  </article>
+                );
+              })()}
             </ScrollReveal>
           );
         })}
@@ -209,37 +270,64 @@ export function ProjectList({
   }
 
   // Compact layout: minimal cards
-  if (layout === "compact") {
+  if (layout === 'compact') {
     return (
       <div className={SPACING.content} data-testid="project-list">
         {projects.map((project, index) => {
           return (
-            <ScrollReveal
-              key={project.slug}
-            >
-              <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}>
-                <Link href={`${basePath}/${project.slug}`} className="block">
-                  <div className="p-3">
-                    {/* Status, category, and timeline - compact */}
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1.5">
-                      {project.status !== "active" && <Badge variant="default" className="text-xs">{STATUS_LABEL[project.status]}</Badge>}
-                      {project.category && <Badge variant="outline" className="text-xs">{CATEGORY_LABEL[project.category]}</Badge>}
-                      {project.timeline && <span>{project.timeline}</span>}
-                      {viewCounts && viewCounts.has(project.slug) && viewCounts.get(project.slug)! > 0 && (
-                        <span className="ml-auto flex items-center gap-1">
-                          <Eye className="h-3 w-3" />
-                          <span className="hidden sm:inline">{formatNumber(viewCounts.get(project.slug)!)}</span>
-                        </span>
-                      )}
-                    </div>
+            <ScrollReveal key={project.slug}>
+              {(() => {
+                const { href, isExternal } = getCardHref(project, basePath);
+                return (
+                  <article
+                    className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card}`}
+                  >
+                    <Link
+                      href={href}
+                      className="block"
+                      {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    >
+                      <div className="p-3">
+                        {/* Status, category, and timeline - compact */}
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1.5">
+                          {project.status !== 'active' && (
+                            <Badge variant="default" className="text-xs">
+                              {STATUS_LABEL[project.status]}
+                            </Badge>
+                          )}
+                          {project.category && (
+                            <Badge variant="outline" className="text-xs">
+                              {CATEGORY_LABEL[project.category]}
+                            </Badge>
+                          )}
+                          {project.timeline && <span>{project.timeline}</span>}
+                          {viewCounts &&
+                            viewCounts.has(project.slug) &&
+                            viewCounts.get(project.slug)! > 0 && (
+                              <span className="ml-auto flex items-center gap-1">
+                                <Eye className="h-3 w-3" />
+                                <span className="hidden sm:inline">
+                                  {formatNumber(viewCounts.get(project.slug)!)}
+                                </span>
+                              </span>
+                            )}
+                        </div>
 
-                    {/* Title - compact */}
-                    <h2 className="font-medium text-sm sm:text-base line-clamp-2">
-                      {project.title}
-                    </h2>
-                  </div>
-                </Link>
-              </article>
+                        {/* Title - compact */}
+                        <h2 className="font-medium text-sm sm:text-base line-clamp-2 flex items-center gap-1.5">
+                          {isExternal && (
+                            <Github
+                              className="h-3 w-3 text-muted-foreground/60 shrink-0"
+                              aria-hidden
+                            />
+                          )}
+                          {project.title}
+                        </h2>
+                      </div>
+                    </Link>
+                  </article>
+                );
+              })()}
             </ScrollReveal>
           );
         })}
@@ -249,59 +337,84 @@ export function ProjectList({
 
   // Default to grid layout
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" data-testid="project-list">
+    <div
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+      data-testid="project-list"
+    >
       {projects.map((project, index) => {
         return (
-          <ScrollReveal
-            key={project.slug}
-          >
-            <article className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card} flex flex-col h-full`}>
-              <Link href={`${basePath}/${project.slug}`} className="flex flex-col h-full">
-                {/* Project content */}
-                <div className="flex-1 p-4 sm:p-5 flex flex-col">
-                  {/* Status, category, and timeline */}
-                  {project.timeline && (
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                      {project.status !== "active" && <Badge variant="default">{STATUS_LABEL[project.status]}</Badge>}
-                      {project.category && <Badge variant="outline">{CATEGORY_LABEL[project.category]}</Badge>}
-                      <span>{project.timeline}</span>
-                      {viewCounts && viewCounts.has(project.slug) && viewCounts.get(project.slug)! > 0 && (
-                        <span className="ml-auto flex items-center gap-1">
-                          <Eye className="h-3 w-3" />
-                          <span>{formatNumber(viewCounts.get(project.slug)!)}</span>
-                        </span>
+          <ScrollReveal key={project.slug}>
+            {(() => {
+              const { href, isExternal } = getCardHref(project, basePath);
+              return (
+                <article
+                  className={`group rounded-lg border overflow-hidden relative bg-card ${HOVER_EFFECTS.card} flex flex-col h-full`}
+                >
+                  <Link
+                    href={href}
+                    className="flex flex-col h-full"
+                    {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  >
+                    {/* GitHub indicator for external repo links */}
+                    {isExternal && (
+                      <Github
+                        className="absolute top-3 right-3 h-3.5 w-3.5 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors"
+                        aria-hidden
+                      />
+                    )}
+                    {/* Project content */}
+                    <div className="flex-1 p-4 sm:p-5 flex flex-col">
+                      {/* Status, category, and timeline */}
+                      {project.timeline && (
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                          {project.status !== 'active' && (
+                            <Badge variant="default">{STATUS_LABEL[project.status]}</Badge>
+                          )}
+                          {project.category && (
+                            <Badge variant="outline">{CATEGORY_LABEL[project.category]}</Badge>
+                          )}
+                          <span>{project.timeline}</span>
+                          {viewCounts &&
+                            viewCounts.has(project.slug) &&
+                            viewCounts.get(project.slug)! > 0 && (
+                              <span className="ml-auto flex items-center gap-1">
+                                <Eye className="h-3 w-3" />
+                                <span>{formatNumber(viewCounts.get(project.slug)!)}</span>
+                              </span>
+                            )}
+                        </div>
+                      )}
+
+                      {/* Title */}
+                      <h2 className="font-semibold text-base sm:text-lg md:text-xl line-clamp-2 mb-2">
+                        {project.title}
+                      </h2>
+
+                      {/* Description */}
+                      <p className="text-sm text-muted-foreground line-clamp-3 flex-1">
+                        {project.description}
+                      </p>
+
+                      {/* Tech Stack */}
+                      {project.tech && project.tech.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 mt-3">
+                          {project.tech.slice(0, 3).map((tech) => (
+                            <Badge key={tech} variant="outline" className="text-xs">
+                              {tech}
+                            </Badge>
+                          ))}
+                          {project.tech.length > 3 && (
+                            <Badge variant="outline" className="text-xs">
+                              +{project.tech.length - 3}
+                            </Badge>
+                          )}
+                        </div>
                       )}
                     </div>
-                  )}
-
-                  {/* Title */}
-                  <h2 className="font-semibold text-base sm:text-lg md:text-xl line-clamp-2 mb-2">
-                    {project.title}
-                  </h2>
-
-                  {/* Description */}
-                  <p className="text-sm text-muted-foreground line-clamp-3 flex-1">
-                    {project.description}
-                  </p>
-
-                  {/* Tech Stack */}
-                  {project.tech && project.tech.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mt-3">
-                      {project.tech.slice(0, 3).map(tech => (
-                        <Badge key={tech} variant="outline" className="text-xs">
-                          {tech}
-                        </Badge>
-                      ))}
-                      {project.tech.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{project.tech.length - 3}
-                        </Badge>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </Link>
-            </article>
+                  </Link>
+                </article>
+              );
+            })()}
           </ScrollReveal>
         );
       })}

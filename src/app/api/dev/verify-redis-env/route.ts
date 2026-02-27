@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { redis, getRedisEnvironment, getRedisKeyPrefix } from '@/mcp/shared/redis-client';
+import { redis, getRedisEnvironment, getRedisKeyPrefix } from '@/lib/redis-client';
 
 // ---------------------------------------------------------------------------
 // Private helpers

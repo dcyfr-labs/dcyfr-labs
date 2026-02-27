@@ -1,7 +1,7 @@
 /**
  * Fuse.js Search Configuration
  *
- * Configures fuzzy search behavior for blog posts.
+ * Configures fuzzy search behavior for blog posts and projects.
  *
  * Features:
  * - Fuzzy matching with typo tolerance
@@ -9,8 +9,8 @@
  * - Configurable threshold for match quality
  */
 
-import Fuse from "fuse.js";
-import type { IFuseOptions } from "fuse.js";
+import Fuse from 'fuse.js';
+import type { IFuseOptions } from 'fuse.js';
 
 /**
  * Fuse.js configuration for blog post search
@@ -38,21 +38,37 @@ export const fuseOptions: IFuseOptions<SearchablePost> = {
   // Fields to search with weights
   keys: [
     {
-      name: "title",
+      name: 'title',
       weight: 0.5, // Highest priority
     },
     {
-      name: "tags",
+      name: 'tags',
       weight: 0.3,
     },
     {
-      name: "summary",
+      name: 'summary',
       weight: 0.15,
     },
     {
-      name: "content",
+      name: 'content',
       weight: 0.05, // Lowest priority (too noisy)
     },
+  ],
+};
+
+/**
+ * Fuse.js configuration for project search
+ */
+export const projectFuseOptions: IFuseOptions<SearchableProject> = {
+  threshold: 0.4,
+  minMatchCharLength: 2,
+  includeScore: true,
+  ignoreLocation: true,
+  keys: [
+    { name: 'title', weight: 0.5 },
+    { name: 'description', weight: 0.3 },
+    { name: 'tags', weight: 0.15 },
+    { name: 'tech', weight: 0.05 },
   ],
 };
 
@@ -72,10 +88,25 @@ export interface SearchablePost {
 }
 
 /**
+ * Searchable project interface matching the generated index
+ */
+export interface SearchableProject {
+  slug: string;
+  title: string;
+  description: string;
+  category: string;
+  tech: string[];
+  tags: string[];
+  status: string;
+  url: string;
+}
+
+/**
  * Search index structure
  */
 export interface SearchIndex {
   posts: SearchablePost[];
+  projects: SearchableProject[];
   tags: string[];
   series: string[];
   generatedAt: string;

@@ -2,18 +2,18 @@
 // `MaintenanceClient` so we can perform an environment check on the server and
 // return a 404 for preview/production environments.
 
-import type { Metadata } from "next";
-import { assertDevOr404 } from "@/lib/dev-only";
-import { createPageMetadata } from "@/lib/metadata";
+import type { Metadata } from 'next';
+import { assertDevOr404 } from '@/lib/utils/dev-only';
+import { createPageMetadata } from '@/lib/metadata';
 // Import the client component directly - the client component file contains
 // "use client" so it will be rendered on the client. We perform the server
 // environment check below and return a 404 in non-dev environments.
-import MaintenanceClient from "./MaintenanceClient";
+import MaintenanceClient from './MaintenanceClient';
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Maintenance Dashboard",
-  description: "Development maintenance dashboard for monitoring workflows and system health",
-  path: "/dev/maintenance",
+  title: 'Maintenance Dashboard',
+  description: 'Development maintenance dashboard for monitoring workflows and system health',
+  path: '/dev/maintenance',
 });
 
 // Vercel optimization: assertDevOr404() calls notFound() in Preview/Production,

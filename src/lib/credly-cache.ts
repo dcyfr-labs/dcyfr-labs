@@ -110,7 +110,7 @@ async function getRedisCachedData<T>(redisKey: string): Promise<T | null> {
  */
 async function setRedisCachedData<T>(redisKey: string, data: T): Promise<void> {
   try {
-    await redis.setex(redisKey, REDIS_CACHE_DURATION, JSON.stringify(data));
+    await redis.setEx(redisKey, REDIS_CACHE_DURATION, JSON.stringify(data));
   } catch (error) {
     console.warn('[Credly Cache] Redis write failed:', error);
   }
@@ -301,7 +301,7 @@ export async function populateCredlyCache(username: string = 'dcyfr'): Promise<v
       // Store in Redis
       const redisKey = createRedisKey(username, variant.limit || undefined);
       try {
-        await redis.set(redisKey, JSON.stringify(cacheData), { ex: REDIS_CACHE_DURATION });
+        await redis.set(redisKey, JSON.stringify(cacheData), { EX: REDIS_CACHE_DURATION });
         console.warn(
           `[Credly Cache] Cached ${variant.key}: ${variant.badges.length} badges to ${redisKey}`
         );
