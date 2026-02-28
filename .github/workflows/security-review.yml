@@ -41,7 +41,7 @@ jobs:
       - name: Claude Code Security Review
         uses: anthropics/claude-code-security-review@main
         with:
-          claude-api-key: $CLAUDE_API_KEY
+          claude-api-key: ${{ secrets.CLAUDE_API_KEY }}
 
           # Post inline comments on the PR with findings + remediation guidance.
           comment-pr: true
@@ -83,11 +83,4 @@ jobs:
           # Tech-stack-specific scan guidance to improve precision.
           custom-security-scan-instructions: >
             .github/security/custom-scan-instructions.md
-      - name: Load secrets from 1Password
-        uses: 1password/load-secrets-action@v1
-        with:
-          export-env: true
-        env:
-          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          CLAUDE_API_KEY: op://CI-CD/dcyfr-labs-claude-api-key/credential
 
