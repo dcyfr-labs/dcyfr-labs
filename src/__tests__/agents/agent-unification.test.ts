@@ -1,7 +1,7 @@
 /**
  * Agent Unification Tests
  *
- * Validates pattern consistency across Claude Code, GitHub Copilot, and OpenCode agents.
+ * Validates pattern consistency across Claude Code and GitHub Copilot agents.
  * Ensures all agents reference the same source patterns and produce consistent outputs.
  */
 

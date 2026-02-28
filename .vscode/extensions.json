@@ -8,7 +8,6 @@
     "esbenp.prettier-vscode",
     "anthropic.claude-code",
     "github.vscode-github-actions",
-    "usernamehw.errorlens",
     "editorconfig.editorconfig",
     "github.vscode-codeql",
     "yzhang.markdown-all-in-one",
@@ -20,6 +19,5 @@
     "willluke.nextjs",
     "msjsdiag.vscode-react-native",
     "bradlc.vscode-tailwindcss",
-    "teabyii.ayu"
   ]
 }

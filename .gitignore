@@ -233,6 +233,7 @@ dump.rdb
 .temp/
 .tmp/
 tmp/
+var/
 
 # OS-specific
 .DS_Store
