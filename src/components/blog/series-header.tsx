@@ -14,7 +14,7 @@
  * ```
  */
 
-import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
+import { TYPOGRAPHY, SPACING, SPACING_SCALE } from '@/lib/design-tokens';
 import { Clock, BookOpen } from "lucide-react";
 
 interface SeriesHeaderProps {
@@ -41,13 +41,13 @@ export function SeriesHeader({
 
       {/* Stats row */}
       <div
-        className={`flex flex-wrap gap-${SPACING.md} mt-${SPACING.md} text-sm text-muted-foreground`}
+        className={`flex flex-wrap gap-${SPACING_SCALE.md} mt-${SPACING_SCALE.md} text-sm text-muted-foreground`}
       >
-        <div className={`flex items-center gap-${SPACING.sm}`}>
+        <div className={`flex items-center gap-${SPACING_SCALE.sm}`}>
           <BookOpen className="w-4 h-4" />
           <span>{postCount === 1 ? "1 post" : `${postCount} posts`}</span>
         </div>
-        <div className={`flex items-center gap-${SPACING.sm}`}>
+        <div className={`flex items-center gap-${SPACING_SCALE.sm}`}>
           <Clock className="w-4 h-4" />
           <span>
             {totalMinutes} min {totalMinutes === 1 ? "read" : "read"}

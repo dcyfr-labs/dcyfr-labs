@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Mail, Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { SPACING, BORDERS, ANIMATION } from "@/lib/design-tokens";
+import { SPACING, BORDERS, ANIMATION, SPACING_SCALE } from '@/lib/design-tokens';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -163,8 +163,8 @@ export function NewsletterSignup({
 
   const contentWrapperClasses = {
     inline: "flex-1",
-    card: `mb-${SPACING.md}`,
-    minimal: `mb-${SPACING.sm}`,
+    card: `mb-${SPACING_SCALE.md}`,
+    minimal: `mb-${SPACING_SCALE.sm}`,
   };
 
   const formClasses = {

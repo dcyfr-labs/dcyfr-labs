@@ -23,7 +23,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { SPACING } from "@/lib/design-tokens";
+import { SPACING, SPACING_SCALE } from '@/lib/design-tokens';
 import { useCallback, useTransition } from "react";
 
 export interface ArchiveFiltersProps {
@@ -140,7 +140,7 @@ export function ArchiveFilters({
   return (
     <div className={cn("space-y-4", className)}>
       {/* Search and Clear */}
-      <div className={`flex flex-col sm:flex-row gap-${SPACING.md}`}>
+      <div className={`flex flex-col sm:flex-row gap-${SPACING_SCALE.md}`}>
         {showSearch && (
           <div className="relative flex-1">
             <Search
@@ -175,7 +175,7 @@ export function ArchiveFilters({
 
       {/* Tags */}
       {showTags && availableTags.length > 0 && (
-        <div className={`flex flex-wrap gap-${SPACING.sm}`}>
+        <div className={`flex flex-wrap gap-${SPACING_SCALE.sm}`}>
           <span className="text-sm text-muted-foreground self-center">
             Filter by tag:
           </span>
@@ -210,7 +210,7 @@ export function ArchiveFilters({
       {/* Active Filters Summary */}
       {hasActiveFilters && (
         <div
-          className={`flex flex-wrap gap-${SPACING.sm} items-center text-sm text-muted-foreground`}
+          className={`flex flex-wrap gap-${SPACING_SCALE.sm} items-center text-sm text-muted-foreground`}
         >
           <span>Active filters:</span>
           {searchQuery && (

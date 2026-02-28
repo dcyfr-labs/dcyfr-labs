@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Download, CheckCircle2, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { SPACING, BORDERS, TYPOGRAPHY, ANIMATION } from "@/lib/design-tokens";
+import { SPACING, BORDERS, TYPOGRAPHY, ANIMATION, SPACING_SCALE } from '@/lib/design-tokens';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -125,7 +125,7 @@ export function DownloadableAsset({
         "downloadable-asset",
         "border rounded-lg p-4 bg-card",
         BORDERS.card,
-        `my-${SPACING.lg}`,
+        `my-${SPACING_SCALE.lg}`,
         className
       )}
     >

@@ -11,7 +11,7 @@ import { Flame } from "lucide-react";
 import { PostAnalytics } from "@/types/analytics";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
+import { TYPOGRAPHY, SPACING, SPACING_SCALE } from '@/lib/design-tokens';
 
 interface AnalyticsTrendingProps {
   /** Trending posts to display */
@@ -44,19 +44,19 @@ export function AnalyticsTrending({
   const displayPosts = trending.slice(0, limit);
 
   return (
-    <div className={`mb-${SPACING.lg}`}>
-      <h2 className={cn(TYPOGRAPHY.label.standard, `mb-${SPACING.md}`)}>
+    <div className={`mb-${SPACING_SCALE.lg}`}>
+      <h2 className={cn(TYPOGRAPHY.label.standard, `mb-${SPACING_SCALE.md}`)}>
         Trending Posts
       </h2>
-      <div className={`grid gap-${SPACING.md} md:grid-cols-2 lg:grid-cols-3`}>
+      <div className={`grid gap-${SPACING_SCALE.md} md:grid-cols-2 lg:grid-cols-3`}>
         {displayPosts.map((post) => (
           <Card
             key={post.slug}
             className="overflow-hidden hover:shadow-md transition-shadow"
           >
-            <CardContent className={`p-${SPACING.md}`}>
+            <CardContent className={`p-${SPACING_SCALE.md}`}>
               <div
-                className={`flex items-start justify-between gap-${SPACING.sm} mb-${SPACING["1.5"]}`}
+                className={`flex items-start justify-between gap-${SPACING_SCALE.sm} mb-${SPACING["1.5"]}`}
               >
                 <Link
                   href={`/blog/${post.slug}`}
@@ -86,7 +86,7 @@ export function AnalyticsTrending({
                 </div>
               </div>
               <p
-                className={`text-xs text-muted-foreground line-clamp-2 mb-${SPACING.md}`}
+                className={`text-xs text-muted-foreground line-clamp-2 mb-${SPACING_SCALE.md}`}
               >
                 {post.summary}
               </p>

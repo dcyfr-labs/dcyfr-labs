@@ -12,14 +12,12 @@ import {
   ContentBlock,
   ContrastText,
 } from "@/components/common";
-import {
-  TYPOGRAPHY,
+import { TYPOGRAPHY,
   CONTENT_HIERARCHY,
   PROGRESSIVE_TEXT,
   FONT_CONTRAST,
   SPACING,
-  SEMANTIC_COLORS,
-} from "@/lib/design-tokens";
+  SEMANTIC_COLORS, SPACING_SCALE } from '@/lib/design-tokens';
 
 /**
  * Visual demonstration of varying depth styles
@@ -45,7 +43,7 @@ export default function VaryingDepthDemo() {
           These patterns create visual depth through organized content blocks.
         </p>
 
-        <div className={`grid gap-${SPACING.md} md:grid-cols-2`}>
+        <div className={`grid gap-${SPACING_SCALE.md} md:grid-cols-2`}>
           <ContentBlock variant="primary" title="Primary Content">
             <p>Main information with full emphasis and maximum contrast.</p>
             <p>This is ideal for core message and central ideas.</p>
@@ -243,10 +241,10 @@ export default function VaryingDepthDemo() {
       {/* Implementation Benefits */}
       <section className={SPACING.content}>
         <h2 className={TYPOGRAPHY.h2.standard}>Implementation Benefits</h2>
-        <div className={`grid gap-${SPACING.md} md:grid-cols-2`}>
-          <div className={`rounded-lg border border-border p-${SPACING.md}`}>
+        <div className={`grid gap-${SPACING_SCALE.md} md:grid-cols-2`}>
+          <div className={`rounded-lg border border-border p-${SPACING_SCALE.md}`}>
             <h3
-              className={`font-semibold mb-${SPACING["1.5"]} flex items-center gap-${SPACING.sm}`}
+              className={`font-semibold mb-${SPACING["1.5"]} flex items-center gap-${SPACING_SCALE.sm}`}
             >
               <Check
                 className={`w-4 h-4 ${SEMANTIC_COLORS.status.success}`}
@@ -261,9 +259,9 @@ export default function VaryingDepthDemo() {
             </p>
           </div>
 
-          <div className={`rounded-lg border border-border p-${SPACING.md}`}>
+          <div className={`rounded-lg border border-border p-${SPACING_SCALE.md}`}>
             <h3
-              className={`font-semibold mb-${SPACING["1.5"]} flex items-center gap-${SPACING.sm}`}
+              className={`font-semibold mb-${SPACING["1.5"]} flex items-center gap-${SPACING_SCALE.sm}`}
             >
               <Check
                 className={`w-4 h-4 ${SEMANTIC_COLORS.status.success}`}
@@ -277,9 +275,9 @@ export default function VaryingDepthDemo() {
             </p>
           </div>
 
-          <div className={`rounded-lg border border-border p-${SPACING.md}`}>
+          <div className={`rounded-lg border border-border p-${SPACING_SCALE.md}`}>
             <h3
-              className={`font-semibold mb-${SPACING["1.5"]} flex items-center gap-${SPACING.sm}`}
+              className={`font-semibold mb-${SPACING["1.5"]} flex items-center gap-${SPACING_SCALE.sm}`}
             >
               <Check
                 className={`w-4 h-4 ${SEMANTIC_COLORS.status.success}`}
@@ -293,9 +291,9 @@ export default function VaryingDepthDemo() {
             </p>
           </div>
 
-          <div className={`rounded-lg border border-border p-${SPACING.md}`}>
+          <div className={`rounded-lg border border-border p-${SPACING_SCALE.md}`}>
             <h3
-              className={`font-semibold mb-${SPACING["1.5"]} flex items-center gap-${SPACING.sm}`}
+              className={`font-semibold mb-${SPACING["1.5"]} flex items-center gap-${SPACING_SCALE.sm}`}
             >
               <Check
                 className={`w-4 h-4 ${SEMANTIC_COLORS.status.success}`}

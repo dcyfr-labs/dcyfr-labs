@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { SPACING, BORDERS, TYPOGRAPHY } from '@/lib/design-tokens';
+import { SPACING, BORDERS, TYPOGRAPHY, SPACING_SCALE } from '@/lib/design-tokens';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -163,11 +163,11 @@ export function RiskMatrix({
   return (
     <div className={cn('risk-matrix-container', `my-${SPACING.content}`, className)}>
       {/* Header */}
-      <div className={cn('flex items-center justify-between', `mb-${SPACING.md}`)}>
+      <div className={cn('flex items-center justify-between', `mb-${SPACING_SCALE.md}`)}>
         <h2 className={`${TYPOGRAPHY.h2.standard} m-0`}>{title}</h2>
 
         {showExport && (
-          <div className={cn('flex', `gap-${SPACING.xs}`)}>
+          <div className={cn('flex', `gap-${SPACING_SCALE.xs}`)}>
             <Button
               onClick={handleExportPNG}
               variant="outline"
@@ -192,7 +192,7 @@ export function RiskMatrix({
         className={cn(
           'rounded-lg bg-card',
           BORDERS.card,
-          `p-${SPACING.md}`,
+          `p-${SPACING_SCALE.md}`,
           'flex items-center justify-center overflow-x-auto'
         )}
       >
@@ -318,24 +318,24 @@ export function RiskMatrix({
             'rounded-lg bg-muted/50',
             BORDERS.card,
             `mt-${SPACING.content}`,
-            `p-${SPACING.md}`
+            `p-${SPACING_SCALE.md}`
           )}
         >
-          <h3 className={cn(TYPOGRAPHY.h3.standard, `mb-${SPACING.sm}`)}>Risk Levels</h3>
-          <div className={cn('grid grid-cols-2 sm:grid-cols-4', `gap-${SPACING.sm}`, 'text-sm')}>
-            <div className={cn('flex items-center', `gap-${SPACING.xs}`)}>
+          <h3 className={cn(TYPOGRAPHY.h3.standard, `mb-${SPACING_SCALE.sm}`)}>Risk Levels</h3>
+          <div className={cn('grid grid-cols-2 sm:grid-cols-4', `gap-${SPACING_SCALE.sm}`, 'text-sm')}>
+            <div className={cn('flex items-center', `gap-${SPACING_SCALE.xs}`)}>
               <div className="w-4 h-4 rounded-full bg-[#22c55e]" />
               <span>Low Risk</span>
             </div>
-            <div className={cn('flex items-center', `gap-${SPACING.xs}`)}>
+            <div className={cn('flex items-center', `gap-${SPACING_SCALE.xs}`)}>
               <div className="w-4 h-4 rounded-full bg-[#eab308]" />
               <span>Medium Risk</span>
             </div>
-            <div className={cn('flex items-center', `gap-${SPACING.xs}`)}>
+            <div className={cn('flex items-center', `gap-${SPACING_SCALE.xs}`)}>
               <div className="w-4 h-4 rounded-full bg-[#f97316]" />
               <span>High Risk</span>
             </div>
-            <div className={cn('flex items-center', `gap-${SPACING.xs}`)}>
+            <div className={cn('flex items-center', `gap-${SPACING_SCALE.xs}`)}>
               <div className="w-4 h-4 rounded-full bg-[#ef4444]" />
               <span>Critical Risk</span>
             </div>
@@ -350,7 +350,7 @@ export function RiskMatrix({
             <DialogHeader>
               <DialogTitle>{selectedRisk.name}</DialogTitle>
             </DialogHeader>
-            <div className={`space-y-${SPACING.xs}`}>
+            <div className={`space-y-${SPACING_SCALE.xs}`}>
               <div>
                 <span className="font-medium">Likelihood:</span>{' '}
                 <span className="capitalize">{selectedRisk.likelihood}</span>
@@ -360,7 +360,7 @@ export function RiskMatrix({
                 <span className="capitalize">{selectedRisk.impact}</span>
               </div>
               {selectedRisk.description && (
-                <div className={`mt-${SPACING.md}`}>
+                <div className={`mt-${SPACING_SCALE.md}`}>
                   <p className="text-sm text-muted-foreground">{selectedRisk.description}</p>
                 </div>
               )}

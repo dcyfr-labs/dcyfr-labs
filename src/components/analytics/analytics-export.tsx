@@ -23,7 +23,7 @@ import {
   Settings,
 } from "lucide-react";
 import { PostAnalytics, AnalyticsSummary } from "@/types/analytics";
-import { SPACING } from "@/lib/design-tokens";
+import { SPACING, SPACING_SCALE } from '@/lib/design-tokens';
 import { toast } from "sonner";
 
 interface AnalyticsExportProps {
@@ -313,7 +313,7 @@ export function AnalyticsExport({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className={`gap-${SPACING.sm}`}>
+        <Button variant="outline" size="sm" className={`gap-${SPACING_SCALE.sm}`}>
           <Download className="h-4 w-4" />
           Export
         </Button>
@@ -334,7 +334,7 @@ export function AnalyticsExport({
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
-        <DropdownMenuLabel className={`flex items-center gap-${SPACING.sm}`}>
+        <DropdownMenuLabel className={`flex items-center gap-${SPACING_SCALE.sm}`}>
           <Settings className="h-3 w-3" />
           Options
         </DropdownMenuLabel>

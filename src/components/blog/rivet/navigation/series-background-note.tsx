@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SITE_URL } from '@/lib/site-config';
-import { SPACING, BORDERS, TYPOGRAPHY } from '@/lib/design-tokens';
+import { SPACING, BORDERS, TYPOGRAPHY, SPACING_SCALE } from '@/lib/design-tokens';
 
 /**
  * SeriesBackgroundNote Component
@@ -79,8 +79,8 @@ export function SeriesBackgroundNote({
       className={cn(
         'series-background-note',
         'border-l-4 border-primary bg-muted/50 rounded-r-md',
-        `pl-${SPACING.md} pr-${SPACING.md} py-${SPACING.sm}`,
-        `my-${SPACING.lg}`,
+        `pl-${SPACING_SCALE.md} pr-${SPACING_SCALE.md} py-${SPACING_SCALE.sm}`,
+        `my-${SPACING_SCALE.lg}`,
         'not-prose',
         className
       )}

@@ -22,7 +22,7 @@ import {
   Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS } from "@/lib/design-tokens";
+import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS, SPACING_SCALE } from '@/lib/design-tokens';
 import type { ActivityFilterPreset } from "@/lib/activity";
 import {
   deletePreset,
@@ -106,7 +106,7 @@ export function PresetManager({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className={`gap-${SPACING.sm}`}>
+        <Button variant="outline" size="sm" className={`gap-${SPACING_SCALE.sm}`}>
           <Settings className="h-4 w-4" />
           Manage Presets
         </Button>
@@ -139,7 +139,7 @@ export function PresetManager({
               {defaultPresets.map((preset) => (
                 <div
                   key={preset.id}
-                  className={`flex items-center gap-${SPACING.md} p-${SPACING.md} rounded-lg border bg-muted/30`}
+                  className={`flex items-center gap-${SPACING_SCALE.md} p-${SPACING_SCALE.md} rounded-lg border bg-muted/30`}
                 >
                   <GripVertical className="h-4 w-4 text-muted-foreground opacity-50" />
                   <div className="flex-1">
@@ -167,12 +167,12 @@ export function PresetManager({
                 {userPresets.map((preset) => (
                   <div
                     key={preset.id}
-                    className={`flex items-center gap-${SPACING.md} p-${SPACING.md} rounded-lg border hover:bg-accent/50 transition-theme`}
+                    className={`flex items-center gap-${SPACING_SCALE.md} p-${SPACING_SCALE.md} rounded-lg border hover:bg-accent/50 transition-theme`}
                   >
                     <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
                     <div className="flex-1">
                       {editingId === preset.id ? (
-                        <div className={`flex items-center gap-${SPACING.sm}`}>
+                        <div className={`flex items-center gap-${SPACING_SCALE.sm}`}>
                           <Input
                             value={editingName}
                             onChange={(e) => setEditingName(e.target.value)}
@@ -235,12 +235,12 @@ export function PresetManager({
           </div>
 
           {/* Export/Import */}
-          <div className={`flex gap-${SPACING.sm} pt-${SPACING.md} border-t`}>
+          <div className={`flex gap-${SPACING_SCALE.sm} pt-${SPACING_SCALE.md} border-t`}>
             <Button
               variant="outline"
               size="sm"
               onClick={handleExport}
-              className={`gap-${SPACING.sm}`}
+              className={`gap-${SPACING_SCALE.sm}`}
             >
               <Download className="h-4 w-4" />
               Export All
@@ -249,7 +249,7 @@ export function PresetManager({
               variant="outline"
               size="sm"
               onClick={handleImport}
-              className={`gap-${SPACING.sm}`}
+              className={`gap-${SPACING_SCALE.sm}`}
             >
               <Upload className="h-4 w-4" />
               Import

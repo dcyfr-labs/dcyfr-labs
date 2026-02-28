@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getCaseStudies } from "@/data/company-cv";
-import { TYPOGRAPHY, SPACING, HOVER_EFFECTS } from "@/lib/design-tokens";
+import { TYPOGRAPHY, SPACING, HOVER_EFFECTS, SPACING_SCALE } from '@/lib/design-tokens';
 import { cn } from "@/lib/utils";
 import { ExternalLink, Github, FileText, TrendingUp } from "lucide-react";
 
@@ -53,7 +53,7 @@ export function CaseStudies() {
               </div>
 
               {/* Challenge & Solution */}
-              <div className={`grid md:grid-cols-2 gap-${SPACING.md}`}>
+              <div className={`grid md:grid-cols-2 gap-${SPACING_SCALE.md}`}>
                 <div>
                   <h4
                     className={cn(TYPOGRAPHY.label.small, "mb-2 text-primary")}
@@ -79,15 +79,15 @@ export function CaseStudies() {
               {/* Metrics (if available) */}
               {study.metrics && study.metrics.length > 0 && (
                 <div
-                  className={`grid grid-cols-2 md:grid-cols-4 gap-${SPACING.md}`}
+                  className={`grid grid-cols-2 md:grid-cols-4 gap-${SPACING_SCALE.md}`}
                 >
                   {study.metrics.map((metric, metricIdx) => (
                     <Card
                       key={metricIdx}
-                      className={`p-${SPACING.md} bg-linear-to-br from-primary/5 to-primary/10 border-primary/20`}
+                      className={`p-${SPACING_SCALE.md} bg-linear-to-br from-primary/5 to-primary/10 border-primary/20`}
                     >
                       <div
-                        className={`flex items-center gap-${SPACING.sm} mb-${SPACING["1.5"]}`}
+                        className={`flex items-center gap-${SPACING_SCALE.sm} mb-${SPACING["1.5"]}`}
                       >
                         <TrendingUp className="w-4 h-4 text-primary" />
                         <p className={TYPOGRAPHY.display.stat}>

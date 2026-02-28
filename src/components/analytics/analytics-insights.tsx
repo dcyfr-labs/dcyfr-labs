@@ -31,12 +31,10 @@ import { PostAnalytics } from "@/types/analytics";
 import Link from "next/link";
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
-import {
-  ANIMATION,
+import { ANIMATION,
   TYPOGRAPHY,
   SEMANTIC_COLORS,
-  SPACING,
-} from "@/lib/design-tokens";
+  SPACING, SPACING_SCALE } from '@/lib/design-tokens';
 
 interface AnalyticsInsightsProps {
   /** All posts for analysis */
@@ -237,7 +235,7 @@ export function AnalyticsInsights({
       {/* All-Time Records */}
       <Card className="md:col-span-1">
         <CardHeader className="pb-3">
-          <div className={`flex items-center gap-${SPACING.sm}`}>
+          <div className={`flex items-center gap-${SPACING_SCALE.sm}`}>
             {}
             <Trophy className="h-4 w-4 text-warning" />
             <div>
@@ -248,11 +246,11 @@ export function AnalyticsInsights({
             </div>
           </div>
         </CardHeader>
-        <CardContent className={`space-y-${SPACING.md}`}>
+        <CardContent className={`space-y-${SPACING_SCALE.md}`}>
           {/* Highest Single Day Views */}
-          <div className={`space-y-${SPACING.sm}`}>
+          <div className={`space-y-${SPACING_SCALE.sm}`}>
             <div className="flex items-center justify-between">
-              <div className={`flex items-center gap-${SPACING.sm}`}>
+              <div className={`flex items-center gap-${SPACING_SCALE.sm}`}>
                 {}
                 <Zap className="h-4 w-4 text-muted-foreground" />
                 <span className={TYPOGRAPHY.label.xs}>
@@ -274,9 +272,9 @@ export function AnalyticsInsights({
           </div>
 
           {/* Most Engaged Post */}
-          <div className={`space-y-${SPACING.sm} pt-${SPACING.sm} border-t`}>
+          <div className={`space-y-${SPACING_SCALE.sm} pt-${SPACING_SCALE.sm} border-t`}>
             <div className="flex items-center justify-between">
-              <div className={`flex items-center gap-${SPACING.sm}`}>
+              <div className={`flex items-center gap-${SPACING_SCALE.sm}`}>
                 {}
                 <Target className="h-4 w-4 text-muted-foreground" />
                 <span className={TYPOGRAPHY.label.xs}>Most Engaged Post</span>
@@ -296,9 +294,9 @@ export function AnalyticsInsights({
           </div>
 
           {/* Top 24h Growth */}
-          <div className={`space-y-${SPACING.sm} pt-${SPACING.sm} border-t`}>
+          <div className={`space-y-${SPACING_SCALE.sm} pt-${SPACING_SCALE.sm} border-t`}>
             <div className="flex items-center justify-between">
-              <div className={`flex items-center gap-${SPACING.sm}`}>
+              <div className={`flex items-center gap-${SPACING_SCALE.sm}`}>
                 {}
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
                 <span className={TYPOGRAPHY.label.xs}>Top 24h Growth</span>
@@ -322,7 +320,7 @@ export function AnalyticsInsights({
       {/* Tag Performance */}
       <Card className="md:col-span-1">
         <CardHeader className="pb-3">
-          <div className={`flex items-center gap-${SPACING.sm}`}>
+          <div className={`flex items-center gap-${SPACING_SCALE.sm}`}>
             <TagIcon className="h-4 w-4 text-muted-foreground" />
             <div>
               <CardTitle className="text-sm">Top Performing Tags</CardTitle>
@@ -333,11 +331,11 @@ export function AnalyticsInsights({
           </div>
         </CardHeader>
         <CardContent>
-          <div className={`space-y-${SPACING.md}`}>
+          <div className={`space-y-${SPACING_SCALE.md}`}>
             {insights.tagPerformances.slice(0, 5).map((tag, index) => (
               <div key={tag.tag} className="flex items-center justify-between">
                 <div
-                  className={`flex items-center gap-${SPACING.md} flex-1 min-w-0`}
+                  className={`flex items-center gap-${SPACING_SCALE.md} flex-1 min-w-0`}
                 >
                   <div
                     className={cn(
@@ -348,7 +346,7 @@ export function AnalyticsInsights({
                     {index + 1}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className={`flex items-center gap-${SPACING.sm}`}>
+                    <div className={`flex items-center gap-${SPACING_SCALE.sm}`}>
                       <Badge variant="outline" className="text-xs">
                         {tag.tag}
                       </Badge>
@@ -373,7 +371,7 @@ export function AnalyticsInsights({
       {/* View Distribution */}
       <Card className="md:col-span-1">
         <CardHeader className="pb-3">
-          <div className={`flex items-center gap-${SPACING.sm}`}>
+          <div className={`flex items-center gap-${SPACING_SCALE.sm}`}>
             <Award className="h-4 w-4 text-muted-foreground" />
             <div>
               <CardTitle className="text-sm">Content Distribution</CardTitle>
@@ -384,7 +382,7 @@ export function AnalyticsInsights({
           </div>
         </CardHeader>
         <CardContent>
-          <div className={`space-y-${SPACING.md}`}>
+          <div className={`space-y-${SPACING_SCALE.md}`}>
             {[
               {
                 label: "5,000+ views",

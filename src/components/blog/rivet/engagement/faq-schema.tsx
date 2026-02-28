@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { SPACING, BORDERS, TYPOGRAPHY, ANIMATION } from '@/lib/design-tokens';
+import { SPACING, BORDERS, TYPOGRAPHY, ANIMATION, SPACING_SCALE } from '@/lib/design-tokens';
 import {
   Accordion,
   AccordionContent,
@@ -157,9 +157,9 @@ export function FAQSchema({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
       />
 
-      <div className={cn('faq-schema-container', `my-${SPACING.lg}`, className)}>
+      <div className={cn('faq-schema-container', `my-${SPACING_SCALE.lg}`, className)}>
         {/* Header */}
-        <div className={cn('flex items-center justify-between', `mb-${SPACING.md}`)}>
+        <div className={cn('flex items-center justify-between', `mb-${SPACING_SCALE.md}`)}>
           <h2 className={cn(TYPOGRAPHY.h2.standard, 'm-0')}>{title}</h2>
 
           {/* Group Controls */}

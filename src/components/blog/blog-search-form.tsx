@@ -4,7 +4,7 @@ import type { FormEvent } from "react";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import { SPACING } from "@/lib/design-tokens";
+import { SPACING, SPACING_SCALE } from '@/lib/design-tokens';
 
 /**
  * Props for the BlogSearchForm component
@@ -128,7 +128,7 @@ export function BlogSearchForm({
   return (
     <form onSubmit={handleSubmit} role="search" className="mt-6">
       <div
-        className={`flex w-full items-center gap-${SPACING.sm}`}
+        className={`flex w-full items-center gap-${SPACING_SCALE.sm}`}
         aria-live="polite"
       >
         <Input

@@ -9,7 +9,7 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
+import { TYPOGRAPHY, SPACING, SPACING_SCALE } from '@/lib/design-tokens';
 import {
   Accordion,
   AccordionContent,
@@ -85,7 +85,7 @@ export function FAQ({ items, title, className, children }: FAQProps) {
         {title && (
           <h2
             id="faq-title"
-            className={cn(TYPOGRAPHY.accordion.heading, `mb-${SPACING.md}`)}
+            className={cn(TYPOGRAPHY.accordion.heading, `mb-${SPACING_SCALE.md}`)}
             style={{ fontFamily: "var(--font-sans)" }}
           >
             {title}
@@ -175,7 +175,7 @@ export function FAQ({ items, title, className, children }: FAQProps) {
         {title && (
           <h2
             id="faq-title"
-            className={cn(TYPOGRAPHY.accordion.heading, `mb-${SPACING.md}`)}
+            className={cn(TYPOGRAPHY.accordion.heading, `mb-${SPACING_SCALE.md}`)}
             style={{ fontFamily: "var(--font-sans)" }}
           >
             {title}

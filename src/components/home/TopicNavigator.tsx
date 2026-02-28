@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
-import { TYPOGRAPHY, ANIMATION, SEMANTIC_COLORS, SPACING } from "@/lib/design-tokens";
+import { TYPOGRAPHY, ANIMATION, SEMANTIC_COLORS, SPACING, SPACING_SCALE } from '@/lib/design-tokens';
 import { cn } from "@/lib/utils";
 
 // ============================================================================
@@ -101,7 +101,7 @@ export function TopicNavigator({
   return (
     <div
       className={cn(
-        `flex flex-wrap items-center justify-center gap-${SPACING.sm} md:gap-${SPACING.sm}`,
+        `flex flex-wrap items-center justify-center gap-${SPACING_SCALE.sm} md:gap-${SPACING_SCALE.sm}`,
         className
       )}
     >

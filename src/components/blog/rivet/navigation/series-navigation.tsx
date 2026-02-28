@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, List } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { SPACING, BORDERS, TYPOGRAPHY, ANIMATION } from "@/lib/design-tokens";
+import { SPACING, BORDERS, TYPOGRAPHY, ANIMATION, SPACING_SCALE } from '@/lib/design-tokens';
 import { Button } from "@/components/ui/button";
 
 export interface SeriesItem {
@@ -71,7 +71,7 @@ export function SeriesNavigation({
         "series-navigation",
         "border rounded-lg bg-card",
         BORDERS.card,
-        `my-${SPACING.lg}`,
+        `my-${SPACING_SCALE.lg}`,
         className
       )}
     >

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { SPACING, BORDERS, TYPOGRAPHY, ANIMATION } from "@/lib/design-tokens";
+import { SPACING, BORDERS, TYPOGRAPHY, ANIMATION, SPACING_SCALE } from '@/lib/design-tokens';
 
 export interface TabItem {
   id: string;
@@ -147,7 +147,7 @@ export function TabInterface({
   };
 
   return (
-    <div className={cn("tab-interface", `my-${SPACING.lg}`, className)}>
+    <div className={cn("tab-interface", `my-${SPACING_SCALE.lg}`, className)}>
       {/* Tab List */}
       <div
         role="tablist"
@@ -186,7 +186,7 @@ export function TabInterface({
           hidden={activeTab !== tab.id}
           tabIndex={0}
           className={cn(
-            `mt-${SPACING.md}`,
+            `mt-${SPACING_SCALE.md}`,
             "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg",
             ANIMATION.transition.base,
             activeTab === tab.id && "opacity-100"

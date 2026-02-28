@@ -47,7 +47,7 @@ import {
   BookmarkX,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { SPACING, TYPOGRAPHY, SEMANTIC_COLORS } from "@/lib/design-tokens";
+import { SPACING, TYPOGRAPHY, SEMANTIC_COLORS, SPACING_SCALE } from '@/lib/design-tokens';
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import type { Bookmark as BookmarkType, ExportFormat } from "@/lib/activity";
 
@@ -159,7 +159,7 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
     return (
       <div
         className={cn(
-          `flex items-center justify-center p-${SPACING.xl}`,
+          `flex items-center justify-center p-${SPACING_SCALE.xl}`,
           className
         )}
       >
@@ -181,13 +181,13 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
           </p>
         </div>
 
-        <div className={`flex items-center gap-${SPACING.sm}`}>
+        <div className={`flex items-center gap-${SPACING_SCALE.sm}`}>
           <Button
             variant="outline"
             size="sm"
             onClick={() => setShowImport(true)}
           >
-            <Upload className={`h-4 w-4 mr-${SPACING.sm}`} />
+            <Upload className={`h-4 w-4 mr-${SPACING_SCALE.sm}`} />
             Import
           </Button>
 
@@ -196,19 +196,19 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
           >
             <SelectTrigger asChild>
               <Button variant="outline" size="sm">
-                <Download className={`h-4 w-4 mr-${SPACING.sm}`} />
+                <Download className={`h-4 w-4 mr-${SPACING_SCALE.sm}`} />
                 Export
               </Button>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="json">
-                <div className={`flex items-center gap-${SPACING.sm}`}>
+                <div className={`flex items-center gap-${SPACING_SCALE.sm}`}>
                   <FileJson className="h-4 w-4" />
                   JSON
                 </div>
               </SelectItem>
               <SelectItem value="csv">
-                <div className={`flex items-center gap-${SPACING.sm}`}>
+                <div className={`flex items-center gap-${SPACING_SCALE.sm}`}>
                   <FileText className="h-4 w-4" />
                   CSV
                 </div>
@@ -225,7 +225,7 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
             className={`flex flex-col items-center justify-center p-${SPACING["2xl"]} text-center`}
           >
             <BookmarkX
-              className={`h-12 w-12 text-muted-foreground mb-${SPACING.md}`}
+              className={`h-12 w-12 text-muted-foreground mb-${SPACING_SCALE.md}`}
             />
             <h3 className={TYPOGRAPHY.h3.standard}>No bookmarks yet</h3>
             <p className="text-sm text-muted-foreground max-w-md">
@@ -238,8 +238,8 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
         <>
           {/* Filters */}
           <Card>
-            <CardContent className={`p-${SPACING.md}`}>
-              <div className={`flex items-center gap-${SPACING.md}`}>
+            <CardContent className={`p-${SPACING_SCALE.md}`}>
+              <div className={`flex items-center gap-${SPACING_SCALE.md}`}>
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -258,7 +258,7 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
                     <SelectItem value="all">All tags</SelectItem>
                     {allTags.map((tag) => (
                       <SelectItem key={tag} value={tag}>
-                        <div className={`flex items-center gap-${SPACING.sm}`}>
+                        <div className={`flex items-center gap-${SPACING_SCALE.sm}`}>
                           <Tag className="h-3 w-3" />
                           {tag}
                         </div>
@@ -271,10 +271,10 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
           </Card>
 
           {/* Bookmarks list */}
-          <div className={`grid gap-${SPACING.md}`}>
+          <div className={`grid gap-${SPACING_SCALE.md}`}>
             {filteredBookmarks.length === 0 ? (
               <Card>
-                <CardContent className={`p-${SPACING.xl} text-center`}>
+                <CardContent className={`p-${SPACING_SCALE.xl} text-center`}>
                   <p className="text-sm text-muted-foreground">
                     No bookmarks match your search criteria.
                   </p>
@@ -315,15 +315,15 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
                       notes: e.target.value,
                     })
                   }
-                  className={`mt-${SPACING.sm}`}
+                  className={`mt-${SPACING_SCALE.sm}`}
                 />
               </div>
 
               <div>
                 <Label>Tags</Label>
-                <div className={`mt-${SPACING.sm} space-y-${SPACING.sm}`}>
+                <div className={`mt-${SPACING_SCALE.sm} space-y-${SPACING_SCALE.sm}`}>
                   {editingBookmark.tags && editingBookmark.tags.length > 0 ? (
-                    <div className={`flex flex-wrap gap-${SPACING.xs}`}>
+                    <div className={`flex flex-wrap gap-${SPACING_SCALE.xs}`}>
                       {editingBookmark.tags.map((tag) => (
                         <Badge
                           key={tag}
@@ -333,7 +333,7 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
                           {tag}
                           <button
                             onClick={() => handleRemoveTag(tag)}
-                            className={`ml-${SPACING.xs} hover:text-destructive`}
+                            className={`ml-${SPACING_SCALE.xs} hover:text-destructive`}
                           >
                             <X className="h-3 w-3" />
                           </button>
@@ -345,14 +345,14 @@ export function BookmarkManager({ className }: BookmarkManagerProps) {
                   )}
 
                   <Button variant="outline" size="sm" onClick={handleAddTag}>
-                    <Plus className={`h-3 w-3 mr-${SPACING.xs}`} />
+                    <Plus className={`h-3 w-3 mr-${SPACING_SCALE.xs}`} />
                     Add tag
                   </Button>
                 </div>
               </div>
             </div>
 
-            <div className={`flex justify-end gap-${SPACING.sm}`}>
+            <div className={`flex justify-end gap-${SPACING_SCALE.sm}`}>
               <Button
                 variant="outline"
                 onClick={() => setEditingBookmark(null)}

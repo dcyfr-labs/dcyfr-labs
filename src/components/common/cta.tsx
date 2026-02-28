@@ -12,13 +12,11 @@ import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/analytics";
-import {
-  TYPOGRAPHY,
+import { TYPOGRAPHY,
   HOVER_EFFECTS,
   getContainerClasses,
   SEMANTIC_COLORS,
-  SPACING,
-} from "@/lib/design-tokens";
+  SPACING, SPACING_SCALE } from '@/lib/design-tokens';
 import { getSocialLink } from "@/data/socials";
 
 // ============================================================================
@@ -182,7 +180,7 @@ export function BlogPostCTA({
   if (variant === "minimal") {
     return (
       <div
-        className={cn(`border-t pt-${SPACING.xl} mt-${SPACING.xl}`, className)}
+        className={cn(`border-t pt-${SPACING_SCALE.xl} mt-${SPACING_SCALE.xl}`, className)}
       >
         <p className="text-sm text-muted-foreground">
           What did you think? Leave a comment below or
@@ -205,17 +203,17 @@ export function BlogPostCTA({
       className={cn(
         HOVER_EFFECTS.card,
         variant === "centered" ? "text-center" : "",
-        `bg-linear-to-b from-muted/50 to-muted/30 p-${SPACING.md} md:p-${SPACING.xl} mt-${SPACING.lg} mb-${SPACING.lg}`,
+        `bg-linear-to-b from-muted/50 to-muted/30 p-${SPACING_SCALE.md} md:p-${SPACING_SCALE.xl} mt-${SPACING_SCALE.lg} mb-${SPACING_SCALE.lg}`,
         className
       )}
     >
       <h2
-        className={cn(TYPOGRAPHY.h2.featured, `mb-${SPACING.sm}`)}
+        className={cn(TYPOGRAPHY.h2.featured, `mb-${SPACING_SCALE.sm}`)}
         style={PROSE_RESET_STYLES}
       >
         What did you think?
       </h2>
-      <p className={`text-muted-foreground mb-${SPACING.lg}`}>
+      <p className={`text-muted-foreground mb-${SPACING_SCALE.lg}`}>
         Feel free to{" "}
         <Link
           href="/contact"
@@ -271,17 +269,17 @@ export function ProjectsCTA({ className }: { className?: string }) {
     : undefined;
 
   return (
-    <section className={cn(`mt-${SPACING.lg} text-center`, className)}>
+    <section className={cn(`mt-${SPACING_SCALE.lg} text-center`, className)}>
       <Card
         className={cn(
           HOVER_EFFECTS.card,
-          `bg-linear-to-b from-muted/50 to-muted/30 p-${SPACING.md} md:p-${SPACING.xl}`
+          `bg-linear-to-b from-muted/50 to-muted/30 p-${SPACING_SCALE.md} md:p-${SPACING_SCALE.xl}`
         )}
       >
-        <h2 className={cn(TYPOGRAPHY.h2.featured, `mb-${SPACING.sm}`)}>
+        <h2 className={cn(TYPOGRAPHY.h2.featured, `mb-${SPACING_SCALE.sm}`)}>
           Interested in a collaboration?
         </h2>
-        <p className={`text-muted-foreground mb-${SPACING.lg}`}>
+        <p className={`text-muted-foreground mb-${SPACING_SCALE.lg}`}>
           Whether you have a project in mind or just want to connect, we&apos;d
           love to hear from you.
         </p>

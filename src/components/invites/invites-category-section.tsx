@@ -1,4 +1,4 @@
-import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
+import { TYPOGRAPHY, SPACING, SPACING_SCALE } from '@/lib/design-tokens';
 import { InviteCodeCard } from "@/components/sponsors";
 import type { InviteCode } from "@/types/invites";
 
@@ -32,7 +32,7 @@ export function InvitesCategorySection({
         </p>
       </div>
 
-      <div className={`grid ${gridCols} gap-${SPACING.md}`}>
+      <div className={`grid ${gridCols} gap-${SPACING_SCALE.md}`}>
         {codes.map((code) => (
           <InviteCodeCard
             key={code.id}

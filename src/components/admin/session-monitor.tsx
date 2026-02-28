@@ -9,7 +9,7 @@ import {
   Shield,
   Users,
 } from "lucide-react";
-import { SPACING, SEMANTIC_COLORS, TYPOGRAPHY } from "@/lib/design-tokens";
+import { SPACING, SEMANTIC_COLORS, TYPOGRAPHY, SPACING_SCALE } from '@/lib/design-tokens';
 
 /**
  * Session Monitor Admin Component
@@ -194,11 +194,11 @@ export function SessionMonitor({
             className={`mt-4 p-4 border rounded-lg ${SEMANTIC_COLORS.alert.info.container}`}
           >
             <h4
-              className={`${TYPOGRAPHY.label.standard} ${SEMANTIC_COLORS.alert.info.text} mb-${SPACING.sm}`}
+              className={`${TYPOGRAPHY.label.standard} ${SEMANTIC_COLORS.alert.info.text} mb-${SPACING_SCALE.sm}`}
             >
               Security Features Active
             </h4>
-            <div className={`grid grid-cols-2 gap-${SPACING.sm} text-sm`}>
+            <div className={`grid grid-cols-2 gap-${SPACING_SCALE.sm} text-sm`}>
               <div className="flex items-center gap-1">
                 <CheckCircle2 className={`h-3 w-3`} />
                 <span className={SEMANTIC_COLORS.alert.info.text}>

@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Alert } from "@/components/common";
 import { toast } from "@/lib/toast";
 import { Loader2 } from "lucide-react";
-import { SPACING } from "@/lib/design-tokens";
+import { SPACING, SPACING_SCALE } from '@/lib/design-tokens';
 import { useFormValidation, validators } from "@/hooks/use-form-validation";
 
 export function ContactForm() {
@@ -134,7 +134,7 @@ export function ContactForm() {
   return (
     <div>
       {/* Informational banner using unified Alert component */}
-      <Alert type="notice" className={`mb-${SPACING.xl}`}>
+      <Alert type="notice" className={`mb-${SPACING_SCALE.xl}`}>
         <strong>Multiple ways to connect:</strong> You can use the form below or
         reach out directly via email and social media.
       </Alert>
