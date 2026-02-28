@@ -1,3 +1,5 @@
+'use server';
+
 /**
  * Compatibility Adapter for @dcyfr/ai Framework
  *
@@ -9,6 +11,9 @@
  * 2. Adapt old interfaces to new framework
  * 3. Maintain existing API surface
  * 4. Gradually deprecate old code
+ *
+ * IMPORTANT: This module is SERVER-ONLY - it imports @dcyfr/ai which uses Node.js
+ * APIs including better-sqlite3. Must not be bundled for client.
  */
 
 import {

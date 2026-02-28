@@ -1,3 +1,5 @@
+'use server';
+
 /**
  * Unified AI Cost Aggregator
  *
@@ -7,6 +9,9 @@
  * - OpenCode.ai (unlimited GitHub Pro models - GPT-5-mini, Raptor, etc.)
  *
  * Provides unified view of spending, token usage, and cost efficiency
+ *
+ * IMPORTANT: This module is SERVER-ONLY - it imports from compat.ts which uses @dcyfr/ai.
+ * Must not be bundled for client.
  */
 
 import { telemetry } from './agents/compat';
