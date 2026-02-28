@@ -7,8 +7,58 @@
  */
 
 import 'server-only';
-import { redis, getRedisEnvironment } from '@/lib/redis-client';
+import { Redis } from '@upstash/redis';
 import { logger } from '@/lib/logger';
+
+// ============================================================================
+// REDIS CLIENT
+// ============================================================================
+
+/**
+ * Get Redis environment (production vs preview/dev)
+ */
+function getRedisEnvironment(): 'production' | 'preview' | 'test' {
+  if (process.env.NODE_ENV === 'test') {
+    return 'test';
+  }
+  if (process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === 'production') {
+    return 'production';
+  }
+  return 'preview';
+}
+
+/**
+ * Initialize Upstash Redis client
+ */
+function getRedisClient(): Redis | null {
+  const env = getRedisEnvironment();
+
+  if (env === 'test') {
+    return null; // No Redis in tests
+  }
+
+  const redisUrl =
+    env === 'production'
+      ? process.env.UPSTASH_REDIS_REST_URL
+      : process.env.UPSTASH_REDIS_REST_URL_PREVIEW;
+
+  const redisToken =
+    env === 'production'
+      ? process.env.UPSTASH_REDIS_REST_TOKEN
+      : process.env.UPSTASH_REDIS_REST_TOKEN_PREVIEW;
+
+  if (!redisUrl || !redisToken) {
+    logger.warn('Redis credentials not configured', { environment: env });
+    return null;
+  }
+
+  return new Redis({
+    url: redisUrl,
+    token: redisToken,
+  });
+}
+
+const redis = getRedisClient();
 
 // ============================================================================
 // TYPES
@@ -138,6 +188,10 @@ function deserializeCacheValue(cached: unknown): ContributionResponse | null {
  * Returns null if the key is missing or the data is invalid.
  */
 async function readContributionCache(key: string): Promise<ContributionResponse | null> {
+  if (!redis) {
+    return null;
+  }
+
   const cached = await redis.get(key);
   const data = deserializeCacheValue(cached);
   return data && data.contributions ? data : null;
@@ -216,7 +270,7 @@ export async function checkGitHubDataHealth(): Promise<{
 }> {
   try {
     // In test environment or when Redis isn't configured, report cache unavailable
-    if (getRedisEnvironment() === 'test' || !process.env.REDIS_URL) {
+    if (getRedisEnvironment() === 'test' || !redis) {
       return { cacheAvailable: false, dataFresh: false };
     }
 
