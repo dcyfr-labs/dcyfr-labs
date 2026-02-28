@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { timingSafeEqual } from '@/lib/security';
 
 /**
  * Security utility for Inngest webhooks - allow Inngest service only
@@ -119,9 +120,6 @@ export function withCronAuth(request: NextRequest): NextResponse | null {
   }
 
   // Use timing-safe comparison to prevent timing attacks
-  // Import here to avoid circular dependency
-  const { timingSafeEqual } = require('@/lib/security');
-  
   if (!timingSafeEqual(providedSecret, expectedSecret)) {
     // Log failed auth attempt for security monitoring
     console.warn('Failed cron auth attempt:', {

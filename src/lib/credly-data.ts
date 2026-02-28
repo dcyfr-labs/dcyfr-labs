@@ -13,6 +13,8 @@
  * - Fast server-side rendering
  */
 
+import fs from 'fs';
+import path from 'path';
 import { redis } from '@/lib/redis';
 import { dataLogger } from '@/lib/logger';
 import type { CredlyBadge, CredlySkill } from '@/types/credly';
@@ -58,9 +60,6 @@ const DEFAULT_USERNAME = 'dcyfr';
  */
 function loadSnapshotData(): { badges: CredlyBadge[]; total_count: number } | null {
   try {
-    // Dynamic import to handle cases where snapshot doesn't exist yet
-    const fs = require('fs');
-    const path = require('path');
     const snapshotPath = path.resolve(process.cwd(), 'src/data/credly-badges-snapshot.json');
 
     if (!fs.existsSync(snapshotPath)) {
@@ -86,7 +85,10 @@ function loadSnapshotData(): { badges: CredlyBadge[]; total_count: number } | nu
       total_count: snapshot.total_count || snapshot.count || snapshot.badges.length,
     };
   } catch (error) {
-    console.warn('[Credly Data] ⚠️  Failed to load snapshot:', error instanceof Error ? error.message : 'Unknown error');
+    console.warn(
+      '[Credly Data] ⚠️  Failed to load snapshot:',
+      error instanceof Error ? error.message : 'Unknown error'
+    );
     return null;
   }
 }
@@ -192,7 +194,9 @@ export async function getCredlyBadges(
 
   // Layer 3: Graceful empty state (no error message to user)
   console.warn('[Credly Data] ⚠️  All fallbacks exhausted - returning empty state');
-  console.warn('[Credly Data]    This should only happen on first build or if snapshot generation failed');
+  console.warn(
+    '[Credly Data]    This should only happen on first build or if snapshot generation failed'
+  );
 
   return {
     badges: [],

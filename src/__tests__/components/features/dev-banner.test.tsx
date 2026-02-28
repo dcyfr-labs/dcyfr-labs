@@ -64,7 +64,7 @@ describe("DevBanner", () => {
       typeof localStorage === "undefined" ||
       typeof localStorage.clear !== "function"
     ) {
-      // @ts-ignore -- Fallback for test environment without localStorage
+      // @ts-expect-error -- Fallback for test environment without localStorage
       (global as any).localStorage = sessionStorage;
     }
     localStorage.clear();

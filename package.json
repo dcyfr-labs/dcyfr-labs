@@ -4,7 +4,7 @@
   "private": true,
   "packageManager": "npm@11.6.2",
   "engines": {
-    "node": ">=24.13.0 <25.0.0",
+    "node": ">=24.0.0",
     "npm": ">=11.6.2"
   },
   "scripts": {
@@ -256,7 +256,7 @@
     "@axiomhq/logging": "^0.2.0",
     "@axiomhq/nextjs": "^0.2.0",
     "@axiomhq/react": "^0.2.0",
-    "@dcyfr/ai": "^1.0.4",
+    "@dcyfr/ai": "^2.1.0",
     "@giscus/react": "^3.1.0",
     "@google/genai": "^1.41.0",
     "@langchain/core": "^1.1.24",
@@ -337,8 +337,9 @@
     "@axe-core/cli": "^4.11.1",
     "@axe-core/playwright": "^4.11.0",
     "@eslint/eslintrc": "^3.3.3",
-    "@lhci/cli": "^0.15.0",
+    "@lhci/cli": "^0.15.1",
     "@next/bundle-analyzer": "^16.1.5",
+    "@next/eslint-plugin-next": "^16.1.6",
     "@octokit/rest": "^22.0.1",
     "@playwright/test": "^1.58.0",
     "@sentry/nextjs": "^10.36.0",
@@ -362,6 +363,7 @@
     "effect": "^3.19.16",
     "eslint": "^10.0.1",
     "eslint-config-next": "^16.1.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "execa": "^9.6.1",
     "happy-dom": "^20.6.0",
     "husky": "^9.1.7",

@@ -447,7 +447,7 @@ async function main() {
     for (const r of results) {
       console.error(`File: ${r.file}`);
       console.error(`  Type: ${r.message}` + (r.severity ? ` [severity: ${r.severity}]` : ""));
-      console.error(`  Examples: ${r.matches.map((m) => `${m}`).join(", ")}`);
+      console.error(`  Examples: ${r.matches.map((m) => String(m)).join(", ")}`);
       console.error("");
     }
     console.error("If this content is expected, move files to a secure location or add a rationale.");

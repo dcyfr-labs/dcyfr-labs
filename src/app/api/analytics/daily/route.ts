@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { timingSafeEqual } from "crypto";
 import * as Sentry from "@sentry/nextjs";
 import { blockExternalAccess } from "@/lib/api/api-security";
 import { getMultiplePostViewsInRange } from "@/lib/views.server";
@@ -71,7 +72,7 @@ function validateApiKey(request: Request): boolean {
     }
 
     // Use timing-safe comparison
-    return require("crypto").timingSafeEqual(tokenBuf, keyBuf);
+    return timingSafeEqual(tokenBuf, keyBuf);
   } catch (error) {
     console.error("[Analytics Daily API] Error during key validation:", error);
     return false;
