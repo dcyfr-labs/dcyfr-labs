@@ -18,7 +18,7 @@ import { SiteLogo } from '@/components/common';
 import { SearchButton } from '@/components/search';
 
 const pageDescription =
-  'Discover insights on cyber architecture, coding, and security at DCYFR Labs. Explore our latest articles, projects, and innovative solutions.';
+  'DCYFR Labs builds @dcyfr/ai — an open-source AI agent framework with plugin marketplace, delegation system, and 20+ specialist agents. Explore cyber architecture, security, and AI engineering.';
 
 export const metadata: Metadata = createPageMetadata({
   title: SITE_TITLE_PLAIN,
@@ -85,7 +85,7 @@ export default async function Home() {
           <SiteLogo size="xl" showIcon={false} />
 
           <p className={cn(TYPOGRAPHY.description, 'text-muted-foreground mt-3')}>
-            Cyber architecture, coding, and security.
+            AI agent framework. Cyber architecture & security.
           </p>
 
           <div className="mx-auto mt-10 max-w-md">

@@ -305,11 +305,6 @@ export const FOOTER_NAV_SECTIONS: NavSection[] = [
         description: 'Our story and team',
       },
       {
-        href: '/services',
-        label: 'Services',
-        description: 'What we offer',
-      },
-      {
         href: '/sponsors',
         label: 'Sponsors',
         description: 'Support our work',
