@@ -15,8 +15,10 @@ import { REPO_DEFAULTS } from '@/config/repos-config';
 /**
  * Convert a repo name to a URL-safe slug.
  * e.g. "dcyfr-ai-cli" → "dcyfr-ai-cli"
+ *
+ * Exported so callers can pre-filter repos before calling repoToProject.
  */
-function repoNameToSlug(name: string): string {
+export function repoNameToSlug(name: string): string {
   return name
     .toLowerCase()
     .replace(/[^a-z0-9-]/g, '-')

@@ -306,7 +306,7 @@ export async function getAutomatedProjects(): Promise<Project[]> {
     const { fetchRepoReadme } = await import('@/lib/github/fetch-readme');
     const { parseReadmeMetadata } = await import('@/lib/markdown/parse-readme-metadata');
     const { isShowcaseRepo } = await import('@/lib/markdown/parse-frontmatter');
-    const { repoToProject } = await import('@/lib/projects/repo-to-project');
+    const { repoToProject, repoNameToSlug } = await import('@/lib/projects/repo-to-project');
     const { REPO_EXCLUDE_LIST, REPO_INCLUDE_LIST } = await import('@/config/repos-config');
 
     const repos = await fetchOrgRepos();
@@ -342,6 +342,11 @@ export async function getAutomatedProjects(): Promise<Project[]> {
       // Only include repos that opt-in OR are in the explicit include list
       const optsIn = isShowcaseRepo(metadata.frontmatter);
       if (!optsIn && !REPO_INCLUDE_LIST.includes(repo.name)) continue;
+
+      // Skip repos whose base slug already exists in a static project.
+      // (resolveSlugCollision would mangle the slug and bypass mergeProjects dedup)
+      const baseSlug = repoNameToSlug(repo.name);
+      if (usedSlugs.has(baseSlug)) continue;
 
       const project = repoToProject(repo, metadata, usedSlugs);
       usedSlugs.add(project.slug);
