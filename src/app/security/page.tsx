@@ -22,7 +22,7 @@ export default async function SecurityPage() {
   // JSON-LD structured data
   const jsonLd = getContactPageSchema(pageDescription);
 
-  const lastUpdated = 'January 16, 2026';
+  const lastUpdated = 'March 1, 2026';
 
   return (
     <PageLayout>

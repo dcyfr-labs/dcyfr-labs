@@ -36,9 +36,9 @@ export const revalidate = 3600;
 
 // Contribution text for core contributors (maps to team member IDs)
 const contributorDescriptions: Record<string, string> = {
-  drew: 'Secure development, incident response, and building resilient systems',
+  drew: 'Creator of @dcyfr/ai — AI agent framework, security architecture, and open-source development',
   dcyfr:
-    'Context-aware coding and security assistance accelerating implementation, analysis, and docs',
+    '20+ specialist AI agents powering security analysis, code generation, delegation, and workspace automation',
 };
 
 export default async function SponsorsPage() {

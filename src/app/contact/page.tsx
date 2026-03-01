@@ -22,7 +22,7 @@ const ScrollReveal = dynamic(
 );
 
 const pageTitle = 'Contact';
-const pageDescription = 'Get in touch for inquiries, collaborations, or feedback.';
+const pageDescription = 'Get in touch with DCYFR Labs — reach out about @dcyfr/ai, security architecture, collaboration, or open-source contributions.';
 
 export const metadata: Metadata = createPageMetadata({
   title: pageTitle,

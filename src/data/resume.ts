@@ -252,7 +252,7 @@ export function getYearsOfExperience(certificationDates?: string[]): number {
  */
 export function getShortSummary(): string {
   const years = getYearsOfExperience();
-  return `Security architect with ${years}+ years leading security programs, incident response, and secure development practices for global organizations.`;
+  return `Security architect and AI framework author with ${years}+ years of experience. Creator of @dcyfr/ai — an open-source TypeScript AI agent framework published on npm.`;
 }
 
 /**
@@ -261,7 +261,7 @@ export function getShortSummary(): string {
  */
 export function getSummary(): string {
   const years = getYearsOfExperience();
-  return `I'm a cybersecurity professional with over ${years} years of experience leading security programs, incident response, and building secure development practices for global organizations. I specialize in cyber risk management, vulnerability management, and automating operational security. I'm passionate about mentoring the next generation of security professionals and sharing my knowledge through writing and community engagement.`;
+  return `Security architect and AI framework author with over ${years} years of experience. Creator of @dcyfr/ai — a portable open-source TypeScript AI agent framework with plugin marketplace, delegation system, and 20+ specialist agents published on npm. Leads global security programs, incident response, and secure development practices. Specializes in cyber risk management, vulnerability management, and autonomous AI agent architectures.`;
 }
 
 export default resume;
