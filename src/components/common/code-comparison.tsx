@@ -48,8 +48,8 @@ function extractText(node: React.ReactNode): string {
     return node.map((item) => extractText(item)).join('');
   }
 
-  if (React.isValidElement(node)) {
-    return extractText(node.props.children as React.ReactNode);
+  if (React.isValidElement<{ children?: React.ReactNode }>(node)) {
+    return extractText(node.props.children);
   }
 
   return String(node);
