@@ -153,6 +153,12 @@ function getCertificationBadge(tier: 'bronze' | 'silver' | 'gold' | null) {
   return badges[tier];
 }
 
+function getTrustScoreColor(score: number): string {
+  if (score >= 90) return 'text-green-600';
+  if (score >= 70) return 'text-yellow-600';
+  return 'text-red-600';
+}
+
 function formatDownloads(count: number): string {
   if (count >= 1000) return `${(count / 1000).toFixed(1)}k`;
   return count.toString();
@@ -224,7 +230,7 @@ export default function PluginsMarketplacePage() {
               className="group p-4 rounded-lg border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all"
             >
               <div className="flex items-start gap-3">
-                <span className="text-2xl" role="img" aria-hidden="true">
+                <span className="text-2xl" aria-hidden="true">
                   {category.icon}
                 </span>
                 <div className="flex-1">
@@ -258,6 +264,7 @@ export default function PluginsMarketplacePage() {
         <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ${SPACING.content}`}>
           {FEATURED_PLUGINS.map((plugin) => {
             const badge = getCertificationBadge(plugin.certified);
+            const trustColor = getTrustScoreColor(plugin.trustScore);
             return (
               <Link
                 key={plugin.id}
@@ -288,15 +295,7 @@ export default function PluginsMarketplacePage() {
                 <div className="flex items-center justify-between pt-3 border-t border-border">
                   {/* Trust Score */}
                   <div className="flex items-center gap-2">
-                    <span
-                      className={`text-sm font-semibold ${
-                        plugin.trustScore >= 90
-                          ? 'text-green-600'
-                          : plugin.trustScore >= 70
-                            ? 'text-yellow-600'
-                            : 'text-red-600'
-                      }`}
-                    >
+                    <span className={`text-sm font-semibold ${trustColor}`}>
                       {plugin.trustScore}
                     </span>
                     <span className={TYPOGRAPHY.metadata}>trust score</span>
@@ -325,7 +324,7 @@ export default function PluginsMarketplacePage() {
       <section
         className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} ${SPACING.section}`}
       >
-        <div className="p-8 rounded-xl bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 text-center">
+        <div className="p-8 rounded-xl bg-linear-to-r from-primary/10 to-primary/5 border border-primary/20 text-center">
           <h2 className={`${TYPOGRAPHY.h2.standard} mb-4`}>Build Your Own Plugin</h2>
           <p className={`${TYPOGRAPHY.body} text-muted-foreground mb-6 max-w-2xl mx-auto`}>
             Create custom AI plugins for your team or the community. Our plugin framework supports

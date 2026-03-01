@@ -13,7 +13,7 @@
  * ```
  */
 
-import { Home, FileText, FolderGit2, Mail, Rss, Heart, User } from 'lucide-react';
+import { Home, FileText, FolderGit2, Mail, Heart, User, Zap } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 export interface NavItem {
@@ -64,6 +64,12 @@ export const PRIMARY_NAV: NavItem[] = [
     label: 'Work',
     icon: FolderGit2,
     shortcut: 'g w',
+  },
+  {
+    href: '/ai',
+    label: 'AI',
+    icon: Zap,
+    shortcut: 'g i',
   },
   {
     href: '/about',
@@ -152,6 +158,14 @@ export const FOOTER_NAV: NavItem[] = [
   {
     href: '/about',
     label: 'About',
+  },
+  {
+    href: '/ai',
+    label: 'AI Framework',
+  },
+  {
+    href: '/open-source',
+    label: 'Open Source',
   },
   {
     href: '/contact',

@@ -33,125 +33,136 @@ export type DcyfrProfile = {
 };
 
 export const dcyfr: DcyfrProfile = {
-  name: "DCYFR",
-  title: "AI Lab Assistant",
-  subtitle: "Context-Aware Coding & Security AI",
+  name: 'DCYFR',
+  title: 'AI Lab Assistant',
+  subtitle: 'AI Agent Framework & Development Automation',
   summary:
-    "DCYFR is an AI-powered lab assistant designed to augment our expertise in building secure, scalable web applications.",
+    'DCYFR is an AI-powered agent swarm built on the @dcyfr/ai framework (published on npm). Features 20+ specialized agents, plugin marketplace with trust scoring, delegation framework v2, and autonomous task routing with reputation-based selection.',
 
   philosophy: [
-    "Augmentation over replacement — AI enhances human expertise rather than replacing it",
-    "Context is king — Deep understanding of codebase, patterns, and constraints enables better solutions",
-    "Quality over speed — Correct, maintainable code matters more than quick shortcuts",
+    'Augmentation over replacement — AI agent swarm enhances human expertise rather than replacing it',
+    'Context is king — Deep understanding of codebase, patterns, and constraints enables better solutions',
+    'Quality over speed — Correct, maintainable code matters more than quick shortcuts',
+    'Reputation-driven delegation — Tasks route to agents with proven track records in specific domains',
+    'Security-first architecture — TLP classification, audit trails, sandboxed execution, and 8+ security mitigations',
     "Teach, don't just do — Explain reasoning and trade-offs to build shared understanding",
-    "Continuous learning — Adapt to new patterns, frameworks, and team conventions",
+    'Continuous learning — Adapt to new patterns, frameworks, and team conventions through Ralph Loop v2',
   ],
 
   capabilities: [
     {
-      name: "Code Development",
+      name: 'AI Agent Framework (@dcyfr/ai)',
       description:
-        "Full-stack development with expertise in Next.js, React, TypeScript, and modern web patterns",
+        'Portable TypeScript framework published on npm with plugin architecture, multi-provider LLM support, delegation v2, and quality gates',
       examples: [
-        "Implement features following established patterns and design systems",
-        "Refactor code for performance, maintainability, and accessibility",
-        "Write comprehensive test suites (unit, integration, E2E)",
-        "Debug complex issues across frontend, backend, and infrastructure",
+        'Plugin marketplace with trust scoring, audit trails, TLP classification, and sandbox isolation (Docker, gVisor, WebAssembly)',
+        'Delegation framework v2: reputation engine, SLA contracts, HMAC auth, and 8 security scenario mitigations',
+        'Multi-provider support: OpenAI, Anthropic, Ollama, GitHub Copilot — swap without changing code',
+        'Companion packages: @dcyfr/ai-cli, @dcyfr/ai-rag, @dcyfr/ai-code-gen — all on npm',
       ],
     },
     {
-      name: "Security Analysis",
+      name: 'Code Development',
       description:
-        "Security-first development with deep understanding of common vulnerabilities and defense strategies",
+        'Full-stack development with 20+ specialized agents (fullstack-developer, typescript-pro, security-engineer, test-engineer, etc.)',
       examples: [
-        "Identify security vulnerabilities in code and dependencies",
-        "Implement security controls (CSP, CORS, authentication, encryption)",
-        "Review code for OWASP Top 10 and common attack vectors",
-        "Design secure architectures with defense-in-depth principles",
+        'Implement features following established patterns and design systems (100% design token compliance)',
+        'Refactor code for performance, maintainability, and accessibility with agent routing',
+        'Write comprehensive test suites (unit, integration, E2E) — 1000+ tests in @dcyfr/ai',
+        'Debug complex issues across frontend, backend, and infrastructure via specialized agents',
       ],
     },
     {
-      name: "Documentation & Knowledge Management",
+      name: 'Security Analysis & Automation',
       description:
-        "Create clear, actionable documentation that serves both humans and AI systems",
+        'Security-first agent swarm with pilot plugin security scanning, incident response SLAs, and automated vulnerability detection',
       examples: [
-        "Write comprehensive technical documentation and API references",
-        "Create decision trees and quick reference guides",
-        "Document architecture decisions and trade-offs",
-        "Build knowledge bases that improve over time",
+        'Automated security scanning: secrets detection (Gitleaks), SBOM generation, dependency audits',
+        'Plugin marketplace security: trust scoring, audit tracking, incident timeline, emergency disablement',
+        'Sandboxed plugin execution: Docker, gVisor, WebAssembly isolation with resource limits',
+        'TLP classification enforcement: RED/AMBER/GREEN access control and security middleware chain',
       ],
     },
     {
-      name: "Code Review & Quality Assurance",
-      description:
-        "Enforce code quality, design patterns, and best practices across the codebase",
+      name: 'Documentation & Knowledge Management',
+      description: 'Create clear, actionable documentation that serves both humans and AI systems',
       examples: [
-        "Review code for design token compliance and accessibility",
-        "Validate TypeScript types and lint configurations",
-        "Check test coverage and identify missing test cases",
-        "Ensure consistent patterns and barrel export usage",
+        'Write comprehensive technical documentation and API references',
+        'Create decision trees and quick reference guides',
+        'Document architecture decisions and trade-offs',
+        'Build knowledge bases that improve over time',
       ],
     },
     {
-      name: "Architecture & Planning",
-      description:
-        "Guide technical decisions with deep understanding of trade-offs and constraints",
+      name: 'Code Review & Quality Assurance',
+      description: 'Enforce code quality, design patterns, and best practices across the codebase',
       examples: [
-        "Recommend appropriate patterns for new features",
-        "Plan refactoring strategies for complex codebases",
-        "Evaluate technology choices and dependencies",
-        "Design scalable, maintainable system architectures",
+        'Review code for design token compliance and accessibility',
+        'Validate TypeScript types and lint configurations',
+        'Check test coverage and identify missing test cases',
+        'Ensure consistent patterns and barrel export usage',
+      ],
+    },
+    {
+      name: 'Architecture & Planning',
+      description:
+        'Guide technical decisions with deep understanding of trade-offs and constraints',
+      examples: [
+        'Recommend appropriate patterns for new features',
+        'Plan refactoring strategies for complex codebases',
+        'Evaluate technology choices and dependencies',
+        'Design scalable, maintainable system architectures',
       ],
     },
   ],
 
   integration: [
     {
-      aspect: "Development Workflow",
+      aspect: 'Agent Swarm Coordination',
       description:
-        "DCYFR integrates directly into the development process, working alongside Drew to implement features, fix bugs, and maintain code quality. Every change follows established patterns, uses design tokens, and includes appropriate tests.",
+        '20+ specialized agents (framework, engineering, quality, operations) coordinate via delegation framework v2. Tasks route to agents with best reputation scores in specific capabilities. Automatic agent selection eliminates manual task routing.',
     },
     {
-      aspect: "Security Posture",
+      aspect: 'Security Posture',
       description:
-        "DCYFR brings security expertise to every line of code, identifying potential vulnerabilities before they reach production. This complements our security architecture work by catching issues at the implementation level.",
+        'Security middleware chain validates every delegation contract: identity (HMAC-SHA256), TLP clearance, threat vectors, content policy (prompt injection), permissions, chain depth, rate limits, and reputation gates. 8 adversarial scenarios mitigated (Agents of Chaos research).',
     },
     {
-      aspect: "Knowledge Amplification",
+      aspect: 'Knowledge Amplification',
       description:
-        "DCYFR transforms our expertise into reusable patterns and documentation, making best practices accessible and consistent across projects. This creates a multiplier effect on our impact.",
+        'Context Engineering Knowledge System (CEKS) in nexus/ — Polaris mission files, 6 cognitive partnership patterns, memory layer, session templates, and investigation registry. TypeScript API with 35 tests. Obsidian vault integration for knowledge graph visualization.',
     },
     {
-      aspect: "Continuous Learning",
+      aspect: 'Continuous Learning (Ralph Loop v2)',
       description:
-        "DCYFR adapts to new patterns, frameworks, and conventions as the codebase evolves. This learning loop ensures solutions stay current with the team's latest standards and practices.",
+        'Self-improvement loop: delegation failures analyzed, prompts rewritten, patterns saved to memory layer. Future similar tasks apply learned patterns automatically. Full rewrite history in data/rewrite-history.jsonl. Reputation scoring adapts based on task outcomes.',
     },
   ],
 
   approach: [
     {
-      text: "Start with understanding — Gather context before making changes",
-      icon: "Focus",
+      text: 'Start with understanding — Gather context before making changes',
+      icon: 'Focus',
     },
     {
       text: "Follow existing patterns — Don't reinvent unless necessary",
-      icon: "GitBranch",
+      icon: 'GitBranch',
     },
     {
-      text: "Validate continuously — Run tests and checks after every change",
-      icon: "CheckCircle",
+      text: 'Validate continuously — Run tests and checks after every change',
+      icon: 'CheckCircle',
     },
     {
-      text: "Document trade-offs — Explain why decisions were made",
-      icon: "FileText",
+      text: 'Document trade-offs — Explain why decisions were made',
+      icon: 'FileText',
     },
     {
-      text: "Ask when uncertain — Clarify ambiguous requirements rather than guessing",
-      icon: "HelpCircle",
+      text: 'Ask when uncertain — Clarify ambiguous requirements rather than guessing',
+      icon: 'HelpCircle',
     },
     {
       text: "Prioritize maintainability — Code is read more than it's written",
-      icon: "Code",
+      icon: 'Code',
     },
   ],
 };

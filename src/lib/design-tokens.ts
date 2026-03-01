@@ -518,6 +518,11 @@ export const TYPOGRAPHY = {
      * Fluid: 30px (mobile) → 36px (desktop)
      */
     large: 'text-[clamp(1.875rem,4vw+1rem,2.25rem)] font-serif font-semibold leading-none',
+
+    /** Extra large logo text (main homepage header)
+     * Fluid: 36px (mobile) → 48px (desktop)
+     */
+    xlarge: 'text-[clamp(2.25rem,4.5vw+1rem,3rem)] font-serif font-semibold leading-none',
   },
 
   /**

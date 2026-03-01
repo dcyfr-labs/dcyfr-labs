@@ -209,19 +209,25 @@ These are the workflows I use every single day. Each one has specific patterns t
 
 **The Pattern:**
 
-<CodeComparison
-  before={`// BEFORE: Hardcoded spacing values
+**Before:**
+
+```tsx
+// BEFORE: Hardcoded spacing values
 <div className="mb-8 mt-12 space-y-6">
   <h1 className="text-4xl font-bold">Title</h1>
   <p className="text-lg leading-relaxed">Content</p>
-</div>`}
-  after={`// AFTER: Design token compliant
+</div>
+```
+
+**After:**
+
+```tsx
+// AFTER: Design token compliant
 <div className={SPACING.section}>
   <h1 className={TYPOGRAPHY.h1.standard}>Title</h1>
   <p className={TYPOGRAPHY.body}>Content</p>
-</div>`}
-  language="tsx"
-/>
+</div>
+```
 
 **Prompt to AI:**
 ```
@@ -459,18 +465,23 @@ These workflows are powerful—but there are five failure modes that will absolu
 
 AI assistants often suggest code with security issues:
 
-<CodeComparison
-  before={`// AI MIGHT SUGGEST (DON'T USE):
+**Before:**
+
+```typescript
+// AI MIGHT SUGGEST (DON'T USE):
 const userId = req.query.id; // No validation
-const user = await db.query(\`SELECT * FROM users WHERE id = \${userId}\`);
-// ^ SQL injection vulnerability`}
-  after={`// CORRECT APPROACH:
+const user = await db.query(`SELECT * FROM users WHERE id = ${userId}`);
+// ^ SQL injection vulnerability
+```
+
+**After:**
+
+```typescript
+// CORRECT APPROACH:
 const userId = z.string().uuid().parse(req.query.id); // Validate first
 const user = await db.user.findUnique({ where: { id: userId } });
-// ^ Parameterized, type-safe`}
-  language="typescript"
-  highlightLines={[2, 3]}
-/>
+// ^ Parameterized, type-safe
+```
 
 **Rule:** Always audit AI-generated code for:
 - Input validation (never trust user input)
@@ -486,17 +497,23 @@ const user = await db.user.findUnique({ where: { id: userId } });
 
 AI often suggests the simplest solution, not the most performant:
 
-<CodeComparison
-  before={`// AI MIGHT SUGGEST:
+**Before:**
+
+```typescript
+// AI MIGHT SUGGEST:
 const posts = await getAllPosts(); // Fetches 1000+ posts
-const featuredPosts = posts.filter(p => p.featured); // Memory filter`}
-  after={`// BETTER:
+const featuredPosts = posts.filter(p => p.featured); // Memory filter
+```
+
+**After:**
+
+```typescript
+// BETTER:
 const featuredPosts = await db.post.findMany({
   where: { featured: true },
   take: 10
-}); // Database-level filtering`}
-  language="typescript"
-/>
+}); // Database-level filtering
+```
 
 **Rule:** Question AI on:
 - Database query efficiency (N+1 problems)

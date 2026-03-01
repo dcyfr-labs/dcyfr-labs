@@ -1,8 +1,8 @@
-import React from "react";
-import { Logo } from "@/components/common";
-import { LOGO_CONFIG } from "@/lib/logo-config";
-import { cn } from "@/lib/utils";
-import { TYPOGRAPHY } from "@/lib/design-tokens";
+import React from 'react';
+import { Logo } from '@/components/common';
+import { LOGO_CONFIG } from '@/lib/logo-config';
+import { cn } from '@/lib/utils';
+import { TYPOGRAPHY } from '@/lib/design-tokens';
 
 /**
  * SiteLogo Component - DCYFR Labs Brand Logo
@@ -14,14 +14,15 @@ import { TYPOGRAPHY } from "@/lib/design-tokens";
  * <SiteLogo />                    // md (header)
  * <SiteLogo size="sm" />          // sm (footer)
  * <SiteLogo size="lg" />          // lg (hero)
+ * <SiteLogo size="xl" />          // xl (hero)
  * <SiteLogo collapseOnMobile />   // icon-only on mobile
  * ```
  */
 
-type SiteLogoSize = "sm" | "md" | "lg";
+type SiteLogoSize = 'sm' | 'md' | 'lg' | 'xl';
 
 interface SiteLogoProps {
-  /** Size variant: sm (footer), md (header), lg (hero) */
+  /** Size variant: sm (footer), md (header), lg (hero), xl (hero) */
   size?: SiteLogoSize;
   /** Additional CSS classes */
   className?: string;
@@ -35,29 +36,31 @@ interface SiteLogoProps {
   collapseOnMobile?: boolean;
 }
 
-const sizeConfig: Record<
-  SiteLogoSize,
-  { text: string; icon: number; gap: string }
-> = {
+const sizeConfig: Record<SiteLogoSize, { text: string; icon: number; gap: string }> = {
   sm: {
     text: TYPOGRAPHY.logo.small,
     icon: LOGO_CONFIG.sizes.small,
-    gap: "gap-2",
+    gap: 'gap-2',
   },
   md: {
     text: TYPOGRAPHY.logo.medium,
     icon: LOGO_CONFIG.sizes.medium,
-    gap: "gap-2.5",
+    gap: 'gap-2.5',
   },
   lg: {
     text: TYPOGRAPHY.logo.large,
     icon: LOGO_CONFIG.sizes.large,
-    gap: "gap-3",
+    gap: 'gap-3',
+  },
+  xl: {
+    text: TYPOGRAPHY.logo.xlarge,
+    icon: LOGO_CONFIG.sizes.xlarge,
+    gap: 'gap-3.5',
   },
 };
 
 export const SiteLogo: React.FC<SiteLogoProps> = ({
-  size = "md",
+  size = 'md',
   className,
   iconClassName,
   showText = true,
@@ -67,26 +70,16 @@ export const SiteLogo: React.FC<SiteLogoProps> = ({
   const config = sizeConfig[size];
 
   return (
-    <span
-      className={cn(
-        "inline-flex items-center text-foreground",
-        config.gap,
-        className
-      )}
-    >
+    <span className={cn('inline-flex items-center text-foreground', config.gap, className)}>
       {showText && (
-        <span
-          className={cn(config.text, collapseOnMobile && "hidden sm:inline")}
-        >
-          DCYFR Labs
-        </span>
+        <span className={cn(config.text, collapseOnMobile && 'hidden sm:inline')}>DCYFR Labs</span>
       )}
       {showIcon && (
         <Logo
           width={config.icon}
           height={config.icon}
           aria-hidden="true"
-          className={cn("text-foreground", iconClassName)}
+          className={cn('text-foreground', iconClassName)}
         />
       )}
     </span>

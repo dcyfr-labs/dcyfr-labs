@@ -102,6 +102,55 @@ export type Project = {
 
 const projectDrafts: Project[] = [
   {
+    id: 'project-dcyfr-ai-f3a7b912',
+    slug: 'dcyfr-ai',
+    title: '@dcyfr/ai — AI Agent Framework',
+    description:
+      'Portable TypeScript AI agent framework with plugin architecture, multi-provider LLM support (OpenAI, Anthropic, Ollama, GitHub Copilot), delegation framework, telemetry, and quality gates. Published on npm.',
+    timeline: '2025 → Present',
+    status: 'active',
+    category: 'code',
+    tech: ['TypeScript', 'Node.js', 'npm', 'Vitest', 'Zod', 'Docker'],
+    tags: ['AI', 'Open Source', 'npm', 'Agents', 'TypeScript', 'Framework'],
+    links: [
+      { label: 'npm', href: 'https://www.npmjs.com/package/@dcyfr/ai', type: 'demo' },
+      { label: 'GitHub', href: 'https://github.com/dcyfr/dcyfr-ai', type: 'github' },
+      { label: 'Docs', href: 'https://deepwiki.com/dcyfr/dcyfr-ai', type: 'docs' },
+      { label: 'Framework', href: '/ai', type: 'article' },
+    ],
+    highlights: [
+      'Plugin architecture with trust scoring, audit trail, TLP classification, and sandboxed Docker execution.',
+      'Multi-provider LLM support: OpenAI, Anthropic, Ollama, GitHub Copilot — swap providers without changing application code.',
+      'Delegation framework v2 with reputation engine, SLA contracts, HMAC auth, and 8 adversarial security scenario mitigations.',
+      'Companion packages: @dcyfr/ai-cli, @dcyfr/ai-rag, @dcyfr/ai-code-gen — all published on npm.',
+      '1000+ tests, TypeScript strict mode, ~200KB gzipped.',
+    ],
+    featured: true,
+    body: '',
+    publishedAt: '2025-08-01',
+    codeContent: {
+      codeDemo: {
+        language: 'typescript',
+        code: `import { PluginManager } from '@dcyfr/ai';
+
+const manager = new PluginManager({ provider: 'openai' });
+await manager.loadPlugin('security-scanner');
+
+const result = await manager.run('security-scanner', {
+  target: './src',
+  depth: 'full',
+});
+
+console.log(result.findings);`,
+      },
+      references: [
+        { label: 'npm package', href: 'https://www.npmjs.com/package/@dcyfr/ai' },
+        { label: 'Framework overview', href: '/ai' },
+        { label: 'All packages', href: '/open-source' },
+      ],
+    },
+  },
+  {
     id: 'project-x64-8ab9c3d2',
     slug: 'x64',
     title: 'X64: Indie Cyber Publication',

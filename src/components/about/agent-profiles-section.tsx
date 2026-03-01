@@ -1,4 +1,4 @@
-import { TYPOGRAPHY, SPACING, PAGE_LAYOUT } from '@/lib/design-tokens';
+import { TYPOGRAPHY, SPACING } from '@/lib/design-tokens';
 import { AGENT_PROFILES, AGENT_CATEGORY_LABELS, type AgentCategory } from '@/lib/agent-profiles';
 import { AgentProfileCard } from './agent-profile-card';
 
@@ -12,9 +12,13 @@ const CATEGORIES: AgentCategory[] = ['framework', 'engineering', 'quality', 'ope
  */
 export function AgentProfilesSection() {
   return (
-    <section aria-labelledby="agent-profiles-heading" data-testid="agent-profiles-section">
+    <section
+      aria-labelledby="agent-profiles-heading"
+      data-testid="agent-profiles-section"
+      className={SPACING.subsection}
+    >
       {/* Section header */}
-      <div className={PAGE_LAYOUT.proseSection.container}>
+      <div className={SPACING.content}>
         <h2 id="agent-profiles-heading" className={TYPOGRAPHY.h2.standard}>
           Our AI Agent Team
         </h2>

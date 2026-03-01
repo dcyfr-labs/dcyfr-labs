@@ -200,6 +200,30 @@
   ],
   "projects": [
     {
+      "slug": "dcyfr-ai",
+      "title": "@dcyfr/ai — AI Agent Framework",
+      "description": "Portable TypeScript AI agent framework with plugin architecture, multi-provider LLM support (OpenAI, Anthropic, Ollama, GitHub Copilot), delegation framework, telemetry, and quality gates. Published on npm.",
+      "category": "code",
+      "tech": [
+        "TypeScript",
+        "Node.js",
+        "npm",
+        "Vitest",
+        "Zod",
+        "Docker"
+      ],
+      "tags": [
+        "AI",
+        "Open Source",
+        "npm",
+        "Agents",
+        "TypeScript",
+        "Framework"
+      ],
+      "status": "active",
+      "url": "/work/dcyfr-ai"
+    },
+    {
       "slug": "x64",
       "title": "X64: Indie Cyber Publication",
       "description": "An independent online publication focused on cybersecurity topics, trends, and research, providing in-depth articles and analysis for professionals and enthusiasts.",
@@ -292,5 +316,5 @@
     "AI Workflows",
     "Portfolio"
   ],
-  "generatedAt": "2026-02-28T03:49:32.168Z"
+  "generatedAt": "2026-03-01T07:55:08.659Z"
 }

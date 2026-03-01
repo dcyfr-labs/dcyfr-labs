@@ -29,7 +29,9 @@ import { DcyfrActivityStats } from './dcyfr-activity-stats';
 export function AboutDcyfrProfile() {
   // Icon mapping for capabilities
   const capabilityIcons: Record<string, React.ReactNode> = {
+    'AI Agent Framework (@dcyfr/ai)': <Zap className="w-4 h-4 text-primary" />,
     'Code Development': <Code className="w-4 h-4 text-primary" />,
+    'Security Analysis & Automation': <Shield className="w-4 h-4 text-primary" />,
     'Security Analysis': <Shield className="w-4 h-4 text-primary" />,
     'Documentation & Knowledge Management': <FileText className="w-4 h-4 text-primary" />,
     'Code Review & Quality Assurance': <Zap className="w-4 h-4 text-primary" />,
