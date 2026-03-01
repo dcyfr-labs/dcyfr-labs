@@ -34,6 +34,7 @@ import {
   Shield,
   Settings,
   ChartBar,
+  Zap,
 } from 'lucide-react';
 import type { NavItem, NavSection, NavigationConfig } from './types';
 
@@ -94,6 +95,14 @@ export const HEADER_NAV: NavItem[] = [
     icon: Briefcase,
     shortcut: 'g w',
     description: 'Explore our portfolio and client work',
+  },
+  {
+    href: '/ai',
+    label: 'AI',
+    shortLabel: 'AI',
+    icon: Zap,
+    shortcut: 'g i',
+    description: 'AI agent framework and open source tools',
   },
 ];
 
@@ -208,6 +217,12 @@ export const MOBILE_NAV_SECTIONS: NavSection[] = [
         label: 'Work',
         icon: Briefcase,
         description: 'View our portfolio',
+      },
+      {
+        href: '/ai',
+        label: 'AI',
+        icon: Zap,
+        description: 'AI agent framework and tools',
       },
     ],
   },
@@ -331,6 +346,11 @@ export const FOOTER_NAV_SECTIONS: NavSection[] = [
         href: '/work',
         label: 'Portfolio',
         description: 'Our projects',
+      },
+      {
+        href: '/ai',
+        label: 'AI Framework',
+        description: '@dcyfr/ai agent framework and open source',
       },
       {
         href: '/activity',

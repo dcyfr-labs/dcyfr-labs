@@ -94,6 +94,83 @@ export interface PinnedRepository {
 const CACHE_KEY_BASE = 'github:contributions:dcyfr';
 const FALLBACK_DATA_KEY_BASE = 'github:fallback-data';
 
+// ============================================================================
+// DEV: DIRECT GITHUB API FETCH (self-seeding on cache miss in development)
+// ============================================================================
+
+/**
+ * Directly fetch GitHub contributions from the GraphQL API.
+ * Only used in development for self-seeding when cache is empty.
+ */
+async function fetchGitHubContributionsFromAPI(): Promise<ContributionResponse | null> {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) {
+    logger.warn('[GitHub Data] DEV: No GITHUB_TOKEN — skipping self-seed');
+    return null;
+  }
+
+  try {
+    const to = new Date();
+    const from = new Date();
+    from.setFullYear(from.getFullYear() - 1);
+
+    const query = `
+      query($username: String!, $from: DateTime!, $to: DateTime!) {
+        user(login: $username) {
+          contributionsCollection(from: $from, to: $to) {
+            contributionCalendar {
+              totalContributions
+              weeks {
+                contributionDays {
+                  date
+                  contributionCount
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    const response = await fetch('https://api.github.com/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        query,
+        variables: { username: 'dcyfr', from: from.toISOString(), to: to.toISOString() },
+      }),
+      // Bypass Next.js cache so this always fetches fresh
+      cache: 'no-store',
+    });
+
+    if (!response.ok) return null;
+
+    const data = await response.json();
+    const calendar = data.data?.user?.contributionsCollection?.contributionCalendar;
+    if (!calendar) return null;
+
+    const contributions: ContributionDay[] = [];
+    for (const week of calendar.weeks || []) {
+      for (const day of week.contributionDays || []) {
+        contributions.push({ date: day.date, count: day.contributionCount });
+      }
+    }
+
+    return {
+      contributions,
+      source: 'github-api',
+      totalContributions: calendar.totalContributions || 0,
+      lastUpdated: new Date().toISOString(),
+    };
+  } catch (error) {
+    logger.warn('[GitHub Data] DEV self-seed failed', { error: String(error) });
+    return null;
+  }
+}
+
 /**
  * Get cache keys (base keys only - prefix added by Redis Proxy)
  * Matches the key format used by populate-build-cache.mjs
@@ -240,6 +317,16 @@ export async function getGitHubContributions(
       return data;
     }
     logger.warn('Cache MISS - key not found or invalid');
+
+    // In development: self-seed from GitHub API so any dev command works without pre-population
+    if (process.env.NODE_ENV === 'development') {
+      const fresh = await fetchGitHubContributionsFromAPI();
+      if (fresh && redis) {
+        await redis.set(cacheKey, fresh, { ex: 24 * 60 * 60 });
+        logger.info('[GitHub Data] DEV: self-seeded cache from GitHub API');
+        return fresh;
+      }
+    }
 
     // Try fallback cache
     const fallbackData = await readContributionCache(getFallbackCacheKey());

@@ -81,7 +81,7 @@ const VALID_TOKENS = {
     label: ['standard', 'small', 'xs'],
     activity: ['title', 'subtitle', 'description', 'metadata', 'replyTitle', 'replyDescription'],
     accordion: ['heading', 'trigger'],
-    logo: ['small', 'medium', 'large'],
+    logo: ['small', 'medium', 'large', 'xlarge'],
     pixel: {
       square: ['xl', 'large', 'medium', 'small'],
       grid: ['xl', 'large', 'medium', 'small'],
