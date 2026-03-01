@@ -8,6 +8,7 @@ import type { PluginEntry } from '@/components/plugins/PluginListWithTrustScores
 import { TrustScoreBreakdown } from '@/components/plugins/TrustScoreBreakdown';
 import { AuditDateTracker } from '@/components/plugins/AuditDateTracker';
 import { IncidentTimeline } from '@/components/plugins/IncidentTimeline';
+import { getReviewStore } from '@/lib/plugins/review-store';
 
 const pageTitle = 'Plugin Security Dashboard';
 const pageDescription =
@@ -105,13 +106,30 @@ export default async function PluginSecurityDashboardPage() {
   // Get nonce from proxy for CSP (available for future structured data scripts)
   await headers();
 
-  const totalPlugins = mockPlugins.length;
-  const verifiedCount = mockPlugins.filter((p) => p.verified).length;
-  const openIncidents = mockPlugins
+  // Overlay live community scores from the review store onto mock plugin data.
+  // If a plugin has no reviews yet, the mock dimension value is kept as-is.
+  const reviewStore = await getReviewStore();
+  const plugins: PluginEntry[] = mockPlugins.map((plugin) => {
+    const liveScore = reviewStore.getCommunityScore(plugin.pluginId);
+    if (liveScore === 0) return plugin;
+    // Recompute overall trust score: Security 40% + Community 30% + Maintenance 20% + Transparency 10%
+    const dims = {
+      ...plugin.dimensions,
+      community: liveScore,
+    };
+    const overallScore = Math.round(
+      dims.security * 0.4 + dims.community * 0.3 + dims.maintenance * 0.2 + dims.transparency * 0.1
+    );
+    return { ...plugin, dimensions: dims, trustScore: overallScore };
+  });
+
+  const totalPlugins = plugins.length;
+  const verifiedCount = plugins.filter((p) => p.verified).length;
+  const openIncidents = plugins
     .flatMap((p) => p.incidents)
     .filter((i) => i.status === 'open').length;
   const avgTrustScore = Math.round(
-    mockPlugins.reduce((sum, p) => sum + p.trustScore, 0) / totalPlugins
+    plugins.reduce((sum, p) => sum + p.trustScore, 0) / totalPlugins
   );
 
   return (
@@ -155,7 +173,7 @@ export default async function PluginSecurityDashboardPage() {
             Trust scores are computed from four weighted dimensions: Security (40%), Community
             (30%), Maintenance (20%), and Transparency (10%).
           </p>
-          <PluginListWithTrustScores plugins={mockPlugins} />
+          <PluginListWithTrustScores plugins={plugins} />
         </section>
 
         {/* Trust score breakdown for top plugin */}
@@ -163,9 +181,9 @@ export default async function PluginSecurityDashboardPage() {
           <h2 className={TYPOGRAPHY.h2.standard}>Trust Score Breakdown</h2>
           <p className={TYPOGRAPHY.metadata}>Dimension breakdown for the highest-rated plugin.</p>
           <TrustScoreBreakdown
-            pluginName={mockPlugins[0].name}
-            dimensions={mockPlugins[0].dimensions}
-            overall={mockPlugins[0].trustScore}
+            pluginName={plugins[0].name}
+            dimensions={plugins[0].dimensions}
+            overall={plugins[0].trustScore}
           />
         </section>
 
@@ -177,7 +195,7 @@ export default async function PluginSecurityDashboardPage() {
             immediate attention.
           </p>
           <AuditDateTracker
-            plugins={mockPlugins.map((p) => ({
+            plugins={plugins.map((p) => ({
               pluginId: p.pluginId,
               name: p.name,
               auditDate: p.auditDate,
@@ -192,7 +210,7 @@ export default async function PluginSecurityDashboardPage() {
           <p className={TYPOGRAPHY.metadata}>
             Chronological record of all security incidents across the plugin ecosystem.
           </p>
-          <IncidentTimeline plugins={mockPlugins} />
+          <IncidentTimeline plugins={plugins} />
         </section>
       </article>
     </PageLayout>
