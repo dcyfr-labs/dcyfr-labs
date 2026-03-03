@@ -1,4 +1,4 @@
-# Next.js Developer Blog & Portfolio
+# DCYFR Labs - Production AI Platform
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/dcyfr/dcyfr-labs)
 
@@ -115,7 +115,7 @@ Starting with dcyfr-labs saves you **6-8 weeks of development time** compared to
 <details>
 <summary>📑 Table of Contents</summary>
 
-- [Next.js Developer Blog \& Portfolio](#nextjs-developer-blog--portfolio)
+- [DCYFR Labs - Production AI Platform](#dcyfr-labs---production-ai-platform)
   - [🌐 Live Demo](#-live-demo)
   - [⚡ Performance Metrics (Latest)](#-performance-metrics-latest)
   - [🎯 Why dcyfr-labs?](#-why-dcyfr-labs)
@@ -234,7 +234,7 @@ Visit **https://localhost:3000** (certificates auto-generated via mkcert).
 
 See [`certs/README.md`](./certs/README.md) for certificate details.
 
-[⬆️ Back to top](#nextjs-developer-blog--portfolio)
+[⬆️ Back to top](#dcyfr-labs---production-ai-platform)
 
 ---
 
@@ -319,7 +319,7 @@ Asynchronous task processing with automatic retries:
 
 See [`/docs/features/inngest-integration.md`](./docs/features/inngest-integration.md) for setup.
 
-[⬆️ Back to top](#nextjs-developer-blog--portfolio)
+[⬆️ Back to top](#dcyfr-labs---production-ai-platform)
 
 ---
 
@@ -400,7 +400,7 @@ curl -s -X POST https://www.dcyfr.ai/api/admin/indexnow/bulk \
 
 See [`/docs/runbooks/INDEXNOW_TROUBLESHOOTING.md`](./docs/runbooks/INDEXNOW_TROUBLESHOOTING.md) for diagnosis and fixes.
 
-[⬆️ Back to top](#nextjs-developer-blog--portfolio)
+[⬆️ Back to top](#dcyfr-labs---production-ai-platform)
 
 ---
 
@@ -414,7 +414,7 @@ See [`/docs/runbooks/INDEXNOW_TROUBLESHOOTING.md`](./docs/runbooks/INDEXNOW_TROU
 
 See [`/docs/security/`](./docs/security/) for implementation details.
 
-[⬆️ Back to top](#nextjs-developer-blog--portfolio)
+[⬆️ Back to top](#dcyfr-labs---production-ai-platform)
 
 ---
 
@@ -507,7 +507,7 @@ npm run test:e2e:ui       # Playwright UI
 - **Coverage:** 96.7% pass rate across 1944 tests
 - **Test Documentation:** See [`/docs/testing/`](./docs/testing/)
 
-[⬆️ Back to top](#nextjs-developer-blog--portfolio)
+[⬆️ Back to top](#dcyfr-labs---production-ai-platform)
 
 ---
 
@@ -650,7 +650,7 @@ npm run test:e2e:ui       # Playwright UI
 - **Trust cert:** First run may require trusting self-signed certificate
 - **Alternative:** Test in Chrome/Firefox for development, Safari only for final testing
 
-[⬆️ Back to top](#nextjs-developer-blog--portfolio)
+[⬆️ Back to top](#dcyfr-labs---production-ai-platform)
 
 ---
 
@@ -740,7 +740,7 @@ A: Common causes:
 3. **Timezones:** Date/time tests may fail due to timezone differences (use UTC in tests)
 4. **File paths:** Windows vs. Unix path separators (use `path.join()` instead of string concatenation)
 
-[⬆️ Back to top](#nextjs-developer-blog--portfolio)
+[⬆️ Back to top](#dcyfr-labs---production-ai-platform)
 
 ---
 
@@ -770,7 +770,7 @@ A: Common causes:
 - **API response time:** <100ms (avg)
 - **Cache hit rate:** ~85% (Redis)
 
-[⬆️ Back to top](#nextjs-developer-blog--portfolio)
+[⬆️ Back to top](#dcyfr-labs---production-ai-platform)
 
 ---
 
@@ -795,7 +795,7 @@ Found a security issue? Report it privately:
 
 See [docs/security/](./docs/security/) for implementation details.
 
-[⬆️ Back to top](#nextjs-developer-blog--portfolio)
+[⬆️ Back to top](#dcyfr-labs---production-ai-platform)
 
 ---
 
@@ -818,7 +818,7 @@ See [docs/security/](./docs/security/) for implementation details.
 
 See [docs/operations/todo.md](./docs/operations/todo.md) for current priorities.
 
-[⬆️ Back to top](#nextjs-developer-blog--portfolio)
+[⬆️ Back to top](#dcyfr-labs---production-ai-platform)
 
 ---
 
