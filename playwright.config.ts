@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test'
+import { defineConfig, devices } from '@playwright/test';
 
 /**
  * Read environment variables from file.
@@ -9,10 +9,14 @@ import { defineConfig, devices } from '@playwright/test'
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-const useProd = !!process.env.CI || process.env.PLAYWRIGHT_USE_PROD === '1' || process.env.PLAYWRIGHT_USE_PROD === 'true'
+const useProd =
+  !!process.env.CI ||
+  process.env.PLAYWRIGHT_USE_PROD === '1' ||
+  process.env.PLAYWRIGHT_USE_PROD === 'true';
 
 export default defineConfig({
   testDir: './e2e',
+  testMatch: ['**/*.spec.ts', '**/*a11y.spec.ts'], // Include accessibility tests
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -127,4 +131,4 @@ export default defineConfig({
         reuseExistingServer: !process.env.CI,
         timeout: useProd ? 10 * 60 * 1000 : 120 * 1000, // 10 minutes for build+start
       },
-})
+});
