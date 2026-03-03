@@ -148,7 +148,7 @@ export async function runAxeScan(
       type: 'tag',
       values: [...tags],
     },
-  });
+  } as RunOptions);
 
   return results;
 }
