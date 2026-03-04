@@ -27,9 +27,8 @@ jobs:
     name: Security Review (Claude Code)
     runs-on: ubuntu-latest
 
-    # Only run when the secret is present — allows the workflow to exist in the
-    # repo without breaking forks or PRs prior to access being granted.
-    if: ${{ secrets.CLAUDE_API_KEY != '' }}
+    # Note: The action itself validates the API key and exits gracefully if missing.
+    # (Job-level 'if' cannot access the secrets context — that check lives inside the action.)
 
     steps:
       - name: Checkout
