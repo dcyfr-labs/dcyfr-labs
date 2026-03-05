@@ -1,27 +1,34 @@
-import type { Metadata } from 'next';
-import { Suspense } from 'react';
-import { posts, featuredPosts, type Post } from '@/data/posts';
-import { POST_CATEGORY_LABEL } from '@/lib/post-categories';
-import { getArchiveData } from '@/lib/archive';
-import { getPostBadgeMetadata } from '@/lib/post-badges.server';
-import { groupPostsByCategory, sortCategoriesByCount } from '@/lib/blog-grouping';
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import { posts, featuredPosts, type Post } from "@/data/posts";
+import { POST_CATEGORY_LABEL } from "@/lib/post-categories";
+import { getArchiveData } from "@/lib/archive";
+import { getPostBadgeMetadata } from "@/lib/post-badges.server";
+import {
+  groupPostsByCategory,
+  sortCategoriesByCount,
+} from "@/lib/blog-grouping";
 import {
   createArchivePageMetadata,
   createBreadcrumbSchema,
   createCollectionSchema,
   getJsonLdScriptProps,
-} from '@/lib/metadata';
-import { AUTHOR_NAME, SITE_URL } from '@/lib/site-config';
-import { teamMembers } from '@/data/team';
-import { headers } from 'next/headers';
-import { getMultiplePostViews } from '@/lib/views.server';
+} from "@/lib/metadata";
+import { AUTHOR_NAME, SITE_URL } from "@/lib/site-config";
+import { teamMembers } from "@/data/team";
+import { headers } from "next/headers";
+import { getMultiplePostViews } from "@/lib/views.server";
 import {
   CONTAINER_WIDTHS,
   CONTAINER_PADDING,
   SPACING,
   MOBILE_SAFE_PADDING,
-} from '@/lib/design-tokens';
-import { ArchivePagination, ArchiveHero, PageLayout } from '@/components/layouts';
+} from "@/lib/design-tokens";
+import {
+  ArchivePagination,
+  ArchiveHero,
+  PageLayout,
+} from "@/components/layouts";
 import {
   BlogSearchAnalytics,
   BlogSidebarWrapper,
@@ -32,18 +39,18 @@ import {
   ModernBlogGrid,
   FeedDropdown,
   FeaturedPostsSection,
-} from '@/components/blog';
-import { PostList } from '@/components/blog/client';
-import { DynamicBlogContent } from '@/components/blog/server';
-import { ViewToggle, SmoothScrollToHash } from '@/components/common';
+} from "@/components/blog";
+import { PostList } from "@/components/blog/client";
+import { DynamicBlogContent } from "@/components/blog/server";
+import { ViewToggle, SmoothScrollToHash } from "@/components/common";
 
 // Force dynamic rendering - don't attempt to prerender during build
 // This page uses headers() for CSP nonce which requires runtime
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-const pageTitle = 'Blog';
+const pageTitle = "Blog";
 const pageDescription =
-  'Blog posts on software development, cybersecurity, emerging technologies, and more.';
+  "Blog posts on software development, cybersecurity, emerging technologies, and more.";
 const POSTS_PER_PAGE = 12;
 
 /**
@@ -84,7 +91,9 @@ async function ModernBlogGridWrapper({
             currentPage={sortedArchiveData.currentPage}
             totalPages={sortedArchiveData.totalPages}
             hasPrevPage={sortedArchiveData.currentPage > 1}
-            hasNextPage={sortedArchiveData.currentPage < sortedArchiveData.totalPages}
+            hasNextPage={
+              sortedArchiveData.currentPage < sortedArchiveData.totalPages
+            }
           />
         </div>
       )}
@@ -106,7 +115,15 @@ type BlogFilterParams = {
  * Apply all blog post filters in sequence. Returns the final filtered list.
  */
 function applyBlogFilters(allPosts: Post[], params: BlogFilterParams): Post[] {
-  const { selectedCategory, selectedTags, selectedAuthor, readingTime, dateRange, showArchived, showDrafts } = params;
+  const {
+    selectedCategory,
+    selectedTags,
+    selectedAuthor,
+    readingTime,
+    dateRange,
+    showArchived,
+    showDrafts,
+  } = params;
   const now = new Date();
 
   // Archived / draft guards
@@ -115,7 +132,9 @@ function applyBlogFilters(allPosts: Post[], params: BlogFilterParams): Post[] {
     : allPosts.filter((p) => !p.archived);
 
   const withCategory = selectedCategory
-    ? withArchived.filter((p) => p.category && p.category.toLowerCase() === selectedCategory)
+    ? withArchived.filter(
+        (p) => p.category && p.category.toLowerCase() === selectedCategory
+      )
     : withArchived;
 
   const withDrafts = showDrafts
@@ -124,13 +143,16 @@ function applyBlogFilters(allPosts: Post[], params: BlogFilterParams): Post[] {
 
   // Date range filter
   const withDate =
-    dateRange !== 'all'
+    dateRange !== "all"
       ? withDrafts.filter((p) => {
           const postDate = new Date(p.publishedAt);
-          const daysDiff = Math.floor((now.getTime() - postDate.getTime()) / (1000 * 60 * 60 * 24));
-          if (dateRange === '30d') return daysDiff <= 30;
-          if (dateRange === '90d') return daysDiff <= 90;
-          if (dateRange === 'year') return postDate.getFullYear() === now.getFullYear();
+          const daysDiff = Math.floor(
+            (now.getTime() - postDate.getTime()) / (1000 * 60 * 60 * 24)
+          );
+          if (dateRange === "30d") return daysDiff <= 30;
+          if (dateRange === "90d") return daysDiff <= 90;
+          if (dateRange === "year")
+            return postDate.getFullYear() === now.getFullYear();
           return true;
         })
       : withDrafts;
@@ -139,9 +161,9 @@ function applyBlogFilters(allPosts: Post[], params: BlogFilterParams): Post[] {
   const withReadingTime = readingTime
     ? withDate.filter((p) => {
         const minutes = p.readingTime.minutes;
-        if (readingTime === 'quick') return minutes <= 5;
-        if (readingTime === 'medium') return minutes > 5 && minutes <= 15;
-        if (readingTime === 'deep') return minutes > 15;
+        if (readingTime === "quick") return minutes <= 5;
+        if (readingTime === "medium") return minutes > 5 && minutes <= 15;
+        if (readingTime === "deep") return minutes > 15;
         return true;
       })
     : withDate;
@@ -150,14 +172,16 @@ function applyBlogFilters(allPosts: Post[], params: BlogFilterParams): Post[] {
   const withTags =
     selectedTags.length > 0
       ? withReadingTime.filter((p) =>
-          selectedTags.every((tag) => p.tags.some((t) => t.toLowerCase() === tag))
+          selectedTags.every((tag) =>
+            p.tags.some((t) => t.toLowerCase() === tag)
+          )
         )
       : withReadingTime;
 
   // Author filter
   const withAuthor = selectedAuthor
     ? withTags.filter((p) => {
-        const postAuthors = p.authors || ['dcyfr'];
+        const postAuthors = p.authors || ["dcyfr"];
         return postAuthors.includes(selectedAuthor);
       })
     : withTags;
@@ -169,23 +193,23 @@ export const metadata: Metadata = {
   ...createArchivePageMetadata({
     title: pageTitle,
     description: pageDescription,
-    path: '/blog',
+    path: "/blog",
   }),
   alternates: {
     types: {
-      'application/rss+xml': [
+      "application/rss+xml": [
         {
           url: `${SITE_URL}/blog/rss.xml`,
           title: `${SITE_URL} - Blog (RSS)`,
         },
       ],
-      'application/atom+xml': [
+      "application/atom+xml": [
         {
           url: `${SITE_URL}/blog/feed`,
           title: `${SITE_URL} - Blog (Atom)`,
         },
       ],
-      'application/feed+json': [
+      "application/feed+json": [
         {
           url: `${SITE_URL}/blog/feed.json`,
           title: `${SITE_URL} - Blog (JSON Feed)`,
@@ -195,8 +219,7 @@ export const metadata: Metadata = {
   },
 };
 
-// Enable Partial Prerendering for faster initial load with dynamic filters
-export const experimental_ppr = true;
+// Note: experimental_ppr removed — incompatible with force-dynamic (page calls headers() at top level)
 
 interface BlogPageProps {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -204,45 +227,48 @@ interface BlogPageProps {
 
 export default async function BlogPage({ searchParams }: BlogPageProps) {
   // Get nonce from proxy for CSP
-  const nonce = (await headers()).get('x-nonce') || '';
+  const nonce = (await headers()).get("x-nonce") || "";
 
   // Resolve search parameters
   const resolvedParams = (await searchParams) ?? {};
   const getParam = (key: string) => {
     const value = resolvedParams[key];
-    return Array.isArray(value) ? (value[0] ?? '') : (value ?? '');
+    return Array.isArray(value) ? value[0] ?? "" : value ?? "";
   };
 
   // A/B test parameter for modern cards
-  const modern = getParam('modern') === 'true';
+  const modern = getParam("modern") === "true";
 
   // Support category filter (primary classification - lowercase in URL)
-  const categoryParam = getParam('category');
-  const selectedCategory = categoryParam ? categoryParam.toLowerCase() : '';
+  const categoryParam = getParam("category");
+  const selectedCategory = categoryParam ? categoryParam.toLowerCase() : "";
 
   // Support multiple tags (comma-separated, case-insensitive)
-  const tagParam = getParam('tag');
+  const tagParam = getParam("tag");
   const selectedTags = tagParam
     ? tagParam
-        .split(',')
+        .split(",")
         .filter(Boolean)
         .map((t) => t.toLowerCase())
     : [];
 
   // Support author filter
-  const authorParam = getParam('author');
-  const selectedAuthor = authorParam || '';
+  const authorParam = getParam("author");
+  const selectedAuthor = authorParam || "";
 
-  const query = getParam('q');
-  const readingTime = getParam('readingTime');
-  const sortBy = getParam('sortBy') || 'newest';
-  const dateRange = getParam('dateRange') || 'all';
-  const showArchived = getParam('showArchived') === 'true';
-  const showDrafts = getParam('showDrafts') === 'true' && process.env.NODE_ENV === 'development';
-  const layoutParam = getParam('layout');
-  const layout = ['grid', 'list', 'magazine', 'compact', 'grouped'].includes(layoutParam)
-    ? (layoutParam as 'grid' | 'list' | 'magazine' | 'compact' | 'grouped')
-    : 'magazine';
+  const query = getParam("q");
+  const readingTime = getParam("readingTime");
+  const sortBy = getParam("sortBy") || "newest";
+  const dateRange = getParam("dateRange") || "all";
+  const showArchived = getParam("showArchived") === "true";
+  const showDrafts =
+    getParam("showDrafts") === "true" && process.env.NODE_ENV === "development";
+  const layoutParam = getParam("layout");
+  const layout = ["grid", "list", "magazine", "compact", "grouped"].includes(
+    layoutParam
+  )
+    ? (layoutParam as "grid" | "list" | "magazine" | "compact" | "grouped")
+    : "magazine";
 
   // Apply all filters
   const filteredPosts = applyBlogFilters(posts, {
@@ -259,14 +285,14 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const archiveData = getArchiveData<Post>(
     {
       items: filteredPosts,
-      searchFields: ['title', 'summary', 'body'],
-      tagField: 'tags',
-      dateField: 'publishedAt',
+      searchFields: ["title", "summary", "body"],
+      tagField: "tags",
+      dateField: "publishedAt",
       itemsPerPage: POSTS_PER_PAGE,
     },
     {
       search: query,
-      page: getParam('page'),
+      page: getParam("page"),
     }
   );
 
@@ -275,9 +301,11 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
 
   // For non-popularity sorts, we can still sort here
   let sortedItems = archiveData.allFilteredItems;
-  if (sortBy === 'oldest') {
+  if (sortBy === "oldest") {
     sortedItems = [...archiveData.allFilteredItems].sort((a, b) => {
-      return new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime();
+      return (
+        new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime()
+      );
     });
   }
   // "newest" is already the default sort from archiveData
@@ -308,7 +336,9 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const availableTagsWithCounts = sortedArchiveData.availableTags
     .map((tag) => ({
       tag,
-      count: sortedArchiveData.allFilteredItems.filter((post) => post.tags.includes(tag)).length,
+      count: sortedArchiveData.allFilteredItems.filter((post) =>
+        post.tags.includes(tag)
+      ).length,
     }))
     .sort((a, b) => b.count - a.count);
 
@@ -329,14 +359,14 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   // Check if filters are active for empty state
   const hasActiveFilters = Boolean(
     query ||
-    selectedCategory ||
-    selectedTags.length > 0 ||
-    readingTime ||
-    sortBy !== 'newest' ||
-    dateRange !== 'all' ||
-    selectedAuthor ||
-    showArchived ||
-    showDrafts
+      selectedCategory ||
+      selectedTags.length > 0 ||
+      readingTime ||
+      sortBy !== "newest" ||
+      dateRange !== "all" ||
+      selectedAuthor ||
+      showArchived ||
+      showDrafts
   );
   const shouldShowFeaturedSection = true;
 
@@ -353,7 +383,8 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     : sortedArchiveData.items;
 
   // JSON-LD structured data
-  const collectionTitle = selectedTags.length > 0 ? `Blog - ${selectedTags.join(', ')}` : pageTitle;
+  const collectionTitle =
+    selectedTags.length > 0 ? `Blog - ${selectedTags.join(", ")}` : pageTitle;
   const collectionDescription =
     selectedTags.length > 0
       ? `Articles tagged with "${selectedTags.join('", "')}"`
@@ -373,8 +404,8 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   });
 
   const breadcrumbJsonLd = createBreadcrumbSchema([
-    { name: 'Home', url: SITE_URL },
-    { name: 'Blog', url: `${SITE_URL}/blog` },
+    { name: "Home", url: SITE_URL },
+    { name: "Blog", url: `${SITE_URL}/blog` },
   ]);
 
   return (
@@ -398,7 +429,11 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         variant="full"
         title={pageTitle}
         description={pageDescription}
-        stats={`${sortedArchiveData.totalItems} ${sortedArchiveData.totalItems === 1 ? 'article' : 'articles'} across ${sortedArchiveData.availableTags.length} ${sortedArchiveData.availableTags.length === 1 ? 'topic' : 'topics'}`}
+        stats={`${sortedArchiveData.totalItems} ${
+          sortedArchiveData.totalItems === 1 ? "article" : "articles"
+        } across ${sortedArchiveData.availableTags.length} ${
+          sortedArchiveData.availableTags.length === 1 ? "topic" : "topics"
+        }`}
         actions={<FeedDropdown feedType="blog" />}
         align="center"
       />
@@ -434,7 +469,9 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
           />
 
           {/* Main content area with Suspense for PPR */}
-          <Suspense fallback={<BlogListSkeleton layout={layout} itemCount={3} />}>
+          <Suspense
+            fallback={<BlogListSkeleton layout={layout} itemCount={3} />}
+          >
             {modern ? (
               <ModernBlogGridWrapper
                 posts={mainListPosts}
@@ -460,7 +497,9 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
                 dateRange={dateRange}
                 layout={layout}
                 hasActiveFilters={hasActiveFilters}
-                groupedCategories={layout === 'grouped' ? sortedCategories : undefined}
+                groupedCategories={
+                  layout === "grouped" ? sortedCategories : undefined
+                }
               />
             )}
           </Suspense>

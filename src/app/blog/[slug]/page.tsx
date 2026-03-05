@@ -64,10 +64,7 @@ export const dynamic = "force-dynamic";
 
 // Note: revalidate is not applicable with dynamic = 'force-dynamic'
 // For caching, use fetch cache: 'force-cache' or similar strategies
-
-// Enable Partial Prerendering for faster initial page load
-// PPR streams dynamic view counts and related posts
-export const experimental_ppr = true;
+// Note: experimental_ppr is incompatible with force-dynamic (page calls headers() at top level)
 
 /** Collect all URL params for blog post pages (current slug + all redirect slugs). */
 function collectPostParams(allPosts: typeof posts): { slug: string }[] {
