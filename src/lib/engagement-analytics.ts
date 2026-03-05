@@ -27,6 +27,7 @@ const LIKE_KEY_PREFIX = 'likes:';
 const BOOKMARK_KEY_PREFIX = 'bookmarks:';
 const LIKE_HISTORY_PREFIX = 'likes:history:';
 const BOOKMARK_HISTORY_PREFIX = 'bookmarks:history:';
+const IP_DEDUP_PREFIX = 'engagement:dedup:';
 
 // ============================================================================
 // TYPES
@@ -72,6 +73,42 @@ const formatLikeHistoryKey = (contentType: ContentType, slug: string) =>
  */
 const formatBookmarkHistoryKey = (contentType: ContentType, slug: string) =>
   `${BOOKMARK_HISTORY_PREFIX}${contentType}:${slug}`;
+
+/**
+ * Format Redis key for 24h per-IP deduplication
+ */
+const formatIpDedupKey = (type: 'like' | 'bookmark', slug: string, ip: string) =>
+  `${IP_DEDUP_PREFIX}${type}:${slug}:${ip}`;
+
+/**
+ * Check whether an IP has already actioned this slug in the dedup window.
+ * Returns true when already actioned (duplicate), false when first action.
+ * Fail-open: Redis errors return false so user action can proceed.
+ */
+export async function checkIpDeduplication(
+  type: 'like' | 'bookmark',
+  slug: string,
+  ip: string,
+  ttlInSeconds = 86400
+): Promise<boolean> {
+  try {
+    if (!ip || ip === 'unknown') {
+      return false;
+    }
+
+    const key = formatIpDedupKey(type, slug, ip);
+    const existing = await redis.get(key);
+    if (existing) {
+      return true;
+    }
+
+    await redis.set(key, '1', { EX: ttlInSeconds });
+    return false;
+  } catch (error) {
+    console.error('[EngagementAnalytics] Failed IP deduplication check (fail-open):', error);
+    return false;
+  }
+}
 
 // ============================================================================
 // LIKE OPERATIONS

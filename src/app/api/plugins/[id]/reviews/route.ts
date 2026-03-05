@@ -3,7 +3,8 @@
  *
  * POST: Submit a new rating and review for a plugin.
  *       One review per user per plugin is enforced.
- *       Body: { userId, displayName, rating: 1-5, comment? }
+ *       Requires authenticated session.
+ *       Body: { displayName, rating: 1-5, comment? }
  *
  * GET:  Retrieve paginated reviews for a plugin.
  *       Query: ?page=1&pageSize=10&sortBy=createdAt&sortOrder=desc
@@ -18,14 +19,14 @@ import { z } from 'zod';
 import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
 import { getReviewStore } from '@/lib/plugins/review-store';
 import { handleApiError } from '@/lib/error-handler';
+import { withAuth, getRequestUser } from '@/lib/auth-middleware';
 
 export const runtime = 'nodejs';
 
-const POST_RATE_LIMIT = { limit: 10, windowInSeconds: 60 };
+const POST_RATE_LIMIT = { limit: 3, windowInSeconds: 60 };
 const GET_RATE_LIMIT = { limit: 60, windowInSeconds: 60 };
 
 const CreateReviewSchema = z.object({
-  userId: z.string().min(1).max(128),
   displayName: z
     .string()
     .min(1)
@@ -37,7 +38,10 @@ const CreateReviewSchema = z.object({
 
 // ── POST ────────────────────────────────────────────────────────────────────
 
-export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export const POST = withAuth(async function postPluginReview(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const { id: pluginId } = await params;
 
@@ -45,9 +49,14 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       return NextResponse.json({ error: 'Plugin ID is required.' }, { status: 400 });
     }
 
+    const user = getRequestUser(request as NextRequest & { auth?: unknown });
+    if (!user?.id) {
+      return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
+    }
+
     // Rate limiting
     const ip = getClientIp(request);
-    const rateLimitResult = await rateLimit(ip, POST_RATE_LIMIT);
+    const rateLimitResult = await rateLimit(`plugins:reviews:${ip}`, POST_RATE_LIMIT);
     if (!rateLimitResult.success) {
       return NextResponse.json(
         { error: 'Rate limit exceeded. Try again later.' },
@@ -74,7 +83,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const store = await getReviewStore();
     const review = store.createReview({
       pluginId,
-      userId: parsed.data.userId,
+      userId: user.id,
       displayName: parsed.data.displayName,
       rating: parsed.data.rating,
       comment: parsed.data.comment,
@@ -102,7 +111,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const errInfo = handleApiError(error, { route: 'POST /api/plugins/[id]/reviews' });
     return NextResponse.json({ error: errInfo.message }, { status: errInfo.statusCode });
   }
-}
+}, {
+  requireAuth: true,
+});
 
 // ── GET ─────────────────────────────────────────────────────────────────────
 

@@ -12,6 +12,7 @@ import { NextRequest } from 'next/server';
 import { createProxyRouteHandler } from '@axiomhq/nextjs';
 import { createServerLogger } from '@/lib/axiom/server-logger';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
+import { validatePayloadSize, maskIp } from '@/lib/security';
 
 const logger = createServerLogger();
 
@@ -42,6 +43,37 @@ export async function POST(request: NextRequest) {
           'X-RateLimit-Remaining': String(rateLimitResult.remaining),
           'X-RateLimit-Reset': String(rateLimitResult.reset),
         },
+      }
+    );
+  }
+
+  const configuredMaxPayloadSize = Number.parseInt(
+    process.env.MAX_AXIOM_PAYLOAD_SIZE ?? '102400',
+    10
+  );
+  const maxPayloadSize = Number.isFinite(configuredMaxPayloadSize)
+    ? configuredMaxPayloadSize
+    : 102400;
+  const payloadValidation = validatePayloadSize(request, maxPayloadSize);
+
+  if (!payloadValidation.valid) {
+    logger.warn('security.axiom.payload_rejected', {
+      endpoint: '/api/axiom',
+      ip_masked: maskIp(clientIp),
+      attempted_size: payloadValidation.size,
+      max_size: payloadValidation.maxBytes,
+      reason: payloadValidation.reason,
+    });
+
+    return new Response(
+      JSON.stringify({
+        error: 'Payload too large',
+        maxBytes: payloadValidation.maxBytes,
+        attemptedBytes: payloadValidation.size,
+      }),
+      {
+        status: 413,
+        headers: { 'Content-Type': 'application/json' },
       }
     );
   }

@@ -28,6 +28,50 @@ export function blockExternalAccessExceptInngest(request: NextRequest): NextResp
 }
 
 /**
+ * Security utility for internal APIs - allow Inngest service and same-origin requests
+ * Used for IndexNow and other self-service APIs that need internal+Inngest access
+ */
+export function blockExternalAccessExceptInngestAndSameOrigin(request: NextRequest): NextResponse | null {
+  const userAgent = request.headers.get('user-agent') || '';
+  const inngestSignature = request.headers.get('x-inngest-signature');
+  const inngestTimestamp = request.headers.get('x-inngest-timestamp');
+  const origin = request.headers.get('origin');
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.dcyfr.ai';
+
+  // Check 1: Allow Inngest service
+  if (inngestSignature && inngestTimestamp && userAgent.includes('inngest')) {
+    return null; // Allow request
+  }
+
+  // Check 2: Allow same-origin requests
+  if (origin) {
+    const allowedOrigins = [siteUrl];
+    // Also allow localhost in development
+    if (process.env.NODE_ENV !== 'production') {
+      allowedOrigins.push('http://localhost:3000', 'http://localhost:3001');
+    }
+    
+    if (allowedOrigins.some(allowed => origin === allowed || origin.endsWith(allowed))) {
+      return null; // Allow request
+    }
+  }
+
+  // Block all other external access
+  const clientIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+  console.warn('[IndexNow Security] Blocked unauthorized access', {
+    timestamp: new Date().toISOString(),
+    ip: clientIp,
+    origin: origin || 'no-origin-header',
+    userAgent: userAgent || 'no-user-agent',
+  });
+
+  return new NextResponse('Unauthorized: Access restricted to Inngest service and dcyfr.ai origin only', { 
+    status: 403,
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
+
+/**
  * Security utility to block all external API access
  *
  * This function should be called at the start of every API route

@@ -13,6 +13,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
+import { createServerLogger } from '@/lib/axiom/server-logger';
+import { validateOrigin, maskIp } from '@/lib/security';
+
+const logger = createServerLogger();
 
 // ============================================================================
 // TYPES
@@ -52,10 +56,10 @@ interface ReferralCounts {
  * }
  */
 export async function POST(request: NextRequest) {
-  // Rate limit: 30 requests per minute per IP to prevent spam
+  // Rate limit: 10 requests per minute per IP to prevent spam and fake attributions
   const clientIp = getClientIp(request);
-  const rateLimitResult = await rateLimit(clientIp, {
-    limit: 30,
+  const rateLimitResult = await rateLimit(`analytics:referral:${clientIp}`, {
+    limit: 10,
     windowInSeconds: 60,
     failClosed: true,
   });
@@ -77,6 +81,20 @@ export async function POST(request: NextRequest) {
         },
       }
     );
+  }
+
+  const allowedDomain = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+  const originValidation = validateOrigin(request, allowedDomain);
+  if (!originValidation.valid) {
+    logger.warn('security.referral.invalid_origin', {
+      endpoint: '/api/analytics/referral',
+      ip_masked: maskIp(clientIp),
+      origin: originValidation.value,
+      source: originValidation.source,
+      reason: originValidation.reason,
+    });
+
+    return NextResponse.json({ error: 'Invalid origin' }, { status: 403 });
   }
 
   try {
@@ -200,13 +218,13 @@ export async function GET(request: NextRequest) {
     for (const platform of platforms) {
       const key = `referral:count:${postId}:${platform}`;
       const count = await redis.get(key);
-      counts[platform] = count ? parseInt(count as string, 10) : 0;
+      counts[platform] = count ? Number.parseInt(count as string, 10) : 0;
     }
 
     // Get total referrals
     const totalKey = `referral:total:${postId}`;
     const total = await redis.get(totalKey);
-    const totalCount = total ? parseInt(total as string, 10) : 0;
+    const totalCount = total ? Number.parseInt(total as string, 10) : 0;
 
     return NextResponse.json({
       postId,

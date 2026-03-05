@@ -11,6 +11,7 @@ import {
   INDEXNOW_EVENTS,
   type IndexNowSubmissionRequestedEventData,
 } from '@/lib/indexnow/events';
+import { blockExternalAccessExceptInngestAndSameOrigin } from '@/lib/api/api-security';
 
 // IndexNow submission request schema
 const IndexNowSubmissionSchema = z.object({
@@ -63,6 +64,12 @@ async function queueIndexNowEvent(
 
 export async function POST(request: NextRequest) {
   try {
+    // SECURITY: Block external access - restrict to Inngest service and dcyfr.ai origin only
+    const accessError = blockExternalAccessExceptInngestAndSameOrigin(request);
+    if (accessError) {
+      return accessError;
+    }
+
     const clientIp = getClientIp(request.headers);
     const rateLimit = checkRateLimit(
       `indexnow-submit:${clientIp}`,

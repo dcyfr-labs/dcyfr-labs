@@ -20,9 +20,14 @@ import {
   incrementLikes,
   decrementLikes,
   getLikes,
+  checkIpDeduplication,
   type ContentType,
 } from '@/lib/engagement-analytics';
 import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
+import { createServerLogger } from '@/lib/axiom/server-logger';
+import { maskIp } from '@/lib/security';
+
+const logger = createServerLogger();
 
 interface LikeRequestBody {
   slug: string;
@@ -92,6 +97,28 @@ export async function POST(request: NextRequest) {
     // Perform action
     let newCount: number | null;
     if (action === 'like') {
+      const dedupSlug = `${contentType}:${slug}`;
+      const alreadyActioned = await checkIpDeduplication('like', dedupSlug, clientIp, 86400);
+
+      if (alreadyActioned) {
+        const currentCount = await getLikes(contentType, slug);
+
+        logger.info('engagement.already_actioned', {
+          endpoint: '/api/engagement/like',
+          action: 'like',
+          contentType,
+          slug,
+          ip_masked: maskIp(clientIp),
+        });
+
+        return NextResponse.json({
+          success: true,
+          alreadyActioned: true,
+          action: 'already_actioned',
+          count: currentCount ?? 0,
+        });
+      }
+
       newCount = await incrementLikes(contentType, slug);
     } else {
       newCount = await decrementLikes(contentType, slug);

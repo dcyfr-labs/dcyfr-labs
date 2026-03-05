@@ -4,8 +4,10 @@
  * Migrate to @dcyfr/ai threat intelligence or remove usage.
  */
 
+import type { PromptIntelIoPC, PromptIntelTaxonomy } from './promptintel-types.js';
+
 export class PromptIntelClient {
-  constructor() {
+  constructor(_config?: unknown) {
     throw new Error(
       'PromptIntel MCP server has been deprecated. ' +
         'Please migrate to @dcyfr/ai threat intelligence services or remove this feature.'
@@ -13,11 +15,19 @@ export class PromptIntelClient {
   }
 
   // Stub methods for compilation (will never be called due to constructor throw)
-  async getPrompts(_options?: unknown): Promise<never[]> {
+  async getPrompts(_options?: unknown): Promise<PromptIntelIoPC[]> {
     return [];
   }
 
-  async getTaxonomy(_options?: unknown): Promise<never[]> {
+  async getTaxonomy(_options?: unknown): Promise<PromptIntelTaxonomy[]> {
     return [];
+  }
+
+  async healthCheck(_options?: unknown): Promise<unknown> {
+    return {};
+  }
+
+  async submitReport(_report?: unknown): Promise<unknown> {
+    return {};
   }
 }

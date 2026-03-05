@@ -5,7 +5,6 @@
  *
  * Props:
  *   pluginId   – ID of the plugin being reviewed.
- *   userId     – Current user ID.
  *   displayName – User display name.
  *   onSubmit   – Called with the newly created review on success.
  *   onCancel   – Called when the user dismisses the form.
@@ -22,13 +21,28 @@ type StarRatingValue = 1 | 2 | 3 | 4 | 5;
 
 interface ReviewFormProps {
   readonly pluginId: string;
-  readonly userId: string;
   readonly displayName: string;
   readonly onSubmit?: (review: unknown) => void;
   readonly onCancel?: () => void;
 }
 
-export function ReviewForm({ pluginId, userId, displayName, onSubmit, onCancel }: ReviewFormProps) {
+function getCookieValue(name: string): string | null {
+  if (typeof document === 'undefined') {
+    return null;
+  }
+
+  const match = document.cookie
+    .split('; ')
+    .find((cookie) => cookie.startsWith(`${name}=`));
+
+  if (!match) {
+    return null;
+  }
+
+  return decodeURIComponent(match.split('=')[1] ?? '');
+}
+
+export function ReviewForm({ pluginId, displayName, onSubmit, onCancel }: ReviewFormProps) {
   const [rating, setRating] = useState<StarRatingValue | 0>(0);
   const [comment, setComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -45,13 +59,22 @@ export function ReviewForm({ pluginId, userId, displayName, onSubmit, onCancel }
     setError(null);
 
     try {
+      const csrfToken = getCookieValue('csrf_token');
       const res = await fetch(`/api/plugins/${encodeURIComponent(pluginId)}/reviews`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, displayName, rating, comment: comment.trim() || undefined }),
+        headers: {
+          'Content-Type': 'application/json',
+          ...(csrfToken ? { 'x-csrf-token': csrfToken } : {}),
+        },
+        body: JSON.stringify({ displayName, rating, comment: comment.trim() || undefined }),
       });
 
       const data = (await res.json()) as { review?: unknown; error?: string };
+
+      if (res.status === 401) {
+        setError('Please authenticate with your OAuth session before submitting a review.');
+        return;
+      }
 
       if (!res.ok) {
         setError(data.error ?? 'Failed to submit review. Please try again.');
