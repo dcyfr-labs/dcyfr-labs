@@ -402,6 +402,7 @@
     "eslint-plugin-react-hooks": {
       "eslint": "$eslint"
     },
+    "serialize-javascript": "^7.0.4",
     "node-gyp": "^10.3.1",
     "serialize-error-cjs": "0.2.0",
     "js-yaml": "^4.1.0",
