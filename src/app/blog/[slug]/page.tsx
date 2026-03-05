@@ -285,7 +285,7 @@ export default async function PostPage({
                       : undefined
                   }
                 >
-                  {/* Metadata shown only when sidebar is hidden 
+                  {/* Metadata shown only when sidebar is hidden
                   <HideWhenSidebarVisible> */}
                   <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mt-4">
                     <time dateTime={post.publishedAt}>
@@ -352,7 +352,7 @@ export default async function PostPage({
 
           {/* Right Rail: Empty (reserved for future use)
           <div className="hidden xl:block xl:order-3 relative"> */}
-          {/* Empty - reserved for future use 
+          {/* Empty - reserved for future use
           </div> */}
         </BlogPostLayoutWrapper>
       </div>
