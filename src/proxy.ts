@@ -313,6 +313,6 @@ export const config = {
      * - *.png, *.jpg, *.jpeg, *.gif, *.svg, *.webp, *.ico (images)
      * - *.woff, *.woff2 (fonts)
      */
-    String.raw`/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\.(?:png|jpg|jpeg|gif|svg|webp|ico|woff|woff2)).*)`,
+    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*[.](?:png|jpg|jpeg|gif|svg|webp|ico|woff|woff2)).*)",
   ],
 };

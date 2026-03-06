@@ -1,28 +1,30 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { timingSafeEqual } from '@/lib/security';
+import { NextRequest, NextResponse } from "next/server";
+import { timingSafeEqual } from "@/lib/security";
 
 /**
  * Security utility for Inngest webhooks - allow Inngest service only
  */
-export function blockExternalAccessExceptInngest(request: NextRequest): NextResponse | null {
+export function blockExternalAccessExceptInngest(
+  request: NextRequest
+): NextResponse | null {
   // Block all external access in production except Inngest
-  if (process.env.NODE_ENV === 'production') {
-    const userAgent = request.headers.get('user-agent') || '';
-    const inngestSignature = request.headers.get('x-inngest-signature');
-    const inngestTimestamp = request.headers.get('x-inngest-timestamp');
-    
+  if (process.env.NODE_ENV === "production") {
+    const userAgent = request.headers.get("user-agent") || "";
+    const inngestSignature = request.headers.get("x-inngest-signature");
+    const inngestTimestamp = request.headers.get("x-inngest-timestamp");
+
     // Allow Inngest service (has signature headers and user agent)
-    if (inngestSignature && inngestTimestamp && userAgent.includes('inngest')) {
+    if (inngestSignature && inngestTimestamp && userAgent.includes("inngest")) {
       return null; // Allow request
     }
-    
+
     // Block all other external access
-    return new NextResponse('API access disabled', { 
+    return new NextResponse("API access disabled", {
       status: 404,
-      headers: { 'Content-Type': 'text/plain' }
+      headers: { "Content-Type": "text/plain" },
     });
   }
-  
+
   // In development, be more permissive
   return null;
 }
@@ -31,15 +33,17 @@ export function blockExternalAccessExceptInngest(request: NextRequest): NextResp
  * Security utility for internal APIs - allow Inngest service and same-origin requests
  * Used for IndexNow and other self-service APIs that need internal+Inngest access
  */
-export function blockExternalAccessExceptInngestAndSameOrigin(request: NextRequest): NextResponse | null {
-  const userAgent = request.headers.get('user-agent') || '';
-  const inngestSignature = request.headers.get('x-inngest-signature');
-  const inngestTimestamp = request.headers.get('x-inngest-timestamp');
-  const origin = request.headers.get('origin');
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.dcyfr.ai';
+export function blockExternalAccessExceptInngestAndSameOrigin(
+  request: NextRequest
+): NextResponse | null {
+  const userAgent = request.headers.get("user-agent") || "";
+  const inngestSignature = request.headers.get("x-inngest-signature");
+  const inngestTimestamp = request.headers.get("x-inngest-timestamp");
+  const origin = request.headers.get("origin");
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.dcyfr.ai";
 
   // Check 1: Allow Inngest service
-  if (inngestSignature && inngestTimestamp && userAgent.includes('inngest')) {
+  if (inngestSignature && inngestTimestamp && userAgent.includes("inngest")) {
     return null; // Allow request
   }
 
@@ -47,28 +51,38 @@ export function blockExternalAccessExceptInngestAndSameOrigin(request: NextReque
   if (origin) {
     const allowedOrigins = [siteUrl];
     // Also allow localhost in development
-    if (process.env.NODE_ENV !== 'production') {
-      allowedOrigins.push('http://localhost:3000', 'http://localhost:3001');
+    if (process.env.NODE_ENV !== "production") {
+      allowedOrigins.push("http://localhost:3000", "http://localhost:3001");
     }
-    
-    if (allowedOrigins.some(allowed => origin === allowed || origin.endsWith(allowed))) {
+
+    if (
+      allowedOrigins.some(
+        (allowed) => origin === allowed || origin.endsWith(allowed)
+      )
+    ) {
       return null; // Allow request
     }
   }
 
   // Block all other external access
-  const clientIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
-  console.warn('[IndexNow Security] Blocked unauthorized access', {
+  const clientIp =
+    request.headers.get("x-forwarded-for") ||
+    request.headers.get("x-real-ip") ||
+    "unknown";
+  console.warn("[IndexNow Security] Blocked unauthorized access", {
     timestamp: new Date().toISOString(),
     ip: clientIp,
-    origin: origin || 'no-origin-header',
-    userAgent: userAgent || 'no-user-agent',
+    origin: origin || "no-origin-header",
+    userAgent: userAgent || "no-user-agent",
   });
 
-  return new NextResponse('Unauthorized: Access restricted to Inngest service and dcyfr.ai origin only', { 
-    status: 403,
-    headers: { 'Content-Type': 'application/json' }
-  });
+  return new NextResponse(
+    "Unauthorized: Access restricted to Inngest service and dcyfr.ai origin only",
+    {
+      status: 403,
+      headers: { "Content-Type": "application/json" },
+    }
+  );
 }
 
 /**
@@ -79,33 +93,33 @@ export function blockExternalAccessExceptInngestAndSameOrigin(request: NextReque
  */
 export function blockExternalAccess(request: NextRequest): NextResponse | null {
   // Block all external access in production
-  if (process.env.NODE_ENV === 'production') {
-    return new NextResponse('API access disabled', {
+  if (process.env.NODE_ENV === "production") {
+    return new NextResponse("API access disabled", {
       status: 404,
       headers: {
-        'Content-Type': 'text/plain',
-      }
+        "Content-Type": "text/plain",
+      },
     });
   }
 
   // In development, check for specific internal patterns
-  const userAgent = request.headers.get('user-agent') || '';
-  const referer = request.headers.get('referer') || '';
+  const userAgent = request.headers.get("user-agent") || "";
+  const referer = request.headers.get("referer") || "";
 
   // Allow localhost and internal services in development
   const isInternal =
-    referer.includes('localhost') ||
-    userAgent.includes('vercel-cron') ||
-    userAgent.includes('inngest') ||
-    request.headers.get('x-vercel-deployment-url') ||
-    request.headers.get('x-internal-request');
+    referer.includes("localhost") ||
+    userAgent.includes("vercel-cron") ||
+    userAgent.includes("inngest") ||
+    request.headers.get("x-vercel-deployment-url") ||
+    request.headers.get("x-internal-request");
 
   if (!isInternal) {
-    return new NextResponse('API access disabled', {
+    return new NextResponse("API access disabled", {
       status: 404,
       headers: {
-        'Content-Type': 'text/plain',
-      }
+        "Content-Type": "text/plain",
+      },
     });
   }
 
@@ -132,33 +146,35 @@ export function blockExternalAccess(request: NextRequest): NextResponse | null {
  * @returns NextResponse with 401 error if auth fails, null if successful
  */
 export function withCronAuth(request: NextRequest): NextResponse | null {
-  const providedSecret = request.headers.get('x-cron-secret');
+  const providedSecret = request.headers.get("x-cron-secret");
   const expectedSecret = process.env.CRON_SECRET;
 
   // If no secret configured, fail closed in production
   if (!expectedSecret) {
-    if (process.env.NODE_ENV === 'production') {
-      console.error('CRON_SECRET not configured in production');
-      return new NextResponse('Unauthorized', {
+    if (process.env.NODE_ENV === "production") {
+      console.error("CRON_SECRET not configured in production");
+      return new NextResponse("Unauthorized", {
         status: 401,
         headers: {
-          'Content-Type': 'text/plain',
-          'WWW-Authenticate': 'Bearer realm="Cron Job"',
+          "Content-Type": "text/plain",
+          "WWW-Authenticate": 'Bearer realm="Cron Job"',
         },
       });
     }
     // In development, allow for easier testing
-    console.warn('⚠️  CRON_SECRET not configured - allowing request in development');
+    console.warn(
+      "⚠️  CRON_SECRET not configured - allowing request in development"
+    );
     return null;
   }
 
   // If no secret provided, reject
   if (!providedSecret) {
-    return new NextResponse('Unauthorized: Missing x-cron-secret header', {
+    return new NextResponse("Unauthorized: Missing x-cron-secret header", {
       status: 401,
       headers: {
-        'Content-Type': 'text/plain',
-        'WWW-Authenticate': 'Bearer realm="Cron Job"',
+        "Content-Type": "text/plain",
+        "WWW-Authenticate": 'Bearer realm="Cron Job"',
       },
     });
   }
@@ -166,17 +182,19 @@ export function withCronAuth(request: NextRequest): NextResponse | null {
   // Use timing-safe comparison to prevent timing attacks
   if (!timingSafeEqual(providedSecret, expectedSecret)) {
     // Log failed auth attempt for security monitoring
-    console.warn('Failed cron auth attempt:', {
+    console.warn("Failed cron auth attempt:", {
       timestamp: new Date().toISOString(),
-      userAgent: request.headers.get('user-agent'),
-      ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip'),
+      userAgent: request.headers.get("user-agent"),
+      ip:
+        request.headers.get("x-forwarded-for") ||
+        request.headers.get("x-real-ip"),
     });
 
-    return new NextResponse('Unauthorized: Invalid secret', {
+    return new NextResponse("Unauthorized: Invalid secret", {
       status: 401,
       headers: {
-        'Content-Type': 'text/plain',
-        'WWW-Authenticate': 'Bearer realm="Cron Job"',
+        "Content-Type": "text/plain",
+        "WWW-Authenticate": 'Bearer realm="Cron Job"',
       },
     });
   }
@@ -192,22 +210,22 @@ export function withCronAuth(request: NextRequest): NextResponse | null {
 
 // Whitelist of allowed external API domains
 const ALLOWED_EXTERNAL_DOMAINS = [
-  'api.perplexity.ai',
-  'www.googleapis.com',
-  'indexing.googleapis.com',
-  'api.github.com',
-  'raw.githubusercontent.com',
+  "api.perplexity.ai",
+  "www.googleapis.com",
+  "indexing.googleapis.com",
+  "api.github.com",
+  "raw.githubusercontent.com",
 ];
 
 // Block internal IP ranges (SSRF prevention)
 const INTERNAL_IP_RANGES = [
-  /^127\./,           // Loopback
-  /^10\./,            // Private range (10.0.0.0/8)
-  /^172\.(?:1[6-9]|2\d|3[01])\./,  // Private range (172.16.0.0/12)
-  /^192\.168\./,      // Private range (192.168.0.0/16)
-  /^::1$|^\[::1\]$/,            // IPv6 loopback (with or without brackets)
-  /^fc00:|^\[fc00:/,           // IPv6 unique local (fc00::/7)
-  /^fe80:|^\[fe80:/,           // IPv6 link-local (fe80::/10)
+  /^127\./, // Loopback
+  /^10\./, // Private range (10.0.0.0/8)
+  /^172\.(?:1[6-9]|2\d|3[01])\./, // Private range (172.16.0.0/12)
+  /^192\.168\./, // Private range (192.168.0.0/16)
+  /^::1$|^\[::1\]$/, // IPv6 loopback (with or without brackets)
+  /^fc00:|^\[fc00:/, // IPv6 unique local (fc00::/7)
+  /^fe80:|^\[fe80:/, // IPv6 link-local (fe80::/10)
 ];
 
 export type ExternalUrlValidationResult = {
@@ -222,34 +240,42 @@ export type ExternalUrlValidationResult = {
  * @param urlString - The URL to validate
  * @returns Validation result with success status and reason if invalid
  */
-export function validateExternalUrl(urlString: string): ExternalUrlValidationResult {
+export function validateExternalUrl(
+  urlString: string
+): ExternalUrlValidationResult {
   try {
     const url = new URL(urlString);
 
     // Block non-HTTPS in production
-    if (process.env.NODE_ENV === 'production' && url.protocol !== 'https:') {
-      return { valid: false, reason: 'Only HTTPS allowed in production' };
+    if (process.env.NODE_ENV === "production" && url.protocol !== "https:") {
+      return { valid: false, reason: "Only HTTPS allowed in production" };
     }
 
     // Block internal IP ranges FIRST (highest priority security check)
     for (const ipPattern of INTERNAL_IP_RANGES) {
       if (ipPattern.test(url.hostname)) {
-        return { valid: false, reason: `Internal IP range blocked: ${url.hostname}` };
+        return {
+          valid: false,
+          reason: `Internal IP range blocked: ${url.hostname}`,
+        };
       }
     }
 
     // Check if domain is whitelisted
-    const isWhitelisted = ALLOWED_EXTERNAL_DOMAINS.some(domain =>
-      url.hostname === domain || url.hostname.endsWith('.' + domain)
+    const isWhitelisted = ALLOWED_EXTERNAL_DOMAINS.some(
+      (domain) => url.hostname === domain || url.hostname.endsWith("." + domain)
     );
 
     if (!isWhitelisted) {
-      return { valid: false, reason: `Domain not whitelisted: ${url.hostname}` };
+      return {
+        valid: false,
+        reason: `Domain not whitelisted: ${url.hostname}`,
+      };
     }
 
     return { valid: true };
   } catch (error) {
-    return { valid: false, reason: 'Invalid URL format' };
+    return { valid: false, reason: "Invalid URL format" };
   }
 }
 
@@ -281,8 +307,8 @@ export async function safeFetch(
  * @param domain - Domain to whitelist (without protocol)
  */
 export function whitelistExternalDomain(domain: string): void {
-  if (process.env.NODE_ENV === 'production') {
-    console.warn('⚠️  Attempted to whitelist domain in production:', domain);
+  if (process.env.NODE_ENV === "production") {
+    console.warn("⚠️  Attempted to whitelist domain in production:", domain);
     return;
   }
 
