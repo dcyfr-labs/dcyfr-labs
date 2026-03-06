@@ -669,7 +669,6 @@ jobs:
           
           **Dependencies:** $DEP_NAMES
           **Update type:** $DEP_UPDATE_TYPE"
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Comment on major version updates
         if: steps.metadata.outputs.update-type == 'version-update:semver-major'
