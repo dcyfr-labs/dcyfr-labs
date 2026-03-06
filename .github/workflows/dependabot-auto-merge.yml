@@ -16,17 +16,17 @@ jobs:
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
     timeout-minutes: 15  # Prevent hanging
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Fetch Dependabot metadata
         id: metadata
         uses: dependabot/fetch-metadata@v2
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-      
+
       - name: Handle Node.js version updates
         id: node-version
         env:
@@ -37,11 +37,11 @@ jobs:
           DEPENDENCY="$DEPENDENCY_NAMES"
           if [[ "$DEPENDENCY" == "node" ]]; then
             echo "is-node-update=true" >> $GITHUB_OUTPUT
-            
+
             # Extract version from PR title (e.g., "bump node from 24.13.0 to 24.13.1")
             VERSION=$(echo "$PR_TITLE" | grep -oP 'v?\d+\.\d+\.\d+' | tail -1)
             echo "node-version=$VERSION" >> $GITHUB_OUTPUT
-            
+
             # Auto-merge patches only (minor/major require manual review)
             if [[ "$UPDATE_TYPE" == "version-update:semver-patch" ]]; then
               echo "safe=true" >> $GITHUB_OUTPUT
@@ -53,7 +53,7 @@ jobs:
           else
             echo "is-node-update=false" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Define safe packages
         id: safe-packages
         run: |
@@ -530,7 +530,7 @@ jobs:
           yocto-queue
           zod
           SAFE_PACKAGES
-      
+
       - name: Determine if safe to auto-merge
         id: check
         env:
@@ -546,10 +546,10 @@ jobs:
           echo "Update type: $UPDATE_TYPE"
           echo "Dependency type: $DEPENDENCY_TYPE"
           echo "Dependency names: $DEPENDENCY_NAMES"
-          
+
           SAFE="false"
           REASON=""
-          
+
           # Handle Node.js version updates first
           if [[ "$IS_NODE_UPDATE" == "true" ]]; then
             if [[ "$NODE_SAFE" == "true" ]]; then
@@ -567,7 +567,7 @@ jobs:
                 break
               fi
             done < /tmp/safe_packages.txt
-            
+
             # Auto-merge dev dependencies (patch and minor updates)
             if [[ "$DEPENDENCY_TYPE" == "direct:development" ]] || \
                [[ "$DEPENDENCY_TYPE" == "indirect:development" ]]; then
@@ -577,7 +577,7 @@ jobs:
                 REASON="Dev dependency patch/minor update"
               fi
             fi
-            
+
             # Auto-merge production patch updates for safe packages (with breaking change check)
             if [[ "$DEPENDENCY_TYPE" == "direct:production" ]]; then
               if [[ "$UPDATE_TYPE" == "version-update:semver-patch" ]]; then
@@ -593,7 +593,7 @@ jobs:
                 fi
               fi
             fi
-            
+
             # Framework updates always require review (except patches for safe packages)
             if [[ "$DEPENDENCY_NAMES" =~ ^(next|react|react-dom|@vercel|tailwindcss)$ ]]; then
               if [[ "$UPDATE_TYPE" == "version-update:semver-patch" ]]; then
@@ -610,12 +610,12 @@ jobs:
               fi
             fi
           fi
-          
+
           echo "safe=$SAFE" >> $GITHUB_OUTPUT
           echo "reason=$REASON" >> $GITHUB_OUTPUT
           echo "is-safe-package=$IS_SAFE_PACKAGE" >> $GITHUB_OUTPUT
           echo "Decision: $SAFE - $REASON"
-      
+
       - name: Wait for CI checks to complete
         if: steps.check.outputs.safe == 'true'
         uses: lewagon/wait-on-check-action@v1.3.4
@@ -626,7 +626,7 @@ jobs:
           wait-interval: 10
           allowed-conclusions: success,skipped
           check-regexp: '^(Code Quality|Unit & Integration Tests|E2E Tests).*$'
-      
+
       - name: Auto-approve safe updates
         if: steps.check.outputs.safe == 'true'
         run: |
@@ -636,7 +636,7 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APPROVE_REASON: ${{ steps.check.outputs.reason }}
-      
+
       - name: Enable auto-merge
         if: steps.check.outputs.safe == 'true'
         run: |
@@ -646,7 +646,7 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Add review required label
         if: steps.check.outputs.safe == 'false'
         env:
@@ -658,23 +658,23 @@ jobs:
         run: |
           gh pr edit "$PR_URL" --add-label "review-required" --add-label "dependencies"
           gh pr comment "$PR_URL" --body "⚠️ **Manual review required**
-          
+
           This PR requires manual review because:
           **$REVIEW_REASON**
-          
+
           Please review the changes before merging:
           - Check CHANGELOG for breaking changes
           - Verify compatibility with current codebase
           - Test critical functionality locally
-          
+
           **Dependencies:** $DEP_NAMES
           **Update type:** $DEP_UPDATE_TYPE"
-      
+
       - name: Comment on major version updates
         if: steps.metadata.outputs.update-type == 'version-update:semver-major'
         run: |
           gh pr comment "$PR_URL" --body "🚨 **Major version update detected**
-          
+
           This PR contains a major version bump that likely includes breaking changes:
           - **Review migration guides** for ${{ steps.metadata.outputs.dependency-names }}
           - **Test thoroughly** before merging
@@ -683,7 +683,7 @@ jobs:
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Summary
         run: |
           if [[ "${{ steps.check.outputs.safe }}" == "true" ]]; then
