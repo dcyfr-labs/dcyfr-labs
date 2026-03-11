@@ -293,7 +293,7 @@
     "date-fns": "^4.1.0",
     "dompurify": "^3.3.2",
     "dotenv": "^17.2.3",
-    "fastmcp": "^3.33.0",
+    "fastmcp": "^3.34.0",
     "framer-motion": "^12.34.0",
     "fuse.js": "^7.1.0",
     "geist": "^1.7.0",
