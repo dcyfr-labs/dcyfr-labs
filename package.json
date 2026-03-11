@@ -432,6 +432,6 @@
   },
   "optionalDependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
-    "sqlite3": "^5.0.2"
+    "sqlite3": "^5.1.7"
   }
 }
