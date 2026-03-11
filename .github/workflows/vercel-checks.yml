@@ -46,8 +46,23 @@ jobs:
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           VERCEL_TOKEN: op://CI-CD/dcyfr-labs-vercel-token/credential
-          LHCI_GITHUB_APP_TOKEN: op://CI-CD/dcyfr-labs-lhci-github-app-token/credential
           VERCEL_AUTOMATION_BYPASS_SECRET: op://Development/dcyfr-labs-vercel-automation-bypass-secret/password
+
+      - name: Load optional LHCI token from 1Password
+        id: load-lhci-token
+        continue-on-error: true
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          LHCI_GITHUB_APP_TOKEN: op://CI-CD/dcyfr-labs-lhci-github-app-token/credential
+
+      - name: Warn when LHCI token is unavailable
+        if: steps.load-lhci-token.outcome == 'failure'
+        run: |
+          echo "⚠️ LHCI_GITHUB_APP_TOKEN unavailable in 1Password; continuing without GitHub App token"
+          echo "Lighthouse checks will still run, but GitHub App posting may be limited."
 
       
       - name: Setup Node.js
