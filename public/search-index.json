@@ -1,24 +1,6 @@
 {
   "posts": [
     {
-      "id": "post-20260315-c12ec3a1",
-      "title": "AI Assistants as Development Partners",
-      "summary": "After 6 months and 12,000+ AI-assisted code changes, discover the 5 daily workflows that deliver 60% time savings, 75% more features shipped, and zero quality regression. Real patterns, measurable results, and pitfalls to avoid.",
-      "content": "After 6 months and 12,000+ AI-assisted code changes across 4 production projects, one thing is clear: the gap between \"AI writes buggy code\" and \"AI 10x'd my productivity\" isn't the model—it's the workflow. This post shares 5 repeatable workflows with real metrics from DCYFR Labs: 60% time savings, 75% more features shipped, zero quality regression. You'll learn how to treat AI assistants as Junior+ teammates with specific strengths and hard limits, not autocomplete on steroids. --- The Partners",
-      "tags": [
-        "AI",
-        "GitHub Copilot",
-        "Developer Productivity",
-        "MCP",
-        "Workflow",
-        "TypeScript"
-      ],
-      "series": "AI Workflows",
-      "publishedAt": "2026-03-15T12:00:00Z",
-      "readingTime": 13,
-      "url": "/blog/ai-assistants-as-development-partners"
-    },
-    {
       "id": "post-20260205-a3f7c1d2",
       "title": "Modernizing Blog Content with RIVET: A Component-Driven Enhancement Framework",
       "summary": "Introducing RIVET: a systematic framework for enhancing blog content with 8 interactive components. Real implementation data from 4 blog posts with 181 component instances, 97 passing tests, and measurable engagement improvements.",
@@ -70,24 +52,6 @@
       "publishedAt": "2026-01-11T12:00:00Z",
       "readingTime": 7,
       "url": "/blog/building-event-driven-architecture"
-    },
-    {
-      "id": "post-20251222-f8c3d4e1",
-      "title": "UI Elements and Components",
-      "summary": "Explore the full range of UI components, MDX elements, code highlighting, alerts, callouts, and visual features available in this blog system. Includes modern engagement components and React 19 patterns.",
-      "content": "> Note: This is a demonstration post showcasing all available UI elements and components. It serves as a visual reference for content creators and developers. This post demonstrates every visual element, component, and styling option available in the design system . Use this as a reference when creating new content. --- Typography Hierarchy Heading 1: Main Title The largest heading, typically used only once per page as the article title. Heading 2: Major Sections Primary section headers that div",
-      "tags": [
-        "Demo",
-        "UI",
-        "Design System",
-        "Components",
-        "MDX",
-        "React 19"
-      ],
-      "series": null,
-      "publishedAt": "2025-12-22T12:00:00Z",
-      "readingTime": 7,
-      "url": "/blog/demo-ui"
     },
     {
       "id": "post-20251219-7f3a9c2e",
@@ -339,24 +303,18 @@
     "Background Jobs",
     "Certification",
     "Component Architecture",
-    "Components",
     "CompTIA",
     "Content Strategy",
     "CVE",
     "Cybersecurity",
-    "Demo",
     "Dependabot",
-    "Design System",
-    "Developer Productivity",
     "Developer Tools",
     "Event-Driven",
-    "GitHub Copilot",
     "HTTP/2",
     "Inngest",
     "IT Career",
     "LLM Security",
     "MCP",
-    "MDX",
     "Next.js",
     "Node.js",
     "OWASP",
@@ -365,7 +323,6 @@
     "Production",
     "Productivity",
     "React",
-    "React 19",
     "React2Shell",
     "RSC",
     "Security",
@@ -374,14 +331,11 @@
     "Tailwind CSS",
     "Threat Intelligence",
     "TypeScript",
-    "UI",
     "UX",
-    "Vercel",
-    "Workflow"
+    "Vercel"
   ],
   "series": [
-    "AI Workflows",
     "Portfolio"
   ],
-  "generatedAt": "2026-03-06T17:01:00.501Z"
+  "generatedAt": "2026-03-13T05:27:00.513Z"
 }

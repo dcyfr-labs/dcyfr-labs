@@ -1,17 +1,7 @@
 {
   "comment": "Lint-staged configuration with design token enforcement",
-  "*.{ts,tsx}": [
-    "eslint --fix",
-    "prettier --write"
-  ],
-  "src/lib/design-tokens.ts": [
-    "node scripts/validate-design-tokens.mjs"
-  ],
-  "*.{js,jsx,mjs,cjs}": [
-    "eslint --fix",
-    "prettier --write"
-  ],
-  "*.{json,md,yml,yaml}": [
-    "prettier --write"
-  ]
+  "*.{ts,tsx}": ["eslint --fix", "npx prettier --write"],
+  "src/lib/design-tokens.ts": ["node scripts/validate-design-tokens.mjs"],
+  "*.{js,jsx,mjs,cjs}": ["eslint --fix", "npx prettier --write"],
+  "*.{json,md,yml,yaml}": ["npx prettier --write"]
 }

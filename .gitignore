@@ -230,6 +230,7 @@ dump.rdb
 # ========================================
 # Cache directories
 .cache/
+.turbo/
 .temp/
 .tmp/
 tmp/
