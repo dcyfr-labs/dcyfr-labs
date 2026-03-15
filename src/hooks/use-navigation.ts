@@ -27,11 +27,11 @@
  * ```
  */
 
-"use client";
+'use client';
 
-import { usePathname } from "next/navigation";
-import { useCallback } from "react";
-import type { NavItem } from "@/lib/navigation-config";
+import { usePathname } from 'next/navigation';
+import { useCallback } from 'react';
+import type { NavItem } from '@/lib/navigation';
 
 export interface UseNavigationReturn {
   /**
@@ -69,7 +69,7 @@ export interface UseNavigationReturn {
    * @param exact - If true, requires exact match
    * @returns 'page' if active, undefined otherwise
    */
-  getAriaCurrent: (href: string, exact?: boolean) => "page" | undefined;
+  getAriaCurrent: (href: string, exact?: boolean) => 'page' | undefined;
 }
 
 /**
@@ -85,8 +85,8 @@ export function useNavigation(): UseNavigationReturn {
   const isActive = useCallback(
     (href: string, exact = false): boolean => {
       // Root path always requires exact match to avoid matching everything
-      if (href === "/") {
-        return pathname === "/";
+      if (href === '/') {
+        return pathname === '/';
       }
 
       // Exact match mode
@@ -96,7 +96,7 @@ export function useNavigation(): UseNavigationReturn {
 
       // StartsWith match mode
       // Check both pathname and pathname without query params
-      const pathWithoutQuery = pathname.split("?")[0];
+      const pathWithoutQuery = pathname.split('?')[0];
       return pathname.startsWith(href) || pathWithoutQuery.startsWith(href);
     },
     [pathname]
@@ -118,8 +118,8 @@ export function useNavigation(): UseNavigationReturn {
    * Get ARIA current attribute for active items
    */
   const getAriaCurrent = useCallback(
-    (href: string, exact = false): "page" | undefined => {
-      return isActive(href, exact) ? "page" : undefined;
+    (href: string, exact = false): 'page' | undefined => {
+      return isActive(href, exact) ? 'page' : undefined;
     },
     [isActive]
   );
@@ -154,9 +154,9 @@ export function useLogoClick(): (e: React.MouseEvent<HTMLAnchorElement>) => void
 
   return useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
-      if (pathname === "/") {
+      if (pathname === '/') {
         e.preventDefault();
-        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
       }
     },
     [pathname]

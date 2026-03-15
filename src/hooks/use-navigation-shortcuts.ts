@@ -5,8 +5,9 @@
  * - g h → Go to Home
  * - g b → Go to Blog
  * - g w → Go to Work
- * - g s → Go to Sponsors
+ * - g i → Go to AI
  * - g a → Go to About
+ * - g s → Go to Sponsors
  * - g c → Go to Contact
  *
  * @example
@@ -18,11 +19,11 @@
  * ```
  */
 
-"use client";
+'use client';
 
-import { useEffect, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { getKeyboardShortcuts } from "@/lib/navigation-config";
+import { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { getKeyboardShortcuts } from '@/lib/navigation';
 
 export interface NavigationShortcutsOptions {
   /**
@@ -54,9 +55,7 @@ export function useNavigationShortcuts(options: NavigationShortcutsOptions = {})
       // Check if we're in an input field
       const target = event.target as HTMLElement;
       const isInput =
-        target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.isContentEditable;
+        target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
 
       // Don't trigger shortcuts when typing
       if (isInput) return;
@@ -67,9 +66,9 @@ export function useNavigationShortcuts(options: NavigationShortcutsOptions = {})
       const key = event.key.toLowerCase();
 
       // First key in sequence: 'g'
-      if (key === "g" && !pendingKey) {
+      if (key === 'g' && !pendingKey) {
         event.preventDefault();
-        setPendingKey("g");
+        setPendingKey('g');
 
         // Reset after 1 second if no second key is pressed
         setTimeout(() => setPendingKey(null), 1000);
@@ -77,7 +76,7 @@ export function useNavigationShortcuts(options: NavigationShortcutsOptions = {})
       }
 
       // Second key in sequence
-      if (pendingKey === "g") {
+      if (pendingKey === 'g') {
         event.preventDefault();
         setPendingKey(null);
 
@@ -85,7 +84,7 @@ export function useNavigationShortcuts(options: NavigationShortcutsOptions = {})
         const shortcuts = getKeyboardShortcuts();
 
         // Find matching shortcut (format is "g h", "g b", etc.)
-        const shortcut = shortcuts.find(s => s.shortcut === `g ${key}`);
+        const shortcut = shortcuts.find((s) => s.shortcut === `g ${key}`);
 
         if (shortcut) {
           onShortcut?.(shortcut.href, shortcut.label);
@@ -97,8 +96,8 @@ export function useNavigationShortcuts(options: NavigationShortcutsOptions = {})
   );
 
   useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 
   return {
@@ -125,10 +124,10 @@ export function useNavigationShortcuts(options: NavigationShortcutsOptions = {})
 export function getAvailableShortcuts() {
   const shortcuts = getKeyboardShortcuts();
 
-  return shortcuts.map(shortcut => ({
+  return shortcuts.map((shortcut) => ({
     ...shortcut,
-    display: shortcut.shortcut.toUpperCase().replace(" ", " then "),
-    keys: shortcut.shortcut.split(" "),
+    display: shortcut.shortcut.toUpperCase().replace(' ', ' then '),
+    keys: shortcut.shortcut.split(' '),
   }));
 }
 
@@ -155,8 +154,8 @@ export function useShortcutIndicator() {
   const shortcuts = getAvailableShortcuts();
 
   return {
-    show: pendingKey === "g",
-    availableKeys: shortcuts.map(s => s.keys[1]?.toUpperCase()).filter(Boolean),
+    show: pendingKey === 'g',
+    availableKeys: shortcuts.map((s) => s.keys[1]?.toUpperCase()).filter(Boolean),
     shortcuts: shortcuts,
   };
 }

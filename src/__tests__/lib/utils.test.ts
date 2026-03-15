@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { cn, sanitizeUrl } from '@/lib/utils';
+import { cn, sanitizeUrl } from '@dcyfr/utils';
 
 describe('utils', () => {
   describe('cn()', () => {
