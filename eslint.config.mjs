@@ -55,4 +55,21 @@ export default [
       ],
     },
   },
+  // Test files: relax rules that don't apply to test/spec code
+  {
+    files: [
+      '**/*.test.{js,jsx,ts,tsx}',
+      '**/*.spec.{js,jsx,ts,tsx}',
+      'tests/**/*.{js,jsx,ts,tsx,mjs}',
+      'src/__tests__/**/*.{js,jsx,ts,tsx}',
+    ],
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'off',
+      'dcyfr-local/no-hardcoded-spacing': 'off',
+      'dcyfr-local/no-hardcoded-colors': 'off',
+      'dcyfr-local/no-hardcoded-typography': 'off',
+      'dcyfr-local/no-hardcoded-animations': 'off',
+      'dcyfr-local/no-hardcoded-inline-styles': 'off',
+    },
+  },
 ];

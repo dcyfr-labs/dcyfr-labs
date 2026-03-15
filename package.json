@@ -21,7 +21,7 @@
     "dev:check": "node scripts/dev-utils.mjs check",
     "dev:check:fast": "node scripts/dev-utils.mjs check -- --fast",
     "dev:check:fix": "node scripts/dev-utils.mjs check -- --fix",
-    "build": "npm run validate:content && npm run build:search && npm run build:populate-cache && npm run sync:metrics:quick && next build",
+    "build": "npm run validate:content && npm run build:search && npm run build:populate-cache && npm run sync:metrics:quick && NEXT_TURBOPACK=0 next build",
     "build:search": "tsx src/lib/search/build-index.ts",
     "build:populate-cache": "node scripts/populate-build-cache.mjs",
     "populate:cache": "node scripts/populate-local-cache.mjs",
@@ -408,7 +408,7 @@
       "eslint": "$eslint"
     },
     "serialize-javascript": "^7.0.4",
-    "node-gyp": "^10.3.1",
+    "node-gyp": "^12.0.0",
     "serialize-error-cjs": "0.2.0",
     "js-yaml": "^4.1.0",
     "tmp": "^0.2.4",
@@ -424,16 +424,12 @@
     "mem0ai": {
       "axios": ">=1.13.5"
     },
-    "sqlite3": {
-      "tar": ">=7.5.10"
-    },
     "hono": ">=4.12.4",
     "langsmith": ">=0.4.6",
-    "undici": ">=6.23.0",
+    "undici": ">=6.24.0",
     "@qdrant/js-client-rest": ">=1.16.0"
   },
   "optionalDependencies": {
-    "@anthropic-ai/sdk": "^0.78.0",
-    "sqlite3": "^5.0.2"
+    "@anthropic-ai/sdk": "^0.78.0"
   }
 }
