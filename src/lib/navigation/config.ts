@@ -31,6 +31,7 @@ import {
   Rss,
   Calendar,
   Code,
+  Code2,
   Shield,
   Settings,
   ChartBar,
@@ -87,6 +88,14 @@ export const HEADER_NAV: NavItem[] = [
     icon: Zap,
     shortcut: 'g l',
     description: 'AI agent framework and open source tools',
+  },
+  {
+    href: '/open-source',
+    label: 'Open Source',
+    shortLabel: 'OSS',
+    icon: Code2,
+    shortcut: 'g o',
+    description: 'Published npm packages and open-source projects',
   },
   {
     href: '/sponsors',
@@ -155,16 +164,6 @@ export const WORK_NAV: NavItem[] = [
     label: 'Code',
     description: 'Open-source code and development projects',
   },
-  {
-    href: '/work?category=nonprofit',
-    label: 'Nonprofit',
-    description: 'Mission-driven partnerships',
-  },
-  {
-    href: '/work?category=startup',
-    label: 'Startup',
-    description: 'Early-stage product development',
-  },
 ];
 
 // ============================================================================
@@ -211,6 +210,12 @@ export const MOBILE_NAV_SECTIONS: NavSection[] = [
         label: 'AI',
         icon: Zap,
         description: 'AI agent framework and tools',
+      },
+      {
+        href: '/open-source',
+        label: 'Open Source',
+        icon: Code2,
+        description: 'Published npm packages and projects',
       },
       {
         href: '/sponsors',

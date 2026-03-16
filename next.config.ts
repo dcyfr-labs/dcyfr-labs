@@ -138,6 +138,17 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       // Legacy RSS/Atom redirects already handled in app/rss.xml/route.ts and app/atom.xml/route.ts
+      // Blog tags index redirect - /blog/tags has no dedicated page, send to main blog
+      {
+        source: '/blog/tags',
+        destination: '/blog',
+        permanent: false,
+      },
+      {
+        source: '/blog/tags/:tag*',
+        destination: '/blog',
+        permanent: false,
+      },
     ];
   },
   webpack: (config, { isServer }) => {
