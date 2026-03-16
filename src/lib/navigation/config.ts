@@ -29,13 +29,9 @@ import {
   Bookmark,
   Heart,
   Rss,
-  Calendar,
-  Code,
   Code2,
-  Shield,
-  Settings,
-  ChartBar,
   Zap,
+  Package,
 } from 'lucide-react';
 import type { NavItem, NavSection, NavigationConfig } from './types';
 
@@ -96,14 +92,6 @@ export const HEADER_NAV: NavItem[] = [
     icon: Code2,
     shortcut: 'g o',
     description: 'Published npm packages and open-source projects',
-  },
-  {
-    href: '/sponsors',
-    label: 'Sponsors',
-    shortLabel: 'Sponsors',
-    icon: Heart,
-    shortcut: 'g s',
-    description: 'Support open source development',
   },
   {
     href: '/contact',
@@ -279,9 +267,9 @@ export const BOTTOM_NAV: NavItem[] = [
     icon: Zap,
   },
   {
-    href: '/bookmarks',
-    label: 'Bookmarks',
-    icon: Bookmark,
+    href: '/open-source',
+    label: 'Open Source',
+    icon: Package,
   },
   {
     href: '/activity',
