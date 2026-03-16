@@ -294,7 +294,7 @@
     "dompurify": "^3.3.2",
     "dotenv": "^17.2.3",
     "fastmcp": "^3.34.0",
-    "framer-motion": "^12.35.2",
+    "framer-motion": "^12.37.0",
     "fuse.js": "^7.1.0",
     "geist": "^1.7.0",
     "glob": "^13.0.4",
