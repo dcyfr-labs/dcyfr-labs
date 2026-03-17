@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowRight, Clock, Calendar } from 'lucide-react';
 import type { Post } from '@/data/posts';
 import { TYPOGRAPHY, SPACING, IMAGE_PLACEHOLDER } from '@/lib/design-tokens';
-import { cn } from '@dcyfr/utils';
+import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
 interface FeaturedPostsSectionProps {
