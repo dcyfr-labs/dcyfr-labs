@@ -81,7 +81,7 @@ export function searchItems<T extends Record<string, any>>(
 
   // Handle filter-only queries (no text search)
   if (query.isFilterOnly) {
-    return applyFilters(items, query, config).map((item) => ({
+    return applyFilters(items, query).map((item) => ({
       item,
       score: 1,
       matches: [],
