@@ -419,11 +419,8 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
             selectedAuthor={selectedAuthor}
             showArchived={showArchived}
             showDrafts={showDrafts}
-            query={query}
             sortBy={sortBy}
             dateRange={dateRange}
-            totalResults={sortedArchiveData.totalItems}
-            totalPosts={posts.length}
           />
 
           {/* Main content area with Suspense for PPR */}
