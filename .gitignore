@@ -168,7 +168,6 @@ skills/
 .vscode/*
 !.vscode/mcp.json
 !.vscode/mcp.json.example
-!.vscode/settings.json
 !.vscode/extensions.json
 !.vscode/design-tokens.code-snippets
 .vscode/*.local.json
