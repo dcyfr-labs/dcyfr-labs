@@ -98,12 +98,23 @@ private/
 archive/
 
 # env files
-# .env contains op:// references (1Password) — safe to commit
+# Never commit real .env files
+.env
+**/.env
+.env.*
+**/.env.*
+
+# Keep safe templates/examples tracked
+!.env.example
+!**/.env.example
+!.env.template
+!**/.env.template
+!.env.ci
+!**/.env.ci
+
 # .env.local contains plaintext secrets — NEVER commit
 .env.local
 .env*.local
-!.env.example
-!.env.template
 
 # API keys and tokens
 *.key
