@@ -1,11 +1,21 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { NextRequest } from 'next/server';
 import { POST as ReviewsPOST } from '@/app/api/plugins/[id]/reviews/route';
 import type { RateLimitResult } from '@/lib/rate-limit';
 
 const { mockRateLimit, mockGetRequestUser, mockReviewStore } = vi.hoisted(() => ({
-  mockRateLimit: vi.fn(async (): Promise<RateLimitResult> => ({ success: true, reset: Date.now() + 60000, limit: 60, remaining: 59 })),
-  mockGetRequestUser: vi.fn((): { id: string; email: string } | null => ({ id: 'user-123', email: 'user@example.com' })),
+  mockRateLimit: vi.fn(
+    async (): Promise<RateLimitResult> => ({
+      success: true,
+      reset: Date.now() + 60000,
+      limit: 60,
+      remaining: 59,
+    })
+  ),
+  mockGetRequestUser: vi.fn((): { id: string; email: string } | null => ({
+    id: 'user-123',
+    email: 'user@example.com',
+  })),
   mockReviewStore: {
     createReview: vi.fn(() => ({
       id: 'review-1',
@@ -63,7 +73,13 @@ const mockContext = {
 describe('Plugin reviews authentication security controls', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockRateLimit.mockResolvedValue({ success: true, reset: Date.now() + 60000, limit: 60, remaining: 59 });
+    vi.stubEnv('PLUGINS_ENABLED', 'true');
+    mockRateLimit.mockResolvedValue({
+      success: true,
+      reset: Date.now() + 60000,
+      limit: 60,
+      remaining: 59,
+    });
     mockGetRequestUser.mockReturnValue({
       id: 'user-123',
       email: 'user@example.com',
@@ -84,11 +100,19 @@ describe('Plugin reviews authentication security controls', () => {
     });
   });
 
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   describe('unauthenticated request rejection', () => {
     it('returns 401 for unauthenticated requests', async () => {
       mockGetRequestUser.mockReturnValue(null);
 
-      const request = createRequest({ displayName: 'Test User', rating: 5, comment: 'Great plugin!' });
+      const request = createRequest({
+        displayName: 'Test User',
+        rating: 5,
+        comment: 'Great plugin!',
+      });
       const response = await ReviewsPOST(request, mockContext);
 
       expect(response.status).toBe(401);
@@ -97,7 +121,11 @@ describe('Plugin reviews authentication security controls', () => {
     it('includes authentication realm in 401 response', async () => {
       mockGetRequestUser.mockReturnValue(null);
 
-      const request = createRequest({ displayName: 'Test User', rating: 5, comment: 'Great plugin!' });
+      const request = createRequest({
+        displayName: 'Test User',
+        rating: 5,
+        comment: 'Great plugin!',
+      });
       const response = await ReviewsPOST(request, mockContext);
 
       expect(response.status).toBe(401);
@@ -113,7 +141,11 @@ describe('Plugin reviews authentication security controls', () => {
     it('does not create review for unauthenticated requests', async () => {
       mockGetRequestUser.mockReturnValue(null);
 
-      const request = createRequest({ displayName: 'Test User', rating: 5, comment: 'Great plugin!' });
+      const request = createRequest({
+        displayName: 'Test User',
+        rating: 5,
+        comment: 'Great plugin!',
+      });
       await ReviewsPOST(request, mockContext);
 
       expect(mockReviewStore.createReview).not.toHaveBeenCalled();

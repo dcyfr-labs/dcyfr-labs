@@ -13,6 +13,17 @@ describe('NewsletterSignup', () => {
     localStorage.clear();
     // Reset window.gtag mock
     window.gtag = undefined as any;
+    globalThis.fetch = vi.fn(
+      () =>
+        new Promise((resolve) => {
+          setTimeout(() => {
+            resolve({
+              ok: true,
+              json: async () => ({}),
+            } as Response);
+          }, 1000);
+        })
+    ) as typeof fetch;
   });
 
   afterEach(() => {

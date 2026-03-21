@@ -70,6 +70,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      'next/server': 'next/server.js',
       // Mock Next.js server-only marker in test environment
       'server-only': path.resolve(__dirname, './tests/__mocks__/server-only.ts'),
     },

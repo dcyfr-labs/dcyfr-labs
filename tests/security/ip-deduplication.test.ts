@@ -58,7 +58,11 @@ describe('IP-based deduplication security controls', () => {
     it('allows first action from IP address', async () => {
       mockCheckIpDeduplication.mockResolvedValue(false);
 
-      const request = createRequest({ slug: 'test-plugin', contentType: 'post', action: 'bookmark' });
+      const request = createRequest({
+        slug: 'test-plugin',
+        contentType: 'post',
+        action: 'bookmark',
+      });
       const response = await BookmarkPOST(request);
       const data = await response.json();
 
@@ -70,7 +74,11 @@ describe('IP-based deduplication security controls', () => {
     it('blocks duplicate action from same IP within 24h window', async () => {
       mockCheckIpDeduplication.mockResolvedValue(true);
 
-      const request = createRequest({ slug: 'test-plugin', contentType: 'post', action: 'bookmark' });
+      const request = createRequest({
+        slug: 'test-plugin',
+        contentType: 'post',
+        action: 'bookmark',
+      });
       const response = await BookmarkPOST(request);
       const data = await response.json();
 
@@ -91,14 +99,18 @@ describe('IP-based deduplication security controls', () => {
       );
     });
 
-    it('applies fail-open behavior when Redis unavailable', async () => {
+    it('applies fail-closed behavior when Redis unavailable', async () => {
       mockCheckIpDeduplication.mockRejectedValue(new Error('Redis connection failed'));
 
-      const request = createRequest({ slug: 'test-plugin', contentType: 'post', action: 'bookmark' });
+      const request = createRequest({
+        slug: 'test-plugin',
+        contentType: 'post',
+        action: 'bookmark',
+      });
       const response = await BookmarkPOST(request);
 
-      expect(response.status).toBe(200);
-      expect(mockIncrementBookmarks).toHaveBeenCalled();
+      expect(response.status).toBe(500);
+      expect(mockIncrementBookmarks).not.toHaveBeenCalled();
     });
   });
 
@@ -140,7 +152,11 @@ describe('IP-based deduplication security controls', () => {
 
   describe('deduplication TTL enforcement', () => {
     it('uses 86400 seconds (24h) TTL for deduplication keys', async () => {
-      const request = createRequest({ slug: 'plugin-slug', contentType: 'post', action: 'bookmark' });
+      const request = createRequest({
+        slug: 'plugin-slug',
+        contentType: 'post',
+        action: 'bookmark',
+      });
       await BookmarkPOST(request);
 
       expect(mockCheckIpDeduplication).toHaveBeenCalledWith(

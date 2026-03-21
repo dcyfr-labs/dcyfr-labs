@@ -31,7 +31,22 @@ vi.mock('@/lib/redis-client', () => ({
         return 1;
       }
     ),
+    hSet: vi.fn(
+      async (key: string, fieldOrHash: string | Record<string, string>, value?: string) => {
+        hashes[key] ||= {};
+        if (typeof fieldOrHash === 'string' && value !== undefined) {
+          hashes[key][fieldOrHash] = value;
+        } else if (typeof fieldOrHash === 'object') {
+          Object.assign(hashes[key], fieldOrHash);
+        }
+        return 1;
+      }
+    ),
     hget: vi.fn(async (key: string, field: string) => {
+      if (!hashes[key]) return null;
+      return hashes[key][field] ?? null;
+    }),
+    hGet: vi.fn(async (key: string, field: string) => {
       if (!hashes[key]) return null;
       return hashes[key][field] ?? null;
     }),
@@ -39,10 +54,22 @@ vi.mock('@/lib/redis-client', () => ({
       if (!hashes[key]) return 0;
       return hashes[key][field] ? 1 : 0;
     }),
+    hExists: vi.fn(async (key: string, field: string) => {
+      if (!hashes[key]) return 0;
+      return hashes[key][field] ? 1 : 0;
+    }),
     hgetall: vi.fn(async (key: string) => {
       return hashes[key] ?? {};
     }),
+    hGetAll: vi.fn(async (key: string) => {
+      return hashes[key] ?? {};
+    }),
     hdel: vi.fn(async (key: string, field: string) => {
+      if (!hashes[key] || !hashes[key][field]) return 0;
+      delete hashes[key][field];
+      return 1;
+    }),
+    hDel: vi.fn(async (key: string, field: string) => {
       if (!hashes[key] || !hashes[key][field]) return 0;
       delete hashes[key][field];
       return 1;
@@ -52,10 +79,17 @@ vi.mock('@/lib/redis-client', () => ({
       lists[key].unshift(value);
       return lists[key].length;
     }),
+    lPush: vi.fn(async (key: string, value: string) => {
+      lists[key] ||= [];
+      lists[key].unshift(value);
+      return lists[key].length;
+    }),
     expire: vi.fn(async () => 1),
     incr: vi.fn(async () => 1),
     pexpireat: vi.fn(async () => 1),
+    pExpireAt: vi.fn(async () => 1),
     pttl: vi.fn(async () => 60000),
+    pTTL: vi.fn(async () => 60000),
   },
 }));
 
