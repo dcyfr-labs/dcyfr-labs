@@ -271,7 +271,7 @@ async function readContributionCache(key: string): Promise<ContributionResponse 
 
   const cached = await redis.get(key);
   const data = deserializeCacheValue(cached);
-  return data && data.contributions ? data : null;
+  return data?.contributions ? data : null;
 }
 
 // ============================================================================
@@ -375,7 +375,7 @@ export async function checkGitHubDataHealth(): Promise<{
       data = cached as ContributionResponse;
     }
 
-    if (!data || !data.lastUpdated) {
+    if (!data?.lastUpdated) {
       return { cacheAvailable: true, dataFresh: false };
     }
 
@@ -388,7 +388,7 @@ export async function checkGitHubDataHealth(): Promise<{
       lastUpdated: data.lastUpdated,
       totalContributions: data.totalContributions,
     };
-  } catch (error) {
+  } catch {
     return { cacheAvailable: false, dataFresh: false };
   }
 }

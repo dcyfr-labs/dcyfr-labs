@@ -5,7 +5,7 @@
  * Uses mocked Redis clients to verify sync logic
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import type { Redis } from '@upstash/redis';
 import { escapeRegExp } from '@/lib/security/regex-utils';
 
@@ -141,7 +141,6 @@ describe('Production Metrics Sync', () => {
         'engagement:post-1:likes': '50',
       };
 
-      const prodRedis = createMockRedis(prodData) as unknown as Redis;
       const previewRedis = createMockRedis({}) as unknown as Redis;
 
       for (const [key, value] of Object.entries(prodData)) {

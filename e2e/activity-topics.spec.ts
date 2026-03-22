@@ -9,22 +9,20 @@
  * - Topic filter clearing
  */
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from '@playwright/test';
 
-test.describe("Activity Topic Cloud", () => {
+test.describe('Activity Topic Cloud', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to activity page
-    await page.goto("/activity");
+    await page.goto('/activity');
 
     // Wait for page to be fully loaded
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
   });
 
-  test("should display topic cloud when topics are available", async ({
-    page,
-  }) => {
+  test('should display topic cloud when topics are available', async ({ page }) => {
     // Look for the Topics heading
-    const topicsHeading = page.getByRole("heading", { name: /Topics/i });
+    const topicsHeading = page.getByRole('heading', { name: /Topics/i });
 
     // Should be visible if there are topics
     const isVisible = await topicsHeading.isVisible().catch(() => false);
@@ -39,7 +37,7 @@ test.describe("Activity Topic Cloud", () => {
     }
   });
 
-  test("should render topic badges with counts", async ({ page }) => {
+  test('should render topic badges with counts', async ({ page }) => {
     // Look for topic badges (they have text + count pattern)
     const topicBadges = page.locator('[role="button"]').filter({
       hasText: /\d+$/, // Ends with a number (the count)
@@ -53,11 +51,11 @@ test.describe("Activity Topic Cloud", () => {
       await expect(firstBadge).toBeVisible();
 
       // Badge should be clickable
-      await expect(firstBadge).toHaveAttribute("class", /cursor-pointer/);
+      await expect(firstBadge).toHaveAttribute('class', /cursor-pointer/);
     }
   });
 
-  test("should filter activities when topic is clicked", async ({ page }) => {
+  test('should filter activities when topic is clicked', async ({ page }) => {
     // Find first topic badge
     const topicBadges = page.locator('[role="button"]').filter({
       hasText: /\d+$/, // Ends with a number
@@ -83,7 +81,7 @@ test.describe("Activity Topic Cloud", () => {
     }
   });
 
-  test("should highlight selected topics", async ({ page }) => {
+  test('should highlight selected topics', async ({ page }) => {
     // Find topic badges
     const topicBadges = page.locator('[role="button"]').filter({
       hasText: /\d+$/,
@@ -95,21 +93,21 @@ test.describe("Activity Topic Cloud", () => {
       const firstTopic = topicBadges.first();
 
       // Get classes before click
-      const beforeClasses = await firstTopic.getAttribute("class");
+      const beforeClasses = await firstTopic.getAttribute('class');
 
       // Click topic
       await firstTopic.click();
       await page.waitForTimeout(100);
 
       // Get classes after click
-      const afterClasses = await firstTopic.getAttribute("class");
+      const afterClasses = await firstTopic.getAttribute('class');
 
       // Classes should change to indicate selection
       expect(beforeClasses).not.toBe(afterClasses);
     }
   });
 
-  test("should support multiple topic selection", async ({ page }) => {
+  test('should support multiple topic selection', async ({ page }) => {
     // Find topic badges
     const topicBadges = page.locator('[role="button"]').filter({
       hasText: /\d+$/,
@@ -125,15 +123,15 @@ test.describe("Activity Topic Cloud", () => {
       await page.waitForTimeout(500);
 
       // Both should be highlighted
-      const firstClasses = await topicBadges.nth(0).getAttribute("class");
-      const secondClasses = await topicBadges.nth(1).getAttribute("class");
+      const firstClasses = await topicBadges.nth(0).getAttribute('class');
+      const secondClasses = await topicBadges.nth(1).getAttribute('class');
 
-      expect(firstClasses).toContain("bg-primary");
-      expect(secondClasses).toContain("bg-primary");
+      expect(firstClasses).toContain('bg-primary');
+      expect(secondClasses).toContain('bg-primary');
     }
   });
 
-  test("should toggle topic selection on second click", async ({ page }) => {
+  test('should toggle topic selection on second click', async ({ page }) => {
     // Find topic badges
     const topicBadges = page.locator('[role="button"]').filter({
       hasText: /\d+$/,
@@ -164,7 +162,7 @@ test.describe("Activity Topic Cloud", () => {
     }
   });
 
-  test("should show topic sizes based on frequency", async ({ page }) => {
+  test('should show topic sizes based on frequency', async ({ page }) => {
     // Find topic badges
     const topicBadges = page.locator('[role="button"]').filter({
       hasText: /\d+$/,
@@ -174,14 +172,14 @@ test.describe("Activity Topic Cloud", () => {
 
     if (count >= 3) {
       // Get classes for first 3 topics (sorted by frequency)
-      const firstClasses = await topicBadges.nth(0).getAttribute("class");
-      const secondClasses = await topicBadges.nth(1).getAttribute("class");
-      const thirdClasses = await topicBadges.nth(2).getAttribute("class");
+      const firstClasses = await topicBadges.nth(0).getAttribute('class');
+      const secondClasses = await topicBadges.nth(1).getAttribute('class');
+      const thirdClasses = await topicBadges.nth(2).getAttribute('class');
 
       // First topic (most frequent) should have larger or equal size
-      const firstSize = getTextSizeFromClasses(firstClasses || "");
-      const secondSize = getTextSizeFromClasses(secondClasses || "");
-      const thirdSize = getTextSizeFromClasses(thirdClasses || "");
+      const firstSize = getTextSizeFromClasses(firstClasses || '');
+      const secondSize = getTextSizeFromClasses(secondClasses || '');
+      const thirdSize = getTextSizeFromClasses(thirdClasses || '');
 
       // Sizes should be ordered (or equal)
       expect(firstSize).toBeGreaterThanOrEqual(secondSize);
@@ -190,15 +188,13 @@ test.describe("Activity Topic Cloud", () => {
   });
 });
 
-test.describe("Related Topics", () => {
+test.describe('Related Topics', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/activity");
-    await page.waitForLoadState("networkidle");
+    await page.goto('/activity');
+    await page.waitForLoadState('networkidle');
   });
 
-  test("should display related topics after selecting a topic", async ({
-    page,
-  }) => {
+  test('should display related topics after selecting a topic', async ({ page }) => {
     // Find and click a topic
     const topicBadges = page.locator('[role="button"]').filter({
       hasText: /\d+$/,
@@ -212,7 +208,7 @@ test.describe("Related Topics", () => {
       await page.waitForTimeout(500);
 
       // Look for "Related Topics" heading
-      const relatedHeading = page.getByRole("heading", {
+      const relatedHeading = page.getByRole('heading', {
         name: /Related Topics/i,
       });
 
@@ -224,7 +220,7 @@ test.describe("Related Topics", () => {
     }
   });
 
-  test("should add related topic to filter when clicked", async ({ page }) => {
+  test('should add related topic to filter when clicked', async ({ page }) => {
     // Find and click a topic
     const topicBadges = page.locator('[role="button"]').filter({
       hasText: /\d+$/,
@@ -250,16 +246,14 @@ test.describe("Related Topics", () => {
         await page.waitForTimeout(500);
 
         // Should now have 2 topics selected
-        const selectedTopics = page.locator(".bg-primary");
+        const selectedTopics = page.locator('.bg-primary');
         const selectedCount = await selectedTopics.count();
         expect(selectedCount).toBeGreaterThanOrEqual(2);
       }
     }
   });
 
-  test("should update related topics when selection changes", async ({
-    page,
-  }) => {
+  test('should update related topics when selection changes', async ({ page }) => {
     // Find topic badges
     const topicBadges = page.locator('[role="button"]').filter({
       hasText: /\d+$/,
@@ -273,8 +267,8 @@ test.describe("Related Topics", () => {
       await page.waitForTimeout(500);
 
       // Get related topics text (if any)
-      const relatedSection = page.locator("text=Related Topics").locator("..");
-      const firstRelated = await relatedSection.textContent().catch(() => "");
+      const relatedSection = page.locator('text=Related Topics').locator('..');
+      await relatedSection.textContent().catch(() => '');
 
       // Select different topic
       await topicBadges.nth(0).click(); // Deselect first
@@ -282,24 +276,22 @@ test.describe("Related Topics", () => {
       await page.waitForTimeout(500);
 
       // Get new related topics
-      const secondRelated = await relatedSection
-        .textContent()
-        .catch(() => "");
+      const secondRelated = await relatedSection.textContent().catch(() => '');
 
       // Related topics may change (or section may disappear)
       // Just verify the operation doesn't crash
-      expect(typeof secondRelated).toBe("string");
+      expect(typeof secondRelated).toBe('string');
     }
   });
 });
 
-test.describe("Topic Cloud Accessibility", () => {
+test.describe('Topic Cloud Accessibility', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/activity");
-    await page.waitForLoadState("networkidle");
+    await page.goto('/activity');
+    await page.waitForLoadState('networkidle');
   });
 
-  test("should have proper ARIA labels for topic badges", async ({ page }) => {
+  test('should have proper ARIA labels for topic badges', async ({ page }) => {
     // Topic badges should be buttons or have appropriate role
     const topicBadges = page.locator('[role="button"]').filter({
       hasText: /\d+$/,
@@ -311,13 +303,13 @@ test.describe("Topic Cloud Accessibility", () => {
       const firstBadge = topicBadges.first();
 
       // Should have title attribute for tooltips
-      const title = await firstBadge.getAttribute("title");
+      const title = await firstBadge.getAttribute('title');
       expect(title).toBeTruthy();
       expect(title).toMatch(/activities/i);
     }
   });
 
-  test("should show topic count in tooltips", async ({ page }) => {
+  test('should show topic count in tooltips', async ({ page }) => {
     const topicBadges = page.locator('[role="button"]').filter({
       hasText: /\d+$/,
     });
@@ -331,7 +323,7 @@ test.describe("Topic Cloud Accessibility", () => {
       await firstBadge.hover();
 
       // Title should show count and percentage
-      const title = await firstBadge.getAttribute("title");
+      const title = await firstBadge.getAttribute('title');
       expect(title).toMatch(/\d+/); // Has number
       expect(title).toMatch(/%/); // Has percentage
     }
@@ -347,13 +339,13 @@ test.describe("Topic Cloud Accessibility", () => {
  */
 function getTextSizeFromClasses(classes: string): number {
   const sizeMap: Record<string, number> = {
-    "text-xs": 1,
-    "text-sm": 2,
-    "text-base": 3,
-    "text-lg": 4,
-    "text-xl": 5,
-    "text-2xl": 6,
-    "text-3xl": 7,
+    'text-xs': 1,
+    'text-sm': 2,
+    'text-base': 3,
+    'text-lg': 4,
+    'text-xl': 5,
+    'text-2xl': 6,
+    'text-3xl': 7,
   };
 
   for (const [className, size] of Object.entries(sizeMap)) {

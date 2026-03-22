@@ -13,9 +13,9 @@
  * Based on: docs/governance/OPERATIONAL_DOCUMENTATION_POLICY.md
  */
 
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,9 +23,9 @@ const rootDir = path.resolve(__dirname, '..');
 const docsDir = path.join(rootDir, 'docs');
 
 // Parse CLI arguments
-const args = process.argv.slice(2);
-const EXECUTE = args.includes('--execute');
-const VERBOSE = args.includes('--verbose');
+const args = new Set(process.argv.slice(2));
+const EXECUTE = args.has('--execute');
+const VERBOSE = args.has('--verbose');
 const DRY_RUN = !EXECUTE;
 
 // Operational documentation patterns (from OPERATIONAL_DOCUMENTATION_POLICY.md)
@@ -63,38 +63,6 @@ const OPERATIONAL_CONTENT_PATTERNS = [
 
   // Date-stamped headers indicating operational doc
   /^##?\s*.+\s+\d{4}-\d{2}(-\d{2})?$/im, // "## Status 2026-01-24"
-];
-
-// Categories that should always have private/ subdirectory available
-const CATEGORIES_WITH_PRIVATE = [
-  'accessibility',
-  'analysis',
-  'api',
-  'architecture',
-  'authentication',
-  'automation',
-  'backlog',
-  'blog',
-  'components',
-  'content',
-  'debugging',
-  'design',
-  'features',
-  'governance',
-  'maintenance',
-  'mcp',
-  'operations',
-  'optimization',
-  'performance',
-  'platform',
-  'proposals',
-  'refactoring',
-  'research',
-  'security',
-  'sessions',
-  'templates',
-  'testing',
-  'troubleshooting',
 ];
 
 // Files to exclude from analysis
@@ -385,7 +353,9 @@ async function main() {
   process.exit(exitCode);
 }
 
-main().catch((error) => {
+try {
+  await main();
+} catch (error) {
   console.error('❌ Fatal error:', error);
   process.exit(1);
-});
+}

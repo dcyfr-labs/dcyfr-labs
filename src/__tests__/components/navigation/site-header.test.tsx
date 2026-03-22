@@ -2,6 +2,16 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+type MockLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+  href: string;
+  children?: React.ReactNode;
+};
+
+type MockImageProps = {
+  alt?: string;
+  src?: string;
+} & Record<string, unknown>;
+
 // Mock next/navigation
 const mockUsePathname = vi.fn();
 vi.mock('next/navigation', () => ({
@@ -10,7 +20,7 @@ vi.mock('next/navigation', () => ({
 
 // Mock next/link
 vi.mock('next/link', () => ({
-  default: ({ children, href, onClick, ...props }: any) => (
+  default: ({ children, href, onClick, ...props }: MockLinkProps) => (
     <a href={href} onClick={onClick} {...props}>
       {children}
     </a>
@@ -19,7 +29,14 @@ vi.mock('next/link', () => ({
 
 // Mock next/image
 vi.mock('next/image', () => ({
-  default: ({ alt, src, ...props }: any) => <img alt={alt} src={src} {...props} />,
+  default: ({ alt, src, ...props }: MockImageProps) => (
+    <div
+      data-testid="next-image"
+      data-alt={alt ? String(alt) : ''}
+      data-src={src ? String(src) : ''}
+      {...props}
+    />
+  ),
 }));
 
 import { SiteHeader } from '@/components/navigation';

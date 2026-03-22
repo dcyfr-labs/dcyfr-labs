@@ -29,7 +29,7 @@ function parseEnvFile(filePath) {
       out[key] = val;
     }
     return out;
-  } catch (err) {
+  } catch {
     return {};
   }
 }
@@ -102,7 +102,7 @@ function isValidMCPServerURL(url) {
     }
 
     return true;
-  } catch (err) {
+  } catch {
     console.warn(`⚠️  Invalid MCP server URL format: ${url}`);
     return false;
   }
@@ -121,7 +121,7 @@ function readMcpConfig(configPath = path.join(ROOT, '.vscode', 'mcp.json')) {
       expanded[name] = expandObject(s, root);
     }
     return expanded;
-  } catch (err) {
+  } catch {
     return {};
   }
 }
@@ -181,7 +181,15 @@ async function fetchGet(url, headers, timeoutMs, opts, name, tokenNameUsed, star
   // Safe: URL validated by isValidMCPServerURL() above (HTTPS or localhost only)
   const res = await fetch(url, { method: 'GET', headers, signal: controller.signal });
   clearTimeout(timer);
-  if (opts.debug) console.log({ url, name, method: 'GET (fallback)', tokenNameUsed, status: res.status, statusText: res.statusText });
+  if (opts.debug)
+    console.log({
+      url,
+      name,
+      method: 'GET (fallback)',
+      tokenNameUsed,
+      status: res.status,
+      statusText: res.statusText,
+    });
   return buildFetchResult(name, res, 'GET', tokenNameUsed, startTime);
 }
 
@@ -214,13 +222,21 @@ async function checkUrlServer(name, server, env = {}, timeoutMs = 5000, opts = {
     if (res.status === 405) {
       return fetchGet(url, headers, timeoutMs * 2, opts, name, tokenNameUsed, startTime);
     }
-    if (opts.debug) console.log({ url, name, method: 'HEAD', tokenNameUsed, status: res.status, statusText: res.statusText });
+    if (opts.debug)
+      console.log({
+        url,
+        name,
+        method: 'HEAD',
+        tokenNameUsed,
+        status: res.status,
+        statusText: res.statusText,
+      });
     return buildFetchResult(name, res, 'HEAD', tokenNameUsed, startTime);
   } catch (err) {
     try {
       return await fetchGet(url, headers, timeoutMs * 2, opts, name, tokenNameUsed, startTime);
-    } catch (err2) {
-      if (opts.debug) console.error(`MCP check failed ${name} ${url}:`, err2 || err);
+    } catch {
+      if (opts.debug) console.error(`MCP check failed ${name} ${url}:`, err);
       return {
         name,
         ok: false,
@@ -237,7 +253,8 @@ function spawnCheckArgs(command, args, name) {
   const cmdArgs = Array.from(args);
   cmdArgs.push('--version');
   try {
-    const res = spawnSync(command, cmdArgs, { // NOSONAR - Administrative script, inputs from controlled sources
+    const res = spawnSync(command, cmdArgs, {
+      // NOSONAR - Administrative script, inputs from controlled sources
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'pipe'],
       timeout: 10_000,
@@ -245,7 +262,8 @@ function spawnCheckArgs(command, args, name) {
     if (res.error) return { name, ok: false, error: String(res.error) };
     if (res.status === 0) return { name, ok: true, stdout: res.stdout.trim() };
     // Try running with --help if version failed
-    const res2 = spawnSync(command, [...args, '--help'], { // NOSONAR - Administrative script, inputs from controlled sources
+    const res2 = spawnSync(command, [...args, '--help'], {
+      // NOSONAR - Administrative script, inputs from controlled sources
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'pipe'],
       timeout: 10_000,
@@ -263,14 +281,15 @@ function checkCommandServer(name, server) {
   if (!command) return { name, ok: false, error: 'no-command' };
   // Try a bare `command --version` first (safe for npx and many binaries)
   try {
-    const resBare = spawnSync(command, ['--version'], { // NOSONAR - Administrative script, inputs from controlled sources
+    const resBare = spawnSync(command, ['--version'], {
+      // NOSONAR - Administrative script, inputs from controlled sources
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'pipe'],
       timeout: 10_000,
     });
     if (!resBare.error && resBare.status === 0)
       return { name, ok: true, stdout: resBare.stdout.trim() };
-  } catch (_err) {
+  } catch {
     // ignore; fallback to the full command invocation
   }
   // Some packages want --version, some -v; try both

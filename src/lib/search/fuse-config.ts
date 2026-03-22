@@ -9,7 +9,6 @@
  * - Configurable threshold for match quality
  */
 
-import Fuse from 'fuse.js';
 import type { IFuseOptions } from 'fuse.js';
 
 /**

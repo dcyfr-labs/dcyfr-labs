@@ -3,11 +3,11 @@
 /**
  * Automated Changelog Entry Generator
  *
- * Extracts changes from PR, todo.md, commits, and file changes to generate
+ * Extracts changes from PR, completed-task moves, commits, and file changes to generate
  * a Keep a Changelog format entry.
  *
  * Input sources (priority order):
- * 1. todo.md → done.md moves (highest signal)
+ * 1. task-list → done-list moves (highest signal)
  * 2. PR description "Changes Made" section
  * 3. Commit messages (conventional commits)
  * 4. File changes analysis
@@ -24,7 +24,6 @@
  */
 
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -40,7 +39,7 @@ const debug = process.env.DEBUG === 'true';
 
 // GitHub API configuration
 const GH_TOKEN = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
-const REPO = 'dcyfr/dcyfr-labs'; // TODO: Extract from git remote
+const REPO = 'dcyfr/dcyfr-labs'; // Placeholder: can be extracted from git remote later.
 
 /**
  * Debug logging
@@ -101,17 +100,17 @@ function parsePRDescription(description) {
   };
 
   // Extract summary (first paragraph or up to first heading)
-  const summaryMatch = description.match(/^(.+?)(?:\n#{1,6}|$)/s);
+  const summaryMatch = /^(.+?)(?:\n#{1,6}|$)/s.exec(description);
   if (summaryMatch) {
     sections.summary = summaryMatch[1].trim();
   }
 
   // Extract "Changes Made" section
-  const changesMatch = description.match(/##?\s*Changes?\s*Made[\s\S]*?\n((?:[-*]\s+.+\n?)+)/i);
+  const changesMatch = /##?\s*Changes?\s*Made[\s\S]*?\n((?:[-*]\s+.+\n?)+)/i.exec(description);
   if (changesMatch) {
     sections.changes = changesMatch[1]
       .split('\n')
-      .filter((line) => line.trim().match(/^[-*]\s+/))
+      .filter((line) => /^[-*]\s+/.exec(line.trim()))
       .map((line) => line.trim().replace(/^[-*]\s+/, ''));
   }
 
@@ -137,7 +136,14 @@ function getPRDiff(prNumber) {
     // Get merge commit for PR (use execFileSync with array args to avoid shell injection)
     const mergeCommit = execFileSync(
       'git',
-      ['log', '--oneline', '--merges', `--grep=Merge pull request #${prNumber}`, '-1', '--format=%H'],
+      [
+        'log',
+        '--oneline',
+        '--merges',
+        `--grep=Merge pull request #${prNumber}`,
+        '-1',
+        '--format=%H',
+      ],
       { cwd: ROOT_DIR, encoding: 'utf-8' }
     ).trim();
 
@@ -160,14 +166,12 @@ function getPRDiff(prNumber) {
 }
 
 /**
- * Extract todo.md → done.md moves from diff
+ * Extract completed-task moves from diff
  * @param {string} diff - Git diff output
  * @returns {string[]} Array of completed tasks
  */
 function extractTodoMoves(diff) {
-  const tasks = [];
-
-  // Look for lines removed from todo.md (starting with "- [ ]" or "- [x]")
+  // Look for lines removed from the task list (starting with "- [ ]" or "- [x]")
   const todoRemovals = diff.match(/^-\s*-\s*\[[ x]\]\s*(.+)$/gm) || [];
 
   // Look for lines added to done.md
@@ -176,7 +180,7 @@ function extractTodoMoves(diff) {
   // Parse task text
   const parsedTasks = [...todoRemovals, ...doneAdditions]
     .map((line) => {
-      const match = line.match(/\[[ x]\]\s*(.+?)(?:\s*\([0-9.]+h\))?$/);
+      const match = /\[[ x]\]\s*(.+?)(?:\s*\([0-9.]+h\))?$/.exec(line);
       return match ? match[1].trim() : null;
     })
     .filter(Boolean);
@@ -200,7 +204,14 @@ function getCommitMessages(prNumber) {
 
     const mergeCommit = execFileSync(
       'git',
-      ['log', '--oneline', '--merges', `--grep=Merge pull request #${prNumber}`, '-1', '--format=%H'],
+      [
+        'log',
+        '--oneline',
+        '--merges',
+        `--grep=Merge pull request #${prNumber}`,
+        '-1',
+        '--format=%H',
+      ],
       { cwd: ROOT_DIR, encoding: 'utf-8' }
     ).trim();
 
@@ -314,7 +325,7 @@ function analyzeFileChanges(diff) {
  * @param {string} diff - Git diff
  * @returns {boolean} True if breaking changes detected
  */
-function detectBreakingChanges(prData, commits, diff) {
+function detectBreakingChanges(prData, commits) {
   // Check PR labels
   if (prData?.labels?.some((label) => label.name === 'breaking-change')) {
     return true;
@@ -403,7 +414,7 @@ function buildCategories(todoMoves, prInfo, fileChanges, commits) {
     Security: [],
   };
 
-  // Add todo moves (highest priority)
+  // Add completed-task moves (highest priority)
   for (const task of todoMoves) {
     addToCategory(categories, task);
   }
@@ -461,7 +472,7 @@ async function main() {
   // Get git diff
   const diff = getPRDiff(prNumber);
 
-  // Extract todo moves
+  // Extract completed-task moves
   console.error('🔍 Extracting todo.md → done.md moves...');
   const todoMoves = extractTodoMoves(diff);
   debugLog('Todo moves:', todoMoves);
@@ -482,7 +493,7 @@ async function main() {
   debugLog('File changes:', fileChanges);
 
   // Detect breaking changes
-  const breaking = detectBreakingChanges(prData, commits, diff);
+  const breaking = detectBreakingChanges(prData, commits);
   debugLog('Breaking changes:', breaking);
 
   // Aggregate changes by category
@@ -503,12 +514,13 @@ async function main() {
   console.error(`\n✅ Changelog entry generated (${changelogEntry.split('\n').length} lines)`);
 }
 
-// Run if executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch((error) => {
+  try {
+    await main();
+  } catch (error) {
     console.error('❌ Fatal error:', error);
     process.exit(1);
-  });
+  }
 }
 
 // Export for testing

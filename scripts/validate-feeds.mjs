@@ -2,21 +2,14 @@
 
 /**
  * Feed Validation Script
- * 
+ *
  * Validates RSS, Atom, and JSON feeds for proper formatting and content sanitization.
  * Checks that feed content doesn't include problematic HTML attributes.
- * 
+ *
  * Usage:
  *   node scripts/validate-feeds.mjs
  *   npm run feeds:validate
  */
-
-import { readFileSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const rootDir = join(__dirname, '..');
 
 // Colors for output
 const colors = {
@@ -67,14 +60,14 @@ const FEED_ENDPOINTS = [
 /**
  * Check feed content for forbidden attributes
  */
-function validateFeedContent(content, feedPath) {
+function validateFeedContent(content) {
   const issues = [];
-  
+
   for (const attr of FORBIDDEN_ATTRIBUTES) {
     // Check for attribute in HTML (case-insensitive)
-    const regex = new RegExp(`${attr}\\s*=`, 'gi');
+    const regex = new RegExp(String.raw`${attr}\s*=`, 'gi');
     const matches = content.match(regex);
-    
+
     if (matches) {
       issues.push({
         attribute: attr,
@@ -83,7 +76,7 @@ function validateFeedContent(content, feedPath) {
       });
     }
   }
-  
+
   return issues;
 }
 
@@ -93,10 +86,10 @@ function validateFeedContent(content, feedPath) {
 async function validateFeed(endpoint) {
   const baseUrl = process.env.SITE_URL || 'http://localhost:3000';
   const url = `${baseUrl}${endpoint.path}`;
-  
+
   try {
     const response = await fetch(url);
-    
+
     if (!response.ok) {
       return {
         endpoint,
@@ -104,16 +97,16 @@ async function validateFeed(endpoint) {
         error: `HTTP ${response.status}: ${response.statusText}`,
       };
     }
-    
+
     const contentType = response.headers.get('content-type') || '';
     const content = await response.text();
-    
+
     // Validate content type
     const hasCorrectContentType = contentType.includes(endpoint.contentType.split(';')[0]);
-    
+
     // Validate content for forbidden attributes
-    const contentIssues = validateFeedContent(content, endpoint.path);
-    
+    const contentIssues = validateFeedContent(content);
+
     return {
       endpoint,
       success: true,
@@ -135,27 +128,27 @@ async function validateFeed(endpoint) {
  * Report the result for a single feed endpoint, returns true if there was an error
  */
 function reportFeedResult(result) {
-  if (!result.success) {
+  if (result.success !== true) {
     log(colors.red, `  ❌ Failed: ${result.error}`);
     return true;
   }
 
-  let hasError = false;
+  const hasContentTypeError = result.hasCorrectContentType !== true;
 
-  if (!result.hasCorrectContentType) {
+  if (hasContentTypeError) {
     log(colors.yellow, `  ⚠️  Wrong Content-Type: ${result.contentType}`);
     log(colors.yellow, `      Expected: ${result.endpoint.contentType}`);
-    hasError = true;
   } else {
     log(colors.green, `  ✅ Content-Type: ${result.contentType}`);
   }
 
-  if (result.contentIssues.length > 0) {
+  const hasContentIssues = result.contentIssues.length > 0;
+
+  if (hasContentIssues) {
     log(colors.red, `  ❌ Found ${result.contentIssues.length} forbidden attribute(s):`);
     for (const issue of result.contentIssues) {
       log(colors.red, `     - ${issue.attribute}: ${issue.count} occurrence(s)`);
     }
-    hasError = true;
   } else {
     log(colors.green, `  ✅ No forbidden attributes`);
   }
@@ -163,7 +156,7 @@ function reportFeedResult(result) {
   const sizeKb = (result.size / 1024).toFixed(2);
   console.log(`     Size: ${sizeKb} KB`);
 
-  return hasError;
+  return hasContentTypeError || hasContentIssues;
 }
 
 /**
@@ -171,31 +164,31 @@ function reportFeedResult(result) {
  */
 async function validateFeeds() {
   log(colors.cyan, '\n🔍 Feed Validation\n');
-  
+
   const results = [];
   let hasErrors = false;
-  
+
   for (const endpoint of FEED_ENDPOINTS) {
     log(colors.blue, `Checking ${endpoint.path} (${endpoint.type})...`);
     const result = await validateFeed(endpoint);
     results.push(result);
-    
+
     if (reportFeedResult(result)) {
       hasErrors = true;
     }
-    
+
     console.log('');
   }
-  
+
   // Summary
-  const successful = results.filter(r => r.success).length;
+  const successful = results.filter((r) => r.success).length;
   const total = results.length;
-  
+
   log(colors.cyan, '\n📊 Summary\n');
   console.log(`  Total endpoints:     ${total}`);
   console.log(`  Successful:          ${successful}`);
   console.log(`  Failed:              ${total - successful}`);
-  
+
   if (hasErrors) {
     log(colors.red, '\n❌ Feed validation failed\n');
     process.exit(1);
@@ -213,7 +206,9 @@ if (baseUrl.includes('localhost')) {
 }
 
 // Run validation
-validateFeeds().catch((error) => {
+try {
+  await validateFeeds();
+} catch (error) {
   log(colors.red, '\n❌ Validation error:', error.message);
   process.exit(1);
-});
+}

@@ -12,16 +12,15 @@
  * @module lib/plugins/review-store
  */
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const globalForReviews = globalThis as unknown as {
-  __pluginReviewAggregator?: any;
+  __pluginReviewAggregator?: PluginRatingAggregatorType;
 };
 
 let aggregatorInstance: PluginRatingAggregatorType | null = null;
 
 type StarRating = 1 | 2 | 3 | 4 | 5;
-type ReviewStatus = "approved" | "pending" | "flagged" | "removed";
-type FlagReason = "spam" | "inappropriate" | "fake" | "other";
+type ReviewStatus = 'approved' | 'pending' | 'flagged' | 'removed';
+type FlagReason = 'spam' | 'inappropriate' | 'fake' | 'other';
 
 type PluginReview = {
   id: string;
@@ -67,17 +66,13 @@ type PluginRatingAggregatorType = {
     options?: {
       page?: number;
       pageSize?: number;
-      sortBy?: "rating" | "helpfulVotes" | "createdAt";
-      sortOrder?: "asc" | "desc";
+      sortBy?: 'rating' | 'helpfulVotes' | 'createdAt';
+      sortOrder?: 'asc' | 'desc';
     }
   ): ReviewPage;
   getRatingStats(pluginId: string): RatingStats;
   getReview(reviewId: string): PluginReview | undefined;
-  flagReview(input: {
-    reviewId: string;
-    reportedBy: string;
-    reason: FlagReason;
-  }): PluginReview;
+  flagReview(input: { reviewId: string; reportedBy: string; reason: FlagReason }): PluginReview;
   approveReview(reviewId: string): PluginReview;
   removeReview(reviewId: string): PluginReview;
   getCommunityScore(pluginId: string): number;
@@ -102,12 +97,12 @@ class InMemoryPluginRatingAggregator implements PluginRatingAggregatorType {
       (review) =>
         review.pluginId === input.pluginId &&
         review.userId === input.userId &&
-        review.status !== "removed"
+        review.status !== 'removed'
     );
 
     if (duplicate) {
-      const error = new Error("Duplicate review");
-      (error as Error & { code: string }).code = "DUPLICATE_REVIEW";
+      const error = new Error('Duplicate review');
+      (error as Error & { code: string }).code = 'DUPLICATE_REVIEW';
       throw error;
     }
 
@@ -119,7 +114,7 @@ class InMemoryPluginRatingAggregator implements PluginRatingAggregatorType {
       displayName: input.displayName,
       rating: input.rating,
       comment: input.comment,
-      status: this.autoApproveOnCreate ? "approved" : "pending",
+      status: this.autoApproveOnCreate ? 'approved' : 'pending',
       helpfulVotes: 0,
       createdAt: now,
       updatedAt: now,
@@ -135,27 +130,27 @@ class InMemoryPluginRatingAggregator implements PluginRatingAggregatorType {
     options: {
       page?: number;
       pageSize?: number;
-      sortBy?: "rating" | "helpfulVotes" | "createdAt";
-      sortOrder?: "asc" | "desc";
+      sortBy?: 'rating' | 'helpfulVotes' | 'createdAt';
+      sortOrder?: 'asc' | 'desc';
     } = {}
   ): ReviewPage {
     const page = Math.max(1, options.page ?? 1);
     const pageSize = Math.max(1, options.pageSize ?? 10);
-    const sortBy = options.sortBy ?? "createdAt";
-    const sortOrder = options.sortOrder ?? "desc";
+    const sortBy = options.sortBy ?? 'createdAt';
+    const sortOrder = options.sortOrder ?? 'desc';
 
     const visibleReviews = Array.from(this.reviews.values()).filter(
-      (review) => review.pluginId === pluginId && review.status !== "removed"
+      (review) => review.pluginId === pluginId && review.status !== 'removed'
     );
 
     const getSortableValue = (
       review: PluginReview,
-      key: "rating" | "helpfulVotes" | "createdAt"
+      key: 'rating' | 'helpfulVotes' | 'createdAt'
     ): number => {
-      if (key === "createdAt") {
+      if (key === 'createdAt') {
         return new Date(review.createdAt).getTime();
       }
-      if (key === "rating") {
+      if (key === 'rating') {
         return review.rating;
       }
       return review.helpfulVotes;
@@ -165,7 +160,7 @@ class InMemoryPluginRatingAggregator implements PluginRatingAggregatorType {
       const left = getSortableValue(a, sortBy);
       const right = getSortableValue(b, sortBy);
 
-      return sortOrder === "asc" ? left - right : right - left;
+      return sortOrder === 'asc' ? left - right : right - left;
     });
 
     const total = visibleReviews.length;
@@ -186,7 +181,7 @@ class InMemoryPluginRatingAggregator implements PluginRatingAggregatorType {
 
   getRatingStats(pluginId: string): RatingStats {
     const approvedReviews = Array.from(this.reviews.values()).filter(
-      (review) => review.pluginId === pluginId && review.status === "approved"
+      (review) => review.pluginId === pluginId && review.status === 'approved'
     );
 
     const distribution: Record<StarRating, number> = {
@@ -206,8 +201,7 @@ class InMemoryPluginRatingAggregator implements PluginRatingAggregatorType {
         ? 0
         : Number(
             (
-              approvedReviews.reduce((sum, review) => sum + review.rating, 0) /
-              totalReviews
+              approvedReviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews
             ).toFixed(2)
           );
 
@@ -223,15 +217,11 @@ class InMemoryPluginRatingAggregator implements PluginRatingAggregatorType {
     return this.reviews.get(reviewId);
   }
 
-  flagReview(input: {
-    reviewId: string;
-    reportedBy: string;
-    reason: FlagReason;
-  }): PluginReview {
+  flagReview(input: { reviewId: string; reportedBy: string; reason: FlagReason }): PluginReview {
     const review = this.reviews.get(input.reviewId);
     if (!review) {
-      const error = new Error("Review not found");
-      (error as Error & { code: string }).code = "REVIEW_NOT_FOUND";
+      const error = new Error('Review not found');
+      (error as Error & { code: string }).code = 'REVIEW_NOT_FOUND';
       throw error;
     }
 
@@ -241,7 +231,7 @@ class InMemoryPluginRatingAggregator implements PluginRatingAggregatorType {
       reason: input.reason,
       reportedAt: new Date().toISOString(),
     });
-    review.status = "flagged";
+    review.status = 'flagged';
     review.updatedAt = new Date().toISOString();
 
     this.reviews.set(review.id, review);
@@ -251,12 +241,12 @@ class InMemoryPluginRatingAggregator implements PluginRatingAggregatorType {
   approveReview(reviewId: string): PluginReview {
     const review = this.reviews.get(reviewId);
     if (!review) {
-      const error = new Error("Review not found");
-      (error as Error & { code: string }).code = "REVIEW_NOT_FOUND";
+      const error = new Error('Review not found');
+      (error as Error & { code: string }).code = 'REVIEW_NOT_FOUND';
       throw error;
     }
 
-    review.status = "approved";
+    review.status = 'approved';
     review.updatedAt = new Date().toISOString();
     this.reviews.set(review.id, review);
     return review;
@@ -265,12 +255,12 @@ class InMemoryPluginRatingAggregator implements PluginRatingAggregatorType {
   removeReview(reviewId: string): PluginReview {
     const review = this.reviews.get(reviewId);
     if (!review) {
-      const error = new Error("Review not found");
-      (error as Error & { code: string }).code = "REVIEW_NOT_FOUND";
+      const error = new Error('Review not found');
+      (error as Error & { code: string }).code = 'REVIEW_NOT_FOUND';
       throw error;
     }
 
-    review.status = "removed";
+    review.status = 'removed';
     review.updatedAt = new Date().toISOString();
     this.reviews.set(review.id, review);
     return review;
@@ -292,7 +282,7 @@ export async function getReviewStore(): Promise<PluginRatingAggregatorType> {
     // Dynamically import to support edge runtime and avoid circular deps.
     // Some published @dcyfr/ai versions do not yet export PluginRatingAggregator,
     // so we gracefully fall back to local in-memory implementation.
-    const aiModule = (await import("@dcyfr/ai")) as unknown as {
+    const aiModule = (await import('@dcyfr/ai')) as unknown as {
       PluginRatingAggregator?: new (config?: {
         autoApproveOnCreate?: boolean;
       }) => PluginRatingAggregatorType;
@@ -300,8 +290,7 @@ export async function getReviewStore(): Promise<PluginRatingAggregatorType> {
 
     // Use globalThis to survive hot-reloads in development
     if (globalForReviews.__pluginReviewAggregator) {
-      aggregatorInstance =
-        globalForReviews.__pluginReviewAggregator as PluginRatingAggregatorType;
+      aggregatorInstance = globalForReviews.__pluginReviewAggregator;
     } else {
       aggregatorInstance = aiModule.PluginRatingAggregator
         ? new aiModule.PluginRatingAggregator({ autoApproveOnCreate: true })

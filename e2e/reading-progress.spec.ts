@@ -181,7 +181,7 @@ test.describe('Reading Progress Tracking', () => {
     await expect(progressIndicator).toBeVisible();
   });
 
-  test('should restore scroll position when returning to article', async ({ page, context }) => {
+  test('should restore scroll position when returning to article', async ({ page }) => {
     // Note: This test may not work perfectly due to browser auto-restore behavior
     // but we'll verify localStorage has the correct data
 

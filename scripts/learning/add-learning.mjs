@@ -11,7 +11,6 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { randomUUID } from 'crypto';
 import readline from 'readline';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -20,11 +19,11 @@ const LEARNINGS_PATH = path.join(__dirname, '../../.github/agents/learning-data/
 function prompt(question) {
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   });
 
-  return new Promise(resolve => {
-    rl.question(question, answer => {
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
       rl.close();
       resolve(answer);
     });
@@ -47,7 +46,7 @@ async function addLearning() {
     title,
     description,
     impact: impact || 'medium',
-    applied: false
+    applied: false,
   };
 
   if (agent) learning.agent = agent;
@@ -63,7 +62,7 @@ async function addLearning() {
   console.log(`   Title: ${title}`);
 }
 
-addLearning().catch(err => {
+addLearning().catch((err) => {
   console.error('❌ Failed to add learning:', err.message);
   process.exit(1);
 });

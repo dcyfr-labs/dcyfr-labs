@@ -39,6 +39,94 @@ async function fetchWithTimeout(url: string, headers: Record<string, string>): P
   }
 }
 
+interface FetchState {
+  useUserEndpoint: boolean;
+  useUnauthenticated: boolean;
+  page: number;
+}
+
+type FetchPageResult =
+  | { kind: 'append'; repos: GitHubRepo[]; done: boolean; nextState: FetchState }
+  | { kind: 'retry'; nextState: FetchState }
+  | { kind: 'return'; repos: GitHubRepo[] };
+
+function getStaleReposOrEmpty(): GitHubRepo[] {
+  const stale = readReposCacheStale();
+  return stale ? stale.repos : [];
+}
+
+function buildReposUrl(state: FetchState): string {
+  const baseEndpoint = state.useUserEndpoint
+    ? `${GITHUB_API_CONFIG.baseUrl}/users/${GITHUB_ORG}/repos`
+    : `${GITHUB_API_CONFIG.baseUrl}/orgs/${GITHUB_ORG}/repos`;
+  return `${baseEndpoint}?per_page=${GITHUB_API_CONFIG.perPage}&page=${state.page}&type=public&sort=updated`;
+}
+
+function requestHeadersForState(
+  state: FetchState,
+  headers: Record<string, string>
+): Record<string, string> {
+  return state.useUnauthenticated ? {} : headers;
+}
+
+function handleErrorStatus(state: FetchState, res: Response): FetchPageResult {
+  if (res.status === 404 && !state.useUserEndpoint && state.page === 1) {
+    return {
+      kind: 'retry',
+      nextState: { ...state, useUserEndpoint: true },
+    };
+  }
+
+  if (res.status === 401 && !state.useUnauthenticated) {
+    return {
+      kind: 'retry',
+      nextState: { ...state, useUnauthenticated: true },
+    };
+  }
+
+  if (res.status === 403) {
+    return { kind: 'return', repos: getStaleReposOrEmpty() };
+  }
+
+  const staleRepos = getStaleReposOrEmpty();
+  if (staleRepos.length > 0) {
+    return { kind: 'return', repos: staleRepos };
+  }
+
+  throw new Error(
+    `GitHub API error fetching repos for ${GITHUB_ORG}: ${res.status} ${res.statusText}`
+  );
+}
+
+async function fetchReposPage(
+  state: FetchState,
+  headers: Record<string, string>
+): Promise<FetchPageResult> {
+  const url = buildReposUrl(state);
+  const reqHeaders = requestHeadersForState(state, headers);
+
+  let res: Response;
+  try {
+    res = await fetchWithTimeout(url, reqHeaders);
+  } catch {
+    return { kind: 'return', repos: getStaleReposOrEmpty() };
+  }
+
+  if (!res.ok) {
+    return handleErrorStatus(state, res);
+  }
+
+  const pageRepos = (await res.json()) as GitHubRepo[];
+  const done = pageRepos.length < GITHUB_API_CONFIG.perPage;
+
+  return {
+    kind: 'append',
+    repos: pageRepos,
+    done,
+    nextState: { ...state, page: state.page + 1 },
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
@@ -63,62 +151,28 @@ export async function fetchOrgRepos(): Promise<GitHubRepo[]> {
   // added up to 10 s of latency on every cold request. Rate-limit responses
   // (HTTP 403) are handled inline in the fetch loop below.
 
-  // Determine whether GITHUB_ORG is an organisation or a user account.
-  // The /orgs/ endpoint returns 404 for plain user accounts; fall back to /users/.
-  let useUserEndpoint = false;
-  let useUnauthenticated = false; // fallback when token is invalid
-
   const allRepos: GitHubRepo[] = [];
-  let page = 1;
+  let state: FetchState = {
+    useUserEndpoint: false,
+    useUnauthenticated: false,
+    page: 1,
+  };
 
   while (true) {
-    // Re-build headers each iteration so unauthenticated fallback takes effect
-    const reqHeaders = useUnauthenticated ? {} : headers;
+    const pageResult = await fetchReposPage(state, headers);
 
-    const baseEndpoint = useUserEndpoint
-      ? `${GITHUB_API_CONFIG.baseUrl}/users/${GITHUB_ORG}/repos`
-      : `${GITHUB_API_CONFIG.baseUrl}/orgs/${GITHUB_ORG}/repos`;
-    const url = `${baseEndpoint}?per_page=${GITHUB_API_CONFIG.perPage}&page=${page}&type=public&sort=updated`;
-
-    let res: Response;
-    try {
-      res = await fetchWithTimeout(url, reqHeaders);
-    } catch (err) {
-      // Network error — fall back to stale cache (ignores TTL)
-      const stale = readReposCacheStale();
-      return stale ? stale.repos : [];
+    if (pageResult.kind === 'retry') {
+      state = pageResult.nextState;
+      continue;
     }
 
-    if (!res.ok) {
-      if (res.status === 404 && !useUserEndpoint && page === 1) {
-        // GITHUB_ORG is a user account, not an org — retry with /users/ endpoint
-        useUserEndpoint = true;
-        continue;
-      }
-      if (res.status === 401 && !useUnauthenticated) {
-        // Token is invalid or expired — retry without auth for public data
-        useUnauthenticated = true;
-        continue;
-      }
-      if (res.status === 403) {
-        // Rate limited — use stale cache (ignores TTL)
-        const stale = readReposCacheStale();
-        return stale ? stale.repos : [];
-      }
-      // Other non-OK status — try stale cache before surfacing error
-      const stale = readReposCacheStale();
-      if (stale) return stale.repos;
-      throw new Error(
-        `GitHub API error fetching repos for ${GITHUB_ORG}: ${res.status} ${res.statusText}`
-      );
+    if (pageResult.kind === 'return') {
+      return pageResult.repos;
     }
 
-    const page_repos = (await res.json()) as GitHubRepo[];
-    allRepos.push(...page_repos);
-
-    // Last page reached when fewer than perPage items are returned
-    if (page_repos.length < GITHUB_API_CONFIG.perPage) break;
-    page++;
+    allRepos.push(...pageResult.repos);
+    state = pageResult.nextState;
+    if (pageResult.done) break;
   }
 
   // 4. Write cache (best-effort — skip on read-only filesystems such as Vercel)

@@ -12,7 +12,7 @@
  * - JSDoc blocks (/** ... * /)
  * - BDD test descriptions (describe, it, test blocks)
  * - Directives (@ts-ignore, @ts-expect-error, eslint-disable)
- * - TODO/FIXME/HACK markers
+ * - Maintenance-note markers
  * - License headers
  * - Type annotations in comments
  *
@@ -29,8 +29,8 @@
  * @see docs/ai/claude-code-enhancements.md
  */
 
-import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { extname, basename } from 'path';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { basename } from 'node:path';
 
 // =============================================================================
 // Configuration
@@ -63,11 +63,11 @@ const VALID_COMMENT_PATTERNS = [
   /^\s*\/\/\s*istanbul ignore/,
   /^\s*\/\/\s*vitest-environment/,
   /^\s*\/\*\s*eslint/,
-  // TODOs (we want these)
+  // Maintenance-note markers we intentionally allow
   /^\s*\/\/\s*(TODO|FIXME|HACK|NOTE|XXX|BUG|OPTIMIZE)[\s:]/i,
   // License headers
   /^\s*\/\/\s*(Copyright|License|SPDX|MIT|Apache)/i,
-  /^\s*\/\*[\s\*]*(Copyright|License|SPDX)/i,
+  /^\s*\/\*[\s*]*(Copyright|License|SPDX)/i,
   // Type annotations
   /^\s*\/\/\s*type:/i,
   /^\s*\/\*\*?\s*@type/,
@@ -100,11 +100,7 @@ function isValidComment(line, lineIndex, lines, isFirstCommentBlock) {
   }
 
   // First comment block (file header) is always valid
-  if (isFirstCommentBlock && lineIndex < 30) {
-    return true;
-  }
-
-  return false;
+  return isFirstCommentBlock && lineIndex < 30;
 }
 
 /**
@@ -132,7 +128,15 @@ function isBDDContext(line, lines, lineIndex) {
   return false;
 }
 
-function processCommentLine(line, i, lines, result, isFirstCommentBlock, firstNonCommentSeen, isTestFile) {
+function processCommentLine(
+  line,
+  i,
+  lines,
+  result,
+  isFirstCommentBlock,
+  firstNonCommentSeen,
+  isTestFile
+) {
   const trimmedLine = line.trim();
   result.commentLines++;
   const isValid = isValidComment(line, i, lines, isFirstCommentBlock && !firstNonCommentSeen);
@@ -178,7 +182,6 @@ function analyzeFile(filePath, threshold = DEFAULT_THRESHOLD) {
 
   const content = readFileSync(filePath, 'utf-8');
   const lines = content.split('\n');
-  const ext = extname(filePath).toLowerCase();
   const isTestFile =
     basename(filePath).includes('.test.') ||
     basename(filePath).includes('.spec.') ||
@@ -230,7 +233,15 @@ function analyzeFile(filePath, threshold = DEFAULT_THRESHOLD) {
     }
 
     if (isCommentLine) {
-      processCommentLine(line, i, lines, result, isFirstCommentBlock, firstNonCommentSeen, isTestFile);
+      processCommentLine(
+        line,
+        i,
+        lines,
+        result,
+        isFirstCommentBlock,
+        firstNonCommentSeen,
+        isTestFile
+      );
     } else {
       result.codeLines++;
       firstNonCommentSeen = true;
@@ -242,9 +253,7 @@ function analyzeFile(filePath, threshold = DEFAULT_THRESHOLD) {
   const totalMeaningfulLines = result.codeLines + result.commentLines;
   if (totalMeaningfulLines > 0) {
     result.commentRatio = Math.round((result.commentLines / totalMeaningfulLines) * 100);
-    result.excessiveRatio = Math.round(
-      (result.excessiveCommentLines / totalMeaningfulLines) * 100
-    );
+    result.excessiveRatio = Math.round((result.excessiveCommentLines / totalMeaningfulLines) * 100);
   }
 
   // Determine status
@@ -298,31 +307,27 @@ function formatResult(result, verbose = false) {
   }
 
   const lines = [];
-  const statusIcon =
-    result.status === 'excessive'
-      ? `${COLORS.red}⚠️`
-      : result.status === 'warning'
-        ? `${COLORS.yellow}⚠️`
-        : `${COLORS.green}✅`;
+  let statusIcon = `${COLORS.green}✅`;
+  if (result.status === 'excessive') {
+    statusIcon = `${COLORS.red}⚠️`;
+  } else if (result.status === 'warning') {
+    statusIcon = `${COLORS.yellow}⚠️`;
+  }
 
-  lines.push(`${statusIcon} ${result.file}${COLORS.reset}`);
   lines.push(
-    `   Lines: ${result.totalLines} total | ${result.codeLines} code | ${result.commentLines} comments | ${result.blankLines} blank`
-  );
-  lines.push(
+    `${statusIcon} ${result.file}${COLORS.reset}`,
+    `   Lines: ${result.totalLines} total | ${result.codeLines} code | ${result.commentLines} comments | ${result.blankLines} blank`,
     `   Ratio: ${result.commentRatio}% total comments | ${COLORS.yellow}${result.excessiveRatio}% excessive${COLORS.reset}`
   );
 
   if (result.status !== 'ok' || verbose) {
     if (result.validCommentLines > 0) {
       lines.push(
-        `   ${COLORS.green}Valid: ${result.validCommentLines} (JSDoc, directives, TODOs)${COLORS.reset}`
+        `   ${COLORS.green}Valid: ${result.validCommentLines} (JSDoc, directives, maintenance notes)${COLORS.reset}`
       );
     }
     if (result.excessiveCommentLines > 0) {
-      lines.push(
-        `   ${COLORS.red}Excessive: ${result.excessiveCommentLines}${COLORS.reset}`
-      );
+      lines.push(`   ${COLORS.red}Excessive: ${result.excessiveCommentLines}${COLORS.reset}`);
     }
   }
 
@@ -352,7 +357,7 @@ async function main() {
   const isVerbose = args.includes('--verbose') || args.includes('-v');
   const thresholdArg = args.find((a) => a.startsWith('--threshold='));
   const threshold = thresholdArg
-    ? parseInt(thresholdArg.split('=')[1], 10)
+    ? Number.parseInt(thresholdArg.split('=')[1], 10)
     : DEFAULT_THRESHOLD;
 
   if (!filePath) {
@@ -400,7 +405,9 @@ async function main() {
   process.exit(0);
 }
 
-main().catch((error) => {
+try {
+  await main();
+} catch (error) {
   console.error(`${COLORS.red}Error: ${error.message}${COLORS.reset}`);
   process.exit(2);
-});
+}

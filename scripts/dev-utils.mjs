@@ -14,46 +14,46 @@ import { parseArgs } from 'util';
 const execAsync = promisify(exec);
 
 const TASKS = {
-  'health': {
+  health: {
     description: 'Check development environment health',
-    fn: checkDevHealth
+    fn: checkDevHealth,
   },
-  'clean': {
+  clean: {
     description: 'Clean build artifacts and caches',
-    fn: cleanProject
+    fn: cleanProject,
   },
-  'reset': {
+  reset: {
     description: 'Reset development environment (clean + install)',
-    fn: resetProject
+    fn: resetProject,
   },
-  'check': {
+  check: {
     description: 'Run pre-flight checks (lint, typecheck, tests, build)',
-    fn: runPreflight
+    fn: runPreflight,
   },
-  'perf': {
+  perf: {
     description: 'Run performance benchmarks',
-    fn: runPerfBenchmarks
+    fn: runPerfBenchmarks,
   },
   'test-watch': {
     description: 'Run tests in optimized watch mode',
-    fn: runTestWatch
-  }
+    fn: runTestWatch,
+  },
 };
 
 async function checkDevHealth() {
   console.log(chalk.blue('🔍 Checking development environment health...\n'));
-  
+
   const checks = [
     { name: 'Node.js version', cmd: 'node --version' },
     { name: 'npm version', cmd: 'npm --version' },
     { name: 'TypeScript compilation', cmd: 'npx tsc --noEmit' },
     { name: 'ESLint status', cmd: 'npm run lint' },
-    { name: 'Dependencies check', cmd: 'npm outdated' }
+    { name: 'Dependencies check', cmd: 'npm outdated' },
   ];
 
   for (const check of checks) {
     try {
-      const { stdout, stderr } = await execAsync(check.cmd);
+      const { stdout } = await execAsync(check.cmd);
       console.log(chalk.green(`✅ ${check.name}:`), stdout.trim() || 'OK');
     } catch (error) {
       console.log(chalk.red(`❌ ${check.name}:`), error.message);
@@ -63,13 +63,13 @@ async function checkDevHealth() {
 
 async function cleanProject() {
   console.log(chalk.blue('🧹 Cleaning project artifacts...\n'));
-  
+
   const cleanCommands = [
     'rm -rf .next',
     'rm -rf coverage',
     'rm -rf node_modules/.cache',
     'rm -rf playwright-report',
-    'rm -rf test-results'
+    'rm -rf test-results',
   ];
 
   for (const cmd of cleanCommands) {
@@ -80,15 +80,15 @@ async function cleanProject() {
       console.log(chalk.yellow(`⚠️  Skip: ${cmd} (${error.message})`));
     }
   }
-  
+
   console.log(chalk.green('\n✨ Project cleaned successfully!'));
 }
 
 async function resetProject() {
   console.log(chalk.blue('🔄 Resetting development environment...\n'));
-  
+
   await cleanProject();
-  
+
   console.log(chalk.blue('\n📦 Reinstalling dependencies...'));
   try {
     await execAsync('npm ci');
@@ -97,17 +97,17 @@ async function resetProject() {
     console.log(chalk.red('❌ Failed to install dependencies:'), error.message);
     return;
   }
-  
+
   console.log(chalk.green('\n✨ Development environment reset complete!'));
 }
 
 async function runPerfBenchmarks() {
   console.log(chalk.blue('⚡ Running performance benchmarks...\n'));
-  
+
   const benchmarks = [
     { name: 'Build time', cmd: 'time npm run build' },
     { name: 'Test time', cmd: 'time npm run test:coverage' },
-    { name: 'Dev startup', cmd: 'time timeout 5s npm run dev:fast || true' }
+    { name: 'Dev startup', cmd: 'time timeout 5s npm run dev:fast || true' },
   ];
 
   for (const benchmark of benchmarks) {
@@ -125,7 +125,7 @@ async function runPerfBenchmarks() {
 
 async function runTestWatch() {
   console.log(chalk.blue('👀 Starting optimized test watch mode...\n'));
-  
+
   // Start vitest in watch mode with optimized settings
   try {
     await execAsync('npm run test', { stdio: 'inherit' });
@@ -146,7 +146,6 @@ async function runPreflight() {
   });
 
   const results = [];
-  let totalDuration = 0;
 
   function logResult(name, passed, duration) {
     const icon = passed ? '✅' : '❌';
@@ -159,7 +158,8 @@ async function runPreflight() {
     const startTime = Date.now();
 
     return new Promise((resolve) => {
-      const child = spawn(command, cmdArgs, { // NOSONAR - Administrative script, inputs from controlled sources
+      const child = spawn(command, cmdArgs, {
+        // NOSONAR - Administrative script, inputs from controlled sources
         stdio: args.values.verbose ? 'inherit' : 'pipe',
         shell: true,
         ...options,
@@ -193,8 +193,6 @@ async function runPreflight() {
     const result = await runCommand(command, cmdArgs, options);
 
     results.push({ name, ...result });
-    totalDuration += result.duration;
-
     logResult(name, result.passed, result.duration);
 
     return result.passed;
@@ -203,7 +201,9 @@ async function runPreflight() {
   const startTime = Date.now();
 
   console.log(chalk.bold(chalk.cyan('🚀 Developer Pre-flight Checks\n')));
-  console.log(`Mode: ${args.values.fast ? 'Fast' : 'Full'} | Fix: ${args.values.fix ? 'Yes' : 'No'}`);
+  console.log(
+    `Mode: ${args.values.fast ? 'Fast' : 'Full'} | Fix: ${args.values.fix ? 'Yes' : 'No'}`
+  );
 
   // Step 1: PII Scan
   await runCheck('PII/PI Scan', 'npm', ['run', 'scan:pi']);
@@ -277,7 +277,7 @@ async function runPreflight() {
 
 async function main() {
   const task = process.argv[2];
-  
+
   if (!task || !TASKS[task]) {
     console.log(chalk.cyan('🛠️  Development Utilities\n'));
     console.log('Available tasks:');
@@ -287,7 +287,7 @@ async function main() {
     console.log(`\nUsage: node dev-utils.js <task>`);
     process.exit(1);
   }
-  
+
   await TASKS[task].fn();
 }
 

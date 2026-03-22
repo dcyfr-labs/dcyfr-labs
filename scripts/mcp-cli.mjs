@@ -2,18 +2,18 @@
 
 /**
  * Unified MCP Server Management CLI
- * 
+ *
  * Single entry point for all MCP (Model Context Protocol) server operations.
  * Manage, check, and validate MCP servers across the project.
- * 
+ *
  * Usage:
  *   npm run mcp <command>
- * 
+ *
  * Commands:
  *   check      - Check MCP server connectivity and status
  *   health     - Generate detailed MCP health report
  *   validate   - Validate critical MCP configurations
- * 
+ *
  * Note: Use mcp:analytics, mcp:tokens, mcp:content, mcp:scholar to run servers
  */
 
@@ -68,7 +68,7 @@ function runCommand(command) {
   try {
     const fullPath = path.join(__dirname, info.script);
     execSync(`node "${fullPath}"`, { stdio: 'inherit' }); // NOSONAR - Administrative script, inputs from controlled sources
-  } catch (error) {
+  } catch {
     console.error(`\n❌ Command failed: ${command}`);
     process.exit(1);
   }

@@ -8,15 +8,14 @@
  * - Unused dependencies
  * - Large files
  * - Duplicate code patterns
- * - TODO/FIXME comments
+ * - Task-marker comments
  *
  * Outputs markdown summary for GitHub Issue
  */
 
-import { execSync } from 'child_process';
-import { readFileSync, existsSync, statSync } from 'fs';
+import { execSync } from 'node:child_process';
+import { readFileSync, statSync } from 'node:fs';
 import { glob } from 'glob';
-import path from 'path';
 
 const LARGE_FILE_THRESHOLD = 500; // lines
 const IGNORE_PATTERNS = [
@@ -39,36 +38,44 @@ async function detectUnusedExports() {
 
     // Parse output - ts-prune lists unused exports as:
     // path/to/file.ts:lineNumber - ExportName
-    const lines = output.trim().split('\n').filter(line => line.trim());
+    const lines = output
+      .trim()
+      .split('\n')
+      .filter((line) => line.trim());
 
     if (lines.length === 0) {
       return { count: 0, items: [] };
     }
 
-    const items = lines.map(line => {
-      const match = line.match(/^(.+?):(\d+)\s+-\s+(.+)$/);
-      if (match) {
-        const [, file, lineNum, exportName] = match;
-        return { file, lineNum, exportName };
-      }
-      return null;
-    }).filter(Boolean);
+    const items = lines
+      .map((line) => {
+        const match = line.match(/^(.+?):(\d+)\s+-\s+(.+)$/);
+        if (match) {
+          const [, file, lineNum, exportName] = match;
+          return { file, lineNum, exportName };
+        }
+        return null;
+      })
+      .filter(Boolean);
 
     return {
       count: items.length,
-      items: items.slice(0, 20) // Limit to top 20
+      items: items.slice(0, 20), // Limit to top 20
     };
   } catch (error) {
     // ts-prune exits with error code if unused exports found
     // Parse stderr for the actual results
     const output = error.stdout?.toString() || '';
-    const lines = output.trim().split('\n').filter(line => line.trim() && !line.includes('used in module'));
+    const lines = output
+      .trim()
+      .split('\n')
+      .filter((line) => line.trim() && !line.includes('used in module'));
 
     if (lines.length === 0) {
       return { count: 0, items: [] };
     }
 
-    const items = lines.slice(0, 20).map(line => ({ raw: line }));
+    const items = lines.slice(0, 20).map((line) => ({ raw: line }));
     return { count: lines.length, items };
   }
 }
@@ -90,7 +97,7 @@ async function detectUnusedDependencies() {
       unusedCount: unused.length,
       unused: unused.slice(0, 15),
       missingCount: missing.length,
-      missing: missing.slice(0, 10)
+      missing: missing.slice(0, 10),
     };
   } catch (error) {
     console.error('depcheck failed:', error.message);
@@ -105,7 +112,7 @@ async function findLargeFiles() {
   console.log('📏 Finding large files...');
 
   const files = await glob('src/**/*.{ts,tsx,js,jsx}', {
-    ignore: IGNORE_PATTERNS
+    ignore: IGNORE_PATTERNS,
   });
 
   const largeFiles = [];
@@ -120,10 +127,10 @@ async function findLargeFiles() {
         largeFiles.push({
           file,
           lines,
-          size: Math.round(stats.size / 1024) // KB
+          size: Math.round(stats.size / 1024), // KB
         });
       }
-    } catch (error) {
+    } catch {
       // Skip files that can't be read
       continue;
     }
@@ -134,18 +141,18 @@ async function findLargeFiles() {
 
   return {
     count: largeFiles.length,
-    files: largeFiles.slice(0, 10) // Top 10
+    files: largeFiles.slice(0, 10), // Top 10
   };
 }
 
 /**
- * Find TODO/FIXME comments
+ * Find task-marker comments
  */
 async function findTodoComments() {
-  console.log('📝 Finding TODO/FIXME comments...');
+  console.log('📝 Finding task-marker comments...');
 
   const files = await glob('src/**/*.{ts,tsx,js,jsx}', {
-    ignore: IGNORE_PATTERNS
+    ignore: IGNORE_PATTERNS,
   });
 
   const todos = [];
@@ -162,18 +169,18 @@ async function findTodoComments() {
             file,
             line: index + 1,
             type: todoMatch[1].toUpperCase(),
-            comment: todoMatch[2].trim()
+            comment: todoMatch[2].trim(),
           });
         }
       });
-    } catch (error) {
+    } catch {
       continue;
     }
   }
 
   return {
     count: todos.length,
-    items: todos.slice(0, 20) // Top 20
+    items: todos.slice(0, 20), // Top 20
   };
 }
 
@@ -184,7 +191,10 @@ async function checkDuplicatePackages() {
   console.log('🔄 Checking for duplicate packages...');
 
   try {
-    const output = execSync('npm ls --all --json', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] }); // NOSONAR - Administrative script, inputs from controlled sources
+    const output = execSync('npm ls --all --json', {
+      encoding: 'utf8',
+      stdio: ['pipe', 'pipe', 'ignore'],
+    }); // NOSONAR - Administrative script, inputs from controlled sources
     const tree = JSON.parse(output);
 
     const versions = new Map();
@@ -207,14 +217,14 @@ async function checkDuplicatePackages() {
       .filter(([, versionSet]) => versionSet.size > 1)
       .map(([name, versionSet]) => ({
         package: name,
-        versions: Array.from(versionSet)
+        versions: Array.from(versionSet),
       }));
 
     return {
       count: duplicates.length,
-      items: duplicates.slice(0, 10)
+      items: duplicates.slice(0, 10),
     };
-  } catch (error) {
+  } catch {
     // npm ls can exit with error if there are issues
     return { count: 0, items: [] };
   }
@@ -232,7 +242,7 @@ function generateWorkspaceChecklist() {
     'Archive old branches (check branch-cleanup report)',
     'Update dependencies: `npm outdated`',
     'Clean git objects: `git gc --aggressive`',
-    'Review and update `.gitignore`'
+    'Review and update `.gitignore`',
   ];
 }
 
@@ -241,9 +251,10 @@ function generateWorkspaceChecklist() {
  */
 function formatUnusedExportsSection(unusedExports, sections) {
   if (unusedExports.count > 0) {
-    sections.push('### 🗑️ Unused Exports\n');
-    sections.push('These exports are not used anywhere in the codebase:\n');
-    unusedExports.items.forEach(item => {
+    sections.push(
+      '### 🗑️ Unused Exports\n\nThese exports are not used anywhere in the codebase:\n'
+    );
+    unusedExports.items.forEach((item) => {
       if (item.raw) {
         sections.push(`- \`${item.raw}\``);
       } else {
@@ -259,9 +270,8 @@ function formatUnusedExportsSection(unusedExports, sections) {
 
 function formatUnusedDepsSection(unusedDeps, sections) {
   if (unusedDeps.unusedCount > 0) {
-    sections.push('### 📦 Unused Dependencies\n');
-    sections.push('Consider removing these from `package.json`:\n');
-    unusedDeps.unused.forEach(dep => {
+    sections.push('### 📦 Unused Dependencies\n\nConsider removing these from `package.json`:\n');
+    unusedDeps.unused.forEach((dep) => {
       sections.push(`- \`${dep}\``);
     });
     if (unusedDeps.unusedCount > unusedDeps.unused.length) {
@@ -273,9 +283,8 @@ function formatUnusedDepsSection(unusedDeps, sections) {
 
 function formatMissingDepsSection(unusedDeps, sections) {
   if (unusedDeps.missingCount > 0) {
-    sections.push('### ⚠️ Missing Dependencies\n');
-    sections.push('These are used but not in `package.json`:\n');
-    unusedDeps.missing.forEach(dep => {
+    sections.push('### ⚠️ Missing Dependencies\n\nThese are used but not in `package.json`:\n');
+    unusedDeps.missing.forEach((dep) => {
       sections.push(`- \`${dep}\``);
     });
     sections.push('');
@@ -284,11 +293,10 @@ function formatMissingDepsSection(unusedDeps, sections) {
 
 function formatLargeFilesSection(largeFiles, sections) {
   if (largeFiles.count > 0) {
-    sections.push('### 📏 Large Files\n');
-    sections.push('Consider refactoring these files:\n');
-    sections.push('| File | Lines | Size |');
-    sections.push('|------|-------|------|');
-    largeFiles.files.forEach(file => {
+    sections.push(
+      '### 📏 Large Files\n\nConsider refactoring these files:\n\n| File | Lines | Size |\n|------|-------|------|'
+    );
+    largeFiles.files.forEach((file) => {
       sections.push(`| [\`${file.file}\`](${file.file}) | ${file.lines} | ${file.size}KB |`);
     });
     if (largeFiles.count > largeFiles.files.length) {
@@ -300,10 +308,11 @@ function formatLargeFilesSection(largeFiles, sections) {
 
 function formatTodosSection(todos, sections) {
   if (todos.count > 0) {
-    sections.push('### 📝 TODO/FIXME Comments\n');
-    sections.push('Technical debt to address:\n');
-    todos.items.forEach(todo => {
-      sections.push(`- **${todo.type}** [\`${todo.file}:${todo.line}\`](${todo.file}#L${todo.line}): ${todo.comment}`);
+    sections.push('### 📝 Task-Marker Comments\n\nTechnical debt to address:\n');
+    todos.items.forEach((todo) => {
+      sections.push(
+        `- **${todo.type}** [\`${todo.file}:${todo.line}\`](${todo.file}#L${todo.line}): ${todo.comment}`
+      );
     });
     if (todos.count > todos.items.length) {
       sections.push(`\n*...and ${todos.count - todos.items.length} more*`);
@@ -314,9 +323,10 @@ function formatTodosSection(todos, sections) {
 
 function formatDuplicatesSection(duplicates, sections) {
   if (duplicates.count > 0) {
-    sections.push('### 🔄 Duplicate Package Versions\n');
-    sections.push('Multiple versions detected (may increase bundle size):\n');
-    duplicates.items.forEach(dup => {
+    sections.push(
+      '### 🔄 Duplicate Package Versions\n\nMultiple versions detected (may increase bundle size):\n'
+    );
+    duplicates.items.forEach((dup) => {
       sections.push(`- **${dup.package}**: ${dup.versions.join(', ')}`);
     });
     sections.push('');
@@ -327,19 +337,12 @@ function formatIssueBody(data) {
   const sections = [];
 
   // Header
-  sections.push('## Monthly Cleanup Report\n');
-  sections.push(`**Generated:** ${new Date().toISOString().split('T')[0]}\n`);
+  sections[sections.length] =
+    `## Monthly Cleanup Report\n\n**Generated:** ${new Date().toISOString().split('T')[0]}\n`;
 
   // Summary
-  sections.push('### Summary\n');
-  sections.push('| Category | Count |');
-  sections.push('|----------|-------|');
-  sections.push(`| Unused Exports | ${data.unusedExports.count} |`);
-  sections.push(`| Unused Dependencies | ${data.unusedDeps.unusedCount} |`);
-  sections.push(`| Large Files (>${LARGE_FILE_THRESHOLD} lines) | ${data.largeFiles.count} |`);
-  sections.push(`| TODO Comments | ${data.todos.count} |`);
-  sections.push(`| Duplicate Packages | ${data.duplicates.count} |`);
-  sections.push('');
+  sections[sections.length] =
+    `### Summary\n\n| Category | Count |\n|----------|-------|\n| Unused Exports | ${data.unusedExports.count} |\n| Unused Dependencies | ${data.unusedDeps.unusedCount} |\n| Large Files (>${LARGE_FILE_THRESHOLD} lines) | ${data.largeFiles.count} |\n| Task-Marker Comments | ${data.todos.count} |\n| Duplicate Packages | ${data.duplicates.count} |\n`;
 
   formatUnusedExportsSection(data.unusedExports, sections);
   formatUnusedDepsSection(data.unusedDeps, sections);
@@ -349,21 +352,15 @@ function formatIssueBody(data) {
   formatDuplicatesSection(data.duplicates, sections);
 
   // Workspace Cleanup Checklist
-  sections.push('### 🧹 Workspace Cleanup Checklist\n');
-  data.workspaceChecklist.forEach(item => {
+  sections[sections.length] = '### 🧹 Workspace Cleanup Checklist\n';
+  data.workspaceChecklist.forEach((item) => {
     sections.push(`- [ ] ${item}`);
   });
-  sections.push('');
+  sections[sections.length] = '';
 
   // Action Items
-  sections.push('### ✅ Action Items\n');
-  sections.push('- [ ] Review and remove unused exports');
-  sections.push('- [ ] Clean up unused dependencies');
-  sections.push('- [ ] Consider refactoring large files');
-  sections.push('- [ ] Address high-priority TODO comments');
-  sections.push('- [ ] Resolve duplicate package versions');
-  sections.push('- [ ] Complete workspace cleanup checklist');
-  sections.push('');
+  sections[sections.length] =
+    '### ✅ Action Items\n\n- [ ] Review and remove unused exports\n- [ ] Clean up unused dependencies\n- [ ] Consider refactoring large files\n- [ ] Address high-priority task-marker comments\n- [ ] Resolve duplicate package versions\n- [ ] Complete workspace cleanup checklist\n';
 
   return sections.join('\n');
 }
@@ -380,7 +377,7 @@ async function main() {
       detectUnusedDependencies(),
       findLargeFiles(),
       findTodoComments(),
-      checkDuplicatePackages()
+      checkDuplicatePackages(),
     ]);
 
     const workspaceChecklist = generateWorkspaceChecklist();
@@ -391,7 +388,7 @@ async function main() {
       largeFiles,
       todos,
       duplicates,
-      workspaceChecklist
+      workspaceChecklist,
     };
 
     const markdown = formatIssueBody(data);
@@ -417,4 +414,4 @@ async function main() {
   }
 }
 
-main();
+await main();

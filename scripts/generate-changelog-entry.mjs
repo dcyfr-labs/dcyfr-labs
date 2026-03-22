@@ -21,7 +21,7 @@ const { values } = parseArgs({
     previous: { type: 'string' },
     'commits-file': { type: 'string' },
     output: { type: 'string' },
-  }
+  },
 });
 
 // Read commits from file
@@ -36,13 +36,13 @@ const categories = {
   removed: [],
   fixed: [],
   security: [],
-  dependencies: []
+  dependencies: [],
 };
 
 const breakingChanges = [];
 
 // Parse each commit using Conventional Commits format
-commits.forEach(commit => {
+commits.forEach((commit) => {
   // Extract hash and message
   const parts = commit.split(' ');
   const hash = parts[0];
@@ -120,7 +120,7 @@ let entry = `## [${values.version}] - ${new Date().toISOString().split('T')[0]}\
 // Breaking changes section (if any)
 if (breakingChanges.length > 0) {
   entry += `### ⚠️ BREAKING CHANGES\n\n`;
-  breakingChanges.forEach(({ scope, description, hash }) => {
+  breakingChanges.forEach(({ scope, description }) => {
     const scopeLabel = scope ? `**${scope}**` : '**Core**';
     entry += `- ${scopeLabel} - ${description}\n`;
   });
@@ -133,7 +133,7 @@ const formatSection = (title, items) => {
 
   let section = `### ${title}\n\n`;
 
-  items.forEach(({ scope, description, message, hash }) => {
+  items.forEach(({ scope, description, message }) => {
     const text = description || message;
     const scopeLabel = scope ? `**${scope}**` : '';
     const prefix = scopeLabel ? `${scopeLabel} - ` : '';

@@ -32,9 +32,9 @@
  *     telemetry:export   - Export telemetry data
  */
 
-import { spawnSync } from 'child_process';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { spawnSync } from 'node:child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -125,12 +125,6 @@ const commands = {
   },
 };
 
-const categories = {
-  costs: 'AI Cost Tracking',
-  fallback: 'Provider Fallback System',
-  telemetry: 'Agent Telemetry & Analytics',
-};
-
 function printHelp() {
   console.log('Unified AI Tooling CLI\n');
   console.log('Usage: npm run ai <command> [options]\n');
@@ -178,9 +172,10 @@ function runCommand(command, extraArgs = []) {
       const args = [...(info.args || []), ...extraArgs];
 
       const runner = info.isTsx ? 'tsx' : 'node';
-      const result = spawnSync(runner, [fullPath, ...args], { // NOSONAR - Administrative script, inputs from controlled sources
-        stdio: ['inherit', 'pipe', 'pipe'],  // Buffer stdout/stderr - prevents heredoc hangs
-        maxBuffer: 10 * 1024 * 1024,        // 10MB limit for large agent output
+      const result = spawnSync(runner, [fullPath, ...args], {
+        // NOSONAR - Administrative script, inputs from controlled sources
+        stdio: ['inherit', 'pipe', 'pipe'], // Buffer stdout/stderr - prevents heredoc hangs
+        maxBuffer: 10 * 1024 * 1024, // 10MB limit for large agent output
         shell: false,
       });
 
@@ -191,7 +186,7 @@ function runCommand(command, extraArgs = []) {
         throw new Error(`Command exited with code ${result.status}`);
       }
     }
-  } catch (error) {
+  } catch {
     console.error(`\n❌ Command failed: ${command}`);
     process.exit(1);
   }

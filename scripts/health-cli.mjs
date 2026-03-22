@@ -2,21 +2,21 @@
 
 /**
  * Unified Health Check CLI
- * 
+ *
  * Single entry point for all health check tasks across the project.
  * Checks system health, services, and component readiness.
- * 
+ *
  * Usage:
  *   npm run health <command>
  *   npm run health all
- * 
+ *
  * Commands:
  *   redis      - Check Redis connection and usage
  *   mcp        - Check MCP servers status
  *   dev        - Check dev environment
  *   providers  - Check AI provider health
  *   all        - Run all health checks
- * 
+ *
  * Options:
  *   --clean    - Clean data while checking (for redis)
  *   --github   - GitHub-specific output (for redis)
@@ -105,7 +105,7 @@ function runHealthCheck(checkName) {
     execSync(cmd, { stdio: 'inherit' }); // NOSONAR - Administrative script, inputs from controlled sources
     console.log('─'.repeat(60));
     return false; // no errors
-  } catch (error) {
+  } catch {
     console.error(`\n❌ Health check failed: ${checkName}`);
     console.log('─'.repeat(60));
     return true; // has errors

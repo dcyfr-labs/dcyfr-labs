@@ -10,8 +10,8 @@
  * @module docs/examples/activity/trending-integration-example
  */
 
-import type { ActivityItem } from "@/lib/activity/types";
-import { calculateTrendingStatus, type EngagementMetrics } from "@/lib/activity/trending";
+import type { ActivityItem } from '@/lib/activity/types';
+import { calculateTrendingStatus, type EngagementMetrics } from '@/lib/activity/trending';
 
 // ============================================================================
 // EXAMPLE: Enriching Blog Post Activities with Trending Status
@@ -23,12 +23,10 @@ import { calculateTrendingStatus, type EngagementMetrics } from "@/lib/activity/
  * This would typically be called from your blog activity source generator
  * (e.g., in src/lib/activity/sources.ts or src/lib/activity/blog-source.ts)
  */
-export async function enrichBlogPostWithTrending(
-  activity: ActivityItem
-): Promise<ActivityItem> {
+export async function enrichBlogPostWithTrending(activity: ActivityItem): Promise<ActivityItem> {
   // Extract post ID from activity ID
   // Format: "blog-{slug}" → extract slug
-  const slug = activity.id.replace(/^blog-/, "");
+  const slug = activity.id.replace(/^blog-/, '');
 
   // Gather engagement metrics from multiple sources
   const metrics: EngagementMetrics = {
@@ -57,14 +55,10 @@ export async function enrichBlogPostWithTrending(
       trendingStatus: {
         isWeeklyTrending: weeklyStatus.isWeeklyTrending,
         isMonthlyTrending: monthlyStatus.isMonthlyTrending,
-        engagementScore: Math.max(
-          weeklyStatus.engagementScore,
-          monthlyStatus.engagementScore
-        ),
+        engagementScore: Math.max(weeklyStatus.engagementScore, monthlyStatus.engagementScore),
       },
       // Keep backward compatibility
-      trending:
-        weeklyStatus.isWeeklyTrending || monthlyStatus.isMonthlyTrending,
+      trending: weeklyStatus.isWeeklyTrending || monthlyStatus.isMonthlyTrending,
     },
   };
 }
@@ -76,12 +70,9 @@ export async function enrichBlogPostWithTrending(
 
 /**
  * Get post views for a given time period
- * TODO: Implement with Vercel Analytics, Redis, or your analytics solution
+ * Placeholder: wire to Vercel Analytics, Redis, or another analytics source
  */
-async function getPostViews(
-  slug: string,
-  periodDays: number
-): Promise<number> {
+async function getPostViews(_slug: string, _periodDays: number): Promise<number> {
   // Example implementation:
   // 1. Query Vercel Analytics API for page views
   // 2. Query Redis for cached view counts
@@ -93,9 +84,9 @@ async function getPostViews(
 
 /**
  * Get post likes (from activity reactions hook)
- * TODO: Implement with server-side like tracking
+ * Placeholder: wire to server-side like tracking
  */
-async function getPostLikes(slug: string): Promise<number> {
+async function getPostLikes(_slug: string): Promise<number> {
   // Example implementation:
   // 1. Query database for like counts
   // 2. Aggregate from localStorage → server sync
@@ -107,9 +98,9 @@ async function getPostLikes(slug: string): Promise<number> {
 
 /**
  * Get post comments (from Giscus)
- * TODO: Implement with GitHub Discussions API
+ * Placeholder: wire to GitHub Discussions API
  */
-async function getPostComments(slug: string): Promise<number> {
+async function getPostComments(_slug: string): Promise<number> {
   // Example implementation:
   // See: src/lib/comments.ts for existing Giscus integration
   // Use getPostCommentCount(slug)
@@ -120,9 +111,9 @@ async function getPostComments(slug: string): Promise<number> {
 
 /**
  * Get average reading completion percentage
- * TODO: Implement with analytics scroll depth tracking
+ * Placeholder: wire to analytics scroll-depth tracking
  */
-async function getPostReadingCompletion(slug: string): Promise<number> {
+async function getPostReadingCompletion(_slug: string): Promise<number> {
   // Example implementation:
   // 1. Query analytics for average scroll depth
   // 2. Calculate from ArticleReadingProgress component data
@@ -150,7 +141,7 @@ export async function enrichActivitiesWithTrending(
     activities.map(async (activity) => {
       // Only enrich blog and project activities
       // (skip GitHub commits, milestones, etc.)
-      if (activity.source === "blog" || activity.source === "project") {
+      if (activity.source === 'blog' || activity.source === 'project') {
         return await enrichBlogPostWithTrending(activity);
       }
 

@@ -5,18 +5,19 @@
  * Analyzes test results, coverage, and generates health reports
  */
 
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
-import { batchEnrich, formatEnrichmentSection } from "./sentry-enricher.mjs";
-import { getOrCreateIssue } from "./github-api.mjs";
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { batchEnrich, formatEnrichmentSection } from './sentry-enricher.mjs';
+import { getOrCreateIssue } from './github-api.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const REPO_ROOT = path.resolve(__dirname, "..");
-const COVERAGE_DIR = path.join(REPO_ROOT, "coverage");
-const TEST_RESULTS_FILE = process.env.TEST_RESULTS_FILE || path.join(REPO_ROOT, "test-results.json");
+const REPO_ROOT = path.resolve(__dirname, '..');
+const COVERAGE_DIR = path.join(REPO_ROOT, 'coverage');
+const TEST_RESULTS_FILE =
+  process.env.TEST_RESULTS_FILE || path.join(REPO_ROOT, 'test-results.json');
 const BASELINE_FILE = process.env.BASELINE_FILE || null;
 
 // Thresholds
@@ -31,7 +32,7 @@ const SLOW_TEST_THRESHOLD = 1000; // Tests slower than 1s (ms)
  */
 async function parseTestResults(filePath) {
   try {
-    const content = await fs.readFile(filePath, "utf-8");
+    const content = await fs.readFile(filePath, 'utf-8');
     const results = JSON.parse(content);
 
     const totalTests = results.numTotalTests || 0;
@@ -46,11 +47,11 @@ async function parseTestResults(filePath) {
 
     for (const file of testFiles) {
       for (const test of file.assertionResults || []) {
-        if (test.status === "failed") {
+        if (test.status === 'failed') {
           failures.push({
             testFile: file.name,
             testName: test.title,
-            errorMessage: test.failureMessages?.[0] || "Unknown error",
+            errorMessage: test.failureMessages?.[0] || 'Unknown error',
             errorType: extractErrorType(test.failureMessages?.[0]),
             duration: test.duration || 0,
           });
@@ -87,10 +88,10 @@ async function parseTestResults(filePath) {
  * @returns {string} Error type (e.g., "TypeError", "Error")
  */
 function extractErrorType(errorMessage) {
-  if (!errorMessage) return "Error";
+  if (!errorMessage) return 'Error';
 
-  const match = errorMessage.match(/^(\w+Error):/);
-  return match ? match[1] : "Error";
+  const match = /^(\w+Error):/.exec(errorMessage);
+  return match ? match[1] : 'Error';
 }
 
 /**
@@ -99,8 +100,8 @@ function extractErrorType(errorMessage) {
  */
 async function parseCoverage() {
   try {
-    const summaryFile = path.join(COVERAGE_DIR, "coverage-summary.json");
-    const content = await fs.readFile(summaryFile, "utf-8");
+    const summaryFile = path.join(COVERAGE_DIR, 'coverage-summary.json');
+    const content = await fs.readFile(summaryFile, 'utf-8');
     const summary = JSON.parse(content);
 
     const total = summary.total || {};
@@ -119,7 +120,7 @@ async function parseCoverage() {
       average,
     };
   } catch (error) {
-    console.warn("⚠️  Could not parse coverage data:", error.message);
+    console.warn('⚠️  Could not parse coverage data:', error.message);
     return null;
   }
 }
@@ -141,7 +142,7 @@ async function compareToBaseline(current, baselineFile) {
   }
 
   try {
-    const content = await fs.readFile(baselineFile, "utf-8");
+    const content = await fs.readFile(baselineFile, 'utf-8');
     const baseline = JSON.parse(content);
 
     const passRateDelta = current.passRate - (baseline.passRate || 0);
@@ -161,7 +162,7 @@ async function compareToBaseline(current, baselineFile) {
       isRegression,
     };
   } catch (error) {
-    console.warn("⚠️  Could not compare to baseline:", error.message);
+    console.warn('⚠️  Could not compare to baseline:', error.message);
     return {
       passRateDelta: 0,
       coverageDelta: 0,
@@ -173,12 +174,10 @@ async function compareToBaseline(current, baselineFile) {
 
 /**
  * Detect flaky tests from historical data
- * @param {Array} failures - Current failures
  * @returns {Promise<Array>} Flaky test names
  */
-async function detectFlakyTests(failures) {
-  // TODO: Implement flaky test detection using Redis or GitHub artifacts
-  // For now, return empty array
+async function detectFlakyTests() {
+  // Placeholder: flaky test detection can be added later via Redis or GitHub artifacts.
   return [];
 }
 
@@ -189,18 +188,17 @@ async function detectFlakyTests(failures) {
  */
 function formatFailureTable(failures) {
   if (failures.length === 0) {
-    return "_No test failures. All tests passing! 🎉_";
+    return '_No test failures. All tests passing! 🎉_';
   }
 
-  let table = "| Test | File | Error | Duration |\n";
-  table += "|------|------|-------|----------|\n";
+  let table = '| Test | File | Error | Duration |\n';
+  table += '|------|------|-------|----------|\n';
 
   for (const failure of failures) {
-    const testName = failure.testName.length > 50
-      ? failure.testName.slice(0, 47) + "..."
-      : failure.testName;
+    const testName =
+      failure.testName.length > 50 ? failure.testName.slice(0, 47) + '...' : failure.testName;
     const fileName = path.basename(failure.testFile);
-    const errorMsg = failure.errorMessage.split("\n")[0].slice(0, 60) + "...";
+    const errorMsg = failure.errorMessage.split('\n')[0].slice(0, 60) + '...';
     const duration = `${failure.duration}ms`;
 
     table += `| ${testName} | \`${fileName}\` | ${errorMsg} | ${duration} |\n`;
@@ -216,13 +214,13 @@ function formatFailureTable(failures) {
  */
 function formatSlowTests(slowTests) {
   if (slowTests.length === 0) {
-    return "_No slow tests detected._";
+    return '_No slow tests detected._';
   }
 
   // Sort by duration (slowest first)
   const sorted = [...slowTests].sort((a, b) => b.duration - a.duration);
 
-  let list = "";
+  let list = '';
   for (const test of sorted.slice(0, 10)) {
     // Top 10
     const fileName = path.basename(test.testFile);
@@ -253,9 +251,9 @@ function generateIssueBody(data) {
     sentryEnrichment,
   } = data;
 
-  const passRateEmoji = passRate >= PASS_RATE_THRESHOLD ? "✅" : "⚠️";
-  const coverageEmoji = coverageDelta >= 0 ? "📈" : "📉";
-  const deltaSign = passRateDelta >= 0 ? "+" : "";
+  const passRateEmoji = passRate >= PASS_RATE_THRESHOLD ? '✅' : '⚠️';
+  const coverageEmoji = coverageDelta >= 0 ? '📈' : '📉';
+  const deltaSign = passRateDelta >= 0 ? '+' : '';
 
   let body = `## Test Health Summary - Week of ${date}\n\n`;
 
@@ -264,7 +262,7 @@ function generateIssueBody(data) {
   body += `- **Tests:** ${passedTests}/${totalTests} passing, ${failedTests} failing\n`;
 
   if (coverage) {
-    body += `- ${coverageEmoji} **Coverage:** ${coverage.average.toFixed(1)}% (Δ ${coverageDelta >= 0 ? "+" : ""}${coverageDelta.toFixed(1)}%)\n`;
+    body += `- ${coverageEmoji} **Coverage:** ${coverage.average.toFixed(1)}% (Δ ${coverageDelta >= 0 ? '+' : ''}${coverageDelta.toFixed(1)}%)\n`;
     body += `  - Lines: ${coverage.lines.toFixed(1)}%\n`;
     body += `  - Statements: ${coverage.statements.toFixed(1)}%\n`;
     body += `  - Functions: ${coverage.functions.toFixed(1)}%\n`;
@@ -320,16 +318,18 @@ function generateIssueBody(data) {
  * Main analysis function
  */
 async function main() {
-  console.log("🔍 Analyzing test health...\n");
+  console.log('🔍 Analyzing test health...\n');
 
   // Parse test results
   const testResults = await parseTestResults(TEST_RESULTS_FILE);
   if (!testResults) {
-    console.error("❌ Failed to parse test results. Exiting.");
+    console.error('❌ Failed to parse test results. Exiting.');
     process.exit(1);
   }
 
-  console.log(`✅ Parsed test results: ${testResults.passedTests}/${testResults.totalTests} passing (${testResults.passRate.toFixed(1)}%)`);
+  console.log(
+    `✅ Parsed test results: ${testResults.passedTests}/${testResults.totalTests} passing (${testResults.passRate.toFixed(1)}%)`
+  );
 
   // Parse coverage
   const coverage = await parseCoverage();
@@ -338,20 +338,19 @@ async function main() {
   }
 
   // Compare to baseline
-  const comparison = await compareToBaseline(
-    { ...testResults, coverage },
-    BASELINE_FILE
+  const comparison = await compareToBaseline({ ...testResults, coverage }, BASELINE_FILE);
+
+  console.log(
+    `📊 Comparison: Pass rate ${comparison.passRateDelta >= 0 ? '+' : ''}${comparison.passRateDelta.toFixed(1)}%, Coverage ${comparison.coverageDelta >= 0 ? '+' : ''}${comparison.coverageDelta.toFixed(1)}%`
   );
 
-  console.log(`📊 Comparison: Pass rate ${comparison.passRateDelta >= 0 ? "+" : ""}${comparison.passRateDelta.toFixed(1)}%, Coverage ${comparison.coverageDelta >= 0 ? "+" : ""}${comparison.coverageDelta.toFixed(1)}%`);
-
   // Detect flaky tests
-  const flakyTests = await detectFlakyTests(testResults.failures);
+  const flakyTests = await detectFlakyTests();
 
   // Enrich with Sentry data
-  let sentryEnrichment = "";
+  let sentryEnrichment = '';
   if (testResults.failures.length > 0 && testResults.failures.length <= 10) {
-    console.log("\n🔍 Enriching failures with Sentry data...");
+    console.log('\n🔍 Enriching failures with Sentry data...');
     const enrichments = await batchEnrich(testResults.failures);
     sentryEnrichment = formatEnrichmentSection(enrichments);
   } else if (testResults.failures.length > 10) {
@@ -360,7 +359,7 @@ async function main() {
 
   // Generate Issue body
   const issueBody = generateIssueBody({
-    date: new Date().toISOString().split("T")[0],
+    date: new Date().toISOString().split('T')[0],
     passRate: testResults.passRate,
     totalTests: testResults.totalTests,
     passedTests: testResults.passedTests,
@@ -381,29 +380,29 @@ async function main() {
     testResults.passRate < PASS_RATE_THRESHOLD;
 
   if (!shouldCreateIssue) {
-    console.log("\n✅ Test health is good! No Issue needed.");
-    console.log("\nSummary:");
+    console.log('\n✅ Test health is good! No Issue needed.');
+    console.log('\nSummary:');
     console.log(`- Pass rate: ${testResults.passRate.toFixed(1)}% (≥${PASS_RATE_THRESHOLD}%)`);
-    console.log(`- Coverage: ${coverage?.average.toFixed(1) || "N/A"}%`);
+    console.log(`- Coverage: ${coverage?.average.toFixed(1) || 'N/A'}%`);
     console.log(`- All metrics stable ✅`);
     return;
   }
 
-  console.log("\n⚠️  Test health requires attention. Creating/updating Issue...\n");
+  console.log('\n⚠️  Test health requires attention. Creating/updating Issue...\n');
 
   // Create or update Issue
   const issue = await getOrCreateIssue({
-    label: "test-health",
+    label: 'test-health',
     signature: `<!-- test-health-${new Date().toISOString().slice(0, 7)} -->`,
-    title: `Test Health Report - ${new Date().toISOString().split("T")[0]}`,
+    title: `Test Health Report - ${new Date().toISOString().split('T')[0]}`,
     body: issueBody,
-    labels: ["test-health", "automated"],
-    assignees: ["drew"],
+    labels: ['test-health', 'automated'],
+    assignees: ['drew'],
     updateIfExists: true,
   });
 
   if (issue) {
-    console.log(`\n✅ Issue created/updated: ${issue.html_url || issue.url || "#" + issue.number}`);
+    console.log(`\n✅ Issue created/updated: ${issue.html_url || issue.url || '#' + issue.number}`);
   }
 
   // Write current results as new baseline
@@ -415,12 +414,14 @@ async function main() {
     slowTests: testResults.slowTests,
   };
 
-  const baselineOutput = path.join(REPO_ROOT, "test-baseline.json");
+  const baselineOutput = path.join(REPO_ROOT, 'test-baseline.json');
   await fs.writeFile(baselineOutput, JSON.stringify(baselineData, null, 2));
   console.log(`\n📝 Wrote new baseline to ${baselineOutput}`);
 }
 
-main().catch((error) => {
-  console.error("❌ Fatal error:", error);
+try {
+  await main();
+} catch (error) {
+  console.error('❌ Fatal error:', error);
   process.exit(1);
-});
+}
