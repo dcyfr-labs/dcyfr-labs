@@ -22,16 +22,16 @@
  *   --github   - GitHub-specific output (for redis)
  */
 
-import { execSync } from 'child_process';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { execSync } from 'node:child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Parse command line arguments
 const args = process.argv.slice(2);
 const command = args[0] || 'all';
-const options = args.slice(1);
+const options = new Set(args.slice(1));
 
 const healthChecks = {
   redis: {
@@ -53,7 +53,7 @@ const healthChecks = {
   },
 };
 
-const allChecks = Object.keys(healthChecks).sort();
+const allChecks = Object.keys(healthChecks).sort((a, b) => a.localeCompare(b));
 
 function printHelp() {
   console.log('Unified Health Check CLI\n');
@@ -94,10 +94,10 @@ function runHealthCheck(checkName) {
 
     // Pass through options for certain checks
     if (checkName === 'redis') {
-      if (options.includes('--clean')) {
+      if (options.has('--clean')) {
         cmd += ' --clean';
       }
-      if (options.includes('--github')) {
+      if (options.has('--github')) {
         cmd += ' --github';
       }
     }

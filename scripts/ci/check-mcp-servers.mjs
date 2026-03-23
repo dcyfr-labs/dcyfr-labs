@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import fs from 'fs';
-import path from 'path';
-import { spawnSync } from 'child_process';
-import { fileURLToPath } from 'url';
+import fs from 'node:fs';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { parse as parseJsonc } from 'jsonc-parser';
 
 const ROOT = process.cwd();
@@ -36,7 +36,7 @@ function parseEnvFile(filePath) {
 
 function expandPlaceholders(value, root) {
   if (typeof value !== 'string') return value;
-  return value.replace(/\$\{([^}]+)\}/g, (match, name) => {
+  return value.replaceAll(/\$\{([^}]+)\}/g, (match, name) => {
     if (name === 'workspaceFolder' || name === 'workspaceRoot') return root;
     if (name === 'workspaceFolderBasename') return path.basename(root);
     // Environment variables (e.g., PERPLEXITY_API_KEY)
@@ -132,8 +132,8 @@ function readMcpConfig(configPath = path.join(ROOT, '.vscode', 'mcp.json')) {
  */
 function buildAuthHeaders(name, server, env) {
   const headers = {};
-  let tokenNameUsed = undefined;
-  if (server && server.auth && server.auth.envVar) {
+  let tokenNameUsed;
+  if (server?.auth?.envVar) {
     const varName = server.auth.envVar;
     if (env[varName]) {
       headers['Authorization'] = `Bearer ${env[varName]}`;
@@ -240,7 +240,7 @@ async function checkUrlServer(name, server, env = {}, timeoutMs = 5000, opts = {
       return {
         name,
         ok: false,
-        error: String(err2 || err),
+        error: String(err),
         method: 'GET',
         tokenNameUsed,
         elapsedMs: Date.now() - startTime,
@@ -380,7 +380,7 @@ if (fileURLToPath(import.meta.url) === process.argv[1]) {
     if (a === '--no-auth') opts.noAuth = true;
     if (a === '--debug') opts.debug = true;
     if ((a === '--timeout' || a === '-t') && args[i + 1]) {
-      opts.timeoutMs = parseInt(args[i + 1], 10);
+      opts.timeoutMs = Number.parseInt(args[i + 1], 10);
       i++;
     }
     if ((a === '--envFile' || a === '-e') && args[i + 1]) {
@@ -392,10 +392,12 @@ if (fileURLToPath(import.meta.url) === process.argv[1]) {
       i++;
     }
   }
-  run(opts).catch((err) => {
+  try {
+    await run(opts);
+  } catch (err) {
     console.error(err);
     process.exit(1);
-  });
+  }
 }
 
 export { parseEnvFile, readMcpConfig, checkUrlServer, checkCommandServer, run };

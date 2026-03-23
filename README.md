@@ -52,6 +52,15 @@ A modern, full-featured developer blog and portfolio built with Next.js (App Rou
 - **GitHub Copilot**: See [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) for quick-reference guide (80/20 patterns you'll use most)
 - **Transparency**: See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for details on open vs. proprietary components
 
+## About DCYFR
+
+`dcyfr-labs` is a production application in the **DCYFR Labs** portfolio.
+
+- **DCYFR** is a registered trademark of DCYFR Labs.
+- Primary domain: [www.dcyfr.ai](https://www.dcyfr.ai)
+- Trademark guidance: [TRADEMARK.md](../TRADEMARK.md)
+- Licensing details: [LICENSE](./LICENSE)
+
 ## 🎯 Why dcyfr-labs?
 
 **Not Just Another Next.js Starter** - This is a production-grade, **real-world application** with battle-tested patterns you can actually use.

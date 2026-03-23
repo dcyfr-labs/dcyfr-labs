@@ -49,7 +49,7 @@ async function detectUnusedExports() {
 
     const items = lines
       .map((line) => {
-        const match = line.match(/^(.+?):(\d+)\s+-\s+(.+)$/);
+        const match = /^(.+?):(\d+)\s+-\s+(.+)$/.exec(line);
         if (match) {
           const [, file, lineNum, exportName] = match;
           return { file, lineNum, exportName };
@@ -163,7 +163,7 @@ async function findTodoComments() {
       const lines = content.split('\n');
 
       lines.forEach((line, index) => {
-        const todoMatch = line.match(/\/\/\s*(TODO|FIXME|HACK|XXX):?\s*(.+)/i);
+        const todoMatch = /\/\/\s*(TODO|FIXME|HACK|XXX):?\s*(.+)/i.exec(line);
         if (todoMatch) {
           todos.push({
             file,

@@ -5,11 +5,9 @@
  * Quick development tasks and health checks
  */
 
-import { spawn } from 'child_process';
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { spawn, exec } from 'node:child_process';
+import { promisify, parseArgs } from 'node:util';
 import chalk from 'chalk';
-import { parseArgs } from 'util';
 
 const execAsync = promisify(exec);
 
@@ -219,10 +217,10 @@ async function runPreflight() {
   await runCheck('TypeScript', 'npm', ['run', 'typecheck']);
 
   // Step 4: Unit Tests
-  if (!args.values.fast) {
-    await runCheck('Unit Tests', 'npm', ['run', 'test:unit']);
-  } else {
+  if (args.values.fast) {
     console.log(chalk.yellow('\n⏩ Skipping unit tests (--fast mode)'));
+  } else {
+    await runCheck('Unit Tests', 'npm', ['run', 'test:unit']);
   }
 
   // Step 5: Build
@@ -291,4 +289,8 @@ async function main() {
   await TASKS[task].fn();
 }
 
-main().catch(console.error);
+try {
+  await main();
+} catch (error_) {
+  console.error(error_);
+}
