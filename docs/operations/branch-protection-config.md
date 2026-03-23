@@ -35,12 +35,15 @@ Navigate to: **Settings → Branches → Add rule**
     - `E2E Tests`
     - `Bundle Size Check`
     - `Security Checks`
+    - `Verified Commits`
     - `Design System Validation`
     - `Lighthouse CI`
 
 - [x] **Require conversation resolution before merging**
 
-- [x] **Require signed commits** (optional but recommended)
+- [x] **Require signed commits**
+  - Required status check: `Verified Commits`
+  - Pair with Vercel **Require Verified Commits** on `main` and `preview`
 
 - [x] **Require linear history**
   - Forces squash merge or rebase (no merge commits)
@@ -131,6 +134,10 @@ GitHub now offers **Rulesets** as a more flexible alternative to branch protecti
           {
             "context": "E2E Tests",
             "integration_id": null
+          },
+          {
+            "context": "Verified Commits",
+            "integration_id": null
           }
         ],
         "strict_required_status_checks_policy": true
@@ -172,6 +179,7 @@ resource "github_branch_protection" "main" {
       "E2E Tests",
       "Bundle Size Check",
       "Security Checks",
+      "Verified Commits",
       "Design System Validation"
     ]
   }
@@ -199,7 +207,8 @@ resource "github_branch_protection" "preview" {
     contexts = [
       "Code Quality",
       "Unit & Integration Tests",
-      "Security Checks"
+      "Security Checks",
+      "Verified Commits"
     ]
   }
 
@@ -265,7 +274,8 @@ gh api repos/$REPO/branches/preview/protection \
     "contexts": [
       "Code Quality",
       "Unit & Integration Tests",
-      "Security Checks"
+      "Security Checks",
+      "Verified Commits"
     ]
   },
   "enforce_admins": true,
@@ -307,11 +317,24 @@ echo "2. Test by attempting to push directly to main (should fail)"
 echo "3. Create a test PR to verify status checks work"
 ```
 
+## Vercel Verified Commits
+
+GitHub branch protection should be paired with Vercel's **Require Verified Commits** deployment setting.
+
+- Enable on `preview` first for soak validation.
+- Enable on `main` after preview stability is confirmed.
+
+This provides two layers of enforcement:
+
+1. GitHub blocks merge of unverified commit history.
+2. Vercel blocks deployment if an unverified commit still reaches a protected branch.
+
 ## Verification Steps
 
 After applying branch protection:
 
 1. **Test direct push prevention**:
+
    ```bash
    git checkout main
    echo "test" >> test.txt
@@ -321,6 +344,7 @@ After applying branch protection:
    ```
 
 2. **Test PR requirement**:
+
    ```bash
    git checkout -b test-branch-protection
    git push origin test-branch-protection
@@ -336,6 +360,7 @@ After applying branch protection:
 ### Status Checks Not Appearing
 
 If required status checks don't show up:
+
 1. Ensure workflows run at least once on the branch
 2. Check workflow job names match exactly (case-sensitive)
 3. Verify workflows have `pull_request` trigger for target branch
@@ -361,5 +386,5 @@ If required status checks don't show up:
 
 ---
 
-**Last Updated**: 2025-12-22
+**Last Updated**: 2026-03-22
 **Priority**: 🔴 CRITICAL - Implement ASAP

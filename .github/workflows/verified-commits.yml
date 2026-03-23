@@ -1,0 +1,74 @@
+name: Verified Commit Validation
+
+'on':
+  pull_request:
+    branches: [main, preview]
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  verified-commits:
+    name: Verified Commits
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Validate commit verification state
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+
+            if (!pr) {
+              await core.summary
+                .addHeading('Verified Commits')
+                .addRaw('This workflow is intended for pull requests targeting `main` or `preview`.')
+                .write();
+              return;
+            }
+
+            const commits = await github.paginate(github.rest.pulls.listCommits, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              per_page: 100,
+            });
+
+            const failures = commits
+              .filter((commit) => !commit.commit?.verification?.verified)
+              .map((commit) => ({
+                sha: commit.sha.slice(0, 7),
+                author: commit.author?.login || commit.commit?.author?.name || 'unknown',
+                reason: commit.commit?.verification?.reason || 'unknown',
+                message: (commit.commit?.message || '').split('\n')[0] || '(no subject)',
+              }));
+
+            const summary = core.summary.addHeading('Verified Commits');
+
+            if (failures.length === 0) {
+              await summary
+                .addRaw(`All ${commits.length} commit(s) in this pull request are GitHub-verified.\n\n`)
+                .addRaw('Accepted signature methods: GPG (preferred), SSH signing, or S/MIME — as long as GitHub marks the commit as **Verified**.\n')
+                .write();
+              return;
+            }
+
+            await summary
+              .addRaw(`Found ${failures.length} unverified commit(s) in this pull request.\n\n`)
+              .addTable([
+                [
+                  {data: 'SHA', header: true},
+                  {data: 'Author', header: true},
+                  {data: 'Reason', header: true},
+                  {data: 'Message', header: true},
+                ],
+                ...failures.map((failure) => [failure.sha, failure.author, failure.reason, failure.message]),
+              ])
+              .addRaw('\nFix guidance: register the signing key with GitHub, refresh expired keys, or re-sign the affected commits before merging. See `docs/deployment/verified-commits.md`.\n')
+              .write();
+
+            core.setFailed(`Found ${failures.length} unverified commit(s). See step summary for details.`);
