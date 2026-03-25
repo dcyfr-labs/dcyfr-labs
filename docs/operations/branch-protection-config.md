@@ -34,10 +34,9 @@ Navigate to: **Settings → Branches → Add rule**
     - `Unit & Integration Tests`
     - `E2E Tests`
     - `Bundle Size Check`
-    - `Security Checks`
+    - `Security Review (Claude Code)`
     - `Verified Commits`
-    - `Design System Validation`
-    - `Lighthouse CI`
+    - `Validate Design Tokens`
 
 - [x] **Require conversation resolution before merging**
 
@@ -73,6 +72,12 @@ Navigate to: **Settings → Branches → Add rule**
 Use the same configuration as `main` with one modification:
 
 - **Require approvals**: **0** (auto-merge from automated workflows allowed)
+- Required status checks (preview):
+  - `Lint & Type Check`
+  - `Unit Tests`
+  - `Production Build`
+  - `Security Review (Claude Code)`
+  - `Verified Commits`
 - All other settings: Same as `main`
 
 **Rationale**: Preview branch is used for automated sync from `main`, so it needs less strict approval requirements but same protection from direct pushes.
@@ -178,9 +183,9 @@ resource "github_branch_protection" "main" {
       "Unit & Integration Tests",
       "E2E Tests",
       "Bundle Size Check",
-      "Security Checks",
+      "Security Review (Claude Code)",
       "Verified Commits",
-      "Design System Validation"
+      "Validate Design Tokens"
     ]
   }
 
@@ -205,14 +210,16 @@ resource "github_branch_protection" "preview" {
   required_status_checks {
     strict   = true
     contexts = [
-      "Code Quality",
-      "Unit & Integration Tests",
-      "Security Checks",
+      "Lint & Type Check",
+      "Unit Tests",
+      "Production Build",
+      "Security Review (Claude Code)",
       "Verified Commits"
     ]
   }
 
   enforce_admins                  = true
+  require_signed_commits          = true
   require_linear_history          = true
   require_conversation_resolution = false
   allows_deletions                = false
@@ -244,8 +251,9 @@ gh api repos/$REPO/branches/main/protection \
       "Unit & Integration Tests",
       "E2E Tests",
       "Bundle Size Check",
-      "Security Checks",
-      "Design System Validation"
+      "Security Review (Claude Code)",
+      "Verified Commits",
+      "Validate Design Tokens"
     ]
   },
   "enforce_admins": true,
@@ -264,6 +272,12 @@ EOF
 
 echo "✅ Main branch protection configured"
 
+# Enable required signatures on main
+gh api repos/$REPO/branches/main/protection/required_signatures \
+  --method POST
+
+echo "✅ Main required signatures enabled"
+
 # Preview branch protection
 gh api repos/$REPO/branches/preview/protection \
   --method PUT \
@@ -272,9 +286,10 @@ gh api repos/$REPO/branches/preview/protection \
   "required_status_checks": {
     "strict": true,
     "contexts": [
-      "Code Quality",
-      "Unit & Integration Tests",
-      "Security Checks",
+      "Lint & Type Check",
+      "Unit Tests",
+      "Production Build",
+      "Security Review (Claude Code)",
       "Verified Commits"
     ]
   },
@@ -293,6 +308,12 @@ gh api repos/$REPO/branches/preview/protection \
 EOF
 
 echo "✅ Preview branch protection configured"
+
+# Enable required signatures on preview
+gh api repos/$REPO/branches/preview/protection/required_signatures \
+  --method POST
+
+echo "✅ Preview required signatures enabled"
 
 # Enable auto-delete head branches
 gh api repos/$REPO \

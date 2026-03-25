@@ -3,7 +3,7 @@ name: Verified Commit Validation
 'on':
   pull_request:
     branches: [main, preview]
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened, ready_for_review, edited]
   workflow_dispatch:
 
 permissions:
@@ -38,13 +38,28 @@ jobs:
               per_page: 100,
             });
 
+            const CONTROL_CHARS_REGEX = /[\x00-\x1F\x7F-\x9F]/g;
+
+            function sanitizeSummaryCell(value, maxLength = 120) {
+              if (value == null) return '';
+              let str = String(value);
+              str = str.replace(CONTROL_CHARS_REGEX, '');
+              str = str.replace(/\r?\n|\r/g, ' ');
+              str = str.replace(/\|/g, '\\|');
+              str = str.trim();
+              if (str.length > maxLength) {
+                str = str.slice(0, maxLength - 1) + '…';
+              }
+              return str;
+            }
+
             const failures = commits
               .filter((commit) => !commit.commit?.verification?.verified)
               .map((commit) => ({
-                sha: commit.sha.slice(0, 7),
-                author: commit.author?.login || commit.commit?.author?.name || 'unknown',
-                reason: commit.commit?.verification?.reason || 'unknown',
-                message: (commit.commit?.message || '').split('\n')[0] || '(no subject)',
+                sha: sanitizeSummaryCell(commit.sha.slice(0, 7)),
+                author: sanitizeSummaryCell(commit.author?.login || commit.commit?.author?.name || 'unknown'),
+                reason: sanitizeSummaryCell(commit.commit?.verification?.reason || 'unknown'),
+                message: sanitizeSummaryCell((commit.commit?.message || '').split('\n')[0] || '(no subject)'),
               }));
 
             const summary = core.summary.addHeading('Verified Commits');

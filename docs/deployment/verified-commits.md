@@ -143,7 +143,7 @@ After pushing, confirm the commit shows **Verified** in GitHub.
 
 ## CI Failure Reasons
 
-The `Verified Commits` workflow fails a PR when one or more commits are not verified by GitHub.
+The `Verified Commit Validation` workflow produces the required `Verified Commits` status check and fails a PR when one or more commits are not verified by GitHub.
 
 Common reasons include:
 
