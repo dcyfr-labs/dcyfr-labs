@@ -20,10 +20,14 @@ WORKSPACE_ROOT="$(cd "$REPO_ROOT/.." && pwd)"
 
 SOURCES_DIR="$REPO_ROOT/content/diagrams"
 OUTPUT_DIR="$REPO_ROOT/public/diagrams"
-GENERATOR="$WORKSPACE_ROOT/.claude/skills/visual-explainer/lib/generate.js"
 
-if [ ! -f "$GENERATOR" ]; then
-  echo "ERROR: Generator not found at $GENERATOR" >&2
+# Prefer repo-local bundled generator (CI-friendly), fall back to workspace-level skill
+if [ -f "$REPO_ROOT/scripts/generate-diagram.js" ]; then
+  GENERATOR="$REPO_ROOT/scripts/generate-diagram.js"
+elif [ -f "$WORKSPACE_ROOT/.claude/skills/visual-explainer/lib/generate.js" ]; then
+  GENERATOR="$WORKSPACE_ROOT/.claude/skills/visual-explainer/lib/generate.js"
+else
+  echo "ERROR: No diagram generator found. Expected at scripts/generate-diagram.js" >&2
   exit 1
 fi
 
