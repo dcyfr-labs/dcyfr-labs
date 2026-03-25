@@ -16,6 +16,13 @@ const RATE_LIMIT_CONFIG = {
   failClosed: true,
 };
 
+let isPromptScannerDisabled = false;
+
+function isPromptScannerDeprecationError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return message.toLowerCase().includes('promptintel mcp server has been deprecated');
+}
+
 type ContactFormData = {
   name: string;
   email: string;
@@ -146,6 +153,10 @@ async function parseRequestBody(request: NextRequest): Promise<ParseResult> {
 
 /** Run prompt security scan; returns a rejection response or null if scan passes/soft-fails */
 async function scanMessageSecurity(message: string): Promise<ReturnType<typeof NextResponse.json> | null> {
+  if (isPromptScannerDisabled) {
+    return null;
+  }
+
   try {
     const scanner = getPromptScanner();
     const scanResult = await scanner.scanPrompt(message, {
@@ -165,6 +176,14 @@ async function scanMessageSecurity(message: string): Promise<ReturnType<typeof N
     }
     return null;
   } catch (scanError) {
+    if (isPromptScannerDeprecationError(scanError)) {
+      isPromptScannerDisabled = true;
+      console.warn(
+        '[Contact API] Prompt scanning disabled: PromptIntel integration is deprecated. Continuing with fail-open mode.'
+      );
+      return null;
+    }
+
     console.error('[Contact API] Prompt scanning failed:', scanError);
     return null; // fail open
   }
