@@ -1,0 +1,50 @@
+name: Regenerate Diagrams
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'content/diagrams/**'
+      - '.claude/skills/visual-explainer/lib/generate.js'
+      - 'scripts/generate-diagrams.sh'
+  workflow_dispatch:
+    inputs:
+      diagram:
+        description: 'Diagram name to regenerate (leave blank for all)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    name: Regenerate diagram HTML
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate diagrams
+        run: |
+          chmod +x scripts/generate-diagrams.sh
+          if [ -n "${{ github.event.inputs.diagram }}" ]; then
+            ./scripts/generate-diagrams.sh "${{ github.event.inputs.diagram }}"
+          else
+            ./scripts/generate-diagrams.sh
+          fi
+
+      - name: Commit generated diagrams
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore(diagrams): regenerate static diagram HTML [skip ci]'
+          file_pattern: 'public/diagrams/*.html'
+          commit_user_name: 'github-actions[bot]'
+          commit_user_email: 'github-actions[bot]@users.noreply.github.com'

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OAuth 2.0 Authentication Flow</title>
+  <style>
+    :root { color-scheme: light dark; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      font-family: system-ui, sans-serif;
+      padding: 1rem;
+    }
+    .mermaid {
+      width: 100%;
+      max-width: 900px;
+    }
+    @media (prefers-color-scheme: dark) {
+      body { background: #0f172a; }
+    }
+    @media (prefers-color-scheme: light) {
+      body { background: #ffffff; }
+    }
+  </style>
+</head>
+<body>
+  <div class="mermaid">
+graph TD
+    User[User] -->|Clicks Login| App[Single Page App]
+    App -->|Requests Auth Code| AuthServer[Auth Server]
+    AuthServer -->|Issues Auth Code| App
+    App -->|Exchanges Code for Token| AuthServer
+    AuthServer -->|Issues Access Token| App
+    App -->|Calls API with Token| API[Protected API]
+    API -->|Returns Data| App
+    App -->|Displays Data| User
+  </div>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: isDark ? 'dark' : 'default',
+      securityLevel: 'strict',
+    });
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      mermaid.initialize({ startOnLoad: false, theme: e.matches ? 'dark' : 'default' });
+      mermaid.run();
+    });
+  </script>
+</body>
+</html>
