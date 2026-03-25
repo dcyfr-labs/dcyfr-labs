@@ -3,7 +3,7 @@ import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit
 import { RATE_LIMITS } from '@/lib/api/api-guardrails';
 import { inngest } from '@/inngest/client';
 
-const RESEND_API_BASE_URL = 'https://api.resend.com';
+const RESEND_API_BASE_URL = 'https://api.resend.com' as const;
 
 const RATE_LIMIT_CONFIG = {
   limit: RATE_LIMITS.newsletter.requestsPerMinute,
@@ -79,12 +79,7 @@ export async function POST(request: NextRequest) {
   const resendSegmentId = process.env.RESEND_SEGMENT_ID?.trim();
   const contactsEndpoint = `${RESEND_API_BASE_URL}/contacts`;
 
-  const contactsPayload = {
-    email: normalizedEmail,
-    unsubscribed: false,
-    ...(resendSegmentId ? { segments: [{ id: resendSegmentId }] } : {}),
-  };
-
+  // Step 1: Create or update the contact (segments field included as best-effort)
   try {
     const contactsResponse = await fetch(contactsEndpoint, {
       method: 'POST',
@@ -92,7 +87,11 @@ export async function POST(request: NextRequest) {
         Authorization: `Bearer ${resendApiKey}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(contactsPayload),
+      body: JSON.stringify({
+        email: normalizedEmail,
+        unsubscribed: false,
+        ...(resendSegmentId ? { segments: [{ id: resendSegmentId }] } : {}),
+      }),
     });
 
     if (!contactsResponse.ok && contactsResponse.status !== 409) {
@@ -118,6 +117,38 @@ export async function POST(request: NextRequest) {
       { error: 'Failed to register your subscription. Please try again later.' },
       { status: 502, headers: createRateLimitHeaders(rateLimitResult) }
     );
+  }
+
+  // Step 2: Explicitly assign contact to segment via dedicated endpoint.
+  // Resend's segment membership uses POST /contacts/{email}/segments/{segmentId}
+  // (mirrors resend SDK's contacts.segments.add()). This is the authoritative path;
+  // the segments field in the body above is belt-and-suspenders.
+  if (resendSegmentId) {
+    const segmentEndpoint = `${RESEND_API_BASE_URL}/contacts/${encodeURIComponent(normalizedEmail)}/segments/${resendSegmentId}`;
+    try {
+      const segmentResponse = await fetch(segmentEndpoint, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${resendApiKey}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!segmentResponse.ok && segmentResponse.status !== 409) {
+        const segmentError = await segmentResponse.text();
+        console.error('[Newsletter API] Failed to assign contact to segment:', {
+          status: segmentResponse.status,
+          segmentId: resendSegmentId,
+          error: segmentError,
+        });
+        // Fail-open: segment assignment failure does not block the subscription
+      }
+    } catch (segmentError) {
+      console.error('[Newsletter API] Segment assignment request failed:', {
+        error: segmentError instanceof Error ? segmentError.message : String(segmentError),
+      });
+      // Fail-open
+    }
   }
 
   try {

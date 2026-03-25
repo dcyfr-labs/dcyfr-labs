@@ -130,18 +130,30 @@ describe('Newsletter API Integration', () => {
     const response = await POST(request);
 
     expect(response.status).toBe(200);
-    expect(globalThis.fetch).toHaveBeenCalledWith('https://api.resend.com/contacts', {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer re_test_123',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: 'user@example.com',
-        unsubscribed: false,
-        segments: [{ id: '8b10d4b1-4cec-41fa-b087-4029c17bf61a' }],
-      }),
-    });
+      expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+      expect(globalThis.fetch).toHaveBeenNthCalledWith(1, 'https://api.resend.com/contacts', {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer re_test_123',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: 'user@example.com',
+          unsubscribed: false,
+          segments: [{ id: '8b10d4b1-4cec-41fa-b087-4029c17bf61a' }],
+        }),
+      });
+      expect(globalThis.fetch).toHaveBeenNthCalledWith(
+        2,
+        'https://api.resend.com/contacts/user%40example.com/segments/8b10d4b1-4cec-41fa-b087-4029c17bf61a',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer re_test_123',
+            'Content-Type': 'application/json',
+          },
+        }
+      );
     expect(inngest.send).toHaveBeenCalled();
   });
 
@@ -157,7 +169,8 @@ describe('Newsletter API Integration', () => {
     const response = await POST(request);
 
     expect(response.status).toBe(200);
-    expect(globalThis.fetch).toHaveBeenCalledWith('https://api.resend.com/contacts', {
+      expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+      expect(globalThis.fetch).toHaveBeenNthCalledWith(1, 'https://api.resend.com/contacts', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer re_test_123',
@@ -169,6 +182,17 @@ describe('Newsletter API Integration', () => {
         segments: [{ id: '8b10d4b1-4cec-41fa-b087-4029c17bf61a' }],
       }),
     });
+      expect(globalThis.fetch).toHaveBeenNthCalledWith(
+        2,
+        'https://api.resend.com/contacts/user%40example.com/segments/8b10d4b1-4cec-41fa-b087-4029c17bf61a',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer re_test_123',
+            'Content-Type': 'application/json',
+          },
+        }
+      );
     expect(inngest.send).toHaveBeenCalled();
   });
 
@@ -189,6 +213,7 @@ describe('Newsletter API Integration', () => {
 
     expect(response.status).toBe(200);
     expect(data.success).toBe(true);
+      expect(globalThis.fetch).toHaveBeenCalledTimes(1);
     expect(inngest.send).toHaveBeenCalled();
   });
 
