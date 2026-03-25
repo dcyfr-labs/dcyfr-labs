@@ -176,7 +176,6 @@ Current security rating: **A+** (Excellent)
 - **2025-12-02:** Operational audit complete, all dependencies updated
 - **2025-11-26:** Dependencies updated (Next.js 16.0.4, Vitest 4.0.14, Playwright 1.57.0)
 - **2025-11-17:** Initial security documentation complete
-- **2026-03-22:** Verified commit enforcement guidance and PR signature validation added
 
 Last updated: 2026-03-22
 
