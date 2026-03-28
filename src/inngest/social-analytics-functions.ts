@@ -142,7 +142,7 @@ export const syncDevToMetrics = inngest.createFunction(
               ...result,
               lastFetchedAt: new Date().toISOString(),
             }),
-            { EX: 21600 } // 6 hours TTL
+            { ex: 21600 } // 6 hours TTL
           );
 
           cachedCount++;
@@ -343,7 +343,7 @@ export const aggregateReferrals = inngest.createFunction(
       // Store aggregated data
       const storageKey = `referral:aggregated:${today}`;
       await redis.set(storageKey, JSON.stringify(aggregations), {
-        EX: 2592000, // 30 days
+        ex: 2592000, // 30 days
       });
 
       console.warn(

@@ -25,7 +25,9 @@ export default defineConfig({
     // so production code that branches on NODE_ENV works correctly in tests.
     env: {
       NODE_ENV: 'test',
-      REDIS_URL: 'redis://localhost:6379/test',
+      // REDIS_URL removed: redis-client now uses @upstash/redis via
+      // UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN. In tests
+      // those env vars are not set so the stub client activates automatically.
     },
     // Route pure-logic tests to lighter node environment (no DOM overhead)
     environmentMatchGlobs: [

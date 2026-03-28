@@ -9,6 +9,7 @@ import { inngest } from './client';
 import { IPReputationService } from '@/lib/ip-reputation';
 import * as Sentry from '@sentry/nextjs';
 import { type IPReputationConfig } from '@/types/ip-reputation';
+import { getVercelWAFClient } from '@/lib/vercel-waf-client';
 
 // Default configuration
 const DEFAULT_CONFIG: IPReputationConfig = {
@@ -329,32 +330,73 @@ async function fetchIpsFromAxiom(_config: IPReputationConfig): Promise<string[]>
 }
 
 /**
- * Update Redis with list of blocked IPs
+ * Block malicious IPs in Vercel WAF (deny action).
  */
 async function updateBlockedIpsList(ips: string[], reason: string): Promise<void> {
+  const waf = getVercelWAFClient();
+  if (!waf) {
+    console.warn('[ip-reputation] VERCEL_WAF_TOKEN not configured — skipping WAF block');
+    return;
+  }
+
   try {
-    // This would update your Redis-based blocking system
-    // Implementation depends on your current blocking mechanism
-    console.warn(`Would block ${ips.length} IPs for reason: ${reason}`);
-    console.warn('Blocked IPs:', ips);
+    const entries = ips.map((ip) => ({
+      ip,
+      action: 'deny' as const,
+      notes: `Auto-blocked: ${reason} (greynoise)`,
+    }));
+
+    const result = await waf.syncIPBlocklist(entries);
+    console.warn(
+      `[ip-reputation] WAF deny sync: added=${result.added} skipped=${result.skipped} errors=${result.errors}`
+    );
+
+    if (result.errors > 0) {
+      Sentry.captureMessage(`WAF block sync had ${result.errors} errors`, {
+        level: 'warning',
+        tags: { component: 'ip-blocking', reason },
+        extra: { total: ips.length, ...result },
+      });
+    }
   } catch (error) {
-    console.error('Failed to update blocked IPs list:', error);
+    console.error('[ip-reputation] Failed to sync blocked IPs to WAF:', error);
     Sentry.captureException(error, {
-      tags: { component: 'ip-blocking' },
+      tags: { component: 'ip-blocking', reason },
     });
   }
 }
 
 /**
- * Update Redis with list of IPs for enhanced rate limiting
+ * Challenge suspicious IPs in Vercel WAF (challenge action).
  */
 async function updateSuspiciousIpsList(ips: string[]): Promise<void> {
+  const waf = getVercelWAFClient();
+  if (!waf) {
+    console.warn('[ip-reputation] VERCEL_WAF_TOKEN not configured — skipping WAF challenge');
+    return;
+  }
+
   try {
-    // This would update your rate limiting configuration
-    console.warn(`Would apply enhanced rate limiting to ${ips.length} IPs`);
-    console.warn('Rate limited IPs:', ips);
+    const entries = ips.map((ip) => ({
+      ip,
+      action: 'challenge' as const,
+      notes: 'Auto-challenged: suspicious activity (greynoise)',
+    }));
+
+    const result = await waf.syncIPBlocklist(entries);
+    console.warn(
+      `[ip-reputation] WAF challenge sync: added=${result.added} skipped=${result.skipped} errors=${result.errors}`
+    );
+
+    if (result.errors > 0) {
+      Sentry.captureMessage(`WAF challenge sync had ${result.errors} errors`, {
+        level: 'warning',
+        tags: { component: 'rate-limiting' },
+        extra: { total: ips.length, ...result },
+      });
+    }
   } catch (error) {
-    console.error('Failed to update suspicious IPs list:', error);
+    console.error('[ip-reputation] Failed to sync suspicious IPs to WAF:', error);
     Sentry.captureException(error, {
       tags: { component: 'rate-limiting' },
     });

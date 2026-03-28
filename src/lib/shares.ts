@@ -76,7 +76,7 @@ export async function getPostSharesBulk(postIds: string[]): Promise<Record<strin
 
   try {
     const keys = postIds.map(formatKey);
-    const values = await redis.mGet(keys);
+    const values = await redis.mGet(...keys);
 
     const result: Record<string, number> = {};
     postIds.forEach((postId, index) => {

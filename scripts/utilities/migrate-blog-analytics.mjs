@@ -2,7 +2,7 @@
 
 /**
  * Comprehensive blog analytics migration script
- * 
+ *
  * Migrates ALL orphaned Redis keys to current post IDs:
  * - views:post:{id} - Total view counts
  * - views:history:post:{id} - View history sorted sets
@@ -11,23 +11,24 @@
  * - shares:history:post:{id} - Share history sorted sets
  * - blog:milestone:{id}:* - Milestone achievements
  * - session:view:{id}:* - Session tracking
- * 
+ *
  * Strategy: Match orphaned keys by date prefix to current posts
  */
 
-import { createClient } from 'redis';
+import { Redis } from '@upstash/redis';
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import yaml from 'js-yaml';
 
-const REDIS_URL = process.env.REDIS_URL;
+const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL;
+const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 const DRY_RUN = process.argv.includes('--dry-run');
 const CONTENT_DIR = path.join(process.cwd(), 'src/content/blog');
 
-if (!REDIS_URL) {
-  console.error('❌ REDIS_URL required');
+if (!REDIS_URL || !REDIS_TOKEN) {
+  console.error('❌ UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN required');
   process.exit(1);
 }
 
@@ -123,7 +124,7 @@ function classifyKey({ key, id, extraSuffix, type, prefix }, posts, postsByDate,
     return { action: 'keep', key, id, type };
   }
 
-  const matchBySlug = posts.find(p => p.slug === id && !p.draft);
+  const matchBySlug = posts.find((p) => p.slug === id && !p.draft);
   if (matchBySlug) {
     return {
       action: 'merge',
@@ -137,7 +138,7 @@ function classifyKey({ key, id, extraSuffix, type, prefix }, posts, postsByDate,
 
   const dateKey = extractDateFromId(id);
   if (dateKey) {
-    const nonDraftPosts = (postsByDate.get(dateKey) || []).filter(p => !p.draft);
+    const nonDraftPosts = (postsByDate.get(dateKey) || []).filter((p) => !p.draft);
     if (nonDraftPosts.length === 1) {
       const targetPost = nonDraftPosts[0];
       return {
@@ -164,7 +165,14 @@ function classifyKey({ key, id, extraSuffix, type, prefix }, posts, postsByDate,
  * Analyze all Redis keys for a single KEY_PATTERNS entry.
  * Pushes results into the operations object.
  */
-async function analyzePatternKeys(client, { pattern, type, prefix }, posts, postsByDate, validIds, operations) {
+async function analyzePatternKeys(
+  client,
+  { pattern, type, prefix },
+  posts,
+  postsByDate,
+  validIds,
+  operations
+) {
   const keys = await client.keys(pattern);
   for (const key of keys.sort()) {
     const suffix = key.replace(prefix, '');
@@ -180,7 +188,7 @@ async function analyzePatternKeys(client, { pattern, type, prefix }, posts, post
 async function executeMergeString(client, op, stats) {
   const fromValue = await client.get(op.fromKey);
   if (fromValue) {
-    const toValue = await client.get(op.toKey) || '0';
+    const toValue = (await client.get(op.toKey)) || '0';
     const newValue = parseInt(toValue) + parseInt(fromValue);
     await client.set(op.toKey, newValue.toString());
     console.log(`   ✅ Merged string: ${op.fromKey}`);
@@ -239,10 +247,10 @@ async function displayFinalState(client, posts) {
   console.log('\n' + '='.repeat(70));
   console.log('\n📈 FINAL ANALYTICS STATE:\n');
 
-  const sorted = posts.filter(p => !p.draft).sort((a, b) => b.dateKey.localeCompare(a.dateKey));
+  const sorted = posts.filter((p) => !p.draft).sort((a, b) => b.dateKey.localeCompare(a.dateKey));
   for (const post of sorted) {
-    const views = await client.get(`views:post:${post.id}`) || '0';
-    const shares = await client.get(`shares:post:${post.id}`) || '0';
+    const views = (await client.get(`views:post:${post.id}`)) || '0';
+    const shares = (await client.get(`shares:post:${post.id}`)) || '0';
     console.log(`   ${post.title.substring(0, 50)}`);
     console.log(`   Views: ${views} | Shares: ${shares}\n`);
   }
@@ -253,8 +261,7 @@ async function main() {
   console.log(`   Mode: ${DRY_RUN ? 'DRY RUN (no changes)' : 'LIVE (will modify Redis)'}\n`);
   console.log('='.repeat(70) + '\n');
 
-  const client = createClient({ url: REDIS_URL });
-  await client.connect();
+  const client = new Redis({ url: REDIS_URL, token: REDIS_TOKEN });
 
   // Step 1: Build post lookup
   const posts = getAllPosts();
@@ -322,7 +329,6 @@ async function main() {
   }
 
   await displayFinalState(client, posts);
-  await client.quit();
 }
 
 main().catch(console.error);

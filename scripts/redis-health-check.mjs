@@ -15,7 +15,7 @@
  *   npm run redis:health -- --github  # Check for GitHub activity only
  */
 
-import { createClient } from 'redis';
+import { Redis } from '@upstash/redis';
 import { config } from 'dotenv';
 
 config({ path: '.env.local' });
@@ -32,22 +32,18 @@ const GITHUB_SOURCES = ['github']; // GitHub activity sources to detect/remove
 // ============================================================================
 
 async function getRedisClient() {
-  const redisUrl = process.env.REDIS_URL;
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-  if (!redisUrl) {
-    console.error('❌ REDIS_URL not configured in environment');
+  if (!url || !token) {
+    console.error(
+      '❌ UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN not configured in environment'
+    );
     process.exit(1);
   }
 
-  try {
-    const client = createClient({ url: redisUrl });
-    await client.connect();
-    console.log('✅ Connected to Redis\n');
-    return client;
-  } catch (error) {
-    console.error('❌ Failed to connect to Redis:', error.message);
-    process.exit(1);
-  }
+  console.log('✅ Connected to Redis\n');
+  return new Redis({ url, token });
 }
 
 // ============================================================================
@@ -88,12 +84,6 @@ async function analyzeActivityCache(redis) {
     console.log('⚠️  No TTL set (cache will persist until manually cleared)');
   } else {
     console.log('⚠️  Key expired or does not exist');
-  }
-
-  // Memory usage
-  const memory = await redis.memoryUsage(CACHE_KEY);
-  if (memory) {
-    console.log(`💾 Memory usage: ${(memory / 1024).toFixed(2)} KB`);
   }
 
   console.log('');
@@ -141,10 +131,12 @@ function analyzeTimestamps(activities) {
   console.log('═'.repeat(50));
 
   const now = new Date();
-  const timestamps = activities.map(a => {
-    const ts = a.timestamp instanceof Date ? a.timestamp : new Date(a.timestamp);
-    return { id: a.id, source: a.source, timestamp: ts };
-  }).sort((a, b) => b.timestamp - a.timestamp);
+  const timestamps = activities
+    .map((a) => {
+      const ts = a.timestamp instanceof Date ? a.timestamp : new Date(a.timestamp);
+      return { id: a.id, source: a.source, timestamp: ts };
+    })
+    .sort((a, b) => b.timestamp - a.timestamp);
 
   if (timestamps.length === 0) {
     console.log('⚠️  No activities found');
@@ -169,14 +161,7 @@ async function checkAllKeys(redis) {
   console.log('🔑 Redis Key Analysis');
   console.log('═'.repeat(50));
 
-  const patterns = [
-    'activity:*',
-    'github:*',
-    'views:*',
-    'likes:*',
-    'bookmarks:*',
-    'analytics:*',
-  ];
+  const patterns = ['activity:*', 'github:*', 'views:*', 'likes:*', 'bookmarks:*', 'analytics:*'];
 
   for (const pattern of patterns) {
     const keys = await redis.keys(pattern);
@@ -209,7 +194,7 @@ async function cleanGitHubActivities(redis, githubActivities) {
   }
 
   const activities = JSON.parse(cached);
-  const cleaned = activities.filter(a => !GITHUB_SOURCES.includes(a.source));
+  const cleaned = activities.filter((a) => !GITHUB_SOURCES.includes(a.source));
 
   console.log(`   Removing ${activities.length - cleaned.length} activities...`);
 
@@ -299,7 +284,7 @@ async function main() {
     if (githubOnly) {
       if (githubActivities.length > 0) {
         console.log(`⚠️  Found ${githubActivities.length} GitHub activities:`);
-        githubActivities.slice(0, 5).forEach(a => {
+        githubActivities.slice(0, 5).forEach((a) => {
           console.log(`   - ${a.title} (${new Date(a.timestamp).toLocaleDateString()})`);
         });
         if (githubActivities.length > 5) {
@@ -327,12 +312,9 @@ async function main() {
     generateRecommendations(activities, githubActivities);
 
     console.log('✅ Health check complete');
-
   } catch (error) {
     console.error('❌ Health check failed:', error);
     throw error;
-  } finally {
-    await redis.quit();
   }
 }
 

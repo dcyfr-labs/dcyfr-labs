@@ -224,7 +224,7 @@ async function populateGitHubCache(): Promise<PopulateResult> {
       };
     }
     const key = 'github:contributions:dcyfr';
-    await redis.set(key, JSON.stringify(githubData), { EX: CACHE_TTL });
+    await redis.set(key, JSON.stringify(githubData), { ex: CACHE_TTL });
     console.warn(`[Admin Cache] GitHub data cached: ${key}`);
     return {
       success: true,
@@ -269,7 +269,7 @@ async function populateCredlyCache(): Promise<PopulateResult> {
           total_count: variant.badges.length,
           count: variant.badges.length,
         }),
-        { EX: CACHE_TTL }
+        { ex: CACHE_TTL }
       );
       credlyKeys.push(redisKey);
       console.warn(`[Admin Cache] Cached ${variant.key}: ${variant.badges.length} badges`);

@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
     };
 
     await redis.set(eventKey, JSON.stringify(eventData), {
-      EX: 86400, // 24 hours
+      ex: 86400, // 24 hours
     });
 
     // Increment referral counter for this post and platform

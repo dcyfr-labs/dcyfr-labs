@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
 
     await Promise.race([
       (async () => {
-        await redis.set(testKey, 'ok', { EX: 10 });
+        await redis.set(testKey, 'ok', { ex: 10 });
         const value = await redis.get(testKey);
         await redis.del(testKey);
 

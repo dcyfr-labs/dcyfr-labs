@@ -189,7 +189,7 @@ export async function trackApiUsage(
       };
     }
 
-    await redis.set(dailyKey, JSON.stringify(usage), { EX: TTL.daily });
+    await redis.set(dailyKey, JSON.stringify(usage), { ex: TTL.daily });
 
     // Update monthly aggregate
     await updateMonthlyAggregate(service, month, {
@@ -256,7 +256,7 @@ async function updateMonthlyAggregate(
       };
     }
 
-    await redis.set(monthlyKey, JSON.stringify(aggregate), { EX: TTL.monthly });
+    await redis.set(monthlyKey, JSON.stringify(aggregate), { ex: TTL.monthly });
   } catch (error) {
     console.error('[API Usage] Failed to update monthly aggregate:', error);
   }

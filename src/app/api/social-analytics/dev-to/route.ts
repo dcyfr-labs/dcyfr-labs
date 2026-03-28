@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
         ...metrics,
         lastFetchedAt: new Date().toISOString(),
       }),
-      { EX: CACHE_TTL }
+      { ex: CACHE_TTL }
     );
 
     return NextResponse.json({

@@ -290,7 +290,7 @@ export async function populateCredlyCache(username: string = 'dcyfr'): Promise<v
       // Store in Redis
       const redisKey = createRedisKey(username, variant.limit || undefined);
       try {
-        await redis.set(redisKey, JSON.stringify(cacheData), { EX: REDIS_CACHE_DURATION });
+        await redis.set(redisKey, JSON.stringify(cacheData), { ex: REDIS_CACHE_DURATION });
         console.warn(
           `[Credly Cache] Cached ${variant.key}: ${variant.badges.length} badges to ${redisKey}`
         );

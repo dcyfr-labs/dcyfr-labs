@@ -62,7 +62,7 @@ export async function getMultipleProjectViews(
 
   try {
     const keys = projectSlugs.map(formatProjectKey);
-    const values = await redis.mGet(keys);
+    const values = await redis.mGet(...keys);
 
     projectSlugs.forEach((slug, index) => {
       const value = values[index];

@@ -75,7 +75,7 @@ export async function storeHealthReport(report: McpHealthReport): Promise<void> 
     await redis.set(
       `${REDIS_KEY_PREFIX}latest`,
       JSON.stringify(report),
-      { EX: 24 * 60 * 60 } // 24 hours
+      { ex: 24 * 60 * 60 } // 24 hours
     );
 
     // Store per-server history

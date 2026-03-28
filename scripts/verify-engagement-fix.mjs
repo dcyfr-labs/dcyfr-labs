@@ -7,24 +7,26 @@
  * blog post now shows correct engagement counts after consolidation.
  */
 
-import { createClient } from 'redis';
+import { Redis } from '@upstash/redis';
 import { config } from 'dotenv';
 
 config({ path: '.env.local' });
 
-const REDIS_URL = process.env.REDIS_URL;
+const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL;
+const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 const POST_SLUG = 'building-event-driven-architecture';
 
-if (!REDIS_URL) {
-  console.error('❌ REDIS_URL environment variable is required');
+if (!REDIS_URL || !REDIS_TOKEN) {
+  console.error(
+    '❌ UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN environment variables are required'
+  );
   process.exit(1);
 }
 
 async function verifyFix() {
-  const client = createClient({ url: REDIS_URL });
+  const client = new Redis({ url: REDIS_URL, token: REDIS_TOKEN });
 
   try {
-    await client.connect();
     console.log('✅ Connected to Redis\n');
 
     // Check consolidated engagement data
@@ -73,8 +75,6 @@ async function verifyFix() {
     }
   } catch (error) {
     console.error('❌ Error:', error);
-  } finally {
-    await client.disconnect();
   }
 }
 

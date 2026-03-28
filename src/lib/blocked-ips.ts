@@ -8,6 +8,7 @@
 import { redis } from '@/lib/redis-client';
 import * as Sentry from '@sentry/nextjs';
 import { type IPReputationEntry } from '@/types/ip-reputation';
+import { getVercelWAFClient } from '@/lib/vercel-waf-client';
 
 const BLOCKED_IPS_KEY = 'security:blocked-ips';
 const SUSPICIOUS_IPS_KEY = 'security:suspicious-ips';
@@ -138,7 +139,7 @@ export class BlockedIPsManager {
 
     try {
       // Add to blocked IPs set
-      await redis.hSet(BLOCKED_IPS_KEY, { [ip]: JSON.stringify(entry) });
+      await redis.hSet(BLOCKED_IPS_KEY, ip, JSON.stringify(entry));
 
       // Add to block history for analytics
       const historyKey = `${IP_BLOCK_HISTORY_KEY}:${new Date().toISOString().split('T')[0]}`;
@@ -160,6 +161,20 @@ export class BlockedIPsManager {
 
       const maskedIp = maskIp(ip);
       console.warn(`Blocked client (reason: ${reason}, source: ${source})`);
+
+      // Sync to Vercel WAF (fail-open: WAF unavailability must not break audit log)
+      const waf = getVercelWAFClient();
+      if (waf) {
+        const wafAction = reason === 'malicious' ? 'deny' : 'challenge';
+        const wafNotes = `Blocked: ${reason} (source: ${source})`;
+        waf[wafAction === 'deny' ? 'blockIP' : 'challengeIP'](ip, wafNotes).catch((err) => {
+          console.error('[blocked-ips] WAF sync failed for block:', err);
+          Sentry.captureException(err, {
+            tags: { component: 'blocked-ips', operation: 'waf-sync-block' },
+            extra: { ip_masked: maskedIp, reason, source },
+          });
+        });
+      }
 
       // Log to Sentry for monitoring (mask IPs in telemetry)
       Sentry.addBreadcrumb({
@@ -207,6 +222,18 @@ export class BlockedIPsManager {
         const maskedIp = maskIp(ip);
         console.warn(`Unblocked client (reason: ${reason})`);
 
+        // Sync removal to Vercel WAF (fail-open)
+        const waf = getVercelWAFClient();
+        if (waf) {
+          waf.removeIPByAddress(ip).catch((err) => {
+            console.error('[blocked-ips] WAF sync failed for unblock:', err);
+            Sentry.captureException(err, {
+              tags: { component: 'blocked-ips', operation: 'waf-sync-unblock' },
+              extra: { ip_masked: maskedIp, reason },
+            });
+          });
+        }
+
         Sentry.addBreadcrumb({
           category: 'security',
           message: `Client unblocked`,
@@ -240,7 +267,7 @@ export class BlockedIPsManager {
         metadata,
       };
 
-      await redis.hSet(SUSPICIOUS_IPS_KEY, { [ip]: JSON.stringify(entry) });
+      await redis.hSet(SUSPICIOUS_IPS_KEY, ip, JSON.stringify(entry));
 
       // Set TTL for suspicious marking (24 hours)
       await redis.expire(`${SUSPICIOUS_IPS_KEY}:${ip}`, 86400);
@@ -257,7 +284,7 @@ export class BlockedIPsManager {
   async isSuspicious(ip: string): Promise<boolean> {
     try {
       const entry = await redis.hExists(SUSPICIOUS_IPS_KEY, ip);
-      return entry === 1;
+      return entry;
     } catch (error) {
       console.error('Error checking if client address (details redacted).', error);
       return false;

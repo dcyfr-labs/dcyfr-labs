@@ -13,7 +13,7 @@
  * Note: Google Analytics integration was considered but not implemented (removed February 2026).
  */
 
-import { createClient } from 'redis';
+import { Redis } from '@upstash/redis';
 
 async function populateAnalyticsMilestones() {
   // PRODUCTION CHECK: Prevent running in production
@@ -37,29 +37,18 @@ async function populateAnalyticsMilestones() {
   console.log('📝 Note: This will populate TEST DATA in Redis.\n');
 
   // Check if Redis URL is configured
-  if (!process.env.REDIS_URL) {
-    console.log('⚠️  REDIS_URL not configured in environment');
-    console.log('💡 This script requires Redis for storing analytics milestones');
-    console.log('');
-    console.log('To set up Redis:');
-    console.log('1. Add REDIS_URL to your .env.local file');
-    console.log('2. Use a local Redis server or cloud service like Upstash/Vercel KV');
-    console.log('');
-    console.log('Example .env.local entry:');
-    console.log('REDIS_URL=redis://localhost:6379');
-    console.log('');
-    console.log('For testing without Redis, the analytics integration will gracefully');
-    console.log('handle missing data and not display any analytics milestones.');
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  if (!url || !token) {
+    console.log('⚠️  UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN not configured');
+    console.log('💡 Add these to your .env.local file to connect to Upstash Redis');
     process.exit(0);
   }
 
-  const redis = createClient({ url: process.env.REDIS_URL });
+  const redis = new Redis({ url, token });
 
   try {
-    console.log('🔌 Connecting to Redis...');
-    await redis.connect();
-    console.log('✅ Connected to Redis');
-
     // Sample Vercel Analytics Milestones
     const vercelMilestones = [
       {
@@ -154,7 +143,6 @@ async function populateAnalyticsMilestones() {
       vercelMilestones.length + githubMilestones.length + searchMilestones.length
     );
 
-    await redis.quit();
     console.log('\n✅ Analytics milestones populated successfully!');
     console.log('💡 The activity cache will pick up these milestones on the next refresh.');
   } catch (error) {
@@ -173,11 +161,6 @@ async function populateAnalyticsMilestones() {
       console.log('💡 Check your Redis configuration and try again');
     }
 
-    try {
-      await redis.quit();
-    } catch (quitError) {
-      // Ignore quit errors if already disconnected
-    }
     process.exit(1);
   }
 }

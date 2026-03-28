@@ -8,7 +8,7 @@
  * Safe to run in production - only clears the fabricated analytics milestones.
  */
 
-import { createClient } from 'redis';
+import { Redis } from '@upstash/redis';
 
 const TEST_DATA_KEYS = [
   'analytics:milestones',
@@ -18,19 +18,17 @@ const TEST_DATA_KEYS = [
 ];
 
 async function clearTestData() {
-  // Check Redis URL
-  if (!process.env.REDIS_URL) {
-    console.error('❌ REDIS_URL not configured in environment');
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  if (!url || !token) {
+    console.error('❌ UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN not configured');
     process.exit(1);
   }
 
-  const redis = createClient({ url: process.env.REDIS_URL });
+  const redis = new Redis({ url, token });
 
   try {
-    console.log('🔌 Connecting to Redis...');
-    await redis.connect();
-    console.log('✅ Connected to Redis\n');
-
     console.log('📊 TEST DATA KEYS TO CLEAR');
     console.log('='.repeat(70));
 
@@ -100,15 +98,9 @@ async function clearTestData() {
     console.log('  3. Monitor logs for any missing milestone warnings');
     console.log('  4. Deploy real data ingestion scripts when ready');
 
-    await redis.quit();
     process.exit(0);
   } catch (error) {
     console.error('❌ Error clearing test data:', error.message);
-    try {
-      await redis.quit();
-    } catch {
-      // Ignore quit errors
-    }
     process.exit(1);
   }
 }

@@ -75,7 +75,7 @@ async function fetchFeeds(): Promise<InoreaderArticle[]> {
 
     // Cache results for 5 minutes
     await redis.set(cacheKey, JSON.stringify(articles), {
-      EX: 60 * 5, // 5 minutes
+      ex: 60 * 5, // 5 minutes
     });
 
     return articles;

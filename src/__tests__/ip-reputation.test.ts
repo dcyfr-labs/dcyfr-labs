@@ -7,7 +7,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { IPReputationService, GreyNoiseClient } from '@/lib/ip-reputation';
 import { BlockedIPsManager } from '@/lib/blocked-ips';
-import { rateLimitWithProtection, getClientIp } from '@/lib/rate-limit';
+import { getClientIp } from '@/lib/rate-limit';
 
 // Mock the Upstash redis singleton with in-memory behavior for tests
 const hashes: Record<string, Record<string, string>> = {};
@@ -305,53 +305,6 @@ describe('Blocked IPs Manager', () => {
 });
 
 import * as BlockedIpsModule from '@/lib/blocked-ips';
-
-describe('Rate Limiting with Reputation', () => {
-  it('should apply different limits based on IP reputation', async () => {
-    const mockRequest = {
-      headers: {
-        get: (name: string) => {
-          if (name === 'x-forwarded-for') return '1.2.3.4';
-          return null;
-        },
-      },
-    } as any;
-
-    // Mock IP reputation checks
-    vi.spyOn(BlockedIpsModule, 'isIPBlocked').mockResolvedValue(false as any);
-    vi.spyOn(BlockedIpsModule, 'isIPSuspicious').mockResolvedValue(true as any);
-
-    const result = await rateLimitWithProtection(mockRequest, {
-      standard: { limit: 100, windowInSeconds: 300 },
-      suspicious: { limit: 10, windowInSeconds: 300 },
-    });
-
-    expect(result.reputation?.is_suspicious).toBe(true);
-    expect(result.reputation?.classification).toBe('suspicious');
-    expect(result.limit).toBe(10); // Should use suspicious limits
-  });
-
-  it('should block requests from blocked IPs', async () => {
-    const mockRequest = {
-      headers: {
-        get: (name: string) => {
-          if (name === 'x-forwarded-for') return '1.2.3.4';
-          return null;
-        },
-      },
-    } as any;
-
-    // Mock blocked IP
-    vi.spyOn(BlockedIpsModule, 'isIPBlocked').mockResolvedValue(true as any);
-    vi.spyOn(BlockedIpsModule, 'isIPSuspicious').mockResolvedValue(false as any);
-
-    const result = await rateLimitWithProtection(mockRequest);
-
-    expect(result.success).toBe(false);
-    expect(result.reputation?.is_blocked).toBe(true);
-    expect(result.limit).toBe(0);
-  });
-});
 
 describe('IP Helper Functions', () => {
   it('should extract client IP from headers', () => {

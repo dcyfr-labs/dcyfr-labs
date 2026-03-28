@@ -680,6 +680,10 @@ export default function AnalyticsDashboard({
         </CardHeader>
         {showConversion && (
           <CardContent className="pt-0">
+            {/* completionRate and avgScrollDepth are placeholder values pending
+              custom event data from Vercel Analytics (blog_post_completed,
+              blog_scroll_milestone). Source: analytics.ts event definitions.
+              Real values available once CTAs + scroll tracking events flow. */}
             <ConversionMetrics
               completionRate={0}
               avgScrollDepth={0}

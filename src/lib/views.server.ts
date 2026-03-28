@@ -101,7 +101,7 @@ export async function getMultiplePostViews(postIds: string[]): Promise<Map<strin
 
   try {
     const keys = postIds.map(formatKey);
-    const values = await redis.mGet(keys);
+    const values = await redis.mGet(...keys);
 
     postIds.forEach((postId, index) => {
       const value = values[index];

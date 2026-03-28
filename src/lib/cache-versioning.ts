@@ -227,7 +227,7 @@ export class VersionedCache<T = any> {
         return 0;
       }
 
-      const deleted = await redis.del(keys);
+      const deleted = await redis.del(...keys);
       console.warn(`[Cache] Deleted ${deleted} versions of ${this.config.namespace}:${key}`);
 
       return deleted;

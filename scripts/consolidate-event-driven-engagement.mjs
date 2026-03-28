@@ -20,20 +20,23 @@
  * directory structure in src/content/blog/building-event-driven-architecture/
  */
 
-import { createClient } from 'redis';
+import { Redis } from '@upstash/redis';
 import { config } from 'dotenv';
 
 config({ path: '.env.local' });
 
-const REDIS_URL = process.env.REDIS_URL;
+const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL;
+const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 const DRY_RUN = process.argv.includes('--dry-run');
 
-if (!REDIS_URL) {
-  console.error('❌ REDIS_URL environment variable is required');
+if (!REDIS_URL || !REDIS_TOKEN) {
+  console.error(
+    '❌ UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN environment variables are required'
+  );
   process.exit(1);
 }
 
-const client = createClient({ url: REDIS_URL });
+const client = new Redis({ url: REDIS_URL, token: REDIS_TOKEN });
 
 const CORRECT_SLUG = 'building-event-driven-architecture';
 const SHORT_SLUG = 'event-driven-architecture';
@@ -77,7 +80,6 @@ async function consolidateEngagementData() {
   console.log('='.repeat(70) + '\n');
 
   try {
-    await client.connect();
     console.log('✅ Connected to Redis\n');
 
     // Key mappings
@@ -163,7 +165,13 @@ async function consolidateEngagementData() {
 
     console.log(`\n🚀 APPLYING CONSOLIDATION...\n`);
 
-    const deletedKeys = await applyConsolidation(client, sourceKeys, targetKeys, totalLikes, totalBookmarks);
+    const deletedKeys = await applyConsolidation(
+      client,
+      sourceKeys,
+      targetKeys,
+      totalLikes,
+      totalBookmarks
+    );
 
     console.log(`\n✅ CONSOLIDATION COMPLETE!\n`);
 
@@ -182,8 +190,6 @@ async function consolidateEngagementData() {
   } catch (error) {
     console.error('\n❌ Error during consolidation:', error);
     process.exit(1);
-  } finally {
-    await client.disconnect();
   }
 }
 

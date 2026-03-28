@@ -102,7 +102,7 @@ export async function checkIpDeduplication(
       return true;
     }
 
-    await redis.set(key, '1', { EX: ttlInSeconds });
+    await redis.set(key, '1', { ex: ttlInSeconds });
     return false;
   } catch (error) {
     console.error('[EngagementAnalytics] Failed IP deduplication check (fail-open):', error);

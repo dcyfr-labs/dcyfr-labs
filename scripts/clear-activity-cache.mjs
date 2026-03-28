@@ -18,22 +18,24 @@
  * - Ensure next page load fetches fresh data
  */
 
-import { createClient } from 'redis';
+import { Redis } from '@upstash/redis';
 import { config } from 'dotenv';
 
 config({ path: '.env.local' });
 
 async function clearActivityCache() {
-  const redisUrl = process.env.REDIS_URL;
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-  if (!redisUrl) {
-    console.log('⚠️  REDIS_URL not configured - no cache to clear');
+  if (!url || !token) {
+    console.log(
+      '⚠️  UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN not configured - no cache to clear'
+    );
     return;
   }
 
   try {
-    const redis = createClient({ url: redisUrl });
-    await redis.connect();
+    const redis = new Redis({ url, token });
 
     // Find all versioned cache keys
     const pattern = 'activity:v*:feed:all';
@@ -41,22 +43,19 @@ async function clearActivityCache() {
 
     if (keys.length === 0) {
       console.log('⚠️  No activity cache found');
-      await redis.quit();
       return;
     }
 
     // Delete all versions
-    const deleted = await redis.del(keys);
+    const deleted = await redis.del(...keys);
     console.log(`✅ Cleared ${deleted} version(s) of activity feed cache:`);
-    keys.forEach(key => console.log(`   - ${key}`));
+    keys.forEach((key) => console.log(`   - ${key}`));
 
     // Also clear legacy non-versioned cache (if it exists)
     const legacyDeleted = await redis.del('activity:feed:all');
     if (legacyDeleted > 0) {
       console.log('✅ Cleared legacy (non-versioned) cache: activity:feed:all');
     }
-
-    await redis.quit();
   } catch (error) {
     console.error('❌ Failed to clear cache:', error);
     process.exit(1);

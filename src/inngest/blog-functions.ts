@@ -379,7 +379,7 @@ export const calculateTrending = inngest.createFunction(
           await step.run('store-trending', async () => {
             try {
               await withTimeout(
-                redis.set(TRENDING_KEY, JSON.stringify(trending), { EX: 60 * 60 }),
+                redis.set(TRENDING_KEY, JSON.stringify(trending), { ex: 60 * 60 }),
                 10000,
                 'Redis set timeout'
               );
@@ -514,7 +514,7 @@ export const generateAnalyticsSummary = inngest.createFunction(
         await redis.set(
           summaryKey,
           JSON.stringify(summary),
-          { EX: 90 * 24 * 60 * 60 } // Keep for 90 days
+          { ex: 90 * 24 * 60 * 60 } // Keep for 90 days
         );
 
         console.warn(`Analytics summary generated for ${period}:`, {
@@ -603,14 +603,14 @@ export const syncVercelAnalytics = inngest.createFunction(
         const { topPages, topReferrers, topDevices, fetchedAt } = result;
 
         // Store standardized data in Redis with 24h TTL
-        await redis.set('vercel:topPages:daily', JSON.stringify(topPages), { EX: 24 * 60 * 60 });
+        await redis.set('vercel:topPages:daily', JSON.stringify(topPages), { ex: 24 * 60 * 60 });
         await redis.set('vercel:topReferrers:daily', JSON.stringify(topReferrers), {
-          EX: 24 * 60 * 60,
+          ex: 24 * 60 * 60,
         });
         await redis.set('vercel:topDevices:daily', JSON.stringify(topDevices), {
-          EX: 24 * 60 * 60,
+          ex: 24 * 60 * 60,
         });
-        await redis.set('vercel:metrics:lastSynced', fetchedAt, { EX: 24 * 60 * 60 });
+        await redis.set('vercel:metrics:lastSynced', fetchedAt, { ex: 24 * 60 * 60 });
 
         // Track that we fetched Vercel analytics - helpful for audit
         await track('vercel_analytics_synced', { fetchedAt, topPagesCount: topPages.length });
