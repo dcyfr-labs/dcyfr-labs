@@ -107,7 +107,7 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          VERCEL_AUTOMATION_BYPASS_SECRET: op://Development/dcyfr-labs-vercel-automation-bypass-secret/password
+          VERCEL_AUTOMATION_BYPASS_SECRET: op://h3s3jppnlhtegkzzh3ghhkrugq/cu5fwwvuxecv6r3uhwa6rlp5c4/automation_bypass_secret
 
 
       - name: Install Nuclei
@@ -332,7 +332,8 @@ jobs:
 
             // Load scan results
             const results = JSON.parse(fs.readFileSync('nuclei-results.json', 'utf-8'))
-              .split('\n')
+              .split('
+')
               .filter(line => line.trim())
               .map(line => JSON.parse(line));
 
@@ -378,11 +379,13 @@ jobs:
 
             ### Evidence
             \`\`\`
-            ${vuln.extracted_results?.join('\n') || vuln.matcher_name || 'See scan artifacts for details'}
+            ${vuln.extracted_results?.join('
+') || vuln.matcher_name || 'See scan artifacts for details'}
             \`\`\`
 
             ### References
-            ${vuln.info.reference ? vuln.info.reference.map(r => `- ${r}`).join('\n') : 'No references available'}
+            ${vuln.info.reference ? vuln.info.reference.map(r => `- ${r}`).join('
+') : 'No references available'}
 
             ### Remediation
             ${vuln.info.remediation || 'Review vulnerability details and apply security patches or configuration changes as appropriate.'}
@@ -416,7 +419,8 @@ jobs:
             }
 
             // Summary comment
-            console.log(`\n📊 Summary: Created ${issuesCreated} GitHub issues`);
+            console.log(`
+📊 Summary: Created ${issuesCreated} GitHub issues`);
 
             // Create summary issue if multiple medium-severity found
             if (medium.length > 5) {
@@ -427,7 +431,8 @@ jobs:
 
             Nuclei external scan found **${medium.length} medium-severity vulnerabilities** that should be reviewed:
 
-            ${medium.map((v, i) => `${i + 1}. **${v.info.name}** (${v.templateID || v['template-id']})`).join('\n')}
+            ${medium.map((v, i) => `${i + 1}. **${v.info.name}** (${v.templateID || v['template-id']})`).join('
+')}
 
             ### Recommendations
             - Review each vulnerability in the scan artifacts
