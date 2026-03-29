@@ -1,10 +1,11 @@
-import { Card } from "@/components/ui/card";
-import { sanitizeUrl } from "@/lib/utils";
-import { SPACING, TYPOGRAPHY, HOVER_EFFECTS } from "@/lib/design-tokens";
-import { AUTHOR_EMAIL } from "@/lib/site-config";
-import { getSocialLink } from "@/data/socials";
-import { cn } from "@/lib/utils";
-import { Mail, Calendar, Linkedin, Github, ExternalLink } from "lucide-react";
+import { Card } from '@/components/ui/card';
+import { sanitizeUrl } from '@/lib/utils';
+import { SPACING, TYPOGRAPHY, HOVER_EFFECTS } from '@/lib/design-tokens';
+import { AUTHOR_EMAIL } from '@/lib/site-config';
+import { getSocialLink } from '@/data/socials';
+import { cn } from '@/lib/utils';
+import { Mail, Calendar, ExternalLink } from 'lucide-react';
+import { Github, Linkedin } from '@/components/ui/brand-icons';
 
 /**
  * Contact Methods Component
@@ -27,14 +28,14 @@ import { Mail, Calendar, Linkedin, Github, ExternalLink } from "lucide-react";
  */
 export function ContactMethods() {
   // Get key social links
-  const linkedinLink = getSocialLink("linkedin");
-  const githubLink = getSocialLink("github");
-  const calendarLink = getSocialLink("calendar");
+  const linkedinLink = getSocialLink('linkedin');
+  const githubLink = getSocialLink('github');
+  const calendarLink = getSocialLink('calendar');
 
   const contactMethods = [
     {
-      label: "Email",
-      description: "Send us a direct email",
+      label: 'Email',
+      description: 'Send us a direct email',
       url: `mailto:${AUTHOR_EMAIL}`,
       icon: Mail,
       isEmail: true,
@@ -43,7 +44,7 @@ export function ContactMethods() {
       ? [
           {
             label: linkedinLink.label,
-            description: linkedinLink.description || "Connect on LinkedIn",
+            description: linkedinLink.description || 'Connect on LinkedIn',
             url: linkedinLink.url,
             icon: Linkedin,
             isEmail: false,
@@ -54,7 +55,7 @@ export function ContactMethods() {
       ? [
           {
             label: githubLink.label,
-            description: githubLink.description || "View our code",
+            description: githubLink.description || 'View our code',
             url: githubLink.url,
             icon: Github,
             isEmail: false,
@@ -65,7 +66,7 @@ export function ContactMethods() {
       ? [
           {
             label: calendarLink.label,
-            description: calendarLink.description || "Schedule a meeting",
+            description: calendarLink.description || 'Schedule a meeting',
             url: calendarLink.url,
             icon: Calendar,
             isEmail: false,
@@ -78,7 +79,7 @@ export function ContactMethods() {
     <div className={SPACING.content}>
       <div className="text-center mb-8">
         <h2 className={TYPOGRAPHY.h2.standard}>Other Ways to Connect</h2>
-        <p className={cn(TYPOGRAPHY.description, "mt-2")}>
+        <p className={cn(TYPOGRAPHY.description, 'mt-2')}>
           Choose the platform that works best for you
         </p>
       </div>
@@ -92,28 +93,21 @@ export function ContactMethods() {
             <a
               key={method.label}
               href={sanitizeUrl(method.url)}
-              target={isExternal ? "_blank" : undefined}
-              rel={isExternal ? "noopener noreferrer" : undefined}
+              target={isExternal ? '_blank' : undefined}
+              rel={isExternal ? 'noopener noreferrer' : undefined}
               className="group"
             >
-              <Card className={cn("p-4 h-full", HOVER_EFFECTS.cardSubtle)}>
+              <Card className={cn('p-4 h-full', HOVER_EFFECTS.cardSubtle)}>
                 <div className="flex flex-col items-center text-center gap-3">
                   <div className="p-3 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                    <IconComponent
-                      className="h-6 w-6 text-primary"
-                      aria-hidden="true"
-                    />
+                    <IconComponent className="h-6 w-6 text-primary" aria-hidden="true" />
                   </div>
                   <div>
                     <p className="font-semibold text-sm group-hover:text-primary transition-colors flex items-center justify-center gap-1.5">
                       {method.label}
-                      {isExternal && (
-                        <ExternalLink className="h-3 w-3" aria-hidden="true" />
-                      )}
+                      {isExternal && <ExternalLink className="h-3 w-3" aria-hidden="true" />}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {method.description}
-                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">{method.description}</p>
                   </div>
                 </div>
               </Card>

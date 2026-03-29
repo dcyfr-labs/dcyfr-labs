@@ -1,19 +1,13 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import {
-  Share2,
-  Linkedin,
-  Link as LinkIcon,
-  Check,
-  XIcon,
-  Code2,
-} from "lucide-react";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { toast } from "@/lib/toast";
-import { cn } from "@/lib/utils";
-import { useShareTracking } from "@/hooks/use-share-tracking";
+import { useState, useEffect } from 'react';
+import { Share2, Link as LinkIcon, Check, XIcon, Code2 } from 'lucide-react';
+import { Linkedin } from '@/components/ui/brand-icons';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { toast } from '@/lib/toast';
+import { cn } from '@/lib/utils';
+import { useShareTracking } from '@/hooks/use-share-tracking';
 
 /**
  * ShareButtons Component
@@ -55,19 +49,13 @@ interface ShareButtonsProps {
   initialShareCount?: number;
 }
 
-export function ShareButtons({
-  url,
-  title,
-  postId,
-  initialShareCount = 0,
-}: ShareButtonsProps) {
+export function ShareButtons({ url, title, postId, initialShareCount = 0 }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const [canShare, setCanShare] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
 
   // Use the proper share tracking hook with anti-spam protection
-  const { trackShare: trackShareAPI, shareCount: apiShareCount } =
-    useShareTracking(postId);
+  const { trackShare: trackShareAPI, shareCount: apiShareCount } = useShareTracking(postId);
   const [shareCount, setShareCount] = useState(initialShareCount);
 
   // Update share count when API returns a value
@@ -84,21 +72,17 @@ export function ShareButtons({
   const trackShare = async () => {
     try {
       const result = await trackShareAPI();
-      if (
-        result.success &&
-        result.count !== undefined &&
-        result.count !== null
-      ) {
+      if (result.success && result.count !== undefined && result.count !== null) {
         setShareCount(result.count);
       }
     } catch (error) {
-      console.error("Failed to track share:", error);
+      console.error('Failed to track share:', error);
     }
   };
 
   // Check if Web Share API is available (typically on mobile)
   useEffect(() => {
-    if (typeof navigator !== "undefined" && "share" in navigator) {
+    if (typeof navigator !== 'undefined' && 'share' in navigator) {
       setCanShare(true);
     }
   }, []);
@@ -122,12 +106,12 @@ export function ShareButtons({
           url: url,
         });
         await trackShare();
-        toast.success("Shared successfully!");
+        toast.success('Shared successfully!');
       } catch (error) {
         // User cancelled the share dialog (AbortError) - don't show error toast
-        if ((error as Error).name !== "AbortError") {
-          console.error("Error sharing:", error);
-          toast.error("Failed to share");
+        if ((error as Error).name !== 'AbortError') {
+          console.error('Error sharing:', error);
+          toast.error('Failed to share');
         }
       } finally {
         // Reset sharing state after a short delay to prevent rapid re-triggering
@@ -179,26 +163,26 @@ export function ShareButtons({
         await navigator.clipboard.writeText(url);
       } else {
         // Fallback for older browsers
-        const textArea = document.createElement("textarea");
+        const textArea = document.createElement('textarea');
         textArea.value = url;
-        textArea.style.position = "fixed";
-        textArea.style.left = "-999999px";
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
         document.body.appendChild(textArea);
         textArea.focus();
         textArea.select();
-        document.execCommand("copy");
+        document.execCommand('copy');
         document.body.removeChild(textArea);
       }
 
       setCopied(true);
       await trackShare();
-      toast.success("Link copied to clipboard!");
+      toast.success('Link copied to clipboard!');
 
       // Reset copied state after 2 seconds
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
-      console.error("Failed to copy link:", error);
-      toast.error("Failed to copy link");
+      console.error('Failed to copy link:', error);
+      toast.error('Failed to copy link');
     }
   };
 
@@ -211,20 +195,20 @@ export function ShareButtons({
       const popup = window.open(
         shareUrl,
         `share-${platform}`,
-        "width=600,height=400,toolbar=no,menubar=no,resizable=yes"
+        'width=600,height=400,toolbar=no,menubar=no,resizable=yes'
       );
 
       // Track share in database
       await trackShare();
 
       // Fallback if popup is blocked
-      if (!popup || popup.closed || typeof popup.closed === "undefined") {
-        window.open(shareUrl, "_blank", "noopener,noreferrer");
+      if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+        window.open(shareUrl, '_blank', 'noopener,noreferrer');
       }
     } catch (error) {
       console.error(`Failed to open ${platform} share:`, error);
       // Final fallback
-      window.open(shareUrl, "_blank", "noopener,noreferrer");
+      window.open(shareUrl, '_blank', 'noopener,noreferrer');
     }
   };
 
@@ -249,11 +233,11 @@ export function ShareButtons({
               key={shareCount}
               initial={{ y: -10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             >
               {shareCount}
             </motion.span>
-            <span>share{shareCount !== 1 ? "s" : ""}</span>
+            <span>share{shareCount !== 1 ? 's' : ''}</span>
           </motion.div>
         )}
       </div>
@@ -277,7 +261,7 @@ export function ShareButtons({
         <Button
           variant="outline"
           size="default"
-          onClick={() => handleShare(getTwitterShareUrl(), "twitter")}
+          onClick={() => handleShare(getTwitterShareUrl(), 'twitter')}
           className="gap-2 h-11 md:h-10"
           aria-label="Share on Twitter/X"
         >
@@ -289,7 +273,7 @@ export function ShareButtons({
         <Button
           variant="outline"
           size="default"
-          onClick={() => handleShare(getDevShareUrl(), "dev")}
+          onClick={() => handleShare(getDevShareUrl(), 'dev')}
           className="gap-2 h-11 md:h-10"
           aria-label="Share on DEV"
         >
@@ -301,7 +285,7 @@ export function ShareButtons({
         <Button
           variant="outline"
           size="default"
-          onClick={() => handleShare(getLinkedInShareUrl(), "linkedin")}
+          onClick={() => handleShare(getLinkedInShareUrl(), 'linkedin')}
           className="gap-2 h-11 md:h-10"
           aria-label="Share on LinkedIn"
         >
@@ -314,7 +298,7 @@ export function ShareButtons({
           variant="outline"
           size="default"
           onClick={handleCopyLink}
-          className={cn("gap-2 h-11 md:h-10", copied && "text-success")}
+          className={cn('gap-2 h-11 md:h-10', copied && 'text-success')}
           aria-label="Copy link to clipboard"
         >
           {copied ? (
@@ -322,9 +306,7 @@ export function ShareButtons({
           ) : (
             <LinkIcon className="h-4 w-4" aria-hidden="true" />
           )}
-          <span className="hidden sm:inline">
-            {copied ? "Copied!" : "Copy Link"}
-          </span>
+          <span className="hidden sm:inline">{copied ? 'Copied!' : 'Copy Link'}</span>
         </Button>
       </div>
     </div>

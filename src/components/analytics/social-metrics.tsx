@@ -10,16 +10,8 @@
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import {
-  ChevronDown,
-  ChevronUp,
-  XIcon,
-  Code2,
-  Linkedin,
-  Github,
-  ExternalLink,
-  TrendingUp,
-} from 'lucide-react';
+import { ChevronDown, ChevronUp, XIcon, Code2, ExternalLink, TrendingUp } from 'lucide-react';
+import { Github, Linkedin } from '@/components/ui/brand-icons';
 import { DashboardStats, DashboardStat } from '@/components/dashboard';
 import { TYPOGRAPHY, SPACING } from '@/lib/design-tokens';
 import { getPlatformDisplayName } from '@/lib/analytics';

@@ -21,12 +21,19 @@
  * ```
  */
 
-import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { SPACING, TYPOGRAPHY, CONTAINER_WIDTHS, CONTAINER_PADDING, HOVER_EFFECTS } from '@/lib/design-tokens'
-import { ArrowRight, Mail, Github, Linkedin } from 'lucide-react'
-import Link from 'next/link'
-import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import {
+  SPACING,
+  TYPOGRAPHY,
+  CONTAINER_WIDTHS,
+  CONTAINER_PADDING,
+  HOVER_EFFECTS,
+} from '@/lib/design-tokens';
+import { ArrowRight, Mail } from 'lucide-react';
+import { Github, Linkedin } from '@/components/ui/brand-icons';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 /**
  * Simple CTA Section
@@ -37,9 +44,7 @@ export function CTASectionSimple() {
     <section className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pb-8 md:pb-12`}>
       <div className="bg-muted/50 border border-border rounded-xl p-8 md:p-12 text-center">
         <div className={cn(SPACING.content, `mx-auto ${CONTAINER_WIDTHS.narrow}`)}>
-          <h2 className={TYPOGRAPHY.h2.standard}>
-            Ready to Get Started?
-          </h2>
+          <h2 className={TYPOGRAPHY.h2.standard}>Ready to Get Started?</h2>
           <p className={TYPOGRAPHY.description}>
             Let&apos;s work together to build something amazing.
           </p>
@@ -52,7 +57,7 @@ export function CTASectionSimple() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 /**
@@ -64,12 +69,10 @@ export function CTASectionDual() {
     <section className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pb-8 md:pb-12`}>
       <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-8 md:p-12 text-center">
         <div className={cn(SPACING.content, `mx-auto ${CONTAINER_WIDTHS.narrow}`)}>
-          <h2 className={TYPOGRAPHY.h2.featured}>
-            Let&apos;s Build Something Great
-          </h2>
+          <h2 className={TYPOGRAPHY.h2.featured}>Let&apos;s Build Something Great</h2>
           <p className={TYPOGRAPHY.description}>
-            I&apos;m available for freelance projects and consulting. View my work or
-            get in touch to discuss your project.
+            I&apos;m available for freelance projects and consulting. View my work or get in touch
+            to discuss your project.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" asChild>
@@ -88,7 +91,7 @@ export function CTASectionDual() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 /**
@@ -100,9 +103,7 @@ export function CTASectionCard() {
     <section className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pb-8 md:pb-12`}>
       <Card className={HOVER_EFFECTS.card}>
         <CardHeader>
-          <CardTitle className={TYPOGRAPHY.h2.standard}>
-            Want to Work Together?
-          </CardTitle>
+          <CardTitle className={TYPOGRAPHY.h2.standard}>Want to Work Together?</CardTitle>
           <CardDescription className="text-base">
             I&apos;m currently available for new projects. Let&apos;s chat about how I can help
             bring your ideas to life.
@@ -127,7 +128,7 @@ export function CTASectionCard() {
         </CardContent>
       </Card>
     </section>
-  )
+  );
 }
 
 /**
@@ -139,9 +140,7 @@ export function CTASectionNewsletter() {
     <section className={`mx-auto ${CONTAINER_WIDTHS.prose} ${CONTAINER_PADDING} pb-8 md:pb-12`}>
       <div className="bg-card border border-border rounded-xl p-8">
         <div className={SPACING.content}>
-          <h2 className={TYPOGRAPHY.h2.standard}>
-            Stay in the Loop
-          </h2>
+          <h2 className={TYPOGRAPHY.h2.standard}>Stay in the Loop</h2>
           <p className={TYPOGRAPHY.body}>
             Get notified when I publish new articles. No spam, unsubscribe anytime.
           </p>
@@ -152,14 +151,12 @@ export function CTASectionNewsletter() {
               className="flex-1 px-4 py-2 border border-input rounded-md bg-background"
               required
             />
-            <Button type="submit">
-              Subscribe
-            </Button>
+            <Button type="submit">Subscribe</Button>
           </form>
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 /**
@@ -171,26 +168,17 @@ export function CTASectionSocial() {
     { icon: <Github className="h-5 w-5" />, label: 'GitHub', href: 'https://github.com' },
     { icon: <Linkedin className="h-5 w-5" />, label: 'LinkedIn', href: 'https://linkedin.com' },
     { icon: <Mail className="h-5 w-5" />, label: 'Email', href: 'mailto:hello@example.com' },
-  ]
+  ];
 
   return (
     <section className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} pb-8 md:pb-12`}>
       <div className="text-center">
         <div className={cn(SPACING.content, `mx-auto ${CONTAINER_WIDTHS.narrow}`)}>
-          <h2 className={TYPOGRAPHY.h2.standard}>
-            Let&apos;s Connect
-          </h2>
-          <p className={TYPOGRAPHY.description}>
-            Find me on these platforms or send me an email.
-          </p>
+          <h2 className={TYPOGRAPHY.h2.standard}>Let&apos;s Connect</h2>
+          <p className={TYPOGRAPHY.description}>Find me on these platforms or send me an email.</p>
           <div className="flex gap-3 justify-center">
             {socials.map((social) => (
-              <Button
-                key={social.label}
-                variant="outline"
-                size="lg"
-                asChild
-              >
+              <Button key={social.label} variant="outline" size="lg" asChild>
                 <a
                   href={social.href}
                   target="_blank"
@@ -206,7 +194,7 @@ export function CTASectionSocial() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 /**
@@ -228,7 +216,7 @@ export function CTASectionMinimal() {
         </Button>
       </div>
     </section>
-  )
+  );
 }
 
 /**
@@ -240,9 +228,7 @@ export function CTASectionBanner() {
     <section className="bg-primary text-primary-foreground py-12 md:py-16">
       <div className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING} text-center`}>
         <div className={cn(SPACING.content, `mx-auto ${CONTAINER_WIDTHS.narrow}`)}>
-          <h2 className={TYPOGRAPHY.h2.featured}>
-            Ready to Start Your Project?
-          </h2>
+          <h2 className={TYPOGRAPHY.h2.featured}>Ready to Start Your Project?</h2>
           <p className={cn(TYPOGRAPHY.description, 'text-primary-foreground/90')}>
             Let&apos;s discuss how I can help you achieve your goals.
           </p>
@@ -255,5 +241,5 @@ export function CTASectionBanner() {
         </div>
       </div>
     </section>
-  )
+  );
 }

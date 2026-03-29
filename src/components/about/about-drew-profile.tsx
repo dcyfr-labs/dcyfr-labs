@@ -14,7 +14,8 @@ import { Section, GitHubHeatmapErrorBoundary } from '@/components/common';
 import { ServerGitHubHeatmap } from '@/components/features';
 import { ServerResumeStats } from '@/components/resume';
 import { ProfileHero } from './profile-hero';
-import { Coffee, Shield, Code, Github, Briefcase } from 'lucide-react';
+import { Coffee, Shield, Code, Briefcase } from 'lucide-react';
+import { Github } from '@/components/ui/brand-icons';
 
 /**
  * About Drew Profile Component

@@ -1,11 +1,9 @@
-import React from "react";
-import { Card } from "@/components/ui/card";
-import { sanitizeUrl } from "@/lib/utils";
-import { socialLinks } from "@/data/socials";
-import { HOVER_EFFECTS } from "@/lib/design-tokens";
+import React from 'react';
+import { Card } from '@/components/ui/card';
+import { sanitizeUrl } from '@/lib/utils';
+import { socialLinks } from '@/data/socials';
+import { HOVER_EFFECTS } from '@/lib/design-tokens';
 import {
-  Github,
-  Linkedin,
   Heart,
   Users,
   BookOpen,
@@ -16,10 +14,14 @@ import {
   XIcon,
   Code2,
   Briefcase,
-} from "lucide-react";
+} from 'lucide-react';
+import { Github, Linkedin } from '@/components/ui/brand-icons';
 
 /** Map of platform names to their icon components */
-const PLATFORM_ICONS: Record<string, React.ComponentType<{ className?: string; 'aria-hidden'?: boolean | 'true' | 'false' }>> = {
+const PLATFORM_ICONS: Record<
+  string,
+  React.ComponentType<{ className?: string; 'aria-hidden'?: boolean | 'true' | 'false' }>
+> = {
   calendar: Calendar,
   twitter: XIcon,
   dev: Code2,
@@ -79,9 +81,7 @@ export function SocialLinksGrid() {
                     {social.label}
                   </p>
                   {social.description && (
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {social.description}
-                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{social.description}</p>
                   )}
                 </div>
                 <ExternalLink

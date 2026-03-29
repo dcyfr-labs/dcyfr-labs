@@ -14,7 +14,8 @@ import {
   CONTAINER_WIDTHS,
   HOVER_EFFECTS,
 } from '@/lib/design-tokens';
-import { BookOpen, Code, Linkedin, Github, ArrowRight } from 'lucide-react';
+import { BookOpen, Code, ArrowRight } from 'lucide-react';
+import { Github, Linkedin } from '@/components/ui/brand-icons';
 import { cn } from '@/lib/utils';
 import { getGitHubSponsors } from '@/lib/sponsors';
 

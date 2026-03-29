@@ -24,7 +24,8 @@
 
 'use client';
 
-import { Share2, XIcon, Linkedin, Link2, Check, Code2 } from 'lucide-react';
+import { Share2, XIcon, Link2, Check, Code2 } from 'lucide-react';
+import { Linkedin } from '@/components/ui/brand-icons';
 import {
   DropdownMenu,
   DropdownMenuContent,
