@@ -47,8 +47,8 @@ export async function addMemory(
     data: {
       userId,
       message,
-      context
-    }
+      context,
+    },
   });
 
   const responseTime = Date.now() - startTime;
@@ -83,8 +83,8 @@ export async function searchMemories(
     data: {
       userId,
       query,
-      limit
-    }
+      limit,
+    },
   });
 
   const responseTime = Date.now() - startTime;
@@ -147,7 +147,7 @@ export async function testMemoryPersistence(
   searchQuery: string
 ): Promise<boolean> {
   // Add memory
-  const memoryId = await addMemory(page, userId, testMemory);
+  await addMemory(page, userId, testMemory);
 
   // Reload page to simulate session restart
   await page.reload();
@@ -157,17 +157,15 @@ export async function testMemoryPersistence(
   const results = await searchMemories(page, userId, searchQuery);
 
   // Verify memory is still findable
-  return results.count > 0 &&
-         results.memories.some(m => m.content.includes(testMemory.split(' ')[0]));
+  return (
+    results.count > 0 && results.memories.some((m) => m.content.includes(testMemory.split(' ')[0]))
+  );
 }
 
 /**
  * Calculate search relevance score based on query match
  */
-export function calculateRelevanceScore(
-  query: string,
-  memories: Memory[]
-): number {
+export function calculateRelevanceScore(query: string, memories: Memory[]): number {
   if (memories.length === 0) return 0;
 
   const queryTerms = query.toLowerCase().split(' ');
@@ -175,7 +173,7 @@ export function calculateRelevanceScore(
 
   memories.forEach((memory, index) => {
     const content = memory.content.toLowerCase();
-    const matches = queryTerms.filter(term => content.includes(term));
+    const matches = queryTerms.filter((term) => content.includes(term));
 
     // Higher weight for earlier results, more matches = higher relevance
     const positionWeight = 1 / (index + 1);
@@ -198,7 +196,7 @@ export async function testErrorResponse(
   expectedErrorMessage?: string
 ): Promise<void> {
   const response = await page.request.post(endpoint, {
-    data: requestData
+    data: requestData,
   });
 
   expect(response.status()).toBe(expectedStatus);
@@ -227,39 +225,27 @@ export async function measurePerformance(
   // Add multiple memories
   for (let i = 0; i < operations; i++) {
     memoryPromises.push(
-      addMemory(
-        page,
-        userId,
-        `Performance test memory ${i} with unique content`,
-        { topic: 'performance', importance: Math.random() }
-      )
+      addMemory(page, userId, `Performance test memory ${i} with unique content`, {
+        topic: 'performance',
+        importance: Math.random(),
+      })
     );
   }
 
   await Promise.all(memoryPromises);
 
   // Perform search test
-  const searchStart = Date.now();
-  const searchResults = await searchMemories(
-    page,
-    userId,
-    'performance test memory',
-    operations
-  );
-  const searchTime = Date.now() - searchStart;
+  const searchResults = await searchMemories(page, userId, 'performance test memory', operations);
 
   const totalTime = Date.now() - startTime;
 
   // Calculate relevance score
-  const relevanceScore = calculateRelevanceScore(
-    'performance test memory',
-    searchResults.memories
-  );
+  const relevanceScore = calculateRelevanceScore('performance test memory', searchResults.memories);
 
   return {
     responseTime: totalTime / operations, // Average response time per operation
     memoryCount: searchResults.count,
-    searchRelevance: relevanceScore
+    searchRelevance: relevanceScore,
   };
 }
 
@@ -270,79 +256,76 @@ export const TestDatasets = {
   programmingConversation: [
     {
       message: 'I prefer TypeScript over JavaScript for large applications',
-      context: { topic: 'programming', importance: 0.9 }
+      context: { topic: 'programming', importance: 0.9 },
     },
     {
       message: 'React hooks make functional components much more powerful',
-      context: { topic: 'react', importance: 0.8 }
+      context: { topic: 'react', importance: 0.8 },
     },
     {
       message: 'Next.js App Router is better than Pages Router for SEO',
-      context: { topic: 'nextjs', importance: 0.85 }
+      context: { topic: 'nextjs', importance: 0.85 },
     },
     {
       message: 'Tailwind CSS saves time compared to writing custom styles',
-      context: { topic: 'css', importance: 0.7 }
-    }
+      context: { topic: 'css', importance: 0.7 },
+    },
   ],
 
   userPreferences: [
     {
       message: 'I prefer dark mode interfaces over light themes',
-      context: { topic: 'ui-preferences', importance: 0.6 }
+      context: { topic: 'ui-preferences', importance: 0.6 },
     },
     {
       message: 'I work best in the morning between 8 AM and 12 PM',
-      context: { topic: 'schedule', importance: 0.8 }
+      context: { topic: 'schedule', importance: 0.8 },
     },
     {
       message: 'I like documentation with code examples',
-      context: { topic: 'learning-style', importance: 0.9 }
-    }
+      context: { topic: 'learning-style', importance: 0.9 },
+    },
   ],
 
   projectContext: [
     {
       message: 'I am building a React dashboard for data visualization',
-      context: { topic: 'current-project', importance: 1.0 }
+      context: { topic: 'current-project', importance: 1.0 },
     },
     {
       message: 'The project uses PostgreSQL with Prisma ORM',
-      context: { topic: 'database', importance: 0.9 }
+      context: { topic: 'database', importance: 0.9 },
     },
     {
       message: 'Authentication is handled by Clerk for user management',
-      context: { topic: 'auth', importance: 0.8 }
-    }
+      context: { topic: 'auth', importance: 0.8 },
+    },
   ],
 
   mixedTopics: [
     {
       message: 'Machine learning models need proper data preprocessing',
-      context: { topic: 'ml', importance: 0.85 }
+      context: { topic: 'ml', importance: 0.85 },
     },
     {
       message: 'I cook Italian food every Sunday with my family',
-      context: { topic: 'personal', importance: 0.5 }
+      context: { topic: 'personal', importance: 0.5 },
     },
     {
       message: 'Microservices architecture requires careful planning',
-      context: { topic: 'architecture', importance: 0.9 }
+      context: { topic: 'architecture', importance: 0.9 },
     },
     {
       message: 'I prefer hiking in the mountains during summer',
-      context: { topic: 'hobbies', importance: 0.4 }
-    }
-  ]
+      context: { topic: 'hobbies', importance: 0.4 },
+    },
+  ],
 };
 
 /**
  * Clean up test memories for a user
  */
-export async function cleanupTestMemories(
-  page: Page,
-  userId: string
-): Promise<void> {
+export async function cleanupTestMemories(page: Page, userId: string): Promise<void> {
   // Search for all memories for the user
   const allMemories = await searchMemories(page, userId, '', 50);
 

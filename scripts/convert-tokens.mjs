@@ -2,10 +2,10 @@
 
 /**
  * Convert Hardcoded Tailwind Classes to Design Tokens
- * 
+ *
  * This script automatically converts hardcoded Tailwind classes to design tokens.
  * Phase 2 of Design Token Enforcement Implementation.
- * 
+ *
  * Usage:
  *   npm run fix:tokens --dry-run     # Preview changes without applying
  *   npm run fix:tokens               # Apply conversions
@@ -67,7 +67,6 @@ const conversionMap = [
 function convertFile(filePath) {
   try {
     let content = fs.readFileSync(filePath, 'utf8');
-    const originalContent = content;
     const changes = [];
 
     // Apply conversions
@@ -119,7 +118,7 @@ function main() {
     ignore: [
       'node_modules/**',
       '.next/**',
-      'ui/**',  // shadcn/ui uses own system
+      'ui/**', // shadcn/ui uses own system
       '**/*.test.ts',
       '**/*.test.tsx',
       '**/*.spec.ts',
@@ -166,7 +165,7 @@ function main() {
   console.log('⚠️  IMPORTANT: Automated conversions for spacing are limited.');
   console.log('   ✅ Straightforward patterns: spacing tokens (mb-, mt-, gap-, p-)');
   console.log('   ❌ Complex patterns requiring manual review:');
-  console.log('      • Typography combinations (text-* + font-*)')
+  console.log('      • Typography combinations (text-* + font-*)');
   console.log('      • Responsive classes (sm:*, md:*, lg:*)');
   console.log('      • Dynamic/conditional classes');
   console.log('      • Container widths with context-dependent logic\n');

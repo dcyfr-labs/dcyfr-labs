@@ -106,7 +106,7 @@ async function clearTestData() {
     console.error('❌ Error clearing test data:', error.message);
     try {
       await redis.quit();
-    } catch (quitError) {
+    } catch {
       // Ignore quit errors
     }
     process.exit(1);

@@ -67,11 +67,18 @@ export class CompatibilityTelemetryAdapter {
         validate: true,
       });
 
+      const telemetryConfig = config?.telemetry as
+        | {
+            storage?: NonNullable<ConstructorParameters<typeof TelemetryEngine>[0]>['storage'];
+            storagePath?: string;
+          }
+        | undefined;
+
       // Update engine with config settings if telemetry storage is configured
-      if (config?.telemetry?.storage) {
+      if (telemetryConfig?.storage) {
         this.engine = new TelemetryEngine({
-          storage: config.telemetry.storage as any,
-          basePath: config.telemetry.storagePath,
+          storage: telemetryConfig.storage,
+          basePath: telemetryConfig.storagePath,
         });
       }
     } catch (error) {
@@ -91,10 +98,13 @@ export class CompatibilityTelemetryAdapter {
       projectName?: string;
     }
   ): CompatibleTelemetrySession {
-    const session = this.engine.startSession(agent as any, {
-      taskType: context.taskType as any,
-      description: context.description,
-    });
+    const session = this.engine.startSession(
+      agent as Parameters<TelemetryEngine['startSession']>[0],
+      {
+        taskType: context.taskType as Parameters<TelemetryEngine['startSession']>[1]['taskType'],
+        description: context.description,
+      }
+    );
 
     return new CompatibleTelemetrySession(session);
   }
@@ -102,8 +112,11 @@ export class CompatibilityTelemetryAdapter {
   /**
    * Get agent statistics (old interface)
    */
-  async getAgentStats(agent: AgentType, period: string = '30d'): Promise<any> {
-    const stats = await this.engine.getAgentStats(agent as any, period);
+  async getAgentStats(agent: AgentType, period: string = '30d'): Promise<unknown> {
+    const stats = await this.engine.getAgentStats(
+      agent as Parameters<TelemetryEngine['getAgentStats']>[0],
+      period
+    );
     return stats;
   }
 
@@ -133,7 +146,10 @@ export class CompatibleTelemetrySession {
    */
   recordMetric(name: string, value: number): void {
     if (this.session && typeof this.session.recordMetric === 'function') {
-      this.session.recordMetric(name as any, value);
+      this.session.recordMetric(
+        name as Parameters<TelemetrySessionManager['recordMetric']>[0],
+        value
+      );
     }
   }
 
@@ -143,8 +159,10 @@ export class CompatibleTelemetrySession {
   recordViolation(violation: ViolationRecord): void {
     if (this.session && typeof this.session.recordViolation === 'function') {
       this.session.recordViolation({
-        type: violation.type as any,
-        severity: violation.severity as any,
+        type: violation.type as Parameters<TelemetrySessionManager['recordViolation']>[0]['type'],
+        severity: violation.severity as Parameters<
+          TelemetrySessionManager['recordViolation']
+        >[0]['severity'],
         message: violation.message,
         file: violation.file,
         line: violation.line,
@@ -159,8 +177,10 @@ export class CompatibleTelemetrySession {
   recordHandoff(handoff: HandoffRecord): void {
     if (this.session && typeof this.session.recordHandoff === 'function') {
       this.session.recordHandoff({
-        toAgent: handoff.toAgent as any,
-        reason: handoff.reason as any,
+        toAgent: handoff.toAgent as Parameters<
+          TelemetrySessionManager['recordHandoff']
+        >[0]['toAgent'],
+        reason: handoff.reason as Parameters<TelemetrySessionManager['recordHandoff']>[0]['reason'],
         automatic: handoff.automatic,
       });
     }
@@ -173,7 +193,9 @@ export class CompatibleTelemetrySession {
     let finalSession: NewTelemetrySession | undefined;
 
     if (this.session && typeof this.session.end === 'function') {
-      finalSession = await this.session.end(outcome as any);
+      finalSession = await this.session.end(
+        outcome as Parameters<TelemetrySessionManager['end']>[0]
+      );
     }
 
     const sessionData = finalSession || this.session.getSession();
@@ -181,8 +203,8 @@ export class CompatibleTelemetrySession {
     // Adapt violations to old format (filter out unsupported types)
     const supportedViolationTypes = ['design-token', 'eslint', 'typescript', 'test', 'security'];
     const adaptedViolations: ViolationRecord[] = (sessionData.violations || [])
-      .filter((v: any) => supportedViolationTypes.includes(v.type))
-      .map((v: any) => ({
+      .filter((v) => supportedViolationTypes.includes(v.type))
+      .map((v) => ({
         timestamp: v.timestamp,
         type: v.type as ViolationRecord['type'],
         severity: v.severity as ViolationRecord['severity'],
@@ -201,8 +223,8 @@ export class CompatibleTelemetrySession {
       'offline',
     ];
     const adaptedHandoffs: HandoffRecord[] = (sessionData.handoffs || [])
-      .filter((h: any) => supportedHandoffReasons.includes(h.reason))
-      .map((h: any) => ({
+      .filter((h) => supportedHandoffReasons.includes(h.reason))
+      .map((h) => ({
         timestamp: h.timestamp,
         fromAgent: h.fromAgent as AgentType,
         toAgent: h.toAgent as AgentType,
@@ -237,7 +259,8 @@ export class CompatibleTelemetrySession {
         tokensUsed: sessionData.metrics.tokensUsed,
         filesModified: sessionData.metrics.filesModified,
         linesChanged: sessionData.metrics.linesChanged,
-        validations: sessionData.metrics.validations as any,
+        validations: sessionData.metrics
+          .validations as unknown as OldTelemetrySession['metrics']['validations'],
       },
       violations: adaptedViolations,
       handoffs: adaptedHandoffs,
@@ -295,10 +318,10 @@ export class CompatibilityProviderAdapter {
     executor: (provider: ProviderType) => Promise<T>
   ): Promise<ExecutionResult<T>> {
     try {
-      const result: NewExecutionResult<T> = await this.registry.executeWithFallback(
-        context as any,
-        executor as any
-      );
+      const result = (await this.registry.executeWithFallback(
+        context as Parameters<ProviderRegistry['executeWithFallback']>[0],
+        executor as Parameters<ProviderRegistry['executeWithFallback']>[1]
+      )) as NewExecutionResult<T>;
 
       return {
         success: result.success,
@@ -313,7 +336,7 @@ export class CompatibilityProviderAdapter {
     } catch (error) {
       return {
         success: false,
-        data: undefined as any,
+        data: undefined as unknown as T,
         provider,
         fallbackUsed: false,
         executionTime: 0,
@@ -329,7 +352,9 @@ export class CompatibilityProviderAdapter {
    */
   getProviderHealth(provider: ProviderType): ProviderHealth | undefined {
     const healthStatus = this.registry.getHealthStatus();
-    const health = healthStatus.get(provider as any) as NewProviderHealth | undefined;
+    const health = healthStatus.get(provider as Parameters<typeof healthStatus.get>[0]) as
+      | NewProviderHealth
+      | undefined;
     if (!health) return undefined;
 
     return {

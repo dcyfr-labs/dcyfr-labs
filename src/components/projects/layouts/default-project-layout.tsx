@@ -1,21 +1,21 @@
-import Link from "next/link";
-import { ExternalLink } from "lucide-react";
-import { visibleProjects, type Project } from "@/data/projects";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { sanitizeUrl } from "@/lib/utils";
-import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
-import { Logo } from "@/components/common";
-import { ProjectsCTA } from "@/components/common";
-import { PostInteractions } from "@/components/common";
-import { OtherProjectCard } from "@/components/projects";
-import { ArticleHeader } from "@/components/layouts";
+import Link from 'next/link';
+import { ExternalLink } from 'lucide-react';
+import { visibleProjects, type Project } from '@/data/projects';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { sanitizeUrl } from '@/lib/utils';
+import { TYPOGRAPHY, SPACING } from '@/lib/design-tokens';
+import { Logo } from '@/components/common';
+import { ProjectsCTA } from '@/components/common';
+import { PostInteractions } from '@/components/common';
+import { OtherProjectCard } from '@/components/projects';
+import { ArticleHeader } from '@/components/layouts';
 
-const STATUS_LABEL: Record<Project["status"], string> = {
-  active: "Active",
-  "in-progress": "In Progress",
-  archived: "Archived",
+const STATUS_LABEL: Record<Project['status'], string> = {
+  active: 'Active',
+  'in-progress': 'In Progress',
+  archived: 'Archived',
 };
 
 interface DefaultProjectLayoutProps {
@@ -48,12 +48,10 @@ interface DefaultProjectLayoutProps {
  */
 export function DefaultProjectLayout({
   project,
-  nonce,
-  basePath = "/work",
+  nonce: _nonce,
+  basePath = '/work',
 }: DefaultProjectLayoutProps) {
   // Check if we have any metadata to show
-  const hasTech = project.tech && project.tech.length > 0;
-  const hasTags = project.tags && project.tags.length > 0;
   const hasHighlights = project.highlights && project.highlights.length > 0;
   const hasLinks = project.links.length > 0;
 
@@ -66,7 +64,7 @@ export function DefaultProjectLayout({
         badges={
           <>
             {/* Status Badge - only show for non-active statuses */}
-            {project.status !== "active" && (
+            {project.status !== 'active' && (
               <Link href={`${basePath}?status=${project.status}`}>
                 <Badge
                   variant="default"
@@ -83,8 +81,7 @@ export function DefaultProjectLayout({
                   variant="outline"
                   className="cursor-pointer hover:opacity-80 transition-opacity"
                 >
-                  {project.category.charAt(0).toUpperCase() +
-                    project.category.slice(1)}
+                  {project.category.charAt(0).toUpperCase() + project.category.slice(1)}
                 </Badge>
               </Link>
             )}
@@ -95,7 +92,7 @@ export function DefaultProjectLayout({
             ? {
                 url: project.image.url,
                 alt: project.image.alt,
-                position: project.image.position || "center",
+                position: project.image.position || 'center',
                 caption: project.image.caption,
                 credit: project.image.credit,
                 priority: project.featured || false,
@@ -117,11 +114,7 @@ export function DefaultProjectLayout({
             const isExternal = /^(?:https?:)?\/\//.test(link.href);
             return isExternal ? (
               <Button key={link.href} asChild variant="default" size="default">
-                <a
-                  href={sanitizeUrl(link.href)}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <a href={sanitizeUrl(link.href)} target="_blank" rel="noreferrer">
                   <span>{link.label}</span>
                   <ExternalLink className="h-4 w-4 ml-2" />
                 </a>
@@ -145,10 +138,7 @@ export function DefaultProjectLayout({
             <CardContent>
               <ul className={`${SPACING.content} mb-0`}>
                 {project.highlights!.map((highlight, index) => (
-                  <li
-                    key={index}
-                    className="flex gap-3 items-start text-base leading-relaxed"
-                  >
+                  <li key={index} className="flex gap-3 items-start text-base leading-relaxed">
                     <Logo
                       width={12}
                       height={12}
@@ -179,9 +169,7 @@ export function DefaultProjectLayout({
 
       {/* Other Projects */}
       <div className={`${SPACING.sectionDivider.container} border-t`}>
-        <h2
-          className={`${TYPOGRAPHY.h2.standard} ${SPACING.sectionDivider.heading}`}
-        >
+        <h2 className={`${TYPOGRAPHY.h2.standard} ${SPACING.sectionDivider.heading}`}>
           Other Projects
         </h2>
         <div className={`grid ${SPACING.sectionDivider.grid} sm:grid-cols-2`}>

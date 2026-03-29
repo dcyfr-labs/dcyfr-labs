@@ -1,24 +1,18 @@
-"use client";
+'use client';
 
-import { useMemo, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Alert } from "@/components/common";
-import { Skeleton } from "@/components/ui/skeleton";
-import { SkeletonHeading } from "@/components/ui/skeleton-primitives";
-import { Award, ExternalLink, Clock } from "lucide-react";
-import {
-  SPACING,
-  TYPOGRAPHY,
-  HOVER_EFFECTS,
-  ANIMATION,
-  BORDERS,
-} from "@/lib/design-tokens";
-import { cn, ensureAbsoluteUrl } from "@/lib/utils";
-import { useCredlyBadges } from "@/hooks/use-credly";
-import type { CredlyBadge } from "@/types/credly";
+import { useMemo } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Alert } from '@/components/common';
+import { Skeleton } from '@/components/ui/skeleton';
+import { SkeletonHeading } from '@/components/ui/skeleton-primitives';
+import { Award, ExternalLink, Clock } from 'lucide-react';
+import { SPACING, TYPOGRAPHY, HOVER_EFFECTS, ANIMATION, BORDERS } from '@/lib/design-tokens';
+import { cn, ensureAbsoluteUrl } from '@/lib/utils';
+import { useCredlyBadges } from '@/hooks/use-credly';
+import type { CredlyBadge } from '@/types/credly';
 
 interface BadgeWalletProps {
   username?: string;
@@ -41,37 +35,27 @@ interface BadgeCardProps {
  * Displays a single Credly badge with image, title, issuer, and metadata.
  */
 function BadgeCard({ badge }: BadgeCardProps) {
-  const issuedDate = new Date(badge.issued_at).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
+  const issuedDate = new Date(badge.issued_at).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
   });
 
   // Extract issuer name from entities array (find primary entity)
   const issuerName =
     badge.issuer.entities.find((e) => e.primary)?.entity.name ||
     badge.issuer.entities[0]?.entity.name ||
-    "Unknown Issuer";
+    'Unknown Issuer';
 
   // Construct public URL from badge ID
   const publicUrl = `https://www.credly.com/badges/${badge.id}`;
   const safeUrl = ensureAbsoluteUrl(publicUrl);
 
   return (
-    <Link
-      href={safeUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="block group h-full"
-    >
-      <Card className={cn("p-4 h-full", HOVER_EFFECTS.card)}>
+    <Link href={safeUrl} target="_blank" rel="noopener noreferrer" className="block group h-full">
+      <Card className={cn('p-4 h-full', HOVER_EFFECTS.card)}>
         <div className="flex flex-col items-center text-center gap-4">
           {/* Badge Image */}
-          <div
-            className={cn(
-              "relative w-36 h-36 shrink-0 bg-muted/30 p-3",
-              BORDERS.card
-            )}
-          >
+          <div className={cn('relative w-36 h-36 shrink-0 bg-muted/30 p-3', BORDERS.card)}>
             <Image
               src={badge.image_url}
               alt={badge.badge_template.name}
@@ -86,15 +70,12 @@ function BadgeCard({ badge }: BadgeCardProps) {
           {/* Badge Info */}
           <div className={`flex-1 ${SPACING.compact}`}>
             <h3
-              className={cn(
-                TYPOGRAPHY.h3.standard,
-                "group-hover:text-primary transition-colors"
-              )}
+              className={cn(TYPOGRAPHY.h3.standard, 'group-hover:text-primary transition-colors')}
             >
               {badge.badge_template.name}
             </h3>
 
-            <p className={cn(TYPOGRAPHY.label.small, "text-muted-foreground")}>
+            <p className={cn(TYPOGRAPHY.label.small, 'text-muted-foreground')}>
               Issued by {issuerName}
             </p>
 
@@ -107,9 +88,9 @@ function BadgeCard({ badge }: BadgeCardProps) {
           {/* View Badge Link */}
           <div
             className={cn(
-              "flex items-center gap-1.5",
+              'flex items-center gap-1.5',
               TYPOGRAPHY.label.small,
-              "text-primary group-hover:gap-2",
+              'text-primary group-hover:gap-2',
               ANIMATION.transition.movement
             )}
           >
@@ -145,16 +126,21 @@ function BadgeCard({ badge }: BadgeCardProps) {
  * <BadgeWallet loading limit={6} />
  */
 export function BadgeWallet({
-  username = "dcyfr",
+  username = 'dcyfr',
   limit,
   showLatestOnly = false,
-  viewMoreUrl,
-  viewMoreText = "View all certifications",
+  viewMoreUrl: _viewMoreUrl,
+  viewMoreText: _viewMoreText = 'View all certifications',
   className,
   loading: loadingProp = false,
 }: BadgeWalletProps) {
   // Use the cached hook for better performance
-  const { badges, totalCount, loading: hookLoading, error, refetch } = useCredlyBadges({
+  const {
+    badges,
+    totalCount,
+    loading: hookLoading,
+    error,
+  } = useCredlyBadges({
     username,
     limit,
   });
@@ -231,12 +217,8 @@ export function BadgeWallet({
       {/* Header */}
       <div className="flex items-center gap-2">
         <Award className="h-5 w-5 text-primary" />
-        <h3 className={TYPOGRAPHY.h3.standard}>
-          {showLatestOnly ? "Latest Badges" : "Badges"}
-        </h3>
-        {totalCount > 0 && (
-          <Badge variant="secondary">{totalCount} Total</Badge>
-        )}
+        <h3 className={TYPOGRAPHY.h3.standard}>{showLatestOnly ? 'Latest Badges' : 'Badges'}</h3>
+        {totalCount > 0 && <Badge variant="secondary">{totalCount} Total</Badge>}
       </div>
 
       {/* Badge Grid */}
@@ -251,10 +233,7 @@ export function BadgeWallet({
         <div className="text-center">
           <Link
             href="/about/drew/resume#certifications"
-            className={cn(
-              "inline-flex items-center gap-2 text-primary",
-              HOVER_EFFECTS.link
-            )}
+            className={cn('inline-flex items-center gap-2 text-primary', HOVER_EFFECTS.link)}
           >
             <span>View all {totalCount} certifications</span>
             <ExternalLink className="h-4 w-4" />

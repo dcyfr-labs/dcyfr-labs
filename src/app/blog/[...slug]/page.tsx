@@ -8,13 +8,7 @@ import 'katex/dist/katex.min.css'; // KaTeX styles for math rendering in blog po
 import { extractHeadings } from '@/lib/toc';
 import { headers } from 'next/headers';
 import { getArticleData } from '@/lib/article';
-import {
-  CONTAINER_WIDTHS,
-  CONTAINER_PADDING,
-  CONTAINER_VERTICAL_PADDING,
-  SPACING,
-  TYPOGRAPHY,
-} from '@/lib/design-tokens';
+import { CONTAINER_WIDTHS, CONTAINER_PADDING, SPACING } from '@/lib/design-tokens';
 import {
   createArticlePageMetadata,
   createArticleSchema,
@@ -24,7 +18,6 @@ import {
 import { ArticleLayout, ArticleHeader, ArticleFooter } from '@/components/layouts';
 import {
   SeriesNavigation,
-  PostHeroImage,
   BlogAnalyticsTracker,
   SidebarVisibilityProvider,
   HideWhenSidebarVisible,

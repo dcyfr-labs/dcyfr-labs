@@ -42,14 +42,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Load secrets from 1Password
-        uses: 1password/load-secrets-action@v1
-        with:
-          export-env: true
-        env:
-          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          CHROMATIC_PROJECT_TOKEN: op://CI-CD/dcyfr-labs-chromatic-project-token/credential
-
 
       - name: Check for Storybook configuration
         id: check
@@ -87,6 +79,14 @@ jobs:
 
       - name: Install dependencies
         run: npm ci --prefer-offline
+
+      - name: Load Chromatic token from 1Password
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          CHROMATIC_PROJECT_TOKEN: op://CI-CD/dcyfr-labs-chromatic-project-token/credential
 
       - name: Build Storybook
         run: npm run build-storybook --quiet

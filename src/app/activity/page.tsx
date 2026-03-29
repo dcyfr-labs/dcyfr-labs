@@ -1,26 +1,18 @@
-import type { Metadata } from "next";
-import { headers } from "next/headers";
-import { createPageMetadata, getJsonLdScriptProps } from "@/lib/metadata";
-import { SITE_URL, AUTHOR_NAME } from "@/lib/site-config";
-import {
-  CONTAINER_WIDTHS,
-  CONTAINER_PADDING,
-  TYPOGRAPHY,
-  SPACING,
-} from "@/lib/design-tokens";
-import { cn } from "@/lib/utils";
-import { ActivityPageClient } from "./activity-client";
-import { PageLayout, ArchiveHero } from "@/components/layouts";
-import { FeedDropdown } from "@/components/blog/client";
-import { posts } from "@/data/posts";
-import { projects } from "@/data/projects";
-import { changelog } from "@/data/changelog";
-import {
-  transformPosts,
-  transformProjects,
-  transformChangelog,
-  aggregateActivities,
-} from "@/lib/activity";
+import type { Metadata } from 'next';
+import { Suspense } from 'react';
+import { headers } from 'next/headers';
+import { createPageMetadata, getJsonLdScriptProps } from '@/lib/metadata';
+import { SITE_URL, AUTHOR_NAME } from '@/lib/site-config';
+import { CONTAINER_WIDTHS, CONTAINER_PADDING, TYPOGRAPHY, SPACING } from '@/lib/design-tokens';
+import { cn } from '@/lib/utils';
+import { ActivityPageClient } from './activity-client';
+import { ActivitySkeleton } from '@/components/activity';
+import { PageLayout, ArchiveHero } from '@/components/layouts';
+import { FeedDropdown } from '@/components/blog/client';
+import { posts } from '@/data/posts';
+import { projects } from '@/data/projects';
+import { changelog } from '@/data/changelog';
+import { transformProjects, transformChangelog } from '@/lib/activity';
 import {
   transformPostsWithViews,
   transformMilestones,
@@ -31,23 +23,23 @@ import {
   transformGitHubTraffic,
   transformGoogleAnalytics,
   transformSearchConsole,
-} from "@/lib/activity/server";
-import type { ActivityItem } from "@/lib/activity";
-import { activityFeedCache } from "@/lib/cache-versioning";
+} from '@/lib/activity/server';
+import type { ActivityItem } from '@/lib/activity';
+import { activityFeedCache } from '@/lib/cache-versioning';
 
-const pageTitle = "Activity";
+const pageTitle = 'Activity';
 const pageDescription =
-  "Timeline of blog posts, project updates, trending content, and milestones.";
+  'Timeline of blog posts, project updates, trending content, and milestones.';
 
 export const metadata: Metadata = {
   ...createPageMetadata({
     title: pageTitle,
     description: pageDescription,
-    path: "/activity",
+    path: '/activity',
   }),
   alternates: {
     types: {
-      "application/rss+xml": [
+      'application/rss+xml': [
         {
           url: `${SITE_URL}/activity/rss.xml`,
           title: `${AUTHOR_NAME}'s Activity Feed`,
@@ -62,7 +54,7 @@ export const revalidate = 300;
 
 export default async function ActivityPage() {
   // Get nonce from proxy for CSP
-  const nonce = (await headers()).get("x-nonce") || "";
+  const nonce = (await headers()).get('x-nonce') || '';
 
   // Fetch activities (cache-first strategy)
   let allActivities: ActivityItem[] = [];
@@ -70,10 +62,10 @@ export default async function ActivityPage() {
 
   try {
     // STEP 1: Try versioned cache first
-    const cached = await activityFeedCache.get("feed:all");
+    const cached = await activityFeedCache.get('feed:all');
     if (cached) {
       // Filter out trending items (disabled feature)
-      allActivities = cached.filter((item) => item.source !== "trending");
+      allActivities = cached.filter((item) => item.source !== 'trending');
       console.warn(
         `[Activity Page] ✅ Loaded from versioned cache: ${allActivities.length} items (trending filtered)`
       );
@@ -81,13 +73,7 @@ export default async function ActivityPage() {
 
     // STEP 2: Fallback to direct fetch if cache miss
     if (allActivities.length === 0) {
-      console.warn("[Activity Page] Fetching activities directly...");
-
-      // Calculate time boundaries for trending posts
-      const now = new Date();
-
-      // Start of current month
-      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      console.warn('[Activity Page] Fetching activities directly...');
 
       // Gather activity from all sources in parallel
       const activities: ActivityItem[] = [];
@@ -96,90 +82,64 @@ export default async function ActivityPage() {
         // Blog posts with views
         transformPostsWithViews(posts)
           .then((items) => activities.push(...items))
-          .catch((err) =>
-            console.error("[Activity Page] Blog posts fetch failed:", err)
-          ),
+          .catch((err) => console.error('[Activity Page] Blog posts fetch failed:', err)),
 
         // Projects
         Promise.resolve(transformProjects([...projects]))
           .then((items) => activities.push(...items))
-          .catch((err) =>
-            console.error("[Activity Page] Projects fetch failed:", err)
-          ),
+          .catch((err) => console.error('[Activity Page] Projects fetch failed:', err)),
 
         // Changelog
         Promise.resolve(transformChangelog(changelog))
           .then((items) => activities.push(...items))
-          .catch((err) =>
-            console.error("[Activity Page] Changelog fetch failed:", err)
-          ),
+          .catch((err) => console.error('[Activity Page] Changelog fetch failed:', err)),
 
         // Milestones - all
         transformMilestones(posts)
           .then((items) => activities.push(...items))
-          .catch((err) =>
-            console.error("[Activity Page] Milestones fetch failed:", err)
-          ),
+          .catch((err) => console.error('[Activity Page] Milestones fetch failed:', err)),
 
         // High engagement posts - all
         transformHighEngagementPosts(posts)
           .then((items) => activities.push(...items))
           .catch((err) =>
-            console.error(
-              "[Activity Page] High engagement posts fetch failed:",
-              err
-            )
+            console.error('[Activity Page] High engagement posts fetch failed:', err)
           ),
 
         // Comment milestones - all
         transformCommentMilestones(posts)
           .then((items) => activities.push(...items))
-          .catch((err) =>
-            console.error(
-              "[Activity Page] Comment milestones fetch failed:",
-              err
-            )
-          ),
+          .catch((err) => console.error('[Activity Page] Comment milestones fetch failed:', err)),
 
         // Credly badges - all
-        transformCredlyBadges("dcyfr")
+        transformCredlyBadges('dcyfr')
           .then((items) => activities.push(...items))
-          .catch((err) =>
-            console.error("[Activity Page] Credly badges fetch failed:", err)
-          ),
+          .catch((err) => console.error('[Activity Page] Credly badges fetch failed:', err)),
 
         // Vercel Analytics milestones - all
         transformVercelAnalytics()
           .then((items) => activities.push(...items))
-          .catch((err) =>
-            console.error("[Activity Page] Vercel Analytics fetch failed:", err)
-          ),
+          .catch((err) => console.error('[Activity Page] Vercel Analytics fetch failed:', err)),
 
         // GitHub Traffic milestones - all
         transformGitHubTraffic()
           .then((items) => activities.push(...items))
-          .catch((err) =>
-            console.error("[Activity Page] GitHub Traffic fetch failed:", err)
-          ),
+          .catch((err) => console.error('[Activity Page] GitHub Traffic fetch failed:', err)),
 
         // Google Analytics milestones - all
         transformGoogleAnalytics()
           .then((items) => activities.push(...items))
-          .catch((err) =>
-            console.error("[Activity Page] Google Analytics fetch failed:", err)
-          ),
+          .catch((err) => console.error('[Activity Page] Google Analytics fetch failed:', err)),
 
         // Search Console achievements - all
         transformSearchConsole()
           .then((items) => activities.push(...items))
-          .catch((err) =>
-            console.error("[Activity Page] Search Console fetch failed:", err)
-          ),
+          .catch((err) => console.error('[Activity Page] Search Console fetch failed:', err)),
       ]);
 
       // Sort by timestamp and filter out trending items (disabled feature)
       allActivities = activities
-        .filter((item) => item.source !== "trending")
+        .filter((item) => item.source !== 'trending')
         .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
       // DEBUG: Log all sources of activities
@@ -193,33 +153,33 @@ export default async function ActivityPage() {
       );
     }
   } catch (err) {
-    error = "Failed to load activities";
-    console.error("[Activity Page] Error:", err);
+    error = 'Failed to load activities';
+    console.error('[Activity Page] Error:', err);
   }
 
   // JSON-LD structured data
   const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "@id": `${SITE_URL}/activity`,
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `${SITE_URL}/activity`,
     url: `${SITE_URL}/activity`,
     name: pageTitle,
     description: pageDescription,
     isPartOf: {
-      "@id": `${SITE_URL}/#website`,
+      '@id': `${SITE_URL}/#website`,
     },
     author: {
-      "@type": "Person",
+      '@type': 'Person',
       name: AUTHOR_NAME,
     },
-    inLanguage: "en-US",
+    inLanguage: 'en-US',
   };
 
   // Serialize activities for client component
   const serializedActivities = allActivities.map((activity) => ({
     ...activity,
     timestamp:
-      typeof activity.timestamp === "string"
+      typeof activity.timestamp === 'string'
         ? activity.timestamp
         : activity.timestamp?.toISOString?.() || new Date().toISOString(),
   }));
@@ -228,10 +188,10 @@ export default async function ActivityPage() {
   const activityCount = allActivities.length;
   const lastUpdated =
     allActivities.length > 0
-      ? new Date(allActivities[0].timestamp).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
+      ? new Date(allActivities[0].timestamp).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
         })
       : null;
 
@@ -249,8 +209,8 @@ export default async function ActivityPage() {
         description={pageDescription}
         stats={
           lastUpdated
-            ? `${activityCount} ${activityCount === 1 ? "activity" : "activities"} • Last updated ${lastUpdated}`
-            : `${activityCount} ${activityCount === 1 ? "activity" : "activities"}`
+            ? `${activityCount} ${activityCount === 1 ? 'activity' : 'activities'} • Last updated ${lastUpdated}`
+            : `${activityCount} ${activityCount === 1 ? 'activity' : 'activities'}`
         }
         actions={feedAction}
         align="center"
@@ -258,19 +218,15 @@ export default async function ActivityPage() {
 
       {/* Error State - Shown above content if needed */}
       {error && (
-        <div
-          className={`${CONTAINER_WIDTHS.standard} mx-auto ${CONTAINER_PADDING} py-8`}
-        >
+        <div className={`${CONTAINER_WIDTHS.standard} mx-auto ${CONTAINER_PADDING} py-8`}>
           <div
             className={cn(
-              "rounded-xl border border-destructive/50 bg-destructive/10 p-4",
+              'rounded-xl border border-destructive/50 bg-destructive/10 p-4',
               SPACING.content
             )}
           >
-            <p className={cn(TYPOGRAPHY.body, "text-destructive")}>{error}</p>
-            <p
-              className={cn(TYPOGRAPHY.metadata, "text-muted-foreground mt-2")}
-            >
+            <p className={cn(TYPOGRAPHY.body, 'text-destructive')}>{error}</p>
+            <p className={cn(TYPOGRAPHY.metadata, 'text-muted-foreground mt-2')}>
               Activities may be temporarily unavailable. Please try again later.
             </p>
           </div>
@@ -278,7 +234,9 @@ export default async function ActivityPage() {
       )}
 
       {/* Search & Timeline Section */}
-      <ActivityPageClient activities={serializedActivities} />
+      <Suspense fallback={<ActivitySkeleton />}>
+        <ActivityPageClient activities={serializedActivities} />
+      </Suspense>
     </PageLayout>
   );
 }

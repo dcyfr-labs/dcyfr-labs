@@ -98,12 +98,21 @@ private/
 archive/
 
 # env files
-# .env contains op:// references (1Password) — safe to commit
+# Never commit real .env files
+.env
+**/.env
+.env.*
+**/.env.*
+
+# Keep safe templates/examples tracked
+!.env.example
+!**/.env.example
+!.env.template
+!**/.env.template
+
 # .env.local contains plaintext secrets — NEVER commit
 .env.local
 .env*.local
-!.env.example
-!.env.template
 
 # API keys and tokens
 *.key
@@ -168,7 +177,6 @@ skills/
 .vscode/*
 !.vscode/mcp.json
 !.vscode/mcp.json.example
-!.vscode/settings.json
 !.vscode/extensions.json
 !.vscode/design-tokens.code-snippets
 .vscode/*.local.json
@@ -193,6 +201,7 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 *.log.local
+.turbo/*.log
 
 # Local development overrides
 *.local
@@ -257,3 +266,4 @@ gitleaks-report*.json
 test-results.json
 reports/prose-*
 
+.turbo/turbo-test$colon$run.log

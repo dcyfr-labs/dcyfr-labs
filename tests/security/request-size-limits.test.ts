@@ -5,9 +5,22 @@ import type { RateLimitResult } from '@/lib/rate-limit';
 import type { PayloadValidationResult } from '@/lib/security/payload-validation';
 
 const { mockRateLimit, mockValidatePayloadSize, mockAxiomIngest } = vi.hoisted(() => ({
-  mockRateLimit: vi.fn(async (): Promise<RateLimitResult> => ({ success: true, reset: Date.now() + 60000, limit: 60, remaining: 59 })),
-  mockValidatePayloadSize: vi.fn((): PayloadValidationResult => ({ valid: true, size: 1024, maxBytes: 102400 })),
+  mockRateLimit: vi.fn(
+    async (): Promise<RateLimitResult> => ({
+      success: true,
+      reset: Date.now() + 60000,
+      limit: 60,
+      remaining: 59,
+    })
+  ),
+  mockValidatePayloadSize: vi.fn(
+    (): PayloadValidationResult => ({ valid: true, size: 1024, maxBytes: 102400 })
+  ),
   mockAxiomIngest: vi.fn(async () => ({ status: 200 })),
+}));
+
+const { mockProxyRouteHandler } = vi.hoisted(() => ({
+  mockProxyRouteHandler: vi.fn(async () => new Response(null, { status: 200 })),
 }));
 
 vi.mock('@/lib/rate-limit', () => ({
@@ -35,6 +48,18 @@ vi.mock('@axiomhq/js', () => ({
   })),
 }));
 
+vi.mock('@axiomhq/nextjs', () => ({
+  createProxyRouteHandler: vi.fn(() =>
+    vi.fn(
+      async () =>
+        new Response(JSON.stringify({ ok: true }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        })
+    )
+  ),
+}));
+
 function createRequest(payloadSize: number): NextRequest {
   const payload = 'x'.repeat(payloadSize);
   const headers: HeadersInit = {
@@ -54,7 +79,12 @@ describe('Request size limit security controls', () => {
     vi.clearAllMocks();
     vi.unstubAllEnvs();
     vi.stubEnv('MAX_AXIOM_PAYLOAD_SIZE', '102400'); // 100KB default
-    mockRateLimit.mockResolvedValue({ success: true, reset: Date.now() + 60000, limit: 60, remaining: 59 });
+    mockRateLimit.mockResolvedValue({
+      success: true,
+      reset: Date.now() + 60000,
+      limit: 60,
+      remaining: 59,
+    });
     mockValidatePayloadSize.mockReturnValue({ valid: true, size: 1024, maxBytes: 102400 });
   });
 
@@ -70,7 +100,7 @@ describe('Request size limit security controls', () => {
       const response = await AxiomPOST(request);
 
       expect(response.status).toBe(200);
-      expect(mockAxiomIngest).toHaveBeenCalled();
+      expect(mockValidatePayloadSize).toHaveBeenCalled();
     });
 
     it('allows requests at exactly 100KB limit', async () => {
@@ -129,8 +159,8 @@ describe('Request size limit security controls', () => {
       const response = await AxiomPOST(request);
       const data = await response.json();
 
-      expect(data.maxSize).toBeDefined();
-      expect(data.receivedSize).toBeDefined();
+      expect(data.maxBytes).toBeDefined();
+      expect(data.attemptedBytes).toBeDefined();
     });
 
     it('does not invoke Axiom ingest for oversized payloads', async () => {
@@ -160,10 +190,7 @@ describe('Request size limit security controls', () => {
       const response = await AxiomPOST(request);
 
       expect(response.status).toBe(200);
-      expect(mockValidatePayloadSize).toHaveBeenCalledWith(
-        expect.any(Object),
-        50000
-      );
+      expect(mockValidatePayloadSize).toHaveBeenCalledWith(expect.any(Object), 50000);
     });
 
     it('defaults to 102400 bytes when env var not set', async () => {
@@ -177,10 +204,7 @@ describe('Request size limit security controls', () => {
       const request = createRequest(50000);
       await AxiomPOST(request);
 
-      expect(mockValidatePayloadSize).toHaveBeenCalledWith(
-        expect.any(Object),
-        102400
-      );
+      expect(mockValidatePayloadSize).toHaveBeenCalledWith(expect.any(Object), 102400);
     });
 
     it('handles custom size limits for high-traffic scenarios', async () => {
@@ -243,10 +267,7 @@ describe('Request size limit security controls', () => {
       const request = createRequest(150000);
       await AxiomPOST(request);
 
-      expect(mockValidatePayloadSize).toHaveBeenCalledWith(
-        expect.any(Object),
-        102400
-      );
+      expect(mockValidatePayloadSize).toHaveBeenCalledWith(expect.any(Object), 102400);
     });
   });
 

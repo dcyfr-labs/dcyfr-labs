@@ -19,30 +19,36 @@
 
 import { execaSync } from 'execa';
 
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY;
 const ALERT_NUMBER = process.env.ALERT_NUMBER;
 const RULE_ID = process.env.RULE_ID;
 const DRY_RUN = process.env.DRY_RUN === 'true';
 
-const [REPO_OWNER, REPO_NAME] = GITHUB_REPOSITORY.split('/');
-
 function generateBranchName() {
   // Format: security/codeql-{alert-number}-{rule-short-name}
-  const ruleShort = RULE_ID.toLowerCase()
-    .replace(/javascript\//i, '')
-    .replace(/typescript\//i, '')
-    .replace(/[^a-z0-9]+/g, '-')
+  const normalizedRuleId = RULE_ID.toLowerCase()
+    .replaceAll('javascript/', '')
+    .replaceAll('typescript/', '');
+
+  const ruleShort = normalizedRuleId
+    .split(/[^a-z0-9]+/)
+    .filter(Boolean)
+    .join('-')
     .substring(0, 20);
 
   const branchName = `security/codeql-${ALERT_NUMBER}-${ruleShort}`;
-  return branchName.replace(/--+/g, '-');
+  return branchName
+    .split(/-+/)
+    .filter(Boolean)
+    .join('-')
+    .replace('security/codeql', 'security/codeql');
 }
 
 function branchExists(branchName) {
   try {
-    execSync(`git rev-parse --verify refs/heads/${branchName}`, { // NOSONAR - Administrative script, inputs from controlled sources
+    execaSync('git', ['rev-parse', '--verify', `refs/heads/${branchName}`], {
       stdio: 'ignore',
+      shell: false,
     });
     return true;
   } catch {
@@ -102,8 +108,10 @@ async function createBranch() {
   }
 }
 
-createBranch().catch((error) => {
+try {
+  await createBranch();
+} catch (error) {
   console.error('❌ Error:', error.message);
   console.log(`::set-output name=branch_name::`);
   process.exit(1);
-});
+}

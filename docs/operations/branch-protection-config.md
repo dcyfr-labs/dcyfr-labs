@@ -34,13 +34,15 @@ Navigate to: **Settings → Branches → Add rule**
     - `Unit & Integration Tests`
     - `E2E Tests`
     - `Bundle Size Check`
-    - `Security Checks`
-    - `Design System Validation`
-    - `Lighthouse CI`
+    - `Security Review (Claude Code)`
+    - `Verified Commits`
+    - `Validate Design Tokens`
 
 - [x] **Require conversation resolution before merging**
 
-- [x] **Require signed commits** (optional but recommended)
+- [x] **Require signed commits**
+  - Required status check: `Verified Commits`
+  - Pair with Vercel **Require Verified Commits** on `main` and `preview`
 
 - [x] **Require linear history**
   - Forces squash merge or rebase (no merge commits)
@@ -70,6 +72,12 @@ Navigate to: **Settings → Branches → Add rule**
 Use the same configuration as `main` with one modification:
 
 - **Require approvals**: **0** (auto-merge from automated workflows allowed)
+- Required status checks (preview):
+  - `Lint & Type Check`
+  - `Unit Tests`
+  - `Production Build`
+  - `Security Review (Claude Code)`
+  - `Verified Commits`
 - All other settings: Same as `main`
 
 **Rationale**: Preview branch is used for automated sync from `main`, so it needs less strict approval requirements but same protection from direct pushes.
@@ -131,6 +139,10 @@ GitHub now offers **Rulesets** as a more flexible alternative to branch protecti
           {
             "context": "E2E Tests",
             "integration_id": null
+          },
+          {
+            "context": "Verified Commits",
+            "integration_id": null
           }
         ],
         "strict_required_status_checks_policy": true
@@ -171,8 +183,9 @@ resource "github_branch_protection" "main" {
       "Unit & Integration Tests",
       "E2E Tests",
       "Bundle Size Check",
-      "Security Checks",
-      "Design System Validation"
+      "Security Review (Claude Code)",
+      "Verified Commits",
+      "Validate Design Tokens"
     ]
   }
 
@@ -197,13 +210,16 @@ resource "github_branch_protection" "preview" {
   required_status_checks {
     strict   = true
     contexts = [
-      "Code Quality",
-      "Unit & Integration Tests",
-      "Security Checks"
+      "Lint & Type Check",
+      "Unit Tests",
+      "Production Build",
+      "Security Review (Claude Code)",
+      "Verified Commits"
     ]
   }
 
   enforce_admins                  = true
+  require_signed_commits          = true
   require_linear_history          = true
   require_conversation_resolution = false
   allows_deletions                = false
@@ -235,8 +251,9 @@ gh api repos/$REPO/branches/main/protection \
       "Unit & Integration Tests",
       "E2E Tests",
       "Bundle Size Check",
-      "Security Checks",
-      "Design System Validation"
+      "Security Review (Claude Code)",
+      "Verified Commits",
+      "Validate Design Tokens"
     ]
   },
   "enforce_admins": true,
@@ -255,6 +272,12 @@ EOF
 
 echo "✅ Main branch protection configured"
 
+# Enable required signatures on main
+gh api repos/$REPO/branches/main/protection/required_signatures \
+  --method POST
+
+echo "✅ Main required signatures enabled"
+
 # Preview branch protection
 gh api repos/$REPO/branches/preview/protection \
   --method PUT \
@@ -263,9 +286,11 @@ gh api repos/$REPO/branches/preview/protection \
   "required_status_checks": {
     "strict": true,
     "contexts": [
-      "Code Quality",
-      "Unit & Integration Tests",
-      "Security Checks"
+      "Lint & Type Check",
+      "Unit Tests",
+      "Production Build",
+      "Security Review (Claude Code)",
+      "Verified Commits"
     ]
   },
   "enforce_admins": true,
@@ -283,6 +308,12 @@ gh api repos/$REPO/branches/preview/protection \
 EOF
 
 echo "✅ Preview branch protection configured"
+
+# Enable required signatures on preview
+gh api repos/$REPO/branches/preview/protection/required_signatures \
+  --method POST
+
+echo "✅ Preview required signatures enabled"
 
 # Enable auto-delete head branches
 gh api repos/$REPO \
@@ -307,11 +338,24 @@ echo "2. Test by attempting to push directly to main (should fail)"
 echo "3. Create a test PR to verify status checks work"
 ```
 
+## Vercel Verified Commits
+
+GitHub branch protection should be paired with Vercel's **Require Verified Commits** deployment setting.
+
+- Enable on `preview` first for soak validation.
+- Enable on `main` after preview stability is confirmed.
+
+This provides two layers of enforcement:
+
+1. GitHub blocks merge of unverified commit history.
+2. Vercel blocks deployment if an unverified commit still reaches a protected branch.
+
 ## Verification Steps
 
 After applying branch protection:
 
 1. **Test direct push prevention**:
+
    ```bash
    git checkout main
    echo "test" >> test.txt
@@ -321,6 +365,7 @@ After applying branch protection:
    ```
 
 2. **Test PR requirement**:
+
    ```bash
    git checkout -b test-branch-protection
    git push origin test-branch-protection
@@ -336,6 +381,7 @@ After applying branch protection:
 ### Status Checks Not Appearing
 
 If required status checks don't show up:
+
 1. Ensure workflows run at least once on the branch
 2. Check workflow job names match exactly (case-sensitive)
 3. Verify workflows have `pull_request` trigger for target branch
@@ -361,5 +407,5 @@ If required status checks don't show up:
 
 ---
 
-**Last Updated**: 2025-12-22
+**Last Updated**: 2026-03-22
 **Priority**: 🔴 CRITICAL - Implement ASAP

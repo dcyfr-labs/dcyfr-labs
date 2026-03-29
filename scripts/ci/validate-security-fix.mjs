@@ -19,8 +19,7 @@
  *   - Test coverage
  */
 
-import { execSync } from 'child_process';
-import fs from 'fs';
+import { execSync } from 'node:child_process';
 
 const BRANCH_NAME = process.env.BRANCH_NAME;
 const DRY_RUN = process.env.DRY_RUN === 'true';
@@ -73,7 +72,7 @@ async function validateFix() {
   // Design token compliance (sample check)
   console.log(`\n📋 Design System Compliance:`);
   const tokenResult = runCommand(
-    "grep -r 'gap-\\|mt-\\|mb-\\|ml-\\|mr-' src/ --include='*.tsx' --include='*.ts' | wc -l",
+    String.raw`grep -r 'gap-\|mt-\|mb-\|ml-\|mr-' src/ --include='*.tsx' --include='*.ts' | wc -l`,
     'Design token check'
   );
   checks.push(tokenResult);
@@ -93,7 +92,9 @@ async function validateFix() {
   }
 }
 
-validateFix().catch((error) => {
+try {
+  await validateFix();
+} catch (error) {
   console.error('❌ Error:', error.message);
   process.exit(1);
-});
+}

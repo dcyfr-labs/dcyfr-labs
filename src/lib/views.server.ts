@@ -2,14 +2,9 @@ import { redis } from '@/lib/redis-client';
 
 const VIEW_KEY_PREFIX = 'views:post:';
 const VIEW_HISTORY_KEY_PREFIX = 'views:history:post:';
-const PROJECT_VIEW_KEY_PREFIX = 'views:project:';
-const PROJECT_VIEW_HISTORY_KEY_PREFIX = 'views:history:project:';
 
 const formatKey = (postId: string) => `${VIEW_KEY_PREFIX}${postId}`;
 const formatHistoryKey = (postId: string) => `${VIEW_HISTORY_KEY_PREFIX}${postId}`;
-const formatProjectKey = (projectSlug: string) => `${PROJECT_VIEW_KEY_PREFIX}${projectSlug}`;
-const formatProjectHistoryKey = (projectSlug: string) =>
-  `${PROJECT_VIEW_HISTORY_KEY_PREFIX}${projectSlug}`;
 
 /**
  * Increment view count for a post by its ID

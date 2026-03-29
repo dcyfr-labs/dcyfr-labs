@@ -40,7 +40,10 @@ if (!existsSync(evidenceMonthDir)) {
 }
 
 const timestamp = currentDate.toISOString().split('T')[0]; // YYYY-MM-DD
-const auditReportPath = join(projectRoot, `docs/security/.private/monthly-audit-${year}-${month}.md`);
+const auditReportPath = join(
+  projectRoot,
+  `docs/security/.private/monthly-audit-${year}-${month}.md`
+);
 
 console.log('🔒 Monthly Security Audit for dcyfr-labs');
 console.log('━'.repeat(50));
@@ -127,14 +130,15 @@ function checkDependencyVulnerabilities() {
     writeFileSync(auditFile, auditOutput);
 
     return {
-      passed: auditResults.vulnerabilities.critical === 0 && auditResults.vulnerabilities.high === 0,
+      passed:
+        auditResults.vulnerabilities.critical === 0 && auditResults.vulnerabilities.high === 0,
       details: `Found ${totalVulns} vulnerabilities (Critical: ${vulnerabilities.critical}, High: ${vulnerabilities.high}, Moderate: ${vulnerabilities.moderate}, Low: ${vulnerabilities.low})`,
-      finding: auditResults.vulnerabilities.critical > 0 || auditResults.vulnerabilities.high > 0
-        ? `Critical/High vulnerabilities require immediate remediation`
-        : null,
-      recommendation: totalVulns > 0
-        ? `Run 'npm audit fix' to automatically remediate vulnerabilities`
-        : null,
+      finding:
+        auditResults.vulnerabilities.critical > 0 || auditResults.vulnerabilities.high > 0
+          ? `Critical/High vulnerabilities require immediate remediation`
+          : null,
+      recommendation:
+        totalVulns > 0 ? `Run 'npm audit fix' to automatically remediate vulnerabilities` : null,
     };
   }
 }
@@ -149,10 +153,10 @@ function checkSBOMGeneration() {
 
     // Check if SBOM files exist
     const sbomDir = join(projectRoot, 'docs/security/sbom');
-    const sbomFiles = readdirSync(sbomDir).filter(f => f.includes(timestamp));
+    const sbomFiles = readdirSync(sbomDir).filter((f) => f.includes(timestamp));
 
-    const hasCombined = sbomFiles.some(f => f.includes('combined'));
-    const hasSPDX = sbomFiles.some(f => f.includes('spdx'));
+    const hasCombined = sbomFiles.some((f) => f.includes('combined'));
+    const hasSPDX = sbomFiles.some((f) => f.includes('spdx'));
 
     if (hasCombined && hasSPDX) {
       // Copy to evidence directory
@@ -191,24 +195,26 @@ function checkSBOMGeneration() {
 function checkSecurityAdvisories() {
   try {
     // Check GitHub security advisories for dependencies
-    const advisoryCount = execSync( // NOSONAR - Administrative script, inputs from controlled sources
+    const advisoryCount = execSync(
+      // NOSONAR - Administrative script, inputs from controlled sources
       'gh api repos/dcyfr-labs/dcyfr-labs/dependabot/alerts --jq "length"',
       { cwd: projectRoot, stdio: 'pipe' }
-    ).toString().trim();
+    )
+      .toString()
+      .trim();
 
     const count = parseInt(advisoryCount, 10);
 
     return {
       passed: count === 0,
-      details: count === 0
-        ? 'No active Dependabot security alerts'
-        : `${count} active Dependabot security alert(s)`,
+      details:
+        count === 0
+          ? 'No active Dependabot security alerts'
+          : `${count} active Dependabot security alert(s)`,
       finding: count > 0 ? 'Security advisories require review' : null,
-      recommendation: count > 0
-        ? 'Review and remediate Dependabot alerts on GitHub'
-        : null,
+      recommendation: count > 0 ? 'Review and remediate Dependabot alerts on GitHub' : null,
     };
-  } catch (error) {
+  } catch {
     // GitHub CLI not configured or no access
     return {
       passed: true,
@@ -229,18 +235,21 @@ function checkAccessControls() {
     const envFiles = execSync('git ls-files "*.env*"', { cwd: projectRoot, stdio: 'pipe' }) // NOSONAR - Administrative script, inputs from controlled sources
       .toString()
       .split('\n')
-      .filter(f => f && !f.includes('.env.example') && !f.includes('.env.local'));
+      .filter((f) => f && !f.includes('.env.example') && !f.includes('.env.local'));
 
     if (envFiles.length > 0) {
-      findings.push(`Found ${envFiles.length} .env files in version control: ${envFiles.join(', ')}`);
+      findings.push(
+        `Found ${envFiles.length} .env files in version control: ${envFiles.join(', ')}`
+      );
     }
-  } catch (error) {
+  } catch {
     // No .env files found - good
   }
 
   // Check Vercel team members (if configured)
   try {
-    const teamOutput = execSync('vercel teams list --json 2>/dev/null || echo "[]"', { // NOSONAR - Administrative script, inputs from controlled sources
+    const teamOutput = execSync('vercel teams list --json 2>/dev/null || echo "[]"', {
+      // NOSONAR - Administrative script, inputs from controlled sources
       cwd: projectRoot,
       stdio: 'pipe',
     }).toString();
@@ -250,19 +259,21 @@ function checkAccessControls() {
       const teamFile = join(evidenceMonthDir, `vercel-team-${timestamp}.json`);
       writeFileSync(teamFile, teamOutput);
     }
-  } catch (error) {
+  } catch {
     // Vercel CLI not configured
   }
 
   return {
     passed: findings.length === 0,
-    details: findings.length === 0
-      ? 'Access controls are secure'
-      : `Found ${findings.length} access control issue(s)`,
+    details:
+      findings.length === 0
+        ? 'Access controls are secure'
+        : `Found ${findings.length} access control issue(s)`,
     finding: findings.length > 0 ? findings.join('; ') : null,
-    recommendation: findings.length > 0
-      ? 'Remove .env files from version control and rotate exposed credentials'
-      : 'Review Vercel team members quarterly',
+    recommendation:
+      findings.length > 0
+        ? 'Remove .env files from version control and rotate exposed credentials'
+        : 'Review Vercel team members quarterly',
   };
 }
 
@@ -282,7 +293,7 @@ function checkThirdPartyServices() {
     try {
       // Simple ping test
       services.redis = true;
-    } catch (error) {
+    } catch {
       services.redis = false;
     }
   }
@@ -292,7 +303,7 @@ function checkThirdPartyServices() {
     try {
       execSync('vercel whoami', { stdio: 'pipe' }); // NOSONAR - Administrative script, inputs from controlled sources
       services.vercel = true;
-    } catch (error) {
+    } catch {
       services.vercel = false;
     }
   }
@@ -303,9 +314,10 @@ function checkThirdPartyServices() {
   return {
     passed: true, // Non-critical check
     details: `${activeServices}/${totalServices} third-party services reachable`,
-    recommendation: activeServices < totalServices
-      ? 'Configure environment variables for complete service monitoring'
-      : null,
+    recommendation:
+      activeServices < totalServices
+        ? 'Configure environment variables for complete service monitoring'
+        : null,
   };
 }
 
@@ -322,15 +334,18 @@ function checkSecurityScans() {
 
     // Try to get latest CodeQL run status
     try {
-      const codeqlStatus = execSync( // NOSONAR - Administrative script, inputs from controlled sources
+      const codeqlStatus = execSync(
+        // NOSONAR - Administrative script, inputs from controlled sources
         'gh run list --workflow=codeql.yml --limit=1 --json conclusion --jq ".[0].conclusion"',
         { cwd: projectRoot, stdio: 'pipe' }
-      ).toString().trim();
+      )
+        .toString()
+        .trim();
 
       if (codeqlStatus !== 'success') {
         findings.push(`CodeQL latest run: ${codeqlStatus}`);
       }
-    } catch (error) {
+    } catch {
       // Can't check CodeQL status
     }
   }
@@ -339,14 +354,14 @@ function checkSecurityScans() {
   try {
     execSync('npm run lint', { cwd: projectRoot, stdio: 'pipe' }); // NOSONAR - Administrative script, inputs from controlled sources
     findings.push('ESLint: 0 errors');
-  } catch (error) {
+  } catch {
     findings.push('ESLint: Has errors (run npm run lint for details)');
   }
 
   return {
     passed: true, // Non-critical check
     details: findings.join(', '),
-    recommendation: findings.some(f => f.includes('errors'))
+    recommendation: findings.some((f) => f.includes('errors'))
       ? 'Fix linting and security scan errors'
       : null,
   };
@@ -358,7 +373,8 @@ function checkSecurityScans() {
 function checkIncidentLogs() {
   // Check if there are any security-related git commits
   try {
-    const securityCommits = execSync( // NOSONAR - Administrative script, inputs from controlled sources
+    const securityCommits = execSync(
+      // NOSONAR - Administrative script, inputs from controlled sources
       `git log --since="30 days ago" --grep="security\\|vulnerability\\|CVE\\|exploit" --oneline`,
       { cwd: projectRoot, stdio: 'pipe' }
     ).toString();
@@ -367,14 +383,13 @@ function checkIncidentLogs() {
 
     return {
       passed: true, // Informational
-      details: commitCount > 0
-        ? `${commitCount} security-related commit(s) in last 30 days`
-        : 'No security-related commits in last 30 days',
-      recommendation: commitCount > 0
-        ? 'Review security commit log for incident tracking'
-        : null,
+      details:
+        commitCount > 0
+          ? `${commitCount} security-related commit(s) in last 30 days`
+          : 'No security-related commits in last 30 days',
+      recommendation: commitCount > 0 ? 'Review security commit log for incident tracking' : null,
     };
-  } catch (error) {
+  } catch {
     return {
       passed: true,
       details: 'No security-related commits found',
@@ -388,23 +403,18 @@ function checkIncidentLogs() {
 function checkBackups() {
   // Check if SBOM backups exist
   const sbomDir = join(projectRoot, 'docs/security/sbom');
-  const sbomFiles = readdirSync(sbomDir).filter(f => f.includes('sbom-'));
+  const sbomFiles = readdirSync(sbomDir).filter((f) => f.includes('sbom-'));
 
   // Check for monthly SBOM snapshots (should have at least 2 months of history)
-  const uniqueMonths = new Set(
-    sbomFiles
-      .map(f => f.match(/\d{4}-\d{2}/)?.[0])
-      .filter(Boolean)
-  );
+  const uniqueMonths = new Set(sbomFiles.map((f) => f.match(/\d{4}-\d{2}/)?.[0]).filter(Boolean));
 
   const monthCount = uniqueMonths.size;
 
   return {
     passed: monthCount >= 1,
     details: `${monthCount} month(s) of SBOM history retained`,
-    recommendation: monthCount < 2
-      ? 'Continue monthly SBOM generation to build 24-month retention'
-      : null,
+    recommendation:
+      monthCount < 2 ? 'Continue monthly SBOM generation to build 24-month retention' : null,
   };
 }
 
@@ -414,7 +424,7 @@ function checkBackups() {
 function generateReport() {
   console.log('\n📋 Generating Audit Report...');
 
-  const passRate = auditResults.passed / (auditResults.passed + auditResults.failed) * 100;
+  const passRate = (auditResults.passed / (auditResults.passed + auditResults.failed)) * 100;
 
   const report = `<!-- TLP:CLEAR -->
 
@@ -443,13 +453,17 @@ function generateReport() {
 
 ## Audit Checks
 
-${auditResults.checks.map((check, idx) => `
+${auditResults.checks
+  .map(
+    (check, idx) => `
 ### ${idx + 1}. ${check.name}
 
 **Status:** ${check.status === 'PASS' ? '✅ PASS' : check.status === 'FAIL' ? '❌ FAIL' : '⚠️ ERROR'}
 **Details:** ${check.details}
 **Timestamp:** ${check.timestamp}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ---
 
@@ -470,7 +484,9 @@ ${auditResults.recommendations.length === 0 ? '_No recommendations._' : auditRes
 All evidence artifacts stored in: \`docs/security/.private/evidence/${year}-${month}/\`
 
 **Files:**
-${readdirSync(evidenceMonthDir).map(f => `- ${f}`).join('\n')}
+${readdirSync(evidenceMonthDir)
+  .map((f) => `- ${f}`)
+  .join('\n')}
 
 ---
 
@@ -515,17 +531,24 @@ async function main() {
   generateReport();
 
   const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-  const passRate = (auditResults.passed / (auditResults.passed + auditResults.failed) * 100).toFixed(1);
+  const passRate = (
+    (auditResults.passed / (auditResults.passed + auditResults.failed)) *
+    100
+  ).toFixed(1);
 
   console.log('\n━'.repeat(50));
   console.log(`✅ Monthly audit complete in ${duration}s`);
-  console.log(`📊 Overall Score: ${passRate}% (${auditResults.passed}/${auditResults.passed + auditResults.failed} checks passed)`);
+  console.log(
+    `📊 Overall Score: ${passRate}% (${auditResults.passed}/${auditResults.passed + auditResults.failed} checks passed)`
+  );
   console.log(`📁 Report: ${auditReportPath}`);
   console.log(`📁 Evidence: ${evidenceMonthDir}`);
   console.log('━'.repeat(50));
 
   // Exit with error code if critical failures
-  process.exit(auditResults.vulnerabilities.critical > 0 || auditResults.vulnerabilities.high > 0 ? 1 : 0);
+  process.exit(
+    auditResults.vulnerabilities.critical > 0 || auditResults.vulnerabilities.high > 0 ? 1 : 0
+  );
 }
 
 main().catch((error) => {

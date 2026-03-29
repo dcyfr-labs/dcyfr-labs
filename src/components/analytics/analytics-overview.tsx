@@ -5,24 +5,14 @@
  * Extracted from AnalyticsClient.tsx for reusability.
  */
 
-import { Card, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Eye,
-  FileText,
-  MessageSquare,
-  Share2,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { DashboardStats, DashboardStat } from "@/components/dashboard";
-import { AnalyticsSummary } from "@/types/analytics";
-import { getBenchmark } from "@/lib/dashboard";
-import Link from "next/link";
-import { useState } from "react";
-import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Eye, FileText, MessageSquare, Share2, ChevronDown, ChevronUp } from 'lucide-react';
+import { DashboardStats, DashboardStat } from '@/components/dashboard';
+import { AnalyticsSummary } from '@/types/analytics';
+import Link from 'next/link';
+import { useState } from 'react';
+import { TYPOGRAPHY, SPACING } from '@/lib/design-tokens';
 
 interface AnalyticsOverviewProps {
   /** Filtered summary statistics */
@@ -50,9 +40,7 @@ export function AnalyticsOverview({ summary }: AnalyticsOverviewProps) {
         <div className="flex items-center justify-between">
           <div>
             <h3 className={TYPOGRAPHY.h3.standard}>Summary Statistics</h3>
-            <p className="text-sm text-muted-foreground">
-              Overview of blog performance metrics
-            </p>
+            <p className="text-sm text-muted-foreground">Overview of blog performance metrics</p>
           </div>
           <Button
             variant="ghost"
@@ -76,11 +64,7 @@ export function AnalyticsOverview({ summary }: AnalyticsOverviewProps) {
           <>
             {/* Summary Stats Cards */}
             <DashboardStats columns={4} className="mb-4">
-              <DashboardStat
-                label="Total Posts"
-                value={summary.totalPosts}
-                icon={FileText}
-              />
+              <DashboardStat label="Total Posts" value={summary.totalPosts} icon={FileText} />
 
               <DashboardStat
                 label="Total Views"
@@ -130,9 +114,7 @@ export function AnalyticsOverview({ summary }: AnalyticsOverviewProps) {
         <div className="flex items-center justify-between">
           <div>
             <h3 className={TYPOGRAPHY.h3.standard}>Featured Posts</h3>
-            <p className="text-sm text-muted-foreground">
-              Top performing posts by category
-            </p>
+            <p className="text-sm text-muted-foreground">Top performing posts by category</p>
           </div>
           <Button
             variant="ghost"
@@ -159,9 +141,7 @@ export function AnalyticsOverview({ summary }: AnalyticsOverviewProps) {
               <div className={SPACING.content}>
                 <div>
                   <h4 className={TYPOGRAPHY.label.small}>Top Post</h4>
-                  <p className="text-xs text-muted-foreground">
-                    Most viewed post overall
-                  </p>
+                  <p className="text-xs text-muted-foreground">Most viewed post overall</p>
                 </div>
                 {summary.topPost ? (
                   <div className={SPACING.compact}>
@@ -186,9 +166,7 @@ export function AnalyticsOverview({ summary }: AnalyticsOverviewProps) {
               <div className={SPACING.content}>
                 <div>
                   <h4 className={TYPOGRAPHY.label.small}>Most Shared</h4>
-                  <p className="text-xs text-muted-foreground">
-                    Most shared post overall
-                  </p>
+                  <p className="text-xs text-muted-foreground">Most shared post overall</p>
                 </div>
                 {summary.mostSharedPost ? (
                   <div className={SPACING.compact}>
@@ -213,9 +191,7 @@ export function AnalyticsOverview({ summary }: AnalyticsOverviewProps) {
               <div className={SPACING.content}>
                 <div>
                   <h4 className={TYPOGRAPHY.label.small}>Most Commented</h4>
-                  <p className="text-xs text-muted-foreground">
-                    Most commented post overall
-                  </p>
+                  <p className="text-xs text-muted-foreground">Most commented post overall</p>
                 </div>
                 {summary.mostCommentedPost ? (
                   <div className={SPACING.compact}>
@@ -226,8 +202,7 @@ export function AnalyticsOverview({ summary }: AnalyticsOverviewProps) {
                       {summary.mostCommentedPost.title}
                     </Link>
                     <p className={TYPOGRAPHY.display.stat}>
-                      {summary.mostCommentedPost.comments.toLocaleString()}{" "}
-                      comments
+                      {summary.mostCommentedPost.comments.toLocaleString()} comments
                     </p>
                   </div>
                 ) : (

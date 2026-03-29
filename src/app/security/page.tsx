@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS, CONTAINER_PADDING } from '@/lib/design-tokens';
 import { createPageMetadata } from '@/lib/metadata';
-import { PageLayout, PageHero } from '@/components/layouts';
+import { PageLayout, PageHero, PolicyPageFooter } from '@/components/layouts';
 import { getJsonLdScriptProps, getContactPageSchema } from '@/lib/json-ld';
 
 const pageTitle = 'Security';
@@ -549,7 +549,7 @@ export default async function SecurityPage() {
         </section>
 
         {/* Footer */}
-        <footer className="mt-8 md:mt-10 lg:mt-14 pt-4 md:pt-5 lg:pt-6 border-t border-border">
+        <PolicyPageFooter>
           <p className="text-sm text-muted-foreground">
             <strong>DCYFR Labs Security Policy</strong>
             <br />
@@ -571,7 +571,7 @@ export default async function SecurityPage() {
             </a>
             .
           </p>
-        </footer>
+        </PolicyPageFooter>
       </article>
     </PageLayout>
   );

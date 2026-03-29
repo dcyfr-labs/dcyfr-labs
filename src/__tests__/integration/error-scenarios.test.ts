@@ -67,16 +67,6 @@ vi.mock('@/lib/comments', () => ({
 
 // Import after mocks are set up
 import { GET as analyticsGET } from '@/app/api/analytics/route';
-import {
-  getMultiplePostViews,
-  getMultiplePostViews24h,
-  getMultiplePostViewsInRange,
-} from '@/lib/views.server';
-import { getPostSharesBulk, getPostShares24hBulk } from '@/lib/shares';
-import { getPostCommentsBulk, getPostComments24hBulk } from '@/lib/comments';
-import { rateLimit } from '@/lib/rate-limit';
-import { blockExternalAccess } from '@/lib/api/api-security';
-import { posts } from '@/data/posts';
 
 describe('Error Scenario Integration Tests', () => {
   const originalEnv = process.env;

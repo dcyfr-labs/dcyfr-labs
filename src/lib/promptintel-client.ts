@@ -1,6 +1,7 @@
 /**
- * @deprecated PromptIntel MCP server has been removed
- * This file is a temporary stub to maintain compilation.
+ * Legacy PromptIntel client stub.
+ * PromptIntel MCP server has been removed.
+ * This file is a temporary compatibility layer to maintain compilation.
  * Migrate to @dcyfr/ai threat intelligence or remove usage.
  */
 

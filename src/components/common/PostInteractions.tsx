@@ -170,8 +170,8 @@ export function PostInteractions({
   // contentId is already the slug (e.g., "my-post" or "my-project")
   const activityId = contentId;
 
-  const { isLiked, toggleLike, getCount } = useActivityReactions();
-  const { isBookmarked, toggle: toggleBookmark, getBookmarkCount } = useBookmarks();
+  const { isLiked, toggleLike } = useActivityReactions();
+  const { isBookmarked, toggle: toggleBookmark } = useBookmarks();
 
   // Fetch global engagement counts
   const { globalLikes, globalBookmarks } = useGlobalEngagementCounts({
@@ -189,11 +189,8 @@ export function PostInteractions({
   // Only show actual values after hydration
   const liked = isHydrated ? isLiked(activityId) : false;
   const bookmarked = isHydrated ? isBookmarked(activityId) : false;
-  const likeCount = isHydrated && showCounts ? getCount(activityId) : 0;
-  const bookmarkCount = isHydrated && showCounts ? getBookmarkCount(activityId) : 0;
 
   const isCompact = variant === 'compact';
-  const isDetailed = variant === 'detailed';
 
   return (
     <div className={cn('flex items-center', isCompact ? 'gap-3' : 'gap-4', className)}>

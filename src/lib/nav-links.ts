@@ -1,12 +1,12 @@
 /**
  * Reusable Navigation Link Components
- * 
+ *
  * Centralized link configurations and button components for consistent
  * navigation across the homepage and other pages.
  */
 
-import { Briefcase, BookOpen, Activity, Bookmark, User } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { Briefcase, BookOpen, Activity, Bookmark } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 /**
  * Navigation link configuration
@@ -17,7 +17,7 @@ export interface NavLinkConfig {
   shortLabel?: string;
   icon: LucideIcon;
   description: string;
-  variant?: "primary" | "secondary" | "tertiary";
+  variant?: 'primary' | 'secondary' | 'tertiary';
 }
 
 /**
@@ -26,28 +26,20 @@ export interface NavLinkConfig {
  */
 export const PRIMARY_NAV_LINKS: NavLinkConfig[] = [
   {
-    href: "/work",
-    label: "View our work",
-    shortLabel: "Projects",
-    icon: Briefcase,
-    description: "Explore our portfolio and client work",
-    variant: "primary",
-  },
-  {
-    href: "/blog",
-    label: "Read our blog",
-    shortLabel: "Blog",
+    href: '/blog',
+    label: 'Read our blog',
+    shortLabel: 'Blog',
     icon: BookOpen,
-    description: "Read articles on security and development",
-    variant: "secondary",
+    description: 'Read articles on security and development',
+    variant: 'primary',
   },
   {
-    href: "/about",
-    label: "Learn more",
-    shortLabel: "About",
-    icon: User,
-    description: "Learn about DCYFR Labs and our team",
-    variant: "tertiary",
+    href: '/work',
+    label: 'View our work',
+    shortLabel: 'Projects',
+    icon: Briefcase,
+    description: 'Explore our portfolio and client work',
+    variant: 'secondary',
   },
 ];
 
@@ -56,31 +48,28 @@ export const PRIMARY_NAV_LINKS: NavLinkConfig[] = [
  */
 export const SECONDARY_NAV_LINKS: NavLinkConfig[] = [
   {
-    href: "/activity",
-    label: "Activity",
+    href: '/activity',
+    label: 'Activity',
     icon: Activity,
-    description: "See latest activity and updates",
+    description: 'See latest activity and updates',
   },
   {
-    href: "/bookmarks",
-    label: "Bookmarks",
+    href: '/bookmarks',
+    label: 'Bookmarks',
     icon: Bookmark,
-    description: "Curated resources and links",
+    description: 'Curated resources and links',
   },
 ];
 
 /**
  * All navigation links combined (for quick links ribbon)
  */
-export const ALL_NAV_LINKS: NavLinkConfig[] = [
-  ...PRIMARY_NAV_LINKS,
-  ...SECONDARY_NAV_LINKS,
-];
+export const ALL_NAV_LINKS: NavLinkConfig[] = [...PRIMARY_NAV_LINKS, ...SECONDARY_NAV_LINKS];
 
 /**
  * Get analytics source identifier for a link
  */
-export function getAnalyticsSource(href: string, context: "hero" | "ribbon" | "nav"): string {
-  const page = href.replace("/", "") || "home";
+export function getAnalyticsSource(href: string, context: 'hero' | 'ribbon' | 'nav'): string {
+  const page = href.replace('/', '') || 'home';
   return `homepage_${context}_${page}`;
 }

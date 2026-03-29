@@ -77,21 +77,21 @@ export default async function AboutPage() {
       <SectionNavigator scrollOffset={SCROLL_BEHAVIOR.offset.standard} className={SPACING.section}>
         {/* Organization Philosophy */}
         <Section id="our-philosophy" className={PAGE_LAYOUT.proseSection.container}>
-          <ScrollReveal animation="fade-up" delay={1}>
+          <ScrollReveal animation="fade-up" delay={0}>
             <AboutDcyfrLabs />
           </ScrollReveal>
         </Section>
 
         {/* Meet the Team */}
         <Section id="meet-the-team" className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={2}>
+          <ScrollReveal animation="fade-up" delay={0}>
             <TeamSpotlights />
           </ScrollReveal>
         </Section>
 
         {/* Team Certifications */}
         <Section id="certifications" className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={3}>
+          <ScrollReveal animation="fade-up" delay={0}>
             <ServerBadgeWallet
               username="dcyfr"
               showLatestOnly
@@ -104,7 +104,7 @@ export default async function AboutPage() {
 
         {/* Team Skills */}
         <Section id="skills" className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={4}>
+          <ScrollReveal animation="fade-up" delay={0}>
             <ServerSkillsWallet
               username="dcyfr"
               limit={9}
@@ -117,14 +117,14 @@ export default async function AboutPage() {
 
         {/* AI Agent Team */}
         <Section id="ai-agents" className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={5}>
+          <ScrollReveal animation="fade-up" delay={0}>
             <AgentProfilesSection />
           </ScrollReveal>
         </Section>
 
         {/* Connect with Us */}
         <Section id="connect-with-us" className={PAGE_LAYOUT.section.container}>
-          <ScrollReveal animation="fade-up" delay={6}>
+          <ScrollReveal animation="fade-up" delay={0}>
             <ConnectWithUs />
           </ScrollReveal>
         </Section>

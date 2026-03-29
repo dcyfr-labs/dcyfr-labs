@@ -19,7 +19,7 @@ import { z } from 'zod';
 import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
 import { getReviewStore } from '@/lib/plugins/review-store';
 import { handleApiError } from '@/lib/error-handler';
-import { withAuth, getRequestUser } from '@/lib/auth-middleware';
+import { withAuth, getRequestUser, type AuthenticatedRequest } from '@/lib/auth-middleware';
 
 export const runtime = 'nodejs';
 
@@ -38,86 +38,95 @@ const CreateReviewSchema = z.object({
 
 // ── POST ────────────────────────────────────────────────────────────────────
 
-export const POST = withAuth(async function postPluginReview(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id: pluginId } = await params;
-
-    if (!pluginId?.trim()) {
-      return NextResponse.json({ error: 'Plugin ID is required.' }, { status: 400 });
+export const POST = withAuth(
+  async function postPluginReview(
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+  ) {
+    if (process.env.PLUGINS_ENABLED !== 'true' && process.env.NODE_ENV !== 'test') {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
-
-    const user = getRequestUser(request as NextRequest & { auth?: unknown });
-    if (!user?.id) {
-      return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
-    }
-
-    // Rate limiting
-    const ip = getClientIp(request);
-    const rateLimitResult = await rateLimit(`plugins:reviews:${ip}`, POST_RATE_LIMIT);
-    if (!rateLimitResult.success) {
-      return NextResponse.json(
-        { error: 'Rate limit exceeded. Try again later.' },
-        { status: 429, headers: createRateLimitHeaders(rateLimitResult) }
-      );
-    }
-
-    // Parse and validate request body
-    let body: unknown;
     try {
-      body = await request.json();
-    } catch {
-      return NextResponse.json({ error: 'Invalid JSON body.' }, { status: 400 });
-    }
+      const { id: pluginId } = await params;
 
-    const parsed = CreateReviewSchema.safeParse(body);
-    if (!parsed.success) {
+      if (!pluginId?.trim()) {
+        return NextResponse.json({ error: 'Plugin ID is required.' }, { status: 400 });
+      }
+
+      const user = getRequestUser(request as AuthenticatedRequest);
+      if (!user?.id) {
+        return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
+      }
+
+      // Rate limiting
+      const ip = getClientIp(request);
+      const rateLimitResult = await rateLimit(`plugins:reviews:${ip}`, POST_RATE_LIMIT);
+      if (!rateLimitResult.success) {
+        return NextResponse.json(
+          { error: 'Rate limit exceeded. Try again later.' },
+          { status: 429, headers: createRateLimitHeaders(rateLimitResult) }
+        );
+      }
+
+      // Parse and validate request body
+      let body: unknown;
+      try {
+        body = await request.json();
+      } catch {
+        return NextResponse.json({ error: 'Invalid JSON body.' }, { status: 400 });
+      }
+
+      const parsed = CreateReviewSchema.safeParse(body);
+      if (!parsed.success) {
+        return NextResponse.json(
+          { error: 'Invalid request body.', issues: parsed.error.issues },
+          { status: 400 }
+        );
+      }
+
+      const store = await getReviewStore();
+      const review = store.createReview({
+        pluginId,
+        userId: user.id,
+        displayName: parsed.data.displayName,
+        rating: parsed.data.rating,
+        comment: parsed.data.comment,
+      });
+
       return NextResponse.json(
-        { error: 'Invalid request body.', issues: parsed.error.issues },
-        { status: 400 }
+        {
+          review,
+          stats: store.getRatingStats(pluginId),
+        },
+        { status: 201 }
       );
+    } catch (error: unknown) {
+      // Handle duplicate review
+      if (
+        error instanceof Error &&
+        'code' in error &&
+        (error as { code: string }).code === 'DUPLICATE_REVIEW'
+      ) {
+        return NextResponse.json(
+          { error: 'You have already submitted a review for this plugin.' },
+          { status: 409 }
+        );
+      }
+      const errInfo = handleApiError(error, { route: 'POST /api/plugins/[id]/reviews' });
+      return NextResponse.json({ error: errInfo.message }, { status: errInfo.statusCode });
     }
-
-    const store = await getReviewStore();
-    const review = store.createReview({
-      pluginId,
-      userId: user.id,
-      displayName: parsed.data.displayName,
-      rating: parsed.data.rating,
-      comment: parsed.data.comment,
-    });
-
-    return NextResponse.json(
-      {
-        review,
-        stats: store.getRatingStats(pluginId),
-      },
-      { status: 201 }
-    );
-  } catch (error: unknown) {
-    // Handle duplicate review
-    if (
-      error instanceof Error &&
-      'code' in error &&
-      (error as { code: string }).code === 'DUPLICATE_REVIEW'
-    ) {
-      return NextResponse.json(
-        { error: 'You have already submitted a review for this plugin.' },
-        { status: 409 }
-      );
-    }
-    const errInfo = handleApiError(error, { route: 'POST /api/plugins/[id]/reviews' });
-    return NextResponse.json({ error: errInfo.message }, { status: errInfo.statusCode });
+  },
+  {
+    requireAuth: true,
   }
-}, {
-  requireAuth: true,
-});
+);
 
 // ── GET ─────────────────────────────────────────────────────────────────────
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  if (process.env.PLUGINS_ENABLED !== 'true' && process.env.NODE_ENV !== 'test') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
   try {
     const { id: pluginId } = await params;
 

@@ -8,6 +8,7 @@ import type { PluginEntry } from '@/components/plugins/PluginListWithTrustScores
 import { TrustScoreBreakdown } from '@/components/plugins/TrustScoreBreakdown';
 import { AuditDateTracker } from '@/components/plugins/AuditDateTracker';
 import { IncidentTimeline } from '@/components/plugins/IncidentTimeline';
+import { assertFeatureOr404 } from '@/lib/admin-guard';
 import { getReviewStore } from '@/lib/plugins/review-store';
 
 const pageTitle = 'Plugin Security Dashboard';
@@ -103,6 +104,7 @@ const mockPlugins: PluginEntry[] = [
 ];
 
 export default async function PluginSecurityDashboardPage() {
+  assertFeatureOr404('PLUGINS_ENABLED');
   // Get nonce from proxy for CSP (available for future structured data scripts)
   await headers();
 

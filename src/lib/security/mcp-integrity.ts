@@ -16,7 +16,7 @@
  * 4. Failed verification = reject response
  */
 
-import { createHash, createHmac, timingSafeEqual } from 'crypto';
+import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
 
 // ============================================================================
 // Types
@@ -61,9 +61,9 @@ export interface MCPIntegrityResult {
 // ============================================================================
 
 class MCPServerRegistry {
-  private servers = new Map<string, MCPServer>();
-  private nonces = new Set<string>(); // Anti-replay protection
-  private nonceExpiry = 5 * 60 * 1000; // 5 minutes
+  private readonly servers = new Map<string, MCPServer>();
+  private readonly nonces = new Set<string>(); // Anti-replay protection
+  private readonly nonceExpiry = 5 * 60 * 1000; // 5 minutes
 
   /**
    * Register trusted MCP server
@@ -185,7 +185,7 @@ function checkServerTrusted(
   errors: string[]
 ): { server: ReturnType<typeof mcpServerRegistry.get>; trusted: boolean } {
   const server = mcpServerRegistry.get(response.server);
-  if (!server || !server.trusted) {
+  if (server?.trusted !== true) {
     errors.push(`Server "${response.server}" is not trusted`);
     return { server, trusted: false };
   }
@@ -285,7 +285,7 @@ export function verifyHMACSignature(
     }
 
     return timingSafeEqual(sigBuffer, expectedBuffer);
-  } catch (error) {
+  } catch {
     return false;
   }
 }

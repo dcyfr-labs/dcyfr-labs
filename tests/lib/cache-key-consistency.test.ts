@@ -19,7 +19,7 @@
  * - Credly Badges Cache (credly-cache.ts)
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 // Helper to simulate key prefix generation logic
 function simulateGetRedisKeyPrefix(env: Record<string, string | undefined>): string {

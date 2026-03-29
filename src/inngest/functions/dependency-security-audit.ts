@@ -7,24 +7,11 @@
  * @see docs/security/dependency-management.md
  */
 
-import { inngest } from "../client";
-import { exec } from "child_process";
-import { promisify } from "util";
+import { inngest } from '../client';
+import { exec } from 'child_process';
+import { promisify } from 'util';
 
 const execAsync = promisify(exec);
-
-interface NpmAuditVulnerability {
-  severity: "critical" | "high" | "moderate" | "low" | "info";
-  title: string;
-  package: string;
-  version: string;
-  vulnerability: string;
-  cwe?: string[];
-  cvss?: {
-    score: number;
-    vectorString: string;
-  };
-}
 
 interface NpmAuditResult {
   vulnerabilities: {
@@ -65,7 +52,7 @@ function parseAuditOutput(jsonOutput: string): NpmAuditResult {
       },
     };
   } catch (error) {
-    console.error("[Security Audit] Failed to parse npm audit output:", error);
+    console.error('[Security Audit] Failed to parse npm audit output:', error);
     return {
       vulnerabilities: {
         critical: 0,
@@ -89,31 +76,31 @@ function parseAuditOutput(jsonOutput: string): NpmAuditResult {
  */
 export const auditDependencies = inngest.createFunction(
   {
-    id: "audit-dependencies",
-    name: "Security Dependency Audit",
+    id: 'audit-dependencies',
+    name: 'Security Dependency Audit',
     retries: 2,
   },
-  { event: "github/dependencies.audit" },
+  { event: 'github/dependencies.audit' },
   async ({ event, step }) => {
-    const { branch, changedFiles, commits, repository } = event.data;
+    const { branch, changedFiles } = event.data;
 
     // Step 1: Run npm audit
-    const auditResult = await step.run("run-audit", async () => {
+    const auditResult = await step.run('run-audit', async () => {
       try {
         // Run npm audit in JSON format
-        const { stdout } = await execAsync("npm audit --json", {
+        const { stdout } = await execAsync('npm audit --json', {
           timeout: 30000, // 30 second timeout
         });
 
         return parseAuditOutput(stdout);
       } catch (error) {
         // npm audit exits with non-zero code if vulnerabilities found
-        if (error instanceof Error && "stdout" in error) {
+        if (error instanceof Error && 'stdout' in error) {
           const execError = error as Error & { stdout: string };
           return parseAuditOutput(execError.stdout);
         }
 
-        console.error("[Security Audit] Failed to run npm audit:", error);
+        console.error('[Security Audit] Failed to run npm audit:', error);
         throw error;
       }
     });
@@ -122,10 +109,12 @@ export const auditDependencies = inngest.createFunction(
     const hasCritical = auditResult.vulnerabilities.critical > 0;
     const hasHigh = auditResult.vulnerabilities.high > 0;
 
-    await step.run("log-audit-results", async () => {
+    await step.run('log-audit-results', async () => {
       console.warn(`[Security Audit] Branch: ${branch}`);
-      console.warn(`[Security Audit] Changed files: ${changedFiles.join(", ")}`);
-      console.warn(`[Security Audit] Total dependencies: ${auditResult.metadata.totalDependencies}`);
+      console.warn(`[Security Audit] Changed files: ${changedFiles.join(', ')}`);
+      console.warn(
+        `[Security Audit] Total dependencies: ${auditResult.metadata.totalDependencies}`
+      );
       console.warn(`[Security Audit] Vulnerabilities:`);
       console.warn(`  - Critical: ${auditResult.vulnerabilities.critical}`);
       console.warn(`  - High: ${auditResult.vulnerabilities.high}`);
@@ -138,15 +127,13 @@ export const auditDependencies = inngest.createFunction(
 
     // Step 3: Send alerts for critical/high severity vulnerabilities
     if (hasCritical || hasHigh) {
-      await step.run("send-security-alerts", async () => {
-        const severity = hasCritical ? "CRITICAL" : "HIGH";
+      await step.run('send-security-alerts', async () => {
+        const severity = hasCritical ? 'CRITICAL' : 'HIGH';
         const count = hasCritical
           ? auditResult.vulnerabilities.critical
           : auditResult.vulnerabilities.high;
 
-        console.error(
-          `[Security Audit] 🔴 ${severity}: ${count} vulnerabilities found!`
-        );
+        console.error(`[Security Audit] 🔴 ${severity}: ${count} vulnerabilities found!`);
 
         // TODO: Future enhancement - Send email alert
         // TODO: Future enhancement - Post GitHub issue
@@ -156,13 +143,13 @@ export const auditDependencies = inngest.createFunction(
         return {
           severity,
           count,
-          action: "alert-sent",
+          action: 'alert-sent',
         };
       });
     }
 
     // Step 4: Track metrics
-    await step.run("track-metrics", async () => {
+    await step.run('track-metrics', async () => {
       // TODO: Future enhancement - Store audit results in Redis
       // TODO: Future enhancement - Track vulnerability trends over time
       // TODO: Future enhancement - Dashboard visualization
@@ -179,7 +166,7 @@ export const auditDependencies = inngest.createFunction(
       branch,
       filesChanged: changedFiles,
       audit: auditResult,
-      status: hasCritical ? "critical" : hasHigh ? "warning" : "passed",
+      status: hasCritical ? 'critical' : hasHigh ? 'warning' : 'passed',
       requiresAction: hasCritical || hasHigh,
     };
   }

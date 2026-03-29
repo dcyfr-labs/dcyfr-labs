@@ -144,7 +144,7 @@ export async function getActivityReactions(
 
   // Check cache first
   const cached = await getCachedReactions(activityId);
-  if (cached !== null) {
+  if (cached) {
     return cached;
   }
 
@@ -247,7 +247,7 @@ export async function getActivityReactions(
     await setCachedReactions(activityId, reactions);
 
     return reactions;
-  } catch (error) {
+  } catch {
     // Silently cache and return empty reactions on network/fetch errors
     // This prevents repeated failed API calls
     await setCachedReactions(activityId, emptyReactions);
@@ -275,7 +275,7 @@ export async function getActivityReactionsBulk(
   // Check cache for all items first
   for (const item of items) {
     const cached = await getCachedReactions(item.activityId);
-    if (cached !== null) {
+    if (cached) {
       results[item.activityId] = cached;
     } else {
       uncachedItems.push(item);

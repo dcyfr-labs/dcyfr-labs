@@ -29,12 +29,6 @@ import {
   Bookmark,
   Heart,
   Rss,
-  Calendar,
-  Code,
-  Code2,
-  Shield,
-  Settings,
-  ChartBar,
   Zap,
 } from 'lucide-react';
 import type { NavItem, NavSection, NavigationConfig } from './types';
@@ -58,14 +52,6 @@ export const HEADER_NAV: NavItem[] = [
     exactMatch: true,
   },
   {
-    href: '/about',
-    label: 'About',
-    shortLabel: 'About',
-    icon: User,
-    shortcut: 'g a',
-    description: 'Learn about us and our team',
-  },
-  {
     href: '/blog',
     label: 'Blog',
     shortLabel: 'Blog',
@@ -83,27 +69,19 @@ export const HEADER_NAV: NavItem[] = [
   },
   {
     href: '/ai',
-    label: 'AI',
-    shortLabel: 'AI',
+    label: 'DCYFR AI',
+    shortLabel: 'DCYFR AI',
     icon: Zap,
     shortcut: 'g l',
-    description: 'AI agent framework and open source tools',
+    description: 'DCYFR AI — open source agent for secure AI engineering',
   },
   {
-    href: '/open-source',
-    label: 'Open Source',
-    shortLabel: 'OSS',
-    icon: Code2,
-    shortcut: 'g o',
-    description: 'Published npm packages and open-source projects',
-  },
-  {
-    href: '/sponsors',
-    label: 'Sponsors',
-    shortLabel: 'Sponsors',
-    icon: Heart,
-    shortcut: 'g s',
-    description: 'Support open source development',
+    href: '/about',
+    label: 'About',
+    shortLabel: 'About',
+    icon: User,
+    shortcut: 'g a',
+    description: 'Learn about us and our team',
   },
   {
     href: '/contact',
@@ -188,12 +166,6 @@ export const MOBILE_NAV_SECTIONS: NavSection[] = [
         exactMatch: true,
       },
       {
-        href: '/about',
-        label: 'About',
-        icon: User,
-        description: 'Learn about us',
-      },
-      {
         href: '/blog',
         label: 'Blog',
         icon: FileText,
@@ -207,21 +179,15 @@ export const MOBILE_NAV_SECTIONS: NavSection[] = [
       },
       {
         href: '/ai',
-        label: 'AI',
+        label: 'DCYFR AI',
         icon: Zap,
-        description: 'AI agent framework and tools',
+        description: 'DCYFR AI — open source agent for secure AI engineering',
       },
       {
-        href: '/open-source',
-        label: 'Open Source',
-        icon: Code2,
-        description: 'Published npm packages and projects',
-      },
-      {
-        href: '/sponsors',
-        label: 'Sponsors',
-        icon: Heart,
-        description: 'Support us',
+        href: '/about',
+        label: 'About',
+        icon: User,
+        description: 'Learn about us',
       },
       {
         href: '/contact',
@@ -236,6 +202,18 @@ export const MOBILE_NAV_SECTIONS: NavSection[] = [
     label: 'Discover',
     description: 'Additional content',
     items: [
+      {
+        href: '/open-source',
+        label: 'Open Source',
+        icon: Zap,
+        description: 'Published npm packages and open-source projects',
+      },
+      {
+        href: '/sponsors',
+        label: 'Sponsors',
+        icon: Heart,
+        description: 'Support us',
+      },
       {
         href: '/activity',
         label: 'Activity',
@@ -274,19 +252,19 @@ export const BOTTOM_NAV: NavItem[] = [
     icon: FileText,
   },
   {
+    href: '/work',
+    label: 'Work',
+    icon: Briefcase,
+  },
+  {
     href: '/ai',
-    label: 'AI',
+    label: 'DCYFR AI',
     icon: Zap,
   },
   {
-    href: '/bookmarks',
-    label: 'Bookmarks',
-    icon: Bookmark,
-  },
-  {
-    href: '/activity',
-    label: 'Activity',
-    icon: Activity,
+    href: '/contact',
+    label: 'Contact',
+    icon: Mail,
   },
 ];
 
@@ -338,8 +316,8 @@ export const FOOTER_NAV_SECTIONS: NavSection[] = [
       },
       {
         href: '/ai',
-        label: 'AI',
-        description: '@dcyfr/ai open source agent framework',
+        label: 'DCYFR AI',
+        description: '@dcyfr/ai — open source agent for secure AI engineering',
       },
       {
         href: '/activity',
@@ -384,32 +362,33 @@ export const FOOTER_NAV_SECTIONS: NavSection[] = [
     items: [
       {
         href: '/legal',
-        label: 'Legal Overview',
+        label: 'Legal',
         description: 'Browse all legal policies',
       },
       {
         href: '/privacy',
-        label: 'Privacy Policy',
+        label: 'Privacy',
         description: 'How we handle your data',
       },
       {
         href: '/terms',
-        label: 'Terms of Service',
+        label: 'Terms',
         description: 'Usage terms',
       },
       {
         href: '/security',
-        label: 'Security Policy',
+        label: 'Security',
         description: 'Security measures and reporting',
       },
       {
         href: '/accessibility',
-        label: 'Accessibility Statement',
+        label: 'Accessibility',
+
         description: 'WCAG 2.1 AA compliance',
       },
       {
         href: '/acceptable-use',
-        label: 'Acceptable Use Policy',
+        label: 'Acceptable Use',
         description: 'Usage guidelines',
       },
     ],

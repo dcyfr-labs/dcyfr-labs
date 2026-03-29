@@ -14,14 +14,13 @@
  *   npm run cleanup:links -- --verbose # Detailed output
  */
 
-import fs from 'fs/promises';
-import path from 'path';
-import { existsSync } from 'fs';
-import { fileURLToPath } from 'url';
+import fs from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '..');
-const docsDir = path.join(projectRoot, 'docs');
 
 // Configuration
 const config = {
@@ -44,7 +43,11 @@ const config = {
  * Check whether a link URL resolves to an existing file (with optional .md/.mdx suffix).
  */
 function checkLinkExists(resolvedPath) {
-  return existsSync(resolvedPath) || existsSync(resolvedPath + '.md') || existsSync(resolvedPath + '.mdx');
+  return (
+    existsSync(resolvedPath) ||
+    existsSync(resolvedPath + '.md') ||
+    existsSync(resolvedPath + '.mdx')
+  );
 }
 
 /**
@@ -144,7 +147,11 @@ class LinkChecker {
   }
 
   applyFixToContent(link, filePath, modifiedContent) {
-    const { content: newContent, fixed, removed } = this.applyLinkFix(link, filePath, modifiedContent);
+    const {
+      content: newContent,
+      fixed,
+      removed,
+    } = this.applyLinkFix(link, filePath, modifiedContent);
     let changed = false;
     if (removed) {
       changed = true;
@@ -154,6 +161,62 @@ class LinkChecker {
       this.stats.linksFixed++;
     }
     return { content: newContent, changed };
+  }
+
+  recordBrokenLink(content, filePath, link) {
+    this.stats.brokenLinks++;
+    this.brokenLinks.push({
+      file: path.relative(this.projectRoot, filePath),
+      link: link.url,
+      text: link.text,
+      line: this.getLineNumber(content, link.match.index),
+    });
+  }
+
+  async checkLinkInFile(filePath, content, modifiedContent, link) {
+    if (this.isExternalLink(link.url)) {
+      return { content: modifiedContent, changed: false };
+    }
+
+    const isValid = await this.validateLink(filePath, link.url);
+    if (isValid) {
+      return { content: modifiedContent, changed: false };
+    }
+
+    this.recordBrokenLink(content, filePath, link);
+
+    if (!this.fix) {
+      return { content: modifiedContent, changed: false };
+    }
+
+    return this.applyFixToContent(link, filePath, modifiedContent);
+  }
+
+  async processLinks(filePath, content, links) {
+    let modifiedContent = content;
+    let hasChanges = false;
+
+    for (const link of links) {
+      const { content: newContent, changed } = await this.checkLinkInFile(
+        filePath,
+        content,
+        modifiedContent,
+        link
+      );
+      modifiedContent = newContent;
+      if (changed) {
+        hasChanges = true;
+      }
+    }
+
+    return { modifiedContent, hasChanges };
+  }
+
+  async writeUpdatedFile(filePath, modifiedContent) {
+    await fs.writeFile(filePath, modifiedContent);
+    if (this.verbose) {
+      console.log(`✏️  Updated: ${path.relative(this.projectRoot, filePath)}`);
+    }
   }
 
   async checkFile(filePath) {
@@ -170,36 +233,10 @@ class LinkChecker {
 
     this.stats.linksFound += links.length;
 
-    let modifiedContent = content;
-    let hasChanges = false;
-
-    for (const link of links) {
-      if (this.isExternalLink(link.url)) continue;
-
-      const isValid = await this.validateLink(filePath, link.url);
-
-      if (!isValid) {
-        this.stats.brokenLinks++;
-        this.brokenLinks.push({
-          file: path.relative(this.projectRoot, filePath),
-          link: link.url,
-          text: link.text,
-          line: this.getLineNumber(content, link.match.index),
-        });
-
-        if (this.fix) {
-          const { content: newContent, changed } = this.applyFixToContent(link, filePath, modifiedContent);
-          modifiedContent = newContent;
-          if (changed) hasChanges = true;
-        }
-      }
-    }
+    const { modifiedContent, hasChanges } = await this.processLinks(filePath, content, links);
 
     if (hasChanges && !this.dryRun) {
-      await fs.writeFile(filePath, modifiedContent);
-      if (this.verbose) {
-        console.log(`✏️  Updated: ${path.relative(this.projectRoot, filePath)}`);
-      }
+      await this.writeUpdatedFile(filePath, modifiedContent);
     }
   }
 
@@ -211,7 +248,7 @@ class LinkChecker {
       const regex = new RegExp(pattern.source, pattern.flags);
 
       while ((match = regex.exec(content)) !== null) {
-        if (pattern.source.includes('\\[')) {
+        if (pattern.source.includes(String.raw`\[`)) {
           // Markdown link pattern
           links.push({
             text: match[1],
@@ -250,15 +287,29 @@ class LinkChecker {
     if (!link.url.startsWith('./') && !link.url.startsWith('../') && !link.url.startsWith('/')) {
       const withDotSlash = `./${link.url}`;
       if (this.validateLinkSync(filePath, withDotSlash)) {
-        return { action: 'fix', newUrl: withDotSlash, replacement: link.match[0].replace(link.url, withDotSlash) };
+        return {
+          action: 'fix',
+          newUrl: withDotSlash,
+          replacement: link.match[0].replace(link.url, withDotSlash),
+        };
       }
     }
 
     // 2. Try adding file extensions and common suffixes
-    const variations = [`${link.url}.md`, `${link.url}.mdx`, `${link.url}/README.md`, `${link.url}/README`, `${link.url}/index.md`];
+    const variations = [
+      `${link.url}.md`,
+      `${link.url}.mdx`,
+      `${link.url}/README.md`,
+      `${link.url}/README`,
+      `${link.url}/index.md`,
+    ];
     for (const variation of variations) {
       if (this.validateLinkSync(filePath, variation)) {
-        return { action: 'fix', newUrl: variation, replacement: link.match[0].replace(link.url, variation) };
+        return {
+          action: 'fix',
+          newUrl: variation,
+          replacement: link.match[0].replace(link.url, variation),
+        };
       }
     }
 
@@ -266,7 +317,11 @@ class LinkChecker {
     if (!link.url.startsWith('./') && !link.url.startsWith('/')) {
       const docsRelativePath = `./${link.url}`;
       if (this.validateLinkSync(filePath, docsRelativePath)) {
-        return { action: 'fix', newUrl: docsRelativePath, replacement: link.match[0].replace(link.url, docsRelativePath) };
+        return {
+          action: 'fix',
+          newUrl: docsRelativePath,
+          replacement: link.match[0].replace(link.url, docsRelativePath),
+        };
       }
     }
 
@@ -347,23 +402,23 @@ class LinkChecker {
       await fs.mkdir(path.dirname(reportPath), { recursive: true });
       await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
       console.log(`\n📋 Detailed report saved: ${path.relative(this.projectRoot, reportPath)}`);
-    } catch (error) {
-      console.warn(`⚠️  Could not save report: ${error.message}`);
+    } catch {
+      console.warn('⚠️  Could not save detailed report');
     }
   }
 }
 
 // CLI interface
 async function main() {
-  const args = process.argv.slice(2);
+  const args = new Set(process.argv.slice(2));
 
   const options = {
-    fix: args.includes('--fix'),
-    verbose: args.includes('--verbose'),
-    dryRun: args.includes('--dry-run'),
+    fix: args.has('--fix'),
+    verbose: args.has('--verbose'),
+    dryRun: args.has('--dry-run'),
   };
 
-  if (args.includes('--help')) {
+  if (args.has('--help')) {
     console.log(`
 🔗 Broken Links Cleanup Tool
 
@@ -399,7 +454,12 @@ Examples:
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch(console.error);
+  try {
+    await main();
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
 }
 
 export { LinkChecker };

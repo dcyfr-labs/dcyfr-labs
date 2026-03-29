@@ -68,6 +68,11 @@ export const RATE_LIMITS = {
     requestsPerHour: 10,
     requestsPerDay: 20,
   },
+  newsletter: {
+    requestsPerMinute: 2,
+    requestsPerHour: 5,
+    requestsPerDay: 10,
+  },
   analytics: {
     requestsPerMinute: 5,
     requestsPerHour: 100,
@@ -82,11 +87,11 @@ export const RATE_LIMITS = {
     requestsPerMinute: 60,
     requestsPerHour: 1000,
     requestsPerDay: 10000,
-  promptScan: {
-    requestsPerMinute: 20, // Generous for automated scanning
-    requestsPerHour: 500,
-    requestsPerDay: 2000,
-  },
+    promptScan: {
+      requestsPerMinute: 20, // Generous for automated scanning
+      requestsPerHour: 500,
+      requestsPerDay: 2000,
+    },
   },
   shares: {
     requestsPerMinute: 30,
@@ -139,9 +144,7 @@ export function trackApiUsage(
   const existing = usageTracking.get(key);
 
   // Reset if it's a new day
-  const shouldReset =
-    existing &&
-    now.getDate() !== existing.lastReset.getDate();
+  const shouldReset = existing && now.getDate() !== existing.lastReset.getDate();
 
   if (!existing || shouldReset) {
     usageTracking.set(key, {
@@ -192,12 +195,12 @@ function checkAlerts(stats: ApiUsageStats): void {
   if (percentUsed >= ALERT_THRESHOLDS.critical * 100) {
     console.error(
       `[API GUARDRAILS] 🚨 CRITICAL: ${service} usage at ${percentUsed.toFixed(1)}% (${count}/${limit})`,
-      estimatedCost ? `Estimated cost: $${estimatedCost.toFixed(2)}` : ""
+      estimatedCost ? `Estimated cost: $${estimatedCost.toFixed(2)}` : ''
     );
   } else if (percentUsed >= ALERT_THRESHOLDS.warning * 100) {
     console.warn(
       `[API GUARDRAILS] ⚠️  WARNING: ${service} usage at ${percentUsed.toFixed(1)}% (${count}/${limit})`,
-      estimatedCost ? `Estimated cost: $${estimatedCost.toFixed(2)}` : ""
+      estimatedCost ? `Estimated cost: $${estimatedCost.toFixed(2)}` : ''
     );
   }
 }
@@ -226,7 +229,7 @@ export function checkServiceLimit(
   }
 
   // Check cost limit for paid services
-  if (service === "perplexity" && stats.estimatedCost) {
+  if (service === 'perplexity' && stats.estimatedCost) {
     const costLimit = API_LIMITS.perplexity.maxCostPerMonth;
     if (stats.estimatedCost >= costLimit) {
       return {
@@ -250,12 +253,8 @@ export function getAllUsageStats(): ApiUsageStats[] {
 /**
  * Get usage statistics for a specific service
  */
-export function getServiceUsageStats(
-  service: keyof typeof API_LIMITS
-): ApiUsageStats[] {
-  return Array.from(usageTracking.values()).filter(
-    (stats) => stats.service === service
-  );
+export function getServiceUsageStats(service: keyof typeof API_LIMITS): ApiUsageStats[] {
+  return Array.from(usageTracking.values()).filter((stats) => stats.service === service);
 }
 
 /**
@@ -263,7 +262,7 @@ export function getServiceUsageStats(
  */
 export function resetUsageTracking(): void {
   usageTracking.clear();
-  console.warn("[API GUARDRAILS] Usage tracking reset");
+  console.warn('[API GUARDRAILS] Usage tracking reset');
 }
 
 /**
@@ -277,18 +276,13 @@ export function getUsageSummary(): {
 } {
   const stats = getAllUsageStats();
 
-  const totalCost = stats.reduce(
-    (sum, stat) => sum + (stat.estimatedCost || 0),
-    0
-  );
+  const totalCost = stats.reduce((sum, stat) => sum + (stat.estimatedCost || 0), 0);
 
   const servicesNearLimit = stats
     .filter((s) => s.percentUsed >= ALERT_THRESHOLDS.warning * 100)
     .map((s) => s.service);
 
-  const servicesAtLimit = stats
-    .filter((s) => s.percentUsed >= 100)
-    .map((s) => s.service);
+  const servicesAtLimit = stats.filter((s) => s.percentUsed >= 100).map((s) => s.service);
 
   return {
     totalServices: new Set(stats.map((s) => s.service)).size,
@@ -309,8 +303,7 @@ export async function checkApiLimitMiddleware(
   service: keyof typeof API_LIMITS,
   endpoint?: string
 ): Promise<
-  | { allowed: true }
-  | { allowed: false; status: number; message: string; retryAfter?: number }
+  { allowed: true } | { allowed: false; status: number; message: string; retryAfter?: number }
 > {
   const check = checkServiceLimit(service, endpoint);
 
@@ -318,7 +311,7 @@ export async function checkApiLimitMiddleware(
     return {
       allowed: false,
       status: 429,
-      message: check.reason || "API limit exceeded",
+      message: check.reason || 'API limit exceeded',
       retryAfter: 3600, // Retry after 1 hour
     };
   }
@@ -341,11 +334,8 @@ export function recordApiCall(
   trackApiUsage(service, endpoint, options?.cost);
 
   // Log detailed metrics
-  if (process.env.NODE_ENV === "development") {
-    console.warn(
-      `[API CALL] ${service}${endpoint ? `:${endpoint}` : ""}`,
-      options
-    );
+  if (process.env.NODE_ENV === 'development') {
+    console.warn(`[API CALL] ${service}${endpoint ? `:${endpoint}` : ''}`, options);
   }
 }
 
@@ -363,27 +353,25 @@ export function estimatePerplexityCost(options: {
 }): number {
   // Pricing as of 2025 (approximate)
   const pricing = {
-    "llama-3.1-sonar-small-128k-online": {
+    'llama-3.1-sonar-small-128k-online': {
       prompt: 0.0002, // $0.20 per 1M tokens
       completion: 0.0002,
     },
-    "llama-3.1-sonar-large-128k-online": {
+    'llama-3.1-sonar-large-128k-online': {
       prompt: 0.001, // $1 per 1M tokens
       completion: 0.001,
     },
-    "llama-3.1-sonar-huge-128k-online": {
+    'llama-3.1-sonar-huge-128k-online': {
       prompt: 0.005, // $5 per 1M tokens
       completion: 0.005,
     },
   };
 
   const modelPricing =
-    pricing[options.model as keyof typeof pricing] ||
-    pricing["llama-3.1-sonar-large-128k-online"];
+    pricing[options.model as keyof typeof pricing] || pricing['llama-3.1-sonar-large-128k-online'];
 
   const promptCost = (options.promptTokens / 1000) * modelPricing.prompt;
-  const completionCost =
-    (options.completionTokens / 1000) * modelPricing.completion;
+  const completionCost = (options.completionTokens / 1000) * modelPricing.completion;
 
   return promptCost + completionCost;
 }
@@ -415,7 +403,7 @@ export function estimateMonthlyCosts(): {
  * Health check for API usage
  */
 export function getApiHealthStatus(): {
-  status: "healthy" | "warning" | "critical";
+  status: 'healthy' | 'warning' | 'critical';
   message: string;
   details: {
     totalCost: number;
@@ -427,7 +415,7 @@ export function getApiHealthStatus(): {
 
   if (summary.servicesAtLimit.length > 0) {
     return {
-      status: "critical",
+      status: 'critical',
       message: `${summary.servicesAtLimit.length} service(s) at limit`,
       details: {
         totalCost: summary.totalCost,
@@ -439,7 +427,7 @@ export function getApiHealthStatus(): {
 
   if (summary.servicesNearLimit.length > 0) {
     return {
-      status: "warning",
+      status: 'warning',
       message: `${summary.servicesNearLimit.length} service(s) near limit`,
       details: {
         totalCost: summary.totalCost,
@@ -450,8 +438,8 @@ export function getApiHealthStatus(): {
   }
 
   return {
-    status: "healthy",
-    message: "All services within limits",
+    status: 'healthy',
+    message: 'All services within limits',
     details: {
       totalCost: summary.totalCost,
       servicesNearLimit: 0,
@@ -467,24 +455,20 @@ export function logDailyUsageSummary(): void {
   const summary = getUsageSummary();
   const stats = getAllUsageStats();
 
-  console.warn("\n" + "=".repeat(60));
-  console.warn("📊 DAILY API USAGE SUMMARY");
-  console.warn("=".repeat(60));
+  console.warn('\n' + '='.repeat(60));
+  console.warn('📊 DAILY API USAGE SUMMARY');
+  console.warn('='.repeat(60));
   console.warn(`Total Services: ${summary.totalServices}`);
   console.warn(`Total Estimated Cost: $${summary.totalCost.toFixed(2)}`);
-  console.warn(
-    `Services Near Limit: ${summary.servicesNearLimit.length}`
-  );
+  console.warn(`Services Near Limit: ${summary.servicesNearLimit.length}`);
   console.warn(`Services At Limit: ${summary.servicesAtLimit.length}`);
-  console.warn("\nDetailed Stats:");
+  console.warn('\nDetailed Stats:');
   stats.forEach((stat) => {
     console.warn(
       `  - ${stat.service}: ${stat.count}/${stat.limit} (${stat.percentUsed.toFixed(1)}%)${
-        stat.estimatedCost
-          ? ` - $${stat.estimatedCost.toFixed(2)}`
-          : ""
+        stat.estimatedCost ? ` - $${stat.estimatedCost.toFixed(2)}` : ''
       }`
     );
   });
-  console.warn("=".repeat(60) + "\n");
+  console.warn('='.repeat(60) + '\n');
 }

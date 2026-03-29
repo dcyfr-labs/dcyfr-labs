@@ -110,7 +110,7 @@ export function ProjectList({
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
         data-testid="project-list"
       >
-        {projects.map((project, index) => {
+        {projects.map((project) => {
           return (
             <ScrollReveal key={project.slug}>
               {(() => {
@@ -195,7 +195,7 @@ export function ProjectList({
   if (layout === 'list') {
     return (
       <div className={SPACING.subsection} data-testid="project-list">
-        {projects.map((project, index) => {
+        {projects.map((project) => {
           return (
             <ScrollReveal key={project.slug}>
               {(() => {
@@ -273,7 +273,7 @@ export function ProjectList({
   if (layout === 'compact') {
     return (
       <div className={SPACING.content} data-testid="project-list">
-        {projects.map((project, index) => {
+        {projects.map((project) => {
           return (
             <ScrollReveal key={project.slug}>
               {(() => {
@@ -341,7 +341,7 @@ export function ProjectList({
       className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
       data-testid="project-list"
     >
-      {projects.map((project, index) => {
+      {projects.map((project) => {
         return (
           <ScrollReveal key={project.slug}>
             {(() => {

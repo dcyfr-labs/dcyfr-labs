@@ -11,7 +11,6 @@ import { type IPReputationEntry } from '@/types/ip-reputation';
 
 const BLOCKED_IPS_KEY = 'security:blocked-ips';
 const SUSPICIOUS_IPS_KEY = 'security:suspicious-ips';
-const IP_REPUTATION_CACHE_KEY = 'security:ip-reputation';
 const IP_BLOCK_HISTORY_KEY = 'security:ip-block-history';
 
 /**
@@ -248,7 +247,6 @@ export class BlockedIPsManager {
 
       console.warn(`Marked client as suspicious (source: ${source})`);
     } catch (error) {
-      const maskedIp = maskIp(ip);
       console.error('Error marking client as suspicious (details redacted).', error);
     }
   }
@@ -261,7 +259,6 @@ export class BlockedIPsManager {
       const entry = await redis.hExists(SUSPICIOUS_IPS_KEY, ip);
       return entry === 1;
     } catch (error) {
-      const maskedIp = maskIp(ip);
       console.error('Error checking if client address (details redacted).', error);
       return false;
     }

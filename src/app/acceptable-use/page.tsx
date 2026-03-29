@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS, CONTAINER_PADDING } from '@/lib/design-tokens';
 import { createPageMetadata } from '@/lib/metadata';
-import { PageLayout, PageHero } from '@/components/layouts';
+import { PageLayout, PageHero, PolicyPageFooter } from '@/components/layouts';
 import { getJsonLdScriptProps, getContactPageSchema } from '@/lib/json-ld';
 
 const pageTitle = 'Acceptable Use Policy';
@@ -156,7 +156,7 @@ export default async function AcceptableUsePage() {
                 (beyond fair use)
               </li>
               <li className={TYPOGRAPHY.body}>
-                <strong>Trademark Violations:</strong> Use DCYFR Labs marks without authorization
+                <strong>Trademark Violations:</strong> Use DCYFR&#8482; marks without authorization
               </li>
               <li className={TYPOGRAPHY.body}>
                 <strong>Fraud:</strong> Engage in fraudulent or deceptive practices
@@ -497,7 +497,7 @@ export default async function AcceptableUsePage() {
         </section>
 
         {/* Footer */}
-        <footer className="mt-8 md:mt-10 lg:mt-14 pt-4 md:pt-5 lg:pt-6 border-t border-border">
+        <PolicyPageFooter>
           <p className="text-sm text-muted-foreground">
             <strong>DCYFR Labs Acceptable Use Policy</strong>
             <br />
@@ -511,7 +511,7 @@ export default async function AcceptableUsePage() {
             </a>{' '}
             with questions.
           </p>
-        </footer>
+        </PolicyPageFooter>
       </article>
     </PageLayout>
   );

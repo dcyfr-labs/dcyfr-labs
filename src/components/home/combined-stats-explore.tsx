@@ -1,26 +1,13 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { motion } from "framer-motion";
-import {
-  BookOpen,
-  Briefcase,
-  Activity,
-  ArrowRight,
-  Bookmark,
-  Heart,
-  Rss,
-} from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  TYPOGRAPHY,
-  HOVER_EFFECTS,
-  ANIMATION,
-  SPACING,
-} from "@/lib/design-tokens";
-import { cn } from "@/lib/utils";
-import { NAVIGATION } from "@/lib/navigation";
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { BookOpen, Briefcase, Activity, ArrowRight } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { TYPOGRAPHY, HOVER_EFFECTS, ANIMATION, SPACING } from '@/lib/design-tokens';
+import { cn } from '@/lib/utils';
+import { NAVIGATION } from '@/lib/navigation';
 
 // ============================================================================
 // TYPES
@@ -61,22 +48,15 @@ function StatItem({ value, label, suffix }: StatItemProps) {
   return (
     <div
       className={cn(
-        "flex flex-col items-center p-4 md:p-8 rounded-lg border bg-card",
+        'flex flex-col items-center p-4 md:p-8 rounded-lg border bg-card',
         HOVER_EFFECTS.cardSubtle
       )}
     >
-      <div className={cn(TYPOGRAPHY.display.statLarge, "mb-2 md:mb-3")}>
+      <div className={cn(TYPOGRAPHY.display.statLarge, 'mb-2 md:mb-3')}>
         {value}
         {suffix && <span className="text-muted-foreground">{suffix}</span>}
       </div>
-      <div
-        className={cn(
-          TYPOGRAPHY.label.small,
-          "text-muted-foreground text-center"
-        )}
-      >
-        {label}
-      </div>
+      <div className={cn(TYPOGRAPHY.label.small, 'text-muted-foreground text-center')}>{label}</div>
     </div>
   );
 }
@@ -121,51 +101,46 @@ export function CombinedStatsExplore({
 }: CombinedStatsExploreProps) {
   const cards: ExploreCardData[] = [
     {
-      href: "/activity",
-      label: "Activity",
+      href: '/activity',
+      label: 'Activity',
       icon: Activity,
-      description: "Recent updates, commits, and milestones",
+      description: 'Recent updates, commits, and milestones',
       count: activityCount,
-      countLabel: "activities",
-      accentColor: "border-primary",
+      countLabel: 'activities',
+      accentColor: 'border-primary',
     },
     {
-      href: "/blog",
-      label: "Blog",
+      href: '/blog',
+      label: 'Blog',
       icon: BookOpen,
-      description: "Articles on security, development, and technology",
+      description: 'Articles on security, development, and technology',
       count: postsCount,
-      countLabel: "articles",
-      accentColor: "border-primary",
+      countLabel: 'articles',
+      accentColor: 'border-primary',
     },
     {
-      href: "/work",
-      label: "Projects",
+      href: '/work',
+      label: 'Projects',
       icon: Briefcase,
-      description: "Featured work and open source contributions",
+      description: 'Featured work and open source contributions',
       count: projectsCount,
-      countLabel: "projects",
-      accentColor: "border-primary",
+      countLabel: 'projects',
+      accentColor: 'border-primary',
     },
   ];
 
   // Get secondary discover links (excluding Activity, Blog, Projects to avoid duplicates)
-  const discoverSection = NAVIGATION.mobile.find(
-    (section) => section.id === "discover"
-  );
+  const discoverSection = NAVIGATION.mobile.find((section) => section.id === 'discover');
   const secondaryLinks =
     discoverSection?.items
-      .filter(
-        (item) =>
-          !["Activity", "Blog", "Projects"].some((name) => item.label === name)
-      )
+      .filter((item) => !['Activity', 'Blog', 'Projects'].some((name) => item.label === name))
       .map((item) => ({
         ...item,
-        label: item.label === "RSS Feeds" ? "Subscribe" : item.label,
+        label: item.label === 'RSS Feeds' ? 'Subscribe' : item.label,
       })) || [];
 
   return (
-    <div className={cn("flex flex-col", SPACING.subsection, className)}>
+    <div className={cn('flex flex-col', SPACING.subsection, className)}>
       {/* Stats Grid - Top section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -175,11 +150,7 @@ export function CombinedStatsExplore({
       >
         <StatItem value={postsCount} label="Blog Posts" />
         <StatItem value={projectsCount} label="Projects" />
-        <StatItem
-          value={yearsOfExperience}
-          label="Years Experience"
-          suffix="+"
-        />
+        <StatItem value={yearsOfExperience} label="Years Experience" suffix="+" />
         <StatItem value={technologiesCount} label="Technologies" suffix="+" />
         <StatItem value={totalBookmarks} label="Bookmarks" />
         <StatItem value={totalLikes} label="Likes" />
@@ -189,9 +160,7 @@ export function CombinedStatsExplore({
       <div className="h-px bg-border/50 mb-8" />
 
       {/* Primary Content Cards */}
-      <div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4"
-      >
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
         {cards.map((card, index) => (
           <motion.div
             key={card.href}
@@ -202,7 +171,7 @@ export function CombinedStatsExplore({
             <Link href={card.href} className="block h-full group">
               <Card
                 className={cn(
-                  "h-full relative overflow-hidden",
+                  'h-full relative overflow-hidden',
                   HOVER_EFFECTS.card,
                   HOVER_EFFECTS.cardGlow
                 )}
@@ -210,29 +179,25 @@ export function CombinedStatsExplore({
                 {/* Accent border */}
                 <div
                   className={cn(
-                    "absolute inset-x-0 top-0 h-0.5 z-20 opacity-0 group-hover:opacity-100 border-t-2",
+                    'absolute inset-x-0 top-0 h-0.5 z-20 opacity-0 group-hover:opacity-100 border-t-2',
                     card.accentColor,
                     ANIMATION.transition.appearance
                   )}
                 />
 
-                <CardContent
-                  className="p-4 md:p-8 flex flex-col h-full"
-                >
+                <CardContent className="p-4 md:p-8 flex flex-col h-full">
                   {/* Icon + Label + Count */}
-                  <div
-                    className="flex items-start justify-between mb-4"
-                  >
+                  <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-2">
                       <div
                         className={cn(
-                          "p-2 rounded-lg bg-muted/50 group-hover:bg-muted group-hover:scale-110",
+                          'p-2 rounded-lg bg-muted/50 group-hover:bg-muted group-hover:scale-110',
                           ANIMATION.transition.base
                         )}
                       >
                         <card.icon
                           className={cn(
-                            "h-5 w-5 text-muted-foreground group-hover:text-foreground",
+                            'h-5 w-5 text-muted-foreground group-hover:text-foreground',
                             ANIMATION.transition.theme
                           )}
                           aria-hidden="true"
@@ -241,7 +206,7 @@ export function CombinedStatsExplore({
                       <h3
                         className={cn(
                           TYPOGRAPHY.h3.standard,
-                          "text-base group-hover:text-foreground",
+                          'text-base group-hover:text-foreground',
                           ANIMATION.transition.theme
                         )}
                       >
@@ -252,7 +217,7 @@ export function CombinedStatsExplore({
                       <Badge
                         variant="secondary"
                         className={cn(
-                          "text-xs shrink-0 group-hover:scale-110",
+                          'text-xs shrink-0 group-hover:scale-110',
                           ANIMATION.transition.movement,
                           ANIMATION.effects.countUp
                         )}
@@ -263,21 +228,19 @@ export function CombinedStatsExplore({
                   </div>
 
                   {/* Description */}
-                  <p className="text-sm text-muted-foreground flex-1">
-                    {card.description}
-                  </p>
+                  <p className="text-sm text-muted-foreground flex-1">{card.description}</p>
 
                   {/* Arrow indicator */}
                   <div
                     className={cn(
-                      "flex items-center gap-1 mt-3 text-sm text-muted-foreground group-hover:text-foreground",
+                      'flex items-center gap-1 mt-3 text-sm text-muted-foreground group-hover:text-foreground',
                       ANIMATION.transition.theme
                     )}
                   >
                     <span>Explore</span>
                     <ArrowRight
                       className={cn(
-                        "h-4 w-4 group-hover:translate-x-1",
+                        'h-4 w-4 group-hover:translate-x-1',
                         ANIMATION.transition.movement
                       )}
                       aria-hidden="true"
@@ -295,17 +258,17 @@ export function CombinedStatsExplore({
         <nav
           aria-label="Discover additional content"
           className={cn(
-            "w-full overflow-x-auto scrollbar-hide",
-            "-webkit-overflow-scrolling-touch",
-            "flex justify-center"
+            'w-full overflow-x-auto scrollbar-hide',
+            '-webkit-overflow-scrolling-touch',
+            'flex justify-center'
           )}
         >
           <div
             className={cn(
-              "flex items-center gap-2 md:gap-3",
-              "py-1 md:py-2",
-              "px-4 md:px-8",
-              "flex-nowrap"
+              'flex items-center gap-2 md:gap-3',
+              'py-1 md:py-2',
+              'px-4 md:px-8',
+              'flex-nowrap'
             )}
           >
             {secondaryLinks.map((link, index) => {
@@ -320,10 +283,10 @@ export function CombinedStatsExplore({
                   <Link
                     href={link.href}
                     className={cn(
-                      "flex items-center gap-2 px-3 py-2 rounded-full",
-                      "text-xs md:text-sm text-muted-foreground whitespace-nowrap",
-                      "border border-border/50",
-                      "hover:border-border hover:text-foreground",
+                      'flex items-center gap-2 px-3 py-2 rounded-full',
+                      'text-xs md:text-sm text-muted-foreground whitespace-nowrap',
+                      'border border-border/50',
+                      'hover:border-border hover:text-foreground',
                       ANIMATION.transition.base
                     )}
                   >

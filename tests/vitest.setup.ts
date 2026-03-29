@@ -64,14 +64,89 @@ process.env.NEXT_PUBLIC_SITE_URL = 'http://localhost:3000';
  * Mock redis-client module to prevent actual Redis connections in tests
  */
 vi.mock('@/lib/redis-client', () => ({
-  redis: {
-    get: vi.fn(),
-    set: vi.fn(),
-    del: vi.fn(),
-    incr: vi.fn(async () => 1),
-    pexpireat: vi.fn(async () => 1),
-    pttl: vi.fn(async () => 60000),
-  },
+  redis: (() => {
+    const hashStore: Record<string, Record<string, string>> = {};
+    const listStore: Record<string, string[]> = {};
+    const counters: Record<string, number> = {};
+    const counterExpiries: Record<string, number> = {};
+
+    const resetIfExpired = (key: string) => {
+      const expiry = counterExpiries[key];
+      if (expiry && expiry <= Date.now()) {
+        delete counters[key];
+        delete counterExpiries[key];
+      }
+    };
+
+    const hSetImpl = async (
+      key: string,
+      fieldOrHash: string | Record<string, string>,
+      value?: string
+    ) => {
+      hashStore[key] ||= {};
+      if (typeof fieldOrHash === 'string' && value !== undefined) {
+        hashStore[key][fieldOrHash] = value;
+      } else if (typeof fieldOrHash === 'object') {
+        Object.assign(hashStore[key], fieldOrHash);
+      }
+      return 1;
+    };
+
+    const hGetImpl = async (key: string, field: string) => hashStore[key]?.[field] ?? null;
+    const hExistsImpl = async (key: string, field: string) => (hashStore[key]?.[field] ? 1 : 0);
+    const hGetAllImpl = async (key: string) => hashStore[key] ?? {};
+    const hDelImpl = async (key: string, field: string) => {
+      if (!hashStore[key]?.[field]) return 0;
+      delete hashStore[key][field];
+      return 1;
+    };
+    const lPushImpl = async (key: string, value: string) => {
+      listStore[key] ||= [];
+      listStore[key].unshift(value);
+      return listStore[key].length;
+    };
+
+    const pExpireAtImpl = async (key: string, timestamp: number) => {
+      counterExpiries[key] = timestamp;
+      return 1;
+    };
+
+    return {
+      get: vi.fn(),
+      set: vi.fn(),
+      setex: vi.fn(),
+      setEx: vi.fn(),
+      del: vi.fn(),
+      hSet: vi.fn(hSetImpl),
+      hGet: vi.fn(hGetImpl),
+      hExists: vi.fn(hExistsImpl),
+      hGetAll: vi.fn(hGetAllImpl),
+      hDel: vi.fn(hDelImpl),
+      lPush: vi.fn(lPushImpl),
+      expire: vi.fn(async () => 1),
+      incr: vi.fn(async (key: string) => {
+        resetIfExpired(key);
+        counters[key] = (counters[key] || 0) + 1;
+        return counters[key];
+      }),
+      pexpireat: vi.fn(pExpireAtImpl),
+      pExpireAt: vi.fn(pExpireAtImpl),
+      pttl: vi.fn(async (key: string) => {
+        resetIfExpired(key);
+        const expiry = counterExpiries[key];
+        if (!expiry) return -2;
+        const ttl = expiry - Date.now();
+        return ttl > 0 ? ttl : -2;
+      }),
+      // Backward-compatible aliases used by older tests
+      hset: vi.fn(hSetImpl),
+      hget: vi.fn(hGetImpl),
+      hexists: vi.fn(hExistsImpl),
+      hgetall: vi.fn(hGetAllImpl),
+      hdel: vi.fn(hDelImpl),
+      lpush: vi.fn(lPushImpl),
+    };
+  })(),
   getRedisClient: vi.fn(() => ({
     connect: vi.fn(),
     quit: vi.fn(),

@@ -1,25 +1,24 @@
-"use client";
+'use client';
 
-import { useEffect, useState, useMemo } from "react";
-import { motion } from "framer-motion";
-import CalendarHeatmap from "react-calendar-heatmap";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { useEffect, useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
+import CalendarHeatmap from 'react-calendar-heatmap';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import {
   ExternalLink,
-  Flame,
   TrendingUp,
   Calendar,
   Target,
   FolderGit2,
   Star,
   GitFork,
-} from "lucide-react";
-import { GitHubHeatmapSkeleton } from "@/components/common";
-import { sanitizeUrl, cn } from "@/lib/utils";
-import { TYPOGRAPHY, SEMANTIC_COLORS, SPACING } from "@/lib/design-tokens";
-import "react-calendar-heatmap/dist/styles.css";
+} from 'lucide-react';
+import { GitHubHeatmapSkeleton } from '@/components/common';
+import { sanitizeUrl } from '@/lib/utils';
+import { TYPOGRAPHY, SPACING } from '@/lib/design-tokens';
+import 'react-calendar-heatmap/dist/styles.css';
 
 /**
  * Represents a single day's contribution data from GitHub API
@@ -84,7 +83,7 @@ interface GitHubHeatmapProps {
   username?: string;
 }
 
-const DEFAULT_GITHUB_USERNAME = "dcyfr";
+const DEFAULT_GITHUB_USERNAME = 'dcyfr';
 
 /**
  * Calculate streak statistics from contribution data
@@ -105,7 +104,10 @@ function advanceCurrentStreak(
 ): void {
   if (state.ended) return;
 
-  if (isFirst && (contribDate.getTime() === today.getTime() || contribDate.getTime() === yesterday.getTime())) {
+  if (
+    isFirst &&
+    (contribDate.getTime() === today.getTime() || contribDate.getTime() === yesterday.getTime())
+  ) {
     state.count++;
     state.lastDate = contribDate;
     return;
@@ -179,10 +181,7 @@ function calculateActivityStats(contributions: ContributionDay[]): {
     contributions[0]
   );
 
-  const totalContributions = contributions.reduce(
-    (sum, day) => sum + day.count,
-    0
-  );
+  const totalContributions = contributions.reduce((sum, day) => sum + day.count, 0);
   const averagePerDay = totalContributions / contributions.length;
   const totalDaysActive = contributions.filter((day) => day.count > 0).length;
 
@@ -198,11 +197,11 @@ function calculateActivityStats(contributions: ContributionDay[]): {
  */
 function formatTooltipDate(dateString: string): string {
   const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    year: "numeric",
+  return date.toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
   });
 }
 
@@ -253,25 +252,18 @@ function formatTooltipDate(dateString: string): string {
  * @see {@link /docs/components/github-heatmap.md} for detailed documentation
  * @see {@link /docs/components/skeleton-sync-strategy.md} for skeleton sync guidelines
  */
-export function GitHubHeatmap({
-  username = DEFAULT_GITHUB_USERNAME,
-}: GitHubHeatmapProps) {
+export function GitHubHeatmap({ username = DEFAULT_GITHUB_USERNAME }: GitHubHeatmapProps) {
   const [contributions, setContributions] = useState<ContributionDay[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalContributions, setTotalContributions] = useState<number>(0);
   const [totalRepositories, setTotalRepositories] = useState<number>(0);
-  const [pinnedRepositories, setPinnedRepositories] = useState<
-    PinnedRepository[]
-  >([]);
-  const [warning, setWarning] = useState<string | null>(null);
+  const [pinnedRepositories, setPinnedRepositories] = useState<PinnedRepository[]>([]);
   const [source, setSource] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await fetch(
-          `/api/github-contributions?username=${username}`
-        );
+        const response = await fetch(`/api/github-contributions?username=${username}`);
 
         if (!response.ok) {
           throw new Error(`Failed to fetch contributions: ${response.status}`);
@@ -280,20 +272,13 @@ export function GitHubHeatmap({
         const data: ContributionResponse = await response.json();
 
         setContributions(data.contributions || []);
-        setTotalContributions(
-          data.totalContributions || data.contributions?.length || 0
-        );
+        setTotalContributions(data.totalContributions || data.contributions?.length || 0);
         setTotalRepositories(data.totalRepositories || 0);
         setPinnedRepositories(data.pinnedRepositories || []);
-        setWarning(data.warning || null);
         setSource(data.source || null);
       } catch (err) {
         // Throw error to be caught by error boundary
-        throw new Error(
-          err instanceof Error
-            ? err.message
-            : "Failed to load GitHub contributions"
-        );
+        throw new Error(err instanceof Error ? err.message : 'Failed to load GitHub contributions');
       } finally {
         setLoading(false);
       }
@@ -304,14 +289,8 @@ export function GitHubHeatmap({
   }, [username]);
 
   // Calculate statistics
-  const streaks = useMemo(
-    () => calculateStreaks(contributions),
-    [contributions]
-  );
-  const activityStats = useMemo(
-    () => calculateActivityStats(contributions),
-    [contributions]
-  );
+  const streaks = useMemo(() => calculateStreaks(contributions), [contributions]);
+  const activityStats = useMemo(() => calculateActivityStats(contributions), [contributions]);
 
   const endDate = new Date();
   const startDate = new Date(endDate);
@@ -326,7 +305,7 @@ export function GitHubHeatmap({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
       >
         <Card className="p-4">
           <div className={SPACING.content}>
@@ -352,11 +331,11 @@ export function GitHubHeatmap({
               >
                 <Target className="h-4 w-4 shrink-0" />
                 <span>
-                  Busiest day:{" "}
+                  Busiest day:{' '}
                   <span className="font-medium text-foreground">
                     {formatTooltipDate(activityStats.busiestDay.date)}
-                  </span>{" "}
-                  with{" "}
+                  </span>{' '}
+                  with{' '}
                   <span className="font-medium text-foreground">
                     {activityStats.busiestDay.count} contributions
                   </span>
@@ -373,34 +352,34 @@ export function GitHubHeatmap({
                   values={contributions}
                   classForValue={(value) => {
                     if (!value || value.count === 0) {
-                      return "color-empty";
+                      return 'color-empty';
                     }
                     if (value.count < 3) {
-                      return "color-scale-1";
+                      return 'color-scale-1';
                     }
                     if (value.count < 6) {
-                      return "color-scale-2";
+                      return 'color-scale-2';
                     }
                     if (value.count < 9) {
-                      return "color-scale-3";
+                      return 'color-scale-3';
                     }
-                    return "color-scale-4";
+                    return 'color-scale-4';
                   }}
                   showWeekdayLabels={false}
                   showMonthLabels={true}
                   monthLabels={[
-                    "Jan",
-                    "Feb",
-                    "Mar",
-                    "Apr",
-                    "May",
-                    "Jun",
-                    "Jul",
-                    "Aug",
-                    "Sep",
-                    "Oct",
-                    "Nov",
-                    "Dec",
+                    'Jan',
+                    'Feb',
+                    'Mar',
+                    'Apr',
+                    'May',
+                    'Jun',
+                    'Jul',
+                    'Aug',
+                    'Sep',
+                    'Oct',
+                    'Nov',
+                    'Dec',
                   ]}
                   showOutOfRangeDays={true}
                   gutterSize={4}
@@ -415,7 +394,7 @@ export function GitHubHeatmap({
                       className="w-2.5 h-2.5 bg-muted rounded-sm border border-border"
                       whileHover={{ scale: 1.2 }}
                       transition={{
-                        type: "spring",
+                        type: 'spring',
                         stiffness: 400,
                         damping: 10,
                       }}
@@ -424,7 +403,7 @@ export function GitHubHeatmap({
                       className="w-2.5 h-2.5 rounded-sm border border-border bg-[oklch(0.75_0_0)] dark:bg-[oklch(0.35_0_0)]"
                       whileHover={{ scale: 1.2 }}
                       transition={{
-                        type: "spring",
+                        type: 'spring',
                         stiffness: 400,
                         damping: 10,
                       }}
@@ -433,7 +412,7 @@ export function GitHubHeatmap({
                       className="w-2.5 h-2.5 rounded-sm border border-border bg-[oklch(0.58_0_0)] dark:bg-[oklch(0.48_0_0)]"
                       whileHover={{ scale: 1.2 }}
                       transition={{
-                        type: "spring",
+                        type: 'spring',
                         stiffness: 400,
                         damping: 10,
                       }}
@@ -442,7 +421,7 @@ export function GitHubHeatmap({
                       className="w-2.5 h-2.5 rounded-sm border border-border bg-[oklch(0.45_0_0)] dark:bg-[oklch(0.60_0_0)]"
                       whileHover={{ scale: 1.2 }}
                       transition={{
-                        type: "spring",
+                        type: 'spring',
                         stiffness: 400,
                         damping: 10,
                       }}
@@ -451,7 +430,7 @@ export function GitHubHeatmap({
                       className="w-2.5 h-2.5 rounded-sm border border-border bg-[oklch(0.32_0_0)] dark:bg-[oklch(0.72_0_0)]"
                       whileHover={{ scale: 1.2 }}
                       transition={{
-                        type: "spring",
+                        type: 'spring',
                         stiffness: 400,
                         damping: 10,
                       }}
@@ -467,15 +446,11 @@ export function GitHubHeatmap({
                     </Badge>
                   )}
 
-                  {process.env.NODE_ENV === "development" &&
-                    source === "server-cache" && (
-                      <Badge
-                        variant="outline"
-                        className="text-xs text-muted-foreground"
-                      >
-                        cached
-                      </Badge>
-                    )}
+                  {process.env.NODE_ENV === 'development' && source === 'server-cache' && (
+                    <Badge variant="outline" className="text-xs text-muted-foreground">
+                      cached
+                    </Badge>
+                  )}
                 </div>
               </div>
             </div>
@@ -490,17 +465,10 @@ export function GitHubHeatmap({
               {/* Repositories Card */}
               <div className="bg-muted/50 rounded-lg p-3 border border-border hover:border-primary/50 transition-colors">
                 <div className="flex items-center gap-2 mb-1">
-                  <FolderGit2
-                    className="w-4 h-4 text-semantic-cyan"
-                    aria-hidden="true"
-                  />
-                  <span className="text-xs text-muted-foreground">
-                    Repositories
-                  </span>
+                  <FolderGit2 className="w-4 h-4 text-semantic-cyan" aria-hidden="true" />
+                  <span className="text-xs text-muted-foreground">Repositories</span>
                 </div>
-                <div className={TYPOGRAPHY.display.stat}>
-                  {totalRepositories}
-                </div>
+                <div className={TYPOGRAPHY.display.stat}>{totalRepositories}</div>
                 <div className="text-xs text-muted-foreground">public</div>
               </div>
 
@@ -508,17 +476,10 @@ export function GitHubHeatmap({
               <div className="bg-muted/50 rounded-lg p-3 border border-border hover:border-primary/50 transition-colors">
                 <div className="flex items-center gap-2 mb-1">
                   {/* Icon color for statistics visualization */}
-                  <Calendar
-                    className="w-4 h-4 text-semantic-blue"
-                    aria-hidden="true"
-                  />
-                  <span className="text-xs text-muted-foreground">
-                    Active Days
-                  </span>
+                  <Calendar className="w-4 h-4 text-semantic-blue" aria-hidden="true" />
+                  <span className="text-xs text-muted-foreground">Active Days</span>
                 </div>
-                <div className={TYPOGRAPHY.display.stat}>
-                  {activityStats.totalDaysActive}
-                </div>
+                <div className={TYPOGRAPHY.display.stat}>{activityStats.totalDaysActive}</div>
                 <div className="text-xs text-muted-foreground">days</div>
               </div>
 
@@ -526,41 +487,25 @@ export function GitHubHeatmap({
               <div className="bg-muted/50 rounded-lg p-3 border border-border hover:border-primary/50 transition-colors">
                 <div className="flex items-center gap-2 mb-1">
                   {/* Icon color for statistics visualization */}
-                  <TrendingUp
-                    className="w-4 h-4 text-semantic-purple"
-                    aria-hidden="true"
-                  />
-                  <span className="text-xs text-muted-foreground">
-                    Daily Average
-                  </span>
+                  <TrendingUp className="w-4 h-4 text-semantic-purple" aria-hidden="true" />
+                  <span className="text-xs text-muted-foreground">Daily Average</span>
                 </div>
-                <div className={TYPOGRAPHY.display.stat}>
-                  {activityStats.averagePerDay}
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  contributions
-                </div>
+                <div className={TYPOGRAPHY.display.stat}>{activityStats.averagePerDay}</div>
+                <div className="text-xs text-muted-foreground">contributions</div>
               </div>
 
               {/* Longest Streak Card */}
               <div className="bg-muted/50 rounded-lg p-3 border border-border hover:border-primary/50 transition-colors">
                 <div className="flex items-center gap-2 mb-1">
                   {/* Icon color for statistics visualization */}
-                  <TrendingUp
-                    className="w-4 h-4 text-success-light"
-                    aria-hidden="true"
-                  />
-                  <span className="text-xs text-muted-foreground">
-                    Longest Streak
-                  </span>
+                  <TrendingUp className="w-4 h-4 text-success-light" aria-hidden="true" />
+                  <span className="text-xs text-muted-foreground">Longest Streak</span>
                 </div>
-                <div className={TYPOGRAPHY.display.stat}>
-                  {streaks.longestStreak}
-                </div>
+                <div className={TYPOGRAPHY.display.stat}>{streaks.longestStreak}</div>
                 <div className="text-xs text-muted-foreground">days</div>
               </div>
 
-              {/* Streaks and Stats Cards 
+              {/* Streaks and Stats Cards
               <div className="bg-muted/50 rounded-lg p-3 border border-border hover:border-primary/50 transition-colors">
                 <div className="flex items-center gap-2 mb-1">
                   {/* eslint-disable-next-line no-restricted-syntax -- Icon accent color */}
@@ -570,7 +515,7 @@ export function GitHubHeatmap({
                   />
                   <span className="text-xs text-muted-foreground">
                     Current Streak
-                  </span> 
+                  </span>
                 </div>
                 <div className={TYPOGRAPHY.display.stat}>
                   {streaks.currentStreak}
@@ -596,7 +541,7 @@ export function GitHubHeatmap({
                       className="bg-muted/30 rounded-lg p-4 border border-border hover:border-primary/50 transition-colors group"
                       whileHover={{ scale: 1.02 }}
                       transition={{
-                        type: "spring",
+                        type: 'spring',
                         stiffness: 400,
                         damping: 10,
                       }}

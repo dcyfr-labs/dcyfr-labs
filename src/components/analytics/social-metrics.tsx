@@ -5,12 +5,11 @@
  * Shows referral counts from Twitter/X, DEV, LinkedIn, Reddit, Hacker News, GitHub, and other sources.
  */
 
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Card, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useState } from 'react';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   ChevronDown,
   ChevronUp,
@@ -20,11 +19,11 @@ import {
   Github,
   ExternalLink,
   TrendingUp,
-} from "lucide-react";
-import { DashboardStats, DashboardStat } from "@/components/dashboard";
-import { TYPOGRAPHY, SEMANTIC_COLORS, SPACING } from "@/lib/design-tokens";
-import { getPlatformDisplayName } from "@/lib/analytics";
-import type { PostAnalytics } from "@/types/analytics";
+} from 'lucide-react';
+import { DashboardStats, DashboardStat } from '@/components/dashboard';
+import { TYPOGRAPHY, SPACING } from '@/lib/design-tokens';
+import { getPlatformDisplayName } from '@/lib/analytics';
+import type { PostAnalytics } from '@/types/analytics';
 
 interface SocialMetricsProps {
   /** List of posts to aggregate social metrics from */
@@ -44,10 +43,7 @@ interface SocialMetricsProps {
  * />
  * ```
  */
-export function SocialMetrics({
-  posts,
-  defaultCollapsed = false,
-}: SocialMetricsProps) {
+export function SocialMetrics({ posts: _posts, defaultCollapsed = false }: SocialMetricsProps) {
   const [showMetrics, setShowMetrics] = useState(!defaultCollapsed);
 
   // Platform icons mapping
@@ -73,10 +69,7 @@ export function SocialMetrics({
     other: 0,
   };
 
-  const totalReferrals = Object.values(mockReferrals).reduce(
-    (sum, count) => sum + count,
-    0
-  );
+  const totalReferrals = Object.values(mockReferrals).reduce((sum, count) => sum + count, 0);
 
   // Get top referral platforms
   const topPlatforms = Object.entries(mockReferrals)
@@ -152,13 +145,9 @@ export function SocialMetrics({
                     .sort(([_, a], [__, b]) => b - a)
                     .map(([platform, count]) => {
                       const Icon = platformIcons[platform] || ExternalLink;
-                      const percentage =
-                        totalReferrals > 0 ? (count / totalReferrals) * 100 : 0;
+                      const percentage = totalReferrals > 0 ? (count / totalReferrals) * 100 : 0;
                       return (
-                        <div
-                          key={platform}
-                          className="flex items-center justify-between"
-                        >
+                        <div key={platform} className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <Icon className="h-4 w-4 text-muted-foreground" />
                             <span className="text-sm font-medium">

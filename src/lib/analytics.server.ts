@@ -159,41 +159,26 @@ export const getAnalyticsData = cache(
 
       // Calculate statistics
       const totalViews = postsWithViews.reduce((sum, post) => sum + post.views, 0);
-      const totalViews24h = postsWithViews.reduce((sum, post) => sum + post.views24h, 0);
       const totalViewsRange = postsWithViews.reduce((sum, post) => sum + post.viewsRange, 0);
       const totalShares = postsWithViews.reduce((sum, post) => sum + post.shares, 0);
-      const totalShares24h = postsWithViews.reduce((sum, post) => sum + post.shares24h, 0);
       const totalComments = postsWithViews.reduce((sum, post) => sum + post.comments, 0);
-      const totalComments24h = postsWithViews.reduce((sum, post) => sum + post.comments24h, 0);
 
       const averageViews = postsWithViews.length > 0 ? totalViews / postsWithViews.length : 0;
-      const averageViews24h = postsWithViews.length > 0 ? totalViews24h / postsWithViews.length : 0;
       const averageViewsRange =
         postsWithViews.length > 0 ? totalViewsRange / postsWithViews.length : 0;
       const averageShares = postsWithViews.length > 0 ? totalShares / postsWithViews.length : 0;
-      const averageShares24h =
-        postsWithViews.length > 0 ? totalShares24h / postsWithViews.length : 0;
       const averageComments = postsWithViews.length > 0 ? totalComments / postsWithViews.length : 0;
-      const averageComments24h =
-        postsWithViews.length > 0 ? totalComments24h / postsWithViews.length : 0;
 
       const topPost = postsWithViews[0];
-
-      // Get top posts in last 24 hours
-      const topPost24h = [...postsWithViews].sort((a, b) => b.views24h - a.views24h)[0];
 
       // Get top posts in selected range
       const topPostRange = [...postsWithViews].sort((a, b) => b.viewsRange - a.viewsRange)[0];
 
       // Get most shared posts
       const mostSharedPost = [...postsWithViews].sort((a, b) => b.shares - a.shares)[0];
-      const mostSharedPost24h = [...postsWithViews].sort((a, b) => b.shares24h - a.shares24h)[0];
 
       // Get most commented posts
       const mostCommentedPost = [...postsWithViews].sort((a, b) => b.comments - a.comments)[0];
-      const mostCommentedPost24h = [...postsWithViews].sort(
-        (a, b) => b.comments24h - a.comments24h
-      )[0];
 
       const trendingPosts = postsWithViews.slice(0, 5);
 

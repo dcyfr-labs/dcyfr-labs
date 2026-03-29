@@ -38,3 +38,6 @@ export { ArticleFooter } from './article-footer';
 export type { ArticleFooterProps } from './article-footer';
 
 export { ArchiveHero } from './archive-hero';
+
+// Policy Pattern Components
+export { PolicyPageFooter } from './policy-page-footer';

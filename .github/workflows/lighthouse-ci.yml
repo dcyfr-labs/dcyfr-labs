@@ -8,7 +8,7 @@ on:
       - 'public/**'
       - 'package*.json'
       - 'next.config.ts'
-      - 'lighthouserc.json'
+      - '.lighthouse/**'
       - '.github/workflows/lighthouse-ci.yml'
   workflow_dispatch:
 

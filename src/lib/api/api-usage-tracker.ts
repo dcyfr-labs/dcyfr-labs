@@ -99,7 +99,7 @@ async function isRedisAvailable(): Promise<boolean> {
   try {
     await redis.ping();
     return true;
-  } catch (error) {
+  } catch {
     console.warn('[API Usage] Redis unavailable, falling back to in-memory tracking');
     return false;
   }
@@ -133,7 +133,6 @@ export async function trackApiUsage(
   const date = getDateKey();
   const month = getMonthKey();
   const dailyKey = REDIS_KEYS.daily(service, endpoint, date);
-  const monthlyKey = REDIS_KEYS.monthly(service, month);
 
   const redisAvailable = await isRedisAvailable();
 
@@ -395,7 +394,7 @@ export async function getAllUsageStats(): Promise<ApiUsageStats[]> {
   if (!redisAvailable) {
     // Return in-memory fallback data
     const stats: ApiUsageStats[] = [];
-    for (const [key, usage] of memoryFallback.entries()) {
+    for (const [_key, usage] of memoryFallback.entries()) {
       const limit = getServiceLimit(usage.service);
       stats.push({
         service: usage.service,

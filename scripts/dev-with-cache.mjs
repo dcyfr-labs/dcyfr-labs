@@ -17,8 +17,8 @@
  *   DEBUG_DEV=1 npm run dev             # verbose via env var
  */
 
-import { spawn } from 'child_process';
-import { parseArgs } from 'util';
+import { spawn } from 'node:child_process';
+import { parseArgs } from 'node:util';
 import chalk from 'chalk';
 import {
   isPortInUse,
@@ -32,19 +32,23 @@ import {
 const { values: flags } = parseArgs({
   options: {
     'kill-port': { type: 'boolean', default: false },
-    'verbose':   { type: 'boolean', default: false },
+    verbose: { type: 'boolean', default: false },
   },
   allowPositionals: false,
   strict: false,
 });
 
 const VERBOSE = flags.verbose || process.env.DEBUG_DEV === '1';
-const PORT = parseInt(process.env.PORT ?? '3000', 10);
+const PORT = Number.parseInt(process.env.PORT ?? '3000', 10);
 
 function logCacheSuccess(data, verbose) {
   console.log(chalk.green('✅ Cache populated successfully!'));
-  console.log(chalk.dim('   - GitHub contributions: ') + (data.github ? chalk.green('✓') : chalk.red('✗')));
-  console.log(chalk.dim('   - Credly badges: ') + (data.credly ? chalk.green('✓') : chalk.red('✗')));
+  console.log(
+    chalk.dim('   - GitHub contributions: ') + (data.github ? chalk.green('✓') : chalk.red('✗'))
+  );
+  console.log(
+    chalk.dim('   - Credly badges: ') + (data.credly ? chalk.green('✓') : chalk.red('✗'))
+  );
   if (data.warning) console.warn(chalk.yellow(`   ⚠️  ${data.warning}`));
   if (verbose && data.details) {
     console.log(chalk.dim('   Details: ' + JSON.stringify(data.details, null, 2)));
@@ -59,7 +63,9 @@ async function handleBadCacheStatus(response, attempt, maxAttempts, retryDelayMs
     await new Promise((r) => setTimeout(r, retryDelayMs));
     return 'retry';
   }
-  console.warn(chalk.yellow(`⚠️  Cache population failed after ${maxAttempts} attempts: ${response.status}`));
+  console.warn(
+    chalk.yellow(`⚠️  Cache population failed after ${maxAttempts} attempts: ${response.status}`)
+  );
   console.warn(chalk.yellow(`   Run manually: npm run populate:cache`));
   return 'done';
 }
@@ -82,7 +88,10 @@ function logCacheError(error, attempt, maxAttempts, verbose) {
   return 'done';
 }
 
-async function populateCacheWithRetry(port, { verbose = false, maxAttempts = 3, retryDelayMs = 2000 } = {}) {
+async function populateCacheWithRetry(
+  port,
+  { verbose = false, maxAttempts = 3, retryDelayMs = 2000 } = {}
+) {
   console.log(chalk.blue('\n📦 Populating local cache...'));
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -115,14 +124,14 @@ async function autoKillPort(port, pids) {
 }
 
 function showManualExitOptions(port) {
-  if (!process.stdin.isTTY) {
-    console.error(chalk.red(`\n❌ Port ${port} is in use and running non-interactively.`));
-    console.error(chalk.yellow(`   Use: npm run dev:fresh  (auto-kills port first)`));
-    console.error(chalk.yellow(`   Or:  PORT=3001 npm run dev  (use a different port)`));
-  } else {
+  if (process.stdin.isTTY) {
     console.log(chalk.yellow('\nExiting. Options:'));
     console.log(chalk.dim('  npm run dev:fresh       — auto-kill port then start'));
     console.log(chalk.dim('  PORT=3001 npm run dev   — use a different port'));
+  } else {
+    console.error(chalk.red(`\n❌ Port ${port} is in use and running non-interactively.`));
+    console.error(chalk.yellow(`   Use: npm run dev:fresh  (auto-kills port first)`));
+    console.error(chalk.yellow(`   Or:  PORT=3001 npm run dev  (use a different port)`));
   }
   process.exit(0);
 }
@@ -165,7 +174,8 @@ async function main() {
   }
 
   // --- Start the Next.js dev server ---
-  const devServer = spawn('next', ['dev', '--turbopack'], { // NOSONAR - Administrative script, inputs from controlled sources
+  const devServer = spawn('next', ['dev', '--turbopack'], {
+    // NOSONAR - Administrative script, inputs from controlled sources
     stdio: 'inherit',
     env: { ...process.env, PORT: String(PORT) },
   });
@@ -178,7 +188,9 @@ async function main() {
     if (code !== 0 && code !== null) {
       console.error(chalk.red(`\n❌ Dev server exited with code ${code}`));
       if (code === 1) {
-        console.error(chalk.yellow('  Common causes: port still in use, missing .env.local, TypeScript errors'));
+        console.error(
+          chalk.yellow('  Common causes: port still in use, missing .env.local, TypeScript errors')
+        );
         console.error(chalk.yellow('  Tip: run DEBUG_DEV=1 npm run dev for verbose output'));
       }
     }
@@ -207,7 +219,9 @@ async function main() {
     });
 
     if (!ready) {
-      console.warn(chalk.yellow('⚠️  Server did not become ready within 60s. Skipping cache population.'));
+      console.warn(
+        chalk.yellow('⚠️  Server did not become ready within 60s. Skipping cache population.')
+      );
       console.warn(chalk.yellow('   Run manually: npm run populate:cache'));
       return;
     }
@@ -216,7 +230,9 @@ async function main() {
   })();
 }
 
-main().catch((err) => {
+try {
+  await main();
+} catch (err) {
   console.error(chalk.red('Fatal error starting dev server:'), err.message);
   process.exit(1);
-});
+}

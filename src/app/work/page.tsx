@@ -13,9 +13,19 @@ import { getArchiveData } from '@/lib/archive';
 import { getMultipleProjectViews } from '@/lib/project-views';
 import { ArchivePagination, PageLayout, ArchiveHero } from '@/components/layouts';
 import { CONTAINER_WIDTHS, CONTAINER_PADDING, SPACING } from '@/lib/design-tokens';
-import { ProjectList, ProjectFilters } from '@/components/projects';
+import { ProjectList } from '@/components/projects';
 import { SmoothScrollToHash } from '@/components/common';
 import { FeedDropdown } from '@/components/blog/client';
+
+/**
+ * Extracts the starting year from a project timeline string (e.g. "2023 → Present").
+ * Returns the provided fallback if the string is missing or doesn't start with 4 digits.
+ */
+function parseTimelineYear(timeline: string | undefined, fallback: number): number {
+  if (!timeline) return fallback;
+  const match = /^\d{4}/.exec(timeline);
+  return match ? Number.parseInt(match[0]) : fallback;
+}
 
 const basePageTitle = 'Our Work';
 const basePageDescription =
@@ -84,14 +94,17 @@ export async function generateMetadata({ searchParams }: WorkPageProps): Promise
     ? metadataProjects.filter((p) => p.category?.toLowerCase() === category).length
     : metadataProjects.length;
 
+  const canonicalPath = category ? `/work?category=${category}` : '/work';
+
   return {
     ...createArchivePageMetadata({
       title,
       description,
-      path: category ? `/work?category=${category}` : '/work',
+      path: canonicalPath,
       itemCount,
     }),
     alternates: {
+      canonical: `${SITE_URL}${canonicalPath}`,
       types: {
         'application/rss+xml': [
           {
@@ -193,8 +206,8 @@ export default async function WorkPage({ searchParams }: WorkPageProps) {
   if (sortBy === 'oldest') {
     // Sort by timeline (earliest first) - handle "YYYY → Present" format
     sortedItems = [...archiveData.allFilteredItems].sort((a, b) => {
-      const aYear = a.timeline ? parseInt(a.timeline.match(/^\d{4}/)?.[0] || '9999') : 9999;
-      const bYear = b.timeline ? parseInt(b.timeline.match(/^\d{4}/)?.[0] || '9999') : 9999;
+      const aYear = parseTimelineYear(a.timeline, 9999);
+      const bYear = parseTimelineYear(b.timeline, 9999);
       return aYear - bYear;
     });
   } else if (sortBy === 'archived') {
@@ -202,8 +215,8 @@ export default async function WorkPage({ searchParams }: WorkPageProps) {
     sortedItems = [...archiveData.allFilteredItems]
       .filter((p) => p.status === 'archived')
       .sort((a, b) => {
-        const aYear = a.timeline ? parseInt(a.timeline.match(/^\d{4}/)?.[0] || '0') : 0;
-        const bYear = b.timeline ? parseInt(b.timeline.match(/^\d{4}/)?.[0] || '0') : 0;
+        const aYear = parseTimelineYear(a.timeline, 0);
+        const bYear = parseTimelineYear(b.timeline, 0);
         return bYear - aYear;
       });
   } else if (sortBy === 'alpha') {
@@ -217,8 +230,8 @@ export default async function WorkPage({ searchParams }: WorkPageProps) {
   } else {
     // "newest" - sort by timeline (most recent first)
     sortedItems = [...archiveData.allFilteredItems].sort((a, b) => {
-      const aYear = a.timeline ? parseInt(a.timeline.match(/^\d{4}/)?.[0] || '0') : 0;
-      const bYear = b.timeline ? parseInt(b.timeline.match(/^\d{4}/)?.[0] || '0') : 0;
+      const aYear = parseTimelineYear(a.timeline, 0);
+      const bYear = parseTimelineYear(b.timeline, 0);
       return bYear - aYear;
     });
   }
@@ -236,24 +249,6 @@ export default async function WorkPage({ searchParams }: WorkPageProps) {
     totalItems: sortedItems.length,
     totalPages: Math.ceil(sortedItems.length / archiveData.itemsPerPage),
   };
-
-  // Get available categories from all visible projects (for filter UI)
-  // Categories use proper casing for display
-  const categoryDisplayMap: Record<string, string> = {
-    nonprofit: 'Nonprofit',
-    code: 'Code',
-    // photography: "Photography",  // disabled
-    startup: 'Startup',
-  };
-  const availableCategories = Array.from(
-    new Set(enabledProjects.map((p) => p.category).filter((c): c is NonNullable<typeof c> => !!c))
-  ).sort((a, b) => a.localeCompare(b));
-
-  // Get available tags from filtered results (for progressive filtering)
-  // Tags maintain proper casing for display
-  const availableTags = Array.from(
-    new Set([...sortedArchiveData.allFilteredItems.flatMap((p) => p.tags || [])])
-  ).sort((a, b) => a.localeCompare(b));
 
   // Check if filters are active for empty state
   const hasActiveFilters = Boolean(
@@ -333,22 +328,6 @@ export default async function WorkPage({ searchParams }: WorkPageProps) {
 
       {/* Content section with archive-width container */}
       <div className={`mx-auto ${CONTAINER_WIDTHS.archive} ${CONTAINER_PADDING}`}>
-        {/* Filters - temporarily hidden
-        <div className="mb-8">
-          <ProjectFilters
-            selectedCategory={selectedCategory}
-            selectedTags={selectedTags}
-            categoryList={availableCategories}
-            categoryDisplayMap={categoryDisplayMap}
-            tagList={availableTags}
-            query={query}
-            sortBy={sortBy}
-            totalResults={sortedArchiveData.totalItems}
-            hasActiveFilters={hasActiveFilters}
-          />
-        </div>
-        */}
-
         {/* Projects list */}
         <div className={SPACING.section}>
           <div id="work-list">

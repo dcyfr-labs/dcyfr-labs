@@ -9,7 +9,6 @@
  */
 
 import { inngest } from './client';
-import { NonRetriableError } from 'inngest';
 import * as Sentry from '@sentry/nextjs';
 import { Resend } from 'resend';
 import {
@@ -19,7 +18,7 @@ import {
   PRICING,
   BUDGET,
 } from '@/lib/api/api-cost-calculator';
-import { getUsageSummary, getAllUsageStats } from '@/lib/api/api-usage-tracker';
+import { getUsageSummary } from '@/lib/api/api-usage-tracker';
 
 // ============================================================================
 // CONFIGURATION
@@ -88,9 +87,7 @@ export const monitorApiCosts = inngest.createFunction(
       // Check individual services
       for (const { service, cost } of monthlyCost.services) {
         const serviceBudget = BUDGET[service as keyof typeof BUDGET];
-        const percentUsed = serviceBudget > 0
-          ? (cost.estimatedCost / serviceBudget) * 100
-          : 0;
+        const percentUsed = serviceBudget > 0 ? (cost.estimatedCost / serviceBudget) * 100 : 0;
 
         if (percentUsed >= ALERT_THRESHOLDS.critical * 100) {
           alerts.push({
@@ -134,7 +131,7 @@ export const monitorApiCosts = inngest.createFunction(
     }
 
     // Send email if critical alerts
-    const criticalAlerts = alerts.filter(a => a.level === 'critical');
+    const criticalAlerts = alerts.filter((a) => a.level === 'critical');
     if (criticalAlerts.length > 0 && process.env.RESEND_API_KEY) {
       await step.run('send-email-alert', async () => {
         const resend = new Resend(process.env.RESEND_API_KEY);
@@ -145,7 +142,7 @@ export const monitorApiCosts = inngest.createFunction(
 <p><strong>${criticalAlerts.length} critical alert(s) detected:</strong></p>
 
 <ul>
-${criticalAlerts.map(alert => `<li>${alert.message}</li>`).join('\n')}
+${criticalAlerts.map((alert) => `<li>${alert.message}</li>`).join('\n')}
 </ul>
 
 <h3>Current Status</h3>
@@ -158,7 +155,7 @@ ${criticalAlerts.map(alert => `<li>${alert.message}</li>`).join('\n')}
 
 <h3>Recommendations</h3>
 <ul>
-${recommendations.map(rec => `<li>${rec}</li>`).join('\n')}
+${recommendations.map((rec) => `<li>${rec}</li>`).join('\n')}
 </ul>
 
 <p><em>Sent by dcyfr-labs API Cost Monitor</em></p>
@@ -190,7 +187,7 @@ ${recommendations.map(rec => `<li>${rec}</li>`).join('\n')}
       alerts: {
         total: alerts.length,
         critical: criticalAlerts.length,
-        warning: alerts.filter(a => a.level === 'warning').length,
+        warning: alerts.filter((a) => a.level === 'warning').length,
       },
       recommendations: recommendations.length,
     };
@@ -282,7 +279,9 @@ export const monthlyApiCostReport = inngest.createFunction(
     </tr>
   </thead>
   <tbody>
-${monthlyCost.services.map(({ service, usage, cost }) => `
+${monthlyCost.services
+  .map(
+    ({ service, usage, cost }) => `
     <tr>
       <td>${PRICING[service as keyof typeof PRICING].name}</td>
       <td>${usage.totalRequests.toLocaleString()}</td>
@@ -290,26 +289,38 @@ ${monthlyCost.services.map(({ service, usage, cost }) => `
       <td>${cost.tier}</td>
       <td>${cost.withinBudget ? '✅' : '❌'}</td>
     </tr>
-`).join('')}
+`
+  )
+  .join('')}
   </tbody>
 </table>
 
 <h3>Predictions for Current Month</h3>
-${predictions.length > 0 ? `
+${
+  predictions.length > 0
+    ? `
 <ul>
-${predictions.map(({ service, prediction }) => `
-  <li><strong>${PRICING[service as keyof typeof PRICING].name}:</strong> 
-    ${prediction.daysUntilLimit !== null 
-      ? `${prediction.daysUntilLimit} days until limit (${prediction.confidence} confidence)`
-      : 'No limit predicted'}
+${predictions
+  .map(
+    ({ service, prediction }) => `
+  <li><strong>${PRICING[service as keyof typeof PRICING].name}:</strong>
+    ${
+      prediction.daysUntilLimit !== null
+        ? `${prediction.daysUntilLimit} days until limit (${prediction.confidence} confidence)`
+        : 'No limit predicted'
+    }
   </li>
-`).join('\n')}
+`
+  )
+  .join('\n')}
 </ul>
-` : '<p><em>No predictions available</em></p>'}
+`
+    : '<p><em>No predictions available</em></p>'
+}
 
 <h3>Recommendations</h3>
 <ul>
-${recommendations.map(rec => `<li>${rec}</li>`).join('\n')}
+${recommendations.map((rec) => `<li>${rec}</li>`).join('\n')}
 </ul>
 
 <p><em>Sent by dcyfr-labs Monthly Cost Reporter</em></p>

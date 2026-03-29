@@ -9,18 +9,17 @@
  * Usage: node scripts/validate-doc-location.mjs
  */
 
-import { readdirSync, statSync, existsSync } from 'fs';
-import { join, relative } from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import { execSync } from 'child_process';
+import { execSync } from 'node:child_process';
+import { readdirSync, statSync } from 'node:fs';
+import { dirname, join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT_DIR = join(__dirname, '..');
 
 // Allowed root-level documentation files
-const ALLOWED_ROOT_DOCS = [
+const ALLOWED_ROOT_DOCS = new Set([
   'README.md',
   'CHANGELOG.md',
   'CONTRIBUTING.md',
@@ -30,10 +29,10 @@ const ALLOWED_ROOT_DOCS = [
   'SUPPORT.md',
   'AGENTS.md',
   'CLAUDE.md',
-];
+]);
 
 // Directories to skip
-const SKIP_DIRS = [
+const SKIP_DIRS = new Set([
   // Build outputs and dependencies
   'node_modules',
   '.next',
@@ -68,10 +67,10 @@ const SKIP_DIRS = [
   '.opencode',
   '.agent',
   'skills', // External skills directory
-];
+]);
 
 // Allowed exceptions for specific directories that need READMEs
-const ALLOWED_EXCEPTIONS = [
+const ALLOWED_EXCEPTIONS = new Set([
   'reports/README.md', // Versioned testing reports
   'reports/performance/baselines/README.md', // Performance budget configuration guide (technical)
   '.vercel/README.md', // Vercel config documentation (gitignored)
@@ -81,7 +80,7 @@ const ALLOWED_EXCEPTIONS = [
   '.github/copilot-instructions.md', // AI instructions
   '.github/QUICK_REFERENCE_CI_CD.md', // CI/CD reference
   'certs/README.md', // Certificate documentation (technical)
-];
+]);
 
 // Pattern-based exceptions for asset and config documentation
 // These READMEs document assets, configurations, or technical setups
@@ -116,12 +115,13 @@ let violations = [];
  */
 function getDeletedFiles() {
   try {
-    const output = execSync('git diff --cached --name-only --diff-filter=D', { // NOSONAR - Administrative script, inputs from controlled sources
+    const output = execSync('git diff --cached --name-only --diff-filter=D', {
+      // NOSONAR - Administrative script, inputs from controlled sources
       cwd: ROOT_DIR,
       encoding: 'utf8',
     });
     return output.trim().split('\n').filter(Boolean);
-  } catch (error) {
+  } catch {
     // If not in a git repo or no staged changes, return empty array
     return [];
   }
@@ -131,7 +131,7 @@ function getDeletedFiles() {
  * Check if directory should be skipped
  */
 function shouldSkipDir(dirName) {
-  return SKIP_DIRS.includes(dirName) || dirName.startsWith('.');
+  return SKIP_DIRS.has(dirName) || dirName.startsWith('.');
 }
 
 /**
@@ -173,7 +173,7 @@ function findMarkdownInSubdirs(dir, currentDepth = 0, maxDepth = 3, foundFiles =
       } else if (stat.isFile() && item.endsWith('.md')) {
         foundFiles.push(relative(ROOT_DIR, itemPath));
       }
-    } catch (error) {
+    } catch {
       // Skip files/dirs we can't read
     }
   }
@@ -188,7 +188,7 @@ function checkRootMarkdownFiles(rootMdFiles, deletedFiles) {
   const rootViolations = [];
   for (const file of rootMdFiles) {
     if (deletedFiles.includes(file)) continue;
-    if (!ALLOWED_ROOT_DOCS.includes(file)) {
+    if (!ALLOWED_ROOT_DOCS.has(file)) {
       rootViolations.push({
         file,
         message: 'Documentation file in root directory (should be in docs/)',
@@ -208,7 +208,7 @@ function checkSubdirMarkdownFiles(subsInRoot, deletedFiles) {
     const mdFiles = findMarkdownInSubdirs(subdirPath);
     for (const file of mdFiles) {
       if (deletedFiles.includes(file)) continue;
-      if (ALLOWED_EXCEPTIONS.includes(file)) continue;
+      if (ALLOWED_EXCEPTIONS.has(file)) continue;
       if (isAllowedByPattern(file)) continue;
       subdirViolations.push({
         file,

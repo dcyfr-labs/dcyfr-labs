@@ -4,13 +4,7 @@ import { createPageMetadata, getJsonLdScriptProps, createBreadcrumbSchema } from
 import { cn } from '@/lib/utils';
 import { PageLayout, PageHero } from '@/components/layouts';
 import { Section, SmoothScrollToHash } from '@/components/common';
-import {
-  TYPOGRAPHY,
-  SPACING,
-  CONTAINER_WIDTHS,
-  CONTAINER_PADDING,
-  CONTAINER_VERTICAL_PADDING,
-} from '@/lib/design-tokens';
+import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS, CONTAINER_PADDING } from '@/lib/design-tokens';
 import { headers } from 'next/headers';
 import { SITE_URL } from '@/lib/site-config';
 import {
@@ -27,10 +21,13 @@ import {
   CheckCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { fetchPackageStats } from '@/lib/npm/fetch-package-stats';
 
-const pageTitle = '@dcyfr/ai — AI Agent Framework';
+export const revalidate = 3600;
+
+const pageTitle = '@dcyfr/ai — DCYFR AI';
 const pageDescription =
-  'Portable AI agent framework with plugin architecture for multi-provider integration, telemetry tracking, and quality validation. ~200KB gzipped, TypeScript-strict, zero config.';
+  'DCYFR AI (@dcyfr/ai) — portable open-source agent with plugin architecture, multi-provider support, telemetry, and quality validation. TypeScript-strict, tree-shakeable, zero config.';
 
 export const metadata: Metadata = createPageMetadata({
   title: pageTitle,
@@ -67,7 +64,7 @@ const FEATURES = [
     icon: Package,
     title: 'Lightweight',
     description:
-      '~200KB gzipped with full tree shaking. Compare that to LangChain at 2.3MB or Vercel AI SDK at 450KB.',
+      'Tree-shakeable with a minimal footprint compared to full-stack AI frameworks — more surface area means more attack surface.',
   },
   {
     icon: Terminal,
@@ -81,7 +78,6 @@ const PACKAGES = [
   {
     name: '@dcyfr/ai',
     description: 'Core AI agent framework — plugin system, multi-provider, telemetry, delegation.',
-    version: 'v2.1.x',
     npmHref: 'https://www.npmjs.com/package/@dcyfr/ai',
     githubHref: 'https://github.com/dcyfr/dcyfr-ai',
     badge: 'Core',
@@ -89,7 +85,6 @@ const PACKAGES = [
   {
     name: '@dcyfr/ai-cli',
     description: 'CLI toolkit for AI workflows — config validation, init, and project scaffolding.',
-    version: 'v1.0.x',
     npmHref: 'https://www.npmjs.com/package/@dcyfr/ai-cli',
     githubHref: 'https://github.com/dcyfr/dcyfr-ai-cli',
     badge: 'CLI',
@@ -97,7 +92,6 @@ const PACKAGES = [
   {
     name: '@dcyfr/ai-rag',
     description: 'RAG library for semantic search and retrieval-augmented generation workflows.',
-    version: 'v1.0.x',
     npmHref: 'https://www.npmjs.com/package/@dcyfr/ai-rag',
     githubHref: 'https://github.com/dcyfr/dcyfr-ai-rag',
     badge: 'RAG',
@@ -105,7 +99,6 @@ const PACKAGES = [
   {
     name: '@dcyfr/ai-code-gen',
     description: 'Code generation toolkit with quality gates and structured output validation.',
-    version: 'v1.0.x',
     npmHref: 'https://www.npmjs.com/package/@dcyfr/ai-code-gen',
     githubHref: 'https://github.com/dcyfr/dcyfr-ai-code-gen',
     badge: 'CodeGen',
@@ -118,13 +111,6 @@ const COMPARISON = [
   { feature: 'Built-in Telemetry', dcyfr: true, langchain: false, vercel: false, autogpt: false },
   { feature: 'Quality Gates', dcyfr: true, langchain: false, vercel: false, autogpt: false },
   { feature: 'Zero Config', dcyfr: true, langchain: false, vercel: true, autogpt: false },
-  {
-    feature: 'Bundle Size',
-    dcyfr: '~200KB',
-    langchain: '~2.3MB',
-    vercel: '~450KB',
-    autogpt: 'N/A',
-  },
   { feature: 'TypeScript Strict', dcyfr: true, langchain: 'Partial', vercel: true, autogpt: false },
   { feature: 'Delegation System', dcyfr: true, langchain: false, vercel: false, autogpt: false },
 ] as const;
@@ -137,6 +123,7 @@ function ComparisonCell({ value }: Readonly<{ value: boolean | string }>) {
 
 export default async function AiFrameworkPage() {
   const nonce = (await headers()).get('x-nonce') || '';
+  const npmStats = await fetchPackageStats(PACKAGES.map((p) => p.name));
 
   const breadcrumbJsonLd = createBreadcrumbSchema([
     { name: 'Home', url: SITE_URL },
@@ -151,7 +138,7 @@ export default async function AiFrameworkPage() {
       {/* Hero */}
       <PageHero
         title="@dcyfr/ai"
-        description="Portable AI agent framework with plugin architecture, multi-provider support, and built-in telemetry. TypeScript-strict. ~200KB gzipped."
+        description="Portable AI agent framework with plugin architecture, multi-provider support, and built-in telemetry. TypeScript-strict. Tree-shakeable."
       />
 
       {/* Install + CTAs */}
@@ -161,10 +148,10 @@ export default async function AiFrameworkPage() {
           CONTAINER_WIDTHS.standard,
           'mx-auto',
           CONTAINER_PADDING,
-          CONTAINER_VERTICAL_PADDING
+          'pt-2 pb-8 md:pb-12'
         )}
       >
-        <div className={cn(SPACING.section, 'flex flex-col items-center text-center gap-6')}>
+        <div className="flex flex-col items-center text-center gap-6">
           {/* Install command */}
           <div className="flex items-center gap-3 bg-muted/60 rounded-lg px-5 py-3 font-mono text-sm border border-border/40 w-full max-w-md justify-between">
             <span className="text-muted-foreground select-none">$</span>
@@ -212,23 +199,23 @@ export default async function AiFrameworkPage() {
           <div className="flex flex-wrap gap-3 justify-center opacity-90">
             {/* eslint-disable @next/next/no-img-element */}
             <img
-              src="https://img.shields.io/npm/v/@dcyfr/ai?style=flat-square&logo=npm&logoColor=white"
+              src="https://img.shields.io/npm/v/@dcyfr/ai?logo=npm&logoColor=white"
               alt="npm version"
               height={20}
             />
             <img
-              src="https://img.shields.io/npm/dm/@dcyfr/ai?style=flat-square&logo=npm&logoColor=white"
+              src="https://img.shields.io/npm/dm/@dcyfr/ai?logo=npm&logoColor=white"
               alt="npm downloads"
               height={20}
             />
             <img
-              src="https://img.shields.io/badge/TypeScript-Strict-3178C6?style=flat-square&logo=typescript&logoColor=white"
+              src="https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white"
               alt="TypeScript strict"
               height={20}
             />
             <img
-              src="https://img.shields.io/badge/Bundle%20Size-~200KB%20gzipped-28a745?style=flat-square"
-              alt="Bundle size"
+              src="https://img.shields.io/bundlephobia/minzip/@dcyfr/ai?label=minified%2Bgzip&color=28a745"
+              alt="Bundle size (minified + gzip)"
               height={20}
             />
             {/* eslint-enable @next/next/no-img-element */}
@@ -375,45 +362,53 @@ console.log(\`Quality gates: \${report.valid ? '✓ PASS' : '✗ FAIL'}\`);`}</c
           <div className={cn(SPACING.subsection)}>
             <h2 className={cn(TYPOGRAPHY.h2.standard)}>Package ecosystem</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {PACKAGES.map(({ name, description, version, npmHref, githubHref, badge }) => (
-                <div
-                  key={name}
-                  className="rounded-xl border border-border/50 bg-card/60 p-5 flex flex-col gap-3"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="font-mono text-sm font-semibold text-foreground">
-                        {name}
+              {PACKAGES.map(({ name, description, npmHref, githubHref, badge }) => {
+                const stats = npmStats[name];
+                const liveVersion = stats ? `v${stats.version}` : null;
+                return (
+                  <div
+                    key={name}
+                    className="rounded-xl border border-border/50 bg-card/60 p-5 flex flex-col gap-3"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex flex-col gap-0.5">
+                        <span className="font-mono text-sm font-semibold text-foreground">
+                          {name}
+                        </span>
+                        {liveVersion && (
+                          <span className="text-xs text-muted-foreground font-mono">
+                            {liveVersion}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-xs font-medium bg-primary/10 text-primary px-2.5 py-1 rounded-full shrink-0">
+                        {badge}
                       </span>
-                      <span className="text-xs text-muted-foreground font-mono">{version}</span>
                     </div>
-                    <span className="text-xs font-medium bg-primary/10 text-primary px-2.5 py-1 rounded-full shrink-0">
-                      {badge}
-                    </span>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+                    <div className="flex gap-3 mt-auto pt-1">
+                      <Link
+                        href={npmHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                      >
+                        npm
+                        <ExternalLink className="h-3 w-3" />
+                      </Link>
+                      <Link
+                        href={githubHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                      >
+                        GitHub
+                        <ExternalLink className="h-3 w-3" />
+                      </Link>
+                    </div>
                   </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
-                  <div className="flex gap-3 mt-auto pt-1">
-                    <Link
-                      href={npmHref}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-                    >
-                      npm
-                      <ExternalLink className="h-3 w-3" />
-                    </Link>
-                    <Link
-                      href={githubHref}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-                    >
-                      GitHub
-                      <ExternalLink className="h-3 w-3" />
-                    </Link>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <p className="text-sm text-muted-foreground">
               See all packages at{' '}

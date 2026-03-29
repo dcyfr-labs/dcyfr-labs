@@ -1,8 +1,7 @@
 import Link from 'next/link';
-import { PageLayout } from '@/components/layouts';
-import { PageHero } from '@/components/layouts';
-import { Button } from '@/components/ui/button';
+import { PageLayout, PageHero } from '@/components/layouts';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { SearchButton } from '@/components/search';
 import {
   CONTAINER_WIDTHS,
   CONTAINER_PADDING,
@@ -59,13 +58,11 @@ export default function NotFound() {
 
       {/* Recommended Content Section */}
       <div className={`mx-auto ${CONTAINER_WIDTHS.standard} ${CONTAINER_PADDING}`}>
-        <div className={`${SPACING.subsection}`}>
-          {/* <div className="text-center">
-            <h2 className={`${TYPOGRAPHY.h2.standard} mb-2`}>Recommended Links</h2>
-            <p className={`${TYPOGRAPHY.description} mb-${SPACING.lg}`}>
-              Here are some helpful links to get you back on track.
-            </p>
-          </div> */}
+        <div className={SPACING.subsection}>
+          {/* Search */}
+          <div className="mx-auto max-w-md mb-8">
+            <SearchButton variant="input" />
+          </div>
 
           {/* Links Grid */}
           <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ${SPACING.contentGrid}`}>

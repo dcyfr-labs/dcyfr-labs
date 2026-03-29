@@ -15,10 +15,13 @@ import { headers } from 'next/headers';
 import { SITE_URL } from '@/lib/site-config';
 import { ExternalLink, Package, Star, GitFork, Download, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { fetchPackageStats, formatDownloads } from '@/lib/npm/fetch-package-stats';
 
 const pageTitle = 'Open Source';
 const pageDescription =
   'DCYFR Labs open source packages on npm. Build with our AI agent framework, CLI tools, RAG library, and code generation toolkit.';
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = createPageMetadata({
   title: pageTitle,
@@ -32,7 +35,6 @@ interface OpenSourcePackage {
   name: string;
   description: string;
   tagline: string;
-  version: string;
   tier: PackageTier;
   tags: string[];
   npmHref: string;
@@ -48,21 +50,19 @@ const PACKAGES: OpenSourcePackage[] = [
     tagline: 'Core AI agent framework',
     description:
       'Portable AI agent framework with plugin architecture, multi-provider support (OpenAI, Anthropic, Ollama, Copilot), built-in telemetry, quality gates, and a security-hardened delegation system.',
-    version: 'v2.1.x',
     tier: 'core',
     status: 'stable',
     tags: ['agents', 'plugins', 'telemetry', 'delegation', 'multi-provider'],
     npmHref: 'https://www.npmjs.com/package/@dcyfr/ai',
     githubHref: 'https://github.com/dcyfr/dcyfr-ai',
     docsHref: 'https://deepwiki.com/dcyfr/dcyfr-ai',
-    highlight: '~200KB gzipped · TypeScript strict · 1,000+ tests',
+    highlight: 'TypeScript strict · Tree-shakeable · 1,000+ tests',
   },
   {
     name: '@dcyfr/ai-cli',
     tagline: 'CLI toolkit for AI workflows',
     description:
       'Command-line tools for AI-powered workflows. Config init, validation, and project scaffolding for teams building with @dcyfr/ai.',
-    version: 'v1.0.x',
     tier: 'tooling',
     status: 'stable',
     tags: ['cli', 'config', 'scaffolding', 'devtools'],
@@ -75,7 +75,6 @@ const PACKAGES: OpenSourcePackage[] = [
     description:
       'Retrieval-Augmented Generation library for semantic search and document grounding. Plugs directly into the @dcyfr/ai plugin system.',
     tagline: 'RAG for semantic search',
-    version: 'v1.0.x',
     tier: 'specialty',
     status: 'stable',
     tags: ['rag', 'semantic-search', 'embeddings', 'retrieval'],
@@ -88,7 +87,6 @@ const PACKAGES: OpenSourcePackage[] = [
     description:
       'Structured code generation with quality gates and output validation. Integrates with the @dcyfr/ai validation framework for guaranteed compliance.',
     tagline: 'Code generation with quality gates',
-    version: 'v1.0.x',
     tier: 'specialty',
     status: 'stable',
     tags: ['code-gen', 'validation', 'quality-gates', 'structured-output'],
@@ -97,6 +95,8 @@ const PACKAGES: OpenSourcePackage[] = [
     highlight: 'Zod-validated structured output',
   },
 ];
+
+const PACKAGE_NAMES = PACKAGES.map((p) => p.name);
 
 const TIER_LABELS: Record<PackageTier, string> = {
   core: 'Core',
@@ -124,6 +124,8 @@ export default async function OpenSourcePage() {
     { name: 'Open Source', url: `${SITE_URL}/open-source` },
   ]);
 
+  const npmStats = await fetchPackageStats(PACKAGE_NAMES);
+
   return (
     <PageLayout>
       <script {...getJsonLdScriptProps(breadcrumbJsonLd, nonce)} />
@@ -145,9 +147,9 @@ export default async function OpenSourcePage() {
           )}
         >
           {[
-            { label: 'Published packages', value: '4' },
+            { label: 'Published packages', value: String(PACKAGES.length) },
             { label: 'Core framework', value: '@dcyfr/ai' },
-            { label: 'Bundle size', value: '~200KB' },
+            { label: 'Tree-shakeable', value: 'Yes' },
             { label: 'License', value: 'MIT' },
           ].map(({ label, value }) => (
             <div key={label} className="flex flex-col items-center gap-0.5 text-center">
@@ -171,110 +173,124 @@ export default async function OpenSourcePage() {
         >
           <div className={cn(SPACING.section)}>
             <div className={cn(SPACING.subsection)}>
-              {PACKAGES.map((pkg) => (
-                <div
-                  key={pkg.name}
-                  className="group rounded-xl border border-border/50 bg-card/60 hover:border-border transition-colors overflow-hidden"
-                >
-                  <div className="p-5 md:p-6 flex flex-col gap-4">
-                    {/* Header row */}
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-mono font-semibold text-base text-foreground">
-                            {pkg.name}
+              {PACKAGES.map((pkg) => {
+                const stats = npmStats[pkg.name];
+                const liveVersion = stats ? `v${stats.version}` : null;
+                const downloads = stats ? formatDownloads(stats.monthlyDownloads) : null;
+
+                return (
+                  <div
+                    key={pkg.name}
+                    className="group rounded-xl border border-border/50 bg-card/60 hover:border-border transition-colors overflow-hidden"
+                  >
+                    <div className="p-5 md:p-6 flex flex-col gap-4">
+                      {/* Header row */}
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-mono font-semibold text-base text-foreground">
+                              {pkg.name}
+                            </span>
+                            {liveVersion && (
+                              <span className="font-mono text-xs text-muted-foreground">
+                                {liveVersion}
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-sm text-muted-foreground">{pkg.tagline}</span>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span
+                            className={cn(
+                              'text-xs font-medium px-2.5 py-1 rounded-full',
+                              TIER_STYLES[pkg.tier]
+                            )}
+                          >
+                            {TIER_LABELS[pkg.tier]}
                           </span>
-                          <span className="font-mono text-xs text-muted-foreground">
-                            {pkg.version}
+                          <span
+                            className={cn(
+                              'text-xs font-medium px-2.5 py-1 rounded-full capitalize',
+                              STATUS_STYLES[pkg.status]
+                            )}
+                          >
+                            {pkg.status}
                           </span>
                         </div>
-                        <span className="text-sm text-muted-foreground">{pkg.tagline}</span>
                       </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span
-                          className={cn(
-                            'text-xs font-medium px-2.5 py-1 rounded-full',
-                            TIER_STYLES[pkg.tier]
-                          )}
-                        >
-                          {TIER_LABELS[pkg.tier]}
-                        </span>
-                        <span
-                          className={cn(
-                            'text-xs font-medium px-2.5 py-1 rounded-full capitalize',
-                            STATUS_STYLES[pkg.status]
-                          )}
-                        >
-                          {pkg.status}
-                        </span>
+
+                      {/* Description */}
+                      <p className="text-sm text-muted-foreground leading-relaxed max-w-3xl">
+                        {pkg.description}
+                      </p>
+
+                      {/* Highlight */}
+                      {pkg.highlight && (
+                        <div className="inline-flex items-center gap-2 bg-muted/60 rounded-md px-3 py-1.5 self-start">
+                          <Package className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                          <span className="font-mono text-xs text-foreground/80">
+                            {pkg.highlight}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Tags */}
+                      <div className="flex flex-wrap gap-1.5">
+                        {pkg.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="text-xs bg-muted/80 text-muted-foreground px-2 py-0.5 rounded border border-border/40"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                        {downloads && downloads !== '—' && (
+                          <span className="text-xs bg-muted/80 text-muted-foreground px-2 py-0.5 rounded border border-border/40 flex items-center gap-1">
+                            <Download className="h-3 w-3" />
+                            {downloads}/mo
+                          </span>
+                        )}
                       </div>
-                    </div>
 
-                    {/* Description */}
-                    <p className="text-sm text-muted-foreground leading-relaxed max-w-3xl">
-                      {pkg.description}
-                    </p>
-
-                    {/* Highlight */}
-                    {pkg.highlight && (
-                      <div className="inline-flex items-center gap-2 bg-muted/60 rounded-md px-3 py-1.5 self-start">
-                        <Package className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                        <span className="font-mono text-xs text-foreground/80">
-                          {pkg.highlight}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-1.5">
-                      {pkg.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-xs bg-muted/80 text-muted-foreground px-2 py-0.5 rounded border border-border/40"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Links */}
-                    <div className="flex flex-wrap gap-3 pt-1 border-t border-border/30">
-                      <Link
-                        href={pkg.npmHref}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        <Download className="h-3.5 w-3.5" />
-                        npm
-                        <ExternalLink className="h-3 w-3 opacity-60" />
-                      </Link>
-                      <Link
-                        href={pkg.githubHref}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        <GitFork className="h-3.5 w-3.5" />
-                        GitHub
-                        <ExternalLink className="h-3 w-3 opacity-60" />
-                      </Link>
-                      {pkg.docsHref && (
+                      {/* Links */}
+                      <div className="flex flex-wrap gap-3 pt-1 border-t border-border/30">
                         <Link
-                          href={pkg.docsHref}
+                          href={pkg.npmHref}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
                         >
-                          <Star className="h-3.5 w-3.5" />
-                          Docs
+                          <Download className="h-3.5 w-3.5" />
+                          npm
                           <ExternalLink className="h-3 w-3 opacity-60" />
                         </Link>
-                      )}
+                        <Link
+                          href={pkg.githubHref}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          <GitFork className="h-3.5 w-3.5" />
+                          GitHub
+                          <ExternalLink className="h-3 w-3 opacity-60" />
+                        </Link>
+                        {pkg.docsHref && (
+                          <Link
+                            href={pkg.docsHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            <Star className="h-3.5 w-3.5" />
+                            Docs
+                            <ExternalLink className="h-3 w-3 opacity-60" />
+                          </Link>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Deep dive CTA */}

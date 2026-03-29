@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import Link from "next/link";
-import type { Post } from "@/data/posts";
-import type { ActivityItem } from "@/lib/activity";
-import { PostList } from "@/components/blog/client";
-import { ActivityFeed } from "@/components/activity";
-import { Button } from "@/components/ui/button";
-import { PageHero } from "@/components/layouts";
-import { Alert } from "@/components/common";
+import * as React from 'react';
+import Link from 'next/link';
+import type { Post } from '@/data/posts';
+import type { ActivityItem } from '@/lib/activity';
+import { PostList } from '@/components/blog/client';
+import { ActivityFeed } from '@/components/activity';
+import { Button } from '@/components/ui/button';
+import { PageHero } from '@/components/layouts';
+import { Alert } from '@/components/common';
 import {
   Dialog,
   DialogContent,
@@ -16,24 +16,19 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Trash2, Heart, HeartOff, Sparkles, AlertTriangle } from "lucide-react";
-import { toast } from "sonner";
-import { useActivityReactions } from "@/hooks/use-activity-reactions";
-import {
-  TYPOGRAPHY,
-  SPACING,
-  CONTAINER_WIDTHS,
-  CONTAINER_PADDING,
-} from "@/lib/design-tokens";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/dialog';
+import { Trash2, Heart, HeartOff, Sparkles, AlertTriangle } from 'lucide-react';
+import { toast } from 'sonner';
+import { useActivityReactions } from '@/hooks/use-activity-reactions';
+import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS, CONTAINER_PADDING } from '@/lib/design-tokens';
+import { cn } from '@/lib/utils';
 
 // Recommended starter posts to like
 const RECOMMENDED_LIKES = [
-  "shipping-developer-portfolio",
-  "hardening-developer-portfolio",
-  "owasp-top-10-agentic-ai",
-  "ai-development-workflow",
+  'shipping-developer-portfolio',
+  'hardening-developer-portfolio',
+  'owasp-top-10-agentic-ai',
+  'ai-development-workflow',
 ];
 
 interface LikesClientProps {
@@ -56,9 +51,7 @@ interface LikesClientProps {
  */
 export function LikesClient({ posts, activities }: LikesClientProps) {
   const { isLiked, toggleLike, getLikedIds } = useActivityReactions();
-  const [layout] = React.useState<"grid" | "list" | "magazine" | "compact">(
-    "magazine"
-  );
+  const [layout] = React.useState<'grid' | 'list' | 'magazine'>('magazine');
   const [isMounted, setIsMounted] = React.useState(false);
   const [showClearDialog, setShowClearDialog] = React.useState(false);
 
@@ -84,8 +77,8 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
     if (!isMounted || !activities) return [];
     return activities.filter((activity) => {
       // For blog posts, check if slug from href is liked
-      if (activity.source === "blog" && activity.href.startsWith("/blog/")) {
-        const slug = activity.href.replace("/blog/", "");
+      if (activity.source === 'blog' && activity.href.startsWith('/blog/')) {
+        const slug = activity.href.replace('/blog/', '');
         return isLiked(slug);
       }
       // For all other activities, check activity ID
@@ -99,7 +92,7 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
     // Count unique items (avoid double-counting blog posts that appear in both lists)
     const postSlugs = new Set(likedPosts.map((p) => p.slug));
     const nonBlogActivities = likedActivities.filter(
-      (a) => !(a.source === "blog" && a.href.startsWith("/blog/"))
+      (a) => !(a.source === 'blog' && a.href.startsWith('/blog/'))
     );
     return postSlugs.size + nonBlogActivities.length;
   }, [likedPosts, likedActivities, isMounted]);
@@ -107,9 +100,7 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
   // Non-blog activities to display (avoid duplicating blog posts shown in PostList)
   const nonBlogLikedActivities = React.useMemo(() => {
     if (!isMounted) return [];
-    return likedActivities.filter(
-      (a) => !(a.source === "blog" && a.href.startsWith("/blog/"))
-    );
+    return likedActivities.filter((a) => !(a.source === 'blog' && a.href.startsWith('/blog/')));
   }, [likedActivities, isMounted]);
 
   // Prevent hydration mismatch by only showing client-only content after mount
@@ -120,23 +111,23 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
   // Add all recommended likes
   const addRecommendedLikes = () => {
     if (recommendedPosts.length === 0) {
-      toast.info("All recommended posts are already liked!");
+      toast.info('All recommended posts are already liked!');
       return;
     }
 
     recommendedPosts.forEach((post) => toggleLike(post.slug));
     toast.success(
-      `Liked ${recommendedPosts.length} recommended post${recommendedPosts.length === 1 ? "" : "s"}!`,
+      `Liked ${recommendedPosts.length} recommended post${recommendedPosts.length === 1 ? '' : 's'}!`,
       { duration: 3000 }
     );
   };
 
   // Clear all likes using the hook's method
   const handleClearAll = () => {
-    const likedIds = getLikedIds("like");
+    const likedIds = getLikedIds('like');
     likedIds.forEach((id) => toggleLike(id));
     setShowClearDialog(false);
-    toast.success("All likes cleared");
+    toast.success('All likes cleared');
   };
 
   // Show loading state during SSR/initial render
@@ -159,23 +150,19 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
   return (
     <>
       {/* Page Hero */}
-      <PageHero
-        title="Likes"
-        description="Content you've liked and engaged with"
-        align="center"
-      />
+      <PageHero title="Likes" description="Content you've liked and engaged with" align="center" />
 
       {/* Dynamic Count and Actions */}
       {isMounted && totalLiked > 0 && (
         <div
           className={cn(
-            "mx-auto flex items-center justify-between gap-4 -mt-6 mb-8",
+            'mx-auto flex items-center justify-between gap-4 -mt-6 mb-8',
             CONTAINER_WIDTHS.standard,
             CONTAINER_PADDING
           )}
         >
           <p className={TYPOGRAPHY.metadata}>
-            {totalLiked} {totalLiked === 1 ? "item" : "items"} liked
+            {totalLiked} {totalLiked === 1 ? 'item' : 'items'} liked
             {likedActivities.length > likedPosts.length && (
               <span className="text-muted-foreground ml-2">
                 ({likedActivities.length} total activities)
@@ -183,11 +170,7 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
             )}
           </p>
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowClearDialog(true)}
-            >
+            <Button variant="outline" size="sm" onClick={() => setShowClearDialog(true)}>
               <Trash2 className="h-4 w-4 mr-2" />
               Clear All
             </Button>
@@ -196,14 +179,10 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
       )}
 
       {/* Post List or Empty State */}
-      <div
-        className={cn("mx-auto", CONTAINER_WIDTHS.standard, CONTAINER_PADDING)}
-      >
+      <div className={cn('mx-auto', CONTAINER_WIDTHS.standard, CONTAINER_PADDING)}>
         {!isMounted ? (
           // Loading state during hydration
-          <div className="text-center py-8 text-muted-foreground">
-            Loading likes...
-          </div>
+          <div className="text-center py-8 text-muted-foreground">Loading likes...</div>
         ) : totalLiked === 0 ? (
           <div className={SPACING.section}>
             <div className="flex flex-col items-center justify-center text-center py-16">
@@ -212,8 +191,7 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
               </div>
               <h2 className={TYPOGRAPHY.h2.standard}>No liked items yet</h2>
               <p className="text-muted-foreground mt-2 mb-8">
-                Like posts and activities you enjoy by clicking the heart icon
-                on any card
+                Like posts and activities you enjoy by clicking the heart icon on any card
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button asChild variant="default">
@@ -232,18 +210,10 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
             {recommendedPosts.length > 0 && (
               <div className="mt-16">
                 <div className="mb-6 text-center">
-                  <h3 className={TYPOGRAPHY.h3.standard}>
-                    Recommended to Get Started
-                  </h3>
-                  <p className="text-muted-foreground mt-2">
-                    Popular posts to explore first
-                  </p>
+                  <h3 className={TYPOGRAPHY.h3.standard}>Recommended to Get Started</h3>
+                  <p className="text-muted-foreground mt-2">Popular posts to explore first</p>
                 </div>
-                <PostList
-                  posts={recommendedPosts}
-                  layout="magazine"
-                  emptyMessage=""
-                />
+                <PostList posts={recommendedPosts} layout="magazine" emptyMessage="" />
               </div>
             )}
           </div>
@@ -252,19 +222,15 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
             {/* Liked Blog Posts */}
             {likedPosts.length > 0 && (
               <div>
-                <h3 className={cn(TYPOGRAPHY.h3.standard, "mb-6")}>
-                  Blog Posts
-                </h3>
+                <h3 className={cn(TYPOGRAPHY.h3.standard, 'mb-6')}>Blog Posts</h3>
                 <PostList posts={likedPosts} layout={layout} emptyMessage="" />
               </div>
             )}
 
             {/* Liked Activities (non-blog) */}
             {nonBlogLikedActivities.length > 0 && (
-              <div className={likedPosts.length > 0 ? "mt-12" : ""}>
-                <h3 className={cn(TYPOGRAPHY.h3.standard, "mb-6")}>
-                  Other Activities
-                </h3>
+              <div className={likedPosts.length > 0 ? 'mt-12' : ''}>
+                <h3 className={cn(TYPOGRAPHY.h3.standard, 'mb-6')}>Other Activities</h3>
                 <ActivityFeed items={nonBlogLikedActivities} emptyMessage="" />
               </div>
             )}
@@ -277,8 +243,8 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
             <div>
               <p className="font-medium mb-1">Likes stored locally</p>
               <p className="text-sm">
-                Your likes are saved in your browser&apos;s local storage. They
-                won&apos;t sync across devices or be visible to others.
+                Your likes are saved in your browser&apos;s local storage. They won&apos;t sync
+                across devices or be visible to others.
               </p>
             </div>
           </Alert>
@@ -296,9 +262,8 @@ export function LikesClient({ posts, activities }: LikesClientProps) {
               <div className="flex-1 space-y-2">
                 <DialogTitle>Clear all likes?</DialogTitle>
                 <DialogDescription>
-                  This will remove all {totalLiked} liked{" "}
-                  {totalLiked === 1 ? "item" : "items"}. This action cannot be
-                  undone.
+                  This will remove all {totalLiked} liked {totalLiked === 1 ? 'item' : 'items'}.
+                  This action cannot be undone.
                 </DialogDescription>
               </div>
             </div>

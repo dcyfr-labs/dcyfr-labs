@@ -17,3 +17,17 @@ export function assertAdminOr404(): void {
     notFound();
   }
 }
+
+/**
+ * Generic feature flag guard for in-development pages.
+ *
+ * Usage: assertFeatureOr404('PLUGINS_ENABLED')
+ *
+ * Add the corresponding env var (set to 'true') to enable the feature.
+ * Without it the page returns a 404 in all environments including production.
+ */
+export function assertFeatureOr404(envVar: string): void {
+  if (process.env[envVar] !== 'true') {
+    notFound();
+  }
+}

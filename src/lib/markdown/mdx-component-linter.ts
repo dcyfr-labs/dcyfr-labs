@@ -136,7 +136,7 @@ function checkSectionShareCoverage(
  * Remark plugin that validates MDX component usage
  */
 export default function remarkMdxComponentLinter(options: any = {}) {
-  const { filepath = 'unknown file', strict = false } = options;
+  const { strict = false } = options;
 
   return (tree: any, file: any) => {
     const wordCount = countWords(tree);
@@ -165,7 +165,7 @@ export default function remarkMdxComponentLinter(options: any = {}) {
 /**
  * Standalone validation function for use in scripts
  */
-export function validateMdxComponents(content: string, options: any = {}) {
+export function validateMdxComponents(_content: string, _options: any = {}) {
   // This function is not implemented yet - use the standalone script instead
   throw new Error('Use scripts/validate-mdx-components.mjs instead');
 }

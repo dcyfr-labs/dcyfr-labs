@@ -401,7 +401,7 @@ export class SecureSessionManager {
             await redis.del(key);
             cleaned++;
           }
-        } catch (error) {
+        } catch {
           // If we can't decrypt/parse, remove the corrupted session
           await redis.del(key);
           cleaned++;
@@ -448,7 +448,7 @@ export class SecureSessionManager {
           } else {
             expiredSessions++;
           }
-        } catch (error) {
+        } catch {
           expiredSessions++; // Count corrupted sessions as expired
         }
       }
@@ -487,7 +487,7 @@ export class SecureSessionManager {
             await redis.del(key);
             revoked++;
           }
-        } catch (error) {
+        } catch {
           // Skip corrupted sessions
           continue;
         }

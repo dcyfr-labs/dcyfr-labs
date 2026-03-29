@@ -17,10 +17,10 @@
  *   npm run tasks:next -- --stats             # Full statistics
  */
 
-import fs from 'fs';
-import path from 'path';
-import { spawnSync } from 'child_process';
-import { fileURLToPath } from 'url';
+import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const backlogDir = __dirname;
@@ -91,10 +91,8 @@ function formatTask(index, task) {
   // Impact stars (safely handle any value)
   const impactValue = Math.min(10, Math.max(0, task.impact_score || 5));
   const starCount = Math.round(impactValue / 2);
-  const stars = starCount > 0 ? Array(starCount).fill('⭐').join('') : '⭐';
-  lines.push(`   Impact: ${stars} ${impactValue}/10`);
-
-  lines.push(`   Status: ${formatStatus(task.status)}`);
+  const stars = starCount > 0 ? new Array(starCount).fill('⭐').join('') : '⭐';
+  lines.push(`   Impact: ${stars} ${impactValue}/10`, `   Status: ${formatStatus(task.status)}`);
 
   if (task.description) {
     lines.push(`   ${task.description}`);
@@ -214,7 +212,8 @@ async function main() {
   if (!fs.existsSync(prioritizedPath)) {
     console.log('📋 Generating prioritized tasks...');
     try {
-      const result = spawnSync('node', [path.resolve(__dirname, 'prioritize-tasks.mjs')], { // NOSONAR - Administrative script, inputs from controlled sources
+      const result = spawnSync('node', [path.resolve(__dirname, 'prioritize-tasks.mjs')], {
+        // NOSONAR - Administrative script, inputs from controlled sources
         cwd: path.resolve(__dirname, '../..'),
         stdio: 'inherit',
         shell: false,
@@ -222,7 +221,7 @@ async function main() {
       if (result.error) throw result.error;
       if (result.status !== 0 && result.status !== null)
         throw new Error(`Script exited with code ${result.status}`);
-    } catch (error) {
+    } catch {
       console.error('❌ Failed to prioritize tasks');
       process.exit(1);
     }
@@ -247,4 +246,4 @@ async function main() {
   }
 }
 
-main();
+await main();

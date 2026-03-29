@@ -12,10 +12,10 @@
  * Usage: npm run check:private-refs
  */
 
-import { readFileSync, existsSync, statSync } from 'fs';
-import { join, resolve, dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
+import { execSync } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -41,7 +41,8 @@ let referencesFound = 0;
  */
 function findPublicDocs() {
   try {
-    const output = execSync( // NOSONAR - Administrative script, inputs from controlled sources
+    const output = execSync(
+      // NOSONAR - Administrative script, inputs from controlled sources
       'find docs -type f -name "*.md" ! -path "*/private/*" ! -path "*/node_modules/*" ! -path "*/.git/*"',
       { cwd: rootDir, encoding: 'utf-8' }
     );
@@ -60,7 +61,7 @@ function extractPrivateReferences(content, filePath) {
   const references = [];
 
   // Remove code blocks (```...```) to avoid flagging examples
-  const withoutCodeBlocks = content.replace(/```[\s\S]*?```/g, '');
+  const withoutCodeBlocks = content.replaceAll(/```[\s\S]*?```/g, '');
 
   // Pattern: docs/[category]/private/[filename].md
   const privatePathPattern = /docs\/([a-z-]+)\/private\/([a-zA-Z0-9_.-]+\.md)/g;
