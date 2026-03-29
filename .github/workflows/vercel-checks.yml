@@ -46,7 +46,7 @@ jobs:
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           VERCEL_TOKEN: op://CI-CD/dcyfr-labs-vercel-token/credential
-          VERCEL_AUTOMATION_BYPASS_SECRET: op://Development/dcyfr-labs-vercel-automation-bypass-secret/password
+          VERCEL_AUTOMATION_BYPASS_SECRET: op://h3s3jppnlhtegkzzh3ghhkrugq/cu5fwwvuxecv6r3uhwa6rlp5c4/automation_bypass_secret
 
       - name: Load optional LHCI token from 1Password
         id: load-lhci-token
