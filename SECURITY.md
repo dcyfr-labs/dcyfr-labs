@@ -82,6 +82,19 @@ This project implements comprehensive security controls:
 - ✅ Code security scanning (GitHub CodeQL)
 - ✅ Automated security updates via Dependabot
 
+### Deployment Integrity & Verified Commits
+
+- ✅ Protected deployment branches are expected to require **GitHub-verified commits** before merge
+- ✅ Accepted signature methods: **GPG** (preferred), **SSH signing**, **S/MIME**
+- ✅ Pull requests targeting `main` or `preview` are validated by the `Verified Commits` workflow
+- ✅ Vercel Verified Commits is the intended deployment-layer backstop for protected branches
+
+Operational guidance:
+
+- Contributors must publish their signing identity to GitHub before using protected branches.
+- Rotated or expired keys should be refreshed immediately and commits re-signed as needed.
+- Emergency bypasses for deployment protections must be explicit, time-bound, and audited.
+
 ### Monitoring & Error Tracking
 
 - ✅ Sentry integration for error monitoring
@@ -131,6 +144,7 @@ Detailed security documentation is available in `/docs/security/`:
 - [Rate Limiting](./docs/security/rate-limiting/) - Rate limiting implementation
 - [API Security](./docs/security/api-security-audit.md) - API endpoint security
 - [Anti-Spam](./docs/security/anti-spam-implementation.md) - Spam prevention measures
+- [Verified Commits Guide](./docs/deployment/verified-commits.md) - Commit signing setup, CI enforcement, and troubleshooting
 
 ## ✅ Security Checklist
 
@@ -157,12 +171,13 @@ Current security rating: **A+** (Excellent)
 
 **Latest Security Updates:**
 
+- **2026-03-22:** Verified commit enforcement guidance and PR signature validation added
 - **2025-12-04:** GitHub Actions workflows optimized, documentation updated
 - **2025-12-02:** Operational audit complete, all dependencies updated
 - **2025-11-26:** Dependencies updated (Next.js 16.0.4, Vitest 4.0.14, Playwright 1.57.0)
 - **2025-11-17:** Initial security documentation complete
 
-Last updated: 2025-12-04
+Last updated: 2026-03-22
 
 ## 📝 Responsible Disclosure
 

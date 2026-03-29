@@ -10,24 +10,24 @@ const resend = isEmailConfigured ? new Resend(RESEND_API_KEY) : null;
 
 /**
  * Contact form email handler
- * 
+ *
  * @remarks
  * Handles contact form submissions asynchronously with:
  * - Automatic retries on failure (3 attempts with exponential backoff)
  * - Email delivery to site owner
  * - Confirmation email to submitter
  * - Error tracking and logging
- * 
+ *
  * Benefits over synchronous processing:
  * - Faster API response (< 100ms vs 1-2s)
  * - Reliable delivery with automatic retries
  * - No user-facing errors if email service is slow
  * - Better observability in Inngest dashboard
- * 
+ *
  * @see https://www.inngest.com/docs/guides/retries
  */
 export const contactFormSubmitted = inngest.createFunction(
-  { 
+  {
     id: "contact-form-submitted",
     retries: 3,
   },
@@ -79,7 +79,7 @@ export const contactFormSubmitted = inngest.createFunction(
           from: FROM_EMAIL,
           emailDomain: email.split('@')[1],
         });
-        
+
         // Track in Vercel Analytics
         await track('contact_form_submitted', {
           emailDomain: email.split('@')[1],
@@ -88,8 +88,8 @@ export const contactFormSubmitted = inngest.createFunction(
           success: true,
         });
 
-        return { 
-          success: true, 
+        return {
+          success: true,
           messageId: result.data?.id,
         };
       } catch (error) {
@@ -135,8 +135,8 @@ export const contactFormSubmitted = inngest.createFunction(
           from: FROM_EMAIL,
         });
 
-        return { 
-          success: true, 
+        return {
+          success: true,
           messageId: result.data?.id,
         };
       } catch (error) {
