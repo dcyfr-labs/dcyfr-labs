@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
 import { RATE_LIMITS } from '@/lib/api/api-guardrails';
 import { inngest } from '@/inngest/client';
+import { syncResendContact } from '@/lib/resend-contact-sync';
 
 const RATE_LIMIT_CONFIG = {
   limit: RATE_LIMITS.newsletter.requestsPerMinute,
@@ -63,19 +64,58 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
   }
 
+  const normalizedEmail = trimmedEmail.toLowerCase();
+
+  const resendApiKey = process.env.RESEND_API_KEY;
+  if (!resendApiKey) {
+    console.warn('[Newsletter API] Missing RESEND_API_KEY, cannot register contact');
+    return NextResponse.json(
+      { error: 'Newsletter service is not configured. Please try again later.' },
+      { status: 503 }
+    );
+  }
+
+  const resendSegmentId = process.env.RESEND_SEGMENT_ID?.trim();
+  try {
+    const syncResult = await syncResendContact({
+      apiKey: resendApiKey,
+      email: normalizedEmail,
+      unsubscribed: false,
+      segmentId: resendSegmentId,
+    });
+
+    console.warn('[Newsletter API] Resend contact synced:', {
+      operation: syncResult.operation,
+      unsubscribed: syncResult.unsubscribed,
+      hasSegmentId: !!resendSegmentId,
+      segmentAssigned: syncResult.segmentAssigned,
+    });
+  } catch (contactsError) {
+    console.error('[Newsletter API] Resend contact sync failed:', {
+      error: contactsError instanceof Error ? contactsError.message : String(contactsError),
+      hasSegmentId: !!resendSegmentId,
+    });
+
+    return NextResponse.json(
+      { error: 'Failed to register your subscription. Please try again later.' },
+      { status: 502, headers: createRateLimitHeaders(rateLimitResult) }
+    );
+  }
+
   try {
     await inngest.send({
       name: 'newsletter/subscribe.submitted',
       data: {
-        email: trimmedEmail,
+        email: normalizedEmail,
         subscribedAt: new Date().toISOString(),
         ip: clientIp,
       },
     });
 
     console.warn('[Newsletter API] Subscription queued:', {
-      emailDomain: trimmedEmail.split('@')[1] || 'unknown',
+      emailDomain: normalizedEmail.split('@')[1] || 'unknown',
       timestamp: new Date().toISOString(),
+      hasSegmentId: !!resendSegmentId,
     });
 
     return NextResponse.json(

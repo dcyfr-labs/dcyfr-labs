@@ -5,6 +5,7 @@ Welcome — this file contains the minimal steps for a single developer to run a
 ## Licensing & Contributions
 
 By contributing to dcyfr-labs, you agree that:
+
 - **Code contributions** → MIT License (personal/non-commercial use)
 - **Documentation** → CC BY-SA 4.0 (share with attribution)
 - **DCYFR specs** → View only, commercial use restricted
@@ -50,6 +51,25 @@ npm run check
 
 - `npm run check` is an alias for running a strict lint (`npm run lint:ci`) followed by `tsc` type-checking. It is safe to run locally and is a canonical pre-merge gate used in CI.
 - To auto-fix fixable lint issues for staged files, use `npm run lint:fix` or set up `lint-staged` (not configured by default).
+
+## Verified commits for protected branches
+
+The deployment branches `main` and `preview` require **GitHub-verified commits** before merge.
+
+Accepted signing methods:
+
+- **GPG** — recommended default for maintainers and contributors
+- **SSH signing** — allowed when GitHub marks the commit as **Verified**
+- **S/MIME** — allowed when GitHub marks the commit as **Verified**
+
+Protected-branch policy:
+
+- Pull requests targeting `main` or `preview` must pass the `Verified Commits` check.
+- Unsigned or unverified commits should be fixed before merge.
+- Rotated, expired, or unpublished keys must be refreshed and the affected commits re-signed.
+- Vercel deployment protection is intended to block unverified commits that reach protected branches.
+
+Setup and troubleshooting steps live in [`docs/deployment/verified-commits.md`](docs/deployment/verified-commits.md).
 
 ## Security Scanning
 

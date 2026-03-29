@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server'
 import { POST } from '@/app/api/contact/route'
 import { rateLimit } from '@/lib/rate-limit'
 import { inngest } from '@/inngest/client'
+import { syncResendContact } from '@/lib/resend-contact-sync'
 
 // Mock dependencies
 vi.mock('@/lib/rate-limit', () => ({
@@ -25,9 +26,19 @@ vi.mock('@/lib/analytics', () => ({
   trackContactFormSubmission: vi.fn().mockResolvedValue(undefined),
 }))
 
+vi.mock('@/lib/resend-contact-sync', () => ({
+  syncResendContact: vi.fn().mockResolvedValue({
+    operation: 'created',
+    unsubscribed: true,
+    segmentAssigned: true,
+  }),
+}))
+
 describe('Contact API Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    process.env.RESEND_API_KEY = 're_test_123'
+    process.env.RESEND_SEGMENT_ID = 'seg_123'
     // Default: rate limit allows requests
     vi.mocked(rateLimit).mockResolvedValue({
       success: true,
@@ -106,6 +117,7 @@ describe('Contact API Integration', () => {
 
         expect(response.status).toBe(200)
         expect(data.success).toBe(true)
+        expect(syncResendContact).not.toHaveBeenCalled()
         expect(inngest.send).not.toHaveBeenCalled()
       })
 
@@ -127,6 +139,14 @@ describe('Contact API Integration', () => {
 
         expect(response.status).toBe(200)
         expect(data.success).toBe(true)
+        expect(syncResendContact).toHaveBeenCalledWith({
+          apiKey: 're_test_123',
+          email: 'john@example.com',
+          unsubscribed: true,
+          segmentId: 'seg_123',
+          firstName: 'John Doe',
+          preserveExistingSubscriptionState: true,
+        })
         expect(inngest.send).toHaveBeenCalled()
       })
     })
@@ -328,6 +348,7 @@ describe('Contact API Integration', () => {
             ip: '192.168.1.1',
           },
         })
+        expect(syncResendContact).toHaveBeenCalled()
       })
 
       it('returns success response', async () => {
@@ -383,6 +404,26 @@ describe('Contact API Integration', () => {
 
         expect(response.status).toBe(500)
         expect(data.error).toBeTruthy()
+      })
+
+      it('returns 502 when Resend contact sync fails', async () => {
+        vi.mocked(syncResendContact).mockRejectedValueOnce(new Error('Resend boom'))
+
+        const request = new NextRequest('http://localhost:3000/api/contact', {
+          method: 'POST',
+          body: JSON.stringify({
+            name: 'John Doe',
+            email: 'john@example.com',
+            message: 'Test message that is long enough',
+          }),
+        })
+
+        const response = await POST(request)
+        const data = await response.json()
+
+        expect(response.status).toBe(502)
+        expect(data.error).toContain('Failed to register your contact')
+        expect(inngest.send).not.toHaveBeenCalled()
       })
     })
 

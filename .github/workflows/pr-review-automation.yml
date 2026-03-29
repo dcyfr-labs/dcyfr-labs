@@ -90,6 +90,8 @@ jobs:
       # File contents for dcyfr-labs PRs are fetched via GitHub API by the
       # script's built-in fallback when files are not present locally.
       - name: Checkout dcyfr-workspace (automation scripts)
+        id: checkout_workspace
+        continue-on-error: true
         uses: actions/checkout@v4
         with:
           repository: dcyfr/dcyfr-workspace
@@ -99,6 +101,7 @@ jobs:
 
       # ── 3. Set up Node.js ────────────────────────────────────────────────
       - name: Set up Node.js ${{ env.NODE_VERSION }}
+        if: steps.checkout_workspace.outcome == 'success'
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -106,10 +109,12 @@ jobs:
 
       # ── 4. Install dependencies ──────────────────────────────────────────
       - name: Install dependencies
+        if: steps.checkout_workspace.outcome == 'success'
         run: npm ci --legacy-peer-deps
 
       # ── 5. Run PR review script ──────────────────────────────────────────
       - name: Run PR review automation
+        if: steps.checkout_workspace.outcome == 'success'
         id: review
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -148,6 +153,12 @@ jobs:
             exit "${EXIT_CODE}"
           fi
 
+      - name: Skip when automation scripts are unavailable
+        if: steps.checkout_workspace.outcome != 'success'
+        run: |
+          echo "⚠️ Skipping automated PR review: dcyfr/dcyfr-workspace checkout unavailable." 
+          echo "review-status=skipped" >> "$GITHUB_OUTPUT"
+
       # ── 6. Write GitHub Step Summary ─────────────────────────────────────
       - name: Write step summary
         if: always()
@@ -177,7 +188,7 @@ jobs:
 
       # ── 7. Fail on script error ───────────────────────────────────────────
       - name: Check for script errors
-        if: steps.review.outputs.exit-code == '2'
+        if: steps.checkout_workspace.outcome == 'success' && steps.review.outputs.exit-code == '2'
         run: |
           echo "::error title=PR Review Script Error::The PR review script exited with an error. Check logs above."
           exit 1
