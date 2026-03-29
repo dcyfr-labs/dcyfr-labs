@@ -44,7 +44,7 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          VERCEL_AUTOMATION_BYPASS_SECRET: op://Development/dcyfr-labs-vercel-automation-bypass-secret/password
+          VERCEL_AUTOMATION_BYPASS_SECRET: op://h3s3jppnlhtegkzzh3ghhkrugq/cu5fwwvuxecv6r3uhwa6rlp5c4/automation_bypass_secret
 
 
       - name: Setup Node.js
