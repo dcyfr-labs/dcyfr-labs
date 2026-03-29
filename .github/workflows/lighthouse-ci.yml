@@ -43,7 +43,7 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          VERCEL_AUTOMATION_BYPASS_SECRET: op://Development/dcyfr-labs-vercel-automation-bypass-secret/password
+          VERCEL_AUTOMATION_BYPASS_SECRET: op://h3s3jppnlhtegkzzh3ghhkrugq/cu5fwwvuxecv6r3uhwa6rlp5c4/automation_bypass_secret
 
       - name: Update baseline browser mapping
         run: npm run update:baseline
@@ -105,15 +105,19 @@ jobs:
             const results = JSON.parse(fs.readFileSync(resultsPath, 'utf8'));
             
             // Build comment with results
-            let comment = '## 📊 Lighthouse CI Results\n\n';
+            let comment = '## 📊 Lighthouse CI Results
+
+';
             
             if (results.runs && results.runs.length > 0) {
               const run = results.runs[0];
               const lhr = run.lhr;
               
               if (lhr && lhr.categories) {
-                comment += '| Category | Score | Budget |\n';
-                comment += '|----------|-------|--------|\n';
+                comment += '| Category | Score | Budget |
+';
+                comment += '|----------|-------|--------|
+';
                 
                 const categories = lhr.categories;
                 const budgets = {
@@ -127,7 +131,8 @@ jobs:
                   const score = Math.round(cat.score * 100);
                   const budget = budgets[key] || 'N/A';
                   const status = score >= budget ? '✅' : '⚠️';
-                  comment += `| ${cat.title} | ${score} | ${budget} ${status} |\n`;
+                  comment += `| ${cat.title} | ${score} | ${budget} ${status} |
+`;
                 }
               }
             }
