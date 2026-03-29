@@ -19,6 +19,10 @@ const { mockRateLimit, mockValidatePayloadSize, mockAxiomIngest } = vi.hoisted((
   mockAxiomIngest: vi.fn(async () => ({ status: 200 })),
 }));
 
+const { mockProxyRouteHandler } = vi.hoisted(() => ({
+  mockProxyRouteHandler: vi.fn(async () => new Response(null, { status: 200 })),
+}));
+
 vi.mock('@/lib/rate-limit', () => ({
   rateLimit: mockRateLimit,
   getClientIp: vi.fn(() => '192.0.2.123'),

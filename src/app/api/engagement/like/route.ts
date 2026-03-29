@@ -98,7 +98,12 @@ export async function POST(request: NextRequest) {
     let newCount: number | null;
     if (action === 'like') {
       const dedupSlug = `${contentType}:${slug}`;
-      const alreadyActioned = await checkIpDeduplication('like', dedupSlug, clientIp, 86400);
+      let alreadyActioned = false;
+      try {
+        alreadyActioned = await checkIpDeduplication('like', dedupSlug, clientIp, 86400);
+      } catch (error) {
+        console.warn('[API] Like deduplication unavailable, applying fail-open behavior', error);
+      }
 
       if (alreadyActioned) {
         const currentCount = await getLikes(contentType, slug);

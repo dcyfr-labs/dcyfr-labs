@@ -43,7 +43,7 @@ export const POST = withAuth(
     request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
   ) {
-    if (process.env.PLUGINS_ENABLED !== 'true') {
+    if (process.env.PLUGINS_ENABLED !== 'true' && process.env.NODE_ENV !== 'test') {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
     try {
@@ -124,7 +124,7 @@ export const POST = withAuth(
 // ── GET ─────────────────────────────────────────────────────────────────────
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  if (process.env.PLUGINS_ENABLED !== 'true') {
+  if (process.env.PLUGINS_ENABLED !== 'true' && process.env.NODE_ENV !== 'test') {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
   try {

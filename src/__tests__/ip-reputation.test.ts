@@ -18,6 +18,7 @@ vi.mock('@/lib/redis-client', () => ({
     get: vi.fn(async (_k: string) => null),
     set: vi.fn(async () => null),
     setex: vi.fn(async () => null),
+    setEx: vi.fn(async () => null),
     hset: vi.fn(
       async (key: string, fieldOrHash: string | Record<string, string>, value?: string) => {
         hashes[key] ||= {};
