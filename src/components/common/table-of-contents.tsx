@@ -188,7 +188,7 @@ export function TableOfContents({
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent, currentIndex: number) => {
+  const handleKeyDown = (e: React.KeyboardEvent, _currentIndex: number) => {
     const maxIndex = filteredHeadings.length - 1;
 
     switch (e.key) {
@@ -288,7 +288,10 @@ export function TableOfContents({
     }, [activeId]);
 
     return (
-      <ul ref={listRef} className={`list-none relative ${SPACING.compact} text-sm border-l-2 border-border`}>
+      <ul
+        ref={listRef}
+        className={`list-none relative ${SPACING.compact} text-sm border-l-2 border-border`}
+      >
         {/* Sliding active indicator */}
         {activeIndex !== null && (
           <motion.div
@@ -512,6 +515,9 @@ export function TableOfContents({
           </SheetContent>
         </Sheet>
       </div>
+
+      {/* Desktop TOC */}
+      <DesktopToC isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
     </>
   );
 }

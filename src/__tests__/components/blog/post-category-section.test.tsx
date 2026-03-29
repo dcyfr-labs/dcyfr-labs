@@ -1,16 +1,12 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
 import { PostCategorySection } from '@/components/blog';
-import type { Post } from "@/data/posts";
+import type { Post } from '@/data/posts';
 
 // Mock the PostList component
-vi.mock("@/components/blog/post/post-list", () => ({
+vi.mock('@/components/blog/post/post-list', () => ({
   PostList: ({ posts, layout, titleLevel }: any) => (
-    <div
-      data-testid="post-list"
-      data-layout={layout}
-      data-title-level={titleLevel}
-    >
+    <div data-testid="post-list" data-layout={layout} data-title-level={titleLevel}>
       <div data-testid="post-count">{posts.length}</div>
       {posts.map((post: Post) => (
         <div key={post.id} data-testid={`post-${post.id}`}>
@@ -23,44 +19,38 @@ vi.mock("@/components/blog/post/post-list", () => ({
 
 const mockPosts: Post[] = [
   {
-    id: "1",
-    slug: "post-1",
-    title: "AI Post 1",
-    summary: "Summary 1",
-    publishedAt: "2025-01-01T00:00:00Z",
-    category: "AI",
-    tags: ["tag1"],
-    readingTime: { minutes: 5, text: "5 min read" },
+    id: '1',
+    slug: 'post-1',
+    title: 'AI Post 1',
+    summary: 'Summary 1',
+    publishedAt: '2025-01-01T00:00:00Z',
+    category: 'AI',
+    tags: ['tag1'],
+    readingTime: { minutes: 5, text: '5 min read' },
   } as Post,
   {
-    id: "2",
-    slug: "post-2",
-    title: "AI Post 2",
-    summary: "Summary 2",
-    publishedAt: "2025-01-02T00:00:00Z",
-    category: "AI",
-    tags: ["tag2"],
-    readingTime: { minutes: 10, text: "10 min read" },
+    id: '2',
+    slug: 'post-2',
+    title: 'AI Post 2',
+    summary: 'Summary 2',
+    publishedAt: '2025-01-02T00:00:00Z',
+    category: 'AI',
+    tags: ['tag2'],
+    readingTime: { minutes: 10, text: '10 min read' },
   } as Post,
 ];
 
-describe("PostCategorySection", () => {
-  it("should render category header with label", () => {
-    render(
-      <PostCategorySection
-        category="AI"
-        label="Artificial Intelligence"
-        posts={mockPosts}
-      />
-    );
+describe('PostCategorySection', () => {
+  it('should render category header with label', () => {
+    render(<PostCategorySection category="AI" label="Artificial Intelligence" posts={mockPosts} />);
 
-    expect(screen.getByText("Artificial Intelligence")).toBeInTheDocument();
+    expect(screen.getByText('Artificial Intelligence')).toBeInTheDocument();
   });
 
-  it("should display post count in header badge", () => {
+  it('should display post count in header badge', () => {
     render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
-    expect(screen.getByText("2 posts")).toBeInTheDocument();
+    expect(screen.getByText('2 posts')).toBeInTheDocument();
   });
 
   it("should use singular 'post' for single post", () => {
@@ -68,63 +58,63 @@ describe("PostCategorySection", () => {
 
     render(<PostCategorySection category="AI" label="AI" posts={singlePost} />);
 
-    expect(screen.getByText("1 post")).toBeInTheDocument();
+    expect(screen.getByText('1 post')).toBeInTheDocument();
   });
 
-  it("should render post count badge with glass morphism background", () => {
+  it('should render post count badge with glass morphism background', () => {
     render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
-    const badge = screen.getByText("2 posts").closest("span");
-    expect(badge).toHaveClass("bg-white/10");
-    expect(badge).toHaveClass("backdrop-blur-sm");
+    const badge = screen.getByText('2 posts').closest('span');
+    expect(badge).toHaveClass('bg-white/10');
+    expect(badge).toHaveClass('backdrop-blur-sm');
   });
 
-  it("should render chevron icon for expand/collapse", () => {
+  it('should render chevron icon for expand/collapse', () => {
     render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
     // ChevronDown icon should be present (aria-hidden)
-    const chevron = screen.getByRole("button").querySelector("svg");
+    const chevron = screen.getByRole('button').querySelector('svg');
     expect(chevron).toBeInTheDocument();
   });
 
-  it("should render PostList with compact layout", () => {
+  it('should render PostList with list layout', () => {
     render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
-    const postList = screen.getByTestId("post-list");
-    expect(postList).toHaveAttribute("data-layout", "compact");
+    const postList = screen.getByTestId('post-list');
+    expect(postList).toHaveAttribute('data-layout', 'list');
   });
 
-  it("should pass h3 as titleLevel to PostList", () => {
+  it('should pass h3 as titleLevel to PostList', () => {
     render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
-    const postList = screen.getByTestId("post-list");
-    expect(postList).toHaveAttribute("data-title-level", "h3");
+    const postList = screen.getByTestId('post-list');
+    expect(postList).toHaveAttribute('data-title-level', 'h3');
   });
 
-  it("should pass all posts to PostList", () => {
+  it('should pass all posts to PostList', () => {
     render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
-    const postCount = screen.getByTestId("post-count");
-    expect(postCount).toHaveTextContent("2");
+    const postCount = screen.getByTestId('post-count');
+    expect(postCount).toHaveTextContent('2');
 
-    expect(screen.getByTestId("post-1")).toBeInTheDocument();
-    expect(screen.getByTestId("post-2")).toBeInTheDocument();
+    expect(screen.getByTestId('post-1')).toBeInTheDocument();
+    expect(screen.getByTestId('post-2')).toBeInTheDocument();
   });
 
-  it("should start with accordion expanded by default", () => {
+  it('should start with accordion expanded by default', () => {
     render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
     // Posts should be visible when rendered (defaultValue includes category)
-    expect(screen.getByTestId("post-list")).toBeInTheDocument();
+    expect(screen.getByTestId('post-list')).toBeInTheDocument();
   });
 
-  it("should allow toggling accordion expansion", () => {
+  it('should allow toggling accordion expansion', () => {
     render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
-    const trigger = screen.getByRole("button");
+    const trigger = screen.getByRole('button');
 
     // Initially should be visible
-    expect(screen.getByTestId("post-list")).toBeInTheDocument();
+    expect(screen.getByTestId('post-list')).toBeInTheDocument();
 
     // Click to toggle (close)
     fireEvent.click(trigger);
@@ -134,28 +124,23 @@ describe("PostCategorySection", () => {
     fireEvent.click(trigger);
 
     // After re-opening, PostList should be visible again
-    expect(screen.getByTestId("post-list")).toBeInTheDocument();
+    expect(screen.getByTestId('post-list')).toBeInTheDocument();
   });
 
-  it("should pass view counts to PostList", () => {
+  it('should pass view counts to PostList', () => {
     const viewCounts = new Map([
-      ["1", 100],
-      ["2", 50],
+      ['1', 100],
+      ['2', 50],
     ]);
 
     render(
-      <PostCategorySection
-        category="AI"
-        label="AI"
-        posts={mockPosts}
-        viewCounts={viewCounts}
-      />
+      <PostCategorySection category="AI" label="AI" posts={mockPosts} viewCounts={viewCounts} />
     );
 
-    expect(screen.getByTestId("post-list")).toBeInTheDocument();
+    expect(screen.getByTestId('post-list')).toBeInTheDocument();
   });
 
-  it("should pass badge metadata to PostList", () => {
+  it('should pass badge metadata to PostList', () => {
     render(
       <PostCategorySection
         category="AI"
@@ -166,44 +151,35 @@ describe("PostCategorySection", () => {
       />
     );
 
-    expect(screen.getByTestId("post-list")).toBeInTheDocument();
+    expect(screen.getByTestId('post-list')).toBeInTheDocument();
   });
 
-  it("should pass search query to PostList", () => {
-    render(
-      <PostCategorySection
-        category="AI"
-        label="AI"
-        posts={mockPosts}
-        searchQuery="test"
-      />
-    );
+  it('should pass search query to PostList', () => {
+    render(<PostCategorySection category="AI" label="AI" posts={mockPosts} searchQuery="test" />);
 
-    expect(screen.getByTestId("post-list")).toBeInTheDocument();
+    expect(screen.getByTestId('post-list')).toBeInTheDocument();
   });
 
-  it("should handle empty posts array gracefully", () => {
+  it('should handle empty posts array gracefully', () => {
     render(<PostCategorySection category="AI" label="AI" posts={[]} />);
 
-    expect(screen.getByText("0 posts")).toBeInTheDocument();
-    expect(screen.getByTestId("post-list")).toBeInTheDocument();
+    expect(screen.getByText('0 posts')).toBeInTheDocument();
+    expect(screen.getByTestId('post-list')).toBeInTheDocument();
   });
 
-  it("should render without optional props", () => {
+  it('should render without optional props', () => {
     render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
-    expect(screen.getByText("AI")).toBeInTheDocument();
-    expect(screen.getByTestId("post-list")).toBeInTheDocument();
+    expect(screen.getByText('AI')).toBeInTheDocument();
+    expect(screen.getByTestId('post-list')).toBeInTheDocument();
   });
 
-  it("should have no border on accordion item", () => {
+  it('should have no border on accordion item', () => {
     render(<PostCategorySection category="AI" label="AI" posts={mockPosts} />);
 
-    const accordionItem = screen
-      .getByRole("button")
-      .closest("[class*='accordion-item']");
+    const accordionItem = screen.getByRole('button').closest("[class*='accordion-item']");
     if (accordionItem) {
-      expect(accordionItem).toHaveClass("border-none");
+      expect(accordionItem).toHaveClass('border-none');
     }
   });
 });

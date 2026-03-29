@@ -5,19 +5,15 @@
  * Tracks clicks and provides consistent styling.
  */
 
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { trackEvent } from "@/lib/analytics";
-import { TYPOGRAPHY,
-  HOVER_EFFECTS,
-  getContainerClasses,
-  SEMANTIC_COLORS,
-  SPACING, SPACING_SCALE } from '@/lib/design-tokens';
-import { getSocialLink } from "@/data/socials";
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
+import { trackEvent } from '@/lib/analytics';
+import { TYPOGRAPHY, HOVER_EFFECTS, SEMANTIC_COLORS, SPACING_SCALE } from '@/lib/design-tokens';
+import { getSocialLink } from '@/data/socials';
 
 // ============================================================================
 // SHARED STYLES
@@ -38,11 +34,11 @@ const PROSE_RESET_STYLES: React.CSSProperties = {
 // ============================================================================
 
 type TrackingLocation =
-  | "homepage"
-  | "about-page"
-  | "about-availability-banner"
-  | "blog-post-end"
-  | "project-page-end";
+  | 'homepage'
+  | 'about-page'
+  | 'about-availability-banner'
+  | 'blog-post-end'
+  | 'project-page-end';
 
 /**
  * Creates a click handler that tracks navigation events
@@ -50,26 +46,17 @@ type TrackingLocation =
 function createTrackingHandler(url: string, source: TrackingLocation) {
   return () => {
     trackEvent({
-      name: "external_link_clicked",
+      name: 'external_link_clicked',
       properties: { url, source },
     });
   };
 }
 
 /**
- * Gets LinkedIn link with UTM parameters
- */
-function getLinkedInUrl(campaign: string): string | null {
-  const linkedInLink = getSocialLink("linkedin");
-  if (!linkedInLink) return null;
-  return `${linkedInLink.url}?utm_source=portfolio&utm_medium=website&utm_campaign=${campaign}`;
-}
-
-/**
  * Gets Peerlist link with UTM parameters
  */
 function getPeerlistUrl(campaign: string): string | null {
-  const peerlistLink = getSocialLink("peerlist");
+  const peerlistLink = getSocialLink('peerlist');
   if (!peerlistLink) return null;
   return `${peerlistLink.url}?utm_source=portfolio&utm_medium=website&utm_campaign=${campaign}`;
 }
@@ -78,17 +65,17 @@ function getPeerlistUrl(campaign: string): string | null {
  * Gets Calendar link with UTM parameters
  */
 function getCalendarUrl(campaign: string): string | null {
-  const calendarLink = getSocialLink("calendar");
+  const calendarLink = getSocialLink('calendar');
   if (!calendarLink) return null;
   return `${calendarLink.url}?utm_source=portfolio&utm_medium=website&utm_campaign=${campaign}`;
 }
 
 export interface CTAProps {
   /** CTA variant style */
-  variant?: "default" | "minimal" | "centered";
+  variant?: 'default' | 'minimal' | 'centered';
 
   /** Location identifier for tracking */
-  location: "homepage" | "about-page" | "blog-post-end" | "project-page-end";
+  location: 'homepage' | 'about-page' | 'blog-post-end' | 'project-page-end';
 
   /** Custom className */
   className?: string;
@@ -98,49 +85,35 @@ export interface CTAProps {
  * About Page Availability Banner
  */
 export function AvailabilityBanner({ className }: { className?: string }) {
-  const linkedInLink = getSocialLink("linkedin");
-  const linkedInUrl = getLinkedInUrl("availability_banner");
-  const calendarLink = getSocialLink("calendar");
-  const calendarUrl = getCalendarUrl("availability_banner");
+  const calendarLink = getSocialLink('calendar');
+  const calendarUrl = getCalendarUrl('availability_banner');
 
-  const handleContactClick = createTrackingHandler(
-    "/contact",
-    "about-availability-banner"
-  );
-  const handleLinkedInClick = linkedInLink
-    ? createTrackingHandler(linkedInLink.url, "about-availability-banner")
-    : undefined;
+  const handleContactClick = createTrackingHandler('/contact', 'about-availability-banner');
   const handleCalendarClick = calendarLink
-    ? createTrackingHandler(calendarLink.url, "about-availability-banner")
+    ? createTrackingHandler(calendarLink.url, 'about-availability-banner')
     : undefined;
 
   return (
-    <Card
-      className={cn(HOVER_EFFECTS.card, "p-4 md:p-8 mt-12 mb-6", className)}
-    >
+    <Card className={cn(HOVER_EFFECTS.card, 'p-4 md:p-8 mt-12 mb-6', className)}>
       <div className="flex items-start gap-3">
         <div className="relative h-3 w-3 mt-1.5 shrink-0" aria-hidden="true">
           <span
             className={cn(
-              "absolute inset-0 rounded-full animate-ping opacity-75",
+              'absolute inset-0 rounded-full animate-ping opacity-75',
               SEMANTIC_COLORS.accent.emerald.bg
             )}
           />
           <span
-            className={cn(
-              "absolute inset-0 rounded-full",
-              SEMANTIC_COLORS.accent.emerald.bg
-            )}
+            className={cn('absolute inset-0 rounded-full', SEMANTIC_COLORS.accent.emerald.bg)}
           />
         </div>
         <div className="flex-1">
-          <div className={cn(TYPOGRAPHY.label.standard, "mb-1")}>
+          <div className={cn(TYPOGRAPHY.label.standard, 'mb-1')}>
             We&apos;re currently available for new projects!
           </div>
           <p className="text-sm text-muted-foreground mb-4">
-            Our calendar is now open! Whether you&apos;re looking for advice on
-            secure coding practices, application performance, or architecture,
-            we&apos;re here to help.
+            Our calendar is now open! Whether you&apos;re looking for advice on secure coding
+            practices, application performance, or architecture, we&apos;re here to help.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <Button variant="cta" asChild className="w-full sm:w-auto">
@@ -150,11 +123,11 @@ export function AvailabilityBanner({ className }: { className?: string }) {
             </Button>
             <Button variant="cta-outline" asChild className="w-full sm:w-auto">
               <a
-                href={calendarUrl ?? "#"}
+                href={calendarUrl ?? '#'}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={handleCalendarClick}
-                aria-label={calendarLink?.description ?? "Schedule a meeting"}
+                aria-label={calendarLink?.description ?? 'Schedule a meeting'}
               >
                 Schedule a meeting
               </a>
@@ -169,19 +142,13 @@ export function AvailabilityBanner({ className }: { className?: string }) {
 /**
  * Blog Post CTA
  */
-export function BlogPostCTA({
-  variant = "default",
-  location,
-  className,
-}: CTAProps) {
-  const handleContactClick = createTrackingHandler("/contact", location);
-  const handleAboutClick = createTrackingHandler("/about", location);
+export function BlogPostCTA({ variant = 'default', location, className }: CTAProps) {
+  const handleContactClick = createTrackingHandler('/contact', location);
+  const handleAboutClick = createTrackingHandler('/about', location);
 
-  if (variant === "minimal") {
+  if (variant === 'minimal') {
     return (
-      <div
-        className={cn(`border-t pt-${SPACING_SCALE.xl} mt-${SPACING_SCALE.xl}`, className)}
-      >
+      <div className={cn(`border-t pt-${SPACING_SCALE.xl} mt-${SPACING_SCALE.xl}`, className)}>
         <p className="text-sm text-muted-foreground">
           What did you think? Leave a comment below or
           <Link
@@ -190,7 +157,7 @@ export function BlogPostCTA({
             className="text-primary underline ml-1"
           >
             send us a message
-          </Link>{" "}
+          </Link>{' '}
           with your thoughts!
         </p>
       </div>
@@ -202,7 +169,7 @@ export function BlogPostCTA({
     <Card
       className={cn(
         HOVER_EFFECTS.card,
-        variant === "centered" ? "text-center" : "",
+        variant === 'centered' ? 'text-center' : '',
         `bg-linear-to-b from-muted/50 to-muted/30 p-${SPACING_SCALE.md} md:p-${SPACING_SCALE.xl} mt-${SPACING_SCALE.lg} mb-${SPACING_SCALE.lg}`,
         className
       )}
@@ -214,28 +181,20 @@ export function BlogPostCTA({
         What did you think?
       </h2>
       <p className={`text-muted-foreground mb-${SPACING_SCALE.lg}`}>
-        Feel free to{" "}
-        <Link
-          href="/contact"
-          onClick={handleContactClick}
-          className="text-primary underline"
-        >
+        Feel free to{' '}
+        <Link href="/contact" onClick={handleContactClick} className="text-primary underline">
           send us a message
-        </Link>{" "}
-        with your thoughts, or learn more{" "}
-        <Link
-          href="/about"
-          onClick={handleAboutClick}
-          className="text-primary underline"
-        >
+        </Link>{' '}
+        with your thoughts, or learn more{' '}
+        <Link href="/about" onClick={handleAboutClick} className="text-primary underline">
           about us
         </Link>
         !
       </p>
       <div
         className={cn(
-          variant === "centered" ? "justify-center" : "",
-          "flex flex-col sm:flex-row gap-3"
+          variant === 'centered' ? 'justify-center' : '',
+          'flex flex-col sm:flex-row gap-3'
         )}
       >
         <Button variant="cta" asChild size="lg">
@@ -257,15 +216,12 @@ export function BlogPostCTA({
  * Projects Page CTA
  */
 export function ProjectsCTA({ className }: { className?: string }) {
-  const peerlistLink = getSocialLink("peerlist");
-  const peerlistUrl = getPeerlistUrl("projects_cta");
+  const peerlistLink = getSocialLink('peerlist');
+  const peerlistUrl = getPeerlistUrl('projects_cta');
 
-  const handleContactClick = createTrackingHandler(
-    "/contact",
-    "project-page-end"
-  );
+  const handleContactClick = createTrackingHandler('/contact', 'project-page-end');
   const handlePeerlistClick = peerlistLink
-    ? createTrackingHandler(peerlistLink.url, "project-page-end")
+    ? createTrackingHandler(peerlistLink.url, 'project-page-end')
     : undefined;
 
   return (
@@ -280,8 +236,8 @@ export function ProjectsCTA({ className }: { className?: string }) {
           Interested in a collaboration?
         </h2>
         <p className={`text-muted-foreground mb-${SPACING_SCALE.lg}`}>
-          Whether you have a project in mind or just want to connect, we&apos;d
-          love to hear from you.
+          Whether you have a project in mind or just want to connect, we&apos;d love to hear from
+          you.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Button variant="cta" asChild size="lg">
@@ -291,13 +247,11 @@ export function ProjectsCTA({ className }: { className?: string }) {
           </Button>
           <Button variant="cta-outline" size="lg" asChild>
             <a
-              href={peerlistUrl ?? "#"}
+              href={peerlistUrl ?? '#'}
               target="_blank"
               rel="noopener noreferrer"
               onClick={handlePeerlistClick}
-              aria-label={
-                peerlistLink?.description ?? "Collaborate on Peerlist"
-              }
+              aria-label={peerlistLink?.description ?? 'Collaborate on Peerlist'}
             >
               Build with us on Peerlist
             </a>

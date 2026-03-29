@@ -1,7 +1,13 @@
 import type { Metadata } from 'next';
 import { getContactPageSchema, getJsonLdScriptProps } from '@/lib/json-ld';
 import { headers } from 'next/headers';
-import { SPACING, TYPOGRAPHY, CONTAINER_WIDTHS } from '@/lib/design-tokens';
+import {
+  SPACING,
+  TYPOGRAPHY,
+  CONTAINER_WIDTHS,
+  CONTAINER_PADDING,
+  HOVER_EFFECTS,
+} from '@/lib/design-tokens';
 import { createPageMetadata } from '@/lib/metadata';
 import dynamic from 'next/dynamic';
 import { PageLayout } from '@/components/layouts';
@@ -22,7 +28,8 @@ const ScrollReveal = dynamic(
 );
 
 const pageTitle = 'Contact';
-const pageDescription = 'Get in touch with DCYFR Labs — reach out about @dcyfr/ai, security architecture, collaboration, or open-source contributions.';
+const pageDescription =
+  'Get in touch with DCYFR Labs — reach out about @dcyfr/ai, security architecture, collaboration, or open-source contributions.';
 
 export const metadata: Metadata = createPageMetadata({
   title: pageTitle,
@@ -41,7 +48,7 @@ export default async function ContactPage() {
     <PageLayout>
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
       <SmoothScrollToHash />
-      <div className="space-y-4 md:space-y-12">
+      <div className={SPACING.section}>
         {/* Hero Section */}
         <PageHero
           title="Contact Us"
@@ -49,10 +56,46 @@ export default async function ContactPage() {
           align="center"
         />
 
+        {/* Engagement Context Section */}
+        <section className={cn('mx-auto', CONTAINER_WIDTHS.standard, CONTAINER_PADDING)}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              {
+                label: 'Architecture Advisory',
+                description:
+                  'Security architecture reviews for cloud, network, and application layers.',
+              },
+              {
+                label: 'Security Review',
+                description: 'Threat modelling, OWASP assessments, and secure design guidance.',
+              },
+              {
+                label: 'Speaking & Writing',
+                description:
+                  'Conference talks, guest posts, and podcast appearances on AI and security.',
+              },
+              {
+                label: 'Open-Source Collaboration',
+                description: 'Contributing to or building on @dcyfr/ai and related tooling.',
+              },
+            ].map(({ label, description }) => (
+              <div
+                key={label}
+                className={cn('rounded-xl border border-border/50 p-4', HOVER_EFFECTS.card)}
+              >
+                <p className={cn(TYPOGRAPHY.label.small, 'mb-1')}>{label}</p>
+                <p className={cn(TYPOGRAPHY.metadata, 'opacity-60 leading-relaxed')}>
+                  {description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* Contact Form Section */}
         <section
           id="contact-form"
-          className={cn('mx-auto', CONTAINER_WIDTHS.standard, 'px-4 sm:px-8 md:px-8')}
+          className={cn('mx-auto', CONTAINER_WIDTHS.standard, CONTAINER_PADDING)}
         >
           <ScrollReveal animation="fade-up" delay={1}>
             <ContactFormErrorBoundary>
@@ -64,7 +107,7 @@ export default async function ContactPage() {
         {/* Contact Methods Section */}
         <section
           id="contact-methods"
-          className={cn('mx-auto', CONTAINER_WIDTHS.standard, 'px-4 sm:px-8 md:px-8')}
+          className={cn('mx-auto', CONTAINER_WIDTHS.standard, CONTAINER_PADDING)}
         >
           <ScrollReveal animation="fade-up" delay={0}>
             <ContactMethods />
@@ -74,7 +117,7 @@ export default async function ContactPage() {
         {/* Social Links Section */}
         <section
           id="social-links"
-          className={cn('mx-auto', CONTAINER_WIDTHS.standard, 'px-4 sm:px-8 md:px-8')}
+          className={cn('mx-auto', CONTAINER_WIDTHS.standard, CONTAINER_PADDING)}
         >
           <ScrollReveal animation="fade-up" delay={2}>
             <ContactSocialLinks />

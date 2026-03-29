@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useRef, useState, useEffect } from "react";
-import { ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import Link from "next/link";
-import { ThreadedActivityFeed } from "@/components/activity";
-import { useInfiniteActivity } from "@/hooks/use-infinite-activity";
-import { cn } from "@/lib/utils";
-import type { ActivityItem } from "@/lib/activity";
-import { SPACING } from "@/lib/design-tokens";
+import { useRef, useEffect } from 'react';
+import { ExternalLink } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import Link from 'next/link';
+import { ThreadedActivityFeed } from '@/components/activity';
+import { useInfiniteActivity } from '@/hooks/use-infinite-activity';
+import { cn } from '@/lib/utils';
+import type { ActivityItem } from '@/lib/activity';
+import { SPACING } from '@/lib/design-tokens';
 
 // ============================================================================
 // TYPES
@@ -41,9 +41,6 @@ interface InfiniteActivitySectionProps {
 // ============================================================================
 // CONSTANTS
 // ============================================================================
-
-const SCROLL_TO_TOP_THRESHOLD = 300;
-const SCROLL_HINT_HIDE_DELAY = 5000; // Hide scroll hint after 5s
 
 // ============================================================================
 // COMPONENT
@@ -89,28 +86,21 @@ export function InfiniteActivitySection({
   pageSize = 5,
   showProgress = true,
   maxItemsBeforeCTA = 20,
-  ctaText = "View full activity timeline",
-  ctaHref = "/activity",
+  ctaText = 'View full activity timeline',
+  ctaHref = '/activity',
   className,
   loading = false,
 }: InfiniteActivitySectionProps) {
   const loadTriggerRef = useRef<HTMLDivElement>(null);
-  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
   // Infinite scroll pagination (call hooks before returns)
-  const {
-    visibleItems,
-    hasMore,
-    isLoadingMore,
-    loadMore,
-    totalCount,
-    visibleCount,
-  } = useInfiniteActivity({
-    items,
-    totalActivities,
-    initialPageSize: initialCount,
-    pageSize,
-  });
+  const { visibleItems, hasMore, isLoadingMore, loadMore, totalCount, visibleCount } =
+    useInfiniteActivity({
+      items,
+      totalActivities,
+      initialPageSize: initialCount,
+      pageSize,
+    });
 
   // Check if we should show CTA instead of loading more
   const shouldShowCTA = visibleCount >= maxItemsBeforeCTA && hasMore;
@@ -123,13 +113,12 @@ export function InfiniteActivitySection({
           // Load more when the trigger element is visible and we're not already loading
           if (entry.isIntersecting && hasMore && !isLoadingMore) {
             loadMore();
-            setHasLoadedOnce(true);
           }
         });
       },
       {
         // Trigger loading when element is 200px from bottom of viewport
-        rootMargin: "200px",
+        rootMargin: '200px',
         threshold: 0,
       }
     );
@@ -150,7 +139,7 @@ export function InfiniteActivitySection({
   // Loading state - skeleton version matching real component structure
   if (loading) {
     return (
-      <div className={cn("relative w-full", className)}>
+      <div className={cn('relative w-full', className)}>
         {/* Progress indicator skeleton */}
         {showProgress && (
           <div className="mb-12 text-xs text-muted-foreground -mt-8">
@@ -198,12 +187,12 @@ export function InfiniteActivitySection({
   }
 
   return (
-    <div className={cn("relative w-full", className)}>
+    <div className={cn('relative w-full', className)}>
       {/* Progress indicator */}
       {showProgress && (
         <div className="mb-12 text-xs text-muted-foreground -mt-8">
           <span className="font-medium">
-            Showing <span className="text-foreground">{visibleCount}</span> of{" "}
+            Showing <span className="text-foreground">{visibleCount}</span> of{' '}
             <span className="text-foreground">{totalCount}</span> activities
           </span>
         </div>
@@ -227,11 +216,7 @@ export function InfiniteActivitySection({
 
       {/* Load trigger point for Intersection Observer */}
       {!shouldShowCTA && hasMore && (
-        <div
-          ref={loadTriggerRef}
-          className="h-2 pointer-events-none"
-          aria-hidden="true"
-        />
+        <div ref={loadTriggerRef} className="h-2 pointer-events-none" aria-hidden="true" />
       )}
 
       {/* CTA to full activity page */}

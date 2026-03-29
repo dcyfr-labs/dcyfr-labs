@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { LayoutGrid, List, Columns2, Square, FolderKanban } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useRouter, useSearchParams } from 'next/navigation';
+import { LayoutGrid, List, Columns2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { SPACING, SPACING_SCALE } from '@/lib/design-tokens';
 
 interface LayoutOption {
-  id: "grid" | "list" | "magazine" | "compact" | "grouped";
+  id: 'grid' | 'list' | 'magazine';
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   title: string;
@@ -14,40 +14,28 @@ interface LayoutOption {
 
 const LAYOUT_OPTIONS: LayoutOption[] = [
   {
-    id: "magazine",
-    label: "Magazine",
+    id: 'magazine',
+    label: 'Magazine',
     icon: Columns2,
-    title: "Magazine layout - Featured posts with alternating full-width cards",
+    title: 'Magazine layout - Hero post with full-width cards',
   },
   {
-    id: "grid",
-    label: "Grid",
+    id: 'grid',
+    label: 'Grid',
     icon: LayoutGrid,
-    title: "Grid layout - Hero post with 2-column grid",
+    title: 'Grid layout - Hero post with 2-column grid',
   },
   {
-    id: "list",
-    label: "List",
+    id: 'list',
+    label: 'List',
     icon: List,
-    title: "List layout - Single column with full details",
-  },
-  {
-    id: "compact",
-    label: "Compact",
-    icon: Square,
-    title: "Compact layout - Minimal cards",
-  },
-  {
-    id: "grouped",
-    label: "Grouped",
-    icon: FolderKanban,
-    title: "Grouped layout - Posts organized by category",
+    title: 'List layout - Single column with full details',
   },
 ];
 
 interface LayoutToggleProps {
   /** Current active layout */
-  currentLayout: "grid" | "list" | "magazine" | "compact" | "grouped";
+  currentLayout: 'grid' | 'list' | 'magazine';
 }
 
 /**
@@ -64,11 +52,9 @@ export function LayoutToggle({ currentLayout }: LayoutToggleProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const handleLayoutChange = (
-    layout: "grid" | "list" | "magazine" | "compact" | "grouped"
-  ) => {
+  const handleLayoutChange = (layout: 'grid' | 'list' | 'magazine') => {
     const params = new URLSearchParams(searchParams.toString());
-    params.set("layout", layout);
+    params.set('layout', layout);
     router.push(`/blog?${params.toString()}`, { scroll: false });
   };
 
@@ -86,8 +72,8 @@ export function LayoutToggle({ currentLayout }: LayoutToggleProps) {
           className={cn(
             `flex items-center justify-center gap-${SPACING_SCALE.sm} px-3 py-2 rounded transition-colors`,
             currentLayout === id
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              ? 'bg-primary text-primary-foreground'
+              : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
           )}
         >
           <Icon className="h-4 w-4" />

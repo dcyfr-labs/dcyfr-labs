@@ -26,8 +26,8 @@ const BULK_BATCH_SIZE = 100; // GreyNoise supports up to 500 IPs per request
  * GreyNoise API client
  */
 export class GreyNoiseClient {
-  private apiKey: string;
-  private baseUrl: string;
+  private readonly apiKey: string;
+  private readonly baseUrl: string;
 
   constructor(apiKey?: string) {
     this.apiKey = apiKey || process.env.GREYNOISE_API_KEY || '';
@@ -104,7 +104,7 @@ export class GreyNoiseClient {
  * IP Reputation service with caching and analysis
  */
 export class IPReputationService {
-  private greynoiseClient: GreyNoiseClient;
+  private readonly greynoiseClient: GreyNoiseClient;
 
   constructor(greynoiseApiKey?: string) {
     this.greynoiseClient = new GreyNoiseClient(greynoiseApiKey);
@@ -329,7 +329,7 @@ export class IPReputationService {
     ip: string,
     reputation: IPReputationEntry,
     cacheHit: boolean,
-    startTime: number
+    _startTime: number
   ): IPReputationCheck {
     return {
       ip,

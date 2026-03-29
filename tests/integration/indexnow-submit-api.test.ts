@@ -12,6 +12,10 @@ vi.mock('@/inngest/client', () => ({
   },
 }));
 
+vi.mock('@/lib/api/api-security', () => ({
+  blockExternalAccessExceptInngestAndSameOrigin: vi.fn(() => null),
+}));
+
 describe('POST /api/indexnow/submit', () => {
   const originalEnv = process.env;
 
@@ -65,9 +69,7 @@ describe('POST /api/indexnow/submit', () => {
   });
 
   it('returns 400 when urls do not match application domain', async () => {
-    const response = await POST(
-      createRequest({ urls: ['https://evil.example.com/phish'] })
-    );
+    const response = await POST(createRequest({ urls: ['https://evil.example.com/phish'] }));
     const data = await response.json();
 
     expect(response.status).toBe(400);
@@ -79,9 +81,7 @@ describe('POST /api/indexnow/submit', () => {
   it('returns 503 when INDEXNOW_API_KEY is missing', async () => {
     delete process.env.INDEXNOW_API_KEY;
 
-    const response = await POST(
-      createRequest({ urls: ['https://www.dcyfr.ai/blog/no-key'] })
-    );
+    const response = await POST(createRequest({ urls: ['https://www.dcyfr.ai/blog/no-key'] }));
     const data = await response.json();
 
     expect(response.status).toBe(503);

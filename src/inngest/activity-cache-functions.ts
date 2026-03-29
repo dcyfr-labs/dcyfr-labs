@@ -17,7 +17,7 @@ import { inngest } from './client';
 import { posts } from '@/data/posts';
 import { projects } from '@/data/projects';
 import { changelog } from '@/data/changelog';
-import { transformProjects, transformChangelog, aggregateActivities } from '@/lib/activity';
+import { transformProjects, transformChangelog } from '@/lib/activity';
 
 import {
   transformPostsWithViews,
@@ -68,9 +68,6 @@ export const refreshActivityFeed = inngest.createFunction(
 
     // Step 1: Gather all activities in parallel
     const activities = await step.run('gather-activities', async () => {
-      const now = new Date();
-      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-
       console.warn('[Activity Cache] Gathering activities from all sources...');
 
       const results = await Promise.allSettled([

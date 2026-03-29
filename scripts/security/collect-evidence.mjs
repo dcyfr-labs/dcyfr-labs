@@ -94,7 +94,8 @@ function collectGitCommitLogs() {
     const startOfMonth = `${year}-${month}-01`;
     const endOfMonth = new Date(year, parseInt(month), 0).toISOString().split('T')[0];
 
-    const commits = execSync( // NOSONAR - Administrative script, inputs from controlled sources
+    const commits = execSync(
+      // NOSONAR - Administrative script, inputs from controlled sources
       `git log --since="${startOfMonth}" --until="${endOfMonth}" --pretty=format:"%H|%an|%ae|%ad|%s" --date=iso`,
       { cwd: projectRoot, stdio: 'pipe' }
     ).toString();
@@ -110,7 +111,7 @@ function collectGitCommitLogs() {
       commits: commits
         .split('\n')
         .filter(Boolean)
-        .map(line => {
+        .map((line) => {
           const [hash, author, email, date, message] = line.split('|');
           return { hash, author, email, date, message };
         }),
@@ -139,7 +140,8 @@ function collectGitCommitLogs() {
 function collectCodeQLResults() {
   try {
     // Try to get latest CodeQL results from GitHub
-    const codeqlOutput = execSync( // NOSONAR - Administrative script, inputs from controlled sources
+    const codeqlOutput = execSync(
+      // NOSONAR - Administrative script, inputs from controlled sources
       'gh api repos/dcyfr-labs/dcyfr-labs/code-scanning/analyses --jq ".[0]"',
       { cwd: projectRoot, stdio: 'pipe' }
     ).toString();
@@ -156,7 +158,7 @@ function collectCodeQLResults() {
       file: filename,
       size: `${alertCount} findings`,
     };
-  } catch (error) {
+  } catch {
     return {
       success: false,
       error: 'CodeQL results unavailable (GitHub CLI not configured or no scans)',
@@ -172,7 +174,8 @@ function collectDependabotPRs() {
     // Get Dependabot PRs merged this month
     const startOfMonth = `${year}-${month}-01`;
 
-    const prs = execSync( // NOSONAR - Administrative script, inputs from controlled sources
+    const prs = execSync(
+      // NOSONAR - Administrative script, inputs from controlled sources
       `gh pr list --state merged --search "author:app/dependabot merged:>=${startOfMonth}" --json number,title,mergedAt,url`,
       { cwd: projectRoot, stdio: 'pipe' }
     ).toString();
@@ -182,14 +185,17 @@ function collectDependabotPRs() {
 
     const filename = `dependabot-prs-${timestamp}.json`;
     const filepath = join(evidenceMonthDir, filename);
-    writeFileSync(filepath, JSON.stringify({ period: `${year}-${month}`, count: prCount, prs: prData }, null, 2));
+    writeFileSync(
+      filepath,
+      JSON.stringify({ period: `${year}-${month}`, count: prCount, prs: prData }, null, 2)
+    );
 
     return {
       success: true,
       file: filename,
       size: `${prCount} PRs`,
     };
-  } catch (error) {
+  } catch {
     return {
       success: false,
       error: 'Dependabot PR collection unavailable (GitHub CLI not configured)',
@@ -203,7 +209,8 @@ function collectDependabotPRs() {
 function collectVercelDeployments() {
   try {
     // Get recent deployments
-    const deployments = execSync( // NOSONAR - Administrative script, inputs from controlled sources
+    const deployments = execSync(
+      // NOSONAR - Administrative script, inputs from controlled sources
       'vercel ls --json',
       { cwd: projectRoot, stdio: 'pipe' }
     ).toString();
@@ -220,7 +227,7 @@ function collectVercelDeployments() {
       file: filename,
       size: `${deployCount} deployments`,
     };
-  } catch (error) {
+  } catch {
     return {
       success: false,
       error: 'Vercel deployment logs unavailable (Vercel CLI not configured)',
@@ -252,7 +259,7 @@ function collectSecurityScans() {
     try {
       execSync('npm run lint', { cwd: projectRoot, stdio: 'pipe' }); // NOSONAR - Administrative script, inputs from controlled sources
       scanResults.scans.eslint = { status: 'PASS', errors: 0 };
-    } catch (error) {
+    } catch {
       scanResults.scans.eslint = { status: 'FAIL', errors: 'Has errors' };
     }
 
@@ -260,7 +267,7 @@ function collectSecurityScans() {
     try {
       execSync('npm run typecheck', { cwd: projectRoot, stdio: 'pipe' }); // NOSONAR - Administrative script, inputs from controlled sources
       scanResults.scans.typescript = { status: 'PASS', errors: 0 };
-    } catch (error) {
+    } catch {
       scanResults.scans.typescript = { status: 'FAIL', errors: 'Has errors' };
     }
 
@@ -289,7 +296,8 @@ function collectAccessLogs() {
     // Collect git author statistics
     const startOfMonth = `${year}-${month}-01`;
 
-    const authors = execSync( // NOSONAR - Administrative script, inputs from controlled sources
+    const authors = execSync(
+      // NOSONAR - Administrative script, inputs from controlled sources
       `git log --since="${startOfMonth}" --pretty=format:"%an|%ae" | sort | uniq -c`,
       { cwd: projectRoot, stdio: 'pipe' }
     ).toString();
@@ -299,7 +307,7 @@ function collectAccessLogs() {
       gitAuthors: authors
         .split('\n')
         .filter(Boolean)
-        .map(line => {
+        .map((line) => {
           const match = line.trim().match(/(\d+)\s+(.+)\|(.+)/);
           if (match) {
             return {
@@ -391,7 +399,8 @@ function collectSBOMSnapshot() {
 function collectTestResults() {
   try {
     // Run tests and capture results
-    const testOutput = execSync('npm run test:run -- --reporter=json', { // NOSONAR - Administrative script, inputs from controlled sources
+    const testOutput = execSync('npm run test:run -- --reporter=json', {
+      // NOSONAR - Administrative script, inputs from controlled sources
       cwd: projectRoot,
       stdio: 'pipe',
     }).toString();
@@ -409,7 +418,7 @@ function collectTestResults() {
       file: filename,
       size: `${passed}/${testCount} passed`,
     };
-  } catch (error) {
+  } catch {
     return {
       success: false,
       error: 'Test results unavailable (test suite not configured or failing)',
@@ -435,10 +444,18 @@ function generateReport() {
 
 ## Evidence Collected
 
-${collectionResults.evidenceCollected.length === 0 ? '_No evidence collected_' : collectionResults.evidenceCollected.map((e, idx) => `${idx + 1}. **${e.name}**
+${
+  collectionResults.evidenceCollected.length === 0
+    ? '_No evidence collected_'
+    : collectionResults.evidenceCollected
+        .map(
+          (e, idx) => `${idx + 1}. **${e.name}**
    - File: \`${e.file}\`
    - Size: ${e.size}
-   - Timestamp: ${e.timestamp}`).join('\n\n')}
+   - Timestamp: ${e.timestamp}`
+        )
+        .join('\n\n')
+}
 
 **Total Evidence Items:** ${collectionResults.evidenceCollected.length}
 
@@ -446,8 +463,16 @@ ${collectionResults.evidenceCollected.length === 0 ? '_No evidence collected_' :
 
 ## Failed Collections
 
-${collectionResults.failed.length === 0 ? '_All collections successful_' : collectionResults.failed.map((f, idx) => `${idx + 1}. **${f.name}**
-   - Error: ${f.error}`).join('\n\n')}
+${
+  collectionResults.failed.length === 0
+    ? '_All collections successful_'
+    : collectionResults.failed
+        .map(
+          (f, idx) => `${idx + 1}. **${f.name}**
+   - Error: ${f.error}`
+        )
+        .join('\n\n')
+}
 
 ---
 
@@ -514,7 +539,7 @@ async function main() {
   process.exit(0);
 }
 
-main().catch(error => {
+main().catch((error) => {
   console.error('\n❌ Evidence collection failed:', error);
   process.exit(1);
 });

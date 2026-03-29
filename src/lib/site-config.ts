@@ -12,9 +12,9 @@ export const AUTHOR_EMAIL = 'drew@dcyfr.ai';
 // For display in UI (with sparkle character)
 export const SITE_TITLE = 'DCYFR Labs';
 export const SITE_TITLE_PLAIN = 'DCYFR Labs'; // For meta tags (without special characters)
-export const SITE_SUBTITLE = 'AI Agent Framework & Cyber Architecture';
+export const SITE_SUBTITLE = 'DCYFR AI & Cyber Architecture';
 export const SITE_DESCRIPTION =
-  'DCYFR Labs builds @dcyfr/ai — an open-source AI agent framework with plugin marketplace, delegation system, and 20+ specialist agents. Explore cyber architecture, security, and modern AI engineering.';
+  'DCYFR Labs builds DCYFR AI (@dcyfr/ai) — an open-source agent with plugin marketplace, delegation system, and 20+ specialist agents. Explore cyber architecture, security, and modern AI engineering.';
 
 /** ISO date when the site first went live */
 export const SITE_LAUNCH_DATE = '2025-08-01';

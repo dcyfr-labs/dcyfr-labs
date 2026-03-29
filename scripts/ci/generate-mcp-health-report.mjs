@@ -16,7 +16,7 @@
  *   --debug             Enable debug logging
  */
 
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'node:url';
 import { run } from './check-mcp-servers.mjs';
 
 // ============================================================================
@@ -28,7 +28,7 @@ import { run } from './check-mcp-servers.mjs';
  */
 function transformToHealthReport(checkResults) {
   const timestamp = new Date().toISOString();
-  
+
   const servers = checkResults.results.map((result) => {
     // Determine status
     let status;
@@ -70,9 +70,9 @@ function transformToHealthReport(checkResults) {
   // Calculate summary
   const summary = {
     total: servers.length,
-    ok: servers.filter(s => s.status === 'ok').length,
-    degraded: servers.filter(s => s.status === 'degraded').length,
-    down: servers.filter(s => s.status === 'down').length,
+    ok: servers.filter((s) => s.status === 'ok').length,
+    degraded: servers.filter((s) => s.status === 'degraded').length,
+    down: servers.filter((s) => s.status === 'down').length,
   };
 
   return {
@@ -88,7 +88,7 @@ function transformToHealthReport(checkResults) {
 
 async function main() {
   const args = process.argv.slice(2);
-  
+
   // Parse options
   const opts = {
     json: true, // Always use JSON mode
@@ -105,7 +105,7 @@ async function main() {
     if (arg === '--no-auth') opts.noAuth = true;
     if (arg === '--debug') opts.debug = true;
     if ((arg === '--timeout' || arg === '-t') && args[i + 1]) {
-      opts.timeoutMs = parseInt(args[i + 1], 10);
+      opts.timeoutMs = Number.parseInt(args[i + 1], 10);
       i++;
     }
     if ((arg === '--envFile' || arg === '-e') && args[i + 1]) {
@@ -122,15 +122,12 @@ async function main() {
     // Suppress console output from check-mcp-servers.mjs
     const originalLog = console.log;
     const originalError = console.error;
-    const capturedLogs = [];
-    
+
     console.log = (...args) => {
-      // Capture but don't output
-      capturedLogs.push(args.join(' '));
+      // Suppress output while collecting raw check results.
     };
     console.error = (...args) => {
-      // Capture but don't output
-      capturedLogs.push(args.join(' '));
+      // Suppress output while collecting raw check results.
     };
 
     // Run MCP server checks
@@ -153,10 +150,12 @@ async function main() {
 
 // Run if called directly
 if (fileURLToPath(import.meta.url) === process.argv[1]) {
-  main().catch((error) => {
+  try {
+    await main();
+  } catch (error) {
     console.error('Fatal error:', error);
     process.exit(1);
-  });
+  }
 }
 
 export { transformToHealthReport };

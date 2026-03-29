@@ -22,8 +22,6 @@
  *   fix_generated - Whether a fix was generated
  */
 
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY;
 const BRANCH_NAME = process.env.BRANCH_NAME;
 const ALERT_NUMBER = process.env.ALERT_NUMBER;
 const RULE_ID = process.env.RULE_ID;
@@ -32,8 +30,6 @@ const ALERT_FILE = process.env.ALERT_FILE;
 const ALERT_LINE = process.env.ALERT_LINE;
 const DESCRIPTION = process.env.DESCRIPTION;
 const DRY_RUN = process.env.DRY_RUN === 'true';
-
-const [REPO_OWNER, REPO_NAME] = GITHUB_REPOSITORY.split('/');
 
 function generateCopilotPrompt() {
   return `# Fix CodeQL Security Alert
@@ -105,8 +101,10 @@ async function requestCopilotFix() {
   console.log(`::set-output name=fix_generated::true`);
 }
 
-requestCopilotFix().catch((error) => {
+try {
+  await requestCopilotFix();
+} catch (error) {
   console.error('❌ Error:', error.message);
   console.log(`::set-output name=fix_generated::false`);
   process.exit(1);
-});
+}

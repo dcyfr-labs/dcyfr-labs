@@ -7,6 +7,7 @@ import { inngest } from '@/inngest/client';
 import { trackContactFormSubmission } from '@/lib/analytics';
 import { handleApiError } from '@/lib/error-handler';
 import { getPromptScanner } from '@/lib/security';
+import { syncResendContact } from '@/lib/resend-contact-sync';
 
 // Rate limit: 3 requests per minute per IP (from centralized guardrails config)
 // Fail closed on Redis errors to protect against abuse during outages
@@ -15,6 +16,13 @@ const RATE_LIMIT_CONFIG = {
   windowInSeconds: 60,
   failClosed: true,
 };
+
+let isPromptScannerDisabled = false;
+
+function isPromptScannerDeprecationError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return message.toLowerCase().includes('promptintel mcp server has been deprecated');
+}
 
 type ContactFormData = {
   name: string;
@@ -146,6 +154,10 @@ async function parseRequestBody(request: NextRequest): Promise<ParseResult> {
 
 /** Run prompt security scan; returns a rejection response or null if scan passes/soft-fails */
 async function scanMessageSecurity(message: string): Promise<ReturnType<typeof NextResponse.json> | null> {
+  if (isPromptScannerDisabled) {
+    return null;
+  }
+
   try {
     const scanner = getPromptScanner();
     const scanResult = await scanner.scanPrompt(message, {
@@ -165,6 +177,14 @@ async function scanMessageSecurity(message: string): Promise<ReturnType<typeof N
     }
     return null;
   } catch (scanError) {
+    if (isPromptScannerDeprecationError(scanError)) {
+      isPromptScannerDisabled = true;
+      console.warn(
+        '[Contact API] Prompt scanning disabled: PromptIntel integration is deprecated. Continuing with fail-open mode.'
+      );
+      return null;
+    }
+
     console.error('[Contact API] Prompt scanning failed:', scanError);
     return null; // fail open
   }
@@ -218,6 +238,47 @@ async function sendContactToInngest(
     return NextResponse.json(
       { error: 'Failed to process your message. Please try again later.' },
       { status: 500 }
+    );
+  }
+}
+
+async function syncContactInResend(
+  sanitizedData: { name: string; email: string; message: string; role?: string },
+  rateLimitResult: Awaited<ReturnType<typeof rateLimit>>
+): Promise<ReturnType<typeof NextResponse.json> | null> {
+  const resendApiKey = process.env.RESEND_API_KEY;
+  if (!resendApiKey) {
+    console.warn('[Contact API] Missing RESEND_API_KEY, skipping Resend contact sync');
+    return null;
+  }
+
+  try {
+    const syncResult = await syncResendContact({
+      apiKey: resendApiKey,
+      email: sanitizedData.email,
+      unsubscribed: true,
+      segmentId: process.env.RESEND_SEGMENT_ID?.trim(),
+      firstName: sanitizedData.name,
+      preserveExistingSubscriptionState: true,
+    });
+
+    console.warn('[Contact API] Resend contact synced:', {
+      emailDomain: sanitizedData.email.split('@')[1] || 'unknown',
+      operation: syncResult.operation,
+      unsubscribed: syncResult.unsubscribed,
+      segmentAssigned: syncResult.segmentAssigned,
+    });
+
+    return null;
+  } catch (error) {
+    console.error('[Contact API] Resend contact sync failed:', {
+      error: error instanceof Error ? error.message : String(error),
+      emailDomain: sanitizedData.email.split('@')[1] || 'unknown',
+    });
+
+    return NextResponse.json(
+      { error: 'Failed to register your contact. Please try again later.' },
+      { status: 502, headers: createRateLimitHeaders(rateLimitResult) }
     );
   }
 }
@@ -290,6 +351,9 @@ async function handleContactSubmission(
   // Prompt security scanning - detect adversarial patterns
   const scanRejection = await scanMessageSecurity(sanitizedData.message);
   if (scanRejection) return scanRejection;
+
+  const resendRejection = await syncContactInResend(sanitizedData, rateLimitResult);
+  if (resendRejection) return resendRejection;
 
   return sendContactToInngest(sanitizedData, clientIp, rateLimitResult);
 }

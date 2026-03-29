@@ -3,6 +3,7 @@ import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS, CONTAINER_PADDING } from '@/lib/
 import { createPageMetadata } from '@/lib/metadata';
 import { PageLayout, PageHero } from '@/components/layouts';
 import Link from 'next/link';
+import { assertFeatureOr404 } from '@/lib/admin-guard';
 
 const pageTitle = 'DCYFR Plugin Marketplace';
 const pageDescription =
@@ -165,6 +166,7 @@ function formatDownloads(count: number): string {
 }
 
 export default function PluginsMarketplacePage() {
+  assertFeatureOr404('PLUGINS_ENABLED');
   return (
     <PageLayout>
       <PageHero

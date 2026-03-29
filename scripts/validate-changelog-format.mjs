@@ -5,8 +5,8 @@
  * @usage npm run changelog:validate
  */
 
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 const changelogPath = resolve('./CHANGELOG.md');
 const content = readFileSync(changelogPath, 'utf-8');
@@ -43,15 +43,17 @@ lines.forEach((line, index) => {
     // Validate CalVer format: YYYY.MM.DD or YYYY.MM.DD.MICRO
     const parts = version.split('.');
     if (parts.length < 3 || parts.length > 4) {
-      errors.push(`Invalid version format at line ${index + 1}: [${version}]`);
-      errors.push(`  Expected: YYYY.MM.DD or YYYY.MM.DD.MICRO`);
+      errors.push(
+        `Invalid version format at line ${index + 1}: [${version}]`,
+        '  Expected: YYYY.MM.DD or YYYY.MM.DD.MICRO'
+      );
     }
 
     // Validate year, month, day are numeric
     if (parts.length >= 3) {
-      const year = parseInt(parts[0]);
-      const month = parseInt(parts[1]);
-      const day = parseInt(parts[2]);
+      const year = Number.parseInt(parts[0], 10);
+      const month = Number.parseInt(parts[1], 10);
+      const day = Number.parseInt(parts[2], 10);
 
       if (year < 2000 || year > 2099) {
         errors.push(`Invalid year in version at line ${index + 1}: ${year}`);

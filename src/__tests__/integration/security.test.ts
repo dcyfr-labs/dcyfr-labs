@@ -26,6 +26,10 @@ vi.mock('@/lib/redis-client', () => ({
       rateLimitExpiries[key] = timestamp;
       return 1;
     }),
+    pExpireAt: vi.fn(async (key: string, timestamp: number) => {
+      rateLimitExpiries[key] = timestamp;
+      return 1;
+    }),
     pttl: vi.fn(async (key: string) => {
       const expiry = rateLimitExpiries[key];
       if (!expiry) return -2; // Key doesn't exist
@@ -35,6 +39,17 @@ vi.mock('@/lib/redis-client', () => ({
         delete rateLimitCounters[key];
         delete rateLimitExpiries[key];
         return -2; // Return -2 (key doesn't exist) instead of -1
+      }
+      return ttl;
+    }),
+    pTTL: vi.fn(async (key: string) => {
+      const expiry = rateLimitExpiries[key];
+      if (!expiry) return -2;
+      const ttl = expiry - Date.now();
+      if (ttl <= 0) {
+        delete rateLimitCounters[key];
+        delete rateLimitExpiries[key];
+        return -2;
       }
       return ttl;
     }),

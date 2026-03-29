@@ -23,7 +23,8 @@ config({ path: resolve(__dirname, '../.env.local') });
 
 // Determine environment
 function getEnvironment() {
-  const isProduction = process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === 'production';
+  const isProduction =
+    process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === 'production';
   const isPreview = process.env.VERCEL_ENV === 'preview';
   const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -54,8 +55,12 @@ function getKeyPrefix() {
  * Exits if credentials are missing.
  */
 function resolveRedisCredentials(environment) {
-  const hasProductionCreds = !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
-  const hasPreviewCreds = !!(process.env.UPSTASH_REDIS_REST_URL_PREVIEW && process.env.UPSTASH_REDIS_REST_TOKEN_PREVIEW);
+  const hasProductionCreds = !!(
+    process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+  );
+  const hasPreviewCreds = !!(
+    process.env.UPSTASH_REDIS_REST_URL_PREVIEW && process.env.UPSTASH_REDIS_REST_TOKEN_PREVIEW
+  );
 
   console.log('🔑 Redis Configuration:');
   console.log(`   Production credentials: ${hasProductionCreds ? '✅' : '❌'}`);
@@ -67,7 +72,8 @@ function resolveRedisCredentials(environment) {
     redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
   } else {
     redisUrl = process.env.UPSTASH_REDIS_REST_URL_PREVIEW || process.env.UPSTASH_REDIS_REST_URL;
-    redisToken = process.env.UPSTASH_REDIS_REST_TOKEN_PREVIEW || process.env.UPSTASH_REDIS_REST_TOKEN;
+    redisToken =
+      process.env.UPSTASH_REDIS_REST_TOKEN_PREVIEW || process.env.UPSTASH_REDIS_REST_TOKEN;
   }
 
   if (!redisUrl || !redisToken) {
@@ -103,7 +109,7 @@ async function checkCacheKeys(redis, keyPrefix, cacheKey) {
       console.log(`   Total Contributions: ${data.totalContributions}`);
       console.log(`   Last Updated: ${data.lastUpdated}`);
       console.log(`   Source: ${data.source}`);
-    } catch (_e) {
+    } catch {
       console.log(`   ⚠️  Data is not valid JSON`);
     }
   }
@@ -118,7 +124,7 @@ async function checkCacheKeys(redis, keyPrefix, cacheKey) {
       const data = JSON.parse(mainCacheNoPrefix);
       console.log(`   Total Contributions: ${data.totalContributions}`);
       console.log(`   Last Updated: ${data.lastUpdated}`);
-    } catch (_e) {
+    } catch {
       console.log(`   Data is not valid JSON`);
     }
   }
@@ -154,7 +160,7 @@ function printRecommendations(mainCacheWithPrefix, mainCacheNoPrefix) {
     console.log('   ✅ Cache is healthy!');
     console.log('      Data exists and should be accessible by the app.');
     console.log('');
-    console.log('   If you\'re still seeing cache misses:');
+    console.log("   If you're still seeing cache misses:");
     console.log('      - Check app is running in same environment');
     console.log('      - Verify Redis client import paths');
     console.log('      - Check for connection errors in app logs');
@@ -190,7 +196,11 @@ async function diagnose() {
   const fallbackKey = 'github:fallback-data';
 
   console.log('🔎 Checking Cache Keys:\n');
-  const { mainCacheWithPrefix, mainCacheNoPrefix } = await checkCacheKeys(redis, keyPrefix, cacheKey);
+  const { mainCacheWithPrefix, mainCacheNoPrefix } = await checkCacheKeys(
+    redis,
+    keyPrefix,
+    cacheKey
+  );
 
   console.log(`   Fallback Key: ${keyPrefix}${fallbackKey}`);
   const fallbackCache = await redis.get(keyPrefix + fallbackKey);

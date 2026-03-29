@@ -11,25 +11,18 @@
  * ```
  */
 
-"use client";
+'use client';
 
-import { createElement } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
-import { ThreadActions } from "./ThreadActions";
-import { SEMANTIC_COLORS } from "@/lib/design-tokens";
-import { getActivitySourceIcon } from "@/lib/activity";
-import type { ActivityItem } from "@/lib/activity";
-import { cn } from "@/lib/utils";
-import {
-  TYPOGRAPHY,
-  SPACING,
-  HOVER_EFFECTS,
-  ANIMATION,
-  ACTIVITY_IMAGE,
-} from "@/lib/design-tokens";
-import { ExternalLink, Calendar, Tag } from "lucide-react";
+import { createElement } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Badge } from '@/components/ui/badge';
+import { ThreadActions } from './ThreadActions';
+import { SEMANTIC_COLORS } from '@/lib/design-tokens';
+import { getActivitySourceIcon } from '@/lib/activity';
+import type { ActivityItem } from '@/lib/activity';
+import { cn } from '@/lib/utils';
+import { TYPOGRAPHY, SPACING, HOVER_EFFECTS, ANIMATION, ACTIVITY_IMAGE } from '@/lib/design-tokens';
 
 // ============================================================================
 // TYPES & HELPERS
@@ -38,8 +31,8 @@ import { ExternalLink, Calendar, Tag } from "lucide-react";
 /**
  * Maps activity verb to semantic color badge class
  */
-function getVerbColor(verb: ActivityItem["verb"]): string {
-  const colorMap: Record<ActivityItem["verb"], string> = {
+function getVerbColor(verb: ActivityItem['verb']): string {
+  const colorMap: Record<ActivityItem['verb'], string> = {
     published: SEMANTIC_COLORS.status.neutral,
     updated: SEMANTIC_COLORS.status.neutral,
     launched: SEMANTIC_COLORS.status.neutral,
@@ -69,31 +62,27 @@ export interface ThreadHeaderProps {
 /**
  * Primary activity in a thread (Threads-style layout)
  */
-export function ThreadHeader({
-  activity,
-  hasReplies = false,
-  className,
-}: ThreadHeaderProps) {
+export function ThreadHeader({ activity, hasReplies = false, className }: ThreadHeaderProps) {
   const verbColor = getVerbColor(activity.verb);
 
   // Get icon component reference
   const sourceIconComponent = getActivitySourceIcon(activity.source);
 
   return (
-    <div className={cn("group/thread relative", className)}>
+    <div className={cn('group/thread relative', className)}>
       {/* Content Layout (Full Width) */}
       <div className="w-full">
         {/* Header: Source + Verb Badges */}
         <div className="flex items-center gap-2 mb-1.5 flex-wrap">
           <Badge variant="default" className="gap-1.5 px-2 h-6">
             {createElement(sourceIconComponent, {
-              className: "h-3.5 w-3.5",
-              "aria-hidden": "true",
+              className: 'h-3.5 w-3.5',
+              'aria-hidden': 'true',
             })}
             <span className="capitalize">{activity.source}</span>
           </Badge>
 
-          <Badge variant="outline" className={cn("px-2 h-6", verbColor)}>
+          <Badge variant="outline" className={cn('px-2 h-6', verbColor)}>
             {activity.verb}
           </Badge>
         </div>
@@ -104,10 +93,10 @@ export function ThreadHeader({
           <Link
             href={activity.href}
             className={cn(
-              "block group/link",
+              'block group/link',
               ANIMATION.transition.base,
               TYPOGRAPHY.activity.title,
-              "hover:text-primary"
+              'hover:text-primary'
             )}
           >
             <span className={HOVER_EFFECTS.link}>{activity.title}</span>
@@ -115,12 +104,7 @@ export function ThreadHeader({
 
           {/* Featured Image (if present) */}
           {activity.meta?.image && (
-            <div
-              className={cn(
-                ACTIVITY_IMAGE.container,
-                ACTIVITY_IMAGE.sizes.header
-              )}
-            >
+            <div className={cn(ACTIVITY_IMAGE.container, ACTIVITY_IMAGE.sizes.header)}>
               <Image
                 src={activity.meta.image.url}
                 alt={activity.meta.image.alt || activity.title}
@@ -132,9 +116,7 @@ export function ThreadHeader({
 
           {/* Description (if present) */}
           {activity.description && (
-            <p className={TYPOGRAPHY.activity.description}>
-              {activity.description}
-            </p>
+            <p className={TYPOGRAPHY.activity.description}>{activity.description}</p>
           )}
 
           {/* Metadata (tags, stats, etc.) */}
@@ -150,21 +132,14 @@ export function ThreadHeader({
 
               {/* Stats */}
               {activity.meta.stats && (
-                <div
-                  className={cn(
-                    TYPOGRAPHY.activity.metadata,
-                    "flex items-center gap-2"
-                  )}
-                >
+                <div className={cn(TYPOGRAPHY.activity.metadata, 'flex items-center gap-2')}>
                   {activity.meta.stats.views !== undefined && (
                     <span>{activity.meta.stats.views} views</span>
                   )}
                   {activity.meta.stats.comments !== undefined && (
                     <span>{activity.meta.stats.comments} comments</span>
                   )}
-                  {activity.meta.readingTime && (
-                    <span>{activity.meta.readingTime}</span>
-                  )}
+                  {activity.meta.readingTime && <span>{activity.meta.readingTime}</span>}
                 </div>
               )}
             </div>
@@ -189,10 +164,7 @@ export function ThreadHeader({
 
       {/* Thread Connector Line (if has replies) */}
       {hasReplies && (
-        <div
-          className="absolute left-8 top-16 bottom-0 w-px bg-border/50"
-          aria-hidden="true"
-        />
+        <div className="absolute left-8 top-16 bottom-0 w-px bg-border/50" aria-hidden="true" />
       )}
     </div>
   );

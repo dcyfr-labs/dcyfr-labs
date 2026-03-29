@@ -13,8 +13,7 @@
  * @see docs/ai/agent-compliance-remediation-plan.md Phase 2
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
 
 // Parse CLI args
 const args = process.argv.slice(2).reduce((acc, arg) => {

@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { POST as AddMemoryAPI } from '../../src/app/api/memory/add/route';
 import { POST as SearchMemoryAPI } from '../../src/app/api/memory/search/route';
 
@@ -18,7 +18,7 @@ vi.mock('@/lib/rate-limit', () => ({
 }));
 
 vi.mock('@/lib/error-handler', () => ({
-  handleApiError: vi.fn((error) => ({
+  handleApiError: vi.fn((_error) => ({
     statusCode: 500,
     isConnectionError: false,
   })),

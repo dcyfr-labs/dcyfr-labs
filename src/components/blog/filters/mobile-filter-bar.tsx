@@ -2,7 +2,7 @@
 
 import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronUp, SlidersHorizontal } from 'lucide-react';
+import { SlidersHorizontal, X } from 'lucide-react';
 import {
   Sheet,
   SheetTrigger,
@@ -10,13 +10,10 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-  SheetFooter,
   SheetClose,
 } from '@/components/ui/sheet';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ANIMATION, TYPOGRAPHY } from '@/lib/design-tokens';
 import { BlogFilters } from './blog-filters';
 import { useMobileFilterSheet } from '@/hooks/use-mobile-filter-sheet';
 
@@ -36,15 +33,10 @@ interface MobileFilterBarProps {
 /**
  * MobileFilterBar Component
  *
- * Compact, collapsible filter UI for mobile devices.
- * Shows active filter summary with expand/collapse toggle.
- * When expanded, reveals full BlogFilters component.
+ * A slim horizontal pill strip that shows the filter trigger and active filter chips
+ * in a single scrollable row. Tapping the filter pill opens a bottom sheet.
  *
- * Features:
- * - Minimal footprint when collapsed (just summary bar)
- * - Shows active filter badges for quick removal
- * - Clear all button when filters are active
- * - Smooth expand/collapse animation
+ * Mobile only (hidden at lg breakpoint).
  */
 export function MobileFilterBar({
   selectedCategory,
@@ -58,141 +50,102 @@ export function MobileFilterBar({
   dateRange = 'all',
   totalResults,
 }: MobileFilterBarProps) {
-  // Using shared state with FloatingFilterFab for coordinated sheet control
   const { isOpen, setIsOpen } = useMobileFilterSheet();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const handleClearAll = () => {
     startTransition(() => {
-      // Close sheet if open, then clear all filters by navigating back to base blog path
       setIsOpen(false);
       router.push('/blog', { scroll: false });
     });
   };
 
-  // Calculate active filter count
-  const activeFilters: Array<{ key: string; label: string; value: string }> = [];
+  // Build active filter chip list
+  const activeFilters: Array<{ key: string; label: string }> = [];
 
-  if (query) {
-    activeFilters.push({ key: 'q', label: `"${query}"`, value: query });
-  }
+  if (query) activeFilters.push({ key: 'q', label: `"${query}"` });
   if (selectedCategory) {
     activeFilters.push({
       key: 'category',
       label: categoryDisplayMap[selectedCategory] || selectedCategory,
-      value: selectedCategory,
     });
   }
-  selectedTags.forEach((tag) => {
-    activeFilters.push({ key: 'tag', label: tag, value: tag });
-  });
+  selectedTags.forEach((tag) => activeFilters.push({ key: 'tag', label: tag }));
   if (readingTime) {
-    const readingTimeLabels: Record<string, string> = {
-      quick: '<5 min',
-      medium: '5-15 min',
-      deep: '>15 min',
-    };
-    activeFilters.push({
-      key: 'readingTime',
-      label: readingTimeLabels[readingTime] || readingTime,
-      value: readingTime,
-    });
+    const labels: Record<string, string> = { quick: '<5 min', medium: '5–15 min', deep: '>15 min' };
+    activeFilters.push({ key: 'readingTime', label: labels[readingTime] || readingTime });
   }
-  if (sortBy && sortBy !== 'popular') {
-    const sortLabels: Record<string, string> = {
-      newest: 'Newest',
+  if (sortBy && sortBy !== 'newest' && sortBy !== 'popular') {
+    const labels: Record<string, string> = {
       oldest: 'Oldest',
       archived: 'Archived',
       drafts: 'Drafts',
     };
-    activeFilters.push({
-      key: 'sortBy',
-      label: sortLabels[sortBy] || sortBy,
-      value: sortBy,
-    });
+    activeFilters.push({ key: 'sortBy', label: labels[sortBy] || sortBy });
   }
   if (dateRange && dateRange !== 'all') {
-    const dateLabels: Record<string, string> = {
-      '30d': '30 days',
-      '90d': '90 days',
+    const labels: Record<string, string> = {
+      '30d': 'Last 30d',
+      '90d': 'Last 90d',
       year: 'This year',
     };
-    activeFilters.push({
-      key: 'dateRange',
-      label: dateLabels[dateRange] || dateRange,
-      value: dateRange,
-    });
+    activeFilters.push({ key: 'dateRange', label: labels[dateRange] || dateRange });
   }
 
   const hasActiveFilters = activeFilters.length > 0;
 
   return (
-    <div className="border rounded-lg overflow-hidden">
-      {/* Use Sheet as a mobile bottom sheet instead of inline expansion */}
+    <div className="lg:hidden">
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
-        <div className={cn('border-b')}>
+        {/* Single horizontal scrollable row */}
+        <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-0.5">
+          {/* Filter trigger pill */}
           <SheetTrigger asChild>
             <button
               type="button"
+              aria-label={
+                hasActiveFilters ? `Filters (${activeFilters.length} active)` : 'Open filters'
+              }
               className={cn(
-                'w-full flex items-center justify-between gap-3 p-3',
-                'text-left hover:bg-muted/50 transition-colors'
+                'shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium',
+                'border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1',
+                hasActiveFilters
+                  ? 'bg-primary text-primary-foreground border-primary'
+                  : 'bg-background text-foreground border-border hover:bg-muted'
               )}
-              aria-label="Open filter sheet"
             >
-              <div className="flex items-center gap-2 min-w-0 flex-1">
-                <SlidersHorizontal className="h-4 w-4 shrink-0 text-muted-foreground" />
-                <span className={TYPOGRAPHY.label.small}>
-                  {hasActiveFilters ? <>Filters ({activeFilters.length})</> : <>Filter & Search</>}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  · {totalResults} post{totalResults !== 1 ? 's' : ''}
-                </span>
-              </div>
-              <ChevronUp className="h-4 w-4 text-muted-foreground" />
+              <SlidersHorizontal className="h-3.5 w-3.5 shrink-0" />
+              <span>{hasActiveFilters ? `Filters · ${activeFilters.length}` : 'Filter'}</span>
             </button>
           </SheetTrigger>
 
+          {/* Active filter chips */}
+          {activeFilters.map((filter, index) => (
+            <span
+              key={`${filter.key}-${index}`}
+              className="shrink-0 px-3 py-1.5 rounded-full text-xs font-medium bg-muted text-foreground border border-border/60 whitespace-nowrap"
+            >
+              {filter.label}
+            </span>
+          ))}
+
+          {/* Clear all — only when filters active */}
           {hasActiveFilters && (
-            <div className="px-3 pb-3 flex justify-end">
-              <button
-                type="button"
-                className={cn(
-                  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium text-xs transition-base',
-                  'hover:bg-accent hover:text-accent-foreground active:bg-accent/80 dark:hover:bg-accent/60',
-                  'disabled:pointer-events-none disabled:opacity-50',
-                  'h-6 px-2'
-                )}
-                onClick={handleClearAll}
-                disabled={isPending}
-              >
-                {isPending ? '...' : 'Clear'}
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={handleClearAll}
+              disabled={isPending}
+              aria-label="Clear all filters"
+              className="shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs text-muted-foreground hover:text-foreground border border-border/60 hover:border-border transition-colors disabled:opacity-50"
+            >
+              <X className="h-3 w-3" />
+              <span>Clear</span>
+            </button>
           )}
         </div>
 
-        {/* Active filter badges (collapsed view) */}
-        {hasActiveFilters && (
-          <div className="px-3 pb-3 flex flex-wrap gap-1.5">
-            {activeFilters.slice(0, 4).map((filter, index) => (
-              <Badge
-                key={`${filter.key}-${filter.value}-${index}`}
-                variant="secondary"
-                className="text-xs gap-1"
-              >
-                {filter.label}
-              </Badge>
-            ))}
-            {activeFilters.length > 4 && (
-              <Badge variant="outline" className="text-xs">
-                +{activeFilters.length - 4} more
-              </Badge>
-            )}
-          </div>
-        )}
-
+        {/* Bottom sheet */}
         <SheetContent side="bottom" className="max-h-[80vh] overflow-auto p-4">
           <SheetHeader>
             <div className="flex items-center justify-between">
@@ -205,12 +158,12 @@ export function MobileFilterBar({
               <div className="flex items-center gap-2">
                 {hasActiveFilters && (
                   <Button variant="ghost" size="sm" onClick={handleClearAll} disabled={isPending}>
-                    {isPending ? '...' : 'Clear'}
+                    {isPending ? '…' : 'Clear all'}
                   </Button>
                 )}
                 <SheetClose asChild>
                   <Button variant="ghost" size="sm" aria-label="Close filters">
-                    Close
+                    Done
                   </Button>
                 </SheetClose>
               </div>
@@ -230,8 +183,6 @@ export function MobileFilterBar({
               dateRange={dateRange}
             />
           </div>
-
-          <SheetFooter>{/* Footer actions if needed in the future */}</SheetFooter>
         </SheetContent>
       </Sheet>
     </div>

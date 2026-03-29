@@ -19,38 +19,10 @@ import { useMemo, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { TYPOGRAPHY, SEMANTIC_COLORS } from '@/lib/design-tokens';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-  AlertCircle,
-  ArrowUp,
-  ArrowDown,
-  ArrowUpDown,
-  Download,
-  RefreshCw,
-  Filter,
-  ChevronDown,
-  Calendar,
-  Copy,
-} from 'lucide-react';
+import { ArrowUp, ArrowDown, ArrowUpDown, ChevronDown, Copy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -64,7 +36,6 @@ import { DashboardLayout } from '@/components/dashboard';
 import { AnalyticsOverview } from '@/components/analytics';
 import { ConversionMetrics } from '@/components/analytics';
 import { AnalyticsInsights } from '@/components/analytics';
-import { AnalyticsRecommendations } from '@/components/analytics';
 import { VercelInsights } from '@/components/analytics';
 import { SocialMetrics } from '@/components/analytics';
 import dynamic from 'next/dynamic';
@@ -116,7 +87,6 @@ import {
 import {
   sortData,
   filterBySearch,
-  filterByTags,
   filterByFlags,
   getUniqueValues,
   calculateEngagementRate,
@@ -151,7 +121,7 @@ const copyToClipboard = async (value: string | number, label: string) => {
       description: String(value),
       duration: 2000,
     });
-  } catch (err) {
+  } catch {
     toast.error('Failed to copy to clipboard');
   }
 };
@@ -170,15 +140,12 @@ export default function AnalyticsDashboard({
   const [publicationCohort, setPublicationCohort] = useState<PublicationCohort>('all');
   const [performanceTier, setPerformanceTier] = useState<PerformanceTierFilter>('all');
   const [tagFilterMode, setTagFilterMode] = useState<TagFilterMode>('AND');
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [showConversion, setShowConversion] = useState(false);
   const [showPerformance, setShowPerformance] = useState(false);
 
   // Data from server (no client-side fetching)
   const [data] = useState<AnalyticsData>(initialData);
   const [daily] = useState<DailyData[]>(initialDailyData);
-  const loading = false; // Data always available from server
-  const error = null; // Server handles errors
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Router for manual refresh
@@ -220,114 +187,113 @@ export default function AnalyticsDashboard({
   });
 
   // Derived data - apply filters and sorting
-  const { filteredPosts, sortedPosts, filteredTrending, filteredSummary, trendStats } =
-    useMemo(() => {
-      if (!data) {
-        return {
-          filteredPosts: [],
-          sortedPosts: [],
-          filteredTrending: [],
-          filteredSummary: {
-            totalPosts: 0,
-            totalViews: 0,
-            totalViewsRange: 0,
-            totalShares: 0,
-            totalComments: 0,
-            averageViews: 0,
-            averageViewsRange: 0,
-            averageShares: 0,
-            averageComments: 0,
-            topPost: null,
-            topPostRange: null,
-            mostSharedPost: null,
-            mostCommentedPost: null,
-          },
-          trendStats: { totalViewsTrend24h: 0, totalTrendPercent: 0 },
-        };
-      }
-
-      const allPosts = data.posts || [];
-
-      // Apply filters
-      let filtered = filterByFlags(allPosts, { draft: hideDrafts, archived: hideArchived });
-      filtered = filterBySearch(filtered, searchQuery, ['title', 'summary', 'tags']);
-
-      // Apply advanced filters
-      filtered = filterByPublicationCohort(filtered, publicationCohort, 'publishedAt');
-      filtered = filterByPerformanceTier(filtered, performanceTier, 'views');
-
-      // Apply tag filter with mode (AND/OR)
-      filtered = filterByTagsWithMode(filtered, selectedTags, 'tags', tagFilterMode);
-
-      // Apply sorting (handle engagement rate specially)
-      let sorted: PostAnalytics[];
-      if (sortField === 'engagementRate') {
-        sorted = [...filtered].sort((a, b) => {
-          const rateA = calculateEngagementRate(a.views, a.shares, a.comments);
-          const rateB = calculateEngagementRate(b.views, b.shares, b.comments);
-          return sortDirection === 'desc' ? rateB - rateA : rateA - rateB;
-        });
-      } else {
-        sorted = sortData(filtered, sortField as keyof PostAnalytics, sortDirection);
-      }
-
-      // Filter trending
-      const trending = filterByFlags(data.trending || [], {
-        draft: hideDrafts,
-        archived: hideArchived,
-      });
-
-      // Recompute summary based on filtered posts
-      const summary = {
-        totalPosts: filtered.length,
-        totalViews: filtered.reduce((s, p) => s + p.views, 0),
-        totalViewsRange: filtered.reduce((s, p) => s + p.viewsRange, 0),
-        totalShares: filtered.reduce((s, p) => s + p.shares, 0),
-        totalComments: filtered.reduce((s, p) => s + p.comments, 0),
-        averageViews:
-          filtered.length > 0
-            ? Math.round(filtered.reduce((s, p) => s + p.views, 0) / filtered.length)
-            : 0,
-        averageViewsRange:
-          filtered.length > 0
-            ? Math.round(filtered.reduce((s, p) => s + p.viewsRange, 0) / filtered.length)
-            : 0,
-        averageShares:
-          filtered.length > 0
-            ? Math.round(filtered.reduce((s, p) => s + p.shares, 0) / filtered.length)
-            : 0,
-        averageComments:
-          filtered.length > 0
-            ? Math.round(filtered.reduce((s, p) => s + p.comments, 0) / filtered.length)
-            : 0,
-        topPost: filtered.length > 0 ? [...filtered].sort((a, b) => b.views - a.views)[0] : null,
-        topPostRange:
-          filtered.length > 0 ? [...filtered].sort((a, b) => b.viewsRange - a.viewsRange)[0] : null,
-        mostSharedPost:
-          filtered.length > 0 ? [...filtered].sort((a, b) => b.shares - a.shares)[0] : null,
-        mostCommentedPost:
-          filtered.length > 0 ? [...filtered].sort((a, b) => b.comments - a.comments)[0] : null,
-      };
-
+  const { filteredPosts, sortedPosts, filteredTrending, filteredSummary } = useMemo(() => {
+    if (!data) {
       return {
-        filteredPosts: filtered,
-        sortedPosts: sorted,
-        filteredTrending: trending,
-        filteredSummary: summary,
+        filteredPosts: [],
+        sortedPosts: [],
+        filteredTrending: [],
+        filteredSummary: {
+          totalPosts: 0,
+          totalViews: 0,
+          totalViewsRange: 0,
+          totalShares: 0,
+          totalComments: 0,
+          averageViews: 0,
+          averageViewsRange: 0,
+          averageShares: 0,
+          averageComments: 0,
+          topPost: null,
+          topPostRange: null,
+          mostSharedPost: null,
+          mostCommentedPost: null,
+        },
         trendStats: { totalViewsTrend24h: 0, totalTrendPercent: 0 },
       };
-    }, [
-      data,
-      hideDrafts,
-      hideArchived,
-      searchQuery,
-      selectedTags,
-      tagFilterMode,
-      publicationCohort,
-      performanceTier,
-      sortField,
-      sortDirection,
-    ]);
+    }
+
+    const allPosts = data.posts || [];
+
+    // Apply filters
+    let filtered = filterByFlags(allPosts, { draft: hideDrafts, archived: hideArchived });
+    filtered = filterBySearch(filtered, searchQuery, ['title', 'summary', 'tags']);
+
+    // Apply advanced filters
+    filtered = filterByPublicationCohort(filtered, publicationCohort, 'publishedAt');
+    filtered = filterByPerformanceTier(filtered, performanceTier, 'views');
+
+    // Apply tag filter with mode (AND/OR)
+    filtered = filterByTagsWithMode(filtered, selectedTags, 'tags', tagFilterMode);
+
+    // Apply sorting (handle engagement rate specially)
+    let sorted: PostAnalytics[];
+    if (sortField === 'engagementRate') {
+      sorted = [...filtered].sort((a, b) => {
+        const rateA = calculateEngagementRate(a.views, a.shares, a.comments);
+        const rateB = calculateEngagementRate(b.views, b.shares, b.comments);
+        return sortDirection === 'desc' ? rateB - rateA : rateA - rateB;
+      });
+    } else {
+      sorted = sortData(filtered, sortField as keyof PostAnalytics, sortDirection);
+    }
+
+    // Filter trending
+    const trending = filterByFlags(data.trending || [], {
+      draft: hideDrafts,
+      archived: hideArchived,
+    });
+
+    // Recompute summary based on filtered posts
+    const summary = {
+      totalPosts: filtered.length,
+      totalViews: filtered.reduce((s, p) => s + p.views, 0),
+      totalViewsRange: filtered.reduce((s, p) => s + p.viewsRange, 0),
+      totalShares: filtered.reduce((s, p) => s + p.shares, 0),
+      totalComments: filtered.reduce((s, p) => s + p.comments, 0),
+      averageViews:
+        filtered.length > 0
+          ? Math.round(filtered.reduce((s, p) => s + p.views, 0) / filtered.length)
+          : 0,
+      averageViewsRange:
+        filtered.length > 0
+          ? Math.round(filtered.reduce((s, p) => s + p.viewsRange, 0) / filtered.length)
+          : 0,
+      averageShares:
+        filtered.length > 0
+          ? Math.round(filtered.reduce((s, p) => s + p.shares, 0) / filtered.length)
+          : 0,
+      averageComments:
+        filtered.length > 0
+          ? Math.round(filtered.reduce((s, p) => s + p.comments, 0) / filtered.length)
+          : 0,
+      topPost: filtered.length > 0 ? [...filtered].sort((a, b) => b.views - a.views)[0] : null,
+      topPostRange:
+        filtered.length > 0 ? [...filtered].sort((a, b) => b.viewsRange - a.viewsRange)[0] : null,
+      mostSharedPost:
+        filtered.length > 0 ? [...filtered].sort((a, b) => b.shares - a.shares)[0] : null,
+      mostCommentedPost:
+        filtered.length > 0 ? [...filtered].sort((a, b) => b.comments - a.comments)[0] : null,
+    };
+
+    return {
+      filteredPosts: filtered,
+      sortedPosts: sorted,
+      filteredTrending: trending,
+      filteredSummary: summary,
+      trendStats: { totalViewsTrend24h: 0, totalTrendPercent: 0 },
+    };
+  }, [
+    data,
+    hideDrafts,
+    hideArchived,
+    searchQuery,
+    selectedTags,
+    tagFilterMode,
+    publicationCohort,
+    performanceTier,
+    sortField,
+    sortDirection,
+  ]);
 
   // Get all unique tags for filter - moved before export functions to ensure it's defined
   const allTags = useMemo(() => {

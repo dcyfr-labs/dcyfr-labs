@@ -15,9 +15,10 @@
  * ```
  */
 
-import { SPACING } from "@/lib/design-tokens";
-import { cn } from "@/lib/utils";
-import { BlogPostCTA } from "@/components/common";
+import { SPACING } from '@/lib/design-tokens';
+import { cn } from '@/lib/utils';
+import { BlogPostCTA } from '@/components/common';
+import { NewsletterSignup } from '@/components/blog/rivet/engagement/newsletter-signup';
 
 export interface ArticleFooterProps<T = Record<string, unknown>> {
   /** Related items to display (optional) */
@@ -39,7 +40,7 @@ export interface ArticleFooterProps<T = Record<string, unknown>> {
 export function ArticleFooter<T>({
   relatedItems = [],
   renderRelatedItem,
-  relatedTitle = "Related Articles",
+  relatedTitle = 'Related Articles',
   children,
   className,
 }: ArticleFooterProps<T>) {
@@ -52,6 +53,13 @@ export function ArticleFooter<T>({
 
   return (
     <div className={cn(SPACING.section, className)}>
+      {/* Newsletter signup */}
+      <NewsletterSignup
+        variant="card"
+        title="Stay in the loop"
+        description="Get new articles on AI engineering, cybersecurity, and security architecture delivered to your inbox."
+      />
+
       {/* Call-to-Action Section */}
       <BlogPostCTA variant="centered" location="blog-post-end" />
 

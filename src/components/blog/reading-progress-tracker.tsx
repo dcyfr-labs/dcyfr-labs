@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, Circle } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { BORDERS, SPACING, ANIMATION } from "@/lib/design-tokens";
+import * as React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle2, Circle } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { BORDERS } from '@/lib/design-tokens';
 
 /**
  * Reading Progress Tracker
@@ -28,7 +28,7 @@ interface ReadingProgressTrackerProps {
 export function ReadingProgressTracker({
   total,
   explored,
-  itemLabel = "risks",
+  itemLabel = 'risks',
   message,
 }: ReadingProgressTrackerProps) {
   const progress = (explored / total) * 100;
@@ -44,11 +44,11 @@ export function ReadingProgressTracker({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         className={cn(
-          "sticky top-16 z-30 mx-auto mb-6",
-          "bg-linear-to-r from-primary/10 via-primary/5 to-transparent",
+          'sticky top-16 z-30 mx-auto mb-6',
+          'bg-linear-to-r from-primary/10 via-primary/5 to-transparent',
           BORDERS.card,
-          "border-primary/20",
-          "rounded-xl p-4 shadow-lg backdrop-blur-sm"
+          'border-primary/20',
+          'rounded-xl p-4 shadow-lg backdrop-blur-sm'
         )}
       >
         <div className="flex items-center justify-between gap-4">
@@ -77,11 +77,9 @@ export function ReadingProgressTracker({
                       </span>
                     ) : (
                       <>
-                        <span className="text-primary font-bold">
-                          {explored}
-                        </span>
+                        <span className="text-primary font-bold">{explored}</span>
                         <span className="text-muted-foreground">
-                          {" "}
+                          {' '}
                           of {total} {itemLabel} explored
                         </span>
                       </>
@@ -108,12 +106,12 @@ export function ReadingProgressTracker({
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
                 className={cn(
-                  "h-full rounded-full",
+                  'h-full rounded-full',
                   isComplete
-                    ? "bg-linear-to-r from-green-500 to-green-600"
-                    : "bg-linear-to-r from-primary to-primary/70"
+                    ? 'bg-linear-to-r from-green-500 to-green-600'
+                    : 'bg-linear-to-r from-primary to-primary/70'
                 )}
               />
             </div>
@@ -129,12 +127,12 @@ export function ReadingProgressTracker({
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
               className={cn(
-                "h-full rounded-full",
+                'h-full rounded-full',
                 isComplete
-                  ? "bg-linear-to-r from-green-500 to-green-600"
-                  : "bg-linear-to-r from-primary to-primary/70"
+                  ? 'bg-linear-to-r from-green-500 to-green-600'
+                  : 'bg-linear-to-r from-primary to-primary/70'
               )}
             />
           </div>
@@ -160,7 +158,7 @@ interface ProgressDotsProps {
   riskIds: string[]; // Ordered array of risk IDs ["ASI01", "ASI02", ...]
 }
 
-export function ProgressDots({ total, explored, riskIds }: ProgressDotsProps) {
+export function ProgressDots({ total: _total, explored, riskIds }: ProgressDotsProps) {
   return (
     <div className="flex items-center gap-1.5 flex-wrap">
       {riskIds.map((id, index) => {
@@ -172,10 +170,10 @@ export function ProgressDots({ total, explored, riskIds }: ProgressDotsProps) {
             animate={{ scale: 1 }}
             transition={{ delay: index * 0.05 }}
             className={cn(
-              "h-2 w-2 rounded-full transition-colors",
-              isExplored ? "bg-primary" : "bg-border"
+              'h-2 w-2 rounded-full transition-colors',
+              isExplored ? 'bg-primary' : 'bg-border'
             )}
-            title={`${id}: ${isExplored ? "Explored" : "Not explored"}`}
+            title={`${id}: ${isExplored ? 'Explored' : 'Not explored'}`}
           />
         );
       })}

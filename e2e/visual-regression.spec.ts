@@ -37,7 +37,7 @@ for (const page of VISUAL_TEST_PAGES) {
       await devBannerClose.waitFor({ state: 'visible', timeout: 1500 });
       await devBannerClose.click();
       await p.waitForTimeout(150);
-    } catch (err) {
+    } catch {
       // Ignore timeout — dev banner not present.
     }
 

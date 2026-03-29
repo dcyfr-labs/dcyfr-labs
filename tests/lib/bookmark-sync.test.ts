@@ -10,7 +10,6 @@ import {
   loadBookmarksFromServer,
   mergeBookmarkCollections,
   type BookmarkCollection,
-  type Bookmark,
 } from '@/lib/activity/bookmarks';
 
 // Mock storage adapter

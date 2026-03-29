@@ -276,7 +276,7 @@ export const manualRefreshGitHubData = inngest.createFunction(
  * Creates an activity item for the commit and stores it for the activity feed
  */
 export const processGitHubCommit = inngest.createFunction(
-  { id: 'process-github-commit', concurrency: { limit: 10 } },
+  { id: 'process-github-commit', concurrency: { limit: 5 } },
   { event: 'github/commit.pushed' },
   async ({ event, logger }) => {
     try {

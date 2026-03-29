@@ -7,7 +7,6 @@
 
 import { render, screen } from '@testing-library/react';
 import FeedsPage, { metadata } from '@/app/(main)/feeds/page';
-import { SITE_TITLE, SITE_URL } from '@/lib/site-config';
 
 describe('FeedsPage', () => {
   // Single render for all DOM-querying tests (static page, no interactions)

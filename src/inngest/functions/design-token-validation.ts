@@ -10,10 +10,10 @@
  * @see docs/ai/enforcement/DESIGN_TOKENS.md
  */
 
-import { inngest } from "../client";
-import { exec } from "child_process";
-import { promisify } from "util";
-import { validateDesignTokens as validateTokensCompat } from "@/lib/ai-compat.server";
+import { inngest } from '../client';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+import { validateDesignTokens as validateTokensCompat } from '@/lib/ai-compat.server';
 
 const execAsync = promisify(exec);
 
@@ -29,7 +29,7 @@ interface DesignTokenViolation {
  */
 function parseViolations(output: string): DesignTokenViolation[] {
   const violations: DesignTokenViolation[] = [];
-  const lines = output.split("\n");
+  const lines = output.split('\n');
 
   for (const line of lines) {
     // Example format: "src/components/foo.tsx:42: hardcoded padding-4 (use spacing('md'))"
@@ -51,12 +51,12 @@ function parseViolations(output: string): DesignTokenViolation[] {
  * Extract violation pattern for categorization
  */
 function extractPattern(violation: string): string {
-  if (violation.includes("SPACING")) return "spacing";
-  if (violation.includes("TYPOGRAPHY")) return "typography";
-  if (violation.includes("COLORS")) return "colors";
-  if (violation.includes("BORDERS")) return "borders";
-  if (violation.includes("ANIMATION")) return "animation";
-  return "unknown";
+  if (violation.includes('SPACING')) return 'spacing';
+  if (violation.includes('TYPOGRAPHY')) return 'typography';
+  if (violation.includes('COLORS')) return 'colors';
+  if (violation.includes('BORDERS')) return 'borders';
+  if (violation.includes('ANIMATION')) return 'animation';
+  return 'unknown';
 }
 
 /**
@@ -64,40 +64,41 @@ function extractPattern(violation: string): string {
  */
 export const validateDesignTokens = inngest.createFunction(
   {
-    id: "validate-design-tokens",
-    name: "Validate Design Token Compliance",
+    id: 'validate-design-tokens',
+    name: 'Validate Design Token Compliance',
     retries: 2,
   },
-  { event: "github/design-tokens.validate" },
+  { event: 'github/design-tokens.validate' },
   async ({ event, step }) => {
-    const { branch, changedFiles, commits, repository } = event.data;
+    const { branch, changedFiles } = event.data;
 
     // Step 1: Run token violation check
-    const violations = await step.run("check-violations", async () => {
+    const violations = await step.run('check-violations', async () => {
       // Try new @dcyfr/ai-based validation first
       try {
         const result = await validateTokensCompat(changedFiles);
 
         // Convert to legacy format for backward compatibility
-        return result.violations.map((v, idx) => ({
+        return result.violations.map((v) => ({
           file: changedFiles[0] || 'unknown', // TODO: Extract file from violation message
           line: 0, // TODO: Extract line number from violation message
           violation: v,
           pattern: extractPattern(v),
         }));
       } catch (compatError) {
-        console.warn('[Design Tokens] New validation unavailable, falling back to script:', compatError);
+        console.warn(
+          '[Design Tokens] New validation unavailable, falling back to script:',
+          compatError
+        );
 
         // Fallback to script-based validation
         try {
-          const { stdout } = await execAsync("npm run find:token-violations");
+          const { stdout } = await execAsync('npm run find:token-violations');
           const allViolations = parseViolations(stdout);
-          return allViolations.filter((v) =>
-            changedFiles.some((f: string) => v.file.includes(f))
-          );
+          return allViolations.filter((v) => changedFiles.some((f: string) => v.file.includes(f)));
         } catch (error) {
           // Script exits with non-zero code if violations found
-          if (error instanceof Error && "stdout" in error) {
+          if (error instanceof Error && 'stdout' in error) {
             const execError = error as Error & { stdout: string };
             const allViolations = parseViolations(execError.stdout);
             return allViolations.filter((v) =>
@@ -110,17 +111,20 @@ export const validateDesignTokens = inngest.createFunction(
     });
 
     // Step 2: Log results
-    await step.run("log-results", async () => {
+    await step.run('log-results', async () => {
       console.warn(`[Design Tokens] Branch: ${branch}`);
       console.warn(`[Design Tokens] Files checked: ${changedFiles.length}`);
       console.warn(`[Design Tokens] Violations found: ${violations.length}`);
 
       if (violations.length > 0) {
-        console.warn("[Design Tokens] Violations by pattern:");
-        const byPattern = violations.reduce((acc, v) => {
-          acc[v.pattern] = (acc[v.pattern] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>);
+        console.warn('[Design Tokens] Violations by pattern:');
+        const byPattern = violations.reduce(
+          (acc, v) => {
+            acc[v.pattern] = (acc[v.pattern] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>
+        );
         console.warn(byPattern);
       }
 
@@ -128,16 +132,19 @@ export const validateDesignTokens = inngest.createFunction(
         branch,
         filesChecked: changedFiles.length,
         violationsFound: violations.length,
-        violationsByPattern: violations.reduce((acc, v) => {
-          acc[v.pattern] = (acc[v.pattern] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>),
+        violationsByPattern: violations.reduce(
+          (acc, v) => {
+            acc[v.pattern] = (acc[v.pattern] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>
+        ),
       };
     });
 
     // Step 3: Send notifications (if violations found)
     if (violations.length > 0) {
-      await step.run("notify-violations", async () => {
+      await step.run('notify-violations', async () => {
         // TODO: Future enhancement - Post GitHub PR comment with violations
         // TODO: Future enhancement - Send Slack notification
         // TODO: Future enhancement - Update dashboard metrics
@@ -148,7 +155,7 @@ export const validateDesignTokens = inngest.createFunction(
 
         // For now, just log critical violations
         const critical = violations.filter((v) =>
-          ["spacing", "typography", "colors"].includes(v.pattern)
+          ['spacing', 'typography', 'colors'].includes(v.pattern)
         );
 
         if (critical.length > 0) {
@@ -170,7 +177,7 @@ export const validateDesignTokens = inngest.createFunction(
       branch,
       filesChecked: changedFiles.length,
       violations: violations.length,
-      status: violations.length === 0 ? "passed" : "failed",
+      status: violations.length === 0 ? 'passed' : 'failed',
     };
   }
 );

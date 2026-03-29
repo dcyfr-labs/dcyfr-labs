@@ -1,27 +1,14 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import {
-  BookOpen,
-  Briefcase,
-  Activity,
-  ArrowRight,
-  Bookmark,
-  Heart,
-  Rss,
-} from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { SkeletonText } from "@/components/ui/skeleton-primitives";
-import {
-  TYPOGRAPHY,
-  HOVER_EFFECTS,
-  ANIMATION,
-  SPACING,
-} from "@/lib/design-tokens";
-import { cn } from "@/lib/utils";
-import { NAVIGATION } from "@/lib/navigation";
+import Link from 'next/link';
+import { BookOpen, Briefcase, Activity, ArrowRight } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { SkeletonText } from '@/components/ui/skeleton-primitives';
+import { TYPOGRAPHY, HOVER_EFFECTS, ANIMATION, SPACING } from '@/lib/design-tokens';
+import { cn } from '@/lib/utils';
+import { NAVIGATION } from '@/lib/navigation';
 
 // ============================================================================
 // TYPES
@@ -93,7 +80,7 @@ export function ExploreCards({
   // Loading state - skeleton version matching real component structure
   if (loading) {
     return (
-      <div className={cn("flex flex-col", SPACING.subsection, className)}>
+      <div className={cn('flex flex-col', SPACING.subsection, className)}>
         {/* Primary Content Cards Skeleton */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[...Array(3)].map((_, index) => (
@@ -130,17 +117,17 @@ export function ExploreCards({
         <nav
           aria-label="Discover additional content"
           className={cn(
-            "w-full overflow-x-auto scrollbar-hide",
-            "-webkit-overflow-scrolling-touch",
-            "flex justify-center"
+            'w-full overflow-x-auto scrollbar-hide',
+            '-webkit-overflow-scrolling-touch',
+            'flex justify-center'
           )}
         >
           <div
             className={cn(
-              "flex items-center gap-2 md:gap-3",
-              "py-1 md:py-2",
-              "px-4 md:px-8",
-              "flex-nowrap"
+              'flex items-center gap-2 md:gap-3',
+              'py-1 md:py-2',
+              'px-4 md:px-8',
+              'flex-nowrap'
             )}
           >
             {[...Array(3)].map((_, index) => (
@@ -160,46 +147,43 @@ export function ExploreCards({
 
   const cards: ExploreCardData[] = [
     {
-      href: "/activity",
-      label: "Activity",
+      href: '/activity',
+      label: 'Activity',
       icon: Activity,
-      description: "Recent updates, commits, and milestones",
+      description: 'Recent updates, commits, and milestones',
       count: activityCount,
-      countLabel: "activities",
-      accentColor: "border-primary",
+      countLabel: 'activities',
+      accentColor: 'border-primary',
     },
     {
-      href: "/blog",
-      label: "Blog",
+      href: '/blog',
+      label: 'Blog',
       icon: BookOpen,
-      description: "Articles on security, development, and technology",
+      description: 'Articles on security, development, and technology',
       count: postCount,
-      countLabel: "articles",
-      accentColor: "border-primary",
+      countLabel: 'articles',
+      accentColor: 'border-primary',
     },
     {
-      href: "/work",
-      label: "Projects",
+      href: '/work',
+      label: 'Projects',
       icon: Briefcase,
-      description: "Featured work and open source contributions",
+      description: 'Featured work and open source contributions',
       count: projectCount,
-      countLabel: "projects",
-      accentColor: "border-primary",
+      countLabel: 'projects',
+      accentColor: 'border-primary',
     },
   ];
 
   // Get secondary discover links (excluding Activity, Blog, Projects to avoid duplicates)
-  const discoverSection = NAVIGATION.mobile.find(
-    (section) => section.id === "discover"
-  );
+  const discoverSection = NAVIGATION.mobile.find((section) => section.id === 'discover');
   const secondaryLinks =
     discoverSection?.items.filter(
-      (item) =>
-        !["Activity", "Blog", "Projects"].some((name) => item.label === name)
+      (item) => !['Activity', 'Blog', 'Projects'].some((name) => item.label === name)
     ) || [];
 
   return (
-    <div className={cn("flex flex-col", SPACING.subsection, className)}>
+    <div className={cn('flex flex-col', SPACING.subsection, className)}>
       {/* Primary Content Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {cards.map((card, index) => {
@@ -215,7 +199,7 @@ export function ExploreCards({
               <Link href={card.href} className="block h-full group">
                 <Card
                   className={cn(
-                    "h-full relative overflow-hidden",
+                    'h-full relative overflow-hidden',
                     HOVER_EFFECTS.card,
                     HOVER_EFFECTS.cardGlow
                   )}
@@ -223,7 +207,7 @@ export function ExploreCards({
                   {/* Accent border */}
                   <div
                     className={cn(
-                      "absolute inset-x-0 top-0 h-0.5 z-20 opacity-0 group-hover:opacity-100 border-t-2",
+                      'absolute inset-x-0 top-0 h-0.5 z-20 opacity-0 group-hover:opacity-100 border-t-2',
                       card.accentColor,
                       ANIMATION.transition.appearance
                     )}
@@ -235,13 +219,13 @@ export function ExploreCards({
                       <div className="flex items-center gap-2">
                         <div
                           className={cn(
-                            "p-2 rounded-lg bg-muted/50 group-hover:bg-muted group-hover:scale-110",
+                            'p-2 rounded-lg bg-muted/50 group-hover:bg-muted group-hover:scale-110',
                             ANIMATION.transition.base
                           )}
                         >
                           <card.icon
                             className={cn(
-                              "h-5 w-5 text-muted-foreground group-hover:text-foreground",
+                              'h-5 w-5 text-muted-foreground group-hover:text-foreground',
                               ANIMATION.transition.theme
                             )}
                             aria-hidden="true"
@@ -250,7 +234,7 @@ export function ExploreCards({
                         <h3
                           className={cn(
                             TYPOGRAPHY.h3.standard,
-                            "text-base group-hover:text-foreground",
+                            'text-base group-hover:text-foreground',
                             ANIMATION.transition.theme
                           )}
                         >
@@ -261,7 +245,7 @@ export function ExploreCards({
                         <Badge
                           variant="secondary"
                           className={cn(
-                            "text-xs shrink-0 group-hover:scale-110",
+                            'text-xs shrink-0 group-hover:scale-110',
                             ANIMATION.transition.movement,
                             ANIMATION.effects.countUp
                           )}
@@ -272,21 +256,19 @@ export function ExploreCards({
                     </div>
 
                     {/* Description */}
-                    <p className="text-sm text-muted-foreground flex-1">
-                      {card.description}
-                    </p>
+                    <p className="text-sm text-muted-foreground flex-1">{card.description}</p>
 
                     {/* Arrow indicator */}
                     <div
                       className={cn(
-                        "flex items-center gap-1 mt-3 text-sm text-muted-foreground group-hover:text-foreground",
+                        'flex items-center gap-1 mt-3 text-sm text-muted-foreground group-hover:text-foreground',
                         ANIMATION.transition.theme
                       )}
                     >
                       <span>Explore</span>
                       <ArrowRight
                         className={cn(
-                          "h-4 w-4 group-hover:translate-x-1",
+                          'h-4 w-4 group-hover:translate-x-1',
                           ANIMATION.transition.movement
                         )}
                         aria-hidden="true"
@@ -305,17 +287,17 @@ export function ExploreCards({
         <nav
           aria-label="Discover additional content"
           className={cn(
-            "w-full overflow-x-auto scrollbar-hide",
-            "-webkit-overflow-scrolling-touch",
-            "flex justify-center"
+            'w-full overflow-x-auto scrollbar-hide',
+            '-webkit-overflow-scrolling-touch',
+            'flex justify-center'
           )}
         >
           <div
             className={cn(
-              "flex items-center gap-2 md:gap-3",
-              "py-1 md:py-2",
-              "px-4 md:px-8",
-              "flex-nowrap"
+              'flex items-center gap-2 md:gap-3',
+              'py-1 md:py-2',
+              'px-4 md:px-8',
+              'flex-nowrap'
             )}
           >
             {secondaryLinks.map((link, index) => {
@@ -332,25 +314,23 @@ export function ExploreCards({
                   <Link
                     href={link.href}
                     className={cn(
-                      "flex items-center gap-1.5 md:gap-2",
-                      "px-3 py-2 md:px-4 md:py-2.5",
-                      "rounded-full",
-                      "bg-muted/50 hover:bg-muted",
-                      "text-muted-foreground hover:text-foreground",
+                      'flex items-center gap-1.5 md:gap-2',
+                      'px-3 py-2 md:px-4 md:py-2.5',
+                      'rounded-full',
+                      'bg-muted/50 hover:bg-muted',
+                      'text-muted-foreground hover:text-foreground',
                       TYPOGRAPHY.label.small,
-                      "whitespace-nowrap",
+                      'whitespace-nowrap',
                       ANIMATION.transition.base,
-                      "hover:scale-105 active:scale-95",
-                      "hover:shadow-md",
-                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                      "min-h-11" // Touch target (44px)
+                      'hover:scale-105 active:scale-95',
+                      'hover:shadow-md',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                      'min-h-11' // Touch target (44px)
                     )}
                     title={link.description}
                     prefetch={link.prefetch ?? false}
                   >
-                    {Icon && (
-                      <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-                    )}
+                    {Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />}
                     <span>{link.label}</span>
                   </Link>
                 </div>

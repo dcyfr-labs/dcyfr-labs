@@ -10,7 +10,7 @@
 
 import type { Post } from '@/data/posts';
 import type { ActivityItem, ActivitySource, ActivityVerb } from './types';
-import type { CredlyBadge, CredlyBadgesResponse } from '@/types/credly';
+import type { CredlyBadgesResponse } from '@/types/credly';
 import { getMultiplePostViews, getMultiplePostViewsInRange } from '@/lib/views.server';
 import { getPostCommentsBulk } from '@/lib/comments';
 import { getActivityReactionsBulk, mapGiscusReactionsToLikes } from '@/lib/giscus-reactions';
@@ -866,7 +866,7 @@ export async function transformVercelAnalytics(limit?: number): Promise<Activity
  */
 export async function transformGitHubTraffic(
   owner: string = 'dcyfr',
-  repos: string[] = ['dcyfr-labs'],
+  _repos: string[] = ['dcyfr-labs'],
   limit?: number
 ): Promise<ActivityItem[]> {
   // Redis client imported from shared module
@@ -949,7 +949,7 @@ export async function transformGitHubTraffic(
 // Google Analytics integration removed - not implemented
 // If needed in future, implement OAuth 2.0 service account in analytics-integration.ts
 
-export async function transformGoogleAnalytics(limit?: number): Promise<ActivityItem[]> {
+export async function transformGoogleAnalytics(_limit?: number): Promise<ActivityItem[]> {
   // Placeholder - Google Analytics not implemented
   return [];
 }

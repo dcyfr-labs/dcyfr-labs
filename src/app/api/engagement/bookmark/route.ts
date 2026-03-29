@@ -98,7 +98,15 @@ export async function POST(request: NextRequest) {
     let newCount: number | null;
     if (action === 'bookmark') {
       const dedupSlug = `${contentType}:${slug}`;
-      const alreadyActioned = await checkIpDeduplication('bookmark', dedupSlug, clientIp, 86400);
+      let alreadyActioned = false;
+      try {
+        alreadyActioned = await checkIpDeduplication('bookmark', dedupSlug, clientIp, 86400);
+      } catch (error) {
+        console.warn(
+          '[API] Bookmark deduplication unavailable, applying fail-open behavior',
+          error
+        );
+      }
 
       if (alreadyActioned) {
         const currentCount = await getBookmarks(contentType, slug);

@@ -81,6 +81,9 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string; reviewId: string }> }
 ) {
+  if (process.env.PLUGINS_ENABLED !== 'true') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
   try {
     const { id: pluginId, reviewId } = await params;
 

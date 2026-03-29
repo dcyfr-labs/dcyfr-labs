@@ -1,10 +1,10 @@
 /**
  * DynamicBlogContent Component Tests
- * 
+ *
  * NOTE: DynamicBlogContent is an async server component that wraps DynamicBlogContentImpl.
  * Since server components can't be easily tested with React Testing Library in unit tests,
  * we test the underlying logic, child component integration, and data flow patterns.
- * 
+ *
  * These tests validate:
  * - View count fetching and sorting logic
  * - Filter state calculation
@@ -25,7 +25,7 @@ vi.mock('@/lib/views', () => ({
       ['post-2', 50],
       ['post-3', 75],
     ]);
-    return new Map(ids.map(id => [id, mockViews.get(id) || 0]));
+    return new Map(ids.map((id) => [id, mockViews.get(id) || 0]));
   }),
 }));
 
@@ -99,10 +99,10 @@ describe('DynamicBlogContent Logic Tests', () => {
   describe('View Count Fetching', () => {
     it('should fetch view counts for all filtered post IDs', async () => {
       const { getMultiplePostViews } = await import('@/lib/views');
-      
+
       const postIds = mockArchiveData.allFilteredItems.map((post: Post) => post.id);
       const viewCounts = await getMultiplePostViews(postIds);
-      
+
       expect(getMultiplePostViews).toHaveBeenCalledWith(['post-1', 'post-2', 'post-3']);
       expect(viewCounts.get('post-1')).toBe(100);
       expect(viewCounts.get('post-2')).toBe(50);
@@ -111,10 +111,10 @@ describe('DynamicBlogContent Logic Tests', () => {
 
     it('should return 0 for posts without view data', async () => {
       const { getMultiplePostViews } = await import('@/lib/views');
-      
+
       const postIds = ['unknown-post'];
       const viewCounts = await getMultiplePostViews(postIds);
-      
+
       expect(viewCounts.get('unknown-post')).toBe(0);
     });
   });
@@ -122,15 +122,15 @@ describe('DynamicBlogContent Logic Tests', () => {
   describe('Popularity Sorting Logic', () => {
     it('should sort posts by view count in descending order', async () => {
       const { getMultiplePostViews } = await import('@/lib/views');
-      
-      const viewCounts = await getMultiplePostViews(mockPosts.map(p => p.id));
-      
+
+      const viewCounts = await getMultiplePostViews(mockPosts.map((p) => p.id));
+
       const sortedPosts = [...mockPosts].sort((a: Post, b: Post) => {
         const aViews = viewCounts.get(a.id) || 0;
         const bViews = viewCounts.get(b.id) || 0;
         return bViews - aViews;
       });
-      
+
       // Should be ordered: post-1 (100), post-3 (75), post-2 (50)
       expect(sortedPosts[0].id).toBe('post-1');
       expect(sortedPosts[1].id).toBe('post-3');
@@ -139,7 +139,7 @@ describe('DynamicBlogContent Logic Tests', () => {
 
     it('should maintain original order when sortBy is not popular', () => {
       const postsToDisplay = [...mockPosts];
-      
+
       // Without sorting, should maintain original order
       expect(postsToDisplay[0].id).toBe('post-1');
       expect(postsToDisplay[1].id).toBe('post-2');
@@ -154,16 +154,16 @@ describe('DynamicBlogContent Logic Tests', () => {
           ['post-3', 50],
         ])
       );
-      
+
       const { getMultiplePostViews } = await import('@/lib/views');
-      const viewCounts = await getMultiplePostViews(mockPosts.map(p => p.id));
-      
+      const viewCounts = await getMultiplePostViews(mockPosts.map((p) => p.id));
+
       const sortedPosts = [...mockPosts].sort((a: Post, b: Post) => {
         const aViews = viewCounts.get(a.id) || 0;
         const bViews = viewCounts.get(b.id) || 0;
         return bViews - aViews;
       });
-      
+
       // With same view counts, order should be stable
       expect(sortedPosts).toHaveLength(3);
     });
@@ -172,7 +172,7 @@ describe('DynamicBlogContent Logic Tests', () => {
   describe('Filter Count Calculation', () => {
     it('should calculate active filter count with no filters', async () => {
       const { calculateActiveFilterCount } = await import('@/lib/blog');
-      
+
       const count = calculateActiveFilterCount({
         query: '',
         selectedCategory: '',
@@ -181,13 +181,13 @@ describe('DynamicBlogContent Logic Tests', () => {
         sortBy: 'date',
         dateRange: '',
       });
-      
+
       expect(count).toBe(0);
     });
 
     it('should calculate active filter count with query filter', async () => {
       const { calculateActiveFilterCount } = await import('@/lib/blog');
-      
+
       const count = calculateActiveFilterCount({
         query: 'test',
         selectedCategory: '',
@@ -196,13 +196,13 @@ describe('DynamicBlogContent Logic Tests', () => {
         sortBy: 'date',
         dateRange: '',
       });
-      
+
       expect(count).toBe(1);
     });
 
     it('should calculate active filter count with multiple filters', async () => {
       const { calculateActiveFilterCount } = await import('@/lib/blog');
-      
+
       const count = calculateActiveFilterCount({
         query: 'test',
         selectedCategory: 'Technology',
@@ -211,13 +211,13 @@ describe('DynamicBlogContent Logic Tests', () => {
         sortBy: 'date',
         dateRange: '',
       });
-      
+
       expect(count).toBe(5); // query + category + 2 tags + readingTime
     });
 
     it('should calculate active filter count with date range', async () => {
       const { calculateActiveFilterCount } = await import('@/lib/blog');
-      
+
       const count = calculateActiveFilterCount({
         query: '',
         selectedCategory: '',
@@ -226,7 +226,7 @@ describe('DynamicBlogContent Logic Tests', () => {
         sortBy: 'date',
         dateRange: '2025-01-01,2025-12-31',
       });
-      
+
       expect(count).toBe(1);
     });
   });
@@ -238,7 +238,7 @@ describe('DynamicBlogContent Logic Tests', () => {
         currentPage: 1,
         totalPages: 3,
       };
-      
+
       const shouldShowPagination = paginatedData.totalPages > 1;
       expect(shouldShowPagination).toBe(true);
     });
@@ -254,7 +254,7 @@ describe('DynamicBlogContent Logic Tests', () => {
         currentPage: 2,
         totalPages: 5,
       };
-      
+
       expect(page2Data.currentPage).toBe(2);
       expect(page2Data.totalPages).toBe(5);
     });
@@ -263,32 +263,32 @@ describe('DynamicBlogContent Logic Tests', () => {
   describe('Feature Flag Logic', () => {
     it('should enable horizontal chips when flag is true', () => {
       vi.stubEnv('NEXT_PUBLIC_FEATURE_HORIZONTAL_FILTER_CHIPS', 'true');
-      
-      const showHorizontalChips = 
+
+      const showHorizontalChips =
         process.env.NEXT_PUBLIC_FEATURE_HORIZONTAL_FILTER_CHIPS === 'true';
-      
+
       expect(showHorizontalChips).toBe(true);
-      
+
       vi.unstubAllEnvs();
     });
 
     it('should disable horizontal chips when flag is false', () => {
       vi.stubEnv('NEXT_PUBLIC_FEATURE_HORIZONTAL_FILTER_CHIPS', 'false');
-      
-      const showHorizontalChips = 
+
+      const showHorizontalChips =
         process.env.NEXT_PUBLIC_FEATURE_HORIZONTAL_FILTER_CHIPS === 'true';
-      
+
       expect(showHorizontalChips).toBe(false);
-      
+
       vi.unstubAllEnvs();
     });
 
     it('should disable horizontal chips when flag is unset', () => {
       vi.unstubAllEnvs();
-      
-      const showHorizontalChips = 
+
+      const showHorizontalChips =
         process.env.NEXT_PUBLIC_FEATURE_HORIZONTAL_FILTER_CHIPS === 'true';
-      
+
       expect(showHorizontalChips).toBe(false);
     });
   });
@@ -325,7 +325,7 @@ describe('DynamicBlogContent Logic Tests', () => {
         ['Technology', [mockPosts[0], mockPosts[2]]],
         ['Development', [mockPosts[1]]],
       ];
-      
+
       const shouldUseGrouped = layout === 'grouped' && groupedCategories;
       expect(shouldUseGrouped).toBeTruthy();
       expect(groupedCategories).toHaveLength(2);
@@ -354,7 +354,7 @@ describe('DynamicBlogContent Logic Tests', () => {
         layout: 'grid' as const,
         hasActiveFilters: false,
       };
-      
+
       expect(props.sortedArchiveData).toBeDefined();
       expect(props.mainListPosts).toHaveLength(3);
       expect(props.availableCategories).toHaveLength(2);
@@ -367,7 +367,7 @@ describe('DynamicBlogContent Logic Tests', () => {
         allFilteredItems: [],
         totalItems: 0,
       };
-      
+
       expect(emptyData.allFilteredItems).toHaveLength(0);
       expect(emptyData.totalItems).toBe(0);
     });
@@ -381,7 +381,7 @@ describe('DynamicBlogContent Logic Tests', () => {
         dateRange: '2025-01-01,2025-12-31',
         hasActiveFilters: true,
       };
-      
+
       expect(filterState.hasActiveFilters).toBe(true);
       expect(filterState.selectedTags).toHaveLength(2);
     });
@@ -390,17 +390,17 @@ describe('DynamicBlogContent Logic Tests', () => {
   describe('Edge Cases', () => {
     it('should handle posts without view counts gracefully', async () => {
       const { getMultiplePostViews } = await import('@/lib/views');
-      
+
       const viewCounts = await getMultiplePostViews(['new-post']);
       const views = viewCounts.get('new-post') || 0;
-      
+
       expect(views).toBe(0);
     });
 
     it('should handle sorting with empty post list', () => {
       const emptyPosts: Post[] = [];
-      const sorted = [...emptyPosts].sort((a, b) => 0);
-      
+      const sorted = [...emptyPosts].sort(() => 0);
+
       expect(sorted).toHaveLength(0);
     });
 
@@ -409,7 +409,7 @@ describe('DynamicBlogContent Logic Tests', () => {
         latestSlug: undefined,
         hottestSlug: undefined,
       };
-      
+
       expect(props.latestSlug).toBeUndefined();
       expect(props.hottestSlug).toBeUndefined();
     });

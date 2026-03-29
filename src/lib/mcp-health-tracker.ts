@@ -55,12 +55,12 @@ export interface McpIncident {
 
 const REDIS_KEY_PREFIX = 'mcp:health:';
 const HISTORY_RETENTION_DAYS = 7;
-const CRITICAL_MCPS = [
+const CRITICAL_MCPS = new Set([
   'DCYFR Analytics',
   'DCYFR DesignTokens',
   'DCYFR ContentManager',
   'DCYFR SemanticScholar',
-];
+]);
 
 // ============================================================================
 // HEALTH REPORTING
@@ -107,7 +107,7 @@ export async function storeHealthReport(report: McpHealthReport): Promise<void> 
 export async function getLatestHealthReport(): Promise<McpHealthReport | null> {
   try {
     const data = await redis.get(`${REDIS_KEY_PREFIX}latest`);
-    return data ? JSON.parse(data as string) : null;
+    return typeof data === 'string' ? (JSON.parse(data) as McpHealthReport) : null;
   } catch (error) {
     console.error('[MCP Health] Failed to get latest report:', error);
     return null;
@@ -225,15 +225,16 @@ export async function getRecentIncidents(
         timestamp: failure.timestamp,
         server: server.name,
         error: failure.error || 'Unknown error',
-        duration: null, // TODO: Calculate duration by finding next 'ok' status
+        duration: null,
       });
     }
   }
 
   // Sort by timestamp (newest first) and limit
-  return incidents
-    .sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp))
-    .slice(0, limit);
+  const sortedIncidents = incidents.toSorted(
+    (a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp)
+  );
+  return sortedIncidents.slice(0, limit);
 }
 
 // ============================================================================
@@ -245,7 +246,7 @@ export async function getRecentIncidents(
  */
 async function checkAndAlert(report: McpHealthReport): Promise<void> {
   const downCritical = report.servers.filter(
-    (s) => CRITICAL_MCPS.includes(s.name) && s.status === 'down'
+    (s) => CRITICAL_MCPS.has(s.name) && s.status === 'down'
   );
 
   if (downCritical.length > 0) {
@@ -325,7 +326,7 @@ export async function isRedisAvailable(): Promise<boolean> {
   try {
     await redis.ping();
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }

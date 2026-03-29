@@ -88,8 +88,7 @@ export function CollapsibleSection({
     } catch (error) {
       console.warn('Failed to load collapsible section state:', error);
     }
-    // Only run once after mount
-  }, [isMounted]);
+  }, [id, isMounted]);
 
   // Check if this section should be expanded based on URL hash
   useEffect(() => {

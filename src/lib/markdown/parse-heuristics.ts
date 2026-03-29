@@ -5,7 +5,7 @@
  * Scanning is capped to `maxHeuristicsLines` to keep build time low.
  */
 
-import { REPO_DEFAULTS } from "@/config/repos-config";
+import { REPO_DEFAULTS } from '@/config/repos-config';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -13,12 +13,7 @@ import { REPO_DEFAULTS } from "@/config/repos-config";
 
 /** Return the first N lines of a string. */
 function head(text: string, lines: number): string[] {
-  return text.split("\n").slice(0, lines);
-}
-
-/** Strip leading `#` characters and trim. */
-function stripHeading(line: string): string {
-  return line.replace(/^#+\s*/, "").trim();
+  return text.split('\n').slice(0, lines);
 }
 
 /** Return `true` if `line` is a markdown heading. */
@@ -33,7 +28,26 @@ function isBullet(line: string): boolean {
 
 /** Extract the text portion of a bullet line. */
 function bulletText(line: string): string {
-  return line.replace(/^[-*+]\s+/, "").replace(/^\d+\.\s+/, "").trim();
+  return line
+    .replace(/^[-*+]\s+/, '')
+    .replace(/^\d+\.\s+/, '')
+    .trim();
+}
+
+function isSkippableParagraphLine(trimmed: string): boolean {
+  if (!trimmed) return true;
+  if (isHeading(trimmed)) return true;
+  if (trimmed.startsWith('<!--')) return true;
+  // Skip badge lines (usually just shields.io image links)
+  if (trimmed.startsWith('[![')) return true;
+  if (trimmed.startsWith('![')) return true;
+  // Skip horizontal rules
+  if (/^[-*_]{3,}$/.test(trimmed)) return true;
+  return false;
+}
+
+function isHighlightsSectionHeading(trimmed: string): boolean {
+  return /^#{1,3}\s+(features|highlights|what.+included)/i.test(trimmed);
 }
 
 // ---------------------------------------------------------------------------
@@ -49,18 +63,14 @@ export function extractFirstParagraph(body: string): string | undefined {
   let inCode = false;
 
   for (const line of lines) {
-    if (line.startsWith("```")) { inCode = !inCode; continue; }
+    if (line.startsWith('```')) {
+      inCode = !inCode;
+      continue;
+    }
     if (inCode) continue;
 
     const trimmed = line.trim();
-    if (!trimmed) continue;
-    if (isHeading(trimmed)) continue;
-    if (trimmed.startsWith("<!--")) continue;
-    // Skip badge lines (usually just shields.io image links)
-    if (/^\[!\[/.test(trimmed)) continue;
-    if (/^!\[/.test(trimmed)) continue;
-    // Skip horizontal rules
-    if (/^[-*_]{3,}$/.test(trimmed)) continue;
+    if (isSkippableParagraphLine(trimmed)) continue;
 
     return trimmed;
   }
@@ -73,29 +83,22 @@ export function extractFirstParagraph(body: string): string | undefined {
  */
 export function extractHighlights(body: string): string[] {
   const lines = head(body, REPO_DEFAULTS.maxHeuristicsLines);
-  const SECTION_PATTERN = /^#{1,3}\s+(features|highlights|what.+included)/i;
+  const sectionStartIndex = lines.findIndex((line) => isHighlightsSectionHeading(line.trim()));
+  if (sectionStartIndex < 0) return [];
 
-  let inSection = false;
   const items: string[] = [];
 
-  for (const line of lines) {
+  for (const line of lines.slice(sectionStartIndex + 1)) {
     const trimmed = line.trim();
 
-    if (!inSection) {
-      if (SECTION_PATTERN.test(trimmed)) {
-        inSection = true;
-      }
-      continue;
-    }
-
     // End of section: new heading
-    if (isHeading(trimmed) && !SECTION_PATTERN.test(trimmed)) break;
+    if (isHeading(trimmed) && !isHighlightsSectionHeading(trimmed)) break;
 
-    if (isBullet(trimmed)) {
-      const text = bulletText(trimmed);
-      if (text) items.push(text);
-      if (items.length >= 6) break;
-    }
+    if (!isBullet(trimmed)) continue;
+
+    const text = bulletText(trimmed);
+    if (text) items.push(text);
+    if (items.length >= 6) break;
   }
 
   return items;
@@ -106,5 +109,5 @@ export function extractHighlights(body: string): string[] {
  */
 export function hasFeaturesList(body: string): boolean {
   const lines = head(body, REPO_DEFAULTS.maxHeuristicsLines);
-  return lines.some((l) => /^#{1,3}\s+(features|highlights|what.+included)/i.test(l.trim()));
+  return lines.some((l) => isHighlightsSectionHeading(l.trim()));
 }

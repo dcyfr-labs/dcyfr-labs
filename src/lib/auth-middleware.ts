@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAuthenticatedUser, validateRequestCSRF, hasPermission, createUnauthorizedResponse, createForbiddenResponse, createCSRFErrorResponse, updateSessionActivity } from '@/lib/auth-utils';
+import {
+  getAuthenticatedUser,
+  validateRequestCSRF,
+  hasPermission,
+  createUnauthorizedResponse,
+  createForbiddenResponse,
+  createCSRFErrorResponse,
+  updateSessionActivity,
+} from '@/lib/auth-utils';
 
 /**
  * Authentication Middleware
- * 
+ *
  * Provides request-level authentication and authorization middleware
  * that works across Dev, Preview, and Production environments.
  */
@@ -16,11 +24,30 @@ interface AuthMiddlewareOptions {
   allowedMethods?: string[];
 }
 
+type RequestContext = Record<string, unknown>;
+
+type AuthEnvelope = {
+  user: Awaited<ReturnType<typeof getAuthenticatedUser>>['user'];
+  session: Awaited<ReturnType<typeof getAuthenticatedUser>>['session'];
+  sessionToken: Awaited<ReturnType<typeof getAuthenticatedUser>>['sessionToken'];
+};
+
+export type AuthenticatedRequest = NextRequest & {
+  auth?: AuthEnvelope;
+};
+
+type RouteHandler<TContext = RequestContext> = (
+  req: AuthenticatedRequest,
+  context: TContext
+) => Promise<NextResponse>;
+
+type MethodHandlers = Partial<Record<'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH', RouteHandler>>;
+
 /**
  * Middleware function for protecting API routes and pages
  */
-export function withAuth(
-  handler: (req: NextRequest, context?: any) => Promise<NextResponse>,
+export function withAuth<TContext = RequestContext>(
+  handler: RouteHandler<TContext>,
   options: AuthMiddlewareOptions = {}
 ) {
   const {
@@ -28,10 +55,10 @@ export function withAuth(
     requireCSRF = true,
     requiredPermissions = [],
     updateActivity = true,
-    allowedMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+    allowedMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   } = options;
 
-  return async (request: NextRequest, context?: any): Promise<NextResponse> => {
+  return async (request: NextRequest, context: TContext): Promise<NextResponse> => {
     try {
       // Check if method is allowed
       if (!allowedMethods.includes(request.method)) {
@@ -50,9 +77,11 @@ export function withAuth(
       }
 
       // Check CSRF for state-changing operations
-      if (requireCSRF && 
-          ['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method) && 
-          sessionToken) {
+      if (
+        requireCSRF &&
+        ['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method) &&
+        sessionToken
+      ) {
         const csrfValid = await validateRequestCSRF(request, sessionToken);
         if (!csrfValid) {
           return createCSRFErrorResponse();
@@ -61,14 +90,12 @@ export function withAuth(
 
       // Check permissions
       if (user && requiredPermissions.length > 0) {
-        const hasRequiredPermission = requiredPermissions.some(permission => 
+        const hasRequiredPermission = requiredPermissions.some((permission) =>
           hasPermission(user, permission)
         );
-        
+
         if (!hasRequiredPermission) {
-          return createForbiddenResponse(
-            `Required permissions: ${requiredPermissions.join(', ')}`
-          );
+          return createForbiddenResponse(`Required permissions: ${requiredPermissions.join(', ')}`);
         }
       }
 
@@ -78,13 +105,7 @@ export function withAuth(
       }
 
       // Add auth context to request
-      const requestWithAuth = request as NextRequest & {
-        auth?: {
-          user: typeof user;
-          session: typeof session;
-          sessionToken: typeof sessionToken;
-        };
-      };
+      const requestWithAuth = request as AuthenticatedRequest;
 
       if (user) {
         requestWithAuth.auth = { user, session, sessionToken };
@@ -105,65 +126,58 @@ export function withAuth(
 /**
  * Middleware specifically for admin routes
  */
-export function withAdminAuth(
-  handler: (req: NextRequest, context?: any) => Promise<NextResponse>
-) {
+export function withAdminAuth<TContext = RequestContext>(handler: RouteHandler<TContext>) {
   return withAuth(handler, {
     requireAuth: true,
     requireCSRF: true,
     requiredPermissions: ['admin'],
-    updateActivity: true
+    updateActivity: true,
   });
 }
 
 /**
  * Middleware for optional authentication (user may or may not be logged in)
  */
-export function withOptionalAuth(
-  handler: (req: NextRequest, context?: any) => Promise<NextResponse>
-) {
+export function withOptionalAuth<TContext = RequestContext>(handler: RouteHandler<TContext>) {
   return withAuth(handler, {
     requireAuth: false,
     requireCSRF: false,
     requiredPermissions: [],
-    updateActivity: true
+    updateActivity: true,
   });
 }
 
 /**
  * Middleware for read-only routes (no CSRF required)
  */
-export function withReadOnlyAuth(
-  handler: (req: NextRequest, context?: any) => Promise<NextResponse>
-) {
+export function withReadOnlyAuth<TContext = RequestContext>(handler: RouteHandler<TContext>) {
   return withAuth(handler, {
     requireAuth: true,
     requireCSRF: false,
     requiredPermissions: [],
     updateActivity: true,
-    allowedMethods: ['GET']
+    allowedMethods: ['GET'],
   });
 }
-
 
 /**
  * Extract authenticated user from request (for use within protected handlers)
  */
-export function getRequestUser(request: NextRequest & { auth?: any }) {
+export function getRequestUser(request: AuthenticatedRequest) {
   return request.auth?.user || null;
 }
 
 /**
  * Extract session data from request (for use within protected handlers)
  */
-export function getRequestSession(request: NextRequest & { auth?: any }) {
+export function getRequestSession(request: AuthenticatedRequest) {
   return request.auth?.session || null;
 }
 
 /**
  * Extract session token from request (for use within protected handlers)
  */
-export function getRequestSessionToken(request: NextRequest & { auth?: any }) {
+export function getRequestSessionToken(request: AuthenticatedRequest) {
   return request.auth?.sessionToken || null;
 }
 
@@ -171,21 +185,16 @@ export function getRequestSessionToken(request: NextRequest & { auth?: any }) {
  * Create protected API handler helper
  */
 export function createProtectedHandler(
-  handlers: {
-    GET?: (req: NextRequest, context?: any) => Promise<NextResponse>;
-    POST?: (req: NextRequest, context?: any) => Promise<NextResponse>;
-    PUT?: (req: NextRequest, context?: any) => Promise<NextResponse>;
-    DELETE?: (req: NextRequest, context?: any) => Promise<NextResponse>;
-    PATCH?: (req: NextRequest, context?: any) => Promise<NextResponse>;
-  },
+  handlers: MethodHandlers,
   options: AuthMiddlewareOptions = {}
 ) {
-  const protectedHandlers: any = {};
+  const protectedHandlers: MethodHandlers = {};
 
   Object.entries(handlers).forEach(([method, handler]) => {
-    protectedHandlers[method] = withAuth(handler, {
+    if (!handler) return;
+    protectedHandlers[method as keyof MethodHandlers] = withAuth(handler, {
       ...options,
-      allowedMethods: [method]
+      allowedMethods: [method],
     });
   });
 
@@ -195,18 +204,10 @@ export function createProtectedHandler(
 /**
  * Create admin-only API handler helper
  */
-export function createAdminHandler(
-  handlers: {
-    GET?: (req: NextRequest, context?: any) => Promise<NextResponse>;
-    POST?: (req: NextRequest, context?: any) => Promise<NextResponse>;
-    PUT?: (req: NextRequest, context?: any) => Promise<NextResponse>;
-    DELETE?: (req: NextRequest, context?: any) => Promise<NextResponse>;
-    PATCH?: (req: NextRequest, context?: any) => Promise<NextResponse>;
-  }
-) {
+export function createAdminHandler(handlers: MethodHandlers) {
   return createProtectedHandler(handlers, {
     requireAuth: true,
     requireCSRF: true,
-    requiredPermissions: ['admin']
+    requiredPermissions: ['admin'],
   });
 }

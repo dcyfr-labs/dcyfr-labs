@@ -13,7 +13,7 @@ let execaSync;
 
 try {
   ({ execaSync } = require('execa'));
-} catch (error) {
+} catch {
   console.error("❌ The 'execa' package is required to run this script.");
   console.error('   Please install it with: npm install execa');
   process.exit(1);

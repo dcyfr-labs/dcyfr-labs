@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS, CONTAINER_PADDING } from '@/lib/design-tokens';
 import { createPageMetadata } from '@/lib/metadata';
 import { PageLayout } from '@/components/layouts';
+import { assertFeatureOr404 } from '@/lib/admin-guard';
 
 // Plugin details type
 interface PluginDetail {
@@ -219,6 +220,7 @@ function TrustScoreMeter({ score, label }: { score: number; label: string }) {
 }
 
 export default async function PluginDetailPage({ params }: Props) {
+  assertFeatureOr404('PLUGINS_ENABLED');
   const { id } = await params;
   const plugin = await getPlugin(id);
 

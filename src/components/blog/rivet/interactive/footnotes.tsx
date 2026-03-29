@@ -1,11 +1,8 @@
-"use client";
+'use client';
 
-import React from "react";
-import { cn } from "@/lib/utils";
-import { CollapsibleSection } from "./collapsible-section";
-import {
-  TYPOGRAPHY,
-  ANIMATION, SPACING } from "@/lib/design-tokens";
+import React from 'react';
+import { CollapsibleSection } from './collapsible-section';
+import { SPACING } from '@/lib/design-tokens';
 
 /**
  * Footnotes - Collapsible footnotes section for blog posts
@@ -36,9 +33,7 @@ export function Footnotes({ children, className }: FootnotesProps) {
       reducedSpacing={true}
       className={className}
     >
-      <div className={`${SPACING.content} md:space-y-4 text-card-foreground`}>
-        {children}
-      </div>
+      <div className={`${SPACING.content} md:space-y-4 text-card-foreground`}>{children}</div>
     </CollapsibleSection>
   );
 }

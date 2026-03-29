@@ -1,11 +1,12 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { Mail, Check, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { SPACING, BORDERS, ANIMATION, SPACING_SCALE } from '@/lib/design-tokens';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import * as React from 'react';
+import { Mail, Check, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { BORDERS, SPACING_SCALE } from '@/lib/design-tokens';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 /**
  * NewsletterSignup Component
@@ -43,7 +44,7 @@ import { Input } from "@/components/ui/input";
  * - Error announcements
  */
 
-export type NewsletterVariant = "inline" | "card" | "minimal";
+export type NewsletterVariant = 'inline' | 'card' | 'minimal';
 
 export interface NewsletterSignupProps {
   /** Title heading */
@@ -62,26 +63,26 @@ export interface NewsletterSignupProps {
   className?: string;
 }
 
-const NEWSLETTER_STORAGE_KEY = "dcyfr-newsletter-signup";
+const NEWSLETTER_STORAGE_KEY = 'dcyfr-newsletter-signup';
 
 export function NewsletterSignup({
-  title = "Stay Updated",
-  description = "Subscribe to get the latest blog posts and insights delivered to your inbox.",
-  buttonText = "Subscribe",
-  successMessage = "Thanks for subscribing! Check your email to confirm.",
-  placeholder = "Enter your email",
-  variant = "card",
+  title = 'Stay Updated',
+  description = 'Subscribe to get the latest blog posts and insights delivered to your inbox.',
+  buttonText = 'Subscribe',
+  successMessage = 'Thanks for subscribing! Check your email to confirm.',
+  placeholder = 'Enter your email',
+  variant = 'card',
   className,
 }: NewsletterSignupProps) {
-  const [email, setEmail] = React.useState("");
+  const [email, setEmail] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
   // Check if user has already signed up
   React.useEffect(() => {
-    if (typeof window === "undefined") return;
-    
+    if (typeof window === 'undefined') return;
+
     const signupData = localStorage.getItem(NEWSLETTER_STORAGE_KEY);
     if (signupData) {
       try {
@@ -109,22 +110,31 @@ export function NewsletterSignup({
 
     // Validate email
     if (!email) {
-      setError("Please enter your email address");
+      setError('Please enter your email address');
       return;
     }
 
     if (!validateEmail(email)) {
-      setError("Please enter a valid email address");
+      setError('Please enter a valid email address');
       return;
     }
 
     setIsLoading(true);
 
     try {
-      // Simulate API call (localStorage-based for now)
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
 
-      // Store signup in localStorage
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        setError((data as { error?: string }).error || 'Something went wrong. Please try again.');
+        return;
+      }
+
+      // Store signup in localStorage to prevent repeat prompts
       localStorage.setItem(
         NEWSLETTER_STORAGE_KEY,
         JSON.stringify({
@@ -134,17 +144,17 @@ export function NewsletterSignup({
       );
 
       // Track signup event
-      if (typeof window !== "undefined" && window.gtag) {
-        window.gtag("event", "newsletter_signup", {
-          method: "inline_form",
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'newsletter_signup', {
+          method: 'inline_form',
           variant,
         });
       }
 
       setIsSuccess(true);
-      setEmail("");
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setEmail('');
+    } catch {
+      setError('Something went wrong. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -152,36 +162,30 @@ export function NewsletterSignup({
 
   // Variant-specific classes
   const containerClasses = {
-    inline: "flex flex-col sm:flex-row gap-3 items-start sm:items-center",
+    inline: 'flex flex-col sm:flex-row gap-3 items-start sm:items-center',
     card: cn(
-      "border rounded-lg p-4",
+      'border rounded-lg p-4',
       BORDERS.card,
-      "bg-gradient-to-br from-primary/5 to-transparent"
+      'bg-gradient-to-br from-primary/5 to-transparent'
     ),
-    minimal: "flex flex-col gap-2",
+    minimal: 'flex flex-col gap-2',
   };
 
   const contentWrapperClasses = {
-    inline: "flex-1",
+    inline: 'flex-1',
     card: `mb-${SPACING_SCALE.md}`,
     minimal: `mb-${SPACING_SCALE.sm}`,
   };
 
   const formClasses = {
-    inline: "flex gap-2 flex-1 w-full",
-    card: "flex gap-2",
-    minimal: "flex gap-2",
+    inline: 'flex gap-2 flex-1 w-full',
+    card: 'flex gap-2',
+    minimal: 'flex gap-2',
   };
 
   if (isSuccess) {
     return (
-      <div
-        className={cn(
-          containerClasses[variant],
-          "newsletter-signup-success",
-          className
-        )}
-      >
+      <div className={cn(containerClasses[variant], 'newsletter-signup-success', className)}>
         <div className="flex items-center gap-3 text-success">
           <div className="rounded-full bg-success/10 p-2">
             <Check className="h-5 w-5" />
@@ -195,31 +199,21 @@ export function NewsletterSignup({
   }
 
   return (
-    <div
-      className={cn(
-        containerClasses[variant],
-        "newsletter-signup",
-        className
-      )}
-    >
+    <div className={cn(containerClasses[variant], 'newsletter-signup', className)}>
       {/* Content */}
       <div className={contentWrapperClasses[variant]}>
-        {title && (
-          <h3 className="text-xl font-semibold m-0 mb-2">
-            {title}
-          </h3>
-        )}
-        {description && (
-          <p className="text-muted-foreground m-0 text-sm">
-            {description}
-          </p>
-        )}
+        {title && <h3 className="text-xl font-semibold m-0 mb-2">{title}</h3>}
+        {description && <p className="text-muted-foreground m-0 text-sm">{description}</p>}
       </div>
 
       {/* Form */}
       <form onSubmit={handleSubmit} className={formClasses[variant]}>
         <div className="flex-1 min-w-0">
+          <Label htmlFor="newsletter-email" className="sr-only">
+            Email address
+          </Label>
           <Input
+            id="newsletter-email"
             type="email"
             value={email}
             onChange={(e) => {
@@ -228,30 +222,18 @@ export function NewsletterSignup({
             }}
             placeholder={placeholder}
             disabled={isLoading}
-            aria-label="Email address"
             aria-invalid={!!error}
-            aria-describedby={error ? "newsletter-error" : undefined}
-            className={cn(
-              "w-full",
-              error && "border-destructive focus-visible:ring-destructive"
-            )}
+            aria-describedby={error ? 'newsletter-error' : undefined}
+            className={cn('w-full', error && 'border-destructive focus-visible:ring-destructive')}
           />
           {error && (
-            <p
-              id="newsletter-error"
-              className="text-xs text-destructive mt-1"
-              role="alert"
-            >
+            <p id="newsletter-error" className="text-xs text-destructive mt-1" role="alert">
               {error}
             </p>
           )}
         </div>
 
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="shrink-0"
-        >
+        <Button type="submit" disabled={isLoading} className="shrink-0">
           {isLoading ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin mr-2" />

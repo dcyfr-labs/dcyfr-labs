@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import Link from "next/link";
-import type { Post } from "@/data/posts";
-import type { ActivityItem } from "@/lib/activity";
-import { PostList } from "@/components/blog/client";
-import { ActivityFeed } from "@/components/activity";
-import { Button } from "@/components/ui/button";
-import { PageHero } from "@/components/layouts";
-import { Alert } from "@/components/common";
+import * as React from 'react';
+import Link from 'next/link';
+import type { Post } from '@/data/posts';
+import type { ActivityItem } from '@/lib/activity';
+import { PostList } from '@/components/blog/client';
+import { ActivityFeed } from '@/components/activity';
+import { Button } from '@/components/ui/button';
+import { PageHero } from '@/components/layouts';
+import { Alert } from '@/components/common';
 import {
   Dialog,
   DialogContent,
@@ -16,30 +16,19 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Trash2,
-  BookmarkX,
-  Sparkles,
-  AlertTriangle,
-  Download,
-} from "lucide-react";
-import { toast } from "sonner";
-import { useBookmarks } from "@/hooks/use-bookmarks";
-import {
-  TYPOGRAPHY,
-  SPACING,
-  CONTAINER_WIDTHS,
-  CONTAINER_PADDING,
-} from "@/lib/design-tokens";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/dialog';
+import { Trash2, BookmarkX, Sparkles, AlertTriangle, Download } from 'lucide-react';
+import { toast } from 'sonner';
+import { useBookmarks } from '@/hooks/use-bookmarks';
+import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS, CONTAINER_PADDING } from '@/lib/design-tokens';
+import { cn } from '@/lib/utils';
 
 // Recommended starter bookmarks
 const RECOMMENDED_BOOKMARKS = [
-  "shipping-developer-portfolio",
-  "hardening-developer-portfolio",
-  "owasp-top-10-agentic-ai",
-  "ai-development-workflow",
+  'shipping-developer-portfolio',
+  'hardening-developer-portfolio',
+  'owasp-top-10-agentic-ai',
+  'ai-development-workflow',
 ];
 
 interface BookmarksClientProps {
@@ -63,14 +52,10 @@ interface BookmarksClientProps {
  */
 export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
   const { collection, isBookmarked, add, remove } = useBookmarks();
-  const [layout] = React.useState<"grid" | "list" | "magazine" | "compact">(
-    "magazine"
-  );
+  const [layout] = React.useState<'grid' | 'list' | 'magazine'>('magazine');
   const [isMounted, setIsMounted] = React.useState(false);
   const [showClearDialog, setShowClearDialog] = React.useState(false);
-  const [viewMode, setViewMode] = React.useState<
-    "posts" | "activities" | "all"
-  >("all");
+  const [viewMode, setViewMode] = React.useState<'posts' | 'activities' | 'all'>('all');
 
   // Get recommended posts that aren't already bookmarked
   const recommendedPosts = React.useMemo(() => {
@@ -99,8 +84,8 @@ export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
     if (!isMounted || !activities || !collection) return [];
     return activities.filter((activity) => {
       // For blog posts, check if slug from href is bookmarked
-      if (activity.source === "blog" && activity.href.startsWith("/blog/")) {
-        const slug = activity.href.replace("/blog/", "");
+      if (activity.source === 'blog' && activity.href.startsWith('/blog/')) {
+        const slug = activity.href.replace('/blog/', '');
         return isBookmarked(slug);
       }
       // For all other activities, check activity ID
@@ -114,7 +99,7 @@ export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
     // Count unique items (avoid double-counting blog posts that appear in both lists)
     const postSlugs = new Set(bookmarkedPosts.map((p) => p.slug));
     const nonBlogActivities = bookmarkedActivities.filter(
-      (a) => !(a.source === "blog" && a.href.startsWith("/blog/"))
+      (a) => !(a.source === 'blog' && a.href.startsWith('/blog/'))
     );
     return postSlugs.size + nonBlogActivities.length;
   }, [bookmarkedPosts, bookmarkedActivities, isMounted]);
@@ -123,7 +108,7 @@ export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
   const nonBlogBookmarkedActivities = React.useMemo(() => {
     if (!isMounted) return [];
     return bookmarkedActivities.filter(
-      (a) => !(a.source === "blog" && a.href.startsWith("/blog/"))
+      (a) => !(a.source === 'blog' && a.href.startsWith('/blog/'))
     );
   }, [bookmarkedActivities, isMounted]);
 
@@ -168,13 +153,13 @@ export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
   // Add all recommended bookmarks
   const addRecommendedBookmarks = () => {
     if (recommendedPosts.length === 0) {
-      toast.info("All recommended posts are already bookmarked!");
+      toast.info('All recommended posts are already bookmarked!');
       return;
     }
 
     recommendedPosts.forEach((post) => add(post.slug));
     toast.success(
-      `Added ${recommendedPosts.length} recommended post${recommendedPosts.length === 1 ? "" : "s"}!`,
+      `Added ${recommendedPosts.length} recommended post${recommendedPosts.length === 1 ? '' : 's'}!`,
       { duration: 3000 }
     );
   };
@@ -185,14 +170,14 @@ export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
       remove(bookmark.activityId);
     });
     setShowClearDialog(false);
-    toast.success("All bookmarks cleared");
+    toast.success('All bookmarks cleared');
   };
 
   // Export bookmarks as JSON
   const handleExportJSON = () => {
     try {
       const exportData = {
-        version: "1.0.0",
+        version: '1.0.0',
         exportedAt: new Date().toISOString(),
         bookmarks: collection.bookmarks.map((b) => ({
           slug: b.activityId,
@@ -203,21 +188,21 @@ export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
       };
 
       const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-        type: "application/json",
+        type: 'application/json',
       });
       const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
+      const link = document.createElement('a');
       link.href = url;
-      link.download = `bookmarks-${new Date().toISOString().split("T")[0]}.json`;
+      link.download = `bookmarks-${new Date().toISOString().split('T')[0]}.json`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      toast.success("Bookmarks exported");
+      toast.success('Bookmarks exported');
     } catch (error) {
-      toast.error("Failed to export bookmarks");
-      console.error("Export error:", error);
+      toast.error('Failed to export bookmarks');
+      console.error('Export error:', error);
     }
   };
 
@@ -251,14 +236,13 @@ export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
       {isMounted && totalBookmarked > 0 && (
         <div
           className={cn(
-            "mx-auto flex items-center justify-between gap-4 -mt-6 mb-8",
+            'mx-auto flex items-center justify-between gap-4 -mt-6 mb-8',
             CONTAINER_WIDTHS.standard,
             CONTAINER_PADDING
           )}
         >
           <p className={TYPOGRAPHY.metadata}>
-            {totalBookmarked} {totalBookmarked === 1 ? "item" : "items"} saved
-            for later
+            {totalBookmarked} {totalBookmarked === 1 ? 'item' : 'items'} saved for later
             {bookmarkedActivities.length > bookmarkedPosts.length && (
               <span className="text-muted-foreground ml-2">
                 ({bookmarkedActivities.length} total activities)
@@ -270,11 +254,7 @@ export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
               <Download className="h-4 w-4 mr-2" />
               Export
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowClearDialog(true)}
-            >
+            <Button variant="outline" size="sm" onClick={() => setShowClearDialog(true)}>
               <Trash2 className="h-4 w-4 mr-2" />
               Clear All
             </Button>
@@ -283,14 +263,10 @@ export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
       )}
 
       {/* Activity List or Empty State */}
-      <div
-        className={cn("mx-auto", CONTAINER_WIDTHS.standard, CONTAINER_PADDING)}
-      >
+      <div className={cn('mx-auto', CONTAINER_WIDTHS.standard, CONTAINER_PADDING)}>
         {!isMounted ? (
           // Loading state during hydration
-          <div className="text-center py-8 text-muted-foreground">
-            Loading bookmarks...
-          </div>
+          <div className="text-center py-8 text-muted-foreground">Loading bookmarks...</div>
         ) : totalBookmarked === 0 ? (
           <div className={SPACING.section}>
             <div className="flex flex-col items-center justify-center text-center py-16">
@@ -299,8 +275,7 @@ export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
               </div>
               <h2 className={TYPOGRAPHY.h2.standard}>No bookmarks yet</h2>
               <p className="text-muted-foreground mt-2 mb-8">
-                Bookmark posts you want to read later by clicking the bookmark
-                icon on any post card
+                Bookmark posts you want to read later by clicking the bookmark icon on any post card
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button asChild variant="default">
@@ -319,18 +294,10 @@ export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
             {recommendedPosts.length > 0 && (
               <div className="mt-16">
                 <div className="mb-6 text-center">
-                  <h3 className={TYPOGRAPHY.h3.standard}>
-                    Recommended to Get Started
-                  </h3>
-                  <p className="text-muted-foreground mt-2">
-                    Popular posts to explore first
-                  </p>
+                  <h3 className={TYPOGRAPHY.h3.standard}>Recommended to Get Started</h3>
+                  <p className="text-muted-foreground mt-2">Popular posts to explore first</p>
                 </div>
-                <PostList
-                  posts={recommendedPosts}
-                  layout="magazine"
-                  emptyMessage=""
-                />
+                <PostList posts={recommendedPosts} layout="magazine" emptyMessage="" />
               </div>
             )}
           </div>
@@ -339,27 +306,16 @@ export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
             {/* Bookmarked Blog Posts */}
             {bookmarkedPosts.length > 0 && (
               <div>
-                <h3 className={cn(TYPOGRAPHY.h3.standard, "mb-6")}>
-                  Blog Posts
-                </h3>
-                <PostList
-                  posts={bookmarkedPosts}
-                  layout={layout}
-                  emptyMessage=""
-                />
+                <h3 className={cn(TYPOGRAPHY.h3.standard, 'mb-6')}>Blog Posts</h3>
+                <PostList posts={bookmarkedPosts} layout={layout} emptyMessage="" />
               </div>
             )}
 
             {/* Bookmarked Activities (non-blog) */}
             {nonBlogBookmarkedActivities.length > 0 && (
-              <div className={bookmarkedPosts.length > 0 ? "mt-12" : ""}>
-                <h3 className={cn(TYPOGRAPHY.h3.standard, "mb-6")}>
-                  Other Activities
-                </h3>
-                <ActivityFeed
-                  items={nonBlogBookmarkedActivities}
-                  emptyMessage=""
-                />
+              <div className={bookmarkedPosts.length > 0 ? 'mt-12' : ''}>
+                <h3 className={cn(TYPOGRAPHY.h3.standard, 'mb-6')}>Other Activities</h3>
+                <ActivityFeed items={nonBlogBookmarkedActivities} emptyMessage="" />
               </div>
             )}
           </div>
@@ -371,8 +327,8 @@ export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
             <div>
               <p className="font-medium mb-1">Bookmarks stored locally</p>
               <p className="text-sm">
-                Your bookmarks are saved in your browser&apos;s local storage.
-                They won&apos;t sync across devices or be visible to others.
+                Your bookmarks are saved in your browser&apos;s local storage. They won&apos;t sync
+                across devices or be visible to others.
               </p>
             </div>
           </Alert>
@@ -390,9 +346,8 @@ export function BookmarksClient({ posts, activities }: BookmarksClientProps) {
               <div className="flex-1 space-y-2">
                 <DialogTitle>Clear all bookmarks?</DialogTitle>
                 <DialogDescription>
-                  This will remove all {totalBookmarked} bookmarked{" "}
-                  {totalBookmarked === 1 ? "item" : "items"}. This action cannot
-                  be undone.
+                  This will remove all {totalBookmarked} bookmarked{' '}
+                  {totalBookmarked === 1 ? 'item' : 'items'}. This action cannot be undone.
                 </DialogDescription>
               </div>
             </div>

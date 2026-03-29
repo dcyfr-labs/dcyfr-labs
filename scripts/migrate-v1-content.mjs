@@ -23,9 +23,9 @@
  */
 
 import Anthropic from '@anthropic-ai/sdk';
-import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync, readdirSync } from 'fs';
-import { join, dirname, basename } from 'path';
-import { fileURLToPath } from 'url';
+import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import chalk from 'chalk';
 import prompts from 'prompts';
 import yaml from 'js-yaml';
@@ -79,15 +79,9 @@ function getPriorityFilter() {
 function generateSlug(title) {
   return title
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
-
-/**
- * Convert title to sentence case for SEO
- */
-function toSentenceCase(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    .split(/[^a-z0-9]+/)
+    .filter(Boolean)
+    .join('-');
 }
 
 /**
@@ -224,7 +218,7 @@ v1Url: "${v1Metadata.v1Url}"
     const modernizedContent = response.content[0].text;
 
     // Extract frontmatter and content
-    const parsed = matter(modernizedContent.replace(/```mdx/g, '').replace(/```/g, ''));
+    const parsed = matter(modernizedContent.replaceAll('```mdx', '').replaceAll('```', ''));
 
     return {
       content: parsed.content,
@@ -375,7 +369,6 @@ async function migrateAll(manifest) {
       // Update manifest
       const postIndex = manifest.posts.findIndex((p) => p.id === post.id);
       manifest.posts[postIndex] = result;
-
     } catch (error) {
       console.error(chalk.red(`   ❌ Error: ${error.message}`));
       failed++;
@@ -453,8 +446,10 @@ async function main() {
   console.log(chalk.dim('5. Commit and deploy\n'));
 }
 
-main().catch((error) => {
+try {
+  await main();
+} catch (error) {
   console.error(chalk.red(`\n❌ Fatal error: ${error.message}`));
   console.error(error.stack);
   process.exit(1);
-});
+}

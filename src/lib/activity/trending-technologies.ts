@@ -13,8 +13,8 @@
  * (Projects count more because they represent active usage)
  */
 
-import type { Post } from "@/data/posts";
-import type { Project } from "@/data/projects";
+import type { Post } from '@/data/posts';
+import type { Project } from '@/data/projects';
 
 // ============================================================================
 // TYPES
@@ -57,56 +57,56 @@ export interface TrendingTechnologiesOptions {
  */
 const TECH_ALIASES: Record<string, string> = {
   // JavaScript ecosystem
-  "js": "JavaScript",
-  "javascript": "JavaScript",
-  "ts": "TypeScript",
-  "typescript": "TypeScript",
-  "node": "Node.js",
-  "node.js": "Node.js",
-  "nodejs": "Node.js",
-  "next": "Next.js",
-  "next.js": "Next.js",
-  "nextjs": "Next.js",
-  "react": "React",
-  "reactjs": "React",
-  "react.js": "React",
-  "vue": "Vue.js",
-  "vue.js": "Vue.js",
-  "vuejs": "Vue.js",
+  js: 'JavaScript',
+  javascript: 'JavaScript',
+  ts: 'TypeScript',
+  typescript: 'TypeScript',
+  node: 'Node.js',
+  'node.js': 'Node.js',
+  nodejs: 'Node.js',
+  next: 'Next.js',
+  'next.js': 'Next.js',
+  nextjs: 'Next.js',
+  react: 'React',
+  reactjs: 'React',
+  'react.js': 'React',
+  vue: 'Vue.js',
+  'vue.js': 'Vue.js',
+  vuejs: 'Vue.js',
 
   // CSS/Styling
-  "tailwind": "Tailwind CSS",
-  "tailwind css": "Tailwind CSS",
-  "tailwindcss": "Tailwind CSS",
-  "css": "CSS",
-  "html": "HTML",
+  tailwind: 'Tailwind CSS',
+  'tailwind css': 'Tailwind CSS',
+  tailwindcss: 'Tailwind CSS',
+  css: 'CSS',
+  html: 'HTML',
 
   // Backend/Infra
-  "php": "PHP",
-  "mysql": "MySQL",
-  "postgres": "PostgreSQL",
-  "postgresql": "PostgreSQL",
-  "redis": "Redis",
-  "docker": "Docker",
+  php: 'PHP',
+  mysql: 'MySQL',
+  postgres: 'PostgreSQL',
+  postgresql: 'PostgreSQL',
+  redis: 'Redis',
+  docker: 'Docker',
 
   // Platforms
-  "vercel": "Vercel",
-  "aws": "AWS",
-  "github": "GitHub",
-  "ghost": "Ghost",
-  "wordpress": "WordPress",
+  vercel: 'Vercel',
+  aws: 'AWS',
+  github: 'GitHub',
+  ghost: 'Ghost',
+  wordpress: 'WordPress',
 
   // Security
-  "owasp": "OWASP",
-  "cybersecurity": "Cybersecurity",
-  "security": "Security",
+  owasp: 'OWASP',
+  cybersecurity: 'Cybersecurity',
+  security: 'Security',
 
   // AI/ML
-  "ai": "AI",
-  "artificial intelligence": "AI",
-  "machine learning": "Machine Learning",
-  "ml": "Machine Learning",
-  "llm": "LLM",
+  ai: 'AI',
+  'artificial intelligence': 'AI',
+  'machine learning': 'Machine Learning',
+  ml: 'Machine Learning',
+  llm: 'LLM',
 };
 
 /**
@@ -143,12 +143,7 @@ export function calculateTrendingTechnologies(
   projects: Project[],
   options: TrendingTechnologiesOptions = {}
 ): TrendingTechnology[] {
-  const {
-    limit = 12,
-    blogWeight = 1,
-    projectWeight = 2,
-    minScore = 1,
-  } = options;
+  const { limit = 12, blogWeight = 1, projectWeight = 2, minScore = 1 } = options;
 
   // Accumulator: tech name -> { blogMentions, projectMentions, sources }
   const techMap = new Map<
@@ -178,7 +173,7 @@ export function calculateTrendingTechnologies(
   const activePosts = posts.filter((p) => !p.archived && !p.draft);
   for (const post of activePosts) {
     for (const tag of post.tags) {
-      const { canonical, entry } = getOrCreate(tag);
+      const { entry } = getOrCreate(tag);
       entry.blogMentions++;
       entry.postSlugs.add(post.slug);
     }
@@ -188,7 +183,7 @@ export function calculateTrendingTechnologies(
   for (const project of projects) {
     if (project.tech) {
       for (const tech of project.tech) {
-        const { canonical, entry } = getOrCreate(tech);
+        const { entry } = getOrCreate(tech);
         entry.projectMentions++;
         entry.projectSlugs.add(project.slug);
       }
@@ -198,8 +193,7 @@ export function calculateTrendingTechnologies(
   // Calculate scores and build result array
   const results: TrendingTechnology[] = [];
   for (const [name, data] of techMap) {
-    const score =
-      data.blogMentions * blogWeight + data.projectMentions * projectWeight;
+    const score = data.blogMentions * blogWeight + data.projectMentions * projectWeight;
 
     if (score >= minScore) {
       results.push({

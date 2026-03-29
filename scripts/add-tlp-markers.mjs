@@ -13,7 +13,6 @@ import { readFileSync, writeFileSync, readdirSync, statSync } from 'fs';
 import { join, relative } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -38,11 +37,6 @@ const isDryRun = process.argv.includes('--dry-run');
 
 // Directories to skip
 const SKIP_DIRS = ['node_modules', '.git', '.next', 'dist', 'build', 'coverage'];
-
-// Track results
-let processed = 0;
-let skipped = 0;
-let errors = [];
 
 /**
  * Check if file already has TLP marker
@@ -76,13 +70,11 @@ function addTLPMarker(filePath) {
 
     // Skip if already has marker
     if (hasTLPMarker(content)) {
-      skipped++;
       return { success: true, reason: 'already-marked' };
     }
 
     // Skip private files (they should have TLP:AMBER)
     if (isInPrivateDir(filePath)) {
-      skipped++;
       return { success: true, reason: 'private-file' };
     }
 
@@ -93,10 +85,8 @@ function addTLPMarker(filePath) {
       writeFileSync(filePath, newContent, 'utf-8');
     }
 
-    processed++;
     return { success: true, reason: 'added' };
   } catch (error) {
-    errors.push({ filePath, error: error.message });
     return { success: false, reason: error.message };
   }
 }

@@ -2,11 +2,11 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/dcyfr/dcyfr-labs)
 
-[![CI](https://img.shields.io/github/actions/workflow/status/dcyfr/dcyfr-labs/test.yml?branch=main&label=Tests&style=flat-square&logo=github)](https://github.com/dcyfr/dcyfr-labs/actions)
-[![Lighthouse](https://img.shields.io/badge/Lighthouse-92%2B-28a745?style=flat-square&logo=lighthouse&logoColor=white)](https://github.com/dcyfr/dcyfr-labs/actions/workflows/lighthouse-ci.yml)
-[![CodeQL](https://img.shields.io/github/actions/workflow/status/dcyfr/dcyfr-labs/codeql.yml?branch=main&label=CodeQL&style=flat-square&logo=github)](https://github.com/dcyfr/dcyfr-labs/security/code-scanning)
-[![Coverage](https://img.shields.io/badge/Coverage-96.7%25-28a745?style=flat-square&logo=vitest&logoColor=white)](./docs/testing/)
-[![Vercel](https://img.shields.io/badge/Vercel-Deployed-000000?style=flat-square&logo=vercel&logoColor=white)](https://dcyfr-labs.vercel.app)
+[![CI](https://img.shields.io/github/actions/workflow/status/dcyfr/dcyfr-labs/test.yml?branch=main&label=Tests&logo=github)](https://github.com/dcyfr/dcyfr-labs/actions)
+[![Lighthouse](https://img.shields.io/badge/Lighthouse-92%2B-28a745?logo=lighthouse&logoColor=white)](https://github.com/dcyfr/dcyfr-labs/actions/workflows/lighthouse-ci.yml)
+[![CodeQL](https://img.shields.io/github/actions/workflow/status/dcyfr/dcyfr-labs/codeql.yml?branch=main&label=CodeQL&logo=github)](https://github.com/dcyfr/dcyfr-labs/security/code-scanning)
+[![Coverage](https://img.shields.io/badge/Coverage-96.7%25-28a745?logo=vitest&logoColor=white)](./docs/testing/)
+[![Vercel](https://img.shields.io/badge/Vercel-Deployed-000000?logo=vercel&logoColor=white)](https://dcyfr-labs.vercel.app)
 
 <a href="https://peerlist.io/dcyfr/project/dcyfr-labs" target="_blank" rel="noreferrer"><img src="https://peerlist.io/api/v1/projects/embed/PRJHJKNGMRMELKAQQ2ANMNEA7QRLNK?showUpvote=true&theme=dark" alt="DCYFR Labs on Peerlist" style="width: auto; height: 72px;" /></a>
 
@@ -51,6 +51,15 @@ A modern, full-featured developer blog and portfolio built with Next.js (App Rou
 - **Claude Code**: See [`CLAUDE.md`](./CLAUDE.md) for comprehensive development guide (detailed patterns, workflows, documentation references)
 - **GitHub Copilot**: See [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) for quick-reference guide (80/20 patterns you'll use most)
 - **Transparency**: See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for details on open vs. proprietary components
+
+## About DCYFR
+
+`dcyfr-labs` is a production application in the **DCYFR Labs** portfolio.
+
+- **DCYFR** is a registered trademark of DCYFR Labs.
+- Primary domain: [www.dcyfr.ai](https://www.dcyfr.ai)
+- Trademark guidance: [TRADEMARK.md](../TRADEMARK.md)
+- Licensing details: [LICENSE](./LICENSE)
 
 ## 🎯 Why dcyfr-labs?
 

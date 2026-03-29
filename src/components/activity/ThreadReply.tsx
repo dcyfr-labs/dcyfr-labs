@@ -16,24 +16,23 @@
  * ```
  */
 
-"use client";
+'use client';
 
-import { createElement } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
-import { ThreadActions } from "./ThreadActions";
-import { getActivitySourceIcon } from "@/lib/activity";
-import type { ActivityItem } from "@/lib/activity";
-import { cn } from "@/lib/utils";
+import { createElement } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Badge } from '@/components/ui/badge';
+import { ThreadActions } from './ThreadActions';
+import { getActivitySourceIcon } from '@/lib/activity';
+import type { ActivityItem } from '@/lib/activity';
+import { cn } from '@/lib/utils';
 import {
   TYPOGRAPHY,
   ANIMATION,
   ACTIVITY_IMAGE,
   SPACING,
   SEMANTIC_COLORS,
-} from "@/lib/design-tokens";
-import { ExternalLink, Calendar, Tag } from "lucide-react";
+} from '@/lib/design-tokens';
 
 // ============================================================================
 // TYPES & HELPERS
@@ -42,8 +41,8 @@ import { ExternalLink, Calendar, Tag } from "lucide-react";
 /**
  * Maps activity verb to semantic color badge class
  */
-function getVerbColor(verb: ActivityItem["verb"]): string {
-  const colorMap: Record<ActivityItem["verb"], string> = {
+function getVerbColor(verb: ActivityItem['verb']): string {
+  const colorMap: Record<ActivityItem['verb'], string> = {
     published: SEMANTIC_COLORS.status.neutral,
     updated: SEMANTIC_COLORS.status.neutral,
     launched: SEMANTIC_COLORS.status.neutral,
@@ -87,11 +86,10 @@ export function ThreadReply({
   const sourceIconComponent = getActivitySourceIcon(activity.source);
 
   // Hide verb badge if it's the same as primary to reduce duplication
-  const showVerbBadge =
-    !primaryActivity || activity.verb !== primaryActivity.verb;
+  const showVerbBadge = !primaryActivity || activity.verb !== primaryActivity.verb;
 
   return (
-    <div className={cn("group/reply relative", className)}>
+    <div className={cn('group/reply relative', className)}>
       {/* Layout: Small Icon + Content */}
       <div className="flex gap-4">
         {/* Icon Column (Aligned with Avatar) */}
@@ -99,8 +97,8 @@ export function ThreadReply({
           {/* Small Connector Dot */}
           <div
             className={cn(
-              "h-3 w-3 rounded-full border-2 border-border bg-muted",
-              "group-hover/reply:border-primary",
+              'h-3 w-3 rounded-full border-2 border-border bg-muted',
+              'group-hover/reply:border-primary',
               ANIMATION.transition.fast
             )}
             aria-hidden="true"
@@ -113,17 +111,14 @@ export function ThreadReply({
           <div className="flex items-center gap-2 mb-1 flex-wrap">
             <Badge variant="secondary" className="gap-1 px-1.5 h-5 text-xs">
               {createElement(sourceIconComponent, {
-                className: "h-3 w-3",
-                "aria-hidden": "true",
+                className: 'h-3 w-3',
+                'aria-hidden': 'true',
               })}
               <span className="capitalize">{activity.source}</span>
             </Badge>
 
             {showVerbBadge && (
-              <Badge
-                variant="outline"
-                className={cn("px-1.5 h-5 text-xs", verbColor)}
-              >
+              <Badge variant="outline" className={cn('px-1.5 h-5 text-xs', verbColor)}>
                 {activity.verb}
               </Badge>
             )}
@@ -135,10 +130,10 @@ export function ThreadReply({
             <Link
               href={activity.href}
               className={cn(
-                "block group/link",
+                'block group/link',
                 ANIMATION.transition.base,
                 TYPOGRAPHY.activity.replyTitle,
-                "hover:text-primary"
+                'hover:text-primary'
               )}
             >
               {activity.title}
@@ -146,12 +141,7 @@ export function ThreadReply({
 
             {/* Featured Image (if present, smaller for replies) */}
             {activity.meta?.image && (
-              <div
-                className={cn(
-                  ACTIVITY_IMAGE.container,
-                  ACTIVITY_IMAGE.sizes.reply
-                )}
-              >
+              <div className={cn(ACTIVITY_IMAGE.container, ACTIVITY_IMAGE.sizes.reply)}>
                 <Image
                   src={activity.meta.image.url}
                   alt={activity.meta.image.alt || activity.title}
@@ -163,9 +153,7 @@ export function ThreadReply({
 
             {/* Description (if present) */}
             {activity.description && (
-              <p className={TYPOGRAPHY.activity.replyDescription}>
-                {activity.description}
-              </p>
+              <p className={TYPOGRAPHY.activity.replyDescription}>{activity.description}</p>
             )}
 
             {/* Metadata (Minimal) */}
@@ -209,10 +197,7 @@ export function ThreadReply({
 
       {/* Thread Connector Line (continues unless last) */}
       {!isLast && (
-        <div
-          className="absolute left-8 top-6 bottom-0 w-px bg-border/50"
-          aria-hidden="true"
-        />
+        <div className="absolute left-8 top-6 bottom-0 w-px bg-border/50" aria-hidden="true" />
       )}
     </div>
   );

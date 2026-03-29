@@ -72,24 +72,6 @@
       "url": "/blog/building-event-driven-architecture"
     },
     {
-      "id": "post-20251222-f8c3d4e1",
-      "title": "UI Elements and Components",
-      "summary": "Explore the full range of UI components, MDX elements, code highlighting, alerts, callouts, and visual features available in this blog system. Includes modern engagement components and React 19 patterns.",
-      "content": "> Note: This is a demonstration post showcasing all available UI elements and components. It serves as a visual reference for content creators and developers. This post demonstrates every visual element, component, and styling option available in the design system . Use this as a reference when creating new content. --- Typography Hierarchy Heading 1: Main Title The largest heading, typically used only once per page as the article title. Heading 2: Major Sections Primary section headers that div",
-      "tags": [
-        "Demo",
-        "UI",
-        "Design System",
-        "Components",
-        "MDX",
-        "React 19"
-      ],
-      "series": null,
-      "publishedAt": "2025-12-22T12:00:00Z",
-      "readingTime": 7,
-      "url": "/blog/demo-ui"
-    },
-    {
       "id": "post-20251219-7f3a9c2e",
       "title": "OWASP Top 10 for Agentic AI: What You Need to Know in 2026",
       "summary": "OWASP's first Top 10 for Agentic Applications (2026): Learn the 10 critical security risks facing autonomous AI systems—from goal hijacking to rogue agents. Expert analysis with real-world CVEs and mitigation strategies.",
@@ -339,14 +321,11 @@
     "Background Jobs",
     "Certification",
     "Component Architecture",
-    "Components",
     "CompTIA",
     "Content Strategy",
     "CVE",
     "Cybersecurity",
-    "Demo",
     "Dependabot",
-    "Design System",
     "Developer Productivity",
     "Developer Tools",
     "Event-Driven",
@@ -356,7 +335,6 @@
     "IT Career",
     "LLM Security",
     "MCP",
-    "MDX",
     "Next.js",
     "Node.js",
     "OWASP",
@@ -365,7 +343,6 @@
     "Production",
     "Productivity",
     "React",
-    "React 19",
     "React2Shell",
     "RSC",
     "Security",
@@ -374,7 +351,6 @@
     "Tailwind CSS",
     "Threat Intelligence",
     "TypeScript",
-    "UI",
     "UX",
     "Vercel",
     "Workflow"
@@ -383,5 +359,5 @@
     "AI Workflows",
     "Portfolio"
   ],
-  "generatedAt": "2026-03-06T17:01:00.501Z"
+  "generatedAt": "2026-03-24T00:30:42.674Z"
 }

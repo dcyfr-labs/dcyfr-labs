@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { FAQSchema, type FAQItem } from '@/components/blog/rivet/engagement/faq-schema';
@@ -223,15 +223,11 @@ describe('FAQSchema', () => {
 
       await waitFor(() => {
         // Use partial matching with exact substring checks to avoid regex anchor issues
+        expect(screen.getByText((content) => content.includes('RIVET stands for'))).toBeVisible();
         expect(
-          screen.getByText((content, element) => content.includes('RIVET stands for'))
+          screen.getByText((content) => content.includes('Import the component'))
         ).toBeVisible();
-        expect(
-          screen.getByText((content, element) => content.includes('Import the component'))
-        ).toBeVisible();
-        expect(
-          screen.getByText((content, element) => content.includes('schema.org/FAQPage'))
-        ).toBeVisible();
+        expect(screen.getByText((content) => content.includes('schema.org/FAQPage'))).toBeVisible();
       });
     });
 
@@ -262,14 +258,10 @@ describe('FAQSchema', () => {
 
       await waitFor(() => {
         // Use partial matching with exact substring checks to avoid regex anchor issues
+        expect(screen.getByText((content) => content.includes('RIVET stands for'))).toBeVisible();
+        expect(screen.getByText((content) => content.includes('schema.org/FAQPage'))).toBeVisible();
         expect(
-          screen.getByText((content, element) => content.includes('RIVET stands for'))
-        ).toBeVisible();
-        expect(
-          screen.getByText((content, element) => content.includes('schema.org/FAQPage'))
-        ).toBeVisible();
-        expect(
-          screen.queryByText((content, element) => content.includes('Import the component'))
+          screen.queryByText((content) => content.includes('Import the component'))
         ).not.toBeInTheDocument();
       });
     });

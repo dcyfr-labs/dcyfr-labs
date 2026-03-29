@@ -8,13 +8,7 @@
 import { inngest } from './client';
 import { IPReputationService } from '@/lib/ip-reputation';
 import * as Sentry from '@sentry/nextjs';
-import {
-  type IPReputationCheckTriggered,
-  type IPReputationCheckCompleted,
-  type MaliciousIPDetected,
-  type IPReputationConfig,
-  type IPReputationBulkResult,
-} from '@/types/ip-reputation';
+import { type IPReputationConfig } from '@/types/ip-reputation';
 
 // Default configuration
 const DEFAULT_CONFIG: IPReputationConfig = {
@@ -313,7 +307,7 @@ export const handleMaliciousIpDetected = inngest.createFunction(
 /**
  * Fetch IPs from Axiom logs based on configuration
  */
-async function fetchIpsFromAxiom(config: IPReputationConfig): Promise<string[]> {
+async function fetchIpsFromAxiom(_config: IPReputationConfig): Promise<string[]> {
   // This would integrate with Axiom API to fetch IPs
   // For now, returning empty array as placeholder
   // You would implement this based on your Axiom setup

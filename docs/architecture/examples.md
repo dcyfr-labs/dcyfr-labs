@@ -2,10 +2,23 @@
 
 # Architecture Patterns: Practical Examples
 
-**Last Updated:** November 10, 2025  
+**Last Updated:** November 10, 2025
 **Purpose:** Real-world examples of archive and article patterns
 
 This document provides copy-paste examples for common scenarios based on the refactored architecture.
+
+## ✅ Prerequisites and Validation
+
+These are architectural code patterns, not standalone runnable snippets.
+Validate changes by applying patterns in real route/component files
+and then running project checks:
+
+- `npm run lint`
+- `npm run typecheck`
+- `npm run test:run`
+- `npm run check:tokens`
+
+Expected result: pattern-compliant implementations pass linting, strict typing, tests, and design-token validation.
 
 ---
 
@@ -40,8 +53,8 @@ export const metadata = createArchivePageMetadata({
 
 export default function TestimonialsPage() {
   return (
-    <ArchiveLayout 
-      title="Testimonials" 
+    <ArchiveLayout
+      title="Testimonials"
       description="What people are saying"
       itemCount={testimonials.length}
     >
@@ -75,13 +88,13 @@ export const metadata = createArchivePageMetadata({
   itemCount: resources.length,
 })
 
-export default async function ResourcesPage({ 
-  searchParams 
-}: { 
-  searchParams: Promise<{ q?: string }> 
+export default async function ResourcesPage({
+  searchParams
+}: {
+  searchParams: Promise<{ q?: string }>
 }) {
   const params = await searchParams
-  
+
   const { items, filters } = getArchiveData({
     items: resources,
     searchParams: params,
@@ -92,13 +105,13 @@ export default async function ResourcesPage({
   })
 
   return (
-    <ArchiveLayout 
-      title="Resources" 
+    <ArchiveLayout
+      title="Resources"
       description="Useful tools and links"
       itemCount={items.length}
       filters={
-        <SearchBox 
-          defaultValue={filters.query} 
+        <SearchBox
+          defaultValue={filters.query}
           placeholder="Search resources..."
         />
       }
@@ -121,10 +134,10 @@ import { ArchiveLayout } from '@/components/layouts/archive-layout'
 import { ArchiveFilters } from '@/components/layouts/archive-filters'
 import { ArchivePagination } from '@/components/layouts/archive-pagination'
 import { getArchiveData } from '@/lib/archive'
-import { 
-  createArchivePageMetadata, 
+import {
+  createArchivePageMetadata,
   createCollectionSchema,
-  getJsonLdScriptProps 
+  getJsonLdScriptProps
 } from '@/lib/metadata'
 import { getNonce } from '@/lib/csp'
 import { tutorials } from '@/data/tutorials'
@@ -136,14 +149,14 @@ export const metadata = createArchivePageMetadata({
   itemCount: tutorials.length,
 })
 
-export default async function TutorialsPage({ 
-  searchParams 
-}: { 
-  searchParams: Promise<Record<string, string | string[] | undefined>> 
+export default async function TutorialsPage({
+  searchParams
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
   const params = await searchParams
   const nonce = getNonce()
-  
+
   const archiveData = getArchiveData({
     items: tutorials,
     searchParams: params,
@@ -176,7 +189,7 @@ export default async function TutorialsPage({
   return (
     <>
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
-      
+
       <ArchiveLayout
         title="Tutorials"
         description="Step-by-step guides and how-tos"
@@ -230,13 +243,13 @@ export const metadata = createArchivePageMetadata({
   itemCount: projects.length,
 })
 
-export default async function ShowcasePage({ 
-  searchParams 
-}: { 
-  searchParams: Promise<Record<string, string | string[] | undefined>> 
+export default async function ShowcasePage({
+  searchParams
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
   const params = await searchParams
-  
+
   const { items } = getArchiveData({
     items: projects,
     searchParams: params,
@@ -251,8 +264,8 @@ export default async function ShowcasePage({
   const regular = items.filter(p => !p.featured)
 
   return (
-    <ArchiveLayout 
-      title="Showcase" 
+    <ArchiveLayout
+      title="Showcase"
       description="Featured projects and work"
       itemCount={items.length}
     >
@@ -303,10 +316,10 @@ export async function generateStaticParams() {
   return guides.map(guide => ({ slug: guide.slug }))
 }
 
-export async function generateMetadata({ 
-  params 
-}: { 
-  params: Promise<{ slug: string }> 
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
   const guide = guides.find(g => g.slug === slug)
@@ -320,10 +333,10 @@ export async function generateMetadata({
   })
 }
 
-export default async function GuidePage({ 
-  params 
-}: { 
-  params: Promise<{ slug: string }> 
+export default async function GuidePage({
+  params
+}: {
+  params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
   const guide = guides.find(g => g.slug === slug)
@@ -336,7 +349,7 @@ export default async function GuidePage({
           <h1>{guide.title}</h1>
           <p className="text-lg text-muted-foreground">{guide.description}</p>
         </header>
-        
+
         <div className="prose dark:prose-invert">
           {guide.content}
         </div>
@@ -381,7 +394,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function EpisodePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const nonce = getNonce()
-  
+
   const episode = episodes.find(e => e.slug === slug)
   if (!episode) notFound()
 
@@ -402,7 +415,7 @@ export default async function EpisodePage({ params }: { params: Promise<{ slug: 
   return (
     <>
       <script {...getJsonLdScriptProps(breadcrumbSchema, nonce)} />
-      
+
       <ArticleLayout>
         <article>
           <h1>{episode.title}</h1>
@@ -423,7 +436,7 @@ export default async function EpisodePage({ params }: { params: Promise<{ slug: 
           ) : (
             <div />
           )}
-          
+
           {navigation.next ? (
             <a href={`/series/${navigation.next.slug}`} className="group text-right">
               <span className="text-sm text-muted-foreground">Next →</span>
@@ -452,10 +465,10 @@ export default async function EpisodePage({ params }: { params: Promise<{ slug: 
 import { notFound } from 'next/navigation'
 import { ArticleLayout } from '@/components/layouts/article-layout'
 import { getArticleData } from '@/lib/article'
-import { 
-  createArticlePageMetadata, 
+import {
+  createArticlePageMetadata,
   createArticleSchema,
-  getJsonLdScriptProps 
+  getJsonLdScriptProps
 } from '@/lib/metadata'
 import { getNonce } from '@/lib/csp'
 import { articles } from '@/data/articles'
@@ -481,7 +494,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const nonce = getNonce()
-  
+
   const article = articles.find(a => a.slug === slug)
   if (!article) notFound()
 
@@ -505,7 +518,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   return (
     <>
       <script {...getJsonLdScriptProps(articleSchema, nonce)} />
-      
+
       <ArticleLayout>
         <article>
           <h1>{article.title}</h1>
@@ -520,8 +533,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             <h2 className="text-xl font-bold mb-4">Related Articles</h2>
             <div className="grid gap-4 sm:grid-cols-3">
               {relatedItems.map(related => (
-                <a 
-                  key={related.slug} 
+                <a
+                  key={related.slug}
                   href={`/articles/${related.slug}`}
                   className="group"
                 >
@@ -551,12 +564,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 ```typescript
 'use client'
 
-export function CategoryFilter({ 
-  categories, 
-  selected 
-}: { 
+export function CategoryFilter({
+  categories,
+  selected
+}: {
   categories: string[]
-  selected?: string 
+  selected?: string
 }) {
   const router = useRouter()
   const pathname = usePathname()
@@ -572,7 +585,7 @@ export function CategoryFilter({
   }
 
   return (
-    <select 
+    <select
       value={selected || 'all'}
       onChange={(e) => handleChange(e.target.value)}
       className="..."
@@ -593,14 +606,14 @@ export function CategoryFilter({
 ```typescript
 'use client'
 
-export function ReadingTimeFilter({ 
-  min, 
-  max, 
-  current 
-}: { 
+export function ReadingTimeFilter({
+  min,
+  max,
+  current
+}: {
   min: number
   max: number
-  current?: number 
+  current?: number
 }) {
   const [value, setValue] = useState(current || max)
   const router = useRouter()
@@ -608,7 +621,7 @@ export function ReadingTimeFilter({
 
   const handleChange = (newValue: number) => {
     setValue(newValue)
-    
+
     const params = new URLSearchParams(window.location.search)
     if (newValue === max) {
       params.delete('maxReadingTime')
@@ -640,10 +653,10 @@ export function ReadingTimeFilter({
 ```typescript
 'use client'
 
-export function LayoutToggle({ 
-  layout 
-}: { 
-  layout: 'grid' | 'list' 
+export function LayoutToggle({
+  layout
+}: {
+  layout: 'grid' | 'list'
 }) {
   const router = useRouter()
   const pathname = usePathname()
@@ -673,21 +686,21 @@ export function LayoutToggle({
 const recipeSchema = {
   '@context': 'https://schema.org',
   '@type': 'Recipe',
-  'name': recipe.title,
-  'description': recipe.description,
-  'image': recipe.image,
-  'datePublished': recipe.publishedAt,
-  'prepTime': `PT${recipe.prepTime}M`,
-  'cookTime': `PT${recipe.cookTime}M`,
-  'totalTime': `PT${recipe.prepTime + recipe.cookTime}M`,
-  'recipeYield': recipe.servings,
-  'recipeIngredient': recipe.ingredients,
-  'recipeInstructions': recipe.steps.map((step, i) => ({
+  name: recipe.title,
+  description: recipe.description,
+  image: recipe.image,
+  datePublished: recipe.publishedAt,
+  prepTime: `PT${recipe.prepTime}M`,
+  cookTime: `PT${recipe.cookTime}M`,
+  totalTime: `PT${recipe.prepTime + recipe.cookTime}M`,
+  recipeYield: recipe.servings,
+  recipeIngredient: recipe.ingredients,
+  recipeInstructions: recipe.steps.map((step, i) => ({
     '@type': 'HowToStep',
-    'position': i + 1,
-    'text': step,
+    position: i + 1,
+    text: step,
   })),
-}
+};
 ```
 
 ---
@@ -698,25 +711,27 @@ const recipeSchema = {
 const courseSchema = {
   '@context': 'https://schema.org',
   '@type': 'Course',
-  'name': course.title,
-  'description': course.description,
-  'provider': {
+  name: course.title,
+  description: course.description,
+  provider: {
     '@type': 'Organization',
-    'name': SITE_TITLE,
-    'url': SITE_URL,
+    name: SITE_TITLE,
+    url: SITE_URL,
   },
-  'coursePrerequisites': course.prerequisites,
-  'hasCourseInstance': {
+  coursePrerequisites: course.prerequisites,
+  hasCourseInstance: {
     '@type': 'CourseInstance',
-    'courseMode': 'online',
-    'duration': `PT${course.hours}H`,
+    courseMode: 'online',
+    duration: `PT${course.hours}H`,
   },
-  'offers': course.price ? {
-    '@type': 'Offer',
-    'price': course.price,
-    'priceCurrency': 'USD',
-  } : undefined,
-}
+  offers: course.price
+    ? {
+        '@type': 'Offer',
+        price: course.price,
+        priceCurrency: 'USD',
+      }
+    : undefined,
+};
 ```
 
 ---
@@ -727,27 +742,29 @@ const courseSchema = {
 const eventSchema = {
   '@context': 'https://schema.org',
   '@type': 'Event',
-  'name': event.title,
-  'description': event.description,
-  'startDate': event.startDate,
-  'endDate': event.endDate,
-  'eventStatus': 'https://schema.org/EventScheduled',
-  'eventAttendanceMode': event.virtual 
+  name: event.title,
+  description: event.description,
+  startDate: event.startDate,
+  endDate: event.endDate,
+  eventStatus: 'https://schema.org/EventScheduled',
+  eventAttendanceMode: event.virtual
     ? 'https://schema.org/OnlineEventAttendanceMode'
     : 'https://schema.org/OfflineEventAttendanceMode',
-  'location': event.virtual ? {
-    '@type': 'VirtualLocation',
-    'url': event.url,
-  } : {
-    '@type': 'Place',
-    'name': event.venue,
-    'address': event.address,
-  },
-  'organizer': {
+  location: event.virtual
+    ? {
+        '@type': 'VirtualLocation',
+        url: event.url,
+      }
+    : {
+        '@type': 'Place',
+        name: event.venue,
+        address: event.address,
+      },
+  organizer: {
     '@type': 'Person',
-    'name': AUTHOR_NAME,
+    name: AUTHOR_NAME,
   },
-}
+};
 ```
 
 ---

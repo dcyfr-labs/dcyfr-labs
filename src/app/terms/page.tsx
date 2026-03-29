@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS, CONTAINER_PADDING } from '@/lib/design-tokens';
 import { createPageMetadata } from '@/lib/metadata';
-import { PageLayout, PageHero } from '@/components/layouts';
+import { PageLayout, PageHero, PolicyPageFooter } from '@/components/layouts';
 import { getJsonLdScriptProps, getContactPageSchema } from '@/lib/json-ld';
 
 const pageTitle = 'Terms of Service';
@@ -28,12 +28,7 @@ export default async function TermsPage() {
     <PageLayout>
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
 
-      <PageHero
-        title={pageTitle}
-        description={pageDescription}
-        variant="standard"
-        align="center"
-      />
+      <PageHero title={pageTitle} description={pageDescription} variant="standard" align="center" />
 
       <article
         className={`mx-auto ${CONTAINER_WIDTHS.prose} ${CONTAINER_PADDING} ${SPACING.section}`}
@@ -491,7 +486,7 @@ export default async function TermsPage() {
         </section>
 
         {/* Footer */}
-        <footer className="mt-8 md:mt-10 lg:mt-14 pt-4 md:pt-5 lg:pt-6 border-t border-border">
+        <PolicyPageFooter>
           <p className="text-sm text-muted-foreground">
             <strong>DCYFR Labs Terms of Service</strong>
             <br />
@@ -504,7 +499,7 @@ export default async function TermsPage() {
             </a>
             .
           </p>
-        </footer>
+        </PolicyPageFooter>
       </article>
     </PageLayout>
   );

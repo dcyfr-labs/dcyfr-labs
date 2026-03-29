@@ -21,10 +21,10 @@
  * @see docs/security/.private/soc2-compliance-plan-2026-01-31.md
  */
 
-import { execSync } from 'child_process';
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, statSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { execSync } from 'node:child_process';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -116,23 +116,26 @@ function runCheck(name, checkFn) {
 function runMonthlyChecks() {
   try {
     // Run monthly audit script
-    const output = execSync('node scripts/security/monthly-audit.mjs', { // NOSONAR - Administrative script, inputs from controlled sources
+    const output = execSync('node scripts/security/monthly-audit.mjs', {
+      // NOSONAR - Administrative script, inputs from controlled sources
       cwd: projectRoot,
       stdio: 'pipe',
     }).toString();
 
     // Check if monthly audit passed
     const passed = !output.includes('❌ FAIL');
+    const finding = passed ? null : 'Monthly audit failures require remediation';
+    const recommendation = passed ? null : 'Address monthly audit findings before quarter closes';
 
     return {
       passed,
       details: passed
         ? 'All monthly audit checks passed'
         : 'Monthly audit has failures - review monthly report',
-      finding: !passed ? 'Monthly audit failures require remediation' : null,
-      recommendation: !passed ? 'Address monthly audit findings before quarter closes' : null,
+      finding,
+      recommendation,
     };
-  } catch (error) {
+  } catch {
     return {
       passed: false,
       details: 'Monthly audit script failed to execute',
@@ -146,63 +149,55 @@ function runMonthlyChecks() {
  * 2. SOC2 Control Testing
  */
 function testSOC2Controls() {
-  const controls = [];
-
-  // SC3.2: Security testing and vulnerability management
-  controls.push({
-    control: 'SC3.2',
-    name: 'Security Testing',
-    test: 'Verify vulnerability scanning is operational',
-    result: existsSync(join(projectRoot, '.github/workflows/codeql.yml')) &&
-            existsSync(join(projectRoot, 'scripts/security/generate-sbom.mjs')),
-  });
-
-  // PI1.1: Data validation and processing integrity
-  controls.push({
-    control: 'PI1.1',
-    name: 'Data Validation',
-    test: 'Verify input validation in API routes',
-    result: true, // Manual verification required
-  });
-
-  // C2.1: Third-party service inventory
-  controls.push({
-    control: 'C2.1',
-    name: 'Third-Party Inventory',
-    test: 'Verify SBOM includes all third-party services',
-    result: existsSync(join(projectRoot, 'docs/security/sbom/README.md')),
-  });
-
-  // P5.1: Vendor management
-  controls.push({
-    control: 'P5.1',
-    name: 'Vendor Management',
-    test: 'Verify vendor risk assessment process exists',
-    result: existsSync(join(projectRoot, 'docs/governance/vendor-management-policy.md')),
-  });
-
-  // A1.2: Availability monitoring
-  controls.push({
-    control: 'A1.2',
-    name: 'Availability Monitoring',
-    test: 'Verify uptime monitoring is configured',
-    result: true, // Vercel provides this automatically
-  });
+  const controls = [
+    {
+      control: 'SC3.2',
+      name: 'Security Testing',
+      test: 'Verify vulnerability scanning is operational',
+      result:
+        existsSync(join(projectRoot, '.github/workflows/codeql.yml')) &&
+        existsSync(join(projectRoot, 'scripts/security/generate-sbom.mjs')),
+    },
+    {
+      control: 'PI1.1',
+      name: 'Data Validation',
+      test: 'Verify input validation in API routes',
+      result: true,
+    },
+    {
+      control: 'C2.1',
+      name: 'Third-Party Inventory',
+      test: 'Verify SBOM includes all third-party services',
+      result: existsSync(join(projectRoot, 'docs/security/sbom/README.md')),
+    },
+    {
+      control: 'P5.1',
+      name: 'Vendor Management',
+      test: 'Verify vendor risk assessment process exists',
+      result: existsSync(join(projectRoot, 'docs/governance/vendor-management-policy.md')),
+    },
+    {
+      control: 'A1.2',
+      name: 'Availability Monitoring',
+      test: 'Verify uptime monitoring is configured',
+      result: true,
+    },
+  ];
 
   auditResults.controlTesting = controls;
 
-  const passedControls = controls.filter(c => c.result).length;
+  const passedControls = controls.filter((c) => c.result).length;
   const totalControls = controls.length;
 
   return {
     passed: passedControls === totalControls,
     details: `${passedControls}/${totalControls} SOC2 controls tested successfully`,
-    finding: passedControls < totalControls
-      ? `${totalControls - passedControls} SOC2 controls need attention`
-      : null,
-    recommendation: passedControls < totalControls
-      ? 'Implement missing SOC2 controls before next audit'
-      : null,
+    finding:
+      passedControls < totalControls
+        ? `${totalControls - passedControls} SOC2 controls need attention`
+        : null,
+    recommendation:
+      passedControls < totalControls ? 'Implement missing SOC2 controls before next audit' : null,
   };
 }
 
@@ -211,7 +206,6 @@ function testSOC2Controls() {
  */
 function reviewPolicies() {
   const policyDir = join(projectRoot, 'docs/governance');
-  const securityDir = join(projectRoot, 'docs/security');
 
   const requiredPolicies = [
     'vendor-management-policy.md',
@@ -222,7 +216,7 @@ function reviewPolicies() {
   const existingPolicies = [];
   const missingPolicies = [];
 
-  requiredPolicies.forEach(policy => {
+  requiredPolicies.forEach((policy) => {
     const policyPath = join(policyDir, policy);
     if (existsSync(policyPath)) {
       existingPolicies.push(policy);
@@ -233,23 +227,24 @@ function reviewPolicies() {
 
   // Check if policies have been updated in last quarter
   const quarterStartDate = new Date(year, (quarter - 1) * 3, 1);
-  const updatedPolicies = existingPolicies.filter(policy => {
+  const updatedPolicies = existingPolicies.filter((policy) => {
     const policyPath = join(policyDir, policy);
     const stats = statSync(policyPath);
     return stats.mtime >= quarterStartDate;
   });
 
+  let recommendation = null;
+  if (missingPolicies.length > 0) {
+    recommendation = 'Create missing governance policies (see Phase 2 of SOC2 plan)';
+  } else if (updatedPolicies.length === 0) {
+    recommendation = 'Review and update policies at least once per quarter';
+  }
+
   return {
     passed: missingPolicies.length === 0,
     details: `${existingPolicies.length}/${requiredPolicies.length} required policies exist, ${updatedPolicies.length} updated this quarter`,
-    finding: missingPolicies.length > 0
-      ? `Missing policies: ${missingPolicies.join(', ')}`
-      : null,
-    recommendation: missingPolicies.length > 0
-      ? 'Create missing governance policies (see Phase 2 of SOC2 plan)'
-      : updatedPolicies.length === 0
-        ? 'Review and update policies at least once per quarter'
-        : null,
+    finding: missingPolicies.length > 0 ? `Missing policies: ${missingPolicies.join(', ')}` : null,
+    recommendation,
   };
 }
 
@@ -257,31 +252,30 @@ function reviewPolicies() {
  * 4. Risk Assessment Review
  */
 function reviewRiskAssessment() {
-  const riskAssessmentPath = join(
-    projectRoot,
-    'docs/governance/risk-assessment-procedure.md'
-  );
+  const riskAssessmentPath = join(projectRoot, 'docs/governance/risk-assessment-procedure.md');
 
   const hasRiskProcess = existsSync(riskAssessmentPath);
 
   // Check for recent risk assessment execution
-  const evidenceFiles = readdirSync(evidenceDir, { recursive: true }).filter(f =>
+  const evidenceFiles = readdirSync(evidenceDir, { recursive: true }).filter((f) =>
     f.includes('risk-assessment')
   );
+
+  const finding = hasRiskProcess ? null : 'Risk assessment process is a critical SOC2 requirement';
+  let recommendation = null;
+  if (!hasRiskProcess) {
+    recommendation = 'Create risk assessment procedure (see Phase 4 of SOC2 plan)';
+  } else if (evidenceFiles.length === 0) {
+    recommendation = 'Conduct formal risk assessment at least annually';
+  }
 
   return {
     passed: hasRiskProcess,
     details: hasRiskProcess
       ? `Risk assessment process documented, ${evidenceFiles.length} assessment(s) on record`
       : 'No formal risk assessment process documented',
-    finding: !hasRiskProcess
-      ? 'Risk assessment process is a critical SOC2 requirement'
-      : null,
-    recommendation: !hasRiskProcess
-      ? 'Create risk assessment procedure (see Phase 4 of SOC2 plan)'
-      : evidenceFiles.length === 0
-        ? 'Conduct formal risk assessment at least annually'
-        : null,
+    finding,
+    recommendation,
   };
 }
 
@@ -290,16 +284,11 @@ function reviewRiskAssessment() {
  */
 function scoreVendorRisks() {
   // Read third-party services from SBOM script
-  const sbomScript = readFileSync(
-    join(projectRoot, 'scripts/security/generate-sbom.mjs'),
-    'utf-8'
-  );
+  const sbomScript = readFileSync(join(projectRoot, 'scripts/security/generate-sbom.mjs'), 'utf-8');
 
   // Extract service count (simple regex)
   const serviceMatch = sbomScript.match(/const THIRD_PARTY_SERVICES = \[([\s\S]*?)\];/);
-  const serviceCount = serviceMatch
-    ? serviceMatch[1].split('{').length - 1
-    : 0;
+  const serviceCount = serviceMatch ? serviceMatch[1].split('{').length - 1 : 0;
 
   // Check if vendor management policy exists
   const vendorPolicyExists = existsSync(
@@ -307,18 +296,21 @@ function scoreVendorRisks() {
   );
 
   // Check for vendor assessments
-  const vendorAssessments = readdirSync(evidenceDir, { recursive: true }).filter(f =>
+  const vendorAssessments = readdirSync(evidenceDir, { recursive: true }).filter((f) =>
     f.includes('vendor-assessment')
   );
+
+  let recommendation = null;
+  if (!vendorPolicyExists) {
+    recommendation = 'Create vendor management policy (see Phase 2 of SOC2 plan)';
+  } else if (vendorAssessments.length < serviceCount) {
+    recommendation = 'Complete risk assessments for all critical vendors';
+  }
 
   return {
     passed: true, // Informational check
     details: `${serviceCount} third-party services documented, ${vendorAssessments.length} vendor assessment(s) completed`,
-    recommendation: !vendorPolicyExists
-      ? 'Create vendor management policy (see Phase 2 of SOC2 plan)'
-      : vendorAssessments.length < serviceCount
-        ? 'Complete risk assessments for all critical vendors'
-        : null,
+    recommendation,
   };
 }
 
@@ -326,25 +318,31 @@ function scoreVendorRisks() {
  * 6. Privacy Compliance Review (GDPR/CCPA)
  */
 function reviewPrivacyCompliance() {
-  const privacyPolicyPath = join(projectRoot, 'docs/governance/privacy-rights-request-procedure.md');
+  const privacyPolicyPath = join(
+    projectRoot,
+    'docs/governance/privacy-rights-request-procedure.md'
+  );
   const hasPrivacyProcess = existsSync(privacyPolicyPath);
 
   // Check for data subject requests
-  const dsrFiles = readdirSync(evidenceDir, { recursive: true }).filter(f =>
-    f.includes('data-subject-request') || f.includes('dsr')
+  const dsrFiles = readdirSync(evidenceDir, { recursive: true }).filter(
+    (f) => f.includes('data-subject-request') || f.includes('dsr')
   );
+
+  const finding = hasPrivacyProcess
+    ? null
+    : 'Privacy rights procedures required for GDPR/CCPA compliance';
+  const recommendation = hasPrivacyProcess
+    ? null
+    : 'Create privacy rights request procedure (see Phase 2 of SOC2 plan)';
 
   return {
     passed: hasPrivacyProcess,
     details: hasPrivacyProcess
       ? `Privacy rights process documented, ${dsrFiles.length} request(s) handled this quarter`
       : 'No privacy rights request procedure documented',
-    finding: !hasPrivacyProcess
-      ? 'Privacy rights procedures required for GDPR/CCPA compliance'
-      : null,
-    recommendation: !hasPrivacyProcess
-      ? 'Create privacy rights request procedure (see Phase 2 of SOC2 plan)'
-      : null,
+    finding,
+    recommendation,
   };
 }
 
@@ -354,25 +352,24 @@ function reviewPrivacyCompliance() {
 function checkDataRetention() {
   // Check SBOM retention (should be 24 months)
   const sbomDir = join(projectRoot, 'docs/security/sbom');
-  const sbomFiles = readdirSync(sbomDir).filter(f => f.includes('sbom-'));
+  const sbomFiles = readdirSync(sbomDir).filter((f) => f.includes('sbom-'));
 
   // Count unique months
-  const uniqueMonths = new Set(
-    sbomFiles.map(f => f.match(/\d{4}-\d{2}/)?.[0]).filter(Boolean)
-  );
+  const uniqueMonths = new Set(sbomFiles.map((f) => f.match(/\d{4}-\d{2}/)?.[0]).filter(Boolean));
 
   const monthsRetained = uniqueMonths.size;
   const targetRetention = 24;
 
   // Check evidence retention
-  const evidenceMonths = readdirSync(evidenceDir).filter(f => f.match(/\d{4}-\d{2}/));
+  const evidenceMonths = readdirSync(evidenceDir).filter((f) => f.match(/\d{4}-\d{2}/));
 
   return {
     passed: true, // Progressive compliance
     details: `SBOM retention: ${monthsRetained}/${targetRetention} months, Evidence: ${evidenceMonths.length} months archived`,
-    recommendation: monthsRetained < targetRetention
-      ? `Continue monthly SBOM generation to reach ${targetRetention}-month retention target`
-      : null,
+    recommendation:
+      monthsRetained < targetRetention
+        ? `Continue monthly SBOM generation to reach ${targetRetention}-month retention target`
+        : null,
   };
 }
 
@@ -382,10 +379,13 @@ function checkDataRetention() {
 function reviewAccessLogs() {
   // Check for suspicious git activity
   try {
-    const suspiciousCommits = execSync( // NOSONAR - Administrative script, inputs from controlled sources
+    const suspiciousCommits = execSync(
+      // NOSONAR - Administrative script, inputs from controlled sources
       `git log --since="90 days ago" --all --author="<>" --oneline || echo ""`,
       { cwd: projectRoot, stdio: 'pipe' }
-    ).toString().trim();
+    )
+      .toString()
+      .trim();
 
     const hasSuspicious = suspiciousCommits.length > 0;
 
@@ -396,7 +396,7 @@ function reviewAccessLogs() {
         : 'No suspicious access patterns detected in git logs',
       finding: hasSuspicious ? 'Investigate commits without proper author attribution' : null,
     };
-  } catch (error) {
+  } catch {
     return {
       passed: true,
       details: 'Access log review completed (no anomalies)',
@@ -411,29 +411,36 @@ function evaluateChangeManagement() {
   // Count PRs merged this quarter
   try {
     const quarterStart = new Date(year, (quarter - 1) * 3, 1).toISOString().split('T')[0];
-    const prCount = execSync( // NOSONAR - Administrative script, inputs from controlled sources
+    const prCount = execSync(
+      // NOSONAR - Administrative script, inputs from controlled sources
       `gh pr list --state merged --search "merged:>=${quarterStart}" --json number --jq "length" || echo "0"`,
       { cwd: projectRoot, stdio: 'pipe' }
-    ).toString().trim();
+    )
+      .toString()
+      .trim();
 
-    const mergedPRs = parseInt(prCount, 10);
+    const mergedPRs = Number.parseInt(prCount, 10);
 
     // Check for emergency changes (commits to main without PR)
-    const directCommits = execSync( // NOSONAR - Administrative script, inputs from controlled sources
+    const directCommits = execSync(
+      // NOSONAR - Administrative script, inputs from controlled sources
       `git log --since="${quarterStart}" --first-parent main --oneline | wc -l`,
       { cwd: projectRoot, stdio: 'pipe' }
-    ).toString().trim();
+    )
+      .toString()
+      .trim();
 
-    const directCount = parseInt(directCommits, 10);
+    const directCount = Number.parseInt(directCommits, 10);
 
     return {
       passed: true, // Informational
       details: `${mergedPRs} PRs merged this quarter, ${directCount} direct commits to main`,
-      recommendation: directCount > mergedPRs * 0.1
-        ? 'High ratio of direct commits - ensure PR process is followed'
-        : null,
+      recommendation:
+        directCount > mergedPRs * 0.1
+          ? 'High ratio of direct commits - ensure PR process is followed'
+          : null,
     };
-  } catch (error) {
+  } catch {
     return {
       passed: true,
       details: 'Change management metrics unavailable (GitHub CLI not configured)',
@@ -448,18 +455,20 @@ function evaluateChangeManagement() {
 function checkTrainingRecords() {
   const trainingRecordsPath = join(projectRoot, 'docs/operations/.private/training-records.md');
   const hasTrainingRecords = existsSync(trainingRecordsPath);
+  const finding = hasTrainingRecords
+    ? null
+    : 'Security training records required for SOC2 compliance';
+  const recommendation = hasTrainingRecords
+    ? 'Ensure all team members complete annual security training'
+    : 'Create training records documentation (see Phase 4 of SOC2 plan)';
 
   return {
     passed: hasTrainingRecords,
     details: hasTrainingRecords
       ? 'Security training records exist'
       : 'No security training records found',
-    finding: !hasTrainingRecords
-      ? 'Security training records required for SOC2 compliance'
-      : null,
-    recommendation: !hasTrainingRecords
-      ? 'Create training records documentation (see Phase 4 of SOC2 plan)'
-      : 'Ensure all team members complete annual security training',
+    finding,
+    recommendation,
   };
 }
 
@@ -497,7 +506,7 @@ function checkStatusLabel(status) {
  * Return SOC2 category status icon (✅ or ⚠️) based on control prefix.
  */
 function soc2CategoryStatus(controls, prefix) {
-  return controls.filter(c => c.control.startsWith(prefix)).every(c => c.result) ? '✅' : '⚠️';
+  return controls.filter((c) => c.control.startsWith(prefix)).every((c) => c.result) ? '✅' : '⚠️';
 }
 
 function generateReport() {
@@ -532,26 +541,34 @@ function generateReport() {
 
 ## SOC2 Control Testing Results
 
-${auditResults.controlTesting.map((control, idx) => `
+${auditResults.controlTesting
+  .map(
+    (control, idx) => `
 ### ${idx + 1}. ${control.control}: ${control.name}
 
 **Test:** ${control.test}
 **Result:** ${control.result ? '✅ PASS' : '❌ FAIL'}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
-**Summary:** ${auditResults.controlTesting.filter(c => c.result).length}/${auditResults.controlTesting.length} controls passing
+**Summary:** ${auditResults.controlTesting.filter((c) => c.result).length}/${auditResults.controlTesting.length} controls passing
 
 ---
 
 ## Detailed Audit Checks
 
-${auditResults.checks.map((check, idx) => `
+${auditResults.checks
+  .map(
+    (check, idx) => `
 ### ${idx + 1}. ${check.name}
 
 **Status:** ${checkStatusLabel(check.status)}
 **Details:** ${check.details}
 **Timestamp:** ${check.timestamp}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ---
 
@@ -572,7 +589,13 @@ ${auditResults.recommendations.length === 0 ? '_No recommendations._' : auditRes
 All evidence artifacts stored in: \`docs/security/.private/evidence/${year}-${quarterLabel}/\`
 
 **Files:**
-${existsSync(evidenceQuarterDir) ? readdirSync(evidenceQuarterDir).map(f => `- ${f}`).join('\n') : '_No evidence files generated this quarter_'}
+${
+  existsSync(evidenceQuarterDir)
+    ? readdirSync(evidenceQuarterDir)
+        .map((f) => `- ${f}`)
+        .join('\n')
+    : '_No evidence files generated this quarter_'
+}
 
 ---
 
@@ -626,11 +649,16 @@ async function main() {
   generateReport();
 
   const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-  const passRate = (auditResults.passed / (auditResults.passed + auditResults.failed) * 100).toFixed(1);
+  const passRate = (
+    (auditResults.passed / (auditResults.passed + auditResults.failed)) *
+    100
+  ).toFixed(1);
 
   console.log('\n━'.repeat(50));
   console.log(`✅ Quarterly audit complete in ${duration}s`);
-  console.log(`📊 Overall Score: ${passRate}% (${auditResults.passed}/${auditResults.passed + auditResults.failed} checks passed)`);
+  console.log(
+    `📊 Overall Score: ${passRate}% (${auditResults.passed}/${auditResults.passed + auditResults.failed} checks passed)`
+  );
   console.log(`📁 Report: ${auditReportPath}`);
   console.log(`📁 Evidence: ${evidenceQuarterDir}`);
   console.log('━'.repeat(50));
@@ -639,7 +667,9 @@ async function main() {
   process.exit(0);
 }
 
-main().catch((error) => {
+try {
+  await main();
+} catch (error) {
   console.error('\n❌ Quarterly audit failed:', error);
   process.exit(1);
-});
+}

@@ -1,6 +1,6 @@
 /**
  * Unified Search System - Search Engine
- * 
+ *
  * Generic search engine using MiniSearch with support for:
  * - Full-text search with fuzzy matching
  * - Field-specific filtering
@@ -8,17 +8,17 @@
  * - Exact phrase matching
  */
 
-import MiniSearch from "minisearch";
-import type { SearchResult, SearchQuery, SearchConfig, SearchableField, SearchMatch } from "./types";
-import { parseSearchQuery, getSearchTermsForHighlighting } from "./query-parser";
+import MiniSearch from 'minisearch';
+import type { SearchResult, SearchQuery, SearchConfig, SearchMatch } from './types';
+import { parseSearchQuery, getSearchTermsForHighlighting } from './query-parser';
 
 /**
  * Create a search index for a collection of items
- * 
+ *
  * @param items - Items to index
  * @param config - Search configuration
  * @returns MiniSearch instance
- * 
+ *
  * @example
  * const searchIndex = createSearchIndex(posts, {
  *   fields: [
@@ -35,15 +35,18 @@ export function createSearchIndex<T extends Record<string, any>>(
   config: SearchConfig<T>
 ): MiniSearch<T> {
   const searchIndex = new MiniSearch<T>({
-    fields: config.fields.map(f => f.name),
+    fields: config.fields.map((f) => f.name),
     storeFields: [String(config.idField)],
     searchOptions: {
       fuzzy: config.fuzzyThreshold ?? 0.2,
       prefix: true,
-      boost: config.fields.reduce((acc, field) => {
-        acc[field.name] = field.weight ?? 1;
-        return acc;
-      }, {} as Record<string, number>),
+      boost: config.fields.reduce(
+        (acc, field) => {
+          acc[field.name] = field.weight ?? 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      ),
     },
   });
 
@@ -53,13 +56,13 @@ export function createSearchIndex<T extends Record<string, any>>(
 
 /**
  * Search items using the unified search system
- * 
+ *
  * @param items - All items (used for filter-only queries)
  * @param searchIndex - Pre-built search index
  * @param queryString - Search query string
  * @param config - Search configuration
  * @returns Array of search results with scoring and matches
- * 
+ *
  * @example
  * const results = searchItems(
  *   posts,
@@ -78,7 +81,7 @@ export function searchItems<T extends Record<string, any>>(
 
   // Handle filter-only queries (no text search)
   if (query.isFilterOnly) {
-    return applyFilters(items, query, config).map(item => ({
+    return applyFilters(items, query).map((item) => ({
       item,
       score: 1,
       matches: [],
@@ -91,7 +94,7 @@ export function searchItems<T extends Record<string, any>>(
   searchTerms.push(...query.terms);
   searchTerms.push(...query.phrases);
 
-  const searchString = searchTerms.join(" ");
+  const searchString = searchTerms.join(' ');
 
   // Perform full-text search
   const miniSearchResults = searchIndex.search(searchString, {
@@ -100,15 +103,15 @@ export function searchItems<T extends Record<string, any>>(
   });
 
   // Convert MiniSearch results to our SearchResult format
-  const itemMap = new Map(items.map(item => [item[config.idField], item]));
+  const itemMap = new Map(items.map((item) => [item[config.idField], item]));
   const results: SearchResult<T>[] = miniSearchResults
-    .map(result => {
+    .map((result) => {
       const item = itemMap.get(result.id);
       if (!item) return null;
 
-      const matches: SearchMatch[] = Object.entries(result.match || {}).map(([field, terms]) => ({
+      const matches: SearchMatch[] = Object.entries(result.match || {}).map(([field, _terms]) => ({
         field,
-        excerpt: String(item[field] || ""),
+        excerpt: String(item[field] || ''),
         positions: [] as [number, number][],
       }));
 
@@ -123,14 +126,13 @@ export function searchItems<T extends Record<string, any>>(
 
   // Apply filters
   const filteredResults = applyFilters(
-    results.map(r => r.item),
-    query,
-    config
+    results.map((r) => r.item),
+    query
   );
 
   // Reconstruct search results with filtering applied
-  const filteredIds = new Set(filteredResults.map(item => item[config.idField]));
-  const finalResults = results.filter(r => filteredIds.has(r.item[config.idField]));
+  const filteredIds = new Set(filteredResults.map((item) => item[config.idField]));
+  const finalResults = results.filter((r) => filteredIds.has(r.item[config.idField]));
 
   // Apply exclusions
   const excludedResults = applyExclusions(finalResults, query, config);
@@ -144,16 +146,12 @@ export function searchItems<T extends Record<string, any>>(
 /**
  * Apply field-specific filters to items
  */
-function applyFilters<T extends Record<string, any>>(
-  items: T[],
-  query: SearchQuery,
-  config: SearchConfig<T>
-): T[] {
+function applyFilters<T extends Record<string, any>>(items: T[], query: SearchQuery): T[] {
   if (Object.keys(query.filters).length === 0) {
     return items;
   }
 
-  return items.filter(item => {
+  return items.filter((item) => {
     return Object.entries(query.filters).every(([field, values]) => {
       const itemValue = item[field];
 
@@ -161,7 +159,7 @@ function applyFilters<T extends Record<string, any>>(
       if (Array.isArray(itemValue)) {
         const matchesArrayItem = (filterValue: string) =>
           itemValue.some(
-            v =>
+            (v) =>
               String(v).toLowerCase() === filterValue.toLowerCase() ||
               String(v).toLowerCase().includes(filterValue.toLowerCase())
           );
@@ -169,10 +167,11 @@ function applyFilters<T extends Record<string, any>>(
       }
 
       // Handle string fields
-      if (typeof itemValue === "string") {
-        return values.some(filterValue =>
-          itemValue.toLowerCase() === filterValue.toLowerCase() ||
-          itemValue.toLowerCase().includes(filterValue.toLowerCase())
+      if (typeof itemValue === 'string') {
+        return values.some(
+          (filterValue) =>
+            itemValue.toLowerCase() === filterValue.toLowerCase() ||
+            itemValue.toLowerCase().includes(filterValue.toLowerCase())
         );
       }
 
@@ -193,17 +192,17 @@ function applyExclusions<T extends Record<string, any>>(
     return results;
   }
 
-  return results.filter(result => {
+  return results.filter((result) => {
     const searchableText = config.fields
-      .map(field => {
+      .map((field) => {
         const value = result.item[field.name];
-        if (Array.isArray(value)) return value.join(" ");
-        return String(value || "");
+        if (Array.isArray(value)) return value.join(' ');
+        return String(value || '');
       })
-      .join(" ")
+      .join(' ')
       .toLowerCase();
 
-    return !query.excludeTerms.some(term => searchableText.includes(term));
+    return !query.excludeTerms.some((term) => searchableText.includes(term));
   });
 }
 
@@ -219,18 +218,16 @@ function applyPhraseFilter<T extends Record<string, any>>(
     return results;
   }
 
-  return results.filter(result => {
+  return results.filter((result) => {
     const searchableText = config.fields
-      .map(field => {
+      .map((field) => {
         const value = result.item[field.name];
-        if (Array.isArray(value)) return value.join(" ");
-        return String(value || "");
+        if (Array.isArray(value)) return value.join(' ');
+        return String(value || '');
       })
-      .join(" ")
+      .join(' ')
       .toLowerCase();
 
-    return query.phrases.every(phrase =>
-      searchableText.includes(phrase.toLowerCase())
-    );
+    return query.phrases.every((phrase) => searchableText.includes(phrase.toLowerCase()));
   });
 }

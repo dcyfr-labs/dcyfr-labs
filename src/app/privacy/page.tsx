@@ -2,9 +2,8 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { TYPOGRAPHY, SPACING, CONTAINER_WIDTHS, CONTAINER_PADDING } from '@/lib/design-tokens';
 import { createPageMetadata } from '@/lib/metadata';
-import { PageLayout, PageHero } from '@/components/layouts';
+import { PageLayout, PageHero, PolicyPageFooter } from '@/components/layouts';
 import { getJsonLdScriptProps, getContactPageSchema } from '@/lib/json-ld';
-import { cn } from '@/lib/utils';
 
 const pageTitle = 'Privacy Policy';
 const pageDescription =
@@ -688,13 +687,13 @@ export default async function PrivacyPage() {
         </section>
 
         {/* Footer */}
-        <footer className="mt-8 md:mt-10 lg:mt-14 pt-4 md:pt-5 lg:pt-6 border-t border-border">
+        <PolicyPageFooter>
           <p className="text-sm text-muted-foreground">
             <strong>DCYFR Labs Privacy Policy</strong>
             <br />
             Last Updated: {lastUpdated}
           </p>
-        </footer>
+        </PolicyPageFooter>
       </article>
     </PageLayout>
   );

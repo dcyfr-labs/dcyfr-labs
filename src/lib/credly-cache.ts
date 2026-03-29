@@ -9,7 +9,7 @@
  * is shared across all server instances and page loads.
  */
 
-import type { CredlyBadge, CredlyBadgesResponse } from '@/types/credly';
+import type { CredlyBadge } from '@/types/credly';
 import { redis } from '@/lib/redis';
 
 // Cache configuration
@@ -103,17 +103,6 @@ async function getRedisCachedData<T>(redisKey: string): Promise<T | null> {
     console.warn('[Credly Cache] Redis read failed:', error);
   }
   return null;
-}
-
-/**
- * Store data in Redis with expiration
- */
-async function setRedisCachedData<T>(redisKey: string, data: T): Promise<void> {
-  try {
-    await redis.setEx(redisKey, REDIS_CACHE_DURATION, JSON.stringify(data));
-  } catch (error) {
-    console.warn('[Credly Cache] Redis write failed:', error);
-  }
 }
 
 /**

@@ -67,7 +67,7 @@ export const PRIMARY_NAV: NavItem[] = [
   },
   {
     href: '/ai',
-    label: 'AI',
+    label: 'DCYFR AI',
     icon: Zap,
     shortcut: 'g i',
   },
@@ -110,6 +110,16 @@ export const BOTTOM_NAV: NavItem[] = [
     href: '/work',
     label: 'Work',
     icon: FolderGit2,
+  },
+  {
+    href: '/ai',
+    label: 'DCYFR AI',
+    icon: Zap,
+  },
+  {
+    href: '/about',
+    label: 'About',
+    icon: User,
   },
 ] as const;
 
@@ -161,7 +171,11 @@ export const FOOTER_NAV: NavItem[] = [
   },
   {
     href: '/ai',
-    label: 'AI Framework',
+    label: 'DCYFR AI',
+  },
+  {
+    href: '/docs',
+    label: 'Docs',
   },
   {
     href: '/open-source',
@@ -177,11 +191,11 @@ export const FOOTER_NAV: NavItem[] = [
   },
   {
     href: '/privacy',
-    label: 'Privacy Policy',
+    label: 'Privacy',
   },
   {
     href: '/terms',
-    label: 'Terms of Service',
+    label: 'Terms',
   },
 ] as const;
 
@@ -196,11 +210,11 @@ export const MOBILE_NAV: NavItem[] = [
   },
   {
     href: '/privacy',
-    label: 'Privacy Policy',
+    label: 'Privacy',
   },
   {
     href: '/terms',
-    label: 'Terms of Service',
+    label: 'Terms',
   },
 ] as const;
 

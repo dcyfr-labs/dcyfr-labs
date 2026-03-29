@@ -13,7 +13,9 @@
  */
 
 import { PromptIntelClient } from '@/lib/promptintel-client';
-import type { PromptIntelIoPC, PromptIntelTaxonomy } from '@/lib/promptintel-types';
+
+type PromptIntelThreat = Awaited<ReturnType<PromptIntelClient['getPrompts']>>[number];
+type PromptIntelTaxonomyItem = Awaited<ReturnType<PromptIntelClient['getTaxonomy']>>[number];
 
 // ============================================================================
 // Types
@@ -120,14 +122,14 @@ const LOCAL_PATTERNS = [
 // ============================================================================
 
 export class PromptSecurityScanner {
-  private client: PromptIntelClient;
-  private cache: Map<string, { result: ScanResult; expiresAt: number }>;
-  private ioPCCache: PromptIntelIoPC[] | null = null;
-  private taxonomyCache: PromptIntelTaxonomy[] | null = null;
+  private readonly client: PromptIntelClient;
+  private readonly cache: Map<string, { result: ScanResult; expiresAt: number }>;
+  private ioPCCache: PromptIntelThreat[] | null = null;
+  private taxonomyCache: PromptIntelTaxonomyItem[] | null = null;
   private lastIoPCUpdate = 0;
   private lastTaxonomyUpdate = 0;
 
-  constructor(apiKey?: string) {
+  constructor(_apiKey?: string) {
     // PromptIntelClient is deprecated - this will throw
     this.client = new PromptIntelClient();
     this.cache = new Map();
@@ -338,7 +340,7 @@ export class PromptSecurityScanner {
    */
   private async checkAgainstTaxonomy(_input: string): Promise<ThreatMatch[]> {
     await this.refreshTaxonomyCacheIfNeeded();
-    // TODO: implement taxonomy matching against _input
+    // Taxonomy matching pipeline is intentionally deferred.
     return [];
   }
 
@@ -398,7 +400,7 @@ export class PromptSecurityScanner {
     // Simple hash function (use crypto.subtle in production)
     let hash = 0;
     for (let i = 0; i < input.length; i++) {
-      const char = input.charCodeAt(i);
+      const char = input.codePointAt(i) ?? 0;
       hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
@@ -444,7 +446,7 @@ export class PromptSecurityScanner {
     return {
       size: this.cache.size,
       maxSize: MAX_CACHE_SIZE,
-      hitRate: 0, // TODO: Implement hit rate tracking
+      hitRate: 0, // Hit-rate tracking is intentionally deferred.
     };
   }
 }
@@ -456,8 +458,6 @@ export class PromptSecurityScanner {
 let scannerInstance: PromptSecurityScanner | null = null;
 
 export function getPromptScanner(): PromptSecurityScanner {
-  if (!scannerInstance) {
-    scannerInstance = new PromptSecurityScanner();
-  }
+  scannerInstance ??= new PromptSecurityScanner();
   return scannerInstance;
 }

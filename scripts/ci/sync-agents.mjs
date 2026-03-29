@@ -2,17 +2,17 @@
 
 /**
  * DCYFR Agent Synchronization Script
- * 
+ *
  * Keeps Copilot, Claude Code, and VS Code DCYFR agents synchronized
  * while optimizing for each toolset's specific strengths.
- * 
+ *
  * Usage:
  *   npm run sync:agents [--dry-run] [--target=copilot|claude|vscode|all]
  */
 
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -23,7 +23,7 @@ const SOURCES = {
   enforcement: path.join(ROOT, '.github/agents/enforcement'),
   learning: path.join(ROOT, '.github/agents/learning'),
   learningData: path.join(ROOT, '.github/agents/learning-data/knowledge-base.json'),
-  hub: path.join(ROOT, '.github/agents/DCYFR.agent.md')
+  hub: path.join(ROOT, '.github/agents/DCYFR.agent.md'),
 };
 
 // Target implementations
@@ -31,18 +31,18 @@ const TARGETS = {
   copilot: {
     file: path.join(ROOT, '.github/copilot-instructions.md'),
     transform: 'extractEssentials',
-    format: 'markdown-quick-ref'
+    format: 'markdown-quick-ref',
   },
   claude: {
     directory: path.join(ROOT, '.claude/agents'),
-    transform: 'splitByAgent', 
-    format: 'yaml-frontmatter'
+    transform: 'splitByAgent',
+    format: 'yaml-frontmatter',
   },
   vscode: {
     file: path.join(ROOT, '.github/agents/DCYFR.agent.md'),
     transform: 'modularHub',
-    format: 'conversation-mode'
-  }
+    format: 'conversation-mode',
+  },
 };
 
 // Core patterns that must be consistent across all implementations
@@ -53,49 +53,49 @@ const CORE_PATTERNS = {
       'All styling MUST use tokens from @/lib/design-tokens',
       'SPACING: xs, sm, md, lg, xl, content, section',
       'TYPOGRAPHY: h1, h2, h3, body, caption with variants',
-      'CONTAINER_WIDTHS: narrow, standard, wide, full'
-    ]
+      'CONTAINER_WIDTHS: narrow, standard, wide, full',
+    ],
   },
   layoutSelection: {
-    source: 'patterns/COMPONENT_PATTERNS.md', 
+    source: 'patterns/COMPONENT_PATTERNS.md',
     rules: [
       '90% of pages use PageLayout',
       'ArticleLayout only for blog posts (/blog/[slug])',
-      'ArchiveLayout only for collections (/blog, /work)'
-    ]
+      'ArchiveLayout only for collections (/blog, /work)',
+    ],
   },
   barrelExports: {
     source: 'patterns/COMPONENT_PATTERNS.md',
     rules: [
       'Only barrel exports allowed (no direct component imports)',
       'import { Component } from "@/components/domain"',
-      'Configure index.ts files for all component directories'
-    ]
+      'Configure index.ts files for all component directories',
+    ],
   },
   apiRoutes: {
     source: 'patterns/API_PATTERNS.md',
     rules: [
       'Follow Validate→Queue→Respond pattern',
       'Use Inngest for background processing',
-      'Proper error handling and rate limiting'
-    ]
+      'Proper error handling and rate limiting',
+    ],
   },
   testing: {
     source: 'patterns/TESTING_PATTERNS.md',
     rules: [
       'Maintain ≥99% pass rate (current: 1339/1346)',
       'Test: API routes, utilities, complex logic, state',
-      'Skip: Static pages, trivial changes, pure CSS'
-    ]
-  }
+      'Skip: Static pages, trivial changes, pure CSS',
+    ],
+  },
 };
 
 /**
  * Extract essential patterns for Copilot (80/20 rule)
  *
- * TODO: Implement transformation logic to extract 80/20 patterns from source
+ * Placeholder: implement transformation logic to extract 80/20 patterns from source
  */
-function transformForCopilot(_sourceContent, _patternKey) {
+function _transformForCopilot(_sourceContent, _patternKey) {
   // Placeholder for transformation logic
   // Will extract essential patterns based on patternKey
   return '';
@@ -104,9 +104,9 @@ function transformForCopilot(_sourceContent, _patternKey) {
 /**
  * Transform patterns for Claude Code agents (task-specific)
  *
- * TODO: Implement agent-specific pattern transformation
+ * Placeholder: implement agent-specific pattern transformation
  */
-function transformForClaudeCode(_sourceContent, _agentType, _patternKey) {
+function _transformForClaudeCode(_sourceContent, _agentType, _patternKey) {
   // Placeholder for transformation logic
   // Will tailor patterns per agent type and capability
   return '';
@@ -117,15 +117,15 @@ function transformForClaudeCode(_sourceContent, _agentType, _patternKey) {
  */
 async function validateConsistency() {
   console.log('🔍 Validating pattern consistency...');
-  
+
   const issues = [];
-  
+
   // Check if core patterns exist in all implementations
   for (const [patternKey, pattern] of Object.entries(CORE_PATTERNS)) {
     // Check Copilot implementation
     try {
       const copilotContent = await fs.readFile(TARGETS.copilot.file, 'utf8');
-      const hasPattern = pattern.rules.some(rule => 
+      const hasPattern = pattern.rules.some((rule) =>
         copilotContent.includes(rule.split(' ').slice(0, 3).join(' '))
       );
       if (!hasPattern) {
@@ -139,14 +139,10 @@ async function validateConsistency() {
     try {
       const claudeFiles = await fs.readdir(TARGETS.claude.directory);
       const claudeContent = await Promise.all(
-        claudeFiles.map(file => 
-          fs.readFile(path.join(TARGETS.claude.directory, file), 'utf8')
-        )
+        claudeFiles.map((file) => fs.readFile(path.join(TARGETS.claude.directory, file), 'utf8'))
       );
-      const hasPattern = claudeContent.some(content =>
-        pattern.rules.some(rule =>
-          content.includes(rule.split(' ').slice(0, 3).join(' '))
-        )
+      const hasPattern = claudeContent.some((content) =>
+        pattern.rules.some((rule) => content.includes(rule.split(' ').slice(0, 3).join(' ')))
       );
       if (!hasPattern) {
         issues.push(`Claude Code missing ${patternKey} pattern`);
@@ -167,7 +163,7 @@ async function loadLearningData() {
     const knowledgeBase = await fs.readFile(SOURCES.learningData, 'utf8');
     const data = JSON.parse(knowledgeBase);
     return data.knowledgeBase || {};
-  } catch (error) {
+  } catch {
     console.log('⚠️ No learning data found (knowledge base not initialized yet)');
     return {};
   }
@@ -195,7 +191,7 @@ function generateSyncReport(target, changes, issues = [], learningData = null) {
 ${Object.entries(learningData.designPatterns || {})
   .sort((a, b) => b[1].confidence - a[1].confidence)
   .slice(0, 3)
-  .map(([key, pattern]) => `- ${pattern.rule} (${(pattern.confidence * 100).toFixed(0)}% confidence)`)
+  .map(([, pattern]) => `- ${pattern.rule} (${(pattern.confidence * 100).toFixed(0)}% confidence)`)
   .join('\n')}
 `;
   }
@@ -209,15 +205,16 @@ ${Object.entries(learningData.designPatterns || {})
 **Issues:** ${issues.length}
 
 ## Changes Made
-${changes.map(change => `- ${change}`).join('\n')}
+${changes.map((change) => `- ${change}`).join('\n')}
 
 ## Validation Issues
-${issues.map(issue => `- ⚠️ ${issue}`).join('\n')}
+${issues.map((issue) => `- ⚠️ ${issue}`).join('\n')}
 ${learningSection}
 ## Next Steps
-${issues.length > 0 ?
-  '- Review and resolve validation issues\n- Re-run sync after fixes' :
-  '- Sync completed successfully\n- All implementations synchronized'
+${
+  issues.length > 0
+    ? '- Review and resolve validation issues\n- Re-run sync after fixes'
+    : '- Sync completed successfully\n- All implementations synchronized'
 }
 `;
 }
@@ -231,20 +228,23 @@ ${issues.length > 0 ?
 function collectTargetChanges(target, results) {
   if (target === 'all' || target === 'copilot') {
     console.log('📝 Syncing Copilot instructions...');
-    results.copilot.changes.push('Extracted essential patterns (80/20 rule)');
-    results.copilot.changes.push('Updated quick reference format');
-    results.copilot.changes.push('Auto-synced from Claude Code patterns');
+    results.copilot.changes.push(
+      'Extracted essential patterns (80/20 rule)',
+      'Updated quick reference format',
+      'Auto-synced from Claude Code patterns'
+    );
   }
   if (target === 'all' || target === 'claude') {
     console.log('🤖 Syncing Claude Code agents...');
-    results.claude.changes.push('Updated production agent patterns');
-    results.claude.changes.push('Optimized quick-fix agent rules');
-    results.claude.changes.push('Enhanced test specialist capabilities');
+    results.claude.changes.push(
+      'Updated production agent patterns',
+      'Optimized quick-fix agent rules',
+      'Enhanced test specialist capabilities'
+    );
   }
   if (target === 'all' || target === 'vscode') {
     console.log('🔧 Syncing VS Code DCYFR agent...');
-    results.vscode.changes.push('Updated modular hub references');
-    results.vscode.changes.push('Synchronized enforcement rules');
+    results.vscode.changes.push('Updated modular hub references', 'Synchronized enforcement rules');
   }
 }
 
@@ -284,7 +284,7 @@ async function syncAgents(options = {}) {
   const results = {
     copilot: { changes: [], issues: [] },
     claude: { changes: [], issues: [] },
-    vscode: { changes: [], issues: [] }
+    vscode: { changes: [], issues: [] },
   };
 
   try {
@@ -300,7 +300,7 @@ async function syncAgents(options = {}) {
   const validationIssues = await validateConsistency();
   if (validationIssues.length > 0) {
     console.log('⚠️ Validation issues found:');
-    validationIssues.forEach(issue => console.log(`  - ${issue}`));
+    validationIssues.forEach((issue) => console.log(`  - ${issue}`));
     console.log('');
   }
 
@@ -334,7 +334,7 @@ async function checkSyncStatus() {
   try {
     // Check last sync timestamps
     const files = await fs.readdir(ROOT);
-    const syncReports = files.filter(f => f.startsWith('sync-report-'));
+    const syncReports = files.filter((f) => f.startsWith('sync-report-'));
 
     if (syncReports.length === 0) {
       console.log('❌ No sync reports found - sync may never have run');
@@ -350,7 +350,7 @@ async function checkSyncStatus() {
     const match = latest.match(/sync-report-(\w+)-(\d+)/);
     if (match) {
       const [, target, timestamp] = match;
-      const date = new Date(parseInt(timestamp));
+      const date = new Date(Number.parseInt(timestamp));
       const hours = Math.floor((Date.now() - date) / (1000 * 60 * 60));
 
       console.log(`   Target: ${target}`);
@@ -370,8 +370,8 @@ async function checkSyncStatus() {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const args = process.argv.slice(2);
   const options = {};
-  
-  args.forEach(arg => {
+
+  args.forEach((arg) => {
     if (arg === '--dry-run') {
       options.dryRun = true;
     } else if (arg.startsWith('--target=')) {
@@ -379,12 +379,13 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     }
   });
 
-  syncAgents(options)
-    .then(success => process.exit(success ? 0 : 1))
-    .catch(error => {
-      console.error('❌ Sync failed:', error);
-      process.exit(1);
-    });
+  try {
+    const success = await syncAgents(options);
+    process.exit(success ? 0 : 1);
+  } catch (error) {
+    console.error('❌ Sync failed:', error);
+    process.exit(1);
+  }
 }
 
 export { syncAgents, validateConsistency };

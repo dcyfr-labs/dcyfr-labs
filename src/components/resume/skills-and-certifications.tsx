@@ -1,20 +1,20 @@
 /**
  * Combined Skills & Certifications Component
- * 
+ *
  * Displays skills and certifications in a unified section with subsections.
  * Skills are shown as collapsible badge groups by category.
  * Certifications are displayed as a separate subsection at the bottom.
- * 
+ *
  * Optimized with lazy loading and memoization for performance.
  */
 
-"use client";
+'use client';
 
-import { useMemo, useCallback, memo } from "react";
-import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { HOVER_EFFECTS, TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
-import type { SkillCategory, CertificationCategory } from "@/data/resume";
+import { useMemo, memo } from 'react';
+import Link from 'next/link';
+import { Badge } from '@/components/ui/badge';
+import { HOVER_EFFECTS, TYPOGRAPHY, SPACING } from '@/lib/design-tokens';
+import type { SkillCategory, CertificationCategory } from '@/data/resume';
 
 interface SkillsAndCertificationsProps {
   skills: SkillCategory[];
@@ -23,10 +23,10 @@ interface SkillsAndCertificationsProps {
 
 // Certification provider URLs for verification
 const providerUrls: Record<string, string> = {
-  "GIAC": "https://www.giac.org/certifications",
-  "CompTIA": "https://www.comptia.org/certifications",
-  "ISC2": "https://www.isc2.org/Certifications",
-  "Mile2": "https://mile2.com/certifications",
+  GIAC: 'https://www.giac.org/certifications',
+  CompTIA: 'https://www.comptia.org/certifications',
+  ISC2: 'https://www.isc2.org/Certifications',
+  Mile2: 'https://mile2.com/certifications',
 };
 
 // Memoized badge renderer for performance
@@ -35,11 +35,11 @@ const BadgeItem = memo(({ text }: { text: string }) => (
     {text}
   </Badge>
 ));
-BadgeItem.displayName = "BadgeItem";
+BadgeItem.displayName = 'BadgeItem';
 
 // Memoized certification category renderer
 const CertificationCategoryGroup = memo(
-  ({ category, provider, badges }: { category: CertificationCategory; provider: string; badges: string[] }) => (
+  ({ provider, badges }: { provider: string; badges: string[] }) => (
     <div className="space-y-1">
       {providerUrls[provider] ? (
         <Link
@@ -61,7 +61,7 @@ const CertificationCategoryGroup = memo(
     </div>
   )
 );
-CertificationCategoryGroup.displayName = "CertificationCategoryGroup";
+CertificationCategoryGroup.displayName = 'CertificationCategoryGroup';
 
 // Memoized skill category renderer
 const SkillCategoryGroup = memo(
@@ -76,7 +76,7 @@ const SkillCategoryGroup = memo(
     </div>
   )
 );
-SkillCategoryGroup.displayName = "SkillCategoryGroup";
+SkillCategoryGroup.displayName = 'SkillCategoryGroup';
 
 export function SkillsAndCertifications({ skills, certifications }: SkillsAndCertificationsProps) {
   // Memoize mapped certifications to prevent unnecessary re-renders
@@ -95,7 +95,6 @@ export function SkillsAndCertifications({ skills, certifications }: SkillsAndCer
         {certGroupsWithProviders.map((certGroup, index) => (
           <CertificationCategoryGroup
             key={index}
-            category={certifications[index]}
             provider={certGroup.provider}
             badges={certGroup.certifications}
           />

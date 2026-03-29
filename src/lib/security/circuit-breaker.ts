@@ -41,7 +41,7 @@ export interface CircuitBreakerConfig {
   isFailure?: (error: unknown) => boolean;
 
   /** Fallback function when circuit is OPEN */
-  fallback?: () => Promise<unknown> | unknown;
+  fallback?: () => unknown;
 
   /** Callback on state change */
   onStateChange?: (from: CircuitState, to: CircuitState) => void;
@@ -73,7 +73,7 @@ export interface CircuitBreakerError extends Error {
 // ============================================================================
 
 export class CircuitBreaker {
-  private config: Required<CircuitBreakerConfig>;
+  private readonly config: Required<CircuitBreakerConfig>;
   private state: CircuitState = 'CLOSED';
   private failureCount = 0;
   private successCount = 0;
@@ -141,10 +141,7 @@ export class CircuitBreaker {
     return Promise.race([
       fn(),
       new Promise<never>((_, reject) =>
-        setTimeout(
-          () => reject(new Error('Request timeout')),
-          this.config.requestTimeout
-        )
+        setTimeout(() => reject(new Error('Request timeout')), this.config.requestTimeout)
       ),
     ]);
   }
@@ -172,15 +169,12 @@ export class CircuitBreaker {
   /**
    * Handle failed execution
    */
-  private onFailure(error: unknown): void {
+  private onFailure(_error: unknown): void {
     this.lastFailureTime = Date.now();
     this.totalFailures++;
     this.failureCount++;
 
-    if (
-      this.state === 'HALF_OPEN' ||
-      this.failureCount >= this.config.failureThreshold
-    ) {
+    if (this.state === 'HALF_OPEN' || this.failureCount >= this.config.failureThreshold) {
       // Open circuit
       this.transitionTo('OPEN');
     }
@@ -315,7 +309,7 @@ export class CircuitBreaker {
  * Global registry for circuit breakers
  */
 class CircuitBreakerRegistry {
-  private breakers = new Map<string, CircuitBreaker>();
+  private readonly breakers = new Map<string, CircuitBreaker>();
 
   /**
    * Get or create circuit breaker for service
@@ -407,9 +401,7 @@ export async function withCircuitBreaker<T>(
 /**
  * Get circuit breaker metrics
  */
-export function getCircuitMetrics(
-  serviceName: string
-): CircuitMetrics | undefined {
+export function getCircuitMetrics(serviceName: string): CircuitMetrics | undefined {
   const breaker = circuitBreakerRegistry.get(serviceName);
   return breaker?.getMetrics();
 }

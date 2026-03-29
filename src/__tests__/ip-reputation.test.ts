@@ -6,7 +6,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { IPReputationService, GreyNoiseClient } from '@/lib/ip-reputation';
-import { BlockedIPsManager, isIPBlocked, isIPSuspicious } from '@/lib/blocked-ips';
+import { BlockedIPsManager } from '@/lib/blocked-ips';
 import { rateLimitWithProtection, getClientIp } from '@/lib/rate-limit';
 
 // Mock the Upstash redis singleton with in-memory behavior for tests
@@ -15,9 +15,10 @@ const lists: Record<string, string[]> = {};
 
 vi.mock('@/lib/redis-client', () => ({
   redis: {
-    get: vi.fn(async (k: string) => null),
+    get: vi.fn(async (_k: string) => null),
     set: vi.fn(async () => null),
     setex: vi.fn(async () => null),
+    setEx: vi.fn(async () => null),
     hset: vi.fn(
       async (key: string, fieldOrHash: string | Record<string, string>, value?: string) => {
         hashes[key] ||= {};
@@ -31,7 +32,22 @@ vi.mock('@/lib/redis-client', () => ({
         return 1;
       }
     ),
+    hSet: vi.fn(
+      async (key: string, fieldOrHash: string | Record<string, string>, value?: string) => {
+        hashes[key] ||= {};
+        if (typeof fieldOrHash === 'string' && value !== undefined) {
+          hashes[key][fieldOrHash] = value;
+        } else if (typeof fieldOrHash === 'object') {
+          Object.assign(hashes[key], fieldOrHash);
+        }
+        return 1;
+      }
+    ),
     hget: vi.fn(async (key: string, field: string) => {
+      if (!hashes[key]) return null;
+      return hashes[key][field] ?? null;
+    }),
+    hGet: vi.fn(async (key: string, field: string) => {
       if (!hashes[key]) return null;
       return hashes[key][field] ?? null;
     }),
@@ -39,10 +55,22 @@ vi.mock('@/lib/redis-client', () => ({
       if (!hashes[key]) return 0;
       return hashes[key][field] ? 1 : 0;
     }),
+    hExists: vi.fn(async (key: string, field: string) => {
+      if (!hashes[key]) return 0;
+      return hashes[key][field] ? 1 : 0;
+    }),
     hgetall: vi.fn(async (key: string) => {
       return hashes[key] ?? {};
     }),
+    hGetAll: vi.fn(async (key: string) => {
+      return hashes[key] ?? {};
+    }),
     hdel: vi.fn(async (key: string, field: string) => {
+      if (!hashes[key] || !hashes[key][field]) return 0;
+      delete hashes[key][field];
+      return 1;
+    }),
+    hDel: vi.fn(async (key: string, field: string) => {
       if (!hashes[key] || !hashes[key][field]) return 0;
       delete hashes[key][field];
       return 1;
@@ -52,10 +80,17 @@ vi.mock('@/lib/redis-client', () => ({
       lists[key].unshift(value);
       return lists[key].length;
     }),
+    lPush: vi.fn(async (key: string, value: string) => {
+      lists[key] ||= [];
+      lists[key].unshift(value);
+      return lists[key].length;
+    }),
     expire: vi.fn(async () => 1),
     incr: vi.fn(async () => 1),
     pexpireat: vi.fn(async () => 1),
+    pExpireAt: vi.fn(async () => 1),
     pttl: vi.fn(async () => 60000),
+    pTTL: vi.fn(async () => 60000),
   },
 }));
 
@@ -248,8 +283,6 @@ describe('Blocked IPs Manager', () => {
   });
 
   it('should handle temporary blocks', async () => {
-    const futureTime = new Date(Date.now() + 3600000); // 1 hour from now
-
     await manager.blockIP('5.6.7.8', 'suspicious', 'manual', {
       temporary_hours: 1,
     });

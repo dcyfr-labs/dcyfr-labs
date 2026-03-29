@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { resume, getSummary } from '@/data/resume';
-import { TYPOGRAPHY, PAGE_LAYOUT, SPACING, CONTAINER_WIDTHS, BORDERS } from '@/lib/design-tokens';
+import { TYPOGRAPHY, PAGE_LAYOUT, SPACING, CONTAINER_WIDTHS } from '@/lib/design-tokens';
 import { cn } from '@/lib/utils';
 import { createPageMetadata } from '@/lib/metadata';
 import { getResumePageSchema, getJsonLdScriptProps } from '@/lib/json-ld';
 import dynamic from 'next/dynamic';
 import { PageLayout, PageHero } from '@/components/layouts';
-import { ServerResumeStats, ResumeSectionNav, DownloadResumeButton } from '@/components/resume';
+import { ServerResumeStats } from '@/components/resume';
 import { UnifiedTimeline, SmoothScrollToHash } from '@/components/common';
 import { BackToTop } from '@/components/navigation';
 import { ServerMiniBadgeList, ServerMiniSkillsList } from '@/components/about';

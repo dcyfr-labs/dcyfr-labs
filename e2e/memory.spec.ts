@@ -15,20 +15,20 @@ const testMemories = {
     'I prefer TypeScript over JavaScript for large applications because of type safety',
     'React hooks like useState and useEffect make functional components more powerful',
     'I always use Tailwind CSS for styling instead of writing custom CSS',
-    'Next.js App Router is much better than Pages Router for new projects'
+    'Next.js App Router is much better than Pages Router for new projects',
   ],
   preferences: [
     'I prefer dark mode interfaces over light themes',
     'I work best in the morning between 8 AM and 12 PM',
     'I like minimal design with lots of whitespace',
-    'I prefer documentation with code examples over text explanations'
+    'I prefer documentation with code examples over text explanations',
   ],
   context: [
     'I am building a React dashboard for data visualization',
     'My current project uses PostgreSQL with Prisma ORM',
     'I need to optimize performance for mobile devices',
-    'I am working on integrating authentication with Clerk'
-  ]
+    'I am working on integrating authentication with Clerk',
+  ],
 };
 
 // Helper functions for memory testing
@@ -37,8 +37,8 @@ async function addMemory(page: Page, userId: string, message: string, context?: 
     data: {
       userId,
       message,
-      context
-    }
+      context,
+    },
   });
 
   expect(response.ok()).toBeTruthy();
@@ -53,8 +53,8 @@ async function searchMemories(page: Page, userId: string, query: string, limit =
     data: {
       userId,
       query,
-      limit
-    }
+      limit,
+    },
   });
 
   expect(response.ok()).toBeTruthy();
@@ -72,23 +72,17 @@ test.describe('Memory Layer E2E', () => {
     await expect(page).toHaveTitle(/DCYFR Labs/);
 
     // Add a memory via API
-    const memoryId = await addMemory(
-      page,
-      testUserId,
-      'I love building full-stack applications with Next.js',
-      { topic: 'programming', importance: 0.9 }
-    );
+    await addMemory(page, testUserId, 'I love building full-stack applications with Next.js', {
+      topic: 'programming',
+      importance: 0.9,
+    });
 
     // Reload the page to simulate session restart
     await page.reload();
     await expect(page).toHaveTitle(/DCYFR Labs/);
 
     // Search for the memory - should still be available
-    const searchResults = await searchMemories(
-      page,
-      testUserId,
-      'Next.js full-stack development'
-    );
+    const searchResults = await searchMemories(page, testUserId, 'Next.js full-stack development');
 
     expect(searchResults.count).toBeGreaterThan(0);
     expect(searchResults.memories[0].content).toContain('Next.js');
@@ -100,17 +94,13 @@ test.describe('Memory Layer E2E', () => {
 
     // Simulate a conversation about programming preferences
     const programmingMemories = testMemories.programming;
-    const storedMemoryIds: string[] = [];
 
     // Store conversation memories
     for (const memory of programmingMemories) {
-      const memoryId = await addMemory(
-        page,
-        testUserId,
-        memory,
-        { topic: 'programming-conversation', importance: 0.8 }
-      );
-      storedMemoryIds.push(memoryId);
+      await addMemory(page, testUserId, memory, {
+        topic: 'programming-conversation',
+        importance: 0.8,
+      });
     }
 
     // Wait a moment to ensure all memories are processed
@@ -127,11 +117,7 @@ test.describe('Memory Layer E2E', () => {
     expect(typescriptResults.memories[0].content).toContain('TypeScript');
 
     // Search for React-related memories
-    const reactResults = await searchMemories(
-      page,
-      testUserId,
-      'React hooks components'
-    );
+    const reactResults = await searchMemories(page, testUserId, 'React hooks components');
 
     expect(reactResults.count).toBeGreaterThan(0);
     expect(reactResults.memories[0].content).toContain('React');
@@ -145,7 +131,9 @@ test.describe('Memory Layer E2E', () => {
     );
 
     expect(generalResults.count).toBeGreaterThanOrEqual(2);
-    expect(generalResults.memories.some((m: Memory) => m.content.includes('TypeScript'))).toBe(true);
+    expect(generalResults.memories.some((m: Memory) => m.content.includes('TypeScript'))).toBe(
+      true
+    );
   });
 
   test('should maintain user-specific memory isolation', async ({ page }) => {
@@ -155,34 +143,20 @@ test.describe('Memory Layer E2E', () => {
     const user2 = `${testUserId}-user2`;
 
     // User 1 stores memories about React
-    await addMemory(
-      page,
-      user1,
-      'I prefer React class components over functional components',
-      { topic: 'react-preferences' }
-    );
+    await addMemory(page, user1, 'I prefer React class components over functional components', {
+      topic: 'react-preferences',
+    });
 
     // User 2 stores memories about Vue
-    await addMemory(
-      page,
-      user2,
-      'I prefer Vue.js over React for smaller projects',
-      { topic: 'vue-preferences' }
-    );
+    await addMemory(page, user2, 'I prefer Vue.js over React for smaller projects', {
+      topic: 'vue-preferences',
+    });
 
     // User 1 searches for frontend frameworks
-    const user1Results = await searchMemories(
-      page,
-      user1,
-      'frontend framework preferences'
-    );
+    const user1Results = await searchMemories(page, user1, 'frontend framework preferences');
 
     // User 2 searches for the same topic
-    const user2Results = await searchMemories(
-      page,
-      user2,
-      'frontend framework preferences'
-    );
+    const user2Results = await searchMemories(page, user2, 'frontend framework preferences');
 
     // Verify isolation - each user only gets their own memories
     expect(user1Results.memories[0].content).toContain('React');
@@ -201,17 +175,12 @@ test.describe('Memory Layer E2E', () => {
       { text: 'JavaScript ES6 features like arrow functions are great', topic: 'javascript' },
       { text: 'Python is my favorite language for data science', topic: 'python' },
       { text: 'Type checking helps prevent runtime errors', topic: 'type-safety' },
-      { text: 'Static typing makes code more maintainable', topic: 'typing' }
+      { text: 'Static typing makes code more maintainable', topic: 'typing' },
     ];
 
     // Store all memories
     for (const memory of memories) {
-      await addMemory(
-        page,
-        testUserId,
-        memory.text,
-        { topic: memory.topic, importance: 0.8 }
-      );
+      await addMemory(page, testUserId, memory.text, { topic: memory.topic, importance: 0.8 });
     }
 
     await page.waitForTimeout(1000);
@@ -227,18 +196,20 @@ test.describe('Memory Layer E2E', () => {
     expect(typeResults.count).toBeGreaterThan(0);
 
     // Verify semantic relevance - TypeScript and type-related memories should rank higher
-    const hasTypeScript = typeResults.memories.some((m: Memory) => m.content.includes('TypeScript'));
-    const hasTypeSafety = typeResults.memories.some((m: Memory) => m.content.includes('type safety'));
-    const hasStaticTyping = typeResults.memories.some((m: Memory) => m.content.includes('Static typing'));
+    const hasTypeScript = typeResults.memories.some((m: Memory) =>
+      m.content.includes('TypeScript')
+    );
+    const hasTypeSafety = typeResults.memories.some((m: Memory) =>
+      m.content.includes('type safety')
+    );
+    const hasStaticTyping = typeResults.memories.some((m: Memory) =>
+      m.content.includes('Static typing')
+    );
 
     expect(hasTypeScript || hasTypeSafety || hasStaticTyping).toBe(true);
 
     // Search for "data science" - should find Python memory
-    const dataResults = await searchMemories(
-      page,
-      testUserId,
-      'data science analytics'
-    );
+    const dataResults = await searchMemories(page, testUserId, 'data science analytics');
 
     expect(dataResults.count).toBeGreaterThan(0);
     expect(dataResults.memories[0].content).toContain('Python');
@@ -254,12 +225,7 @@ test.describe('Memory Layer E2E', () => {
     for (let i = 0; i < 20; i++) {
       const memory = `Memory entry ${i}: This is a test memory about topic ${i % 5} with some relevant content`;
       memoryPromises.push(
-        addMemory(
-          page,
-          bulkUserId,
-          memory,
-          { topic: `topic-${i % 5}`, importance: Math.random() }
-        )
+        addMemory(page, bulkUserId, memory, { topic: `topic-${i % 5}`, importance: Math.random() })
       );
     }
 
@@ -269,12 +235,7 @@ test.describe('Memory Layer E2E', () => {
 
     // Search should still work efficiently
     const searchStart = Date.now();
-    const results = await searchMemories(
-      page,
-      bulkUserId,
-      'test memory topic',
-      10
-    );
+    const results = await searchMemories(page, bulkUserId, 'test memory topic', 10);
     const searchTime = Date.now() - searchStart;
 
     expect(results.count).toBeGreaterThan(0);
@@ -291,8 +252,8 @@ test.describe('Memory Layer E2E', () => {
     const invalidUserResponse = await page.request.post('/api/memory/add', {
       data: {
         userId: '', // Empty userId
-        message: 'Test message'
-      }
+        message: 'Test message',
+      },
     });
 
     expect(invalidUserResponse.status()).toBe(400);
@@ -304,7 +265,7 @@ test.describe('Memory Layer E2E', () => {
       data: {
         userId: testUserId,
         // Missing message
-      }
+      },
     });
 
     expect(missingMessageResponse.status()).toBe(400);
@@ -314,8 +275,8 @@ test.describe('Memory Layer E2E', () => {
     const longMessageResponse = await page.request.post('/api/memory/add', {
       data: {
         userId: testUserId,
-        message: longMessage
-      }
+        message: longMessage,
+      },
     });
 
     expect(longMessageResponse.status()).toBe(413);
@@ -324,8 +285,8 @@ test.describe('Memory Layer E2E', () => {
     const emptyQueryResponse = await page.request.post('/api/memory/search', {
       data: {
         userId: testUserId,
-        query: '' // Empty query
-      }
+        query: '', // Empty query
+      },
     });
 
     expect(emptyQueryResponse.status()).toBe(400);
@@ -335,8 +296,8 @@ test.describe('Memory Layer E2E', () => {
       data: {
         userId: testUserId,
         query: 'test',
-        limit: 50 // Over limit of 10
-      }
+        limit: 50, // Over limit of 10
+      },
     });
 
     expect(invalidLimitResponse.status()).toBe(400);
@@ -365,16 +326,11 @@ test.describe('Memory Layer E2E', () => {
     const results = await Promise.allSettled([...addPromises, ...searchPromises]);
 
     // All operations should succeed
-    const failures = results.filter(result => result.status === 'rejected');
+    const failures = results.filter((result) => result.status === 'rejected');
     expect(failures).toHaveLength(0);
 
     // Final verification search
-    const finalResults = await searchMemories(
-      page,
-      concurrentUserId,
-      'concurrent memory',
-      10
-    );
+    const finalResults = await searchMemories(page, concurrentUserId, 'concurrent memory', 10);
 
     expect(finalResults.count).toBeGreaterThan(0);
   });
@@ -385,7 +341,7 @@ test.describe('Memory Layer E2E', () => {
     const contextUserId = `${testUserId}-context`;
 
     // Add memory with rich context
-    const memoryId = await addMemory(
+    await addMemory(
       page,
       contextUserId,
       'I am working on a machine learning project using TensorFlow',
@@ -396,8 +352,8 @@ test.describe('Memory Layer E2E', () => {
           technology: 'tensorflow',
           domain: 'machine-learning',
           priority: 'high',
-          dateAdded: new Date().toISOString()
-        }
+          dateAdded: new Date().toISOString(),
+        },
       }
     );
 
@@ -426,23 +382,16 @@ test.describe('Memory Layer Performance', () => {
 
     // Test memory addition performance
     const addStart = Date.now();
-    const memoryId = await addMemory(
-      page,
-      perfUserId,
-      'Performance test memory for response time validation',
-      { topic: 'performance' }
-    );
+    await addMemory(page, perfUserId, 'Performance test memory for response time validation', {
+      topic: 'performance',
+    });
     const addTime = Date.now() - addStart;
 
     expect(addTime).toBeLessThan(500); // Should complete within 500ms
 
     // Test search performance
     const searchStart = Date.now();
-    const results = await searchMemories(
-      page,
-      perfUserId,
-      'performance response time'
-    );
+    const results = await searchMemories(page, perfUserId, 'performance response time');
     const searchTime = Date.now() - searchStart;
 
     expect(searchTime).toBeLessThan(200); // Should complete within 200ms
@@ -461,8 +410,8 @@ test.describe('Memory Layer Performance', () => {
         page.request.post('/api/memory/add', {
           data: {
             userId: rateLimitUserId,
-            message: `Rate limit test message ${i}`
-          }
+            message: `Rate limit test message ${i}`,
+          },
         })
       );
     }
@@ -470,17 +419,17 @@ test.describe('Memory Layer Performance', () => {
     const responses = await Promise.all(requests);
 
     // Some requests should succeed (200)
-    const successCount = responses.filter(r => r.status() === 200).length;
+    const successCount = responses.filter((r) => r.status() === 200).length;
 
     // Some should be rate limited (429)
-    const rateLimitedCount = responses.filter(r => r.status() === 429).length;
+    const rateLimitedCount = responses.filter((r) => r.status() === 429).length;
 
     expect(successCount).toBeGreaterThan(0);
     expect(rateLimitedCount).toBeGreaterThan(0);
     expect(successCount + rateLimitedCount).toBe(12);
 
     // Verify rate limit headers are present on 429 responses
-    const rateLimitedResponse = responses.find(r => r.status() === 429);
+    const rateLimitedResponse = responses.find((r) => r.status() === 429);
     if (rateLimitedResponse) {
       const headers = rateLimitedResponse.headers();
       expect(headers['x-ratelimit-limit']).toBeDefined();

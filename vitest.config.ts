@@ -31,6 +31,7 @@ export default defineConfig({
     environmentMatchGlobs: [
       ['src/**/agents/**/*.test.ts', 'node'],
       ['src/__tests__/lib/**/*.test.ts', 'node'],
+      ['scripts/__tests__/**/*.{test,spec}.{ts,mjs}', 'node'],
     ],
     // Cache: uses Vite's cacheDir (set at top level)
     // Test isolation: Clear all mocks and module cache between test suites
@@ -61,7 +62,11 @@ export default defineConfig({
       },
     },
     globals: true,
-    include: ['src/**/*.{test,spec}.{ts,tsx}', 'tests/**/*.{test,spec}.{ts,tsx}'],
+    include: [
+      'src/**/*.{test,spec}.{ts,tsx}',
+      'tests/**/*.{test,spec}.{ts,tsx}',
+      'scripts/__tests__/**/*.{test,spec}.{ts,mjs}',
+    ],
     exclude: ['node_modules', '.next', 'e2e'],
     // Silence console output during tests (cleaner output)
     // Set to false if debugging
@@ -70,6 +75,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      'next/server': 'next/server.js',
       // Mock Next.js server-only marker in test environment
       'server-only': path.resolve(__dirname, './tests/__mocks__/server-only.ts'),
     },

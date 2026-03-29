@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
 import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from "@/components/ui/accordion";
-import { PostList } from "@/components/blog/client";
-import { TYPOGRAPHY, SPACING } from "@/lib/design-tokens";
-import type { Post } from "@/data/posts";
-import type { PostCategory } from "@/lib/post-categories";
+} from '@/components/ui/accordion';
+import { PostList } from '@/components/blog/client';
+import { TYPOGRAPHY, SPACING } from '@/lib/design-tokens';
+import type { Post } from '@/data/posts';
+import type { PostCategory } from '@/lib/post-categories';
 
 interface PostCategorySectionProps {
   /** Category value (used as accordion key) */
@@ -74,7 +74,7 @@ export function PostCategorySection({
               <span
                 className={`inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-foreground whitespace-nowrap transition-colors ${TYPOGRAPHY.label.small}`}
               >
-                {postCount} {postCount === 1 ? "post" : "posts"}
+                {postCount} {postCount === 1 ? 'post' : 'posts'}
               </span>
             </div>
           </div>
@@ -89,7 +89,7 @@ export function PostCategorySection({
             latestSlug={latestSlug}
             hottestSlug={hottestSlug}
             titleLevel="h3"
-            layout="compact"
+            layout="list"
             viewCounts={viewCounts}
             searchQuery={searchQuery}
           />

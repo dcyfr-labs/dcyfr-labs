@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useCallback, useMemo, useEffect, useRef } from "react";
+import { useCallback, useMemo, useEffect, useRef } from 'react';
 import {
   ReactFlow,
   Controls,
@@ -20,10 +20,10 @@ import {
   Position,
   Handle,
   type NodeProps,
-} from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
-import { cn } from "@/lib/utils";
-import { ANIMATION, BORDERS, SHADOWS } from "@/lib/design-tokens";
+} from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
+import { cn } from '@/lib/utils';
+import { ANIMATION, BORDERS, SHADOWS } from '@/lib/design-tokens';
 
 // ============================================================================
 // Custom Node Types
@@ -36,7 +36,7 @@ export interface BaseNodeData extends Record<string, unknown> {
   label: string;
   description?: string;
   icon?: React.ReactNode;
-  variant?: "default" | "primary" | "secondary" | "accent" | "muted";
+  variant?: 'default' | 'primary' | 'secondary' | 'accent' | 'muted';
 }
 
 /**
@@ -44,18 +44,22 @@ export interface BaseNodeData extends Record<string, unknown> {
  */
 function ModernNode({ data, selected }: NodeProps<Node<BaseNodeData>>) {
   const variants = {
-    default: "bg-card border-border",
-    primary: "bg-primary/10 border-primary/50",
-    secondary: "bg-secondary border-secondary-foreground/20",
-    accent: "bg-accent border-accent-foreground/20",
-    muted: "bg-muted border-muted-foreground/20",
+    default: 'bg-card border-border',
+    primary: 'bg-primary/10 border-primary/50',
+    secondary: 'bg-secondary border-secondary-foreground/20',
+    accent: 'bg-accent border-accent-foreground/20',
+    muted: 'bg-muted border-muted-foreground/20',
   };
 
-  const variant = data.variant || "default";
+  const variant = data.variant || 'default';
 
   return (
     <>
-      <Handle type="target" position={Position.Top} className="bg-primary! w-3! h-3! border-2! border-background!" />
+      <Handle
+        type="target"
+        position={Position.Top}
+        className="bg-primary! w-3! h-3! border-2! border-background!"
+      />
       <div
         className={cn(
           `px-4 py-3 ${BORDERS.card} border-2 ${SHADOWS.sm} transition-base`,
@@ -75,7 +79,11 @@ function ModernNode({ data, selected }: NodeProps<Node<BaseNodeData>>) {
           </div>
         </div>
       </div>
-      <Handle type="source" position={Position.Bottom} className="bg-primary! w-3! h-3! border-2! border-background!" />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        className="bg-primary! w-3! h-3! border-2! border-background!"
+      />
     </>
   );
 }
@@ -90,7 +98,7 @@ function InputNode({ data, selected }: NodeProps<Node<BaseNodeData>>) {
         className={cn(
           `px-4 py-3 ${BORDERS.card} border-2 ${SHADOWS.sm}`,
           ANIMATION.transition.base,
-          "bg-card/80 border-border",
+          'bg-card/80 border-border',
           selected && `ring-2 ring-primary ring-offset-2 ring-offset-background ${SHADOWS.lg}`
         )}
       >
@@ -99,7 +107,11 @@ function InputNode({ data, selected }: NodeProps<Node<BaseNodeData>>) {
           <div className="font-medium text-sm text-foreground">{data.label}</div>
         </div>
       </div>
-      <Handle type="source" position={Position.Bottom} className="bg-primary! w-3! h-3! border-2! border-background!" />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        className="bg-primary! w-3! h-3! border-2! border-background!"
+      />
     </>
   );
 }
@@ -110,12 +122,16 @@ function InputNode({ data, selected }: NodeProps<Node<BaseNodeData>>) {
 function OutputNode({ data, selected }: NodeProps<Node<BaseNodeData>>) {
   return (
     <>
-      <Handle type="target" position={Position.Top} className="bg-primary! w-3! h-3! border-2! border-background!" />
+      <Handle
+        type="target"
+        position={Position.Top}
+        className="bg-primary! w-3! h-3! border-2! border-background!"
+      />
       <div
         className={cn(
           `px-4 py-3 ${BORDERS.card} border-2 ${SHADOWS.sm}`,
           ANIMATION.transition.base,
-          "bg-card/80 border-border",
+          'bg-card/80 border-border',
           selected && `ring-2 ring-primary ring-offset-2 ring-offset-background ${SHADOWS.lg}`
         )}
       >
@@ -134,12 +150,16 @@ function OutputNode({ data, selected }: NodeProps<Node<BaseNodeData>>) {
 function ProcessNode({ data, selected }: NodeProps<Node<BaseNodeData>>) {
   return (
     <>
-      <Handle type="target" position={Position.Top} className="bg-primary! w-3! h-3! border-2! border-background!" />
+      <Handle
+        type="target"
+        position={Position.Top}
+        className="bg-primary! w-3! h-3! border-2! border-background!"
+      />
       <div
         className={cn(
           `px-4 py-3 ${BORDERS.card} border-2 ${SHADOWS.sm}`,
           ANIMATION.transition.base,
-          "bg-card/80 border-border",
+          'bg-card/80 border-border',
           selected && `ring-2 ring-primary ring-offset-2 ring-offset-background ${SHADOWS.lg}`
         )}
       >
@@ -153,7 +173,11 @@ function ProcessNode({ data, selected }: NodeProps<Node<BaseNodeData>>) {
           </div>
         </div>
       </div>
-      <Handle type="source" position={Position.Bottom} className="bg-primary! w-3! h-3! border-2! border-background!" />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        className="bg-primary! w-3! h-3! border-2! border-background!"
+      />
     </>
   );
 }
@@ -164,13 +188,17 @@ function ProcessNode({ data, selected }: NodeProps<Node<BaseNodeData>>) {
 function DecisionNode({ data, selected }: NodeProps<Node<BaseNodeData>>) {
   return (
     <>
-      <Handle type="target" position={Position.Top} className="bg-primary! w-3! h-3! border-2! border-background!" />
+      <Handle
+        type="target"
+        position={Position.Top}
+        className="bg-primary! w-3! h-3! border-2! border-background!"
+      />
       <div
         className={cn(
           `px-4 py-3 border-2 ${SHADOWS.sm}`,
           ANIMATION.transition.base,
-          "bg-card/80 border-border",
-          "w-24 h-24 rotate-45", // Diamond shape
+          'bg-card/80 border-border',
+          'w-24 h-24 rotate-45', // Diamond shape
           selected && `ring-2 ring-primary ring-offset-2 ring-offset-background ${SHADOWS.lg}`
         )}
       >
@@ -178,9 +206,21 @@ function DecisionNode({ data, selected }: NodeProps<Node<BaseNodeData>>) {
           <div className="font-medium text-sm text-foreground text-center">{data.label}</div>
         </div>
       </div>
-      <Handle type="source" position={Position.Bottom} className="bg-primary! w-3! h-3! border-2! border-background!" />
-      <Handle type="source" position={Position.Left} className="bg-primary! w-3! h-3! border-2! border-background!" />
-      <Handle type="source" position={Position.Right} className="bg-primary! w-3! h-3! border-2! border-background!" />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        className="bg-primary! w-3! h-3! border-2! border-background!"
+      />
+      <Handle
+        type="source"
+        position={Position.Left}
+        className="bg-primary! w-3! h-3! border-2! border-background!"
+      />
+      <Handle
+        type="source"
+        position={Position.Right}
+        className="bg-primary! w-3! h-3! border-2! border-background!"
+      />
     </>
   );
 }
@@ -208,15 +248,18 @@ function AutoFitView({ nodes }: { nodes: Node<BaseNodeData>[] }) {
   const { fitView: reactFlowFitView } = useReactFlow();
 
   // Helper function to fit and zoom the view - memoized to avoid dependency issues
-  const fitAndZoom = useCallback((duration: number) => {
-    // Use fitView which automatically calculates optimal zoom level
-    reactFlowFitView({
-      padding: 0.2,
-      duration,
-      maxZoom: 1.5, // Allow zooming in up to 1.5x for better visibility
-      minZoom: 0.1, // Allow zooming out to 0.1x for overview
-    });
-  }, [reactFlowFitView]);
+  const fitAndZoom = useCallback(
+    (duration: number) => {
+      // Use fitView which automatically calculates optimal zoom level
+      reactFlowFitView({
+        padding: 0.2,
+        duration,
+        maxZoom: 1.5, // Allow zooming in up to 1.5x for better visibility
+        minZoom: 0.1, // Allow zooming out to 0.1x for overview
+      });
+    },
+    [reactFlowFitView]
+  );
 
   useEffect(() => {
     // Fit view when nodes change (layout shifts)
@@ -296,10 +339,10 @@ export interface InteractiveDiagramProps {
 
 /**
  * Interactive Diagram Component
- * 
+ *
  * Modern, interactive node-based diagrams powered by React Flow.
  * Perfect for architecture diagrams, flowcharts, and process visualizations.
- * 
+ *
  * @component
  * @example
  * ```tsx
@@ -308,19 +351,19 @@ export interface InteractiveDiagramProps {
  *   { id: '2', type: 'process', position: { x: 0, y: 100 }, data: { label: 'Process' } },
  *   { id: '3', type: 'output', position: { x: 0, y: 200 }, data: { label: 'End' } },
  * ];
- * 
+ *
  * const edges = [
  *   { id: 'e1-2', source: '1', target: '2' },
  *   { id: 'e2-3', source: '2', target: '3' },
  * ];
- * 
- * <InteractiveDiagram 
- *   nodes={nodes} 
- *   edges={edges} 
+ *
+ * <InteractiveDiagram
+ *   nodes={nodes}
+ *   edges={edges}
  *   title="Simple Flow"
  * />
  * ```
- * 
+ *
  * @features
  * - Pre-styled node types (input, output, process, modern)
  * - Theme-aware styling (light/dark mode)
@@ -345,13 +388,13 @@ export function InteractiveDiagram({
   className,
   customNodeTypes,
   customEdgeTypes,
-  title,
-  description,
+  title: _title,
+  description: _description,
   locked = true,
   caption,
 }: InteractiveDiagramProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   // Apply lock settings
@@ -367,7 +410,7 @@ export function InteractiveDiagram({
     if (!locked || !containerRef.current) return;
 
     const container = containerRef.current;
-    
+
     const handleWheel = (e: WheelEvent) => {
       // Only prevent ReactFlow's default wheel handling when locked
       // Allow the browser to handle the scroll normally for the page
@@ -375,7 +418,7 @@ export function InteractiveDiagram({
     };
 
     container.addEventListener('wheel', handleWheel, { passive: false });
-    
+
     return () => {
       container.removeEventListener('wheel', handleWheel);
     };
@@ -404,10 +447,7 @@ export function InteractiveDiagram({
   );
 
   // Merge custom node types with defaults
-  const mergedNodeTypes = useMemo(
-    () => ({ ...nodeTypes, ...customNodeTypes }),
-    [customNodeTypes]
-  );
+  const mergedNodeTypes = useMemo(() => ({ ...nodeTypes, ...customNodeTypes }), [customNodeTypes]);
 
   // Style edges with theme-aware colors using semantic CSS variables
   const styledEdges = useMemo(
@@ -432,14 +472,14 @@ export function InteractiveDiagram({
       <div
         ref={containerRef}
         className={cn(
-          "rounded-lg border border-border bg-card overflow-hidden flex flex-col w-full",
-          locked && "diagram-locked",
+          'rounded-lg border border-border bg-card overflow-hidden flex flex-col w-full',
+          locked && 'diagram-locked',
           className
         )}
         style={{ height }}
         data-locked={locked}
       >
-      {/*{(title || description) && (
+        {/*{(title || description) && (
         <div className="px-4 py-1 border-b border-border bg-muted/30 shrink-0">
           {title && <h3 className="font-sans! font-medium text-sm text-foreground">{title}</h3>}
           {description && (
@@ -447,72 +487,70 @@ export function InteractiveDiagram({
           )}
         </div>
       )}*/}
-      <div className="flex-1">
-        <ReactFlow
-          nodes={nodes}
-          edges={styledEdges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          nodeTypes={mergedNodeTypes}
-          edgeTypes={customEdgeTypes}
-          nodesDraggable={isDraggable}
-          nodesConnectable={connectable}
-          fitView={fitView}
-          minZoom={lockedMinZoom}
-          maxZoom={lockedMaxZoom}
-          panOnScroll={!locked}
-          zoomOnScroll={!locked}
-          zoomOnPinch={!locked}
-          panOnDrag={!locked}
-          proOptions={{ hideAttribution: true }}
-          className="bg-background"
-        >
-        {showBackground && (
-          <Background
-            variant={backgroundVariant}
-            gap={20}
-            size={1}
-            style={{
-              color: 'color-mix(in srgb, var(--foreground) 15%, transparent)'
-            }}
-          />
-        )}
-        {shouldShowControls && (
-          <Controls
-            className="bg-card! border-border! shadow-md!"
-            showInteractive={connectable}
-            position="bottom-right"
-            orientation="horizontal"
-          />
-        )}
-        {showMinimap && (
-          <MiniMap
-            className="bg-card! border-border!"
-            nodeColor={(node) => {
-              // Use semantic colors that adapt to theme automatically
-              switch (node.type) {
-                case "input":
-                  return 'var(--primary)';
-                case "output":
-                  return 'color-mix(in srgb, var(--primary) 80%, transparent)';
-                case "process":
-                  return 'var(--accent-foreground)';
-                default:
-                  return 'color-mix(in srgb, var(--foreground) 60%, transparent)';
-              }
-            }}
-          />
-        )}
-        <AutoFitView nodes={nodes} />
-      </ReactFlow>
+        <div className="flex-1">
+          <ReactFlow
+            nodes={nodes}
+            edges={styledEdges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            nodeTypes={mergedNodeTypes}
+            edgeTypes={customEdgeTypes}
+            nodesDraggable={isDraggable}
+            nodesConnectable={connectable}
+            fitView={fitView}
+            minZoom={lockedMinZoom}
+            maxZoom={lockedMaxZoom}
+            panOnScroll={!locked}
+            zoomOnScroll={!locked}
+            zoomOnPinch={!locked}
+            panOnDrag={!locked}
+            proOptions={{ hideAttribution: true }}
+            className="bg-background"
+          >
+            {showBackground && (
+              <Background
+                variant={backgroundVariant}
+                gap={20}
+                size={1}
+                style={{
+                  color: 'color-mix(in srgb, var(--foreground) 15%, transparent)',
+                }}
+              />
+            )}
+            {shouldShowControls && (
+              <Controls
+                className="bg-card! border-border! shadow-md!"
+                showInteractive={connectable}
+                position="bottom-right"
+                orientation="horizontal"
+              />
+            )}
+            {showMinimap && (
+              <MiniMap
+                className="bg-card! border-border!"
+                nodeColor={(node) => {
+                  // Use semantic colors that adapt to theme automatically
+                  switch (node.type) {
+                    case 'input':
+                      return 'var(--primary)';
+                    case 'output':
+                      return 'color-mix(in srgb, var(--primary) 80%, transparent)';
+                    case 'process':
+                      return 'var(--accent-foreground)';
+                    default:
+                      return 'color-mix(in srgb, var(--foreground) 60%, transparent)';
+                  }
+                }}
+              />
+            )}
+            <AutoFitView nodes={nodes} />
+          </ReactFlow>
+        </div>
       </div>
-    </div>
-    {caption && (
-      <figcaption className="mt-3 text-sm text-muted-foreground italic">
-        {caption}
-      </figcaption>
-    )}
+      {caption && (
+        <figcaption className="mt-3 text-sm text-muted-foreground italic">{caption}</figcaption>
+      )}
     </figure>
   );
 }
@@ -524,12 +562,13 @@ export function InteractiveDiagram({
 /**
  * Helper to create a simple linear flow
  */
-export function createLinearFlow(
-  steps: { label: string; description?: string }[]
-): { nodes: Node<BaseNodeData>[]; edges: Edge[] } {
+export function createLinearFlow(steps: { label: string; description?: string }[]): {
+  nodes: Node<BaseNodeData>[];
+  edges: Edge[];
+} {
   const nodes: Node<BaseNodeData>[] = steps.map((step, index) => ({
     id: `node-${index}`,
-    type: index === 0 ? "input" : index === steps.length - 1 ? "output" : "process",
+    type: index === 0 ? 'input' : index === steps.length - 1 ? 'output' : 'process',
     position: { x: 250, y: index * 100 },
     data: { label: step.label, description: step.description },
   }));
@@ -557,8 +596,8 @@ export function createBranchingFlow(config: {
 
   // Start node
   nodes.push({
-    id: "start",
-    type: "input",
+    id: 'start',
+    type: 'input',
     position: { x: 250, y: 0 },
     data: { label: config.start },
   });
@@ -571,14 +610,14 @@ export function createBranchingFlow(config: {
     const nodeId = `branch-${index}`;
     nodes.push({
       id: nodeId,
-      type: "process",
+      type: 'process',
       position: { x: startX + index * branchWidth, y: 100 },
       data: { label: branch.label },
     });
 
     edges.push({
       id: `edge-start-${nodeId}`,
-      source: "start",
+      source: 'start',
       target: nodeId,
     });
 
@@ -587,7 +626,7 @@ export function createBranchingFlow(config: {
       const childId = `${nodeId}-child-${childIndex}`;
       nodes.push({
         id: childId,
-        type: "modern",
+        type: 'modern',
         position: { x: startX + index * branchWidth, y: 200 + childIndex * 80 },
         data: { label: child },
       });
@@ -604,21 +643,19 @@ export function createBranchingFlow(config: {
   if (config.end) {
     const endY = Math.max(...nodes.map((n) => n.position.y)) + 100;
     nodes.push({
-      id: "end",
-      type: "output",
+      id: 'end',
+      type: 'output',
       position: { x: 250, y: endY },
       data: { label: config.end },
     });
 
     // Connect last nodes to end
-    const lastNodes = nodes.filter(
-      (n) => n.id !== "end" && !edges.some((e) => e.source === n.id)
-    );
+    const lastNodes = nodes.filter((n) => n.id !== 'end' && !edges.some((e) => e.source === n.id));
     lastNodes.forEach((node) => {
       edges.push({
         id: `edge-${node.id}-end`,
         source: node.id,
-        target: "end",
+        target: 'end',
       });
     });
   }

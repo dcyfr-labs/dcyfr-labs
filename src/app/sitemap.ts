@@ -1,8 +1,8 @@
-import type { MetadataRoute } from "next";
-import { posts, allSeries } from "@/data/posts";
-import { visibleProjects } from "@/data/projects";
-import { teamMembers } from "@/data/team";
-import { SITE_URL } from "@/lib/site-config";
+import type { MetadataRoute } from 'next';
+import { posts, allSeries } from '@/data/posts';
+import { visibleProjects } from '@/data/projects';
+import { teamMembers } from '@/data/team';
+import { SITE_URL } from '@/lib/site-config';
 
 /**
  * Sitemap Generator
@@ -20,29 +20,30 @@ import { SITE_URL } from "@/lib/site-config";
 
 // Define static page configurations
 const pageConfig = {
-  "/": { changeFrequency: "weekly" as const, priority: 1.0 },
-  "/about": { changeFrequency: "yearly" as const, priority: 0.5 },
-  "/about/drew": { changeFrequency: "monthly" as const, priority: 0.5 },
-  "/about/dcyfr": { changeFrequency: "monthly" as const, priority: 0.5 },
-  "/about/drew/resume": { changeFrequency: "monthly" as const, priority: 0.4 },
-  "/blog": { changeFrequency: "weekly" as const, priority: 0.8 },
-  "/blog/series": { changeFrequency: "monthly" as const, priority: 0.7 },
-  "/work": { changeFrequency: "monthly" as const, priority: 0.7 },
-  "/services": { changeFrequency: "monthly" as const, priority: 0.7 },
-  "/contact": { changeFrequency: "yearly" as const, priority: 0.6 },
-  "/privacy": { changeFrequency: "yearly" as const, priority: 0.4 },
-  "/terms": { changeFrequency: "yearly" as const, priority: 0.4 },
-  "/acceptable-use": { changeFrequency: "yearly" as const, priority: 0.3 },
-  "/security": { changeFrequency: "yearly" as const, priority: 0.4 },
-  "/accessibility": { changeFrequency: "yearly" as const, priority: 0.4 },
-  "/legal": { changeFrequency: "yearly" as const, priority: 0.3 },
-  "/activity": { changeFrequency: "hourly" as const, priority: 0.7 },
-  "/bookmarks": { changeFrequency: "daily" as const, priority: 0.6 },
-  "/likes": { changeFrequency: "daily" as const, priority: 0.6 },
-  "/invites": { changeFrequency: "monthly" as const, priority: 0.5 },
-  "/sponsors": { changeFrequency: "monthly" as const, priority: 0.5 },
-  "/sponsors/thank-you": { changeFrequency: "yearly" as const, priority: 0.3 },
-  "/feeds": { changeFrequency: "monthly" as const, priority: 0.8 },
+  '/': { changeFrequency: 'weekly' as const, priority: 1.0 },
+  '/about': { changeFrequency: 'yearly' as const, priority: 0.5 },
+  '/about/drew': { changeFrequency: 'monthly' as const, priority: 0.5 },
+  '/about/dcyfr': { changeFrequency: 'monthly' as const, priority: 0.5 },
+  '/about/drew/resume': { changeFrequency: 'monthly' as const, priority: 0.4 },
+  '/docs': { changeFrequency: 'monthly' as const, priority: 0.8 },
+  '/blog': { changeFrequency: 'weekly' as const, priority: 0.8 },
+  '/blog/series': { changeFrequency: 'monthly' as const, priority: 0.7 },
+  '/work': { changeFrequency: 'monthly' as const, priority: 0.7 },
+  '/services': { changeFrequency: 'monthly' as const, priority: 0.7 },
+  '/contact': { changeFrequency: 'yearly' as const, priority: 0.6 },
+  '/privacy': { changeFrequency: 'yearly' as const, priority: 0.4 },
+  '/terms': { changeFrequency: 'yearly' as const, priority: 0.4 },
+  '/acceptable-use': { changeFrequency: 'yearly' as const, priority: 0.3 },
+  '/security': { changeFrequency: 'yearly' as const, priority: 0.4 },
+  '/accessibility': { changeFrequency: 'yearly' as const, priority: 0.4 },
+  '/legal': { changeFrequency: 'yearly' as const, priority: 0.3 },
+  '/activity': { changeFrequency: 'hourly' as const, priority: 0.7 },
+  '/bookmarks': { changeFrequency: 'daily' as const, priority: 0.6 },
+  '/likes': { changeFrequency: 'daily' as const, priority: 0.6 },
+  '/invites': { changeFrequency: 'monthly' as const, priority: 0.5 },
+  '/sponsors': { changeFrequency: 'monthly' as const, priority: 0.5 },
+  '/sponsors/thank-you': { changeFrequency: 'yearly' as const, priority: 0.3 },
+  '/feeds': { changeFrequency: 'monthly' as const, priority: 0.8 },
 } as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -54,7 +55,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     const config = pageConfig[page as keyof typeof pageConfig];
 
     return {
-      url: `${base}${page === "/" ? "" : page}`,
+      url: `${base}${page === '/' ? '' : page}`,
       lastModified: now,
       ...config,
     };
@@ -68,7 +69,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     .map((member) => ({
       url: `${base}/about/${member.slug}`,
       lastModified: now,
-      changeFrequency: "monthly" as const,
+      changeFrequency: 'monthly' as const,
       priority: 0.5,
     }));
 
@@ -76,7 +77,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const blogPostEntries = posts.map((post) => ({
     url: `${base}/blog/${post.slug}`,
     lastModified: new Date(post.updatedAt ?? post.publishedAt),
-    changeFrequency: "yearly" as const,
+    changeFrequency: 'yearly' as const,
     priority: 0.6,
   }));
 
@@ -84,7 +85,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const projectEntries = visibleProjects.map((project) => ({
     url: `${base}/work/${project.slug}`,
     lastModified: now,
-    changeFrequency: "monthly" as const,
+    changeFrequency: 'monthly' as const,
     priority: 0.6,
   }));
 
@@ -92,7 +93,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const seriesEntries = allSeries.map((series) => ({
     url: `${base}/blog/series/${series.slug}`,
     lastModified: new Date(series.latestPost.publishedAt),
-    changeFrequency: "monthly" as const,
+    changeFrequency: 'monthly' as const,
     priority: 0.7,
   }));
 
@@ -103,82 +104,82 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: `${base}/feed`,
       lastModified: now,
-      changeFrequency: "daily" as const,
+      changeFrequency: 'daily' as const,
       priority: 0.7,
     },
     {
       url: `${base}/rss.xml`,
       lastModified: now,
-      changeFrequency: "daily" as const,
+      changeFrequency: 'daily' as const,
       priority: 0.7,
     },
     {
       url: `${base}/atom.xml`,
       lastModified: now,
-      changeFrequency: "daily" as const,
+      changeFrequency: 'daily' as const,
       priority: 0.7,
     },
     {
       url: `${base}/feed.json`,
       lastModified: now,
-      changeFrequency: "daily" as const,
+      changeFrequency: 'daily' as const,
       priority: 0.7,
     },
     // Activity feeds
     {
       url: `${base}/activity/feed`,
       lastModified: now,
-      changeFrequency: "hourly" as const,
+      changeFrequency: 'hourly' as const,
       priority: 0.7,
     },
     {
       url: `${base}/activity/rss.xml`,
       lastModified: now,
-      changeFrequency: "hourly" as const,
+      changeFrequency: 'hourly' as const,
       priority: 0.7,
     },
     {
       url: `${base}/activity/feed.json`,
       lastModified: now,
-      changeFrequency: "hourly" as const,
+      changeFrequency: 'hourly' as const,
       priority: 0.7,
     },
     // Blog feeds
     {
       url: `${base}/blog/feed`,
       lastModified: now,
-      changeFrequency: "daily" as const,
+      changeFrequency: 'daily' as const,
       priority: 0.7,
     },
     {
       url: `${base}/blog/rss.xml`,
       lastModified: now,
-      changeFrequency: "daily" as const,
+      changeFrequency: 'daily' as const,
       priority: 0.7,
     },
     {
       url: `${base}/blog/feed.json`,
       lastModified: now,
-      changeFrequency: "daily" as const,
+      changeFrequency: 'daily' as const,
       priority: 0.7,
     },
     // Work/Projects feeds
     {
       url: `${base}/work/feed`,
       lastModified: now,
-      changeFrequency: "weekly" as const,
+      changeFrequency: 'weekly' as const,
       priority: 0.5,
     },
     {
       url: `${base}/work/rss.xml`,
       lastModified: now,
-      changeFrequency: "weekly" as const,
+      changeFrequency: 'weekly' as const,
       priority: 0.5,
     },
     {
       url: `${base}/work/feed.json`,
       lastModified: now,
-      changeFrequency: "weekly" as const,
+      changeFrequency: 'weekly' as const,
       priority: 0.5,
     },
   ];

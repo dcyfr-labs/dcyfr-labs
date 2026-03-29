@@ -13,7 +13,7 @@
  * - Development-only operation
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { devLogger } from '../dev-logger';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -64,9 +64,7 @@ function extractRequestMetadata(request: Request | NextRequest): RequestMetadata
   });
 
   const ip =
-    request.headers.get('x-forwarded-for') ||
-    request.headers.get('x-real-ip') ||
-    'unknown';
+    request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
 
   return {
     method: request.method,
@@ -104,7 +102,12 @@ function extractResponseMetadata(response: Response): ResponseMetadata {
  */
 
 /** Log the request body if enabled and present */
-async function logOptionalRequestBody(request: Request, routeName: string, operationId: string, enabled: boolean): Promise<void> {
+async function logOptionalRequestBody(
+  request: Request,
+  routeName: string,
+  operationId: string,
+  enabled: boolean
+): Promise<void> {
   if (!enabled || !request.body) return;
   try {
     const body = await request.clone().text();
@@ -120,7 +123,12 @@ async function logOptionalRequestBody(request: Request, routeName: string, opera
 }
 
 /** Log the response body if enabled and the response meets severity filter */
-async function logOptionalResponseBody(response: Response, routeName: string, operationId: string, enabled: boolean): Promise<void> {
+async function logOptionalResponseBody(
+  response: Response,
+  routeName: string,
+  operationId: string,
+  enabled: boolean
+): Promise<void> {
   if (!enabled) return;
   try {
     const body = await response.clone().text();
@@ -144,26 +152,39 @@ function logApiResponse(
   responseMetadata: ResponseMetadata,
   isError: boolean,
   isSlow: boolean,
-  isVerySlow: boolean,
+  isVerySlow: boolean
 ): void {
   if (isError) {
     devLogger.error(logMessage, {
-      operation: operationId, duration,
-      metadata: { request: requestMetadata as unknown as Record<string, unknown>, response: responseMetadata as unknown as Record<string, unknown> },
+      operation: operationId,
+      duration,
+      metadata: {
+        request: requestMetadata as unknown as Record<string, unknown>,
+        response: responseMetadata as unknown as Record<string, unknown>,
+      },
     });
   } else if (isVerySlow) {
     devLogger.warn(`${logMessage} (VERY SLOW!)`, {
-      operation: operationId, duration,
-      metadata: { request: requestMetadata as unknown as Record<string, unknown>, response: responseMetadata as unknown as Record<string, unknown> },
+      operation: operationId,
+      duration,
+      metadata: {
+        request: requestMetadata as unknown as Record<string, unknown>,
+        response: responseMetadata as unknown as Record<string, unknown>,
+      },
     });
   } else if (isSlow) {
     devLogger.warn(`${logMessage} (slow)`, {
-      operation: operationId, duration,
-      metadata: { request: requestMetadata as unknown as Record<string, unknown>, response: responseMetadata as unknown as Record<string, unknown> },
+      operation: operationId,
+      duration,
+      metadata: {
+        request: requestMetadata as unknown as Record<string, unknown>,
+        response: responseMetadata as unknown as Record<string, unknown>,
+      },
     });
   } else {
     devLogger.api(logMessage, {
-      operation: operationId, duration,
+      operation: operationId,
+      duration,
       metadata: {
         request: { method: requestMetadata.method, pathname: requestMetadata.pathname },
         response: { status: responseMetadata.status, size: responseMetadata.size },
@@ -172,7 +193,7 @@ function logApiResponse(
   }
 }
 
-export function withApiMonitoring<T = unknown>(
+export function withApiMonitoring(
   handler: (request: Request) => Promise<Response>,
   routeName: string,
   options: ApiMonitorOptions = {}
@@ -199,7 +220,9 @@ export function withApiMonitoring<T = unknown>(
     } catch (error) {
       const duration = Date.now() - startTime;
       devLogger.error(`✗ Request failed: ${requestMetadata.method} ${requestMetadata.pathname}`, {
-        operation: operationId, duration, error,
+        operation: operationId,
+        duration,
+        error,
         metadata: requestMetadata as unknown as Record<string, unknown>,
       });
       throw error;
@@ -212,7 +235,16 @@ export function withApiMonitoring<T = unknown>(
     const isVerySlow = duration > VERY_SLOW_REQUEST_THRESHOLD;
 
     const logMessage = `← Response: ${requestMetadata.method} ${requestMetadata.pathname} - ${response.status}`;
-    logApiResponse(logMessage, operationId, duration, requestMetadata, responseMetadata, isError, isSlow, isVerySlow);
+    logApiResponse(
+      logMessage,
+      operationId,
+      duration,
+      requestMetadata,
+      responseMetadata,
+      isError,
+      isSlow,
+      isVerySlow
+    );
 
     if (options.logResponseBody && (isError || isVerySlow)) {
       await logOptionalResponseBody(response, routeName, operationId, true);
@@ -228,7 +260,7 @@ export function withApiMonitoring<T = unknown>(
 export async function monitorAsync<T>(
   operation: () => Promise<T>,
   operationName: string,
-  metadata?: Record<string, unknown>
+  _metadata?: Record<string, unknown>
 ): Promise<T> {
   if (!isDev) {
     return operation();
@@ -251,12 +283,7 @@ class ApiMetrics {
     }
   > = new Map();
 
-  recordRequest(
-    route: string,
-    duration: number,
-    isError: boolean,
-    isSlow: boolean
-  ): void {
+  recordRequest(route: string, duration: number, isError: boolean, isSlow: boolean): void {
     const metrics = this.requests.get(route) || {
       count: 0,
       totalDuration: 0,

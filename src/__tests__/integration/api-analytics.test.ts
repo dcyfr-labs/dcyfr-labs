@@ -68,14 +68,9 @@ vi.mock('@/lib/comments', () => ({
 // Import after mocks are set up
 import { GET } from '@/app/api/analytics/route';
 import { rateLimit } from '@/lib/rate-limit';
-import { blockExternalAccess } from '@/lib/api/api-security';
-import {
-  getMultiplePostViews,
-  getMultiplePostViews24h,
-  getMultiplePostViewsInRange,
-} from '@/lib/views.server';
-import { getPostSharesBulk, getPostShares24hBulk } from '@/lib/shares';
-import { getPostCommentsBulk, getPostComments24hBulk } from '@/lib/comments';
+import { getMultiplePostViews, getMultiplePostViewsInRange } from '@/lib/views.server';
+import { getPostSharesBulk } from '@/lib/shares';
+import { getPostCommentsBulk } from '@/lib/comments';
 
 describe('Analytics API Integration', () => {
   beforeEach(() => {
@@ -314,7 +309,6 @@ describe('Analytics API Integration', () => {
       });
       it('includes vercel analytics data when present in Redis', async () => {
         // Mock redis.get to return vercel analytics data
-        const { redis } = await import('@/lib/redis-client');
         mocks.redisGet.mockImplementation(async (key: string) => {
           if (key === 'vercel:topPages:daily') {
             return JSON.stringify([{ path: '/blog/test-post', views: 50 }]);

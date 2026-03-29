@@ -3,13 +3,11 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { SPACING } from '@/lib/design-tokens';
-import { useBlogKeyboard } from '@/components/blog';
 import { SidebarFilters } from './sidebar-filters';
 import { SidebarCategories } from './sidebar-categories';
 import { SidebarTopics } from './sidebar-topics';
 import { SidebarAuthors } from './sidebar-authors';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 
 interface BlogSidebarProps {
   selectedCategory: string;
@@ -22,11 +20,8 @@ interface BlogSidebarProps {
   selectedAuthor: string;
   showArchived: boolean;
   showDrafts: boolean;
-  query: string;
   sortBy: string;
   dateRange: string;
-  totalResults: number;
-  totalPosts: number;
 }
 
 export type { BlogSidebarProps };
@@ -55,20 +50,16 @@ export function BlogSidebar({
   selectedAuthor,
   showArchived,
   showDrafts,
-  query,
   sortBy,
   dateRange,
-  totalResults,
-  totalPosts,
 }: BlogSidebarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition();
-  const { searchInputRef } = useBlogKeyboard();
+  const [, startTransition] = useTransition();
   const [expandedSections, setExpandedSections] = useState({
     filters: true,
     categories: true,
-    topics: true,
+    topics: false,
     authors: true,
   });
 
@@ -143,23 +134,6 @@ export function BlogSidebar({
       router.push(`/blog?${params.toString()}`, { scroll: false });
     });
   };
-
-  const clearAllFilters = () => {
-    startTransition(() => {
-      router.push('/blog', { scroll: false });
-    });
-  };
-
-  const activeFilterCount = [
-    selectedCategory && 'category',
-    selectedTags.length > 0 && 'tags',
-    readingTime && 'readingTime',
-    sortBy !== 'newest' && 'sort',
-    dateRange !== 'all' && 'date',
-    selectedAuthor && 'author',
-    showArchived && 'archived',
-    showDrafts && 'drafts',
-  ].filter(Boolean).length;
 
   const toggleSection = (section: 'filters' | 'categories' | 'topics' | 'authors') => {
     setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));

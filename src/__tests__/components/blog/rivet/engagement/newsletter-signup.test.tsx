@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { NewsletterSignup } from '@/components/blog/rivet/engagement/newsletter-signup';
@@ -13,6 +13,17 @@ describe('NewsletterSignup', () => {
     localStorage.clear();
     // Reset window.gtag mock
     window.gtag = undefined as any;
+    globalThis.fetch = vi.fn(
+      () =>
+        new Promise((resolve) => {
+          setTimeout(() => {
+            resolve({
+              ok: true,
+              json: async () => ({}),
+            } as Response);
+          }, 1000);
+        })
+    ) as typeof fetch;
   });
 
   afterEach(() => {
@@ -94,7 +105,6 @@ describe('NewsletterSignup', () => {
     });
 
     it('should show error for invalid email format (client-side validation)', async () => {
-      const user = userEvent.setup({ delay: null });
       render(<NewsletterSignup />);
 
       const emailInput = screen.getByLabelText('Email address');
@@ -159,6 +169,9 @@ describe('NewsletterSignup', () => {
   describe('Form Submission', () => {
     it('should show loading state during submission', async () => {
       const user = userEvent.setup({ delay: null });
+      (globalThis.fetch as ReturnType<typeof vi.fn>).mockImplementationOnce(
+        () => new Promise(() => {})
+      );
       render(<NewsletterSignup />);
 
       const emailInput = screen.getByLabelText('Email address');
@@ -167,12 +180,12 @@ describe('NewsletterSignup', () => {
       const submitButton = screen.getByRole('button', { name: /Subscribe/ });
       await user.click(submitButton);
 
-      expect(screen.getByText('Subscribing...')).toBeInTheDocument();
+      expect(screen.getByText(/Subscribing/i)).toBeInTheDocument();
       expect(submitButton).toBeDisabled();
     });
 
     it('should store signup in localStorage on success', async () => {
-      const user = userEvent.setup({ delay: null, advanceTimers: vi.advanceTimersByTime });
+      const user = userEvent.setup({ delay: null });
       render(<NewsletterSignup />);
 
       const emailInput = screen.getByLabelText('Email address');
@@ -181,9 +194,8 @@ describe('NewsletterSignup', () => {
       const submitButton = screen.getByRole('button', { name: /Subscribe/ });
       await user.click(submitButton);
 
-      // Advance past the 1000ms simulated API delay
-      await act(async () => {
-        vi.advanceTimersByTime(1100);
+      await waitFor(() => {
+        expect(localStorage.getItem(NEWSLETTER_STORAGE_KEY)).toBeTruthy();
       });
 
       const storedData = localStorage.getItem(NEWSLETTER_STORAGE_KEY);
@@ -195,7 +207,7 @@ describe('NewsletterSignup', () => {
     });
 
     it('should show success message after signup', async () => {
-      const user = userEvent.setup({ delay: null, advanceTimers: vi.advanceTimersByTime });
+      const user = userEvent.setup({ delay: null });
       render(<NewsletterSignup />);
 
       const emailInput = screen.getByLabelText('Email address');
@@ -204,15 +216,13 @@ describe('NewsletterSignup', () => {
       const submitButton = screen.getByRole('button', { name: /Subscribe/ });
       await user.click(submitButton);
 
-      await act(async () => {
-        vi.advanceTimersByTime(1100);
+      await waitFor(() => {
+        expect(screen.getByText(/Thanks for subscribing!/)).toBeInTheDocument();
       });
-
-      expect(screen.getByText(/Thanks for subscribing!/)).toBeInTheDocument();
     });
 
     it('should show custom success message', async () => {
-      const user = userEvent.setup({ delay: null, advanceTimers: vi.advanceTimersByTime });
+      const user = userEvent.setup({ delay: null });
       render(<NewsletterSignup successMessage="You're all set!" />);
 
       const emailInput = screen.getByLabelText('Email address');
@@ -221,36 +231,32 @@ describe('NewsletterSignup', () => {
       const submitButton = screen.getByRole('button', { name: /Subscribe/ });
       await user.click(submitButton);
 
-      await act(async () => {
-        vi.advanceTimersByTime(1100);
+      await waitFor(() => {
+        expect(screen.getByText("You're all set!")).toBeInTheDocument();
       });
-
-      expect(screen.getByText("You're all set!")).toBeInTheDocument();
     });
 
     it('should clear email input after successful signup', async () => {
-      const user = userEvent.setup({ delay: null, advanceTimers: vi.advanceTimersByTime });
+      const user = userEvent.setup({ delay: null });
       render(<NewsletterSignup />);
 
-      const emailInput = screen.getByLabelText('Email address') as HTMLInputElement;
+      const emailInput = screen.getByLabelText('Email address');
       await user.type(emailInput, 'user@example.com');
 
       const submitButton = screen.getByRole('button', { name: /Subscribe/ });
       await user.click(submitButton);
 
-      await act(async () => {
-        vi.advanceTimersByTime(1100);
+      await waitFor(() => {
+        // Success message shown, original form hidden
+        expect(screen.getByText(/Thanks for subscribing!/)).toBeInTheDocument();
       });
-
-      // Success message shown, original form hidden
-      expect(screen.getByText(/Thanks for subscribing!/)).toBeInTheDocument();
     });
 
     it('should track analytics event on signup', async () => {
       const gtagMock = vi.fn();
-      window.gtag = gtagMock;
+      globalThis.window.gtag = gtagMock;
 
-      const user = userEvent.setup({ delay: null, advanceTimers: vi.advanceTimersByTime });
+      const user = userEvent.setup({ delay: null });
       render(<NewsletterSignup variant="inline" />);
 
       const emailInput = screen.getByLabelText('Email address');
@@ -259,13 +265,11 @@ describe('NewsletterSignup', () => {
       const submitButton = screen.getByRole('button', { name: /Subscribe/ });
       await user.click(submitButton);
 
-      await act(async () => {
-        vi.advanceTimersByTime(1100);
-      });
-
-      expect(gtagMock).toHaveBeenCalledWith('event', 'newsletter_signup', {
-        method: 'inline_form',
-        variant: 'inline',
+      await waitFor(() => {
+        expect(gtagMock).toHaveBeenCalledWith('event', 'newsletter_signup', {
+          method: 'inline_form',
+          variant: 'inline',
+        });
       });
     });
   });
@@ -335,6 +339,9 @@ describe('NewsletterSignup', () => {
 
     it('should disable inputs during loading', async () => {
       const user = userEvent.setup({ delay: null });
+      (globalThis.fetch as ReturnType<typeof vi.fn>).mockImplementationOnce(
+        () => new Promise(() => {})
+      );
       render(<NewsletterSignup />);
 
       const emailInput = screen.getByLabelText('Email address');

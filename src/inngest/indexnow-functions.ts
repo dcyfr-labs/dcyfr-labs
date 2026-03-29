@@ -6,27 +6,24 @@ import {
   isUuidV4,
   normalizeValidUrls,
 } from '@/lib/indexnow/indexnow';
-import {
-  INDEXNOW_EVENTS,
-  type IndexNowSubmissionRequestedEventData,
-} from '@/lib/indexnow/events';
+import { INDEXNOW_EVENTS, type IndexNowSubmissionRequestedEventData } from '@/lib/indexnow/events';
 
 /**
  * IndexNow API integration for real-time search engine indexing
- * 
+ *
  * @remarks
  * This module provides IndexNow protocol submissions to search engines:
  * - Validates and normalizes submission URLs
  * - Submits to IndexNow API endpoints (Bing, Yandex, Seznam.cz, Naver)
- * - Handles rate limiting and retries with exponential backoff  
+ * - Handles rate limiting and retries with exponential backoff
  * - Tracks submission success/failure rates
  * - Validates ownership via API key file serving
- * 
+ *
  * Prerequisites:
  * 1. IndexNow API key (UUID v4 format) configured in environment
  * 2. Key file served at /{api-key}.txt endpoint
  * 3. URLs must be from the same domain as the API key location
- * 
+ *
  * @see https://www.indexnow.org/documentation
  * @see https://blogs.bing.com/webmaster/october-2021/IndexNow-instantly-index-your-web-content-in-search-engines
  */
@@ -34,7 +31,7 @@ import {
 // IndexNow API endpoint URLs for different search engines
 const INDEXNOW_ENDPOINTS = [
   'https://api.indexnow.org/indexnow', // Primary endpoint
-  'https://www.bing.com/indexnow',     // Bing specific
+  'https://www.bing.com/indexnow', // Bing specific
   // 'https://yandex.com/indexnow',       // Yandex (if needed)
   // 'https://search.seznam.cz/indexnow', // Seznam.cz (if needed)
 ] as const;
@@ -91,20 +88,7 @@ async function submitToEndpoint(
 }
 
 /**
- * IndexNow submission data structure
- */
-/**
  * IndexNow API request payload
- */
-interface IndexNowApiPayload {
-  host: string;
-  key: string;
-  keyLocation: string;
-  urlList: string[];
-}
-
-/**
- * IndexNow API response
  */
 interface IndexNowApiResponse {
   success: boolean;
@@ -116,12 +100,12 @@ interface IndexNowApiResponse {
 
 /**
  * Process IndexNow submission request
- * 
+ *
  * Triggered by: indexnow/submission.requested
- * 
+ *
  * This function handles the actual submission to IndexNow API endpoints:
  * 1. Validates and normalizes URLs
- * 2. Batches URLs if needed (max 10,000 per request)  
+ * 2. Batches URLs if needed (max 10,000 per request)
  * 3. Submits to IndexNow endpoints with retry logic
  * 4. Tracks success/failure metrics
  * 5. Logs detailed submission results
@@ -150,7 +134,7 @@ export const processIndexNowSubmission = inngest.createFunction(
       // Validate key location URL
       try {
         new URL(keyLocation);
-      } catch (error) {
+      } catch {
         throw new Error(`Invalid key location URL: ${keyLocation}`);
       }
 
@@ -206,7 +190,9 @@ export const processIndexNowSubmission = inngest.createFunction(
 
     // Step 3: Submit to IndexNow endpoints
     const submissionResults = await step.run('submit-to-indexnow', async () => {
-      console.log(`[IndexNow] Submitting ${payloads.payloads.length} payloads to ${INDEXNOW_ENDPOINTS.length} endpoints`);
+      console.log(
+        `[IndexNow] Submitting ${payloads.payloads.length} payloads to ${INDEXNOW_ENDPOINTS.length} endpoints`
+      );
 
       const results: IndexNowApiResponse[] = [];
 
@@ -218,13 +204,13 @@ export const processIndexNowSubmission = inngest.createFunction(
 
           // Rate limiting: small delay between requests
           if (i < INDEXNOW_ENDPOINTS.length - 1) {
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await new Promise((resolve) => setTimeout(resolve, 100));
           }
         }
 
         // Delay between batches
         if (payloads.payloads.length > 1) {
-          await new Promise(resolve => setTimeout(resolve, 500));
+          await new Promise((resolve) => setTimeout(resolve, 500));
         }
       }
 
@@ -233,20 +219,26 @@ export const processIndexNowSubmission = inngest.createFunction(
 
     // Step 4: Analyze results and return summary
     const summary = await step.run('analyze-results', async () => {
-      const successful = submissionResults.filter(r => r.success);
-      const failed = submissionResults.filter(r => !r.success);
-      
+      const successful = submissionResults.filter((r) => r.success);
+      const failed = submissionResults.filter((r) => !r.success);
+
       const totalUrls = validationResult.totalValid;
       const successRate = successful.length / submissionResults.length;
-      const avgResponseTime = submissionResults.reduce((sum, r) => sum + r.responseTime, 0) / submissionResults.length;
+      const avgResponseTime =
+        submissionResults.reduce((sum, r) => sum + r.responseTime, 0) / submissionResults.length;
 
       console.log(`[IndexNow] Submission ${requestId} complete:`);
       console.log(`  - URLs submitted: ${totalUrls}`);
-      console.log(`  - Success rate: ${(successRate * 100).toFixed(1)}% (${successful.length}/${submissionResults.length})`);
+      console.log(
+        `  - Success rate: ${(successRate * 100).toFixed(1)}% (${successful.length}/${submissionResults.length})`
+      );
       console.log(`  - Avg response time: ${avgResponseTime.toFixed(0)}ms`);
 
       if (failed.length > 0) {
-        console.warn(`[IndexNow] Failed submissions:`, failed.map(f => `${f.endpoint}: ${f.error}`));
+        console.warn(
+          `[IndexNow] Failed submissions:`,
+          failed.map((f) => `${f.endpoint}: ${f.error}`)
+        );
       }
 
       return {
@@ -278,7 +270,7 @@ export const processIndexNowSubmission = inngest.createFunction(
 
 /**
  * Scheduled function to verify IndexNow key file accessibility
- * 
+ *
  * Runs every 12 hours to ensure the API key file is properly accessible
  * and the IndexNow setup is working correctly.
  */
@@ -333,7 +325,6 @@ export const verifyIndexNowKeyFile = inngest.createFunction(
           contentValid: true,
           timestamp: new Date().toISOString(),
         };
-
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         console.error(`[IndexNow] ❌ Key file verification failed: ${errorMessage}`);

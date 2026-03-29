@@ -19,16 +19,15 @@
  * ```
  */
 
-"use client";
+'use client';
 
-import { useMemo } from "react";
-import { Eye, Lock, Zap } from "lucide-react";
-import { ThreadedActivityGroup } from "./ThreadedActivityGroup";
-import { Alert } from "@/components/common";
-import { groupActivitiesIntoThreads } from "@/lib/activity";
-import type { ActivityItem } from "@/lib/activity";
-import { cn } from "@/lib/utils";
-import { CONTAINER_WIDTHS, SPACING } from "@/lib/design-tokens";
+import { useMemo } from 'react';
+import { ThreadedActivityGroup } from './ThreadedActivityGroup';
+import { Alert } from '@/components/common';
+import { groupActivitiesIntoThreads } from '@/lib/activity';
+import type { ActivityItem } from '@/lib/activity';
+import { cn } from '@/lib/utils';
+import { CONTAINER_WIDTHS, SPACING } from '@/lib/design-tokens';
 
 // ============================================================================
 // TYPES
@@ -54,7 +53,7 @@ export interface ThreadedActivityFeedProps {
  */
 export function ThreadedActivityFeed({
   activities,
-  emptyMessage = "No activities to display",
+  emptyMessage = 'No activities to display',
   className,
   limit,
 }: ThreadedActivityFeedProps) {
@@ -67,14 +66,14 @@ export function ThreadedActivityFeed({
   // Empty state
   if (threads.length === 0) {
     return (
-      <div className={cn(CONTAINER_WIDTHS.thread, "mx-auto", className)}>
+      <div className={cn(CONTAINER_WIDTHS.thread, 'mx-auto', className)}>
         <Alert type="info">{emptyMessage}</Alert>
       </div>
     );
   }
 
   return (
-    <div className={cn(CONTAINER_WIDTHS.thread, "mx-auto", className)}>
+    <div className={cn(CONTAINER_WIDTHS.thread, 'mx-auto', className)}>
       <div className={SPACING.subsection}>
         {/* Render Threads */}
         {threads.map((thread, index) => (
@@ -83,10 +82,7 @@ export function ThreadedActivityFeed({
 
             {/* Divider between threads (except last) */}
             {index < threads.length - 1 && (
-              <div
-                className="my-12 border-t border-border/50"
-                aria-hidden="true"
-              />
+              <div className="my-12 border-t border-border/50" aria-hidden="true" />
             )}
           </div>
         ))}

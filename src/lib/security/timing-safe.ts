@@ -7,7 +7,7 @@
  * @module lib/security/timing-safe
  */
 
-import { timingSafeEqual as cryptoTimingSafeEqual } from 'crypto';
+import { timingSafeEqual as cryptoTimingSafeEqual } from 'node:crypto';
 
 /**
  * Compare two strings in constant time to prevent timing attacks
@@ -56,7 +56,7 @@ export function timingSafeEqual(a: string, b: string): boolean {
 
   try {
     return cryptoTimingSafeEqual(bufA, bufB);
-  } catch (error) {
+  } catch {
     // timingSafeEqual throws if buffers have different lengths
     // This should never happen due to the check above, but handle defensively
     return false;
