@@ -300,7 +300,7 @@
     "inngest": "^3.52.6",
     "js-yaml": "^4.1.0",
     "katex": "^0.16.44",
-    "lucide-react": "^1.0.1",
+    "lucide-react": "^1.7.0",
     "minisearch": "^7.2.0",
     "next": "^16.2.1",
     "next-mdx-remote": "^6.0.0",
