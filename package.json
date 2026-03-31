@@ -279,7 +279,7 @@
     "@upstash/redis": "^1.37.0",
     "@vercel/analytics": "2.0.1",
     "@vercel/speed-insights": "2.0.0",
-    "@xyflow/react": "^12.10.0",
+    "@xyflow/react": "^12.10.2",
     "better-sqlite3": "^11.10.0",
     "botid": "^1.5.11",
     "chalk": "^5.6.2",
