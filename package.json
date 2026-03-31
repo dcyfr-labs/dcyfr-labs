@@ -78,6 +78,7 @@
     "validate:infrastructure": "node scripts/validate.mjs infrastructure",
     "validate:code": "node scripts/validate.mjs code",
     "validate:tlp": "node scripts/validate.mjs tlp-compliance",
+    "validate:allowlist": "node scripts/validate-cli.mjs allowlist",
     "validate:docs-links": "node scripts/validate.mjs docs-links",
     "validate:frontmatter": "node scripts/validate.mjs frontmatter",
     "validate:emojis": "node scripts/validate.mjs emojis",
