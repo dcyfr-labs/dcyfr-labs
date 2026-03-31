@@ -81,6 +81,7 @@
     "validate:allowlist": "node scripts/validate-cli.mjs allowlist",
     "validate:docs-links": "node scripts/validate.mjs docs-links",
     "validate:frontmatter": "node scripts/validate.mjs frontmatter",
+    "validate:botid": "node scripts/validate-cli.mjs botid",
     "validate:emojis": "node scripts/validate.mjs emojis",
     "validate:governance": "node scripts/validate.mjs governance",
     "validate:redis": "node scripts/validate.mjs redis-connectivity",
