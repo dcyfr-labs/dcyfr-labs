@@ -433,7 +433,7 @@
     "@axiomhq/js": "^1.6.0"
   },
   "optionalDependencies": {
-    "@anthropic-ai/sdk": "^0.80.0",
+    "@anthropic-ai/sdk": "^0.82.0",
     "sqlite3": "^5.1.7"
   }
 }
