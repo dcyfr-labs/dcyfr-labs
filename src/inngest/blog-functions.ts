@@ -27,8 +27,7 @@ function withTimeout<T>(promise: Promise<T>, timeoutMs: number, message: string)
  * - Updating trending calculations
  */
 export const trackPostView = inngest.createFunction(
-  { id: 'track-post-view' },
-  { event: 'blog/post.viewed' },
+  { id: 'track-post-view', triggers: [{ event: 'blog/post.viewed' }] },
   async ({ event, step }) => {
     const { postId, slug, title } = event.data;
     // Redis client imported from shared module
@@ -155,8 +154,7 @@ export const trackPostView = inngest.createFunction(
  * Could send notifications, update badges, etc.
  */
 export const handleMilestone = inngest.createFunction(
-  { id: 'handle-milestone' },
-  { event: 'blog/milestone.reached' },
+  { id: 'handle-milestone', triggers: [{ event: 'blog/milestone.reached' }] },
   async ({ event, step }) => {
     const { slug, title, milestone, totalViews } = event.data;
 
@@ -219,9 +217,10 @@ export const handleMilestone = inngest.createFunction(
 export const calculateTrending = inngest.createFunction(
   {
     id: 'calculate-trending',
-    retries: 1, // Fail fast on hourly jobs to prevent queue buildup
-  },
-  { cron: '0 * * * *' }, // Every hour
+    retries: 1, // Fail fast on hourly jobs to prevent queue buildup,
+
+    triggers: [{ cron: '0 * * * *' }],
+  }, // Every hour
   async ({ step }) => {
     const startTime = Date.now();
 
@@ -441,8 +440,9 @@ export const generateAnalyticsSummary = inngest.createFunction(
   {
     id: 'generate-analytics-summary',
     retries: 1,
+
+    triggers: [{ event: 'analytics/summary.generate' }],
   },
-  { event: 'analytics/summary.generate' },
   async ({ event, step }) => {
     const { period, startDate, endDate } = event.data;
     // Redis client imported from shared module
@@ -548,8 +548,7 @@ export const generateAnalyticsSummary = inngest.createFunction(
  * Runs daily at midnight UTC to generate yesterday's summary.
  */
 export const dailyAnalyticsSummary = inngest.createFunction(
-  { id: 'daily-analytics-summary' },
-  { cron: '0 0 * * *' }, // Daily at midnight UTC
+  { id: 'daily-analytics-summary', triggers: [{ cron: '0 0 * * *' }] }, // Daily at midnight UTC
   async ({ step }) => {
     await step.run('trigger-summary', async () => {
       const yesterday = new Date();
@@ -579,8 +578,7 @@ export const dailyAnalyticsSummary = inngest.createFunction(
  * for a proxy endpoint (preferred) or a direct Vercel API endpoint if configured.
  */
 export const syncVercelAnalytics = inngest.createFunction(
-  { id: 'sync-vercel-analytics' },
-  { cron: '0 2 * * *' }, // Daily at 02:00 UTC
+  { id: 'sync-vercel-analytics', triggers: [{ cron: '0 2 * * *' }] }, // Daily at 02:00 UTC
   async ({ step }) => {
     // Redis client imported from shared module
     if (!redis) {

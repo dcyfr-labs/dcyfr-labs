@@ -1,7 +1,7 @@
-import { inngest } from "./client";
-import { Resend } from "resend";
-import { AUTHOR_EMAIL, FROM_EMAIL } from "@/lib/site-config";
-import { track } from "@vercel/analytics/server";
+import { inngest } from './client';
+import { Resend } from 'resend';
+import { AUTHOR_EMAIL, FROM_EMAIL } from '@/lib/site-config';
+import { track } from '@vercel/analytics/server';
 
 // Initialize Resend only if configured
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -28,44 +28,45 @@ const resend = isEmailConfigured ? new Resend(RESEND_API_KEY) : null;
  */
 export const contactFormSubmitted = inngest.createFunction(
   {
-    id: "contact-form-submitted",
+    id: 'contact-form-submitted',
     retries: 3,
+
+    triggers: [{ event: 'contact/form.submitted' }],
   },
-  { event: "contact/form.submitted" },
   async ({ event, step }) => {
     const { name, email, message, role, submittedAt } = event.data;
 
     // Log function execution for debugging
-    console.warn("[Contact Function] Processing submission:", {
+    console.warn('[Contact Function] Processing submission:', {
       fromEmail: email,
       messageLength: message.length,
-      role: role || "not-specified",
+      role: role || 'not-specified',
       emailConfigured: isEmailConfigured,
       resendFromEmail: FROM_EMAIL,
     });
 
     // Step 1: Send notification email to site owner
-    const notificationResult = await step.run("send-notification-email", async () => {
+    const notificationResult = await step.run('send-notification-email', async () => {
       if (!isEmailConfigured || !resend) {
-        console.warn("[Contact Function] Email not configured, skipping notification", {
+        console.warn('[Contact Function] Email not configured, skipping notification', {
           hasResendKey: !!process.env.RESEND_API_KEY,
           resendInstance: !!resend,
         });
-        return { success: false, reason: "not-configured" };
+        return { success: false, reason: 'not-configured' };
       }
 
       try {
         const result = await resend.emails.send({
           from: FROM_EMAIL,
           to: AUTHOR_EMAIL,
-          subject: `Contact form: ${name}${role ? ` (${role})` : ""}`,
+          subject: `Contact form: ${name}${role ? ` (${role})` : ''}`,
           replyTo: email,
-          text: `From: ${name} <${email}>${role ? `\nRole: ${role}` : ""}\nSubmitted: ${new Date(submittedAt).toLocaleString()}\n\n${message}`,
+          text: `From: ${name} <${email}>${role ? `\nRole: ${role}` : ''}\nSubmitted: ${new Date(submittedAt).toLocaleString()}\n\n${message}`,
           html: `
             <div style="font-family: sans-serif; max-width: 600px;">
               <h2>New Contact Form Submission</h2>
               <p><strong>From:</strong> ${name} &lt;${email}&gt;</p>
-              ${role ? `<p><strong>Role:</strong> ${role}</p>` : ""}
+              ${role ? `<p><strong>Role:</strong> ${role}</p>` : ''}
               <p><strong>Submitted:</strong> ${new Date(submittedAt).toLocaleString()}</p>
               <hr style="border: 1px solid #eee; margin: 20px 0;" />
               <p style="white-space: pre-wrap;">${message}</p>
@@ -73,7 +74,7 @@ export const contactFormSubmitted = inngest.createFunction(
           `,
         });
 
-        console.warn("Notification email sent:", {
+        console.warn('Notification email sent:', {
           messageId: result.data?.id,
           to: AUTHOR_EMAIL,
           from: FROM_EMAIL,
@@ -93,7 +94,7 @@ export const contactFormSubmitted = inngest.createFunction(
           messageId: result.data?.id,
         };
       } catch (error) {
-        console.error("[Contact Function] Failed to send notification email:", {
+        console.error('[Contact Function] Failed to send notification email:', {
           error: error instanceof Error ? error.message : String(error),
           from: FROM_EMAIL,
           to: AUTHOR_EMAIL,
@@ -104,16 +105,16 @@ export const contactFormSubmitted = inngest.createFunction(
     });
 
     // Step 2: Send confirmation email to submitter
-    const confirmationResult = await step.run("send-confirmation-email", async () => {
+    const confirmationResult = await step.run('send-confirmation-email', async () => {
       if (!isEmailConfigured || !resend) {
-        return { success: false, reason: "not-configured" };
+        return { success: false, reason: 'not-configured' };
       }
 
       try {
         const result = await resend.emails.send({
           from: FROM_EMAIL,
           to: email,
-          subject: "Thanks for reaching out!",
+          subject: 'Thanks for reaching out!',
           text: `Hi ${name},\n\nThank you for your message! I've received your submission and will get back to you as soon as possible.\n\nBest regards,\nDrew`,
           html: `
             <div style="font-family: sans-serif; max-width: 600px;">
@@ -129,7 +130,7 @@ export const contactFormSubmitted = inngest.createFunction(
           `,
         });
 
-        console.warn("Confirmation email sent:", {
+        console.warn('Confirmation email sent:', {
           messageId: result.data?.id,
           to: email,
           from: FROM_EMAIL,
@@ -141,7 +142,7 @@ export const contactFormSubmitted = inngest.createFunction(
         };
       } catch (error) {
         // Log but don't fail the function if confirmation email fails
-        console.error("[Contact Function] Failed to send confirmation email:", {
+        console.error('[Contact Function] Failed to send confirmation email:', {
           error: error instanceof Error ? error.message : String(error),
           from: FROM_EMAIL,
           to: email,
@@ -151,9 +152,9 @@ export const contactFormSubmitted = inngest.createFunction(
     });
 
     // Step 3: Track the result
-    await step.run("track-result", async () => {
+    await step.run('track-result', async () => {
       // Could send analytics event, update database, etc.
-      console.warn("Contact form processed:", {
+      console.warn('Contact form processed:', {
         notification: notificationResult.success,
         confirmation: confirmationResult.success,
         emailDomain: email.split('@')[1],
@@ -167,5 +168,5 @@ export const contactFormSubmitted = inngest.createFunction(
       confirmation: confirmationResult,
       processedAt: new Date().toISOString(),
     };
-  },
+  }
 );

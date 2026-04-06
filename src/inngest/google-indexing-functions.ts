@@ -1,18 +1,15 @@
-import { inngest } from "./client";
-import { google } from "googleapis";
-import type { AuthClient, OAuth2Client } from "google-auth-library";
-import {
-  INDEXNOW_EVENTS,
-  type IndexNowSubmissionRequestedEventData,
-} from "@/lib/indexnow/events";
-import { buildKeyLocation } from "@/lib/indexnow/indexnow";
+import { inngest } from './client';
+import { google } from 'googleapis';
+import type { AuthClient, OAuth2Client } from 'google-auth-library';
+import { INDEXNOW_EVENTS, type IndexNowSubmissionRequestedEventData } from '@/lib/indexnow/events';
+import { buildKeyLocation } from '@/lib/indexnow/indexnow';
 
 /** Google API error shape from googleapis HTTP errors */
 type GoogleApiError = { response?: { status?: number; data?: unknown }; message?: string };
 
 /**
  * Google Indexing API integration for automatic URL submission
- * 
+ *
  * @remarks
  * This module provides comprehensive Google Indexing API management:
  * - Validates sitemap against submission status
@@ -20,14 +17,14 @@ type GoogleApiError = { response?: { status?: number; data?: unknown }; message?
  * - Respects API rate limits (200 submissions/day quota)
  * - Verifies successful indexing status
  * - Batch submission with proper queueing
- * 
+ *
  * Prerequisites:
  * 1. Create a Google Cloud Platform project
  * 2. Enable the Indexing API
  * 3. Create a service account with JSON key
  * 4. Add service account as owner in Google Search Console
  * 5. Store service account JSON as GOOGLE_INDEXING_API_KEY env variable
- * 
+ *
  * @see https://developers.google.com/search/apis/indexing-api/v3/quickstart
  * @see https://developers.google.com/search/apis/indexing-api/v3/using-api
  */
@@ -57,7 +54,7 @@ async function queueIndexNowSubmission(urls: string[]): Promise<{
   const key = process.env.INDEXNOW_API_KEY;
 
   if (!key) {
-    return { queued: false, reason: "INDEXNOW_API_KEY not configured" };
+    return { queued: false, reason: 'INDEXNOW_API_KEY not configured' };
   }
 
   const keyLocation = buildKeyLocation(process.env.NEXT_PUBLIC_SITE_URL, key);
@@ -68,8 +65,8 @@ async function queueIndexNowSubmission(urls: string[]): Promise<{
     keyLocation,
     requestId: crypto.randomUUID(),
     requestedAt: Date.now(),
-    userAgent: "google-indexing-functions",
-    ip: "internal",
+    userAgent: 'google-indexing-functions',
+    ip: 'internal',
   };
 
   await inngest.send({
@@ -83,16 +80,16 @@ async function queueIndexNowSubmission(urls: string[]): Promise<{
 // Load service account credentials from environment
 function getServiceAccountCredentials() {
   const credentialsJson = process.env.GOOGLE_INDEXING_API_KEY;
-  
+
   if (!credentialsJson) {
-    console.warn("GOOGLE_INDEXING_API_KEY not configured. Skipping Google indexing.");
+    console.warn('GOOGLE_INDEXING_API_KEY not configured. Skipping Google indexing.');
     return null;
   }
 
   try {
     return JSON.parse(credentialsJson);
   } catch (error) {
-    console.error("Failed to parse GOOGLE_INDEXING_API_KEY:", error);
+    console.error('Failed to parse GOOGLE_INDEXING_API_KEY:', error);
     return null;
   }
 }
@@ -100,14 +97,14 @@ function getServiceAccountCredentials() {
 // Initialize Google Auth client
 async function getAuthClient(): Promise<OAuth2Client | null> {
   const credentials = getServiceAccountCredentials();
-  
+
   if (!credentials) {
     return null;
   }
 
   const auth = new google.auth.GoogleAuth({
     credentials,
-    scopes: ["https://www.googleapis.com/auth/indexing"],
+    scopes: ['https://www.googleapis.com/auth/indexing'],
   });
 
   return (await auth.getClient()) as OAuth2Client;
@@ -115,30 +112,30 @@ async function getAuthClient(): Promise<OAuth2Client | null> {
 
 /**
  * Track rate limit state and return current quota remaining
- * 
+ *
  * @returns Remaining submissions for today
  */
 function getRemainingQuota(): number {
   const now = Date.now();
-  
+
   // Reset counter if 24 hours have passed
   if (now - rateLimitState.lastResetTime > GOOGLE_RATE_LIMIT_RESET_MS) {
     rateLimitState.submissionCount = 0;
     rateLimitState.lastResetTime = now;
   }
-  
+
   return Math.max(0, GOOGLE_DAILY_QUOTA - rateLimitState.submissionCount);
 }
 
 /**
  * Check if submission is within rate limits
- * 
+ *
  * @returns true if submission can proceed
  */
 function canSubmit(): boolean {
   const remaining = getRemainingQuota();
   const timeSinceLastSubmission = Date.now() - rateLimitState.lastSubmissionTime;
-  
+
   return remaining > 0 && timeSinceLastSubmission >= SUBMISSION_RATE_LIMIT_MS;
 }
 
@@ -152,12 +149,12 @@ function recordSubmission(): void {
 
 /**
  * Check indexing status for a URL
- * 
+ *
  * Queries Google Search Console to verify if a URL has been indexed
  * and get metadata about its status.
  */
 async function checkIndexingStatus(
-  url: string, 
+  url: string,
   authClient: OAuth2Client
 ): Promise<{
   indexed: boolean;
@@ -165,15 +162,15 @@ async function checkIndexingStatus(
   metadata: Record<string, unknown>;
 }> {
   try {
-    const indexing = google.indexing({ version: "v3", auth: authClient as OAuth2Client });
-    
+    const indexing = google.indexing({ version: 'v3', auth: authClient as OAuth2Client });
+
     const response = await indexing.urlNotifications.getMetadata({
       url,
     });
 
     const data = response.data as Record<string, unknown>;
-    const mobileFriendlyStatus = (data.mobileFriendlyStatus as string) || "UNKNOWN";
-    const indexed = mobileFriendlyStatus !== "NOT_FOUND";
+    const mobileFriendlyStatus = (data.mobileFriendlyStatus as string) || 'UNKNOWN';
+    const indexed = mobileFriendlyStatus !== 'NOT_FOUND';
 
     return {
       indexed,
@@ -182,12 +179,12 @@ async function checkIndexingStatus(
     };
   } catch (error) {
     const statusCode = (error as { response?: { status?: number } }).response?.status;
-    
+
     // 404 means URL is not indexed
     if (statusCode === 404) {
       return {
         indexed: false,
-        status: "NOT_FOUND",
+        status: 'NOT_FOUND',
         metadata: { url },
       };
     }
@@ -198,41 +195,42 @@ async function checkIndexingStatus(
 
 /**
  * Submit URL update notification to Google Indexing API
- * 
+ *
  * Notifies Google that a URL has been added or updated, respecting
  * rate limits and recording submission for quota tracking.
  */
 export const submitUrlToGoogle = inngest.createFunction(
-  { 
-    id: "submit-url-to-google",
+  {
+    id: 'submit-url-to-google',
     retries: 3,
+
+    triggers: [{ event: 'google/url.submit' }],
   },
-  { event: "google/url.submit" },
   async ({ event, step }) => {
-    const { url, type = "URL_UPDATED", skipRateLimit = false } = event.data;
+    const { url, type = 'URL_UPDATED', skipRateLimit = false } = event.data;
 
     // Step 1: Validate configuration
-    const authClient = await step.run("authenticate", async () => {
+    const authClient = await step.run('authenticate', async () => {
       const client = await getAuthClient();
-      
+
       if (!client) {
-        console.warn("Google Indexing API not configured. Skipping URL submission.");
+        console.warn('Google Indexing API not configured. Skipping URL submission.');
         return null;
       }
-      
+
       return client;
     });
 
     if (!authClient) {
-      return { 
-        success: false, 
-        reason: "api-not-configured",
+      return {
+        success: false,
+        reason: 'api-not-configured',
         url,
       };
     }
 
     // Step 2: Check rate limits
-    const quotaCheck = await step.run("check-rate-limit", async () => {
+    const quotaCheck = await step.run('check-rate-limit', async () => {
       const remaining = getRemainingQuota();
       const canSubmitNow = canSubmit();
 
@@ -242,16 +240,16 @@ export const submitUrlToGoogle = inngest.createFunction(
     if (!skipRateLimit && !quotaCheck.canSubmit) {
       return {
         success: false,
-        reason: "rate-limit-exceeded",
+        reason: 'rate-limit-exceeded',
         url,
         quotaRemaining: quotaCheck.remaining,
       };
     }
 
     // Step 3: Submit URL to Google Indexing API
-    const result = await step.run("submit-url", async () => {
+    const result = await step.run('submit-url', async () => {
       try {
-        const indexing = google.indexing({ version: "v3", auth: authClient as OAuth2Client });
+        const indexing = google.indexing({ version: 'v3', auth: authClient as OAuth2Client });
 
         const response = await indexing.urlNotifications.publish({
           requestBody: {
@@ -289,7 +287,7 @@ export const submitUrlToGoogle = inngest.createFunction(
         } else if (statusCode === 403) {
           // Permission denied - likely not added to Search Console
           console.error(
-            "Permission denied. Ensure service account is added as owner in Google Search Console."
+            'Permission denied. Ensure service account is added as owner in Google Search Console.'
           );
         }
 
@@ -304,30 +302,28 @@ export const submitUrlToGoogle = inngest.createFunction(
 
     // Step 4: Verify indexing status
     if (result.success) {
-      await step.run("queue-indexnow", async () => {
+      await step.run('queue-indexnow', async () => {
         try {
           const queued = await queueIndexNowSubmission([url]);
           if (!queued.queued) {
-            console.warn(
-              `[Google→IndexNow] Skipped IndexNow queue for ${url}: ${queued.reason}`
-            );
+            console.warn(`[Google→IndexNow] Skipped IndexNow queue for ${url}: ${queued.reason}`);
           }
           return queued;
         } catch (error) {
           console.warn(`[Google→IndexNow] Failed to queue ${url}:`, error);
-          return { queued: false, reason: "queue-failed" };
+          return { queued: false, reason: 'queue-failed' };
         }
       });
 
-      const indexingStatus = await step.run("verify-indexing", async () => {
+      const indexingStatus = await step.run('verify-indexing', async () => {
         // Wait a moment for Google to process
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         try {
           return await checkIndexingStatus(url, authClient as OAuth2Client);
         } catch (error) {
           console.warn(`Could not verify indexing status for ${url}:`, error);
-          return { indexed: null, status: "UNKNOWN", metadata: {} };
+          return { indexed: null, status: 'UNKNOWN', metadata: {} };
         }
       });
 
@@ -343,27 +339,28 @@ export const submitUrlToGoogle = inngest.createFunction(
 
 /**
  * Validate sitemap against Google submission status
- * 
+ *
  * Compares sitemap URLs with Google Search Console data to identify:
  * - Successfully indexed pages
  * - Missing/unindexed pages
  * - Pages pending indexing
- * 
+ *
  * Returns missing pages that need submission.
  */
 export const validateSitemapAndGetMissing = inngest.createFunction(
-  { 
-    id: "validate-sitemap-and-get-missing",
+  {
+    id: 'validate-sitemap-and-get-missing',
     retries: 2,
+
+    triggers: [{ event: 'google/sitemap.validate' }],
   },
-  { event: "google/sitemap.validate" },
   async ({ event, step }) => {
     const { sitemapUrls } = event.data;
 
     if (!Array.isArray(sitemapUrls) || sitemapUrls.length === 0) {
       return {
         success: false,
-        reason: "no-urls-provided",
+        reason: 'no-urls-provided',
         indexed: [],
         missing: [],
         pending: [],
@@ -371,21 +368,21 @@ export const validateSitemapAndGetMissing = inngest.createFunction(
     }
 
     // Step 1: Validate configuration
-    const authClient = await step.run("authenticate", async () => {
+    const authClient = await step.run('authenticate', async () => {
       const client = await getAuthClient();
-      
+
       if (!client) {
-        console.warn("Google Indexing API not configured. Skipping sitemap validation.");
+        console.warn('Google Indexing API not configured. Skipping sitemap validation.');
         return null;
       }
-      
+
       return client;
     });
 
     if (!authClient) {
       return {
         success: false,
-        reason: "api-not-configured",
+        reason: 'api-not-configured',
         indexed: [],
         missing: [],
         pending: [],
@@ -395,12 +392,12 @@ export const validateSitemapAndGetMissing = inngest.createFunction(
     console.warn(`🔍 Validating ${sitemapUrls.length} URLs against Google Search Console...`);
 
     // Step 2: Check indexing status for each URL
-    const statusResults = await step.run("check-all-urls", async () => {
+    const statusResults = await step.run('check-all-urls', async () => {
       const results = [];
-      
+
       for (let i = 0; i < sitemapUrls.length; i++) {
         const url = sitemapUrls[i];
-        
+
         try {
           const status = await checkIndexingStatus(url, authClient as OAuth2Client);
           results.push({
@@ -409,27 +406,27 @@ export const validateSitemapAndGetMissing = inngest.createFunction(
             status: status.status,
             metadata: status.metadata,
           });
-          
+
           // Small delay to avoid rate limiting
           if (i < sitemapUrls.length - 1) {
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await new Promise((resolve) => setTimeout(resolve, 100));
           }
         } catch (error) {
           console.warn(`Could not check status for ${url}:`, (error as Error).message);
           results.push({
             url,
             indexed: null,
-            status: "ERROR",
+            status: 'ERROR',
             error: (error as Error).message,
           });
         }
       }
-      
+
       return results;
     });
 
     // Step 3: Categorize results
-    const categorized = await step.run("categorize-results", async () => {
+    const categorized = await step.run('categorize-results', async () => {
       const indexed = [];
       const missing = [];
       const pending = [];
@@ -466,41 +463,42 @@ export const validateSitemapAndGetMissing = inngest.createFunction(
 
 /**
  * Delete URL from Google index
- * 
+ *
  * Notifies Google that a URL has been removed and should be
  * deleted from search results, respecting rate limits.
  */
 export const deleteUrlFromGoogle = inngest.createFunction(
-  { 
-    id: "delete-url-from-google",
+  {
+    id: 'delete-url-from-google',
     retries: 3,
+
+    triggers: [{ event: 'google/url.delete' }],
   },
-  { event: "google/url.delete" },
   async ({ event, step }) => {
     const { url, skipRateLimit = false } = event.data;
 
     // Step 1: Validate configuration
-    const authClient = await step.run("authenticate", async () => {
+    const authClient = await step.run('authenticate', async () => {
       const client = await getAuthClient();
-      
+
       if (!client) {
-        console.warn("Google Indexing API not configured. Skipping URL deletion.");
+        console.warn('Google Indexing API not configured. Skipping URL deletion.');
         return null;
       }
-      
+
       return client;
     });
 
     if (!authClient) {
-      return { 
-        success: false, 
-        reason: "api-not-configured",
+      return {
+        success: false,
+        reason: 'api-not-configured',
         url,
       };
     }
 
     // Step 2: Check rate limits
-    const quotaCheck = await step.run("check-rate-limit", async () => {
+    const quotaCheck = await step.run('check-rate-limit', async () => {
       const remaining = getRemainingQuota();
       const canSubmitNow = canSubmit();
 
@@ -510,21 +508,21 @@ export const deleteUrlFromGoogle = inngest.createFunction(
     if (!skipRateLimit && !quotaCheck.canSubmit) {
       return {
         success: false,
-        reason: "rate-limit-exceeded",
+        reason: 'rate-limit-exceeded',
         url,
         quotaRemaining: quotaCheck.remaining,
       };
     }
 
     // Step 3: Submit deletion request to Google
-    const result = await step.run("delete-url", async () => {
+    const result = await step.run('delete-url', async () => {
       try {
-        const indexing = google.indexing({ version: "v3", auth: authClient as OAuth2Client });
+        const indexing = google.indexing({ version: 'v3', auth: authClient as OAuth2Client });
 
         const response = await indexing.urlNotifications.publish({
           requestBody: {
             url,
-            type: "URL_DELETED",
+            type: 'URL_DELETED',
           },
         });
 
@@ -536,7 +534,7 @@ export const deleteUrlFromGoogle = inngest.createFunction(
         return {
           success: true,
           url,
-          type: "URL_DELETED",
+          type: 'URL_DELETED',
           metadata: response.data,
           quotaRemaining: getRemainingQuota(),
         };
@@ -571,25 +569,26 @@ export const deleteUrlFromGoogle = inngest.createFunction(
 
 /**
  * Batch submit blog posts to Google Indexing API (Legacy)
- * 
+ *
  * @deprecated Use submitMissingPagesToGoogle instead
- * 
+ *
  * Processes multiple URLs in sequence, respecting rate limits.
  * Useful for backfilling existing blog posts.
  */
 export const batchSubmitBlogPosts = inngest.createFunction(
-  { 
-    id: "batch-submit-blog-posts",
+  {
+    id: 'batch-submit-blog-posts',
     retries: 1,
+
+    triggers: [{ event: 'google/urls.batch-submit' }],
   },
-  { event: "google/urls.batch-submit" },
   async ({ event, step }) => {
     const { urls } = event.data;
 
     if (!Array.isArray(urls) || urls.length === 0) {
-      return { 
-        success: false, 
-        reason: "no-urls-provided",
+      return {
+        success: false,
+        reason: 'no-urls-provided',
       };
     }
 
@@ -597,21 +596,21 @@ export const batchSubmitBlogPosts = inngest.createFunction(
 
     // Process each URL sequentially to respect rate limits
     const results = [];
-    
+
     for (let i = 0; i < urls.length; i++) {
       const url = urls[i];
-      
+
       const result = await step.run(`submit-url-${i}`, async () => {
         // Send individual submission event
         await inngest.send({
-          name: "google/url.submit",
+          name: 'google/url.submit',
           data: { url },
         });
 
         // Add delay to respect rate limits (default quota: 200/day)
         // Space out requests: 24h / 200 = ~432 seconds = ~7 minutes
         if (i < urls.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 500)); // 500ms delay
+          await new Promise((resolve) => setTimeout(resolve, 500)); // 500ms delay
         }
 
         return { url, submitted: true };
@@ -632,28 +631,29 @@ export const batchSubmitBlogPosts = inngest.createFunction(
 
 /**
  * Batch submit and validate URLs with rate limit awareness
- * 
+ *
  * High-level orchestration function that:
  * 1. Identifies missing pages from sitemap
  * 2. Respects API rate limits throughout submission
  * 3. Submits URLs in batches
  * 4. Validates successful indexing
- * 
+ *
  * Returns comprehensive report on submissions and indexing status.
  */
 export const submitMissingPagesToGoogle = inngest.createFunction(
-  { 
-    id: "submit-missing-pages-to-google",
+  {
+    id: 'submit-missing-pages-to-google',
     retries: 1,
+
+    triggers: [{ event: 'google/missing-pages.submit' }],
   },
-  { event: "google/missing-pages.submit" },
   async ({ event, step }) => {
     const { sitemapUrls, maxSubmissions } = event.data;
 
     if (!Array.isArray(sitemapUrls) || sitemapUrls.length === 0) {
       return {
         success: false,
-        reason: "no-urls-provided",
+        reason: 'no-urls-provided',
         submitted: [],
         failed: [],
         skipped: [],
@@ -662,21 +662,21 @@ export const submitMissingPagesToGoogle = inngest.createFunction(
     }
 
     // Step 1: Validate configuration
-    const authClient = await step.run("authenticate", async () => {
+    const authClient = await step.run('authenticate', async () => {
       const client = await getAuthClient();
-      
+
       if (!client) {
-        console.warn("Google Indexing API not configured. Cannot submit pages.");
+        console.warn('Google Indexing API not configured. Cannot submit pages.');
         return null;
       }
-      
+
       return client;
     });
 
     if (!authClient) {
       return {
         success: false,
-        reason: "api-not-configured",
+        reason: 'api-not-configured',
         submitted: [],
         failed: [],
         skipped: [],
@@ -685,53 +685,55 @@ export const submitMissingPagesToGoogle = inngest.createFunction(
     }
 
     // Step 2: Validate sitemap and identify missing pages
-    const validationResult = await step.run("validate-sitemap", async () => {
-      return await checkIndexingStatus("https://placeholder.com", authClient as OAuth2Client).then(
-        () => ({ success: true }),
-        () => ({ success: false }) // API is working even on placeholder fail
-      ).then(async () => {
-        // Do actual validation
-        const results = [];
-        const missing = [];
+    const validationResult = await step.run('validate-sitemap', async () => {
+      return await checkIndexingStatus('https://placeholder.com', authClient as OAuth2Client)
+        .then(
+          () => ({ success: true }),
+          () => ({ success: false }) // API is working even on placeholder fail
+        )
+        .then(async () => {
+          // Do actual validation
+          const results = [];
+          const missing = [];
 
-        for (let i = 0; i < sitemapUrls.length; i++) {
-          const url = sitemapUrls[i];
-          
-          try {
-            const status = await checkIndexingStatus(url, authClient as OAuth2Client);
-            
-            if (!status.indexed) {
+          for (let i = 0; i < sitemapUrls.length; i++) {
+            const url = sitemapUrls[i];
+
+            try {
+              const status = await checkIndexingStatus(url, authClient as OAuth2Client);
+
+              if (!status.indexed) {
+                missing.push(url);
+              }
+
+              results.push({
+                url,
+                indexed: status.indexed,
+                status: status.status,
+              });
+
+              // Small delay between checks
+              if (i < sitemapUrls.length - 1) {
+                await new Promise((resolve) => setTimeout(resolve, 100));
+              }
+            } catch (error) {
+              console.warn(`Could not check status for ${url}:`, (error as Error).message);
+              // Treat unknown as potentially missing
               missing.push(url);
             }
-
-            results.push({
-              url,
-              indexed: status.indexed,
-              status: status.status,
-            });
-
-            // Small delay between checks
-            if (i < sitemapUrls.length - 1) {
-              await new Promise(resolve => setTimeout(resolve, 100));
-            }
-          } catch (error) {
-            console.warn(`Could not check status for ${url}:`, (error as Error).message);
-            // Treat unknown as potentially missing
-            missing.push(url);
           }
-        }
 
-        return { results, missing };
-      });
+          return { results, missing };
+        });
     });
 
     const missingUrls = validationResult.missing || [];
     console.warn(`Found ${missingUrls.length} missing/unindexed pages`);
 
     // Step 3: Determine how many we can submit given quota
-    const quotaInfo = await step.run("check-quota", async () => {
+    const quotaInfo = await step.run('check-quota', async () => {
       const remaining = getRemainingQuota();
-      const toSubmit = maxSubmissions 
+      const toSubmit = maxSubmissions
         ? Math.min(missingUrls.length, remaining, maxSubmissions)
         : Math.min(missingUrls.length, remaining);
 
@@ -746,7 +748,7 @@ export const submitMissingPagesToGoogle = inngest.createFunction(
     console.warn(`📊 Quota info:`, quotaInfo);
 
     // Step 4: Submit missing URLs respecting quota
-    const submissionResults = await step.run("submit-missing-urls", async () => {
+    const submissionResults = await step.run('submit-missing-urls', async () => {
       const submitted = [];
       const failed = [];
       const skipped = [];
@@ -758,15 +760,15 @@ export const submitMissingPagesToGoogle = inngest.createFunction(
         const url = urlsToSubmit[i];
 
         try {
-          const indexing = google.indexing({ 
-            version: "v3", 
-            auth: authClient as OAuth2Client
+          const indexing = google.indexing({
+            version: 'v3',
+            auth: authClient as OAuth2Client,
           });
 
           await indexing.urlNotifications.publish({
             requestBody: {
               url,
-              type: "URL_UPDATED",
+              type: 'URL_UPDATED',
             },
           });
 
@@ -777,9 +779,7 @@ export const submitMissingPagesToGoogle = inngest.createFunction(
 
           // Respectful delay between submissions
           if (i < urlsToSubmit.length - 1) {
-            await new Promise(resolve => 
-              setTimeout(resolve, SUBMISSION_RATE_LIMIT_MS)
-            );
+            await new Promise((resolve) => setTimeout(resolve, SUBMISSION_RATE_LIMIT_MS));
           }
         } catch (error) {
           console.error(`✗ Failed to submit ${url}:`, (error as Error).message);
@@ -798,34 +798,32 @@ export const submitMissingPagesToGoogle = inngest.createFunction(
       return { submitted, failed, skipped };
     });
 
-    await step.run("queue-indexnow-batch", async () => {
+    await step.run('queue-indexnow-batch', async () => {
       if (!submissionResults.submitted.length) {
-        return { queued: false, reason: "no-submitted-urls" };
+        return { queued: false, reason: 'no-submitted-urls' };
       }
 
       try {
         const queued = await queueIndexNowSubmission(submissionResults.submitted);
         if (!queued.queued) {
-          console.warn(
-            `[Google→IndexNow] Skipped batch queue: ${queued.reason}`
-          );
+          console.warn(`[Google→IndexNow] Skipped batch queue: ${queued.reason}`);
         }
         return queued;
       } catch (error) {
-        console.warn("[Google→IndexNow] Failed batch queue:", error);
-        return { queued: false, reason: "queue-failed" };
+        console.warn('[Google→IndexNow] Failed batch queue:', error);
+        return { queued: false, reason: 'queue-failed' };
       }
     });
 
     // Step 5: Verify indexing status of submitted URLs
-    const verificationResults = await step.run("verify-submissions", async () => {
+    const verificationResults = await step.run('verify-submissions', async () => {
       const verified = [];
 
       for (const url of submissionResults.submitted) {
         try {
           // Wait for Google to process
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+
           const status = await checkIndexingStatus(url, authClient as OAuth2Client);
           verified.push({
             url,
@@ -837,7 +835,7 @@ export const submitMissingPagesToGoogle = inngest.createFunction(
           verified.push({
             url,
             indexed: null,
-            status: "UNKNOWN",
+            status: 'UNKNOWN',
           });
         }
       }
@@ -856,7 +854,7 @@ export const submitMissingPagesToGoogle = inngest.createFunction(
         indexed: validationResult.results?.length || 0,
         missing: missingUrls.length,
         submitted: submissionResults.submitted.length,
-        successfullyIndexed: verificationResults.filter(v => v.indexed).length,
+        successfullyIndexed: verificationResults.filter((v) => v.indexed).length,
         failed: submissionResults.failed.length,
         skipped: submissionResults.skipped.length,
         quotaRemaining: getRemainingQuota(),

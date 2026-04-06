@@ -119,9 +119,10 @@ export async function fetchGitHubContributions(): Promise<ContributionResponse |
 export const refreshGitHubData = inngest.createFunction(
   {
     id: 'refresh-github-data',
-    retries: 1, // Fail fast on hourly jobs to prevent queue buildup
-  },
-  { cron: '0 * * * *' }, // Hourly at minute 0
+    retries: 1, // Fail fast on hourly jobs to prevent queue buildup,
+
+    triggers: [{ cron: '0 * * * *' }],
+  }, // Hourly at minute 0
   async ({ step }) => {
     // Step 1: Fetch fresh data from GitHub
     const freshData = await step.run('fetch-github-data', async () => {
@@ -217,8 +218,9 @@ export const manualRefreshGitHubData = inngest.createFunction(
   {
     id: 'manual-refresh-github-data',
     retries: 1,
+
+    triggers: [{ event: 'github/data.refresh' }],
   },
-  { event: 'github/data.refresh' },
   async ({ event, step }) => {
     const { force } = event.data;
 
@@ -278,8 +280,11 @@ export const manualRefreshGitHubData = inngest.createFunction(
  * Creates an activity item for the commit and stores it for the activity feed
  */
 export const processGitHubCommit = inngest.createFunction(
-  { id: 'process-github-commit', concurrency: { limit: 5 } },
-  { event: 'github/commit.pushed' },
+  {
+    id: 'process-github-commit',
+    concurrency: { limit: 5 },
+    triggers: [{ event: 'github/commit.pushed' }],
+  },
   async ({ event, logger }) => {
     try {
       const { hash, message, author, url, timestamp, branch, repository } = event.data;

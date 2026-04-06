@@ -58,8 +58,9 @@ export const refreshActivityFeed = inngest.createFunction(
   {
     id: 'refresh-activity-feed',
     retries: 2,
-  },
-  { cron: '0 * * * *' }, // Every hour on the hour
+
+    triggers: [{ cron: '0 * * * *' }],
+  }, // Every hour on the hour
   async ({ step }) => {
     // Redis client imported from shared module
     if (!redis) {
@@ -158,8 +159,9 @@ export const refreshActivityFeed = inngest.createFunction(
 export const invalidateActivityFeed = inngest.createFunction(
   {
     id: 'invalidate-activity-feed',
+
+    triggers: [{ event: 'activity/cache.invalidate' }],
   },
-  { event: 'activity/cache.invalidate' },
   async ({ step, event }) => {
     // Redis client imported from shared module
     if (!redis) {

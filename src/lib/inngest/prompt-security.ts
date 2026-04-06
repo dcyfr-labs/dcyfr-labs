@@ -59,10 +59,11 @@ export const handlePromptThreatDetected = inngest.createFunction(
   {
     id: 'security-prompt-threat-detected',
     name: 'Handle Prompt Threat Detection',
+
+    triggers: [{ event: 'security/prompt.threat-detected' }],
   },
-  { event: 'security/prompt.threat-detected' },
   async ({ event, step }) => {
-    const { data } = event as ThreatDetectedEvent;
+    const { data } = event as unknown as ThreatDetectedEvent;
 
     // Step 1: Log threat details
     await step.run('log-threat', async () => {
@@ -141,8 +142,9 @@ export const generateDailyThreatReport = inngest.createFunction(
   {
     id: 'security-daily-threat-report',
     name: 'Generate Daily Threat Report',
-  },
-  { cron: '0 9 * * *' }, // 9 AM UTC daily
+
+    triggers: [{ cron: '0 9 * * *' }],
+  }, // 9 AM UTC daily
   async ({ step }) => {
     const reportDate = new Date();
 
@@ -220,8 +222,9 @@ export const syncIoPCDatabase = inngest.createFunction(
   {
     id: 'security-sync-iopc',
     name: 'Sync IoPC Database',
-  },
-  { cron: '0 */6 * * *' }, // Every 6 hours
+
+    triggers: [{ cron: '0 */6 * * *' }],
+  }, // Every 6 hours
   async ({ step }) => {
     // Step 1: Clear scanner cache
     await step.run('clear-cache', async () => {
@@ -280,10 +283,11 @@ export const handlePromptScanError = inngest.createFunction(
   {
     id: 'security-prompt-scan-error',
     name: 'Handle Prompt Scan Error',
+
+    triggers: [{ event: 'security/prompt.scan-error' }],
   },
-  { event: 'security/prompt.scan-error' },
   async ({ event, step }) => {
-    const { data } = event as ScanErrorEvent;
+    const { data } = event as unknown as ScanErrorEvent;
 
     await step.run('log-error', async () => {
       console.error('[PromptSecurity] Scan error:', {

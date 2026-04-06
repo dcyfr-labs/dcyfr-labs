@@ -50,9 +50,10 @@ interface PostWithDevSlug {
 export const syncDevToMetrics = inngest.createFunction(
   {
     id: 'sync-dev-to-metrics',
-    retries: 2, // Retry on transient API failures
-  },
-  { cron: '0 */6 * * *' }, // Every 6 hours
+    retries: 2, // Retry on transient API failures,
+
+    triggers: [{ cron: '0 */6 * * *' }],
+  }, // Every 6 hours
   async ({ step }) => {
     // Step 1: Get all posts with DEV articles
     const posts = await step.run('fetch-posts-with-dev-slugs', async () => {
@@ -204,8 +205,9 @@ export const manualDevToSync = inngest.createFunction(
   {
     id: 'manual-dev-to-sync',
     retries: 1,
+
+    triggers: [{ event: 'social/dev-to.sync' }],
   },
-  { event: 'social/dev-to.sync' },
   async ({ event, step }) => {
     const { postId, force } = event.data;
 
@@ -274,8 +276,9 @@ export const aggregateReferrals = inngest.createFunction(
   {
     id: 'aggregate-referral-data',
     retries: 2,
-  },
-  { cron: '0 2 * * *' }, // Daily at 2:00 AM UTC
+
+    triggers: [{ cron: '0 2 * * *' }],
+  }, // Daily at 2:00 AM UTC
   async ({ step }) => {
     // Step 1: Get all referral counters from Redis
     const counters = await step.run('fetch-referral-counters', async () => {

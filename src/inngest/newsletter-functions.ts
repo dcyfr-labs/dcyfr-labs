@@ -21,8 +21,9 @@ export const newsletterSubscribeSubmitted = inngest.createFunction(
   {
     id: 'newsletter-subscribe-submitted',
     retries: 3,
+
+    triggers: [{ event: 'newsletter/subscribe.submitted' }],
   },
-  { event: 'newsletter/subscribe.submitted' },
   async ({ event, step }) => {
     const { email, subscribedAt } = event.data;
 

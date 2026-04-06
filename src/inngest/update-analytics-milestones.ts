@@ -1,5 +1,5 @@
-import { inngest } from "./client";
-import { updateAllAnalyticsMilestones } from "@/lib/analytics-integration";
+import { inngest } from './client';
+import { updateAllAnalyticsMilestones } from '@/lib/analytics-integration';
 
 /**
  * Inngest Function: Update Analytics Milestones
@@ -29,39 +29,39 @@ import { updateAllAnalyticsMilestones } from "@/lib/analytics-integration";
 
 export const updateAnalyticsMilestones = inngest.createFunction(
   {
-    id: "update-analytics-milestones",
-    name: "Update Analytics Milestones",
+    id: 'update-analytics-milestones',
+    name: 'Update Analytics Milestones',
     retries: 2,
+    triggers: [
+      // Scheduled trigger: Daily at 2 AM UTC
+      { cron: '0 2 * * *' },
+      // Manual trigger via API
+      { event: 'analytics/milestones.update' },
+    ],
   },
-  [
-    // Scheduled trigger: Daily at 2 AM UTC
-    { cron: "0 2 * * *" },
-    // Manual trigger via API
-    { event: "analytics/milestones.update" },
-  ],
   async ({ event, step }) => {
-    const triggeredBy = event.data?.triggered_by || "cron_schedule";
+    const triggeredBy = (event.data as Record<string, unknown>)?.triggered_by || 'cron_schedule';
 
     // Log start
-    await step.run("log-start", async () => {
+    await step.run('log-start', async () => {
       console.warn(`📊 Analytics update started (triggered by: ${triggeredBy})`);
       return { triggered_by: triggeredBy, started_at: new Date().toISOString() };
     });
 
     // Update all analytics sources
-    const result = await step.run("update-analytics", async () => {
+    const result = await step.run('update-analytics', async () => {
       return await updateAllAnalyticsMilestones();
     });
 
     // Log completion
-    await step.run("log-completion", async () => {
+    await step.run('log-completion', async () => {
       if (result.success) {
-        console.warn(`✅ Analytics update complete: ${result.updated.join(", ")}`);
+        console.warn(`✅ Analytics update complete: ${result.updated.join(', ')}`);
       } else {
         console.warn(
           `⚠️  Analytics update completed with errors:`,
-          `Updated: [${result.updated.join(", ")}]`,
-          `Failed: [${result.failed.join(", ")}]`
+          `Updated: [${result.updated.join(', ')}]`,
+          `Failed: [${result.failed.join(', ')}]`
         );
       }
 

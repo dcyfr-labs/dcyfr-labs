@@ -41,9 +41,10 @@ import { populateCredlyCache } from '@/lib/credly-cache';
 export const refreshCredlyCache = inngest.createFunction(
   {
     id: 'refresh-credly-cache',
-    retries: 3, // More retries for external API dependency
-  },
-  { cron: '0 6 * * *' }, // Daily at 6:00 AM UTC
+    retries: 3, // More retries for external API dependency,
+
+    triggers: [{ cron: '0 6 * * *' }],
+  }, // Daily at 6:00 AM UTC
   async ({ step }) => {
     // Step 1: Refresh primary user badge cache
     await step.run('refresh-dcyfr-badges', async () => {
@@ -133,8 +134,9 @@ export const clearCredlyCache = inngest.createFunction(
   {
     id: 'clear-credly-cache',
     retries: 1,
+
+    triggers: [{ event: 'credly/cache.clear' }],
   },
-  { event: 'credly/cache.clear' },
   async ({ event, step }) => {
     const { reason = 'manual', requestedBy = 'system' } = event.data;
 

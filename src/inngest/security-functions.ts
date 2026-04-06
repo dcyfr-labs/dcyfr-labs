@@ -89,9 +89,9 @@ export const securityAdvisoryMonitor = inngest.createFunction(
   {
     id: 'security-advisory-monitor',
     retries: 3,
+
+    triggers: [{ cron: '0 0,8,16 * * *' }],
   },
-  // Run 3x daily (every 8 hours: 00:00, 08:00, 16:00 UTC) - supplements GitHub Actions workflow
-  { cron: '0 0,8,16 * * *' },
   async ({ step }) => {
     // Step 1: Fetch advisories from GHSA
     const advisories = (await step.run('fetch-ghsa-advisories', async () => {
@@ -416,8 +416,9 @@ export const securityAdvisoryHandler = inngest.createFunction(
   {
     id: 'security-advisory-handler',
     retries: 2,
+
+    triggers: [{ event: 'security/advisory.detected' }],
   },
-  { event: 'security/advisory.detected' },
   async ({ event, step }) => {
     const { advisories, source } = event.data;
 
@@ -477,12 +478,9 @@ export const dailySecurityTest = inngest.createFunction(
         if: "async.data.reason == 'schedule_ended'",
       },
     ],
+
+    triggers: [{ cron: '0 1 * * *' }],
   },
-  // Run daily at 6:00 PM Mountain Time
-  // MST (winter): 6 PM MST = 1 AM UTC next day (UTC-7)
-  // MDT (summer): 6 PM MDT = 12 AM UTC next day (UTC-6)
-  // Currently in MST, so 1 AM UTC
-  { cron: '0 1 * * *' },
   async ({ step }) => {
     const now = new Date();
     const endDate = new Date('2025-12-20T23:59:59Z');

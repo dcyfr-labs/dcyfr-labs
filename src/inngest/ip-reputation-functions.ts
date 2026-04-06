@@ -57,8 +57,9 @@ export const scheduleIpReputationCheck = inngest.createFunction(
   {
     id: 'schedule-ip-reputation-check',
     name: 'Schedule IP Reputation Check',
-  },
-  { cron: '0 0,4,8,12,16,20 * * *' }, // Every 4 hours (0, 4, 8, 12, 16, 20 UTC)
+
+    triggers: [{ cron: '0 0,4,8,12,16,20 * * *' }],
+  }, // Every 4 hours (0, 4, 8, 12, 16, 20 UTC)
   async ({ step, logger }) => {
     logger.info('Starting scheduled IP reputation check');
 
@@ -83,8 +84,9 @@ export const checkIpReputation = inngest.createFunction(
     id: 'check-ip-reputation',
     name: 'Check IP Reputation',
     retries: 2,
+
+    triggers: [{ event: 'security/ip-reputation.check-triggered' }],
   },
-  { event: 'security/ip-reputation.check-triggered' },
   async ({ event, step, logger }) => {
     const { trigger_source, ip_list, check_config } = event.data;
     const config = { ...DEFAULT_CONFIG, ...check_config };
@@ -214,8 +216,9 @@ export const handleMaliciousIpDetected = inngest.createFunction(
   {
     id: 'handle-malicious-ip-detected',
     name: 'Handle Malicious IP Detection',
+
+    triggers: [{ event: 'security/malicious-ip.detected' }],
   },
-  { event: 'security/malicious-ip.detected' },
   async ({ event, step, logger }) => {
     const { ip, reputation, request_count_24h, auto_blocked } = event.data;
 

@@ -5,18 +5,14 @@
  * when they're published. Adapt this pattern to your specific workflow.
  */
 
-import { inngest } from "@/inngest/client";
-import { SITE_URL } from "@/lib/site-config";
+import { inngest } from '@/inngest/client';
+import { SITE_URL } from '@/lib/site-config';
 
 /**
  * Example 1: Manual Publishing Flow
  * Use this when you manually publish blog posts
  */
-export async function publishBlogPost(post: {
-  slug: string;
-  title: string;
-  published: boolean;
-}) {
+export async function publishBlogPost(post: { slug: string; title: string; published: boolean }) {
   // 1. Publish the post (your existing logic)
   // ... save to database, update files, etc. ...
 
@@ -26,7 +22,7 @@ export async function publishBlogPost(post: {
 
     try {
       await inngest.send({
-        name: "google/url.submit",
+        name: 'google/url.submit',
         data: { url },
       });
 
@@ -53,7 +49,7 @@ export async function unpublishBlogPost(slug: string) {
 
   try {
     await inngest.send({
-      name: "google/url.delete",
+      name: 'google/url.delete',
       data: { url },
     });
 
@@ -76,10 +72,10 @@ export async function updateBlogPost(slug: string) {
 
   try {
     await inngest.send({
-      name: "google/url.submit",
+      name: 'google/url.submit',
       data: {
         url,
-        type: "URL_UPDATED", // Explicitly mark as update
+        type: 'URL_UPDATED', // Explicitly mark as update
       },
     });
 
@@ -102,7 +98,7 @@ export async function batchPublishPosts(posts: Array<{ slug: string }>) {
 
   try {
     await inngest.send({
-      name: "google/urls.batch-submit",
+      name: 'google/urls.batch-submit',
       data: { urls },
     });
 
@@ -116,7 +112,7 @@ export async function batchPublishPosts(posts: Array<{ slug: string }>) {
  * Example 5: API Route Integration
  * If you have an API route for publishing posts
  */
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
@@ -127,32 +123,32 @@ export async function POST(request: NextRequest) {
 
     // Handle different actions
     switch (action) {
-      case "publish":
+      case 'publish':
         // Publish the post...
         await inngest.send({
-          name: "google/url.submit",
+          name: 'google/url.submit',
           data: { url },
         });
         break;
 
-      case "unpublish":
+      case 'unpublish':
         // Unpublish the post...
         await inngest.send({
-          name: "google/url.delete",
+          name: 'google/url.delete',
           data: { url },
         });
         break;
 
-      case "update":
+      case 'update':
         // Update the post...
         await inngest.send({
-          name: "google/url.submit",
-          data: { url, type: "URL_UPDATED" },
+          name: 'google/url.submit',
+          data: { url, type: 'URL_UPDATED' },
         });
         break;
 
       default:
-        return NextResponse.json({ error: "Invalid action" }, { status: 400 });
+        return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
     }
 
     return NextResponse.json({
@@ -160,11 +156,8 @@ export async function POST(request: NextRequest) {
       message: `Post ${action}ed and submitted to Google`,
     });
   } catch (error) {
-    console.error("Error in publish API:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error('Error in publish API:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -173,21 +166,16 @@ export async function POST(request: NextRequest) {
  * Create an Inngest function to periodically re-submit important posts
  */
 export const reindexImportantPosts = inngest.createFunction(
-  { id: "reindex-important-posts" },
-  { cron: "0 0 * * 0" }, // Weekly on Sunday at midnight
+  { id: 'reindex-important-posts', triggers: [{ cron: '0 0 * * 0' }] }, // Weekly on Sunday at midnight
   async ({ step }) => {
     // Get list of important posts (e.g., most viewed, recent, etc.)
-    const importantSlugs = [
-      "essential-guide",
-      "getting-started",
-      "latest-release",
-    ];
+    const importantSlugs = ['essential-guide', 'getting-started', 'latest-release'];
 
     const urls = importantSlugs.map((slug) => `${SITE_URL}/blog/${slug}`);
 
-    await step.run("reindex-posts", async () => {
+    await step.run('reindex-posts', async () => {
       await inngest.send({
-        name: "google/urls.batch-submit",
+        name: 'google/urls.batch-submit',
         data: { urls },
       });
     });
@@ -203,16 +191,16 @@ export const reindexImportantPosts = inngest.createFunction(
  * Example 7: Integration with Content Management
  * Trigger indexing when MDX files are modified
  */
-import { watch } from "fs";
+import { watch } from 'fs';
 
 export function watchBlogContent(contentDir: string) {
   watch(contentDir, { recursive: true }, async (_eventType, filename) => {
-    if (!filename?.endsWith(".mdx")) return;
+    if (!filename?.endsWith('.mdx')) return;
 
     // Extract slug from filename
     const slug = filename
-      .replace(/\.mdx$/, "")
-      .split("/")
+      .replace(/\.mdx$/, '')
+      .split('/')
       .pop();
     if (!slug) return;
 
@@ -223,7 +211,7 @@ export function watchBlogContent(contentDir: string) {
     // Submit to Google (with debouncing in production)
     try {
       await inngest.send({
-        name: "google/url.submit",
+        name: 'google/url.submit',
         data: { url },
       });
 

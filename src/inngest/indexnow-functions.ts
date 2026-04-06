@@ -113,9 +113,10 @@ interface IndexNowApiResponse {
 export const processIndexNowSubmission = inngest.createFunction(
   {
     id: 'process-indexnow-submission',
-    retries: 3, // Retry on transient failures
+    retries: 3, // Retry on transient failures,
+
+    triggers: [{ event: INDEXNOW_EVENTS.submissionRequested }],
   },
-  { event: INDEXNOW_EVENTS.submissionRequested },
   async ({ event, step }) => {
     const submissionData = event.data as IndexNowSubmissionRequestedEventData;
     const { urls, key, keyLocation, requestId } = submissionData;
@@ -278,8 +279,9 @@ export const verifyIndexNowKeyFile = inngest.createFunction(
   {
     id: 'verify-indexnow-key-file',
     retries: 2,
-  },
-  { cron: '0 */12 * * *' }, // Every 12 hours
+
+    triggers: [{ cron: '0 */12 * * *' }],
+  }, // Every 12 hours
   async ({ step }) => {
     const apiKey = process.env.INDEXNOW_API_KEY;
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;

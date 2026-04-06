@@ -67,8 +67,9 @@ export const validateDesignTokens = inngest.createFunction(
     id: 'validate-design-tokens',
     name: 'Validate Design Token Compliance',
     retries: 2,
+
+    triggers: [{ event: 'github/design-tokens.validate' }],
   },
-  { event: 'github/design-tokens.validate' },
   async ({ event, step }) => {
     const { branch, changedFiles } = event.data;
 

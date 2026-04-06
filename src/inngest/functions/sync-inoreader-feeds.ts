@@ -18,8 +18,9 @@ export const syncInoreaderFeeds = inngest.createFunction(
     id: 'sync-inoreader-feeds',
     name: 'Sync Inoreader Feeds',
     retries: 3,
-  },
-  { cron: '0 */6 * * *' }, // Every 6 hours
+
+    triggers: [{ cron: '0 */6 * * *' }],
+  }, // Every 6 hours
   async ({ step, logger }) => {
     // Step 1: Validate environment and dependencies
     await step.run('validate-config', async () => {

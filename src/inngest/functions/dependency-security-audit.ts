@@ -79,8 +79,9 @@ export const auditDependencies = inngest.createFunction(
     id: 'audit-dependencies',
     name: 'Security Dependency Audit',
     retries: 2,
+
+    triggers: [{ event: 'github/dependencies.audit' }],
   },
-  { event: 'github/dependencies.audit' },
   async ({ event, step }) => {
     const { branch, changedFiles } = event.data;
 

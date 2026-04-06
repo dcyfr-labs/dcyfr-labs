@@ -45,8 +45,9 @@ export const monitorApiCosts = inngest.createFunction(
     id: 'monitor-api-costs',
     name: 'Monitor API Costs',
     retries: 3,
-  },
-  { cron: '0 9 * * *' }, // Daily at 9am UTC
+
+    triggers: [{ cron: '0 9 * * *' }],
+  }, // Daily at 9am UTC
   async ({ step }) => {
     // Get current month's cost data
     const monthlyCost = await step.run('calculate-monthly-cost', async () => {
@@ -208,8 +209,9 @@ export const monthlyApiCostReport = inngest.createFunction(
     id: 'monthly-api-cost-report',
     name: 'Monthly API Cost Report',
     retries: 2,
-  },
-  { cron: '0 10 1 * *' }, // 1st of month at 10am UTC
+
+    triggers: [{ cron: '0 10 1 * *' }],
+  }, // 1st of month at 10am UTC
   async ({ step }) => {
     // Get previous month's data
     const previousMonth = await step.run('get-previous-month', async () => {
