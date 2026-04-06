@@ -85,7 +85,9 @@ e2e/**-spec.ts-snapshots/**
 # Private directories (at any level)
 # Note: Use .private/ for new directories (dot-prefix convention)
 **/.private/
+**/.private/**
 **/private/
+**/private/**
 .private/
 private/
 !/src/app/private/

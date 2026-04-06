@@ -4,7 +4,7 @@ import type { IndexNowSubmissionRequestedEventData } from '@/lib/indexnow/events
 // Capture the handler that gets passed to createFunction
 vi.mock('@/inngest/client', () => ({
   inngest: {
-    createFunction: (_config: unknown, _event: unknown, handler: unknown) => ({
+    createFunction: (_config: unknown, handler: unknown) => ({
       _handler: handler,
     }),
   },
