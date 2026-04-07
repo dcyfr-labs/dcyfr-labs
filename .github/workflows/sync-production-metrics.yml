@@ -38,9 +38,9 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          UPSTASH_REDIS_REST_URL: op://Production/Upstash Redis/url  # TODO: Add 'url' field to Production/Upstash Redis
+          UPSTASH_REDIS_REST_URL: op://Production/Upstash Redis/url
           UPSTASH_REDIS_REST_TOKEN: op://Production/Upstash Redis/rest_token
-          UPSTASH_REDIS_REST_URL_PREVIEW: op://Production/Upstash Redis/url_preview  # TODO: Add 'url_preview' field to Production/Upstash Redis
+          UPSTASH_REDIS_REST_URL_PREVIEW: op://Production/Upstash Redis/url_preview
           UPSTASH_REDIS_REST_TOKEN_PREVIEW: op://Production/Upstash Redis/rest_token_preview
 
 

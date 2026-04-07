@@ -35,7 +35,7 @@ jobs:
     env:
       DEPLOYMENT_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.deployment_url || github.event.deployment_status.environment_url }}
       DEPLOYMENT_ID: ${{ github.event_name == 'workflow_dispatch' && inputs.deployment_id || github.event.deployment.id }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -56,7 +56,7 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          LHCI_GITHUB_APP_TOKEN: op://CI-CD/dcyfr-labs-lhci-github-app-token/credential  # TODO: Create this item in 1Password or remove LHCI integration
+          LHCI_GITHUB_APP_TOKEN: op://CI-CD/dcyfr-labs-lhci-github-app-token/credential  # Optional: gracefully handled if missing
 
       - name: Warn when LHCI token is unavailable
         if: steps.load-lhci-token.outcome == 'failure'
@@ -64,20 +64,20 @@ jobs:
           echo "⚠️ LHCI_GITHUB_APP_TOKEN unavailable in 1Password; continuing without GitHub App token"
           echo "Lighthouse checks will still run, but GitHub App posting may be limited."
 
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci --prefer-offline
-      
+
       # ============================================
       # BUNDLE SIZE CHECK
       # ============================================
-      
+
       - name: Create Bundle Size Check
         id: create-bundle-check
         run: |
@@ -91,11 +91,11 @@ jobs:
               "blocking": true,
               "detailsUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }')
-          
+
           CHECK_ID=$(echo $RESPONSE | jq -r '.id')
           echo "check_id=$CHECK_ID" >> $GITHUB_OUTPUT
           echo "✅ Created bundle size check: $CHECK_ID"
-      
+
       - name: Update Bundle Check to Running
         if: steps.create-bundle-check.outputs.check_id
         run: |
@@ -110,13 +110,13 @@ jobs:
                 "text": "Running bundle size analysis against performance baselines"
               }
             }'
-      
+
       - name: Build Production Bundle
         id: build
         run: |
           echo "🔨 Building production bundle..."
           npm run build
-      
+
       - name: Run Bundle Size Check
         id: bundle-check
         continue-on-error: true
@@ -124,10 +124,10 @@ jobs:
           echo "📦 Checking bundle sizes..."
           OUTPUT=$(node scripts/performance/check-bundle-size.mjs 2>&1)
           EXIT_CODE=$?
-          
+
           # Save output for reporting
           echo "$OUTPUT" > bundle-check-output.txt
-          
+
           # Determine conclusion
           if [ $EXIT_CODE -eq 0 ]; then
             if echo "$OUTPUT" | grep -q "PASSED with warnings"; then
@@ -141,14 +141,14 @@ jobs:
             echo "conclusion=failed" >> $GITHUB_OUTPUT
             echo "summary=Bundle size check failed - exceeds error thresholds" >> $GITHUB_OUTPUT
           fi
-          
+
           exit $EXIT_CODE
-      
+
       - name: Update Bundle Check with Results
         if: always() && steps.create-bundle-check.outputs.check_id
         run: |
           OUTPUT=$(cat bundle-check-output.txt | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}')
-          
+
           curl -s -X PATCH \
             "https://api.vercel.com/v1/deployments/${{ env.DEPLOYMENT_ID }}/checks/${{ steps.create-bundle-check.outputs.check_id }}" \
             -H "Authorization: Bearer $VERCEL_TOKEN" \
@@ -161,11 +161,11 @@ jobs:
                 \"text\": \"$OUTPUT\"
               }
             }"
-      
+
       # ============================================
       # LIGHTHOUSE PERFORMANCE CHECK
       # ============================================
-      
+
       - name: Create Lighthouse Check
         id: create-lighthouse-check
         run: |
@@ -179,11 +179,11 @@ jobs:
               "blocking": true,
               "detailsUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }')
-          
+
           CHECK_ID=$(echo $RESPONSE | jq -r '.id')
           echo "check_id=$CHECK_ID" >> $GITHUB_OUTPUT
           echo "✅ Created Lighthouse check: $CHECK_ID"
-      
+
       - name: Update Lighthouse Check to Running
         if: steps.create-lighthouse-check.outputs.check_id
         run: |
@@ -198,10 +198,10 @@ jobs:
                 "text": "Auditing deployment: ${{ env.DEPLOYMENT_URL }}"
               }
             }'
-      
+
       - name: Install Lighthouse CI
         run: npm install -g @lhci/cli@0.14.x
-      
+
       - name: Run Lighthouse CI
         id: lighthouse
         continue-on-error: true
@@ -211,14 +211,14 @@ jobs:
           VERCEL_AUTOMATION_BYPASS_SECRET: $VERCEL_AUTOMATION_BYPASS_SECRET
         run: |
           echo "🔦 Running Lighthouse audits..."
-          
+
           # Build URLs with bypass secret for password-protected deployments
           BASE_URL="$DEPLOYMENT_URL"
           if [ -n "$VERCEL_AUTOMATION_BYPASS_SECRET" ]; then
             echo "✅ Using Vercel automation bypass secret for protected deployment"
             BASE_URL="${DEPLOYMENT_URL}?x-vercel-protection-bypass=${VERCEL_AUTOMATION_BYPASS_SECRET}"
           fi
-          
+
           # Create temporary lighthouse config for deployment URL
           cat > lighthouserc-deployment.json << EOF
           {
@@ -245,11 +245,11 @@ jobs:
             }
           }
           EOF
-          
+
           # Run Lighthouse
           lhci autorun --config=lighthouserc-deployment.json > lighthouse-output.txt 2>&1
           EXIT_CODE=$?
-          
+
           # Extract scores
           if [ $EXIT_CODE -eq 0 ]; then
             echo "conclusion=succeeded" >> $GITHUB_OUTPUT
@@ -263,14 +263,14 @@ jobs:
               echo "summary=Lighthouse audits failed - performance below thresholds" >> $GITHUB_OUTPUT
             fi
           fi
-          
+
           exit $EXIT_CODE
-      
+
       - name: Update Lighthouse Check with Results
         if: always() && steps.create-lighthouse-check.outputs.check_id
         run: |
           OUTPUT=$(cat lighthouse-output.txt | tail -n 50 | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}')
-          
+
           curl -s -X PATCH \
             "https://api.vercel.com/v1/deployments/${{ env.DEPLOYMENT_ID }}/checks/${{ steps.create-lighthouse-check.outputs.check_id }}" \
             -H "Authorization: Bearer $VERCEL_TOKEN" \
@@ -283,11 +283,11 @@ jobs:
                 \"text\": \"$OUTPUT\"
               }
             }"
-      
+
       # ============================================
       # BASELINE REGRESSION CHECK
       # ============================================
-      
+
       - name: Create Baseline Regression Check
         id: create-baseline-check
         run: |
@@ -301,17 +301,17 @@ jobs:
               "blocking": true,
               "detailsUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }')
-          
+
           CHECK_ID=$(echo $RESPONSE | jq -r '.id')
           echo "check_id=$CHECK_ID" >> $GITHUB_OUTPUT
           echo "✅ Created baseline check: $CHECK_ID"
-      
+
       - name: Validate Against Baselines
         id: baseline-check
         continue-on-error: true
         run: |
           echo "📊 Validating against performance baselines..."
-          
+
           # Check if baselines are established
           if ! jq -e '.baselines.bundles.firstLoadJS.value != null' performance-baselines.json > /dev/null; then
             echo "conclusion=neutral" >> $GITHUB_OUTPUT
@@ -319,11 +319,11 @@ jobs:
             echo "ℹ️  No baselines established yet. This will be set after first production deployment."
             exit 0
           fi
-          
+
           # Bundle check already ran - use those results
           BUNDLE_CONCLUSION="${{ steps.bundle-check.outputs.conclusion }}"
           LIGHTHOUSE_CONCLUSION="${{ steps.lighthouse.outputs.conclusion }}"
-          
+
           # Determine overall conclusion
           if [[ "$BUNDLE_CONCLUSION" == "failed" ]] || [[ "$LIGHTHOUSE_CONCLUSION" == "failed" ]]; then
             echo "conclusion=failed" >> $GITHUB_OUTPUT
@@ -338,7 +338,7 @@ jobs:
             echo "summary=No performance regressions detected" >> $GITHUB_OUTPUT
             exit 0
           fi
-      
+
       - name: Update Baseline Check with Results
         if: always() && steps.create-baseline-check.outputs.check_id
         run: |
@@ -346,23 +346,23 @@ jobs:
           cat > baseline-report.txt << EOF
           Performance Baseline Validation Report
           ========================================
-          
+
           Configured Thresholds:
           - Bundle Size: <10% = pass, 10-25% = warning, >25% = error
           - Lighthouse: <5 points = pass, 5-10 = warning, >10 = error
           - Web Vitals: <15% = pass, 15-30% = warning, >30% = error
-          
+
           Results:
           - Bundle Size Check: ${{ steps.bundle-check.outputs.conclusion }}
           - Lighthouse Check: ${{ steps.lighthouse.outputs.conclusion }}
-          
+
           Overall Conclusion: ${{ steps.baseline-check.outputs.conclusion }}
-          
+
           View detailed results in the individual check outputs above.
           EOF
-          
+
           OUTPUT=$(cat baseline-report.txt | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}')
-          
+
           curl -s -X PATCH \
             "https://api.vercel.com/v1/deployments/${{ env.DEPLOYMENT_ID }}/checks/${{ steps.create-baseline-check.outputs.check_id }}" \
             -H "Authorization: Bearer $VERCEL_TOKEN" \
@@ -375,11 +375,11 @@ jobs:
                 \"text\": \"$OUTPUT\"
               }
             }"
-      
+
       # ============================================
       # FINAL STATUS
       # ============================================
-      
+
       - name: Report Final Status
         if: always()
         run: |
@@ -393,7 +393,7 @@ jobs:
           echo ""
           echo "Deployment: ${{ env.DEPLOYMENT_URL }}"
           echo "View checks: https://vercel.com/${{ github.repository_owner }}/deployments/${{ env.DEPLOYMENT_ID }}"
-      
+
       - name: Fail if Critical Checks Failed
         if: |
           steps.bundle-check.outputs.conclusion == 'failed' ||

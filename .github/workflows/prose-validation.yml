@@ -132,6 +132,6 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          LANGUAGETOOL_API_KEY: op://CI-CD/dcyfr-labs-languagetool-api-key/credential  # TODO: Create this item in 1Password
-          LANGUAGETOOL_USERNAME: op://CI-CD/dcyfr-labs-languagetool-username/credential  # TODO: Create this item in 1Password
+          LANGUAGETOOL_API_KEY: op://CI-CD/dcyfr-labs-languagetool-api-key/credential
+          LANGUAGETOOL_USERNAME: op://CI-CD/dcyfr-labs-languagetool-username/credential
 
