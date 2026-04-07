@@ -301,7 +301,7 @@
     "html2canvas": "^1.4.1",
     "inngest": "^4.1.0",
     "js-yaml": "^4.1.0",
-    "katex": "^0.16.44",
+    "katex": "^0.16.45",
     "lucide-react": "^1.7.0",
     "minisearch": "^7.2.0",
     "next": "^16.2.2",
