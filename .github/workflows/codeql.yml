@@ -15,12 +15,6 @@ on:
       - '.github/workflows/codeql.yml'
   pull_request:
     branches: ["main"]
-    paths:
-      - '**.ts'
-      - '**.tsx'
-      - '**.js'
-      - '**.jsx'
-      - 'package*.json'
   schedule:
     # Run daily at 06:00 UTC
     - cron: '0 6 * * *'
