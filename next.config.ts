@@ -1,7 +1,6 @@
 import { withSentryConfig } from '@sentry/nextjs';
 import type { NextConfig } from 'next';
 import bundleAnalyzer from '@next/bundle-analyzer';
-// import { withBotId } from "botid/next/config"; // Temporarily disabled
 import { cpus } from 'os';
 
 const withBundleAnalyzer = bundleAnalyzer({

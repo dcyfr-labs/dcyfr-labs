@@ -36,13 +36,6 @@ export function initializeDevTools() {
     devLogger.info('✓ Hang detection enabled (10s interval)');
   }
 
-  // TODO: Redis monitoring deprecated with Upstash migration
-  // Setup Redis monitoring (check every 30 seconds)
-  // redisMonitorInterval = setupRedisMonitoring(30000);
-  // if (redisMonitorInterval) {
-  //   devLogger.info('✓ Redis connection monitoring enabled (30s interval)');
-  // }
-
   // Setup process event handlers
   setupProcessHandlers();
 

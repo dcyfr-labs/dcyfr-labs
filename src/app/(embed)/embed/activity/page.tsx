@@ -52,32 +52,11 @@ export default async function ActivityEmbedPage({
 }) {
   const params = await searchParams;
 
-  // Fetch activities (cache-first strategy)
   let allActivities: ActivityItem[] = [];
   let error: string | null = null;
 
   try {
-    // STEP 1: Try cache first (TEMPORARILY DISABLED FOR DEBUG - committed activity removal)
-    // const redis = await getRedisClient();
-    const cachedActivities: ActivityItem[] = []; // Always empty - cache disabled
-
-    // if (redis) {
-    //   try {
-    //     const cached = await redis.get("activity:feed:all");
-    //     if (cached) {
-    //       cachedActivities = JSON.parse(cached);
-    //       allActivities = cachedActivities;
-    //     }
-    //   } catch (cacheError) {
-    //     console.error("[Activity Embed] Cache read failed:", cacheError);
-    //   } finally {
-    //     await redis.disconnect();
-    //   }
-    // }
-
-    // STEP 2: If no cache, fetch from sources
-    if (cachedActivities.length === 0) {
-      const [
+    const [
         postsWithViews,
         milestones,
         highEngagement,
@@ -128,7 +107,6 @@ export default async function ActivityEmbedPage({
       } catch (writeError) {
         console.error("[Activity Embed] Cache write failed:", writeError);
       }
-    }
   } catch (err) {
     console.error("[Activity Embed] Failed to load activities:", err);
     error = err instanceof Error ? err.message : "Unknown error";

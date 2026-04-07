@@ -284,36 +284,13 @@ async function syncContactInResend(
 }
 
 /**
- * Handle validated contact submission: BotID check, rate limiting, honeypot,
+ * Handle validated contact submission: rate limiting, honeypot,
  * data validation, security scan, and Inngest queue dispatch.
  */
 async function handleContactSubmission(
   request: NextRequest,
   body: ContactFormData
 ): Promise<ReturnType<typeof NextResponse.json> | Response> {
-  // BotID check — TEMPORARILY DISABLED (causing 403 errors on initial setup).
-  // To re-enable: 1) Go to Vercel Dashboard → Settings → Security → Enable Bot Protection
-  //               2) Set ENABLE_BOTID=1 in Vercel environment variables
-  //               3) Uncomment the import at top and the checkBotId() call below
-  //               4) Change `false` below back to the env var check
-  const shouldUseBotId = false; // process.env.NODE_ENV === 'production' && process.env.ENABLE_BOTID === '1';
-
-  if (shouldUseBotId) {
-    try {
-      // TEMPORARILY DISABLED: checkBotId import is commented out to prevent 403 errors
-      // const verification = await checkBotId();
-      // if (verification.isBot && !verification.isVerifiedBot && !verification.bypassed) {
-      //   console.warn("[Contact API] Bot detected by BotID - blocking request");
-      //   return NextResponse.json({ error: "Access denied" }, { status: 403 });
-      // }
-    } catch (botIdError) {
-      console.warn(
-        '[Contact API] BotID check failed, using fallback protection (rate limit + honeypot):',
-        botIdError instanceof Error ? botIdError.message : String(botIdError)
-      );
-    }
-  }
-
   // Apply rate limiting
   const clientIp = getClientIp(request);
   const rateLimitResult = await rateLimit(clientIp, RATE_LIMIT_CONFIG);
