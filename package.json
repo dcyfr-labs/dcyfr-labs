@@ -292,7 +292,7 @@
     "dompurify": "^3.3.3",
     "dotenv": "^17.2.3",
     "framer-motion": "^12.38.0",
-    "fuse.js": "^7.1.0",
+    "fuse.js": "^7.3.0",
     "geist": "^1.7.0",
     "glob": "^13.0.4",
     "googleapis": "^171.4.0",
