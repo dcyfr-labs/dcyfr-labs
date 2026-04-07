@@ -290,7 +290,7 @@
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
     "dompurify": "^3.3.3",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.4.1",
     "framer-motion": "^12.38.0",
     "fuse.js": "^7.1.0",
     "geist": "^1.7.0",
