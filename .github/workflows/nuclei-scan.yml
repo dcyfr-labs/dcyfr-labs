@@ -142,18 +142,25 @@ jobs:
           echo "✅ Nuclei installed successfully"
           nuclei -version
 
-      - name: Initialize git submodules
+      - name: Download community templates
         run: |
-          # Initialize nuclei-templates submodule (v9.9.4 pinned)
-          echo "🔄 Initializing nuclei-templates submodule..."
-          git submodule update --init --recursive .github/nuclei/templates/community
+          # Download latest nuclei community templates (replaces broken submodule)
+          echo "📥 Downloading nuclei community templates..."
+          nuclei -update-templates
 
-          # Verify templates loaded
+          # Symlink into expected path so -templates .github/nuclei/templates/ picks them up
+          NUCLEI_HOME="${HOME}/nuclei-templates"
+          if [ -d "$NUCLEI_HOME" ]; then
+            ln -sf "$NUCLEI_HOME" .github/nuclei/templates/community
+          else
+            echo "⚠️  Community templates not found at $NUCLEI_HOME — scan will use custom templates only"
+          fi
+
           COMMUNITY_COUNT=$(find .github/nuclei/templates/community -name "*.yaml" 2>/dev/null | wc -l)
           CUSTOM_COUNT=$(find .github/nuclei/templates/custom -name "*.yaml" 2>/dev/null | wc -l)
-          echo "📊 Community templates: $COMMUNITY_COUNT"
+          echo "📊 Community templates: ${COMMUNITY_COUNT:-0}"
           echo "📊 Custom dcyfr templates: $CUSTOM_COUNT"
-          echo "📊 Total templates: $((COMMUNITY_COUNT + CUSTOM_COUNT))"
+          echo "📊 Total templates: $((${COMMUNITY_COUNT:-0} + CUSTOM_COUNT))"
 
       - name: Run Nuclei vulnerability scan
         id: scan

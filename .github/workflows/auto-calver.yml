@@ -94,6 +94,8 @@ jobs:
 
       - name: Commit version update
         if: steps.check.outputs.needs_update == 'true'
+        env:
+          HUSKY: '0'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
