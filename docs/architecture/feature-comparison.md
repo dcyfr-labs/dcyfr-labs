@@ -1,3 +1,5 @@
+<!-- TLP:CLEAR -->
+
 # Feature Comparison Diagram
 
 ## Metadata

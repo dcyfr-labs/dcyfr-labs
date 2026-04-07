@@ -1,3 +1,5 @@
+<!-- TLP:CLEAR -->
+
 # Authentication Flow Diagram
 
 ## Metadata

@@ -1,3 +1,5 @@
+<!-- TLP:CLEAR -->
+
 # API Architecture Diagram
 
 ## Metadata
