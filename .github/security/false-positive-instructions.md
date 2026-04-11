@@ -1,6 +1,6 @@
 # DCYFR False-Positive Filtering Instructions
 
-<!-- TLP:AMBER -->
+<!-- TLP:CLEAR -->
 <!-- Referenced by .github/workflows/security-review.yml via false-positive-filtering-instructions -->
 <!-- Plain English instructions telling Claude which findings to suppress or downgrade. -->
 

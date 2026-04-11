@@ -1,6 +1,6 @@
 # DCYFR Custom Security Scan Instructions
 
-<!-- TLP:AMBER -->
+<!-- TLP:CLEAR -->
 <!-- Referenced by .github/workflows/security-review.yml via custom-security-scan-instructions -->
 <!-- Provides stack context and focus areas so analysis is precise rather than generic. -->
 

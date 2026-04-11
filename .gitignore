@@ -92,6 +92,12 @@ e2e/**-spec.ts-snapshots/**
 private/
 !/src/app/private/
 
+# Internal planning and editorial docs (TLP:AMBER)
+# These are internal-only and must never be committed to the public repo.
+# If this file is accidentally tracked, run: git rm --cached <file>
+docs/content/content-calendar.md
+docs/content/editorial-calendar.md
+
 # Archive directories (at any level)
 # Note: Use .archive/ for new directories (dot-prefix convention)
 **/.archive/
