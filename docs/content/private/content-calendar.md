@@ -103,7 +103,7 @@ Planned sessions: @architecture-reviewer (x2), @database-architect (x2), @devops
 
 ## Blocked Items
 
-- **`dcyfr-delegation-health`** service on workbench: FAILING — 1Password item `q53eacrbcwppmjvl7wntjxlizu` deleted/archived in vault `h3s3jppnlhtegkzzh3ghhkrugq`. Credential must be restored in 1Password for the service to recover. This affects any workspace automation that depends on delegated credentials.
+- **`dcyfr-delegation-health`** service on workbench: FAILING — 1Password item `[REDACTED]` deleted/archived in vault `[REDACTED]`. Credential must be restored in 1Password for the service to recover. This affects any workspace automation that depends on delegated credentials.
 
 ---
 
