@@ -86,6 +86,7 @@
     "validate:governance": "node scripts/validate.mjs governance",
     "validate:redis": "node scripts/validate.mjs redis-connectivity",
     "validate:color-contrast": "node scripts/validate.mjs color-contrast",
+    "sitemap:validate": "node scripts/validate-sitemap.mjs",
     "fix:barrels": "node scripts/fix-barrel-exports.mjs",
     "fix:barrels:auto": "node scripts/fix-barrel-exports.mjs --fix",
     "docs:add-tlp-markers": "node scripts/add-tlp-markers.mjs",
