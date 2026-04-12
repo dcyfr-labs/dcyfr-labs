@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-// import { checkBotId } from "botid/server"; // TEMPORARILY DISABLED - causing 403 errors
+import { checkBotId } from 'botid/server';
 // blockExternalAccess NOT imported - contact form is public user-facing endpoint
 import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
 import { RATE_LIMITS } from '@/lib/api/api-guardrails';
@@ -81,10 +81,16 @@ function validateContactData(body: ContactFormData): ValidationResult {
   const { name, email, message, role } = body;
 
   if (!name || !email || !message) {
-    return { ok: false, response: NextResponse.json({ error: 'All fields are required' }, { status: 400 }) };
+    return {
+      ok: false,
+      response: NextResponse.json({ error: 'All fields are required' }, { status: 400 }),
+    };
   }
   if (!validateEmail(email)) {
-    return { ok: false, response: NextResponse.json({ error: 'Invalid email address' }, { status: 400 }) };
+    return {
+      ok: false,
+      response: NextResponse.json({ error: 'Invalid email address' }, { status: 400 }),
+    };
   }
 
   const data = {
@@ -95,19 +101,27 @@ function validateContactData(body: ContactFormData): ValidationResult {
   };
 
   if (data.name.length < 2) {
-    return { ok: false, response: NextResponse.json({ error: 'Name must be at least 2 characters' }, { status: 400 }) };
+    return {
+      ok: false,
+      response: NextResponse.json({ error: 'Name must be at least 2 characters' }, { status: 400 }),
+    };
   }
   if (data.message.length < 10) {
     return {
       ok: false,
-      response: NextResponse.json({ error: 'Message must be at least 10 characters' }, { status: 400 }),
+      response: NextResponse.json(
+        { error: 'Message must be at least 10 characters' },
+        { status: 400 }
+      ),
     };
   }
 
   return { ok: true, data };
 }
 
-type ParseResult = { ok: true; body: ContactFormData } | { ok: false; response: ReturnType<typeof NextResponse.json> };
+type ParseResult =
+  | { ok: true; body: ContactFormData }
+  | { ok: false; response: ReturnType<typeof NextResponse.json> };
 
 /**
  * Parse, size-check, and JSON-decode the request body.
@@ -119,7 +133,10 @@ async function parseRequestBody(request: NextRequest): Promise<ParseResult> {
     return {
       ok: false,
       response: NextResponse.json(
-        { error: 'Request too large', message: `Request size must not exceed ${Math.floor(maxSize / 1024)}KB` },
+        {
+          error: 'Request too large',
+          message: `Request size must not exceed ${Math.floor(maxSize / 1024)}KB`,
+        },
         { status: 413 }
       ),
     };
@@ -131,21 +148,33 @@ async function parseRequestBody(request: NextRequest): Promise<ParseResult> {
       return {
         ok: false,
         response: NextResponse.json(
-          { error: 'Request too large', message: `Request size must not exceed ${Math.floor(maxSize / 1024)}KB` },
+          {
+            error: 'Request too large',
+            message: `Request size must not exceed ${Math.floor(maxSize / 1024)}KB`,
+          },
           { status: 413 }
         ),
       };
     }
     const body = JSON.parse(rawBody);
     if (!body || typeof body !== 'object') {
-      return { ok: false, response: NextResponse.json({ error: 'Request body must be a JSON object' }, { status: 400 }) };
+      return {
+        ok: false,
+        response: NextResponse.json(
+          { error: 'Request body must be a JSON object' },
+          { status: 400 }
+        ),
+      };
     }
     return { ok: true, body: body as ContactFormData };
   } catch (error) {
     return {
       ok: false,
       response: NextResponse.json(
-        { error: 'Invalid JSON in request body', message: error instanceof Error ? error.message : 'Unknown error' },
+        {
+          error: 'Invalid JSON in request body',
+          message: error instanceof Error ? error.message : 'Unknown error',
+        },
         { status: 400 }
       ),
     };
@@ -153,7 +182,9 @@ async function parseRequestBody(request: NextRequest): Promise<ParseResult> {
 }
 
 /** Run prompt security scan; returns a rejection response or null if scan passes/soft-fails */
-async function scanMessageSecurity(message: string): Promise<ReturnType<typeof NextResponse.json> | null> {
+async function scanMessageSecurity(
+  message: string
+): Promise<ReturnType<typeof NextResponse.json> | null> {
   if (isPromptScannerDisabled) {
     return null;
   }
@@ -171,7 +202,10 @@ async function scanMessageSecurity(message: string): Promise<ReturnType<typeof N
         threatCount: scanResult.threats.length,
       });
       return NextResponse.json(
-        { error: 'Message validation failed', message: 'Your message could not be processed. Please review your content and try again.' },
+        {
+          error: 'Message validation failed',
+          message: 'Your message could not be processed. Please review your content and try again.',
+        },
         { status: 400 }
       );
     }
@@ -341,6 +375,14 @@ export async function POST(request: NextRequest) {
   // Security is provided by: rate limiting, honeypot field, input validation,
   // and optionally BotID in production environments (requires ENABLE_BOTID=1).
   // BotID is disabled in non-production environments to prevent false positives.
+
+  // BotID check (enabled only when ENABLE_BOTID=1 env var is set in production)
+  if (process.env.ENABLE_BOTID === '1') {
+    const botCheck = await checkBotId();
+    if (!botCheck.isHuman) {
+      return NextResponse.json({ error: 'Access denied' }, { status: 403 });
+    }
+  }
 
   // Parse and size-check the request body
   const parseResult = await parseRequestBody(request);
