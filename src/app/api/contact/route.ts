@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { checkBotId } from 'botid/server';
+import { checkBotId } from "botid/server";
 // blockExternalAccess NOT imported - contact form is public user-facing endpoint
 import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
 import { RATE_LIMITS } from '@/lib/api/api-guardrails';
