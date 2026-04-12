@@ -36,5 +36,12 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", ".next", "vitest.config.ts", "vitest.scripts.config.ts", "docs"]
+  "exclude": [
+    "node_modules",
+    ".next",
+    "vitest.config.ts",
+    "vitest.scripts.config.ts",
+    "docs",
+    "_deprecated"
+  ]
 }

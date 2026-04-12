@@ -69,7 +69,7 @@ export default defineConfig({
       'tests/**/*.{test,spec}.{ts,tsx}',
       'scripts/__tests__/**/*.{test,spec}.{ts,mjs}',
     ],
-    exclude: ['node_modules', '.next', 'e2e'],
+    exclude: ['node_modules', '.next', 'e2e', '_deprecated'],
     // Silence console output during tests (cleaner output)
     // Set to false if debugging
     silent: false,

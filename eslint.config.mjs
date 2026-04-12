@@ -15,6 +15,7 @@ export default [
       'dist/**',
       'build/**',
       'coverage/**',
+      '_deprecated/**',
     ],
   },
   ...tseslint.configs.recommended,
@@ -44,11 +45,13 @@ export default [
 
       // Relax TypeScript rules for Next.js
       '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unused-vars': ['warn', {
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
-      }],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
     },
   },
 ];
-
