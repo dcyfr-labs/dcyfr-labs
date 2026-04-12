@@ -1,5 +1,5 @@
 import { withSentryConfig } from '@sentry/nextjs';
-import { withBotId } from 'botid/next';
+import { withBotId } from 'botid/next/config';
 import type { NextConfig } from 'next';
 import bundleAnalyzer from '@next/bundle-analyzer';
 import { cpus } from 'os';
