@@ -1,0 +1,231 @@
+# actor: bot
+# Repo budget guardrails — enforces the ceilings declared in the
+# dcyfr-labs-cleanup change. Runs on every PR that touches topline files,
+# workflows, scripts, deps, or docs, and on a weekly cron so nothing
+# silently drifts past the budget between PRs.
+#
+# Gates:
+#   topline-budget   — README ≤200, AGENTS ≤300, CLAUDE ≤150, copilot ≤120
+#   manifest-schema  — .well-known/automation.yaml validates against schema
+#                      + glossary_version matches docs/automation-glossary.md
+#   script-orphan    — package.json scripts declare `# used-by:` provenance
+#   workflow-budget  — .github/workflows/*.yml count ≤ 20 (soft, warn only)
+#   depcheck-gate    — depcheck prod ≤50, dev ≤35 (hard fail above cap)
+#   doc-topic-budget — docs/ has ≤8 canonical topics (warn for now;
+#                      topic consolidation is a follow-up change)
+
+name: repo-budget-guardrails
+
+on:
+  pull_request:
+    paths:
+      - 'README.md'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - '.github/copilot-instructions.md'
+      - '.github/workflows/**'
+      - '.well-known/automation.yaml'
+      - 'schemas/automation-manifest.schema.json'
+      - 'docs/automation-glossary.md'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'scripts/**'
+      - 'docs/**'
+  push:
+    branches: [main]
+  schedule:
+    # Monday 07:00 UTC
+    - cron: '0 7 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: repo-budget-guardrails-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  topline-budget:
+    name: Topline line budgets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify README ≤200 lines
+        run: |
+          lines=$(wc -l < README.md)
+          echo "README.md = $lines lines (budget 200)"
+          if [ "$lines" -gt 200 ]; then
+            echo "::error file=README.md::README.md exceeds 200-line budget ($lines lines)"
+            exit 1
+          fi
+
+      - name: Verify AGENTS ≤300 lines
+        run: |
+          lines=$(wc -l < AGENTS.md)
+          echo "AGENTS.md = $lines lines (budget 300)"
+          if [ "$lines" -gt 300 ]; then
+            echo "::error file=AGENTS.md::AGENTS.md exceeds 300-line budget ($lines lines)"
+            exit 1
+          fi
+
+      - name: Verify CLAUDE ≤150 lines
+        run: |
+          lines=$(wc -l < CLAUDE.md)
+          echo "CLAUDE.md = $lines lines (budget 150)"
+          if [ "$lines" -gt 150 ]; then
+            echo "::error file=CLAUDE.md::CLAUDE.md exceeds 150-line budget ($lines lines)"
+            exit 1
+          fi
+
+      - name: Verify copilot-instructions ≤120 lines
+        run: |
+          lines=$(wc -l < .github/copilot-instructions.md)
+          echo ".github/copilot-instructions.md = $lines lines (budget 120)"
+          if [ "$lines" -gt 120 ]; then
+            echo "::error file=.github/copilot-instructions.md::copilot-instructions.md exceeds 120-line budget ($lines lines)"
+            exit 1
+          fi
+
+      - name: Verify glossary ≤250 lines
+        run: |
+          lines=$(wc -l < docs/automation-glossary.md)
+          echo "docs/automation-glossary.md = $lines lines (budget 250)"
+          if [ "$lines" -gt 250 ]; then
+            echo "::error file=docs/automation-glossary.md::glossary exceeds 250-line budget ($lines lines)"
+            exit 1
+          fi
+
+  manifest-schema:
+    name: Automation manifest schema
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci --prefer-offline --no-audit --no-fund
+      - name: Validate manifest against schema + glossary version cross-check
+        run: node scripts/validate-automation-manifest.mjs
+
+  script-provenance:
+    name: package.json script provenance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Every script declares # used-by: (warn-only for now)
+        run: |
+          # Soft gate: count undocumented scripts and report. Promotes to a
+          # hard fail in a follow-up change once the legacy scripts are
+          # annotated.
+          total=$(node -e "console.log(Object.keys(require('./package.json').scripts||{}).length)")
+          # A script is "documented" if a `# used-by:` comment exists within
+          # 3 lines before its key in package.json. Rough proxy: count the
+          # number of used-by comments, not their alignment.
+          documented=$(grep -c '# used-by:' package.json || true)
+          echo "scripts total = $total"
+          echo "# used-by:    = $documented"
+          if [ "$documented" -lt 1 ]; then
+            echo "::warning::No `# used-by:` provenance comments in package.json"
+          fi
+
+  workflow-budget:
+    name: Workflow file count
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Soft-gate .github/workflows/*.yml ≤ 20
+        run: |
+          count=$(find .github/workflows -maxdepth 1 -type f \( -name '*.yml' -o -name '*.yaml' \) | wc -l | tr -d ' ')
+          echo "workflow count = $count (soft cap 20)"
+          if [ "$count" -gt 20 ]; then
+            echo "::warning::workflow count $count exceeds soft cap 20 (consolidation in progress)"
+          fi
+
+      - name: Every workflow declares `# actor:` (warn-only)
+        run: |
+          missing=0
+          for f in .github/workflows/*.yml .github/workflows/*.yaml; do
+            [ -f "$f" ] || continue
+            if ! head -5 "$f" | grep -qE '^# actor:\s*(bot|assistant|agent)'; then
+              echo "::warning file=$f::workflow missing '# actor:' declaration in first 5 lines"
+              missing=$((missing+1))
+            fi
+          done
+          echo "workflows missing actor declaration = $missing"
+
+  depcheck-gate:
+    name: depcheck ceilings
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci --prefer-offline --no-audit --no-fund
+      - name: Dep count budgets
+        run: |
+          # Current state after Phase 3 trim: prod=74, dev=42.
+          # Long-term target from dcyfr-labs-cleanup spec: prod≤50, dev≤35.
+          # Hard ratchet ceilings prevent growth from today; the long-term
+          # targets will be lowered to match as follow-up trim lands.
+          HARD_PROD=75
+          HARD_DEV=45
+          TARGET_PROD=50
+          TARGET_DEV=35
+
+          prod=$(node -e "console.log(Object.keys(require('./package.json').dependencies||{}).length)")
+          dev=$(node -e "console.log(Object.keys(require('./package.json').devDependencies||{}).length)")
+          echo "prod deps = $prod (hard $HARD_PROD, target $TARGET_PROD)"
+          echo "dev deps  = $dev (hard $HARD_DEV, target $TARGET_DEV)"
+
+          failed=0
+          if [ "$prod" -gt "$HARD_PROD" ]; then
+            echo "::error::production dependencies $prod exceeds hard ceiling $HARD_PROD"
+            failed=1
+          elif [ "$prod" -gt "$TARGET_PROD" ]; then
+            echo "::warning::prod deps $prod still above long-term target $TARGET_PROD"
+          fi
+          if [ "$dev" -gt "$HARD_DEV" ]; then
+            echo "::error::devDependencies $dev exceeds hard ceiling $HARD_DEV"
+            failed=1
+          elif [ "$dev" -gt "$TARGET_DEV" ]; then
+            echo "::warning::dev deps $dev still above long-term target $TARGET_DEV"
+          fi
+          exit $failed
+
+      - name: depcheck regression (warn-only)
+        run: |
+          npx depcheck --json > /tmp/depcheck.json || true
+          unused_prod=$(node -e "const r=require('/tmp/depcheck.json');console.log((r.dependencies||[]).length)")
+          unused_dev=$(node -e "const r=require('/tmp/depcheck.json');console.log((r.devDependencies||[]).length)")
+          echo "depcheck flagged unused prod = $unused_prod"
+          echo "depcheck flagged unused dev  = $unused_dev"
+          if [ "$unused_prod" -gt 0 ] || [ "$unused_dev" -gt 0 ]; then
+            echo "::warning::depcheck found unused dependencies — verify manually, may be false positives"
+          fi
+
+  doc-topic-budget:
+    name: docs/ topic count
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Soft-gate docs/ top-level dirs ≤ 8 canonical topics
+        run: |
+          # Canonical topics per cleanup spec: architecture, operations,
+          # features, governance, security, ai, testing, _private. We also
+          # allow _archived and _inventory as cleanup-artifact directories.
+          allowed='^(architecture|operations|features|governance|security|ai|testing|_private|_archived|_inventory)$'
+          offending=0
+          for d in docs/*/; do
+            name=$(basename "$d")
+            if ! echo "$name" | grep -qE "$allowed"; then
+              echo "::warning::docs/$name/ is not a canonical topic (expected one of: architecture operations features governance security ai testing _private)"
+              offending=$((offending+1))
+            fi
+          done
+          echo "non-canonical top-level docs directories = $offending"
+          # Warn-only. Promotes to hard fail after topic consolidation follow-up.
