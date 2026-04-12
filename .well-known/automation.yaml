@@ -1,0 +1,182 @@
+# dcyfr-labs automation contract
+# Machine-readable entry point for bots, assistants, and agents.
+# Read this before reading any prose. Prose documents link here; not the other way around.
+# See docs/automation-glossary.md for the definition of each actor class.
+
+$schema: ./schemas/automation-manifest.schema.json
+schema_version: '1.0.0'
+glossary: docs/automation-glossary.md
+glossary_version: '1.0.0'
+
+repo:
+  name: dcyfr-labs
+  url: https://github.com/dcyfr/dcyfr-labs
+  production_url: https://www.dcyfr.ai
+  stack: [nextjs-16, react-19, typescript, tailwind-v4, shadcn-ui, mdx]
+  versioning: calver
+  license: MIT
+
+# ---------- actor classes ----------
+# Each actor class declares:
+#   reads: contract surface it is expected to consume (ordered, most important first)
+#   primary_instructions: the single prose file this actor class loads on wake
+#   scope: what this class is allowed to do
+#   token_budget: maximum prose context measured in tokens (soft cap, enforced by size of primary_instructions)
+
+actors:
+  bots:
+    reads:
+      - .well-known/automation.yaml
+      - package.json
+      - .github/workflows/
+    primary_instructions: null
+    scope: >-
+      Structured data only. No natural-language reasoning. Examples: Dependabot,
+      Renovate, scheduled cron jobs, auto-merge workflows, release automation.
+    token_budget: 0
+    examples:
+      - dependabot
+      - auto-calver
+      - monthly-cleanup
+      - vercel-cron
+
+  assistants:
+    reads:
+      - .well-known/automation.yaml
+      - .github/copilot-instructions.md
+      - CLAUDE.md
+      - docs/automation-glossary.md
+    primary_instructions: .github/copilot-instructions.md
+    scope: >-
+      Human-in-the-loop suggestion and pair-programming. Operates one turn at a
+      time inside a chat/editor context. Does not own multi-step tasks end to end.
+    token_budget: 10000
+    examples:
+      - github-copilot-inline
+      - claude-inline-chat
+      - cursor-tab
+
+  agents:
+    reads:
+      - .well-known/automation.yaml
+      - AGENTS.md
+      - dcyfr-workspace/openspec/
+      - docs/automation-glossary.md
+    primary_instructions: AGENTS.md
+    scope: >-
+      Autonomous, goal-directed, multi-turn task execution. Owns tasks end to
+      end, manages its own context, writes files, runs commands, and follows
+      openspec. Must obey mutation_policy below.
+    token_budget: 50000
+    examples:
+      - claude-code-sub-agents
+      - rei-daemon
+      - dcyfr-workspace-specialists
+
+# ---------- capabilities ----------
+# Every automation-discoverable operation. Each capability names its owner
+# (a workflow or script) so that bots can map a desired outcome to an invocation.
+# Capability ids are stable — rename via deprecated_capabilities, not in place.
+
+capabilities:
+  - id: build
+    summary: Production Next.js build (typecheck + compile + bundle)
+    owner: .github/workflows/test.yml
+    idempotent: true
+    requires_approval: false
+
+  - id: test
+    summary: Unit + integration test suite
+    owner: .github/workflows/test.yml
+    idempotent: true
+    requires_approval: false
+
+  - id: lint
+    summary: ESLint with design-token enforcement
+    owner: .github/workflows/test.yml
+    idempotent: true
+    requires_approval: false
+
+  - id: typecheck
+    summary: TypeScript strict type checking
+    owner: .github/workflows/test.yml
+    idempotent: true
+    requires_approval: false
+
+  - id: deploy-preview
+    summary: Vercel preview deployment on every PR
+    owner: vercel-integration
+    idempotent: true
+    requires_approval: false
+
+  - id: deploy-production
+    summary: Production deployment on merge to main
+    owner: .github/workflows/deploy.yml
+    idempotent: false
+    requires_approval: true
+
+  - id: security-scan
+    summary: CodeQL + Semgrep + Nuclei external scan
+    owner: .github/workflows/codeql.yml
+    idempotent: true
+    requires_approval: false
+
+  - id: lighthouse-audit
+    summary: Core Web Vitals and accessibility audit
+    owner: .github/workflows/lighthouse-ci.yml
+    idempotent: true
+    requires_approval: false
+
+  - id: dependency-audit
+    summary: npm audit + depcheck regression gate
+    owner: .github/workflows/repo-budget-guardrails.yml
+    idempotent: true
+    requires_approval: false
+
+  - id: release-calver
+    summary: Calendar-versioned release tag and changelog
+    owner: .github/workflows/release-automation.yml
+    idempotent: false
+    requires_approval: true
+
+  - id: repo-budget
+    summary: Topline doc / script count / workflow count guardrails
+    owner: .github/workflows/repo-budget-guardrails.yml
+    idempotent: true
+    requires_approval: false
+
+deprecated_capabilities: []
+
+# ---------- mutation policy ----------
+# Declared boundaries for what automation may touch. This is an intent
+# declaration — enforcement lives in agent policy and CI, not in YAML parsing.
+
+mutation_policy:
+  allow:
+    - 'src/**'
+    - 'content/**'
+    - 'tests/**'
+    - 'e2e/**'
+    - 'scripts/**'
+    - 'docs/**'
+    - 'package.json'
+    - 'package-lock.json'
+    - '.github/workflows/**'
+
+  requires_approval:
+    - '.github/CODEOWNERS'
+    - '.github/branch-protection.yml'
+    - 'vercel.json'
+    - 'next.config.ts'
+    - '.well-known/automation.yaml'
+    - 'schemas/automation-manifest.schema.json'
+
+  forbid:
+    - '.env*'
+    - '**/*.env.local'
+    - '**/*.env.production'
+    - '**/secrets/**'
+    - 'op://**'
+    - '.gnupg/**'
+    - '**/id_rsa*'
+    - '**/id_ed25519*'

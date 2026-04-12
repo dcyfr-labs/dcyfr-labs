@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.dcyfr.ai/schemas/automation-manifest.schema.json",
+  "title": "dcyfr-labs automation manifest",
+  "description": "Machine-readable contract surface for bots, assistants, and agents operating against this repository.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schema_version",
+    "glossary",
+    "glossary_version",
+    "repo",
+    "actors",
+    "capabilities",
+    "mutation_policy"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "glossary": {
+      "type": "string",
+      "description": "Relative path to the canonical glossary markdown file."
+    },
+    "glossary_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "repo": {
+      "type": "object",
+      "required": ["name", "url"],
+      "properties": {
+        "name": { "type": "string" },
+        "url": { "type": "string", "format": "uri" },
+        "production_url": { "type": "string", "format": "uri" },
+        "stack": { "type": "array", "items": { "type": "string" } },
+        "versioning": { "type": "string" },
+        "license": { "type": "string" }
+      }
+    },
+    "actors": {
+      "type": "object",
+      "required": ["bots", "assistants", "agents"],
+      "additionalProperties": false,
+      "properties": {
+        "bots": { "$ref": "#/$defs/actor" },
+        "assistants": { "$ref": "#/$defs/actor" },
+        "agents": { "$ref": "#/$defs/actor" }
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/capability" },
+      "minItems": 1
+    },
+    "deprecated_capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "superseded_by"],
+        "properties": {
+          "id": { "type": "string" },
+          "superseded_by": { "type": "string" },
+          "removed_at": { "type": "string" }
+        }
+      }
+    },
+    "mutation_policy": {
+      "type": "object",
+      "required": ["allow", "requires_approval", "forbid"],
+      "additionalProperties": false,
+      "properties": {
+        "allow": { "type": "array", "items": { "type": "string" } },
+        "requires_approval": { "type": "array", "items": { "type": "string" } },
+        "forbid": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  },
+  "$defs": {
+    "actor": {
+      "type": "object",
+      "required": ["reads", "primary_instructions", "scope", "token_budget"],
+      "additionalProperties": false,
+      "properties": {
+        "reads": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "primary_instructions": {
+          "type": ["string", "null"]
+        },
+        "scope": { "type": "string", "minLength": 1 },
+        "token_budget": { "type": "integer", "minimum": 0 },
+        "examples": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "capability": {
+      "type": "object",
+      "required": ["id", "summary", "owner", "idempotent", "requires_approval"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "owner": { "type": "string" },
+        "idempotent": { "type": "boolean" },
+        "requires_approval": { "type": "boolean" }
+      }
+    }
+  }
+}
