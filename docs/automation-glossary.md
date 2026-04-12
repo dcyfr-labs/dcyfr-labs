@@ -1,9 +1,9 @@
-## <!-- TLP:CLEAR -->
-
-version: "1.0.0"
-audience: humans + agents (canonical definition of actor classes)
-
 ---
+version: '1.0.0'
+audience: humans + agents (canonical definition of actor classes)
+---
+
+<!-- TLP:CLEAR -->
 
 # Automation Glossary
 
