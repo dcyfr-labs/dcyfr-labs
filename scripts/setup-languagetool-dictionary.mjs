@@ -13,7 +13,6 @@
 
 import dotenv from 'dotenv';
 import { addWord, listWords } from './lib/languagetool-client.mjs';
-import fs from 'fs';
 
 // Explicitly load .env.local
 dotenv.config({ path: '.env.local' });

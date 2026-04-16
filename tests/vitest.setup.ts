@@ -60,6 +60,63 @@ afterEach(() => {
 process.env.NEXT_PUBLIC_SITE_URL = 'http://localhost:3000';
 
 /**
+ * GLOBAL LOCALSTORAGE SHIM
+ *
+ * Some test files run in a Node environment via environmentMatchGlobs, while
+ * others run in happy-dom. Ensure a consistent Storage-like API exists across
+ * all workers to prevent cross-suite localStorage shape drift.
+ */
+const createLocalStorageShim = (): Storage => {
+  const store = new Map<string, string>();
+
+  return {
+    get length() {
+      return store.size;
+    },
+    clear() {
+      store.clear();
+    },
+    getItem(key: string) {
+      return store.has(key) ? store.get(key)! : null;
+    },
+    key(index: number) {
+      return Array.from(store.keys())[index] ?? null;
+    },
+    removeItem(key: string) {
+      store.delete(key);
+    },
+    setItem(key: string, value: string) {
+      store.set(key, String(value));
+    },
+  } as Storage;
+};
+
+const ensureLocalStorage = () => {
+  const current = (globalThis as { localStorage?: Partial<Storage> }).localStorage;
+  const hasMinimumStorageApi =
+    current &&
+    typeof current.getItem === 'function' &&
+    typeof current.setItem === 'function' &&
+    typeof current.clear === 'function';
+
+  if (!hasMinimumStorageApi) {
+    Object.defineProperty(globalThis, 'localStorage', {
+      value: createLocalStorageShim(),
+      writable: true,
+      configurable: true,
+    });
+  }
+};
+
+beforeAll(() => {
+  ensureLocalStorage();
+});
+
+beforeEach(() => {
+  ensureLocalStorage();
+});
+
+/**
  * REDIS CLIENT MOCK
  * Mock redis-client module to prevent actual Redis connections in tests
  */

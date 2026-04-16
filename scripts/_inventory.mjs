@@ -15,7 +15,7 @@
 //
 // Reads only. No mutation outside docs/_inventory/.
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync, statSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, statSync, readdirSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 import { join, relative, dirname, basename } from 'node:path';
 
@@ -28,7 +28,7 @@ mkdirSync(OUT, { recursive: true });
 const sh = (cmd) => {
   try {
     return execSync(cmd, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }).trim();
-  } catch (e) {
+  } catch (_e) {
     return '';
   }
 };

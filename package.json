@@ -388,7 +388,7 @@
   "author": "DCYFR Labs",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dcyfr/dcyfr-labs.git"
+    "url": "https://github.com/dcyfr-labs/dcyfr-labs.git"
   },
   "overrides": {
     "typescript": "6.0.2",
@@ -419,9 +419,6 @@
     "mem0ai": {
       "axios": ">=1.15.0"
     },
-    "sqlite3": {
-      "tar": ">=7.5.11"
-    },
     "hono": ">=4.12.4",
     "langsmith": ">=0.4.6",
     "undici": ">=6.23.0",
@@ -429,7 +426,6 @@
     "@axiomhq/js": "^1.6.0"
   },
   "optionalDependencies": {
-    "@anthropic-ai/sdk": "0.82.0",
-    "sqlite3": "^5.1.7"
+    "@anthropic-ai/sdk": "0.82.0"
   }
 }

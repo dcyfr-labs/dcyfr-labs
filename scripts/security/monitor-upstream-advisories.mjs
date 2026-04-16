@@ -2,48 +2,47 @@
 
 /**
  * Upstream Security Advisory Monitor
- * 
+ *
  * Proactively monitors GitHub Security Advisories for React/Next.js ecosystem
  * to detect vulnerabilities before they propagate to npm audit/Dependabot.
- * 
+ *
  * Created in response to CVE-2025-55182 which had a 13-hour detection gap.
- * 
+ *
  * @see https://github.com/facebook/react/security/advisories
  * @see https://github.com/vercel/next.js/security/advisories
  */
 
-import { readFileSync, writeFileSync, existsSync } from "fs";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
-import { execSync } from "child_process";
+import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = join(__dirname, "..");
+const PROJECT_ROOT = join(__dirname, '..');
 
 // Configuration
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const FORCE_ALERT = process.env.FORCE_ALERT === "true";
-const SEVERITY_THRESHOLD = process.env.SEVERITY_THRESHOLD || "high";
-const DEBUG = process.env.DEBUG === "true";
+const FORCE_ALERT = process.env.FORCE_ALERT === 'true';
+const SEVERITY_THRESHOLD = process.env.SEVERITY_THRESHOLD || 'high';
+const DEBUG = process.env.DEBUG === 'true';
 
 // State file to track seen advisories (stored in .github/security-state.json)
-const STATE_FILE = join(__dirname, "..", ".github", "security-state.json");
+const STATE_FILE = join(__dirname, '..', '.github', 'security-state.json');
 
 // Packages to monitor for security advisories
 const MONITORED_PACKAGES = [
-  "next",
-  "react", 
-  "react-dom",
-  "react-server-dom-webpack",
-  "react-server-dom-turbopack",
-  "react-server-dom-parcel",
+  'next',
+  'react',
+  'react-dom',
+  'react-server-dom-webpack',
+  'react-server-dom-turbopack',
+  'react-server-dom-parcel',
 ];
 
 // RSC packages get lower severity threshold (medium+)
 const RSC_PACKAGES = new Set([
-  "react-server-dom-webpack",
-  "react-server-dom-turbopack",
-  "react-server-dom-parcel",
+  'react-server-dom-webpack',
+  'react-server-dom-turbopack',
+  'react-server-dom-parcel',
 ]);
 
 // Severity rankings
@@ -60,10 +59,10 @@ const SEVERITY_RANK = {
 function loadState() {
   try {
     if (existsSync(STATE_FILE)) {
-      return JSON.parse(readFileSync(STATE_FILE, "utf-8"));
+      return JSON.parse(readFileSync(STATE_FILE, 'utf-8'));
     }
   } catch (error) {
-    console.warn("⚠️  Could not load state file:", error.message);
+    console.warn('⚠️  Could not load state file:', error.message);
   }
   return { seenAdvisories: [], lastCheck: null };
 }
@@ -75,7 +74,7 @@ function saveState(state) {
   try {
     writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
   } catch (error) {
-    console.warn("⚠️  Could not save state file:", error.message);
+    console.warn('⚠️  Could not save state file:', error.message);
   }
 }
 
@@ -85,11 +84,11 @@ function saveState(state) {
  */
 function parsePackagesFromLockfileV3(packages, installedVersions) {
   for (const [path, pkg] of Object.entries(packages)) {
-    if (path === "" && pkg.dependencies) continue;
+    if (path === '' && pkg.dependencies) continue;
     const match = path.match(/^node_modules\/(.+)$/);
     if (match && pkg.version) {
       const pkgName = match[1];
-      if (!pkgName.includes("node_modules/")) {
+      if (!pkgName.includes('node_modules/')) {
         installedVersions.set(pkgName, pkg.version);
       }
     }
@@ -108,13 +107,13 @@ function getInstalledPackages() {
   const installedVersions = new Map();
 
   try {
-    const lockfilePath = join(PROJECT_ROOT, "package-lock.json");
+    const lockfilePath = join(PROJECT_ROOT, 'package-lock.json');
     if (!existsSync(lockfilePath)) {
-      console.warn("⚠️  No package-lock.json found, cannot verify installed versions");
+      console.warn('⚠️  No package-lock.json found, cannot verify installed versions');
       return installedVersions;
     }
 
-    const lockfile = JSON.parse(readFileSync(lockfilePath, "utf-8"));
+    const lockfile = JSON.parse(readFileSync(lockfilePath, 'utf-8'));
 
     if (lockfile.packages) {
       parsePackagesFromLockfileV3(lockfile.packages, installedVersions);
@@ -124,7 +123,7 @@ function getInstalledPackages() {
       parsePackagesFromLockfileV2(lockfile.dependencies, installedVersions);
     }
   } catch (error) {
-    console.warn("⚠️  Error reading package-lock.json:", error.message);
+    console.warn('⚠️  Error reading package-lock.json:', error.message);
   }
 
   return installedVersions;
@@ -136,23 +135,23 @@ function getInstalledPackages() {
  */
 function getProductionDependencies() {
   const productionDeps = new Set();
-  
+
   try {
-    const packageJsonPath = join(PROJECT_ROOT, "package.json");
+    const packageJsonPath = join(PROJECT_ROOT, 'package.json');
     if (!existsSync(packageJsonPath)) {
-      console.warn("⚠️  No package.json found, cannot verify production dependencies");
+      console.warn('⚠️  No package.json found, cannot verify production dependencies');
       return productionDeps;
     }
-    
-    const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
-    
+
+    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+
     // Add dependencies (production)
     if (packageJson.dependencies) {
       for (const name of Object.keys(packageJson.dependencies)) {
         productionDeps.add(name);
       }
     }
-    
+
     // Add devDependencies only if they're in our MONITORED_PACKAGES list
     // (some dev tools like @next/bundle-analyzer might have security relevance)
     if (packageJson.devDependencies) {
@@ -163,9 +162,9 @@ function getProductionDependencies() {
       }
     }
   } catch (error) {
-    console.warn("⚠️  Error reading package.json:", error.message);
+    console.warn('⚠️  Error reading package.json:', error.message);
   }
-  
+
   return productionDeps;
 }
 
@@ -176,19 +175,19 @@ function getProductionDependencies() {
  */
 function parseVersion(version) {
   if (!version) return null;
-  
+
   // Clean the version string
-  const cleaned = version.replace(/^[v=]/, "").trim();
-  
+  const cleaned = version.replace(/^[v=]/, '').trim();
+
   // Match semver pattern: major.minor.patch with optional prerelease
   const match = cleaned.match(/^(\d+)\.(\d+)\.(\d+)(?:-(.+))?$/);
   if (!match) return null;
-  
+
   return {
     major: parseInt(match[1], 10),
     minor: parseInt(match[2], 10),
     patch: parseInt(match[3], 10),
-    prerelease: match[4] ? match[4].split(".") : [],
+    prerelease: match[4] ? match[4].split('.') : [],
   };
 }
 
@@ -198,18 +197,18 @@ function parseVersion(version) {
 function compareVersions(a, b) {
   const vA = parseVersion(a);
   const vB = parseVersion(b);
-  
+
   if (!vA || !vB) return 0;
-  
+
   // Compare major.minor.patch
   if (vA.major !== vB.major) return vA.major < vB.major ? -1 : 1;
   if (vA.minor !== vB.minor) return vA.minor < vB.minor ? -1 : 1;
   if (vA.patch !== vB.patch) return vA.patch < vB.patch ? -1 : 1;
-  
+
   // Prerelease versions are less than release versions
   if (vA.prerelease.length && !vB.prerelease.length) return -1;
   if (!vA.prerelease.length && vB.prerelease.length) return 1;
-  
+
   return 0;
 }
 
@@ -219,13 +218,19 @@ function compareVersions(a, b) {
  */
 function checkVersionConditionSatisfied(operator, comparison) {
   switch (operator) {
-    case "<":  return comparison < 0;
-    case "<=": return comparison <= 0;
-    case ">":  return comparison > 0;
-    case ">=": return comparison >= 0;
-    case "=":
-    case "==": return comparison === 0;
-    default:   return true;
+    case '<':
+      return comparison < 0;
+    case '<=':
+      return comparison <= 0;
+    case '>':
+      return comparison > 0;
+    case '>=':
+      return comparison >= 0;
+    case '=':
+    case '==':
+      return comparison === 0;
+    default:
+      return true;
   }
 }
 
@@ -235,23 +240,23 @@ function checkVersionConditionSatisfied(operator, comparison) {
  * - ">= 13.3.0, < 14.2.34"
  * - "< 19.0.2"
  * - ">= 19.0.0, < 19.0.2"
- * 
+ *
  * @param {string} installedVersion - The installed version (e.g., "16.0.10")
  * @param {string} vulnerableRange - The vulnerable range (e.g., ">= 13.3.0, < 14.2.34")
  * @returns {boolean} - True if the installed version is vulnerable
  */
 function isVersionVulnerable(installedVersion, vulnerableRange) {
-  if (!installedVersion || !vulnerableRange || vulnerableRange === "Unknown") {
+  if (!installedVersion || !vulnerableRange || vulnerableRange === 'Unknown') {
     // Can't determine - assume vulnerable to be safe
     return true;
   }
-  
+
   const installed = parseVersion(installedVersion);
   if (!installed) return true;
-  
+
   // Parse the vulnerability range - split by comma for compound ranges
-  const conditions = vulnerableRange.split(",").map(c => c.trim());
-  
+  const conditions = vulnerableRange.split(',').map((c) => c.trim());
+
   for (const condition of conditions) {
     const match = condition.match(/^([<>=!]+)\s*(.+)$/);
     if (!match) continue;
@@ -261,7 +266,7 @@ function isVersionVulnerable(installedVersion, vulnerableRange) {
 
     if (!checkVersionConditionSatisfied(operator, comparison)) return false;
   }
-  
+
   // All conditions satisfied - version is vulnerable
   return true;
 }
@@ -271,12 +276,12 @@ function isVersionVulnerable(installedVersion, vulnerableRange) {
  */
 function meetsSeverityThreshold(severity, packageName) {
   const severityRank = SEVERITY_RANK[severity?.toLowerCase()] || 0;
-  
+
   // RSC packages: alert on medium+
   if (RSC_PACKAGES.has(packageName)) {
     return severityRank >= SEVERITY_RANK.medium;
   }
-  
+
   // Core packages: alert on high+ (or user-specified threshold)
   const thresholdRank = SEVERITY_RANK[SEVERITY_THRESHOLD] || SEVERITY_RANK.high;
   return severityRank >= thresholdRank;
@@ -291,7 +296,7 @@ function validateAdvisoryForPackage(adv, packageName) {
   let foundInVulnerabilities = false;
   let vulnerabilityInfo = null;
   if (Array.isArray(adv.vulnerabilities)) {
-    const vulnInfo = adv.vulnerabilities.find(v => v.package?.name === packageName);
+    const vulnInfo = adv.vulnerabilities.find((v) => v.package?.name === packageName);
     if (vulnInfo) {
       foundInVulnerabilities = true;
       vulnerabilityInfo = vulnInfo;
@@ -300,7 +305,7 @@ function validateAdvisoryForPackage(adv, packageName) {
   // Strategy 2: Check affected_packages array (fallback)
   let foundInAffectedPackages = false;
   if (!foundInVulnerabilities && Array.isArray(adv.affected_packages)) {
-    const affectedInfo = adv.affected_packages.find(pkg => pkg.package?.name === packageName);
+    const affectedInfo = adv.affected_packages.find((pkg) => pkg.package?.name === packageName);
     if (affectedInfo) {
       foundInAffectedPackages = true;
       vulnerabilityInfo = affectedInfo;
@@ -340,21 +345,30 @@ function processAdvisoryEntry(adv, packageName, advisories, skippedAdvisories) {
     validateAdvisoryForPackage(adv, packageName);
 
   if (!foundInVulnerabilities && !foundInAffectedPackages) {
-    const affectedPackage = adv.vulnerabilities?.[0]?.package?.name ||
+    const affectedPackage =
+      adv.vulnerabilities?.[0]?.package?.name ||
       adv.affected_packages?.[0]?.package?.name ||
-      adv.package_slug || "unknown";
+      adv.package_slug ||
+      'unknown';
     skippedAdvisories.push({
-      id: adv.ghsa_id, cveId: adv.cve_id, actualPackage: affectedPackage,
-      queriedPackage: packageName, reason: 'not_in_vulnerabilities_or_affected_packages'
+      id: adv.ghsa_id,
+      cveId: adv.cve_id,
+      actualPackage: affectedPackage,
+      queriedPackage: packageName,
+      reason: 'not_in_vulnerabilities_or_affected_packages',
     });
-    if (DEBUG) console.log(`   ⏭️  ${adv.ghsa_id} (${adv.cve_id}) - not attributed to ${packageName}`);
+    if (DEBUG)
+      console.log(`   ⏭️  ${adv.ghsa_id} (${adv.cve_id}) - not attributed to ${packageName}`);
     return;
   }
 
   if (!packageSlugMatches && !foundInVulnerabilities) {
     skippedAdvisories.push({
-      id: adv.ghsa_id, cveId: adv.cve_id, actualPackage: adv.package_slug || 'unknown',
-      queriedPackage: packageName, reason: 'package_slug_mismatch'
+      id: adv.ghsa_id,
+      cveId: adv.cve_id,
+      actualPackage: adv.package_slug || 'unknown',
+      queriedPackage: packageName,
+      reason: 'package_slug_mismatch',
     });
     if (DEBUG) console.log(`   ⏭️  ${adv.ghsa_id} - package_slug mismatch: ${adv.package_slug}`);
     return;
@@ -362,11 +376,17 @@ function processAdvisoryEntry(adv, packageName, advisories, skippedAdvisories) {
 
   if (isAdvisoryRecent(adv.published_at)) {
     advisories.push({
-      id: adv.ghsa_id, package: packageName, severity: adv.severity, summary: adv.summary,
-      description: adv.description, cvssScore: adv.cvss?.score || "N/A", cveId: adv.cve_id,
-      publishedAt: adv.published_at, url: adv.html_url,
-      vulnerableRange: vulnerabilityInfo?.vulnerable_version_range || "Unknown",
-      patchedVersion: vulnerabilityInfo?.first_patched_version?.identifier || "Not yet available",
+      id: adv.ghsa_id,
+      package: packageName,
+      severity: adv.severity,
+      summary: adv.summary,
+      description: adv.description,
+      cvssScore: adv.cvss?.score || 'N/A',
+      cveId: adv.cve_id,
+      publishedAt: adv.published_at,
+      url: adv.html_url,
+      vulnerableRange: vulnerabilityInfo?.vulnerable_version_range || 'Unknown',
+      patchedVersion: vulnerabilityInfo?.first_patched_version?.identifier || 'Not yet available',
     });
   }
 }
@@ -374,17 +394,17 @@ function processAdvisoryEntry(adv, packageName, advisories, skippedAdvisories) {
 async function fetchAdvisoriesForPackage(packageName) {
   const advisories = [];
   const skippedAdvisories = [];
-  
+
   try {
     console.log(`   Checking GHSA for ${packageName}...`);
-    
+
     // Use the global advisories API with explicit package filter
     const response = await fetch(
       `https://api.github.com/advisories?ecosystem=npm&package=${packageName}&per_page=20`,
       {
         headers: {
-          Accept: "application/vnd.github+json",
-          "X-GitHub-Api-Version": "2022-11-28",
+          Accept: 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28',
           ...(GITHUB_TOKEN && { Authorization: `Bearer ${GITHUB_TOKEN}` }),
         },
       }
@@ -412,12 +432,12 @@ async function fetchAdvisoriesForPackage(packageName) {
  * Format advisory for output
  */
 function formatAdvisory(adv) {
-  const severity = (adv.severity || "unknown").toUpperCase();
-  
+  const severity = (adv.severity || 'unknown').toUpperCase();
+
   return {
     ...adv,
     severity,
-    formatted: `- **${adv.package}** (${severity}${adv.cveId ? ` - ${adv.cveId}` : ""})
+    formatted: `- **${adv.package}** (${severity}${adv.cveId ? ` - ${adv.cveId}` : ''})
   - GHSA: [${adv.id}](${adv.url})
   - CVSS: ${adv.cvssScore}
   - Vulnerable: ${adv.vulnerableRange}
@@ -442,11 +462,21 @@ function assessAdvisory(advisory, installedVersion, packageName, seenIds, allSki
   }
   const vulnerable = isVersionVulnerable(installedVersion, advisory.vulnerableRange);
   if (!vulnerable) {
-    console.log(`   ✅ Not vulnerable: ${id} - ${packageName}@${installedVersion} not in range "${advisory.vulnerableRange}"`);
-    allSkipped.push({ id: advisory.id, cveId: advisory.cveId, actualPackage: packageName, queriedPackage: packageName, reason: `version_not_vulnerable: ${installedVersion} not in ${advisory.vulnerableRange}` });
+    console.log(
+      `   ✅ Not vulnerable: ${id} - ${packageName}@${installedVersion} not in range "${advisory.vulnerableRange}"`
+    );
+    allSkipped.push({
+      id: advisory.id,
+      cveId: advisory.cveId,
+      actualPackage: packageName,
+      queriedPackage: packageName,
+      reason: `version_not_vulnerable: ${installedVersion} not in ${advisory.vulnerableRange}`,
+    });
     return null;
   }
-  console.log(`   🚨 NEW: ${id} - ${packageName}@${installedVersion} (${advisory.severity}) - vulnerable to ${advisory.vulnerableRange}`);
+  console.log(
+    `   🚨 NEW: ${id} - ${packageName}@${installedVersion} (${advisory.severity}) - vulnerable to ${advisory.vulnerableRange}`
+  );
   seenIds.add(id);
   return formatAdvisory(advisory);
 }
@@ -469,7 +499,7 @@ async function processPackageAdvisories(packageName, installedVersion, seenIds, 
  * Log installed monitored packages and their production status
  */
 function logInstalledPackages(installedPackages, productionDependencies) {
-  console.log("📦 Installed monitored packages:");
+  console.log('📦 Installed monitored packages:');
   for (const pkg of MONITORED_PACKAGES) {
     const version = installedPackages.get(pkg);
     const isProduction = productionDependencies.has(pkg);
@@ -483,23 +513,23 @@ function logInstalledPackages(installedPackages, productionDependencies) {
       console.log(`   - ${pkg}: not installed (will skip)`);
     }
   }
-  console.log("");
+  console.log('');
 }
 
 /**
  * Main monitoring function
  */
 async function main() {
-  console.log("🔍 Security Advisory Monitor");
-  console.log("============================");
+  console.log('🔍 Security Advisory Monitor');
+  console.log('============================');
   console.log(`Severity threshold: ${SEVERITY_THRESHOLD} (RSC packages: medium+)`);
   console.log(`Force alert: ${FORCE_ALERT}`);
-  console.log("");
+  console.log('');
 
   // Get installed package versions for validation
   const installedPackages = getInstalledPackages();
   const productionDependencies = getProductionDependencies();
-  
+
   logInstalledPackages(installedPackages, productionDependencies);
 
   const state = loadState();
@@ -510,9 +540,22 @@ async function main() {
   for (const packageName of MONITORED_PACKAGES) {
     const installedVersion = installedPackages.get(packageName);
     const isProductionDep = productionDependencies.has(packageName);
-    if (!installedVersion) { console.log(`   ⏭️  Skipping ${packageName}: not installed in project`); continue; }
-    if (!isProductionDep) { console.log(`   ⏭️  Skipping ${packageName}: transitive dependency only (not in package.json)`); continue; }
-    const alerts = await processPackageAdvisories(packageName, installedVersion, seenIds, allSkipped);
+    if (!installedVersion) {
+      console.log(`   ⏭️  Skipping ${packageName}: not installed in project`);
+      continue;
+    }
+    if (!isProductionDep) {
+      console.log(
+        `   ⏭️  Skipping ${packageName}: transitive dependency only (not in package.json)`
+      );
+      continue;
+    }
+    const alerts = await processPackageAdvisories(
+      packageName,
+      installedVersion,
+      seenIds,
+      allSkipped
+    );
     newAdvisories.push(...alerts);
   }
 
@@ -520,7 +563,9 @@ async function main() {
   if (allSkipped.length > 0) {
     console.log(`\n✅ Filtered out ${allSkipped.length} misattributed advisories:`);
     for (const skipped of allSkipped) {
-      console.log(`   - ${skipped.id} (${skipped.cveId}): affects ${skipped.actualPackage}, not ${skipped.queriedPackage}`);
+      console.log(
+        `   - ${skipped.id} (${skipped.cveId}): affects ${skipped.actualPackage}, not ${skipped.queriedPackage}`
+      );
     }
   }
 
@@ -532,32 +577,34 @@ async function main() {
   // Output for GitHub Actions
   const hasNewAdvisories = newAdvisories.length > 0;
   const advisoryCount = newAdvisories.length;
-  const advisorySummary = newAdvisories.map((a) => a.formatted).join("\n\n");
+  const advisorySummary = newAdvisories.map((a) => a.formatted).join('\n\n');
 
   // Set outputs for GitHub Actions
   if (process.env.GITHUB_OUTPUT) {
     const outputFile = process.env.GITHUB_OUTPUT;
     const appendOutput = (key, value) => {
       // Handle multiline values
-      if (value.includes("\n")) {
-        writeFileSync(outputFile, `${key}<<EOF\n${value}\nEOF\n`, { flag: "a" });
+      if (value.includes('\n')) {
+        writeFileSync(outputFile, `${key}<<EOF\n${value}\nEOF\n`, { flag: 'a' });
       } else {
-        writeFileSync(outputFile, `${key}=${value}\n`, { flag: "a" });
+        writeFileSync(outputFile, `${key}=${value}\n`, { flag: 'a' });
       }
     };
 
-    appendOutput("has_new_advisories", hasNewAdvisories.toString());
-    appendOutput("advisory_count", advisoryCount.toString());
-    appendOutput("advisory_summary", advisorySummary || "No new advisories");
+    appendOutput('has_new_advisories', hasNewAdvisories.toString());
+    appendOutput('advisory_count', advisoryCount.toString());
+    appendOutput('advisory_summary', advisorySummary || 'No new advisories');
   }
 
   // Console output
-  console.log("\n" + "=".repeat(50));
+  console.log('\n' + '='.repeat(50));
   if (hasNewAdvisories) {
-    console.log(`\n🚨 ${advisoryCount} NEW SECURITY ADVISOR${advisoryCount === 1 ? "Y" : "IES"} DETECTED!\n`);
+    console.log(
+      `\n🚨 ${advisoryCount} NEW SECURITY ADVISOR${advisoryCount === 1 ? 'Y' : 'IES'} DETECTED!\n`
+    );
     console.log(advisorySummary);
   } else {
-    console.log("\n✅ No new security advisories detected.");
+    console.log('\n✅ No new security advisories detected.');
   }
   console.log(`\nLast check: ${state.lastCheck}`);
 
@@ -566,6 +613,6 @@ async function main() {
 
 // Run
 main().catch((error) => {
-  console.error("❌ Error:", error);
+  console.error('❌ Error:', error);
   process.exit(1);
 });
